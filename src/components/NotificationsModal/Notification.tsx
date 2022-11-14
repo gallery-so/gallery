@@ -234,10 +234,9 @@ const Container = styled.div<{ isClickable: boolean }>`
     isClickable
       ? css`
           cursor: pointer;
+          :hover {
+            background-color: ${colors.faint};
+          }
         `
       : css``};
-
-  :hover {
-    background-color: ${colors.faint};
-  }
 `;

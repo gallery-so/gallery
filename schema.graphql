@@ -12,6 +12,8 @@ directive @goField(
 # arguments that specify the level of access required.
 directive @authRequired on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
 
+directive @retoolAuth on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
+
 # Use @scrub on any input field that should be omitted from request logging (e.g. passwords or
 # other sensitive data)
 directive @scrub on INPUT_FIELD_DEFINITION
@@ -56,6 +58,7 @@ type GalleryUser implements Node {
     bio: String
     traits: String
     universal: Boolean
+    roles: [Role] @goField(forceResolver: true)
 
     # Returns all tokens owned by this user. Useful for retrieving all tokens without any duplicates,
     # as opposed to retrieving user -> wallets -> tokens, which would contain duplicates for any token
@@ -88,8 +91,8 @@ type ChainAddress {
 
 
 type ChainPubKey {
-  pubKey: PubKey
-  chain: Chain
+    pubKey: PubKey
+    chain: Chain
 }
 
 type ChainTokens {
@@ -119,16 +122,16 @@ union GalleryUserOrAddress = GalleryUser | ChainAddress
 
 union MediaSubtype =
     ImageMedia
-  | GIFMedia
-  | VideoMedia
-  | AudioMedia
-  | TextMedia
-  | HtmlMedia
-  | JsonMedia
-  | GltfMedia
-  | UnknownMedia
-  | SyncingMedia
-  | InvalidMedia
+    | GIFMedia
+    | VideoMedia
+    | AudioMedia
+    | TextMedia
+    | HtmlMedia
+    | JsonMedia
+    | GltfMedia
+    | UnknownMedia
+    | SyncingMedia
+    | InvalidMedia
 
 type PreviewURLSet {
     raw: String
@@ -170,11 +173,11 @@ type ImageMedia implements Media {
 }
 
 type GIFMedia implements Media {
-  previewURLs: PreviewURLSet
-  mediaURL: String
-  mediaType: String
+    previewURLs: PreviewURLSet
+    mediaURL: String
+    mediaType: String
 
-  contentRenderURL: String
+    contentRenderURL: String
 }
 
 type VideoMedia implements Media {
@@ -234,11 +237,11 @@ type UnknownMedia implements Media {
 }
 
 type SyncingMedia implements Media {
-  previewURLs: PreviewURLSet
-  mediaURL: String
-  mediaType: String
+    previewURLs: PreviewURLSet
+    mediaURL: String
+    mediaType: String
 
-  contentRenderURL: String
+    contentRenderURL: String
 }
 
 type InvalidMedia implements Media {
@@ -371,46 +374,46 @@ type MembershipTier implements Node {
 }
 
 type TokenEdge {
-  node: Token
-  cursor: String
+    node: Token
+    cursor: String
 }
 
 type TokensConnection {
-  edges: [TokenEdge]
-  pageInfo: PageInfo!
+    edges: [TokenEdge]
+    pageInfo: PageInfo!
 }
 
 type TokenHolderEdge {
-  node: TokenHolder
-  cursor: String
+    node: TokenHolder
+    cursor: String
 }
 
 type TokenHoldersConnection {
-  edges: [TokenHolderEdge]
-  pageInfo: PageInfo!
+    edges: [TokenHolderEdge]
+    pageInfo: PageInfo!
 }
 
 type Community implements Node
-  @goGqlId(fields: ["contractAddress", "chain"])
-  @goEmbedHelper {
-  dbid: DBID!
-  id: ID!
+@goGqlId(fields: ["contractAddress", "chain"])
+@goEmbedHelper {
+    dbid: DBID!
+    id: ID!
 
-  lastUpdated: Time
+    lastUpdated: Time
 
-  contractAddress: ChainAddress
-  creatorAddress: ChainAddress
-  chain: Chain
-  name: String
-  description: String
-  previewImage: String
-  profileImageURL: String
-  profileBannerURL: String
-  badgeURL: String
+    contractAddress: ChainAddress
+    creatorAddress: ChainAddress
+    chain: Chain
+    name: String
+    description: String
+    previewImage: String
+    profileImageURL: String
+    profileBannerURL: String
+    badgeURL: String
 
-  tokensInCommunity(before: String, after: String, first: Int, last: Int, onlyGalleryUsers: Boolean): TokensConnection @goField(forceResolver: true)
+    tokensInCommunity(before: String, after: String, first: Int, last: Int, onlyGalleryUsers: Boolean): TokensConnection @goField(forceResolver: true)
 
-  owners(before: String, after: String, first: Int, last: Int, onlyGalleryUsers: Boolean): TokenHoldersConnection @goField(forceResolver: true)
+    owners(before: String, after: String, first: Int, last: Int, onlyGalleryUsers: Boolean): TokenHoldersConnection @goField(forceResolver: true)
 }
 
 type Contract implements Node {
@@ -446,38 +449,38 @@ type NotificationsConnection @goEmbedHelper {
 }
 
 type Viewer {
-  user: GalleryUser @goField(forceResolver: true)
-  viewerGalleries: [ViewerGallery] @goField(forceResolver: true)
-  feed(before: String, after: String, first: Int, last: Int): FeedConnection
+    user: GalleryUser @goField(forceResolver: true)
+    viewerGalleries: [ViewerGallery] @goField(forceResolver: true)
+    feed(before: String, after: String, first: Int, last: Int): FeedConnection
     @goField(forceResolver: true)
 
-  email: UserEmail @goField(forceResolver: true)
-  """
-  Returns a list of notifications in reverse chronological order.
-  Seen notifications come after unseen notifications
-  """
-  notifications(
-    before: String
-    after: String
-    first: Int
-    last: Int
-  ): NotificationsConnection @goField(forceResolver: true)
+    email: UserEmail @goField(forceResolver: true)
+    """
+    Returns a list of notifications in reverse chronological order.
+    Seen notifications come after unseen notifications
+    """
+    notifications(
+        before: String
+        after: String
+        first: Int
+        last: Int
+    ): NotificationsConnection @goField(forceResolver: true)
 
-  notificationSettings: NotificationSettings @goField(forceResolver: true)
+    notificationSettings: NotificationSettings @goField(forceResolver: true)
 }
 
 type NotificationSettings {
-  someoneFollowedYou: Boolean
-  someoneAdmiredYourUpdate: Boolean
-  someoneCommentedOnYourUpdate: Boolean
-  someoneViewedYourGallery: Boolean
+    someoneFollowedYou: Boolean
+    someoneAdmiredYourUpdate: Boolean
+    someoneCommentedOnYourUpdate: Boolean
+    someoneViewedYourGallery: Boolean
 }
 
 input NotificationSettingsInput {
-  someoneFollowedYou: Boolean
-  someoneAdmiredYourUpdate: Boolean
-  someoneCommentedOnYourUpdate: Boolean
-  someoneViewedYourGallery: Boolean
+    someoneFollowedYou: Boolean
+    someoneAdmiredYourUpdate: Boolean
+    someoneCommentedOnYourUpdate: Boolean
+    someoneViewedYourGallery: Boolean
 }
 
 enum EmailVerificationStatus {
@@ -729,6 +732,21 @@ type FeedConnection {
     pageInfo: PageInfo!
 }
 
+type UserEdge {
+    node: GalleryUser
+    cursor: String
+}
+
+type UsersConnection {
+    edges: [UserEdge]
+    pageInfo: PageInfo!
+}
+
+enum Role {
+    ADMIN
+    BETA_TESTER
+}
+
 type Query {
     node(id: ID!): Node
     viewer: ViewerOrError @authRequired
@@ -746,6 +764,9 @@ type Query {
     galleryOfTheWeekWinners: [GalleryUser!]
     globalFeed(before: String, after: String, first: Int, last: Int): FeedConnection
     feedEventById(id: DBID!): FeedEventByIdOrError
+
+    # Retool Specific
+    usersByRole(role: Role!, before: String, after: String, first: Int, last: Int): UsersConnection @retoolAuth
 }
 
 input CollectionLayoutInput {
@@ -931,8 +952,8 @@ type SyncTokensPayload {
 
 union RefreshTokenPayloadOrError =
     RefreshTokenPayload
-  | ErrInvalidInput
-  | ErrSyncFailed
+    | ErrInvalidInput
+    | ErrSyncFailed
 
 type RefreshTokenPayload {
     token: Token
@@ -940,8 +961,8 @@ type RefreshTokenPayload {
 
 union RefreshCollectionPayloadOrError =
     RefreshCollectionPayload
-  | ErrInvalidInput
-  | ErrSyncFailed
+    | ErrInvalidInput
+    | ErrSyncFailed
 
 type RefreshCollectionPayload {
     collection: Collection
@@ -949,8 +970,8 @@ type RefreshCollectionPayload {
 
 union RefreshContractPayloadOrError =
     RefreshContractPayload
-  | ErrInvalidInput
-  | ErrSyncFailed
+    | ErrInvalidInput
+    | ErrSyncFailed
 
 type RefreshContractPayload {
     contract: Contract
@@ -1136,30 +1157,30 @@ type UnfollowUserPayload {
 
 union AdmireFeedEventPayloadOrError =
     AdmireFeedEventPayload
-  | ErrAuthenticationFailed
-  | ErrFeedEventNotFound
-  | ErrInvalidInput
-  | ErrAdmireAlreadyExists
+    | ErrAuthenticationFailed
+    | ErrFeedEventNotFound
+    | ErrInvalidInput
+    | ErrAdmireAlreadyExists
 
 union RemoveAdmirePayloadOrError =
     RemoveAdmirePayload
-  | ErrAuthenticationFailed
-  | ErrFeedEventNotFound
-  | ErrInvalidInput
-  | ErrAdmireNotFound
+    | ErrAuthenticationFailed
+    | ErrFeedEventNotFound
+    | ErrInvalidInput
+    | ErrAdmireNotFound
 
 union CommentOnFeedEventPayloadOrError =
     CommentOnFeedEventPayload
-  | ErrAuthenticationFailed
-  | ErrFeedEventNotFound
-  | ErrInvalidInput
+    | ErrAuthenticationFailed
+    | ErrFeedEventNotFound
+    | ErrInvalidInput
 
 union RemoveCommentPayloadOrError =
     RemoveCommentPayload
-  | ErrAuthenticationFailed
-  | ErrFeedEventNotFound
-  | ErrInvalidInput
-  | ErrCommentNotFound
+    | ErrAuthenticationFailed
+    | ErrFeedEventNotFound
+    | ErrInvalidInput
+    | ErrCommentNotFound
 
 type AdmireFeedEventPayload {
     viewer: Viewer
@@ -1174,15 +1195,15 @@ type RemoveAdmirePayload {
 }
 
 type CommentOnFeedEventPayload {
-  viewer: Viewer
-  comment: Comment @goField(forceResolver: true)
-  replyToComment: Comment @goField(forceResolver: true)
-  feedEvent: FeedEvent @goField(forceResolver: true)
+    viewer: Viewer
+    comment: Comment @goField(forceResolver: true)
+    replyToComment: Comment @goField(forceResolver: true)
+    feedEvent: FeedEvent @goField(forceResolver: true)
 }
 
 type RemoveCommentPayload {
-  viewer: Viewer
-  feedEvent: FeedEvent @goField(forceResolver: true)
+    viewer: Viewer
+    feedEvent: FeedEvent @goField(forceResolver: true)
 }
 
 interface Notification implements Node {
@@ -1207,73 +1228,73 @@ type GroupNotificationUserEdge {
 }
 
 type GroupNotificationUsersConnection @goEmbedHelper {
-    edges:  [GroupNotificationUserEdge] 
+    edges:  [GroupNotificationUserEdge]
     pageInfo: PageInfo
 }
 
 type SomeoneFollowedYouNotification implements Notification & Node & GroupedNotification
-  @goEmbedHelper {
-  id: ID!
-  dbid: DBID!
-  seen: Boolean
-  creationTime: Time
-  updatedTime: Time
-  count: Int
+@goEmbedHelper {
+    id: ID!
+    dbid: DBID!
+    seen: Boolean
+    creationTime: Time
+    updatedTime: Time
+    count: Int
 
-  followers(before: String, after: String, first: Int, last: Int): GroupNotificationUsersConnection @goField(forceResolver: true)
+    followers(before: String, after: String, first: Int, last: Int): GroupNotificationUsersConnection @goField(forceResolver: true)
 }
 
 type SomeoneFollowedYouBackNotification implements Notification & Node & GroupedNotification
-  @goEmbedHelper {
-  id: ID!
-  dbid: DBID!
-  seen: Boolean
-  creationTime: Time
-  updatedTime: Time
-  count: Int
+@goEmbedHelper {
+    id: ID!
+    dbid: DBID!
+    seen: Boolean
+    creationTime: Time
+    updatedTime: Time
+    count: Int
 
-  followers(before: String, after: String, first: Int, last: Int): GroupNotificationUsersConnection @goField(forceResolver: true)
+    followers(before: String, after: String, first: Int, last: Int): GroupNotificationUsersConnection @goField(forceResolver: true)
 }
 
 type SomeoneAdmiredYourFeedEventNotification implements Notification & Node & GroupedNotification
-  @goEmbedHelper {
-  id: ID!
-  dbid: DBID!
-  seen: Boolean
-  creationTime: Time
-  updatedTime: Time
-  count: Int
+@goEmbedHelper {
+    id: ID!
+    dbid: DBID!
+    seen: Boolean
+    creationTime: Time
+    updatedTime: Time
+    count: Int
 
-  feedEvent: FeedEvent @goField(forceResolver: true)
-  admirers(before: String, after: String, first: Int, last: Int): GroupNotificationUsersConnection @goField(forceResolver: true)
+    feedEvent: FeedEvent @goField(forceResolver: true)
+    admirers(before: String, after: String, first: Int, last: Int): GroupNotificationUsersConnection @goField(forceResolver: true)
 }
 
 type SomeoneCommentedOnYourFeedEventNotification implements Notification & Node
-  @goEmbedHelper {
-  id: ID!
-  dbid: DBID!
-  seen: Boolean
-  creationTime: Time
-  updatedTime: Time
+@goEmbedHelper {
+    id: ID!
+    dbid: DBID!
+    seen: Boolean
+    creationTime: Time
+    updatedTime: Time
 
-  # Don't need a `who` here since the `comment` can provide that
-  # Do we want this comment to be the latest comment
-  comment: Comment @goField(forceResolver: true)
-  feedEvent: FeedEvent @goField(forceResolver: true)
+    # Don't need a `who` here since the `comment` can provide that
+    # Do we want this comment to be the latest comment
+    comment: Comment @goField(forceResolver: true)
+    feedEvent: FeedEvent @goField(forceResolver: true)
 }
 
 type SomeoneViewedYourGalleryNotification implements Notification & Node & GroupedNotification
-  @goEmbedHelper {
-  id: ID!
-  dbid: DBID!
-  seen: Boolean
-  creationTime: Time
-  updatedTime: Time
-  count: Int
+@goEmbedHelper {
+    id: ID!
+    dbid: DBID!
+    seen: Boolean
+    creationTime: Time
+    updatedTime: Time
+    count: Int
 
-  userViewers(before: String, after: String, first: Int, last: Int): GroupNotificationUsersConnection @goField(forceResolver: true)
-  nonUserViewerCount: Int
-  gallery: Gallery @goField(forceResolver: true)
+    userViewers(before: String, after: String, first: Int, last: Int): GroupNotificationUsersConnection @goField(forceResolver: true)
+    nonUserViewerCount: Int
+    gallery: Gallery @goField(forceResolver: true)
 }
 
 type ClearAllNotificationsPayload {
@@ -1332,6 +1353,9 @@ union UnsubscribeFromEmailTypePayloadOrError =
     UnsubscribeFromEmailTypePayload
     | ErrInvalidInput
 
+union AddRolesToUserPayloadOrError = GalleryUser | ErrNotAuthorized
+union RevokeRolesFromUserPayloadOrError = GalleryUser | ErrNotAuthorized
+
 type Mutation {
     # User Mutations
     addUserWallet(chainAddress: ChainAddressInput!, authMechanism: AuthMechanism!): AddUserWalletPayloadOrError @authRequired
@@ -1374,7 +1398,7 @@ type Mutation {
     removeAdmire(admireId: DBID!): RemoveAdmirePayloadOrError @authRequired
     commentOnFeedEvent(feedEventId: DBID!, replyToID: DBID, comment: String!): CommentOnFeedEventPayloadOrError @authRequired
     removeComment(commentId: DBID!): RemoveCommentPayloadOrError @authRequired
-    
+
     viewGallery(galleryId: DBID!): ViewGalleryPayloadOrError
 
     clearAllNotifications: ClearAllNotificationsPayload @authRequired
@@ -1382,6 +1406,10 @@ type Mutation {
     updateNotificationSettings(settings: NotificationSettingsInput): NotificationSettings
 
     verifyEmail(token: String!): VerifyEmailPayloadOrError
+
+    # Retool Specific Mutations
+    addRolesToUser(username: String!, roles: [Role]): AddRolesToUserPayloadOrError @retoolAuth
+    revokeRolesFromUser(username: String!, roles: [Role]): RevokeRolesFromUserPayloadOrError @retoolAuth
 }
 
 type Subscription {

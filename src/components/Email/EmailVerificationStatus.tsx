@@ -128,9 +128,9 @@ function EmailVerificationStatus({ setIsEditMode, queryRef }: Props) {
         <BaseM>{savedEmail}</BaseM>
         <HStack gap={4}>{verificationStatusIndicator}</HStack>
       </VStack>
-      <Button variant="secondary" onClick={handleEditClick}>
+      <StyledButton variant="secondary" onClick={handleEditClick}>
         EDIT
-      </Button>
+      </StyledButton>
     </HStack>
   );
 }
@@ -144,6 +144,10 @@ const ResendEmail = styled.button`
   &:hover {
     text-decoration: none;
   }
+`;
+
+const StyledButton = styled(Button)`
+  padding: 8px 12px;
 `;
 
 export default EmailVerificationStatus;

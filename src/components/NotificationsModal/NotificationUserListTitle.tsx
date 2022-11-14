@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import { BaseS } from '~/components/core/Text/Text';
+import { TitleDiatypeM } from '~/components/core/Text/Text';
 
 type NotificationUserListTitleProps = {
   queryRef: NotificationUserListTitleFragment$key;
@@ -51,5 +51,5 @@ export function NotificationUserListTitle({ queryRef }: NotificationUserListTitl
     return 'Collectors';
   }, [query.node?.__typename]);
 
-  return <BaseS>{title.toUpperCase()}</BaseS>;
+  return <TitleDiatypeM>{title}</TitleDiatypeM>;
 }
