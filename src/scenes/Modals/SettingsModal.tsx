@@ -35,6 +35,7 @@ function SettingsModal({
           ... on Viewer {
             email @required(action: THROW) {
               email
+              verificationStatus
               emailNotificationSettings {
                 unsubscribedFromAll
                 unsubscribedFromNotifications

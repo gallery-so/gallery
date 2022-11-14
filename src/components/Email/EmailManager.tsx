@@ -1,4 +1,3 @@
-import { useRouter } from 'next/router';
 import { useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
@@ -32,9 +31,6 @@ function EmailManager({ queryRef, onClose }: Props) {
     queryRef
   );
 
-  const { route } = useRouter();
-  const isOnboarding = route === '/onboarding/add-email';
-
   const savedEmail = query?.viewer?.email?.email;
 
   const [isEditMode, setIsEditMode] = useState(false);
@@ -44,7 +40,7 @@ function EmailManager({ queryRef, onClose }: Props) {
   }, [savedEmail, isEditMode]);
 
   return (
-    <StyledEmailManager isOnboarding={isOnboarding}>
+    <StyledEmailManager>
       {showInput ? (
         <EmailForm queryRef={query} setIsEditMode={setIsEditMode} onClose={onClose} />
       ) : (
@@ -54,11 +50,9 @@ function EmailManager({ queryRef, onClose }: Props) {
   );
 }
 
-const StyledEmailManager = styled.div<{ isOnboarding: boolean }>`
-  height: ${({ isOnboarding }) =>
-    isOnboarding
-      ? '72px'
-      : 'auto'}; // set fixed height to onboarding so changing modes doesnt shift page content
+const StyledEmailManager = styled.div`
+  min-height: 38px;
+  height: auto;
 `;
 
 export default EmailManager;

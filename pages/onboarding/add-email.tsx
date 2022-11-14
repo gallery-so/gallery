@@ -78,7 +78,9 @@ export default function AddEmail() {
               You can always change this later in account settings.
             </StyledBodyText>
           </VStack>
-          <EmailManager queryRef={query} />
+          <StyledEmailManagerContainer>
+            <EmailManager queryRef={query} />
+          </StyledEmailManagerContainer>
         </VStack>
       </FullPageCenteredStep>
       <OnboardingFooter
@@ -94,4 +96,8 @@ export default function AddEmail() {
 
 const StyledBodyText = styled(BaseM)`
   max-width: 400px;
+`;
+
+const StyledEmailManagerContainer = styled.div`
+  height: 72px;
 `;
