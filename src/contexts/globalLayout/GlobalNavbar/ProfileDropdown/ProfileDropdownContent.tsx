@@ -120,7 +120,9 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
             <NotificationsDropdownItem onClick={handleNotificationsClick}>
               <HStack align="center" gap={10}>
                 <div>NOTIFICATIONS</div>
-                {notificationCount > 0 && <CountText role="button">{notificationCount}</CountText>}
+                <CountText role="button" hasNotification={notificationCount > 0}>
+                  {notificationCount}
+                </CountText>
               </HStack>
             </NotificationsDropdownItem>
           )}
@@ -144,7 +146,7 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
   );
 }
 
-const CountText = styled(BaseM)`
+const CountText = styled(BaseM)<{ hasNotification?: boolean }>`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -163,6 +165,8 @@ const CountText = styled(BaseM)`
   user-select: none;
 
   border-radius: 99999px;
+
+  opacity: ${({ hasNotification }) => (hasNotification ? 1 : 0)};
 `;
 
 const NotificationsDropdownItem = styled(DropdownItem)``;
