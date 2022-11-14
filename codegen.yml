@@ -10,6 +10,7 @@ generates:
           Time: string
       avoidOptionals: true
       autoSelectId: true
+      immutableTypes: true
     plugins:
       - typescript
       - "@gallery-so/typescript-operations"
