@@ -77,9 +77,9 @@ function EmailForm({ setIsEditMode, queryRef, onClose }: Props) {
   const handleCancelClick = useCallback(() => {
     if (onClose) {
       onClose();
-    } else {
-      setIsEditMode(false);
     }
+
+    setIsEditMode(false);
   }, [onClose, setIsEditMode]);
 
   const { route } = useRouter();
