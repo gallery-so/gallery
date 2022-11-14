@@ -13,6 +13,7 @@ import { ProfileDropdownFragment$key } from '~/generated/ProfileDropdownFragment
 import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 import { NotificationsCircle } from '../NotificationCircle';
+import NavUpArrow from './NavUpArrow';
 
 type ProfileDropdownProps = {
   queryRef: ProfileDropdownFragment$key;
@@ -90,10 +91,10 @@ export function ProfileDropdown({ queryRef, rightContent }: ProfileDropdownProps
         <LogoContainer gap={4} role="button" onClick={handleLoggedInLogoClick}>
           {isWhiteRhinoEnabled && notificationCount > 0 ? <NotificationsCircle /> : null}
 
-          <HStack gap={2}>
+          <HStack gap={2} align="center">
             <GLogo />
 
-            <NavDownArrow />
+            {showDropdown ? <NavUpArrow /> : <NavDownArrow />}
           </HStack>
         </LogoContainer>
       ) : (
