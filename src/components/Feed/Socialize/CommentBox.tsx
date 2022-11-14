@@ -112,7 +112,7 @@ export function CommentBox({ active, onClose, eventRef, queryRef }: Props) {
       });
     }
 
-    track('Comment Click');
+    track('Save Comment Click');
 
     try {
       const interactionsConnection = ConnectionHandler.getConnectionID(
