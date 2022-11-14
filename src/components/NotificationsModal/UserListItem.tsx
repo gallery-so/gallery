@@ -37,8 +37,8 @@ export function UserListItem({ userRef }: UserListItemProps) {
   }, [clearAllModals]);
 
   return (
-    <Link href={userRoute} onClick={handleUserClick}>
-      <StyledLink href={route(userRoute)}>
+    <Link href={userRoute}>
+      <StyledLink href={route(userRoute)} onClick={handleUserClick}>
         <Container>
           <TitleDiatypeM>{user.username}</TitleDiatypeM>
           {user.bio && <BioText>{user.bio && <Markdown text={getFirstLine(user.bio)} />}</BioText>}
