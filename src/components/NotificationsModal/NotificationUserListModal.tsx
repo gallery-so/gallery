@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { USERS_PER_PAGE } from '~/components/NotificationsModal/constants';
 import { NotificationUserList } from '~/components/NotificationsModal/NotificationUserList/NotificationUserList';
 import { NotificationUserListTitle } from '~/components/NotificationsModal/NotificationUserListTitle';
-import { MODAL_PADDING_THICC_PX } from '~/contexts/modal/constants';
+import { MODAL_PADDING_PX } from '~/contexts/modal/constants';
 import { NotificationUserListModalQuery } from '~/generated/NotificationUserListModalQuery.graphql';
 
 type NotificationUserListModalProps = {
@@ -48,7 +48,7 @@ export function NotificationUserListModal({
 }
 
 const StyledHeader = styled.div`
-  padding-bottom: ${MODAL_PADDING_THICC_PX}px;
+  padding-bottom: ${MODAL_PADDING_PX}px;
   padding-left: 12px;
 `;
 
@@ -57,5 +57,5 @@ const ModalContent = styled.div<{ fullscreen: boolean }>`
   width: ${({ fullscreen }) => (fullscreen ? '100%' : '420px')};
   display: flex;
   flex-direction: column;
-  padding: ${MODAL_PADDING_THICC_PX}px 4px;
+  padding: ${MODAL_PADDING_PX}px 4px;
 `;

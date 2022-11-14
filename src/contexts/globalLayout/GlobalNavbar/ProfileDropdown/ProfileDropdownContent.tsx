@@ -3,7 +3,7 @@ import { Route, route } from 'nextjs-routes';
 import { useCallback } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import colors from '~/components/core/colors';
@@ -123,7 +123,9 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
             <NotificationsDropdownItem onClick={handleNotificationsClick}>
               <HStack align="center" gap={10}>
                 <div>NOTIFICATIONS</div>
-                {notificationCount > 0 && <CountText role="button">{notificationCount}</CountText>}
+                <CountText role="button" visible={notificationCount > 0}>
+                  {notificationCount}
+                </CountText>
               </HStack>
             </NotificationsDropdownItem>
           )}
@@ -147,7 +149,7 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
   );
 }
 
-const CountText = styled(BaseM)`
+const CountText = styled(BaseM)<{ visible: boolean }>`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -166,6 +168,17 @@ const CountText = styled(BaseM)`
   user-select: none;
 
   border-radius: 99999px;
+
+  transition: opacity 150ms ease-in-out;
+
+  ${({ visible }) =>
+    visible
+      ? css`
+          opacity: 1;
+        `
+      : css`
+          opacity: 0;
+        `}
 `;
 
 const NotificationsDropdownItem = styled(DropdownItem)``;

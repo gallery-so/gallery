@@ -8,6 +8,7 @@ import { BaseM } from '~/components/core/Text/Text';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { CollectionLink } from '~/components/NotificationsModal/CollectionLink';
 import { SomeoneCommentedOnYourFeedEventQueryFragment$key } from '~/generated/SomeoneCommentedOnYourFeedEventQueryFragment.graphql';
+import unescape from '~/utils/unescape';
 
 type SomeoneCommentedOnYourFeedEventProps = {
   notificationRef: SomeoneCommentedOnYourFeedEventFragment$key;
@@ -86,7 +87,7 @@ export function SomeoneCommentedOnYourFeedEvent({
       </BaseM>
 
       <CommentPreviewContainer>
-        <BaseM>{notification.comment?.comment}</BaseM>
+        <BaseM>{unescape(notification.comment?.comment ?? '')}</BaseM>
       </CommentPreviewContainer>
     </VStack>
   );

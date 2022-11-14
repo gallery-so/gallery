@@ -42,7 +42,7 @@ export function NoteModalOpenerText({ children, eventRef }: Props) {
 const Text = styled.div.attrs({ role: 'button' })`
   cursor: pointer;
   font-family: ${BODY_FONT_FAMILY};
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1;
   font-weight: 400;
 
