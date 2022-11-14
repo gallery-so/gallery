@@ -13,6 +13,8 @@ import { ProfileDropdownContent } from '~/contexts/globalLayout/GlobalNavbar/Pro
 import { FeedLeftContentFragment$key } from '~/generated/FeedLeftContentFragment.graphql';
 import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
+import NavUpArrow from '../ProfileDropdown/NavUpArrow';
+
 type FeedLeftContentProps = {
   queryRef: FeedLeftContentFragment$key;
 };
@@ -84,7 +86,7 @@ export function FeedLeftContent({ queryRef }: FeedLeftContentProps) {
 
       <HomeText>Home</HomeText>
 
-      <NavDownArrow />
+      {showDropdown ? <NavUpArrow /> : <NavDownArrow />}
 
       <ProfileDropdownContent
         showDropdown={showDropdown}
