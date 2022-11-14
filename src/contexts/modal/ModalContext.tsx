@@ -173,8 +173,7 @@ function ModalProvider({ children }: Props) {
   const route = useStabilizedRouteTransitionKey();
   useEffect(() => {
     if (isModalOpenRef.current) {
-      // bypass onClose as to not navigate the user back mid-route change
-      hideModal({ bypassOnClose: true });
+      clearAllModals();
     }
   }, [route, hideModal]);
 
