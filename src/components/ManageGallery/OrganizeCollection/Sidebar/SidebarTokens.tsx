@@ -33,6 +33,7 @@ export const SidebarTokens = ({
   const tokens = useFragment(
     graphql`
       fragment SidebarTokensFragment on Token @relay(plural: true) {
+        id
         dbid
 
         chain
@@ -53,17 +54,17 @@ export const SidebarTokens = ({
   const setSpamPreference = useSetSpamPreference();
   const setSpamPreferenceForCollection = useCallback(
     (address: string, isSpam: boolean) => {
-      const tokenIds = tokens
+      const filteredTokens = tokens
         .filter((token) => token.contract?.contractAddress?.address === address)
-        .map((token) => token.dbid);
+        .map(({ id, dbid }) => ({ id, dbid }));
 
-      if (tokenIds.length === 0) {
+      if (filteredTokens.length === 0) {
         throw new Error(
           `No matching token IDs found for ${address} to mark as ${isSpam ? 'spam' : 'not spam'}`
         );
       }
 
-      setSpamPreference({ tokens: tokenIds, isSpam });
+      setSpamPreference({ tokens: filteredTokens, isSpam });
     },
     [tokens, setSpamPreference]
   );

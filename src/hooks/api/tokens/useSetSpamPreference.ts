@@ -1,14 +1,23 @@
 import { useCallback } from 'react';
 import { graphql } from 'relay-runtime';
 
-import { SetSpamPreferenceInput } from '~/generated/operations';
-import { useSetSpamPreferenceMutation$data } from '~/generated/useSetSpamPreferenceMutation.graphql';
+import { useSetSpamPreferenceMutation } from '~/generated/useSetSpamPreferenceMutation.graphql';
 import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 
+interface Token {
+  id: string;
+  dbid: string;
+}
+
+interface SetSpamPreferenceArgs {
+  tokens: Token[];
+  isSpam: boolean;
+}
+
 export default function useSetSpamPreference() {
-  const [setSpamPreference] = usePromisifiedMutation(
+  const [setSpamPreference] = usePromisifiedMutation<useSetSpamPreferenceMutation>(
     graphql`
-      mutation useSetSpamPreferenceMutation($input: SetSpamPreferenceInput!) {
+      mutation useSetSpamPreferenceMutation($input: SetSpamPreferenceInput!) @raw_response_type {
         setSpamPreference(input: $input) {
           __typename
           ... on SetSpamPreferencePayload {
@@ -22,15 +31,18 @@ export default function useSetSpamPreference() {
   );
 
   return useCallback(
-    async (input: SetSpamPreferenceInput) => {
-      const optimisticResponse: useSetSpamPreferenceMutation$data = {
+    async ({ tokens, isSpam }: SetSpamPreferenceArgs) => {
+      const optimisticResponse: useSetSpamPreferenceMutation['rawResponse'] = {
         setSpamPreference: {
           __typename: 'SetSpamPreferencePayload',
-          tokens: input.tokens.map((id) => ({ id, isSpamByUser: input.isSpam })),
+          tokens: tokens.map(({ id }) => ({ id, isSpamByUser: isSpam })),
         },
       };
 
-      await setSpamPreference({ optimisticResponse, variables: { input } });
+      await setSpamPreference({
+        optimisticResponse,
+        variables: { input: { tokens: tokens.map(({ dbid }) => dbid), isSpam } },
+      });
 
       // TODO: handle error cases
     },
