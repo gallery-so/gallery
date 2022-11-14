@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import styled from 'styled-components';
 
 import colors from '../colors';
@@ -6,23 +5,16 @@ import colors from '../colors';
 type Props = {
   checked: boolean;
   isPending?: boolean;
-  onChange: (checked: boolean) => void;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 } & React.InputHTMLAttributes<HTMLInputElement>;
 
 export default function Toggle({ checked, isPending, onChange, ...inputProps }: Props) {
-  const handleChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      onChange(e.target.checked);
-    },
-    [onChange]
-  );
-
   return (
     <StyledToggle disabled={isPending}>
       <StyledInput
         type="checkbox"
         checked={checked}
-        onChange={handleChange}
+        onChange={onChange}
         disabled={isPending}
         {...inputProps}
       />
