@@ -88,7 +88,7 @@ export default function CollectionCreatedFeedEvent({ caption, eventDataRef, quer
         <VStack gap={16}>
           <StyledEventHeader>
             <VStack gap={4}>
-              <HStack inline gap={2} align="center">
+              <StyledEventHeaderContainer>
                 <HoverCardOnUsername userRef={event.owner} queryRef={query} />{' '}
                 <BaseM>
                   added {tokens.length} {pluralize(tokens.length, 'piece')} to their new collection
@@ -110,7 +110,7 @@ export default function CollectionCreatedFeedEvent({ caption, eventDataRef, quer
                   )}
                   <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
                 </HStack>
-              </HStack>
+              </StyledEventHeaderContainer>
               {caption && (
                 <StyledCaptionContainer gap={8} align="center">
                   <BaseS>{caption}</BaseS>
@@ -131,6 +131,10 @@ export default function CollectionCreatedFeedEvent({ caption, eventDataRef, quer
     </UnstyledLink>
   );
 }
+
+const StyledEventHeaderContainer = styled.div`
+  display: inline;
+`;
 
 const StyledAdditionalPieces = styled(BaseS)`
   text-align: end;
