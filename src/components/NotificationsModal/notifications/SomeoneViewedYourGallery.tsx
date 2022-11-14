@@ -63,7 +63,7 @@ export function SomeoneViewedYourGallery({
       return (
         <BaseM data-testid={testId}>
           {lastViewer ? <HoverCardOnUsername userRef={lastViewer} queryRef={query} /> : 'Someone'}
-          <span> has viewed your gallery</span>
+          <span> viewed your gallery</span>
         </BaseM>
       );
     } else {
@@ -74,8 +74,8 @@ export function SomeoneViewedYourGallery({
           {lastViewer ? <HoverCardOnUsername userRef={lastViewer} queryRef={query} /> : 'Someone'}
           <span>
             {' '}
-            and {remainingViewCount} {remainingViewCount === 1 ? 'other' : 'others'} have viewed
-            your gallery
+            and {remainingViewCount} {remainingViewCount === 1 ? 'other' : 'others'} viewed your
+            gallery
           </span>
         </BaseM>
       );
@@ -85,14 +85,14 @@ export function SomeoneViewedYourGallery({
       return (
         <BaseM data-testid={testId}>
           <strong>An anonymous user</strong>
-          <span> has viewed your gallery</span>
+          <span> viewed your gallery</span>
         </BaseM>
       );
     } else {
       return (
         <BaseM data-testid={testId}>
           <strong>{nonUserViewerCount} anonymous users</strong>
-          <span> have viewed your gallery</span>
+          <span> viewed your gallery</span>
         </BaseM>
       );
     }
