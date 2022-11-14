@@ -175,7 +175,7 @@ function ModalProvider({ children }: Props) {
     if (isModalOpenRef.current) {
       clearAllModals();
     }
-  }, [route, hideModal]);
+  }, [route, clearAllModals]);
 
   /**
    * EFFECT: Prevent main body from being scrollable while any modals are open
