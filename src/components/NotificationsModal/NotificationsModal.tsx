@@ -9,7 +9,7 @@ import {
   NOTIFICATIONS_PER_PAGE,
 } from '~/components/NotificationsModal/NotificationList';
 import { useClearNotifications } from '~/components/NotificationsModal/useClearNotifications';
-import { MODAL_PADDING_THICC_PX } from '~/contexts/modal/constants';
+import { MODAL_PADDING_PX } from '~/contexts/modal/constants';
 import { NotificationsModalQuery } from '~/generated/NotificationsModalQuery.graphql';
 
 type NotificationsModalProps = {
@@ -49,7 +49,7 @@ export function NotificationsModal({ fullscreen }: NotificationsModalProps) {
 }
 
 const StyledHeader = styled.div`
-  padding-bottom: ${MODAL_PADDING_THICC_PX}px;
+  padding-bottom: ${MODAL_PADDING_PX}px;
   padding-left: 12px;
 `;
 
@@ -59,5 +59,5 @@ const ModalContent = styled.div<{ fullscreen: boolean }>`
   min-width: 420px;
   display: flex;
   flex-direction: column;
-  padding: ${MODAL_PADDING_THICC_PX}px 4px;
+  padding: ${MODAL_PADDING_PX}px 4px;
 `;

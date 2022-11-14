@@ -49,7 +49,7 @@ export function SomeoneViewedYourGallery({
     <BaseM>
       {count > 1 ? (
         <>
-          <strong>{count} collectors</strong>
+          <strong>{count} collectors </strong>
           have viewed your gallery
         </>
       ) : (

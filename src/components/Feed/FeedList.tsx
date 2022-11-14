@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import {
   AutoSizer,
@@ -118,7 +118,7 @@ export default function FeedList({
         >
           {({ registerChild }) => (
             // @ts-expect-error: this is the suggested usage of registerChild
-            <div ref={registerChild} style={style}>
+            <div ref={registerChild} style={style} key={key}>
               <FeedEvent
                 // Here, we're listening to our children for anything that might cause
                 // the height of this list item to change height.
@@ -148,6 +148,14 @@ export default function FeedList({
     await loadNextPage();
     setIsLoading(false);
   }, [loadNextPage]);
+
+  useEffect(
+    function recalculateHeightsWhenEventsChange() {
+      measurerCache.clearAll();
+      virtualizedListRef.current?.recomputeRowHeights();
+    },
+    [feedData, measurerCache]
+  );
 
   return (
     <WindowScroller>
