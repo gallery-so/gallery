@@ -142,7 +142,7 @@ function SettingsModal({
             />
           </HStack>
         </VStack>
-        <StyledButtonContaienr>
+        <StyledButtonContainer>
           {shouldDisplayAddEmailInput ? (
             <EmailManager queryRef={query} onClose={handleCloseEmailManager} />
           ) : (
@@ -150,7 +150,7 @@ function SettingsModal({
               add email address
             </StyledButton>
           )}
-        </StyledButtonContaienr>
+        </StyledButtonContainer>
       </VStack>
       <StyledHr />
       <VStack>
@@ -180,7 +180,7 @@ const StyledHr = styled.hr`
   margin: 0;
 `;
 
-const StyledButtonContaienr = styled.div`
+const StyledButtonContainer = styled.div`
   display: inline;
 `;
 
