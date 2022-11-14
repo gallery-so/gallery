@@ -1,5 +1,4 @@
 import Head from 'next/head';
-import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -8,11 +7,8 @@ import styled from 'styled-components';
 import breakpoints, { pageGutter } from '~/components/core/breakpoints';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
-import { useModalActions } from '~/contexts/modal/ModalContext';
 import { UserGalleryPageFragment$key } from '~/generated/UserGalleryPageFragment.graphql';
-import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
-import SettingsModal from '../../components/Email/SettingsModal';
 import useVerifyEmailOnPage from '../../components/Email/useVerifyEmailOnPage';
 import UserGallery from './UserGallery';
 
@@ -50,25 +46,6 @@ function UserGalleryPage({ queryRef, username }: UserGalleryPageProps) {
   useEffect(() => {
     track('Page View: User Gallery', { username });
   }, [username, track]);
-
-  const router = useRouter();
-  const { settings } = router.query;
-
-  const { showModal } = useModalActions();
-
-  // Check if the user logged in
-  const isLoggedIn = query.viewer?.__typename === 'Viewer';
-  const isEmailFeatureEnabled = isFeatureEnabled(FeatureFlag.EMAIL, query);
-
-  useEffect(() => {
-    // Only show the modal if the user is logged in and the settings query param is set
-    if (settings === 'true' && isLoggedIn && isEmailFeatureEnabled) {
-      showModal({
-        content: <SettingsModal queryRef={query} />,
-        headerText: 'Settings',
-      });
-    }
-  }, [query, router, showModal, username, settings, isLoggedIn, isEmailFeatureEnabled]);
 
   return (
     <>
