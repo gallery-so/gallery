@@ -3,6 +3,7 @@ import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
+import Loader from '~/components/core/Loader/Loader';
 import { TitleDiatypeM } from '~/components/core/Text/Text';
 import {
   NotificationList,
@@ -11,6 +12,8 @@ import {
 import { useClearNotifications } from '~/components/NotificationsModal/useClearNotifications';
 import { MODAL_PADDING_THICC_PX } from '~/contexts/modal/constants';
 import { NotificationsModalQuery } from '~/generated/NotificationsModalQuery.graphql';
+
+import { VStack } from '../core/Spacer/Stack';
 
 type NotificationsModalProps = {
   fullscreen: boolean;
@@ -41,7 +44,13 @@ export function NotificationsModal({ fullscreen }: NotificationsModalProps) {
         <TitleDiatypeM>Notifications</TitleDiatypeM>
       </StyledHeader>
 
-      <Suspense fallback={null}>
+      <Suspense
+        fallback={
+          <VStack grow justify="center" align="center">
+            <Loader size="large" />
+          </VStack>
+        }
+      >
         <NotificationList queryRef={query} />
       </Suspense>
     </ModalContent>
