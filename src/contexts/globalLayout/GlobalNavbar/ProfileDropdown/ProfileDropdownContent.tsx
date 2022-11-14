@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Route, route } from 'nextjs-routes';
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
@@ -15,13 +15,11 @@ import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, Paragraph, TITLE_FONT_FAMILY, TitleM } from '~/components/core/Text/Text';
 import SettingsModal from '~/components/Email/SettingsModal';
-import { NotificationsModal } from '~/components/NotificationsModal/NotificationsModal';
+import useNotificationsModal from '~/components/NotificationsModal/useNotificationsModal';
 import { useSubscribeToNotifications } from '~/components/NotificationsModal/useSubscribeToNotifications';
 import { useAuthActions } from '~/contexts/auth/AuthContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { ProfileDropdownContentFragment$key } from '~/generated/ProfileDropdownContentFragment.graphql';
-import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
-import CogIcon from '~/icons/CogIcon';
 import ManageWalletsModal from '~/scenes/Modals/ManageWalletsModal';
 import { getEditGalleryUrl } from '~/utils/getEditGalleryUrl';
 import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
@@ -65,39 +63,15 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
     queryRef
   );
 
-  const { showModal, hideModal } = useModalActions();
+  const { showModal } = useModalActions();
   const { handleLogout } = useAuthActions();
+  const showNotificationsModal = useNotificationsModal();
 
-  const isMobile = useIsMobileWindowWidth();
   const isEmailFeatureEnabled = isFeatureEnabled(FeatureFlag.EMAIL, query);
 
-  const notificationModalActions = useMemo(() => {
-    const handleSettingsClick = () => {
-      // Hide notification modal
-      hideModal();
-
-      showModal({
-        content: <SettingsModal queryRef={query} />,
-        headerText: 'Settings',
-      });
-    };
-
-    return (
-      <StyledCogButton onClick={handleSettingsClick}>
-        <CogIcon />
-      </StyledCogButton>
-    );
-  }, [hideModal, showModal, query]);
-
   const handleNotificationsClick = useCallback(() => {
-    showModal({
-      content: <NotificationsModal fullscreen={isMobile} />,
-      isFullPage: isMobile,
-      isPaddingDisabled: true,
-      headerVariant: 'standard',
-      headerActions: isEmailFeatureEnabled ? notificationModalActions : false,
-    });
-  }, [isEmailFeatureEnabled, isMobile, notificationModalActions, showModal]);
+    showNotificationsModal();
+  }, [showNotificationsModal]);
 
   const handleManageWalletsClick = useCallback(() => {
     if (isEmailFeatureEnabled) {
@@ -238,21 +212,6 @@ const DropdownProfileSection = styled.a`
   text-decoration: none;
 
   padding: 8px;
-
-  :hover {
-    background-color: ${colors.faint};
-  }
-`;
-
-const StyledCogButton = styled.button`
-  background: none;
-  border: none;
-  padding: 8px;
-  margin: 0;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 
   :hover {
     background-color: ${colors.faint};
