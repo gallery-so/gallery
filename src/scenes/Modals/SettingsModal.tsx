@@ -54,8 +54,9 @@ function SettingsModal({
   const updateEmailNotificationSettings = useUpdateEmailNotificationSettings();
 
   const isEmailNotificationSubscribed =
-    query?.viewer?.email?.emailNotificationSettings?.unsubscribedFromNotifications || false;
-  const [isEmailNotificationChecked, setIsEmailNotificationChecked] = useState(
+    !query?.viewer?.email?.emailNotificationSettings?.unsubscribedFromNotifications;
+
+  const [isEmailNotificationChecked, setIsEmailNotificationChecked] = useState<boolean>(
     isEmailNotificationSubscribed
   );
   const { pushToast } = useToastActions();
@@ -64,16 +65,17 @@ function SettingsModal({
   const isEmailUnsubscribedFromAll =
     query?.viewer?.email?.emailNotificationSettings?.unsubscribedFromAll ?? false;
 
-  // If the user already have email attached, toggle the email manager ui
   const userEmail = query?.viewer?.email?.email;
-  const [shouldDisplayAddEmailInput, setShouldDisplayAddEmailInput] = useState(Boolean(userEmail));
+  const [shouldDisplayAddEmailInput, setShouldDisplayAddEmailInput] = useState<boolean>(
+    Boolean(userEmail)
+  );
 
   const [isPending, setIsPending] = useState(false);
 
   const handleEmailNotificationChange = useCallback(
     async (checked: boolean) => {
       const unsubscribedFromNotifications = checked;
-      setIsEmailNotificationChecked(checked);
+      setIsEmailNotificationChecked(!checked);
       setIsPending(true);
       try {
         const response = await updateEmailNotificationSettings(
@@ -100,7 +102,7 @@ function SettingsModal({
           message: 'Unfortunately there was an error to update your notification settings',
         });
         // If its failed, revert the toggle state
-        setIsEmailNotificationChecked(!checked);
+        setIsEmailNotificationChecked(checked);
       } finally {
         setIsPending(false);
       }
@@ -110,7 +112,7 @@ function SettingsModal({
 
   const toggleEmailNotification = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      handleEmailNotificationChange(event.target.checked);
+      handleEmailNotificationChange(!event.target.checked);
     },
     [handleEmailNotificationChange]
   );
