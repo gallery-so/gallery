@@ -103,34 +103,34 @@ describe('SomeoneViewedYourGallery', () => {
     test('only 1 view', async () => {
       await assertSituation(
         { userViews: 0, nonUserViews: 1 },
-        'An anonymous user has viewed your gallery'
+        'An anonymous user viewed your gallery'
       );
     });
 
     test('two views', async () => {
       await assertSituation(
         { userViews: 0, nonUserViews: 2 },
-        '2 anonymous users have viewed your gallery'
+        '2 anonymous users viewed your gallery'
       );
     });
   });
 
   describe('all user views', () => {
     test('only 1 view', async () => {
-      await assertSituation({ userViews: 1, nonUserViews: 0 }, 'User 0 has viewed your gallery');
+      await assertSituation({ userViews: 1, nonUserViews: 0 }, 'User 0 viewed your gallery');
     });
 
     test('two views', async () => {
       await assertSituation(
         { userViews: 2, nonUserViews: 0 },
-        'User 0 and 1 other have viewed your gallery'
+        'User 0 and 1 other viewed your gallery'
       );
     });
 
     test('three views', async () => {
       await assertSituation(
         { userViews: 3, nonUserViews: 0 },
-        'User 0 and 2 others have viewed your gallery'
+        'User 0 and 2 others viewed your gallery'
       );
     });
   });
@@ -139,28 +139,28 @@ describe('SomeoneViewedYourGallery', () => {
     test('1 user and 1 non-user', async () => {
       await assertSituation(
         { nonUserViews: 1, userViews: 1 },
-        'User 0 and 1 other have viewed your gallery'
+        'User 0 and 1 other viewed your gallery'
       );
     });
 
     test('1 user and 2 non-users', async () => {
       await assertSituation(
         { nonUserViews: 2, userViews: 1 },
-        'User 0 and 2 others have viewed your gallery'
+        'User 0 and 2 others viewed your gallery'
       );
     });
 
     test('2 users and 1 non-user', async () => {
       await assertSituation(
         { nonUserViews: 1, userViews: 2 },
-        'User 0 and 2 others have viewed your gallery'
+        'User 0 and 2 others viewed your gallery'
       );
     });
 
     test('2 users and 2 non-users', async () => {
       await assertSituation(
         { nonUserViews: 2, userViews: 2 },
-        'User 0 and 3 others have viewed your gallery'
+        'User 0 and 3 others viewed your gallery'
       );
     });
   });
