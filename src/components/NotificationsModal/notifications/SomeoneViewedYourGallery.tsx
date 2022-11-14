@@ -11,6 +11,8 @@ type SomeoneViewedYourGalleryProps = {
   queryRef: SomeoneViewedYourGalleryQueryFragment$key;
 };
 
+const testId = 'SomeoneViewedYourGallery';
+
 export function SomeoneViewedYourGallery({
   notificationRef,
   queryRef,
@@ -30,6 +32,14 @@ export function SomeoneViewedYourGallery({
         __typename
 
         count
+
+        nonUserViewerCount
+        userViewers {
+          pageInfo {
+            total
+          }
+        }
+
         userViewers {
           edges {
             node {
@@ -42,24 +52,57 @@ export function SomeoneViewedYourGallery({
     notificationRef
   );
 
-  const count = notification.count ?? 1;
-  const lastViewer = notification.userViewers?.edges?.[0]?.node;
+  const userViewerCount = notification.userViewers?.pageInfo?.total ?? 0;
+  const nonUserViewerCount = notification.nonUserViewerCount ?? 0;
+  const totalViewCount = userViewerCount + nonUserViewerCount;
 
+  if (userViewerCount > 0) {
+    const lastViewer = notification.userViewers?.edges?.[0]?.node;
+
+    if (totalViewCount === 1) {
+      return (
+        <BaseM data-testid={testId}>
+          {lastViewer ? <HoverCardOnUsername userRef={lastViewer} queryRef={query} /> : 'Someone'}
+          <span> has viewed your gallery</span>
+        </BaseM>
+      );
+    } else {
+      const remainingViewCount = totalViewCount - 1;
+
+      return (
+        <BaseM data-testid={testId}>
+          {lastViewer ? <HoverCardOnUsername userRef={lastViewer} queryRef={query} /> : 'Someone'}
+          <span>
+            {' '}
+            and {remainingViewCount} {remainingViewCount === 1 ? 'other' : 'others'} have viewed
+            your gallery
+          </span>
+        </BaseM>
+      );
+    }
+  } else if (nonUserViewerCount > 0) {
+    if (nonUserViewerCount === 1) {
+      return (
+        <BaseM data-testid={testId}>
+          <strong>An anonymous user</strong>
+          <span> has viewed your gallery</span>
+        </BaseM>
+      );
+    } else {
+      return (
+        <BaseM data-testid={testId}>
+          <strong>{nonUserViewerCount} anonymous users</strong>
+          <span> have viewed your gallery</span>
+        </BaseM>
+      );
+    }
+  }
+
+  // If we get here, it means the backend is failing for some reason
   return (
-    <BaseM>
-      {count > 1 ? (
-        <>
-          <strong>{count} collectors </strong>
-          have viewed your gallery
-        </>
-      ) : (
-        <>
-          <strong>
-            {lastViewer ? <HoverCardOnUsername userRef={lastViewer} queryRef={query} /> : 'Someone'}
-          </strong>{' '}
-          has viewed your gallery
-        </>
-      )}
+    <BaseM data-testid={testId}>
+      <strong>Someone</strong>
+      <span> has viewed your gallery</span>
     </BaseM>
   );
 }
