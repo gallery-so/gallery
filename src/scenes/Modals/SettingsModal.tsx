@@ -83,7 +83,7 @@ function SettingsModal({
           isEmailUnsubscribedFromAll
         );
 
-        if (!response?.updateEmailNotificationSettings) {
+        if (response?.updateEmailNotificationSettings) {
           pushToast({
             message:
               'Settings successfully updated. You will no longer receive notification emails',
