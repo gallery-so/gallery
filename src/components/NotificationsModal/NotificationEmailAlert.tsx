@@ -6,7 +6,7 @@ import { useModalActions } from '~/contexts/modal/ModalContext';
 import { NotificationEmailAlertQueryFragment$key } from '~/generated/NotificationEmailAlertQueryFragment.graphql';
 import CloseIcon from '~/icons/CloseIcon';
 import InfoCircleIcon from '~/icons/InfoCircleIcon';
-import ManageWalletsModal from '~/scenes/Modals/ManageWalletsModal';
+import SettingsModal from '~/scenes/Modals/SettingsModal';
 
 import colors from '../core/colors';
 import InteractiveLink from '../core/InteractiveLink/InteractiveLink';
@@ -22,7 +22,7 @@ export function NotificationEmailAlert({ onDismiss, queryRef }: Props) {
   const query = useFragment(
     graphql`
       fragment NotificationEmailAlertQueryFragment on Query {
-        ...ManageWalletsModalFragment
+        ...SettingsModalFragment
       }
     `,
     queryRef
@@ -35,7 +35,7 @@ export function NotificationEmailAlert({ onDismiss, queryRef }: Props) {
     hideModal();
 
     showModal({
-      content: <ManageWalletsModal queryRef={query} />,
+      content: <SettingsModal queryRef={query} />,
       headerText: 'Manage accounts',
     });
   }, [hideModal, query, showModal]);
