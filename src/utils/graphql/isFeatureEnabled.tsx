@@ -27,8 +27,8 @@ const ROLE_FLAGS: Record<Role, Record<FeatureFlag, boolean>> = {
     WHITE_RHINO: true,
     EMAIL: false,
   },
-  // In case a new role gets added, how do we want to handle that new role
-  // if the client hasn't been updated to handle the new role.
+  // The below object is what will be used in the case that the backend deployed
+  // something that the frontend doesn't know about
   '%future added value': {
     WHITE_RHINO: false,
     EMAIL: false,
