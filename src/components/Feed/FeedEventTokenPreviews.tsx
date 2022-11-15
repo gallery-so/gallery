@@ -8,6 +8,7 @@ import useWindowSize, {
   useIsMobileOrMobileLargeWindowWidth,
 } from '~/hooks/useWindowSize';
 
+import { DIMENSIONS, FEED_EVENT_TOKEN_MARGIN, FEED_MAX_WIDTH } from './dimensions';
 import EventMedia from './Events/EventMedia';
 
 export type TokenToPreview = EventMediaFragment$key & {
@@ -17,10 +18,6 @@ export type TokenToPreview = EventMediaFragment$key & {
 type Props = {
   tokensToPreview: TokenToPreview[];
 };
-
-export const DEFAULT_DIMENSIONS_DESKTOP = 259.33;
-export const SMALL_DIMENSIONS_DESKTOP = 190.5;
-export const FEED_EVENT_TOKEN_MARGIN = 16;
 
 export default function FeedEventTokenPreviews({ tokensToPreview }: Props) {
   const showSmallerPreview = tokensToPreview.length > 3;
@@ -40,15 +37,11 @@ export default function FeedEventTokenPreviews({ tokensToPreview }: Props) {
       return (windowSize.width - 4 * FEED_EVENT_TOKEN_MARGIN) / 3;
     }
     if (breakpoint === size.tablet) {
-      if (showSmallerPreview) {
-        // If there are 4 previews, size is 25% of vw minus margins
-        return (size.tablet - 3 * FEED_EVENT_TOKEN_MARGIN) / 4;
-      }
-      // if there are less than 4 previews, size is 33% of vw minus margins (even if there are only 1 or 2 pieces)
-      return (size.tablet - 2 * FEED_EVENT_TOKEN_MARGIN) / 3;
+      return DIMENSIONS.TABLET[`${tokensToPreview.length}`];
     }
-    return showSmallerPreview ? SMALL_DIMENSIONS_DESKTOP : DEFAULT_DIMENSIONS_DESKTOP;
-  }, [breakpoint, isMobile, showSmallerPreview, windowSize.width]);
+
+    return DIMENSIONS.DESKTOP[`${tokensToPreview.length}`];
+  }, [breakpoint, isMobile, showSmallerPreview, tokensToPreview.length, windowSize.width]);
 
   return (
     <StyledFeedEventTokenPreviews>
@@ -66,7 +59,7 @@ export default function FeedEventTokenPreviews({ tokensToPreview }: Props) {
 
 const StyledFeedEventTokenPreviews = styled.div`
   display: flex;
-  gap: 16px;
+  gap: ${FEED_EVENT_TOKEN_MARGIN}px;
   justify-content: center;
   align-items: center;
 `;

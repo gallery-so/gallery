@@ -22,7 +22,6 @@ export const StyledEvent = ({ children, className, onClick }: StyledEventProps) 
 };
 
 export const StyledInnerEvent = styled.div`
-  max-width: ${FEED_EVENT_ROW_WIDTH_TABLET}px;
   width: 100%;
 
   @media only screen and ${breakpoints.desktop} {
@@ -41,6 +40,10 @@ export const StyledEventWrapper = styled.div`
   padding: 24px 16px;
 
   @media only screen and ${breakpoints.tablet} {
+    padding: 16px 32px;
+  }
+
+  @media only screen and ${breakpoints.desktop} {
     padding: 16px;
   }
 

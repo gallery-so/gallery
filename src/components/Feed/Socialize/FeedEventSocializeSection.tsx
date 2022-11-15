@@ -121,11 +121,18 @@ export function FeedEventSocializeSection({
 
 const SocializedSectionPadding = styled.div`
   padding: 0 16px;
+
+  @media only screen and ${breakpoints.tablet} {
+    padding: 0 32px;
+  }
+
+  @media only screen and ${breakpoints.desktop} {
+    padding: 0 16px;
+  }
 `;
 
 // Modeled after StyledEventInner
 const SocializeSectionWrapper = styled.div`
-  max-width: ${FEED_EVENT_ROW_WIDTH_TABLET}px;
   width: 100%;
 
   @media only screen and ${breakpoints.desktop} {
