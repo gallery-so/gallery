@@ -22,36 +22,23 @@ type Props = {
   queryRef: GlobalAnnouncementPopoverFragment$key;
 };
 
-export const FEATURED_TEZOS_COLLECTION_IDS = [
-  // bastiboii
-  '2EsMiniw7WGzp8yR3iUXwj2SjcR',
-  // curated
-  '2FBRDB7lb5WSqRKmQWJdPh25lUD',
-  // rudxane
-  '2F2tLTe7VQ9zFKfzhMA9p41QbWm',
-  // 1mposter
-  '2FEmDXlEjNQXtorn4WKh6Vyizc6',
-  // duaneking
-  '2EsMhMU7Ite54MHjLL7cdf3bIoB',
-  // the_ayybee_gallery
-  '2FEs5fgkmIIvoHrD7nkhyCOYMrB',
-  // masisus
-  '2EtEXRDVBB5KTSPl48CVxxy1jcN',
-  // supertank1e
-  '2F0lVnwvDzD3l8FtvjG11v9XQep',
-  // hardi
-  '2FJJtUdlivSVsyWMno5tSbZumlj',
-  // sbiernacki
-  '2F0BXXyhwhzNFO7Kh02Jw95y9WE',
-  // theblkchain
-  '2FJZqjWN1z87BcedVCOjS6wf2bh',
-  //jeres
-  '2F86xvV2khiVFAIRe7KnFCKFpM7',
-  // ashtar
-  '2F45XyhANdyCNLJ1XCUfDoYpy8N',
-  // unblock
-  '2FLdCg421BuoOtwB9RyKqnAEf5P',
+export const FEATURED_COLLECTION_IDS = [
+  // flamingoDAO
+  '26760c9d63938ef7f7f622d16a41219b',
+  // DCinvestor
+  '28KtVPzsE0N5ht5gGBlmuy4Khxc',
+  // KevinRose
+  '0f4f4e0a9ca395590af50c648243e1d5',
+  // Phones
+  '25G6pTdSt3VfVdWKzEXzkPDPQs9',
 ];
+
+const HEADER_TEXT_1 = 'Introducing the';
+const HEADER_TEXT_2 = 'Next Era of Self Expression';
+const HEADER_DESC_1 =
+  'Gallery is a limitless social canvas for creativity, curation, and connection.';
+const HEADER_DESC_2 = 'Now open to everyone.';
+const BUTTON_TEXT_1 = 'Curate Now';
 
 // NOTE: in order to toggle whether the modal should appear for authenticated users only,
 // refer to `useGlobalAnnouncementPopover.tsx`
@@ -164,11 +151,11 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
                   <MobileButtonContainer>
                     <VStack gap={16} align="center">
                       {isAuthenticated ? (
-                        <Button onClick={handleManageWalletsClick}>Add your Tezos wallet</Button>
+                        <Button onClick={handleManageWalletsClick}>Curate Now</Button>
                       ) : (
-                        <Button onClick={handleCreateGalleryClick}>Create your gallery</Button>
+                        <Button onClick={handleCreateGalleryClick}>Curate Now</Button>
                       )}
-                      <TextButton onClick={handleViewTezosGallerisClick} text="Tezos Galleries ↓" />
+                      <TextButton onClick={handleViewTezosGallerisClick} text="Explore More ↓" />
                     </VStack>
                   </MobileButtonContainer>
                 </VStack>
@@ -201,33 +188,64 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
             <VStack gap={92} align="center">
               <DesktopHeaderContainer>
                 <VStack gap={32}>
+                  <DesktopIntroText>{HEADER_TEXT_1}</DesktopIntroText>
                   <DesktopIntroText>
-                    Now supporting <i>Tezos</i>
+                    <i>{HEADER_TEXT_2}</i>
                   </DesktopIntroText>
                   <DesktopDescriptionText>
-                    Starting today, you can connect your Tezos wallets and display your Tezos pieces
-                    alongside your Ethereum pieces.
+                    {HEADER_DESC_1} <i>{HEADER_DESC_2}</i>
                   </DesktopDescriptionText>
                   <DesktopButtonContainer>
                     <HStack gap={32}>
                       {isAuthenticated ? (
-                        <Button onClick={handleManageWalletsClick}>Add your Tezos wallet</Button>
+                        <Button onClick={handleManageWalletsClick}>Curate Now</Button>
                       ) : (
-                        <Button onClick={handleCreateGalleryClick}>Create your gallery</Button>
+                        <Button onClick={handleCreateGalleryClick}>Curate Now</Button>
                       )}
-                      <TextButton onClick={handleViewTezosGallerisClick} text="Tezos Galleries ↓" />
+                      <TextButton onClick={handleViewTezosGallerisClick} text="Explore More ↓" />
                     </HStack>
                   </DesktopButtonContainer>
                 </VStack>
               </DesktopHeaderContainer>
+
+              <div>Placeholder splash image</div>
+
               <DesktopSecondaryHeaderContainer>
                 <VStack gap={12}>
                   <DesktopStyledSecondaryTitle>
-                    Featured Tezos Collectors
+                    Bring your imagination, we’ll handle the rest.
                   </DesktopStyledSecondaryTitle>
                   <DesktopDescriptionText>
-                    Discover the depth and diversity of pieces on Tezos by exploring these galleries
-                    curated by our featured collectors.
+                    Multi-chain and multi-wallet. Everything you love in one place.
+                  </DesktopDescriptionText>
+                  <DesktopDescriptionText>
+                    <ul>
+                      <li>
+                        Your collection has a story, we help you tell it — put together a beautiful
+                        and intuitive canvas with just a few clicks.
+                      </li>
+                      <li>Everything you love displayed exactly how it was meant to be seen.</li>
+                      <li>Support for Ethereum, Tezos, and POAPs, with more chains coming soon.</li>
+                    </ul>
+                  </DesktopDescriptionText>
+                </VStack>
+              </DesktopSecondaryHeaderContainer>
+
+              <div>Placeholder images</div>
+
+              <DesktopSecondaryHeaderContainer>
+                <VStack gap={12}>
+                  <DesktopStyledSecondaryTitle>Find your people.</DesktopStyledSecondaryTitle>
+                  <DesktopDescriptionText>
+                    A creative oasis for curation, connection and exploration. Focus on the art,
+                    take a break from the noise.
+                  </DesktopDescriptionText>
+                  <DesktopDescriptionText>
+                    <ul>
+                      <li>Explore the communities behind your favorite collections.</li>
+                      <li>Connect with other collectors who you vibe with.</li>
+                      <li>Join conversations around the work you love.</li>
+                    </ul>
                   </DesktopDescriptionText>
                 </VStack>
               </DesktopSecondaryHeaderContainer>
