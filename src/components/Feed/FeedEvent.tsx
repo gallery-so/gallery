@@ -1,6 +1,7 @@
 import { ErrorBoundary } from '@sentry/nextjs';
 import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
+import styled from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';
 import { FeedEventSocializeSection } from '~/components/Feed/Socialize/FeedEventSocializeSection';
@@ -10,6 +11,7 @@ import { FeedEventWithErrorBoundaryFragment$key } from '~/generated/FeedEventWit
 import { FeedEventWithErrorBoundaryQueryFragment$key } from '~/generated/FeedEventWithErrorBoundaryQueryFragment.graphql';
 import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
+import colors from '../core/colors';
 import CollectionCreatedFeedEvent from './Events/CollectionCreatedFeedEvent';
 import CollectionUpdatedFeedEvent from './Events/CollectionUpdatedFeedEvent';
 import CollectorsNoteAddedToCollectionFeedEvent from './Events/CollectorsNoteAddedToCollectionFeedEvent';
@@ -176,7 +178,7 @@ export default function FeedEventWithBoundary({
 
   return (
     <FeedEventErrorBoundary>
-      <VStack gap={16}>
+      <FeedEventContainer gap={16}>
         <FeedEvent eventRef={event} queryRef={query} feedMode={feedMode} />
 
         {shouldShowAdmireComment && (
@@ -188,7 +190,11 @@ export default function FeedEventWithBoundary({
             />
           </ErrorBoundary>
         )}
-      </VStack>
+      </FeedEventContainer>
     </FeedEventErrorBoundary>
   );
 }
+
+const FeedEventContainer = styled(VStack)`
+  border-bottom: 1px solid ${colors.faint};
+`;

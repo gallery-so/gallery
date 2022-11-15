@@ -86,8 +86,8 @@ export function FeedEventSocializeSection({
   }, [query, showModal]);
 
   return (
-    <SocializedSectionPadding>
-      <SocializeSectionWrapper>
+    <SocializeSectionWrapper>
+      <SocializedSectionPadding>
         <HStack justify="space-between" align="flex-end" gap={24}>
           <VStack shrink>
             <Interactions
@@ -114,8 +114,8 @@ export function FeedEventSocializeSection({
             </IconWrapper>
           </HStack>
         </HStack>
-      </SocializeSectionWrapper>
-    </SocializedSectionPadding>
+      </SocializedSectionPadding>
+    </SocializeSectionWrapper>
   );
 }
 
@@ -136,8 +136,6 @@ const SocializeSectionWrapper = styled.div`
   // Center in space
   margin: 0 auto;
   padding-bottom: 16px;
-
-  border-bottom: 1px solid ${colors.faint};
 `;
 
 const IconWrapper = styled.div`

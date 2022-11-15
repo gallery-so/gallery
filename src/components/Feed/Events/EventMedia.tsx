@@ -31,6 +31,6 @@ export default function EventMedia({ tokenRef, maxWidth, maxHeight }: Props) {
 
 const StyledEventMedia = styled.div<{ width: number; height: number }>`
   display: flex;
-  width: ${({ width }) => width}px;
+  max-width: ${({ width }) => width}px;
   height: ${({ height }) => height}px;
 `;
