@@ -26,6 +26,7 @@ import { removeNullValues } from '~/utils/removeNullValues';
 import { convertObjectToArray } from '../convertObjectToArray';
 import { AddWalletSidebar } from './AddWalletSidebar';
 import SearchBar from './SearchBar';
+import { SidebarView, SidebarViewSelector } from './SidebarViewSelector';
 
 type Props = {
   sidebarTokens: SidebarTokensState;
@@ -39,6 +40,8 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
       fragment SidebarFragment on Token @relay(plural: true) {
         dbid
         chain
+        isSpamByUser
+        isSpamByProvider
 
         ...SearchBarFragment
         ...SidebarTokensFragment
@@ -75,6 +78,7 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
   const { stageTokens } = useCollectionEditorActions();
   const [searchResults, setSearchResults] = useState<string[]>([]);
   const [selectedChain, setSelectedChain] = useState<Chain>('Ethereum');
+  const [selectedView, setSelectedView] = useState<SidebarView>('Collected');
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
 
   const { pushToast } = useToastActions();
@@ -147,9 +151,24 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
         return true;
       }
 
-      return token.chain === selectedChain;
+      if (token.chain !== selectedChain) {
+        return false;
+      }
+
+      const isSpam = token.isSpamByUser !== null ? token.isSpamByUser : token.isSpamByProvider;
+
+      if (selectedView === 'Hidden') {
+        return isSpam;
+      }
+      return !isSpam;
     });
-  }, [editModeTokensSearchResults, isSearching, nftFragmentsKeyedByID, selectedChain]);
+  }, [
+    editModeTokensSearchResults,
+    isSearching,
+    nftFragmentsKeyedByID,
+    selectedChain,
+    selectedView,
+  ]);
 
   const { isLocked, syncTokens } = useSyncTokens();
 
@@ -185,6 +204,7 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
           setSearchResults={setSearchResults}
           setDebouncedSearchQuery={setDebouncedSearchQuery}
         />
+        <SidebarViewSelector selectedView={selectedView} setSelectedView={setSelectedView} />
         {!isSearching && (
           <>
             <SidebarChainSelector
@@ -209,6 +229,7 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
           isSearching={isSearching}
           tokenRefs={nonNullTokens}
           selectedChain={selectedChain}
+          selectedView={selectedView}
           editModeTokens={tokensToDisplay}
         />
       ) : (
@@ -227,7 +248,7 @@ const StyledSidebarContainer = styled(VStack)`
 `;
 
 const AddBlankSpaceButton = styled(Button)`
-  margin: 4px 0;
+  margin-bottom: 8px;
 `;
 
 const StyledSidebar = styled.div<{ navbarHeight: number }>`
@@ -249,8 +270,7 @@ const Header = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  min-height: 52px;
-  padding-bottom: 16px;
+  min-height: 32px;
 `;
 
 export default memo(Sidebar);

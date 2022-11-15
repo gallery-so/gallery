@@ -1,14 +1,16 @@
 import throttle from 'lodash.throttle';
-import { useCallback, useLayoutEffect, useMemo, useRef } from 'react';
+import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { graphql } from 'react-relay';
 import { AutoSizer, Index, List, ListRowProps } from 'react-virtualized';
 import { readInlineData } from 'relay-runtime';
 import styled from 'styled-components';
 
+import colors from '~/components/core/colors';
 import { TitleXS } from '~/components/core/Text/Text';
 import { ExpandedIcon } from '~/components/ManageGallery/OrganizeCollection/Sidebar/ExpandedIcon';
 import SidebarNftIcon from '~/components/ManageGallery/OrganizeCollection/Sidebar/SidebarNftIcon';
 import { EditModeToken } from '~/components/ManageGallery/OrganizeCollection/types';
+import Tooltip from '~/components/Tooltip/Tooltip';
 import {
   SIDEBAR_COLLECTION_TITLE_BOTTOM_SPACE,
   SIDEBAR_COLLECTION_TITLE_HEIGHT,
@@ -16,30 +18,102 @@ import {
   SIDEBAR_ICON_GAP,
 } from '~/constants/sidebar';
 import { SidebarListTokenFragment$key } from '~/generated/SidebarListTokenFragment.graphql';
+import HideIcon from '~/icons/HideIcon';
+import ShowIcon from '~/icons/ShowIcon';
+
+import { SidebarView } from './SidebarViewSelector';
 
 export type TokenAndEditModeToken = {
   token: SidebarListTokenFragment$key;
   editModeToken: EditModeToken;
 };
 
+export type CollectionTitleRow = {
+  type: 'collection-title';
+  expanded: boolean;
+  address: string;
+  title: string;
+};
+
 export type VirtualizedRow =
-  | { type: 'collection-title'; expanded: boolean; address: string; title: string }
+  | CollectionTitleRow
   | { type: 'tokens'; tokens: TokenAndEditModeToken[]; expanded: boolean };
 
 type Props = {
   rows: VirtualizedRow[];
+  selectedView: SidebarView;
   shouldUseCollectionGrouping: boolean;
   onToggleExpanded(address: string): void;
   handleTokenRenderError: (id: string) => void;
   handleTokenRenderSuccess: (id: string) => void;
+  setSpamPreferenceForCollection: (address: string, isSpam: boolean) => void;
 };
+
+function CollectionTitle({
+  row,
+  key,
+  style,
+  selectedView,
+  onToggleExpanded,
+  setSpamPreferenceForCollection,
+}: {
+  row: CollectionTitleRow;
+  key: string;
+  style: React.CSSProperties;
+  selectedView: SidebarView;
+  onToggleExpanded: (address: string) => void;
+  setSpamPreferenceForCollection: (address: string, isSpam: boolean) => void;
+}) {
+  const [showIcon, setShowIcon] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
+
+  return (
+    <CollectionTitleRow style={style}>
+      <CollectionTitleContainer
+        onClick={() => onToggleExpanded(row.address)}
+        key={key}
+        onMouseEnter={() => setShowIcon(true)}
+        onMouseLeave={() => setShowIcon(false)}
+      >
+        <ExpandedIcon expanded={row.expanded} />
+
+        <CollectionTitleText title={row.title}>{row.title}</CollectionTitleText>
+
+        {showIcon && (
+          <>
+            <ShowHideContainer
+              onMouseEnter={() => setShowTooltip(true)}
+              onMouseLeave={() => setShowTooltip(false)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setSpamPreferenceForCollection(row.address, selectedView === 'Collected');
+              }}
+            >
+              {selectedView === 'Hidden' ? <ShowIcon /> : <HideIcon />}
+            </ShowHideContainer>
+            <StyledTooltip
+              text={selectedView === 'Hidden' ? 'Show' : 'Hide'}
+              description={`This will move "${row.title}" to your ${
+                selectedView === 'Hidden' ? 'Collected' : 'Hidden'
+              } folder.`}
+              whiteSpace="normal"
+              visible={showTooltip}
+            />
+          </>
+        )}
+      </CollectionTitleContainer>
+    </CollectionTitleRow>
+  );
+}
 
 export function SidebarList({
   rows,
+  selectedView,
   onToggleExpanded,
   handleTokenRenderError,
   handleTokenRenderSuccess,
   shouldUseCollectionGrouping,
+  setSpamPreferenceForCollection,
 }: Props) {
   const rowRenderer = useCallback(
     ({ key, style, index }: ListRowProps) => {
@@ -51,16 +125,14 @@ export function SidebarList({
 
       if (row.type === 'collection-title') {
         return (
-          <CollectionTitleContainer
-            expanded={row.expanded}
-            onClick={() => onToggleExpanded(row.address)}
+          <CollectionTitle
+            row={row}
             key={key}
             style={style}
-          >
-            <ExpandedIcon expanded={row.expanded} />
-
-            <CollectionTitleText title={row.title}>{row.title}</CollectionTitleText>
-          </CollectionTitleContainer>
+            selectedView={selectedView}
+            onToggleExpanded={onToggleExpanded}
+            setSpamPreferenceForCollection={setSpamPreferenceForCollection}
+          />
         );
       }
 
@@ -96,7 +168,14 @@ export function SidebarList({
         );
       }
     },
-    [handleTokenRenderError, handleTokenRenderSuccess, onToggleExpanded, rows]
+    [
+      handleTokenRenderError,
+      handleTokenRenderSuccess,
+      onToggleExpanded,
+      rows,
+      selectedView,
+      setSpamPreferenceForCollection,
+    ]
   );
 
   const rowHeightCalculator = useCallback(
@@ -181,14 +260,24 @@ const CollectionTitleText = styled(TitleXS)`
   overflow: hidden;
 `;
 
-const CollectionTitleContainer = styled.div.attrs({ role: 'button' })<{ expanded: boolean }>`
+const CollectionTitleRow = styled.div`
+  padding-bottom: ${SIDEBAR_COLLECTION_TITLE_BOTTOM_SPACE}px;
+`;
+
+const CollectionTitleContainer = styled.div.attrs({ role: 'button' })`
   display: flex;
   align-items: center;
-
+  gap: 4px;
   cursor: pointer;
 
-  padding-bottom: ${({ expanded }) =>
-    expanded ? `${SIDEBAR_COLLECTION_TITLE_BOTTOM_SPACE}px` : '0px'};
+  height: ${SIDEBAR_COLLECTION_TITLE_HEIGHT}px;
+  padding: 0 8px;
+
+  border-radius: 2px;
+
+  &:hover {
+    background: ${colors.faint};
+  }
 `;
 
 const StyledListTokenContainer = styled.div<{ shouldUseCollectionGrouping: boolean }>`
@@ -202,4 +291,18 @@ const StyledListTokenContainer = styled.div<{ shouldUseCollectionGrouping: boole
 const Selection = styled.div`
   display: flex;
   grid-gap: ${SIDEBAR_ICON_GAP}px;
+`;
+
+const ShowHideContainer = styled.div`
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+`;
+
+const StyledTooltip = styled(Tooltip)<{ visible: boolean }>`
+  opacity: ${({ visible }) => (visible ? 1 : 0)};
+  width: 130px;
+  right: 0;
+  top: 30px;
+  z-index: 1;
 `;
