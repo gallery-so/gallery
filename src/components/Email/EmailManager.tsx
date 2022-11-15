@@ -9,9 +9,10 @@ import EmailVerificationStatus from './EmailVerificationStatus';
 
 type Props = {
   queryRef: EmailManagerFragment$key;
+  onClose?: () => void;
 };
 
-function EmailManager({ queryRef }: Props) {
+function EmailManager({ queryRef, onClose }: Props) {
   const query = useFragment(
     graphql`
       fragment EmailManagerFragment on Query {
@@ -41,7 +42,7 @@ function EmailManager({ queryRef }: Props) {
   return (
     <StyledEmailManager>
       {showInput ? (
-        <EmailForm queryRef={query} setIsEditMode={setIsEditMode} />
+        <EmailForm queryRef={query} setIsEditMode={setIsEditMode} onClose={onClose} />
       ) : (
         <EmailVerificationStatus queryRef={query} setIsEditMode={setIsEditMode} />
       )}
@@ -50,7 +51,8 @@ function EmailManager({ queryRef }: Props) {
 }
 
 const StyledEmailManager = styled.div`
-  height: 72px; // set fixed height so changing modes doesnt shift page content
+  min-height: 38px;
+  height: auto;
 `;
 
 export default EmailManager;

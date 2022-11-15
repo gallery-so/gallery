@@ -12,6 +12,7 @@ import { UsernameQuery } from '~/generated/UsernameQuery.graphql';
 import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 import { MetaTagProps } from '~/pages/_app';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
+import useOpenSettingsModal from '~/scenes/Modals/useOpenSettingsModal';
 import UserGalleryPage from '~/scenes/UserGalleryPage/UserGalleryPage';
 import { openGraphMetaTags } from '~/utils/openGraphMetaTags';
 
@@ -77,10 +78,13 @@ export default function UserGallery({ username }: UserGalleryProps) {
         ...UserGalleryPageFragment
         ...GalleryNavbarFragment
         ...UsernameGalleryViewQueryFragment
+        ...useOpenSettingsModalFragment
       }
     `,
     { username }
   );
+
+  useOpenSettingsModal(query);
 
   return (
     <GalleryRoute

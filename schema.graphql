@@ -516,6 +516,31 @@ input UnsubscribeFromEmailTypeInput {
     token: String!
 }
 
+enum EmailUnsubscriptionType {
+  All
+  Notifications
+}
+type UserEmail {
+    email: String
+    verificationStatus: EmailVerificationStatus
+    emailNotificationSettings: EmailNotificationSettings
+}
+
+type EmailNotificationSettings {
+    unsubscribedFromAll: Boolean!
+    unsubscribedFromNotifications: Boolean!
+}
+
+input UpdateEmailNotificationSettingsInput {
+  unsubscribedFromAll: Boolean!
+  unsubscribedFromNotifications: Boolean!
+}
+
+input UnsubscribeFromEmailTypeInput {
+  type: EmailUnsubscriptionType!
+  token: String!
+}
+
 union UserByUsernameOrError = GalleryUser | ErrUserNotFound | ErrInvalidInput
 
 union UserByIdOrError = GalleryUser | ErrUserNotFound | ErrInvalidInput

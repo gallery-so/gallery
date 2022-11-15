@@ -14,14 +14,13 @@ import { DropdownSection } from '~/components/core/Dropdown/DropdownSection';
 import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, Paragraph, TITLE_FONT_FAMILY, TitleM } from '~/components/core/Text/Text';
-import { NotificationsModal } from '~/components/NotificationsModal/NotificationsModal';
+import useNotificationsModal from '~/components/NotificationsModal/useNotificationsModal';
 import { useSubscribeToNotifications } from '~/components/NotificationsModal/useSubscribeToNotifications';
-import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { useAuthActions } from '~/contexts/auth/AuthContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { ProfileDropdownContentFragment$key } from '~/generated/ProfileDropdownContentFragment.graphql';
-import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import ManageWalletsModal from '~/scenes/Modals/ManageWalletsModal';
+import SettingsModal from '~/scenes/Modals/SettingsModal';
 import { getEditGalleryUrl } from '~/utils/getEditGalleryUrl';
 import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
@@ -57,6 +56,7 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
 
         ...getEditGalleryUrlFragment
         ...ManageWalletsModalFragment
+        ...SettingsModalFragment
         ...isFeatureEnabledFragment
       }
     `,
@@ -65,26 +65,28 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
 
   const { showModal } = useModalActions();
   const { handleLogout } = useAuthActions();
+  const showNotificationsModal = useNotificationsModal();
 
-  const isMobile = useIsMobileWindowWidth();
-  const track = useTrack();
+  const isEmailFeatureEnabled = isFeatureEnabled(FeatureFlag.EMAIL, query);
 
   const handleNotificationsClick = useCallback(() => {
-    track('Open Notifications Click');
-    showModal({
-      content: <NotificationsModal fullscreen={isMobile} />,
-      isFullPage: isMobile,
-      isPaddingDisabled: true,
-      headerVariant: 'standard',
-    });
-  }, [isMobile, showModal, track]);
+    showNotificationsModal();
+  }, [showNotificationsModal]);
 
   const handleManageWalletsClick = useCallback(() => {
+    if (isEmailFeatureEnabled) {
+      showModal({
+        content: <SettingsModal queryRef={query} />,
+        headerText: 'Settings',
+      });
+      return;
+    }
+
     showModal({
       content: <ManageWalletsModal queryRef={query} />,
-      headerText: 'Manage accounts',
+      headerText: 'Settings',
     });
-  }, [query, showModal]);
+  }, [isEmailFeatureEnabled, query, showModal]);
 
   const username = query.viewer?.user?.username;
 

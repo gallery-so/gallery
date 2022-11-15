@@ -1,5 +1,4 @@
 import Head from 'next/head';
-import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -8,10 +7,9 @@ import styled from 'styled-components';
 import breakpoints, { pageGutter } from '~/components/core/breakpoints';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
-import { useModalActions } from '~/contexts/modal/ModalContext';
 import { UserGalleryPageFragment$key } from '~/generated/UserGalleryPageFragment.graphql';
 
-import ManageWalletsModal from '../Modals/ManageWalletsModal';
+import useVerifyEmailOnPage from '../../components/Email/useVerifyEmailOnPage';
 import UserGallery from './UserGallery';
 
 type UserGalleryPageProps = {
@@ -23,8 +21,16 @@ function UserGalleryPage({ queryRef, username }: UserGalleryPageProps) {
   const query = useFragment(
     graphql`
       fragment UserGalleryPageFragment on Query {
+        viewer {
+          ... on Viewer {
+            __typename
+          }
+        }
+
         ...UserGalleryFragment
-        ...ManageWalletsModalFragment
+        ...SettingsModalFragment
+        ...useVerifyEmailOnPageQueryFragment
+        ...isFeatureEnabledFragment
       }
     `,
     queryRef
@@ -35,23 +41,11 @@ function UserGalleryPage({ queryRef, username }: UserGalleryPageProps) {
   const track = useTrack();
   const navbarHeight = useGlobalNavbarHeight();
 
+  useVerifyEmailOnPage(query);
+
   useEffect(() => {
     track('Page View: User Gallery', { username });
   }, [username, track]);
-
-  const router = useRouter();
-  const { settings } = router.query;
-
-  const { showModal } = useModalActions();
-
-  useEffect(() => {
-    if (settings === 'true') {
-      showModal({
-        content: <ManageWalletsModal queryRef={query} />,
-        headerText: 'Manage accounts',
-      });
-    }
-  }, [query, router, showModal, username, settings]);
 
   return (
     <>
