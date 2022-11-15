@@ -140,11 +140,13 @@ function SettingsModal({
             <BaseM>
               Receive weekly recaps that show your most recent admires, comments, and followers.
             </BaseM>
-            <Toggle
-              checked={isEmailNotificationChecked}
-              isPending={isPending}
-              onChange={toggleEmailNotification}
-            />
+            {userEmail && (
+              <Toggle
+                checked={isEmailNotificationChecked}
+                isPending={isPending}
+                onChange={toggleEmailNotification}
+              />
+            )}
           </HStack>
         </VStack>
         <StyledButtonContainer>
