@@ -5,7 +5,7 @@ import breakpoints from '~/components/core/breakpoints';
 import colors from '~/components/core/colors';
 import { BaseS } from '~/components/core/Text/Text';
 
-import { FEED_EVENT_ROW_WIDTH_DESKTOP, FEED_EVENT_ROW_WIDTH_TABLET } from '../dimensions';
+import { FEED_EVENT_ROW_WIDTH_DESKTOP } from '../dimensions';
 
 type StyledEventProps = {
   children: ReactNode;

@@ -4,12 +4,8 @@ import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
-import colors from '~/components/core/colors';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
-import {
-  FEED_EVENT_ROW_WIDTH_DESKTOP,
-  FEED_EVENT_ROW_WIDTH_TABLET,
-} from '~/components/Feed/dimensions';
+import { FEED_EVENT_ROW_WIDTH_DESKTOP } from '~/components/Feed/dimensions';
 import { AdmireButton } from '~/components/Feed/Socialize/AdmireButton';
 import { CommentBox } from '~/components/Feed/Socialize/CommentBox';
 import { Interactions } from '~/components/Feed/Socialize/Interactions';
