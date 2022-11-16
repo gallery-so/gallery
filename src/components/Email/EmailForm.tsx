@@ -40,13 +40,14 @@ function EmailForm({ setIsEditMode, queryRef, onClose }: Props) {
   );
 
   const [updateEmail] = usePromisifiedMutation<EmailFormMutation>(graphql`
-    mutation EmailFormMutation($input: UpdateEmailInput!) {
+    mutation EmailFormMutation($input: UpdateEmailInput!) @raw_response_type {
       updateEmail(input: $input) {
         ... on UpdateEmailPayload {
           __typename
           viewer {
             email {
               email
+              verificationStatus
             }
           }
         }
@@ -101,8 +102,23 @@ function EmailForm({ setIsEditMode, queryRef, onClose }: Props) {
       userId,
     };
 
+    const optimisticResponse: EmailFormMutation['response'] = {
+      updateEmail: {
+        __typename: 'UpdateEmailPayload',
+        viewer: {
+          email: {
+            email,
+            verificationStatus: 'Unverified',
+          },
+        },
+      },
+    };
+
     try {
-      const response = await updateEmail({ variables: { input: { email } } });
+      const response = await updateEmail({
+        variables: { input: { email } },
+        optimisticResponse,
+      });
 
       if (response.updateEmail?.__typename !== 'UpdateEmailPayload') {
         // ERROR
