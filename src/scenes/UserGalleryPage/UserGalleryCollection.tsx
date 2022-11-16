@@ -259,12 +259,17 @@ const StyledCollectorsNote = styled(BaseM)<{ showMore: boolean }>`
           -webkit-line-clamp: 2;
 
           p {
+            display: inline;
             padding-bottom: 0 !important;
           }
 
           // We only care about line clamping on mobile
           @media only screen and ${breakpoints.tablet} {
             -webkit-line-clamp: unset;
+
+            p {
+              display: inline-block;
+            }
 
             p:not(:last-child) {
               padding-bottom: 12px !important;
