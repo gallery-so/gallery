@@ -3,6 +3,7 @@ import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
+import IconContainer from '~/components/core/Markdown/IconContainer';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { USERS_PER_PAGE } from '~/components/NotificationsModal/constants';
 import { NotificationUserList } from '~/components/NotificationsModal/NotificationUserList/NotificationUserList';
@@ -43,21 +44,32 @@ export function NotificationUserListModal({
         <HStack align="center" gap={8}>
           <BackButton onClick={hideModal} />
           <Suspense fallback={null}>
-            <NotificationUserListTitle queryRef={query} />
+            <ModalTitle>
+              <NotificationUserListTitle queryRef={query} />
+            </ModalTitle>
           </Suspense>
         </HStack>
       </StyledHeader>
 
       <Suspense fallback={null}>
-        <NotificationUserList queryRef={query} />
+        <ModalBody>
+          <NotificationUserList queryRef={query} />
+        </ModalBody>
       </Suspense>
     </ModalContent>
   );
 }
 
+const ModalTitle = styled.div`
+  padding: 16px 0;
+`;
+
+const ModalBody = styled.div`
+  padding: 0 4px;
+`;
+
 const StyledHeader = styled.div`
-  padding-bottom: ${MODAL_PADDING_PX}px;
-  padding-left: 12px;
+  padding: 0 8px;
 `;
 
 const ModalContent = styled.div<{ fullscreen: boolean }>`
@@ -65,5 +77,4 @@ const ModalContent = styled.div<{ fullscreen: boolean }>`
   width: ${({ fullscreen }) => (fullscreen ? '100%' : '420px')};
   display: flex;
   flex-direction: column;
-  padding: ${MODAL_PADDING_PX}px 4px;
 `;
