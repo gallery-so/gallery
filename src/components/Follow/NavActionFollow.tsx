@@ -1,6 +1,8 @@
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { Route, route } from 'nextjs-routes';
 import { graphql, useFragment } from 'react-relay';
+import styled from 'styled-components';
 
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BreadcrumbLink } from '~/contexts/globalLayout/GlobalNavbar/ProfileDropdown/Breadcrumbs';
@@ -8,6 +10,7 @@ import { NavActionFollowQueryFragment$key } from '~/generated/NavActionFollowQue
 import { NavActionFollowUserFragment$key } from '~/generated/NavActionFollowUserFragment.graphql';
 import { isUsername3ac } from '~/hooks/oneOffs/useIs3acProfilePage';
 
+import colors from '../core/colors';
 import FollowButton from './FollowButton';
 
 type Props = {
@@ -35,6 +38,7 @@ export default function NavActionFollow({ userRef, queryRef }: Props) {
     `,
     queryRef
   );
+  const { pathname } = useRouter();
 
   if (!user.username) {
     return null;
@@ -42,15 +46,20 @@ export default function NavActionFollow({ userRef, queryRef }: Props) {
 
   const is3ac = isUsername3ac(user.username);
   const usernameRoute: Route = { pathname: '/[username]', query: { username: user.username } };
+  const isViewingProfile = pathname === '/[username]';
 
   return (
     <HStack gap={8} align="center">
       <Link href={usernameRoute}>
-        <BreadcrumbLink href={route(usernameRoute)}>
+        <StyledBreadcrumbLink href={route(usernameRoute)} focused={isViewingProfile}>
           {is3ac ? 'The Unofficial 3AC Gallery' : user.username}
-        </BreadcrumbLink>
+        </StyledBreadcrumbLink>
       </Link>
       <FollowButton queryRef={loggedInUserQuery} userRef={user} />
     </HStack>
   );
 }
+
+const StyledBreadcrumbLink = styled(BreadcrumbLink)<{ focused: boolean }>`
+  color: ${({ focused }) => (focused ? colors.offBlack : colors.shadow)};
+`;
