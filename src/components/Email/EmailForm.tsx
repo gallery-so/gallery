@@ -164,7 +164,7 @@ function EmailForm({ setIsEditMode, queryRef, onClose }: Props) {
           autoFocus
           disabled={savePending}
         />
-        <HStack justify={showCancelButton ? 'space-between' : 'flex-end'} align="flex-end">
+        <HStack justify="flex-end" align="flex-end" gap={8}>
           {showCancelButton && (
             <Button variant="secondary" disabled={savePending} onClick={handleCancelClick}>
               Cancel
