@@ -7,6 +7,7 @@ import FeedList from '~/components/Feed/FeedList';
 import { UserActivityFeedFragment$key } from '~/generated/UserActivityFeedFragment.graphql';
 import { UserActivityFeedQueryFragment$key } from '~/generated/UserActivityFeedQueryFragment.graphql';
 import { UserFeedByUserIdPaginationQuery } from '~/generated/UserFeedByUserIdPaginationQuery.graphql';
+import { EmptyState } from '~/components/EmptyState/EmptyState';
 
 type Props = {
   userRef: UserActivityFeedFragment$key;
@@ -46,6 +47,7 @@ function UserActivityFeed({ userRef, queryRef }: Props) {
 
         feedEventById(id: $topEventId) {
           ... on FeedEvent {
+            __typename
             ...FeedListEventDataFragment
           }
         }
@@ -73,12 +75,21 @@ function UserActivityFeed({ userRef, queryRef }: Props) {
       }
     }
 
-    if (query.feedEventById) {
+    if (query.feedEventById?.__typename === 'FeedEvent') {
       events.push(query.feedEventById);
     }
 
     return events;
   }, [query.feedEventById, user.feed?.edges]);
+
+  if (feedData.length === 0) {
+    return (
+      <EmptyState
+        title={"It's quiet in here"}
+        description="This user doesn't seem to have any activity yet."
+      />
+    );
+  }
 
   return (
     <FeedList
