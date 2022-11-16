@@ -52,7 +52,7 @@ export function NotificationEmailAlert({ onDismiss, queryRef }: Props) {
         <HStack align="center" gap={8}>
           <InteractiveLink onClick={handleEnableEmails}>Enable</InteractiveLink>
           <StyledCloseButton onClick={handleDismiss}>
-            <CloseIcon isActive />
+            <CloseIcon />
           </StyledCloseButton>
         </HStack>
       </StyledAlert>
@@ -80,4 +80,5 @@ const StyledCloseButton = styled.button`
   background: none;
   border: none;
   padding: 0;
+  color: ${colors.offBlack};
 `;

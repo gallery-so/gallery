@@ -129,7 +129,7 @@ export function CollectionSaveButtonWithCaption({
           <>
             <HStack justify="flex-end">
               <StyledCloseButton onClick={handleCloseCaption}>
-                <CloseIcon isActive={true} />
+                <CloseIcon />
               </StyledCloseButton>
             </HStack>
             {hasUnsavedChange ? (
@@ -197,6 +197,7 @@ const StyledCloseButton = styled.button`
   border: none;
   padding: 0;
   cursor: pointer;
+  color: ${colors.offBlack};
 `;
 
 const StyledConfirmationContent = styled(VStack)`

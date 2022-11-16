@@ -53,6 +53,7 @@ export default function Bold({
 
   return (
     <IconContainer
+      size="sm"
       icon={
         <svg
           data-testid="markdown-icon"

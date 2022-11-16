@@ -68,7 +68,7 @@ export function NftFailureFallback({ onRetry, refreshing, size = 'medium' }: Pro
             onMouseDown={handleMouseDown}
             onClick={handleClick}
           >
-            <IconContainer icon={<RefreshIcon />} />
+            <IconContainer size="sm" icon={<RefreshIcon />} />
             <RefreshTooltip active={showTooltip} text="Refresh" />
           </IconButton>
         )}

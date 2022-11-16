@@ -1,10 +1,11 @@
-import { useCallback, useMemo } from 'react';
-import { graphql, useFragment } from 'react-relay';
+import { useCallback, useEffect, useMemo } from 'react';
+import { graphql, useRefetchableFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { EmailVerificationStatusFragment$key } from '~/generated/EmailVerificationStatusFragment.graphql';
 import { EmailVerificationStatusMutation } from '~/generated/EmailVerificationStatusMutation.graphql';
+import { RefetchableEmailVerificationStatusFragment } from '~/generated/RefetchableEmailVerificationStatusFragment.graphql';
 import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 import AlertTriangleIcon from '~/icons/AlertTriangleIcon';
 import CircleCheckIcon from '~/icons/CircleCheckIcon';
@@ -15,15 +16,21 @@ import colors from '../core/colors';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM, BaseS } from '../core/Text/Text';
 
+const POLLING_INTERVAL_MS = 5000;
+
 type Props = {
   setIsEditMode: (editMode: boolean) => void;
   queryRef: EmailVerificationStatusFragment$key;
 };
 
 function EmailVerificationStatus({ setIsEditMode, queryRef }: Props) {
-  const query = useFragment(
+  const [query, refetch] = useRefetchableFragment<
+    RefetchableEmailVerificationStatusFragment,
+    EmailVerificationStatusFragment$key
+  >(
     graphql`
-      fragment EmailVerificationStatusFragment on Query {
+      fragment EmailVerificationStatusFragment on Query
+      @refetchable(queryName: "RefetchableEmailVerificationStatusFragment") {
         viewer {
           ... on Viewer {
             user {
@@ -87,6 +94,27 @@ function EmailVerificationStatus({ setIsEditMode, queryRef }: Props) {
     }
   }, [pushToast, resendVerificationEmail]);
 
+  useEffect(
+    function pollVerificationStatus() {
+      let timeoutId: ReturnType<typeof setTimeout> | null = null;
+
+      async function fetchAndTimeout() {
+        await refetch({}, { fetchPolicy: 'store-and-network' });
+
+        timeoutId = setTimeout(fetchAndTimeout, POLLING_INTERVAL_MS);
+      }
+
+      timeoutId = setTimeout(fetchAndTimeout, POLLING_INTERVAL_MS);
+
+      return () => {
+        if (timeoutId) {
+          clearTimeout(timeoutId);
+        }
+      };
+    },
+    [refetch]
+  );
+
   const resendEmailButton = useMemo(() => {
     return (
       <ResendEmail onClick={handleResendClick}>
@@ -122,11 +150,14 @@ function EmailVerificationStatus({ setIsEditMode, queryRef }: Props) {
         );
     }
   }, [resendEmailButton, verificationStatus]);
+
   return (
     <HStack justify="space-between">
       <VStack>
         <BaseM>{savedEmail}</BaseM>
-        <HStack gap={4}>{verificationStatusIndicator}</HStack>
+        <HStack gap={4} align="center">
+          {verificationStatusIndicator}
+        </HStack>
       </VStack>
       <StyledButton variant="secondary" onClick={handleEditClick}>
         EDIT
