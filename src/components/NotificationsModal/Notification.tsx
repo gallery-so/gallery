@@ -110,6 +110,7 @@ export function Notification({ notificationRef, queryRef }: NotificationProps) {
           <NotificationUserListModal notificationId={notification.id} fullscreen={isMobile} />
         ),
         isFullPage: isMobile,
+        hideClose: true,
         isPaddingDisabled: true,
         headerVariant: 'standard',
       });

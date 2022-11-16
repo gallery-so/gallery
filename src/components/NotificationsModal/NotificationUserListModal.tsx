@@ -1,4 +1,4 @@
-import { Suspense } from 'react';
+import { Suspense, useCallback } from 'react';
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
@@ -8,6 +8,9 @@ import { NotificationUserList } from '~/components/NotificationsModal/Notificati
 import { NotificationUserListTitle } from '~/components/NotificationsModal/NotificationUserListTitle';
 import { MODAL_PADDING_PX } from '~/contexts/modal/constants';
 import { NotificationUserListModalQuery } from '~/generated/NotificationUserListModalQuery.graphql';
+import { BackButton } from '~/contexts/globalLayout/GlobalNavbar/BackButton';
+import { HStack } from '~/components/core/Spacer/Stack';
+import { useModalActions } from '~/contexts/modal/ModalContext';
 
 type NotificationUserListModalProps = {
   notificationId: string;
@@ -32,12 +35,17 @@ export function NotificationUserListModal({
     { notificationId, notificationUsersLast: USERS_PER_PAGE }
   );
 
+  const { hideModal } = useModalActions();
+
   return (
     <ModalContent fullscreen={fullscreen}>
       <StyledHeader>
-        <Suspense fallback={null}>
-          <NotificationUserListTitle queryRef={query} />
-        </Suspense>
+        <HStack align="center" gap={8}>
+          <BackButton onClick={hideModal} />
+          <Suspense fallback={null}>
+            <NotificationUserListTitle queryRef={query} />
+          </Suspense>
+        </HStack>
       </StyledHeader>
 
       <Suspense fallback={null}>
