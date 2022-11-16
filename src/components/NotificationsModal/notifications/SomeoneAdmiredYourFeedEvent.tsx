@@ -33,13 +33,6 @@ export function SomeoneAdmiredYourFeedEvent({
 
         feedEvent {
           eventData {
-            ... on CollectorsNoteAddedToTokenFeedEventData {
-              __typename
-              collection {
-                ...CollectionLinkFragment
-              }
-            }
-
             ... on CollectionCreatedFeedEventData {
               __typename
               collection {
@@ -91,15 +84,17 @@ export function SomeoneAdmiredYourFeedEvent({
       case 'CollectionCreatedFeedEventData':
       case 'TokensAddedToCollectionFeedEventData':
         return 'admired your additions to';
-      case 'CollectorsNoteAddedToTokenFeedEventData':
       case 'CollectorsNoteAddedToCollectionFeedEventData':
         return 'admired your note on';
       case 'CollectionUpdatedFeedEventData':
         return 'admired your updates to';
       default:
-        return 'admired your additions to';
+        return 'admired your updates to';
     }
   }, [eventType]);
+
+  // @ts-expect-error: property `collection` does not exist on type { readonly __typename: "%other" };
+  const collection = notification.feedEvent?.eventData?.collection;
 
   return (
     <BaseM>
@@ -117,13 +112,7 @@ export function SomeoneAdmiredYourFeedEvent({
         )}
       </strong>
       {` ${verb} `}
-      {notification.feedEvent?.eventData?.collection ? (
-        <>
-          <CollectionLink collectionRef={notification.feedEvent.eventData.collection} />
-        </>
-      ) : (
-        <>your collection</>
-      )}
+      {collection ? <CollectionLink collectionRef={collection} /> : <>your collection</>}
     </BaseM>
   );
 }
