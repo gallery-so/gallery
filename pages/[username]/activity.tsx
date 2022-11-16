@@ -4,6 +4,7 @@ import { graphql } from 'relay-runtime';
 
 import { ITEMS_PER_PAGE, MAX_PIECES_DISPLAYED_PER_FEED_EVENT } from '~/components/Feed/constants';
 import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/NotesModal/NotesModal';
+import GalleryViewEmitter from '~/components/internal/GalleryViewEmitter';
 import { GalleryNavbar } from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavbar';
 import { activityQuery } from '~/generated/activityQuery.graphql';
 import { MetaTagProps } from '~/pages/_app';
@@ -30,6 +31,7 @@ export default function UserFeed({ username, eventId }: UserActivityProps) {
       ) {
         ...UserActivityPageFragment
         ...GalleryNavbarFragment
+        ...GalleryViewEmitterWithSuspenseFragment
       }
     `,
     {
@@ -44,7 +46,12 @@ export default function UserFeed({ username, eventId }: UserActivityProps) {
   return (
     <GalleryRoute
       navbar={<GalleryNavbar username={username} queryRef={query} />}
-      element={<UserActivityPage username={username} queryRef={query} />}
+      element={
+        <>
+          <GalleryViewEmitter queryRef={query} />
+          <UserActivityPage username={username} queryRef={query} />
+        </>
+      }
     />
   );
 }
