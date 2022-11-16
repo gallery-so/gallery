@@ -46,12 +46,14 @@ export default function NavActionFollow({ userRef, queryRef }: Props) {
 
   const is3ac = isUsername3ac(user.username);
   const usernameRoute: Route = { pathname: '/[username]', query: { username: user.username } };
-  const mainGalleryPage = pathname === '/[username]';
 
   return (
     <HStack gap={8} align="center">
       <Link href={usernameRoute}>
-        <UsernameBreadcrumbLink href={route(usernameRoute)} mainGalleryPage={mainGalleryPage}>
+        <UsernameBreadcrumbLink
+          href={route(usernameRoute)}
+          mainGalleryPage={pathname === '/[username]'}
+        >
           {is3ac ? 'The Unofficial 3AC Gallery' : user.username}
         </UsernameBreadcrumbLink>
       </Link>
