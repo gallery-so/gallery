@@ -4,6 +4,7 @@ import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import FollowList from '~/components/Follow/FollowList';
+import GalleryViewEmitter from '~/components/internal/GalleryViewEmitter';
 import { GalleryNavbar } from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavbar';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { followersFollowersPageFragment$key } from '~/generated/followersFollowersPageFragment.graphql';
@@ -53,6 +54,7 @@ export default function Followers({ username }: FollowersProps) {
       query followersQuery($username: String!) {
         ...GalleryNavbarFragment
         ...followersFollowersPageFragment
+        ...GalleryViewEmitterWithSuspenseFragment
       }
     `,
     { username }
@@ -60,7 +62,12 @@ export default function Followers({ username }: FollowersProps) {
 
   return (
     <GalleryRoute
-      element={<FollowersPage queryRef={query} />}
+      element={
+        <>
+          <GalleryViewEmitter queryRef={query} />
+          <FollowersPage queryRef={query} />
+        </>
+      }
       footer={false}
       navbar={<GalleryNavbar username={username} queryRef={query} />}
     />

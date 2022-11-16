@@ -7,6 +7,7 @@ import styled from 'styled-components';
 
 import { ButtonLink } from '~/components/core/Button/Button';
 import { EmptyState } from '~/components/EmptyState/EmptyState';
+import GalleryViewEmitter from '~/components/internal/GalleryViewEmitter';
 import { GalleryNavbar } from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavbar';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { galleriesGalleryPageFragment$key } from '~/generated/galleriesGalleryPageFragment.graphql';
@@ -104,6 +105,7 @@ export default function Galleries({ username }: GalleriesProps) {
       query galleriesQuery($username: String!) {
         ...galleriesGalleryPageFragment
         ...GalleryNavbarFragment
+        ...GalleryViewEmitterWithSuspenseFragment
       }
     `,
     { username }
@@ -111,7 +113,12 @@ export default function Galleries({ username }: GalleriesProps) {
 
   return (
     <GalleryRoute
-      element={<GalleryPage queryRef={query} />}
+      element={
+        <>
+          <GalleryViewEmitter queryRef={query} />
+          <GalleryPage queryRef={query} />
+        </>
+      }
       footer={false}
       navbar={<GalleryNavbar username={username} queryRef={query} />}
     />
