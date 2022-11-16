@@ -46,20 +46,20 @@ export default function NavActionFollow({ userRef, queryRef }: Props) {
 
   const is3ac = isUsername3ac(user.username);
   const usernameRoute: Route = { pathname: '/[username]', query: { username: user.username } };
-  const isViewingProfile = pathname === '/[username]';
+  const mainGalleryPage = pathname === '/[username]';
 
   return (
     <HStack gap={8} align="center">
       <Link href={usernameRoute}>
-        <StyledBreadcrumbLink href={route(usernameRoute)} focused={isViewingProfile}>
+        <UsernameBreadcrumbLink href={route(usernameRoute)} mainGalleryPage={mainGalleryPage}>
           {is3ac ? 'The Unofficial 3AC Gallery' : user.username}
-        </StyledBreadcrumbLink>
+        </UsernameBreadcrumbLink>
       </Link>
       <FollowButton queryRef={loggedInUserQuery} userRef={user} />
     </HStack>
   );
 }
 
-const StyledBreadcrumbLink = styled(BreadcrumbLink)<{ focused: boolean }>`
-  color: ${({ focused }) => (focused ? colors.offBlack : colors.shadow)};
+const UsernameBreadcrumbLink = styled(BreadcrumbLink)<{ mainGalleryPage: boolean }>`
+  color: ${({ mainGalleryPage }) => (mainGalleryPage ? colors.offBlack : colors.shadow)};
 `;
