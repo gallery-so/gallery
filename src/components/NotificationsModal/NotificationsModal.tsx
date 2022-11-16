@@ -12,6 +12,8 @@ import { useClearNotifications } from '~/components/NotificationsModal/useClearN
 import { MODAL_PADDING_PX } from '~/contexts/modal/constants';
 import { NotificationsModalQuery } from '~/generated/NotificationsModalQuery.graphql';
 
+import Loader from '../core/Loader/Loader';
+
 type NotificationsModalProps = {
   fullscreen: boolean;
 };
@@ -41,7 +43,13 @@ export function NotificationsModal({ fullscreen }: NotificationsModalProps) {
         <TitleDiatypeM>Notifications</TitleDiatypeM>
       </StyledHeader>
 
-      <Suspense fallback={null}>
+      <Suspense
+        fallback={
+          <LoadingContent>
+            <Loader inverted size="medium" />
+          </LoadingContent>
+        }
+      >
         <NotificationList queryRef={query} />
       </Suspense>
     </ModalContent>
@@ -60,4 +68,12 @@ const ModalContent = styled.div<{ fullscreen: boolean }>`
   display: flex;
   flex-direction: column;
   padding: ${MODAL_PADDING_PX}px 4px;
+`;
+
+const LoadingContent = styled.div`
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
