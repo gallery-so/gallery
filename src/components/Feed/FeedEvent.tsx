@@ -178,7 +178,7 @@ export default function FeedEventWithBoundary({
 
   return (
     <FeedEventErrorBoundary>
-      <FeedEventContainer gap={16}>
+      <FeedEventContainer>
         <FeedEvent eventRef={event} queryRef={query} feedMode={feedMode} />
 
         {shouldShowAdmireComment && (

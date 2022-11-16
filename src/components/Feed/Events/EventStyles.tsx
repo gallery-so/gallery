@@ -62,9 +62,8 @@ export const StyledEventHeader = styled.div`
 
 export const StyledTime = styled(BaseS)`
   color: ${colors.metal};
-  align-self: flex-end;
+  align-self: center;
   display: inline;
-  vertical-align: bottom;
 `;
 
 export const StyledClickHandler = styled.a`
