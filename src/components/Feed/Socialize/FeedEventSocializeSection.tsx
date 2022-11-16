@@ -4,12 +4,8 @@ import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
-import colors from '~/components/core/colors';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
-import {
-  FEED_EVENT_ROW_WIDTH_DESKTOP,
-  FEED_EVENT_ROW_WIDTH_TABLET,
-} from '~/components/Feed/dimensions';
+import { FEED_EVENT_ROW_WIDTH_DESKTOP } from '~/components/Feed/dimensions';
 import { AdmireButton } from '~/components/Feed/Socialize/AdmireButton';
 import { CommentBox } from '~/components/Feed/Socialize/CommentBox';
 import { Interactions } from '~/components/Feed/Socialize/Interactions';
@@ -86,8 +82,8 @@ export function FeedEventSocializeSection({
   }, [query, showModal]);
 
   return (
-    <SocializedSectionPadding>
-      <SocializeSectionWrapper>
+    <SocializeSectionWrapper>
+      <SocializedSectionPadding>
         <HStack justify="space-between" align="flex-end" gap={24}>
           <VStack shrink>
             <Interactions
@@ -114,18 +110,25 @@ export function FeedEventSocializeSection({
             </IconWrapper>
           </HStack>
         </HStack>
-      </SocializeSectionWrapper>
-    </SocializedSectionPadding>
+      </SocializedSectionPadding>
+    </SocializeSectionWrapper>
   );
 }
 
 const SocializedSectionPadding = styled.div`
   padding: 0 16px;
+
+  @media only screen and ${breakpoints.tablet} {
+    padding: 0 32px;
+  }
+
+  @media only screen and ${breakpoints.desktop} {
+    padding: 0 16px;
+  }
 `;
 
 // Modeled after StyledEventInner
 const SocializeSectionWrapper = styled.div`
-  max-width: ${FEED_EVENT_ROW_WIDTH_TABLET}px;
   width: 100%;
 
   @media only screen and ${breakpoints.desktop} {
@@ -136,8 +139,6 @@ const SocializeSectionWrapper = styled.div`
   // Center in space
   margin: 0 auto;
   padding-bottom: 16px;
-
-  border-bottom: 1px solid ${colors.faint};
 `;
 
 const IconWrapper = styled.div`
