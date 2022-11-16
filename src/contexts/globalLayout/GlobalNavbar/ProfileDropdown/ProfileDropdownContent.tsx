@@ -214,7 +214,7 @@ const UsernameText = styled(Paragraph)`
 `;
 
 const StyledInteractiveLink = styled(InteractiveLink)`
-  font-size: 10px !important;
+  font-size: 12px !important;
 `;
 
 const DropdownProfileSection = styled.a`
