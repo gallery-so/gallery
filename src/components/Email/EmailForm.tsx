@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import { useCallback, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
+import { SelectorStoreUpdater } from 'relay-runtime';
 import styled from 'styled-components';
 
 import { AdditionalContext, useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
@@ -40,13 +41,15 @@ function EmailForm({ setIsEditMode, queryRef, onClose }: Props) {
   );
 
   const [updateEmail] = usePromisifiedMutation<EmailFormMutation>(graphql`
-    mutation EmailFormMutation($input: UpdateEmailInput!) {
+    mutation EmailFormMutation($input: UpdateEmailInput!) @raw_response_type {
       updateEmail(input: $input) {
+        __typename
         ... on UpdateEmailPayload {
           __typename
           viewer {
             email {
               email
+              verificationStatus
             }
           }
         }
@@ -101,8 +104,22 @@ function EmailForm({ setIsEditMode, queryRef, onClose }: Props) {
       userId,
     };
 
+    const updater: SelectorStoreUpdater<EmailFormMutation['response']> = (store, response) => {
+      if (response?.updateEmail?.__typename === 'UpdateEmailPayload') {
+        const verificationStatus = response.updateEmail.viewer?.email?.verificationStatus;
+
+        store
+          .get('client:root:viewer')
+          ?.getLinkedRecord('email')
+          ?.setValue(verificationStatus, 'verificationStatus');
+      }
+    };
+
     try {
-      const response = await updateEmail({ variables: { input: { email } } });
+      const response = await updateEmail({
+        variables: { input: { email } },
+        updater,
+      });
 
       if (response.updateEmail?.__typename !== 'UpdateEmailPayload') {
         // ERROR

@@ -28,21 +28,6 @@ export default function Toggle({ checked, isPending, onChange, ...inputProps }: 
 const StyledToggle = styled.div<{ disabled?: boolean }>`
   position: relative;
   display: inline-block;
-  opacity: ${({ disabled }) => (disabled ? '0.5' : '1')};
-`;
-
-const StyledInput = styled.input`
-  opacity: 0;
-  height: 12px;
-  position: absolute;
-  width: 22px;
-  z-index: 1;
-  margin: 0;
-  cursor: pointer;
-
-  &:disabled {
-    cursor: not-allowed;
-  }
 `;
 
 const StyledToggleContainer = styled.div<{ active: boolean }>`
@@ -63,4 +48,26 @@ const StyledTogglePill = styled.div<{ active: boolean }>`
   width: 8px;
   border-radius: 20px;
   border: 1px solid ${({ active }) => (active ? colors.activeBlue : colors.offBlack)};
+`;
+
+const StyledInput = styled.input`
+  opacity: 0;
+  height: 12px;
+  position: absolute;
+  width: 22px;
+  z-index: 1;
+  margin: 0;
+  cursor: pointer;
+
+  &:disabled {
+    cursor: not-allowed;
+
+    + ${StyledToggleContainer} {
+      border-color: ${colors.porcelain};
+
+      ${StyledTogglePill} {
+        border-color: ${colors.porcelain};
+      }
+    }
+  }
 `;
