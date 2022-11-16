@@ -2,6 +2,7 @@ import { GetServerSideProps } from 'next';
 import { route } from 'nextjs-routes';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 
+import GalleryViewEmitter from '~/components/internal/GalleryViewEmitter';
 import { CollectionNavbar } from '~/contexts/globalLayout/GlobalNavbar/CollectionNavbar/CollectionNavbar';
 import { CollectionIdQuery } from '~/generated/CollectionIdQuery.graphql';
 import { MetaTagProps } from '~/pages/_app';
@@ -21,6 +22,7 @@ export default function CollectionGallery({ collectionId, username }: Collection
       query CollectionIdQuery($collectionId: DBID!, $username: String!) {
         ...CollectionNavbarFragment
         ...CollectionGalleryPageFragment
+        ...GalleryViewEmitterWithSuspenseFragment
       }
     `,
     { collectionId, username }
@@ -33,7 +35,12 @@ export default function CollectionGallery({ collectionId, username }: Collection
   return (
     <GalleryRoute
       navbar={<CollectionNavbar username={username} collectionId={collectionId} queryRef={query} />}
-      element={<CollectionGalleryPage queryRef={query} username={username} />}
+      element={
+        <>
+          <GalleryViewEmitter queryRef={query} />
+          <CollectionGalleryPage queryRef={query} username={username} />
+        </>
+      }
     />
   );
 }

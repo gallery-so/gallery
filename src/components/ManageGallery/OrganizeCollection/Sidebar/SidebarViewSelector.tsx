@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 import styled from 'styled-components';
 
+import colors from '~/components/core/colors';
 import { Dropdown } from '~/components/core/Dropdown/Dropdown';
 import { DropdownItem } from '~/components/core/Dropdown/DropdownItem';
 import { DropdownSection } from '~/components/core/Dropdown/DropdownSection';
@@ -27,9 +28,9 @@ export function SidebarViewSelector({ selectedView, setSelectedView }: SidebarVi
 
   return (
     <Container>
-      <Selector onClick={() => setIsDropdownOpen(true)}>
+      <Selector isDropdownOpen={isDropdownOpen} onClick={() => setIsDropdownOpen(true)}>
         <BaseM>{selectedView}</BaseM>
-        <StyledArrowsIcon />
+        <DoubleArrowsIcon />
       </Selector>
       <Dropdown
         position="full-width"
@@ -47,15 +48,18 @@ export function SidebarViewSelector({ selectedView, setSelectedView }: SidebarVi
 
 const Container = styled.div`
   position: relative;
-  padding-top: 16px;
 `;
 
-const Selector = styled.div`
+const Selector = styled.div<{ isDropdownOpen: boolean }>`
   display: flex;
   justify-content: space-between;
   cursor: pointer;
-`;
+  padding: 8px 12px;
+  align-items: center;
 
-const StyledArrowsIcon = styled(DoubleArrowsIcon)`
-  margin-right: 4px;
+  ${({ isDropdownOpen }) => isDropdownOpen && `background-color: ${colors.faint};`}
+
+  &:hover {
+    background-color: ${colors.faint};
+  }
 `;
