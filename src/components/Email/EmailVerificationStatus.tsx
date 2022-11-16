@@ -122,11 +122,14 @@ function EmailVerificationStatus({ setIsEditMode, queryRef }: Props) {
         );
     }
   }, [resendEmailButton, verificationStatus]);
+
   return (
     <HStack justify="space-between">
       <VStack>
         <BaseM>{savedEmail}</BaseM>
-        <HStack gap={4}>{verificationStatusIndicator}</HStack>
+        <HStack gap={4} align="center">
+          {verificationStatusIndicator}
+        </HStack>
       </VStack>
       <StyledButton variant="secondary" onClick={handleEditClick}>
         EDIT
