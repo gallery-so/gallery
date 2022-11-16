@@ -1,13 +1,13 @@
 import { useCallback, useMemo } from 'react';
 import { graphql, useFragment, usePaginationFragment } from 'react-relay';
 
+import { EmptyState } from '~/components/EmptyState/EmptyState';
 import { useTrackLoadMoreFeedEvents } from '~/components/Feed/analytics';
 import { ITEMS_PER_PAGE } from '~/components/Feed/constants';
 import FeedList from '~/components/Feed/FeedList';
 import { UserActivityFeedFragment$key } from '~/generated/UserActivityFeedFragment.graphql';
 import { UserActivityFeedQueryFragment$key } from '~/generated/UserActivityFeedQueryFragment.graphql';
 import { UserFeedByUserIdPaginationQuery } from '~/generated/UserFeedByUserIdPaginationQuery.graphql';
-import { EmptyState } from '~/components/EmptyState/EmptyState';
 
 type Props = {
   userRef: UserActivityFeedFragment$key;

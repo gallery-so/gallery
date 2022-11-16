@@ -1,16 +1,16 @@
-import { Suspense, useCallback } from 'react';
+import { Suspense } from 'react';
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
+import { HStack } from '~/components/core/Spacer/Stack';
 import { USERS_PER_PAGE } from '~/components/NotificationsModal/constants';
 import { NotificationUserList } from '~/components/NotificationsModal/NotificationUserList/NotificationUserList';
 import { NotificationUserListTitle } from '~/components/NotificationsModal/NotificationUserListTitle';
-import { MODAL_PADDING_PX } from '~/contexts/modal/constants';
-import { NotificationUserListModalQuery } from '~/generated/NotificationUserListModalQuery.graphql';
 import { BackButton } from '~/contexts/globalLayout/GlobalNavbar/BackButton';
-import { HStack } from '~/components/core/Spacer/Stack';
+import { MODAL_PADDING_PX } from '~/contexts/modal/constants';
 import { useModalActions } from '~/contexts/modal/ModalContext';
+import { NotificationUserListModalQuery } from '~/generated/NotificationUserListModalQuery.graphql';
 
 type NotificationUserListModalProps = {
   notificationId: string;
