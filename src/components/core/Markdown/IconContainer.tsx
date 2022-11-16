@@ -1,17 +1,25 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import colors from '../colors';
+
+type Size = 'sm' | 'md' | 'lg';
 
 export default function IconContainer({
   icon,
   className,
+  onClick,
+  size = 'md',
 }: {
+  onClick?: () => void;
   icon: React.ReactElement;
   className?: string;
+  size?: Size;
 }) {
   return (
     <StyledIcon
+      onClick={onClick}
+      size={size}
       className={className}
       onMouseDown={(e) => {
         // This will prevent the textarea from losing focus when user clicks a markdown icon
@@ -23,12 +31,35 @@ export default function IconContainer({
   );
 }
 
-const StyledIcon = styled.div`
+const StyledIcon = styled.div<{ size: Size }>`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   cursor: pointer;
-  height: 24px;
+
+  ${({ size }) => {
+    if (size === 'sm') {
+      return css`
+        height: 24px;
+        width: 24px;
+      `;
+    } else if (size === 'md') {
+      return css`
+        height: 32px;
+        width: 32px;
+      `;
+    } else if (size === 'lg') {
+      return css`
+        height: 40px;
+        width: 40px;
+      `;
+    }
+  }}
+
+  color: ${colors.offBlack};
 
   &:hover {
-    background: ${colors.porcelain};
+    background: ${colors.faint};
   }
 
   &:active {
