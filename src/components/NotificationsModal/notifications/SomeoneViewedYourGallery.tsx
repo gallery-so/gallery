@@ -102,7 +102,7 @@ export function SomeoneViewedYourGallery({
   return (
     <BaseM data-testid={testId}>
       <strong>Someone</strong>
-      <span> has viewed your gallery</span>
+      <span> viewed your gallery</span>
     </BaseM>
   );
 }

@@ -1,4 +1,5 @@
 import { SomeoneAdmiredYourFeedEventFragment$key } from '__generated__/SomeoneAdmiredYourFeedEventFragment.graphql';
+import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
@@ -32,19 +33,36 @@ export function SomeoneAdmiredYourFeedEvent({
 
         feedEvent {
           eventData {
+            ... on CollectorsNoteAddedToTokenFeedEventData {
+              __typename
+              collection {
+                ...CollectionLinkFragment
+              }
+            }
+
             ... on CollectionCreatedFeedEventData {
+              __typename
               collection {
                 ...CollectionLinkFragment
               }
             }
 
             ... on CollectorsNoteAddedToCollectionFeedEventData {
+              __typename
               collection {
                 ...CollectionLinkFragment
               }
             }
 
             ... on TokensAddedToCollectionFeedEventData {
+              __typename
+              collection {
+                ...CollectionLinkFragment
+              }
+            }
+
+            ... on CollectionUpdatedFeedEventData {
+              __typename
               collection {
                 ...CollectionLinkFragment
               }
@@ -66,6 +84,22 @@ export function SomeoneAdmiredYourFeedEvent({
 
   const count = notification.count ?? 1;
   const firstAdmirer = notification.admirers?.edges?.[0]?.node;
+  const eventType = notification.feedEvent?.eventData?.__typename;
+
+  const verb = useMemo(() => {
+    switch (eventType) {
+      case 'CollectionCreatedFeedEventData':
+      case 'TokensAddedToCollectionFeedEventData':
+        return 'admired your additions to';
+      case 'CollectorsNoteAddedToTokenFeedEventData':
+      case 'CollectorsNoteAddedToCollectionFeedEventData':
+        return 'admired your note on';
+      case 'CollectionUpdatedFeedEventData':
+        return 'admired your updates to';
+      default:
+        return 'admired your additions to';
+    }
+  }, [eventType]);
 
   return (
     <BaseM>
@@ -81,13 +115,14 @@ export function SomeoneAdmiredYourFeedEvent({
             )}
           </>
         )}
-      </strong>{' '}
+      </strong>
+      {` ${verb} `}
       {notification.feedEvent?.eventData?.collection ? (
         <>
           <CollectionLink collectionRef={notification.feedEvent.eventData.collection} />
         </>
       ) : (
-        <>admired your additions to one of your collections</>
+        <>your collection</>
       )}
     </BaseM>
   );
