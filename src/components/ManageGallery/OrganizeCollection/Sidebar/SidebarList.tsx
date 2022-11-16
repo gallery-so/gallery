@@ -241,7 +241,7 @@ export function SidebarList({
           <List
             className="SidebarTokenList"
             ref={virtualizedListRef}
-            style={{ outline: 'none', padding: '0 16px' }}
+            style={{ outline: 'none', padding: '0 4px' }}
             rowRenderer={rowRenderer}
             rowCount={rows.length}
             rowHeight={rowHeightCalculator}
@@ -289,6 +289,7 @@ const StyledListTokenContainer = styled.div<{ shouldUseCollectionGrouping: boole
 `;
 
 const Selection = styled.div`
+  padding: 0 12px;
   display: flex;
   grid-gap: ${SIDEBAR_ICON_GAP}px;
 `;

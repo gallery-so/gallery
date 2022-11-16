@@ -78,7 +78,7 @@ const StyledSearchInput = styled.input`
   border: none;
   width: 100%;
   padding: 8px;
-  padding-left: 16px;
+  padding-left: 12px;
   color: ${colors.metal};
   background: ${colors.offWhite};
   height: 36px;
