@@ -118,6 +118,7 @@ export function ProfileDropdown({ queryRef, rightContent }: ProfileDropdownProps
 }
 
 const LogoContainer = styled(HStack)`
+  min-height: 32px;
   cursor: pointer;
   position: relative;
 `;
