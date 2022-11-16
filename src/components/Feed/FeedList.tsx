@@ -60,8 +60,22 @@ export default function FeedList({
     feedEventRefs
   );
 
+  // Keep the current feed data in a ref so we can access it below in the
+  // CellMeasurerCache's keyMapper without having to create a new cache
+  // every time the feed data changes.
+  const feedDataRef = useRef(feedData);
+  feedDataRef.current = feedData;
+
   const measurerCache = useMemo(() => {
     return new CellMeasurerCache({
+      // This is critical to ensure heights aren't cached from the wrong item.
+      // Typically, RV wil use the index of the row as a cache key.
+      // This immediately becomes a problem when we load new content
+      // at the top of the list. e.g. index 0 gets replaced w/ new content
+      // and has a different height than the item preceding it.
+      keyMapper: (rowIndex) => {
+        return feedDataRef.current[feedDataRef.current.length - rowIndex - 1].dbid;
+      },
       defaultHeight: 400,
       fixedWidth: true,
       minHeight: 0,
@@ -151,7 +165,6 @@ export default function FeedList({
 
   useEffect(
     function recalculateHeightsWhenEventsChange() {
-      measurerCache.clearAll();
       virtualizedListRef.current?.recomputeRowHeights();
     },
     [feedData, measurerCache]
