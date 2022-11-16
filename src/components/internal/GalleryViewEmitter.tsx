@@ -23,6 +23,14 @@ function GalleryViewEmitter({ queryRef }: GalleryViewEmitterProps) {
             }
           }
         }
+
+        viewer {
+          ... on Viewer {
+            user {
+              dbid
+            }
+          }
+        }
       }
     `,
     queryRef
@@ -39,6 +47,13 @@ function GalleryViewEmitter({ queryRef }: GalleryViewEmitterProps) {
   const reportError = useReportError();
 
   useEffect(() => {
+    const isLoggedIn = query.viewer?.user?.dbid;
+
+    // skip tracking anonymous views
+    if (!isLoggedIn) {
+      return;
+    }
+
     const galleryId = query.userByUsername?.galleries?.[0]?.dbid;
 
     if (!galleryId) {
@@ -54,7 +69,7 @@ function GalleryViewEmitter({ queryRef }: GalleryViewEmitterProps) {
         );
       }
     });
-  }, [query.userByUsername?.galleries, reportError, viewGallery]);
+  }, [query.userByUsername?.galleries, query.viewer?.user?.dbid, reportError, viewGallery]);
 
   return null;
 }
