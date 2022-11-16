@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -21,6 +21,8 @@ type Props = {
   onEthAddWalletSuccess?: () => void;
   onTezosAddWalletSuccess?: () => void;
 };
+
+const DISABLED_TOGGLE_BY_EMAIL_STATUS = ['Unverified', 'Failed'];
 
 function SettingsModal({
   newAddress,
@@ -130,6 +132,18 @@ function SettingsModal({
     }
   }, [userEmail]);
 
+  const isEmailUnverified = useMemo(() => {
+    return DISABLED_TOGGLE_BY_EMAIL_STATUS.includes(query?.viewer?.email?.verificationStatus ?? '');
+  }, [query]);
+
+  const isToggleChecked = useMemo(() => {
+    // if the user dont have an email or not verified, we want to toggle off
+    if (!userEmail || isEmailUnverified) {
+      return false;
+    }
+    return isEmailNotificationChecked;
+  }, [isEmailNotificationChecked, isEmailUnverified, userEmail]);
+
   return (
     <StyledManageWalletsModal gap={24}>
       <VStack gap={16}>
@@ -140,13 +154,11 @@ function SettingsModal({
             <BaseM>
               Receive weekly recaps that show your most recent admires, comments, and followers.
             </BaseM>
-            {userEmail && (
-              <Toggle
-                checked={isEmailNotificationChecked}
-                isPending={isPending}
-                onChange={toggleEmailNotification}
-              />
-            )}
+            <Toggle
+              checked={isToggleChecked}
+              isPending={isPending || isEmailUnverified}
+              onChange={toggleEmailNotification}
+            />
           </HStack>
         </VStack>
         <StyledButtonContainer>
