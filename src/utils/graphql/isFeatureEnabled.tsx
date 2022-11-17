@@ -25,7 +25,7 @@ const ROLE_FLAGS: Record<Role, Record<FeatureFlag, boolean>> = {
   },
   BETA_TESTER: {
     WHITE_RHINO: true,
-    EMAIL: false,
+    EMAIL: true,
   },
   // The below object is what will be used in the case that the backend deployed
   // something that the frontend doesn't know about
