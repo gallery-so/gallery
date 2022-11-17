@@ -73,7 +73,7 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
     throw new Error('GlobalAnnouncementPopver did not receive gallery of the week winners');
   }
 
-  const { showModal, clearAllModals } = useModalActions();
+  const { showModal, hideModal } = useModalActions();
 
   const isMobile = !useIsDesktopWindowWidth();
 
@@ -82,7 +82,7 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
   const { push } = useRouter();
 
   const handlePrimaryButtonClick = useCallback(() => {
-    clearAllModals();
+    hideModal();
 
     if (isAuthenticated) {
       push({ pathname: '/home' });
@@ -93,7 +93,7 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
       content: <AuthModal queryRef={query} />,
       headerText: 'Create account',
     });
-  }, [isAuthenticated, push, query, showModal]);
+  }, [hideModal, isAuthenticated, push, query, showModal]);
 
   const handleSecondaryButtonClick = useCallback(() => {
     document.getElementById('beautiful-home')?.scrollIntoView({ behavior: 'smooth' });
