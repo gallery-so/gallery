@@ -99,7 +99,7 @@ function Toast({ message, onClose, variant }: Props) {
         )}
         <BaseM>{message}</BaseM>
         <StyledClose onClick={handleClose}>
-          <CloseIcon isActive />
+          <CloseIcon />
         </StyledClose>
       </StyledToast>
     </ToastContainer>
@@ -132,6 +132,7 @@ const StyledClose = styled.button`
   align-items: center;
   margin-left: 8px;
   cursor: pointer;
+  color: ${colors.offBlack};
 
   background: none;
   border: none;

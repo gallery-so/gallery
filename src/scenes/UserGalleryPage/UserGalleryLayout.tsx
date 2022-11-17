@@ -81,6 +81,6 @@ export const StyledUserGalleryLayout = styled(VStack)`
   padding: 0 0 32px;
 
   @media only screen and ${breakpoints.tablet} {
-    padding: 0 0 32px;
+    padding: 24px 0 32px;
   }
 `;

@@ -89,7 +89,7 @@ export function ProfileDropdown({ queryRef, rightContent }: ProfileDropdownProps
     <Wrapper gap={4} align="center">
       {isLoggedIn ? (
         <LogoContainer gap={4} role="button" onClick={handleLoggedInLogoClick}>
-          {isWhiteRhinoEnabled && notificationCount > 0 ? <NotificationsCircle /> : null}
+          {isWhiteRhinoEnabled && notificationCount > 0 ? <StyledNotificationsCircle /> : null}
 
           <HStack gap={2} align="center">
             <GLogo />
@@ -118,7 +118,14 @@ export function ProfileDropdown({ queryRef, rightContent }: ProfileDropdownProps
 }
 
 const LogoContainer = styled(HStack)`
+  min-height: 32px;
   cursor: pointer;
+  position: relative;
+`;
+
+const StyledNotificationsCircle = styled(NotificationsCircle)`
+  position: absolute;
+  left: -6px;
 `;
 
 const Wrapper = styled(HStack)`

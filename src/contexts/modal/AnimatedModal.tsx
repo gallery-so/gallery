@@ -30,6 +30,7 @@ type Props = {
   headerActions?: JSX.Element | false;
   headerText: string;
   headerVariant: ModalPaddingVariant;
+  hideClose?: boolean;
 };
 
 function AnimatedModal({
@@ -42,6 +43,7 @@ function AnimatedModal({
   headerActions,
   headerText,
   headerVariant,
+  hideClose,
 }: Props) {
   useEffect(() => {
     if (!isActive) {
@@ -95,7 +97,9 @@ function AnimatedModal({
               {headerText ? <StyledTitleS>{headerText}</StyledTitleS> : null}
               <StyledModalActions align="center">
                 {headerActions}
-                <DecoratedCloseIcon onClick={hideModal} variant={headerVariant} />
+                {hideClose ? null : (
+                  <DecoratedCloseIcon onClick={hideModal} variant={headerVariant} />
+                )}
               </StyledModalActions>
             </StyledHeader>
             {content}

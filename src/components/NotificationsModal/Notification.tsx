@@ -49,6 +49,14 @@ export function Notification({ notificationRef, queryRef }: NotificationProps) {
           }
         }
 
+        ... on SomeoneViewedYourGalleryNotification {
+          userViewers {
+            pageInfo {
+              total
+            }
+          }
+        }
+
         ... on GroupedNotification {
           count
         }
@@ -88,46 +96,71 @@ export function Notification({ notificationRef, queryRef }: NotificationProps) {
    * instead of a function. Signaling downstream that this notification
    * is not actionable.
    */
-  const handleNotificationClick = useMemo(() => {
+  type NotificationClick =
+    | {
+        handleClick: () => void;
+        showCaret: boolean;
+      }
+    | undefined;
+
+  const handleNotificationClick = useMemo((): NotificationClick => {
+    function showUserListModal() {
+      showModal({
+        content: (
+          <NotificationUserListModal notificationId={notification.id} fullscreen={isMobile} />
+        ),
+        isFullPage: isMobile,
+        hideClose: true,
+        isPaddingDisabled: true,
+        headerVariant: 'standard',
+      });
+    }
+
     if (notification.feedEvent) {
       const username = query.viewer?.user?.username;
       const eventId = notification.feedEvent.dbid;
 
-      return function navigateToUserActivityWithFeedEventAtTop() {
-        if (username && eventId) {
-          push({ pathname: '/[username]/activity', query: { username, eventId } });
-        }
+      return {
+        showCaret: false,
+        handleClick: function navigateToUserActivityWithFeedEventAtTop() {
+          if (username && eventId) {
+            push({ pathname: '/[username]/activity', query: { username, eventId } });
+          }
+        },
       };
+    } else if (notification.__typename === 'SomeoneViewedYourGalleryNotification') {
+      const count = notification.userViewers?.pageInfo?.total ?? 0;
+
+      if (count > 0) {
+        return { handleClick: showUserListModal, showCaret: true };
+      }
+
+      return undefined;
     } else if (notification.count && notification.count > 1) {
-      return function showUserListModal() {
-        showModal({
-          content: (
-            <NotificationUserListModal notificationId={notification.id} fullscreen={isMobile} />
-          ),
-          isFullPage: isMobile,
-          isPaddingDisabled: true,
-          headerVariant: 'standard',
-        });
-      };
+      return { showCaret: true, handleClick: showUserListModal };
     }
 
     return undefined;
   }, [
     isMobile,
+    notification.__typename,
     notification.count,
     notification.feedEvent,
     notification.id,
+    notification.userViewers?.pageInfo?.total,
     push,
     query.viewer?.user?.username,
     showModal,
   ]);
 
   const isClickable = handleNotificationClick != undefined;
+  const handleClick = handleNotificationClick?.handleClick;
+  const showCaret = handleNotificationClick?.showCaret ?? false;
 
   const timeAgo = getTimeSince(notification.updatedTime);
 
   return (
-    <Container isClickable={isClickable} onClick={handleNotificationClick}>
+    <Container isClickable={isClickable} onClick={handleClick}>
       <HStack gap={8} align="center">
         {!notification.seen && (
           <UnseenDotContainer>
@@ -137,7 +170,7 @@ export function Notification({ notificationRef, queryRef }: NotificationProps) {
         <NotificationInner queryRef={query} notificationRef={notification} />
         <HStack grow justify="flex-end" gap={16}>
           <TimeAgoText color={colors.metal}>{timeAgo}</TimeAgoText>
-          {isClickable && <NotificationArrow />}
+          {showCaret && <NotificationArrow />}
         </HStack>
       </HStack>
     </Container>

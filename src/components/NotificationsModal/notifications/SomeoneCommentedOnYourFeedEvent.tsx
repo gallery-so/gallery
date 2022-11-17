@@ -1,4 +1,5 @@
 import { SomeoneCommentedOnYourFeedEventFragment$key } from '__generated__/SomeoneCommentedOnYourFeedEventFragment.graphql';
+import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
@@ -34,18 +35,28 @@ export function SomeoneCommentedOnYourFeedEvent({
         feedEvent {
           eventData {
             ... on CollectionCreatedFeedEventData {
+              __typename
               collection {
                 ...CollectionLinkFragment
               }
             }
 
             ... on CollectorsNoteAddedToCollectionFeedEventData {
+              __typename
               collection {
                 ...CollectionLinkFragment
               }
             }
 
             ... on TokensAddedToCollectionFeedEventData {
+              __typename
+              collection {
+                ...CollectionLinkFragment
+              }
+            }
+
+            ... on CollectionUpdatedFeedEventData {
+              __typename
               collection {
                 ...CollectionLinkFragment
               }
@@ -66,6 +77,25 @@ export function SomeoneCommentedOnYourFeedEvent({
     queryRef
   );
 
+  const eventType = notification.feedEvent?.eventData?.__typename;
+
+  const verb = useMemo(() => {
+    switch (eventType) {
+      case 'CollectionCreatedFeedEventData':
+      case 'TokensAddedToCollectionFeedEventData':
+        return 'commented on your additions to';
+      case 'CollectorsNoteAddedToCollectionFeedEventData':
+        return 'commented on your note on';
+      case 'CollectionUpdatedFeedEventData':
+        return 'commented on your updates to';
+      default:
+        return 'commented on your updates to';
+    }
+  }, [eventType]);
+
+  // @ts-expect-error: property `collection` does not exist on type { readonly __typename: "%other" };
+  const collection = notification.feedEvent?.eventData?.collection;
+
   return (
     <VStack gap={8}>
       <BaseM>
@@ -74,16 +104,10 @@ export function SomeoneCommentedOnYourFeedEvent({
             <HoverCardOnUsername userRef={notification.comment?.commenter} queryRef={query} />
           ) : (
             'Someone'
-          )}{' '}
+          )}
         </strong>
-        {notification.feedEvent?.eventData?.collection ? (
-          <>
-            commented on your additions to{' '}
-            <CollectionLink collectionRef={notification.feedEvent.eventData.collection} />
-          </>
-        ) : (
-          <>commented on your additions to one of your collections</>
-        )}
+        {` ${verb} `}
+        {collection ? <CollectionLink collectionRef={collection} /> : <>your collection</>}
       </BaseM>
 
       <CommentPreviewContainer>

@@ -5,7 +5,7 @@ import breakpoints from '~/components/core/breakpoints';
 import colors from '~/components/core/colors';
 import { BaseS } from '~/components/core/Text/Text';
 
-import { FEED_EVENT_ROW_WIDTH_DESKTOP, FEED_EVENT_ROW_WIDTH_TABLET } from '../dimensions';
+import { FEED_EVENT_ROW_WIDTH_DESKTOP } from '../dimensions';
 
 type StyledEventProps = {
   children: ReactNode;
@@ -22,7 +22,6 @@ export const StyledEvent = ({ children, className, onClick }: StyledEventProps) 
 };
 
 export const StyledInnerEvent = styled.div`
-  max-width: ${FEED_EVENT_ROW_WIDTH_TABLET}px;
   width: 100%;
 
   @media only screen and ${breakpoints.desktop} {
@@ -41,6 +40,10 @@ export const StyledEventWrapper = styled.div`
   padding: 24px 16px;
 
   @media only screen and ${breakpoints.tablet} {
+    padding: 16px 32px;
+  }
+
+  @media only screen and ${breakpoints.desktop} {
     padding: 16px;
   }
 
@@ -59,9 +62,8 @@ export const StyledEventHeader = styled.div`
 
 export const StyledTime = styled(BaseS)`
   color: ${colors.metal};
-  align-self: flex-end;
+  align-self: center;
   display: inline;
-  vertical-align: bottom;
 `;
 
 export const StyledClickHandler = styled.a`

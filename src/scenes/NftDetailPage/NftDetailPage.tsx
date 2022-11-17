@@ -11,6 +11,7 @@ import FullPageLoader from '~/components/core/Loader/FullPageLoader';
 import transitions, {
   ANIMATED_COMPONENT_TRANSLATION_PIXELS_LARGE,
 } from '~/components/core/transitions';
+import GalleryViewEmitter from '~/components/internal/GalleryViewEmitter';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import ErrorBoundary from '~/contexts/boundary/ErrorBoundary';
 import { NftDetailPageQuery } from '~/generated/NftDetailPageQuery.graphql';
@@ -34,7 +35,7 @@ function NftDetailPage({
 }: Props) {
   const query = useLazyLoadQuery<NftDetailPageQuery>(
     graphql`
-      query NftDetailPageQuery($tokenId: DBID!, $collectionId: DBID!) {
+      query NftDetailPageQuery($tokenId: DBID!, $collectionId: DBID!, $username: String!) {
         collectionNft: collectionTokenById(tokenId: $tokenId, collectionId: $collectionId) {
           ... on ErrTokenNotFound {
             __typename
@@ -70,9 +71,11 @@ function NftDetailPage({
             }
           }
         }
+
+        ...GalleryViewEmitterWithSuspenseFragment
       }
     `,
-    { tokenId: initialNftId, collectionId: initialCollectionId }
+    { tokenId: initialNftId, collectionId: initialCollectionId, username }
   );
 
   const { collectionNft: initialCollectionNft, viewer } = query;
@@ -210,6 +213,7 @@ function NftDetailPage({
       <Head>
         <title>{headTitle}</title>
       </Head>
+      <GalleryViewEmitter queryRef={query} />
       <StyledNftDetailPage>
         {prevNft && <NavigationHandle direction={Directions.LEFT} onClick={handlePrevPress} />}
         {mountedNfts.map(({ token, visibility }) => (

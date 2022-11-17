@@ -1,8 +1,8 @@
 import { useCallback, useMemo } from 'react';
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import styled from 'styled-components';
 
+import IconContainer from '~/components/core/Markdown/IconContainer';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useNotificationsModalQuery } from '~/generated/useNotificationsModalQuery.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
@@ -10,7 +10,6 @@ import CogIcon from '~/icons/CogIcon';
 import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 import SettingsModal from '../../scenes/Modals/SettingsModal';
-import colors from '../core/colors';
 import { NotificationsModal } from './NotificationsModal';
 
 export default function useNotificationsModal() {
@@ -39,11 +38,7 @@ export default function useNotificationsModal() {
       });
     };
 
-    return (
-      <StyledCogButton onClick={handleSettingsClick}>
-        <CogIcon />
-      </StyledCogButton>
-    );
+    return <IconContainer onClick={handleSettingsClick} icon={<CogIcon />}></IconContainer>;
   }, [hideModal, showModal, query]);
 
   return useCallback(() => {
@@ -56,18 +51,3 @@ export default function useNotificationsModal() {
     });
   }, [isEmailFeatureEnabled, isMobile, notificationModalActions, showModal]);
 }
-
-const StyledCogButton = styled.button`
-  background: none;
-  border: none;
-  padding: 8px;
-  margin: 0;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  :hover {
-    background-color: ${colors.faint};
-  }
-`;

@@ -5,7 +5,6 @@ import { graphql } from 'relay-runtime';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { AdmireLine } from '~/components/Feed/Socialize/AdmireLine';
 import { CommentLine } from '~/components/Feed/Socialize/CommentLine';
-import { NoteModalOpenerText } from '~/components/Feed/Socialize/NoteModalOpenerText';
 import { RemainingAdmireCount } from '~/components/Feed/Socialize/RemainingAdmireCount';
 import { InteractionsFragment$key } from '~/generated/InteractionsFragment.graphql';
 import { InteractionsQueryFragment$key } from '~/generated/InteractionsQueryFragment.graphql';
@@ -163,15 +162,9 @@ export function Interactions({ eventRef, queryRef, onPotentialLayoutShift }: Pro
   }
 
   if (totalAdmires > 0) {
-    if (totalAdmires === 1) {
-      const [admire] = nonNullAdmires;
+    const [admire] = nonNullAdmires;
 
-      if (admire) {
-        return <AdmireLine admireRef={admire} queryRef={query} />;
-      }
-    }
-
-    return <NoteModalOpenerText eventRef={event}>{totalAdmires} admired this</NoteModalOpenerText>;
+    return <AdmireLine totalAdmires={totalAdmires} admireRef={admire} queryRef={query} />;
   }
 
   return null;
