@@ -13,6 +13,7 @@ import {
 } from '~/contexts/globalLayout/GlobalNavbar/StandardNavbarContainer';
 import { CollectionEditorNavbarFragment$key } from '~/generated/CollectionEditorNavbarFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import unescape from '~/utils/unescape';
 
 import { CollectionSaveButtonWithCaption } from '../CollectionSaveButtonWithCaption';
 
@@ -49,6 +50,8 @@ export function CollectionEditorNavbar({
 
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
+  const collectionName = unescape(query.collectionById?.name ?? '');
+
   const mainContent = useMemo(() => {
     const editGalleryRoute: Route = {
       pathname: '/gallery/[galleryId]/edit',
@@ -60,10 +63,10 @@ export function CollectionEditorNavbar({
         editGalleryRoute={editGalleryRoute}
         rightText="Editing"
         galleryName="My gallery"
-        collectionName={query.collectionById?.name ?? ''}
+        collectionName={collectionName ?? ''}
       />
     );
-  }, [galleryId, query.collectionById?.name]);
+  }, [collectionName, galleryId]);
 
   return (
     <StandardNavbarContainer>
