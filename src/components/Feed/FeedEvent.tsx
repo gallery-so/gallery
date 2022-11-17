@@ -12,6 +12,7 @@ import { FeedEventQueryFragment$key } from '~/generated/FeedEventQueryFragment.g
 import { FeedEventWithErrorBoundaryFragment$key } from '~/generated/FeedEventWithErrorBoundaryFragment.graphql';
 import { FeedEventWithErrorBoundaryQueryFragment$key } from '~/generated/FeedEventWithErrorBoundaryQueryFragment.graphql';
 import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
+import unescape from '~/utils/unescape';
 
 import colors from '../core/colors';
 import CollectionCreatedFeedEvent from './Events/CollectionCreatedFeedEvent';
@@ -85,7 +86,7 @@ function FeedEvent({ eventRef, queryRef, feedMode }: FeedEventProps) {
     case 'CollectionCreatedFeedEventData':
       return (
         <CollectionCreatedFeedEvent
-          caption={event.caption}
+          caption={unescape(event.caption ?? '')}
           eventDataRef={event.eventData}
           queryRef={query}
         />
@@ -99,7 +100,7 @@ function FeedEvent({ eventRef, queryRef, feedMode }: FeedEventProps) {
     case 'TokensAddedToCollectionFeedEventData':
       return (
         <TokensAddedToCollectionFeedEvent
-          caption={event.caption}
+          caption={unescape(event.caption ?? '')}
           eventDataRef={event.eventData}
           queryRef={query}
         />
