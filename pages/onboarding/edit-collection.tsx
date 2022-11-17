@@ -48,9 +48,7 @@ function LazyLoadedCollectionEditorOnboarding({ collectionId }: Props) {
   const stagedCollectionState = useStagedCollectionState();
   const collectionMetadata = useCollectionMetadataState();
 
-  const collectionName = useMemo(() => {
-    return query?.collectionById?.name;
-  }, [query]);
+  const collectionName = query?.collectionById?.name;
 
   const { back, replace, query: urlQuery } = useRouter();
 
