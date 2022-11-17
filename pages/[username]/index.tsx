@@ -3,6 +3,7 @@ import { route } from 'nextjs-routes';
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
+import useVerifyEmailOnPage from '~/components/Email/useVerifyEmailOnPage';
 import GalleryViewEmitter from '~/components/internal/GalleryViewEmitter';
 import { GalleryNavbar } from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavbar';
 import { UsernameQuery } from '~/generated/UsernameQuery.graphql';
@@ -24,11 +25,13 @@ export default function UserGallery({ username }: UserGalleryProps) {
         ...GalleryNavbarFragment
         ...useOpenSettingsModalFragment
         ...GalleryViewEmitterWithSuspenseFragment
+        ...useVerifyEmailOnPageQueryFragment
       }
     `,
     { username }
   );
 
+  useVerifyEmailOnPage(query);
   useOpenSettingsModal(query);
 
   return (
