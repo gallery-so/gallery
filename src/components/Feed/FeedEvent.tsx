@@ -205,14 +205,6 @@ const FeedEventContainer = styled(VStack)`
 
   padding: 24px 16px;
 
-  @media only screen and ${breakpoints.tablet} {
-    padding: 16px 32px;
-  }
-
-  @media only screen and ${breakpoints.desktop} {
-    padding: 16px;
-  }
-
   cursor: pointer;
 
   @media only screen and ${breakpoints.desktop} {
