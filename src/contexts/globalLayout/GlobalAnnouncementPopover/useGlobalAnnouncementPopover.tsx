@@ -70,7 +70,7 @@ export default function useGlobalAnnouncementPopover({
     if (asPath.toLowerCase().includes('/edit')) return true;
     // hide for new users onboarding
     if (asPath.toLowerCase().includes('/onboarding')) return true;
-    // hide for curated for now
+    // hide for curated as they've asked not to display anything else on their page
     if (asPath.toLowerCase().includes('curated')) return true;
 
     return false;
@@ -78,6 +78,9 @@ export default function useGlobalAnnouncementPopover({
 
   useEffect(() => {
     async function handleMount() {
+      // TODO: temp disable popover, even for beta users
+      return;
+
       if (dismissVariant === 'session' && dismissedOnSession) return;
       if (dismissVariant === 'global' && dismissedOnLocalStorage) return;
 
