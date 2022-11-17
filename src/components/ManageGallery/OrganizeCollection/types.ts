@@ -32,4 +32,11 @@ export type Section = {
   items: StagingItem[];
 };
 
+export type SectionWithoutIds = {
+  columns: number;
+  items: Omit<StagingItem, 'id'>[];
+};
+
+export type StagedCollectionWithoutIds = Record<UniqueIdentifier, SectionWithoutIds>;
+
 export type StagedCollection = Record<UniqueIdentifier, Section>;
