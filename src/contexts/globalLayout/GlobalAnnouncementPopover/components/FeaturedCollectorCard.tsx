@@ -75,7 +75,7 @@ export default function FeaturedCollectorCard({
       passHref
     >
       <StyledAnchor target="_blank" rel="noopener noreferrer">
-        <FeaturedCollectorContainer gap={isMobile ? 16 : 32}>
+        <FeaturedCollectorContainer gap={isMobile ? 12 : 22}>
           <FeaturedCollectorHeader gap={8}>
             <DescriptionText>{owner.username}</DescriptionText>
             <FollowButton queryRef={query} userRef={owner} />
@@ -113,9 +113,9 @@ const FeaturedCollectorContainer = styled(VStack)`
   padding: 12px;
 
   @media only screen and ${breakpoints.tablet} {
-    padding: 16px;
+    padding: 22px;
     width: 500px;
-    height: 556px;
+    height: 550px;
   }
 `;
 
@@ -140,8 +140,8 @@ const FeaturedCollectorImageContainer = styled.div`
   height: 146px;
 
   @media only screen and ${breakpoints.tablet} {
-    height: 230px;
-    width: 230px;
+    height: 226px;
+    width: 226px;
   }
 `;
 

@@ -1,21 +1,20 @@
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import SplashImage from 'public/gallery_social_splash.png';
+import SplashImage1 from 'public/gallery_social_splash.png';
+import SplashImage2 from 'public/gallery_social_splash_2.png';
 import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import { FragmentRefs } from 'relay-runtime';
 import styled from 'styled-components';
 
 import { Button } from '~/components/core/Button/Button';
-import TextButton from '~/components/core/Button/TextButton';
 import colors from '~/components/core/colors';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, BODY_FONT_FAMILY, TitleM } from '~/components/core/Text/Text';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { GlobalAnnouncementPopoverFragment$key } from '~/generated/GlobalAnnouncementPopoverFragment.graphql';
 import { AuthModal } from '~/hooks/useAuthModal';
-import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
-import ManageWalletsModal from '~/scenes/Modals/ManageWalletsModal';
+import { useIsDesktopWindowWidth } from '~/hooks/useWindowSize';
 import { removeNullValues } from '~/utils/removeNullValues';
 
 import FeaturedCollectorCard from './components/FeaturedCollectorCard';
@@ -28,11 +27,11 @@ export const FEATURED_COLLECTION_IDS = [
   // flamingoDAO
   '2Gd3Zy9WOKnMMySWkdp8hEIqcaE',
   // DCinvestor
-  '28MSJGusLMDr7XQC5I4vhdLbib2',
-  // iancr
-  '27jw0WEcJfsXFyhC9zIMKV8BPij',
+  '28MVRr0fTeWIJFnOrOzKLBJ9Kn4',
   // Phones
-  '25HD83fNYagiWsN2fhZZxBpIzoF',
+  '2HZ66Wbw3XW3zZWPcO9tDINCmeN',
+  // iancr
+  '26sDkAJhoGgauOFPcd5icLyATJv',
 ];
 
 // NOTE: in order to toggle whether the modal should appear for authenticated users only,
@@ -74,38 +73,27 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
     throw new Error('GlobalAnnouncementPopver did not receive gallery of the week winners');
   }
 
-  const { showModal, clearAllModals } = useModalActions();
+  const { showModal } = useModalActions();
 
-  const isMobile = useIsMobileOrMobileLargeWindowWidth();
+  const isMobile = !useIsDesktopWindowWidth();
 
   const isAuthenticated = Boolean(query.viewer?.user?.id);
 
-  const handleCreateGalleryClick = useCallback(() => {
-    showModal({
-      content: <AuthModal queryRef={query} variant="tezos-announcement" />,
-      headerText: 'Create account',
-    });
-  }, [query, showModal]);
-
   const { push } = useRouter();
 
-  const handleManageWalletsClick = useCallback(() => {
+  const handlePrimaryButtonClick = useCallback(() => {
+    if (isAuthenticated) {
+      push({ pathname: '/home' });
+      return;
+    }
     showModal({
-      content: (
-        <ManageWalletsModal
-          queryRef={query}
-          onTezosAddWalletSuccess={() => {
-            clearAllModals();
-            push({ pathname: '/edit' });
-          }}
-        />
-      ),
-      headerText: 'Manage accounts',
+      content: <AuthModal queryRef={query} />,
+      headerText: 'Create account',
     });
-  }, [clearAllModals, push, query, showModal]);
+  }, [isAuthenticated, push, query, showModal]);
 
-  const handleViewTezosGallerisClick = useCallback(() => {
-    document.getElementById('featured-tezos')?.scrollIntoView({ behavior: 'smooth' });
+  const handleSecondaryButtonClick = useCallback(() => {
+    document.getElementById('beautiful-home')?.scrollIntoView({ behavior: 'smooth' });
   }, []);
 
   // TODO: definitely shouldn't have to do this, but for some reason typescript doesn't understand
@@ -134,160 +122,255 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
         // different sets of components entirely. The alternative would be to litter this file with ternaries
         // and CSS params
         isMobile ? (
-          <>
-            <VStack gap={24} align="center">
-              <MobileHeaderContainer>
-                <VStack gap={24}>
-                  <VStack gap={8} align="center">
-                    <MobileIntroTextContainer>
-                      <MobileIntroText>
-                        Now supporting <i>Tezos</i>
-                      </MobileIntroText>
-                    </MobileIntroTextContainer>
-                    <MobileDescriptionTextContainer>
-                      <BaseM>
-                        Starting today, you can connect your Tezos wallets and display your Tezos
-                        pieces alongside your Ethereum pieces.
-                      </BaseM>
-                    </MobileDescriptionTextContainer>
-                  </VStack>
-                  <MobileButtonContainer>
-                    <VStack gap={16} align="center">
-                      {isAuthenticated ? (
-                        <Button onClick={handleManageWalletsClick}>{BUTTON_TEXT_1}</Button>
-                      ) : (
-                        <Button onClick={handleCreateGalleryClick}>{BUTTON_TEXT_1}</Button>
-                      )}
-                      <TextButton onClick={handleViewTezosGallerisClick} text={BUTTON_TEXT_2} />
-                    </VStack>
-                  </MobileButtonContainer>
-                </VStack>
-              </MobileHeaderContainer>
-
-              <MobileSecondaryHeaderContainer>
-                <VStack gap={12} align="center">
-                  <MobileStyledSecondaryTitle>Featured Tezos Collectors</MobileStyledSecondaryTitle>
-                  <MobileDescriptionTextContainer>
-                    <BaseM>
-                      Discover the depth and diversity of pieces on Tezos by exploring these
-                      galleries curated by our featured collectors.
-                    </BaseM>
-                  </MobileDescriptionTextContainer>
-                </VStack>
-              </MobileSecondaryHeaderContainer>
-              <FeaturedGalleryContainer id="featured-tezos">
-                {collections.map((collection) => (
-                  <FeaturedCollectorCard
-                    key={collection.dbid}
-                    queryRef={query}
-                    collectionRef={collection}
-                  />
-                ))}
-              </FeaturedGalleryContainer>
-            </VStack>
-          </>
-        ) : (
-          <>
-            <VStack gap={80} align="center">
-              <DesktopHeaderContainer>
-                <VStack gap={32}>
-                  <VStack>
-                    <DesktopIntroText>{HEADER_TEXT_1}</DesktopIntroText>
-                    <DesktopIntroText>
+          <MobilePopoverContainer gap={32} align="center">
+            <MobileHeaderContainer>
+              <VStack gap={24}>
+                <VStack gap={16} align="center">
+                  <MobileIntroTextContainer>
+                    <MobileIntroText>{HEADER_TEXT_1}</MobileIntroText>
+                    <MobileIntroText>
                       <i>{HEADER_TEXT_2}</i>
-                    </DesktopIntroText>
+                    </MobileIntroText>
+                  </MobileIntroTextContainer>
+                  <BaseM>
+                    {HEADER_DESC_1} {HEADER_DESC_2}
+                  </BaseM>
+                </VStack>
+                <MobileButtonContainer>
+                  <VStack gap={16} align="center">
+                    <Button onClick={handlePrimaryButtonClick}>{BUTTON_TEXT_1}</Button>
                   </VStack>
-                  <DesktopDescriptionText>
-                    {HEADER_DESC_1} <i>{HEADER_DESC_2}</i>
-                  </DesktopDescriptionText>
-                  <DesktopButtonContainer>
-                    <HStack gap={24}>
-                      {isAuthenticated ? (
-                        <Button onClick={handleManageWalletsClick}>{BUTTON_TEXT_1}</Button>
-                      ) : (
-                        <Button onClick={handleCreateGalleryClick}>{BUTTON_TEXT_1}</Button>
-                      )}
-                      <Button onClick={handleViewTezosGallerisClick} variant="secondary">
-                        {BUTTON_TEXT_2}
-                      </Button>
-                    </HStack>
-                  </DesktopButtonContainer>
+                </MobileButtonContainer>
+              </VStack>
+            </MobileHeaderContainer>
+
+            <Image src={SplashImage1} alt="splash-image" />
+
+            <MobileSecondaryHeaderContainer>
+              <VStack gap={12} align="center">
+                <MobileStyledSecondaryTitle>
+                  Your collection deserves a beautiful home.
+                </MobileStyledSecondaryTitle>
+                <MobileDescriptionTextContainer>
+                  <BaseM>Multi-chain and multi-wallet. Everything you love in one place.</BaseM>
+                </MobileDescriptionTextContainer>
+              </VStack>
+            </MobileSecondaryHeaderContainer>
+
+            <VStack gap={16}>
+              <ValueProp>
+                <BaseM>
+                  <b>Simple and intuitive</b>
+                </BaseM>
+                <BaseM>Create a beautiful page with just a few clicks.</BaseM>
+              </ValueProp>
+              <ValueProp>
+                <BaseM>
+                  <b>Multi-chain</b>
+                </BaseM>
+                <BaseM>
+                  Display Ethereum, Tezos, and POAP NFTs together, with more chains coming soon.
+                </BaseM>
+              </ValueProp>
+              <ValueProp>
+                <BaseM>
+                  <b>Expressive</b>
+                </BaseM>
+                <BaseM>
+                  Your collection has a story – share it the way it was meant to be told.
+                </BaseM>
+              </ValueProp>
+            </VStack>
+
+            <Image src={SplashImage2} alt="splash-image" />
+
+            <MobileSecondaryHeaderContainer>
+              <VStack gap={12} align="center">
+                <MobileStyledSecondaryTitle>Find your people.</MobileStyledSecondaryTitle>
+                <MobileDescriptionTextContainer>
+                  <BaseM>
+                    A creative oasis for curation, connection, and exploration. Focus on the art,
+                    take a break from the noise.
+                  </BaseM>
+                </MobileDescriptionTextContainer>
+              </VStack>
+            </MobileSecondaryHeaderContainer>
+
+            <VStack gap={16}>
+              <ValueProp>
+                <BaseM>
+                  <b>Explorations</b>
+                </BaseM>
+                <BaseM>Discover the communities behind your favorite collections.</BaseM>
+              </ValueProp>
+              <ValueProp>
+                <BaseM>
+                  <b>Connections</b>
+                </BaseM>
+                <BaseM>Follow others based on their taste and stay updated.</BaseM>
+              </ValueProp>
+              <ValueProp>
+                <BaseM>
+                  <b>Conversations</b>
+                </BaseM>
+                <BaseM>Comment on the latest activities from friends.</BaseM>
+              </ValueProp>
+            </VStack>
+
+            <FeaturedGalleryContainer>
+              {collections.map((collection) => (
+                <FeaturedCollectorCard
+                  key={collection.dbid}
+                  queryRef={query}
+                  collectionRef={collection}
+                />
+              ))}
+            </FeaturedGalleryContainer>
+
+            <DesktopFooterContainer gap={16} align="center">
+              <MobileSecondaryHeaderContainer gap={4}>
+                <HStack gap={6} justify="center">
+                  <MobileStyledSecondaryTitle>Welcome to</MobileStyledSecondaryTitle>
+                  <MobileStyledLogo src="/icons/logo-large-2.svg" />
+                </HStack>
+                <BaseM>Share your taste with the world.</BaseM>
+              </MobileSecondaryHeaderContainer>
+              <Button onClick={handlePrimaryButtonClick}>{BUTTON_TEXT_1}</Button>
+            </DesktopFooterContainer>
+          </MobilePopoverContainer>
+        ) : (
+          <DesktopPopoverContainer gap={80} align="center">
+            <DesktopHeaderContainer>
+              <VStack gap={32}>
+                <VStack>
+                  <DesktopIntroText>{HEADER_TEXT_1}</DesktopIntroText>
+                  <DesktopIntroText>
+                    <i>{HEADER_TEXT_2}</i>
+                  </DesktopIntroText>
                 </VStack>
-              </DesktopHeaderContainer>
-
-              <DesktopSplashImageContainer>
-                <Image src={SplashImage} alt="splash-image" />
-              </DesktopSplashImageContainer>
-
-              <DesktopSecondarySectionContainer align="center">
-                <VStack gap={64} align="center">
-                  <DesktopSecondaryHeaderContainer gap={12}>
-                    <DesktopStyledSecondaryTitle>
-                      Your collection deserves a beautiful home.
-                    </DesktopStyledSecondaryTitle>
-                    <DesktopSecondaryDescription>
-                      Multi-chain and multi-wallet. Everything you love in one place.
-                    </DesktopSecondaryDescription>
-                  </DesktopSecondaryHeaderContainer>
-                  <HStack gap={16}>
-                    <ValueProp>
-                      <DesktopSecondaryDescription>
-                        <b>Simple and intuitive</b>
-                      </DesktopSecondaryDescription>
-                      <DesktopSecondaryDescription>
-                        Create a beautiful page with just a few clicks.
-                      </DesktopSecondaryDescription>
-                    </ValueProp>
-                    <ValueProp>
-                      <DesktopSecondaryDescription>
-                        <b>Multi-chain</b>
-                      </DesktopSecondaryDescription>
-                      <DesktopSecondaryDescription>
-                        Display Ethereum, Tezos, and POAP NFTs together, with more chains coming
-                        soon.
-                      </DesktopSecondaryDescription>
-                    </ValueProp>
-                    <ValueProp>
-                      <DesktopSecondaryDescription>
-                        <b>Expressive</b>
-                      </DesktopSecondaryDescription>
-                      <DesktopSecondaryDescription>
-                        Your collection has a story – share it the way it was meant to be told.
-                      </DesktopSecondaryDescription>
-                    </ValueProp>
+                <DesktopDescriptionText>
+                  {HEADER_DESC_1} <i>{HEADER_DESC_2}</i>
+                </DesktopDescriptionText>
+                <DesktopButtonContainer>
+                  <HStack gap={24}>
+                    <Button onClick={handlePrimaryButtonClick}>{BUTTON_TEXT_1}</Button>
+                    <Button onClick={handleSecondaryButtonClick} variant="secondary">
+                      {BUTTON_TEXT_2}
+                    </Button>
                   </HStack>
-                </VStack>
-              </DesktopSecondarySectionContainer>
+                </DesktopButtonContainer>
+              </VStack>
+            </DesktopHeaderContainer>
 
-              <div>Placeholder images</div>
+            <DesktopSplashImageContainer1>
+              <Image src={SplashImage1} alt="splash-image" />
+            </DesktopSplashImageContainer1>
 
-              <DesktopSecondaryHeaderContainer>
-                <VStack gap={12}>
+            <DesktopSecondarySectionContainer align="center" id="beautiful-home">
+              <VStack gap={64} align="center">
+                <DesktopSecondaryHeaderContainer gap={12}>
+                  <DesktopStyledSecondaryTitle>
+                    Your collection deserves a beautiful home.
+                  </DesktopStyledSecondaryTitle>
+                  <DesktopSecondaryDescription>
+                    Multi-chain and multi-wallet. Everything you love in one place.
+                  </DesktopSecondaryDescription>
+                </DesktopSecondaryHeaderContainer>
+                <HStack gap={16}>
+                  <ValueProp>
+                    <DesktopSecondaryDescription>
+                      <b>Simple and intuitive</b>
+                    </DesktopSecondaryDescription>
+                    <DesktopSecondaryDescription>
+                      Create a beautiful page with just a few clicks.
+                    </DesktopSecondaryDescription>
+                  </ValueProp>
+                  <ValueProp>
+                    <DesktopSecondaryDescription>
+                      <b>Multi-chain</b>
+                    </DesktopSecondaryDescription>
+                    <DesktopSecondaryDescription>
+                      Display Ethereum, Tezos, and POAP NFTs together, with more chains coming soon.
+                    </DesktopSecondaryDescription>
+                  </ValueProp>
+                  <ValueProp>
+                    <DesktopSecondaryDescription>
+                      <b>Expressive</b>
+                    </DesktopSecondaryDescription>
+                    <DesktopSecondaryDescription>
+                      Your collection has a story – share it the way it was meant to be told.
+                    </DesktopSecondaryDescription>
+                  </ValueProp>
+                </HStack>
+              </VStack>
+            </DesktopSecondarySectionContainer>
+
+            <DesktopSplashImageContainer2>
+              <Image src={SplashImage2} alt="splash-image" />
+            </DesktopSplashImageContainer2>
+
+            <DesktopSecondarySectionContainer align="center">
+              <VStack gap={64} align="center">
+                <DesktopSecondaryHeaderContainer gap={12}>
                   <DesktopStyledSecondaryTitle>Find your people.</DesktopStyledSecondaryTitle>
-                  <DesktopDescriptionText>
+                  <DesktopSecondaryDescription>
                     A creative oasis for curation, connection and exploration. Focus on the art,
                     take a break from the noise.
-                  </DesktopDescriptionText>
-                  <DesktopDescriptionText>
-                    <ul>
-                      <li>Explore the communities behind your favorite collections.</li>
-                      <li>Connect with other collectors who you vibe with.</li>
-                      <li>Join conversations around the work you love.</li>
-                    </ul>
-                  </DesktopDescriptionText>
-                </VStack>
+                  </DesktopSecondaryDescription>
+                </DesktopSecondaryHeaderContainer>
+
+                <HStack gap={16}>
+                  <ValueProp>
+                    <DesktopSecondaryDescription>
+                      <b>Explorations</b>
+                    </DesktopSecondaryDescription>
+                    <DesktopSecondaryDescription>
+                      Discover the communities behind your favorite collections.
+                    </DesktopSecondaryDescription>
+                  </ValueProp>
+                  <ValueProp>
+                    <DesktopSecondaryDescription>
+                      <b>Connections</b>
+                    </DesktopSecondaryDescription>
+                    <DesktopSecondaryDescription>
+                      Follow others based on their taste and stay updated.
+                    </DesktopSecondaryDescription>
+                  </ValueProp>
+                  <ValueProp>
+                    <DesktopSecondaryDescription>
+                      <b>Conversations</b>
+                    </DesktopSecondaryDescription>
+                    <DesktopSecondaryDescription>
+                      Comment on the latest activities from friends.
+                    </DesktopSecondaryDescription>
+                  </ValueProp>
+                </HStack>
+              </VStack>
+            </DesktopSecondarySectionContainer>
+
+            <FeaturedGalleryContainer>
+              {collections.map((collection) => (
+                <FeaturedCollectorCard
+                  key={collection.dbid}
+                  queryRef={query}
+                  collectionRef={collection}
+                />
+              ))}
+            </FeaturedGalleryContainer>
+
+            <DesktopFooterContainer gap={32} align="center">
+              <DesktopSecondaryHeaderContainer gap={12}>
+                <HStack gap={12} justify="center">
+                  <DesktopStyledSecondaryTitle>Welcome to</DesktopStyledSecondaryTitle>
+                  <DesktopStyledLogo src="/icons/logo-large-2.svg" />
+                </HStack>
+                <DesktopSecondaryDescription>
+                  Share your taste with the world.
+                </DesktopSecondaryDescription>
               </DesktopSecondaryHeaderContainer>
-              <FeaturedGalleryContainer id="featured-tezos">
-                {collections.map((collection) => (
-                  <FeaturedCollectorCard
-                    key={collection.dbid}
-                    queryRef={query}
-                    collectionRef={collection}
-                  />
-                ))}
-              </FeaturedGalleryContainer>
-            </VStack>
-          </>
+              <Button onClick={handlePrimaryButtonClick}>{BUTTON_TEXT_1}</Button>
+            </DesktopFooterContainer>
+          </DesktopPopoverContainer>
         )
       }
     </StyledGlobalAnnouncementPopover>
@@ -299,24 +382,24 @@ const StyledGlobalAnnouncementPopover = styled.div`
   flex-direction: column;
   align-items: center;
   background: ${colors.white};
-  padding: 80px;
 
   min-height: 100vh;
-
-  button {
-    width: 130px;
-  }
 `;
 
 ////////////////////////// MOBILE //////////////////////////
+const MobilePopoverContainer = styled(VStack)`
+  padding: 80px 16px;
+`;
+
 const MobileHeaderContainer = styled.div`
+  max-width: 343px;
+
   display: flex;
   flex-direction: column;
   align-items: center;
 `;
 
-const MobileIntroTextContainer = styled.div`
-  width: 245px;
+const MobileIntroTextContainer = styled(VStack)`
   text-align: center;
 `;
 
@@ -347,13 +430,25 @@ const MobileStyledSecondaryTitle = styled.span`
   letter-spacing: -0.05em;
 `;
 
-const MobileSecondaryHeaderContainer = styled.div`
-  display: flex;
-  flex-direction: column;
+const MobileSecondaryHeaderContainer = styled(VStack)`
   align-items: center;
 `;
 
+const MobileStyledLogo = styled.img`
+  height: 24px;
+`;
+
 ////////////////////////// DESKTOP //////////////////////////
+const DesktopPopoverContainer = styled(VStack)`
+  padding: 80px;
+
+  button {
+    font-size: 18px;
+    width: 190px;
+    height: 48px;
+  }
+`;
+
 const DesktopDescriptionText = styled(TitleM)`
   font-style: normal;
 `;
@@ -380,8 +475,12 @@ const DesktopButtonContainer = styled.div`
   justify-content: center;
 `;
 
-const DesktopSplashImageContainer = styled.div`
+const DesktopSplashImageContainer1 = styled.div`
   max-width: 1000px;
+`;
+
+const DesktopSplashImageContainer2 = styled.div`
+  max-width: 1200px;
 `;
 
 const DesktopSecondarySectionContainer = styled(VStack)`
@@ -418,4 +517,13 @@ const FeaturedGalleryContainer = styled.div`
   flex-wrap: wrap;
   grid-gap: 24px;
   max-width: 1040px;
+`;
+
+const DesktopFooterContainer = styled(VStack)`
+  text-align: center;
+  padding-bottom: 30px;
+`;
+
+const DesktopStyledLogo = styled.img`
+  height: 70px;
 `;

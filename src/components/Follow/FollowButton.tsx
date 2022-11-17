@@ -77,7 +77,7 @@ export default function FollowButton({ queryRef, userRef }: Props) {
 
     const optimisticNewFollowersList = [{ id: loggedInUserId }, ...user.followers];
     await followUser(user.dbid, optimisticNewFollowersList, user.following);
-    pushToast({ message: `You have followed ${user.username}.` });
+    pushToast({ message: `You followed ${user.username}.` });
   }, [loggedInUserId, user, track, followUser, pushToast, showAuthModal]);
 
   const handleUnfollowClick = useCallback(async () => {
@@ -88,7 +88,7 @@ export default function FollowButton({ queryRef, userRef }: Props) {
       (follower: { id: string } | null) => follower?.id !== loggedInUserId
     );
     await unfollowUser(user.dbid, optimisticNewFollowersList, user.following);
-    pushToast({ message: `You have unfollowed ${user.username}.` });
+    pushToast({ message: `You unfollowed ${user.username}.` });
   }, [user, track, unfollowUser, pushToast, loggedInUserId]);
 
   const isAuthenticatedUsersPage = loggedInUserId === user?.id;
