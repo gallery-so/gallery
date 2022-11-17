@@ -108,8 +108,8 @@ const FeaturedCollectorContainer = styled(VStack)`
     border-color: ${colors.offBlack};
   }
 
-  width: 343px;
-  height: 343px;
+  width: 320px;
+  height: 364px;
   padding: 12px;
 
   @media only screen and ${breakpoints.tablet} {
@@ -136,8 +136,8 @@ const FeaturedCollectorImageContainer = styled.div`
   justify-content: center;
   align-items: center;
 
-  // width: 116px;
-  // height: 116px;
+  width: 146px;
+  height: 146px;
 
   @media only screen and ${breakpoints.tablet} {
     height: 230px;
