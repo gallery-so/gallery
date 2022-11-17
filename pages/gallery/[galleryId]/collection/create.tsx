@@ -16,6 +16,7 @@ import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext'
 import { CollectionCreateNavbar } from '~/contexts/globalLayout/GlobalNavbar/CollectionCreateNavbar/CollectionCreateNavbar';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useCanGoBack } from '~/contexts/navigation/GalleryNavigationProvider';
+import { useToastActions } from '~/contexts/toast/ToastContext';
 import CollectionWizardContext from '~/contexts/wizard/CollectionWizardContext';
 import formatError from '~/errors/formatError';
 import { createCollectionQuery } from '~/generated/createCollectionQuery.graphql';
@@ -41,6 +42,7 @@ function LazyLoadedCollectionEditor({ galleryId }: Props) {
 
   const track = useTrack();
   const reportError = useReportError();
+  const { pushToast } = useToastActions();
   const [generalError, setGeneralError] = useState('');
 
   const [collectionTitle, setCollectionTitle] = useState('');
@@ -89,6 +91,9 @@ function LazyLoadedCollectionEditor({ galleryId }: Props) {
           response.createCollection.collection
         ) {
           push(editGalleryUrl);
+          pushToast({
+            message: `“${title || 'Collection'}” has been saved`,
+          });
         }
       } catch (error) {
         if (error instanceof Error) {
@@ -113,6 +118,7 @@ function LazyLoadedCollectionEditor({ galleryId }: Props) {
       editGalleryUrl,
       galleryId,
       push,
+      pushToast,
       reportError,
       stagedCollectionState,
       track,
