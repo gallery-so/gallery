@@ -8,7 +8,6 @@ import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleS } from '~/components/core/Text/Text';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { FollowListUsersFragment$key } from '~/generated/FollowListUsersFragment.graphql';
-import { getFirstLine } from '~/utils/getFirstLine';
 
 type Props = {
   userRefs: FollowListUsersFragment$key;
@@ -41,7 +40,7 @@ export default function FollowListUsers({
       {users.map((user) => (
         <StyledListItem key={user.dbid} href={`/${user.username}`} onClick={handleClick}>
           <TitleS>{user.username}</TitleS>
-          <BaseM>{user.bio && <Markdown text={getFirstLine(user.bio)} />}</BaseM>
+          <StyledBaseM>{user.bio && <Markdown text={user.bio} />}</StyledBaseM>
         </StyledListItem>
       ))}
       {users.length === 0 && (
@@ -52,6 +51,17 @@ export default function FollowListUsers({
     </StyledList>
   );
 }
+
+const StyledBaseM = styled(BaseM)`
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+
+  p {
+    padding-bottom: 0;
+  }
+`;
 
 const StyledList = styled.div`
   display: flex;
@@ -64,13 +74,6 @@ const StyledListItem = styled.a`
 
   &:hover {
     background: ${colors.offWhite};
-  }
-
-  // truncate bios
-  p {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
   }
 `;
 
