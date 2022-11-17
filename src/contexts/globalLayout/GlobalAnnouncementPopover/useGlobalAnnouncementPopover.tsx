@@ -81,6 +81,12 @@ export default function useGlobalAnnouncementPopover({
       if (dismissVariant === 'session' && dismissedOnSession) return;
       if (dismissVariant === 'global' && dismissedOnLocalStorage) return;
 
+      // Ensure we don't show the modal if the user is just about to get redirected
+      // I'm so sorry if you're reading this...
+      if (isAuthenticated && asPath === '/') {
+        return;
+      }
+
       if (authRequired && !isAuthenticated) return;
 
       if (shouldHidePopoverOnCurrentPath) return;
