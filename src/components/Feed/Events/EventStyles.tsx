@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import colors from '~/components/core/colors';
+import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseS } from '~/components/core/Text/Text';
 
 import { FEED_EVENT_ROW_WIDTH_DESKTOP } from '../dimensions';
@@ -70,4 +71,9 @@ export const StyledClickHandler = styled.a`
   display: flex;
   flex-direction: column;
   text-decoration: none;
+`;
+
+export const StyledEventContent = styled(VStack)<{ hasCaption?: boolean }>`
+  background-color: ${({ hasCaption }) => (hasCaption ? colors.offWhite : 'transparent')};
+  padding: 12px;
 `;

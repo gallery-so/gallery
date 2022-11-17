@@ -18,7 +18,7 @@ import unescape from '~/utils/unescape';
 
 import { MAX_PIECES_DISPLAYED_PER_FEED_EVENT } from '../constants';
 import FeedEventTokenPreviews, { TokenToPreview } from '../FeedEventTokenPreviews';
-import { StyledEvent, StyledEventHeader, StyledTime } from './EventStyles';
+import { StyledEvent, StyledEventContent, StyledEventHeader, StyledTime } from './EventStyles';
 
 type Props = {
   caption: string | null;
@@ -111,21 +111,23 @@ export default function CollectionCreatedFeedEvent({ caption, eventDataRef, quer
                   <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
                 </HStack>
               </StyledEventHeaderContainer>
-              {caption && (
-                <StyledCaptionContainer gap={8} align="center">
-                  <BaseS>{caption}</BaseS>
-                </StyledCaptionContainer>
-              )}
             </VStack>
           </StyledEventHeader>
-          <VStack gap={8}>
-            <FeedEventTokenPreviews tokensToPreview={tokensToPreview} />
-            {showAdditionalPiecesIndicator && (
-              <StyledAdditionalPieces>
-                +{numAdditionalPieces} more {pluralize(numAdditionalPieces, 'piece')}
-              </StyledAdditionalPieces>
+          <StyledEventContent gap={16} hasCaption={Boolean(caption)}>
+            {caption && (
+              <StyledCaptionContainer gap={8} align="center">
+                <BaseM>{caption}</BaseM>
+              </StyledCaptionContainer>
             )}
-          </VStack>
+            <VStack gap={8}>
+              <FeedEventTokenPreviews tokensToPreview={tokensToPreview} />
+              {showAdditionalPiecesIndicator && (
+                <StyledAdditionalPieces>
+                  +{numAdditionalPieces} more {pluralize(numAdditionalPieces, 'piece')}
+                </StyledAdditionalPieces>
+              )}
+            </VStack>
+          </StyledEventContent>
         </VStack>
       </StyledEvent>
     </UnstyledLink>
