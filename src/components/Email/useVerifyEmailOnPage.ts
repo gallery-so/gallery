@@ -16,6 +16,9 @@ export default function useVerifyEmailOnPage(queryRef: useVerifyEmailOnPageQuery
       fragment useVerifyEmailOnPageQueryFragment on Query {
         viewer {
           ... on Viewer {
+            user {
+              dbid
+            }
             email {
               verificationStatus
             }
@@ -38,9 +41,14 @@ export default function useVerifyEmailOnPage(queryRef: useVerifyEmailOnPageQuery
 
   useEffect(() => {
     if (!isEmailFeatureEnabled) return;
+    const isLoggedIn = query.viewer?.user?.dbid;
 
-    // If the user is already verified, we don't need to do anything
-    if (verifyEmail && FAILED_EMAIL_VERIFICATION_STATUS.includes(verificationStatus ?? '')) {
+    // Verify email address if verificationStatus is not in the verified state
+    // OR there is no viewer, because we allow verification without signing in
+    if (
+      verifyEmail &&
+      (FAILED_EMAIL_VERIFICATION_STATUS.includes(verificationStatus ?? '') || !isLoggedIn)
+    ) {
       verifyEmailActivation(verifyEmail as string);
     }
 
@@ -56,5 +64,6 @@ export default function useVerifyEmailOnPage(queryRef: useVerifyEmailOnPageQuery
     verifyEmail,
     verificationStatus,
     verifyEmailActivation,
+    query.viewer,
   ]);
 }
