@@ -10,7 +10,7 @@ import styled from 'styled-components';
 import { Button } from '~/components/core/Button/Button';
 import colors from '~/components/core/colors';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
-import { BaseM, BODY_FONT_FAMILY, TitleM } from '~/components/core/Text/Text';
+import { BaseM, BODY_FONT_FAMILY } from '~/components/core/Text/Text';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { GlobalAnnouncementPopoverFragment$key } from '~/generated/GlobalAnnouncementPopoverFragment.graphql';
 import { AuthModal } from '~/hooks/useAuthModal';
