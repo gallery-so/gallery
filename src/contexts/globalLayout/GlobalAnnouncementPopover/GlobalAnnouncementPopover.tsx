@@ -1,4 +1,6 @@
+import Image from 'next/image';
 import { useRouter } from 'next/router';
+import SplashImage from 'public/gallery_social_splash.png';
 import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import { FragmentRefs } from 'relay-runtime';
@@ -8,7 +10,7 @@ import { Button } from '~/components/core/Button/Button';
 import TextButton from '~/components/core/Button/TextButton';
 import colors from '~/components/core/colors';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
-import { BaseM, TitleM } from '~/components/core/Text/Text';
+import { BaseM, BODY_FONT_FAMILY, TitleM } from '~/components/core/Text/Text';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { GlobalAnnouncementPopoverFragment$key } from '~/generated/GlobalAnnouncementPopoverFragment.graphql';
 import { AuthModal } from '~/hooks/useAuthModal';
@@ -186,7 +188,7 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
           </>
         ) : (
           <>
-            <VStack gap={92} align="center">
+            <VStack gap={80} align="center">
               <DesktopHeaderContainer>
                 <VStack gap={32}>
                   <VStack>
@@ -213,28 +215,49 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
                 </VStack>
               </DesktopHeaderContainer>
 
-              <div>Placeholder splash image</div>
+              <DesktopSplashImageContainer>
+                <Image src={SplashImage} alt="splash-image" />
+              </DesktopSplashImageContainer>
 
-              <DesktopSecondaryHeaderContainer>
-                <VStack gap={12}>
-                  <DesktopStyledSecondaryTitle>
-                    Bring your imagination, we’ll handle the rest.
-                  </DesktopStyledSecondaryTitle>
-                  <DesktopDescriptionText>
-                    Multi-chain and multi-wallet. Everything you love in one place.
-                  </DesktopDescriptionText>
-                  <DesktopDescriptionText>
-                    <ul>
-                      <li>
-                        Your collection has a story, we help you tell it — put together a beautiful
-                        and intuitive canvas with just a few clicks.
-                      </li>
-                      <li>Everything you love displayed exactly how it was meant to be seen.</li>
-                      <li>Support for Ethereum, Tezos, and POAPs, with more chains coming soon.</li>
-                    </ul>
-                  </DesktopDescriptionText>
+              <DesktopSecondarySectionContainer align="center">
+                <VStack gap={64} align="center">
+                  <DesktopSecondaryHeaderContainer gap={12}>
+                    <DesktopStyledSecondaryTitle>
+                      Your collection deserves a beautiful home.
+                    </DesktopStyledSecondaryTitle>
+                    <DesktopSecondaryDescription>
+                      Multi-chain and multi-wallet. Everything you love in one place.
+                    </DesktopSecondaryDescription>
+                  </DesktopSecondaryHeaderContainer>
+                  <HStack gap={16}>
+                    <ValueProp>
+                      <DesktopSecondaryDescription>
+                        <b>Simple and intuitive</b>
+                      </DesktopSecondaryDescription>
+                      <DesktopSecondaryDescription>
+                        Create a beautiful page with just a few clicks.
+                      </DesktopSecondaryDescription>
+                    </ValueProp>
+                    <ValueProp>
+                      <DesktopSecondaryDescription>
+                        <b>Multi-chain</b>
+                      </DesktopSecondaryDescription>
+                      <DesktopSecondaryDescription>
+                        Display Ethereum, Tezos, and POAP NFTs together, with more chains coming
+                        soon.
+                      </DesktopSecondaryDescription>
+                    </ValueProp>
+                    <ValueProp>
+                      <DesktopSecondaryDescription>
+                        <b>Expressive</b>
+                      </DesktopSecondaryDescription>
+                      <DesktopSecondaryDescription>
+                        Your collection has a story – share it the way it was meant to be told.
+                      </DesktopSecondaryDescription>
+                    </ValueProp>
+                  </HStack>
                 </VStack>
-              </DesktopSecondaryHeaderContainer>
+              </DesktopSecondarySectionContainer>
 
               <div>Placeholder images</div>
 
@@ -276,7 +299,7 @@ const StyledGlobalAnnouncementPopover = styled.div`
   flex-direction: column;
   align-items: center;
   background: ${colors.white};
-  padding: 92px 16px;
+  padding: 80px;
 
   min-height: 100vh;
 
@@ -357,17 +380,36 @@ const DesktopButtonContainer = styled.div`
   justify-content: center;
 `;
 
-const DesktopSecondaryHeaderContainer = styled.div`
-  width: 661px;
+const DesktopSplashImageContainer = styled.div`
+  max-width: 1000px;
+`;
+
+const DesktopSecondarySectionContainer = styled(VStack)`
   text-align: center;
+`;
+
+const DesktopSecondaryHeaderContainer = styled(VStack)`
+  width: 660px;
 `;
 
 const DesktopStyledSecondaryTitle = styled.span`
   // TODO [GAL-273]: once we've defined marketing-specific font families, standardize this in Text.tsx
   font-family: 'GT Alpina Condensed';
-  font-size: 42px;
-  line-height: 48px;
+  font-size: 72px;
+  line-height: 64px;
   letter-spacing: -0.05em;
+`;
+
+const DesktopSecondaryDescription = styled.span`
+  font-family: ${BODY_FONT_FAMILY};
+  font-size: 24px;
+  line-height: 28px;
+  letter-spacing: -0.03em;
+`;
+
+const ValueProp = styled(VStack)`
+  width: 344px;
+  text-align: left;
 `;
 
 const FeaturedGalleryContainer = styled.div`
