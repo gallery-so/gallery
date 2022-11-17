@@ -4,6 +4,7 @@ import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import { HStack } from '~/components/core/Spacer/Stack';
+import { TitleDiatypeM } from '~/components/core/Text/Text';
 import { USERS_PER_PAGE } from '~/components/NotificationsModal/constants';
 import { NotificationUserList } from '~/components/NotificationsModal/NotificationUserList/NotificationUserList';
 import { NotificationUserListTitle } from '~/components/NotificationsModal/NotificationUserListTitle';
@@ -41,11 +42,11 @@ export function NotificationUserListModal({
       <StyledHeader>
         <HStack align="center" gap={8}>
           <BackButton onClick={hideModal} />
-          <Suspense fallback={null}>
-            <ModalTitle>
+          <ModalTitle>
+            <Suspense fallback={<TitleDiatypeM>...</TitleDiatypeM>}>
               <NotificationUserListTitle queryRef={query} />
-            </ModalTitle>
-          </Suspense>
+            </Suspense>
+          </ModalTitle>
         </HStack>
       </StyledHeader>
 
