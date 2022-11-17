@@ -124,7 +124,7 @@ function CollectionEditor({ queryRef, onValidChange, onHasUnsavedChange }: Props
   );
 
   // Check if the collection has unsaved changes
-  const lastStagedCollection = useRef({});
+  const initialStagedCollection = useRef({});
   const isStagedCollectionInitialized = useRef(false);
 
   // Initialize the lastStagedCollection ref
@@ -133,16 +133,15 @@ function CollectionEditor({ queryRef, onValidChange, onHasUnsavedChange }: Props
       return;
     }
 
-    lastStagedCollection.current = formatStagedCollection(stagedCollectionState);
-
     isStagedCollectionInitialized.current = true;
+    initialStagedCollection.current = formatStagedCollection(stagedCollectionState);
   }, [stagedCollectionState]);
 
   useEffect(() => {
     const formattedStagedCollection = formatStagedCollection(stagedCollectionState);
 
     if (
-      JSON.stringify(formattedStagedCollection) !== JSON.stringify(lastStagedCollection.current)
+      JSON.stringify(formattedStagedCollection) !== JSON.stringify(initialStagedCollection.current)
     ) {
       onHasUnsavedChange(true);
       return;

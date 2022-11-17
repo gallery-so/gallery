@@ -1,24 +1,26 @@
-import { StagedCollection } from '../types';
+import { SectionWithoutIds, StagedCollection, StagedCollectionWithoutIds } from '../types';
 
 // Clone the staged collection without staged token id
-export function formatStagedCollection(stagedCollection: StagedCollection) {
-  const firstCollectionKey = Object.keys(stagedCollection)[0];
+export function formatStagedCollection(
+  stagedCollection: StagedCollection
+): StagedCollectionWithoutIds {
+  const cloned: StagedCollectionWithoutIds = {};
 
-  if (!firstCollectionKey) {
-    return [];
+  for (const sectionKey in stagedCollection) {
+    const section = stagedCollection[sectionKey];
+
+    // Removed id key from items
+    const formattedItems: SectionWithoutIds['items'] = section.items.map((item) => {
+      const { id, ...rest } = item;
+
+      return rest;
+    });
+
+    cloned[sectionKey] = {
+      ...section,
+      items: formattedItems,
+    };
   }
 
-  const formattedStagedCollection = stagedCollection[firstCollectionKey];
-
-  // Removed id key from items
-  const formattedItems = formattedStagedCollection.items.map((item) => {
-    const { id, ...rest } = item;
-
-    return rest;
-  });
-
-  return {
-    ...formattedStagedCollection,
-    items: formattedItems,
-  };
+  return cloned;
 }
