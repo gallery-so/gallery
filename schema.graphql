@@ -1433,6 +1433,7 @@ type Mutation {
 
     updateNotificationSettings(settings: NotificationSettingsInput): NotificationSettings
 
+
     preverifyEmail(input: PreverifyEmailInput!): PreverifyEmailPayloadOrError
     verifyEmail(input: VerifyEmailInput!): VerifyEmailPayloadOrError
 
