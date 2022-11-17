@@ -9,7 +9,6 @@ import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import ErrorText from '~/components/core/Text/ErrorText';
 import { TextAreaWithCharCount } from '~/components/core/TextArea/TextArea';
 import transitions, {
-  ANIMATED_COMPONENT_TRANSITION_MS,
   ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL,
 } from '~/components/core/transitions';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
@@ -44,7 +43,6 @@ export function CollectionSaveButtonWithCaption({
 
   // Pseudo-state for signaling animations. This gives us a chance
   // to display an animation prior to unmounting the component and its contents
-  const [isActive, setIsActive] = useState(false);
   const [isPopupDisplayed, setIsPopupDisplayed] = useState(false);
   const track = useTrack();
 
@@ -54,10 +52,6 @@ export function CollectionSaveButtonWithCaption({
   const isWhiteRhinoEnabled = isFeatureEnabled(FeatureFlag.WHITE_RHINO, query);
 
   const handleCloseCaption = useCallback(() => {
-    deactivateHoverCardTimeoutRef.current = setTimeout(
-      () => setIsActive(false),
-      ANIMATED_COMPONENT_TRANSITION_MS
-    );
     setIsPopupDisplayed(false);
   }, []);
 
@@ -85,7 +79,6 @@ export function CollectionSaveButtonWithCaption({
     if (deactivateHoverCardTimeoutRef.current) {
       clearTimeout(deactivateHoverCardTimeoutRef.current);
     }
-    setIsActive(true);
     setIsPopupDisplayed(true);
   }, [handleSubmit, isWhiteRhinoEnabled]);
 
@@ -110,27 +103,25 @@ export function CollectionSaveButtonWithCaption({
       {/* Used to hijack click events on things outside of the caption area */}
       {isPopupDisplayed && <Backdrop onClick={handleCloseCaption} />}
 
-      {isActive && (
-        <StyledCardContainer gap={hasUnsavedChange ? 12 : 24} isActive={isPopupDisplayed}>
-          <VStack gap={12}>
-            <TextAreaWithCharCount
-              currentCharCount={caption.length}
-              maxCharCount={600}
-              onChange={handleCaptionChange}
-              hasPadding
-              defaultValue={caption}
-              placeholder="Add an optional note..."
-              textAreaHeight="80px"
-            />
+      <StyledCardContainer gap={hasUnsavedChange ? 12 : 24} isActive={isPopupDisplayed}>
+        <VStack gap={12}>
+          <TextAreaWithCharCount
+            currentCharCount={caption.length}
+            maxCharCount={600}
+            onChange={handleCaptionChange}
+            hasPadding
+            defaultValue={caption}
+            placeholder="Add an optional note..."
+            textAreaHeight="80px"
+          />
 
-            <Button onClick={handleSubmit} disabled={isSaveDisabled} pending={isLoading}>
-              Save
-            </Button>
+          <Button onClick={handleSubmit} disabled={isSaveDisabled} pending={isLoading}>
+            Save
+          </Button>
 
-            {error && <ErrorText message={error} />}
-          </VStack>
-        </StyledCardContainer>
-      )}
+          {error && <ErrorText message={error} />}
+        </VStack>
+      </StyledCardContainer>
     </StyledConfirmationContainer>
   );
 }
@@ -158,6 +149,8 @@ const StyledCardContainer = styled(VStack)<{ isActive: boolean }>`
   transform: ${({ isActive }) =>
     `translateY(${isActive ? 0 : ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL}px)`};
   opacity: ${({ isActive }) => (isActive ? 1 : 0)};
+  pointer-events: ${({ isActive }) => (isActive ? 'all' : 'none')};
+  transition: transform 250ms ease-out, opacity 250ms linear;
 `;
 
 const Backdrop = styled.div`
