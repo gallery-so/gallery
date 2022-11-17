@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
@@ -62,6 +62,10 @@ export function FeedLeftContent({ queryRef }: FeedLeftContentProps) {
     return 0;
   }, [query.viewer]);
 
+  const handleContainerClick = useCallback(() => {
+    setShowDropdown(true);
+  }, []);
+
   if (!isLoggedIn) {
     return (
       <Link href={{ pathname: '/' }}>
@@ -74,17 +78,14 @@ export function FeedLeftContent({ queryRef }: FeedLeftContentProps) {
 
   const isWhiteRhinoEnabled = isFeatureEnabled(FeatureFlag.WHITE_RHINO, query);
 
-  return (
-    <HStack
-      gap={4}
-      align="center"
-      role="button"
-      style={{ position: 'relative', cursor: 'pointer' }}
-      onClick={() => setShowDropdown(true)}
-    >
-      {isWhiteRhinoEnabled && notificationCount > 0 ? <NotificationsCircle /> : null}
+  const showNotifications = Boolean(isWhiteRhinoEnabled && notificationCount > 0);
 
-      <HomeText>Home</HomeText>
+  return (
+    <Container gap={4} align="center" role="button" onClick={handleContainerClick}>
+      <HomeText>
+        {showNotifications && <StyledNotificationsCircle />}
+        <span>Home</span>
+      </HomeText>
 
       {showDropdown ? <NavUpArrow /> : <NavDownArrow />}
 
@@ -93,9 +94,21 @@ export function FeedLeftContent({ queryRef }: FeedLeftContentProps) {
         onClose={() => setShowDropdown(false)}
         queryRef={query}
       />
-    </HStack>
+    </Container>
   );
 }
+
+const StyledNotificationsCircle = styled(NotificationsCircle)`
+  position: absolute;
+  left: -5px;
+  top: 4px;
+`;
+
+const Container = styled(HStack)`
+  height: 32px;
+  position: relative;
+  cursor: pointer;
+`;
 
 const GLogoLinkWrapper = styled.a`
   cursor: pointer;
