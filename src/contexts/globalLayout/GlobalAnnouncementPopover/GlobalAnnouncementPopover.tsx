@@ -10,7 +10,7 @@ import styled from 'styled-components';
 import { Button } from '~/components/core/Button/Button';
 import colors from '~/components/core/colors';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
-import { BaseM, BODY_FONT_FAMILY, TitleM } from '~/components/core/Text/Text';
+import { BaseM, BODY_FONT_FAMILY } from '~/components/core/Text/Text';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { GlobalAnnouncementPopoverFragment$key } from '~/generated/GlobalAnnouncementPopoverFragment.graphql';
 import { AuthModal } from '~/hooks/useAuthModal';
@@ -241,7 +241,7 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
         ) : (
           <DesktopPopoverContainer gap={80} align="center">
             <DesktopHeaderContainer>
-              <VStack gap={32}>
+              <VStack gap={32} align="center">
                 <VStack>
                   <DesktopIntroText>{HEADER_TEXT_1}</DesktopIntroText>
                   <DesktopIntroText>
@@ -249,7 +249,7 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
                   </DesktopIntroText>
                 </VStack>
                 <DesktopDescriptionText>
-                  {HEADER_DESC_1} <i>{HEADER_DESC_2}</i>
+                  {HEADER_DESC_1} {HEADER_DESC_2}
                 </DesktopDescriptionText>
                 <DesktopButtonContainer>
                   <HStack gap={24}>
@@ -449,11 +449,14 @@ const DesktopPopoverContainer = styled(VStack)`
   }
 `;
 
-const DesktopDescriptionText = styled(TitleM)`
-  font-style: normal;
+const DesktopDescriptionText = styled.span`
+  font-family: ${BODY_FONT_FAMILY};
+  font-size: 24px;
+  line-height: 28px;
+  letter-spacing: -0.03em;
 `;
 
-const DesktopHeaderContainer = styled.div`
+const DesktopHeaderContainer = styled(VStack)`
   max-width: 800px;
   text-align: center;
 
