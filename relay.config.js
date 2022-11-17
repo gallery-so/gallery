@@ -5,6 +5,7 @@ module.exports = {
   language: 'typescript',
   artifactDirectory: './__generated__',
   customScalars: {
+    Email: 'string',
     Address: 'string',
     DBID: 'string',
   },

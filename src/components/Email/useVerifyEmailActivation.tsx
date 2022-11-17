@@ -8,8 +8,8 @@ import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 
 export default function useVerifyEmailActivation() {
   const [verifyEmailMutate] = usePromisifiedMutation<useVerifyEmailActivationMutation>(graphql`
-    mutation useVerifyEmailActivationMutation($token: String!) @raw_response_type {
-      verifyEmail(token: $token) {
+    mutation useVerifyEmailActivationMutation($input: VerifyEmailInput!) @raw_response_type {
+      verifyEmail(input: $input) {
         ... on VerifyEmailPayload {
           __typename
           email
@@ -39,7 +39,11 @@ export default function useVerifyEmailActivation() {
     async (token: string) => {
       try {
         const response = await verifyEmailMutate({
-          variables: { token },
+          variables: {
+            input: {
+              token,
+            },
+          },
           updater,
         });
 

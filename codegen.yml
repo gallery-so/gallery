@@ -4,6 +4,7 @@ generates:
   ./__generated__/operations.ts:
     config:
       scalars:
+          Email: string
           DBID: string
           Address: string
           PubKey: string
