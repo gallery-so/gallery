@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import { TEZOS_ANNOUNCEMENT_STORAGE_KEY } from '~/constants/storageKeys';
+import { WHITE_RHINO_STORAGE_KEY } from '~/constants/storageKeys';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useGlobalAnnouncementPopoverFragment$key } from '~/generated/useGlobalAnnouncementPopoverFragment.graphql';
 import usePersistedState from '~/hooks/usePersistedState';
@@ -50,7 +50,7 @@ export default function useGlobalAnnouncementPopover({
 
   // tracks dismissal on localStorage, persisted across refreshes
   const [dismissedOnLocalStorage, setDismissedOnLocalStorage] = usePersistedState(
-    TEZOS_ANNOUNCEMENT_STORAGE_KEY,
+    WHITE_RHINO_STORAGE_KEY,
     false
   );
 
@@ -59,7 +59,7 @@ export default function useGlobalAnnouncementPopover({
 
   const { showModal, hideModal } = useModalActions();
 
-  const shouldHidePopover = useMemo(() => {
+  const shouldHidePopoverOnCurrentPath = useMemo(() => {
     // hide modal on opengraph pages
     if (asPath.includes('opengraph')) return true;
     // hide announcement modal on announcements page
@@ -78,15 +78,12 @@ export default function useGlobalAnnouncementPopover({
 
   useEffect(() => {
     async function handleMount() {
-      // TODO: temp disable popover, even for beta users
-      return;
-
       if (dismissVariant === 'session' && dismissedOnSession) return;
       if (dismissVariant === 'global' && dismissedOnLocalStorage) return;
 
       if (authRequired && !isAuthenticated) return;
 
-      if (shouldHidePopover) return;
+      if (shouldHidePopoverOnCurrentPath) return;
 
       // prevent font flicker on popover load
       await handlePreloadFonts();
@@ -115,18 +112,18 @@ export default function useGlobalAnnouncementPopover({
     popoverDelayMs,
     dismissVariant,
     dismissedOnSession,
-    shouldHidePopover,
+    shouldHidePopoverOnCurrentPath,
   ]);
 
   useEffect(
     function handleCloseModalOnRedirect() {
-      if (shouldHidePopover) {
+      if (shouldHidePopoverOnCurrentPath) {
         hideModal({
           id: 'global-announcement-popover',
         });
       }
     },
-    [hideModal, shouldHidePopover]
+    [hideModal, shouldHidePopoverOnCurrentPath]
   );
 }
 
