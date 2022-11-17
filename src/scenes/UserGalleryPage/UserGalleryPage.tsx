@@ -9,7 +9,6 @@ import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { UserGalleryPageFragment$key } from '~/generated/UserGalleryPageFragment.graphql';
 
-import useVerifyEmailOnPage from '../../components/Email/useVerifyEmailOnPage';
 import UserGallery from './UserGallery';
 
 type UserGalleryPageProps = {
@@ -29,7 +28,6 @@ function UserGalleryPage({ queryRef, username }: UserGalleryPageProps) {
 
         ...UserGalleryFragment
         ...SettingsModalFragment
-        ...useVerifyEmailOnPageQueryFragment
         ...isFeatureEnabledFragment
       }
     `,
@@ -40,8 +38,6 @@ function UserGalleryPage({ queryRef, username }: UserGalleryPageProps) {
 
   const track = useTrack();
   const navbarHeight = useGlobalNavbarHeight();
-
-  useVerifyEmailOnPage(query);
 
   useEffect(() => {
     track('Page View: User Gallery', { username });

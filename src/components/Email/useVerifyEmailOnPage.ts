@@ -1,13 +1,14 @@
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { graphql, useFragment } from 'react-relay';
-import { SelectorStoreUpdater } from 'relay-runtime';
 
 import { useToastActions } from '~/contexts/toast/ToastContext';
-import { useVerifyEmailOnPageMutation } from '~/generated/useVerifyEmailOnPageMutation.graphql';
 import { useVerifyEmailOnPageQueryFragment$key } from '~/generated/useVerifyEmailOnPageQueryFragment.graphql';
-import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
+
+import { FAILED_EMAIL_VERIFICATION_STATUS } from '../NotificationsModal/NotificationList';
+import useUnsubscribeEmail from './useUnsubscribeEmail';
+import useVerifyEmailActivation from './useVerifyEmailActivation';
 
 export default function useVerifyEmailOnPage(queryRef: useVerifyEmailOnPageQueryFragment$key) {
   const query = useFragment(
@@ -28,70 +29,32 @@ export default function useVerifyEmailOnPage(queryRef: useVerifyEmailOnPageQuery
 
   const verificationStatus = query.viewer?.email?.verificationStatus;
   const isEmailFeatureEnabled = isFeatureEnabled(FeatureFlag.EMAIL, query);
-
-  const [verifyEmailMutate] = usePromisifiedMutation<useVerifyEmailOnPageMutation>(graphql`
-    mutation useVerifyEmailOnPageMutation($token: String!) @raw_response_type {
-      verifyEmail(token: $token) {
-        ... on VerifyEmailPayload {
-          __typename
-          email
-        }
-        ... on ErrInvalidInput {
-          __typename
-        }
-      }
-    }
-  `);
+  const verifyEmailActivation = useVerifyEmailActivation();
+  const unsubscribeEmail = useUnsubscribeEmail();
 
   const router = useRouter();
-  const { verifyEmail } = router.query;
+  const { verifyEmail, unsubscribeToken } = router.query;
   const { pushToast } = useToastActions();
-
-  const updater: SelectorStoreUpdater<useVerifyEmailOnPageMutation['response']> = (
-    store,
-    response
-  ) => {
-    if (response.verifyEmail?.__typename === 'VerifyEmailPayload' && response.verifyEmail?.email) {
-      store
-        .get('client:root:viewer')
-        ?.getLinkedRecord('email')
-        ?.setValue('Verified', 'verificationStatus');
-    }
-  };
 
   useEffect(() => {
     if (!isEmailFeatureEnabled) return;
 
-    // If the user is already verified and have invalid verifyEmail, don't do anything
-    if (!verifyEmail || verificationStatus === 'Verified') return;
-    const handleVerifyEmail = async (token: string) => {
-      try {
-        const response = await verifyEmailMutate({
-          updater,
-          variables: { token },
-        });
+    // If the user is already verified, we don't need to do anything
+    if (verifyEmail && FAILED_EMAIL_VERIFICATION_STATUS.includes(verificationStatus ?? '')) {
+      verifyEmailActivation(verifyEmail as string);
+    }
 
-        if (!response.verifyEmail) {
-          pushToast({
-            message:
-              'Unfortunately there was an error verifying your email address. Please request a new verification email via your Notification Settings or reach out to us on discord.',
-            variant: 'error',
-          });
-          return;
-        }
-
-        pushToast({
-          message: 'Your email address has been successfully verified.',
-        });
-      } catch (error) {
-        console.error(error);
-        pushToast({
-          message:
-            'Unfortunately there was an error verifying your email address. Please request a new verification email via your Notification Settings or reach out to us on discord.',
-          variant: 'error',
-        });
-      }
-    };
-    handleVerifyEmail(verifyEmail as string);
-  }, [isEmailFeatureEnabled, pushToast, verifyEmail, verifyEmailMutate, verificationStatus]);
+    // check unsubscribe token
+    if (unsubscribeToken) {
+      unsubscribeEmail({ type: 'Notifications', token: unsubscribeToken as string });
+    }
+  }, [
+    isEmailFeatureEnabled,
+    pushToast,
+    unsubscribeEmail,
+    unsubscribeToken,
+    verifyEmail,
+    verificationStatus,
+    verifyEmailActivation,
+  ]);
 }
