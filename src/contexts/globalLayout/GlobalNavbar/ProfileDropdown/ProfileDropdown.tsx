@@ -98,7 +98,7 @@ export function ProfileDropdown({ queryRef, rightContent }: ProfileDropdownProps
           </HStack>
         </LogoContainer>
       ) : (
-        <LogoContainer gap={4} role="button" onClick={handleLoggedOutLogoClick}>
+        <LogoContainer gap={4} role="button" onClick={handleLoggedOutLogoClick} align="center">
           <GLogo />
         </LogoContainer>
       )}
@@ -125,7 +125,8 @@ const LogoContainer = styled(HStack)`
 
 const StyledNotificationsCircle = styled(NotificationsCircle)`
   position: absolute;
-  left: -6px;
+  left: -5px;
+  top: 4px;
 `;
 
 const Wrapper = styled(HStack)`
