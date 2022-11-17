@@ -12,6 +12,7 @@ import {
   StandardNavbarContainer,
 } from '~/contexts/globalLayout/GlobalNavbar/StandardNavbarContainer';
 import { OnboardingCollectionEditorNavbarFragment$key } from '~/generated/OnboardingCollectionEditorNavbarFragment.graphql';
+import unescape from '~/utils/unescape';
 
 import { CollectionSaveButtonWithCaption } from '../CollectionSaveButtonWithCaption';
 
@@ -44,6 +45,7 @@ export function OnboardingCollectionEditorNavbar({
     queryRef
   );
 
+  const collectionName = unescape(query.collectionById?.name ?? '');
   const editGalleryRoute: Route = { pathname: '/onboarding/organize-gallery' };
 
   return (
@@ -56,7 +58,7 @@ export function OnboardingCollectionEditorNavbar({
         <GalleryNameAndCollectionName
           editGalleryRoute={editGalleryRoute}
           galleryName={'My gallery'}
-          collectionName={query.collectionById?.name ?? ''}
+          collectionName={collectionName ?? ''}
           rightText="Editing"
         />
       </NavbarCenterContent>
