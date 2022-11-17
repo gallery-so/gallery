@@ -16,7 +16,7 @@ import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import ManageWalletsModal from '~/scenes/Modals/ManageWalletsModal';
 import { removeNullValues } from '~/utils/removeNullValues';
 
-import FeaturedTezosCollectorCard from './components/FeaturedTezosCollectorCard';
+import FeaturedCollectorCard from './components/FeaturedCollectorCard';
 
 type Props = {
   queryRef: GlobalAnnouncementPopoverFragment$key;
@@ -24,21 +24,14 @@ type Props = {
 
 export const FEATURED_COLLECTION_IDS = [
   // flamingoDAO
-  '26760c9d63938ef7f7f622d16a41219b',
+  '2Gd3Zy9WOKnMMySWkdp8hEIqcaE',
   // DCinvestor
-  '28KtVPzsE0N5ht5gGBlmuy4Khxc',
-  // KevinRose
-  '0f4f4e0a9ca395590af50c648243e1d5',
+  '28MSJGusLMDr7XQC5I4vhdLbib2',
+  // iancr
+  '27jw0WEcJfsXFyhC9zIMKV8BPij',
   // Phones
-  '25G6pTdSt3VfVdWKzEXzkPDPQs9',
+  '25HD83fNYagiWsN2fhZZxBpIzoF',
 ];
-
-const HEADER_TEXT_1 = 'Introducing the';
-const HEADER_TEXT_2 = 'Next Era of Self Expression';
-const HEADER_DESC_1 =
-  'Gallery is a limitless social canvas for creativity, curation, and connection.';
-const HEADER_DESC_2 = 'Now open to everyone.';
-const BUTTON_TEXT_1 = 'Curate Now';
 
 // NOTE: in order to toggle whether the modal should appear for authenticated users only,
 // refer to `useGlobalAnnouncementPopover.tsx`
@@ -64,12 +57,12 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
           ... on Collection {
             __typename
             dbid
-            ...FeaturedTezosCollectorCardCollectionFragment
+            ...FeaturedCollectorCardCollectionFragment
           }
         }
         ...ManageWalletsModalFragment
         ...useAuthModalFragment
-        ...FeaturedTezosCollectorCardFragment
+        ...FeaturedCollectorCardFragment
       }
     `,
     queryRef
@@ -120,8 +113,16 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
   ) ?? []) as {
     readonly __typename: 'Collection';
     readonly dbid: string;
-    readonly ' $fragmentSpreads': FragmentRefs<'FeaturedTezosCollectorCardCollectionFragment'>;
+    readonly ' $fragmentSpreads': FragmentRefs<'FeaturedCollectorCardCollectionFragment'>;
   }[];
+
+  const HEADER_TEXT_1 = 'Introducing the';
+  const HEADER_TEXT_2 = 'Next Era of Self Expression';
+  const HEADER_DESC_1 =
+    'Gallery is a limitless social canvas of curation and connection for your digital objects.';
+  const HEADER_DESC_2 = 'Now open to everyone.';
+  const BUTTON_TEXT_1 = 'Create Now';
+  const BUTTON_TEXT_2 = 'Explore ↓';
 
   return (
     <StyledGlobalAnnouncementPopover>
@@ -151,11 +152,11 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
                   <MobileButtonContainer>
                     <VStack gap={16} align="center">
                       {isAuthenticated ? (
-                        <Button onClick={handleManageWalletsClick}>Curate Now</Button>
+                        <Button onClick={handleManageWalletsClick}>{BUTTON_TEXT_1}</Button>
                       ) : (
-                        <Button onClick={handleCreateGalleryClick}>Curate Now</Button>
+                        <Button onClick={handleCreateGalleryClick}>{BUTTON_TEXT_1}</Button>
                       )}
-                      <TextButton onClick={handleViewTezosGallerisClick} text="Explore More ↓" />
+                      <TextButton onClick={handleViewTezosGallerisClick} text={BUTTON_TEXT_2} />
                     </VStack>
                   </MobileButtonContainer>
                 </VStack>
@@ -172,15 +173,15 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
                   </MobileDescriptionTextContainer>
                 </VStack>
               </MobileSecondaryHeaderContainer>
-              <GalleryOfTheWeekContainer id="featured-tezos">
+              <FeaturedGalleryContainer id="featured-tezos">
                 {collections.map((collection) => (
-                  <FeaturedTezosCollectorCard
+                  <FeaturedCollectorCard
                     key={collection.dbid}
                     queryRef={query}
                     collectionRef={collection}
                   />
                 ))}
-              </GalleryOfTheWeekContainer>
+              </FeaturedGalleryContainer>
             </VStack>
           </>
         ) : (
@@ -188,21 +189,25 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
             <VStack gap={92} align="center">
               <DesktopHeaderContainer>
                 <VStack gap={32}>
-                  <DesktopIntroText>{HEADER_TEXT_1}</DesktopIntroText>
-                  <DesktopIntroText>
-                    <i>{HEADER_TEXT_2}</i>
-                  </DesktopIntroText>
+                  <VStack>
+                    <DesktopIntroText>{HEADER_TEXT_1}</DesktopIntroText>
+                    <DesktopIntroText>
+                      <i>{HEADER_TEXT_2}</i>
+                    </DesktopIntroText>
+                  </VStack>
                   <DesktopDescriptionText>
                     {HEADER_DESC_1} <i>{HEADER_DESC_2}</i>
                   </DesktopDescriptionText>
                   <DesktopButtonContainer>
-                    <HStack gap={32}>
+                    <HStack gap={24}>
                       {isAuthenticated ? (
-                        <Button onClick={handleManageWalletsClick}>Curate Now</Button>
+                        <Button onClick={handleManageWalletsClick}>{BUTTON_TEXT_1}</Button>
                       ) : (
-                        <Button onClick={handleCreateGalleryClick}>Curate Now</Button>
+                        <Button onClick={handleCreateGalleryClick}>{BUTTON_TEXT_1}</Button>
                       )}
-                      <TextButton onClick={handleViewTezosGallerisClick} text="Explore More ↓" />
+                      <Button onClick={handleViewTezosGallerisClick} variant="secondary">
+                        {BUTTON_TEXT_2}
+                      </Button>
                     </HStack>
                   </DesktopButtonContainer>
                 </VStack>
@@ -249,15 +254,15 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
                   </DesktopDescriptionText>
                 </VStack>
               </DesktopSecondaryHeaderContainer>
-              <GalleryOfTheWeekContainer id="featured-tezos">
+              <FeaturedGalleryContainer id="featured-tezos">
                 {collections.map((collection) => (
-                  <FeaturedTezosCollectorCard
+                  <FeaturedCollectorCard
                     key={collection.dbid}
                     queryRef={query}
                     collectionRef={collection}
                   />
                 ))}
-              </GalleryOfTheWeekContainer>
+              </FeaturedGalleryContainer>
             </VStack>
           </>
         )
@@ -270,10 +275,14 @@ const StyledGlobalAnnouncementPopover = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: ${colors.offWhite};
+  background: ${colors.white};
   padding: 92px 16px;
 
   min-height: 100vh;
+
+  button {
+    width: 130px;
+  }
 `;
 
 ////////////////////////// MOBILE //////////////////////////
@@ -322,9 +331,17 @@ const MobileSecondaryHeaderContainer = styled.div`
 `;
 
 ////////////////////////// DESKTOP //////////////////////////
+const DesktopDescriptionText = styled(TitleM)`
+  font-style: normal;
+`;
+
 const DesktopHeaderContainer = styled.div`
-  width: 626px;
+  max-width: 800px;
   text-align: center;
+
+  ${DesktopDescriptionText} {
+    max-width: 640px;
+  }
 `;
 
 const DesktopIntroText = styled.span`
@@ -333,10 +350,6 @@ const DesktopIntroText = styled.span`
   font-size: 84px;
   line-height: 69px;
   letter-spacing: -0.05em;
-`;
-
-const DesktopDescriptionText = styled(TitleM)`
-  font-style: normal;
 `;
 
 const DesktopButtonContainer = styled.div`
@@ -357,7 +370,7 @@ const DesktopStyledSecondaryTitle = styled.span`
   letter-spacing: -0.05em;
 `;
 
-const GalleryOfTheWeekContainer = styled.div`
+const FeaturedGalleryContainer = styled.div`
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
