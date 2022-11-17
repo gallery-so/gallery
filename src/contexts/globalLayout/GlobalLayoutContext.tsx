@@ -26,6 +26,8 @@ import usePrevious from '~/hooks/usePrevious';
 import useThrottle from '~/hooks/useThrottle';
 import isTouchscreenDevice from '~/utils/isTouchscreenDevice';
 
+import { FEATURED_COLLECTION_IDS } from './GlobalAnnouncementPopover/GlobalAnnouncementPopover';
+import useGlobalAnnouncementPopover from './GlobalAnnouncementPopover/useGlobalAnnouncementPopover';
 import Banner from './GlobalBanner/GlobalBanner';
 import GlobalNavbar, { Props as GlobalNavbarProps } from './GlobalNavbar/GlobalNavbar';
 
@@ -72,13 +74,15 @@ type FadeTriggerType = 'route' | 'scroll' | 'hover';
 const GlobalLayoutContextProvider = memo(({ children }: Props) => {
   const query = useLazyLoadQuery<GlobalLayoutContextQuery>(
     graphql`
-      query GlobalLayoutContextQuery {
+      query GlobalLayoutContextQuery($collectionIds: [DBID!]!) {
         ...GlobalLayoutContextNavbarFragment
         # Keeping this around for the next time we want to use it
-        # ...useGlobalAnnouncementPopoverFragment
+        ...useGlobalAnnouncementPopoverFragment
       }
     `,
-    {}
+    {
+      collectionIds: FEATURED_COLLECTION_IDS,
+    }
   );
 
   // whether the global banner is visible
@@ -237,7 +241,7 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
   );
 
   // Keeping this around for the next time we want to use it
-  // useGlobalAnnouncementPopover({ queryRef: query, authRequired: false, dismissVariant: 'global' });
+  useGlobalAnnouncementPopover({ queryRef: query, authRequired: false, dismissVariant: 'global' });
 
   return (
     // note: we render the navbar here, above the main contents of the app,

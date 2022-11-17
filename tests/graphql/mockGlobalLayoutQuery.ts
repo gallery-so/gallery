@@ -8,6 +8,7 @@ export function mockGlobalLayoutQuery() {
     __typename: 'Query',
     viewer: {
       __typename: 'Viewer',
+      // @ts-expect-error: this is erroring because of a temp popover that we'll remove shortly after launch
       user: {
         __typename: 'GalleryUser',
         roles: [],

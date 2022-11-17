@@ -3,7 +3,7 @@ import { graphql, useLazyLoadQuery } from 'react-relay';
 
 import { TEZOS_ANNOUNCEMENT_STORAGE_KEY } from '~/constants/storageKeys';
 import GlobalAnnouncementPopover, {
-  FEATURED_TEZOS_COLLECTION_IDS,
+  FEATURED_COLLECTION_IDS,
 } from '~/contexts/globalLayout/GlobalAnnouncementPopover/GlobalAnnouncementPopover';
 import { announcementsQuery } from '~/generated/announcementsQuery.graphql';
 import usePersistedState from '~/hooks/usePersistedState';
@@ -18,7 +18,7 @@ export default function Announcements() {
         ...GlobalAnnouncementPopoverFragment
       }
     `,
-    { collectionIds: FEATURED_TEZOS_COLLECTION_IDS }
+    { collectionIds: FEATURED_COLLECTION_IDS }
   );
 
   useEffect(() => {
