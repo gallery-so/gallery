@@ -50,7 +50,7 @@ export function Notification({ notificationRef, queryRef }: NotificationProps) {
         }
 
         ... on SomeoneViewedYourGalleryNotification {
-          userViewers {
+          userViewers(last: 1) {
             pageInfo {
               total
             }
@@ -131,7 +131,7 @@ export function Notification({ notificationRef, queryRef }: NotificationProps) {
     } else if (notification.__typename === 'SomeoneViewedYourGalleryNotification') {
       const count = notification.userViewers?.pageInfo?.total ?? 0;
 
-      if (count > 0) {
+      if (count > 1) {
         return { handleClick: showUserListModal, showCaret: true };
       }
 

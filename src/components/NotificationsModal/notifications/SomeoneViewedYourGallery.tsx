@@ -34,13 +34,12 @@ export function SomeoneViewedYourGallery({
         count
 
         nonUserViewerCount
-        userViewers {
+
+        userViewers(last: 1) {
           pageInfo {
             total
           }
-        }
 
-        userViewers {
           edges {
             node {
               ...HoverCardOnUsernameFragment
