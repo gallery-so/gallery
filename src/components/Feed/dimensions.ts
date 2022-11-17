@@ -21,6 +21,7 @@ type getFeedTokenDimensionsProps = {
   numTokens: NumTokens;
   maxWidth: number;
   breakpoint: size;
+  isInCaption?: boolean;
 };
 
 export type NumTokens = '1' | '2' | '3' | '4';
@@ -30,13 +31,18 @@ export const getFeedTokenDimensions = ({
   numTokens,
   maxWidth,
   breakpoint,
+  isInCaption,
 }: getFeedTokenDimensionsProps): NumTokensToDimensionMap[NumTokens] => {
+  const paddingCount = isInCaption ? 4 : 2;
+
   if (breakpoint === size.desktop) {
     return {
       '1': 380,
       '2': 340,
       '3': 340,
-      '4': (FEED_MAX_WIDTH - FEED_EVENT_TOKEN_MARGIN * 3 - FEED_EVENT_PADDING_DESKTOP * 2) / 4,
+      '4':
+        (FEED_MAX_WIDTH - FEED_EVENT_TOKEN_MARGIN * 3 - FEED_EVENT_PADDING_DESKTOP * paddingCount) /
+        4,
     }[numTokens];
   }
 
@@ -44,15 +50,15 @@ export const getFeedTokenDimensions = ({
     return {
       '1': 380,
       '2': 320,
-      '3': (maxWidth - FEED_EVENT_TOKEN_MARGIN * 2 - FEED_EVENT_PADDING_TABLET * 2) / 3,
-      '4': (maxWidth - FEED_EVENT_TOKEN_MARGIN * 3 - FEED_EVENT_PADDING_TABLET * 2) / 4,
+      '3': (maxWidth - FEED_EVENT_TOKEN_MARGIN * 2 - FEED_EVENT_PADDING_TABLET * paddingCount) / 3,
+      '4': (maxWidth - FEED_EVENT_TOKEN_MARGIN * 3 - FEED_EVENT_PADDING_TABLET * paddingCount) / 4,
     }[numTokens];
   }
 
   return {
     '1': 320,
-    '2': (maxWidth - FEED_EVENT_TOKEN_MARGIN * 1 - FEED_EVENT_PADDING_MOBILE * 2) / 2,
-    '3': (maxWidth - FEED_EVENT_TOKEN_MARGIN * 2 - FEED_EVENT_PADDING_MOBILE * 2) / 3,
-    '4': (maxWidth - FEED_EVENT_TOKEN_MARGIN * 3 - FEED_EVENT_PADDING_MOBILE * 2) / 4,
+    '2': (maxWidth - FEED_EVENT_TOKEN_MARGIN * 1 - FEED_EVENT_PADDING_MOBILE * paddingCount) / 2,
+    '3': (maxWidth - FEED_EVENT_TOKEN_MARGIN * 2 - FEED_EVENT_PADDING_MOBILE * paddingCount) / 3,
+    '4': (maxWidth - FEED_EVENT_TOKEN_MARGIN * 3 - FEED_EVENT_PADDING_MOBILE * paddingCount) / 4,
   }[numTokens];
 };

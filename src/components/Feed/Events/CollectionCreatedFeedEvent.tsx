@@ -120,7 +120,10 @@ export default function CollectionCreatedFeedEvent({ caption, eventDataRef, quer
               </StyledCaptionContainer>
             )}
             <VStack gap={8}>
-              <FeedEventTokenPreviews tokensToPreview={tokensToPreview} />
+              <FeedEventTokenPreviews
+                isInCaption={Boolean(caption)}
+                tokensToPreview={tokensToPreview}
+              />
               {showAdditionalPiecesIndicator && (
                 <StyledAdditionalPieces>
                   +{numAdditionalPieces} more {pluralize(numAdditionalPieces, 'piece')}
