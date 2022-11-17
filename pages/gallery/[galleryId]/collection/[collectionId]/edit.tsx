@@ -31,6 +31,14 @@ function LazyLoadedCollectionEditor({ galleryId, collectionId }: Props) {
         ...CollectionEditorFragment
         ...CollectionEditorNavbarFragment
         ...GalleryAuthenticatedRouteFragment
+
+        ... on Query {
+          collectionById(id: $collectionId) {
+            ... on Collection {
+              name
+            }
+          }
+        }
       }
     `,
     { collectionId }
@@ -41,6 +49,8 @@ function LazyLoadedCollectionEditor({ galleryId, collectionId }: Props) {
   const updateCollection = useUpdateCollectionTokens();
   const stagedCollectionState = useStagedCollectionState();
   const collectionMetadata = useCollectionMetadataState();
+
+  const collectionName = query?.collectionById?.name;
 
   const { back, replace } = useRouter();
 
@@ -68,41 +78,48 @@ function LazyLoadedCollectionEditor({ galleryId, collectionId }: Props) {
     });
   }, [back, canGoBack, editGalleryUrl, replace, showModal]);
 
-  const handleNext = useCallback(async (caption: string) => {
-    try {
-      await updateCollection({
-        collectionId,
-        stagedCollection: stagedCollectionState,
-        tokenSettings: collectionMetadata.tokenSettings,
-        caption,
-      });
-
-      if (canGoBack) {
-        back();
-      } else {
-        replace(editGalleryUrl);
-      }
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        pushToast({
-          message:
-            'There was an error updating your collection. If the issue persists, please contact us on Discord.',
+  const handleNext = useCallback(
+    async (caption: string) => {
+      try {
+        await updateCollection({
+          collectionId,
+          stagedCollection: stagedCollectionState,
+          tokenSettings: collectionMetadata.tokenSettings,
+          caption,
         });
 
-        return;
+        if (canGoBack) {
+          back();
+        } else {
+          replace(editGalleryUrl);
+        }
+        pushToast({
+          message: `“${collectionName || 'Collection'}” has been saved`,
+        });
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          pushToast({
+            message:
+              'There was an error updating your collection. If the issue persists, please contact us on Discord.',
+          });
+
+          return;
+        }
       }
-    }
-  }, [
-    back,
-    canGoBack,
-    collectionId,
-    collectionMetadata.tokenSettings,
-    editGalleryUrl,
-    pushToast,
-    replace,
-    stagedCollectionState,
-    updateCollection,
-  ]);
+    },
+    [
+      back,
+      canGoBack,
+      collectionId,
+      collectionMetadata.tokenSettings,
+      collectionName,
+      editGalleryUrl,
+      pushToast,
+      replace,
+      stagedCollectionState,
+      updateCollection,
+    ]
+  );
 
   const [isCollectionValid, setIsCollectionValid] = useState(false);
   const [hasUnsavedChange, setHasUnsavedChange] = useState(false);
@@ -121,7 +138,11 @@ function LazyLoadedCollectionEditor({ galleryId, collectionId }: Props) {
       }
       withBorder
     >
-      <CollectionEditor queryRef={query} onValidChange={setIsCollectionValid} onHasUnsavedChange={setHasUnsavedChange}/>
+      <CollectionEditor
+        queryRef={query}
+        onValidChange={setIsCollectionValid}
+        onHasUnsavedChange={setHasUnsavedChange}
+      />
     </FullPageStep>
   );
 }

@@ -29,6 +29,7 @@ function LazyLoadedCollectionEditorOnboarding({ collectionId }: Props) {
       query editCollectionOnboardingQuery($collectionId: DBID!) {
         collectionById(id: $collectionId) {
           ... on Collection {
+            name
             gallery {
               dbid
             }
@@ -46,6 +47,8 @@ function LazyLoadedCollectionEditorOnboarding({ collectionId }: Props) {
   const updateCollection = useUpdateCollectionTokens();
   const stagedCollectionState = useStagedCollectionState();
   const collectionMetadata = useCollectionMetadataState();
+
+  const collectionName = query?.collectionById?.name;
 
   const { back, replace, query: urlQuery } = useRouter();
 
@@ -72,6 +75,10 @@ function LazyLoadedCollectionEditorOnboarding({ collectionId }: Props) {
         });
 
         replace(returnUrl);
+
+        pushToast({
+          message: `“${collectionName || 'Collection'}” has been saved`,
+        });
       } catch (error: unknown) {
         if (error instanceof Error) {
           pushToast({
@@ -85,6 +92,7 @@ function LazyLoadedCollectionEditorOnboarding({ collectionId }: Props) {
     [
       collectionId,
       collectionMetadata.tokenSettings,
+      collectionName,
       pushToast,
       replace,
       returnUrl,

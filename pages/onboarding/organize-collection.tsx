@@ -13,6 +13,7 @@ import CollectionEditorProvider, {
 import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import { OnboardingCollectionCreateNavbar } from '~/contexts/globalLayout/GlobalNavbar/OnboardingCollectionCreateNavbar/OnboardingCollectionCreateNavbar';
 import { useModalActions } from '~/contexts/modal/ModalContext';
+import { useToastActions } from '~/contexts/toast/ToastContext';
 import CollectionWizardContext from '~/contexts/wizard/CollectionWizardContext';
 import formatError from '~/errors/formatError';
 import { organizeCollectionPageQuery } from '~/generated/organizeCollectionPageQuery.graphql';
@@ -60,6 +61,7 @@ function LazyLoadedCollectionEditor() {
   const track = useTrack();
   const reportError = useReportError();
   const [generalError, setGeneralError] = useState('');
+  const { pushToast } = useToastActions();
 
   const { showModal } = useModalActions();
   const stagedCollectionState = useStagedCollectionState();
@@ -114,6 +116,10 @@ function LazyLoadedCollectionEditor() {
             pathname: '/onboarding/organize-gallery',
             query: { ...urlQuery },
           });
+
+          pushToast({
+            message: `“${title || 'Collection'}” has been saved`,
+          });
         }
       } catch (error) {
         if (error instanceof Error) {
@@ -137,6 +143,7 @@ function LazyLoadedCollectionEditor() {
       createCollection,
       galleryId,
       push,
+      pushToast,
       replace,
       reportError,
       stagedCollectionState,

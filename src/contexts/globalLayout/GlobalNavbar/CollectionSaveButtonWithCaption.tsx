@@ -7,15 +7,12 @@ import { Button } from '~/components/core/Button/Button';
 import colors from '~/components/core/colors';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import ErrorText from '~/components/core/Text/ErrorText';
-import { BaseM, TitleDiatypeL } from '~/components/core/Text/Text';
 import { TextAreaWithCharCount } from '~/components/core/TextArea/TextArea';
 import transitions, {
-  ANIMATED_COMPONENT_TRANSITION_MS,
   ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL,
 } from '~/components/core/transitions';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { CollectionSaveButtonWithCaptionFragment$key } from '~/generated/CollectionSaveButtonWithCaptionFragment.graphql';
-import CloseIcon from '~/icons/CloseIcon';
 import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 type Props = {
@@ -46,7 +43,6 @@ export function CollectionSaveButtonWithCaption({
 
   // Pseudo-state for signaling animations. This gives us a chance
   // to display an animation prior to unmounting the component and its contents
-  const [isActive, setIsActive] = useState(false);
   const [isPopupDisplayed, setIsPopupDisplayed] = useState(false);
   const track = useTrack();
 
@@ -56,10 +52,6 @@ export function CollectionSaveButtonWithCaption({
   const isWhiteRhinoEnabled = isFeatureEnabled(FeatureFlag.WHITE_RHINO, query);
 
   const handleCloseCaption = useCallback(() => {
-    deactivateHoverCardTimeoutRef.current = setTimeout(
-      () => setIsActive(false),
-      ANIMATED_COMPONENT_TRANSITION_MS
-    );
     setIsPopupDisplayed(false);
   }, []);
 
@@ -87,7 +79,6 @@ export function CollectionSaveButtonWithCaption({
     if (deactivateHoverCardTimeoutRef.current) {
       clearTimeout(deactivateHoverCardTimeoutRef.current);
     }
-    setIsActive(true);
     setIsPopupDisplayed(true);
   }, [handleSubmit, isWhiteRhinoEnabled]);
 
@@ -101,63 +92,35 @@ export function CollectionSaveButtonWithCaption({
     <StyledConfirmationContainer>
       <StyledButton
         onClick={isPopupDisplayed ? handleCloseCaption : handleOpenCaption}
-        disabled={disabled}
+        disabled={disabled || !hasUnsavedChange}
         pending={isLoading && !isWhiteRhinoEnabled}
       >
         <HStack gap={4} align="center">
           {label}
-          {isWhiteRhinoEnabled && (
-            <StyledChevronSvg
-              isActive={isPopupDisplayed}
-              width="12"
-              height="7"
-              viewBox="0 0 12 7"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M1.33337 1L6.00004 5.66667L10.6667 1"
-                stroke="#FEFEFE"
-                strokeMiterlimit="10"
-              />
-            </StyledChevronSvg>
-          )}
         </HStack>
       </StyledButton>
+
+      {/* Used to hijack click events on things outside of the caption area */}
+      {isPopupDisplayed && <Backdrop onClick={handleCloseCaption} />}
+
       <StyledCardContainer gap={hasUnsavedChange ? 12 : 24} isActive={isPopupDisplayed}>
-        {isActive && (
-          <>
-            <HStack justify="flex-end">
-              <StyledCloseButton onClick={handleCloseCaption}>
-                <CloseIcon />
-              </StyledCloseButton>
-            </HStack>
-            {hasUnsavedChange ? (
-              <>
-                <StyledConfirmationContent gap={8}>
-                  <BaseM>Share your update to the feed with an optional note.</BaseM>
-                  <TextAreaWithCharCount
-                    currentCharCount={caption.length}
-                    maxCharCount={600}
-                    onChange={handleCaptionChange}
-                    hasPadding
-                    defaultValue={caption}
-                    placeholder="Add a note..."
-                    textAreaHeight="50px"
-                  />
-                </StyledConfirmationContent>
+        <VStack gap={12}>
+          <TextAreaWithCharCount
+            currentCharCount={caption.length}
+            maxCharCount={600}
+            onChange={handleCaptionChange}
+            hasPadding
+            defaultValue={caption}
+            placeholder="Add an optional note..."
+            textAreaHeight="80px"
+          />
 
-                <Button onClick={handleSubmit} disabled={isSaveDisabled} pending={isLoading}>
-                  Save
-                </Button>
+          <Button onClick={handleSubmit} disabled={isSaveDisabled} pending={isLoading}>
+            Save
+          </Button>
 
-                {error && <ErrorText message={error} />}
-              </>
-            ) : (
-              <StyledNoChangesTitle>No changes made yet.</StyledNoChangesTitle>
-            )}
-          </>
-        )}
+          {error && <ErrorText message={error} />}
+        </VStack>
       </StyledCardContainer>
     </StyledConfirmationContainer>
   );
@@ -171,39 +134,30 @@ const StyledButton = styled(Button)`
   padding: 8px 12px;
 `;
 
-const StyledChevronSvg = styled.svg<{ isActive: boolean }>`
-  transform: ${({ isActive }) => (isActive ? 'rotate(180deg)' : 'rotate(0deg)')};
-`;
-
 const StyledCardContainer = styled(VStack)<{ isActive: boolean }>`
   border: 1px solid ${colors.offBlack};
   padding: 12px 16px;
-  width: 375px;
+  width: 250px;
   display: grid;
   background-color: ${colors.white};
 
   position: absolute;
   right: 0;
-  top: calc(100% + 8px);
+  top: 0;
 
   transition: ${transitions.cubic};
   transform: ${({ isActive }) =>
     `translateY(${isActive ? 0 : ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL}px)`};
   opacity: ${({ isActive }) => (isActive ? 1 : 0)};
+  pointer-events: ${({ isActive }) => (isActive ? 'all' : 'none')};
+  transition: transform 250ms ease-out, opacity 250ms linear;
 `;
 
-const StyledCloseButton = styled.button`
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  color: ${colors.offBlack};
-`;
-
-const StyledConfirmationContent = styled(VStack)`
-  padding: 12px 0;
-`;
-
-const StyledNoChangesTitle = styled(TitleDiatypeL)`
-  text-align: center;
+const Backdrop = styled.div`
+  cursor: default;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
 `;

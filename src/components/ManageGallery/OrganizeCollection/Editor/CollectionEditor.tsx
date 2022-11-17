@@ -21,6 +21,7 @@ import Directions from '../Directions';
 import Sidebar from '../Sidebar/Sidebar';
 import { EditModeToken, EditModeTokenChild, StagedCollection } from '../types';
 import EditorMenu from './EditorMenu';
+import { formatStagedCollection } from './formatStagedCollection';
 import StagingArea from './StagingArea';
 
 function convertNftsToEditModeTokens(
@@ -123,7 +124,7 @@ function CollectionEditor({ queryRef, onValidChange, onHasUnsavedChange }: Props
   );
 
   // Check if the collection has unsaved changes
-  const lastStagedCollection = useRef<StagedCollection | Record<string, unknown>>({});
+  const lastStagedCollection = useRef({});
   const isStagedCollectionInitialized = useRef(false);
 
   // Initialize the lastStagedCollection ref
@@ -132,12 +133,17 @@ function CollectionEditor({ queryRef, onValidChange, onHasUnsavedChange }: Props
       return;
     }
 
-    lastStagedCollection.current = stagedCollectionState;
+    lastStagedCollection.current = formatStagedCollection(stagedCollectionState);
+
     isStagedCollectionInitialized.current = true;
   }, [stagedCollectionState]);
 
   useEffect(() => {
-    if (JSON.stringify(stagedCollectionState) !== JSON.stringify(lastStagedCollection.current)) {
+    const formattedStagedCollection = formatStagedCollection(stagedCollectionState);
+
+    if (
+      JSON.stringify(formattedStagedCollection) !== JSON.stringify(lastStagedCollection.current)
+    ) {
       onHasUnsavedChange(true);
       return;
     }
