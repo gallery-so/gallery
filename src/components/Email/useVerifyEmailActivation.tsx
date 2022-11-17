@@ -2,12 +2,13 @@ import { useCallback } from 'react';
 import { graphql } from 'react-relay';
 import { SelectorStoreUpdater } from 'relay-runtime';
 
-import { useVerifyEmailOnPageMutation } from '~/generated/useVerifyEmailOnPageMutation.graphql';
+import { useToastActions } from '~/contexts/toast/ToastContext';
+import { useVerifyEmailActivationMutation } from '~/generated/useVerifyEmailActivationMutation.graphql';
 import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 
 export default function useVerifyEmailActivation() {
-  const [verifyEmailMutate] = usePromisifiedMutation<useVerifyEmailOnPageMutation>(graphql`
-    mutation useVerifyEmailOnPageMutation($token: String!) @raw_response_type {
+  const [verifyEmailMutate] = usePromisifiedMutation<useVerifyEmailActivationMutation>(graphql`
+    mutation useVerifyEmailActivationMutation($token: String!) @raw_response_type {
       verifyEmail(token: $token) {
         ... on VerifyEmailPayload {
           __typename
@@ -20,7 +21,7 @@ export default function useVerifyEmailActivation() {
     }
   `);
 
-  const updater: SelectorStoreUpdater<useVerifyEmailOnPageMutation['response']> = (
+  const updater: SelectorStoreUpdater<useVerifyEmailActivationMutation['response']> = (
     store,
     response
   ) => {
@@ -32,13 +33,38 @@ export default function useVerifyEmailActivation() {
     }
   };
 
+  const { pushToast } = useToastActions();
+
   return useCallback(
-    (token: string) => {
-      return verifyEmailMutate({
-        variables: { token },
-        updater,
-      });
+    async (token: string) => {
+      try {
+        const response = await verifyEmailMutate({
+          variables: { token },
+          updater,
+        });
+
+        if (!response.verifyEmail) {
+          pushToast({
+            message:
+              'Unfortunately there was an error verifying your email address. Please request a new verification email via your Notification Settings or reach out to us on discord.',
+            variant: 'error',
+          });
+          return;
+        }
+
+        pushToast({
+          message: 'Your email address has been successfully verified.',
+        });
+      } catch (error) {
+        if (error instanceof Error) {
+          pushToast({
+            message:
+              'Unfortunately there was an error verifying your email address. Please request a new verification email via your Notification Settings or reach out to us on discord.',
+            variant: 'error',
+          });
+        }
+      }
     },
-    [verifyEmailMutate]
+    [pushToast, verifyEmailMutate]
   );
 }

@@ -20,7 +20,7 @@ type NotificationListProps = {
   queryRef: NotificationListFragment$key;
 };
 
-const FAILED_EMAIL_VERIFICATION_STATUS = ['Failed', 'Unverified'];
+export const FAILED_EMAIL_VERIFICATION_STATUS = ['Failed', 'Unverified'];
 
 export function NotificationList({ queryRef }: NotificationListProps) {
   const {
