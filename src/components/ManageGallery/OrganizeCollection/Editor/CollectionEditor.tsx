@@ -1,5 +1,4 @@
 import { CollectionEditorFragment$key } from '__generated__/CollectionEditorFragment.graphql';
-import cloneDeep from 'lodash.clonedeep';
 import React, { useEffect, useMemo, useRef } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
@@ -22,6 +21,7 @@ import Directions from '../Directions';
 import Sidebar from '../Sidebar/Sidebar';
 import { EditModeToken, EditModeTokenChild, StagedCollection } from '../types';
 import EditorMenu from './EditorMenu';
+import { formatStagedCollection } from './formatStagedCollection';
 import StagingArea from './StagingArea';
 
 function convertNftsToEditModeTokens(
@@ -124,7 +124,7 @@ function CollectionEditor({ queryRef, onValidChange, onHasUnsavedChange }: Props
   );
 
   // Check if the collection has unsaved changes
-  const lastStagedCollection = useRef<StagedCollection | Record<string, unknown>>({});
+  const lastStagedCollection = useRef({});
   const isStagedCollectionInitialized = useRef(false);
 
   // Initialize the lastStagedCollection ref
@@ -133,12 +133,17 @@ function CollectionEditor({ queryRef, onValidChange, onHasUnsavedChange }: Props
       return;
     }
 
-    lastStagedCollection.current = cloneDeep(stagedCollectionState);
+    lastStagedCollection.current = formatStagedCollection(stagedCollectionState);
+
     isStagedCollectionInitialized.current = true;
   }, [stagedCollectionState]);
 
   useEffect(() => {
-    if (JSON.stringify(stagedCollectionState) !== JSON.stringify(lastStagedCollection.current)) {
+    const formattedStagedCollection = formatStagedCollection(stagedCollectionState);
+
+    if (
+      JSON.stringify(formattedStagedCollection) !== JSON.stringify(lastStagedCollection.current)
+    ) {
       onHasUnsavedChange(true);
       return;
     }
