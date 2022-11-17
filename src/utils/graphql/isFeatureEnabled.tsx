@@ -9,8 +9,8 @@ export enum FeatureFlag {
 }
 
 const PROD_FLAGS: Record<FeatureFlag, boolean> = {
-  WHITE_RHINO: false,
-  EMAIL: false,
+  WHITE_RHINO: true,
+  EMAIL: true,
 };
 
 const DEV_FLAGS: Record<FeatureFlag, boolean> = {
