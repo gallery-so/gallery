@@ -73,7 +73,7 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
     throw new Error('GlobalAnnouncementPopver did not receive gallery of the week winners');
   }
 
-  const { showModal } = useModalActions();
+  const { showModal, clearAllModals } = useModalActions();
 
   const isMobile = !useIsDesktopWindowWidth();
 
@@ -82,10 +82,13 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
   const { push } = useRouter();
 
   const handlePrimaryButtonClick = useCallback(() => {
+    clearAllModals();
+
     if (isAuthenticated) {
       push({ pathname: '/home' });
       return;
     }
+
     showModal({
       content: <AuthModal queryRef={query} />,
       headerText: 'Create account',
