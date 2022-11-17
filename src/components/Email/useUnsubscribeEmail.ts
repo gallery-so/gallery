@@ -44,17 +44,11 @@ export default function useUnsubscribeEmail() {
               token,
             },
           },
-          optimisticResponse: {
-            unsubscribeFromEmailType: {
-              __typename: 'UnsubscribeFromEmailTypePayload',
-              viewer: {
-                email: {
-                  emailNotificationSettings: {
-                    unsubscribedFromNotifications: true,
-                  },
-                },
-              },
-            },
+          optimisticUpdater: (store) => {
+            const viewer = store.getRoot().getLinkedRecord('viewer');
+            const email = viewer?.getLinkedRecord('email');
+            const emailNotificationSettings = email?.getLinkedRecord('emailNotificationSettings');
+            emailNotificationSettings?.setValue(true, 'unsubscribedFromNotifications');
           },
         });
 
@@ -62,17 +56,20 @@ export default function useUnsubscribeEmail() {
           pushToast({
             message:
               'You have successfully unsubscribed. You will no longer receive Notification emails.',
+            autoClose: false,
           });
           return;
         }
 
         pushToast({
           message: 'Unfortunately there was an error unsubscribe your email address.',
+          autoClose: false,
         });
       } catch (error) {
         if (error instanceof Error) {
           pushToast({
             message: 'Unfortunately there was an error unsubscribe your email address.',
+            autoClose: false,
           });
         }
       }
