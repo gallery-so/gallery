@@ -141,8 +141,9 @@ function SettingsModal({
     if (!userEmail || isEmailUnverified) {
       return false;
     }
+    setIsEmailNotificationChecked(isEmailNotificationSubscribed);
     return isEmailNotificationChecked;
-  }, [isEmailNotificationChecked, isEmailUnverified, userEmail]);
+  }, [isEmailNotificationChecked, isEmailNotificationSubscribed, isEmailUnverified, userEmail]);
 
   return (
     <StyledManageWalletsModal gap={24}>

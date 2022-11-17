@@ -44,6 +44,18 @@ export default function useUnsubscribeEmail() {
               token,
             },
           },
+          optimisticResponse: {
+            unsubscribeFromEmailType: {
+              __typename: 'UnsubscribeFromEmailTypePayload',
+              viewer: {
+                email: {
+                  emailNotificationSettings: {
+                    unsubscribedFromNotifications: true,
+                  },
+                },
+              },
+            },
+          },
         });
 
         if (response?.unsubscribeFromEmailType?.__typename === 'UnsubscribeFromEmailTypePayload') {
