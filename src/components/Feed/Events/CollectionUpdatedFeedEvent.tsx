@@ -99,17 +99,17 @@ export default function CollectionUpdatedFeedEvent({ eventDataRef, queryRef }: P
             <HStack gap={4} inline>
               <BaseM>
                 <HoverCardOnUsername userRef={event.owner} queryRef={query} /> made updates to
-                {collectionName ? ' ': 'their collection'}
+                {collectionName ? ' ' : 'their collection'}
                 <InteractiveLink to={collectionPagePath}>{collectionName}</InteractiveLink>
               </BaseM>
               <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
             </HStack>
           </StyledEventHeader>
-            <StyledQuote>
-              <Markdown text={unescape(event.newCollectorsNote ?? '')} inheritLinkStyling />
-            </StyledQuote>
+          <StyledQuote>
+            <Markdown text={unescape(event.newCollectorsNote ?? '')} inheritLinkStyling />
+          </StyledQuote>
           <VStack gap={8}>
-            <FeedEventTokenPreviews tokensToPreview={tokensToPreview} />
+            <FeedEventTokenPreviews isInCaption={false} tokensToPreview={tokensToPreview} />
             {showAdditionalPiecesIndicator && (
               <StyledAdditionalPieces>
                 +{numAdditionalPieces} more {pluralize(numAdditionalPieces, 'piece')}
@@ -125,7 +125,7 @@ export default function CollectionUpdatedFeedEvent({ eventDataRef, queryRef }: P
 const StyledAdditionalPieces = styled(BaseS)`
   text-align: end;
   color: ${colors.metal};
-`
+`;
 const StyledQuote = styled(BaseM)`
   color: ${colors.metal};
   border-left: 2px solid ${colors.porcelain};
@@ -133,5 +133,5 @@ const StyledQuote = styled(BaseM)`
 
   @media only screen and ${breakpoints.tablet} {
     max-width: 50%;
-  };
-`
+  } ;
+`;

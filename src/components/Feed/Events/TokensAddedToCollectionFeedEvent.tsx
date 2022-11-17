@@ -122,7 +122,10 @@ export default function TokensAddedToCollectionFeedEvent({
                 <BaseM>{caption}</BaseM>
               </StyledCaptionContainer>
             )}
-            <FeedEventTokenPreviews tokensToPreview={tokensToPreview} />
+            <FeedEventTokenPreviews
+              isInCaption={Boolean(caption)}
+              tokensToPreview={tokensToPreview}
+            />
             {showAdditionalPiecesIndicator && !isPreFeed && (
               <StyledAdditionalPieces>
                 +{numAdditionalPieces} more {pluralize(numAdditionalPieces, 'piece')}

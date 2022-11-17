@@ -3,7 +3,9 @@ import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
+import breakpoints from '~/components/core/breakpoints';
 import { VStack } from '~/components/core/Spacer/Stack';
+import { FEED_EVENT_ROW_WIDTH_DESKTOP } from '~/components/Feed/dimensions';
 import { FeedEventSocializeSection } from '~/components/Feed/Socialize/FeedEventSocializeSection';
 import { FeedEventFragment$key } from '~/generated/FeedEventFragment.graphql';
 import { FeedEventQueryFragment$key } from '~/generated/FeedEventQueryFragment.graphql';
@@ -178,7 +180,7 @@ export default function FeedEventWithBoundary({
 
   return (
     <FeedEventErrorBoundary>
-      <FeedEventContainer>
+      <FeedEventContainer gap={16}>
         <FeedEvent eventRef={event} queryRef={query} feedMode={feedMode} />
 
         {shouldShowAdmireComment && (
@@ -196,5 +198,24 @@ export default function FeedEventWithBoundary({
 }
 
 const FeedEventContainer = styled(VStack)`
+  margin: 0 auto;
+
   border-bottom: 1px solid ${colors.faint};
+
+  padding: 24px 16px;
+
+  @media only screen and ${breakpoints.tablet} {
+    padding: 16px 32px;
+  }
+
+  @media only screen and ${breakpoints.desktop} {
+    padding: 16px;
+  }
+
+  cursor: pointer;
+
+  @media only screen and ${breakpoints.desktop} {
+    max-width: initial;
+    width: ${FEED_EVENT_ROW_WIDTH_DESKTOP}px;
+  }
 `;

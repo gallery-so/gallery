@@ -6,7 +6,6 @@ import breakpoints from '~/components/core/breakpoints';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { FeedViewerFragment$key } from '~/generated/FeedViewerFragment.graphql';
 
-import { FEED_MAX_WIDTH } from './dimensions';
 import GlobalFeed from './GlobalFeed';
 import ViewerFeed from './ViewerFeed';
 
@@ -49,9 +48,5 @@ const StyledFeed = styled(VStack)`
 
   @media only screen and ${breakpoints.tablet} {
     padding-top: 24px;
-  }
-
-  @media only screen and ${breakpoints.desktop} {
-    width: ${FEED_MAX_WIDTH}px;
   }
 `;

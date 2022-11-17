@@ -13,9 +13,10 @@ export type TokenToPreview = EventMediaFragment$key & {
 
 type Props = {
   tokensToPreview: TokenToPreview[];
+  isInCaption: boolean;
 };
 
-export default function FeedEventTokenPreviews({ tokensToPreview }: Props) {
+export default function FeedEventTokenPreviews({ tokensToPreview, isInCaption }: Props) {
   const breakpoint = useBreakpoint();
   const { width } = useWindowSize();
 
@@ -24,8 +25,9 @@ export default function FeedEventTokenPreviews({ tokensToPreview }: Props) {
       numTokens: `${tokensToPreview.length}` as NumTokens,
       maxWidth: width,
       breakpoint,
+      isInCaption,
     });
-  }, [breakpoint, tokensToPreview.length, width]);
+  }, [breakpoint, isInCaption, tokensToPreview.length, width]);
 
   return (
     <StyledFeedEventTokenPreviews>

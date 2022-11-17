@@ -104,7 +104,10 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({
             <StyledQuote>
               <Markdown text={unescape(event.newCollectorsNote ?? '')} inheritLinkStyling />
             </StyledQuote>
-            <FeedEventTokenPreviews tokensToPreview={event.collection.tokens as TokenToPreview[]} />
+            <FeedEventTokenPreviews
+              isInCaption={Boolean(event.newCollectorsNote)}
+              tokensToPreview={event.collection.tokens as TokenToPreview[]}
+            />
           </StyledEventContent>
           {/* [GAL-608] Bring this back once we fix perf around tokenURI
           {showAdditionalPiecesIndicator && (

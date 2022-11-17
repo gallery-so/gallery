@@ -1,12 +1,9 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
 
-import breakpoints from '~/components/core/breakpoints';
 import colors from '~/components/core/colors';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseS } from '~/components/core/Text/Text';
-
-import { FEED_EVENT_ROW_WIDTH_DESKTOP } from '../dimensions';
 
 type StyledEventProps = {
   children: ReactNode;
@@ -16,39 +13,14 @@ type StyledEventProps = {
 
 export const StyledEvent = ({ children, className, onClick }: StyledEventProps) => {
   return (
-    <StyledEventWrapper className={className} onClick={onClick}>
-      <StyledInnerEvent>{children}</StyledInnerEvent>
-    </StyledEventWrapper>
+    <StyledInnerEvent onClick={onClick} className={className}>
+      {children}
+    </StyledInnerEvent>
   );
 };
 
 export const StyledInnerEvent = styled.div`
-  width: 100%;
-
-  @media only screen and ${breakpoints.desktop} {
-    max-width: initial;
-    width: ${FEED_EVENT_ROW_WIDTH_DESKTOP}px;
-  }
-`;
-
-// base styles for feed events
-export const StyledEventWrapper = styled.div`
-  width: 100%;
-
-  display: flex;
-  justify-content: center;
-
-  padding: 24px 16px;
-
-  @media only screen and ${breakpoints.tablet} {
-    padding: 16px 32px;
-  }
-
-  @media only screen and ${breakpoints.desktop} {
-    padding: 16px;
-  }
-
-  cursor: pointer;
+  flex-grow: 1;
 `;
 
 export const StyledEventHeader = styled.div`
@@ -75,5 +47,5 @@ export const StyledClickHandler = styled.a`
 
 export const StyledEventContent = styled(VStack)<{ hasCaption?: boolean }>`
   background-color: ${({ hasCaption }) => (hasCaption ? colors.offWhite : 'transparent')};
-  padding: 12px;
+  padding: ${({ hasCaption }) => (hasCaption ? '16px' : '0')};
 `;
