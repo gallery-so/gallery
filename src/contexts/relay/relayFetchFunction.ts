@@ -1,6 +1,6 @@
 import { getCurrentHub, startTransaction } from '@sentry/nextjs';
 import { Transaction } from '@sentry/types';
-import { FetchFunction, GraphQLResponse, RequestParameters } from 'relay-runtime';
+import { FetchFunction, GraphQLResponse, PayloadError, RequestParameters } from 'relay-runtime';
 
 import { _fetch } from '~/contexts/swr/fetch';
 import { baseUrl } from '~/utils/baseUrl';
@@ -27,22 +27,31 @@ export const relayFetchFunction: FetchFunction = async (request, variables) => {
   const transaction = initSentryTracing(request);
   // ---------- end pre-request hooks
 
-  const response = await _fetch<GraphQLResponse>(getGraphqlUrl(), {
-    body: {
-      operationName: request.name,
-      query: request.text,
-      variables,
-    },
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
+  try {
+    const response = await _fetch<GraphQLResponse>(getGraphqlUrl(), {
+      body: {
+        operationName: request.name,
+        query: request.text,
+        variables,
+      },
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
 
-  // ---------- begin post-request hooks
-  teardownSentryTracing(transaction);
-  // ---------- end post-request hooks
+    return response;
+  } catch (error) {
+    const payloadError: PayloadError =
+      error instanceof Error
+        ? { message: error.message, severity: 'CRITICAL' }
+        : { message: 'An unexpected error occurred in relayFetchFunction', severity: 'CRITICAL' };
 
-  return response;
+    return { errors: [payloadError] };
+  } finally {
+    // ---------- begin post-request hooks
+    teardownSentryTracing(transaction);
+    // ---------- end post-request hooks
+  }
 };
 
 /**
