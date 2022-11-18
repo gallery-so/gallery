@@ -13,7 +13,7 @@ import {
   useState,
 } from 'react';
 import { useFragment, useLazyLoadQuery } from 'react-relay';
-import { graphql } from 'relay-runtime';
+import { fetchQuery, graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import NavLink from '~/components/core/NavLink/NavLink';
@@ -24,6 +24,7 @@ import { GlobalLayoutContextQuery } from '~/generated/GlobalLayoutContextQuery.g
 import useDebounce from '~/hooks/useDebounce';
 import usePrevious from '~/hooks/usePrevious';
 import useThrottle from '~/hooks/useThrottle';
+import { PreloadQueryArgs } from '~/types/PageComponentPreloadQuery';
 import isTouchscreenDevice from '~/utils/isTouchscreenDevice';
 
 import { FEATURED_COLLECTION_IDS } from './GlobalAnnouncementPopover/GlobalAnnouncementPopover';
@@ -71,19 +72,18 @@ type Props = { children: ReactNode };
 // the action that triggered the fade animation
 type FadeTriggerType = 'route' | 'scroll' | 'hover';
 
+const GlobalLayoutContextQueryNode = graphql`
+  query GlobalLayoutContextQuery($collectionIds: [DBID!]!) {
+    ...GlobalLayoutContextNavbarFragment
+    # Keeping this around for the next time we want to use it
+    ...useGlobalAnnouncementPopoverFragment
+  }
+`;
+
 const GlobalLayoutContextProvider = memo(({ children }: Props) => {
-  const query = useLazyLoadQuery<GlobalLayoutContextQuery>(
-    graphql`
-      query GlobalLayoutContextQuery($collectionIds: [DBID!]!) {
-        ...GlobalLayoutContextNavbarFragment
-        # Keeping this around for the next time we want to use it
-        ...useGlobalAnnouncementPopoverFragment
-      }
-    `,
-    {
-      collectionIds: FEATURED_COLLECTION_IDS,
-    }
-  );
+  const query = useLazyLoadQuery<GlobalLayoutContextQuery>(GlobalLayoutContextQueryNode, {
+    collectionIds: FEATURED_COLLECTION_IDS,
+  });
 
   // whether the global banner is visible
   const [isBannerVisible, setBannerVisible] = useState(false);
@@ -266,6 +266,12 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
     </>
   );
 });
+
+GlobalLayoutContextProvider.preloadQuery = ({ relayEnvironment }: PreloadQueryArgs) => {
+  fetchQuery<GlobalLayoutContextQuery>(relayEnvironment, GlobalLayoutContextQueryNode, {
+    collectionIds: FEATURED_COLLECTION_IDS,
+  }).toPromise();
+};
 
 GlobalLayoutContextProvider.displayName = 'GlobalLayoutContextProvider';
 

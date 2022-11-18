@@ -27,6 +27,7 @@ import { AuthContextLogoutMutation } from '~/generated/AuthContextLogoutMutation
 import usePersistedState from '~/hooks/usePersistedState';
 import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 import { isWeb3Error, Web3Error } from '~/types/Error';
+import { PreloadQueryArgs } from '~/types/PageComponentPreloadQuery';
 
 import clearLocalStorageWithException from './clearLocalStorageWithException';
 import { EtheremProviders } from './EthereumProviders';
@@ -64,49 +65,51 @@ export const useAuthActions = (): AuthActions => {
   return context;
 };
 
+const AuthContextFetchUserQueryNode = graphql`
+  query AuthContextFetchUserQuery {
+    viewer {
+      ... on Viewer {
+        __typename
+        user {
+          id
+          dbid
+          username
+          wallets {
+            dbid
+            chainAddress {
+              chain
+              address
+            }
+          }
+        }
+      }
+      ... on ErrNotAuthorized {
+        __typename
+        cause {
+          ... on ErrInvalidToken {
+            __typename
+          }
+          ... on ErrDoesNotOwnRequiredToken {
+            __typename
+          }
+          ... on ErrNoCookie {
+            __typename
+          }
+        }
+      }
+    }
+
+    ...ProfileDropdownFragment
+  }
+`;
+
 const useImperativelyFetchUser = () => {
   const relayEnvironment = useRelayEnvironment();
 
   return useCallback(async () => {
     return await fetchQuery<AuthContextFetchUserQuery>(
       relayEnvironment,
-      graphql`
-        query AuthContextFetchUserQuery {
-          viewer {
-            ... on Viewer {
-              __typename
-              user {
-                id
-                dbid
-                username
-                wallets {
-                  dbid
-                  chainAddress {
-                    chain
-                    address
-                  }
-                }
-              }
-            }
-            ... on ErrNotAuthorized {
-              __typename
-              cause {
-                ... on ErrInvalidToken {
-                  __typename
-                }
-                ... on ErrDoesNotOwnRequiredToken {
-                  __typename
-                }
-                ... on ErrNoCookie {
-                  __typename
-                }
-              }
-            }
-          }
-
-          ...ProfileDropdownFragment
-        }
-      `,
+      AuthContextFetchUserQueryNode,
       {}
     ).toPromise();
   }, [relayEnvironment]);
@@ -310,6 +313,14 @@ const AuthProvider = memo(({ children }: Props) => {
     </Fragment>
   );
 });
+
+AuthProvider.preloadQuery = async ({ relayEnvironment }: PreloadQueryArgs) => {
+  fetchQuery<AuthContextFetchUserQuery>(
+    relayEnvironment,
+    AuthContextFetchUserQueryNode,
+    {}
+  ).toPromise();
+};
 
 AuthProvider.displayName = 'AuthProvider';
 
