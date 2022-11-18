@@ -46,7 +46,7 @@ export default function useGlobalAnnouncementPopover({
 
   const isAuthenticated = Boolean(query.viewer?.user?.id);
 
-  const { asPath } = useRouter();
+  const { asPath, query: urlQuery } = useRouter();
 
   // tracks dismissal on localStorage, persisted across refreshes
   const [dismissedOnLocalStorage, setDismissedOnLocalStorage] = usePersistedState(
@@ -60,9 +60,9 @@ export default function useGlobalAnnouncementPopover({
   const { showModal, hideModal } = useModalActions();
 
   const shouldHidePopoverOnCurrentPath = useMemo(() => {
-    // hide modal on opengraph pages
+    // hide on opengraph pages
     if (asPath.includes('opengraph')) return true;
-    // hide announcement modal on announcements page
+    // hide on announcements page
     if (asPath === '/announcements') return true;
     // hide on auth page
     if (asPath === '/auth') return true;
@@ -70,11 +70,15 @@ export default function useGlobalAnnouncementPopover({
     if (asPath.toLowerCase().includes('/edit')) return true;
     // hide for new users onboarding
     if (asPath.toLowerCase().includes('/onboarding')) return true;
-    // hide for curated as they've asked not to display anything else on their page
-    if (asPath.toLowerCase().includes('curated')) return true;
+
+    // hide for users who have explicitly requested the popover to be disabled on their page
+    if (typeof urlQuery.username === 'string') {
+      const disabledUserProfiles = ['curated', '1of1'];
+      if (disabledUserProfiles.includes(urlQuery.username)) return true;
+    }
 
     return false;
-  }, [asPath]);
+  }, [asPath, urlQuery.username]);
 
   useEffect(() => {
     async function handleMount() {
