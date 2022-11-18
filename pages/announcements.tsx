@@ -1,16 +1,16 @@
 import { useEffect } from 'react';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 
-import { TEZOS_ANNOUNCEMENT_STORAGE_KEY } from '~/constants/storageKeys';
+import { WHITE_RHINO_STORAGE_KEY } from '~/constants/storageKeys';
 import GlobalAnnouncementPopover, {
-  FEATURED_TEZOS_COLLECTION_IDS,
+  FEATURED_COLLECTION_IDS,
 } from '~/contexts/globalLayout/GlobalAnnouncementPopover/GlobalAnnouncementPopover';
 import { announcementsQuery } from '~/generated/announcementsQuery.graphql';
 import usePersistedState from '~/hooks/usePersistedState';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
 
 export default function Announcements() {
-  const [, setDismissed] = usePersistedState(TEZOS_ANNOUNCEMENT_STORAGE_KEY, false);
+  const [, setDismissed] = usePersistedState(WHITE_RHINO_STORAGE_KEY, false);
 
   const query = useLazyLoadQuery<announcementsQuery>(
     graphql`
@@ -18,7 +18,7 @@ export default function Announcements() {
         ...GlobalAnnouncementPopoverFragment
       }
     `,
-    { collectionIds: FEATURED_TEZOS_COLLECTION_IDS }
+    { collectionIds: FEATURED_COLLECTION_IDS }
   );
 
   useEffect(() => {

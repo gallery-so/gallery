@@ -18,7 +18,7 @@ import { getTimeSince } from '~/utils/time';
 import unescape from '~/utils/unescape';
 
 import FeedEventTokenPreviews, { TokenToPreview } from '../FeedEventTokenPreviews';
-import { StyledEvent, StyledEventHeader, StyledTime } from './EventStyles';
+import { StyledEvent, StyledEventContent, StyledEventHeader, StyledTime } from './EventStyles';
 
 type Props = {
   eventDataRef: CollectorsNoteAddedToCollectionFeedEventFragment$key;
@@ -98,11 +98,17 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({
                 <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
               </HStack>
             </StyledEventHeader>
+          </VStack>
+
+          <StyledEventContent gap={16} hasCaption={Boolean(event.newCollectorsNote)}>
             <StyledQuote>
               <Markdown text={unescape(event.newCollectorsNote ?? '')} inheritLinkStyling />
             </StyledQuote>
-          </VStack>
-          <FeedEventTokenPreviews tokensToPreview={event.collection.tokens as TokenToPreview[]} />
+            <FeedEventTokenPreviews
+              isInCaption={Boolean(event.newCollectorsNote)}
+              tokensToPreview={event.collection.tokens as TokenToPreview[]}
+            />
+          </StyledEventContent>
           {/* [GAL-608] Bring this back once we fix perf around tokenURI
           {showAdditionalPiecesIndicator && (
             <StyledAdditionalPieces>
@@ -123,7 +129,6 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({
 // `;
 
 const StyledQuote = styled(BaseM)`
-  color: ${colors.metal};
   border-left: 2px solid ${colors.porcelain};
   padding-left: 8px;
 

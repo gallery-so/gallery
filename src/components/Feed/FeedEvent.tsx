@@ -1,16 +1,22 @@
 import { ErrorBoundary } from '@sentry/nextjs';
 import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
+import styled from 'styled-components';
 
+import breakpoints from '~/components/core/breakpoints';
 import { VStack } from '~/components/core/Spacer/Stack';
+import { FEED_EVENT_ROW_WIDTH_DESKTOP } from '~/components/Feed/dimensions';
 import { FeedEventSocializeSection } from '~/components/Feed/Socialize/FeedEventSocializeSection';
 import { FeedEventFragment$key } from '~/generated/FeedEventFragment.graphql';
 import { FeedEventQueryFragment$key } from '~/generated/FeedEventQueryFragment.graphql';
 import { FeedEventWithErrorBoundaryFragment$key } from '~/generated/FeedEventWithErrorBoundaryFragment.graphql';
 import { FeedEventWithErrorBoundaryQueryFragment$key } from '~/generated/FeedEventWithErrorBoundaryQueryFragment.graphql';
 import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
+import unescape from '~/utils/unescape';
 
+import colors from '../core/colors';
 import CollectionCreatedFeedEvent from './Events/CollectionCreatedFeedEvent';
+import CollectionUpdatedFeedEvent from './Events/CollectionUpdatedFeedEvent';
 import CollectorsNoteAddedToCollectionFeedEvent from './Events/CollectorsNoteAddedToCollectionFeedEvent';
 import CollectorsNoteAddedToTokenFeedEvent from './Events/CollectorsNoteAddedToTokenFeedEvent';
 import TokensAddedToCollectionFeedEvent from './Events/TokensAddedToCollectionFeedEvent';
@@ -28,6 +34,7 @@ function FeedEvent({ eventRef, queryRef, feedMode }: FeedEventProps) {
   const event = useFragment(
     graphql`
       fragment FeedEventFragment on FeedEvent {
+        caption
         eventData {
           __typename
 
@@ -49,6 +56,12 @@ function FeedEvent({ eventRef, queryRef, feedMode }: FeedEventProps) {
           ... on CollectorsNoteAddedToCollectionFeedEventData {
             ...CollectorsNoteAddedToCollectionFeedEventFragment
           }
+          ... on CollectorsNoteAddedToCollectionFeedEventData {
+            ...CollectorsNoteAddedToCollectionFeedEventFragment
+          }
+          ... on CollectionUpdatedFeedEventData {
+            ...CollectionUpdatedFeedEventFragment
+          }
         }
       }
     `,
@@ -63,6 +76,7 @@ function FeedEvent({ eventRef, queryRef, feedMode }: FeedEventProps) {
         ...CollectorsNoteAddedToCollectionFeedEventQueryFragment
         ...CollectionCreatedFeedEventQueryFragment
         ...CollectorsNoteAddedToTokenFeedEventQueryFragment
+        ...CollectionUpdatedFeedEventQueryFragment
       }
     `,
     queryRef
@@ -70,13 +84,27 @@ function FeedEvent({ eventRef, queryRef, feedMode }: FeedEventProps) {
 
   switch (event.eventData?.__typename) {
     case 'CollectionCreatedFeedEventData':
-      return <CollectionCreatedFeedEvent eventDataRef={event.eventData} queryRef={query} />;
+      return (
+        <CollectionCreatedFeedEvent
+          caption={unescape(event.caption ?? '')}
+          eventDataRef={event.eventData}
+          queryRef={query}
+        />
+      );
+    case 'CollectionUpdatedFeedEventData':
+      return <CollectionUpdatedFeedEvent eventDataRef={event.eventData} queryRef={query} />;
     case 'CollectorsNoteAddedToTokenFeedEventData':
       return (
         <CollectorsNoteAddedToTokenFeedEvent eventDataRef={event.eventData} queryRef={query} />
       );
     case 'TokensAddedToCollectionFeedEventData':
-      return <TokensAddedToCollectionFeedEvent eventDataRef={event.eventData} queryRef={query} />;
+      return (
+        <TokensAddedToCollectionFeedEvent
+          caption={unescape(event.caption ?? '')}
+          eventDataRef={event.eventData}
+          queryRef={query}
+        />
+      );
     case 'CollectorsNoteAddedToCollectionFeedEventData':
       return (
         <CollectorsNoteAddedToCollectionFeedEvent eventDataRef={event.eventData} queryRef={query} />
@@ -141,7 +169,7 @@ export default function FeedEventWithBoundary({
     queryRef
   );
 
-  const isAdmireCommentEnabled = isFeatureEnabled(FeatureFlag.ADMIRE_COMMENT, query);
+  const isAdmireCommentEnabled = isFeatureEnabled(FeatureFlag.WHITE_RHINO, query);
   const eventSupportsAdmireComment =
     event.eventData?.__typename !== 'UserFollowedUsersFeedEventData';
 
@@ -153,7 +181,7 @@ export default function FeedEventWithBoundary({
 
   return (
     <FeedEventErrorBoundary>
-      <VStack gap={16}>
+      <FeedEventContainer gap={16}>
         <FeedEvent eventRef={event} queryRef={query} feedMode={feedMode} />
 
         {shouldShowAdmireComment && (
@@ -165,7 +193,22 @@ export default function FeedEventWithBoundary({
             />
           </ErrorBoundary>
         )}
-      </VStack>
+      </FeedEventContainer>
     </FeedEventErrorBoundary>
   );
 }
+
+const FeedEventContainer = styled(VStack)`
+  margin: 0 auto;
+
+  border-bottom: 1px solid ${colors.faint};
+
+  padding: 24px 16px;
+
+  cursor: pointer;
+
+  @media only screen and ${breakpoints.desktop} {
+    max-width: initial;
+    width: ${FEED_EVENT_ROW_WIDTH_DESKTOP}px;
+  }
+`;

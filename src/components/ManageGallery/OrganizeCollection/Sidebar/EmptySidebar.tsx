@@ -4,14 +4,17 @@ import styled from 'styled-components';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeL } from '~/components/core/Text/Text';
 
+import { SidebarView } from './SidebarViewSelector';
+
 type Reason = 'no-search-results' | 'no-nfts';
 
 type Props = {
   chain: string;
+  view: SidebarView;
   reason: Reason;
 };
 
-export function EmptySidebar({ chain, reason }: Props) {
+export function EmptySidebar({ chain, view, reason }: Props) {
   // Typing this explicitly in case we add a new Reason above
   // and then forget to handle that new case here
   const subtext: ReactNode = useMemo(() => {
@@ -21,6 +24,10 @@ export function EmptySidebar({ chain, reason }: Props) {
       return <BaseM>No pieces matching your search query</BaseM>;
     }
   }, [chain, reason]);
+
+  if (view === 'Hidden') {
+    return null;
+  }
 
   return (
     <StyledVStack grow align="center" justify="center">

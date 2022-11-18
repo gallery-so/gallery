@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { graphql, useFragment, usePaginationFragment } from 'react-relay';
 
+import { EmptyState } from '~/components/EmptyState/EmptyState';
 import { useTrackLoadMoreFeedEvents } from '~/components/Feed/analytics';
 import { ITEMS_PER_PAGE } from '~/components/Feed/constants';
 import FeedList from '~/components/Feed/FeedList';
@@ -43,6 +44,13 @@ function UserActivityFeed({ userRef, queryRef }: Props) {
     graphql`
       fragment UserActivityFeedQueryFragment on Query {
         ...FeedListFragment
+
+        feedEventById(id: $topEventId) {
+          ... on FeedEvent {
+            __typename
+            ...FeedListEventDataFragment
+          }
+        }
       }
     `,
     queryRef
@@ -67,8 +75,21 @@ function UserActivityFeed({ userRef, queryRef }: Props) {
       }
     }
 
+    if (query.feedEventById?.__typename === 'FeedEvent') {
+      events.push(query.feedEventById);
+    }
+
     return events;
-  }, [user.feed?.edges]);
+  }, [query.feedEventById, user.feed?.edges]);
+
+  if (feedData.length === 0) {
+    return (
+      <EmptyState
+        title={"It's quiet in here"}
+        description="This user doesn't seem to have any activity yet."
+      />
+    );
+  }
 
   return (
     <FeedList

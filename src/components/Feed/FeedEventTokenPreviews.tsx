@@ -1,13 +1,10 @@
 import { useMemo } from 'react';
 import styled from 'styled-components';
 
-import { size } from '~/components/core/breakpoints';
 import { EventMediaFragment$key } from '~/generated/EventMediaFragment.graphql';
-import useWindowSize, {
-  useBreakpoint,
-  useIsMobileOrMobileLargeWindowWidth,
-} from '~/hooks/useWindowSize';
+import useWindowSize, { useBreakpoint } from '~/hooks/useWindowSize';
 
+import { FEED_EVENT_TOKEN_MARGIN, getFeedTokenDimensions, NumTokens } from './dimensions';
 import EventMedia from './Events/EventMedia';
 
 export type TokenToPreview = EventMediaFragment$key & {
@@ -16,39 +13,21 @@ export type TokenToPreview = EventMediaFragment$key & {
 
 type Props = {
   tokensToPreview: TokenToPreview[];
+  isInCaption: boolean;
 };
 
-export const DEFAULT_DIMENSIONS_DESKTOP = 259.33;
-export const SMALL_DIMENSIONS_DESKTOP = 190.5;
-export const FEED_EVENT_TOKEN_MARGIN = 16;
-
-export default function FeedEventTokenPreviews({ tokensToPreview }: Props) {
-  const showSmallerPreview = tokensToPreview.length > 3;
-
-  const isMobile = useIsMobileOrMobileLargeWindowWidth();
-  const windowSize = useWindowSize();
-
+export default function FeedEventTokenPreviews({ tokensToPreview, isInCaption }: Props) {
   const breakpoint = useBreakpoint();
+  const { width } = useWindowSize();
 
   const sizePx = useMemo(() => {
-    if (isMobile) {
-      if (showSmallerPreview) {
-        // If there are 4 previews, size is 25% of vw minus margins
-        return (windowSize.width - 5 * FEED_EVENT_TOKEN_MARGIN) / 4;
-      }
-      // if there are less than 4 previews, size is 33% of vw minus margins (even if there are only 1 or 2 pieces)
-      return (windowSize.width - 4 * FEED_EVENT_TOKEN_MARGIN) / 3;
-    }
-    if (breakpoint === size.tablet) {
-      if (showSmallerPreview) {
-        // If there are 4 previews, size is 25% of vw minus margins
-        return (size.tablet - 3 * FEED_EVENT_TOKEN_MARGIN) / 4;
-      }
-      // if there are less than 4 previews, size is 33% of vw minus margins (even if there are only 1 or 2 pieces)
-      return (size.tablet - 2 * FEED_EVENT_TOKEN_MARGIN) / 3;
-    }
-    return showSmallerPreview ? SMALL_DIMENSIONS_DESKTOP : DEFAULT_DIMENSIONS_DESKTOP;
-  }, [breakpoint, isMobile, showSmallerPreview, windowSize.width]);
+    return getFeedTokenDimensions({
+      numTokens: `${tokensToPreview.length}` as NumTokens,
+      maxWidth: width,
+      breakpoint,
+      isInCaption,
+    });
+  }, [breakpoint, isInCaption, tokensToPreview.length, width]);
 
   return (
     <StyledFeedEventTokenPreviews>
@@ -66,7 +45,7 @@ export default function FeedEventTokenPreviews({ tokensToPreview }: Props) {
 
 const StyledFeedEventTokenPreviews = styled.div`
   display: flex;
-  gap: 16px;
+  gap: ${FEED_EVENT_TOKEN_MARGIN}px;
   justify-content: center;
   align-items: center;
 `;

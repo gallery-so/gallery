@@ -3,10 +3,13 @@ import { route } from 'nextjs-routes';
 import { useLazyLoadQuery } from 'react-relay';
 import { fetchQuery, graphql } from 'relay-runtime';
 
+import useVerifyEmailOnPage from '~/components/Email/useVerifyEmailOnPage';
+import GalleryViewEmitter from '~/components/internal/GalleryViewEmitter';
 import { GalleryNavbar } from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavbar';
 import { UsernameQuery } from '~/generated/UsernameQuery.graphql';
 import { MetaTagProps } from '~/pages/_app';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
+import useOpenSettingsModal from '~/scenes/Modals/useOpenSettingsModal';
 import UserGalleryPage from '~/scenes/UserGalleryPage/UserGalleryPage';
 import { PreloadQueryArgs } from '~/types/PageComponentPreloadQuery';
 import { openGraphMetaTags } from '~/utils/openGraphMetaTags';
@@ -15,6 +18,9 @@ const UsernameQueryNode = graphql`
   query UsernameQuery($username: String!) {
     ...UserGalleryPageFragment
     ...GalleryNavbarFragment
+    ...useOpenSettingsModalFragment
+    ...GalleryViewEmitterWithSuspenseFragment
+    ...useVerifyEmailOnPageQueryFragment
   }
 `;
 
@@ -25,10 +31,18 @@ type UserGalleryProps = MetaTagProps & {
 export default function UserGallery({ username }: UserGalleryProps) {
   const query = useLazyLoadQuery<UsernameQuery>(UsernameQueryNode, { username });
 
+  useVerifyEmailOnPage(query);
+  useOpenSettingsModal(query);
+
   return (
     <GalleryRoute
       navbar={<GalleryNavbar username={username} queryRef={query} />}
-      element={<UserGalleryPage username={username} queryRef={query} />}
+      element={
+        <>
+          <GalleryViewEmitter queryRef={query} />
+          <UserGalleryPage username={username} queryRef={query} />
+        </>
+      }
     />
   );
 }

@@ -12,6 +12,8 @@ directive @goField(
 # arguments that specify the level of access required.
 directive @authRequired on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
 
+directive @retoolAuth on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
+
 # Use @scrub on any input field that should be omitted from request logging (e.g. passwords or
 # other sensitive data)
 directive @scrub on INPUT_FIELD_DEFINITION
@@ -40,6 +42,7 @@ scalar Time
 scalar Address
 scalar PubKey
 scalar DBID
+scalar Email
 
 interface Node {
     id: ID!
@@ -56,6 +59,7 @@ type GalleryUser implements Node {
     bio: String
     traits: String
     universal: Boolean
+    roles: [Role] @goField(forceResolver: true)
 
     # Returns all tokens owned by this user. Useful for retrieving all tokens without any duplicates,
     # as opposed to retrieving user -> wallets -> tokens, which would contain duplicates for any token
@@ -285,7 +289,6 @@ type Token implements Node {
     chain: Chain
     name: String
     description: String
-    tokenUri: String
     tokenId: String
     quantity: String # source is a hex string
     owner: GalleryUser @goField(forceResolver: true)
@@ -446,33 +449,71 @@ type NotificationsConnection @goEmbedHelper {
 }
 
 type Viewer {
-    user: GalleryUser @goField(forceResolver: true)
-    viewerGalleries: [ViewerGallery] @goField(forceResolver: true)
-    feed(before: String, after: String, first: Int, last: Int): FeedConnection @goField(forceResolver: true)
+  user: GalleryUser @goField(forceResolver: true)
+  viewerGalleries: [ViewerGallery] @goField(forceResolver: true)
+  feed(before: String, after: String, first: Int, last: Int): FeedConnection
+    @goField(forceResolver: true)
 
-    """
-    Returns a list of notifications in reverse chronological order.
-    Seen notifications come after unseen notifications
-    """
-    notifications(before: String, after: String, first: Int, last: Int): NotificationsConnection @goField(forceResolver: true)
+  email: UserEmail @goField(forceResolver: true)
+  """
+  Returns a list of notifications in reverse chronological order.
+  Seen notifications come after unseen notifications
+  """
+  notifications(
+    before: String
+    after: String
+    first: Int
+    last: Int
+  ): NotificationsConnection @goField(forceResolver: true)
 
-    notificationSettings: NotificationSettings @goField(forceResolver: true)
+  notificationSettings: NotificationSettings @goField(forceResolver: true)
 }
 
-type NotificationSettings @goEmbedHelper {
-    user: GalleryUser
-
-    someoneFollowedYou: Boolean
-    someoneAdmiredYourUpdate: Boolean
-    someoneCommentedOnYourUpdate: Boolean
-    someoneViewedYourGallery: Boolean
+type NotificationSettings {
+  someoneFollowedYou: Boolean
+  someoneAdmiredYourUpdate: Boolean
+  someoneCommentedOnYourUpdate: Boolean
+  someoneViewedYourGallery: Boolean
 }
 
 input NotificationSettingsInput {
-    someoneFollowedYou: Boolean
-    someoneAdmiredYourUpdate: Boolean
-    someoneCommentedOnYourUpdate: Boolean
-    someoneViewedYourGallery: Boolean
+  someoneFollowedYou: Boolean
+  someoneAdmiredYourUpdate: Boolean
+  someoneCommentedOnYourUpdate: Boolean
+  someoneViewedYourGallery: Boolean
+}
+
+enum EmailVerificationStatus {
+    Unverified
+    Verified
+    Failed
+    Admin
+}
+
+enum EmailUnsubscriptionType {
+    All
+    Notifications
+}
+
+type UserEmail {
+    email: Email
+    verificationStatus: EmailVerificationStatus
+    emailNotificationSettings: EmailNotificationSettings
+}
+
+type EmailNotificationSettings {
+    unsubscribedFromAll: Boolean!
+    unsubscribedFromNotifications: Boolean!
+}
+
+input UpdateEmailNotificationSettingsInput {
+    unsubscribedFromAll: Boolean!
+    unsubscribedFromNotifications: Boolean!
+}
+
+input UnsubscribeFromEmailTypeInput {
+    type: EmailUnsubscriptionType!
+    token: String! @scrub
 }
 
 union UserByUsernameOrError = GalleryUser | ErrUserNotFound | ErrInvalidInput
@@ -691,6 +732,21 @@ type FeedConnection {
     pageInfo: PageInfo!
 }
 
+type UserEdge {
+    node: GalleryUser
+    cursor: String
+}
+
+type UsersConnection {
+    edges: [UserEdge]
+    pageInfo: PageInfo!
+}
+
+enum Role {
+    ADMIN
+    BETA_TESTER
+}
+
 type Query {
     node(id: ID!): Node
     viewer: ViewerOrError @authRequired
@@ -708,6 +764,9 @@ type Query {
     galleryOfTheWeekWinners: [GalleryUser!]
     globalFeed(before: String, after: String, first: Int, last: Int): FeedConnection
     feedEventById(id: DBID!): FeedEventByIdOrError
+
+    # Retool Specific
+    usersByRole(role: Role!, before: String, after: String, first: Int, last: Int): UsersConnection @retoolAuth
 }
 
 input CollectionLayoutInput {
@@ -1169,7 +1228,7 @@ type GroupNotificationUserEdge {
 }
 
 type GroupNotificationUsersConnection @goEmbedHelper {
-    edges:  [GroupNotificationUserEdge] 
+    edges:  [GroupNotificationUserEdge]
     pageInfo: PageInfo
 }
 
@@ -1231,9 +1290,13 @@ type SomeoneViewedYourGalleryNotification implements Notification & Node & Group
   seen: Boolean
   creationTime: Time
   updatedTime: Time
+  # the total count of notifications grouped, despite uniqueness of the viewers and whether they are logged in or not
   count: Int
 
+  # unique user viewers, use PageInfo.Total to get the total unique user viewers
   userViewers(before: String, after: String, first: Int, last: Int): GroupNotificationUsersConnection @goField(forceResolver: true)
+
+  # count of unique non-user viewers
   nonUserViewerCount: Int
   gallery: Gallery @goField(forceResolver: true)
 }
@@ -1249,6 +1312,77 @@ type ViewGalleryPayload {
 union ViewGalleryPayloadOrError =
     ViewGalleryPayload
     | ErrAuthenticationFailed
+
+
+input VerifyEmailInput {
+    token: String! @scrub
+}
+
+type VerifyEmailPayload {
+    email: Email!
+}
+
+union VerifyEmailPayloadOrError =
+    VerifyEmailPayload
+    | ErrInvalidInput
+
+input PreverifyEmailInput {
+    email: Email! @scrub
+}
+
+enum PreverifyEmailResult {
+    Invalid
+    Risky
+    Valid
+}
+
+type PreverifyEmailPayload {
+    email: Email!
+    result: PreverifyEmailResult!
+}
+
+union PreverifyEmailPayloadOrError =
+    PreverifyEmailPayload
+    | ErrInvalidInput
+
+input UpdateEmailInput {
+    email: Email! @scrub
+}
+
+type UpdateEmailPayload {
+    viewer: Viewer
+}
+
+union UpdateEmailPayloadOrError =
+    UpdateEmailPayload
+    | ErrInvalidInput
+
+type ResendVerificationEmailPayload {
+    viewer: Viewer
+}
+
+union ResendVerificationEmailPayloadOrError =
+    ResendVerificationEmailPayload
+    | ErrInvalidInput
+
+type UpdateEmailNotificationSettingsPayload {
+    viewer: Viewer
+}
+
+union UpdateEmailNotificationSettingsPayloadOrError =
+    UpdateEmailNotificationSettingsPayload
+    | ErrInvalidInput
+
+type UnsubscribeFromEmailTypePayload {
+    viewer: Viewer
+}
+
+union UnsubscribeFromEmailTypePayloadOrError =
+    UnsubscribeFromEmailTypePayload
+    | ErrInvalidInput
+
+union AddRolesToUserPayloadOrError = GalleryUser | ErrNotAuthorized
+union RevokeRolesFromUserPayloadOrError = GalleryUser | ErrNotAuthorized
 
 type Mutation {
     # User Mutations
@@ -1278,7 +1412,11 @@ type Mutation {
 
     getAuthNonce(chainAddress: ChainAddressInput!): GetAuthNoncePayloadOrError
 
-    createUser(authMechanism: AuthMechanism!, username: String!, bio:String): CreateUserPayloadOrError
+    createUser(authMechanism: AuthMechanism!, username: String!, bio: String, email: Email): CreateUserPayloadOrError
+    updateEmail(input: UpdateEmailInput!): UpdateEmailPayloadOrError @authRequired
+    resendVerificationEmail: ResendVerificationEmailPayloadOrError @authRequired
+    updateEmailNotificationSettings(input: UpdateEmailNotificationSettingsInput!): UpdateEmailNotificationSettingsPayloadOrError @authRequired
+    unsubscribeFromEmailType(input: UnsubscribeFromEmailTypeInput!): UnsubscribeFromEmailTypePayloadOrError
     login(authMechanism: AuthMechanism!): LoginPayloadOrError
     logout: LogoutPayload
 
@@ -1288,12 +1426,20 @@ type Mutation {
     removeAdmire(admireId: DBID!): RemoveAdmirePayloadOrError @authRequired
     commentOnFeedEvent(feedEventId: DBID!, replyToID: DBID, comment: String!): CommentOnFeedEventPayloadOrError @authRequired
     removeComment(commentId: DBID!): RemoveCommentPayloadOrError @authRequired
-    
+
     viewGallery(galleryId: DBID!): ViewGalleryPayloadOrError
 
     clearAllNotifications: ClearAllNotificationsPayload @authRequired
 
     updateNotificationSettings(settings: NotificationSettingsInput): NotificationSettings
+
+
+    preverifyEmail(input: PreverifyEmailInput!): PreverifyEmailPayloadOrError
+    verifyEmail(input: VerifyEmailInput!): VerifyEmailPayloadOrError
+
+    # Retool Specific Mutations
+    addRolesToUser(username: String!, roles: [Role]): AddRolesToUserPayloadOrError @retoolAuth
+    revokeRolesFromUser(username: String!, roles: [Role]): RevokeRolesFromUserPayloadOrError @retoolAuth
 }
 
 type Subscription {

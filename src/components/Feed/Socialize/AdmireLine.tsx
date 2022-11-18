@@ -12,11 +12,12 @@ import { AdmireLineFragment$key } from '~/generated/AdmireLineFragment.graphql';
 import { AdmireLineQueryFragment$key } from '~/generated/AdmireLineQueryFragment.graphql';
 
 type CommentLineProps = {
+  totalAdmires: number;
   admireRef: AdmireLineFragment$key;
   queryRef: AdmireLineQueryFragment$key;
 };
 
-export function AdmireLine({ admireRef, queryRef }: CommentLineProps) {
+export function AdmireLine({ admireRef, queryRef, totalAdmires }: CommentLineProps) {
   const admire = useFragment(
     graphql`
       fragment AdmireLineFragment on Admire {
@@ -63,12 +64,21 @@ export function AdmireLine({ admireRef, queryRef }: CommentLineProps) {
     : { pathname: '/' };
 
   const admirerLink = route(admirerLinkRoute);
+
   return (
     <HStack gap={4} align="flex-end">
       <Link href={admirerLinkRoute}>
         <AdmirerName href={admirerLink}>{admirerName}</AdmirerName>
       </Link>
-      <AdmirerText>admired this</AdmirerText>
+      {totalAdmires === 1 ? (
+        <AdmirerText>admired this</AdmirerText>
+      ) : (
+        <AdmirerText>
+          {/*                                  |-- Checking for two here since we have  */}
+          {/*                                  |   to subtract one to get the remaining count */}
+          and {totalAdmires - 1} {totalAdmires === 2 ? 'other' : 'others'} admired this
+        </AdmirerText>
+      )}
     </HStack>
   );
 }

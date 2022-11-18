@@ -16,8 +16,8 @@ import { fetchQuery, graphql, useRelayEnvironment } from 'react-relay';
 import FullPageLoader from '~/components/core/Loader/FullPageLoader';
 import {
   GLOBAL_BANNER_STORAGE_KEY,
-  TEZOS_ANNOUNCEMENT_STORAGE_KEY,
   USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY,
+  WHITE_RHINO_STORAGE_KEY,
 } from '~/constants/storageKeys';
 import { _identify } from '~/contexts/analytics/AnalyticsContext';
 import ErrorBoundary from '~/contexts/boundary/ErrorBoundary';
@@ -166,7 +166,7 @@ const AuthProvider = memo(({ children }: Props) => {
     setLocallyLoggedInWalletAddress('');
     // keep around dismissed state of banner so that user doesn't
     // encounter it again on login
-    clearLocalStorageWithException([GLOBAL_BANNER_STORAGE_KEY, TEZOS_ANNOUNCEMENT_STORAGE_KEY]);
+    clearLocalStorageWithException([GLOBAL_BANNER_STORAGE_KEY, WHITE_RHINO_STORAGE_KEY]);
   }, [setLocallyLoggedInWalletAddress]);
 
   const logoutOnServer = useLogout();

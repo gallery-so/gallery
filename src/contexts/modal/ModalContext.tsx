@@ -42,8 +42,10 @@ type ShowModalFnProps = {
   headerText?: string;
   headerVariant?: ModalPaddingVariant;
   isFullPage?: boolean;
+  hideClose?: boolean;
   isPaddingDisabled?: boolean;
   onClose?: () => void;
+  headerActions?: JSX.Element | false;
 };
 
 type HideModalFnProps = {
@@ -74,10 +76,12 @@ type Modal = {
   id: string;
   isActive: boolean;
   content: ReactElement;
+  headerActions?: JSX.Element | false;
   headerText: string;
   headerVariant: ModalPaddingVariant;
   isFullPage: boolean;
   isPaddingDisabled: boolean;
+  hideClose: boolean;
   onClose: () => void;
 };
 
@@ -96,7 +100,9 @@ function ModalProvider({ children }: Props) {
     ({
       id = uuid(),
       content,
+      headerActions,
       headerText = '',
+      hideClose = false,
       headerVariant = 'standard',
       isFullPage = false,
       isPaddingDisabled = false,
@@ -108,6 +114,8 @@ function ModalProvider({ children }: Props) {
           id,
           isActive: true,
           content,
+          headerActions,
+          hideClose,
           headerText,
           headerVariant,
           isFullPage,
@@ -173,10 +181,9 @@ function ModalProvider({ children }: Props) {
   const route = useStabilizedRouteTransitionKey();
   useEffect(() => {
     if (isModalOpenRef.current) {
-      // bypass onClose as to not navigate the user back mid-route change
-      hideModal({ bypassOnClose: true });
+      clearAllModals();
     }
-  }, [route, hideModal]);
+  }, [route, clearAllModals]);
 
   /**
    * EFFECT: Prevent main body from being scrollable while any modals are open
@@ -236,7 +243,17 @@ function ModalProvider({ children }: Props) {
       <ModalActionsContext.Provider value={actions}>
         {children}
         {modals.map(
-          ({ id, isActive, content, headerText, headerVariant, isFullPage, isPaddingDisabled }) => {
+          ({
+            id,
+            isActive,
+            content,
+            headerActions,
+            headerText,
+            headerVariant,
+            isFullPage,
+            isPaddingDisabled,
+            hideClose,
+          }) => {
             return (
               <AnimatedModal
                 key={id}
@@ -247,7 +264,9 @@ function ModalProvider({ children }: Props) {
                 headerText={headerText}
                 isFullPage={isFullPage}
                 isPaddingDisabled={isPaddingDisabled}
+                hideClose={hideClose}
                 headerVariant={headerVariant}
+                headerActions={headerActions}
               />
             );
           }

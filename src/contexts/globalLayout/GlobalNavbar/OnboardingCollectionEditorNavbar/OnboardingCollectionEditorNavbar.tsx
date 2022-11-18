@@ -2,7 +2,6 @@ import { Route } from 'nextjs-routes';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import { Button } from '~/components/core/Button/Button';
 import { ONBOARDING_NEXT_BUTTON_TEXT_MAP } from '~/components/Onboarding/constants';
 import { BackButton } from '~/contexts/globalLayout/GlobalNavbar/BackButton';
 import { GalleryNameAndCollectionName } from '~/contexts/globalLayout/GlobalNavbar/CollectionEditorNavbar/GalleryNameAndCollectionName';
@@ -13,12 +12,16 @@ import {
   StandardNavbarContainer,
 } from '~/contexts/globalLayout/GlobalNavbar/StandardNavbarContainer';
 import { OnboardingCollectionEditorNavbarFragment$key } from '~/generated/OnboardingCollectionEditorNavbarFragment.graphql';
+import unescape from '~/utils/unescape';
+
+import { CollectionSaveButtonWithCaption } from '../CollectionSaveButtonWithCaption';
 
 type OnboardingCollectionEditorNavbarProps = {
   queryRef: OnboardingCollectionEditorNavbarFragment$key;
   onBack: () => void;
-  onNext: () => void;
+  onNext: (caption: string) => Promise<void>;
   isCollectionValid: boolean;
+  hasUnsavedChange: boolean;
 };
 
 export function OnboardingCollectionEditorNavbar({
@@ -26,6 +29,7 @@ export function OnboardingCollectionEditorNavbar({
   onNext,
   queryRef,
   isCollectionValid,
+  hasUnsavedChange,
 }: OnboardingCollectionEditorNavbarProps) {
   const query = useFragment(
     graphql`
@@ -35,11 +39,13 @@ export function OnboardingCollectionEditorNavbar({
             name
           }
         }
+        ...CollectionSaveButtonWithCaptionFragment
       }
     `,
     queryRef
   );
 
+  const collectionName = unescape(query.collectionById?.name ?? '');
   const editGalleryRoute: Route = { pathname: '/onboarding/organize-gallery' };
 
   return (
@@ -52,15 +58,19 @@ export function OnboardingCollectionEditorNavbar({
         <GalleryNameAndCollectionName
           editGalleryRoute={editGalleryRoute}
           galleryName={'My gallery'}
-          collectionName={query.collectionById?.name ?? ''}
+          collectionName={collectionName ?? ''}
           rightText="Editing"
         />
       </NavbarCenterContent>
 
       <NavbarRightContent>
-        <Button disabled={!isCollectionValid} onClick={onNext}>
-          {ONBOARDING_NEXT_BUTTON_TEXT_MAP['edit-collection']}
-        </Button>
+        <CollectionSaveButtonWithCaption
+          disabled={!isCollectionValid}
+          label={ONBOARDING_NEXT_BUTTON_TEXT_MAP['edit-collection']}
+          onSave={onNext}
+          hasUnsavedChange={hasUnsavedChange}
+          queryRef={query}
+        />
       </NavbarRightContent>
     </StandardNavbarContainer>
   );

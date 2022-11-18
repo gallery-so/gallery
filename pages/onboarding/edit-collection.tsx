@@ -29,6 +29,7 @@ function LazyLoadedCollectionEditorOnboarding({ collectionId }: Props) {
       query editCollectionOnboardingQuery($collectionId: DBID!) {
         collectionById(id: $collectionId) {
           ... on Collection {
+            name
             gallery {
               dbid
             }
@@ -47,6 +48,8 @@ function LazyLoadedCollectionEditorOnboarding({ collectionId }: Props) {
   const stagedCollectionState = useStagedCollectionState();
   const collectionMetadata = useCollectionMetadataState();
 
+  const collectionName = query?.collectionById?.name;
+
   const { back, replace, query: urlQuery } = useRouter();
 
   const returnUrl: Route = useMemo(() => {
@@ -61,33 +64,42 @@ function LazyLoadedCollectionEditorOnboarding({ collectionId }: Props) {
     };
   }, [urlQuery]);
 
-  const handleNext = useCallback(async () => {
-    try {
-      await updateCollection({
-        collectionId,
-        stagedCollection: stagedCollectionState,
-        tokenSettings: collectionMetadata.tokenSettings,
-      });
-
-      replace(returnUrl);
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        pushToast({
-          message:
-            'There was an error updating your collection. If the issue persists, please contact us on Discord.',
+  const handleNext = useCallback(
+    async (caption: string) => {
+      try {
+        await updateCollection({
+          collectionId,
+          stagedCollection: stagedCollectionState,
+          tokenSettings: collectionMetadata.tokenSettings,
+          caption,
         });
-        return;
+
+        replace(returnUrl);
+
+        pushToast({
+          message: `“${collectionName || 'Collection'}” has been saved`,
+        });
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          pushToast({
+            message:
+              'There was an error updating your collection. If the issue persists, please contact us on Discord.',
+          });
+          return;
+        }
       }
-    }
-  }, [
-    collectionId,
-    collectionMetadata.tokenSettings,
-    pushToast,
-    replace,
-    returnUrl,
-    stagedCollectionState,
-    updateCollection,
-  ]);
+    },
+    [
+      collectionId,
+      collectionMetadata.tokenSettings,
+      collectionName,
+      pushToast,
+      replace,
+      returnUrl,
+      stagedCollectionState,
+      updateCollection,
+    ]
+  );
 
   const canGoBack = useCanGoBack();
   const handlePrevious = useCallback(() => {
@@ -109,6 +121,7 @@ function LazyLoadedCollectionEditorOnboarding({ collectionId }: Props) {
   }, [back, canGoBack, replace, returnUrl, showModal]);
 
   const [isCollectionValid, setIsCollectionValid] = useState(false);
+  const [hasUnsavedChange, setHasUnsavedChange] = useState(false);
 
   return (
     <FullPageStep
@@ -116,13 +129,18 @@ function LazyLoadedCollectionEditorOnboarding({ collectionId }: Props) {
       navbar={
         <OnboardingCollectionEditorNavbar
           isCollectionValid={isCollectionValid}
+          hasUnsavedChange={hasUnsavedChange}
           onBack={handlePrevious}
           onNext={handleNext}
           queryRef={query}
         />
       }
     >
-      <CollectionEditor queryRef={query} onValidChange={setIsCollectionValid} />
+      <CollectionEditor
+        queryRef={query}
+        onValidChange={setIsCollectionValid}
+        onHasUnsavedChange={setHasUnsavedChange}
+      />
     </FullPageStep>
   );
 }

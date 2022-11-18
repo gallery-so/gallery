@@ -29,7 +29,6 @@ const StyledSvg = styled.svg<{ expanded: boolean }>`
 `;
 
 const Container = styled.div`
-  margin-right: 4px;
   display: flex;
   align-items: center;
 `;

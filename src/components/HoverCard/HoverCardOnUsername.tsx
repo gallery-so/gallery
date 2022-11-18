@@ -19,6 +19,8 @@ import { HoverCardOnUsernameFollowFragment$key } from '~/generated/HoverCardOnUs
 import { HoverCardOnUsernameFragment$key } from '~/generated/HoverCardOnUsernameFragment.graphql';
 import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
 
+const HOVER_POPUP_DELAY = 100;
+
 type Props = {
   userRef: HoverCardOnUsernameFragment$key;
   queryRef: HoverCardOnUsernameFollowFragment$key;
@@ -73,16 +75,30 @@ export default function HoverCardOnUsername({ userRef, queryRef }: Props) {
   const [isHovering, setIsHovering] = useState(false);
 
   const deactivateHoverCardTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const activateHoverCardTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const handleMouseEnter = () => {
     if (deactivateHoverCardTimeoutRef.current) {
       clearTimeout(deactivateHoverCardTimeoutRef.current);
     }
 
-    setIsActive(true);
-    setIsHovering(true);
+    /**
+     * We don't want the popover to trigger instantly. Otherwise
+     * users will trigger the popup accidentally while just moving
+     * their mouse around.
+     *
+     * This ensures that the popover is opened with absolute intent.
+     */
+    activateHoverCardTimeoutRef.current = setTimeout(() => {
+      setIsActive(true);
+      setIsHovering(true);
+    }, HOVER_POPUP_DELAY);
   };
 
   const handleMouseLeave = () => {
+    if (activateHoverCardTimeoutRef.current) {
+      clearTimeout(activateHoverCardTimeoutRef.current);
+    }
+
     setIsHovering(false);
     deactivateHoverCardTimeoutRef.current = setTimeout(
       () => setIsActive(false),
@@ -92,6 +108,7 @@ export default function HoverCardOnUsername({ userRef, queryRef }: Props) {
 
   const handleClick = useCallback<MouseEventHandler>(
     (e) => {
+      e.stopPropagation();
       e.preventDefault();
       router.push({ pathname: '/[username]', query: { username: user.username as string } });
     },
@@ -166,6 +183,7 @@ export default function HoverCardOnUsername({ userRef, queryRef }: Props) {
 const StyledContainer = styled.span`
   position: relative;
   display: inline-block;
+  cursor: pointer;
 `;
 
 const StyledLinkContainer = styled.div`

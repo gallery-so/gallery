@@ -9,24 +9,24 @@ import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { TitleM } from '~/components/core/Text/Text';
 import transitions from '~/components/core/transitions';
 import FollowButton from '~/components/Follow/FollowButton';
-import { FeaturedTezosCollectorCardCollectionFragment$key } from '~/generated/FeaturedTezosCollectorCardCollectionFragment.graphql';
-import { FeaturedTezosCollectorCardFragment$key } from '~/generated/FeaturedTezosCollectorCardFragment.graphql';
+import { FeaturedCollectorCardCollectionFragment$key } from '~/generated/FeaturedCollectorCardCollectionFragment.graphql';
+import { FeaturedCollectorCardFragment$key } from '~/generated/FeaturedCollectorCardFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import getVideoOrImageUrlForNftPreview from '~/utils/graphql/getVideoOrImageUrlForNftPreview';
 import { removeNullValues } from '~/utils/removeNullValues';
 
-type FeaturedTezosCollectorCardProps = {
-  queryRef: FeaturedTezosCollectorCardFragment$key;
-  collectionRef: FeaturedTezosCollectorCardCollectionFragment$key;
+type FeaturedCollectorCardProps = {
+  queryRef: FeaturedCollectorCardFragment$key;
+  collectionRef: FeaturedCollectorCardCollectionFragment$key;
 };
 
-export default function FeaturedTezosCollectorCard({
+export default function FeaturedCollectorCard({
   queryRef,
   collectionRef,
-}: FeaturedTezosCollectorCardProps) {
+}: FeaturedCollectorCardProps) {
   const query = useFragment(
     graphql`
-      fragment FeaturedTezosCollectorCardFragment on Query {
+      fragment FeaturedCollectorCardFragment on Query {
         ...FollowButtonQueryFragment
       }
     `,
@@ -35,7 +35,7 @@ export default function FeaturedTezosCollectorCard({
 
   const collection = useFragment(
     graphql`
-      fragment FeaturedTezosCollectorCardCollectionFragment on Collection {
+      fragment FeaturedCollectorCardCollectionFragment on Collection {
         tokens {
           token {
             ...getVideoOrImageUrlForNftPreviewFragment
@@ -75,19 +75,19 @@ export default function FeaturedTezosCollectorCard({
       passHref
     >
       <StyledAnchor target="_blank" rel="noopener noreferrer">
-        <GotwContainer gap={isMobile ? 16 : 32}>
-          <GotwHeader gap={8}>
+        <FeaturedCollectorContainer gap={isMobile ? 12 : 22}>
+          <FeaturedCollectorHeader gap={8}>
             <DescriptionText>{owner.username}</DescriptionText>
             <FollowButton queryRef={query} userRef={owner} />
-          </GotwHeader>
-          <GotwBody>
+          </FeaturedCollectorHeader>
+          <FeaturedCollectorBody>
             {imageUrls.map((url) => (
-              <GotwImageContainer key={url}>
-                <GotwImage src={url} />
-              </GotwImageContainer>
+              <FeaturedCollectorImageContainer key={url}>
+                <FeaturedCollectorImage src={url} />
+              </FeaturedCollectorImageContainer>
             ))}
-          </GotwBody>
-        </GotwContainer>
+          </FeaturedCollectorBody>
+        </FeaturedCollectorContainer>
       </StyledAnchor>
     </Link>
   );
@@ -97,60 +97,55 @@ const StyledAnchor = styled.a`
   text-decoration: none;
 `;
 
-const GotwContainer = styled(VStack)`
-  background: ${colors.white};
+const FeaturedCollectorContainer = styled(VStack)`
+  background: ${colors.offWhite};
   border: 1px solid;
   cursor: pointer;
 
-  border-color: ${colors.white};
+  border-color: ${colors.offWhite};
   transition: border ${transitions.cubic};
   &:hover {
     border-color: ${colors.offBlack};
   }
 
-  width: 343px;
-  height: 343px;
+  width: 320px;
+  height: 364px;
   padding: 12px;
 
   @media only screen and ${breakpoints.tablet} {
-    padding: 16px;
-    width: 506px;
-    height: 506px;
+    padding: 22px;
+    width: 500px;
+    height: 550px;
   }
 `;
 
-const GotwHeader = styled(HStack)`
+const FeaturedCollectorHeader = styled(HStack)`
   align-items: center;
+  justify-content: center;
 `;
 
-const GotwBody = styled.div`
+const FeaturedCollectorBody = styled.div`
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  grid-gap: 24px;
-
-  // hack that exempts the last row from having its content centered
-  :after {
-    content: '';
-    flex: auto;
-  }
+  grid-gap: 2px;
 `;
 
-const GotwImageContainer = styled.div`
+const FeaturedCollectorImageContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
 
-  width: 116px;
-  height: 116px;
+  width: 146px;
+  height: 146px;
 
   @media only screen and ${breakpoints.tablet} {
-    height: 190px;
-    width: 220px;
+    height: 226px;
+    width: 226px;
   }
 `;
 
-const GotwImage = styled.img`
+const FeaturedCollectorImage = styled.img`
   max-height: 100%;
   max-width: 100%;
 `;

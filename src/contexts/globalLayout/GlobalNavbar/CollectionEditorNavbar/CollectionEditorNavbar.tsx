@@ -3,7 +3,6 @@ import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import { Button } from '~/components/core/Button/Button';
 import { BackButton } from '~/contexts/globalLayout/GlobalNavbar/BackButton';
 import { GalleryNameAndCollectionName } from '~/contexts/globalLayout/GlobalNavbar/CollectionEditorNavbar/GalleryNameAndCollectionName';
 import {
@@ -14,17 +13,22 @@ import {
 } from '~/contexts/globalLayout/GlobalNavbar/StandardNavbarContainer';
 import { CollectionEditorNavbarFragment$key } from '~/generated/CollectionEditorNavbarFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import unescape from '~/utils/unescape';
+
+import { CollectionSaveButtonWithCaption } from '../CollectionSaveButtonWithCaption';
 
 type Props = {
   galleryId: string;
-  onDone: () => void;
+  onDone: (caption: string) => Promise<void>;
   onCancel: () => void;
   isCollectionValid: boolean;
+  hasUnsavedChange: boolean;
   queryRef: CollectionEditorNavbarFragment$key;
 };
 
 export function CollectionEditorNavbar({
   queryRef,
+  hasUnsavedChange,
   isCollectionValid,
   onDone,
   onCancel,
@@ -38,12 +42,15 @@ export function CollectionEditorNavbar({
             name
           }
         }
+        ...CollectionSaveButtonWithCaptionFragment
       }
     `,
     queryRef
   );
 
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
+
+  const collectionName = unescape(query.collectionById?.name ?? '');
 
   const mainContent = useMemo(() => {
     const editGalleryRoute: Route = {
@@ -56,10 +63,10 @@ export function CollectionEditorNavbar({
         editGalleryRoute={editGalleryRoute}
         rightText="Editing"
         galleryName="My gallery"
-        collectionName={query.collectionById?.name ?? ''}
+        collectionName={collectionName ?? ''}
       />
     );
-  }, [galleryId, query.collectionById?.name]);
+  }, [collectionName, galleryId]);
 
   return (
     <StandardNavbarContainer>
@@ -70,9 +77,12 @@ export function CollectionEditorNavbar({
       <NavbarCenterContent>{!isMobile && mainContent}</NavbarCenterContent>
 
       <NavbarRightContent>
-        <Button disabled={!isCollectionValid} onClick={onDone}>
-          Done
-        </Button>
+        <CollectionSaveButtonWithCaption
+          disabled={!isCollectionValid}
+          onSave={onDone}
+          hasUnsavedChange={hasUnsavedChange}
+          queryRef={query}
+        />
       </NavbarRightContent>
     </StandardNavbarContainer>
   );

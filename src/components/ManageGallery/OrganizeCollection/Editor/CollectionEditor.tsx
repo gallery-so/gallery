@@ -1,3 +1,4 @@
+import { CollectionEditorFragment$key } from '__generated__/CollectionEditorFragment.graphql';
 import React, { useEffect, useMemo, useRef } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
@@ -9,7 +10,6 @@ import {
   useStagedCollectionState,
 } from '~/contexts/collectionEditor/CollectionEditorContext';
 import { useCollectionWizardState } from '~/contexts/wizard/CollectionWizardContext';
-import { CollectionEditorFragment$key } from '~/generated/CollectionEditorFragment.graphql';
 import { CollectionEditorViewerFragment$key } from '~/generated/CollectionEditorViewerFragment.graphql';
 import { parseCollectionLayout } from '~/utils/collectionLayout';
 import { removeNullValues } from '~/utils/removeNullValues';
@@ -21,6 +21,7 @@ import Directions from '../Directions';
 import Sidebar from '../Sidebar/Sidebar';
 import { EditModeToken, EditModeTokenChild, StagedCollection } from '../types';
 import EditorMenu from './EditorMenu';
+import { formatStagedCollection } from './formatStagedCollection';
 import StagingArea from './StagingArea';
 
 function convertNftsToEditModeTokens(
@@ -38,6 +39,7 @@ function convertNftsToEditModeTokens(
 type Props = {
   queryRef: CollectionEditorFragment$key;
   onValidChange: (valid: boolean) => void;
+  onHasUnsavedChange: (hasUnsavedChanges: boolean) => void;
 };
 
 // Separated out so we can refresh data as a part of our sync tokens mutation
@@ -52,6 +54,8 @@ const collectionEditorViewerFragment = graphql`
               dbid @required(action: THROW)
               name @required(action: THROW)
               lastUpdated @required(action: THROW)
+              isSpamByUser
+              isSpamByProvider
             }
             tokenSettings {
               renderLive
@@ -70,6 +74,8 @@ const collectionEditorViewerFragment = graphql`
         dbid @required(action: THROW)
         name @required(action: THROW)
         lastUpdated @required(action: THROW)
+        isSpamByUser
+        isSpamByProvider
         ...SidebarFragment
         ...StagingAreaFragment
       }
@@ -78,7 +84,7 @@ const collectionEditorViewerFragment = graphql`
   }
 `;
 
-function CollectionEditor({ queryRef, onValidChange }: Props) {
+function CollectionEditor({ queryRef, onValidChange, onHasUnsavedChange }: Props) {
   const query = useFragment(
     graphql`
       fragment CollectionEditorFragment on Query {
@@ -87,7 +93,6 @@ function CollectionEditor({ queryRef, onValidChange }: Props) {
             ...CollectionEditorViewerFragment
           }
         }
-
         ...SidebarViewerFragment
       }
     `,
@@ -117,6 +122,32 @@ function CollectionEditor({ queryRef, onValidChange }: Props) {
     },
     [stagedCollectionState, onValidChange]
   );
+
+  // Check if the collection has unsaved changes
+  const initialStagedCollection = useRef({});
+  const isStagedCollectionInitialized = useRef(false);
+
+  // Initialize the lastStagedCollection ref
+  useEffect(() => {
+    if (Object.keys(stagedCollectionState).length === 0 || isStagedCollectionInitialized.current) {
+      return;
+    }
+
+    isStagedCollectionInitialized.current = true;
+    initialStagedCollection.current = formatStagedCollection(stagedCollectionState);
+  }, [stagedCollectionState]);
+
+  useEffect(() => {
+    const formattedStagedCollection = formatStagedCollection(stagedCollectionState);
+
+    if (
+      JSON.stringify(formattedStagedCollection) !== JSON.stringify(initialStagedCollection.current)
+    ) {
+      onHasUnsavedChange(true);
+      return;
+    }
+    onHasUnsavedChange(false);
+  }, [onHasUnsavedChange, stagedCollectionState]);
 
   const { setSidebarTokens, unstageTokens, setStagedCollectionState, setActiveSectionIdState } =
     useCollectionEditorActions();

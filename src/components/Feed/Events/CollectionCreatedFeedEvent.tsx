@@ -18,14 +18,15 @@ import unescape from '~/utils/unescape';
 
 import { MAX_PIECES_DISPLAYED_PER_FEED_EVENT } from '../constants';
 import FeedEventTokenPreviews, { TokenToPreview } from '../FeedEventTokenPreviews';
-import { StyledEvent, StyledEventHeader, StyledTime } from './EventStyles';
+import { StyledEvent, StyledEventContent, StyledEventHeader, StyledTime } from './EventStyles';
 
 type Props = {
+  caption: string | null;
   eventDataRef: CollectionCreatedFeedEventFragment$key;
   queryRef: CollectionCreatedFeedEventQueryFragment$key;
 };
 
-export default function CollectionCreatedFeedEvent({ eventDataRef, queryRef }: Props) {
+export default function CollectionCreatedFeedEvent({ caption, eventDataRef, queryRef }: Props) {
   const event = useFragment(
     graphql`
       fragment CollectionCreatedFeedEventFragment on CollectionCreatedFeedEventData {
@@ -86,43 +87,70 @@ export default function CollectionCreatedFeedEvent({ eventDataRef, queryRef }: P
       <StyledEvent>
         <VStack gap={16}>
           <StyledEventHeader>
-            <HoverCardOnUsername userRef={event.owner} queryRef={query} />{' '}
-            <BaseM>
-              added {tokens.length} {pluralize(tokens.length, 'piece')} to their new collection
-              {collectionName ? `, ` : ' '}
-            </BaseM>
-            <HStack gap={4} inline>
-              {collectionName && (
-                <InteractiveLink
-                  to={{
-                    pathname: '/[username]/[collectionId]',
-                    query: {
-                      username: event.owner.username as string,
-                      collectionId: event.collection.dbid,
-                    },
-                  }}
-                >
-                  {unescape(event.collection.name ?? '')}
-                </InteractiveLink>
-              )}
-              <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
-            </HStack>
+            <VStack gap={4}>
+              <StyledEventHeaderContainer>
+                <HoverCardOnUsername userRef={event.owner} queryRef={query} />{' '}
+                <BaseM>
+                  added {tokens.length} {pluralize(tokens.length, 'piece')} to their new collection
+                  {collectionName ? `, ` : ' '}
+                </BaseM>
+                <HStack gap={4} inline>
+                  {collectionName && (
+                    <InteractiveLink
+                      to={{
+                        pathname: '/[username]/[collectionId]',
+                        query: {
+                          username: event.owner.username as string,
+                          collectionId: event.collection.dbid,
+                        },
+                      }}
+                    >
+                      {unescape(event.collection.name ?? '')}
+                    </InteractiveLink>
+                  )}
+                  <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
+                </HStack>
+              </StyledEventHeaderContainer>
+            </VStack>
           </StyledEventHeader>
-          <VStack gap={8}>
-            <FeedEventTokenPreviews tokensToPreview={tokensToPreview} />
-            {showAdditionalPiecesIndicator && (
-              <StyledAdditionalPieces>
-                +{numAdditionalPieces} more {pluralize(numAdditionalPieces, 'piece')}
-              </StyledAdditionalPieces>
+          <StyledEventContent gap={16} hasCaption={Boolean(caption)}>
+            {caption && (
+              <StyledCaptionContainer gap={8} align="center">
+                <BaseM>{caption}</BaseM>
+              </StyledCaptionContainer>
             )}
-          </VStack>
+            <VStack gap={8}>
+              <FeedEventTokenPreviews
+                isInCaption={Boolean(caption)}
+                tokensToPreview={tokensToPreview}
+              />
+              {showAdditionalPiecesIndicator && (
+                <StyledAdditionalPieces>
+                  +{numAdditionalPieces} more {pluralize(numAdditionalPieces, 'piece')}
+                </StyledAdditionalPieces>
+              )}
+            </VStack>
+          </StyledEventContent>
         </VStack>
       </StyledEvent>
     </UnstyledLink>
   );
 }
 
+const StyledEventHeaderContainer = styled.div`
+  display: inline;
+`;
+
 const StyledAdditionalPieces = styled(BaseS)`
   text-align: end;
   color: ${colors.metal};
+`;
+
+export const StyledCaptionContainer = styled(HStack)`
+  border-left: 2px solid #d9d9d9;
+  padding-left: 8px;
+
+  ${BaseS} {
+    color: ${colors.metal};
+  }
 `;

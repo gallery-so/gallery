@@ -4,6 +4,8 @@ export type EditModeTokenChild = {
   dbid: string;
   name: string;
   lastUpdated: number;
+  isSpamByUser: boolean | null;
+  isSpamByProvider: boolean | null;
 };
 
 export type EditModeToken = {
@@ -29,5 +31,12 @@ export type Section = {
   columns: number;
   items: StagingItem[];
 };
+
+export type SectionWithoutIds = {
+  columns: number;
+  items: Omit<StagingItem, 'id'>[];
+};
+
+export type StagedCollectionWithoutIds = Record<UniqueIdentifier, SectionWithoutIds>;
 
 export type StagedCollection = Record<UniqueIdentifier, Section>;

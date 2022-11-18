@@ -1,4 +1,4 @@
-import { act, fireEvent, render } from '@testing-library/react';
+import { fireEvent, render } from '@testing-library/react';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 
 import AppProvider from '~/contexts/AppProvider';
@@ -134,9 +134,7 @@ describe('NftDetailAsset', () => {
     expect(await findByText('Could not load', undefined, { timeout: 10000 })).toBeVisible();
 
     // Hit the refresh button
-    await act(async () => {
-      fireEvent.click(await findByTestId('RefreshButton'));
-    });
+    fireEvent.click(await findByTestId('RefreshButton'));
 
     // Make sure we see the fallback's loading state
     expect(await findByText('Loading...')).toBeVisible();

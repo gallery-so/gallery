@@ -154,5 +154,5 @@ const Container = styled.div`
   display: flex;
   justify-content: space-between;
 
-  padding: 16px 0;
+  padding: 16px 12px;
 `;

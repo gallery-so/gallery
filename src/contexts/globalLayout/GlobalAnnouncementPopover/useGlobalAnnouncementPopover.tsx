@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import { TEZOS_ANNOUNCEMENT_STORAGE_KEY } from '~/constants/storageKeys';
+import { WHITE_RHINO_STORAGE_KEY } from '~/constants/storageKeys';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useGlobalAnnouncementPopoverFragment$key } from '~/generated/useGlobalAnnouncementPopoverFragment.graphql';
 import usePersistedState from '~/hooks/usePersistedState';
@@ -46,11 +46,11 @@ export default function useGlobalAnnouncementPopover({
 
   const isAuthenticated = Boolean(query.viewer?.user?.id);
 
-  const { asPath } = useRouter();
+  const { asPath, query: urlQuery } = useRouter();
 
   // tracks dismissal on localStorage, persisted across refreshes
   const [dismissedOnLocalStorage, setDismissedOnLocalStorage] = usePersistedState(
-    TEZOS_ANNOUNCEMENT_STORAGE_KEY,
+    WHITE_RHINO_STORAGE_KEY,
     false
   );
 
@@ -59,10 +59,10 @@ export default function useGlobalAnnouncementPopover({
 
   const { showModal, hideModal } = useModalActions();
 
-  const shouldHidePopover = useMemo(() => {
-    // hide modal on opengraph pages
+  const shouldHidePopoverOnCurrentPath = useMemo(() => {
+    // hide on opengraph pages
     if (asPath.includes('opengraph')) return true;
-    // hide announcement modal on announcements page
+    // hide on announcements page
     if (asPath === '/announcements') return true;
     // hide on auth page
     if (asPath === '/auth') return true;
@@ -70,20 +70,30 @@ export default function useGlobalAnnouncementPopover({
     if (asPath.toLowerCase().includes('/edit')) return true;
     // hide for new users onboarding
     if (asPath.toLowerCase().includes('/onboarding')) return true;
-    // hide for curated for now
-    if (asPath.toLowerCase().includes('curated')) return true;
+
+    // hide for users who have explicitly requested the popover to be disabled on their page
+    if (typeof urlQuery.username === 'string') {
+      const disabledUserProfiles = ['curated', '1of1'];
+      if (disabledUserProfiles.includes(urlQuery.username)) return true;
+    }
 
     return false;
-  }, [asPath]);
+  }, [asPath, urlQuery.username]);
 
   useEffect(() => {
     async function handleMount() {
       if (dismissVariant === 'session' && dismissedOnSession) return;
       if (dismissVariant === 'global' && dismissedOnLocalStorage) return;
 
+      // Ensure we don't show the modal if the user is just about to get redirected
+      // I'm so sorry if you're reading this...
+      if (isAuthenticated && asPath === '/') {
+        return;
+      }
+
       if (authRequired && !isAuthenticated) return;
 
-      if (shouldHidePopover) return;
+      if (shouldHidePopoverOnCurrentPath) return;
 
       // prevent font flicker on popover load
       await handlePreloadFonts();
@@ -112,18 +122,18 @@ export default function useGlobalAnnouncementPopover({
     popoverDelayMs,
     dismissVariant,
     dismissedOnSession,
-    shouldHidePopover,
+    shouldHidePopoverOnCurrentPath,
   ]);
 
   useEffect(
     function handleCloseModalOnRedirect() {
-      if (shouldHidePopover) {
+      if (shouldHidePopoverOnCurrentPath) {
         hideModal({
           id: 'global-announcement-popover',
         });
       }
     },
-    [hideModal, shouldHidePopover]
+    [hideModal, shouldHidePopoverOnCurrentPath]
   );
 }
 

@@ -14,6 +14,7 @@ type Props = {
   description: string;
   stagedCollection: StagedCollection;
   tokenSettings: TokenSettings;
+  caption: string | null;
 };
 
 export default function useCreateCollection() {
@@ -64,7 +65,7 @@ export default function useCreateCollection() {
   `);
 
   return useCallback(
-    async ({ galleryId, title, description, stagedCollection, tokenSettings }: Props) => {
+    async ({ galleryId, title, description, stagedCollection, tokenSettings, caption }: Props) => {
       const layout = generateLayoutFromCollection(stagedCollection);
       const tokenIds = getTokenIdsFromCollection(stagedCollection);
       const tokenSettingsArray = collectionTokenSettingsObjectToArray(tokenSettings);
@@ -78,6 +79,7 @@ export default function useCreateCollection() {
             tokens: tokenIds,
             layout,
             tokenSettings: tokenSettingsArray,
+            caption: caption || null,
           },
         },
       });

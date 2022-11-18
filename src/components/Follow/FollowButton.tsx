@@ -66,18 +66,18 @@ export default function FollowButton({ queryRef, userRef }: Props) {
   const track = useTrack();
 
   const handleFollowClick = useCallback(async () => {
-    track('Follow Click', {
-      followee: user.dbid,
-    });
-
     if (!loggedInUserId) {
       showAuthModal();
       return;
     }
 
+    track('Follow Click', {
+      followee: user.dbid,
+    });
+
     const optimisticNewFollowersList = [{ id: loggedInUserId }, ...user.followers];
     await followUser(user.dbid, optimisticNewFollowersList, user.following);
-    pushToast({ message: `You have followed ${user.username}.` });
+    pushToast({ message: `You followed ${user.username}.` });
   }, [loggedInUserId, user, track, followUser, pushToast, showAuthModal]);
 
   const handleUnfollowClick = useCallback(async () => {
@@ -88,7 +88,7 @@ export default function FollowButton({ queryRef, userRef }: Props) {
       (follower: { id: string } | null) => follower?.id !== loggedInUserId
     );
     await unfollowUser(user.dbid, optimisticNewFollowersList, user.following);
-    pushToast({ message: `You have unfollowed ${user.username}.` });
+    pushToast({ message: `You unfollowed ${user.username}.` });
   }, [user, track, unfollowUser, pushToast, loggedInUserId]);
 
   const isAuthenticatedUsersPage = loggedInUserId === user?.id;
@@ -132,8 +132,15 @@ export default function FollowButton({ queryRef, userRef }: Props) {
 }
 
 const Chip = styled(TitleXSBold).attrs({ role: 'button' })<{ disabled?: boolean }>`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   padding: 2px 4px;
   cursor: pointer;
+
+  height: 20px;
+  line-height: 1;
 
   border-radius: 2px;
 

@@ -26,6 +26,7 @@ import { removeNullValues } from '~/utils/removeNullValues';
 import { convertObjectToArray } from '../convertObjectToArray';
 import { AddWalletSidebar } from './AddWalletSidebar';
 import SearchBar from './SearchBar';
+import { SidebarView, SidebarViewSelector } from './SidebarViewSelector';
 
 type Props = {
   sidebarTokens: SidebarTokensState;
@@ -39,6 +40,8 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
       fragment SidebarFragment on Token @relay(plural: true) {
         dbid
         chain
+        isSpamByUser
+        isSpamByProvider
 
         ...SearchBarFragment
         ...SidebarTokensFragment
@@ -75,6 +78,7 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
   const { stageTokens } = useCollectionEditorActions();
   const [searchResults, setSearchResults] = useState<string[]>([]);
   const [selectedChain, setSelectedChain] = useState<Chain>('Ethereum');
+  const [selectedView, setSelectedView] = useState<SidebarView>('Collected');
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
 
   const { pushToast } = useToastActions();
@@ -147,9 +151,24 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
         return true;
       }
 
-      return token.chain === selectedChain;
+      if (token.chain !== selectedChain) {
+        return false;
+      }
+
+      const isSpam = token.isSpamByUser !== null ? token.isSpamByUser : token.isSpamByProvider;
+
+      if (selectedView === 'Hidden') {
+        return isSpam;
+      }
+      return !isSpam;
     });
-  }, [editModeTokensSearchResults, isSearching, nftFragmentsKeyedByID, selectedChain]);
+  }, [
+    editModeTokensSearchResults,
+    isSearching,
+    nftFragmentsKeyedByID,
+    selectedChain,
+    selectedView,
+  ]);
 
   const { isLocked, syncTokens } = useSyncTokens();
 
@@ -178,7 +197,7 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
     <StyledSidebar navbarHeight={navbarHeight}>
       <StyledSidebarContainer gap={8}>
         <Header>
-          <TitleS>All pieces</TitleS>
+          <TitleS>Add pieces</TitleS>
         </Header>
         <SearchBar
           tokensRef={nonNullTokens}
@@ -187,14 +206,17 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
         />
         {!isSearching && (
           <>
-            <SidebarChainSelector
-              ownsWalletFromSelectedChain={ownsWalletFromSelectedChain}
-              queryRef={query}
-              selected={selectedChain}
-              onChange={setSelectedChain}
-              handleRefresh={handleRefresh}
-              isRefreshingNfts={isLocked}
-            />
+            <div>
+              <SidebarViewSelector selectedView={selectedView} setSelectedView={setSelectedView} />
+              <SidebarChainSelector
+                ownsWalletFromSelectedChain={ownsWalletFromSelectedChain}
+                queryRef={query}
+                selected={selectedChain}
+                onChange={setSelectedChain}
+                handleRefresh={handleRefresh}
+                isRefreshingNfts={isLocked}
+              />
+            </div>
             {ownsWalletFromSelectedChain && (
               <AddBlankSpaceButton onClick={handleAddBlankBlockClick} variant="secondary">
                 ADD BLANK SPACE
@@ -202,32 +224,34 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
             )}
           </>
         )}
-      </StyledSidebarContainer>
 
-      {ownsWalletFromSelectedChain ? (
-        <SidebarTokens
-          isSearching={isSearching}
-          tokenRefs={nonNullTokens}
-          selectedChain={selectedChain}
-          editModeTokens={tokensToDisplay}
-        />
-      ) : (
-        <AddWalletSidebar
-          selectedChain={selectedChain}
-          queryRef={query}
-          handleRefresh={handleRefresh}
-        />
-      )}
+        {ownsWalletFromSelectedChain ? (
+          <SidebarTokens
+            isSearching={isSearching}
+            tokenRefs={nonNullTokens}
+            selectedChain={selectedChain}
+            selectedView={selectedView}
+            editModeTokens={tokensToDisplay}
+          />
+        ) : (
+          <AddWalletSidebar
+            selectedChain={selectedChain}
+            queryRef={query}
+            handleRefresh={handleRefresh}
+          />
+        )}
+      </StyledSidebarContainer>
     </StyledSidebar>
   );
 }
 
 const StyledSidebarContainer = styled(VStack)`
-  padding: 0 16px;
+  padding: 0 4px;
+  height: 100%;
 `;
 
 const AddBlankSpaceButton = styled(Button)`
-  margin: 4px 0;
+  margin: 0 12px;
 `;
 
 const StyledSidebar = styled.div<{ navbarHeight: number }>`
@@ -246,11 +270,10 @@ const StyledSidebar = styled.div<{ navbarHeight: number }>`
 `;
 
 const Header = styled.div`
+  padding: 0 12px 8px;
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  min-height: 52px;
-  padding-bottom: 16px;
 `;
 
 export default memo(Sidebar);

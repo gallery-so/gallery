@@ -7,7 +7,6 @@ import { BODY_FONT_FAMILY, Paragraph, TITLE_FONT_FAMILY } from '~/components/cor
 export const HomeText = styled(Paragraph)`
   font-family: ${BODY_FONT_FAMILY};
   font-weight: 500;
-  line-height: 21px;
 
   letter-spacing: -0.04em;
 

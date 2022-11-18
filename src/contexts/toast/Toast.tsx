@@ -2,23 +2,31 @@ import { useCallback, useEffect, useState } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 
 import colors from '~/components/core/colors';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import transitions, {
   ANIMATED_COMPONENT_TIMEOUT_MS,
   ANIMATED_COMPONENT_TRANSITION_MS,
   ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL,
 } from '~/components/core/transitions';
+import AlertIcon from '~/icons/AlertIcon';
 import CloseIcon from '~/icons/CloseIcon';
 
 type Props = {
   message: string;
   onClose?: () => void;
   autoClose?: boolean;
+  variant?: 'success' | 'error';
 };
 
 const noop = () => {};
 
-export function AnimatedToast({ message, onClose = noop, autoClose = true }: Props) {
+export function AnimatedToast({
+  message,
+  onClose = noop,
+  autoClose = true,
+  variant = 'success',
+}: Props) {
   // Pseudo-state for signaling animations. this will allow us
   // to display an animation prior to unmounting
   // This initializes as true so that there is not a jitter in the animation (if it were false, this would trigger the wrong CSS animation initially)
@@ -46,7 +54,7 @@ export function AnimatedToast({ message, onClose = noop, autoClose = true }: Pro
 
   return (
     <_Animate isActive={isActive}>
-      <Toast message={message} onClose={handleClose} />
+      <Toast message={message} onClose={handleClose} variant={variant} />
     </_Animate>
   );
 }
@@ -76,17 +84,22 @@ const _Animate = styled.div<{ isActive: boolean }>`
   bottom: 16px;
 `;
 
-function Toast({ message, onClose }: Props) {
+function Toast({ message, onClose, variant }: Props) {
   const handleClose = useCallback(() => {
     onClose?.();
   }, [onClose]);
 
   return (
     <ToastContainer>
-      <StyledToast>
+      <StyledToast align="center" gap={8} variant={variant}>
+        {variant === 'error' && (
+          <StyledAlertIcon>
+            <AlertIcon />
+          </StyledAlertIcon>
+        )}
         <BaseM>{message}</BaseM>
         <StyledClose onClick={handleClose}>
-          <CloseIcon isActive />
+          <CloseIcon />
         </StyledClose>
       </StyledToast>
     </ToastContainer>
@@ -100,11 +113,8 @@ const ToastContainer = styled.div`
   justify-content: center;
 `;
 
-const StyledToast = styled.div`
-  display: flex;
-  align-items: center;
-
-  border: 1px solid black;
+const StyledToast = styled(HStack)<{ variant: Props['variant'] }>`
+  border: 1px solid ${({ variant }) => (variant === 'error' ? colors.red : colors.offBlack)};
   padding: 8px 10px 8px 16px;
   max-width: min(80vw, 628px); // Set width of toast to 80% of viewport
   background: ${colors.white};
@@ -112,11 +122,17 @@ const StyledToast = styled.div`
   pointer-events: auto;
 `;
 
+const StyledAlertIcon = styled(VStack)`
+  height: 24px;
+  width: 24px;
+`;
+
 const StyledClose = styled.button`
   display: flex;
   align-items: center;
   margin-left: 8px;
   cursor: pointer;
+  color: ${colors.offBlack};
 
   background: none;
   border: none;

@@ -3,6 +3,7 @@ import styled, { css, keyframes } from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import colors from '~/components/core/colors';
+import { HStack } from '~/components/core/Spacer/Stack';
 import { TitleS } from '~/components/core/Text/Text';
 import transitions, {
   ANIMATED_COMPONENT_TRANSITION_MS,
@@ -26,8 +27,10 @@ type Props = {
   content: ReactElement;
   isFullPage: boolean;
   isPaddingDisabled: boolean;
+  headerActions?: JSX.Element | false;
   headerText: string;
   headerVariant: ModalPaddingVariant;
+  hideClose?: boolean;
 };
 
 function AnimatedModal({
@@ -37,8 +40,10 @@ function AnimatedModal({
   content,
   isFullPage,
   isPaddingDisabled,
+  headerActions,
   headerText,
   headerVariant,
+  hideClose,
 }: Props) {
   useEffect(() => {
     if (!isActive) {
@@ -90,7 +95,12 @@ function AnimatedModal({
           >
             <StyledHeader>
               {headerText ? <StyledTitleS>{headerText}</StyledTitleS> : null}
-              <StyledDecoratedCloseIcon onClick={hideModal} variant={headerVariant} />
+              <StyledModalActions align="center">
+                {headerActions}
+                {hideClose ? null : (
+                  <DecoratedCloseIcon onClick={hideModal} variant={headerVariant} />
+                )}
+              </StyledModalActions>
             </StyledHeader>
             {content}
           </StyledContent>
@@ -145,7 +155,7 @@ const Overlay = styled.div`
   left: 0;
   height: 100vh;
   width: 100vw;
-  background: ${colors.white};
+  background-color: ${colors.white};
   opacity: 0.95;
 
   // should appear above rest of site
@@ -205,7 +215,7 @@ const StyledContent = styled.div<{
   width: ${({ width }) => width};
 `;
 
-const StyledDecoratedCloseIcon = styled(DecoratedCloseIcon)`
+const StyledModalActions = styled(HStack)`
   z-index: 3;
   position: absolute;
   right: 0;

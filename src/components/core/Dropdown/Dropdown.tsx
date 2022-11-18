@@ -9,7 +9,7 @@ type Props = {
   active: boolean;
   onClose: () => void;
   children?: ReactNode;
-  position: 'right' | 'left';
+  position: 'right' | 'left' | 'full-width';
 };
 
 export function Dropdown({ active, onClose, children, position }: Props) {
@@ -43,7 +43,10 @@ const Backdrop = styled.div`
   width: 100vw;
 `;
 
-const DropdownContainer = styled(VStack)<{ active: boolean; position: 'right' | 'left' }>`
+const DropdownContainer = styled(VStack)<{
+  active: boolean;
+  position: 'right' | 'left' | 'full-width';
+}>`
   position: absolute;
   z-index: 10;
   top: 100%;
@@ -53,8 +56,12 @@ const DropdownContainer = styled(VStack)<{ active: boolean; position: 'right' | 
       ? css`
           right: 0;
         `
-      : css`
+      : position === 'left'
+      ? css`
           left: 0;
+        `
+      : css`
+          width: 100%;
         `}
 
   background-color: ${colors.white};

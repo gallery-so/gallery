@@ -1,11 +1,7 @@
-import { useRouter } from 'next/router';
-import { useCallback } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import { useModalState } from '~/contexts/modal/ModalContext';
 import { UserActivityFragment$key } from '~/generated/UserActivityFragment.graphql';
-import useKeyDown from '~/hooks/useKeyDown';
 import useDisplayFullPageNftDetailModal from '~/scenes/NftDetailPage/useDisplayFullPageNftDetailModal';
 import NotFound from '~/scenes/NotFound/NotFound';
 
@@ -51,25 +47,6 @@ function UserActivity({ queryRef }: Props) {
   );
 
   const { user } = query;
-  const { push } = useRouter();
-
-  const galleryId = query.viewer?.viewerGalleries?.[0]?.gallery?.dbid;
-
-  const loggedInUserId = query.viewer?.user?.dbid;
-  const isLoggedIn = Boolean(loggedInUserId);
-
-  const { isModalOpenRef } = useModalState();
-
-  const navigateToEdit = useCallback(() => {
-    if (!isLoggedIn) return;
-    if (isModalOpenRef.current) return;
-
-    if (galleryId) {
-      void push({ pathname: '/gallery/[galleryId]/edit', query: { galleryId } });
-    }
-  }, [isLoggedIn, isModalOpenRef, push, galleryId]);
-
-  useKeyDown('e', navigateToEdit);
 
   useDisplayFullPageNftDetailModal();
 

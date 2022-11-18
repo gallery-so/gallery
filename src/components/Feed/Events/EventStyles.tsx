@@ -1,11 +1,9 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
 
-import breakpoints from '~/components/core/breakpoints';
 import colors from '~/components/core/colors';
+import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseS } from '~/components/core/Text/Text';
-
-import { FEED_EVENT_ROW_WIDTH_DESKTOP, FEED_EVENT_ROW_WIDTH_TABLET } from '../dimensions';
 
 type StyledEventProps = {
   children: ReactNode;
@@ -15,36 +13,14 @@ type StyledEventProps = {
 
 export const StyledEvent = ({ children, className, onClick }: StyledEventProps) => {
   return (
-    <StyledEventWrapper className={className} onClick={onClick}>
-      <StyledInnerEvent>{children}</StyledInnerEvent>
-    </StyledEventWrapper>
+    <StyledInnerEvent onClick={onClick} className={className}>
+      {children}
+    </StyledInnerEvent>
   );
 };
 
 export const StyledInnerEvent = styled.div`
-  max-width: ${FEED_EVENT_ROW_WIDTH_TABLET}px;
-  width: 100%;
-
-  @media only screen and ${breakpoints.desktop} {
-    max-width: initial;
-    width: ${FEED_EVENT_ROW_WIDTH_DESKTOP}px;
-  }
-`;
-
-// base styles for feed events
-export const StyledEventWrapper = styled.div`
-  width: 100%;
-
-  display: flex;
-  justify-content: center;
-
-  padding: 24px 16px;
-
-  @media only screen and ${breakpoints.tablet} {
-    padding: 16px;
-  }
-
-  cursor: pointer;
+  flex-grow: 1;
 `;
 
 export const StyledEventHeader = styled.div`
@@ -59,13 +35,17 @@ export const StyledEventHeader = styled.div`
 
 export const StyledTime = styled(BaseS)`
   color: ${colors.metal};
-  align-self: flex-end;
+  align-self: center;
   display: inline;
-  vertical-align: bottom;
 `;
 
 export const StyledClickHandler = styled.a`
   display: flex;
   flex-direction: column;
   text-decoration: none;
+`;
+
+export const StyledEventContent = styled(VStack)<{ hasCaption?: boolean }>`
+  background-color: ${({ hasCaption }) => (hasCaption ? colors.offWhite : 'transparent')};
+  padding: ${({ hasCaption }) => (hasCaption ? '16px' : '0')};
 `;
