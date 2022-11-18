@@ -36,8 +36,6 @@ export const _fetch: FetcherType = async (path, parameters = {}) => {
     response = await fetch(`${baseurl}/glry/v1${path}`, requestOptions);
   }
 
-  // console.log(await response.text());
-
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const responseBody = await response.json().catch((error: unknown) => {
     // Certain successful responses won't have a JSON body (e.g. updates)
