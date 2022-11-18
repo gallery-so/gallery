@@ -20,3 +20,5 @@ export const createRelayEnvironmentFromRecords = (records?: RecordMap): Environm
     store: new Store(new RecordSource(records ?? {})),
     network: Network.create(relayFetchFunction, relaySubscribeFunction),
   });
+
+export const createEmptyRelayEnvironment = (): Environment => createRelayEnvironmentFromRecords({});
