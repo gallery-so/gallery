@@ -16,7 +16,7 @@ import AppProvider from '~/contexts/AppProvider';
 import AuthProvider from '~/contexts/auth/AuthContext';
 import GlobalLayoutContextProvider from '~/contexts/globalLayout/GlobalLayoutContext';
 import { createRelayEnvironmentFromRecords } from '~/contexts/relay/RelayProvider';
-import { PreloadQueryArgs, PreloadQueryFn } from '~/types/PageComponentPreloadQuery';
+import { PreloadQueryFn } from '~/types/PageComponentPreloadQuery';
 import isProduction from '~/utils/isProduction';
 import welcomeDoormat from '~/utils/welcomeDoormat';
 
