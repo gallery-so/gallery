@@ -13,8 +13,10 @@ import FadeTransitioner, {
   useStabilizedRouteTransitionKey,
 } from '~/components/FadeTransitioner/FadeTransitioner';
 import AppProvider from '~/contexts/AppProvider';
+import AuthProvider from '~/contexts/auth/AuthContext';
+import GlobalLayoutContextProvider from '~/contexts/globalLayout/GlobalLayoutContext';
 import { createRelayEnvironmentFromRecords } from '~/contexts/relay/RelayProvider';
-import { PreloadQueryArgs } from '~/types/PageComponentPreloadQuery';
+import { PreloadQueryArgs, PreloadQueryFn } from '~/types/PageComponentPreloadQuery';
 import isProduction from '~/utils/isProduction';
 import welcomeDoormat from '~/utils/welcomeDoormat';
 
@@ -30,7 +32,7 @@ export type MetaTagProps = {
 };
 
 type PageComponent = ComponentType<MetaTagProps> & {
-  preloadQuery?: (args: PreloadQueryArgs) => Promise<void>;
+  preloadQuery?: PreloadQueryFn;
 };
 
 // This component ensures that we don't try to render anything on the server.
@@ -60,9 +62,11 @@ const App: FC<{
   }, []);
 
   const { query } = useRouter();
-  if (Component.preloadQuery) {
-    Component.preloadQuery({ relayEnvironment, query });
-  }
+
+  // Kick off queries that would waterfall
+  Component.preloadQuery?.({ relayEnvironment, query });
+  GlobalLayoutContextProvider.preloadQuery?.({ relayEnvironment, query });
+  AuthProvider.preloadQuery?.({ relayEnvironment, query });
 
   return (
     <>

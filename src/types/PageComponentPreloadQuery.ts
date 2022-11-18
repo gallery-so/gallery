@@ -5,3 +5,5 @@ export type PreloadQueryArgs = {
   query: ParsedUrlQuery;
   relayEnvironment: Environment;
 };
+
+export type PreloadQueryFn = (args: PreloadQueryArgs) => void;
