@@ -34,12 +34,14 @@ const activityQueryNode = graphql`
   }
 `;
 
+const NON_EXISTENT_FEED_EVENT_ID = 'some-non-existent-feed-event-id';
+
 export default function UserFeed({ username, eventId }: UserActivityProps) {
   const query = useLazyLoadQuery<activityQuery>(activityQueryNode, {
     username: username,
     viewerLast: ITEMS_PER_PAGE,
     interactionsFirst: NOTES_PER_PAGE,
-    topEventId: eventId ?? 'some-non-existent-feed-event-id',
+    topEventId: eventId ?? NON_EXISTENT_FEED_EVENT_ID,
     visibleTokensPerFeedEvent: MAX_PIECES_DISPLAYED_PER_FEED_EVENT,
   });
 
@@ -57,8 +59,9 @@ export default function UserFeed({ username, eventId }: UserActivityProps) {
 }
 
 UserFeed.preloadQuery = ({ relayEnvironment, query }: PreloadQueryArgs) => {
-  if (query.username && typeof query.username === 'string') {
+  if (query.username && typeof query.username === 'string' && !Array.isArray(query.eventId)) {
     fetchQuery<activityQuery>(relayEnvironment, activityQueryNode, {
+      topEventId: query.eventId ?? NON_EXISTENT_FEED_EVENT_ID,
       username: query.username,
       interactionsFirst: NOTES_PER_PAGE,
       viewerLast: ITEMS_PER_PAGE,
