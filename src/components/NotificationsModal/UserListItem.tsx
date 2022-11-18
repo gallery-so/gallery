@@ -9,7 +9,6 @@ import colors from '~/components/core/colors';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM } from '~/components/core/Text/Text';
-import { getFirstLine } from '~/utils/getFirstLine';
 
 type UserListItemProps = {
   userRef: UserListItemFragment$key;
@@ -33,7 +32,7 @@ export function UserListItem({ userRef }: UserListItemProps) {
       <StyledLink href={route(userRoute)}>
         <Container>
           <TitleDiatypeM>{user.username}</TitleDiatypeM>
-          {user.bio && <BioText>{user.bio && <Markdown text={getFirstLine(user.bio)} />}</BioText>}
+          {user.bio && <BioText>{user.bio && <Markdown text={user.bio} />}</BioText>}
         </Container>
       </StyledLink>
     </Link>
@@ -45,6 +44,10 @@ const BioText = styled(BaseM)`
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
+
+  p {
+    padding-bottom: 0;
+  }
 `;
 
 const StyledLink = styled.a`

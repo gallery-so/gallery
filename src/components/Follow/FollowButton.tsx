@@ -132,8 +132,15 @@ export default function FollowButton({ queryRef, userRef }: Props) {
 }
 
 const Chip = styled(TitleXSBold).attrs({ role: 'button' })<{ disabled?: boolean }>`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   padding: 2px 4px;
   cursor: pointer;
+
+  height: 20px;
+  line-height: 1;
 
   border-radius: 2px;
 

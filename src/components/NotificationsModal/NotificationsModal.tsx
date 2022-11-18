@@ -27,7 +27,8 @@ export function NotificationsModal({ fullscreen }: NotificationsModalProps) {
         ...NotificationListFragment
       }
     `,
-    { notificationsLast: NOTIFICATIONS_PER_PAGE }
+    { notificationsLast: NOTIFICATIONS_PER_PAGE },
+    { fetchPolicy: 'store-and-network' }
   );
 
   const clearAllNotifications = useClearNotifications();

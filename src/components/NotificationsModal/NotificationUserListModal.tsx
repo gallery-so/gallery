@@ -32,7 +32,8 @@ export function NotificationUserListModal({
         ...NotificationUserListTitleFragment
       }
     `,
-    { notificationId, notificationUsersLast: USERS_PER_PAGE }
+    { notificationId, notificationUsersLast: USERS_PER_PAGE },
+    { fetchPolicy: 'store-and-network' }
   );
 
   const { hideModal } = useModalActions();
