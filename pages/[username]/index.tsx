@@ -1,7 +1,7 @@
 import { GetServerSideProps } from 'next';
 import { route } from 'nextjs-routes';
 import { useLazyLoadQuery } from 'react-relay';
-import { graphql } from 'relay-runtime';
+import { fetchQuery, graphql } from 'relay-runtime';
 
 import useVerifyEmailOnPage from '~/components/Email/useVerifyEmailOnPage';
 import GalleryViewEmitter from '~/components/internal/GalleryViewEmitter';
@@ -11,25 +11,25 @@ import { MetaTagProps } from '~/pages/_app';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
 import useOpenSettingsModal from '~/scenes/Modals/useOpenSettingsModal';
 import UserGalleryPage from '~/scenes/UserGalleryPage/UserGalleryPage';
+import { PreloadQueryArgs } from '~/types/PageComponentPreloadQuery';
 import { openGraphMetaTags } from '~/utils/openGraphMetaTags';
+
+const UsernameQueryNode = graphql`
+  query UsernameQuery($username: String!) {
+    ...UserGalleryPageFragment
+    ...GalleryNavbarFragment
+    ...useOpenSettingsModalFragment
+    ...GalleryViewEmitterWithSuspenseFragment
+    ...useVerifyEmailOnPageQueryFragment
+  }
+`;
 
 type UserGalleryProps = MetaTagProps & {
   username: string;
 };
 
 export default function UserGallery({ username }: UserGalleryProps) {
-  const query = useLazyLoadQuery<UsernameQuery>(
-    graphql`
-      query UsernameQuery($username: String!) {
-        ...UserGalleryPageFragment
-        ...GalleryNavbarFragment
-        ...useOpenSettingsModalFragment
-        ...GalleryViewEmitterWithSuspenseFragment
-        ...useVerifyEmailOnPageQueryFragment
-      }
-    `,
-    { username }
-  );
+  const query = useLazyLoadQuery<UsernameQuery>(UsernameQueryNode, { username });
 
   useVerifyEmailOnPage(query);
   useOpenSettingsModal(query);
@@ -46,6 +46,14 @@ export default function UserGallery({ username }: UserGalleryProps) {
     />
   );
 }
+
+UserGallery.preloadQuery = ({ relayEnvironment, query }: PreloadQueryArgs) => {
+  if (query.username && typeof query.username === 'string') {
+    fetchQuery<UsernameQuery>(relayEnvironment, UsernameQueryNode, {
+      username: query.username,
+    }).toPromise();
+  }
+};
 
 export const getServerSideProps: GetServerSideProps<UserGalleryProps> = async ({ params }) => {
   const username = params?.username ? (params.username as string) : undefined;

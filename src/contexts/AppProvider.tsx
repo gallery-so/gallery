@@ -1,8 +1,7 @@
-import { RecordMap } from 'relay-runtime/lib/store/RelayStoreTypes';
+import { Environment, RelayEnvironmentProvider } from 'react-relay';
 
 import Debugger from '~/components/Debugger/Debugger';
 import { GalleryNavigationProvider } from '~/contexts/navigation/GalleryNavigationProvider';
-import { RelayProvider } from '~/contexts/relay/RelayProvider';
 import { SyncTokensLockProvider } from '~/contexts/SyncTokensLockContext';
 import isProduction from '~/utils/isProduction';
 
@@ -19,16 +18,16 @@ import ToastProvider from './toast/ToastContext';
 
 type Props = {
   children: React.ReactNode;
-  relayCache?: RecordMap;
+  relayEnvironment: Environment;
 };
 
 const isProd = isProduction();
 
-export default function AppProvider({ children, relayCache }: Props) {
+export default function AppProvider({ children, relayEnvironment }: Props) {
   return (
     <Boundary>
       <ToastProvider>
-        <RelayProvider initialCache={relayCache}>
+        <RelayEnvironmentProvider environment={relayEnvironment}>
           <AuthProvider>
             <AnalyticsProvider>
               <ErrorReportingProvider>
@@ -51,7 +50,7 @@ export default function AppProvider({ children, relayCache }: Props) {
               </ErrorReportingProvider>
             </AnalyticsProvider>
           </AuthProvider>
-        </RelayProvider>
+        </RelayEnvironmentProvider>
       </ToastProvider>
     </Boundary>
   );

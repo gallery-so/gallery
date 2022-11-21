@@ -1,6 +1,6 @@
 import { GetServerSideProps } from 'next';
 import { useLazyLoadQuery } from 'react-relay';
-import { graphql } from 'relay-runtime';
+import { fetchQuery, graphql } from 'relay-runtime';
 
 import { ITEMS_PER_PAGE, MAX_PIECES_DISPLAYED_PER_FEED_EVENT } from '~/components/Feed/constants';
 import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/NotesModal/NotesModal';
@@ -10,6 +10,7 @@ import { activityQuery } from '~/generated/activityQuery.graphql';
 import { MetaTagProps } from '~/pages/_app';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
 import UserActivityPage from '~/scenes/UserActivityPage/UserActivityPage';
+import { PreloadQueryArgs } from '~/types/PageComponentPreloadQuery';
 import { openGraphMetaTags } from '~/utils/openGraphMetaTags';
 
 type UserActivityProps = MetaTagProps & {
@@ -17,31 +18,32 @@ type UserActivityProps = MetaTagProps & {
   eventId: string | null;
 };
 
+const activityQueryNode = graphql`
+  query activityQuery(
+    $username: String!
+    $interactionsFirst: Int!
+    $interactionsAfter: String
+    $viewerLast: Int!
+    $viewerBefore: String
+    $visibleTokensPerFeedEvent: Int!
+    $topEventId: DBID!
+  ) {
+    ...UserActivityPageFragment
+    ...GalleryNavbarFragment
+    ...GalleryViewEmitterWithSuspenseFragment
+  }
+`;
+
+const NON_EXISTENT_FEED_EVENT_ID = 'some-non-existent-feed-event-id';
+
 export default function UserFeed({ username, eventId }: UserActivityProps) {
-  const query = useLazyLoadQuery<activityQuery>(
-    graphql`
-      query activityQuery(
-        $username: String!
-        $interactionsFirst: Int!
-        $interactionsAfter: String
-        $viewerLast: Int!
-        $viewerBefore: String
-        $visibleTokensPerFeedEvent: Int!
-        $topEventId: DBID!
-      ) {
-        ...UserActivityPageFragment
-        ...GalleryNavbarFragment
-        ...GalleryViewEmitterWithSuspenseFragment
-      }
-    `,
-    {
-      username: username,
-      viewerLast: ITEMS_PER_PAGE,
-      interactionsFirst: NOTES_PER_PAGE,
-      topEventId: eventId ?? 'some-non-existent-feed-event-id',
-      visibleTokensPerFeedEvent: MAX_PIECES_DISPLAYED_PER_FEED_EVENT,
-    }
-  );
+  const query = useLazyLoadQuery<activityQuery>(activityQueryNode, {
+    username: username,
+    viewerLast: ITEMS_PER_PAGE,
+    interactionsFirst: NOTES_PER_PAGE,
+    topEventId: eventId ?? NON_EXISTENT_FEED_EVENT_ID,
+    visibleTokensPerFeedEvent: MAX_PIECES_DISPLAYED_PER_FEED_EVENT,
+  });
 
   return (
     <GalleryRoute
@@ -55,6 +57,18 @@ export default function UserFeed({ username, eventId }: UserActivityProps) {
     />
   );
 }
+
+UserFeed.preloadQuery = ({ relayEnvironment, query }: PreloadQueryArgs) => {
+  if (query.username && typeof query.username === 'string' && !Array.isArray(query.eventId)) {
+    fetchQuery<activityQuery>(relayEnvironment, activityQueryNode, {
+      topEventId: query.eventId ?? NON_EXISTENT_FEED_EVENT_ID,
+      username: query.username,
+      interactionsFirst: NOTES_PER_PAGE,
+      viewerLast: ITEMS_PER_PAGE,
+      visibleTokensPerFeedEvent: MAX_PIECES_DISPLAYED_PER_FEED_EVENT,
+    }).toPromise();
+  }
+};
 
 export const getServerSideProps: GetServerSideProps<UserActivityProps> = async ({
   params,

@@ -5,6 +5,7 @@ import 'src/scenes/NftDetailPage/model-viewer.css';
 
 import { Analytics } from '@vercel/analytics/react';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import { ComponentType, FC, PropsWithChildren, useEffect, useState } from 'react';
 import { RecordMap } from 'relay-runtime/lib/store/RelayStoreTypes';
 
@@ -12,6 +13,10 @@ import FadeTransitioner, {
   useStabilizedRouteTransitionKey,
 } from '~/components/FadeTransitioner/FadeTransitioner';
 import AppProvider from '~/contexts/AppProvider';
+import AuthProvider from '~/contexts/auth/AuthContext';
+import GlobalLayoutContextProvider from '~/contexts/globalLayout/GlobalLayoutContext';
+import { createRelayEnvironmentFromRecords } from '~/contexts/relay/RelayProvider';
+import { PreloadQueryFn } from '~/types/PageComponentPreloadQuery';
 import isProduction from '~/utils/isProduction';
 import welcomeDoormat from '~/utils/welcomeDoormat';
 
@@ -24,6 +29,10 @@ type MetaTag = NameOrProperty & {
 
 export type MetaTagProps = {
   metaTags?: MetaTag[] | null;
+};
+
+type PageComponent = ComponentType<MetaTagProps> & {
+  preloadQuery?: PreloadQueryFn;
 };
 
 // This component ensures that we don't try to render anything on the server.
@@ -40,16 +49,24 @@ function SafeHydrate({ children }: PropsWithChildren) {
 }
 
 const App: FC<{
-  Component: ComponentType<MetaTagProps>;
+  Component: PageComponent;
   pageProps: MetaTagProps & Record<string, unknown>;
 }> = ({ Component, pageProps }) => {
   const relayCache = pageProps.__relayCache as RecordMap | undefined;
+  const [relayEnvironment] = useState(() => createRelayEnvironmentFromRecords(relayCache));
 
   const locationKey = useStabilizedRouteTransitionKey();
 
   useEffect(() => {
     if (isProduction()) welcomeDoormat();
   }, []);
+
+  const { query } = useRouter();
+
+  // Kick off queries that would waterfall
+  Component.preloadQuery?.({ relayEnvironment, query });
+  GlobalLayoutContextProvider.preloadQuery?.({ relayEnvironment, query });
+  AuthProvider.preloadQuery?.({ relayEnvironment, query });
 
   return (
     <>
@@ -85,7 +102,7 @@ const App: FC<{
         )}
       </Head>
       <SafeHydrate>
-        <AppProvider relayCache={relayCache}>
+        <AppProvider relayEnvironment={relayEnvironment}>
           <FadeTransitioner locationKey={locationKey}>
             <>
               <Component {...pageProps} />

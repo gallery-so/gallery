@@ -4,6 +4,7 @@ import { graphql } from 'relay-runtime';
 
 import { SomeoneViewedYourGallery } from '~/components/NotificationsModal/notifications/SomeoneViewedYourGallery';
 import AppProvider from '~/contexts/AppProvider';
+import { createEmptyRelayEnvironment } from '~/contexts/relay/RelayProvider';
 import { SomeoneViewedYourGalleryTestQueryQuery } from '~/generated/operations';
 import { SomeoneViewedYourGalleryTestQuery } from '~/generated/SomeoneViewedYourGalleryTestQuery.graphql';
 import { mockGraphqlQuery } from '~/tests/graphql/mockGraphqlQuery';
@@ -88,8 +89,9 @@ async function assertSituation(args: MockResponseArgs, expectedText: string) {
 
   mockGraphqlQuery('SomeoneViewedYourGalleryTestQuery', response);
 
+  const relayEnvironment = createEmptyRelayEnvironment();
   const { findByTestId } = render(
-    <AppProvider>
+    <AppProvider relayEnvironment={relayEnvironment}>
       <Fixture />
     </AppProvider>
   );

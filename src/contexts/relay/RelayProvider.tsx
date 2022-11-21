@@ -1,5 +1,4 @@
-import { ReactNode, useState } from 'react';
-import { Environment, RelayEnvironmentProvider } from 'react-relay';
+import { Environment } from 'react-relay';
 import { Network, RecordSource, Store } from 'relay-runtime';
 import RelayModernEnvironment from 'relay-runtime/lib/store/RelayModernEnvironment';
 import { RecordMap } from 'relay-runtime/lib/store/RelayStoreTypes';
@@ -22,16 +21,4 @@ export const createRelayEnvironmentFromRecords = (records?: RecordMap): Environm
     network: Network.create(relayFetchFunction, relaySubscribeFunction),
   });
 
-export function RelayProvider({
-  children,
-  initialCache,
-}: {
-  children: ReactNode;
-  initialCache?: RecordMap;
-}) {
-  const [relayEnvironment] = useState(() => createRelayEnvironmentFromRecords(initialCache));
-
-  return (
-    <RelayEnvironmentProvider environment={relayEnvironment}>{children}</RelayEnvironmentProvider>
-  );
-}
+export const createEmptyRelayEnvironment = (): Environment => createRelayEnvironmentFromRecords({});

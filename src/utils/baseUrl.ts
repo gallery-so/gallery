@@ -10,13 +10,7 @@ const getBaseUrl = () => {
   }
 
   // Otherwise, we're probably running locally?
-  if (process.env.NODE_ENV === 'production') {
-    return 'https://gallery.so';
-  }
-
-  // TODO: figure out if/what hostname needed for tests
-
-  return `http://localhost:3000`;
+  return 'http://localhost:3000';
 };
 
 export const baseUrl = getBaseUrl();

@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { graphql, useLazyLoadQuery } from 'react-relay';
+import { fetchQuery } from 'relay-runtime';
 
 import { ITEMS_PER_PAGE, MAX_PIECES_DISPLAYED_PER_FEED_EVENT } from '~/components/Feed/constants';
 import { FeedMode } from '~/components/Feed/Feed';
@@ -10,38 +11,38 @@ import { homeQuery } from '~/generated/homeQuery.graphql';
 import usePersistedState from '~/hooks/usePersistedState';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
 import HomeScene from '~/scenes/Home/Home';
+import { PreloadQueryArgs } from '~/types/PageComponentPreloadQuery';
+
+const homeQueryNode = graphql`
+  query homeQuery(
+    $interactionsFirst: Int!
+    $interactionsAfter: String
+    $globalLast: Int!
+    $globalBefore: String
+    $viewerLast: Int!
+    $viewerBefore: String
+    $visibleTokensPerFeedEvent: Int!
+  ) {
+    viewer {
+      ... on Viewer {
+        user {
+          dbid
+        }
+      }
+    }
+
+    ...HomeFragment
+    ...FeedNavbarFragment
+  }
+`;
 
 export default function Home() {
-  const query = useLazyLoadQuery<homeQuery>(
-    graphql`
-      query homeQuery(
-        $interactionsFirst: Int!
-        $interactionsAfter: String
-        $globalLast: Int!
-        $globalBefore: String
-        $viewerLast: Int!
-        $viewerBefore: String
-        $visibleTokensPerFeedEvent: Int!
-      ) {
-        viewer {
-          ... on Viewer {
-            user {
-              dbid
-            }
-          }
-        }
-
-        ...HomeFragment
-        ...FeedNavbarFragment
-      }
-    `,
-    {
-      interactionsFirst: NOTES_PER_PAGE,
-      globalLast: ITEMS_PER_PAGE,
-      viewerLast: ITEMS_PER_PAGE,
-      visibleTokensPerFeedEvent: MAX_PIECES_DISPLAYED_PER_FEED_EVENT,
-    }
-  );
+  const query = useLazyLoadQuery<homeQuery>(homeQueryNode, {
+    interactionsFirst: NOTES_PER_PAGE,
+    globalLast: ITEMS_PER_PAGE,
+    viewerLast: ITEMS_PER_PAGE,
+    visibleTokensPerFeedEvent: MAX_PIECES_DISPLAYED_PER_FEED_EVENT,
+  });
 
   const { viewer } = query;
   const viewerUserId = viewer?.user?.dbid ?? '';
@@ -63,6 +64,15 @@ export default function Home() {
     />
   );
 }
+
+Home.preloadQuery = ({ relayEnvironment }: PreloadQueryArgs) => {
+  fetchQuery<homeQuery>(relayEnvironment, homeQueryNode, {
+    interactionsFirst: NOTES_PER_PAGE,
+    globalLast: ITEMS_PER_PAGE,
+    viewerLast: ITEMS_PER_PAGE,
+    visibleTokensPerFeedEvent: MAX_PIECES_DISPLAYED_PER_FEED_EVENT,
+  }).toPromise();
+};
 
 /**
  * Wacky bugfix that addresses a bizarre inconsistency in the NextJS router.
