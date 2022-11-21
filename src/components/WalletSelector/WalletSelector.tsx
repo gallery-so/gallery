@@ -3,7 +3,6 @@ import { graphql, useFragment } from 'react-relay';
 import { WalletSelectorFragment$key } from '~/generated/WalletSelectorFragment.graphql';
 import { ADD_WALLET_TO_USER, AUTH, CONNECT_WALLET_ONLY } from '~/types/Wallet';
 
-import DeprecatedWalletSelector from './DeprecatedWalletSelector';
 import {
   MultichainWalletSelector,
   WalletSelectorVariant,
@@ -30,15 +29,6 @@ export default function WalletSelector({
   onEthAddWalletSuccess,
   onTezosAddWalletSuccess,
 }: Props) {
-  // Our feature flags are semi-global flags and I want to be able to toggle
-  // this new multichain behavior on a per-user basis, to not block anyone if
-  // authentication breaks while I am working on the new stuff. Anyone can opt
-  // into it by setting the localStorage variable below.
-  // const isMultichain =
-  //   typeof window !== 'undefined' &&
-  //   !!window.localStorage.getItem('GALLERY_ENABLE_MULTICHAIN_AUTH');
-  const isMultichain = true;
-
   // Usually we'd want to pass in a query variable and use @skip to conditionally
   // return certain data fragments, but in this case, we have lots of queries that
   // bundle this fragment and the two branches won't differ enough to be concerning
@@ -46,14 +36,13 @@ export default function WalletSelector({
   const query = useFragment(
     graphql`
       fragment WalletSelectorFragment on Query {
-        ...DeprecatedWalletSelectorFragment
         ...MultichainWalletSelectorFragment
       }
     `,
     queryRef
   );
 
-  return isMultichain ? (
+  return (
     <MultichainWalletSelector
       connectionMode={connectionMode}
       queryRef={query}
@@ -61,7 +50,5 @@ export default function WalletSelector({
       onEthAddWalletSuccess={onEthAddWalletSuccess}
       onTezosAddWalletSuccess={onTezosAddWalletSuccess}
     />
-  ) : (
-    <DeprecatedWalletSelector connectionMode={connectionMode} queryRef={query} />
   );
 }
