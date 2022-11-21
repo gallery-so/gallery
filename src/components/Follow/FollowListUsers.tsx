@@ -67,6 +67,7 @@ const StyledList = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
+  padding-top: 32px;
 `;
 const StyledListItem = styled.a`
   padding: 16px;
