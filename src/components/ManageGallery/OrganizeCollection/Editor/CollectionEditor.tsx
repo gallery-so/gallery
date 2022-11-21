@@ -21,8 +21,8 @@ import Directions from '../Directions';
 import Sidebar from '../Sidebar/Sidebar';
 import { EditModeToken, EditModeTokenChild, StagedCollection } from '../types';
 import EditorMenu from './EditorMenu';
-import { formatStagedCollection } from './formatStagedCollection';
 import StagingArea from './StagingArea';
+import useCheckUnsavedChanges from './useCheckUnsavedChanges';
 
 function convertNftsToEditModeTokens(
   tokens: EditModeTokenChild[],
@@ -110,6 +110,7 @@ function CollectionEditor({ queryRef, onValidChange, onHasUnsavedChange }: Props
 
   useNotOptimizedForMobileWarning();
   useConfirmationMessageBeforeClose();
+  useCheckUnsavedChanges(onHasUnsavedChange);
 
   const stagedCollectionState = useStagedCollectionState();
   const sidebarTokens = useSidebarTokensState();
@@ -122,32 +123,6 @@ function CollectionEditor({ queryRef, onValidChange, onHasUnsavedChange }: Props
     },
     [stagedCollectionState, onValidChange]
   );
-
-  // Check if the collection has unsaved changes
-  const initialStagedCollection = useRef({});
-  const isStagedCollectionInitialized = useRef(false);
-
-  // Initialize the lastStagedCollection ref
-  useEffect(() => {
-    if (Object.keys(stagedCollectionState).length === 0 || isStagedCollectionInitialized.current) {
-      return;
-    }
-
-    isStagedCollectionInitialized.current = true;
-    initialStagedCollection.current = formatStagedCollection(stagedCollectionState);
-  }, [stagedCollectionState]);
-
-  useEffect(() => {
-    const formattedStagedCollection = formatStagedCollection(stagedCollectionState);
-
-    if (
-      JSON.stringify(formattedStagedCollection) !== JSON.stringify(initialStagedCollection.current)
-    ) {
-      onHasUnsavedChange(true);
-      return;
-    }
-    onHasUnsavedChange(false);
-  }, [onHasUnsavedChange, stagedCollectionState]);
 
   const { setSidebarTokens, unstageTokens, setStagedCollectionState, setActiveSectionIdState } =
     useCollectionEditorActions();

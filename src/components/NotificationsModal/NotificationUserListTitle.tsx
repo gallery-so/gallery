@@ -44,7 +44,7 @@ export function NotificationUserListTitle({ queryRef }: NotificationUserListTitl
     } else if (typename === 'SomeoneAdmiredYourFeedEventNotification') {
       return 'Admirers';
     } else if (typename === 'SomeoneViewedYourGalleryNotification') {
-      return 'Gallery Views';
+      return 'Gallery views';
     }
 
     // Sane fallback

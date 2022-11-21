@@ -1,5 +1,6 @@
-import Link from 'next/link';
-import { Route, route } from 'nextjs-routes';
+import { useRouter } from 'next/router';
+import { Route } from 'nextjs-routes';
+import { useCallback } from 'react';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
@@ -10,6 +11,8 @@ import {
   EditingText,
   MainGalleryText,
 } from '~/contexts/globalLayout/GlobalNavbar/GalleryEditNavbar/GalleryEditNavbar';
+import { useModalActions } from '~/contexts/modal/ModalContext';
+import GenericActionModal from '~/scenes/Modals/GenericActionModal';
 
 type Props = {
   editGalleryRoute: Route;
@@ -24,13 +27,28 @@ export function GalleryNameAndCollectionName({
   rightText,
   editGalleryRoute,
 }: Props) {
+  const { showModal } = useModalActions();
+  const router = useRouter();
+
+  const handleToGalleryCollection = useCallback(() => {
+    showModal({
+      content: (
+        <GenericActionModal
+          buttonText="Leave"
+          action={() => {
+            router.push(editGalleryRoute);
+          }}
+        />
+      ),
+      headerText: 'Would you like to stop editing?',
+    });
+  }, [editGalleryRoute, router, showModal]);
+
   return (
     <HStack gap={8} align="baseline">
-      <Link href={editGalleryRoute}>
-        <LinkWrapper href={route(editGalleryRoute)}>
-          <StyledMainGalleryText>{galleryName}</StyledMainGalleryText>
-        </LinkWrapper>
-      </Link>
+      <StyledMainGalleryText as="button" onClick={handleToGalleryCollection}>
+        {galleryName}
+      </StyledMainGalleryText>
 
       <CollectionName>/</CollectionName>
 
@@ -41,12 +59,13 @@ export function GalleryNameAndCollectionName({
   );
 }
 
-const LinkWrapper = styled.a`
-  text-decoration: none;
-`;
-
 const StyledMainGalleryText = styled(MainGalleryText)`
   color: ${colors.metal};
+
+  appearance: none;
+  background: none;
+  border: none;
+  cursor: pointer;
 `;
 
 const CollectionName = styled(Paragraph)`
