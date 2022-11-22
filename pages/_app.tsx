@@ -106,7 +106,15 @@ const App: FC<{
           <FadeTransitioner locationKey={locationKey}>
             <>
               <Component {...pageProps} />
-              <Analytics />
+              <Analytics
+                beforeSend={(event) => {
+                  // Ignore sending noisy events related to /opengraph previews
+                  if (event.url.includes('/opengraph')) {
+                    return null;
+                  }
+                  return event;
+                }}
+              />
             </>
           </FadeTransitioner>
         </AppProvider>
