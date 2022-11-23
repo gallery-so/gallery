@@ -41,7 +41,7 @@ Start app:
 $ yarn dev
 ```
 
-The app will be available on http://localhost:3000.
+The app will be running on http://localhost:3000.
 
 ### E2E Test
 
