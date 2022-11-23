@@ -1,6 +1,7 @@
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
+import colors from '~/components/core/colors';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import FollowButton from '~/components/Follow/FollowButton';
@@ -53,24 +54,37 @@ export default function UserFollowedYouEvent({ followInfoRef, eventRef, queryRef
   );
 
   return (
-    <StyledEvent>
-      <StyledEventContent>
-        <StyledEventHeader>
-          <HStack gap={4} inline>
-            <BaseM>
-              <HoverCardOnUsername userRef={event.owner} queryRef={query} /> followed you{' '}
-              {followInfo.followedBack && 'back'}
-            </BaseM>
-            <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
-          </HStack>
-        </StyledEventHeader>
-        {!followInfo.followedBack && <FollowButton userRef={event.owner} queryRef={query} />}
-      </StyledEventContent>
-    </StyledEvent>
+    <>
+      <StyledEvent>
+        <StyledEventContent>
+          <StyledEventHeader>
+            <HStack gap={4} inline>
+              <BaseM>
+                <HoverCardOnUsername userRef={event.owner} queryRef={query} /> followed you{' '}
+                {followInfo.followedBack && 'back'}
+              </BaseM>
+              <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
+            </HStack>
+          </StyledEventHeader>
+          {!followInfo.followedBack && <FollowButton userRef={event.owner} queryRef={query} />}
+        </StyledEventContent>
+      </StyledEvent>
+      <StyledHr />
+    </>
   );
 }
 
 const StyledEventContent = styled.div`
   display: flex;
   align-items: center;
+`;
+
+const StyledHr = styled.hr`
+  border: none;
+  border-top: 1px solid ${colors.faint};
+
+  /* Hack to force full width: full width + FeedEventContainer right padding  */
+  width: calc(100% + 16px);
+
+  margin: 8px 0px;
 `;
