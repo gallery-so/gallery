@@ -30,7 +30,6 @@ function GlobalFooter() {
           <Link href={{ pathname: '/' }}>
             <StyledLogo src="/icons/logo-large.svg" />
           </Link>
-          <BaseS>BETA</BaseS>
         </HStack>
         <HStack gap={8} wrap="wrap">
           <StyledFooterLink href={GALLERY_FAQ}>FAQ</StyledFooterLink>
