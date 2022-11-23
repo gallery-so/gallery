@@ -8,6 +8,7 @@ import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleS } from '~/components/core/Text/Text';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { FollowListUsersFragment$key } from '~/generated/FollowListUsersFragment.graphql';
+import { BREAK_LINES } from '~/utils/regex';
 
 type Props = {
   userRefs: FollowListUsersFragment$key;
@@ -36,7 +37,7 @@ export default function FollowListUsers({
   }, [track]);
 
   const trimBreaklines = useCallback((text: string) => {
-    return text.replace(/(\r\n|\n|\r|\\\n)/gm, '');
+    return text.replace(BREAK_LINES, '');
   }, []);
 
   return (
