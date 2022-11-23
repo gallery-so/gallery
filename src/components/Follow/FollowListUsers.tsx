@@ -35,12 +35,16 @@ export default function FollowListUsers({
     track('Follower List Username Click');
   }, [track]);
 
+  const trimBreaklines = useCallback((text: string) => {
+    return text.replace(/(\r\n|\n|\r|\\\n)/gm, '');
+  }, []);
+
   return (
     <StyledList>
       {users.map((user) => (
         <StyledListItem key={user.dbid} href={`/${user.username}`} onClick={handleClick}>
           <TitleS>{user.username}</TitleS>
-          <StyledBaseM>{user.bio && <Markdown text={user.bio} />}</StyledBaseM>
+          <StyledBaseM>{user.bio && <Markdown text={trimBreaklines(user.bio)} />}</StyledBaseM>
         </StyledListItem>
       ))}
       {users.length === 0 && (
