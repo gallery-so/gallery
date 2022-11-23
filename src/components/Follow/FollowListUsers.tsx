@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -36,19 +36,24 @@ export default function FollowListUsers({
     track('Follower List Username Click');
   }, [track]);
 
-  const trimBreaklines = useCallback((text: string) => {
-    return text.replace(BREAK_LINES, '');
-  }, []);
+  const formattedUsersBio = useMemo(() => {
+    return users.map((user) => {
+      return {
+        ...user,
+        bio: (user.bio ?? '').replace(BREAK_LINES, ''),
+      };
+    });
+  }, [users]);
 
   return (
     <StyledList>
-      {users.map((user) => (
+      {formattedUsersBio.map((user) => (
         <StyledListItem key={user.dbid} href={`/${user.username}`} onClick={handleClick}>
           <TitleS>{user.username}</TitleS>
-          <StyledBaseM>{user.bio && <Markdown text={trimBreaklines(user.bio)} />}</StyledBaseM>
+          <StyledBaseM>{user.bio && <Markdown text={user.bio} />}</StyledBaseM>
         </StyledListItem>
       ))}
-      {users.length === 0 && (
+      {formattedUsersBio.length === 0 && (
         <StyledEmptyList gap={48} align="center" justify="center">
           <BaseM>{emptyListText}</BaseM>
         </StyledEmptyList>
