@@ -45,11 +45,7 @@ The app will be available on http://localhost:3000.
 
 ### E2E Test
 
-<<<<<<< HEAD
-Cypress CI is configured as a github workflow in `.github/workflows`
-=======
 Cypress CI is configured as a github workflow in `.github/workflows`.
->>>>>>> 8c7c02b (trigger)
 
 ### Advanced
 
