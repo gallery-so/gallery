@@ -29,7 +29,7 @@ Install dependencies:
 $ yarn
 ```
 
-Generate relay files
+Generate relay files:
 
 ```bash
 yarn relay
