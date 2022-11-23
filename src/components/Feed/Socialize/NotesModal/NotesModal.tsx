@@ -75,6 +75,25 @@ export function NotesModal({ eventRef, fullscreen }: NotesModalProps) {
     return interactions;
   }, [feedEvent.interactions?.edges, hasPrevious]);
 
+  // sort interactions by comment and admire
+  const sortedInteractions = useMemo(() => {
+    return nonNullInteractionsAndSeeMore.sort((a, b) => {
+      if ('kind' in a || 'kind' in b) {
+        return 0;
+      }
+
+      if (a.__typename === 'Comment' && b.__typename === 'Admire') {
+        return 1;
+      }
+
+      if (a.__typename === 'Admire' && b.__typename === 'Comment') {
+        return -1;
+      }
+
+      return 0;
+    });
+  }, [nonNullInteractionsAndSeeMore]);
+
   const [measurerCache] = useState(() => {
     return new CellMeasurerCache({
       fixedWidth: true,
@@ -88,8 +107,7 @@ export function NotesModal({ eventRef, fullscreen }: NotesModalProps) {
 
   const rowRenderer = useCallback<ListRowRenderer>(
     ({ index, parent, key, style }) => {
-      const interaction =
-        nonNullInteractionsAndSeeMore[nonNullInteractionsAndSeeMore.length - index - 1];
+      const interaction = sortedInteractions[sortedInteractions.length - index - 1];
 
       return (
         <CellMeasurer
@@ -132,7 +150,7 @@ export function NotesModal({ eventRef, fullscreen }: NotesModalProps) {
         </CellMeasurer>
       );
     },
-    [handleSeeMore, measurerCache, nonNullInteractionsAndSeeMore]
+    [handleSeeMore, measurerCache, sortedInteractions]
   );
 
   return (
