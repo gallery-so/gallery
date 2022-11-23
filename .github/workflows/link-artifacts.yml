@@ -6,7 +6,6 @@ on:
       - completed
 jobs:
   pr_comment:
-    if: github.event_name == 'pull_request' && github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/github-script@v6
@@ -14,6 +13,11 @@ jobs:
           # This snippet is public-domain, taken from
           # https://github.com/oprypin/nightly.link/blob/master/.github/workflows/pr-comment.yml
           script: |
+            const eventName = ${{ github.event_name }};
+            const conclusion = ${{ github.event.workflow_run.conclusion }}
+            console.log(eventName)
+            console.log(conclusion)
+
             async function upsertComment(owner, repo, issue_number, purpose, body) {
               const {data: comments} = await github.rest.issues.listComments(
                 {owner, repo, issue_number});

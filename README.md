@@ -43,7 +43,7 @@ $ yarn dev
 
 The app will be running on http://localhost:3000.
 
-### E2E Test
+### E2E Testing
 
 Cypress CI is configured as a Github workflow in `.github/workflows`.
 
