@@ -1,8 +1,8 @@
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
+import styled from 'styled-components';
 
 import colors from '~/components/core/colors';
-import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import { ListItem } from '~/components/Feed/Socialize/NotesModal/ListItem';
 import { TimeAgoText } from '~/components/Feed/Socialize/NotesModal/TimeAgoText';
@@ -35,12 +35,18 @@ export function CommentNote({ commentRef }: CommentNoteProps) {
 
   return (
     <ListItem justify="space-between" gap={4}>
-      <HStack gap={4}>
-        <UsernameLink username={comment.commenter?.username ?? null} />
-        <BaseM dangerouslySetInnerHTML={{ __html: comment.comment ?? '' }} />
-      </HStack>
+      <p>
+        <StyledUsernameContainer>
+          <UsernameLink username={comment.commenter?.username ?? null} />
+        </StyledUsernameContainer>
+        <BaseM as="span" dangerouslySetInnerHTML={{ __html: comment.comment ?? '' }} />
+      </p>
 
       <TimeAgoText color={colors.metal}>{timeAgo}</TimeAgoText>
     </ListItem>
   );
 }
+
+const StyledUsernameContainer = styled.span`
+  padding-right: 4px;
+`;
