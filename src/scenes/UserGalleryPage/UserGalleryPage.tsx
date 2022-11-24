@@ -40,7 +40,7 @@ function UserGalleryPage({ queryRef, username }: UserGalleryPageProps) {
   const navbarHeight = useGlobalNavbarHeight();
 
   useEffect(() => {
-    track('Page View: User Gallery', { username });
+    track('Page View: User Gallery', { username }, true);
   }, [username, track]);
 
   return (

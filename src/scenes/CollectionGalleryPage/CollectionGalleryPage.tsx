@@ -66,10 +66,14 @@ function CollectionGalleryPage({ username, queryRef }: CollectionGalleryPageProp
   const track = useTrack();
 
   useEffect(() => {
-    track('Page View: Collection', {
-      username,
-      collectionId,
-    });
+    track(
+      'Page View: Collection',
+      {
+        username,
+        collectionId,
+      },
+      true
+    );
   }, [username, collectionId, track]);
 
   const { push } = useRouter();

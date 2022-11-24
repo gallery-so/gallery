@@ -48,7 +48,7 @@ export function GalleryNavigationProvider({ children }: Props) {
     setHistoryStack((stack) => [...stack, { asPath, route, pathname, query }]);
 
     // analytics
-    track('Page view', { path: asPath });
+    track('Page view', { path: asPath }, true);
 
     // only trigger this effect on `asPath` change; other params are decorative and may cause over-active calls
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -84,7 +84,7 @@ function NftDetailPage({
 
   const track = useTrack();
   useEffect(() => {
-    track('Page View: NFT Detail', { tokenId });
+    track('Page View: NFT Detail', { tokenId }, true);
   }, [tokenId, track]);
 
   if (initialCollectionNft?.__typename !== 'CollectionToken') {
