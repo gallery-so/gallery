@@ -8,16 +8,20 @@ import styled from 'styled-components';
 import colors from '~/components/core/colors';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BODY_FONT_FAMILY } from '~/components/core/Text/Text';
+import { AdmireLineEventFragment$key } from '~/generated/AdmireLineEventFragment.graphql';
 import { AdmireLineFragment$key } from '~/generated/AdmireLineFragment.graphql';
 import { AdmireLineQueryFragment$key } from '~/generated/AdmireLineQueryFragment.graphql';
+
+import { NoteModalOpenerText } from './NoteModalOpenerText';
 
 type CommentLineProps = {
   totalAdmires: number;
   admireRef: AdmireLineFragment$key;
   queryRef: AdmireLineQueryFragment$key;
+  eventRef: AdmireLineEventFragment$key;
 };
 
-export function AdmireLine({ admireRef, queryRef, totalAdmires }: CommentLineProps) {
+export function AdmireLine({ admireRef, eventRef, queryRef, totalAdmires }: CommentLineProps) {
   const admire = useFragment(
     graphql`
       fragment AdmireLineFragment on Admire {
@@ -47,6 +51,16 @@ export function AdmireLine({ admireRef, queryRef, totalAdmires }: CommentLinePro
     queryRef
   );
 
+  const event = useFragment(
+    graphql`
+      fragment AdmireLineEventFragment on FeedEvent {
+        dbid
+        ...NoteModalOpenerTextFragment
+      }
+    `,
+    eventRef
+  );
+
   const admirerName = useMemo(() => {
     const isTheAdmirerTheLoggedInUser = query.viewer?.user?.dbid === admire.admirer?.dbid;
 
@@ -73,11 +87,16 @@ export function AdmireLine({ admireRef, queryRef, totalAdmires }: CommentLinePro
       {totalAdmires === 1 ? (
         <AdmirerText>admired this</AdmirerText>
       ) : (
-        <AdmirerText>
-          {/*                                  |-- Checking for two here since we have  */}
-          {/*                                  |   to subtract one to get the remaining count */}
-          and {totalAdmires - 1} {totalAdmires === 2 ? 'other' : 'others'} admired this
-        </AdmirerText>
+        <>
+          <AdmirerText>and</AdmirerText>
+          <AdmirerText>
+            <NoteModalOpenerText eventRef={event}>
+              {/*                                  |-- Checking for two here since we have  */}
+              {/*                                  |   to subtract one to get the remaining count */}
+              {totalAdmires - 1} {totalAdmires === 2 ? 'other' : 'others'} admired this
+            </NoteModalOpenerText>
+          </AdmirerText>
+        </>
       )}
     </HStack>
   );
