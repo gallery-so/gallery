@@ -31,7 +31,7 @@ function UserActivityPage({ queryRef, username }: UserActivityPageProps) {
   const navbarHeight = useGlobalNavbarHeight();
 
   useEffect(() => {
-    track('Page View: User Gallery', { username });
+    track('Page View: User Gallery', { username }, true);
   }, [username, track]);
 
   return (

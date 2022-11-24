@@ -43,7 +43,7 @@ export default function CommunityPage({ queryRef }: Props) {
 
   useEffect(() => {
     if (community && community.__typename === 'Community') {
-      track('Page View: Community', { name: community.name });
+      track('Page View: Community', { name: community.name }, true);
     }
   }, [community, track]);
 
