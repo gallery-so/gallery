@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -8,6 +8,7 @@ import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleS } from '~/components/core/Text/Text';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { FollowListUsersFragment$key } from '~/generated/FollowListUsersFragment.graphql';
+import { BREAK_LINES } from '~/utils/regex';
 
 type Props = {
   userRefs: FollowListUsersFragment$key;
@@ -35,15 +36,24 @@ export default function FollowListUsers({
     track('Follower List Username Click');
   }, [track]);
 
+  const formattedUsersBio = useMemo(() => {
+    return users.map((user) => {
+      return {
+        ...user,
+        bio: (user.bio ?? '').replace(BREAK_LINES, ''),
+      };
+    });
+  }, [users]);
+
   return (
     <StyledList>
-      {users.map((user) => (
+      {formattedUsersBio.map((user) => (
         <StyledListItem key={user.dbid} href={`/${user.username}`} onClick={handleClick}>
           <TitleS>{user.username}</TitleS>
           <StyledBaseM>{user.bio && <Markdown text={user.bio} />}</StyledBaseM>
         </StyledListItem>
       ))}
-      {users.length === 0 && (
+      {formattedUsersBio.length === 0 && (
         <StyledEmptyList gap={48} align="center" justify="center">
           <BaseM>{emptyListText}</BaseM>
         </StyledEmptyList>

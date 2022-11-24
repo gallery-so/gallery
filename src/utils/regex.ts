@@ -10,3 +10,6 @@ export const VALID_URL =
 
 // standard email format x@x.xx
 export const EMAIL_FORMAT = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+
+// break lines
+export const BREAK_LINES = /(\r\n|\n|\r|\\\n)/gm;

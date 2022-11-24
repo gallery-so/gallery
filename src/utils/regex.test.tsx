@@ -1,4 +1,4 @@
-import { ALPHANUMERIC_UNDERSCORES, VALID_URL } from './regex';
+import { ALPHANUMERIC_UNDERSCORES, BREAK_LINES, VALID_URL } from './regex';
 
 function testRegex(pattern: RegExp, values: string[], expectedValue: boolean) {
   for (const value of values) {
@@ -30,5 +30,44 @@ describe('regex', () => {
 
     testRegex(VALID_URL, validUrls, true);
     testRegex(VALID_URL, invalidUrls, false);
+  });
+
+  test('BREAK_LINES', () => {
+    const validTexts = [
+      `
+        \
+        𝘩𝘪 𝘪&#39;𝘮 a gallery user 
+
+        \
+
+        𝘩𝘪 𝘪&#39;𝘮 a gallery user
+
+        \
+        
+        𝘩𝘪 𝘪&#39;𝘮 a gallery user
+      `,
+      'test\r\ntest',
+      `
+        Ohh boy 
+        I've got 
+        Breaks
+      `,
+      `
+        title
+
+        another break
+
+        not again...
+      `,
+    ];
+    const invalidStrings = [
+      'test',
+      'test test',
+      'i just have a normal bio here',
+      'i have no break with ![links](https://gallery.so)',
+    ];
+
+    testRegex(BREAK_LINES, validTexts, true);
+    testRegex(BREAK_LINES, invalidStrings, false);
   });
 });
