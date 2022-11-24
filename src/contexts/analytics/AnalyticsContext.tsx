@@ -7,7 +7,7 @@ import noop from '~/utils/noop';
 
 type EventProps = Record<string, unknown>;
 
-type TrackFn = (eventName: string, eventProps?: EventProps) => void;
+type TrackFn = (eventName: string, eventProps?: EventProps, checkAuth?: boolean) => void;
 
 const AnalyticsContext = createContext<TrackFn | undefined>(undefined);
 
@@ -70,7 +70,12 @@ const AnalyticsProvider = memo(({ children }: Props) => {
   const userIdRef = useRef(userId);
   userIdRef.current = userId;
 
-  const handleTrack: TrackFn = useCallback((eventName, eventProps = {}) => {
+  const handleTrack: TrackFn = useCallback((eventName, eventProps = {}, checkAuth = false) => {
+    // if there is auth, and we don't have a user id, don't track
+    if (checkAuth && !userIdRef.current) {
+      return;
+    }
+
     _track(eventName, eventProps, userIdRef.current);
   }, []);
 
