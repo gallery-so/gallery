@@ -247,6 +247,6 @@ const StyledCharacterCounter = styled(BaseM)<{ error: boolean; hasPadding: boole
 const StyledMarkdownContainer = styled.div<{ hasPadding: boolean }>`
   position: absolute;
   background: none;
-  bottom: ${({ hasPadding }) => (hasPadding ? '12px' : '0')};
+  bottom: ${({ hasPadding }) => (hasPadding ? '8px' : '0')};
   left: ${({ hasPadding }) => (hasPadding ? '8px' : '0')};
 `;
