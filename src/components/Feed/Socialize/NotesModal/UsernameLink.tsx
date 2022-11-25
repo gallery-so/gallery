@@ -14,7 +14,7 @@ export function UsernameLink({ username }: UsernameLinkProps) {
   return (
     <Link href={link}>
       <UsernameLinkWrapper href={route(link)}>
-        <TitleS>{username ?? '<unknown>'}</TitleS>
+        <TitleS as="span">{username ?? '<unknown>'}</TitleS>
       </UsernameLinkWrapper>
     </Link>
   );
