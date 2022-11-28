@@ -1,6 +1,5 @@
 import unescape from 'lodash/unescape';
 import Link from 'next/link';
-import { Route } from 'nextjs-routes';
 import { MouseEventHandler, useCallback, useMemo, useRef, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
