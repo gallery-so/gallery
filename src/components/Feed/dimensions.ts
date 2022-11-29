@@ -39,7 +39,7 @@ export const getFeedTokenDimensions = ({
     return {
       '1': 380,
       '2': 340,
-      '3': 340,
+      '3': 320,
       '4':
         (FEED_MAX_WIDTH - FEED_EVENT_TOKEN_MARGIN * 3 - FEED_EVENT_PADDING_DESKTOP * paddingCount) /
         4,
