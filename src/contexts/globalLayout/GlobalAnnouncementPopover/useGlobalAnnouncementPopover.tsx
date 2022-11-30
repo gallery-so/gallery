@@ -74,7 +74,7 @@ export default function useGlobalAnnouncementPopover({
     // hide for users who have explicitly requested the popover to be disabled on their page
     if (typeof urlQuery.username === 'string') {
       const disabledUserProfiles = ['curated', '1of1'];
-      if (disabledUserProfiles.includes(urlQuery.username)) return true;
+      if (disabledUserProfiles.includes(urlQuery.username.toLowerCase())) return true;
     }
 
     return false;
