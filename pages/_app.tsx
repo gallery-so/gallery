@@ -64,9 +64,11 @@ const App: FC<{
   const { query } = useRouter();
 
   // Kick off queries that would waterfall
-  Component.preloadQuery?.({ relayEnvironment, query });
-  GlobalLayoutContextProvider.preloadQuery?.({ relayEnvironment, query });
-  AuthProvider.preloadQuery?.({ relayEnvironment, query });
+  if (typeof window !== 'undefined') {
+    Component.preloadQuery?.({ relayEnvironment, query });
+    GlobalLayoutContextProvider.preloadQuery?.({ relayEnvironment, query });
+    AuthProvider.preloadQuery?.({ relayEnvironment, query });
+  }
 
   return (
     <>
