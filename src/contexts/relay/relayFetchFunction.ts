@@ -2,11 +2,14 @@ import { getCurrentHub, startTransaction } from '@sentry/nextjs';
 import { Transaction } from '@sentry/types';
 import { FetchFunction, GraphQLResponse, PayloadError, RequestParameters } from 'relay-runtime';
 
-import { _fetch } from '~/contexts/swr/fetch';
-import { baseUrl } from '~/utils/baseUrl';
+import { _fetch, baseurl } from '~/contexts/swr/fetch';
+// Use this once we fix the ERRCONNRESET issue
+// import { baseUrl } from '~/utils/baseUrl';
 
 export function getGraphqlHost() {
-  return baseUrl;
+  // Use this once we fix the ERRCONNRESET issue
+  // return baseUrl
+  return baseurl;
 }
 
 export function getGraphqlPath() {
