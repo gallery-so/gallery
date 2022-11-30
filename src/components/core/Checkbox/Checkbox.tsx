@@ -1,5 +1,7 @@
 import styled from 'styled-components';
+
 import CheckIcon from '~/icons/CheckIcon';
+
 import colors from '../colors';
 
 type Props = {
@@ -18,7 +20,7 @@ export default function Checkbox({ checked, isPending, onChange, ...inputProps }
         disabled={isPending}
         {...inputProps}
       />
-      <StyledCheckboxContainer>
+      <StyledCheckboxContainer active={checked}>
         {checked && <CheckIcon color={colors.activeBlue} />}
       </StyledCheckboxContainer>
     </StyledCheckbox>
@@ -30,8 +32,8 @@ const StyledCheckbox = styled.div`
   display: inline-block;
 `;
 
-const StyledCheckboxContainer = styled.div`
-  border: 1px solid blue;
+const StyledCheckboxContainer = styled.div<{ active: boolean }>`
+  border: 1px solid ${({ active }) => (active ? colors.activeBlue : colors.offBlack)};
   height: 12px;
   width: 12px;
   display: flex;

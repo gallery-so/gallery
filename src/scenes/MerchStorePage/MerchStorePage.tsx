@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
+import { Button } from '~/components/core/Button/Button';
 import colors from '~/components/core/colors';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { TitleM } from '~/components/core/Text/Text';
@@ -11,6 +12,7 @@ import LogoBracketRight from '~/icons/LogoBracketRight';
 
 import Countdown from './Countdown';
 import ItemPreview from './ItemPreview';
+import useRedeemModal from './Redemption/useRedeemModal';
 
 const items = [
   {
@@ -43,6 +45,8 @@ const items = [
 ];
 
 export default function MerchStorePage() {
+  const showRedeemModal = useRedeemModal();
+
   return (
     <StyledPage>
       <Countdown />
@@ -53,6 +57,9 @@ export default function MerchStorePage() {
           <StyledLogoBracketRight color={colors.offBlack} />
         </HStack>
       </StyledLogoContainer>
+      <StyledButtonContainer>
+        <StyledButton onClick={showRedeemModal}>Redeem</StyledButton>
+      </StyledButtonContainer>
       <StyledItemsContainer>
         {items.map((item) => (
           <ItemPreview {...item} key={item.label} />
@@ -78,6 +85,16 @@ const StyledLogoContainer = styled.div`
   position: absolute;
   display: flex;
   align-items: center;
+`;
+
+const StyledButtonContainer = styled.div`
+  position: absolute;
+  top: 16px;
+  right: 24px;
+`;
+
+const StyledButton = styled(Button)`
+  padding: 10px 12px;
 `;
 
 const StyledShopText = styled(TitleM)`
