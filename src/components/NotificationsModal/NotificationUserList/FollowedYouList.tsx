@@ -22,6 +22,7 @@ export function FollowedYouList({ notificationRef }: FollowedYouListProps) {
       @refetchable(queryName: "RefetchableFollowedYouListFragment") {
         followers(last: $notificationUsersLast, before: $notificationUsersBefore)
           @connection(key: "FollowedYouListFragment_followers") {
+          # eslint-disable-next-line relay/unused-fields
           edges {
             __typename
           }

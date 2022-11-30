@@ -36,10 +36,7 @@ export const SidebarTokens = ({
         id
         dbid
 
-        chain
-
         contract {
-          name
           contractAddress {
             address
           }

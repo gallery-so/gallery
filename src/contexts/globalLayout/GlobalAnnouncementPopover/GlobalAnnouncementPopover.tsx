@@ -2,9 +2,8 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import SplashImage1 from 'public/gallery_social_splash.png';
 import SplashImage2 from 'public/gallery_social_splash_2.png';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
-import { FragmentRefs } from 'relay-runtime';
 import styled from 'styled-components';
 
 import { Button } from '~/components/core/Button/Button';
@@ -15,7 +14,6 @@ import { useModalActions } from '~/contexts/modal/ModalContext';
 import { GlobalAnnouncementPopoverFragment$key } from '~/generated/GlobalAnnouncementPopoverFragment.graphql';
 import { AuthModal } from '~/hooks/useAuthModal';
 import { useIsDesktopWindowWidth } from '~/hooks/useWindowSize';
-import { removeNullValues } from '~/utils/removeNullValues';
 
 import FeaturedCollectorCard from './components/FeaturedCollectorCard';
 
@@ -44,7 +42,6 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
           ... on Viewer {
             user {
               id
-              username
             }
           }
         }
@@ -61,7 +58,6 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
             ...FeaturedCollectorCardCollectionFragment
           }
         }
-        ...ManageWalletsModalFragment
         ...useAuthModalFragment
         ...FeaturedCollectorCardFragment
       }
@@ -99,15 +95,17 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
     document.getElementById('beautiful-home')?.scrollIntoView({ behavior: 'smooth' });
   }, []);
 
-  // TODO: definitely shouldn't have to do this, but for some reason typescript doesn't understand
-  // that `.filter` should remove any entities that are not of typename `Collection`
-  const collections = (removeNullValues(query.collections).filter(
-    (collection) => collection.__typename === 'Collection'
-  ) ?? []) as {
-    readonly __typename: 'Collection';
-    readonly dbid: string;
-    readonly ' $fragmentSpreads': FragmentRefs<'FeaturedCollectorCardCollectionFragment'>;
-  }[];
+  const collections = useMemo(() => {
+    const collections = [];
+
+    for (const collection of query.collections ?? []) {
+      if (collection?.__typename === 'Collection') {
+        collections.push(collection);
+      }
+    }
+
+    return collections;
+  }, [query.collections]);
 
   const HEADER_TEXT_1 = 'Introducing the';
   const HEADER_TEXT_2 = 'Next Era of Self Expression';

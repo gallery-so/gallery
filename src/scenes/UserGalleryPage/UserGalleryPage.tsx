@@ -20,15 +20,7 @@ function UserGalleryPage({ queryRef, username }: UserGalleryPageProps) {
   const query = useFragment(
     graphql`
       fragment UserGalleryPageFragment on Query {
-        viewer {
-          ... on Viewer {
-            __typename
-          }
-        }
-
         ...UserGalleryFragment
-        ...SettingsModalFragment
-        ...isFeatureEnabledFragment
       }
     `,
     queryRef

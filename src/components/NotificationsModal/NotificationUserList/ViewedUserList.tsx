@@ -22,6 +22,7 @@ export function ViewedUserList({ notificationRef }: ViewedUserListProps) {
       @refetchable(queryName: "RefetchableViewedUserListFragment") {
         userViewers(last: $notificationUsersLast, before: $notificationUsersBefore)
           @connection(key: "ViewedUserListFragment_userViewers") {
+          # eslint-disable-next-line relay/unused-fields
           edges {
             __typename
           }

@@ -33,13 +33,11 @@ function NftDetailText({ tokenRef }: Props) {
   const token = useFragment(
     graphql`
       fragment NftDetailTextFragment on Token {
-        dbid
         name
         chain
         description
         tokenId
         tokenMetadata
-        externalUrl
         owner {
           username
         }

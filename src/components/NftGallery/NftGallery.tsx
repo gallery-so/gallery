@@ -18,13 +18,8 @@ function NftGallery({ collectionRef, mobileLayout }: Props) {
   const collection = useFragment(
     graphql`
       fragment NftGalleryFragment on Collection {
-        dbid
         layout {
-          sections
-          sectionLayout {
-            columns
-            whitespace
-          }
+          __typename
         }
         tokens {
           id

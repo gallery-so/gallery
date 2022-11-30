@@ -22,7 +22,6 @@ export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
     graphql`
       fragment UserGalleryLayoutQueryFragment on Query {
         ...UserGalleryCollectionsQueryFragment
-        ...NavActionFollowQueryFragment
       }
     `,
     queryRef
@@ -31,7 +30,6 @@ export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
   const user = useFragment(
     graphql`
       fragment UserGalleryLayoutFragment on GalleryUser {
-        username
         galleries {
           collections {
             __typename
@@ -39,8 +37,6 @@ export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
 
           ...UserGalleryCollectionsFragment
         }
-
-        ...NavActionFollowUserFragment
 
         ...UserGalleryHeaderFragment
       }

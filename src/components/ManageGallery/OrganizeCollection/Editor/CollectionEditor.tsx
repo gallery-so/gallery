@@ -52,30 +52,20 @@ const collectionEditorViewerFragment = graphql`
           tokens {
             token @required(action: THROW) {
               dbid @required(action: THROW)
-              name @required(action: THROW)
               lastUpdated @required(action: THROW)
-              isSpamByUser
-              isSpamByProvider
             }
             tokenSettings {
               renderLive
             }
           }
           layout {
-            sections
-            sectionLayout {
-              columns
-              whitespace
-            }
+            __typename
           }
         }
       }
       tokens {
         dbid @required(action: THROW)
-        name @required(action: THROW)
         lastUpdated @required(action: THROW)
-        isSpamByUser
-        isSpamByProvider
         ...SidebarFragment
         ...StagingAreaFragment
       }

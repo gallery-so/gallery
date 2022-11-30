@@ -45,7 +45,6 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
 
         ...SearchBarFragment
         ...SidebarTokensFragment
-        ...getVideoOrImageUrlForNftPreviewFragment
       }
     `,
     tokensRef
@@ -59,7 +58,6 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
             user {
               wallets {
                 chainAddress {
-                  address
                   chain
                 }
               }
@@ -68,7 +66,6 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
         }
 
         ...SidebarChainSelectorFragment
-        ...isFeatureEnabledFragment
         ...AddWalletSidebarQueryFragment
       }
     `,

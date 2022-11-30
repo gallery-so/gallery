@@ -71,16 +71,7 @@ const AuthContextFetchUserQueryNode = graphql`
       ... on Viewer {
         __typename
         user {
-          id
           dbid
-          username
-          wallets {
-            dbid
-            chainAddress {
-              chain
-              address
-            }
-          }
         }
       }
       ... on ErrNotAuthorized {
@@ -98,8 +89,6 @@ const AuthContextFetchUserQueryNode = graphql`
         }
       }
     }
-
-    ...ProfileDropdownFragment
   }
 `;
 

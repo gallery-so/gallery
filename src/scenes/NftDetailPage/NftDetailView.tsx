@@ -22,16 +22,6 @@ export default function NftDetailView({ authenticatedUserOwnsAsset, queryRef }: 
       fragment NftDetailViewFragment on CollectionToken {
         token @required(action: THROW) {
           dbid
-          name
-          description
-          contract {
-            name
-            contractAddress {
-              address
-            }
-          }
-          tokenId
-          externalUrl
           collectorsNote
 
           ...NftDetailTextFragment
