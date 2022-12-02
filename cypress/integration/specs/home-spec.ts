@@ -3,10 +3,10 @@ import HomePage from '../pages/home/home-page';
 const home = new HomePage();
 
 describe('Homepage test', () => {
-  beforeEach(() => {
-    // cy.disconnectMetamaskWalletFromAllDapps();
-    cy.visit('/');
-  });
+  // beforeEach(() => {
+  //   // cy.disconnectMetamaskWalletFromAllDapps();
+  //   cy.visit('/');
+  // });
 
   it('should render the homepage', () => {
     cy.contains('Gallery', { matchCase: false }).should('be.exist');
