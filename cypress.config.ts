@@ -19,7 +19,8 @@ export default defineConfig({
     setupNodeEvents(on, config) {
       synpressPlugins(on, config);
     },
-    baseUrl: 'http://localhost:3000',
+    // TODO: update with branch URL
+    baseUrl: 'https://gallery-dev.vercel.app',
     specPattern: 'cypress/integration/specs/**/*.{js,jsx,ts,tsx}',
     supportFile: 'cypress/support/e2e.ts',
     fixturesFolder: 'cypress/fixtures',
