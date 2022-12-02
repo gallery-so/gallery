@@ -123,7 +123,7 @@ jobs:
             ${{ runner.os }}-buildx-
       - name: Run e2e tests
         run: |
-          docker-compose -f docker-compose.ci.yml --env-file ${{ matrix.resolution }}-res.env --build --exit-code-from synpress
+          docker-compose -f docker-compose.ci.yml --env-file ${{ matrix.resolution }}-res.env --profile foundry up --build --exit-code-from synpress
 
         env:
           COMPOSE_DOCKER_CLI_BUILD: 1
