@@ -71,7 +71,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        resolution: ['low', 'medium', 'high']
+        resolution: ['medium']
 
     steps:
       - name: Chown workspace
@@ -121,7 +121,7 @@ jobs:
           key: ${{ runner.os }}-buildx-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-buildx-
-      - name: Run e2e tests (${{ matrix.resolution }} res)
+      - name: Run e2e tests
         run: |
           docker-compose -f docker-compose.ci.yml --env-file ${{ matrix.resolution }}-res.env --profile foundry up --build --exit-code-from synpress
         env:
