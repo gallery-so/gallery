@@ -4,7 +4,7 @@ const home = new HomePage();
 
 describe('Homepage test', () => {
   beforeEach(() => {
-    cy.disconnectMetamaskWalletFromAllDapps();
+    // cy.disconnectMetamaskWalletFromAllDapps();
     cy.visit('/');
   });
 
