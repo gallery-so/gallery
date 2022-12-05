@@ -1,4 +1,4 @@
-# Gallery Frontend
+## Gallery Frontend
 
 The premier gallery experience for your NFTs.
 
