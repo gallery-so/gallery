@@ -1,10 +1,10 @@
-export function historyPushState(url: string) {
+export function historyPushState(url: string | URL) {
   if (typeof window !== 'undefined') {
     window.history.pushState({}, '', url);
   }
 }
 
-export function historyReplaceState(url: string) {
+export function historyReplaceState(url: string | URL) {
   if (typeof window !== 'undefined') {
     window.history.replaceState({}, '', url);
   }
