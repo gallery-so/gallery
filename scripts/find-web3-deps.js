@@ -61,7 +61,7 @@ madge('pages/_app.tsx', {
     console.log('Image written to ' + writtenImagePath);
   })
   // The following code is unrelated to the image writing above
-  .then(() => {
+  .then((res) => {
     let chains = [];
 
     let visited = new Set();
