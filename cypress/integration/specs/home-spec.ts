@@ -1,31 +1,20 @@
 import HomePage from '../pages/home/home-page';
-import Page from '../pages/page';
 
 const home = new HomePage();
 
 describe('Homepage test', () => {
-  // beforeEach(() => {
-  //   // cy.disconnectMetamaskWalletFromAllDapps();
-  //   cy.visit('/');
-  // });
+  beforeEach(() => {
+    cy.disconnectMetamaskWalletFromAllDapps();
+    cy.visit('/');
+  });
 
   context('Homepage', () => {
-    beforeEach(() => {
-      cy.visit('/');
-    });
-
     it('should render the homepage', () => {
+      cy.visit('/');
       cy.contains('Gallery', { matchCase: false }).should('be.exist');
     });
 
     it('should redirect to members page when click the explore button', () => {
-      // wait If there is popovers, we need to close it
-      // cy.get('[data-testid="close-icon"]').then(($closeIcon) => {
-      //   if ($closeIcon.length) {
-      //     cy.get('[data-testid="close-icon"]').click();
-      //   }
-      // });
-
       home.getExploreButton().should('be.exist');
       home.getExploreButton().click();
 
