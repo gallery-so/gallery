@@ -1,86 +1,23 @@
 import { Contract } from '@ethersproject/contracts';
 import { keccak256 } from '@ethersproject/keccak256';
-import { JsonRpcSigner } from '@ethersproject/providers';
 import { Web3Provider } from '@ethersproject/providers';
 import { toUtf8Bytes } from '@ethersproject/strings';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
-import { WalletLinkConnector } from '@web3-react/walletlink-connector';
 
 import GNOSIS_SAFE_CONTRACT_ABI from '~/abis/gnosis-safe-contract.json';
 import { Web3Error } from '~/types/Error';
-import { CONTRACT_ACCOUNT, EXTERNALLY_OWNED_ACCOUNT } from '~/types/Wallet';
-
-import walletlinkSigner from './walletlinkSigner';
 
 // The hard coded value that Gnosis Safe contract's isValidSignature method returns if the message was signed
 // https://github.com/gnosis/safe-contracts/blob/dec13f7cdab62056984343c4edfe40df5a1954dc6/contracts/handler/CompatibilityFallbackHandler.sol#L19
 const GNOSIS_VALID_SIGNATURE_MAGIC_VALUE = '0x1626ba7e';
 const GNOSIS_SAFE_SIGN_MESSAGE_EVENT_NAME = 'SignMsg';
 
-type EthereumAccountType = typeof EXTERNALLY_OWNED_ACCOUNT | typeof CONTRACT_ACCOUNT;
 type Signature = string;
-// The contract accounts that Gallery supports (Gnosis, Argent, etc). ID is used by the backend to know which contract to call
-type ContractAccount = { name: string; id: number };
 
 // Externally Owned Accounts will always have Wallet Type ID = 0 because the backend will handle all EOAs the same way.
-export const DEFAULT_WALLET_TYPE_ID = 0;
 export const GNOSIS_SAFE_WALLET_TYPE_ID = 1;
 // List of contract account wallets that Gallery supports. Used to detect if the user is trying to log in with a contract account
-const SUPPORTED_CONTRACT_ACCOUNTS: [ContractAccount] = [
-  { name: 'Gnosis Safe', id: GNOSIS_SAFE_WALLET_TYPE_ID },
-];
-
-/**
- * Checks what type of Ethereum account the wallet is and signs the message accordingly
- */
-export async function signMessage(
-  address: string,
-  nonce: string,
-  connector: AbstractConnector,
-  signer: JsonRpcSigner
-): Promise<Signature> {
-  const accountType = getEthereumAccountType(connector);
-
-  if (accountType === CONTRACT_ACCOUNT) {
-    // TODO: if theres a nonce in local storage, prompt to try again
-
-    return signMessageWithContractAccount(address, nonce, connector);
-  }
-
-  return signMessageWithEOA(address, nonce, signer, connector);
-}
-
-export async function signMessageWithEOA(
-  address: string,
-  nonce: string,
-  signer: JsonRpcSigner,
-  connector: AbstractConnector
-): Promise<Signature> {
-  try {
-    if (connector instanceof WalletConnectConnector) {
-      // This keeps the nonce message intact instead of encrypting it for WalletConnect users
-      return (await connector.walletConnectProvider.connector.signPersonalMessage([
-        nonce,
-        address,
-      ])) as Signature;
-    }
-
-    if (connector instanceof WalletLinkConnector) {
-      return await walletlinkSigner({ connector, nonce, address });
-    }
-
-    return await signer.signMessage(nonce);
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      throw { code: 'REJECTED_SIGNATURE', ...error } as Web3Error;
-    } else if (error instanceof Object && isRpcSignatureError(error)) {
-      throw { code: 'REJECTED_SIGNATURE' } as Web3Error;
-    }
-
-    throw new Error('Unknown error');
-  }
-}
 
 export async function signMessageWithContractAccount(
   address: string,
@@ -165,43 +102,6 @@ export async function validateNonceSignedByGnosis(
   const gnosisSafeContract = new Contract(address, GNOSIS_SAFE_CONTRACT_ABI, provider);
   const messageHash = generateMessageHash(nonce);
   return validateGnosisSignature(gnosisSafeContract, messageHash);
-}
-
-// Determines if the account is an EOA or a Contract Account
-function getEthereumAccountType(connector: AbstractConnector): EthereumAccountType {
-  // Currently we only support CONTRACT_ACCOUNT via WalletConnect so if it's a different connector, automatically use EOA
-  if (!(connector instanceof WalletConnectConnector)) {
-    return EXTERNALLY_OWNED_ACCOUNT;
-  }
-
-  const contractAccount = checkIfContractAccount(connector);
-
-  if (contractAccount) {
-    return CONTRACT_ACCOUNT;
-  }
-
-  return EXTERNALLY_OWNED_ACCOUNT;
-}
-
-// Checks if the wallet is one of the supported contract account types. If so, return the matching ContractAccount object.
-// Otherwise returns null
-function checkIfContractAccount(connector: WalletConnectConnector): ContractAccount | null {
-  const walletName = connector.walletConnectProvider?.wc?.peerMeta?.name;
-
-  if (!walletName) {
-    return null;
-  }
-
-  const contractAccount = SUPPORTED_CONTRACT_ACCOUNTS.find((contractAccount: ContractAccount) =>
-    walletName.startsWith(contractAccount.name)
-  );
-
-  // If the wallet name doesn't match any supported contract accounts, it is either an EOA or we don't support it yet
-  if (!contractAccount) {
-    return null;
-  }
-
-  return contractAccount;
 }
 
 // Need a better way to type this Web3 stuff

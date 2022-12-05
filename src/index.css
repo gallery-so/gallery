@@ -142,3 +142,9 @@ code {
   box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
 }
 /* end custom scrollbar */
+
+/* On brand skeleton colors */
+.react-loading-skeleton {
+  --base-color: #f2f2f2 !important;
+  --highlight-color: #f9f9f9 !important;
+}

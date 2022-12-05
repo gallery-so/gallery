@@ -1,6 +1,6 @@
 import '@rainbow-me/rainbowkit/styles.css';
 
-import { getDefaultWallets, lightTheme,RainbowKitProvider } from '@rainbow-me/rainbowkit';
+import { getDefaultWallets, lightTheme, RainbowKitProvider } from '@rainbow-me/rainbowkit';
 import merge from 'lodash.merge';
 import { ReactNode } from 'react';
 import { configureChains, createClient, defaultChains, WagmiConfig } from 'wagmi';
@@ -87,7 +87,7 @@ type Props = {
   children: ReactNode;
 };
 
-export function EtheremProviders({ children }: Props) {
+export default function EthereumProviders({ children }: Props) {
   return (
     <WagmiConfig client={wagmiClient}>
       <RainbowKitProvider chains={chains} theme={myCustomTheme}>

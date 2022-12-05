@@ -1,6 +1,7 @@
 const relayConfig = require('./relay.config');
 const { withSentryConfig } = require('@sentry/nextjs');
 const withRoutes = require('nextjs-routes/config')();
+const withBundleAnalyzer = require('@next/bundle-analyzer');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -73,6 +74,12 @@ const sentryWebpackPluginOptions = {
   // https://github.com/getsentry/sentry-webpack-plugin#options.
 };
 
-const plugins = [withRoutes, (config) => withSentryConfig(config, sentryWebpackPluginOptions)];
+const plugins = [
+  withRoutes,
+  (config) => withSentryConfig(config, sentryWebpackPluginOptions),
+  withBundleAnalyzer({
+    enabled: process.env.ANALYZE === 'true',
+  }),
+];
 
 module.exports = () => plugins.reduce((config, plugin) => plugin(config), nextConfig);
