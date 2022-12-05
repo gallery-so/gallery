@@ -1,13 +1,17 @@
 import dynamic from 'next/dynamic';
+import { lazy, Suspense } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
 import { WalletSelectorFragment$key } from '~/generated/WalletSelectorFragment.graphql';
 import { ADD_WALLET_TO_USER, AUTH, CONNECT_WALLET_ONLY } from '~/types/Wallet';
 
 import type { WalletSelectorVariant } from './multichain/MultichainWalletSelector';
-const MultichainWalletSelector = dynamic(() => import('./multichain/MultichainWalletSelector'), {
-  suspense: true,
-});
+
+const MultichainWalletSelector = lazy(() => import('./multichain/MultichainWalletSelector'));
+
+const EthereumProviders = lazy(() => import('~/contexts/auth/EthereumProviders'));
+
+const BeaconProvider = lazy(() => import('~/contexts/beacon/BeaconContext'));
 
 // AUTH: authenticate with wallet (sign in)
 // ADD_WALLET_TO_USER: add wallet to user
@@ -44,12 +48,18 @@ export default function WalletSelector({
   );
 
   return (
-    <MultichainWalletSelector
-      connectionMode={connectionMode}
-      queryRef={query}
-      variant={variant}
-      onEthAddWalletSuccess={onEthAddWalletSuccess}
-      onTezosAddWalletSuccess={onTezosAddWalletSuccess}
-    />
+    <Suspense fallback={'Loading...'}>
+      <BeaconProvider>
+        <EthereumProviders>
+          <MultichainWalletSelector
+            connectionMode={connectionMode}
+            queryRef={query}
+            variant={variant}
+            onEthAddWalletSuccess={onEthAddWalletSuccess}
+            onTezosAddWalletSuccess={onTezosAddWalletSuccess}
+          />
+        </EthereumProviders>
+      </BeaconProvider>
+    </Suspense>
   );
 }
