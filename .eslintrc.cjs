@@ -31,7 +31,7 @@ module.exports = {
 
   overrides: [
     {
-      files: ['next.config.js', 'jest.config.js'],
+      files: ['next.config.js', 'jest.config.js', 'scripts/**/*'],
       rules: {
         // Okay to use require in these files
         '@typescript-eslint/no-var-requires': 'off',
