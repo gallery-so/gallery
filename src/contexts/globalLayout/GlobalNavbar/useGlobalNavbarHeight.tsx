@@ -17,7 +17,7 @@ export function useGlobalNavbarHeight() {
         return;
       }
 
-      setHeight(entry.borderBoxSize[0]?.blockSize ?? INITIAL_HEIGHT);
+      setHeight(entry.borderBoxSize?.[0]?.blockSize ?? INITIAL_HEIGHT);
     });
 
     const element = document.querySelector('.GlobalNavbar');
