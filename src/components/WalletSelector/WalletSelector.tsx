@@ -3,11 +3,11 @@ import Skeleton from 'react-loading-skeleton';
 import { graphql, useFragment } from 'react-relay';
 
 import { VStack } from '~/components/core/Spacer/Stack';
+import { WalletSelectorWrapper } from '~/components/WalletSelector/multichain/WalletSelectorWrapper';
 import { WalletSelectorFragment$key } from '~/generated/WalletSelectorFragment.graphql';
 import { ADD_WALLET_TO_USER, AUTH, CONNECT_WALLET_ONLY } from '~/types/Wallet';
 
 import type { WalletSelectorVariant } from './multichain/MultichainWalletSelector';
-import { StyledWalletSelector } from './multichain/MultichainWalletSelector';
 
 const MultichainWalletSelector = lazy(() => import('./multichain/MultichainWalletSelector'));
 
@@ -51,7 +51,7 @@ export default function WalletSelector({
 
   const fallback = useMemo(
     () => (
-      <StyledWalletSelector>
+      <WalletSelectorWrapper>
         <VStack gap={16}>
           {Array.from({ length: 4 }).map(() => {
             // We don't have anything relevant to key off of here
@@ -59,7 +59,7 @@ export default function WalletSelector({
             return <Skeleton width="100%" height="52px" />;
           })}
         </VStack>
-      </StyledWalletSelector>
+      </WalletSelectorWrapper>
     ),
     []
   );
