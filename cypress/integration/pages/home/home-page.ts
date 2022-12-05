@@ -32,4 +32,8 @@ export default class HomePage extends Page {
   getSignInButtonNav() {
     return cy.get('button').contains('Sign In');
   }
+
+  getClosePopoverButton() {
+    return cy.get('[data-testid="close-icon"]');
+  }
 }
