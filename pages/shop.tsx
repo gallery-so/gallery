@@ -2,7 +2,7 @@ import EthereumProviders from '~/contexts/auth/EthereumProviders';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
 import MerchStorePage from '~/scenes/MerchStorePage/MerchStorePage';
 
-export default function Privacy() {
+export default function Shop() {
   return (
     <GalleryRoute
       element={
