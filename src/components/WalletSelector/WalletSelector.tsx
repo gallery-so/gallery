@@ -1,11 +1,13 @@
-import dynamic from 'next/dynamic';
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useMemo } from 'react';
+import Skeleton from 'react-loading-skeleton';
 import { graphql, useFragment } from 'react-relay';
 
+import { VStack } from '~/components/core/Spacer/Stack';
 import { WalletSelectorFragment$key } from '~/generated/WalletSelectorFragment.graphql';
 import { ADD_WALLET_TO_USER, AUTH, CONNECT_WALLET_ONLY } from '~/types/Wallet';
 
 import type { WalletSelectorVariant } from './multichain/MultichainWalletSelector';
+import { StyledWalletSelector } from './multichain/MultichainWalletSelector';
 
 const MultichainWalletSelector = lazy(() => import('./multichain/MultichainWalletSelector'));
 
@@ -47,8 +49,23 @@ export default function WalletSelector({
     queryRef
   );
 
+  const fallback = useMemo(
+    () => (
+      <StyledWalletSelector>
+        <VStack gap={16}>
+          {Array.from({ length: 4 }).map(() => {
+            // We don't have anything relevant to key off of here
+            // eslint-disable-next-line react/jsx-key
+            return <Skeleton width="100%" height="52px" />;
+          })}
+        </VStack>
+      </StyledWalletSelector>
+    ),
+    []
+  );
+
   return (
-    <Suspense fallback={'Loading...'}>
+    <Suspense fallback={fallback}>
       <BeaconProvider>
         <EthereumProviders>
           <MultichainWalletSelector

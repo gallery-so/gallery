@@ -82,6 +82,7 @@ export default function MultichainWalletSelector({
         </StyledWalletSelector>
       );
     }
+
     if (connectionMode === AUTH) {
       return (
         <StyledWalletSelector>
@@ -166,7 +167,7 @@ export default function MultichainWalletSelector({
   );
 }
 
-const StyledWalletSelector = styled(VStack)`
+export const StyledWalletSelector = styled(VStack)`
   text-align: center;
   width: 320px;
 
