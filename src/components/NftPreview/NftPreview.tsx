@@ -1,4 +1,5 @@
 import { useRouter } from 'next/router';
+import { route } from 'nextjs-routes';
 import { useCallback, useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -17,6 +18,7 @@ import NftDetailAnimation from '~/scenes/NftDetailPage/NftDetailAnimation';
 import NftDetailGif from '~/scenes/NftDetailPage/NftDetailGif';
 import NftDetailVideo from '~/scenes/NftDetailPage/NftDetailVideo';
 import { isFirefox } from '~/utils/browser';
+import { historyReplaceState } from '~/utils/browserHistory';
 import getVideoOrImageUrlForNftPreview from '~/utils/graphql/getVideoOrImageUrlForNftPreview';
 import isSvg from '~/utils/isSvg';
 import { getBackgroundColorOverrideForContract } from '~/utils/token';
@@ -28,7 +30,7 @@ type Props = {
   tokenRef: NftPreviewFragment$key;
   previewSize: number;
   ownerUsername?: string;
-  onClick?: () => void;
+  onClick?: ({ onClose }: { onClose?: () => void }) => void;
   hideLabelOnMobile?: boolean;
   disableLiverender?: boolean;
   columns?: number;
@@ -127,10 +129,31 @@ function NftPreview({
     (event: React.MouseEvent<HTMLElement>) => {
       if (onClick && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) {
         event.preventDefault();
-        onClick();
+
+        // Replace the URL without triggering a page load
+        historyReplaceState(
+          route({
+            pathname: '/[username]/[collectionId]/[tokenId]',
+            query: {
+              username: username as string,
+              collectionId,
+              tokenId: token.dbid,
+              returnTo: 'home',
+            },
+          })
+        );
+
+        onClick({
+          onClose: () =>
+            historyReplaceState(
+              route({
+                pathname: '/home',
+              })
+            ),
+        });
       }
     },
-    [onClick]
+    [onClick, collectionId, token.dbid, username]
   );
 
   const shouldLiverender = tokenSettings?.renderLive;

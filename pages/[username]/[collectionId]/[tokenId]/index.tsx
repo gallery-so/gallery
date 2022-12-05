@@ -1,6 +1,7 @@
 import { GetServerSideProps } from 'next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { Route } from 'nextjs-routes';
 import { useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 
@@ -19,23 +20,27 @@ type NftDetailPageProps = MetaTagProps & {
 };
 
 export default function NftDetailPage({ username, collectionId, tokenId }: NftDetailPageProps) {
-  const { push } = useRouter();
+  const { push, query } = useRouter();
 
   // the default "back" behavior from the NFT Detail Page
-  // is a redirect to the Collection Page
-  const collectionRoute = useMemo(
-    () => ({
+  // is a redirect to the Collection Page or a valid returnTo route
+  const returnToRoute = useMemo<Route>(() => {
+    if (query?.returnTo === 'home') {
+      return {
+        pathname: '/home',
+      };
+    }
+    return {
       pathname: '/[username]/[collectionId]',
       query: { username, collectionId },
-    }),
-    [username, collectionId]
-  );
+    };
+  }, [username, collectionId, query?.returnTo]);
 
-  const handleReturnToCollectionPage = useCallback(() => {
-    push(collectionRoute);
-  }, [collectionRoute, push]);
+  const handleReturnToRoute = useCallback(() => {
+    push(returnToRoute);
+  }, [returnToRoute, push]);
 
-  useKeyDown('Escape', handleReturnToCollectionPage);
+  useKeyDown('Escape', handleReturnToRoute);
 
   if (!tokenId) {
     // Something went horribly wrong
@@ -44,7 +49,7 @@ export default function NftDetailPage({ username, collectionId, tokenId }: NftDe
 
   return (
     <>
-      <Link href={collectionRoute}>
+      <Link href={returnToRoute}>
         <StyledDecoratedCloseIcon />
       </Link>
       <GalleryRoute

@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useMemo } from 'react';
+import { ReactElement, useCallback, useEffect, useMemo } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
@@ -31,6 +31,7 @@ type Props = {
   headerText: string;
   headerVariant: ModalPaddingVariant;
   hideClose?: boolean;
+  onClose?: () => void;
 };
 
 function AnimatedModal({
@@ -44,6 +45,7 @@ function AnimatedModal({
   headerText,
   headerVariant,
   hideClose,
+  onClose,
 }: Props) {
   useEffect(() => {
     if (!isActive) {
@@ -81,9 +83,14 @@ function AnimatedModal({
     return 'unset';
   }, [isFullPage, isMobile]);
 
+  const handleClose = useCallback(() => {
+    onClose?.();
+    hideModal();
+  }, [hideModal, onClose]);
+
   return (
     <_ToggleFade isActive={isActive}>
-      <Overlay onClick={hideModal} />
+      <Overlay onClick={handleClose} />
       <StyledContentContainer isFullPage={isFullPage}>
         <_ToggleTranslate isActive={isActive}>
           <StyledContent
@@ -98,7 +105,7 @@ function AnimatedModal({
               <StyledModalActions align="center">
                 {headerActions}
                 {hideClose ? null : (
-                  <DecoratedCloseIcon onClick={hideModal} variant={headerVariant} />
+                  <DecoratedCloseIcon onClick={handleClose} variant={headerVariant} />
                 )}
               </StyledModalActions>
             </StyledHeader>

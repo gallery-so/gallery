@@ -45,16 +45,20 @@ function FeedEventNftPreviewWrapper({ tokenRef, maxWidth, maxHeight }: Props) {
 
   const { showModal } = useModalActions();
 
-  const handleClick = useCallback(() => {
-    showModal({
-      content: (
-        <StyledNftDetailViewPopover>
-          <NftDetailView authenticatedUserOwnsAsset={false} queryRef={token} />
-        </StyledNftDetailViewPopover>
-      ),
-      isFullPage: true,
-    });
-  }, [showModal, token]);
+  const handleClick = useCallback(
+    ({ onClose }: { onClose?: () => void }) => {
+      showModal({
+        content: (
+          <StyledNftDetailViewPopover>
+            <NftDetailView authenticatedUserOwnsAsset={false} queryRef={token} />
+          </StyledNftDetailViewPopover>
+        ),
+        isFullPage: true,
+        onClose,
+      });
+    },
+    [showModal, token]
+  );
 
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
