@@ -30,7 +30,7 @@ type Props = {
   onTezosAddWalletSuccess?: () => void;
 };
 
-export function MultichainWalletSelector({
+export default function MultichainWalletSelector({
   queryRef,
   connectionMode = AUTH,
   variant = 'default',

@@ -1,12 +1,13 @@
+import dynamic from 'next/dynamic';
 import { graphql, useFragment } from 'react-relay';
 
 import { WalletSelectorFragment$key } from '~/generated/WalletSelectorFragment.graphql';
 import { ADD_WALLET_TO_USER, AUTH, CONNECT_WALLET_ONLY } from '~/types/Wallet';
 
-import {
-  MultichainWalletSelector,
-  WalletSelectorVariant,
-} from './multichain/MultichainWalletSelector';
+import type { WalletSelectorVariant } from './multichain/MultichainWalletSelector';
+const MultichainWalletSelector = dynamic(() => import('./multichain/MultichainWalletSelector'), {
+  suspense: true,
+});
 
 // AUTH: authenticate with wallet (sign in)
 // ADD_WALLET_TO_USER: add wallet to user
