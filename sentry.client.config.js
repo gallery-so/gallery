@@ -6,9 +6,9 @@ import * as Sentry from '@sentry/nextjs';
 
 const SENTRY_DSN = process.env.SENTRY_DSN || process.env.NEXT_PUBLIC_SENTRY_DSN;
 
-const SENTRY_ENV = process.env.NEXT_PUBLIC_VERCEL_ENV;
+const ENV = process.env.NEXT_PUBLIC_VERCEL_ENV;
 
-const IS_PROD = SENTRY_ENV === 'production';
+const IS_PROD = ENV === 'production';
 
 const SENTRY_TRACING_ORIGIN = IS_PROD ? 'api.gallery.so' : 'api.dev.gallery.so';
 
@@ -32,6 +32,9 @@ Sentry.init({
   // Note: if you want to override the automatic release value, do not set a
   // `release` value here - use the environment variable `SENTRY_RELEASE`, so
   // that it will also get attached to your source maps
-  environment: SENTRY_ENV || 'local',
+  environment: ENV || 'local',
   tunnel: 'https://monitoring.gallery.so/bugs',
+  // disable sentry reporting by default if in local development.
+  // NEXT_PUBLIC_VERCEL_ENV is only set in a deployed environment.
+  enabled: ENV !== undefined,
 });
