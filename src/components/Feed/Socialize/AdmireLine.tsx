@@ -81,7 +81,7 @@ export function AdmireLine({ admireRef, eventRef, queryRef, totalAdmires }: Comm
 
   return (
     <HStack gap={4} align="flex-end">
-      <Link href={admirerLinkRoute}>
+      <Link prefetch={false} href={admirerLinkRoute}>
         <AdmirerName href={admirerLink}>{admirerName}</AdmirerName>
       </Link>
       {totalAdmires === 1 ? (

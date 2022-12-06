@@ -44,7 +44,7 @@ export default function NftDetailPage({ username, collectionId, tokenId }: NftDe
 
   return (
     <>
-      <Link href={collectionRoute}>
+      <Link prefetch={false} href={collectionRoute}>
         <StyledDecoratedCloseIcon />
       </Link>
       <GalleryRoute

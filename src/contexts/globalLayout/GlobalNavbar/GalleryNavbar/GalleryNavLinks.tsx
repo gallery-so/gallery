@@ -34,20 +34,20 @@ export function GalleryNavLinks({ username, queryRef }: Props) {
 
   return (
     <HStack gap={8}>
-      <Link href={galleriesRoute}>
+      <Link prefetch={false} href={galleriesRoute}>
         <NavbarLink href={route(galleriesRoute)} active={pathname === galleriesRoute.pathname}>
           Galleries
         </NavbarLink>
       </Link>
 
-      <Link href={followersRoute}>
+      <Link prefetch={false} href={followersRoute}>
         <NavbarLink href={route(followersRoute)} active={pathname === followersRoute.pathname}>
           Followers
         </NavbarLink>
       </Link>
 
       {isWhiteRhinoEnabled && (
-        <Link href={activityRoute}>
+        <Link prefetch={false} href={activityRoute}>
           <NavbarLink href={route(activityRoute)} active={pathname === activityRoute.pathname}>
             Activity
           </NavbarLink>

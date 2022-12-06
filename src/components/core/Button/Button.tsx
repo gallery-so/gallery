@@ -164,7 +164,7 @@ export const ButtonLink = ({
   children,
   ...otherProps
 }: ButtonLinkProps) => (
-  <Link href={href} passHref>
+  <Link prefetch={false} href={href} passHref>
     <StyledButton
       as="a"
       tabIndex={disabled ? -1 : undefined}

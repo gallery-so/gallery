@@ -109,7 +109,7 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
     <>
       <Dropdown position="left" active={showDropdown} onClose={onClose}>
         <DropdownSection>
-          <Link href={userGalleryRoute}>
+          <Link prefetch={false} href={userGalleryRoute}>
             <DropdownProfileSection href={route(userGalleryRoute)}>
               <UsernameText>{username}</UsernameText>
               {editGalleryUrl && (

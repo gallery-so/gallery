@@ -28,7 +28,7 @@ export function UserListItem({ userRef }: UserListItemProps) {
   const userRoute: Route = { pathname: '/[username]', query: { username: user.username } };
 
   return (
-    <Link href={userRoute}>
+    <Link prefetch={false} href={userRoute}>
       <StyledLink href={route(userRoute)}>
         <Container>
           <TitleDiatypeM>{user.username}</TitleDiatypeM>

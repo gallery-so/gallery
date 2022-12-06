@@ -27,7 +27,7 @@ function GlobalFooter() {
       {isMobile && <StyledHr />}
       <VStack gap={4}>
         <HStack gap={4}>
-          <Link href={{ pathname: '/' }}>
+          <Link prefetch={false} href={{ pathname: '/' }}>
             <StyledLogo src="/icons/logo-large.svg" />
           </Link>
         </HStack>

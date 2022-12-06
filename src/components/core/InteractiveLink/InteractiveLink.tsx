@@ -57,7 +57,7 @@ export default function InteractiveLink({
 
   if (to) {
     return (
-      <Link href={to} passHref>
+      <Link prefetch={false} href={to} passHref>
         <StyledAnchor
           onClick={handleClick}
           className={className}

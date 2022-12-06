@@ -130,11 +130,11 @@ export default function HoverCardOnUsername({ userRef, queryRef }: Props) {
   return (
     <StyledContainer onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <StyledLinkContainer>
-        <Link href={userProfileLink}>
+        <Link prefetch={false} href={userProfileLink}>
           <TitleDiatypeM onClick={handleUsernameClick}>{user.username}</TitleDiatypeM>
         </Link>
       </StyledLinkContainer>
-      <Link href={userProfileLink}>
+      <Link prefetch={false} href={userProfileLink}>
         <a>
           <StyledCardWrapper isHovering={isHovering}>
             {isActive && (

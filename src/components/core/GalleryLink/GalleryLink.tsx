@@ -36,7 +36,7 @@ export default function GalleryLink({
 
   if (to) {
     return (
-      <Link href={to} passHref>
+      <Link prefetch={false} href={to} passHref>
         <StyledAnchor className={className} onClick={handleClick}>
           {children}
         </StyledAnchor>

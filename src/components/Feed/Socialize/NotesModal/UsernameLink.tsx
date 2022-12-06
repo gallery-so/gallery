@@ -12,7 +12,7 @@ export function UsernameLink({ username }: UsernameLinkProps) {
     ? { pathname: '/[username]', query: { username } }
     : { pathname: '/' };
   return (
-    <Link href={link}>
+    <Link prefetch={false} href={link}>
       <UsernameLinkWrapper href={route(link)}>
         <TitleS as="span">{username ?? '<unknown>'}</TitleS>
       </UsernameLinkWrapper>

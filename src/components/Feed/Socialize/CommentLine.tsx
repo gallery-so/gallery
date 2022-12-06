@@ -49,7 +49,7 @@ export function CommentLine({ commentRef }: CommentLineProps) {
   const usernameLink = route(usernameLinkRoute);
   return (
     <HStack key={comment.dbid} gap={4} align="baseline">
-      <Link href={usernameLinkRoute}>
+      <Link prefetch={false} href={usernameLinkRoute}>
         <CommenterName href={usernameLink}>
           {comment.commenter?.username ?? '<unknown>'}
         </CommenterName>

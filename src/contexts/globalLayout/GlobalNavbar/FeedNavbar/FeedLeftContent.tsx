@@ -68,7 +68,7 @@ export function FeedLeftContent({ queryRef }: FeedLeftContentProps) {
 
   if (!isLoggedIn) {
     return (
-      <Link href={{ pathname: '/' }}>
+      <Link prefetch={false} href={{ pathname: '/' }}>
         <GLogoLinkWrapper href="/">
           <GLogo />
         </GLogoLinkWrapper>

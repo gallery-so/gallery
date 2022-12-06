@@ -60,7 +60,7 @@ export function GalleryNavbar({ queryRef, username }: Props) {
         <NavbarCenterContent>
           {isMobile ? (
             <HStack gap={4}>
-              <Link href={userGalleryRoute}>
+              <Link prefetch={false} href={userGalleryRoute}>
                 <UsernameBreadcrumbLink
                   mainGalleryPage={pathname === '/[username]'}
                   href={route(userGalleryRoute)}
