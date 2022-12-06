@@ -76,10 +76,13 @@ const sentryWebpackPluginOptions = {
 
 const plugins = [
   withRoutes,
-  (config) => withSentryConfig(config, sentryWebpackPluginOptions),
   withBundleAnalyzer({
     enabled: process.env.ANALYZE === 'true',
   }),
 ];
+
+if (process.env.DISABLE_SENTRY !== 'true') {
+  plugins.push((config) => withSentryConfig(config, sentryWebpackPluginOptions));
+}
 
 module.exports = () => plugins.reduce((config, plugin) => plugin(config), nextConfig);
