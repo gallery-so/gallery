@@ -22,8 +22,6 @@ export default function CommunityHolderList({ communityRef }: Props) {
     graphql`
       fragment CommunityHolderListFragment on Community
       @refetchable(queryName: "CommunityHolderListRefetchableFragment") {
-        id
-
         owners(
           first: $listOwnersFirst
           after: $listOwnersAfter

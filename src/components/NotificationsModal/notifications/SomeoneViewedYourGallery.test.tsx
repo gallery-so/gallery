@@ -46,7 +46,6 @@ function mockResponse({ userViews, nonUserViews }: MockResponseArgs) {
       __typename: 'SomeoneViewedYourGalleryNotification',
       id: 'SomeoneViewedYourGalleryNotification:notification-1',
       nonUserViewerCount: nonUserViews,
-      count: userViews + nonUserViews,
       userViewers: {
         __typename: 'GroupNotificationUsersConnection',
         pageInfo: {

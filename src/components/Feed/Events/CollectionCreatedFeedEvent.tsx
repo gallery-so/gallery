@@ -17,7 +17,7 @@ import { getTimeSince } from '~/utils/time';
 import unescape from '~/utils/unescape';
 
 import { MAX_PIECES_DISPLAYED_PER_FEED_EVENT } from '../constants';
-import FeedEventTokenPreviews, { TokenToPreview } from '../FeedEventTokenPreviews';
+import FeedEventTokenPreviews from '../FeedEventTokenPreviews';
 import { StyledEvent, StyledEventContent, StyledEventHeader, StyledTime } from './EventStyles';
 
 type Props = {
@@ -40,10 +40,7 @@ export default function CollectionCreatedFeedEvent({ caption, eventDataRef, quer
           name
         }
         newTokens @required(action: THROW) {
-          token {
-            dbid
-          }
-          ...EventMediaFragment
+          ...FeedEventTokenPreviewsFragment
         }
       }
     `,
@@ -63,7 +60,7 @@ export default function CollectionCreatedFeedEvent({ caption, eventDataRef, quer
 
   const tokensToPreview = useMemo(() => {
     return removeNullValues(tokens).slice(0, MAX_PIECES_DISPLAYED_PER_FEED_EVENT);
-  }, [tokens]) as TokenToPreview[];
+  }, [tokens]);
 
   const track = useTrack();
 
@@ -122,7 +119,7 @@ export default function CollectionCreatedFeedEvent({ caption, eventDataRef, quer
             <VStack gap={8}>
               <FeedEventTokenPreviews
                 isInCaption={Boolean(caption)}
-                tokensToPreview={tokensToPreview}
+                tokenToPreviewRefs={tokensToPreview}
               />
               {showAdditionalPiecesIndicator && (
                 <StyledAdditionalPieces>

@@ -18,11 +18,6 @@ export function mockDebuggerQuery() {
             __typename: 'Wallet',
             id: WALLETS.MainEthereum.ID,
             dbid: WALLETS.MainEthereum.DBID,
-            chainAddress: {
-              __typename: 'ChainAddress',
-              address: WALLETS.MainEthereum.ADDRESS,
-              chain: WALLETS.MainEthereum.CHAIN,
-            },
           },
         ],
       },
