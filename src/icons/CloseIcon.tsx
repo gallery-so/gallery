@@ -12,7 +12,6 @@ export default function CloseIcon() {
       fill="none"
       stroke="currentColor"
       xmlns="http://www.w3.org/2000/svg"
-      datatest-id="close-icon"
     >
       <path d="M12.6667 3.33333L3.33333 12.6667" strokeMiterlimit="10" />
       <path d="M3.33333 3.33333L12.6667 12.6667" strokeMiterlimit="10" />
