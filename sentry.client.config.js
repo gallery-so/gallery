@@ -12,7 +12,7 @@ const IS_PROD = ENV === 'production';
 
 const SENTRY_TRACING_ORIGIN = IS_PROD ? 'api.gallery.so' : 'api.dev.gallery.so';
 
-const SENTRY_TRACING_SAMPLE_RATE = IS_PROD ? 0.2 : 1.0;
+const SENTRY_TRACING_SAMPLE_RATE = IS_PROD ? 0.05 : 1.0;
 
 Sentry.init({
   // DSNs are safe to keep public because they only allow submission of
