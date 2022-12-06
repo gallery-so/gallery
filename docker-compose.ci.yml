@@ -34,6 +34,7 @@ services:
       - GITHUB_REF=${GITHUB_REF}
       - GITHUB_BASE_REF=${GITHUB_BASE_REF}
       - GITHUB_HEAD_REF=${GITHUB_HEAD_REF}
+      - CYPRESS_BASE_URL=${CYPRESS_BASE_URL}
     depends_on:
       - display
       - video
