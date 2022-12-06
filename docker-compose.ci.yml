@@ -12,7 +12,6 @@ services:
       - CYPRESS_DOCKER_RUN=true
       - CI=${CI}
       # cypress dashboard
-      - CYPRESS_GROUP=${CYPRESS_GROUP}
       - CYPRESS_PROJECT_ID=${CYPRESS_PROJECT_ID}
       - CYPRESS_RECORD_KEY=${CYPRESS_RECORD_KEY}
       - COMMIT_INFO_MESSAGE=${COMMIT_INFO_MESSAGE}
@@ -52,8 +51,8 @@ services:
     image: synthetixio/display:016121eafdfff448414894d0ca5a50b1d72b62eb-base
     environment:
       - RUN_XTERM=no
-      - DISPLAY_WIDTH=${DISPLAY_WIDTH}
-      - DISPLAY_HEIGHT=${DISPLAY_HEIGHT}
+      - DISPLAY_WIDTH=1366
+      - DISPLAY_HEIGHT=768
     ports:
       - '8080:8080'
     networks:
@@ -79,8 +78,8 @@ services:
       - ./docker/videos-ci:/videos
     environment:
       - FILE_NAME=CI-full-video.mp4
-      - SE_SCREEN_WIDTH=${SE_SCREEN_WIDTH}
-      - SE_SCREEN_HEIGHT=${SE_SCREEN_HEIGHT}
+      - SE_SCREEN_WIDTH=1366
+      - SE_SCREEN_HEIGHT=768
     depends_on:
       - display
     networks:
