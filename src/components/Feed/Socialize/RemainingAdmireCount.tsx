@@ -13,8 +13,6 @@ export function RemainingAdmireCount({ remainingCount, eventRef }: RemainingAdmi
   const event = useFragment(
     graphql`
       fragment RemainingAdmireCountFragment on FeedEvent {
-        dbid
-
         ...NoteModalOpenerTextFragment
       }
     `,

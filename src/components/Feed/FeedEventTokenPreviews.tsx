@@ -1,22 +1,31 @@
 import { useMemo } from 'react';
+import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
-import { EventMediaFragment$key } from '~/generated/EventMediaFragment.graphql';
+import { FeedEventTokenPreviewsFragment$key } from '~/generated/FeedEventTokenPreviewsFragment.graphql';
 import useWindowSize, { useBreakpoint } from '~/hooks/useWindowSize';
 
 import { FEED_EVENT_TOKEN_MARGIN, getFeedTokenDimensions, NumTokens } from './dimensions';
 import EventMedia from './Events/EventMedia';
 
-export type TokenToPreview = EventMediaFragment$key & {
-  token: { dbid: string };
-};
-
 type Props = {
-  tokensToPreview: TokenToPreview[];
+  tokenToPreviewRefs: FeedEventTokenPreviewsFragment$key;
   isInCaption: boolean;
 };
 
-export default function FeedEventTokenPreviews({ tokensToPreview, isInCaption }: Props) {
+export default function FeedEventTokenPreviews({ tokenToPreviewRefs, isInCaption }: Props) {
+  const tokensToPreview = useFragment(
+    graphql`
+      fragment FeedEventTokenPreviewsFragment on CollectionToken @relay(plural: true) {
+        token {
+          dbid
+        }
+        ...EventMediaFragment
+      }
+    `,
+    tokenToPreviewRefs
+  );
+
   const breakpoint = useBreakpoint();
   const { width } = useWindowSize();
 
@@ -34,7 +43,7 @@ export default function FeedEventTokenPreviews({ tokensToPreview, isInCaption }:
       {tokensToPreview.map((collectionToken) => (
         <EventMedia
           tokenRef={collectionToken}
-          key={collectionToken.token.dbid}
+          key={collectionToken.token?.dbid}
           maxWidth={sizePx}
           maxHeight={sizePx}
         />
