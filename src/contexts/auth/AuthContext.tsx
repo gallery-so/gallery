@@ -69,7 +69,20 @@ const AuthContextFetchUserQueryNode = graphql`
       ... on Viewer {
         __typename
         user {
+          # Need to refresh user data. We don't have a good system here yet
+          # eslint-disable-next-line relay/unused-fields
+          id
           dbid
+          # eslint-disable-next-line relay/unused-fields
+          username
+          # eslint-disable-next-line relay/unused-fields
+          wallets {
+            dbid
+            chainAddress {
+              chain
+              address
+            }
+          }
         }
       }
       ... on ErrNotAuthorized {
@@ -87,6 +100,10 @@ const AuthContextFetchUserQueryNode = graphql`
         }
       }
     }
+
+    # Need to refresh user data. We don't have a good system here yet
+    # eslint-disable-next-line relay/must-colocate-fragment-spreads
+    ...ProfileDropdownFragment
   }
 `;
 

@@ -1,4 +1,3 @@
-import { CollectionEditorFragment$key } from '__generated__/CollectionEditorFragment.graphql';
 import React, { useEffect, useMemo, useRef } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
@@ -10,6 +9,7 @@ import {
   useStagedCollectionState,
 } from '~/contexts/collectionEditor/CollectionEditorContext';
 import { useCollectionWizardState } from '~/contexts/wizard/CollectionWizardContext';
+import { CollectionEditorFragment$key } from '~/generated/CollectionEditorFragment.graphql';
 import { CollectionEditorViewerFragment$key } from '~/generated/CollectionEditorViewerFragment.graphql';
 import { parseCollectionLayout } from '~/utils/collectionLayout';
 import { removeNullValues } from '~/utils/removeNullValues';
@@ -53,6 +53,15 @@ const collectionEditorViewerFragment = graphql`
             token @required(action: THROW) {
               dbid @required(action: THROW)
               lastUpdated @required(action: THROW)
+
+              # Escape hatch for data processing util files
+              # This whole
+              # eslint-disable-next-line relay/unused-fields
+              name @required(action: THROW)
+              # eslint-disable-next-line relay/unused-fields
+              isSpamByProvider
+              # eslint-disable-next-line relay/unused-fields
+              isSpamByUser
             }
             tokenSettings {
               renderLive
@@ -68,6 +77,15 @@ const collectionEditorViewerFragment = graphql`
         lastUpdated @required(action: THROW)
         ...SidebarFragment
         ...StagingAreaFragment
+
+        # Escape hatch for data processing util files
+        # This whole
+        # eslint-disable-next-line relay/unused-fields
+        name @required(action: THROW)
+        # eslint-disable-next-line relay/unused-fields
+        isSpamByProvider
+        # eslint-disable-next-line relay/unused-fields
+        isSpamByUser
       }
     }
     ...EditorMenuFragment

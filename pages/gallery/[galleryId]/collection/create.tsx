@@ -34,6 +34,7 @@ function LazyLoadedCollectionEditor({ galleryId }: Props) {
     graphql`
       query createCollectionQuery {
         ...CollectionEditorFragment
+        ...CollectionCreateNavbarFragment
       }
     `,
     {}

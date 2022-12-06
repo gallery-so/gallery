@@ -37,6 +37,7 @@ function LazyLoadedCollectionEditor() {
         }
 
         ...CollectionEditorFragment
+        ...OnboardingCollectionCreateNavbarFragment
       }
     `,
     {}
