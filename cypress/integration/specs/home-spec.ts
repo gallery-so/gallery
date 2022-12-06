@@ -16,7 +16,9 @@ describe('Homepage test', () => {
 
     it('should redirect to members page when click the explore button', () => {
       home.getExploreButton().should('be.exist');
-      home.getExploreButton().click();
+      home.getExploreButton().click({
+        force: true,
+      });
 
       cy.url().should('include', '/home');
     });
