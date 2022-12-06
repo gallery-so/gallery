@@ -11,7 +11,7 @@ import {
 import { useCollectionWizardState } from '~/contexts/wizard/CollectionWizardContext';
 import { CollectionEditorFragment$key } from '~/generated/CollectionEditorFragment.graphql';
 import { CollectionEditorViewerFragment$key } from '~/generated/CollectionEditorViewerFragment.graphql';
-import { parseCollectionLayout } from '~/utils/collectionLayout';
+import { parseCollectionLayoutGraphql } from '~/utils/collectionLayout';
 import { removeNullValues } from '~/utils/removeNullValues';
 
 import useConfirmationMessageBeforeClose from '../../useConfirmationMessageBeforeClose';
@@ -68,7 +68,7 @@ const collectionEditorViewerFragment = graphql`
             }
           }
           layout {
-            __typename
+            ...collectionLayoutParseFragment
           }
         }
       }
@@ -208,14 +208,17 @@ function CollectionEditor({ queryRef, onValidChange, onHasUnsavedChange }: Props
       if (!collectionBeingEdited) {
         setStagedCollectionState({});
       } else {
-        const collectionToStage = parseCollectionLayout(
-          tokensToStage,
-          collectionBeingEdited?.layout
-        ) as StagedCollection;
+        if (collectionBeingEdited.layout) {
+          const collectionToStage = parseCollectionLayoutGraphql(
+            tokensToStage,
+            collectionBeingEdited.layout
+          ) as StagedCollection;
 
-        setStagedCollectionState(collectionToStage);
-        if (Object.keys(collectionToStage).length > 0) {
-          setActiveSectionIdState(Object.keys(collectionToStage)[0]);
+          setStagedCollectionState(collectionToStage);
+
+          if (Object.keys(collectionToStage).length > 0) {
+            setActiveSectionIdState(Object.keys(collectionToStage)[0]);
+          }
         }
       }
     }

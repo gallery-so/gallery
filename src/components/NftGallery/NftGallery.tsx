@@ -7,7 +7,8 @@ import breakpoints from '~/components/core/breakpoints';
 import { DisplayLayout } from '~/components/core/enums';
 import NftPreviewWrapper from '~/components/NftPreview/GalleryNftPreviewWrapper';
 import { NftGalleryFragment$key } from '~/generated/NftGalleryFragment.graphql';
-import { parseCollectionLayout } from '~/utils/collectionLayout';
+import { parseCollectionLayoutGraphql } from '~/utils/collectionLayout';
+import { removeNullValues } from '~/utils/removeNullValues';
 
 type Props = {
   collectionRef: NftGalleryFragment$key;
@@ -19,7 +20,7 @@ function NftGallery({ collectionRef, mobileLayout }: Props) {
     graphql`
       fragment NftGalleryFragment on Collection {
         layout {
-          __typename
+          ...collectionLayoutParseFragment
         }
         tokens {
           id
@@ -33,10 +34,14 @@ function NftGallery({ collectionRef, mobileLayout }: Props) {
   const hideWhitespace = mobileLayout === DisplayLayout.LIST;
 
   const parsedCollection = useMemo(() => {
-    if (!collection.tokens) {
+    if (!collection.tokens || !collection.layout) {
       return {};
     }
-    return parseCollectionLayout(collection.tokens, collection.layout, hideWhitespace);
+    return parseCollectionLayoutGraphql(
+      removeNullValues(collection.tokens),
+      collection.layout,
+      hideWhitespace
+    );
   }, [collection.layout, collection.tokens, hideWhitespace]);
 
   return (
