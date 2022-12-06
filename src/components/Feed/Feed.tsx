@@ -48,7 +48,7 @@ export default function Feed({ queryRef, feedMode, setFeedMode }: Props) {
 }
 
 const StyledFeed = styled(VStack)`
-  width: 100vw;
+  width: 100%;
   flex: 1;
 
   @media only screen and ${breakpoints.tablet} {

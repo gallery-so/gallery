@@ -1,6 +1,5 @@
 import unescape from 'lodash/unescape';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import { MouseEventHandler, useCallback, useMemo, useRef, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
@@ -27,8 +26,6 @@ type Props = {
 };
 
 export default function HoverCardOnUsername({ userRef, queryRef }: Props) {
-  const router = useRouter();
-
   const user = useFragment(
     graphql`
       fragment HoverCardOnUsernameFragment on GalleryUser {
@@ -105,15 +102,6 @@ export default function HoverCardOnUsername({ userRef, queryRef }: Props) {
     );
   };
 
-  const handleClick = useCallback<MouseEventHandler>(
-    (e) => {
-      e.stopPropagation();
-      e.preventDefault();
-      router.push({ pathname: '/[username]', query: { username: user.username as string } });
-    },
-    [user, router]
-  );
-
   const loggedInUserId = useLoggedInUserId(query);
   const isOwnProfile = loggedInUserId === user?.id;
   const isLoggedIn = !!loggedInUserId;
@@ -134,47 +122,55 @@ export default function HoverCardOnUsername({ userRef, queryRef }: Props) {
     return badges;
   }, [user?.badges]);
 
+  const userProfileLink = useMemo(() => {
+    return { pathname: '/[username]', query: { username: user.username as string } };
+  }, [user]);
+
   return (
     <StyledContainer onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <StyledLinkContainer>
-        <Link href={{ pathname: '/[username]', query: { username: user.username as string } }}>
+        <Link href={userProfileLink}>
           <TitleDiatypeM onClick={handleUsernameClick}>{user.username}</TitleDiatypeM>
         </Link>
       </StyledLinkContainer>
-      <StyledCardWrapper isHovering={isHovering} onClick={handleClick}>
-        {isActive && (
-          <StyledCardContainer>
-            <StyledCardHeader>
-              <HStack align="center" gap={4}>
-                <HStack align="center" gap={6}>
-                  <StyledCardUsername>{user.username}</StyledCardUsername>
+      <Link href={userProfileLink}>
+        <a>
+          <StyledCardWrapper isHovering={isHovering}>
+            {isActive && (
+              <StyledCardContainer>
+                <StyledCardHeader>
+                  <HStack align="center" gap={4}>
+                    <HStack align="center" gap={6}>
+                      <StyledCardUsername>{user.username}</StyledCardUsername>
 
-                  {userBadges.map((badge) => (
-                    // Might need to rethink this layout when we have more badges
-                    <Badge key={badge.name} badgeRef={badge} />
-                  ))}
-                </HStack>
+                      {userBadges.map((badge) => (
+                        // Might need to rethink this layout when we have more badges
+                        <Badge key={badge.name} badgeRef={badge} />
+                      ))}
+                    </HStack>
 
-                {isLoggedIn && !isOwnProfile && (
-                  <StyledFollowButtonWrapper>
-                    <FollowButton userRef={user} queryRef={query} />
-                  </StyledFollowButtonWrapper>
+                    {isLoggedIn && !isOwnProfile && (
+                      <StyledFollowButtonWrapper>
+                        <FollowButton userRef={user} queryRef={query} />
+                      </StyledFollowButtonWrapper>
+                    )}
+                  </HStack>
+
+                  <BaseM>{totalCollections} collections</BaseM>
+                </StyledCardHeader>
+
+                {user.bio && (
+                  <StyledCardDescription>
+                    <BaseM>
+                      <Markdown text={unescape(user.bio)}></Markdown>
+                    </BaseM>
+                  </StyledCardDescription>
                 )}
-              </HStack>
-
-              <BaseM>{totalCollections} collections</BaseM>
-            </StyledCardHeader>
-
-            {user.bio && (
-              <StyledCardDescription>
-                <BaseM>
-                  <Markdown text={unescape(user.bio)}></Markdown>
-                </BaseM>
-              </StyledCardDescription>
+              </StyledCardContainer>
             )}
-          </StyledCardContainer>
-        )}
-      </StyledCardWrapper>
+          </StyledCardWrapper>
+        </a>
+      </Link>
     </StyledContainer>
   );
 }

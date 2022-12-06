@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import breakpoints from '~/components/core/breakpoints';
 import colors from '~/components/core/colors';
 import { BaseM, BlueLabel, TitleMonoM } from '~/components/core/Text/Text';
+import EthereumProviders from '~/contexts/auth/EthereumProviders';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useMintMerchContract } from '~/hooks/useContract';
 import useMintContractWithQuantity from '~/hooks/useMintContractWithQuantity';
@@ -28,13 +29,15 @@ export default function ItemPreview({
   const handleClick = useCallback(() => {
     showModal({
       content: (
-        <SingleItemPage
-          label={label}
-          image={image}
-          title={title}
-          description={description}
-          tokenId={tokenId}
-        />
+        <EthereumProviders>
+          <SingleItemPage
+            label={label}
+            image={image}
+            title={title}
+            description={description}
+            tokenId={tokenId}
+          />
+        </EthereumProviders>
       ),
       isFullPage: true,
     });

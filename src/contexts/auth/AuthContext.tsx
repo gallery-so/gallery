@@ -30,9 +30,7 @@ import { isWeb3Error, Web3Error } from '~/types/Error';
 import { PreloadQueryArgs } from '~/types/PageComponentPreloadQuery';
 
 import clearLocalStorageWithException from './clearLocalStorageWithException';
-import { EtheremProviders } from './EthereumProviders';
 import { LOGGED_IN, LOGGED_OUT, UNKNOWN } from './types';
-import Web3WalletProvider from './Web3WalletContext';
 
 export type AuthState = LOGGED_IN | typeof LOGGED_OUT | typeof UNKNOWN;
 
@@ -290,11 +288,7 @@ const AuthProvider = memo(({ children }: Props) => {
         <Suspense fallback={<FullPageLoader />}>
           <AuthStateContext.Provider value={authState}>
             <AuthActionsContext.Provider value={authActions}>
-              <EtheremProviders>
-                <Web3WalletProvider>
-                  {shouldDisplayUniversalLoader ? null : children}
-                </Web3WalletProvider>
-              </EtheremProviders>
+              {shouldDisplayUniversalLoader ? null : children}
             </AuthActionsContext.Provider>
           </AuthStateContext.Provider>
         </Suspense>

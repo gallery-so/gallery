@@ -7,8 +7,6 @@ import isProduction from '~/utils/isProduction';
 
 import AnalyticsProvider from './analytics/AnalyticsContext';
 import AuthProvider from './auth/AuthContext';
-import { Web3ProviderNetwork } from './auth/Web3WalletContext';
-import BeaconProvider from './beacon/BeaconContext';
 import Boundary from './boundary/Boundary';
 import ErrorReportingProvider from './errorReporting/ErrorReportingContext';
 import GlobalLayoutContextProvider from './globalLayout/GlobalLayoutContext';
@@ -31,22 +29,18 @@ export default function AppProvider({ children, relayEnvironment }: Props) {
           <AuthProvider>
             <AnalyticsProvider>
               <ErrorReportingProvider>
-                <Web3ProviderNetwork>
-                  <SwrProvider>
-                    <BeaconProvider>
-                      <GalleryNavigationProvider>
-                        <ModalProvider>
-                          <SyncTokensLockProvider>
-                            <GlobalLayoutContextProvider>
-                              {isProd ? null : <Debugger />}
-                              {children}
-                            </GlobalLayoutContextProvider>
-                          </SyncTokensLockProvider>
-                        </ModalProvider>
-                      </GalleryNavigationProvider>
-                    </BeaconProvider>
-                  </SwrProvider>
-                </Web3ProviderNetwork>
+                <SwrProvider>
+                  <GalleryNavigationProvider>
+                    <ModalProvider>
+                      <SyncTokensLockProvider>
+                        <GlobalLayoutContextProvider>
+                          {isProd ? null : <Debugger />}
+                          {children}
+                        </GlobalLayoutContextProvider>
+                      </SyncTokensLockProvider>
+                    </ModalProvider>
+                  </GalleryNavigationProvider>
+                </SwrProvider>
               </ErrorReportingProvider>
             </AnalyticsProvider>
           </AuthProvider>
