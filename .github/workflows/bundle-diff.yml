@@ -1,0 +1,31 @@
+name: bundle-diff
+on: [push]
+jobs:
+  bundle-diff:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout git repository
+        uses: actions/checkout@v2
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - uses: actions/cache@v3
+        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      - name: Install dependencies
+        run: yarn install
+      - name: Build Next.js App
+        run: yarn build
+      - name: Analyze bundle sizes
+        uses: transferwise/actions-next-bundle-analyzer@master
+        with:
+          # Filename of the workflow this step is defined in
+          workflow-id: bundle-diff.yml
+          base-branch: master
+        env:
+          # This secret is automatically injected by GitHub
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
