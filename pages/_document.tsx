@@ -1,4 +1,5 @@
 import Document, { DocumentContext, Head, Html, Main, NextScript } from 'next/document';
+import Script from 'next/script';
 import { ServerStyleSheet } from 'styled-components';
 
 export default class MyDocument extends Document {
@@ -37,9 +38,9 @@ export default class MyDocument extends Document {
           <link rel="manifest" href="/site.webmanifest" />
           <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#000000" />
 
-          <script
-            async
+          <Script
             type="module"
+            strategy="lazyOnload"
             src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"
           />
         </Head>
