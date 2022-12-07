@@ -5,11 +5,12 @@ import styled from 'styled-components';
 import breakpoints, { size } from '~/components/core/breakpoints';
 import { Button } from '~/components/core/Button/Button';
 import TextButton from '~/components/core/Button/TextButton';
+import colors from '~/components/core/colors';
 import HorizontalBreak from '~/components/core/HorizontalBreak/HorizontalBreak';
 import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
-import { BaseM, TitleM, TitleXS } from '~/components/core/Text/Text';
+import { BaseM, TitleDiatypeM, TitleM, TitleXS } from '~/components/core/Text/Text';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { NftDetailTextFragment$key } from '~/generated/NftDetailTextFragment.graphql';
@@ -110,15 +111,20 @@ function NftDetailText({ tokenRef }: Props) {
   return (
     <StyledDetailLabel horizontalLayout={horizontalLayout} navbarHeight={navbarHeight}>
       <VStack gap={isMobile ? 32 : 24}>
-        <VStack gap={4}>
+        <VStack gap={8}>
           {token.name && <TitleM>{decodedTokenName}</TitleM>}
           <HStack align="center" gap={4}>
-            {token.chain === 'POAP' && <PoapLogo />}
-
             {communityUrl && token.contract?.name ? (
-              <InteractiveLink to={communityUrl}>{token.contract.name}</InteractiveLink>
+              <ClickablePill to={communityUrl}>
+                <HStack gap={4} align="center" justify="flex-end">
+                  {token.chain === 'POAP' && <PoapLogo />}
+                  <TitleDiatypeM>{token.contract.name}</TitleDiatypeM>
+                </HStack>
+              </ClickablePill>
             ) : (
-              <BaseM>{token.contract?.name}</BaseM>
+              <NonclickablePill>
+                <TitleDiatypeM>{token.contract?.name}</TitleDiatypeM>
+              </NonclickablePill>
             )}
           </HStack>
         </VStack>
@@ -166,8 +172,8 @@ function NftDetailText({ tokenRef }: Props) {
 }
 
 const PoapLogo = styled.img.attrs({ src: '/icons/poap_logo.svg', alt: 'POAP Logo' })`
-  width: 16px;
-  height: 16px;
+  width: 24px;
+  height: 24px;
 `;
 
 const StyledDetailLabel = styled.div<{ horizontalLayout: boolean; navbarHeight: number }>`
@@ -199,6 +205,37 @@ const StyledInteractiveLink = styled(InteractiveLink)`
 
 const StyledButton = styled(Button)`
   width: 100%;
+`;
+
+const ClickablePill = styled(InteractiveLink)`
+  border: 1px solid ${colors.porcelain};
+  padding: 0 12px;
+  border-radius: 24px;
+  color: ${colors.offBlack};
+  text-decoration: none;
+  width: fit-content;
+  align-self: end;
+  height: 32px;
+  display: flex;
+  align-items: center;
+
+  &:hover {
+    background: ${colors.porcelain};
+    backdrop-filter: blur(10px);
+    border-color: transparent;
+  }
+`;
+
+const NonclickablePill = styled.div`
+  border: 1px solid ${colors.porcelain};
+  padding: 0 12px;
+  border-radius: 24px;
+  color: ${colors.offBlack};
+  width: fit-content;
+  align-self: end;
+  height: 32px;
+  display: flex;
+  align-items: center;
 `;
 
 export default NftDetailText;
