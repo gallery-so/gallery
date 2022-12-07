@@ -258,7 +258,6 @@ const ClickablePill = styled(InteractiveLink)`
   color: ${colors.white};
   text-decoration: none;
   width: fit-content;
-  // align-self: end;
   height: 32px;
   display: flex;
   align-items: center;
@@ -275,8 +274,8 @@ const NonclickablePill = styled.div`
   padding: 0 12px;
   border-radius: 24px;
   color: ${colors.white};
+  text-decoration: none;
   width: fit-content;
-  align-self: end;
   height: 32px;
   display: flex;
   align-items: center;
