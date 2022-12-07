@@ -16,10 +16,12 @@ import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, Paragraph, TITLE_FONT_FAMILY, TitleM } from '~/components/core/Text/Text';
 import useNotificationsModal from '~/components/NotificationsModal/useNotificationsModal';
 import { useSubscribeToNotifications } from '~/components/NotificationsModal/useSubscribeToNotifications';
+import { MERCH_REDEMPTION_STORAGE_KEY } from '~/constants/storageKeys';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { useAuthActions } from '~/contexts/auth/AuthContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { ProfileDropdownContentFragment$key } from '~/generated/ProfileDropdownContentFragment.graphql';
+import usePersistedState from '~/hooks/usePersistedState';
 import ManageWalletsModal from '~/scenes/Modals/ManageWalletsModal';
 import SettingsModal from '~/scenes/Modals/SettingsModal';
 import { getEditGalleryUrl } from '~/utils/getEditGalleryUrl';
@@ -70,6 +72,15 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
 
   const isEmailFeatureEnabled = isFeatureEnabled(FeatureFlag.EMAIL, query);
   const track = useTrack();
+
+  const [dismissMerchRedemption, setDismissMerchRedemption] = usePersistedState(
+    MERCH_REDEMPTION_STORAGE_KEY,
+    false
+  );
+
+  const handleDismissMerchRedemption = useCallback(() => {
+    setDismissMerchRedemption(true);
+  }, [setDismissMerchRedemption]);
 
   const handleNotificationsClick = useCallback(() => {
     track('Open Notifications Click');
@@ -138,10 +149,13 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
 
         <DropdownSection gap={4}>
           <DropdownItem onClick={handleManageWalletsClick}>SETTINGS</DropdownItem>
-          <DropdownLink href={{ pathname: '/shop' }}>
-            <HStack gap={8}>
-              <span>SHOP</span>
-              <StyledObjectsText>(OBJECTS)</StyledObjectsText>
+          <DropdownLink href={{ pathname: '/shop' }} onClick={handleDismissMerchRedemption}>
+            <HStack gap={10} align="center">
+              <HStack gap={8}>
+                <span>SHOP</span>
+                <StyledObjectsText>(OBJECTS)</StyledObjectsText>
+              </HStack>
+              {!dismissMerchRedemption && <NotificationsCircle />}
             </HStack>
           </DropdownLink>
         </DropdownSection>
@@ -232,4 +246,11 @@ const DropdownProfileSection = styled.a`
   :hover {
     background-color: ${colors.faint};
   }
+`;
+
+const NotificationsCircle = styled.div`
+  height: 8px;
+  width: 8px;
+  border-radius: 50%;
+  background-color: ${colors.hyperBlue};
 `;
