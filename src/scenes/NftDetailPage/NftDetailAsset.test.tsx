@@ -75,6 +75,7 @@ const UnknownMediaResponse: NftDetailAssetTestQueryQuery = {
           chain: Chain.Ethereum,
           address: '0x0Ff979fB365e20c09bE06676D569EF581a46621D',
         },
+        badgeURL: 'http://someurl.com',
       },
     },
   },

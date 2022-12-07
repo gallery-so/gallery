@@ -100,23 +100,21 @@ function CollectionName({ tokenRef, interactive }: CollectionNameProps) {
   if (token.chain === 'POAP') {
     return shouldDisplayLinkToCommunityPage ? (
       <ClickablePill to={communityUrl}>
-        <HStack gap={4} align="center" justify="flex-end">
-          <POAPLogo />
-          <POAPTitle lines={1}>
-            <StyledTileDiatypeM lines={1} color={colors.white}>
-              {collectionName}
-            </StyledTileDiatypeM>
-          </POAPTitle>
-        </HStack>
-      </ClickablePill>
-    ) : (
-      <NonclickablePill>
-        <HStack gap={4} align="center" justify="flex-end">
+        <POAPWrapperHStack gap={4} align="center" justify="flex-end">
           <POAPLogo />
           <POAPTitle color={colors.white} lines={1}>
             {collectionName}
           </POAPTitle>
-        </HStack>
+        </POAPWrapperHStack>
+      </ClickablePill>
+    ) : (
+      <NonclickablePill>
+        <POAPWrapperHStack gap={4} align="center" justify="flex-end">
+          <POAPLogo />
+          <POAPTitle color={colors.white} lines={1}>
+            {collectionName}
+          </POAPTitle>
+        </POAPWrapperHStack>
       </NonclickablePill>
     );
   }
@@ -227,6 +225,7 @@ const StyledTileDiatypeM = styled(TitleDiatypeM)<{ lines: number }>`
     line-height: 20px;
     padding-right: 0;
     margin-right: 0;
+    display: unset;
   }
 `;
 
@@ -243,7 +242,7 @@ const StyledBadge = styled.img`
  * of the text and multiline text causes unnecessary
  * extra width to show up
  */
-const POAPTitle = styled(StyledBaseM)`
+const POAPTitle = styled(StyledTileDiatypeM)`
   line-clamp: 1;
   -webkit-line-clamp: 1;
   white-space: nowrap;
@@ -261,12 +260,17 @@ const ClickablePill = styled(InteractiveLink)`
   height: 32px;
   display: flex;
   align-items: center;
+  max-width: -webkit-fill-available;
 
   &:hover {
     background: rgba(254, 254, 254, 0.24);
     backdrop-filter: blur(10px);
     border-color: transparent;
   }
+`;
+
+const POAPWrapperHStack = styled(HStack)`
+  width: 100%;
 `;
 
 const NonclickablePill = styled.div`
@@ -279,6 +283,7 @@ const NonclickablePill = styled.div`
   height: 32px;
   display: flex;
   align-items: center;
+  max-width: -webkit-fill-available;
 `;
 
 export default NftPreviewLabel;
