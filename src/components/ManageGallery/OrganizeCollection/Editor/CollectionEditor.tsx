@@ -1,4 +1,3 @@
-import { CollectionEditorFragment$key } from '__generated__/CollectionEditorFragment.graphql';
 import React, { useEffect, useMemo, useRef } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
@@ -10,8 +9,9 @@ import {
   useStagedCollectionState,
 } from '~/contexts/collectionEditor/CollectionEditorContext';
 import { useCollectionWizardState } from '~/contexts/wizard/CollectionWizardContext';
+import { CollectionEditorFragment$key } from '~/generated/CollectionEditorFragment.graphql';
 import { CollectionEditorViewerFragment$key } from '~/generated/CollectionEditorViewerFragment.graphql';
-import { parseCollectionLayout } from '~/utils/collectionLayout';
+import { parseCollectionLayoutGraphql } from '~/utils/collectionLayout';
 import { removeNullValues } from '~/utils/removeNullValues';
 
 import useConfirmationMessageBeforeClose from '../../useConfirmationMessageBeforeClose';
@@ -52,32 +52,48 @@ const collectionEditorViewerFragment = graphql`
           tokens {
             token @required(action: THROW) {
               dbid @required(action: THROW)
-              name @required(action: THROW)
               lastUpdated @required(action: THROW)
-              isSpamByUser
+
+              # Escape hatch for data processing util files
+              # CollectionEditor could use a refactor
+              # eslint-disable-next-line relay/unused-fields
+              name @required(action: THROW)
+              # Escape hatch for data processing util files
+              # CollectionEditor could use a refactor
+              # eslint-disable-next-line relay/unused-fields
               isSpamByProvider
+              # Escape hatch for data processing util files
+              # CollectionEditor could use a refactor
+              # eslint-disable-next-line relay/unused-fields
+              isSpamByUser
             }
             tokenSettings {
               renderLive
             }
           }
           layout {
-            sections
-            sectionLayout {
-              columns
-              whitespace
-            }
+            ...collectionLayoutParseFragment
           }
         }
       }
       tokens {
         dbid @required(action: THROW)
-        name @required(action: THROW)
         lastUpdated @required(action: THROW)
-        isSpamByUser
-        isSpamByProvider
         ...SidebarFragment
         ...StagingAreaFragment
+
+        # Escape hatch for data processing util files
+        # CollectionEditor could use a refactor
+        # eslint-disable-next-line relay/unused-fields
+        name @required(action: THROW)
+        # Escape hatch for data processing util files
+        # CollectionEditor could use a refactor
+        # eslint-disable-next-line relay/unused-fields
+        isSpamByProvider
+        # Escape hatch for data processing util files
+        # CollectionEditor could use a refactor
+        # eslint-disable-next-line relay/unused-fields
+        isSpamByUser
       }
     }
     ...EditorMenuFragment
@@ -200,14 +216,17 @@ function CollectionEditor({ queryRef, onValidChange, onHasUnsavedChange }: Props
       if (!collectionBeingEdited) {
         setStagedCollectionState({});
       } else {
-        const collectionToStage = parseCollectionLayout(
-          tokensToStage,
-          collectionBeingEdited?.layout
-        ) as StagedCollection;
+        if (collectionBeingEdited.layout) {
+          const collectionToStage = parseCollectionLayoutGraphql(
+            tokensToStage,
+            collectionBeingEdited.layout
+          ) as StagedCollection;
 
-        setStagedCollectionState(collectionToStage);
-        if (Object.keys(collectionToStage).length > 0) {
-          setActiveSectionIdState(Object.keys(collectionToStage)[0]);
+          setStagedCollectionState(collectionToStage);
+
+          if (Object.keys(collectionToStage).length > 0) {
+            setActiveSectionIdState(Object.keys(collectionToStage)[0]);
+          }
         }
       }
     }

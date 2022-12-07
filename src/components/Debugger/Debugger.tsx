@@ -27,10 +27,6 @@ const Debugger = () => {
               username
               wallets {
                 dbid
-                chainAddress {
-                  chain
-                  address
-                }
               }
             }
           }
@@ -143,7 +139,7 @@ const LoginContainer = styled(VStack)`
 `;
 
 const StyledButton = styled(Button)`
-  align-self: right;
+  align-self: flex-end;
 `;
 
 const LoggedInUserContainer = styled.div``;

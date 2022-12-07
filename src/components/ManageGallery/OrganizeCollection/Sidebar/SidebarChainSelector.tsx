@@ -38,8 +38,6 @@ export function SidebarChainSelector({
             }
           }
         }
-
-        ...isFeatureEnabledFragment
       }
     `,
     queryRef

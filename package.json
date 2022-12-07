@@ -107,6 +107,7 @@
     "eslint": "^7.11.0",
     "eslint-config-next": "^12.2.5",
     "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-relay": "^1.8.3",
     "eslint-plugin-simple-import-sort": "^8.0.0",
     "graphql": "^16.5.0",
     "identity-obj-proxy": "^3.0.0",

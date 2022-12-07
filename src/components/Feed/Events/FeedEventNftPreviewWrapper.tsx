@@ -29,13 +29,6 @@ function FeedEventNftPreviewWrapper({ tokenRef, maxWidth, maxHeight }: Props) {
   const token = useFragment(
     graphql`
       fragment FeedEventNftPreviewWrapperFragment on CollectionToken {
-        collection {
-          gallery @required(action: THROW) {
-            owner @required(action: THROW) {
-              username
-            }
-          }
-        }
         ...NftPreviewFragment
         ...NftDetailViewFragment
       }

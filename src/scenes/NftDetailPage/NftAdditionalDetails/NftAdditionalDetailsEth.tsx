@@ -20,7 +20,6 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionaDetailsNonPOAP
   const token = useFragment(
     graphql`
       fragment NftAdditionalDetailsEthFragment on Token {
-        dbid
         externalUrl
         tokenId
         contract {

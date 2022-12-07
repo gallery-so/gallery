@@ -25,7 +25,6 @@ export default function UserFollowedYouEvent({ followInfoRef, eventRef, queryRef
       fragment UserFollowedYouEventEventFragment on UserFollowedUsersFeedEventData {
         eventTime
         owner @required(action: THROW) {
-          username @required(action: THROW)
           ...FollowButtonUserFragment
           ...HoverCardOnUsernameFragment
         }

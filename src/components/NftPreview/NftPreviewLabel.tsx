@@ -77,9 +77,6 @@ function CollectionName({ tokenRef, interactive }: CollectionNameProps) {
         chain
         contract {
           name
-          contractAddress {
-            address
-          }
           badgeURL
         }
 

@@ -30,7 +30,6 @@ function LazyLoadedCollectionEditor({ galleryId, collectionId }: Props) {
       query editCollectionQuery($collectionId: DBID!) {
         ...CollectionEditorFragment
         ...CollectionEditorNavbarFragment
-        ...GalleryAuthenticatedRouteFragment
 
         ... on Query {
           collectionById(id: $collectionId) {

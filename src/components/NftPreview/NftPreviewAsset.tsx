@@ -19,7 +19,6 @@ function NftPreviewAsset({ tokenRef, size, onLoad }: Props) {
   const token = useFragment(
     graphql`
       fragment NftPreviewAssetFragment on Token {
-        dbid
         name
         media {
           __typename
