@@ -1,4 +1,4 @@
-import { GlobalLayoutContextQueryQuery } from '~/generated/operations';
+import { GlobalLayoutContextQueryQuery } from '~/tests/__generated__/operations';
 
 import { GALLERY_USER_ID } from '../constants';
 import { mockGraphqlQuery } from './mockGraphqlQuery';

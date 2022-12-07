@@ -5,8 +5,8 @@ import { graphql } from 'relay-runtime';
 import { SomeoneViewedYourGallery } from '~/components/NotificationsModal/notifications/SomeoneViewedYourGallery';
 import AppProvider from '~/contexts/AppProvider';
 import { createEmptyRelayEnvironment } from '~/contexts/relay/RelayProvider';
-import { SomeoneViewedYourGalleryTestQueryQuery } from '~/generated/operations';
 import { SomeoneViewedYourGalleryTestQuery } from '~/generated/SomeoneViewedYourGalleryTestQuery.graphql';
+import { SomeoneViewedYourGalleryTestQueryQuery } from '~/tests/__generated__/operations';
 import { mockGraphqlQuery } from '~/tests/graphql/mockGraphqlQuery';
 import { mockProviderQueries } from '~/tests/graphql/mockProviderQueries';
 

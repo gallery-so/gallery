@@ -4,12 +4,12 @@ import { graphql, useLazyLoadQuery } from 'react-relay';
 import AppProvider from '~/contexts/AppProvider';
 import { createEmptyRelayEnvironment } from '~/contexts/relay/RelayProvider';
 import { NftDetailAssetTestQuery } from '~/generated/NftDetailAssetTestQuery.graphql';
+import NftDetailView from '~/scenes/NftDetailPage/NftDetailView';
 import {
   Chain,
   NftDetailAssetTestQueryQuery,
   UseNftRetryMutationMutation,
-} from '~/generated/operations';
-import NftDetailView from '~/scenes/NftDetailPage/NftDetailView';
+} from '~/tests/__generated__/operations';
 import { mockGraphqlQuery } from '~/tests/graphql/mockGraphqlQuery';
 import { mockProviderQueries } from '~/tests/graphql/mockProviderQueries';
 
