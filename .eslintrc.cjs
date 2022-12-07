@@ -35,9 +35,11 @@ module.exports = {
     'relay/generated-flow-types': 'off',
     'relay/must-colocate-fragment-spreads': 'error',
     'relay/no-future-added-value': 'error',
-    'relay/unused-fields': 'error',
-    'relay/function-required-argument': 'error',
-    'relay/hook-required-argument': 'error'
+    'relay/unused-fields': 'warn',
+    // Typescript does this for us
+    'relay/function-required-argument': 'off',
+    // Typescript does this for us
+    'relay/hook-required-argument': 'off'
   },
 
   overrides: [
