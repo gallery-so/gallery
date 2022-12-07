@@ -55,11 +55,15 @@ const collectionEditorViewerFragment = graphql`
               lastUpdated @required(action: THROW)
 
               # Escape hatch for data processing util files
-              # This whole
+              # CollectionEditor could use a refactor
               # eslint-disable-next-line relay/unused-fields
               name @required(action: THROW)
+              # Escape hatch for data processing util files
+              # CollectionEditor could use a refactor
               # eslint-disable-next-line relay/unused-fields
               isSpamByProvider
+              # Escape hatch for data processing util files
+              # CollectionEditor could use a refactor
               # eslint-disable-next-line relay/unused-fields
               isSpamByUser
             }
@@ -79,11 +83,15 @@ const collectionEditorViewerFragment = graphql`
         ...StagingAreaFragment
 
         # Escape hatch for data processing util files
-        # This whole
+        # CollectionEditor could use a refactor
         # eslint-disable-next-line relay/unused-fields
         name @required(action: THROW)
+        # Escape hatch for data processing util files
+        # CollectionEditor could use a refactor
         # eslint-disable-next-line relay/unused-fields
         isSpamByProvider
+        # Escape hatch for data processing util files
+        # CollectionEditor could use a refactor
         # eslint-disable-next-line relay/unused-fields
         isSpamByUser
       }
