@@ -50,6 +50,7 @@ function NftDetailText({ tokenRef }: Props) {
           contractAddress {
             address
           }
+          badgeURL
         }
 
         ...NftAdditionalDetailsFragment
@@ -118,6 +119,7 @@ function NftDetailText({ tokenRef }: Props) {
               <ClickablePill to={communityUrl}>
                 <HStack gap={4} align="center" justify="flex-end">
                   {token.chain === 'POAP' && <PoapLogo />}
+                  {token.contract?.badgeURL && <StyledBadge src={token.contract.badgeURL} />}
                   <TitleDiatypeM>{token.contract.name}</TitleDiatypeM>
                 </HStack>
               </ClickablePill>
@@ -172,6 +174,11 @@ function NftDetailText({ tokenRef }: Props) {
 }
 
 const PoapLogo = styled.img.attrs({ src: '/icons/poap_logo.svg', alt: 'POAP Logo' })`
+  width: 24px;
+  height: 24px;
+`;
+
+const StyledBadge = styled.img`
   width: 24px;
   height: 24px;
 `;

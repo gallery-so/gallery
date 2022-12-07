@@ -46,7 +46,7 @@ function NftPreviewLabel({ className, tokenRef, interactive = true }: Props) {
   return (
     <StyledNftPreviewLabel className={className}>
       <HStack gap={4} justify={'flex-end'} align="center">
-        <VStack shrink>
+        <VStack align="flex-end" shrink>
           {
             // Since POAPs' collection names are the same as the
             // token name, we don't want to show duplicate information
@@ -258,7 +258,7 @@ const ClickablePill = styled(InteractiveLink)`
   color: ${colors.white};
   text-decoration: none;
   width: fit-content;
-  align-self: end;
+  // align-self: end;
   height: 32px;
   display: flex;
   align-items: center;
