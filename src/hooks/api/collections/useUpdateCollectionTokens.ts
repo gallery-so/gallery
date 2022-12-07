@@ -81,6 +81,7 @@ export default function useUpdateCollectionTokens() {
         graphql`
           query useUpdateCollectionTokensRefresherQuery($id: DBID!) {
             collectionById(id: $id) {
+              # All of these are to ensure relevant components get their data refetched
               # eslint-disable-next-line relay/must-colocate-fragment-spreads
               ...NftGalleryFragment
               # eslint-disable-next-line relay/must-colocate-fragment-spreads
