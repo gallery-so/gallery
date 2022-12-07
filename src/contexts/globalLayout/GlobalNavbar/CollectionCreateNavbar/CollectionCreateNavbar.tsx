@@ -10,7 +10,6 @@ import {
   StandardNavbarContainer,
 } from '~/contexts/globalLayout/GlobalNavbar/StandardNavbarContainer';
 import { CollectionCreateNavbarFragment$key } from '~/generated/CollectionCreateNavbarFragment.graphql';
-import { CollectionSaveButtonWithCaptionFragment$key } from '~/generated/CollectionSaveButtonWithCaptionFragment.graphql';
 
 import { CollectionSaveButtonWithCaption } from '../CollectionSaveButtonWithCaption';
 
