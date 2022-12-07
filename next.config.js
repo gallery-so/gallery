@@ -10,11 +10,21 @@ const nextConfig = {
     // This is fine since we do a type check in Github Actions.
     ignoreBuildErrors: true,
   },
-
   eslint: {
     // Save time in Vercel builds by avoiding linting.
     // This is fine since we do a lint in Github Actions.
     ignoreDuringBuilds: true,
+  },
+
+  /** @type {import('@sentry/nextjs/types/config/types').UserSentryOptions} */
+  sentry: {
+    // Use `hidden-source-map` rather than `source-map` as the Webpack `devtool`
+    // for client-side builds. (This will be the default starting in
+    // `@sentry/nextjs` version 8.0.0.) See
+    // https://webpack.js.org/configuration/devtool/ and
+    // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/#use-hidden-source-map
+    // for more information.
+    hideSourceMaps: true,
   },
 
   webpack(config) {
@@ -61,6 +71,7 @@ const nextConfig = {
   },
 };
 
+/** @type {Partial<import('@sentry/nextjs/types/config/types').SentryWebpackPluginOptions>} */
 const sentryWebpackPluginOptions = {
   // Additional config options for the Sentry Webpack plugin. Keep in mind that
   // the following options are set automatically, and overriding them is not
@@ -68,8 +79,9 @@ const sentryWebpackPluginOptions = {
   //   release, url, org, project, authToken, configFile, stripPrefix,
   //   urlPrefix, include, ignore
 
-  silent: true, // Suppresses all logs
+  silent: true,
   authToken: process.env.NEXT_PUBLIC_SENTRY_AUTH_TOKEN,
+
   // For all available options, see:
   // https://github.com/getsentry/sentry-webpack-plugin#options.
 };
@@ -85,4 +97,4 @@ if (process.env.DISABLE_SENTRY !== 'true') {
   plugins.push((config) => withSentryConfig(config, sentryWebpackPluginOptions));
 }
 
-module.exports = () => plugins.reduce((config, plugin) => plugin(config), nextConfig);
+module.exports = plugins.reduce((config, plugin) => plugin(config), nextConfig);
