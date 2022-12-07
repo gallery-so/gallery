@@ -7,7 +7,7 @@ generates:
       onlyEnums: true
     plugins:
       - typescript
-  ./__generated__/operations.ts:
+  ./tests/__generated__/operations.ts:
     config:
       scalars:
           Email: string
