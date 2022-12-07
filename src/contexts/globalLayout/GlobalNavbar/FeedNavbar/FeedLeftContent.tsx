@@ -4,6 +4,7 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
+import { useDropdownHoverControls } from '~/components/core/Dropdown/useDropdownHoverControls';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { GLogo } from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GLogo';
 import { NotificationsCircle } from '~/contexts/globalLayout/GlobalNavbar/NotificationCircle';
@@ -46,8 +47,6 @@ export function FeedLeftContent({ queryRef }: FeedLeftContentProps) {
     queryRef
   );
 
-  const [showDropdown, setShowDropdown] = useState(false);
-
   const isLoggedIn = query.viewer?.__typename === 'Viewer';
 
   const notificationCount = useMemo(() => {
@@ -62,9 +61,13 @@ export function FeedLeftContent({ queryRef }: FeedLeftContentProps) {
     return 0;
   }, [query.viewer]);
 
-  const handleContainerClick = useCallback(() => {
-    setShowDropdown(true);
-  }, []);
+  const {
+    showDropdown,
+    closeDropdown,
+    shouldShowDropdown,
+    handleDropdownMouseEnter,
+    handleDropdownMouseLeave,
+  } = useDropdownHoverControls();
 
   if (!isLoggedIn) {
     return (
@@ -81,17 +84,25 @@ export function FeedLeftContent({ queryRef }: FeedLeftContentProps) {
   const showNotifications = Boolean(isWhiteRhinoEnabled && notificationCount > 0);
 
   return (
-    <Container gap={4} align="center" role="button" onClick={handleContainerClick}>
-      <HomeText>
-        {showNotifications && <StyledNotificationsCircle />}
-        <span>Home</span>
-      </HomeText>
+    <Container gap={4} align="center" role="button">
+      <HStack
+        onMouseEnter={handleDropdownMouseEnter}
+        onMouseLeave={handleDropdownMouseLeave}
+        align="center"
+      >
+        <HomeText>
+          {showNotifications && <StyledNotificationsCircle />}
+          <span>Home</span>
+        </HomeText>
 
-      {showDropdown ? <NavUpArrow /> : <NavDownArrow />}
+        {shouldShowDropdown ? <NavUpArrow /> : <NavDownArrow />}
+      </HStack>
 
       <ProfileDropdownContent
-        showDropdown={showDropdown}
-        onClose={() => setShowDropdown(false)}
+        shouldShowDropdown={shouldShowDropdown}
+        onMouseEnter={handleDropdownMouseEnter}
+        onMouseLeave={handleDropdownMouseLeave}
+        onClose={closeDropdown}
         queryRef={query}
       />
     </Container>

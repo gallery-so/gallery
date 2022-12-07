@@ -1,9 +1,10 @@
 import { useRouter } from 'next/router';
-import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
+import { ReactNode, useCallback, useEffect, useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
+import { useDropdownHoverControls } from '~/components/core/Dropdown/useDropdownHoverControls';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { Paragraph, TITLE_FONT_FAMILY } from '~/components/core/Text/Text';
 import { GLogo } from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GLogo';
@@ -46,27 +47,20 @@ export function ProfileDropdown({ queryRef, rightContent }: ProfileDropdownProps
     queryRef
   );
 
-  const [showDropdown, setShowDropdown] = useState(false);
-
   const { push, pathname, query: urlQuery } = useRouter();
 
-  const handleLoggedInLogoClick = useCallback(() => {
-    setShowDropdown((previous) => !previous);
-  }, []);
+  const { handleDropdownMouseEnter, handleDropdownMouseLeave, closeDropdown, shouldShowDropdown } =
+    useDropdownHoverControls();
 
   const handleLoggedOutLogoClick = useCallback(() => {
     push({ pathname: '/home' });
   }, [push]);
 
-  const handleClose = useCallback(() => {
-    setShowDropdown(false);
-  }, []);
-
   useEffect(
     function closeDropdownWhenRouteChanges() {
-      handleClose();
+      closeDropdown();
     },
-    [handleClose, pathname, urlQuery]
+    [closeDropdown, pathname, urlQuery]
   );
 
   const isLoggedIn = query.viewer?.__typename === 'Viewer';
@@ -88,13 +82,18 @@ export function ProfileDropdown({ queryRef, rightContent }: ProfileDropdownProps
   return (
     <Wrapper gap={4} align="center">
       {isLoggedIn ? (
-        <LogoContainer gap={4} role="button" onClick={handleLoggedInLogoClick}>
+        <LogoContainer
+          gap={4}
+          role="button"
+          onMouseEnter={handleDropdownMouseEnter}
+          onMouseLeave={handleDropdownMouseLeave}
+        >
           {isWhiteRhinoEnabled && notificationCount > 0 ? <StyledNotificationsCircle /> : null}
 
           <HStack gap={2} align="center">
             <GLogo />
 
-            {showDropdown ? <NavUpArrow /> : <NavDownArrow />}
+            {shouldShowDropdown ? <NavUpArrow /> : <NavDownArrow />}
           </HStack>
         </LogoContainer>
       ) : (
@@ -108,8 +107,10 @@ export function ProfileDropdown({ queryRef, rightContent }: ProfileDropdownProps
 
       {isLoggedIn && (
         <ProfileDropdownContent
-          showDropdown={showDropdown}
-          onClose={handleClose}
+          onMouseEnter={handleDropdownMouseEnter}
+          onMouseLeave={handleDropdownMouseLeave}
+          shouldShowDropdown={shouldShowDropdown}
+          onClose={closeDropdown}
           queryRef={query}
         />
       )}

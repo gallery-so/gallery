@@ -8,11 +8,25 @@ import colors from '../colors';
 type Props = {
   active: boolean;
   onClose: () => void;
+
+  onMouseLeave: () => void;
+  onMouseEnter: () => void;
+
+  controlledByHover?: boolean;
+
   children?: ReactNode;
   position: 'right' | 'left' | 'full-width';
 };
 
-export function Dropdown({ active, onClose, children, position }: Props) {
+export function Dropdown({
+  active,
+  onClose,
+  children,
+  position,
+  onMouseLeave,
+  onMouseEnter,
+  controlledByHover,
+}: Props) {
   const handleClose = useCallback<MouseEventHandler>(
     (event) => {
       event.stopPropagation();
@@ -25,9 +39,14 @@ export function Dropdown({ active, onClose, children, position }: Props) {
   return (
     <>
       {/* Used to hijack click events on things outside of the dropdown */}
-      {active && <Backdrop onClick={handleClose} />}
+      {active && !controlledByHover && <Backdrop onClick={handleClose} />}
 
-      <DropdownContainer position={position} active={active}>
+      <DropdownContainer
+        position={position}
+        active={active}
+        onMouseLeave={onMouseLeave}
+        onMouseEnter={onMouseEnter}
+      >
         {children}
       </DropdownContainer>
     </>
