@@ -33,6 +33,7 @@ const fetchWithJustHash: InternalFetchFunction = async (request, variables) => {
     method: 'POST',
     credentials: 'include',
     body: JSON.stringify({
+      operationName: request.name,
       extensions: {
         persistedQuery: {
           version: 1,
@@ -59,6 +60,7 @@ const fetchWithHashAndQueryText: InternalFetchFunction = async (request, variabl
     method: 'POST',
     credentials: 'include',
     body: JSON.stringify({
+      operationName: request.name,
       extensions: {
         persistedQuery: {
           version: 1,
