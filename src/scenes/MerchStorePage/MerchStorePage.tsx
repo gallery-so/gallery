@@ -14,7 +14,16 @@ import Countdown from './Countdown';
 import ItemPreview from './ItemPreview';
 import useRedeemModal from './Redemption/useRedeemModal';
 
-const items = [
+export type MerchItemTypes = {
+  label: string;
+  image: string;
+  title: string;
+  description: string;
+  price: string;
+  tokenId: number;
+};
+
+export const merchItems = [
   {
     label: 'Shirt',
     image: '/merch/shirt',
@@ -61,7 +70,7 @@ export default function MerchStorePage() {
         <StyledButton onClick={showRedeemModal}>Redeem</StyledButton>
       </StyledButtonContainer>
       <StyledItemsContainer>
-        {items.map((item) => (
+        {merchItems.map((item) => (
           <ItemPreview {...item} key={item.label} />
         ))}
       </StyledItemsContainer>

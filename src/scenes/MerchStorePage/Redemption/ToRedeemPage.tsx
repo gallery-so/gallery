@@ -4,32 +4,11 @@ import { Button } from '~/components/core/Button/Button';
 import { BaseM } from '~/components/core/Text/Text';
 
 import RedeemItem from './RedeemItem';
-
-// TODO: replace with real data
-const items = [
-  {
-    id: 1,
-    name: '(OBJECT 001) Shirt',
-    checked: false,
-  },
-  {
-    id: 2,
-    name: '(OBJECT 001) Shirt',
-    checked: false,
-  },
-  {
-    id: 3,
-    name: '(OBJECT 002) hat',
-    checked: false,
-  },
-  {
-    id: 4,
-    name: '(OBJECT 003) card',
-    checked: false,
-  },
-];
+import useMerchRedemption from './useMerchRedemption';
 
 export default function ToRedeemPage() {
+  const { userItems } = useMerchRedemption();
+
   return (
     <>
       <StyledRedeemTextContainer>
@@ -38,8 +17,8 @@ export default function ToRedeemPage() {
           Shopify store.
         </BaseM>
       </StyledRedeemTextContainer>
-      {items.map((item) => (
-        <RedeemItem key={item.id} name={item.name} checked={item.checked} />
+      {userItems.map((item, index) => (
+        <RedeemItem key={index} name={`${item.title} ${item.label}`} checked={false} />
       ))}
       <StyledRedeemFooter>
         <StyledRedeemSubmitButton>Redeem</StyledRedeemSubmitButton>
