@@ -217,7 +217,6 @@ const StyledTileDiatypeM = styled(TitleDiatypeM)<{ lines: number }>`
 
   @media only screen and ${breakpoints.mobileLarge} {
     word-wrap: unset;
-    word-break: unset;
   }
 
   @media only screen and ${breakpoints.tablet} {
@@ -225,7 +224,6 @@ const StyledTileDiatypeM = styled(TitleDiatypeM)<{ lines: number }>`
     line-height: 20px;
     padding-right: 0;
     margin-right: 0;
-    display: unset;
   }
 `;
 
@@ -248,6 +246,7 @@ const POAPTitle = styled(StyledTileDiatypeM)`
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+  display: block;
 `;
 
 const ClickablePill = styled(InteractiveLink)`
