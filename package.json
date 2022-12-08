@@ -3,6 +3,7 @@
   "scripts": {
     "dev": "concurrently -n Next,Relay-Compiler,GraphQL-Codegen \"next\" \"yarn relay:watch\" \"graphql-codegen --watch\"",
     "build": "yarn relay && yarn graphql-codegen && next build",
+    "upload-apq": "node scripts/upload-persisted-queries.mjs",
     "start": "next start",
     "lint": "eslint . --ext .js,.ts,.tsx,.cjs",
     "typecheck": "nextjs-routes; graphql-codegen; tsc --noEmit",
