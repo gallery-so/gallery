@@ -86,6 +86,7 @@ export default function List({
   return (
     <IconContainer
       size="sm"
+      stacked
       icon={
         <svg
           data-testid="markdown-icon"
