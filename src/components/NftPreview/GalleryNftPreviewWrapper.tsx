@@ -37,15 +37,6 @@ function GalleryNftPreviewWrapper({ tokenRef, columns }: Props) {
   const collectionTokenRef = useFragment(
     graphql`
       fragment GalleryNftPreviewWrapperFragment on CollectionToken {
-        token @required(action: THROW) {
-          dbid
-          ...NftPreviewAssetFragment
-        }
-        collection @required(action: THROW) {
-          id
-          dbid
-        }
-        ...NftDetailViewFragment
         ...NftPreviewFragment
       }
     `,

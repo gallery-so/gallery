@@ -31,8 +31,6 @@ export function SomeoneViewedYourGallery({
       fragment SomeoneViewedYourGalleryFragment on SomeoneViewedYourGalleryNotification {
         __typename
 
-        count
-
         nonUserViewerCount
 
         userViewers(last: 1) {

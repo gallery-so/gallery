@@ -125,7 +125,6 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
   const collectionToken = useFragment(
     graphql`
       fragment NftDetailAssetFragment on CollectionToken {
-        id
         token @required(action: THROW) {
           ...NftDetailAssetTokenFragment
         }

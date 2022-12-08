@@ -65,8 +65,6 @@ export const EthereumAddWallet = ({ queryRef, reset, onSuccess = noop }: Props) 
             }
           }
         }
-
-        ...ManageWalletsModalFragment
       }
     `,
     queryRef

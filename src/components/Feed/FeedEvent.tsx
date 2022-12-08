@@ -38,9 +38,6 @@ function FeedEvent({ eventRef, queryRef, feedMode }: FeedEventProps) {
         eventData {
           __typename
 
-          action
-          eventTime
-
           ... on CollectionCreatedFeedEventData {
             ...CollectionCreatedFeedEventFragment
           }

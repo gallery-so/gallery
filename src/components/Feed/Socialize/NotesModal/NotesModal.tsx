@@ -35,8 +35,6 @@ export function NotesModal({ eventRef, fullscreen }: NotesModalProps) {
     graphql`
       fragment NotesModalFragment on FeedEvent
       @refetchable(queryName: "NotesModalRefetchableFragment") {
-        dbid
-
         interactions(last: $interactionsFirst, before: $interactionsAfter)
           @connection(key: "NotesModal_interactions") {
           edges {
@@ -44,11 +42,9 @@ export function NotesModal({ eventRef, fullscreen }: NotesModalProps) {
               __typename
 
               ... on Admire {
-                creationTime
                 ...AdmireNoteFragment
               }
               ... on Comment {
-                creationTime
                 ...CommentNoteFragment
               }
             }

@@ -50,10 +50,6 @@ export default function FeedList({
       fragment FeedListEventDataFragment on FeedEvent @relay(plural: true) {
         dbid
 
-        eventData {
-          eventTime
-        }
-
         ...FeedEventWithErrorBoundaryFragment
       }
     `,

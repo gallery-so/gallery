@@ -24,31 +24,11 @@ export default function CommunityHolderGridItem({ holderRef }: Props) {
   const token = useFragment(
     graphql`
       fragment CommunityHolderGridItemFragment on Token {
-        dbid
         name
         tokenId
         contract {
           contractAddress {
             address
-          }
-        }
-        collectorsNote
-        media {
-          __typename
-          ... on ImageMedia {
-            previewURLs @required(action: NONE) {
-              large @required(action: NONE)
-            }
-          }
-          ... on VideoMedia {
-            previewURLs @required(action: NONE) {
-              large @required(action: NONE)
-            }
-          }
-          ... on UnknownMedia {
-            previewURLs @required(action: NONE) {
-              large @required(action: NONE)
-            }
           }
         }
         owner @required(action: THROW) {
@@ -58,7 +38,6 @@ export default function CommunityHolderGridItem({ holderRef }: Props) {
         }
         ...getVideoOrImageUrlForNftPreviewFragment
         ...TokenDetailViewFragment
-        ...NftPreviewAssetFragment
       }
     `,
     holderRef

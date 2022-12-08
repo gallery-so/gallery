@@ -1,4 +1,5 @@
 import { Route } from 'nextjs-routes';
+import { graphql, useFragment } from 'react-relay';
 
 import { BackButton } from '~/contexts/globalLayout/GlobalNavbar/BackButton';
 import { GalleryNameAndCollectionName } from '~/contexts/globalLayout/GlobalNavbar/CollectionEditorNavbar/GalleryNameAndCollectionName';
@@ -8,7 +9,7 @@ import {
   NavbarRightContent,
   StandardNavbarContainer,
 } from '~/contexts/globalLayout/GlobalNavbar/StandardNavbarContainer';
-import { CollectionSaveButtonWithCaptionFragment$key } from '~/generated/CollectionSaveButtonWithCaptionFragment.graphql';
+import { CollectionCreateNavbarFragment$key } from '~/generated/CollectionCreateNavbarFragment.graphql';
 
 import { CollectionSaveButtonWithCaption } from '../CollectionSaveButtonWithCaption';
 
@@ -19,7 +20,7 @@ type CollectionCreateNavbarProps = {
   isCollectionValid: boolean;
   collectionName?: string;
   error?: string;
-  queryRef: CollectionSaveButtonWithCaptionFragment$key;
+  queryRef: CollectionCreateNavbarFragment$key;
 };
 
 export function CollectionCreateNavbar({
@@ -32,6 +33,15 @@ export function CollectionCreateNavbar({
   queryRef,
 }: CollectionCreateNavbarProps) {
   const editGalleryRoute: Route = { pathname: '/gallery/[galleryId]/edit', query: { galleryId } };
+
+  const query = useFragment(
+    graphql`
+      fragment CollectionCreateNavbarFragment on Query {
+        ...CollectionSaveButtonWithCaptionFragment
+      }
+    `,
+    queryRef
+  );
 
   return (
     <StandardNavbarContainer>
@@ -54,7 +64,7 @@ export function CollectionCreateNavbar({
           onSave={onNext}
           hasUnsavedChange={true}
           error={error}
-          queryRef={queryRef}
+          queryRef={query}
         />
       </NavbarRightContent>
     </StandardNavbarContainer>

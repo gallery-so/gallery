@@ -42,7 +42,6 @@ export default function CommunityHolderGrid({ communityRef }: Props) {
                 __typename
               }
               owner {
-                username
                 universal
               }
               ...CommunityHolderGridItemFragment

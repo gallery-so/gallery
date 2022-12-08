@@ -30,9 +30,6 @@ function LazyLoadedCollectionEditorOnboarding({ collectionId }: Props) {
         collectionById(id: $collectionId) {
           ... on Collection {
             name
-            gallery {
-              dbid
-            }
           }
         }
         ...CollectionEditorFragment

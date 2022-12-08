@@ -37,7 +37,6 @@ export default function UserFollowedUsersFeedEvent({ eventDataRef, queryRef, fee
         owner @required(action: THROW) {
           username @required(action: THROW)
           ...HoverCardOnUsernameFragment
-          ...FollowButtonUserFragment
         }
         followed @required(action: THROW) {
           user {
@@ -46,7 +45,6 @@ export default function UserFollowedUsersFeedEvent({ eventDataRef, queryRef, fee
             ...FollowListUsersFragment
             ...HoverCardOnUsernameFragment
           }
-          followedBack
 
           ...UserFollowedYouEventFragment
         }
@@ -68,7 +66,6 @@ export default function UserFollowedUsersFeedEvent({ eventDataRef, queryRef, fee
             }
           }
         }
-        ...FollowButtonQueryFragment
         ...HoverCardOnUsernameFollowFragment
         ...UserFollowedYouEventEventQueryFragment
       }

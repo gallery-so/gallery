@@ -24,13 +24,8 @@ export function OrganizeGallery({ queryRef, onAddCollection, onEditCollection }:
       fragment OrganizeGalleryFragment on Query {
         viewer @required(action: THROW) {
           ... on Viewer {
-            user @required(action: THROW) {
-              username @required(action: THROW)
-            }
             viewerGalleries @required(action: THROW) {
               gallery @required(action: THROW) {
-                dbid
-
                 ...CollectionDndFragment
 
                 collections @required(action: THROW) {
