@@ -123,16 +123,16 @@ function CollectionName({ tokenRef, interactive }: CollectionNameProps) {
     <ClickablePill to={communityUrl}>
       <HStack gap={4} align="center" justify="flex-end">
         {token.contract?.badgeURL && <StyledBadge src={token.contract.badgeURL} />}
-        <StyledTileDiatypeM lines={1} color={colors.white}>
+        <StyledTitleDiatypeM lines={1} color={colors.white}>
           {collectionName}
-        </StyledTileDiatypeM>
+        </StyledTitleDiatypeM>
       </HStack>
     </ClickablePill>
   ) : (
     <NonclickablePill>
-      <StyledTileDiatypeM color={colors.white} lines={1}>
+      <StyledTitleDiatypeM color={colors.white} lines={1}>
         {collectionName}
-      </StyledTileDiatypeM>
+      </StyledTitleDiatypeM>
     </NonclickablePill>
   );
 }
@@ -198,7 +198,7 @@ const StyledBaseM = styled(BaseM)<{ lines: number }>`
   }
 `;
 
-const StyledTileDiatypeM = styled(TitleDiatypeM)<{ lines: number }>`
+const StyledTitleDiatypeM = styled(TitleDiatypeM)<{ lines: number }>`
   word-wrap: break-word;
   word-break: break-all;
 
@@ -240,7 +240,7 @@ const StyledBadge = styled.img`
  * of the text and multiline text causes unnecessary
  * extra width to show up
  */
-const POAPTitle = styled(StyledTileDiatypeM)`
+const POAPTitle = styled(StyledTitleDiatypeM)`
   line-clamp: 1;
   -webkit-line-clamp: 1;
   white-space: nowrap;
