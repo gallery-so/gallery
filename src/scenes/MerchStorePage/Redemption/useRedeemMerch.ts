@@ -33,7 +33,9 @@ export default function useRedeemMerch() {
     async (tokenIds: string[]) => {
       // generate signature
       const signature = await signMessage({
-        message: `Proof that you're the owner of the following address: ${address}`,
+        message: `Gallery uses this that you own the following merch token IDs: ${tokenIds.join(
+          ', '
+        )}`,
       });
 
       const payload = {
