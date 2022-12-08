@@ -116,6 +116,7 @@
     "madge": "^5.0.1",
     "next-router-mock": "^0.7.4",
     "nock": "^13.2.9",
+    "node-fetch": "^3.3.0",
     "prettier": "^2.5.1",
     "react-loading-skeleton": "^3.1.0",
     "relay-compiler": "^14.1.0",
