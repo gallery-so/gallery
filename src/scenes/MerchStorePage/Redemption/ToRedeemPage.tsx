@@ -1,7 +1,9 @@
-import { useCallback, useEffect, useState } from 'react';
+import { Suspense, useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import { Button } from '~/components/core/Button/Button';
+import Loader from '~/components/core/Loader/Loader';
+import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 
@@ -42,7 +44,13 @@ export default function ToRedeemPage() {
   }, [hideModal]);
 
   return (
-    <>
+    <Suspense
+      fallback={
+        <StyledLoadingContainer grow justify="center" align="center">
+          <Loader />
+        </StyledLoadingContainer>
+      }
+    >
       {userItemsWithChecked.length > 0 ? (
         <>
           <StyledRedeemTextContainer>
@@ -76,7 +84,7 @@ export default function ToRedeemPage() {
           </StyledRedeemFooter>
         </>
       )}
-    </>
+    </Suspense>
   );
 }
 
@@ -90,4 +98,8 @@ const StyledRedeemFooter = styled.div`
 
 const StyledRedeemSubmitButton = styled(Button)`
   width: 100%;
+`;
+
+const StyledLoadingContainer = styled(VStack)`
+  height: 250px;
 `;
