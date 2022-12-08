@@ -73,11 +73,3 @@ const StyledInfoCircleIcon = styled(InfoCircleIcon)`
   width: 24px;
   color: red;
 `;
-
-const StyledCloseButton = styled.button`
-  cursor: pointer;
-  background: none;
-  border: none;
-  padding: 0;
-  color: ${colors.offBlack};
-`;

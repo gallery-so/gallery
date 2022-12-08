@@ -125,17 +125,3 @@ const StyledAlertIcon = styled(VStack)`
   height: 24px;
   width: 24px;
 `;
-
-const StyledClose = styled.button`
-  display: flex;
-  align-items: center;
-  margin-left: 8px;
-  cursor: pointer;
-  color: ${colors.offBlack};
-
-  background: none;
-  border: none;
-  padding: 0;
-`;
-
-export default Toast;
