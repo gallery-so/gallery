@@ -27,7 +27,7 @@ mutation UploadPersistedQueriesMutation($persistedQueries: String!) {
 const base64Encoded =  Buffer.from(`FrontendBuildAuth:${process.env.FRONTEND_APQ_UPLOAD_AUTH_TOKEN}`).toString('base64');
 
 let start = Date.now();
-fetch('http://localhost:4000/glry/graphql/query', {
+fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/glry/graphql/query`, {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
