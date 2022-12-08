@@ -10,6 +10,8 @@ if (process.env.NODE_ENV !== 'production') {
 
 const persistedQueries = readFileSync('./persisted_queries.json', { encoding: 'utf-8' });
 
+const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4000';
+
 const query = `
 mutation UploadPersistedQueriesMutation($persistedQueries: String!) {
   uploadPersistedQueries(input: {persistedQueries: $persistedQueries}) {
@@ -28,7 +30,7 @@ const base64Encoded = Buffer.from(
 ).toString('base64');
 
 let start = Date.now();
-fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/glry/graphql/query`, {
+fetch(`${API_URL}/glry/graphql/query`, {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
@@ -43,6 +45,8 @@ fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/glry/graphql/query`, {
 })
   .then((response) => {
     console.log('Response status is: ', response.status);
+
+    return response;
   })
   .then((response) => response.json())
   .then((response) => {
