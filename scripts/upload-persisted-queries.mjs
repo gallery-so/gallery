@@ -1,6 +1,13 @@
 import { readFileSync } from 'fs';
 import fetch from 'node-fetch';
 
+if(process.env.NODE_ENV !=="production") {
+  console.log("Skipping APQ Upload since you're running the command locally.");
+  console.log("Please run the command with `NODE_ENV=production` to upload persisted queries.")
+
+  process.exit(0);
+}
+
 const persistedQueries = readFileSync('./persisted_queries.json', {encoding: 'utf-8'});
 
 const query = `
