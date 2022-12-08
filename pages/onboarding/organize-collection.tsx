@@ -29,7 +29,6 @@ function LazyLoadedCollectionEditor() {
           ... on Viewer {
             __typename
             user @required(action: THROW) {
-              username
               galleries @required(action: THROW) {
                 dbid @required(action: THROW)
               }
@@ -38,7 +37,7 @@ function LazyLoadedCollectionEditor() {
         }
 
         ...CollectionEditorFragment
-        ...CollectionSaveButtonWithCaptionFragment
+        ...OnboardingCollectionCreateNavbarFragment
       }
     `,
     {}

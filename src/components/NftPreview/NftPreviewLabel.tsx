@@ -6,7 +6,7 @@ import breakpoints from '~/components/core/breakpoints';
 import colors from '~/components/core/colors';
 import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
-import { BaseM } from '~/components/core/Text/Text';
+import { BaseM, TitleDiatypeM } from '~/components/core/Text/Text';
 import { NftPreviewLabelCollectionNameFragment$key } from '~/generated/NftPreviewLabelCollectionNameFragment.graphql';
 import { NftPreviewLabelFragment$key } from '~/generated/NftPreviewLabelFragment.graphql';
 import { getCommunityUrlForToken } from '~/utils/getCommunityUrlForToken';
@@ -46,8 +46,7 @@ function NftPreviewLabel({ className, tokenRef, interactive = true }: Props) {
   return (
     <StyledNftPreviewLabel className={className}>
       <HStack gap={4} justify={'flex-end'} align="center">
-        {token.chain === 'POAP' && <POAPLogo />}
-        <VStack shrink>
+        <VStack gap={4} align="flex-end" shrink>
           {
             // Since POAPs' collection names are the same as the
             // token name, we don't want to show duplicate information
@@ -77,9 +76,6 @@ function CollectionName({ tokenRef, interactive }: CollectionNameProps) {
         chain
         contract {
           name
-          contractAddress {
-            address
-          }
           badgeURL
         }
 
@@ -100,27 +96,41 @@ function CollectionName({ tokenRef, interactive }: CollectionNameProps) {
 
   if (token.chain === 'POAP') {
     return shouldDisplayLinkToCommunityPage ? (
-      <POAPTitle lines={2}>
-        <StyledInteractiveLink to={communityUrl}>{collectionName}</StyledInteractiveLink>
-      </POAPTitle>
+      <ClickablePill to={communityUrl}>
+        <POAPWrapperHStack gap={4} align="center" justify="flex-end">
+          <POAPLogo />
+          <POAPTitle color={colors.white} lines={1}>
+            {collectionName}
+          </POAPTitle>
+        </POAPWrapperHStack>
+      </ClickablePill>
     ) : (
-      <POAPTitle color={colors.white} lines={2}>
-        {collectionName}
-      </POAPTitle>
+      <NonclickablePill>
+        <POAPWrapperHStack gap={4} align="center" justify="flex-end">
+          <POAPLogo />
+          <POAPTitle color={colors.white} lines={1}>
+            {collectionName}
+          </POAPTitle>
+        </POAPWrapperHStack>
+      </NonclickablePill>
     );
   }
 
   return shouldDisplayLinkToCommunityPage ? (
-    <HStack gap={4} align="center" justify="flex-end">
-      <StyledBaseM lines={2}>
-        <StyledInteractiveLink to={communityUrl}>{collectionName}</StyledInteractiveLink>
-      </StyledBaseM>
-      {token.contract?.badgeURL && <StyledBadge src={token.contract.badgeURL} />}
-    </HStack>
+    <ClickablePill to={communityUrl}>
+      <HStack gap={4} align="center" justify="flex-end">
+        {token.contract?.badgeURL && <StyledBadge src={token.contract.badgeURL} />}
+        <StyledTitleDiatypeM lines={1} color={colors.white}>
+          {collectionName}
+        </StyledTitleDiatypeM>
+      </HStack>
+    </ClickablePill>
   ) : (
-    <StyledBaseM color={colors.white} lines={2}>
-      {collectionName}
-    </StyledBaseM>
+    <NonclickablePill>
+      <StyledTitleDiatypeM color={colors.white} lines={1}>
+        {collectionName}
+      </StyledTitleDiatypeM>
+    </NonclickablePill>
   );
 }
 
@@ -128,8 +138,8 @@ const POAPLogo = styled.img.attrs({
   src: '/icons/poap_logo.svg',
   alt: 'POAP Logo',
 })`
-  width: 16px;
-  height: 16px;
+  width: 24px;
+  height: 24px;
 `;
 
 export const StyledNftPreviewLabel = styled.div`
@@ -183,12 +193,40 @@ const StyledBaseM = styled(BaseM)<{ lines: number }>`
     overflow: visible;
     text-overflow: unset;
   }
-}
+`;
+
+const StyledTitleDiatypeM = styled(TitleDiatypeM)<{ lines: number }>`
+  word-wrap: break-word;
+  word-break: break-all;
+
+  margin: 0;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  line-clamp: ${({ lines }) => lines};
+  -webkit-line-clamp: ${({ lines }) => lines};
+  overflow: hidden;
+  font-size: 12px;
+  line-height: 16px;
+  text-overflow: ellipsis;
+  padding-right: 16px;
+  margin-right: -16px;
+
+  @media only screen and ${breakpoints.mobileLarge} {
+    word-wrap: unset;
+  }
+
+  @media only screen and ${breakpoints.tablet} {
+    font-size: 14px;
+    line-height: 20px;
+    padding-right: 0;
+    margin-right: 0;
+  }
 `;
 
 const StyledBadge = styled.img`
-  width: 12px;
-  height: 12px;
+  width: 24px;
+  height: 24px;
 `;
 
 /**
@@ -199,26 +237,49 @@ const StyledBadge = styled.img`
  * of the text and multiline text causes unnecessary
  * extra width to show up
  */
-const POAPTitle = styled(StyledBaseM)`
+const POAPTitle = styled(StyledTitleDiatypeM)`
   line-clamp: 1;
   -webkit-line-clamp: 1;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+  display: block;
 `;
 
-const StyledInteractiveLink = styled(InteractiveLink)`
+const ClickablePill = styled(InteractiveLink)`
+  border: 1px solid rgba(254, 254, 254, 0.5);
+  padding: 0 12px;
+  border-radius: 24px;
   color: ${colors.white};
+  text-decoration: none;
   width: fit-content;
-  font-size: 12px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  max-width: -webkit-fill-available;
 
   &:hover {
-    color: ${colors.white};
+    background: rgba(254, 254, 254, 0.24);
+    backdrop-filter: blur(10px);
+    border-color: transparent;
   }
+`;
 
-  @media only screen and ${breakpoints.tablet} {
-    font-size: 14px;
-  }
+const POAPWrapperHStack = styled(HStack)`
+  width: 100%;
+`;
+
+const NonclickablePill = styled.div`
+  border: 1px solid rgba(254, 254, 254, 0.5);
+  padding: 0 12px;
+  border-radius: 24px;
+  color: ${colors.white};
+  text-decoration: none;
+  width: fit-content;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  max-width: -webkit-fill-available;
 `;
 
 export default NftPreviewLabel;

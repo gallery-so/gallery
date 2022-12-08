@@ -34,7 +34,6 @@ export default function HoverCardOnUsername({ userRef, queryRef }: Props) {
         bio
         galleries @required(action: THROW) {
           collections {
-            dbid
             name
             hidden
           }

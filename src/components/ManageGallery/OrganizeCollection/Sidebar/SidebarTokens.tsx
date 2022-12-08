@@ -36,10 +36,15 @@ export const SidebarTokens = ({
         id
         dbid
 
+        # Escape hatch for data processing in util files
+        # eslint-disable-next-line relay/unused-fields
         chain
 
         contract {
+          # Escape hatch for data processing in util files
+          # eslint-disable-next-line relay/unused-fields
           name
+
           contractAddress {
             address
           }

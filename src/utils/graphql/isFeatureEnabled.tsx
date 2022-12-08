@@ -1,7 +1,9 @@
 import { graphql, readInlineData } from 'relay-runtime';
 
-import { isFeatureEnabledFragment$key, Role } from '~/generated/isFeatureEnabledFragment.graphql';
+import type { Role } from '~/generated/enums';
+import { isFeatureEnabledFragment$key } from '~/generated/isFeatureEnabledFragment.graphql';
 import isProduction from '~/utils/isProduction';
+import { removeNullValues } from '~/utils/removeNullValues';
 
 export enum FeatureFlag {
   WHITE_RHINO = 'WHITE_RHINO',
@@ -26,12 +28,6 @@ const ROLE_FLAGS: Record<Role, Record<FeatureFlag, boolean>> = {
   BETA_TESTER: {
     WHITE_RHINO: true,
     EMAIL: true,
-  },
-  // The below object is what will be used in the case that the backend deployed
-  // something that the frontend doesn't know about
-  '%future added value': {
-    WHITE_RHINO: false,
-    EMAIL: false,
   },
 };
 
@@ -65,13 +61,20 @@ export default function isFeatureEnabled(
   }
 
   function checkRole() {
-    const roles = result.viewer?.user?.roles ?? [];
+    const roles = removeNullValues(result.viewer?.user?.roles);
 
     const anyRoleEnablesFeatureFlag = roles.some((role) => {
-      if (!role) {
+      // Safe guard to ensure we're actually using a flag that the client
+      // knows about. It could be the case that the backend added a new field
+      // and the client has not been updated to know about that new field
+      //
+      // In that case, we'll assume the flag is not enabled.
+      if (!(role in ROLE_FLAGS)) {
         return false;
       }
 
+      // We safe guarded above so it's okay to ignore this here
+      // @ts-expect-error https://stackoverflow.com/questions/57928920/typescript-narrowing-of-keys-in-objects-when-passed-to-function
       const roleEnablesFeatureFlag = ROLE_FLAGS[role][flag];
 
       return roleEnablesFeatureFlag;

@@ -298,7 +298,6 @@ function GlobalNavbarWithFadeEnabled({
     graphql`
       fragment GlobalLayoutContextNavbarFragment on Query {
         ...GlobalBannerFragment
-        ...isFeatureEnabledFragment
       }
     `,
     queryRef

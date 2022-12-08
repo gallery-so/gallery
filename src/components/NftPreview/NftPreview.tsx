@@ -36,11 +36,8 @@ type Props = {
 
 const nftPreviewTokenFragment = graphql`
   fragment NftPreviewTokenFragment on Token {
-    id
     dbid
-    name
     contract {
-      name
       contractAddress {
         address
       }
@@ -84,7 +81,6 @@ function NftPreview({
           renderLive
         }
         collection @required(action: THROW) {
-          id
           dbid
           gallery {
             owner {
@@ -92,7 +88,6 @@ function NftPreview({
             }
           }
         }
-        ...NftDetailViewFragment
       }
     `,
     tokenRef

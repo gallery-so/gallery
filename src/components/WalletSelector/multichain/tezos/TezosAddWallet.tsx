@@ -67,8 +67,6 @@ export const TezosAddWallet = ({ queryRef, reset, onSuccess = noop }: Props) => 
             }
           }
         }
-
-        ...ManageWalletsModalFragment
       }
     `,
     queryRef
