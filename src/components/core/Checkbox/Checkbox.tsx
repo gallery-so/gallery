@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { v4 as uuid } from 'uuid';
 
 import CheckIcon from '~/icons/CheckIcon';
 
@@ -8,22 +9,30 @@ type Props = {
   checked: boolean;
   isPending?: boolean;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  label?: React.ReactNode;
 } & React.InputHTMLAttributes<HTMLInputElement>;
 
-export default function Checkbox({ checked, isPending, onChange, ...inputProps }: Props) {
+export default function Checkbox({ checked, label, isPending, onChange, ...inputProps }: Props) {
+  // generate a unique id for the input
+  const id = uuid();
+
   return (
-    <StyledCheckbox>
-      <StyledInput
-        type="checkbox"
-        checked={checked}
-        onChange={onChange}
-        disabled={isPending}
-        {...inputProps}
-      />
-      <StyledCheckboxContainer active={checked}>
-        {checked && <CheckIcon color={colors.activeBlue} />}
-      </StyledCheckboxContainer>
-    </StyledCheckbox>
+    <>
+      <StyledCheckbox>
+        <StyledInput
+          type="checkbox"
+          checked={checked}
+          onChange={onChange}
+          disabled={isPending}
+          id={id}
+          {...inputProps}
+        />
+        <StyledCheckboxContainer active={checked}>
+          {checked && <CheckIcon color={colors.activeBlue} />}
+        </StyledCheckboxContainer>
+      </StyledCheckbox>
+      {label && <label htmlFor={id}>{label}</label>}
+    </>
   );
 }
 

@@ -19,8 +19,11 @@ export default function RedeemItem({ checked, index, name, onChange }: Props) {
 
   return (
     <StyledRedeemItemContainer gap={16} align="center">
-      <Checkbox checked={checked} onChange={handleChange} />
-      <StyledRedeemItemText>{name}</StyledRedeemItemText>
+      <Checkbox
+        checked={checked}
+        onChange={handleChange}
+        label={<StyledRedeemItemText>{name}</StyledRedeemItemText>}
+      />
     </StyledRedeemItemContainer>
   );
 }
