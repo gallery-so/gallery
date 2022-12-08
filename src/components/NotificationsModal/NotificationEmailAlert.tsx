@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
+import IconContainer from '~/components/core/Markdown/IconContainer';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { NotificationEmailAlertQueryFragment$key } from '~/generated/NotificationEmailAlertQueryFragment.graphql';
 import CloseIcon from '~/icons/CloseIcon';
@@ -51,9 +52,7 @@ export function NotificationEmailAlert({ onDismiss, queryRef }: Props) {
         <BaseM>Never miss a moment! Enable email notifications in settings.</BaseM>
         <HStack align="center" gap={8}>
           <InteractiveLink onClick={handleEnableEmails}>Enable</InteractiveLink>
-          <StyledCloseButton onClick={handleDismiss}>
-            <CloseIcon />
-          </StyledCloseButton>
+          <IconContainer size="sm" onClick={handleDismiss} icon={<CloseIcon />} />
         </HStack>
       </StyledAlert>
     </StyledAlertContainer>
