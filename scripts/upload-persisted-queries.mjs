@@ -1,14 +1,14 @@
 import { readFileSync } from 'fs';
 import fetch from 'node-fetch';
 
-if(process.env.NODE_ENV !=="production") {
+if (process.env.NODE_ENV !== 'production') {
   console.log("Skipping APQ Upload since you're running the command locally.");
-  console.log("Please run the command with `NODE_ENV=production` to upload persisted queries.")
+  console.log('Please run the command with `NODE_ENV=production` to upload persisted queries.');
 
   process.exit(0);
 }
 
-const persistedQueries = readFileSync('./persisted_queries.json', {encoding: 'utf-8'});
+const persistedQueries = readFileSync('./persisted_queries.json', { encoding: 'utf-8' });
 
 const query = `
 mutation UploadPersistedQueriesMutation($persistedQueries: String!) {
@@ -21,17 +21,18 @@ mutation UploadPersistedQueriesMutation($persistedQueries: String!) {
     }
   }
 }
-`
+`;
 
-
-const base64Encoded =  Buffer.from(`FrontendBuildAuth:${process.env.FRONTEND_APQ_UPLOAD_AUTH_TOKEN}`).toString('base64');
+const base64Encoded = Buffer.from(
+  `FrontendBuildAuth:${process.env.FRONTEND_APQ_UPLOAD_AUTH_TOKEN}`
+).toString('base64');
 
 let start = Date.now();
 fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/glry/graphql/query`, {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
-    'Authorization': `Basic ${base64Encoded}`
+    Authorization: `Basic ${base64Encoded}`,
   },
   body: JSON.stringify({
     variables: {
@@ -40,17 +41,22 @@ fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/glry/graphql/query`, {
     query,
   }),
 })
+  .then((response) => {
+    console.log('Response status is: ', response.status);
+  })
   .then((response) => response.json())
   .then((response) => {
-    if(response.data.uploadPersistedQueries.successMessage) {
+    if (response.data.uploadPersistedQueries.successMessage) {
       console.log(`Successfully uploaded persisted queries in ${Date.now() - start}ms`);
     } else {
-      console.log("Something went wrong while uploading the persisted queries. Here's the full resposne");
+      console.log(
+        "Something went wrong while uploading the persisted queries. Here's the full resposne"
+      );
       console.log(JSON.stringify(response, null, 2));
     }
-
-  }).catch((error) => {
-    console.error("There was an error while trying to upload the persisted queries.", error);
+  })
+  .catch((error) => {
+    console.error('There was an error while trying to upload the persisted queries.', error);
 
     process.exit(1);
-});
+  });
