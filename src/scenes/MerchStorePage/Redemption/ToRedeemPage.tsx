@@ -1,4 +1,4 @@
-import { Suspense, useCallback, useEffect, useState } from 'react';
+import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import { Button } from '~/components/core/Button/Button';
@@ -39,6 +39,10 @@ export default function ToRedeemPage() {
     redeemMerch(itemIds);
   }, [redeemMerch, userItemsWithChecked]);
 
+  const isRedeemButtonDisabled = useMemo(() => {
+    return !userItemsWithChecked.some((item) => item.checked);
+  }, [userItemsWithChecked]);
+
   const handleClose = useCallback(() => {
     hideModal();
   }, [hideModal]);
@@ -71,7 +75,9 @@ export default function ToRedeemPage() {
           ))}
 
           <StyledRedeemFooter>
-            <StyledRedeemSubmitButton onClick={handleSubmit}>Redeem</StyledRedeemSubmitButton>
+            <StyledRedeemSubmitButton onClick={handleSubmit} disabled={isRedeemButtonDisabled}>
+              Redeem
+            </StyledRedeemSubmitButton>
           </StyledRedeemFooter>
         </>
       ) : (
