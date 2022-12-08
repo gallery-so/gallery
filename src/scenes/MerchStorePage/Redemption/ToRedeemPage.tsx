@@ -9,8 +9,8 @@ import { useModalActions } from '~/contexts/modal/ModalContext';
 
 import { MerchItemTypes } from '../MerchStorePage';
 import RedeemItem from './RedeemItem';
-import useUserOwnedMerch from './useUserOwnedMerch';
 import useRedeemMerch from './useRedeemMerch';
+import useUserOwnedMerch from './useUserOwnedMerch';
 
 type MerchItemTypesWithChecked = MerchItemTypes & { checked: boolean };
 
@@ -62,7 +62,6 @@ export default function ToRedeemPage() {
               Mark the item you want to redeem, and we’ll generate a code that you can use on our
               Shopify store.
             </BaseM>
-            <BaseM>You have not purchased any merchandise.</BaseM>
           </StyledRedeemTextContainer>
           {userItemsWithChecked.map((item, index) => (
             <RedeemItem
