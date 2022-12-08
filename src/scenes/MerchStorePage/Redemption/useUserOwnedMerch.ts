@@ -5,7 +5,8 @@ import web3 from 'web3';
 import { useMintMerchContract } from '~/hooks/useContract';
 
 import { merchItems, MerchItemTypes } from '../MerchStorePage';
-export default function useMerchRedemption() {
+
+export default function useUserOwnedMerch() {
   const contract = useMintMerchContract();
   const { address } = useAccount();
 

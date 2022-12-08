@@ -9,13 +9,13 @@ import { useModalActions } from '~/contexts/modal/ModalContext';
 
 import { MerchItemTypes } from '../MerchStorePage';
 import RedeemItem from './RedeemItem';
-import useMerchRedemption from './useMerchRedemption';
+import useUserOwnedMerch from './useUserOwnedMerch';
 import useRedeemMerch from './useRedeemMerch';
 
 type MerchItemTypesWithChecked = MerchItemTypes & { checked: boolean };
 
 export default function ToRedeemPage() {
-  const { userItems } = useMerchRedemption();
+  const { userItems } = useUserOwnedMerch();
   const redeemMerch = useRedeemMerch();
   const [userItemsWithChecked, setUserItemsWithChecked] = useState<MerchItemTypesWithChecked[]>([]);
   const { hideModal } = useModalActions();
