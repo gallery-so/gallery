@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import { Button } from '~/components/core/Button/Button';
 import { BaseM } from '~/components/core/Text/Text';
+import { useModalActions } from '~/contexts/modal/ModalContext';
 
 import { MerchItemTypes } from '../MerchStorePage';
 import RedeemItem from './RedeemItem';
@@ -15,6 +16,7 @@ export default function ToRedeemPage() {
   const { userItems } = useMerchRedemption();
   const redeemMerch = useRedeemMerch();
   const [userItemsWithChecked, setUserItemsWithChecked] = useState<MerchItemTypesWithChecked[]>([]);
+  const { hideModal } = useModalActions();
 
   useEffect(() => {
     setUserItemsWithChecked(userItems.map((item) => ({ ...item, checked: false })));
@@ -35,27 +37,45 @@ export default function ToRedeemPage() {
     redeemMerch(itemIds);
   }, [redeemMerch, userItemsWithChecked]);
 
+  const handleClose = useCallback(() => {
+    hideModal();
+  }, [hideModal]);
+
   return (
     <>
-      <StyledRedeemTextContainer>
-        <BaseM>
-          Mark the item you want to redeem, and we’ll generate a code that you can use on our
-          Shopify store.
-        </BaseM>
-      </StyledRedeemTextContainer>
-      {userItemsWithChecked.map((item, index) => (
-        <RedeemItem
-          key={index}
-          index={index}
-          name={`${item.title} ${item.label}`}
-          checked={item.checked}
-          onChange={handleItemChange}
-        />
-      ))}
+      {userItemsWithChecked.length > 0 ? (
+        <>
+          <StyledRedeemTextContainer>
+            <BaseM>
+              Mark the item you want to redeem, and we’ll generate a code that you can use on our
+              Shopify store.
+            </BaseM>
+            <BaseM>You have not purchased any merchandise.</BaseM>
+          </StyledRedeemTextContainer>
+          {userItemsWithChecked.map((item, index) => (
+            <RedeemItem
+              key={index}
+              index={index}
+              name={`${item.title} ${item.label}`}
+              checked={item.checked}
+              onChange={handleItemChange}
+            />
+          ))}
 
-      <StyledRedeemFooter>
-        <StyledRedeemSubmitButton onClick={handleSubmit}>Redeem</StyledRedeemSubmitButton>
-      </StyledRedeemFooter>
+          <StyledRedeemFooter>
+            <StyledRedeemSubmitButton onClick={handleSubmit}>Redeem</StyledRedeemSubmitButton>
+          </StyledRedeemFooter>
+        </>
+      ) : (
+        <>
+          <StyledRedeemTextContainer>
+            <BaseM>You have not purchased any merchandise.</BaseM>
+          </StyledRedeemTextContainer>
+          <StyledRedeemFooter>
+            <StyledRedeemSubmitButton onClick={handleClose}>Close</StyledRedeemSubmitButton>
+          </StyledRedeemFooter>
+        </>
+      )}
     </>
   );
 }
