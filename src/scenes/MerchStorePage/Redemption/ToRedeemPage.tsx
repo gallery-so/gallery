@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import { Button } from '~/components/core/Button/Button';
@@ -7,11 +7,13 @@ import { BaseM } from '~/components/core/Text/Text';
 import { MerchItemTypes } from '../MerchStorePage';
 import RedeemItem from './RedeemItem';
 import useMerchRedemption from './useMerchRedemption';
+import useRedeemMerch from './useRedeemMerch';
 
 type MerchItemTypesWithChecked = MerchItemTypes & { checked: boolean };
 
 export default function ToRedeemPage() {
   const { userItems } = useMerchRedemption();
+  const redeemMerch = useRedeemMerch();
   const [userItemsWithChecked, setUserItemsWithChecked] = useState<MerchItemTypesWithChecked[]>([]);
 
   useEffect(() => {
@@ -22,6 +24,16 @@ export default function ToRedeemPage() {
     userItemsWithChecked[index].checked = checked;
     setUserItemsWithChecked([...userItemsWithChecked]);
   };
+
+  const handleSubmit = useCallback(() => {
+    // Filter out items that are checked
+    const itemsToRedeem = userItemsWithChecked.filter((item) => item.checked);
+
+    // Get the item ids
+    const itemIds = itemsToRedeem.map((item) => item.tokenId.toString());
+
+    redeemMerch(itemIds);
+  }, [redeemMerch, userItemsWithChecked]);
 
   return (
     <>
@@ -42,7 +54,7 @@ export default function ToRedeemPage() {
       ))}
 
       <StyledRedeemFooter>
-        <StyledRedeemSubmitButton>Redeem</StyledRedeemSubmitButton>
+        <StyledRedeemSubmitButton onClick={handleSubmit}>Redeem</StyledRedeemSubmitButton>
       </StyledRedeemFooter>
     </>
   );
