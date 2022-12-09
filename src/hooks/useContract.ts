@@ -1,5 +1,5 @@
 import { ContractInterface } from '@ethersproject/contracts';
-import { useContract, useProvider,useSigner } from 'wagmi';
+import { useContract, useProvider, useSigner } from 'wagmi';
 
 import GALLERY_MEMENTOS_CONTRACT_ABI from '~/abis/gallery-mementos-contract.json';
 import GALLERY_MERCH_CONTRACT_ABI from '~/abis/gallery-merch-contract.json';
@@ -39,6 +39,6 @@ export function useGeneralMembershipCardContract() {
   return useContractWithAbi(GENERAL_MEMBERSHIP_CONRTACT_ADDRESS, GENERAL_MEMBERSHIP_CONTRACT_ABI);
 }
 
-export function useMintPosterContract() {
+export function useMintMementosContract() {
   return useContractWithAbi(GALLERY_MEMENTOS_CONTRACT_ADDRESS, GALLERY_MEMENTOS_CONTRACT_ABI);
 }
