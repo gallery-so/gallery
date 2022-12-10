@@ -65,7 +65,6 @@ export default function UserFollowedYouEvent({ followInfoRef, eventRef, queryRef
               <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
             </HStack>
           </StyledEventHeader>
-          {!followInfo.followedBack && <FollowButton userRef={event.owner} queryRef={query} />}
         </StyledEventContent>
       </StyledEvent>
       <StyledHr />
