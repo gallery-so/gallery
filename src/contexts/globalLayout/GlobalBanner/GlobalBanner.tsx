@@ -106,7 +106,7 @@ const TextContainer = styled.div`
 const StyledBanner = styled.div`
   text-align: left;
   width: 100%;
-  padding: 16px;
+  padding: 16px 16px 0px 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -125,7 +125,7 @@ const StyledBanner = styled.div`
 `;
 
 const StyledClose = styled(DecoratedCloseIcon)`
-  padding: 16px;
+  padding: 10px;
   display: flex;
   justify-content: center;
   align-items: center;

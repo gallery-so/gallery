@@ -18,7 +18,7 @@ function MaintenancePage() {
         <StyledLogo src="/icons/logo-large.svg" />
         <StyledBaseM>
           Gallery is currently undergoing planned maintenance until{' '}
-          <strong>Monday June 20th, 11:59am EST</strong> and is not usable at this time. Keep up to
+          <strong>Saturday Dec 10th, 6:00pm EST</strong> and is not usable at this time. Keep up to
           date on our socials.
         </StyledBaseM>
       </VStack>
