@@ -122,6 +122,11 @@ const LogoContainer = styled(HStack)`
   min-height: 32px;
   cursor: pointer;
   position: relative;
+
+  // This weird bit of code your seeing is to keep the spacing around
+  // this component the same, but ensure the tap target is bigger.
+  margin: -16px -8px;
+  padding: 16px 8px;
 `;
 
 const StyledNotificationsCircle = styled(NotificationsCircle)`
