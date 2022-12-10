@@ -104,7 +104,7 @@ export default function ThankYouTokenPage() {
           </StyledCallToAction> */}
 
           {isMinted ? (
-            <BaseXL>You've succesfully minted this poster.</BaseXL>
+            <BaseXL>You've succesfully minted this token.</BaseXL>
           ) : (
             <StyledCallToAction>
               <Timer />

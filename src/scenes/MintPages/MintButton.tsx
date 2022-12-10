@@ -1,11 +1,11 @@
-import { useEffect, useMemo } from 'react';
-
+import { Contract } from '@ethersproject/contracts';
+import { useEffect } from 'react';
 import styled from 'styled-components';
+
 import { Button } from '~/components/core/Button/Button';
 import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import ErrorText from '~/components/core/Text/ErrorText';
 import { BaseM } from '~/components/core/Text/Text';
-
 import { TransactionStatus } from '~/constants/transaction';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { useMintMementosContract } from '~/hooks/useContract';
@@ -22,7 +22,7 @@ export default function MintButton({ onMintSuccess }: Props) {
 
   const contract = useMintMementosContract();
   const { transactionHash, transactionStatus, buttonText, error, handleClick } = useMintContract({
-    contract,
+    contract: contract as Contract | null,
     tokenId,
   });
 
@@ -36,13 +36,12 @@ export default function MintButton({ onMintSuccess }: Props) {
     }
   }, [transactionStatus, pushToast, onMintSuccess]);
 
-  const isButtonDisabled = useMemo(() => {
-    return transactionStatus === TransactionStatus.PENDING;
-  }, [transactionStatus]);
-
   return (
     <>
-      <StyledButton onClick={handleClick} disabled={isButtonDisabled}>
+      <StyledButton
+        onClick={handleClick}
+        disabled={transactionStatus === TransactionStatus.PENDING}
+      >
         {buttonText}
       </StyledButton>
       {transactionHash && (
@@ -58,15 +57,9 @@ export default function MintButton({ onMintSuccess }: Props) {
         </>
       )}
       {transactionStatus === TransactionStatus.SUCCESS && (
-        <>
-          <BaseM>It should be in your wallet at the moment</BaseM>
-        </>
+        <BaseM>It should be in your wallet at the moment</BaseM>
       )}
-      {error && (
-        <>
-          <ErrorText message={error} />
-        </>
-      )}
+      {error && <ErrorText message={error} />}
     </>
   );
 }

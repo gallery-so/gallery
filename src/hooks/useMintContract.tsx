@@ -1,6 +1,7 @@
 import { Contract } from '@ethersproject/contracts';
 import { useCallback, useMemo, useState } from 'react';
 import { useAccount } from 'wagmi';
+
 import { useConnectEthereum } from '~/components/WalletSelector/multichain/useConnectEthereum';
 import { TransactionStatus } from '~/constants/transaction';
 
@@ -22,6 +23,7 @@ export default function useMintContract({ contract, tokenId, onMintSuccess }: Pr
   const mintToken = useCallback(
     async (contract: Contract, tokenId: number) => {
       if (contract && address) {
+        console.log('minting', { tokenId, address });
         return contract.mint(tokenId, address, []);
       }
     },
@@ -50,8 +52,6 @@ export default function useMintContract({ contract, tokenId, onMintSuccess }: Pr
     if (error) {
       setError('');
     }
-
-    console.log('wtf', address);
 
     if (active && contract) {
       // Submit mint transaction

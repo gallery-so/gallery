@@ -21,8 +21,9 @@ function useContractWithAbi(contractAddress: string, contractAbi: ContractInterf
   const provider = useProvider({ chainId: chainId });
 
   return useContract({
-    addressOrName: contractAddress,
-    contractInterface: contractAbi,
+    address: contractAddress,
+    // @ts-expect-error typescript incompatibility between ethersproject <> wagmi
+    abi: contractAbi,
     signerOrProvider: signer ?? provider,
   });
 }
