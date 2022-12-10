@@ -2,7 +2,7 @@ import { graphql, useFragment } from 'react-relay';
 
 import ShimmerProvider from '~/contexts/shimmer/ShimmerContext';
 import { GalleryNftPreviewWrapperFragment$key } from '~/generated/GalleryNftPreviewWrapperFragment.graphql';
-import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
+import { useIsMobileOrMobileLargeWindowWidth, useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 
 import NftPreview from './NftPreview';
 
@@ -47,7 +47,15 @@ function GalleryNftPreviewWrapper({ tokenRef, columns }: Props) {
   const isMobile = useIsMobileWindowWidth();
   const previewSize = isMobile ? MOBILE_NFT_WIDTH : LAYOUT_DIMENSIONS[columns];
 
-  return <NftPreview tokenRef={collectionTokenRef} previewSize={previewSize} columns={columns} />;
+  const isMobileOrMobileLargeWindowWidth = useIsMobileOrMobileLargeWindowWidth();
+  return (
+    <NftPreview
+      hideLabelOnMobile={isMobileOrMobileLargeWindowWidth}
+      tokenRef={collectionTokenRef}
+      previewSize={previewSize}
+      columns={columns}
+    />
+  );
 }
 
 export default NftPreviewWithShimmer;
