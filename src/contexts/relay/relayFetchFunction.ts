@@ -17,12 +17,12 @@ export function getGraphqlHost() {
   return baseurl;
 }
 
-export function getGraphqlPath() {
-  return `/glry/graphql/query`;
+export function getGraphqlPath(operationName: string) {
+  return `/glry/graphql/query/${operationName}`;
 }
 
 export function getGraphqlUrl(operationName: string) {
-  return `${getGraphqlHost()}${getGraphqlPath()}/${operationName}`;
+  return `${getGraphqlHost()}${getGraphqlPath(operationName)}`;
 }
 
 type InternalFetchFunction = (
