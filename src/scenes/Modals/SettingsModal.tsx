@@ -174,7 +174,7 @@ function SettingsModal({
       </VStack>
       <StyledHr />
       <VStack>
-        <TitleDiatypeL>Manage Accounts</TitleDiatypeL>
+        <TitleDiatypeL>Manage accounts</TitleDiatypeL>
         <ManageWallets
           queryRef={query}
           newAddress={newAddress}
