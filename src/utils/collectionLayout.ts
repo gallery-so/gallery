@@ -23,8 +23,6 @@ export function parseCollectionLayoutGraphql<T>(
   collectionLayoutRef: collectionLayoutParseFragment$key,
   ignoreWhitespace = false
 ): CollectionWithLayout<T> {
-  console.log(collectionLayoutRef);
-
   const layout = readInlineData(
     graphql`
       fragment collectionLayoutParseFragment on CollectionLayout @inline {
