@@ -49,21 +49,13 @@ function FeedEventNftPreviewWrapper({ tokenRef, maxWidth, maxHeight }: Props) {
     });
   }, [showModal, token]);
 
-  const isMobile = useIsMobileOrMobileLargeWindowWidth();
-
   return (
     <StyledNftPreviewWrapper
       maxWidth={maxWidth}
       maxHeight={maxHeight}
       onClick={(e) => e.stopPropagation()}
     >
-      <NftPreview
-        tokenRef={token}
-        previewSize={maxWidth}
-        onClick={handleClick}
-        hideLabelOnMobile={isMobile}
-        disableLiverender
-      />
+      <NftPreview tokenRef={token} previewSize={maxWidth} onClick={handleClick} disableLiverender />
     </StyledNftPreviewWrapper>
   );
 }
