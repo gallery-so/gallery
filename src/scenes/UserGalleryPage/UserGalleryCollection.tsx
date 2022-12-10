@@ -143,7 +143,7 @@ function UserGalleryCollection({
       <StyledCollectionHeader>
         <StyledCollectionTitleWrapper>
           <UnstyledLink href={collectionUrlPath}>
-            <StyledCollectorsTitle>{unescapedCollectionName}</StyledCollectorsTitle>
+            <StyledCollectorsTitle>{unescapedCollectionName || 'untitled'}</StyledCollectorsTitle>
           </UnstyledLink>
           <StyledOptionsContainer gap={16}>
             <StyledCopyToClipboard textToCopy={`${baseUrl}${collectionUrl}`}>
