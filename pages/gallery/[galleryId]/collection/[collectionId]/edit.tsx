@@ -140,6 +140,7 @@ function LazyLoadedCollectionEditor({ galleryId, collectionId }: Props) {
       <CollectionEditor
         queryRef={query}
         onValidChange={setIsCollectionValid}
+        hasUnsavedChanges={hasUnsavedChange}
         onHasUnsavedChange={setHasUnsavedChange}
       />
     </FullPageStep>
