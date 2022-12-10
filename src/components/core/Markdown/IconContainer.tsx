@@ -6,23 +6,22 @@ import colors from '../colors';
 type Size = 'sm' | 'md' | 'lg';
 
 type Props = {
-  onClick?: () => void;
-  icon: React.ReactElement;
-  className?: string;
   size?: Size;
-
   stacked?: boolean;
-
   disabled?: boolean;
-};
+  className?: string;
+  icon: React.ReactElement;
+} & Omit<JSX.IntrinsicElements['div'], 'ref'>;
 
 export default function IconContainer({
   icon,
-  className,
   onClick,
-  size = 'md',
-  disabled,
   stacked,
+  disabled,
+  className,
+  size = 'md',
+
+  ...props
 }: Props) {
   return (
     <StyledIcon
@@ -35,6 +34,7 @@ export default function IconContainer({
         // This will prevent the textarea from losing focus when user clicks a markdown icon
         e.preventDefault();
       }}
+      {...props}
     >
       {icon}
     </StyledIcon>
@@ -46,6 +46,8 @@ const StyledIcon = styled.div<{
   disabled?: boolean;
   stacked?: boolean;
 }>`
+  position: relative;
+
   display: flex;
   justify-content: center;
   align-items: center;
