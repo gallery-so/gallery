@@ -2,7 +2,7 @@ import { graphql, useFragment } from 'react-relay';
 
 import ShimmerProvider from '~/contexts/shimmer/ShimmerContext';
 import { GalleryNftPreviewWrapperFragment$key } from '~/generated/GalleryNftPreviewWrapperFragment.graphql';
-import { useIsMobileOrMobileLargeWindowWidth, useIsMobileWindowWidth } from '~/hooks/useWindowSize';
+import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 
 import NftPreview from './NftPreview';
 

@@ -5,7 +5,6 @@ import { graphql } from 'relay-runtime';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { FeedMode } from '~/components/Feed/Feed';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
-import { FeedLeftContent } from '~/contexts/globalLayout/GlobalNavbar/FeedNavbar/FeedLeftContent';
 import { NavbarLink } from '~/contexts/globalLayout/GlobalNavbar/NavbarLink';
 import { ProfileDropdown } from '~/contexts/globalLayout/GlobalNavbar/ProfileDropdown/ProfileDropdown';
 import { SignInButton } from '~/contexts/globalLayout/GlobalNavbar/SignInButton';

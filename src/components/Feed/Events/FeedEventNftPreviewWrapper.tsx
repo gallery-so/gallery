@@ -8,7 +8,6 @@ import NftPreview from '~/components/NftPreview/NftPreview';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import ShimmerProvider from '~/contexts/shimmer/ShimmerContext';
 import { FeedEventNftPreviewWrapperFragment$key } from '~/generated/FeedEventNftPreviewWrapperFragment.graphql';
-import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import NftDetailView from '~/scenes/NftDetailPage/NftDetailView';
 
 type Props = {
