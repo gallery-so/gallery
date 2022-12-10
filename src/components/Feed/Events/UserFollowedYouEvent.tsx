@@ -24,7 +24,6 @@ export default function UserFollowedYouEvent({ followInfoRef, eventRef, queryRef
       fragment UserFollowedYouEventEventFragment on UserFollowedUsersFeedEventData {
         eventTime
         owner @required(action: THROW) {
-          ...FollowButtonUserFragment
           ...HoverCardOnUsernameFragment
         }
       }
@@ -45,7 +44,6 @@ export default function UserFollowedYouEvent({ followInfoRef, eventRef, queryRef
     graphql`
       fragment UserFollowedYouEventEventQueryFragment on Query {
         ...HoverCardOnUsernameFollowFragment
-        ...FollowButtonQueryFragment
       }
     `,
     queryRef
