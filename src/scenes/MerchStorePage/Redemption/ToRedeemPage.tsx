@@ -7,22 +7,24 @@ import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 
-import { MerchItemTypes } from '../MerchStorePage';
 import RedeemItem from './RedeemItem';
+import { MerchToken } from './RedeemModal';
 import useRedeemMerch from './useRedeemMerch';
-import useUserOwnedMerch from './useUserOwnedMerch';
 
-type MerchItemTypesWithChecked = MerchItemTypes & { checked: boolean };
+type MerchItemTypesWithChecked = MerchToken & { checked: boolean };
 
-export default function ToRedeemPage() {
-  const { userItems } = useUserOwnedMerch();
+type Props = {
+  tokens: MerchToken[];
+};
+
+export default function ToRedeemPage({ tokens }: Props) {
   const redeemMerch = useRedeemMerch();
   const [userItemsWithChecked, setUserItemsWithChecked] = useState<MerchItemTypesWithChecked[]>([]);
   const { hideModal } = useModalActions();
 
   useEffect(() => {
-    setUserItemsWithChecked(userItems.map((item) => ({ ...item, checked: false })));
-  }, [userItems]);
+    setUserItemsWithChecked(tokens.map((item) => ({ ...item, checked: false })));
+  }, [tokens]);
 
   const handleItemChange = (index: number, checked: boolean) => {
     userItemsWithChecked[index].checked = checked;
@@ -65,9 +67,9 @@ export default function ToRedeemPage() {
           </StyledRedeemTextContainer>
           {userItemsWithChecked.map((item, index) => (
             <RedeemItem
-              key={index}
+              key={item.tokenId}
               index={index}
-              name={`${item.title} ${item.label}`}
+              name={item.name || ''}
               checked={item.checked}
               onChange={handleItemChange}
             />

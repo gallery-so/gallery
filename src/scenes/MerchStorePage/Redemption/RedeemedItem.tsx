@@ -6,14 +6,19 @@ import { HStack } from '~/components/core/Spacer/Stack';
 import { TitleMonoM } from '~/components/core/Text/Text';
 import CopyIcon from '~/icons/CopyIcon';
 
-export default function RedeemedItem() {
+type Props = {
+  name: string;
+  discountCode: string;
+};
+
+export default function RedeemedItem({ name, discountCode }: Props) {
   return (
     <StyledRedeemItemContainer align="center" justify="space-between">
-      <StyledRedeemItemText>(OBJECT 001) Shirt</StyledRedeemItemText>
+      <StyledRedeemItemText>{name}</StyledRedeemItemText>
       <HStack gap={16}>
-        <TitleMonoM>JFDD894RJ</TitleMonoM>
+        <TitleMonoM>{discountCode}</TitleMonoM>
         <StyledCopyCodeButton>
-          <CopyToClipboard textToCopy="JFDD894RJ" successText="Copied.">
+          <CopyToClipboard textToCopy={discountCode} successText="Copied.">
             <CopyIcon color={colors.offBlack} />
           </CopyToClipboard>
         </StyledCopyCodeButton>

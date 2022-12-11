@@ -22,6 +22,7 @@ export default function useRedeemMerch() {
         }
         ... on ErrInvalidInput {
           __typename
+          message
         }
       }
     }
@@ -31,38 +32,23 @@ export default function useRedeemMerch() {
 
   return useCallback(
     async (tokenIds: string[]) => {
-      // generate signature
-      const signature = await signMessage({
-        message: `Gallery uses this that you own the following merch token IDs: ${tokenIds.join(
-          ', '
-        )}`,
-      });
-
-      const payload = {
-        tokenIds,
-        address: {
-          address,
-          chain: 'Ethereum',
-        },
-        // TODO: get wallet type from account
-        walletType: 'EOA',
-        signature,
-      };
-
-      console.log(payload);
-
-      return;
       try {
+        const signature = await signMessage({
+          message: `Gallery uses this that you own the following merch token IDs: ${tokenIds.join(
+            ', '
+          )}`,
+        });
+
         const response = await redeemMerch({
           variables: {
             input: {
               tokenIds,
               address: {
-                address: '0x123',
+                address: (address as string).toLowerCase(),
                 chain: 'Ethereum',
               },
               walletType: 'EOA',
-              signature: '0x123',
+              signature,
             },
           },
         });
