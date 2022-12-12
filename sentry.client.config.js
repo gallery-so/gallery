@@ -4,6 +4,8 @@
 
 import * as Sentry from '@sentry/nextjs';
 
+import { ErrorWithSentryMetadata } from './src/errors/ErrorWithSentryMetadata';
+
 const SENTRY_DSN = process.env.SENTRY_DSN || process.env.NEXT_PUBLIC_SENTRY_DSN;
 
 const ENV = process.env.NEXT_PUBLIC_VERCEL_ENV;
@@ -36,5 +38,13 @@ Sentry.init({
   tunnel: 'https://monitoring.gallery.so/bugs',
   // disable sentry reporting by default if in local development.
   // NEXT_PUBLIC_VERCEL_ENV is only set in a deployed environment.
-  enabled: ENV !== undefined,
+  enabled: true,
+});
+
+Sentry.configureScope((scope) => {
+  scope.addEventProcessor((event, hint) => {
+    if (hint.originalException instanceof ErrorWithSentryMetadata) {
+      Object.assign(event.tags, hint.originalException.metadata);
+    }
+  });
 });
