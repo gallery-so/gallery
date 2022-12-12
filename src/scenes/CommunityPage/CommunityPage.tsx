@@ -33,6 +33,8 @@ export default function CommunityPage({ queryRef }: Props) {
             ...CommunityPageViewFragment
           }
         }
+
+        ...CommunityPageViewQueryFragment
       }
     `,
     queryRef
@@ -63,7 +65,7 @@ export default function CommunityPage({ queryRef }: Props) {
         <title>{headTitle}</title>
       </Head>
       <StyledPage navbarHeight={navbarHeight}>
-        <CommunityPageView communityRef={community} />
+        <CommunityPageView communityRef={community} queryRef={query} />
       </StyledPage>
     </>
   );
