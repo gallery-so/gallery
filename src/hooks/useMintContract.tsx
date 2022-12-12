@@ -34,7 +34,6 @@ export default function useMintContract({ contract, tokenId, allowlist, onMintSu
         if (error.message === 'Promise replaced or component unmounted') {
           return;
         }
-        // setError(error.message);
       }
     }
   }, [connectEthereum]);
