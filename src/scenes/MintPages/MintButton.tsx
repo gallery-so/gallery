@@ -10,6 +10,7 @@ import { TransactionStatus } from '~/constants/transaction';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { useMintMementosContract } from '~/hooks/useContract';
 import useMintContract from '~/hooks/useMintContract';
+import allowlist from '~/scenes/MintPages/thank-you-allowlist';
 
 type Props = {
   onMintSuccess: () => void;
@@ -24,6 +25,7 @@ export default function MintButton({ onMintSuccess }: Props) {
   const { transactionHash, transactionStatus, buttonText, error, handleClick } = useMintContract({
     contract: contract as Contract | null,
     tokenId,
+    allowlist,
   });
 
   useEffect(() => {

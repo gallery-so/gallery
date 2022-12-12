@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import SplashImage from 'public/thank-you-token.jpg';
+import SplashImage from 'public/thank-u-token.jpg';
 import { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useAccount } from 'wagmi';

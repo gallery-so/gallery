@@ -1,17 +1,19 @@
 import { Contract } from '@ethersproject/contracts';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAccount } from 'wagmi';
 
 import { useConnectEthereum } from '~/components/WalletSelector/multichain/useConnectEthereum';
 import { TransactionStatus } from '~/constants/transaction';
+import MerkleTree, { generateMerkleProof } from '~/utils/MerkleTree';
 
 type Props = {
   contract: Contract | null;
   tokenId: number;
+  allowlist?: string[];
   onMintSuccess?: () => void;
 };
 
-export default function useMintContract({ contract, tokenId, onMintSuccess }: Props) {
+export default function useMintContract({ contract, tokenId, allowlist, onMintSuccess }: Props) {
   const { address: rawAddress, isConnected: active } = useAccount();
 
   const [error, setError] = useState('');
@@ -47,6 +49,13 @@ export default function useMintContract({ contract, tokenId, onMintSuccess }: Pr
     }
   }, [connectEthereum]);
 
+  useEffect(() => {
+    if (allowlist) {
+      const merkleTree = new MerkleTree(Array.from(allowlist));
+      console.log({ allowlist, merkleRoot: merkleTree.getHexRoot() });
+    }
+  }, [allowlist]);
+
   const handleMintButtonClick = useCallback(async () => {
     // clear any previous errors
     if (error) {
@@ -56,14 +65,28 @@ export default function useMintContract({ contract, tokenId, onMintSuccess }: Pr
     if (active && contract) {
       // Submit mint transaction
       setTransactionStatus(TransactionStatus.PENDING);
-      const mintResult = await mintToken(contract, tokenId).catch((error: any) => {
-        let errorMessage = error?.error?.message ?? error?.message;
-        if (errorMessage.includes('not approved to mint')) {
-          errorMessage = `${address} is not on the mintlist. If you think this is a mistake, please reach out to us on Twitter or Discord.`;
+
+      let mintResult;
+
+      if (contract && address) {
+        try {
+          console.log('generating', address);
+          const merkleProof = allowlist ? generateMerkleProof(address, Array.from(allowlist)) : [];
+          console.log({ contract: contract.address, tokenId, address, merkleProof });
+          mintResult = await contract.mint(tokenId, address, merkleProof);
+        } catch (error: unknown) {
+          // @ts-expect-error: weird contract error type has `error.error`
+          let errorMessage = error?.error?.message ?? error?.message;
+          if (
+            errorMessage.includes('not approved to mint') ||
+            errorMessage.includes('does not exist in Merkle tree')
+          ) {
+            errorMessage = `${address} is not on the mintlist. If you think this is a mistake, please reach out to us on Twitter or Discord.`;
+          }
+          setError(errorMessage);
+          setTransactionStatus(TransactionStatus.FAILED);
         }
-        setError(errorMessage);
-        setTransactionStatus(TransactionStatus.FAILED);
-      });
+      }
 
       if (!mintResult) {
         return;
@@ -87,7 +110,7 @@ export default function useMintContract({ contract, tokenId, onMintSuccess }: Pr
         }
       }
     }
-  }, [active, address, contract, error, mintToken, onMintSuccess, tokenId]);
+  }, [active, address, allowlist, contract, error, onMintSuccess, tokenId]);
 
   const handleClick = useCallback(() => {
     active ? handleMintButtonClick() : handleConnectWalletButtonClick();
