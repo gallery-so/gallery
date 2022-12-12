@@ -22,16 +22,6 @@ export default function useMintContract({ contract, tokenId, allowlist, onMintSu
 
   const address = rawAddress?.toLowerCase();
 
-  const mintToken = useCallback(
-    async (contract: Contract, tokenId: number) => {
-      if (contract && address) {
-        console.log('minting', { tokenId, address });
-        return contract.mint(tokenId, address, []);
-      }
-    },
-    [address]
-  );
-
   const connectEthereum = useConnectEthereum();
   const handleConnectWalletButtonClick = useCallback(async () => {
     try {
