@@ -60,6 +60,12 @@ export default function useGlobalAnnouncementPopover({
   const { showModal, hideModal } = useModalActions();
 
   const shouldHidePopoverOnCurrentPath = useMemo(() => {
+    // Ensure we don't show the modal if the user is just about to get redirected
+    // I'm so sorry if you're reading this...
+    if (isAuthenticated && asPath === '/') {
+      return;
+    }
+
     // hide on opengraph pages
     if (asPath.includes('opengraph')) return true;
     // hide on announcements page
@@ -74,20 +80,19 @@ export default function useGlobalAnnouncementPopover({
     // hide for users who have explicitly requested the popover to be disabled on their page
     if (typeof urlQuery.username === 'string') {
       const disabledUserProfiles = ['curated', '1of1'];
-      if (disabledUserProfiles.includes(urlQuery.username)) return true;
+      if (disabledUserProfiles.includes(urlQuery.username.toLowerCase())) return true;
     }
 
     return false;
-  }, [asPath, urlQuery.username]);
+  }, [asPath, urlQuery.username, isAuthenticated]);
 
   useEffect(() => {
     async function handleMount() {
       if (dismissVariant === 'session' && dismissedOnSession) return;
       if (dismissVariant === 'global' && dismissedOnLocalStorage) return;
 
-      // Ensure we don't show the modal if the user is just about to get redirected
-      // I'm so sorry if you're reading this...
-      if (isAuthenticated && asPath === '/') {
+      // TEMPORARY: only display the white rhino launch popover on the homepage
+      if (asPath !== '/') {
         return;
       }
 

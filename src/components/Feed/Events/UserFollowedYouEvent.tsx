@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import colors from '~/components/core/colors';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
-import FollowButton from '~/components/Follow/FollowButton';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { UserFollowedYouEventEventFragment$key } from '~/generated/UserFollowedYouEventEventFragment.graphql';
 import { UserFollowedYouEventEventQueryFragment$key } from '~/generated/UserFollowedYouEventEventQueryFragment.graphql';
@@ -25,8 +24,6 @@ export default function UserFollowedYouEvent({ followInfoRef, eventRef, queryRef
       fragment UserFollowedYouEventEventFragment on UserFollowedUsersFeedEventData {
         eventTime
         owner @required(action: THROW) {
-          username @required(action: THROW)
-          ...FollowButtonUserFragment
           ...HoverCardOnUsernameFragment
         }
       }
@@ -47,7 +44,6 @@ export default function UserFollowedYouEvent({ followInfoRef, eventRef, queryRef
     graphql`
       fragment UserFollowedYouEventEventQueryFragment on Query {
         ...HoverCardOnUsernameFollowFragment
-        ...FollowButtonQueryFragment
       }
     `,
     queryRef
@@ -66,7 +62,6 @@ export default function UserFollowedYouEvent({ followInfoRef, eventRef, queryRef
               <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
             </HStack>
           </StyledEventHeader>
-          {!followInfo.followedBack && <FollowButton userRef={event.owner} queryRef={query} />}
         </StyledEventContent>
       </StyledEvent>
       <StyledHr />

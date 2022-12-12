@@ -39,7 +39,6 @@ function UserGallery({ queryRef }: Props) {
           }
           ... on ErrUserNotFound {
             __typename
-            message
           }
         }
 

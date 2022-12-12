@@ -90,6 +90,12 @@ export const IconWrapper = styled.div<{ active: boolean }>`
   justify-content: center;
   align-items: center;
 
+  border-radius: 9999999px;
+
+  &:hover {
+    background: ${colors.faint};
+  }
+
   :active ${StyledSvg} {
     // Spec says 21.6 px which is 24 * .9
     transform: scale(0.9);

@@ -8,6 +8,7 @@ import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { TitleS } from '~/components/core/Text/Text';
 import { useMemberListPageState } from '~/contexts/memberListPage/MemberListPageContext';
 import { TokenHolderListFragment$key } from '~/generated/TokenHolderListFragment.graphql';
+import { TokenHolderListQueryFragment$key } from '~/generated/TokenHolderListQueryFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { removeNullValues } from '~/utils/removeNullValues';
 
@@ -22,9 +23,10 @@ function getPreviewDirection(index: number) {
 type Props = {
   title: string;
   tokenHoldersRef: TokenHolderListFragment$key;
+  queryRef: TokenHolderListQueryFragment$key;
 };
 
-function TokenHolderList({ title, tokenHoldersRef }: Props) {
+function TokenHolderList({ title, tokenHoldersRef, queryRef }: Props) {
   const tokenHolders = useFragment(
     graphql`
       fragment TokenHolderListFragment on TokenHolder @relay(plural: true) {
@@ -37,6 +39,15 @@ function TokenHolderList({ title, tokenHoldersRef }: Props) {
       }
     `,
     tokenHoldersRef
+  );
+
+  const query = useFragment(
+    graphql`
+      fragment TokenHolderListQueryFragment on Query {
+        ...TokenHolderListItemQueryFragment
+      }
+    `,
+    queryRef
   );
 
   const { fadeUsernames, searchQuery } = useMemberListPageState();
@@ -71,6 +82,7 @@ function TokenHolderList({ title, tokenHoldersRef }: Props) {
             tokenHolderRef={tokenHolder}
             direction={getPreviewDirection(index)}
             fadeUsernames={fadeUsernames}
+            queryRef={query}
           />
         ))}
       </StyledTokenHoldersWrapper>

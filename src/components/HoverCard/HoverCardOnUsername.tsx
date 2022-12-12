@@ -23,9 +23,10 @@ const HOVER_POPUP_DELAY = 100;
 type Props = {
   userRef: HoverCardOnUsernameFragment$key;
   queryRef: HoverCardOnUsernameFollowFragment$key;
+  children?: React.ReactNode;
 };
 
-export default function HoverCardOnUsername({ userRef, queryRef }: Props) {
+export default function HoverCardOnUsername({ children, userRef, queryRef }: Props) {
   const user = useFragment(
     graphql`
       fragment HoverCardOnUsernameFragment on GalleryUser {
@@ -34,7 +35,6 @@ export default function HoverCardOnUsername({ userRef, queryRef }: Props) {
         bio
         galleries @required(action: THROW) {
           collections {
-            dbid
             name
             hidden
           }
@@ -131,7 +131,11 @@ export default function HoverCardOnUsername({ userRef, queryRef }: Props) {
     <StyledContainer onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <StyledLinkContainer>
         <Link href={userProfileLink}>
-          <TitleDiatypeM onClick={handleUsernameClick}>{user.username}</TitleDiatypeM>
+          {children ? (
+            children
+          ) : (
+            <TitleDiatypeM onClick={handleUsernameClick}>{user.username}</TitleDiatypeM>
+          )}
         </Link>
       </StyledLinkContainer>
       <Link href={userProfileLink}>
@@ -178,7 +182,7 @@ export default function HoverCardOnUsername({ userRef, queryRef }: Props) {
 
 const StyledContainer = styled.span`
   position: relative;
-  display: inline-block;
+  display: inline-grid;
   cursor: pointer;
 `;
 

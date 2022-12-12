@@ -5,6 +5,7 @@ import colors from '~/components/core/colors';
 import { Dropdown } from '~/components/core/Dropdown/Dropdown';
 import { DropdownItem } from '~/components/core/Dropdown/DropdownItem';
 import { DropdownSection } from '~/components/core/Dropdown/DropdownSection';
+import IconContainer from '~/components/core/Markdown/IconContainer';
 import { BaseM } from '~/components/core/Text/Text';
 import DoubleArrowsIcon from '~/icons/DoubleArrowsIcon';
 
@@ -30,7 +31,7 @@ export function SidebarViewSelector({ selectedView, setSelectedView }: SidebarVi
     <Container>
       <Selector isDropdownOpen={isDropdownOpen} onClick={() => setIsDropdownOpen(true)}>
         <BaseM>{selectedView}</BaseM>
-        <DoubleArrowsIcon />
+        <IconContainer stacked size="sm" icon={<DoubleArrowsIcon />} />
       </Selector>
       <Dropdown
         position="full-width"

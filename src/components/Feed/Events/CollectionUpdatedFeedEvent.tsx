@@ -21,7 +21,7 @@ import { getTimeSince } from '~/utils/time';
 import unescape from '~/utils/unescape';
 
 import { MAX_PIECES_DISPLAYED_PER_FEED_EVENT } from '../constants';
-import FeedEventTokenPreviews, { TokenToPreview } from '../FeedEventTokenPreviews';
+import FeedEventTokenPreviews from '../FeedEventTokenPreviews';
 import { StyledEvent, StyledEventHeader, StyledTime } from './EventStyles';
 
 type Props = {
@@ -41,19 +41,10 @@ export default function CollectionUpdatedFeedEvent({ eventDataRef, queryRef }: P
         collection @required(action: THROW) {
           dbid
           name
-          tokens(limit: $visibleTokensPerFeedEvent) @required(action: THROW) {
-            token {
-              dbid
-            }
-            ...EventMediaFragment
-          }
         }
         newCollectorsNote @required(action: THROW)
         newTokens @required(action: THROW) {
-          token {
-            dbid
-          }
-          ...EventMediaFragment
+          ...FeedEventTokenPreviewsFragment
         }
       }
     `,
@@ -71,7 +62,7 @@ export default function CollectionUpdatedFeedEvent({ eventDataRef, queryRef }: P
 
   const tokensToPreview = useMemo(() => {
     return removeNullValues(event.newTokens).slice(0, MAX_PIECES_DISPLAYED_PER_FEED_EVENT);
-  }, [event.newTokens]) as TokenToPreview[];
+  }, [event.newTokens]);
 
   const collectionPagePath: Route = {
     pathname: '/[username]/[collectionId]',
@@ -109,7 +100,7 @@ export default function CollectionUpdatedFeedEvent({ eventDataRef, queryRef }: P
             <Markdown text={unescape(event.newCollectorsNote ?? '')} inheritLinkStyling />
           </StyledQuote>
           <VStack gap={8}>
-            <FeedEventTokenPreviews isInCaption={false} tokensToPreview={tokensToPreview} />
+            <FeedEventTokenPreviews isInCaption={false} tokenToPreviewRefs={tokensToPreview} />
             {showAdditionalPiecesIndicator && (
               <StyledAdditionalPieces>
                 +{numAdditionalPieces} more {pluralize(numAdditionalPieces, 'piece')}

@@ -105,7 +105,9 @@ export default function useCreateUser() {
           query useCreateUserRefreshViewerQuery {
             viewer {
               ... on Viewer {
+                # eslint-disable-next-line relay/unused-fields
                 user {
+                  # eslint-disable-next-line relay/unused-fields
                   id
                 }
               }

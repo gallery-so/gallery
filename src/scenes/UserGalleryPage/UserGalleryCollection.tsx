@@ -143,7 +143,7 @@ function UserGalleryCollection({
       <StyledCollectionHeader>
         <StyledCollectionTitleWrapper>
           <UnstyledLink href={collectionUrlPath}>
-            <StyledCollectorsTitle>{unescapedCollectionName}</StyledCollectorsTitle>
+            <StyledCollectorsTitle>{unescapedCollectionName || 'untitled'}</StyledCollectorsTitle>
           </UnstyledLink>
           <StyledOptionsContainer gap={16}>
             <StyledCopyToClipboard textToCopy={`${baseUrl}${collectionUrl}`}>
@@ -193,7 +193,7 @@ const StyledOptionsContainer = styled(HStack)`
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  height: 24px;
+  height: 32px;
 
   transition: opacity 200ms ease-in-out;
   opacity: 0;

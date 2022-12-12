@@ -152,7 +152,7 @@ function CollectionGalleryHeader({
       <HStack align="flex-start" justify="space-between">
         <VStack grow>
           <StyledBreadcrumbsWrapper>
-            <StyledCollectionName>{unescapedCollectionName}</StyledCollectionName>
+            <StyledCollectionName>{unescapedCollectionName || 'untitled'}</StyledCollectionName>
           </StyledBreadcrumbsWrapper>
           {unescapedCollectorsNote && (
             <StyledCollectionNote clamp={2}>

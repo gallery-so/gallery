@@ -20,7 +20,6 @@ function EmailManager({ queryRef, onClose }: Props) {
           ... on Viewer {
             email {
               email
-              verificationStatus
             }
           }
         }

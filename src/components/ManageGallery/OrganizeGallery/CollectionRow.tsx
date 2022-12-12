@@ -163,12 +163,6 @@ function CompactNfts({ nftRefs }: { nftRefs: CollectionRowCompactNftsFragment$ke
     graphql`
       fragment CollectionRowCompactNftsFragment on Token @relay(plural: true) {
         id
-        contract {
-          contractAddress {
-            address
-          }
-        }
-        ...getVideoOrImageUrlForNftPreviewFragment
         ...SmolNftFragment
       }
     `,

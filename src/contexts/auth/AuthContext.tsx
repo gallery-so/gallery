@@ -30,9 +30,7 @@ import { isWeb3Error, Web3Error } from '~/types/Error';
 import { PreloadQueryArgs } from '~/types/PageComponentPreloadQuery';
 
 import clearLocalStorageWithException from './clearLocalStorageWithException';
-import { EtheremProviders } from './EthereumProviders';
 import { LOGGED_IN, LOGGED_OUT, UNKNOWN } from './types';
-import Web3WalletProvider from './Web3WalletContext';
 
 export type AuthState = LOGGED_IN | typeof LOGGED_OUT | typeof UNKNOWN;
 
@@ -71,9 +69,13 @@ const AuthContextFetchUserQueryNode = graphql`
       ... on Viewer {
         __typename
         user {
+          # Need to refresh user data. We don't have a good system here yet
+          # eslint-disable-next-line relay/unused-fields
           id
           dbid
+          # eslint-disable-next-line relay/unused-fields
           username
+          # eslint-disable-next-line relay/unused-fields
           wallets {
             dbid
             chainAddress {
@@ -99,6 +101,8 @@ const AuthContextFetchUserQueryNode = graphql`
       }
     }
 
+    # Need to refresh user data. We don't have a good system here yet
+    # eslint-disable-next-line relay/must-colocate-fragment-spreads
     ...ProfileDropdownFragment
   }
 `;
@@ -301,11 +305,7 @@ const AuthProvider = memo(({ children }: Props) => {
         <Suspense fallback={<FullPageLoader />}>
           <AuthStateContext.Provider value={authState}>
             <AuthActionsContext.Provider value={authActions}>
-              <EtheremProviders>
-                <Web3WalletProvider>
-                  {shouldDisplayUniversalLoader ? null : children}
-                </Web3WalletProvider>
-              </EtheremProviders>
+              {shouldDisplayUniversalLoader ? null : children}
             </AuthActionsContext.Provider>
           </AuthStateContext.Provider>
         </Suspense>
