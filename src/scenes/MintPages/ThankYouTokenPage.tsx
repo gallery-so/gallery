@@ -88,10 +88,13 @@ export default function ThankYouTokenPage() {
             </BaseM>
             <BaseM>
               This commemorative token is available to our most active users, as well as early
-              adopters of our social features. Connect your wallet to see if you are eligible.
+              adopters of our social features. Thank you for being a member of Gallery. We are
+              excited for what’s to come.
             </BaseM>
-            <BaseM>Thank you for being a member of Gallery.</BaseM>
-            <BaseM>Minting is available until 12/18/22 on Ethereum. 1 mint per address.</BaseM>
+            <BaseM>
+              Connect your wallet to see if you are eligible. Minting is available until 12/18/22 on
+              Ethereum. 1 mint per address.
+            </BaseM>
             {/* <BaseM>Minting is now closed. Thank you to everyone who minted one.</BaseM> */}
           </VStack>
 
