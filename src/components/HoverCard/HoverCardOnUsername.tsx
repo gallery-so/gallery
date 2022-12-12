@@ -182,7 +182,7 @@ export default function HoverCardOnUsername({ children, userRef, queryRef }: Pro
 
 const StyledContainer = styled.span`
   position: relative;
-  display: inline-block;
+  display: inline-grid;
   cursor: pointer;
 `;
 

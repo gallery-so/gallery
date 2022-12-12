@@ -49,6 +49,7 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
     graphql`
       fragment CommunityPageViewQueryFragment on Query {
         ...CommunityHolderGridQueryFragment
+        ...CommunityHolderListQueryFragment
       }
     `,
     queryRef
@@ -132,7 +133,7 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
               <MemberListFilter />
             </StyledMemberListFilterContainer>
             <StyledListWrapper>
-              <CommunityHolderList communityRef={community} />
+              <CommunityHolderList communityRef={community} queryRef={query} />
             </StyledListWrapper>
           </>
         )}
