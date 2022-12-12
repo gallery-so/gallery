@@ -12,7 +12,7 @@ export type ReportFn = (
   additionalContext?: AdditionalContext
 ) => void;
 
-const ErrorReportingContext = createContext<ReportFn | undefined>(undefined);
+export const ErrorReportingContext = createContext<ReportFn | undefined>(undefined);
 
 /**
  * USAGE GUIDELINES
