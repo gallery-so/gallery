@@ -1,6 +1,7 @@
 import { Contract } from '@ethersproject/contracts';
 import { useEffect } from 'react';
 import styled from 'styled-components';
+import useSWR from 'swr';
 
 import { Button } from '~/components/core/Button/Button';
 import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
@@ -10,16 +11,20 @@ import { TransactionStatus } from '~/constants/transaction';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { useMintMementosContract } from '~/hooks/useContract';
 import useMintContract from '~/hooks/useMintContract';
-import allowlist from '~/scenes/MintPages/thank-you-allowlist';
 
 type Props = {
   onMintSuccess: () => void;
 };
 
+const WHITE_RHINO_ALLOWLIST =
+  'https://storage.googleapis.com/gallery-prod-325303.appspot.com/white-rhino-allowlist.json';
+
 export default function MintButton({ onMintSuccess }: Props) {
   const { pushToast } = useToastActions();
 
   const tokenId = 1;
+
+  const { data: allowlist } = useSWR(WHITE_RHINO_ALLOWLIST);
 
   const contract = useMintMementosContract();
   const { transactionHash, transactionStatus, buttonText, error, handleClick } = useMintContract({
