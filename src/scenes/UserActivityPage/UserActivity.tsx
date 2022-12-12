@@ -15,19 +15,6 @@ function UserActivity({ queryRef }: Props) {
   const query = useFragment(
     graphql`
       fragment UserActivityFragment on Query {
-        viewer {
-          ... on Viewer {
-            user {
-              dbid
-            }
-            viewerGalleries {
-              gallery {
-                dbid
-              }
-            }
-          }
-        }
-
         user: userByUsername(username: $username) @required(action: THROW) {
           ... on GalleryUser {
             __typename
@@ -36,7 +23,6 @@ function UserActivity({ queryRef }: Props) {
           }
           ... on ErrUserNotFound {
             __typename
-            message
           }
         }
 

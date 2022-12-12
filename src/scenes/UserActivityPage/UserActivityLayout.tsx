@@ -24,7 +24,6 @@ export const UserActivityLayout = ({ userRef, queryRef }: Props) => {
     graphql`
       fragment UserActivityLayoutQueryFragment on Query
       @refetchable(queryName: "UserGalleryFeedRefreshQuery") {
-        ...NavActionFollowQueryFragment
         ...UserActivityFeedQueryFragment
       }
     `,
@@ -34,12 +33,6 @@ export const UserActivityLayout = ({ userRef, queryRef }: Props) => {
   const user = useFragment(
     graphql`
       fragment UserActivityLayoutFragment on GalleryUser {
-        username
-
-        ...NavActionFollowUserFragment
-
-        ...UserGalleryHeaderFragment
-
         ...UserActivityFeedFragment
       }
     `,

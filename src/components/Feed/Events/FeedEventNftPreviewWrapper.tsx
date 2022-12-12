@@ -8,7 +8,6 @@ import NftPreview from '~/components/NftPreview/NftPreview';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import ShimmerProvider from '~/contexts/shimmer/ShimmerContext';
 import { FeedEventNftPreviewWrapperFragment$key } from '~/generated/FeedEventNftPreviewWrapperFragment.graphql';
-import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import NftDetailView from '~/scenes/NftDetailPage/NftDetailView';
 
 type Props = {
@@ -29,13 +28,6 @@ function FeedEventNftPreviewWrapper({ tokenRef, maxWidth, maxHeight }: Props) {
   const token = useFragment(
     graphql`
       fragment FeedEventNftPreviewWrapperFragment on CollectionToken {
-        collection {
-          gallery @required(action: THROW) {
-            owner @required(action: THROW) {
-              username
-            }
-          }
-        }
         ...NftPreviewFragment
         ...NftDetailViewFragment
       }
@@ -56,21 +48,13 @@ function FeedEventNftPreviewWrapper({ tokenRef, maxWidth, maxHeight }: Props) {
     });
   }, [showModal, token]);
 
-  const isMobile = useIsMobileOrMobileLargeWindowWidth();
-
   return (
     <StyledNftPreviewWrapper
       maxWidth={maxWidth}
       maxHeight={maxHeight}
       onClick={(e) => e.stopPropagation()}
     >
-      <NftPreview
-        tokenRef={token}
-        previewSize={maxWidth}
-        onClick={handleClick}
-        hideLabelOnMobile={isMobile}
-        disableLiverender
-      />
+      <NftPreview tokenRef={token} previewSize={maxWidth} onClick={handleClick} disableLiverender />
     </StyledNftPreviewWrapper>
   );
 }
@@ -78,6 +62,9 @@ function FeedEventNftPreviewWrapper({ tokenRef, maxWidth, maxHeight }: Props) {
 const StyledNftPreviewWrapper = styled.div<{ maxWidth: number; maxHeight: number }>`
   display: flex;
   width: 100%;
+
+  min-width: 150px;
+
   ${StyledImageWithLoading} {
     max-height: calc((100vw - 64px) / 3);
     max-width: ${({ maxWidth }) => maxWidth}px;

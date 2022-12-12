@@ -1,4 +1,4 @@
-import { addBreadcrumb, Severity } from '@sentry/nextjs';
+import { addBreadcrumb } from '@sentry/nextjs';
 import { useCallback, useContext, useMemo, useState } from 'react';
 import { useRelayEnvironment } from 'react-relay';
 // @ts-expect-error We're in untyped territory
@@ -87,7 +87,7 @@ export function useNftRetry({ tokenId }: useNftRetryArgs): useNftRetryResult {
     () => {
       addBreadcrumb({
         message: 'Trying to clear the Relay FragmentResource cache',
-        level: Severity.Info,
+        level: 'info',
       });
 
       // Wrapping this in a try catch since we have no idea

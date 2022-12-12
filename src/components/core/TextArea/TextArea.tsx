@@ -248,5 +248,5 @@ const StyledMarkdownContainer = styled.div<{ hasPadding: boolean }>`
   position: absolute;
   background: none;
   bottom: ${({ hasPadding }) => (hasPadding ? '8px' : '0')};
-  left: ${({ hasPadding }) => (hasPadding ? '8px' : '0')};
+  left: ${({ hasPadding }) => (hasPadding ? '6px' : '0')};
 `;

@@ -2,9 +2,9 @@ import { useCallback, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
-import breakpoints from '~/components/core/breakpoints';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
+import { WalletSelectorWrapper } from '~/components/WalletSelector/multichain/WalletSelectorWrapper';
 import { useBeaconActions } from '~/contexts/beacon/BeaconContext';
 import { MultichainWalletSelectorFragment$key } from '~/generated/MultichainWalletSelectorFragment.graphql';
 import { ADD_WALLET_TO_USER, AUTH, CONNECT_WALLET_ONLY } from '~/types/Wallet';
@@ -30,7 +30,7 @@ type Props = {
   onTezosAddWalletSuccess?: () => void;
 };
 
-export function MultichainWalletSelector({
+export default function MultichainWalletSelector({
   queryRef,
   connectionMode = AUTH,
   variant = 'default',
@@ -60,16 +60,16 @@ export function MultichainWalletSelector({
   if (selectedAuthMethod === supportedAuthMethods.ethereum) {
     if (connectionMode === ADD_WALLET_TO_USER) {
       return (
-        <StyledWalletSelector>
+        <WalletSelectorWrapper>
           <EthereumAddWallet queryRef={query} reset={reset} onSuccess={onEthAddWalletSuccess} />
-        </StyledWalletSelector>
+        </WalletSelectorWrapper>
       );
     }
     if (connectionMode === AUTH) {
       return (
-        <StyledWalletSelector>
+        <WalletSelectorWrapper>
           <EthereumAuthenticateWallet reset={reset} />
-        </StyledWalletSelector>
+        </WalletSelectorWrapper>
       );
     }
   }
@@ -77,16 +77,17 @@ export function MultichainWalletSelector({
   if (selectedAuthMethod === supportedAuthMethods.gnosisSafe) {
     if (connectionMode === ADD_WALLET_TO_USER) {
       return (
-        <StyledWalletSelector>
+        <WalletSelectorWrapper>
           <GnosisSafeAddWallet queryRef={query} reset={reset} />
-        </StyledWalletSelector>
+        </WalletSelectorWrapper>
       );
     }
+
     if (connectionMode === AUTH) {
       return (
-        <StyledWalletSelector>
+        <WalletSelectorWrapper>
           <GnosisSafeAuthenticateWallet reset={reset} />
-        </StyledWalletSelector>
+        </WalletSelectorWrapper>
       );
     }
   }
@@ -94,22 +95,22 @@ export function MultichainWalletSelector({
   if (selectedAuthMethod === supportedAuthMethods.tezos) {
     if (connectionMode === ADD_WALLET_TO_USER) {
       return (
-        <StyledWalletSelector>
+        <WalletSelectorWrapper>
           <TezosAddWallet queryRef={query} reset={reset} onSuccess={onTezosAddWalletSuccess} />
-        </StyledWalletSelector>
+        </WalletSelectorWrapper>
       );
     }
     if (connectionMode === AUTH) {
       return (
-        <StyledWalletSelector>
+        <WalletSelectorWrapper>
           <TezosAuthenticateWallet reset={reset} />
-        </StyledWalletSelector>
+        </WalletSelectorWrapper>
       );
     }
   }
 
   return (
-    <StyledWalletSelector gap={24}>
+    <WalletSelectorWrapper gap={24}>
       <VStack gap={16}>
         {variant === 'tezos-announcement' && (
           <StyledDescription>
@@ -162,19 +163,9 @@ export function MultichainWalletSelector({
           <WalletButton label="Solana" icon="solana" disabled />
         </VStack>
       </VStack>
-    </StyledWalletSelector>
+    </WalletSelectorWrapper>
   );
 }
-
-const StyledWalletSelector = styled(VStack)`
-  text-align: center;
-  width: 320px;
-
-  @media only screen and ${breakpoints.mobileLarge} {
-    width: 400px;
-    max-width: 480px;
-  }
-`;
 
 const StyledDescription = styled(BaseM)`
   text-align: left;

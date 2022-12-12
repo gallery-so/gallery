@@ -20,7 +20,6 @@ function NftDetailVideo({ mediaRef, hideControls = false, onLoad }: Props) {
     graphql`
       fragment NftDetailVideoFragment on VideoMedia {
         contentRenderURLs @required(action: THROW) {
-          raw @required(action: THROW)
           large @required(action: THROW)
         }
         previewURLs {

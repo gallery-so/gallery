@@ -69,7 +69,6 @@ function StagingArea({ tokensRef }: Props) {
     graphql`
       fragment StagingAreaFragment on Token @relay(plural: true) {
         dbid
-        name
         ...SortableStagedNftFragment
         ...StagedItemDraggingFragment
       }

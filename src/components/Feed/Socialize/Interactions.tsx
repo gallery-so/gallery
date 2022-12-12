@@ -51,7 +51,6 @@ export function Interactions({ eventRef, queryRef, onPotentialLayoutShift }: Pro
 
         ...AdmireLineEventFragment
         ...RemainingAdmireCountFragment
-        ...NoteModalOpenerTextFragment
       }
     `,
     eventRef

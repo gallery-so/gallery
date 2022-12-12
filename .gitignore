@@ -37,11 +37,9 @@ tsconfig.tsbuildinfo
 # SECRITS
 _internal*
 
-# Relay Generated Files
-**/*.graphql.ts
-
 # GraphQL Codegen Files
-__generated__/operations.ts
+__generated__/**/*
+tests/__generated__/**/*
 
 # Next.js Routes Types
 nextjs-routes.d.ts

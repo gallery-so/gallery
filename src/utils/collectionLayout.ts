@@ -1,3 +1,6 @@
+import { graphql } from 'react-relay';
+import { readInlineData } from 'relay-runtime';
+
 import {
   EditModeTokenChild,
   isEditModeToken,
@@ -5,6 +8,8 @@ import {
   StagingItem,
   WhitespaceBlock,
 } from '~/components/ManageGallery/OrganizeCollection/types';
+import { collectionLayoutParseFragment$key } from '~/generated/collectionLayoutParseFragment.graphql';
+import { removeNullValues } from '~/utils/removeNullValues';
 // This file contains helper methods to manipulate collections, layouts, and related data used for the Collection Editor and its drag and drop interface.
 
 type Section<T> = {
@@ -13,14 +18,47 @@ type Section<T> = {
 };
 type CollectionWithLayout<T> = Record<string, Section<T>>;
 
+export function parseCollectionLayoutGraphql<T>(
+  tokens: T[],
+  collectionLayoutRef: collectionLayoutParseFragment$key,
+  ignoreWhitespace = false
+): CollectionWithLayout<T> {
+  const layout = readInlineData(
+    graphql`
+      fragment collectionLayoutParseFragment on CollectionLayout @inline {
+        sections
+        sectionLayout {
+          whitespace
+          columns
+        }
+      }
+    `,
+    collectionLayoutRef
+  );
+
+  const sections = removeNullValues(layout?.sections ?? []);
+  const sectionLayout = removeNullValues(layout?.sectionLayout ?? []);
+
+  return parseCollectionLayout(
+    tokens,
+    {
+      sections,
+      sectionLayout,
+    },
+    ignoreWhitespace
+  );
+}
+
+type CollectionLayout = {
+  sections: Array<number>;
+  sectionLayout: Array<{ whitespace: ReadonlyArray<number | null> | null; columns: number | null }>;
+};
+
 // Given a list of tokens in the collection and the collection layout settings,
 // returns an object that represents the full structure of the collection layout with sections, items, and whitespace blocks.
 export function parseCollectionLayout<T>(
   tokens: ReadonlyArray<T>,
-
-  // Hard to type this, need a second look
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  collectionLayout: any,
+  collectionLayout: CollectionLayout,
   ignoreWhitespace = false
 ): CollectionWithLayout<T> {
   const parsedCollection = collectionLayout.sections.reduce(
@@ -33,12 +71,15 @@ export function parseCollectionLayout<T>(
         sectionEndIndex + 1
       );
       if (!ignoreWhitespace) {
-        section = insertWhitespaceBlocks(section, collectionLayout.sectionLayout[index].whitespace);
+        section = insertWhitespaceBlocks(
+          section,
+          removeNullValues(collectionLayout.sectionLayout[index].whitespace)
+        );
       }
       const sectionId = generate12DigitId();
       allSections[sectionId] = {
         items: section,
-        columns: collectionLayout.sectionLayout[index].columns,
+        columns: collectionLayout.sectionLayout[index].columns ?? 1,
       };
       return allSections;
     },

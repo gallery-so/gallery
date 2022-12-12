@@ -14,7 +14,6 @@ export function LinkableAddress({ chainAddressRef }: LinkableAddressProps) {
   const address = useFragment(
     graphql`
       fragment LinkableAddressFragment on ChainAddress {
-        chain @required(action: THROW)
         address @required(action: THROW)
 
         ...walletTruncateAddressFragment

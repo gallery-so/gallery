@@ -22,7 +22,6 @@ export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
     graphql`
       fragment UserGalleryLayoutQueryFragment on Query {
         ...UserGalleryCollectionsQueryFragment
-        ...NavActionFollowQueryFragment
       }
     `,
     queryRef
@@ -31,7 +30,6 @@ export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
   const user = useFragment(
     graphql`
       fragment UserGalleryLayoutFragment on GalleryUser {
-        username
         galleries {
           collections {
             __typename
@@ -39,8 +37,6 @@ export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
 
           ...UserGalleryCollectionsFragment
         }
-
-        ...NavActionFollowUserFragment
 
         ...UserGalleryHeaderFragment
       }
@@ -78,7 +74,7 @@ export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
 export const StyledUserGalleryLayout = styled(VStack)`
   width: 100%;
   max-width: 1200px;
-  padding: 0 0 32px;
+  padding: 16px 0 32px;
 
   @media only screen and ${breakpoints.tablet} {
     padding: 24px 0 32px;

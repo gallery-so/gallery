@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 
 import colors from '~/components/core/colors';
+import IconContainer from '~/components/core/Markdown/IconContainer';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import transitions, {
@@ -98,9 +99,7 @@ function Toast({ message, onClose, variant }: Props) {
           </StyledAlertIcon>
         )}
         <BaseM>{message}</BaseM>
-        <StyledClose onClick={handleClose}>
-          <CloseIcon />
-        </StyledClose>
+        <IconContainer onClick={handleClose} size="sm" icon={<CloseIcon />} />
       </StyledToast>
     </ToastContainer>
   );
@@ -115,7 +114,7 @@ const ToastContainer = styled.div`
 
 const StyledToast = styled(HStack)<{ variant: Props['variant'] }>`
   border: 1px solid ${({ variant }) => (variant === 'error' ? colors.red : colors.offBlack)};
-  padding: 8px 10px 8px 16px;
+  padding: 6px 10px 6px 16px;
   max-width: min(80vw, 628px); // Set width of toast to 80% of viewport
   background: ${colors.white};
 
@@ -126,17 +125,3 @@ const StyledAlertIcon = styled(VStack)`
   height: 24px;
   width: 24px;
 `;
-
-const StyledClose = styled.button`
-  display: flex;
-  align-items: center;
-  margin-left: 8px;
-  cursor: pointer;
-  color: ${colors.offBlack};
-
-  background: none;
-  border: none;
-  padding: 0;
-`;
-
-export default Toast;

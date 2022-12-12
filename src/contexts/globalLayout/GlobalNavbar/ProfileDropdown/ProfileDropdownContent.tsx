@@ -50,6 +50,7 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
               unseenCount
               # Relay requires that we grab the edges field if we use the connection directive
               # We're selecting __typename since that shouldn't have a cost
+              # eslint-disable-next-line relay/unused-fields
               edges {
                 __typename
               }

@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 import IconContainer from '~/components/core/Markdown/IconContainer';
 import { Chain, chains } from '~/components/ManageGallery/OrganizeCollection/Sidebar/chains';
@@ -38,8 +38,6 @@ export function SidebarChainSelector({
             }
           }
         }
-
-        ...isFeatureEnabledFragment
       }
     `,
     queryRef
@@ -79,65 +77,29 @@ export function SidebarChainSelector({
         })}
       </Chains>
       {isRefreshDisabledForUser(query.viewer?.user?.dbid ?? '') ? null : (
-        <IconButton
-          refreshing={isRefreshingNfts}
+        <IconContainer
           data-testid="RefreshButton"
           onMouseEnter={() => setShowTooltip(true)}
           onMouseLeave={() => setShowTooltip(false)}
           onClick={handleRefresh}
-          disabled={!ownsWalletFromSelectedChain}
-        >
-          <StyledIconContainer icon={<RefreshIcon />} />
-          <RefreshTooltip
-            active={showTooltip}
-            text={isRefreshingNfts ? `Refreshing...` : `Refresh ${selectedChain.shortName} Wallets`}
-          />
-        </IconButton>
+          disabled={isRefreshingNfts || !ownsWalletFromSelectedChain}
+          size="sm"
+          icon={
+            <>
+              <RefreshIcon />
+              <RefreshTooltip
+                active={showTooltip}
+                text={
+                  isRefreshingNfts ? `Refreshing...` : `Refresh ${selectedChain.shortName} Wallets`
+                }
+              />
+            </>
+          }
+        />
       )}
     </Container>
   );
 }
-
-const StyledIconContainer = styled(IconContainer)``;
-
-const IconButton = styled.button<{ refreshing: boolean }>`
-  position: relative;
-
-  // Button Reset
-  border: none;
-  margin: 0;
-  padding: 0;
-  background: none;
-
-  cursor: pointer;
-
-  // Ensure we don't include the Tooltip in the outline
-  :focus-within {
-    outline: none;
-
-    ${StyledIconContainer} {
-      outline: auto;
-    }
-  }
-
-  ${({ refreshing }) =>
-    refreshing
-      ? css`
-          cursor: unset;
-
-          ${StyledIconContainer} {
-            pointer-events: none;
-            opacity: 0.2;
-          }
-        `
-      : ''};
-
-  :disabled {
-    ${StyledIconContainer} {
-      cursor: not-allowed;
-    }
-  }
-`;
 
 const RefreshTooltip = styled(Tooltip)<{ active: boolean }>`
   bottom: 0;

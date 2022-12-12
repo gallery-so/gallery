@@ -21,17 +21,6 @@ export default function TokenDetailView({ authenticatedUserOwnsAsset, queryRef }
   const token = useFragment(
     graphql`
       fragment TokenDetailViewFragment on Token {
-        dbid
-        name
-        description
-        contract {
-          name
-          contractAddress {
-            address
-          }
-        }
-        tokenId
-        externalUrl
         collectorsNote
 
         ...NftDetailTextFragment

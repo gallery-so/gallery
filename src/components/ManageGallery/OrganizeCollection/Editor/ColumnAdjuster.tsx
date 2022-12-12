@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
-import colors from '~/components/core/colors';
+import IconContainer from '~/components/core/Markdown/IconContainer';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import {
@@ -50,13 +50,21 @@ function ColumnAdjuster({ viewerRef, activeSectionId }: Props) {
     <HStack gap={24} align="center" justify="space-between">
       <BaseM>Columns</BaseM>
       <StyledButtonContainer>
-        <StyledColumnButton onClick={handleDecrementClick} disabled={columns <= 1}>
-          <CircleMinusIcon />
-        </StyledColumnButton>
+        <IconContainer
+          size="sm"
+          onClick={handleDecrementClick}
+          disabled={columns <= 1}
+          icon={<CircleMinusIcon />}
+        />
+
         <StyledNumberOfColumns>{columns}</StyledNumberOfColumns>
-        <StyledColumnButton onClick={handleIncrementClick} disabled={columns >= maxColumns}>
-          <CirclePlusIcon />
-        </StyledColumnButton>
+
+        <IconContainer
+          size="sm"
+          onClick={handleIncrementClick}
+          disabled={columns >= maxColumns}
+          icon={<CirclePlusIcon />}
+        />
       </StyledButtonContainer>
     </HStack>
   );
@@ -65,21 +73,6 @@ function ColumnAdjuster({ viewerRef, activeSectionId }: Props) {
 const StyledButtonContainer = styled.div`
   display: flex;
   align-items: center;
-`;
-
-const StyledColumnButton = styled.button<{ disabled: boolean }>`
-  font-size: 16px;
-  border-radius: 50%;
-  width: 16px;
-  height: 16px;
-  border: 0;
-  padding: 0;
-  cursor: pointer;
-  background: none;
-
-  path {
-    stroke: ${({ disabled }) => (disabled ? `${colors.porcelain}` : 'auto')};
-  }
 `;
 
 const StyledNumberOfColumns = styled(BaseM)`

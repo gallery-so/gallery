@@ -28,18 +28,10 @@ function CollectionGallery({ queryRef }: Props) {
           ... on Collection {
             __typename
 
-            gallery {
-              owner {
-                username
-                ...NavActionFollowUserFragment
-              }
-            }
-
             ...NftGalleryFragment
             ...CollectionGalleryHeaderFragment
           }
         }
-        ...NavActionFollowQueryFragment
         ...CollectionGalleryHeaderQueryFragment
       }
     `,
