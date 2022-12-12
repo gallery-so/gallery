@@ -1,3 +1,5 @@
+import Image from 'next/image';
+import SplashImage from 'public/thank-you-token.jpg';
 import { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useAccount } from 'wagmi';
@@ -26,8 +28,6 @@ function Timer() {
 export default function ThankYouTokenPage() {
   const isMobile = useIsMobileWindowWidth();
 
-  const POSTER_IMAGE_URL =
-    'https://storage.googleapis.com/gallery-prod-325303.appspot.com/g_frame.png';
   // const POSTER_SECONDARY_URL =
   //   'https://opensea.io/assets/ethereum/0x7e619a01e1a3b3a6526d0e01fbac4822d48f439b/0';
 
@@ -77,7 +77,7 @@ export default function ThankYouTokenPage() {
       </StyledPositionedBackLink>
       <StyledWrapper>
         <StyledImageContainer>
-          <StyledImage src={POSTER_IMAGE_URL} />
+          <Image src={SplashImage} alt="splash-image" />
         </StyledImageContainer>
         <StyledContent>
           <TitleM>The Next Era of Self Expression</TitleM>
@@ -143,18 +143,6 @@ const StyledImageContainer = styled.div`
   justify-content: center;
 `;
 
-const StyledImage = styled.img`
-  margin: 0 auto;
-  max-width: 100%;
-  max-height: 600px;
-
-  @media only screen and ${breakpoints.tablet} {
-    justify-content: flex-start;
-
-    width: initial;
-  }
-`;
-
 const StyledPositionedBackLink = styled(StyledBackLink)`
   top: -0;
 `;
@@ -206,15 +194,17 @@ const StyledCallToAction = styled.div<{ hasEnded?: boolean }>`
     border-top: 1px solid ${colors.porcelain};
   }
 `;
-const StyledSecondaryLink = styled.a`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: ${colors.offBlack};
-  cursor: pointer;
-  height: 40px;
-  text-decoration: none;
-  &:hover {
-    opacity: 0.8;
-  }
-`;
+
+// May come handy later
+// const StyledSecondaryLink = styled.a`
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   background: ${colors.offBlack};
+//   cursor: pointer;
+//   height: 40px;
+//   text-decoration: none;
+//   &:hover {
+//     opacity: 0.8;
+//   }
+// `;
