@@ -1,3 +1,16 @@
+import {
+  autoUpdate,
+  flip,
+  FloatingFocusManager,
+  inline,
+  offset,
+  shift,
+  useFloating,
+  useHover,
+  useId,
+  useInteractions,
+  useRole,
+} from '@floating-ui/react';
 import unescape from 'lodash/unescape';
 import Link from 'next/link';
 import { MouseEventHandler, useCallback, useMemo, useRef, useState } from 'react';
@@ -70,6 +83,20 @@ export default function HoverCardOnUsername({ userRef, queryRef }: Props) {
   const [isActive, setIsActive] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
 
+  const { x, y, reference, floating, strategy, context } = useFloating({
+    open: isHovering,
+    onOpenChange: setIsHovering,
+    middleware: [offset(8), flip(), shift(), inline()],
+    whileElementsMounted: autoUpdate,
+  });
+
+  const role = useRole(context);
+  const hover = useHover(context);
+
+  const { getReferenceProps, getFloatingProps } = useInteractions([hover, role]);
+
+  const headingId = useId();
+
   const deactivateHoverCardTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const activateHoverCardTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const handleMouseEnter = () => {
@@ -127,7 +154,12 @@ export default function HoverCardOnUsername({ userRef, queryRef }: Props) {
   }, [user]);
 
   return (
-    <StyledContainer onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+    <StyledContainer
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      ref={reference}
+      {...getReferenceProps()}
+    >
       <StyledLinkContainer>
         <Link href={userProfileLink}>
           <TitleDiatypeM onClick={handleUsernameClick}>{user.username}</TitleDiatypeM>
@@ -135,40 +167,53 @@ export default function HoverCardOnUsername({ userRef, queryRef }: Props) {
       </StyledLinkContainer>
       <Link href={userProfileLink}>
         <a>
-          <StyledCardWrapper isHovering={isHovering}>
-            {isActive && (
-              <StyledCardContainer>
-                <StyledCardHeader>
-                  <HStack align="center" gap={4}>
-                    <HStack align="center" gap={6}>
-                      <StyledCardUsername>{user.username}</StyledCardUsername>
+          <FloatingFocusManager context={context} modal={false}>
+            <StyledCardWrapper
+              className="Popover"
+              ref={floating}
+              isHovering={isHovering}
+              style={{
+                position: strategy,
+                top: y ?? 0,
+                left: x ?? 0,
+              }}
+              aria-labelledby={headingId}
+              {...getFloatingProps()}
+            >
+              {isActive && (
+                <StyledCardContainer>
+                  <StyledCardHeader>
+                    <HStack align="center" gap={4}>
+                      <HStack align="center" gap={6}>
+                        <StyledCardUsername>{user.username}</StyledCardUsername>
 
-                      {userBadges.map((badge) => (
-                        // Might need to rethink this layout when we have more badges
-                        <Badge key={badge.name} badgeRef={badge} />
-                      ))}
+                        {userBadges.map((badge) => (
+                          // Might need to rethink this layout when we have more badges
+                          <Badge key={badge.name} badgeRef={badge} />
+                        ))}
+                      </HStack>
+
+                      {isLoggedIn && !isOwnProfile && (
+                        <StyledFollowButtonWrapper>
+                          <FollowButton userRef={user} queryRef={query} />
+                        </StyledFollowButtonWrapper>
+                      )}
                     </HStack>
 
-                    {isLoggedIn && !isOwnProfile && (
-                      <StyledFollowButtonWrapper>
-                        <FollowButton userRef={user} queryRef={query} />
-                      </StyledFollowButtonWrapper>
-                    )}
-                  </HStack>
+                    <BaseM>{totalCollections} collections</BaseM>
+                  </StyledCardHeader>
 
-                  <BaseM>{totalCollections} collections</BaseM>
-                </StyledCardHeader>
-
-                {user.bio && (
-                  <StyledCardDescription>
-                    <BaseM>
-                      <Markdown text={unescape(user.bio)}></Markdown>
-                    </BaseM>
-                  </StyledCardDescription>
-                )}
-              </StyledCardContainer>
-            )}
-          </StyledCardWrapper>
+                  {user.bio && (
+                    <StyledCardDescription>
+                      <BaseM>
+                        <Markdown text={unescape(user.bio)}></Markdown>
+                      </BaseM>
+                    </StyledCardDescription>
+                  )}
+                </StyledCardContainer>
+              )}
+            </StyledCardWrapper>
+          </FloatingFocusManager>
         </a>
       </Link>
     </StyledContainer>
@@ -186,12 +231,8 @@ const StyledLinkContainer = styled.div`
 `;
 
 const StyledCardWrapper = styled.div<{ isHovering: boolean }>`
-  padding-top: 8px;
-  position: absolute;
   z-index: 1;
-  top: 100%;
-
-  transition: ${transitions.cubic};
+  transition: transform ${transitions.cubic}, opacity ${transitions.cubic};
   transform: ${({ isHovering }) =>
     `translateY(${isHovering ? 0 : ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL}px)`};
   opacity: ${({ isHovering }) => (isHovering ? 1 : 0)};
