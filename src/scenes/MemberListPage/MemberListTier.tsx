@@ -4,12 +4,14 @@ import { graphql } from 'relay-runtime';
 
 import TokenHolderList from '~/components/TokenHolderList/TokenHolderList';
 import { MemberListTierFragment$key } from '~/generated/MemberListTierFragment.graphql';
+import { MemberListTierQueryFragment$key } from '~/generated/MemberListTierQueryFragment.graphql';
 
 type Props = {
   tierRef: MemberListTierFragment$key;
+  queryRef: MemberListTierQueryFragment$key;
 };
 
-function MemberListTier({ tierRef }: Props) {
+function MemberListTier({ queryRef, tierRef }: Props) {
   const tier = useFragment(
     graphql`
       fragment MemberListTierFragment on MembershipTier {
@@ -20,6 +22,15 @@ function MemberListTier({ tierRef }: Props) {
       }
     `,
     tierRef
+  );
+
+  const query = useFragment(
+    graphql`
+      fragment MemberListTierQueryFragment on Query {
+        ...TokenHolderListQueryFragment
+      }
+    `,
+    queryRef
   );
 
   const nonNullTokenHolders = useMemo(() => {
@@ -34,7 +45,13 @@ function MemberListTier({ tierRef }: Props) {
     return holders;
   }, [tier.owners]);
 
-  return <TokenHolderList title={tier.name || ''} tokenHoldersRef={nonNullTokenHolders} />;
+  return (
+    <TokenHolderList
+      title={tier.name || ''}
+      tokenHoldersRef={nonNullTokenHolders}
+      queryRef={query}
+    />
+  );
 }
 
 export default MemberListTier;
