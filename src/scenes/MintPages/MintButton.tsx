@@ -59,7 +59,7 @@ export default function MintButton({ onMintSuccess }: Props) {
       {transactionStatus === TransactionStatus.SUCCESS && (
         <BaseM>It should be in your wallet at the moment</BaseM>
       )}
-      {error && <ErrorText message={error} />}
+      {error && <StyledErrorText message={error} />}
     </>
   );
 }
@@ -70,4 +70,9 @@ const StyledButton = styled(Button)`
   height: 100%;
   padding: 12px 24px;
   text-decoration: none;
+`;
+
+const StyledErrorText = styled(ErrorText)`
+  // prevents long error messages from overflowing
+  word-break: break-word;
 `;

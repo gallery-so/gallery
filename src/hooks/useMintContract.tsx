@@ -57,7 +57,11 @@ export default function useMintContract({ contract, tokenId, onMintSuccess }: Pr
       // Submit mint transaction
       setTransactionStatus(TransactionStatus.PENDING);
       const mintResult = await mintToken(contract, tokenId).catch((error: any) => {
-        setError(`Error while calling contract - "${error?.error?.message ?? error?.message}"`);
+        let errorMessage = error?.error?.message ?? error?.message;
+        if (errorMessage.includes('not approved to mint')) {
+          errorMessage = `${address} is not on the mintlist. If you think this is a mistake, please reach out to us on Twitter or Discord.`;
+        }
+        setError(errorMessage);
         setTransactionStatus(TransactionStatus.FAILED);
       });
 
@@ -83,7 +87,7 @@ export default function useMintContract({ contract, tokenId, onMintSuccess }: Pr
         }
       }
     }
-  }, [active, contract, error, mintToken, onMintSuccess, tokenId, address]);
+  }, [active, address, contract, error, mintToken, onMintSuccess, tokenId]);
 
   const handleClick = useCallback(() => {
     active ? handleMintButtonClick() : handleConnectWalletButtonClick();
