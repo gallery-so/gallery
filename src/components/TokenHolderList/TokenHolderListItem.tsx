@@ -10,21 +10,26 @@ import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { BaseXL } from '~/components/core/Text/Text';
 import { useMemberListPageActions } from '~/contexts/memberListPage/MemberListPageContext';
 import { TokenHolderListItemFragment$key } from '~/generated/TokenHolderListItemFragment.graphql';
+import { TokenHolderListItemQueryFragment$key } from '~/generated/TokenHolderListItemQueryFragment.graphql';
 import useDebounce from '~/hooks/useDebounce';
 import { useBreakpoint } from '~/hooks/useWindowSize';
 import detectMobileDevice from '~/utils/detectMobileDevice';
 import { removeNullValues } from '~/utils/removeNullValues';
 import { graphqlTruncateUniversalUsername } from '~/utils/wallet';
 
+import HoverCardOnUsername from '../HoverCard/HoverCardOnUsername';
 import MemberListGalleryPreview from './TokenHolderListGalleryPreview';
 
 type Props = {
   tokenHolderRef: TokenHolderListItemFragment$key;
   direction: Directions.LEFT | Directions.RIGHT;
   fadeUsernames: boolean;
+  queryRef: TokenHolderListItemQueryFragment$key;
 };
 
-function TokenHolderListItem({ tokenHolderRef, direction, fadeUsernames }: Props) {
+const DISABLED_GALLERY_PREVIEW = true;
+
+function TokenHolderListItem({ tokenHolderRef, direction, fadeUsernames, queryRef }: Props) {
   const { setFadeUsernames } = useMemberListPageActions();
 
   const owner = useFragment(
@@ -35,11 +40,21 @@ function TokenHolderListItem({ tokenHolderRef, direction, fadeUsernames }: Props
           universal
 
           ...walletTruncateUniversalUsernameFragment
+          ...HoverCardOnUsernameFragment
         }
         previewTokens
       }
     `,
     tokenHolderRef
+  );
+
+  const query = useFragment(
+    graphql`
+      fragment TokenHolderListItemQueryFragment on Query {
+        ...HoverCardOnUsernameFollowFragment
+      }
+    `,
+    queryRef
   );
 
   const username = graphqlTruncateUniversalUsername(owner.user);
@@ -107,22 +122,28 @@ function TokenHolderListItem({ tokenHolderRef, direction, fadeUsernames }: Props
             <StyledUsername>{username}</StyledUsername>
           </StyledGalleryLink>
         ) : (
-          <StyledGalleryLink
-            to={{ pathname: '/[username]', query: { username: owner.user.username } }}
-            underlined={false}
-            fadeUsernames={fadeUsernames}
-          >
-            <StyledUsername>{username}</StyledUsername>
-          </StyledGalleryLink>
+          <HoverCardOnUsername userRef={owner.user} queryRef={query}>
+            <StyledGalleryLink
+              to={{ pathname: '/[username]', query: { username: owner.user.username } }}
+              underlined={false}
+              fadeUsernames={fadeUsernames}
+            >
+              <StyledUsername>{username}</StyledUsername>
+            </StyledGalleryLink>
+          </HoverCardOnUsername>
         )}
       </StyledUsernameWrapper>
-      {isDesktop && showPreview && previewTokens && !owner.user.universal && (
-        <MemberListGalleryPreview
-          direction={direction}
-          tokenUrls={previewTokens}
-          startFadeOut={startFadeOut}
-        />
-      )}
+      {isDesktop &&
+        showPreview &&
+        previewTokens &&
+        !owner.user.universal &&
+        !DISABLED_GALLERY_PREVIEW && (
+          <MemberListGalleryPreview
+            direction={direction}
+            tokenUrls={previewTokens}
+            startFadeOut={startFadeOut}
+          />
+        )}
     </StyledOwner>
   );
 }

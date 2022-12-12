@@ -17,13 +17,14 @@ type Props = {
 };
 
 function MemberListPage({ queryRef }: Props) {
-  const { membershipTiers } = useFragment(
+  const query = useFragment(
     graphql`
       fragment MemberListPageFragment on Query {
         membershipTiers @required(action: THROW) {
           id
           ...MemberListTierFragment
         }
+        ...MemberListTierQueryFragment
       }
     `,
     queryRef
@@ -41,8 +42,8 @@ function MemberListPage({ queryRef }: Props) {
           <TokenHolderListFilter />
         </StyledTokenHolderListFilterContainer>
         <StyledTierWrapper>
-          {removeNullValues(membershipTiers).map((tier) => (
-            <MemberListTier key={tier.id} tierRef={tier} />
+          {removeNullValues(query.membershipTiers).map((tier) => (
+            <MemberListTier key={tier.id} tierRef={tier} queryRef={query} />
           ))}
         </StyledTierWrapper>
       </MemberListPageProvider>
