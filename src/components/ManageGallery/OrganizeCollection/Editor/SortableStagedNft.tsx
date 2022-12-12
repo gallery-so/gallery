@@ -5,9 +5,9 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import Gradient from '~/components/core/Gradient/Gradient';
-import { NftFailureBoundary } from '~/components/NftFailureFallback/NftFailureBoundary';
 import { NftFailureFallback } from '~/components/NftFailureFallback/NftFailureFallback';
 import { StyledNftPreviewLabel } from '~/components/NftPreview/NftPreviewLabel';
+import { ReportingErrorBoundary } from '~/contexts/boundary/ReportingErrorBoundary';
 import { SPACE_BETWEEN_ITEMS } from '~/contexts/collectionEditor/useDndDimensions';
 import { SortableStagedNftFragment$key } from '~/generated/SortableStagedNftFragment.graphql';
 import { useNftRetry } from '~/hooks/useNftRetry';
@@ -81,7 +81,7 @@ function SortableStagedNft({ tokenRef, size, mini }: Props) {
       style={style}
       backgroundColorOverride={backgroundColorOverride}
     >
-      <NftFailureBoundary
+      <ReportingErrorBoundary
         key={retryKey}
         fallback={
           <FallbackContainer ref={setNodeRef} size={size} {...attributes} {...listeners}>
@@ -99,7 +99,7 @@ function SortableStagedNft({ tokenRef, size, mini }: Props) {
           {...attributes}
           {...listeners}
         />
-      </NftFailureBoundary>
+      </ReportingErrorBoundary>
       <StyledUnstageButton id={id} />
       {isLiveType && <LiveDisplayButton id={id} />}
       <StyledGradient type="top" direction="up" height={mini ? 40 : 64} />
