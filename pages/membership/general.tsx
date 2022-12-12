@@ -1,6 +1,7 @@
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
+import EthereumProviders from '~/contexts/auth/EthereumProviders';
 import { generalQuery } from '~/generated/generalQuery.graphql';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
 import GeneralMembershipMintPage from '~/scenes/MembershipMintPage/GeneralMembershipMintPage';
@@ -15,5 +16,14 @@ export default function General() {
     {}
   );
 
-  return <GalleryRoute element={<GeneralMembershipMintPage queryRef={query} />} navbar={false} />;
+  return (
+    <GalleryRoute
+      element={
+        <EthereumProviders>
+          <GeneralMembershipMintPage queryRef={query} />
+        </EthereumProviders>
+      }
+      navbar={false}
+    />
+  );
 }
