@@ -130,6 +130,7 @@ function GeneralMembershipMintPageContent({ queryRef }: ContentProps) {
 
   useEffect(() => {
     if (contract) {
+      // @ts-expect-error: fix this later, related to web3 lib upgrade
       getSupply(contract, MEMBERSHIP_NFT_GENERAL.tokenId);
     }
   }, [getSupply, contract]);
@@ -138,6 +139,7 @@ function GeneralMembershipMintPageContent({ queryRef }: ContentProps) {
     <CustomizedGeneralMembershipMintPage
       membershipNft={MEMBERSHIP_NFT_GENERAL}
       canMintToken={canMintToken}
+      // @ts-expect-error: fix this later, related to web3 lib upgrade
       contract={contract}
       mintToken={mintToken}
       onMintSuccess={onMintSuccess}
