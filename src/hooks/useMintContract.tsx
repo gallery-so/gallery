@@ -72,6 +72,9 @@ export default function useMintContract({ contract, tokenId, allowlist, onMintSu
           ) {
             errorMessage = `${address} is not on the mintlist. If you think this is a mistake, please reach out to us on Twitter or Discord.`;
           }
+          if (errorMessage.includes('cannot mint while owning poster')) {
+            errorMessage = 'You already own this item. Limit 1 per address.';
+          }
           setError(errorMessage);
           setTransactionStatus(TransactionStatus.FAILED);
         }
