@@ -7,11 +7,10 @@ import { graphql } from 'relay-runtime';
 import useSWR from 'swr';
 
 import { LinkableAddress, RawLinkableAddress } from '~/components/LinkableAddress';
+import { ReportingErrorBoundary } from '~/contexts/boundary/ReportingErrorBoundary';
 import { TezosDomainOrAddressFragment$key } from '~/generated/TezosDomainOrAddressFragment.graphql';
 import { TezosDomainOrAddressWithSuspenseFragment$key } from '~/generated/TezosDomainOrAddressWithSuspenseFragment.graphql';
 import { getExternalAddressLink } from '~/utils/wallet';
-
-import { PlainErrorBoundary } from './PlainErrorBoundary';
 
 async function tezosDomainFetcher(address: string): Promise<string | null> {
   const tezos = new TezosToolkit('https://mainnet.api.tez.ie');
@@ -69,9 +68,9 @@ export const TezosDomainOrAddress = ({ chainAddressRef }: TezosDomainOrAddressPr
 
   return (
     <Suspense fallback={<LinkableAddress chainAddressRef={address} />}>
-      <PlainErrorBoundary fallback={<LinkableAddress chainAddressRef={address} />}>
+      <ReportingErrorBoundary fallback={<LinkableAddress chainAddressRef={address} />}>
         <TezosDomain chainAddressRef={address} />
-      </PlainErrorBoundary>
+      </ReportingErrorBoundary>
     </Suspense>
   );
 };
