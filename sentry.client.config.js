@@ -46,5 +46,7 @@ Sentry.configureScope((scope) => {
     if (hint.originalException instanceof ErrorWithSentryMetadata) {
       Object.assign(event.tags, hint.originalException.metadata);
     }
+
+    return event;
   });
 });
