@@ -96,9 +96,9 @@ export default function ThankYouTokenPage() {
               Ethereum. 1 mint per address.
             </BaseM>
             <BaseM>
-              Eligibility criteria: Our top 200 most active users and any users who used our social
-              features (admired, commented, or followed on Gallery) before 12/12/22 were included in
-              the snapshot.
+              Eligibility criteria: Our top 200 most active users in the last 60 days and any users
+              who used our social features (admired, commented, or followed on Gallery) before
+              12/12/22 were included in the snapshot.
             </BaseM>
             {/* <BaseM>Minting is now closed. Thank you to everyone who minted one.</BaseM> */}
           </VStack>
@@ -116,7 +116,7 @@ export default function ThankYouTokenPage() {
           ) : (
             <StyledCallToAction>
               <Timer />
-              {/* <MintButton onMintSuccess={() => setIsMinted(true)}></MintButton> */}
+              <MintButton onMintSuccess={() => setIsMinted(true)}></MintButton>
             </StyledCallToAction>
           )}
         </StyledContent>
