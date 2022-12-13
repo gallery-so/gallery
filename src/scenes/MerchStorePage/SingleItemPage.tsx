@@ -14,7 +14,7 @@ import { truncateAddress } from '~/utils/wallet';
 
 import FlippingImage from './FlippingImage';
 import PurchaseBox from './PurchaseBox';
-import { MobileReceiptBox,UserOwnsBox } from './PurchaseBox';
+import { MobileReceiptBox, UserOwnsBox } from './PurchaseBox';
 
 export default function ItemPage({
   label,
@@ -35,6 +35,7 @@ export default function ItemPage({
 
   const { publicSupply, usedPublicSupply, tokenPrice, userOwnedSupply } =
     useMintContractWithQuantity({
+      // @ts-expect-error: fix this later, related to web3 lib upgrade
       contract,
       tokenId,
     });

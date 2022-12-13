@@ -43,14 +43,18 @@ function PremiumMembershipMintPage({ membershipNft }: Props) {
 
   const onMintSuccess = useCallback(async () => {
     if (contract) {
+      // @ts-expect-error: fix this later, related to web3 lib upgrade
       void getCanMintToken(contract);
     }
   }, [contract, getCanMintToken]);
 
   useEffect(() => {
     if (contract) {
+      // @ts-expect-error: fix this later, related to web3 lib upgrade
       void getCanMintToken(contract);
+      // @ts-expect-error: fix this later, related to web3 lib upgrade
       getSupply(contract, membershipNft.tokenId);
+      // @ts-expect-error: fix this later, related to web3 lib upgrade
       getPrice(contract, membershipNft.tokenId);
     }
   }, [getCanMintToken, contract, getPrice, getSupply, membershipNft.tokenId]);
@@ -59,6 +63,7 @@ function PremiumMembershipMintPage({ membershipNft }: Props) {
     <MembershipMintPage
       membershipNft={membershipNft}
       canMintToken={canMintToken}
+      // @ts-expect-error: fix this later, related to web3 lib upgrade
       contract={contract}
       mintToken={mintToken}
       onMintSuccess={onMintSuccess}

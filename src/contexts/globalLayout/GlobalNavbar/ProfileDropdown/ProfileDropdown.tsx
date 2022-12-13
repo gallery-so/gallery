@@ -131,8 +131,8 @@ const LogoContainer = styled(HStack)`
 
 const StyledNotificationsCircle = styled(NotificationsCircle)`
   position: absolute;
-  left: -5px;
-  top: 4px;
+  left: 0;
+  top: 16px;
 `;
 
 const Wrapper = styled(HStack)`

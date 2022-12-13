@@ -3,8 +3,8 @@ import styled from 'styled-components';
 
 import breakpoints, { size } from '~/components/core/breakpoints';
 import { StyledImageWithLoading } from '~/components/LoadingAsset/ImageWithLoading';
-import { NftFailureBoundary } from '~/components/NftFailureFallback/NftFailureBoundary';
 import { NftFailureFallback } from '~/components/NftFailureFallback/NftFailureFallback';
+import { ReportingErrorBoundary } from '~/contexts/boundary/ReportingErrorBoundary';
 import { GLOBAL_FOOTER_HEIGHT } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
 import { useContentState } from '~/contexts/shimmer/ShimmerContext';
 import { CouldNotRenderNftError } from '~/errors/CouldNotRenderNftError';
@@ -180,13 +180,13 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
       hasExtraPaddingForNote={hasExtraPaddingForNote}
       backgroundColorOverride={backgroundColorOverride}
     >
-      <NftFailureBoundary
+      <ReportingErrorBoundary
         key={retryKey}
         onError={handleNftError}
         fallback={<NftFailureFallback onRetry={refreshMetadata} refreshing={refreshingMetadata} />}
       >
         <NftDetailAssetComponent onLoad={handleNftLoaded} tokenRef={token} />
-      </NftFailureBoundary>
+      </ReportingErrorBoundary>
     </StyledAssetContainer>
   );
 }
