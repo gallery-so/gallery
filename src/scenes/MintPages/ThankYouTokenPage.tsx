@@ -92,10 +92,13 @@ export default function ThankYouTokenPage() {
               excited for what’s to come.
             </BaseM>
             <BaseM>
-              Connect your wallet to see if you are eligible. Our top 200 most active users as well
-              as any users who used our social features (admired, commented, or followed on Gallery)
-              before 12/12/22 were included in the snapshot. Minting is available until 12/18/22 on
+              Connect your wallet to see if you are eligible. Minting is available until 12/18/22 on
               Ethereum. 1 mint per address.
+            </BaseM>
+            <BaseM>
+              Eligibility criteria: Our top 200 most active users and any users who used our social
+              features (admired, commented, or followed on Gallery) before 12/12/22 were included in
+              the snapshot.
             </BaseM>
             {/* <BaseM>Minting is now closed. Thank you to everyone who minted one.</BaseM> */}
           </VStack>
@@ -113,7 +116,7 @@ export default function ThankYouTokenPage() {
           ) : (
             <StyledCallToAction>
               <Timer />
-              <MintButton onMintSuccess={() => setIsMinted(true)}></MintButton>
+              {/* <MintButton onMintSuccess={() => setIsMinted(true)}></MintButton> */}
             </StyledCallToAction>
           )}
         </StyledContent>
