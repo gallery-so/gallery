@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import colors from '~/components/core/colors';
 import { BaseM } from '~/components/core/Text/Text';
+import { NftFailureBoundary } from '~/components/NftFailureFallback/NftFailureBoundary';
 import { NftFailureFallback } from '~/components/NftFailureFallback/NftFailureFallback';
 import { ReportingErrorBoundary } from '~/contexts/boundary/ReportingErrorBoundary';
 import { StagedItemDraggingFragment$key } from '~/generated/StagedItemDraggingFragment.graphql';
@@ -62,13 +63,14 @@ function StagedNftImageDraggingWrapper({ tokenRef, size }: StagedNftImageDraggin
   });
 
   return (
-    <ReportingErrorBoundary
+    <NftFailureBoundary
       key={retryKey}
+      tokenId={token.dbid}
       fallback={<NftFailureFallback refreshing={false} onRetry={noop} />}
       onError={handleNftError}
     >
       <StagedNftImageDragging onLoad={handleNftLoaded} tokenRef={token} size={size} />
-    </ReportingErrorBoundary>
+    </NftFailureBoundary>
   );
 }
 

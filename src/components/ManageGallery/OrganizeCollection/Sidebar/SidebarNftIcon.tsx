@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import colors from '~/components/core/colors';
 import { BODY_FONT_FAMILY } from '~/components/core/Text/Text';
 import transitions from '~/components/core/transitions';
+import { NftFailureBoundary } from '~/components/NftFailureFallback/NftFailureBoundary';
 import { NftFailureFallback } from '~/components/NftFailureFallback/NftFailureFallback';
 import { SIDEBAR_ICON_DIMENSIONS } from '~/constants/sidebar';
 import { ReportingErrorBoundary } from '~/contexts/boundary/ReportingErrorBoundary';
@@ -166,8 +167,9 @@ function SidebarNftIcon({
   }
 
   return (
-    <ReportingErrorBoundary
+    <NftFailureBoundary
       key={retryKey}
+      tokenId={token.dbid}
       fallback={
         <StyledSidebarNftIcon backgroundColorOverride={backgroundColorOverride}>
           <NftFailureFallback
@@ -187,7 +189,7 @@ function SidebarNftIcon({
         />
         <StyledOutline onClick={handleClick} isSelected={isSelected} />
       </StyledSidebarNftIcon>
-    </ReportingErrorBoundary>
+    </NftFailureBoundary>
   );
 }
 
