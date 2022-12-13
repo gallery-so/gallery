@@ -10,4 +10,8 @@ export class ErrorWithSentryMetadata extends Error {
 
     Object.setPrototypeOf(this, ErrorWithSentryMetadata.prototype);
   }
+
+  addMetadata(metadata: Record<string, Primitive>) {
+    Object.assign(this.metadata, metadata);
+  }
 }

@@ -6,13 +6,16 @@ import {
   PropsWithChildren,
   ReactNode,
 } from 'react';
+import { Primitive } from 'relay-runtime/lib/store/RelayStoreTypes';
 
 import { ErrorReportingContext } from '~/contexts/errorReporting/ErrorReportingContext';
+import { ErrorWithSentryMetadata } from '~/errors/ErrorWithSentryMetadata';
 
 export type ReportingErrorBoundaryFallbackProps = { error: Error };
 
-type Props = PropsWithChildren<{
+export type ReportingErrorBoundaryProps = PropsWithChildren<{
   fallback: ReactNode | ComponentType<ReportingErrorBoundaryFallbackProps>;
+  additionalTags?: Record<string, Primitive>;
   onError?: (error: Error) => void;
 }>;
 
@@ -20,11 +23,11 @@ type State = {
   error: Error | null;
 };
 
-export class ReportingErrorBoundary extends Component<Props, State> {
+export class ReportingErrorBoundary extends Component<ReportingErrorBoundaryProps, State> {
   static contextType = ErrorReportingContext;
   context!: ContextType<typeof ErrorReportingContext>;
 
-  constructor(props: Props) {
+  constructor(props: ReportingErrorBoundaryProps) {
     super(props);
 
     this.state = {
@@ -34,6 +37,10 @@ export class ReportingErrorBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error) {
     this.context?.(error);
+
+    if (error instanceof ErrorWithSentryMetadata) {
+      error.addMetadata(this.props.additionalTags ?? {});
+    }
 
     this.props.onError?.(error);
     this.setState({ error });

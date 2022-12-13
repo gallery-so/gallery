@@ -1,8 +1,8 @@
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
+import { NftFailureBoundary } from '~/components/NftFailureFallback/NftFailureBoundary';
 import { NftFailureFallback } from '~/components/NftFailureFallback/NftFailureFallback';
-import { ReportingErrorBoundary } from '~/contexts/boundary/ReportingErrorBoundary';
 import { CouldNotRenderNftError } from '~/errors/CouldNotRenderNftError';
 import { BigNftFragment$key } from '~/generated/BigNftFragment.graphql';
 import { BigNftPreviewFragment$key } from '~/generated/BigNftPreviewFragment.graphql';
@@ -37,13 +37,14 @@ export function BigNft({ tokenRef }: BigNftProps) {
 
   return (
     <BigNftContainer>
-      <ReportingErrorBoundary
+      <NftFailureBoundary
         key={retryKey}
+        tokenId={token.dbid}
         fallback={<NftFailureFallback onRetry={refreshMetadata} refreshing={refreshingMetadata} />}
         onError={handleNftError}
       >
         <BigNftPreview onLoad={handleNftLoaded} tokenRef={token} />
-      </ReportingErrorBoundary>
+      </NftFailureBoundary>
     </BigNftContainer>
   );
 }

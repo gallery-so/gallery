@@ -6,8 +6,8 @@ import styled from 'styled-components';
 
 import Gradient from '~/components/core/Gradient/Gradient';
 import transitions from '~/components/core/transitions';
+import { NftFailureBoundary } from '~/components/NftFailureFallback/NftFailureBoundary';
 import { NftFailureFallback } from '~/components/NftFailureFallback/NftFailureFallback';
-import { ReportingErrorBoundary } from '~/contexts/boundary/ReportingErrorBoundary';
 import { useContentState } from '~/contexts/shimmer/ShimmerContext';
 import { NftPreviewFragment$key } from '~/generated/NftPreviewFragment.graphql';
 import { NftPreviewTokenFragment$key } from '~/generated/NftPreviewTokenFragment.graphql';
@@ -189,8 +189,9 @@ function NftPreview({
   const { aspectRatio } = useContentState();
 
   return (
-    <ReportingErrorBoundary
+    <NftFailureBoundary
       key={retryKey}
+      tokenId={token.dbid}
       fallback={
         <NftFailureWrapper>
           <NftFailureFallback refreshing={refreshingMetadata} onRetry={refreshMetadata} />
@@ -222,7 +223,7 @@ function NftPreview({
           </StyledNftPreview>
         </StyledA>
       </LinkToNftDetailView>
-    </ReportingErrorBoundary>
+    </NftFailureBoundary>
   );
 }
 
