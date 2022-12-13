@@ -9,8 +9,8 @@ type Props = {
   active: boolean;
   onClose: () => void;
 
-  onMouseLeave: () => void;
-  onMouseEnter: () => void;
+  onMouseLeave?: () => void;
+  onMouseEnter?: () => void;
 
   controlledByHover?: boolean;
 
