@@ -39,6 +39,8 @@ export function Dropdown({
   return (
     <>
       {/* Used to hijack click events on things outside of the dropdown */}
+      {/* We don't want this here if we're showing the dropdown with a hover */}
+      {/* otherwise we'll never get a mouseleave event on the triggering element */}
       {active && !controlledByHover && <Backdrop onClick={handleClose} />}
 
       <DropdownContainer
