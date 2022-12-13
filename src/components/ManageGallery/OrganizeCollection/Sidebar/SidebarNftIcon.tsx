@@ -9,7 +9,6 @@ import transitions from '~/components/core/transitions';
 import { NftFailureBoundary } from '~/components/NftFailureFallback/NftFailureBoundary';
 import { NftFailureFallback } from '~/components/NftFailureFallback/NftFailureFallback';
 import { SIDEBAR_ICON_DIMENSIONS } from '~/constants/sidebar';
-import { ReportingErrorBoundary } from '~/contexts/boundary/ReportingErrorBoundary';
 import { useCollectionEditorActions } from '~/contexts/collectionEditor/CollectionEditorContext';
 import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import { ContentIsLoadedEvent } from '~/contexts/shimmer/ShimmerContext';

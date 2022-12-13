@@ -6,7 +6,6 @@ import colors from '~/components/core/colors';
 import { BaseM } from '~/components/core/Text/Text';
 import { NftFailureBoundary } from '~/components/NftFailureFallback/NftFailureBoundary';
 import { NftFailureFallback } from '~/components/NftFailureFallback/NftFailureFallback';
-import { ReportingErrorBoundary } from '~/contexts/boundary/ReportingErrorBoundary';
 import { StagedItemDraggingFragment$key } from '~/generated/StagedItemDraggingFragment.graphql';
 import { StagedItemDraggingWrapperFragment$key } from '~/generated/StagedItemDraggingWrapperFragment.graphql';
 import { useNftRetry } from '~/hooks/useNftRetry';
