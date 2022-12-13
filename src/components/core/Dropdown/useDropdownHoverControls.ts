@@ -13,7 +13,6 @@ export function useDropdownHoverControls() {
 
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const handleDropdownMouseEnter = useCallback(() => {
-    console.log('Enter');
     showDropdown();
 
     if (timeoutRef.current) {
@@ -24,7 +23,6 @@ export function useDropdownHoverControls() {
   }, [showDropdown]);
 
   const handleDropdownMouseLeave = useCallback(() => {
-    console.log('Leave');
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
