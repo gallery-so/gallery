@@ -1,13 +1,15 @@
 import { useMemo, useState } from 'react';
-import { useLazyLoadQuery } from 'react-relay';
+import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
-import { useAccount } from 'wagmi';
 
 import colors from '~/components/core/colors';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { TitleXS } from '~/components/core/Text/Text';
-import { MerchType, RedeemModalQuery } from '~/generated/RedeemModalQuery.graphql';
+import {
+  MerchType,
+  RedeemModalQueryFragment$key,
+} from '~/generated/RedeemModalQueryFragment.graphql';
 
 import RedeemedPage from './RedeemedPage';
 import ToRedeemPage from './ToRedeemPage';
@@ -28,50 +30,41 @@ export type MerchToken = {
   name?: string;
 };
 
-export default function RedeemModal() {
-  const { address } = useAccount();
+type Props = {
+  queryRef: RedeemModalQueryFragment$key;
+};
 
-  const query = useLazyLoadQuery<RedeemModalQuery>(
+export default function RedeemModal({ queryRef }: Props) {
+  const queryFragment = useFragment(
     graphql`
-      query RedeemModalQuery($wallet: Address!) {
-        merchTokens: getMerchTokens(wallet: $wallet) {
-          __typename
-          ... on MerchTokensPayload {
-            tokens {
-              ... on MerchToken {
-                tokenId
-                objectType
-                discountCode
-                redeemed
-              }
-            }
-          }
+      fragment RedeemModalQueryFragment on MerchTokensPayload {
+        tokens {
+          tokenId
+          objectType
+          discountCode
+          redeemed
         }
       }
     `,
-    {
-      wallet: address ?? '',
-    }
+    queryRef
   );
 
-  const { merchTokens } = query;
+  const { tokens } = queryFragment;
 
   // add name key to each merchTokens
   const formattedTokens = useMemo(() => {
-    if (merchTokens?.__typename !== 'MerchTokensPayload') return [];
-
-    return merchTokens?.tokens?.map((token) => {
+    return tokens?.map((token) => {
       if (token) {
         return {
           ...token,
           name: MERCHS_NAMING[token.objectType as keyof typeof MERCHS_NAMING],
+          tokenId: token.tokenId,
+          discountCode: token.discountCode,
         };
       }
       return null;
     });
-  }, [merchTokens]);
-
-  console.log(formattedTokens);
+  }, [tokens]);
 
   const [activeTab, setActiveTab] = useState<RedeemTab>('to redeem');
 

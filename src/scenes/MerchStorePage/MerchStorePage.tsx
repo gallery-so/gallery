@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useCallback } from 'react';
+import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 import styled from 'styled-components';
+import { useAccount } from 'wagmi';
 
 import breakpoints from '~/components/core/breakpoints';
 import { Button } from '~/components/core/Button/Button';
@@ -7,6 +9,10 @@ import colors from '~/components/core/colors';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { TitleM } from '~/components/core/Text/Text';
 import { GLOBAL_FOOTER_HEIGHT } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
+import { MerchStorePageQuery } from '~/generated/MerchStorePageQuery.graphql';
+import { MerchStorePageQueryFragment$key } from '~/generated/MerchStorePageQueryFragment.graphql';
+import useAuthModal from '~/hooks/useAuthModal';
+import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
 import LogoBracketLeft from '~/icons/LogoBracketLeft';
 import LogoBracketRight from '~/icons/LogoBracketRight';
 
@@ -53,8 +59,55 @@ export const merchItems = [
   },
 ];
 
-export default function MerchStorePage() {
-  const showRedeemModal = useRedeemModal();
+type Props = {
+  queryRef: MerchStorePageQueryFragment$key;
+};
+
+export default function MerchStorePage({ queryRef }: Props) {
+  const { address } = useAccount();
+  const query = useLazyLoadQuery<MerchStorePageQuery>(
+    graphql`
+      query MerchStorePageQuery($wallet: Address!) {
+        merchTokens: getMerchTokens(wallet: $wallet) @required(action: THROW) {
+          __typename
+          ...useRedeemModalQueryFragment
+        }
+
+        viewer {
+          ... on Viewer {
+            __typename
+          }
+        }
+      }
+    `,
+    {
+      wallet: address ?? '',
+    }
+  );
+
+  const userQuery = useFragment(
+    graphql`
+      fragment MerchStorePageQueryFragment on Query {
+        ...useLoggedInUserIdFragment
+      }
+    `,
+    queryRef
+  );
+
+  const { merchTokens } = query;
+  const showAuthModal = useAuthModal();
+  const showRedeemModal = useRedeemModal(merchTokens);
+
+  const loggedInUserId = useLoggedInUserId(userQuery);
+
+  const handleShowRedeemModal = useCallback(() => {
+    if (!loggedInUserId) {
+      showAuthModal();
+      return;
+    }
+
+    showRedeemModal();
+  }, [loggedInUserId, showRedeemModal, showAuthModal]);
 
   return (
     <StyledPage>
@@ -67,7 +120,7 @@ export default function MerchStorePage() {
         </HStack>
       </StyledLogoContainer>
       <StyledButtonContainer>
-        <StyledButton onClick={showRedeemModal}>Redeem</StyledButton>
+        <StyledButton onClick={handleShowRedeemModal}>Redeem</StyledButton>
       </StyledButtonContainer>
       <StyledItemsContainer>
         {merchItems.map((item) => (

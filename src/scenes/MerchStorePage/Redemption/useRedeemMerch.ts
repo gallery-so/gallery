@@ -1,6 +1,7 @@
 import { signMessage } from '@wagmi/core';
 import { useCallback } from 'react';
 import { graphql } from 'react-relay';
+import { SelectorStoreUpdater } from 'relay-runtime';
 import { useAccount } from 'wagmi';
 
 import { useToastActions } from '~/contexts/toast/ToastContext';
@@ -34,10 +35,35 @@ export default function useRedeemMerch() {
     async (tokenIds: string[]) => {
       try {
         const signature = await signMessage({
-          message: `Gallery uses this that you own the following merch token IDs: ${tokenIds.join(
+          message: `Gallery uses this cryptographic signature in place of a password: [${tokenIds.join(
             ', '
-          )}`,
+          )}]`,
         });
+
+        const updater: SelectorStoreUpdater<useRedeemMerchMutation['response']> = (
+          store,
+          response
+        ) => {
+          if (response?.redeemMerch?.__typename === 'RedeemMerchPayload') {
+            const discountCodes = response?.redeemMerch?.discountCodes || [];
+
+            const root = store.get(`client:root:getMerchTokens(wallet:"${address}")`);
+
+            const tokens = root?.getLinkedRecords('tokens') || [];
+
+            // assign the discount code to the token
+            tokens.forEach((token) => {
+              const tokenId = token.getValue('tokenId');
+              const discountCode = discountCodes.find(
+                (discountCode) => discountCode.tokenId === tokenId
+              );
+
+              if (discountCode) {
+                token.setValue(discountCode.code, 'discountCode').setValue(true, 'redeemed');
+              }
+            });
+          }
+        };
 
         const response = await redeemMerch({
           variables: {
@@ -51,24 +77,32 @@ export default function useRedeemMerch() {
               signature,
             },
           },
+          updater,
         });
 
         if (response?.redeemMerch?.__typename === 'ErrInvalidInput') {
           pushToast({
             message: 'Something went wrong',
-            autoClose: false,
+          });
+          return;
+        }
+
+        if (
+          response?.redeemMerch?.__typename === 'RedeemMerchPayload' &&
+          response?.redeemMerch?.discountCodes?.length === 0
+        ) {
+          pushToast({
+            message: 'Something went wrong',
           });
           return;
         }
 
         pushToast({
           message: 'Successfully redeemed merch',
-          autoClose: false,
         });
       } catch (error) {
         pushToast({
           message: 'Something went wrong',
-          autoClose: false,
         });
       }
     },
