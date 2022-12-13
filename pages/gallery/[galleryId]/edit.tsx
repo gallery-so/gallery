@@ -21,7 +21,7 @@ function NewEditGalleryPage() {
 
   const query = useLazyLoadQuery<editGalleryPageNewQuery>(
     graphql`
-      query editGalleryPageNewQuery {
+      query editGalleryPageNewQuery($galleryId: DBID!) {
         viewer {
           ... on Viewer {
             user {
