@@ -117,7 +117,7 @@ export function ProfileDropdownContent({
   return (
     <>
       <Dropdown
-        controlledByHover
+        isActivatedByHover
         position="left"
         active={shouldShowDropdown}
         onClose={onClose}

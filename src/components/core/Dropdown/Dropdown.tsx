@@ -12,7 +12,7 @@ type Props = {
   onMouseLeave?: () => void;
   onMouseEnter?: () => void;
 
-  controlledByHover?: boolean;
+  isActivatedByHover?: boolean;
 
   children?: ReactNode;
   position: 'right' | 'left' | 'full-width';
@@ -25,7 +25,7 @@ export function Dropdown({
   position,
   onMouseLeave,
   onMouseEnter,
-  controlledByHover,
+  isActivatedByHover,
 }: Props) {
   const handleClose = useCallback<MouseEventHandler>(
     (event) => {
@@ -41,7 +41,7 @@ export function Dropdown({
       {/* Used to hijack click events on things outside of the dropdown */}
       {/* We don't want this here if we're showing the dropdown with a hover */}
       {/* otherwise we'll never get a mouseleave event on the triggering element */}
-      {active && !controlledByHover && <Backdrop onClick={handleClose} />}
+      {active && !isActivatedByHover && <Backdrop onClick={handleClose} />}
 
       <DropdownContainer
         position={position}
