@@ -12,6 +12,7 @@ import { useContentState } from '~/contexts/shimmer/ShimmerContext';
 import { NftPreviewFragment$key } from '~/generated/NftPreviewFragment.graphql';
 import { NftPreviewTokenFragment$key } from '~/generated/NftPreviewTokenFragment.graphql';
 import { useNftRetry } from '~/hooks/useNftRetry';
+import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import LinkToNftDetailView from '~/scenes/NftDetailPage/LinkToNftDetailView';
 import NftDetailAnimation from '~/scenes/NftDetailPage/NftDetailAnimation';
 import NftDetailGif from '~/scenes/NftDetailPage/NftDetailGif';
@@ -67,7 +68,6 @@ function NftPreview({
   tokenRef,
   previewSize,
   onClick,
-  hideLabelOnMobile = false,
   disableLiverender = false,
   columns = 3,
 }: Props) {
@@ -173,6 +173,8 @@ function NftPreview({
     handleNftLoaded,
   ]);
 
+  const isMobileOrLargeMobile = useIsMobileOrMobileLargeWindowWidth();
+
   const result = getVideoOrImageUrlForNftPreview(token);
   const isFirefoxSvg = isSvg(result?.urls?.large) && isFirefox();
   // stretch the image to take up the full-width if...
@@ -189,6 +191,7 @@ function NftPreview({
   return (
     <NftFailureBoundary
       key={retryKey}
+      tokenId={token.dbid}
       fallback={
         <NftFailureWrapper>
           <NftFailureFallback refreshing={refreshingMetadata} onRetry={refreshMetadata} />
@@ -211,7 +214,7 @@ function NftPreview({
             fullWidth={fullWidth}
           >
             {PreviewAsset}
-            {hideLabelOnMobile ? null : (
+            {isMobileOrLargeMobile ? null : (
               <StyledNftFooter>
                 <StyledNftLabel tokenRef={token} />
                 <StyledGradient type="bottom" direction="down" />

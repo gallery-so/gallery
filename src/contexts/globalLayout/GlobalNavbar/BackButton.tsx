@@ -20,8 +20,12 @@ export function BackButton({ onClick }: Props) {
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
-          <path d="M14.6667 11.3334L10 16L14.6667 20.6667" stroke="black" strokeMiterlimit="10" />
-          <path d="M10 16H22.6667" stroke="black" strokeMiterlimit="10" />
+          <path
+            d="M14.6667 11.3334L10 16L14.6667 20.6667"
+            stroke="currentColor"
+            strokeMiterlimit="10"
+          />
+          <path d="M10 16H22.6667" stroke="currentColor" strokeMiterlimit="10" />
         </StyledSvg>
       }
     />

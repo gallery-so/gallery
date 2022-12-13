@@ -4,6 +4,7 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import IconContainer from '~/components/core/Markdown/IconContainer';
 import Tooltip from '~/components/Tooltip/Tooltip';
 import { BadgeFragment$key } from '~/generated/BadgeFragment.graphql';
 
@@ -64,7 +65,16 @@ export default function Badge({ badgeRef }: Props) {
   return (
     <StyledInteractiveLink to={communityUrl}>
       <StyledTooltip text={name || ''} showTooltip={showTooltip} />
-      <StyledBadge src={imageURL} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseExit} />
+      <IconContainer
+        size="md"
+        icon={
+          <StyledBadge
+            src={imageURL}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseExit}
+          />
+        }
+      />
     </StyledInteractiveLink>
   );
 }

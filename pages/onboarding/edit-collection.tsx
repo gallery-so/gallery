@@ -135,6 +135,7 @@ function LazyLoadedCollectionEditorOnboarding({ collectionId }: Props) {
     >
       <CollectionEditor
         queryRef={query}
+        hasUnsavedChanges={hasUnsavedChange}
         onValidChange={setIsCollectionValid}
         onHasUnsavedChange={setHasUnsavedChange}
       />

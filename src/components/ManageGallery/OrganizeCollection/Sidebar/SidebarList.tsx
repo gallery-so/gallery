@@ -6,6 +6,7 @@ import { readInlineData } from 'relay-runtime';
 import styled from 'styled-components';
 
 import colors from '~/components/core/colors';
+import IconContainer from '~/components/core/Markdown/IconContainer';
 import { TitleXS } from '~/components/core/Text/Text';
 import { ExpandedIcon } from '~/components/ManageGallery/OrganizeCollection/Sidebar/ExpandedIcon';
 import SidebarNftIcon from '~/components/ManageGallery/OrganizeCollection/Sidebar/SidebarNftIcon';
@@ -89,7 +90,11 @@ function CollectionTitle({
                 setSpamPreferenceForCollection(row.address, selectedView === 'Collected');
               }}
             >
-              {selectedView === 'Hidden' ? <ShowIcon /> : <HideIcon />}
+              <IconContainer
+                stacked
+                size="sm"
+                icon={selectedView === 'Hidden' ? <ShowIcon /> : <HideIcon />}
+              />
             </ShowHideContainer>
             <StyledTooltip
               text={selectedView === 'Hidden' ? 'Show' : 'Hide'}

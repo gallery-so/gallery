@@ -19,7 +19,6 @@ import formatError from '~/errors/formatError';
 import { organizeCollectionPageQuery } from '~/generated/organizeCollectionPageQuery.graphql';
 import useCreateCollection from '~/hooks/api/collections/useCreateCollection';
 import { getTokenIdsFromCollection } from '~/utils/collectionLayout';
-import noop from '~/utils/noop';
 
 function LazyLoadedCollectionEditor() {
   const query = useLazyLoadQuery<organizeCollectionPageQuery>(
@@ -174,6 +173,8 @@ function LazyLoadedCollectionEditor() {
     hasShownAddCollectionNameAndDescriptionModal.current = true;
   }, [showModal, stagedCollectionState, collectionMetadata.tokenSettings, galleryId, push]);
 
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+
   return (
     <FullPageStep
       withBorder
@@ -191,7 +192,8 @@ function LazyLoadedCollectionEditor() {
       <CollectionEditor
         queryRef={query}
         onValidChange={setIsCollectionValid}
-        onHasUnsavedChange={noop}
+        hasUnsavedChanges={hasUnsavedChanges}
+        onHasUnsavedChange={setHasUnsavedChanges}
       />
     </FullPageStep>
   );

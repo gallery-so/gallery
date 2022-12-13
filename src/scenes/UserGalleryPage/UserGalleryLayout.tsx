@@ -74,7 +74,7 @@ export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
 export const StyledUserGalleryLayout = styled(VStack)`
   width: 100%;
   max-width: 1200px;
-  padding: 0 0 32px;
+  padding: 16px 0 32px;
 
   @media only screen and ${breakpoints.tablet} {
     padding: 24px 0 32px;

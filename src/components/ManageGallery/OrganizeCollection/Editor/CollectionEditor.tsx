@@ -37,6 +37,7 @@ function convertNftsToEditModeTokens(
 }
 
 type Props = {
+  hasUnsavedChanges: boolean;
   queryRef: CollectionEditorFragment$key;
   onValidChange: (valid: boolean) => void;
   onHasUnsavedChange: (hasUnsavedChanges: boolean) => void;
@@ -100,7 +101,12 @@ const collectionEditorViewerFragment = graphql`
   }
 `;
 
-function CollectionEditor({ queryRef, onValidChange, onHasUnsavedChange }: Props) {
+function CollectionEditor({
+  queryRef,
+  onValidChange,
+  onHasUnsavedChange,
+  hasUnsavedChanges,
+}: Props) {
   const query = useFragment(
     graphql`
       fragment CollectionEditorFragment on Query {
@@ -125,7 +131,7 @@ function CollectionEditor({ queryRef, onValidChange, onHasUnsavedChange }: Props
   }
 
   useNotOptimizedForMobileWarning();
-  useConfirmationMessageBeforeClose();
+  useConfirmationMessageBeforeClose(hasUnsavedChanges);
   useCheckUnsavedChanges(onHasUnsavedChange);
 
   const stagedCollectionState = useStagedCollectionState();

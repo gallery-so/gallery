@@ -64,6 +64,7 @@ function StagedNftImageDraggingWrapper({ tokenRef, size }: StagedNftImageDraggin
   return (
     <NftFailureBoundary
       key={retryKey}
+      tokenId={token.dbid}
       fallback={<NftFailureFallback refreshing={false} onRetry={noop} />}
       onError={handleNftError}
     >

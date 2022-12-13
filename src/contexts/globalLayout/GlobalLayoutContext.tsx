@@ -18,6 +18,7 @@ import styled from 'styled-components';
 
 import NavLink from '~/components/core/NavLink/NavLink';
 import { FADE_TRANSITION_TIME_MS } from '~/components/FadeTransitioner/FadeTransitioner';
+import { MAINTENANCE_BANNER_6_18_STORAGE_KEY } from '~/constants/storageKeys';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { GlobalLayoutContextNavbarFragment$key } from '~/generated/GlobalLayoutContextNavbarFragment.graphql';
 import { GlobalLayoutContextQuery } from '~/generated/GlobalLayoutContextQuery.graphql';
@@ -370,10 +371,9 @@ function GlobalNavbarWithFadeEnabled({
     >
       {isBannerVisible && (
         <Banner
-          localStorageKey="GALLERY_POAP_SUPPORT_BANNER"
+          localStorageKey={MAINTENANCE_BANNER_6_18_STORAGE_KEY}
           text=""
           queryRef={query}
-          actionComponent={<NavLink to={{ pathname: '/edit' }}>Add Poaps</NavLink>}
           dismissOnActionComponentClick
           requireAuth
         />

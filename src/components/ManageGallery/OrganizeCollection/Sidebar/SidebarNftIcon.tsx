@@ -168,6 +168,7 @@ function SidebarNftIcon({
   return (
     <NftFailureBoundary
       key={retryKey}
+      tokenId={token.dbid}
       fallback={
         <StyledSidebarNftIcon backgroundColorOverride={backgroundColorOverride}>
           <NftFailureFallback
