@@ -96,7 +96,7 @@ export default function ThankYouTokenPage() {
               Ethereum. 1 mint per address.
             </BaseM>
             <BaseM>
-              Eligibility criteria: Our top 200 most active users in the last 60 days and any users
+              Eligibility criteria: Our top 200 most active users in the last 60 days, and anyone
               who used our social features (admired, commented, or followed on Gallery) before
               12/12/22 were included in the snapshot.
             </BaseM>
