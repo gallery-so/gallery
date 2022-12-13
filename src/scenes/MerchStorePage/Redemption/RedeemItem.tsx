@@ -13,7 +13,6 @@ type Props = {
 
 export default function RedeemItem({ checked, index, name, onChange }: Props) {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(event.target.checked);
     onChange(index, event.target.checked);
   };
 
