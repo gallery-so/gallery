@@ -1,5 +1,9 @@
 name: bundle-diff
-on: [pull_request, push]
+on:
+  pull_request:
+  push:
+    branches:
+      - 'main'
 jobs:
   bundle-diff:
     runs-on: ubuntu-latest
