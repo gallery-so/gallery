@@ -95,11 +95,6 @@ export default function useMintContractWithQuantity({
 
       const price = await getTokenPrice(contract);
       setTokenPrice(price);
-
-      // console.log('Total supply: ', sup);
-      // console.log('Used supply: ', used);
-      // console.log('User currently owns: ', userOwnedSupply);
-      // console.log('Token price: ', price);
     }
 
     effect();

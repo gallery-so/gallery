@@ -41,11 +41,6 @@ export function FeedEventSocializeSection({
         viewer {
           ... on Viewer {
             __typename
-            user {
-              id
-              dbid
-              username
-            }
           }
         }
 

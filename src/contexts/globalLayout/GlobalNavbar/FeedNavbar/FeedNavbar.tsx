@@ -5,8 +5,8 @@ import { graphql } from 'relay-runtime';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { FeedMode } from '~/components/Feed/Feed';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
-import { FeedLeftContent } from '~/contexts/globalLayout/GlobalNavbar/FeedNavbar/FeedLeftContent';
 import { NavbarLink } from '~/contexts/globalLayout/GlobalNavbar/NavbarLink';
+import { ProfileDropdown } from '~/contexts/globalLayout/GlobalNavbar/ProfileDropdown/ProfileDropdown';
 import { SignInButton } from '~/contexts/globalLayout/GlobalNavbar/SignInButton';
 import {
   NavbarCenterContent,
@@ -32,7 +32,7 @@ export function FeedNavbar({ queryRef, onChange, feedMode }: FeedNavbarProps) {
           }
         }
 
-        ...FeedLeftContentFragment
+        ...ProfileDropdownFragment
       }
     `,
     queryRef
@@ -64,7 +64,7 @@ export function FeedNavbar({ queryRef, onChange, feedMode }: FeedNavbarProps) {
   return (
     <StandardNavbarContainer>
       <NavbarLeftContent>
-        <FeedLeftContent queryRef={query} />
+        <ProfileDropdown queryRef={query} />
       </NavbarLeftContent>
 
       <NavbarCenterContent>

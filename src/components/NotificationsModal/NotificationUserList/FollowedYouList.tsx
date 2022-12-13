@@ -22,6 +22,8 @@ export function FollowedYouList({ notificationRef }: FollowedYouListProps) {
       @refetchable(queryName: "RefetchableFollowedYouListFragment") {
         followers(last: $notificationUsersLast, before: $notificationUsersBefore)
           @connection(key: "FollowedYouListFragment_followers") {
+          # Relay doesn't allow @connection w/o edges so we must query for it
+          # eslint-disable-next-line relay/unused-fields
           edges {
             __typename
           }

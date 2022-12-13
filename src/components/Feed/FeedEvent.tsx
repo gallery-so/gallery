@@ -1,4 +1,3 @@
-import { ErrorBoundary } from '@sentry/nextjs';
 import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
@@ -7,6 +6,8 @@ import breakpoints from '~/components/core/breakpoints';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { FEED_EVENT_ROW_WIDTH_DESKTOP } from '~/components/Feed/dimensions';
 import { FeedEventSocializeSection } from '~/components/Feed/Socialize/FeedEventSocializeSection';
+import { ReportingErrorBoundary } from '~/contexts/boundary/ReportingErrorBoundary';
+import { TriedToRenderUnsupportedFeedEvent } from '~/errors/TriedToRenderUnsupportedFeedEvent';
 import { FeedEventFragment$key } from '~/generated/FeedEventFragment.graphql';
 import { FeedEventQueryFragment$key } from '~/generated/FeedEventQueryFragment.graphql';
 import { FeedEventWithErrorBoundaryFragment$key } from '~/generated/FeedEventWithErrorBoundaryFragment.graphql';
@@ -22,7 +23,6 @@ import CollectorsNoteAddedToTokenFeedEvent from './Events/CollectorsNoteAddedToT
 import TokensAddedToCollectionFeedEvent from './Events/TokensAddedToCollectionFeedEvent';
 import UserFollowedUsersFeedEvent from './Events/UserFollowedUsersFeedEvent';
 import { FeedMode } from './Feed';
-import FeedEventErrorBoundary from './FeedEventErrorBoundary';
 
 type FeedEventProps = {
   eventRef: FeedEventFragment$key;
@@ -34,12 +34,10 @@ function FeedEvent({ eventRef, queryRef, feedMode }: FeedEventProps) {
   const event = useFragment(
     graphql`
       fragment FeedEventFragment on FeedEvent {
+        dbid
         caption
         eventData {
           __typename
-
-          action
-          eventTime
 
           ... on CollectionCreatedFeedEventData {
             ...CollectionCreatedFeedEventFragment
@@ -122,7 +120,7 @@ function FeedEvent({ eventRef, queryRef, feedMode }: FeedEventProps) {
     // case 'UserCreatedFeedEventData':
 
     default:
-      throw new Error('Tried to render unsupported feed event');
+      throw new TriedToRenderUnsupportedFeedEvent(event.dbid);
   }
 }
 
@@ -180,21 +178,23 @@ export default function FeedEventWithBoundary({
   }, [index, onPotentialLayoutShift]);
 
   return (
-    <FeedEventErrorBoundary>
+    <ReportingErrorBoundary fallback={<></>}>
       <FeedEventContainer gap={16}>
         <FeedEvent eventRef={event} queryRef={query} feedMode={feedMode} />
 
         {shouldShowAdmireComment && (
-          <ErrorBoundary fallback={<></>}>
+          // We have another boundary here in case the socialize section fails
+          // and the rest of the feed event loads
+          <ReportingErrorBoundary fallback={<></>}>
             <FeedEventSocializeSection
               eventRef={event}
               queryRef={query}
               onPotentialLayoutShift={handlePotentialLayoutShift}
             />
-          </ErrorBoundary>
+          </ReportingErrorBoundary>
         )}
       </FeedEventContainer>
-    </FeedEventErrorBoundary>
+    </ReportingErrorBoundary>
   );
 }
 
@@ -203,11 +203,12 @@ const FeedEventContainer = styled(VStack)`
 
   border-bottom: 1px solid ${colors.faint};
 
-  padding: 24px 16px;
+  padding: 24px 0px;
 
   cursor: pointer;
 
   @media only screen and ${breakpoints.desktop} {
+    padding: 24px 16px;
     max-width: initial;
     width: ${FEED_EVENT_ROW_WIDTH_DESKTOP}px;
   }

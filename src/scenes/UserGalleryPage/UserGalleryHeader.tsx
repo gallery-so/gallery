@@ -37,7 +37,6 @@ function UserGalleryHeader({
     graphql`
       fragment UserGalleryHeaderFragment on GalleryUser {
         username
-        dbid
         bio
         badges {
           name

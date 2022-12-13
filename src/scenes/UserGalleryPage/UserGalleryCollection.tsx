@@ -193,7 +193,7 @@ const StyledOptionsContainer = styled(HStack)`
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  height: 24px;
+  height: 32px;
 
   transition: opacity 200ms ease-in-out;
   opacity: 0;

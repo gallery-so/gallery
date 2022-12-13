@@ -1,4 +1,5 @@
 import { Route } from 'nextjs-routes';
+import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
@@ -14,10 +15,11 @@ import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { CollectorsNoteAddedToCollectionFeedEventFragment$key } from '~/generated/CollectorsNoteAddedToCollectionFeedEventFragment.graphql';
 import { CollectorsNoteAddedToCollectionFeedEventQueryFragment$key } from '~/generated/CollectorsNoteAddedToCollectionFeedEventQueryFragment.graphql';
+import { removeNullValues } from '~/utils/removeNullValues';
 import { getTimeSince } from '~/utils/time';
 import unescape from '~/utils/unescape';
 
-import FeedEventTokenPreviews, { TokenToPreview } from '../FeedEventTokenPreviews';
+import FeedEventTokenPreviews from '../FeedEventTokenPreviews';
 import { StyledEvent, StyledEventContent, StyledEventHeader, StyledTime } from './EventStyles';
 
 type Props = {
@@ -41,10 +43,7 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({
           dbid
           name
           tokens(limit: $visibleTokensPerFeedEvent) @required(action: THROW) {
-            token {
-              dbid
-            }
-            ...EventMediaFragment
+            ...FeedEventTokenPreviewsFragment
           }
         }
         newCollectorsNote
@@ -68,6 +67,10 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({
   };
 
   const track = useTrack();
+
+  const nonNullTokens = useMemo(() => {
+    return removeNullValues(event.collection.tokens);
+  }, [event.collection.tokens]);
 
   // [GAL-608] Bring this back once we fix perf around tokenURI
   // const numAdditionalPieces = event.collection.tokens.length - MAX_PIECES_DISPLAYED_PER_FEED_EVENT;
@@ -106,7 +109,7 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({
             </StyledQuote>
             <FeedEventTokenPreviews
               isInCaption={Boolean(event.newCollectorsNote)}
-              tokensToPreview={event.collection.tokens as TokenToPreview[]}
+              tokenToPreviewRefs={nonNullTokens}
             />
           </StyledEventContent>
           {/* [GAL-608] Bring this back once we fix perf around tokenURI

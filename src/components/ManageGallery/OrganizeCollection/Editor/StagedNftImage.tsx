@@ -23,11 +23,6 @@ function StagedNftImage({ tokenRef, size, hideLabel, setNodeRef, onLoad, ...prop
   const token = useFragment(
     graphql`
       fragment StagedNftImageFragment on Token {
-        name
-        contract {
-          name
-        }
-
         ...StagedNftImageVideoFragment
         ...StagedNftImageImageFragment
         ...getVideoOrImageUrlForNftPreviewFragment

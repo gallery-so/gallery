@@ -23,7 +23,6 @@ import { createCollectionQuery } from '~/generated/createCollectionQuery.graphql
 import useCreateCollection from '~/hooks/api/collections/useCreateCollection';
 import GenericActionModal from '~/scenes/Modals/GenericActionModal';
 import { getTokenIdsFromCollection } from '~/utils/collectionLayout';
-import noop from '~/utils/noop';
 
 type Props = {
   galleryId: string;
@@ -34,7 +33,7 @@ function LazyLoadedCollectionEditor({ galleryId }: Props) {
     graphql`
       query createCollectionQuery {
         ...CollectionEditorFragment
-        ...CollectionSaveButtonWithCaptionFragment
+        ...CollectionCreateNavbarFragment
       }
     `,
     {}
@@ -167,6 +166,8 @@ function LazyLoadedCollectionEditor({ galleryId }: Props) {
     hasShownAddCollectionModal.current = true;
   }, [showModal, stagedCollectionState, collectionMetadata.tokenSettings, galleryId, push]);
 
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+
   return (
     <FullPageStep
       withBorder
@@ -185,7 +186,8 @@ function LazyLoadedCollectionEditor({ galleryId }: Props) {
       <CollectionEditor
         queryRef={query}
         onValidChange={setIsCollectionValid}
-        onHasUnsavedChange={noop}
+        hasUnsavedChanges={hasUnsavedChanges}
+        onHasUnsavedChange={setHasUnsavedChanges}
       />
     </FullPageStep>
   );

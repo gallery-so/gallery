@@ -144,3 +144,8 @@ export default class MerkleTree {
     return Buffer.concat([...args].sort(Buffer.compare));
   }
 }
+
+export function generateMerkleProof(address: string, allowlist: string[]) {
+  const merkleTree = new MerkleTree(allowlist);
+  return merkleTree.getHexProof(address);
+}

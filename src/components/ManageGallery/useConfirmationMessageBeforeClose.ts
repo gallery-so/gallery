@@ -1,7 +1,11 @@
 import { useEffect } from 'react';
 
-export default function useConfirmationMessageBeforeClose() {
+export default function useConfirmationMessageBeforeClose(enabled: boolean) {
   useEffect(() => {
+    if (!enabled) {
+      return;
+    }
+
     const message =
       'Are you sure you want to quit editing the collection? You have unsaved changes.';
     const savedOnBeforeUnload = window.onbeforeunload;
@@ -17,5 +21,5 @@ export default function useConfirmationMessageBeforeClose() {
     return () => {
       window.onbeforeunload = savedOnBeforeUnload;
     };
-  }, []);
+  }, [enabled]);
 }

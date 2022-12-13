@@ -33,9 +33,6 @@ function EmailVerificationStatus({ setIsEditMode, queryRef }: Props) {
       @refetchable(queryName: "RefetchableEmailVerificationStatusFragment") {
         viewer {
           ... on Viewer {
-            user {
-              id
-            }
             email {
               email
               verificationStatus

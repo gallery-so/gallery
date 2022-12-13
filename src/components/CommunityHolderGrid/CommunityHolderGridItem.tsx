@@ -11,20 +11,23 @@ import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext'
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { CouldNotRenderNftError } from '~/errors/CouldNotRenderNftError';
 import { CommunityHolderGridItemFragment$key } from '~/generated/CommunityHolderGridItemFragment.graphql';
+import { CommunityHolderGridItemQueryFragment$key } from '~/generated/CommunityHolderGridItemQueryFragment.graphql';
 import TokenDetailView from '~/scenes/TokenDetailPage/TokenDetailView';
 import { getOpenseaExternalUrl } from '~/utils/getOpenseaExternalUrl';
 import getVideoOrImageUrlForNftPreview from '~/utils/graphql/getVideoOrImageUrlForNftPreview';
 import { graphqlTruncateUniversalUsername } from '~/utils/wallet';
 
+import HoverCardOnUsername from '../HoverCard/HoverCardOnUsername';
+
 type Props = {
   holderRef: CommunityHolderGridItemFragment$key;
+  queryRef: CommunityHolderGridItemQueryFragment$key;
 };
 
-export default function CommunityHolderGridItem({ holderRef }: Props) {
+export default function CommunityHolderGridItem({ holderRef, queryRef }: Props) {
   const token = useFragment(
     graphql`
       fragment CommunityHolderGridItemFragment on Token {
-        dbid
         name
         tokenId
         contract {
@@ -32,36 +35,26 @@ export default function CommunityHolderGridItem({ holderRef }: Props) {
             address
           }
         }
-        collectorsNote
-        media {
-          __typename
-          ... on ImageMedia {
-            previewURLs @required(action: NONE) {
-              large @required(action: NONE)
-            }
-          }
-          ... on VideoMedia {
-            previewURLs @required(action: NONE) {
-              large @required(action: NONE)
-            }
-          }
-          ... on UnknownMedia {
-            previewURLs @required(action: NONE) {
-              large @required(action: NONE)
-            }
-          }
-        }
         owner @required(action: THROW) {
           username @required(action: THROW)
           universal
           ...walletTruncateUniversalUsernameFragment
+          ...HoverCardOnUsernameFragment
         }
         ...getVideoOrImageUrlForNftPreviewFragment
         ...TokenDetailViewFragment
-        ...NftPreviewAssetFragment
       }
     `,
     holderRef
+  );
+
+  const query = useFragment(
+    graphql`
+      fragment CommunityHolderGridItemQueryFragment on Query {
+        ...HoverCardOnUsernameFollowFragment
+      }
+    `,
+    queryRef
   );
 
   const [isFailedToLoad, setIsFailedToLoad] = useState(false);
@@ -132,9 +125,11 @@ export default function CommunityHolderGridItem({ holderRef }: Props) {
         {owner?.universal ? (
           <InteractiveLink href={openseaProfileLink}>{usernameWithFallback}</InteractiveLink>
         ) : (
-          <InteractiveLink to={{ pathname: '/[username]', query: { username: owner.username } }}>
-            {usernameWithFallback}
-          </InteractiveLink>
+          <HoverCardOnUsername userRef={token.owner} queryRef={query}>
+            <InteractiveLink to={{ pathname: '/[username]', query: { username: owner.username } }}>
+              {usernameWithFallback}
+            </InteractiveLink>
+          </HoverCardOnUsername>
         )}
       </VStack>
     </VStack>

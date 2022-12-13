@@ -30,7 +30,6 @@ function LazyLoadedCollectionEditor({ galleryId, collectionId }: Props) {
       query editCollectionQuery($collectionId: DBID!) {
         ...CollectionEditorFragment
         ...CollectionEditorNavbarFragment
-        ...GalleryAuthenticatedRouteFragment
 
         ... on Query {
           collectionById(id: $collectionId) {
@@ -141,6 +140,7 @@ function LazyLoadedCollectionEditor({ galleryId, collectionId }: Props) {
       <CollectionEditor
         queryRef={query}
         onValidChange={setIsCollectionValid}
+        hasUnsavedChanges={hasUnsavedChange}
         onHasUnsavedChange={setHasUnsavedChange}
       />
     </FullPageStep>
