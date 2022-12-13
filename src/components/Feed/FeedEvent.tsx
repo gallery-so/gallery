@@ -203,11 +203,12 @@ const FeedEventContainer = styled(VStack)`
 
   border-bottom: 1px solid ${colors.faint};
 
-  padding: 24px 16px;
+  padding: 24px 0px;
 
   cursor: pointer;
 
   @media only screen and ${breakpoints.desktop} {
+    padding: 24px 16px;
     max-width: initial;
     width: ${FEED_EVENT_ROW_WIDTH_DESKTOP}px;
   }
