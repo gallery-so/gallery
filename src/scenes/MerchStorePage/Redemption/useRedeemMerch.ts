@@ -8,6 +8,11 @@ import { useToastActions } from '~/contexts/toast/ToastContext';
 import { useRedeemMerchMutation } from '~/generated/useRedeemMerchMutation.graphql';
 import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 
+type Props = {
+  tokenIds: string[];
+  onSuccess: () => void;
+};
+
 export default function useRedeemMerch() {
   const { address } = useAccount();
 
@@ -32,7 +37,7 @@ export default function useRedeemMerch() {
   const { pushToast } = useToastActions();
 
   return useCallback(
-    async (tokenIds: string[]) => {
+    async ({ tokenIds, onSuccess }: Props) => {
       try {
         const signature = await signMessage({
           message: `Gallery uses this cryptographic signature in place of a password: [${tokenIds.join(
@@ -100,6 +105,8 @@ export default function useRedeemMerch() {
         pushToast({
           message: 'Successfully redeemed merch',
         });
+
+        onSuccess();
       } catch (error) {
         pushToast({
           message: 'Something went wrong',

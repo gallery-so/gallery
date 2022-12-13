@@ -108,7 +108,7 @@ export default function RedeemModal({ queryRef }: Props) {
         </StyledRedeemTab>
       </StyledRedeemHeaderContainer>
       {activeTab === 'to redeem' ? (
-        <ToRedeemPage tokens={redeemableTokens} />
+        <ToRedeemPage tokens={redeemableTokens} onToggle={toggleTab} />
       ) : (
         <RedeemedPage tokens={redeemedTokens} />
       )}

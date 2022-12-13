@@ -15,9 +15,10 @@ type MerchItemTypesWithChecked = MerchToken & { checked: boolean };
 
 type Props = {
   tokens: MerchToken[];
+  onToggle: () => void;
 };
 
-export default function ToRedeemPage({ tokens }: Props) {
+export default function ToRedeemPage({ tokens, onToggle }: Props) {
   const redeemMerch = useRedeemMerch();
   const [userItemsWithChecked, setUserItemsWithChecked] = useState<MerchItemTypesWithChecked[]>([]);
   const { hideModal } = useModalActions();
@@ -38,8 +39,11 @@ export default function ToRedeemPage({ tokens }: Props) {
     // Get the item ids
     const itemIds = itemsToRedeem.map((item) => item.tokenId.toString());
 
-    redeemMerch(itemIds);
-  }, [redeemMerch, userItemsWithChecked]);
+    redeemMerch({
+      tokenIds: itemIds,
+      onSuccess: onToggle,
+    });
+  }, [onToggle, redeemMerch, userItemsWithChecked]);
 
   const isRedeemButtonDisabled = useMemo(() => {
     return !userItemsWithChecked.some((item) => item.checked);
