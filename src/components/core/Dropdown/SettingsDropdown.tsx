@@ -2,7 +2,6 @@ import { ReactNode, useCallback, useState } from 'react';
 import styled from 'styled-components';
 
 import { Dropdown } from '~/components/core/Dropdown/Dropdown';
-import { useDropdownHoverControls } from '~/components/core/Dropdown/useDropdownHoverControls';
 import IconContainer from '~/components/core/Markdown/IconContainer';
 
 type Props = {
