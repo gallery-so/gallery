@@ -16,14 +16,6 @@ export function CollectionSearch({ queryRef }: CollectionSearchProps) {
   const query = useFragment(
     graphql`
       fragment CollectionSearchFragment on Query {
-        galleryById(id: $galleryId) {
-          ... on Gallery {
-            collections {
-              name
-            }
-          }
-        }
-
         ...CollectionSearchResultsFragment
       }
     `,

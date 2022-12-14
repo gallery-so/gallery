@@ -3,6 +3,7 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
+import { CollectionListItem } from '~/components/GalleryEditor/CollectionListItem';
 import { CollectionSearchResultsFragment$key } from '~/generated/CollectionSearchResultsFragment.graphql';
 import { removeNullValues } from '~/utils/removeNullValues';
 
@@ -18,8 +19,10 @@ export function CollectionSearchResults({ queryRef, searchQuery }: CollectionSea
         galleryById(id: $galleryId) {
           ... on Gallery {
             collections {
+              dbid
               name
-              hidden
+
+              ...CollectionListItemFragment
             }
           }
         }
@@ -37,13 +40,15 @@ export function CollectionSearchResults({ queryRef, searchQuery }: CollectionSea
       return nonNullCollections;
     }
 
-    return nonNullCollections.filter((collection) => collection.name?.includes(searchQuery));
+    return nonNullCollections.filter((collection) =>
+      collection.name?.toLocaleLowerCase().includes(searchQuery.toLowerCase())
+    );
   }, [nonNullCollections, searchQuery]);
 
   return (
     <VStack gap={2}>
       {filteredCollections.map((collection) => {
-        return <HStack>{collection.name}</HStack>;
+        return <CollectionListItem key={collection.dbid} collectionRef={collection} />;
       })}
     </VStack>
   );
