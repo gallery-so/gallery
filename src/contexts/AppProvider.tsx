@@ -11,7 +11,7 @@ import Boundary from './boundary/Boundary';
 import ErrorReportingProvider from './errorReporting/ErrorReportingContext';
 import GlobalLayoutContextProvider from './globalLayout/GlobalLayoutContext';
 import ModalProvider from './modal/ModalContext';
-import Snow from './Snow';
+import SnowProvider from './snow/SnowContext';
 import { SwrProvider } from './swr/SwrContext';
 import ToastProvider from './toast/ToastContext';
 
@@ -34,11 +34,12 @@ export default function AppProvider({ children, relayEnvironment }: Props) {
                   <GalleryNavigationProvider>
                     <ModalProvider>
                       <SyncTokensLockProvider>
-                        <GlobalLayoutContextProvider>
-                          <Snow />
-                          {isProd ? null : <Debugger />}
-                          {children}
-                        </GlobalLayoutContextProvider>
+                        <SnowProvider>
+                          <GlobalLayoutContextProvider>
+                            {isProd ? null : <Debugger />}
+                            {children}
+                          </GlobalLayoutContextProvider>
+                        </SnowProvider>
                       </SyncTokensLockProvider>
                     </ModalProvider>
                   </GalleryNavigationProvider>
