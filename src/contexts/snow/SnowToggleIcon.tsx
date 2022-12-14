@@ -9,7 +9,7 @@ export default function SnowToggleIcon() {
   const { isSnowEnabled, toggleSnow } = useSnowContext();
   return (
     <IconContainer
-      size="sm"
+      size="md"
       icon={<StyledSnowflakeIcon active={isSnowEnabled} />}
       onClick={toggleSnow}
     />
@@ -17,5 +17,5 @@ export default function SnowToggleIcon() {
 }
 
 const StyledSnowflakeIcon = styled(SnowflakeIcon)`
-  padding: 3px;
+  padding: 5px;
 `;
