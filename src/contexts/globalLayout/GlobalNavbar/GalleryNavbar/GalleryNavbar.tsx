@@ -88,7 +88,11 @@ export function GalleryNavbar({ queryRef, username }: Props) {
           )}
         </NavbarCenterContent>
         <NavbarRightContent>
-          {isLoggedInOnMobile ? null : <SnowToggleIcon />}
+          {
+            // hide if user is logged in on mobile. this is a very rare state
+            // but there are just too many icons in this scenario
+            isLoggedInOnMobile ? null : <SnowToggleIcon />
+          }
           <GalleryRightContent username={username} queryRef={query} />
         </NavbarRightContent>
       </StandardNavbarContainer>
