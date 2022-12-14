@@ -4,7 +4,7 @@ import { getGraphqlHost, getGraphqlPath } from '~/contexts/relay/relayFetchFunct
 
 export function mockGraphqlQuery(operationName: string, response: unknown) {
   return nock(getGraphqlHost())
-    .post(getGraphqlPath(), (body) => body.operationName === operationName)
+    .post(getGraphqlPath(operationName), (body) => body.operationName === operationName)
     .reply(200, {
       data: response,
     });
