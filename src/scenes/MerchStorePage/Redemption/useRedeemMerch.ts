@@ -39,6 +39,8 @@ export default function useRedeemMerch() {
 
   return useCallback(
     async ({ tokenIds, onSuccess }: Props) => {
+      if (!address) return;
+
       try {
         const signature = await signMessage({
           message: `Gallery uses this cryptographic signature in place of a password: [${tokenIds.join(
@@ -79,7 +81,7 @@ export default function useRedeemMerch() {
             input: {
               tokenIds,
               address: {
-                address: (address as string).toLowerCase(),
+                address: address.toLowerCase(),
                 chain: 'Ethereum',
               },
               walletType: 'EOA',
