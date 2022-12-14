@@ -91,14 +91,7 @@ export default function useRedeemMerch() {
           updater,
         });
 
-        if (response?.redeemMerch?.__typename === 'ErrInvalidInput') {
-          pushToast({
-            message: 'Failed to redeem merch',
-          });
-          return;
-        }
-
-        if (response?.redeemMerch?.__typename === 'RedeemMerchPayload' && !response?.redeemMerch) {
+        if (response?.redeemMerch?.__typename === 'ErrInvalidInput' || !response?.redeemMerch) {
           pushToast({
             message: 'Failed to redeem merch',
           });
