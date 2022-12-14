@@ -64,7 +64,7 @@ export function CollectionNavbar({ queryRef, username, collectionId }: Collectio
   const usernameRoute: Route = { pathname: '/[username]', query: { username } };
 
   const unescapedCollectionName = useMemo(
-    () => unescape(query.collectionById?.name ?? ''),
+    () => unescape(query.collectionById?.name ?? '') || 'untitled',
     [query.collectionById?.name]
   );
 
