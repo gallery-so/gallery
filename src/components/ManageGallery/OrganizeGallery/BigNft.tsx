@@ -39,6 +39,7 @@ export function BigNft({ tokenRef }: BigNftProps) {
     <BigNftContainer>
       <NftFailureBoundary
         key={retryKey}
+        tokenId={token.dbid}
         fallback={<NftFailureFallback onRetry={refreshMetadata} refreshing={refreshingMetadata} />}
         onError={handleNftError}
       >

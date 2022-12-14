@@ -3,7 +3,7 @@ import { graphql, useLazyLoadQuery } from 'react-relay';
 import { posterQuery } from '~/generated/posterQuery.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import GalleryAuthenticatedRoute from '~/scenes/_Router/GalleryAuthenticatedRoute';
-import PosterPage from '~/scenes/PosterPage/PosterPage';
+import PosterPage from '~/scenes/MintPages/PosterPage';
 
 export default function Poster() {
   const query = useLazyLoadQuery<posterQuery>(

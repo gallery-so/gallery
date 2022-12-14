@@ -46,6 +46,7 @@ export default function ItemPreview({
   const contract = useMintMerchContract();
 
   const { soldOut, userOwnedSupply } = useMintContractWithQuantity({
+    // @ts-expect-error: fix this later, related to web3 lib upgrade
     contract,
     tokenId,
   });
