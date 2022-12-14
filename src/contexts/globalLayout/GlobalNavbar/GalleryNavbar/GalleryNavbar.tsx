@@ -19,6 +19,7 @@ import {
   NavbarRightContent,
   StandardNavbarContainer,
 } from '~/contexts/globalLayout/GlobalNavbar/StandardNavbarContainer';
+import SnowToggleIcon from '~/contexts/snow/SnowToggleIcon';
 import { GalleryNavbarFragment$key } from '~/generated/GalleryNavbarFragment.graphql';
 import { isUsername3ac } from '~/hooks/oneOffs/useIs3acProfilePage';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
@@ -79,6 +80,7 @@ export function GalleryNavbar({ queryRef, username }: Props) {
           )}
         </NavbarCenterContent>
         <NavbarRightContent>
+          <SnowToggleIcon />
           <GalleryRightContent username={username} queryRef={query} />
         </NavbarRightContent>
       </StandardNavbarContainer>

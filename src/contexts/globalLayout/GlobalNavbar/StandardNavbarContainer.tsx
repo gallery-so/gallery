@@ -35,6 +35,8 @@ export const NavbarCenterContent = styled.div`
 export const NavbarRightContent = styled.div`
   display: flex;
   justify-content: flex-end;
+  align-items: center;
+  gap: 3px;
 
   min-width: 0;
   flex: 1 1 20%;
