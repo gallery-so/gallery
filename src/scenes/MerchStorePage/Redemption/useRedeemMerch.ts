@@ -1,7 +1,6 @@
 import { signMessage } from '@wagmi/core';
 import { useCallback } from 'react';
 import { graphql } from 'react-relay';
-import { SelectorStoreUpdater } from 'relay-runtime';
 import { useAccount } from 'wagmi';
 
 import { useToastActions } from '~/contexts/toast/ToastContext';
@@ -21,9 +20,8 @@ export default function useRedeemMerch() {
       redeemMerch(input: $input) {
         __typename
         ... on RedeemMerchPayload {
-          discountCodes {
-            code
-            tokenId
+          tokens {
+            discountCode
           }
         }
         ... on ErrInvalidInput {
@@ -45,31 +43,6 @@ export default function useRedeemMerch() {
           )}]`,
         });
 
-        const updater: SelectorStoreUpdater<useRedeemMerchMutation['response']> = (
-          store,
-          response
-        ) => {
-          if (response?.redeemMerch?.__typename === 'RedeemMerchPayload') {
-            const discountCodes = response?.redeemMerch?.discountCodes || [];
-
-            const root = store.get(`client:root:getMerchTokens(wallet:"${address}")`);
-
-            const tokens = root?.getLinkedRecords('tokens') || [];
-
-            // assign the discount code to the token
-            tokens.forEach((token) => {
-              const tokenId = token.getValue('tokenId');
-              const discountCode = discountCodes.find(
-                (discountCode) => discountCode.tokenId === tokenId
-              );
-
-              if (discountCode) {
-                token.setValue(discountCode.code, 'discountCode').setValue(true, 'redeemed');
-              }
-            });
-          }
-        };
-
         const response = await redeemMerch({
           variables: {
             input: {
@@ -82,7 +55,6 @@ export default function useRedeemMerch() {
               signature,
             },
           },
-          updater,
         });
 
         if (response?.redeemMerch?.__typename === 'ErrInvalidInput') {
