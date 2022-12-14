@@ -6,7 +6,7 @@ type Props = {
 };
 
 export default function SnowflakeIcon({ className, active }: Props) {
-  const color = active ? colors.offBlack : colors.shadow;
+  const color = active ? colors.offBlack : colors.metal;
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className={className}>
       <line x1="12" y1="0.98" x2="12" y2="23.02" fill="none" stroke={color} strokeMiterlimit="10" />
