@@ -756,6 +756,7 @@ type UsersConnection {
 enum Role {
     ADMIN
     BETA_TESTER
+    EARLY_ACCESS
 }
 
 enum MerchType {
@@ -764,7 +765,8 @@ enum MerchType {
   Card
 }
 
-type MerchToken {
+type MerchToken @goGqlId(fields: ["tokenId"]) {
+  id: ID! 
   tokenId: String!
   objectType: MerchType!
   discountCode: String
@@ -1438,12 +1440,24 @@ type MerchDiscountCode {
 }
 
 type RedeemMerchPayload {
-    discountCodes: [MerchDiscountCode!]
+    tokens: [MerchToken]
 }
 
 union RedeemMerchPayloadOrError =
     RedeemMerchPayload
     | ErrInvalidInput
+
+type SyncTokensForUsernamePayload {
+    message: String!
+}
+
+union SyncTokensForUsernamePayloadOrError = SyncTokensForUsernamePayload | ErrNotAuthorized | ErrSyncFailed
+
+type BanUserFromFeedPayload {
+   user: GalleryUser
+}
+
+union BanUserFromFeedPayloadOrError = BanUserFromFeedPayload | ErrNotAuthorized
 
 type Mutation {
     # User Mutations
@@ -1503,6 +1517,8 @@ type Mutation {
     # Retool Specific Mutations
     addRolesToUser(username: String!, roles: [Role]): AddRolesToUserPayloadOrError @retoolAuth
     revokeRolesFromUser(username: String!, roles: [Role]): RevokeRolesFromUserPayloadOrError @retoolAuth
+    syncTokensForUsername(username: String!, chains: [Chain!]!): SyncTokensForUsernamePayloadOrError @retoolAuth
+    banUserFromFeed(username: String!, action: String!): BanUserFromFeedPayloadOrError @retoolAuth
 
     # Gallery Frontend Deploy Persisted Queries
     uploadPersistedQueries(input: UploadPersistedQueriesInput): UploadPersistedQueriesPayloadOrError @frontendBuildAuth
