@@ -1,4 +1,5 @@
 import { useFloating, useHover, useInteractions } from '@floating-ui/react';
+import { useCallback } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled, { css } from 'styled-components';
@@ -10,6 +11,7 @@ import SettingsDropdown from '~/components/core/Dropdown/SettingsDropdown';
 import IconContainer from '~/components/core/Markdown/IconContainer';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { TitleXS } from '~/components/core/Text/Text';
+import { useGalleryEditorContext } from '~/components/GalleryEditor/GalleryEditorContext';
 import { NewTooltip } from '~/components/Tooltip/NewTooltip';
 import { useTooltipHover } from '~/components/Tooltip/useTooltipHover';
 import { CollectionListItemFragment$key } from '~/generated/CollectionListItemFragment.graphql';
@@ -25,8 +27,8 @@ export function CollectionListItem({ collectionRef }: CollectionListItemProps) {
   const collection = useFragment(
     graphql`
       fragment CollectionListItemFragment on Collection {
+        dbid
         name
-        hidden
       }
     `,
     collectionRef
@@ -37,6 +39,13 @@ export function CollectionListItem({ collectionRef }: CollectionListItemProps) {
   const { floating, reference, getFloatingProps, getReferenceProps, floatingStyle } =
     useTooltipHover();
 
+  const { hiddenCollectionIds, toggleCollectionHidden } = useGalleryEditorContext();
+  const hidden = hiddenCollectionIds.has(collection.dbid);
+
+  const handleToggleHidden = useCallback(() => {
+    toggleCollectionHidden(collection.dbid);
+  }, [collection.dbid, toggleCollectionHidden]);
+
   return (
     <CollectionListItemContainer role="button" justify="space-between" align="center">
       <CollectionTitleText italicize={!collection.name}>
@@ -45,17 +54,18 @@ export function CollectionListItem({ collectionRef }: CollectionListItemProps) {
       <HStack gap={2}>
         <IconContainer
           {...getReferenceProps()}
+          onClick={handleToggleHidden}
           ref={reference}
           size="sm"
           stacked
-          icon={collection.hidden ? <ShowIcon /> : <HideIcon />}
+          icon={hidden ? <ShowIcon /> : <HideIcon />}
         />
 
         <NewTooltip
           {...getFloatingProps()}
           style={floatingStyle}
           ref={floating}
-          text={collection.hidden ? 'Show' : 'Hide'}
+          text={hidden ? 'Show' : 'Hide'}
         />
 
         <SettingsDropdown size="sm" stacked>
