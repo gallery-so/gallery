@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import { createContext, memo, ReactNode, useCallback, useContext, useMemo } from 'react';
 import styled from 'styled-components';
 
@@ -22,14 +23,26 @@ export const useSnowContext = (): SnowState => {
 
 type Props = { children: ReactNode };
 
-// DISABLED ROUTES!!!!!!!
-
 const SnowProvider = memo(({ children }: Props) => {
-  const [isSnowEnabled, setIsSnowEnabled] = usePersistedState('gallery_snowfall_enabled', true);
+  const [isEnabledBasedOnUserPreference, setIsEnabledBasedOnUserPreference] = usePersistedState(
+    'gallery_snowfall_enabled',
+    true
+  );
+
+  const { asPath } = useRouter();
+
+  const isEnabledBasedOnRoute = useMemo(() => {
+    if (asPath.includes('/gallery')) {
+      return false;
+    }
+    return true;
+  }, [asPath]);
+
+  const isSnowEnabled = isEnabledBasedOnUserPreference && isEnabledBasedOnRoute;
 
   const toggleSnow = useCallback(() => {
-    setIsSnowEnabled((prev) => !prev);
-  }, [setIsSnowEnabled]);
+    setIsEnabledBasedOnUserPreference((prev) => !prev);
+  }, [setIsEnabledBasedOnUserPreference]);
 
   const value = useMemo(
     () => ({
