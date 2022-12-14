@@ -1,4 +1,5 @@
-import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
+import { Suspense, useCallback, useMemo, useState } from 'react';
+import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { Button } from '~/components/core/Button/Button';
@@ -6,48 +7,63 @@ import Loader from '~/components/core/Loader/Loader';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import { useModalActions } from '~/contexts/modal/ModalContext';
+import { ToRedeemPageFragment$key } from '~/generated/ToRedeemPageFragment.graphql';
 
+import { getObjectName } from '../getObjectName';
 import RedeemItem from './RedeemItem';
-import { MerchToken } from './RedeemModal';
 import useRedeemMerch from './useRedeemMerch';
 
-type MerchItemTypesWithChecked = MerchToken & { checked: boolean };
-
 type Props = {
-  tokens: MerchToken[];
   onToggle: () => void;
+  merchTokenRefs: ToRedeemPageFragment$key;
 };
 
-export default function ToRedeemPage({ tokens, onToggle }: Props) {
+export default function ToRedeemPage({ onToggle, merchTokenRefs }: Props) {
+  const merchTokens = useFragment(
+    graphql`
+      fragment ToRedeemPageFragment on MerchToken @relay(plural: true) {
+        tokenId
+
+        ...getObjectNameFragment
+      }
+    `,
+    merchTokenRefs
+  );
+
+  const [selectedTokenIds, setSelectedTokenIds] = useState<Set<string>>(() => new Set());
+
   const redeemMerch = useRedeemMerch();
-  const [userItemsWithChecked, setUserItemsWithChecked] = useState<MerchItemTypesWithChecked[]>([]);
   const { hideModal } = useModalActions();
 
-  useEffect(() => {
-    setUserItemsWithChecked(tokens.map((item) => ({ ...item, checked: false })));
-  }, [tokens]);
-
   const handleItemChange = (index: number, checked: boolean) => {
-    userItemsWithChecked[index].checked = checked;
-    setUserItemsWithChecked([...userItemsWithChecked]);
+    const merchToken = merchTokens[index];
+
+    if (!merchToken) {
+      return;
+    }
+
+    const newSelectedTokenIds = new Set(selectedTokenIds);
+    if (checked) {
+      newSelectedTokenIds.add(merchToken.tokenId);
+    } else {
+      newSelectedTokenIds.delete(merchToken.tokenId);
+    }
+
+    setSelectedTokenIds(newSelectedTokenIds);
   };
 
   const handleSubmit = useCallback(() => {
-    // Filter out items that are checked
-    const itemsToRedeem = userItemsWithChecked.filter((item) => item.checked);
-
-    // Get the item ids
-    const itemIds = itemsToRedeem.map((item) => item.tokenId.toString());
+    const itemIds = [...selectedTokenIds];
 
     redeemMerch({
       tokenIds: itemIds,
       onSuccess: onToggle,
     });
-  }, [onToggle, redeemMerch, userItemsWithChecked]);
+  }, [onToggle, redeemMerch, selectedTokenIds]);
 
   const isRedeemButtonDisabled = useMemo(() => {
-    return !userItemsWithChecked.some((item) => item.checked);
-  }, [userItemsWithChecked]);
+    return selectedTokenIds.size === 0;
+  }, [selectedTokenIds.size]);
 
   const handleClose = useCallback(() => {
     hideModal();
@@ -61,7 +77,7 @@ export default function ToRedeemPage({ tokens, onToggle }: Props) {
         </StyledLoadingContainer>
       }
     >
-      {userItemsWithChecked.length > 0 ? (
+      {merchTokens.length > 0 ? (
         <>
           <StyledRedeemTextContainer>
             <BaseM>
@@ -69,15 +85,20 @@ export default function ToRedeemPage({ tokens, onToggle }: Props) {
               Shopify store.
             </BaseM>
           </StyledRedeemTextContainer>
-          {userItemsWithChecked.map((item, index) => (
-            <RedeemItem
-              key={item.tokenId}
-              index={index}
-              name={item.name || ''}
-              checked={item.checked}
-              onChange={handleItemChange}
-            />
-          ))}
+          {merchTokens.map((token, index) => {
+            const name = getObjectName(token);
+            const checked = selectedTokenIds.has(token.tokenId);
+
+            return (
+              <RedeemItem
+                key={token.tokenId}
+                index={index}
+                name={name}
+                checked={checked}
+                onChange={handleItemChange}
+              />
+            );
+          })}
 
           <StyledRedeemFooter>
             <StyledRedeemSubmitButton onClick={handleSubmit} disabled={isRedeemButtonDisabled}>

@@ -1,20 +1,33 @@
 import { useCallback } from 'react';
+import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { Button } from '~/components/core/Button/Button';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import { useModalActions } from '~/contexts/modal/ModalContext';
+import { RedeemedPageFragment$key } from '~/generated/RedeemedPageFragment.graphql';
 import ArrowUpRightIcon from '~/icons/ArrowUpRightIcon';
 
+import { getObjectName } from '../getObjectName';
 import RedeemedItem from './RedeemedItem';
-import { MerchToken } from './RedeemModal';
 
 type Props = {
-  tokens: MerchToken[];
+  merchTokenRefs: RedeemedPageFragment$key;
 };
 
-export default function RedeemedPage({ tokens }: Props) {
+export default function RedeemedPage({ merchTokenRefs }: Props) {
+  const merchTokens = useFragment(
+    graphql`
+      fragment RedeemedPageFragment on MerchToken @relay(plural: true) {
+        tokenId
+        discountCode
+        ...getObjectNameFragment
+      }
+    `,
+    merchTokenRefs
+  );
+
   const { hideModal } = useModalActions();
 
   const handleRedeem = useCallback(() => {
@@ -28,18 +41,22 @@ export default function RedeemedPage({ tokens }: Props) {
 
   return (
     <>
-      {tokens.length > 0 ? (
+      {merchTokens.length > 0 ? (
         <>
           <StyledRedeemTextContainer>
             <BaseM>Copy the codes to use on our Shopify shop.</BaseM>
           </StyledRedeemTextContainer>
-          {tokens.map((token) => (
-            <RedeemedItem
-              key={token.tokenId}
-              name={token.name || ''}
-              discountCode={token.discountCode || ''}
-            />
-          ))}
+          {merchTokens.map((token) => {
+            const name = getObjectName(token);
+
+            return (
+              <RedeemedItem
+                key={token.tokenId}
+                name={name}
+                discountCode={token.discountCode || ''}
+              />
+            );
+          })}
           <StyledRedeemFooter>
             <StyledRedeemSubmitButton onClick={handleRedeem}>
               <HStack gap={4} align="center">
@@ -51,7 +68,7 @@ export default function RedeemedPage({ tokens }: Props) {
         </>
       ) : (
         <>
-          <BaseM>No items to redeem.</BaseM>
+          <BaseM>You have not redeemed any items yet.</BaseM>
           <StyledRedeemFooter>
             <StyledRedeemSubmitButton onClick={handleClose}>
               <HStack gap={4} align="center">

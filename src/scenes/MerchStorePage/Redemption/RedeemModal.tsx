@@ -6,21 +6,14 @@ import styled from 'styled-components';
 import colors from '~/components/core/colors';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { TitleXS } from '~/components/core/Text/Text';
-import {
-  MerchType,
-  RedeemModalQueryFragment$key,
-} from '~/generated/RedeemModalQueryFragment.graphql';
+import { MerchType } from '~/generated/getObjectNameFragment.graphql';
+import { RedeemModalQueryFragment$key } from '~/generated/RedeemModalQueryFragment.graphql';
+import { removeNullValues } from '~/utils/removeNullValues';
 
 import RedeemedPage from './RedeemedPage';
 import ToRedeemPage from './ToRedeemPage';
 
 type RedeemTab = 'to redeem' | 'redeemed';
-
-const MERCHS_NAMING = {
-  TShirt: '(OBJECT 001) Shirt',
-  Hat: '(OBJECT 002) hat',
-  Card: '(OBJECT 003) card ',
-};
 
 export type MerchToken = {
   discountCode: string | null;
@@ -35,36 +28,21 @@ type Props = {
 };
 
 export default function RedeemModal({ queryRef }: Props) {
-  const queryFragment = useFragment(
+  const merchTokensPayload = useFragment(
     graphql`
       fragment RedeemModalQueryFragment on MerchTokensPayload {
         tokens {
-          tokenId
-          objectType
-          discountCode
           redeemed
+
+          ...RedeemedPageFragment
+          ...ToRedeemPageFragment
         }
       }
     `,
     queryRef
   );
 
-  const { tokens } = queryFragment;
-
-  // add name key to each merchTokens
-  const formattedTokens = useMemo(() => {
-    return tokens?.map((token) => {
-      if (token) {
-        return {
-          ...token,
-          name: MERCHS_NAMING[token.objectType as keyof typeof MERCHS_NAMING],
-          tokenId: token.tokenId,
-          discountCode: token.discountCode,
-        };
-      }
-      return null;
-    });
-  }, [tokens]);
+  const { tokens } = merchTokensPayload;
 
   const [activeTab, setActiveTab] = useState<RedeemTab>('to redeem');
 
@@ -72,30 +50,17 @@ export default function RedeemModal({ queryRef }: Props) {
     setActiveTab(activeTab === 'to redeem' ? 'redeemed' : 'to redeem');
   };
 
-  // filter the tokens by redeemed status
-  const redeemableTokens = useMemo(() => {
-    const tokens = [];
+  const nonNullTokens = useMemo(() => removeNullValues(tokens), [tokens]);
 
-    for (const token of formattedTokens ?? []) {
-      if (token && !token.redeemed) {
-        tokens.push(token);
-      }
-    }
+  const redeemableTokens = useMemo(
+    () => nonNullTokens.filter((token) => !token.redeemed),
+    [nonNullTokens]
+  );
 
-    return tokens;
-  }, [formattedTokens]);
-
-  const redeemedTokens = useMemo(() => {
-    const tokens = [];
-
-    for (const token of formattedTokens ?? []) {
-      if (token && token.redeemed) {
-        tokens.push(token);
-      }
-    }
-
-    return tokens;
-  }, [formattedTokens]);
+  const redeemedTokens = useMemo(
+    () => nonNullTokens.filter((token) => token.redeemed),
+    [nonNullTokens]
+  );
 
   return (
     <StyledRedeemModal>
@@ -108,9 +73,9 @@ export default function RedeemModal({ queryRef }: Props) {
         </StyledRedeemTab>
       </StyledRedeemHeaderContainer>
       {activeTab === 'to redeem' ? (
-        <ToRedeemPage tokens={redeemableTokens} onToggle={toggleTab} />
+        <ToRedeemPage merchTokenRefs={redeemableTokens} onToggle={toggleTab} />
       ) : (
-        <RedeemedPage tokens={redeemedTokens} />
+        <RedeemedPage merchTokenRefs={redeemedTokens} />
       )}
     </StyledRedeemModal>
   );
