@@ -17,5 +17,6 @@ export default function SnowToggleIcon() {
 }
 
 const StyledSnowflakeIcon = styled(SnowflakeIcon)`
+  width: 100%;
   padding: 5px;
 `;
