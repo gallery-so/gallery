@@ -29,6 +29,10 @@ const ROLE_FLAGS: Record<Role, Record<FeatureFlag, boolean>> = {
     WHITE_RHINO: true,
     EMAIL: true,
   },
+  EARLY_ACCESS: {
+    WHITE_RHINO: true,
+    EMAIL: true,
+  },
 };
 
 /**
