@@ -24,13 +24,13 @@ describe('Homepage test', () => {
     });
 
     // TODO: reenable when synpress `acceptMetamaskAccessRequest()` bug is fixed!
-    it('should redirect to home page when click the sign in button', () => {
-      home.getSignInButton().should('be.exist');
-      home.getSignInButton().click({ force: true });
-      home.getEthereumButton().click({ force: true });
-      home.getMetaMaskButton().click({ force: true });
-      home.acceptMetamaskAccessRequest();
-      cy.url().should('include', `/home`);
-    });
+    // it('should redirect to home page when click the sign in button', () => {
+    //   home.getSignInButton().should('be.exist');
+    //   home.getSignInButton().click({ force: true });
+    //   home.getEthereumButton().click({ force: true });
+    //   home.getMetaMaskButton().click({ force: true });
+    //   home.acceptMetamaskAccessRequest();
+    //   cy.url().should('include', `/home`);
+    // });
   });
 });
