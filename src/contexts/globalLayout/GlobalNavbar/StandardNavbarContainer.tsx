@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 
 import { pageGutter } from '~/components/core/breakpoints';
-import { HStack } from '~/components/core/Spacer/Stack';
 
 export const StandardNavbarContainer = styled.div`
   width: 100%;
@@ -37,7 +36,7 @@ export const NavbarRightContent = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  gap: 3px 0;
+  gap: 3px;
 
   min-width: 0;
   flex: 1 1 20%;
