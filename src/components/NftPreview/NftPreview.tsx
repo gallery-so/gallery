@@ -191,6 +191,7 @@ function NftPreview({
   return (
     <NftFailureBoundary
       key={retryKey}
+      tokenId={token.dbid}
       fallback={
         <NftFailureWrapper>
           <NftFailureFallback refreshing={refreshingMetadata} onRetry={refreshMetadata} />

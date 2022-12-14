@@ -1,7 +1,7 @@
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
-import { NftFailureBoundary } from '~/components/NftFailureFallback/NftFailureBoundary';
+import { ReportingErrorBoundary } from '~/contexts/boundary/ReportingErrorBoundary';
 import { CouldNotRenderNftError } from '~/errors/CouldNotRenderNftError';
 import { SmolNftFragment$key } from '~/generated/SmolNftFragment.graphql';
 import { SmolNftPreviewFragment$key } from '~/generated/SmolNftPreviewFragment.graphql';
@@ -36,9 +36,9 @@ export function SmolNft({ tokenRef }: SmolNftProps) {
   return (
     <SmolNftContainer>
       {/* We're using a null fallback here since NftFailureFallback is too big */}
-      <NftFailureBoundary key={retryKey} fallback={null} onError={handleNftError}>
+      <ReportingErrorBoundary key={retryKey} fallback={null} onError={handleNftError}>
         <SmolNftPreview onLoad={handleNftLoaded} tokenRef={token} />
-      </NftFailureBoundary>
+      </ReportingErrorBoundary>
     </SmolNftContainer>
   );
 }
