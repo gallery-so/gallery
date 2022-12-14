@@ -93,17 +93,14 @@ export default function useRedeemMerch() {
 
         if (response?.redeemMerch?.__typename === 'ErrInvalidInput') {
           pushToast({
-            message: 'Something went wrong',
+            message: 'Failed to redeem merch',
           });
           return;
         }
 
-        if (
-          response?.redeemMerch?.__typename === 'RedeemMerchPayload' &&
-          response?.redeemMerch?.tokens?.length === 0
-        ) {
+        if (response?.redeemMerch?.__typename === 'RedeemMerchPayload' && !response?.redeemMerch) {
           pushToast({
-            message: 'Something went wrong',
+            message: 'Failed to redeem merch',
           });
           return;
         }
@@ -115,7 +112,7 @@ export default function useRedeemMerch() {
         onSuccess();
       } catch (error) {
         pushToast({
-          message: 'Something went wrong',
+          message: 'Failed to redeem merch',
         });
       }
     },
