@@ -33,7 +33,12 @@ export const NavbarCenterContent = styled.div`
   flex: 1 1 content;
 `;
 
-export const NavbarRightContent = styled(HStack)`
+export const NavbarRightContent = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 3px 0;
+
   min-width: 0;
   flex: 1 1 20%;
 `;

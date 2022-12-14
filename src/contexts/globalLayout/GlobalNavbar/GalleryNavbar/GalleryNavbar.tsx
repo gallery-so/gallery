@@ -79,7 +79,7 @@ export function GalleryNavbar({ queryRef, username }: Props) {
             <GalleryNavLinks username={username} queryRef={query} />
           )}
         </NavbarCenterContent>
-        <NavbarRightContent justify="flex-end" align="center" gap={3}>
+        <NavbarRightContent>
           <SnowToggleIcon />
           <GalleryRightContent username={username} queryRef={query} />
         </NavbarRightContent>
