@@ -10,7 +10,7 @@ import { EmptySidebar } from '~/components/ManageGallery/OrganizeCollection/Side
 import { groupCollectionsByAddress } from '~/components/ManageGallery/OrganizeCollection/Sidebar/groupCollectionsByAddress';
 import { SidebarList } from '~/components/ManageGallery/OrganizeCollection/Sidebar/SidebarList';
 import { EditModeToken } from '~/components/ManageGallery/OrganizeCollection/types';
-import { SidebarTokensFragment$key } from '~/generated/SidebarTokensFragment.graphql';
+import { SidebarTokensNewFragment$key } from '~/generated/SidebarTokensNewFragment.graphql';
 import useSetSpamPreference from '~/hooks/api/tokens/useSetSpamPreference';
 
 import { SidebarView } from './SidebarViewSelector';
@@ -20,7 +20,7 @@ type SidebarTokensProps = {
   selectedChain: Chain;
   selectedView: SidebarView;
   editModeTokens: EditModeToken[];
-  tokenRefs: SidebarTokensFragment$key;
+  tokenRefs: SidebarTokensNewFragment$key;
 };
 
 export const SidebarTokens = ({
@@ -32,7 +32,7 @@ export const SidebarTokens = ({
 }: SidebarTokensProps) => {
   const tokens = useFragment(
     graphql`
-      fragment SidebarTokensFragment on Token @relay(plural: true) {
+      fragment SidebarTokensNewFragment on Token @relay(plural: true) {
         id
         dbid
 
@@ -50,7 +50,7 @@ export const SidebarTokens = ({
           }
         }
 
-        ...SidebarListTokenFragment
+        ...SidebarListTokenNewFragment
       }
     `,
     tokenRefs

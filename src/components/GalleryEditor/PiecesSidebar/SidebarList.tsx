@@ -18,14 +18,14 @@ import {
   SIDEBAR_ICON_DIMENSIONS,
   SIDEBAR_ICON_GAP,
 } from '~/constants/sidebar';
-import { SidebarListTokenFragment$key } from '~/generated/SidebarListTokenFragment.graphql';
+import { SidebarListTokenNewFragment$key } from '~/generated/SidebarListTokenNewFragment.graphql';
 import HideIcon from '~/icons/HideIcon';
 import ShowIcon from '~/icons/ShowIcon';
 
 import { SidebarView } from './SidebarViewSelector';
 
 export type TokenAndEditModeToken = {
-  token: SidebarListTokenFragment$key;
+  token: SidebarListTokenNewFragment$key;
   editModeToken: EditModeToken;
 };
 
@@ -151,9 +151,9 @@ export function SidebarList({
             {row.tokens.map((tokenOrWhitespace) => {
               const token = readInlineData(
                 graphql`
-                  fragment SidebarListTokenFragment on Token @inline {
+                  fragment SidebarListTokenNewFragment on Token @inline {
                     dbid
-                    ...SidebarNftIconFragment
+                    ...SidebarNftIconNewFragment
                   }
                 `,
                 tokenOrWhitespace.token

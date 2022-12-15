@@ -6,7 +6,7 @@ import {
   VirtualizedRow,
 } from '~/components/ManageGallery/OrganizeCollection/Sidebar/SidebarList';
 import { EditModeToken } from '~/components/ManageGallery/OrganizeCollection/types';
-import { SidebarTokensFragment$data } from '~/generated/SidebarTokensFragment.graphql';
+import { SidebarTokensFragment$data } from '~/generated/SidebarTokensNewFragment.graphql';
 
 type createVirtualizedRowsFromGroupsArgs = {
   groups: CollectionGroup[];

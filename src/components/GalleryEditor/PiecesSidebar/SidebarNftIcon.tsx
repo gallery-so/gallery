@@ -13,8 +13,7 @@ import { useCollectionEditorActions } from '~/contexts/collectionEditor/Collecti
 import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import { ContentIsLoadedEvent } from '~/contexts/shimmer/ShimmerContext';
 import { CouldNotRenderNftError } from '~/errors/CouldNotRenderNftError';
-import { SidebarNftIconFragment$key } from '~/generated/SidebarNftIconFragment.graphql';
-import { SidebarNftIconPollerQuery } from '~/generated/SidebarNftIconPollerQuery.graphql';
+import { SidebarNftIconNewFragment$key } from '~/generated/SidebarNftIconNewFragment.graphql';
 import { SidebarNftIconPreviewAsset$key } from '~/generated/SidebarNftIconPreviewAsset.graphql';
 import { useNftRetry, useThrowOnMediaFailure } from '~/hooks/useNftRetry';
 import getVideoOrImageUrlForNftPreview from '~/utils/graphql/getVideoOrImageUrlForNftPreview';
@@ -23,7 +22,7 @@ import { getBackgroundColorOverrideForContract } from '~/utils/token';
 import { EditModeToken } from '../types';
 
 type SidebarNftIconProps = {
-  tokenRef: SidebarNftIconFragment$key;
+  tokenRef: SidebarNftIconNewFragment$key;
   editModeToken: EditModeToken;
   handleTokenRenderError: (id: string) => void;
   handleTokenRenderSuccess: (id: string) => void;
@@ -37,7 +36,7 @@ function SidebarNftIcon({
 }: SidebarNftIconProps) {
   const token = useFragment(
     graphql`
-      fragment SidebarNftIconFragment on Token {
+      fragment SidebarNftIconNewFragment on Token {
         dbid
         contract {
           contractAddress {
@@ -135,12 +134,12 @@ function SidebarNftIcon({
       let timeoutId: ReturnType<typeof setTimeout>;
 
       async function refreshToken() {
-        await fetchQuery<SidebarNftIconPollerQuery>(
+        await fetchQuery<SidebarNftIconPollerNewQuery>(
           relayEnvironment,
           graphql`
-            query SidebarNftIconPollerQuery($id: DBID!) {
+            query SidebarNftIconPollerNewQuery($id: DBID!) {
               tokenById(id: $id) {
-                ...SidebarNftIconFragment
+                ...SidebarNftIconNewFragment
               }
             }
           `,
@@ -222,7 +221,7 @@ type SidebarPreviewAssetProps = {
 function SidebarPreviewAsset({ tokenRef, onLoad, isSelected }: SidebarPreviewAssetProps) {
   const token = useFragment(
     graphql`
-      fragment SidebarNftIconPreviewAsset on Token {
+      fragment SidebarNftIconPreviewAssetNew on Token {
         ...getVideoOrImageUrlForNftPreviewFragment
       }
     `,

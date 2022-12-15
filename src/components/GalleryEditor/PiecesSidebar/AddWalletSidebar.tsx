@@ -7,11 +7,11 @@ import { VStack } from '~/components/core/Spacer/Stack';
 import { EmptyState } from '~/components/EmptyState/EmptyState';
 import { Chain } from '~/components/ManageGallery/OrganizeCollection/Sidebar/chains';
 import { useModalActions } from '~/contexts/modal/ModalContext';
-import { AddWalletSidebarQueryFragment$key } from '~/generated/AddWalletSidebarQueryFragment.graphql';
+import { AddWalletSidebarQueryNewFragment$key } from '~/generated/AddWalletSidebarQueryNewFragment.graphql';
 import ManageWalletsModal from '~/scenes/Modals/ManageWalletsModal';
 
 type Props = {
-  queryRef: AddWalletSidebarQueryFragment$key;
+  queryRef: AddWalletSidebarQueryNewFragment$key;
   selectedChain: Chain;
   handleRefresh: () => void;
 };
@@ -19,7 +19,7 @@ type Props = {
 export function AddWalletSidebar({ handleRefresh, selectedChain, queryRef }: Props) {
   const query = useFragment(
     graphql`
-      fragment AddWalletSidebarQueryFragment on Query {
+      fragment AddWalletSidebarQueryNewFragment on Query {
         ...ManageWalletsModalFragment
       }
     `,

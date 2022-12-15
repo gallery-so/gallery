@@ -17,8 +17,8 @@ import {
 import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { useToastActions } from '~/contexts/toast/ToastContext';
-import { SidebarFragment$key } from '~/generated/SidebarFragment.graphql';
-import { SidebarViewerFragment$key } from '~/generated/SidebarViewerFragment.graphql';
+import { SidebarNewFragment$key } from '~/generated/SidebarNewFragment.graphql';
+import { SidebarViewerNewFragment$key } from '~/generated/SidebarViewerNewFragment.graphql';
 import useSyncTokens from '~/hooks/api/tokens/useSyncTokens';
 import { generate12DigitId } from '~/utils/collectionLayout';
 import { removeNullValues } from '~/utils/removeNullValues';
@@ -30,21 +30,21 @@ import { SidebarView, SidebarViewSelector } from './SidebarViewSelector';
 
 type Props = {
   sidebarTokens: SidebarTokensState;
-  tokensRef: SidebarFragment$key;
-  queryRef: SidebarViewerFragment$key;
+  tokensRef: SidebarNewFragment$key;
+  queryRef: SidebarViewerNewFragment$key;
 };
 
 function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
   const allTokens = useFragment(
     graphql`
-      fragment SidebarFragment on Token @relay(plural: true) {
+      fragment SidebarNewFragment on Token @relay(plural: true) {
         dbid
         chain
         isSpamByUser
         isSpamByProvider
 
-        ...SearchBarFragment
-        ...SidebarTokensFragment
+        ...SearchBarNewFragment
+        ...SidebarTokensNewFragment
       }
     `,
     tokensRef
@@ -52,7 +52,7 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
 
   const query = useFragment(
     graphql`
-      fragment SidebarViewerFragment on Query {
+      fragment SidebarViewerNewFragment on Query {
         viewer {
           ... on Viewer {
             user {
@@ -65,8 +65,8 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
           }
         }
 
-        ...SidebarChainSelectorFragment
-        ...AddWalletSidebarQueryFragment
+        ...SidebarChainSelectorNewFragment
+        ...AddWalletSidebarQueryNewFragment
       }
     `,
     queryRef

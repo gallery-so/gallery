@@ -6,7 +6,7 @@ import IconContainer from '~/components/core/Markdown/IconContainer';
 import { Chain, chains } from '~/components/ManageGallery/OrganizeCollection/Sidebar/chains';
 import { SidebarChainButton } from '~/components/ManageGallery/OrganizeCollection/Sidebar/SidebarChainButton';
 import Tooltip from '~/components/Tooltip/Tooltip';
-import { SidebarChainSelectorFragment$key } from '~/generated/SidebarChainSelectorFragment.graphql';
+import { SidebarChainSelectorNewFragment$key } from '~/generated/SidebarChainSelectorNewFragment.graphql';
 import { RefreshIcon } from '~/icons/RefreshIcon';
 
 import isRefreshDisabledForUser from './isRefreshDisabledForUser';
@@ -15,7 +15,7 @@ type SidebarChainsProps = {
   ownsWalletFromSelectedChain: boolean;
   selected: Chain;
   onChange: (chain: Chain) => void;
-  queryRef: SidebarChainSelectorFragment$key;
+  queryRef: SidebarChainSelectorNewFragment$key;
   handleRefresh: () => void;
   isRefreshingNfts: boolean;
 };
@@ -30,7 +30,7 @@ export function SidebarChainSelector({
 }: SidebarChainsProps) {
   const query = useFragment(
     graphql`
-      fragment SidebarChainSelectorFragment on Query {
+      fragment SidebarChainSelectorNewFragment on Query {
         viewer {
           ... on Viewer {
             user {
