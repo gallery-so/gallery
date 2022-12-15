@@ -13,6 +13,7 @@ import { GalleryEditorContextFragment$key } from '~/generated/GalleryEditorConte
 export type GalleryEditorContextType = {
   toggleCollectionHidden: (collectionId: string) => void;
   hiddenCollectionIds: Set<string>;
+  collectionIdBeingEdited: string | null;
 };
 
 export const GalleryEditorContext = createContext<GalleryEditorContextType | undefined>(undefined);
@@ -25,11 +26,15 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
   const query = useFragment(
     graphql`
       fragment GalleryEditorContextFragment on Query {
-        galleryById(id: $galleryId) {
-          ... on Gallery {
-            collections {
-              dbid
-              hidden
+        viewer {
+          ... on Viewer {
+            user {
+              galleries {
+                collections {
+                  dbid
+                  hidden
+                }
+              }
             }
           }
         }
@@ -38,10 +43,14 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
     queryRef
   );
 
+  const [collectionIdBeingEdited, setCollectionIdBeingEdited] = useState<string | null>(() => {
+    return query.viewer?.user?.galleries?.[0]?.collections?.[0]?.dbid ?? null;
+  });
+
   const [hiddenCollectionIds, setHiddenCollectionIds] = useState(() => {
     const initialHiddenIds = new Set<string>();
 
-    for (const collection of query.galleryById?.collections ?? []) {
+    for (const collection of query.viewer?.user?.galleries?.[0]?.collections ?? []) {
       if (collection?.hidden) {
         initialHiddenIds.add(collection.dbid);
       }
@@ -67,8 +76,9 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
     return {
       hiddenCollectionIds,
       toggleCollectionHidden,
+      collectionIdBeingEdited,
     };
-  }, [hiddenCollectionIds, toggleCollectionHidden]);
+  }, [hiddenCollectionIds, toggleCollectionHidden, collectionIdBeingEdited]);
 
   return <GalleryEditorContext.Provider value={value}>{children}</GalleryEditorContext.Provider>;
 }

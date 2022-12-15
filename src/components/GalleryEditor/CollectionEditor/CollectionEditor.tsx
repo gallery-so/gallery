@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
+import { useGalleryEditorContext } from '~/components/GalleryEditor/GalleryEditorContext';
 import { convertObjectToArray } from '~/components/ManageGallery/OrganizeCollection/convertObjectToArray';
 import Directions from '~/components/ManageGallery/OrganizeCollection/Directions';
 import Sidebar from '~/components/ManageGallery/OrganizeCollection/Sidebar/Sidebar';
@@ -150,7 +151,8 @@ export function CollectionEditor({
 
   const { setSidebarTokens, unstageTokens, setStagedCollectionState, setActiveSectionIdState } =
     useCollectionEditorActions();
-  const { collectionIdBeingEdited } = useCollectionWizardState();
+  const { collectionIdBeingEdited } = useGalleryEditorContext();
+  console.log('Collection ID', collectionIdBeingEdited);
   const collectionIdBeingEditedRef = useRef<string>(collectionIdBeingEdited ?? '');
 
   const gallery = viewer.user.galleries[0];
@@ -218,6 +220,7 @@ export function CollectionEditor({
   useEffect(() => {
     // Handle initializing sidebar with NFTs
     const preRefreshNftsAsArray = convertObjectToArray(sidebarTokensRef.current);
+    console.log(sidebarTokensRef.current);
     const initialRender = preRefreshNftsAsArray.length === 0;
     if (initialRender) {
       const tokensToStage = convertNftsToEditModeTokens(tokensInCollection, true);
@@ -280,6 +283,7 @@ export function CollectionEditor({
 
   const shouldDisplayEditor = Object.keys(stagedCollectionState).length > 0;
 
+  console.log({ allNfts });
   return <StagingArea tokensRef={allNfts} />;
 }
 

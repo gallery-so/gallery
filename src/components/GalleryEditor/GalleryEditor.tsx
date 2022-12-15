@@ -7,6 +7,8 @@ import { HStack } from '~/components/core/Spacer/Stack';
 import { CollectionEditor } from '~/components/GalleryEditor/CollectionEditor/CollectionEditor';
 import { CollectionSidebar } from '~/components/GalleryEditor/CollectionSidebar';
 import { GalleryEditorProvider } from '~/components/GalleryEditor/GalleryEditorContext';
+import CollectionEditorProvider from '~/contexts/collectionEditor/CollectionEditorContext';
+import CollectionWizardContext from '~/contexts/wizard/CollectionWizardContext';
 
 type GalleryEditorProps = {
   queryRef: GalleryEditorFragment$key;
@@ -29,7 +31,14 @@ export function GalleryEditor({ queryRef }: GalleryEditorProps) {
       <GalleryEditorWrapper>
         <CollectionSidebar queryRef={query} />
 
-        <CollectionEditor queryRef={query} />
+        <CollectionEditorProvider>
+          <CollectionEditor
+            onValidChange={() => {}}
+            onHasUnsavedChange={() => {}}
+            hasUnsavedChanges={false}
+            queryRef={query}
+          />
+        </CollectionEditorProvider>
       </GalleryEditorWrapper>
     </GalleryEditorProvider>
   );
