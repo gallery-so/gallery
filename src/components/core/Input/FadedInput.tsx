@@ -22,25 +22,28 @@ export function FadedInput({ value, onChange, placeholder, size }: FadedInputPro
   );
 
   return (
-    <StyledInput size={size} value={value} onChange={handleChange} placeholder={placeholder} />
+    <StyledInput
+      variantSize={size}
+      value={value}
+      onChange={handleChange}
+      placeholder={placeholder}
+    />
   );
 }
 
-const StyledInput = styled.input<{ size: FadedInputSize }>`
+const StyledInput = styled.input<{ variantSize: FadedInputSize }>`
   all: unset;
-
-  width: 100%;
   padding: 6px 12px;
 
-  ${({ size }) => {
-    if (size == 'md') {
+  ${({ variantSize }) => {
+    if (variantSize == 'md') {
       return css`
         font-family: ${BODY_FONT_FAMILY};
         font-size: 14px;
         line-height: 20px;
         font-weight: 400;
       `;
-    } else if (size === 'lg') {
+    } else if (variantSize === 'lg') {
       return css`
         font-family: ${BODY_FONT_FAMILY};
         font-size: 18px;
