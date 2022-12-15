@@ -35,7 +35,7 @@ type Props = {
 function SortableStagedNft({ tokenRef, size, mini }: Props) {
   const token = useFragment(
     graphql`
-      fragment SortableStagedNftNewFragment on Token {
+      fragment SortableStagedNftFragment on Token {
         dbid @required(action: THROW)
         contract {
           contractAddress {
