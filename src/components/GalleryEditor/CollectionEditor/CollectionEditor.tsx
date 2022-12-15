@@ -1,16 +1,13 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import { graphql, useFragment } from 'react-relay';
-import styled from 'styled-components';
 
-import { useGalleryEditorContext } from '~/components/GalleryEditor/GalleryEditorContext';
-import { convertObjectToArray } from '~/components/ManageGallery/OrganizeCollection/convertObjectToArray';
-import Directions from '~/components/ManageGallery/OrganizeCollection/Directions';
-import Sidebar from '~/components/ManageGallery/OrganizeCollection/Sidebar/Sidebar';
+import { convertObjectToArray } from '~/components/GalleryEditor/CollectionEditor/convertObjectToArray';
 import {
   EditModeToken,
   EditModeTokenChild,
   StagedCollection,
-} from '~/components/ManageGallery/OrganizeCollection/types';
+} from '~/components/GalleryEditor/CollectionEditor/types';
+import { useGalleryEditorContext } from '~/components/GalleryEditor/GalleryEditorContext';
 import useConfirmationMessageBeforeClose from '~/components/ManageGallery/useConfirmationMessageBeforeClose';
 import useNotOptimizedForMobileWarning from '~/components/ManageGallery/useNotOptimizedForMobileWarning';
 import {
@@ -19,13 +16,11 @@ import {
   useSidebarTokensState,
   useStagedCollectionState,
 } from '~/contexts/collectionEditor/CollectionEditorContext';
-import { useCollectionWizardState } from '~/contexts/wizard/CollectionWizardContext';
 import { CollectionEditorNewFragment$key } from '~/generated/CollectionEditorNewFragment.graphql';
 import { CollectionEditorViewerNewFragment$key } from '~/generated/CollectionEditorViewerNewFragment.graphql';
 import { parseCollectionLayoutGraphql } from '~/utils/collectionLayout';
 import { removeNullValues } from '~/utils/removeNullValues';
 
-import EditorMenu from './EditorMenu';
 import StagingArea from './StagingArea';
 import useCheckUnsavedChanges from './useCheckUnsavedChanges';
 
@@ -101,7 +96,6 @@ const collectionEditorViewerFragment = graphql`
         isSpamByUser
       }
     }
-    ...EditorMenuNewFragment
   }
 `;
 
@@ -281,24 +275,5 @@ export function CollectionEditor({
     unstageTokens,
   ]);
 
-  const shouldDisplayEditor = Object.keys(stagedCollectionState).length > 0;
-
-  console.log({ allNfts });
   return <StagingArea tokensRef={allNfts} />;
 }
-
-const SIDEBAR_WIDTH = 250;
-
-const StyledOrganizeCollection = styled.div`
-  display: flex;
-  height: 100%;
-`;
-
-const StyledSidebarContainer = styled.div`
-  width: ${SIDEBAR_WIDTH}px;
-`;
-
-const StyledEditorContainer = styled.div`
-  display: flex;
-  width: calc(100vw - ${SIDEBAR_WIDTH}px);
-`;

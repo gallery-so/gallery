@@ -25,7 +25,7 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';
-import { isEditModeToken, Section } from '~/components/ManageGallery/OrganizeCollection/types';
+import { isEditModeToken, Section } from '~/components/GalleryEditor/CollectionEditor/types';
 import {
   useActiveSectionIdState,
   useCollectionEditorActions,

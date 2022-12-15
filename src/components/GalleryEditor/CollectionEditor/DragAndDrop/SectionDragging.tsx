@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { isEditModeToken, StagingItem } from '~/components/ManageGallery/OrganizeCollection/types';
+import { isEditModeToken, StagingItem } from '~/components/GalleryEditor/CollectionEditor/types';
 import { SortableStagedNftNewFragment$key } from '~/generated/SortableStagedNftNewFragment.graphql';
 
 import SortableStagedNft from '../SortableStagedNft';
