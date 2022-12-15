@@ -3,6 +3,7 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import colors from '~/components/core/colors';
+import { FadedInput } from '~/components/core/Input/FadedInput';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BODY_FONT_FAMILY } from '~/components/core/Text/Text';
 import { CollectionSearchResults } from '~/components/GalleryEditor/CollectionSidebar/CollectionSearchResults';
@@ -24,17 +25,14 @@ export function CollectionSearch({ queryRef }: CollectionSearchProps) {
 
   const [searchQuery, setSearchQuery] = useState('');
 
-  const handleInputChange = useCallback<ChangeEventHandler<HTMLInputElement>>((event) => {
-    setSearchQuery(event.target.value);
-  }, []);
-
   return (
     <VStack gap={8}>
       <CollectionSearchBoxContainer>
-        <CollectionSearchInput
+        <FadedInput
           value={searchQuery}
-          onChange={handleInputChange}
+          onChange={setSearchQuery}
           placeholder="Search all collections"
+          size="md"
         />
       </CollectionSearchBoxContainer>
 
@@ -43,22 +41,6 @@ export function CollectionSearch({ queryRef }: CollectionSearchProps) {
   );
 }
 const CollectionSearchBoxContainer = styled(VStack)`
-  padding: 8px 4px;
-`;
-
-const CollectionSearchInput = styled.input`
-  padding: 8px 12px;
-
-  font-family: ${BODY_FONT_FAMILY};
-  color: ${colors.offBlack};
-  background-color: ${colors.offWhite};
-  border: none;
-
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 400;
-
-  ::placeholder {
-    color: ${colors.metal};
-  }
+  box-sizing: border-box;
+  padding: 8px 10px;
 `;
