@@ -256,6 +256,9 @@ const StyledSidebar = styled.div<{ navbarHeight: number }>`
   display: flex;
   flex-direction: column;
 
+  max-width: 250px;
+  min-width: 250px;
+
   padding-top: 16px;
 
   height: 100%;

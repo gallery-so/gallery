@@ -43,7 +43,9 @@ export function CollectionSidebar({ queryRef }: CollectionSidebarProps) {
 }
 
 const CollectionSidebarWrapper = styled(VStack)`
-  width: 250px;
+  min-width: 250px;
+  max-width: 250px;
+
   height: 100%;
 
   padding-top: 16px;
