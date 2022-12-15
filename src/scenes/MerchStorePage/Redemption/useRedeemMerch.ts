@@ -48,34 +48,6 @@ export default function useRedeemMerch() {
           )}]`,
         });
 
-        // TODO: Remove this once we fix the issue with the id
-        const updater: SelectorStoreUpdater<useRedeemMerchMutation['response']> = (
-          store,
-          response
-        ) => {
-          if (response?.redeemMerch?.__typename === 'RedeemMerchPayload') {
-            const merchTokens = response?.redeemMerch?.tokens || [];
-
-            const root = store.get(`client:root:getMerchTokens(wallet:"${address}")`);
-
-            const tokens = root?.getLinkedRecords('tokens') || [];
-
-            // assign the discount code to the token
-            tokens.forEach((token) => {
-              const tokenId = token.getValue('tokenId');
-              const selectedMerchToken = merchTokens.find(
-                (merchToken) => merchToken?.tokenId === tokenId
-              );
-
-              if (selectedMerchToken) {
-                token
-                  .setValue(selectedMerchToken.discountCode, 'discountCode')
-                  .setValue(true, 'redeemed');
-              }
-            });
-          }
-        };
-
         const response = await redeemMerch({
           variables: {
             input: {
@@ -88,7 +60,6 @@ export default function useRedeemMerch() {
               signature,
             },
           },
-          updater,
         });
 
         if (response?.redeemMerch?.__typename === 'ErrInvalidInput' || !response?.redeemMerch) {
