@@ -44,7 +44,7 @@ export default function useRedeemMerch() {
       try {
         const signature = await signMessage({
           message: `Gallery uses this cryptographic signature in place of a password: [${tokenIds.join(
-            ', '
+            ' '
           )}]`,
         });
 
