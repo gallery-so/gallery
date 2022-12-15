@@ -6,15 +6,15 @@ import colors from '~/components/core/colors';
 import { BaseM } from '~/components/core/Text/Text';
 import { NftFailureBoundary } from '~/components/NftFailureFallback/NftFailureBoundary';
 import { NftFailureFallback } from '~/components/NftFailureFallback/NftFailureFallback';
-import { StagedItemDraggingFragment$key } from '~/generated/StagedItemDraggingFragment.graphql';
-import { StagedItemDraggingWrapperFragment$key } from '~/generated/StagedItemDraggingWrapperFragment.graphql';
+import { StagedItemDraggingNewFragment$key } from '~/generated/StagedItemDraggingNewFragment.graphql';
+import { StagedItemDraggingWrapperNewFragment$key } from '~/generated/StagedItemDraggingWrapperNewFragment.graphql';
 import { useNftRetry } from '~/hooks/useNftRetry';
 import noop from '~/utils/noop';
 
 import StagedNftImageDragging from './StagedNftImageDragging';
 
 type Props = {
-  tokenRef: StagedItemDraggingFragment$key | null;
+  tokenRef: StagedItemDraggingNewFragment$key | null;
   isEditModeToken: boolean;
   size: number;
 };
@@ -22,8 +22,8 @@ type Props = {
 function StagedItemDragging({ tokenRef, isEditModeToken, size }: Props) {
   const token = useFragment(
     graphql`
-      fragment StagedItemDraggingFragment on Token {
-        ...StagedItemDraggingWrapperFragment
+      fragment StagedItemDraggingNewFragment on Token {
+        ...StagedItemDraggingWrapperNewFragment
       }
     `,
     tokenRef
@@ -41,17 +41,17 @@ function StagedItemDragging({ tokenRef, isEditModeToken, size }: Props) {
 }
 
 type StagedNftImageDraggingWrapperProps = {
-  tokenRef: StagedItemDraggingWrapperFragment$key;
+  tokenRef: StagedItemDraggingWrapperNewFragment$key;
   size: number;
 };
 
 function StagedNftImageDraggingWrapper({ tokenRef, size }: StagedNftImageDraggingWrapperProps) {
   const token = useFragment(
     graphql`
-      fragment StagedItemDraggingWrapperFragment on Token {
+      fragment StagedItemDraggingWrapperNewFragment on Token {
         dbid
 
-        ...StagedNftImageDraggingFragment
+        ...StagedNftImageDraggingNewFragment
       }
     `,
     tokenRef

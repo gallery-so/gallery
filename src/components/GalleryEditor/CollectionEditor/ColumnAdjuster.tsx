@@ -11,19 +11,19 @@ import {
   useStagedCollectionState,
 } from '~/contexts/collectionEditor/CollectionEditorContext';
 import useMaxColumns from '~/contexts/collectionEditor/useMaxColumns';
-import { ColumnAdjusterFragment$key } from '~/generated/ColumnAdjusterFragment.graphql';
+import { ColumnAdjusterNewFragment$key } from '~/generated/ColumnAdjusterNewFragment.graphql';
 import CircleMinusIcon from '~/icons/CircleMinusIcon';
 import CirclePlusIcon from '~/icons/CirclePlusIcon';
 
 type Props = {
-  viewerRef: ColumnAdjusterFragment$key;
+  viewerRef: ColumnAdjusterNewFragment$key;
   activeSectionId: UniqueIdentifier;
 };
 
 function ColumnAdjuster({ viewerRef, activeSectionId }: Props) {
   const viewer = useFragment(
     graphql`
-      fragment ColumnAdjusterFragment on Viewer {
+      fragment ColumnAdjusterNewFragment on Viewer {
         ...useMaxColumnsFragment
       }
     `,

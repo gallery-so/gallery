@@ -33,7 +33,7 @@ import {
 } from '~/contexts/collectionEditor/CollectionEditorContext';
 import { IMAGE_SIZES } from '~/contexts/collectionEditor/useDndDimensions';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
-import { StagingAreaFragment$key } from '~/generated/StagingAreaFragment.graphql';
+import { StagingAreaNewFragment$key } from '~/generated/StagingAreaNewFragment.graphql';
 import useKeyDown from '~/hooks/useKeyDown';
 import { removeNullValues } from '~/utils/removeNullValues';
 
@@ -61,16 +61,16 @@ const layoutMeasuring = {
 };
 
 type Props = {
-  tokensRef: StagingAreaFragment$key;
+  tokensRef: StagingAreaNewFragment$key;
 };
 
 function StagingArea({ tokensRef }: Props) {
   const tokenss = useFragment(
     graphql`
-      fragment StagingAreaFragment on Token @relay(plural: true) {
+      fragment StagingAreaNewFragment on Token @relay(plural: true) {
         dbid
-        ...SortableStagedNftFragment
-        ...StagedItemDraggingFragment
+        ...SortableStagedNftNewFragment
+        ...StagedItemDraggingNewFragment
       }
     `,
     tokensRef

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { isEditModeToken, StagingItem } from '~/components/ManageGallery/OrganizeCollection/types';
-import { SortableStagedNftFragment$key } from '~/generated/SortableStagedNftFragment.graphql';
+import { SortableStagedNftNewFragment$key } from '~/generated/SortableStagedNftNewFragment.graphql';
 
 import SortableStagedNft from '../SortableStagedNft';
 import SortableStagedWhitespace from '../SortableStagedWhitespace';
@@ -11,7 +11,7 @@ type Props = {
   items: StagingItem[];
   itemWidth: number;
   columns: number;
-  nftFragmentsKeyedByID: { [id: string]: SortableStagedNftFragment$key };
+  nftFragmentsKeyedByID: { [id: string]: SortableStagedNftNewFragment$key };
 };
 
 export default function SectionDragging({

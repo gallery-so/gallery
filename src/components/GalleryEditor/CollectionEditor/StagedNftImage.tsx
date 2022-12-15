@@ -4,15 +4,15 @@ import styled from 'styled-components';
 import NftPreviewLabel from '~/components/NftPreview/NftPreviewLabel';
 import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import { CouldNotRenderNftError } from '~/errors/CouldNotRenderNftError';
-import { StagedNftImageFragment$key } from '~/generated/StagedNftImageFragment.graphql';
-import { StagedNftImageImageFragment$key } from '~/generated/StagedNftImageImageFragment.graphql';
-import { StagedNftImageVideoFragment$key } from '~/generated/StagedNftImageVideoFragment.graphql';
+import { StagedNftImageImageNewFragment$key } from '~/generated/StagedNftImageImageNewFragment.graphql';
+import { StagedNftImageNewFragment$key } from '~/generated/StagedNftImageNewFragment.graphql';
+import { StagedNftImageVideoNewFragment$key } from '~/generated/StagedNftImageVideoNewFragment.graphql';
 import { useImageFailureCheck } from '~/hooks/useImageFailureCheck';
 import { useThrowOnMediaFailure } from '~/hooks/useNftRetry';
 import getVideoOrImageUrlForNftPreview from '~/utils/graphql/getVideoOrImageUrlForNftPreview';
 
 type Props = {
-  tokenRef: StagedNftImageFragment$key;
+  tokenRef: StagedNftImageNewFragment$key;
   size: number;
   setNodeRef: (node: HTMLElement | null) => void;
   hideLabel: boolean;
@@ -22,9 +22,9 @@ type Props = {
 function StagedNftImage({ tokenRef, size, hideLabel, setNodeRef, onLoad, ...props }: Props) {
   const token = useFragment(
     graphql`
-      fragment StagedNftImageFragment on Token {
-        ...StagedNftImageVideoFragment
-        ...StagedNftImageImageFragment
+      fragment StagedNftImageNewFragment on Token {
+        ...StagedNftImageVideoNewFragment
+        ...StagedNftImageImageNewFragment
         ...getVideoOrImageUrlForNftPreviewFragment
       }
     `,
@@ -77,7 +77,7 @@ type StagedNftImageImageProps = {
   size: number;
   hideLabel: boolean;
   onLoad: () => void;
-  tokenRef: StagedNftImageImageFragment$key;
+  tokenRef: StagedNftImageImageNewFragment$key;
   setNodeRef: (node: HTMLElement | null) => void;
 };
 
@@ -92,7 +92,7 @@ function StagedNftImageImage({
 }: StagedNftImageImageProps) {
   const token = useFragment(
     graphql`
-      fragment StagedNftImageImageFragment on Token {
+      fragment StagedNftImageImageNewFragment on Token {
         ...NftPreviewLabelFragment
       }
     `,
@@ -116,7 +116,7 @@ type StagedNftImageVideoProps = {
   size: number;
   hideLabel: boolean;
   onLoad: () => void;
-  tokenRef: StagedNftImageVideoFragment$key;
+  tokenRef: StagedNftImageVideoNewFragment$key;
   setNodeRef: (node: HTMLElement | null) => void;
 };
 
@@ -131,7 +131,7 @@ function StagedNftImageVideo({
 }: StagedNftImageVideoProps) {
   const token = useFragment(
     graphql`
-      fragment StagedNftImageVideoFragment on Token {
+      fragment StagedNftImageVideoNewFragment on Token {
         ...NftPreviewLabelFragment
       }
     `,

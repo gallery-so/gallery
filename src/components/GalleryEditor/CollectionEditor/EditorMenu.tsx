@@ -9,19 +9,19 @@ import {
   useActiveSectionIdState,
   useStagedCollectionState,
 } from '~/contexts/collectionEditor/CollectionEditorContext';
-import { EditorMenuFragment$key } from '~/generated/EditorMenuFragment.graphql';
+import { EditorMenuNewFragment$key } from '~/generated/EditorMenuNewFragment.graphql';
 
 import ColumnAdjuster from './ColumnAdjuster';
 
 type Props = {
-  viewerRef: EditorMenuFragment$key;
+  viewerRef: EditorMenuNewFragment$key;
 };
 
 function EditorMenu({ viewerRef }: Props) {
   const viewer = useFragment(
     graphql`
-      fragment EditorMenuFragment on Viewer {
-        ...ColumnAdjusterFragment
+      fragment EditorMenuNewFragment on Viewer {
+        ...ColumnAdjusterNewFragment
       }
     `,
     viewerRef

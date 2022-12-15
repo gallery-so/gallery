@@ -19,8 +19,8 @@ import {
   useStagedCollectionState,
 } from '~/contexts/collectionEditor/CollectionEditorContext';
 import { useCollectionWizardState } from '~/contexts/wizard/CollectionWizardContext';
-import { CollectionEditorFragment$key } from '~/generated/CollectionEditorFragment.graphql';
-import { CollectionEditorViewerFragment$key } from '~/generated/CollectionEditorViewerFragment.graphql';
+import { CollectionEditorNewFragment$key } from '~/generated/CollectionEditorNewFragment.graphql';
+import { CollectionEditorViewerNewFragment$key } from '~/generated/CollectionEditorViewerNewFragment.graphql';
 import { parseCollectionLayoutGraphql } from '~/utils/collectionLayout';
 import { removeNullValues } from '~/utils/removeNullValues';
 
@@ -42,14 +42,14 @@ function convertNftsToEditModeTokens(
 
 type Props = {
   hasUnsavedChanges: boolean;
-  queryRef: CollectionEditorFragment$key;
+  queryRef: CollectionEditorNewFragment$key;
   onValidChange: (valid: boolean) => void;
   onHasUnsavedChange: (hasUnsavedChanges: boolean) => void;
 };
 
 // Separated out so we can refresh data as a part of our sync tokens mutation
 const collectionEditorViewerFragment = graphql`
-  fragment CollectionEditorViewerFragment on Viewer {
+  fragment CollectionEditorViewerNewFragment on Viewer {
     user @required(action: THROW) {
       galleries @required(action: THROW) {
         collections @required(action: THROW) {
@@ -84,8 +84,7 @@ const collectionEditorViewerFragment = graphql`
       tokens {
         dbid @required(action: THROW)
         lastUpdated @required(action: THROW)
-        ...SidebarFragment
-        ...StagingAreaFragment
+        ...StagingAreaNewFragment
 
         # Escape hatch for data processing util files
         # CollectionEditor could use a refactor
@@ -101,7 +100,7 @@ const collectionEditorViewerFragment = graphql`
         isSpamByUser
       }
     }
-    ...EditorMenuFragment
+    ...EditorMenuNewFragment
   }
 `;
 
@@ -113,19 +112,18 @@ export function CollectionEditor({
 }: Props) {
   const query = useFragment(
     graphql`
-      fragment CollectionEditorFragment on Query {
+      fragment CollectionEditorNewFragment on Query {
         viewer {
           ... on Viewer {
-            ...CollectionEditorViewerFragment
+            ...CollectionEditorViewerNewFragment
           }
         }
-        ...SidebarViewerFragment
       }
     `,
     queryRef
   );
 
-  const viewer = useFragment<CollectionEditorViewerFragment$key>(
+  const viewer = useFragment<CollectionEditorViewerNewFragment$key>(
     collectionEditorViewerFragment,
     query.viewer
   );
@@ -282,23 +280,7 @@ export function CollectionEditor({
 
   const shouldDisplayEditor = Object.keys(stagedCollectionState).length > 0;
 
-  return (
-    <StyledOrganizeCollection>
-      <StyledSidebarContainer>
-        <Sidebar sidebarTokens={sidebarTokens} tokensRef={allNfts} queryRef={query} />
-      </StyledSidebarContainer>
-      <StyledEditorContainer>
-        {shouldDisplayEditor ? (
-          <>
-            <StagingArea tokensRef={allNfts} />
-            <EditorMenu viewerRef={viewer} />
-          </>
-        ) : (
-          <Directions />
-        )}
-      </StyledEditorContainer>
-    </StyledOrganizeCollection>
-  );
+  return <StagingArea tokensRef={allNfts} />;
 }
 
 const SIDEBAR_WIDTH = 250;
