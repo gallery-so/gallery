@@ -55,7 +55,6 @@ const Selector = styled.div<{ isDropdownOpen: boolean }>`
   display: flex;
   justify-content: space-between;
   cursor: pointer;
-  padding: 8px 12px;
   align-items: center;
 
   ${({ isDropdownOpen }) => isDropdownOpen && `background-color: ${colors.faint};`}

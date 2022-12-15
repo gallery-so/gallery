@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 import { Button } from '~/components/core/Button/Button';
 import colors from '~/components/core/colors';
-import { VStack } from '~/components/core/Spacer/Stack';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { TitleS } from '~/components/core/Text/Text';
 import { Chain } from '~/components/GalleryEditor/PiecesSidebar/chains';
 import { SidebarChainSelector } from '~/components/GalleryEditor/PiecesSidebar/SidebarChainSelector';
@@ -194,8 +194,9 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
   return (
     <StyledSidebar navbarHeight={navbarHeight}>
       <StyledSidebarContainer gap={8}>
-        <Header>
+        <Header align="center" justify="space-between" gap={4}>
           <TitleS>Add pieces</TitleS>
+          <SidebarViewSelector selectedView={selectedView} setSelectedView={setSelectedView} />
         </Header>
         <SearchBar
           tokensRef={nonNullTokens}
@@ -205,7 +206,6 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
         {!isSearching && (
           <>
             <div>
-              <SidebarViewSelector selectedView={selectedView} setSelectedView={setSelectedView} />
               <SidebarChainSelector
                 ownsWalletFromSelectedChain={ownsWalletFromSelectedChain}
                 queryRef={query}
@@ -267,9 +267,6 @@ const StyledSidebar = styled.div<{ navbarHeight: number }>`
   }
 `;
 
-const Header = styled.div`
+const Header = styled(HStack)`
   padding: 0 12px 8px;
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
 `;
