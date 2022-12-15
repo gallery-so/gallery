@@ -4,6 +4,7 @@ import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import { HStack } from '~/components/core/Spacer/Stack';
+import { CollectionEditor } from '~/components/GalleryEditor/CollectionEditor/CollectionEditor';
 import { CollectionSidebar } from '~/components/GalleryEditor/CollectionSidebar';
 import { GalleryEditorProvider } from '~/components/GalleryEditor/GalleryEditorContext';
 
@@ -17,6 +18,7 @@ export function GalleryEditor({ queryRef }: GalleryEditorProps) {
       fragment GalleryEditorFragment on Query {
         ...CollectionSidebarFragment
         ...GalleryEditorContextFragment
+        ...CollectionEditorNewFragment
       }
     `,
     queryRef
@@ -26,6 +28,8 @@ export function GalleryEditor({ queryRef }: GalleryEditorProps) {
     <GalleryEditorProvider queryRef={query}>
       <GalleryEditorWrapper>
         <CollectionSidebar queryRef={query} />
+
+        <CollectionEditor queryRef={query} />
       </GalleryEditorWrapper>
     </GalleryEditorProvider>
   );
