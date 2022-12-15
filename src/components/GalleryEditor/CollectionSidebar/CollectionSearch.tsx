@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import colors from '~/components/core/colors';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BODY_FONT_FAMILY } from '~/components/core/Text/Text';
-import { CollectionSearchResults } from '~/components/GalleryEditor/CollectionSearchResults';
+import { CollectionSearchResults } from '~/components/GalleryEditor/CollectionSidebar/CollectionSearchResults';
 import { CollectionSearchFragment$key } from '~/generated/CollectionSearchFragment.graphql';
 
 type CollectionSearchProps = {

@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 import { HStack } from '~/components/core/Spacer/Stack';
 import { CollectionEditor } from '~/components/GalleryEditor/CollectionEditor/CollectionEditor';
-import { CollectionSidebar } from '~/components/GalleryEditor/CollectionSidebar';
+import { CollectionSidebar } from '~/components/GalleryEditor/CollectionSidebar/CollectionSidebar';
 import { GalleryEditorProvider } from '~/components/GalleryEditor/GalleryEditorContext';
 import CollectionEditorProvider from '~/contexts/collectionEditor/CollectionEditorContext';
 import CollectionWizardContext from '~/contexts/wizard/CollectionWizardContext';

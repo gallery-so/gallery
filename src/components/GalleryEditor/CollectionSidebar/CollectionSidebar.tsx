@@ -5,8 +5,8 @@ import colors from '~/components/core/colors';
 import IconContainer from '~/components/core/Markdown/IconContainer';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { TitleS } from '~/components/core/Text/Text';
-import { CollectionSearch } from '~/components/GalleryEditor/CollectionSearch';
-import { CreateCollectionIcon } from '~/components/GalleryEditor/CreateCollectionIcon';
+import { CollectionSearch } from '~/components/GalleryEditor/CollectionSidebar/CollectionSearch';
+import { CreateCollectionIcon } from '~/components/GalleryEditor/CollectionSidebar/CreateCollectionIcon';
 import { CollectionSidebarFragment$key } from '~/generated/CollectionSidebarFragment.graphql';
 
 function TitleSection() {

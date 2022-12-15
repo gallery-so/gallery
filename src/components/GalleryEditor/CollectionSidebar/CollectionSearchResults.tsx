@@ -3,7 +3,7 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
-import { CollectionListItem } from '~/components/GalleryEditor/CollectionListItem';
+import { CollectionListItem } from '~/components/GalleryEditor/CollectionSidebar/CollectionListItem';
 import { CollectionSearchResultsFragment$key } from '~/generated/CollectionSearchResultsFragment.graphql';
 import { removeNullValues } from '~/utils/removeNullValues';
 
