@@ -3,6 +3,7 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import IconContainer from '~/components/core/Markdown/IconContainer';
+import { HStack } from '~/components/core/Spacer/Stack';
 import { Chain, chains } from '~/components/GalleryEditor/PiecesSidebar/chains';
 import { SidebarChainButton } from '~/components/GalleryEditor/PiecesSidebar/SidebarChainButton';
 import Tooltip from '~/components/Tooltip/Tooltip';
@@ -58,16 +59,17 @@ export function SidebarChainSelector({
     throw new Error(`Could not find a chain for selected value '${selected}'`);
   }
 
+  const isRefreshDisabled = isRefreshDisabledForUser(query.viewer?.user?.dbid ?? '');
+
   return (
     <Container>
-      <Chains>
+      <HStack gap={4}>
         {chains.map((chain) => {
           const isSelected = chain.name === selected;
 
           return (
             <SidebarChainButton
               key={chain.name}
-              locked={false}
               icon={chain.icon}
               title={chain.shortName}
               isSelected={isSelected}
@@ -75,28 +77,28 @@ export function SidebarChainSelector({
             />
           );
         })}
-      </Chains>
-      {isRefreshDisabledForUser(query.viewer?.user?.dbid ?? '') ? null : (
-        <IconContainer
-          data-testid="RefreshButton"
-          onMouseEnter={() => setShowTooltip(true)}
-          onMouseLeave={() => setShowTooltip(false)}
-          onClick={handleRefresh}
-          disabled={isRefreshingNfts || !ownsWalletFromSelectedChain}
-          size="sm"
-          icon={
-            <>
-              <RefreshIcon />
-              <RefreshTooltip
-                active={showTooltip}
-                text={
-                  isRefreshingNfts ? `Refreshing...` : `Refresh ${selectedChain.shortName} Wallets`
-                }
-              />
-            </>
-          }
-        />
-      )}
+      </HStack>
+      {/*{isRefreshDisabled ? null : (*/}
+      {/*  <IconContainer*/}
+      {/*    data-testid="RefreshButton"*/}
+      {/*    onMouseEnter={() => setShowTooltip(true)}*/}
+      {/*    onMouseLeave={() => setShowTooltip(false)}*/}
+      {/*    onClick={handleRefresh}*/}
+      {/*    disabled={isRefreshingNfts || !ownsWalletFromSelectedChain}*/}
+      {/*    size="sm"*/}
+      {/*    icon={*/}
+      {/*      <>*/}
+      {/*        <RefreshIcon />*/}
+      {/*        <RefreshTooltip*/}
+      {/*          active={showTooltip}*/}
+      {/*          text={*/}
+      {/*            isRefreshingNfts ? `Refreshing...` : `Refresh ${selectedChain.shortName} Wallets`*/}
+      {/*          }*/}
+      {/*        />*/}
+      {/*      </>*/}
+      {/*    }*/}
+      {/*  />*/}
+      {/*)}*/}
     </Container>
   );
 }
@@ -106,10 +108,6 @@ const RefreshTooltip = styled(Tooltip)<{ active: boolean }>`
   z-index: 1;
   opacity: ${({ active }) => (active ? 1 : 0)};
   transform: translateY(calc(100% + ${({ active }) => (active ? 4 : 0)}px));
-`;
-
-const Chains = styled.div`
-  display: flex;
 `;
 
 const Container = styled.div`
