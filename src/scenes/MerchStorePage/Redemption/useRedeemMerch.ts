@@ -1,7 +1,6 @@
 import { signMessage } from '@wagmi/core';
 import { useCallback } from 'react';
 import { graphql } from 'react-relay';
-import { SelectorStoreUpdater } from 'relay-runtime';
 import { useAccount } from 'wagmi';
 
 import { useToastActions } from '~/contexts/toast/ToastContext';
