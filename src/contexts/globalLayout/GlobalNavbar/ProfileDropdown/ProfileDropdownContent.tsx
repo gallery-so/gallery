@@ -28,12 +28,20 @@ import { getEditGalleryUrl } from '~/utils/getEditGalleryUrl';
 import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 type Props = {
-  showDropdown: boolean;
+  shouldShowDropdown: boolean;
   onClose: () => void;
+  onMouseLeave: () => void;
+  onMouseEnter: () => void;
   queryRef: ProfileDropdownContentFragment$key;
 };
 
-export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Props) {
+export function ProfileDropdownContent({
+  onClose,
+  queryRef,
+  onMouseLeave,
+  onMouseEnter,
+  shouldShowDropdown,
+}: Props) {
   useSubscribeToNotifications();
 
   const query = useFragment(
@@ -119,7 +127,14 @@ export function ProfileDropdownContent({ showDropdown, onClose, queryRef }: Prop
 
   return (
     <>
-      <Dropdown position="left" active={showDropdown} onClose={onClose}>
+      <Dropdown
+        isActivatedByHover
+        position="left"
+        active={shouldShowDropdown}
+        onClose={onClose}
+        onMouseLeave={onMouseLeave}
+        onMouseEnter={onMouseEnter}
+      >
         <DropdownSection>
           <Link href={userGalleryRoute}>
             <DropdownProfileSection href={route(userGalleryRoute)}>

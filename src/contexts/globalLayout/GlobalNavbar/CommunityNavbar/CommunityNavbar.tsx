@@ -8,6 +8,7 @@ import {
   NavbarRightContent,
   StandardNavbarContainer,
 } from '~/contexts/globalLayout/GlobalNavbar/StandardNavbarContainer';
+import SnowToggleIcon from '~/contexts/snow/SnowToggleIcon';
 import { CommunityNavbarFragment$key } from '~/generated/CommunityNavbarFragment.graphql';
 
 type CommunityNavbarProps = {
@@ -31,7 +32,9 @@ export function CommunityNavbar({ queryRef }: CommunityNavbarProps) {
       </NavbarLeftContent>
 
       <NavbarCenterContent />
-      <NavbarRightContent />
+      <NavbarRightContent>
+        <SnowToggleIcon />
+      </NavbarRightContent>
     </StandardNavbarContainer>
   );
 }
