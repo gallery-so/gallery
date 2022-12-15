@@ -6,6 +6,7 @@ import { Dropdown } from '~/components/core/Dropdown/Dropdown';
 import { DropdownItem } from '~/components/core/Dropdown/DropdownItem';
 import { DropdownSection } from '~/components/core/Dropdown/DropdownSection';
 import IconContainer from '~/components/core/Markdown/IconContainer';
+import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import DoubleArrowsIcon from '~/icons/DoubleArrowsIcon';
 
@@ -29,15 +30,11 @@ export function SidebarViewSelector({ selectedView, setSelectedView }: SidebarVi
 
   return (
     <Container>
-      <Selector isDropdownOpen={isDropdownOpen} onClick={() => setIsDropdownOpen(true)}>
+      <Selector gap={10} align="center" onClick={() => setIsDropdownOpen(true)}>
         <BaseM>{selectedView}</BaseM>
         <IconContainer stacked size="sm" icon={<DoubleArrowsIcon />} />
       </Selector>
-      <Dropdown
-        position="full-width"
-        active={isDropdownOpen}
-        onClose={() => setIsDropdownOpen(false)}
-      >
+      <Dropdown position="right" active={isDropdownOpen} onClose={() => setIsDropdownOpen(false)}>
         <DropdownSection>
           <DropdownItem onClick={() => onSelectView('Collected')}>COLLECTED</DropdownItem>
           <DropdownItem onClick={() => onSelectView('Hidden')}>HIDDEN</DropdownItem>
@@ -47,19 +44,10 @@ export function SidebarViewSelector({ selectedView, setSelectedView }: SidebarVi
   );
 }
 
-const Container = styled.div`
-  position: relative;
+const Selector = styled(HStack)`
+  cursor: pointer;
 `;
 
-const Selector = styled.div<{ isDropdownOpen: boolean }>`
-  display: flex;
-  justify-content: space-between;
-  cursor: pointer;
-  align-items: center;
-
-  ${({ isDropdownOpen }) => isDropdownOpen && `background-color: ${colors.faint};`}
-
-  &:hover {
-    background-color: ${colors.faint};
-  }
+const Container = styled.div`
+  position: relative;
 `;

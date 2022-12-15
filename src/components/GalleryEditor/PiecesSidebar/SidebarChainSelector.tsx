@@ -114,5 +114,5 @@ const Container = styled.div`
   display: flex;
   justify-content: space-between;
 
-  padding: 16px 12px;
+  padding: 8px 12px;
 `;

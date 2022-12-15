@@ -10,6 +10,7 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import colors from '~/components/core/colors';
+import { FadedInput } from '~/components/core/Input/FadedInput';
 import { SearchBarNewFragment$key } from '~/generated/SearchBarNewFragment.graphql';
 import useDebounce from '~/hooks/useDebounce';
 
@@ -36,14 +37,6 @@ function SearchBar({ tokensRef, setSearchResults, setDebouncedSearchQuery }: Pro
   const [searchQuery, setSearchQuery] = useState('');
   const debouncedSearchQuery = useDebounce(searchQuery, 200);
 
-  const handleQueryChange = useCallback<ChangeEventHandler<HTMLInputElement>>(
-    (event) => {
-      const searchQuery = event.target.value;
-      setSearchQuery(searchQuery);
-    },
-    [setSearchQuery]
-  );
-
   useEffect(() => {
     const lowerCaseQuery = debouncedSearchQuery.toLowerCase();
 
@@ -66,30 +59,13 @@ function SearchBar({ tokensRef, setSearchResults, setDebouncedSearchQuery }: Pro
   }, [debouncedSearchQuery, setDebouncedSearchQuery, setSearchResults, tokens]);
 
   return (
-    <StyledSearchBar>
-      <StyledSearchInput onChange={handleQueryChange} placeholder="Search pieces" />
-    </StyledSearchBar>
+    <FadedInput
+      size="md"
+      value={searchQuery}
+      onChange={setSearchQuery}
+      placeholder="Search pieces"
+    />
   );
 }
-
-const StyledSearchBar = styled.div``;
-
-const StyledSearchInput = styled.input`
-  border: none;
-  width: 100%;
-  padding: 8px;
-  padding-left: 12px;
-  color: ${colors.metal};
-  background: ${colors.offWhite};
-  height: 36px;
-
-  ::placeholder {
-    color: ${colors.metal};
-  }
-
-  &:focus {
-    color: ${colors.offBlack};
-  }
-`;
 
 export default SearchBar;
