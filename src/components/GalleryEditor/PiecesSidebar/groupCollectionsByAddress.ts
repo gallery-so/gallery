@@ -1,19 +1,19 @@
 import keyBy from 'lodash.keyby';
 
-import { EditModeToken } from '~/components/ManageGallery/OrganizeCollection/types';
-import { SidebarTokensFragment$data } from '~/generated/SidebarTokensNewFragment.graphql';
+import { EditModeToken } from '~/components/GalleryEditor/CollectionEditor/types';
+import { SidebarTokensNewFragment$data } from '~/generated/SidebarTokensNewFragment.graphql';
 
 export type CollectionGroup = {
   title: string;
   address: string;
   tokens: Array<{
-    token: SidebarTokensFragment$data[number];
+    token: SidebarTokensNewFragment$data[number];
     editModeToken: EditModeToken;
   }>;
 };
 
 type groupCollectionsByAddressArgs = {
-  tokens: SidebarTokensFragment$data;
+  tokens: SidebarTokensNewFragment$data;
   editModeTokens: EditModeToken[];
 };
 

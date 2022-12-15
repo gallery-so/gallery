@@ -1,5 +1,5 @@
 import keyBy from 'lodash.keyby';
-import { memo, useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -7,9 +7,9 @@ import { Button } from '~/components/core/Button/Button';
 import colors from '~/components/core/colors';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { TitleS } from '~/components/core/Text/Text';
-import { Chain } from '~/components/ManageGallery/OrganizeCollection/Sidebar/chains';
-import { SidebarChainSelector } from '~/components/ManageGallery/OrganizeCollection/Sidebar/SidebarChainSelector';
-import { SidebarTokens } from '~/components/ManageGallery/OrganizeCollection/Sidebar/SidebarTokens';
+import { Chain } from '~/components/GalleryEditor/PiecesSidebar/chains';
+import { SidebarChainSelector } from '~/components/GalleryEditor/PiecesSidebar/SidebarChainSelector';
+import { SidebarTokens } from '~/components/GalleryEditor/PiecesSidebar/SidebarTokens';
 import {
   SidebarTokensState,
   useCollectionEditorActions,
@@ -17,27 +17,27 @@ import {
 import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { useToastActions } from '~/contexts/toast/ToastContext';
-import { SidebarNewFragment$key } from '~/generated/SidebarNewFragment.graphql';
-import { SidebarViewerNewFragment$key } from '~/generated/SidebarViewerNewFragment.graphql';
+import { PiecesSidebarNewFragment$key } from '~/generated/PiecesSidebarNewFragment.graphql';
+import { PiecesSidebarViewerNewFragment$key } from '~/generated/PiecesSidebarViewerNewFragment.graphql';
 import useSyncTokens from '~/hooks/api/tokens/useSyncTokens';
 import { generate12DigitId } from '~/utils/collectionLayout';
 import { removeNullValues } from '~/utils/removeNullValues';
 
-import { convertObjectToArray } from '../convertObjectToArray';
+import { convertObjectToArray } from '../CollectionEditor/convertObjectToArray';
 import { AddWalletSidebar } from './AddWalletSidebar';
 import SearchBar from './SearchBar';
 import { SidebarView, SidebarViewSelector } from './SidebarViewSelector';
 
 type Props = {
   sidebarTokens: SidebarTokensState;
-  tokensRef: SidebarNewFragment$key;
-  queryRef: SidebarViewerNewFragment$key;
+  tokensRef: PiecesSidebarNewFragment$key;
+  queryRef: PiecesSidebarViewerNewFragment$key;
 };
 
-function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
+export function PiecesSidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
   const allTokens = useFragment(
     graphql`
-      fragment SidebarNewFragment on Token @relay(plural: true) {
+      fragment PiecesSidebarNewFragment on Token @relay(plural: true) {
         dbid
         chain
         isSpamByUser
@@ -52,7 +52,7 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
 
   const query = useFragment(
     graphql`
-      fragment SidebarViewerNewFragment on Query {
+      fragment PiecesSidebarViewerNewFragment on Query {
         viewer {
           ... on Viewer {
             user {
@@ -272,5 +272,3 @@ const Header = styled.div`
   justify-content: space-between;
   align-items: baseline;
 `;
-
-export default memo(Sidebar);

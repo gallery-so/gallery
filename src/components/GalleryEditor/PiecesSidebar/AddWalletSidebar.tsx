@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { Button } from '~/components/core/Button/Button';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { EmptyState } from '~/components/EmptyState/EmptyState';
-import { Chain } from '~/components/ManageGallery/OrganizeCollection/Sidebar/chains';
+import { Chain } from '~/components/GalleryEditor/PiecesSidebar/chains';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { AddWalletSidebarQueryNewFragment$key } from '~/generated/AddWalletSidebarQueryNewFragment.graphql';
 import ManageWalletsModal from '~/scenes/Modals/ManageWalletsModal';

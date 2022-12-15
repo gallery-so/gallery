@@ -14,12 +14,13 @@ import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext'
 import { ContentIsLoadedEvent } from '~/contexts/shimmer/ShimmerContext';
 import { CouldNotRenderNftError } from '~/errors/CouldNotRenderNftError';
 import { SidebarNftIconNewFragment$key } from '~/generated/SidebarNftIconNewFragment.graphql';
+import { SidebarNftIconPollerNewQuery } from '~/generated/SidebarNftIconPollerNewQuery.graphql';
 import { SidebarNftIconPreviewAsset$key } from '~/generated/SidebarNftIconPreviewAsset.graphql';
 import { useNftRetry, useThrowOnMediaFailure } from '~/hooks/useNftRetry';
 import getVideoOrImageUrlForNftPreview from '~/utils/graphql/getVideoOrImageUrlForNftPreview';
 import { getBackgroundColorOverrideForContract } from '~/utils/token';
 
-import { EditModeToken } from '../types';
+import { EditModeToken } from '../CollectionEditor/types';
 
 type SidebarNftIconProps = {
   tokenRef: SidebarNftIconNewFragment$key;

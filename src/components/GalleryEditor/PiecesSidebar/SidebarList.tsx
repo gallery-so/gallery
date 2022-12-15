@@ -8,8 +8,8 @@ import styled from 'styled-components';
 import colors from '~/components/core/colors';
 import IconContainer from '~/components/core/Markdown/IconContainer';
 import { TitleXS } from '~/components/core/Text/Text';
-import { ExpandedIcon } from '~/components/ManageGallery/OrganizeCollection/Sidebar/ExpandedIcon';
-import SidebarNftIcon from '~/components/ManageGallery/OrganizeCollection/Sidebar/SidebarNftIcon';
+import { ExpandedIcon } from '~/components/GalleryEditor/PiecesSidebar/ExpandedIcon';
+import SidebarNftIcon from '~/components/GalleryEditor/PiecesSidebar/SidebarNftIcon';
 import { EditModeToken } from '~/components/ManageGallery/OrganizeCollection/types';
 import Tooltip from '~/components/Tooltip/Tooltip';
 import {

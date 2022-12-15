@@ -1,12 +1,12 @@
 import keyBy from 'lodash.keyby';
 
-import { CollectionGroup } from '~/components/ManageGallery/OrganizeCollection/Sidebar/groupCollectionsByAddress';
+import { EditModeToken } from '~/components/GalleryEditor/CollectionEditor/types';
+import { CollectionGroup } from '~/components/GalleryEditor/PiecesSidebar/groupCollectionsByAddress';
 import {
   TokenAndEditModeToken,
   VirtualizedRow,
-} from '~/components/ManageGallery/OrganizeCollection/Sidebar/SidebarList';
-import { EditModeToken } from '~/components/ManageGallery/OrganizeCollection/types';
-import { SidebarTokensFragment$data } from '~/generated/SidebarTokensNewFragment.graphql';
+} from '~/components/GalleryEditor/PiecesSidebar/SidebarList';
+import { SidebarTokensNewFragment$data } from '~/generated/SidebarTokensNewFragment.graphql';
 
 type createVirtualizedRowsFromGroupsArgs = {
   groups: CollectionGroup[];
@@ -52,7 +52,7 @@ export function createVirtualizedRowsFromGroups({
 }
 
 type createVirtualizedRowsFromTokensArgs = {
-  tokens: SidebarTokensFragment$data;
+  tokens: SidebarTokensNewFragment$data;
   editModeTokens: EditModeToken[];
   erroredTokenIds: Set<string>;
 };

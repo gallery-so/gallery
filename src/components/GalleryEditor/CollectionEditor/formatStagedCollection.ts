@@ -1,4 +1,8 @@
-import { SectionWithoutIds, StagedCollection, StagedCollectionWithoutIds } from '../types';
+import {
+  SectionWithoutIds,
+  StagedCollection,
+  StagedCollectionWithoutIds,
+} from '../CollectionEditor/types';
 
 // Clone the staged collection without staged token id
 export function formatStagedCollection(

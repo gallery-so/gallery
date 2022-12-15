@@ -1,15 +1,15 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
-import { Chain } from '~/components/ManageGallery/OrganizeCollection/Sidebar/chains';
+import { EditModeToken } from '~/components/GalleryEditor/CollectionEditor/types';
+import { Chain } from '~/components/GalleryEditor/PiecesSidebar/chains';
 import {
   createVirtualizedRowsFromGroups,
   createVirtualizedRowsFromTokens,
-} from '~/components/ManageGallery/OrganizeCollection/Sidebar/createVirtualizedRowsFromGroups';
-import { EmptySidebar } from '~/components/ManageGallery/OrganizeCollection/Sidebar/EmptySidebar';
-import { groupCollectionsByAddress } from '~/components/ManageGallery/OrganizeCollection/Sidebar/groupCollectionsByAddress';
-import { SidebarList } from '~/components/ManageGallery/OrganizeCollection/Sidebar/SidebarList';
-import { EditModeToken } from '~/components/ManageGallery/OrganizeCollection/types';
+} from '~/components/GalleryEditor/PiecesSidebar/createVirtualizedRowsFromGroups';
+import { EmptySidebar } from '~/components/GalleryEditor/PiecesSidebar/EmptySidebar';
+import { groupCollectionsByAddress } from '~/components/GalleryEditor/PiecesSidebar/groupCollectionsByAddress';
+import { SidebarList } from '~/components/GalleryEditor/PiecesSidebar/SidebarList';
 import { SidebarTokensNewFragment$key } from '~/generated/SidebarTokensNewFragment.graphql';
 import useSetSpamPreference from '~/hooks/api/tokens/useSetSpamPreference';
 
