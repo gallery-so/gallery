@@ -49,7 +49,7 @@ function SidebarNftIcon({
             __typename
           }
         }
-        ...SidebarNftIconPreviewAsset
+        ...SidebarNftIconPreviewAssetNew
       }
     `,
     tokenRef

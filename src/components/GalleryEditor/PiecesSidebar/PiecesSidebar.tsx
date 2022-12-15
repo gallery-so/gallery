@@ -13,6 +13,7 @@ import { SidebarTokens } from '~/components/GalleryEditor/PiecesSidebar/SidebarT
 import {
   SidebarTokensState,
   useCollectionEditorActions,
+  useSidebarTokensState,
 } from '~/contexts/collectionEditor/CollectionEditorContext';
 import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
@@ -29,12 +30,11 @@ import SearchBar from './SearchBar';
 import { SidebarView, SidebarViewSelector } from './SidebarViewSelector';
 
 type Props = {
-  sidebarTokens: SidebarTokensState;
   tokensRef: PiecesSidebarNewFragment$key;
   queryRef: PiecesSidebarViewerNewFragment$key;
 };
 
-export function PiecesSidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
+export function PiecesSidebar({ tokensRef, queryRef }: Props) {
   const allTokens = useFragment(
     graphql`
       fragment PiecesSidebarNewFragment on Token @relay(plural: true) {
@@ -72,6 +72,7 @@ export function PiecesSidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
     queryRef
   );
 
+  const sidebarTokens = useSidebarTokensState();
   const { stageTokens } = useCollectionEditorActions();
   const [searchResults, setSearchResults] = useState<string[]>([]);
   const [selectedChain, setSelectedChain] = useState<Chain>('Ethereum');
@@ -258,7 +259,7 @@ const StyledSidebar = styled.div<{ navbarHeight: number }>`
   padding-top: 16px;
 
   height: 100%;
-  border-right: 1px solid ${colors.porcelain};
+  border-left: 1px solid ${colors.porcelain};
   user-select: none;
 
   &::-webkit-scrollbar {

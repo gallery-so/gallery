@@ -1,3 +1,4 @@
+import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import { useCallback } from 'react';
 import { useLazyLoadQuery } from 'react-relay';
@@ -16,8 +17,12 @@ import { editGalleryPageOldQuery } from '~/generated/editGalleryPageOldQuery.gra
 import { editGalleryPageQuery } from '~/generated/editGalleryPageQuery.graphql';
 import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
-function NewEditGalleryPage() {
-  const { query: urlQuery, back, replace } = useRouter();
+type Props = {
+  galleryId: string;
+};
+
+function NewEditGalleryPage({ galleryId }: Props) {
+  const { back, replace } = useRouter();
 
   const query = useLazyLoadQuery<editGalleryPageNewQuery>(
     graphql`
@@ -33,7 +38,7 @@ function NewEditGalleryPage() {
         ...GalleryEditorFragment
       }
     `,
-    { galleryId: urlQuery.galleryId }
+    { galleryId }
   );
 
   const canGoBack = useCanGoBack();
@@ -137,7 +142,7 @@ const Wrapper = styled.div`
   }
 `;
 
-export default function EditGalleryPage() {
+export default function EditGalleryPage({ galleryId }: Props) {
   const query = useLazyLoadQuery<editGalleryPageQuery>(
     graphql`
       query editGalleryPageQuery {
@@ -149,5 +154,17 @@ export default function EditGalleryPage() {
 
   const isMultigalleryEnabled = isFeatureEnabled(FeatureFlag.MULTIGALLERY, query);
 
-  return isMultigalleryEnabled ? <NewEditGalleryPage /> : <OldEditGalleryPage />;
+  return isMultigalleryEnabled ? (
+    <NewEditGalleryPage galleryId={galleryId} />
+  ) : (
+    <OldEditGalleryPage />
+  );
 }
+
+export const getServerSideProps: GetServerSideProps<Props> = ({ params }) => {
+  return {
+    props: {
+      galleryId: params.galleryId,
+    },
+  };
+};
