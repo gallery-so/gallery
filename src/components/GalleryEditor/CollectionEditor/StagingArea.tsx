@@ -25,6 +25,7 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';
+import { isEditModeToken, Section } from '~/components/ManageGallery/OrganizeCollection/types';
 import {
   useActiveSectionIdState,
   useCollectionEditorActions,
@@ -36,7 +37,6 @@ import { StagingAreaFragment$key } from '~/generated/StagingAreaFragment.graphql
 import useKeyDown from '~/hooks/useKeyDown';
 import { removeNullValues } from '~/utils/removeNullValues';
 
-import { isEditModeToken, Section } from '../types';
 import DroppableSection from './DragAndDrop/DroppableSection';
 import SectionDragging from './DragAndDrop/SectionDragging';
 import { MENU_WIDTH } from './EditorMenu';

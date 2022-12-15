@@ -2,6 +2,16 @@ import React, { useEffect, useMemo, useRef } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
+import { convertObjectToArray } from '~/components/ManageGallery/OrganizeCollection/convertObjectToArray';
+import Directions from '~/components/ManageGallery/OrganizeCollection/Directions';
+import Sidebar from '~/components/ManageGallery/OrganizeCollection/Sidebar/Sidebar';
+import {
+  EditModeToken,
+  EditModeTokenChild,
+  StagedCollection,
+} from '~/components/ManageGallery/OrganizeCollection/types';
+import useConfirmationMessageBeforeClose from '~/components/ManageGallery/useConfirmationMessageBeforeClose';
+import useNotOptimizedForMobileWarning from '~/components/ManageGallery/useNotOptimizedForMobileWarning';
 import {
   SidebarTokensState,
   useCollectionEditorActions,
@@ -14,12 +24,6 @@ import { CollectionEditorViewerFragment$key } from '~/generated/CollectionEditor
 import { parseCollectionLayoutGraphql } from '~/utils/collectionLayout';
 import { removeNullValues } from '~/utils/removeNullValues';
 
-import useConfirmationMessageBeforeClose from '../../useConfirmationMessageBeforeClose';
-import useNotOptimizedForMobileWarning from '../../useNotOptimizedForMobileWarning';
-import { convertObjectToArray } from '../convertObjectToArray';
-import Directions from '../Directions';
-import Sidebar from '../Sidebar/Sidebar';
-import { EditModeToken, EditModeTokenChild, StagedCollection } from '../types';
 import EditorMenu from './EditorMenu';
 import StagingArea from './StagingArea';
 import useCheckUnsavedChanges from './useCheckUnsavedChanges';
@@ -101,7 +105,7 @@ const collectionEditorViewerFragment = graphql`
   }
 `;
 
-function CollectionEditor({
+export function CollectionEditor({
   queryRef,
   onValidChange,
   onHasUnsavedChange,
@@ -312,5 +316,3 @@ const StyledEditorContainer = styled.div`
   display: flex;
   width: calc(100vw - ${SIDEBAR_WIDTH}px);
 `;
-
-export default CollectionEditor;
