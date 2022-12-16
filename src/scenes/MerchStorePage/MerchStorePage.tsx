@@ -6,8 +6,8 @@ import { useAccount } from 'wagmi';
 import breakpoints from '~/components/core/breakpoints';
 import { Button } from '~/components/core/Button/Button';
 import colors from '~/components/core/colors';
-import { HStack } from '~/components/core/Spacer/Stack';
-import { TitleM } from '~/components/core/Text/Text';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
+import { TitleM, TitleMonoM } from '~/components/core/Text/Text';
 import { GLOBAL_FOOTER_HEIGHT } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
 import { MerchStorePageQuery } from '~/generated/MerchStorePageQuery.graphql';
 import { MerchStorePageQueryFragment$key } from '~/generated/MerchStorePageQueryFragment.graphql';
@@ -122,11 +122,14 @@ export default function MerchStorePage({ queryRef }: Props) {
       <StyledButtonContainer>
         <StyledButton onClick={handleShowRedeemModal}>Redeem</StyledButton>
       </StyledButtonContainer>
-      <StyledItemsContainer>
-        {merchItems.map((item) => (
-          <ItemPreview {...item} key={item.label} />
-        ))}
-      </StyledItemsContainer>
+      <StyledContent gap={32} align="center">
+        <TitleMonoM>Physical redemption is now available.</TitleMonoM>
+        <StyledItemsContainer>
+          {merchItems.map((item) => (
+            <ItemPreview {...item} key={item.label} />
+          ))}
+        </StyledItemsContainer>
+      </StyledContent>
     </StyledPage>
   );
 }
@@ -163,6 +166,15 @@ const StyledButton = styled(Button)`
   padding: 10px 12px;
 `;
 
+const StyledContent = styled(VStack)`
+  padding-top: 80px;
+  width: 100%;
+
+  @media only screen and ${breakpoints.tablet} {
+    padding-top: 0;
+  }
+`;
+
 const StyledShopText = styled(TitleM)`
   font-family: 'GT Alpina Condensed';
   font-style: normal;
@@ -185,7 +197,6 @@ const StyledItemsContainer = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  padding-top: 60px;
   justify-content: center;
   place-items: center;
 
