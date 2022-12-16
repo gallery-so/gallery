@@ -13,6 +13,7 @@ import { RecordMap } from 'relay-runtime/lib/store/RelayStoreTypes';
 import FadeTransitioner, {
   useStabilizedRouteTransitionKey,
 } from '~/components/FadeTransitioner/FadeTransitioner';
+import GoogleAnalytics from '~/components/GoogleAnalytics';
 import AppProvider from '~/contexts/AppProvider';
 import AuthProvider from '~/contexts/auth/AuthContext';
 import GlobalLayoutContextProvider from '~/contexts/globalLayout/GlobalLayoutContext';
@@ -108,7 +109,7 @@ const App: FC<{
         <AppProvider relayEnvironment={relayEnvironment}>
           <FadeTransitioner locationKey={locationKey}>
             <>
-              <Component {...pageProps} />
+              <GoogleAnalytics />
               <Analytics
                 beforeSend={(event) => {
                   // Ignore sending noisy events related to /opengraph previews
@@ -118,6 +119,7 @@ const App: FC<{
                   return event;
                 }}
               />
+              <Component {...pageProps} />
             </>
           </FadeTransitioner>
         </AppProvider>
