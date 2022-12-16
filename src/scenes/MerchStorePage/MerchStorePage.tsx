@@ -143,8 +143,9 @@ const StyledPage = styled.div`
 `;
 
 const StyledLogoContainer = styled.div`
-  top: 16px;
   position: absolute;
+  top: 16px;
+  height: 32px;
   display: flex;
   align-items: center;
 `;
@@ -153,6 +154,9 @@ const StyledButtonContainer = styled.div`
   position: absolute;
   top: 16px;
   right: 24px;
+  height: 32px;
+  display: flex;
+  align-items: center;
 `;
 
 const StyledButton = styled(Button)`
