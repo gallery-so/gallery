@@ -4,8 +4,8 @@ import { getObjectNameFragment$key } from '~/generated/getObjectNameFragment.gra
 
 const MERCHS_NAMING = {
   TShirt: '(OBJECT 001) Shirt',
-  Hat: '(OBJECT 002) hat',
-  Card: '(OBJECT 003) card ',
+  Hat: '(OBJECT 002) Hat',
+  Card: '(OBJECT 003) Card ',
 };
 
 export function getObjectName(merchTokenRef: getObjectNameFragment$key) {
