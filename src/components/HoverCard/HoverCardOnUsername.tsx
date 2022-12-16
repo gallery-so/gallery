@@ -24,7 +24,6 @@ import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM, TitleM } from '~/components/core/Text/Text';
 import {
-  ANIMATED_COMPONENT_TRANSITION_MS,
   ANIMATED_COMPONENT_TRANSITION_S,
   ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL,
   rawTransitions,
@@ -93,7 +92,7 @@ export default function HoverCardOnUsername({ children, userRef, queryRef }: Pro
   });
 
   const role = useRole(context);
-  const hover = useHover(context, { delay: 150 });
+  const hover = useHover(context, { delay: HOVER_POPUP_DELAY });
 
   const { getReferenceProps, getFloatingProps } = useInteractions([hover, role]);
 

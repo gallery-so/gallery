@@ -13,9 +13,7 @@ import {
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
-import styled from 'styled-components';
 
-import breakpoints from '~/components/core/breakpoints';
 import {
   ANIMATED_COMPONENT_TRANSITION_S,
   ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL,

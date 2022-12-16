@@ -1,11 +1,4 @@
-import {
-  ClipboardEventHandler,
-  ForwardedRef,
-  KeyboardEventHandler,
-  useCallback,
-  useRef,
-  useState,
-} from 'react';
+import { ClipboardEventHandler, KeyboardEventHandler, useCallback, useRef, useState } from 'react';
 import { useFragment } from 'react-relay';
 import { ConnectionHandler, graphql, SelectorStoreUpdater } from 'relay-runtime';
 import styled from 'styled-components';
