@@ -1,18 +1,35 @@
-import React from 'react';
+import React, { useCallback } from 'react';
+import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 import styled from 'styled-components';
+import { useAccount } from 'wagmi';
 
 import breakpoints from '~/components/core/breakpoints';
+import { Button } from '~/components/core/Button/Button';
 import colors from '~/components/core/colors';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { TitleM } from '~/components/core/Text/Text';
 import { GLOBAL_FOOTER_HEIGHT } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
+import { MerchStorePageQuery } from '~/generated/MerchStorePageQuery.graphql';
+import { MerchStorePageQueryFragment$key } from '~/generated/MerchStorePageQueryFragment.graphql';
+import useAuthModal from '~/hooks/useAuthModal';
+import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
 import LogoBracketLeft from '~/icons/LogoBracketLeft';
 import LogoBracketRight from '~/icons/LogoBracketRight';
 
 import Countdown from './Countdown';
 import ItemPreview from './ItemPreview';
+import useRedeemModal from './Redemption/useRedeemModal';
 
-const items = [
+export type MerchItemTypes = {
+  label: string;
+  image: string;
+  title: string;
+  description: string;
+  price: string;
+  tokenId: number;
+};
+
+export const merchItems = [
   {
     label: 'Shirt',
     image: '/merch/shirt',
@@ -42,7 +59,56 @@ const items = [
   },
 ];
 
-export default function MerchStorePage() {
+type Props = {
+  queryRef: MerchStorePageQueryFragment$key;
+};
+
+export default function MerchStorePage({ queryRef }: Props) {
+  const { address } = useAccount();
+  const query = useLazyLoadQuery<MerchStorePageQuery>(
+    graphql`
+      query MerchStorePageQuery($wallet: Address!) {
+        merchTokens: getMerchTokens(wallet: $wallet) @required(action: THROW) {
+          __typename
+          ...useRedeemModalQueryFragment
+        }
+
+        viewer {
+          ... on Viewer {
+            __typename
+          }
+        }
+      }
+    `,
+    {
+      wallet: address ?? '',
+    }
+  );
+
+  const userQuery = useFragment(
+    graphql`
+      fragment MerchStorePageQueryFragment on Query {
+        ...useLoggedInUserIdFragment
+      }
+    `,
+    queryRef
+  );
+
+  const { merchTokens } = query;
+  const showAuthModal = useAuthModal();
+  const showRedeemModal = useRedeemModal(merchTokens);
+
+  const loggedInUserId = useLoggedInUserId(userQuery);
+
+  const handleShowRedeemModal = useCallback(() => {
+    if (!loggedInUserId) {
+      showAuthModal();
+      return;
+    }
+
+    showRedeemModal();
+  }, [loggedInUserId, showRedeemModal, showAuthModal]);
+
   return (
     <StyledPage>
       <Countdown />
@@ -53,8 +119,11 @@ export default function MerchStorePage() {
           <StyledLogoBracketRight color={colors.offBlack} />
         </HStack>
       </StyledLogoContainer>
+      <StyledButtonContainer>
+        <StyledButton onClick={handleShowRedeemModal}>Redeem</StyledButton>
+      </StyledButtonContainer>
       <StyledItemsContainer>
-        {items.map((item) => (
+        {merchItems.map((item) => (
           <ItemPreview {...item} key={item.label} />
         ))}
       </StyledItemsContainer>
@@ -78,6 +147,16 @@ const StyledLogoContainer = styled.div`
   position: absolute;
   display: flex;
   align-items: center;
+`;
+
+const StyledButtonContainer = styled.div`
+  position: absolute;
+  top: 16px;
+  right: 24px;
+`;
+
+const StyledButton = styled(Button)`
+  padding: 10px 12px;
 `;
 
 const StyledShopText = styled(TitleM)`
