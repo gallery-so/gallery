@@ -1,54 +1,37 @@
 import {
-  autoUpdate,
-  flip,
-  FloatingFocusManager,
-  offset,
-  shift,
-  useClick,
-  useDismiss,
-  useFloating,
-  useId,
-  useInteractions,
-  useRole,
-} from '@floating-ui/react';
-import {
   ClipboardEventHandler,
+  ForwardedRef,
   KeyboardEventHandler,
-  MouseEventHandler,
   useCallback,
-  useEffect,
   useRef,
   useState,
 } from 'react';
 import { useFragment } from 'react-relay';
 import { ConnectionHandler, graphql, SelectorStoreUpdater } from 'relay-runtime';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import colors from '~/components/core/colors';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM, BODY_FONT_FAMILY } from '~/components/core/Text/Text';
-import { ANIMATED_COMPONENT_TRANSITION_MS } from '~/components/core/transitions';
 import { SendButton } from '~/components/Feed/Socialize/SendButton';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
-import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { CommentBoxFragment$key } from '~/generated/CommentBoxFragment.graphql';
 import { CommentBoxMutation } from '~/generated/CommentBoxMutation.graphql';
 import { CommentBoxQueryFragment$key } from '~/generated/CommentBoxQueryFragment.graphql';
-import { AuthModal } from '~/hooks/useAuthModal';
 import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
-import { CommentIcon } from '~/icons/SocializeIcons';
 
 const MAX_TEXT_LENGTH = 100;
 
 type Props = {
+  onClose: () => void;
   eventRef: CommentBoxFragment$key;
   queryRef: CommentBoxQueryFragment$key;
 };
 
-export function CommentBox({ eventRef, queryRef }: Props) {
+export function CommentBox({ eventRef, queryRef, onClose }: Props) {
   const query = useFragment(
     graphql`
       fragment CommentBoxQueryFragment on Query {
@@ -60,7 +43,6 @@ export function CommentBox({ eventRef, queryRef }: Props) {
             }
           }
         }
-        ...useAuthModalFragment
       }
     `,
     queryRef
@@ -92,33 +74,6 @@ export function CommentBox({ eventRef, queryRef }: Props) {
       }
     }
   `);
-
-  // Pseudo-state for signaling animations. This gives us a chance
-  // to display an animation prior to unmounting the component
-  const [isActive, setIsActive] = useState(false);
-  const [showCommentBox, setShowCommentBox] = useState(false);
-
-  const activateCommentBoxTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const deactivateCommentBoxTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const { showModal } = useModalActions();
-
-  const handleClose = useCallback(() => {
-    setShowCommentBox(false);
-  }, []);
-
-  const { x, y, reference, floating, strategy, context } = useFloating({
-    open: showCommentBox,
-    onOpenChange: setShowCommentBox,
-    middleware: [offset(), flip(), shift()],
-    whileElementsMounted: autoUpdate,
-  });
-
-  const click = useClick(context);
-  const role = useRole(context);
-  const dismiss = useDismiss(context);
-
-  const { getReferenceProps, getFloatingProps } = useInteractions([click, dismiss, role]);
 
   // WARNING: calling `setValue` will not cause the textarea's content to actually change
   // It's simply there as a state value that we can reference to peek into the current state
@@ -205,7 +160,7 @@ export function CommentBox({ eventRef, queryRef }: Props) {
       if (response.commentOnFeedEvent?.__typename === 'CommentOnFeedEventPayload') {
         resetInputState();
 
-        handleClose();
+        onClose();
       } else {
         pushErrorToast();
 
@@ -226,7 +181,7 @@ export function CommentBox({ eventRef, queryRef }: Props) {
     event.dbid,
     event.id,
     isSubmittingComment,
-    handleClose,
+    onClose,
     pushToast,
     query.viewer?.user?.id,
     query.viewer?.user?.username,
@@ -236,45 +191,6 @@ export function CommentBox({ eventRef, queryRef }: Props) {
     track,
     value,
   ]);
-
-  useEffect(() => {
-    if (showCommentBox) {
-      // If the user isn't logged in, show the auth modal
-      if (!query.viewer?.user) {
-        showModal({
-          content: <AuthModal queryRef={query} />,
-        });
-
-        return;
-      }
-
-      textareaRef.current?.focus();
-
-      if (deactivateCommentBoxTimeoutRef.current) {
-        clearTimeout(deactivateCommentBoxTimeoutRef.current);
-      }
-
-      activateCommentBoxTimeoutRef.current = setTimeout(() => {
-        setIsActive(true);
-        setShowCommentBox(true);
-      }, 100);
-
-      return;
-    }
-
-    if (activateCommentBoxTimeoutRef.current) {
-      clearTimeout(activateCommentBoxTimeoutRef.current);
-    }
-
-    deactivateCommentBoxTimeoutRef.current = setTimeout(() => {
-      setIsActive(false);
-      setShowCommentBox(false);
-    }, ANIMATED_COMPONENT_TRANSITION_MS);
-  }, [query, showCommentBox, showModal]);
-
-  const handleClick = useCallback<MouseEventHandler<HTMLElement>>((event) => {
-    event.stopPropagation();
-  }, []);
 
   const handleInputKeyDown = useCallback<KeyboardEventHandler>(
     async (event) => {
@@ -342,74 +258,25 @@ export function CommentBox({ eventRef, queryRef }: Props) {
     [handleInput]
   );
 
-  const headingId = useId();
-
   return (
-    <>
-      <CommentIcon ref={reference} {...getReferenceProps()} />
+    <Wrapper>
+      <InputWrapper gap={12}>
+        {/* Purposely not using a controlled input here to avoid cursor jitter */}
+        <Textarea
+          onPaste={handlePaste}
+          onKeyDown={handleInputKeyDown}
+          ref={textareaRef}
+          onInput={handleInput}
+        />
 
-      <FloatingFocusManager context={context} modal={false}>
-        <CommentBoxWrapper
-          active={showCommentBox}
-          ref={floating}
-          style={{
-            position: strategy,
-            top: y ?? 0,
-            left: x ?? 0,
-            zIndex: 10,
-          }}
-          aria-labelledby={headingId}
-          {...getFloatingProps()}
-        >
-          {isActive && (
-            <Wrapper onClick={handleClick}>
-              <InputWrapper gap={12}>
-                {/* Purposely not using a controlled input here to avoid cursor jitter */}
-                <Textarea
-                  onPaste={handlePaste}
-                  onKeyDown={handleInputKeyDown}
-                  ref={textareaRef}
-                  onInput={handleInput}
-                />
-
-                <ControlsContainer gap={12} align="center">
-                  <BaseM color={colors.metal}>{MAX_TEXT_LENGTH - value.length}</BaseM>
-                  <SendButton
-                    enabled={value.length > 0 && !isSubmittingComment}
-                    onClick={handleSubmit}
-                  />
-                </ControlsContainer>
-              </InputWrapper>
-            </Wrapper>
-          )}
-        </CommentBoxWrapper>
-      </FloatingFocusManager>
-    </>
+        <ControlsContainer gap={12} align="center">
+          <BaseM color={colors.metal}>{MAX_TEXT_LENGTH - value.length}</BaseM>
+          <SendButton enabled={value.length > 0 && !isSubmittingComment} onClick={handleSubmit} />
+        </ControlsContainer>
+      </InputWrapper>
+    </Wrapper>
   );
 }
-
-const CommentBoxWrapper = styled.div<{ active: boolean }>`
-  // Full width with 16px of padding on either side
-  width: calc(100vw - 32px);
-
-  @media only screen and ${breakpoints.mobileLarge} {
-    width: 375px;
-  }
-
-  transition: transform 300ms ease-out, opacity 300ms ease-in-out;
-
-  ${({ active }) =>
-    active
-      ? css`
-          opacity: 1;
-          transform: translateY(8px);
-        `
-      : css`
-          opacity: 0;
-          pointer-events: none;
-          transform: translateY(0);
-        `}
-`;
 
 const ControlsContainer = styled(HStack)`
   position: absolute;
@@ -441,6 +308,8 @@ const Textarea = styled(BaseM).attrs({
   min-width: 0;
   font-family: ${BODY_FONT_FAMILY};
 
+  cursor: text;
+
   width: 100%;
   min-height: 20px;
 
@@ -457,8 +326,12 @@ const Textarea = styled(BaseM).attrs({
 `;
 
 const Wrapper = styled.div`
-  position: relative;
-  width: 100%;
+  // Full width with 16px of padding on either side
+  width: calc(100vw - 32px);
+
+  @media only screen and ${breakpoints.mobileLarge} {
+    width: 375px;
+  }
 
   border: 1px solid ${colors.offBlack};
 

@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { AdmireButton } from '~/components/Feed/Socialize/AdmireButton';
-import { CommentBox } from '~/components/Feed/Socialize/CommentBox';
+import { CommentBoxIcon } from '~/components/Feed/Socialize/CommentBox/CommentBoxIcon';
 import { Interactions } from '~/components/Feed/Socialize/Interactions';
 import { FeedEventSocializeSectionFragment$key } from '~/generated/FeedEventSocializeSectionFragment.graphql';
 import { FeedEventSocializeSectionQueryFragment$key } from '~/generated/FeedEventSocializeSectionQueryFragment.graphql';
@@ -23,7 +23,7 @@ export function FeedEventSocializeSection({
   const event = useFragment(
     graphql`
       fragment FeedEventSocializeSectionFragment on FeedEvent {
-        ...CommentBoxFragment
+        ...CommentBoxIconEventFragment
         ...InteractionsFragment
         ...AdmireButtonFragment
       }
@@ -36,7 +36,7 @@ export function FeedEventSocializeSection({
       fragment FeedEventSocializeSectionQueryFragment on Query {
         ...AdmireButtonQueryFragment
         ...InteractionsQueryFragment
-        ...CommentBoxQueryFragment
+        ...CommentBoxIconQueryFragment
       }
     `,
     queryRef
@@ -58,7 +58,7 @@ export function FeedEventSocializeSection({
         </IconWrapper>
 
         <IconWrapper>
-          <CommentBox eventRef={event} queryRef={query} />
+          <CommentBoxIcon eventRef={event} queryRef={query} />
         </IconWrapper>
       </HStack>
     </HStack>
