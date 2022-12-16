@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import { HStack, VStack } from '~/components/core/Spacer/Stack';
+import { VStack } from '~/components/core/Spacer/Stack';
 import { CollectionListItem } from '~/components/GalleryEditor/CollectionSidebar/CollectionListItem';
 import { CollectionSearchResultsFragment$key } from '~/generated/CollectionSearchResultsFragment.graphql';
 import { removeNullValues } from '~/utils/removeNullValues';
@@ -16,13 +16,17 @@ export function CollectionSearchResults({ queryRef, searchQuery }: CollectionSea
   const query = useFragment(
     graphql`
       fragment CollectionSearchResultsFragment on Query {
-        galleryById(id: $galleryId) {
-          ... on Gallery {
-            collections {
-              dbid
-              name
+        viewer {
+          ... on Viewer {
+            viewerGalleries {
+              gallery {
+                collections {
+                  dbid
+                  name
 
-              ...CollectionListItemFragment
+                  ...CollectionListItemFragment
+                }
+              }
             }
           }
         }
@@ -32,8 +36,8 @@ export function CollectionSearchResults({ queryRef, searchQuery }: CollectionSea
   );
 
   const nonNullCollections = useMemo(() => {
-    return removeNullValues(query.galleryById?.collections);
-  }, [query.galleryById?.collections]);
+    return removeNullValues(query.viewer?.viewerGalleries?.[0]?.gallery?.collections);
+  }, [query.viewer?.viewerGalleries]);
 
   const filteredCollections = useMemo(() => {
     if (searchQuery.length === 0) {
