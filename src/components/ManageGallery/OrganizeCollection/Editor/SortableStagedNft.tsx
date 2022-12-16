@@ -83,6 +83,7 @@ function SortableStagedNft({ tokenRef, size, mini }: Props) {
     >
       <NftFailureBoundary
         key={retryKey}
+        tokenId={token.dbid}
         fallback={
           <FallbackContainer ref={setNodeRef} size={size} {...attributes} {...listeners}>
             <NftFailureFallback onRetry={refreshMetadata} refreshing={refreshingMetadata} />

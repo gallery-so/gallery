@@ -40,6 +40,7 @@ _internal*
 # GraphQL Codegen Files
 __generated__/**/*
 tests/__generated__/**/*
+persisted_queries.json
 
 # Next.js Routes Types
 nextjs-routes.d.ts

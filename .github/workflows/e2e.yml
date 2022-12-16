@@ -4,29 +4,14 @@ jobs:
   e2e:
     if: github.event_name == 'deployment_status' && github.event.deployment_status.state == 'success'
     runs-on: ubuntu-latest
+
     steps:
-      - name: Dump GitHub context
-        run: echo "$GITHUB_CONTEXT"
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-      - uses: actions/checkout@v2
-      - name: Setup node
-        uses: actions/setup-node@v2
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-      - uses: actions/cache@v3
-        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
-      - name: Install dependencies
-        run: yarn install
-      - run: yarn add @synthetixio/synpress
-      - name: 'Update apt'
-        run: sudo apt-get update
+      - name: Chown workspace
+        run: chown -R $(whoami) .
+
+      - name: Checkout
+        uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # pin@v2
+
       - name: 'Download Keybase'
         run: curl --remote-name https://prerelease.keybase.io/keybase_amd64.deb
       - name: 'Install Keybase'
@@ -55,9 +40,32 @@ jobs:
           # end of optional handling for multi line json
           echo "::set-output name=packageJson::$content"
 
-      - name: 'Run integration tests'
-        run: yarn run cypress:gh
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@e81a89b1732b9c48d79cd809d8d81d79c4647a18 # pin@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@8c0edbc76e98fa90f69d9a2c020dcb50019dc325 # pin@v1
+
+      - name: Cache Docker layers
+        uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7 # pin@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+      - name: Run e2e tests
+        run: |
+          docker-compose -f docker-compose.ci.yml --profile foundry up --build --exit-code-from synpress
+
         env:
+          COMPOSE_DOCKER_CLI_BUILD: 1
+          DOCKER_BUILDKIT: 1
+          DOCKER_DEFAULT_PLATFORM: linux/amd64
+          NGROK_AUTH: ${{ secrets.NGROK_AUTH }}
+          PRIVATE_KEY: ${{ fromJson(steps.set_var.outputs.packageJson).pk_2 }}
+          # cypress dashboard
+          CYPRESS_PROJECT_ID: igfgns
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          COMMIT_INFO_MESSAGE: ${{ github.event.pull_request.title }}
+          COMMIT_INFO_SHA: ${{ github.event.pull_request.head.sha }}
           CYPRESS_BASE_URL: ${{ github.event.deployment_status.target_url }}
-          PRIVATE_KEY: ${{fromJson(steps.set_var.outputs.packageJson).pk_1}}
-          NETWORK_NAME: main

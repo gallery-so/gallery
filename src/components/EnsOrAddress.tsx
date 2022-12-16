@@ -4,11 +4,10 @@ import { graphql } from 'relay-runtime';
 import useSWR from 'swr';
 
 import { LinkableAddress, RawLinkableAddress } from '~/components/LinkableAddress';
+import { ReportingErrorBoundary } from '~/contexts/boundary/ReportingErrorBoundary';
 import { EnsOrAddressFragment$key } from '~/generated/EnsOrAddressFragment.graphql';
 import { EnsOrAddressWithSuspenseFragment$key } from '~/generated/EnsOrAddressWithSuspenseFragment.graphql';
 import { getExternalAddressLink } from '~/utils/wallet';
-
-import { PlainErrorBoundary } from './PlainErrorBoundary';
 
 type EnsNameProps = {
   chainAddressRef: EnsOrAddressFragment$key;
@@ -62,9 +61,9 @@ export const EnsOrAddress = ({ chainAddressRef }: EnsOrAddressProps) => {
 
   return (
     <Suspense fallback={<LinkableAddress chainAddressRef={address} />}>
-      <PlainErrorBoundary fallback={<LinkableAddress chainAddressRef={address} />}>
+      <ReportingErrorBoundary fallback={<LinkableAddress chainAddressRef={address} />}>
         <EnsName chainAddressRef={address} />
-      </PlainErrorBoundary>
+      </ReportingErrorBoundary>
     </Suspense>
   );
 };

@@ -182,6 +182,7 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
     >
       <NftFailureBoundary
         key={retryKey}
+        tokenId={token.dbid}
         onError={handleNftError}
         fallback={<NftFailureFallback onRetry={refreshMetadata} refreshing={refreshingMetadata} />}
       >

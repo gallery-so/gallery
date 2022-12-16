@@ -85,6 +85,10 @@ function CollectionDnd({ galleryRef, onEditCollection }: Props) {
     (event: DragEndEvent) => {
       const { active, over } = event;
 
+      if(!over || !active) {
+        return;
+      }
+
       if (active.id !== over?.id) {
         let updatedCollections = sortedCollectionIds;
 
