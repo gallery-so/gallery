@@ -35,22 +35,25 @@ export default function ToRedeemPage({ onToggle, merchTokenRefs }: Props) {
   const redeemMerch = useRedeemMerch();
   const { hideModal } = useModalActions();
 
-  const handleItemChange = (index: number, checked: boolean) => {
-    const merchToken = merchTokens[index];
+  const handleItemChange = useCallback(
+    (index: number, checked: boolean) => {
+      const merchToken = merchTokens[index];
 
-    if (!merchToken) {
-      return;
-    }
+      if (!merchToken) {
+        return;
+      }
 
-    const newSelectedTokenIds = new Set(selectedTokenIds);
-    if (checked) {
-      newSelectedTokenIds.add(merchToken.tokenId);
-    } else {
-      newSelectedTokenIds.delete(merchToken.tokenId);
-    }
+      const newSelectedTokenIds = new Set(selectedTokenIds);
+      if (checked) {
+        newSelectedTokenIds.add(merchToken.tokenId);
+      } else {
+        newSelectedTokenIds.delete(merchToken.tokenId);
+      }
 
-    setSelectedTokenIds(newSelectedTokenIds);
-  };
+      setSelectedTokenIds(newSelectedTokenIds);
+    },
+    [merchTokens, selectedTokenIds]
+  );
 
   const handleSubmit = useCallback(() => {
     const itemIds = [...selectedTokenIds];

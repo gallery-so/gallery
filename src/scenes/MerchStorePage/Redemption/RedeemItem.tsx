@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import styled from 'styled-components';
 
 import Checkbox from '~/components/core/Checkbox/Checkbox';
@@ -12,9 +13,12 @@ type Props = {
 };
 
 export default function RedeemItem({ checked, index, name, onChange }: Props) {
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    onChange(index, event.target.checked);
-  };
+  const handleChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChange(index, event.target.checked);
+    },
+    [index, onChange]
+  );
 
   return (
     <StyledRedeemItemContainer gap={16} align="center">
