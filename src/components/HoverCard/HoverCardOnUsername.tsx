@@ -3,7 +3,6 @@ import {
   flip,
   FloatingFocusManager,
   inline,
-  offset,
   shift,
   useFloating,
   useHover,
@@ -11,9 +10,11 @@ import {
   useInteractions,
   useRole,
 } from '@floating-ui/react';
+import { AnimatePresence, motion } from 'framer-motion';
 import unescape from 'lodash/unescape';
 import Link from 'next/link';
-import { MouseEventHandler, useCallback, useMemo, useRef, useState } from 'react';
+import { Route, route } from 'nextjs-routes';
+import { MouseEventHandler, useCallback, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -22,9 +23,11 @@ import colors from '~/components/core/colors';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM, TitleM } from '~/components/core/Text/Text';
-import transitions, {
+import {
   ANIMATED_COMPONENT_TRANSITION_MS,
+  ANIMATED_COMPONENT_TRANSITION_S,
   ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL,
+  rawTransitions,
 } from '~/components/core/transitions';
 import FollowButton from '~/components/Follow/FollowButton';
 import { HoverCardOnUsernameFollowFragment$key } from '~/generated/HoverCardOnUsernameFollowFragment.graphql';
@@ -79,56 +82,22 @@ export default function HoverCardOnUsername({ children, userRef, queryRef }: Pro
 
   const totalCollections = filteredCollections?.length || 0;
 
-  // Pseudo-state for signaling animations. This gives us a chance
-  // to display an animation prior to unmounting the component
-  const [isActive, setIsActive] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
 
   const { x, y, reference, floating, strategy, context } = useFloating({
+    placement: 'bottom-start',
     open: isHovering,
     onOpenChange: setIsHovering,
-    middleware: [offset(8), flip(), shift(), inline()],
+    middleware: [flip(), shift(), inline()],
     whileElementsMounted: autoUpdate,
   });
 
   const role = useRole(context);
-  const hover = useHover(context);
+  const hover = useHover(context, { delay: 150 });
 
   const { getReferenceProps, getFloatingProps } = useInteractions([hover, role]);
 
   const headingId = useId();
-
-  const deactivateHoverCardTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const activateHoverCardTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const handleMouseEnter = () => {
-    if (deactivateHoverCardTimeoutRef.current) {
-      clearTimeout(deactivateHoverCardTimeoutRef.current);
-    }
-
-    /**
-     * We don't want the popover to trigger instantly. Otherwise
-     * users will trigger the popup accidentally while just moving
-     * their mouse around.
-     *
-     * This ensures that the popover is opened with absolute intent.
-     */
-    activateHoverCardTimeoutRef.current = setTimeout(() => {
-      setIsActive(true);
-      setIsHovering(true);
-    }, HOVER_POPUP_DELAY);
-  };
-
-  const handleMouseLeave = () => {
-    if (activateHoverCardTimeoutRef.current) {
-      clearTimeout(activateHoverCardTimeoutRef.current);
-    }
-
-    setIsHovering(false);
-    deactivateHoverCardTimeoutRef.current = setTimeout(
-      () => setIsActive(false),
-      ANIMATED_COMPONENT_TRANSITION_MS
-    );
-  };
 
   const loggedInUserId = useLoggedInUserId(query);
   const isOwnProfile = loggedInUserId === user?.id;
@@ -150,18 +119,13 @@ export default function HoverCardOnUsername({ children, userRef, queryRef }: Pro
     return badges;
   }, [user?.badges]);
 
-  const userProfileLink = useMemo(() => {
+  const userProfileLink = useMemo((): Route => {
     return { pathname: '/[username]', query: { username: user.username as string } };
   }, [user]);
 
   return (
-    <StyledContainer
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      ref={reference}
-      {...getReferenceProps()}
-    >
-      <StyledLinkContainer>
+    <StyledContainer>
+      <StyledLinkContainer ref={reference} {...getReferenceProps()}>
         <Link href={userProfileLink}>
           {children ? (
             children
@@ -170,57 +134,68 @@ export default function HoverCardOnUsername({ children, userRef, queryRef }: Pro
           )}
         </Link>
       </StyledLinkContainer>
-      <Link href={userProfileLink}>
-        <a>
-          <FloatingFocusManager context={context} modal={false}>
-            <StyledCardWrapper
-              className="Popover"
-              ref={floating}
-              isHovering={isHovering}
-              style={{
-                position: strategy,
-                top: y ?? 0,
-                left: x ?? 0,
-              }}
-              aria-labelledby={headingId}
-              {...getFloatingProps()}
-            >
-              {isActive && (
-                <StyledCardContainer>
-                  <StyledCardHeader>
-                    <HStack align="center" gap={4}>
-                      <HStack align="center" gap={6}>
-                        <StyledCardUsername>{user.username}</StyledCardUsername>
 
-                        {userBadges.map((badge) => (
-                          // Might need to rethink this layout when we have more badges
-                          <Badge key={badge.name} badgeRef={badge} />
-                        ))}
+      <AnimatePresence>
+        {isHovering && (
+          <FloatingFocusManager context={context} modal={false}>
+            <Link href={userProfileLink}>
+              <a href={route(userProfileLink)}>
+                <StyledCardWrapper
+                  className="Popover"
+                  aria-labelledby={headingId}
+                  // Floating UI Props
+                  ref={floating}
+                  style={{
+                    position: strategy,
+                    top: y ?? 0,
+                    left: x ?? 0,
+                  }}
+                  {...getFloatingProps()}
+                  // Framer Motion Props
+                  transition={{
+                    duration: ANIMATED_COMPONENT_TRANSITION_S,
+                    ease: rawTransitions.cubicValues,
+                  }}
+                  initial={{ opacity: 0, y: 0 }}
+                  animate={{ opacity: 1, y: ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL }}
+                  exit={{ opacity: 0, y: 0 }}
+                >
+                  <StyledCardContainer>
+                    <StyledCardHeader>
+                      <HStack align="center" gap={4}>
+                        <HStack align="center" gap={6}>
+                          <StyledCardUsername>{user.username}</StyledCardUsername>
+
+                          {userBadges.map((badge) => (
+                            // Might need to rethink this layout when we have more badges
+                            <Badge key={badge.name} badgeRef={badge} />
+                          ))}
+                        </HStack>
+
+                        {isLoggedIn && !isOwnProfile && (
+                          <StyledFollowButtonWrapper>
+                            <FollowButton userRef={user} queryRef={query} />
+                          </StyledFollowButtonWrapper>
+                        )}
                       </HStack>
 
-                      {isLoggedIn && !isOwnProfile && (
-                        <StyledFollowButtonWrapper>
-                          <FollowButton userRef={user} queryRef={query} />
-                        </StyledFollowButtonWrapper>
-                      )}
-                    </HStack>
+                      <BaseM>{totalCollections} collections</BaseM>
+                    </StyledCardHeader>
 
-                    <BaseM>{totalCollections} collections</BaseM>
-                  </StyledCardHeader>
-
-                  {user.bio && (
-                    <StyledCardDescription>
-                      <BaseM>
-                        <Markdown text={unescape(user.bio)}></Markdown>
-                      </BaseM>
-                    </StyledCardDescription>
-                  )}
-                </StyledCardContainer>
-              )}
-            </StyledCardWrapper>
+                    {user.bio && (
+                      <StyledCardDescription>
+                        <BaseM>
+                          <Markdown text={unescape(user.bio)}></Markdown>
+                        </BaseM>
+                      </StyledCardDescription>
+                    )}
+                  </StyledCardContainer>
+                </StyledCardWrapper>
+              </a>
+            </Link>
           </FloatingFocusManager>
-        </a>
-      </Link>
+        )}
+      </AnimatePresence>
     </StyledContainer>
   );
 }
@@ -235,12 +210,12 @@ const StyledLinkContainer = styled.div`
   display: inline-block;
 `;
 
-const StyledCardWrapper = styled.div<{ isHovering: boolean }>`
+const StyledCardWrapper = styled(motion.div)`
   z-index: 1;
-  transition: transform ${transitions.cubic}, opacity ${transitions.cubic};
-  transform: ${({ isHovering }) =>
-    `translateY(${isHovering ? 0 : ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL}px)`};
-  opacity: ${({ isHovering }) => (isHovering ? 1 : 0)};
+
+  :focus {
+    outline: none;
+  }
 `;
 
 const StyledCardContainer = styled.div`

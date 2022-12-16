@@ -16,7 +16,11 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
-import { ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL } from '~/components/core/transitions';
+import {
+  ANIMATED_COMPONENT_TRANSITION_S,
+  ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL,
+  rawTransitions,
+} from '~/components/core/transitions';
 import { CommentBox } from '~/components/Feed/Socialize/CommentBox/CommentBox';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { CommentBoxIconEventFragment$key } from '~/generated/CommentBoxIconEventFragment.graphql';
@@ -119,7 +123,10 @@ export function CommentBoxIcon({ queryRef, eventRef }: Props) {
               }}
               {...getFloatingProps()}
               // Framer Motion Props
-              transition={{ duration: 0.3, ease: 'easeOut' }}
+              transition={{
+                duration: ANIMATED_COMPONENT_TRANSITION_S,
+                ease: rawTransitions.cubicValues,
+              }}
               initial={{ opacity: 0, y: 0 }}
               animate={{ opacity: 1, y: ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL }}
               exit={{ opacity: 0, y: 0 }}
