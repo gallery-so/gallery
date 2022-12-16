@@ -28,7 +28,7 @@ import breakpoints from '~/components/core/breakpoints';
 import colors from '~/components/core/colors';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM, BODY_FONT_FAMILY } from '~/components/core/Text/Text';
-import transitions, { ANIMATED_COMPONENT_TRANSITION_MS } from '~/components/core/transitions';
+import { ANIMATED_COMPONENT_TRANSITION_MS } from '~/components/core/transitions';
 import { SendButton } from '~/components/Feed/Socialize/SendButton';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
