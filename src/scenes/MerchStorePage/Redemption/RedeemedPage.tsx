@@ -3,7 +3,7 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { Button } from '~/components/core/Button/Button';
-import { HStack } from '~/components/core/Spacer/Stack';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { RedeemedPageFragment$key } from '~/generated/RedeemedPageFragment.graphql';
@@ -42,21 +42,23 @@ export default function RedeemedPage({ merchTokenRefs }: Props) {
   return (
     <>
       {merchTokens.length > 0 ? (
-        <>
-          <StyledRedeemTextContainer>
-            <BaseM>Copy the codes to use on our Shopify shop.</BaseM>
-          </StyledRedeemTextContainer>
-          {merchTokens.map((token) => {
-            const name = getObjectName(token);
+        <StyledRedeemedPageContainer>
+          <VStack>
+            <StyledRedeemTextContainer>
+              <BaseM>Copy the codes to use on our Shopify shop.</BaseM>
+            </StyledRedeemTextContainer>
+            {merchTokens.map((token) => {
+              const name = getObjectName(token);
 
-            return (
-              <RedeemedItem
-                key={token.tokenId}
-                name={name}
-                discountCode={token.discountCode || ''}
-              />
-            );
-          })}
+              return (
+                <RedeemedItem
+                  key={token.tokenId}
+                  name={name}
+                  discountCode={token.discountCode || ''}
+                />
+              );
+            })}
+          </VStack>
           <StyledRedeemFooter>
             <StyledRedeemSubmitButton onClick={handleRedeem}>
               <HStack gap={4} align="center">
@@ -65,9 +67,9 @@ export default function RedeemedPage({ merchTokenRefs }: Props) {
               </HStack>
             </StyledRedeemSubmitButton>
           </StyledRedeemFooter>
-        </>
+        </StyledRedeemedPageContainer>
       ) : (
-        <>
+        <StyledRedeemedPageContainer>
           <BaseM>You have not redeemed any items yet.</BaseM>
           <StyledRedeemFooter>
             <StyledRedeemSubmitButton onClick={handleClose}>
@@ -76,11 +78,16 @@ export default function RedeemedPage({ merchTokenRefs }: Props) {
               </HStack>
             </StyledRedeemSubmitButton>
           </StyledRedeemFooter>
-        </>
+        </StyledRedeemedPageContainer>
       )}
     </>
   );
 }
+
+const StyledRedeemedPageContainer = styled(VStack)`
+  flex: 1;
+  justify-content: space-between;
+`;
 
 const StyledRedeemTextContainer = styled.div`
   padding-bottom: 16px;

@@ -83,6 +83,7 @@ export default function RedeemModal({ queryRef }: Props) {
 
 const StyledRedeemModal = styled(VStack)`
   width: 480px;
+  min-height: 250px;
 `;
 
 const StyledRedeemHeaderContainer = styled(HStack)`

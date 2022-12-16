@@ -81,47 +81,54 @@ export default function ToRedeemPage({ onToggle, merchTokenRefs }: Props) {
       }
     >
       {merchTokens.length > 0 ? (
-        <>
-          <StyledRedeemTextContainer>
-            <BaseM>
-              Mark the item you want to redeem, and we’ll generate a code that you can use on our
-              Shopify store.
-            </BaseM>
-          </StyledRedeemTextContainer>
-          {merchTokens.map((token, index) => {
-            const name = getObjectName(token);
-            const checked = selectedTokenIds.has(token.tokenId);
+        <StyledToRedeemPageContainer>
+          <VStack>
+            <StyledRedeemTextContainer>
+              <BaseM>
+                Mark the item you want to redeem, and we’ll generate a code that you can use on our
+                Shopify store.
+              </BaseM>
+            </StyledRedeemTextContainer>
+            {merchTokens.map((token, index) => {
+              const name = getObjectName(token);
+              const checked = selectedTokenIds.has(token.tokenId);
 
-            return (
-              <RedeemItem
-                key={token.tokenId}
-                index={index}
-                name={name}
-                checked={checked}
-                onChange={handleItemChange}
-              />
-            );
-          })}
+              return (
+                <RedeemItem
+                  key={token.tokenId}
+                  index={index}
+                  name={name}
+                  checked={checked}
+                  onChange={handleItemChange}
+                />
+              );
+            })}
+          </VStack>
 
           <StyledRedeemFooter>
             <StyledRedeemSubmitButton onClick={handleSubmit} disabled={isRedeemButtonDisabled}>
               Redeem
             </StyledRedeemSubmitButton>
           </StyledRedeemFooter>
-        </>
+        </StyledToRedeemPageContainer>
       ) : (
-        <>
+        <StyledToRedeemPageContainer>
           <StyledRedeemTextContainer>
             <BaseM>You have not purchased any merchandise.</BaseM>
           </StyledRedeemTextContainer>
           <StyledRedeemFooter>
             <StyledRedeemSubmitButton onClick={handleClose}>Close</StyledRedeemSubmitButton>
           </StyledRedeemFooter>
-        </>
+        </StyledToRedeemPageContainer>
       )}
     </Suspense>
   );
 }
+
+const StyledToRedeemPageContainer = styled(VStack)`
+  flex: 1;
+  justify-content: space-between;
+`;
 
 const StyledRedeemTextContainer = styled.div`
   padding-bottom: 16px;
