@@ -1,4 +1,4 @@
-import { forwardRef } from 'react';
+import { forwardRef, MouseEvent } from 'react';
 import styled, { css } from 'styled-components';
 
 import colors from '~/components/core/colors';
@@ -7,7 +7,7 @@ type Props = {
   active?: boolean;
   width?: number;
   height?: number;
-  onClick?: () => void;
+  onClick?: (e: MouseEvent) => void;
 };
 
 export const CommentIcon = forwardRef<HTMLDivElement, Props>(
@@ -18,7 +18,7 @@ export const CommentIcon = forwardRef<HTMLDivElement, Props>(
         role="button"
         onClick={(e) => {
           e.stopPropagation();
-          onClick?.();
+          onClick?.(e);
         }}
         ref={ref}
       >
@@ -48,7 +48,7 @@ export const AdmireIcon = forwardRef<HTMLDivElement, Props>(
         role="button"
         onClick={(e) => {
           e.stopPropagation();
-          onClick?.();
+          onClick?.(e);
         }}
       >
         <StyledSvg
