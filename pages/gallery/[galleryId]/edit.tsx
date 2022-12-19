@@ -15,6 +15,8 @@ import { useCanGoBack } from '~/contexts/navigation/GalleryNavigationProvider';
 import { editGalleryPageNewQuery } from '~/generated/editGalleryPageNewQuery.graphql';
 import { editGalleryPageOldQuery } from '~/generated/editGalleryPageOldQuery.graphql';
 import { editGalleryPageQuery } from '~/generated/editGalleryPageQuery.graphql';
+import GalleryRedirect from '~/scenes/_Router/GalleryRedirect';
+import NotFound from '~/scenes/NotFound/NotFound';
 import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 type Props = {
@@ -29,6 +31,8 @@ function NewEditGalleryPage({ galleryId }: Props) {
       query editGalleryPageNewQuery {
         viewer {
           ... on Viewer {
+            __typename
+
             user {
               username
             }
@@ -45,7 +49,7 @@ function NewEditGalleryPage({ galleryId }: Props) {
   const handleBack = useCallback(() => {
     if (canGoBack) {
       back();
-    } else if (query.viewer?.user?.username) {
+    } else if (query.viewer?.__typename === 'Viewer' && query.viewer.user?.username) {
       replace({
         pathname: '/[username]/galleries',
         query: { username: query.viewer.user.username },
@@ -53,11 +57,17 @@ function NewEditGalleryPage({ galleryId }: Props) {
     } else {
       replace({ pathname: '/home' });
     }
-  }, [back, canGoBack, query.viewer?.user?.username, replace]);
+  }, [back, canGoBack, query.viewer]);
 
   const handleDone = useCallback(() => {
     console.log('Done');
   }, []);
+
+  const isLoggedIn = query.viewer?.__typename === 'Viewer';
+
+  if (!isLoggedIn) {
+    return <GalleryRedirect to={{ pathname: '/auth' }} />;
+  }
 
   return (
     <FullPageStep
@@ -161,10 +171,14 @@ export default function EditGalleryPage({ galleryId }: Props) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps<Props> = ({ params }) => {
-  return {
-    props: {
-      galleryId: params.galleryId,
-    },
-  };
+export const getServerSideProps: GetServerSideProps<Props> = async ({ params }) => {
+  if (typeof params?.galleryId === 'string') {
+    return {
+      props: {
+        galleryId: params.galleryId,
+      },
+    };
+  }
+
+  return { redirect: '/', props: { galleryId: '' } };
 };
