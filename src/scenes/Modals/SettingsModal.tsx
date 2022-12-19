@@ -15,6 +15,7 @@ import { useToastActions } from '~/contexts/toast/ToastContext';
 import { SettingsModalFragment$key } from '~/generated/SettingsModalFragment.graphql';
 import AlertTriangleIcon from '~/icons/AlertTriangleIcon';
 import CircleCheckIcon from '~/icons/CircleCheckIcon';
+import { GALLERY_OS_ADDRESS } from '~/utils/getOpenseaExternalUrl';
 
 import useUpdateEmailNotificationSettings from '../../components/Email/useUpdateEmailNotificationSettings';
 
@@ -188,10 +189,13 @@ function SettingsModal({
         <HStack justify="space-between" align="center" gap={8}>
           <span>
             <BaseM>
-              Try select features early by holding a{' '}
-              <InteractiveLink href="https://opensea.io/collection/gallery-membership-cards">
-                Premium Gallery Membership Card.
+              Get early access to select features by holding a{' '}
+              <InteractiveLink
+                href={`https://opensea.io/collection/gallery-membership-cards?ref=${GALLERY_OS_ADDRESS}`}
+              >
+                Premium Gallery Membership Card
               </InteractiveLink>
+              .
             </BaseM>
           </span>
           <HStack align="center" gap={4} shrink={false}>
