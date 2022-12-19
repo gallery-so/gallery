@@ -9,7 +9,7 @@ import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import CogIcon from '~/icons/CogIcon';
 import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
-import SettingsModal from '../../scenes/Modals/SettingsModal';
+import SettingsModal from '../../scenes/Modals/SettingsModal/SettingsModal';
 import { NotificationsModal } from './NotificationsModal';
 
 export default function useNotificationsModal() {

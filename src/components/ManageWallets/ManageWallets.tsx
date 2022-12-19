@@ -5,12 +5,12 @@ import styled from 'styled-components';
 import { Button } from '~/components/core/Button/Button';
 import { VStack } from '~/components/core/Spacer/Stack';
 import ErrorText from '~/components/core/Text/ErrorText';
-import { BaseM } from '~/components/core/Text/Text';
 import { USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY } from '~/constants/storageKeys';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { ManageWalletsFragment$key } from '~/generated/ManageWalletsFragment.graphql';
 import useAddWalletModal from '~/hooks/useAddWalletModal';
 import usePersistedState from '~/hooks/usePersistedState';
+import SettingsRowDescription from '~/scenes/Modals/SettingsModal/SettingsRowDescription';
 import { removeNullValues } from '~/utils/removeNullValues';
 import { truncateAddress } from '~/utils/wallet';
 
@@ -92,8 +92,10 @@ function ManageWallets({
     <VStack gap={16}>
       <VStack gap={16}>
         <VStack>
-          <BaseM>Add more wallets to access your other NFTs.</BaseM>
-          <BaseM>You&apos;ll also be able to sign in using any connected wallet.</BaseM>
+          <SettingsRowDescription>
+            Add more wallets to access your other NFTs. You&apos;ll also be able to sign in using
+            any connected wallet.
+          </SettingsRowDescription>
           {errorMessage && <StyledErrorText message={errorMessage} />}
         </VStack>
         <VStack>

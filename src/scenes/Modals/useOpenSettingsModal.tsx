@@ -6,7 +6,7 @@ import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useOpenSettingsModalFragment$key } from '~/generated/useOpenSettingsModalFragment.graphql';
 import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
-import SettingsModal from './SettingsModal';
+import SettingsModal from './SettingsModal/SettingsModal';
 
 export default function useOpenSettingsModal(queryRef: useOpenSettingsModalFragment$key) {
   const query = useFragment(

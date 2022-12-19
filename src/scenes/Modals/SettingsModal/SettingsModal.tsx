@@ -17,7 +17,8 @@ import AlertTriangleIcon from '~/icons/AlertTriangleIcon';
 import CircleCheckIcon from '~/icons/CircleCheckIcon';
 import { GALLERY_OS_ADDRESS } from '~/utils/getOpenseaExternalUrl';
 
-import useUpdateEmailNotificationSettings from '../../components/Email/useUpdateEmailNotificationSettings';
+import useUpdateEmailNotificationSettings from '../../../components/Email/useUpdateEmailNotificationSettings';
+import SettingsRowDescription from './SettingsRowDescription';
 
 type Props = {
   queryRef: SettingsModalFragment$key;
@@ -162,10 +163,10 @@ function SettingsModal({
         <TitleDiatypeL>Never miss a moment</TitleDiatypeL>
         <VStack>
           <TitleDiatypeM>Email notifications</TitleDiatypeM>
-          <HStack>
-            <BaseM>
+          <HStack justify="space-between" align="center">
+            <SettingsRowDescription>
               Receive weekly recaps that show your most recent admires, comments, and followers.
-            </BaseM>
+            </SettingsRowDescription>
             <Toggle
               checked={isToggleChecked}
               isPending={isPending || isEmailUnverified}
@@ -188,7 +189,7 @@ function SettingsModal({
         <TitleDiatypeL>Early Access</TitleDiatypeL>
         <HStack justify="space-between" align="center" gap={8}>
           <span>
-            <BaseM>
+            <SettingsRowDescription>
               Get early access to select features by holding a{' '}
               <InteractiveLink
                 href={`https://opensea.io/collection/gallery-membership-cards?ref=${GALLERY_OS_ADDRESS}`}
@@ -196,7 +197,7 @@ function SettingsModal({
                 Premium Gallery Membership Card
               </InteractiveLink>
               .
-            </BaseM>
+            </SettingsRowDescription>
           </span>
           <HStack align="center" gap={4} shrink={false}>
             {hasEarlyAccess ? (
