@@ -31,8 +31,7 @@ export default function RedeemedPage({ merchTokenRefs }: Props) {
   const { hideModal } = useModalActions();
 
   const handleRedeem = useCallback(() => {
-    // TODO: Replace with the actual shopify link
-    window.open('https://www.shopify.com', '_blank');
+    window.open('http://shopify.gallery.so', '_blank');
   }, []);
 
   const handleClose = useCallback(() => {
