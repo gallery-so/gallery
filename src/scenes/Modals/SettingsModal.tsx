@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import { Button } from '~/components/core/Button/Button';
+import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeL, TitleDiatypeM } from '~/components/core/Text/Text';
 import Toggle from '~/components/core/Toggle/Toggle';
@@ -12,6 +13,8 @@ import ManageWallets from '~/components/ManageWallets/ManageWallets';
 import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { SettingsModalFragment$key } from '~/generated/SettingsModalFragment.graphql';
+import AlertTriangleIcon from '~/icons/AlertTriangleIcon';
+import CircleCheckIcon from '~/icons/CircleCheckIcon';
 
 import useUpdateEmailNotificationSettings from '../../components/Email/useUpdateEmailNotificationSettings';
 
@@ -42,6 +45,9 @@ function SettingsModal({
                 unsubscribedFromAll
                 unsubscribedFromNotifications
               }
+            }
+            user {
+              roles
             }
           }
         }
@@ -145,6 +151,10 @@ function SettingsModal({
     return isEmailNotificationChecked;
   }, [isEmailNotificationChecked, isEmailNotificationSubscribed, isEmailUnverified, userEmail]);
 
+  const hasEarlyAccess = useMemo(() => {
+    return query.viewer?.user?.roles?.includes('EARLY_ACCESS');
+  }, [query]);
+
   return (
     <StyledManageWalletsModal gap={24}>
       <VStack gap={16}>
@@ -171,6 +181,33 @@ function SettingsModal({
             </StyledButton>
           )}
         </StyledButtonContainer>
+      </VStack>
+      <StyledHr />
+      <VStack>
+        <TitleDiatypeL>Early Access</TitleDiatypeL>
+        <HStack justify="space-between" align="center" gap={8}>
+          <span>
+            <BaseM>
+              Try select features early by holding a{' '}
+              <InteractiveLink href="https://opensea.io/collection/gallery-membership-cards">
+                Premium Gallery Membership Card.
+              </InteractiveLink>
+            </BaseM>
+          </span>
+          <HStack align="center" gap={4} shrink={false}>
+            {hasEarlyAccess ? (
+              <>
+                <CircleCheckIcon />
+                <BaseM>Active</BaseM>
+              </>
+            ) : (
+              <>
+                <AlertTriangleIcon />
+                <BaseM>Not Active</BaseM>
+              </>
+            )}
+          </HStack>
+        </HStack>
       </VStack>
       <StyledHr />
       <VStack>
