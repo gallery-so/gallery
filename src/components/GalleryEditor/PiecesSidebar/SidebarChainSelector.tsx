@@ -2,13 +2,11 @@ import { useCallback, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
-import IconContainer from '~/components/core/Markdown/IconContainer';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { Chain, chains } from '~/components/GalleryEditor/PiecesSidebar/chains';
 import { SidebarChainButton } from '~/components/GalleryEditor/PiecesSidebar/SidebarChainButton';
 import Tooltip from '~/components/Tooltip/Tooltip';
 import { SidebarChainSelectorNewFragment$key } from '~/generated/SidebarChainSelectorNewFragment.graphql';
-import { RefreshIcon } from '~/icons/RefreshIcon';
 
 import isRefreshDisabledForUser from './isRefreshDisabledForUser';
 

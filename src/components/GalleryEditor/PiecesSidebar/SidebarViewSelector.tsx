@@ -1,7 +1,6 @@
 import { useCallback, useState } from 'react';
 import styled from 'styled-components';
 
-import colors from '~/components/core/colors';
 import { Dropdown } from '~/components/core/Dropdown/Dropdown';
 import { DropdownItem } from '~/components/core/Dropdown/DropdownItem';
 import { DropdownSection } from '~/components/core/Dropdown/DropdownSection';

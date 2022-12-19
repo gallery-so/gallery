@@ -1,15 +1,6 @@
-import {
-  ChangeEventHandler,
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
-import styled from 'styled-components';
 
-import colors from '~/components/core/colors';
 import { FadedInput } from '~/components/core/Input/FadedInput';
 import { SearchBarNewFragment$key } from '~/generated/SearchBarNewFragment.graphql';
 import useDebounce from '~/hooks/useDebounce';

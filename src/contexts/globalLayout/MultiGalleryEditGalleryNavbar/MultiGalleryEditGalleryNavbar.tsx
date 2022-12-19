@@ -3,8 +3,7 @@ import styled from 'styled-components';
 import breakpoints from '~/components/core/breakpoints';
 import { Button } from '~/components/core/Button/Button';
 import colors from '~/components/core/colors';
-import { HStack } from '~/components/core/Spacer/Stack';
-import { BODY_FONT_FAMILY, Paragraph, TitleXS } from '~/components/core/Text/Text';
+import { BODY_FONT_FAMILY, Paragraph } from '~/components/core/Text/Text';
 import { BackButton } from '~/contexts/globalLayout/GlobalNavbar/BackButton';
 import {
   NavbarCenterContent,
