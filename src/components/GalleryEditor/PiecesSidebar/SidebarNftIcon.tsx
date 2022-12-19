@@ -15,7 +15,7 @@ import { ContentIsLoadedEvent } from '~/contexts/shimmer/ShimmerContext';
 import { CouldNotRenderNftError } from '~/errors/CouldNotRenderNftError';
 import { SidebarNftIconNewFragment$key } from '~/generated/SidebarNftIconNewFragment.graphql';
 import { SidebarNftIconPollerNewQuery } from '~/generated/SidebarNftIconPollerNewQuery.graphql';
-import { SidebarNftIconPreviewAsset$key } from '~/generated/SidebarNftIconPreviewAsset.graphql';
+import { SidebarNftIconPreviewAssetNew$key } from '~/generated/SidebarNftIconPreviewAssetNew.graphql';
 import { useNftRetry, useThrowOnMediaFailure } from '~/hooks/useNftRetry';
 import getVideoOrImageUrlForNftPreview from '~/utils/graphql/getVideoOrImageUrlForNftPreview';
 import { getBackgroundColorOverrideForContract } from '~/utils/token';
@@ -214,7 +214,7 @@ const LoadingText = styled.span`
 `;
 
 type SidebarPreviewAssetProps = {
-  tokenRef: SidebarNftIconPreviewAsset$key;
+  tokenRef: SidebarNftIconPreviewAssetNew$key;
   onLoad: ContentIsLoadedEvent;
   isSelected: boolean;
 };
