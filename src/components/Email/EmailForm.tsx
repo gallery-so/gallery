@@ -80,7 +80,7 @@ function EmailForm({ setIsEditMode, queryRef, onClose }: Props) {
     setEmail(event.target.value);
   }, []);
 
-  const debouncedEmail = useDebounce(email, 500);
+  const debouncedEmail = useDebounce(email, 1000);
 
   useEffect(() => {
     async function checkEmail() {
