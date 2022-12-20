@@ -147,19 +147,12 @@ const StyledCommunityPageContainer = styled.div`
 `;
 
 const StyledBaseM = styled(BaseM)<{ showExpandedDescription: boolean }>`
-  -webkit-line-clamp: ${({ showExpandedDescription }) => (showExpandedDescription ? 'initial' : 4)};
+  -webkit-line-clamp: ${({ showExpandedDescription }) => (showExpandedDescription ? 'initial' : 5)};
   display: -webkit-box;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  line-clamp: 4;
+  line-clamp: 5;
   display: -webkit-box;
-
-  // allows descriptions with multiple paragraphs to be line clamped properly
-  p,
-  ol,
-  li {
-    display: contents;
-  }
 `;
 
 const StyledDescriptionWrapper = styled(VStack)`
