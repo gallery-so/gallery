@@ -1,20 +1,22 @@
 import { DragEndEvent, UniqueIdentifier } from '@dnd-kit/core';
-import { arrayMove } from '@dnd-kit/sortable';
-import deepClone from 'fast-deepclone';
-import { createContext, memo, ReactNode, useCallback, useMemo, useState } from 'react';
+import { createContext, memo, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
+import rfdc from 'rfdc';
 
+import { dragEnd } from '~/components/GalleryEditor/CollectionEditor/DragAndDrop/draggingActions';
 import { useGalleryEditorContext } from '~/components/GalleryEditor/GalleryEditorContext';
 import { ErrorWithSentryMetadata } from '~/errors/ErrorWithSentryMetadata';
 import { CollectionEditorContextNewFragment$key } from '~/generated/CollectionEditorContextNewFragment.graphql';
 import { generate12DigitId, parseCollectionLayoutGraphql } from '~/utils/collectionLayout';
 import { removeNullValues } from '~/utils/removeNullValues';
 
+const deepClone = rfdc();
+
 const DEFAULT_COLUMN_SETTING = 3;
 
-type StagedItem = { kind: 'whitespace'; id: string } | { kind: 'token'; id: string };
+export type StagedItem = { kind: 'whitespace'; id: string } | { kind: 'token'; id: string };
 
-type StagedSection = {
+export type StagedSection = {
   columns: number;
   items: StagedItem[];
 };
@@ -30,11 +32,11 @@ type CollectionEditorContextType = {
 
   // Actions
   toggleTokenStaged: (tokenId: string) => void;
+  addWhitespace: () => void;
 
-  reorderTokensWithinSection: (event: DragEndEvent, sectionId: string) => void;
+  updateSections: (sections: Record<string, StagedSection>) => void;
 
   addSection: () => void;
-  reorderSection: (event: DragEndEvent) => void;
   deleteSection: (sectionId: string) => void;
 
   incrementColumns: (sectionId: string) => void;
@@ -45,11 +47,13 @@ type CollectionEditorContextType = {
   activateSection: (sectionId: string) => void;
 };
 
-const CollectionEditorContext = createContext<CollectionEditorContextType | undefined>(undefined);
+const CollectionEditorContextNew = createContext<CollectionEditorContextType | undefined>(
+  undefined
+);
 
 type Props = { children: ReactNode; queryRef: CollectionEditorContextNewFragment$key };
 
-const CollectionEditorProvider = memo(({ children, queryRef }: Props) => {
+export const CollectionEditorProviderNew = memo(({ children, queryRef }: Props) => {
   const query = useFragment(
     graphql`
       fragment CollectionEditorContextNewFragment on Query {
@@ -140,45 +144,8 @@ const CollectionEditorProvider = memo(({ children, queryRef }: Props) => {
     return Object.keys(sections)[0];
   });
 
-  const reorderTokensWithinSection = useCallback(
-    (event: DragEndEvent) => {
-      const { active, over } = event;
-
-      setSections((previous) => {
-        if (!activeSectionId) {
-          throw new ErrorWithSentryMetadata(
-            'Tried to reorder tokens within section without a section id',
-            {}
-          );
-        }
-
-        const cloned = deepClone(previous);
-        const section = cloned[activeSectionId];
-
-        const oldIndex = section.items.findIndex((item) => item.id === active.id);
-        const newIndex = section.items.findIndex((item) => item.id === over?.id);
-
-        arrayMove(section.items, oldIndex, newIndex);
-
-        return cloned;
-      });
-    },
-    [activeSectionId]
-  );
-
-  const reorderSection = useCallback((event: DragEndEvent) => {
-    const { active, over } = event;
-    setSections((previous) => {
-      const previousOrder = Object.keys(previous); // get previous order as list of section ids
-
-      const oldIndex = previousOrder.findIndex((id) => id === active.id);
-      const newIndex = previousOrder.findIndex((id) => id === over?.id);
-      const newOrder = arrayMove(previousOrder, oldIndex, newIndex);
-
-      return newOrder.reduce((acc, sectionId) => {
-        return { ...acc, [sectionId]: previous[sectionId] };
-      }, {});
-    });
+  const updateSections = useCallback((updatedSections: Record<string, StagedSection>) => {
+    setSections(updatedSections);
   }, []);
 
   const addSection = useCallback(() => {
@@ -258,6 +225,14 @@ const CollectionEditorProvider = memo(({ children, queryRef }: Props) => {
     });
   }, []);
 
+  const stagedItemIds = useMemo(() => {
+    const stagedTokenIds = Object.values(sections)
+      .flatMap((section) => section.items)
+      .map((token) => token.id);
+
+    return new Set(stagedTokenIds);
+  }, [sections]);
+
   const stagedTokenIds = useMemo(() => {
     const stagedTokenIds = Object.values(sections)
       .flatMap((section) => section.items)
@@ -300,14 +275,36 @@ const CollectionEditorProvider = memo(({ children, queryRef }: Props) => {
 
   const toggleTokenStaged = useCallback(
     (tokenId: string) => {
-      if (stagedTokenIds.has(tokenId)) {
+      if (stagedItemIds.has(tokenId)) {
         removeTokenFromSections(tokenId);
       } else {
         addTokenToActiveSection(tokenId);
       }
     },
-    [addTokenToActiveSection, removeTokenFromSections, stagedTokenIds]
+    [addTokenToActiveSection, removeTokenFromSections, stagedItemIds]
   );
+
+  const addWhitespace = useCallback(() => {
+    if (!activeSectionId) {
+      // Maybe create a new section for them automatically
+
+      return;
+    }
+
+    const id = generate12DigitId();
+    setSections((previous) => {
+      const cloned = deepClone(previous);
+
+      cloned[activeSectionId].items.push({ kind: 'whitespace', id });
+
+      return cloned;
+    });
+
+    // auto scroll so that the new block is visible. 100ms timeout to account for async nature of staging tokens
+    setTimeout(() => {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+  }, [activeSectionId]);
 
   const activateSection = useCallback((sectionId: string) => {
     setActiveSectionId(sectionId);
@@ -317,13 +314,13 @@ const CollectionEditorProvider = memo(({ children, queryRef }: Props) => {
     return {
       activateSection,
       activeSectionId,
+      addWhitespace,
       addSection,
+      updateSections,
       decrementColumns,
       deleteSection,
       incrementColumns,
       liveDisplayTokenIds,
-      reorderSection,
-      reorderTokensWithinSection,
       sections,
       stagedTokenIds,
       toggleTokenLiveDisplay,
@@ -333,23 +330,33 @@ const CollectionEditorProvider = memo(({ children, queryRef }: Props) => {
     activateSection,
     activeSectionId,
     addSection,
+    addWhitespace,
     decrementColumns,
     deleteSection,
     incrementColumns,
     liveDisplayTokenIds,
-    reorderSection,
-    reorderTokensWithinSection,
     sections,
     stagedTokenIds,
     toggleTokenLiveDisplay,
     toggleTokenStaged,
+    updateSections,
   ]);
 
   return (
-    <CollectionEditorContext.Provider value={value}>{children}</CollectionEditorContext.Provider>
+    <CollectionEditorContextNew.Provider value={value}>
+      {children}
+    </CollectionEditorContextNew.Provider>
   );
 });
 
-CollectionEditorProvider.displayName = 'CollectionEditorProvider';
+export function useCollectionEditorContextNew() {
+  const value = useContext(CollectionEditorContextNew);
 
-export default CollectionEditorProvider;
+  if (!value) {
+    throw new Error('Tried to use CollectionEditorContextNew without a provider.');
+  }
+
+  return value;
+}
+
+CollectionEditorProviderNew.displayName = 'CollectionEditorProvider';

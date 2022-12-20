@@ -9,7 +9,7 @@ import { CollectionEditor } from '~/components/GalleryEditor/CollectionEditor/Co
 import { CollectionSidebar } from '~/components/GalleryEditor/CollectionSidebar/CollectionSidebar';
 import { GalleryEditorProvider } from '~/components/GalleryEditor/GalleryEditorContext';
 import { PiecesSidebar } from '~/components/GalleryEditor/PiecesSidebar/PiecesSidebar';
-import CollectionEditorProvider from '~/contexts/collectionEditor/CollectionEditorContext';
+import { CollectionEditorProviderNew } from '~/contexts/collectionEditor/CollectionEditorContextNew';
 import { removeNullValues } from '~/utils/removeNullValues';
 
 type GalleryEditorProps = {
@@ -24,6 +24,7 @@ export function GalleryEditor({ queryRef }: GalleryEditorProps) {
         ...GalleryEditorContextFragment
         ...CollectionEditorNewFragment
         ...PiecesSidebarViewerNewFragment
+        ...CollectionEditorContextNewFragment
 
         viewer {
           ... on Viewer {
@@ -48,7 +49,7 @@ export function GalleryEditor({ queryRef }: GalleryEditorProps) {
   return (
     <GalleryEditorProvider queryRef={query}>
       <GalleryEditorWrapper>
-        <CollectionEditorProvider>
+        <CollectionEditorProviderNew queryRef={query}>
           <CollectionSidebar queryRef={query} />
 
           <CollectionEditor
@@ -59,7 +60,7 @@ export function GalleryEditor({ queryRef }: GalleryEditorProps) {
           />
 
           <PiecesSidebar tokensRef={allTokens} queryRef={query} />
-        </CollectionEditorProvider>
+        </CollectionEditorProviderNew>
       </GalleryEditorWrapper>
     </GalleryEditorProvider>
   );
