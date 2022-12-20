@@ -1,11 +1,8 @@
 import keyBy from 'lodash.keyby';
 
-import { EditModeToken } from '~/components/GalleryEditor/CollectionEditor/types';
 import { CollectionGroup } from '~/components/GalleryEditor/PiecesSidebar/groupCollectionsByAddress';
-import {
-  TokenAndEditModeToken,
-  VirtualizedRow,
-} from '~/components/GalleryEditor/PiecesSidebar/SidebarList';
+import { VirtualizedRow } from '~/components/GalleryEditor/PiecesSidebar/SidebarList';
+import { SidebarListTokenNewFragment$key } from '~/generated/SidebarListTokenNewFragment.graphql';
 import { SidebarTokensNewFragment$data } from '~/generated/SidebarTokensNewFragment.graphql';
 
 type createVirtualizedRowsFromGroupsArgs = {
@@ -22,18 +19,20 @@ export function createVirtualizedRowsFromGroups({
   const rows: VirtualizedRow[] = [];
 
   for (const group of groups) {
-    const tokensSortedByErrored: TokenAndEditModeToken[] = [...group.tokens].sort((a, b) => {
-      const aIsErrored = erroredTokenIds.has(a.token.dbid);
-      const bIsErrored = erroredTokenIds.has(b.token.dbid);
+    const tokensSortedByErrored: SidebarListTokenNewFragment$key[] = [...group.tokens].sort(
+      (a, b) => {
+        const aIsErrored = erroredTokenIds.has(a.dbid);
+        const bIsErrored = erroredTokenIds.has(b.dbid);
 
-      if (aIsErrored === bIsErrored) {
-        return 0;
-      } else if (aIsErrored) {
-        return 1;
-      } else {
-        return -1;
+        if (aIsErrored === bIsErrored) {
+          return 0;
+        } else if (aIsErrored) {
+          return 1;
+        } else {
+          return -1;
+        }
       }
-    });
+    );
 
     // Default to expanded
     const expanded = !collapsedCollections.has(group.address);
@@ -53,19 +52,16 @@ export function createVirtualizedRowsFromGroups({
 
 type createVirtualizedRowsFromTokensArgs = {
   tokens: SidebarTokensNewFragment$data;
-  editModeTokens: EditModeToken[];
   erroredTokenIds: Set<string>;
 };
 
 export function createVirtualizedRowsFromTokens({
   tokens,
-  editModeTokens,
   erroredTokenIds,
 }: createVirtualizedRowsFromTokensArgs): VirtualizedRow[] {
   const rows: VirtualizedRow[] = [];
-  const tokensKeyedById = keyBy(tokens, (token) => token.dbid);
 
-  const editModeTokensSortedByErrored = [...editModeTokens].sort((a, b) => {
+  const tokensSortedByErrored = [...tokens].sort((a, b) => {
     const aIsErrored = erroredTokenIds.has(a.id);
     const bIsErrored = erroredTokenIds.has(b.id);
 
@@ -77,15 +73,6 @@ export function createVirtualizedRowsFromTokens({
       return -1;
     }
   });
-
-  const tokensSortedByErrored: TokenAndEditModeToken[] = editModeTokensSortedByErrored.map(
-    (editModeToken) => {
-      return {
-        editModeToken,
-        token: tokensKeyedById[editModeToken.id],
-      };
-    }
-  );
 
   const COLUMNS_PER_ROW = 3;
   for (let i = 0; i < tokensSortedByErrored.length; i += COLUMNS_PER_ROW) {

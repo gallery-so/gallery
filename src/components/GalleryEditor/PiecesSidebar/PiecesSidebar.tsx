@@ -1,4 +1,3 @@
-import keyBy from 'lodash.keyby';
 import { useCallback, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
@@ -10,21 +9,15 @@ import { TitleS } from '~/components/core/Text/Text';
 import { Chain } from '~/components/GalleryEditor/PiecesSidebar/chains';
 import { SidebarChainSelector } from '~/components/GalleryEditor/PiecesSidebar/SidebarChainSelector';
 import { SidebarTokens } from '~/components/GalleryEditor/PiecesSidebar/SidebarTokens';
-import {
-  SidebarTokensState,
-  useCollectionEditorActions,
-  useSidebarTokensState,
-} from '~/contexts/collectionEditor/CollectionEditorContext';
+import { useCollectionEditorContextNew } from '~/contexts/collectionEditor/CollectionEditorContextNew';
 import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { PiecesSidebarNewFragment$key } from '~/generated/PiecesSidebarNewFragment.graphql';
 import { PiecesSidebarViewerNewFragment$key } from '~/generated/PiecesSidebarViewerNewFragment.graphql';
 import useSyncTokens from '~/hooks/api/tokens/useSyncTokens';
-import { generate12DigitId } from '~/utils/collectionLayout';
 import { removeNullValues } from '~/utils/removeNullValues';
 
-import { convertObjectToArray } from '../CollectionEditor/convertObjectToArray';
 import { AddWalletSidebar } from './AddWalletSidebar';
 import SearchBar from './SearchBar';
 import { SidebarView, SidebarViewSelector } from './SidebarViewSelector';
@@ -72,8 +65,8 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
     queryRef
   );
 
-  const sidebarTokens = useSidebarTokensState();
-  const { stageTokens } = useCollectionEditorActions();
+  const { addWhitespace } = useCollectionEditorContextNew();
+
   const [searchResults, setSearchResults] = useState<string[]>([]);
   const [selectedChain, setSelectedChain] = useState<Chain>('Ethereum');
   const [selectedView, setSelectedView] = useState<SidebarView>('Collected');
@@ -87,7 +80,6 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
   const isSearching = debouncedSearchQuery.length > 0;
 
   const nonNullTokens = removeNullValues(allTokens);
-  const sidebarTokensAsArray = useMemo(() => convertObjectToArray(sidebarTokens), [sidebarTokens]);
 
   // Only show blank space + add account button
   // 1. if the user don't have selected account
@@ -105,45 +97,22 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
     return ownsWalletFromChain ?? false;
   }, [query, selectedChain]);
 
-  const editModeTokensSearchResults = useMemo(() => {
+  const tokenSearchResults = useMemo(() => {
     if (!debouncedSearchQuery) {
-      return sidebarTokensAsArray;
+      return nonNullTokens;
     }
 
-    const searchResultNfts = [];
-    for (const resultId of searchResults) {
-      if (sidebarTokens[resultId]) {
-        searchResultNfts.push(sidebarTokens[resultId]);
-      }
-    }
+    const searchResultsSet = new Set(searchResults);
 
-    return searchResultNfts;
-  }, [debouncedSearchQuery, searchResults, sidebarTokens, sidebarTokensAsArray]);
-
-  const nftFragmentsKeyedByID = useMemo(
-    () => keyBy(nonNullTokens, (token) => token.dbid),
-    [nonNullTokens]
-  );
+    return nonNullTokens.filter((token) => searchResultsSet.has(token.dbid));
+  }, [debouncedSearchQuery, nonNullTokens, searchResults]);
 
   const handleAddBlankBlockClick = useCallback(() => {
-    const id = `blank-${generate12DigitId()}`;
-    stageTokens([{ id, whitespace: 'whitespace' }]);
-    // auto scroll so that the new block is visible. 100ms timeout to account for async nature of staging tokens
-    setTimeout(() => {
-      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-    }, 100);
-  }, [stageTokens]);
+    addWhitespace();
+  }, [addWhitespace]);
 
   const tokensToDisplay = useMemo(() => {
-    return editModeTokensSearchResults.filter((editModeToken) => {
-      const token = nftFragmentsKeyedByID[editModeToken.id];
-
-      // Ensure we have a 1-1 match.
-      // Every EditModeToken should have a Token from Relay
-      if (!token) {
-        return false;
-      }
-
+    return tokenSearchResults.filter((token) => {
       // If we're searching, we want to search across all chains
       if (isSearching) {
         return true;
@@ -160,13 +129,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
       }
       return !isSpam;
     });
-  }, [
-    editModeTokensSearchResults,
-    isSearching,
-    nftFragmentsKeyedByID,
-    selectedChain,
-    selectedView,
-  ]);
+  }, [tokenSearchResults, isSearching, selectedChain, selectedView]);
 
   const { isLocked, syncTokens } = useSyncTokens();
 
@@ -226,10 +189,9 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
         {ownsWalletFromSelectedChain ? (
           <SidebarTokens
             isSearching={isSearching}
-            tokenRefs={nonNullTokens}
+            tokenRefs={tokensToDisplay}
             selectedChain={selectedChain}
             selectedView={selectedView}
-            editModeTokens={tokensToDisplay}
           />
         ) : (
           <AddWalletSidebar

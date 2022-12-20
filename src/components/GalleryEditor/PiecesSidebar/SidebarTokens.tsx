@@ -19,7 +19,6 @@ type SidebarTokensProps = {
   isSearching: boolean;
   selectedChain: Chain;
   selectedView: SidebarView;
-  editModeTokens: EditModeToken[];
   tokenRefs: SidebarTokensNewFragment$key;
 };
 
@@ -28,7 +27,6 @@ export const SidebarTokens = ({
   isSearching,
   selectedChain,
   selectedView,
-  editModeTokens,
 }: SidebarTokensProps) => {
   const tokens = useFragment(
     graphql`
@@ -116,17 +114,16 @@ export const SidebarTokens = ({
 
   const rows = useMemo(() => {
     if (shouldUseCollectionGrouping) {
-      const groups = groupCollectionsByAddress({ tokens, editModeTokens });
+      const groups = groupCollectionsByAddress({ tokens });
 
       return createVirtualizedRowsFromGroups({ groups, erroredTokenIds, collapsedCollections });
     } else {
       return createVirtualizedRowsFromTokens({
         tokens,
-        editModeTokens,
         erroredTokenIds,
       });
     }
-  }, [collapsedCollections, editModeTokens, erroredTokenIds, shouldUseCollectionGrouping, tokens]);
+  }, [collapsedCollections, erroredTokenIds, shouldUseCollectionGrouping, tokens]);
 
   useEffect(
     function resetCollapsedSectionsWhileSearching() {

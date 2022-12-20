@@ -28,7 +28,7 @@ function NewEditGalleryPage({ galleryId }: Props) {
 
   const query = useLazyLoadQuery<editGalleryPageNewQuery>(
     graphql`
-      query editGalleryPageNewQuery {
+      query editGalleryPageNewQuery($galleryId: DBID!) {
         viewer {
           ... on Viewer {
             __typename
@@ -42,7 +42,7 @@ function NewEditGalleryPage({ galleryId }: Props) {
         ...GalleryEditorFragment
       }
     `,
-    {}
+    { galleryId }
   );
 
   const canGoBack = useCanGoBack();
