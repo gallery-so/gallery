@@ -10,7 +10,6 @@ import { CollectionSidebar } from '~/components/GalleryEditor/CollectionSidebar/
 import { GalleryEditorProvider } from '~/components/GalleryEditor/GalleryEditorContext';
 import { PiecesSidebar } from '~/components/GalleryEditor/PiecesSidebar/PiecesSidebar';
 import CollectionEditorProvider from '~/contexts/collectionEditor/CollectionEditorContext';
-import CollectionWizardContext from '~/contexts/wizard/CollectionWizardContext';
 import { removeNullValues } from '~/utils/removeNullValues';
 
 type GalleryEditorProps = {

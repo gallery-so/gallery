@@ -43,7 +43,7 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
     queryRef
   );
 
-  const [collectionIdBeingEdited, setCollectionIdBeingEdited] = useState<string | null>(() => {
+  const [collectionIdBeingEdited] = useState<string | null>(() => {
     return query.viewer?.user?.galleries?.[0]?.collections?.[0]?.dbid ?? null;
   });
 

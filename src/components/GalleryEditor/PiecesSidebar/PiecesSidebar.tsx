@@ -11,7 +11,6 @@ import { Chain } from '~/components/GalleryEditor/PiecesSidebar/chains';
 import { SidebarChainSelector } from '~/components/GalleryEditor/PiecesSidebar/SidebarChainSelector';
 import { SidebarTokens } from '~/components/GalleryEditor/PiecesSidebar/SidebarTokens';
 import {
-  SidebarTokensState,
   useCollectionEditorActions,
   useSidebarTokensState,
 } from '~/contexts/collectionEditor/CollectionEditorContext';

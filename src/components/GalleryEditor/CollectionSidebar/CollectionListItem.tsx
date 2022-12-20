@@ -1,4 +1,3 @@
-import { useFloating, useHover, useInteractions } from '@floating-ui/react';
 import { useCallback } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';

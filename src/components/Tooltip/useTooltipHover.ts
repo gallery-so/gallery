@@ -1,12 +1,4 @@
-import {
-  autoUpdate,
-  flip,
-  offset,
-  shift,
-  useFloating,
-  useHover,
-  useInteractions,
-} from '@floating-ui/react';
+import { autoUpdate, offset, useFloating, useHover, useInteractions } from '@floating-ui/react';
 import { useMemo, useState } from 'react';
 import { CSSProperties } from 'styled-components';
 

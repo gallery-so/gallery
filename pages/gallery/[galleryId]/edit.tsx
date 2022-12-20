@@ -161,10 +161,10 @@ export default function EditGalleryPage({ galleryId }: Props) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps<Props> = ({ params }) => {
+export const getServerSideProps: GetServerSideProps<Props> = async ({ params }) => {
   return {
     props: {
-      galleryId: params.galleryId,
+      galleryId: params?.galleryId as string,
     },
   };
 };
