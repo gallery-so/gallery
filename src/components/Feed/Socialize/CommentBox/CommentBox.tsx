@@ -1,7 +1,6 @@
 import {
   ClipboardEventHandler,
   KeyboardEventHandler,
-  MouseEventHandler,
   useCallback,
   useEffect,
   useRef,
@@ -9,7 +8,7 @@ import {
 } from 'react';
 import { useFragment } from 'react-relay';
 import { ConnectionHandler, graphql, SelectorStoreUpdater } from 'relay-runtime';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import colors from '~/components/core/colors';
@@ -27,13 +26,12 @@ import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 const MAX_TEXT_LENGTH = 100;
 
 type Props = {
-  active: boolean;
   onClose: () => void;
   eventRef: CommentBoxFragment$key;
   queryRef: CommentBoxQueryFragment$key;
 };
 
-export function CommentBox({ active, onClose, eventRef, queryRef }: Props) {
+export function CommentBox({ eventRef, queryRef, onClose }: Props) {
   const query = useFragment(
     graphql`
       fragment CommentBoxQueryFragment on Query {
@@ -194,16 +192,6 @@ export function CommentBox({ active, onClose, eventRef, queryRef }: Props) {
     value,
   ]);
 
-  useEffect(() => {
-    if (active) {
-      textareaRef.current?.focus();
-    }
-  }, [active]);
-
-  const handleClick = useCallback<MouseEventHandler<HTMLElement>>((event) => {
-    event.stopPropagation();
-  }, []);
-
   const handleInputKeyDown = useCallback<KeyboardEventHandler>(
     async (event) => {
       if (event.key === 'Enter' && event.metaKey) {
@@ -270,74 +258,29 @@ export function CommentBox({ active, onClose, eventRef, queryRef }: Props) {
     [handleInput]
   );
 
-  return (
-    <>
-      {active && <ClickPreventingOverlay onClick={onClose} />}
-      <CommentBoxWrapper active={active}>
-        <Wrapper onClick={handleClick}>
-          <InputWrapper gap={12}>
-            {/* Purposely not using a controlled input here to avoid cursor jitter */}
-            <Textarea
-              onPaste={handlePaste}
-              onKeyDown={handleInputKeyDown}
-              ref={textareaRef}
-              onInput={handleInput}
-            />
+  useEffect(() => {
+    textareaRef.current?.focus();
+  }, []);
 
-            <ControlsContainer gap={12} align="center">
-              <BaseM color={colors.metal}>{MAX_TEXT_LENGTH - value.length}</BaseM>
-              <SendButton
-                enabled={value.length > 0 && !isSubmittingComment}
-                onClick={handleSubmit}
-              />
-            </ControlsContainer>
-          </InputWrapper>
-        </Wrapper>
-      </CommentBoxWrapper>
-    </>
+  return (
+    <Wrapper>
+      <InputWrapper gap={12}>
+        {/* Purposely not using a controlled input here to avoid cursor jitter */}
+        <Textarea
+          onPaste={handlePaste}
+          onKeyDown={handleInputKeyDown}
+          ref={textareaRef}
+          onInput={handleInput}
+        />
+
+        <ControlsContainer gap={12} align="center">
+          <BaseM color={colors.metal}>{MAX_TEXT_LENGTH - value.length}</BaseM>
+          <SendButton enabled={value.length > 0 && !isSubmittingComment} onClick={handleSubmit} />
+        </ControlsContainer>
+      </InputWrapper>
+    </Wrapper>
   );
 }
-
-const ClickPreventingOverlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-
-  // Higher than whole page / header
-  z-index: 10;
-`;
-
-const CommentBoxWrapper = styled.div<{ active: boolean }>`
-  // Full width with 16px of padding on either side
-  width: calc(100vw - 32px);
-
-  @media only screen and ${breakpoints.mobileLarge} {
-    width: 375px;
-  }
-
-  position: absolute;
-  bottom: 0;
-  right: 0;
-
-  // Higher than the Overlay
-  z-index: 11;
-
-  transition: transform 300ms ease-out, opacity 300ms ease-in-out;
-
-  ${({ active }) =>
-    active
-      ? css`
-          opacity: 1;
-          transform: translateY(calc(100% + 8px));
-        `
-      : css`
-          opacity: 0;
-          pointer-events: none;
-          transform: translateY(100%);
-        `}
-`;
 
 const ControlsContainer = styled(HStack)`
   position: absolute;
@@ -369,6 +312,8 @@ const Textarea = styled(BaseM).attrs({
   min-width: 0;
   font-family: ${BODY_FONT_FAMILY};
 
+  cursor: text;
+
   width: 100%;
   min-height: 20px;
 
@@ -385,8 +330,12 @@ const Textarea = styled(BaseM).attrs({
 `;
 
 const Wrapper = styled.div`
-  position: relative;
-  width: 100%;
+  // Full width with 16px of padding on either side
+  width: calc(100vw - 32px);
+
+  @media only screen and ${breakpoints.mobileLarge} {
+    width: 375px;
+  }
 
   border: 1px solid ${colors.offBlack};
 

@@ -102,7 +102,7 @@ const StyledIcon = styled.div<{
   }
 
   &:active {
-    background: ${colors.metal};
+    background: ${colors.porcelain};
   }
 `;
 

@@ -756,6 +756,7 @@ type UsersConnection {
 enum Role {
     ADMIN
     BETA_TESTER
+    EARLY_ACCESS
 }
 
 enum MerchType {
@@ -764,7 +765,8 @@ enum MerchType {
     Card
 }
 
-type MerchToken {
+type MerchToken implements Node @goGqlId(fields: ["tokenId"]) {
+    id: ID!
     tokenId: String!
     objectType: MerchType!
     discountCode: String
@@ -777,7 +779,7 @@ type MerchTokensPayload {
 
 union MerchTokensPayloadOrError = MerchTokensPayload | ErrInvalidInput
 
-type ErrGalleryNotFound {
+type ErrGalleryNotFound implements Error {
     message: String!
 }
 
@@ -804,6 +806,7 @@ type Query {
     getMerchTokens(wallet: Address!): MerchTokensPayloadOrError
     galleryById(id: DBID!): GalleryByIdPayloadOrError
     viewerGalleryById(id: DBID!): ViewerGalleryByIdPayloadOrError
+
 
     # Retool Specific
     usersByRole(role: Role!, before: String, after: String, first: Int, last: Int): UsersConnection @retoolAuth
@@ -1447,12 +1450,24 @@ type MerchDiscountCode {
 }
 
 type RedeemMerchPayload {
-    discountCodes: [MerchDiscountCode!]
+    tokens: [MerchToken]
 }
 
 union RedeemMerchPayloadOrError =
     RedeemMerchPayload
     | ErrInvalidInput
+
+type SyncTokensForUsernamePayload {
+    message: String!
+}
+
+union SyncTokensForUsernamePayloadOrError = SyncTokensForUsernamePayload | ErrNotAuthorized | ErrSyncFailed
+
+type BanUserFromFeedPayload {
+    user: GalleryUser
+}
+
+union BanUserFromFeedPayloadOrError = BanUserFromFeedPayload | ErrNotAuthorized
 
 type Mutation {
     # User Mutations
@@ -1474,7 +1489,7 @@ type Mutation {
     updateTokenInfo(input: UpdateTokenInfoInput!): UpdateTokenInfoPayloadOrError @authRequired
     setSpamPreference(input: SetSpamPreferenceInput!): SetSpamPreferencePayloadOrError @authRequired
 
-    syncTokens(chains: [Chain!], userID: DBID): SyncTokensPayloadOrError @authRequired
+    syncTokens(chains: [Chain!]): SyncTokensPayloadOrError @authRequired
     refreshToken(tokenId: DBID!): RefreshTokenPayloadOrError
     refreshCollection(collectionId: DBID!): RefreshCollectionPayloadOrError
     refreshContract(contractId: DBID!): RefreshContractPayloadOrError
@@ -1512,6 +1527,8 @@ type Mutation {
     # Retool Specific Mutations
     addRolesToUser(username: String!, roles: [Role]): AddRolesToUserPayloadOrError @retoolAuth
     revokeRolesFromUser(username: String!, roles: [Role]): RevokeRolesFromUserPayloadOrError @retoolAuth
+    syncTokensForUsername(username: String!, chains: [Chain!]!): SyncTokensForUsernamePayloadOrError @retoolAuth
+    banUserFromFeed(username: String!, action: String!): BanUserFromFeedPayloadOrError @retoolAuth
 
     # Gallery Frontend Deploy Persisted Queries
     uploadPersistedQueries(input: UploadPersistedQueriesInput): UploadPersistedQueriesPayloadOrError @frontendBuildAuth

@@ -34,6 +34,10 @@ const ROLE_FLAGS: Record<Role, Record<FeatureFlag, boolean>> = {
     EMAIL: true,
     MULTIGALLERY: false,
   },
+  EARLY_ACCESS: {
+    WHITE_RHINO: true,
+    EMAIL: true,
+  },
 };
 
 /**

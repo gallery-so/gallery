@@ -80,11 +80,18 @@ function mockResponse({ userViews, nonUserViews }: MockResponseArgs) {
 
   return result;
 }
+class ResizeObserver {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+}
 
 async function assertSituation(args: MockResponseArgs, expectedText: string) {
   const response = mockResponse(args);
 
   mockProviderQueries();
+
+  window.ResizeObserver = ResizeObserver;
 
   mockGraphqlQuery('SomeoneViewedYourGalleryTestQuery', response);
 

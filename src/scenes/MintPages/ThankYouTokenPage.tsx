@@ -20,7 +20,7 @@ import isProduction from '~/utils/isProduction';
 import MintButton from './MintButton';
 
 function Timer() {
-  const MINT_DEADLINE = '2022-12-18T23:59:59-04:00'; // time is in EST (GMT-04:00)
+  const MINT_DEADLINE = '2022-12-22T23:59:59-04:00'; // time is in EST (GMT-04:00)
   const { timestamp } = useTimer(MINT_DEADLINE);
   return <BaseXL>{timestamp}</BaseXL>;
 }
