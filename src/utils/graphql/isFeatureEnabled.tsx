@@ -20,14 +20,14 @@ const PROD_FLAGS: Record<FeatureFlag, boolean> = {
 const DEV_FLAGS: Record<FeatureFlag, boolean> = {
   WHITE_RHINO: true,
   EMAIL: true,
-  MULTIGALLERY: true,
+  MULTIGALLERY: false,
 };
 
 const ROLE_FLAGS: Record<Role, Record<FeatureFlag, boolean>> = {
   ADMIN: {
     WHITE_RHINO: true,
     EMAIL: true,
-    MULTIGALLERY: true,
+    MULTIGALLERY: false,
   },
   BETA_TESTER: {
     WHITE_RHINO: true,
@@ -37,6 +37,7 @@ const ROLE_FLAGS: Record<Role, Record<FeatureFlag, boolean>> = {
   EARLY_ACCESS: {
     WHITE_RHINO: true,
     EMAIL: true,
+    MULTIGALLERY: false,
   },
 };
 
