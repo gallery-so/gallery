@@ -93,7 +93,7 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
       <StyledCommunityPageContainer>
         <HStack>
           <StyledHeader>
-            <HStack gap={4} align="center">
+            <HStack gap={8} align="center">
               <TitleL>{name}</TitleL>
               {badgeURL && <StyledBadge src={badgeURL} />}
             </HStack>
