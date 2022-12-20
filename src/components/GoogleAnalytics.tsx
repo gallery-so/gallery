@@ -13,7 +13,9 @@ export default function GoogleAnalytics() {
           function gtag(){window.dataLayer.push(arguments);}
           gtag('js', new Date());
 
-          gtag('config', 'G-0WWCB2PQB5');
+          gtag('config', 'G-0WWCB2PQB5', {
+            transport_url: 'https://gtm.gallery.so',
+          });
         `}
       </Script>
     </>
