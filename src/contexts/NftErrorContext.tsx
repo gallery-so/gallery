@@ -109,7 +109,7 @@ export function NftErrorProvider({ children }: PropsWithChildren) {
 
   const environment = useRelayEnvironment();
   const FragmentResource = getFragmentResourceForEnvironment(environment);
-  const retryToken = useCallback<NftErrorContextType['retryToken']>(
+  const retryToken = useCallback(
     (tokenId: string) => {
       addBreadcrumb({
         message: 'Trying to clear the Relay FragmentResource cache',
