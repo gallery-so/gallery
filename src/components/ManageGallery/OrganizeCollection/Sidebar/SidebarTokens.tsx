@@ -74,7 +74,7 @@ export const SidebarTokens = ({
     [tokens, setSpamPreference]
   );
 
-  const [erroredTokenIds, setErroredTokenIds] = useState<Set<string>>(new Set());
+  const [, setErroredTokenIds] = useState<Set<string>>(new Set());
   const [collapsedCollections, setCollapsedCollections] = useState<Set<string>>(new Set());
 
   const handleMarkErroredTokenId = useCallback((id: string) => {
@@ -125,7 +125,7 @@ export const SidebarTokens = ({
         editModeTokens,
       });
     }
-  }, [collapsedCollections, editModeTokens, erroredTokenIds, shouldUseCollectionGrouping, tokens]);
+  }, [collapsedCollections, editModeTokens, shouldUseCollectionGrouping, tokens]);
 
   useEffect(
     function resetCollapsedSectionsWhileSearching() {
