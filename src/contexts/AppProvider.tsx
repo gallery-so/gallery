@@ -2,6 +2,7 @@ import { Environment, RelayEnvironmentProvider } from 'react-relay';
 
 import Debugger from '~/components/Debugger/Debugger';
 import { GalleryNavigationProvider } from '~/contexts/navigation/GalleryNavigationProvider';
+import { NftErrorProvider } from '~/contexts/NftErrorContext';
 import { SyncTokensLockProvider } from '~/contexts/SyncTokensLockContext';
 import isProduction from '~/utils/isProduction';
 
@@ -33,14 +34,16 @@ export default function AppProvider({ children, relayEnvironment }: Props) {
                 <SwrProvider>
                   <GalleryNavigationProvider>
                     <ModalProvider>
-                      <SyncTokensLockProvider>
-                        <SnowProvider>
-                          <GlobalLayoutContextProvider>
-                            {isProd ? null : <Debugger />}
-                            {children}
-                          </GlobalLayoutContextProvider>
-                        </SnowProvider>
-                      </SyncTokensLockProvider>
+                      <NftErrorProvider>
+                        <SyncTokensLockProvider>
+                          <SnowProvider>
+                            <GlobalLayoutContextProvider>
+                              {isProd ? null : <Debugger />}
+                              {children}
+                            </GlobalLayoutContextProvider>
+                          </SnowProvider>
+                        </SyncTokensLockProvider>
+                      </NftErrorProvider>
                     </ModalProvider>
                   </GalleryNavigationProvider>
                 </SwrProvider>
