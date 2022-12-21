@@ -8,7 +8,7 @@ import NftDetailView from '~/scenes/NftDetailPage/NftDetailView';
 import {
   Chain,
   NftDetailAssetTestQueryQuery,
-  UseNftRetryMutationMutation,
+  NftErrorContextRetryMutationMutation,
 } from '~/tests/__generated__/operations';
 import { mockGraphqlQuery } from '~/tests/graphql/mockGraphqlQuery';
 import { mockProviderQueries } from '~/tests/graphql/mockProviderQueries';
@@ -81,7 +81,7 @@ const UnknownMediaResponse: NftDetailAssetTestQueryQuery = {
   },
 };
 
-const RetryImageMediaResponse: UseNftRetryMutationMutation = {
+const RetryImageMediaResponse: NftErrorContextRetryMutationMutation = {
   __typename: 'Mutation',
   refreshToken: {
     __typename: 'RefreshTokenPayload',
@@ -122,7 +122,7 @@ describe('NftDetailAsset', () => {
     mockGraphqlQuery('NftDetailAssetTestQuery', UnknownMediaResponse);
 
     // Mock the retry for when they hit the button
-    mockGraphqlQuery('useNftRetryMutation', RetryImageMediaResponse);
+    mockGraphqlQuery('NftErrorContextRetryMutation', RetryImageMediaResponse);
 
     const relayEnvironment = createEmptyRelayEnvironment();
     const { findByText, findByTestId, findByAltText } = render(
