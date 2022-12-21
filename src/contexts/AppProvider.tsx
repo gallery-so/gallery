@@ -33,8 +33,8 @@ export default function AppProvider({ children, relayEnvironment }: Props) {
               <ErrorReportingProvider>
                 <SwrProvider>
                   <GalleryNavigationProvider>
-                    <ModalProvider>
-                      <NftErrorProvider>
+                    <NftErrorProvider>
+                      <ModalProvider>
                         <SyncTokensLockProvider>
                           <SnowProvider>
                             <GlobalLayoutContextProvider>
@@ -43,8 +43,8 @@ export default function AppProvider({ children, relayEnvironment }: Props) {
                             </GlobalLayoutContextProvider>
                           </SnowProvider>
                         </SyncTokensLockProvider>
-                      </NftErrorProvider>
-                    </ModalProvider>
+                      </ModalProvider>
+                    </NftErrorProvider>
                   </GalleryNavigationProvider>
                 </SwrProvider>
               </ErrorReportingProvider>
