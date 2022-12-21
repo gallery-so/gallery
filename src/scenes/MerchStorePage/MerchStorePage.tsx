@@ -17,7 +17,7 @@ import LogoBracketLeft from '~/icons/LogoBracketLeft';
 import LogoBracketRight from '~/icons/LogoBracketRight';
 
 import Countdown from './Countdown';
-import ItemPreview from './ItemPreview';
+import ListMerchItems from './ListMerchItems';
 import useRedeemModal from './Redemption/useRedeemModal';
 
 export type MerchItemTypes = {
@@ -38,6 +38,7 @@ export const merchItems = [
       'Black short sleeve cotton t-shirt with puff-print design on left chest and both puff-print and screen-print design on full back.\nThe first entry in the (OBJECTS) Gallery merch collection.\nThis token may be used to claim 1 physical corresponding merch item during the redemption period.',
     price: '0.05',
     tokenId: 0,
+    type: 'TShirt',
   },
   {
     label: 'Hat',
@@ -47,6 +48,7 @@ export const merchItems = [
       'Black hat with embroidered text design at center front and embroidered Gallery logo at center back.\nThe second entry in the (OBJECTS) Gallery merch collection.\nThis token may be used to claim 1 physical corresponding merch item during the redemption period.',
     price: '0.06',
     tokenId: 1,
+    type: 'Hat',
   },
   {
     label: 'Card',
@@ -56,6 +58,7 @@ export const merchItems = [
       'Metallic membership card laser etched with the Gallery logo on the front and text design on the back.\nThe third entry in the (OBJECTS) Gallery merch collection.\nThis token may be used to claim 1 physical corresponding merch item during the redemption period.',
     price: '0.08',
     tokenId: 2,
+    type: 'Card',
   },
 ];
 
@@ -71,6 +74,7 @@ export default function MerchStorePage({ queryRef }: Props) {
         merchTokens: getMerchTokens(wallet: $wallet) @required(action: THROW) {
           __typename
           ...useRedeemModalQueryFragment
+          ...ListMerchItemsFragment
         }
 
         viewer {
@@ -124,11 +128,7 @@ export default function MerchStorePage({ queryRef }: Props) {
       </StyledButtonContainer>
       <StyledContent gap={32} align="center">
         <TitleMonoM>Physical redemption is now available.</TitleMonoM>
-        <StyledItemsContainer>
-          {merchItems.map((item) => (
-            <ItemPreview {...item} key={item.label} />
-          ))}
-        </StyledItemsContainer>
+        <ListMerchItems queryRef={merchTokens} />
       </StyledContent>
     </StyledPage>
   );
@@ -191,17 +191,4 @@ const StyledLogoBracketLeft = styled(LogoBracketLeft)`
 const StyledLogoBracketRight = styled(LogoBracketRight)`
   width: 8px;
   height: 26px;
-`;
-
-const StyledItemsContainer = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  place-items: center;
-
-  @media only screen and ${breakpoints.tablet} {
-    flex-direction: row;
-    padding: 0;
-  }
 `;
