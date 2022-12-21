@@ -18,12 +18,14 @@ export default function ItemPreview({
   title,
   description,
   tokenId,
+  quantity,
 }: {
   label: string;
   image: string;
   title: string;
   description: string;
   tokenId: number;
+  quantity: number;
 }) {
   const { showModal } = useModalActions();
   const handleClick = useCallback(() => {
@@ -45,7 +47,7 @@ export default function ItemPreview({
 
   const contract = useMintMerchContract();
 
-  const { soldOut, userOwnedSupply } = useMintContractWithQuantity({
+  const { soldOut } = useMintContractWithQuantity({
     // @ts-expect-error: fix this later, related to web3 lib upgrade
     contract,
     tokenId,
@@ -63,9 +65,7 @@ export default function ItemPreview({
         <FlippingImage src={image} isInPreview isFlipped={isFlipped} />
       </StyledImageContainer>
       <StyledTopRightLabels>
-        {typeof userOwnedSupply == 'number' && userOwnedSupply > 0 && (
-          <StyledOwnedText>You Own {userOwnedSupply}</StyledOwnedText>
-        )}
+        {quantity > 0 && <StyledOwnedText>You Own {quantity}</StyledOwnedText>}
         {soldOut && <StyledSoldOutText>Sold Out</StyledSoldOutText>}
       </StyledTopRightLabels>
       <StyledBottomText>
