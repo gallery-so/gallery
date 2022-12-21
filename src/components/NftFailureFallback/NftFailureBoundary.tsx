@@ -1,4 +1,4 @@
-import { createElement, useContext, useMemo } from 'react';
+import { createElement, useMemo } from 'react';
 
 import {
   ReportingErrorBoundary,
@@ -26,7 +26,7 @@ export function NftFailureBoundary({ tokenId, additionalTags, ...rest }: Props) 
     if (typeof fallback === 'function') {
       return createElement(fallback, { error: new Error() });
     } else {
-      return fallback ?? null;
+      return <>{fallback}</>;
     }
   }
 
