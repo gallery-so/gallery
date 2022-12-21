@@ -118,12 +118,11 @@ export const SidebarTokens = ({
     if (shouldUseCollectionGrouping) {
       const groups = groupCollectionsByAddress({ tokens, editModeTokens });
 
-      return createVirtualizedRowsFromGroups({ groups, erroredTokenIds, collapsedCollections });
+      return createVirtualizedRowsFromGroups({ groups, collapsedCollections });
     } else {
       return createVirtualizedRowsFromTokens({
         tokens,
         editModeTokens,
-        erroredTokenIds,
       });
     }
   }, [collapsedCollections, editModeTokens, erroredTokenIds, shouldUseCollectionGrouping, tokens]);
