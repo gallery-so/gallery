@@ -98,19 +98,17 @@ export function SomeoneAdmiredYourFeedEvent({
 
   return (
     <BaseM>
-      <strong>
-        {count > 1 ? (
-          <>{notification.count} collectors</>
-        ) : (
-          <>
-            {firstAdmirer ? (
-              <HoverCardOnUsername userRef={firstAdmirer} queryRef={query} />
-            ) : (
-              'Someone'
-            )}
-          </>
-        )}
-      </strong>
+      {count > 1 ? (
+        <strong>{notification.count} collectors</strong>
+      ) : (
+        <>
+          {firstAdmirer ? (
+            <HoverCardOnUsername userRef={firstAdmirer} queryRef={query} />
+          ) : (
+            <strong>Someone</strong>
+          )}
+        </>
+      )}
       {` ${verb} `}
       {collection ? <CollectionLink collectionRef={collection} /> : <>your collection</>}
     </BaseM>
