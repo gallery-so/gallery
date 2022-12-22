@@ -6,7 +6,7 @@ export class CouldNotRenderNftError extends ErrorWithSentryMetadata {
   public componentName: string;
 
   constructor(componentName: string, reason: string, metadata?: Record<string, Primitive>) {
-    super(`${componentName}: ${reason}`, metadata ?? {});
+    super(`Could not render NFT`, { ...metadata, componentName, reason });
 
     this.componentName = componentName;
 
