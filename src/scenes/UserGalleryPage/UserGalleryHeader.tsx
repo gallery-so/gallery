@@ -166,6 +166,11 @@ const StyledBioWrapper = styled(BaseM)<{ showMore: boolean }>`
           }
 
           -webkit-line-clamp: 2;
+
+          p {
+            padding: 0;
+            display: inline;
+          }
         `}
 `;
 
