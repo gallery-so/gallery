@@ -81,21 +81,6 @@ export function NftErrorProvider({ children }: PropsWithChildren) {
         });
       }
 
-      const commonTags = {
-        tokenId,
-        alreadyRefreshed: token.refreshed,
-      };
-
-      if (error instanceof CouldNotRenderNftError) {
-        reportError('NftLoadError: ' + error.message, {
-          tags: { ...commonTags, ...error.metadata },
-        });
-      } else {
-        reportError('NftLoadError: Could not load nft', {
-          tags: commonTags,
-        });
-      }
-
       setTokens((previous) => {
         const next = { ...previous };
 
