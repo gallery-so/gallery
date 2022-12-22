@@ -49,7 +49,7 @@ export function CollectionListItem({ collectionRef }: CollectionListItemProps) {
   return (
     <CollectionListItemContainer role="button" justify="space-between" align="center">
       <CollectionTitleText italicize={!collection.name}>
-        {escapedCollectionName}
+        {escapedCollectionName || 'Untitled'}
       </CollectionTitleText>
       <HStack gap={2}>
         <IconContainer
