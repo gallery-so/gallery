@@ -9,6 +9,7 @@ import {
   WhitespaceBlock,
 } from '~/components/ManageGallery/OrganizeCollection/types';
 import { collectionLayoutParseFragment$key } from '~/generated/collectionLayoutParseFragment.graphql';
+import { generate12DigitId } from '~/utils/generate12DigitId';
 import { removeNullValues } from '~/utils/removeNullValues';
 // This file contains helper methods to manipulate collections, layouts, and related data used for the Collection Editor and its drag and drop interface.
 
@@ -172,10 +173,6 @@ export function getWhitespacePositionsFromSection(sectionItems: StagingItem[]): 
     }
   });
   return result;
-}
-
-export function generate12DigitId() {
-  return Math.round(Math.random() * 1000000000000).toString();
 }
 
 // filter whitespaces from stagedItems and map each EditModeToken -> Nft

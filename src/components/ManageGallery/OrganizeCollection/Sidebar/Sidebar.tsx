@@ -20,7 +20,7 @@ import { useToastActions } from '~/contexts/toast/ToastContext';
 import { SidebarFragment$key } from '~/generated/SidebarFragment.graphql';
 import { SidebarViewerFragment$key } from '~/generated/SidebarViewerFragment.graphql';
 import useSyncTokens from '~/hooks/api/tokens/useSyncTokens';
-import { generate12DigitId } from '~/utils/collectionLayout';
+import { generate12DigitId } from '~/utils/generate12DigitId';
 import { removeNullValues } from '~/utils/removeNullValues';
 
 import { convertObjectToArray } from '../convertObjectToArray';

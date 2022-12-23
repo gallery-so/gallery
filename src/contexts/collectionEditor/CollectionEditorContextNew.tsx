@@ -7,7 +7,8 @@ import { dragEnd } from '~/components/GalleryEditor/CollectionEditor/DragAndDrop
 import { useGalleryEditorContext } from '~/components/GalleryEditor/GalleryEditorContext';
 import { ErrorWithSentryMetadata } from '~/errors/ErrorWithSentryMetadata';
 import { CollectionEditorContextNewFragment$key } from '~/generated/CollectionEditorContextNewFragment.graphql';
-import { generate12DigitId, parseCollectionLayoutGraphql } from '~/utils/collectionLayout';
+import { parseCollectionLayoutGraphql } from '~/utils/collectionLayout';
+import { generate12DigitId } from '~/utils/generate12DigitId';
 import { removeNullValues } from '~/utils/removeNullValues';
 
 const deepClone = rfdc();
