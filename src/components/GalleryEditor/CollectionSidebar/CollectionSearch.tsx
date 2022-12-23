@@ -1,28 +1,11 @@
-import { ChangeEventHandler, useCallback, useState } from 'react';
-import { graphql, useFragment } from 'react-relay';
+import { useState } from 'react';
 import styled from 'styled-components';
 
-import colors from '~/components/core/colors';
 import { FadedInput } from '~/components/core/Input/FadedInput';
 import { VStack } from '~/components/core/Spacer/Stack';
-import { BODY_FONT_FAMILY } from '~/components/core/Text/Text';
 import { CollectionSearchResults } from '~/components/GalleryEditor/CollectionSidebar/CollectionSearchResults';
-import { CollectionSearchFragment$key } from '~/generated/CollectionSearchFragment.graphql';
 
-type CollectionSearchProps = {
-  queryRef: CollectionSearchFragment$key;
-};
-
-export function CollectionSearch({ queryRef }: CollectionSearchProps) {
-  const query = useFragment(
-    graphql`
-      fragment CollectionSearchFragment on Query {
-        ...CollectionSearchResultsFragment
-      }
-    `,
-    queryRef
-  );
-
+export function CollectionSearch() {
   const [searchQuery, setSearchQuery] = useState('');
 
   return (
@@ -36,7 +19,7 @@ export function CollectionSearch({ queryRef }: CollectionSearchProps) {
         />
       </CollectionSearchBoxContainer>
 
-      <CollectionSearchResults searchQuery={searchQuery} queryRef={query} />
+      <CollectionSearchResults searchQuery={searchQuery} />
     </VStack>
   );
 }

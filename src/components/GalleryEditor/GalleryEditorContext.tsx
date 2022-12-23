@@ -1,6 +1,8 @@
 import {
   createContext,
+  Dispatch,
   PropsWithChildren,
+  SetStateAction,
   useCallback,
   useContext,
   useMemo,
@@ -14,15 +16,19 @@ const deepClone = rfdc();
 import { CollectionCreateOrEditForm } from '~/components/GalleryEditor/CollectionCreateOrEditForm';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { GalleryEditorContextFragment$key } from '~/generated/GalleryEditorContextFragment.graphql';
+import { parseCollectionLayoutGraphql } from '~/utils/collectionLayout';
 import { generate12DigitId } from '~/utils/generate12DigitId';
 import { removeNullValues } from '~/utils/removeNullValues';
 
 export type GalleryEditorContextType = {
   collections: CollectionMap;
+  setCollections: Dispatch<SetStateAction<CollectionMap>>;
   hiddenCollectionIds: Set<string>;
 
+  activateCollection: (collectionId: string) => void;
+  deleteCollection: (collectionId: string) => void;
+  editCollectionNameAndNote: (collectionId: string) => void;
   createCollection: () => void;
-  updateCollectionNameAndNote: (collectionId: string, name: string, note: string) => void;
   toggleCollectionHidden: (collectionId: string) => void;
   collectionIdBeingEdited: string | null;
 };
@@ -33,15 +39,29 @@ type GalleryEditorProviderProps = PropsWithChildren<{
   queryRef: GalleryEditorContextFragment$key;
 }>;
 
+export type StagedItem = { kind: 'whitespace'; id: string } | { kind: 'token'; id: string };
+
+export type StagedSection = {
+  columns: number;
+  items: StagedItem[];
+};
+
 type CollectionState = {
   dbid: string;
   localOnly: boolean;
+
+  liveDisplayTokenIds: Set<string>;
+
   name: string;
   collectorsNote: string;
   hidden: boolean;
+
+  sections: StagedSectionMap;
+  activeSectionId: string | null;
 };
 
-type CollectionMap = Record<string, CollectionState>;
+export type StagedSectionMap = Record<string, StagedSection>;
+export type CollectionMap = Record<string, CollectionState>;
 
 export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProviderProps) {
   const query = useFragment(
@@ -56,6 +76,17 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
               name
               collectorsNote
               hidden
+              layout @required(action: THROW) {
+                ...collectionLayoutParseFragment
+              }
+              tokens @required(action: THROW) {
+                tokenSettings {
+                  renderLive
+                }
+                token @required(action: THROW) {
+                  dbid
+                }
+              }
             }
           }
         }
@@ -71,8 +102,12 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
     );
   }
 
-  const [collectionIdBeingEdited] = useState<string | null>(() => {
+  const [collectionIdBeingEdited, setCollectionIdBeingEdited] = useState<string | null>(() => {
     return gallery?.collections?.[0]?.dbid ?? null;
+  });
+
+  const [deletedCollectionIds, setDeletedCollectionIds] = useState(() => {
+    return new Set<string>();
   });
 
   const [collections, setCollections] = useState<CollectionMap>(() => {
@@ -81,7 +116,36 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
     const queryCollections = removeNullValues(gallery?.collections);
 
     for (const collection of queryCollections) {
+      const sections: StagedSectionMap = {};
+      const nonNullTokens = removeNullValues(collection.tokens);
+
+      const parsed = parseCollectionLayoutGraphql(nonNullTokens, collection.layout);
+      for (const sectionId in parsed) {
+        const parsedSection = parsed[sectionId];
+
+        sections[sectionId] = {
+          columns: parsedSection.columns,
+          items: parsedSection.items.map((item) => {
+            if ('whitespace' in item) {
+              return { kind: 'whitespace', id: item.id };
+            } else {
+              return { kind: 'token', id: item.token.dbid };
+            }
+          }),
+        };
+      }
+
+      const liveDisplayTokenIds = new Set<string>();
+      for (const token of nonNullTokens) {
+        if (token.tokenSettings?.renderLive) {
+          liveDisplayTokenIds.add(token.token.dbid);
+        }
+      }
+
       collections[collection.dbid] = {
+        activeSectionId: null,
+        liveDisplayTokenIds: liveDisplayTokenIds,
+        sections,
         localOnly: false,
         dbid: collection.dbid,
         name: collection.name ?? '',
@@ -93,20 +157,6 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
     return collections;
   });
 
-  const updateCollectionNameAndNote = useCallback(
-    (collectionId: string, name: string, collectorsNote: string) => {
-      setCollections((previous) => {
-        const cloned = deepClone(previous);
-
-        const previousCollection = cloned[collectionId];
-        cloned[collectionId] = { ...previousCollection, name, collectorsNote };
-
-        return cloned;
-      });
-    },
-    []
-  );
-
   const { showModal } = useModalActions();
   const createCollection = useCallback(() => {
     showModal({
@@ -114,11 +164,16 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
         <CollectionCreateOrEditForm
           mode="creating"
           onDone={({ name, collectorsNote }) => {
-            const dbid = generate12DigitId();
+            const newCollectionId = generate12DigitId();
 
             setCollections((previous) => {
+              const defaultSectionId = generate12DigitId();
+
               const newCollection: CollectionState = {
-                dbid,
+                activeSectionId: defaultSectionId,
+                liveDisplayTokenIds: new Set(),
+                sections: { [defaultSectionId]: { columns: 3, items: [] } },
+                dbid: newCollectionId,
                 localOnly: true,
                 hidden: false,
                 name: name ?? '',
@@ -126,10 +181,12 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
               };
 
               return {
-                [dbid]: newCollection,
+                [newCollectionId]: newCollection,
                 ...previous,
               };
             });
+
+            setCollectionIdBeingEdited(newCollectionId);
           }}
         />
       ),
@@ -141,8 +198,7 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
     setCollections((previous) => {
       const cloned = deepClone(previous);
 
-      const previousCollection = cloned[collectionId];
-      cloned[collectionId] = { ...previousCollection, hidden: previousCollection.hidden };
+      cloned[collectionId].hidden = !cloned[collectionId].hidden;
 
       return cloned;
     });
@@ -156,23 +212,85 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
     );
   }, [collections]);
 
+  const activateCollection = useCallback((collectionId: string) => {
+    setCollectionIdBeingEdited(collectionId);
+  }, []);
+
+  const deleteCollection = useCallback((collectionId: string) => {
+    setDeletedCollectionIds((previous) => {
+      const next = new Set(previous);
+
+      next.add(collectionId);
+
+      return next;
+    });
+
+    setCollections((previous) => {
+      const next = { ...previous };
+
+      delete next[collectionId];
+
+      return next;
+    });
+  }, []);
+
+  const editCollectionNameAndNote = useCallback(() => {
+    if (!collectionIdBeingEdited) {
+      return null;
+    }
+
+    const collection = collections[collectionIdBeingEdited];
+
+    showModal({
+      content: (
+        <CollectionCreateOrEditForm
+          name={collection.name}
+          collectorsNote={collection.collectorsNote}
+          onDone={({ name, collectorsNote }) => {
+            if (!collectionIdBeingEdited) {
+              return;
+            }
+
+            setCollections((previous) => {
+              const next = { ...previous };
+
+              next[collectionIdBeingEdited] = {
+                ...next[collectionIdBeingEdited],
+                name,
+                collectorsNote,
+              };
+
+              return next;
+            });
+          }}
+          mode={'editing'}
+        />
+      ),
+    });
+  }, [collectionIdBeingEdited, collections, showModal]);
+
   const value: GalleryEditorContextType = useMemo(() => {
     return {
       collections,
       hiddenCollectionIds,
 
+      setCollections,
+      deleteCollection,
       createCollection,
-      updateCollectionNameAndNote,
+      activateCollection,
       toggleCollectionHidden,
       collectionIdBeingEdited,
+      editCollectionNameAndNote,
     };
   }, [
     collections,
     hiddenCollectionIds,
+    deleteCollection,
     createCollection,
-    updateCollectionNameAndNote,
+    activateCollection,
     toggleCollectionHidden,
     collectionIdBeingEdited,
+    editCollectionNameAndNote,
   ]);
 
   return <GalleryEditorContext.Provider value={value}>{children}</GalleryEditorContext.Provider>;

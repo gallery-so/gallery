@@ -1,4 +1,3 @@
-import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import colors from '~/components/core/colors';
@@ -8,7 +7,6 @@ import { TitleS } from '~/components/core/Text/Text';
 import { CollectionSearch } from '~/components/GalleryEditor/CollectionSidebar/CollectionSearch';
 import { CreateCollectionIcon } from '~/components/GalleryEditor/CollectionSidebar/CreateCollectionIcon';
 import { useGalleryEditorContext } from '~/components/GalleryEditor/GalleryEditorContext';
-import { CollectionSidebarFragment$key } from '~/generated/CollectionSidebarFragment.graphql';
 
 function TitleSection() {
   const { createCollection } = useGalleryEditorContext();
@@ -22,25 +20,12 @@ function TitleSection() {
   );
 }
 
-type CollectionSidebarProps = {
-  queryRef: CollectionSidebarFragment$key;
-};
-
-export function CollectionSidebar({ queryRef }: CollectionSidebarProps) {
-  const query = useFragment(
-    graphql`
-      fragment CollectionSidebarFragment on Query {
-        ...CollectionSearchFragment
-      }
-    `,
-    queryRef
-  );
-
+export function CollectionSidebar() {
   return (
     <CollectionSidebarWrapper gap={8}>
       <TitleSection />
 
-      <CollectionSearch queryRef={query} />
+      <CollectionSearch />
     </CollectionSidebarWrapper>
   );
 }

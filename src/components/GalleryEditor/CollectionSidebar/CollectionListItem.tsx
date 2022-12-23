@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { MouseEventHandler, useCallback } from 'react';
 import styled, { css } from 'styled-components';
 
 import colors from '~/components/core/colors';
@@ -21,7 +21,13 @@ type CollectionListItemProps = {
 };
 
 export function CollectionListItem({ collectionId }: CollectionListItemProps) {
-  const { collections } = useGalleryEditorContext();
+  const {
+    collections,
+    collectionIdBeingEdited,
+    activateCollection,
+    deleteCollection,
+    editCollectionNameAndNote,
+  } = useGalleryEditorContext();
   const collection = collections[collectionId];
 
   if (!collection) {
@@ -43,12 +49,36 @@ export function CollectionListItem({ collectionId }: CollectionListItemProps) {
     toggleCollectionHidden(collection.dbid);
   }, [collection.dbid, toggleCollectionHidden]);
 
+  const selected = collectionIdBeingEdited === collectionId;
+
+  const handleItemClick = useCallback(() => {
+    activateCollection(collectionId);
+  }, [activateCollection, collectionId]);
+
+  const handleDelete = useCallback(() => {
+    deleteCollection(collectionId);
+  }, [collectionId, deleteCollection]);
+
+  const handleEdit = useCallback(() => {
+    editCollectionNameAndNote(collectionId);
+  }, [collectionId, editCollectionNameAndNote]);
+
+  const handleIconSectionClick = useCallback<MouseEventHandler>((event) => {
+    event.stopPropagation();
+  }, []);
+
   return (
-    <CollectionListItemContainer role="button" justify="space-between" align="center">
+    <CollectionListItemContainer
+      onClick={handleItemClick}
+      role="button"
+      justify="space-between"
+      align="center"
+      selected={selected}
+    >
       <CollectionTitleText italicize={!collection.name}>
         {escapedCollectionName || 'Untitled'}
       </CollectionTitleText>
-      <HStack gap={2}>
+      <HStack gap={2} onClick={handleIconSectionClick}>
         <IconContainer
           {...getReferenceProps()}
           onClick={handleToggleHidden}
@@ -67,8 +97,8 @@ export function CollectionListItem({ collectionId }: CollectionListItemProps) {
 
         <SettingsDropdown size="sm" stacked>
           <DropdownSection>
-            <DropdownItem>EDIT NAME & DESC</DropdownItem>
-            <DropdownItem>DELETE</DropdownItem>
+            <DropdownItem onClick={handleEdit}>EDIT NAME & DESC</DropdownItem>
+            <DropdownItem onClick={handleDelete}>DELETE</DropdownItem>
           </DropdownSection>
         </SettingsDropdown>
       </HStack>
@@ -87,11 +117,18 @@ const CollectionTitleText = styled(TitleXS)<{ italicize: boolean }>`
       : null}
 `;
 
-const CollectionListItemContainer = styled(HStack)`
+const CollectionListItemContainer = styled(HStack)<{ selected: boolean }>`
   margin: 0 4px;
   padding: 8px 12px;
 
   cursor: pointer;
+
+  ${({ selected }) =>
+    selected
+      ? css`
+          background-color: ${colors.faint};
+        `
+      : null};
 
   :hover {
     background-color: ${colors.faint};
