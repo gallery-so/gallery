@@ -58,7 +58,7 @@ Sentry.init({
   tunnel: 'https://monitoring.gallery.so/bugs',
   // disable sentry reporting by default if in local development.
   // NEXT_PUBLIC_VERCEL_ENV is only set in a deployed environment.
-  enabled: true,
+  enabled: ENV !== undefined,
 });
 
 Sentry.configureScope((scope) => {
