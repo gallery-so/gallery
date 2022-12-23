@@ -13,12 +13,8 @@ export default function useCreateUser() {
 
   const [createUser] = usePromisifiedMutation<useCreateUserMutation>(
     graphql`
-      mutation useCreateUserMutation(
-        $authMechanism: AuthMechanism!
-        $username: String!
-        $bio: String
-      ) {
-        createUser(authMechanism: $authMechanism, username: $username, bio: $bio) {
+      mutation useCreateUserMutation($authMechanism: AuthMechanism!, $input: CreateUserInput!) {
+        createUser(authMechanism: $authMechanism, input: $input) {
           __typename
           ... on CreateUserPayload {
             __typename
@@ -73,8 +69,10 @@ export default function useCreateUser() {
       const response = await createUser({
         variables: {
           authMechanism,
-          username,
-          bio,
+          input: {
+            username,
+            bio,
+          },
         },
       });
 
