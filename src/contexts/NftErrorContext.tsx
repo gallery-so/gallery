@@ -14,7 +14,6 @@ import { graphql } from 'relay-runtime';
 
 import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
-import { CouldNotRenderNftError } from '~/errors/CouldNotRenderNftError';
 import { NftErrorContextRetryMutation } from '~/generated/NftErrorContextRetryMutation.graphql';
 import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 
@@ -66,6 +65,8 @@ export function NftErrorProvider({ children }: PropsWithChildren) {
 
   const handleNftError = useCallback<NftErrorContextType['handleNftError']>(
     (tokenId: string, error: Error) => {
+      addBreadcrumb({ category: 'nft error', message: error.message, level: 'error' });
+
       const token = { ...(tokens[tokenId] ?? defaultTokenErrorState()) };
 
       token.isFailed = true;
@@ -89,7 +90,7 @@ export function NftErrorProvider({ children }: PropsWithChildren) {
         return next;
       });
     },
-    [pushToast, reportError, tokens]
+    [pushToast, tokens]
   );
 
   const environment = useRelayEnvironment();
