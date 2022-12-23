@@ -11,15 +11,19 @@ import rfdc from 'rfdc';
 
 const deepClone = rfdc();
 
-import CollectionCreateOrEditForm from '~/components/ManageGallery/OrganizeCollection/CollectionCreateOrEditForm';
+import { CollectionCreateOrEditForm } from '~/components/GalleryEditor/CollectionCreateOrEditForm';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { GalleryEditorContextFragment$key } from '~/generated/GalleryEditorContextFragment.graphql';
+import { generate12DigitId } from '~/utils/generate12DigitId';
 import { removeNullValues } from '~/utils/removeNullValues';
 
 export type GalleryEditorContextType = {
   collections: CollectionMap;
-  toggleCollectionHidden: (collectionId: string) => void;
   hiddenCollectionIds: Set<string>;
+
+  createCollection: () => void;
+  updateCollectionNameAndNote: (collectionId: string, name: string, note: string) => void;
+  toggleCollectionHidden: (collectionId: string) => void;
   collectionIdBeingEdited: string | null;
 };
 
@@ -30,7 +34,8 @@ type GalleryEditorProviderProps = PropsWithChildren<{
 }>;
 
 type CollectionState = {
-  dbid?: string;
+  dbid: string;
+  localOnly: boolean;
   name: string;
   collectorsNote: string;
   hidden: boolean;
@@ -43,8 +48,9 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
     graphql`
       fragment GalleryEditorContextFragment on Query {
         galleryById(id: $galleryId) @required(action: THROW) {
+          __typename
           ... on Gallery {
-            dbid
+            dbid @required(action: THROW)
             collections {
               dbid
               name
@@ -58,17 +64,25 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
     queryRef
   );
 
+  const gallery = query.galleryById;
+  if (gallery.__typename !== 'Gallery') {
+    throw new Error(
+      `Expected gallery to be typename 'Gallery', but received '${gallery.__typename}'`
+    );
+  }
+
   const [collectionIdBeingEdited] = useState<string | null>(() => {
-    return query.galleryById?.collections?.[0]?.dbid ?? null;
+    return gallery?.collections?.[0]?.dbid ?? null;
   });
 
   const [collections, setCollections] = useState<CollectionMap>(() => {
     const collections: CollectionMap = {};
 
-    const queryCollections = removeNullValues(query.galleryById?.collections);
+    const queryCollections = removeNullValues(gallery?.collections);
 
     for (const collection of queryCollections) {
       collections[collection.dbid] = {
+        localOnly: false,
         dbid: collection.dbid,
         name: collection.name ?? '',
         collectorsNote: collection.collectorsNote ?? '',
@@ -94,24 +108,34 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
   );
 
   const { showModal } = useModalActions();
-  const cerateCollection = useCallback(() => {
-    const galleryId = query.galleryById.dbid;
-
+  const createCollection = useCallback(() => {
     showModal({
       content: (
         <CollectionCreateOrEditForm
-          onNext={({ title, description }) => {
-            setCollectionTitle(title ?? '');
-            setCollectionDescription(description ?? '');
+          mode="creating"
+          onDone={({ name, collectorsNote }) => {
+            const dbid = generate12DigitId();
+
+            setCollections((previous) => {
+              const newCollection: CollectionState = {
+                dbid,
+                localOnly: true,
+                hidden: false,
+                name: name ?? '',
+                collectorsNote: collectorsNote ?? '',
+              };
+
+              return {
+                [dbid]: newCollection,
+                ...previous,
+              };
+            });
           }}
-          galleryId={galleryId}
-          stagedCollection={stagedCollectionState}
-          tokenSettings={collectionMetadata.tokenSettings}
         />
       ),
       headerText: 'Name and describe your collection',
     });
-  }, []);
+  }, [showModal]);
 
   const toggleCollectionHidden = useCallback((collectionId: string) => {
     setCollections((previous) => {
@@ -136,10 +160,20 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
     return {
       collections,
       hiddenCollectionIds,
+
+      createCollection,
+      updateCollectionNameAndNote,
       toggleCollectionHidden,
       collectionIdBeingEdited,
     };
-  }, [collections, hiddenCollectionIds, toggleCollectionHidden, collectionIdBeingEdited]);
+  }, [
+    collections,
+    hiddenCollectionIds,
+    createCollection,
+    updateCollectionNameAndNote,
+    toggleCollectionHidden,
+    collectionIdBeingEdited,
+  ]);
 
   return <GalleryEditorContext.Provider value={value}>{children}</GalleryEditorContext.Provider>;
 }

@@ -1,7 +1,4 @@
-import { useFloating, useHover, useInteractions } from '@floating-ui/react';
 import { useCallback } from 'react';
-import { useFragment } from 'react-relay';
-import { graphql } from 'relay-runtime';
 import styled, { css } from 'styled-components';
 
 import colors from '~/components/core/colors';
@@ -14,25 +11,25 @@ import { TitleXS } from '~/components/core/Text/Text';
 import { useGalleryEditorContext } from '~/components/GalleryEditor/GalleryEditorContext';
 import { NewTooltip } from '~/components/Tooltip/NewTooltip';
 import { useTooltipHover } from '~/components/Tooltip/useTooltipHover';
-import { CollectionListItemFragment$key } from '~/generated/CollectionListItemFragment.graphql';
+import { ErrorWithSentryMetadata } from '~/errors/ErrorWithSentryMetadata';
 import HideIcon from '~/icons/HideIcon';
 import ShowIcon from '~/icons/ShowIcon';
 import unescape from '~/utils/unescape';
 
 type CollectionListItemProps = {
-  collectionRef: CollectionListItemFragment$key;
+  collectionId: string;
 };
 
-export function CollectionListItem({ collectionRef }: CollectionListItemProps) {
-  const collection = useFragment(
-    graphql`
-      fragment CollectionListItemFragment on Collection {
-        dbid
-        name
-      }
-    `,
-    collectionRef
-  );
+export function CollectionListItem({ collectionId }: CollectionListItemProps) {
+  const { collections } = useGalleryEditorContext();
+  const collection = collections[collectionId];
+
+  if (!collection) {
+    throw new ErrorWithSentryMetadata(
+      'Tried to render CollectionListItem without a valid collection',
+      { collectionId }
+    );
+  }
 
   const escapedCollectionName = unescape(collection.name ?? '');
 

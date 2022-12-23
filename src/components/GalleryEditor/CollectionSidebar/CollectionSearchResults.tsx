@@ -4,55 +4,33 @@ import { graphql } from 'relay-runtime';
 
 import { VStack } from '~/components/core/Spacer/Stack';
 import { CollectionListItem } from '~/components/GalleryEditor/CollectionSidebar/CollectionListItem';
+import { useGalleryEditorContext } from '~/components/GalleryEditor/GalleryEditorContext';
 import { CollectionSearchResultsFragment$key } from '~/generated/CollectionSearchResultsFragment.graphql';
 import { removeNullValues } from '~/utils/removeNullValues';
 
 type CollectionSearchResultsProps = {
   searchQuery: string;
-  queryRef: CollectionSearchResultsFragment$key;
 };
 
-export function CollectionSearchResults({ queryRef, searchQuery }: CollectionSearchResultsProps) {
-  const query = useFragment(
-    graphql`
-      fragment CollectionSearchResultsFragment on Query {
-        viewer {
-          ... on Viewer {
-            viewerGalleries {
-              gallery {
-                collections {
-                  dbid
-                  name
+export function CollectionSearchResults({ searchQuery }: CollectionSearchResultsProps) {
+  const { collections } = useGalleryEditorContext();
 
-                  ...CollectionListItemFragment
-                }
-              }
-            }
-          }
-        }
-      }
-    `,
-    queryRef
-  );
-
-  const nonNullCollections = useMemo(() => {
-    return removeNullValues(query.viewer?.viewerGalleries?.[0]?.gallery?.collections);
-  }, [query.viewer?.viewerGalleries]);
+  const collectionList = useMemo(() => Object.values(collections), [collections]);
 
   const filteredCollections = useMemo(() => {
     if (searchQuery.length === 0) {
-      return nonNullCollections;
+      return collectionList;
     }
 
-    return nonNullCollections.filter((collection) =>
+    return collectionList.filter((collection) =>
       collection.name?.toLocaleLowerCase().includes(searchQuery.toLowerCase())
     );
-  }, [nonNullCollections, searchQuery]);
+  }, [collectionList, searchQuery]);
 
   return (
     <VStack gap={2}>
       {filteredCollections.map((collection) => {
-        return <CollectionListItem key={collection.dbid} collectionRef={collection} />;
+        return <CollectionListItem collectionId={collection.dbid} />;
       })}
     </VStack>
   );

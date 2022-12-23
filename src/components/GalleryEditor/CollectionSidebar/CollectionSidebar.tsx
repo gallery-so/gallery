@@ -7,14 +7,17 @@ import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { TitleS } from '~/components/core/Text/Text';
 import { CollectionSearch } from '~/components/GalleryEditor/CollectionSidebar/CollectionSearch';
 import { CreateCollectionIcon } from '~/components/GalleryEditor/CollectionSidebar/CreateCollectionIcon';
+import { useGalleryEditorContext } from '~/components/GalleryEditor/GalleryEditorContext';
 import { CollectionSidebarFragment$key } from '~/generated/CollectionSidebarFragment.graphql';
 
 function TitleSection() {
+  const { createCollection } = useGalleryEditorContext();
+
   return (
     <TitleSectionWrapper align="center" justify="space-between">
       <TitleS>Collections</TitleS>
 
-      <IconContainer size="sm" icon={<CreateCollectionIcon />} />
+      <IconContainer size="sm" icon={<CreateCollectionIcon />} onClick={createCollection} />
     </TitleSectionWrapper>
   );
 }
