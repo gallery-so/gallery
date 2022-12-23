@@ -11,14 +11,13 @@ import {
 import { graphql, useFragment } from 'react-relay';
 import rfdc from 'rfdc';
 
-const deepClone = rfdc();
-
 import { CollectionCreateOrEditForm } from '~/components/GalleryEditor/CollectionCreateOrEditForm';
+import { getInitialCollectionsFromServer } from '~/components/GalleryEditor/getInitialCollectionsFromServer';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { GalleryEditorContextFragment$key } from '~/generated/GalleryEditorContextFragment.graphql';
-import { parseCollectionLayoutGraphql } from '~/utils/collectionLayout';
 import { generate12DigitId } from '~/utils/generate12DigitId';
-import { removeNullValues } from '~/utils/removeNullValues';
+
+const deepClone = rfdc();
 
 export type GalleryEditorContextType = {
   collections: CollectionMap;
@@ -67,95 +66,31 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
   const query = useFragment(
     graphql`
       fragment GalleryEditorContextFragment on Query {
-        galleryById(id: $galleryId) @required(action: THROW) {
-          __typename
+        galleryById(id: $galleryId) {
           ... on Gallery {
-            dbid @required(action: THROW)
             collections {
               dbid
-              name
-              collectorsNote
-              hidden
-              layout @required(action: THROW) {
-                ...collectionLayoutParseFragment
-              }
-              tokens @required(action: THROW) {
-                tokenSettings {
-                  renderLive
-                }
-                token @required(action: THROW) {
-                  dbid
-                }
-              }
             }
           }
         }
+
+        ...getInitialCollectionsFromServerFragment
       }
     `,
     queryRef
   );
 
-  const gallery = query.galleryById;
-  if (gallery.__typename !== 'Gallery') {
-    throw new Error(
-      `Expected gallery to be typename 'Gallery', but received '${gallery.__typename}'`
-    );
-  }
-
   const [collectionIdBeingEdited, setCollectionIdBeingEdited] = useState<string | null>(() => {
-    return gallery?.collections?.[0]?.dbid ?? null;
+    return query.galleryById?.collections?.[0]?.dbid ?? null;
   });
 
   const [deletedCollectionIds, setDeletedCollectionIds] = useState(() => {
     return new Set<string>();
   });
 
-  const [collections, setCollections] = useState<CollectionMap>(() => {
-    const collections: CollectionMap = {};
-
-    const queryCollections = removeNullValues(gallery?.collections);
-
-    for (const collection of queryCollections) {
-      const sections: StagedSectionMap = {};
-      const nonNullTokens = removeNullValues(collection.tokens);
-
-      const parsed = parseCollectionLayoutGraphql(nonNullTokens, collection.layout);
-      for (const sectionId in parsed) {
-        const parsedSection = parsed[sectionId];
-
-        sections[sectionId] = {
-          columns: parsedSection.columns,
-          items: parsedSection.items.map((item) => {
-            if ('whitespace' in item) {
-              return { kind: 'whitespace', id: item.id };
-            } else {
-              return { kind: 'token', id: item.token.dbid };
-            }
-          }),
-        };
-      }
-
-      const liveDisplayTokenIds = new Set<string>();
-      for (const token of nonNullTokens) {
-        if (token.tokenSettings?.renderLive) {
-          liveDisplayTokenIds.add(token.token.dbid);
-        }
-      }
-
-      collections[collection.dbid] = {
-        activeSectionId: null,
-        liveDisplayTokenIds: liveDisplayTokenIds,
-        sections,
-        localOnly: false,
-        dbid: collection.dbid,
-        name: collection.name ?? '',
-        collectorsNote: collection.collectorsNote ?? '',
-        hidden: collection.hidden ?? false,
-      };
-    }
-
-    return collections;
-  });
+  const [collections, setCollections] = useState<CollectionMap>(() =>
+    getInitialCollectionsFromServer(query)
+  );
 
   const { showModal } = useModalActions();
   const createCollection = useCallback(() => {
@@ -170,14 +105,17 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
               const defaultSectionId = generate12DigitId();
 
               const newCollection: CollectionState = {
+                dbid: newCollectionId,
                 activeSectionId: defaultSectionId,
                 liveDisplayTokenIds: new Set(),
-                sections: { [defaultSectionId]: { columns: 3, items: [] } },
-                dbid: newCollectionId,
-                localOnly: true,
-                hidden: false,
+
                 name: name ?? '',
                 collectorsNote: collectorsNote ?? '',
+
+                localOnly: true,
+                hidden: false,
+
+                sections: { [defaultSectionId]: { columns: 3, items: [] } },
               };
 
               return {
