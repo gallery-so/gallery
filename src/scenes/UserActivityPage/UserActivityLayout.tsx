@@ -92,6 +92,7 @@ const StyledUserActivityLayout = styled(VStack)<{ enableFlashFirstRowAnimation: 
   width: 100vw;
 
   @media only screen and ${breakpoints.desktop} {
+    padding: 24px 0px 0;
     width: ${FEED_MAX_WIDTH}px;
   }
   ${({ enableFlashFirstRowAnimation }) =>
