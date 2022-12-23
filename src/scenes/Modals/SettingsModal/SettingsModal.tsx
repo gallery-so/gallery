@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import { Button } from '~/components/core/Button/Button';
+import colors from '~/components/core/colors';
 import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeL, TitleDiatypeM } from '~/components/core/Text/Text';
@@ -13,7 +14,6 @@ import ManageWallets from '~/components/ManageWallets/ManageWallets';
 import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { SettingsModalFragment$key } from '~/generated/SettingsModalFragment.graphql';
-import AlertTriangleIcon from '~/icons/AlertTriangleIcon';
 import CircleCheckIcon from '~/icons/CircleCheckIcon';
 import { GALLERY_OS_ADDRESS } from '~/utils/getOpenseaExternalUrl';
 
@@ -206,10 +206,7 @@ function SettingsModal({
                 <BaseM>Active</BaseM>
               </>
             ) : (
-              <>
-                <AlertTriangleIcon />
-                <BaseM>Not Active</BaseM>
-              </>
+              <BaseM color={colors.metal}>Inactive</BaseM>
             )}
           </HStack>
         </HStack>
