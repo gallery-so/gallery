@@ -232,9 +232,6 @@ const ClickablePill = styled(InteractiveLink)`
 `;
 
 const NonclickablePill = styled.div`
-  border: 1px solid ${colors.porcelain};
-  padding: 0 12px;
-  border-radius: 24px;
   color: ${colors.offBlack};
   width: fit-content;
   align-self: end;

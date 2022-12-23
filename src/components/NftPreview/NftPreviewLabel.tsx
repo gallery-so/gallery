@@ -270,13 +270,9 @@ const POAPWrapperHStack = styled(HStack)`
 `;
 
 const NonclickablePill = styled.div`
-  border: 1px solid rgba(254, 254, 254, 0.5);
-  padding: 0 12px;
-  border-radius: 24px;
   color: ${colors.white};
   text-decoration: none;
   width: fit-content;
-  height: 32px;
   display: flex;
   align-items: center;
   max-width: -webkit-fill-available;

@@ -23,7 +23,7 @@ import { useModalActions } from '~/contexts/modal/ModalContext';
 import { ProfileDropdownContentFragment$key } from '~/generated/ProfileDropdownContentFragment.graphql';
 import usePersistedState from '~/hooks/usePersistedState';
 import ManageWalletsModal from '~/scenes/Modals/ManageWalletsModal';
-import SettingsModal from '~/scenes/Modals/SettingsModal';
+import SettingsModal from '~/scenes/Modals/SettingsModal/SettingsModal';
 import { getEditGalleryUrl } from '~/utils/getEditGalleryUrl';
 import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
