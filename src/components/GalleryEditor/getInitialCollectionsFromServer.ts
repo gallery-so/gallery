@@ -90,7 +90,7 @@ export function getInitialCollectionsFromServer(
     }
 
     collections[collection.dbid] = {
-      activeSectionId: null,
+      activeSectionId: Object.keys(sections)[0],
       liveDisplayTokenIds: liveDisplayTokenIds,
       sections,
       localOnly: false,
