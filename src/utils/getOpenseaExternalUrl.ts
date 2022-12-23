@@ -1,4 +1,4 @@
-const GALLERY_OS_ADDRESS = '0x8914496dc01efcc49a2fa340331fb90969b6f1d2';
+export const GALLERY_OS_ADDRESS = '0x8914496dc01efcc49a2fa340331fb90969b6f1d2';
 
 // The backend converts all token IDs to hexadecimals; here, we convert back
 // https://stackoverflow.com/a/53751162
