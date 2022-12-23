@@ -7,7 +7,7 @@ import { useModalActions } from '~/contexts/modal/ModalContext';
 import { NotificationEmailAlertQueryFragment$key } from '~/generated/NotificationEmailAlertQueryFragment.graphql';
 import CloseIcon from '~/icons/CloseIcon';
 import InfoCircleIcon from '~/icons/InfoCircleIcon';
-import SettingsModal from '~/scenes/Modals/SettingsModal';
+import SettingsModal from '~/scenes/Modals/SettingsModal/SettingsModal';
 
 import colors from '../core/colors';
 import InteractiveLink from '../core/InteractiveLink/InteractiveLink';

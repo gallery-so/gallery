@@ -74,7 +74,7 @@ export const SidebarTokens = ({
     [tokens, setSpamPreference]
   );
 
-  const [erroredTokenIds, setErroredTokenIds] = useState<Set<string>>(new Set());
+  const [, setErroredTokenIds] = useState<Set<string>>(new Set());
   const [collapsedCollections, setCollapsedCollections] = useState<Set<string>>(new Set());
 
   const handleMarkErroredTokenId = useCallback((id: string) => {
@@ -118,15 +118,14 @@ export const SidebarTokens = ({
     if (shouldUseCollectionGrouping) {
       const groups = groupCollectionsByAddress({ tokens, editModeTokens });
 
-      return createVirtualizedRowsFromGroups({ groups, erroredTokenIds, collapsedCollections });
+      return createVirtualizedRowsFromGroups({ groups, collapsedCollections });
     } else {
       return createVirtualizedRowsFromTokens({
         tokens,
         editModeTokens,
-        erroredTokenIds,
       });
     }
-  }, [collapsedCollections, editModeTokens, erroredTokenIds, shouldUseCollectionGrouping, tokens]);
+  }, [collapsedCollections, editModeTokens, shouldUseCollectionGrouping, tokens]);
 
   useEffect(
     function resetCollapsedSectionsWhileSearching() {
