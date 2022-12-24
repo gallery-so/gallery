@@ -160,9 +160,8 @@ function SettingsModal({
   return (
     <StyledManageWalletsModal gap={24}>
       <VStack gap={16}>
-        <TitleDiatypeL>Never miss a moment</TitleDiatypeL>
         <VStack>
-          <TitleDiatypeM>Email notifications</TitleDiatypeM>
+          <TitleDiatypeL>Email notifications</TitleDiatypeL>
           <HStack justify="space-between" align="center">
             <SettingsRowDescription>
               Receive weekly recaps that show your most recent admires, comments, and followers.
