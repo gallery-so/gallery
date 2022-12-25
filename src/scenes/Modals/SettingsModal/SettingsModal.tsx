@@ -7,7 +7,7 @@ import { Button } from '~/components/core/Button/Button';
 import colors from '~/components/core/colors';
 import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
-import { BaseM, TitleDiatypeL, TitleDiatypeM } from '~/components/core/Text/Text';
+import { BaseM, TitleDiatypeL } from '~/components/core/Text/Text';
 import Toggle from '~/components/core/Toggle/Toggle';
 import EmailManager from '~/components/Email/EmailManager';
 import ManageWallets from '~/components/ManageWallets/ManageWallets';
