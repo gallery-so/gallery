@@ -15,7 +15,6 @@ import { EMAIL_FORMAT } from '~/utils/regex';
 import { Button } from '../core/Button/Button';
 import colors from '../core/colors';
 import { HStack, VStack } from '../core/Spacer/Stack';
-import { Spinner } from '../core/Spinner/Spinner';
 import ErrorText from '../core/Text/ErrorText';
 import useVerifyValidEmail from './useVerifyValidEmail';
 
@@ -180,6 +179,10 @@ function EmailForm({ setIsEditMode, queryRef, onClose }: Props) {
     return !isValidEmail && debouncedEmail && !isChecking;
   }, [debouncedEmail, isChecking, isValidEmail]);
 
+  const isButtonDisabled = useMemo(() => {
+    return !isValidEmail || savePending || savedEmail === email || isChecking;
+  }, [email, isValidEmail, isChecking, savePending, savedEmail]);
+
   return (
     <form onSubmit={handleFormSubmit}>
       <VStack gap={8}>
@@ -202,10 +205,11 @@ function EmailForm({ setIsEditMode, queryRef, onClose }: Props) {
             )}
             <Button
               variant="primary"
-              disabled={!isValidEmail || savePending || savedEmail === email || isChecking}
+              disabled={isButtonDisabled}
               onClick={handleSaveClick}
+              pending={isChecking}
             >
-              {isChecking ? <Spinner /> : 'Save'}
+              Save
             </Button>
           </HStack>
         </HStack>
