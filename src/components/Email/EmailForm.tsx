@@ -77,9 +77,10 @@ function EmailForm({ setIsEditMode, queryRef, onClose }: Props) {
 
   const handleEmailChange = useCallback(async (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
+    setIsValidEmail(false);
   }, []);
 
-  const debouncedEmail = useDebounce(email, 1000);
+  const debouncedEmail = useDebounce(email, 500);
 
   useEffect(() => {
     async function checkEmail() {
@@ -92,7 +93,7 @@ function EmailForm({ setIsEditMode, queryRef, onClose }: Props) {
 
       setIsValidEmail(valid);
     }
-
+    setIsValidEmail(false);
     checkEmail();
   }, [debouncedEmail, verifyEmail]);
 
@@ -179,10 +180,6 @@ function EmailForm({ setIsEditMode, queryRef, onClose }: Props) {
     return !isValidEmail && debouncedEmail && !isChecking;
   }, [debouncedEmail, isChecking, isValidEmail]);
 
-  const isButtonDisabled = useMemo(() => {
-    return !isValidEmail || savePending || savedEmail === email || isChecking;
-  }, [email, isValidEmail, isChecking, savePending, savedEmail]);
-
   return (
     <form onSubmit={handleFormSubmit}>
       <VStack gap={8}>
@@ -205,7 +202,7 @@ function EmailForm({ setIsEditMode, queryRef, onClose }: Props) {
             )}
             <Button
               variant="primary"
-              disabled={isButtonDisabled}
+              disabled={!isValidEmail || savePending}
               onClick={handleSaveClick}
               pending={isChecking}
             >
