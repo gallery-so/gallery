@@ -13,8 +13,16 @@ import rfdc from 'rfdc';
 
 import { CollectionCreateOrEditForm } from '~/components/GalleryEditor/CollectionCreateOrEditForm';
 import { getInitialCollectionsFromServer } from '~/components/GalleryEditor/getInitialCollectionsFromServer';
+import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { GalleryEditorContextFragment$key } from '~/generated/GalleryEditorContextFragment.graphql';
+import {
+  CreateCollectionInGalleryInput,
+  GalleryEditorContextSaveGalleryMutation,
+  UpdateCollectionInput,
+} from '~/generated/GalleryEditorContextSaveGalleryMutation.graphql';
+import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
+import { generateLayoutFromCollectionNew } from '~/utils/collectionLayout';
 import { generate12DigitId } from '~/utils/generate12DigitId';
 
 const deepClone = rfdc();
@@ -66,8 +74,11 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
   const query = useFragment(
     graphql`
       fragment GalleryEditorContextFragment on Query {
-        galleryById(id: $galleryId) {
+        galleryById(id: $galleryId) @required(action: THROW) {
           ... on Gallery {
+            dbid
+            name
+            description
             collections {
               dbid
             }
@@ -80,6 +91,17 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
     queryRef
   );
 
+  const [save] = usePromisifiedMutation<GalleryEditorContextSaveGalleryMutation>(graphql`
+    mutation GalleryEditorContextSaveGalleryMutation($input: UpdateGalleryInput!) {
+      updateGallery(input: $input) {
+        __typename
+      }
+    }
+  `);
+
+  const [name, setName] = useState(() => query.galleryById?.name ?? '');
+  const [description, setDescription] = useState(() => query.galleryById?.description ?? '');
+
   const [collectionIdBeingEdited, setCollectionIdBeingEdited] = useState<string | null>(() => {
     return query.galleryById?.collections?.[0]?.dbid ?? null;
   });
@@ -91,6 +113,8 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
   const [collections, setCollections] = useState<CollectionMap>(() =>
     getInitialCollectionsFromServer(query)
   );
+
+  console.log({ collections });
 
   const { showModal } = useModalActions();
   const createCollection = useCallback(() => {
@@ -206,6 +230,94 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
       ),
     });
   }, [collectionIdBeingEdited, collections, showModal]);
+
+  const reportError = useReportError();
+  const saveGallery = useCallback(async () => {
+    const galleryId = query.galleryById.dbid;
+
+    if (!galleryId) {
+      reportError('Tried to save a gallery without a gallery id');
+      return;
+    }
+
+    const localCollectionToUpdatedCollection = (
+      collection: CollectionState
+    ): UpdateCollectionInput => {
+      const tokens = Object.values(collection.sections).flatMap((section) =>
+        section.items.filter((item) => item.kind === 'token')
+      );
+
+      const layout = generateLayoutFromCollectionNew(collection.sections);
+
+      return {
+        collectorsNote: collection.collectorsNote,
+        dbid: collection.dbid,
+        hidden: collection.hidden,
+        tokenSettings: tokens.map((token) => {
+          return { tokenId: token.id, renderLive: collection.liveDisplayTokenIds.has(token.id) };
+        }),
+        layout,
+        name: collection.name,
+        tokens: tokens.map((token) => token.id),
+      };
+    };
+
+    const localCollectionToCreatedCollection = (
+      collection: CollectionState
+    ): CreateCollectionInGalleryInput => {
+      const tokens = Object.values(collection.sections).flatMap((section) =>
+        section.items.filter((item) => item.kind === 'token')
+      );
+
+      const layout = generateLayoutFromCollectionNew(collection.sections);
+
+      return {
+        givenID: collection.dbid,
+        hidden: collection.hidden,
+        collectorsNote: collection.collectorsNote,
+        tokenSettings: tokens.map((token) => {
+          return { tokenId: token.id, renderLive: collection.liveDisplayTokenIds.has(token.id) };
+        }),
+        layout,
+        name: collection.name,
+        tokens: tokens.map((token) => token.id),
+      };
+    };
+
+    const updateCollections: UpdateCollectionInput[] = Object.values(collections)
+      .filter((collection) => !collection.localOnly)
+      .map(localCollectionToUpdatedCollection);
+
+    const createdCollections: CreateCollectionInGalleryInput[] = Object.values(collections)
+      .filter((collection) => collection.localOnly)
+      .map(localCollectionToCreatedCollection);
+
+    const deletedCollections = [...deletedCollectionIds];
+
+    const order = [...Object.values(collections).map((collection) => collection.dbid)];
+
+    try {
+      await save({
+        variables: {
+          input: {
+            galleryId: query.galleryById!.dbid!,
+
+            name,
+            description,
+            caption: null,
+
+            order,
+
+            createdCollections,
+            updateCollections,
+            deletedCollections,
+          },
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }, [collections, deletedCollectionIds, description, name, query.galleryById, reportError, save]);
 
   const value: GalleryEditorContextType = useMemo(() => {
     return {
