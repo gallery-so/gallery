@@ -32,6 +32,7 @@ export type GalleryEditorContextType = {
   setCollections: Dispatch<SetStateAction<CollectionMap>>;
   hiddenCollectionIds: Set<string>;
 
+  saveGallery: () => void;
   activateCollection: (collectionId: string) => void;
   deleteCollection: (collectionId: string) => void;
   editCollectionNameAndNote: (collectionId: string) => void;
@@ -95,6 +96,33 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
     mutation GalleryEditorContextSaveGalleryMutation($input: UpdateGalleryInput!) {
       updateGallery(input: $input) {
         __typename
+        ... on UpdateGalleryPayload {
+          gallery {
+            name
+            description
+            collections {
+              # All of these are to ensure relevant components get their data refetched
+              # eslint-disable-next-line relay/must-colocate-fragment-spreads
+              ...NftGalleryFragment
+              # eslint-disable-next-line relay/must-colocate-fragment-spreads
+              ...CollectionRowFragment
+              # eslint-disable-next-line relay/must-colocate-fragment-spreads
+              ...CollectionRowDraggingFragment
+              # eslint-disable-next-line relay/must-colocate-fragment-spreads
+              ...CollectionRowSettingsFragment
+              # eslint-disable-next-line relay/must-colocate-fragment-spreads
+              ...CollectionRowWrapperFragment
+              # eslint-disable-next-line relay/must-colocate-fragment-spreads
+              ...DeleteCollectionConfirmationFragment
+              # eslint-disable-next-line relay/must-colocate-fragment-spreads
+              ...SortableCollectionRowFragment
+              # eslint-disable-next-line relay/must-colocate-fragment-spreads
+              ...UserGalleryCollectionFragment
+              # eslint-disable-next-line relay/must-colocate-fragment-spreads
+              ...CollectionGalleryHeaderFragment
+            }
+          }
+        }
       }
     }
   `);
@@ -324,6 +352,7 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
       collections,
       hiddenCollectionIds,
 
+      saveGallery,
       setCollections,
       deleteCollection,
       createCollection,
@@ -334,10 +363,11 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
     };
   }, [
     collections,
-    hiddenCollectionIds,
+    saveGallery,
     deleteCollection,
     createCollection,
     activateCollection,
+    hiddenCollectionIds,
     toggleCollectionHidden,
     collectionIdBeingEdited,
     editCollectionNameAndNote,
