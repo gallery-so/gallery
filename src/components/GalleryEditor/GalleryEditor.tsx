@@ -1,5 +1,6 @@
 import { GalleryEditorFragment$key } from '__generated__/GalleryEditorFragment.graphql';
-import { useMemo } from 'react';
+import { useRouter } from 'next/router';
+import { useCallback, useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
@@ -7,9 +8,15 @@ import styled from 'styled-components';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { CollectionEditor } from '~/components/GalleryEditor/CollectionEditor/CollectionEditor';
 import { CollectionSidebar } from '~/components/GalleryEditor/CollectionSidebar/CollectionSidebar';
-import { GalleryEditorProvider } from '~/components/GalleryEditor/GalleryEditorContext';
+import {
+  GalleryEditorProvider,
+  useGalleryEditorContext,
+} from '~/components/GalleryEditor/GalleryEditorContext';
 import { PiecesSidebar } from '~/components/GalleryEditor/PiecesSidebar/PiecesSidebar';
+import FullPageStep from '~/components/Onboarding/FullPageStep';
 import { CollectionEditorProviderNew } from '~/contexts/collectionEditor/CollectionEditorContextNew';
+import { MultiGalleryEditGalleryNavbar } from '~/contexts/globalLayout/MultiGalleryEditGalleryNavbar/MultiGalleryEditGalleryNavbar';
+import { useCanGoBack } from '~/contexts/navigation/GalleryNavigationProvider';
 import { removeNullValues } from '~/utils/removeNullValues';
 
 type GalleryEditorProps = {
@@ -25,8 +32,11 @@ export function GalleryEditor({ queryRef }: GalleryEditorProps) {
         ...PiecesSidebarViewerNewFragment
 
         viewer {
+          __typename
+
           ... on Viewer {
             user {
+              username
               tokens {
                 ...PiecesSidebarNewFragment
               }
@@ -38,14 +48,39 @@ export function GalleryEditor({ queryRef }: GalleryEditorProps) {
     queryRef
   );
 
-  console.log({ query });
+  const canGoBack = useCanGoBack();
+  const { replace, back } = useRouter();
+  const { saveGallery } = useGalleryEditorContext();
+  const handleBack = useCallback(() => {
+    if (canGoBack) {
+      back();
+    } else if (query.viewer?.__typename === 'Viewer' && query.viewer.user?.username) {
+      replace({
+        pathname: '/[username]/galleries',
+        query: { username: query.viewer.user.username },
+      });
+    } else {
+      replace({ pathname: '/home' });
+    }
+  }, [back, canGoBack, query.viewer, replace]);
+
+  const handleDone = useCallback(() => {
+    saveGallery();
+  }, [saveGallery]);
 
   const allTokens = useMemo(() => {
+    if (query.viewer?.__typename !== 'Viewer') {
+      return [];
+    }
+
     return removeNullValues(query.viewer?.user?.tokens);
-  }, [query.viewer?.user?.tokens]);
+  }, [query.viewer]);
 
   return (
-    <GalleryEditorProvider queryRef={query}>
+    <FullPageStep
+      withBorder
+      navbar={<MultiGalleryEditGalleryNavbar onBack={handleBack} onDone={handleDone} />}
+    >
       <GalleryEditorWrapper>
         <CollectionEditorProviderNew>
           <CollectionSidebar />
@@ -60,7 +95,7 @@ export function GalleryEditor({ queryRef }: GalleryEditorProps) {
           <PiecesSidebar tokensRef={allTokens} queryRef={query} />
         </CollectionEditorProviderNew>
       </GalleryEditorWrapper>
-    </GalleryEditorProvider>
+    </FullPageStep>
   );
 }
 
