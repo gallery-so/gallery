@@ -364,6 +364,11 @@ type Collection implements Node {
 type Gallery implements Node {
     id: ID!
     dbid: DBID!
+    name: String
+    description: String
+    position: String
+    hidden: Boolean
+    tokenPreviews: [String] @goField(forceResolver: true)
     owner: GalleryUser @goField(forceResolver: true)
     collections: [Collection] @goField(forceResolver: true)
 }
