@@ -12,6 +12,7 @@ import { DropdownLink } from '~/components/core/Dropdown/DropdownLink';
 import { DropdownSection } from '~/components/core/Dropdown/DropdownSection';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { TitleXS } from '~/components/core/Text/Text';
+import useCreateGallery from '~/components/MultiGallery/useCreateGallery';
 import { EditLink } from '~/contexts/globalLayout/GlobalNavbar/CollectionNavbar/EditLink';
 import { SignInButton } from '~/contexts/globalLayout/GlobalNavbar/SignInButton';
 import { useModalActions } from '~/contexts/modal/ModalContext';
@@ -57,6 +58,12 @@ export function GalleryRightContent({ queryRef, username }: GalleryRightContentP
 
   const styledQrCode = useQrCode();
   const { showModal } = useModalActions();
+
+  const createGallery = useCreateGallery();
+
+  const handleCreateGallery = useCallback(() => {
+    createGallery();
+  }, [createGallery]);
 
   const handleNameAndBioClick = useCallback(() => {
     showModal({
@@ -116,11 +123,11 @@ export function GalleryRightContent({ queryRef, username }: GalleryRightContentP
     return (
       <HStack gap={12}>
         {editGalleryUrl && (
-          <Link href={editGalleryUrl}>
-            <Button variant="secondary" onClick={handleEditClick}>
-              Add New
-            </Button>
-          </Link>
+          // <Link href={editGalleryUrl}>
+          <Button variant="secondary" onClick={handleCreateGallery}>
+            Add New
+          </Button>
+          // </Link>
         )}
         <Button>DONE</Button>
       </HStack>
