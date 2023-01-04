@@ -10,8 +10,8 @@ import SettingsDropdown from '../core/Dropdown/SettingsDropdown';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM, TitleDiatypeM, TitleXS } from '../core/Text/Text';
 import useSetFeaturedGallery from './useSetFeaturedGallery';
+import useUpdateGalleryHidden from './useUpdateGalleryHidden';
 
-// TODO: Remove it when we used relay
 type Props = {
   isFeatured?: boolean;
   queryRef: any;
@@ -37,10 +37,15 @@ export default function Gallery({ isFeatured = false, queryRef }: Props) {
   );
 
   const setFeaturedGallery = useSetFeaturedGallery();
+  const updateGalleryHidden = useUpdateGalleryHidden();
 
   const handleSetFeaturedGallery = useCallback(() => {
     setFeaturedGallery(query.dbid);
   }, [query.dbid, setFeaturedGallery]);
+
+  const handleUpdateGalleryHidden = useCallback(() => {
+    updateGalleryHidden(query.dbid, !query.hidden);
+  }, [query.id, query.dbid, query.hidden, updateGalleryHidden]);
 
   const { name, collections, tokenPreviews, hidden } = query;
 
@@ -57,11 +62,13 @@ export default function Gallery({ isFeatured = false, queryRef }: Props) {
           <SettingsDropdown>
             <DropdownItem>EDIT NAME & DESC</DropdownItem>
             {hidden ? (
-              <DropdownItem>UNHIDE</DropdownItem>
+              <DropdownItem onClick={handleUpdateGalleryHidden}>UNHIDE</DropdownItem>
             ) : (
               <>
-                <DropdownItem onClick={handleSetFeaturedGallery}>FEATURE ON PROFILE</DropdownItem>
-                <DropdownItem>HIDE</DropdownItem>
+                {!isFeatured && (
+                  <DropdownItem onClick={handleSetFeaturedGallery}>FEATURE ON PROFILE</DropdownItem>
+                )}
+                <DropdownItem onClick={handleUpdateGalleryHidden}>HIDE</DropdownItem>
               </>
             )}
             <DropdownItem>DELETE</DropdownItem>
