@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -8,6 +9,7 @@ import { DropdownItem } from '../core/Dropdown/DropdownItem';
 import SettingsDropdown from '../core/Dropdown/SettingsDropdown';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM, TitleDiatypeM, TitleXS } from '../core/Text/Text';
+import useSetFeaturedGallery from './useSetFeaturedGallery';
 
 // TODO: Remove it when we used relay
 type Props = {
@@ -19,6 +21,7 @@ export default function Gallery({ isFeatured = false, queryRef }: Props) {
   const query = useFragment(
     graphql`
       fragment GalleryFragment on Gallery {
+        dbid
         id
         name
         description
@@ -33,7 +36,11 @@ export default function Gallery({ isFeatured = false, queryRef }: Props) {
     queryRef
   );
 
-  console.log(query);
+  const setFeaturedGallery = useSetFeaturedGallery();
+
+  const handleSetFeaturedGallery = useCallback(() => {
+    setFeaturedGallery(query.dbid);
+  }, [query.dbid, setFeaturedGallery]);
 
   const { name, collections, tokenPreviews, hidden } = query;
 
@@ -53,7 +60,7 @@ export default function Gallery({ isFeatured = false, queryRef }: Props) {
               <DropdownItem>UNHIDE</DropdownItem>
             ) : (
               <>
-                <DropdownItem>FEATURE ON PROFILE</DropdownItem>
+                <DropdownItem onClick={handleSetFeaturedGallery}>FEATURE ON PROFILE</DropdownItem>
                 <DropdownItem>HIDE</DropdownItem>
               </>
             )}
