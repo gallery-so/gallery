@@ -1,4 +1,6 @@
-import { MouseEventHandler, useCallback } from 'react';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { CSSProperties, MouseEventHandler, useCallback } from 'react';
 import styled, { css } from 'styled-components';
 
 import colors from '~/components/core/colors';
@@ -67,42 +69,61 @@ export function CollectionListItem({ collectionId }: CollectionListItemProps) {
     event.stopPropagation();
   }, []);
 
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: collectionId,
+  });
+
+  const style: CSSProperties = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    position: 'relative',
+    zIndex: isDragging ? 1 : 0,
+  };
+
   return (
-    <CollectionListItemContainer
+    <div
+      // Draggable Props
+      ref={setNodeRef}
+      {...attributes}
+      {...listeners}
+      style={style}
       onClick={handleItemClick}
-      role="button"
-      justify="space-between"
-      align="center"
-      selected={selected}
     >
-      <CollectionTitleText italicize={!collection.name}>
-        {escapedCollectionName || 'Untitled'}
-      </CollectionTitleText>
-      <HStack gap={2} onClick={handleIconSectionClick}>
-        <IconContainer
-          {...getReferenceProps()}
-          onClick={handleToggleHidden}
-          ref={reference}
-          size="sm"
-          stacked
-          icon={hidden ? <ShowIcon /> : <HideIcon />}
-        />
+      <CollectionListItemContainer
+        role="button"
+        justify="space-between"
+        align="center"
+        selected={selected}
+      >
+        <CollectionTitleText italicize={!collection.name}>
+          {escapedCollectionName || 'Untitled'}
+        </CollectionTitleText>
+        <HStack gap={2} onClick={handleIconSectionClick}>
+          <IconContainer
+            {...getReferenceProps()}
+            onClick={handleToggleHidden}
+            ref={reference}
+            size="sm"
+            stacked
+            icon={hidden ? <ShowIcon /> : <HideIcon />}
+          />
 
-        <NewTooltip
-          {...getFloatingProps()}
-          style={floatingStyle}
-          ref={floating}
-          text={hidden ? 'Show' : 'Hide'}
-        />
+          <NewTooltip
+            {...getFloatingProps()}
+            style={floatingStyle}
+            ref={floating}
+            text={hidden ? 'Show' : 'Hide'}
+          />
 
-        <SettingsDropdown size="sm" stacked>
-          <DropdownSection>
-            <DropdownItem onClick={handleEdit}>EDIT NAME & DESC</DropdownItem>
-            <DropdownItem onClick={handleDelete}>DELETE</DropdownItem>
-          </DropdownSection>
-        </SettingsDropdown>
-      </HStack>
-    </CollectionListItemContainer>
+          <SettingsDropdown size="sm" stacked>
+            <DropdownSection>
+              <DropdownItem onClick={handleEdit}>EDIT NAME & DESC</DropdownItem>
+              <DropdownItem onClick={handleDelete}>DELETE</DropdownItem>
+            </DropdownSection>
+          </SettingsDropdown>
+        </HStack>
+      </CollectionListItemContainer>
+    </div>
   );
 }
 
@@ -120,6 +141,12 @@ const CollectionTitleText = styled(TitleXS)<{ italicize: boolean }>`
 const CollectionListItemContainer = styled(HStack)<{ selected: boolean }>`
   margin: 0 4px;
   padding: 8px 12px;
+  border-radius: 2px;
+
+  user-select: none;
+  touch-action: none;
+
+  background: ${colors.white};
 
   cursor: pointer;
 
