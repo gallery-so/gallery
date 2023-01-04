@@ -13,6 +13,7 @@ import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useG
 import { galleriesGalleryPageFragment$key } from '~/generated/galleriesGalleryPageFragment.graphql';
 import { galleriesQuery } from '~/generated/galleriesQuery.graphql';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
+import GalleriesPage from '~/scenes/GalleryPage/GalleriesPage';
 import { getEditGalleryUrl } from '~/utils/getEditGalleryUrl';
 
 type GalleryPageProps = {
@@ -33,6 +34,9 @@ function GalleryPage({ queryRef }: GalleryPageProps) {
           ... on Viewer {
             user {
               dbid
+              galleries {
+                id
+              }
             }
           }
         }
@@ -106,6 +110,7 @@ export default function Galleries({ username }: GalleriesProps) {
         ...galleriesGalleryPageFragment
         ...GalleryNavbarFragment
         ...GalleryViewEmitterWithSuspenseFragment
+        ...GalleriesPageQueryFragment
       }
     `,
     { username }
@@ -116,7 +121,8 @@ export default function Galleries({ username }: GalleriesProps) {
       element={
         <>
           <GalleryViewEmitter queryRef={query} />
-          <GalleryPage queryRef={query} />
+          {/* <GalleryPage queryRef={query} /> */}
+          <GalleriesPage queryRef={query} />
         </>
       }
       footer={false}

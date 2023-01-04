@@ -1,7 +1,9 @@
+import Link from 'next/link';
 import { useCallback, useMemo, useState } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
+import { Button } from '~/components/core/Button/Button';
 
 import colors from '~/components/core/colors';
 import { Dropdown } from '~/components/core/Dropdown/Dropdown';
@@ -112,11 +114,16 @@ export function GalleryRightContent({ queryRef, username }: GalleryRightContentP
 
   if (shouldShowEditButton) {
     return (
-      <EditButtonContainer onClick={handleEditClick}>
-        <TitleXS>EDIT</TitleXS>
-
-        {dropdown}
-      </EditButtonContainer>
+      <HStack gap={12}>
+        {editGalleryUrl && (
+          <Link href={editGalleryUrl}>
+            <Button variant="secondary" onClick={handleEditClick}>
+              Add New
+            </Button>
+          </Link>
+        )}
+        <Button>DONE</Button>
+      </HStack>
     );
   } else if (query.viewer?.__typename !== 'Viewer') {
     return <SignInButton />;
