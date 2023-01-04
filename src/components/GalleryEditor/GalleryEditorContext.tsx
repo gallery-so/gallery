@@ -142,8 +142,6 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
     getInitialCollectionsFromServer(query)
   );
 
-  console.log({ collections });
-
   const { showModal } = useModalActions();
   const createCollection = useCallback(() => {
     showModal({
