@@ -43,6 +43,11 @@ function NftPreviewAsset({ tokenRef, size, onLoad }: Props) {
               large @required(action: NONE)
             }
           }
+          ... on TextMedia {
+            previewURLs @required(action: NONE) {
+              large @required(action: NONE)
+            }
+          }
           ... on AudioMedia {
             previewURLs @required(action: NONE) {
               large @required(action: NONE)
