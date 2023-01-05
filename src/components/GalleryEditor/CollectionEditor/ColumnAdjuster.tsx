@@ -1,4 +1,3 @@
-import { UniqueIdentifier } from '@dnd-kit/core';
 import { useCallback, useMemo } from 'react';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import styled from 'styled-components';
@@ -63,7 +62,7 @@ function ColumnAdjuster() {
 
       <HStack gap={8} align="center">
         <IconContainer
-          size="sm"
+          size="xs"
           variant="blue"
           onClick={handleDecrementClick}
           disabled={columns <= 1}
@@ -73,7 +72,7 @@ function ColumnAdjuster() {
         <BaseM color={colors.white}>{columns}</BaseM>
 
         <IconContainer
-          size="sm"
+          size="xs"
           variant="blue"
           onClick={handleIncrementClick}
           disabled={columns >= maxColumns}

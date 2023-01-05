@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 
 import colors from '../colors';
 
-export type IconSize = 'sm' | 'md' | 'lg';
+export type IconSize = 'xs' | 'sm' | 'md' | 'lg';
 
 export type ColorVariant = 'blue' | 'default' | 'stacked';
 
@@ -142,7 +142,14 @@ const StyledIcon = styled.div<{
   }}
 
   ${({ size }) => {
-    if (size === 'sm') {
+    if (size === 'xs') {
+      return css`
+        height: 20px;
+        width: 20px;
+
+        border-radius: 99999999px;
+      `;
+    } else if (size === 'sm') {
       return css`
         height: 24px;
         width: 24px;

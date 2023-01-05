@@ -108,7 +108,7 @@ export const Section = forwardRef<HTMLDivElement, Props>(
           <HStack gap={2}>
             <ColumnAdjuster />
             <StyledDeleteButton onClick={handleDeleteSectionClick}>
-              <IconContainer size="sm" variant="blue" icon={<TrashIconNew />} />
+              <IconContainer size="xs" variant="blue" icon={<TrashIconNew />} />
             </StyledDeleteButton>
           </HStack>
         </StyledButtonContainer>
@@ -178,7 +178,7 @@ const StyledDeleteButton = styled.button`
   background-color: ${colors.activeBlue};
   border: 0;
   border-radius: 2px;
-  padding: 2px 0;
+  padding: 2px;
   justify-content: center;
   align-items: center;
   cursor: pointer;
