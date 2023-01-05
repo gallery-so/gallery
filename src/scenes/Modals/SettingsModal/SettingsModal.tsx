@@ -195,7 +195,7 @@ function SettingsModal({
               >
                 Premium Gallery Membership Card
               </InteractiveLink>
-              .
+              and connecting your email address.
             </SettingsRowDescription>
           </span>
           <HStack align="center" gap={4} shrink={false}>
