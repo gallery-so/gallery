@@ -74,8 +74,9 @@ export function CollectionListItem({ collectionId }: CollectionListItemProps) {
   });
 
   const style: CSSProperties = {
-    transform: CSS.Transform.toString(transform),
     transition,
+    // Ensure they can only move along the Y axis.
+    transform: `translate3d(0, ${transform?.y ?? 0}px, 0)`,
     position: 'relative',
     zIndex: isDragging ? 1 : 0,
   };
