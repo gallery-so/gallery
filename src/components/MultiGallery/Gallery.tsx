@@ -13,6 +13,7 @@ import { DropdownItem } from '../core/Dropdown/DropdownItem';
 import SettingsDropdown from '../core/Dropdown/SettingsDropdown';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM, TitleDiatypeM, TitleXS } from '../core/Text/Text';
+import useDeleteGallery from './useDeleteGallery';
 import useSetFeaturedGallery from './useSetFeaturedGallery';
 import useUpdateGalleryHidden from './useUpdateGalleryHidden';
 
@@ -42,6 +43,7 @@ export default function Gallery({ isFeatured = false, queryRef }: Props) {
 
   const setFeaturedGallery = useSetFeaturedGallery();
   const updateGalleryHidden = useUpdateGalleryHidden();
+  const deleteGallery = useDeleteGallery();
 
   const handleSetFeaturedGallery = useCallback(() => {
     setFeaturedGallery(query.dbid);
@@ -50,6 +52,10 @@ export default function Gallery({ isFeatured = false, queryRef }: Props) {
   const handleUpdateGalleryHidden = useCallback(() => {
     updateGalleryHidden(query.dbid, !query.hidden);
   }, [query.dbid, query.hidden, updateGalleryHidden]);
+
+  const handleDeleteGallery = useCallback(() => {
+    deleteGallery(query.dbid);
+  }, [query.dbid, deleteGallery]);
 
   const handleEditGallery: Route = useMemo(() => {
     return {
@@ -88,7 +94,7 @@ export default function Gallery({ isFeatured = false, queryRef }: Props) {
                 <DropdownItem onClick={handleUpdateGalleryHidden}>HIDE</DropdownItem>
               </>
             )}
-            <DropdownItem>DELETE</DropdownItem>
+            <DropdownItem onClick={handleDeleteGallery}>DELETE</DropdownItem>
           </SettingsDropdown>
         </HStack>
       </StyledGalleryHeader>
