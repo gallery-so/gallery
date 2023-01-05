@@ -1,8 +1,12 @@
-import { useCallback } from 'react';
+import Link from 'next/link';
+import { Route } from 'nextjs-routes';
+import { useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
+import { GalleryFragment$key } from '~/generated/GalleryFragment.graphql';
 
 import PencilIcon from '~/icons/PencilIcon';
+import { removeNullValues } from '~/utils/removeNullValues';
 
 import colors from '../core/colors';
 import { DropdownItem } from '../core/Dropdown/DropdownItem';
@@ -14,7 +18,7 @@ import useUpdateGalleryHidden from './useUpdateGalleryHidden';
 
 type Props = {
   isFeatured?: boolean;
-  queryRef: any;
+  queryRef: GalleryFragment$key;
 };
 
 export default function Gallery({ isFeatured = false, queryRef }: Props) {
@@ -24,17 +28,17 @@ export default function Gallery({ isFeatured = false, queryRef }: Props) {
         dbid
         id
         name
-        description
-        tokenPreviews
-        position
-        hidden
-        collections {
+        tokenPreviews @required(action: THROW)
+        hidden @required(action: THROW)
+        collections @required(action: THROW) {
           id
         }
       }
     `,
     queryRef
   );
+
+  console.log(query);
 
   const setFeaturedGallery = useSetFeaturedGallery();
   const updateGalleryHidden = useUpdateGalleryHidden();
@@ -45,9 +49,18 @@ export default function Gallery({ isFeatured = false, queryRef }: Props) {
 
   const handleUpdateGalleryHidden = useCallback(() => {
     updateGalleryHidden(query.dbid, !query.hidden);
-  }, [query.id, query.dbid, query.hidden, updateGalleryHidden]);
+  }, [query.dbid, query.hidden, updateGalleryHidden]);
+
+  const handleEditGallery: Route = useMemo(() => {
+    return {
+      pathname: '/gallery/[galleryId]/edit',
+      query: { galleryId: query.dbid },
+    };
+  }, [query.dbid]);
 
   const { name, collections, tokenPreviews, hidden } = query;
+
+  const nonNullTokenPreviews = removeNullValues(tokenPreviews) ?? [];
 
   return (
     <StyledGalleryWrapper gap={12}>
@@ -58,7 +71,11 @@ export default function Gallery({ isFeatured = false, queryRef }: Props) {
         </StyledGalleryTitleWrapper>
         <HStack gap={8} align="center">
           {isFeatured && <StyledGalleryFeaturedText as="span">Featured</StyledGalleryFeaturedText>}
-          <PencilIcon />
+          <Link href={handleEditGallery}>
+            <a>
+              <PencilIcon />
+            </a>
+          </Link>
           <SettingsDropdown>
             <DropdownItem>EDIT NAME & DESC</DropdownItem>
             {hidden ? (
@@ -76,7 +93,7 @@ export default function Gallery({ isFeatured = false, queryRef }: Props) {
         </HStack>
       </StyledGalleryHeader>
       <StyledTokenPreviewWrapper isHidden={hidden}>
-        {tokenPreviews.map((token: string) => (
+        {nonNullTokenPreviews.map((token) => (
           <StyledTokenPreview key={token} src={token} alt="token preview" />
         ))}
       </StyledTokenPreviewWrapper>
@@ -85,14 +102,12 @@ export default function Gallery({ isFeatured = false, queryRef }: Props) {
 }
 
 const StyledGalleryWrapper = styled(VStack)`
-  /* width: 308px; */
   padding: 12px;
-  /* background-color: red; */
 `;
 const StyledGalleryHeader = styled(HStack)``;
 
 const StyledGalleryTitleWrapper = styled(VStack)<{ isHidden?: boolean }>`
-  opacity: ${({ isHidden }) => (isHidden ? 0.5 : 1)};
+  opacity: ${({ isHidden = false }) => (isHidden ? 0.5 : 1)};
 `;
 
 const StyledGalleryFeaturedText = styled(TitleXS)`
