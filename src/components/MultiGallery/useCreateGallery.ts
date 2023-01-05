@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import { useCallback } from 'react';
 import { graphql } from 'relay-runtime';
 
@@ -5,12 +6,15 @@ import { useCreateGalleryMutation } from '~/generated/useCreateGalleryMutation.g
 import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 
 export default function useCreateGallery() {
+  const router = useRouter();
+
   const [createGallery] = usePromisifiedMutation<useCreateGalleryMutation>(graphql`
     mutation useCreateGalleryMutation($input: CreateGalleryInput!) @raw_response_type {
       createGallery(input: $input) {
         ... on CreateGalleryPayload {
           gallery {
             id
+            dbid
           }
         }
 
@@ -21,15 +25,35 @@ export default function useCreateGallery() {
     }
   `);
 
-  return useCallback(() => {
-    return createGallery({
-      variables: {
-        input: {
-          name: '',
-          description: '',
-          position: '2',
-        },
-      },
-    });
-  }, [createGallery]);
+  return useCallback(
+    async (position: string) => {
+      try {
+        const response = await createGallery({
+          variables: {
+            input: {
+              name: '',
+              description: '',
+              position,
+            },
+          },
+        });
+
+        if (response?.createGallery?.__typename === 'ErrInvalidInput') {
+          return;
+        }
+
+        const galleryId = response?.createGallery?.gallery?.dbid;
+        const route = {
+          pathname: '/gallery/[galleryId]/edit',
+          query: { galleryId },
+        };
+        if (galleryId) {
+          router.push(route);
+        }
+      } catch (error) {
+        throw new Error('Failed to create gallery');
+      }
+    },
+    [createGallery, router]
+  );
 }

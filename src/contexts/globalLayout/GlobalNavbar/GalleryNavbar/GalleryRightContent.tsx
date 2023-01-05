@@ -47,6 +47,9 @@ export function GalleryRightContent({ queryRef, username }: GalleryRightContentP
         userByUsername(username: $username) {
           ... on GalleryUser {
             dbid
+            galleries {
+              __typename
+            }
           }
         }
       }
@@ -61,8 +64,10 @@ export function GalleryRightContent({ queryRef, username }: GalleryRightContentP
   const createGallery = useCreateGallery();
 
   const handleCreateGallery = useCallback(() => {
-    createGallery();
-  }, [createGallery]);
+    const latestPosition = query?.userByUsername?.galleries?.length.toString() ?? '0';
+
+    createGallery(latestPosition);
+  }, [createGallery, query?.userByUsername?.galleries?.length]);
 
   const handleNameAndBioClick = useCallback(() => {
     showModal({
