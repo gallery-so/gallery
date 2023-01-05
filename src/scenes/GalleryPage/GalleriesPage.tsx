@@ -21,6 +21,7 @@ export default function GalleriesPage({ queryRef }: Props) {
       fragment GalleriesPageQueryFragment on Query {
         userByUsername(username: $username) {
           ... on GalleryUser {
+            id
             featuredGallery {
               id
             }
@@ -31,7 +32,7 @@ export default function GalleriesPage({ queryRef }: Props) {
             }
           }
         }
-        ...useLoggedInUserIdFragment
+        ...GalleryFragmentQuery
       }
     `,
     queryRef

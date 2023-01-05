@@ -6,7 +6,7 @@ import styled from 'styled-components';
 
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { GalleryFragment$key } from '~/generated/GalleryFragment.graphql';
-import { useLoggedInUserIdFragment$key } from '~/generated/useLoggedInUserIdFragment.graphql';
+import { GalleryFragmentQuery$key } from '~/generated/GalleryFragmentQuery.graphql';
 import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
 import PencilIcon from '~/icons/PencilIcon';
 import { removeNullValues } from '~/utils/removeNullValues';
@@ -24,11 +24,11 @@ import useUpdateGalleryHidden from './useUpdateGalleryHidden';
 type Props = {
   isFeatured?: boolean;
   galleryRef: GalleryFragment$key;
-  queryRef: useLoggedInUserIdFragment$key;
+  queryRef: GalleryFragmentQuery$key;
 };
 
 export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Props) {
-  const query = useFragment(
+  const gallery = useFragment(
     graphql`
       fragment GalleryFragment on Gallery {
         dbid
@@ -48,42 +48,51 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
     galleryRef
   );
 
+  const query = useFragment(
+    graphql`
+      fragment GalleryFragmentQuery on Query {
+        ...useLoggedInUserIdFragment
+      }
+    `,
+    queryRef
+  );
+
   const setFeaturedGallery = useSetFeaturedGallery();
   const updateGalleryHidden = useUpdateGalleryHidden();
   const deleteGallery = useDeleteGallery();
 
-  const loggedInUserId = useLoggedInUserId(queryRef);
-  const isAuthenticatedUser = loggedInUserId === query?.owner?.id;
+  const loggedInUserId = useLoggedInUserId(query);
+  const isAuthenticatedUser = loggedInUserId === gallery?.owner?.id;
 
   const { showModal, hideModal } = useModalActions();
 
+  const { name, collections, tokenPreviews, hidden, dbid } = gallery;
+
   const handleSetFeaturedGallery = useCallback(() => {
-    setFeaturedGallery(query.dbid);
-  }, [query.dbid, setFeaturedGallery]);
+    setFeaturedGallery(dbid);
+  }, [dbid, setFeaturedGallery]);
 
   const handleUpdateGalleryHidden = useCallback(() => {
-    updateGalleryHidden(query.dbid, !query.hidden);
-  }, [query.dbid, query.hidden, updateGalleryHidden]);
+    updateGalleryHidden(dbid, !hidden);
+  }, [dbid, hidden, updateGalleryHidden]);
 
   const handleDeleteGallery = useCallback(() => {
-    deleteGallery(query.dbid);
-  }, [query.dbid, deleteGallery]);
+    deleteGallery(dbid);
+  }, [dbid, deleteGallery]);
 
   const handleEditGalleryName = useCallback(() => {
     showModal({
-      content: <GalleryNameAndDescriptionModal galleryRef={query} onNext={hideModal} />,
+      content: <GalleryNameAndDescriptionModal galleryRef={gallery} onNext={hideModal} />,
       headerText: 'Name and descripton of your gallery',
     });
-  }, [hideModal, query, showModal]);
+  }, [hideModal, gallery, showModal]);
 
   const handleEditGallery: Route = useMemo(() => {
     return {
       pathname: '/gallery/[galleryId]/edit',
-      query: { galleryId: query.dbid },
+      query: { galleryId: dbid },
     };
-  }, [query.dbid]);
-
-  const { name, collections, tokenPreviews, hidden } = query;
+  }, [dbid]);
 
   const nonNullTokenPreviews = removeNullValues(tokenPreviews) ?? [];
 
@@ -91,7 +100,7 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
 
   return (
     <StyledGalleryWrapper gap={12}>
-      <StyledGalleryHeader justify="space-between">
+      <HStack justify="space-between">
         <StyledGalleryTitleWrapper isHidden={hidden}>
           <TitleDiatypeM>{name || 'Untitled'}</TitleDiatypeM>
           <BaseM>{collections.length} collections</BaseM>
@@ -124,7 +133,7 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
             </>
           )}
         </HStack>
-      </StyledGalleryHeader>
+      </HStack>
       <StyledTokenPreviewWrapper isHidden={hidden}>
         {nonNullTokenPreviews.map((token) => (
           <StyledTokenPreview key={token} src={token} />
@@ -137,7 +146,6 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
 const StyledGalleryWrapper = styled(VStack)`
   padding: 12px;
 `;
-const StyledGalleryHeader = styled(HStack)``;
 
 const StyledGalleryTitleWrapper = styled(VStack)<{ isHidden?: boolean }>`
   opacity: ${({ isHidden = false }) => (isHidden ? 0.5 : 1)};
