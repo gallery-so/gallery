@@ -2,6 +2,7 @@ import { Environment, RelayEnvironmentProvider } from 'react-relay';
 
 import Debugger from '~/components/Debugger/Debugger';
 import { GalleryNavigationProvider } from '~/contexts/navigation/GalleryNavigationProvider';
+import { NftErrorProvider } from '~/contexts/NftErrorContext';
 import { SyncTokensLockProvider } from '~/contexts/SyncTokensLockContext';
 import isProduction from '~/utils/isProduction';
 
@@ -11,7 +12,6 @@ import Boundary from './boundary/Boundary';
 import ErrorReportingProvider from './errorReporting/ErrorReportingContext';
 import GlobalLayoutContextProvider from './globalLayout/GlobalLayoutContext';
 import ModalProvider from './modal/ModalContext';
-import SnowProvider from './snow/SnowContext';
 import { SwrProvider } from './swr/SwrContext';
 import ToastProvider from './toast/ToastContext';
 
@@ -32,16 +32,16 @@ export default function AppProvider({ children, relayEnvironment }: Props) {
               <ErrorReportingProvider>
                 <SwrProvider>
                   <GalleryNavigationProvider>
-                    <ModalProvider>
-                      <SyncTokensLockProvider>
-                        <SnowProvider>
+                    <NftErrorProvider>
+                      <ModalProvider>
+                        <SyncTokensLockProvider>
                           <GlobalLayoutContextProvider>
                             {isProd ? null : <Debugger />}
                             {children}
                           </GlobalLayoutContextProvider>
-                        </SnowProvider>
-                      </SyncTokensLockProvider>
-                    </ModalProvider>
+                        </SyncTokensLockProvider>
+                      </ModalProvider>
+                    </NftErrorProvider>
                   </GalleryNavigationProvider>
                 </SwrProvider>
               </ErrorReportingProvider>

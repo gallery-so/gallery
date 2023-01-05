@@ -94,8 +94,8 @@ type ChainAddress {
 
 
 type ChainPubKey {
-  pubKey: PubKey
-  chain: Chain
+    pubKey: PubKey
+    chain: Chain
 }
 
 type ChainTokens {
@@ -125,17 +125,17 @@ union GalleryUserOrAddress = GalleryUser | ChainAddress
 
 union MediaSubtype =
     ImageMedia
-  | GIFMedia
-  | VideoMedia
-  | AudioMedia
-  | TextMedia
-  | PdfMedia
-  | HtmlMedia
-  | JsonMedia
-  | GltfMedia
-  | UnknownMedia
-  | SyncingMedia
-  | InvalidMedia
+    | GIFMedia
+    | VideoMedia
+    | AudioMedia
+    | TextMedia
+    | PdfMedia
+    | HtmlMedia
+    | JsonMedia
+    | GltfMedia
+    | UnknownMedia
+    | SyncingMedia
+    | InvalidMedia
 
 type PreviewURLSet {
     raw: String
@@ -177,11 +177,11 @@ type ImageMedia implements Media {
 }
 
 type GIFMedia implements Media {
-  previewURLs: PreviewURLSet
-  mediaURL: String
-  mediaType: String
+    previewURLs: PreviewURLSet
+    mediaURL: String
+    mediaType: String
 
-  contentRenderURL: String
+    contentRenderURL: String
 }
 
 type VideoMedia implements Media {
@@ -209,11 +209,11 @@ type TextMedia implements Media {
 }
 
 type PdfMedia implements Media {
-  previewURLs: PreviewURLSet
-  mediaURL: String
-  mediaType: String
+    previewURLs: PreviewURLSet
+    mediaURL: String
+    mediaType: String
 
-  contentRenderURL: String
+    contentRenderURL: String
 }
 
 type HtmlMedia implements Media {
@@ -249,11 +249,11 @@ type UnknownMedia implements Media {
 }
 
 type SyncingMedia implements Media {
-  previewURLs: PreviewURLSet
-  mediaURL: String
-  mediaType: String
+    previewURLs: PreviewURLSet
+    mediaURL: String
+    mediaType: String
 
-  contentRenderURL: String
+    contentRenderURL: String
 }
 
 type InvalidMedia implements Media {
@@ -390,46 +390,46 @@ type MembershipTier implements Node {
 }
 
 type TokenEdge {
-  node: Token
-  cursor: String
+    node: Token
+    cursor: String
 }
 
 type TokensConnection {
-  edges: [TokenEdge]
-  pageInfo: PageInfo!
+    edges: [TokenEdge]
+    pageInfo: PageInfo!
 }
 
 type TokenHolderEdge {
-  node: TokenHolder
-  cursor: String
+    node: TokenHolder
+    cursor: String
 }
 
 type TokenHoldersConnection {
-  edges: [TokenHolderEdge]
-  pageInfo: PageInfo!
+    edges: [TokenHolderEdge]
+    pageInfo: PageInfo!
 }
 
 type Community implements Node
-  @goGqlId(fields: ["contractAddress", "chain"])
-  @goEmbedHelper {
-  dbid: DBID!
-  id: ID!
+@goGqlId(fields: ["contractAddress", "chain"])
+@goEmbedHelper {
+    dbid: DBID!
+    id: ID!
 
-  lastUpdated: Time
+    lastUpdated: Time
 
-  contractAddress: ChainAddress
-  creatorAddress: ChainAddress
-  chain: Chain
-  name: String
-  description: String
-  previewImage: String
-  profileImageURL: String
-  profileBannerURL: String
-  badgeURL: String
+    contractAddress: ChainAddress
+    creatorAddress: ChainAddress
+    chain: Chain
+    name: String
+    description: String
+    previewImage: String
+    profileImageURL: String
+    profileBannerURL: String
+    badgeURL: String
 
-  tokensInCommunity(before: String, after: String, first: Int, last: Int, onlyGalleryUsers: Boolean): TokensConnection @goField(forceResolver: true)
+    tokensInCommunity(before: String, after: String, first: Int, last: Int, onlyGalleryUsers: Boolean): TokensConnection @goField(forceResolver: true)
 
-  owners(before: String, after: String, first: Int, last: Int, onlyGalleryUsers: Boolean): TokenHoldersConnection @goField(forceResolver: true)
+    owners(before: String, after: String, first: Int, last: Int, onlyGalleryUsers: Boolean): TokenHoldersConnection @goField(forceResolver: true)
 }
 
 type Contract implements Node {
@@ -465,38 +465,38 @@ type NotificationsConnection @goEmbedHelper {
 }
 
 type Viewer {
-  user: GalleryUser @goField(forceResolver: true)
-  viewerGalleries: [ViewerGallery] @goField(forceResolver: true)
-  feed(before: String, after: String, first: Int, last: Int): FeedConnection
+    user: GalleryUser @goField(forceResolver: true)
+    viewerGalleries: [ViewerGallery] @goField(forceResolver: true)
+    feed(before: String, after: String, first: Int, last: Int): FeedConnection
     @goField(forceResolver: true)
 
-  email: UserEmail @goField(forceResolver: true)
-  """
-  Returns a list of notifications in reverse chronological order.
-  Seen notifications come after unseen notifications
-  """
-  notifications(
-    before: String
-    after: String
-    first: Int
-    last: Int
-  ): NotificationsConnection @goField(forceResolver: true)
+    email: UserEmail @goField(forceResolver: true)
+    """
+    Returns a list of notifications in reverse chronological order.
+    Seen notifications come after unseen notifications
+    """
+    notifications(
+        before: String
+        after: String
+        first: Int
+        last: Int
+    ): NotificationsConnection @goField(forceResolver: true)
 
-  notificationSettings: NotificationSettings @goField(forceResolver: true)
+    notificationSettings: NotificationSettings @goField(forceResolver: true)
 }
 
 type NotificationSettings {
-  someoneFollowedYou: Boolean
-  someoneAdmiredYourUpdate: Boolean
-  someoneCommentedOnYourUpdate: Boolean
-  someoneViewedYourGallery: Boolean
+    someoneFollowedYou: Boolean
+    someoneAdmiredYourUpdate: Boolean
+    someoneCommentedOnYourUpdate: Boolean
+    someoneViewedYourGallery: Boolean
 }
 
 input NotificationSettingsInput {
-  someoneFollowedYou: Boolean
-  someoneAdmiredYourUpdate: Boolean
-  someoneCommentedOnYourUpdate: Boolean
-  someoneViewedYourGallery: Boolean
+    someoneFollowedYou: Boolean
+    someoneAdmiredYourUpdate: Boolean
+    someoneCommentedOnYourUpdate: Boolean
+    someoneViewedYourGallery: Boolean
 }
 
 enum EmailVerificationStatus {
@@ -765,24 +765,31 @@ enum Role {
 }
 
 enum MerchType {
-  TShirt
-  Hat
-  Card
+    TShirt
+    Hat
+    Card
 }
 
-type MerchToken @goGqlId(fields: ["tokenId"]) {
-  id: ID! 
-  tokenId: String!
-  objectType: MerchType!
-  discountCode: String
-  redeemed: Boolean!
+type MerchToken implements Node @goGqlId(fields: ["tokenId"]) {
+    id: ID!
+    tokenId: String!
+    objectType: MerchType!
+    discountCode: String
+    redeemed: Boolean!
 }
 
 type MerchTokensPayload {
-  tokens: [MerchToken!]
+    tokens: [MerchToken!]
 }
 
 union MerchTokensPayloadOrError = MerchTokensPayload | ErrInvalidInput
+
+type ErrGalleryNotFound implements Error {
+    message: String!
+}
+
+union GalleryByIdPayloadOrError = Gallery | ErrGalleryNotFound
+union ViewerGalleryByIdPayloadOrError = ViewerGallery | ErrGalleryNotFound
 
 type Query {
     node(id: ID!): Node
@@ -802,6 +809,9 @@ type Query {
     globalFeed(before: String, after: String, first: Int, last: Int): FeedConnection
     feedEventById(id: DBID!): FeedEventByIdOrError
     getMerchTokens(wallet: Address!): MerchTokensPayloadOrError
+    galleryById(id: DBID!): GalleryByIdPayloadOrError
+    viewerGalleryById(id: DBID!): ViewerGalleryByIdPayloadOrError
+
 
     # Retool Specific
     usersByRole(role: Role!, before: String, after: String, first: Int, last: Int): UsersConnection @retoolAuth
@@ -990,8 +1000,8 @@ type SyncTokensPayload {
 
 union RefreshTokenPayloadOrError =
     RefreshTokenPayload
-  | ErrInvalidInput
-  | ErrSyncFailed
+    | ErrInvalidInput
+    | ErrSyncFailed
 
 type RefreshTokenPayload {
     token: Token
@@ -999,8 +1009,8 @@ type RefreshTokenPayload {
 
 union RefreshCollectionPayloadOrError =
     RefreshCollectionPayload
-  | ErrInvalidInput
-  | ErrSyncFailed
+    | ErrInvalidInput
+    | ErrSyncFailed
 
 type RefreshCollectionPayload {
     collection: Collection
@@ -1008,8 +1018,8 @@ type RefreshCollectionPayload {
 
 union RefreshContractPayloadOrError =
     RefreshContractPayload
-  | ErrInvalidInput
-  | ErrSyncFailed
+    | ErrInvalidInput
+    | ErrSyncFailed
 
 type RefreshContractPayload {
     contract: Contract
@@ -1195,30 +1205,30 @@ type UnfollowUserPayload {
 
 union AdmireFeedEventPayloadOrError =
     AdmireFeedEventPayload
-  | ErrAuthenticationFailed
-  | ErrFeedEventNotFound
-  | ErrInvalidInput
-  | ErrAdmireAlreadyExists
+    | ErrAuthenticationFailed
+    | ErrFeedEventNotFound
+    | ErrInvalidInput
+    | ErrAdmireAlreadyExists
 
 union RemoveAdmirePayloadOrError =
     RemoveAdmirePayload
-  | ErrAuthenticationFailed
-  | ErrFeedEventNotFound
-  | ErrInvalidInput
-  | ErrAdmireNotFound
+    | ErrAuthenticationFailed
+    | ErrFeedEventNotFound
+    | ErrInvalidInput
+    | ErrAdmireNotFound
 
 union CommentOnFeedEventPayloadOrError =
     CommentOnFeedEventPayload
-  | ErrAuthenticationFailed
-  | ErrFeedEventNotFound
-  | ErrInvalidInput
+    | ErrAuthenticationFailed
+    | ErrFeedEventNotFound
+    | ErrInvalidInput
 
 union RemoveCommentPayloadOrError =
     RemoveCommentPayload
-  | ErrAuthenticationFailed
-  | ErrFeedEventNotFound
-  | ErrInvalidInput
-  | ErrCommentNotFound
+    | ErrAuthenticationFailed
+    | ErrFeedEventNotFound
+    | ErrInvalidInput
+    | ErrCommentNotFound
 
 type AdmireFeedEventPayload {
     viewer: Viewer
@@ -1233,15 +1243,15 @@ type RemoveAdmirePayload {
 }
 
 type CommentOnFeedEventPayload {
-  viewer: Viewer
-  comment: Comment @goField(forceResolver: true)
-  replyToComment: Comment @goField(forceResolver: true)
-  feedEvent: FeedEvent @goField(forceResolver: true)
+    viewer: Viewer
+    comment: Comment @goField(forceResolver: true)
+    replyToComment: Comment @goField(forceResolver: true)
+    feedEvent: FeedEvent @goField(forceResolver: true)
 }
 
 type RemoveCommentPayload {
-  viewer: Viewer
-  feedEvent: FeedEvent @goField(forceResolver: true)
+    viewer: Viewer
+    feedEvent: FeedEvent @goField(forceResolver: true)
 }
 
 interface Notification implements Node {
@@ -1271,72 +1281,72 @@ type GroupNotificationUsersConnection @goEmbedHelper {
 }
 
 type SomeoneFollowedYouNotification implements Notification & Node & GroupedNotification
-  @goEmbedHelper {
-  id: ID!
-  dbid: DBID!
-  seen: Boolean
-  creationTime: Time
-  updatedTime: Time
-  count: Int
+@goEmbedHelper {
+    id: ID!
+    dbid: DBID!
+    seen: Boolean
+    creationTime: Time
+    updatedTime: Time
+    count: Int
 
-  followers(before: String, after: String, first: Int, last: Int): GroupNotificationUsersConnection @goField(forceResolver: true)
+    followers(before: String, after: String, first: Int, last: Int): GroupNotificationUsersConnection @goField(forceResolver: true)
 }
 
 type SomeoneFollowedYouBackNotification implements Notification & Node & GroupedNotification
-  @goEmbedHelper {
-  id: ID!
-  dbid: DBID!
-  seen: Boolean
-  creationTime: Time
-  updatedTime: Time
-  count: Int
+@goEmbedHelper {
+    id: ID!
+    dbid: DBID!
+    seen: Boolean
+    creationTime: Time
+    updatedTime: Time
+    count: Int
 
-  followers(before: String, after: String, first: Int, last: Int): GroupNotificationUsersConnection @goField(forceResolver: true)
+    followers(before: String, after: String, first: Int, last: Int): GroupNotificationUsersConnection @goField(forceResolver: true)
 }
 
 type SomeoneAdmiredYourFeedEventNotification implements Notification & Node & GroupedNotification
-  @goEmbedHelper {
-  id: ID!
-  dbid: DBID!
-  seen: Boolean
-  creationTime: Time
-  updatedTime: Time
-  count: Int
+@goEmbedHelper {
+    id: ID!
+    dbid: DBID!
+    seen: Boolean
+    creationTime: Time
+    updatedTime: Time
+    count: Int
 
-  feedEvent: FeedEvent @goField(forceResolver: true)
-  admirers(before: String, after: String, first: Int, last: Int): GroupNotificationUsersConnection @goField(forceResolver: true)
+    feedEvent: FeedEvent @goField(forceResolver: true)
+    admirers(before: String, after: String, first: Int, last: Int): GroupNotificationUsersConnection @goField(forceResolver: true)
 }
 
 type SomeoneCommentedOnYourFeedEventNotification implements Notification & Node
-  @goEmbedHelper {
-  id: ID!
-  dbid: DBID!
-  seen: Boolean
-  creationTime: Time
-  updatedTime: Time
+@goEmbedHelper {
+    id: ID!
+    dbid: DBID!
+    seen: Boolean
+    creationTime: Time
+    updatedTime: Time
 
-  # Don't need a `who` here since the `comment` can provide that
-  # Do we want this comment to be the latest comment
-  comment: Comment @goField(forceResolver: true)
-  feedEvent: FeedEvent @goField(forceResolver: true)
+    # Don't need a `who` here since the `comment` can provide that
+    # Do we want this comment to be the latest comment
+    comment: Comment @goField(forceResolver: true)
+    feedEvent: FeedEvent @goField(forceResolver: true)
 }
 
 type SomeoneViewedYourGalleryNotification implements Notification & Node & GroupedNotification
-  @goEmbedHelper {
-  id: ID!
-  dbid: DBID!
-  seen: Boolean
-  creationTime: Time
-  updatedTime: Time
-  # the total count of notifications grouped, despite uniqueness of the viewers and whether they are logged in or not
-  count: Int
+@goEmbedHelper {
+    id: ID!
+    dbid: DBID!
+    seen: Boolean
+    creationTime: Time
+    updatedTime: Time
+    # the total count of notifications grouped, despite uniqueness of the viewers and whether they are logged in or not
+    count: Int
 
-  # unique user viewers, use PageInfo.Total to get the total unique user viewers
-  userViewers(before: String, after: String, first: Int, last: Int): GroupNotificationUsersConnection @goField(forceResolver: true)
+    # unique user viewers, use PageInfo.Total to get the total unique user viewers
+    userViewers(before: String, after: String, first: Int, last: Int): GroupNotificationUsersConnection @goField(forceResolver: true)
 
-  # count of unique non-user viewers
-  nonUserViewerCount: Int
-  gallery: Gallery @goField(forceResolver: true)
+    # count of unique non-user viewers
+    nonUserViewerCount: Int
+    gallery: Gallery @goField(forceResolver: true)
 }
 
 type ClearAllNotificationsPayload {
@@ -1459,7 +1469,7 @@ type SyncTokensForUsernamePayload {
 union SyncTokensForUsernamePayloadOrError = SyncTokensForUsernamePayload | ErrNotAuthorized | ErrSyncFailed
 
 type BanUserFromFeedPayload {
-   user: GalleryUser
+    user: GalleryUser
 }
 
 union BanUserFromFeedPayloadOrError = BanUserFromFeedPayload | ErrNotAuthorized
@@ -1484,7 +1494,7 @@ type Mutation {
     updateTokenInfo(input: UpdateTokenInfoInput!): UpdateTokenInfoPayloadOrError @authRequired
     setSpamPreference(input: SetSpamPreferenceInput!): SetSpamPreferencePayloadOrError @authRequired
 
-    syncTokens(chains: [Chain!], userID: DBID): SyncTokensPayloadOrError @authRequired
+    syncTokens(chains: [Chain!]): SyncTokensPayloadOrError @authRequired
     refreshToken(tokenId: DBID!): RefreshTokenPayloadOrError
     refreshCollection(collectionId: DBID!): RefreshCollectionPayloadOrError
     refreshContract(contractId: DBID!): RefreshContractPayloadOrError

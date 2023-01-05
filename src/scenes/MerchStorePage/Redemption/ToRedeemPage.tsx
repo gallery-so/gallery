@@ -114,7 +114,7 @@ export default function ToRedeemPage({ onToggle, merchTokenRefs }: Props) {
       ) : (
         <StyledToRedeemPageContainer>
           <StyledRedeemTextContainer>
-            <BaseM>You have not purchased any merchandise.</BaseM>
+            <BaseM>You do not have any merchandise to redeem.</BaseM>
           </StyledRedeemTextContainer>
           <StyledRedeemFooter>
             <StyledRedeemSubmitButton onClick={handleClose}>Close</StyledRedeemSubmitButton>

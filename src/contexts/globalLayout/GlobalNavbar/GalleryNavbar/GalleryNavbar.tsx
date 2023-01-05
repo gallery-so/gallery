@@ -19,7 +19,6 @@ import {
   NavbarRightContent,
   StandardNavbarContainer,
 } from '~/contexts/globalLayout/GlobalNavbar/StandardNavbarContainer';
-import SnowToggleIcon from '~/contexts/snow/SnowToggleIcon';
 import { GalleryNavbarFragment$key } from '~/generated/GalleryNavbarFragment.graphql';
 import { isUsername3ac } from '~/hooks/oneOffs/useIs3acProfilePage';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
@@ -38,12 +37,6 @@ export function GalleryNavbar({ queryRef, username }: Props) {
         ...GalleryNavLinksFragment
         ...FollowButtonQueryFragment
 
-        viewer {
-          ... on Viewer {
-            __typename
-          }
-        }
-
         userByUsername(username: $username) {
           ...FollowButtonUserFragment
         }
@@ -57,8 +50,6 @@ export function GalleryNavbar({ queryRef, username }: Props) {
   const { pathname } = useRouter();
 
   const userGalleryRoute: Route = { pathname: '/[username]', query: { username } };
-
-  const isLoggedInOnMobile = isMobile && query.viewer?.__typename === 'Viewer';
 
   return (
     <VStack>
@@ -88,11 +79,6 @@ export function GalleryNavbar({ queryRef, username }: Props) {
           )}
         </NavbarCenterContent>
         <NavbarRightContent>
-          {
-            // hide if user is logged in on mobile. this is a very rare state
-            // but there are just too many icons in this scenario
-            isLoggedInOnMobile ? null : <SnowToggleIcon />
-          }
           <GalleryRightContent username={username} queryRef={query} />
         </NavbarRightContent>
       </StandardNavbarContainer>

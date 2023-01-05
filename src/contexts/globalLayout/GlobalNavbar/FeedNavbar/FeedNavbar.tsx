@@ -14,7 +14,6 @@ import {
   NavbarRightContent,
   StandardNavbarContainer,
 } from '~/contexts/globalLayout/GlobalNavbar/StandardNavbarContainer';
-import SnowToggleIcon from '~/contexts/snow/SnowToggleIcon';
 import { FeedNavbarFragment$key } from '~/generated/FeedNavbarFragment.graphql';
 
 type FeedNavbarProps = {
@@ -83,10 +82,7 @@ export function FeedNavbar({ queryRef, onChange, feedMode }: FeedNavbarProps) {
       </NavbarCenterContent>
 
       {/* Strictly here to keep spacing consistent */}
-      <NavbarRightContent>
-        <SnowToggleIcon />
-        {isLoggedIn ? null : <SignInButton />}
-      </NavbarRightContent>
+      <NavbarRightContent>{isLoggedIn ? null : <SignInButton />}</NavbarRightContent>
     </StandardNavbarContainer>
   );
 }

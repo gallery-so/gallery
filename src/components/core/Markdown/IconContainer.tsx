@@ -1,30 +1,34 @@
-import React from 'react';
+import React, { ForwardedRef, forwardRef } from 'react';
 import styled, { css } from 'styled-components';
 
 import colors from '../colors';
 
-type Size = 'sm' | 'md' | 'lg';
+export type IconSize = 'sm' | 'md' | 'lg';
 
 type Props = {
-  size?: Size;
+  size?: IconSize;
   stacked?: boolean;
   disabled?: boolean;
   className?: string;
   icon: React.ReactElement;
 } & Omit<JSX.IntrinsicElements['div'], 'ref'>;
 
-export default function IconContainer({
-  icon,
-  onClick,
-  stacked,
-  disabled,
-  className,
-  size = 'md',
+function IconContainer(
+  {
+    icon,
+    onClick,
+    stacked,
+    disabled,
+    className,
+    size = 'md',
 
-  ...props
-}: Props) {
+    ...props
+  }: Props,
+  ref: ForwardedRef<HTMLDivElement>
+) {
   return (
     <StyledIcon
+      ref={ref}
       onClick={onClick}
       size={size}
       disabled={disabled}
@@ -42,7 +46,7 @@ export default function IconContainer({
 }
 
 const StyledIcon = styled.div<{
-  size: Size;
+  size: IconSize;
   disabled?: boolean;
   stacked?: boolean;
 }>`
@@ -101,3 +105,7 @@ const StyledIcon = styled.div<{
     background: ${colors.porcelain};
   }
 `;
+
+const ForwardedIconContainer = forwardRef<HTMLDivElement, Props>(IconContainer);
+
+export default ForwardedIconContainer;

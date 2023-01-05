@@ -9,6 +9,7 @@ import { useModalActions } from '~/contexts/modal/ModalContext';
 import { RedeemedPageFragment$key } from '~/generated/RedeemedPageFragment.graphql';
 import ArrowUpRightIcon from '~/icons/ArrowUpRightIcon';
 
+import { REDEEMED_STATUS } from '../constants';
 import { getObjectName } from '../getObjectName';
 import RedeemedItem from './RedeemedItem';
 
@@ -31,8 +32,7 @@ export default function RedeemedPage({ merchTokenRefs }: Props) {
   const { hideModal } = useModalActions();
 
   const handleRedeem = useCallback(() => {
-    // TODO: Replace with the actual shopify link
-    window.open('https://www.shopify.com', '_blank');
+    window.open('https://shopify.gallery.so', '_blank');
   }, []);
 
   const handleClose = useCallback(() => {
@@ -54,7 +54,11 @@ export default function RedeemedPage({ merchTokenRefs }: Props) {
                 <RedeemedItem
                   key={token.tokenId}
                   name={name}
-                  discountCode={token.discountCode || ''}
+                  // if the backend returns a redeemed token but no discount code, this means
+                  // the token was manually marked as redeemed on the user's behalf (e.g. free
+                  // giveaway from NFT NYC). this prevents the user from redeeming further merch
+                  // from NFTs they'd received in the past.
+                  discountCode={token.discountCode || REDEEMED_STATUS}
                 />
               );
             })}
