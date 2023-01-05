@@ -144,43 +144,33 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
 
   const { showModal } = useModalActions();
   const createCollection = useCallback(() => {
-    showModal({
-      content: (
-        <CollectionCreateOrEditForm
-          mode="creating"
-          onDone={({ name, collectorsNote }) => {
-            const newCollectionId = generate12DigitId();
+    const newCollectionId = generate12DigitId();
 
-            setCollections((previous) => {
-              const defaultSectionId = generate12DigitId();
+    setCollections((previous) => {
+      const defaultSectionId = generate12DigitId();
 
-              const newCollection: CollectionState = {
-                dbid: newCollectionId,
-                activeSectionId: defaultSectionId,
-                liveDisplayTokenIds: new Set(),
+      const newCollection: CollectionState = {
+        dbid: newCollectionId,
+        activeSectionId: defaultSectionId,
+        liveDisplayTokenIds: new Set(),
 
-                name: name ?? '',
-                collectorsNote: collectorsNote ?? '',
+        name: '',
+        collectorsNote: '',
 
-                localOnly: true,
-                hidden: false,
+        localOnly: true,
+        hidden: false,
 
-                sections: { [defaultSectionId]: { columns: 3, items: [] } },
-              };
+        sections: { [defaultSectionId]: { columns: 3, items: [] } },
+      };
 
-              return {
-                [newCollectionId]: newCollection,
-                ...previous,
-              };
-            });
-
-            setCollectionIdBeingEdited(newCollectionId);
-          }}
-        />
-      ),
-      headerText: 'Name and describe your collection',
+      return {
+        [newCollectionId]: newCollection,
+        ...previous,
+      };
     });
-  }, [showModal]);
+
+    setCollectionIdBeingEdited(newCollectionId);
+  }, []);
 
   const toggleCollectionHidden = useCallback((collectionId: string) => {
     setCollections((previous) => {
