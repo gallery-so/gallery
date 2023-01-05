@@ -55,13 +55,13 @@ const COLOR_STATES: ColorStates = {
     disabledForeground: colors.porcelain,
 
     idleBackground: 'transparent',
-    idleForeground: colors.offBlack,
+    idleForeground: colors.white,
 
     hoverBackground: colors.faint,
     hoverForeground: colors.offBlack,
 
     activeBackground: 'transparent',
-    activeForeground: colors.porcelain,
+    activeForeground: colors.offBlack,
   },
 };
 

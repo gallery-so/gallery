@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 
-import { isEditModeToken } from '~/components/GalleryEditor/CollectionEditor/types';
-import { StagedItem } from '~/contexts/collectionEditor/CollectionEditorContextNew';
+import { StagedItem } from '~/components/GalleryEditor/GalleryEditorContext';
 import { SortableStagedNftNewFragment$key } from '~/generated/SortableStagedNftNewFragment.graphql';
 
 import SortableStagedNft from '../SortableStagedNft';

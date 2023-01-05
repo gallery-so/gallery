@@ -4,12 +4,14 @@ import { CSSProperties, forwardRef, ReactNode } from 'react';
 import styled from 'styled-components';
 
 import colors from '~/components/core/colors';
+import IconContainer from '~/components/core/Markdown/IconContainer';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { TitleDiatypeM } from '~/components/core/Text/Text';
 import transitions from '~/components/core/transitions';
 import ColumnAdjuster from '~/components/GalleryEditor/CollectionEditor/ColumnAdjuster';
 import DragHandleIcon from '~/icons/DragHandleIcon';
 import TrashIcon from '~/icons/Trash';
+import { TrashIconNew } from '~/icons/TrashIconNew';
 import noop from '~/utils/noop';
 
 interface Props {
@@ -106,7 +108,7 @@ export const Section = forwardRef<HTMLDivElement, Props>(
           <HStack gap={2}>
             <ColumnAdjuster />
             <StyledDeleteButton onClick={handleDeleteSectionClick}>
-              <StyledTrashIcon />
+              <IconContainer size="sm" variant="blue" icon={<TrashIconNew />} />
             </StyledDeleteButton>
           </HStack>
         </StyledButtonContainer>
@@ -173,8 +175,6 @@ const StyledEmptySectionMessage = styled.div`
 `;
 
 const StyledDeleteButton = styled.button`
-  height: 24px;
-  width: 24px;
   background-color: ${colors.activeBlue};
   border: 0;
   border-radius: 2px;
@@ -183,5 +183,3 @@ const StyledDeleteButton = styled.button`
   align-items: center;
   cursor: pointer;
 `;
-
-const StyledTrashIcon = styled(TrashIcon)``;

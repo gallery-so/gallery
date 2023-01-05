@@ -58,12 +58,13 @@ function ColumnAdjuster() {
   }, [activeSectionId, columns, decrementColumns]);
 
   return (
-    <Container gap={24} align="center" justify="space-between">
+    <Container gap={10} align="center" justify="space-between">
       <TitleDiatypeM color={colors.white}>Columns</TitleDiatypeM>
-      <HStack gap={2} align="center">
+
+      <HStack gap={8} align="center">
         <IconContainer
           size="sm"
-          variant="default"
+          variant="blue"
           onClick={handleDecrementClick}
           disabled={columns <= 1}
           icon={<CircleMinusIcon />}
@@ -73,7 +74,7 @@ function ColumnAdjuster() {
 
         <IconContainer
           size="sm"
-          variant="default"
+          variant="blue"
           onClick={handleIncrementClick}
           disabled={columns >= maxColumns}
           icon={<CirclePlusIcon />}
@@ -86,6 +87,8 @@ function ColumnAdjuster() {
 const Container = styled(HStack)`
   background: ${colors.activeBlue};
   padding: 2px 4px;
+
+  border-radius: 2px;
 `;
 
 export default ColumnAdjuster;
