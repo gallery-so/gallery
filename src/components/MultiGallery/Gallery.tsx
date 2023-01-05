@@ -3,11 +3,11 @@ import { Route } from 'nextjs-routes';
 import { useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
+
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { GalleryFragment$key } from '~/generated/GalleryFragment.graphql';
 import { useLoggedInUserIdFragment$key } from '~/generated/useLoggedInUserIdFragment.graphql';
 import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
-
 import PencilIcon from '~/icons/PencilIcon';
 import { removeNullValues } from '~/utils/removeNullValues';
 
@@ -74,7 +74,7 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
       content: <GalleryNameAndDescriptionModal galleryRef={query} onNext={hideModal} />,
       headerText: 'Name and descripton of your gallery',
     });
-  }, [showModal]);
+  }, [hideModal, query, showModal]);
 
   const handleEditGallery: Route = useMemo(() => {
     return {

@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import { graphql } from 'relay-runtime';
+
 import { useSetFeaturedGalleryMutation } from '~/generated/useSetFeaturedGalleryMutation.graphql';
 import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 
@@ -24,11 +25,14 @@ export default function useSetFeaturedGallery() {
     }
   `);
 
-  return useCallback((galleryId: string) => {
-    return setFeaturedGallery({
-      variables: {
-        galleryId,
-      },
-    });
-  }, []);
+  return useCallback(
+    (galleryId: string) => {
+      return setFeaturedGallery({
+        variables: {
+          galleryId,
+        },
+      });
+    },
+    [setFeaturedGallery]
+  );
 }

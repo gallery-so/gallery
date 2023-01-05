@@ -1,7 +1,9 @@
 import { useCallback, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
+
 import { GalleryNameAndDescriptionModalFragment$key } from '~/generated/GalleryNameAndDescriptionModalFragment.graphql';
+
 import breakpoints from '../core/breakpoints';
 import { Button } from '../core/Button/Button';
 import Input from '../core/Input/Input';
@@ -52,7 +54,7 @@ export default function GalleryNameAndDescriptionModal({ galleryRef, onNext }: P
     });
     onNext();
     setIsLoading(false);
-  }, [name, description, isLoading, onNext, updateGalleryInfo]);
+  }, [id, name, description, onNext, updateGalleryInfo]);
 
   return (
     <StyledCollectionEditInfoForm>

@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { graphql } from 'relay-runtime';
-import { useCreateGalleryMutation } from '~/generated/useCreateGalleryMutation.graphql';
+
 import { useUpdateGalleryHiddenMutation } from '~/generated/useUpdateGalleryHiddenMutation.graphql';
 import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 
@@ -21,14 +21,17 @@ export default function useUpdateGalleryHidden() {
     }
   `);
 
-  return useCallback((id: string, hidden: boolean) => {
-    return updateGalleryHidden({
-      variables: {
-        input: {
-          id,
-          hidden,
+  return useCallback(
+    (id: string, hidden: boolean) => {
+      return updateGalleryHidden({
+        variables: {
+          input: {
+            id,
+            hidden,
+          },
         },
-      },
-    });
-  }, []);
+      });
+    },
+    [updateGalleryHidden]
+  );
 }

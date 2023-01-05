@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import { graphql } from 'relay-runtime';
+
 import { useCreateGalleryMutation } from '~/generated/useCreateGalleryMutation.graphql';
 import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 
@@ -26,9 +27,9 @@ export default function useCreateGallery() {
         input: {
           name: '',
           description: '',
-          position: 'a1',
+          position: '2',
         },
       },
     });
-  }, []);
+  }, [createGallery]);
 }

@@ -3,15 +3,13 @@ import { useCallback, useMemo, useState } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
-import { Button } from '~/components/core/Button/Button';
 
-import colors from '~/components/core/colors';
+import { Button } from '~/components/core/Button/Button';
 import { Dropdown } from '~/components/core/Dropdown/Dropdown';
 import { DropdownItem } from '~/components/core/Dropdown/DropdownItem';
 import { DropdownLink } from '~/components/core/Dropdown/DropdownLink';
 import { DropdownSection } from '~/components/core/Dropdown/DropdownSection';
 import { HStack } from '~/components/core/Spacer/Stack';
-import { TitleXS } from '~/components/core/Text/Text';
 import useCreateGallery from '~/components/MultiGallery/useCreateGallery';
 import { EditLink } from '~/contexts/globalLayout/GlobalNavbar/CollectionNavbar/EditLink';
 import { SignInButton } from '~/contexts/globalLayout/GlobalNavbar/SignInButton';
@@ -148,19 +146,4 @@ export function GalleryRightContent({ queryRef, username }: GalleryRightContentP
 
 const EditLinkWrapper = styled.div`
   position: relative;
-`;
-
-const EditButtonContainer = styled.div.attrs({ role: 'button' })`
-  position: relative;
-
-  padding: 8px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  cursor: pointer;
-
-  :hover {
-    background-color: ${colors.faint};
-  }
 `;

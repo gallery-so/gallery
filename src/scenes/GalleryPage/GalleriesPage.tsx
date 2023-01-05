@@ -1,11 +1,11 @@
+import { DndContext } from '@dnd-kit/core';
+import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import Gallery from '~/components/MultiGallery/Gallery';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
-import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { DndContext } from '@dnd-kit/core';
-import { graphql, useFragment } from 'react-relay';
 import { GalleriesPageQueryFragment$key } from '~/generated/GalleriesPageQueryFragment.graphql';
 import { removeNullValues } from '~/utils/removeNullValues';
 
@@ -21,7 +21,6 @@ export default function GalleriesPage({ queryRef }: Props) {
       fragment GalleriesPageQueryFragment on Query {
         userByUsername(username: $username) {
           ... on GalleryUser {
-            dbid
             featuredGallery {
               id
             }

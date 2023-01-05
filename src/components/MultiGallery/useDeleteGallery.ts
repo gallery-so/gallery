@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import { graphql } from 'relay-runtime';
+
 import { useDeleteGalleryMutation } from '~/generated/useDeleteGalleryMutation.graphql';
 import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 
@@ -21,11 +22,14 @@ export default function useDeleteGallery() {
     }
   `);
 
-  return useCallback((galleryId: string) => {
-    return deleteGallery({
-      variables: {
-        galleryId,
-      },
-    });
-  }, []);
+  return useCallback(
+    (galleryId: string) => {
+      return deleteGallery({
+        variables: {
+          galleryId,
+        },
+      });
+    },
+    [deleteGallery]
+  );
 }
