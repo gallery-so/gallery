@@ -15,6 +15,7 @@ import { ErrorWithSentryMetadata } from '~/errors/ErrorWithSentryMetadata';
 export type ReportingErrorBoundaryFallbackProps = { error: Error };
 
 export type ReportingErrorBoundaryProps = PropsWithChildren<{
+  dontReport?: boolean;
   fallback: ReactNode | ComponentType<ReportingErrorBoundaryFallbackProps>;
   additionalTags?: Record<string, Primitive>;
   onError?: (error: Error) => void;
@@ -43,7 +44,9 @@ export class ReportingErrorBoundary extends Component<ReportingErrorBoundaryProp
 
     // Temporarily disable the reporting of Nft failures
     // since they're eating up our sentry credits.
-    if (!(error instanceof CouldNotRenderNftError)) {
+    //
+    // Also allow the user of this component to swallow errors
+    if (!this.props.dontReport && !(error instanceof CouldNotRenderNftError)) {
       this.context?.(error);
     }
 
