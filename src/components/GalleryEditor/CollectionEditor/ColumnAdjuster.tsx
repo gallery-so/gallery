@@ -1,55 +1,66 @@
 import { UniqueIdentifier } from '@dnd-kit/core';
-import { useCallback } from 'react';
-import { graphql, useFragment } from 'react-relay';
+import { useCallback, useMemo } from 'react';
+import { graphql, useLazyLoadQuery } from 'react-relay';
 import styled from 'styled-components';
 
+import colors from '~/components/core/colors';
 import IconContainer from '~/components/core/Markdown/IconContainer';
 import { HStack } from '~/components/core/Spacer/Stack';
-import { BaseM } from '~/components/core/Text/Text';
-import {
-  useCollectionEditorActions,
-  useStagedCollectionState,
-} from '~/contexts/collectionEditor/CollectionEditorContext';
+import { BaseM, TitleDiatypeM } from '~/components/core/Text/Text';
+import { useCollectionEditorContextNew } from '~/contexts/collectionEditor/CollectionEditorContextNew';
 import useMaxColumns from '~/contexts/collectionEditor/useMaxColumns';
-import { ColumnAdjusterNewFragment$key } from '~/generated/ColumnAdjusterNewFragment.graphql';
+import { ColumnAdjusterQuery } from '~/generated/ColumnAdjusterQuery.graphql';
 import CircleMinusIcon from '~/icons/CircleMinusIcon';
 import CirclePlusIcon from '~/icons/CirclePlusIcon';
 
-type Props = {
-  viewerRef: ColumnAdjusterNewFragment$key;
-  activeSectionId: UniqueIdentifier;
-};
-
-function ColumnAdjuster({ viewerRef, activeSectionId }: Props) {
-  const viewer = useFragment(
+function ColumnAdjuster() {
+  const query = useLazyLoadQuery<ColumnAdjusterQuery>(
     graphql`
-      fragment ColumnAdjusterNewFragment on Viewer {
-        ...useMaxColumnsFragment
+      query ColumnAdjusterQuery {
+        viewer {
+          ... on Viewer {
+            __typename
+            ...useMaxColumnsFragment
+          }
+        }
       }
     `,
-    viewerRef
+    {}
   );
 
-  const stagedCollectionState = useStagedCollectionState();
-  const { incrementColumns, decrementColumns } = useCollectionEditorActions();
+  if (query.viewer?.__typename !== 'Viewer') {
+    throw new Error('Expected viewer to be present');
+  }
 
-  const activeSection = stagedCollectionState[activeSectionId];
-  const columns = activeSection.columns;
+  const maxColumns = useMaxColumns(query.viewer);
 
-  const maxColumns = useMaxColumns(viewer);
-  const handleIncrementClick = useCallback(
-    () => incrementColumns(activeSectionId),
-    [activeSectionId, incrementColumns]
-  );
-  const handleDecrementClick = useCallback(
-    () => decrementColumns(activeSectionId),
-    [activeSectionId, decrementColumns]
-  );
+  const { incrementColumns, decrementColumns, activeSectionId, sections } =
+    useCollectionEditorContextNew();
+
+  const columns = useMemo(() => {
+    if (activeSectionId) {
+      return sections[activeSectionId]?.columns ?? 0;
+    }
+
+    return 0;
+  }, [activeSectionId, sections]);
+
+  const handleIncrementClick = useCallback(() => {
+    if (activeSectionId && columns < maxColumns) {
+      incrementColumns(activeSectionId);
+    }
+  }, [activeSectionId, columns, incrementColumns, maxColumns]);
+
+  const handleDecrementClick = useCallback(() => {
+    if (activeSectionId && columns > 1) {
+      decrementColumns(activeSectionId);
+    }
+  }, [activeSectionId, columns, decrementColumns]);
 
   return (
-    <HStack gap={24} align="center" justify="space-between">
-      <BaseM>Columns</BaseM>
-      <StyledButtonContainer>
+    <Container gap={24} align="center" justify="space-between">
+      <TitleDiatypeM color={colors.white}>Columns</TitleDiatypeM>
+      <HStack gap={2} align="center">
         <IconContainer
           size="sm"
           onClick={handleDecrementClick}
@@ -57,7 +68,7 @@ function ColumnAdjuster({ viewerRef, activeSectionId }: Props) {
           icon={<CircleMinusIcon />}
         />
 
-        <StyledNumberOfColumns>{columns}</StyledNumberOfColumns>
+        <BaseM color={colors.white}>{columns}</BaseM>
 
         <IconContainer
           size="sm"
@@ -65,18 +76,14 @@ function ColumnAdjuster({ viewerRef, activeSectionId }: Props) {
           disabled={columns >= maxColumns}
           icon={<CirclePlusIcon />}
         />
-      </StyledButtonContainer>
-    </HStack>
+      </HStack>
+    </Container>
   );
 }
 
-const StyledButtonContainer = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const StyledNumberOfColumns = styled(BaseM)`
-  padding: 0 8px;
+const Container = styled(HStack)`
+  background: ${colors.activeBlue};
+  padding: 2px 4px;
 `;
 
 export default ColumnAdjuster;

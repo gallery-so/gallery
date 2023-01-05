@@ -7,6 +7,7 @@ import colors from '~/components/core/colors';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { TitleDiatypeM } from '~/components/core/Text/Text';
 import transitions from '~/components/core/transitions';
+import ColumnAdjuster from '~/components/GalleryEditor/CollectionEditor/ColumnAdjuster';
 import DragHandleIcon from '~/icons/DragHandleIcon';
 import TrashIcon from '~/icons/Trash';
 import noop from '~/utils/noop';
@@ -42,7 +43,6 @@ export const Handle = forwardRef<HTMLButtonElement, HandleProps>((props, ref) =>
       {...props}
     >
       <HStack gap={2} align="center">
-        <DragHandleIcon />
         <StyledLabelText>Section</StyledLabelText>
       </HStack>
     </StyledLabel>
@@ -55,9 +55,9 @@ const StyledLabel = styled.div<{ isActive: boolean; isDragging: boolean }>`
   display: flex;
   background-color: ${colors.activeBlue};
   border-radius: 2px;
-  padding: 0 6px 0 2px;
+  padding: 2px 4px;
   align-items: center;
-  width: fit-content;
+  user-select: none;
 
   cursor: ${({ isDragging }) => (isDragging ? 'grabbing' : 'grab')};
 `;
@@ -102,9 +102,13 @@ export const Section = forwardRef<HTMLDivElement, Props>(
             {...draggableListeners}
             {...draggableAttributes}
           />
-          <StyledDeleteButton onClick={handleDeleteSectionClick}>
-            <StyledTrashIcon />
-          </StyledDeleteButton>
+
+          <HStack gap={2}>
+            <ColumnAdjuster />
+            <StyledDeleteButton onClick={handleDeleteSectionClick}>
+              <StyledTrashIcon />
+            </StyledDeleteButton>
+          </HStack>
         </StyledButtonContainer>
         <StyledItemContainer columns={columns}>
           {isEmpty ? (

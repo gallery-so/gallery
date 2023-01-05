@@ -34,7 +34,6 @@ import { removeNullValues } from '~/utils/removeNullValues';
 
 import DroppableSection from './DragAndDrop/DroppableSection';
 import SectionDragging from './DragAndDrop/SectionDragging';
-import { MENU_WIDTH } from './EditorMenu';
 import SortableStagedNft from './SortableStagedNft';
 import SortableStagedWhitespace from './SortableStagedWhitespace';
 import StagedItemDragging from './StagedItemDragging';
@@ -239,8 +238,6 @@ const StyledStagingArea = styled.div<{ navbarHeight: number }>`
   display: flex;
   flex-direction: column;
   align-items: center;
-
-  width: calc(100% - ${MENU_WIDTH}px);
 
   margin: 0 auto;
 

@@ -158,41 +158,6 @@ export const CollectionEditorProviderNew = memo(({ children }: Props) => {
     return collections[collectionIdBeingEdited]?.activeSectionId ?? null;
   }, [collectionIdBeingEdited, collections]);
 
-  // const [sections, setSections] = useState<Record<string, StagedSection>>(() => {
-  //   const sections: Record<string, StagedSection> = {};
-  //
-  //   // In the case this component is initializing and the user is creating a new
-  //   // Gallery. They won't have any collections yet. So it makes sense that they
-  //   // won't have any data from the server. So we'll initialize them with an
-  //   // empty section.
-  //   if (!serverCollectionBeingEdited) {
-  //     const defaultSection = { columns: DEFAULT_COLUMN_SETTING, items: [] };
-  //
-  //     return { [generate12DigitId()]: defaultSection };
-  //   }
-  //
-  //   const parsed = parseCollectionLayoutGraphql(
-  //     collectionTokens,
-  //     serverCollectionBeingEdited.layout
-  //   );
-  //   for (const sectionId in parsed) {
-  //     const parsedSection = parsed[sectionId];
-  //
-  //     sections[sectionId] = {
-  //       columns: parsedSection.columns,
-  //       items: parsedSection.items.map((item) => {
-  //         if ('whitespace' in item) {
-  //           return { kind: 'whitespace', id: item.id };
-  //         } else {
-  //           return { kind: 'token', id: item.token.dbid };
-  //         }
-  //       }),
-  //     };
-  //   }
-  //
-  //   return sections;
-  // });
-
   const updateSections = useCallback(
     (updatedSections: Record<string, StagedSection>) => {
       setSections(updatedSections);
@@ -240,7 +205,7 @@ export const CollectionEditorProviderNew = memo(({ children }: Props) => {
   );
 
   const incrementColumns = useCallback(
-    (sectionId: UniqueIdentifier) => {
+    (sectionId: string) => {
       setSections((previous) => {
         return {
           ...previous,
@@ -255,8 +220,9 @@ export const CollectionEditorProviderNew = memo(({ children }: Props) => {
   );
 
   const decrementColumns = useCallback(
-    (sectionId: UniqueIdentifier) => {
+    (sectionId: string) => {
       setSections((previous) => {
+        console.log('Here');
         return {
           ...previous,
           [sectionId]: {
