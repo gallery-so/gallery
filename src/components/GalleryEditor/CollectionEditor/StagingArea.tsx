@@ -20,6 +20,7 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';
+import { BaseM, TitleDiatypeM } from '~/components/core/Text/Text';
 import { createCollisionDetectionStrategy } from '~/components/GalleryEditor/CollectionEditor/DragAndDrop/createCollisionDetectionStrategy';
 import {
   dragEnd,
@@ -27,7 +28,6 @@ import {
 } from '~/components/GalleryEditor/CollectionEditor/DragAndDrop/draggingActions';
 import { useCollectionEditorContextNew } from '~/contexts/collectionEditor/CollectionEditorContextNew';
 import { IMAGE_SIZES } from '~/contexts/collectionEditor/useDndDimensions';
-import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { StagingAreaNewFragment$key } from '~/generated/StagingAreaNewFragment.graphql';
 import useKeyDown from '~/hooks/useKeyDown';
 import { removeNullValues } from '~/utils/removeNullValues';
@@ -70,7 +70,6 @@ function StagingArea({ tokensRef }: Props) {
     tokensRef
   );
 
-  const navbarHeight = useGlobalNavbarHeight();
   const { activeSectionId, sections, updateSections, deleteSection } =
     useCollectionEditorContextNew();
 
@@ -182,68 +181,78 @@ function StagingArea({ tokensRef }: Props) {
   }, [activeId, activeItem, localSections, nftFragmentsKeyedByID, sections]);
 
   return (
-    <StyledStagingArea navbarHeight={navbarHeight}>
-      <DndContext
-        sensors={sensors}
-        onDragEnd={handleDragEnd}
-        onDragStart={handleDragStart}
-        collisionDetection={collisionDetectionStrategy}
-        measuring={layoutMeasuring}
-        onDragOver={handleDragOver}
-      >
-        {/* Handles sorting for sections */}
-        <SortableContext items={sectionIds} strategy={verticalListSortingStrategy}>
-          <VStack gap={12}>
-            {Object.entries(localSections).map(([sectionId, section]) => {
-              return (
-                <DroppableSection
-                  key={sectionId}
-                  id={sectionId}
-                  items={section.items}
-                  columns={section.columns}
-                >
-                  {/* Handles sorting for items in each section */}
-                  <SortableContext items={section.items.map((item) => item.id)}>
-                    {section.items.map((item) => {
-                      const columns = section.columns;
-                      const size = IMAGE_SIZES[columns];
-                      const stagedItemRef = nftFragmentsKeyedByID[item.id];
+    <StyledStagingArea gap={20}>
+      <CollectionNameAndDescriptionContainer>
+        <TitleDiatypeM>stuff</TitleDiatypeM>
+        <BaseM>description of stuff</BaseM>
+      </CollectionNameAndDescriptionContainer>
 
-                      if (item.kind === 'token' && stagedItemRef) {
-                        return (
-                          <SortableStagedNft
-                            key={item.id}
-                            size={size}
-                            mini={columns > 4}
-                            tokenRef={stagedItemRef}
-                          />
-                        );
-                      } else {
-                        return <SortableStagedWhitespace key={item.id} id={item.id} size={size} />;
-                      }
-                    })}
-                  </SortableContext>
-                </DroppableSection>
-              );
-            })}
-          </VStack>
-        </SortableContext>
-        <DragOverlay dropAnimation={dropAnimation}>{draggingOverlay}</DragOverlay>
-      </DndContext>
+      <SectionList>
+        <DndContext
+          sensors={sensors}
+          onDragEnd={handleDragEnd}
+          onDragStart={handleDragStart}
+          collisionDetection={collisionDetectionStrategy}
+          measuring={layoutMeasuring}
+          onDragOver={handleDragOver}
+        >
+          {/* Handles sorting for sections */}
+          <SortableContext items={sectionIds} strategy={verticalListSortingStrategy}>
+            <VStack gap={12}>
+              {Object.entries(localSections).map(([sectionId, section]) => {
+                return (
+                  <DroppableSection
+                    key={sectionId}
+                    id={sectionId}
+                    items={section.items}
+                    columns={section.columns}
+                  >
+                    {/* Handles sorting for items in each section */}
+                    <SortableContext items={section.items.map((item) => item.id)}>
+                      {section.items.map((item) => {
+                        const columns = section.columns;
+                        const size = IMAGE_SIZES[columns];
+                        const stagedItemRef = nftFragmentsKeyedByID[item.id];
+
+                        if (item.kind === 'token' && stagedItemRef) {
+                          return (
+                            <SortableStagedNft
+                              key={item.id}
+                              size={size}
+                              mini={columns > 4}
+                              tokenRef={stagedItemRef}
+                            />
+                          );
+                        } else {
+                          return (
+                            <SortableStagedWhitespace key={item.id} id={item.id} size={size} />
+                          );
+                        }
+                      })}
+                    </SortableContext>
+                  </DroppableSection>
+                );
+              })}
+            </VStack>
+          </SortableContext>
+          <DragOverlay dropAnimation={dropAnimation}>{draggingOverlay}</DragOverlay>
+        </DndContext>
+      </SectionList>
     </StyledStagingArea>
   );
 }
 
-const StyledStagingArea = styled.div<{ navbarHeight: number }>`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+const CollectionNameAndDescriptionContainer = styled(VStack)`
+  padding: 0 16px;
+`;
 
-  margin: 0 auto;
+const SectionList = styled(VStack)``;
 
+const StyledStagingArea = styled(VStack)`
   height: 100%;
+  flex-grow: 1;
 
-  padding: 48px 0px;
+  padding: 16px 0;
 
   overflow: auto;
 
