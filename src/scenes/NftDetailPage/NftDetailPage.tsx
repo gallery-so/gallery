@@ -16,6 +16,7 @@ import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import ErrorBoundary from '~/contexts/boundary/ErrorBoundary';
 import { NftDetailPageQuery } from '~/generated/NftDetailPageQuery.graphql';
 import useKeyDown from '~/hooks/useKeyDown';
+import NotFound from '~/scenes/NotFound/NotFound';
 import { removeNullValues } from '~/utils/removeNullValues';
 
 import NavigationHandle from './NavigationHandle';
@@ -99,9 +100,7 @@ function NftDetailPage({
 
   const { selectedNftIndex, selectedNft } = useMemo(() => {
     const index = collection.findIndex(({ token }) => token.dbid === tokenId);
-    if (index === -1) {
-      throw new Error('NFT Detail Page: NFT index not found within collection');
-    }
+
     return { selectedNftIndex: index, selectedNft: collection[index] };
   }, [tokenId, collection]);
 
@@ -215,16 +214,22 @@ function NftDetailPage({
       </Head>
       <GalleryViewEmitter queryRef={query} />
       <StyledNftDetailPage>
-        {prevNft && <NavigationHandle direction={Directions.LEFT} onClick={handlePrevPress} />}
-        {mountedNfts.map(({ token, visibility }) => (
-          <_DirectionalFade key={token.token.dbid} visibility={visibility}>
-            <NftDetailView
-              queryRef={token}
-              authenticatedUserOwnsAsset={authenticatedUserOwnsAsset}
-            />
-          </_DirectionalFade>
-        ))}
-        {nextNft && <NavigationHandle direction={Directions.RIGHT} onClick={handleNextPress} />}
+        {selectedNftIndex === -1 ? (
+          <NotFound />
+        ) : (
+          <>
+            {prevNft && <NavigationHandle direction={Directions.LEFT} onClick={handlePrevPress} />}
+            {mountedNfts.map(({ token, visibility }) => (
+              <_DirectionalFade key={token.token.dbid} visibility={visibility}>
+                <NftDetailView
+                  queryRef={token}
+                  authenticatedUserOwnsAsset={authenticatedUserOwnsAsset}
+                />
+              </_DirectionalFade>
+            ))}
+            {nextNft && <NavigationHandle direction={Directions.RIGHT} onClick={handleNextPress} />}
+          </>
+        )}
       </StyledNftDetailPage>
     </>
   );
