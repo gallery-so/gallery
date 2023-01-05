@@ -47,7 +47,7 @@ function NavigationHandle({ direction, onClick }: Props) {
   return (
     <StyledNavigationHandle direction={direction}>
       <StyledTextWrapper align="center" gap={3} direction={direction} onClick={onClick}>
-        {arrow && <IconContainer size="md" icon={arrow} />}
+        {arrow && <IconContainer variant="default" size="md" icon={arrow} />}
         <StyledHoverText>
           <ActionText>{hoverText}</ActionText>
         </StyledHoverText>

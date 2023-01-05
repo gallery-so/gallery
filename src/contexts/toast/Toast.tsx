@@ -99,7 +99,7 @@ function Toast({ message, onClose, variant }: Props) {
           </StyledAlertIcon>
         )}
         <BaseM>{message}</BaseM>
-        <IconContainer onClick={handleClose} size="sm" icon={<CloseIcon />} />
+        <IconContainer variant="default" onClick={handleClose} size="sm" icon={<CloseIcon />} />
       </StyledToast>
     </ToastContainer>
   );

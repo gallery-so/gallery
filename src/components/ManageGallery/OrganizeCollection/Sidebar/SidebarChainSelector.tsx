@@ -78,6 +78,7 @@ export function SidebarChainSelector({
       </Chains>
       {isRefreshDisabledForUser(query.viewer?.user?.dbid ?? '') ? null : (
         <IconContainer
+          variant="default"
           data-testid="RefreshButton"
           onMouseEnter={() => setShowTooltip(true)}
           onMouseLeave={() => setShowTooltip(false)}

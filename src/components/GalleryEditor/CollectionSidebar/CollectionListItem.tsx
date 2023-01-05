@@ -105,7 +105,7 @@ export function CollectionListItem({ collectionId }: CollectionListItemProps) {
             onClick={handleToggleHidden}
             ref={reference}
             size="sm"
-            stacked
+            variant="stacked"
             icon={hidden ? <ShowIcon /> : <HideIcon />}
           />
 
@@ -116,7 +116,7 @@ export function CollectionListItem({ collectionId }: CollectionListItemProps) {
             text={hidden ? 'Show' : 'Hide'}
           />
 
-          <SettingsDropdown size="sm" stacked>
+          <SettingsDropdown size="sm" iconVariant="stacked">
             <DropdownSection>
               <DropdownItem onClick={handleEdit}>EDIT NAME & DESC</DropdownItem>
               <DropdownItem onClick={handleDelete}>DELETE</DropdownItem>

@@ -31,7 +31,7 @@ export function SidebarViewSelector({ selectedView, setSelectedView }: SidebarVi
     <Container>
       <Selector isDropdownOpen={isDropdownOpen} onClick={() => setIsDropdownOpen(true)}>
         <BaseM>{selectedView}</BaseM>
-        <IconContainer stacked size="sm" icon={<DoubleArrowsIcon />} />
+        <IconContainer variant="stacked" size="sm" icon={<DoubleArrowsIcon />} />
       </Selector>
       <Dropdown
         position="full-width"

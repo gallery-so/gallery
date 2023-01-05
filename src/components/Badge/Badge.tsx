@@ -67,6 +67,7 @@ export default function Badge({ badgeRef }: Props) {
       <StyledTooltip text={name || ''} showTooltip={showTooltip} />
       <IconContainer
         size="md"
+        variant="default"
         icon={
           <StyledBadge
             src={imageURL}

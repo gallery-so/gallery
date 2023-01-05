@@ -38,7 +38,13 @@ export default function useNotificationsModal() {
       });
     };
 
-    return <IconContainer onClick={handleSettingsClick} icon={<CogIcon />}></IconContainer>;
+    return (
+      <IconContainer
+        variant="default"
+        onClick={handleSettingsClick}
+        icon={<CogIcon />}
+      ></IconContainer>
+    );
   }, [hideModal, showModal, query]);
 
   return useCallback(() => {

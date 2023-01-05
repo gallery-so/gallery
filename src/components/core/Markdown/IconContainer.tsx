@@ -5,9 +5,69 @@ import colors from '../colors';
 
 export type IconSize = 'sm' | 'md' | 'lg';
 
+export type ColorVariant = 'blue' | 'default' | 'stacked';
+
+type ColorState = {
+  disabledBackground: string;
+  disabledForeground: string;
+
+  idleBackground: string;
+  idleForeground: string;
+
+  hoverBackground: string;
+  hoverForeground: string;
+
+  activeBackground: string;
+  activeForeground: string;
+};
+
+type ColorStates = { [key in ColorVariant]: ColorState };
+
+const COLOR_STATES: ColorStates = {
+  stacked: {
+    disabledBackground: 'transparent',
+    disabledForeground: colors.porcelain,
+
+    idleBackground: 'transparent',
+    idleForeground: colors.offBlack,
+
+    hoverBackground: colors.porcelain,
+    hoverForeground: colors.offBlack,
+
+    activeBackground: 'transparent',
+    activeForeground: colors.porcelain,
+  },
+  default: {
+    disabledBackground: 'transparent',
+    disabledForeground: colors.porcelain,
+
+    idleBackground: 'transparent',
+    idleForeground: colors.offBlack,
+
+    hoverBackground: colors.faint,
+    hoverForeground: colors.offBlack,
+
+    activeBackground: 'transparent',
+    activeForeground: colors.porcelain,
+  },
+  blue: {
+    disabledBackground: 'transparent',
+    disabledForeground: colors.porcelain,
+
+    idleBackground: 'transparent',
+    idleForeground: colors.offBlack,
+
+    hoverBackground: colors.faint,
+    hoverForeground: colors.offBlack,
+
+    activeBackground: 'transparent',
+    activeForeground: colors.porcelain,
+  },
+};
+
 type Props = {
   size?: IconSize;
-  stacked?: boolean;
+  variant: ColorVariant;
   disabled?: boolean;
   className?: string;
   icon: React.ReactElement;
@@ -17,7 +77,7 @@ function IconContainer(
   {
     icon,
     onClick,
-    stacked,
+    variant,
     disabled,
     className,
     size = 'md',
@@ -33,7 +93,7 @@ function IconContainer(
       size={size}
       disabled={disabled}
       className={className}
-      stacked={stacked}
+      variant={variant}
       onMouseDown={(e) => {
         // This will prevent the textarea from losing focus when user clicks a markdown icon
         e.preventDefault();
@@ -48,7 +108,7 @@ function IconContainer(
 const StyledIcon = styled.div<{
   size: IconSize;
   disabled?: boolean;
-  stacked?: boolean;
+  variant: ColorVariant;
 }>`
   position: relative;
 
@@ -57,14 +117,29 @@ const StyledIcon = styled.div<{
   align-items: center;
   cursor: pointer;
 
-  ${({ disabled }) =>
-    disabled
-      ? css`
-          color: ${colors.porcelain};
-        `
-      : css`
-          color: ${colors.offBlack};
-        `}
+  ${({ variant }) => {
+    const variantState = COLOR_STATES[variant];
+
+    return css`
+      color: ${variantState.idleForeground};
+      background-color: ${variantState.idleBackground};
+
+      :active {
+        color: ${variantState.activeForeground};
+        background-color: ${variantState.activeBackground};
+      }
+
+      :hover {
+        color: ${variantState.hoverForeground};
+        background-color: ${variantState.hoverBackground};
+      }
+
+      :disabled {
+        color: ${variantState.disabledForeground};
+        background-color: ${variantState.disabledBackground};
+      }
+    `;
+  }}
 
   ${({ size }) => {
     if (size === 'sm') {
@@ -90,20 +165,6 @@ const StyledIcon = styled.div<{
       `;
     }
   }}
-
-
-  &:hover {
-    ${({ disabled, stacked }) =>
-      disabled
-        ? null
-        : css`
-            background: ${stacked ? colors.porcelain : colors.faint};
-          `}
-  }
-
-  &:active {
-    background: ${colors.porcelain};
-  }
 `;
 
 const ForwardedIconContainer = forwardRef<HTMLDivElement, Props>(IconContainer);

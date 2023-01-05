@@ -63,6 +63,7 @@ function ColumnAdjuster() {
       <HStack gap={2} align="center">
         <IconContainer
           size="sm"
+          variant="default"
           onClick={handleDecrementClick}
           disabled={columns <= 1}
           icon={<CircleMinusIcon />}
@@ -72,6 +73,7 @@ function ColumnAdjuster() {
 
         <IconContainer
           size="sm"
+          variant="default"
           onClick={handleIncrementClick}
           disabled={columns >= maxColumns}
           icon={<CirclePlusIcon />}

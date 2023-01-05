@@ -8,7 +8,7 @@ export function ExpandedIcon({ expanded }: Props) {
   return (
     <Container>
       <IconContainer
-        stacked
+        variant="stacked"
         size="sm"
         icon={
           <StyledSvg

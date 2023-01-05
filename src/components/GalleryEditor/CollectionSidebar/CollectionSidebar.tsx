@@ -15,7 +15,12 @@ function TitleSection() {
     <TitleSectionWrapper align="center" justify="space-between">
       <TitleS>Collections</TitleS>
 
-      <IconContainer size="sm" icon={<CreateCollectionIcon />} onClick={createCollection} />
+      <IconContainer
+        variant="default"
+        size="sm"
+        icon={<CreateCollectionIcon />}
+        onClick={createCollection}
+      />
     </TitleSectionWrapper>
   );
 }

@@ -10,6 +10,7 @@ export default function SnowToggleIcon() {
   return (
     <IconContainer
       size="md"
+      variant="default"
       icon={<StyledSnowflakeIcon active={isSnowEnabled} />}
       onClick={toggleSnow}
     />

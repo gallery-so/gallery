@@ -10,6 +10,7 @@ export function BackButton({ onClick }: Props) {
   return (
     <IconContainer
       size="md"
+      variant="default"
       onClick={onClick}
       icon={
         <StyledSvg

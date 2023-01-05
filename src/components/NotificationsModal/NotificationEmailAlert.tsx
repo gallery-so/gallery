@@ -52,7 +52,7 @@ export function NotificationEmailAlert({ onDismiss, queryRef }: Props) {
         <BaseM>Never miss a moment! Enable email notifications in settings.</BaseM>
         <HStack align="center" gap={8}>
           <InteractiveLink onClick={handleEnableEmails}>Enable</InteractiveLink>
-          <IconContainer size="sm" onClick={handleDismiss} icon={<CloseIcon />} />
+          <IconContainer variant="default" size="sm" onClick={handleDismiss} icon={<CloseIcon />} />
         </HStack>
       </StyledAlert>
     </StyledAlertContainer>

@@ -52,6 +52,7 @@ function ColumnAdjuster({ viewerRef, activeSectionId }: Props) {
       <StyledButtonContainer>
         <IconContainer
           size="sm"
+          variant="default"
           onClick={handleDecrementClick}
           disabled={columns <= 1}
           icon={<CircleMinusIcon />}
@@ -61,6 +62,7 @@ function ColumnAdjuster({ viewerRef, activeSectionId }: Props) {
 
         <IconContainer
           size="sm"
+          variant="default"
           onClick={handleIncrementClick}
           disabled={columns >= maxColumns}
           icon={<CirclePlusIcon />}

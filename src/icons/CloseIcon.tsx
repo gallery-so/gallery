@@ -32,7 +32,7 @@ export function DecoratedCloseIcon({
 }: DecoratedCloseIconProps) {
   return (
     <StyledDecoratedCloseIcon className={className} variant={variant}>
-      <IconContainer onClick={onClick} icon={<CloseIcon />} />
+      <IconContainer variant="default" onClick={onClick} icon={<CloseIcon />} />
     </StyledDecoratedCloseIcon>
   );
 }

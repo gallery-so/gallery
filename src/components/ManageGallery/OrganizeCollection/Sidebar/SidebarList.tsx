@@ -91,8 +91,8 @@ function CollectionTitle({
               }}
             >
               <IconContainer
-                stacked
                 size="sm"
+                variant="stacked"
                 icon={selectedView === 'Hidden' ? <ShowIcon /> : <HideIcon />}
               />
             </ShowHideContainer>
