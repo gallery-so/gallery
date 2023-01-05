@@ -18,7 +18,7 @@ type CollectionSearchResultsProps = {
 };
 
 export function CollectionSearchResults({ searchQuery }: CollectionSearchResultsProps) {
-  const { collections, setCollections } = useGalleryEditorContext();
+  const { collections, setCollections, activateCollection } = useGalleryEditorContext();
 
   const collectionList = useMemo(() => Object.values(collections), [collections]);
 
@@ -36,17 +36,7 @@ export function CollectionSearchResults({ searchQuery }: CollectionSearchResults
     return Object.values(collections).map((collection) => collection.dbid);
   }, [collections]);
 
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        delay: 100,
-
-        // This is pretty arbitrary, but seems like a reasonable value
-        // https://docs.dndkit.com/api-documentation/sensors/pointer#delay
-        tolerance: 50,
-      },
-    })
-  );
+  const sensors = useSensors(useSensor(PointerSensor));
 
   const handleDragEnd = useCallback(
     (event: DragEndEvent) => {
@@ -55,6 +45,8 @@ export function CollectionSearchResults({ searchQuery }: CollectionSearchResults
       if (!active.id || !over?.id) {
         return;
       }
+
+      activateCollection(active.id as string);
 
       setCollections((previousCollections) => {
         const items = Object.keys(previousCollections);

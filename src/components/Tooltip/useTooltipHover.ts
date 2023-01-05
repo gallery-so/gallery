@@ -8,6 +8,7 @@ export function useTooltipHover() {
   const { x, y, reference, floating, strategy, context } = useFloating({
     open,
     placement: 'bottom',
+    strategy: 'absolute',
     onOpenChange: setOpen,
     middleware: [offset(8)],
     whileElementsMounted: autoUpdate,
@@ -24,7 +25,7 @@ export function useTooltipHover() {
       transform: open ? `translateY(0)` : `translateY(-4px)`,
       opacity: open ? '1' : '0',
       width: 'max-content',
-      zIndex: 1,
+      zIndex: 10,
     }),
     [open, strategy, x, y]
   );
