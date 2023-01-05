@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { useCallback, useMemo, useState } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -58,6 +58,7 @@ export function GalleryRightContent({ queryRef, username }: GalleryRightContentP
 
   const styledQrCode = useQrCode();
   const { showModal } = useModalActions();
+  const { route, back } = useRouter();
 
   const createGallery = useCreateGallery();
 
@@ -77,6 +78,14 @@ export function GalleryRightContent({ queryRef, username }: GalleryRightContentP
       'user' in query.viewer &&
       query.viewer?.user?.dbid &&
       query.viewer?.user?.dbid === query.userByUsername?.dbid
+  );
+
+  const showShowMultiGalleryButton = Boolean(
+    query.viewer &&
+      'user' in query.viewer &&
+      query.viewer?.user?.dbid &&
+      query.viewer?.user?.dbid === query.userByUsername?.dbid &&
+      route === '/[username]/galleries'
   );
 
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
@@ -119,17 +128,15 @@ export function GalleryRightContent({ queryRef, username }: GalleryRightContentP
     );
   }
 
-  if (shouldShowEditButton) {
+  if (showShowMultiGalleryButton) {
     return (
       <HStack gap={12}>
         {editGalleryUrl && (
-          // <Link href={editGalleryUrl}>
           <Button variant="secondary" onClick={handleCreateGallery}>
             Add New
           </Button>
-          // </Link>
         )}
-        <Button>DONE</Button>
+        <Button onClick={back}>DONE</Button>
       </HStack>
     );
   } else if (query.viewer?.__typename !== 'Viewer') {
