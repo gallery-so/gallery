@@ -7,6 +7,7 @@ import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { DndContext } from '@dnd-kit/core';
 import { graphql, useFragment } from 'react-relay';
 import { GalleriesPageQueryFragment$key } from '~/generated/GalleriesPageQueryFragment.graphql';
+import { removeNullValues } from '~/utils/removeNullValues';
 
 type Props = {
   queryRef: GalleriesPageQueryFragment$key;
@@ -15,37 +16,62 @@ type Props = {
 export default function GalleriesPage({ queryRef }: Props) {
   const navbarHeight = useGlobalNavbarHeight();
 
-  // const galleries = ['1', '2', '3', '4', '5', '6'];
-
   const query = useFragment(
     graphql`
       fragment GalleriesPageQueryFragment on Query {
-        viewer {
-          ... on Viewer {
-            user {
-              dbid
-              galleries {
-                id
-                ...GalleryFragment
-              }
+        userByUsername(username: $username) {
+          ... on GalleryUser {
+            dbid
+            featuredGallery {
+              id
+            }
+            galleries {
+              id
+              hidden
+              ...GalleryFragment
             }
           }
         }
+        ...useLoggedInUserIdFragment
       }
     `,
     queryRef
   );
 
-  const galleries = query.viewer?.user?.galleries ?? [];
+  const user = query.userByUsername;
+  const galleries = removeNullValues(user?.galleries) ?? [];
 
-  if (galleries.length < 1) return null;
+  const featuredGalleryId = user?.featuredGallery?.id ?? null;
+  const featuredGallery = galleries.find((gallery) => gallery.id === featuredGalleryId);
+
+  // sort by hidden
+  const nonFeaturedGalleries = galleries
+    .filter((gallery) => gallery.id !== featuredGalleryId)
+    .sort((a, b) => {
+      if (a.hidden && !b.hidden) {
+        return 1;
+      } else if (!a.hidden && b.hidden) {
+        return -1;
+      } else {
+        return 0;
+      }
+    });
 
   return (
     <GalleryPageWrapper navbarHeight={navbarHeight}>
       <GalleryWrapper>
-        {galleries.map((gallery) => {
-          // @ts-ignore
-          return <Gallery key={gallery.id} queryRef={gallery} />;
+        {featuredGallery && (
+          <Gallery queryRef={query} galleryRef={featuredGallery} isFeatured={true} />
+        )}
+        {nonFeaturedGalleries.map((gallery) => {
+          return (
+            <Gallery
+              key={gallery.id}
+              galleryRef={gallery}
+              queryRef={query}
+              isFeatured={featuredGalleryId === gallery.id}
+            />
+          );
         })}
 
         {/* <DndContext>
@@ -55,8 +81,6 @@ export default function GalleriesPage({ queryRef }: Props) {
             })}
           </SortableContext>
         </DndContext> */}
-        {/* <Gallery isFeatured />
-        <Gallery isHidden /> */}
       </GalleryWrapper>
     </GalleryPageWrapper>
   );
@@ -73,6 +97,9 @@ const GalleryWrapper = styled.div`
   gap: 16px;
 
   @media only screen and ${breakpoints.tablet} {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  @media only screen and ${breakpoints.desktop} {
     grid-template-columns: repeat(4, 1fr);
   }
 `;
