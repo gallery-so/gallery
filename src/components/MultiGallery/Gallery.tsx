@@ -3,7 +3,10 @@ import { Route } from 'nextjs-routes';
 import { useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
+import { useModalActions } from '~/contexts/modal/ModalContext';
 import { GalleryFragment$key } from '~/generated/GalleryFragment.graphql';
+import { useLoggedInUserIdFragment$key } from '~/generated/useLoggedInUserIdFragment.graphql';
+import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
 
 import PencilIcon from '~/icons/PencilIcon';
 import { removeNullValues } from '~/utils/removeNullValues';
@@ -13,16 +16,18 @@ import { DropdownItem } from '../core/Dropdown/DropdownItem';
 import SettingsDropdown from '../core/Dropdown/SettingsDropdown';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM, TitleDiatypeM, TitleXS } from '../core/Text/Text';
+import GalleryNameAndDescriptionModal from './GalleryNameAndDescriptionModal';
 import useDeleteGallery from './useDeleteGallery';
 import useSetFeaturedGallery from './useSetFeaturedGallery';
 import useUpdateGalleryHidden from './useUpdateGalleryHidden';
 
 type Props = {
   isFeatured?: boolean;
-  queryRef: GalleryFragment$key;
+  galleryRef: GalleryFragment$key;
+  queryRef: useLoggedInUserIdFragment$key;
 };
 
-export default function Gallery({ isFeatured = false, queryRef }: Props) {
+export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Props) {
   const query = useFragment(
     graphql`
       fragment GalleryFragment on Gallery {
@@ -34,16 +39,23 @@ export default function Gallery({ isFeatured = false, queryRef }: Props) {
         collections @required(action: THROW) {
           id
         }
+        owner {
+          id
+        }
+        ...GalleryNameAndDescriptionModalFragment
       }
     `,
-    queryRef
+    galleryRef
   );
-
-  console.log(query);
 
   const setFeaturedGallery = useSetFeaturedGallery();
   const updateGalleryHidden = useUpdateGalleryHidden();
   const deleteGallery = useDeleteGallery();
+
+  const loggedInUserId = useLoggedInUserId(queryRef);
+  const isAuthenticatedUser = loggedInUserId === query?.owner?.id;
+
+  const { showModal, hideModal } = useModalActions();
 
   const handleSetFeaturedGallery = useCallback(() => {
     setFeaturedGallery(query.dbid);
@@ -57,6 +69,13 @@ export default function Gallery({ isFeatured = false, queryRef }: Props) {
     deleteGallery(query.dbid);
   }, [query.dbid, deleteGallery]);
 
+  const handleEditGalleryName = useCallback(() => {
+    showModal({
+      content: <GalleryNameAndDescriptionModal galleryRef={query} onNext={hideModal} />,
+      headerText: 'Name and descripton of your gallery',
+    });
+  }, [showModal]);
+
   const handleEditGallery: Route = useMemo(() => {
     return {
       pathname: '/gallery/[galleryId]/edit',
@@ -68,6 +87,8 @@ export default function Gallery({ isFeatured = false, queryRef }: Props) {
 
   const nonNullTokenPreviews = removeNullValues(tokenPreviews) ?? [];
 
+  if (!isAuthenticatedUser && hidden) return null;
+
   return (
     <StyledGalleryWrapper gap={12}>
       <StyledGalleryHeader justify="space-between">
@@ -77,30 +98,36 @@ export default function Gallery({ isFeatured = false, queryRef }: Props) {
         </StyledGalleryTitleWrapper>
         <HStack gap={8} align="center">
           {isFeatured && <StyledGalleryFeaturedText as="span">Featured</StyledGalleryFeaturedText>}
-          <Link href={handleEditGallery}>
-            <a>
-              <PencilIcon />
-            </a>
-          </Link>
-          <SettingsDropdown>
-            <DropdownItem>EDIT NAME & DESC</DropdownItem>
-            {hidden ? (
-              <DropdownItem onClick={handleUpdateGalleryHidden}>UNHIDE</DropdownItem>
-            ) : (
-              <>
-                {!isFeatured && (
-                  <DropdownItem onClick={handleSetFeaturedGallery}>FEATURE ON PROFILE</DropdownItem>
+          {isAuthenticatedUser && (
+            <>
+              <Link href={handleEditGallery}>
+                <a>
+                  <PencilIcon />
+                </a>
+              </Link>
+              <SettingsDropdown>
+                <DropdownItem onClick={handleEditGalleryName}>EDIT NAME & DESC</DropdownItem>
+                {hidden ? (
+                  <DropdownItem onClick={handleUpdateGalleryHidden}>UNHIDE</DropdownItem>
+                ) : (
+                  <>
+                    {!isFeatured && (
+                      <DropdownItem onClick={handleSetFeaturedGallery}>
+                        FEATURE ON PROFILE
+                      </DropdownItem>
+                    )}
+                    <DropdownItem onClick={handleUpdateGalleryHidden}>HIDE</DropdownItem>
+                  </>
                 )}
-                <DropdownItem onClick={handleUpdateGalleryHidden}>HIDE</DropdownItem>
-              </>
-            )}
-            <DropdownItem onClick={handleDeleteGallery}>DELETE</DropdownItem>
-          </SettingsDropdown>
+                <DropdownItem onClick={handleDeleteGallery}>DELETE</DropdownItem>
+              </SettingsDropdown>
+            </>
+          )}
         </HStack>
       </StyledGalleryHeader>
       <StyledTokenPreviewWrapper isHidden={hidden}>
         {nonNullTokenPreviews.map((token) => (
-          <StyledTokenPreview key={token} src={token} alt="token preview" />
+          <StyledTokenPreview key={token} src={token} />
         ))}
       </StyledTokenPreviewWrapper>
     </StyledGalleryWrapper>
