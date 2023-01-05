@@ -36,7 +36,14 @@ export function CollectionSearchResults({ searchQuery }: CollectionSearchResults
     return Object.values(collections).map((collection) => collection.dbid);
   }, [collections]);
 
-  const sensors = useSensors(useSensor(PointerSensor));
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        delay: 150,
+        tolerance: 100,
+      },
+    })
+  );
 
   const handleDragEnd = useCallback(
     (event: DragEndEvent) => {
