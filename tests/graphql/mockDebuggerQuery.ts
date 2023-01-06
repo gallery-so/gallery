@@ -1,6 +1,12 @@
 import { DebuggerQueryQuery } from '~/tests/__generated__/operations';
 
-import { GALLERY_USER_DBID, GALLERY_USER_ID, GALLERY_USER_USERNAME, WALLETS } from '../constants';
+import {
+  GALLERY_USER_DBID,
+  GALLERY_USER_ID,
+  GALLERY_USER_USERNAME,
+  GALLERY_VIEWER_ID,
+  WALLETS,
+} from '../constants';
 import { mockGraphqlQuery } from './mockGraphqlQuery';
 
 export function mockDebuggerQuery() {
@@ -8,6 +14,7 @@ export function mockDebuggerQuery() {
     __typename: 'Query',
     viewer: {
       __typename: 'Viewer',
+      id: GALLERY_VIEWER_ID,
       user: {
         __typename: 'GalleryUser',
         id: GALLERY_USER_ID,
