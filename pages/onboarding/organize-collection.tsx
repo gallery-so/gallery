@@ -16,6 +16,7 @@ import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import CollectionWizardContext from '~/contexts/wizard/CollectionWizardContext';
 import formatError from '~/errors/formatError';
+import { ValidationError } from '~/errors/ValidationError';
 import { organizeCollectionPageQuery } from '~/generated/organizeCollectionPageQuery.graphql';
 import useCreateCollection from '~/hooks/api/collections/useCreateCollection';
 import { getTokenIdsFromCollection } from '~/utils/collectionLayout';
@@ -64,7 +65,7 @@ function LazyLoadedCollectionEditor() {
   const { showModal } = useModalActions();
   const stagedCollectionState = useStagedCollectionState();
   const collectionMetadata = useCollectionMetadataState();
-  const createCollection = useCreateCollection();
+  const [createCollection] = useCreateCollection();
 
   const [collectionTitle, setCollectionTitle] = useState('');
   const [collectionDescription, setCollectionDescription] = useState('');
@@ -120,7 +121,9 @@ function LazyLoadedCollectionEditor() {
           });
         }
       } catch (error) {
-        if (error instanceof Error) {
+        if (error instanceof ValidationError) {
+          setGeneralError(error.validationMessage);
+        } else if (error instanceof Error) {
           reportError(error);
           setGeneralError(formatError(error));
         }

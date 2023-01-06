@@ -41,6 +41,11 @@ Sentry.init({
     }),
   ],
 
+  ignoreErrors: [
+    // Ignore Metamask rejected errors
+    'UserRejectedRequestError',
+  ],
+
   // DSNs are safe to keep public because they only allow submission of
   // new events and related event data; they do not allow read access to
   // any information. While there is a risk of abusing a DSN, where any

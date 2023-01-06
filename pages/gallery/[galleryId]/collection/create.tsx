@@ -19,6 +19,7 @@ import { useCanGoBack } from '~/contexts/navigation/GalleryNavigationProvider';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import CollectionWizardContext from '~/contexts/wizard/CollectionWizardContext';
 import formatError from '~/errors/formatError';
+import { ValidationError } from '~/errors/ValidationError';
 import { createCollectionQuery } from '~/generated/createCollectionQuery.graphql';
 import useCreateCollection from '~/hooks/api/collections/useCreateCollection';
 import GenericActionModal from '~/scenes/Modals/GenericActionModal';
@@ -50,7 +51,7 @@ function LazyLoadedCollectionEditor({ galleryId }: Props) {
   const { showModal } = useModalActions();
   const stagedCollectionState = useStagedCollectionState();
   const collectionMetadata = useCollectionMetadataState();
-  const createCollection = useCreateCollection();
+  const [createCollection] = useCreateCollection();
 
   const hasShownAddCollectionModal = useRef(false);
 
@@ -95,7 +96,9 @@ function LazyLoadedCollectionEditor({ galleryId }: Props) {
           });
         }
       } catch (error) {
-        if (error instanceof Error) {
+        if (error instanceof ValidationError) {
+          setGeneralError(error.validationMessage);
+        } else if (error instanceof Error) {
           reportError(error);
           setGeneralError(formatError(error));
         }
