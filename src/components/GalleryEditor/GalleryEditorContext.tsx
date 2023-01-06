@@ -35,7 +35,7 @@ export type GalleryEditorContextType = {
   saveGallery: () => void;
   activateCollection: (collectionId: string) => void;
   deleteCollection: (collectionId: string) => void;
-  editCollectionNameAndNote: (collectionId: string) => void;
+  editCollectionNameAndNote: () => void;
   createCollection: () => void;
   toggleCollectionHidden: (collectionId: string) => void;
   collectionIdBeingEdited: string | null;
@@ -220,6 +220,7 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
     const collection = collections[collectionIdBeingEdited];
 
     showModal({
+      headerText: 'Add a tile and description',
       content: (
         <CollectionCreateOrEditForm
           name={collection.name}

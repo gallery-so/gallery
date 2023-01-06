@@ -56,7 +56,7 @@ export function CollectionCreateOrEditForm({
       name: '',
       collectorsNote: '',
     });
-  }, [onDone]);
+  }, [hideModal, onDone]);
 
   const handleClick = useCallback(async () => {
     setGeneralError('');
@@ -71,7 +71,7 @@ export function CollectionCreateOrEditForm({
 
     hideModal();
     onDone({ name, collectorsNote });
-  }, [collectorsNote, name, onDone]);
+  }, [collectorsNote, hideModal, name, onDone]);
 
   return (
     <StyledCollectionEditInfoForm>

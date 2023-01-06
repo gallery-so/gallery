@@ -24,6 +24,8 @@ const DEFAULT_COLUMN_SETTING = 3;
 
 type CollectionEditorContextType = {
   // State
+  name: string;
+  collectorsNote: string;
   sections: Record<string, StagedSection>;
   activeSectionId: string | null;
 
@@ -46,6 +48,8 @@ type CollectionEditorContextType = {
   toggleTokenLiveDisplay: (tokenId: string) => void;
 
   activateSection: (sectionId: string) => void;
+
+  updateNameAndCollectorsNote: (name: string, collectorsNote: string) => void;
 };
 
 const CollectionEditorContextNew = createContext<CollectionEditorContextType | undefined>(
@@ -343,8 +347,31 @@ export const CollectionEditorProviderNew = memo(({ children }: Props) => {
     [setActiveSectionId]
   );
 
+  const updateNameAndCollectorsNote = useCallback(
+    (name: string, collectorsNote: string) => {
+      if (!collectionIdBeingEdited) {
+        return;
+      }
+
+      setCollections((previousCollections) => {
+        const cloned = { ...previousCollections };
+
+        cloned[collectionIdBeingEdited] = {
+          ...cloned[collectionIdBeingEdited],
+          name,
+          collectorsNote,
+        };
+
+        return cloned;
+      });
+    },
+    [collectionIdBeingEdited, setCollections]
+  );
+
   const value = useMemo((): CollectionEditorContextType => {
     return {
+      name: collectionBeingEdited?.name ?? '',
+      collectorsNote: collectionBeingEdited?.collectorsNote ?? '',
       activateSection,
       activeSectionId,
       addWhitespace,
@@ -358,12 +385,15 @@ export const CollectionEditorProviderNew = memo(({ children }: Props) => {
       stagedTokenIds,
       toggleTokenLiveDisplay,
       toggleTokenStaged,
+      updateNameAndCollectorsNote,
     };
   }, [
     activateSection,
     activeSectionId,
     addSection,
     addWhitespace,
+    collectionBeingEdited?.collectorsNote,
+    collectionBeingEdited?.name,
     decrementColumns,
     deleteSection,
     incrementColumns,
@@ -372,6 +402,7 @@ export const CollectionEditorProviderNew = memo(({ children }: Props) => {
     stagedTokenIds,
     toggleTokenLiveDisplay,
     toggleTokenStaged,
+    updateNameAndCollectorsNote,
     updateSections,
   ]);
 

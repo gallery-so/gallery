@@ -19,15 +19,21 @@ import { memo, useCallback, useLayoutEffect, useMemo, useRef, useState } from 'r
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
-import { VStack } from '~/components/core/Spacer/Stack';
+import colors from '~/components/core/colors';
+import { FadedInput } from '~/components/core/Input/FadedInput';
+import IconContainer from '~/components/core/Markdown/IconContainer';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM } from '~/components/core/Text/Text';
+import { CollectionCreateOrEditForm } from '~/components/GalleryEditor/CollectionCreateOrEditForm';
 import { createCollisionDetectionStrategy } from '~/components/GalleryEditor/CollectionEditor/DragAndDrop/createCollisionDetectionStrategy';
 import {
   dragEnd,
   dragOver,
 } from '~/components/GalleryEditor/CollectionEditor/DragAndDrop/draggingActions';
+import { useGalleryEditorContext } from '~/components/GalleryEditor/GalleryEditorContext';
 import { useCollectionEditorContextNew } from '~/contexts/collectionEditor/CollectionEditorContextNew';
 import { IMAGE_SIZES } from '~/contexts/collectionEditor/useDndDimensions';
+import { useModalActions } from '~/contexts/modal/ModalContext';
 import { StagingAreaNewFragment$key } from '~/generated/StagingAreaNewFragment.graphql';
 import useKeyDown from '~/hooks/useKeyDown';
 import { removeNullValues } from '~/utils/removeNullValues';
@@ -70,8 +76,16 @@ function StagingArea({ tokensRef }: Props) {
     tokensRef
   );
 
-  const { activeSectionId, sections, updateSections, deleteSection } =
-    useCollectionEditorContextNew();
+  const { editCollectionNameAndNote } = useGalleryEditorContext();
+  const {
+    name,
+    sections,
+    collectorsNote,
+    activeSectionId,
+
+    updateSections,
+    deleteSection,
+  } = useCollectionEditorContextNew();
 
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
 
@@ -180,11 +194,40 @@ function StagingArea({ tokensRef }: Props) {
     }
   }, [activeId, activeItem, localSections, nftFragmentsKeyedByID, sections]);
 
+  const hasNameOrCollectorsNote = name || collectorsNote;
   return (
     <StyledStagingArea gap={20}>
-      <CollectionNameAndDescriptionContainer>
-        <TitleDiatypeM>stuff</TitleDiatypeM>
-        <BaseM>description of stuff</BaseM>
+      <CollectionNameAndDescriptionContainer align="center" gap={8}>
+        {hasNameOrCollectorsNote ? (
+          <VStack>
+            <TitleDiatypeM>{name}</TitleDiatypeM>
+            <BaseM>{collectorsNote}</BaseM>
+          </VStack>
+        ) : (
+          <BaseM color={colors.metal}>Add title and description</BaseM>
+        )}
+
+        <EditIconContainer>
+          <IconContainer
+            onClick={editCollectionNameAndNote}
+            variant="default"
+            icon={
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 14 14"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M1 13L1.66667 10L10.6667 1H11.3333L13 2.66667V3.33333L4 12.3333L1 13Z"
+                  stroke="currentColor"
+                  strokeMiterlimit="10"
+                />
+              </svg>
+            }
+          />
+        </EditIconContainer>
       </CollectionNameAndDescriptionContainer>
 
       <SectionList>
@@ -242,8 +285,20 @@ function StagingArea({ tokensRef }: Props) {
   );
 }
 
-const CollectionNameAndDescriptionContainer = styled(VStack)`
+const EditIconContainer = styled.div`
+  opacity: 0;
+
+  transition: opacity 150ms ease-in-out;
+`;
+
+const CollectionNameAndDescriptionContainer = styled(HStack)`
   padding: 0 16px;
+
+  :hover {
+    ${EditIconContainer} {
+      opacity: 1;
+    }
+  }
 `;
 
 const SectionList = styled(VStack)``;
