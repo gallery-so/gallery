@@ -88,10 +88,11 @@ const flashAnimation = keyframes`
 
 const StyledUserActivityLayout = styled(VStack)<{ enableFlashFirstRowAnimation: boolean }>`
   margin: 0 -16px;
-  padding-top: 24px;
+  padding: 24px 16px 0;
   width: 100vw;
 
   @media only screen and ${breakpoints.desktop} {
+    padding: 24px 0px 0;
     width: ${FEED_MAX_WIDTH}px;
   }
   ${({ enableFlashFirstRowAnimation }) =>

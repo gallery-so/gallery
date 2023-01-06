@@ -156,6 +156,7 @@ function NftPreview({
     if (isIFrameLiveDisplay) {
       return <NftDetailAnimation onLoad={handleNftLoaded} mediaRef={token} />;
     }
+
     return (
       <NftPreviewAsset
         onLoad={handleNftLoaded}

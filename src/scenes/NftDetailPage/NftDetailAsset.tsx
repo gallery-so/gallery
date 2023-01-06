@@ -50,6 +50,9 @@ export function NftDetailAssetComponent({ tokenRef, onLoad }: NftDetailAssetComp
           ... on AudioMedia {
             __typename
           }
+          ... on TextMedia {
+            __typename
+          }
           ... on GltfMedia {
             __typename
             ...NftDetailModelFragment

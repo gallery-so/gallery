@@ -23,6 +23,10 @@ function NftDetailAnimation({ mediaRef, onLoad }: Props) {
             __typename
             contentRenderURL @required(action: THROW)
           }
+          ... on TextMedia {
+            __typename
+            mediaURL
+          }
           ... on UnknownMedia {
             __typename
             contentRenderURL @required(action: THROW)
@@ -36,6 +40,14 @@ function NftDetailAnimation({ mediaRef, onLoad }: Props) {
   const contentRenderURL = useMemo(() => {
     if (token.media.__typename === 'HtmlMedia' || token.media.__typename === 'UnknownMedia') {
       return token.media.contentRenderURL;
+    } else if (token.media.__typename === 'TextMedia') {
+      if (token.media.mediaURL?.startsWith('data:')) {
+        const mimeType = token.media.mediaURL.split('data:')[1]?.split(';')[0];
+
+        if (mimeType === 'text/html') {
+          return token.media.mediaURL;
+        }
+      }
     }
 
     return '';
