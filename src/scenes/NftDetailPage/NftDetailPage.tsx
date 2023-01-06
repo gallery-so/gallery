@@ -2,7 +2,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { route } from 'nextjs-routes';
 import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
-import { graphql, useLazyLoadQuery } from 'react-relay';
+import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 import styled from 'styled-components';
 
 import breakpoints, { pageGutter } from '~/components/core/breakpoints';
@@ -14,55 +14,34 @@ import transitions, {
 import GalleryViewEmitter from '~/components/internal/GalleryViewEmitter';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import ErrorBoundary from '~/contexts/boundary/ErrorBoundary';
+import { NftDetailPageFragment$key } from '~/generated/NftDetailPageFragment.graphql';
 import { NftDetailPageQuery } from '~/generated/NftDetailPageQuery.graphql';
+import { NftDetailPageQueryFragment$key } from '~/generated/NftDetailPageQueryFragment.graphql';
 import useKeyDown from '~/hooks/useKeyDown';
+import NotFound from '~/scenes/NotFound/NotFound';
 import { removeNullValues } from '~/utils/removeNullValues';
 
 import NavigationHandle from './NavigationHandle';
 import NftDetailView from './NftDetailView';
 import shiftNftCarousel, { MountedNft } from './utils/shiftNftCarousel';
 
-type Props = {
+type NftDetailPageProps = {
   username: string;
-  tokenId: string;
   collectionId: string;
+
+  collectionTokenRef: NftDetailPageFragment$key;
+  queryRef: NftDetailPageQueryFragment$key;
 };
 
 function NftDetailPage({
+  collectionTokenRef,
+  queryRef,
   username,
-  tokenId: initialNftId,
   collectionId: initialCollectionId,
-}: Props) {
-  const query = useLazyLoadQuery<NftDetailPageQuery>(
+}: NftDetailPageProps) {
+  const query = useFragment(
     graphql`
-      query NftDetailPageQuery($tokenId: DBID!, $collectionId: DBID!, $username: String!) {
-        collectionNft: collectionTokenById(tokenId: $tokenId, collectionId: $collectionId) {
-          ... on ErrTokenNotFound {
-            __typename
-          }
-
-          ... on ErrCollectionNotFound {
-            __typename
-          }
-
-          ... on CollectionToken {
-            __typename
-            token {
-              dbid
-              name
-            }
-            collection {
-              tokens {
-                token @required(action: THROW) {
-                  dbid
-                  name
-                }
-                ...NftDetailViewFragment
-              }
-            }
-          }
-        }
-
+      fragment NftDetailPageQueryFragment on Query {
         viewer {
           __typename
           ... on Viewer {
@@ -75,33 +54,43 @@ function NftDetailPage({
         ...GalleryViewEmitterWithSuspenseFragment
       }
     `,
-    { tokenId: initialNftId, collectionId: initialCollectionId, username }
+    queryRef
   );
 
-  const { collectionNft: initialCollectionNft, viewer } = query;
+  const initialCollectionNft = useFragment(
+    graphql`
+      fragment NftDetailPageFragment on CollectionToken {
+        __typename
+        token @required(action: THROW) {
+          dbid
+          name
+        }
+        collection {
+          tokens {
+            token @required(action: THROW) {
+              dbid
+              name
+            }
+            ...NftDetailViewFragment
+          }
+        }
+      }
+    `,
+    collectionTokenRef
+  );
 
-  const [tokenId, setNftId] = useState(initialNftId);
+  const [tokenId, setNftId] = useState(initialCollectionNft.token.dbid);
 
   const track = useTrack();
   useEffect(() => {
     track('Page View: NFT Detail', { tokenId }, true);
   }, [tokenId, track]);
 
-  if (initialCollectionNft?.__typename !== 'CollectionToken') {
-    throw new Error('NftDetailPage: CollectionToken for requested NFT not found');
-  }
-
   const collection = removeNullValues(initialCollectionNft.collection?.tokens);
-
-  if (!collection) {
-    throw new Error('NftDetailPage: Collection of NFTs not found');
-  }
 
   const { selectedNftIndex, selectedNft } = useMemo(() => {
     const index = collection.findIndex(({ token }) => token.dbid === tokenId);
-    if (index === -1) {
-      throw new Error('NFT Detail Page: NFT index not found within collection');
-    }
+
     return { selectedNftIndex: index, selectedNft: collection[index] };
   }, [tokenId, collection]);
 
@@ -114,7 +103,7 @@ function NftDetailPage({
   const headTitle = `${selectedNft?.token?.name} - ${username} | Gallery`;
 
   const authenticatedUserOwnsAsset =
-    viewer?.__typename === 'Viewer' && viewer?.user?.username === username;
+    query.viewer?.__typename === 'Viewer' && query.viewer?.user?.username === username;
 
   const { prevNft, nextNft } = useMemo(() => {
     const prevNft = collection[selectedNftIndex - 1] ?? null;
@@ -214,17 +203,90 @@ function NftDetailPage({
         <title>{headTitle}</title>
       </Head>
       <GalleryViewEmitter queryRef={query} />
+      {prevNft && <NavigationHandle direction={Directions.LEFT} onClick={handlePrevPress} />}
+      {mountedNfts.map(({ token, visibility }) => (
+        <_DirectionalFade key={token.token.dbid} visibility={visibility}>
+          <NftDetailView queryRef={token} authenticatedUserOwnsAsset={authenticatedUserOwnsAsset} />
+        </_DirectionalFade>
+      ))}
+      {nextNft && <NavigationHandle direction={Directions.RIGHT} onClick={handleNextPress} />}
+    </>
+  );
+}
+
+type NftDetailPageWrapperProps = {
+  username: string;
+  tokenId: string;
+  collectionId: string;
+};
+
+function NftDetailPageWrapper({ username, tokenId, collectionId }: NftDetailPageWrapperProps) {
+  const query = useLazyLoadQuery<NftDetailPageQuery>(
+    graphql`
+      query NftDetailPageQuery($tokenId: DBID!, $collectionId: DBID!, $username: String!) {
+        collectionNft: collectionTokenById(tokenId: $tokenId, collectionId: $collectionId) {
+          ... on ErrTokenNotFound {
+            __typename
+          }
+
+          ... on ErrCollectionNotFound {
+            __typename
+          }
+
+          ... on CollectionToken {
+            __typename
+            ...NftDetailPageFragment
+
+            collection {
+              tokens {
+                token {
+                  dbid
+                }
+              }
+            }
+          }
+        }
+
+        viewer {
+          __typename
+          ... on Viewer {
+            user {
+              username
+            }
+          }
+        }
+
+        ...NftDetailPageQueryFragment
+      }
+    `,
+    { tokenId, collectionId, username }
+  );
+
+  const collectionHasToken = useMemo(() => {
+    if (query.collectionNft?.__typename !== 'CollectionToken') {
+      return false;
+    }
+
+    return query.collectionNft.collection?.tokens?.some((token) => token?.token?.dbid === tokenId);
+  }, [query.collectionNft, tokenId]);
+
+  if (query.collectionNft?.__typename !== 'CollectionToken' || !collectionHasToken) {
+    return (
       <StyledNftDetailPage>
-        {prevNft && <NavigationHandle direction={Directions.LEFT} onClick={handlePrevPress} />}
-        {mountedNfts.map(({ token, visibility }) => (
-          <_DirectionalFade key={token.token.dbid} visibility={visibility}>
-            <NftDetailView
-              queryRef={token}
-              authenticatedUserOwnsAsset={authenticatedUserOwnsAsset}
-            />
-          </_DirectionalFade>
-        ))}
-        {nextNft && <NavigationHandle direction={Directions.RIGHT} onClick={handleNextPress} />}
+        <NotFound />
+      </StyledNftDetailPage>
+    );
+  }
+
+  return (
+    <>
+      <StyledNftDetailPage>
+        <NftDetailPage
+          queryRef={query}
+          username={username}
+          collectionTokenRef={query.collectionNft}
+          collectionId={collectionId}
+        />
       </StyledNftDetailPage>
     </>
   );
@@ -270,12 +332,12 @@ const StyledNftDetailPage = styled.div`
   }
 `;
 
-function NftDetailPageWithBoundary({ username, collectionId, tokenId }: Props) {
+function NftDetailPageWithBoundary({ username, collectionId, tokenId }: NftDetailPageWrapperProps) {
   return (
     <StyledNftDetailPageWithBoundary>
       <Suspense fallback={<FullPageLoader />}>
         <ErrorBoundary>
-          <NftDetailPage username={username} collectionId={collectionId} tokenId={tokenId} />
+          <NftDetailPageWrapper username={username} collectionId={collectionId} tokenId={tokenId} />
         </ErrorBoundary>
       </Suspense>
     </StyledNftDetailPageWithBoundary>
