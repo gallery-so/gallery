@@ -71,6 +71,7 @@ type Props = {
   disabled?: boolean;
   className?: string;
   icon: React.ReactElement;
+  disableHoverPadding?: boolean;
 } & Omit<JSX.IntrinsicElements['div'], 'ref'>;
 
 function IconContainer(
@@ -81,6 +82,7 @@ function IconContainer(
     disabled,
     className,
     size = 'md',
+    disableHoverPadding = false,
 
     ...props
   }: Props,
@@ -94,21 +96,51 @@ function IconContainer(
       disabled={disabled}
       className={className}
       variant={variant}
+      disableHoverPadding={disableHoverPadding}
       onMouseDown={(e) => {
         // This will prevent the textarea from losing focus when user clicks a markdown icon
         e.preventDefault();
       }}
       {...props}
     >
+      {disableHoverPadding && <HoverCircle variant={variant} size={size} disabled={disabled} />}
+
       {icon}
     </StyledIcon>
   );
 }
 
+const HoverCircle = styled.div<{ size: IconSize; variant: ColorVariant; disabled?: boolean }>`
+  position: absolute;
+  z-index: -1;
+
+  border-radius: 99999999px;
+
+  ${({ size }) => {
+    if (size === 'sm') {
+      return css`
+        height: 24px;
+        width: 24px;
+      `;
+    } else if (size === 'md') {
+      return css`
+        height: 32px;
+        width: 32px;
+      `;
+    } else if (size === 'lg') {
+      return css`
+        height: 40px;
+        width: 40px;
+      `;
+    }
+  }}
+`;
+
 const StyledIcon = styled.div<{
   size: IconSize;
   disabled?: boolean;
   variant: ColorVariant;
+  disableHoverPadding: boolean;
 }>`
   position: relative;
 
@@ -128,22 +160,38 @@ const StyledIcon = styled.div<{
         ? css`
             color: ${variantState.disabledForeground};
             background-color: ${variantState.disabledBackground};
+
+            ${HoverCircle} {
+              background-color: ${variantState.disabledBackground};
+            }
           `
         : css`
             :active {
               color: ${variantState.activeForeground};
               background-color: ${variantState.activeBackground};
+
+              ${HoverCircle} {
+                background-color: ${variantState.activeBackground};
+              }
             }
 
             :hover {
               color: ${variantState.hoverForeground};
               background-color: ${variantState.hoverBackground};
+
+              ${HoverCircle} {
+                background-color: ${variantState.hoverBackground};
+              }
             }
           `};
     `;
   }}
 
-  ${({ size }) => {
+  ${({ size, disableHoverPadding }) => {
+    if (disableHoverPadding) {
+      return null;
+    }
+
     if (size === 'xs') {
       return css`
         height: 20px;
