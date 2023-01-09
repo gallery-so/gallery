@@ -1,5 +1,7 @@
 import styled from 'styled-components';
 
+import IconContainer from '~/components/core/Markdown/IconContainer';
+
 import colors from '../colors';
 
 type Props = {
@@ -10,18 +12,24 @@ type Props = {
 
 export default function Toggle({ checked, isPending, onChange, ...inputProps }: Props) {
   return (
-    <StyledToggle disabled={isPending}>
-      <StyledInput
-        type="checkbox"
-        checked={checked}
-        onChange={onChange}
-        disabled={isPending}
-        {...inputProps}
-      />
-      <StyledToggleContainer active={checked}>
-        <StyledTogglePill active={checked} />
-      </StyledToggleContainer>
-    </StyledToggle>
+    <IconContainer
+      disableHoverPadding
+      size="md"
+      icon={
+        <StyledToggle disabled={isPending}>
+          <StyledInput
+            type="checkbox"
+            checked={checked}
+            onChange={onChange}
+            disabled={isPending}
+            {...inputProps}
+          />
+          <StyledToggleContainer active={checked}>
+            <StyledTogglePill active={checked} />
+          </StyledToggleContainer>
+        </StyledToggle>
+      }
+    />
   );
 }
 
