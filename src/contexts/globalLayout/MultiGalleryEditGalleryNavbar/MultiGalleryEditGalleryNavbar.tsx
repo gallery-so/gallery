@@ -14,6 +14,7 @@ import {
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 
 type Props = {
+  canSave: boolean;
   onBack: () => void;
   onDone: () => void;
 };
@@ -22,7 +23,7 @@ function GalleryTitleSection() {
   return <MainGalleryText>My gallery</MainGalleryText>;
 }
 
-export function MultiGalleryEditGalleryNavbar({ onDone, onBack }: Props) {
+export function MultiGalleryEditGalleryNavbar({ canSave, onDone, onBack }: Props) {
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
   return (
@@ -35,7 +36,9 @@ export function MultiGalleryEditGalleryNavbar({ onDone, onBack }: Props) {
         <NavbarCenterContent>{!isMobile && <GalleryTitleSection />}</NavbarCenterContent>
 
         <NavbarRightContent>
-          <Button onClick={onDone}>Done</Button>
+          <Button disabled={!canSave} onClick={onDone}>
+            Done
+          </Button>
         </NavbarRightContent>
       </StandardNavbarContainer>
     </Wrapper>

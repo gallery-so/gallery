@@ -1,6 +1,6 @@
 import { GalleryEditorFragment$key } from '__generated__/GalleryEditorFragment.graphql';
 import { useRouter } from 'next/router';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
@@ -50,7 +50,8 @@ export function GalleryEditor({ queryRef }: GalleryEditorProps) {
 
   const canGoBack = useCanGoBack();
   const { replace, back } = useRouter();
-  const { saveGallery } = useGalleryEditorContext();
+  const { saveGallery, canSave } = useGalleryEditorContext();
+
   const handleBack = useCallback(() => {
     if (canGoBack) {
       back();
@@ -79,18 +80,15 @@ export function GalleryEditor({ queryRef }: GalleryEditorProps) {
   return (
     <FullPageStep
       withBorder
-      navbar={<MultiGalleryEditGalleryNavbar onBack={handleBack} onDone={handleDone} />}
+      navbar={
+        <MultiGalleryEditGalleryNavbar canSave={canSave} onBack={handleBack} onDone={handleDone} />
+      }
     >
       <GalleryEditorWrapper>
         <CollectionEditorProviderNew>
           <CollectionSidebar />
 
-          <CollectionEditor
-            onValidChange={() => {}}
-            onHasUnsavedChange={() => {}}
-            hasUnsavedChanges={false}
-            queryRef={query}
-          />
+          <CollectionEditor queryRef={query} />
 
           <PiecesSidebar tokensRef={allTokens} queryRef={query} />
         </CollectionEditorProviderNew>

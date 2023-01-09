@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
+import useCheckUnsavedChanges from '~/components/GalleryEditor/CollectionEditor/useCheckUnsavedChanges';
 import useConfirmationMessageBeforeClose from '~/components/ManageGallery/useConfirmationMessageBeforeClose';
 import useNotOptimizedForMobileWarning from '~/components/ManageGallery/useNotOptimizedForMobileWarning';
 import { CollectionEditorNewFragment$key } from '~/generated/CollectionEditorNewFragment.graphql';
@@ -10,10 +11,7 @@ import { removeNullValues } from '~/utils/removeNullValues';
 import StagingArea from './StagingArea';
 
 type Props = {
-  hasUnsavedChanges: boolean;
   queryRef: CollectionEditorNewFragment$key;
-  onValidChange: (valid: boolean) => void;
-  onHasUnsavedChange: (hasUnsavedChanges: boolean) => void;
 };
 
 // Separated out so we can refresh data as a part of our sync tokens mutation
@@ -40,12 +38,7 @@ const collectionEditorViewerFragment = graphql`
   }
 `;
 
-export function CollectionEditor({
-  queryRef,
-  onValidChange,
-  onHasUnsavedChange,
-  hasUnsavedChanges,
-}: Props) {
+export function CollectionEditor({ queryRef }: Props) {
   const query = useFragment(
     graphql`
       fragment CollectionEditorNewFragment on Query {
@@ -69,7 +62,7 @@ export function CollectionEditor({
   }
 
   useNotOptimizedForMobileWarning();
-  useConfirmationMessageBeforeClose(hasUnsavedChanges);
+  // useConfirmationMessageBeforeClose(hasUnsavedChanges);
   // useCheckUnsavedChanges(onHasUnsavedChange);
 
   // useEffect(

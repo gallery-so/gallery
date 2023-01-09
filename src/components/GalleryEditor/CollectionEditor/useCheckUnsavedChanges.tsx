@@ -1,45 +1,32 @@
 import { useEffect, useRef } from 'react';
 
 import {
-  useCollectionMetadataState,
-  useStagedCollectionState,
-} from '~/contexts/collectionEditor/CollectionEditorContext';
+  CollectionState,
+  useGalleryEditorContext,
+} from '~/components/GalleryEditor/GalleryEditorContext';
 
-import { formatStagedCollection } from './formatStagedCollection';
+function removeIdsFromCollections(collections: CollectionState[]): CollectionState[] {
+  return collections.map((collection) => {
+    return { ...collection, dbid: '' };
+  }, []);
+}
 
 export default function useCheckUnsavedChanges(
   onHasUnsavedChange: (hasUnsavedChanges: boolean) => void
 ) {
-  const initialStagedCollection = useRef({});
-  const initialCollectionMetadata = useRef({});
-  const isStagedCollectionInitialized = useRef(false);
+  const { collections } = useGalleryEditorContext();
 
-  const stagedCollectionState = useStagedCollectionState();
-  const collectionMetadataState = useCollectionMetadataState();
+  const initalCollectionsRef = useRef(collections);
 
-  // Initialize the staged collection and collection metadata ref
   useEffect(() => {
-    if (Object.keys(stagedCollectionState).length === 0 || isStagedCollectionInitialized.current) {
-      return;
-    }
+    const collectionList = removeIdsFromCollections(Object.values(collections));
+    const initialCollectionsList = removeIdsFromCollections(
+      Object.values(initalCollectionsRef.current)
+    );
 
-    isStagedCollectionInitialized.current = true;
-    initialStagedCollection.current = formatStagedCollection(stagedCollectionState);
-    initialCollectionMetadata.current = collectionMetadataState;
-  }, [collectionMetadataState, stagedCollectionState]);
+    const hasUnsavedChanged =
+      JSON.stringify(collectionList) !== JSON.stringify(initialCollectionsList);
 
-  // Check if the staged collection or collection metadata has changed
-  useEffect(() => {
-    const formattedStagedCollection = formatStagedCollection(stagedCollectionState);
-
-    if (
-      JSON.stringify(formattedStagedCollection) !==
-        JSON.stringify(initialStagedCollection.current) ||
-      JSON.stringify(collectionMetadataState) !== JSON.stringify(initialCollectionMetadata.current)
-    ) {
-      onHasUnsavedChange(true);
-      return;
-    }
-    onHasUnsavedChange(false);
-  }, [collectionMetadataState, onHasUnsavedChange, stagedCollectionState]);
+    onHasUnsavedChange(hasUnsavedChanged);
+  }, [collections, onHasUnsavedChange]);
 }

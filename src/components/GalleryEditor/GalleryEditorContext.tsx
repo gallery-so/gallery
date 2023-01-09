@@ -6,6 +6,7 @@ import {
   useCallback,
   useContext,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 import { graphql, useFragment } from 'react-relay';
@@ -32,6 +33,10 @@ export type GalleryEditorContextType = {
   setCollections: Dispatch<SetStateAction<CollectionMap>>;
   hiddenCollectionIds: Set<string>;
 
+  hasUnsavedChanges: boolean;
+  validationErrors: string[];
+  canSave: boolean;
+
   saveGallery: () => void;
   activateCollection: (collectionId: string) => void;
   deleteCollection: (collectionId: string) => void;
@@ -54,7 +59,7 @@ export type StagedSection = {
   items: StagedItem[];
 };
 
-type CollectionState = {
+export type CollectionState = {
   dbid: string;
   localOnly: boolean;
 
@@ -336,10 +341,52 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
     }
   }, [collections, deletedCollectionIds, description, name, query.galleryById, reportError, save]);
 
+  const initialCollections = useRef(collections);
+  const hasUnsavedChanges = useMemo(() => {
+    function removeIdsFromCollections(collections: CollectionState[]): CollectionState[] {
+      return collections.map((collection) => {
+        return { ...collection, dbid: '' };
+      });
+    }
+
+    const currentCollectionsWithoutIds = removeIdsFromCollections(Object.values(collections));
+    const initialCollectionsWithoutIds = removeIdsFromCollections(
+      Object.values(initialCollections.current)
+    );
+
+    return (
+      JSON.stringify(currentCollectionsWithoutIds) !== JSON.stringify(initialCollectionsWithoutIds)
+    );
+  }, [collections]);
+
+  const validationErrors = useMemo(() => {
+    const errors: string[] = [];
+
+    for (const collection of Object.values(collections)) {
+      const hasAnyItems = Object.values(collection.sections).some((section) => {
+        return section.items.length > 0;
+      });
+
+      if (!hasAnyItems) {
+        errors.push(`Collection #${collection.dbid} doesn't have any items`);
+      }
+    }
+
+    return errors;
+  }, [collections]);
+
+  const canSave = useMemo(() => {
+    return validationErrors.length === 0 && hasUnsavedChanges;
+  }, [hasUnsavedChanges, validationErrors.length]);
+
   const value: GalleryEditorContextType = useMemo(() => {
     return {
       collections,
       hiddenCollectionIds,
+
+      hasUnsavedChanges,
+      validationErrors,
+      canSave,
 
       saveGallery,
       setCollections,
@@ -352,11 +399,14 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
     };
   }, [
     collections,
+    hiddenCollectionIds,
+    hasUnsavedChanges,
+    validationErrors,
+    canSave,
     saveGallery,
     deleteCollection,
     createCollection,
     activateCollection,
-    hiddenCollectionIds,
     toggleCollectionHidden,
     collectionIdBeingEdited,
     editCollectionNameAndNote,
