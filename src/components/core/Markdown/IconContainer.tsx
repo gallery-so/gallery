@@ -117,27 +117,29 @@ const StyledIcon = styled.div<{
   align-items: center;
   cursor: pointer;
 
-  ${({ variant }) => {
+  ${({ variant, disabled }) => {
     const variantState = COLOR_STATES[variant];
 
     return css`
       color: ${variantState.idleForeground};
       background-color: ${variantState.idleBackground};
 
-      :active {
-        color: ${variantState.activeForeground};
-        background-color: ${variantState.activeBackground};
-      }
+      ${disabled
+        ? css`
+            color: ${variantState.disabledForeground};
+            background-color: ${variantState.disabledBackground};
+          `
+        : css`
+            :active {
+              color: ${variantState.activeForeground};
+              background-color: ${variantState.activeBackground};
+            }
 
-      :hover {
-        color: ${variantState.hoverForeground};
-        background-color: ${variantState.hoverBackground};
-      }
-
-      :disabled {
-        color: ${variantState.disabledForeground};
-        background-color: ${variantState.disabledBackground};
-      }
+            :hover {
+              color: ${variantState.hoverForeground};
+              background-color: ${variantState.hoverBackground};
+            }
+          `};
     `;
   }}
 
