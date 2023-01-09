@@ -1,40 +1,13 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
-import { convertObjectToArray } from '~/components/GalleryEditor/CollectionEditor/convertObjectToArray';
-import {
-  EditModeToken,
-  EditModeTokenChild,
-  StagedCollection,
-} from '~/components/GalleryEditor/CollectionEditor/types';
-import { useGalleryEditorContext } from '~/components/GalleryEditor/GalleryEditorContext';
 import useConfirmationMessageBeforeClose from '~/components/ManageGallery/useConfirmationMessageBeforeClose';
 import useNotOptimizedForMobileWarning from '~/components/ManageGallery/useNotOptimizedForMobileWarning';
-import {
-  SidebarTokensState,
-  useCollectionEditorActions,
-  useSidebarTokensState,
-  useStagedCollectionState,
-} from '~/contexts/collectionEditor/CollectionEditorContext';
 import { CollectionEditorNewFragment$key } from '~/generated/CollectionEditorNewFragment.graphql';
 import { CollectionEditorViewerNewFragment$key } from '~/generated/CollectionEditorViewerNewFragment.graphql';
-import { parseCollectionLayoutGraphql } from '~/utils/collectionLayout';
 import { removeNullValues } from '~/utils/removeNullValues';
 
 import StagingArea from './StagingArea';
-import useCheckUnsavedChanges from './useCheckUnsavedChanges';
-
-function convertNftsToEditModeTokens(
-  tokens: EditModeTokenChild[],
-  isSelected = false
-): EditModeToken[] {
-  return tokens.map((token, index) => ({
-    index,
-    token,
-    id: token.dbid,
-    isSelected,
-  }));
-}
 
 type Props = {
   hasUnsavedChanges: boolean;
@@ -47,39 +20,7 @@ type Props = {
 const collectionEditorViewerFragment = graphql`
   fragment CollectionEditorViewerNewFragment on Viewer {
     user @required(action: THROW) {
-      galleries @required(action: THROW) {
-        collections @required(action: THROW) {
-          dbid
-          tokens {
-            token @required(action: THROW) {
-              dbid @required(action: THROW)
-              lastUpdated @required(action: THROW)
-
-              # Escape hatch for data processing util files
-              # CollectionEditor could use a refactor
-              # eslint-disable-next-line relay/unused-fields
-              name @required(action: THROW)
-              # Escape hatch for data processing util files
-              # CollectionEditor could use a refactor
-              # eslint-disable-next-line relay/unused-fields
-              isSpamByProvider
-              # Escape hatch for data processing util files
-              # CollectionEditor could use a refactor
-              # eslint-disable-next-line relay/unused-fields
-              isSpamByUser
-            }
-            tokenSettings {
-              renderLive
-            }
-          }
-          layout {
-            ...collectionLayoutParseFragment
-          }
-        }
-      }
       tokens {
-        dbid @required(action: THROW)
-        lastUpdated @required(action: THROW)
         ...StagingAreaNewFragment
 
         # Escape hatch for data processing util files

@@ -2,7 +2,7 @@ import {
   dragEnd,
   dragOver,
 } from '~/components/GalleryEditor/CollectionEditor/DragAndDrop/draggingActions';
-import { StagedSection } from '~/contexts/collectionEditor/CollectionEditorContextNew';
+import { StagedSection } from '~/components/GalleryEditor/GalleryEditorContext';
 
 type TestCaseArgs = {
   initial: Record<string, StagedSection>;

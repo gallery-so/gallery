@@ -301,7 +301,7 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
       };
     };
 
-    const updateCollections: UpdateCollectionInput[] = Object.values(collections)
+    const updatedCollections: UpdateCollectionInput[] = Object.values(collections)
       .filter((collection) => !collection.localOnly)
       .map(localCollectionToUpdatedCollection);
 
@@ -326,7 +326,7 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
             order,
 
             createdCollections,
-            updateCollections,
+            updatedCollections,
             deletedCollections,
           },
         },

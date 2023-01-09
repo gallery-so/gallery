@@ -9,8 +9,6 @@ import { HStack } from '~/components/core/Spacer/Stack';
 import { TitleDiatypeM } from '~/components/core/Text/Text';
 import transitions from '~/components/core/transitions';
 import ColumnAdjuster from '~/components/GalleryEditor/CollectionEditor/ColumnAdjuster';
-import DragHandleIcon from '~/icons/DragHandleIcon';
-import TrashIcon from '~/icons/Trash';
 import { TrashIconNew } from '~/icons/TrashIconNew';
 import noop from '~/utils/noop';
 

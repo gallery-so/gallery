@@ -1,5 +1,4 @@
 import { useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
 import { CSSProperties, MouseEventHandler, useCallback } from 'react';
 import styled, { css } from 'styled-components';
 
@@ -62,7 +61,7 @@ export function CollectionListItem({ collectionId }: CollectionListItemProps) {
   }, [collectionId, deleteCollection]);
 
   const handleEdit = useCallback(() => {
-    editCollectionNameAndNote(collectionId);
+    editCollectionNameAndNote();
   }, [collectionId, editCollectionNameAndNote]);
 
   const handleIconSectionClick = useCallback<MouseEventHandler>((event) => {

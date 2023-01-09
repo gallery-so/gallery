@@ -20,11 +20,9 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import colors from '~/components/core/colors';
-import { FadedInput } from '~/components/core/Input/FadedInput';
 import IconContainer from '~/components/core/Markdown/IconContainer';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM } from '~/components/core/Text/Text';
-import { CollectionCreateOrEditForm } from '~/components/GalleryEditor/CollectionCreateOrEditForm';
 import { createCollisionDetectionStrategy } from '~/components/GalleryEditor/CollectionEditor/DragAndDrop/createCollisionDetectionStrategy';
 import {
   dragEnd,
@@ -33,7 +31,6 @@ import {
 import { useGalleryEditorContext } from '~/components/GalleryEditor/GalleryEditorContext';
 import { useCollectionEditorContextNew } from '~/contexts/collectionEditor/CollectionEditorContextNew';
 import { IMAGE_SIZES } from '~/contexts/collectionEditor/useDndDimensions';
-import { useModalActions } from '~/contexts/modal/ModalContext';
 import { StagingAreaNewFragment$key } from '~/generated/StagingAreaNewFragment.graphql';
 import useKeyDown from '~/hooks/useKeyDown';
 import { removeNullValues } from '~/utils/removeNullValues';

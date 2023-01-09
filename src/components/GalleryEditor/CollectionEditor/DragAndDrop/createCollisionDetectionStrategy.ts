@@ -8,7 +8,7 @@ import {
 } from '@dnd-kit/core';
 import { MutableRefObject } from 'react';
 
-import { StagedSection } from '~/contexts/collectionEditor/CollectionEditorContextNew';
+import { StagedSection } from '~/components/GalleryEditor/GalleryEditorContext';
 
 type createCollisionDetectionStrategyArgs = {
   activeId: UniqueIdentifier | null;

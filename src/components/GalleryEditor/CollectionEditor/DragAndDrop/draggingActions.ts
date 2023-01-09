@@ -2,7 +2,7 @@ import { DragEndEvent, DragOverEvent } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
 import rfdc from 'rfdc';
 
-import { StagedSection } from '~/contexts/collectionEditor/CollectionEditorContextNew';
+import { StagedSection } from '~/components/GalleryEditor/GalleryEditorContext';
 
 const deepClone = rfdc();
 
