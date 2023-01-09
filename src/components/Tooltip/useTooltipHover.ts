@@ -1,4 +1,11 @@
-import { autoUpdate, offset, useFloating, useHover, useInteractions } from '@floating-ui/react';
+import {
+  autoUpdate,
+  offset,
+  shift,
+  useFloating,
+  useHover,
+  useInteractions,
+} from '@floating-ui/react';
 import { useMemo, useState } from 'react';
 import { CSSProperties } from 'styled-components';
 
@@ -10,7 +17,7 @@ export function useTooltipHover() {
     placement: 'bottom',
     strategy: 'absolute',
     onOpenChange: setOpen,
-    middleware: [offset(8)],
+    middleware: [offset(8), shift()],
     whileElementsMounted: autoUpdate,
   });
 

@@ -10,12 +10,11 @@ import { Chain } from '~/components/GalleryEditor/PiecesSidebar/chains';
 import { SidebarChainSelector } from '~/components/GalleryEditor/PiecesSidebar/SidebarChainSelector';
 import { SidebarTokens } from '~/components/GalleryEditor/PiecesSidebar/SidebarTokens';
 import { useCollectionEditorContextNew } from '~/contexts/collectionEditor/CollectionEditorContextNew';
-import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
-import { useToastActions } from '~/contexts/toast/ToastContext';
 import { PiecesSidebarNewFragment$key } from '~/generated/PiecesSidebarNewFragment.graphql';
 import { PiecesSidebarViewerNewFragment$key } from '~/generated/PiecesSidebarViewerNewFragment.graphql';
 import useSyncTokens from '~/hooks/api/tokens/useSyncTokens';
+import { doesUserOwnWalletFromChain } from '~/utils/doesUserOwnWalletFromChain';
 import { removeNullValues } from '~/utils/removeNullValues';
 
 import { AddWalletSidebar } from './AddWalletSidebar';
@@ -46,18 +45,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
   const query = useFragment(
     graphql`
       fragment PiecesSidebarViewerNewFragment on Query {
-        viewer {
-          ... on Viewer {
-            user {
-              wallets {
-                chainAddress {
-                  chain
-                }
-              }
-            }
-          }
-        }
-
+        ...doesUserOwnWalletFromChainFragment
         ...SidebarChainSelectorNewFragment
         ...AddWalletSidebarQueryNewFragment
       }
@@ -65,6 +53,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
     queryRef
   );
 
+  const { syncTokens } = useSyncTokens();
   const { addWhitespace } = useCollectionEditorContextNew();
 
   const [searchResults, setSearchResults] = useState<string[]>([]);
@@ -72,30 +61,13 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
   const [selectedView, setSelectedView] = useState<SidebarView>('Collected');
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
 
-  const { pushToast } = useToastActions();
-  const reportError = useReportError();
-
   const navbarHeight = useGlobalNavbarHeight();
 
   const isSearching = debouncedSearchQuery.length > 0;
 
   const nonNullTokens = removeNullValues(allTokens);
 
-  // Only show blank space + add account button
-  // 1. if the user don't have selected account
-  // 2. the selected chain is selected account
-  const ownsWalletFromSelectedChain = useMemo(() => {
-    let chain = selectedChain;
-    if (selectedChain === 'POAP') {
-      chain = 'Ethereum';
-    }
-
-    const ownsWalletFromChain = query.viewer?.user?.wallets?.some(
-      (wallet) => wallet?.chainAddress?.chain === chain
-    );
-
-    return ownsWalletFromChain ?? false;
-  }, [query, selectedChain]);
+  const ownsWalletFromSelectedChain = doesUserOwnWalletFromChain(selectedChain, query);
 
   const tokenSearchResults = useMemo(() => {
     if (!debouncedSearchQuery) {
@@ -131,29 +103,6 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
     });
   }, [tokenSearchResults, isSearching, selectedChain, selectedView]);
 
-  const { isLocked, syncTokens } = useSyncTokens();
-
-  const handleRefresh = useCallback(async () => {
-    if (!selectedChain || isLocked) {
-      return;
-    }
-
-    pushToast({
-      message: 'We’re retrieving your new pieces. This may take up to a few minutes.',
-      autoClose: true,
-    });
-
-    try {
-      await syncTokens(selectedChain);
-    } catch (e) {
-      if (e instanceof Error) {
-        reportError(e);
-      } else {
-        reportError('Could not run SidebarChainSelectorMutation for an unknown reason');
-      }
-    }
-  }, [isLocked, pushToast, reportError, selectedChain, syncTokens]);
-
   return (
     <StyledSidebar navbarHeight={navbarHeight}>
       <StyledSidebarContainer gap={8}>
@@ -170,12 +119,9 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
           <>
             <div>
               <SidebarChainSelector
-                ownsWalletFromSelectedChain={ownsWalletFromSelectedChain}
                 queryRef={query}
                 selected={selectedChain}
                 onChange={setSelectedChain}
-                handleRefresh={handleRefresh}
-                isRefreshingNfts={isLocked}
               />
             </div>
             {ownsWalletFromSelectedChain && (
@@ -197,7 +143,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
           <AddWalletSidebar
             selectedChain={selectedChain}
             queryRef={query}
-            handleRefresh={handleRefresh}
+            handleRefresh={() => syncTokens(selectedChain)}
           />
         )}
       </StyledSidebarContainer>

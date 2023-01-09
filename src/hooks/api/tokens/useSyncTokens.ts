@@ -2,6 +2,7 @@ import { useCallback, useMemo } from 'react';
 import { graphql } from 'relay-runtime';
 
 import { Chain } from '~/components/ManageGallery/OrganizeCollection/Sidebar/chains';
+import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import { useSyncTokensContext } from '~/contexts/SyncTokensLockContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { useSyncTokensMutation } from '~/generated/useSyncTokensMutation.graphql';
@@ -36,6 +37,11 @@ export default function useSyncTokens() {
   const { pushToast } = useToastActions();
   const sync = useCallback(
     async (chain: Chain) => {
+      pushToast({
+        message: 'We’re retrieving your new pieces. This may take up to a few minutes.',
+        autoClose: true,
+      });
+
       if (isLocked) {
         return false;
       }

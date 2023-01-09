@@ -5,3 +5,5 @@ export const chains = [
 ] as const;
 
 export type Chain = typeof chains[number]['name'];
+
+export type ChainMetadata = typeof chains[number];
