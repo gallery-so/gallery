@@ -23,7 +23,7 @@ type Props = {
   onTezosAddWalletSuccess?: () => void;
 };
 
-const MAX_ALLOWED_ADDRESSES = 10;
+const MAX_ALLOWED_ADDRESSES = 15;
 
 function ManageWallets({
   newAddress,

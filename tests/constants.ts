@@ -1,5 +1,6 @@
 import { Chain } from '~/tests/__generated__/operations';
 
+export const GALLERY_VIEWER_ID = 'TestViewerId';
 export const GALLERY_USER_DBID = 'TestUserId';
 export const GALLERY_USER_ID = `User:${GALLERY_USER_DBID}`;
 export const GALLERY_USER_USERNAME = `SomeUsername`;
