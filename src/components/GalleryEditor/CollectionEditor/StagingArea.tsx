@@ -128,7 +128,10 @@ function StagingArea({ tokensRef }: Props) {
 
   const handleDragEnd = useCallback(
     (event: DragEndEvent) => {
-      updateSections(dragEnd(localSections, event));
+      const nextSections = dragEnd(localSections, event);
+
+      setLocalSections(nextSections);
+      updateSections(nextSections);
     },
     [localSections, updateSections]
   );
