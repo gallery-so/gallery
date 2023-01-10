@@ -65,8 +65,8 @@ export function GalleryEditor({ queryRef }: GalleryEditorProps) {
     }
   }, [back, canGoBack, query.viewer, replace]);
 
-  const handleDone = useCallback(() => {
-    saveGallery();
+  const handleDone = useCallback(async () => {
+    await saveGallery();
   }, [saveGallery]);
 
   const allTokens = useMemo(() => {

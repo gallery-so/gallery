@@ -1,4 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
+import { useCallback, useState } from 'react';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
@@ -20,7 +21,7 @@ type Props = {
   hasUnsavedChanges: boolean;
 
   onBack: () => void;
-  onDone: () => void;
+  onDone: () => Promise<void>;
 };
 
 function GalleryTitleSection() {
@@ -34,6 +35,15 @@ export function MultiGalleryEditGalleryNavbar({
   hasUnsavedChanges,
 }: Props) {
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
+
+  const [loading, setLoading] = useState(false);
+  const handleDone = useCallback(() => {
+    setLoading(true);
+
+    onDone()
+      .then(() => setLoading(false))
+      .catch(() => setLoading(false));
+  }, [onDone]);
 
   return (
     <Wrapper>
@@ -50,7 +60,7 @@ export function MultiGalleryEditGalleryNavbar({
               <TitleDiatypeM color={colors.metal}>Unsaved Changes</TitleDiatypeM>
             )}
 
-            <Button disabled={!canSave} onClick={onDone}>
+            <Button pending={loading} disabled={!canSave} onClick={handleDone}>
               Done
             </Button>
           </HStack>
