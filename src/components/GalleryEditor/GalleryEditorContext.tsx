@@ -199,23 +199,24 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
     setCollectionIdBeingEdited(collectionId);
   }, []);
 
-  const deleteCollection = useCallback((collectionId: string) => {
-    setDeletedCollectionIds((previous) => {
-      const next = new Set(previous);
+  const deleteCollection = useCallback(
+    (collectionId: string) => {
+      setDeletedCollectionIds((previous) => {
+        const next = new Set(previous);
 
-      next.add(collectionId);
+        next.add(collectionId);
 
-      return next;
-    });
+        return next;
+      });
 
-    setCollections((previous) => {
-      const next = { ...previous };
+      const nextCollections = { ...collections };
+      delete nextCollections[collectionId];
 
-      delete next[collectionId];
-
-      return next;
-    });
-  }, []);
+      setCollections(nextCollections);
+      setCollectionIdBeingEdited(Object.keys(nextCollections)[0]);
+    },
+    [collections]
+  );
 
   const editCollectionNameAndNote = useCallback(() => {
     if (!collectionIdBeingEdited) {
