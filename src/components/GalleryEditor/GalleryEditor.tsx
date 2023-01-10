@@ -13,6 +13,7 @@ import {
   useGalleryEditorContext,
 } from '~/components/GalleryEditor/GalleryEditorContext';
 import { PiecesSidebar } from '~/components/GalleryEditor/PiecesSidebar/PiecesSidebar';
+import useConfirmationMessageBeforeClose from '~/components/ManageGallery/useConfirmationMessageBeforeClose';
 import FullPageStep from '~/components/Onboarding/FullPageStep';
 import { CollectionEditorProviderNew } from '~/contexts/collectionEditor/CollectionEditorContextNew';
 import { MultiGalleryEditGalleryNavbar } from '~/contexts/globalLayout/MultiGalleryEditGalleryNavbar/MultiGalleryEditGalleryNavbar';
@@ -51,6 +52,8 @@ export function GalleryEditor({ queryRef }: GalleryEditorProps) {
   const canGoBack = useCanGoBack();
   const { replace, back } = useRouter();
   const { saveGallery, canSave, hasUnsavedChanges } = useGalleryEditorContext();
+
+  useConfirmationMessageBeforeClose(hasUnsavedChanges);
 
   const handleBack = useCallback(() => {
     if (canGoBack) {

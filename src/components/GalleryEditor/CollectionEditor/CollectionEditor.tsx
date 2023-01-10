@@ -62,17 +62,6 @@ export function CollectionEditor({ queryRef }: Props) {
   }
 
   useNotOptimizedForMobileWarning();
-  // useConfirmationMessageBeforeClose(hasUnsavedChanges);
-  // useCheckUnsavedChanges(onHasUnsavedChange);
-
-  // useEffect(
-  //   function notifyParentWhenCollectionIsValid() {
-  //     const isCollectionValid = Object.keys(stagedCollectionState).length > 0;
-  //
-  //     onValidChange(isCollectionValid);
-  //   },
-  //   [stagedCollectionState, onValidChange]
-  // );
 
   const allNfts = useMemo(() => {
     return removeNullValues(viewer.user.tokens ?? []);
