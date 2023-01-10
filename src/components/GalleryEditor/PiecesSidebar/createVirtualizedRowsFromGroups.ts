@@ -1,5 +1,3 @@
-import keyBy from 'lodash.keyby';
-
 import { CollectionGroup } from '~/components/GalleryEditor/PiecesSidebar/groupCollectionsByAddress';
 import { VirtualizedRow } from '~/components/GalleryEditor/PiecesSidebar/SidebarList';
 import { SidebarListTokenNewFragment$key } from '~/generated/SidebarListTokenNewFragment.graphql';

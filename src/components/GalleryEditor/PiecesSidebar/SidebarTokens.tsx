@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
-import { EditModeToken } from '~/components/GalleryEditor/CollectionEditor/types';
 import { Chain } from '~/components/GalleryEditor/PiecesSidebar/chains';
 import {
   createVirtualizedRowsFromGroups,

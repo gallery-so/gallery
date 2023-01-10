@@ -62,7 +62,7 @@ export function CollectionListItem({ collectionId }: CollectionListItemProps) {
 
   const handleEdit = useCallback(() => {
     editCollectionNameAndNote();
-  }, [collectionId, editCollectionNameAndNote]);
+  }, [editCollectionNameAndNote]);
 
   const handleIconSectionClick = useCallback<MouseEventHandler>((event) => {
     event.stopPropagation();

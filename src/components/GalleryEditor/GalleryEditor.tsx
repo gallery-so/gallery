@@ -1,6 +1,6 @@
 import { GalleryEditorFragment$key } from '__generated__/GalleryEditorFragment.graphql';
 import { useRouter } from 'next/router';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
@@ -8,10 +8,7 @@ import styled from 'styled-components';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { CollectionEditor } from '~/components/GalleryEditor/CollectionEditor/CollectionEditor';
 import { CollectionSidebar } from '~/components/GalleryEditor/CollectionSidebar/CollectionSidebar';
-import {
-  GalleryEditorProvider,
-  useGalleryEditorContext,
-} from '~/components/GalleryEditor/GalleryEditorContext';
+import { useGalleryEditorContext } from '~/components/GalleryEditor/GalleryEditorContext';
 import { PiecesSidebar } from '~/components/GalleryEditor/PiecesSidebar/PiecesSidebar';
 import useConfirmationMessageBeforeClose from '~/components/ManageGallery/useConfirmationMessageBeforeClose';
 import FullPageStep from '~/components/Onboarding/FullPageStep';

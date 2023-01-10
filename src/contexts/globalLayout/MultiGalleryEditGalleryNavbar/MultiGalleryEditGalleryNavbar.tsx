@@ -1,4 +1,3 @@
-import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useState } from 'react';
 import styled from 'styled-components';
 

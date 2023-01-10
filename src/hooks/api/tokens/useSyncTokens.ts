@@ -2,7 +2,6 @@ import { useCallback, useMemo } from 'react';
 import { graphql } from 'relay-runtime';
 
 import { Chain } from '~/components/ManageGallery/OrganizeCollection/Sidebar/chains';
-import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import { useSyncTokensContext } from '~/contexts/SyncTokensLockContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { useSyncTokensMutation } from '~/generated/useSyncTokensMutation.graphql';

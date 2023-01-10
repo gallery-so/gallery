@@ -6,7 +6,6 @@ import {
   useCallback,
   useContext,
   useMemo,
-  useRef,
   useState,
 } from 'react';
 import { graphql, useFragment } from 'react-relay';
@@ -132,8 +131,8 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
     }
   `);
 
-  const [name, setName] = useState(() => query.galleryById?.name ?? '');
-  const [description, setDescription] = useState(() => query.galleryById?.description ?? '');
+  const [name] = useState(() => query.galleryById?.name ?? '');
+  const [description] = useState(() => query.galleryById?.description ?? '');
 
   const [collectionIdBeingEdited, setCollectionIdBeingEdited] = useState<string | null>(() => {
     return query.galleryById?.collections?.[0]?.dbid ?? null;
@@ -323,7 +322,7 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
       await save({
         variables: {
           input: {
-            galleryId: query.galleryById!.dbid!,
+            galleryId: query.galleryById.dbid,
 
             name,
             description,

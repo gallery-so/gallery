@@ -1,8 +1,6 @@
 import React, { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
-import useCheckUnsavedChanges from '~/components/GalleryEditor/CollectionEditor/useCheckUnsavedChanges';
-import useConfirmationMessageBeforeClose from '~/components/ManageGallery/useConfirmationMessageBeforeClose';
 import useNotOptimizedForMobileWarning from '~/components/ManageGallery/useNotOptimizedForMobileWarning';
 import { CollectionEditorNewFragment$key } from '~/generated/CollectionEditorNewFragment.graphql';
 import { CollectionEditorViewerNewFragment$key } from '~/generated/CollectionEditorViewerNewFragment.graphql';

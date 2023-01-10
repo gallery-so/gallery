@@ -1,5 +1,3 @@
-import keyBy from 'lodash.keyby';
-
 import { SidebarTokensNewFragment$data } from '~/generated/SidebarTokensNewFragment.graphql';
 
 export type CollectionGroup = {

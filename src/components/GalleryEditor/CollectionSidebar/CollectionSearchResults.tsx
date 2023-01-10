@@ -68,7 +68,7 @@ export function CollectionSearchResults({ searchQuery }: CollectionSearchResults
         }, {});
       });
     },
-    [setCollections]
+    [activateCollection, setCollections]
   );
 
   return (
