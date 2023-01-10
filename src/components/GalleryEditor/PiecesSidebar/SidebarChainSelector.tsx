@@ -1,3 +1,4 @@
+import { LayoutGroup } from 'framer-motion';
 import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
@@ -39,19 +40,21 @@ export function SidebarChainSelector({ selected, onChange, queryRef }: SidebarCh
   return (
     <Container>
       <HStack gap={4}>
-        {chains.map((chain) => {
-          const isSelected = chain.name === selected;
+        <LayoutGroup>
+          {chains.map((chain) => {
+            const isSelected = chain.name === selected;
 
-          return (
-            <SidebarChainButton
-              key={chain.name}
-              isSelected={isSelected}
-              onClick={() => handleChainClick(chain.name)}
-              queryRef={query}
-              chain={chain}
-            />
-          );
-        })}
+            return (
+              <SidebarChainButton
+                key={chain.name}
+                isSelected={isSelected}
+                onClick={() => handleChainClick(chain.name)}
+                queryRef={query}
+                chain={chain}
+              />
+            );
+          })}
+        </LayoutGroup>
       </HStack>
     </Container>
   );

@@ -56,7 +56,7 @@ export function SidebarChainButton({ isSelected, onClick, chain, queryRef }: Pro
 
   return (
     <>
-      <ChainButton role="button" onClick={onClick} selected={isSelected}>
+      <ChainButton layout role="button" onClick={onClick} selected={isSelected}>
         <HStack align="center">
           <ChainLogo src={chain.icon} />
           <TitleXSBold>{chain.shortName}</TitleXSBold>
@@ -64,12 +64,7 @@ export function SidebarChainButton({ isSelected, onClick, chain, queryRef }: Pro
 
         <AnimatePresence>
           {isSelected && (
-            <motion.div
-              key={chain.name}
-              transition={{ duration: 0.15 }}
-              initial={{ width: '0px', opacity: 0, scale: 0 }}
-              animate={{ width: 'auto', opacity: 1, scale: 1 }}
-            >
+            <motion.div key={chain.name}>
               <IconContainer
                 size="sm"
                 disableHoverPadding
@@ -100,7 +95,7 @@ const ChainLogo = styled.img`
   margin-right: 4px;
 `;
 
-const ChainButton = styled.div<{ selected: boolean }>`
+const ChainButton = styled(motion.div)<{ selected: boolean }>`
   display: flex;
   gap: 0 8px;
   padding: 6px 8px;
