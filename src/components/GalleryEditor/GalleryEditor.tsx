@@ -50,7 +50,7 @@ export function GalleryEditor({ queryRef }: GalleryEditorProps) {
 
   const canGoBack = useCanGoBack();
   const { replace, back } = useRouter();
-  const { saveGallery, canSave } = useGalleryEditorContext();
+  const { saveGallery, canSave, hasUnsavedChanges } = useGalleryEditorContext();
 
   const handleBack = useCallback(() => {
     if (canGoBack) {
@@ -81,7 +81,12 @@ export function GalleryEditor({ queryRef }: GalleryEditorProps) {
     <FullPageStep
       withBorder
       navbar={
-        <MultiGalleryEditGalleryNavbar canSave={canSave} onBack={handleBack} onDone={handleDone} />
+        <MultiGalleryEditGalleryNavbar
+          canSave={canSave}
+          hasUnsavedChanges={hasUnsavedChanges}
+          onBack={handleBack}
+          onDone={handleDone}
+        />
       }
     >
       <GalleryEditorWrapper>

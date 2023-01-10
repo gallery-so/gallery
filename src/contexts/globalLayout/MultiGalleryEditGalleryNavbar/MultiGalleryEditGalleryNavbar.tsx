@@ -1,9 +1,11 @@
+import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import { Button } from '~/components/core/Button/Button';
 import colors from '~/components/core/colors';
-import { BODY_FONT_FAMILY, Paragraph } from '~/components/core/Text/Text';
+import { HStack } from '~/components/core/Spacer/Stack';
+import { BODY_FONT_FAMILY, Paragraph, TitleDiatypeM } from '~/components/core/Text/Text';
 import { BackButton } from '~/contexts/globalLayout/GlobalNavbar/BackButton';
 import {
   NavbarCenterContent,
@@ -15,6 +17,8 @@ import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 
 type Props = {
   canSave: boolean;
+  hasUnsavedChanges: boolean;
+
   onBack: () => void;
   onDone: () => void;
 };
@@ -23,7 +27,12 @@ function GalleryTitleSection() {
   return <MainGalleryText>My gallery</MainGalleryText>;
 }
 
-export function MultiGalleryEditGalleryNavbar({ canSave, onDone, onBack }: Props) {
+export function MultiGalleryEditGalleryNavbar({
+  canSave,
+  onDone,
+  onBack,
+  hasUnsavedChanges,
+}: Props) {
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
   return (
@@ -36,9 +45,15 @@ export function MultiGalleryEditGalleryNavbar({ canSave, onDone, onBack }: Props
         <NavbarCenterContent>{!isMobile && <GalleryTitleSection />}</NavbarCenterContent>
 
         <NavbarRightContent>
-          <Button disabled={!canSave} onClick={onDone}>
-            Done
-          </Button>
+          <HStack align="center" gap={12}>
+            {hasUnsavedChanges && (
+              <TitleDiatypeM color={colors.metal}>Unsaved Changes</TitleDiatypeM>
+            )}
+
+            <Button disabled={!canSave} onClick={onDone}>
+              Done
+            </Button>
+          </HStack>
         </NavbarRightContent>
       </StandardNavbarContainer>
     </Wrapper>
