@@ -337,12 +337,15 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
           },
         },
       });
+
+      // Make sure we reset our "Has unsaved changes comparison point"
+      setInitialCollections(collections);
     } catch (error) {
       console.log(error);
     }
   }, [collections, deletedCollectionIds, description, name, query.galleryById, reportError, save]);
 
-  const initialCollections = useRef(collections);
+  const [initialCollections, setInitialCollections] = useState(collections);
   const hasUnsavedChanges = useMemo(() => {
     function removeIdsFromCollections(collections: CollectionState[]): CollectionState[] {
       return collections.map((collection) => {
@@ -352,13 +355,13 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
 
     const currentCollectionsWithoutIds = removeIdsFromCollections(Object.values(collections));
     const initialCollectionsWithoutIds = removeIdsFromCollections(
-      Object.values(initialCollections.current)
+      Object.values(initialCollections)
     );
 
     return (
       JSON.stringify(currentCollectionsWithoutIds) !== JSON.stringify(initialCollectionsWithoutIds)
     );
-  }, [collections]);
+  }, [collections, initialCollections]);
 
   const validationErrors = useMemo(() => {
     const errors: string[] = [];
