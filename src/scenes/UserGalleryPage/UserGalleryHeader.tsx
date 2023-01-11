@@ -75,14 +75,16 @@ function UserGalleryHeader({
 
   return (
     <StyledUserGalleryHeader gap={2}>
-      <HStack align="center" gap={6}>
+      <HStack align="center" gap={4}>
         {isMobile ? (
           <StyledUsernameMobile>{displayName}</StyledUsernameMobile>
         ) : (
           <StyledUsername>{displayName}</StyledUsername>
         )}
 
-        {userBadges.map((badge) => (badge ? <Badge key={badge.name} badgeRef={badge} /> : null))}
+        <HStack align="center" gap={0}>
+          {userBadges.map((badge) => (badge ? <Badge key={badge.name} badgeRef={badge} /> : null))}
+        </HStack>
       </HStack>
 
       <HStack align="flex-start" justify="space-between">

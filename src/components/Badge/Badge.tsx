@@ -89,7 +89,8 @@ const StyledInteractiveLink = styled(InteractiveLink)`
 `;
 
 const StyledBadge = styled.img`
-  height: 24px;
-  width: 24px;
+  width: 100%;
+  max-width: 24px;
+  max-height: 24px;
   cursor: pointer;
 `;
