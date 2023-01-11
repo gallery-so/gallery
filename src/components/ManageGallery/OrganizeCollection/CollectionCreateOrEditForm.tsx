@@ -12,6 +12,7 @@ import { TokenSettings } from '~/contexts/collectionEditor/CollectionEditorConte
 import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import formatError from '~/errors/formatError';
+import { ValidationError } from '~/errors/ValidationError';
 import useUpdateCollectionInfo from '~/hooks/api/collections/useUpdateCollectionInfo';
 import unescape from '~/utils/unescape';
 
@@ -77,9 +78,7 @@ function CollectionCreateOrEditForm({
     [onNext, hideModal]
   );
 
-  const [isLoading, setIsLoading] = useState(false);
-
-  const updateCollection = useUpdateCollectionInfo();
+  const [updateCollection, isMutating] = useUpdateCollectionInfo();
 
   const track = useTrack();
   const reportError = useReportError();
@@ -99,7 +98,6 @@ function CollectionCreateOrEditForm({
       return;
     }
 
-    setIsLoading(true);
     try {
       // Collection is being updated
       if (collectionId) {
@@ -119,7 +117,9 @@ function CollectionCreateOrEditForm({
         });
       }
     } catch (error) {
-      if (error instanceof Error) {
+      if (error instanceof ValidationError) {
+        setGeneralError(error.validationMessage);
+      } else if (error instanceof Error) {
         reportError(error);
         setGeneralError(formatError(error));
       }
@@ -132,8 +132,6 @@ function CollectionCreateOrEditForm({
         },
       });
     }
-
-    setIsLoading(false);
   }, [
     collectionId,
     description,
@@ -175,7 +173,7 @@ function CollectionCreateOrEditForm({
               skip and add later
             </Button>
           )}
-          <Button onClick={handleClick} disabled={isLoading} pending={isLoading}>
+          <Button onClick={handleClick} disabled={isMutating} pending={isMutating}>
             save
           </Button>
         </ButtonContainer>

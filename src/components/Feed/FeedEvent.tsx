@@ -185,7 +185,7 @@ export default function FeedEventWithBoundary({
         {shouldShowAdmireComment && (
           // We have another boundary here in case the socialize section fails
           // and the rest of the feed event loads
-          <ReportingErrorBoundary fallback={<></>}>
+          <ReportingErrorBoundary dontReport fallback={<></>}>
             <FeedEventSocializeSection
               eventRef={event}
               queryRef={query}

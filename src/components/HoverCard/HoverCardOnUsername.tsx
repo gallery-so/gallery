@@ -32,6 +32,7 @@ import FollowButton from '~/components/Follow/FollowButton';
 import { HoverCardOnUsernameFollowFragment$key } from '~/generated/HoverCardOnUsernameFollowFragment.graphql';
 import { HoverCardOnUsernameFragment$key } from '~/generated/HoverCardOnUsernameFragment.graphql';
 import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
+import handleCustomDisplayName from '~/utils/handleCustomDisplayName';
 
 const HOVER_POPUP_DELAY = 100;
 
@@ -122,6 +123,12 @@ export default function HoverCardOnUsername({ children, userRef, queryRef }: Pro
     return { pathname: '/[username]', query: { username: user.username as string } };
   }, [user]);
 
+  if (!user.username) {
+    return null;
+  }
+
+  const displayName = handleCustomDisplayName(user.username);
+
   return (
     <StyledContainer>
       <StyledLinkContainer ref={reference} {...getReferenceProps()}>
@@ -129,7 +136,7 @@ export default function HoverCardOnUsername({ children, userRef, queryRef }: Pro
           {children ? (
             children
           ) : (
-            <TitleDiatypeM onClick={handleUsernameClick}>{user.username}</TitleDiatypeM>
+            <TitleDiatypeM onClick={handleUsernameClick}>{displayName}</TitleDiatypeM>
           )}
         </Link>
       </StyledLinkContainer>
@@ -163,7 +170,7 @@ export default function HoverCardOnUsername({ children, userRef, queryRef }: Pro
                     <StyledCardHeader>
                       <HStack align="center" gap={4}>
                         <HStack align="center" gap={6}>
-                          <StyledCardUsername>{user.username}</StyledCardUsername>
+                          <StyledCardUsername>{displayName}</StyledCardUsername>
 
                           {userBadges.map((badge) => (
                             // Might need to rethink this layout when we have more badges

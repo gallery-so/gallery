@@ -8,7 +8,7 @@ import { HStack } from '~/components/core/Spacer/Stack';
 import { BreadcrumbLink } from '~/contexts/globalLayout/GlobalNavbar/ProfileDropdown/Breadcrumbs';
 import { NavActionFollowQueryFragment$key } from '~/generated/NavActionFollowQueryFragment.graphql';
 import { NavActionFollowUserFragment$key } from '~/generated/NavActionFollowUserFragment.graphql';
-import { isUsername3ac } from '~/hooks/oneOffs/useIs3acProfilePage';
+import handleCustomDisplayName from '~/utils/handleCustomDisplayName';
 
 import colors from '../core/colors';
 import FollowButton from './FollowButton';
@@ -39,13 +39,14 @@ export default function NavActionFollow({ userRef, queryRef }: Props) {
     queryRef
   );
   const { pathname } = useRouter();
-
-  if (!user.username) {
+  const { username } = user;
+  if (!username) {
     return null;
   }
 
-  const is3ac = isUsername3ac(user.username);
-  const usernameRoute: Route = { pathname: '/[username]', query: { username: user.username } };
+  const displayName = handleCustomDisplayName(username);
+
+  const usernameRoute: Route = { pathname: '/[username]', query: { username: username } };
 
   return (
     <HStack gap={8} align="center">
@@ -54,7 +55,7 @@ export default function NavActionFollow({ userRef, queryRef }: Props) {
           href={route(usernameRoute)}
           mainGalleryPage={pathname === '/[username]'}
         >
-          {is3ac ? 'The Unofficial 3AC Gallery' : user.username}
+          {displayName}
         </UsernameBreadcrumbLink>
       </Link>
       <FollowButton queryRef={loggedInUserQuery} userRef={user} />
