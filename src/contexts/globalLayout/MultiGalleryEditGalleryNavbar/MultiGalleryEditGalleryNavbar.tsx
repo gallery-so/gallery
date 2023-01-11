@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import colors from '~/components/core/colors';
+import IconContainer from '~/components/core/Markdown/IconContainer';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BODY_FONT_FAMILY, Paragraph, TitleDiatypeM } from '~/components/core/Text/Text';
 import { BackButton } from '~/contexts/globalLayout/GlobalNavbar/BackButton';
@@ -18,18 +19,70 @@ type Props = {
   canSave: boolean;
   hasUnsavedChanges: boolean;
 
+  onEdit: () => void;
+
   onBack: () => void;
   onDone: (caption: string) => Promise<void>;
 };
 
-function GalleryTitleSection() {
-  return <MainGalleryText>My gallery</MainGalleryText>;
+type GalleryTitleSectionProps = {
+  onEdit: () => void;
+};
+
+function GalleryTitleSection({ onEdit }: GalleryTitleSectionProps) {
+  return (
+    <GalleryTitleContainer align="center" onClick={onEdit} gap={8}>
+      <MainGalleryText>My Gallery</MainGalleryText>
+
+      <EditIconContainer>
+        <IconContainer
+          size="sm"
+          variant="stacked"
+          icon={
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 14 14"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M1 13L1.66667 10L10.6667 1H11.3333L13 2.66667V3.33333L4 12.3333L1 13Z"
+                stroke="currentColor"
+                strokeMiterlimit="10"
+              />
+            </svg>
+          }
+        />
+      </EditIconContainer>
+    </GalleryTitleContainer>
+  );
 }
+
+const EditIconContainer = styled.div`
+  opacity: 0;
+
+  transition: opacity 150ms ease-in-out;
+`;
+
+const GalleryTitleContainer = styled(HStack)`
+  padding: 4px 8px;
+  cursor: pointer;
+
+  :hover {
+    background-color: ${colors.faint};
+
+    ${EditIconContainer} {
+      opacity: 1;
+    }
+  }
+`;
 
 export function MultiGalleryEditGalleryNavbar({
   canSave,
   onDone,
   onBack,
+  onEdit,
   hasUnsavedChanges,
 }: Props) {
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
@@ -38,10 +91,12 @@ export function MultiGalleryEditGalleryNavbar({
     <Wrapper>
       <StandardNavbarContainer>
         <NavbarLeftContent>
-          {isMobile ? <GalleryTitleSection /> : <BackButton onClick={onBack} />}
+          {isMobile ? <GalleryTitleSection onEdit={onEdit} /> : <BackButton onClick={onBack} />}
         </NavbarLeftContent>
 
-        <NavbarCenterContent>{!isMobile && <GalleryTitleSection />}</NavbarCenterContent>
+        <NavbarCenterContent>
+          {!isMobile && <GalleryTitleSection onEdit={onEdit} />}
+        </NavbarCenterContent>
 
         <NavbarRightContent>
           <HStack align="center" gap={12}>
