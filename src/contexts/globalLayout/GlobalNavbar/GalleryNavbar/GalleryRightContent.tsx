@@ -59,7 +59,7 @@ export function GalleryRightContent({ queryRef, username }: GalleryRightContentP
 
   const styledQrCode = useQrCode();
   const { showModal } = useModalActions();
-  const { route, back } = useRouter();
+  const { route } = useRouter();
 
   const createGallery = useCreateGallery();
 
@@ -139,7 +139,6 @@ export function GalleryRightContent({ queryRef, username }: GalleryRightContentP
             Add New
           </Button>
         )}
-        <Button onClick={back}>DONE</Button>
       </HStack>
     );
   } else if (query.viewer?.__typename !== 'Viewer') {

@@ -173,7 +173,8 @@ const StyledGalleryDraggable = styled(VStack)<{ isDragging?: boolean }>`
   padding: 12px;
   opacity: ${({ isDragging }) => (isDragging ? 0.5 : 1)};
   cursor: ${({ isDragging }) => (isDragging ? 'grabbing' : 'grab')};
-
+  min-height: 310px;
+  height: 100%;
   &:hover {
     background-color: ${colors.faint};
   }
