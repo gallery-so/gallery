@@ -21,7 +21,7 @@ export default function GalleryNameAndDescriptionModal({ galleryRef, onNext }: P
   const query = useFragment(
     graphql`
       fragment GalleryNameAndDescriptionModalFragment on Gallery {
-        id
+        dbid
         name
         description
       }
@@ -29,7 +29,7 @@ export default function GalleryNameAndDescriptionModal({ galleryRef, onNext }: P
     galleryRef
   );
 
-  const { name: previousName, description: previousDescription, id } = query;
+  const { name: previousName, description: previousDescription, dbid } = query;
 
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -48,13 +48,13 @@ export default function GalleryNameAndDescriptionModal({ galleryRef, onNext }: P
   const handleSave = useCallback(() => {
     setIsLoading(true);
     updateGalleryInfo({
-      id,
+      id: dbid,
       name,
       description,
     });
     onNext();
     setIsLoading(false);
-  }, [id, name, description, onNext, updateGalleryInfo]);
+  }, [dbid, name, description, onNext, updateGalleryInfo]);
 
   return (
     <StyledCollectionEditInfoForm>

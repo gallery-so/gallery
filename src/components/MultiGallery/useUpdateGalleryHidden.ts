@@ -30,6 +30,17 @@ export default function useUpdateGalleryHidden() {
             hidden,
           },
         },
+        updater: (store) => {
+          const viewer = store.getRoot().getLinkedRecord('viewer');
+          const galleries = viewer?.getLinkedRecord('user')?.getLinkedRecords('galleries');
+          const gallery = galleries?.find((gallery) => gallery.getValue('dbid') === id);
+
+          if (!gallery) {
+            return;
+          }
+
+          gallery.setValue(hidden, 'hidden');
+        },
       });
     },
     [updateGalleryHidden]
