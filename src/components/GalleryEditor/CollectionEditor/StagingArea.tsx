@@ -196,38 +196,44 @@ function StagingArea({ tokensRef }: Props) {
 
   const hasNameOrCollectorsNote = name || collectorsNote;
   return (
-    <StyledStagingArea gap={20}>
-      <CollectionNameAndDescriptionContainer align="center" gap={8}>
-        {hasNameOrCollectorsNote ? (
-          <VStack>
-            <TitleDiatypeM>{name}</TitleDiatypeM>
-            <BaseM>{collectorsNote}</BaseM>
-          </VStack>
-        ) : (
-          <BaseM color={colors.metal}>Add title and description</BaseM>
-        )}
+    <StyledStagingArea gap={20} align="center">
+      <CollectionNameAndDescriptionContainer justify="start" align="center">
+        <CollectionNameAndDescriptionBackground
+          onClick={editCollectionNameAndNote}
+          align="center"
+          gap={48}
+        >
+          {hasNameOrCollectorsNote ? (
+            <VStack>
+              <TitleDiatypeM>{name}</TitleDiatypeM>
+              <BaseM>{collectorsNote}</BaseM>
+            </VStack>
+          ) : (
+            <BaseM color={colors.metal}>Add title and description</BaseM>
+          )}
 
-        <EditIconContainer>
-          <IconContainer
-            onClick={editCollectionNameAndNote}
-            variant="default"
-            icon={
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 14 14"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M1 13L1.66667 10L10.6667 1H11.3333L13 2.66667V3.33333L4 12.3333L1 13Z"
-                  stroke="currentColor"
-                  strokeMiterlimit="10"
-                />
-              </svg>
-            }
-          />
-        </EditIconContainer>
+          <EditIconContainer>
+            <IconContainer
+              size="sm"
+              variant="stacked"
+              icon={
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 14 14"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M1 13L1.66667 10L10.6667 1H11.3333L13 2.66667V3.33333L4 12.3333L1 13Z"
+                    stroke="currentColor"
+                    strokeMiterlimit="10"
+                  />
+                </svg>
+              }
+            />
+          </EditIconContainer>
+        </CollectionNameAndDescriptionBackground>
       </CollectionNameAndDescriptionContainer>
 
       <SectionList>
@@ -291,14 +297,21 @@ const EditIconContainer = styled.div`
   transition: opacity 150ms ease-in-out;
 `;
 
-const CollectionNameAndDescriptionContainer = styled(HStack)`
-  padding: 0 16px;
+const CollectionNameAndDescriptionBackground = styled(HStack)`
+  padding: 4px 8px;
+  cursor: pointer;
 
   :hover {
+    background-color: ${colors.faint};
+
     ${EditIconContainer} {
       opacity: 1;
     }
   }
+`;
+
+const CollectionNameAndDescriptionContainer = styled(HStack)`
+  width: 830px;
 `;
 
 const SectionList = styled(VStack)``;
