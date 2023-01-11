@@ -11,13 +11,14 @@ import {
   UniqueIdentifier,
 } from '@dnd-kit/core';
 import { arraySwap, rectSortingStrategy, SortableContext } from '@dnd-kit/sortable';
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import Gallery from '~/components/MultiGallery/Gallery';
+import useUpdateGalleryOrder from '~/components/MultiGallery/useUpdateGalleryOrder';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { GalleriesPageQueryFragment$key } from '~/generated/GalleriesPageQueryFragment.graphql';
 import { removeNullValues } from '~/utils/removeNullValues';
@@ -40,6 +41,7 @@ export default function GalleriesPage({ queryRef }: Props) {
             }
             galleries {
               id
+              position
               ...GalleryFragment
             }
           }
@@ -51,25 +53,30 @@ export default function GalleriesPage({ queryRef }: Props) {
   );
 
   const user = query.userByUsername;
-  const galleries = removeNullValues(user?.galleries) ?? [];
 
-  const [localGalleries, setLocalGalleries] = useState(galleries);
+  const sortedGalleries = useMemo(() => {
+    const galleries = removeNullValues(user?.galleries) ?? [];
+
+    return galleries.sort((a, b) => {
+      if (!a.position || !b.position) {
+        return 0;
+      }
+
+      if (a.position < b.position) {
+        return -1;
+      } else if (a.position > b.position) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
+  }, [user?.galleries]);
+
+  const [localGalleries, setLocalGalleries] = useState(sortedGalleries);
 
   const featuredGalleryId = user?.featuredGallery?.id ?? null;
-  // const featuredGallery = localGalleries.find((gallery) => gallery.id === featuredGalleryId);
 
-  // sort by hidden
-  // const nonFeaturedGalleries = localGalleries
-  //   .filter((gallery) => gallery.id !== featuredGalleryId)
-  //   .sort((a, b) => {
-  //     if (a.hidden && !b.hidden) {
-  //       return 1;
-  //     } else if (!a.hidden && b.hidden) {
-  //       return -1;
-  //     } else {
-  //       return 0;
-  //     }
-  //   });
+  const updateGalleryOrder = useUpdateGalleryOrder();
 
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
   const getIndex = useCallback(
@@ -124,12 +131,20 @@ export default function GalleriesPage({ queryRef }: Props) {
       if (over) {
         const overIndex = getIndex(over.id);
         if (activeIndex !== overIndex) {
-          console.log(`reorder ${activeIndex} to ${overIndex}`);
           setLocalGalleries((items) => arraySwap(items, activeIndex, overIndex));
         }
       }
+
+      const formattedGalleriesPosition = localGalleries.map((gallery, index) => {
+        return {
+          galleryId: gallery.id,
+          position: `a${index.toString()}`,
+        };
+      });
+
+      updateGalleryOrder(formattedGalleriesPosition);
     },
-    [activeIndex, getIndex]
+    [activeIndex, getIndex, localGalleries, updateGalleryOrder]
   );
 
   return (
