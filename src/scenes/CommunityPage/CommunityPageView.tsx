@@ -93,7 +93,7 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
       <StyledCommunityPageContainer>
         <HStack>
           <StyledHeader>
-            <HStack gap={8} align="center">
+            <HStack gap={12} align="center">
               <TitleL>{name}</TitleL>
               {badgeURL && <StyledBadge src={badgeURL} />}
             </HStack>
@@ -192,6 +192,7 @@ const StyledMemberListFilterContainer = styled.div<{ isMobile: boolean }>`
 `;
 
 const StyledBadge = styled.img`
-  height: 24px;
-  width: 24px;
+  max-height: 24px;
+  max-width: 24px;
+  width: 100%;
 `;
