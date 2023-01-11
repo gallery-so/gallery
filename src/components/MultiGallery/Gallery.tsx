@@ -110,58 +110,73 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
   if (!isAuthenticatedUser && hidden) return null;
 
   return (
-    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      <StyledGalleryWrapper gap={12} isDragging={isDragging}>
+    <StyledGalleryWrapper>
+      <StyledGalleryDraggable
+        gap={12}
+        isDragging={isDragging}
+        ref={setNodeRef}
+        style={style}
+        {...attributes}
+        {...listeners}
+      >
         <HStack justify="space-between">
           <StyledGalleryTitleWrapper isHidden={hidden}>
             <TitleDiatypeM>{name || 'Untitled'}</TitleDiatypeM>
             <BaseM>{collections.length} collections</BaseM>
           </StyledGalleryTitleWrapper>
-          <HStack gap={8} align="center">
-            {isFeatured && (
-              <StyledGalleryFeaturedText as="span">Featured</StyledGalleryFeaturedText>
-            )}
-            {isAuthenticatedUser && (
-              <>
-                <Link href={handleEditGallery}>
-                  <a>
-                    <PencilIcon />
-                  </a>
-                </Link>
-                <SettingsDropdown>
-                  <DropdownItem onClick={handleEditGalleryName}>EDIT NAME & DESC</DropdownItem>
-                  {hidden ? (
-                    <DropdownItem onClick={handleUpdateGalleryHidden}>UNHIDE</DropdownItem>
-                  ) : (
-                    <>
-                      {!isFeatured && (
-                        <DropdownItem onClick={handleSetFeaturedGallery}>
-                          FEATURE ON PROFILE
-                        </DropdownItem>
-                      )}
-                      <DropdownItem onClick={handleUpdateGalleryHidden}>HIDE</DropdownItem>
-                    </>
-                  )}
-                  <DropdownItem onClick={handleDeleteGallery}>DELETE</DropdownItem>
-                </SettingsDropdown>
-              </>
-            )}
-          </HStack>
         </HStack>
         <StyledTokenPreviewWrapper isHidden={hidden}>
           {nonNullTokenPreviews.map((token) => (
             <StyledTokenPreview key={token} src={token} />
           ))}
         </StyledTokenPreviewWrapper>
-      </StyledGalleryWrapper>
-    </div>
+      </StyledGalleryDraggable>
+      <StyledGalleryActionsContainer>
+        <HStack gap={8} align="center">
+          {isFeatured && <StyledGalleryFeaturedText as="span">Featured</StyledGalleryFeaturedText>}
+          {isAuthenticatedUser && (
+            <>
+              <Link href={handleEditGallery}>
+                <a>
+                  <PencilIcon />
+                </a>
+              </Link>
+              <SettingsDropdown>
+                <DropdownItem onClick={handleEditGalleryName}>EDIT NAME & DESC</DropdownItem>
+                {hidden ? (
+                  <DropdownItem onClick={handleUpdateGalleryHidden}>UNHIDE</DropdownItem>
+                ) : (
+                  <>
+                    {!isFeatured && (
+                      <DropdownItem onClick={handleSetFeaturedGallery}>
+                        FEATURE ON PROFILE
+                      </DropdownItem>
+                    )}
+                    <DropdownItem onClick={handleUpdateGalleryHidden}>HIDE</DropdownItem>
+                  </>
+                )}
+                <DropdownItem onClick={handleDeleteGallery}>DELETE</DropdownItem>
+              </SettingsDropdown>
+            </>
+          )}
+        </HStack>
+      </StyledGalleryActionsContainer>
+    </StyledGalleryWrapper>
   );
 }
 
-const StyledGalleryWrapper = styled(VStack)<{ isDragging?: boolean }>`
+const StyledGalleryWrapper = styled.div`
+  position: relative;
+`;
+
+const StyledGalleryDraggable = styled(VStack)<{ isDragging?: boolean }>`
   padding: 12px;
   opacity: ${({ isDragging }) => (isDragging ? 0.5 : 1)};
   cursor: ${({ isDragging }) => (isDragging ? 'grabbing' : 'grab')};
+
+  &:hover {
+    background-color: ${colors.faint};
+  }
 `;
 
 const StyledGalleryTitleWrapper = styled(VStack)<{ isHidden?: boolean }>`
@@ -184,4 +199,10 @@ const StyledTokenPreviewWrapper = styled.div<{ isHidden?: boolean }>`
 `;
 const StyledTokenPreview = styled.img`
   width: 100%;
+`;
+
+const StyledGalleryActionsContainer = styled.div`
+  position: absolute;
+  top: 12px;
+  right: 12px;
 `;
