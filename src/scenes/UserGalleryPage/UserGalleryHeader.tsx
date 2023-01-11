@@ -82,7 +82,9 @@ function UserGalleryHeader({
           <StyledUsername>{displayName}</StyledUsername>
         )}
 
-        {userBadges.map((badge) => (badge ? <Badge key={badge.name} badgeRef={badge} /> : null))}
+        <HStack align="center" gap={2}>
+          {userBadges.map((badge) => (badge ? <Badge key={badge.name} badgeRef={badge} /> : null))}
+        </HStack>
       </HStack>
 
       <HStack align="flex-start" justify="space-between">
