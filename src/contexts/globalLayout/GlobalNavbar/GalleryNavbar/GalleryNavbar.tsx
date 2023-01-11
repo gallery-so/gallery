@@ -20,8 +20,8 @@ import {
   StandardNavbarContainer,
 } from '~/contexts/globalLayout/GlobalNavbar/StandardNavbarContainer';
 import { GalleryNavbarFragment$key } from '~/generated/GalleryNavbarFragment.graphql';
-import { isUsername3ac } from '~/hooks/oneOffs/useIs3acProfilePage';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import handleCustomDisplayName from '~/utils/handleCustomDisplayName';
 
 type Props = {
   username: string;
@@ -45,7 +45,7 @@ export function GalleryNavbar({ queryRef, username }: Props) {
     queryRef
   );
 
-  const is3ac = isUsername3ac(username);
+  const displayName = handleCustomDisplayName(username);
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
   const { pathname } = useRouter();
 
@@ -65,7 +65,7 @@ export function GalleryNavbar({ queryRef, username }: Props) {
                   mainGalleryPage={pathname === '/[username]'}
                   href={route(userGalleryRoute)}
                 >
-                  {is3ac ? 'The Unofficial 3AC Gallery' : username}
+                  {displayName}
                 </UsernameBreadcrumbLink>
               </Link>
               {query.userByUsername && (
