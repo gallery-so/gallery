@@ -33,16 +33,23 @@ export default function GalleriesPage({ queryRef }: Props) {
   const query = useFragment(
     graphql`
       fragment GalleriesPageQueryFragment on Query {
+        viewer {
+          ... on Viewer {
+            viewerGalleries {
+              gallery {
+                id
+                position
+                ...GalleryFragment
+              }
+            }
+          }
+        }
+
         userByUsername(username: $username) {
           ... on GalleryUser {
             id
             featuredGallery {
               id
-            }
-            galleries {
-              id
-              position
-              ...GalleryFragment
             }
           }
         }
@@ -52,10 +59,14 @@ export default function GalleriesPage({ queryRef }: Props) {
     queryRef
   );
 
+  const viewerGalleries = useMemo(() => {
+    return query.viewer?.viewerGalleries?.map((viewerGallery) => viewerGallery?.gallery) ?? [];
+  }, [query.viewer?.viewerGalleries]);
+
   const user = query.userByUsername;
 
   const sortedGalleries = useMemo(() => {
-    const galleries = removeNullValues(user?.galleries) ?? [];
+    const galleries = removeNullValues(viewerGalleries) ?? [];
 
     return galleries.sort((a, b) => {
       if (!a.position || !b.position) {
@@ -70,7 +81,7 @@ export default function GalleriesPage({ queryRef }: Props) {
         return 0;
       }
     });
-  }, [user?.galleries]);
+  }, [viewerGalleries]);
 
   const [localGalleries, setLocalGalleries] = useState(sortedGalleries);
 
