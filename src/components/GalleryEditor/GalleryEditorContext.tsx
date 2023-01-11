@@ -36,7 +36,7 @@ export type GalleryEditorContextType = {
   validationErrors: string[];
   canSave: boolean;
 
-  saveGallery: () => void;
+  saveGallery: (caption: string) => void;
   activateCollection: (collectionId: string) => void;
   deleteCollection: (collectionId: string) => void;
   editCollectionNameAndNote: () => void;
@@ -254,95 +254,98 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
   }, [collectionIdBeingEdited, collections, showModal]);
 
   const reportError = useReportError();
-  const saveGallery = useCallback(async () => {
-    const galleryId = query.galleryById.dbid;
+  const saveGallery = useCallback(
+    async (caption: string) => {
+      const galleryId = query.galleryById.dbid;
 
-    if (!galleryId) {
-      reportError('Tried to save a gallery without a gallery id');
-      return;
-    }
+      if (!galleryId) {
+        reportError('Tried to save a gallery without a gallery id');
+        return;
+      }
 
-    const localCollectionToUpdatedCollection = (
-      collection: CollectionState
-    ): UpdateCollectionInput => {
-      const tokens = Object.values(collection.sections).flatMap((section) =>
-        section.items.filter((item) => item.kind === 'token')
-      );
+      const localCollectionToUpdatedCollection = (
+        collection: CollectionState
+      ): UpdateCollectionInput => {
+        const tokens = Object.values(collection.sections).flatMap((section) =>
+          section.items.filter((item) => item.kind === 'token')
+        );
 
-      const layout = generateLayoutFromCollectionNew(collection.sections);
+        const layout = generateLayoutFromCollectionNew(collection.sections);
 
-      return {
-        collectorsNote: collection.collectorsNote,
-        dbid: collection.dbid,
-        hidden: collection.hidden,
-        tokenSettings: tokens.map((token) => {
-          return { tokenId: token.id, renderLive: collection.liveDisplayTokenIds.has(token.id) };
-        }),
-        layout,
-        name: collection.name,
-        tokens: tokens.map((token) => token.id),
+        return {
+          collectorsNote: collection.collectorsNote,
+          dbid: collection.dbid,
+          hidden: collection.hidden,
+          tokenSettings: tokens.map((token) => {
+            return { tokenId: token.id, renderLive: collection.liveDisplayTokenIds.has(token.id) };
+          }),
+          layout,
+          name: collection.name,
+          tokens: tokens.map((token) => token.id),
+        };
       };
-    };
 
-    const localCollectionToCreatedCollection = (
-      collection: CollectionState
-    ): CreateCollectionInGalleryInput => {
-      const tokens = Object.values(collection.sections).flatMap((section) =>
-        section.items.filter((item) => item.kind === 'token')
-      );
+      const localCollectionToCreatedCollection = (
+        collection: CollectionState
+      ): CreateCollectionInGalleryInput => {
+        const tokens = Object.values(collection.sections).flatMap((section) =>
+          section.items.filter((item) => item.kind === 'token')
+        );
 
-      const layout = generateLayoutFromCollectionNew(collection.sections);
+        const layout = generateLayoutFromCollectionNew(collection.sections);
 
-      return {
-        givenID: collection.dbid,
-        hidden: collection.hidden,
-        collectorsNote: collection.collectorsNote,
-        tokenSettings: tokens.map((token) => {
-          return { tokenId: token.id, renderLive: collection.liveDisplayTokenIds.has(token.id) };
-        }),
-        layout,
-        name: collection.name,
-        tokens: tokens.map((token) => token.id),
+        return {
+          givenID: collection.dbid,
+          hidden: collection.hidden,
+          collectorsNote: collection.collectorsNote,
+          tokenSettings: tokens.map((token) => {
+            return { tokenId: token.id, renderLive: collection.liveDisplayTokenIds.has(token.id) };
+          }),
+          layout,
+          name: collection.name,
+          tokens: tokens.map((token) => token.id),
+        };
       };
-    };
 
-    const updatedCollections: UpdateCollectionInput[] = Object.values(collections)
-      .filter((collection) => !collection.localOnly)
-      .map(localCollectionToUpdatedCollection);
+      const updatedCollections: UpdateCollectionInput[] = Object.values(collections)
+        .filter((collection) => !collection.localOnly)
+        .map(localCollectionToUpdatedCollection);
 
-    const createdCollections: CreateCollectionInGalleryInput[] = Object.values(collections)
-      .filter((collection) => collection.localOnly)
-      .map(localCollectionToCreatedCollection);
+      const createdCollections: CreateCollectionInGalleryInput[] = Object.values(collections)
+        .filter((collection) => collection.localOnly)
+        .map(localCollectionToCreatedCollection);
 
-    const deletedCollections = [...deletedCollectionIds];
+      const deletedCollections = [...deletedCollectionIds];
 
-    const order = [...Object.values(collections).map((collection) => collection.dbid)];
+      const order = [...Object.values(collections).map((collection) => collection.dbid)];
 
-    try {
-      await save({
-        variables: {
-          input: {
-            galleryId: query.galleryById.dbid,
+      try {
+        await save({
+          variables: {
+            input: {
+              galleryId: query.galleryById.dbid,
 
-            name,
-            description,
-            caption: null,
+              name,
+              description,
+              caption,
 
-            order,
+              order,
 
-            createdCollections,
-            updatedCollections,
-            deletedCollections,
+              createdCollections,
+              updatedCollections,
+              deletedCollections,
+            },
           },
-        },
-      });
+        });
 
-      // Make sure we reset our "Has unsaved changes comparison point"
-      setInitialCollections(collections);
-    } catch (error) {
-      console.log(error);
-    }
-  }, [collections, deletedCollectionIds, description, name, query.galleryById, reportError, save]);
+        // Make sure we reset our "Has unsaved changes comparison point"
+        setInitialCollections(collections);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    [collections, deletedCollectionIds, description, name, query.galleryById, reportError, save]
+  );
 
   const [initialCollections, setInitialCollections] = useState(collections);
   const hasUnsavedChanges = useMemo(() => {

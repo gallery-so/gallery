@@ -1,12 +1,11 @@
-import { useCallback, useState } from 'react';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
-import { Button } from '~/components/core/Button/Button';
 import colors from '~/components/core/colors';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BODY_FONT_FAMILY, Paragraph, TitleDiatypeM } from '~/components/core/Text/Text';
 import { BackButton } from '~/contexts/globalLayout/GlobalNavbar/BackButton';
+import { CollectionSaveButtonWithCaption } from '~/contexts/globalLayout/GlobalNavbar/CollectionSaveButtonWithCaption';
 import {
   NavbarCenterContent,
   NavbarLeftContent,
@@ -20,7 +19,7 @@ type Props = {
   hasUnsavedChanges: boolean;
 
   onBack: () => void;
-  onDone: () => Promise<void>;
+  onDone: (caption: string) => Promise<void>;
 };
 
 function GalleryTitleSection() {
@@ -34,15 +33,6 @@ export function MultiGalleryEditGalleryNavbar({
   hasUnsavedChanges,
 }: Props) {
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
-
-  const [loading, setLoading] = useState(false);
-  const handleDone = useCallback(() => {
-    setLoading(true);
-
-    onDone()
-      .then(() => setLoading(false))
-      .catch(() => setLoading(false));
-  }, [onDone]);
 
   return (
     <Wrapper>
@@ -59,9 +49,11 @@ export function MultiGalleryEditGalleryNavbar({
               <TitleDiatypeM color={colors.metal}>Unsaved Changes</TitleDiatypeM>
             )}
 
-            <Button pending={loading} disabled={!canSave} onClick={handleDone}>
-              Done
-            </Button>
+            <CollectionSaveButtonWithCaption
+              hasUnsavedChange={hasUnsavedChanges}
+              disabled={!canSave}
+              onSave={onDone}
+            />
           </HStack>
         </NavbarRightContent>
       </StandardNavbarContainer>

@@ -1,5 +1,4 @@
 import { Route } from 'nextjs-routes';
-import { graphql, useFragment } from 'react-relay';
 
 import { ONBOARDING_NEXT_BUTTON_TEXT_MAP } from '~/components/Onboarding/constants';
 import { BackButton } from '~/contexts/globalLayout/GlobalNavbar/BackButton';
@@ -10,7 +9,6 @@ import {
   NavbarRightContent,
   StandardNavbarContainer,
 } from '~/contexts/globalLayout/GlobalNavbar/StandardNavbarContainer';
-import { OnboardingCollectionCreateNavbarFragment$key } from '~/generated/OnboardingCollectionCreateNavbarFragment.graphql';
 
 import { CollectionSaveButtonWithCaption } from '../CollectionSaveButtonWithCaption';
 
@@ -20,7 +18,6 @@ type OnboardingCollectionCreateNavbarProps = {
   isCollectionValid: boolean;
   collectionName?: string;
   error?: string;
-  queryRef: OnboardingCollectionCreateNavbarFragment$key;
 };
 
 export function OnboardingCollectionCreateNavbar({
@@ -29,18 +26,8 @@ export function OnboardingCollectionCreateNavbar({
   isCollectionValid,
   collectionName,
   error,
-  queryRef,
 }: OnboardingCollectionCreateNavbarProps) {
   const editGalleryRoute: Route = { pathname: '/onboarding/organize-gallery' };
-
-  const query = useFragment(
-    graphql`
-      fragment OnboardingCollectionCreateNavbarFragment on Query {
-        ...CollectionSaveButtonWithCaptionFragment
-      }
-    `,
-    queryRef
-  );
 
   return (
     <StandardNavbarContainer>
@@ -64,7 +51,6 @@ export function OnboardingCollectionCreateNavbar({
           onSave={onNext}
           hasUnsavedChange={true}
           error={error}
-          queryRef={query}
         />
       </NavbarRightContent>
     </StandardNavbarContainer>

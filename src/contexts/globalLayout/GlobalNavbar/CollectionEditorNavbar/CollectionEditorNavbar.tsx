@@ -42,7 +42,6 @@ export function CollectionEditorNavbar({
             name
           }
         }
-        ...CollectionSaveButtonWithCaptionFragment
       }
     `,
     queryRef
@@ -81,7 +80,6 @@ export function CollectionEditorNavbar({
           disabled={!isCollectionValid}
           onSave={onDone}
           hasUnsavedChange={hasUnsavedChange}
-          queryRef={query}
         />
       </NavbarRightContent>
     </StandardNavbarContainer>

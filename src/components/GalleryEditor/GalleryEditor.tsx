@@ -65,9 +65,12 @@ export function GalleryEditor({ queryRef }: GalleryEditorProps) {
     }
   }, [back, canGoBack, query.viewer, replace]);
 
-  const handleDone = useCallback(async () => {
-    await saveGallery();
-  }, [saveGallery]);
+  const handleDone = useCallback(
+    async (caption: string) => {
+      await saveGallery(caption);
+    },
+    [saveGallery]
+  );
 
   const allTokens = useMemo(() => {
     if (query.viewer?.__typename !== 'Viewer') {

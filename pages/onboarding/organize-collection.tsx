@@ -37,7 +37,6 @@ function LazyLoadedCollectionEditor() {
         }
 
         ...CollectionEditorFragment
-        ...OnboardingCollectionCreateNavbarFragment
       }
     `,
     {}
@@ -188,7 +187,6 @@ function LazyLoadedCollectionEditor() {
           isCollectionValid={isCollectionValid}
           collectionName={collectionTitle}
           error={generalError}
-          queryRef={query}
         />
       }
     >
