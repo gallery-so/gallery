@@ -169,13 +169,15 @@ export default function HoverCardOnUsername({ children, userRef, queryRef }: Pro
                   <StyledCardContainer>
                     <StyledCardHeader>
                       <HStack align="center" gap={4}>
-                        <HStack align="center" gap={6}>
+                        <HStack align="center" gap={4}>
                           <StyledCardUsername>{displayName}</StyledCardUsername>
 
-                          {userBadges.map((badge) => (
-                            // Might need to rethink this layout when we have more badges
-                            <Badge key={badge.name} badgeRef={badge} />
-                          ))}
+                          <HStack align="center" gap={0}>
+                            {userBadges.map((badge) => (
+                              // Might need to rethink this layout when we have more badges
+                              <Badge key={badge.name} badgeRef={badge} />
+                            ))}
+                          </HStack>
                         </HStack>
 
                         {isLoggedIn && !isOwnProfile && (
