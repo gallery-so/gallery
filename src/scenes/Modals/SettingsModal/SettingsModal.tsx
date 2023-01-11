@@ -194,8 +194,8 @@ function SettingsModal({
                 href={`https://opensea.io/collection/gallery-membership-cards?ref=${GALLERY_OS_ADDRESS}`}
               >
                 Premium Gallery Membership Card
-              </InteractiveLink>
-              .
+              </InteractiveLink>{' '}
+              and connecting your email address.
             </SettingsRowDescription>
           </span>
           <HStack align="center" gap={4} shrink={false}>

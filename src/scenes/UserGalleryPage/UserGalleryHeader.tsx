@@ -16,6 +16,7 @@ import { UserGalleryHeaderFragment$key } from '~/generated/UserGalleryHeaderFrag
 import useIs3acProfilePage from '~/hooks/oneOffs/useIs3acProfilePage';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import LinkToNftDetailView from '~/scenes/NftDetailPage/LinkToNftDetailView';
+import handleCustomDisplayName from '~/utils/handleCustomDisplayName';
 import unescape from '~/utils/unescape';
 
 import MobileLayoutToggle from './MobileLayoutToggle';
@@ -66,15 +67,19 @@ function UserGalleryHeader({
     setShowMore((previous) => !previous);
   }, []);
 
+  if (!username) {
+    return null;
+  }
+
+  const displayName = handleCustomDisplayName(username);
+
   return (
     <StyledUserGalleryHeader gap={2}>
       <HStack align="center" gap={6}>
         {isMobile ? (
-          <StyledUsernameMobile>
-            {is3ac ? 'The Unofficial 3AC Gallery' : username}
-          </StyledUsernameMobile>
+          <StyledUsernameMobile>{displayName}</StyledUsernameMobile>
         ) : (
-          <StyledUsername>{is3ac ? 'The Unofficial 3AC Gallery' : username}</StyledUsername>
+          <StyledUsername>{displayName}</StyledUsername>
         )}
 
         {userBadges.map((badge) => (badge ? <Badge key={badge.name} badgeRef={badge} /> : null))}
@@ -139,7 +144,7 @@ const NftDetailViewer = ({ href, children }: NftDetailViewerProps) => {
   const [, username, collectionId, tokenId] = href.split('/');
   return (
     <LinkToNftDetailView
-      username={username ?? ''}
+      username={username}
       collectionId={collectionId}
       tokenId={tokenId}
       originPage="gallery"
