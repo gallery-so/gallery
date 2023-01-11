@@ -1,5 +1,18 @@
-import { DndContext } from '@dnd-kit/core';
-import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import {
+  closestCenter,
+  defaultDropAnimationSideEffects,
+  DndContext,
+  DragEndEvent,
+  DragOverEvent,
+  DragOverlay,
+  DragStartEvent,
+  DropAnimation,
+  MeasuringStrategy,
+  UniqueIdentifier,
+} from '@dnd-kit/core';
+import { arraySwap, rectSortingStrategy, SortableContext } from '@dnd-kit/sortable';
+import { useCallback, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -27,7 +40,6 @@ export default function GalleriesPage({ queryRef }: Props) {
             }
             galleries {
               id
-              hidden
               ...GalleryFragment
             }
           }
@@ -41,47 +53,123 @@ export default function GalleriesPage({ queryRef }: Props) {
   const user = query.userByUsername;
   const galleries = removeNullValues(user?.galleries) ?? [];
 
+  const [localGalleries, setLocalGalleries] = useState(galleries);
+
   const featuredGalleryId = user?.featuredGallery?.id ?? null;
-  const featuredGallery = galleries.find((gallery) => gallery.id === featuredGalleryId);
+  // const featuredGallery = localGalleries.find((gallery) => gallery.id === featuredGalleryId);
 
   // sort by hidden
-  const nonFeaturedGalleries = galleries
-    .filter((gallery) => gallery.id !== featuredGalleryId)
-    .sort((a, b) => {
-      if (a.hidden && !b.hidden) {
-        return 1;
-      } else if (!a.hidden && b.hidden) {
-        return -1;
-      } else {
-        return 0;
+  // const nonFeaturedGalleries = localGalleries
+  //   .filter((gallery) => gallery.id !== featuredGalleryId)
+  //   .sort((a, b) => {
+  //     if (a.hidden && !b.hidden) {
+  //       return 1;
+  //     } else if (!a.hidden && b.hidden) {
+  //       return -1;
+  //     } else {
+  //       return 0;
+  //     }
+  //   });
+
+  const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
+  const getIndex = useCallback(
+    (id: UniqueIdentifier) => localGalleries.findIndex((gallery) => gallery.id === id),
+    [localGalleries]
+  );
+
+  const activeIndex = activeId ? getIndex(activeId) : -1;
+
+  const layoutMeasuring = {
+    droppable: {
+      strategy: MeasuringStrategy.Always,
+    },
+  };
+
+  const dropAnimation: DropAnimation = {
+    sideEffects: defaultDropAnimationSideEffects({
+      styles: {
+        active: {
+          opacity: '0.2',
+        },
+      },
+    }),
+  };
+
+  const handleDragStart = useCallback(({ active }: DragStartEvent) => {
+    if (!active) {
+      return;
+    }
+    setActiveId(active.id);
+  }, []);
+
+  const handleDragOver = useCallback(
+    (event: DragOverEvent) => {
+      const { active, over } = event;
+
+      if (active && over) {
+        const overIndex = getIndex(over.id);
+
+        if (activeIndex !== overIndex) {
+          setLocalGalleries((items) => arraySwap(items, activeIndex, overIndex));
+        }
       }
-    });
+    },
+    [activeIndex, getIndex]
+  );
+
+  const handleDragEnd = useCallback(
+    ({ over }: DragEndEvent) => {
+      setActiveId(null);
+
+      if (over) {
+        const overIndex = getIndex(over.id);
+        if (activeIndex !== overIndex) {
+          console.log(`reorder ${activeIndex} to ${overIndex}`);
+          setLocalGalleries((items) => arraySwap(items, activeIndex, overIndex));
+        }
+      }
+    },
+    [activeIndex, getIndex]
+  );
 
   return (
     <GalleryPageWrapper navbarHeight={navbarHeight}>
-      <GalleryWrapper>
-        {featuredGallery && (
-          <Gallery queryRef={query} galleryRef={featuredGallery} isFeatured={true} />
-        )}
-        {nonFeaturedGalleries.map((gallery) => {
-          return (
-            <Gallery
-              key={gallery.id}
-              galleryRef={gallery}
-              queryRef={query}
-              isFeatured={featuredGalleryId === gallery.id}
-            />
-          );
-        })}
-
-        {/* <DndContext>
-          <SortableContext items={galleries} strategy={verticalListSortingStrategy}>
-            {galleries.map((gallery) => {
-              return <Gallery key={gallery} />;
+      <DndContext
+        collisionDetection={closestCenter}
+        measuring={layoutMeasuring}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+        onDragOver={handleDragOver}
+        onDragCancel={() => setActiveId(null)}
+      >
+        <SortableContext items={localGalleries} strategy={rectSortingStrategy}>
+          <GalleryWrapper>
+            {localGalleries.map((gallery) => {
+              return (
+                <Gallery
+                  key={gallery.id}
+                  galleryRef={gallery}
+                  queryRef={query}
+                  isFeatured={featuredGalleryId === gallery.id}
+                />
+              );
             })}
-          </SortableContext>
-        </DndContext> */}
-      </GalleryWrapper>
+          </GalleryWrapper>
+        </SortableContext>
+        {createPortal(
+          <DragOverlay dropAnimation={dropAnimation}>
+            {activeId && (
+              <Gallery
+                key={activeId}
+                galleryRef={localGalleries[activeIndex]}
+                queryRef={query}
+                isFeatured={featuredGalleryId === activeId}
+              />
+            )}
+          </DragOverlay>,
+          document.body
+        )}
+      </DndContext>
     </GalleryPageWrapper>
   );
 }

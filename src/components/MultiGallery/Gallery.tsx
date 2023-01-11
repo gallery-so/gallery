@@ -1,3 +1,5 @@
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import Link from 'next/link';
 import { Route } from 'nextjs-routes';
 import { useCallback, useMemo } from 'react';
@@ -57,6 +59,15 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
     queryRef
   );
 
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: gallery.id.toString(),
+  });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
   const setFeaturedGallery = useSetFeaturedGallery();
   const updateGalleryHidden = useUpdateGalleryHidden();
   const deleteGallery = useDeleteGallery();
@@ -99,52 +110,58 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
   if (!isAuthenticatedUser && hidden) return null;
 
   return (
-    <StyledGalleryWrapper gap={12}>
-      <HStack justify="space-between">
-        <StyledGalleryTitleWrapper isHidden={hidden}>
-          <TitleDiatypeM>{name || 'Untitled'}</TitleDiatypeM>
-          <BaseM>{collections.length} collections</BaseM>
-        </StyledGalleryTitleWrapper>
-        <HStack gap={8} align="center">
-          {isFeatured && <StyledGalleryFeaturedText as="span">Featured</StyledGalleryFeaturedText>}
-          {isAuthenticatedUser && (
-            <>
-              <Link href={handleEditGallery}>
-                <a>
-                  <PencilIcon />
-                </a>
-              </Link>
-              <SettingsDropdown>
-                <DropdownItem onClick={handleEditGalleryName}>EDIT NAME & DESC</DropdownItem>
-                {hidden ? (
-                  <DropdownItem onClick={handleUpdateGalleryHidden}>UNHIDE</DropdownItem>
-                ) : (
-                  <>
-                    {!isFeatured && (
-                      <DropdownItem onClick={handleSetFeaturedGallery}>
-                        FEATURE ON PROFILE
-                      </DropdownItem>
-                    )}
-                    <DropdownItem onClick={handleUpdateGalleryHidden}>HIDE</DropdownItem>
-                  </>
-                )}
-                <DropdownItem onClick={handleDeleteGallery}>DELETE</DropdownItem>
-              </SettingsDropdown>
-            </>
-          )}
+    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+      <StyledGalleryWrapper gap={12} isDragging={isDragging}>
+        <HStack justify="space-between">
+          <StyledGalleryTitleWrapper isHidden={hidden}>
+            <TitleDiatypeM>{name || 'Untitled'}</TitleDiatypeM>
+            <BaseM>{collections.length} collections</BaseM>
+          </StyledGalleryTitleWrapper>
+          <HStack gap={8} align="center">
+            {isFeatured && (
+              <StyledGalleryFeaturedText as="span">Featured</StyledGalleryFeaturedText>
+            )}
+            {isAuthenticatedUser && (
+              <>
+                <Link href={handleEditGallery}>
+                  <a>
+                    <PencilIcon />
+                  </a>
+                </Link>
+                <SettingsDropdown>
+                  <DropdownItem onClick={handleEditGalleryName}>EDIT NAME & DESC</DropdownItem>
+                  {hidden ? (
+                    <DropdownItem onClick={handleUpdateGalleryHidden}>UNHIDE</DropdownItem>
+                  ) : (
+                    <>
+                      {!isFeatured && (
+                        <DropdownItem onClick={handleSetFeaturedGallery}>
+                          FEATURE ON PROFILE
+                        </DropdownItem>
+                      )}
+                      <DropdownItem onClick={handleUpdateGalleryHidden}>HIDE</DropdownItem>
+                    </>
+                  )}
+                  <DropdownItem onClick={handleDeleteGallery}>DELETE</DropdownItem>
+                </SettingsDropdown>
+              </>
+            )}
+          </HStack>
         </HStack>
-      </HStack>
-      <StyledTokenPreviewWrapper isHidden={hidden}>
-        {nonNullTokenPreviews.map((token) => (
-          <StyledTokenPreview key={token} src={token} />
-        ))}
-      </StyledTokenPreviewWrapper>
-    </StyledGalleryWrapper>
+        <StyledTokenPreviewWrapper isHidden={hidden}>
+          {nonNullTokenPreviews.map((token) => (
+            <StyledTokenPreview key={token} src={token} />
+          ))}
+        </StyledTokenPreviewWrapper>
+      </StyledGalleryWrapper>
+    </div>
   );
 }
 
-const StyledGalleryWrapper = styled(VStack)`
+const StyledGalleryWrapper = styled(VStack)<{ isDragging?: boolean }>`
   padding: 12px;
+  opacity: ${({ isDragging }) => (isDragging ? 0.5 : 1)};
+  cursor: ${({ isDragging }) => (isDragging ? 'grabbing' : 'grab')};
 `;
 
 const StyledGalleryTitleWrapper = styled(VStack)<{ isHidden?: boolean }>`
