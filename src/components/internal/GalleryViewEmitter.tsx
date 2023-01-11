@@ -47,12 +47,11 @@ function GalleryViewEmitter({ queryRef }: GalleryViewEmitterProps) {
   const reportError = useReportError();
 
   useEffect(() => {
-    const isLoggedIn = query.viewer?.user?.dbid;
-
-    // skip tracking anonymous views
-    if (!isLoggedIn) {
-      return;
-    }
+    // Uncomment to skip tracking of anonymous views
+    // const isLoggedIn = query.viewer?.user?.dbid;
+    // if (!isLoggedIn) {
+    //   return;
+    // }
 
     const galleryId = query.userByUsername?.galleries?.[0]?.dbid;
 
