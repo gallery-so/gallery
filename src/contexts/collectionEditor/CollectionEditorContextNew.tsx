@@ -194,7 +194,7 @@ export const CollectionEditorProviderNew = memo(({ children }: Props) => {
 
       setLiveDisplayTokenIds((previous) => {
         const cloned = new Set(previous);
-        sectionTokenIds.forEach(cloned.delete);
+        sectionTokenIds.forEach((tokenId) => cloned.delete(tokenId));
         return cloned;
       });
 
