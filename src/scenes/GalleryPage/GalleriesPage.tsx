@@ -132,7 +132,7 @@ export default function GalleriesPage({ queryRef }: Props) {
       const formattedGalleriesPosition = sortedGalleryIds.map((galleryId, index) => {
         return {
           galleryId: galleryId,
-          position: `a${index.toString()}`,
+          position: index.toString(),
         };
       });
 
