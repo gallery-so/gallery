@@ -58,6 +58,10 @@ export default function OrganizeGalleryPage() {
 
   const galleryId = query.viewer?.user?.galleries?.[0]?.id;
 
+  if (!galleryId) {
+    throw new Error('User did not have a gallery.');
+  }
+
   return (
     <FullPageStep navbar={<OnboardingGalleryEditorNavbar onBack={back} onNext={handleNext} />}>
       <OrganizeGallery
