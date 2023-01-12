@@ -73,8 +73,12 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
 
   const totalGalleries = query.viewer?.viewerGalleries?.length ?? 0;
 
+  const loggedInUserId = useLoggedInUserId(query);
+  const isAuthenticatedUser = loggedInUserId === gallery?.owner?.id;
+
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: gallery.dbid.toString(),
+    disabled: !isAuthenticatedUser,
   });
 
   const style = {
@@ -85,9 +89,6 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
   const setFeaturedGallery = useSetFeaturedGallery();
   const updateGalleryHidden = useUpdateGalleryHidden();
   const deleteGallery = useDeleteGallery();
-
-  const loggedInUserId = useLoggedInUserId(query);
-  const isAuthenticatedUser = loggedInUserId === gallery?.owner?.id;
 
   const { showModal, hideModal } = useModalActions();
 
@@ -156,6 +157,7 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
       <StyledGalleryDraggable
         gap={12}
         isDragging={isDragging}
+        isAuthedUser={isAuthenticatedUser}
         ref={setNodeRef}
         style={style}
         {...attributes}
@@ -211,14 +213,14 @@ const StyledGalleryWrapper = styled.div`
   position: relative;
 `;
 
-const StyledGalleryDraggable = styled(VStack)<{ isDragging?: boolean }>`
+const StyledGalleryDraggable = styled(VStack)<{ isDragging?: boolean; isAuthedUser: boolean }>`
   padding: 12px;
   opacity: ${({ isDragging }) => (isDragging ? 0.5 : 1)};
-  cursor: ${({ isDragging }) => (isDragging ? 'grabbing' : 'grab')};
+  cursor: ${({ isAuthedUser }) => (isAuthedUser ? 'grab' : 'default')};
   min-height: 310px;
   height: 100%;
   &:hover {
-    background-color: ${colors.faint};
+    background-color: ${({ isAuthedUser }) => (isAuthedUser ? colors.faint : 'transparent')};
   }
 `;
 
