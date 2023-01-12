@@ -177,8 +177,9 @@ const PoapLogo = styled.img.attrs({ src: '/icons/poap_logo.svg', alt: 'POAP Logo
 `;
 
 const StyledBadge = styled.img`
-  width: 24px;
-  height: 24px;
+  width: 100%;
+  max-width: 24px;
+  max-height: 24px;
 `;
 
 const StyledDetailLabel = styled.div<{ horizontalLayout: boolean; navbarHeight: number }>`
