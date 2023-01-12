@@ -11,7 +11,7 @@ export default function useDeleteGallery() {
         ... on DeleteGalleryPayload {
           __typename
           deletedId {
-            id
+            dbid
           }
         }
 
@@ -25,6 +25,14 @@ export default function useDeleteGallery() {
   return useCallback(
     (galleryId: string) => {
       return deleteGallery({
+        updater: (store, response) => {
+          if (
+            response.deleteGallery?.__typename === 'DeleteGalleryPayload' &&
+            response.deleteGallery.deletedId?.dbid
+          ) {
+            store.delete(`Gallery:${response.deleteGallery.deletedId.dbid}`);
+          }
+        },
         variables: {
           galleryId,
         },
