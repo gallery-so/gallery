@@ -225,8 +225,9 @@ const StyledTitleDiatypeM = styled(TitleDiatypeM)<{ lines: number }>`
 `;
 
 const StyledBadge = styled.img`
-  width: 24px;
-  height: 24px;
+  width: 100%;
+  max-width: 24px;
+  max-height: 24px;
 `;
 
 /**
