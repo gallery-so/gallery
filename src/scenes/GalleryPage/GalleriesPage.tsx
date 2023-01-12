@@ -37,6 +37,7 @@ export default function GalleriesPage({ queryRef }: Props) {
           ... on Viewer {
             viewerGalleries {
               gallery {
+                dbid
                 id
                 position
                 ...GalleryFragment
@@ -148,7 +149,7 @@ export default function GalleriesPage({ queryRef }: Props) {
 
       const formattedGalleriesPosition = localGalleries.map((gallery, index) => {
         return {
-          galleryId: gallery.id,
+          galleryId: gallery.dbid,
           position: `a${index.toString()}`,
         };
       });
