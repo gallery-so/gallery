@@ -33,24 +33,17 @@ export default function GalleriesPage({ queryRef }: Props) {
   const query = useFragment(
     graphql`
       fragment GalleriesPageQueryFragment on Query {
-        viewer {
-          ... on Viewer {
-            viewerGalleries {
-              gallery {
-                dbid
-                id
-                position @required(action: NONE)
-                ...GalleryFragment
-              }
-            }
-          }
-        }
-
         userByUsername(username: $username) {
           ... on GalleryUser {
             id
             featuredGallery {
               id
+            }
+            galleries {
+              dbid
+              id
+              position @required(action: NONE)
+              ...GalleryFragment
             }
           }
         }
@@ -61,10 +54,8 @@ export default function GalleriesPage({ queryRef }: Props) {
   );
 
   const nonNullGalleries = useMemo(() => {
-    return removeNullValues(
-      query.viewer?.viewerGalleries?.map((viewerGallery) => viewerGallery?.gallery)
-    );
-  }, [query.viewer?.viewerGalleries]);
+    return removeNullValues(query.userByUsername?.galleries);
+  }, [query.userByUsername?.galleries]);
 
   const user = query.userByUsername;
 
