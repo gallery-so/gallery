@@ -1,4 +1,3 @@
-import { useRouter } from 'next/router';
 import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -14,12 +13,13 @@ import { OrganizeGalleryFragment$key } from '~/generated/OrganizeGalleryFragment
 import useNotOptimizedForMobileWarning from '../useNotOptimizedForMobileWarning';
 
 type Props = {
+  galleryId: string;
   onAddCollection: () => void;
   onEditCollection: (dbid: string) => void;
   queryRef: OrganizeGalleryFragment$key;
 };
 
-export function OrganizeGallery({ queryRef, onAddCollection, onEditCollection }: Props) {
+export function OrganizeGallery({ galleryId, queryRef, onAddCollection, onEditCollection }: Props) {
   const query = useFragment(
     graphql`
       fragment OrganizeGalleryFragment on Query {
@@ -42,9 +42,6 @@ export function OrganizeGallery({ queryRef, onAddCollection, onEditCollection }:
     queryRef
   );
 
-  const { query: routerQuery } = useRouter();
-  const { galleryId } = routerQuery;
-
   const gallery = useMemo(() => {
     const selectedGallery = query.viewer.viewerGalleries?.find((viewerGallery) => {
       return viewerGallery?.gallery?.dbid === galleryId;
@@ -52,8 +49,6 @@ export function OrganizeGallery({ queryRef, onAddCollection, onEditCollection }:
 
     return selectedGallery?.gallery;
   }, [galleryId, query.viewer.viewerGalleries]);
-
-  // const gallery = query.viewer.viewerGalleries?.[0]?.gallery;
 
   if (!gallery) {
     throw new Error('User did not have a gallery.');

@@ -69,7 +69,11 @@ function NewEditGalleryPage({ galleryId }: Props) {
   );
 }
 
-function OldEditGalleryPage() {
+type OldEditGalleryPageProps = {
+  galleryId: string;
+};
+
+function OldEditGalleryPage({ galleryId }: OldEditGalleryPageProps) {
   const query = useLazyLoadQuery<editGalleryPageOldQuery>(
     graphql`
       query editGalleryPageOldQuery {
@@ -128,6 +132,7 @@ function OldEditGalleryPage() {
           onAddCollection={handleAddCollection}
           onEditCollection={handleEditCollection}
           queryRef={query}
+          galleryId={galleryId}
         />
       </Wrapper>
     </FullPageStep>
@@ -157,7 +162,7 @@ export default function EditGalleryPage({ galleryId }: Props) {
   return isMultigalleryEnabled ? (
     <NewEditGalleryPage galleryId={galleryId} />
   ) : (
-    <OldEditGalleryPage />
+    <OldEditGalleryPage galleryId={galleryId} />
   );
 }
 
