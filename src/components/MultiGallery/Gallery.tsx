@@ -7,6 +7,7 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { useModalActions } from '~/contexts/modal/ModalContext';
+import { useToastActions } from '~/contexts/toast/ToastContext';
 import { GalleryFragment$key } from '~/generated/GalleryFragment.graphql';
 import { GalleryFragmentQuery$key } from '~/generated/GalleryFragmentQuery.graphql';
 import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
@@ -54,10 +55,20 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
     graphql`
       fragment GalleryFragmentQuery on Query {
         ...useLoggedInUserIdFragment
+
+        viewer {
+          ... on Viewer {
+            viewerGalleries {
+              __typename
+            }
+          }
+        }
       }
     `,
     queryRef
   );
+
+  const totalGalleries = query.viewer?.viewerGalleries?.length ?? 0;
 
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: gallery.dbid.toString(),
@@ -79,6 +90,8 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
 
   const { name, collections, tokenPreviews, hidden, dbid } = gallery;
 
+  const { pushToast } = useToastActions();
+
   const handleSetFeaturedGallery = useCallback(() => {
     setFeaturedGallery(dbid);
   }, [dbid, setFeaturedGallery]);
@@ -88,8 +101,15 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
   }, [dbid, hidden, updateGalleryHidden]);
 
   const handleDeleteGallery = useCallback(() => {
+    if (totalGalleries < 2) {
+      pushToast({
+        message: 'You cannot delete your only gallery.',
+      });
+      return;
+    }
+
     deleteGallery(dbid);
-  }, [dbid, deleteGallery]);
+  }, [dbid, deleteGallery, pushToast, totalGalleries]);
 
   const handleEditGalleryName = useCallback(() => {
     showModal({
