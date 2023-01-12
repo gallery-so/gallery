@@ -60,6 +60,9 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
           ... on Viewer {
             viewerGalleries {
               __typename
+              gallery {
+                dbid
+              }
             }
           }
         }
@@ -109,7 +112,26 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
     }
 
     deleteGallery(dbid);
-  }, [dbid, deleteGallery, pushToast, totalGalleries]);
+
+    // if delete featured gallery, set another gallery as featured
+    if (isFeatured) {
+      const otherGallery = removeNullValues(query.viewer?.viewerGalleries).find(
+        (viewerGallery) => viewerGallery?.gallery?.dbid !== dbid
+      );
+
+      if (otherGallery && otherGallery?.gallery?.dbid) {
+        setFeaturedGallery(otherGallery?.gallery?.dbid);
+      }
+    }
+  }, [
+    dbid,
+    deleteGallery,
+    isFeatured,
+    pushToast,
+    query.viewer?.viewerGalleries,
+    setFeaturedGallery,
+    totalGalleries,
+  ]);
 
   const handleEditGalleryName = useCallback(() => {
     showModal({
