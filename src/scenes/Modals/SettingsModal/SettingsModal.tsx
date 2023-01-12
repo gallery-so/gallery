@@ -164,7 +164,8 @@ function SettingsModal({
           <TitleDiatypeL>Email notifications</TitleDiatypeL>
           <HStack justify="space-between" align="center">
             <SettingsRowDescription>
-              Receive weekly recaps that show your most recent admires, comments, and followers.
+              Receive weekly recaps about product updates, airdrop opportunities, and your most
+              recent gallery admirers.
             </SettingsRowDescription>
             <Toggle
               checked={isToggleChecked}
@@ -185,17 +186,18 @@ function SettingsModal({
       </VStack>
       <StyledHr />
       <VStack>
-        <TitleDiatypeL>Early Access</TitleDiatypeL>
+        <TitleDiatypeL>Members Club</TitleDiatypeL>
         <HStack justify="space-between" align="center" gap={8}>
           <span>
             <SettingsRowDescription>
-              Get early access to select features by holding a{' '}
+              Unlock early access to features, a profile badge, and the members-only Discord channel
+              by holding a{' '}
               <InteractiveLink
                 href={`https://opensea.io/collection/gallery-membership-cards?ref=${GALLERY_OS_ADDRESS}`}
               >
                 Premium Gallery Membership Card
               </InteractiveLink>{' '}
-              and connecting your email address.
+              and verifying your email address.
             </SettingsRowDescription>
           </span>
           <HStack align="center" gap={4} shrink={false}>
