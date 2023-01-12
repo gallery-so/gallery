@@ -74,8 +74,8 @@ export default function AddEmail() {
           <VStack>
             <TitleDiatypeL>Never miss a moment</TitleDiatypeL>
             <StyledBodyText>
-              Receive weekly emails that recap your most recent admires, comments, and followers.
-              You can always change this later in account settings.
+              Receive weekly emails that recap product updates, airdrop opportunities, and your most
+              recent gallery admirers. You can always change this later in account settings.
             </StyledBodyText>
           </VStack>
           <StyledEmailManagerContainer>
