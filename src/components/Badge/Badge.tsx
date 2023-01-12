@@ -86,6 +86,7 @@ const StyledTooltip = styled(Tooltip)<{ showTooltip: boolean }>`
 
 const StyledInteractiveLink = styled(InteractiveLink)`
   line-height: 1;
+  outline: none;
 `;
 
 const StyledBadge = styled.img`

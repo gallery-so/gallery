@@ -190,7 +190,7 @@ export default function FeedList({
                 //
                 // Simply setting this back to it's original `auto` seems to do the trick and shouldn't have
                 // any serious performance implications from some trivial testing that was done.
-                style={{ willChange: 'auto' }}
+                style={{ willChange: 'auto', outline: 'none' }}
               />
               {hasNext && (
                 <StyledLoadMoreRow width={width} onClick={handleLoadMoreClick}>
