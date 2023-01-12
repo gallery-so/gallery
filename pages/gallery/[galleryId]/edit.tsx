@@ -87,7 +87,10 @@ function OldEditGalleryPage({ galleryId }: OldEditGalleryPageProps) {
         }
       }
     `,
-    {}
+    {},
+    {
+      fetchPolicy: 'network-only',
+    }
   );
 
   const { push, query: urlQuery } = useRouter();
