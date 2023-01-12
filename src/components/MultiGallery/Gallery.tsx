@@ -60,7 +60,7 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
   );
 
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
-    id: gallery.id.toString(),
+    id: gallery.dbid.toString(),
   });
 
   const style = {

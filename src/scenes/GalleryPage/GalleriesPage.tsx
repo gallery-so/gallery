@@ -39,7 +39,7 @@ export default function GalleriesPage({ queryRef }: Props) {
               gallery {
                 dbid
                 id
-                position
+                position @required(action: NONE)
                 ...GalleryFragment
               }
             }
@@ -60,40 +60,31 @@ export default function GalleriesPage({ queryRef }: Props) {
     queryRef
   );
 
-  const viewerGalleries = useMemo(() => {
-    return query.viewer?.viewerGalleries?.map((viewerGallery) => viewerGallery?.gallery) ?? [];
+  const nonNullGalleries = useMemo(() => {
+    return removeNullValues(
+      query.viewer?.viewerGalleries?.map((viewerGallery) => viewerGallery?.gallery)
+    );
   }, [query.viewer?.viewerGalleries]);
 
   const user = query.userByUsername;
 
-  const sortedGalleries = useMemo(() => {
-    const galleries = removeNullValues(viewerGalleries) ?? [];
-
-    return galleries.sort((a, b) => {
-      if (!a.position || !b.position) {
-        return 0;
-      }
-
-      if (a.position < b.position) {
-        return -1;
-      } else if (a.position > b.position) {
-        return 1;
-      } else {
-        return 0;
-      }
-    });
-  }, [viewerGalleries]);
-
-  const [localGalleries, setLocalGalleries] = useState(sortedGalleries);
+  const [sortedGalleryIds, setSortedGalleryIds] = useState(
+    nonNullGalleries
+      .sort((a, b) => {
+        return a.position.localeCompare(b.position);
+      })
+      .map((gallery) => gallery.dbid)
+  );
 
   const featuredGalleryId = user?.featuredGallery?.id ?? null;
 
   const updateGalleryOrder = useUpdateGalleryOrder();
 
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
+
   const getIndex = useCallback(
-    (id: UniqueIdentifier) => localGalleries.findIndex((gallery) => gallery.id === id),
-    [localGalleries]
+    (id: UniqueIdentifier) => sortedGalleryIds.findIndex((galleryId) => galleryId === id),
+    [sortedGalleryIds]
   );
 
   const activeIndex = activeId ? getIndex(activeId) : -1;
@@ -129,7 +120,7 @@ export default function GalleriesPage({ queryRef }: Props) {
         const overIndex = getIndex(over.id);
 
         if (activeIndex !== overIndex) {
-          setLocalGalleries((items) => arraySwap(items, activeIndex, overIndex));
+          setSortedGalleryIds((items) => arraySwap(items, activeIndex, overIndex));
         }
       }
     },
@@ -143,20 +134,33 @@ export default function GalleriesPage({ queryRef }: Props) {
       if (over) {
         const overIndex = getIndex(over.id);
         if (activeIndex !== overIndex) {
-          setLocalGalleries((items) => arraySwap(items, activeIndex, overIndex));
+          setSortedGalleryIds((items) => arraySwap(items, activeIndex, overIndex));
         }
       }
 
-      const formattedGalleriesPosition = localGalleries.map((gallery, index) => {
+      const formattedGalleriesPosition = sortedGalleryIds.map((galleryId, index) => {
         return {
-          galleryId: gallery.dbid,
+          galleryId: galleryId,
           position: `a${index.toString()}`,
         };
       });
 
       updateGalleryOrder(formattedGalleriesPosition);
     },
-    [activeIndex, getIndex, localGalleries, updateGalleryOrder]
+    [activeIndex, getIndex, sortedGalleryIds, updateGalleryOrder]
+  );
+
+  const sortedGalleries = useMemo(() => {
+    return removeNullValues(
+      sortedGalleryIds.map((galleryId) => {
+        return nonNullGalleries.find((gallery) => gallery.dbid === galleryId);
+      })
+    );
+  }, [nonNullGalleries, sortedGalleryIds]);
+
+  const activeGallery = useMemo(
+    () => nonNullGalleries.find((gallery) => gallery.dbid === activeId),
+    [activeId, nonNullGalleries]
   );
 
   return (
@@ -169,9 +173,9 @@ export default function GalleriesPage({ queryRef }: Props) {
         onDragOver={handleDragOver}
         onDragCancel={() => setActiveId(null)}
       >
-        <SortableContext items={localGalleries} strategy={rectSortingStrategy}>
+        <SortableContext items={sortedGalleryIds} strategy={rectSortingStrategy}>
           <GalleryWrapper>
-            {localGalleries.map((gallery) => {
+            {sortedGalleries.map((gallery) => {
               return (
                 <Gallery
                   key={gallery.id}
@@ -185,10 +189,10 @@ export default function GalleriesPage({ queryRef }: Props) {
         </SortableContext>
         {createPortal(
           <DragOverlay dropAnimation={dropAnimation}>
-            {activeId && (
+            {activeGallery && (
               <Gallery
-                key={activeId}
-                galleryRef={localGalleries[activeIndex]}
+                key={activeGallery.dbid}
+                galleryRef={activeGallery}
                 queryRef={query}
                 isFeatured={featuredGalleryId === activeId}
               />
