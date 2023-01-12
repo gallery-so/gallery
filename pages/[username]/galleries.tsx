@@ -21,7 +21,8 @@ export default function Galleries({ username }: GalleriesProps) {
         ...GalleriesPageQueryFragment
       }
     `,
-    { username }
+    { username },
+    { fetchPolicy: 'network-only' }
   );
 
   return (
