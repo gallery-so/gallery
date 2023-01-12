@@ -11,6 +11,7 @@ import { BaseM, TitleDiatypeL } from '~/components/core/Text/Text';
 import Toggle from '~/components/core/Toggle/Toggle';
 import EmailManager from '~/components/Email/EmailManager';
 import ManageWallets from '~/components/ManageWallets/ManageWallets';
+import { GALLERY_DISCORD } from '~/constants/urls';
 import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { SettingsModalFragment$key } from '~/generated/SettingsModalFragment.graphql';
@@ -190,8 +191,8 @@ function SettingsModal({
         <HStack justify="space-between" align="center" gap={8}>
           <span>
             <SettingsRowDescription>
-              Unlock early access to features, a profile badge, and the members-only Discord channel
-              by holding a{' '}
+              Unlock early access to features, a profile badge, and the members-only{' '}
+              <InteractiveLink href={GALLERY_DISCORD}>Discord channel</InteractiveLink> by holding a{' '}
               <InteractiveLink
                 href={`https://opensea.io/collection/gallery-membership-cards?ref=${GALLERY_OS_ADDRESS}`}
               >
