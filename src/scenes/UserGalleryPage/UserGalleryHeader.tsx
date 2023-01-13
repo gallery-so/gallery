@@ -1,7 +1,7 @@
 import { ReactNode, useCallback, useMemo, useState } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 import Badge from '~/components/Badge/Badge';
 import breakpoints from '~/components/core/breakpoints';
@@ -62,11 +62,6 @@ function UserGalleryHeader({
     return badges.filter((badge) => badge && badge?.imageURL);
   }, [badges]);
 
-  const [showMore, setShowMore] = useState(false);
-  const handleBioClick = useCallback(() => {
-    setShowMore((previous) => !previous);
-  }, []);
-
   if (!username) {
     return null;
   }
@@ -93,7 +88,7 @@ function UserGalleryHeader({
             {is3ac ? (
               <ExpandableBio text={unescapedBio} />
             ) : (
-              <StyledBioWrapper showMore={showMore} onClick={handleBioClick}>
+              <StyledBioWrapper>
                 <Markdown text={unescapedBio} />
               </StyledBioWrapper>
             )}
@@ -156,29 +151,11 @@ const NftDetailViewer = ({ href, children }: NftDetailViewerProps) => {
   );
 };
 
-const StyledBioWrapper = styled(BaseM)<{ showMore: boolean }>`
+const StyledBioWrapper = styled(BaseM)`
   display: -webkit-box;
   -webkit-box-orient: vertical;
   overflow: hidden;
-
-  ${({ showMore }) =>
-    showMore
-      ? css`
-          -webkit-line-clamp: unset;
-        `
-      : css`
-          // We only care about line clamping on mobile
-          @media only screen and ${breakpoints.mobileLarge} {
-            -webkit-line-clamp: unset;
-          }
-
-          -webkit-line-clamp: 2;
-
-          p {
-            padding: 0;
-            display: inline;
-          }
-        `}
+  -webkit-line-clamp: unset;
 `;
 
 const StyledUsername = styled(TitleL)`
