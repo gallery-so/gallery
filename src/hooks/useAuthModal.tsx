@@ -39,7 +39,7 @@ export const AuthModal = ({ queryRef, variant }: ModalProps) => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      hideModal();
+      hideModal({ id: 'auth' });
     }
   }, [isAuthenticated, hideModal]);
 
@@ -74,6 +74,10 @@ export default function useAuthModal() {
   );
 
   return useCallback(() => {
-    showModal({ content: <AuthModal queryRef={query} />, headerText: 'Connect your wallet' });
+    showModal({
+      id: 'auth',
+      content: <AuthModal queryRef={query} />,
+      headerText: 'Connect your wallet',
+    });
   }, [query, showModal]);
 }
