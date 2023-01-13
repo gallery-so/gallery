@@ -70,9 +70,9 @@ const AnalyticsProvider = memo(({ children }: Props) => {
   const userIdRef = useRef(userId);
   userIdRef.current = userId;
 
-  const handleTrack: TrackFn = useCallback((eventName, eventProps = {}, checkAuth = false) => {
-    // if there is auth, and we don't have a user id, don't track
-    if (checkAuth && !userIdRef.current) {
+  const handleTrack: TrackFn = useCallback((eventName, eventProps = {}) => {
+    // don't track unauthenticated users
+    if (!userIdRef.current) {
       return;
     }
 
