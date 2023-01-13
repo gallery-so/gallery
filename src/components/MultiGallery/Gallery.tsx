@@ -17,6 +17,7 @@ import { removeNullValues } from '~/utils/removeNullValues';
 import colors from '../core/colors';
 import { DropdownItem } from '../core/Dropdown/DropdownItem';
 import SettingsDropdown from '../core/Dropdown/SettingsDropdown';
+import IconContainer from '../core/Markdown/IconContainer';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM, TitleDiatypeM, TitleXS } from '../core/Text/Text';
 import GalleryNameAndDescriptionModal from './GalleryNameAndDescriptionModal';
@@ -182,7 +183,7 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
             <>
               <Link href={handleEditGallery}>
                 <a>
-                  <PencilIcon />
+                  <IconContainer size="md" icon={<PencilIcon />} />
                 </a>
               </Link>
               <SettingsDropdown>
