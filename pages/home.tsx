@@ -11,6 +11,7 @@ import { homeQuery } from '~/generated/homeQuery.graphql';
 import usePersistedState from '~/hooks/usePersistedState';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
 import HomeScene from '~/scenes/Home/Home';
+import useOpenSettingsModal from '~/scenes/Modals/useOpenSettingsModal';
 import { PreloadQueryArgs } from '~/types/PageComponentPreloadQuery';
 
 const homeQueryNode = graphql`
@@ -33,6 +34,7 @@ const homeQueryNode = graphql`
 
     ...HomeFragment
     ...FeedNavbarFragment
+    ...useOpenSettingsModalFragment
   }
 `;
 
@@ -56,6 +58,8 @@ export default function Home() {
       setFeedMode('WORLDWIDE');
     }
   }, [viewerUserId, feedMode, setFeedMode]);
+
+  useOpenSettingsModal(query);
 
   return (
     <GalleryRoute

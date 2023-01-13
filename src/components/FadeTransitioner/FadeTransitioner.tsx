@@ -75,6 +75,10 @@ export function useStabilizedRouteTransitionKey() {
     if (pathname === '/[username]/[collectionId]/[tokenId]') {
       return `/${query.username}/${query.collectionId}`;
     }
+    // keep location stable if settings modal is open
+    if (query.settings === 'true') {
+      return pathname;
+    }
     return asPath;
   }, [asPath, pathname, query]);
 

@@ -1,9 +1,10 @@
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useOpenSettingsModalFragment$key } from '~/generated/useOpenSettingsModalFragment.graphql';
+import useAuthModal from '~/hooks/useAuthModal';
 import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 import SettingsModal from './SettingsModal/SettingsModal';
@@ -24,18 +25,33 @@ export default function useOpenSettingsModal(queryRef: useOpenSettingsModalFragm
 
   const router = useRouter();
   const { showModal } = useModalActions();
+  const showAuthModal = useAuthModal();
   const { settings } = router.query;
   const isEmailFeatureEnabled = isFeatureEnabled(FeatureFlag.EMAIL, query);
 
   const isLoggedIn = query.viewer?.__typename === 'Viewer';
 
+  // feels like a hack but if this hook is run multiple times via parent component re-render,
+  // the same modal is opened multiple times
+  const isSettingsModalOpen = useRef(false);
+  const isAuthModalOpen = useRef(false);
+
   useEffect(() => {
     // Only show the modal if the user is logged in and the settings query param is set
-    if (settings === 'true' && isLoggedIn && isEmailFeatureEnabled) {
-      showModal({
-        content: <SettingsModal queryRef={query} />,
-        headerText: 'Settings',
-      });
+    if (settings === 'true' && isEmailFeatureEnabled && !isSettingsModalOpen.current) {
+      if (isLoggedIn) {
+        isSettingsModalOpen.current = true;
+        showModal({
+          content: <SettingsModal queryRef={query} />,
+          headerText: 'Settings',
+        });
+        return;
+      }
+      // if the user is not logged in, prompt them to log in, and the settings modal will open afterwards
+      if (!isAuthModalOpen.current) {
+        isAuthModalOpen.current = true;
+        showAuthModal();
+      }
     }
-  }, [isEmailFeatureEnabled, isLoggedIn, query, router, settings, showModal]);
+  }, [isEmailFeatureEnabled, isLoggedIn, query, router, settings, showAuthModal, showModal]);
 }
