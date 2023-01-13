@@ -1,7 +1,3 @@
-import HomePage from '../pages/home/home-page';
-
-const home = new HomePage();
-
 describe('Homepage test', () => {
   beforeEach(() => {
     cy.disconnectMetamaskWalletFromAllDapps();
