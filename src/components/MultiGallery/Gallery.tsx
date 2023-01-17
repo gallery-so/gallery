@@ -167,16 +167,14 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
   if (!isAuthenticatedUser && hidden) return null;
 
   return (
-    <StyledGalleryWrapper>
-      <StyledGalleryDraggable
-        gap={12}
-        isDragging={isDragging}
-        isAuthedUser={isAuthenticatedUser}
-        ref={setNodeRef}
-        style={style}
-        {...attributes}
-        {...listeners}
-      >
+    <StyledGalleryWrapper
+      isDragging={isDragging}
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+    >
+      <StyledGalleryDraggable gap={12} isAuthedUser={isAuthenticatedUser}>
         <HStack justify="space-between">
           <StyledGalleryTitleWrapper isHidden={hidden}>
             <UnstyledLink href={galleryLink}>
@@ -227,13 +225,13 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
   );
 }
 
-const StyledGalleryWrapper = styled.div`
+const StyledGalleryWrapper = styled.div<{ isDragging?: boolean }>`
   position: relative;
+  opacity: ${({ isDragging }) => (isDragging ? 0.5 : 1)};
 `;
 
-const StyledGalleryDraggable = styled(VStack)<{ isDragging?: boolean; isAuthedUser: boolean }>`
+const StyledGalleryDraggable = styled(VStack)<{ isAuthedUser: boolean }>`
   padding: 12px;
-  opacity: ${({ isDragging }) => (isDragging ? 0.5 : 1)};
   cursor: ${({ isAuthedUser }) => (isAuthedUser ? 'grab' : 'default')};
   min-height: 310px;
   height: 100%;
