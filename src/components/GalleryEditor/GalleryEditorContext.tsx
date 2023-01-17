@@ -1,4 +1,3 @@
-import { reporter } from 'next/dist/trace/report';
 import {
   createContext,
   Dispatch,
