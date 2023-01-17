@@ -18,9 +18,10 @@ import colors from '../core/colors';
 import { DropdownItem } from '../core/Dropdown/DropdownItem';
 import { DropdownSection } from '../core/Dropdown/DropdownSection';
 import SettingsDropdown from '../core/Dropdown/SettingsDropdown';
+import { UnstyledLink } from '../core/Link/UnstyledLink';
 import IconContainer from '../core/Markdown/IconContainer';
 import { HStack, VStack } from '../core/Spacer/Stack';
-import { BaseM, TitleDiatypeM, TitleXS } from '../core/Text/Text';
+import { BaseM, TitleS, TitleXS } from '../core/Text/Text';
 import GalleryNameAndDescriptionModal from './GalleryNameAndDescriptionModal';
 import useDeleteGallery from './useDeleteGallery';
 import useSetFeaturedGallery from './useSetFeaturedGallery';
@@ -46,6 +47,7 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
         }
         owner {
           id
+          username @required(action: THROW)
         }
         ...GalleryNameAndDescriptionModalFragment
       }
@@ -74,6 +76,16 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
   );
 
   const totalGalleries = query.viewer?.viewerGalleries?.length ?? 0;
+
+  if (!gallery?.owner?.username) {
+    throw new Error('This gallery does not have an owner.');
+  }
+
+  // TODO: Replace with a specific gallery route in the future
+  const galleryLink: Route = {
+    pathname: '/[username]',
+    query: { username: gallery.owner.username },
+  };
 
   const loggedInUserId = useLoggedInUserId(query);
   const isAuthenticatedUser = loggedInUserId === gallery?.owner?.id;
@@ -167,7 +179,9 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
       >
         <HStack justify="space-between">
           <StyledGalleryTitleWrapper isHidden={hidden}>
-            <TitleDiatypeM>{name || 'Untitled'}</TitleDiatypeM>
+            <UnstyledLink href={galleryLink}>
+              <StyledGalleryTitle>{name || 'Untitled'}</StyledGalleryTitle>
+            </UnstyledLink>
             <BaseM>{collections.length} collections</BaseM>
           </StyledGalleryTitleWrapper>
         </HStack>
@@ -230,6 +244,13 @@ const StyledGalleryDraggable = styled(VStack)<{ isDragging?: boolean; isAuthedUs
 
 const StyledGalleryTitleWrapper = styled(VStack)<{ isHidden?: boolean }>`
   opacity: ${({ isHidden = false }) => (isHidden ? 0.5 : 1)};
+`;
+
+const StyledGalleryTitle = styled(TitleS)`
+  cursor: pointer;
+  &:hover {
+    text-decoration: underline;
+  }
 `;
 
 const StyledGalleryFeaturedText = styled(TitleXS)`
