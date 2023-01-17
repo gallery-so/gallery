@@ -185,7 +185,7 @@ export default function GalleriesPage({ queryRef }: Props) {
                 key={activeGallery.dbid}
                 galleryRef={activeGallery}
                 queryRef={query}
-                isFeatured={featuredGalleryId === activeId}
+                isFeatured={featuredGalleryId === `Gallery:${activeId}`}
               />
             )}
           </DragOverlay>,
