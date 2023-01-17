@@ -225,7 +225,6 @@ export const CollectionEditorProviderNew = memo(({ children }: Props) => {
   const decrementColumns = useCallback(
     (sectionId: string) => {
       setSections((previous) => {
-        console.log('Here');
         return {
           ...previous,
           [sectionId]: {
