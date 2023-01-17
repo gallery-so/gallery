@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
-import IconContainer from '~/components/core/Markdown/IconContainer';
+import IconContainer from '~/components/core/IconContainer';
 import { Chain, chains } from '~/components/ManageGallery/OrganizeCollection/Sidebar/chains';
 import { SidebarChainButton } from '~/components/ManageGallery/OrganizeCollection/Sidebar/SidebarChainButton';
 import Tooltip from '~/components/Tooltip/Tooltip';

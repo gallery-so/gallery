@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import IconContainer from './IconContainer';
+import IconContainer from '../IconContainer';
 import { setValueAndTriggerOnChange } from './MarkdownShortcuts';
 
 export default function List({

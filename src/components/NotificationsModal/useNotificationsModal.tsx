@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react';
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import IconContainer from '~/components/core/Markdown/IconContainer';
+import IconContainer from '~/components/core/IconContainer';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useNotificationsModalQuery } from '~/generated/useNotificationsModalQuery.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';

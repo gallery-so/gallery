@@ -1,7 +1,7 @@
 import React, { ForwardedRef, forwardRef } from 'react';
 import styled, { css } from 'styled-components';
 
-import colors from '../colors';
+import colors from './colors';
 
 export type IconSize = 'xs' | 'sm' | 'md' | 'lg';
 

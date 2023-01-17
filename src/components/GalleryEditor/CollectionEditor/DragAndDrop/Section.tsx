@@ -4,7 +4,7 @@ import { CSSProperties, forwardRef, ReactNode } from 'react';
 import styled from 'styled-components';
 
 import colors from '~/components/core/colors';
-import IconContainer from '~/components/core/Markdown/IconContainer';
+import IconContainer from '~/components/core/IconContainer';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { TitleDiatypeM } from '~/components/core/Text/Text';
 import transitions from '~/components/core/transitions';

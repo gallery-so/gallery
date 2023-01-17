@@ -7,7 +7,7 @@ import ActionText from '~/components/core/ActionText/ActionText';
 import breakpoints from '~/components/core/breakpoints';
 import colors from '~/components/core/colors';
 import { Directions } from '~/components/core/enums';
-import IconContainer from '~/components/core/Markdown/IconContainer';
+import IconContainer from '~/components/core/IconContainer';
 import { HStack } from '~/components/core/Spacer/Stack';
 import transitions from '~/components/core/transitions';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';

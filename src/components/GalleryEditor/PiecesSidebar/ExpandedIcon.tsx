@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import IconContainer from '~/components/core/Markdown/IconContainer';
+import IconContainer from '~/components/core/IconContainer';
 
 type Props = { expanded: boolean };
 

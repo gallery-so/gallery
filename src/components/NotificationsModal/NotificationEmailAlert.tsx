@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
-import IconContainer from '~/components/core/Markdown/IconContainer';
+import IconContainer from '~/components/core/IconContainer';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { NotificationEmailAlertQueryFragment$key } from '~/generated/NotificationEmailAlertQueryFragment.graphql';
 import CloseIcon from '~/icons/CloseIcon';

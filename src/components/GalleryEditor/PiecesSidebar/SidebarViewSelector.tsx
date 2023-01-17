@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { Dropdown } from '~/components/core/Dropdown/Dropdown';
 import { DropdownItem } from '~/components/core/Dropdown/DropdownItem';
 import { DropdownSection } from '~/components/core/Dropdown/DropdownSection';
-import IconContainer from '~/components/core/Markdown/IconContainer';
+import IconContainer from '~/components/core/IconContainer';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import DoubleArrowsIcon from '~/icons/DoubleArrowsIcon';

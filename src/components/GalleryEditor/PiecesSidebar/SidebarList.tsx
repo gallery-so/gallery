@@ -6,7 +6,7 @@ import { readInlineData } from 'relay-runtime';
 import styled from 'styled-components';
 
 import colors from '~/components/core/colors';
-import IconContainer from '~/components/core/Markdown/IconContainer';
+import IconContainer from '~/components/core/IconContainer';
 import { TitleXS } from '~/components/core/Text/Text';
 import { ExpandedIcon } from '~/components/GalleryEditor/PiecesSidebar/ExpandedIcon';
 import SidebarNftIcon from '~/components/GalleryEditor/PiecesSidebar/SidebarNftIcon';

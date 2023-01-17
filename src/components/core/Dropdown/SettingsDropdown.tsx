@@ -2,7 +2,7 @@ import { ReactNode, useCallback, useState } from 'react';
 import styled from 'styled-components';
 
 import { Dropdown } from '~/components/core/Dropdown/Dropdown';
-import IconContainer, { ColorVariant, IconSize } from '~/components/core/Markdown/IconContainer';
+import IconContainer, { ColorVariant, IconSize } from '~/components/core/IconContainer';
 
 type Props = {
   children: ReactNode;

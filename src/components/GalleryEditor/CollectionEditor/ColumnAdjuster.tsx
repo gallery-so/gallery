@@ -3,7 +3,7 @@ import { graphql, useLazyLoadQuery } from 'react-relay';
 import styled from 'styled-components';
 
 import colors from '~/components/core/colors';
-import IconContainer from '~/components/core/Markdown/IconContainer';
+import IconContainer from '~/components/core/IconContainer';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM } from '~/components/core/Text/Text';
 import { useCollectionEditorContextNew } from '~/contexts/collectionEditor/CollectionEditorContextNew';

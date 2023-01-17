@@ -6,7 +6,7 @@ import colors from '~/components/core/colors';
 import { DropdownItem } from '~/components/core/Dropdown/DropdownItem';
 import { DropdownSection } from '~/components/core/Dropdown/DropdownSection';
 import SettingsDropdown from '~/components/core/Dropdown/SettingsDropdown';
-import IconContainer from '~/components/core/Markdown/IconContainer';
+import IconContainer from '~/components/core/IconContainer';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { TitleXS } from '~/components/core/Text/Text';
 import { useGalleryEditorContext } from '~/components/GalleryEditor/GalleryEditorContext';

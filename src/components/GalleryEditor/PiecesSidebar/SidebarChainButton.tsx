@@ -4,7 +4,7 @@ import { graphql, useFragment } from 'react-relay';
 import styled, { css } from 'styled-components';
 
 import colors from '~/components/core/colors';
-import IconContainer from '~/components/core/Markdown/IconContainer';
+import IconContainer from '~/components/core/IconContainer';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { TitleXSBold } from '~/components/core/Text/Text';
 import { ChainMetadata } from '~/components/GalleryEditor/PiecesSidebar/chains';
