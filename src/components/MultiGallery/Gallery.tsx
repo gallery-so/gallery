@@ -16,6 +16,7 @@ import { removeNullValues } from '~/utils/removeNullValues';
 
 import colors from '../core/colors';
 import { DropdownItem } from '../core/Dropdown/DropdownItem';
+import { DropdownSection } from '../core/Dropdown/DropdownSection';
 import SettingsDropdown from '../core/Dropdown/SettingsDropdown';
 import IconContainer from '../core/Markdown/IconContainer';
 import { HStack, VStack } from '../core/Spacer/Stack';
@@ -187,20 +188,22 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
                 </a>
               </Link>
               <SettingsDropdown>
-                <DropdownItem onClick={handleEditGalleryName}>EDIT NAME & DESC</DropdownItem>
-                {hidden ? (
-                  <DropdownItem onClick={handleUpdateGalleryHidden}>UNHIDE</DropdownItem>
-                ) : (
-                  <>
-                    {!isFeatured && (
-                      <DropdownItem onClick={handleSetFeaturedGallery}>
-                        FEATURE ON PROFILE
-                      </DropdownItem>
-                    )}
-                    <DropdownItem onClick={handleUpdateGalleryHidden}>HIDE</DropdownItem>
-                  </>
-                )}
-                <DropdownItem onClick={handleDeleteGallery}>DELETE</DropdownItem>
+                <DropdownSection>
+                  <DropdownItem onClick={handleEditGalleryName}>EDIT NAME & DESC</DropdownItem>
+                  {hidden ? (
+                    <DropdownItem onClick={handleUpdateGalleryHidden}>UNHIDE</DropdownItem>
+                  ) : (
+                    <>
+                      {!isFeatured && (
+                        <DropdownItem onClick={handleSetFeaturedGallery}>
+                          FEATURE ON PROFILE
+                        </DropdownItem>
+                      )}
+                      <DropdownItem onClick={handleUpdateGalleryHidden}>HIDE</DropdownItem>
+                    </>
+                  )}
+                  <DropdownItem onClick={handleDeleteGallery}>DELETE</DropdownItem>
+                </DropdownSection>
               </SettingsDropdown>
             </>
           )}
