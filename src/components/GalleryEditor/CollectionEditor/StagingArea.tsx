@@ -34,6 +34,7 @@ import { IMAGE_SIZES } from '~/contexts/collectionEditor/useDndDimensions';
 import { StagingAreaNewFragment$key } from '~/generated/StagingAreaNewFragment.graphql';
 import useKeyDown from '~/hooks/useKeyDown';
 import { removeNullValues } from '~/utils/removeNullValues';
+import unescape from '~/utils/unescape';
 
 import DroppableSection from './DragAndDrop/DroppableSection';
 import SectionDragging from './DragAndDrop/SectionDragging';
@@ -94,6 +95,7 @@ function StagingArea({ tokensRef }: Props) {
     return setLocalSections(sections);
   }, [sections]);
 
+  const escapedCollectionName = unescape(name ?? '');
   const nonNullTokens = useMemo(() => removeNullValues(tokens), [tokens]);
   const sectionIds = useMemo(() => Object.keys(localSections) as string[], [localSections]);
 
@@ -211,7 +213,7 @@ function StagingArea({ tokensRef }: Props) {
         >
           {hasNameOrCollectorsNote ? (
             <VStack>
-              <TitleDiatypeM>{name}</TitleDiatypeM>
+              <TitleDiatypeM>{escapedCollectionName || 'Untitled'}</TitleDiatypeM>
               <BaseM>{collectorsNote}</BaseM>
             </VStack>
           ) : (
