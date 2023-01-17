@@ -66,6 +66,7 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
               __typename
               gallery {
                 dbid
+                hidden
               }
             }
           }
@@ -74,8 +75,6 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
     `,
     queryRef
   );
-
-  const totalGalleries = query.viewer?.viewerGalleries?.length ?? 0;
 
   if (!gallery?.owner?.username) {
     throw new Error('This gallery does not have an owner.');
@@ -111,21 +110,33 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
   const { pushToast } = useToastActions();
 
   const reassignFeaturedGallery = useCallback(() => {
-    const otherGallery = removeNullValues(query.viewer?.viewerGalleries).find(
-      (viewerGallery) => viewerGallery?.gallery?.dbid !== dbid
-    );
+    if (!isFeatured) return;
+
+    const otherGallery = removeNullValues(query.viewer?.viewerGalleries)
+      .filter((viewerGallery) => !viewerGallery?.gallery?.hidden)
+      .find((viewerGallery) => viewerGallery?.gallery?.dbid !== dbid);
 
     if (otherGallery && otherGallery?.gallery?.dbid) {
       setFeaturedGallery(otherGallery?.gallery?.dbid);
     }
-  }, [dbid, query.viewer?.viewerGalleries, setFeaturedGallery]);
+  }, [dbid, isFeatured, query.viewer?.viewerGalleries, setFeaturedGallery]);
+
+  const checkIfItsLastVisibleGallery = useCallback(() => {
+    const visibleGalleries = removeNullValues(query.viewer?.viewerGalleries).filter(
+      (viewerGallery) => !viewerGallery?.gallery?.hidden
+    );
+
+    return visibleGalleries.length < 2;
+  }, [query.viewer?.viewerGalleries]);
 
   const handleSetFeaturedGallery = useCallback(() => {
     setFeaturedGallery(dbid);
   }, [dbid, setFeaturedGallery]);
 
   const handleUpdateGalleryHidden = useCallback(() => {
-    if (totalGalleries < 2) {
+    const isLastGallery = checkIfItsLastVisibleGallery();
+
+    if (isLastGallery && !hidden) {
       pushToast({
         message: 'You cannot hide your only gallery.',
       });
@@ -136,10 +147,19 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
 
     // if hide featured gallery, set another gallery as featured
     reassignFeaturedGallery();
-  }, [dbid, hidden, pushToast, reassignFeaturedGallery, totalGalleries, updateGalleryHidden]);
+  }, [
+    checkIfItsLastVisibleGallery,
+    dbid,
+    hidden,
+    pushToast,
+    reassignFeaturedGallery,
+    updateGalleryHidden,
+  ]);
 
   const handleDeleteGallery = useCallback(() => {
-    if (totalGalleries < 2) {
+    const isLastGallery = checkIfItsLastVisibleGallery();
+
+    if (isLastGallery && !hidden) {
       pushToast({
         message: 'You cannot delete your only gallery.',
       });
@@ -150,7 +170,14 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
 
     // if delete featured gallery, set another gallery as featured
     reassignFeaturedGallery();
-  }, [dbid, deleteGallery, pushToast, reassignFeaturedGallery, totalGalleries]);
+  }, [
+    checkIfItsLastVisibleGallery,
+    dbid,
+    deleteGallery,
+    hidden,
+    pushToast,
+    reassignFeaturedGallery,
+  ]);
 
   const handleEditGalleryName = useCallback(() => {
     showModal({
