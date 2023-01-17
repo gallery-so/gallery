@@ -1,3 +1,4 @@
+import { reporter } from 'next/dist/trace/report';
 import {
   createContext,
   Dispatch,
@@ -16,6 +17,8 @@ import { GalleryNameAndDescriptionEditForm } from '~/components/GalleryEditor/Ga
 import { getInitialCollectionsFromServer } from '~/components/GalleryEditor/getInitialCollectionsFromServer';
 import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
+import { useToastActions } from '~/contexts/toast/ToastContext';
+import { ErrorWithSentryMetadata } from '~/errors/ErrorWithSentryMetadata';
 import { GalleryEditorContextFragment$key } from '~/generated/GalleryEditorContextFragment.graphql';
 import {
   CreateCollectionInGalleryInput,
@@ -151,6 +154,7 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
   );
 
   const { showModal } = useModalActions();
+  const { pushToast } = useToastActions();
   const createCollection = useCallback(() => {
     const newCollectionId = generate12DigitId();
 
@@ -347,7 +351,7 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
         await save({
           variables: {
             input: {
-              galleryId: query.galleryById.dbid,
+              galleryId,
 
               name,
               description,
@@ -367,7 +371,20 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
         setInitialDescription(description);
         setInitialCollections(collections);
       } catch (error) {
-        console.log(error);
+        pushToast({
+          autoClose: false,
+          message: "Something went wrong while saving your gallery. We're looking into it.",
+        });
+
+        if (error instanceof Error) {
+          reportError(error, { tags: { galleryId } });
+        } else {
+          reportError(
+            new ErrorWithSentryMetadata('Something unexpected went wrong while saving a gallery', {
+              galleryId,
+            })
+          );
+        }
       }
     },
     [collections, deletedCollectionIds, description, name, query.galleryById, reportError, save]
