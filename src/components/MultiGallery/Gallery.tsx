@@ -233,7 +233,7 @@ const StyledGalleryWrapper = styled.div<{ isDragging?: boolean }>`
 const StyledGalleryDraggable = styled(VStack)<{ isAuthedUser: boolean }>`
   padding: 12px;
   cursor: ${({ isAuthedUser }) => (isAuthedUser ? 'grab' : 'default')};
-  min-height: 310px;
+  min-height: 350px;
   height: 100%;
   border-radius: 12px;
   background-color: ${colors.offWhite};
