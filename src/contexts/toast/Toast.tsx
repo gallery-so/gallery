@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 
 import colors from '~/components/core/colors';
-import IconContainer from '~/components/core/Markdown/IconContainer';
+import IconContainer from '~/components/core/IconContainer';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import transitions, {
@@ -99,7 +99,7 @@ function Toast({ message, onClose, variant }: Props) {
           </StyledAlertIcon>
         )}
         <BaseM>{message}</BaseM>
-        <IconContainer onClick={handleClose} size="sm" icon={<CloseIcon />} />
+        <IconContainer variant="default" onClick={handleClose} size="sm" icon={<CloseIcon />} />
       </StyledToast>
     </ToastContainer>
   );

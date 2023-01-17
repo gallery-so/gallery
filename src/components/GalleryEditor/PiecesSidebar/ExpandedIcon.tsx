@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import IconContainer from '~/components/core/Markdown/IconContainer';
+import IconContainer from '~/components/core/IconContainer';
 
 type Props = { expanded: boolean };
 
@@ -8,7 +8,7 @@ export function ExpandedIcon({ expanded }: Props) {
   return (
     <Container>
       <IconContainer
-        stacked
+        variant="stacked"
         size="sm"
         icon={
           <StyledSvg

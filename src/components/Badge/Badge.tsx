@@ -3,8 +3,8 @@ import { useCallback, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
+import IconContainer from '~/components/core/IconContainer';
 import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
-import IconContainer from '~/components/core/Markdown/IconContainer';
 import Tooltip from '~/components/Tooltip/Tooltip';
 import { BadgeFragment$key } from '~/generated/BadgeFragment.graphql';
 
@@ -67,6 +67,7 @@ export default function Badge({ badgeRef }: Props) {
       <StyledTooltip text={name || ''} showTooltip={showTooltip} />
       <IconContainer
         size="md"
+        variant="default"
         icon={
           <StyledBadge
             src={imageURL}

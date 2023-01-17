@@ -1,29 +1,22 @@
-import keyBy from 'lodash.keyby';
 import { useCallback, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { Button } from '~/components/core/Button/Button';
 import colors from '~/components/core/colors';
-import { VStack } from '~/components/core/Spacer/Stack';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { TitleS } from '~/components/core/Text/Text';
 import { Chain } from '~/components/GalleryEditor/PiecesSidebar/chains';
 import { SidebarChainSelector } from '~/components/GalleryEditor/PiecesSidebar/SidebarChainSelector';
 import { SidebarTokens } from '~/components/GalleryEditor/PiecesSidebar/SidebarTokens';
-import {
-  useCollectionEditorActions,
-  useSidebarTokensState,
-} from '~/contexts/collectionEditor/CollectionEditorContext';
-import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
+import { useCollectionEditorContextNew } from '~/contexts/collectionEditor/CollectionEditorContextNew';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
-import { useToastActions } from '~/contexts/toast/ToastContext';
 import { PiecesSidebarNewFragment$key } from '~/generated/PiecesSidebarNewFragment.graphql';
 import { PiecesSidebarViewerNewFragment$key } from '~/generated/PiecesSidebarViewerNewFragment.graphql';
 import useSyncTokens from '~/hooks/api/tokens/useSyncTokens';
-import { generate12DigitId } from '~/utils/collectionLayout';
+import { doesUserOwnWalletFromChain } from '~/utils/doesUserOwnWalletFromChain';
 import { removeNullValues } from '~/utils/removeNullValues';
 
-import { convertObjectToArray } from '../CollectionEditor/convertObjectToArray';
 import { AddWalletSidebar } from './AddWalletSidebar';
 import SearchBar from './SearchBar';
 import { SidebarView, SidebarViewSelector } from './SidebarViewSelector';
@@ -52,18 +45,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
   const query = useFragment(
     graphql`
       fragment PiecesSidebarViewerNewFragment on Query {
-        viewer {
-          ... on Viewer {
-            user {
-              wallets {
-                chainAddress {
-                  chain
-                }
-              }
-            }
-          }
-        }
-
+        ...doesUserOwnWalletFromChainFragment
         ...SidebarChainSelectorNewFragment
         ...AddWalletSidebarQueryNewFragment
       }
@@ -71,78 +53,38 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
     queryRef
   );
 
-  const sidebarTokens = useSidebarTokensState();
-  const { stageTokens } = useCollectionEditorActions();
+  const { syncTokens } = useSyncTokens();
+  const { addWhitespace } = useCollectionEditorContextNew();
+
   const [searchResults, setSearchResults] = useState<string[]>([]);
   const [selectedChain, setSelectedChain] = useState<Chain>('Ethereum');
   const [selectedView, setSelectedView] = useState<SidebarView>('Collected');
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
-
-  const { pushToast } = useToastActions();
-  const reportError = useReportError();
 
   const navbarHeight = useGlobalNavbarHeight();
 
   const isSearching = debouncedSearchQuery.length > 0;
 
   const nonNullTokens = removeNullValues(allTokens);
-  const sidebarTokensAsArray = useMemo(() => convertObjectToArray(sidebarTokens), [sidebarTokens]);
 
-  // Only show blank space + add account button
-  // 1. if the user don't have selected account
-  // 2. the selected chain is selected account
-  const ownsWalletFromSelectedChain = useMemo(() => {
-    let chain = selectedChain;
-    if (selectedChain === 'POAP') {
-      chain = 'Ethereum';
-    }
+  const ownsWalletFromSelectedChain = doesUserOwnWalletFromChain(selectedChain, query);
 
-    const ownsWalletFromChain = query.viewer?.user?.wallets?.some(
-      (wallet) => wallet?.chainAddress?.chain === chain
-    );
-
-    return ownsWalletFromChain ?? false;
-  }, [query, selectedChain]);
-
-  const editModeTokensSearchResults = useMemo(() => {
+  const tokenSearchResults = useMemo(() => {
     if (!debouncedSearchQuery) {
-      return sidebarTokensAsArray;
+      return nonNullTokens;
     }
 
-    const searchResultNfts = [];
-    for (const resultId of searchResults) {
-      if (sidebarTokens[resultId]) {
-        searchResultNfts.push(sidebarTokens[resultId]);
-      }
-    }
+    const searchResultsSet = new Set(searchResults);
 
-    return searchResultNfts;
-  }, [debouncedSearchQuery, searchResults, sidebarTokens, sidebarTokensAsArray]);
-
-  const nftFragmentsKeyedByID = useMemo(
-    () => keyBy(nonNullTokens, (token) => token.dbid),
-    [nonNullTokens]
-  );
+    return nonNullTokens.filter((token) => searchResultsSet.has(token.dbid));
+  }, [debouncedSearchQuery, nonNullTokens, searchResults]);
 
   const handleAddBlankBlockClick = useCallback(() => {
-    const id = `blank-${generate12DigitId()}`;
-    stageTokens([{ id, whitespace: 'whitespace' }]);
-    // auto scroll so that the new block is visible. 100ms timeout to account for async nature of staging tokens
-    setTimeout(() => {
-      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-    }, 100);
-  }, [stageTokens]);
+    addWhitespace();
+  }, [addWhitespace]);
 
   const tokensToDisplay = useMemo(() => {
-    return editModeTokensSearchResults.filter((editModeToken) => {
-      const token = nftFragmentsKeyedByID[editModeToken.id];
-
-      // Ensure we have a 1-1 match.
-      // Every EditModeToken should have a Token from Relay
-      if (!token) {
-        return false;
-      }
-
+    return tokenSearchResults.filter((token) => {
       // If we're searching, we want to search across all chains
       if (isSearching) {
         return true;
@@ -159,42 +101,14 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
       }
       return !isSpam;
     });
-  }, [
-    editModeTokensSearchResults,
-    isSearching,
-    nftFragmentsKeyedByID,
-    selectedChain,
-    selectedView,
-  ]);
-
-  const { isLocked, syncTokens } = useSyncTokens();
-
-  const handleRefresh = useCallback(async () => {
-    if (!selectedChain || isLocked) {
-      return;
-    }
-
-    pushToast({
-      message: 'We’re retrieving your new pieces. This may take up to a few minutes.',
-      autoClose: true,
-    });
-
-    try {
-      await syncTokens(selectedChain);
-    } catch (e) {
-      if (e instanceof Error) {
-        reportError(e);
-      } else {
-        reportError('Could not run SidebarChainSelectorMutation for an unknown reason');
-      }
-    }
-  }, [isLocked, pushToast, reportError, selectedChain, syncTokens]);
+  }, [tokenSearchResults, isSearching, selectedChain, selectedView]);
 
   return (
     <StyledSidebar navbarHeight={navbarHeight}>
       <StyledSidebarContainer gap={8}>
-        <Header>
+        <Header align="center" justify="space-between" gap={4}>
           <TitleS>Add pieces</TitleS>
+          <SidebarViewSelector selectedView={selectedView} setSelectedView={setSelectedView} />
         </Header>
         <SearchBar
           tokensRef={nonNullTokens}
@@ -204,14 +118,10 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
         {!isSearching && (
           <>
             <div>
-              <SidebarViewSelector selectedView={selectedView} setSelectedView={setSelectedView} />
               <SidebarChainSelector
-                ownsWalletFromSelectedChain={ownsWalletFromSelectedChain}
                 queryRef={query}
                 selected={selectedChain}
                 onChange={setSelectedChain}
-                handleRefresh={handleRefresh}
-                isRefreshingNfts={isLocked}
               />
             </div>
             {ownsWalletFromSelectedChain && (
@@ -225,16 +135,15 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
         {ownsWalletFromSelectedChain ? (
           <SidebarTokens
             isSearching={isSearching}
-            tokenRefs={nonNullTokens}
+            tokenRefs={tokensToDisplay}
             selectedChain={selectedChain}
             selectedView={selectedView}
-            editModeTokens={tokensToDisplay}
           />
         ) : (
           <AddWalletSidebar
             selectedChain={selectedChain}
             queryRef={query}
-            handleRefresh={handleRefresh}
+            handleRefresh={() => syncTokens(selectedChain)}
           />
         )}
       </StyledSidebarContainer>
@@ -255,6 +164,9 @@ const StyledSidebar = styled.div<{ navbarHeight: number }>`
   display: flex;
   flex-direction: column;
 
+  max-width: 250px;
+  min-width: 250px;
+
   padding-top: 16px;
 
   height: 100%;
@@ -266,9 +178,6 @@ const StyledSidebar = styled.div<{ navbarHeight: number }>`
   }
 `;
 
-const Header = styled.div`
+const Header = styled(HStack)`
   padding: 0 12px 8px;
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
 `;

@@ -15,11 +15,10 @@ import StagedNftImageDragging from './StagedNftImageDragging';
 
 type Props = {
   tokenRef: StagedItemDraggingNewFragment$key | null;
-  isEditModeToken: boolean;
   size: number;
 };
 
-function StagedItemDragging({ tokenRef, isEditModeToken, size }: Props) {
+function StagedItemDragging({ tokenRef, size }: Props) {
   const token = useFragment(
     graphql`
       fragment StagedItemDraggingNewFragment on Token {
@@ -29,7 +28,7 @@ function StagedItemDragging({ tokenRef, isEditModeToken, size }: Props) {
     tokenRef
   );
 
-  if (token && isEditModeToken) {
+  if (token) {
     return <StagedNftImageDraggingWrapper size={size} tokenRef={token} />;
   }
 

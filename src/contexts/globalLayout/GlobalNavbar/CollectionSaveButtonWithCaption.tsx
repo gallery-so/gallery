@@ -1,6 +1,4 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
-import { useFragment } from 'react-relay';
-import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import { Button } from '~/components/core/Button/Button';
@@ -12,8 +10,6 @@ import transitions, {
   ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL,
 } from '~/components/core/transitions';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
-import { CollectionSaveButtonWithCaptionFragment$key } from '~/generated/CollectionSaveButtonWithCaptionFragment.graphql';
-import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 type Props = {
   disabled?: boolean;
@@ -21,7 +17,6 @@ type Props = {
   hasUnsavedChange?: boolean;
   label?: string;
   onSave: (caption: string) => Promise<void>;
-  queryRef: CollectionSaveButtonWithCaptionFragment$key;
 };
 
 export function CollectionSaveButtonWithCaption({
@@ -30,17 +25,7 @@ export function CollectionSaveButtonWithCaption({
   hasUnsavedChange,
   label = 'Save',
   onSave,
-  queryRef,
 }: Props) {
-  const query = useFragment(
-    graphql`
-      fragment CollectionSaveButtonWithCaptionFragment on Query {
-        ...isFeatureEnabledFragment
-      }
-    `,
-    queryRef
-  );
-
   // Pseudo-state for signaling animations. This gives us a chance
   // to display an animation prior to unmounting the component and its contents
   const [isPopupDisplayed, setIsPopupDisplayed] = useState(false);
@@ -48,8 +33,6 @@ export function CollectionSaveButtonWithCaption({
 
   const [caption, setCaption] = useState('');
   const deactivateHoverCardTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const isWhiteRhinoEnabled = isFeatureEnabled(FeatureFlag.WHITE_RHINO, query);
 
   const handleCloseCaption = useCallback(() => {
     setIsPopupDisplayed(false);
@@ -70,17 +53,11 @@ export function CollectionSaveButtonWithCaption({
   }, [caption, handleCloseCaption, onSave, track]);
 
   const handleOpenCaption = useCallback(() => {
-    // If feature flag off, skip caption and save immediately
-    if (!isWhiteRhinoEnabled) {
-      handleSubmit();
-      return;
-    }
-
     if (deactivateHoverCardTimeoutRef.current) {
       clearTimeout(deactivateHoverCardTimeoutRef.current);
     }
     setIsPopupDisplayed(true);
-  }, [handleSubmit, isWhiteRhinoEnabled]);
+  }, []);
 
   const isSaveDisabled = useMemo(() => {
     return caption.length > 600;
@@ -93,7 +70,7 @@ export function CollectionSaveButtonWithCaption({
       <StyledButton
         onClick={isPopupDisplayed ? handleCloseCaption : handleOpenCaption}
         disabled={disabled || !hasUnsavedChange}
-        pending={isLoading && !isWhiteRhinoEnabled}
+        pending={isLoading}
       >
         <HStack gap={4} align="center">
           {label}

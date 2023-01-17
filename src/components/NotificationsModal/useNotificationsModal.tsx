@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react';
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import IconContainer from '~/components/core/Markdown/IconContainer';
+import IconContainer from '~/components/core/IconContainer';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useNotificationsModalQuery } from '~/generated/useNotificationsModalQuery.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
@@ -38,7 +38,13 @@ export default function useNotificationsModal() {
       });
     };
 
-    return <IconContainer onClick={handleSettingsClick} icon={<CogIcon />}></IconContainer>;
+    return (
+      <IconContainer
+        variant="default"
+        onClick={handleSettingsClick}
+        icon={<CogIcon />}
+      ></IconContainer>
+    );
   }, [hideModal, showModal, query]);
 
   return useCallback(() => {

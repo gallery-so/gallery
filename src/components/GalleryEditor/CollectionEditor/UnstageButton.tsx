@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import colors from '~/components/core/colors';
 import { BaseM } from '~/components/core/Text/Text';
-import { useCollectionEditorActions } from '~/contexts/collectionEditor/CollectionEditorContext';
+import { useCollectionEditorContextNew } from '~/contexts/collectionEditor/CollectionEditorContextNew';
 import TrashIcon from '~/icons/Trash';
 
 type Props = {
@@ -14,12 +14,11 @@ type Props = {
   variant?: 'icon' | 'text';
 };
 function UnstageButton({ id, className, variant = 'icon' }: Props) {
-  const { setTokensIsSelected, unstageTokens } = useCollectionEditorActions();
+  const { toggleTokenStaged } = useCollectionEditorContextNew();
 
   const handleOnClick = useCallback(() => {
-    setTokensIsSelected([id], false);
-    unstageTokens([id]);
-  }, [id, setTokensIsSelected, unstageTokens]);
+    toggleTokenStaged(id);
+  }, [id, toggleTokenStaged]);
 
   return (
     <StyledUnstageButton className={className} onClick={handleOnClick}>

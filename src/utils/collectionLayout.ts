@@ -1,6 +1,7 @@
 import { graphql } from 'react-relay';
 import { readInlineData } from 'relay-runtime';
 
+import { StagedItem, StagedSectionMap } from '~/components/GalleryEditor/GalleryEditorContext';
 import {
   EditModeTokenChild,
   isEditModeToken,
@@ -9,6 +10,7 @@ import {
   WhitespaceBlock,
 } from '~/components/ManageGallery/OrganizeCollection/types';
 import { collectionLayoutParseFragment$key } from '~/generated/collectionLayoutParseFragment.graphql';
+import { generate12DigitId } from '~/utils/generate12DigitId';
 import { removeNullValues } from '~/utils/removeNullValues';
 // This file contains helper methods to manipulate collections, layouts, and related data used for the Collection Editor and its drag and drop interface.
 
@@ -152,6 +154,45 @@ export function generateLayoutFromCollection(collection: StagedCollection) {
   };
 }
 
+// Given a collection of sections and their items, return an object representing the layout of the collection.
+// The layout object corresponds to the `CollectionLayoutInput`input type in the GraphQL API.
+export function generateLayoutFromCollectionNew(collection: StagedSectionMap) {
+  let sectionStartIndex = 0;
+  const filteredCollection = { ...collection };
+  Object.keys(collection).forEach((sectionId) => {
+    let isEmptySection = collection[sectionId].items.length === 0;
+    if (!isEmptySection) {
+      // see if it's only empty whitespace blocks
+      const sectionWithoutWhitespace = collection[sectionId].items.filter(
+        (item) => item.kind === 'token'
+      );
+      isEmptySection = sectionWithoutWhitespace.length === 0;
+    }
+
+    if (isEmptySection) {
+      // delete empty section
+      delete filteredCollection[sectionId];
+    }
+  });
+
+  const sectionStartIndices = Object.keys(filteredCollection).map((sectionId, index) => {
+    if (index === 0) {
+      return sectionStartIndex;
+    }
+    const previousSection = filteredCollection[Object.keys(filteredCollection)[index - 1]];
+    sectionStartIndex += previousSection.items.filter((item) => item.kind === 'token').length;
+    return sectionStartIndex;
+  });
+
+  return {
+    sections: sectionStartIndices,
+    sectionLayout: Object.keys(filteredCollection).map((sectionId) => ({
+      columns: filteredCollection[sectionId].columns,
+      whitespace: getWhitespacePositionsFromSectionNew(filteredCollection[sectionId].items),
+    })),
+  };
+}
+
 // Given a collection of sections and their items, return a list of just the token ids in the collection.
 export function getTokenIdsFromCollection(collection: StagedCollection) {
   const tokens = removeWhitespacesFromStagedItems(
@@ -174,8 +215,18 @@ export function getWhitespacePositionsFromSection(sectionItems: StagingItem[]): 
   return result;
 }
 
-export function generate12DigitId() {
-  return Math.round(Math.random() * 1000000000000).toString();
+export function getWhitespacePositionsFromSectionNew(sectionItems: StagedItem[]): number[] {
+  let nftIndex = 0;
+  const result: number[] = [];
+  sectionItems.forEach((item) => {
+    if (item.kind === 'token') {
+      nftIndex++;
+    } else {
+      // is whitespace
+      result.push(nftIndex);
+    }
+  });
+  return result;
 }
 
 // filter whitespaces from stagedItems and map each EditModeToken -> Nft

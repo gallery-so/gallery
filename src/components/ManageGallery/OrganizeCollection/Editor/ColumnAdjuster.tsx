@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
-import IconContainer from '~/components/core/Markdown/IconContainer';
+import IconContainer from '~/components/core/IconContainer';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import {
@@ -52,6 +52,7 @@ function ColumnAdjuster({ viewerRef, activeSectionId }: Props) {
       <StyledButtonContainer>
         <IconContainer
           size="sm"
+          variant="default"
           onClick={handleDecrementClick}
           disabled={columns <= 1}
           icon={<CircleMinusIcon />}
@@ -61,6 +62,7 @@ function ColumnAdjuster({ viewerRef, activeSectionId }: Props) {
 
         <IconContainer
           size="sm"
+          variant="default"
           onClick={handleIncrementClick}
           disabled={columns >= maxColumns}
           icon={<CirclePlusIcon />}

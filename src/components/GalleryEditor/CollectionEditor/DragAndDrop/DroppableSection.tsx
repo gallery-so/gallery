@@ -1,21 +1,18 @@
 import { AnimateLayoutChanges, defaultAnimateLayoutChanges, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { useCallback, useMemo } from 'react';
+import { CSSProperties, ReactNode, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 
 import colors from '~/components/core/colors';
 import { VStack } from '~/components/core/Spacer/Stack';
-import {
-  useActiveSectionIdState,
-  useCollectionEditorActions,
-} from '~/contexts/collectionEditor/CollectionEditorContext';
+import { useCollectionEditorContextNew } from '~/contexts/collectionEditor/CollectionEditorContextNew';
 import PlusIcon from '~/icons/PlusIcon';
 
 import { Section } from './Section';
 
 type Props = {
-  children: React.ReactNode;
-  style?: React.CSSProperties;
+  children: ReactNode;
+  style?: CSSProperties;
   columns?: number;
   id: string;
   items: Array<{ id: string }>;
@@ -35,14 +32,14 @@ export default function DroppableSection({ children, columns, id, items, style, 
     animateLayoutChanges,
   });
 
-  const { setActiveSectionIdState, addSection, deleteSection } = useCollectionEditorActions();
+  const { activeSectionId, activateSection, addSection, deleteSection } =
+    useCollectionEditorContextNew();
 
   // Set section as active on mousedown instead of on click so that starting to drag an item immediately activates that section
   const handleMouseDown = useCallback(() => {
-    setActiveSectionIdState(id);
-  }, [id, setActiveSectionIdState]);
+    activateSection(id);
+  }, [activateSection, id]);
 
-  const activeSectionId = useActiveSectionIdState();
   const isActive = activeSectionId === id;
 
   const handleAddSectionClick = useCallback(() => {
@@ -50,8 +47,8 @@ export default function DroppableSection({ children, columns, id, items, style, 
   }, [addSection]);
 
   const handleDeleteSectionClick = useCallback(() => {
-    deleteSection(id, itemIds);
-  }, [deleteSection, id, itemIds]);
+    deleteSection(id);
+  }, [deleteSection, id]);
 
   return (
     <>

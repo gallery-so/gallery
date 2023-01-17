@@ -34,7 +34,6 @@ function LazyLoadedCollectionEditor({ galleryId }: Props) {
     graphql`
       query createCollectionQuery {
         ...CollectionEditorFragment
-        ...CollectionCreateNavbarFragment
       }
     `,
     {}
@@ -182,7 +181,6 @@ function LazyLoadedCollectionEditor({ galleryId }: Props) {
           onNext={handleNext}
           isCollectionValid={isCollectionValid}
           error={generalError}
-          queryRef={query}
         />
       }
     >

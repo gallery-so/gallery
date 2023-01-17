@@ -9,7 +9,7 @@ import transitions from '~/components/core/transitions';
 import { NftFailureBoundary } from '~/components/NftFailureFallback/NftFailureBoundary';
 import { NftFailureFallback } from '~/components/NftFailureFallback/NftFailureFallback';
 import { SIDEBAR_ICON_DIMENSIONS } from '~/constants/sidebar';
-import { useCollectionEditorActions } from '~/contexts/collectionEditor/CollectionEditorContext';
+import { useCollectionEditorContextNew } from '~/contexts/collectionEditor/CollectionEditorContextNew';
 import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import { ContentIsLoadedEvent } from '~/contexts/shimmer/ShimmerContext';
 import { CouldNotRenderNftError } from '~/errors/CouldNotRenderNftError';
@@ -20,18 +20,14 @@ import { useNftRetry, useThrowOnMediaFailure } from '~/hooks/useNftRetry';
 import getVideoOrImageUrlForNftPreview from '~/utils/graphql/getVideoOrImageUrlForNftPreview';
 import { getBackgroundColorOverrideForContract } from '~/utils/token';
 
-import { EditModeToken } from '../CollectionEditor/types';
-
 type SidebarNftIconProps = {
   tokenRef: SidebarNftIconNewFragment$key;
-  editModeToken: EditModeToken;
   handleTokenRenderError: (id: string) => void;
   handleTokenRenderSuccess: (id: string) => void;
 };
 
 function SidebarNftIcon({
   tokenRef,
-  editModeToken,
   handleTokenRenderError,
   handleTokenRenderSuccess,
 }: SidebarNftIconProps) {
@@ -55,9 +51,9 @@ function SidebarNftIcon({
     tokenRef
   );
 
-  const { isSelected, id } = editModeToken;
+  const { stagedTokenIds, toggleTokenStaged } = useCollectionEditorContextNew();
 
-  const { setTokensIsSelected, stageTokens, unstageTokens } = useCollectionEditorActions();
+  const isSelected = stagedTokenIds.has(token.dbid);
 
   const mountRef = useRef(false);
 
@@ -65,11 +61,11 @@ function SidebarNftIcon({
     // When NFT is selected, scroll Staging Area to the added NFT.
     // But don't do this when this component is first mounted (we dont want to scroll to the bottom when we load the DnD)
     if (mountRef.current && isSelected) {
-      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+      document.getElementById(token.dbid)?.scrollIntoView({ behavior: 'smooth' });
     }
 
     mountRef.current = true;
-  }, [id, isSelected]);
+  }, [token.dbid, isSelected]);
 
   const contractAddress = token.contract?.contractAddress?.address ?? '';
 
@@ -91,22 +87,8 @@ function SidebarNftIcon({
       return;
     }
 
-    setTokensIsSelected([id], !isSelected);
-    if (isSelected) {
-      unstageTokens([id]);
-    } else {
-      stageTokens([editModeToken]);
-    }
-  }, [
-    isFailed,
-    setTokensIsSelected,
-    id,
-    isSelected,
-    refreshMetadata,
-    unstageTokens,
-    stageTokens,
-    editModeToken,
-  ]);
+    toggleTokenStaged(token.dbid);
+  }, [isFailed, toggleTokenStaged, token.dbid, refreshMetadata]);
 
   const handleError = useCallback<ContentIsLoadedEvent>(
     (event) => {

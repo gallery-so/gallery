@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import IconContainer from './IconContainer';
+import IconContainer from '../IconContainer';
 import { setValueAndTriggerOnChange } from './MarkdownShortcuts';
 
 export default function List({
@@ -86,7 +86,7 @@ export default function List({
   return (
     <IconContainer
       size="sm"
-      stacked
+      variant="stacked"
       icon={
         <svg
           data-testid="markdown-icon"

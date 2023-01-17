@@ -20,7 +20,7 @@ const PROD_FLAGS: Record<FeatureFlag, boolean> = {
 const DEV_FLAGS: Record<FeatureFlag, boolean> = {
   WHITE_RHINO: true,
   EMAIL: true,
-  MULTIGALLERY: false,
+  MULTIGALLERY: true,
 };
 
 const ROLE_FLAGS: Record<Role, Record<FeatureFlag, boolean>> = {

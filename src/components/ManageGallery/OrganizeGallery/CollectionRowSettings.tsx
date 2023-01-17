@@ -86,7 +86,7 @@ function CollectionRowSettings({ collectionRef, onEditCollection }: Props) {
   return (
     <SettingsContainer gap={8} align="center">
       <StyledTextButton onClick={handleEditCollectionClick} text="Edit" />
-      <SettingsDropdown>
+      <SettingsDropdown iconVariant="default">
         <DropdownSection>
           <DropdownItem onClick={handleEditNameClick}>EDIT NAME & DESCRIPTION</DropdownItem>
           <DropdownItem onClick={handleToggleHiddenClick}>{hidden ? 'SHOW' : 'HIDE'}</DropdownItem>

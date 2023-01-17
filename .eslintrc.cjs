@@ -52,7 +52,10 @@ module.exports = {
         'no-restricted-imports': [
           'error',
           {
-            patterns: ['~/components/ManageGallery/OrganizeCollection/*'],
+            patterns: [
+              '~/components/ManageGallery/OrganizeCollection/*',
+              '~/contexts/collectionEditor/CollectionEditorContext',
+            ],
           },
         ],
       },

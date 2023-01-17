@@ -140,7 +140,7 @@ function UserGalleryCollection({
             <StyledCopyToClipboard textToCopy={`${baseUrl}${collectionUrl}`}>
               <TextButton text="Share" onClick={handleShareClick} />
             </StyledCopyToClipboard>
-            <SettingsDropdown>
+            <SettingsDropdown iconVariant="default">
               <DropdownSection>
                 {showEditActions && (
                   <>
