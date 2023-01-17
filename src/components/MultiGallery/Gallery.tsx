@@ -81,10 +81,9 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
     throw new Error('This gallery does not have an owner.');
   }
 
-  // TODO: Replace with a specific gallery route in the future
   const galleryLink: Route = {
-    pathname: '/[username]',
-    query: { username: gallery.owner.username },
+    pathname: '/[username]/galleries/[galleryId]',
+    query: { username: gallery.owner.username, galleryId: gallery.dbid },
   };
 
   const loggedInUserId = useLoggedInUserId(query);
