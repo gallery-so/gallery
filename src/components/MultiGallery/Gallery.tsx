@@ -110,13 +110,33 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
 
   const { pushToast } = useToastActions();
 
+  const reassignFeaturedGallery = useCallback(() => {
+    const otherGallery = removeNullValues(query.viewer?.viewerGalleries).find(
+      (viewerGallery) => viewerGallery?.gallery?.dbid !== dbid
+    );
+
+    if (otherGallery && otherGallery?.gallery?.dbid) {
+      setFeaturedGallery(otherGallery?.gallery?.dbid);
+    }
+  }, [dbid, query.viewer?.viewerGalleries, setFeaturedGallery]);
+
   const handleSetFeaturedGallery = useCallback(() => {
     setFeaturedGallery(dbid);
   }, [dbid, setFeaturedGallery]);
 
   const handleUpdateGalleryHidden = useCallback(() => {
+    if (totalGalleries < 2) {
+      pushToast({
+        message: 'You cannot hide your only gallery.',
+      });
+      return;
+    }
+
     updateGalleryHidden(dbid, !hidden);
-  }, [dbid, hidden, updateGalleryHidden]);
+
+    // if hide featured gallery, set another gallery as featured
+    reassignFeaturedGallery();
+  }, [dbid, hidden, pushToast, reassignFeaturedGallery, totalGalleries, updateGalleryHidden]);
 
   const handleDeleteGallery = useCallback(() => {
     if (totalGalleries < 2) {
@@ -129,24 +149,8 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
     deleteGallery(dbid);
 
     // if delete featured gallery, set another gallery as featured
-    if (isFeatured) {
-      const otherGallery = removeNullValues(query.viewer?.viewerGalleries).find(
-        (viewerGallery) => viewerGallery?.gallery?.dbid !== dbid
-      );
-
-      if (otherGallery && otherGallery?.gallery?.dbid) {
-        setFeaturedGallery(otherGallery?.gallery?.dbid);
-      }
-    }
-  }, [
-    dbid,
-    deleteGallery,
-    isFeatured,
-    pushToast,
-    query.viewer?.viewerGalleries,
-    setFeaturedGallery,
-    totalGalleries,
-  ]);
+    reassignFeaturedGallery();
+  }, [dbid, deleteGallery, pushToast, reassignFeaturedGallery, totalGalleries]);
 
   const handleEditGalleryName = useCallback(() => {
     showModal({
