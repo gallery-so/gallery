@@ -14,6 +14,7 @@ import {
   StandardNavbarContainer,
 } from '~/contexts/globalLayout/GlobalNavbar/StandardNavbarContainer';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import { EditPencilIcon } from '~/icons/EditPencilIcon';
 
 type Props = {
   canSave: boolean;
@@ -37,25 +38,7 @@ function GalleryTitleSection({ onEdit, galleryName }: GalleryTitleSectionProps) 
       <MainGalleryText>{galleryName || 'Untitled'}</MainGalleryText>
 
       <EditIconContainer>
-        <IconContainer
-          size="sm"
-          variant="stacked"
-          icon={
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 14 14"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M1 13L1.66667 10L10.6667 1H11.3333L13 2.66667V3.33333L4 12.3333L1 13Z"
-                stroke="currentColor"
-                strokeMiterlimit="10"
-              />
-            </svg>
-          }
-        />
+        <IconContainer size="sm" variant="stacked" icon={<EditPencilIcon />} />
       </EditIconContainer>
     </GalleryTitleContainer>
   );
