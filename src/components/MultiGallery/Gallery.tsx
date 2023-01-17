@@ -243,7 +243,7 @@ const StyledGalleryDraggable = styled(VStack)<{ isAuthedUser: boolean }>`
   background-color: ${colors.offWhite};
 
   &:hover {
-    background-color: ${({ isAuthedUser }) => (isAuthedUser ? colors.faint : 'transparent')};
+    background-color: ${({ isAuthedUser }) => (isAuthedUser ? colors.faint : colors.offWhite)};
   }
 `;
 
