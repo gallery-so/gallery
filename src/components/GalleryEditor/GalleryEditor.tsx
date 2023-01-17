@@ -13,7 +13,7 @@ import { PiecesSidebar } from '~/components/GalleryEditor/PiecesSidebar/PiecesSi
 import useConfirmationMessageBeforeClose from '~/components/ManageGallery/useConfirmationMessageBeforeClose';
 import FullPageStep from '~/components/Onboarding/FullPageStep';
 import { CollectionEditorProviderNew } from '~/contexts/collectionEditor/CollectionEditorContextNew';
-import { MultiGalleryEditGalleryNavbar } from '~/contexts/globalLayout/MultiGalleryEditGalleryNavbar/MultiGalleryEditGalleryNavbar';
+import { EditGalleryNavbar } from '~/contexts/globalLayout/EditGalleryNavbar/EditGalleryNavbar';
 import { useCanGoBack } from '~/contexts/navigation/GalleryNavigationProvider';
 import { removeNullValues } from '~/utils/removeNullValues';
 
@@ -89,7 +89,7 @@ export function GalleryEditor({ queryRef }: GalleryEditorProps) {
     <FullPageStep
       withBorder
       navbar={
-        <MultiGalleryEditGalleryNavbar
+        <EditGalleryNavbar
           onEdit={handleEdit}
           galleryName={name}
           canSave={canSave}

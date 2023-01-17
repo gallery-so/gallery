@@ -80,7 +80,7 @@ const GalleryTitleContainer = styled(HStack)`
   }
 `;
 
-export function MultiGalleryEditGalleryNavbar({
+export function EditGalleryNavbar({
   canSave,
   onDone,
   onBack,
