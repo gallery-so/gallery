@@ -387,23 +387,24 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
         }
       }
     },
-    [collections, deletedCollectionIds, description, name, query.galleryById, reportError, save]
+    [
+      collections,
+      deletedCollectionIds,
+      description,
+      name,
+      pushToast,
+      query.galleryById.dbid,
+      reportError,
+      save,
+    ]
   );
 
   const [initialName, setInitialName] = useState(name);
   const [initialDescription, setInitialDescription] = useState(description);
   const [initialCollections, setInitialCollections] = useState(collections);
   const hasUnsavedChanges = useMemo(() => {
-    function removeIdsFromCollections(collections: CollectionState[]): CollectionState[] {
-      return collections.map((collection) => {
-        return { ...collection, dbid: '' };
-      });
-    }
-
-    const currentCollectionsWithoutIds = removeIdsFromCollections(Object.values(collections));
-    const initialCollectionsWithoutIds = removeIdsFromCollections(
-      Object.values(initialCollections)
-    );
+    const currentCollectionsWithoutIds = Object.values(collections);
+    const initialCollectionsWithoutIds = Object.values(initialCollections);
 
     const collectionsAreDifferent =
       JSON.stringify(currentCollectionsWithoutIds) !== JSON.stringify(initialCollectionsWithoutIds);
@@ -414,21 +415,12 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
     return collectionsAreDifferent || nameIsDifferent || descriptionIsDifferent;
   }, [collections, description, initialCollections, initialDescription, initialName, name]);
 
+  // At some point we will have validation errors built in
   const validationErrors = useMemo(() => {
     const errors: string[] = [];
 
-    for (const collection of Object.values(collections)) {
-      const hasAnyItems = Object.values(collection.sections).some((section) => {
-        return section.items.length > 0;
-      });
-
-      if (!hasAnyItems) {
-        errors.push(`Collection #${collection.dbid} doesn't have any items`);
-      }
-    }
-
     return errors;
-  }, [collections]);
+  }, []);
 
   const canSave = useMemo(() => {
     return validationErrors.length === 0 && hasUnsavedChanges;
