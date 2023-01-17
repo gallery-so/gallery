@@ -39,6 +39,8 @@ const CollectionSidebarWrapper = styled(VStack)`
   min-width: 250px;
   max-width: 250px;
 
+  overflow-y: auto;
+  max-height: 100%;
   height: 100%;
 
   padding-top: 16px;
