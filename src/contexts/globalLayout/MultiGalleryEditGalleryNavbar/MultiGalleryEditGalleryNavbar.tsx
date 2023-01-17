@@ -18,6 +18,7 @@ import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 type Props = {
   canSave: boolean;
   hasUnsavedChanges: boolean;
+  galleryName: string;
 
   onEdit: () => void;
 
@@ -27,12 +28,13 @@ type Props = {
 
 type GalleryTitleSectionProps = {
   onEdit: () => void;
+  galleryName: string;
 };
 
-function GalleryTitleSection({ onEdit }: GalleryTitleSectionProps) {
+function GalleryTitleSection({ onEdit, galleryName }: GalleryTitleSectionProps) {
   return (
     <GalleryTitleContainer align="center" onClick={onEdit} gap={8}>
-      <MainGalleryText>My Gallery</MainGalleryText>
+      <MainGalleryText>{galleryName || 'Untitled'}</MainGalleryText>
 
       <EditIconContainer>
         <IconContainer
@@ -84,6 +86,7 @@ export function MultiGalleryEditGalleryNavbar({
   onBack,
   onEdit,
   hasUnsavedChanges,
+  galleryName,
 }: Props) {
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
@@ -91,11 +94,15 @@ export function MultiGalleryEditGalleryNavbar({
     <Wrapper>
       <StandardNavbarContainer>
         <NavbarLeftContent>
-          {isMobile ? <GalleryTitleSection onEdit={onEdit} /> : <BackButton onClick={onBack} />}
+          {isMobile ? (
+            <GalleryTitleSection galleryName={galleryName} onEdit={onEdit} />
+          ) : (
+            <BackButton onClick={onBack} />
+          )}
         </NavbarLeftContent>
 
         <NavbarCenterContent>
-          {!isMobile && <GalleryTitleSection onEdit={onEdit} />}
+          {!isMobile && <GalleryTitleSection galleryName={galleryName} onEdit={onEdit} />}
         </NavbarCenterContent>
 
         <NavbarRightContent>

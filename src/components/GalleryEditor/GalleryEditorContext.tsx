@@ -12,6 +12,7 @@ import { graphql, useFragment } from 'react-relay';
 import rfdc from 'rfdc';
 
 import { CollectionCreateOrEditForm } from '~/components/GalleryEditor/CollectionCreateOrEditForm';
+import { GalleryNameAndDescriptionEditForm } from '~/components/GalleryEditor/GalleryNameAndDescriptionEditForm';
 import { getInitialCollectionsFromServer } from '~/components/GalleryEditor/getInitialCollectionsFromServer';
 import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
@@ -28,6 +29,8 @@ import { generate12DigitId } from '~/utils/generate12DigitId';
 const deepClone = rfdc();
 
 export type GalleryEditorContextType = {
+  name: string;
+  description: string;
   collections: CollectionMap;
   setCollections: Dispatch<SetStateAction<CollectionMap>>;
   hiddenCollectionIds: Set<string>;
@@ -40,6 +43,7 @@ export type GalleryEditorContextType = {
   activateCollection: (collectionId: string) => void;
   deleteCollection: (collectionId: string) => void;
   editCollectionNameAndNote: (collectionId: string) => void;
+  editGalleryNameAndDescription: () => void;
   createCollection: () => void;
   toggleCollectionHidden: (collectionId: string) => void;
   collectionIdBeingEdited: string | null;
@@ -131,8 +135,8 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
     }
   `);
 
-  const [name] = useState(() => query.galleryById?.name ?? '');
-  const [description] = useState(() => query.galleryById?.description ?? '');
+  const [name, setName] = useState(() => query.galleryById?.name ?? '');
+  const [description, setDescription] = useState(() => query.galleryById?.description ?? '');
 
   const [collectionIdBeingEdited, setCollectionIdBeingEdited] = useState<string | null>(() => {
     return query.galleryById?.collections?.[0]?.dbid ?? null;
@@ -216,6 +220,23 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
     },
     [collections]
   );
+
+  const editGalleryNameAndDescription = useCallback(() => {
+    showModal({
+      headerText: 'Add a gallery name and description',
+      content: (
+        <GalleryNameAndDescriptionEditForm
+          onDone={(result) => {
+            setName(result.name);
+            setDescription(result.description);
+          }}
+          mode="editing"
+          description={description}
+          name={name}
+        />
+      ),
+    });
+  }, [description, name, showModal]);
 
   const editCollectionNameAndNote = useCallback(
     (collectionId: string) => {
@@ -342,6 +363,8 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
         });
 
         // Make sure we reset our "Has unsaved changes comparison point"
+        setInitialName(name);
+        setInitialDescription(description);
         setInitialCollections(collections);
       } catch (error) {
         console.log(error);
@@ -350,6 +373,8 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
     [collections, deletedCollectionIds, description, name, query.galleryById, reportError, save]
   );
 
+  const [initialName, setInitialName] = useState(name);
+  const [initialDescription, setInitialDescription] = useState(description);
   const [initialCollections, setInitialCollections] = useState(collections);
   const hasUnsavedChanges = useMemo(() => {
     function removeIdsFromCollections(collections: CollectionState[]): CollectionState[] {
@@ -363,10 +388,14 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
       Object.values(initialCollections)
     );
 
-    return (
-      JSON.stringify(currentCollectionsWithoutIds) !== JSON.stringify(initialCollectionsWithoutIds)
-    );
-  }, [collections, initialCollections]);
+    const collectionsAreDifferent =
+      JSON.stringify(currentCollectionsWithoutIds) !== JSON.stringify(initialCollectionsWithoutIds);
+
+    const nameIsDifferent = name !== initialName;
+    const descriptionIsDifferent = description !== initialDescription;
+
+    return collectionsAreDifferent || nameIsDifferent || descriptionIsDifferent;
+  }, [collections, description, initialCollections, initialDescription, initialName, name]);
 
   const validationErrors = useMemo(() => {
     const errors: string[] = [];
@@ -390,6 +419,8 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
 
   const value: GalleryEditorContextType = useMemo(() => {
     return {
+      name,
+      description,
       collections,
       hiddenCollectionIds,
 
@@ -405,8 +436,11 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
       toggleCollectionHidden,
       collectionIdBeingEdited,
       editCollectionNameAndNote,
+      editGalleryNameAndDescription,
     };
   }, [
+    name,
+    description,
     collections,
     hiddenCollectionIds,
     hasUnsavedChanges,
@@ -419,6 +453,7 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
     toggleCollectionHidden,
     collectionIdBeingEdited,
     editCollectionNameAndNote,
+    editGalleryNameAndDescription,
   ]);
 
   return <GalleryEditorContext.Provider value={value}>{children}</GalleryEditorContext.Provider>;

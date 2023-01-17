@@ -48,7 +48,8 @@ export function GalleryEditor({ queryRef }: GalleryEditorProps) {
 
   const canGoBack = useCanGoBack();
   const { replace, back } = useRouter();
-  const { saveGallery, canSave, hasUnsavedChanges } = useGalleryEditorContext();
+  const { saveGallery, canSave, hasUnsavedChanges, editGalleryNameAndDescription, name } =
+    useGalleryEditorContext();
 
   useConfirmationMessageBeforeClose(hasUnsavedChanges);
 
@@ -72,6 +73,10 @@ export function GalleryEditor({ queryRef }: GalleryEditorProps) {
     [saveGallery]
   );
 
+  const handleEdit = useCallback(() => {
+    editGalleryNameAndDescription();
+  }, [editGalleryNameAndDescription]);
+
   const allTokens = useMemo(() => {
     if (query.viewer?.__typename !== 'Viewer') {
       return [];
@@ -85,6 +90,8 @@ export function GalleryEditor({ queryRef }: GalleryEditorProps) {
       withBorder
       navbar={
         <MultiGalleryEditGalleryNavbar
+          onEdit={handleEdit}
+          galleryName={name}
           canSave={canSave}
           hasUnsavedChanges={hasUnsavedChanges}
           onBack={handleBack}
