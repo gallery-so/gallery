@@ -78,6 +78,7 @@ export function CollectionListItem({ collectionId }: CollectionListItemProps) {
     transform: transform ? `translate3d(0, ${transform?.y ?? 0}px, 0)` : 'unset',
     position: 'relative',
     zIndex: isDragging ? 1 : 'unset',
+    cursor: isDragging ? 'grabbing' : 'pointer',
   };
 
   return (
@@ -147,8 +148,6 @@ const CollectionListItemContainer = styled(HStack)<{ selected: boolean }>`
   touch-action: none;
 
   background: ${colors.white};
-
-  cursor: pointer;
 
   ${({ selected }) =>
     selected
