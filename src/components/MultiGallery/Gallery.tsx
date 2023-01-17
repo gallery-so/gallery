@@ -167,14 +167,14 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
   if (!isAuthenticatedUser && hidden) return null;
 
   return (
-    <StyledGalleryWrapper
-      isDragging={isDragging}
-      ref={setNodeRef}
-      style={style}
-      {...attributes}
-      {...listeners}
-    >
-      <StyledGalleryDraggable gap={12} isAuthedUser={isAuthenticatedUser}>
+    <StyledGalleryWrapper isDragging={isDragging} ref={setNodeRef}>
+      <StyledGalleryDraggable
+        gap={12}
+        isAuthedUser={isAuthenticatedUser}
+        style={style}
+        {...attributes}
+        {...listeners}
+      >
         <HStack justify="space-between">
           <StyledGalleryTitleWrapper isHidden={hidden}>
             <UnstyledLink href={galleryLink}>
@@ -235,6 +235,9 @@ const StyledGalleryDraggable = styled(VStack)<{ isAuthedUser: boolean }>`
   cursor: ${({ isAuthedUser }) => (isAuthedUser ? 'grab' : 'default')};
   min-height: 310px;
   height: 100%;
+  border-radius: 12px;
+  background-color: ${colors.offWhite};
+
   &:hover {
     background-color: ${({ isAuthedUser }) => (isAuthedUser ? colors.faint : 'transparent')};
   }
@@ -262,7 +265,7 @@ const StyledGalleryFeaturedText = styled(TitleXS)`
 const StyledTokenPreviewWrapper = styled.div<{ isHidden?: boolean }>`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 4px;
+  gap: 2px;
   opacity: ${({ isHidden }) => (isHidden ? 0.5 : 1)};
 `;
 const StyledTokenPreview = styled.img`
