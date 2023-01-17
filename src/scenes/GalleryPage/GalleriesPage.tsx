@@ -207,7 +207,7 @@ const GalleryWrapper = styled.div`
   gap: 16px;
 
   @media only screen and ${breakpoints.tablet} {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
   @media only screen and ${breakpoints.desktop} {
     grid-template-columns: repeat(4, 1fr);

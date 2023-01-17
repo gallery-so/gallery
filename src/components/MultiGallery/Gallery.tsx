@@ -269,7 +269,10 @@ const StyledTokenPreviewWrapper = styled.div<{ isHidden?: boolean }>`
   opacity: ${({ isHidden }) => (isHidden ? 0.5 : 1)};
 `;
 const StyledTokenPreview = styled.img`
+  height: auto;
   width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
 `;
 
 const StyledGalleryActionsContainer = styled.div`
