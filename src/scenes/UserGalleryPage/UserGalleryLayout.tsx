@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
@@ -11,13 +12,15 @@ import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import EmptyGallery from '~/scenes/UserGalleryPage/EmptyGallery';
 import UserGalleryCollections from '~/scenes/UserGalleryPage/UserGalleryCollections';
 import UserGalleryHeader from '~/scenes/UserGalleryPage/UserGalleryHeader';
+import { removeNullValues } from '~/utils/removeNullValues';
 
 type Props = {
+  galleryId: string;
   userRef: UserGalleryLayoutFragment$key;
   queryRef: UserGalleryLayoutQueryFragment$key;
 };
 
-export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
+export const UserGalleryLayout = ({ galleryId, userRef, queryRef }: Props) => {
   const query = useFragment(
     graphql`
       fragment UserGalleryLayoutQueryFragment on Query {
@@ -35,6 +38,7 @@ export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
             __typename
           }
 
+          dbid
           ...UserGalleryCollectionsFragment
         }
 
@@ -48,7 +52,13 @@ export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
   const showMobileLayoutToggle = Boolean(isMobile && user.galleries?.[0]?.collections?.length);
   const { mobileLayout, setMobileLayout } = useMobileLayout();
 
-  const [gallery] = user.galleries ?? [];
+  const nonNullGalleries = useMemo(() => removeNullValues(user.galleries), [user.galleries]);
+
+  const gallery = nonNullGalleries.find((gallery) => gallery?.dbid === galleryId);
+
+  if (!gallery) {
+    throw new Error('Gallery not found');
+  }
 
   const collectionsView = gallery?.collections ? (
     <UserGalleryCollections queryRef={query} galleryRef={gallery} mobileLayout={mobileLayout} />

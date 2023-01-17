@@ -4,32 +4,25 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { useModalState } from '~/contexts/modal/ModalContext';
-import { UserGalleryFragment$key } from '~/generated/UserGalleryFragment.graphql';
+import { GalleryPageViewFragment$key } from '~/generated/GalleryPageViewFragment.graphql';
 import useKeyDown from '~/hooks/useKeyDown';
 import useDisplayFullPageNftDetailModal from '~/scenes/NftDetailPage/useDisplayFullPageNftDetailModal';
 import NotFound from '~/scenes/NotFound/NotFound';
 import { UserGalleryLayout } from '~/scenes/UserGalleryPage/UserGalleryLayout';
 
 type Props = {
-  queryRef: UserGalleryFragment$key;
+  galleryId: string;
+  queryRef: GalleryPageViewFragment$key;
 };
 
-function UserGallery({ queryRef }: Props) {
+function GalleryPageView({ galleryId, queryRef }: Props) {
   const query = useFragment(
     graphql`
-      fragment UserGalleryFragment on Query {
+      fragment GalleryPageViewFragment on Query {
         viewer {
           ... on Viewer {
             user {
               dbid
-              featuredGallery {
-                dbid
-              }
-            }
-            viewerGalleries {
-              gallery {
-                dbid
-              }
             }
           }
         }
@@ -37,10 +30,6 @@ function UserGallery({ queryRef }: Props) {
         user: userByUsername(username: $username) @required(action: THROW) {
           ... on GalleryUser {
             __typename
-
-            featuredGallery {
-              dbid
-            }
 
             ...UserGalleryLayoutFragment
           }
@@ -57,14 +46,6 @@ function UserGallery({ queryRef }: Props) {
 
   const { user } = query;
   const { push } = useRouter();
-
-  // If the user has a featured gallery, use that. Otherwise, use the first gallery in the list.
-  const galleryId =
-    query.viewer?.user?.featuredGallery?.dbid || query.viewer?.viewerGalleries?.[0]?.gallery?.dbid;
-
-  if (!galleryId) {
-    throw new Error('No galleryId found');
-  }
 
   const loggedInUserId = query.viewer?.user?.dbid;
   const isLoggedIn = Boolean(loggedInUserId);
@@ -92,4 +73,4 @@ function UserGallery({ queryRef }: Props) {
   return <UserGalleryLayout galleryId={galleryId} userRef={user} queryRef={query} />;
 }
 
-export default UserGallery;
+export default GalleryPageView;
