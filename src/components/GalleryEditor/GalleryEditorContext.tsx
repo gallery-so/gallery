@@ -39,7 +39,7 @@ export type GalleryEditorContextType = {
   saveGallery: (caption: string) => void;
   activateCollection: (collectionId: string) => void;
   deleteCollection: (collectionId: string) => void;
-  editCollectionNameAndNote: () => void;
+  editCollectionNameAndNote: (collectionId: string) => void;
   createCollection: () => void;
   toggleCollectionHidden: (collectionId: string) => void;
   collectionIdBeingEdited: string | null;
@@ -217,41 +217,44 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
     [collections]
   );
 
-  const editCollectionNameAndNote = useCallback(() => {
-    if (!collectionIdBeingEdited) {
-      return null;
-    }
+  const editCollectionNameAndNote = useCallback(
+    (collectionId: string) => {
+      if (!collectionIdBeingEdited) {
+        return null;
+      }
 
-    const collection = collections[collectionIdBeingEdited];
+      const collection = collections[collectionId];
 
-    showModal({
-      headerText: 'Add a tile and description',
-      content: (
-        <CollectionCreateOrEditForm
-          name={collection.name}
-          collectorsNote={collection.collectorsNote}
-          onDone={({ name, collectorsNote }) => {
-            if (!collectionIdBeingEdited) {
-              return;
-            }
+      showModal({
+        headerText: 'Add a tile and description',
+        content: (
+          <CollectionCreateOrEditForm
+            name={collection.name}
+            collectorsNote={collection.collectorsNote}
+            onDone={({ name, collectorsNote }) => {
+              if (!collectionIdBeingEdited) {
+                return;
+              }
 
-            setCollections((previous) => {
-              const next = { ...previous };
+              setCollections((previous) => {
+                const next = { ...previous };
 
-              next[collectionIdBeingEdited] = {
-                ...next[collectionIdBeingEdited],
-                name,
-                collectorsNote,
-              };
+                next[collectionIdBeingEdited] = {
+                  ...next[collectionIdBeingEdited],
+                  name,
+                  collectorsNote,
+                };
 
-              return next;
-            });
-          }}
-          mode={'editing'}
-        />
-      ),
-    });
-  }, [collectionIdBeingEdited, collections, showModal]);
+                return next;
+              });
+            }}
+            mode={'editing'}
+          />
+        ),
+      });
+    },
+    [collectionIdBeingEdited, collections, showModal]
+  );
 
   const reportError = useReportError();
   const saveGallery = useCallback(

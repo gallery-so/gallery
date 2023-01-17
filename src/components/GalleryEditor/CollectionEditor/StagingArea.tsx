@@ -73,7 +73,7 @@ function StagingArea({ tokensRef }: Props) {
     tokensRef
   );
 
-  const { editCollectionNameAndNote } = useGalleryEditorContext();
+  const { editCollectionNameAndNote, collectionIdBeingEdited } = useGalleryEditorContext();
   const {
     name,
     sections,
@@ -135,6 +135,12 @@ function StagingArea({ tokensRef }: Props) {
     },
     [localSections, updateSections]
   );
+
+  const handleEditNameAndDescription = useCallback(() => {
+    if (collectionIdBeingEdited) {
+      editCollectionNameAndNote(collectionIdBeingEdited);
+    }
+  }, [collectionIdBeingEdited, editCollectionNameAndNote]);
 
   // flatten the collection into a single array of items to easily find the active item
   const allItemsInCollection = useMemo(
@@ -199,7 +205,7 @@ function StagingArea({ tokensRef }: Props) {
     <StyledStagingArea gap={20} align="center">
       <CollectionNameAndDescriptionContainer justify="start" align="center">
         <CollectionNameAndDescriptionBackground
-          onClick={editCollectionNameAndNote}
+          onClick={handleEditNameAndDescription}
           align="center"
           gap={48}
         >
