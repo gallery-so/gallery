@@ -63,7 +63,6 @@ export default function GlobalFeed({ queryRef }: Props) {
 
   return (
     <FeedList
-      data-testid="feed-list"
       queryRef={query}
       feedEventRefs={feedData}
       loadNextPage={loadNextPage}
