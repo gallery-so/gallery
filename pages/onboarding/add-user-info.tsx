@@ -83,7 +83,7 @@ function AddUserInfo() {
     } else {
       push({ pathname: '/onboarding/create' });
     }
-  }, [isMultigalleryEnabled, push, query.viewer?.viewerGalleries, urlQuery]);
+  }, [isMultigalleryEnabled, push, relayEnvironment, urlQuery]);
 
   const {
     bio,

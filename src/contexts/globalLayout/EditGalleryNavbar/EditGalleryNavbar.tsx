@@ -2,7 +2,6 @@ import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import colors from '~/components/core/colors';
-import IconContainer from '~/components/core/IconContainer';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BODY_FONT_FAMILY, Paragraph, TitleDiatypeM } from '~/components/core/Text/Text';
 import { GalleryTitleSection } from '~/contexts/globalLayout/EditGalleryNavbar/GalleryTitleSection';
@@ -15,7 +14,6 @@ import {
   StandardNavbarContainer,
 } from '~/contexts/globalLayout/GlobalNavbar/StandardNavbarContainer';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
-import { EditPencilIcon } from '~/icons/EditPencilIcon';
 
 type Props = {
   canSave: boolean;
