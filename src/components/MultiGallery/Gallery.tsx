@@ -200,26 +200,27 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
   return (
     <StyledGalleryWrapper isDragging={isDragging} ref={setNodeRef}>
       <StyledGalleryDraggable
+        ref={setNodeRef}
         gap={12}
         isAuthedUser={isAuthenticatedUser}
         style={style}
         {...attributes}
         {...listeners}
       >
-        <HStack justify="space-between">
-          <StyledGalleryTitleWrapper isHidden={hidden}>
-            <UnstyledLink href={galleryLink}>
-              <StyledGalleryTitle>{name || 'Untitled'}</StyledGalleryTitle>
-            </UnstyledLink>
-            <BaseM>{collections.length} collections</BaseM>
-          </StyledGalleryTitleWrapper>
-        </HStack>
         <StyledTokenPreviewWrapper isHidden={hidden}>
           {nonNullTokenPreviews.map((token) => (
             <StyledTokenPreview key={token} src={token} />
           ))}
         </StyledTokenPreviewWrapper>
       </StyledGalleryDraggable>
+      <StyledGalleryTitleContainer justify="space-between">
+        <StyledGalleryTitleWrapper isHidden={hidden}>
+          <UnstyledLink href={galleryLink}>
+            <StyledGalleryTitle tabIndex={1}>{name || 'Untitled'}</StyledGalleryTitle>
+          </UnstyledLink>
+          <BaseM>{collections.length} collections</BaseM>
+        </StyledGalleryTitleWrapper>
+      </StyledGalleryTitleContainer>
       <StyledGalleryActionsContainer>
         <HStack gap={8} align="center">
           {isFeatured && <StyledGalleryFeaturedText as="span">Featured</StyledGalleryFeaturedText>}
@@ -259,18 +260,21 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
 const StyledGalleryWrapper = styled.div<{ isDragging?: boolean }>`
   position: relative;
   opacity: ${({ isDragging }) => (isDragging ? 0.5 : 1)};
+  height: 100%;
+  max-width: 520px;
 `;
 
 const StyledGalleryDraggable = styled(VStack)<{ isAuthedUser: boolean }>`
-  padding: 12px;
+  /* text height + padding 12px vertically */
+  padding: calc(40px + 12px + 12px) 12px 12px;
   cursor: ${({ isAuthedUser }) => (isAuthedUser ? 'grab' : 'default')};
-  min-height: 350px;
+  min-height: 400px;
   height: 100%;
   border-radius: 12px;
   background-color: ${colors.offWhite};
 
   &:hover {
-    background-color: ${({ isAuthedUser }) => (isAuthedUser ? colors.faint : colors.offWhite)};
+    background-color: ${colors.faint};
   }
 `;
 
@@ -304,6 +308,12 @@ const StyledTokenPreview = styled.img`
   width: 100%;
   aspect-ratio: 1 / 1;
   object-fit: cover;
+`;
+
+const StyledGalleryTitleContainer = styled(HStack)`
+  position: absolute;
+  top: 12px;
+  left: 12px;
 `;
 
 const StyledGalleryActionsContainer = styled.div`
