@@ -33,6 +33,8 @@ type Props = {
   queryRef: GalleryFragmentQuery$key;
 };
 
+const TOTAL_TOKENS = 4;
+
 export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Props) {
   const gallery = useFragment(
     graphql`
@@ -186,6 +188,8 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
 
   const nonNullTokenPreviews = removeNullValues(tokenPreviews) ?? [];
 
+  const remainingTokenPreviews = TOTAL_TOKENS - nonNullTokenPreviews.length;
+
   if (!isAuthenticatedUser && hidden) return null;
 
   const galleryView = (
@@ -200,6 +204,9 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
         <StyledTokenPreviewWrapper isHidden={hidden}>
           {nonNullTokenPreviews.map((token) => (
             <StyledTokenPreview key={token} src={token} />
+          ))}
+          {[...Array(remainingTokenPreviews).keys()].map((index) => (
+            <StyledEmptyTokenPreview key={index} />
           ))}
         </StyledTokenPreviewWrapper>
       </StyledGalleryDraggable>
@@ -257,14 +264,12 @@ const StyledGalleryWrapper = styled.div<{ isDragging?: boolean }>`
   position: relative;
   opacity: ${({ isDragging }) => (isDragging ? 0.5 : 1)};
   height: 100%;
-  max-width: 520px;
 `;
 
 const StyledGalleryDraggable = styled(VStack)<{ isAuthedUser: boolean }>`
   /* text height + padding 12px vertically */
   padding: calc(40px + 12px + 12px) 12px 12px;
   cursor: ${({ isAuthedUser }) => (isAuthedUser ? 'grab' : 'pointer')};
-  min-height: 400px;
   height: 100%;
   border-radius: 12px;
   background-color: ${colors.offWhite};
@@ -304,6 +309,12 @@ const StyledTokenPreview = styled.img`
   width: 100%;
   aspect-ratio: 1 / 1;
   object-fit: cover;
+`;
+
+const StyledEmptyTokenPreview = styled.div`
+  height: 100%;
+  width: 100%;
+  aspect-ratio: 1 / 1;
 `;
 
 const StyledGalleryTitleContainer = styled(HStack)`
