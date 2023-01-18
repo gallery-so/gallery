@@ -182,7 +182,7 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
   const handleEditGalleryName = useCallback(() => {
     showModal({
       content: <GalleryNameAndDescriptionModal galleryRef={gallery} onNext={hideModal} />,
-      headerText: 'Name and descripton of your gallery',
+      headerText: 'Add a gallery name and description',
     });
   }, [hideModal, gallery, showModal]);
 
