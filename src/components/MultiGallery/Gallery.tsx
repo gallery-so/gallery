@@ -22,8 +22,8 @@ import { UnstyledLink } from '../core/Link/UnstyledLink';
 import IconContainer from '../core/Markdown/IconContainer';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM, TitleS, TitleXS } from '../core/Text/Text';
+import DeleteGalleryConfirmation from './DeleteGalleryConfirmation';
 import GalleryNameAndDescriptionModal from './GalleryNameAndDescriptionModal';
-import useDeleteGallery from './useDeleteGallery';
 import useSetFeaturedGallery from './useSetFeaturedGallery';
 import useUpdateGalleryHidden from './useUpdateGalleryHidden';
 
@@ -49,6 +49,7 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
           id
           username @required(action: THROW)
         }
+        ...DeleteGalleryConfirmationFragment
         ...GalleryNameAndDescriptionModalFragment
       }
     `,
@@ -101,7 +102,6 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
 
   const setFeaturedGallery = useSetFeaturedGallery();
   const updateGalleryHidden = useUpdateGalleryHidden();
-  const deleteGallery = useDeleteGallery();
 
   const { showModal, hideModal } = useModalActions();
 
@@ -158,26 +158,17 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
 
   const handleDeleteGallery = useCallback(() => {
     const isLastGallery = checkIfItsLastVisibleGallery();
-
-    if (isLastGallery && !hidden) {
-      pushToast({
-        message: 'You cannot delete your only gallery.',
-      });
-      return;
-    }
-
-    deleteGallery(dbid);
-
-    // if delete featured gallery, set another gallery as featured
-    reassignFeaturedGallery();
-  }, [
-    checkIfItsLastVisibleGallery,
-    dbid,
-    deleteGallery,
-    hidden,
-    pushToast,
-    reassignFeaturedGallery,
-  ]);
+    showModal({
+      content: (
+        <DeleteGalleryConfirmation
+          galleryRef={gallery}
+          isLastGallery={isLastGallery}
+          onSuccess={reassignFeaturedGallery}
+        />
+      ),
+      isFullPage: false,
+    });
+  }, [checkIfItsLastVisibleGallery, gallery, reassignFeaturedGallery, showModal]);
 
   const handleEditGalleryName = useCallback(() => {
     showModal({
