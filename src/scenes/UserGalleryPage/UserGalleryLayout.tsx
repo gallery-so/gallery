@@ -9,15 +9,15 @@ import { UserGalleryLayoutQueryFragment$key } from '~/generated/UserGalleryLayou
 import useMobileLayout from '~/hooks/useMobileLayout';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import EmptyGallery from '~/scenes/UserGalleryPage/EmptyGallery';
+import GalleryNameDescriptionHeader from '~/scenes/UserGalleryPage/GalleryNameDescriptionHeader';
 import UserGalleryCollections from '~/scenes/UserGalleryPage/UserGalleryCollections';
-import UserGalleryHeader from '~/scenes/UserGalleryPage/UserGalleryHeader';
 
 type Props = {
-  userRef: UserGalleryLayoutFragment$key;
+  galleryRef: UserGalleryLayoutFragment$key;
   queryRef: UserGalleryLayoutQueryFragment$key;
 };
 
-export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
+export const UserGalleryLayout = ({ galleryRef, queryRef }: Props) => {
   const query = useFragment(
     graphql`
       fragment UserGalleryLayoutQueryFragment on Query {
@@ -27,28 +27,23 @@ export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
     queryRef
   );
 
-  const user = useFragment(
+  const gallery = useFragment(
     graphql`
-      fragment UserGalleryLayoutFragment on GalleryUser {
-        galleries {
-          collections {
-            __typename
-          }
-
-          ...UserGalleryCollectionsFragment
+      fragment UserGalleryLayoutFragment on Gallery {
+        collections {
+          __typename
         }
 
         ...UserGalleryHeaderFragment
+        ...UserGalleryCollectionsFragment
       }
     `,
-    userRef
+    galleryRef
   );
 
   const isMobile = useIsMobileWindowWidth();
-  const showMobileLayoutToggle = Boolean(isMobile && user.galleries?.[0]?.collections?.length);
+  const showMobileLayoutToggle = Boolean(isMobile && gallery.collections?.length);
   const { mobileLayout, setMobileLayout } = useMobileLayout();
-
-  const [gallery] = user.galleries ?? [];
 
   const collectionsView = gallery?.collections ? (
     <UserGalleryCollections queryRef={query} galleryRef={gallery} mobileLayout={mobileLayout} />
@@ -58,8 +53,8 @@ export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
 
   return (
     <StyledUserGalleryLayout>
-      <UserGalleryHeader
-        userRef={user}
+      <GalleryNameDescriptionHeader
+        galleryRef={gallery}
         showMobileLayoutToggle={showMobileLayoutToggle}
         mobileLayout={mobileLayout}
         setMobileLayout={setMobileLayout}

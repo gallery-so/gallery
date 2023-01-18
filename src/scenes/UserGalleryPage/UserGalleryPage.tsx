@@ -53,8 +53,6 @@ export const StyledUserGalleryPage = styled.div<{ navbarHeight: number }>`
   padding-top: ${({ navbarHeight }) => navbarHeight}px;
   min-height: 100vh;
 
-  display: flex;
-  justify-content: center;
   margin: 0 ${pageGutter.mobile}px 24px;
 
   @media only screen and ${breakpoints.tablet} {

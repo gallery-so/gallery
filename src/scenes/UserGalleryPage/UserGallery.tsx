@@ -35,7 +35,9 @@ function UserGallery({ queryRef }: Props) {
           ... on GalleryUser {
             __typename
 
-            ...UserGalleryLayoutFragment
+            featuredGallery @required(action: THROW) {
+              ...UserGalleryLayoutFragment
+            }
           }
           ... on ErrUserNotFound {
             __typename
@@ -76,7 +78,7 @@ function UserGallery({ queryRef }: Props) {
     throw new Error(`Expected user to be type GalleryUser. Received: ${user.__typename}`);
   }
 
-  return <UserGalleryLayout userRef={user} queryRef={query} />;
+  return <UserGalleryLayout galleryRef={user.featuredGallery} queryRef={query} />;
 }
 
 export default UserGallery;
