@@ -34,7 +34,7 @@ export const UserGalleryLayout = ({ galleryRef, queryRef }: Props) => {
           __typename
         }
 
-        ...UserGalleryHeaderFragment
+        ...GalleryNameDescriptionHeaderFragment
         ...UserGalleryCollectionsFragment
       }
     `,
@@ -59,7 +59,7 @@ export const UserGalleryLayout = ({ galleryRef, queryRef }: Props) => {
         mobileLayout={mobileLayout}
         setMobileLayout={setMobileLayout}
       />
-      <VStack gap={32} align="center" justify="center" grow>
+      <VStack gap={32} align="center" grow>
         {collectionsView}
       </VStack>
     </StyledUserGalleryLayout>
@@ -68,10 +68,5 @@ export const UserGalleryLayout = ({ galleryRef, queryRef }: Props) => {
 
 export const StyledUserGalleryLayout = styled(VStack)`
   width: 100%;
-  max-width: 1200px;
-  padding: 16px 0 32px;
-
-  @media only screen and ${breakpoints.tablet} {
-    padding: 32px 0 32px;
-  }
+  padding-bottom: 32px;
 `;
