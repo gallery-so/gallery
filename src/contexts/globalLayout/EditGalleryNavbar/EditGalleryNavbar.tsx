@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import breakpoints from '~/components/core/breakpoints';
 import colors from '~/components/core/colors';
 import { HStack } from '~/components/core/Spacer/Stack';
-import { BODY_FONT_FAMILY, Paragraph, TitleDiatypeM } from '~/components/core/Text/Text';
+import { TitleDiatypeM } from '~/components/core/Text/Text';
 import { GalleryTitleSection } from '~/contexts/globalLayout/EditGalleryNavbar/GalleryTitleSection';
 import { BackButton } from '~/contexts/globalLayout/GlobalNavbar/BackButton';
 import { CollectionSaveButtonWithCaption } from '~/contexts/globalLayout/GlobalNavbar/CollectionSaveButtonWithCaption';
@@ -74,20 +74,5 @@ const Wrapper = styled.div`
 
   @media only screen and ${breakpoints.tablet} {
     border: none;
-  }
-`;
-
-export const MainGalleryText = styled(Paragraph)`
-  font-family: ${BODY_FONT_FAMILY};
-  font-style: normal;
-  font-weight: 500;
-  line-height: 21px;
-  letter-spacing: -0.04em;
-  white-space: nowrap;
-
-  font-size: 16px;
-
-  @media only screen and ${breakpoints.tablet} {
-    font-size: 18px;
   }
 `;

@@ -1,9 +1,10 @@
 import styled from 'styled-components';
 
+import breakpoints from '~/components/core/breakpoints';
 import colors from '~/components/core/colors';
 import IconContainer from '~/components/core/IconContainer';
 import { HStack } from '~/components/core/Spacer/Stack';
-import { MainGalleryText } from '~/contexts/globalLayout/EditGalleryNavbar/OnboardingEditGalleryNavbar';
+import { BODY_FONT_FAMILY, Paragraph } from '~/components/core/Text/Text';
 import { EditPencilIcon } from '~/icons/EditPencilIcon';
 
 type GalleryTitleSectionProps = {
@@ -39,5 +40,20 @@ const GalleryTitleContainer = styled(HStack)`
     ${EditIconContainer} {
       opacity: 1;
     }
+  }
+`;
+
+const MainGalleryText = styled(Paragraph)`
+  font-family: ${BODY_FONT_FAMILY};
+  font-style: normal;
+  font-weight: 500;
+  line-height: 21px;
+  letter-spacing: -0.04em;
+  white-space: nowrap;
+
+  font-size: 16px;
+
+  @media only screen and ${breakpoints.tablet} {
+    font-size: 18px;
   }
 `;
