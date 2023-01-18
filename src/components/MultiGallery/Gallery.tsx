@@ -198,62 +198,65 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
   if (!isAuthenticatedUser && hidden) return null;
 
   return (
-    <StyledGalleryWrapper isDragging={isDragging} ref={setNodeRef}>
-      <StyledGalleryDraggable
-        ref={setNodeRef}
-        gap={12}
-        isAuthedUser={isAuthenticatedUser}
-        style={style}
-        {...attributes}
-        {...listeners}
-      >
-        <StyledTokenPreviewWrapper isHidden={hidden}>
-          {nonNullTokenPreviews.map((token) => (
-            <StyledTokenPreview key={token} src={token} />
-          ))}
-        </StyledTokenPreviewWrapper>
-      </StyledGalleryDraggable>
-      <StyledGalleryTitleContainer justify="space-between">
-        <StyledGalleryTitleWrapper isHidden={hidden}>
-          <UnstyledLink href={galleryLink}>
-            <StyledGalleryTitle tabIndex={1}>{name || 'Untitled'}</StyledGalleryTitle>
-          </UnstyledLink>
-          <BaseM>{collections.length} collections</BaseM>
-        </StyledGalleryTitleWrapper>
-      </StyledGalleryTitleContainer>
-      <StyledGalleryActionsContainer>
-        <HStack gap={8} align="center">
-          {isFeatured && <StyledGalleryFeaturedText as="span">Featured</StyledGalleryFeaturedText>}
-          {isAuthenticatedUser && (
-            <>
-              <Link href={handleEditGallery}>
-                <a>
-                  <IconContainer size="md" icon={<PencilIcon />} />
-                </a>
-              </Link>
-              <SettingsDropdown>
-                <DropdownSection>
-                  <DropdownItem onClick={handleEditGalleryName}>EDIT NAME & DESC</DropdownItem>
-                  {hidden ? (
-                    <DropdownItem onClick={handleUpdateGalleryHidden}>UNHIDE</DropdownItem>
-                  ) : (
-                    <>
-                      {!isFeatured && (
-                        <DropdownItem onClick={handleSetFeaturedGallery}>
-                          FEATURE ON PROFILE
-                        </DropdownItem>
-                      )}
-                      <DropdownItem onClick={handleUpdateGalleryHidden}>HIDE</DropdownItem>
-                    </>
-                  )}
-                  <DropdownItem onClick={handleDeleteGallery}>DELETE</DropdownItem>
-                </DropdownSection>
-              </SettingsDropdown>
-            </>
-          )}
-        </HStack>
-      </StyledGalleryActionsContainer>
-    </StyledGalleryWrapper>
+    <UnstyledLink href={galleryLink}>
+      <StyledGalleryWrapper isDragging={isDragging} ref={setNodeRef}>
+        <StyledGalleryDraggable
+          gap={12}
+          isAuthedUser={isAuthenticatedUser}
+          style={style}
+          {...attributes}
+          {...listeners}
+        >
+          <StyledTokenPreviewWrapper isHidden={hidden}>
+            {nonNullTokenPreviews.map((token) => (
+              <StyledTokenPreview key={token} src={token} />
+            ))}
+          </StyledTokenPreviewWrapper>
+        </StyledGalleryDraggable>
+        <StyledGalleryTitleContainer justify="space-between">
+          <StyledGalleryTitleWrapper isHidden={hidden}>
+            <UnstyledLink href={galleryLink}>
+              <StyledGalleryTitle tabIndex={1}>{name || 'Untitled'}</StyledGalleryTitle>
+            </UnstyledLink>
+            <BaseM>{collections.length} collections</BaseM>
+          </StyledGalleryTitleWrapper>
+        </StyledGalleryTitleContainer>
+        <StyledGalleryActionsContainer>
+          <HStack gap={8} align="center">
+            {isFeatured && (
+              <StyledGalleryFeaturedText as="span">Featured</StyledGalleryFeaturedText>
+            )}
+            {isAuthenticatedUser && (
+              <>
+                <Link href={handleEditGallery}>
+                  <a>
+                    <IconContainer size="md" icon={<PencilIcon />} />
+                  </a>
+                </Link>
+                <SettingsDropdown>
+                  <DropdownSection>
+                    <DropdownItem onClick={handleEditGalleryName}>EDIT NAME & DESC</DropdownItem>
+                    {hidden ? (
+                      <DropdownItem onClick={handleUpdateGalleryHidden}>UNHIDE</DropdownItem>
+                    ) : (
+                      <>
+                        {!isFeatured && (
+                          <DropdownItem onClick={handleSetFeaturedGallery}>
+                            FEATURE ON PROFILE
+                          </DropdownItem>
+                        )}
+                        <DropdownItem onClick={handleUpdateGalleryHidden}>HIDE</DropdownItem>
+                      </>
+                    )}
+                    <DropdownItem onClick={handleDeleteGallery}>DELETE</DropdownItem>
+                  </DropdownSection>
+                </SettingsDropdown>
+              </>
+            )}
+          </HStack>
+        </StyledGalleryActionsContainer>
+      </StyledGalleryWrapper>
+    </UnstyledLink>
   );
 }
 
@@ -267,7 +270,7 @@ const StyledGalleryWrapper = styled.div<{ isDragging?: boolean }>`
 const StyledGalleryDraggable = styled(VStack)<{ isAuthedUser: boolean }>`
   /* text height + padding 12px vertically */
   padding: calc(40px + 12px + 12px) 12px 12px;
-  cursor: ${({ isAuthedUser }) => (isAuthedUser ? 'grab' : 'default')};
+  cursor: ${({ isAuthedUser }) => (isAuthedUser ? 'grab' : 'pointer')};
   min-height: 400px;
   height: 100%;
   border-radius: 12px;
