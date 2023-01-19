@@ -20,6 +20,7 @@ import CollectionCreatedFeedEvent from './Events/CollectionCreatedFeedEvent';
 import CollectionUpdatedFeedEvent from './Events/CollectionUpdatedFeedEvent';
 import CollectorsNoteAddedToCollectionFeedEvent from './Events/CollectorsNoteAddedToCollectionFeedEvent';
 import CollectorsNoteAddedToTokenFeedEvent from './Events/CollectorsNoteAddedToTokenFeedEvent';
+import GalleryUpdatedFeedEvent from './Events/GalleryUpdatedFeedEvent';
 import TokensAddedToCollectionFeedEvent from './Events/TokensAddedToCollectionFeedEvent';
 import UserFollowedUsersFeedEvent from './Events/UserFollowedUsersFeedEvent';
 import { FeedMode } from './Feed';
@@ -60,6 +61,10 @@ function FeedEvent({ eventRef, queryRef, feedMode }: FeedEventProps) {
           ... on CollectionUpdatedFeedEventData {
             ...CollectionUpdatedFeedEventFragment
           }
+
+          ... on GalleryUpdatedFeedEventData {
+            ...GalleryUpdatedFeedEventFragment
+          }
         }
       }
     `,
@@ -75,6 +80,7 @@ function FeedEvent({ eventRef, queryRef, feedMode }: FeedEventProps) {
         ...CollectionCreatedFeedEventQueryFragment
         ...CollectorsNoteAddedToTokenFeedEventQueryFragment
         ...CollectionUpdatedFeedEventQueryFragment
+        ...GalleryUpdatedFeedEventQueryFragment
       }
     `,
     queryRef
@@ -115,6 +121,8 @@ function FeedEvent({ eventRef, queryRef, feedMode }: FeedEventProps) {
           feedMode={feedMode}
         />
       );
+    case 'GalleryUpdatedFeedEventData':
+      return <GalleryUpdatedFeedEvent eventRef={event.eventData} queryRef={query} />;
 
     // These event types are returned by the backend but are not currently spec'd to be displayed
     // case 'UserCreatedFeedEventData':
