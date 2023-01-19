@@ -41,7 +41,7 @@ export type GalleryEditorContextType = {
   validationErrors: string[];
   canSave: boolean;
 
-  saveGallery: (caption: string) => void;
+  saveGallery: (caption: string | null) => void;
   activateCollection: (collectionId: string) => void;
   deleteCollection: (collectionId: string) => void;
   editCollectionNameAndNote: (collectionId: string) => void;
@@ -282,7 +282,7 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
 
   const reportError = useReportError();
   const saveGallery = useCallback(
-    async (caption: string) => {
+    async (caption: string | null) => {
       const galleryId = query.galleryById.dbid;
 
       if (!galleryId) {

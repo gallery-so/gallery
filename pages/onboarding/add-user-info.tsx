@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { useCallback } from 'react';
-import { useLazyLoadQuery } from 'react-relay';
-import { graphql } from 'relay-runtime';
+import { useLazyLoadQuery, useRelayEnvironment } from 'react-relay';
+import { fetchQuery, graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';
@@ -12,8 +12,10 @@ import { OnboardingFooter } from '~/components/Onboarding/OnboardingFooter';
 import UserInfoForm from '~/components/Profile/UserInfoForm';
 import useUserInfoForm from '~/components/Profile/useUserInfoForm';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
+import { addUserInfoFetchGalleryIdQuery } from '~/generated/addUserInfoFetchGalleryIdQuery.graphql';
 import { addUserInfoQuery } from '~/generated/addUserInfoQuery.graphql';
 import useSyncTokens from '~/hooks/api/tokens/useSyncTokens';
+import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 import noop from '~/utils/noop';
 
 function AddUserInfo() {
@@ -29,14 +31,19 @@ function AddUserInfo() {
             }
           }
         }
+
+        ...isFeatureEnabledFragment
       }
     `,
     {}
   );
 
-  const { push, back, query: urlQuery } = useRouter();
+  const isMultigalleryEnabled = isFeatureEnabled(FeatureFlag.MULTIGALLERY, query);
 
-  const handleFormSuccess = useCallback(() => {
+  const { push, back, query: urlQuery } = useRouter();
+  const relayEnvironment = useRelayEnvironment();
+
+  const handleFormSuccess = useCallback(async () => {
     // After we've created an account, we can remove these
     // params from the URL since we won't need them
     // and it looks better if the URL is clean
@@ -48,8 +55,35 @@ function AddUserInfo() {
     delete nextParams.authMechanism;
     delete nextParams.userFriendlyWalletName;
 
-    push({ pathname: '/onboarding/create' });
-  }, [push, urlQuery]);
+    if (isMultigalleryEnabled) {
+      const query = await fetchQuery<addUserInfoFetchGalleryIdQuery>(
+        relayEnvironment,
+        graphql`
+          query addUserInfoFetchGalleryIdQuery {
+            viewer {
+              ... on Viewer {
+                viewerGalleries {
+                  gallery {
+                    dbid
+                  }
+                }
+              }
+            }
+          }
+        `,
+        {},
+        { fetchPolicy: 'network-only' }
+      ).toPromise();
+
+      const galleryId = query?.viewer?.viewerGalleries?.[0]?.gallery?.dbid;
+
+      if (galleryId) {
+        push({ pathname: '/onboarding/edit-gallery', query: { galleryId } });
+      }
+    } else {
+      push({ pathname: '/onboarding/create' });
+    }
+  }, [isMultigalleryEnabled, push, relayEnvironment, urlQuery]);
 
   const {
     bio,

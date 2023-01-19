@@ -205,44 +205,46 @@ function StagingArea({ tokensRef }: Props) {
   const hasNameOrCollectorsNote = name || collectorsNote;
   return (
     <StyledStagingArea gap={20} align="center">
-      <CollectionNameAndDescriptionContainer justify="start" align="center">
-        <CollectionNameAndDescriptionBackground
-          onClick={handleEditNameAndDescription}
-          align="center"
-          gap={48}
-        >
-          {hasNameOrCollectorsNote ? (
-            <VStack>
-              <TitleDiatypeM>{escapedCollectionName || 'Untitled'}</TitleDiatypeM>
-              <BaseM>{collectorsNote}</BaseM>
-            </VStack>
-          ) : (
-            <BaseM color={colors.metal}>Add title and description</BaseM>
-          )}
+      {collectionIdBeingEdited && (
+        <CollectionNameAndDescriptionContainer justify="start" align="center">
+          <CollectionNameAndDescriptionBackground
+            onClick={handleEditNameAndDescription}
+            align="center"
+            gap={48}
+          >
+            {hasNameOrCollectorsNote ? (
+              <VStack>
+                <TitleDiatypeM>{escapedCollectionName || 'Untitled'}</TitleDiatypeM>
+                <BaseM>{collectorsNote}</BaseM>
+              </VStack>
+            ) : (
+              <BaseM color={colors.metal}>Add title and description</BaseM>
+            )}
 
-          <EditIconContainer>
-            <IconContainer
-              size="sm"
-              variant="stacked"
-              icon={
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 14 14"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M1 13L1.66667 10L10.6667 1H11.3333L13 2.66667V3.33333L4 12.3333L1 13Z"
-                    stroke="currentColor"
-                    strokeMiterlimit="10"
-                  />
-                </svg>
-              }
-            />
-          </EditIconContainer>
-        </CollectionNameAndDescriptionBackground>
-      </CollectionNameAndDescriptionContainer>
+            <EditIconContainer>
+              <IconContainer
+                size="sm"
+                variant="stacked"
+                icon={
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 14 14"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M1 13L1.66667 10L10.6667 1H11.3333L13 2.66667V3.33333L4 12.3333L1 13Z"
+                      stroke="currentColor"
+                      strokeMiterlimit="10"
+                    />
+                  </svg>
+                }
+              />
+            </EditIconContainer>
+          </CollectionNameAndDescriptionBackground>
+        </CollectionNameAndDescriptionContainer>
+      )}
 
       <SectionList>
         <DndContext
