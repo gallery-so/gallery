@@ -3,6 +3,7 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import breakpoints, { pageGutter } from '~/components/core/breakpoints';
+import Featured from '~/components/Featured/Featured';
 import Feed, { FeedMode } from '~/components/Feed/Feed';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { HomeFragment$key } from '~/generated/HomeFragment.graphql';
@@ -18,10 +19,20 @@ export default function Home({ queryRef, setFeedMode, feedMode }: Props) {
     graphql`
       fragment HomeFragment on Query {
         ...FeedViewerFragment
+        ...FeaturedFragment
       }
     `,
     queryRef
   );
+
+  // const query = useFragment(
+  //   graphql`
+  //     fragment HomeFragment on Query {
+  //       ...FeaturedFragment
+  //     }
+  //   `,
+  //   queryRef
+  // );
 
   const navbarHeight = useGlobalNavbarHeight();
 
@@ -31,7 +42,8 @@ export default function Home({ queryRef, setFeedMode, feedMode }: Props) {
         <title>Gallery - Home</title>
       </Head>
       <StyledPage navbarHeight={navbarHeight}>
-        <Feed feedMode={feedMode} setFeedMode={setFeedMode} queryRef={query} />
+        {/* <Feed feedMode={feedMode} setFeedMode={setFeedMode} queryRef={query} /> */}
+        <Featured queryRef={query} />
       </StyledPage>
     </>
   );
@@ -56,7 +68,8 @@ const StyledPage = styled.div<{ navbarHeight: number }>`
   }
 
   @media only screen and ${breakpoints.desktop} {
-    max-width: 1200px;
+    // max-width: 1200px;
+    max-width: 1336px;
     margin: 0 auto;
     padding: ${({ navbarHeight }) => navbarHeight}px 32px 0;
   }

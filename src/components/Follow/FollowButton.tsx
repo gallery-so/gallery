@@ -18,9 +18,10 @@ import useUnfollowUser from './mutations/useUnfollowUser';
 type Props = {
   queryRef: FollowButtonQueryFragment$key;
   userRef: FollowButtonUserFragment$key;
+  className?: string;
 };
 
-export default function FollowButton({ queryRef, userRef }: Props) {
+export default function FollowButton({ queryRef, userRef, className }: Props) {
   const loggedInUserQuery = useFragment(
     graphql`
       fragment FollowButtonQueryFragment on Query {
@@ -100,18 +101,24 @@ export default function FollowButton({ queryRef, userRef }: Props) {
       return (
         // return following & hover show unfollow
         <FollowingChipContainer>
-          <FollowingChip>Following</FollowingChip>
+          <FollowingChip className={className}>Following</FollowingChip>
 
           <UnfollowChipContainer>
-            <UnfollowChip onClick={handleUnfollowClick}>Unfollow</UnfollowChip>
+            <UnfollowChip onClick={handleUnfollowClick} className={className}>
+              Unfollow
+            </UnfollowChip>
           </UnfollowChipContainer>
         </FollowingChipContainer>
       );
     } else {
-      return <FollowChip onClick={handleFollowClick}>Follow</FollowChip>;
+      return (
+        <FollowChip onClick={handleFollowClick} className={className}>
+          Follow
+        </FollowChip>
+      );
       // show follow button
     }
-  }, [handleFollowClick, handleUnfollowClick, isAuthenticatedUsersPage, isFollowing]);
+  }, [className, handleFollowClick, handleUnfollowClick, isAuthenticatedUsersPage, isFollowing]);
 
   const handleWrapperClick = useCallback<MouseEventHandler>((event) => {
     // We want to make sure clicking these buttons doesn't bubble up to
@@ -169,6 +176,7 @@ const UnfollowChipContainer = styled.div`
 
 const FollowingChipContainer = styled.div`
   position: relative;
+  width: 100%;
 
   ${UnfollowChipContainer} {
     opacity: 0;
