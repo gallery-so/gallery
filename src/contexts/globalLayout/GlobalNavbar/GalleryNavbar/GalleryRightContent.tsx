@@ -5,11 +5,13 @@ import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import { Button } from '~/components/core/Button/Button';
+import colors from '~/components/core/colors';
 import { Dropdown } from '~/components/core/Dropdown/Dropdown';
 import { DropdownItem } from '~/components/core/Dropdown/DropdownItem';
 import { DropdownLink } from '~/components/core/Dropdown/DropdownLink';
 import { DropdownSection } from '~/components/core/Dropdown/DropdownSection';
 import { HStack } from '~/components/core/Spacer/Stack';
+import { TitleXS } from '~/components/core/Text/Text';
 import useCreateGallery from '~/components/MultiGallery/useCreateGallery';
 import Tooltip from '~/components/Tooltip/Tooltip';
 import { EditLink } from '~/contexts/globalLayout/GlobalNavbar/CollectionNavbar/EditLink';
@@ -139,20 +141,23 @@ export function GalleryRightContent({ queryRef, username }: GalleryRightContentP
 
   if (showShowMultiGalleryButton) {
     return (
+      <div onMouseEnter={() => setShowTooltip(true)} onMouseLeave={() => setShowTooltip(false)}>
+        {!isMultigalleryEnabled && <StyledTooltip text={'Coming Soon'} showTooltip={showTooltip} />}
+        <Button variant="secondary" onClick={handleCreateGallery} disabled={!isMultigalleryEnabled}>
+          Add New
+        </Button>
+      </div>
+    );
+  }
+
+  if (shouldShowEditButton) {
+    return (
       <HStack gap={12}>
-        {editGalleryUrl && (
-          <div onMouseEnter={() => setShowTooltip(true)} onMouseLeave={() => setShowTooltip(false)}>
-            {!isMultigalleryEnabled && (
-              <StyledTooltip text={'Coming Soon'} showTooltip={showTooltip} />
-            )}
-            <Button
-              variant="secondary"
-              onClick={handleCreateGallery}
-              disabled={!isMultigalleryEnabled}
-            >
-              Add New
-            </Button>
-          </div>
+        {shouldShowEditButton && (
+          <EditButtonContainer onClick={handleEditClick}>
+            <TitleXS>EDIT</TitleXS>
+            {dropdown}
+          </EditButtonContainer>
         )}
       </HStack>
     );
@@ -165,6 +170,18 @@ export function GalleryRightContent({ queryRef, username }: GalleryRightContentP
 
 const EditLinkWrapper = styled.div`
   position: relative;
+`;
+
+const EditButtonContainer = styled.div.attrs({ role: 'button' })`
+  position: relative;
+  padding: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  :hover {
+    background-color: ${colors.faint};
+  }
 `;
 
 const StyledTooltip = styled(Tooltip)<{ showTooltip: boolean }>`
