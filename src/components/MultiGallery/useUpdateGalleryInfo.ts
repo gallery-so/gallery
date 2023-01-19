@@ -16,6 +16,7 @@ export default function useUpdateGalleryInfo() {
       updateGalleryInfo(input: $input) {
         ... on UpdateGalleryInfoPayload {
           gallery {
+            __typename
             id
             name
             description
@@ -30,16 +31,26 @@ export default function useUpdateGalleryInfo() {
   `);
 
   return useCallback(
-    ({ id, name, description }: Props) => {
-      return updateGalleryInfo({
-        variables: {
-          input: {
-            id,
-            name,
-            description,
+    async ({ id, name, description }: Props) => {
+      try {
+        const response = await updateGalleryInfo({
+          variables: {
+            input: {
+              id,
+              name,
+              description,
+            },
           },
-        },
-      });
+        });
+
+        if (response?.updateGalleryInfo?.__typename === 'ErrInvalidInput') {
+          throw new Error('The description you entered is too long.');
+        }
+
+        return response?.updateGalleryInfo?.gallery;
+      } catch (error) {
+        throw new Error('Failed to update gallery info');
+      }
     },
     [updateGalleryInfo]
   );

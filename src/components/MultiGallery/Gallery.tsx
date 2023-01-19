@@ -115,7 +115,7 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
 
   const { pushToast } = useToastActions();
 
-  const reassignFeaturedGallery = useCallback(() => {
+  const reassignFeaturedGallery = useCallback(async () => {
     if (!isFeatured) return;
 
     const otherGallery = removeNullValues(query.viewer?.viewerGalleries)
@@ -123,7 +123,7 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
       .find((viewerGallery) => viewerGallery?.gallery?.dbid !== dbid);
 
     if (otherGallery && otherGallery?.gallery?.dbid) {
-      setFeaturedGallery(otherGallery?.gallery?.dbid);
+      await setFeaturedGallery(otherGallery?.gallery?.dbid);
     }
   }, [dbid, isFeatured, query.viewer?.viewerGalleries, setFeaturedGallery]);
 
@@ -135,8 +135,8 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
     return visibleGalleries.length < 2;
   }, [query.viewer?.viewerGalleries]);
 
-  const handleSetFeaturedGallery = useCallback(() => {
-    setFeaturedGallery(dbid);
+  const handleSetFeaturedGallery = useCallback(async () => {
+    await setFeaturedGallery(dbid);
   }, [dbid, setFeaturedGallery]);
 
   const handleUpdateGalleryHidden = useCallback(() => {
@@ -181,8 +181,8 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
     showModal({
       content: (
         <GalleryNameAndDescriptionEditForm
-          onDone={(result) => {
-            updateGalleryInfo({
+          onDone={async (result) => {
+            await updateGalleryInfo({
               id: gallery.dbid,
               name: result.name,
               description: result.description,

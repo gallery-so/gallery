@@ -26,12 +26,22 @@ export default function useSetFeaturedGallery() {
   `);
 
   return useCallback(
-    (galleryId: string) => {
-      return setFeaturedGallery({
-        variables: {
-          galleryId,
-        },
-      });
+    async (galleryId: string) => {
+      try {
+        const response = await setFeaturedGallery({
+          variables: {
+            galleryId,
+          },
+        });
+
+        if (response?.updateFeaturedGallery?.__typename === 'ErrInvalidInput') {
+          throw new Error('Failed to set featured gallery');
+        }
+
+        return response?.updateFeaturedGallery?.viewer?.user?.featuredGallery?.id;
+      } catch (error) {
+        throw new Error('Failed to set featured gallery');
+      }
     },
     [setFeaturedGallery]
   );

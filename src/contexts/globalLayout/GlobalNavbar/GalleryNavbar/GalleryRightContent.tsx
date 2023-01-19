@@ -67,14 +67,12 @@ export function GalleryRightContent({ queryRef, username }: GalleryRightContentP
   const isMultigalleryEnabled = isFeatureEnabled(FeatureFlag.MULTIGALLERY, query);
   const [showTooltip, setShowTooltip] = useState(false);
 
-  console.log('isMultigalleryEnabled', isMultigalleryEnabled);
-
   const createGallery = useCreateGallery();
 
-  const handleCreateGallery = useCallback(() => {
+  const handleCreateGallery = useCallback(async () => {
     const latestPosition = query?.userByUsername?.galleries?.length.toString() ?? '0';
 
-    createGallery(latestPosition);
+    await createGallery(latestPosition);
   }, [createGallery, query?.userByUsername?.galleries?.length]);
 
   const handleNameAndBioClick = useCallback(() => {

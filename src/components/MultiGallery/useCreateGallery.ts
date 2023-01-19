@@ -2,11 +2,14 @@ import { useRouter } from 'next/router';
 import { useCallback } from 'react';
 import { graphql } from 'relay-runtime';
 
+import { useToastActions } from '~/contexts/toast/ToastContext';
+import { ValidationError } from '~/errors/ValidationError';
 import { useCreateGalleryMutation } from '~/generated/useCreateGalleryMutation.graphql';
 import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 
 export default function useCreateGallery() {
   const router = useRouter();
+  const { pushToast } = useToastActions();
 
   const [createGallery] = usePromisifiedMutation<useCreateGalleryMutation>(graphql`
     mutation useCreateGalleryMutation($input: CreateGalleryInput!) @raw_response_type {
@@ -39,7 +42,10 @@ export default function useCreateGallery() {
         });
 
         if (response?.createGallery?.__typename === 'ErrInvalidInput') {
-          return;
+          pushToast({
+            message: 'Failed to create gallery',
+          });
+          throw new ValidationError('The description you entered is too long.');
         }
 
         const galleryId = response?.createGallery?.gallery?.dbid;
@@ -54,6 +60,6 @@ export default function useCreateGallery() {
         throw new Error('Failed to create gallery');
       }
     },
-    [createGallery, router]
+    [createGallery, pushToast, router]
   );
 }
