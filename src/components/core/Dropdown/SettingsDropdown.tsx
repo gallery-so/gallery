@@ -8,9 +8,10 @@ type Props = {
   children: ReactNode;
   iconVariant: ColorVariant;
   size?: IconSize;
+  disableHoverPadding?: boolean;
 };
 
-function SettingsDropdown({ children, iconVariant, size }: Props) {
+function SettingsDropdown({ children, iconVariant, size, disableHoverPadding }: Props) {
   const [showDropdown, setShowDropdown] = useState(false);
 
   const handleSettingsClick = useCallback(() => {
@@ -25,6 +26,7 @@ function SettingsDropdown({ children, iconVariant, size }: Props) {
     <StyledSettingsDropdown>
       <IconContainer
         variant={iconVariant}
+        disableHoverPadding={disableHoverPadding}
         size={size}
         onClick={handleSettingsClick}
         icon={

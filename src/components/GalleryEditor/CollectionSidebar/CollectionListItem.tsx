@@ -99,12 +99,13 @@ export function CollectionListItem({ collectionId }: CollectionListItemProps) {
         <CollectionTitleText italicize={!collection.name}>
           {escapedCollectionName || 'Untitled'}
         </CollectionTitleText>
-        <HStack gap={2} onClick={handleIconSectionClick}>
+        <HStack gap={10} onClick={handleIconSectionClick}>
           <IconContainer
             {...getReferenceProps()}
             onClick={handleToggleHidden}
             ref={reference}
             size="sm"
+            disableHoverPadding
             variant="stacked"
             icon={hidden ? <ShowIcon /> : <HideIcon />}
           />
@@ -116,7 +117,7 @@ export function CollectionListItem({ collectionId }: CollectionListItemProps) {
             text={hidden ? 'Show' : 'Hide'}
           />
 
-          <SettingsDropdown size="sm" iconVariant="stacked">
+          <SettingsDropdown size="sm" iconVariant="stacked" disableHoverPadding>
             <DropdownSection>
               <DropdownItem onClick={handleEdit}>EDIT NAME & DESC</DropdownItem>
               <DropdownItem onClick={handleDelete}>DELETE</DropdownItem>
