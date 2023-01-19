@@ -10,20 +10,23 @@ import { GalleryUpdatedFeedEventFragment$key } from '~/generated/GalleryUpdatedF
 import { GalleryUpdatedFeedEventQueryFragment$key } from '~/generated/GalleryUpdatedFeedEventQueryFragment.graphql';
 import { getTimeSince } from '~/utils/time';
 
-import CollectionCreatedFeedEvent from './CollectionCreatedFeedEvent';
+import { FeedMode } from '../Feed';
+import CollectionCreatedFeedEvent, { StyledCaptionContainer } from './CollectionCreatedFeedEvent';
 import CollectionUpdatedFeedEvent from './CollectionUpdatedFeedEvent';
 import CollectorsNoteAddedToCollectionFeedEvent from './CollectorsNoteAddedToCollectionFeedEvent';
 import CollectorsNoteAddedToTokenFeedEvent from './CollectorsNoteAddedToTokenFeedEvent';
-import { StyledEvent, StyledEventHeader, StyledTime } from './EventStyles';
+import { StyledEvent, StyledEventContent, StyledEventHeader, StyledTime } from './EventStyles';
 import TokensAddedToCollectionFeedEvent from './TokensAddedToCollectionFeedEvent';
 import UserFollowedUsersFeedEvent from './UserFollowedUsersFeedEvent';
 
 type Props = {
+  caption: string | null;
+  feedMode: FeedMode;
   eventRef: GalleryUpdatedFeedEventFragment$key;
   queryRef: GalleryUpdatedFeedEventQueryFragment$key;
 };
 
-export default function GalleryUpdatedFeedEvent({ eventRef, queryRef }: Props) {
+export default function GalleryUpdatedFeedEvent({ caption, eventRef, feedMode, queryRef }: Props) {
   const event = useFragment(
     graphql`
       fragment GalleryUpdatedFeedEventFragment on GalleryUpdatedFeedEventData {
@@ -39,7 +42,6 @@ export default function GalleryUpdatedFeedEvent({ eventRef, queryRef }: Props) {
         }
         subEventDatas {
           __typename
-          # eventTime
 
           ... on CollectionCreatedFeedEventData {
             ...CollectionCreatedFeedEventFragment
@@ -107,7 +109,12 @@ export default function GalleryUpdatedFeedEvent({ eventRef, queryRef }: Props) {
             <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
           </HStack>
         </StyledEventHeader>
-        <>
+        <StyledEventContent>
+          {caption && (
+            <StyledCaptionContainer gap={8} align="center">
+              <BaseM>{caption}</BaseM>
+            </StyledCaptionContainer>
+          )}
           {event?.subEventDatas?.map((subEvent, index) => {
             switch (subEvent.__typename) {
               case 'CollectionCreatedFeedEventData':
@@ -117,13 +124,20 @@ export default function GalleryUpdatedFeedEvent({ eventRef, queryRef }: Props) {
                     eventDataRef={subEvent}
                     queryRef={query}
                     caption={null}
+                    isSubEvent
                   />
                 );
               case 'CollectionUpdatedFeedEventData':
-                return <CollectionUpdatedFeedEvent eventDataRef={subEvent} queryRef={query} />;
+                return (
+                  <CollectionUpdatedFeedEvent eventDataRef={subEvent} queryRef={query} isSubEvent />
+                );
               case 'CollectorsNoteAddedToTokenFeedEventData':
                 return (
-                  <CollectorsNoteAddedToTokenFeedEvent eventDataRef={subEvent} queryRef={query} />
+                  <CollectorsNoteAddedToTokenFeedEvent
+                    eventDataRef={subEvent}
+                    queryRef={query}
+                    isSubEvent
+                  />
                 );
               case 'TokensAddedToCollectionFeedEventData':
                 return (
@@ -131,6 +145,7 @@ export default function GalleryUpdatedFeedEvent({ eventRef, queryRef }: Props) {
                     caption={null}
                     eventDataRef={subEvent}
                     queryRef={query}
+                    isSubEvent
                   />
                 );
               case 'CollectorsNoteAddedToCollectionFeedEventData':
@@ -138,6 +153,7 @@ export default function GalleryUpdatedFeedEvent({ eventRef, queryRef }: Props) {
                   <CollectorsNoteAddedToCollectionFeedEvent
                     eventDataRef={subEvent}
                     queryRef={query}
+                    isSubEvent
                   />
                 );
               case 'UserFollowedUsersFeedEventData':
@@ -145,15 +161,15 @@ export default function GalleryUpdatedFeedEvent({ eventRef, queryRef }: Props) {
                   <UserFollowedUsersFeedEvent
                     eventDataRef={subEvent}
                     queryRef={query}
-                    // TODO: make it dynamic
-                    feedMode="USER"
+                    feedMode={feedMode}
+                    isSubEvent
                   />
                 );
               default:
                 throw new TriedToRenderUnsupportedFeedEvent(subEvent.__typename);
             }
           })}
-        </>
+        </StyledEventContent>
       </VStack>
     </StyledEvent>
   );

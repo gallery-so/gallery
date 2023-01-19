@@ -122,7 +122,14 @@ function FeedEvent({ eventRef, queryRef, feedMode }: FeedEventProps) {
         />
       );
     case 'GalleryUpdatedFeedEventData':
-      return <GalleryUpdatedFeedEvent eventRef={event.eventData} queryRef={query} />;
+      return (
+        <GalleryUpdatedFeedEvent
+          caption={event.caption}
+          eventRef={event.eventData}
+          queryRef={query}
+          feedMode={feedMode}
+        />
+      );
 
     // These event types are returned by the backend but are not currently spec'd to be displayed
     // case 'UserCreatedFeedEventData':

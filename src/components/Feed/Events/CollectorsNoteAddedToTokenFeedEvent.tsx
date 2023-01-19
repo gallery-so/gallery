@@ -21,6 +21,7 @@ import EventMedia from './EventMedia';
 import { StyledClickHandler, StyledEvent, StyledEventHeader, StyledTime } from './EventStyles';
 
 type Props = {
+  isSubEvent?: boolean;
   eventDataRef: CollectorsNoteAddedToTokenFeedEventFragment$key;
   queryRef: CollectorsNoteAddedToTokenFeedEventQueryFragment$key;
 };
@@ -30,7 +31,11 @@ const MIDDLE_GAP = 24;
 // images will be rendered within a square of this size
 const IMAGE_SPACE_SIZE = 269;
 
-export default function CollectorsNoteAddedToTokenFeedEvent({ eventDataRef, queryRef }: Props) {
+export default function CollectorsNoteAddedToTokenFeedEvent({
+  eventDataRef,
+  isSubEvent = false,
+  queryRef,
+}: Props) {
   const event = useFragment(
     graphql`
       fragment CollectorsNoteAddedToTokenFeedEventFragment on CollectorsNoteAddedToTokenFeedEventData {
@@ -91,13 +96,19 @@ export default function CollectorsNoteAddedToTokenFeedEvent({ eventDataRef, quer
 
   return (
     <StyledClickHandler onClick={handleEventClick}>
-      <StyledEvent>
+      <StyledEvent isSubEvent={isSubEvent}>
         <VStack gap={16}>
           <StyledEventHeader>
             <HStack gap={4} inline>
               <BaseM>
-                <HoverCardOnUsername userRef={event.owner} queryRef={query} /> added a collector's
-                note to{' '}
+                {isSubEvent ? (
+                  <>Added a collector's note to</>
+                ) : (
+                  <>
+                    <HoverCardOnUsername userRef={event.owner} queryRef={query} /> added a
+                    collector's note to
+                  </>
+                )}{' '}
                 <InteractiveLink
                   to={{
                     pathname: '/[username]/[collectionId]/[tokenId]',

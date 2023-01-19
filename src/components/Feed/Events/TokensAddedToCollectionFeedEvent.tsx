@@ -25,6 +25,7 @@ import { StyledEvent, StyledEventContent, StyledEventHeader, StyledTime } from '
 
 type Props = {
   caption: string | null;
+  isSubEvent?: boolean;
   eventDataRef: TokensAddedToCollectionFeedEventFragment$key;
   queryRef: TokensAddedToCollectionFeedEventQueryFragment$key;
 };
@@ -32,6 +33,7 @@ type Props = {
 export default function TokensAddedToCollectionFeedEvent({
   caption,
   eventDataRef,
+  isSubEvent = false,
   queryRef,
 }: Props) {
   const event = useFragment(
@@ -95,15 +97,25 @@ export default function TokensAddedToCollectionFeedEvent({
       href={collectionPagePath}
       onClick={() => track('Feed: Clicked Tokens added to collection event')}
     >
-      <StyledEvent>
+      <StyledEvent isSubEvent={isSubEvent}>
         <VStack gap={16}>
           <StyledEventHeader>
             <VStack gap={4}>
               <HStack gap={4} inline>
                 <BaseM>
-                  <HoverCardOnUsername userRef={event.owner} queryRef={query} /> added{' '}
-                  {isPreFeed ? '' : `${tokens.length} ${pluralize(tokens.length, 'piece')}`} to
-                  {collectionName ? ' ' : ' their collection'}
+                  {isSubEvent ? (
+                    <>
+                      Added{' '}
+                      {isPreFeed ? '' : `${tokens.length} ${pluralize(tokens.length, 'piece')}`} to
+                      {collectionName ? ' ' : ' their collection'}
+                    </>
+                  ) : (
+                    <>
+                      <HoverCardOnUsername userRef={event.owner} queryRef={query} /> added{' '}
+                      {isPreFeed ? '' : `${tokens.length} ${pluralize(tokens.length, 'piece')}`} to
+                      {collectionName ? ' ' : ' their collection'}
+                    </>
+                  )}
                   <InteractiveLink to={collectionPagePath}>{collectionName}</InteractiveLink>
                 </BaseM>
                 <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>

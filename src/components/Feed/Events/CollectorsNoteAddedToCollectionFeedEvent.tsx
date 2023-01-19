@@ -25,10 +25,12 @@ import { StyledEvent, StyledEventContent, StyledEventHeader, StyledTime } from '
 type Props = {
   eventDataRef: CollectorsNoteAddedToCollectionFeedEventFragment$key;
   queryRef: CollectorsNoteAddedToCollectionFeedEventQueryFragment$key;
+  isSubEvent?: boolean;
 };
 
 export default function CollectorsNoteAddedToCollectionFeedEvent({
   eventDataRef,
+  isSubEvent = false,
   queryRef,
 }: Props) {
   const event = useFragment(
@@ -87,17 +89,25 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({
       href={collectionPagePath}
       onClick={() => track('Feed: Clicked Description added to collection event')}
     >
-      <StyledEvent>
+      <StyledEvent isSubEvent={isSubEvent}>
         <VStack gap={16}>
           <VStack gap={8}>
             <StyledEventHeader>
               <HStack gap={4} inline>
-                <BaseM>
-                  <HoverCardOnUsername userRef={event.owner} queryRef={query} /> added a description
-                  to
-                  {collectionName ? ' ' : ' their collection'}
-                  <InteractiveLink to={collectionPagePath}>{collectionName}</InteractiveLink>
-                </BaseM>
+                {isSubEvent ? (
+                  <BaseM>
+                    Added a description to
+                    {collectionName ? ' ' : ' their collection'}
+                    <InteractiveLink to={collectionPagePath}>{collectionName}</InteractiveLink>
+                  </BaseM>
+                ) : (
+                  <BaseM>
+                    <HoverCardOnUsername userRef={event.owner} queryRef={query} /> added a
+                    description to
+                    {collectionName ? ' ' : ' their collection'}
+                    <InteractiveLink to={collectionPagePath}>{collectionName}</InteractiveLink>
+                  </BaseM>
+                )}
                 <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
               </HStack>
             </StyledEventHeader>

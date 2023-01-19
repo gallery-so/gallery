@@ -27,9 +27,15 @@ type Props = {
   eventDataRef: UserFollowedUsersFeedEventFragment$key;
   queryRef: UserFollowedUsersFeedEventQueryFragment$key;
   feedMode: FeedMode;
+  isSubEvent?: boolean;
 };
 
-export default function UserFollowedUsersFeedEvent({ eventDataRef, queryRef, feedMode }: Props) {
+export default function UserFollowedUsersFeedEvent({
+  eventDataRef,
+  queryRef,
+  feedMode,
+  isSubEvent = false,
+}: Props) {
   const event = useFragment(
     graphql`
       fragment UserFollowedUsersFeedEventFragment on UserFollowedUsersFeedEventData {
@@ -145,31 +151,50 @@ export default function UserFollowedUsersFeedEvent({ eventDataRef, queryRef, fee
         <UserFollowedYouEvent eventRef={event} followInfoRef={followedYouAction} queryRef={query} />
       )}
       {followedNoRemainingUsers ? null : followedSingleUser ? (
-        <CustomStyledEvent onClick={handleSeeFollowedUserClick}>
+        <CustomStyledEvent onClick={handleSeeFollowedUserClick} isSubEvent={isSubEvent}>
           <StyledEventContent>
             <StyledEventHeader>
               <HStack gap={4} inline>
-                <BaseM>
-                  <HoverCardOnUsername userRef={event.owner} queryRef={query} /> followed{' '}
-                  {firstFollowerUsernameRef && firstFollowerUsernameRef.user && (
-                    <HoverCardOnUsername userRef={firstFollowerUsernameRef.user} queryRef={query} />
-                  )}
-                </BaseM>
+                {isSubEvent ? (
+                  <BaseM>
+                    Followed{' '}
+                    {firstFollowerUsernameRef && firstFollowerUsernameRef.user && (
+                      <HoverCardOnUsername
+                        userRef={firstFollowerUsernameRef.user}
+                        queryRef={query}
+                      />
+                    )}
+                  </BaseM>
+                ) : (
+                  <BaseM>
+                    <HoverCardOnUsername userRef={event.owner} queryRef={query} /> followed{' '}
+                    {firstFollowerUsernameRef && firstFollowerUsernameRef.user && (
+                      <HoverCardOnUsername
+                        userRef={firstFollowerUsernameRef.user}
+                        queryRef={query}
+                      />
+                    )}
+                  </BaseM>
+                )}
                 <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
               </HStack>
             </StyledEventHeader>
           </StyledEventContent>
         </CustomStyledEvent>
       ) : (
-        <CustomStyledEvent onClick={handleSeeMoreClick}>
+        <CustomStyledEvent onClick={handleSeeMoreClick} isSubEvent={isSubEvent}>
           <StyledEventContent>
             <StyledEventHeaderContainer gap={16} align="center" grow>
               <StyledEventHeader>
                 <HStack gap={4} inline>
-                  <BaseM>
-                    <HoverCardOnUsername userRef={event.owner} queryRef={query} /> followed{' '}
-                    {genericFollows.length} collectors.
-                  </BaseM>
+                  {isSubEvent ? (
+                    <BaseM>Followed {genericFollows.length} collectors.</BaseM>
+                  ) : (
+                    <BaseM>
+                      <HoverCardOnUsername userRef={event.owner} queryRef={query} /> followed{' '}
+                      {genericFollows.length} collectors.
+                    </BaseM>
+                  )}
                   <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
                 </HStack>
               </StyledEventHeader>

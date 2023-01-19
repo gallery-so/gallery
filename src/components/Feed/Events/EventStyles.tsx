@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import colors from '~/components/core/colors';
 import { VStack } from '~/components/core/Spacer/Stack';
@@ -8,19 +8,28 @@ import { BaseS } from '~/components/core/Text/Text';
 type StyledEventProps = {
   children: ReactNode;
   className?: string;
+  isSubEvent?: boolean;
   onClick?: JSX.IntrinsicElements['div']['onClick'];
 };
 
-export const StyledEvent = ({ children, className, onClick }: StyledEventProps) => {
+export const StyledEvent = ({ children, className, isSubEvent, onClick }: StyledEventProps) => {
   return (
-    <StyledInnerEvent onClick={onClick} className={className}>
+    <StyledInnerEvent onClick={onClick} className={className} isSubEvent={isSubEvent}>
       {children}
     </StyledInnerEvent>
   );
 };
 
-export const StyledInnerEvent = styled.div`
+export const StyledInnerEvent = styled.div<{ isSubEvent?: boolean }>`
   flex-grow: 1;
+
+  ${({ isSubEvent }) =>
+    isSubEvent &&
+    css`
+      background-color: ${colors.faint};
+      border-radius: 4px;
+      padding: 10px;
+    `}
 `;
 
 export const StyledEventHeader = styled.div`
@@ -46,6 +55,7 @@ export const StyledClickHandler = styled.a`
 `;
 
 export const StyledEventContent = styled(VStack)<{ hasCaption?: boolean }>`
-  background-color: ${({ hasCaption }) => (hasCaption ? colors.offWhite : 'transparent')};
+  /* background-color: ${({ hasCaption }) => (hasCaption ? colors.offWhite : 'transparent')}; */
+  background-color: ${({ hasCaption }) => (hasCaption ? colors.faint : 'transparent')};
   padding: ${({ hasCaption }) => (hasCaption ? '16px' : '0')};
 `;

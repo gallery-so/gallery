@@ -22,11 +22,17 @@ import { StyledEvent, StyledEventContent, StyledEventHeader, StyledTime } from '
 
 type Props = {
   caption: string | null;
+  isSubEvent?: boolean;
   eventDataRef: CollectionCreatedFeedEventFragment$key;
   queryRef: CollectionCreatedFeedEventQueryFragment$key;
 };
 
-export default function CollectionCreatedFeedEvent({ caption, eventDataRef, queryRef }: Props) {
+export default function CollectionCreatedFeedEvent({
+  caption,
+  eventDataRef,
+  isSubEvent,
+  queryRef,
+}: Props) {
   const event = useFragment(
     graphql`
       fragment CollectionCreatedFeedEventFragment on CollectionCreatedFeedEventData {
@@ -81,16 +87,28 @@ export default function CollectionCreatedFeedEvent({ caption, eventDataRef, quer
       }}
       onClick={() => track('Feed: Clicked collection created event')}
     >
-      <StyledEvent>
+      <StyledEvent isSubEvent={isSubEvent}>
         <VStack gap={16}>
           <StyledEventHeader>
             <VStack gap={4}>
               <StyledEventHeaderContainer>
-                <HoverCardOnUsername userRef={event.owner} queryRef={query} />{' '}
-                <BaseM>
-                  added {tokens.length} {pluralize(tokens.length, 'piece')} to their new collection
-                  {collectionName ? `, ` : ' '}
-                </BaseM>
+                {isSubEvent ? (
+                  <BaseM>
+                    Added {tokens.length} {pluralize(tokens.length, 'piece')} to their new
+                    collection
+                    {collectionName ? `, ` : ' '}
+                  </BaseM>
+                ) : (
+                  <>
+                    <HoverCardOnUsername userRef={event.owner} queryRef={query} />{' '}
+                    <BaseM>
+                      added {tokens.length} {pluralize(tokens.length, 'piece')} to their new
+                      collection
+                      {collectionName ? `, ` : ' '}
+                    </BaseM>
+                  </>
+                )}
+
                 <HStack gap={4} inline>
                   {collectionName && (
                     <InteractiveLink
