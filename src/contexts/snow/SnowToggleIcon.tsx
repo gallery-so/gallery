@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import IconContainer from '~/components/core/Markdown/IconContainer';
+import IconContainer from '~/components/core/IconContainer';
 import SnowflakeIcon from '~/icons/SnowflakeIcon';
 
 import { useSnowContext } from './SnowContext';
@@ -10,6 +10,7 @@ export default function SnowToggleIcon() {
   return (
     <IconContainer
       size="md"
+      variant="default"
       icon={<StyledSnowflakeIcon active={isSnowEnabled} />}
       onClick={toggleSnow}
     />

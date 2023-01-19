@@ -2,7 +2,7 @@ import { MouseEventHandler, useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import colors from '~/components/core/colors';
-import IconContainer from '~/components/core/Markdown/IconContainer';
+import IconContainer from '~/components/core/IconContainer';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import Tooltip from '~/components/Tooltip/Tooltip';
@@ -68,7 +68,7 @@ export function NftFailureFallback({ onRetry, refreshing, size = 'medium' }: Pro
             onMouseDown={handleMouseDown}
             onClick={handleClick}
           >
-            <IconContainer size="sm" icon={<RefreshIcon />} />
+            <IconContainer variant="default" size="sm" icon={<RefreshIcon />} />
             <RefreshTooltip active={showTooltip} text="Refresh" />
           </IconButton>
         )}

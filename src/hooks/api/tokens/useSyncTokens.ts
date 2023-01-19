@@ -36,6 +36,11 @@ export default function useSyncTokens() {
   const { pushToast } = useToastActions();
   const sync = useCallback(
     async (chain: Chain) => {
+      pushToast({
+        message: 'We’re retrieving your new pieces. This may take up to a few minutes.',
+        autoClose: true,
+      });
+
       if (isLocked) {
         return false;
       }

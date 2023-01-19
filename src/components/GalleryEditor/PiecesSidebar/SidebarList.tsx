@@ -6,9 +6,8 @@ import { readInlineData } from 'relay-runtime';
 import styled from 'styled-components';
 
 import colors from '~/components/core/colors';
-import IconContainer from '~/components/core/Markdown/IconContainer';
+import IconContainer from '~/components/core/IconContainer';
 import { TitleXS } from '~/components/core/Text/Text';
-import { EditModeToken } from '~/components/GalleryEditor/CollectionEditor/types';
 import { ExpandedIcon } from '~/components/GalleryEditor/PiecesSidebar/ExpandedIcon';
 import SidebarNftIcon from '~/components/GalleryEditor/PiecesSidebar/SidebarNftIcon';
 import Tooltip from '~/components/Tooltip/Tooltip';
@@ -24,11 +23,6 @@ import ShowIcon from '~/icons/ShowIcon';
 
 import { SidebarView } from './SidebarViewSelector';
 
-export type TokenAndEditModeToken = {
-  token: SidebarListTokenNewFragment$key;
-  editModeToken: EditModeToken;
-};
-
 export type CollectionTitleRow = {
   type: 'collection-title';
   expanded: boolean;
@@ -38,7 +32,7 @@ export type CollectionTitleRow = {
 
 export type VirtualizedRow =
   | CollectionTitleRow
-  | { type: 'tokens'; tokens: TokenAndEditModeToken[]; expanded: boolean };
+  | { type: 'tokens'; tokens: SidebarListTokenNewFragment$key[]; expanded: boolean };
 
 type Props = {
   rows: VirtualizedRow[];
@@ -91,7 +85,7 @@ function CollectionTitle({
               }}
             >
               <IconContainer
-                stacked
+                variant="stacked"
                 size="sm"
                 icon={selectedView === 'Hidden' ? <ShowIcon /> : <HideIcon />}
               />
@@ -148,7 +142,7 @@ export function SidebarList({
 
         return (
           <Selection key={key} style={style}>
-            {row.tokens.map((tokenOrWhitespace) => {
+            {row.tokens.map((tokenRef) => {
               const token = readInlineData(
                 graphql`
                   fragment SidebarListTokenNewFragment on Token @inline {
@@ -156,14 +150,13 @@ export function SidebarList({
                     ...SidebarNftIconNewFragment
                   }
                 `,
-                tokenOrWhitespace.token
+                tokenRef
               );
 
               return (
                 <SidebarNftIcon
                   key={token.dbid}
                   tokenRef={token}
-                  editModeToken={tokenOrWhitespace.editModeToken}
                   handleTokenRenderError={handleTokenRenderError}
                   handleTokenRenderSuccess={handleTokenRenderSuccess}
                 />

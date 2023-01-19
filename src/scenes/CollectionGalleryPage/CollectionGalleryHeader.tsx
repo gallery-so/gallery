@@ -169,7 +169,7 @@ function CollectionGalleryHeader({
               </CopyToClipboard>
 
               {/* On mobile, we show these options in the navbar, not in header */}
-              <SettingsDropdown>
+              <SettingsDropdown iconVariant="default">
                 <DropdownSection>
                   <DropdownItem onClick={handleEditNameClick}>EDIT NAME & DESCRIPTION</DropdownItem>
 

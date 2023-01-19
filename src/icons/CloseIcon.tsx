@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import IconContainer from '~/components/core/Markdown/IconContainer';
+import IconContainer from '~/components/core/IconContainer';
 import { ModalPaddingVariant } from '~/contexts/modal/constants';
 
 export default function CloseIcon() {
@@ -32,7 +32,7 @@ export function DecoratedCloseIcon({
 }: DecoratedCloseIconProps) {
   return (
     <StyledDecoratedCloseIcon className={className} variant={variant}>
-      <IconContainer onClick={onClick} icon={<CloseIcon />} />
+      <IconContainer variant="default" onClick={onClick} icon={<CloseIcon />} />
     </StyledDecoratedCloseIcon>
   );
 }

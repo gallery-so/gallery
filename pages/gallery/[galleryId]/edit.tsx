@@ -7,14 +7,14 @@ import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import { GalleryEditor } from '~/components/GalleryEditor/GalleryEditor';
+import { GalleryEditorProvider } from '~/components/GalleryEditor/GalleryEditorContext';
 import { OrganizeGallery } from '~/components/ManageGallery/OrganizeGallery/OrganizeGallery';
 import FullPageStep from '~/components/Onboarding/FullPageStep';
 import { GalleryEditNavbar } from '~/contexts/globalLayout/GlobalNavbar/GalleryEditNavbar/GalleryEditNavbar';
-import { MultiGalleryEditGalleryNavbar } from '~/contexts/globalLayout/MultiGalleryEditGalleryNavbar/MultiGalleryEditGalleryNavbar';
-import { useCanGoBack } from '~/contexts/navigation/GalleryNavigationProvider';
 import { editGalleryPageNewQuery } from '~/generated/editGalleryPageNewQuery.graphql';
 import { editGalleryPageOldQuery } from '~/generated/editGalleryPageOldQuery.graphql';
 import { editGalleryPageQuery } from '~/generated/editGalleryPageQuery.graphql';
+import GalleryRedirect from '~/scenes/_Router/GalleryRedirect';
 import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 type Props = {
@@ -22,50 +22,32 @@ type Props = {
 };
 
 function NewEditGalleryPage({ galleryId }: Props) {
-  const { back, replace } = useRouter();
-
   const query = useLazyLoadQuery<editGalleryPageNewQuery>(
     graphql`
       query editGalleryPageNewQuery($galleryId: DBID!) {
         viewer {
           ... on Viewer {
-            user {
-              username
-            }
+            __typename
           }
         }
 
         ...GalleryEditorFragment
+        ...GalleryEditorContextFragment
       }
     `,
     { galleryId }
   );
 
-  const canGoBack = useCanGoBack();
-  const handleBack = useCallback(() => {
-    if (canGoBack) {
-      back();
-    } else if (query.viewer?.user?.username) {
-      replace({
-        pathname: '/[username]/galleries',
-        query: { username: query.viewer.user.username },
-      });
-    } else {
-      replace({ pathname: '/home' });
-    }
-  }, [back, canGoBack, query.viewer?.user?.username, replace]);
+  const isLoggedIn = query.viewer?.__typename === 'Viewer';
 
-  const handleDone = useCallback(() => {
-    console.log('Done');
-  }, []);
+  if (!isLoggedIn) {
+    return <GalleryRedirect to={{ pathname: '/auth' }} />;
+  }
 
   return (
-    <FullPageStep
-      navbar={<MultiGalleryEditGalleryNavbar onBack={handleBack} onDone={handleDone} />}
-      withBorder
-    >
+    <GalleryEditorProvider queryRef={query}>
       <GalleryEditor queryRef={query} />
-    </FullPageStep>
+    </GalleryEditorProvider>
   );
 }
 
@@ -170,9 +152,13 @@ export default function EditGalleryPage({ galleryId }: Props) {
 }
 
 export const getServerSideProps: GetServerSideProps<Props> = async ({ params }) => {
-  return {
-    props: {
-      galleryId: params?.galleryId as string,
-    },
-  };
+  if (typeof params?.galleryId === 'string') {
+    return {
+      props: {
+        galleryId: params.galleryId,
+      },
+    };
+  }
+
+  return { redirect: '/', props: { galleryId: '' } };
 };

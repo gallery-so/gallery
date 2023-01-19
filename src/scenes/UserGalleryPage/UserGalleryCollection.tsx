@@ -1,9 +1,9 @@
 import { useRouter } from 'next/router';
 import { Route, route } from 'nextjs-routes';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 import CopyToClipboard from '~/components/CopyToClipboard/CopyToClipboard';
 import breakpoints from '~/components/core/breakpoints';
@@ -35,7 +35,6 @@ type Props = {
   mobileLayout: DisplayLayout;
   cacheHeight: number;
   onLoad: () => void;
-  onLayoutShift: () => void;
 };
 
 function UserGalleryCollection({
@@ -44,7 +43,6 @@ function UserGalleryCollection({
   mobileLayout,
   onLoad,
   cacheHeight,
-  onLayoutShift,
 }: Props) {
   const query = useFragment(
     graphql`
@@ -131,13 +129,6 @@ function UserGalleryCollection({
     });
   }, [collection.collectorsNote, collectionId, collection.name, galleryId, showModal]);
 
-  const [showMore, setShowMore] = useState(false);
-  const handleCollectorsNoteClick = useCallback(() => {
-    setShowMore((previous) => !previous);
-
-    onLayoutShift();
-  }, [onLayoutShift]);
-
   return (
     <StyledCollectionWrapper ref={componentRef}>
       <StyledCollectionHeader>
@@ -149,7 +140,7 @@ function UserGalleryCollection({
             <StyledCopyToClipboard textToCopy={`${baseUrl}${collectionUrl}`}>
               <TextButton text="Share" onClick={handleShareClick} />
             </StyledCopyToClipboard>
-            <SettingsDropdown>
+            <SettingsDropdown iconVariant="default">
               <DropdownSection>
                 {showEditActions && (
                   <>
@@ -174,7 +165,7 @@ function UserGalleryCollection({
         </StyledCollectionTitleWrapper>
         {unescapedCollectorsNote && (
           <>
-            <StyledCollectorsNote showMore={showMore} onClick={handleCollectorsNoteClick}>
+            <StyledCollectorsNote>
               <Markdown text={unescapedCollectorsNote} />
             </StyledCollectorsNote>
           </>
@@ -241,7 +232,7 @@ const StyledCollectorsTitle = styled(TitleS)`
   }
 `;
 
-const StyledCollectorsNote = styled(BaseM)<{ showMore: boolean }>`
+const StyledCollectorsNote = styled(BaseM)`
   width: 100%;
 
   @media only screen and ${breakpoints.tablet} {
@@ -251,33 +242,7 @@ const StyledCollectorsNote = styled(BaseM)<{ showMore: boolean }>`
   display: -webkit-box;
   -webkit-box-orient: vertical;
   overflow: hidden;
-
-  ${({ showMore }) =>
-    showMore
-      ? css`
-          -webkit-line-clamp: unset;
-        `
-      : css`
-          -webkit-line-clamp: 2;
-
-          p {
-            display: inline;
-            padding-bottom: 0 !important;
-          }
-
-          // We only care about line clamping on mobile
-          @media only screen and ${breakpoints.tablet} {
-            -webkit-line-clamp: unset;
-
-            p {
-              display: inline-block;
-            }
-
-            p:not(:last-child) {
-              padding-bottom: 12px !important;
-            }
-          }
-        `}
+  -webkit-line-clamp: unset;
 `;
 
 export default UserGalleryCollection;

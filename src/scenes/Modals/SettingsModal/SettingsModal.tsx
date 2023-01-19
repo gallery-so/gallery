@@ -1,4 +1,5 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useRouter } from 'next/router';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -61,6 +62,17 @@ function SettingsModal({
     `,
     queryRef
   );
+
+  // drop settings param from URL once modal has been opened
+  const { pathname, query: urlQuery, replace } = useRouter();
+  useEffect(() => {
+    const params = new URLSearchParams(urlQuery as Record<string, string>);
+    if (params.has('settings')) {
+      params.delete('settings');
+      // @ts-expect-error we're simply replacing the current page with the same path
+      replace({ pathname, query: params.toString() }, undefined, { shallow: true });
+    }
+  }, [pathname, replace, urlQuery]);
 
   const updateEmailNotificationSettings = useUpdateEmailNotificationSettings();
 

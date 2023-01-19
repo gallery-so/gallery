@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
-import { EditModeToken } from '~/components/GalleryEditor/CollectionEditor/types';
 import { Chain } from '~/components/GalleryEditor/PiecesSidebar/chains';
 import {
   createVirtualizedRowsFromGroups,
@@ -19,7 +18,6 @@ type SidebarTokensProps = {
   isSearching: boolean;
   selectedChain: Chain;
   selectedView: SidebarView;
-  editModeTokens: EditModeToken[];
   tokenRefs: SidebarTokensNewFragment$key;
 };
 
@@ -28,7 +26,6 @@ export const SidebarTokens = ({
   isSearching,
   selectedChain,
   selectedView,
-  editModeTokens,
 }: SidebarTokensProps) => {
   const tokens = useFragment(
     graphql`
@@ -116,17 +113,16 @@ export const SidebarTokens = ({
 
   const rows = useMemo(() => {
     if (shouldUseCollectionGrouping) {
-      const groups = groupCollectionsByAddress({ tokens, editModeTokens });
+      const groups = groupCollectionsByAddress({ tokens });
 
       return createVirtualizedRowsFromGroups({ groups, erroredTokenIds, collapsedCollections });
     } else {
       return createVirtualizedRowsFromTokens({
         tokens,
-        editModeTokens,
         erroredTokenIds,
       });
     }
-  }, [collapsedCollections, editModeTokens, erroredTokenIds, shouldUseCollectionGrouping, tokens]);
+  }, [collapsedCollections, erroredTokenIds, shouldUseCollectionGrouping, tokens]);
 
   useEffect(
     function resetCollapsedSectionsWhileSearching() {

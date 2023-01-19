@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import IconContainer from '~/components/core/Markdown/IconContainer';
+import IconContainer from '~/components/core/IconContainer';
 
 type Props = {
   onClick: () => void;
@@ -10,6 +10,7 @@ export function BackButton({ onClick }: Props) {
   return (
     <IconContainer
       size="md"
+      variant="default"
       onClick={onClick}
       icon={
         <StyledSvg

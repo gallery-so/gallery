@@ -7,7 +7,7 @@ import {
   StagedCollection,
   StagingItem,
 } from '~/components/ManageGallery/OrganizeCollection/types';
-import { generate12DigitId } from '~/utils/collectionLayout';
+import { generate12DigitId } from "~/utils/generate12DigitId";
 
 type TokenId = string;
 export type SidebarTokensState = Record<TokenId, EditModeToken>;

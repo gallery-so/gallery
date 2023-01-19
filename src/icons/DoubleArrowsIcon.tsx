@@ -8,23 +8,12 @@ export default function DoubleArrowsIcon({ className }: { className?: string }) 
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <g clipPath="url(#clip0_422_8644)">
-        <path
-          d="M4.66669 12.0001L8.00002 15.3335L11.3334 12.0001"
-          stroke="black"
-          strokeMiterlimit="10"
-        />
-        <path
-          d="M11.3334 4.00012L8.00002 0.666789L4.66669 4.00012"
-          stroke="black"
-          strokeMiterlimit="10"
-        />
-      </g>
-      <defs>
-        <clipPath id="clip0_422_8644">
-          <rect width="16" height="16" fill="white" transform="translate(0 16.0001) rotate(-90)" />
-        </clipPath>
-      </defs>
+      <path
+        d="M4.66675 9.99967L8.00008 13.333L11.3334 9.99967"
+        stroke="currentColor"
+        strokeMiterlimit="10"
+      />
+      <path d="M11.3334 6L8.00008 2.66667L4.66675 6" stroke="currentColor" strokeMiterlimit="10" />
     </svg>
   );
 }

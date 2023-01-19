@@ -1,44 +1,93 @@
-import { useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useCallback } from 'react';
+import { graphql, useFragment } from 'react-relay';
 import styled, { css } from 'styled-components';
 
+import colors from '~/components/core/colors';
+import IconContainer from '~/components/core/IconContainer';
+import { HStack } from '~/components/core/Spacer/Stack';
 import { TitleXSBold } from '~/components/core/Text/Text';
-import Tooltip from '~/components/Tooltip/Tooltip';
+import { ChainMetadata } from '~/components/GalleryEditor/PiecesSidebar/chains';
+import isRefreshDisabledForUser from '~/components/GalleryEditor/PiecesSidebar/isRefreshDisabledForUser';
+import { NewTooltip } from '~/components/Tooltip/NewTooltip';
+import { useTooltipHover } from '~/components/Tooltip/useTooltipHover';
+import { SidebarChainButtonFragment$key } from '~/generated/SidebarChainButtonFragment.graphql';
+import useSyncTokens from '~/hooks/api/tokens/useSyncTokens';
+import { RefreshIcon } from '~/icons/RefreshIcon';
+import { doesUserOwnWalletFromChain } from '~/utils/doesUserOwnWalletFromChain';
 
 type Props = {
-  icon: string;
-  title: string;
-  isSelected: boolean;
+  chain: ChainMetadata;
   onClick: () => void;
-  locked: boolean;
+  isSelected: boolean;
+  queryRef: SidebarChainButtonFragment$key;
 };
 
-export function SidebarChainButton({ isSelected, onClick, icon, title, locked }: Props) {
-  const [showTooltip, setShowTooltip] = useState(false);
+export function SidebarChainButton({ isSelected, onClick, chain, queryRef }: Props) {
+  const query = useFragment(
+    graphql`
+      fragment SidebarChainButtonFragment on Query {
+        viewer {
+          ... on Viewer {
+            user {
+              dbid
+            }
+          }
+        }
+
+        ...doesUserOwnWalletFromChainFragment
+      }
+    `,
+    queryRef
+  );
+
+  const { isLocked, syncTokens } = useSyncTokens();
+
+  const isRefreshDisabledAtUserLevel = isRefreshDisabledForUser(query.viewer?.user?.dbid ?? '');
+  const refreshDisabled =
+    isRefreshDisabledAtUserLevel && doesUserOwnWalletFromChain(chain.name, query);
+
+  const handleRefresh = useCallback(async () => {
+    await syncTokens(chain.name);
+  }, [chain.name, syncTokens]);
+
+  const { floating, reference, getFloatingProps, getReferenceProps, floatingStyle } =
+    useTooltipHover();
 
   return (
-    <ChainButton
-      role="button"
-      locked={locked}
-      onClick={onClick}
-      selected={isSelected}
-      onMouseEnter={() => setShowTooltip(true)}
-      onMouseLeave={() => setShowTooltip(false)}
-    >
-      <ChainLogo src={icon} />
-      <TitleXSBold>{title}</TitleXSBold>
+    <>
+      <ChainButton layout role="button" onClick={onClick} selected={isSelected}>
+        <HStack align="center">
+          <ChainLogo src={chain.icon} />
+          <TitleXSBold>{chain.shortName}</TitleXSBold>
+        </HStack>
 
-      {locked && <LockedChainTooltip active={showTooltip} text="Coming soon" />}
-    </ChainButton>
+        <AnimatePresence>
+          {isSelected && (
+            <motion.div key={chain.name}>
+              <IconContainer
+                size="sm"
+                disableHoverPadding
+                variant="default"
+                onClick={handleRefresh}
+                disabled={refreshDisabled}
+                ref={reference}
+                {...getReferenceProps()}
+                icon={<RefreshIcon />}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </ChainButton>
+      <NewTooltip
+        {...getFloatingProps()}
+        style={floatingStyle}
+        ref={floating}
+        text={isLocked ? `Refreshing...` : `Refresh ${chain.shortName} Wallets`}
+      />
+    </>
   );
 }
-
-const LockedChainTooltip = styled(Tooltip)<{ active: boolean }>`
-  bottom: 0;
-  z-index: 10;
-  opacity: ${({ active }) => (active ? 1 : 0)};
-  transform: translateY(calc(100% + ${({ active }) => (active ? 4 : 0)}px));
-`;
-
 const ChainLogo = styled.img`
   width: 16px;
   height: 16px;
@@ -46,26 +95,33 @@ const ChainLogo = styled.img`
   margin-right: 4px;
 `;
 
-const ChainButton = styled.div<{ selected: boolean; locked: boolean }>`
+const ChainButton = styled(motion.div)<{ selected: boolean }>`
   display: flex;
+  gap: 0 8px;
+  padding: 6px 8px;
+
+  z-index: 1;
+
+  border: 1px solid ${colors.offBlack};
+  border-radius: 24px;
 
   position: relative;
   align-items: center;
+  cursor: pointer;
 
-  ${({ locked }) =>
-    locked
+  ${({ selected }) =>
+    selected
       ? css`
-          cursor: not-allowed;
+          opacity: 1;
         `
       : css`
-          cursor: pointer;
+          opacity: 0.5;
+          border-color: ${colors.porcelain};
+          filter: blur(0.05px);
+
+          :hover {
+            filter: none;
+            opacity: 1;
+          }
         `}
-
-  &:not(:last-child) {
-    margin-right: 16px;
-  }
-
-  > *:not(${LockedChainTooltip}) {
-    opacity: ${({ selected }) => (selected ? '1' : '.5')};
-  }
 `;

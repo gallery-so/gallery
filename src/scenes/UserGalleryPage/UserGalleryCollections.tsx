@@ -101,14 +101,6 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
     [nonNullCollections]
   );
 
-  const handleLayoutShift = useCallback(
-    (index: number) => {
-      cache.clear(index, 0);
-      listRef.current?.recomputeRowHeights(index);
-    },
-    [cache]
-  );
-
   const rowRenderer = useCallback(
     ({ index, key, parent, style }: ListRowProps) => {
       const collection = collectionsToDisplay[index];
@@ -119,7 +111,6 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
               // @ts-expect-error Bad types from react-virtualized
               <StyledUserGalleryCollectionContainer ref={registerChild} key={key} style={style}>
                 <UserGalleryCollection
-                  onLayoutShift={() => handleLayoutShift(index)}
                   queryRef={query}
                   collectionRef={collection}
                   mobileLayout={mobileLayout}
@@ -132,7 +123,7 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
         </CellMeasurer>
       );
     },
-    [cache, collectionsToDisplay, handleLayoutShift, mobileLayout, query]
+    [cache, collectionsToDisplay, mobileLayout, query]
   );
 
   const numCollectionsToDisplay = collectionsToDisplay.length;

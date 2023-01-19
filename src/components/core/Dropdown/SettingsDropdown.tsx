@@ -2,15 +2,15 @@ import { ReactNode, useCallback, useState } from 'react';
 import styled from 'styled-components';
 
 import { Dropdown } from '~/components/core/Dropdown/Dropdown';
-import IconContainer, { IconSize } from "~/components/core/Markdown/IconContainer";
+import IconContainer, { ColorVariant, IconSize } from '~/components/core/IconContainer';
 
 type Props = {
   children: ReactNode;
-  stacked?: boolean
-  size?:IconSize
+  iconVariant: ColorVariant;
+  size?: IconSize;
 };
 
-function SettingsDropdown({ children, stacked, size }: Props) {
+function SettingsDropdown({ children, iconVariant, size }: Props) {
   const [showDropdown, setShowDropdown] = useState(false);
 
   const handleSettingsClick = useCallback(() => {
@@ -24,7 +24,7 @@ function SettingsDropdown({ children, stacked, size }: Props) {
   return (
     <StyledSettingsDropdown>
       <IconContainer
-        stacked={stacked}
+        variant={iconVariant}
         size={size}
         onClick={handleSettingsClick}
         icon={

@@ -1,11 +1,8 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 
 import Tooltip from '~/components/Tooltip/Tooltip';
-import {
-  useCollectionEditorActions,
-  useCollectionMetadataState,
-} from '~/contexts/collectionEditor/CollectionEditorContext';
+import { useCollectionEditorContextNew } from '~/contexts/collectionEditor/CollectionEditorContextNew';
 import VideoEnabledIcon from '~/icons/Video';
 import VideoDisabledIcon from '~/icons/VideoDisabled';
 
@@ -14,12 +11,8 @@ type Props = {
 };
 
 export default function LiveDisplayButton({ id }: Props) {
-  const collectionMetadata = useCollectionMetadataState();
-  const { setTokenLiveDisplay } = useCollectionEditorActions();
-
-  const isEnabled = useMemo(() => {
-    return collectionMetadata.tokenSettings[id];
-  }, [collectionMetadata.tokenSettings, id]);
+  const { liveDisplayTokenIds, toggleTokenLiveDisplay } = useCollectionEditorContextNew();
+  const isEnabled = liveDisplayTokenIds.has(id);
 
   const [showTooltip, setShowTooltip] = useState(false);
 
@@ -28,7 +21,7 @@ export default function LiveDisplayButton({ id }: Props) {
       <StyledTooltip text="Turn off live display" showTooltip={showTooltip} />
       <StyledVideoEnabledIcon
         color="white"
-        onClick={() => setTokenLiveDisplay(id, false)}
+        onClick={() => toggleTokenLiveDisplay(id)}
         onMouseEnter={() => setShowTooltip(true)}
         onMouseLeave={() => setShowTooltip(false)}
       />
@@ -38,7 +31,7 @@ export default function LiveDisplayButton({ id }: Props) {
       <StyledTooltip text="Turn on live display" showTooltip={showTooltip} />
       <StyledVideoDisabledIcon
         color="white"
-        onClick={() => setTokenLiveDisplay(id, true)}
+        onClick={() => toggleTokenLiveDisplay(id)}
         onMouseEnter={() => setShowTooltip(true)}
         onMouseLeave={() => setShowTooltip(false)}
       />
