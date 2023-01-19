@@ -1,6 +1,11 @@
 name: screenshots
 on: [deployment_status]
 jobs:
+  # start disable ---
+  # temporarily disable workflow as the failure mode is unclear
+  # last time this job failed: https://github.com/gallery-so/gallery/actions/runs/3951382775/jobs/6765164811
+  if: ${{ false }}
+  # --- end disable
   run:
     runs-on: ubuntu-latest
     steps:

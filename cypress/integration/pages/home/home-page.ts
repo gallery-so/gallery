@@ -9,8 +9,8 @@ export default class HomePage extends Page {
     return cy.get('[data-testid="sign-in-button"]');
   }
 
-  getExploreButton() {
-    return cy.get('[data-testid="explore-button"]');
+  getFeedList() {
+    return cy.get('[data-testid="feed-list"]');
   }
 
   getEthereumButton() {
