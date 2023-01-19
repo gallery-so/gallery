@@ -11,6 +11,7 @@ import { DropdownLink } from '~/components/core/Dropdown/DropdownLink';
 import { DropdownSection } from '~/components/core/Dropdown/DropdownSection';
 import { HStack } from '~/components/core/Spacer/Stack';
 import useCreateGallery from '~/components/MultiGallery/useCreateGallery';
+import Tooltip from '~/components/Tooltip/Tooltip';
 import { EditLink } from '~/contexts/globalLayout/GlobalNavbar/CollectionNavbar/EditLink';
 import { SignInButton } from '~/contexts/globalLayout/GlobalNavbar/SignInButton';
 import { useModalActions } from '~/contexts/modal/ModalContext';
@@ -20,6 +21,7 @@ import { useQrCode } from '~/scenes/Modals/QRCodePopover';
 import EditUserInfoModal from '~/scenes/UserGalleryPage/EditUserInfoModal';
 import LinkButton from '~/scenes/UserGalleryPage/LinkButton';
 import { getEditGalleryUrl } from '~/utils/getEditGalleryUrl';
+import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 import QRCodeButton from './QRCodeButton';
 
@@ -34,6 +36,7 @@ export function GalleryRightContent({ queryRef, username }: GalleryRightContentP
       fragment GalleryRightContentFragment on Query {
         ...EditUserInfoModalFragment
         ...getEditGalleryUrlFragment
+        ...isFeatureEnabledFragment
 
         viewer {
           ... on Viewer {
@@ -60,6 +63,11 @@ export function GalleryRightContent({ queryRef, username }: GalleryRightContentP
   const styledQrCode = useQrCode();
   const { showModal } = useModalActions();
   const { route } = useRouter();
+
+  const isMultigalleryEnabled = isFeatureEnabled(FeatureFlag.MULTIGALLERY, query);
+  const [showTooltip, setShowTooltip] = useState(false);
+
+  console.log('isMultigalleryEnabled', isMultigalleryEnabled);
 
   const createGallery = useCreateGallery();
 
@@ -135,9 +143,18 @@ export function GalleryRightContent({ queryRef, username }: GalleryRightContentP
     return (
       <HStack gap={12}>
         {editGalleryUrl && (
-          <Button variant="secondary" onClick={handleCreateGallery}>
-            Add New
-          </Button>
+          <div onMouseEnter={() => setShowTooltip(true)} onMouseLeave={() => setShowTooltip(false)}>
+            {!isMultigalleryEnabled && (
+              <StyledTooltip text={'Coming Soon'} showTooltip={showTooltip} />
+            )}
+            <Button
+              variant="secondary"
+              onClick={handleCreateGallery}
+              disabled={!isMultigalleryEnabled}
+            >
+              Add New
+            </Button>
+          </div>
         )}
       </HStack>
     );
@@ -150,4 +167,10 @@ export function GalleryRightContent({ queryRef, username }: GalleryRightContentP
 
 const EditLinkWrapper = styled.div`
   position: relative;
+`;
+
+const StyledTooltip = styled(Tooltip)<{ showTooltip: boolean }>`
+  opacity: ${({ showTooltip }) => (showTooltip ? 1 : 0)};
+  transform: translateX(${({ showTooltip }) => (showTooltip ? '-120%' : '-90%')});
+  top: 16px;
 `;
