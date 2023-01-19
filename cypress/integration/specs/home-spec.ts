@@ -1,3 +1,7 @@
+import HomePage from '../pages/home/home-page';
+
+const home = new HomePage();
+
 describe('Homepage test', () => {
   beforeEach(() => {
     cy.disconnectMetamaskWalletFromAllDapps();
@@ -5,9 +9,10 @@ describe('Homepage test', () => {
   });
 
   context('Homepage', () => {
-    it('should render the homepage', () => {
+    it('should redirect to the feed when visiting the homepage', () => {
       cy.visit('/');
-      cy.contains('Gallery', { matchCase: false }).should('be.exist');
+      cy.url().should('include', '/home');
+      home.getFeedList().should('be.exist');
     });
 
     // TODO: reenable when synpress `acceptMetamaskAccessRequest()` bug is fixed!
