@@ -22,10 +22,11 @@ import IconContainer from '../core/IconContainer';
 import { UnstyledLink } from '../core/Link/UnstyledLink';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM, TitleS, TitleXS } from '../core/Text/Text';
+import { GalleryNameAndDescriptionEditForm } from '../GalleryEditor/GalleryNameAndDescriptionEditForm';
 import DeleteGalleryConfirmation from './DeleteGalleryConfirmation';
-import GalleryNameAndDescriptionModal from './GalleryNameAndDescriptionModal';
 import useSetFeaturedGallery from './useSetFeaturedGallery';
 import useUpdateGalleryHidden from './useUpdateGalleryHidden';
+import useUpdateGalleryInfo from './useUpdateGalleryInfo';
 
 type Props = {
   isFeatured?: boolean;
@@ -42,6 +43,7 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
         dbid
         id
         name
+        description
         tokenPreviews @required(action: THROW) {
           __typename
           small
@@ -55,7 +57,6 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
           username @required(action: THROW)
         }
         ...DeleteGalleryConfirmationFragment
-        ...GalleryNameAndDescriptionModalFragment
       }
     `,
     galleryRef
@@ -108,7 +109,7 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
   const setFeaturedGallery = useSetFeaturedGallery();
   const updateGalleryHidden = useUpdateGalleryHidden();
 
-  const { showModal, hideModal } = useModalActions();
+  const { showModal } = useModalActions();
 
   const { name, collections, tokenPreviews, hidden, dbid } = gallery;
 
@@ -175,12 +176,26 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
     });
   }, [checkIfItsLastVisibleGallery, gallery, reassignFeaturedGallery, showModal]);
 
+  const updateGalleryInfo = useUpdateGalleryInfo();
   const handleEditGalleryName = useCallback(() => {
     showModal({
-      content: <GalleryNameAndDescriptionModal galleryRef={gallery} onNext={hideModal} />,
+      content: (
+        <GalleryNameAndDescriptionEditForm
+          onDone={(result) => {
+            updateGalleryInfo({
+              id: gallery.dbid,
+              name: result.name,
+              description: result.description,
+            });
+          }}
+          mode="editing"
+          description={gallery.description ?? ''}
+          name={gallery.name ?? ''}
+        />
+      ),
       headerText: 'Add a gallery name and description',
     });
-  }, [hideModal, gallery, showModal]);
+  }, [gallery, showModal, updateGalleryInfo]);
 
   const handleEditGallery: Route = useMemo(() => {
     return {
