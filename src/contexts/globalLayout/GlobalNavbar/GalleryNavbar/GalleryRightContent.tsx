@@ -10,7 +10,7 @@ import { Dropdown } from '~/components/core/Dropdown/Dropdown';
 import { DropdownItem } from '~/components/core/Dropdown/DropdownItem';
 import { DropdownLink } from '~/components/core/Dropdown/DropdownLink';
 import { DropdownSection } from '~/components/core/Dropdown/DropdownSection';
-import { HStack } from '~/components/core/Spacer/Stack';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { TitleXS } from '~/components/core/Text/Text';
 import useCreateGallery from '~/components/MultiGallery/useCreateGallery';
 import Tooltip from '~/components/Tooltip/Tooltip';
@@ -155,12 +155,16 @@ export function GalleryRightContent({ queryRef, username }: GalleryRightContentP
 
   if (showShowMultiGalleryButton) {
     return (
-      <div onMouseEnter={() => setShowTooltip(true)} onMouseLeave={() => setShowTooltip(false)}>
-        {!isMultigalleryEnabled && <StyledTooltip text={'Coming Soon'} showTooltip={showTooltip} />}
+      <VStack
+        onMouseEnter={() => setShowTooltip(true)}
+        onMouseLeave={() => setShowTooltip(false)}
+        align="center"
+      >
+        {!isMultigalleryEnabled && <StyledTooltip text="Soon™" showTooltip={showTooltip} />}
         <Button variant="secondary" onClick={handleCreateGallery} disabled={!isMultigalleryEnabled}>
           Add New
         </Button>
-      </div>
+      </VStack>
     );
   }
 
@@ -200,6 +204,5 @@ const EditButtonContainer = styled.div.attrs({ role: 'button' })`
 
 const StyledTooltip = styled(Tooltip)<{ showTooltip: boolean }>`
   opacity: ${({ showTooltip }) => (showTooltip ? 1 : 0)};
-  transform: translateX(${({ showTooltip }) => (showTooltip ? '-120%' : '-90%')});
-  top: 16px;
+  transform: translateY(${({ showTooltip }) => (showTooltip ? '38px' : '34px')});
 `;
