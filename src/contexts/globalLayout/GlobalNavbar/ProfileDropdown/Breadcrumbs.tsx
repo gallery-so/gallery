@@ -17,6 +17,7 @@ export const HomeText = styled(Paragraph)`
 `;
 
 export const BreadcrumbText = styled(Paragraph)`
+  display: inline;
   font-family: ${TITLE_FONT_FAMILY};
   font-weight: 400;
   line-height: 21px;
@@ -29,10 +30,7 @@ export const BreadcrumbText = styled(Paragraph)`
   white-space: nowrap;
   overflow: hidden;
 
-  font-size: 16px;
-  @media only screen and ${breakpoints.tablet} {
-    font-size: 18px;
-  }
+  font-size: 18px;
 `;
 
 export const BreadcrumbLink = styled.a`
@@ -49,8 +47,5 @@ export const BreadcrumbLink = styled.a`
   white-space: nowrap;
   overflow: hidden;
 
-  font-size: 16px;
-  @media only screen and ${breakpoints.tablet} {
-    font-size: 18px;
-  }
+  font-size: 18px;
 `;

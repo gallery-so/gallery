@@ -17,6 +17,7 @@ export default function FocusedGallery({ galleryId, username }: Props) {
       query GalleryIdFocusedGalleryQuery($galleryId: DBID!, $username: String!) {
         galleryById(id: $galleryId) {
           ... on Gallery {
+            name
             owner {
               username
             }
@@ -34,6 +35,7 @@ export default function FocusedGallery({ galleryId, username }: Props) {
     <GalleryRoute
       navbar={
         <GalleryNavbar
+          galleryName={query.galleryById?.name || undefined}
           username={query.galleryById?.owner?.username ?? '<error>'}
           queryRef={query}
         />

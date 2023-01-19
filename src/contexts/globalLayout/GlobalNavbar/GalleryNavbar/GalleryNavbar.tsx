@@ -12,7 +12,10 @@ import FollowButton from '~/components/Follow/FollowButton';
 import GalleryLeftContent from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryLeftContent';
 import { GalleryNavLinks } from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavLinks';
 import { GalleryRightContent } from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryRightContent';
-import { BreadcrumbLink } from '~/contexts/globalLayout/GlobalNavbar/ProfileDropdown/Breadcrumbs';
+import {
+  BreadcrumbLink,
+  BreadcrumbText,
+} from '~/contexts/globalLayout/GlobalNavbar/ProfileDropdown/Breadcrumbs';
 import {
   NavbarCenterContent,
   NavbarLeftContent,
@@ -25,10 +28,11 @@ import handleCustomDisplayName from '~/utils/handleCustomDisplayName';
 
 type Props = {
   username: string;
+  galleryName?: string;
   queryRef: GalleryNavbarFragment$key;
 };
 
-export function GalleryNavbar({ queryRef, username }: Props) {
+export function GalleryNavbar({ queryRef, username, galleryName }: Props) {
   const query = useFragment(
     graphql`
       fragment GalleryNavbarFragment on Query {
@@ -55,29 +59,36 @@ export function GalleryNavbar({ queryRef, username }: Props) {
     <VStack>
       <StandardNavbarContainer>
         <NavbarLeftContent>
-          <GalleryLeftContent queryRef={query} />
+          <GalleryLeftContent galleryName={galleryName} queryRef={query} />
         </NavbarLeftContent>
+
         <NavbarCenterContent>
           {isMobile ? (
-            <HStack gap={4}>
+            <HStack style={{ overflow: 'hidden' }} gap={4}>
               <Link href={userGalleryRoute}>
                 <UsernameBreadcrumbLink
-                  mainGalleryPage={pathname === '/[username]'}
                   href={route(userGalleryRoute)}
+                  mainGalleryPage={pathname === '/[username]'}
                 >
-                  {displayName}
+                  {displayName} {galleryName && <BreadcrumbText>/ {galleryName}</BreadcrumbText>}
                 </UsernameBreadcrumbLink>
               </Link>
-              {query.userByUsername && (
-                <Suspense fallback={null}>
-                  <FollowButton queryRef={query} userRef={query.userByUsername} />
-                </Suspense>
+
+              {!galleryName && (
+                <>
+                  {query.userByUsername && (
+                    <Suspense fallback={null}>
+                      <FollowButton queryRef={query} userRef={query.userByUsername} />
+                    </Suspense>
+                  )}
+                </>
               )}
             </HStack>
           ) : (
             <GalleryNavLinks username={username} queryRef={query} />
           )}
         </NavbarCenterContent>
+
         <NavbarRightContent>
           <GalleryRightContent username={username} queryRef={query} />
         </NavbarRightContent>
