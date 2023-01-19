@@ -11,7 +11,7 @@ import { useToastActions } from '~/contexts/toast/ToastContext';
 import { GalleryFragment$key } from '~/generated/GalleryFragment.graphql';
 import { GalleryFragmentQuery$key } from '~/generated/GalleryFragmentQuery.graphql';
 import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
-import PencilIcon from '~/icons/PencilIcon';
+import { EditPencilIcon } from '~/icons/EditPencilIcon';
 import { removeNullValues } from '~/utils/removeNullValues';
 
 import colors from '../core/colors';
@@ -243,7 +243,7 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
             <>
               <Link href={handleEditGallery}>
                 <a>
-                  <IconContainer size="md" variant="default" icon={<PencilIcon />} />
+                  <IconContainer size="md" variant="default" icon={<EditPencilIcon />} />
                 </a>
               </Link>
               <SettingsDropdown iconVariant="default">
