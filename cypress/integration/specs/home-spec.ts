@@ -9,18 +9,10 @@ describe('Homepage test', () => {
   });
 
   context('Homepage', () => {
-    it('should render the homepage', () => {
+    it('should redirect to the feed when visiting the homepage', () => {
       cy.visit('/');
-      cy.contains('Gallery', { matchCase: false }).should('be.exist');
-    });
-
-    it('should redirect to members page when click the explore button', () => {
-      home.getExploreButton().should('be.exist');
-      home.getExploreButton().click({
-        force: true,
-      });
-
       cy.url().should('include', '/home');
+      home.getFeedList().should('be.exist');
     });
 
     // TODO: reenable when synpress `acceptMetamaskAccessRequest()` bug is fixed!
