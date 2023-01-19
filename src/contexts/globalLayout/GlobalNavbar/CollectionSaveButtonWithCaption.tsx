@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
 
 import { Button } from '~/components/core/Button/Button';
@@ -64,6 +64,23 @@ export function CollectionSaveButtonWithCaption({
   }, [caption]);
 
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    function handlePress(event: KeyboardEvent) {
+      if (event.key === 's' && event.metaKey) {
+        // Avoid trying to save page as HTML
+        event.preventDefault();
+
+        if (!isPopupDisplayed && !disabled) {
+          handleOpenCaption();
+        }
+      }
+    }
+
+    window.addEventListener('keydown', handlePress);
+
+    return () => window.removeEventListener('keydown', handlePress);
+  }, [disabled, handleOpenCaption, isPopupDisplayed]);
 
   return (
     <StyledConfirmationContainer>
