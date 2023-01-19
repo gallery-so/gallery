@@ -42,7 +42,10 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
         dbid
         id
         name
-        tokenPreviews @required(action: THROW)
+        tokenPreviews @required(action: THROW) {
+          __typename
+          small
+        }
         hidden @required(action: THROW)
         collections @required(action: THROW) {
           id
@@ -186,7 +189,7 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
     };
   }, [dbid]);
 
-  const nonNullTokenPreviews = removeNullValues(tokenPreviews) ?? [];
+  const nonNullTokenPreviews = removeNullValues(tokenPreviews?.map((token) => token?.small)) ?? [];
 
   const remainingTokenPreviews = TOTAL_TOKENS - nonNullTokenPreviews.length;
 
