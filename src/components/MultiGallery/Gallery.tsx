@@ -18,8 +18,8 @@ import colors from '../core/colors';
 import { DropdownItem } from '../core/Dropdown/DropdownItem';
 import { DropdownSection } from '../core/Dropdown/DropdownSection';
 import SettingsDropdown from '../core/Dropdown/SettingsDropdown';
+import IconContainer from '../core/IconContainer';
 import { UnstyledLink } from '../core/Link/UnstyledLink';
-import IconContainer from '../core/Markdown/IconContainer';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM, TitleS, TitleXS } from '../core/Text/Text';
 import DeleteGalleryConfirmation from './DeleteGalleryConfirmation';
@@ -228,10 +228,10 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
             <>
               <Link href={handleEditGallery}>
                 <a>
-                  <IconContainer size="md" icon={<PencilIcon />} />
+                  <IconContainer size="md" variant="default" icon={<PencilIcon />} />
                 </a>
               </Link>
-              <SettingsDropdown>
+              <SettingsDropdown iconVariant="default">
                 <DropdownSection>
                   <DropdownItem onClick={handleEditGalleryName}>EDIT NAME & DESC</DropdownItem>
                   {hidden ? (
