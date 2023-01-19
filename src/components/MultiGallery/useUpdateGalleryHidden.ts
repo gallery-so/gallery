@@ -9,8 +9,11 @@ export default function useUpdateGalleryHidden() {
     mutation useUpdateGalleryHiddenMutation($input: UpdateGalleryHiddenInput!) @raw_response_type {
       updateGalleryHidden(input: $input) {
         ... on UpdateGalleryHiddenPayload {
+          __typename
           gallery {
+            __typename
             id
+            hidden
           }
         }
 
@@ -23,6 +26,16 @@ export default function useUpdateGalleryHidden() {
 
   return useCallback(
     (id: string, hidden: boolean) => {
+      const optimisticResponse: useUpdateGalleryHiddenMutation['response'] = {
+        updateGalleryHidden: {
+          __typename: 'UpdateGalleryHiddenPayload',
+          gallery: {
+            __typename: 'Gallery',
+            id,
+            hidden,
+          },
+        },
+      };
       return updateGalleryHidden({
         variables: {
           input: {
@@ -30,17 +43,7 @@ export default function useUpdateGalleryHidden() {
             hidden,
           },
         },
-        updater: (store) => {
-          const viewer = store.getRoot().getLinkedRecord('viewer');
-          const galleries = viewer?.getLinkedRecord('user')?.getLinkedRecords('galleries');
-          const gallery = galleries?.find((gallery) => gallery.getValue('dbid') === id);
-
-          if (!gallery) {
-            return;
-          }
-
-          gallery.setValue(hidden, 'hidden');
-        },
+        optimisticResponse,
       });
     },
     [updateGalleryHidden]
