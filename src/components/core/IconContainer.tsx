@@ -1,6 +1,8 @@
 import React, { ForwardedRef, forwardRef } from 'react';
 import styled, { css } from 'styled-components';
 
+import { HStack } from '~/components/core/Spacer/Stack';
+
 import colors from './colors';
 
 export type IconSize = 'xs' | 'sm' | 'md' | 'lg';
@@ -105,14 +107,15 @@ function IconContainer(
     >
       {disableHoverPadding && <HoverCircle variant={variant} size={size} disabled={disabled} />}
 
-      {icon}
+      <HStack justify="center" align="center" style={{ position: 'relative', zIndex: 1 }}>
+        {icon}
+      </HStack>
     </StyledIcon>
   );
 }
 
 const HoverCircle = styled.div<{ size: IconSize; variant: ColorVariant; disabled?: boolean }>`
   position: absolute;
-  z-index: -1;
 
   border-radius: 99999999px;
 
