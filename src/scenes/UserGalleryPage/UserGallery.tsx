@@ -5,7 +5,6 @@ import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
-import colors from '~/components/core/colors';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { useModalState } from '~/contexts/modal/ModalContext';
 import { UserGalleryFragment$key } from '~/generated/UserGalleryFragment.graphql';

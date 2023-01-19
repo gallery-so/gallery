@@ -8,7 +8,7 @@ import colors from '~/components/core/colors';
 import { DisplayLayout } from '~/components/core/enums';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
-import { BaseM, TitleL, TitleM } from '~/components/core/Text/Text';
+import { BaseM, TitleM } from '~/components/core/Text/Text';
 import { GalleryNameDescriptionHeaderFragment$key } from '~/generated/GalleryNameDescriptionHeaderFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import unescape from '~/utils/unescape';
