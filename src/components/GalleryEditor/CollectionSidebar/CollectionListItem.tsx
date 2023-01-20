@@ -96,7 +96,7 @@ export function CollectionListItem({ collectionId }: CollectionListItemProps) {
         align="center"
         selected={selected}
       >
-        <CollectionTitleText italicize={!collection.name}>
+        <CollectionTitleText isHidden={hidden} italicize={!collection.name}>
           {escapedCollectionName || 'Untitled'}
         </CollectionTitleText>
         <HStack gap={10} onClick={handleIconSectionClick}>
@@ -129,8 +129,15 @@ export function CollectionListItem({ collectionId }: CollectionListItemProps) {
   );
 }
 
-const CollectionTitleText = styled(TitleXS)<{ italicize: boolean }>`
+const CollectionTitleText = styled(TitleXS)<{ italicize: boolean; isHidden: boolean }>`
   text-transform: none;
+
+  ${({ isHidden }) =>
+    isHidden
+      ? css`
+          color: ${colors.metal};
+        `
+      : null}
 
   ${({ italicize }) =>
     italicize
