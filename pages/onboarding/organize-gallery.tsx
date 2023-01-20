@@ -12,6 +12,16 @@ export default function OrganizeGalleryPage() {
   const query = useLazyLoadQuery<organizeGalleryQuery>(
     graphql`
       query organizeGalleryQuery {
+        viewer {
+          ... on Viewer {
+            user {
+              galleries {
+                id
+              }
+            }
+          }
+        }
+
         ...OrganizeGalleryFragment
         ...isFeatureEnabledFragment
       }
@@ -46,9 +56,16 @@ export default function OrganizeGalleryPage() {
     return push({ pathname, query: { ...urlQuery } });
   }, [isEmailFeatureEnabled, push, urlQuery]);
 
+  const galleryId = query.viewer?.user?.galleries?.[0]?.id;
+
+  if (!galleryId) {
+    throw new Error('User did not have a gallery.');
+  }
+
   return (
     <FullPageStep navbar={<OnboardingGalleryEditorNavbar onBack={back} onNext={handleNext} />}>
       <OrganizeGallery
+        galleryId={galleryId}
         queryRef={query}
         onAddCollection={handleAddCollection}
         onEditCollection={handleEditCollection}

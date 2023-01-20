@@ -56,7 +56,7 @@ export default function Feed({ queryRef }: Props) {
   }, [feedMode, refetch]);
 
   return (
-    <StyledFeed>
+    <StyledFeed data-testid="feed-list">
       {isLoggedIn && <FeedModeSelector feedMode={feedMode} setFeedMode={setFeedMode} />}
       {feedMode === 'FOLLOWING' && <ViewerFeed queryRef={query} setFeedMode={setFeedMode} />}
       {feedMode === 'WORLDWIDE' && <GlobalFeed queryRef={query} />}
