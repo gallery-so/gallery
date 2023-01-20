@@ -61,8 +61,5 @@ export default function Featured({ queryRef }: Props) {
 const StyledFeaturedPage = styled(VStack)`
   width: 100%;
   flex: 1;
-
-  @media only screen and ${breakpoints.tablet} {
-    padding-top: 24px;
-  }
+  padding-top: 24px;
 `;
