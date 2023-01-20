@@ -36,21 +36,19 @@ export default function FeedModeSelector({ feedMode, setFeedMode }: Props) {
   );
 
   return (
-    <div>
-      <HStack gap={8}>
-        <StyledTextButton
-          active={feedMode === 'FOLLOWING'}
-          onClick={handleFollowingModeClick}
-          text="Following"
-        />
+    <HStack gap={8}>
+      <StyledTextButton
+        active={feedMode === 'FOLLOWING'}
+        onClick={handleFollowingModeClick}
+        text="Following"
+      />
 
-        <StyledTextButton
-          active={feedMode === 'WORLDWIDE'}
-          onClick={handleWorldwideModeClick}
-          text="Worldwide"
-        />
-      </HStack>
-    </div>
+      <StyledTextButton
+        active={feedMode === 'WORLDWIDE'}
+        onClick={handleWorldwideModeClick}
+        text="Worldwide"
+      />
+    </HStack>
   );
 }
 

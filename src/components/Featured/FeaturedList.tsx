@@ -57,7 +57,7 @@ const Wrapper = styled.div`
   grid-template-columns: repeat(8, 1fr);
 
   grid-gap: 12px 16px;
-  min-width: 1496px; // to get overflow on mobile
+  min-width: 1496px; // define the full width of the list, which is meant to overflow and be horizontally scrollable
 
   @media only screen and ${breakpoints.desktop} {
     min-width: 2560px;

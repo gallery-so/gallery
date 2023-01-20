@@ -114,11 +114,7 @@ export default function FeaturedUserCard({ userRef, queryRef }: Props) {
               {collectionCount} {pluralize(collectionCount, 'collection')}
             </BaseM>
           </VStack>
-          {!isOwnProfile && (
-            <div>
-              <StyledFollowButton userRef={user} queryRef={query} />
-            </div>
-          )}
+          {!isOwnProfile && <StyledFollowButton userRef={user} queryRef={query} />}
         </UserDetails>
       </StyledContent>
     </StyledFeaturedUserCard>
@@ -129,10 +125,9 @@ const StyledFeaturedUserCard = styled.a`
   border-radius: 12px;
   background-color: ${colors.offWhite};
   padding: 12px;
-
   cursor: pointer;
-
   text-decoration: none;
+
   &:hover {
     background-color: ${colors.faint};
   }
