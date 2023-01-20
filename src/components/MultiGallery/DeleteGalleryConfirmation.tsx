@@ -37,7 +37,7 @@ export default function DeleteGalleryConfirmation({ galleryRef, isLastGallery, o
   const [isLoading, setIsLoading] = useState(false);
 
   const handleConfirmClick = useCallback(() => {
-    if (isLastGallery && !hidden) {
+    if (isLastGallery) {
       pushToast({
         message: 'You cannot delete your only gallery.',
       });
