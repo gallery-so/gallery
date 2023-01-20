@@ -1,7 +1,8 @@
+import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
-import { FeaturedListFragment$key } from '~/generated/FeaturedListFragment.graphql';
-import { FeaturedUserCardFollowFragment$key } from '~/generated/FeaturedUserCardFollowFragment.graphql';
+import { FeaturedSectionFragment$key } from '~/generated/FeaturedSectionFragment.graphql';
+import { FeaturedSectionQueryFragment$key } from '~/generated/FeaturedSectionQueryFragment.graphql';
 
 import colors from '../core/colors';
 import { VStack } from '../core/Spacer/Stack';
@@ -11,18 +12,36 @@ import FeaturedList from './FeaturedList';
 type Props = {
   title: string;
   subTitle: string;
-  trendingUsersRef: FeaturedListFragment$key;
-  queryRef: FeaturedUserCardFollowFragment$key;
+  trendingUsersRef: FeaturedSectionFragment$key;
+  queryRef: FeaturedSectionQueryFragment$key;
 };
 
 export default function FeaturedSection({ trendingUsersRef, queryRef, title, subTitle }: Props) {
+  const query = useFragment(
+    graphql`
+      fragment FeaturedSectionQueryFragment on Query {
+        ...FeaturedListQueryFragment
+      }
+    `,
+    queryRef
+  );
+
+  const trendingUsers = useFragment(
+    graphql`
+      fragment FeaturedSectionFragment on TrendingUsersPayload {
+        ...FeaturedListFragment
+      }
+    `,
+    trendingUsersRef
+  );
+
   return (
     <StyledFeaturedSection gap={32}>
       <VStack gap={4}>
         <Title>{title}</Title>
         <TitleDiatypeL color={colors.metal}>{subTitle}</TitleDiatypeL>
       </VStack>
-      <FeaturedList trendingUsersRef={trendingUsersRef} queryRef={queryRef} />
+      <FeaturedList trendingUsersRef={trendingUsers} queryRef={query} />
     </StyledFeaturedSection>
   );
 }

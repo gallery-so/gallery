@@ -3,7 +3,7 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { FeaturedListFragment$key } from '~/generated/FeaturedListFragment.graphql';
-import { FeaturedUserCardFollowFragment$key } from '~/generated/FeaturedUserCardFollowFragment.graphql';
+import { FeaturedListQueryFragment$key } from '~/generated/FeaturedListQueryFragment.graphql';
 
 import breakpoints from '../core/breakpoints';
 import { HStack } from '../core/Spacer/Stack';
@@ -11,12 +11,21 @@ import FeaturedUserCard from './FeaturedUserCard';
 
 type Props = {
   trendingUsersRef: FeaturedListFragment$key;
-  queryRef: FeaturedUserCardFollowFragment$key;
+  queryRef: FeaturedListQueryFragment$key;
 };
 
 const USERS_TO_SHOW = 16;
 
 export default function FeaturedList({ trendingUsersRef, queryRef }: Props) {
+  const query = useFragment(
+    graphql`
+      fragment FeaturedListQueryFragment on Query {
+        ...FeaturedUserCardFollowFragment
+      }
+    `,
+    queryRef
+  );
+
   const trendingUsers = useFragment(
     graphql`
       fragment FeaturedListFragment on TrendingUsersPayload {
@@ -38,7 +47,7 @@ export default function FeaturedList({ trendingUsersRef, queryRef }: Props) {
     <StyledFeaturedList>
       <Wrapper>
         {shortenedUserList.map((user) => (
-          <FeaturedUserCard userRef={user} queryRef={queryRef} key={user.id} />
+          <FeaturedUserCard userRef={user} queryRef={query} key={user.id} />
         ))}
       </Wrapper>
     </StyledFeaturedList>

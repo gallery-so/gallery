@@ -3,7 +3,6 @@ import styled from 'styled-components';
 
 import { FeaturedFragment$key } from '~/generated/FeaturedFragment.graphql';
 
-import breakpoints from '../core/breakpoints';
 import { VStack } from '../core/Spacer/Stack';
 import FeaturedSection from './FeaturedSection';
 
@@ -18,19 +17,17 @@ export default function Featured({ queryRef }: Props) {
         trendingUsers7Days: trendingUsers(input: { report: LAST_7_DAYS }) {
           ... on TrendingUsersPayload {
             __typename
-            # eslint-disable-next-line relay/must-colocate-fragment-spreads
-            ...FeaturedListFragment
+            ...FeaturedSectionFragment
           }
         }
         trendingUsersAllTime: trendingUsers(input: { report: ALL_TIME }) {
           ... on TrendingUsersPayload {
             __typename
-            # eslint-disable-next-line relay/must-colocate-fragment-spreads
-            ...FeaturedListFragment
+            ...FeaturedSectionFragment
           }
         }
-        # eslint-disable-next-line relay/must-colocate-fragment-spreads
-        ...FeaturedUserCardFollowFragment
+
+        ...FeaturedSectionQueryFragment
       }
     `,
     queryRef
