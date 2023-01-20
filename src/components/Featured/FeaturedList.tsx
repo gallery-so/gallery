@@ -49,10 +49,6 @@ const StyledFeaturedList = styled(HStack)`
   gap: 12px 16px;
   overflow-x: scroll;
   padding-bottom: 16px; // to create space for overflow scroll bar
-
-  @media only screen and ${breakpoints.desktop} {
-    padding-bottom: 0px;
-  }
 `;
 
 const Wrapper = styled.div`
@@ -61,7 +57,7 @@ const Wrapper = styled.div`
   grid-template-columns: repeat(8, 1fr);
 
   grid-gap: 12px 16px;
-  min-width: 748px; // to get overflow on mobile
+  min-width: 1496px; // to get overflow on mobile
 
   @media only screen and ${breakpoints.desktop} {
     min-width: 2560px;
