@@ -58,6 +58,7 @@ export function getInitialCollectionsFromServer(
 
   const queryCollections = removeNullValues(gallery?.collections);
 
+  // generate default collection client-side if user doesn't have any
   if (queryCollections.length === 0) {
     const generatedCollectionId = generate12DigitId();
     const generatedSectionId = generate12DigitId();
