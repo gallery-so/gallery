@@ -40,11 +40,7 @@ export default function FocusedGallery({ galleryId, username }: Props) {
           queryRef={query}
         />
       }
-      element={
-        <>
-          <FocusedGalleryPage queryRef={query} />
-        </>
-      }
+      element={<FocusedGalleryPage queryRef={query} />}
     />
   );
 }
