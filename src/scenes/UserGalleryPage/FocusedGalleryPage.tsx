@@ -41,7 +41,10 @@ export function FocusedGalleryPage({ queryRef }: FocusedGalleryPageProps) {
 
   const username = query.galleryById.owner?.username ?? '<unknown>';
 
-  const headTitle = `${username} | Gallery`;
+  let headTitle = `${username} | Gallery`;
+  if (query.galleryById.name) {
+    headTitle = `${username} | ${query.galleryById.name} | Gallery`;
+  }
 
   const track = useTrack();
   const navbarHeight = useGlobalNavbarHeight();
