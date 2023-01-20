@@ -140,10 +140,6 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
   const [name, setName] = useState(() => query.galleryById?.name ?? '');
   const [description, setDescription] = useState(() => query.galleryById?.description ?? '');
 
-  const [collectionIdBeingEdited, setCollectionIdBeingEdited] = useState<string | null>(() => {
-    return query.galleryById?.collections?.[0]?.dbid ?? null;
-  });
-
   const [deletedCollectionIds, setDeletedCollectionIds] = useState(() => {
     return new Set<string>();
   });
@@ -151,6 +147,10 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
   const [collections, setCollections] = useState<CollectionMap>(() =>
     getInitialCollectionsFromServer(query)
   );
+
+  const [collectionIdBeingEdited, setCollectionIdBeingEdited] = useState<string | null>(() => {
+    return Object.values(collections)[0]?.dbid ?? null;
+  });
 
   const { showModal } = useModalActions();
   const { pushToast } = useToastActions();
