@@ -123,9 +123,17 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
       .find((viewerGallery) => viewerGallery?.gallery?.dbid !== dbid);
 
     if (otherGallery && otherGallery?.gallery?.dbid) {
-      await setFeaturedGallery(otherGallery?.gallery?.dbid);
+      try {
+        await setFeaturedGallery(otherGallery?.gallery?.dbid);
+      } catch (error) {
+        if (error instanceof Error) {
+          pushToast({
+            message: 'Unfortunately there was an error to featured this gallery',
+          });
+        }
+      }
     }
-  }, [dbid, isFeatured, query.viewer?.viewerGalleries, setFeaturedGallery]);
+  }, [dbid, isFeatured, pushToast, query.viewer?.viewerGalleries, setFeaturedGallery]);
 
   const checkIfItsLastVisibleGallery = useCallback(() => {
     const visibleGalleries = removeNullValues(query.viewer?.viewerGalleries).filter(
@@ -136,8 +144,16 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
   }, [query.viewer?.viewerGalleries]);
 
   const handleSetFeaturedGallery = useCallback(async () => {
-    await setFeaturedGallery(dbid);
-  }, [dbid, setFeaturedGallery]);
+    try {
+      await setFeaturedGallery(dbid);
+    } catch (error) {
+      if (error instanceof Error) {
+        pushToast({
+          message: 'Unfortunately there was an error to featured this gallery',
+        });
+      }
+    }
+  }, [dbid, pushToast, setFeaturedGallery]);
 
   const handleUpdateGalleryHidden = useCallback(() => {
     const isLastGallery = checkIfItsLastVisibleGallery();
@@ -177,17 +193,31 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
   }, [checkIfItsLastVisibleGallery, gallery, reassignFeaturedGallery, showModal]);
 
   const updateGalleryInfo = useUpdateGalleryInfo();
+
+  const handleUpdateGalleryInfo = useCallback(
+    async (result: { name: string; description: string }) => {
+      try {
+        await updateGalleryInfo({
+          id: gallery.dbid,
+          name: result.name,
+          description: result.description,
+        });
+      } catch (error) {
+        if (error instanceof Error) {
+          pushToast({
+            message: 'Unfortunately there was an error to update gallery name and description.',
+          });
+        }
+      }
+    },
+    [gallery.dbid, pushToast, updateGalleryInfo]
+  );
+
   const handleEditGalleryName = useCallback(() => {
     showModal({
       content: (
         <GalleryNameAndDescriptionEditForm
-          onDone={async (result) => {
-            await updateGalleryInfo({
-              id: gallery.dbid,
-              name: result.name,
-              description: result.description,
-            });
-          }}
+          onDone={handleUpdateGalleryInfo}
           mode="editing"
           description={gallery.description ?? ''}
           name={gallery.name ?? ''}
@@ -195,7 +225,7 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
       ),
       headerText: 'Add a gallery name and description',
     });
-  }, [gallery, showModal, updateGalleryInfo]);
+  }, [gallery, handleUpdateGalleryInfo, showModal]);
 
   const handleEditGallery: Route = useMemo(() => {
     return {

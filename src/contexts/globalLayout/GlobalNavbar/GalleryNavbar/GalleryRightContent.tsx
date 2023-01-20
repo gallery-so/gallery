@@ -17,6 +17,7 @@ import Tooltip from '~/components/Tooltip/Tooltip';
 import { EditLink } from '~/contexts/globalLayout/GlobalNavbar/CollectionNavbar/EditLink';
 import { SignInButton } from '~/contexts/globalLayout/GlobalNavbar/SignInButton';
 import { useModalActions } from '~/contexts/modal/ModalContext';
+import { useToastActions } from '~/contexts/toast/ToastContext';
 import { GalleryRightContentFragment$key } from '~/generated/GalleryRightContentFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import { useQrCode } from '~/scenes/Modals/QRCodePopover';
@@ -65,6 +66,7 @@ export function GalleryRightContent({ queryRef, username }: GalleryRightContentP
   const styledQrCode = useQrCode();
   const { showModal } = useModalActions();
   const { route } = useRouter();
+  const { pushToast } = useToastActions();
 
   const isMultigalleryEnabled = isFeatureEnabled(FeatureFlag.MULTIGALLERY, query);
   const [showTooltip, setShowTooltip] = useState(false);
@@ -74,8 +76,16 @@ export function GalleryRightContent({ queryRef, username }: GalleryRightContentP
   const handleCreateGallery = useCallback(async () => {
     const latestPosition = query?.userByUsername?.galleries?.length.toString() ?? '0';
 
-    await createGallery(latestPosition);
-  }, [createGallery, query?.userByUsername?.galleries?.length]);
+    try {
+      await createGallery(latestPosition);
+    } catch (error) {
+      if (error instanceof Error) {
+        pushToast({
+          message: 'Unfortunately there was an error to create your gallery',
+        });
+      }
+    }
+  }, [createGallery, pushToast, query?.userByUsername?.galleries?.length]);
 
   const handleNameAndBioClick = useCallback(() => {
     showModal({

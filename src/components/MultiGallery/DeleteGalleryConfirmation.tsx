@@ -43,13 +43,21 @@ export default function DeleteGalleryConfirmation({ galleryRef, isLastGallery, o
       });
       return;
     }
-    setIsLoading(true);
 
-    deleteGallery(galleryId);
-
-    setIsLoading(false);
-    onSuccess();
-    hideModal();
+    try {
+      setIsLoading(true);
+      deleteGallery(galleryId);
+      onSuccess();
+    } catch (error) {
+      if (error instanceof Error) {
+        pushToast({
+          message: 'Unfortunately there was an error to delete this gallery.',
+        });
+      }
+    } finally {
+      setIsLoading(false);
+      hideModal();
+    }
   }, [deleteGallery, galleryId, hidden, hideModal, isLastGallery, onSuccess, pushToast]);
 
   return (
