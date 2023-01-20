@@ -94,20 +94,24 @@ export function GalleryRightContent({ queryRef, username }: GalleryRightContentP
     });
   }, [query, showModal]);
 
-  const shouldShowEditButton = Boolean(
-    query.viewer &&
-      'user' in query.viewer &&
-      query.viewer?.user?.dbid &&
-      query.viewer?.user?.dbid === query.userByUsername?.dbid
-  );
+  const shouldShowEditButton = useMemo(() => {
+    return Boolean(
+      query.viewer &&
+        'user' in query.viewer &&
+        query.viewer?.user?.dbid &&
+        query.viewer?.user?.dbid === query.userByUsername?.dbid
+    );
+  }, [query.viewer, query.userByUsername?.dbid]);
 
-  const showShowMultiGalleryButton = Boolean(
-    query.viewer &&
-      'user' in query.viewer &&
-      query.viewer?.user?.dbid &&
-      query.viewer?.user?.dbid === query.userByUsername?.dbid &&
-      route === '/[username]/galleries'
-  );
+  const showShowMultiGalleryButton = useMemo(() => {
+    return Boolean(
+      query.viewer &&
+        'user' in query.viewer &&
+        query.viewer?.user?.dbid &&
+        query.viewer?.user?.dbid === query.userByUsername?.dbid &&
+        route === '/[username]/galleries'
+    );
+  }, [query.userByUsername?.dbid, query.viewer, route]);
 
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
   const [showDropdown, setShowDropdown] = useState(false);

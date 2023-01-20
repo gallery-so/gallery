@@ -22,13 +22,12 @@ export default function DeleteGalleryConfirmation({ galleryRef, isLastGallery, o
     graphql`
       fragment DeleteGalleryConfirmationFragment on Gallery {
         dbid
-        hidden
       }
     `,
     galleryRef
   );
 
-  const { dbid: galleryId, hidden } = gallery;
+  const { dbid: galleryId } = gallery;
 
   const { hideModal } = useModalActions();
   const { pushToast } = useToastActions();
@@ -58,7 +57,7 @@ export default function DeleteGalleryConfirmation({ galleryRef, isLastGallery, o
       setIsLoading(false);
       hideModal();
     }
-  }, [deleteGallery, galleryId, hidden, hideModal, isLastGallery, onSuccess, pushToast]);
+  }, [deleteGallery, galleryId, hideModal, isLastGallery, onSuccess, pushToast]);
 
   return (
     <StyledConfirmation>

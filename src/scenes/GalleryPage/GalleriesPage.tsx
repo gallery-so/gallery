@@ -80,21 +80,25 @@ export default function GalleriesPage({ queryRef }: Props) {
 
   const activeIndex = activeId ? getIndex(activeId) : -1;
 
-  const layoutMeasuring = {
-    droppable: {
-      strategy: MeasuringStrategy.Always,
-    },
-  };
-
-  const dropAnimation: DropAnimation = {
-    sideEffects: defaultDropAnimationSideEffects({
-      styles: {
-        active: {
-          opacity: '0.2',
-        },
+  const layoutMeasuring = useMemo(() => {
+    return {
+      droppable: {
+        strategy: MeasuringStrategy.Always,
       },
-    }),
-  };
+    };
+  }, []);
+
+  const dropAnimation: DropAnimation = useMemo(() => {
+    return {
+      sideEffects: defaultDropAnimationSideEffects({
+        styles: {
+          active: {
+            opacity: '0.2',
+          },
+        },
+      }),
+    };
+  }, []);
 
   const handleDragStart = useCallback(({ active }: DragStartEvent) => {
     if (!active) {
