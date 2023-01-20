@@ -30,7 +30,6 @@ export default function LandingPage() {
           <ButtonLink
             href={{ pathname: '/home' }}
             onClick={() => track('Landing page Explore button click')}
-            data-testid="explore-button"
             variant="secondary"
           >
             Explore

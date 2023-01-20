@@ -1,12 +1,14 @@
+import { useEffect } from 'react';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
+import { Button } from '~/components/core/Button/Button';
 import colors from '~/components/core/colors';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { TitleDiatypeM } from '~/components/core/Text/Text';
+import { ONBOARDING_NEXT_BUTTON_TEXT_MAP } from '~/components/Onboarding/constants';
 import { GalleryTitleSection } from '~/contexts/globalLayout/EditGalleryNavbar/GalleryTitleSection';
 import { BackButton } from '~/contexts/globalLayout/GlobalNavbar/BackButton';
-import { CollectionSaveButtonWithCaption } from '~/contexts/globalLayout/GlobalNavbar/CollectionSaveButtonWithCaption';
 import {
   NavbarCenterContent,
   NavbarLeftContent,
@@ -23,10 +25,10 @@ type Props = {
   onEdit: () => void;
 
   onBack: () => void;
-  onDone: (caption: string) => Promise<void>;
+  onDone: () => Promise<void>;
 };
 
-export function EditGalleryNavbar({
+export function OnboardingEditGalleryNavbar({
   canSave,
   onDone,
   onBack,
@@ -35,6 +37,21 @@ export function EditGalleryNavbar({
   galleryName,
 }: Props) {
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
+
+  useEffect(() => {
+    function handlePress(event: KeyboardEvent) {
+      if (event.key === 's' && event.metaKey) {
+        // Avoid trying to save page as HTML
+        event.preventDefault();
+
+        onDone();
+      }
+    }
+
+    window.addEventListener('keydown', handlePress);
+
+    return () => window.removeEventListener('keydown', handlePress);
+  }, [onDone]);
 
   return (
     <Wrapper>
@@ -57,11 +74,9 @@ export function EditGalleryNavbar({
               <TitleDiatypeM color={colors.metal}>Unsaved Changes</TitleDiatypeM>
             )}
 
-            <CollectionSaveButtonWithCaption
-              hasUnsavedChange={hasUnsavedChanges}
-              disabled={!canSave}
-              onSave={onDone}
-            />
+            <Button onClick={onDone} disabled={!canSave}>
+              {ONBOARDING_NEXT_BUTTON_TEXT_MAP['edit-gallery']}
+            </Button>
           </HStack>
         </NavbarRightContent>
       </StandardNavbarContainer>

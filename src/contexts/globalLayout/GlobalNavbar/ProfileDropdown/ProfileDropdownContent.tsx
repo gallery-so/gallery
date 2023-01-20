@@ -80,6 +80,7 @@ export function ProfileDropdownContent({
   const showNotificationsModal = useNotificationsModal();
 
   const isEmailFeatureEnabled = isFeatureEnabled(FeatureFlag.EMAIL, query);
+  const isMultiGalleryEnabled = isFeatureEnabled(FeatureFlag.MULTIGALLERY, query);
   const track = useTrack();
 
   const [dismissMerchRedemption, setDismissMerchRedemption] = usePersistedState(
@@ -120,6 +121,7 @@ export function ProfileDropdownContent({
   const editGalleryUrl = getEditGalleryUrl(query);
 
   const userGalleryRoute: Route = { pathname: '/[username]', query: { username } };
+  const editGalleriesRoute: Route = { pathname: '/[username]/galleries', query: { username } };
 
   const notificationCount = query.viewer?.notifications?.unseenCount ?? 0;
 
@@ -139,11 +141,24 @@ export function ProfileDropdownContent({
           <Link href={userGalleryRoute}>
             <DropdownProfileSection href={route(userGalleryRoute)}>
               <UsernameText>{username}</UsernameText>
-              {editGalleryUrl && (
+              {isMultiGalleryEnabled ? (
                 // Need this to ensure the interactive link doesn't take the full width
                 <VStack align="flex-start">
-                  <StyledInteractiveLink to={editGalleryUrl}>Edit gallery</StyledInteractiveLink>
+                  <StyledInteractiveLink to={editGalleriesRoute}>
+                    Edit galleries
+                  </StyledInteractiveLink>
                 </VStack>
+              ) : (
+                <>
+                  {editGalleryUrl && (
+                    // Need this to ensure the interactive link doesn't take the full width
+                    <VStack align="flex-start">
+                      <StyledInteractiveLink to={editGalleryUrl}>
+                        Edit gallery
+                      </StyledInteractiveLink>
+                    </VStack>
+                  )}
+                </>
               )}
             </DropdownProfileSection>
           </Link>
