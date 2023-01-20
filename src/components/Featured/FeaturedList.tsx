@@ -14,7 +14,7 @@ type Props = {
   queryRef: FeaturedUserCardFollowFragment$key;
 };
 
-const USERS_TO_SHOW = 8;
+const USERS_TO_SHOW = 16;
 
 export default function FeaturedList({ trendingUsersRef, queryRef }: Props) {
   const trendingUsers = useFragment(
@@ -58,8 +58,12 @@ const StyledFeaturedList = styled(HStack)`
 const Wrapper = styled.div`
   display: grid;
 
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(8, 1fr);
 
   grid-gap: 12px 16px;
   min-width: 748px; // to get overflow on mobile
+
+  @media only screen and ${breakpoints.desktop} {
+    min-width: 2560px;
+  }
 `;

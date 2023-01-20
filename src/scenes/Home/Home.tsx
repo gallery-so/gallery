@@ -4,17 +4,17 @@ import styled from 'styled-components';
 
 import breakpoints, { pageGutter } from '~/components/core/breakpoints';
 import Featured from '~/components/Featured/Featured';
-import Feed, { FeedMode } from '~/components/Feed/Feed';
+import Feed from '~/components/Feed/Feed';
+import { HOME_MODE } from '~/contexts/globalLayout/GlobalNavbar/HomeNavbar/HomeNavbar';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { HomeFragment$key } from '~/generated/HomeFragment.graphql';
 
 type Props = {
   queryRef: HomeFragment$key;
-  feedMode: FeedMode;
-  setFeedMode: (mode: FeedMode) => void;
+  homeMode: HOME_MODE;
 };
 
-export default function Home({ queryRef, setFeedMode, feedMode }: Props) {
+export default function Home({ queryRef, homeMode }: Props) {
   const query = useFragment(
     graphql`
       fragment HomeFragment on Query {
@@ -25,15 +25,6 @@ export default function Home({ queryRef, setFeedMode, feedMode }: Props) {
     queryRef
   );
 
-  // const query = useFragment(
-  //   graphql`
-  //     fragment HomeFragment on Query {
-  //       ...FeaturedFragment
-  //     }
-  //   `,
-  //   queryRef
-  // );
-
   const navbarHeight = useGlobalNavbarHeight();
 
   return (
@@ -42,8 +33,7 @@ export default function Home({ queryRef, setFeedMode, feedMode }: Props) {
         <title>Gallery - Home</title>
       </Head>
       <StyledPage navbarHeight={navbarHeight}>
-        {/* <Feed feedMode={feedMode} setFeedMode={setFeedMode} queryRef={query} /> */}
-        <Featured queryRef={query} />
+        {homeMode === 'ACTIVITY' ? <Feed queryRef={query} /> : <Featured queryRef={query} />}
       </StyledPage>
     </>
   );

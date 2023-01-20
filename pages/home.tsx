@@ -1,14 +1,11 @@
-import { useEffect } from 'react';
+import { useState } from 'react';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import { fetchQuery } from 'relay-runtime';
 
 import { ITEMS_PER_PAGE, MAX_PIECES_DISPLAYED_PER_FEED_EVENT } from '~/components/Feed/constants';
-import { FeedMode } from '~/components/Feed/Feed';
 import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/NotesModal/NotesModal';
-import { FEED_MODE_KEY } from '~/constants/storageKeys';
-import { FeedNavbar } from '~/contexts/globalLayout/GlobalNavbar/FeedNavbar/FeedNavbar';
+import { HOME_MODE, HomeNavbar } from '~/contexts/globalLayout/GlobalNavbar/HomeNavbar/HomeNavbar';
 import { homeQuery } from '~/generated/homeQuery.graphql';
-import usePersistedState from '~/hooks/usePersistedState';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
 import HomeScene from '~/scenes/Home/Home';
 import useOpenSettingsModal from '~/scenes/Modals/useOpenSettingsModal';
@@ -33,7 +30,7 @@ const homeQueryNode = graphql`
     }
 
     ...HomeFragment
-    ...FeedNavbarFragment
+    ...HomeNavbarFragment
     ...useOpenSettingsModalFragment
   }
 `;
@@ -46,25 +43,14 @@ export default function Home() {
     visibleTokensPerFeedEvent: MAX_PIECES_DISPLAYED_PER_FEED_EVENT,
   });
 
-  const { viewer } = query;
-  const viewerUserId = viewer?.user?.dbid ?? '';
-  const defaultFeedMode = viewerUserId ? 'FOLLOWING' : 'WORLDWIDE';
-
-  const [feedMode, setFeedMode] = usePersistedState<FeedMode>(FEED_MODE_KEY, defaultFeedMode);
-
-  // This effect handles adding and removing the Feed controls on the navbar when mounting this component, and signing in+out while on the Feed page.
-  useEffect(() => {
-    if (!viewerUserId) {
-      setFeedMode('WORLDWIDE');
-    }
-  }, [viewerUserId, feedMode, setFeedMode]);
+  const [homeMode, setHomeMode] = useState<HOME_MODE>('ACTIVITY');
 
   useOpenSettingsModal(query);
 
   return (
     <GalleryRoute
-      navbar={<FeedNavbar feedMode={feedMode} onChange={setFeedMode} queryRef={query} />}
-      element={<HomeScene setFeedMode={setFeedMode} feedMode={feedMode} queryRef={query} />}
+      navbar={<HomeNavbar queryRef={query} homeMode={homeMode} setHomeMode={setHomeMode} />}
+      element={<HomeScene queryRef={query} homeMode={homeMode} />}
     />
   );
 }
