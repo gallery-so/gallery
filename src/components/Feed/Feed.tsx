@@ -25,9 +25,6 @@ export default function Feed({ queryRef }: Props) {
         viewer {
           ... on Viewer {
             __typename
-            user {
-              dbid
-            }
           }
         }
         ...ViewerFeedFragment
@@ -37,10 +34,8 @@ export default function Feed({ queryRef }: Props) {
     queryRef
   );
 
-  const { viewer } = query;
-  const viewerUserId = viewer?.user?.dbid ?? '';
-  const defaultFeedMode = viewerUserId ? 'FOLLOWING' : 'WORLDWIDE';
   const isLoggedIn = query.viewer?.__typename === 'Viewer';
+  const defaultFeedMode = isLoggedIn ? 'FOLLOWING' : 'WORLDWIDE';
 
   const [feedMode, setFeedMode] = usePersistedState<FeedMode>(FEED_MODE_KEY, defaultFeedMode);
 

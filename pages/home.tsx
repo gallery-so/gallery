@@ -21,14 +21,6 @@ const homeQueryNode = graphql`
     $viewerBefore: String
     $visibleTokensPerFeedEvent: Int!
   ) {
-    viewer {
-      ... on Viewer {
-        user {
-          dbid
-        }
-      }
-    }
-
     ...HomeFragment
     ...HomeNavbarFragment
     ...useOpenSettingsModalFragment

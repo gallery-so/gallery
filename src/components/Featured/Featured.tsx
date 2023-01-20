@@ -18,15 +18,18 @@ export default function Featured({ queryRef }: Props) {
         trendingUsers7Days: trendingUsers(input: { report: LAST_7_DAYS }) {
           ... on TrendingUsersPayload {
             __typename
+            # eslint-disable-next-line relay/must-colocate-fragment-spreads
             ...FeaturedListFragment
           }
         }
         trendingUsersAllTime: trendingUsers(input: { report: ALL_TIME }) {
           ... on TrendingUsersPayload {
             __typename
+            # eslint-disable-next-line relay/must-colocate-fragment-spreads
             ...FeaturedListFragment
           }
         }
+        # eslint-disable-next-line relay/must-colocate-fragment-spreads
         ...FeaturedUserCardFollowFragment
       }
     `,
@@ -35,18 +38,22 @@ export default function Featured({ queryRef }: Props) {
 
   return (
     <StyledFeaturedPage gap={64}>
-      <FeaturedSection
-        title="Weekly Spotlight"
-        subTitle="Top collectors with the most views in the past week"
-        trendingUsersRef={query.trendingUsers7Days}
-        queryRef={query}
-      ></FeaturedSection>
-      <FeaturedSection
-        title="Most popular"
-        subTitle="Top collectors with the most all-time views"
-        trendingUsersRef={query.trendingUsersAllTime}
-        queryRef={query}
-      ></FeaturedSection>
+      {query.trendingUsers7Days?.__typename === 'TrendingUsersPayload' && (
+        <FeaturedSection
+          title="Weekly Spotlight"
+          subTitle="Top collectors with the most views in the past week"
+          trendingUsersRef={query.trendingUsers7Days}
+          queryRef={query}
+        />
+      )}
+      {query.trendingUsersAllTime?.__typename === 'TrendingUsersPayload' && (
+        <FeaturedSection
+          title="Most popular"
+          subTitle="Top collectors with the most all-time views"
+          trendingUsersRef={query.trendingUsersAllTime}
+          queryRef={query}
+        />
+      )}
     </StyledFeaturedPage>
   );
 }

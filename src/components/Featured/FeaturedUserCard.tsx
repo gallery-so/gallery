@@ -58,17 +58,25 @@ export default function FeaturedUserCard({ userRef, queryRef }: Props) {
   const loggedInUserId = useLoggedInUserId(query);
   const isOwnProfile = loggedInUserId && loggedInUserId === user?.id;
 
-  const tokenPreviews = useMemo(() => {
-    const gallery = user.galleries.find((gallery) => !gallery.hidden);
+  const userGalleries = useMemo(() => {
+    return user?.galleries ?? [];
+  }, [user?.galleries]);
 
-    return gallery?.tokenPreviews.slice(0, 2) ?? [];
-  }, [user.galleries]);
+  const tokenPreviews = useMemo(() => {
+    const gallery = userGalleries.find((gallery) => !gallery?.hidden);
+
+    return gallery?.tokenPreviews?.slice(0, 2) ?? [];
+  }, [userGalleries]);
 
   const collectionCount = useMemo(() => {
-    return user.galleries.reduce((sum, gallery) => {
-      return gallery.hidden ? sum : sum + gallery.collections.length;
+    return userGalleries.reduce((sum, gallery) => {
+      if (gallery === null || gallery.hidden || !gallery.collections) {
+        return sum;
+      }
+
+      return sum + gallery.collections.length;
     }, 0);
-  }, [user.galleries]);
+  }, [userGalleries]);
 
   const userBadges = useMemo(() => {
     const badges = [];
@@ -86,9 +94,9 @@ export default function FeaturedUserCard({ userRef, queryRef }: Props) {
     <StyledFeaturedUserCard href={`/${user.username}`}>
       <StyledContent gap={12} justify="space-between">
         <TokenPreviewContainer>
-          {tokenPreviews.map((url) => (
-            <TokenPreview src={url.small} key={url.small} />
-          ))}
+          {tokenPreviews.map(
+            (url) => url?.small && <TokenPreview src={url.small} key={url.small} />
+          )}
         </TokenPreviewContainer>
         <UserDetails>
           <VStack>
@@ -98,7 +106,6 @@ export default function FeaturedUserCard({ userRef, queryRef }: Props) {
               </TitleM>
               <HStack align="center" gap={0}>
                 {userBadges.map((badge) => (
-                  // Might need to rethink this layout when we have more badges
                   <Badge key={badge.name} badgeRef={badge} />
                 ))}
               </HStack>
