@@ -10,7 +10,7 @@ import { VStack } from '~/components/core/Spacer/Stack';
 import { FEED_MAX_WIDTH } from '~/components/Feed/dimensions';
 import { UserActivityLayoutFragment$key } from '~/generated/UserActivityLayoutFragment.graphql';
 import { UserActivityLayoutQueryFragment$key } from '~/generated/UserActivityLayoutQueryFragment.graphql';
-import { StyledUserGalleryLayout } from '~/scenes/UserGalleryPage/UserGalleryLayout';
+import { StyledGalleryLayout } from '~/scenes/UserGalleryPage/StyledGalleryLayout';
 
 import UserActivityFeed from './UserActivityFeed';
 
@@ -61,14 +61,14 @@ export const UserActivityLayout = ({ userRef, queryRef }: Props) => {
   }, []);
 
   return (
-    <StyledUserGalleryLayout align="center">
+    <StyledGalleryLayout align="center">
       <StyledUserActivityLayout
         gap={32}
         enableFlashFirstRowAnimation={enableFlashFirstRowAnimation}
       >
         <UserActivityFeed userRef={user} queryRef={query} />
       </StyledUserActivityLayout>
-    </StyledUserGalleryLayout>
+    </StyledGalleryLayout>
   );
 };
 
