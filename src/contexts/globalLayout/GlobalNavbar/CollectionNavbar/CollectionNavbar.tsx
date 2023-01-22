@@ -41,7 +41,6 @@ export function CollectionNavbar({ queryRef, username, collectionId }: Collectio
     graphql`
       fragment CollectionNavbarFragment on Query {
         ...CollectionRightContentFragment
-        ...GalleryNavLinksFragment
         ...ProfileDropdownFragment
         ...NavActionFollowQueryFragment
 
@@ -100,7 +99,7 @@ export function CollectionNavbar({ queryRef, username, collectionId }: Collectio
             <BreadcrumbText>{unescapedCollectionName}</BreadcrumbText>
           </VStack>
         ) : (
-          <GalleryNavLinks username={username} queryRef={query} />
+          <GalleryNavLinks username={username} />
         )}
       </NavbarCenterContent>
 
