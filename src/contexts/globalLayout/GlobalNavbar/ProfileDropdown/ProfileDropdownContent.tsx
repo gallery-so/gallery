@@ -115,72 +115,68 @@ export function ProfileDropdownContent({
   const notificationCount = query.viewer?.notifications?.unseenCount ?? 0;
 
   return (
-    <>
-      <Dropdown
-        isActivatedByHover
-        position="left"
-        active={shouldShowDropdown}
-        onClose={onClose}
-        onMouseLeave={onMouseLeave}
-        onMouseEnter={onMouseEnter}
-      >
-        <DropdownSection>
-          <Link href={userGalleryRoute}>
-            <DropdownProfileSection href={route(userGalleryRoute)}>
-              <UsernameText>{username}</UsernameText>
-              {isMultiGalleryEnabled ? (
-                // Need this to ensure the interactive link doesn't take the full width
-                <VStack align="flex-start">
-                  <StyledInteractiveLink to={editGalleriesRoute}>
-                    Edit galleries
-                  </StyledInteractiveLink>
-                </VStack>
-              ) : (
-                <>
-                  {editGalleryUrl && (
-                    // Need this to ensure the interactive link doesn't take the full width
-                    <VStack align="flex-start">
-                      <StyledInteractiveLink to={editGalleryUrl}>
-                        Edit gallery
-                      </StyledInteractiveLink>
-                    </VStack>
-                  )}
-                </>
-              )}
-            </DropdownProfileSection>
-          </Link>
-        </DropdownSection>
+    <Dropdown
+      isActivatedByHover
+      position="left"
+      active={shouldShowDropdown}
+      onClose={onClose}
+      onMouseLeave={onMouseLeave}
+      onMouseEnter={onMouseEnter}
+    >
+      <DropdownSection>
+        <Link href={userGalleryRoute}>
+          <DropdownProfileSection href={route(userGalleryRoute)}>
+            <UsernameText>{username}</UsernameText>
+            {isMultiGalleryEnabled ? (
+              // Need this to ensure the interactive link doesn't take the full width
+              <VStack align="flex-start">
+                <StyledInteractiveLink to={editGalleriesRoute}>
+                  Edit galleries
+                </StyledInteractiveLink>
+              </VStack>
+            ) : (
+              <>
+                {editGalleryUrl && (
+                  // Need this to ensure the interactive link doesn't take the full width
+                  <VStack align="flex-start">
+                    <StyledInteractiveLink to={editGalleryUrl}>Edit gallery</StyledInteractiveLink>
+                  </VStack>
+                )}
+              </>
+            )}
+          </DropdownProfileSection>
+        </Link>
+      </DropdownSection>
 
-        <DropdownSection gap={4}>
-          <DropdownLink href={{ pathname: '/home' }}>HOME</DropdownLink>
-          <NotificationsDropdownItem onClick={handleNotificationsClick}>
-            <HStack align="center" gap={10}>
-              <div>NOTIFICATIONS</div>
-              <CountText role="button" visible={notificationCount > 0}>
-                {notificationCount}
-              </CountText>
+      <DropdownSection gap={4}>
+        <DropdownLink href={{ pathname: '/home' }}>HOME</DropdownLink>
+        <NotificationsDropdownItem onClick={handleNotificationsClick}>
+          <HStack align="center" gap={10}>
+            <div>NOTIFICATIONS</div>
+            <CountText role="button" visible={notificationCount > 0}>
+              {notificationCount}
+            </CountText>
+          </HStack>
+        </NotificationsDropdownItem>
+      </DropdownSection>
+
+      <DropdownSection gap={4}>
+        <DropdownItem onClick={handleManageWalletsClick}>SETTINGS</DropdownItem>
+        <DropdownLink href={{ pathname: '/shop' }} onClick={handleDismissMerchRedemption}>
+          <HStack gap={10} align="center">
+            <HStack gap={8}>
+              <span>SHOP</span>
+              <StyledObjectsText>(OBJECTS)</StyledObjectsText>
             </HStack>
-          </NotificationsDropdownItem>
-        </DropdownSection>
+            {!dismissMerchRedemption && <NotificationsCircle />}
+          </HStack>
+        </DropdownLink>
+      </DropdownSection>
 
-        <DropdownSection gap={4}>
-          <DropdownItem onClick={handleManageWalletsClick}>SETTINGS</DropdownItem>
-          <DropdownLink href={{ pathname: '/shop' }} onClick={handleDismissMerchRedemption}>
-            <HStack gap={10} align="center">
-              <HStack gap={8}>
-                <span>SHOP</span>
-                <StyledObjectsText>(OBJECTS)</StyledObjectsText>
-              </HStack>
-              {!dismissMerchRedemption && <NotificationsCircle />}
-            </HStack>
-          </DropdownLink>
-        </DropdownSection>
-
-        <DropdownSection gap={4}>
-          <DropdownItem onClick={handleLogout}>LOG OUT</DropdownItem>
-        </DropdownSection>
-      </Dropdown>
-    </>
+      <DropdownSection gap={4}>
+        <DropdownItem onClick={handleLogout}>LOG OUT</DropdownItem>
+      </DropdownSection>
+    </Dropdown>
   );
 }
 

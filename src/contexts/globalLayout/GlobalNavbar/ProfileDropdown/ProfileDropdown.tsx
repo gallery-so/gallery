@@ -51,7 +51,7 @@ export function ProfileDropdown({ queryRef, rightContent }: ProfileDropdownProps
   const { handleDropdownMouseEnter, handleDropdownMouseLeave, closeDropdown, shouldShowDropdown } =
     useDropdownHoverControls();
 
-  const handleLoggedOutLogoClick = useCallback(() => {
+  const handleHomeRedirect = useCallback(() => {
     push({ pathname: '/home' });
   }, [push]);
 
@@ -84,6 +84,7 @@ export function ProfileDropdown({ queryRef, rightContent }: ProfileDropdownProps
           role="button"
           onMouseEnter={handleDropdownMouseEnter}
           onMouseLeave={handleDropdownMouseLeave}
+          onClick={handleHomeRedirect}
         >
           {notificationCount > 0 ? <StyledNotificationsCircle /> : null}
 
@@ -94,7 +95,7 @@ export function ProfileDropdown({ queryRef, rightContent }: ProfileDropdownProps
           </HStack>
         </LogoContainer>
       ) : (
-        <LogoContainer gap={4} role="button" onClick={handleLoggedOutLogoClick} align="center">
+        <LogoContainer gap={4} role="button" onClick={handleHomeRedirect} align="center">
           <GLogo />
         </LogoContainer>
       )}
