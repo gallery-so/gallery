@@ -6,31 +6,25 @@ import isProduction from '~/utils/isProduction';
 import { removeNullValues } from '~/utils/removeNullValues';
 
 export enum FeatureFlag {
-  EMAIL = 'EMAIL',
   MULTIGALLERY = 'MULTIGALLERY',
 }
 
 const PROD_FLAGS: Record<FeatureFlag, boolean> = {
-  EMAIL: true,
   MULTIGALLERY: false,
 };
 
 const DEV_FLAGS: Record<FeatureFlag, boolean> = {
-  EMAIL: true,
   MULTIGALLERY: true,
 };
 
 const ROLE_FLAGS: Record<Role, Record<FeatureFlag, boolean>> = {
   ADMIN: {
-    EMAIL: true,
     MULTIGALLERY: false,
   },
   BETA_TESTER: {
-    EMAIL: true,
     MULTIGALLERY: false,
   },
   EARLY_ACCESS: {
-    EMAIL: true,
     MULTIGALLERY: false,
   },
 };

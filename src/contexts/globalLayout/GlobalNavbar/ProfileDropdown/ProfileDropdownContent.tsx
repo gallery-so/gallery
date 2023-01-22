@@ -22,7 +22,6 @@ import { useAuthActions } from '~/contexts/auth/AuthContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { ProfileDropdownContentFragment$key } from '~/generated/ProfileDropdownContentFragment.graphql';
 import usePersistedState from '~/hooks/usePersistedState';
-import ManageWalletsModal from '~/scenes/Modals/ManageWalletsModal';
 import SettingsModal from '~/scenes/Modals/SettingsModal/SettingsModal';
 import { getEditGalleryUrl } from '~/utils/getEditGalleryUrl';
 import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
@@ -67,7 +66,6 @@ export function ProfileDropdownContent({
         }
 
         ...getEditGalleryUrlFragment
-        ...ManageWalletsModalFragment
         ...SettingsModalFragment
         ...isFeatureEnabledFragment
       }
@@ -79,7 +77,6 @@ export function ProfileDropdownContent({
   const { handleLogout } = useAuthActions();
   const showNotificationsModal = useNotificationsModal();
 
-  const isEmailFeatureEnabled = isFeatureEnabled(FeatureFlag.EMAIL, query);
   const isMultiGalleryEnabled = isFeatureEnabled(FeatureFlag.MULTIGALLERY, query);
   const track = useTrack();
 
@@ -98,19 +95,11 @@ export function ProfileDropdownContent({
   }, [showNotificationsModal, track]);
 
   const handleManageWalletsClick = useCallback(() => {
-    if (isEmailFeatureEnabled) {
-      showModal({
-        content: <SettingsModal queryRef={query} />,
-        headerText: 'Settings',
-      });
-      return;
-    }
-
     showModal({
-      content: <ManageWalletsModal queryRef={query} />,
+      content: <SettingsModal queryRef={query} />,
       headerText: 'Settings',
     });
-  }, [isEmailFeatureEnabled, query, showModal]);
+  }, [query, showModal]);
 
   const username = query.viewer?.user?.username;
 
