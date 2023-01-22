@@ -34,7 +34,6 @@ export function GalleryNavbar({ queryRef, username }: Props) {
       fragment GalleryNavbarFragment on Query {
         ...GalleryLeftContentFragment
         ...GalleryRightContentFragment
-        ...GalleryNavLinksFragment
         ...FollowButtonQueryFragment
 
         userByUsername(username: $username) {
@@ -75,7 +74,7 @@ export function GalleryNavbar({ queryRef, username }: Props) {
               )}
             </HStack>
           ) : (
-            <GalleryNavLinks username={username} queryRef={query} />
+            <GalleryNavLinks username={username} />
           )}
         </NavbarCenterContent>
         <NavbarRightContent>
@@ -87,7 +86,7 @@ export function GalleryNavbar({ queryRef, username }: Props) {
       {isMobile && (
         <StandardNavbarContainer>
           <MobileNavLinks justify="center" grow>
-            <GalleryNavLinks username={username} queryRef={query} />
+            <GalleryNavLinks username={username} />
           </MobileNavLinks>
         </StandardNavbarContainer>
       )}
