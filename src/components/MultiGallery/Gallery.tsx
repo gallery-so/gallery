@@ -137,7 +137,7 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
 
   const checkIfItsLastVisibleGallery = useCallback(() => {
     const visibleGalleries = removeNullValues(query.viewer?.viewerGalleries).filter(
-      (viewerGallery) => !viewerGallery?.gallery?.hidden
+      (viewerGallery) => viewerGallery?.gallery && !viewerGallery?.gallery?.hidden
     );
 
     return visibleGalleries.length < 2;

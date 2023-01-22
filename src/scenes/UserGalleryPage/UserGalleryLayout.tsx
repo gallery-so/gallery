@@ -57,7 +57,7 @@ export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
   );
 
   return (
-    <StyledUserGalleryLayout>
+    <StyledGalleryLayout>
       <UserGalleryHeader
         userRef={user}
         showMobileLayoutToggle={showMobileLayoutToggle}
@@ -67,11 +67,11 @@ export const UserGalleryLayout = ({ userRef, queryRef }: Props) => {
       <VStack gap={32} align="center" justify="center" grow>
         {collectionsView}
       </VStack>
-    </StyledUserGalleryLayout>
+    </StyledGalleryLayout>
   );
 };
 
-export const StyledUserGalleryLayout = styled(VStack)`
+export const StyledGalleryLayout = styled(VStack)`
   width: 100%;
   max-width: 1200px;
   padding: 16px 0 32px;
