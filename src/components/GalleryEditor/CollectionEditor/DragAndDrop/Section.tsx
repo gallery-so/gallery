@@ -61,10 +61,6 @@ const StyledLabel = styled.div<{ isActive: boolean; isDragging: boolean }>`
   cursor: ${({ isDragging }) => (isDragging ? 'grabbing' : 'grab')};
 `;
 
-const StyledLabelText = styled(TitleDiatypeM)`
-  color: ${colors.white};
-`;
-
 export const Section = forwardRef<HTMLDivElement, Props>(
   (
     {

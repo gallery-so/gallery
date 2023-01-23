@@ -1,10 +1,8 @@
 import { useCallback, useState } from 'react';
-import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
-import { DeleteGalleryConfirmationFragment$key } from '~/generated/DeleteGalleryConfirmationFragment.graphql';
 
 import { Button } from '../core/Button/Button';
 import { HStack } from '../core/Spacer/Stack';
