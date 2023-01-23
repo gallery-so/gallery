@@ -23,6 +23,8 @@ import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useG
 import { GalleriesPageQueryFragment$key } from '~/generated/GalleriesPageQueryFragment.graphql';
 import { removeNullValues } from '~/utils/removeNullValues';
 
+import { StyledGalleryLayout } from '../UserGalleryPage/UserGalleryLayout';
+
 type Props = {
   queryRef: GalleriesPageQueryFragment$key;
 };
@@ -160,49 +162,60 @@ export default function GalleriesPage({ queryRef }: Props) {
 
   return (
     <GalleryPageWrapper navbarHeight={navbarHeight}>
-      <DndContext
-        collisionDetection={closestCenter}
-        measuring={layoutMeasuring}
-        onDragStart={handleDragStart}
-        onDragEnd={handleDragEnd}
-        onDragOver={handleDragOver}
-        onDragCancel={() => setActiveId(null)}
-      >
-        <SortableContext items={sortedGalleryIds} strategy={rectSortingStrategy}>
-          <GalleryWrapper>
-            {sortedGalleries.map((gallery) => {
-              return (
+      <StyledGalleryGridLayout>
+        <DndContext
+          collisionDetection={closestCenter}
+          measuring={layoutMeasuring}
+          onDragStart={handleDragStart}
+          onDragEnd={handleDragEnd}
+          onDragOver={handleDragOver}
+          onDragCancel={() => setActiveId(null)}
+        >
+          <SortableContext items={sortedGalleryIds} strategy={rectSortingStrategy}>
+            <GalleryWrapper>
+              {sortedGalleries.map((gallery) => {
+                return (
+                  <Gallery
+                    key={gallery.id}
+                    galleryRef={gallery}
+                    queryRef={query}
+                    isFeatured={featuredGalleryId === gallery.id}
+                  />
+                );
+              })}
+            </GalleryWrapper>
+          </SortableContext>
+          {createPortal(
+            <DragOverlay dropAnimation={dropAnimation}>
+              {activeGallery && (
                 <Gallery
-                  key={gallery.id}
-                  galleryRef={gallery}
+                  key={activeGallery.dbid}
+                  galleryRef={activeGallery}
                   queryRef={query}
-                  isFeatured={featuredGalleryId === gallery.id}
+                  isFeatured={featuredGalleryId === `Gallery:${activeId}`}
                 />
-              );
-            })}
-          </GalleryWrapper>
-        </SortableContext>
-        {createPortal(
-          <DragOverlay dropAnimation={dropAnimation}>
-            {activeGallery && (
-              <Gallery
-                key={activeGallery.dbid}
-                galleryRef={activeGallery}
-                queryRef={query}
-                isFeatured={featuredGalleryId === `Gallery:${activeId}`}
-              />
-            )}
-          </DragOverlay>,
-          document.body
-        )}
-      </DndContext>
+              )}
+            </DragOverlay>,
+            document.body
+          )}
+        </DndContext>
+      </StyledGalleryGridLayout>
     </GalleryPageWrapper>
   );
 }
 
 const GalleryPageWrapper = styled.div<{ navbarHeight: number }>`
   height: calc(100vh - ${({ navbarHeight }) => navbarHeight}px);
-  padding: ${({ navbarHeight }) => navbarHeight}px 16px 0;
+
+  padding-top: ${({ navbarHeight }) => navbarHeight + 10}px;
+
+  @media only screen and ${breakpoints.tablet} {
+    padding-top: ${({ navbarHeight }) => navbarHeight + 24}px;
+  }
+`;
+
+const StyledGalleryGridLayout = styled(StyledGalleryLayout)`
+  margin: 0 auto;
 `;
 
 const GalleryWrapper = styled.div`
