@@ -25,7 +25,7 @@ const ROLE_FLAGS: Record<Role, Record<FeatureFlag, boolean>> = {
     MULTIGALLERY: false,
   },
   EARLY_ACCESS: {
-    MULTIGALLERY: false,
+    MULTIGALLERY: true,
   },
 };
 
