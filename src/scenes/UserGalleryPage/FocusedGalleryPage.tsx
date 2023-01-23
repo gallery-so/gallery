@@ -2,12 +2,10 @@ import Head from 'next/head';
 import { useEffect } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import styled from 'styled-components';
 
-import breakpoints, { pageGutter } from '~/components/core/breakpoints';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
-import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { FocusedGalleryPageFragment$key } from '~/generated/FocusedGalleryPageFragment.graphql';
+import { GalleryPageSpacing } from '~/pages/[username]';
 import { UserGalleryLayout } from '~/scenes/UserGalleryPage/UserGalleryLayout';
 
 type FocusedGalleryPageProps = {
@@ -48,7 +46,6 @@ export function FocusedGalleryPage({ queryRef }: FocusedGalleryPageProps) {
   }
 
   const track = useTrack();
-  const navbarHeight = useGlobalNavbarHeight();
 
   useEffect(() => {
     track('Page View: User Gallery', { username }, true);
@@ -59,23 +56,9 @@ export function FocusedGalleryPage({ queryRef }: FocusedGalleryPageProps) {
       <Head>
         <title>{headTitle}</title>
       </Head>
-      <StyledUserGalleryPage navbarHeight={navbarHeight}>
+      <GalleryPageSpacing>
         <UserGalleryLayout galleryRef={query.galleryById} queryRef={query} />
-      </StyledUserGalleryPage>
+      </GalleryPageSpacing>
     </>
   );
 }
-
-export const StyledUserGalleryPage = styled.div<{ navbarHeight: number }>`
-  display: flex;
-  justify-content: center;
-  min-height: 100vh;
-
-  margin: 0 ${pageGutter.mobile}px 24px;
-  padding-top: ${({ navbarHeight }) => navbarHeight + 10}px;
-
-  @media only screen and ${breakpoints.tablet} {
-    margin: 0 ${pageGutter.tablet}px;
-    padding-top: ${({ navbarHeight }) => navbarHeight + 24}px;
-  }
-`;

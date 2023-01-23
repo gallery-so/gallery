@@ -1,7 +1,6 @@
 import { useRouter } from 'next/router';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import styled from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';
 import { UserGalleryLayoutFragment$key } from '~/generated/UserGalleryLayoutFragment.graphql';
@@ -53,7 +52,7 @@ export const UserGalleryLayout = ({ galleryRef, queryRef }: Props) => {
   );
 
   return (
-    <StyledGalleryLayout>
+    <VStack>
       <GalleryNameDescriptionHeader
         noLink={pathname === '/[username]/galleries/[galleryId]'}
         galleryRef={gallery}
@@ -64,11 +63,6 @@ export const UserGalleryLayout = ({ galleryRef, queryRef }: Props) => {
       <VStack gap={32} align="center" grow>
         {collectionsView}
       </VStack>
-    </StyledGalleryLayout>
+    </VStack>
   );
 };
-
-export const StyledGalleryLayout = styled(VStack)`
-  width: 100%;
-  padding-bottom: 32px;
-`;

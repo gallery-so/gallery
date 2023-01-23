@@ -16,22 +16,18 @@ import { createPortal } from 'react-dom';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
-import breakpoints, { pageGutter } from '~/components/core/breakpoints';
+import breakpoints from '~/components/core/breakpoints';
 import Gallery from '~/components/MultiGallery/Gallery';
 import useUpdateGalleryOrder from '~/components/MultiGallery/useUpdateGalleryOrder';
-import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { GalleriesPageQueryFragment$key } from '~/generated/GalleriesPageQueryFragment.graphql';
+import { GalleryPageSpacing } from '~/pages/[username]';
 import { removeNullValues } from '~/utils/removeNullValues';
-
-import { StyledGalleryLayout } from '../UserGalleryPage/UserGalleryLayout';
 
 type Props = {
   queryRef: GalleriesPageQueryFragment$key;
 };
 
 export default function GalleriesPage({ queryRef }: Props) {
-  const navbarHeight = useGlobalNavbarHeight();
-
   const query = useFragment(
     graphql`
       fragment GalleriesPageQueryFragment on Query {
@@ -161,64 +157,46 @@ export default function GalleriesPage({ queryRef }: Props) {
   );
 
   return (
-    <GalleryPageWrapper navbarHeight={navbarHeight}>
-      <StyledGalleryGridLayout>
-        <DndContext
-          collisionDetection={closestCenter}
-          measuring={layoutMeasuring}
-          onDragStart={handleDragStart}
-          onDragEnd={handleDragEnd}
-          onDragOver={handleDragOver}
-          onDragCancel={() => setActiveId(null)}
-        >
-          <SortableContext items={sortedGalleryIds} strategy={rectSortingStrategy}>
-            <GalleryWrapper>
-              {sortedGalleries.map((gallery) => {
-                return (
-                  <Gallery
-                    key={gallery.id}
-                    galleryRef={gallery}
-                    queryRef={query}
-                    isFeatured={featuredGalleryId === gallery.id}
-                  />
-                );
-              })}
-            </GalleryWrapper>
-          </SortableContext>
-          {createPortal(
-            <DragOverlay dropAnimation={dropAnimation}>
-              {activeGallery && (
+    <GalleryPageSpacing>
+      <DndContext
+        collisionDetection={closestCenter}
+        measuring={layoutMeasuring}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+        onDragOver={handleDragOver}
+        onDragCancel={() => setActiveId(null)}
+      >
+        <SortableContext items={sortedGalleryIds} strategy={rectSortingStrategy}>
+          <GalleryWrapper>
+            {sortedGalleries.map((gallery) => {
+              return (
                 <Gallery
-                  key={activeGallery.dbid}
-                  galleryRef={activeGallery}
+                  key={gallery.id}
+                  galleryRef={gallery}
                   queryRef={query}
-                  isFeatured={featuredGalleryId === `Gallery:${activeId}`}
+                  isFeatured={featuredGalleryId === gallery.id}
                 />
-              )}
-            </DragOverlay>,
-            document.body
-          )}
-        </DndContext>
-      </StyledGalleryGridLayout>
-    </GalleryPageWrapper>
+              );
+            })}
+          </GalleryWrapper>
+        </SortableContext>
+        {createPortal(
+          <DragOverlay dropAnimation={dropAnimation}>
+            {activeGallery && (
+              <Gallery
+                key={activeGallery.dbid}
+                galleryRef={activeGallery}
+                queryRef={query}
+                isFeatured={featuredGalleryId === `Gallery:${activeId}`}
+              />
+            )}
+          </DragOverlay>,
+          document.body
+        )}
+      </DndContext>
+    </GalleryPageSpacing>
   );
 }
-
-const GalleryPageWrapper = styled.div<{ navbarHeight: number }>`
-  height: calc(100vh - ${({ navbarHeight }) => navbarHeight}px);
-
-  margin: 0 ${pageGutter.mobile}px 24px;
-  padding-top: ${({ navbarHeight }) => navbarHeight + 10}px;
-
-  @media only screen and ${breakpoints.tablet} {
-    margin: 0 ${pageGutter.tablet}px;
-    padding-top: ${({ navbarHeight }) => navbarHeight + 24}px;
-  }
-`;
-
-const StyledGalleryGridLayout = styled(StyledGalleryLayout)`
-  margin: 0 auto;
-`;
 
 const GalleryWrapper = styled.div`
   display: grid;

@@ -4,7 +4,6 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
-import breakpoints from '~/components/core/breakpoints';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { useModalState } from '~/contexts/modal/ModalContext';
 import { UserGalleryFragment$key } from '~/generated/UserGalleryFragment.graphql';
@@ -87,11 +86,11 @@ function UserGallery({ queryRef }: Props) {
   }
 
   return (
-    <Container gap={isMobile ? 12 : 24}>
+    <VStack gap={isMobile ? 12 : 24}>
       <UserNameAndDescriptionHeader userRef={user} />
       <Divider />
       <UserGalleryLayout galleryRef={user.featuredGallery} queryRef={query} />
-    </Container>
+    </VStack>
   );
 }
 
@@ -99,17 +98,6 @@ const Divider = styled.div`
   width: 100%;
   height: 1px;
   background-color: #e7e7e7;
-`;
-
-const Container = styled(VStack)`
-  margin-top: 10px;
-
-  @media only screen and ${breakpoints.tablet} {
-    margin-top: 24px;
-  }
-
-  width: 100%;
-  max-width: 1200px;
 `;
 
 export default UserGallery;
