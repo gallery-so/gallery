@@ -56,7 +56,6 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
           id
           username @required(action: THROW)
         }
-        ...DeleteGalleryConfirmationFragment
       }
     `,
     galleryRef
