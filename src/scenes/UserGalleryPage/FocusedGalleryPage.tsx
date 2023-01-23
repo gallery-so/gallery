@@ -23,6 +23,7 @@ export function FocusedGalleryPage({ queryRef }: FocusedGalleryPageProps) {
         galleryById(id: $galleryId) {
           ... on Gallery {
             __typename
+            name
             owner {
               username
             }
