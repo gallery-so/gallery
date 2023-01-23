@@ -2,11 +2,8 @@ import Head from 'next/head';
 import { useEffect } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import styled from 'styled-components';
 
-import breakpoints, { pageGutter } from '~/components/core/breakpoints';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
-import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { FocusedGalleryPageFragment$key } from '~/generated/FocusedGalleryPageFragment.graphql';
 import { GalleryPageSpacing } from '~/pages/[username]';
 import { UserGalleryLayout } from '~/scenes/UserGalleryPage/UserGalleryLayout';
@@ -49,7 +46,6 @@ export function FocusedGalleryPage({ queryRef }: FocusedGalleryPageProps) {
   }
 
   const track = useTrack();
-  const navbarHeight = useGlobalNavbarHeight();
 
   useEffect(() => {
     track('Page View: User Gallery', { username }, true);

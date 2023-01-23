@@ -2,11 +2,8 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect } from 'react';
 import { graphql, useFragment } from 'react-relay';
-import styled from 'styled-components';
 
-import breakpoints, { pageGutter } from '~/components/core/breakpoints';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
-import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { useModalState } from '~/contexts/modal/ModalContext';
 import { CollectionGalleryPageFragment$key } from '~/generated/CollectionGalleryPageFragment.graphql';
 import useKeyDown from '~/hooks/useKeyDown';

@@ -16,15 +16,12 @@ import { createPortal } from 'react-dom';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
-import breakpoints, { pageGutter } from '~/components/core/breakpoints';
+import breakpoints from '~/components/core/breakpoints';
 import Gallery from '~/components/MultiGallery/Gallery';
 import useUpdateGalleryOrder from '~/components/MultiGallery/useUpdateGalleryOrder';
-import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { GalleriesPageQueryFragment$key } from '~/generated/GalleriesPageQueryFragment.graphql';
 import { GalleryPageSpacing } from '~/pages/[username]';
 import { removeNullValues } from '~/utils/removeNullValues';
-
-import { StyledGalleryLayout } from '../UserGalleryPage/UserGalleryLayout';
 
 type Props = {
   queryRef: GalleriesPageQueryFragment$key;

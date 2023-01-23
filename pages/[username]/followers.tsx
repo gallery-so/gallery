@@ -1,13 +1,11 @@
 import { GetServerSideProps } from 'next';
 import { useFragment, useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import styled from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';
 import FollowList from '~/components/Follow/FollowList';
 import GalleryViewEmitter from '~/components/internal/GalleryViewEmitter';
 import { GalleryNavbar } from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavbar';
-import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { followersFollowersPageFragment$key } from '~/generated/followersFollowersPageFragment.graphql';
 import { followersQuery } from '~/generated/followersQuery.graphql';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
