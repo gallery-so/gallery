@@ -90,9 +90,6 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
             dbid
             name
             description
-            collections {
-              dbid
-            }
           }
         }
 
