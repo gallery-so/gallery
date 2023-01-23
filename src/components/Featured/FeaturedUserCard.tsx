@@ -98,8 +98,8 @@ export default function FeaturedUserCard({ userRef, queryRef }: Props) {
             (url) => url?.small && <TokenPreview src={url.small} key={url.small} />
           )}
         </TokenPreviewContainer>
-        <UserDetails>
-          <VStack>
+        <UserDetailsContainer>
+          <UserDetailsText>
             <HStack gap={4} align="center">
               <TitleM>
                 <strong>{user.username}</strong>
@@ -113,9 +113,9 @@ export default function FeaturedUserCard({ userRef, queryRef }: Props) {
             <BaseM>
               {collectionCount} {pluralize(collectionCount, 'collection')}
             </BaseM>
-          </VStack>
+          </UserDetailsText>
           {!isOwnProfile && <StyledFollowButton userRef={user} queryRef={query} />}
-        </UserDetails>
+        </UserDetailsContainer>
       </StyledContent>
     </StyledFeaturedUserCard>
   );
@@ -127,6 +127,7 @@ const StyledFeaturedUserCard = styled.a`
   padding: 12px;
   cursor: pointer;
   text-decoration: none;
+  overflow: hidden;
 
   &:hover {
     background-color: ${colors.faint};
@@ -141,7 +142,7 @@ const StyledContent = styled(VStack)`
   height: 100%;
 `;
 
-const UserDetails = styled.div`
+const UserDetailsContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -151,6 +152,10 @@ const UserDetails = styled.div`
     justify-content: space-between;
     align-items: center;
   }
+`;
+
+const UserDetailsText = styled(VStack)`
+  overflow: hidden;
 `;
 
 const TokenPreviewContainer = styled.div`
