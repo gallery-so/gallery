@@ -16,7 +16,7 @@ import { createPortal } from 'react-dom';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
-import breakpoints from '~/components/core/breakpoints';
+import breakpoints, { pageGutter } from '~/components/core/breakpoints';
 import Gallery from '~/components/MultiGallery/Gallery';
 import useUpdateGalleryOrder from '~/components/MultiGallery/useUpdateGalleryOrder';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
@@ -207,10 +207,12 @@ export default function GalleriesPage({ queryRef }: Props) {
 const GalleryPageWrapper = styled.div<{ navbarHeight: number }>`
   height: calc(100vh - ${({ navbarHeight }) => navbarHeight}px);
 
-  padding: ${({ navbarHeight }) => navbarHeight + 10}px 16px;
+  margin: 0 ${pageGutter.mobile}px 24px;
+  padding-top: ${({ navbarHeight }) => navbarHeight + 10}px;
 
   @media only screen and ${breakpoints.tablet} {
-    padding: ${({ navbarHeight }) => navbarHeight + 24}px 80px;
+    margin: 0 ${pageGutter.tablet}px;
+    padding-top: ${({ navbarHeight }) => navbarHeight + 24}px;
   }
 `;
 

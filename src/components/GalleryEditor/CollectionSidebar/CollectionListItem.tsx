@@ -107,7 +107,7 @@ export function CollectionListItem({ collectionId }: CollectionListItemProps) {
             size="sm"
             disableHoverPadding
             variant="stacked"
-            icon={hidden ? <ShowIcon /> : <HideIcon />}
+            icon={hidden ? <HideIcon /> : <ShowIcon />}
           />
 
           <NewTooltip

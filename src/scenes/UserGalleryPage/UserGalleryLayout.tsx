@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
@@ -41,6 +42,7 @@ export const UserGalleryLayout = ({ galleryRef, queryRef }: Props) => {
   );
 
   const isMobile = useIsMobileWindowWidth();
+  const { pathname } = useRouter();
   const showMobileLayoutToggle = Boolean(isMobile && gallery.collections?.length);
   const { mobileLayout, setMobileLayout } = useMobileLayout();
 
@@ -53,6 +55,7 @@ export const UserGalleryLayout = ({ galleryRef, queryRef }: Props) => {
   return (
     <StyledGalleryLayout>
       <GalleryNameDescriptionHeader
+        noLink={pathname === '/[username]/galleries/[galleryId]'}
         galleryRef={gallery}
         showMobileLayoutToggle={showMobileLayoutToggle}
         mobileLayout={mobileLayout}

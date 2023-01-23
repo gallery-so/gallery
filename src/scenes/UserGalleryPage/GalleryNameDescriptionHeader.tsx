@@ -1,3 +1,5 @@
+import Link from 'next/link';
+import { Route, route } from 'nextjs-routes';
 import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -20,19 +22,26 @@ type Props = {
   showMobileLayoutToggle: boolean;
   mobileLayout: DisplayLayout;
   setMobileLayout: (mobileLayout: DisplayLayout) => void;
+  noLink?: boolean;
 };
 
 function GalleryNameDescriptionHeader({
   galleryRef,
   showMobileLayoutToggle,
   mobileLayout,
+  noLink,
   setMobileLayout,
 }: Props) {
   const gallery = useFragment(
     graphql`
       fragment GalleryNameDescriptionHeaderFragment on Gallery {
+        dbid
         name
         description
+
+        owner @required(action: THROW) {
+          username @required(action: THROW)
+        }
       }
     `,
     galleryRef
@@ -40,18 +49,36 @@ function GalleryNameDescriptionHeader({
 
   const isMobile = useIsMobileWindowWidth();
 
+  const username = gallery.owner.username;
+  const galleryId = gallery.dbid;
+
   const unescapedBio = useMemo(
     () => (gallery.description ? unescape(gallery.description) : ''),
     [gallery.description]
   );
 
+  const galleryRoute: Route = {
+    pathname: '/[username]/galleries/[galleryId]',
+    query: { username, galleryId },
+  };
+
+  const galleryName = useMemo(() => {
+    if (isMobile) {
+      <GalleryNameMobile color={noLink ? colors.offBlack : colors.shadow}>
+        {gallery.name}
+      </GalleryNameMobile>;
+    }
+
+    return (
+      <GalleryName color={noLink ? colors.offBlack : colors.shadow}>{gallery.name}</GalleryName>
+    );
+  }, [gallery.name, isMobile, noLink]);
+
   return (
     <Container gap={2}>
-      {isMobile ? (
-        <GalleryNameMobile>{gallery.name}</GalleryNameMobile>
-      ) : (
-        <GalleryName>{gallery.name}</GalleryName>
-      )}
+      <Link href={galleryRoute}>
+        {noLink ? galleryName : <GalleryLink href={route(galleryRoute)}>{galleryName}</GalleryLink>}
+      </Link>
 
       <HStack align="flex-start" justify="space-between">
         <HStack align="center" gap={8} grow>
@@ -80,7 +107,6 @@ const StyledBioWrapper = styled(BaseM)`
 `;
 
 const GalleryName = styled(TitleM)`
-  color: ${colors.shadow};
   font-style: normal;
   overflow-wrap: break-word;
 `;
@@ -89,11 +115,15 @@ const GalleryNameMobile = styled(TitleM)`
   font-style: normal;
   font-size: 18px;
   overflow-wrap: break-word;
-  color: ${colors.shadow};
 `;
 
 const Container = styled(VStack)`
   width: 100%;
+`;
+
+const GalleryLink = styled.a`
+  all: unset;
+  cursor: pointer;
 `;
 
 const StyledButtonsWrapper = styled(HStack)`
