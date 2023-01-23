@@ -19,7 +19,7 @@ const DEV_FLAGS: Record<FeatureFlag, boolean> = {
 
 const ROLE_FLAGS: Record<Role, Record<FeatureFlag, boolean>> = {
   ADMIN: {
-    MULTIGALLERY: false,
+    MULTIGALLERY: true,
   },
   BETA_TESTER: {
     MULTIGALLERY: false,
