@@ -206,7 +206,12 @@ export default function GalleriesPage({ queryRef }: Props) {
 
 const GalleryPageWrapper = styled.div<{ navbarHeight: number }>`
   height: calc(100vh - ${({ navbarHeight }) => navbarHeight}px);
-  padding: ${({ navbarHeight }) => navbarHeight}px 16px 0;
+
+  padding: ${({ navbarHeight }) => navbarHeight + 10}px 16px;
+
+  @media only screen and ${breakpoints.tablet} {
+    padding: ${({ navbarHeight }) => navbarHeight + 24}px 80px;
+  }
 `;
 
 const StyledGalleryGridLayout = styled(StyledGalleryLayout)`

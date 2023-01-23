@@ -2,13 +2,18 @@ import { useRouter } from 'next/router';
 import { useCallback } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
+import styled from 'styled-components';
 
+import breakpoints from '~/components/core/breakpoints';
+import { VStack } from '~/components/core/Spacer/Stack';
 import { useModalState } from '~/contexts/modal/ModalContext';
 import { UserGalleryFragment$key } from '~/generated/UserGalleryFragment.graphql';
 import useKeyDown from '~/hooks/useKeyDown';
+import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import useDisplayFullPageNftDetailModal from '~/scenes/NftDetailPage/useDisplayFullPageNftDetailModal';
 import NotFound from '~/scenes/NotFound/NotFound';
 import { UserGalleryLayout } from '~/scenes/UserGalleryPage/UserGalleryLayout';
+import { UserNameAndDescriptionHeader } from '~/scenes/UserGalleryPage/UserNameAndDescriptionHeader';
 
 type Props = {
   queryRef: UserGalleryFragment$key;
@@ -35,7 +40,11 @@ function UserGallery({ queryRef }: Props) {
           ... on GalleryUser {
             __typename
 
-            ...UserGalleryLayoutFragment
+            featuredGallery @required(action: THROW) {
+              ...UserGalleryLayoutFragment
+            }
+
+            ...UserNameAndDescriptionHeader
           }
           ... on ErrUserNotFound {
             __typename
@@ -65,8 +74,9 @@ function UserGallery({ queryRef }: Props) {
   }, [isLoggedIn, isModalOpenRef, push, galleryId]);
 
   useKeyDown('e', navigateToEdit);
-
   useDisplayFullPageNftDetailModal();
+
+  const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
   if (user.__typename === 'ErrUserNotFound') {
     return <NotFound />;
@@ -76,7 +86,30 @@ function UserGallery({ queryRef }: Props) {
     throw new Error(`Expected user to be type GalleryUser. Received: ${user.__typename}`);
   }
 
-  return <UserGalleryLayout userRef={user} queryRef={query} />;
+  return (
+    <Container gap={isMobile ? 12 : 24}>
+      <UserNameAndDescriptionHeader userRef={user} />
+      <Divider />
+      <UserGalleryLayout galleryRef={user.featuredGallery} queryRef={query} />
+    </Container>
+  );
 }
+
+const Divider = styled.div`
+  width: 100%;
+  height: 1px;
+  background-color: #e7e7e7;
+`;
+
+const Container = styled(VStack)`
+  margin-top: 10px;
+
+  @media only screen and ${breakpoints.tablet} {
+    margin-top: 24px;
+  }
+
+  width: 100%;
+  max-width: 1200px;
+`;
 
 export default UserGallery;

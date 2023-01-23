@@ -66,7 +66,7 @@ function CollectionGallery({ queryRef }: Props) {
 const StyledCollectionGallery = styled(VStack)<{ isMobile: boolean }>`
   width: 100%;
   max-width: 1200px;
-  padding: ${({ isMobile }) => (isMobile ? '8px 0 16px 0' : '80px 0 64px 0')};
+  padding: ${({ isMobile }) => (isMobile ? '8px 0 16px 0' : '24px 0 64px 0')};
 `;
 
 const NftGalleryWrapper = styled(VStack)`
