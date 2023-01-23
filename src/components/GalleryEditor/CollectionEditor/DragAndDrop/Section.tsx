@@ -9,6 +9,7 @@ import { HStack } from '~/components/core/Spacer/Stack';
 import { TitleDiatypeM } from '~/components/core/Text/Text';
 import transitions from '~/components/core/transitions';
 import ColumnAdjuster from '~/components/GalleryEditor/CollectionEditor/ColumnAdjuster';
+import DragHandleIcon from '~/icons/DragHandleIcon';
 import { TrashIconNew } from '~/icons/TrashIconNew';
 import noop from '~/utils/noop';
 
@@ -42,9 +43,7 @@ export const Handle = forwardRef<HTMLButtonElement, HandleProps>((props, ref) =>
       data-cypress="draggable-handle"
       {...props}
     >
-      <HStack gap={2} align="center">
-        <StyledLabelText>Section</StyledLabelText>
-      </HStack>
+      <DragHandleIcon />
     </StyledLabel>
   );
 });
@@ -60,10 +59,6 @@ const StyledLabel = styled.div<{ isActive: boolean; isDragging: boolean }>`
   user-select: none;
 
   cursor: ${({ isDragging }) => (isDragging ? 'grabbing' : 'grab')};
-`;
-
-const StyledLabelText = styled(TitleDiatypeM)`
-  color: ${colors.white};
 `;
 
 export const Section = forwardRef<HTMLDivElement, Props>(

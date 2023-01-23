@@ -56,7 +56,6 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
           id
           username @required(action: THROW)
         }
-        ...DeleteGalleryConfirmationFragment
       }
     `,
     galleryRef
@@ -183,7 +182,7 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
     showModal({
       content: (
         <DeleteGalleryConfirmation
-          galleryRef={gallery}
+          galleryId={gallery.dbid}
           isLastGallery={isLastGallery}
           onSuccess={reassignFeaturedGallery}
         />

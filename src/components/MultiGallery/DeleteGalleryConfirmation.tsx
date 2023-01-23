@@ -1,10 +1,8 @@
 import { useCallback, useState } from 'react';
-import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
-import { DeleteGalleryConfirmationFragment$key } from '~/generated/DeleteGalleryConfirmationFragment.graphql';
 
 import { Button } from '../core/Button/Button';
 import { HStack } from '../core/Spacer/Stack';
@@ -12,23 +10,12 @@ import { BaseM } from '../core/Text/Text';
 import useDeleteGallery from './useDeleteGallery';
 
 type Props = {
-  galleryRef: DeleteGalleryConfirmationFragment$key;
+  galleryId: string;
   isLastGallery: boolean;
   onSuccess: () => void;
 };
 
-export default function DeleteGalleryConfirmation({ galleryRef, isLastGallery, onSuccess }: Props) {
-  const gallery = useFragment(
-    graphql`
-      fragment DeleteGalleryConfirmationFragment on Gallery {
-        dbid
-      }
-    `,
-    galleryRef
-  );
-
-  const { dbid: galleryId } = gallery;
-
+export default function DeleteGalleryConfirmation({ galleryId, isLastGallery, onSuccess }: Props) {
   const { hideModal } = useModalActions();
   const { pushToast } = useToastActions();
   const deleteGallery = useDeleteGallery();
