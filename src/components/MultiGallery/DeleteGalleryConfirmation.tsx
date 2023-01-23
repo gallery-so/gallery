@@ -12,23 +12,12 @@ import { BaseM } from '../core/Text/Text';
 import useDeleteGallery from './useDeleteGallery';
 
 type Props = {
-  galleryRef: DeleteGalleryConfirmationFragment$key;
+  galleryId: string;
   isLastGallery: boolean;
   onSuccess: () => void;
 };
 
-export default function DeleteGalleryConfirmation({ galleryRef, isLastGallery, onSuccess }: Props) {
-  const gallery = useFragment(
-    graphql`
-      fragment DeleteGalleryConfirmationFragment on Gallery {
-        dbid
-      }
-    `,
-    galleryRef
-  );
-
-  const { dbid: galleryId } = gallery;
-
+export default function DeleteGalleryConfirmation({ galleryId, isLastGallery, onSuccess }: Props) {
   const { hideModal } = useModalActions();
   const { pushToast } = useToastActions();
   const deleteGallery = useDeleteGallery();
