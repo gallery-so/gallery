@@ -34,7 +34,7 @@ export default function Featured({ queryRef }: Props) {
   );
 
   return (
-    <StyledFeaturedPage gap={64}>
+    <StyledFeaturedPage gap={48}>
       {query.trendingUsers7Days?.__typename === 'TrendingUsersPayload' && (
         <FeaturedSection
           title="Weekly Spotlight"
