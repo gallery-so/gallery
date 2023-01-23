@@ -10,6 +10,7 @@ import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useG
 import { useModalState } from '~/contexts/modal/ModalContext';
 import { CollectionGalleryPageFragment$key } from '~/generated/CollectionGalleryPageFragment.graphql';
 import useKeyDown from '~/hooks/useKeyDown';
+import { GalleryPageSpacing } from '~/pages/[username]';
 import useDisplayFullPageNftDetailModal from '~/scenes/NftDetailPage/useDisplayFullPageNftDetailModal';
 
 import CollectionGallery from './CollectionGallery';
@@ -100,32 +101,16 @@ function CollectionGalleryPage({ username, queryRef }: CollectionGalleryPageProp
 
   useDisplayFullPageNftDetailModal();
 
-  const navbarHeight = useGlobalNavbarHeight();
-
   return (
     <>
       <Head>
         <title>{headTitle}</title>
       </Head>
-      <StyledCollectionGalleryWrapper navbarHeight={navbarHeight}>
+      <GalleryPageSpacing>
         <CollectionGallery queryRef={query} />
-      </StyledCollectionGalleryWrapper>
+      </GalleryPageSpacing>
     </>
   );
 }
-
-const StyledCollectionGalleryWrapper = styled.div<{ navbarHeight: number }>`
-  padding-top: ${({ navbarHeight }) => navbarHeight}px;
-  min-height: 100vh;
-
-  display: flex;
-  justify-content: center;
-  margin: 0 ${pageGutter.mobile}px;
-  position: relative;
-
-  @media only screen and ${breakpoints.tablet} {
-    margin: 0 ${pageGutter.tablet}px;
-  }
-`;
 
 export default CollectionGalleryPage;

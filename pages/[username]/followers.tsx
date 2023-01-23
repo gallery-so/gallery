@@ -3,6 +3,7 @@ import { useFragment, useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
+import { VStack } from '~/components/core/Spacer/Stack';
 import FollowList from '~/components/Follow/FollowList';
 import GalleryViewEmitter from '~/components/internal/GalleryViewEmitter';
 import { GalleryNavbar } from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavbar';
@@ -10,6 +11,8 @@ import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useG
 import { followersFollowersPageFragment$key } from '~/generated/followersFollowersPageFragment.graphql';
 import { followersQuery } from '~/generated/followersQuery.graphql';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
+
+import { GalleryPageSpacing } from '.';
 
 type FollowersPageProps = {
   queryRef: followersFollowersPageFragment$key;
@@ -27,22 +30,14 @@ function FollowersPage({ queryRef }: FollowersPageProps) {
     queryRef
   );
 
-  const navbarHeight = useGlobalNavbarHeight();
-
   return (
-    <FollowersPageWrapper navbarHeight={navbarHeight}>
-      <FollowList userRef={query.userByUsername} />
-    </FollowersPageWrapper>
+    <GalleryPageSpacing>
+      <VStack align="center">
+        <FollowList userRef={query.userByUsername} />
+      </VStack>
+    </GalleryPageSpacing>
   );
 }
-
-const FollowersPageWrapper = styled.div<{ navbarHeight: number }>`
-  padding-top: ${({ navbarHeight }) => navbarHeight}px;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
 
 type FollowersProps = {
   username: string;

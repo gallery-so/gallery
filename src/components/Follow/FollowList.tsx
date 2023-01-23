@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import TextButton, { StyledButtonText } from '~/components/core/Button/TextButton';
 import colors from '~/components/core/colors';
@@ -71,7 +71,16 @@ const StyledFollowList = styled.div<{ fullscreen: boolean }>`
   width: ${({ fullscreen }) => (fullscreen ? '100%' : '540px')};
   display: flex;
   flex-direction: column;
-  padding: ${MODAL_PADDING_THICC_PX}px 8px;
+
+  ${({ fullscreen }) =>
+    fullscreen
+      ? css`
+          width: 100%;
+          padding: ${MODAL_PADDING_THICC_PX}px 8px;
+        `
+      : css`
+          width: 540px;
+        `}
 `;
 
 const StyledHeader = styled(HStack)`
