@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Route } from 'nextjs-routes';
+import { Route, route } from 'nextjs-routes';
 import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -50,7 +50,13 @@ export function CollectionNavbar({ queryRef, username, collectionId }: Collectio
 
         collectionById(id: $collectionId) {
           ... on Collection {
+            __typename
             name
+
+            gallery @required(action: THROW) {
+              dbid
+              name
+            }
           }
         }
       }
@@ -58,14 +64,26 @@ export function CollectionNavbar({ queryRef, username, collectionId }: Collectio
     queryRef
   );
 
+  if (query.collectionById?.__typename !== 'Collection') {
+    throw new Error('Expected collectionById to be a Collection');
+  }
+
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
   const usernameRoute: Route = { pathname: '/[username]', query: { username } };
 
-  const unescapedCollectionName = useMemo(
-    () => unescape(query.collectionById?.name ?? '') || 'untitled',
-    [query.collectionById?.name]
-  );
+  const galleryRoute: Route = {
+    pathname: '/[username]/galleries/[galleryId]',
+    query: { username, galleryId: query.collectionById?.gallery.dbid },
+  };
+
+  const unescapedCollectionName = useMemo(() => {
+    if (query.collectionById?.__typename === 'Collection') {
+      return unescape(query.collectionById?.name ?? '') || 'untitled';
+    }
+
+    return 'untitled';
+  }, [query.collectionById]);
 
   return (
     <StandardNavbarContainer>
@@ -80,6 +98,17 @@ export function CollectionNavbar({ queryRef, username, collectionId }: Collectio
                 )}
 
                 <SlashText>/</SlashText>
+
+                {query.collectionById?.gallery?.name && (
+                  <>
+                    <Link href={galleryRoute}>
+                      <BreadcrumbLink href={route(galleryRoute)}>
+                        {query.collectionById.gallery.name}
+                      </BreadcrumbLink>
+                    </Link>
+                    <SlashText>/</SlashText>
+                  </>
+                )}
 
                 <CollectionNameText title={unescapedCollectionName}>
                   {unescapedCollectionName}
