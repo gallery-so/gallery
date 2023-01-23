@@ -101,9 +101,9 @@ export default function FeaturedUserCard({ userRef, queryRef }: Props) {
         <UserDetailsContainer>
           <UserDetailsText>
             <HStack gap={4} align="center">
-              <TitleM>
+              <Username>
                 <strong>{user.username}</strong>
-              </TitleM>
+              </Username>
               <HStack align="center" gap={0}>
                 {userBadges.map((badge) => (
                   <Badge key={badge.name} badgeRef={badge} />
@@ -169,6 +169,11 @@ const TokenPreview = styled.img`
   width: 100%;
   aspect-ratio: 1 / 1;
   object-fit: cover;
+`;
+
+const Username = styled(TitleM)`
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const StyledFollowButton = styled(FollowButton)`
