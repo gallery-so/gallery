@@ -173,7 +173,7 @@ function StagingArea({ tokensRef }: Props) {
       return null;
     }
 
-    if (sections[activeId.toString()]) {
+    if (localSections[activeId.toString()]) {
       return (
         <SectionDragging
           items={localSections[activeId].items}
