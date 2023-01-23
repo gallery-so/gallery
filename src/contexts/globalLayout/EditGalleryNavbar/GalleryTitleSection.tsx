@@ -15,7 +15,7 @@ type GalleryTitleSectionProps = {
 export function GalleryTitleSection({ onEdit, galleryName }: GalleryTitleSectionProps) {
   return (
     <GalleryTitleContainer align="center" onClick={onEdit} gap={8}>
-      <MainGalleryText>{galleryName || 'Untitled'}</MainGalleryText>
+      <MainGalleryText>{galleryName || 'Untitled Gallery'}</MainGalleryText>
 
       <EditIconContainer>
         <IconContainer size="sm" variant="stacked" icon={<EditPencilIcon />} />
