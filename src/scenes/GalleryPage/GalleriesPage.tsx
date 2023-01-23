@@ -207,10 +207,10 @@ export default function GalleriesPage({ queryRef }: Props) {
 const GalleryPageWrapper = styled.div<{ navbarHeight: number }>`
   height: calc(100vh - ${({ navbarHeight }) => navbarHeight}px);
 
-  padding-top: ${({ navbarHeight }) => navbarHeight + 10}px;
+  padding: ${({ navbarHeight }) => navbarHeight + 10}px 16px;
 
   @media only screen and ${breakpoints.tablet} {
-    padding-top: ${({ navbarHeight }) => navbarHeight + 24}px;
+    padding: ${({ navbarHeight }) => navbarHeight + 24}px 80px;
   }
 `;
 
