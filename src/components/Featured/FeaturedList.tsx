@@ -55,7 +55,6 @@ export default function FeaturedList({ trendingUsersRef, queryRef }: Props) {
 }
 
 const StyledFeaturedList = styled(HStack)`
-  gap: 12px 16px;
   overflow-x: scroll;
   padding-bottom: 16px; // to create space for overflow scroll bar
 `;
@@ -65,7 +64,7 @@ const Wrapper = styled.div`
 
   grid-template-columns: repeat(8, 1fr);
 
-  grid-gap: 12px 16px;
+  grid-gap: 16px;
   min-width: 1496px; // define the full width of the list, which is meant to overflow and be horizontally scrollable
 
   @media only screen and ${breakpoints.desktop} {

@@ -58,5 +58,5 @@ export default function Featured({ queryRef }: Props) {
 const StyledFeaturedPage = styled(VStack)`
   width: 100%;
   flex: 1;
-  padding: 24px 0;
+  padding: 16px 0;
 `;
