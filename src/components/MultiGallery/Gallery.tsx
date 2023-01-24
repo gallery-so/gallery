@@ -262,7 +262,9 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
           <UnstyledLink href={galleryLink}>
             <StyledGalleryTitle tabIndex={1}>{name || 'Untitled'}</StyledGalleryTitle>
           </UnstyledLink>
-          <BaseM>{collections.length} collections</BaseM>
+          <BaseM>
+            {collections.length} collection{collections.length === 1 ? '' : 's'}
+          </BaseM>
         </StyledGalleryTitleWrapper>
       </StyledGalleryTitleContainer>
       <StyledGalleryActionsContainer>
