@@ -24,7 +24,7 @@ export default function DelegateCashMessage({ reset }: Props) {
         </VStack>
         <VStack align="flex-start">
           <TitleS>New Users:</TitleS>
-          <BaseM>Please first create a Gallery account with a hot wallet.</BaseM>
+          <StyledText>Please first create a Gallery account with a hot wallet.</StyledText>
         </VStack>
         <VStack align="flex-start">
           <TitleS>Existing Users:</TitleS>
