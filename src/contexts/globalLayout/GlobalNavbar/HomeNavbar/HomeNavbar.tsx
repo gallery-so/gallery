@@ -59,7 +59,9 @@ export function HomeNavbar({ queryRef }: Props) {
       <NavbarCenterContent>
         <HStack gap={8}>
           <NavbarLink
+            legacyBehavior={false}
             active={pathname === activityRoute.pathname}
+            // @ts-expect-error We're not using the legacy Link
             href={route(activityRoute)}
             onClick={handleActivityModeClick}
           >
@@ -67,7 +69,9 @@ export function HomeNavbar({ queryRef }: Props) {
           </NavbarLink>
 
           <NavbarLink
+            legacyBehavior={false}
             active={pathname === featuredRoute.pathname}
+            // @ts-expect-error We're not using the legacy Link
             href={route(featuredRoute)}
             onClick={handleFeaturedModeClick}
           >
