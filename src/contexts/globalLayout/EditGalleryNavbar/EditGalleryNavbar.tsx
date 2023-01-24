@@ -1,13 +1,13 @@
-import { useMemo } from 'react';
+import { useRouter } from 'next/router';
+import { useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import { Button } from '~/components/core/Button/Button';
 import colors from '~/components/core/colors';
 import { HStack } from '~/components/core/Spacer/Stack';
-import { BaseM, TitleDiatypeM } from '~/components/core/Text/Text';
+import { BaseM, TitleDiatypeM, TitleXS } from '~/components/core/Text/Text';
 import { GalleryTitleSection } from '~/contexts/globalLayout/EditGalleryNavbar/GalleryTitleSection';
-import { BackButton } from '~/contexts/globalLayout/GlobalNavbar/BackButton';
 import { CollectionSaveButtonWithCaption } from '~/contexts/globalLayout/GlobalNavbar/CollectionSaveButtonWithCaption';
 import {
   NavbarCenterContent,
@@ -16,12 +16,14 @@ import {
   StandardNavbarContainer,
 } from '~/contexts/globalLayout/GlobalNavbar/StandardNavbarContainer';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import { AllGalleriesIcon } from '~/icons/AllGalleriesIcon';
 
 type Props = {
   canSave: boolean;
   hasSaved: boolean;
   hasUnsavedChanges: boolean;
   galleryName: string;
+  username: string;
 
   onEdit: () => void;
 
@@ -42,9 +44,16 @@ export function EditGalleryNavbar({
   onEdit,
   hasSaved,
   hasUnsavedChanges,
+
+  username,
   galleryName,
 }: Props) {
+  const { push } = useRouter();
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
+
+  const handleAllGalleriesClick = useCallback(() => {
+    push({ pathname: '/[username]/galleries', query: { username } });
+  }, [push, username]);
 
   const doneAction = useMemo<DoneAction>(() => {
     if (hasUnsavedChanges) {
@@ -97,7 +106,10 @@ export function EditGalleryNavbar({
           {isMobile ? (
             <GalleryTitleSection galleryName={galleryName} onEdit={onEdit} />
           ) : (
-            <BackButton onClick={onBack} />
+            <AllGalleriesWrapper onClick={handleAllGalleriesClick} gap={4}>
+              <AllGalleriesIcon />
+              <TitleXS color={colors.shadow}>ALL GALLERIES</TitleXS>
+            </AllGalleriesWrapper>
           )}
         </NavbarLeftContent>
 
@@ -114,6 +126,15 @@ export function EditGalleryNavbar({
     </Wrapper>
   );
 }
+
+const AllGalleriesWrapper = styled(HStack)`
+  cursor: pointer;
+  padding: 8px;
+
+  :hover {
+    background-color: ${colors.faint};
+  }
+`;
 
 const DoneButton = styled(Button)`
   padding: 8px 12px;
