@@ -200,13 +200,13 @@ export default function GalleriesPage({ queryRef }: Props) {
 
 const GalleryWrapper = styled.div`
   display: grid;
-  grid-template-columns: repeat(1, 1fr);
+  grid-template-columns: repeat(1, minmax(1fr));
   gap: 16px;
 
   @media only screen and ${breakpoints.tablet} {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   @media only screen and ${breakpoints.desktop} {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 `;
