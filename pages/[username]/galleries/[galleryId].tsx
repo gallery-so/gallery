@@ -15,12 +15,13 @@ export default function FocusedGallery({ galleryId, username }: Props) {
   const query = useLazyLoadQuery<GalleryIdFocusedGalleryQuery>(
     graphql`
       query GalleryIdFocusedGalleryQuery($galleryId: DBID!, $username: String!) {
-        galleryById(id: $galleryId) {
+        galleryById(id: $galleryId) @required(action: THROW) {
           ... on Gallery {
-            name
             owner {
               username
             }
+
+            ...GalleryNavbarGalleryFragment
           }
         }
 
@@ -35,7 +36,8 @@ export default function FocusedGallery({ galleryId, username }: Props) {
     <GalleryRoute
       navbar={
         <GalleryNavbar
-          galleryName={query.galleryById?.name || undefined}
+          showGalleryNameBreadcrumb
+          galleryRef={query.galleryById}
           username={query.galleryById?.owner?.username ?? '<error>'}
           queryRef={query}
         />

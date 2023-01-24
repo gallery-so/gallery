@@ -26,6 +26,7 @@ import { UserGalleryCollectionQueryFragment$key } from '~/generated/UserGalleryC
 import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
 import useResizeObserver from '~/hooks/useResizeObserver';
 import { baseUrl } from '~/utils/baseUrl';
+import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 import noop from '~/utils/noop';
 import unescape from '~/utils/unescape';
 
@@ -48,6 +49,7 @@ function UserGalleryCollection({
     graphql`
       fragment UserGalleryCollectionQueryFragment on Query {
         ...useLoggedInUserIdFragment
+        ...isFeatureEnabledFragment
       }
     `,
     queryRef
@@ -129,6 +131,8 @@ function UserGalleryCollection({
     });
   }, [collection.collectorsNote, collectionId, collection.name, galleryId, showModal]);
 
+  const isMultiGalleryEnabled = isFeatureEnabled(FeatureFlag.MULTIGALLERY, query);
+
   return (
     <StyledCollectionWrapper ref={componentRef}>
       <StyledCollectionHeader>
@@ -148,10 +152,17 @@ function UserGalleryCollection({
                       EDIT NAME & DESCRIPTION
                     </DropdownItem>
                     <DropdownLink
-                      href={{
-                        pathname: '/gallery/[galleryId]/collection/[collectionId]/edit',
-                        query: { galleryId, collectionId },
-                      }}
+                      href={
+                        isMultiGalleryEnabled
+                          ? {
+                              pathname: '/gallery/[galleryId]/edit',
+                              query: { galleryId, collectionId },
+                            }
+                          : {
+                              pathname: '/gallery/[galleryId]/collection/[collectionId]/edit',
+                              query: { galleryId, collectionId },
+                            }
+                      }
                       onClick={() => track('Update existing collection button clicked')}
                     >
                       EDIT COLLECTION
