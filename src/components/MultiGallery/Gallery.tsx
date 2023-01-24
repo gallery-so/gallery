@@ -252,8 +252,7 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
           <HStack shrink justify="space-between">
             <StyledGalleryTitleWrapper isHidden={hidden}>
               <UnstyledLink href={galleryLink}>
-                {/*<StyledGalleryTitle tabIndex={1}>{name || 'Untitled'}</StyledGalleryTitle>*/}
-                <StyledGalleryTitle tabIndex={1}>Some long name here</StyledGalleryTitle>
+                <StyledGalleryTitle tabIndex={1}>{name || 'Untitled'}</StyledGalleryTitle>
               </UnstyledLink>
               <BaseM>
                 {collections.length} collection{collections.length === 1 ? '' : 's'}
