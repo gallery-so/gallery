@@ -63,7 +63,7 @@ function NewEditGalleryPageInner({ queryRef }: NewEditGalleryPageInnerProps) {
         query: { username: query.viewer.user.username },
       });
     } else {
-      replace({ pathname: '/home' });
+      replace({ pathname: '/activity' });
     }
   }, [back, canGoBack, query.viewer, replace]);
 
@@ -186,7 +186,7 @@ function OldEditGalleryPage({ galleryId }: OldEditGalleryPageProps) {
     if (query.viewer?.user?.username) {
       push({ pathname: '/[username]', query: { username: query.viewer.user.username } });
     } else {
-      push({ pathname: '/home' });
+      push({ pathname: '/activity' });
     }
   }, [push, query.viewer?.user?.username]);
 

@@ -54,7 +54,7 @@ export function ProfileDropdown({ queryRef, rightContent }: ProfileDropdownProps
     useDropdownHoverControls();
 
   const handleLoggedOutLogoClick = useCallback(() => {
-    push({ pathname: '/home' });
+    push({ pathname: '/activity' });
   }, [push]);
 
   useEffect(

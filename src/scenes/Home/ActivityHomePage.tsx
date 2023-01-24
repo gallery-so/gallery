@@ -3,23 +3,19 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import breakpoints, { pageGutter } from '~/components/core/breakpoints';
-import Featured from '~/components/Featured/Featured';
 import Feed from '~/components/Feed/Feed';
-import { HOME_MODE } from '~/contexts/globalLayout/GlobalNavbar/HomeNavbar/HomeNavbar';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
-import { HomeFragment$key } from '~/generated/HomeFragment.graphql';
+import { ActivityHomePageFragment$key } from '~/generated/ActivityHomePageFragment.graphql';
 
 type Props = {
-  queryRef: HomeFragment$key;
-  homeMode: HOME_MODE;
+  queryRef: ActivityHomePageFragment$key;
 };
 
-export default function Home({ queryRef, homeMode }: Props) {
+export default function ActivityHomePage({ queryRef }: Props) {
   const query = useFragment(
     graphql`
-      fragment HomeFragment on Query {
+      fragment ActivityHomePageFragment on Query {
         ...FeedViewerFragment
-        ...FeaturedFragment
       }
     `,
     queryRef
@@ -33,7 +29,7 @@ export default function Home({ queryRef, homeMode }: Props) {
         <title>Gallery - Home</title>
       </Head>
       <StyledPage navbarHeight={navbarHeight}>
-        {homeMode === 'ACTIVITY' ? <Feed queryRef={query} /> : <Featured queryRef={query} />}
+        <Feed queryRef={query} />
       </StyledPage>
     </>
   );

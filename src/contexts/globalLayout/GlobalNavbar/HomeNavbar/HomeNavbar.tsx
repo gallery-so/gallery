@@ -1,3 +1,5 @@
+import { useRouter } from 'next/router';
+import { Route, route } from 'nextjs-routes';
 import { MouseEventHandler, useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
@@ -15,14 +17,10 @@ import {
   StandardNavbarContainer,
 } from '../StandardNavbarContainer';
 
-export type HOME_MODE = 'ACTIVITY' | 'FEATURED';
-
 type Props = {
   queryRef: HomeNavbarFragment$key;
-  setHomeMode: (homeMode: HOME_MODE) => void;
-  homeMode: HOME_MODE;
 };
-export function HomeNavbar({ queryRef, homeMode, setHomeMode }: Props) {
+export function HomeNavbar({ queryRef }: Props) {
   const query = useFragment(
     graphql`
       fragment HomeNavbarFragment on Query {
@@ -41,25 +39,17 @@ export function HomeNavbar({ queryRef, homeMode, setHomeMode }: Props) {
   const isLoggedIn = query.viewer?.__typename === 'Viewer';
 
   const track = useTrack();
-  const handleActivityModeClick = useCallback<MouseEventHandler>(
-    (e) => {
-      e.preventDefault();
+  const handleActivityModeClick = useCallback<MouseEventHandler>(() => {
+    track('Home: Clicked toggle to Activity Feed');
+  }, [track]);
 
-      track('Home: Clicked toggle to Activity Feed');
-      setHomeMode('ACTIVITY');
-    },
-    [setHomeMode, track]
-  );
+  const handleFeaturedModeClick = useCallback<MouseEventHandler>(() => {
+    track('Home: Clicked toggle to Featured Page');
+  }, [track]);
 
-  const handleFeaturedModeClick = useCallback<MouseEventHandler>(
-    (e) => {
-      e.preventDefault();
-
-      track('Home: Clicked toggle to Featured Page');
-      setHomeMode('FEATURED');
-    },
-    [setHomeMode, track]
-  );
+  const { pathname } = useRouter();
+  const activityRoute: Route = { pathname: '/activity', query: {} };
+  const featuredRoute: Route = { pathname: '/featured', query: {} };
 
   return (
     <StandardNavbarContainer>
@@ -68,11 +58,19 @@ export function HomeNavbar({ queryRef, homeMode, setHomeMode }: Props) {
       </NavbarLeftContent>
       <NavbarCenterContent>
         <HStack gap={8}>
-          <NavbarLink active={homeMode === 'ACTIVITY'} onClick={handleActivityModeClick}>
+          <NavbarLink
+            active={pathname === activityRoute.pathname}
+            href={route(activityRoute)}
+            onClick={handleActivityModeClick}
+          >
             Activity
           </NavbarLink>
 
-          <NavbarLink active={homeMode === 'FEATURED'} onClick={handleFeaturedModeClick}>
+          <NavbarLink
+            active={pathname === featuredRoute.pathname}
+            href={route(featuredRoute)}
+            onClick={handleFeaturedModeClick}
+          >
             Featured
           </NavbarLink>
         </HStack>
