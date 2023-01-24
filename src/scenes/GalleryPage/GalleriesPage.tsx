@@ -8,7 +8,11 @@ import {
   DragStartEvent,
   DropAnimation,
   MeasuringStrategy,
+  MouseSensor,
+  PointerSensor,
   UniqueIdentifier,
+  useSensor,
+  useSensors,
 } from '@dnd-kit/core';
 import { arraySwap, rectSortingStrategy, SortableContext } from '@dnd-kit/sortable';
 import { useCallback, useMemo, useState } from 'react';
@@ -156,9 +160,19 @@ export default function GalleriesPage({ queryRef }: Props) {
     [activeId, nonNullGalleries]
   );
 
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        delay: 150,
+        tolerance: 100,
+      },
+    })
+  );
+
   return (
     <GalleryPageSpacing>
       <DndContext
+        sensors={sensors}
         collisionDetection={closestCenter}
         measuring={layoutMeasuring}
         onDragStart={handleDragStart}
