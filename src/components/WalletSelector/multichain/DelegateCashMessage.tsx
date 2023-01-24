@@ -18,16 +18,28 @@ export default function DelegateCashMessage({ reset }: Props) {
   return (
     <EmptyState title="Coming Soon">
       <VStack gap={24}>
-        <VStack align="center" gap={8}>
+        <VStack align="center" gap={4}>
           <Icon src={walletIconMap['delegate_cash']} />
-          <BaseM>We are currently building support for delegate.cash.</BaseM>
+          <BaseM>We&#39;re currently building support for delegate.cash</BaseM>
         </VStack>
         <VStack align="flex-start">
-          <TitleS>New Users:</TitleS>
-          <StyledText>Please first create a Gallery account with a hot wallet.</StyledText>
+          <TitleS>What is it?</TitleS>
+          <StyledText>
+            <InteractiveLink href={'https://delegate.cash'}>Delegate Cash</InteractiveLink> is a
+            decentralized service that allows you to designate a hot wallet to act and sign on
+            behalf of your cold wallet.
+          </StyledText>
         </VStack>
         <VStack align="flex-start">
-          <TitleS>Existing Users:</TitleS>
+          <TitleS>New Users</TitleS>
+          <StyledText>
+            Please create a Gallery account with your delegated hot wallet, then reach out to our
+            team via <InteractiveLink href={GALLERY_DISCORD}>Discord</InteractiveLink> or{' '}
+            <InteractiveLink href={GALLERY_TWITTER}>Twitter</InteractiveLink> for next steps.
+          </StyledText>
+        </VStack>
+        <VStack align="flex-start">
+          <TitleS>Existing Users</TitleS>
           <StyledText>
             If you’d like to connect your cold wallet to an existing Gallery account, please reach
             out to the Gallery team via{' '}

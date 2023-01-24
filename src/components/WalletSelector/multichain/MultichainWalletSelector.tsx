@@ -144,16 +144,6 @@ export default function MultichainWalletSelector({
               );
             }}
           />
-          {connectionMode !== CONNECT_WALLET_ONLY ? (
-            <WalletButton
-              label={supportedAuthMethods.gnosisSafe.name}
-              icon="gnosis_safe"
-              onClick={() => {
-                console.log('connecting to gnosis safe via walletconnect');
-                setSelectedAuthMethod(supportedAuthMethods.gnosisSafe);
-              }}
-            />
-          ) : null}
           <WalletButton
             label="Tezos"
             icon="tezos"
@@ -169,8 +159,18 @@ export default function MultichainWalletSelector({
                 });
             }}
           />
+          {connectionMode !== CONNECT_WALLET_ONLY ? (
+            <WalletButton
+              label={supportedAuthMethods.gnosisSafe.name}
+              icon="gnosis_safe"
+              onClick={() => {
+                console.log('connecting to gnosis safe via walletconnect');
+                setSelectedAuthMethod(supportedAuthMethods.gnosisSafe);
+              }}
+            />
+          ) : null}
           <WalletButton
-            label="delegate.cash"
+            label={supportedAuthMethods.delegateCash.name}
             icon="delegate_cash"
             onClick={() => {
               setSelectedAuthMethod(supportedAuthMethods.delegateCash);

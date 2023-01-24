@@ -18,6 +18,6 @@ export const supportedAuthMethods: Readonly<
     name: 'Tezos',
   },
   delegateCash: {
-    name: 'delegate.cash',
+    name: 'Delegate Cash',
   },
 };
