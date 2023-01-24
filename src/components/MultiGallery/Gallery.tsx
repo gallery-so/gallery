@@ -268,10 +268,10 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
                 <>
                   <Link href={handleEditGallery}>
                     <a>
-                      <IconContainer size="md" variant="default" icon={<EditPencilIcon />} />
+                      <IconContainer size="md" variant="stacked" icon={<EditPencilIcon />} />
                     </a>
                   </Link>
-                  <SettingsDropdown iconVariant="default">
+                  <SettingsDropdown iconVariant="stacked">
                     <DropdownSection>
                       <DropdownItem onClick={handleEditGalleryName}>EDIT NAME & DESC</DropdownItem>
                       {hidden ? (
