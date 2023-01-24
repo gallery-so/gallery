@@ -139,7 +139,7 @@ const HoverCircle = styled.div<{ size: IconSize; variant: ColorVariant; disabled
   }}
 `;
 
-const StyledIcon = styled.div<{
+export const StyledIcon = styled.div<{
   size: IconSize;
   disabled?: boolean;
   variant: ColorVariant;

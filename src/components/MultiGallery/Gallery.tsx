@@ -18,7 +18,7 @@ import colors from '../core/colors';
 import { DropdownItem } from '../core/Dropdown/DropdownItem';
 import { DropdownSection } from '../core/Dropdown/DropdownSection';
 import SettingsDropdown from '../core/Dropdown/SettingsDropdown';
-import IconContainer from '../core/IconContainer';
+import IconContainer, { StyledIcon } from '../core/IconContainer';
 import { UnstyledLink } from '../core/Link/UnstyledLink';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM, TitleS, TitleXS } from '../core/Text/Text';
@@ -326,7 +326,7 @@ const StyledGalleryDraggable = styled(VStack)<{ isAuthedUser: boolean }>`
   background-color: ${colors.offWhite};
   padding: 12px;
 
-  &:hover {
+  &:hover:not(:has(${StyledIcon}:hover)) {
     background-color: ${colors.faint};
   }
 `;
