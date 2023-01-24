@@ -26,7 +26,7 @@ export default function ActivityHomePage({ queryRef }: Props) {
   return (
     <>
       <Head>
-        <title>Gallery - Home</title>
+        <title>Gallery - Activity</title>
       </Head>
       <StyledPage navbarHeight={navbarHeight}>
         <Feed queryRef={query} />
