@@ -8,7 +8,6 @@ import {
   DragStartEvent,
   DropAnimation,
   MeasuringStrategy,
-  MouseSensor,
   PointerSensor,
   UniqueIdentifier,
   useSensor,
