@@ -159,6 +159,8 @@ export default function GalleriesPage({ queryRef }: Props) {
     [activeId, nonNullGalleries]
   );
 
+  // This is here to ensure the user can click icons without
+  // immediately triggering the drag n drop flow
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
