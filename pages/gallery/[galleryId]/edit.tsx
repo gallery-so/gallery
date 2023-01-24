@@ -49,7 +49,7 @@ function NewEditGalleryPageInner({ queryRef }: NewEditGalleryPageInnerProps) {
 
   const canGoBack = useCanGoBack();
   const { replace, back } = useRouter();
-  const { saveGallery, canSave, hasUnsavedChanges, editGalleryNameAndDescription, name } =
+  const { saveGallery, hasSaved, canSave, hasUnsavedChanges, editGalleryNameAndDescription, name } =
     useGalleryEditorContext();
 
   useConfirmationMessageBeforeClose(hasUnsavedChanges);
@@ -78,6 +78,12 @@ function NewEditGalleryPageInner({ queryRef }: NewEditGalleryPageInnerProps) {
     editGalleryNameAndDescription();
   }, [editGalleryNameAndDescription]);
 
+  const username = query.viewer?.__typename === 'Viewer' ? query.viewer.user?.username : null;
+
+  if (!username) {
+    throw new Error('Username does not exist');
+  }
+
   return (
     <FullPageStep
       withBorder
@@ -86,6 +92,8 @@ function NewEditGalleryPageInner({ queryRef }: NewEditGalleryPageInnerProps) {
           onEdit={handleEdit}
           galleryName={name}
           canSave={canSave}
+          hasSaved={hasSaved}
+          username={username}
           hasUnsavedChanges={hasUnsavedChanges}
           onBack={handleBack}
           onDone={handleDone}
