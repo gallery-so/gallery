@@ -49,7 +49,7 @@ function NewEditGalleryPageInner({ queryRef }: NewEditGalleryPageInnerProps) {
 
   const canGoBack = useCanGoBack();
   const { replace, back } = useRouter();
-  const { saveGallery, canSave, hasUnsavedChanges, editGalleryNameAndDescription, name } =
+  const { saveGallery, hasSaved, canSave, hasUnsavedChanges, editGalleryNameAndDescription, name } =
     useGalleryEditorContext();
 
   useConfirmationMessageBeforeClose(hasUnsavedChanges);
@@ -86,6 +86,7 @@ function NewEditGalleryPageInner({ queryRef }: NewEditGalleryPageInnerProps) {
           onEdit={handleEdit}
           galleryName={name}
           canSave={canSave}
+          hasSaved={hasSaved}
           hasUnsavedChanges={hasUnsavedChanges}
           onBack={handleBack}
           onDone={handleDone}

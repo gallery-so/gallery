@@ -37,6 +37,7 @@ export type GalleryEditorContextType = {
   setCollections: Dispatch<SetStateAction<CollectionMap>>;
   hiddenCollectionIds: Set<string>;
 
+  hasSaved: boolean;
   hasUnsavedChanges: boolean;
   validationErrors: string[];
   canSave: boolean;
@@ -138,6 +139,8 @@ export function GalleryEditorProvider({
       }
     }
   `);
+
+  const [hasSaved, setHasSaved] = useState(false);
 
   const [name, setName] = useState(() => query.galleryById?.name ?? '');
   const [description, setDescription] = useState(() => query.galleryById?.description ?? '');
@@ -363,6 +366,8 @@ export function GalleryEditorProvider({
         setInitialName(name);
         setInitialDescription(description);
         setInitialCollections(collections);
+
+        setHasSaved(true);
       } catch (error) {
         pushToast({
           autoClose: false,
@@ -426,6 +431,7 @@ export function GalleryEditorProvider({
       collections,
       hiddenCollectionIds,
 
+      hasSaved,
       hasUnsavedChanges,
       validationErrors,
       canSave,
@@ -445,6 +451,7 @@ export function GalleryEditorProvider({
     description,
     collections,
     hiddenCollectionIds,
+    hasSaved,
     hasUnsavedChanges,
     validationErrors,
     canSave,
