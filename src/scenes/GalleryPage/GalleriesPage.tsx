@@ -19,8 +19,8 @@ import styled from 'styled-components';
 import breakpoints from '~/components/core/breakpoints';
 import Gallery from '~/components/MultiGallery/Gallery';
 import useUpdateGalleryOrder from '~/components/MultiGallery/useUpdateGalleryOrder';
-import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { GalleriesPageQueryFragment$key } from '~/generated/GalleriesPageQueryFragment.graphql';
+import { GalleryPageSpacing } from '~/pages/[username]';
 import { removeNullValues } from '~/utils/removeNullValues';
 
 type Props = {
@@ -28,8 +28,6 @@ type Props = {
 };
 
 export default function GalleriesPage({ queryRef }: Props) {
-  const navbarHeight = useGlobalNavbarHeight();
-
   const query = useFragment(
     graphql`
       fragment GalleriesPageQueryFragment on Query {
@@ -159,7 +157,7 @@ export default function GalleriesPage({ queryRef }: Props) {
   );
 
   return (
-    <GalleryPageWrapper navbarHeight={navbarHeight}>
+    <GalleryPageSpacing>
       <DndContext
         collisionDetection={closestCenter}
         measuring={layoutMeasuring}
@@ -196,14 +194,9 @@ export default function GalleriesPage({ queryRef }: Props) {
           document.body
         )}
       </DndContext>
-    </GalleryPageWrapper>
+    </GalleryPageSpacing>
   );
 }
-
-const GalleryPageWrapper = styled.div<{ navbarHeight: number }>`
-  height: calc(100vh - ${({ navbarHeight }) => navbarHeight}px);
-  padding: ${({ navbarHeight }) => navbarHeight}px 16px 0;
-`;
 
 const GalleryWrapper = styled.div`
   display: grid;

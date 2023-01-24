@@ -43,17 +43,15 @@ function CollectionGallery({ queryRef }: Props) {
 
   if (collection?.__typename === 'Collection') {
     return (
-      <StyledCollectionGallery isMobile={isMobile} align="center">
-        <NftGalleryWrapper gap={isMobile ? 12 : 80}>
-          <CollectionGalleryHeader
-            queryRef={query}
-            collectionRef={collection}
-            mobileLayout={mobileLayout}
-            setMobileLayout={setMobileLayout}
-          />
-          <NftGallery collectionRef={collection} mobileLayout={mobileLayout} />
-        </NftGalleryWrapper>
-      </StyledCollectionGallery>
+      <NftGalleryWrapper gap={isMobile ? 12 : 80}>
+        <CollectionGalleryHeader
+          queryRef={query}
+          collectionRef={collection}
+          mobileLayout={mobileLayout}
+          setMobileLayout={setMobileLayout}
+        />
+        <NftGallery collectionRef={collection} mobileLayout={mobileLayout} />
+      </NftGalleryWrapper>
     );
   } else if (collection?.__typename === 'ErrCollectionNotFound') {
     return <NotFound resource="collection" />;
@@ -62,12 +60,6 @@ function CollectionGallery({ queryRef }: Props) {
   // TODO: just throw to an error boundary and have that report to sentry
   return null;
 }
-
-const StyledCollectionGallery = styled(VStack)<{ isMobile: boolean }>`
-  width: 100%;
-  max-width: 1200px;
-  padding: ${({ isMobile }) => (isMobile ? '8px 0 16px 0' : '80px 0 64px 0')};
-`;
 
 const NftGalleryWrapper = styled(VStack)`
   width: 100%;

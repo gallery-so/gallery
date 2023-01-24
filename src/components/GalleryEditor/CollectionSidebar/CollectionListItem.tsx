@@ -96,17 +96,18 @@ export function CollectionListItem({ collectionId }: CollectionListItemProps) {
         align="center"
         selected={selected}
       >
-        <CollectionTitleText italicize={!collection.name}>
+        <CollectionTitleText isHidden={hidden} italicize={!collection.name}>
           {escapedCollectionName || 'Untitled'}
         </CollectionTitleText>
-        <HStack gap={2} onClick={handleIconSectionClick}>
+        <HStack gap={10} onClick={handleIconSectionClick}>
           <IconContainer
             {...getReferenceProps()}
             onClick={handleToggleHidden}
             ref={reference}
             size="sm"
+            disableHoverPadding
             variant="stacked"
-            icon={hidden ? <ShowIcon /> : <HideIcon />}
+            icon={hidden ? <HideIcon /> : <ShowIcon />}
           />
 
           <NewTooltip
@@ -116,7 +117,7 @@ export function CollectionListItem({ collectionId }: CollectionListItemProps) {
             text={hidden ? 'Show' : 'Hide'}
           />
 
-          <SettingsDropdown size="sm" iconVariant="stacked">
+          <SettingsDropdown size="sm" iconVariant="stacked" disableHoverPadding>
             <DropdownSection>
               <DropdownItem onClick={handleEdit}>EDIT NAME & DESC</DropdownItem>
               <DropdownItem onClick={handleDelete}>DELETE</DropdownItem>
@@ -128,8 +129,15 @@ export function CollectionListItem({ collectionId }: CollectionListItemProps) {
   );
 }
 
-const CollectionTitleText = styled(TitleXS)<{ italicize: boolean }>`
+const CollectionTitleText = styled(TitleXS)<{ italicize: boolean; isHidden: boolean }>`
   text-transform: none;
+
+  ${({ isHidden }) =>
+    isHidden
+      ? css`
+          color: ${colors.metal};
+        `
+      : null}
 
   ${({ italicize }) =>
     italicize

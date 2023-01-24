@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
@@ -36,6 +37,21 @@ export function OnboardingEditGalleryNavbar({
   galleryName,
 }: Props) {
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
+
+  useEffect(() => {
+    function handlePress(event: KeyboardEvent) {
+      if (event.key === 's' && event.metaKey) {
+        // Avoid trying to save page as HTML
+        event.preventDefault();
+
+        onDone();
+      }
+    }
+
+    window.addEventListener('keydown', handlePress);
+
+    return () => window.removeEventListener('keydown', handlePress);
+  }, [onDone]);
 
   return (
     <Wrapper>

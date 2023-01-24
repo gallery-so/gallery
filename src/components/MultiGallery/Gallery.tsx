@@ -56,7 +56,6 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
           id
           username @required(action: THROW)
         }
-        ...DeleteGalleryConfirmationFragment
       }
     `,
     galleryRef
@@ -89,8 +88,8 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
 
   // TODO: Replace with a specific gallery route in the future
   const galleryLink: Route = {
-    pathname: '/[username]',
-    query: { username: gallery.owner.username },
+    pathname: '/[username]/galleries/[galleryId]',
+    query: { username: gallery.owner.username, galleryId: gallery.dbid },
   };
 
   const loggedInUserId = useLoggedInUserId(query);
@@ -137,7 +136,7 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
 
   const checkIfItsLastVisibleGallery = useCallback(() => {
     const visibleGalleries = removeNullValues(query.viewer?.viewerGalleries).filter(
-      (viewerGallery) => !viewerGallery?.gallery?.hidden
+      (viewerGallery) => viewerGallery?.gallery && !viewerGallery?.gallery?.hidden
     );
 
     return visibleGalleries.length < 2;
@@ -183,7 +182,7 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
     showModal({
       content: (
         <DeleteGalleryConfirmation
-          galleryRef={gallery}
+          galleryId={gallery.dbid}
           isLastGallery={isLastGallery}
           onSuccess={reassignFeaturedGallery}
         />
