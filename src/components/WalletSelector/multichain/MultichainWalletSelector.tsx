@@ -10,6 +10,7 @@ import { MultichainWalletSelectorFragment$key } from '~/generated/MultichainWall
 import { ADD_WALLET_TO_USER, AUTH, CONNECT_WALLET_ONLY } from '~/types/Wallet';
 
 import { ConnectionMode } from '../WalletSelector';
+import DelegateCashMessage from './DelegateCashMessage';
 import { EthereumAddWallet } from './EthereumAddWallet';
 import { EthereumAuthenticateWallet } from './EthereumAuthenticateWallet';
 import { GnosisSafeAddWallet } from './GnosisSafeAddWallet';
@@ -109,6 +110,14 @@ export default function MultichainWalletSelector({
     }
   }
 
+  if (selectedAuthMethod === supportedAuthMethods.delegateCash) {
+    return (
+      <WalletSelectorWrapper>
+        <DelegateCashMessage reset={reset} />
+      </WalletSelectorWrapper>
+    );
+  }
+
   return (
     <WalletSelectorWrapper gap={24}>
       <VStack gap={16}>
@@ -160,7 +169,13 @@ export default function MultichainWalletSelector({
                 });
             }}
           />
-          <WalletButton label="Solana" icon="solana" disabled />
+          <WalletButton
+            label="delegate.cash"
+            icon="delegate_cash"
+            onClick={() => {
+              setSelectedAuthMethod(supportedAuthMethods.delegateCash);
+            }}
+          />
         </VStack>
       </VStack>
     </WalletSelectorWrapper>
