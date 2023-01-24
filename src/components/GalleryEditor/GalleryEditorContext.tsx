@@ -245,10 +245,6 @@ export function GalleryEditorProvider({
 
   const editCollectionNameAndNote = useCallback(
     (collectionId: string) => {
-      if (!collectionIdBeingEdited) {
-        return null;
-      }
-
       const collection = collections[collectionId];
 
       showModal({
@@ -258,15 +254,11 @@ export function GalleryEditorProvider({
             name={collection.name}
             collectorsNote={collection.collectorsNote}
             onDone={({ name, collectorsNote }) => {
-              if (!collectionIdBeingEdited) {
-                return;
-              }
-
               setCollections((previous) => {
                 const next = { ...previous };
 
-                next[collectionIdBeingEdited] = {
-                  ...next[collectionIdBeingEdited],
+                next[collectionId] = {
+                  ...next[collectionId],
                   name,
                   collectorsNote,
                 };
@@ -279,7 +271,7 @@ export function GalleryEditorProvider({
         ),
       });
     },
-    [collectionIdBeingEdited, collections, showModal]
+    [collections, showModal]
   );
 
   const reportError = useReportError();

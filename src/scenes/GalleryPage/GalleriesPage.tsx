@@ -8,7 +8,10 @@ import {
   DragStartEvent,
   DropAnimation,
   MeasuringStrategy,
+  PointerSensor,
   UniqueIdentifier,
+  useSensor,
+  useSensors,
 } from '@dnd-kit/core';
 import { arraySwap, rectSortingStrategy, SortableContext } from '@dnd-kit/sortable';
 import { useCallback, useMemo, useState } from 'react';
@@ -156,9 +159,21 @@ export default function GalleriesPage({ queryRef }: Props) {
     [activeId, nonNullGalleries]
   );
 
+  // This is here to ensure the user can click icons without
+  // immediately triggering the drag n drop flow
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        delay: 150,
+        tolerance: 100,
+      },
+    })
+  );
+
   return (
     <GalleryPageSpacing>
       <DndContext
+        sensors={sensors}
         collisionDetection={closestCenter}
         measuring={layoutMeasuring}
         onDragStart={handleDragStart}
@@ -200,13 +215,13 @@ export default function GalleriesPage({ queryRef }: Props) {
 
 const GalleryWrapper = styled.div`
   display: grid;
-  grid-template-columns: repeat(1, 1fr);
+  grid-template-columns: repeat(1, minmax(1fr));
   gap: 16px;
 
   @media only screen and ${breakpoints.tablet} {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   @media only screen and ${breakpoints.desktop} {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 `;
