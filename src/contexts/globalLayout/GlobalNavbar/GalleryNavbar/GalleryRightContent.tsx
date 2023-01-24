@@ -1,4 +1,5 @@
 import { useRouter } from 'next/router';
+import { Route } from 'nextjs-routes';
 import { useCallback, useMemo, useState } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -19,26 +20,26 @@ import { SignInButton } from '~/contexts/globalLayout/GlobalNavbar/SignInButton'
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { GalleryRightContentFragment$key } from '~/generated/GalleryRightContentFragment.graphql';
+import { GalleryRightContentGalleryFragment$key } from '~/generated/GalleryRightContentGalleryFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import { useQrCode } from '~/scenes/Modals/QRCodePopover';
 import EditUserInfoModal from '~/scenes/UserGalleryPage/EditUserInfoModal';
 import LinkButton from '~/scenes/UserGalleryPage/LinkButton';
-import { getEditGalleryUrl } from '~/utils/getEditGalleryUrl';
 import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 import QRCodeButton from './QRCodeButton';
 
 type GalleryRightContentProps = {
   username: string;
+  galleryRef: GalleryRightContentGalleryFragment$key | null;
   queryRef: GalleryRightContentFragment$key;
 };
 
-export function GalleryRightContent({ queryRef, username }: GalleryRightContentProps) {
+export function GalleryRightContent({ queryRef, galleryRef, username }: GalleryRightContentProps) {
   const query = useFragment(
     graphql`
       fragment GalleryRightContentFragment on Query {
         ...EditUserInfoModalFragment
-        ...getEditGalleryUrlFragment
         ...isFeatureEnabledFragment
 
         viewer {
@@ -61,6 +62,15 @@ export function GalleryRightContent({ queryRef, username }: GalleryRightContentP
       }
     `,
     queryRef
+  );
+
+  const gallery = useFragment(
+    graphql`
+      fragment GalleryRightContentGalleryFragment on Gallery {
+        dbid
+      }
+    `,
+    galleryRef
   );
 
   const styledQrCode = useQrCode();
@@ -124,7 +134,16 @@ export function GalleryRightContent({ queryRef, username }: GalleryRightContentP
     setShowDropdown(false);
   }, []);
 
-  const editGalleryUrl = getEditGalleryUrl(query);
+  const editGalleryUrl: Route | null = useMemo(() => {
+    if (!gallery?.dbid) {
+      return null;
+    }
+
+    return {
+      pathname: '/gallery/[galleryId]/edit',
+      query: { galleryId: gallery.dbid },
+    };
+  }, [gallery?.dbid]);
 
   const dropdown = useMemo(() => {
     return (

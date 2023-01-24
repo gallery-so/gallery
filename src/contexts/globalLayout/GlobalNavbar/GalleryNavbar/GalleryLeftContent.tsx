@@ -17,7 +17,7 @@ import { GalleryLeftContentFragment$key } from '~/generated/GalleryLeftContentFr
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 
 type Props = {
-  galleryName?: string;
+  galleryName: string | null;
   queryRef: GalleryLeftContentFragment$key;
 };
 

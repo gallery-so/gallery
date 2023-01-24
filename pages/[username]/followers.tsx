@@ -62,7 +62,7 @@ export default function Followers({ username }: FollowersProps) {
         </>
       }
       footer={false}
-      navbar={<GalleryNavbar username={username} queryRef={query} />}
+      navbar={<GalleryNavbar galleryRef={null} username={username} queryRef={query} />}
     />
   );
 }

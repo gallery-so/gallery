@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Route, route } from 'nextjs-routes';
-import { Suspense } from 'react';
+import { Suspense, useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled, { css } from 'styled-components';
@@ -23,16 +23,23 @@ import {
   StandardNavbarContainer,
 } from '~/contexts/globalLayout/GlobalNavbar/StandardNavbarContainer';
 import { GalleryNavbarFragment$key } from '~/generated/GalleryNavbarFragment.graphql';
+import { GalleryNavbarGalleryFragment$key } from '~/generated/GalleryNavbarGalleryFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import handleCustomDisplayName from '~/utils/handleCustomDisplayName';
 
 type Props = {
   username: string;
-  galleryName?: string;
+  showGalleryNameBreadcrumb?: boolean;
+  galleryRef: GalleryNavbarGalleryFragment$key | null;
   queryRef: GalleryNavbarFragment$key;
 };
 
-export function GalleryNavbar({ queryRef, username, galleryName }: Props) {
+export function GalleryNavbar({
+  queryRef,
+  username,
+  galleryRef,
+  showGalleryNameBreadcrumb,
+}: Props) {
   const query = useFragment(
     graphql`
       fragment GalleryNavbarFragment on Query {
@@ -48,17 +55,36 @@ export function GalleryNavbar({ queryRef, username, galleryName }: Props) {
     queryRef
   );
 
+  const gallery = useFragment(
+    graphql`
+      fragment GalleryNavbarGalleryFragment on Gallery {
+        name
+
+        ...GalleryRightContentGalleryFragment
+      }
+    `,
+    galleryRef
+  );
+
   const displayName = handleCustomDisplayName(username);
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
   const { pathname } = useRouter();
 
   const userGalleryRoute: Route = { pathname: '/[username]', query: { username } };
 
+  const displayGalleryName = useMemo(() => {
+    if (!showGalleryNameBreadcrumb) {
+      return null;
+    }
+
+    return gallery?.name ?? null;
+  }, [gallery?.name, showGalleryNameBreadcrumb]);
+
   return (
     <VStack>
       <StandardNavbarContainer>
         <NavbarLeftContent>
-          <GalleryLeftContent galleryName={galleryName} queryRef={query} />
+          <GalleryLeftContent galleryName={displayGalleryName} queryRef={query} />
         </NavbarLeftContent>
 
         <NavbarCenterContent>
@@ -69,11 +95,12 @@ export function GalleryNavbar({ queryRef, username, galleryName }: Props) {
                   href={route(userGalleryRoute)}
                   mainGalleryPage={pathname === '/[username]'}
                 >
-                  {displayName} {galleryName && <BreadcrumbText>/ {galleryName}</BreadcrumbText>}
+                  {displayName}{' '}
+                  {displayGalleryName && <BreadcrumbText>/ {displayGalleryName}</BreadcrumbText>}
                 </UsernameBreadcrumbLink>
               </Link>
 
-              {!galleryName && (
+              {!displayGalleryName && (
                 <>
                   {query.userByUsername && (
                     <Suspense fallback={null}>
@@ -89,7 +116,7 @@ export function GalleryNavbar({ queryRef, username, galleryName }: Props) {
         </NavbarCenterContent>
 
         <NavbarRightContent>
-          <GalleryRightContent username={username} queryRef={query} />
+          <GalleryRightContent galleryRef={gallery} username={username} queryRef={query} />
         </NavbarRightContent>
       </StandardNavbarContainer>
 

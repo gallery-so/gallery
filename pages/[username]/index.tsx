@@ -20,6 +20,14 @@ import { openGraphMetaTags } from '~/utils/openGraphMetaTags';
 
 const UsernameQueryNode = graphql`
   query UsernameQuery($username: String!) {
+    userByUsername(username: $username) @required(action: THROW) {
+      ... on GalleryUser {
+        featuredGallery @required(action: THROW) {
+          ...GalleryNavbarGalleryFragment
+        }
+      }
+    }
+
     ...UserGalleryPageFragment
     ...GalleryNavbarFragment
     ...useOpenSettingsModalFragment
@@ -70,9 +78,19 @@ export default function UserGallery({ username }: UserGalleryProps) {
   useVerifyEmailOnPage(query);
   useOpenSettingsModal(query);
 
+  if (!query.userByUsername.featuredGallery) {
+    throw new Error('User did not have a featured gallery');
+  }
+
   return (
     <GalleryRoute
-      navbar={<GalleryNavbar username={username} queryRef={query} />}
+      navbar={
+        <GalleryNavbar
+          username={username}
+          queryRef={query}
+          galleryRef={query.userByUsername.featuredGallery}
+        />
+      }
       element={
         <>
           <GalleryViewEmitter queryRef={query} />
