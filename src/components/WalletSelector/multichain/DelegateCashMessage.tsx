@@ -16,11 +16,11 @@ type Props = {
 
 export default function DelegateCashMessage({ reset }: Props) {
   return (
-    <EmptyState title="Coming Soon">
+    <EmptyState title="">
       <VStack gap={24}>
         <VStack align="center" gap={4}>
           <Icon src={walletIconMap['delegate_cash']} />
-          <BaseM>We&#39;re currently building support for delegate.cash</BaseM>
+          <TitleS>Delegate Cash Coming Soon</TitleS>
         </VStack>
         <VStack align="flex-start">
           <TitleS>What is it?</TitleS>
@@ -31,7 +31,7 @@ export default function DelegateCashMessage({ reset }: Props) {
           </StyledText>
         </VStack>
         <VStack align="flex-start">
-          <TitleS>New Users</TitleS>
+          <TitleS>New users</TitleS>
           <StyledText>
             Please create a Gallery account with your delegated hot wallet, then reach out to our
             team via <InteractiveLink href={GALLERY_DISCORD}>Discord</InteractiveLink> or{' '}
@@ -39,7 +39,7 @@ export default function DelegateCashMessage({ reset }: Props) {
           </StyledText>
         </VStack>
         <VStack align="flex-start">
-          <TitleS>Existing Users</TitleS>
+          <TitleS>Existing users</TitleS>
           <StyledText>
             If you’d like to connect your cold wallet to an existing Gallery account, please reach
             out to the Gallery team via{' '}
@@ -47,7 +47,7 @@ export default function DelegateCashMessage({ reset }: Props) {
             <InteractiveLink href={GALLERY_TWITTER}>Twitter</InteractiveLink>.
           </StyledText>
         </VStack>
-        <Button onClick={reset}>Return to wallet selection</Button>
+        <Button onClick={reset}>Back</Button>
       </VStack>
     </EmptyState>
   );
