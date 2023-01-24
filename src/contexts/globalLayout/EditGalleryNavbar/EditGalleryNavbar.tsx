@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useMemo, useState } from 'react';
 import styled from 'styled-components';
 
@@ -65,12 +65,12 @@ export function EditGalleryNavbar({
 
   const doneButton = useMemo(() => {
     if (doneAction === 'no-changes') {
-      return <Button onClick={onBack}>Done</Button>;
+      return <DoneButton onClick={onBack}>Done</DoneButton>;
     } else if (doneAction === 'saved') {
       return (
         <>
           <TitleDiatypeM color={colors.metal}>Saved</TitleDiatypeM>
-          <Button onClick={onBack}>Done</Button>
+          <DoneButton onClick={onBack}>Done</DoneButton>
         </>
       );
     } else if (
@@ -115,6 +115,10 @@ export function EditGalleryNavbar({
     </Wrapper>
   );
 }
+
+const DoneButton = styled(Button)`
+  padding: 8px 12px;
+`;
 
 const Wrapper = styled.div`
   border-bottom: 1px solid ${colors.porcelain};
