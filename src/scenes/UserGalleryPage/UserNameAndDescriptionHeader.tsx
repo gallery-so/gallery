@@ -121,12 +121,7 @@ type NftDetailViewerProps = {
 const NftDetailViewer = ({ href, children }: NftDetailViewerProps) => {
   const [, username, collectionId, tokenId] = href.split('/');
   return (
-    <LinkToNftDetailView
-      username={username}
-      collectionId={collectionId}
-      tokenId={tokenId}
-      originPage="gallery"
-    >
+    <LinkToNftDetailView username={username} collectionId={collectionId} tokenId={tokenId}>
       <StyledAnchor>{children}</StyledAnchor>
     </LinkToNftDetailView>
   );
