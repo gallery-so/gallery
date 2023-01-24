@@ -1,12 +1,11 @@
-import { AnimatePresence, motion } from 'framer-motion';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import { Button } from '~/components/core/Button/Button';
 import colors from '~/components/core/colors';
 import { HStack } from '~/components/core/Spacer/Stack';
-import { TitleDiatypeM } from '~/components/core/Text/Text';
+import { BaseM, TitleDiatypeM } from '~/components/core/Text/Text';
 import { GalleryTitleSection } from '~/contexts/globalLayout/EditGalleryNavbar/GalleryTitleSection';
 import { BackButton } from '~/contexts/globalLayout/GlobalNavbar/BackButton';
 import { CollectionSaveButtonWithCaption } from '~/contexts/globalLayout/GlobalNavbar/CollectionSaveButtonWithCaption';
@@ -69,7 +68,7 @@ export function EditGalleryNavbar({
     } else if (doneAction === 'saved') {
       return (
         <>
-          <TitleDiatypeM color={colors.metal}>Saved</TitleDiatypeM>
+          <BaseM color={colors.metal}>Saved</BaseM>
           <DoneButton onClick={onBack}>Done</DoneButton>
         </>
       );
