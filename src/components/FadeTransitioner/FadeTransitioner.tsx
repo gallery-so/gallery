@@ -1,5 +1,4 @@
 import { useRouter } from 'next/router';
-import { route } from 'nextjs-routes';
 import { createContext, CSSProperties, memo, Suspense, useMemo } from 'react';
 import { CSSTransition, TransitionGroup, TransitionStatus } from 'react-transition-group';
 
