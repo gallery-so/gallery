@@ -36,7 +36,7 @@ export default function FeedModeSelector({ feedMode, setFeedMode }: Props) {
   );
 
   return (
-    <HStack gap={8}>
+    <HStack justify="center" gap={8}>
       <StyledTextButton
         active={feedMode === 'FOLLOWING'}
         onClick={handleFollowingModeClick}
