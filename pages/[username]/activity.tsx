@@ -47,7 +47,7 @@ export default function UserFeed({ username, eventId }: UserActivityProps) {
 
   return (
     <GalleryRoute
-      navbar={<GalleryNavbar username={username} queryRef={query} />}
+      navbar={<GalleryNavbar galleryRef={null} username={username} queryRef={query} />}
       element={
         <>
           <GalleryViewEmitter queryRef={query} />

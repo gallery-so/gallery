@@ -157,7 +157,10 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
                   rowRenderer={rowRenderer}
                   style={{
                     outline: 'none',
+                    overflowX: 'visible',
+                    overflowY: 'visible',
                   }}
+                  containerStyle={{ overflow: 'visible' }}
                   overscanIndicesGetter={({
                     cellCount,
                     overscanCellsCount,

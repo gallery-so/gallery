@@ -6,6 +6,7 @@ import { graphql } from 'relay-runtime';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { FocusedGalleryPageFragment$key } from '~/generated/FocusedGalleryPageFragment.graphql';
 import { GalleryPageSpacing } from '~/pages/[username]';
+import useDisplayFullPageNftDetailModal from '~/scenes/NftDetailPage/useDisplayFullPageNftDetailModal';
 import { UserGalleryLayout } from '~/scenes/UserGalleryPage/UserGalleryLayout';
 
 type FocusedGalleryPageProps = {
@@ -50,6 +51,8 @@ export function FocusedGalleryPage({ queryRef }: FocusedGalleryPageProps) {
   useEffect(() => {
     track('Page View: User Gallery', { username }, true);
   }, [username, track]);
+
+  useDisplayFullPageNftDetailModal();
 
   return (
     <>

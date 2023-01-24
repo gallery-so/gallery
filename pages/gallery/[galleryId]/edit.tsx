@@ -99,9 +99,10 @@ function NewEditGalleryPageInner({ queryRef }: NewEditGalleryPageInnerProps) {
 
 type Props = {
   galleryId: string;
+  initialCollectionId: string | null;
 };
 
-function NewEditGalleryPage({ galleryId }: Props) {
+function NewEditGalleryPage({ galleryId, initialCollectionId }: Props) {
   const query = useLazyLoadQuery<editGalleryPageNewQuery>(
     graphql`
       query editGalleryPageNewQuery($galleryId: DBID!) {
@@ -125,7 +126,7 @@ function NewEditGalleryPage({ galleryId }: Props) {
   }
 
   return (
-    <GalleryEditorProvider queryRef={query}>
+    <GalleryEditorProvider initialCollectionId={initialCollectionId} queryRef={query}>
       <NewEditGalleryPageInner queryRef={query} />
     </GalleryEditorProvider>
   );
@@ -212,7 +213,7 @@ const Wrapper = styled.div`
   }
 `;
 
-export default function EditGalleryPage({ galleryId }: Props) {
+export default function EditGalleryPage({ galleryId, initialCollectionId }: Props) {
   const query = useLazyLoadQuery<editGalleryPageQuery>(
     graphql`
       query editGalleryPageQuery {
@@ -225,20 +226,21 @@ export default function EditGalleryPage({ galleryId }: Props) {
   const isMultigalleryEnabled = isFeatureEnabled(FeatureFlag.MULTIGALLERY, query);
 
   return isMultigalleryEnabled ? (
-    <NewEditGalleryPage galleryId={galleryId} />
+    <NewEditGalleryPage initialCollectionId={initialCollectionId} galleryId={galleryId} />
   ) : (
     <OldEditGalleryPage galleryId={galleryId} />
   );
 }
 
-export const getServerSideProps: GetServerSideProps<Props> = async ({ params }) => {
+export const getServerSideProps: GetServerSideProps<Props> = async ({ params, query }) => {
   if (typeof params?.galleryId === 'string') {
     return {
       props: {
         galleryId: params.galleryId,
+        initialCollectionId: typeof query?.collectionId === 'string' ? query.collectionId : null,
       },
     };
   }
 
-  return { redirect: '/', props: { galleryId: '' } };
+  return { redirect: { permanent: false, destination: '/' } };
 };

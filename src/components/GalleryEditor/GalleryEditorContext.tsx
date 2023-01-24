@@ -55,6 +55,7 @@ export const GalleryEditorContext = createContext<GalleryEditorContextType | und
 
 type GalleryEditorProviderProps = PropsWithChildren<{
   queryRef: GalleryEditorContextFragment$key;
+  initialCollectionId?: string | null;
 }>;
 
 export type StagedItem = { kind: 'whitespace'; id: string } | { kind: 'token'; id: string };
@@ -81,7 +82,11 @@ export type CollectionState = {
 export type StagedSectionMap = Record<string, StagedSection>;
 export type CollectionMap = Record<string, CollectionState>;
 
-export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProviderProps) {
+export function GalleryEditorProvider({
+  queryRef,
+  initialCollectionId,
+  children,
+}: GalleryEditorProviderProps) {
   const query = useFragment(
     graphql`
       fragment GalleryEditorContextFragment on Query {
@@ -146,7 +151,7 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
   );
 
   const [collectionIdBeingEdited, setCollectionIdBeingEdited] = useState<string | null>(() => {
-    return Object.values(collections)[0]?.dbid ?? null;
+    return initialCollectionId ?? Object.values(collections)[0]?.dbid ?? null;
   });
 
   const { showModal } = useModalActions();
@@ -240,10 +245,6 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
 
   const editCollectionNameAndNote = useCallback(
     (collectionId: string) => {
-      if (!collectionIdBeingEdited) {
-        return null;
-      }
-
       const collection = collections[collectionId];
 
       showModal({
@@ -253,15 +254,11 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
             name={collection.name}
             collectorsNote={collection.collectorsNote}
             onDone={({ name, collectorsNote }) => {
-              if (!collectionIdBeingEdited) {
-                return;
-              }
-
               setCollections((previous) => {
                 const next = { ...previous };
 
-                next[collectionIdBeingEdited] = {
-                  ...next[collectionIdBeingEdited],
+                next[collectionId] = {
+                  ...next[collectionId],
                   name,
                   collectorsNote,
                 };
@@ -274,7 +271,7 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
         ),
       });
     },
-    [collectionIdBeingEdited, collections, showModal]
+    [collections, showModal]
   );
 
   const reportError = useReportError();
