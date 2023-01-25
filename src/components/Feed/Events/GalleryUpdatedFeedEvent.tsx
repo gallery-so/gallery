@@ -64,6 +64,10 @@ export default function GalleryUpdatedFeedEvent({ caption, eventRef, feedMode, q
           ... on CollectionUpdatedFeedEventData {
             ...CollectionUpdatedFeedEventFragment
           }
+
+          ... on GalleryInfoUpdatedFeedEventData {
+            __typename
+          }
         }
       }
     `,
@@ -110,65 +114,76 @@ export default function GalleryUpdatedFeedEvent({ caption, eventRef, feedMode, q
           </HStack>
         </StyledEventHeader>
         <StyledEventContent>
-          {caption && (
-            <StyledCaptionContainer gap={8} align="center">
-              <BaseM>{caption}</BaseM>
-            </StyledCaptionContainer>
-          )}
-          {event?.subEventDatas?.map((subEvent, index) => {
-            switch (subEvent.__typename) {
-              case 'CollectionCreatedFeedEventData':
-                return (
-                  <CollectionCreatedFeedEvent
-                    key={index}
-                    eventDataRef={subEvent}
-                    queryRef={query}
-                    caption={null}
-                    isSubEvent
-                  />
-                );
-              case 'CollectionUpdatedFeedEventData':
-                return (
-                  <CollectionUpdatedFeedEvent eventDataRef={subEvent} queryRef={query} isSubEvent />
-                );
-              case 'CollectorsNoteAddedToTokenFeedEventData':
-                return (
-                  <CollectorsNoteAddedToTokenFeedEvent
-                    eventDataRef={subEvent}
-                    queryRef={query}
-                    isSubEvent
-                  />
-                );
-              case 'TokensAddedToCollectionFeedEventData':
-                return (
-                  <TokensAddedToCollectionFeedEvent
-                    caption={null}
-                    eventDataRef={subEvent}
-                    queryRef={query}
-                    isSubEvent
-                  />
-                );
-              case 'CollectorsNoteAddedToCollectionFeedEventData':
-                return (
-                  <CollectorsNoteAddedToCollectionFeedEvent
-                    eventDataRef={subEvent}
-                    queryRef={query}
-                    isSubEvent
-                  />
-                );
-              case 'UserFollowedUsersFeedEventData':
-                return (
-                  <UserFollowedUsersFeedEvent
-                    eventDataRef={subEvent}
-                    queryRef={query}
-                    feedMode={feedMode}
-                    isSubEvent
-                  />
-                );
-              default:
-                throw new TriedToRenderUnsupportedFeedEvent(subEvent.__typename);
-            }
-          })}
+          <VStack gap={16}>
+            {caption && (
+              <StyledCaptionContainer gap={8} align="center">
+                <BaseM>{caption}</BaseM>
+              </StyledCaptionContainer>
+            )}
+            {event?.subEventDatas?.map((subEvent, index) => {
+              switch (subEvent.__typename) {
+                case 'CollectionCreatedFeedEventData':
+                  return (
+                    <CollectionCreatedFeedEvent
+                      key={index}
+                      eventDataRef={subEvent}
+                      queryRef={query}
+                      caption={null}
+                      isSubEvent
+                    />
+                  );
+                case 'CollectionUpdatedFeedEventData':
+                  return (
+                    <CollectionUpdatedFeedEvent
+                      eventDataRef={subEvent}
+                      queryRef={query}
+                      isSubEvent
+                    />
+                  );
+                case 'CollectorsNoteAddedToTokenFeedEventData':
+                  return (
+                    <CollectorsNoteAddedToTokenFeedEvent
+                      eventDataRef={subEvent}
+                      queryRef={query}
+                      isSubEvent
+                    />
+                  );
+                case 'TokensAddedToCollectionFeedEventData':
+                  return (
+                    <TokensAddedToCollectionFeedEvent
+                      caption={null}
+                      eventDataRef={subEvent}
+                      queryRef={query}
+                      isSubEvent
+                    />
+                  );
+                case 'CollectorsNoteAddedToCollectionFeedEventData':
+                  return (
+                    <CollectorsNoteAddedToCollectionFeedEvent
+                      eventDataRef={subEvent}
+                      queryRef={query}
+                      isSubEvent
+                    />
+                  );
+                case 'UserFollowedUsersFeedEventData':
+                  return (
+                    <UserFollowedUsersFeedEvent
+                      eventDataRef={subEvent}
+                      queryRef={query}
+                      feedMode={feedMode}
+                      isSubEvent
+                    />
+                  );
+
+                case 'GalleryInfoUpdatedFeedEventData':
+                  return null;
+
+                default: {
+                  return null;
+                }
+              }
+            })}
+          </VStack>
         </StyledEventContent>
       </VStack>
     </StyledEvent>
