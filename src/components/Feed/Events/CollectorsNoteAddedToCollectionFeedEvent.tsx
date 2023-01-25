@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { Route } from 'nextjs-routes';
 import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
@@ -6,7 +7,6 @@ import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import colors from '~/components/core/colors';
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { UnstyledLink } from '~/components/core/Link/UnstyledLink';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
@@ -20,7 +20,13 @@ import { getTimeSince } from '~/utils/time';
 import unescape from '~/utils/unescape';
 
 import FeedEventTokenPreviews from '../FeedEventTokenPreviews';
-import { StyledEvent, StyledEventContent, StyledEventHeader, StyledTime } from './EventStyles';
+import {
+  StyledEvent,
+  StyledEventContent,
+  StyledEventHeader,
+  StyledEventLabel,
+  StyledTime,
+} from './EventStyles';
 
 type Props = {
   eventDataRef: CollectorsNoteAddedToCollectionFeedEventFragment$key;
@@ -98,14 +104,18 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({
                   <BaseM>
                     Added a description to
                     {collectionName ? ' ' : ' their collection'}
-                    <InteractiveLink to={collectionPagePath}>{collectionName}</InteractiveLink>
+                    <Link href={collectionPagePath} passHref>
+                      <StyledEventLabel>{collectionName}</StyledEventLabel>
+                    </Link>
                   </BaseM>
                 ) : (
                   <BaseM>
                     <HoverCardOnUsername userRef={event.owner} queryRef={query} /> added a
                     description to
                     {collectionName ? ' ' : ' their collection'}
-                    <InteractiveLink to={collectionPagePath}>{collectionName}</InteractiveLink>
+                    <Link href={collectionPagePath} passHref>
+                      <StyledEventLabel>{collectionName}</StyledEventLabel>
+                    </Link>
                   </BaseM>
                 )}
                 <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>

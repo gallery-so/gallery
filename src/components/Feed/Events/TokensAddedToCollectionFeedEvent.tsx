@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { Route } from 'nextjs-routes';
 import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
@@ -5,7 +6,6 @@ import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import colors from '~/components/core/colors';
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { UnstyledLink } from '~/components/core/Link/UnstyledLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, BaseS } from '~/components/core/Text/Text';
@@ -21,7 +21,13 @@ import unescape from '~/utils/unescape';
 import { MAX_PIECES_DISPLAYED_PER_FEED_EVENT } from '../constants';
 import FeedEventTokenPreviews from '../FeedEventTokenPreviews';
 import { StyledCaptionContainer } from './CollectionCreatedFeedEvent';
-import { StyledEvent, StyledEventContent, StyledEventHeader, StyledTime } from './EventStyles';
+import {
+  StyledEvent,
+  StyledEventContent,
+  StyledEventHeader,
+  StyledEventLabel,
+  StyledTime,
+} from './EventStyles';
 
 type Props = {
   caption: string | null;
@@ -119,7 +125,9 @@ export default function TokensAddedToCollectionFeedEvent({
                       {collectionName ? ' ' : ' their collection'}
                     </>
                   )}
-                  <InteractiveLink to={collectionPagePath}>{collectionName}</InteractiveLink>
+                  <Link href={collectionPagePath} passHref>
+                    <StyledEventLabel>{collectionName}</StyledEventLabel>
+                  </Link>
                 </BaseM>
                 <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
               </HStack>

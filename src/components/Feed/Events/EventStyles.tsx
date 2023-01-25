@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 
 import colors from '~/components/core/colors';
 import { VStack } from '~/components/core/Spacer/Stack';
-import { BaseS } from '~/components/core/Text/Text';
+import { BaseS, TitleDiatypeM } from '~/components/core/Text/Text';
 
 type StyledEventProps = {
   children: ReactNode;
@@ -57,5 +57,9 @@ export const StyledClickHandler = styled.a`
 export const StyledEventContent = styled(VStack)<{ hasCaption?: boolean }>`
   /* background-color: ${({ hasCaption }) => (hasCaption ? colors.offWhite : 'transparent')}; */
   background-color: ${({ hasCaption }) => (hasCaption ? colors.faint : 'transparent')};
-  padding: ${({ hasCaption }) => (hasCaption ? '16px' : '0')};
+  padding: ${({ hasCaption }) => (hasCaption ? '16px 0' : '0')};
+`;
+
+export const StyledEventLabel = styled(TitleDiatypeM)`
+  display: inline;
 `;

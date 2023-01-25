@@ -1,7 +1,7 @@
+import Link from 'next/link';
 import { Route } from 'nextjs-routes';
 import { graphql, useFragment } from 'react-relay';
 
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
@@ -14,7 +14,13 @@ import CollectionCreatedFeedEvent, { StyledCaptionContainer } from './Collection
 import CollectionUpdatedFeedEvent from './CollectionUpdatedFeedEvent';
 import CollectorsNoteAddedToCollectionFeedEvent from './CollectorsNoteAddedToCollectionFeedEvent';
 import CollectorsNoteAddedToTokenFeedEvent from './CollectorsNoteAddedToTokenFeedEvent';
-import { StyledEvent, StyledEventContent, StyledEventHeader, StyledTime } from './EventStyles';
+import {
+  StyledEvent,
+  StyledEventContent,
+  StyledEventHeader,
+  StyledEventLabel,
+  StyledTime,
+} from './EventStyles';
 import TokensAddedToCollectionFeedEvent from './TokensAddedToCollectionFeedEvent';
 import UserFollowedUsersFeedEvent from './UserFollowedUsersFeedEvent';
 
@@ -105,11 +111,11 @@ export default function GalleryUpdatedFeedEvent({ caption, eventRef, feedMode, q
           <HStack gap={4} inline>
             <BaseM>
               <HoverCardOnUsername userRef={event.owner} queryRef={query} /> updated{' '}
-              <InteractiveLink to={galleryPagePath}>
-                {event?.gallery?.name || 'gallery'}
-              </InteractiveLink>
+              <Link href={galleryPagePath} passHref>
+                <StyledEventLabel>{event?.gallery?.name || 'gallery'}</StyledEventLabel>
+              </Link>
+              <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
             </BaseM>
-            <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
           </HStack>
         </StyledEventHeader>
         <StyledEventContent>

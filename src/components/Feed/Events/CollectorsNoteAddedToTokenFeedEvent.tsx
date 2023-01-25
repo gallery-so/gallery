@@ -1,9 +1,9 @@
+import Link from 'next/link';
 import { MouseEventHandler, useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleM } from '~/components/core/Text/Text';
@@ -18,7 +18,13 @@ import { getTimeSince } from '~/utils/time';
 import unescape from '~/utils/unescape';
 
 import EventMedia from './EventMedia';
-import { StyledClickHandler, StyledEvent, StyledEventHeader, StyledTime } from './EventStyles';
+import {
+  StyledClickHandler,
+  StyledEvent,
+  StyledEventHeader,
+  StyledEventLabel,
+  StyledTime,
+} from './EventStyles';
 
 type Props = {
   isSubEvent?: boolean;
@@ -109,8 +115,8 @@ export default function CollectorsNoteAddedToTokenFeedEvent({
                     collector's note to
                   </>
                 )}{' '}
-                <InteractiveLink
-                  to={{
+                <Link
+                  href={{
                     pathname: '/[username]/[collectionId]/[tokenId]',
                     query: {
                       username: event.owner.username as string,
@@ -120,8 +126,8 @@ export default function CollectorsNoteAddedToTokenFeedEvent({
                   }}
                   onClick={handleEventClick}
                 >
-                  {event.token.token?.name}
-                </InteractiveLink>
+                  <StyledEventLabel>{event.token.token?.name}</StyledEventLabel>
+                </Link>
               </BaseM>
               <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
             </HStack>
