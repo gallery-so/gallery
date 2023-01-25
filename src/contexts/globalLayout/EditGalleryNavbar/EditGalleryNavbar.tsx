@@ -6,7 +6,7 @@ import breakpoints from '~/components/core/breakpoints';
 import { Button } from '~/components/core/Button/Button';
 import colors from '~/components/core/colors';
 import { HStack } from '~/components/core/Spacer/Stack';
-import { BaseM, TitleDiatypeM, TitleXS } from '~/components/core/Text/Text';
+import { BaseM, TitleXS } from '~/components/core/Text/Text';
 import { GalleryTitleSection } from '~/contexts/globalLayout/EditGalleryNavbar/GalleryTitleSection';
 import { CollectionSaveButtonWithCaption } from '~/contexts/globalLayout/GlobalNavbar/CollectionSaveButtonWithCaption';
 import {
