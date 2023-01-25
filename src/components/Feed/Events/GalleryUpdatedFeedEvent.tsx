@@ -96,8 +96,7 @@ export default function GalleryUpdatedFeedEvent({ caption, eventRef, feedMode, q
   );
 
   const galleryPagePath: Route = {
-    // @ts-expect-error wait multigallery to be merged
-    pathname: '[username]/galleries/[galleryId]',
+    pathname: '/[username]/galleries/[galleryId]',
     query: {
       username: event.owner.username,
       galleryId: event.gallery.dbid,
