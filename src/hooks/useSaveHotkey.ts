@@ -11,9 +11,6 @@ export function useSaveHotkey(callback: () => void) {
         event.preventDefault();
 
         callbackRef.current();
-        // if (!isPopupDisplayed && !disabled) {
-        //   handleOpenCaption();
-        // }
       }
     }
 
