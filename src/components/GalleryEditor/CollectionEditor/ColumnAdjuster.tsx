@@ -12,7 +12,11 @@ import { ColumnAdjusterQuery } from '~/generated/ColumnAdjusterQuery.graphql';
 import CircleMinusIcon from '~/icons/CircleMinusIcon';
 import CirclePlusIcon from '~/icons/CirclePlusIcon';
 
-function ColumnAdjuster() {
+type Props = {
+  sectionId: string;
+};
+
+function ColumnAdjuster({ sectionId }: Props) {
   const query = useLazyLoadQuery<ColumnAdjusterQuery>(
     graphql`
       query ColumnAdjusterQuery {
@@ -37,12 +41,12 @@ function ColumnAdjuster() {
     useCollectionEditorContextNew();
 
   const columns = useMemo(() => {
-    if (activeSectionId) {
-      return sections[activeSectionId]?.columns ?? 0;
+    if (sectionId) {
+      return sections[sectionId]?.columns ?? 0;
     }
 
     return 0;
-  }, [activeSectionId, sections]);
+  }, [sectionId, sections]);
 
   const handleIncrementClick = useCallback(() => {
     if (activeSectionId && columns < maxColumns) {

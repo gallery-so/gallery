@@ -177,6 +177,7 @@ function StagingArea({ tokensRef }: Props) {
     if (localSections[activeId.toString()]) {
       return (
         <SectionDragging
+          sectionId={activeId.toString()}
           items={localSections[activeId].items}
           itemWidth={IMAGE_SIZES[localSections[activeId].columns]}
           columns={localSections[activeId].columns}
