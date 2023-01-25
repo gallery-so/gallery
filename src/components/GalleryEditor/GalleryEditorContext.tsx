@@ -251,7 +251,7 @@ export function GalleryEditorProvider({
       const collection = collections[collectionId];
 
       showModal({
-        headerText: 'Add a tile and description',
+        headerText: 'Add a title and description',
         content: (
           <CollectionCreateOrEditForm
             name={collection.name}
