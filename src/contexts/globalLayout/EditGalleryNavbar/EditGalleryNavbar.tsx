@@ -15,6 +15,7 @@ import {
   NavbarRightContent,
   StandardNavbarContainer,
 } from '~/contexts/globalLayout/GlobalNavbar/StandardNavbarContainer';
+import { useGuardEditorUnsavedChanges } from '~/hooks/useGuardEditorUnsavedChanges';
 import { useSaveHotkey } from '~/hooks/useSaveHotkey';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import { AllGalleriesIcon } from '~/icons/AllGalleriesIcon';
@@ -52,9 +53,9 @@ export function EditGalleryNavbar({
   const { push } = useRouter();
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
-  const handleAllGalleriesClick = useCallback(() => {
+  const handleAllGalleriesClick = useGuardEditorUnsavedChanges(() => {
     push({ pathname: '/[username]/galleries', query: { username } });
-  }, [push, username]);
+  }, hasUnsavedChanges);
 
   const doneAction = useMemo<DoneAction>(() => {
     if (hasUnsavedChanges) {
