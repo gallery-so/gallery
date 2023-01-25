@@ -23,13 +23,38 @@ export default function CollectionGallery({ collectionId, username }: Collection
         ...CollectionNavbarFragment
         ...CollectionGalleryPageFragment
         ...GalleryViewEmitterWithSuspenseFragment
+
+        collectionById(id: $collectionId) {
+          ... on Collection {
+            gallery {
+              owner {
+                username
+              }
+            }
+          }
+        }
       }
     `,
     { collectionId, username }
   );
 
-  if (!username || !collectionId) {
+  const rightfulOwner = query.collectionById?.gallery?.owner?.username;
+  if (!username || !collectionId || typeof rightfulOwner !== 'string') {
     return <GalleryRedirect to={{ pathname: '/' }} />;
+  }
+
+  if (rightfulOwner !== username) {
+    return (
+      <GalleryRedirect
+        to={{
+          pathname: '/[username]/[collectionId]',
+          query: {
+            username: rightfulOwner,
+            collectionId,
+          },
+        }}
+      />
+    );
   }
 
   return (

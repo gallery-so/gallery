@@ -157,7 +157,10 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
                   rowRenderer={rowRenderer}
                   style={{
                     outline: 'none',
+                    overflowX: 'visible',
+                    overflowY: 'visible',
                   }}
+                  containerStyle={{ overflow: 'visible' }}
                   overscanIndicesGetter={({
                     cellCount,
                     overscanCellsCount,
@@ -179,10 +182,11 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
 
 const StyledUserGalleryCollections = styled.div`
   width: 100%;
+
   padding-top: 16px;
 
   @media only screen and ${breakpoints.tablet} {
-    padding-top: 80px;
+    padding-top: 24px;
   }
 `;
 

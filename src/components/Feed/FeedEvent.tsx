@@ -12,7 +12,6 @@ import { FeedEventFragment$key } from '~/generated/FeedEventFragment.graphql';
 import { FeedEventQueryFragment$key } from '~/generated/FeedEventQueryFragment.graphql';
 import { FeedEventWithErrorBoundaryFragment$key } from '~/generated/FeedEventWithErrorBoundaryFragment.graphql';
 import { FeedEventWithErrorBoundaryQueryFragment$key } from '~/generated/FeedEventWithErrorBoundaryQueryFragment.graphql';
-import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 import unescape from '~/utils/unescape';
 
 import colors from '../core/colors';
@@ -175,18 +174,12 @@ export default function FeedEventWithBoundary({
       fragment FeedEventWithErrorBoundaryQueryFragment on Query {
         ...FeedEventQueryFragment
         ...FeedEventSocializeSectionQueryFragment
-
-        ...isFeatureEnabledFragment
       }
     `,
     queryRef
   );
 
-  const isAdmireCommentEnabled = isFeatureEnabled(FeatureFlag.WHITE_RHINO, query);
-  const eventSupportsAdmireComment =
-    event.eventData?.__typename !== 'UserFollowedUsersFeedEventData';
-
-  const shouldShowAdmireComment = isAdmireCommentEnabled && eventSupportsAdmireComment;
+  const shouldShowAdmireComment = event.eventData?.__typename !== 'UserFollowedUsersFeedEventData';
 
   const handlePotentialLayoutShift = useCallback(() => {
     onPotentialLayoutShift(index);

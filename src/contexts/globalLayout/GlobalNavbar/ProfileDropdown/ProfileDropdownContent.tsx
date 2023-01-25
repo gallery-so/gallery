@@ -22,7 +22,6 @@ import { useAuthActions } from '~/contexts/auth/AuthContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { ProfileDropdownContentFragment$key } from '~/generated/ProfileDropdownContentFragment.graphql';
 import usePersistedState from '~/hooks/usePersistedState';
-import ManageWalletsModal from '~/scenes/Modals/ManageWalletsModal';
 import SettingsModal from '~/scenes/Modals/SettingsModal/SettingsModal';
 import { getEditGalleryUrl } from '~/utils/getEditGalleryUrl';
 import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
@@ -67,7 +66,6 @@ export function ProfileDropdownContent({
         }
 
         ...getEditGalleryUrlFragment
-        ...ManageWalletsModalFragment
         ...SettingsModalFragment
         ...isFeatureEnabledFragment
       }
@@ -79,7 +77,7 @@ export function ProfileDropdownContent({
   const { handleLogout } = useAuthActions();
   const showNotificationsModal = useNotificationsModal();
 
-  const isEmailFeatureEnabled = isFeatureEnabled(FeatureFlag.EMAIL, query);
+  const isMultiGalleryEnabled = isFeatureEnabled(FeatureFlag.MULTIGALLERY, query);
   const track = useTrack();
 
   const [dismissMerchRedemption, setDismissMerchRedemption] = usePersistedState(
@@ -97,19 +95,11 @@ export function ProfileDropdownContent({
   }, [showNotificationsModal, track]);
 
   const handleManageWalletsClick = useCallback(() => {
-    if (isEmailFeatureEnabled) {
-      showModal({
-        content: <SettingsModal queryRef={query} />,
-        headerText: 'Settings',
-      });
-      return;
-    }
-
     showModal({
-      content: <ManageWalletsModal queryRef={query} />,
+      content: <SettingsModal queryRef={query} />,
       headerText: 'Settings',
     });
-  }, [isEmailFeatureEnabled, query, showModal]);
+  }, [query, showModal]);
 
   const username = query.viewer?.user?.username;
 
@@ -120,67 +110,73 @@ export function ProfileDropdownContent({
   const editGalleryUrl = getEditGalleryUrl(query);
 
   const userGalleryRoute: Route = { pathname: '/[username]', query: { username } };
+  const editGalleriesRoute: Route = { pathname: '/[username]/galleries', query: { username } };
 
   const notificationCount = query.viewer?.notifications?.unseenCount ?? 0;
 
-  const isWhiteRhinoEnabled = isFeatureEnabled(FeatureFlag.WHITE_RHINO, query);
-
   return (
-    <>
-      <Dropdown
-        isActivatedByHover
-        position="left"
-        active={shouldShowDropdown}
-        onClose={onClose}
-        onMouseLeave={onMouseLeave}
-        onMouseEnter={onMouseEnter}
-      >
-        <DropdownSection>
-          <Link href={userGalleryRoute}>
-            <DropdownProfileSection href={route(userGalleryRoute)}>
-              <UsernameText>{username}</UsernameText>
-              {editGalleryUrl && (
-                // Need this to ensure the interactive link doesn't take the full width
-                <VStack align="flex-start">
-                  <StyledInteractiveLink to={editGalleryUrl}>Edit gallery</StyledInteractiveLink>
-                </VStack>
-              )}
-            </DropdownProfileSection>
-          </Link>
-        </DropdownSection>
+    <Dropdown
+      isActivatedByHover
+      position="left"
+      active={shouldShowDropdown}
+      onClose={onClose}
+      onMouseLeave={onMouseLeave}
+      onMouseEnter={onMouseEnter}
+    >
+      <DropdownSection>
+        <Link href={userGalleryRoute}>
+          <DropdownProfileSection href={route(userGalleryRoute)}>
+            <UsernameText>{username}</UsernameText>
+            {isMultiGalleryEnabled ? (
+              // Need this to ensure the interactive link doesn't take the full width
+              <VStack align="flex-start">
+                <StyledInteractiveLink to={editGalleriesRoute}>
+                  Edit galleries
+                </StyledInteractiveLink>
+              </VStack>
+            ) : (
+              <>
+                {editGalleryUrl && (
+                  // Need this to ensure the interactive link doesn't take the full width
+                  <VStack align="flex-start">
+                    <StyledInteractiveLink to={editGalleryUrl}>Edit gallery</StyledInteractiveLink>
+                  </VStack>
+                )}
+              </>
+            )}
+          </DropdownProfileSection>
+        </Link>
+      </DropdownSection>
 
-        <DropdownSection gap={4}>
-          <DropdownLink href={{ pathname: '/home' }}>HOME</DropdownLink>
-          {isWhiteRhinoEnabled && (
-            <NotificationsDropdownItem onClick={handleNotificationsClick}>
-              <HStack align="center" gap={10}>
-                <div>NOTIFICATIONS</div>
-                <CountText role="button" visible={notificationCount > 0}>
-                  {notificationCount}
-                </CountText>
-              </HStack>
-            </NotificationsDropdownItem>
-          )}
-        </DropdownSection>
+      <DropdownSection gap={4}>
+        <DropdownLink href={{ pathname: '/home' }}>HOME</DropdownLink>
+        <NotificationsDropdownItem onClick={handleNotificationsClick}>
+          <HStack align="center" gap={10}>
+            <div>NOTIFICATIONS</div>
+            <CountText role="button" visible={notificationCount > 0}>
+              {notificationCount}
+            </CountText>
+          </HStack>
+        </NotificationsDropdownItem>
+      </DropdownSection>
 
-        <DropdownSection gap={4}>
-          <DropdownItem onClick={handleManageWalletsClick}>SETTINGS</DropdownItem>
-          <DropdownLink href={{ pathname: '/shop' }} onClick={handleDismissMerchRedemption}>
-            <HStack gap={10} align="center">
-              <HStack gap={8}>
-                <span>SHOP</span>
-                <StyledObjectsText>(OBJECTS)</StyledObjectsText>
-              </HStack>
-              {!dismissMerchRedemption && <NotificationsCircle />}
+      <DropdownSection gap={4}>
+        <DropdownItem onClick={handleManageWalletsClick}>SETTINGS</DropdownItem>
+        <DropdownLink href={{ pathname: '/shop' }} onClick={handleDismissMerchRedemption}>
+          <HStack gap={10} align="center">
+            <HStack gap={8}>
+              <span>SHOP</span>
+              <StyledObjectsText>(OBJECTS)</StyledObjectsText>
             </HStack>
-          </DropdownLink>
-        </DropdownSection>
+            {!dismissMerchRedemption && <NotificationsCircle />}
+          </HStack>
+        </DropdownLink>
+      </DropdownSection>
 
-        <DropdownSection gap={4}>
-          <DropdownItem onClick={handleLogout}>LOG OUT</DropdownItem>
-        </DropdownSection>
-      </Dropdown>
-    </>
+      <DropdownSection gap={4}>
+        <DropdownItem onClick={handleLogout}>LOG OUT</DropdownItem>
+      </DropdownSection>
+    </Dropdown>
   );
 }
 

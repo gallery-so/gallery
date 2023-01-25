@@ -4,9 +4,8 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
-import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { UserActivityPageFragment$key } from '~/generated/UserActivityPageFragment.graphql';
-import { StyledUserGalleryPage } from '~/scenes/UserGalleryPage/UserGalleryPage';
+import { GalleryPageSpacing } from '~/pages/[username]';
 
 import UserActivity from './UserActivity';
 
@@ -28,7 +27,6 @@ function UserActivityPage({ queryRef, username }: UserActivityPageProps) {
   const headTitle = `${username} | Gallery`;
 
   const track = useTrack();
-  const navbarHeight = useGlobalNavbarHeight();
 
   useEffect(() => {
     track('Page View: User Gallery', { username }, true);
@@ -39,9 +37,9 @@ function UserActivityPage({ queryRef, username }: UserActivityPageProps) {
       <Head>
         <title>{headTitle}</title>
       </Head>
-      <StyledUserGalleryPage navbarHeight={navbarHeight}>
+      <GalleryPageSpacing>
         <UserActivity queryRef={query} />
-      </StyledUserGalleryPage>
+      </GalleryPageSpacing>
     </>
   );
 }

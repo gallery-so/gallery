@@ -68,9 +68,14 @@ export function useStabilizedRouteTransitionKey() {
       return `/${query.username}`;
     }
     // same logic for modal triggered from collection page
+    if (pathname === '/[username]/galleries/[galleryId]' && query.modal === 'true') {
+      return `/${query.username}/galleries/${query.galleryId}`;
+    }
+    // same logic for modal triggered from collection page
     if (pathname === '/[username]/[collectionId]' && query.modal === 'true') {
       return `/${query.username}/${query.collectionId}`;
     }
+
     // keep location stable for NFT detail pages
     if (pathname === '/[username]/[collectionId]/[tokenId]') {
       return `/${query.username}/${query.collectionId}`;

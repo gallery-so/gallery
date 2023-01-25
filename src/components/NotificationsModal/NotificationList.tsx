@@ -9,7 +9,6 @@ import { TitleDiatypeL } from '~/components/core/Text/Text';
 import { SeeMore } from '~/components/NotificationsModal/SeeMore';
 import { ENABLE_EMAIL_DISMISSED_KEY } from '~/constants/storageKeys';
 import usePersistedState from '~/hooks/usePersistedState';
-import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 import { Notification } from './Notification';
 import { NotificationEmailAlert } from './NotificationEmailAlert';
@@ -52,7 +51,6 @@ export function NotificationList({ queryRef }: NotificationListProps) {
 
         ...NotificationQueryFragment
         ...NotificationEmailAlertQueryFragment
-        ...isFeatureEnabledFragment
       }
     `,
     queryRef
@@ -82,12 +80,10 @@ export function NotificationList({ queryRef }: NotificationListProps) {
   }, [loadPrevious]);
 
   const hasNotifications = nonNullNotifications.length > 0;
-  const isEmailFeatureEnabled = isFeatureEnabled(FeatureFlag.EMAIL, query);
 
   const showEmailAlert =
     FAILED_EMAIL_VERIFICATION_STATUS.includes(query.viewer?.email?.verificationStatus ?? '') &&
-    !emailDismissed &&
-    isEmailFeatureEnabled;
+    !emailDismissed;
 
   return (
     <NotificationsContent grow>

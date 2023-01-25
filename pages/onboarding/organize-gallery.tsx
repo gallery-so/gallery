@@ -6,14 +6,22 @@ import { OrganizeGallery } from '~/components/ManageGallery/OrganizeGallery/Orga
 import FullPageStep from '~/components/Onboarding/FullPageStep';
 import { OnboardingGalleryEditorNavbar } from '~/contexts/globalLayout/GlobalNavbar/OnboardingGalleryEditorNavbar/OnboardingGalleryEditorNavbar';
 import { organizeGalleryQuery } from '~/generated/organizeGalleryQuery.graphql';
-import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 export default function OrganizeGalleryPage() {
   const query = useLazyLoadQuery<organizeGalleryQuery>(
     graphql`
       query organizeGalleryQuery {
+        viewer {
+          ... on Viewer {
+            user {
+              galleries {
+                id
+              }
+            }
+          }
+        }
+
         ...OrganizeGalleryFragment
-        ...isFeatureEnabledFragment
       }
     `,
     {}
@@ -37,18 +45,20 @@ export default function OrganizeGalleryPage() {
     [push, urlQuery]
   );
 
-  const isEmailFeatureEnabled = isFeatureEnabled(FeatureFlag.EMAIL, query);
-
   const handleNext = useCallback(() => {
-    const pathname = isEmailFeatureEnabled
-      ? '/onboarding/add-email'
-      : '/onboarding/congratulations';
-    return push({ pathname, query: { ...urlQuery } });
-  }, [isEmailFeatureEnabled, push, urlQuery]);
+    return push({ pathname: '/onboarding/add-email', query: { ...urlQuery } });
+  }, [push, urlQuery]);
+
+  const galleryId = query.viewer?.user?.galleries?.[0]?.id;
+
+  if (!galleryId) {
+    throw new Error('User did not have a gallery.');
+  }
 
   return (
     <FullPageStep navbar={<OnboardingGalleryEditorNavbar onBack={back} onNext={handleNext} />}>
       <OrganizeGallery
+        galleryId={galleryId}
         queryRef={query}
         onAddCollection={handleAddCollection}
         onEditCollection={handleEditCollection}

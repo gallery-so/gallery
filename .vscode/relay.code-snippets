@@ -1,0 +1,40 @@
+{
+  "Relay Fragment Component": {
+    "description": "Create a new Relay Fragment",
+    "scope": "typescriptreact",
+    "prefix": "rfc",
+    "body": [
+      "import { useFragment } from 'react-relay';",
+      "import { graphql } from 'relay-runtime';",
+      "import { ${TM_FILENAME_BASE}Fragment\\$key } from '~/generated/${TM_FILENAME_BASE}Fragment.graphql';",
+      "",
+      "",
+      "type ${TM_FILENAME_BASE}Props = {",
+      "${1/(.*)/${1:/camelcase}/}Ref: ${TM_FILENAME_BASE}Fragment\\$key;",
+      "};",
+      "",
+      "export function ${TM_FILENAME_BASE}({ ${1/(.*)/${1:/camelcase}/}Ref }: ${TM_FILENAME_BASE}Props) {",
+      "const ${1/(.*)/${1:/camelcase}/} = useFragment(graphql`",
+      "fragment ${TM_FILENAME_BASE}Fragment on ${1:Type} {",
+      "    __typename",
+      "}",
+      "`, ${1/(.*)/${1:/camelcase}/}Ref)",
+      "",
+      " return null;",
+      "}"
+    ]
+  },
+
+  "useFragment": {
+    "description": "Create a new Relay Fragment",
+    "scope": "typescriptreact",
+    "prefix": "uf",
+    "body": [
+      "const ${1/(.*)/${1:/camelcase}/} = useFragment(graphql`",
+      "fragment ${TM_FILENAME_BASE}Fragment on ${1:Type} {",
+      "    __typename",
+      "}",
+      "`, ${1/(.*)/${1:/camelcase}/}Ref)"
+    ]
+  }
+}
