@@ -45,14 +45,18 @@ export function SidebarChainButton({ isSelected, onClick, chain, queryRef }: Pro
 
   const isRefreshDisabledAtUserLevel = isRefreshDisabledForUser(query.viewer?.user?.dbid ?? '');
   const refreshDisabled =
-    isRefreshDisabledAtUserLevel && doesUserOwnWalletFromChain(chain.name, query);
+    isRefreshDisabledAtUserLevel || !doesUserOwnWalletFromChain(chain.name, query);
 
   const handleRefresh = useCallback(async () => {
+    if (refreshDisabled) {
+      return;
+    }
+
     await syncTokens(chain.name);
-  }, [chain.name, syncTokens]);
+  }, [chain.name, refreshDisabled, syncTokens]);
 
   const { floating, reference, getFloatingProps, getReferenceProps, floatingStyle } =
-    useTooltipHover();
+    useTooltipHover({ disabled: refreshDisabled });
 
   return (
     <>
