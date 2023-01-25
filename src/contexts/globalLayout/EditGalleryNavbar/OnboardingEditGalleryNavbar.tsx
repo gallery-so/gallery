@@ -15,6 +15,7 @@ import {
   NavbarRightContent,
   StandardNavbarContainer,
 } from '~/contexts/globalLayout/GlobalNavbar/StandardNavbarContainer';
+import { useSaveHotkey } from '~/hooks/useSaveHotkey';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 
 type Props = {
@@ -38,20 +39,9 @@ export function OnboardingEditGalleryNavbar({
 }: Props) {
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
-  useEffect(() => {
-    function handlePress(event: KeyboardEvent) {
-      if (event.key === 's' && event.metaKey) {
-        // Avoid trying to save page as HTML
-        event.preventDefault();
-
-        onDone();
-      }
-    }
-
-    window.addEventListener('keydown', handlePress);
-
-    return () => window.removeEventListener('keydown', handlePress);
-  }, [onDone]);
+  useSaveHotkey(() => {
+    onDone();
+  });
 
   return (
     <Wrapper>

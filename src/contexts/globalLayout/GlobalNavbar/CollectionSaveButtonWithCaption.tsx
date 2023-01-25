@@ -10,6 +10,7 @@ import transitions, {
   ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL,
 } from '~/components/core/transitions';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
+import { useSaveHotkey } from '~/hooks/useSaveHotkey';
 
 type Props = {
   disabled?: boolean;
@@ -65,22 +66,11 @@ export function CollectionSaveButtonWithCaption({
 
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    function handlePress(event: KeyboardEvent) {
-      if (event.key === 's' && event.metaKey) {
-        // Avoid trying to save page as HTML
-        event.preventDefault();
-
-        if (!isPopupDisplayed && !disabled) {
-          handleOpenCaption();
-        }
-      }
+  useSaveHotkey(() => {
+    if (!isPopupDisplayed && !disabled) {
+      handleOpenCaption();
     }
-
-    window.addEventListener('keydown', handlePress);
-
-    return () => window.removeEventListener('keydown', handlePress);
-  }, [disabled, handleOpenCaption, isPopupDisplayed]);
+  });
 
   return (
     <StyledConfirmationContainer>
