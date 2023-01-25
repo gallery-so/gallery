@@ -26,7 +26,7 @@ export default function FeaturedHomePage({ queryRef }: Props) {
   return (
     <>
       <Head>
-        <title>Gallery - Featured</title>
+        <title>Gallery | Featured</title>
       </Head>
       <StyledPage navbarHeight={navbarHeight}>
         <Featured queryRef={query} />
