@@ -21,6 +21,7 @@ import styled from 'styled-components';
 
 import colors from '~/components/core/colors';
 import IconContainer from '~/components/core/IconContainer';
+import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM } from '~/components/core/Text/Text';
 import { createCollisionDetectionStrategy } from '~/components/GalleryEditor/CollectionEditor/DragAndDrop/createCollisionDetectionStrategy';
@@ -176,6 +177,7 @@ function StagingArea({ tokensRef }: Props) {
     if (localSections[activeId.toString()]) {
       return (
         <SectionDragging
+          sectionId={activeId.toString()}
           items={localSections[activeId].items}
           itemWidth={IMAGE_SIZES[localSections[activeId].columns]}
           columns={localSections[activeId].columns}
@@ -215,7 +217,10 @@ function StagingArea({ tokensRef }: Props) {
             {hasNameOrCollectorsNote ? (
               <VStack>
                 <TitleDiatypeM>{escapedCollectionName || 'Untitled'}</TitleDiatypeM>
-                <BaseM>{collectorsNote}</BaseM>
+
+                <BaseM>
+                  <Markdown text={collectorsNote}></Markdown>
+                </BaseM>
               </VStack>
             ) : (
               <BaseM color={colors.metal}>Add title and description</BaseM>
