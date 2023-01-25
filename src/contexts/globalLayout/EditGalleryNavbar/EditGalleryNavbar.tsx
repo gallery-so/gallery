@@ -87,7 +87,7 @@ export function EditGalleryNavbar({
     ) {
       return (
         <>
-          <TitleDiatypeM color={colors.metal}>Unsaved changes</TitleDiatypeM>
+          <BaseM color={colors.metal}>Unsaved changes</BaseM>
 
           <CollectionSaveButtonWithCaption
             hasUnsavedChange={hasUnsavedChanges}
