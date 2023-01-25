@@ -90,7 +90,7 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({
       onClick={() => track('Feed: Clicked Description added to collection event')}
     >
       <StyledEvent isSubEvent={isSubEvent}>
-        <VStack gap={16}>
+        <VStack gap={isSubEvent ? 0 : 16}>
           <VStack gap={8}>
             <StyledEventHeader>
               <HStack gap={4} inline>

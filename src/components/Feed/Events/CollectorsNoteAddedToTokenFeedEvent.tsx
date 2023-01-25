@@ -97,7 +97,7 @@ export default function CollectorsNoteAddedToTokenFeedEvent({
   return (
     <StyledClickHandler onClick={handleEventClick}>
       <StyledEvent isSubEvent={isSubEvent}>
-        <VStack gap={16}>
+        <VStack gap={isSubEvent ? 0 : 16}>
           <StyledEventHeader>
             <HStack gap={4} inline>
               <BaseM>

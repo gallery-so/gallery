@@ -71,7 +71,10 @@ export default function TokensAddedToCollectionFeedEvent({
 
   const { isPreFeed } = event;
 
-  const tokens = isPreFeed ? event.collection.tokens : event.newTokens;
+  const tokens = useMemo(
+    () => (isPreFeed ? event.collection.tokens : event.newTokens ?? []),
+    [event.collection.tokens, event.newTokens, isPreFeed]
+  );
 
   const tokensToPreview = useMemo(() => {
     return removeNullValues(tokens).slice(0, MAX_PIECES_DISPLAYED_PER_FEED_EVENT);
