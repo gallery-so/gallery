@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import breakpoints from '~/components/core/breakpoints';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { FEED_EVENT_ROW_WIDTH_DESKTOP } from '~/components/Feed/dimensions';
+import { FeedEventData } from '~/components/Feed/FeedEventData';
 import { FeedEventSocializeSection } from '~/components/Feed/Socialize/FeedEventSocializeSection';
 import { ReportingErrorBoundary } from '~/contexts/boundary/ReportingErrorBoundary';
 import { TriedToRenderUnsupportedFeedEvent } from '~/errors/TriedToRenderUnsupportedFeedEvent';
@@ -12,16 +13,8 @@ import { FeedEventFragment$key } from '~/generated/FeedEventFragment.graphql';
 import { FeedEventQueryFragment$key } from '~/generated/FeedEventQueryFragment.graphql';
 import { FeedEventWithErrorBoundaryFragment$key } from '~/generated/FeedEventWithErrorBoundaryFragment.graphql';
 import { FeedEventWithErrorBoundaryQueryFragment$key } from '~/generated/FeedEventWithErrorBoundaryQueryFragment.graphql';
-import unescape from '~/utils/unescape';
 
 import colors from '../core/colors';
-import CollectionCreatedFeedEvent from './Events/CollectionCreatedFeedEvent';
-import CollectionUpdatedFeedEvent from './Events/CollectionUpdatedFeedEvent';
-import CollectorsNoteAddedToCollectionFeedEvent from './Events/CollectorsNoteAddedToCollectionFeedEvent';
-import CollectorsNoteAddedToTokenFeedEvent from './Events/CollectorsNoteAddedToTokenFeedEvent';
-import GalleryUpdatedFeedEvent from './Events/GalleryUpdatedFeedEvent';
-import TokensAddedToCollectionFeedEvent from './Events/TokensAddedToCollectionFeedEvent';
-import UserFollowedUsersFeedEvent from './Events/UserFollowedUsersFeedEvent';
 import { FeedMode } from './Feed';
 
 type FeedEventProps = {
@@ -37,33 +30,7 @@ function FeedEvent({ eventRef, queryRef, feedMode }: FeedEventProps) {
         dbid
         caption
         eventData {
-          __typename
-
-          ... on CollectionCreatedFeedEventData {
-            ...CollectionCreatedFeedEventFragment
-          }
-          ... on CollectorsNoteAddedToTokenFeedEventData {
-            ...CollectorsNoteAddedToTokenFeedEventFragment
-          }
-          ... on TokensAddedToCollectionFeedEventData {
-            ...TokensAddedToCollectionFeedEventFragment
-          }
-          ... on UserFollowedUsersFeedEventData {
-            ...UserFollowedUsersFeedEventFragment
-          }
-          ... on CollectorsNoteAddedToCollectionFeedEventData {
-            ...CollectorsNoteAddedToCollectionFeedEventFragment
-          }
-          ... on CollectorsNoteAddedToCollectionFeedEventData {
-            ...CollectorsNoteAddedToCollectionFeedEventFragment
-          }
-          ... on CollectionUpdatedFeedEventData {
-            ...CollectionUpdatedFeedEventFragment
-          }
-
-          ... on GalleryUpdatedFeedEventData {
-            ...GalleryUpdatedFeedEventFragment
-          }
+          ...FeedEventDataFragment
         }
       }
     `,
@@ -73,68 +40,26 @@ function FeedEvent({ eventRef, queryRef, feedMode }: FeedEventProps) {
   const query = useFragment(
     graphql`
       fragment FeedEventQueryFragment on Query {
-        ...UserFollowedUsersFeedEventQueryFragment
-        ...TokensAddedToCollectionFeedEventQueryFragment
-        ...CollectorsNoteAddedToCollectionFeedEventQueryFragment
-        ...CollectionCreatedFeedEventQueryFragment
-        ...CollectorsNoteAddedToTokenFeedEventQueryFragment
-        ...CollectionUpdatedFeedEventQueryFragment
-        ...GalleryUpdatedFeedEventQueryFragment
+        ...FeedEventDataQueryFragment
       }
     `,
     queryRef
   );
 
-  switch (event.eventData?.__typename) {
-    case 'CollectionCreatedFeedEventData':
-      return (
-        <CollectionCreatedFeedEvent
-          caption={unescape(event.caption ?? '')}
-          eventDataRef={event.eventData}
-          queryRef={query}
-        />
-      );
-    case 'CollectionUpdatedFeedEventData':
-      return <CollectionUpdatedFeedEvent eventDataRef={event.eventData} queryRef={query} />;
-    case 'CollectorsNoteAddedToTokenFeedEventData':
-      return (
-        <CollectorsNoteAddedToTokenFeedEvent eventDataRef={event.eventData} queryRef={query} />
-      );
-    case 'TokensAddedToCollectionFeedEventData':
-      return (
-        <TokensAddedToCollectionFeedEvent
-          caption={unescape(event.caption ?? '')}
-          eventDataRef={event.eventData}
-          queryRef={query}
-        />
-      );
-    case 'CollectorsNoteAddedToCollectionFeedEventData':
-      return (
-        <CollectorsNoteAddedToCollectionFeedEvent eventDataRef={event.eventData} queryRef={query} />
-      );
-    case 'UserFollowedUsersFeedEventData':
-      return (
-        <UserFollowedUsersFeedEvent
-          eventDataRef={event.eventData}
-          queryRef={query}
-          feedMode={feedMode}
-        />
-      );
-    case 'GalleryUpdatedFeedEventData':
-      return (
-        <GalleryUpdatedFeedEvent
-          caption={event.caption}
-          eventRef={event.eventData}
-          queryRef={query}
-        />
-      );
-
-    // These event types are returned by the backend but are not currently spec'd to be displayed
-    // case 'UserCreatedFeedEventData':
-
-    default:
-      throw new TriedToRenderUnsupportedFeedEvent(event.dbid);
+  if (!event.eventData) {
+    debugger;
+    throw new TriedToRenderUnsupportedFeedEvent(event.dbid);
   }
+
+  return (
+    <FeedEventData
+      caption={event.caption}
+      feedMode={feedMode}
+      eventDbid={event.dbid}
+      feedEventRef={event.eventData}
+      queryRef={query}
+    />
+  );
 }
 
 type FeedEventWithBoundaryProps = {
