@@ -1,15 +1,14 @@
+import { forwardRef } from 'react';
 import styled, { keyframes } from 'styled-components';
 
 import colors from '~/components/core/colors';
 
-export default function Blinking() {
-  return (
-    <StyledBlinkingContainer>
-      <StyledOuterBlinking />
-      <StyledBlinking />
-    </StyledBlinkingContainer>
-  );
-}
+const Blinking = forwardRef<HTMLSpanElement, Record<string, never>>(({}, ref) => (
+  <StyledBlinkingContainer ref={ref}>
+    <StyledOuterBlinking />
+    <StyledBlinking />
+  </StyledBlinkingContainer>
+));
 
 const blinking = keyframes`
     50% {
@@ -48,3 +47,6 @@ const StyledBlinking = styled.span`
   background-color: ${colors.activeBlue};
   display: block;
 `;
+
+Blinking.displayName = 'Blinking';
+export default Blinking;
