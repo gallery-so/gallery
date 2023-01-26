@@ -35,7 +35,7 @@ export default function useUpdatePrimaryWallet() {
       if (updatePrimaryWallet?.__typename === 'UpdatePrimaryWalletPayload') {
         return;
       } else {
-        return;
+        throw new Error('Error updating primary wallet');
       }
     },
     [updatePrimaryWalletAddress]

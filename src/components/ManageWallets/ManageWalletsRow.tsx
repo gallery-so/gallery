@@ -4,13 +4,14 @@ import styled from 'styled-components';
 
 import { Button } from '~/components/core/Button/Button';
 import { BaseM, BODY_MONO_FONT_FAMILY } from '~/components/core/Text/Text';
-import Tooltip from '~/components/Tooltip/Tooltip';
 import { walletIconMap } from '~/components/WalletSelector/multichain/WalletButton';
 import useRemoveWallet from '~/components/WalletSelector/mutations/useRemoveWallet';
 import { isWeb3Error } from '~/types/Error';
 import { truncateAddress } from '~/utils/wallet';
 
 import breakpoints from '../core/breakpoints';
+import { NewTooltip } from '../Tooltip/NewTooltip';
+import { useTooltipHover } from '../Tooltip/useTooltipHover';
 import useUpdatePrimaryWallet from '../WalletSelector/mutations/useUpdatePrimaryWallet';
 
 type Props = {
@@ -28,15 +29,6 @@ function ManageWalletsRow({ walletId, address, chain, setErrorMessage, setRemove
   const updatePrimaryWallet = useUpdatePrimaryWallet();
   const [isDisconnecting, setIsDisconnecting] = useState(false);
   const [isPending, setIsPending] = useState(false);
-  const [showTooltip, setShowTooltip] = useState(false);
-
-  const handleMouseEnter = useCallback(() => {
-    setShowTooltip(true);
-  }, []);
-
-  const handleMouseExit = useCallback(() => {
-    setShowTooltip(false);
-  }, []);
 
   const handleDisconnectClick = useCallback(async () => {
     ReactTooltip.hide();
@@ -59,11 +51,19 @@ function ManageWalletsRow({ walletId, address, chain, setErrorMessage, setRemove
 
   const handleSetPrimaryClick = useCallback(async () => {
     setIsPending(true);
-    await updatePrimaryWallet(walletId);
-    setIsPending(false);
-  }, [walletId, updatePrimaryWallet]);
+    setErrorMessage('');
+    try {
+      await updatePrimaryWallet(walletId);
+      setIsPending(false);
+    } catch {
+      setErrorMessage(`There was an error while updating the primary wallet.`);
+      setIsPending(false);
+    }
+  }, [updatePrimaryWallet, walletId, setErrorMessage]);
 
   const iconUrl = walletIconMap[chain.toLowerCase() as keyof typeof walletIconMap];
+  const { floating, reference, getFloatingProps, getReferenceProps, floatingStyle } =
+    useTooltipHover();
 
   return (
     <StyledWalletRow>
@@ -76,30 +76,23 @@ function ManageWalletsRow({ walletId, address, chain, setErrorMessage, setRemove
           Set Primary
         </StyledButton>
 
-        <StyledButton
-          variant="warning"
-          onClick={handleDisconnectClick}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseExit}
-          data-tip
-          data-for="global"
-          disabled={isPending}
-        >
-          {isDisconnecting ? 'Disconnecting...' : 'Disconnect'}
-        </StyledButton>
-        <ReactTooltip
-          id="global"
-          place="top"
-          effect="solid"
-          arrowColor="transparent"
-          backgroundColor="transparent"
-        >
-          <StyledTooltip
-            showTooltip={showTooltip}
-            whiteSpace="normal"
-            text="Remove all pieces in this wallet from your collections."
-          />
-        </ReactTooltip>
+        <div {...getReferenceProps()} ref={reference}>
+          <StyledButton
+            variant="warning"
+            onClick={handleDisconnectClick}
+            data-tip
+            data-for="global"
+            disabled={isPending}
+          >
+            {isDisconnecting ? 'Disconnecting...' : 'Disconnect'}
+          </StyledButton>
+        </div>
+        <NewTooltip
+          {...getFloatingProps()}
+          style={floatingStyle}
+          ref={floating}
+          text="Remove all pieces in this wallet from your collections."
+        />
       </StyledButtonContainer>
     </StyledWalletRow>
   );
@@ -131,13 +124,6 @@ const Icon = styled.img`
 
 const StyledButton = styled(Button)`
   padding: 8px 12px;
-`;
-
-const StyledTooltip = styled(Tooltip)<{ showTooltip: boolean }>`
-  left: -35px;
-  width: 180px;
-  opacity: ${({ showTooltip }) => (showTooltip ? 1 : 0)};
-  transform: translateY(${({ showTooltip }) => (showTooltip ? -24 : -20)}px);
 `;
 
 const StyledButtonContainer = styled.div`

@@ -86,10 +86,6 @@ function ManageWallets({
   );
   const [userSigninAddress] = usePersistedState(USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY, '');
 
-  // const primaryWallet = useMemo(() => {
-  //   return wallets.find((wallet) => wallet.dbid === viewer?.user.primaryWallet.dbid);
-  // }, [viewer?.user.primaryWallet, wallets]);
-
   useEffect(() => {
     if (removedAddress) {
       pushToast({
