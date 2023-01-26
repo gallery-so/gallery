@@ -3,7 +3,7 @@ import styled, { keyframes } from 'styled-components';
 
 import colors from '~/components/core/colors';
 
-const Blinking = forwardRef<HTMLSpanElement, Record<string, never>>(({}, ref) => (
+const Blinking = forwardRef<HTMLSpanElement, Record<string, unknown>>(({}, ref) => (
   <StyledBlinkingContainer ref={ref}>
     <StyledOuterBlinking />
     <StyledBlinking />
