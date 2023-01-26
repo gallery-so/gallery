@@ -58,9 +58,13 @@ export default function FeaturedUserCard({ userRef, queryRef }: Props) {
   const loggedInUserId = useLoggedInUserId(query);
   const isOwnProfile = loggedInUserId && loggedInUserId === user?.id;
 
+  if (!user) {
+    throw new Error('No user available to showcase FeaturedUserCard');
+  }
+
   const userGalleries = useMemo(() => {
-    return user?.galleries ?? [];
-  }, [user?.galleries]);
+    return user.galleries ?? [];
+  }, [user.galleries]);
 
   const tokenPreviews = useMemo(() => {
     const gallery = userGalleries.find((gallery) => !gallery?.hidden);
@@ -81,14 +85,14 @@ export default function FeaturedUserCard({ userRef, queryRef }: Props) {
   const userBadges = useMemo(() => {
     const badges = [];
 
-    for (const badge of user?.badges ?? []) {
+    for (const badge of user.badges ?? []) {
       if (badge?.imageURL) {
         badges.push(badge);
       }
     }
 
     return badges;
-  }, [user?.badges]);
+  }, [user.badges]);
 
   return (
     <StyledFeaturedUserCard href={`/${user.username}`}>
