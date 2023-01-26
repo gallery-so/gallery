@@ -2,5 +2,6 @@
   "name": "gallery-monorepo",
   "workspaces": [
     "apps/*"
-  ]
+  ],
+  "packageManager": "yarn@3.3.0"
 }
