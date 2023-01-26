@@ -151,6 +151,10 @@ const AllGalleriesWrapper = styled(HStack)`
 
   :hover {
     background-color: ${colors.faint};
+
+    ${TitleXS} {
+      color: ${colors.offBlack};
+    }
   }
 `;
 
