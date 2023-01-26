@@ -240,8 +240,6 @@ function SettingsModal({
 }
 
 const StyledManageWalletsModal = styled(VStack)`
-  width: 300px;
-
   @media only screen and ${breakpoints.tablet} {
     width: 480px;
   }

@@ -10,6 +10,9 @@ import useRemoveWallet from '~/components/WalletSelector/mutations/useRemoveWall
 import { isWeb3Error } from '~/types/Error';
 import { truncateAddress } from '~/utils/wallet';
 
+import breakpoints from '../core/breakpoints';
+import useUpdatePrimaryWallet from '../WalletSelector/mutations/useUpdatePrimaryWallet';
+
 type Props = {
   walletId: string;
   address: string;
@@ -20,17 +23,11 @@ type Props = {
   isOnlyWalletConnected: boolean;
 };
 
-function ManageWalletsRow({
-  walletId,
-  address,
-  chain,
-  userSigninAddress,
-  setErrorMessage,
-  setRemovedAddress,
-  isOnlyWalletConnected,
-}: Props) {
+function ManageWalletsRow({ walletId, address, chain, setErrorMessage, setRemovedAddress }: Props) {
   const removeWallet = useRemoveWallet();
+  const updatePrimaryWallet = useUpdatePrimaryWallet();
   const [isDisconnecting, setIsDisconnecting] = useState(false);
+  const [isPending, setIsPending] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
 
   const handleMouseEnter = useCallback(() => {
@@ -46,10 +43,12 @@ function ManageWalletsRow({
     try {
       setErrorMessage('');
       setIsDisconnecting(true);
+      setIsPending(true);
       await removeWallet(walletId);
       setRemovedAddress(address);
     } catch (error) {
       setIsDisconnecting(false);
+      setIsPending(false);
       if (isWeb3Error(error)) {
         setErrorMessage('Error disconnecting wallet');
       }
@@ -58,7 +57,11 @@ function ManageWalletsRow({
     }
   }, [setErrorMessage, removeWallet, walletId, setRemovedAddress, address]);
 
-  const showDisconnectButton = address !== userSigninAddress && !isOnlyWalletConnected;
+  const handleSetPrimaryClick = useCallback(async () => {
+    setIsPending(true);
+    await updatePrimaryWallet(walletId);
+    setIsPending(false);
+  }, [walletId, updatePrimaryWallet]);
 
   const iconUrl = walletIconMap[chain.toLowerCase() as keyof typeof walletIconMap];
 
@@ -68,33 +71,36 @@ function ManageWalletsRow({
         <Icon src={iconUrl} />
         <StyledWalletAddress>{truncateAddress(address)}</StyledWalletAddress>
       </StyledWalletDetails>
-      {showDisconnectButton && (
-        <>
-          <StyledDisconnectButton
-            variant="error"
-            onClick={handleDisconnectClick}
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseExit}
-            data-tip
-            data-for="global"
-          >
-            {isDisconnecting ? 'Disconnecting...' : 'Disconnect'}
-          </StyledDisconnectButton>
-          <ReactTooltip
-            id="global"
-            place="top"
-            effect="solid"
-            arrowColor="transparent"
-            backgroundColor="transparent"
-          >
-            <StyledTooltip
-              showTooltip={showTooltip}
-              whiteSpace="normal"
-              text="Remove all pieces in this wallet from your collections."
-            />
-          </ReactTooltip>
-        </>
-      )}
+      <StyledButtonContainer>
+        <StyledButton variant="secondary" onClick={handleSetPrimaryClick} disabled={isPending}>
+          Set Primary
+        </StyledButton>
+
+        <StyledButton
+          variant="warning"
+          onClick={handleDisconnectClick}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseExit}
+          data-tip
+          data-for="global"
+          disabled={isPending}
+        >
+          {isDisconnecting ? 'Disconnecting...' : 'Disconnect'}
+        </StyledButton>
+        <ReactTooltip
+          id="global"
+          place="top"
+          effect="solid"
+          arrowColor="transparent"
+          backgroundColor="transparent"
+        >
+          <StyledTooltip
+            showTooltip={showTooltip}
+            whiteSpace="normal"
+            text="Remove all pieces in this wallet from your collections."
+          />
+        </ReactTooltip>
+      </StyledButtonContainer>
     </StyledWalletRow>
   );
 }
@@ -123,8 +129,8 @@ const Icon = styled.img`
   height: 16px;
 `;
 
-const StyledDisconnectButton = styled(Button)`
-  padding: 8px 16px;
+const StyledButton = styled(Button)`
+  padding: 8px 12px;
 `;
 
 const StyledTooltip = styled(Tooltip)<{ showTooltip: boolean }>`
@@ -132,4 +138,13 @@ const StyledTooltip = styled(Tooltip)<{ showTooltip: boolean }>`
   width: 180px;
   opacity: ${({ showTooltip }) => (showTooltip ? 1 : 0)};
   transform: translateY(${({ showTooltip }) => (showTooltip ? -24 : -20)}px);
+`;
+
+const StyledButtonContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  @media only screen and ${breakpoints.tablet} {
+    flex-direction: row;
+  }
 `;

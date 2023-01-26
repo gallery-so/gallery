@@ -12,9 +12,10 @@ import useAddWalletModal from '~/hooks/useAddWalletModal';
 import usePersistedState from '~/hooks/usePersistedState';
 import SettingsRowDescription from '~/scenes/Modals/SettingsModal/SettingsRowDescription';
 import { removeNullValues } from '~/utils/removeNullValues';
-import { truncateAddress } from '~/utils/wallet';
+import { graphqlTruncateAddress, truncateAddress } from '~/utils/wallet';
 
 import ManageWalletsRow from './ManageWalletsRow';
+import PrimaryWalletRow from './PrimaryWalletRow';
 
 type Props = {
   newAddress?: string;
@@ -44,6 +45,13 @@ function ManageWallets({
                   chain @required(action: THROW)
                 }
               }
+              primaryWallet @required(action: THROW) {
+                dbid @required(action: THROW)
+                chainAddress @required(action: THROW) {
+                  chain @required(action: THROW)
+                  ...walletTruncateAddressFragment
+                }
+              }
             }
           }
         }
@@ -52,7 +60,14 @@ function ManageWallets({
     queryRef
   );
 
-  const wallets = useMemo(() => removeNullValues(viewer?.user?.wallets), [viewer?.user?.wallets]);
+  const primaryWallet = viewer?.user?.primaryWallet;
+  const nonPrimaryWallets = useMemo(
+    () =>
+      removeNullValues(viewer?.user?.wallets).filter(
+        (wallet) => wallet.dbid !== primaryWallet?.dbid
+      ),
+    [primaryWallet?.dbid, viewer?.user?.wallets]
+  );
 
   const { pushToast } = useToastActions();
 
@@ -65,8 +80,15 @@ function ManageWallets({
     showAddWalletModal({ onEthAddWalletSuccess, onTezosAddWalletSuccess });
   }, [onEthAddWalletSuccess, onTezosAddWalletSuccess, showAddWalletModal]);
 
-  const addWalletDisabled = useMemo(() => wallets.length >= MAX_ALLOWED_ADDRESSES, [wallets]);
+  const addWalletDisabled = useMemo(
+    () => nonPrimaryWallets.length >= MAX_ALLOWED_ADDRESSES,
+    [nonPrimaryWallets]
+  );
   const [userSigninAddress] = usePersistedState(USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY, '');
+
+  // const primaryWallet = useMemo(() => {
+  //   return wallets.find((wallet) => wallet.dbid === viewer?.user.primaryWallet.dbid);
+  // }, [viewer?.user.primaryWallet, wallets]);
 
   useEffect(() => {
     if (removedAddress) {
@@ -93,13 +115,20 @@ function ManageWallets({
       <VStack gap={16}>
         <VStack>
           <SettingsRowDescription>
-            Add more wallets to access your other NFTs. You&apos;ll also be able to sign in using
-            any connected wallet.
+            Add wallets to access your pieces. You&apos;ll also be able to sign in using any
+            connected wallet.
           </SettingsRowDescription>
           {errorMessage && <StyledErrorText message={errorMessage} />}
         </VStack>
+
+        {primaryWallet && (
+          <PrimaryWalletRow
+            address={graphqlTruncateAddress(primaryWallet.chainAddress)}
+            chain={primaryWallet.chainAddress.chain}
+          />
+        )}
         <VStack>
-          {wallets.map((wallet) => (
+          {nonPrimaryWallets.map((wallet) => (
             <ManageWalletsRow
               key={wallet.dbid}
               walletId={wallet.dbid}
@@ -108,7 +137,7 @@ function ManageWallets({
               setErrorMessage={setErrorMessage}
               userSigninAddress={userSigninAddress}
               setRemovedAddress={setRemovedAddress}
-              isOnlyWalletConnected={wallets.length === 1}
+              isOnlyWalletConnected={nonPrimaryWallets.length === 1}
             />
           ))}
         </VStack>

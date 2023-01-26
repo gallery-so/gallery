@@ -18,7 +18,7 @@ const alphaHex = (percentage: number) => {
 };
 
 type StyledButtonProps = {
-  variant?: 'primary' | 'secondary' | 'error';
+  variant?: 'primary' | 'secondary' | 'warning';
   disabled?: boolean;
 };
 
@@ -49,7 +49,6 @@ const StyledButton = styled.button<StyledButtonProps>`
 
   .Button-label {
     opacity: 1;
-    transition: all ${transitions.cubic};
   }
   &[aria-busy='true'] .Button-label {
     opacity: 0;
@@ -107,18 +106,17 @@ const StyledButton = styled.button<StyledButtonProps>`
       `;
     }
 
-    if (variant === 'error') {
+    if (variant === 'warning') {
       return css`
         background: transparent;
-        color: ${colors.shadow};
-        border: 1px solid transparent;
+        border: 1px solid ${colors.porcelain};
+        color: ${colors.red};
 
         &:hover:not(:disabled) {
           border-color: ${colors.red};
         }
 
         &:hover {
-          color: ${colors.red};
           border-color: ${colors.red};
         }
       `;
