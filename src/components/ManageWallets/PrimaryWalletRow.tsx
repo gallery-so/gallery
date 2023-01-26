@@ -28,9 +28,9 @@ export default function PrimaryWalletRow({ address, chain }: PrimaryWalletProps)
           <StyledWalletAddress>{address}</StyledWalletAddress>
         </HStack>
         <div {...getReferenceProps()} ref={reference}>
-          <Button variant="warning" disabled>
+          <StyledButton variant="warning" disabled>
             Disconnect
-          </Button>
+          </StyledButton>
         </div>
         <NewTooltip
           {...getFloatingProps()}
@@ -55,4 +55,8 @@ const PrimaryWallet = styled(VStack)`
 
 const StyledWalletAddress = styled(BaseM)`
   font-family: ${BODY_MONO_FONT_FAMILY};
+`;
+
+const StyledButton = styled(Button)`
+  padding: 8px 12px;
 `;
