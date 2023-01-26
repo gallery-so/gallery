@@ -31,6 +31,10 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+.yarn/
+.pnp.loader.mjs
+.pnp.cjs
+
 .next/
 tsconfig.tsbuildinfo
 
