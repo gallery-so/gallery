@@ -37,15 +37,15 @@ export default function Featured({ queryRef }: Props) {
     <StyledFeaturedPage gap={48}>
       {query.trendingUsers7Days?.__typename === 'TrendingUsersPayload' && (
         <FeaturedSection
-          title="Weekly Spotlight"
-          subTitle="Top collectors with the most views in the past week"
+          title="Weekly Leaderboard"
+          subTitle="Trending curators this week"
           trendingUsersRef={query.trendingUsers7Days}
           queryRef={query}
         />
       )}
       {query.trendingUsersAllTime?.__typename === 'TrendingUsersPayload' && (
         <FeaturedSection
-          title="Most popular"
+          title="Hall of Fame"
           subTitle="Top collectors with the most all-time views"
           trendingUsersRef={query.trendingUsersAllTime}
           queryRef={query}
