@@ -1,0 +1,6 @@
+{
+  "name": "gallery-monorepo",
+  "workspaces": [
+    "apps/*"
+  ]
+}
