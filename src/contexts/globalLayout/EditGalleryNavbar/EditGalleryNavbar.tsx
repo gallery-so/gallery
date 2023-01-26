@@ -1,12 +1,12 @@
 import { useRouter } from 'next/router';
-import { useCallback, useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import { Button } from '~/components/core/Button/Button';
 import colors from '~/components/core/colors';
 import { HStack } from '~/components/core/Spacer/Stack';
-import { BaseM, TitleDiatypeM, TitleXS } from '~/components/core/Text/Text';
+import { BaseM, TitleXS } from '~/components/core/Text/Text';
 import { GalleryTitleSection } from '~/contexts/globalLayout/EditGalleryNavbar/GalleryTitleSection';
 import { CollectionSaveButtonWithCaption } from '~/contexts/globalLayout/GlobalNavbar/CollectionSaveButtonWithCaption';
 import {
@@ -15,6 +15,8 @@ import {
   NavbarRightContent,
   StandardNavbarContainer,
 } from '~/contexts/globalLayout/GlobalNavbar/StandardNavbarContainer';
+import { useGuardEditorUnsavedChanges } from '~/hooks/useGuardEditorUnsavedChanges';
+import { useSaveHotkey } from '~/hooks/useSaveHotkey';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import { AllGalleriesIcon } from '~/icons/AllGalleriesIcon';
 
@@ -51,9 +53,9 @@ export function EditGalleryNavbar({
   const { push } = useRouter();
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
-  const handleAllGalleriesClick = useCallback(() => {
+  const handleAllGalleriesClick = useGuardEditorUnsavedChanges(() => {
     push({ pathname: '/[username]/galleries', query: { username } });
-  }, [push, username]);
+  }, hasUnsavedChanges);
 
   const doneAction = useMemo<DoneAction>(() => {
     if (hasUnsavedChanges) {
@@ -71,13 +73,29 @@ export function EditGalleryNavbar({
     return 'no-changes';
   }, [canSave, hasSaved, hasUnsavedChanges]);
 
+  // Flash the "Saved" state if the user has nothing to save
+  // and the hit "Cmd+S" anyway
+  const [showSaved, setShowSaved] = useState(true);
+  useSaveHotkey(() => {
+    if (doneAction === 'saved') {
+      setShowSaved(false);
+
+      setTimeout(() => {
+        setShowSaved(true);
+      }, 500);
+    }
+  });
+
   const doneButton = useMemo(() => {
     if (doneAction === 'no-changes') {
       return <DoneButton onClick={onBack}>Done</DoneButton>;
     } else if (doneAction === 'saved') {
       return (
         <>
-          <BaseM color={colors.metal}>Saved</BaseM>
+          <SavedText show={showSaved} color={colors.metal}>
+            Saved
+          </SavedText>
+
           <DoneButton onClick={onBack}>Done</DoneButton>
         </>
       );
@@ -87,7 +105,7 @@ export function EditGalleryNavbar({
     ) {
       return (
         <>
-          <TitleDiatypeM color={colors.metal}>Unsaved changes</TitleDiatypeM>
+          <BaseM color={colors.metal}>Unsaved changes</BaseM>
 
           <CollectionSaveButtonWithCaption
             hasUnsavedChange={hasUnsavedChanges}
@@ -97,7 +115,7 @@ export function EditGalleryNavbar({
         </>
       );
     }
-  }, [doneAction, hasUnsavedChanges, onBack, onDone]);
+  }, [doneAction, hasUnsavedChanges, onBack, onDone, showSaved]);
 
   return (
     <Wrapper>
@@ -134,6 +152,11 @@ const AllGalleriesWrapper = styled(HStack)`
   :hover {
     background-color: ${colors.faint};
   }
+`;
+
+const SavedText = styled(BaseM)<{ show: boolean }>`
+  transition: opacity 300ms ease-in-out;
+  opacity: ${({ show }) => (show ? '1' : '0')};
 `;
 
 const DoneButton = styled(Button)`
