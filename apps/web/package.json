@@ -1,4 +1,5 @@
 {
+  "name": "web",
   "private": true,
   "scripts": {
     "dev": "concurrently -n Next,Relay-Compiler,GraphQL-Codegen \"next\" \"yarn relay:watch\" \"graphql-codegen --watch\"",
