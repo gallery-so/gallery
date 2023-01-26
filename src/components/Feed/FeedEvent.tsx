@@ -126,7 +126,6 @@ function FeedEvent({ eventRef, queryRef, feedMode }: FeedEventProps) {
           caption={event.caption}
           eventRef={event.eventData}
           queryRef={query}
-          feedMode={feedMode}
         />
       );
 

@@ -5,11 +5,11 @@ import { graphql, useFragment } from 'react-relay';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
+import { ReportingErrorBoundary } from '~/contexts/boundary/ReportingErrorBoundary';
 import { GalleryUpdatedFeedEventFragment$key } from '~/generated/GalleryUpdatedFeedEventFragment.graphql';
 import { GalleryUpdatedFeedEventQueryFragment$key } from '~/generated/GalleryUpdatedFeedEventQueryFragment.graphql';
 import { getTimeSince } from '~/utils/time';
 
-import { FeedMode } from '../Feed';
 import CollectionCreatedFeedEvent, { StyledCaptionContainer } from './CollectionCreatedFeedEvent';
 import CollectionUpdatedFeedEvent from './CollectionUpdatedFeedEvent';
 import CollectorsNoteAddedToCollectionFeedEvent from './CollectorsNoteAddedToCollectionFeedEvent';
@@ -22,16 +22,14 @@ import {
   StyledTime,
 } from './EventStyles';
 import TokensAddedToCollectionFeedEvent from './TokensAddedToCollectionFeedEvent';
-import UserFollowedUsersFeedEvent from './UserFollowedUsersFeedEvent';
 
 type Props = {
   caption: string | null;
-  feedMode: FeedMode;
   eventRef: GalleryUpdatedFeedEventFragment$key;
   queryRef: GalleryUpdatedFeedEventQueryFragment$key;
 };
 
-export default function GalleryUpdatedFeedEvent({ caption, eventRef, feedMode, queryRef }: Props) {
+export default function GalleryUpdatedFeedEvent({ caption, eventRef, queryRef }: Props) {
   const event = useFragment(
     graphql`
       fragment GalleryUpdatedFeedEventFragment on GalleryUpdatedFeedEventData {
@@ -57,9 +55,7 @@ export default function GalleryUpdatedFeedEvent({ caption, eventRef, feedMode, q
           ... on TokensAddedToCollectionFeedEventData {
             ...TokensAddedToCollectionFeedEventFragment
           }
-          ... on UserFollowedUsersFeedEventData {
-            ...UserFollowedUsersFeedEventFragment
-          }
+
           ... on CollectorsNoteAddedToCollectionFeedEventData {
             ...CollectorsNoteAddedToCollectionFeedEventFragment
           }
@@ -84,7 +80,6 @@ export default function GalleryUpdatedFeedEvent({ caption, eventRef, feedMode, q
       fragment GalleryUpdatedFeedEventQueryFragment on Query {
         ...HoverCardOnUsernameFollowFragment
 
-        ...UserFollowedUsersFeedEventQueryFragment
         ...TokensAddedToCollectionFeedEventQueryFragment
         ...CollectorsNoteAddedToCollectionFeedEventQueryFragment
         ...CollectionCreatedFeedEventQueryFragment
@@ -128,57 +123,59 @@ export default function GalleryUpdatedFeedEvent({ caption, eventRef, feedMode, q
               switch (subEvent.__typename) {
                 case 'CollectionCreatedFeedEventData':
                   return (
-                    <CollectionCreatedFeedEvent
-                      key={index}
-                      eventDataRef={subEvent}
-                      queryRef={query}
-                      caption={null}
-                      isSubEvent
-                    />
+                    <ReportingErrorBoundary fallback={<></>} dontReport>
+                      <CollectionCreatedFeedEvent
+                        key={index}
+                        eventDataRef={subEvent}
+                        queryRef={query}
+                        caption={null}
+                        isSubEvent
+                      />
+                    </ReportingErrorBoundary>
                   );
                 case 'CollectionUpdatedFeedEventData':
                   return (
-                    <CollectionUpdatedFeedEvent
-                      eventDataRef={subEvent}
-                      queryRef={query}
-                      isSubEvent
-                    />
+                    <ReportingErrorBoundary fallback={<></>} dontReport>
+                      <CollectionUpdatedFeedEvent
+                        eventDataRef={subEvent}
+                        queryRef={query}
+                        isSubEvent
+                      />
+                    </ReportingErrorBoundary>
                   );
                 case 'CollectorsNoteAddedToTokenFeedEventData':
                   return (
-                    <CollectorsNoteAddedToTokenFeedEvent
-                      eventDataRef={subEvent}
-                      queryRef={query}
-                      isSubEvent
-                    />
+                    <ReportingErrorBoundary fallback={<></>} dontReport>
+                      <CollectorsNoteAddedToTokenFeedEvent
+                        eventDataRef={subEvent}
+                        queryRef={query}
+                        isSubEvent
+                      />
+                    </ReportingErrorBoundary>
                   );
                 case 'TokensAddedToCollectionFeedEventData':
                   return (
-                    <TokensAddedToCollectionFeedEvent
-                      caption={null}
-                      eventDataRef={subEvent}
-                      queryRef={query}
-                      isSubEvent
-                    />
+                    <ReportingErrorBoundary fallback={<></>} dontReport>
+                      <TokensAddedToCollectionFeedEvent
+                        caption={null}
+                        eventDataRef={subEvent}
+                        queryRef={query}
+                        isSubEvent
+                      />
+                    </ReportingErrorBoundary>
                   );
                 case 'CollectorsNoteAddedToCollectionFeedEventData':
                   return (
-                    <CollectorsNoteAddedToCollectionFeedEvent
-                      eventDataRef={subEvent}
-                      queryRef={query}
-                      isSubEvent
-                    />
-                  );
-                case 'UserFollowedUsersFeedEventData':
-                  return (
-                    <UserFollowedUsersFeedEvent
-                      eventDataRef={subEvent}
-                      queryRef={query}
-                      feedMode={feedMode}
-                      isSubEvent
-                    />
+                    <ReportingErrorBoundary fallback={<></>} dontReport>
+                      <CollectorsNoteAddedToCollectionFeedEvent
+                        eventDataRef={subEvent}
+                        queryRef={query}
+                        isSubEvent
+                      />
+                    </ReportingErrorBoundary>
                   );
 
+                // These event types are returned by the backend but are not currently spec'd to be displayed
                 case 'GalleryInfoUpdatedFeedEventData':
                   return null;
 
