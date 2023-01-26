@@ -129,7 +129,7 @@ export default function TokensAddedToCollectionFeedEvent({
                     <StyledEventLabel>{collectionName}</StyledEventLabel>
                   </Link>
                 </BaseM>
-                <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
+                {!isSubEvent && <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>}
               </HStack>
             </VStack>
           </StyledEventHeader>

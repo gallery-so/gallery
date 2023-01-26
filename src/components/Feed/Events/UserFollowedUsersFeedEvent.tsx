@@ -176,7 +176,7 @@ export default function UserFollowedUsersFeedEvent({
                     )}
                   </BaseM>
                 )}
-                <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
+                {!isSubEvent && <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>}
               </HStack>
             </StyledEventHeader>
           </StyledEventContent>
@@ -190,12 +190,14 @@ export default function UserFollowedUsersFeedEvent({
                   {isSubEvent ? (
                     <BaseM>Followed {genericFollows.length} collectors.</BaseM>
                   ) : (
-                    <BaseM>
-                      <HoverCardOnUsername userRef={event.owner} queryRef={query} /> followed{' '}
-                      {genericFollows.length} collectors.
-                    </BaseM>
+                    <>
+                      <BaseM>
+                        <HoverCardOnUsername userRef={event.owner} queryRef={query} /> followed{' '}
+                        {genericFollows.length} collectors.
+                      </BaseM>
+                      <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
+                    </>
                   )}
-                  <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
                 </HStack>
               </StyledEventHeader>
               <StyledSecondaryButton>See All</StyledSecondaryButton>

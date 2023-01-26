@@ -129,7 +129,7 @@ export default function CollectorsNoteAddedToTokenFeedEvent({
                   <StyledEventLabel>{event.token.token?.name}</StyledEventLabel>
                 </Link>
               </BaseM>
-              <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
+              {!isSubEvent && <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>}
             </HStack>
           </StyledEventHeader>
           <StyledContent justify="center" align="center" gap={MIDDLE_GAP}>

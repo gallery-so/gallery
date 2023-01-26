@@ -105,7 +105,7 @@ export default function CollectionUpdatedFeedEvent({
 
                 <InteractiveLink to={collectionPagePath}>{collectionName}</InteractiveLink>
               </BaseM>
-              <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
+              {!isSubEvent && <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>}
             </HStack>
           </StyledEventHeader>
           <StyledQuote>

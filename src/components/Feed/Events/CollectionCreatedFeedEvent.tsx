@@ -1,9 +1,9 @@
+import Link from 'next/link';
 import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import colors from '~/components/core/colors';
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { UnstyledLink } from '~/components/core/Link/UnstyledLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, BaseS } from '~/components/core/Text/Text';
@@ -18,7 +18,13 @@ import unescape from '~/utils/unescape';
 
 import { MAX_PIECES_DISPLAYED_PER_FEED_EVENT } from '../constants';
 import FeedEventTokenPreviews from '../FeedEventTokenPreviews';
-import { StyledEvent, StyledEventContent, StyledEventHeader, StyledTime } from './EventStyles';
+import {
+  StyledEvent,
+  StyledEventContent,
+  StyledEventHeader,
+  StyledEventLabel,
+  StyledTime,
+} from './EventStyles';
 
 type Props = {
   caption: string | null;
@@ -88,31 +94,29 @@ export default function CollectionCreatedFeedEvent({
       onClick={() => track('Feed: Clicked collection created event')}
     >
       <StyledEvent isSubEvent={isSubEvent}>
-        <VStack gap={isSubEvent ? 0 : 16}>
+        <VStack gap={16}>
           <StyledEventHeader>
             <VStack gap={4}>
               <StyledEventHeaderContainer>
                 {isSubEvent ? (
                   <BaseM>
                     Added {tokens.length} {pluralize(tokens.length, 'piece')} to their new
-                    collection
-                    {collectionName ? `, ` : ' '}
+                    collection {collectionName ? `, ` : ' '}
                   </BaseM>
                 ) : (
                   <>
                     <HoverCardOnUsername userRef={event.owner} queryRef={query} />{' '}
                     <BaseM>
                       added {tokens.length} {pluralize(tokens.length, 'piece')} to their new
-                      collection
-                      {collectionName ? `, ` : ' '}
+                      collection {collectionName ? `, ` : ' '}
                     </BaseM>
                   </>
                 )}
 
                 <HStack gap={4} inline>
                   {collectionName && (
-                    <InteractiveLink
-                      to={{
+                    <Link
+                      href={{
                         pathname: '/[username]/[collectionId]',
                         query: {
                           username: event.owner.username as string,
@@ -120,10 +124,10 @@ export default function CollectionCreatedFeedEvent({
                         },
                       }}
                     >
-                      {unescape(event.collection.name ?? '')}
-                    </InteractiveLink>
+                      <StyledEventLabel>{unescape(event.collection.name ?? '')}</StyledEventLabel>
+                    </Link>
                   )}
-                  <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
+                  {!isSubEvent && <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>}
                 </HStack>
               </StyledEventHeaderContainer>
             </VStack>

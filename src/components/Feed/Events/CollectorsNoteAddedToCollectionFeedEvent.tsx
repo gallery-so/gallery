@@ -118,7 +118,7 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({
                     </Link>
                   </BaseM>
                 )}
-                <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
+                {!isSubEvent && <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>}
               </HStack>
             </StyledEventHeader>
           </VStack>
