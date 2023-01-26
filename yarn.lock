@@ -3884,6 +3884,56 @@
   resolved "https://registry.yarnpkg.com/@metamask/safe-event-emitter/-/safe-event-emitter-2.0.0.tgz#af577b477c683fad17c619a78208cede06f9605c"
   integrity sha512-/kSXhY692qiV1MXu6EeOZvg5nECLclxNXcKCxJ3cXQgYuRymRHpdx/t7JXfsK+JLjwA1e1c1/SBrlQYpusC29Q==
 
+"@moonrepo/cli@^0.22.0":
+  version "0.22.0"
+  resolved "https://registry.yarnpkg.com/@moonrepo/cli/-/cli-0.22.0.tgz#abb73d1cae9567fd120f5ed01f575850b93daf38"
+  integrity sha512-rmzLPbnploQoGIhaiWKijwZvZTZsljSBFw6B4k/gcidTiGLWGC6dxM9NJzHLARE0gabGczMKrCfZzlFPRoXD4w==
+  dependencies:
+    detect-libc "^2.0.1"
+  optionalDependencies:
+    "@moonrepo/core-linux-arm64-gnu" "^0.22.0"
+    "@moonrepo/core-linux-arm64-musl" "^0.22.0"
+    "@moonrepo/core-linux-x64-gnu" "^0.22.0"
+    "@moonrepo/core-linux-x64-musl" "^0.22.0"
+    "@moonrepo/core-macos-arm64" "^0.22.0"
+    "@moonrepo/core-macos-x64" "^0.22.0"
+    "@moonrepo/core-windows-x64-msvc" "^0.22.0"
+
+"@moonrepo/core-linux-arm64-gnu@^0.22.0":
+  version "0.22.0"
+  resolved "https://registry.yarnpkg.com/@moonrepo/core-linux-arm64-gnu/-/core-linux-arm64-gnu-0.22.0.tgz#92e3b0fa9578ec43f872b43abdfa3931283664c9"
+  integrity sha512-0rGr2PCQLTNJOL6vbf5SutVSYDtuVmJTX5lcoPeh8qeYyQGNfyYq7u4lWrPnxX8LgoLC5sDnK9VdMcDRGJ01gA==
+
+"@moonrepo/core-linux-arm64-musl@^0.22.0":
+  version "0.22.0"
+  resolved "https://registry.yarnpkg.com/@moonrepo/core-linux-arm64-musl/-/core-linux-arm64-musl-0.22.0.tgz#69271f1c858f98ec27b1fbfee334755ea4e404f4"
+  integrity sha512-gDSO+l0V3A+LDYeqHuNhQPyPMkWqtp6LAwU0SfrUdTvMFSzK1vYFUOwJD+JV1bxTZZdfKyzR6jwW94Vtf/KQ+Q==
+
+"@moonrepo/core-linux-x64-gnu@^0.22.0":
+  version "0.22.0"
+  resolved "https://registry.yarnpkg.com/@moonrepo/core-linux-x64-gnu/-/core-linux-x64-gnu-0.22.0.tgz#a2ec63be4d8bc69ecb2bb82f71b12c3aaf33dbdc"
+  integrity sha512-cQfR0qURfTaJsKEHBNl1gdHflZb9cCtifSTRbF/cOO1irZZMLj57TVNfPvOJ3Hp+667hi2m8xuA05j8kdS0g2Q==
+
+"@moonrepo/core-linux-x64-musl@^0.22.0":
+  version "0.22.0"
+  resolved "https://registry.yarnpkg.com/@moonrepo/core-linux-x64-musl/-/core-linux-x64-musl-0.22.0.tgz#541a81d7a351d843336c81244c62053cff15da11"
+  integrity sha512-sBXMthjEmwZwdanns6WaTPMJBmNsFZs5H3tKb0bXCttZssiRQJYL3dXHa8bNqQs5PvJHHPkAeWG1mfYl/oR6PQ==
+
+"@moonrepo/core-macos-arm64@^0.22.0":
+  version "0.22.0"
+  resolved "https://registry.yarnpkg.com/@moonrepo/core-macos-arm64/-/core-macos-arm64-0.22.0.tgz#35f74ea5584c10017ef50ffa00dd59f85395732b"
+  integrity sha512-Bsb4qBsyssXFi9yrkFU6dqAZ9COwRS3LykBSnAVwoiM3HkoyhguDXklWUdGUZg+dUSJV1XFgnXDwaCJhh9H+FQ==
+
+"@moonrepo/core-macos-x64@^0.22.0":
+  version "0.22.0"
+  resolved "https://registry.yarnpkg.com/@moonrepo/core-macos-x64/-/core-macos-x64-0.22.0.tgz#b330172aae2cb28ecc26b6dfafb88569e5b266b8"
+  integrity sha512-atkgBNUxbs7eQ2GPUzfZV0D30j8HHlmljmW1uq47QziAI7Rd4ospLQSuyCfHcGQg3Vo2KNvW/94YbbG4i4RVjw==
+
+"@moonrepo/core-windows-x64-msvc@^0.22.0":
+  version "0.22.0"
+  resolved "https://registry.yarnpkg.com/@moonrepo/core-windows-x64-msvc/-/core-windows-x64-msvc-0.22.0.tgz#a706d2558579eeefdeaade80082c997f8abe7ba9"
+  integrity sha512-B3L/CjLkK2EmDyDsZr2K/g/CfS0bRRX4bRP7n9CqJ3RmWGGmY2pXdrZyBVIlgLCnPwAVyK3m/3UaePB0AtFQnQ==
+
 "@motionone/animation@^10.15.1":
   version "10.15.1"
   resolved "https://registry.yarnpkg.com/@motionone/animation/-/animation-10.15.1.tgz#4a85596c31cbc5100ae8eb8b34c459fb0ccf6807"
@@ -9965,6 +10015,11 @@ detect-indent@^6.0.0:
   version "6.1.0"
   resolved "https://registry.yarnpkg.com/detect-indent/-/detect-indent-6.1.0.tgz#592485ebbbf6b3b1ab2be175c8393d04ca0d57e6"
   integrity sha512-reYkTUJAZb9gUuZ2RvVCNhVHdg62RHnJ7WJl8ftMi4diZ6NWlciOzQN88pUhSELEwflJht4oQDv0F0BMlwaYtA==
+
+detect-libc@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/detect-libc/-/detect-libc-2.0.1.tgz#e1897aa88fa6ad197862937fbc0441ef352ee0cd"
+  integrity sha512-463v3ZeIrcWtdgIg6vI6XUncguvr2TnGl4SzDXinkt9mSLpBJKXT3mW6xT3VQdDN11+WVs29pgvivTc4Lp8v+w==
 
 detect-newline@^3.0.0:
   version "3.1.0"

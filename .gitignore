@@ -50,3 +50,7 @@ nextjs-routes.d.ts
 
 # JetBrains IDE
 .idea/
+
+# moon
+.moon/cache
+.moon/docker
