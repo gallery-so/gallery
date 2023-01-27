@@ -32,7 +32,7 @@ export async function signMessageWithContractAccount(
     // TODO: ensure we have a provider on the connector?
 
     // This keeps the nonce message intact instead of encrypting it for WalletConnect users
-    return (await connector.walletConnectProvider.connector.signPersonalMessage([
+    return (await connector.walletConnectProvider?.connector.signPersonalMessage([
       nonce,
       address,
     ])) as Signature;

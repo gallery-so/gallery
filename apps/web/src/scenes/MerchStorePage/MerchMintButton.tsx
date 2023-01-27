@@ -28,7 +28,6 @@ export default function MintButton({ onMintSuccess, quantity, tokenId }: Props) 
 
   const { transactionHash, transactionStatus, buttonText, error, handleClick, userOwnedSupply } =
     useMintContractWithQuantity({
-      // @ts-expect-error: fix this later, related to web3 lib upgrade
       contract,
       tokenId,
       quantity,

@@ -35,7 +35,6 @@ export default function ItemPage({
 
   const { publicSupply, usedPublicSupply, tokenPrice, userOwnedSupply } =
     useMintContractWithQuantity({
-      // @ts-expect-error: fix this later, related to web3 lib upgrade
       contract,
       tokenId,
     });

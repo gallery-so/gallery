@@ -22,7 +22,6 @@ export function UserOwnsBox({ inReceipt, tokenId }: { inReceipt: boolean; tokenI
   const contract = useMintMerchContract();
 
   const { tokenPrice, userOwnedSupply } = useMintContractWithQuantity({
-    // @ts-expect-error: fix this later, related to web3 lib upgrade
     contract,
     tokenId,
   });
@@ -62,7 +61,6 @@ export function MobileReceiptBox({
   const contract = useMintMerchContract();
 
   const { userOwnedSupply } = useMintContractWithQuantity({
-    // @ts-expect-error: fix this later, related to web3 lib upgrade
     contract,
     tokenId,
   });
@@ -125,7 +123,6 @@ export default function PurchaseBox({
   const contract = useMintMerchContract();
 
   const { soldOut, userOwnedSupply, active, tokenPrice } = useMintContractWithQuantity({
-    // @ts-expect-error: fix this later, related to web3 lib upgrade
     contract,
     tokenId,
   });
