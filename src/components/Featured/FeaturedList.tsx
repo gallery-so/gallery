@@ -2,12 +2,12 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 
 import chunk from 'lodash.chunk';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled, { css } from 'styled-components';
 import { Mousewheel, Pagination } from 'swiper';
 import SwiperType from 'swiper';
-import { Swiper, SwiperSlide } from 'swiper/react';
+import { Swiper, SwiperRef, SwiperSlide } from 'swiper/react';
 
 import colors from '~/components/core/colors';
 import { FeaturedListFragment$key } from '~/generated/FeaturedListFragment.graphql';
@@ -63,10 +63,13 @@ export default function FeaturedList({ trendingUsersRef, queryRef }: Props) {
   const chunkSize = isMobileOrMobileLargeWindowWidth ? 4 : 8;
   const chunks = chunk(shortenedUserList, chunkSize);
 
+  const swiperRef = useRef<SwiperRef>(null);
+
   return (
     <VStack gap={16}>
       <div>
         <Swiper
+          ref={swiperRef}
           mousewheel={{ forceToAxis: true }}
           modules={[Mousewheel, Pagination]}
           spaceBetween={50}
@@ -88,7 +91,13 @@ export default function FeaturedList({ trendingUsersRef, queryRef }: Props) {
       </div>
       <HStack justify="center" gap={8}>
         {chunks.map((_, index) => {
-          return <SlideDot key={index} active={index === activeIndex} />;
+          return (
+            <SlideDot
+              onClick={() => swiperRef.current?.swiper.slideTo(index)}
+              key={index}
+              active={index === activeIndex}
+            />
+          );
         })}
       </HStack>
     </VStack>
@@ -102,6 +111,8 @@ const SlideDot = styled.div<{ active: boolean }>`
   border-radius: 9999px;
 
   transition: transform 300ms ease-in-out;
+
+  cursor: pointer;
 
   ${({ active }) =>
     active
