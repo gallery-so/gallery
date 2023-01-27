@@ -97,7 +97,7 @@ export function CollectionListItem({ collectionId }: CollectionListItemProps) {
         selected={selected}
       >
         <CollectionTitleText isHidden={hidden} italicize={!collection.name}>
-          {escapedCollectionName || 'Untitled'}
+          {escapedCollectionName || 'Untitled Collection'}
         </CollectionTitleText>
         <HStack gap={10} onClick={handleIconSectionClick}>
           <IconContainer
