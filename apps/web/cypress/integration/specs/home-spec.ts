@@ -11,7 +11,7 @@ describe('Homepage test', () => {
   context('Homepage', () => {
     it('should redirect to the feed when visiting the homepage', () => {
       cy.visit('/');
-      cy.url().should('include', '/home');
+      cy.url().should('include', '/activity');
       home.getFeedList().should('be.exist');
     });
 
