@@ -81,7 +81,7 @@ export default function GlobalAnnouncementPopover({ queryRef }: Props) {
     hideModal();
 
     if (isAuthenticated) {
-      push({ pathname: '/home' });
+      push({ pathname: '/activity' });
       return;
     }
 
