@@ -17,7 +17,7 @@ import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import keyBy from 'lodash.keyby';
 import { memo, useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import colors from '~/components/core/colors';
 import IconContainer from '~/components/core/IconContainer';
@@ -216,7 +216,9 @@ function StagingArea({ tokensRef }: Props) {
           >
             {hasNameOrCollectorsNote ? (
               <VStack>
-                <TitleDiatypeM>{escapedCollectionName || 'Untitled'}</TitleDiatypeM>
+                <StyledCollectionName hasName={Boolean(escapedCollectionName)}>
+                  {escapedCollectionName || 'Untitled collection'}
+                </StyledCollectionName>
 
                 <BaseM>
                   <Markdown text={collectorsNote}></Markdown>
@@ -327,6 +329,16 @@ const CollectionNameAndDescriptionBackground = styled(HStack)`
 
 const CollectionNameAndDescriptionContainer = styled(HStack)`
   width: 830px;
+`;
+
+const StyledCollectionName = styled(TitleDiatypeM)<{ hasName: boolean }>`
+  ${({ hasName }) =>
+    !hasName &&
+    css`
+      font-style: italic;
+      color: ${colors.metal};
+      font-weight: 400;
+    `}
 `;
 
 const SectionList = styled(VStack)``;
