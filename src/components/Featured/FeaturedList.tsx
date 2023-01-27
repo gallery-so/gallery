@@ -70,8 +70,8 @@ export default function FeaturedList({ trendingUsersRef, queryRef }: Props) {
       <div>
         <Swiper
           ref={swiperRef}
-          mousewheel={{ forceToAxis: true }}
-          modules={[Mousewheel, Pagination]}
+          direction="horizontal"
+          cssMode
           spaceBetween={50}
           slidesPerView={1}
           onSlideChange={handleSlideChange}
