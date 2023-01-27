@@ -46,7 +46,7 @@ export default function Featured({ queryRef }: Props) {
       {query.trendingUsersAllTime?.__typename === 'TrendingUsersPayload' && (
         <FeaturedSection
           title="Hall of Fame"
-          subTitle="Top collectors with the most all-time views"
+          subTitle="Top curators with the most all-time views"
           trendingUsersRef={query.trendingUsersAllTime}
           queryRef={query}
         />
