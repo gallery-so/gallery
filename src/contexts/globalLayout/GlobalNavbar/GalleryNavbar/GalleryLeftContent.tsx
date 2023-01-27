@@ -46,7 +46,7 @@ export default function GalleryLeftContent({ queryRef, galleryName }: Props) {
   const rightContent = useMemo(() => {
     if (isMobile) {
       return null;
-    } else if (galleryName && query.userByUsername?.username) {
+    } else if (query.userByUsername?.username) {
       const usernameRoute: Route = {
         pathname: '/[username]',
         query: { username: query.userByUsername.username },
@@ -59,7 +59,7 @@ export default function GalleryLeftContent({ queryRef, galleryName }: Props) {
               {query.userByUsername?.username}
             </UsernameBreadcrumbLink>
           </Link>
-          <BreadcrumbText>/ {galleryName}</BreadcrumbText>
+          <BreadcrumbText>/ {galleryName || 'Untitled'}</BreadcrumbText>
         </HStack>
       );
     } else if (user) {
