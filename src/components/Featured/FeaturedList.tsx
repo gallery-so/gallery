@@ -5,7 +5,6 @@ import chunk from 'lodash.chunk';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled, { css } from 'styled-components';
-import { Mousewheel, Pagination } from 'swiper';
 import SwiperType from 'swiper';
 import { Swiper, SwiperRef, SwiperSlide } from 'swiper/react';
 
