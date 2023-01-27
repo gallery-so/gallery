@@ -44,9 +44,10 @@ export default function GalleryLeftContent({ queryRef, galleryName }: Props) {
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
   const rightContent = useMemo(() => {
+    console.log(galleryName);
     if (isMobile) {
       return null;
-    } else if (query.userByUsername?.username) {
+    } else if (galleryName && query.userByUsername?.username) {
       const usernameRoute: Route = {
         pathname: '/[username]',
         query: { username: query.userByUsername.username },
