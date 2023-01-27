@@ -3736,23 +3736,10 @@
     "@taquito/utils" "^15.1.0"
     bignumber.js "^9.1.0"
 
-"@taquito/local-forging@^14.0.0":
-  version "14.2.0"
-  resolved "https://registry.yarnpkg.com/@taquito/local-forging/-/local-forging-14.2.0.tgz#20b4b62577cc1ab281e42810bf1ef5e1059fbffe"
-  integrity sha512-V+NOGEwWcm/N6jDfsHOZpt1mOeCbxhWQpss7z9q+CrW/AbBfJJDpVG+nfswsum+Bdj0pNqvKml5Zf+LMl12Gbg==
-  dependencies:
-    "@taquito/utils" "*"
-    bignumber.js "^9.1.0"
-
 "@taquito/michel-codec@*":
   version "15.1.0"
   resolved "https://registry.yarnpkg.com/@taquito/michel-codec/-/michel-codec-15.1.0.tgz#b4452757ff02c40b110ec5ecafad1f659e1de4e3"
   integrity sha512-wKucIhs7vhaq5H+YSF2f6Qu9+g+QiEL6MPc5ROpxBrXJTeKSwBOEIpfqcKfkfMuecJyHZJW3glNfkpAVTCgkxg==
-
-"@taquito/michel-codec@^14.0.0":
-  version "14.2.0"
-  resolved "https://registry.yarnpkg.com/@taquito/michel-codec/-/michel-codec-14.2.0.tgz#24be15f8064be6364d111e4e410fd53f5b0faff9"
-  integrity sha512-rfMrrB3oaEMkPjcV9caUQFBzJ0jc1p3ijfAMgoHcfLzunzC9bJwwPAkZD0/2G256/MyUt5CUwhxzdEUgVz0COw==
 
 "@taquito/michelson-encoder@*":
   version "15.1.0"
@@ -3792,21 +3779,7 @@
     "@taquito/utils" "*"
     bignumber.js "^9.1.0"
 
-"@taquito/taquito@14.0.0":
-  version "14.0.0"
-  resolved "https://registry.yarnpkg.com/@taquito/taquito/-/taquito-14.0.0.tgz#7dc8dccbe164f5ef52d61e40f9a8084da340b172"
-  integrity sha512-JaXfvqOCF3dkwXxhe00Ravb8WLMC2VqJxerf4GrGUEpJw+NAkwbGEb8k/52+MQQdlxMPepZdPPru/HM3nFG0Tw==
-  dependencies:
-    "@taquito/http-utils" "^14.0.0"
-    "@taquito/local-forging" "^14.0.0"
-    "@taquito/michel-codec" "^14.0.0"
-    "@taquito/michelson-encoder" "^14.0.0"
-    "@taquito/rpc" "^14.0.0"
-    "@taquito/utils" "^14.0.0"
-    bignumber.js "^9.0.2"
-    rxjs "^6.6.3"
-
-"@taquito/taquito@^14.0.0":
+"@taquito/taquito@14.0.0", "@taquito/taquito@^14.0.0":
   version "14.2.0"
   resolved "https://registry.yarnpkg.com/@taquito/taquito/-/taquito-14.2.0.tgz#5ce737663fdb06316798a32da416fedff3696800"
   integrity sha512-JrAUtANIVr02TFI6N87Xnn+KfgDT8hTA6IBeRhGfQnZH8nL1LG6/6q7uHZTw6D4ddfnMvxjgA/916cxAFcskFA==
@@ -4582,19 +4555,10 @@
     "@types/prop-types" "*"
     "@types/react" "^17"
 
-"@types/react@*", "@types/react@^18.0.27":
+"@types/react@*", "@types/react@^17", "@types/react@^18.0.0", "@types/react@^18.0.27":
   version "18.0.27"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-18.0.27.tgz#d9425abe187a00f8a5ec182b010d4fd9da703b71"
   integrity sha512-3vtRKHgVxu3Jp9t718R9BuzoD4NcQ8YJ5XRzsSKxNDiDonD2MXIT1TmSkenxuCycZJoQT5d2vE8LwWJxBC1gmA==
-  dependencies:
-    "@types/prop-types" "*"
-    "@types/scheduler" "*"
-    csstype "^3.0.2"
-
-"@types/react@^17":
-  version "17.0.53"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.53.tgz#10d4d5999b8af3d6bc6a9369d7eb953da82442ab"
-  integrity sha512-1yIpQR2zdYu1Z/dc1OxC+MA6GR240u3gcnP4l6mvj/PJiVaqHsQPmWttsvHsfnhfPbU2FuGmo0wSITPygjBmsw==
   dependencies:
     "@types/prop-types" "*"
     "@types/scheduler" "*"
@@ -13624,6 +13588,11 @@ lodash.camelcase@^4.3.0:
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/lodash.camelcase/-/lodash.camelcase-4.3.0.tgz#b28aa6288a2b9fc651035c7711f65ab6190331a6"
   integrity sha512-TwuEnCnxbc3rAvhf/LbG7tJUDzhqXyFnv3dtzLOPgCG/hODL7WFnsbwktkD7yUV0RrreP/l1PALq/YSg6VvjlA==
+
+lodash.chunk@^4.2.0:
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/lodash.chunk/-/lodash.chunk-4.2.0.tgz#66e5ce1f76ed27b4303d8c6512e8d1216e8106bc"
+  integrity sha512-ZzydJKfUHJwHa+hF5X66zLFCBrWn5GeF28OHEr4WVWtNDXlQ/IjWKPBiikqKo2ne0+v6JgCgJ0GzJp8k8bHC7w==
 
 lodash.clonedeep@^4.5.0:
   version "4.5.0"
