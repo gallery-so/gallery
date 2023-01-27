@@ -87,7 +87,6 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
     throw new Error('This gallery does not have an owner.');
   }
 
-  // TODO: Replace with a specific gallery route in the future
   const galleryLink: Route = {
     pathname: '/[username]/galleries/[galleryId]',
     query: { username: gallery.owner.username, galleryId: gallery.dbid },
@@ -143,40 +142,48 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
     return visibleGalleries.length < 2;
   }, [query.viewer?.viewerGalleries]);
 
-  const handleSetFeaturedGallery = useCallback(async () => {
-    try {
-      await setFeaturedGallery(dbid);
-    } catch (error) {
-      if (error instanceof Error) {
-        pushToast({
-          message: 'Unfortunately there was an error to featured this gallery',
-        });
+  const handleSetFeaturedGallery = useCallback(
+    async (event: React.MouseEvent<HTMLElement>) => {
+      event.preventDefault();
+      try {
+        await setFeaturedGallery(dbid);
+      } catch (error) {
+        if (error instanceof Error) {
+          pushToast({
+            message: 'Unfortunately there was an error to featured this gallery',
+          });
+        }
       }
-    }
-  }, [dbid, pushToast, setFeaturedGallery]);
+    },
+    [dbid, pushToast, setFeaturedGallery]
+  );
 
-  const handleUpdateGalleryHidden = useCallback(() => {
-    const isLastGallery = checkIfItsLastVisibleGallery();
+  const handleUpdateGalleryHidden = useCallback(
+    (event: React.MouseEvent<HTMLElement>) => {
+      event.preventDefault();
+      const isLastGallery = checkIfItsLastVisibleGallery();
 
-    if (isLastGallery && !hidden) {
-      pushToast({
-        message: 'You cannot hide your only gallery.',
-      });
-      return;
-    }
+      if (isLastGallery && !hidden) {
+        pushToast({
+          message: 'You cannot hide your only gallery.',
+        });
+        return;
+      }
 
-    updateGalleryHidden(dbid, !hidden);
+      updateGalleryHidden(dbid, !hidden);
 
-    // if hide featured gallery, set another gallery as featured
-    reassignFeaturedGallery();
-  }, [
-    checkIfItsLastVisibleGallery,
-    dbid,
-    hidden,
-    pushToast,
-    reassignFeaturedGallery,
-    updateGalleryHidden,
-  ]);
+      // if hide featured gallery, set another gallery as featured
+      reassignFeaturedGallery();
+    },
+    [
+      checkIfItsLastVisibleGallery,
+      dbid,
+      hidden,
+      pushToast,
+      reassignFeaturedGallery,
+      updateGalleryHidden,
+    ]
+  );
 
   const handleDeleteGallery = useCallback(() => {
     const isLastGallery = checkIfItsLastVisibleGallery();
@@ -213,19 +220,23 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
     [gallery.dbid, pushToast, updateGalleryInfo]
   );
 
-  const handleEditGalleryName = useCallback(() => {
-    showModal({
-      content: (
-        <GalleryNameAndDescriptionEditForm
-          onDone={handleUpdateGalleryInfo}
-          mode="editing"
-          description={gallery.description ?? ''}
-          name={gallery.name ?? ''}
-        />
-      ),
-      headerText: 'Add a gallery name and description',
-    });
-  }, [gallery, handleUpdateGalleryInfo, showModal]);
+  const handleEditGalleryName = useCallback(
+    (event: React.MouseEvent<HTMLElement>) => {
+      event.preventDefault();
+      showModal({
+        content: (
+          <GalleryNameAndDescriptionEditForm
+            onDone={handleUpdateGalleryInfo}
+            mode="editing"
+            description={gallery.description ?? ''}
+            name={gallery.name ?? ''}
+          />
+        ),
+        headerText: 'Add a gallery name and description',
+      });
+    },
+    [gallery, handleUpdateGalleryInfo, showModal]
+  );
 
   const handleEditGallery: Route = useMemo(() => {
     return {
@@ -241,7 +252,12 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
   if (!isAuthenticatedUser && hidden) return null;
 
   return (
-    <UnstyledLink href={galleryLink}>
+    <UnstyledLink
+      href={galleryLink}
+      style={{
+        position: 'relative',
+      }}
+    >
       <StyledGalleryWrapper isDragging={isDragging}>
         <StyledGalleryDraggable
           gap={12}
@@ -284,22 +300,26 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
                     </Link>
                     <SettingsDropdown iconVariant="stacked">
                       <DropdownSection>
-                        <DropdownItem onClick={handleEditGalleryName}>
+                        <DropdownItem onClick={(e) => handleEditGalleryName(e)}>
                           EDIT NAME & DESC
                         </DropdownItem>
                         {hidden ? (
-                          <DropdownItem onClick={handleUpdateGalleryHidden}>UNHIDE</DropdownItem>
+                          <DropdownItem onClick={(e) => handleUpdateGalleryHidden(e)}>
+                            UNHIDE
+                          </DropdownItem>
                         ) : (
                           <>
                             {!isFeatured && (
-                              <DropdownItem onClick={handleSetFeaturedGallery}>
+                              <DropdownItem onClick={(e) => handleSetFeaturedGallery(e)}>
                                 FEATURE ON PROFILE
                               </DropdownItem>
                             )}
-                            <DropdownItem onClick={handleUpdateGalleryHidden}>HIDE</DropdownItem>
+                            <DropdownItem onClick={(e) => handleUpdateGalleryHidden(e)}>
+                              HIDE
+                            </DropdownItem>
                           </>
                         )}
-                        <DropdownItem onClick={handleDeleteGallery}>DELETE</DropdownItem>
+                        <DropdownItem onClick={(e) => handleDeleteGallery(e)}>DELETE</DropdownItem>
                       </DropdownSection>
                     </SettingsDropdown>
                   </>
@@ -328,8 +348,6 @@ const StyledGalleryWrapper = styled.div<{ isDragging?: boolean }>`
 `;
 
 const StyledGalleryDraggable = styled(VStack)<{ isAuthedUser: boolean }>`
-  /* cursor: ${({ isAuthedUser }) => (isAuthedUser ? 'grab' : 'pointer')}; */
-  cursor: pointer;
   border-radius: 12px;
   background-color: ${colors.offWhite};
   padding: 12px;
@@ -386,6 +404,11 @@ const StyledEmptyTokenPreview = styled.div`
 
 const StyledGalleryActionsContainer = styled.div`
   flex-shrink: 0;
+  user-select: none;
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 10;
 `;
 
 const StyledIconContainer = styled(IconContainer)<{ isDragging: boolean }>`
