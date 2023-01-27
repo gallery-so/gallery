@@ -14,6 +14,7 @@ import EmailManager from '~/components/Email/EmailManager';
 import ManageWallets from '~/components/ManageWallets/ManageWallets';
 import { GALLERY_DISCORD } from '~/constants/urls';
 import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
+import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { SettingsModalFragment$key } from '~/generated/SettingsModalFragment.graphql';
 import CircleCheckIcon from '~/icons/CircleCheckIcon';
@@ -95,6 +96,8 @@ function SettingsModal({
 
   const [isPending, setIsPending] = useState(false);
 
+  const { hideModal } = useModalActions();
+
   const handleEmailNotificationChange = useCallback(
     async (checked: boolean) => {
       const unsubscribedFromNotifications = checked;
@@ -153,6 +156,10 @@ function SettingsModal({
     }
   }, [userEmail]);
 
+  const handleDoneClick = useCallback(() => {
+    hideModal();
+  }, [hideModal]);
+
   const isEmailUnverified = useMemo(() => {
     return DISABLED_TOGGLE_BY_EMAIL_STATUS.includes(query?.viewer?.email?.verificationStatus ?? '');
   }, [query]);
@@ -171,70 +178,75 @@ function SettingsModal({
   }, [query]);
 
   return (
-    <StyledManageWalletsModal gap={24}>
-      <VStack gap={16}>
+    <StyledManageWalletsModal gap={12}>
+      <VStack gap={24}>
+        <VStack gap={16}>
+          <VStack>
+            <TitleDiatypeL>Email notifications</TitleDiatypeL>
+            <HStack justify="space-between" align="center">
+              <SettingsRowDescription>
+                Receive weekly recaps about product updates, airdrop opportunities, and your most
+                recent gallery admirers.
+              </SettingsRowDescription>
+              <Toggle
+                checked={isToggleChecked}
+                isPending={isPending || isEmailUnverified}
+                onChange={toggleEmailNotification}
+              />
+            </HStack>
+          </VStack>
+          <StyledButtonContainer>
+            {shouldDisplayAddEmailInput ? (
+              <EmailManager queryRef={query} onClose={handleCloseEmailManager} />
+            ) : (
+              <StyledButton variant="secondary" onClick={handleOpenEmailManager}>
+                add email address
+              </StyledButton>
+            )}
+          </StyledButtonContainer>
+        </VStack>
+        <StyledHr />
         <VStack>
-          <TitleDiatypeL>Email notifications</TitleDiatypeL>
-          <HStack justify="space-between" align="center">
-            <SettingsRowDescription>
-              Receive weekly recaps about product updates, airdrop opportunities, and your most
-              recent gallery admirers.
-            </SettingsRowDescription>
-            <Toggle
-              checked={isToggleChecked}
-              isPending={isPending || isEmailUnverified}
-              onChange={toggleEmailNotification}
-            />
+          <TitleDiatypeL>Members Club</TitleDiatypeL>
+          <HStack justify="space-between" align="center" gap={8}>
+            <span>
+              <SettingsRowDescription>
+                Unlock early access to features, a profile badge, and the members-only{' '}
+                <InteractiveLink href={GALLERY_DISCORD}>Discord channel</InteractiveLink> by holding
+                a{' '}
+                <InteractiveLink
+                  href={`https://opensea.io/collection/gallery-membership-cards?ref=${GALLERY_OS_ADDRESS}`}
+                >
+                  Premium Gallery Membership Card
+                </InteractiveLink>{' '}
+                and verifying your email address.
+              </SettingsRowDescription>
+            </span>
+            <HStack align="center" gap={4} shrink={false}>
+              {hasEarlyAccess ? (
+                <>
+                  <CircleCheckIcon />
+                  <BaseM>Active</BaseM>
+                </>
+              ) : (
+                <BaseM color={colors.metal}>Inactive</BaseM>
+              )}
+            </HStack>
           </HStack>
         </VStack>
-        <StyledButtonContainer>
-          {shouldDisplayAddEmailInput ? (
-            <EmailManager queryRef={query} onClose={handleCloseEmailManager} />
-          ) : (
-            <StyledButton variant="secondary" onClick={handleOpenEmailManager}>
-              add email address
-            </StyledButton>
-          )}
-        </StyledButtonContainer>
+        <StyledHr />
+        <VStack>
+          <TitleDiatypeL>Manage accounts</TitleDiatypeL>
+          <ManageWallets
+            queryRef={query}
+            newAddress={newAddress}
+            onTezosAddWalletSuccess={onTezosAddWalletSuccess}
+            onEthAddWalletSuccess={onEthAddWalletSuccess}
+          />
+        </VStack>
+        <StyledHr />
       </VStack>
-      <StyledHr />
-      <VStack>
-        <TitleDiatypeL>Members Club</TitleDiatypeL>
-        <HStack justify="space-between" align="center" gap={8}>
-          <span>
-            <SettingsRowDescription>
-              Unlock early access to features, a profile badge, and the members-only{' '}
-              <InteractiveLink href={GALLERY_DISCORD}>Discord channel</InteractiveLink> by holding a{' '}
-              <InteractiveLink
-                href={`https://opensea.io/collection/gallery-membership-cards?ref=${GALLERY_OS_ADDRESS}`}
-              >
-                Premium Gallery Membership Card
-              </InteractiveLink>{' '}
-              and verifying your email address.
-            </SettingsRowDescription>
-          </span>
-          <HStack align="center" gap={4} shrink={false}>
-            {hasEarlyAccess ? (
-              <>
-                <CircleCheckIcon />
-                <BaseM>Active</BaseM>
-              </>
-            ) : (
-              <BaseM color={colors.metal}>Inactive</BaseM>
-            )}
-          </HStack>
-        </HStack>
-      </VStack>
-      <StyledHr />
-      <VStack>
-        <TitleDiatypeL>Manage accounts</TitleDiatypeL>
-        <ManageWallets
-          queryRef={query}
-          newAddress={newAddress}
-          onTezosAddWalletSuccess={onTezosAddWalletSuccess}
-          onEthAddWalletSuccess={onEthAddWalletSuccess}
-        />
-      </VStack>
+      <DoneButton onClick={handleDoneClick}>Done</DoneButton>
     </StyledManageWalletsModal>
   );
 }
@@ -257,6 +269,10 @@ const StyledButtonContainer = styled.div`
 
 const StyledButton = styled(Button)`
   padding: 8px 12px;
+`;
+
+const DoneButton = styled(Button)`
+  align-self: flex-end;
 `;
 
 export default SettingsModal;

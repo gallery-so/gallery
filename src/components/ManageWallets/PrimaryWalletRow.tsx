@@ -1,11 +1,8 @@
 import styled from 'styled-components';
 
-import { Button } from '../core/Button/Button';
 import colors from '../core/colors';
 import { HStack, VStack } from '../core/Spacer/Stack';
-import { BaseM, BODY_MONO_FONT_FAMILY, TitleDiatypeM } from '../core/Text/Text';
-import { NewTooltip } from '../Tooltip/NewTooltip';
-import { useTooltipHover } from '../Tooltip/useTooltipHover';
+import { BaseM, BaseS, BODY_MONO_FONT_FAMILY, TitleXS } from '../core/Text/Text';
 import { walletIconMap } from '../WalletSelector/multichain/WalletButton';
 
 type PrimaryWalletProps = {
@@ -16,29 +13,18 @@ type PrimaryWalletProps = {
 export default function PrimaryWalletRow({ address, chain }: PrimaryWalletProps) {
   const iconUrl = walletIconMap[chain.toLowerCase() as keyof typeof walletIconMap];
 
-  const { floating, reference, getFloatingProps, getReferenceProps, floatingStyle } =
-    useTooltipHover();
-
   return (
-    <PrimaryWallet gap={12}>
-      <TitleDiatypeM>Primary</TitleDiatypeM>
+    <PrimaryWallet gap={10}>
       <HStack align="center" justify="space-between">
-        <HStack gap={12} align="center">
+        <HStack gap={4} align="center">
           <Icon src={iconUrl} />
           <StyledWalletAddress>{address}</StyledWalletAddress>
         </HStack>
-        <div {...getReferenceProps()} ref={reference}>
-          <StyledButton variant="warning" disabled>
-            Disconnect
-          </StyledButton>
-        </div>
-        <NewTooltip
-          {...getFloatingProps()}
-          style={floatingStyle}
-          ref={floating}
-          text="To disconnect your primary wallet, please select another wallet as the primary first."
-        />
+        <BlueBox>
+          <TitleXS color={colors.activeBlue}>Primary</TitleXS>
+        </BlueBox>
       </HStack>
+      <BaseS>Disconnecting? First, set another wallet as your primary.</BaseS>
     </PrimaryWallet>
   );
 }
@@ -57,6 +43,8 @@ const StyledWalletAddress = styled(BaseM)`
   font-family: ${BODY_MONO_FONT_FAMILY};
 `;
 
-const StyledButton = styled(Button)`
-  padding: 8px 12px;
+const BlueBox = styled.div`
+  padding: 2px 4px;
+  border: 1px solid ${colors.activeBlue};
+  border-radius: 2px;
 `;

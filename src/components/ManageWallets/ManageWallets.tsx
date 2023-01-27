@@ -43,6 +43,7 @@ function ManageWallets({
                 chainAddress @required(action: THROW) {
                   address @required(action: THROW)
                   chain @required(action: THROW)
+                  ...ManageWalletsRow
                 }
               }
               primaryWallet @required(action: THROW) {
@@ -111,8 +112,8 @@ function ManageWallets({
       <VStack gap={16}>
         <VStack>
           <SettingsRowDescription>
-            Add wallets to access your pieces. You&apos;ll also be able to sign in using any
-            connected wallet.
+            Add wallets to access your pieces. You&apos;ll be able to sign in using any connected
+            wallet.
           </SettingsRowDescription>
           {errorMessage && <StyledErrorText message={errorMessage} />}
         </VStack>
@@ -134,11 +135,12 @@ function ManageWallets({
               userSigninAddress={userSigninAddress}
               setRemovedAddress={setRemovedAddress}
               isOnlyWalletConnected={nonPrimaryWallets.length === 1}
+              chainAddressRef={wallet.chainAddress}
             />
           ))}
         </VStack>
       </VStack>
-      <StyledButton onClick={handleSubmit} disabled={addWalletDisabled}>
+      <StyledButton onClick={handleSubmit} disabled={addWalletDisabled} variant="secondary">
         Add new wallet
       </StyledButton>
     </VStack>
@@ -146,8 +148,7 @@ function ManageWallets({
 }
 
 const StyledButton = styled(Button)`
-  align-self: flex-end;
-  width: 100%;
+  align-self: flex-start;
 `;
 
 const StyledErrorText = styled(ErrorText)`

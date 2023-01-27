@@ -5,26 +5,27 @@ import { useUpdatePrimaryWalletMutation } from '~/generated/useUpdatePrimaryWall
 import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 
 export default function useUpdatePrimaryWallet() {
-  const [updatePrimaryWalletAddress] = usePromisifiedMutation<useUpdatePrimaryWalletMutation>(
-    graphql`
-      mutation useUpdatePrimaryWalletMutation($walletId: DBID!) {
-        updatePrimaryWallet(walletID: $walletId) {
-          ... on UpdatePrimaryWalletPayload {
-            __typename
-            viewer {
-              user {
-                primaryWallet {
-                  dbid
+  const [updatePrimaryWalletAddress, isMutating] =
+    usePromisifiedMutation<useUpdatePrimaryWalletMutation>(
+      graphql`
+        mutation useUpdatePrimaryWalletMutation($walletId: DBID!) {
+          updatePrimaryWallet(walletID: $walletId) {
+            ... on UpdatePrimaryWalletPayload {
+              __typename
+              viewer {
+                user {
+                  primaryWallet {
+                    dbid
+                  }
                 }
               }
             }
           }
         }
-      }
-    `
-  );
+      `
+    );
 
-  return useCallback(
+  const mutate = useCallback(
     async (walletId: string) => {
       const { updatePrimaryWallet } = await updatePrimaryWalletAddress({
         variables: {
@@ -40,4 +41,6 @@ export default function useUpdatePrimaryWallet() {
     },
     [updatePrimaryWalletAddress]
   );
+
+  return [mutate, isMutating] as const;
 }
