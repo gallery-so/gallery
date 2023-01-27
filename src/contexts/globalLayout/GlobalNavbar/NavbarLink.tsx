@@ -1,10 +1,11 @@
+import Link from 'next/link';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import colors from '~/components/core/colors';
 import { BODY_FONT_FAMILY } from '~/components/core/Text/Text';
 
-export const NavbarLink = styled.a<{ active: boolean }>`
+export const NavbarLink = styled(Link)<{ active: boolean }>`
   font-family: ${BODY_FONT_FAMILY};
   line-height: 21px;
   letter-spacing: -0.04em;

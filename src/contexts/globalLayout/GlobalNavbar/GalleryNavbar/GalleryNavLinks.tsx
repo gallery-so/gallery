@@ -19,19 +19,31 @@ export function GalleryNavLinks({ username }: Props) {
   return (
     <HStack gap={8}>
       <Link href={galleriesRoute}>
-        <NavbarLink href={route(galleriesRoute)} active={pathname === galleriesRoute.pathname}>
+        <NavbarLink
+          // @ts-expect-error We're not using the legacy Link
+          href={route(galleriesRoute)}
+          active={pathname === galleriesRoute.pathname}
+        >
           Galleries
         </NavbarLink>
       </Link>
 
       <Link href={followersRoute}>
-        <NavbarLink href={route(followersRoute)} active={pathname === followersRoute.pathname}>
+        <NavbarLink
+          // @ts-expect-error We're not using the legacy Link
+          href={route(followersRoute)}
+          active={pathname === followersRoute.pathname}
+        >
           Followers
         </NavbarLink>
       </Link>
 
       <Link href={activityRoute}>
-        <NavbarLink href={route(activityRoute)} active={pathname === activityRoute.pathname}>
+        <NavbarLink
+          // @ts-expect-error We're not using the legacy Link
+          href={route(activityRoute)}
+          active={pathname === activityRoute.pathname}
+        >
           Activity
         </NavbarLink>
       </Link>
