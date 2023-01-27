@@ -180,8 +180,8 @@ export function GalleryEditorProvider({
       };
 
       return {
-        [newCollectionId]: newCollection,
         ...previous,
+        [newCollectionId]: newCollection,
       };
     });
 
@@ -401,8 +401,18 @@ export function GalleryEditorProvider({
   const [initialDescription, setInitialDescription] = useState(description);
   const [initialCollections, setInitialCollections] = useState(collections);
   const hasUnsavedChanges = useMemo(() => {
-    const currentCollectionsWithoutIds = Object.values(collections);
-    const initialCollectionsWithoutIds = Object.values(initialCollections);
+    const currentCollectionsWithoutIds = Object.values(collections).map((collection) => {
+      return {
+        ...collection,
+        liveDisplayTokenIdsSize: collection.liveDisplayTokenIds.size,
+      };
+    });
+    const initialCollectionsWithoutIds = Object.values(initialCollections).map((collection) => {
+      return {
+        ...collection,
+        liveDisplayTokenIdsSize: collection.liveDisplayTokenIds.size,
+      };
+    });
 
     const collectionsAreDifferent =
       JSON.stringify(currentCollectionsWithoutIds) !== JSON.stringify(initialCollectionsWithoutIds);
