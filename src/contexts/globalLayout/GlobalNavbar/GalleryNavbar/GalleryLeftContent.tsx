@@ -44,7 +44,6 @@ export default function GalleryLeftContent({ queryRef, galleryName }: Props) {
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
   const rightContent = useMemo(() => {
-    console.log(galleryName);
     if (isMobile) {
       return null;
     } else if (galleryName && query.userByUsername?.username) {
