@@ -270,12 +270,14 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
           <HStack justify="space-between" gap={24}>
             <HStack shrink justify="space-between">
               <StyledGalleryTitleWrapper isHidden={hidden}>
-                <StyledIconContainer
-                  isDragging={isDragging}
-                  size="md"
-                  variant="stacked"
-                  icon={<DragHandleIconOutline color={colors.offBlack} />}
-                />
+                {isAuthenticatedUser && (
+                  <StyledIconContainer
+                    isDragging={isDragging}
+                    size="md"
+                    variant="stacked"
+                    icon={<DragHandleIconOutline color={colors.offBlack} />}
+                  />
+                )}
                 <VStack>
                   <UnstyledLink href={galleryLink}>
                     <StyledGalleryTitle tabIndex={1}>{name || 'Untitled'}</StyledGalleryTitle>
