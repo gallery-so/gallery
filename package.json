@@ -1,7 +1,18 @@
 {
   "name": "gallery-monorepo",
+  "private": true,
   "workspaces": [
     "apps/*"
   ],
-  "packageManager": "yarn@3.3.0"
+  "packageManager": "yarn@1.22.19",
+  "engines": {
+    "node": "18.12.0"
+  },
+  "resolutions": {
+    "@types/react": "^18.0.0",
+    "@taquito/taquito": "^14.0.0"
+  },
+  "devDependencies": {
+    "@moonrepo/cli": "^0.22.0"
+  }
 }
