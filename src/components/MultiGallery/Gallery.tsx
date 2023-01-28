@@ -11,7 +11,7 @@ import { useToastActions } from '~/contexts/toast/ToastContext';
 import { GalleryFragment$key } from '~/generated/GalleryFragment.graphql';
 import { GalleryFragmentQuery$key } from '~/generated/GalleryFragmentQuery.graphql';
 import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
-import DragHandleIconOutline from '~/icons/DragHandleIconOutline';
+import DragHandleIcon from '~/icons/DragHandleIcon';
 import { EditPencilIcon } from '~/icons/EditPencilIcon';
 import { removeNullValues } from '~/utils/removeNullValues';
 
@@ -240,13 +240,8 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
   if (!isAuthenticatedUser && hidden) return null;
 
   return (
-    <UnstyledLink
-      href={galleryLink}
-      style={{
-        position: 'relative',
-      }}
-    >
-      <StyledGalleryWrapper isDragging={isDragging}>
+    <StyledGalleryWrapper isDragging={isDragging}>
+      <UnstyledLink href={galleryLink}>
         <StyledGalleryDraggable
           gap={12}
           isAuthedUser={isAuthenticatedUser}
@@ -255,26 +250,24 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
           {...listeners}
           ref={setNodeRef}
         >
-          <HStack justify="space-between" gap={24}>
+          <HStack justify="space-between">
             <HStack shrink justify="space-between">
-              <StyledGalleryTitleWrapper isHidden={hidden} align="center">
+              <StyledGalleryTitleWrapper isHidden={hidden} align="center" gap={4}>
                 {isAuthenticatedUser && (
                   <StyledIconContainer
                     isDragging={isDragging}
-                    size="md"
+                    size="sm"
                     variant="stacked"
-                    icon={<DragHandleIconOutline color={colors.offBlack} />}
+                    icon={<DragHandleIcon color={colors.offBlack} />}
                     onClick={(e) => e.preventDefault()}
                   />
                 )}
-                <VStack>
-                  <UnstyledLink href={galleryLink}>
-                    <StyledGalleryTitle tabIndex={1}>{name || 'Untitled'}</StyledGalleryTitle>
-                  </UnstyledLink>
+                <TitleContainer>
+                  <StyledGalleryTitle tabIndex={1}>{name || 'Untitled'}</StyledGalleryTitle>
                   <BaseM>
                     {collections.length} collection{collections.length === 1 ? '' : 's'}
                   </BaseM>
-                </VStack>
+                </TitleContainer>
               </StyledGalleryTitleWrapper>
             </HStack>
             <StyledGalleryActionsContainer>
@@ -324,8 +317,8 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
             ))}
           </StyledTokenPreviewWrapper>
         </StyledGalleryDraggable>
-      </StyledGalleryWrapper>
-    </UnstyledLink>
+      </UnstyledLink>
+    </StyledGalleryWrapper>
   );
 }
 
@@ -346,7 +339,10 @@ const StyledGalleryDraggable = styled(VStack)<{ isAuthedUser: boolean }>`
 
 const StyledGalleryTitleWrapper = styled(HStack)<{ isHidden?: boolean }>`
   opacity: ${({ isHidden = false }) => (isHidden ? 0.5 : 1)};
-  gap: 8px;
+  overflow: hidden;
+`;
+
+const TitleContainer = styled(VStack)`
   overflow: hidden;
 `;
 
@@ -392,9 +388,6 @@ const StyledEmptyTokenPreview = styled.div`
 const StyledGalleryActionsContainer = styled.div`
   flex-shrink: 0;
   user-select: none;
-  position: absolute;
-  top: 12px;
-  right: 12px;
   z-index: 10;
 `;
 
