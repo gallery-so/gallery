@@ -59,7 +59,7 @@ const nextConfig = {
     return [
       {
         source: '/',
-        destination: '/featured',
+        destination: '/activity',
         permanent: false,
       },
       {
