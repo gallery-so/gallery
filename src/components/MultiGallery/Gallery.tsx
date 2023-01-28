@@ -271,12 +271,12 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
               </StyledGalleryTitleWrapper>
             </HStack>
             <StyledGalleryActionsContainer>
-              <HStack align="center">
+              <HStack align="center" gap={2}>
                 {isFeatured && (
                   <StyledGalleryFeaturedText as="span">Featured</StyledGalleryFeaturedText>
                 )}
                 {isAuthenticatedUser && (
-                  <>
+                  <HStack>
                     <Link href={handleEditGallery}>
                       <a>
                         <IconContainer size="md" variant="stacked" icon={<EditPencilIcon />} />
@@ -302,7 +302,7 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
                         <DropdownItem onClick={handleDeleteGallery}>DELETE</DropdownItem>
                       </DropdownSection>
                     </SettingsDropdown>
-                  </>
+                  </HStack>
                 )}
               </HStack>
             </StyledGalleryActionsContainer>
