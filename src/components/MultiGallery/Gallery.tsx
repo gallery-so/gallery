@@ -11,6 +11,7 @@ import { useToastActions } from '~/contexts/toast/ToastContext';
 import { GalleryFragment$key } from '~/generated/GalleryFragment.graphql';
 import { GalleryFragmentQuery$key } from '~/generated/GalleryFragmentQuery.graphql';
 import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
+import DragHandleIcon from '~/icons/DragHandleIcon';
 import { EditPencilIcon } from '~/icons/EditPencilIcon';
 import { removeNullValues } from '~/utils/removeNullValues';
 
@@ -86,7 +87,6 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
     throw new Error('This gallery does not have an owner.');
   }
 
-  // TODO: Replace with a specific gallery route in the future
   const galleryLink: Route = {
     pathname: '/[username]/galleries/[galleryId]',
     query: { username: gallery.owner.username, galleryId: gallery.dbid },
@@ -239,78 +239,86 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
 
   if (!isAuthenticatedUser && hidden) return null;
 
-  const galleryView = (
-    <StyledGalleryWrapper isDragging={isDragging} ref={setNodeRef}>
-      <StyledGalleryDraggable
-        gap={12}
-        isAuthedUser={isAuthenticatedUser}
-        style={style}
-        {...attributes}
-        {...listeners}
-      >
-        <HStack justify="space-between" gap={24}>
-          <HStack shrink justify="space-between">
-            <StyledGalleryTitleWrapper isHidden={hidden}>
-              <UnstyledLink href={galleryLink}>
-                <StyledGalleryTitle tabIndex={1}>{name || 'Untitled'}</StyledGalleryTitle>
-              </UnstyledLink>
-              <BaseM>
-                {collections.length} collection{collections.length === 1 ? '' : 's'}
-              </BaseM>
-            </StyledGalleryTitleWrapper>
-          </HStack>
-          <StyledGalleryActionsContainer>
-            <HStack gap={8} align="center">
-              {isFeatured && (
-                <StyledGalleryFeaturedText as="span">Featured</StyledGalleryFeaturedText>
-              )}
-              {isAuthenticatedUser && (
-                <>
-                  <Link href={handleEditGallery}>
-                    <a>
-                      <IconContainer size="md" variant="stacked" icon={<EditPencilIcon />} />
-                    </a>
-                  </Link>
-                  <SettingsDropdown iconVariant="stacked">
-                    <DropdownSection>
-                      <DropdownItem onClick={handleEditGalleryName}>EDIT NAME & DESC</DropdownItem>
-                      {hidden ? (
-                        <DropdownItem onClick={handleUpdateGalleryHidden}>UNHIDE</DropdownItem>
-                      ) : (
-                        <>
-                          {!isFeatured && (
-                            <DropdownItem onClick={handleSetFeaturedGallery}>
-                              FEATURE ON PROFILE
-                            </DropdownItem>
-                          )}
-                          <DropdownItem onClick={handleUpdateGalleryHidden}>HIDE</DropdownItem>
-                        </>
-                      )}
-                      <DropdownItem onClick={handleDeleteGallery}>DELETE</DropdownItem>
-                    </DropdownSection>
-                  </SettingsDropdown>
-                </>
-              )}
+  return (
+    <StyledGalleryWrapper isDragging={isDragging}>
+      <UnstyledLink href={galleryLink}>
+        <StyledGalleryDraggable
+          gap={12}
+          isAuthedUser={isAuthenticatedUser}
+          style={style}
+          {...attributes}
+          {...listeners}
+          ref={setNodeRef}
+        >
+          <HStack justify="space-between">
+            <HStack shrink justify="space-between">
+              <StyledGalleryTitleWrapper isHidden={hidden} align="center" gap={4}>
+                {isAuthenticatedUser && (
+                  <StyledIconContainer
+                    isDragging={isDragging}
+                    size="sm"
+                    variant="stacked"
+                    icon={<DragHandleIcon color={colors.offBlack} />}
+                    onClick={(e) => e.preventDefault()}
+                  />
+                )}
+                <TitleContainer>
+                  <StyledGalleryTitle tabIndex={1}>{name || 'Untitled'}</StyledGalleryTitle>
+                  <BaseM>
+                    {collections.length} collection{collections.length === 1 ? '' : 's'}
+                  </BaseM>
+                </TitleContainer>
+              </StyledGalleryTitleWrapper>
             </HStack>
-          </StyledGalleryActionsContainer>
-        </HStack>
+            <StyledGalleryActionsContainer>
+              <HStack align="center" gap={2}>
+                {isFeatured && (
+                  <StyledGalleryFeaturedText as="span">Featured</StyledGalleryFeaturedText>
+                )}
+                {isAuthenticatedUser && (
+                  <HStack>
+                    <Link href={handleEditGallery}>
+                      <a>
+                        <IconContainer size="md" variant="stacked" icon={<EditPencilIcon />} />
+                      </a>
+                    </Link>
+                    <SettingsDropdown iconVariant="stacked">
+                      <DropdownSection>
+                        <DropdownItem onClick={handleEditGalleryName}>
+                          EDIT NAME & DESC
+                        </DropdownItem>
+                        {hidden ? (
+                          <DropdownItem onClick={handleUpdateGalleryHidden}>UNHIDE</DropdownItem>
+                        ) : (
+                          <>
+                            {!isFeatured && (
+                              <DropdownItem onClick={handleSetFeaturedGallery}>
+                                FEATURE ON PROFILE
+                              </DropdownItem>
+                            )}
+                            <DropdownItem onClick={handleUpdateGalleryHidden}>HIDE</DropdownItem>
+                          </>
+                        )}
+                        <DropdownItem onClick={handleDeleteGallery}>DELETE</DropdownItem>
+                      </DropdownSection>
+                    </SettingsDropdown>
+                  </HStack>
+                )}
+              </HStack>
+            </StyledGalleryActionsContainer>
+          </HStack>
 
-        <StyledTokenPreviewWrapper isHidden={hidden}>
-          {nonNullTokenPreviews.map((token) => (
-            <StyledTokenPreview key={token} src={token} />
-          ))}
-          {[...Array(remainingTokenPreviews).keys()].map((index) => (
-            <StyledEmptyTokenPreview key={index} />
-          ))}
-        </StyledTokenPreviewWrapper>
-      </StyledGalleryDraggable>
+          <StyledTokenPreviewWrapper isHidden={hidden}>
+            {nonNullTokenPreviews.map((token) => (
+              <StyledTokenPreview key={token} src={token} />
+            ))}
+            {[...Array(remainingTokenPreviews).keys()].map((index) => (
+              <StyledEmptyTokenPreview key={index} />
+            ))}
+          </StyledTokenPreviewWrapper>
+        </StyledGalleryDraggable>
+      </UnstyledLink>
     </StyledGalleryWrapper>
-  );
-
-  return isAuthenticatedUser ? (
-    galleryView
-  ) : (
-    <UnstyledLink href={galleryLink}>{galleryView}</UnstyledLink>
   );
 }
 
@@ -320,8 +328,6 @@ const StyledGalleryWrapper = styled.div<{ isDragging?: boolean }>`
 `;
 
 const StyledGalleryDraggable = styled(VStack)<{ isAuthedUser: boolean }>`
-  /* text height + padding 12px vertically */
-  cursor: ${({ isAuthedUser }) => (isAuthedUser ? 'grab' : 'pointer')};
   border-radius: 12px;
   background-color: ${colors.offWhite};
   padding: 12px;
@@ -331,9 +337,12 @@ const StyledGalleryDraggable = styled(VStack)<{ isAuthedUser: boolean }>`
   }
 `;
 
-const StyledGalleryTitleWrapper = styled(VStack)<{ isHidden?: boolean }>`
+const StyledGalleryTitleWrapper = styled(HStack)<{ isHidden?: boolean }>`
   opacity: ${({ isHidden = false }) => (isHidden ? 0.5 : 1)};
+  overflow: hidden;
+`;
 
+const TitleContainer = styled(VStack)`
   overflow: hidden;
 `;
 
@@ -378,4 +387,11 @@ const StyledEmptyTokenPreview = styled.div`
 
 const StyledGalleryActionsContainer = styled.div`
   flex-shrink: 0;
+  user-select: none;
+  z-index: 10;
+`;
+
+const StyledIconContainer = styled(IconContainer)<{ isDragging: boolean }>`
+  user-select: none;
+  cursor: ${({ isDragging }) => (isDragging ? 'grabbing' : 'grab')};
 `;

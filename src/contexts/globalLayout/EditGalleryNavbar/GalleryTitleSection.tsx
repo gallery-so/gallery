@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import colors from '~/components/core/colors';
@@ -15,7 +15,9 @@ type GalleryTitleSectionProps = {
 export function GalleryTitleSection({ onEdit, galleryName }: GalleryTitleSectionProps) {
   return (
     <GalleryTitleContainer align="center" onClick={onEdit} gap={8}>
-      <MainGalleryText>{galleryName || 'Untitled Gallery'}</MainGalleryText>
+      <MainGalleryText hasGalleryName={Boolean(galleryName)}>
+        {galleryName || 'Untitled Gallery'}
+      </MainGalleryText>
 
       <EditIconContainer>
         <IconContainer size="sm" variant="stacked" icon={<EditPencilIcon />} />
@@ -43,7 +45,7 @@ const GalleryTitleContainer = styled(HStack)`
   }
 `;
 
-const MainGalleryText = styled(Paragraph)`
+const MainGalleryText = styled(Paragraph)<{ hasGalleryName: boolean }>`
   font-family: ${BODY_FONT_FAMILY};
   font-style: normal;
   font-weight: 500;
@@ -52,6 +54,14 @@ const MainGalleryText = styled(Paragraph)`
   white-space: nowrap;
 
   font-size: 16px;
+
+  ${({ hasGalleryName }) =>
+    !hasGalleryName &&
+    css`
+      font-style: italic;
+      color: ${colors.metal};
+      font-weight: 400;
+    `}
 
   @media only screen and ${breakpoints.tablet} {
     font-size: 18px;

@@ -23,7 +23,14 @@ function SettingsDropdown({ children, iconVariant, size, disableHoverPadding }: 
   }, []);
 
   return (
-    <StyledSettingsDropdown>
+    <StyledSettingsDropdown
+      onClick={(e) => {
+        // if this dropdown component is rendered within a parent that is itself clickable,
+        // prevent the parent from triggering any transitions
+        e.stopPropagation();
+        e.preventDefault();
+      }}
+    >
       <IconContainer
         variant={iconVariant}
         disableHoverPadding={disableHoverPadding}
