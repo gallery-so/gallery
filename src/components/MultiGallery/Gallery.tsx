@@ -278,7 +278,7 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
               </StyledGalleryTitleWrapper>
             </HStack>
             <StyledGalleryActionsContainer>
-              <HStack gap={8} align="center">
+              <HStack align="center">
                 {isFeatured && (
                   <StyledGalleryFeaturedText as="span">Featured</StyledGalleryFeaturedText>
                 )}
