@@ -217,7 +217,7 @@ function StagingArea({ tokensRef }: Props) {
             {hasNameOrCollectorsNote ? (
               <VStack>
                 <StyledCollectionName hasName={Boolean(escapedCollectionName)}>
-                  {escapedCollectionName || 'Untitled collection'}
+                  {escapedCollectionName || 'Untitled Collection'}
                 </StyledCollectionName>
 
                 <BaseM>
