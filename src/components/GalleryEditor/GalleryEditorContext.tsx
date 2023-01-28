@@ -401,16 +401,18 @@ export function GalleryEditorProvider({
   const [initialDescription, setInitialDescription] = useState(description);
   const [initialCollections, setInitialCollections] = useState(collections);
   const hasUnsavedChanges = useMemo(() => {
+    // Need to convert the liveDisplayTokenIds Set into an Array because sets don't store data
+    // as properties to be stringified: https://stackoverflow.com/a/31190928/5377437
     const currentCollectionsWithoutIds = Object.values(collections).map((collection) => {
       return {
         ...collection,
-        liveDisplayTokenIdsSize: collection.liveDisplayTokenIds.size,
+        liveDisplayTokenIdsSize: [...collection.liveDisplayTokenIds].sort(),
       };
     });
     const initialCollectionsWithoutIds = Object.values(initialCollections).map((collection) => {
       return {
         ...collection,
-        liveDisplayTokenIdsSize: collection.liveDisplayTokenIds.size,
+        liveDisplayTokenIdsSize: [...collection.liveDisplayTokenIds].sort(),
       };
     });
 
