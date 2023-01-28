@@ -14,8 +14,7 @@ type Props = {
 function SettingsDropdown({ children, iconVariant, size, disableHoverPadding }: Props) {
   const [showDropdown, setShowDropdown] = useState(false);
 
-  const handleSettingsClick = useCallback((event: React.MouseEvent<HTMLElement>) => {
-    event.preventDefault();
+  const handleSettingsClick = useCallback(() => {
     setShowDropdown((previous) => !previous);
   }, []);
 
@@ -24,12 +23,19 @@ function SettingsDropdown({ children, iconVariant, size, disableHoverPadding }: 
   }, []);
 
   return (
-    <StyledSettingsDropdown>
+    <StyledSettingsDropdown
+      onClick={(e) => {
+        // if this dropdown component is rendered within a parent that is itself clickable,
+        // prevent the parent from triggering any transitions
+        e.stopPropagation();
+        e.preventDefault();
+      }}
+    >
       <IconContainer
         variant={iconVariant}
         disableHoverPadding={disableHoverPadding}
         size={size}
-        onClick={(e) => handleSettingsClick(e)}
+        onClick={handleSettingsClick}
         icon={
           <svg
             xmlns="http://www.w3.org/2000/svg"

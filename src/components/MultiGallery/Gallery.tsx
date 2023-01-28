@@ -142,48 +142,40 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
     return visibleGalleries.length < 2;
   }, [query.viewer?.viewerGalleries]);
 
-  const handleSetFeaturedGallery = useCallback(
-    async (event: React.MouseEvent<HTMLElement>) => {
-      event.preventDefault();
-      try {
-        await setFeaturedGallery(dbid);
-      } catch (error) {
-        if (error instanceof Error) {
-          pushToast({
-            message: 'Unfortunately there was an error to featured this gallery',
-          });
-        }
-      }
-    },
-    [dbid, pushToast, setFeaturedGallery]
-  );
-
-  const handleUpdateGalleryHidden = useCallback(
-    (event: React.MouseEvent<HTMLElement>) => {
-      event.preventDefault();
-      const isLastGallery = checkIfItsLastVisibleGallery();
-
-      if (isLastGallery && !hidden) {
+  const handleSetFeaturedGallery = useCallback(async () => {
+    try {
+      await setFeaturedGallery(dbid);
+    } catch (error) {
+      if (error instanceof Error) {
         pushToast({
-          message: 'You cannot hide your only gallery.',
+          message: 'Unfortunately there was an error to featured this gallery',
         });
-        return;
       }
+    }
+  }, [dbid, pushToast, setFeaturedGallery]);
 
-      updateGalleryHidden(dbid, !hidden);
+  const handleUpdateGalleryHidden = useCallback(() => {
+    const isLastGallery = checkIfItsLastVisibleGallery();
 
-      // if hide featured gallery, set another gallery as featured
-      reassignFeaturedGallery();
-    },
-    [
-      checkIfItsLastVisibleGallery,
-      dbid,
-      hidden,
-      pushToast,
-      reassignFeaturedGallery,
-      updateGalleryHidden,
-    ]
-  );
+    if (isLastGallery && !hidden) {
+      pushToast({
+        message: 'You cannot hide your only gallery.',
+      });
+      return;
+    }
+
+    updateGalleryHidden(dbid, !hidden);
+
+    // if hide featured gallery, set another gallery as featured
+    reassignFeaturedGallery();
+  }, [
+    checkIfItsLastVisibleGallery,
+    dbid,
+    hidden,
+    pushToast,
+    reassignFeaturedGallery,
+    updateGalleryHidden,
+  ]);
 
   const handleDeleteGallery = useCallback(() => {
     const isLastGallery = checkIfItsLastVisibleGallery();
@@ -220,23 +212,19 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
     [gallery.dbid, pushToast, updateGalleryInfo]
   );
 
-  const handleEditGalleryName = useCallback(
-    (event: React.MouseEvent<HTMLElement>) => {
-      event.preventDefault();
-      showModal({
-        content: (
-          <GalleryNameAndDescriptionEditForm
-            onDone={handleUpdateGalleryInfo}
-            mode="editing"
-            description={gallery.description ?? ''}
-            name={gallery.name ?? ''}
-          />
-        ),
-        headerText: 'Add a gallery name and description',
-      });
-    },
-    [gallery, handleUpdateGalleryInfo, showModal]
-  );
+  const handleEditGalleryName = useCallback(() => {
+    showModal({
+      content: (
+        <GalleryNameAndDescriptionEditForm
+          onDone={handleUpdateGalleryInfo}
+          mode="editing"
+          description={gallery.description ?? ''}
+          name={gallery.name ?? ''}
+        />
+      ),
+      headerText: 'Add a gallery name and description',
+    });
+  }, [gallery, handleUpdateGalleryInfo, showModal]);
 
   const handleEditGallery: Route = useMemo(() => {
     return {
@@ -303,26 +291,22 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
                     </Link>
                     <SettingsDropdown iconVariant="stacked">
                       <DropdownSection>
-                        <DropdownItem onClick={(e) => handleEditGalleryName(e)}>
+                        <DropdownItem onClick={handleEditGalleryName}>
                           EDIT NAME & DESC
                         </DropdownItem>
                         {hidden ? (
-                          <DropdownItem onClick={(e) => handleUpdateGalleryHidden(e)}>
-                            UNHIDE
-                          </DropdownItem>
+                          <DropdownItem onClick={handleUpdateGalleryHidden}>UNHIDE</DropdownItem>
                         ) : (
                           <>
                             {!isFeatured && (
-                              <DropdownItem onClick={(e) => handleSetFeaturedGallery(e)}>
+                              <DropdownItem onClick={handleSetFeaturedGallery}>
                                 FEATURE ON PROFILE
                               </DropdownItem>
                             )}
-                            <DropdownItem onClick={(e) => handleUpdateGalleryHidden(e)}>
-                              HIDE
-                            </DropdownItem>
+                            <DropdownItem onClick={handleUpdateGalleryHidden}>HIDE</DropdownItem>
                           </>
                         )}
-                        <DropdownItem onClick={() => handleDeleteGallery()}>DELETE</DropdownItem>
+                        <DropdownItem onClick={handleDeleteGallery}>DELETE</DropdownItem>
                       </DropdownSection>
                     </SettingsDropdown>
                   </>
