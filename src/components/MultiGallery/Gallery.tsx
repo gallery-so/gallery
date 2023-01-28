@@ -269,13 +269,14 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
         >
           <HStack justify="space-between" gap={24}>
             <HStack shrink justify="space-between">
-              <StyledGalleryTitleWrapper isHidden={hidden}>
+              <StyledGalleryTitleWrapper isHidden={hidden} align="center">
                 {isAuthenticatedUser && (
                   <StyledIconContainer
                     isDragging={isDragging}
                     size="md"
                     variant="stacked"
                     icon={<DragHandleIconOutline color={colors.offBlack} />}
+                    onClick={(e) => e.preventDefault()}
                   />
                 )}
                 <VStack>
@@ -321,7 +322,7 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
                             </DropdownItem>
                           </>
                         )}
-                        <DropdownItem onClick={(e) => handleDeleteGallery(e)}>DELETE</DropdownItem>
+                        <DropdownItem onClick={() => handleDeleteGallery()}>DELETE</DropdownItem>
                       </DropdownSection>
                     </SettingsDropdown>
                   </>
