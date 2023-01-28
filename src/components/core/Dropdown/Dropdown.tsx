@@ -29,6 +29,7 @@ export function Dropdown({
 }: Props) {
   const handleClose = useCallback<MouseEventHandler>(
     (event) => {
+      event.preventDefault();
       event.stopPropagation();
 
       onClose();
