@@ -6,8 +6,8 @@ import styled from 'styled-components';
 import breakpoints from '~/components/core/breakpoints';
 import { Button } from '~/components/core/Button/Button';
 import colors from '~/components/core/colors';
-import { HStack, VStack } from '~/components/core/Spacer/Stack';
-import { BaseM, TitleXS } from '~/components/core/Text/Text';
+import { VStack } from '~/components/core/Spacer/Stack';
+import { TitleXS } from '~/components/core/Text/Text';
 import FollowListUsers from '~/components/Follow/FollowListUsers';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
@@ -170,19 +170,11 @@ export default function UserFollowedUsersFeedEvent({
           <StyledEventContent>
             <StyledEventHeaderContainer gap={16} align="center" grow>
               <StyledEventHeader>
-                <HStack gap={4} inline>
-                  {isSubEvent ? (
-                    <BaseM>Followed {genericFollows.length} collectors.</BaseM>
-                  ) : (
-                    <>
-                      <BaseM>
-                        <HoverCardOnUsername userRef={event.owner} queryRef={query} /> followed{' '}
-                        {genericFollows.length} collectors.
-                      </BaseM>
-                      <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
-                    </>
-                  )}
-                </HStack>
+                <StyledEventText isSubEvent={isSubEvent}>
+                  {!isSubEvent && <HoverCardOnUsername userRef={event.owner} queryRef={query} />}{' '}
+                  followed {genericFollows.length} collectors.
+                  <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
+                </StyledEventText>
               </StyledEventHeader>
               <StyledSecondaryButton>See All</StyledSecondaryButton>
             </StyledEventHeaderContainer>

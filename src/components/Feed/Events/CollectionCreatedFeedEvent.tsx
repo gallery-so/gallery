@@ -103,21 +103,21 @@ export default function CollectionCreatedFeedEvent({
                   {!isSubEvent && <HoverCardOnUsername userRef={event.owner} queryRef={query} />}{' '}
                   added {tokens.length} {pluralize(tokens.length, 'piece')} to their new collection
                   {collectionName ? `, ` : ' '}
+                  {collectionName && (
+                    <Link
+                      href={{
+                        pathname: '/[username]/[collectionId]',
+                        query: {
+                          username: event.owner.username as string,
+                          collectionId: event.collection.dbid,
+                        },
+                      }}
+                    >
+                      <StyledEventLabel>{unescape(event.collection.name ?? '')}</StyledEventLabel>
+                    </Link>
+                  )}
+                  {!isSubEvent && <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>}
                 </StyledEventText>
-                {collectionName && (
-                  <Link
-                    href={{
-                      pathname: '/[username]/[collectionId]',
-                      query: {
-                        username: event.owner.username as string,
-                        collectionId: event.collection.dbid,
-                      },
-                    }}
-                  >
-                    <StyledEventLabel>{unescape(event.collection.name ?? '')}</StyledEventLabel>
-                  </Link>
-                )}
-                {!isSubEvent && <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>}
               </StyledEventHeaderContainer>
             </VStack>
           </StyledEventHeader>
