@@ -5,7 +5,7 @@ import { useRemoveWalletMutation } from '~/generated/useRemoveWalletMutation.gra
 import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 
 export default function useRemoveWallet() {
-  const [removeWallet] = usePromisifiedMutation<useRemoveWalletMutation>(
+  const [removeWallet, isMutating] = usePromisifiedMutation<useRemoveWalletMutation>(
     graphql`
       mutation useRemoveWalletMutation($walletIds: [DBID!]!) {
         removeUserWallets(walletIds: $walletIds) {
@@ -26,7 +26,7 @@ export default function useRemoveWallet() {
     `
   );
 
-  return useCallback(
+  const mutate = useCallback(
     async (walletId: string) => {
       const { removeUserWallets } = await removeWallet({
         variables: {
@@ -43,4 +43,6 @@ export default function useRemoveWallet() {
     },
     [removeWallet]
   );
+
+  return [mutate, isMutating] as const;
 }
