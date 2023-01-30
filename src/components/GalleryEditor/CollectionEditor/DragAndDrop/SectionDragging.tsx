@@ -8,6 +8,7 @@ import SortableStagedWhitespace from '../SortableStagedWhitespace';
 import { Section } from './Section';
 
 type Props = {
+  sectionId: string;
   items: StagedItem[];
   itemWidth: number;
   columns: number;
@@ -15,6 +16,7 @@ type Props = {
 };
 
 export default function SectionDragging({
+  sectionId,
   items,
   itemWidth,
   columns,
@@ -22,7 +24,7 @@ export default function SectionDragging({
 }: Props) {
   return (
     <StyledDraggingWrapper>
-      <Section isDragging isEmpty={items.length === 0} columns={columns}>
+      <Section id={sectionId} isDragging isEmpty={items.length === 0} columns={columns}>
         {items.map((item) => {
           const size = itemWidth;
           const stagedItemRef = nftFragmentsKeyedByID[item.id];

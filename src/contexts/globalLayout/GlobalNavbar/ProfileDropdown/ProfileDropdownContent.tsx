@@ -149,7 +149,7 @@ export function ProfileDropdownContent({
       </DropdownSection>
 
       <DropdownSection gap={4}>
-        <DropdownLink href={{ pathname: '/home' }}>HOME</DropdownLink>
+        <DropdownLink href={{ pathname: '/activity' }}>HOME</DropdownLink>
         <NotificationsDropdownItem onClick={handleNotificationsClick}>
           <HStack align="center" gap={10}>
             <div>NOTIFICATIONS</div>

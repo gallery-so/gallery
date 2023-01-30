@@ -4,8 +4,11 @@ import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import { VStack } from '~/components/core/Spacer/Stack';
+import { FEED_MODE_KEY } from '~/constants/storageKeys';
 import { FeedViewerFragment$key } from '~/generated/FeedViewerFragment.graphql';
+import usePersistedState from '~/hooks/usePersistedState';
 
+import FeedModeSelector from './FeedModeSelector';
 import GlobalFeed from './GlobalFeed';
 import ViewerFeed from './ViewerFeed';
 
@@ -13,20 +16,28 @@ export type FeedMode = 'FOLLOWING' | 'WORLDWIDE' | 'USER';
 
 type Props = {
   queryRef: FeedViewerFragment$key;
-  setFeedMode: (mode: FeedMode) => void;
-  feedMode: FeedMode;
 };
 
-export default function Feed({ queryRef, feedMode, setFeedMode }: Props) {
+export default function Feed({ queryRef }: Props) {
   const [query, refetch] = useRefetchableFragment(
     graphql`
       fragment FeedViewerFragment on Query @refetchable(queryName: "FeedRefreshQuery") {
+        viewer {
+          ... on Viewer {
+            __typename
+          }
+        }
         ...ViewerFeedFragment
         ...GlobalFeedFragment
       }
     `,
     queryRef
   );
+
+  const isLoggedIn = query.viewer?.__typename === 'Viewer';
+  const defaultFeedMode = isLoggedIn ? 'FOLLOWING' : 'WORLDWIDE';
+
+  const [feedMode, setFeedMode] = usePersistedState<FeedMode>(FEED_MODE_KEY, defaultFeedMode);
 
   const firstMountRef = useRef(true);
   // refetch when changing modes. this not only displays up-to-date data, but fixes a bug
@@ -41,6 +52,7 @@ export default function Feed({ queryRef, feedMode, setFeedMode }: Props) {
 
   return (
     <StyledFeed data-testid="feed-list">
+      {isLoggedIn && <FeedModeSelector feedMode={feedMode} setFeedMode={setFeedMode} />}
       {feedMode === 'FOLLOWING' && <ViewerFeed queryRef={query} setFeedMode={setFeedMode} />}
       {feedMode === 'WORLDWIDE' && <GlobalFeed queryRef={query} />}
     </StyledFeed>

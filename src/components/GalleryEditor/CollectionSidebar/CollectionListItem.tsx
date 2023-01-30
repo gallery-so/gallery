@@ -1,5 +1,5 @@
 import { useSortable } from '@dnd-kit/sortable';
-import { CSSProperties, MouseEventHandler, useCallback } from 'react';
+import { CSSProperties, MouseEventHandler, useCallback, useMemo } from 'react';
 import styled, { css } from 'styled-components';
 
 import colors from '~/components/core/colors';
@@ -81,6 +81,14 @@ export function CollectionListItem({ collectionId }: CollectionListItemProps) {
     cursor: isDragging ? 'grabbing' : 'pointer',
   };
 
+  const collectionLabel = useMemo(() => {
+    if (escapedCollectionName) {
+      return escapedCollectionName;
+    }
+
+    return selected ? 'Untitled Collection' : 'Untitled';
+  }, [escapedCollectionName, selected]);
+
   return (
     <div
       // Draggable Props
@@ -97,9 +105,9 @@ export function CollectionListItem({ collectionId }: CollectionListItemProps) {
         selected={selected}
       >
         <CollectionTitleText isHidden={hidden} italicize={!collection.name}>
-          {escapedCollectionName || 'Untitled'}
+          {collectionLabel}
         </CollectionTitleText>
-        <HStack gap={10} onClick={handleIconSectionClick}>
+        <CollectionListItemActionsContainer gap={10} onClick={handleIconSectionClick}>
           <IconContainer
             {...getReferenceProps()}
             onClick={handleToggleHidden}
@@ -109,21 +117,19 @@ export function CollectionListItem({ collectionId }: CollectionListItemProps) {
             variant="stacked"
             icon={hidden ? <HideIcon /> : <ShowIcon />}
           />
-
           <NewTooltip
             {...getFloatingProps()}
             style={floatingStyle}
             ref={floating}
             text={hidden ? 'Show' : 'Hide'}
           />
-
           <SettingsDropdown size="sm" iconVariant="stacked" disableHoverPadding>
             <DropdownSection>
               <DropdownItem onClick={handleEdit}>EDIT NAME & DESC</DropdownItem>
               <DropdownItem onClick={handleDelete}>DELETE</DropdownItem>
             </DropdownSection>
           </SettingsDropdown>
-        </HStack>
+        </CollectionListItemActionsContainer>
       </CollectionListItemContainer>
     </div>
   );
@@ -147,6 +153,10 @@ const CollectionTitleText = styled(TitleXS)<{ italicize: boolean; isHidden: bool
       : null}
 `;
 
+const CollectionListItemActionsContainer = styled(HStack)`
+  display: none;
+`;
+
 const CollectionListItemContainer = styled(HStack)<{ selected: boolean }>`
   margin: 0 4px;
   padding: 8px 12px;
@@ -157,14 +167,24 @@ const CollectionListItemContainer = styled(HStack)<{ selected: boolean }>`
 
   background: ${colors.white};
 
+  :hover {
+    background-color: ${colors.faint};
+    ${CollectionListItemActionsContainer} {
+      display: flex;
+    }
+  }
+
   ${({ selected }) =>
     selected
       ? css`
           background-color: ${colors.faint};
+
+          ${CollectionTitleText} {
+            font-weight: 700;
+          }
+          ${CollectionListItemActionsContainer} {
+            display: flex;
+          }
         `
       : null};
-
-  :hover {
-    background-color: ${colors.faint};
-  }
 `;

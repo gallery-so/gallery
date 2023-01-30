@@ -14,6 +14,7 @@ import { TrashIconNew } from '~/icons/TrashIconNew';
 import noop from '~/utils/noop';
 
 interface Props {
+  id: string;
   children: ReactNode;
   columns?: number;
   label?: string;
@@ -64,6 +65,7 @@ const StyledLabel = styled.div<{ isActive: boolean; isDragging: boolean }>`
 export const Section = forwardRef<HTMLDivElement, Props>(
   (
     {
+      id,
       children,
       columns,
       draggableListeners,
@@ -99,7 +101,7 @@ export const Section = forwardRef<HTMLDivElement, Props>(
           />
 
           <HStack gap={2}>
-            <ColumnAdjuster />
+            <ColumnAdjuster sectionId={id} />
             <StyledDeleteButton onClick={handleDeleteSectionClick}>
               <IconContainer size="xs" variant="blue" icon={<TrashIconNew />} />
             </StyledDeleteButton>

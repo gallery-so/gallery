@@ -78,18 +78,18 @@ export default function UserGallery({ username }: UserGalleryProps) {
   useVerifyEmailOnPage(query);
   useOpenSettingsModal(query);
 
-  if (!query.userByUsername.featuredGallery) {
-    throw new Error('User did not have a featured gallery');
-  }
-
   return (
     <GalleryRoute
       navbar={
-        <GalleryNavbar
-          username={username}
-          queryRef={query}
-          galleryRef={query.userByUsername.featuredGallery}
-        />
+        query.userByUsername.featuredGallery ? (
+          <GalleryNavbar
+            username={username}
+            queryRef={query}
+            galleryRef={query.userByUsername.featuredGallery}
+          />
+        ) : (
+          false
+        )
       }
       element={
         <>

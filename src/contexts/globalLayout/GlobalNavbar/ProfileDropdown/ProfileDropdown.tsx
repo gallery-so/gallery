@@ -52,7 +52,7 @@ export function ProfileDropdown({ queryRef, rightContent }: ProfileDropdownProps
     useDropdownHoverControls();
 
   const handleHomeRedirect = useCallback(() => {
-    push({ pathname: '/home' });
+    push({ pathname: '/activity' });
   }, [push]);
 
   useEffect(

@@ -180,7 +180,7 @@ export function GalleryRightContent({ queryRef, galleryRef, username }: GalleryR
         align="center"
       >
         {!isMultigalleryEnabled && <StyledTooltip text="Soon™" showTooltip={showTooltip} />}
-        <Button variant="secondary" onClick={handleCreateGallery} disabled={!isMultigalleryEnabled}>
+        <Button variant="primary" onClick={handleCreateGallery} disabled={!isMultigalleryEnabled}>
           Add New
         </Button>
       </VStack>

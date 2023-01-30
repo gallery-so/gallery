@@ -40,8 +40,8 @@ const COLOR_STATES: ColorStates = {
     activeForeground: colors.porcelain,
   },
   default: {
-    disabledBackground: 'transparent',
-    disabledForeground: colors.porcelain,
+    disabledBackground: colors.faint,
+    disabledForeground: colors.metal,
 
     idleBackground: 'transparent',
     idleForeground: colors.offBlack,

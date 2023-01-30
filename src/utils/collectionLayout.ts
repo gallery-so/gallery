@@ -9,6 +9,7 @@ import {
   StagingItem,
   WhitespaceBlock,
 } from '~/components/ManageGallery/OrganizeCollection/types';
+import { DEFAULT_COLUMNS } from '~/constants/layout';
 import { collectionLayoutParseFragment$key } from '~/generated/collectionLayoutParseFragment.graphql';
 import { generate12DigitId } from '~/utils/generate12DigitId';
 import { removeNullValues } from '~/utils/removeNullValues';
@@ -63,6 +64,10 @@ export function parseCollectionLayout<T>(
   collectionLayout: CollectionLayout,
   ignoreWhitespace = false
 ): CollectionWithLayout<T> {
+  if (tokens.length === 0) {
+    return { [generate12DigitId()]: { items: [], columns: DEFAULT_COLUMNS } };
+  }
+
   const parsedCollection = collectionLayout.sections.reduce(
     (allSections: CollectionWithLayout<T>, sectionStartIndex: number, index: number) => {
       const sectionEndIndex = collectionLayout.sections[index + 1]

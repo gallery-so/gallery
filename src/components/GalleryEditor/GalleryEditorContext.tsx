@@ -180,8 +180,8 @@ export function GalleryEditorProvider({
       };
 
       return {
-        [newCollectionId]: newCollection,
         ...previous,
+        [newCollectionId]: newCollection,
       };
     });
 
@@ -251,7 +251,7 @@ export function GalleryEditorProvider({
       const collection = collections[collectionId];
 
       showModal({
-        headerText: 'Add a tile and description',
+        headerText: 'Add a title and description',
         content: (
           <CollectionCreateOrEditForm
             name={collection.name}
@@ -401,8 +401,20 @@ export function GalleryEditorProvider({
   const [initialDescription, setInitialDescription] = useState(description);
   const [initialCollections, setInitialCollections] = useState(collections);
   const hasUnsavedChanges = useMemo(() => {
-    const currentCollectionsWithoutIds = Object.values(collections);
-    const initialCollectionsWithoutIds = Object.values(initialCollections);
+    // Need to convert the liveDisplayTokenIds Set into an Array because sets don't store data
+    // as properties to be stringified: https://stackoverflow.com/a/31190928/5377437
+    const currentCollectionsWithoutIds = Object.values(collections).map((collection) => {
+      return {
+        ...collection,
+        liveDisplayTokenIdsSize: [...collection.liveDisplayTokenIds].sort(),
+      };
+    });
+    const initialCollectionsWithoutIds = Object.values(initialCollections).map((collection) => {
+      return {
+        ...collection,
+        liveDisplayTokenIdsSize: [...collection.liveDisplayTokenIds].sort(),
+      };
+    });
 
     const collectionsAreDifferent =
       JSON.stringify(currentCollectionsWithoutIds) !== JSON.stringify(initialCollectionsWithoutIds);

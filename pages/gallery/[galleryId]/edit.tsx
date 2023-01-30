@@ -21,6 +21,7 @@ import { editGalleryPageNewInnerFragment$key } from '~/generated/editGalleryPage
 import { editGalleryPageNewQuery } from '~/generated/editGalleryPageNewQuery.graphql';
 import { editGalleryPageOldQuery } from '~/generated/editGalleryPageOldQuery.graphql';
 import { editGalleryPageQuery } from '~/generated/editGalleryPageQuery.graphql';
+import { useGuardEditorUnsavedChanges } from '~/hooks/useGuardEditorUnsavedChanges';
 import GalleryRedirect from '~/scenes/_Router/GalleryRedirect';
 import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
@@ -54,7 +55,7 @@ function NewEditGalleryPageInner({ queryRef }: NewEditGalleryPageInnerProps) {
 
   useConfirmationMessageBeforeClose(hasUnsavedChanges);
 
-  const handleBack = useCallback(() => {
+  const goBack = useCallback(() => {
     if (canGoBack) {
       back();
     } else if (query.viewer?.__typename === 'Viewer' && query.viewer.user?.username) {
@@ -63,9 +64,11 @@ function NewEditGalleryPageInner({ queryRef }: NewEditGalleryPageInnerProps) {
         query: { username: query.viewer.user.username },
       });
     } else {
-      replace({ pathname: '/home' });
+      replace({ pathname: '/activity' });
     }
   }, [back, canGoBack, query.viewer, replace]);
+
+  const handleBack = useGuardEditorUnsavedChanges(goBack, hasUnsavedChanges);
 
   const handleDone = useCallback(
     async (caption: string) => {
@@ -195,7 +198,7 @@ function OldEditGalleryPage({ galleryId }: OldEditGalleryPageProps) {
     if (query.viewer?.user?.username) {
       push({ pathname: '/[username]', query: { username: query.viewer.user.username } });
     } else {
-      push({ pathname: '/home' });
+      push({ pathname: '/activity' });
     }
   }, [push, query.viewer?.user?.username]);
 

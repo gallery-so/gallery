@@ -9,8 +9,11 @@ import {
 import { useMemo, useState } from 'react';
 import { CSSProperties } from 'styled-components';
 
-export function useTooltipHover() {
-  const [open, setOpen] = useState(false);
+type useTooltipHoverOptions = { disabled?: boolean };
+
+export function useTooltipHover(options?: useTooltipHoverOptions) {
+  const [_open, setOpen] = useState(false);
+  const open = options?.disabled ? false : _open;
 
   const { x, y, reference, floating, strategy, context } = useFloating({
     open,

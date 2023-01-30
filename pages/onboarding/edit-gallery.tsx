@@ -14,6 +14,7 @@ import { OnboardingEditGalleryNavbar } from '~/contexts/globalLayout/EditGallery
 import { useCanGoBack } from '~/contexts/navigation/GalleryNavigationProvider';
 import { editGalleryOnboardingInnerFragment$key } from '~/generated/editGalleryOnboardingInnerFragment.graphql';
 import { editGalleryOnboardingQuery } from '~/generated/editGalleryOnboardingQuery.graphql';
+import { useGuardEditorUnsavedChanges } from '~/hooks/useGuardEditorUnsavedChanges';
 
 type EditGalleryInnerProps = {
   queryRef: editGalleryOnboardingInnerFragment$key;
@@ -36,7 +37,7 @@ function EditGalleryInner({ queryRef }: EditGalleryInnerProps) {
 
   useConfirmationMessageBeforeClose(hasUnsavedChanges);
 
-  const handleBack = useCallback(() => {
+  const goBack = useCallback(() => {
     if (canGoBack) {
       back();
     } else {
@@ -45,6 +46,8 @@ function EditGalleryInner({ queryRef }: EditGalleryInnerProps) {
       });
     }
   }, [back, canGoBack, replace]);
+
+  const handleBack = useGuardEditorUnsavedChanges(goBack, hasUnsavedChanges);
 
   const handleDone = useCallback(async () => {
     await saveGallery(null);
