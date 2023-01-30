@@ -60,7 +60,7 @@ export default function NonAuthedFeed({ queryRef }: Props) {
     graphql`
       fragment NonAuthedFeedTrendingFragment on Query
       @refetchable(queryName: "NonAuthedFeedTrendingPaginationQuery") {
-        trendingFeed(before: $globalBefore, last: $globalLast)
+        trendingFeed(before: $trendingBefore, last: $trendingLast)
           @connection(key: "NonAuthedFeed_trendingFeed") {
           edges {
             node {
@@ -97,7 +97,11 @@ export default function NonAuthedFeed({ queryRef }: Props) {
     }
 
     return events;
-  }, [globalPagination.data.globalFeed?.edges, trendingPagination.data.trendingFeed?.edges]);
+  }, [
+    globalPagination.data.globalFeed?.edges,
+    trendingPagination.data.trendingFeed?.edges,
+    trendingPagination.hasPrevious,
+  ]);
 
   const hasPrevious = trendingPagination.hasPrevious || globalPagination.hasPrevious;
 

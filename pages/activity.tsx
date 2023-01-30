@@ -14,6 +14,8 @@ const activityPageQueryNode = graphql`
   query activityPageQuery(
     $interactionsFirst: Int!
     $interactionsAfter: String
+    $trendingLast: Int!
+    $trendingBefore: String
     $globalLast: Int!
     $globalBefore: String
     $viewerLast: Int!
@@ -30,6 +32,7 @@ export default function Activity() {
   const query = useLazyLoadQuery<activityPageQuery>(activityPageQueryNode, {
     interactionsFirst: NOTES_PER_PAGE,
     globalLast: ITEMS_PER_PAGE,
+    trendingLast: ITEMS_PER_PAGE,
     viewerLast: ITEMS_PER_PAGE,
     visibleTokensPerFeedEvent: MAX_PIECES_DISPLAYED_PER_FEED_EVENT,
   });
@@ -48,6 +51,7 @@ Activity.preloadQuery = ({ relayEnvironment }: PreloadQueryArgs) => {
   fetchQuery<activityPageQuery>(relayEnvironment, activityPageQueryNode, {
     interactionsFirst: NOTES_PER_PAGE,
     globalLast: ITEMS_PER_PAGE,
+    trendingLast: ITEMS_PER_PAGE,
     viewerLast: ITEMS_PER_PAGE,
     visibleTokensPerFeedEvent: MAX_PIECES_DISPLAYED_PER_FEED_EVENT,
   }).toPromise();
