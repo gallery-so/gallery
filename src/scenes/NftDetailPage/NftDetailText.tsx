@@ -115,15 +115,15 @@ function NftDetailText({ tokenRef }: Props) {
           <HStack align="center" gap={4}>
             {communityUrl && token.contract?.name ? (
               <ClickablePill to={communityUrl}>
-                <HStack gap={4} align="center" justify="flex-end">
+                <StyledPillContent gap={4} align="center" justify="flex-end">
                   {token.chain === 'POAP' && <PoapLogo />}
                   {token.contract?.badgeURL && <StyledBadge src={token.contract.badgeURL} />}
-                  <TitleDiatypeM>{token.contract.name}</TitleDiatypeM>
-                </HStack>
+                  <StyledContractName>{token.contract.name}</StyledContractName>
+                </StyledPillContent>
               </ClickablePill>
             ) : (
               <NonclickablePill>
-                <TitleDiatypeM>{token.contract?.name}</TitleDiatypeM>
+                <StyledContractName>{token.contract?.name}</StyledContractName>
               </NonclickablePill>
             )}
           </HStack>
@@ -220,6 +220,7 @@ const ClickablePill = styled(InteractiveLink)`
   color: ${colors.offBlack};
   text-decoration: none;
   width: fit-content;
+  max-width: 100%;
   align-self: end;
   height: 32px;
   display: flex;
@@ -235,10 +236,22 @@ const ClickablePill = styled(InteractiveLink)`
 const NonclickablePill = styled.div`
   color: ${colors.offBlack};
   width: fit-content;
+  max-width: 100%;
   align-self: end;
   height: 32px;
   display: flex;
   align-items: center;
+`;
+
+const StyledPillContent = styled(HStack)`
+  width: 100%;
+`;
+
+const StyledContractName = styled(TitleDiatypeM)`
+  overflow: hidden;
+  white-space: nowrap;
+  width: 100%;
+  text-overflow: ellipsis;
 `;
 
 export default NftDetailText;
