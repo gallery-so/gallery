@@ -136,7 +136,6 @@ export function NonRecursiveFeedEventData({
     case 'GalleryInfoUpdatedFeedEventData':
       return null;
     default:
-      console.log('Failed', eventData.__typename);
       throw new TriedToRenderUnsupportedFeedEvent(eventDbid);
   }
 }
