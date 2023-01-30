@@ -1,5 +1,6 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSSProperties, MouseEventHandler, useCallback } from 'react';
+import { graphql, useFragment } from 'react-relay';
 import styled, { css } from 'styled-components';
 
 import colors from '~/components/core/colors';
@@ -13,15 +14,28 @@ import { useGalleryEditorContext } from '~/components/GalleryEditor/GalleryEdito
 import { NewTooltip } from '~/components/Tooltip/NewTooltip';
 import { useTooltipHover } from '~/components/Tooltip/useTooltipHover';
 import { ErrorWithSentryMetadata } from '~/errors/ErrorWithSentryMetadata';
+import { CollectionListItemQueryFragment$key } from '~/generated/CollectionListItemQueryFragment.graphql';
 import HideIcon from '~/icons/HideIcon';
 import ShowIcon from '~/icons/ShowIcon';
 import unescape from '~/utils/unescape';
 
+import useMoveCollectionModal from './useMoveCollectionModal';
+
 type CollectionListItemProps = {
   collectionId: string;
+  queryRef: CollectionListItemQueryFragment$key;
 };
 
-export function CollectionListItem({ collectionId }: CollectionListItemProps) {
+export function CollectionListItem({ collectionId, queryRef }: CollectionListItemProps) {
+  const query = useFragment(
+    graphql`
+      fragment CollectionListItemQueryFragment on Query {
+        ...useMoveCollectionModalFragment
+      }
+    `,
+    queryRef
+  );
+
   const {
     collections,
     collectionIdBeingEdited,
@@ -42,6 +56,8 @@ export function CollectionListItem({ collectionId }: CollectionListItemProps) {
 
   const { floating, reference, getFloatingProps, getReferenceProps, floatingStyle } =
     useTooltipHover();
+
+  const handleMoveCollectionModal = useMoveCollectionModal({ collection, queryRef: query });
 
   const { hiddenCollectionIds, toggleCollectionHidden } = useGalleryEditorContext();
   const hidden = hiddenCollectionIds.has(collection.dbid);
@@ -120,6 +136,7 @@ export function CollectionListItem({ collectionId }: CollectionListItemProps) {
           <SettingsDropdown size="sm" iconVariant="stacked" disableHoverPadding>
             <DropdownSection>
               <DropdownItem onClick={handleEdit}>EDIT NAME & DESC</DropdownItem>
+              <DropdownItem onClick={handleMoveCollectionModal}>MOVE TO...</DropdownItem>
               <DropdownItem onClick={handleDelete}>DELETE</DropdownItem>
             </DropdownSection>
           </SettingsDropdown>
