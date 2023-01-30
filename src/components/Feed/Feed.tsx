@@ -29,6 +29,8 @@ export default function Feed({ queryRef }: Props) {
         }
         ...ViewerFeedFragment
         ...GlobalFeedFragment
+        ...GlobalFeedGlobalFragment
+        ...GlobalFeedTrendingFragment
       }
     `,
     queryRef
