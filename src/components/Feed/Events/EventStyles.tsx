@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 
 import colors from '~/components/core/colors';
 import { VStack } from '~/components/core/Spacer/Stack';
-import { BaseS, TitleDiatypeM } from '~/components/core/Text/Text';
+import { BaseM, BaseS, TitleDiatypeM } from '~/components/core/Text/Text';
 
 type StyledEventProps = {
   children: ReactNode;
@@ -37,7 +37,7 @@ export const StyledEventHeader = styled.div`
   width: 100%;
 
   p {
-    display: inline;
+    display: inline-block;
     line-height: 16px;
   }
 `;
@@ -46,6 +46,7 @@ export const StyledTime = styled(BaseS)`
   color: ${colors.metal};
   align-self: center;
   display: inline;
+  padding-left: 4px;
 `;
 
 export const StyledClickHandler = styled.a`
@@ -60,6 +61,17 @@ export const StyledEventContent = styled(VStack)<{ hasCaption?: boolean }>`
 `;
 
 export const StyledEventLabel = styled(TitleDiatypeM)`
-  display: inline;
-  padding-right: 4px;
+  display: inline-block;
+`;
+
+export const StyledEventText = styled(BaseM)<{ isSubEvent?: boolean }>`
+  display: contents;
+
+  ${({ isSubEvent }) =>
+    isSubEvent &&
+    css`
+      &:first-letter {
+        text-transform: capitalize;
+      }
+    `}
 `;

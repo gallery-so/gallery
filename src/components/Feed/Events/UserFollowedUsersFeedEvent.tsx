@@ -20,7 +20,7 @@ import { removeNullValues } from '~/utils/removeNullValues';
 import { getTimeSince } from '~/utils/time';
 
 import { FeedMode } from '../Feed';
-import { StyledEvent, StyledEventHeader, StyledTime } from './EventStyles';
+import { StyledEvent, StyledEventHeader, StyledEventText, StyledTime } from './EventStyles';
 import UserFollowedYouEvent from './UserFollowedYouEvent';
 
 type Props = {
@@ -154,30 +154,14 @@ export default function UserFollowedUsersFeedEvent({
         <CustomStyledEvent onClick={handleSeeFollowedUserClick} isSubEvent={isSubEvent}>
           <StyledEventContent>
             <StyledEventHeader>
-              <HStack gap={4} inline>
-                {isSubEvent ? (
-                  <BaseM>
-                    Followed{' '}
-                    {firstFollowerUsernameRef && firstFollowerUsernameRef.user && (
-                      <HoverCardOnUsername
-                        userRef={firstFollowerUsernameRef.user}
-                        queryRef={query}
-                      />
-                    )}
-                  </BaseM>
-                ) : (
-                  <BaseM>
-                    <HoverCardOnUsername userRef={event.owner} queryRef={query} /> followed{' '}
-                    {firstFollowerUsernameRef && firstFollowerUsernameRef.user && (
-                      <HoverCardOnUsername
-                        userRef={firstFollowerUsernameRef.user}
-                        queryRef={query}
-                      />
-                    )}
-                  </BaseM>
+              <StyledEventText isSubEvent={isSubEvent}>
+                {!isSubEvent && <HoverCardOnUsername userRef={event.owner} queryRef={query} />}{' '}
+                followed{' '}
+                {firstFollowerUsernameRef && firstFollowerUsernameRef.user && (
+                  <HoverCardOnUsername userRef={firstFollowerUsernameRef.user} queryRef={query} />
                 )}
                 {!isSubEvent && <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>}
-              </HStack>
+              </StyledEventText>
             </StyledEventHeader>
           </StyledEventContent>
         </CustomStyledEvent>

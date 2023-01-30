@@ -26,6 +26,7 @@ import {
   StyledEventContent,
   StyledEventHeader,
   StyledEventLabel,
+  StyledEventText,
   StyledTime,
 } from './EventStyles';
 
@@ -111,24 +112,15 @@ export default function TokensAddedToCollectionFeedEvent({
           <StyledEventHeader>
             <VStack gap={4}>
               <HStack gap={4} inline>
-                <BaseM>
-                  {isSubEvent ? (
-                    <>
-                      Added{' '}
-                      {isPreFeed ? '' : `${tokens.length} ${pluralize(tokens.length, 'piece')}`} to
-                      {collectionName ? ' ' : ' their collection'}
-                    </>
-                  ) : (
-                    <>
-                      <HoverCardOnUsername userRef={event.owner} queryRef={query} /> added{' '}
-                      {isPreFeed ? '' : `${tokens.length} ${pluralize(tokens.length, 'piece')}`} to
-                      {collectionName ? ' ' : ' their collection'}
-                    </>
-                  )}
+                <StyledEventText isSubEvent={isSubEvent}>
+                  {!isSubEvent && <HoverCardOnUsername userRef={event.owner} queryRef={query} />}{' '}
+                  added {isPreFeed ? '' : `${tokens.length} ${pluralize(tokens.length, 'piece')}`}{' '}
+                  to
+                  {collectionName ? ' ' : ' their collection'}
                   <Link href={collectionPagePath} passHref>
                     <StyledEventLabel>{collectionName}</StyledEventLabel>
                   </Link>
-                </BaseM>
+                </StyledEventText>
                 {!isSubEvent && <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>}
               </HStack>
             </VStack>

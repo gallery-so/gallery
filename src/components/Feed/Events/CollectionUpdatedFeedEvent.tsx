@@ -22,7 +22,7 @@ import unescape from '~/utils/unescape';
 
 import { MAX_PIECES_DISPLAYED_PER_FEED_EVENT } from '../constants';
 import FeedEventTokenPreviews from '../FeedEventTokenPreviews';
-import { StyledEvent, StyledEventHeader, StyledTime } from './EventStyles';
+import { StyledEvent, StyledEventHeader, StyledEventText, StyledTime } from './EventStyles';
 
 type Props = {
   eventDataRef: CollectionUpdatedFeedEventFragment$key;
@@ -94,15 +94,10 @@ export default function CollectionUpdatedFeedEvent({
           <StyledEventHeader>
             <HStack gap={4} inline>
               <BaseM>
-                {isSubEvent ? (
-                  <>Made updates to {collectionName ? ' ' : 'their collection'}</>
-                ) : (
-                  <>
-                    <HoverCardOnUsername userRef={event.owner} queryRef={query} /> made updates to
-                    {collectionName ? ' ' : 'their collection'}
-                  </>
-                )}
-
+                {!isSubEvent && <HoverCardOnUsername userRef={event.owner} queryRef={query} />}
+                <StyledEventText isSubEvent={isSubEvent}>
+                  made updates to {collectionName ? ' ' : 'their collection'}
+                </StyledEventText>
                 <InteractiveLink to={collectionPagePath}>{collectionName}</InteractiveLink>
               </BaseM>
               {!isSubEvent && <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>}

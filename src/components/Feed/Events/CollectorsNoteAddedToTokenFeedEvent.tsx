@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import breakpoints from '~/components/core/breakpoints';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
-import { BaseM, TitleM } from '~/components/core/Text/Text';
+import { TitleM } from '~/components/core/Text/Text';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
@@ -23,6 +23,7 @@ import {
   StyledEvent,
   StyledEventHeader,
   StyledEventLabel,
+  StyledEventText,
   StyledTime,
 } from './EventStyles';
 
@@ -105,32 +106,24 @@ export default function CollectorsNoteAddedToTokenFeedEvent({
       <StyledEvent isSubEvent={isSubEvent}>
         <VStack gap={isSubEvent ? 0 : 16}>
           <StyledEventHeader>
-            <HStack gap={4} inline>
-              <BaseM>
-                {isSubEvent ? (
-                  <>Added a collector's note to</>
-                ) : (
-                  <>
-                    <HoverCardOnUsername userRef={event.owner} queryRef={query} /> added a
-                    collector's note to
-                  </>
-                )}{' '}
-                <Link
-                  href={{
-                    pathname: '/[username]/[collectionId]/[tokenId]',
-                    query: {
-                      username: event.owner.username as string,
-                      collectionId: event.token.collection?.dbid as string,
-                      tokenId: event.token.token?.dbid,
-                    },
-                  }}
-                  onClick={handleEventClick}
-                >
-                  <StyledEventLabel>{event.token.token?.name}</StyledEventLabel>
-                </Link>
-              </BaseM>
-              {!isSubEvent && <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>}
-            </HStack>
+            <StyledEventText isSubEvent={isSubEvent}>
+              {!isSubEvent && <HoverCardOnUsername userRef={event.owner} queryRef={query} />} add a
+              collector's note to{' '}
+              <Link
+                href={{
+                  pathname: '/[username]/[collectionId]/[tokenId]',
+                  query: {
+                    username: event.owner.username as string,
+                    collectionId: event.token.collection?.dbid as string,
+                    tokenId: event.token.token?.dbid,
+                  },
+                }}
+                onClick={handleEventClick}
+              >
+                <StyledEventLabel>{event.token.token?.name}</StyledEventLabel>
+              </Link>
+            </StyledEventText>
+            {!isSubEvent && <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>}
           </StyledEventHeader>
           <StyledContent justify="center" align="center" gap={MIDDLE_GAP}>
             <StyledMediaWrapper>

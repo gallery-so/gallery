@@ -23,6 +23,7 @@ import {
   StyledEventContent,
   StyledEventHeader,
   StyledEventLabel,
+  StyledEventText,
   StyledTime,
 } from './EventStyles';
 
@@ -98,37 +99,25 @@ export default function CollectionCreatedFeedEvent({
           <StyledEventHeader>
             <VStack gap={4}>
               <StyledEventHeaderContainer>
-                {isSubEvent ? (
-                  <BaseM>
-                    Added {tokens.length} {pluralize(tokens.length, 'piece')} to their new
-                    collection {collectionName ? `, ` : ' '}
-                  </BaseM>
-                ) : (
-                  <>
-                    <HoverCardOnUsername userRef={event.owner} queryRef={query} />{' '}
-                    <BaseM>
-                      added {tokens.length} {pluralize(tokens.length, 'piece')} to their new
-                      collection {collectionName ? `, ` : ' '}
-                    </BaseM>
-                  </>
+                <StyledEventText isSubEvent={isSubEvent}>
+                  {!isSubEvent && <HoverCardOnUsername userRef={event.owner} queryRef={query} />}{' '}
+                  added {tokens.length} {pluralize(tokens.length, 'piece')} to their new collection
+                  {collectionName ? `, ` : ' '}
+                </StyledEventText>
+                {collectionName && (
+                  <Link
+                    href={{
+                      pathname: '/[username]/[collectionId]',
+                      query: {
+                        username: event.owner.username as string,
+                        collectionId: event.collection.dbid,
+                      },
+                    }}
+                  >
+                    <StyledEventLabel>{unescape(event.collection.name ?? '')}</StyledEventLabel>
+                  </Link>
                 )}
-
-                <HStack gap={4} inline>
-                  {collectionName && (
-                    <Link
-                      href={{
-                        pathname: '/[username]/[collectionId]',
-                        query: {
-                          username: event.owner.username as string,
-                          collectionId: event.collection.dbid,
-                        },
-                      }}
-                    >
-                      <StyledEventLabel>{unescape(event.collection.name ?? '')}</StyledEventLabel>
-                    </Link>
-                  )}
-                  {!isSubEvent && <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>}
-                </HStack>
+                {!isSubEvent && <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>}
               </StyledEventHeaderContainer>
             </VStack>
           </StyledEventHeader>

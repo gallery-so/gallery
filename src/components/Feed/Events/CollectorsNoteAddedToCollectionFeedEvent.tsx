@@ -9,7 +9,7 @@ import breakpoints from '~/components/core/breakpoints';
 import colors from '~/components/core/colors';
 import { UnstyledLink } from '~/components/core/Link/UnstyledLink';
 import Markdown from '~/components/core/Markdown/Markdown';
-import { HStack, VStack } from '~/components/core/Spacer/Stack';
+import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
@@ -25,6 +25,7 @@ import {
   StyledEventContent,
   StyledEventHeader,
   StyledEventLabel,
+  StyledEventText,
   StyledTime,
 } from './EventStyles';
 
@@ -99,27 +100,14 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({
         <VStack gap={isSubEvent ? 0 : 16}>
           <VStack gap={8}>
             <StyledEventHeader>
-              <HStack gap={4} inline>
-                {isSubEvent ? (
-                  <BaseM>
-                    Added a description to
-                    {collectionName ? ' ' : ' their collection'}
-                    <Link href={collectionPagePath} passHref>
-                      <StyledEventLabel>{collectionName}</StyledEventLabel>
-                    </Link>
-                  </BaseM>
-                ) : (
-                  <BaseM>
-                    <HoverCardOnUsername userRef={event.owner} queryRef={query} /> added a
-                    description to
-                    {collectionName ? ' ' : ' their collection'}
-                    <Link href={collectionPagePath} passHref>
-                      <StyledEventLabel>{collectionName}</StyledEventLabel>
-                    </Link>
-                  </BaseM>
-                )}
+              <StyledEventText isSubEvent={isSubEvent}>
+                {!isSubEvent && <HoverCardOnUsername userRef={event.owner} queryRef={query} />}{' '}
+                added a description to{collectionName ? ' ' : ' their collection'}
+                <Link href={collectionPagePath} passHref>
+                  <StyledEventLabel>{collectionName}</StyledEventLabel>
+                </Link>
                 {!isSubEvent && <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>}
-              </HStack>
+              </StyledEventText>
             </StyledEventHeader>
           </VStack>
 
