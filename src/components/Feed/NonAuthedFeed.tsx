@@ -1,24 +1,26 @@
 import { useCallback, useMemo } from 'react';
 import { graphql, useFragment, usePaginationFragment } from 'react-relay';
 
-import { GlobalFeedFragment$key } from '~/generated/GlobalFeedFragment.graphql';
-import { GlobalFeedGlobalFragment$key } from '~/generated/GlobalFeedGlobalFragment.graphql';
-import { GlobalFeedGlobalPaginationQuery } from '~/generated/GlobalFeedGlobalPaginationQuery.graphql';
-import { GlobalFeedTrendingFragment$key } from '~/generated/GlobalFeedTrendingFragment.graphql';
-import { GlobalFeedTrendingPaginationQuery } from '~/generated/GlobalFeedTrendingPaginationQuery.graphql';
+import { NonAuthedFeedFragment$key } from '~/generated/NonAuthedFeedFragment.graphql';
+import { NonAuthedFeedGlobalFragment$key } from '~/generated/NonAuthedFeedGlobalFragment.graphql';
+import { NonAuthedFeedGlobalPaginationQuery } from '~/generated/NonAuthedFeedGlobalPaginationQuery.graphql';
+import { NonAuthedFeedTrendingFragment$key } from '~/generated/NonAuthedFeedTrendingFragment.graphql';
+import { NonAuthedFeedTrendingPaginationQuery } from '~/generated/NonAuthedFeedTrendingPaginationQuery.graphql';
 
 import { useTrackLoadMoreFeedEvents } from './analytics';
 import { ITEMS_PER_PAGE } from './constants';
 import FeedList from './FeedList';
 
 type Props = {
-  queryRef: GlobalFeedGlobalFragment$key & GlobalFeedTrendingFragment$key & GlobalFeedFragment$key;
+  queryRef: NonAuthedFeedGlobalFragment$key &
+    NonAuthedFeedTrendingFragment$key &
+    NonAuthedFeedFragment$key;
 };
 
-export default function GlobalFeed({ queryRef }: Props) {
+export default function NonAuthedFeed({ queryRef }: Props) {
   const query = useFragment(
     graphql`
-      fragment GlobalFeedFragment on Query {
+      fragment NonAuthedFeedFragment on Query {
         ...FeedListFragment
       }
     `,
@@ -26,14 +28,14 @@ export default function GlobalFeed({ queryRef }: Props) {
   );
 
   const globalPagination = usePaginationFragment<
-    GlobalFeedGlobalPaginationQuery,
-    GlobalFeedGlobalFragment$key
+    NonAuthedFeedGlobalPaginationQuery,
+    NonAuthedFeedGlobalFragment$key
   >(
     graphql`
-      fragment GlobalFeedGlobalFragment on Query
-      @refetchable(queryName: "GlobalFeedGlobalPaginationQuery") {
+      fragment NonAuthedFeedGlobalFragment on Query
+      @refetchable(queryName: "NonAuthedFeedGlobalPaginationQuery") {
         globalFeed(before: $globalBefore, last: $globalLast)
-          @connection(key: "GlobalFeed_globalFeed") {
+          @connection(key: "NonAuthedFeed_globalFeed") {
           edges {
             node {
               ... on FeedEvent {
@@ -52,14 +54,14 @@ export default function GlobalFeed({ queryRef }: Props) {
   );
 
   const trendingPagination = usePaginationFragment<
-    GlobalFeedTrendingPaginationQuery,
-    GlobalFeedTrendingFragment$key
+    NonAuthedFeedTrendingPaginationQuery,
+    NonAuthedFeedTrendingFragment$key
   >(
     graphql`
-      fragment GlobalFeedTrendingFragment on Query
-      @refetchable(queryName: "GlobalFeedTrendingPaginationQuery") {
+      fragment NonAuthedFeedTrendingFragment on Query
+      @refetchable(queryName: "NonAuthedFeedTrendingPaginationQuery") {
         trendingFeed(before: $globalBefore, last: $globalLast)
-          @connection(key: "GlobalFeed_trendingFeed") {
+          @connection(key: "NonAuthedFeed_trendingFeed") {
           edges {
             node {
               ... on FeedEvent {

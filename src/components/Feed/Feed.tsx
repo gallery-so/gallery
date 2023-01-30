@@ -9,7 +9,7 @@ import { FeedViewerFragment$key } from '~/generated/FeedViewerFragment.graphql';
 import usePersistedState from '~/hooks/usePersistedState';
 
 import FeedModeSelector from './FeedModeSelector';
-import GlobalFeed from './GlobalFeed';
+import NonAuthedFeed from './NonAuthedFeed';
 import ViewerFeed from './ViewerFeed';
 
 export type FeedMode = 'FOLLOWING' | 'WORLDWIDE' | 'USER';
@@ -28,9 +28,9 @@ export default function Feed({ queryRef }: Props) {
           }
         }
         ...ViewerFeedFragment
-        ...GlobalFeedFragment
-        ...GlobalFeedGlobalFragment
-        ...GlobalFeedTrendingFragment
+        ...NonAuthedFeedFragment
+        ...NonAuthedFeedGlobalFragment
+        ...NonAuthedFeedTrendingFragment
       }
     `,
     queryRef
@@ -56,7 +56,7 @@ export default function Feed({ queryRef }: Props) {
     <StyledFeed data-testid="feed-list">
       {isLoggedIn && <FeedModeSelector feedMode={feedMode} setFeedMode={setFeedMode} />}
       {feedMode === 'FOLLOWING' && <ViewerFeed queryRef={query} setFeedMode={setFeedMode} />}
-      {feedMode === 'WORLDWIDE' && <GlobalFeed queryRef={query} />}
+      {feedMode === 'WORLDWIDE' && <NonAuthedFeed queryRef={query} />}
     </StyledFeed>
   );
 }
