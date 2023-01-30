@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import { ChangeEvent, useCallback, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
@@ -42,11 +43,16 @@ export default function MoveCollectionModal({ collection, onSuccess, queryRef }:
 
   const moveCollectionToGallery = useMoveCollectionToGallery();
 
+  const { query: routerQuery } = useRouter();
+  const galleryId = routerQuery.galleryId as string;
+
   const [selectedGalleryId, setSelectedGalleryId] = useState<string | null>(null);
 
   const galleries = useMemo(() => {
-    return removeNullValues(query.viewer?.user?.galleries);
-  }, [query.viewer]);
+    return removeNullValues(query.viewer?.user?.galleries).filter(
+      (gallery) => gallery.dbid !== galleryId
+    );
+  }, [query.viewer, galleryId]);
 
   const { pushToast } = useToastActions();
   const { hideModal } = useModalActions();
