@@ -161,6 +161,17 @@ const StyledMoveCollectionModal = styled(VStack)`
 const StyledCollectionsContainer = styled.div`
   max-height: 200px;
   overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    background-color: ${colors.faint};
+    width: 8px;
+    border-radius: 8px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    background-color: ${colors.metal};
+  }
 `;
 
 const StyledCollectionContainer = styled(HStack)`
