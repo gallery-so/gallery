@@ -9,56 +9,17 @@
       "@frames/*": [
         "../../packages/frames-dls/src/*"
       ],
-      "~/abis/*": [
-        "src/abis/*"
-      ],
-      "~/assets/*": [
-        "src/assets/*"
-      ],
-      "~/components/*": [
-        "src/components/*"
-      ],
-      "~/connectors/*": [
-        "src/connectors/*"
-      ],
-      "~/constants/*": [
-        "src/constants/*"
-      ],
-      "~/contexts/*": [
-        "src/contexts/*"
-      ],
-      "~/errors/*": [
-        "src/errors/*"
+      "~/*": [
+        "src/*"
       ],
       "~/generated/*": [
         "__generated__/*"
       ],
-      "~/hooks/*": [
-        "src/hooks/*"
-      ],
-      "~/icons/*": [
-        "src/icons/*"
-      ],
-      "~/mocks/*": [
-        "src/mocks/*"
-      ],
       "~/pages/*": [
         "pages/*"
       ],
-      "~/scenes/*": [
-        "src/scenes/*"
-      ],
-      "~/snapshots/*": [
-        "src/snapshots/*"
-      ],
       "~/tests/*": [
         "tests/*"
-      ],
-      "~/types/*": [
-        "src/types/*"
-      ],
-      "~/utils/*": [
-        "src/utils/*"
       ]
     },
     "outDir": "../../.moon/cache/types/apps/web",
