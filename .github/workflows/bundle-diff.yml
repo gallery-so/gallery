@@ -12,6 +12,7 @@ jobs:
         with:
           fetch-depth: 0
       - uses: 'actions/setup-node@v3'
+        node-version: 18.12.0
         with:
           cache: 'yarn'
       - run: 'yarn install --immutable'
