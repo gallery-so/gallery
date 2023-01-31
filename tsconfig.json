@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.options.json",
+  "files": [],
+  "references": [
+    {
+      "path": "apps/web"
+    },
+    {
+      "path": "packages/frames-dls"
+    }
+  ]
+}

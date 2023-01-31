@@ -1,26 +1,14 @@
 {
+  "extends": "../../tsconfig.options.json",
   "compilerOptions": {
-    "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true,
-    "module": "esnext",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "preserve",
     "baseUrl": ".",
+    "jsx": "preserve",
+    "emitDeclarationOnly": false,
+    "noEmit": true,
     "paths": {
+      "@frames/*": [
+        "../../packages/frames-dls/src/*"
+      ],
       "~/abis/*": [
         "src/abis/*"
       ],
@@ -42,14 +30,20 @@
       "~/errors/*": [
         "src/errors/*"
       ],
-      "~/icons/*": [
-        "src/icons/*"
+      "~/generated/*": [
+        "__generated__/*"
       ],
       "~/hooks/*": [
         "src/hooks/*"
       ],
+      "~/icons/*": [
+        "src/icons/*"
+      ],
       "~/mocks/*": [
         "src/mocks/*"
+      ],
+      "~/pages/*": [
+        "pages/*"
       ],
       "~/scenes/*": [
         "src/scenes/*"
@@ -65,16 +59,9 @@
       ],
       "~/utils/*": [
         "src/utils/*"
-      ],
-      "~/generated/*": [
-        "__generated__/*"
-      ],
-      "~/pages/*": [
-        "pages/*"
       ]
     },
-    "downlevelIteration": true,
-    "incremental": true
+    "outDir": "../../.moon/cache/types/apps/web"
   },
   "include": [
     "src",
@@ -84,7 +71,5 @@
     "app.d.ts",
     "__generated__"
   ],
-  "exclude": [
-    "node_modules"
-  ]
+  "references": []
 }
