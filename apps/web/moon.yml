@@ -78,7 +78,6 @@ tasks:
     platform: system
 
   touch-relay-files:
-    platform: system
     deps:
       - "~:touch-persisted-queries"
       - "~:touch-generated"
