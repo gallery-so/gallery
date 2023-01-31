@@ -56,3 +56,8 @@ nextjs-routes.d.ts
 # moon
 .moon/cache
 .moon/docker
+
+# The `outDir` for declarations
+dts/
+# Build cache manifests
+*.tsbuildinfo

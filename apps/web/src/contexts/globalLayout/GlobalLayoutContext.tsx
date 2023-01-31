@@ -16,7 +16,6 @@ import { useFragment, useLazyLoadQuery } from 'react-relay';
 import { fetchQuery, graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
-import NavLink from '~/components/core/NavLink/NavLink';
 import { FADE_TRANSITION_TIME_MS } from '~/components/FadeTransitioner/FadeTransitioner';
 import { MAINTENANCE_BANNER_6_18_STORAGE_KEY } from '~/constants/storageKeys';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
