@@ -4348,23 +4348,10 @@
     "@taquito/utils" "^15.1.0"
     bignumber.js "^9.1.0"
 
-"@taquito/local-forging@^14.0.0":
-  version "14.2.0"
-  resolved "https://registry.yarnpkg.com/@taquito/local-forging/-/local-forging-14.2.0.tgz#20b4b62577cc1ab281e42810bf1ef5e1059fbffe"
-  integrity sha512-V+NOGEwWcm/N6jDfsHOZpt1mOeCbxhWQpss7z9q+CrW/AbBfJJDpVG+nfswsum+Bdj0pNqvKml5Zf+LMl12Gbg==
-  dependencies:
-    "@taquito/utils" "*"
-    bignumber.js "^9.1.0"
-
 "@taquito/michel-codec@*":
   version "15.1.0"
   resolved "https://registry.npmjs.org/@taquito/michel-codec/-/michel-codec-15.1.0.tgz"
   integrity sha512-wKucIhs7vhaq5H+YSF2f6Qu9+g+QiEL6MPc5ROpxBrXJTeKSwBOEIpfqcKfkfMuecJyHZJW3glNfkpAVTCgkxg==
-
-"@taquito/michel-codec@^14.0.0":
-  version "14.2.0"
-  resolved "https://registry.yarnpkg.com/@taquito/michel-codec/-/michel-codec-14.2.0.tgz#24be15f8064be6364d111e4e410fd53f5b0faff9"
-  integrity sha512-rfMrrB3oaEMkPjcV9caUQFBzJ0jc1p3ijfAMgoHcfLzunzC9bJwwPAkZD0/2G256/MyUt5CUwhxzdEUgVz0COw==
 
 "@taquito/michelson-encoder@*":
   version "15.1.0"
@@ -4404,21 +4391,7 @@
     "@taquito/utils" "*"
     bignumber.js "^9.1.0"
 
-"@taquito/taquito@14.0.0":
-  version "14.0.0"
-  resolved "https://registry.yarnpkg.com/@taquito/taquito/-/taquito-14.0.0.tgz#7dc8dccbe164f5ef52d61e40f9a8084da340b172"
-  integrity sha512-JaXfvqOCF3dkwXxhe00Ravb8WLMC2VqJxerf4GrGUEpJw+NAkwbGEb8k/52+MQQdlxMPepZdPPru/HM3nFG0Tw==
-  dependencies:
-    "@taquito/http-utils" "^14.0.0"
-    "@taquito/local-forging" "^14.0.0"
-    "@taquito/michel-codec" "^14.0.0"
-    "@taquito/michelson-encoder" "^14.0.0"
-    "@taquito/rpc" "^14.0.0"
-    "@taquito/utils" "^14.0.0"
-    bignumber.js "^9.0.2"
-    rxjs "^6.6.3"
-
-"@taquito/taquito@^14.0.0":
+"@taquito/taquito@14.0.0", "@taquito/taquito@^14.0.0":
   version "14.2.0"
   resolved "https://registry.npmjs.org/@taquito/taquito/-/taquito-14.2.0.tgz"
   integrity sha512-JrAUtANIVr02TFI6N87Xnn+KfgDT8hTA6IBeRhGfQnZH8nL1LG6/6q7uHZTw6D4ddfnMvxjgA/916cxAFcskFA==
@@ -5203,19 +5176,10 @@
     "@types/prop-types" "*"
     "@types/react" "^17"
 
-"@types/react@*", "@types/react@^18.0.27":
+"@types/react@*", "@types/react@^17", "@types/react@^18.0.0", "@types/react@^18.0.27":
   version "18.0.27"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-18.0.27.tgz#d9425abe187a00f8a5ec182b010d4fd9da703b71"
   integrity sha512-3vtRKHgVxu3Jp9t718R9BuzoD4NcQ8YJ5XRzsSKxNDiDonD2MXIT1TmSkenxuCycZJoQT5d2vE8LwWJxBC1gmA==
-  dependencies:
-    "@types/prop-types" "*"
-    "@types/scheduler" "*"
-    csstype "^3.0.2"
-
-"@types/react@^17":
-  version "17.0.53"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.53.tgz#10d4d5999b8af3d6bc6a9369d7eb953da82442ab"
-  integrity sha512-1yIpQR2zdYu1Z/dc1OxC+MA6GR240u3gcnP4l6mvj/PJiVaqHsQPmWttsvHsfnhfPbU2FuGmo0wSITPygjBmsw==
   dependencies:
     "@types/prop-types" "*"
     "@types/scheduler" "*"
@@ -9233,11 +9197,6 @@ dashdash@^1.12.0:
   dependencies:
     assert-plus "^1.0.0"
 
-data-uri-to-buffer@^4.0.0:
-  version "4.0.1"
-  resolved "https://registry.npmjs.org/data-uri-to-buffer/-/data-uri-to-buffer-4.0.1.tgz"
-  integrity sha512-0R9ikRb668HB7QDxT1vkpuUBtqc53YyAwMwGeUFKRojY/NWKvdZ+9UYtRfGmhqNbRkTSVpMbmyhXipFFv2cb/A==
-
 data-urls@^3.0.1, data-urls@^3.0.2:
   version "3.0.2"
   resolved "https://registry.npmjs.org/data-urls/-/data-urls-3.0.2.tgz"
@@ -11739,14 +11698,6 @@ fd-slicer@~1.1.0:
   dependencies:
     pend "~1.2.0"
 
-fetch-blob@^3.1.2, fetch-blob@^3.1.4:
-  version "3.2.0"
-  resolved "https://registry.npmjs.org/fetch-blob/-/fetch-blob-3.2.0.tgz"
-  integrity sha512-7yAQpD2UMJzLi1Dqv7qFYnPbaPx7ZfFK6PiIxQ4PfkGPyNyl2Ugx+a/umUonmKqjhM4DnfbMvdX6otXq83soQQ==
-  dependencies:
-    node-domexception "^1.0.0"
-    web-streams-polyfill "^3.0.3"
-
 fetch-ponyfill@^4.0.0:
   version "4.1.0"
   resolved "https://registry.npmjs.org/fetch-ponyfill/-/fetch-ponyfill-4.1.0.tgz"
@@ -12083,13 +12034,6 @@ formdata-node@^4.3.1:
   dependencies:
     node-domexception "1.0.0"
     web-streams-polyfill "4.0.0-beta.3"
-
-formdata-polyfill@^4.0.10:
-  version "4.0.10"
-  resolved "https://registry.npmjs.org/formdata-polyfill/-/formdata-polyfill-4.0.10.tgz"
-  integrity sha512-buewHzMvYL29jdeQTVILecSaZKnt/RJWjoZCF5OW60Z67/GmSLBkOFM7qh1PI3zFNtJbaZL5eQu1vLfazOwj4g==
-  dependencies:
-    fetch-blob "^3.1.2"
 
 forwarded@0.2.0:
   version "0.2.0"
@@ -16788,15 +16732,15 @@ node-dir@^0.1.17:
   dependencies:
     minimatch "^3.0.2"
 
-node-domexception@1.0.0, node-domexception@^1.0.0:
+node-domexception@1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/node-domexception/-/node-domexception-1.0.0.tgz"
   integrity sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ==
 
-node-fetch@2, node-fetch@^2.2.0, node-fetch@^2.6.0, node-fetch@^2.6.1, node-fetch@^2.6.7:
-  version "2.6.8"
-  resolved "https://registry.npmjs.org/node-fetch/-/node-fetch-2.6.8.tgz"
-  integrity sha512-RZ6dBYuj8dRSfxpUSu+NsdF1dpPpluJxwOp+6IoDp/sH2QNDSvurYsAa+F1WxY2RjA1iP93xhcsUoYbF2XBqVg==
+node-fetch@2, node-fetch@^2, node-fetch@^2.2.0, node-fetch@^2.6.0, node-fetch@^2.6.1, node-fetch@^2.6.7:
+  version "2.6.9"
+  resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.9.tgz#7c7f744b5cc6eb5fd404e0c7a9fec630a55657e6"
+  integrity sha512-DJm/CJkZkRjKKj4Zi4BsKVZh3ValV5IR5s7LVZnW+6YMh0W1BfNA8XSs6DLMGYlId5F3KnA70uu2qepcR08Qqg==
   dependencies:
     whatwg-url "^5.0.0"
 
@@ -16806,15 +16750,6 @@ node-fetch@2.6.7:
   integrity sha512-ZjMPFEfVx5j+y2yF35Kzx5sF7kDzxuDj6ziH4FFbOp87zKDZNx8yExJIb05OGF4Nlt9IHFIMBkRl41VdvcNdbQ==
   dependencies:
     whatwg-url "^5.0.0"
-
-node-fetch@^3.3.0:
-  version "3.3.0"
-  resolved "https://registry.npmjs.org/node-fetch/-/node-fetch-3.3.0.tgz"
-  integrity sha512-BKwRP/O0UvoMKp7GNdwPlObhYGB5DQqwhEDQlNKuoqwVYSxkSZCSbHjnFFmUEtwSKRPU4kNK8PbDYYitwaE3QA==
-  dependencies:
-    data-uri-to-buffer "^4.0.0"
-    fetch-blob "^3.1.4"
-    formdata-polyfill "^4.0.10"
 
 node-fetch@~1.7.1:
   version "1.7.3"
@@ -18496,17 +18431,10 @@ react-virtualized@^9.22.3:
     prop-types "^15.7.2"
     react-lifecycles-compat "^3.0.4"
 
-react@18.1.0:
+react@18.1.0, react@18.2.0:
   version "18.1.0"
   resolved "https://registry.npmjs.org/react/-/react-18.1.0.tgz"
   integrity sha512-4oL8ivCz5ZEPyclFQXaNksK3adutVS8l2xzZU0cqEFrE9Sb7fC0EFK5uEk74wIreL1DERyjvsU915j1pcT2uEQ==
-  dependencies:
-    loose-envify "^1.1.0"
-
-react@18.2.0:
-  version "18.2.0"
-  resolved "https://registry.yarnpkg.com/react/-/react-18.2.0.tgz#555bd98592883255fa00de14f1151a917b5d77d5"
-  integrity sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ==
   dependencies:
     loose-envify "^1.1.0"
 
@@ -21204,12 +21132,7 @@ typedarray@^0.0.6:
   resolved "https://registry.npmjs.org/typedarray/-/typedarray-0.0.6.tgz"
   integrity sha512-/aCDEGatGvZ2BIk+HmLf4ifCJFwvKFNb9/JeZPMulfgFracn9QFcAf5GO8B/mweUjSoblS5In0cWhqpfs/5PQA==
 
-typescript@^3.9.10, typescript@^3.9.5, typescript@^3.9.7:
-  version "3.9.10"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.9.10.tgz#70f3910ac7a51ed6bef79da7800690b19bf778b8"
-  integrity sha512-w6fIxVE/H1PkLKcCPsFqKE7Kv7QUwhU8qQY2MueZXWx5cPZdwFupLgKK3vntcK98BtNHZtAF4LA/yl2a7k8R6Q==
-
-typescript@^4.9.4:
+typescript@^3.9.10, typescript@^3.9.5, typescript@^3.9.7, typescript@^4.9.4:
   version "4.9.4"
   resolved "https://registry.npmjs.org/typescript/-/typescript-4.9.4.tgz"
   integrity sha512-Uz+dTXYzxXXbsFpM86Wh3dKCxrQqUcVMxwU54orwlJjOpO3ao8L7j5lH+dWfTwgCwIuM9GQ2kvVotzYJMXTBZg==
@@ -21861,7 +21784,7 @@ web-streams-polyfill@4.0.0-beta.3:
   resolved "https://registry.npmjs.org/web-streams-polyfill/-/web-streams-polyfill-4.0.0-beta.3.tgz"
   integrity sha512-QW95TCTaHmsYfHDybGMwO5IJIM93I/6vTRk+daHTWFPhwh+C8Cg7j7XyKrwrj8Ib6vYXe0ocYNrmzY4xAAN6ug==
 
-web-streams-polyfill@^3.0.3, web-streams-polyfill@^3.2.0:
+web-streams-polyfill@^3.2.0:
   version "3.2.1"
   resolved "https://registry.npmjs.org/web-streams-polyfill/-/web-streams-polyfill-3.2.1.tgz"
   integrity sha512-e0MO3wdXWKrLbL0DgGnUV7WHVuw9OUvL4hjgnPkIeEvESk74gAITi5G606JtZPp39cd8HA9VQzCIvA49LpPN5Q==
@@ -22291,11 +22214,6 @@ whatwg-fetch@^2.0.4:
   integrity sha512-dcQ1GWpOD/eEQ97k66aiEVpNnapVj90/+R+SXTPYGHpYBBypfKJEQjLrvMZ7YXbKm21gXd4NcuxUTjiv1YtLng==
 
 whatwg-fetch@^3.0.0, whatwg-fetch@^3.4.1:
-  version "3.6.2"
-  resolved "https://registry.npmjs.org/whatwg-fetch/-/whatwg-fetch-3.6.2.tgz"
-  integrity sha512-bJlen0FcuU/0EMLrdbJ7zOnW6ITZLrZMIarMUVmdKtsGvZna8vxKYaexICWPfZ8qwf9fzNq+UEIZrnSaApt6RA==
-
-whatwg-fetch@^3.6.2:
   version "3.6.2"
   resolved "https://registry.yarnpkg.com/whatwg-fetch/-/whatwg-fetch-3.6.2.tgz#dced24f37f2624ed0281725d51d0e2e3fe677f8c"
   integrity sha512-bJlen0FcuU/0EMLrdbJ7zOnW6ITZLrZMIarMUVmdKtsGvZna8vxKYaexICWPfZ8qwf9fzNq+UEIZrnSaApt6RA==
