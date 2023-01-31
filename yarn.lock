@@ -4373,22 +4373,22 @@
     bignumber.js "^9.1.0"
     fast-json-stable-stringify "^2.1.0"
 
-"@taquito/rpc@*", "@taquito/rpc@^14.0.0", "@taquito/rpc@^14.0.0-beta-RC.0":
-  version "14.2.0"
-  resolved "https://registry.npmjs.org/@taquito/rpc/-/rpc-14.2.0.tgz"
-  integrity sha512-QQ5zJJrvUNYryEv3axkPaT5d9qowy2sUoQmHczHiC8HYNHPpSk65yzwnWclC8Gg4GOBxQDZQfRVad4QqIVjFLw==
-  dependencies:
-    "@taquito/http-utils" "*"
-    "@taquito/utils" "*"
-    bignumber.js "^9.1.0"
-
-"@taquito/rpc@^15.1.0":
+"@taquito/rpc@*", "@taquito/rpc@^15.1.0":
   version "15.1.0"
   resolved "https://registry.npmjs.org/@taquito/rpc/-/rpc-15.1.0.tgz"
   integrity sha512-OeQA8QwT+s6IUmLaF5yeWruPYzWi/DVCA3kl+AaQ8IFfCMzmAW/MszbbNkJSzHpY2p4jPBwdRNxg3qeJdL482A==
   dependencies:
     "@taquito/http-utils" "^15.1.0"
     "@taquito/utils" "^15.1.0"
+    bignumber.js "^9.1.0"
+
+"@taquito/rpc@^14.0.0", "@taquito/rpc@^14.0.0-beta-RC.0":
+  version "14.2.0"
+  resolved "https://registry.npmjs.org/@taquito/rpc/-/rpc-14.2.0.tgz"
+  integrity sha512-QQ5zJJrvUNYryEv3axkPaT5d9qowy2sUoQmHczHiC8HYNHPpSk65yzwnWclC8Gg4GOBxQDZQfRVad4QqIVjFLw==
+  dependencies:
+    "@taquito/http-utils" "*"
+    "@taquito/utils" "*"
     bignumber.js "^9.1.0"
 
 "@taquito/taquito@14.0.0", "@taquito/taquito@^14.0.0":
@@ -16384,7 +16384,7 @@ minipass-pipeline@^1.2.2:
   dependencies:
     minipass "^3.0.0"
 
-minipass@3.1.6, minipass@^3.0.0:
+minipass@3.1.6:
   version "3.1.6"
   resolved "https://registry.npmjs.org/minipass/-/minipass-3.1.6.tgz"
   integrity sha512-rty5kpw9/z8SX9dmxblFA6edItUmwJgMeYDZRrwlIVN27i8gysGbznJwUggw2V/FVqFSDdWy040ZPS811DYAqQ==
@@ -16399,7 +16399,7 @@ minipass@^2.6.0, minipass@^2.9.0:
     safe-buffer "^5.1.2"
     yallist "^3.0.0"
 
-minipass@^3.1.1:
+minipass@^3.0.0, minipass@^3.1.1:
   version "3.3.6"
   resolved "https://registry.npmjs.org/minipass/-/minipass-3.3.6.tgz"
   integrity sha512-DxiNidxSEK+tHG6zOIklvNOwm3hvCrbUrdtzY74U6HKTJxvIDfOUL5W5P2Ghd3DTkhhKPYGqeNUIh5qcM4YBfw==
@@ -18268,20 +18268,20 @@ react-dom@^18.2.0:
     loose-envify "^1.1.0"
     scheduler "^0.23.0"
 
-"react-is@^16.12.0 || ^17.0.0 || ^18.0.0", react-is@^17.0.0, react-is@^17.0.1, react-is@^17.0.2:
-  version "17.0.2"
-  resolved "https://registry.npmjs.org/react-is/-/react-is-17.0.2.tgz"
-  integrity sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==
+"react-is@^16.12.0 || ^17.0.0 || ^18.0.0", react-is@^18.0.0:
+  version "18.2.0"
+  resolved "https://registry.npmjs.org/react-is/-/react-is-18.2.0.tgz"
+  integrity sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==
 
 react-is@^16.13.1, react-is@^16.7.0:
   version "16.13.1"
   resolved "https://registry.npmjs.org/react-is/-/react-is-16.13.1.tgz"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
 
-react-is@^18.0.0:
-  version "18.2.0"
-  resolved "https://registry.npmjs.org/react-is/-/react-is-18.2.0.tgz"
-  integrity sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==
+react-is@^17.0.0, react-is@^17.0.1, react-is@^17.0.2:
+  version "17.0.2"
+  resolved "https://registry.npmjs.org/react-is/-/react-is-17.0.2.tgz"
+  integrity sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==
 
 react-lifecycles-compat@^3.0.4:
   version "3.0.4"

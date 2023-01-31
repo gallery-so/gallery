@@ -3,7 +3,10 @@
   "compilerOptions": {
     "jsx": "react-native",
     "paths": {
-      "~frames/*": ["../../packages/frames-dls/src/*"]
-    }
-  },
+      "~frames/*": [
+        "../../packages/frames-dls/src/*"
+      ]
+    },
+    "outDir": "../../.moon/cache/types/apps/mobile"
+  }
 }

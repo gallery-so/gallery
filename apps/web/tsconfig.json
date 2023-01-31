@@ -6,9 +6,6 @@
     "emitDeclarationOnly": false,
     "noEmit": true,
     "paths": {
-      "~frames/*": [
-        "../../packages/frames-dls/src/*"
-      ],
       "~/*": [
         "src/*"
       ],
@@ -20,6 +17,9 @@
       ],
       "~/tests/*": [
         "tests/*"
+      ],
+      "~frames/*": [
+        "../../packages/frames-dls/src/*"
       ]
     },
     "outDir": "../../.moon/cache/types/apps/web",

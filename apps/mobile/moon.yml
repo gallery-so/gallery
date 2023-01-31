@@ -1,0 +1,11 @@
+language: 'javascript'
+
+tasks:
+  typecheck:
+    command: tsc --build
+
+  android:
+    command: expo start --ios
+
+  ios:
+    command: expo start --ios
