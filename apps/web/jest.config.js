@@ -12,6 +12,7 @@ const createJestConfig = nextJest({
 
 module.exports = async () => {
   const nextJestConfig = await createJestConfig({
+    setupFiles: ['<rootDir>/tests/setupFile.js'],
     setupFilesAfterEnv: ['<rootDir>/tests/setupFileAfterEnv.js'],
     modulePaths: ['<rootDir>'],
 
