@@ -9,30 +9,36 @@ jobs:
   run:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: 'actions/checkout@v3'
+        with:
+          fetch-depth: 0
       - name: install puppeteer-headful
         uses: mujo-code/puppeteer-headful@master
         env:
           CI: 'true'
 
       - name: user-gallery
+        working-directory: apps/web
         uses: flameddd/screenshots-ci-action@master
         with:
           url: ${{ github.event.deployment_status.target_url }}/percyio
           devices: iPhone 13,iPad
           fullPage: 'true'
       - uses: actions/upload-artifact@v3
+        working-directory: apps/web
         with:
           path: screenshots
           name: user-gallery
 
       - name: image-detail
+        working-directory: apps/web
         uses: flameddd/screenshots-ci-action@master
         with:
           url: ${{ github.event.deployment_status.target_url }}/percyio/26SbJpukOE3AIJuo9JsWGBA6Xk1/294pa8BiADwZo1pnElsrWPfyrnE-test
           devices: iPhone 13,iPad
           fullPage: 'true'
       - uses: actions/upload-artifact@v3
+        working-directory: apps/web
         with:
           path: screenshots
           name: image-detail
