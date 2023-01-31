@@ -61,7 +61,8 @@
         "src/utils/*"
       ]
     },
-    "outDir": "../../.moon/cache/types/apps/web"
+    "outDir": "../../.moon/cache/types/apps/web",
+    "incremental": true
   },
   "include": [
     "src",
@@ -71,5 +72,8 @@
     "app.d.ts",
     "__generated__"
   ],
-  "references": []
+  "references": [],
+  "exclude": [
+    "node_modules"
+  ]
 }
