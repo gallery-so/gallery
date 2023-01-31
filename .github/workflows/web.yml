@@ -26,7 +26,7 @@ jobs:
           cache: 'yarn'
       - run: 'yarn install --immutable'
       - name: Run typecheck
-        run: yarn moon run web:typecheck
+        run: yarn moon run web:typecheck --log=trace
   unit-tests:
     runs-on: ubuntu-latest
     steps:
