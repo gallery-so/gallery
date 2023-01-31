@@ -8,21 +8,30 @@ import Checkbox from '~/components/core/Checkbox/Checkbox';
 import colors from '~/components/core/colors';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, BaseS, TitleDiatypeL } from '~/components/core/Text/Text';
+import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { MoveCollectionModalFragment$key } from '~/generated/MoveCollectionModalFragment.graphql';
 import { removeNullValues } from '~/utils/removeNullValues';
 
-import { CollectionState } from '../GalleryEditorContext';
+import { CollectionState, GalleryEditorContextType } from '../GalleryEditorContext';
 import useMoveCollectionToGallery from './useMoveCollectionToGallery';
 
 type Props = {
   queryRef: MoveCollectionModalFragment$key;
   collection: CollectionState;
+  hasUnsavedChanges: boolean;
+  handleSaveGallery: GalleryEditorContextType['saveGallery'];
   onSuccess: () => void;
 };
 
-export default function MoveCollectionModal({ collection, onSuccess, queryRef }: Props) {
+export default function MoveCollectionModal({
+  collection,
+  hasUnsavedChanges,
+  handleSaveGallery,
+  onSuccess,
+  queryRef,
+}: Props) {
   const query = useFragment(
     graphql`
       fragment MoveCollectionModalFragment on Query {
@@ -58,6 +67,8 @@ export default function MoveCollectionModal({ collection, onSuccess, queryRef }:
   const { pushToast } = useToastActions();
   const { hideModal } = useModalActions();
 
+  const reportError = useReportError();
+
   const handleSubmit = useCallback(async () => {
     const gallery = galleries.find((gallery) => gallery.dbid === selectedGalleryId);
 
@@ -65,9 +76,26 @@ export default function MoveCollectionModal({ collection, onSuccess, queryRef }:
       return;
     }
 
+    if (hasUnsavedChanges) {
+      try {
+        setIsLoading(true);
+        // save the entire gallery with no caption prior to moving the collection.
+        // the user will be given ample warning about this.
+        await handleSaveGallery('');
+      } catch (error) {
+        reportError('Failed to save gallery changes', {
+          tags: {
+            galleryId,
+          },
+        });
+        pushToast({ message: 'Failed to save your changes before moving your collection' });
+        setIsLoading(false);
+      }
+    }
+
     try {
       setIsLoading(true);
-      moveCollectionToGallery({
+      await moveCollectionToGallery({
         collectionId: collection.dbid,
         galleryId: gallery.dbid,
         onSucess: () => {
@@ -92,15 +120,27 @@ export default function MoveCollectionModal({ collection, onSuccess, queryRef }:
 
       hideModal();
     } catch (error) {
+      reportError('Failed to move collection', {
+        tags: {
+          collectionId: collection.dbid,
+          toGalleryId: selectedGalleryId,
+        },
+      });
+      pushToast({ message: 'Failed to move your collection' });
       setIsLoading(false);
     }
   }, [
-    collection,
+    collection.dbid,
+    collection.name,
     galleries,
+    galleryId,
+    handleSaveGallery,
+    hasUnsavedChanges,
     hideModal,
     moveCollectionToGallery,
     onSuccess,
     pushToast,
+    reportError,
     selectedGalleryId,
   ]);
 
@@ -109,19 +149,32 @@ export default function MoveCollectionModal({ collection, onSuccess, queryRef }:
     setSelectedGalleryId(selectedGalleryId);
   }, []);
 
-  const isButtonDisabled = useMemo(() => {
-    return !selectedGalleryId;
-  }, [selectedGalleryId]);
+  const collectionDisplayName = collection.name || 'Untitled collection';
+
+  const description = useMemo(() => {
+    if (hasUnsavedChanges) {
+      return (
+        <BaseM>
+          It looks like you've made updates to <strong>{collectionDisplayName}</strong>. You'll need
+          to save your gallery first. Choose a gallery to move{' '}
+          <strong>{collectionDisplayName}</strong> to, then press "Save and Move" to move your
+          collection.
+        </BaseM>
+      );
+    }
+    return (
+      <BaseM>
+        This will move your collection <strong>{collectionDisplayName}</strong> to another gallery.
+      </BaseM>
+    );
+  }, [collectionDisplayName, hasUnsavedChanges]);
 
   return (
     <StyledMoveCollectionModal gap={8} justify="space-between">
       <VStack gap={8}>
         <VStack>
-          <TitleDiatypeL>Move to...</TitleDiatypeL>
-          <BaseM>
-            This will move your collection{' '}
-            <strong>{collection.name || 'Untitled collection'}</strong> to another gallery
-          </BaseM>
+          {hasUnsavedChanges ? null : <TitleDiatypeL>Move to...</TitleDiatypeL>}
+          {description}
         </VStack>
 
         <StyledCollectionsContainer>
@@ -139,14 +192,14 @@ export default function MoveCollectionModal({ collection, onSuccess, queryRef }:
       </VStack>
 
       <StyledFooter justify="flex-end">
-        <StyledButton
+        <Button
           onClick={handleSubmit}
           variant="primary"
-          disabled={isButtonDisabled}
+          disabled={!selectedGalleryId}
           pending={isLoading}
         >
-          MOVE
-        </StyledButton>
+          {hasUnsavedChanges ? 'Save and move' : 'Move'}
+        </Button>
       </StyledFooter>
     </StyledMoveCollectionModal>
   );
@@ -184,8 +237,4 @@ const StyledCollectionContainer = styled(HStack)`
 
 const StyledFooter = styled(HStack)`
   padding-top: 12px;
-`;
-
-const StyledButton = styled(Button)`
-  width: 68px;
 `;
