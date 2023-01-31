@@ -24,6 +24,7 @@ jobs:
           # Filename of the workflow this step is defined in
           workflow-id: bundle-diff.yml
           base-branch: main
+          working-directory: apps/web
         env:
           # This secret is automatically injected by GitHub
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

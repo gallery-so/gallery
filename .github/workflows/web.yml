@@ -26,7 +26,7 @@ jobs:
           cache: 'yarn'
       - run: 'yarn install --immutable'
       - name: Run typecheck
-        run: yarn moon run web:codegen; ls apps/web/tests/__generated__; yarn moon run web:typecheck
+        run: yarn moon run web:codegen && yarn moon run web:typecheck
   unit-tests:
     runs-on: ubuntu-latest
     steps:
@@ -39,4 +39,4 @@ jobs:
           cache: 'yarn'
       - run: 'yarn install --immutable'
       - name: Run unit tests
-        run: yarn moon run web:test
+        run: yarn moon run web:codegen && yarn moon run web:test
