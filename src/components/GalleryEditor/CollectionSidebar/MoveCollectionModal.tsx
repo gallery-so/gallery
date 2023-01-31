@@ -47,6 +47,7 @@ export default function MoveCollectionModal({ collection, onSuccess, queryRef }:
   const galleryId = routerQuery.galleryId as string;
 
   const [selectedGalleryId, setSelectedGalleryId] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const galleries = useMemo(() => {
     return removeNullValues(query.viewer?.user?.galleries).filter(
@@ -57,27 +58,33 @@ export default function MoveCollectionModal({ collection, onSuccess, queryRef }:
   const { pushToast } = useToastActions();
   const { hideModal } = useModalActions();
 
-  const handleSubmit = useCallback(() => {
+  const handleSubmit = useCallback(async () => {
     const gallery = galleries.find((gallery) => gallery.dbid === selectedGalleryId);
 
     if (!gallery) {
       return;
     }
 
-    moveCollectionToGallery({
-      collectionId: collection.dbid,
-      galleryId: gallery.dbid,
-      onSucess: () => {
-        onSuccess();
-        pushToast({
-          message: `Moved **${collection.name || 'Untitled collection'}** to **${
-            gallery.name || 'Untitled gallery'
-          }**`,
-        });
+    try {
+      setIsLoading(true);
+      moveCollectionToGallery({
+        collectionId: collection.dbid,
+        galleryId: gallery.dbid,
+        onSucess: () => {
+          onSuccess();
+          setIsLoading(false);
+          pushToast({
+            message: `Moved **${collection.name || 'Untitled collection'}** to **${
+              gallery.name || 'Untitled gallery'
+            }**`,
+          });
 
-        hideModal();
-      },
-    });
+          hideModal();
+        },
+      });
+    } catch (error) {
+      setIsLoading(false);
+    }
   }, [
     collection,
     galleries,
@@ -93,19 +100,18 @@ export default function MoveCollectionModal({ collection, onSuccess, queryRef }:
     setSelectedGalleryId(selectedGalleryId);
   }, []);
 
+  const isButtonDisabled = useMemo(() => {
+    return !selectedGalleryId;
+  }, [selectedGalleryId]);
+
   return (
     <StyledMoveCollectionModal gap={8} justify="space-between">
       <VStack gap={8}>
         <TitleDiatypeL>Move to...</TitleDiatypeL>
 
-        <div>
+        <StyledCollectionsContainer>
           {galleries.map((gallery) => (
-            <StyledCollectionContainer
-              key={gallery.dbid}
-              gap={10}
-              align="center"
-              isSelected={selectedGalleryId === gallery.dbid}
-            >
+            <StyledCollectionContainer key={gallery.dbid} gap={10} align="center">
               <Checkbox
                 checked={selectedGalleryId === gallery.dbid}
                 onChange={handleOnSelect}
@@ -114,11 +120,16 @@ export default function MoveCollectionModal({ collection, onSuccess, queryRef }:
               />
             </StyledCollectionContainer>
           ))}
-        </div>
+        </StyledCollectionsContainer>
       </VStack>
 
       <StyledFooter justify="flex-end">
-        <StyledButton onClick={handleSubmit} variant="primary">
+        <StyledButton
+          onClick={handleSubmit}
+          variant="primary"
+          disabled={isButtonDisabled}
+          pending={isLoading}
+        >
           MOVE
         </StyledButton>
       </StyledFooter>
@@ -128,14 +139,21 @@ export default function MoveCollectionModal({ collection, onSuccess, queryRef }:
 
 const StyledMoveCollectionModal = styled(VStack)`
   width: 375px;
-  min-height: 228px;
+  min-height: 200px;
   padding-top: 52px;
 `;
 
-const StyledCollectionContainer = styled(HStack)<{ isSelected: boolean }>`
+const StyledCollectionsContainer = styled.div`
+  max-height: 200px;
+  overflow-y: auto;
+`;
+
+const StyledCollectionContainer = styled(HStack)`
   padding: 8px;
 
-  background-color: ${({ isSelected }) => (isSelected ? colors.faint : 'transparent')};
+  &:hover {
+    background-color: ${colors.faint};
+  }
 `;
 
 const StyledFooter = styled(HStack)`
