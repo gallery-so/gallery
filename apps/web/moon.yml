@@ -90,8 +90,12 @@ tasks:
     inputs:
       - '@group(source)'
 
+  nextjs-routes:
+    command: nextjs-routes
+
   codegen:
     deps:
+      - "~:nextjs-routes"
       - "~:relay-codegen"
       - "~:graphql-codegen"
 
