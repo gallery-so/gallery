@@ -39,6 +39,7 @@ export type GalleryEditorContextType = {
 
   hasSaved: boolean;
   hasUnsavedChanges: boolean;
+  hasUnsavedChangesCollectionBeingEdited: boolean;
   validationErrors: string[];
   canSave: boolean;
 
@@ -404,18 +405,12 @@ export function GalleryEditorProvider({
   const hasUnsavedChanges = useMemo(() => {
     // Need to convert the liveDisplayTokenIds Set into an Array because sets don't store data
     // as properties to be stringified: https://stackoverflow.com/a/31190928/5377437
-    const currentCollectionsWithoutIds = Object.values(collections).map((collection) => {
-      return {
-        ...collection,
-        liveDisplayTokenIdsSize: [...collection.liveDisplayTokenIds].sort(),
-      };
-    });
-    const initialCollectionsWithoutIds = Object.values(initialCollections).map((collection) => {
-      return {
-        ...collection,
-        liveDisplayTokenIdsSize: [...collection.liveDisplayTokenIds].sort(),
-      };
-    });
+    const currentCollectionsWithoutIds = Object.values(collections).map(
+      convertCollectionToComparisonFriendlyObject
+    );
+    const initialCollectionsWithoutIds = Object.values(initialCollections).map(
+      convertCollectionToComparisonFriendlyObject
+    );
 
     const collectionsAreDifferent =
       JSON.stringify(currentCollectionsWithoutIds) !== JSON.stringify(initialCollectionsWithoutIds);
@@ -425,6 +420,22 @@ export function GalleryEditorProvider({
 
     return collectionsAreDifferent || nameIsDifferent || descriptionIsDifferent;
   }, [collections, description, initialCollections, initialDescription, initialName, name]);
+
+  const hasUnsavedChangesCollectionBeingEdited = useMemo(() => {
+    if (!collectionIdBeingEdited) {
+      return false;
+    }
+    const currCollection = convertCollectionToComparisonFriendlyObject(
+      collections[collectionIdBeingEdited]
+    );
+    const initialCollection = convertCollectionToComparisonFriendlyObject(
+      initialCollections[collectionIdBeingEdited]
+    );
+    const collectionsAreDifferent =
+      JSON.stringify(currCollection) !== JSON.stringify(initialCollection);
+
+    return collectionsAreDifferent;
+  }, [collectionIdBeingEdited, collections, initialCollections]);
 
   // At some point we will have validation errors built in
   const validationErrors = useMemo(() => {
@@ -446,6 +457,7 @@ export function GalleryEditorProvider({
       const nextCollections = { ...collections };
       delete nextCollections[collectionId];
       setCollections(nextCollections);
+      setCollectionIdBeingEdited(Object.keys(nextCollections)[0]);
     },
     [collections, initialCollections]
   );
@@ -459,6 +471,7 @@ export function GalleryEditorProvider({
 
       hasSaved,
       hasUnsavedChanges,
+      hasUnsavedChangesCollectionBeingEdited,
       validationErrors,
       canSave,
 
@@ -480,6 +493,7 @@ export function GalleryEditorProvider({
     hiddenCollectionIds,
     hasSaved,
     hasUnsavedChanges,
+    hasUnsavedChangesCollectionBeingEdited,
     validationErrors,
     canSave,
     saveGallery,
@@ -504,4 +518,14 @@ export function useGalleryEditorContext() {
   }
 
   return value;
+}
+
+function convertCollectionToComparisonFriendlyObject(collection?: CollectionState) {
+  if (!collection) {
+    return null;
+  }
+  return {
+    ...collection,
+    liveDisplayTokenIdsSize: [...collection.liveDisplayTokenIds].sort(),
+  };
 }
