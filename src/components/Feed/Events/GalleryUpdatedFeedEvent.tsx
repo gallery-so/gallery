@@ -83,7 +83,7 @@ export default function GalleryUpdatedFeedEvent({
             <BaseM>
               <HoverCardOnUsername userRef={event.owner} queryRef={query} /> updated{' '}
               <Link href={galleryPagePath} passHref>
-                <StyledEventLabel>{event?.gallery?.name || 'gallery'}</StyledEventLabel>
+                <StyledEventLabel>{event?.gallery?.name || 'their gallery'}</StyledEventLabel>
               </Link>
               <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
             </BaseM>
