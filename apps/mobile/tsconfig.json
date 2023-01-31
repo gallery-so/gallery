@@ -1,0 +1,9 @@
+{
+  "extends": "../../tsconfig.options.json",
+  "compilerOptions": {
+    "jsx": "react-native",
+    "paths": {
+      "~frames/*": ["../../packages/frames-dls/src/*"]
+    }
+  },
+}
