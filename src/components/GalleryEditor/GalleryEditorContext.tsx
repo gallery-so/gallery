@@ -50,6 +50,7 @@ export type GalleryEditorContextType = {
   createCollection: () => void;
   toggleCollectionHidden: (collectionId: string) => void;
   collectionIdBeingEdited: string | null;
+  moveCollectionToGallery: (collectionId: string) => void;
 };
 
 export const GalleryEditorContext = createContext<GalleryEditorContextType | undefined>(undefined);
@@ -436,6 +437,19 @@ export function GalleryEditorProvider({
     return validationErrors.length === 0 && hasUnsavedChanges;
   }, [hasUnsavedChanges, validationErrors.length]);
 
+  const moveCollectionToGallery = useCallback(
+    (collectionId: string) => {
+      const nextInitialCollections = { ...initialCollections };
+      delete nextInitialCollections[collectionId];
+      setInitialCollections(nextInitialCollections);
+
+      const nextCollections = { ...collections };
+      delete nextCollections[collectionId];
+      setCollections(nextCollections);
+    },
+    [collections, initialCollections]
+  );
+
   const value: GalleryEditorContextType = useMemo(() => {
     return {
       name,
@@ -457,6 +471,7 @@ export function GalleryEditorProvider({
       collectionIdBeingEdited,
       editCollectionNameAndNote,
       editGalleryNameAndDescription,
+      moveCollectionToGallery,
     };
   }, [
     name,
@@ -475,6 +490,7 @@ export function GalleryEditorProvider({
     collectionIdBeingEdited,
     editCollectionNameAndNote,
     editGalleryNameAndDescription,
+    moveCollectionToGallery,
   ]);
 
   return <GalleryEditorContext.Provider value={value}>{children}</GalleryEditorContext.Provider>;
