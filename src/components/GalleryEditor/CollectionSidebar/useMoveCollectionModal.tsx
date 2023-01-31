@@ -22,13 +22,13 @@ export default function useMoveCollectionModal({ collection, queryRef }: Props) 
     `,
     queryRef
   );
-  const { deleteCollection } = useGalleryEditorContext();
+  const { moveCollectionToGallery } = useGalleryEditorContext();
 
   const { showModal } = useModalActions();
 
   const onSuccess = useCallback(() => {
-    deleteCollection(collection.dbid);
-  }, [collection.dbid, deleteCollection]);
+    moveCollectionToGallery(collection.dbid);
+  }, [collection.dbid, moveCollectionToGallery]);
 
   return useCallback(() => {
     showModal({

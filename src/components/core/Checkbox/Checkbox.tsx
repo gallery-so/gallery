@@ -64,4 +64,5 @@ const StyledInput = styled.input`
 
 const StyledLabel = styled.label`
   width: 100%;
+  cursor: pointer;
 `;

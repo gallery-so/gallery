@@ -7,7 +7,7 @@ import { Button } from '~/components/core/Button/Button';
 import Checkbox from '~/components/core/Checkbox/Checkbox';
 import colors from '~/components/core/colors';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
-import { BaseS, TitleDiatypeL } from '~/components/core/Text/Text';
+import { BaseM, BaseS, TitleDiatypeL } from '~/components/core/Text/Text';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { MoveCollectionModalFragment$key } from '~/generated/MoveCollectionModalFragment.graphql';
@@ -82,6 +82,15 @@ export default function MoveCollectionModal({ collection, onSuccess, queryRef }:
           hideModal();
         },
       });
+
+      setIsLoading(false);
+      pushToast({
+        message: `Moved **${collection.name || 'Untitled collection'}** to **${
+          gallery.name || 'Untitled gallery'
+        }**`,
+      });
+
+      hideModal();
     } catch (error) {
       setIsLoading(false);
     }
@@ -107,7 +116,13 @@ export default function MoveCollectionModal({ collection, onSuccess, queryRef }:
   return (
     <StyledMoveCollectionModal gap={8} justify="space-between">
       <VStack gap={8}>
-        <TitleDiatypeL>Move to...</TitleDiatypeL>
+        <VStack>
+          <TitleDiatypeL>Move to...</TitleDiatypeL>
+          <BaseM>
+            This will move your collection{' '}
+            <strong>{collection.name || 'Untitled collection'}</strong> to another gallery
+          </BaseM>
+        </VStack>
 
         <StyledCollectionsContainer>
           {galleries.map((gallery) => (
