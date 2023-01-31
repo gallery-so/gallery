@@ -59,7 +59,7 @@ export default function GalleryLeftContent({ queryRef, galleryName }: Props) {
               {query.userByUsername?.username}
             </UsernameBreadcrumbLink>
           </Link>
-          <BreadcrumbText>/ {galleryName}</BreadcrumbText>
+          <BreadcrumbText>/ {galleryName || 'Untitled'}</BreadcrumbText>
         </HStack>
       );
     } else if (user) {
