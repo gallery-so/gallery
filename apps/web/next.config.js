@@ -28,6 +28,21 @@ const nextConfig = {
   },
 
   webpack(config) {
+    // Start https://github.com/NiGhTTraX/ts-monorepo/blob/master/apps/nextjs/next.config.js#L3
+    // Allows us to use typescript from other directories
+    const oneOfRule = config.module.rules.find((rule) => rule.oneOf);
+
+    // Next 12 has multiple TS loaders, and we need to update all of them.
+    const tsRules = oneOfRule.oneOf.filter(
+      (rule) => rule.test && rule.test.toString().includes('tsx|ts')
+    );
+
+    tsRules.forEach((rule) => {
+      // eslint-disable-next-line no-param-reassign
+      rule.include = undefined;
+    });
+    // End https://github.com/NiGhTTraX/ts-monorepo/blob/master/apps/nextjs/next.config.js#L3
+
     config.module.rules.push({
       test: /\.svg$/,
       use: ['@svgr/webpack'],
