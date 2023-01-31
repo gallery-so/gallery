@@ -6,7 +6,7 @@
     "emitDeclarationOnly": false,
     "noEmit": true,
     "paths": {
-      "@frames/*": [
+      "~frames/*": [
         "../../packages/frames-dls/src/*"
       ],
       "~/*": [
