@@ -26,8 +26,8 @@ type State = {
 };
 
 export class ReportingErrorBoundary extends Component<ReportingErrorBoundaryProps, State> {
-  static contextType = ErrorReportingContext;
-  context!: ContextType<typeof ErrorReportingContext>;
+  static override contextType = ErrorReportingContext;
+  declare context: ContextType<typeof ErrorReportingContext>;
 
   constructor(props: ReportingErrorBoundaryProps) {
     super(props);
