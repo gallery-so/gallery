@@ -54,6 +54,9 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({
           tokens(limit: $visibleTokensPerFeedEvent) @required(action: THROW) {
             ...FeedEventTokenPreviewsFragment
           }
+          gallery {
+            dbid
+          }
         }
         newCollectorsNote
       }
@@ -89,6 +92,10 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({
 
   if (!event.collection.tokens.length) {
     throw new Error('Tried to render CollectorsNoteAddedToCollectionFeedEvent without any tokens');
+  }
+
+  if (!event.collection.gallery?.dbid) {
+    throw new Error('Tried to render CollectorsNoteAddedToCollectionFeedEvent without a gallery');
   }
 
   return (
