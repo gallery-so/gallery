@@ -5,6 +5,7 @@ import colors from '~/components/core/colors';
 import IconContainer from '~/components/core/IconContainer';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BODY_FONT_FAMILY, Paragraph } from '~/components/core/Text/Text';
+import OnboardingDialog from '~/components/GalleryEditor/GalleryOnboardingGuide/OnboardingDialog';
 import { EditPencilIcon } from '~/icons/EditPencilIcon';
 
 type GalleryTitleSectionProps = {
@@ -15,7 +16,16 @@ type GalleryTitleSectionProps = {
 export function GalleryTitleSection({ onEdit, galleryName }: GalleryTitleSectionProps) {
   return (
     <GalleryTitleContainer align="center" onClick={onEdit} gap={8}>
-      <MainGalleryText>{galleryName || 'Untitled'}</MainGalleryText>
+      <MainGalleryText>
+        {galleryName || 'Untitled'}
+        <OnboardingDialog
+          step={1}
+          text="You can modify your gallery name and description here."
+          onNext={() => {
+            console.log('next');
+          }}
+        />
+      </MainGalleryText>
 
       <EditIconContainer>
         <IconContainer size="sm" variant="stacked" icon={<EditPencilIcon />} />
@@ -52,6 +62,11 @@ const MainGalleryText = styled(Paragraph)`
   white-space: nowrap;
 
   font-size: 16px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 
   @media only screen and ${breakpoints.tablet} {
     font-size: 18px;
