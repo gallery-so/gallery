@@ -72,16 +72,13 @@ tasks:
   touch-generated:
     command: mkdir -p __generated__
     platform: system
-    local: true
 
   touch-persisted-queries:
     command: "touch persisted_queries.json"
     platform: system
-    local: true
 
   touch-relay-files:
     platform: system
-    local: true
     deps:
       - "~:touch-persisted-queries"
       - "~:touch-generated"
