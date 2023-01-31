@@ -84,6 +84,8 @@ tasks:
       - "~:touch-generated"
 
   relay-codegen:
+    deps:
+      - "~:touch-relay-files"
     command: relay-compiler --repersist
     inputs:
       - '@group(source)'
