@@ -129,7 +129,7 @@ export default function CollectionCreatedFeedEvent({
             )}
             <VStack gap={8}>
               <FeedEventTokenPreviews
-                isInCaption={Boolean(caption || isSubEvent)}
+                isInCaption={Boolean(caption)}
                 tokenToPreviewRefs={tokensToPreview}
               />
               {showAdditionalPiecesIndicator && (
