@@ -55,7 +55,6 @@ tasks:
     command: synpress run --configFile cypress.config.ts
     local: true
 
-
   relay-watch:
     command: relay-compiler --repersist --watch
     local: true
