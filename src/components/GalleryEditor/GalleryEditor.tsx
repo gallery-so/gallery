@@ -21,6 +21,7 @@ export function GalleryEditor({ queryRef }: GalleryEditorProps) {
       fragment GalleryEditorFragment on Query {
         ...CollectionEditorNewFragment
         ...PiecesSidebarViewerNewFragment
+        ...CollectionSidebarQueryFragment
 
         viewer {
           __typename
@@ -49,7 +50,7 @@ export function GalleryEditor({ queryRef }: GalleryEditorProps) {
   return (
     <GalleryEditorWrapper>
       <CollectionEditorProviderNew>
-        <CollectionSidebar />
+        <CollectionSidebar queryRef={query} />
 
         <CollectionEditor queryRef={query} />
 

@@ -31,7 +31,7 @@ export default function Checkbox({ checked, label, isPending, onChange, ...input
           {checked && <CheckIcon color={colors.activeBlue} />}
         </StyledCheckboxContainer>
       </StyledCheckbox>
-      {label && <label htmlFor={id}>{label}</label>}
+      {label && <StyledLabel htmlFor={id}>{label}</StyledLabel>}
     </>
   );
 }
@@ -59,5 +59,10 @@ const StyledInput = styled.input`
   width: 22px;
   z-index: 1;
   margin: 0;
+  cursor: pointer;
+`;
+
+const StyledLabel = styled.label`
+  width: 100%;
   cursor: pointer;
 `;
