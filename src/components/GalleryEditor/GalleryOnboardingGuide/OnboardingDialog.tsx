@@ -27,21 +27,23 @@ type Props = {
 
   options?: {
     placement?: Placement;
+    positionOffset?: number;
   };
 };
 
 export default function OnboardingDialog({ step, text, onNext, options }: Props) {
   const [open, setOpen] = useState(true);
 
-  const { placement } = options ?? {
+  const { placement, positionOffset } = options ?? {
     placement: 'right-start',
+    positionOffset: 10,
   };
 
   const { x, y, reference, floating, strategy, context } = useFloating({
     placement,
     open: open,
     onOpenChange: setOpen,
-    middleware: [flip(), shift(), offset(10)],
+    middleware: [flip(), shift(), offset(positionOffset)],
     whileElementsMounted: autoUpdate,
   });
 
@@ -65,7 +67,7 @@ export default function OnboardingDialog({ step, text, onNext, options }: Props)
             style={{
               position: strategy,
               top: y ?? 0,
-              left: x ?? 0,
+              left: x ?? 500,
             }}
             {...getFloatingProps()}
           >

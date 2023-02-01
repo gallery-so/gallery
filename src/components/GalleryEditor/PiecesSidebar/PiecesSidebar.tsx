@@ -17,6 +17,8 @@ import useSyncTokens from '~/hooks/api/tokens/useSyncTokens';
 import { doesUserOwnWalletFromChain } from '~/utils/doesUserOwnWalletFromChain';
 import { removeNullValues } from '~/utils/removeNullValues';
 
+import OnboardingDialog from '../GalleryOnboardingGuide/OnboardingDialog';
+import { useOnboardingDialogContext } from '../GalleryOnboardingGuide/OnboardingDialogContext';
 import { AddWalletSidebar } from './AddWalletSidebar';
 import SearchBar from './SearchBar';
 import { SidebarView, SidebarViewSelector } from './SidebarViewSelector';
@@ -53,6 +55,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
     queryRef
   );
 
+  const { step, dialogMessage, nextStep } = useOnboardingDialogContext();
   const { syncTokens } = useSyncTokens();
   const { addWhitespace } = useCollectionEditorContextNew();
 
@@ -115,6 +118,21 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
           setSearchResults={setSearchResults}
           setDebouncedSearchQuery={setDebouncedSearchQuery}
         />
+        {step === 3 && (
+          <StyledOnboardingDialogContainer>
+            <StyledOnboardingDialog>
+              <OnboardingDialog
+                step={step}
+                text={dialogMessage}
+                onNext={nextStep}
+                options={{
+                  placement: 'left-start',
+                  positionOffset: 150,
+                }}
+              />
+            </StyledOnboardingDialog>
+          </StyledOnboardingDialogContainer>
+        )}
         {!isSearching && (
           <>
             <div>
@@ -180,4 +198,14 @@ const StyledSidebar = styled.div<{ navbarHeight: number }>`
 
 const Header = styled(HStack)`
   padding: 0 12px 8px;
+`;
+
+const StyledOnboardingDialogContainer = styled.div`
+  position: relative;
+`;
+
+const StyledOnboardingDialog = styled.div`
+  position: absolute;
+  top: -28px;
+  left: 110px;
 `;
