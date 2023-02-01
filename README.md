@@ -9,36 +9,30 @@ The premier gallery experience for your NFTs.
 1. [Install Yarn](https://classic.yarnpkg.com/en/docs/install)
 2. [Install NVM](https://github.com/nvm-sh/nvm)
 
-### Setup
-
-Create a local .env file by copying values from .env.sample:
-
-```terminal
-$ cp .env.sample .env
-```
+### Setup Web
 
 Install our node version:
 
 ```bash
-$ nvm use
+nvm use
 ```
 
 Install dependencies:
 
 ```bash
-$ yarn
+yarn install
 ```
 
-Generate relay files:
+Create a local .env file by copying values from .env.sample:
 
 ```bash
-yarn relay
+cp apps/web/.env.sample apps/web/.env
 ```
 
 Start app:
 
 ```bash
-$ yarn dev
+yarn moon run web:dev
 ```
 
 The app will be running at http://localhost:3000.
@@ -60,10 +54,10 @@ Hit up a member of the core team!
 
 ### Other commands
 
-- `yarn test` for tests
-- `yarn relay` to run relay compiler
-- `yarn relay:watch` to run relay compiler in watch mode
-- `yarn lint` for linting
-- `yarn typecheck` for checking type validity
-- `yarn cypress:run` to run e2e tests
-- `yarn cypress:open` to open cypress
+- `moon run web:test` for tests
+- `moon run web:relay-codegen` to run relay compiler
+- `moon run web:relay-watch` to run relay compiler in watch mode
+- `moon run web:lint` for linting
+- `moon run web:typecheck` for checking type validity
+- `moon run web:synpress-run` to run e2e tests
+- `moon run web:synpress-open` to open cypress
