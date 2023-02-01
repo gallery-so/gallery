@@ -8,16 +8,28 @@ import {
 } from '@dnd-kit/core';
 import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { useCallback, useMemo } from 'react';
+import { graphql, useFragment } from 'react-relay';
 
 import { VStack } from '~/components/core/Spacer/Stack';
 import { CollectionListItem } from '~/components/GalleryEditor/CollectionSidebar/CollectionListItem';
 import { useGalleryEditorContext } from '~/components/GalleryEditor/GalleryEditorContext';
+import { CollectionSearchResultsQueryFragment$key } from '~/generated/CollectionSearchResultsQueryFragment.graphql';
 
 type CollectionSearchResultsProps = {
   searchQuery: string;
+  queryRef: CollectionSearchResultsQueryFragment$key;
 };
 
-export function CollectionSearchResults({ searchQuery }: CollectionSearchResultsProps) {
+export function CollectionSearchResults({ searchQuery, queryRef }: CollectionSearchResultsProps) {
+  const query = useFragment(
+    graphql`
+      fragment CollectionSearchResultsQueryFragment on Query {
+        ...CollectionListItemQueryFragment
+      }
+    `,
+    queryRef
+  );
+
   const { collections, setCollections, activateCollection } = useGalleryEditorContext();
 
   const collectionList = useMemo(() => Object.values(collections), [collections]);
@@ -80,7 +92,13 @@ export function CollectionSearchResults({ searchQuery }: CollectionSearchResults
       >
         <VStack gap={2}>
           {filteredCollections.map((collection) => {
-            return <CollectionListItem key={collection.dbid} collectionId={collection.dbid} />;
+            return (
+              <CollectionListItem
+                key={collection.dbid}
+                collectionId={collection.dbid}
+                queryRef={query}
+              />
+            );
           })}
         </VStack>
       </SortableContext>

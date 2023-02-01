@@ -37,7 +37,9 @@ export type GalleryEditorContextType = {
   setCollections: Dispatch<SetStateAction<CollectionMap>>;
   hiddenCollectionIds: Set<string>;
 
+  hasSaved: boolean;
   hasUnsavedChanges: boolean;
+  hasUnsavedChangesCollectionBeingEdited: boolean;
   validationErrors: string[];
   canSave: boolean;
 
@@ -49,12 +51,14 @@ export type GalleryEditorContextType = {
   createCollection: () => void;
   toggleCollectionHidden: (collectionId: string) => void;
   collectionIdBeingEdited: string | null;
+  moveCollectionToGallery: (collectionId: string) => void;
 };
 
 export const GalleryEditorContext = createContext<GalleryEditorContextType | undefined>(undefined);
 
 type GalleryEditorProviderProps = PropsWithChildren<{
   queryRef: GalleryEditorContextFragment$key;
+  initialCollectionId?: string | null;
 }>;
 
 export type StagedItem = { kind: 'whitespace'; id: string } | { kind: 'token'; id: string };
@@ -81,7 +85,11 @@ export type CollectionState = {
 export type StagedSectionMap = Record<string, StagedSection>;
 export type CollectionMap = Record<string, CollectionState>;
 
-export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProviderProps) {
+export function GalleryEditorProvider({
+  queryRef,
+  initialCollectionId,
+  children,
+}: GalleryEditorProviderProps) {
   const query = useFragment(
     graphql`
       fragment GalleryEditorContextFragment on Query {
@@ -90,9 +98,6 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
             dbid
             name
             description
-            collections {
-              dbid
-            }
           }
         }
 
@@ -137,12 +142,10 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
     }
   `);
 
+  const [hasSaved, setHasSaved] = useState(false);
+
   const [name, setName] = useState(() => query.galleryById?.name ?? '');
   const [description, setDescription] = useState(() => query.galleryById?.description ?? '');
-
-  const [collectionIdBeingEdited, setCollectionIdBeingEdited] = useState<string | null>(() => {
-    return query.galleryById?.collections?.[0]?.dbid ?? null;
-  });
 
   const [deletedCollectionIds, setDeletedCollectionIds] = useState(() => {
     return new Set<string>();
@@ -151,6 +154,10 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
   const [collections, setCollections] = useState<CollectionMap>(() =>
     getInitialCollectionsFromServer(query)
   );
+
+  const [collectionIdBeingEdited, setCollectionIdBeingEdited] = useState<string | null>(() => {
+    return initialCollectionId ?? Object.values(collections)[0]?.dbid ?? null;
+  });
 
   const { showModal } = useModalActions();
   const { pushToast } = useToastActions();
@@ -175,8 +182,8 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
       };
 
       return {
-        [newCollectionId]: newCollection,
         ...previous,
+        [newCollectionId]: newCollection,
       };
     });
 
@@ -243,28 +250,20 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
 
   const editCollectionNameAndNote = useCallback(
     (collectionId: string) => {
-      if (!collectionIdBeingEdited) {
-        return null;
-      }
-
       const collection = collections[collectionId];
 
       showModal({
-        headerText: 'Add a tile and description',
+        headerText: 'Add a title and description',
         content: (
           <CollectionCreateOrEditForm
             name={collection.name}
             collectorsNote={collection.collectorsNote}
             onDone={({ name, collectorsNote }) => {
-              if (!collectionIdBeingEdited) {
-                return;
-              }
-
               setCollections((previous) => {
                 const next = { ...previous };
 
-                next[collectionIdBeingEdited] = {
-                  ...next[collectionIdBeingEdited],
+                next[collectionId] = {
+                  ...next[collectionId],
                   name,
                   collectorsNote,
                 };
@@ -277,7 +276,7 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
         ),
       });
     },
-    [collectionIdBeingEdited, collections, showModal]
+    [collections, showModal]
   );
 
   const reportError = useReportError();
@@ -369,6 +368,8 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
         setInitialName(name);
         setInitialDescription(description);
         setInitialCollections(collections);
+
+        setHasSaved(true);
       } catch (error) {
         pushToast({
           autoClose: false,
@@ -402,8 +403,14 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
   const [initialDescription, setInitialDescription] = useState(description);
   const [initialCollections, setInitialCollections] = useState(collections);
   const hasUnsavedChanges = useMemo(() => {
-    const currentCollectionsWithoutIds = Object.values(collections);
-    const initialCollectionsWithoutIds = Object.values(initialCollections);
+    // Need to convert the liveDisplayTokenIds Set into an Array because sets don't store data
+    // as properties to be stringified: https://stackoverflow.com/a/31190928/5377437
+    const currentCollectionsWithoutIds = Object.values(collections).map(
+      convertCollectionToComparisonFriendlyObject
+    );
+    const initialCollectionsWithoutIds = Object.values(initialCollections).map(
+      convertCollectionToComparisonFriendlyObject
+    );
 
     const collectionsAreDifferent =
       JSON.stringify(currentCollectionsWithoutIds) !== JSON.stringify(initialCollectionsWithoutIds);
@@ -413,6 +420,22 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
 
     return collectionsAreDifferent || nameIsDifferent || descriptionIsDifferent;
   }, [collections, description, initialCollections, initialDescription, initialName, name]);
+
+  const hasUnsavedChangesCollectionBeingEdited = useMemo(() => {
+    if (!collectionIdBeingEdited) {
+      return false;
+    }
+    const currCollection = convertCollectionToComparisonFriendlyObject(
+      collections[collectionIdBeingEdited]
+    );
+    const initialCollection = convertCollectionToComparisonFriendlyObject(
+      initialCollections[collectionIdBeingEdited]
+    );
+    const collectionsAreDifferent =
+      JSON.stringify(currCollection) !== JSON.stringify(initialCollection);
+
+    return collectionsAreDifferent;
+  }, [collectionIdBeingEdited, collections, initialCollections]);
 
   // At some point we will have validation errors built in
   const validationErrors = useMemo(() => {
@@ -425,6 +448,20 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
     return validationErrors.length === 0 && hasUnsavedChanges;
   }, [hasUnsavedChanges, validationErrors.length]);
 
+  const moveCollectionToGallery = useCallback(
+    (collectionId: string) => {
+      const nextInitialCollections = { ...initialCollections };
+      delete nextInitialCollections[collectionId];
+      setInitialCollections(nextInitialCollections);
+
+      const nextCollections = { ...collections };
+      delete nextCollections[collectionId];
+      setCollections(nextCollections);
+      setCollectionIdBeingEdited(Object.keys(nextCollections)[0]);
+    },
+    [collections, initialCollections]
+  );
+
   const value: GalleryEditorContextType = useMemo(() => {
     return {
       name,
@@ -432,7 +469,9 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
       collections,
       hiddenCollectionIds,
 
+      hasSaved,
       hasUnsavedChanges,
+      hasUnsavedChangesCollectionBeingEdited,
       validationErrors,
       canSave,
 
@@ -445,13 +484,16 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
       collectionIdBeingEdited,
       editCollectionNameAndNote,
       editGalleryNameAndDescription,
+      moveCollectionToGallery,
     };
   }, [
     name,
     description,
     collections,
     hiddenCollectionIds,
+    hasSaved,
     hasUnsavedChanges,
+    hasUnsavedChangesCollectionBeingEdited,
     validationErrors,
     canSave,
     saveGallery,
@@ -462,6 +504,7 @@ export function GalleryEditorProvider({ queryRef, children }: GalleryEditorProvi
     collectionIdBeingEdited,
     editCollectionNameAndNote,
     editGalleryNameAndDescription,
+    moveCollectionToGallery,
   ]);
 
   return <GalleryEditorContext.Provider value={value}>{children}</GalleryEditorContext.Provider>;
@@ -475,4 +518,14 @@ export function useGalleryEditorContext() {
   }
 
   return value;
+}
+
+function convertCollectionToComparisonFriendlyObject(collection?: CollectionState) {
+  if (!collection) {
+    return null;
+  }
+  return {
+    ...collection,
+    liveDisplayTokenIdsSize: [...collection.liveDisplayTokenIds].sort(),
+  };
 }

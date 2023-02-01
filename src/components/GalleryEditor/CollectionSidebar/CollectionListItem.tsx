@@ -1,5 +1,6 @@
 import { useSortable } from '@dnd-kit/sortable';
-import { CSSProperties, MouseEventHandler, useCallback } from 'react';
+import { CSSProperties, MouseEventHandler, useCallback, useMemo } from 'react';
+import { graphql, useFragment } from 'react-relay';
 import styled, { css } from 'styled-components';
 
 import colors from '~/components/core/colors';
@@ -13,15 +14,28 @@ import { useGalleryEditorContext } from '~/components/GalleryEditor/GalleryEdito
 import { NewTooltip } from '~/components/Tooltip/NewTooltip';
 import { useTooltipHover } from '~/components/Tooltip/useTooltipHover';
 import { ErrorWithSentryMetadata } from '~/errors/ErrorWithSentryMetadata';
+import { CollectionListItemQueryFragment$key } from '~/generated/CollectionListItemQueryFragment.graphql';
 import HideIcon from '~/icons/HideIcon';
 import ShowIcon from '~/icons/ShowIcon';
 import unescape from '~/utils/unescape';
 
+import useMoveCollectionModal from './useMoveCollectionModal';
+
 type CollectionListItemProps = {
   collectionId: string;
+  queryRef: CollectionListItemQueryFragment$key;
 };
 
-export function CollectionListItem({ collectionId }: CollectionListItemProps) {
+export function CollectionListItem({ collectionId, queryRef }: CollectionListItemProps) {
+  const query = useFragment(
+    graphql`
+      fragment CollectionListItemQueryFragment on Query {
+        ...useMoveCollectionModalFragment
+      }
+    `,
+    queryRef
+  );
+
   const {
     collections,
     collectionIdBeingEdited,
@@ -42,6 +56,8 @@ export function CollectionListItem({ collectionId }: CollectionListItemProps) {
 
   const { floating, reference, getFloatingProps, getReferenceProps, floatingStyle } =
     useTooltipHover();
+
+  const handleMoveCollectionModal = useMoveCollectionModal({ collection, queryRef: query });
 
   const { hiddenCollectionIds, toggleCollectionHidden } = useGalleryEditorContext();
   const hidden = hiddenCollectionIds.has(collection.dbid);
@@ -81,6 +97,14 @@ export function CollectionListItem({ collectionId }: CollectionListItemProps) {
     cursor: isDragging ? 'grabbing' : 'pointer',
   };
 
+  const collectionLabel = useMemo(() => {
+    if (escapedCollectionName) {
+      return escapedCollectionName;
+    }
+
+    return selected ? 'Untitled Collection' : 'Untitled';
+  }, [escapedCollectionName, selected]);
+
   return (
     <div
       // Draggable Props
@@ -96,40 +120,47 @@ export function CollectionListItem({ collectionId }: CollectionListItemProps) {
         align="center"
         selected={selected}
       >
-        <CollectionTitleText italicize={!collection.name}>
-          {escapedCollectionName || 'Untitled'}
+        <CollectionTitleText isHidden={hidden} italicize={!collection.name}>
+          {collectionLabel}
         </CollectionTitleText>
-        <HStack gap={2} onClick={handleIconSectionClick}>
+        <CollectionListItemActionsContainer gap={10} onClick={handleIconSectionClick}>
           <IconContainer
             {...getReferenceProps()}
             onClick={handleToggleHidden}
             ref={reference}
             size="sm"
+            disableHoverPadding
             variant="stacked"
-            icon={hidden ? <ShowIcon /> : <HideIcon />}
+            icon={hidden ? <HideIcon /> : <ShowIcon />}
           />
-
           <NewTooltip
             {...getFloatingProps()}
             style={floatingStyle}
             ref={floating}
             text={hidden ? 'Show' : 'Hide'}
           />
-
-          <SettingsDropdown size="sm" iconVariant="stacked">
+          <SettingsDropdown size="sm" iconVariant="stacked" disableHoverPadding>
             <DropdownSection>
               <DropdownItem onClick={handleEdit}>EDIT NAME & DESC</DropdownItem>
+              <DropdownItem onClick={handleMoveCollectionModal}>MOVE TO...</DropdownItem>
               <DropdownItem onClick={handleDelete}>DELETE</DropdownItem>
             </DropdownSection>
           </SettingsDropdown>
-        </HStack>
+        </CollectionListItemActionsContainer>
       </CollectionListItemContainer>
     </div>
   );
 }
 
-const CollectionTitleText = styled(TitleXS)<{ italicize: boolean }>`
+const CollectionTitleText = styled(TitleXS)<{ italicize: boolean; isHidden: boolean }>`
   text-transform: none;
+
+  ${({ isHidden }) =>
+    isHidden
+      ? css`
+          color: ${colors.metal};
+        `
+      : null}
 
   ${({ italicize }) =>
     italicize
@@ -137,6 +168,10 @@ const CollectionTitleText = styled(TitleXS)<{ italicize: boolean }>`
           font-style: italic;
         `
       : null}
+`;
+
+const CollectionListItemActionsContainer = styled(HStack)`
+  display: none;
 `;
 
 const CollectionListItemContainer = styled(HStack)<{ selected: boolean }>`
@@ -149,14 +184,24 @@ const CollectionListItemContainer = styled(HStack)<{ selected: boolean }>`
 
   background: ${colors.white};
 
+  :hover {
+    background-color: ${colors.faint};
+    ${CollectionListItemActionsContainer} {
+      display: flex;
+    }
+  }
+
   ${({ selected }) =>
     selected
       ? css`
           background-color: ${colors.faint};
+
+          ${CollectionTitleText} {
+            font-weight: 700;
+          }
+          ${CollectionListItemActionsContainer} {
+            display: flex;
+          }
         `
       : null};
-
-  :hover {
-    background-color: ${colors.faint};
-  }
 `;

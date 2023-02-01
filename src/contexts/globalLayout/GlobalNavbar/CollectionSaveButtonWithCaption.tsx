@@ -10,6 +10,7 @@ import transitions, {
   ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL,
 } from '~/components/core/transitions';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
+import { useSaveHotkey } from '~/hooks/useSaveHotkey';
 
 type Props = {
   disabled?: boolean;
@@ -64,6 +65,12 @@ export function CollectionSaveButtonWithCaption({
   }, [caption]);
 
   const [isLoading, setIsLoading] = useState(false);
+
+  useSaveHotkey(() => {
+    if (!isPopupDisplayed && !disabled) {
+      handleOpenCaption();
+    }
+  });
 
   return (
     <StyledConfirmationContainer>

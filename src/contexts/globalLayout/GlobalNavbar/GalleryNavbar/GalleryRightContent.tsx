@@ -1,4 +1,5 @@
 import { useRouter } from 'next/router';
+import { Route } from 'nextjs-routes';
 import { useCallback, useMemo, useState } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -10,7 +11,7 @@ import { Dropdown } from '~/components/core/Dropdown/Dropdown';
 import { DropdownItem } from '~/components/core/Dropdown/DropdownItem';
 import { DropdownLink } from '~/components/core/Dropdown/DropdownLink';
 import { DropdownSection } from '~/components/core/Dropdown/DropdownSection';
-import { HStack } from '~/components/core/Spacer/Stack';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { TitleXS } from '~/components/core/Text/Text';
 import useCreateGallery from '~/components/MultiGallery/useCreateGallery';
 import Tooltip from '~/components/Tooltip/Tooltip';
@@ -19,26 +20,26 @@ import { SignInButton } from '~/contexts/globalLayout/GlobalNavbar/SignInButton'
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { GalleryRightContentFragment$key } from '~/generated/GalleryRightContentFragment.graphql';
+import { GalleryRightContentGalleryFragment$key } from '~/generated/GalleryRightContentGalleryFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import { useQrCode } from '~/scenes/Modals/QRCodePopover';
 import EditUserInfoModal from '~/scenes/UserGalleryPage/EditUserInfoModal';
 import LinkButton from '~/scenes/UserGalleryPage/LinkButton';
-import { getEditGalleryUrl } from '~/utils/getEditGalleryUrl';
 import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 import QRCodeButton from './QRCodeButton';
 
 type GalleryRightContentProps = {
   username: string;
+  galleryRef: GalleryRightContentGalleryFragment$key | null;
   queryRef: GalleryRightContentFragment$key;
 };
 
-export function GalleryRightContent({ queryRef, username }: GalleryRightContentProps) {
+export function GalleryRightContent({ queryRef, galleryRef, username }: GalleryRightContentProps) {
   const query = useFragment(
     graphql`
       fragment GalleryRightContentFragment on Query {
         ...EditUserInfoModalFragment
-        ...getEditGalleryUrlFragment
         ...isFeatureEnabledFragment
 
         viewer {
@@ -61,6 +62,15 @@ export function GalleryRightContent({ queryRef, username }: GalleryRightContentP
       }
     `,
     queryRef
+  );
+
+  const gallery = useFragment(
+    graphql`
+      fragment GalleryRightContentGalleryFragment on Gallery {
+        dbid
+      }
+    `,
+    galleryRef
   );
 
   const styledQrCode = useQrCode();
@@ -124,7 +134,16 @@ export function GalleryRightContent({ queryRef, username }: GalleryRightContentP
     setShowDropdown(false);
   }, []);
 
-  const editGalleryUrl = getEditGalleryUrl(query);
+  const editGalleryUrl: Route | null = useMemo(() => {
+    if (!gallery?.dbid) {
+      return null;
+    }
+
+    return {
+      pathname: '/gallery/[galleryId]/edit',
+      query: { galleryId: gallery.dbid },
+    };
+  }, [gallery?.dbid]);
 
   const dropdown = useMemo(() => {
     return (
@@ -155,12 +174,16 @@ export function GalleryRightContent({ queryRef, username }: GalleryRightContentP
 
   if (showShowMultiGalleryButton) {
     return (
-      <div onMouseEnter={() => setShowTooltip(true)} onMouseLeave={() => setShowTooltip(false)}>
-        {!isMultigalleryEnabled && <StyledTooltip text={'Coming Soon'} showTooltip={showTooltip} />}
-        <Button variant="secondary" onClick={handleCreateGallery} disabled={!isMultigalleryEnabled}>
+      <VStack
+        onMouseEnter={() => setShowTooltip(true)}
+        onMouseLeave={() => setShowTooltip(false)}
+        align="center"
+      >
+        {!isMultigalleryEnabled && <StyledTooltip text="Soon™" showTooltip={showTooltip} />}
+        <Button variant="primary" onClick={handleCreateGallery} disabled={!isMultigalleryEnabled}>
           Add New
         </Button>
-      </div>
+      </VStack>
     );
   }
 
@@ -200,6 +223,5 @@ const EditButtonContainer = styled.div.attrs({ role: 'button' })`
 
 const StyledTooltip = styled(Tooltip)<{ showTooltip: boolean }>`
   opacity: ${({ showTooltip }) => (showTooltip ? 1 : 0)};
-  transform: translateX(${({ showTooltip }) => (showTooltip ? '-120%' : '-90%')});
-  top: 16px;
+  transform: translateY(${({ showTooltip }) => (showTooltip ? '38px' : '34px')});
 `;

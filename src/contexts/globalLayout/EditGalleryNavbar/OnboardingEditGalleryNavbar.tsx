@@ -14,6 +14,7 @@ import {
   NavbarRightContent,
   StandardNavbarContainer,
 } from '~/contexts/globalLayout/GlobalNavbar/StandardNavbarContainer';
+import { useSaveHotkey } from '~/hooks/useSaveHotkey';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 
 type Props = {
@@ -36,6 +37,10 @@ export function OnboardingEditGalleryNavbar({
   galleryName,
 }: Props) {
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
+
+  useSaveHotkey(() => {
+    onDone();
+  });
 
   return (
     <Wrapper>

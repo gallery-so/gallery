@@ -8,7 +8,10 @@ import {
   DragStartEvent,
   DropAnimation,
   MeasuringStrategy,
+  PointerSensor,
   UniqueIdentifier,
+  useSensor,
+  useSensors,
 } from '@dnd-kit/core';
 import { arraySwap, rectSortingStrategy, SortableContext } from '@dnd-kit/sortable';
 import { useCallback, useMemo, useState } from 'react';
@@ -19,8 +22,8 @@ import styled from 'styled-components';
 import breakpoints from '~/components/core/breakpoints';
 import Gallery from '~/components/MultiGallery/Gallery';
 import useUpdateGalleryOrder from '~/components/MultiGallery/useUpdateGalleryOrder';
-import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { GalleriesPageQueryFragment$key } from '~/generated/GalleriesPageQueryFragment.graphql';
+import { GalleryPageSpacing } from '~/pages/[username]';
 import { removeNullValues } from '~/utils/removeNullValues';
 
 type Props = {
@@ -28,8 +31,6 @@ type Props = {
 };
 
 export default function GalleriesPage({ queryRef }: Props) {
-  const navbarHeight = useGlobalNavbarHeight();
-
   const query = useFragment(
     graphql`
       fragment GalleriesPageQueryFragment on Query {
@@ -158,9 +159,21 @@ export default function GalleriesPage({ queryRef }: Props) {
     [activeId, nonNullGalleries]
   );
 
+  // This is here to ensure the user can click icons without
+  // immediately triggering the drag n drop flow
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        delay: 150,
+        tolerance: 100,
+      },
+    })
+  );
+
   return (
-    <GalleryPageWrapper navbarHeight={navbarHeight}>
+    <GalleryPageSpacing>
       <DndContext
+        sensors={sensors}
         collisionDetection={closestCenter}
         measuring={layoutMeasuring}
         onDragStart={handleDragStart}
@@ -196,24 +209,19 @@ export default function GalleriesPage({ queryRef }: Props) {
           document.body
         )}
       </DndContext>
-    </GalleryPageWrapper>
+    </GalleryPageSpacing>
   );
 }
 
-const GalleryPageWrapper = styled.div<{ navbarHeight: number }>`
-  height: calc(100vh - ${({ navbarHeight }) => navbarHeight}px);
-  padding: ${({ navbarHeight }) => navbarHeight}px 16px 0;
-`;
-
 const GalleryWrapper = styled.div`
   display: grid;
-  grid-template-columns: repeat(1, 1fr);
+  grid-template-columns: repeat(1, minmax(1fr));
   gap: 16px;
 
   @media only screen and ${breakpoints.tablet} {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   @media only screen and ${breakpoints.desktop} {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 `;

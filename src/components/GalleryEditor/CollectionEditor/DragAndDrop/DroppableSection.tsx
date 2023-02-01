@@ -55,6 +55,7 @@ export default function DroppableSection({ children, columns, id, items, style, 
       <VStack gap={6} align="center" onMouseDown={handleMouseDown}>
         <VStack gap={12} align="center">
           <Section
+            id={id}
             ref={setNodeRef}
             style={{
               ...style,

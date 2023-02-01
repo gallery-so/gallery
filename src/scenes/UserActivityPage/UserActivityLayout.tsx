@@ -10,7 +10,6 @@ import { VStack } from '~/components/core/Spacer/Stack';
 import { FEED_MAX_WIDTH } from '~/components/Feed/dimensions';
 import { UserActivityLayoutFragment$key } from '~/generated/UserActivityLayoutFragment.graphql';
 import { UserActivityLayoutQueryFragment$key } from '~/generated/UserActivityLayoutQueryFragment.graphql';
-import { StyledUserGalleryLayout } from '~/scenes/UserGalleryPage/UserGalleryLayout';
 
 import UserActivityFeed from './UserActivityFeed';
 
@@ -61,14 +60,9 @@ export const UserActivityLayout = ({ userRef, queryRef }: Props) => {
   }, []);
 
   return (
-    <StyledUserGalleryLayout align="center">
-      <StyledUserActivityLayout
-        gap={32}
-        enableFlashFirstRowAnimation={enableFlashFirstRowAnimation}
-      >
-        <UserActivityFeed userRef={user} queryRef={query} />
-      </StyledUserActivityLayout>
-    </StyledUserGalleryLayout>
+    <StyledUserActivityLayout gap={32} enableFlashFirstRowAnimation={enableFlashFirstRowAnimation}>
+      <UserActivityFeed userRef={user} queryRef={query} />
+    </StyledUserActivityLayout>
   );
 };
 
@@ -87,14 +81,13 @@ const flashAnimation = keyframes`
 `;
 
 const StyledUserActivityLayout = styled(VStack)<{ enableFlashFirstRowAnimation: boolean }>`
-  margin: 0 -16px;
-  padding: 24px 16px 0;
   width: 100vw;
+  margin: 0 auto;
 
   @media only screen and ${breakpoints.desktop} {
-    padding: 24px 0px 0;
     width: ${FEED_MAX_WIDTH}px;
   }
+
   ${({ enableFlashFirstRowAnimation }) =>
     enableFlashFirstRowAnimation
       ? css`

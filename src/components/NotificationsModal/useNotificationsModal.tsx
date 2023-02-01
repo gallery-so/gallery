@@ -7,7 +7,6 @@ import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useNotificationsModalQuery } from '~/generated/useNotificationsModalQuery.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import CogIcon from '~/icons/CogIcon';
-import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 import SettingsModal from '../../scenes/Modals/SettingsModal/SettingsModal';
 import { NotificationsModal } from './NotificationsModal';
@@ -16,7 +15,6 @@ export default function useNotificationsModal() {
   const query = useLazyLoadQuery<useNotificationsModalQuery>(
     graphql`
       query useNotificationsModalQuery {
-        ...isFeatureEnabledFragment
         ...SettingsModalFragment
       }
     `,
@@ -24,7 +22,6 @@ export default function useNotificationsModal() {
   );
 
   const { showModal, hideModal } = useModalActions();
-  const isEmailFeatureEnabled = isFeatureEnabled(FeatureFlag.EMAIL, query);
   const isMobile = useIsMobileWindowWidth();
 
   const notificationModalActions = useMemo(() => {
@@ -53,7 +50,7 @@ export default function useNotificationsModal() {
       isFullPage: isMobile,
       isPaddingDisabled: true,
       headerVariant: 'standard',
-      headerActions: isEmailFeatureEnabled ? notificationModalActions : false,
+      headerActions: notificationModalActions,
     });
-  }, [isEmailFeatureEnabled, isMobile, notificationModalActions, showModal]);
+  }, [isMobile, notificationModalActions, showModal]);
 }

@@ -22,6 +22,7 @@ import { editGalleryPageNewInnerFragment$key } from '~/generated/editGalleryPage
 import { editGalleryPageNewQuery } from '~/generated/editGalleryPageNewQuery.graphql';
 import { editGalleryPageOldQuery } from '~/generated/editGalleryPageOldQuery.graphql';
 import { editGalleryPageQuery } from '~/generated/editGalleryPageQuery.graphql';
+import { useGuardEditorUnsavedChanges } from '~/hooks/useGuardEditorUnsavedChanges';
 import GalleryRedirect from '~/scenes/_Router/GalleryRedirect';
 import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
@@ -50,12 +51,12 @@ function NewEditGalleryPageInner({ queryRef }: NewEditGalleryPageInnerProps) {
 
   const canGoBack = useCanGoBack();
   const { replace, back } = useRouter();
-  const { saveGallery, canSave, hasUnsavedChanges, editGalleryNameAndDescription, name } =
+  const { saveGallery, hasSaved, canSave, hasUnsavedChanges, editGalleryNameAndDescription, name } =
     useGalleryEditorContext();
 
   useConfirmationMessageBeforeClose(hasUnsavedChanges);
 
-  const handleBack = useCallback(() => {
+  const goBack = useCallback(() => {
     if (canGoBack) {
       back();
     } else if (query.viewer?.__typename === 'Viewer' && query.viewer.user?.username) {
@@ -64,9 +65,11 @@ function NewEditGalleryPageInner({ queryRef }: NewEditGalleryPageInnerProps) {
         query: { username: query.viewer.user.username },
       });
     } else {
-      replace({ pathname: '/home' });
+      replace({ pathname: '/activity' });
     }
   }, [back, canGoBack, query.viewer, replace]);
+
+  const handleBack = useGuardEditorUnsavedChanges(goBack, hasUnsavedChanges);
 
   const handleDone = useCallback(
     async (caption: string) => {
@@ -79,6 +82,12 @@ function NewEditGalleryPageInner({ queryRef }: NewEditGalleryPageInnerProps) {
     editGalleryNameAndDescription();
   }, [editGalleryNameAndDescription]);
 
+  const username = query.viewer?.__typename === 'Viewer' ? query.viewer.user?.username : null;
+
+  if (!username) {
+    throw new Error('Username does not exist');
+  }
+
   return (
     <FullPageStep
       withBorder
@@ -88,6 +97,8 @@ function NewEditGalleryPageInner({ queryRef }: NewEditGalleryPageInnerProps) {
             onEdit={handleEdit}
             galleryName={name}
             canSave={canSave}
+            hasSaved={hasSaved}
+            username={username}
             hasUnsavedChanges={hasUnsavedChanges}
             onBack={handleBack}
             onDone={handleDone}
@@ -102,9 +113,10 @@ function NewEditGalleryPageInner({ queryRef }: NewEditGalleryPageInnerProps) {
 
 type Props = {
   galleryId: string;
+  initialCollectionId: string | null;
 };
 
-function NewEditGalleryPage({ galleryId }: Props) {
+function NewEditGalleryPage({ galleryId, initialCollectionId }: Props) {
   const query = useLazyLoadQuery<editGalleryPageNewQuery>(
     graphql`
       query editGalleryPageNewQuery($galleryId: DBID!) {
@@ -128,10 +140,8 @@ function NewEditGalleryPage({ galleryId }: Props) {
   }
 
   return (
-    <GalleryEditorProvider queryRef={query}>
-      <OnboardingDialogProvider>
-        <NewEditGalleryPageInner queryRef={query} />
-      </OnboardingDialogProvider>
+    <GalleryEditorProvider initialCollectionId={initialCollectionId} queryRef={query}>
+      <NewEditGalleryPageInner queryRef={query} />
     </GalleryEditorProvider>
   );
 }
@@ -191,7 +201,7 @@ function OldEditGalleryPage({ galleryId }: OldEditGalleryPageProps) {
     if (query.viewer?.user?.username) {
       push({ pathname: '/[username]', query: { username: query.viewer.user.username } });
     } else {
-      push({ pathname: '/home' });
+      push({ pathname: '/activity' });
     }
   }, [push, query.viewer?.user?.username]);
 
@@ -217,7 +227,7 @@ const Wrapper = styled.div`
   }
 `;
 
-export default function EditGalleryPage({ galleryId }: Props) {
+export default function EditGalleryPage({ galleryId, initialCollectionId }: Props) {
   const query = useLazyLoadQuery<editGalleryPageQuery>(
     graphql`
       query editGalleryPageQuery {
@@ -230,20 +240,21 @@ export default function EditGalleryPage({ galleryId }: Props) {
   const isMultigalleryEnabled = isFeatureEnabled(FeatureFlag.MULTIGALLERY, query);
 
   return isMultigalleryEnabled ? (
-    <NewEditGalleryPage galleryId={galleryId} />
+    <NewEditGalleryPage initialCollectionId={initialCollectionId} galleryId={galleryId} />
   ) : (
     <OldEditGalleryPage galleryId={galleryId} />
   );
 }
 
-export const getServerSideProps: GetServerSideProps<Props> = async ({ params }) => {
+export const getServerSideProps: GetServerSideProps<Props> = async ({ params, query }) => {
   if (typeof params?.galleryId === 'string') {
     return {
       props: {
         galleryId: params.galleryId,
+        initialCollectionId: typeof query?.collectionId === 'string' ? query.collectionId : null,
       },
     };
   }
 
-  return { redirect: '/', props: { galleryId: '' } };
+  return { redirect: { permanent: false, destination: '/' } };
 };

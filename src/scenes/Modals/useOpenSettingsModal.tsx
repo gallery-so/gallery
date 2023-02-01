@@ -5,7 +5,6 @@ import { graphql, useFragment } from 'react-relay';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useOpenSettingsModalFragment$key } from '~/generated/useOpenSettingsModalFragment.graphql';
 import useAuthModal from '~/hooks/useAuthModal';
-import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 import SettingsModal from './SettingsModal/SettingsModal';
 
@@ -17,7 +16,6 @@ export default function useOpenSettingsModal(queryRef: useOpenSettingsModalFragm
           __typename
         }
         ...SettingsModalFragment
-        ...isFeatureEnabledFragment
       }
     `,
     queryRef
@@ -27,7 +25,6 @@ export default function useOpenSettingsModal(queryRef: useOpenSettingsModalFragm
   const { showModal } = useModalActions();
   const showAuthModal = useAuthModal();
   const { settings } = router.query;
-  const isEmailFeatureEnabled = isFeatureEnabled(FeatureFlag.EMAIL, query);
 
   const isLoggedIn = query.viewer?.__typename === 'Viewer';
 
@@ -38,7 +35,7 @@ export default function useOpenSettingsModal(queryRef: useOpenSettingsModalFragm
 
   useEffect(() => {
     // Only show the modal if the user is logged in and the settings query param is set
-    if (settings === 'true' && isEmailFeatureEnabled && !isSettingsModalOpen.current) {
+    if (settings === 'true' && !isSettingsModalOpen.current) {
       if (isLoggedIn) {
         isSettingsModalOpen.current = true;
         showModal({
@@ -53,5 +50,5 @@ export default function useOpenSettingsModal(queryRef: useOpenSettingsModalFragm
         showAuthModal();
       }
     }
-  }, [isEmailFeatureEnabled, isLoggedIn, query, router, settings, showAuthModal, showModal]);
+  }, [isLoggedIn, query, router, settings, showAuthModal, showModal]);
 }

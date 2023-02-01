@@ -4,7 +4,6 @@ import { graphql, useFragment } from 'react-relay';
 
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { useVerifyEmailOnPageQueryFragment$key } from '~/generated/useVerifyEmailOnPageQueryFragment.graphql';
-import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 import { FAILED_EMAIL_VERIFICATION_STATUS } from '../NotificationsModal/NotificationList';
 import useUnsubscribeEmail from './useUnsubscribeEmail';
@@ -24,14 +23,12 @@ export default function useVerifyEmailOnPage(queryRef: useVerifyEmailOnPageQuery
             }
           }
         }
-        ...isFeatureEnabledFragment
       }
     `,
     queryRef
   );
 
   const verificationStatus = query.viewer?.email?.verificationStatus;
-  const isEmailFeatureEnabled = isFeatureEnabled(FeatureFlag.EMAIL, query);
   const verifyEmailActivation = useVerifyEmailActivation();
   const unsubscribeEmail = useUnsubscribeEmail();
 
@@ -40,7 +37,6 @@ export default function useVerifyEmailOnPage(queryRef: useVerifyEmailOnPageQuery
   const { pushToast } = useToastActions();
 
   useEffect(() => {
-    if (!isEmailFeatureEnabled) return;
     const isLoggedIn = query.viewer?.user?.dbid;
 
     // Verify email address if verificationStatus is not in the verified state
@@ -57,7 +53,6 @@ export default function useVerifyEmailOnPage(queryRef: useVerifyEmailOnPageQuery
       unsubscribeEmail({ type: 'Notifications', token: unsubscribeToken as string });
     }
   }, [
-    isEmailFeatureEnabled,
     pushToast,
     unsubscribeEmail,
     unsubscribeToken,

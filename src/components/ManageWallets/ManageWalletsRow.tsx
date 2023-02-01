@@ -1,14 +1,20 @@
-import { useCallback, useState } from 'react';
-import ReactTooltip from 'react-tooltip';
+import { useCallback } from 'react';
+import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { Button } from '~/components/core/Button/Button';
 import { BaseM, BODY_MONO_FONT_FAMILY } from '~/components/core/Text/Text';
-import Tooltip from '~/components/Tooltip/Tooltip';
 import { walletIconMap } from '~/components/WalletSelector/multichain/WalletButton';
 import useRemoveWallet from '~/components/WalletSelector/mutations/useRemoveWallet';
+import { ManageWalletsRow$key } from '~/generated/ManageWalletsRow.graphql';
 import { isWeb3Error } from '~/types/Error';
-import { truncateAddress } from '~/utils/wallet';
+import { graphqlTruncateAddress } from '~/utils/wallet';
+
+import breakpoints from '../core/breakpoints';
+import { HStack } from '../core/Spacer/Stack';
+import { NewTooltip } from '../Tooltip/NewTooltip';
+import { useTooltipHover } from '../Tooltip/useTooltipHover';
+import useUpdatePrimaryWallet from '../WalletSelector/mutations/useUpdatePrimaryWallet';
 
 type Props = {
   walletId: string;
@@ -18,38 +24,35 @@ type Props = {
   setErrorMessage: (message: string) => void;
   setRemovedAddress: (address: string) => void;
   isOnlyWalletConnected: boolean;
+  chainAddressRef: ManageWalletsRow$key;
 };
 
 function ManageWalletsRow({
   walletId,
   address,
   chain,
-  userSigninAddress,
   setErrorMessage,
   setRemovedAddress,
-  isOnlyWalletConnected,
+  chainAddressRef,
 }: Props) {
-  const removeWallet = useRemoveWallet();
-  const [isDisconnecting, setIsDisconnecting] = useState(false);
-  const [showTooltip, setShowTooltip] = useState(false);
+  const chainAddress = useFragment(
+    graphql`
+      fragment ManageWalletsRow on ChainAddress {
+        ...walletTruncateAddressFragment
+      }
+    `,
+    chainAddressRef
+  );
 
-  const handleMouseEnter = useCallback(() => {
-    setShowTooltip(true);
-  }, []);
-
-  const handleMouseExit = useCallback(() => {
-    setShowTooltip(false);
-  }, []);
+  const [removeWallet, isRemovingWallet] = useRemoveWallet();
+  const [updatePrimaryWallet, isUpdatingPrimaryWallet] = useUpdatePrimaryWallet();
 
   const handleDisconnectClick = useCallback(async () => {
-    ReactTooltip.hide();
     try {
       setErrorMessage('');
-      setIsDisconnecting(true);
       await removeWallet(walletId);
       setRemovedAddress(address);
     } catch (error) {
-      setIsDisconnecting(false);
       if (isWeb3Error(error)) {
         setErrorMessage('Error disconnecting wallet');
       }
@@ -58,43 +61,52 @@ function ManageWalletsRow({
     }
   }, [setErrorMessage, removeWallet, walletId, setRemovedAddress, address]);
 
-  const showDisconnectButton = address !== userSigninAddress && !isOnlyWalletConnected;
+  const handleSetPrimaryClick = useCallback(async () => {
+    setErrorMessage('');
+    try {
+      await updatePrimaryWallet(walletId);
+    } catch {
+      setErrorMessage(`There was an error while updating the primary wallet.`);
+    }
+  }, [updatePrimaryWallet, walletId, setErrorMessage]);
 
   const iconUrl = walletIconMap[chain.toLowerCase() as keyof typeof walletIconMap];
+  const { floating, reference, getFloatingProps, getReferenceProps, floatingStyle } =
+    useTooltipHover();
 
   return (
     <StyledWalletRow>
-      <StyledWalletDetails>
+      <HStack gap={4} align="center">
         <Icon src={iconUrl} />
-        <StyledWalletAddress>{truncateAddress(address)}</StyledWalletAddress>
-      </StyledWalletDetails>
-      {showDisconnectButton && (
-        <>
-          <StyledDisconnectButton
-            variant="error"
+        <StyledWalletAddress>{graphqlTruncateAddress(chainAddress)}</StyledWalletAddress>
+      </HStack>
+      <StyledButtonContainer>
+        <StyledButton
+          variant="secondary"
+          onClick={handleSetPrimaryClick}
+          disabled={isUpdatingPrimaryWallet || isRemovingWallet}
+        >
+          Set Primary
+        </StyledButton>
+
+        <div {...getReferenceProps()} ref={reference}>
+          <StyledButton
+            variant="warning"
             onClick={handleDisconnectClick}
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseExit}
             data-tip
             data-for="global"
+            disabled={isUpdatingPrimaryWallet || isRemovingWallet}
           >
-            {isDisconnecting ? 'Disconnecting...' : 'Disconnect'}
-          </StyledDisconnectButton>
-          <ReactTooltip
-            id="global"
-            place="top"
-            effect="solid"
-            arrowColor="transparent"
-            backgroundColor="transparent"
-          >
-            <StyledTooltip
-              showTooltip={showTooltip}
-              whiteSpace="normal"
-              text="Remove all pieces in this wallet from your collections."
-            />
-          </ReactTooltip>
-        </>
-      )}
+            {isRemovingWallet ? 'Disconnecting...' : 'Disconnect'}
+          </StyledButton>
+        </div>
+        <NewTooltip
+          {...getFloatingProps()}
+          style={floatingStyle}
+          ref={floating}
+          text="Remove all pieces in this wallet from your collections."
+        />
+      </StyledButtonContainer>
     </StyledWalletRow>
   );
 }
@@ -109,13 +121,12 @@ const StyledWalletRow = styled.div`
   align-items: center;
 `;
 
-const StyledWalletDetails = styled.div`
-  display: flex;
-  gap: 12px;
-`;
-
 const StyledWalletAddress = styled(BaseM)`
   font-family: ${BODY_MONO_FONT_FAMILY};
+  font-size: 12px;
+  @media only screen and ${breakpoints.tablet} {
+    font-size: 14px;
+  }
 `;
 
 const Icon = styled.img`
@@ -123,13 +134,15 @@ const Icon = styled.img`
   height: 16px;
 `;
 
-const StyledDisconnectButton = styled(Button)`
-  padding: 8px 16px;
+const StyledButton = styled(Button)`
+  padding: 8px 12px;
 `;
 
-const StyledTooltip = styled(Tooltip)<{ showTooltip: boolean }>`
-  left: -35px;
-  width: 180px;
-  opacity: ${({ showTooltip }) => (showTooltip ? 1 : 0)};
-  transform: translateY(${({ showTooltip }) => (showTooltip ? -24 : -20)}px);
+const StyledButtonContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+
+  gap: 4px;
+  @media only screen and ${breakpoints.tablet} {
+  }
 `;

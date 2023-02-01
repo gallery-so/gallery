@@ -1,4 +1,3 @@
-import { useRouter } from 'next/router';
 import { useCallback, useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -83,6 +82,7 @@ function NftPreview({
         collection @required(action: THROW) {
           dbid
           gallery {
+            dbid
             owner {
               username
             }
@@ -112,12 +112,6 @@ function NftPreview({
     [contractAddress]
   );
 
-  const {
-    query: { collectionId: collectionIdInQuery },
-  } = useRouter();
-
-  // whether the user is on a gallery page or collection page prior to clicking on an NFT
-  const originPage = collectionIdInQuery ? 'home' : 'gallery';
   const handleClick = useCallback(
     (event: React.MouseEvent<HTMLElement>) => {
       if (onClick && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) {
@@ -204,7 +198,6 @@ function NftPreview({
         username={username ?? ''}
         collectionId={collectionId}
         tokenId={token.dbid}
-        originPage={originPage}
       >
         {/* NextJS <Link> tags don't come with an anchor tag by default, so we're adding one here.
           This will inherit the `as` URL from the parent component. */}
