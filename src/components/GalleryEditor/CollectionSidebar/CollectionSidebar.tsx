@@ -16,7 +16,7 @@ import { QuestionMarkIcon } from '~/icons/QuestionMarkIcon';
 
 // TODO: Replace with notion docs link
 const NOTION_DOCS_URL =
-  'https://www.notion.so/How-to-set-up-your-gallery-1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e';
+  'ghttps://www.notion.so/gallery-so/Creating-a-new-gallery-and-organizing-your-NFTs-b407a174a2ee44748bb9952abd803290';
 
 function TitleSection() {
   const { createCollection } = useGalleryEditorContext();
