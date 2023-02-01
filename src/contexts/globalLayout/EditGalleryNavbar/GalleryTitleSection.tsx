@@ -16,7 +16,7 @@ export function GalleryTitleSection({ onEdit, galleryName }: GalleryTitleSection
   return (
     <GalleryTitleContainer align="center" onClick={onEdit} gap={8}>
       <MainGalleryText hasGalleryName={Boolean(galleryName)}>
-        {galleryName || 'Untitled Gallery'}
+        {galleryName || 'Untitled gallery'}
       </MainGalleryText>
 
       <EditIconContainer>
