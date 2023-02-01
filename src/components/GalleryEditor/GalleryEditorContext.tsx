@@ -281,7 +281,9 @@ export function GalleryEditorProvider({
 
   const reportError = useReportError();
   const saveGallery = useCallback(
-    async (caption: string | null) => {
+    async (_caption: string | null) => {
+      const caption = _caption?.trim() ? _caption : null;
+
       const galleryId = query.galleryById.dbid;
 
       if (!galleryId) {
