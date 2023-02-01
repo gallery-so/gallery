@@ -4,10 +4,12 @@ import { CSSProperties, ReactNode, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 
 import colors from '~/components/core/colors';
-import { VStack } from '~/components/core/Spacer/Stack';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { useCollectionEditorContextNew } from '~/contexts/collectionEditor/CollectionEditorContextNew';
 import PlusIcon from '~/icons/PlusIcon';
 
+import OnboardingDialog from '../../GalleryOnboardingGuide/OnboardingDialog';
+import { useOnboardingDialogContext } from '../../GalleryOnboardingGuide/OnboardingDialogContext';
 import { Section } from './Section';
 
 type Props = {
@@ -34,6 +36,8 @@ export default function DroppableSection({ children, columns, id, items, style, 
 
   const { activeSectionId, activateSection, addSection, deleteSection } =
     useCollectionEditorContextNew();
+
+  const { step, dialogMessage, nextStep } = useOnboardingDialogContext();
 
   // Set section as active on mousedown instead of on click so that starting to drag an item immediately activates that section
   const handleMouseDown = useCallback(() => {
@@ -74,9 +78,14 @@ export default function DroppableSection({ children, columns, id, items, style, 
             {children}
           </Section>
           {isActive && !isDragging && (
-            <StyledAddSectionButton onClick={handleAddSectionClick}>
-              <StyledPlusIcon />
-            </StyledAddSectionButton>
+            <HStack gap={8} align="center">
+              <StyledAddSectionButton onClick={handleAddSectionClick}>
+                <StyledPlusIcon />
+              </StyledAddSectionButton>
+              {step === 5 && (
+                <OnboardingDialog step={step} text={dialogMessage} onNext={nextStep} />
+              )}
+            </HStack>
           )}
         </VStack>
       </VStack>
