@@ -37,6 +37,8 @@ import useKeyDown from '~/hooks/useKeyDown';
 import { removeNullValues } from '~/utils/removeNullValues';
 import unescape from '~/utils/unescape';
 
+import OnboardingDialog from '../GalleryOnboardingGuide/OnboardingDialog';
+import { useOnboardingDialogContext } from '../GalleryOnboardingGuide/OnboardingDialogContext';
 import DroppableSection from './DragAndDrop/DroppableSection';
 import SectionDragging from './DragAndDrop/SectionDragging';
 import SortableStagedNft from './SortableStagedNft';
@@ -74,6 +76,8 @@ function StagingArea({ tokensRef }: Props) {
     `,
     tokensRef
   );
+
+  const { step, dialogMessage, nextStep } = useOnboardingDialogContext();
 
   const { editCollectionNameAndNote, collectionIdBeingEdited } = useGalleryEditorContext();
   const {
@@ -225,7 +229,19 @@ function StagingArea({ tokensRef }: Props) {
                 </BaseM>
               </VStack>
             ) : (
-              <BaseM color={colors.metal}>Add title and description</BaseM>
+              <HStack gap={8} align="center">
+                <BaseM color={colors.metal}>Add title and description</BaseM>
+                {step === 2 && (
+                  <OnboardingDialog
+                    step={step}
+                    text={dialogMessage}
+                    onNext={nextStep}
+                    options={{
+                      placement: 'bottom',
+                    }}
+                  />
+                )}
+              </HStack>
             )}
 
             <EditIconContainer>

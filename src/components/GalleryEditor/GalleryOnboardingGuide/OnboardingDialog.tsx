@@ -3,6 +3,7 @@ import {
   flip,
   FloatingPortal,
   offset,
+  Placement,
   shift,
   useFloating,
   useId,
@@ -23,13 +24,21 @@ type Props = {
   step: number;
   text: string;
   onNext: () => void;
+
+  options?: {
+    placement?: Placement;
+  };
 };
 
-export default function OnboardingDialog({ step, text, onNext }: Props) {
+export default function OnboardingDialog({ step, text, onNext, options }: Props) {
   const [open, setOpen] = useState(true);
 
-  const { x, y, reference, floating, strategy, context } = useFloating({
+  const { placement } = options ?? {
     placement: 'right-start',
+  };
+
+  const { x, y, reference, floating, strategy, context } = useFloating({
+    placement,
     open: open,
     onOpenChange: setOpen,
     middleware: [flip(), shift(), offset(10)],
@@ -68,7 +77,7 @@ export default function OnboardingDialog({ step, text, onNext }: Props) {
               <Button
                 onClick={(e) => {
                   e.stopPropagation();
-                  setOpen(false);
+                  // setOpen(false);
                   onNext();
                 }}
               >

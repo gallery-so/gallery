@@ -141,7 +141,9 @@ function NewEditGalleryPage({ galleryId, initialCollectionId }: Props) {
 
   return (
     <GalleryEditorProvider initialCollectionId={initialCollectionId} queryRef={query}>
-      <NewEditGalleryPageInner queryRef={query} />
+      <OnboardingDialogProvider>
+        <NewEditGalleryPageInner queryRef={query} />
+      </OnboardingDialogProvider>
     </GalleryEditorProvider>
   );
 }
