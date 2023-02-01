@@ -23,7 +23,8 @@ type OnboardingDialogProviderProps = {
 };
 
 export function OnboardingDialogProvider({ children }: OnboardingDialogProviderProps) {
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(2);
+  const [showTooltip, setShowTooltip] = useState(true);
 
   const dialogMessage = useMemo(
     () => OnboardingDialogMessage[step as keyof typeof OnboardingDialogMessage],
@@ -32,11 +33,12 @@ export function OnboardingDialogProvider({ children }: OnboardingDialogProviderP
 
   const nextStep = useCallback(() => {
     if (step === 5) {
+      setShowTooltip(false);
       return;
     }
 
     console.log('nextStep', step);
-    setStep((step) => step + 1);
+    setStep(step + 1);
   }, [step]);
 
   const value = useMemo(() => {
@@ -44,8 +46,9 @@ export function OnboardingDialogProvider({ children }: OnboardingDialogProviderP
       step,
       dialogMessage,
       nextStep,
+      showTooltip,
     };
-  }, [dialogMessage, nextStep, step]);
+  }, [dialogMessage, nextStep, showTooltip, step]);
 
   return (
     <OnboardingDialogContext.Provider value={value}>{children}</OnboardingDialogContext.Provider>

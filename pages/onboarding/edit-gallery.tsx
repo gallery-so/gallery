@@ -8,6 +8,7 @@ import {
   GalleryEditorProvider,
   useGalleryEditorContext,
 } from '~/components/GalleryEditor/GalleryEditorContext';
+import { OnboardingDialogProvider } from '~/components/GalleryEditor/GalleryOnboardingGuide/OnboardingDialogContext';
 import useConfirmationMessageBeforeClose from '~/components/ManageGallery/useConfirmationMessageBeforeClose';
 import FullPageStep from '~/components/Onboarding/FullPageStep';
 import { OnboardingEditGalleryNavbar } from '~/contexts/globalLayout/EditGalleryNavbar/OnboardingEditGalleryNavbar';
@@ -92,7 +93,9 @@ export default function EditGallery({ galleryId }: Props) {
 
   return (
     <GalleryEditorProvider queryRef={query}>
-      <EditGalleryInner queryRef={query} />
+      <OnboardingDialogProvider>
+        <EditGalleryInner queryRef={query} />
+      </OnboardingDialogProvider>
     </GalleryEditorProvider>
   );
 }
