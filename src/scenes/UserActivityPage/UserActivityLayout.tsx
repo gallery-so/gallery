@@ -81,7 +81,7 @@ const flashAnimation = keyframes`
 `;
 
 const StyledUserActivityLayout = styled(VStack)<{ enableFlashFirstRowAnimation: boolean }>`
-  width: 100vw;
+  width: 100%;
   margin: 0 auto;
 
   @media only screen and ${breakpoints.desktop} {

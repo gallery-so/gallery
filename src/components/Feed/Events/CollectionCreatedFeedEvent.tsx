@@ -121,7 +121,7 @@ export default function CollectionCreatedFeedEvent({
               </StyledEventHeaderContainer>
             </VStack>
           </StyledEventHeader>
-          <StyledEventContent gap={16} hasCaption={Boolean(caption)}>
+          <StyledEventContent gap={16} hasCaption={Boolean(caption)} isSubEvent={isSubEvent}>
             {caption && (
               <StyledCaptionContainer gap={8} align="center">
                 <BaseM>{caption}</BaseM>
@@ -129,7 +129,7 @@ export default function CollectionCreatedFeedEvent({
             )}
             <VStack gap={8}>
               <FeedEventTokenPreviews
-                isInCaption={Boolean(caption)}
+                isInCaption={Boolean(caption || isSubEvent)}
                 tokenToPreviewRefs={tokensToPreview}
               />
               {showAdditionalPiecesIndicator && (

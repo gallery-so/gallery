@@ -105,20 +105,22 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({
     >
       <StyledEvent isSubEvent={isSubEvent}>
         <VStack gap={isSubEvent ? 0 : 16}>
-          <VStack gap={8}>
-            <StyledEventHeader>
-              <StyledEventText isSubEvent={isSubEvent}>
-                {!isSubEvent && <HoverCardOnUsername userRef={event.owner} queryRef={query} />}{' '}
-                added a description to{collectionName ? ' ' : ' their collection'}
-                <Link href={collectionPagePath} passHref>
-                  <StyledEventLabel>{collectionName}</StyledEventLabel>
-                </Link>
-                {!isSubEvent && <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>}
-              </StyledEventText>
-            </StyledEventHeader>
-          </VStack>
+          <StyledEventHeader>
+            <StyledEventText isSubEvent={isSubEvent}>
+              {!isSubEvent && <HoverCardOnUsername userRef={event.owner} queryRef={query} />} added
+              a description to{collectionName ? ' ' : ' their collection'}
+              <Link href={collectionPagePath} passHref>
+                <StyledEventLabel>{collectionName}</StyledEventLabel>
+              </Link>
+              {!isSubEvent && <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>}
+            </StyledEventText>
+          </StyledEventHeader>
 
-          <StyledEventContent gap={16} hasCaption={Boolean(event.newCollectorsNote)}>
+          <StyledEventContent
+            gap={16}
+            hasCaption={Boolean(event.newCollectorsNote)}
+            isSubEvent={isSubEvent}
+          >
             <StyledQuote>
               <Markdown text={unescape(event.newCollectorsNote ?? '')} inheritLinkStyling />
             </StyledQuote>

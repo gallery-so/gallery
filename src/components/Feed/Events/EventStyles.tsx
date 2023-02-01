@@ -55,9 +55,18 @@ export const StyledClickHandler = styled.a`
   text-decoration: none;
 `;
 
-export const StyledEventContent = styled(VStack)<{ hasCaption?: boolean }>`
+export const StyledEventContent = styled(VStack)<{ hasCaption?: boolean; isSubEvent?: boolean }>`
   background-color: ${({ hasCaption }) => (hasCaption ? colors.faint : 'transparent')};
-  padding: ${({ hasCaption }) => (hasCaption ? '16px 0' : '0')};
+
+  padding: ${({ hasCaption, isSubEvent }) => {
+    if (isSubEvent) {
+      return '16px 0';
+    } else if (hasCaption) {
+      return '16px';
+    } else {
+      return '0';
+    }
+  }};
 `;
 
 export const StyledEventLabel = styled(TitleDiatypeM)`
