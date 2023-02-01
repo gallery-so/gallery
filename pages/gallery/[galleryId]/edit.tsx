@@ -11,6 +11,7 @@ import {
   GalleryEditorProvider,
   useGalleryEditorContext,
 } from '~/components/GalleryEditor/GalleryEditorContext';
+import { OnboardingDialogProvider } from '~/components/GalleryEditor/GalleryOnboardingGuide/OnboardingDialogContext';
 import { OrganizeGallery } from '~/components/ManageGallery/OrganizeGallery/OrganizeGallery';
 import useConfirmationMessageBeforeClose from '~/components/ManageGallery/useConfirmationMessageBeforeClose';
 import FullPageStep from '~/components/Onboarding/FullPageStep';
@@ -82,14 +83,16 @@ function NewEditGalleryPageInner({ queryRef }: NewEditGalleryPageInnerProps) {
     <FullPageStep
       withBorder
       navbar={
-        <EditGalleryNavbar
-          onEdit={handleEdit}
-          galleryName={name}
-          canSave={canSave}
-          hasUnsavedChanges={hasUnsavedChanges}
-          onBack={handleBack}
-          onDone={handleDone}
-        />
+        <OnboardingDialogProvider>
+          <EditGalleryNavbar
+            onEdit={handleEdit}
+            galleryName={name}
+            canSave={canSave}
+            hasUnsavedChanges={hasUnsavedChanges}
+            onBack={handleBack}
+            onDone={handleDone}
+          />
+        </OnboardingDialogProvider>
       }
     >
       <GalleryEditor queryRef={query} />
@@ -126,7 +129,9 @@ function NewEditGalleryPage({ galleryId }: Props) {
 
   return (
     <GalleryEditorProvider queryRef={query}>
-      <NewEditGalleryPageInner queryRef={query} />
+      <OnboardingDialogProvider>
+        <NewEditGalleryPageInner queryRef={query} />
+      </OnboardingDialogProvider>
     </GalleryEditorProvider>
   );
 }

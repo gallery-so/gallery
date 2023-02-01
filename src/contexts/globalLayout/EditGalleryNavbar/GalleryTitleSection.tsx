@@ -6,6 +6,7 @@ import IconContainer from '~/components/core/IconContainer';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BODY_FONT_FAMILY, Paragraph } from '~/components/core/Text/Text';
 import OnboardingDialog from '~/components/GalleryEditor/GalleryOnboardingGuide/OnboardingDialog';
+import { useOnboardingDialogContext } from '~/components/GalleryEditor/GalleryOnboardingGuide/OnboardingDialogContext';
 import { EditPencilIcon } from '~/icons/EditPencilIcon';
 
 type GalleryTitleSectionProps = {
@@ -14,17 +15,13 @@ type GalleryTitleSectionProps = {
 };
 
 export function GalleryTitleSection({ onEdit, galleryName }: GalleryTitleSectionProps) {
+  const { step, dialogMessage, nextStep } = useOnboardingDialogContext();
+
   return (
     <GalleryTitleContainer align="center" onClick={onEdit} gap={8}>
       <MainGalleryText>
         {galleryName || 'Untitled'}
-        <OnboardingDialog
-          step={1}
-          text="You can modify your gallery name and description here."
-          onNext={() => {
-            console.log('next');
-          }}
-        />
+        {step === 1 && <OnboardingDialog step={1} text={dialogMessage} onNext={nextStep} />}
       </MainGalleryText>
 
       <EditIconContainer>
