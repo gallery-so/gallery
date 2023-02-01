@@ -1,12 +1,12 @@
+import Link from 'next/link';
 import { MouseEventHandler, useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
-import { BaseM, TitleM } from '~/components/core/Text/Text';
+import { TitleM } from '~/components/core/Text/Text';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
@@ -18,9 +18,17 @@ import { getTimeSince } from '~/utils/time';
 import unescape from '~/utils/unescape';
 
 import EventMedia from './EventMedia';
-import { StyledClickHandler, StyledEvent, StyledEventHeader, StyledTime } from './EventStyles';
+import {
+  StyledClickHandler,
+  StyledEvent,
+  StyledEventHeader,
+  StyledEventLabel,
+  StyledEventText,
+  StyledTime,
+} from './EventStyles';
 
 type Props = {
+  isSubEvent?: boolean;
   eventDataRef: CollectorsNoteAddedToTokenFeedEventFragment$key;
   queryRef: CollectorsNoteAddedToTokenFeedEventQueryFragment$key;
 };
@@ -30,7 +38,11 @@ const MIDDLE_GAP = 24;
 // images will be rendered within a square of this size
 const IMAGE_SPACE_SIZE = 269;
 
-export default function CollectorsNoteAddedToTokenFeedEvent({ eventDataRef, queryRef }: Props) {
+export default function CollectorsNoteAddedToTokenFeedEvent({
+  eventDataRef,
+  isSubEvent = false,
+  queryRef,
+}: Props) {
   const event = useFragment(
     graphql`
       fragment CollectorsNoteAddedToTokenFeedEventFragment on CollectorsNoteAddedToTokenFeedEventData {
@@ -91,29 +103,27 @@ export default function CollectorsNoteAddedToTokenFeedEvent({ eventDataRef, quer
 
   return (
     <StyledClickHandler onClick={handleEventClick}>
-      <StyledEvent>
-        <VStack gap={16}>
+      <StyledEvent isSubEvent={isSubEvent}>
+        <VStack gap={isSubEvent ? 0 : 16}>
           <StyledEventHeader>
-            <HStack gap={4} inline>
-              <BaseM>
-                <HoverCardOnUsername userRef={event.owner} queryRef={query} /> added a collector's
-                note to{' '}
-                <InteractiveLink
-                  to={{
-                    pathname: '/[username]/[collectionId]/[tokenId]',
-                    query: {
-                      username: event.owner.username as string,
-                      collectionId: event.token.collection?.dbid as string,
-                      tokenId: event.token.token?.dbid,
-                    },
-                  }}
-                  onClick={handleEventClick}
-                >
-                  {event.token.token?.name}
-                </InteractiveLink>
-              </BaseM>
-              <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
-            </HStack>
+            <StyledEventText isSubEvent={isSubEvent}>
+              {!isSubEvent && <HoverCardOnUsername userRef={event.owner} queryRef={query} />} add a
+              collector's note to{' '}
+              <Link
+                href={{
+                  pathname: '/[username]/[collectionId]/[tokenId]',
+                  query: {
+                    username: event.owner.username as string,
+                    collectionId: event.token.collection?.dbid as string,
+                    tokenId: event.token.token?.dbid,
+                  },
+                }}
+                onClick={handleEventClick}
+              >
+                <StyledEventLabel>{event.token.token?.name}</StyledEventLabel>
+              </Link>
+            </StyledEventText>
+            {!isSubEvent && <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>}
           </StyledEventHeader>
           <StyledContent justify="center" align="center" gap={MIDDLE_GAP}>
             <StyledMediaWrapper>

@@ -22,14 +22,19 @@ import unescape from '~/utils/unescape';
 
 import { MAX_PIECES_DISPLAYED_PER_FEED_EVENT } from '../constants';
 import FeedEventTokenPreviews from '../FeedEventTokenPreviews';
-import { StyledEvent, StyledEventHeader, StyledTime } from './EventStyles';
+import { StyledEvent, StyledEventHeader, StyledEventText, StyledTime } from './EventStyles';
 
 type Props = {
   eventDataRef: CollectionUpdatedFeedEventFragment$key;
   queryRef: CollectionUpdatedFeedEventQueryFragment$key;
+  isSubEvent?: boolean;
 };
 
-export default function CollectionUpdatedFeedEvent({ eventDataRef, queryRef }: Props) {
+export default function CollectionUpdatedFeedEvent({
+  eventDataRef,
+  isSubEvent = false,
+  queryRef,
+}: Props) {
   const event = useFragment(
     graphql`
       fragment CollectionUpdatedFeedEventFragment on CollectionUpdatedFeedEventData {
@@ -84,16 +89,18 @@ export default function CollectionUpdatedFeedEvent({ eventDataRef, queryRef }: P
       href={collectionPagePath}
       onClick={() => track('Feed: Clicked collection updated event')}
     >
-      <StyledEvent>
+      <StyledEvent isSubEvent={isSubEvent}>
         <VStack gap={16}>
           <StyledEventHeader>
             <HStack gap={4} inline>
               <BaseM>
-                <HoverCardOnUsername userRef={event.owner} queryRef={query} /> made updates to
-                {collectionName ? ' ' : 'their collection'}
+                {!isSubEvent && <HoverCardOnUsername userRef={event.owner} queryRef={query} />}
+                <StyledEventText isSubEvent={isSubEvent}>
+                  made updates to {collectionName ? ' ' : 'their collection'}
+                </StyledEventText>
                 <InteractiveLink to={collectionPagePath}>{collectionName}</InteractiveLink>
               </BaseM>
-              <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
+              {!isSubEvent && <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>}
             </HStack>
           </StyledEventHeader>
           <StyledQuote>
