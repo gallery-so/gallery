@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Route } from 'nextjs-routes';
+import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
@@ -75,6 +76,9 @@ export default function GalleryUpdatedFeedEvent({
     },
   };
 
+  // Max 3 sub events
+  const subEvents = useMemo(() => event?.subEventDatas?.slice(0, 3), [event?.subEventDatas]);
+
   return (
     <StyledEvent>
       <VStack gap={16}>
@@ -96,7 +100,7 @@ export default function GalleryUpdatedFeedEvent({
                 <BaseM>{caption}</BaseM>
               </StyledCaptionContainer>
             )}
-            {event?.subEventDatas?.map((subEvent, index) => {
+            {subEvents?.map((subEvent, index) => {
               return (
                 <ReportingErrorBoundary key={index} fallback={<></>} dontReport>
                   <NonRecursiveFeedEventData
