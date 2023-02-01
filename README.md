@@ -14,7 +14,7 @@ The premier gallery experience for your NFTs.
 Install our node version:
 
 ```bash
-nvm use
+nvm install && nvm use
 ```
 
 Install dependencies:
