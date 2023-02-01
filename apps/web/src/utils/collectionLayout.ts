@@ -80,13 +80,13 @@ export function parseCollectionLayout<T>(
       if (!ignoreWhitespace) {
         section = insertWhitespaceBlocks(
           section,
-          removeNullValues(collectionLayout.sectionLayout[index].whitespace)
+          removeNullValues(collectionLayout.sectionLayout[index]?.whitespace)
         );
       }
       const sectionId = generate12DigitId();
       allSections[sectionId] = {
         items: section,
-        columns: collectionLayout.sectionLayout[index].columns ?? 1,
+        columns: collectionLayout.sectionLayout[index]?.columns ?? 1,
       };
       return allSections;
     },

@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { Route } from 'nextjs-routes';
 import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
@@ -6,10 +7,9 @@ import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import colors from '~/components/core/colors';
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { UnstyledLink } from '~/components/core/Link/UnstyledLink';
 import Markdown from '~/components/core/Markdown/Markdown';
-import { HStack, VStack } from '~/components/core/Spacer/Stack';
+import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
@@ -20,15 +20,24 @@ import { getTimeSince } from '~/utils/time';
 import unescape from '~/utils/unescape';
 
 import FeedEventTokenPreviews from '../FeedEventTokenPreviews';
-import { StyledEvent, StyledEventContent, StyledEventHeader, StyledTime } from './EventStyles';
+import {
+  StyledEvent,
+  StyledEventContent,
+  StyledEventHeader,
+  StyledEventLabel,
+  StyledEventText,
+  StyledTime,
+} from './EventStyles';
 
 type Props = {
   eventDataRef: CollectorsNoteAddedToCollectionFeedEventFragment$key;
   queryRef: CollectorsNoteAddedToCollectionFeedEventQueryFragment$key;
+  isSubEvent?: boolean;
 };
 
 export default function CollectorsNoteAddedToCollectionFeedEvent({
   eventDataRef,
+  isSubEvent = false,
   queryRef,
 }: Props) {
   const event = useFragment(
@@ -44,6 +53,9 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({
           name
           tokens(limit: $visibleTokensPerFeedEvent) @required(action: THROW) {
             ...FeedEventTokenPreviewsFragment
+          }
+          gallery {
+            dbid
           }
         }
         newCollectorsNote
@@ -82,28 +94,33 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({
     throw new Error('Tried to render CollectorsNoteAddedToCollectionFeedEvent without any tokens');
   }
 
+  if (!event.collection.gallery?.dbid) {
+    throw new Error('Tried to render CollectorsNoteAddedToCollectionFeedEvent without a gallery');
+  }
+
   return (
     <UnstyledLink
       href={collectionPagePath}
       onClick={() => track('Feed: Clicked Description added to collection event')}
     >
-      <StyledEvent>
-        <VStack gap={16}>
-          <VStack gap={8}>
-            <StyledEventHeader>
-              <HStack gap={4} inline>
-                <BaseM>
-                  <HoverCardOnUsername userRef={event.owner} queryRef={query} /> added a description
-                  to
-                  {collectionName ? ' ' : ' their collection'}
-                  <InteractiveLink to={collectionPagePath}>{collectionName}</InteractiveLink>
-                </BaseM>
-                <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
-              </HStack>
-            </StyledEventHeader>
-          </VStack>
+      <StyledEvent isSubEvent={isSubEvent}>
+        <VStack gap={isSubEvent ? 0 : 16}>
+          <StyledEventHeader>
+            <StyledEventText isSubEvent={isSubEvent}>
+              {!isSubEvent && <HoverCardOnUsername userRef={event.owner} queryRef={query} />} added
+              a description to{collectionName ? ' ' : ' their collection'}
+              <Link href={collectionPagePath} passHref>
+                <StyledEventLabel>{collectionName}</StyledEventLabel>
+              </Link>
+              {!isSubEvent && <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>}
+            </StyledEventText>
+          </StyledEventHeader>
 
-          <StyledEventContent gap={16} hasCaption={Boolean(event.newCollectorsNote)}>
+          <StyledEventContent
+            gap={16}
+            hasCaption={Boolean(event.newCollectorsNote)}
+            isSubEvent={isSubEvent}
+          >
             <StyledQuote>
               <Markdown text={unescape(event.newCollectorsNote ?? '')} inheritLinkStyling />
             </StyledQuote>

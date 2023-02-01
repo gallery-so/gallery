@@ -6,8 +6,8 @@ import styled from 'styled-components';
 import breakpoints from '~/components/core/breakpoints';
 import { Button } from '~/components/core/Button/Button';
 import colors from '~/components/core/colors';
-import { HStack, VStack } from '~/components/core/Spacer/Stack';
-import { BaseM, TitleXS } from '~/components/core/Text/Text';
+import { VStack } from '~/components/core/Spacer/Stack';
+import { TitleXS } from '~/components/core/Text/Text';
 import FollowListUsers from '~/components/Follow/FollowListUsers';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
@@ -20,16 +20,22 @@ import { removeNullValues } from '~/utils/removeNullValues';
 import { getTimeSince } from '~/utils/time';
 
 import { FeedMode } from '../Feed';
-import { StyledEvent, StyledEventHeader, StyledTime } from './EventStyles';
+import { StyledEvent, StyledEventHeader, StyledEventText, StyledTime } from './EventStyles';
 import UserFollowedYouEvent from './UserFollowedYouEvent';
 
 type Props = {
   eventDataRef: UserFollowedUsersFeedEventFragment$key;
   queryRef: UserFollowedUsersFeedEventQueryFragment$key;
   feedMode: FeedMode;
+  isSubEvent?: boolean;
 };
 
-export default function UserFollowedUsersFeedEvent({ eventDataRef, queryRef, feedMode }: Props) {
+export default function UserFollowedUsersFeedEvent({
+  eventDataRef,
+  queryRef,
+  feedMode,
+  isSubEvent = false,
+}: Props) {
   const event = useFragment(
     graphql`
       fragment UserFollowedUsersFeedEventFragment on UserFollowedUsersFeedEventData {
@@ -145,33 +151,30 @@ export default function UserFollowedUsersFeedEvent({ eventDataRef, queryRef, fee
         <UserFollowedYouEvent eventRef={event} followInfoRef={followedYouAction} queryRef={query} />
       )}
       {followedNoRemainingUsers ? null : followedSingleUser ? (
-        <CustomStyledEvent onClick={handleSeeFollowedUserClick}>
+        <CustomStyledEvent onClick={handleSeeFollowedUserClick} isSubEvent={isSubEvent}>
           <StyledEventContent>
             <StyledEventHeader>
-              <HStack gap={4} inline>
-                <BaseM>
-                  <HoverCardOnUsername userRef={event.owner} queryRef={query} /> followed{' '}
-                  {firstFollowerUsernameRef && firstFollowerUsernameRef.user && (
-                    <HoverCardOnUsername userRef={firstFollowerUsernameRef.user} queryRef={query} />
-                  )}
-                </BaseM>
-                <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
-              </HStack>
+              <StyledEventText isSubEvent={isSubEvent}>
+                {!isSubEvent && <HoverCardOnUsername userRef={event.owner} queryRef={query} />}{' '}
+                followed{' '}
+                {firstFollowerUsernameRef && firstFollowerUsernameRef.user && (
+                  <HoverCardOnUsername userRef={firstFollowerUsernameRef.user} queryRef={query} />
+                )}
+                {!isSubEvent && <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>}
+              </StyledEventText>
             </StyledEventHeader>
           </StyledEventContent>
         </CustomStyledEvent>
       ) : (
-        <CustomStyledEvent onClick={handleSeeMoreClick}>
+        <CustomStyledEvent onClick={handleSeeMoreClick} isSubEvent={isSubEvent}>
           <StyledEventContent>
             <StyledEventHeaderContainer gap={16} align="center" grow>
               <StyledEventHeader>
-                <HStack gap={4} inline>
-                  <BaseM>
-                    <HoverCardOnUsername userRef={event.owner} queryRef={query} /> followed{' '}
-                    {genericFollows.length} collectors.
-                  </BaseM>
+                <StyledEventText isSubEvent={isSubEvent}>
+                  {!isSubEvent && <HoverCardOnUsername userRef={event.owner} queryRef={query} />}{' '}
+                  followed {genericFollows.length} collectors.
                   <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
-                </HStack>
+                </StyledEventText>
               </StyledEventHeader>
               <StyledSecondaryButton>See All</StyledSecondaryButton>
             </StyledEventHeaderContainer>
