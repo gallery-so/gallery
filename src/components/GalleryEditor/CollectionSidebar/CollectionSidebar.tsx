@@ -14,9 +14,8 @@ import { useTooltipHover } from '~/components/Tooltip/useTooltipHover';
 import { CollectionSidebarQueryFragment$key } from '~/generated/CollectionSidebarQueryFragment.graphql';
 import { QuestionMarkIcon } from '~/icons/QuestionMarkIcon';
 
-// TODO: Replace with notion docs link
 const NOTION_DOCS_URL =
-  'ghttps://www.notion.so/gallery-so/Creating-a-new-gallery-and-organizing-your-NFTs-b407a174a2ee44748bb9952abd803290';
+  'https://www.notion.so/gallery-so/Creating-a-new-gallery-and-organizing-your-NFTs-b407a174a2ee44748bb9952abd803290';
 
 function TitleSection() {
   const { createCollection } = useGalleryEditorContext();
