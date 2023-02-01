@@ -39,6 +39,7 @@ export type GalleryEditorContextType = {
 
   hasSaved: boolean;
   hasUnsavedChanges: boolean;
+  hasUnsavedChangesCollectionBeingEdited: boolean;
   validationErrors: string[];
   canSave: boolean;
 
@@ -50,6 +51,7 @@ export type GalleryEditorContextType = {
   createCollection: () => void;
   toggleCollectionHidden: (collectionId: string) => void;
   collectionIdBeingEdited: string | null;
+  moveCollectionToGallery: (collectionId: string) => void;
 };
 
 export const GalleryEditorContext = createContext<GalleryEditorContextType | undefined>(undefined);
@@ -403,18 +405,12 @@ export function GalleryEditorProvider({
   const hasUnsavedChanges = useMemo(() => {
     // Need to convert the liveDisplayTokenIds Set into an Array because sets don't store data
     // as properties to be stringified: https://stackoverflow.com/a/31190928/5377437
-    const currentCollectionsWithoutIds = Object.values(collections).map((collection) => {
-      return {
-        ...collection,
-        liveDisplayTokenIdsSize: [...collection.liveDisplayTokenIds].sort(),
-      };
-    });
-    const initialCollectionsWithoutIds = Object.values(initialCollections).map((collection) => {
-      return {
-        ...collection,
-        liveDisplayTokenIdsSize: [...collection.liveDisplayTokenIds].sort(),
-      };
-    });
+    const currentCollectionsWithoutIds = Object.values(collections).map(
+      convertCollectionToComparisonFriendlyObject
+    );
+    const initialCollectionsWithoutIds = Object.values(initialCollections).map(
+      convertCollectionToComparisonFriendlyObject
+    );
 
     const collectionsAreDifferent =
       JSON.stringify(currentCollectionsWithoutIds) !== JSON.stringify(initialCollectionsWithoutIds);
@@ -424,6 +420,22 @@ export function GalleryEditorProvider({
 
     return collectionsAreDifferent || nameIsDifferent || descriptionIsDifferent;
   }, [collections, description, initialCollections, initialDescription, initialName, name]);
+
+  const hasUnsavedChangesCollectionBeingEdited = useMemo(() => {
+    if (!collectionIdBeingEdited) {
+      return false;
+    }
+    const currCollection = convertCollectionToComparisonFriendlyObject(
+      collections[collectionIdBeingEdited]
+    );
+    const initialCollection = convertCollectionToComparisonFriendlyObject(
+      initialCollections[collectionIdBeingEdited]
+    );
+    const collectionsAreDifferent =
+      JSON.stringify(currCollection) !== JSON.stringify(initialCollection);
+
+    return collectionsAreDifferent;
+  }, [collectionIdBeingEdited, collections, initialCollections]);
 
   // At some point we will have validation errors built in
   const validationErrors = useMemo(() => {
@@ -436,6 +448,20 @@ export function GalleryEditorProvider({
     return validationErrors.length === 0 && hasUnsavedChanges;
   }, [hasUnsavedChanges, validationErrors.length]);
 
+  const moveCollectionToGallery = useCallback(
+    (collectionId: string) => {
+      const nextInitialCollections = { ...initialCollections };
+      delete nextInitialCollections[collectionId];
+      setInitialCollections(nextInitialCollections);
+
+      const nextCollections = { ...collections };
+      delete nextCollections[collectionId];
+      setCollections(nextCollections);
+      setCollectionIdBeingEdited(Object.keys(nextCollections)[0]);
+    },
+    [collections, initialCollections]
+  );
+
   const value: GalleryEditorContextType = useMemo(() => {
     return {
       name,
@@ -445,6 +471,7 @@ export function GalleryEditorProvider({
 
       hasSaved,
       hasUnsavedChanges,
+      hasUnsavedChangesCollectionBeingEdited,
       validationErrors,
       canSave,
 
@@ -457,6 +484,7 @@ export function GalleryEditorProvider({
       collectionIdBeingEdited,
       editCollectionNameAndNote,
       editGalleryNameAndDescription,
+      moveCollectionToGallery,
     };
   }, [
     name,
@@ -465,6 +493,7 @@ export function GalleryEditorProvider({
     hiddenCollectionIds,
     hasSaved,
     hasUnsavedChanges,
+    hasUnsavedChangesCollectionBeingEdited,
     validationErrors,
     canSave,
     saveGallery,
@@ -475,6 +504,7 @@ export function GalleryEditorProvider({
     collectionIdBeingEdited,
     editCollectionNameAndNote,
     editGalleryNameAndDescription,
+    moveCollectionToGallery,
   ]);
 
   return <GalleryEditorContext.Provider value={value}>{children}</GalleryEditorContext.Provider>;
@@ -488,4 +518,14 @@ export function useGalleryEditorContext() {
   }
 
   return value;
+}
+
+function convertCollectionToComparisonFriendlyObject(collection?: CollectionState) {
+  if (!collection) {
+    return null;
+  }
+  return {
+    ...collection,
+    liveDisplayTokenIdsSize: [...collection.liveDisplayTokenIds].sort(),
+  };
 }
