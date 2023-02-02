@@ -76,10 +76,12 @@ const BeaconProvider = memo(({ children }: Props) => {
 
     const walletName = peer?.name || FriendlyWalletNaming.default;
 
+    const friendlyWalletName = walletName ? FriendlyWalletNaming[walletName] : null;
+
     return {
       publicKey,
       address,
-      wallet: FriendlyWalletNaming[walletName] || 'Tezos',
+      wallet: friendlyWalletName || 'Tezos',
     };
   }, []);
 

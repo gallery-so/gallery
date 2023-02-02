@@ -1,5 +1,6 @@
 import {
   closestCenter,
+  Collision,
   CollisionDetection,
   getFirstCollision,
   pointerWithin,
@@ -31,7 +32,7 @@ export function createCollisionDetectionStrategy({
   localSections,
   recentlyMovedToNewContainer,
 }: createCollisionDetectionStrategyArgs) {
-  return (args: Parameters<CollisionDetection>[0]) => {
+  return (args: Parameters<CollisionDetection>[0]): Collision[] => {
     // handle collisions when dragging sections
     if (activeId && activeId in localSections) {
       return closestCenter({
@@ -49,29 +50,33 @@ export function createCollisionDetectionStrategy({
         ? // If there are droppables intersecting with the pointer, return those
           pointerIntersections
         : rectIntersection(args);
-    let overId = getFirstCollision(intersections, 'id');
 
-    if (!!overId) {
-      if (overId in localSections) {
-        const sectionItems = localSections[overId].items;
+    let overId = getFirstCollision(intersections, 'id');
+    if (overId) {
+      const overSection = overId ? localSections[overId] : null;
+      if (overSection) {
+        const sectionItems = overSection.items;
 
         // If a section is matched and it contains items (columns 'A', 'B', 'C')
         if (sectionItems.length > 0) {
           // Return the closest droppable within that section
-          overId = closestCenter({
-            ...args,
-            droppableContainers: args.droppableContainers.filter(
-              (section) =>
-                section.id !== overId &&
-                sectionItems.map((item) => item.id).includes(section.id as string)
-            ),
-          })[0]?.id;
+          overId =
+            closestCenter({
+              ...args,
+              droppableContainers: args.droppableContainers.filter(
+                (section) =>
+                  section.id !== overId &&
+                  sectionItems.map((item) => item.id).includes(section.id as string)
+              ),
+            })[0]?.id ?? null;
         }
       }
 
       lastOverId.current = overId;
 
-      return [{ id: overId }];
+      if (overId) {
+        return [{ id: overId }];
+      }
     }
 
     // When a draggable item moves to a new container, the layout may shift

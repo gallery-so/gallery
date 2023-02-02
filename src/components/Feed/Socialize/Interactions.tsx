@@ -164,14 +164,16 @@ export function Interactions({ eventRef, queryRef, onPotentialLayoutShift }: Pro
   if (totalAdmires > 0) {
     const [admire] = nonNullAdmires;
 
-    return (
-      <AdmireLine
-        totalAdmires={totalAdmires}
-        admireRef={admire}
-        queryRef={query}
-        eventRef={event}
-      />
-    );
+    if (admire) {
+      return (
+        <AdmireLine
+          totalAdmires={totalAdmires}
+          admireRef={admire}
+          queryRef={query}
+          eventRef={event}
+        />
+      );
+    }
   }
 
   return null;

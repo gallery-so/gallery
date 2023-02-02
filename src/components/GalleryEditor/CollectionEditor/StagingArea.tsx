@@ -31,7 +31,7 @@ import {
 } from '~/components/GalleryEditor/CollectionEditor/DragAndDrop/draggingActions';
 import { useGalleryEditorContext } from '~/components/GalleryEditor/GalleryEditorContext';
 import { useCollectionEditorContextNew } from '~/contexts/collectionEditor/CollectionEditorContextNew';
-import { IMAGE_SIZES } from '~/contexts/collectionEditor/useDndDimensions';
+import { getImageSizeForColumns } from '~/contexts/collectionEditor/useDndDimensions';
 import { StagingAreaNewFragment$key } from '~/generated/StagingAreaNewFragment.graphql';
 import useKeyDown from '~/hooks/useKeyDown';
 import { removeNullValues } from '~/utils/removeNullValues';
@@ -90,7 +90,7 @@ function StagingArea({ tokensRef }: Props) {
 
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
 
-  // copy the StagedCollectionState locally so that we can temporarily modify it when the user drags items around without affecting the orginal state and other components that access it
+  // copy the StagedCollectionState locally so that we can temporarily modify it when the user drags items around without affecting the original state and other components that access it
   const [localSections, setLocalSections] = useState(sections);
   useLayoutEffect(() => {
     return setLocalSections(sections);
@@ -147,7 +147,7 @@ function StagingArea({ tokensRef }: Props) {
 
   // flatten the collection into a single array of items to easily find the active item
   const allItemsInCollection = useMemo(
-    () => Object.keys(localSections).flatMap((sectionId) => localSections[sectionId].items),
+    () => Object.values(localSections).flatMap((section) => section.items),
     [localSections]
   );
 
@@ -174,13 +174,14 @@ function StagingArea({ tokensRef }: Props) {
       return null;
     }
 
-    if (localSections[activeId.toString()]) {
+    const localActiveSection = localSections[activeId.toString()];
+    if (localActiveSection) {
       return (
         <SectionDragging
           sectionId={activeId.toString()}
-          items={localSections[activeId].items}
-          itemWidth={IMAGE_SIZES[localSections[activeId].columns]}
-          columns={localSections[activeId].columns}
+          items={localActiveSection.items}
+          itemWidth={getImageSizeForColumns(localActiveSection.columns)}
+          columns={localActiveSection.columns}
           nftFragmentsKeyedByID={nftFragmentsKeyedByID}
         />
       );
@@ -189,16 +190,16 @@ function StagingArea({ tokensRef }: Props) {
         section.items.some((item) => item.id === activeId)
       );
 
-      if (!sectionOwningItem) {
+      const activeItemRef = nftFragmentsKeyedByID[activeItem.id];
+
+      if (!sectionOwningItem || !activeItemRef) {
         return null;
       }
-
-      const activeItemRef = nftFragmentsKeyedByID[activeItem.id];
 
       return (
         <StagedItemDragging
           tokenRef={activeItemRef}
-          size={IMAGE_SIZES[sectionOwningItem.columns]}
+          size={getImageSizeForColumns(sectionOwningItem.columns)}
         />
       );
     }
@@ -277,7 +278,7 @@ function StagingArea({ tokensRef }: Props) {
                     <SortableContext items={section.items.map((item) => item.id)}>
                       {section.items.map((item) => {
                         const columns = section.columns;
-                        const size = IMAGE_SIZES[columns];
+                        const size = getImageSizeForColumns(columns);
                         const stagedItemRef = nftFragmentsKeyedByID[item.id];
 
                         if (item.kind === 'token' && stagedItemRef) {

@@ -127,13 +127,13 @@ function NftDetailPage({
    * smoothly as the user navigates left and right. Edge cases are handled accordingly
    * in the `shiftNftCarousel` util function.
    */
-  const [mountedNfts, setMountedNfts] = useState<MountedNft<typeof prevNft>[]>(
-    removeNullValues([
+  const [mountedNfts, setMountedNfts] = useState<MountedNft<NonNullable<typeof prevNft>>[]>(() => {
+    return removeNullValues([
       prevNft ? { token: prevNft, visibility: 'hidden-left' } : null,
-      { token: selectedNft, visibility: 'visible' },
+      selectedNft ? { token: selectedNft, visibility: 'visible' } : null,
       nextNft ? { token: nextNft, visibility: 'hidden-right' } : null,
-    ])
-  );
+    ]);
+  });
 
   // Redirects user to view an adjacent NFT
   const pushToNftById = useCallback(

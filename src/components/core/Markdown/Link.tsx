@@ -15,6 +15,11 @@ export default function Bold({
     if (!textArea) return;
 
     const [start, end] = selectedRange;
+
+    if (start === undefined || end === undefined) {
+      return;
+    }
+
     const selectedText = textArea.value.substring(start, end);
 
     // If the user clicks an empty link, remove the [](https://)

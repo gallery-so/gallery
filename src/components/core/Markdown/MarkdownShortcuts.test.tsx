@@ -32,7 +32,10 @@ describe('MarkdownShortcuts', () => {
     const { getAllByTestId } = render(<MarkdownShortcutsWithTextArea />);
 
     const boldIcon = getAllByTestId('markdown-icon')[0];
-    fireEvent.click(boldIcon);
+
+    if (boldIcon) {
+      fireEvent.click(boldIcon);
+    }
 
     const message = screen.getByDisplayValue('****');
     expect(message).toBeTruthy();
@@ -69,7 +72,10 @@ describe('MarkdownShortcuts', () => {
     const { getAllByTestId } = render(<MarkdownShortcutsWithTextArea />);
 
     const listIcon = getAllByTestId('markdown-icon')[1];
-    fireEvent.click(listIcon);
+
+    if (listIcon) {
+      fireEvent.click(listIcon);
+    }
 
     const message = screen.getByDisplayValue('*');
     expect(message).toBeTruthy();
@@ -79,7 +85,10 @@ describe('MarkdownShortcuts', () => {
     const { getAllByTestId } = render(<MarkdownShortcutsWithTextArea />);
 
     const linkIcon = getAllByTestId('markdown-icon')[2];
-    fireEvent.click(linkIcon);
+
+    if (linkIcon) {
+      fireEvent.click(linkIcon);
+    }
 
     const message = screen.getByDisplayValue('[](https://)');
     expect(message).toBeTruthy();

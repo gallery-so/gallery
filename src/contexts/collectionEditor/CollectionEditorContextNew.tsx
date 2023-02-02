@@ -76,7 +76,13 @@ export const CollectionEditorProviderNew = memo(({ children }: Props) => {
 
       setCollections((previous) => {
         const next = { ...previous };
-        const previousLiveDisplayTokenIds = next[collectionIdBeingEdited].liveDisplayTokenIds;
+        const previousCollection = next[collectionIdBeingEdited];
+
+        if (!previousCollection) {
+          return previous;
+        }
+
+        const previousLiveDisplayTokenIds = previousCollection.liveDisplayTokenIds;
 
         let nextLiveDisplayTokenIds;
         if (typeof value === 'function') {
@@ -86,7 +92,7 @@ export const CollectionEditorProviderNew = memo(({ children }: Props) => {
         }
 
         next[collectionIdBeingEdited] = {
-          ...next[collectionIdBeingEdited],
+          ...previousCollection,
           liveDisplayTokenIds: nextLiveDisplayTokenIds,
         };
 
@@ -113,6 +119,11 @@ export const CollectionEditorProviderNew = memo(({ children }: Props) => {
       setCollections((previousCollections) => {
         const nextCollections = { ...previousCollections };
         const previousCollection = previousCollections[collectionIdBeingEdited];
+
+        if (!previousCollection) {
+          return previousCollections;
+        }
+
         const previousSections = previousCollection.sections;
 
         let nextSections;
@@ -141,9 +152,14 @@ export const CollectionEditorProviderNew = memo(({ children }: Props) => {
 
       setCollections((previous) => {
         const next = { ...previous };
+        const previousCollection = previous[collectionIdBeingEdited];
+
+        if (!previousCollection) {
+          return previous;
+        }
 
         next[collectionIdBeingEdited] = {
-          ...next[collectionIdBeingEdited],
+          ...previousCollection,
           activeSectionId: sectionId,
         };
 
@@ -188,9 +204,10 @@ export const CollectionEditorProviderNew = memo(({ children }: Props) => {
 
   const deleteSection = useCallback(
     (sectionId: string) => {
-      const sectionTokenIds = sections[sectionId].items
-        .filter((item) => item.kind === 'token')
-        .map((token) => token.id);
+      const sectionTokenIds =
+        sections[sectionId]?.items
+          .filter((item) => item.kind === 'token')
+          .map((token) => token.id) ?? [];
 
       setLiveDisplayTokenIds((previous) => {
         const cloned = new Set(previous);
@@ -201,8 +218,16 @@ export const CollectionEditorProviderNew = memo(({ children }: Props) => {
       // Remove the section
       const nextSections = { ...sections };
       delete nextSections[sectionId];
+
+      // If this was the last section in the collection, make a new one so its not empty
+      let nextActiveSectionId: string | undefined = Object.keys(nextSections)[0];
+      if (!nextActiveSectionId) {
+        nextActiveSectionId = generate12DigitId();
+        nextSections[nextActiveSectionId] = { columns: 3, items: [] };
+      }
+
       setSections(nextSections);
-      setActiveSectionId(Object.keys(nextSections)[0] ?? null);
+      setActiveSectionId(nextActiveSectionId);
     },
     [sections, setActiveSectionId, setLiveDisplayTokenIds, setSections]
   );
@@ -210,11 +235,17 @@ export const CollectionEditorProviderNew = memo(({ children }: Props) => {
   const incrementColumns = useCallback(
     (sectionId: string) => {
       setSections((previous) => {
+        const previousSection = previous[sectionId];
+
+        if (!previousSection) {
+          return previous;
+        }
+
         return {
           ...previous,
           [sectionId]: {
-            ...previous[sectionId],
-            columns: previous[sectionId].columns + 1,
+            ...previousSection,
+            columns: previousSection.columns + 1,
           },
         };
       });
@@ -225,11 +256,17 @@ export const CollectionEditorProviderNew = memo(({ children }: Props) => {
   const decrementColumns = useCallback(
     (sectionId: string) => {
       setSections((previous) => {
+        const previousSection = previous[sectionId];
+
+        if (!previousSection) {
+          return previous;
+        }
+
         return {
           ...previous,
           [sectionId]: {
-            ...previous[sectionId],
-            columns: previous[sectionId].columns - 1,
+            ...previousSection,
+            columns: previousSection.columns - 1,
           },
         };
       });
@@ -297,7 +334,7 @@ export const CollectionEditorProviderNew = memo(({ children }: Props) => {
       setSections((previous) => {
         const cloned = deepClone(previous);
 
-        cloned[activeSectionId].items.push({ kind: 'token', id: tokenId });
+        cloned[activeSectionId]?.items.push({ kind: 'token', id: tokenId });
 
         return cloned;
       });
@@ -327,7 +364,7 @@ export const CollectionEditorProviderNew = memo(({ children }: Props) => {
     setSections((previous) => {
       const cloned = deepClone(previous);
 
-      cloned[activeSectionId].items.push({ kind: 'whitespace', id });
+      cloned[activeSectionId]?.items.push({ kind: 'whitespace', id });
 
       return cloned;
     });
@@ -354,8 +391,14 @@ export const CollectionEditorProviderNew = memo(({ children }: Props) => {
       setCollections((previousCollections) => {
         const cloned = { ...previousCollections };
 
+        const previousCollection = previousCollections[collectionIdBeingEdited];
+
+        if (!previousCollection) {
+          return previousCollections;
+        }
+
         cloned[collectionIdBeingEdited] = {
-          ...cloned[collectionIdBeingEdited],
+          ...previousCollection,
           name,
           collectorsNote,
         };

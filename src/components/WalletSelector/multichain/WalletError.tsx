@@ -41,8 +41,8 @@ const ERROR_MESSAGES: Record<string, ErrorMessage> = {
   },
 };
 
-function getErrorMessage(errorCode: string) {
-  return ERROR_MESSAGES[errorCode] ?? ERROR_MESSAGES.UNKNOWN_ERROR;
+function getErrorMessage(errorCode: string): ErrorMessage {
+  return ERROR_MESSAGES[errorCode] ?? (ERROR_MESSAGES.UNKNOWN_ERROR as ErrorMessage);
 }
 
 type Props = {

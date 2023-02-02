@@ -34,8 +34,9 @@ export default class MerkleTree {
     layers.push(elements);
 
     // Get next layer until we reach the root
-    while (layers[layers.length - 1].length > 1) {
-      layers.push(this.getNextLayer(layers[layers.length - 1]));
+    let layer;
+    while ((layer = layers[layers.length - 1]) && layer.length > 1) {
+      layers.push(this.getNextLayer(layer));
     }
 
     return layers;
@@ -43,9 +44,10 @@ export default class MerkleTree {
 
   getNextLayer(elements: Buffer[]) {
     return elements.reduce((layer: Buffer[], el, idx, arr) => {
-      if (idx % 2 === 0) {
+      const pair = arr[idx + 1];
+      if (idx % 2 === 0 && pair) {
         // Hash the current element with its pair element
-        layer.push(this.combinedHash(el, arr[idx + 1]));
+        layer.push(this.combinedHash(el, pair));
       }
 
       return layer;
@@ -65,7 +67,7 @@ export default class MerkleTree {
   }
 
   getRoot() {
-    return this.layers[this.layers.length - 1][0];
+    return this.layers[this.layers.length - 1]?.[0];
   }
 
   getHexRoot() {
@@ -120,7 +122,8 @@ export default class MerkleTree {
     }
 
     for (let i = 0; i < arr.length; i++) {
-      if (hash.equals(arr[i])) {
+      const current = arr[i];
+      if (current && hash.equals(current)) {
         return i;
       }
     }
@@ -129,7 +132,12 @@ export default class MerkleTree {
   }
 
   bufDedup(elements: Buffer[]) {
-    return elements.filter((el, idx) => idx === 0 || !elements[idx - 1].equals(el));
+    return elements.filter((el, idx) => {
+      const previousElement = elements[idx - 1];
+      const previousEqualsCurrent = previousElement && previousElement.equals(el);
+
+      return idx === 0 || !previousEqualsCurrent;
+    });
   }
 
   bufArrToHexArr(arr: Buffer[]) {

@@ -4,7 +4,6 @@ import { readInlineData } from 'relay-runtime';
 import {
   CollectionMap,
   CollectionState,
-  StagedSection,
   StagedSectionMap,
 } from '~/components/GalleryEditor/GalleryEditorContext';
 import { getInitialCollectionsFromServerFragment$key } from '~/generated/getInitialCollectionsFromServerFragment.graphql';
@@ -47,31 +46,9 @@ export function getInitialCollectionsFromServer(
 
   // generate default collection client-side if user doesn't have any
   if (queryCollections.length === 0) {
-    const generatedCollectionId = generate12DigitId();
-    const generatedSectionId = generate12DigitId();
+    const initialCollection = createEmptyCollection();
 
-    const initialSection: StagedSection = {
-      columns: 3,
-      items: [],
-    };
-
-    const initialCollection: CollectionState = {
-      dbid: generatedCollectionId,
-      localOnly: true,
-
-      liveDisplayTokenIds: new Set(),
-
-      name: '',
-      collectorsNote: '',
-      hidden: false,
-
-      sections: {
-        [generatedSectionId]: initialSection,
-      },
-      activeSectionId: generatedSectionId,
-    };
-
-    collections[generatedCollectionId] = initialCollection;
+    collections[initialCollection.dbid] = initialCollection;
   }
 
   for (const collection of queryCollections) {
@@ -83,9 +60,7 @@ export function getInitialCollectionsFromServer(
     }
 
     const parsed = parseCollectionLayoutGraphql(nonNullTokens, collection.layout);
-    for (const sectionId in parsed) {
-      const parsedSection = parsed[sectionId];
-
+    Object.entries(parsed).forEach(([sectionId, parsedSection]) => {
       sections[sectionId] = {
         columns: parsedSection.columns,
         items: parsedSection.items.map((item) => {
@@ -102,6 +77,13 @@ export function getInitialCollectionsFromServer(
           }
         }),
       };
+    });
+
+    let activeSectionId = Object.keys(sections)[0];
+
+    if (!activeSectionId) {
+      activeSectionId = generate12DigitId();
+      sections[activeSectionId] = { items: [], columns: 3 };
     }
 
     const liveDisplayTokenIds = new Set<string>();
@@ -112,7 +94,7 @@ export function getInitialCollectionsFromServer(
     }
 
     collections[collection.dbid] = {
-      activeSectionId: Object.keys(sections)[0],
+      activeSectionId,
       liveDisplayTokenIds: liveDisplayTokenIds,
       sections,
       localOnly: false,
@@ -124,4 +106,25 @@ export function getInitialCollectionsFromServer(
   }
 
   return collections;
+}
+
+export function createEmptyCollection(): CollectionState {
+  const generatedCollectionId = generate12DigitId();
+  const generatedSectionId = generate12DigitId();
+
+  return {
+    dbid: generatedCollectionId,
+    localOnly: true,
+
+    liveDisplayTokenIds: new Set(),
+
+    name: '',
+    collectorsNote: '',
+    hidden: false,
+
+    sections: {
+      [generatedSectionId]: { columns: 3, items: [] },
+    },
+    activeSectionId: generatedSectionId,
+  };
 }

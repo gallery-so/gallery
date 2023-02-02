@@ -15,6 +15,11 @@ export default function List({
     if (!textArea) return;
 
     const [start, end] = selectedRange;
+
+    if (start === undefined || end === undefined) {
+      return;
+    }
+
     const selectedText = textArea.value.substring(start, end);
 
     const allLines = textArea.value.split('\n');
@@ -26,8 +31,8 @@ export default function List({
 
     // Map over allLines and return an object with the existing string and a boolean indicating if it is selected
     const allLinesWithSelected = allLines.map((line, index) => {
-      const lineStart = lineStartIndices[index];
-      const lineEnd = lineStartIndices[index] + line.length;
+      const lineStart = lineStartIndices[index] ?? 0;
+      const lineEnd = lineStart + line.length;
       // isSelected is true if the user's selection range includes the start of the line
       const isSelected =
         (lineStart >= start && end >= lineEnd) || (start >= lineStart && start <= lineEnd);
@@ -46,10 +51,10 @@ export default function List({
     // If there is no selectedText but the user's cursor is on a line, get the current lines first character
     if (!selectedText) {
       const currentLineIndex = textArea.value.substring(0, start).split('\n').length - 1;
-      const currentLine = textArea.value.split('\n')[currentLineIndex];
+      const currentLine = textArea.value.split('\n')[currentLineIndex] ?? '';
 
       if (currentLine.startsWith('* ')) {
-        allLines[currentLineIndex] = allLines[currentLineIndex].slice(2);
+        allLines[currentLineIndex] = currentLine.slice(2);
         const newText = allLines.join('\n');
         setValueAndTriggerOnChange(textArea, newText, [start - 2, end - 2]); // * [0, 2] -> [0, 0]
       } else {

@@ -105,6 +105,10 @@ export function NotesModal({ eventRef, fullscreen }: NotesModalProps) {
     ({ index, parent, key, style }) => {
       const interaction = sortedInteractions[sortedInteractions.length - index - 1];
 
+      if (!interaction) {
+        return null;
+      }
+
       return (
         <CellMeasurer
           cache={measurerCache}

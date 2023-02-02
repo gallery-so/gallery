@@ -34,6 +34,7 @@ function ColumnAdjuster({ viewerRef, activeSectionId }: Props) {
   const { incrementColumns, decrementColumns } = useCollectionEditorActions();
 
   const activeSection = stagedCollectionState[activeSectionId];
+  // @ts-expect-error This file will be deleted soon
   const columns = activeSection.columns;
 
   const maxColumns = useMaxColumns(viewer);

@@ -135,6 +135,7 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
 
   const tokensToDisplay = useMemo(() => {
     return editModeTokensSearchResults.filter((editModeToken) => {
+      // @ts-expect-error This file will be deleted soon
       const token = nftFragmentsKeyedByID[editModeToken.id];
 
       // Ensure we have a 1-1 match.
@@ -228,6 +229,7 @@ function Sidebar({ tokensRef, sidebarTokens, queryRef }: Props) {
             tokenRefs={nonNullTokens}
             selectedChain={selectedChain}
             selectedView={selectedView}
+            // @ts-expect-error This file will be deleted soon
             editModeTokens={tokensToDisplay}
           />
         ) : (
