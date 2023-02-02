@@ -102,8 +102,8 @@ export function CollectionListItem({ collectionId, queryRef }: CollectionListIte
       return escapedCollectionName;
     }
 
-    return selected ? 'Untitled Collection' : 'Untitled';
-  }, [escapedCollectionName, selected]);
+    return 'Untitled collection';
+  }, [escapedCollectionName]);
 
   return (
     <div

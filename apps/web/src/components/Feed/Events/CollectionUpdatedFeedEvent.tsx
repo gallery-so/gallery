@@ -93,13 +93,11 @@ export default function CollectionUpdatedFeedEvent({
         <VStack gap={16}>
           <StyledEventHeader>
             <HStack gap={4} inline>
-              <BaseM>
-                {!isSubEvent && <HoverCardOnUsername userRef={event.owner} queryRef={query} />}
-                <StyledEventText isSubEvent={isSubEvent}>
-                  made updates to {collectionName ? ' ' : 'their collection'}
-                </StyledEventText>
+              <StyledEventText isSubEvent={isSubEvent}>
+                {!isSubEvent && <HoverCardOnUsername userRef={event.owner} queryRef={query} />} made
+                updates to {collectionName ? ' ' : 'their collection'}
                 <InteractiveLink to={collectionPagePath}>{collectionName}</InteractiveLink>
-              </BaseM>
+              </StyledEventText>
               {!isSubEvent && <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>}
             </HStack>
           </StyledEventHeader>

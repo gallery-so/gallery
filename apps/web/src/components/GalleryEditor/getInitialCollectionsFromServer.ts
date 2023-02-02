@@ -13,46 +13,33 @@ import { generate12DigitId } from '~/utils/generate12DigitId';
 import { removeNullValues } from '~/utils/removeNullValues';
 
 export function getInitialCollectionsFromServer(
-  queryRef: getInitialCollectionsFromServerFragment$key
+  galleryRef: getInitialCollectionsFromServerFragment$key
 ): CollectionMap {
-  const query = readInlineData(
+  const gallery = readInlineData(
     graphql`
-      fragment getInitialCollectionsFromServerFragment on Query @inline {
-        galleryById(id: $galleryId) {
-          __typename
-          ... on Gallery {
-            dbid
-            collections {
+      fragment getInitialCollectionsFromServerFragment on Gallery @inline {
+        dbid
+        collections {
+          dbid
+          name
+          collectorsNote
+          hidden
+          layout {
+            ...collectionLayoutParseFragment
+          }
+          tokens {
+            tokenSettings {
+              renderLive
+            }
+            token {
               dbid
-              name
-              collectorsNote
-              hidden
-              layout {
-                ...collectionLayoutParseFragment
-              }
-              tokens {
-                tokenSettings {
-                  renderLive
-                }
-                token {
-                  dbid
-                }
-              }
             }
           }
         }
       }
     `,
-    queryRef
+    galleryRef
   );
-
-  const gallery = query.galleryById;
-
-  if (gallery?.__typename !== 'Gallery') {
-    throw new Error(
-      `Expected gallery to be typename 'Gallery', but received '${gallery?.__typename}'`
-    );
-  }
 
   const collections: CollectionMap = {};
 

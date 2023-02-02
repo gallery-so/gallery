@@ -98,10 +98,10 @@ export function GalleryEditorProvider({
             dbid
             name
             description
+
+            ...getInitialCollectionsFromServerFragment
           }
         }
-
-        ...getInitialCollectionsFromServerFragment
       }
     `,
     queryRef
@@ -136,6 +136,8 @@ export function GalleryEditorProvider({
               # eslint-disable-next-line relay/must-colocate-fragment-spreads
               ...CollectionGalleryHeaderFragment
             }
+
+            ...getInitialCollectionsFromServerFragment
           }
         }
       }
@@ -152,7 +154,7 @@ export function GalleryEditorProvider({
   });
 
   const [collections, setCollections] = useState<CollectionMap>(() =>
-    getInitialCollectionsFromServer(query)
+    getInitialCollectionsFromServer(query.galleryById)
   );
 
   const [collectionIdBeingEdited, setCollectionIdBeingEdited] = useState<string | null>(() => {
@@ -281,7 +283,9 @@ export function GalleryEditorProvider({
 
   const reportError = useReportError();
   const saveGallery = useCallback(
-    async (caption: string | null) => {
+    async (_caption: string | null) => {
+      const caption = _caption?.trim() ? _caption : null;
+
       const galleryId = query.galleryById.dbid;
 
       if (!galleryId) {
@@ -346,7 +350,7 @@ export function GalleryEditorProvider({
       const order = [...Object.values(collections).map((collection) => collection.dbid)];
 
       try {
-        await save({
+        const { updateGallery } = await save({
           variables: {
             input: {
               galleryId,
@@ -364,11 +368,36 @@ export function GalleryEditorProvider({
           },
         });
 
+        if (updateGallery?.__typename !== 'UpdateGalleryPayload' || !updateGallery.gallery) {
+          throw new ErrorWithSentryMetadata(
+            'Update gallery response did not have the expected typename',
+            { __typename: updateGallery?.__typename }
+          );
+        }
+
+        const serverSourcedCollections = getInitialCollectionsFromServer(updateGallery.gallery);
+
         // Make sure we reset our "Has unsaved changes comparison point"
         setInitialName(name);
         setInitialDescription(description);
-        setInitialCollections(collections);
+        setInitialCollections(serverSourcedCollections);
 
+        // Make sure the UI is reflecting what the server tells us happened.
+        setCollections(serverSourcedCollections);
+
+        // Reset the deleted collection ids since we just deleted them
+        setDeletedCollectionIds(new Set());
+
+        // Ensure the same collection is still activated
+        const newCollectionIdBeingEdited = collectionIdBeingEdited
+          ? Object.keys(serverSourcedCollections)[
+              Object.keys(collections).indexOf(collectionIdBeingEdited)
+            ]
+          : null;
+
+        setCollectionIdBeingEdited(newCollectionIdBeingEdited);
+
+        // Flash a "Saved" message next to the "Done" button
         setHasSaved(true);
       } catch (error) {
         pushToast({
@@ -388,6 +417,7 @@ export function GalleryEditorProvider({
       }
     },
     [
+      collectionIdBeingEdited,
       collections,
       deletedCollectionIds,
       description,
@@ -402,6 +432,7 @@ export function GalleryEditorProvider({
   const [initialName, setInitialName] = useState(name);
   const [initialDescription, setInitialDescription] = useState(description);
   const [initialCollections, setInitialCollections] = useState(collections);
+
   const hasUnsavedChanges = useMemo(() => {
     // Need to convert the liveDisplayTokenIds Set into an Array because sets don't store data
     // as properties to be stringified: https://stackoverflow.com/a/31190928/5377437
@@ -422,7 +453,11 @@ export function GalleryEditorProvider({
   }, [collections, description, initialCollections, initialDescription, initialName, name]);
 
   const hasUnsavedChangesCollectionBeingEdited = useMemo(() => {
-    if (!collectionIdBeingEdited) {
+    if (
+      !collectionIdBeingEdited ||
+      !collections[collectionIdBeingEdited] ||
+      !initialCollections[collectionIdBeingEdited]
+    ) {
       return false;
     }
     const currCollection = convertCollectionToComparisonFriendlyObject(
@@ -520,12 +555,16 @@ export function useGalleryEditorContext() {
   return value;
 }
 
-function convertCollectionToComparisonFriendlyObject(collection?: CollectionState) {
-  if (!collection) {
-    return null;
-  }
+type ComparisonFriendlyCollectionState = Omit<CollectionState, 'liveDisplayTokenIds'> & {
+  liveDisplayTokenIds: string[];
+};
+
+function convertCollectionToComparisonFriendlyObject(
+  collection: CollectionState
+): ComparisonFriendlyCollectionState {
   return {
     ...collection,
-    liveDisplayTokenIdsSize: [...collection.liveDisplayTokenIds].sort(),
+    activeSectionId: null,
+    liveDisplayTokenIds: [...collection.liveDisplayTokenIds].sort(),
   };
 }
