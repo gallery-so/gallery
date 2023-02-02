@@ -5,6 +5,7 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
     "resolveJsonModule": true,
     "noImplicitReturns": false,
     "noImplicitOverride": false
