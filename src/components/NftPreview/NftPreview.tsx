@@ -32,6 +32,7 @@ type Props = {
   hideLabelOnMobile?: boolean;
   disableLiverender?: boolean;
   columns?: number;
+  isInFeedEvent?: boolean;
 };
 
 const nftPreviewTokenFragment = graphql`
@@ -69,6 +70,7 @@ function NftPreview({
   onClick,
   disableLiverender = false,
   columns = 3,
+  isInFeedEvent = false,
 }: Props) {
   const collectionToken = useFragment(
     graphql`
@@ -174,12 +176,13 @@ function NftPreview({
   const isFirefoxSvg = isSvg(result?.urls?.large) && isFirefox();
   // stretch the image to take up the full-width if...
   const fullWidth =
+    !isInFeedEvent &&
     // there are more than 1 columns in the layout
-    columns > 1 ||
-    // the asset is an SVG on firefox
-    isFirefoxSvg ||
-    // the asset is an iframe in single column mode
-    (columns === 1 && isIFrameLiveDisplay);
+    (columns > 1 ||
+      // the asset is an SVG on firefox
+      isFirefoxSvg ||
+      // the asset is an iframe in single column mode
+      (columns === 1 && isIFrameLiveDisplay));
 
   const { aspectRatio } = useContentState();
 
@@ -210,6 +213,7 @@ function NftPreview({
             {PreviewAsset}
             {isMobileOrLargeMobile ? null : (
               <StyledNftFooter>
+                {columns}
                 <StyledNftLabel tokenRef={token} />
                 <StyledGradient type="bottom" direction="down" />
               </StyledNftFooter>
