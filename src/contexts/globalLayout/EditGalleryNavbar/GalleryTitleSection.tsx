@@ -27,7 +27,7 @@ export function GalleryTitleSection({
   return (
     <GalleryTitleContainer align="center" onClick={onEdit} gap={8}>
       <MainGalleryText hasGalleryName={Boolean(galleryName)}>
-        {galleryName || 'Untitled Gallery'}
+        {galleryName || 'Untitled gallery'}
 
         {step === 1 && <OnboardingDialog step={1} text={dialogMessage} onNext={onNextStep} />}
       </MainGalleryText>

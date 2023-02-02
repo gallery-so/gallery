@@ -85,6 +85,8 @@ export function CollectionNavbar({ queryRef, username, collectionId }: Collectio
     return 'untitled';
   }, [query.collectionById]);
 
+  const galleryName = query.collectionById.gallery.name || 'Untitled';
+
   return (
     <StandardNavbarContainer>
       <NavbarLeftContent>
@@ -99,16 +101,11 @@ export function CollectionNavbar({ queryRef, username, collectionId }: Collectio
 
                 <SlashText>/</SlashText>
 
-                {query.collectionById?.gallery?.name && (
-                  <>
-                    <Link href={galleryRoute}>
-                      <BreadcrumbLink href={route(galleryRoute)}>
-                        {query.collectionById.gallery.name}
-                      </BreadcrumbLink>
-                    </Link>
-                    <SlashText>/</SlashText>
-                  </>
-                )}
+                <Link href={galleryRoute}>
+                  <BreadcrumbLink href={route(galleryRoute)}>{galleryName}</BreadcrumbLink>
+                </Link>
+
+                <SlashText>/</SlashText>
 
                 <CollectionNameText title={unescapedCollectionName}>
                   {unescapedCollectionName}

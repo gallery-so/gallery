@@ -1,9 +1,9 @@
+import Link from 'next/link';
 import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import colors from '~/components/core/colors';
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { UnstyledLink } from '~/components/core/Link/UnstyledLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, BaseS } from '~/components/core/Text/Text';
@@ -18,15 +18,28 @@ import unescape from '~/utils/unescape';
 
 import { MAX_PIECES_DISPLAYED_PER_FEED_EVENT } from '../constants';
 import FeedEventTokenPreviews from '../FeedEventTokenPreviews';
-import { StyledEvent, StyledEventContent, StyledEventHeader, StyledTime } from './EventStyles';
+import {
+  StyledEvent,
+  StyledEventContent,
+  StyledEventHeader,
+  StyledEventLabel,
+  StyledEventText,
+  StyledTime,
+} from './EventStyles';
 
 type Props = {
   caption: string | null;
+  isSubEvent?: boolean;
   eventDataRef: CollectionCreatedFeedEventFragment$key;
   queryRef: CollectionCreatedFeedEventQueryFragment$key;
 };
 
-export default function CollectionCreatedFeedEvent({ caption, eventDataRef, queryRef }: Props) {
+export default function CollectionCreatedFeedEvent({
+  caption,
+  eventDataRef,
+  isSubEvent,
+  queryRef,
+}: Props) {
   const event = useFragment(
     graphql`
       fragment CollectionCreatedFeedEventFragment on CollectionCreatedFeedEventData {
@@ -56,7 +69,7 @@ export default function CollectionCreatedFeedEvent({ caption, eventDataRef, quer
     queryRef
   );
 
-  const tokens = event.newTokens;
+  const tokens = useMemo(() => event?.newTokens ?? [], [event?.newTokens]);
 
   const tokensToPreview = useMemo(() => {
     return removeNullValues(tokens).slice(0, MAX_PIECES_DISPLAYED_PER_FEED_EVENT);
@@ -81,20 +94,18 @@ export default function CollectionCreatedFeedEvent({ caption, eventDataRef, quer
       }}
       onClick={() => track('Feed: Clicked collection created event')}
     >
-      <StyledEvent>
+      <StyledEvent isSubEvent={isSubEvent}>
         <VStack gap={16}>
           <StyledEventHeader>
             <VStack gap={4}>
               <StyledEventHeaderContainer>
-                <HoverCardOnUsername userRef={event.owner} queryRef={query} />{' '}
-                <BaseM>
+                <StyledEventText isSubEvent={isSubEvent}>
+                  {!isSubEvent && <HoverCardOnUsername userRef={event.owner} queryRef={query} />}{' '}
                   added {tokens.length} {pluralize(tokens.length, 'piece')} to their new collection
                   {collectionName ? `, ` : ' '}
-                </BaseM>
-                <HStack gap={4} inline>
                   {collectionName && (
-                    <InteractiveLink
-                      to={{
+                    <Link
+                      href={{
                         pathname: '/[username]/[collectionId]',
                         query: {
                           username: event.owner.username as string,
@@ -102,15 +113,15 @@ export default function CollectionCreatedFeedEvent({ caption, eventDataRef, quer
                         },
                       }}
                     >
-                      {unescape(event.collection.name ?? '')}
-                    </InteractiveLink>
+                      <StyledEventLabel>{unescape(event.collection.name ?? '')}</StyledEventLabel>
+                    </Link>
                   )}
-                  <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
-                </HStack>
+                  {!isSubEvent && <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>}
+                </StyledEventText>
               </StyledEventHeaderContainer>
             </VStack>
           </StyledEventHeader>
-          <StyledEventContent gap={16} hasCaption={Boolean(caption)}>
+          <StyledEventContent gap={16} hasCaption={Boolean(caption)} isSubEvent={isSubEvent}>
             {caption && (
               <StyledCaptionContainer gap={8} align="center">
                 <BaseM>{caption}</BaseM>
@@ -118,7 +129,7 @@ export default function CollectionCreatedFeedEvent({ caption, eventDataRef, quer
             )}
             <VStack gap={8}>
               <FeedEventTokenPreviews
-                isInCaption={Boolean(caption)}
+                isInCaption={Boolean(caption || isSubEvent)}
                 tokenToPreviewRefs={tokensToPreview}
               />
               {showAdditionalPiecesIndicator && (

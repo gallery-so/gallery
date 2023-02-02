@@ -10,7 +10,7 @@ export enum FeatureFlag {
 }
 
 const PROD_FLAGS: Record<FeatureFlag, boolean> = {
-  MULTIGALLERY: false,
+  MULTIGALLERY: true,
 };
 
 const DEV_FLAGS: Record<FeatureFlag, boolean> = {
