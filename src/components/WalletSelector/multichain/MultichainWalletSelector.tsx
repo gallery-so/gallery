@@ -15,6 +15,7 @@ import { EthereumAddWallet } from './EthereumAddWallet';
 import { EthereumAuthenticateWallet } from './EthereumAuthenticateWallet';
 import { GnosisSafeAddWallet } from './GnosisSafeAddWallet';
 import { GnosisSafeAuthenticateWallet } from './GnosisSafeAuthenticateWallet';
+import MagicLinkLogin from './MagicLinkLogin';
 import { SupportedAuthMethod, supportedAuthMethods } from './supportedAuthMethods';
 import { TezosAddWallet } from './tezos/TezosAddWallet';
 import { TezosAuthenticateWallet } from './tezos/TezosAuthenticateWallet';
@@ -118,6 +119,14 @@ export default function MultichainWalletSelector({
     );
   }
 
+  if (selectedAuthMethod === supportedAuthMethods.magicLink) {
+    return (
+      <WalletSelectorWrapper>
+        <MagicLinkLogin reset={reset} />
+      </WalletSelectorWrapper>
+    );
+  }
+
   return (
     <WalletSelectorWrapper gap={24}>
       <VStack gap={16}>
@@ -176,6 +185,14 @@ export default function MultichainWalletSelector({
               setSelectedAuthMethod(supportedAuthMethods.delegateCash);
             }}
           />
+          {connectionMode === AUTH ? (
+            <WalletButton
+              label={supportedAuthMethods.magicLink.name}
+              onClick={() => {
+                setSelectedAuthMethod(supportedAuthMethods.magicLink);
+              }}
+            ></WalletButton>
+          ) : null}
         </VStack>
       </VStack>
     </WalletSelectorWrapper>
