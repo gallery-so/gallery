@@ -70,7 +70,7 @@ export default function FeedList({
       // at the top of the list. e.g. index 0 gets replaced w/ new content
       // and has a different height than the item preceding it.
       keyMapper: (rowIndex) => {
-        return feedDataRef.current[feedDataRef.current.length - rowIndex - 1].dbid;
+        return feedDataRef.current[feedDataRef.current.length - rowIndex - 1]?.dbid;
       },
       defaultHeight: 400,
       fixedWidth: true,

@@ -54,7 +54,7 @@ export function dragOver(
     });
 
     // Push the token to the new section
-    cloned[overId].items.push(item);
+    cloned[overId]?.items.push(item);
 
     return cloned;
   } else {
@@ -71,22 +71,23 @@ export function dragOver(
       sectionWithOverToken &&
       sectionWithOverToken != sectionWithActiveToken
     ) {
-      const activeTokenIndex = sectionWithActiveToken.items.findIndex(
-        (item) => item.id === activeId
-      );
-      const overTokenIndex = sectionWithOverToken.items.findIndex((item) => item.id === overId);
+      const activeToken = sectionWithActiveToken.items.find((item) => item.id === activeId);
 
-      const activeToken = sectionWithActiveToken.items[activeTokenIndex];
+      if (activeToken) {
+        const activeTokenIndex = sectionWithActiveToken.items.indexOf(activeToken);
 
-      // Remove the old token
-      sectionWithActiveToken.items.splice(activeTokenIndex, 1);
+        const overTokenIndex = sectionWithOverToken.items.findIndex((item) => item.id === overId);
 
-      const newIndex =
-        overTokenIndex >= 0 ? overTokenIndex + 1 : sectionWithOverToken.items.length + 1;
-      // Push the new token
-      sectionWithOverToken.items.splice(newIndex, 0, activeToken);
+        // Remove the old token
+        sectionWithActiveToken.items.splice(activeTokenIndex, 1);
 
-      return cloned;
+        const newIndex =
+          overTokenIndex >= 0 ? overTokenIndex + 1 : sectionWithOverToken.items.length + 1;
+        // Push the new token
+        sectionWithOverToken.items.splice(newIndex, 0, activeToken);
+
+        return cloned;
+      }
     }
   }
 
@@ -142,7 +143,7 @@ export function dragEnd(
     });
 
     // Push the token to the new section
-    cloned[overId].items.push(item);
+    cloned[overId]?.items.push(item);
 
     return cloned;
   } else if (!isTheActiveItemASection && !isTheOverItemASection) {
@@ -171,10 +172,12 @@ export function dragEnd(
     } else {
       const activeToken = sectionWithActiveToken.items[activeTokenIndex];
 
-      // Remove the old token
-      sectionWithActiveToken.items.splice(activeTokenIndex, 1);
-      // Push the new token
-      sectionWithOverToken.items.splice(overTokenIndex, 0, activeToken);
+      if (activeToken) {
+        // Remove the old token
+        sectionWithActiveToken.items.splice(activeTokenIndex, 1);
+        // Push the new token
+        sectionWithOverToken.items.splice(overTokenIndex, 0, activeToken);
+      }
     }
 
     return cloned;
