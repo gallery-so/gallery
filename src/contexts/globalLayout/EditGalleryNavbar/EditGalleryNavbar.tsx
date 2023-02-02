@@ -26,6 +26,10 @@ type Props = {
   hasUnsavedChanges: boolean;
   galleryName: string;
   username: string;
+  dialogMessage: string;
+  step: number;
+
+  onNextStep: () => void;
 
   onEdit: () => void;
 
@@ -46,6 +50,10 @@ export function EditGalleryNavbar({
   onEdit,
   hasSaved,
   hasUnsavedChanges,
+
+  dialogMessage,
+  step,
+  onNextStep,
 
   username,
   galleryName,
@@ -122,7 +130,13 @@ export function EditGalleryNavbar({
       <StandardNavbarContainer>
         <NavbarLeftContent>
           {isMobile ? (
-            <GalleryTitleSection galleryName={galleryName} onEdit={onEdit} />
+            <GalleryTitleSection
+              galleryName={galleryName}
+              onEdit={onEdit}
+              step={step}
+              dialogMessage={dialogMessage}
+              onNextStep={onNextStep}
+            />
           ) : (
             <AllGalleriesWrapper onClick={handleAllGalleriesClick} gap={4}>
               <AllGalleriesIcon />
@@ -132,7 +146,15 @@ export function EditGalleryNavbar({
         </NavbarLeftContent>
 
         <NavbarCenterContent>
-          {!isMobile && <GalleryTitleSection galleryName={galleryName} onEdit={onEdit} />}
+          {!isMobile && (
+            <GalleryTitleSection
+              galleryName={galleryName}
+              onEdit={onEdit}
+              step={step}
+              dialogMessage={dialogMessage}
+              onNextStep={onNextStep}
+            />
+          )}
         </NavbarCenterContent>
 
         <NavbarRightContent>

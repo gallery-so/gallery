@@ -11,7 +11,10 @@ import {
   GalleryEditorProvider,
   useGalleryEditorContext,
 } from '~/components/GalleryEditor/GalleryEditorContext';
-import { OnboardingDialogProvider } from '~/components/GalleryEditor/GalleryOnboardingGuide/OnboardingDialogContext';
+import {
+  OnboardingDialogProvider,
+  useOnboardingDialogContext,
+} from '~/components/GalleryEditor/GalleryOnboardingGuide/OnboardingDialogContext';
 import { OrganizeGallery } from '~/components/ManageGallery/OrganizeGallery/OrganizeGallery';
 import useConfirmationMessageBeforeClose from '~/components/ManageGallery/useConfirmationMessageBeforeClose';
 import FullPageStep from '~/components/Onboarding/FullPageStep';
@@ -53,6 +56,7 @@ function NewEditGalleryPageInner({ queryRef }: NewEditGalleryPageInnerProps) {
   const { replace, back } = useRouter();
   const { saveGallery, hasSaved, canSave, hasUnsavedChanges, editGalleryNameAndDescription, name } =
     useGalleryEditorContext();
+  const { step, dialogMessage, nextStep } = useOnboardingDialogContext();
 
   useConfirmationMessageBeforeClose(hasUnsavedChanges);
 
@@ -92,18 +96,19 @@ function NewEditGalleryPageInner({ queryRef }: NewEditGalleryPageInnerProps) {
     <FullPageStep
       withBorder
       navbar={
-        <OnboardingDialogProvider>
-          <EditGalleryNavbar
-            onEdit={handleEdit}
-            galleryName={name}
-            canSave={canSave}
-            hasSaved={hasSaved}
-            username={username}
-            hasUnsavedChanges={hasUnsavedChanges}
-            onBack={handleBack}
-            onDone={handleDone}
-          />
-        </OnboardingDialogProvider>
+        <EditGalleryNavbar
+          onEdit={handleEdit}
+          galleryName={name}
+          canSave={canSave}
+          hasSaved={hasSaved}
+          username={username}
+          hasUnsavedChanges={hasUnsavedChanges}
+          onBack={handleBack}
+          onDone={handleDone}
+          step={step}
+          dialogMessage={dialogMessage}
+          onNextStep={nextStep}
+        />
       }
     >
       <GalleryEditor queryRef={query} />
@@ -208,16 +213,18 @@ function OldEditGalleryPage({ galleryId }: OldEditGalleryPageProps) {
   }, [push, query.viewer?.user?.username]);
 
   return (
-    <FullPageStep navbar={<GalleryEditNavbar onDone={handleDone} />}>
-      <Wrapper>
-        <OrganizeGallery
-          onAddCollection={handleAddCollection}
-          onEditCollection={handleEditCollection}
-          queryRef={query}
-          galleryId={galleryId}
-        />
-      </Wrapper>
-    </FullPageStep>
+    <OnboardingDialogProvider>
+      <FullPageStep navbar={<GalleryEditNavbar onDone={handleDone} />}>
+        <Wrapper>
+          <OrganizeGallery
+            onAddCollection={handleAddCollection}
+            onEditCollection={handleEditCollection}
+            queryRef={query}
+            galleryId={galleryId}
+          />
+        </Wrapper>
+      </FullPageStep>
+    </OnboardingDialogProvider>
   );
 }
 

@@ -23,7 +23,7 @@ type OnboardingDialogProviderProps = {
 };
 
 export function OnboardingDialogProvider({ children }: OnboardingDialogProviderProps) {
-  const [step, setStep] = useState(2);
+  const [step, setStep] = useState(1);
   const [showTooltip, setShowTooltip] = useState(true);
 
   const dialogMessage = useMemo(
@@ -37,7 +37,6 @@ export function OnboardingDialogProvider({ children }: OnboardingDialogProviderP
       return;
     }
 
-    console.log('nextStep', step);
     setStep(step + 1);
   }, [step]);
 

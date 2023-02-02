@@ -10,13 +10,15 @@ import {
   useInteractions,
   useRole,
 } from '@floating-ui/react';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import styled from 'styled-components';
 
 import { Button } from '~/components/core/Button/Button';
 import colors from '~/components/core/colors';
+import IconContainer from '~/components/core/IconContainer';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM } from '~/components/core/Text/Text';
+import CloseIcon from '~/icons/CloseIcon';
 
 import Blinking from './Blinking';
 
@@ -54,15 +56,27 @@ export default function OnboardingDialog({ step, text, onNext, options }: Props)
   const { getReferenceProps, getFloatingProps } = useInteractions([role]);
   const headingId = useId();
 
+  const handleNext = useCallback(
+    (e: React.MouseEvent<HTMLElement>) => {
+      e.stopPropagation();
+      onNext();
+    },
+    [onNext]
+  );
+
+  const handleOnClose = useCallback((e: React.MouseEvent<HTMLElement>) => {
+    e.stopPropagation();
+    setOpen(false);
+  }, []);
+
   return (
     <>
-      <Blinking ref={reference} {...getReferenceProps()} />
+      {open && <Blinking ref={reference} {...getReferenceProps()} />}
       {open && (
         <FloatingPortal>
           <StyledConfirmation
             className="Popover"
             aria-labelledby={headingId}
-            // Floating UI Props
             ref={floating}
             style={{
               position: strategy,
@@ -71,20 +85,20 @@ export default function OnboardingDialog({ step, text, onNext, options }: Props)
             }}
             {...getFloatingProps()}
           >
+            <HStack justify="flex-end">
+              <IconContainer
+                onClick={(e) => handleOnClose(e)}
+                size="sm"
+                variant="stacked"
+                icon={<CloseIcon />}
+              />
+            </HStack>
             <StyledTextWrapper>
               <BaseM>{text}</BaseM>
             </StyledTextWrapper>
             <HStack justify="space-between" align="center">
               <TitleDiatypeM>Tip {step} of 5</TitleDiatypeM>
-              <Button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  // setOpen(false);
-                  onNext();
-                }}
-              >
-                Next
-              </Button>
+              <Button onClick={handleNext}>Next</Button>
             </HStack>
           </StyledConfirmation>
         </FloatingPortal>
@@ -100,7 +114,7 @@ const StyledConfirmation = styled.div`
   z-index: 2;
 
   background-color: ${colors.white};
-  padding: 20px;
+  padding: 16px;
 
   border: 1px solid ${colors.offBlack};
 `;

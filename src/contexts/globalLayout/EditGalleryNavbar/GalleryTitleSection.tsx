@@ -6,23 +6,30 @@ import IconContainer from '~/components/core/IconContainer';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BODY_FONT_FAMILY, Paragraph } from '~/components/core/Text/Text';
 import OnboardingDialog from '~/components/GalleryEditor/GalleryOnboardingGuide/OnboardingDialog';
-import { useOnboardingDialogContext } from '~/components/GalleryEditor/GalleryOnboardingGuide/OnboardingDialogContext';
 import { EditPencilIcon } from '~/icons/EditPencilIcon';
 
 type GalleryTitleSectionProps = {
   onEdit: () => void;
   galleryName: string;
+  dialogMessage: string;
+  step: number;
+
+  onNextStep: () => void;
 };
 
-export function GalleryTitleSection({ onEdit, galleryName }: GalleryTitleSectionProps) {
-  const { step, dialogMessage, nextStep } = useOnboardingDialogContext();
-
+export function GalleryTitleSection({
+  onEdit,
+  galleryName,
+  dialogMessage,
+  step,
+  onNextStep,
+}: GalleryTitleSectionProps) {
   return (
     <GalleryTitleContainer align="center" onClick={onEdit} gap={8}>
       <MainGalleryText hasGalleryName={Boolean(galleryName)}>
         {galleryName || 'Untitled Gallery'}
 
-        {step === 1 && <OnboardingDialog step={1} text={dialogMessage} onNext={nextStep} />}
+        {step === 1 && <OnboardingDialog step={1} text={dialogMessage} onNext={onNextStep} />}
       </MainGalleryText>
 
       <EditIconContainer>
