@@ -71,37 +71,39 @@ export default function OnboardingDialog({ step, text, onNext, options }: Props)
 
   return (
     <>
-      {open && <Blinking ref={reference} {...getReferenceProps()} />}
       {open && (
-        <FloatingPortal>
-          <StyledConfirmation
-            className="Popover"
-            aria-labelledby={headingId}
-            ref={floating}
-            style={{
-              position: strategy,
-              top: y ?? 0,
-              left: x ?? 500,
-            }}
-            {...getFloatingProps()}
-          >
-            <HStack justify="flex-end">
-              <IconContainer
-                onClick={(e) => handleOnClose(e)}
-                size="sm"
-                variant="stacked"
-                icon={<CloseIcon />}
-              />
-            </HStack>
-            <StyledTextWrapper>
-              <BaseM>{text}</BaseM>
-            </StyledTextWrapper>
-            <HStack justify="space-between" align="center">
-              <TitleDiatypeM>Tip {step} of 5</TitleDiatypeM>
-              <Button onClick={handleNext}>Next</Button>
-            </HStack>
-          </StyledConfirmation>
-        </FloatingPortal>
+        <>
+          <Blinking ref={reference} {...getReferenceProps()} />
+          <FloatingPortal>
+            <StyledConfirmation
+              className="Popover"
+              aria-labelledby={headingId}
+              ref={floating}
+              style={{
+                position: strategy,
+                top: y ?? 0,
+                left: x ?? 500,
+              }}
+              {...getFloatingProps()}
+            >
+              <HStack justify="flex-end">
+                <IconContainer
+                  onClick={(e) => handleOnClose(e)}
+                  size="sm"
+                  variant="stacked"
+                  icon={<CloseIcon />}
+                />
+              </HStack>
+              <StyledTextWrapper>
+                <BaseM>{text}</BaseM>
+              </StyledTextWrapper>
+              <HStack justify="space-between" align="center">
+                <TitleDiatypeM>Tip {step} of 5</TitleDiatypeM>
+                <Button onClick={handleNext}>Next</Button>
+              </HStack>
+            </StyledConfirmation>
+          </FloatingPortal>
+        </>
       )}
     </>
   );

@@ -1,5 +1,8 @@
 import { createContext, useCallback, useContext, useMemo, useState } from 'react';
 
+import { ONBOARDING_EDITOR_STORAGE_KEY } from '~/constants/storageKeys';
+import usePersistedState from '~/hooks/usePersistedState';
+
 type OnboardingDialogContextType = {
   step: number;
   dialogMessage: string;
@@ -26,6 +29,11 @@ export function OnboardingDialogProvider({ children }: OnboardingDialogProviderP
   const [step, setStep] = useState(1);
   const [showTooltip, setShowTooltip] = useState(true);
 
+  const [showOnboardingTooltips, setShowOnboardingTooltips] = usePersistedState(
+    ONBOARDING_EDITOR_STORAGE_KEY,
+    true
+  );
+
   const dialogMessage = useMemo(
     () => OnboardingDialogMessage[step as keyof typeof OnboardingDialogMessage],
     [step]
@@ -33,21 +41,27 @@ export function OnboardingDialogProvider({ children }: OnboardingDialogProviderP
 
   const nextStep = useCallback(() => {
     if (step === 5) {
+      setShowOnboardingTooltips(false);
       setShowTooltip(false);
       return;
     }
 
     setStep(step + 1);
-  }, [step]);
+  }, [setShowOnboardingTooltips, step]);
+
+  const currentStep = useMemo(() => {
+    if (!showTooltip || !showOnboardingTooltips) return 0;
+    return step;
+  }, [showOnboardingTooltips, showTooltip, step]);
 
   const value = useMemo(() => {
     return {
-      step,
+      step: currentStep,
       dialogMessage,
       nextStep,
       showTooltip,
     };
-  }, [dialogMessage, nextStep, showTooltip, step]);
+  }, [currentStep, dialogMessage, nextStep, showTooltip]);
 
   return (
     <OnboardingDialogContext.Provider value={value}>{children}</OnboardingDialogContext.Provider>
