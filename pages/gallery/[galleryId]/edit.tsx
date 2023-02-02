@@ -56,7 +56,7 @@ function NewEditGalleryPageInner({ queryRef }: NewEditGalleryPageInnerProps) {
   const { replace, back } = useRouter();
   const { saveGallery, hasSaved, canSave, hasUnsavedChanges, editGalleryNameAndDescription, name } =
     useGalleryEditorContext();
-  const { step, dialogMessage, nextStep } = useOnboardingDialogContext();
+  const { step, dialogMessage, nextStep, handleClose } = useOnboardingDialogContext();
 
   useConfirmationMessageBeforeClose(hasUnsavedChanges);
 
@@ -108,6 +108,7 @@ function NewEditGalleryPageInner({ queryRef }: NewEditGalleryPageInnerProps) {
           step={step}
           dialogMessage={dialogMessage}
           onNextStep={nextStep}
+          dialogOnClose={handleClose}
         />
       }
     >

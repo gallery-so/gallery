@@ -66,7 +66,7 @@ function CollectionTitle({
   const [showIcon, setShowIcon] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
 
-  const { step, dialogMessage, nextStep } = useOnboardingDialogContext();
+  const { step, dialogMessage, nextStep, handleClose } = useOnboardingDialogContext();
 
   return (
     <CollectionTitleRow style={style}>
@@ -112,6 +112,7 @@ function CollectionTitle({
             step={4}
             text={dialogMessage}
             onNext={nextStep}
+            onClose={handleClose}
             options={{
               placement: 'left-end',
               positionOffset: 100,

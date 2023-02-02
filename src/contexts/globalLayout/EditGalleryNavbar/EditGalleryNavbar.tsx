@@ -30,6 +30,7 @@ type Props = {
   step: number;
 
   onNextStep: () => void;
+  dialogOnClose: () => void;
 
   onEdit: () => void;
 
@@ -54,6 +55,7 @@ export function EditGalleryNavbar({
   dialogMessage,
   step,
   onNextStep,
+  dialogOnClose,
 
   username,
   galleryName,
@@ -136,6 +138,7 @@ export function EditGalleryNavbar({
               step={step}
               dialogMessage={dialogMessage}
               onNextStep={onNextStep}
+              dialogOnClose={dialogOnClose}
             />
           ) : (
             <AllGalleriesWrapper onClick={handleAllGalleriesClick} gap={4}>
@@ -153,6 +156,7 @@ export function EditGalleryNavbar({
               step={step}
               dialogMessage={dialogMessage}
               onNextStep={onNextStep}
+              dialogOnClose={dialogOnClose}
             />
           )}
         </NavbarCenterContent>

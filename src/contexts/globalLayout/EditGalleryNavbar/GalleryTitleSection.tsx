@@ -14,6 +14,7 @@ type GalleryTitleSectionProps = {
   dialogMessage: string;
   step: number;
 
+  dialogOnClose: () => void;
   onNextStep: () => void;
 };
 
@@ -22,6 +23,7 @@ export function GalleryTitleSection({
   galleryName,
   dialogMessage,
   step,
+  dialogOnClose,
   onNextStep,
 }: GalleryTitleSectionProps) {
   return (
@@ -29,7 +31,14 @@ export function GalleryTitleSection({
       <MainGalleryText hasGalleryName={Boolean(galleryName)}>
         {galleryName || 'Untitled gallery'}
 
-        {step === 1 && <OnboardingDialog step={1} text={dialogMessage} onNext={onNextStep} />}
+        {step === 1 && (
+          <OnboardingDialog
+            step={1}
+            text={dialogMessage}
+            onNext={onNextStep}
+            onClose={dialogOnClose}
+          />
+        )}
       </MainGalleryText>
 
       <EditIconContainer>

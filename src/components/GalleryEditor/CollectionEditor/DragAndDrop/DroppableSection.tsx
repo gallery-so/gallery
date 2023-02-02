@@ -37,7 +37,7 @@ export default function DroppableSection({ children, columns, id, items, style, 
   const { activeSectionId, activateSection, addSection, deleteSection } =
     useCollectionEditorContextNew();
 
-  const { step, dialogMessage, nextStep } = useOnboardingDialogContext();
+  const { step, dialogMessage, nextStep, handleClose } = useOnboardingDialogContext();
 
   // Set section as active on mousedown instead of on click so that starting to drag an item immediately activates that section
   const handleMouseDown = useCallback(() => {
@@ -83,7 +83,12 @@ export default function DroppableSection({ children, columns, id, items, style, 
                 <StyledPlusIcon />
               </StyledAddSectionButton>
               {step === 5 && (
-                <OnboardingDialog step={step} text={dialogMessage} onNext={nextStep} />
+                <OnboardingDialog
+                  step={step}
+                  text={dialogMessage}
+                  onNext={nextStep}
+                  onClose={handleClose}
+                />
               )}
             </HStack>
           )}

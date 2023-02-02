@@ -26,6 +26,7 @@ type Props = {
   step: number;
 
   onNextStep: () => void;
+  dialogOnClose: () => void;
 
   onEdit: () => void;
 
@@ -44,6 +45,7 @@ export function OnboardingEditGalleryNavbar({
   dialogMessage,
   step,
   onNextStep,
+  dialogOnClose,
 
   galleryName,
 }: Props) {
@@ -64,6 +66,7 @@ export function OnboardingEditGalleryNavbar({
               step={step}
               dialogMessage={dialogMessage}
               onNextStep={onNextStep}
+              dialogOnClose={dialogOnClose}
             />
           ) : (
             <BackButton onClick={onBack} />
@@ -78,6 +81,7 @@ export function OnboardingEditGalleryNavbar({
               step={step}
               dialogMessage={dialogMessage}
               onNextStep={onNextStep}
+              dialogOnClose={dialogOnClose}
             />
           )}
         </NavbarCenterContent>

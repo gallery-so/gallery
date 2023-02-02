@@ -7,6 +7,7 @@ type OnboardingDialogContextType = {
   step: number;
   dialogMessage: string;
   nextStep: () => void;
+  handleClose: () => void;
 };
 
 const OnboardingDialogMessage = {
@@ -54,14 +55,20 @@ export function OnboardingDialogProvider({ children }: OnboardingDialogProviderP
     return step;
   }, [showOnboardingTooltips, showTooltip, step]);
 
+  const handleClose = useCallback(() => {
+    setShowTooltip(false);
+    setShowOnboardingTooltips(false);
+  }, [setShowOnboardingTooltips]);
+
   const value = useMemo(() => {
     return {
       step: currentStep,
       dialogMessage,
-      nextStep,
       showTooltip,
+      nextStep,
+      handleClose,
     };
-  }, [currentStep, dialogMessage, nextStep, showTooltip]);
+  }, [currentStep, dialogMessage, handleClose, nextStep, showTooltip]);
 
   return (
     <OnboardingDialogContext.Provider value={value}>{children}</OnboardingDialogContext.Provider>

@@ -55,7 +55,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
     queryRef
   );
 
-  const { step, dialogMessage, nextStep } = useOnboardingDialogContext();
+  const { step, dialogMessage, nextStep, handleClose } = useOnboardingDialogContext();
   const { syncTokens } = useSyncTokens();
   const { addWhitespace } = useCollectionEditorContextNew();
 
@@ -125,6 +125,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
                 step={step}
                 text={dialogMessage}
                 onNext={nextStep}
+                onClose={handleClose}
                 options={{
                   placement: 'left-start',
                   positionOffset: 150,

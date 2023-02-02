@@ -26,6 +26,7 @@ type Props = {
   step: number;
   text: string;
   onNext: () => void;
+  onClose: () => void;
 
   options?: {
     placement?: Placement;
@@ -33,7 +34,7 @@ type Props = {
   };
 };
 
-export default function OnboardingDialog({ step, text, onNext, options }: Props) {
+export default function OnboardingDialog({ step, text, onNext, onClose, options }: Props) {
   const [open, setOpen] = useState(true);
 
   const { placement, positionOffset } = options ?? {
@@ -64,10 +65,14 @@ export default function OnboardingDialog({ step, text, onNext, options }: Props)
     [onNext]
   );
 
-  const handleOnClose = useCallback((e: React.MouseEvent<HTMLElement>) => {
-    e.stopPropagation();
-    setOpen(false);
-  }, []);
+  const handleOnClose = useCallback(
+    (e: React.MouseEvent<HTMLElement>) => {
+      e.stopPropagation();
+      setOpen(false);
+      onClose();
+    },
+    [onClose]
+  );
 
   return (
     <>

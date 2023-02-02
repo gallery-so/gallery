@@ -38,7 +38,7 @@ function EditGalleryInner({ queryRef }: EditGalleryInnerProps) {
   const { replace, back, push } = useRouter();
   const { saveGallery, canSave, hasUnsavedChanges, editGalleryNameAndDescription, name } =
     useGalleryEditorContext();
-  const { step, dialogMessage, nextStep } = useOnboardingDialogContext();
+  const { step, dialogMessage, nextStep, handleClose } = useOnboardingDialogContext();
 
   useConfirmationMessageBeforeClose(hasUnsavedChanges);
 
@@ -74,6 +74,7 @@ function EditGalleryInner({ queryRef }: EditGalleryInnerProps) {
           step={step}
           dialogMessage={dialogMessage}
           onNextStep={nextStep}
+          dialogOnClose={handleClose}
         />
       }
     >

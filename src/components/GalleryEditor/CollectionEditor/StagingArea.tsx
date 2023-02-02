@@ -77,7 +77,7 @@ function StagingArea({ tokensRef }: Props) {
     tokensRef
   );
 
-  const { step, dialogMessage, nextStep } = useOnboardingDialogContext();
+  const { step, dialogMessage, nextStep, handleClose } = useOnboardingDialogContext();
 
   const { editCollectionNameAndNote, collectionIdBeingEdited } = useGalleryEditorContext();
   const {
@@ -234,6 +234,7 @@ function StagingArea({ tokensRef }: Props) {
                     step={step}
                     text={dialogMessage}
                     onNext={nextStep}
+                    onClose={handleClose}
                     options={{
                       placement: 'bottom',
                       positionOffset: 30,
@@ -249,6 +250,7 @@ function StagingArea({ tokensRef }: Props) {
                     step={step}
                     text={dialogMessage}
                     onNext={nextStep}
+                    onClose={handleClose}
                     options={{
                       placement: 'bottom',
                     }}
