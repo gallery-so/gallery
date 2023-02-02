@@ -30,7 +30,7 @@ import {
   useCollectionEditorActions,
   useStagedCollectionState,
 } from '~/contexts/collectionEditor/CollectionEditorContext';
-import { IMAGE_SIZES } from '~/contexts/collectionEditor/useDndDimensions';
+import { getImageSizeForColumns } from '~/contexts/collectionEditor/useDndDimensions';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { StagingAreaFragment$key } from '~/generated/StagingAreaFragment.graphql';
 import useKeyDown from '~/hooks/useKeyDown';
@@ -104,6 +104,7 @@ function StagingArea({ tokensRef }: Props) {
    * - If there are no intersecting containers, return the last matched intersection
    *
    */
+  // @ts-expect-error This file will be deleted soon
   const collisionDetectionStrategy: CollisionDetection = useCallback(
     (args) => {
       // handle collisions when dragging sections
@@ -127,11 +128,13 @@ function StagingArea({ tokensRef }: Props) {
 
       if (!!overId) {
         if (overId in localStagedCollection) {
+          // @ts-expect-error This file will be deleted soon
           const sectionItems = localStagedCollection[overId].items;
 
           // If a section is matched and it contains items (columns 'A', 'B', 'C')
           if (sectionItems.length > 0) {
             // Return the closest droppable within that section
+            // @ts-expect-error This file will be deleted soon
             overId = closestCenter({
               ...args,
               droppableContainers: args.droppableContainers.filter(
@@ -176,6 +179,7 @@ function StagingArea({ tokensRef }: Props) {
       }
 
       const sectionId = Object.keys(localStagedCollection).find((key) =>
+        // @ts-expect-error This file will be deleted soon
         sectionContainsId(localStagedCollection[key], id)
       );
 
@@ -213,11 +217,14 @@ function StagingArea({ tokensRef }: Props) {
       // We update the local collection state to visually reflect that the item is in a different section.
       // Note on performance: setLocalStagedCollection is only called when the item is dragged to a new container -
       // if the item is continued to be dragged within the new container, this function will not be called.
+      // @ts-expect-error This file will be deleted soon
       setLocalStagedCollection((previous) => {
         const oldSection = previous[activeSectionId];
+        // @ts-expect-error This file will be deleted soon
         const oldSectionItems = oldSection.items;
         const oldSectionItemIndex = oldSectionItems.findIndex(({ id }) => id === activeId);
         const newSection = previous[overSectionId];
+        // @ts-expect-error This file will be deleted soon
         const newSectionItems = newSection.items;
         const newSectionItemIndex = newSectionItems.findIndex(({ id }) => id === overId);
 
@@ -233,10 +240,14 @@ function StagingArea({ tokensRef }: Props) {
         }
 
         recentlyMovedToNewContainer.current = true;
+        // @ts-expect-error This file will be deleted soon
         const updatedOldSectionItems = oldSection.items.filter((item) => item.id !== activeId);
         const updatedNewSectionItems = [
+          // @ts-expect-error This file will be deleted soon
           ...newSection.items.slice(0, newIndex),
+          // @ts-expect-error This file will be deleted soon
           oldSection.items[oldSectionItemIndex],
+          // @ts-expect-error This file will be deleted soon
           ...newSection.items.slice(newIndex, newSection.items.length),
         ];
 
@@ -274,9 +285,11 @@ function StagingArea({ tokensRef }: Props) {
 
       // Item was dropped over a section
       if (overSectionId) {
+        // @ts-expect-error This file will be deleted soon
         const previousIndex = localStagedCollection[activeSectionId].items.findIndex(
           ({ id }) => id === active.id
         );
+        // @ts-expect-error This file will be deleted soon
         const newIndex = localStagedCollection[overSectionId].items.findIndex(
           ({ id }) => id === overId
         );
@@ -285,12 +298,14 @@ function StagingArea({ tokensRef }: Props) {
           // Item was dropped into a new section, so update the full collection with the local state
 
           const section = localStagedCollection[activeSectionId];
+          // @ts-expect-error This file will be deleted soon
           const sectionItems = section.items;
           const updatedSectionItems = arrayMove(sectionItems, previousIndex, newIndex);
           const updatedCollection = {
             ...localStagedCollection,
             [activeSectionId]: { ...section, items: updatedSectionItems },
           };
+          // @ts-expect-error This file will be deleted soon
           setStagedCollectionState(updatedCollection);
         } else {
           // Item was dropped into the same section, so just reorder the affected section
@@ -315,6 +330,7 @@ function StagingArea({ tokensRef }: Props) {
   const allItemsInCollection = useMemo(
     () =>
       Object.keys(localStagedCollection).flatMap(
+        // @ts-expect-error This file will be deleted soon
         (sectionId) => localStagedCollection[sectionId].items
       ),
     [localStagedCollection]
@@ -361,16 +377,21 @@ function StagingArea({ tokensRef }: Props) {
               <DroppableSection
                 key={sectionId}
                 id={sectionId}
+                // @ts-expect-error This file will be deleted soon
                 items={localStagedCollection[sectionId].items}
+                // @ts-expect-error This file will be deleted soon
                 columns={localStagedCollection[sectionId].columns}
               >
                 {/* Handles sorting for items in each section */}
                 <SortableContext
+                  // @ts-expect-error This file will be deleted soon
                   items={localStagedCollection[sectionId].items.map((item) => item.id)}
                 >
+                  {/* @ts-expect-error This file will be deleted soon */}
                   {localStagedCollection[sectionId].items.map((item) => {
+                    // @ts-expect-error This file will be deleted soon
                     const columns = localStagedCollection[sectionId].columns;
-                    const size = IMAGE_SIZES[columns];
+                    const size = getImageSizeForColumns(columns);
                     const stagedItemRef = nftFragmentsKeyedByID[item.id];
                     if (isEditModeToken(item) && stagedItemRef) {
                       return (
@@ -393,8 +414,11 @@ function StagingArea({ tokensRef }: Props) {
           {activeId ? (
             sectionIds.includes(activeId as string) ? (
               <SectionDragging
+                // @ts-expect-error This file will be deleted soon
                 items={localStagedCollection[activeId].items}
+                // @ts-expect-error This file will be deleted soon
                 itemWidth={IMAGE_SIZES[localStagedCollection[activeId].columns]}
+                // @ts-expect-error This file will be deleted soon
                 columns={localStagedCollection[activeId].columns}
                 nftFragmentsKeyedByID={nftFragmentsKeyedByID}
               />
@@ -403,13 +427,12 @@ function StagingArea({ tokensRef }: Props) {
                 <StagedItemDragging
                   tokenRef={activeItemRef || null}
                   isEditModeToken={isEditModeToken(activeItem)}
-                  size={
-                    IMAGE_SIZES[
-                      findSection(activeId)
-                        ? localStagedCollection[findSection(activeId)].columns
-                        : 3
-                    ]
-                  }
+                  size={getImageSizeForColumns(
+                    findSection(activeId)
+                      ? // @ts-expect-error This file will be deleted soon
+                        localStagedCollection[findSection(activeId)].columns
+                      : 3
+                  )}
                 />
               )
             )

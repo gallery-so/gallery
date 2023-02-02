@@ -120,6 +120,15 @@ type NftDetailViewerProps = {
 
 const NftDetailViewer = ({ href, children }: NftDetailViewerProps) => {
   const [, username, collectionId, tokenId] = href.split('/');
+
+  if (
+    typeof username === 'undefined' ||
+    typeof collectionId === 'undefined' ||
+    typeof tokenId === 'undefined'
+  ) {
+    return null;
+  }
+
   return (
     <LinkToNftDetailView username={username} collectionId={collectionId} tokenId={tokenId}>
       <StyledAnchor>{children}</StyledAnchor>

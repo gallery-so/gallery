@@ -16,6 +16,10 @@ export default function Bold({
 
     const [start, end] = selectedRange;
 
+    if (start === undefined || end === undefined) {
+      return;
+    }
+
     const selectedText = textArea.value.substring(start, end);
     const selectedTextWithSurrounding = textArea.value.substring(start - 2, end + 2);
 

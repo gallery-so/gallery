@@ -46,8 +46,7 @@ function NftGallery({ collectionRef, mobileLayout }: Props) {
 
   return (
     <StyledCollectionTokens>
-      {Object.keys(parsedCollection).map((sectionId) => {
-        const section = parsedCollection[sectionId];
+      {Object.entries(parsedCollection).map(([sectionId, section]) => {
         return (
           <StyledSection
             key={sectionId}

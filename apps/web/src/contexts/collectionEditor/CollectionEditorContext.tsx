@@ -7,7 +7,7 @@ import {
   StagedCollection,
   StagingItem,
 } from '~/components/ManageGallery/OrganizeCollection/types';
-import { generate12DigitId } from "~/utils/generate12DigitId";
+import { generate12DigitId } from '~/utils/generate12DigitId';
 
 type TokenId = string;
 export type SidebarTokensState = Record<TokenId, EditModeToken>;
@@ -168,6 +168,7 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
 
       // For each section, filter out the tokens that are being removed.
       Object.keys(next).forEach((sectionId) => {
+        // @ts-expect-error This file will be deleted soon
         next[sectionId].items = next[sectionId].items.filter(
           (stagingItem) => !ids.includes(stagingItem.id)
         );
@@ -192,8 +193,10 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
   const reorderTokensWithinSection = useCallback(
     (event: DragEndEvent, sectionId: UniqueIdentifier) => {
       const { active, over } = event;
+      // @ts-expect-error This file will be deleted soon
       setStagedCollectionState((previous) => {
         const section = previous[sectionId];
+        // @ts-expect-error This file will be deleted soon
         const sectionItems = section.items;
 
         const oldIndex = sectionItems.findIndex(({ id }) => id === active.id);
@@ -265,11 +268,13 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
   );
 
   const incrementColumns = useCallback((sectionId: UniqueIdentifier) => {
+    // @ts-expect-error This file will be deleted soon
     setStagedCollectionState((previous) => {
       return {
         ...previous,
         [sectionId]: {
           ...previous[sectionId],
+          // @ts-expect-error This file will be deleted soon
           columns: previous[sectionId].columns + 1,
         },
       };
@@ -277,11 +282,13 @@ const CollectionEditorProvider = memo(({ children }: Props) => {
   }, []);
 
   const decrementColumns = useCallback((sectionId: UniqueIdentifier) => {
+    // @ts-expect-error This file will be deleted soon
     setStagedCollectionState((previous) => {
       return {
         ...previous,
         [sectionId]: {
           ...previous[sectionId],
+          // @ts-expect-error This file will be deleted soon
           columns: previous[sectionId].columns - 1,
         },
       };

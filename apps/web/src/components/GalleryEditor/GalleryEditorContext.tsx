@@ -13,7 +13,10 @@ import rfdc from 'rfdc';
 
 import { CollectionCreateOrEditForm } from '~/components/GalleryEditor/CollectionCreateOrEditForm';
 import { GalleryNameAndDescriptionEditForm } from '~/components/GalleryEditor/GalleryNameAndDescriptionEditForm';
-import { getInitialCollectionsFromServer } from '~/components/GalleryEditor/getInitialCollectionsFromServer';
+import {
+  createEmptyCollection,
+  getInitialCollectionsFromServer,
+} from '~/components/GalleryEditor/getInitialCollectionsFromServer';
 import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
@@ -39,7 +42,6 @@ export type GalleryEditorContextType = {
 
   hasSaved: boolean;
   hasUnsavedChanges: boolean;
-  hasUnsavedChangesCollectionBeingEdited: boolean;
   validationErrors: string[];
   canSave: boolean;
 
@@ -52,6 +54,7 @@ export type GalleryEditorContextType = {
   toggleCollectionHidden: (collectionId: string) => void;
   collectionIdBeingEdited: string | null;
   moveCollectionToGallery: (collectionId: string) => void;
+  doesCollectionHaveUnsavedChanges: (collectionId: string) => boolean;
 };
 
 export const GalleryEditorContext = createContext<GalleryEditorContextType | undefined>(undefined);
@@ -196,7 +199,10 @@ export function GalleryEditorProvider({
     setCollections((previous) => {
       const cloned = deepClone(previous);
 
-      cloned[collectionId].hidden = !cloned[collectionId].hidden;
+      const collection = cloned[collectionId];
+      if (collection) {
+        collection.hidden = !collection.hidden;
+      }
 
       return cloned;
     });
@@ -228,7 +234,14 @@ export function GalleryEditorProvider({
       delete nextCollections[collectionId];
 
       setCollections(nextCollections);
-      setCollectionIdBeingEdited(Object.keys(nextCollections)[0]);
+
+      let nextCollectionIdBeingEdited = Object.keys(nextCollections)[0];
+      if (!nextCollectionIdBeingEdited) {
+        const emptyCollection = createEmptyCollection();
+        nextCollectionIdBeingEdited = emptyCollection.dbid;
+        nextCollections[nextCollectionIdBeingEdited] = emptyCollection;
+      }
+      setCollectionIdBeingEdited(nextCollectionIdBeingEdited);
     },
     [collections]
   );
@@ -254,6 +267,10 @@ export function GalleryEditorProvider({
     (collectionId: string) => {
       const collection = collections[collectionId];
 
+      if (!collection) {
+        return;
+      }
+
       showModal({
         headerText: 'Add a title and description',
         content: (
@@ -264,8 +281,13 @@ export function GalleryEditorProvider({
               setCollections((previous) => {
                 const next = { ...previous };
 
+                const previousCollection = previous[collectionId];
+                if (!previousCollection) {
+                  return previous;
+                }
+
                 next[collectionId] = {
-                  ...next[collectionId],
+                  ...previousCollection,
                   name,
                   collectorsNote,
                 };
@@ -395,7 +417,7 @@ export function GalleryEditorProvider({
             ]
           : null;
 
-        setCollectionIdBeingEdited(newCollectionIdBeingEdited);
+        setCollectionIdBeingEdited(newCollectionIdBeingEdited ?? null);
 
         // Flash a "Saved" message next to the "Done" button
         setHasSaved(true);
@@ -452,25 +474,28 @@ export function GalleryEditorProvider({
     return collectionsAreDifferent || nameIsDifferent || descriptionIsDifferent;
   }, [collections, description, initialCollections, initialDescription, initialName, name]);
 
-  const hasUnsavedChangesCollectionBeingEdited = useMemo(() => {
-    if (
-      !collectionIdBeingEdited ||
-      !collections[collectionIdBeingEdited] ||
-      !initialCollections[collectionIdBeingEdited]
-    ) {
-      return false;
-    }
-    const currCollection = convertCollectionToComparisonFriendlyObject(
-      collections[collectionIdBeingEdited]
-    );
-    const initialCollection = convertCollectionToComparisonFriendlyObject(
-      initialCollections[collectionIdBeingEdited]
-    );
-    const collectionsAreDifferent =
-      JSON.stringify(currCollection) !== JSON.stringify(initialCollection);
+  const doesCollectionHaveUnsavedChanges = useCallback(
+    (collectionId: string) => {
+      const currentCollection = collections[collectionId];
+      const initialCollection = initialCollections[collectionId];
 
-    return collectionsAreDifferent;
-  }, [collectionIdBeingEdited, collections, initialCollections]);
+      if (!currentCollection || !initialCollection) {
+        return false;
+      }
+
+      const comparisonFriendlyCurrentCollection =
+        convertCollectionToComparisonFriendlyObject(currentCollection);
+      const comparisonFriendlyInitialCollection =
+        convertCollectionToComparisonFriendlyObject(initialCollection);
+
+      const collectionsAreDifferent =
+        JSON.stringify(comparisonFriendlyCurrentCollection) !==
+        JSON.stringify(comparisonFriendlyInitialCollection);
+
+      return collectionsAreDifferent;
+    },
+    [collections, initialCollections]
+  );
 
   // At some point we will have validation errors built in
   const validationErrors = useMemo(() => {
@@ -492,7 +517,14 @@ export function GalleryEditorProvider({
       const nextCollections = { ...collections };
       delete nextCollections[collectionId];
       setCollections(nextCollections);
-      setCollectionIdBeingEdited(Object.keys(nextCollections)[0]);
+
+      let nextCollectionIdBeingEdited = Object.keys(nextCollections)[0];
+      if (!nextCollectionIdBeingEdited) {
+        const emptyCollection = createEmptyCollection();
+        nextCollectionIdBeingEdited = emptyCollection.dbid;
+        nextCollections[nextCollectionIdBeingEdited] = emptyCollection;
+      }
+      setCollectionIdBeingEdited(nextCollectionIdBeingEdited);
     },
     [collections, initialCollections]
   );
@@ -506,7 +538,6 @@ export function GalleryEditorProvider({
 
       hasSaved,
       hasUnsavedChanges,
-      hasUnsavedChangesCollectionBeingEdited,
       validationErrors,
       canSave,
 
@@ -516,10 +547,11 @@ export function GalleryEditorProvider({
       createCollection,
       activateCollection,
       toggleCollectionHidden,
+      moveCollectionToGallery,
       collectionIdBeingEdited,
       editCollectionNameAndNote,
       editGalleryNameAndDescription,
-      moveCollectionToGallery,
+      doesCollectionHaveUnsavedChanges,
     };
   }, [
     name,
@@ -528,7 +560,6 @@ export function GalleryEditorProvider({
     hiddenCollectionIds,
     hasSaved,
     hasUnsavedChanges,
-    hasUnsavedChangesCollectionBeingEdited,
     validationErrors,
     canSave,
     saveGallery,
@@ -536,10 +567,11 @@ export function GalleryEditorProvider({
     createCollection,
     activateCollection,
     toggleCollectionHidden,
+    moveCollectionToGallery,
     collectionIdBeingEdited,
     editCollectionNameAndNote,
     editGalleryNameAndDescription,
-    moveCollectionToGallery,
+    doesCollectionHaveUnsavedChanges,
   ]);
 
   return <GalleryEditorContext.Provider value={value}>{children}</GalleryEditorContext.Provider>;

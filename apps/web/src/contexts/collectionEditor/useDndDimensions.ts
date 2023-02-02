@@ -1,7 +1,7 @@
 const DND_WIDTH = 824;
 
 // Width of draggable image for each Column # setting
-export const IMAGE_SIZES: Record<number, number> = {
+const IMAGE_SIZES: Record<number, number> = {
   1: 400,
   2: (DND_WIDTH - 24 * 3) / 2,
   3: (DND_WIDTH - 24 * 4) / 3,
@@ -13,5 +13,9 @@ export const IMAGE_SIZES: Record<number, number> = {
   9: 78,
   10: 78,
 };
+
+export function getImageSizeForColumns(columns: number) {
+  return IMAGE_SIZES[columns] ?? 78;
+}
 
 export const SPACE_BETWEEN_ITEMS = 24;

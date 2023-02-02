@@ -231,6 +231,7 @@ function CollectionEditor({
           setStagedCollectionState(collectionToStage);
 
           if (Object.keys(collectionToStage).length > 0) {
+            // @ts-expect-error This file will be deleted soon
             setActiveSectionIdState(Object.keys(collectionToStage)[0]);
           }
         }
@@ -249,14 +250,18 @@ function CollectionEditor({
     const tokensToUnstage = [];
     // iterate through old sidebar tokens, so that we can retain the selection state
     for (const preRefreshNft of preRefreshNftsAsArray) {
+      // @ts-expect-error This file will be deleted soon
       const newSidebarNft = newSidebarTokens[preRefreshNft.id];
 
       if (newSidebarNft) {
         // token that used to be in sidebar is still in new sidebar, so copy over isSelected.
         // this ensures user selections are not reset when we refresh the sidebar
+        // @ts-expect-error This file will be deleted soon
         newSidebarNft.isSelected = preRefreshNft.isSelected;
+        // @ts-expect-error This file will be deleted soon
       } else if (preRefreshNft.isSelected) {
         // if any previously selected NFTs are no longer in the new sidebar, unstage it
+        // @ts-expect-error This file will be deleted soon
         tokensToUnstage.push(preRefreshNft.id);
       }
     }

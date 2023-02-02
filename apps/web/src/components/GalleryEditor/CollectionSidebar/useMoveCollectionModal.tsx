@@ -22,7 +22,7 @@ export default function useMoveCollectionModal({ collection, queryRef }: Props) 
     `,
     queryRef
   );
-  const { moveCollectionToGallery, hasUnsavedChangesCollectionBeingEdited, saveGallery } =
+  const { moveCollectionToGallery, doesCollectionHaveUnsavedChanges, saveGallery } =
     useGalleryEditorContext();
 
   const { showModal } = useModalActions();
@@ -36,19 +36,12 @@ export default function useMoveCollectionModal({ collection, queryRef }: Props) 
       content: (
         <MoveCollectionModal
           collection={collection}
-          hasUnsavedChanges={hasUnsavedChangesCollectionBeingEdited}
+          hasUnsavedChanges={doesCollectionHaveUnsavedChanges(collection.dbid)}
           handleSaveGallery={saveGallery}
           queryRef={query}
           onSuccess={onSuccess}
         />
       ),
     });
-  }, [
-    collection,
-    hasUnsavedChangesCollectionBeingEdited,
-    onSuccess,
-    query,
-    saveGallery,
-    showModal,
-  ]);
+  }, [collection, doesCollectionHaveUnsavedChanges, onSuccess, query, saveGallery, showModal]);
 }

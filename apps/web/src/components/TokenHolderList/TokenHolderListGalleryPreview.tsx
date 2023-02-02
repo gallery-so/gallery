@@ -19,10 +19,15 @@ function getImagePositions(tokenUrls: string[]) {
   const shuffledHorizontalOffset = shuffle(horizontalOffset);
 
   // offset each image by one of the three possible offset amounts and additionally randomly offset by up to 40px.
-  return tokenUrls.map((url, index) => ({
-    top: shuffledVerticalOffset[index] + Math.random() * 40,
-    left: shuffledHorizontalOffset[index] + Math.random() * 40,
-  }));
+  return tokenUrls.map((url, index) => {
+    const verticalOffset = shuffledVerticalOffset[index] ?? 0;
+    const horizontalOffset = shuffledHorizontalOffset[index] ?? 0;
+
+    return {
+      top: verticalOffset + Math.random() * 40,
+      left: horizontalOffset + Math.random() * 40,
+    };
+  });
 }
 
 // Randomly generates parameters for keyframe animation for each image, so that each image floats a bit differently.
@@ -98,15 +103,24 @@ function TokenHolderListGalleryPreview({
   return (
     <StyledPreview>
       <StyledPreviewImageWrapper direction={direction} startFadeOut={startFadeOut}>
-        {tokenUrls.map((url, index) => (
-          <PreviewImage
-            key={url}
-            src={url}
-            top={imagePositions[index].top}
-            left={imagePositions[index].left}
-            movement={animationMovements[index]}
-          />
-        ))}
+        {tokenUrls.map((url, index) => {
+          const position = imagePositions[index];
+          const movement = animationMovements[index];
+
+          if (!position || !movement) {
+            return null;
+          }
+
+          return (
+            <PreviewImage
+              key={url}
+              src={url}
+              top={position.top}
+              left={position.left}
+              movement={movement}
+            />
+          );
+        })}
       </StyledPreviewImageWrapper>
     </StyledPreview>
   );
@@ -117,8 +131,8 @@ const StyledPreview = styled.div`
 `;
 
 const fadeOut = keyframes`
-  from { opacity: 1; };
-  to { opacity: 0; };
+  from { opacity: 1; }
+  to { opacity: 0; }
 `;
 
 type StyledPreviewImageWrapperProps = {
@@ -153,8 +167,8 @@ const float = (x: number, y: number) => keyframes`
 `;
 
 const fadeIn = keyframes`
-  from { opacity: 0; };
-  to { opacity: 1; };
+  from { opacity: 0; }
+  to { opacity: 1; }
 `;
 
 type Movement = {
@@ -177,7 +191,7 @@ const StyledPreviewImage = styled.img<StyledPreviewImageProps>`
   background-color: ${colors.white};
   width: 250px;
   opacity: 0;
-  box-shadow: rgba(0, 0, 0, 0.2) 0px 18px 50px -10px;
+  box-shadow: rgba(0, 0, 0, 0.2) 0 18px 50px -10px;
 
   ${({ isLoaded, movement }) =>
     isLoaded &&

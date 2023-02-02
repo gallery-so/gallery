@@ -176,8 +176,11 @@ export function NftErrorProvider({ children }: PropsWithChildren) {
       try {
         setTokens((previous) => {
           const next = { ...previous };
+          const existingToken = next[tokenId];
 
-          next[tokenId] = { ...next[tokenId], refreshingMetadata: true };
+          if (existingToken) {
+            next[tokenId] = { ...existingToken, refreshingMetadata: true };
+          }
 
           return next;
         });
@@ -198,8 +201,11 @@ export function NftErrorProvider({ children }: PropsWithChildren) {
       } finally {
         setTokens((previous) => {
           const next = { ...previous };
+          const existingToken = next[tokenId];
 
-          next[tokenId] = { ...next[tokenId], refreshingMetadata: false };
+          if (existingToken) {
+            next[tokenId] = { ...existingToken, refreshingMetadata: false };
+          }
 
           return next;
         });

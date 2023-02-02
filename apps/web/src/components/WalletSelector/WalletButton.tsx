@@ -18,15 +18,15 @@ const walletIconMap: Record<string, string> = {
   gnosis_safe: '/icons/gnosis_safe.svg',
 };
 
-const walletNameSymbolMap: Record<string, WalletName> = {
+const walletNameSymbolMap = {
   Metamask: METAMASK,
   WalletConnect: WALLETCONNECT,
   WalletLink: WALLETLINK,
   GnosisSafe: GNOSIS_SAFE,
-};
+} as const;
 
 type WalletButtonProps = {
-  walletName: string;
+  walletName: keyof typeof walletNameSymbolMap;
   activate: Web3ReactManagerFunctions['activate'];
   connector?: AbstractConnector;
   setToPendingState: (connector: AbstractConnector, walletName: WalletName) => void;
