@@ -12,6 +12,7 @@ import {
 } from '~/contexts/analytics/authUtil';
 import { useAuthActions } from '~/contexts/auth/AuthContext';
 import { useBeaconActions } from '~/contexts/beacon/BeaconContext';
+import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import { INITIAL, PendingState, PROMPT_SIGNATURE } from '~/types/Wallet';
 
 import { normalizeError } from '../normalizeError';
@@ -81,7 +82,7 @@ export const TezosAuthenticateWallet = ({ reset }: Props) => {
 
       if (userExists && userId) {
         trackSignInSuccess('Tezos');
-        return await handleLogin(userId, address);
+        return handleLogin(userId, address);
       }
     },
     [

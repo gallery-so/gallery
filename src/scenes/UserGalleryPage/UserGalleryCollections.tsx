@@ -104,6 +104,11 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
   const rowRenderer = useCallback(
     ({ index, key, parent, style }: ListRowProps) => {
       const collection = collectionsToDisplay[index];
+
+      if (!collection) {
+        return null;
+      }
+
       return (
         <CellMeasurer cache={cache} columnIndex={0} rowIndex={index} key={key} parent={parent}>
           {({ registerChild, measure }) => {

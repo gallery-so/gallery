@@ -15,12 +15,14 @@ export function collectionTokenSettingsArrayToObject(
   return tokenSettingsObject;
 }
 
-export function collectionTokenSettingsObjectToArray(obj: TokenSettingsObject) {
+export function collectionTokenSettingsObjectToArray(
+  obj: TokenSettingsObject
+): Array<{ tokenId: string; renderLive: boolean }> {
   const tokenSettingsArray = [];
   for (const key in obj) {
     tokenSettingsArray.push({
       tokenId: key,
-      renderLive: obj[key],
+      renderLive: obj[key] ?? false,
     });
   }
   return tokenSettingsArray;
