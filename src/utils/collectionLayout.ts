@@ -70,9 +70,9 @@ export function parseCollectionLayout<T>(
 
   const parsedCollection = collectionLayout.sections.reduce(
     (allSections: CollectionWithLayout<T>, sectionStartIndex: number, index: number) => {
-      const sectionEndIndex = collectionLayout.sections[index + 1]
-        ? collectionLayout.sections[index + 1] - 1
-        : tokens.length;
+      const nextSection = collectionLayout.sections[index + 1];
+      const sectionEndIndex = nextSection ? nextSection - 1 : tokens.length;
+
       let section: ReadonlyArray<T | WhitespaceBlock> = tokens.slice(
         sectionStartIndex,
         sectionEndIndex + 1
@@ -125,13 +125,13 @@ export function getWhitespacePositionsFromStagedItems(stagedItems: StagingItem[]
 export function generateLayoutFromCollection(collection: StagedCollection) {
   let sectionStartIndex = 0;
   const filteredCollection = { ...collection };
-  Object.keys(collection).forEach((sectionId) => {
-    let isEmptySection = collection[sectionId].items.length === 0;
+
+  Object.entries(collection).forEach(([sectionId, section]) => {
+    let isEmptySection = section.items.length === 0;
     if (!isEmptySection) {
       // see if it's only empty whitespace blocks
-      const sectionWithoutWhitespace = collection[sectionId].items.filter((item) =>
-        isEditModeToken(item)
-      );
+      const sectionWithoutWhitespace = section.items.filter((item) => isEditModeToken(item));
+
       isEmptySection = sectionWithoutWhitespace.length === 0;
     }
 
@@ -142,19 +142,23 @@ export function generateLayoutFromCollection(collection: StagedCollection) {
   });
 
   const sectionStartIndices = Object.keys(filteredCollection).map((sectionId, index) => {
-    if (index === 0) {
+    const lastSectionId = Object.keys(filteredCollection)[index - 1];
+    const previousSection = lastSectionId ? filteredCollection[lastSectionId] : null;
+
+    if (!previousSection) {
       return sectionStartIndex;
     }
-    const previousSection = filteredCollection[Object.keys(filteredCollection)[index - 1]];
+
     sectionStartIndex += previousSection.items.filter((item) => isEditModeToken(item)).length;
+
     return sectionStartIndex;
   });
 
   return {
     sections: sectionStartIndices,
-    sectionLayout: Object.keys(filteredCollection).map((sectionId) => ({
-      columns: filteredCollection[sectionId].columns,
-      whitespace: getWhitespacePositionsFromSection(filteredCollection[sectionId].items),
+    sectionLayout: Object.values(filteredCollection).map((section) => ({
+      columns: section.columns,
+      whitespace: getWhitespacePositionsFromSection(section.items),
     })),
   };
 }
@@ -164,13 +168,11 @@ export function generateLayoutFromCollection(collection: StagedCollection) {
 export function generateLayoutFromCollectionNew(collection: StagedSectionMap) {
   let sectionStartIndex = 0;
   const filteredCollection = { ...collection };
-  Object.keys(collection).forEach((sectionId) => {
-    let isEmptySection = collection[sectionId].items.length === 0;
+  Object.entries(collection).forEach(([sectionId, section]) => {
+    let isEmptySection = section.items.length === 0;
     if (!isEmptySection) {
       // see if it's only empty whitespace blocks
-      const sectionWithoutWhitespace = collection[sectionId].items.filter(
-        (item) => item.kind === 'token'
-      );
+      const sectionWithoutWhitespace = section.items.filter((item) => item.kind === 'token');
       isEmptySection = sectionWithoutWhitespace.length === 0;
     }
 
@@ -181,19 +183,23 @@ export function generateLayoutFromCollectionNew(collection: StagedSectionMap) {
   });
 
   const sectionStartIndices = Object.keys(filteredCollection).map((sectionId, index) => {
-    if (index === 0) {
+    const lastSectionId = Object.keys(filteredCollection)[index - 1];
+    const previousSection = lastSectionId ? filteredCollection[lastSectionId] : null;
+
+    if (!previousSection) {
       return sectionStartIndex;
     }
-    const previousSection = filteredCollection[Object.keys(filteredCollection)[index - 1]];
+
     sectionStartIndex += previousSection.items.filter((item) => item.kind === 'token').length;
+
     return sectionStartIndex;
   });
 
   return {
     sections: sectionStartIndices,
-    sectionLayout: Object.keys(filteredCollection).map((sectionId) => ({
-      columns: filteredCollection[sectionId].columns,
-      whitespace: getWhitespacePositionsFromSectionNew(filteredCollection[sectionId].items),
+    sectionLayout: Object.values(filteredCollection).map((section) => ({
+      columns: section.columns,
+      whitespace: getWhitespacePositionsFromSectionNew(section.items),
     })),
   };
 }
@@ -201,7 +207,7 @@ export function generateLayoutFromCollectionNew(collection: StagedSectionMap) {
 // Given a collection of sections and their items, return a list of just the token ids in the collection.
 export function getTokenIdsFromCollection(collection: StagedCollection) {
   const tokens = removeWhitespacesFromStagedItems(
-    Object.keys(collection).flatMap((sectionId) => collection[sectionId].items)
+    Object.values(collection).flatMap((section) => section.items)
   );
   return tokens.map((token) => token.dbid);
 }
