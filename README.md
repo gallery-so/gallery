@@ -9,6 +9,16 @@ The premier gallery experience for your NFTs.
 1. [Install Yarn](https://classic.yarnpkg.com/en/docs/install)
 2. [Install NVM](https://github.com/nvm-sh/nvm)
 
+#### Install Moon (optional)
+At Gallery, we use a monorepo tool called [moon](https://moonrepo.dev).
+Every time you want to run a task in our repo, you can run it in two ways
+1. `yarn moon run {target}`
+2. `moon run {target}`
+
+The second way requires you to install moon globally ([instructions here](https://moonrepo.dev/docs/install#installing))
+
+Every time you see `moon x`, know that if you do not have moon installed globally, you can just do `yarn moon x`
+
 ### Setup Web
 
 Install our node version:
@@ -32,7 +42,7 @@ cp apps/web/.env.sample apps/web/.env
 Start app:
 
 ```bash
-yarn moon run web:dev
+moon run web:dev
 ```
 
 The app will be running at http://localhost:3000.
