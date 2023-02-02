@@ -16,7 +16,7 @@ export default function List({
 
     const [start, end] = selectedRange;
 
-    if (!start || !end) {
+    if (start === undefined || end === undefined) {
       return;
     }
 
