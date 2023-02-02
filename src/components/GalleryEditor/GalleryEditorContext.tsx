@@ -239,6 +239,7 @@ export function GalleryEditorProvider({
       if (!nextCollectionIdBeingEdited) {
         const emptyCollection = createEmptyCollection();
         nextCollectionIdBeingEdited = emptyCollection.dbid;
+        nextCollections[nextCollectionIdBeingEdited] = emptyCollection;
       }
       setCollectionIdBeingEdited(nextCollectionIdBeingEdited);
     },
@@ -521,6 +522,7 @@ export function GalleryEditorProvider({
       if (!nextCollectionIdBeingEdited) {
         const emptyCollection = createEmptyCollection();
         nextCollectionIdBeingEdited = emptyCollection.dbid;
+        nextCollections[nextCollectionIdBeingEdited] = emptyCollection;
       }
       setCollectionIdBeingEdited(nextCollectionIdBeingEdited);
     },
