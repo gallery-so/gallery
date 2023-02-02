@@ -48,7 +48,7 @@ describe('insertWhitespaceBlocks', () => {
     const whitespaceList = [0, 0, 1, 4, 5];
     const whitespacesAndNfts = insertWhitespaceBlocks(tokens, whitespaceList);
     expect(whitespacesAndNfts.length).toEqual(10);
-    expect(whitespacesAndNfts[2].id).toEqual(tokens[0].id);
+    expect(whitespacesAndNfts[2]?.id).toEqual(tokens[0]?.id);
   });
 });
 
@@ -81,8 +81,8 @@ describe('parseCollectionLayout', () => {
     Object.keys(collection).forEach((sectionId, index) => {
       const section = collection[sectionId];
 
-      expect(section.columns).toEqual(collectionLayout.sectionLayout[index].columns);
-      expect(section.items.length).toEqual(expectedItemLengths[index]);
+      expect(section?.columns).toEqual(collectionLayout.sectionLayout[index]?.columns);
+      expect(section?.items.length).toEqual(expectedItemLengths[index]);
     });
   });
 });
