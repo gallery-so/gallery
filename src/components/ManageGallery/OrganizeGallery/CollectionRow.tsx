@@ -61,7 +61,7 @@ function CollectionRow({ collectionRef, className }: Props) {
 
   const truncatedCollectorsNote = useMemo(() => {
     const lines = unescapedCollectorsNote.split('\n');
-    const firstLine = lines[0];
+    const firstLine = lines[0] ?? '';
 
     // If it's multiline, always truncate to suggest there are more lines
     if (lines.length > 1) {

@@ -48,6 +48,7 @@ export function createVirtualizedRowsFromTokens({
   const rows: VirtualizedRow[] = [];
   const tokensKeyedById = keyBy(tokens, (token) => token.dbid);
 
+  // @ts-expect-error This file will be deleted soon
   const tokensSortedByErrored: TokenAndEditModeToken[] = editModeTokens.map((editModeToken) => {
     return {
       editModeToken,

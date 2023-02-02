@@ -85,7 +85,7 @@ function CollectionDnd({ galleryRef, onEditCollection }: Props) {
     (event: DragEndEvent) => {
       const { active, over } = event;
 
-      if(!over || !active) {
+      if (!over || !active) {
         return;
       }
 
@@ -104,6 +104,7 @@ function CollectionDnd({ galleryRef, onEditCollection }: Props) {
           // the `id` field in relay is represented as `Collection:123456`, and we only want the latter half.
           // while we should use `dbid`, this will confuse the DND machine, which expects `id` to exist as a
           // native key on each entity.
+          // @ts-expect-error This file will be deleted soon
           updatedCollections.map((id) => id.split(':')[1])
         );
       }
@@ -143,11 +144,14 @@ function CollectionDnd({ galleryRef, onEditCollection }: Props) {
       collisionDetection={closestCenter}
       modifiers={modifiers}
     >
+      {/* @ts-expect-error This file will be deleted soon*/}
       <SortableContext items={sortedCollections} strategy={verticalListSortingStrategy}>
         <VStack gap={16}>
           {sortedCollections.map((collection) => (
             <CollectionRowWrapper
+              // @ts-expect-error This file will be deleted soon
               key={collection.id}
+              // @ts-expect-error This file will be deleted soon
               collectionRef={collection}
               onEditCollection={onEditCollection}
             />
