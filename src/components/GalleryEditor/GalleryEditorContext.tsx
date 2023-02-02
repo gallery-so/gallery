@@ -432,6 +432,7 @@ export function GalleryEditorProvider({
   const [initialName, setInitialName] = useState(name);
   const [initialDescription, setInitialDescription] = useState(description);
   const [initialCollections, setInitialCollections] = useState(collections);
+
   const hasUnsavedChanges = useMemo(() => {
     // Need to convert the liveDisplayTokenIds Set into an Array because sets don't store data
     // as properties to be stringified: https://stackoverflow.com/a/31190928/5377437
@@ -452,7 +453,11 @@ export function GalleryEditorProvider({
   }, [collections, description, initialCollections, initialDescription, initialName, name]);
 
   const hasUnsavedChangesCollectionBeingEdited = useMemo(() => {
-    if (!collectionIdBeingEdited) {
+    if (
+      !collectionIdBeingEdited ||
+      !collections[collectionIdBeingEdited] ||
+      !initialCollections[collectionIdBeingEdited]
+    ) {
       return false;
     }
     const currCollection = convertCollectionToComparisonFriendlyObject(
