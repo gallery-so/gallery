@@ -219,15 +219,28 @@ function StagingArea({ tokensRef }: Props) {
             gap={48}
           >
             {hasNameOrCollectorsNote ? (
-              <VStack>
-                <StyledCollectionName hasName={Boolean(escapedCollectionName)}>
-                  {escapedCollectionName || 'Untitled Collection'}
-                </StyledCollectionName>
+              <HStack gap={8} align="center">
+                <VStack>
+                  <StyledCollectionName hasName={Boolean(escapedCollectionName)}>
+                    {escapedCollectionName || 'Untitled Collection'}
+                  </StyledCollectionName>
 
-                <BaseM>
-                  <Markdown text={collectorsNote}></Markdown>
-                </BaseM>
-              </VStack>
+                  <BaseM>
+                    <Markdown text={collectorsNote}></Markdown>
+                  </BaseM>
+                </VStack>
+                {step === 2 && (
+                  <OnboardingDialog
+                    step={step}
+                    text={dialogMessage}
+                    onNext={nextStep}
+                    options={{
+                      placement: 'bottom',
+                      positionOffset: 30,
+                    }}
+                  />
+                )}
+              </HStack>
             ) : (
               <HStack gap={8} align="center">
                 <BaseM color={colors.metal}>Add title and description</BaseM>
