@@ -27,6 +27,8 @@ tasks:
     - --configFile cypress.config.ts
 
   dev:
+    deps:
+      - "~:touch-relay-files"
     command:
     - concurrently
     - -n Next,Relay-Compiler,GraphQL-Codegen
