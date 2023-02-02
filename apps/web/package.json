@@ -2,6 +2,9 @@
   "name": "web",
   "private": true,
   "version": "1.0.0",
+  "scripts": {
+    "build": "yarn relay-compiler && yarn graphql-codegen && node ./upload-persisted-queries.js && yanr next build"
+  },
   "devDependencies": {
     "@gallery-so/typescript-operations": "^0.0.7",
     "@gallery-so/visitor-plugin-common": "^0.0.2",
