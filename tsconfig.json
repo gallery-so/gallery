@@ -1,44 +1,15 @@
 {
-  "compilerOptions": {
-    "target": "es5",
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "noUncheckedIndexedAccess": true,
-    "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true,
-    "module": "esnext",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "preserve",
-    "baseUrl": ".",
-    "paths": {
-      "~/abis/*": ["src/abis/*"],
-      "~/assets/*": ["src/assets/*"],
-      "~/components/*": ["src/components/*"],
-      "~/connectors/*": ["src/connectors/*"],
-      "~/constants/*": ["src/constants/*"],
-      "~/contexts/*": ["src/contexts/*"],
-      "~/errors/*": ["src/errors/*"],
-      "~/icons/*": ["src/icons/*"],
-      "~/hooks/*": ["src/hooks/*"],
-      "~/mocks/*": ["src/mocks/*"],
-      "~/scenes/*": ["src/scenes/*"],
-      "~/snapshots/*": ["src/snapshots/*"],
-      "~/tests/*": ["tests/*"],
-      "~/types/*": ["src/types/*"],
-      "~/utils/*": ["src/utils/*"],
-      "~/generated/*": ["__generated__/*"],
-      "~/pages/*": ["pages/*"]
+  "extends": "./tsconfig.options.json",
+  "files": [],
+  "references": [
+    {
+      "path": "apps/mobile"
     },
-    "downlevelIteration": true,
-    "incremental": true
-  },
-  "include": ["src", "scripts", "pages", "next-env.d.ts", "app.d.ts", "__generated__"],
-  "exclude": ["node_modules"]
+    {
+      "path": "apps/web"
+    },
+    {
+      "path": "packages/frames-dls"
+    }
+  ]
 }

@@ -1,0 +1,79 @@
+{
+  "extends": "../../tsconfig.options.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "jsx": "preserve",
+    "emitDeclarationOnly": false,
+    "noEmit": true,
+    "paths": {
+      "~/abis/*": [
+        "src/abis/*"
+      ],
+      "~/assets/*": [
+        "src/assets/*"
+      ],
+      "~/components/*": [
+        "src/components/*"
+      ],
+      "~/connectors/*": [
+        "src/connectors/*"
+      ],
+      "~/constants/*": [
+        "src/constants/*"
+      ],
+      "~/contexts/*": [
+        "src/contexts/*"
+      ],
+      "~/errors/*": [
+        "src/errors/*"
+      ],
+      "~/generated/*": [
+        "__generated__/*"
+      ],
+      "~/hooks/*": [
+        "src/hooks/*"
+      ],
+      "~/icons/*": [
+        "src/icons/*"
+      ],
+      "~/mocks/*": [
+        "src/mocks/*"
+      ],
+      "~/pages/*": [
+        "pages/*"
+      ],
+      "~/scenes/*": [
+        "src/scenes/*"
+      ],
+      "~/snapshots/*": [
+        "src/snapshots/*"
+      ],
+      "~/tests/*": [
+        "tests/*"
+      ],
+      "~/types/*": [
+        "src/types/*"
+      ],
+      "~/utils/*": [
+        "src/utils/*"
+      ],
+      "~frames/*": [
+        "../../packages/frames-dls/src/*"
+      ]
+    },
+    "outDir": "../../.moon/cache/types/apps/web",
+    "incremental": true
+  },
+  "include": [
+    "src",
+    "scripts",
+    "pages",
+    "next-env.d.ts",
+    "app.d.ts",
+    "__generated__"
+  ],
+  "references": [],
+  "exclude": [
+    "node_modules"
+  ]
+}

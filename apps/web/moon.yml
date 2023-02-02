@@ -1,0 +1,112 @@
+language: 'javascript'
+
+fileGroups:
+  tests:
+    - 'tests/**/*'
+    - '**/*.test.ts*'
+  lint:
+    - '**/*.*{ts,js,tsx,jsx,cjs,mjs}'
+  source:
+    - 'src/**/*.{ts,js,tsx,jsx}'
+    - 'pages/**/*.{ts,js,tsx,jsx}'
+
+tasks:
+  build:
+    deps:
+      - '~:relay-codegen'
+      - '~:graphql-codegen'
+    command: next build
+    inputs:
+      - '@group(source)'
+      - 'next.config.js'
+
+  cypress-gh:
+    command:
+    - synpress run --record
+    - --key 9d633f22-7630-4a11-9cf4-ff9809332564
+    - --configFile cypress.config.ts
+
+  dev:
+    command:
+    - concurrently
+    - -n Next,Relay-Compiler,GraphQL-Codegen
+    - yarn next dev
+    - yarn moon run web:relay-watch
+    - yarn moon run web:graphql-codegen-watch
+
+  lint:
+    command:
+    - eslint
+    - --ext
+    - .js,.ts,.tsx,.cjs
+    - '@group(lint)'
+    inputs:
+      - '@group(lint)'
+
+  start:
+    command: next start
+    local: true
+
+  synpress-open:
+    command: synpress open --configFile cypress.config.ts
+    platform: node
+
+  synpress-run:
+    command: synpress run --configFile cypress.config.ts
+    local: true
+
+  relay-watch:
+    command: relay-compiler --repersist --watch
+    local: true
+
+  graphql-codegen-watch:
+    command: graphql-codegen --watch
+    local: true
+
+  graphql-codegen:
+    command: graphql-codegen
+    inputs:
+      - '@group(source)'
+
+  touch-generated:
+    command: mkdir -p __generated__
+    platform: system
+
+  touch-persisted-queries:
+    command: "touch persisted_queries.json"
+    platform: system
+
+  touch-relay-files:
+    deps:
+      - "~:touch-persisted-queries"
+      - "~:touch-generated"
+
+  relay-codegen:
+    deps:
+      - "~:touch-relay-files"
+    command: relay-compiler --repersist
+    inputs:
+      - '@group(source)'
+
+  nextjs-routes:
+    command: nextjs-routes
+
+  codegen:
+    deps:
+      - "~:nextjs-routes"
+      - "~:relay-codegen"
+      - "~:graphql-codegen"
+
+  typecheck:
+    deps:
+      - '~:codegen'
+    command: tsc --noEmit
+
+  test:
+    deps:
+      - "~:codegen"
+    command: jest
+
+  upload-apq:
+    command: node scripts/upload-persisted-queries.mjs
+    local: true
