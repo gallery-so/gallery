@@ -550,12 +550,16 @@ export function useGalleryEditorContext() {
   return value;
 }
 
-function convertCollectionToComparisonFriendlyObject(collection?: CollectionState) {
-  if (!collection) {
-    return null;
-  }
+type ComparisonFriendlyCollectionState = Omit<CollectionState, 'liveDisplayTokenIds'> & {
+  liveDisplayTokenIds: string[];
+};
+
+function convertCollectionToComparisonFriendlyObject(
+  collection: CollectionState
+): ComparisonFriendlyCollectionState {
   return {
     ...collection,
-    liveDisplayTokenIdsSize: [...collection.liveDisplayTokenIds].sort(),
+    activeSectionId: null,
+    liveDisplayTokenIds: [...collection.liveDisplayTokenIds].sort(),
   };
 }
