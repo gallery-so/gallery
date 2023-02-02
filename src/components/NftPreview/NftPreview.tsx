@@ -176,6 +176,7 @@ function NftPreview({
   const isFirefoxSvg = isSvg(result?.urls?.large) && isFirefox();
   // stretch the image to take up the full-width if...
   const fullWidth =
+    // it's not in a feed event
     !isInFeedEvent &&
     // there are more than 1 columns in the layout
     (columns > 1 ||
@@ -213,7 +214,6 @@ function NftPreview({
             {PreviewAsset}
             {isMobileOrLargeMobile ? null : (
               <StyledNftFooter>
-                {columns}
                 <StyledNftLabel tokenRef={token} />
                 <StyledGradient type="bottom" direction="down" />
               </StyledNftFooter>
