@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "build": "echo {} > persisted_queries.json && ../../node_modules/.bin/relay-compiler && ../../node_modules/.bin/graphql-codegen && node ./upload-persisted-queries.js && ../../node_modules/.bin/next build"
+    "build": "echo {} > persisted_queries.json && mkdir -p __generated__ && ../../node_modules/.bin/relay-compiler && ../../node_modules/.bin/graphql-codegen && node ./upload-persisted-queries.js && ../../node_modules/.bin/next build"
   },
   "devDependencies": {
     "@gallery-so/typescript-operations": "^0.0.7",
