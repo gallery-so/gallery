@@ -17,7 +17,7 @@ const blinking = keyframes`
     }
     75% {
         opacity: 0;
-        transform: scale(3);
+        transform: scale(1);
     }
 
 `;
@@ -37,6 +37,7 @@ const StyledOuterBlinking = styled.span`
   border-radius: 50%;
   background-color: ${colors.activeBlue};
   opacity: 0.24;
+  transform: scale(2);
   animation: ${blinking} 800ms linear infinite;
 `;
 
