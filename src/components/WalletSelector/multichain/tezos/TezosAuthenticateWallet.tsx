@@ -35,7 +35,7 @@ export const TezosAuthenticateWallet = ({ reset }: Props) => {
   const { handleLogin } = useAuthActions();
 
   const createNonce = useCreateNonce();
-  const loginOrRedirectToOnboarding = useLoginOrRedirectToOnboarding();
+  const [loginOrRedirectToOnboarding] = useLoginOrRedirectToOnboarding();
 
   const trackSignInAttempt = useTrackSignInAttempt();
   const trackSignInSuccess = useTrackSignInSuccess();
@@ -81,7 +81,7 @@ export const TezosAuthenticateWallet = ({ reset }: Props) => {
 
       if (userExists && userId) {
         trackSignInSuccess('Tezos');
-        return await handleLogin(userId, address);
+        return await handleLogin(userId);
       }
     },
     [

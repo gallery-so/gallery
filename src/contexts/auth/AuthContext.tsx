@@ -14,17 +14,12 @@ import {
 import { fetchQuery, graphql, useRelayEnvironment } from 'react-relay';
 
 import FullPageLoader from '~/components/core/Loader/FullPageLoader';
-import {
-  GLOBAL_BANNER_STORAGE_KEY,
-  USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY,
-  WHITE_RHINO_STORAGE_KEY,
-} from '~/constants/storageKeys';
+import { GLOBAL_BANNER_STORAGE_KEY, WHITE_RHINO_STORAGE_KEY } from '~/constants/storageKeys';
 import { _identify } from '~/contexts/analytics/AnalyticsContext';
 import ErrorBoundary from '~/contexts/boundary/ErrorBoundary';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { AuthContextFetchUserQuery } from '~/generated/AuthContextFetchUserQuery.graphql';
 import { AuthContextLogoutMutation } from '~/generated/AuthContextLogoutMutation.graphql';
-import usePersistedState from '~/hooks/usePersistedState';
 import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 import { isWeb3Error, Web3Error } from '~/types/Error';
 import { PreloadQueryArgs } from '~/types/PageComponentPreloadQuery';
@@ -47,7 +42,7 @@ export const useAuthState = (): AuthState => {
 };
 
 type AuthActions = {
-  handleLogin: (userId: string, address: string) => void;
+  handleLogin: (userId: string) => void;
   handleLogout: () => void;
   handleUnauthorized: () => void;
 };
@@ -158,23 +153,16 @@ type Props = { children: ReactNode };
 
 const AuthProvider = memo(({ children }: Props) => {
   const [authState, setAuthState] = useState<AuthState>(UNKNOWN);
-  // we store what wallet they've logged in with on metamask / etc.,
-  // which is necessary for the Manage Wallets view
-  const [, setLocallyLoggedInWalletAddress] = usePersistedState(
-    USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY,
-    ''
-  );
 
   /**
    * Sets the user state to logged out and clears local storage
    */
   const setLoggedOut = useCallback(() => {
     setAuthState(LOGGED_OUT);
-    setLocallyLoggedInWalletAddress('');
     // keep around dismissed state of banner so that user doesn't
     // encounter it again on login
     clearLocalStorageWithException([GLOBAL_BANNER_STORAGE_KEY, WHITE_RHINO_STORAGE_KEY]);
-  }, [setLocallyLoggedInWalletAddress]);
+  }, []);
 
   const logoutOnServer = useLogout();
 
@@ -196,7 +184,7 @@ const AuthProvider = memo(({ children }: Props) => {
   const imperativelyFetchUser = useImperativelyFetchUser();
 
   const handleLogin = useCallback(
-    async (userId: string, address: string) => {
+    async (userId: string) => {
       try {
         const transaction = startTransaction({ name: 'imperativelyFetchUser', op: 'login' });
         getCurrentHub().configureScope((scope) => scope.setSpan(transaction));
@@ -205,7 +193,6 @@ const AuthProvider = memo(({ children }: Props) => {
 
         if (response?.viewer?.__typename === 'Viewer' && response.viewer.user?.dbid) {
           setAuthState({ type: 'LOGGED_IN', userId });
-          setLocallyLoggedInWalletAddress(address.toLowerCase());
           _identify(userId);
         }
 
@@ -252,7 +239,7 @@ const AuthProvider = memo(({ children }: Props) => {
         throw new Error('Authorization failed! ' + errorMessage);
       }
     },
-    [imperativelyFetchUser, pushToast, setLocallyLoggedInWalletAddress, setLoggedOut]
+    [imperativelyFetchUser, pushToast, setLoggedOut]
   );
 
   // this effect runs on mount to determine whether or not to display

@@ -13,6 +13,7 @@ export const walletIconMap = {
   ethereum: '/icons/ethereum_logo.svg',
   tezos: '/icons/tezos_logo.svg',
   delegate_cash: 'icons/delegate_cash_logo.svg',
+  magic_link: '',
 };
 
 type WalletButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
