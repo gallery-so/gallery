@@ -10,10 +10,12 @@ type Props = {
 // 1) enables redirect without erroring
 // 2) wraps in Page component to prevent footer from flashing
 export default function GalleryRedirect({ to }: Props) {
-  const { replace } = useRouter();
+  const { push } = useRouter();
   useEffect(() => {
-    void replace(to);
-  }, [replace, to]);
+    void push(to);
+    // prevent unnecessary successive redirects
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return <Placeholder />;
 }
