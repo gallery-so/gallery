@@ -11,6 +11,11 @@ fileGroups:
     - 'pages/**/*.{ts,js,tsx,jsx}'
 
 tasks:
+  start-optimized-build:
+    deps:
+      - "~:build"
+    command: next start
+
   build:
     deps:
       - '~:relay-codegen'
