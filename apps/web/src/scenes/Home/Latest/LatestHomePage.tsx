@@ -15,10 +15,19 @@ export function LatestHomePage({ queryRef }: Props) {
     graphql`
       fragment LatestHomePageFragment on Query {
         ...LatestFeedFragment
+        viewer {
+          ... on Viewer {
+            user {
+              id
+            }
+          }
+        }
       }
     `,
     queryRef
   );
+
+  const isAuthenticated = Boolean(query.viewer?.user?.id);
 
   return (
     <>
@@ -26,7 +35,7 @@ export function LatestHomePage({ queryRef }: Props) {
         <title>Gallery | Latest</title>
       </Head>
       <FeedPage>
-        <FollowingToggleSection active={false} />
+        {isAuthenticated && <FollowingToggleSection active={false} />}
         <LatestFeed queryRef={query} />
       </FeedPage>
     </>
