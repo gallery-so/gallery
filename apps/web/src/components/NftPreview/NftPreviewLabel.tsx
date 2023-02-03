@@ -4,9 +4,9 @@ import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import colors from '~/components/core/colors';
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM } from '~/components/core/Text/Text';
+import { ClickablePill, NonclickablePill } from '~/components/Pill';
 import { NftPreviewLabelCollectionNameFragment$key } from '~/generated/NftPreviewLabelCollectionNameFragment.graphql';
 import { NftPreviewLabelFragment$key } from '~/generated/NftPreviewLabelFragment.graphql';
 import { getCommunityUrlForToken } from '~/utils/getCommunityUrlForToken';
@@ -247,36 +247,8 @@ const POAPTitle = styled(StyledTitleDiatypeM)`
   display: block;
 `;
 
-const ClickablePill = styled(InteractiveLink)`
-  border: 1px solid rgba(254, 254, 254, 0.5);
-  padding: 0 12px;
-  border-radius: 24px;
-  color: ${colors.white};
-  text-decoration: none;
-  width: fit-content;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  max-width: -webkit-fill-available;
-
-  &:hover {
-    background: rgba(254, 254, 254, 0.24);
-    backdrop-filter: blur(10px);
-    border-color: transparent;
-  }
-`;
-
 const POAPWrapperHStack = styled(HStack)`
   width: 100%;
-`;
-
-const NonclickablePill = styled.div`
-  color: ${colors.white};
-  text-decoration: none;
-  width: fit-content;
-  display: flex;
-  align-items: center;
-  max-width: -webkit-fill-available;
 `;
 
 export default NftPreviewLabel;
