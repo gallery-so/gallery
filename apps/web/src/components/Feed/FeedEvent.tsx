@@ -7,6 +7,7 @@ import { VStack } from '~/components/core/Spacer/Stack';
 import { FEED_EVENT_ROW_WIDTH_DESKTOP } from '~/components/Feed/dimensions';
 import { FeedEventData } from '~/components/Feed/FeedEventData';
 import { FeedEventSocializeSection } from '~/components/Feed/Socialize/FeedEventSocializeSection';
+import { FeedMode } from '~/components/Feed/types';
 import { ReportingErrorBoundary } from '~/contexts/boundary/ReportingErrorBoundary';
 import { TriedToRenderUnsupportedFeedEvent } from '~/errors/TriedToRenderUnsupportedFeedEvent';
 import { FeedEventFragment$key } from '~/generated/FeedEventFragment.graphql';
@@ -15,7 +16,6 @@ import { FeedEventWithErrorBoundaryFragment$key } from '~/generated/FeedEventWit
 import { FeedEventWithErrorBoundaryQueryFragment$key } from '~/generated/FeedEventWithErrorBoundaryQueryFragment.graphql';
 
 import colors from '../core/colors';
-import { FeedMode } from './Feed';
 
 type FeedEventProps = {
   eventRef: FeedEventFragment$key;

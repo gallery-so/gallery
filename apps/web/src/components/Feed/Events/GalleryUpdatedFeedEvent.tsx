@@ -5,8 +5,8 @@ import { graphql, useFragment } from 'react-relay';
 
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
-import { FeedMode } from '~/components/Feed/Feed';
 import { NonRecursiveFeedEventData } from '~/components/Feed/FeedEventData';
+import { FeedMode } from '~/components/Feed/types';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { ReportingErrorBoundary } from '~/contexts/boundary/ReportingErrorBoundary';
 import { GalleryUpdatedFeedEventFragment$key } from '~/generated/GalleryUpdatedFeedEventFragment.graphql';

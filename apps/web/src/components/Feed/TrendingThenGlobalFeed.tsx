@@ -1,39 +1,40 @@
 import { useCallback, useMemo } from 'react';
 import { graphql, useFragment, usePaginationFragment } from 'react-relay';
 
-import { NonAuthedFeedFragment$key } from '~/generated/NonAuthedFeedFragment.graphql';
-import { NonAuthedFeedGlobalFragment$key } from '~/generated/NonAuthedFeedGlobalFragment.graphql';
-import { NonAuthedFeedGlobalPaginationQuery } from '~/generated/NonAuthedFeedGlobalPaginationQuery.graphql';
-import { NonAuthedFeedTrendingFragment$key } from '~/generated/NonAuthedFeedTrendingFragment.graphql';
-import { NonAuthedFeedTrendingPaginationQuery } from '~/generated/NonAuthedFeedTrendingPaginationQuery.graphql';
+import { TrendingThenGlobalFeedFragment$key } from '~/generated/TrendingThenGlobalFeedFragment.graphql';
+import { TrendingThenGlobalFeedGlobalFragment$key } from '~/generated/TrendingThenGlobalFeedGlobalFragment.graphql';
+import { TrendingThenGlobalFeedGlobalPaginationQuery } from '~/generated/TrendingThenGlobalFeedGlobalPaginationQuery.graphql';
+import { TrendingThenGlobalFeedTrendingFragment$key } from '~/generated/TrendingThenGlobalFeedTrendingFragment.graphql';
+import { TrendingThenGlobalFeedTrendingPaginationQuery } from '~/generated/TrendingThenGlobalFeedTrendingPaginationQuery.graphql';
 
 import { useTrackLoadMoreFeedEvents } from './analytics';
 import { ITEMS_PER_PAGE } from './constants';
 import FeedList from './FeedList';
 
 type Props = {
-  queryRef: NonAuthedFeedGlobalFragment$key &
-    NonAuthedFeedTrendingFragment$key &
-    NonAuthedFeedFragment$key;
+  queryRef: TrendingThenGlobalFeedFragment$key;
 };
 
-export default function NonAuthedFeed({ queryRef }: Props) {
+export default function TrendingThenGlobalFeed({ queryRef }: Props) {
   const query = useFragment(
     graphql`
-      fragment NonAuthedFeedFragment on Query {
+      fragment TrendingThenGlobalFeedFragment on Query {
         ...FeedListFragment
+
+        ...TrendingThenGlobalFeedGlobalFragment
+        ...TrendingThenGlobalFeedTrendingFragment
       }
     `,
     queryRef
   );
 
   const globalPagination = usePaginationFragment<
-    NonAuthedFeedGlobalPaginationQuery,
-    NonAuthedFeedGlobalFragment$key
+    TrendingThenGlobalFeedGlobalPaginationQuery,
+    TrendingThenGlobalFeedGlobalFragment$key
   >(
     graphql`
-      fragment NonAuthedFeedGlobalFragment on Query
-      @refetchable(queryName: "NonAuthedFeedGlobalPaginationQuery") {
+      fragment TrendingThenGlobalFeedGlobalFragment on Query
+      @refetchable(queryName: "TrendingThenGlobalFeedGlobalPaginationQuery") {
         globalFeed(before: $globalBefore, last: $globalLast)
           @connection(key: "NonAuthedFeed_globalFeed") {
           edges {
@@ -50,16 +51,16 @@ export default function NonAuthedFeed({ queryRef }: Props) {
         ...FeedListFragment
       }
     `,
-    queryRef
+    query
   );
 
   const trendingPagination = usePaginationFragment<
-    NonAuthedFeedTrendingPaginationQuery,
-    NonAuthedFeedTrendingFragment$key
+    TrendingThenGlobalFeedTrendingPaginationQuery,
+    TrendingThenGlobalFeedTrendingFragment$key
   >(
     graphql`
-      fragment NonAuthedFeedTrendingFragment on Query
-      @refetchable(queryName: "NonAuthedFeedTrendingPaginationQuery") {
+      fragment TrendingThenGlobalFeedTrendingFragment on Query
+      @refetchable(queryName: "TrendingThenGlobalFeedTrendingPaginationQuery") {
         trendingFeed(before: $trendingBefore, last: $trendingLast)
           @connection(key: "NonAuthedFeed_trendingFeed") {
           edges {
@@ -76,7 +77,7 @@ export default function NonAuthedFeed({ queryRef }: Props) {
         ...FeedListFragment
       }
     `,
-    queryRef
+    query
   );
 
   const feedData = useMemo(() => {
@@ -109,7 +110,7 @@ export default function NonAuthedFeed({ queryRef }: Props) {
 
   const loadNextPage = useCallback(() => {
     return new Promise<void>((resolve) => {
-      trackLoadMoreFeedEvents('global');
+      trackLoadMoreFeedEvents('trending');
       // Infinite scroll component wants load callback to return a promise
       if (trendingPagination.hasPrevious) {
         trendingPagination.loadPrevious(ITEMS_PER_PAGE, { onComplete: () => resolve() });

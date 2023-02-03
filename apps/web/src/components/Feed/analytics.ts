@@ -7,7 +7,7 @@ export function useTrackLoadMoreFeedEvents() {
   const pageNum = useRef(0);
 
   return useCallback(
-    (mode: 'global' | 'viewer') => {
+    (mode: 'latest' | 'latest-following' | 'trending' | 'viewer') => {
       track('Feed: Clicked load more events', {
         pageNum: ++pageNum.current,
         mode,

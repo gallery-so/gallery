@@ -54,6 +54,7 @@ export function HomeNavbar({ queryRef }: Props) {
   const { pathname } = useRouter();
   const trendingRoute: Route = { pathname: '/trending', query: {} };
   const latestRoute: Route = { pathname: '/latest', query: {} };
+  const latestFollowingRoute: Route = { pathname: '/latest/following', query: {} };
   const featuredRoute: Route = { pathname: '/featured', query: {} };
 
   return (
@@ -73,7 +74,7 @@ export function HomeNavbar({ queryRef }: Props) {
           </NavbarLink>
 
           <NavbarLink
-            active={pathname === latestRoute.pathname}
+            active={pathname === latestRoute.pathname || pathname === latestFollowingRoute.pathname}
             // @ts-expect-error We're not using the legacy Link
             href={route(latestRoute)}
             onClick={handleLatestModeClick}

@@ -1,0 +1,36 @@
+import styled from 'styled-components';
+
+import breakpoints from '~/components/core/breakpoints';
+import colors from '~/components/core/colors';
+import { HStack } from '~/components/core/Spacer/Stack';
+import { TitleDiatypeM } from '~/components/core/Text/Text';
+import { FEED_EVENT_ROW_WIDTH_DESKTOP } from '~/components/Feed/dimensions';
+import { ClickablePill } from '~/components/Pill';
+
+type Props = {
+  active: boolean;
+};
+
+export function FollowingToggleSection({ active }: Props) {
+  return (
+    <HStack justify="center">
+      <FollowingSectionContainer>
+        <ClickablePill
+          active={active}
+          to={active ? { pathname: '/latest' } : { pathname: '/latest/following' }}
+        >
+          <TitleDiatypeM color={colors.offBlack}>Following</TitleDiatypeM>
+        </ClickablePill>
+      </FollowingSectionContainer>
+    </HStack>
+  );
+}
+
+const FollowingSectionContainer = styled(HStack)`
+  width: 100%;
+  padding-bottom: 24px;
+
+  @media only screen and ${breakpoints.desktop} {
+    width: ${FEED_EVENT_ROW_WIDTH_DESKTOP}px;
+  }
+`;

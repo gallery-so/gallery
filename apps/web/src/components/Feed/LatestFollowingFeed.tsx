@@ -1,5 +1,4 @@
-import { useMemo } from 'react';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { graphql, usePaginationFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -7,32 +6,32 @@ import { Button } from '~/components/core/Button/Button';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeL } from '~/components/core/Text/Text';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
-import { FeedByUserIdPaginationQuery } from '~/generated/FeedByUserIdPaginationQuery.graphql';
-import { ViewerFeedFragment$key } from '~/generated/ViewerFeedFragment.graphql';
+import { LatestFollowingFeedFragment$key } from '~/generated/LatestFollowingFeedFragment.graphql';
+import { LatestFollowingFeedPaginationQuery } from '~/generated/LatestFollowingFeedPaginationQuery.graphql';
 
 import { useTrackLoadMoreFeedEvents } from './analytics';
 import { ITEMS_PER_PAGE } from './constants';
-import { FeedMode } from './Feed';
 import FeedList from './FeedList';
 
 type Props = {
-  queryRef: ViewerFeedFragment$key;
-  setFeedMode: (feedMode: FeedMode) => void;
+  queryRef: LatestFollowingFeedFragment$key;
+  onSeeAll: () => void;
 };
 
-export default function ViewerFeed({ setFeedMode, queryRef }: Props) {
+export function LatestFollowingFeed({ onSeeAll, queryRef }: Props) {
   const {
     data: query,
     loadPrevious,
     hasPrevious,
-  } = usePaginationFragment<FeedByUserIdPaginationQuery, ViewerFeedFragment$key>(
+  } = usePaginationFragment<LatestFollowingFeedPaginationQuery, LatestFollowingFeedFragment$key>(
     graphql`
-      fragment ViewerFeedFragment on Query @refetchable(queryName: "FeedByUserIdPaginationQuery") {
+      fragment LatestFollowingFeedFragment on Query
+      @refetchable(queryName: "LatestFollowingFeedPaginationQuery") {
         ...FeedListFragment
 
         viewer {
           ... on Viewer {
-            feed(before: $viewerBefore, last: $viewerLast)
+            feed(before: $latestFollowingBefore, last: $latestFollowingLast)
               @connection(key: "ViewerFeedFragment_feed") {
               edges {
                 node {
@@ -54,10 +53,10 @@ export default function ViewerFeed({ setFeedMode, queryRef }: Props) {
   const trackLoadMoreFeedEvents = useTrackLoadMoreFeedEvents();
 
   const loadNextPage = useCallback(() => {
-    return new Promise((resolve) => {
-      trackLoadMoreFeedEvents('viewer');
+    return new Promise<void>((resolve) => {
+      trackLoadMoreFeedEvents('latest-following');
       // Infinite scroll component wants load callback to return a promise
-      loadPrevious(ITEMS_PER_PAGE, { onComplete: () => resolve('loaded') });
+      loadPrevious(ITEMS_PER_PAGE, { onComplete: () => resolve() });
     });
   }, [loadPrevious, trackLoadMoreFeedEvents]);
 
@@ -67,8 +66,8 @@ export default function ViewerFeed({ setFeedMode, queryRef }: Props) {
 
   const handleSeeWorldwideClick = useCallback(() => {
     track('Feed: Clicked worldwide button from inbox zero');
-    setFeedMode('WORLDWIDE');
-  }, [setFeedMode, track]);
+    onSeeAll();
+  }, [onSeeAll, track]);
 
   const feedData = useMemo(() => {
     const events = [];
@@ -82,39 +81,30 @@ export default function ViewerFeed({ setFeedMode, queryRef }: Props) {
     return events;
   }, [query.viewer?.feed?.edges]);
 
-  return (
-    <StyledViewerFeed>
-      {noViewerFeedEvents ? (
-        <StyledEmptyFeed gap={12}>
-          <VStack align="center">
-            <TitleDiatypeL>It's quiet in here</TitleDiatypeL>
-            <StyledEmptyFeedBody>
-              Discover new collectors to follow in the worldwide feed.
-            </StyledEmptyFeedBody>
-          </VStack>
-          <VStack>
-            <Button variant="secondary" onClick={handleSeeWorldwideClick}>
-              See worldwide activity
-            </Button>
-          </VStack>
-        </StyledEmptyFeed>
-      ) : (
-        <FeedList
-          feedEventRefs={feedData}
-          loadNextPage={loadNextPage}
-          hasNext={hasPrevious}
-          queryRef={query}
-          feedMode={'FOLLOWING'}
-        />
-      )}
-    </StyledViewerFeed>
+  return noViewerFeedEvents ? (
+    <StyledEmptyFeed gap={12}>
+      <VStack align="center">
+        <TitleDiatypeL>It's quiet in here</TitleDiatypeL>
+        <StyledEmptyFeedBody>
+          Discover new collectors to follow in the worldwide feed.
+        </StyledEmptyFeedBody>
+      </VStack>
+      <VStack>
+        <Button variant="secondary" onClick={handleSeeWorldwideClick}>
+          See worldwide activity
+        </Button>
+      </VStack>
+    </StyledEmptyFeed>
+  ) : (
+    <FeedList
+      feedEventRefs={feedData}
+      loadNextPage={loadNextPage}
+      hasNext={hasPrevious}
+      queryRef={query}
+      feedMode={'FOLLOWING'}
+    />
   );
 }
-
-const StyledViewerFeed = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
 
 const StyledEmptyFeed = styled(VStack)`
   align-items: center;

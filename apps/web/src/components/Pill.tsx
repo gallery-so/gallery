@@ -1,9 +1,9 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import colors from '~/components/core/colors';
 import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 
-export const ClickablePill = styled(InteractiveLink)`
+export const ClickablePill = styled(InteractiveLink)<{ active?: boolean }>`
   border: 1px solid ${colors.porcelain};
   padding: 0 12px;
   border-radius: 24px;
@@ -16,10 +16,14 @@ export const ClickablePill = styled(InteractiveLink)`
   display: flex;
   align-items: center;
 
+  ${({ active }) =>
+    active &&
+    css`
+      border-color: ${colors.offBlack};
+    `}
+
   &:hover {
-    background: ${colors.porcelain};
-    backdrop-filter: blur(10px);
-    border-color: transparent;
+    border-color: ${colors.offBlack};
   }
 `;
 
