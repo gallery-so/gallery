@@ -24,6 +24,7 @@ export default function MagicLinkLogin({ reset }: Props) {
   const [loginOrRedirectToOnboarding] = useLoginOrRedirectToOnboarding();
   const { handleLogin } = useAuthActions();
   const trackSignInSuccess = useTrackSignInSuccess();
+
   const [email, setEmail] = useState('');
   const [clickedSendLink, setClickedSendLink] = useState(false);
   const [attemptingSignIn, setIsAttemptingSignIn] = useState(false);
