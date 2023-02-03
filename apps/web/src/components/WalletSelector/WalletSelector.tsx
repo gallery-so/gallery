@@ -55,7 +55,7 @@ export default function WalletSelector({
   const fallback = useMemo(
     () => (
       <WalletSelectorWrapper>
-        <VStack gap={16}>
+        <VStack gap={8}>
           {Array.from({ length: NUM_OPTIONS_SUPPORTED }).map(() => {
             // We don't have anything relevant to key off of here
             // eslint-disable-next-line react/jsx-key
