@@ -4,6 +4,7 @@ import { ITEMS_PER_PAGE, MAX_PIECES_DISPLAYED_PER_FEED_EVENT } from '~/component
 import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/NotesModal/NotesModal';
 import { HomeNavbar } from '~/contexts/globalLayout/GlobalNavbar/HomeNavbar/HomeNavbar';
 import { followingQuery } from '~/generated/followingQuery.graphql';
+import GalleryRedirect from '~/scenes/_Router/GalleryRedirect';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
 import { LatestFollowingPage } from '~/scenes/Home/Latest/LatestFollowingPage';
 
@@ -19,6 +20,13 @@ export default function Following() {
       ) {
         ...HomeNavbarFragment
         ...LatestFollowingPageFragment
+        viewer {
+          ... on Viewer {
+            user {
+              id
+            }
+          }
+        }
       }
     `,
     {
@@ -27,6 +35,12 @@ export default function Following() {
       interactionsFirst: NOTES_PER_PAGE,
     }
   );
+
+  const isAuthenticated = Boolean(query.viewer?.user?.id);
+
+  if (!isAuthenticated) {
+    return <GalleryRedirect to={{ pathname: '/latest' }} />;
+  }
 
   return (
     <GalleryRoute
