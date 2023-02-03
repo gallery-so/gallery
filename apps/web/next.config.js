@@ -74,7 +74,17 @@ const nextConfig = {
     return [
       {
         source: '/',
-        destination: '/activity',
+        destination: '/trending',
+        permanent: false,
+      },
+      {
+        source: '/activity',
+        destination: '/trending',
+        permanent: false,
+      },
+      {
+        source: '/home',
+        destination: '/trending',
         permanent: false,
       },
       {
