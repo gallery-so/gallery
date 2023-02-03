@@ -13,7 +13,7 @@ jobs:
           fetch-depth: 0
       - uses: 'actions/setup-node@v3'
         with:
-          node-version: 16.16.0
+          node-version: 16
           cache: 'yarn'
       - run: 'yarn install --immutable'
       - name: Build Next.js App
