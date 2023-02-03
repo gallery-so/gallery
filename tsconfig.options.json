@@ -1,0 +1,13 @@
+{
+  "extends": "tsconfig-moon",
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "resolveJsonModule": true,
+    "noImplicitReturns": false,
+    "noImplicitOverride": false
+  }
+}

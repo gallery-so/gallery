@@ -1,15 +1,37 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# misc
+.DS_Store
 
 # dependencies
-/node_modules
-/.pnp
-.pnp.js
+node_modules
 
-# testing
-/coverage
+npm-debug.log
+yarn-debug.log
+yarn-error.log
 
-# production
-/build
+.yarn/
+
+# SECRITS
+_internal*
+
+# GraphQL Codegen Files
+__generated__
+persisted_queries.json
+
+# Sentry
+.sentryclirc
+
+# JetBrains IDE
+.idea/
+
+# moon
+.moon/cache
+.moon/docker
+
+# Typescript
+dts/
+# Build cache manifests
+*.tsbuildinfo
 
 # env config
 .env
@@ -17,36 +39,3 @@
 .env.development.local
 .env.test.local
 .env.production.local
-
-# e2e
-/tests/e2e/screenshots/*
-/tests/e2e/videos/*
-/cypress/screenshots
-/cypress/videos
-
-# misc
-.DS_Store
-
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-.next/
-tsconfig.tsbuildinfo
-
-# SECRITS
-_internal*
-
-# GraphQL Codegen Files
-__generated__/**/*
-tests/__generated__/**/*
-persisted_queries.json
-
-# Next.js Routes Types
-nextjs-routes.d.ts
-
-# Sentry
-.sentryclirc
-
-# JetBrains IDE
-.idea/

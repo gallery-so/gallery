@@ -1,0 +1,30 @@
+name: bundle-diff
+on:
+  pull_request:
+  push:
+    branches:
+      - 'main'
+jobs:
+  bundle-diff:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: 'actions/checkout@v3'
+        with:
+          fetch-depth: 0
+      - uses: 'actions/setup-node@v3'
+        with:
+          node-version: 16.16.0
+          cache: 'yarn'
+      - run: 'yarn install --immutable'
+      - name: Build Next.js App
+        run: DISABLE_SENTRY=true yarn moon run web:build
+      - name: Analyze bundle sizes
+        uses: transferwise/actions-next-bundle-analyzer@master
+        with:
+          # Filename of the workflow this step is defined in
+          workflow-id: bundle-diff.yml
+          base-branch: main
+          working-directory: apps/web
+        env:
+          # This secret is automatically injected by GitHub
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
