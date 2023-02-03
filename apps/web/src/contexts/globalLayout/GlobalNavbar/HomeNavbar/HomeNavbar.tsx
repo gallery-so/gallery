@@ -39,8 +39,12 @@ export function HomeNavbar({ queryRef }: Props) {
   const isLoggedIn = query.viewer?.__typename === 'Viewer';
 
   const track = useTrack();
-  const handleActivityModeClick = useCallback<MouseEventHandler>(() => {
-    track('Home: Clicked toggle to Activity Feed');
+  const handleTrendingClick = useCallback<MouseEventHandler>(() => {
+    track('Home: Clicked toggle to Trending Feed');
+  }, [track]);
+
+  const handleLatestModeClick = useCallback<MouseEventHandler>(() => {
+    track('Home: Clicked toggle to Latest Page');
   }, [track]);
 
   const handleFeaturedModeClick = useCallback<MouseEventHandler>(() => {
@@ -48,7 +52,8 @@ export function HomeNavbar({ queryRef }: Props) {
   }, [track]);
 
   const { pathname } = useRouter();
-  const activityRoute: Route = { pathname: '/activity', query: {} };
+  const trendingRoute: Route = { pathname: '/trending', query: {} };
+  const latestRoute: Route = { pathname: '/latest', query: {} };
   const featuredRoute: Route = { pathname: '/featured', query: {} };
 
   return (
@@ -59,12 +64,21 @@ export function HomeNavbar({ queryRef }: Props) {
       <NavbarCenterContent>
         <HStack gap={8}>
           <NavbarLink
-            active={pathname === activityRoute.pathname}
+            active={pathname === trendingRoute.pathname}
             // @ts-expect-error We're not using the legacy Link
-            href={route(activityRoute)}
-            onClick={handleActivityModeClick}
+            href={route(trendingRoute)}
+            onClick={handleTrendingClick}
           >
-            Activity
+            Trending
+          </NavbarLink>
+
+          <NavbarLink
+            active={pathname === latestRoute.pathname}
+            // @ts-expect-error We're not using the legacy Link
+            href={route(latestRoute)}
+            onClick={handleLatestModeClick}
+          >
+            Latest
           </NavbarLink>
 
           <NavbarLink
