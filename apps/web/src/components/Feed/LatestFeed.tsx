@@ -41,7 +41,7 @@ export function LatestFeed({ queryRef }: Props) {
     return new Promise<void>((resolve) => {
       loadPrevious(ITEMS_PER_PAGE, { onComplete: () => resolve() });
     });
-  }, [loadPrevious]);
+  }, [loadPrevious, trackLoadMoreFeedEvents]);
 
   const feedData = useMemo(() => {
     const feedData = [];
