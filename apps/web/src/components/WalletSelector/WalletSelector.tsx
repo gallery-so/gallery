@@ -29,6 +29,9 @@ type Props = {
   onTezosAddWalletSuccess?: () => void;
 };
 
+// number of connection options supported; list available in `MultichainWalletSelector.tsx`
+const NUM_OPTIONS_SUPPORTED = 5;
+
 export default function WalletSelector({
   queryRef,
   connectionMode = AUTH,
@@ -53,7 +56,7 @@ export default function WalletSelector({
     () => (
       <WalletSelectorWrapper>
         <VStack gap={16}>
-          {Array.from({ length: 4 }).map(() => {
+          {Array.from({ length: NUM_OPTIONS_SUPPORTED }).map(() => {
             // We don't have anything relevant to key off of here
             // eslint-disable-next-line react/jsx-key
             return <Skeleton width="100%" height="52px" />;
