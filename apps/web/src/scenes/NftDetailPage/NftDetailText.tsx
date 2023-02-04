@@ -5,12 +5,12 @@ import styled from 'styled-components';
 import breakpoints, { size } from '~/components/core/breakpoints';
 import { Button } from '~/components/core/Button/Button';
 import TextButton from '~/components/core/Button/TextButton';
-import colors from '~/components/core/colors';
 import HorizontalBreak from '~/components/core/HorizontalBreak/HorizontalBreak';
 import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM, TitleM, TitleXS } from '~/components/core/Text/Text';
+import { ClickablePill, NonclickablePill } from '~/components/Pill';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { NftDetailTextFragment$key } from '~/generated/NftDetailTextFragment.graphql';
@@ -211,36 +211,6 @@ const StyledInteractiveLink = styled(InteractiveLink)`
 
 const StyledButton = styled(Button)`
   width: 100%;
-`;
-
-const ClickablePill = styled(InteractiveLink)`
-  border: 1px solid ${colors.porcelain};
-  padding: 0 12px;
-  border-radius: 24px;
-  color: ${colors.offBlack};
-  text-decoration: none;
-  width: fit-content;
-  max-width: 100%;
-  align-self: end;
-  height: 32px;
-  display: flex;
-  align-items: center;
-
-  &:hover {
-    background: ${colors.porcelain};
-    backdrop-filter: blur(10px);
-    border-color: transparent;
-  }
-`;
-
-const NonclickablePill = styled.div`
-  color: ${colors.offBlack};
-  width: fit-content;
-  max-width: 100%;
-  align-self: end;
-  height: 32px;
-  display: flex;
-  align-items: center;
 `;
 
 const StyledPillContent = styled(HStack)`

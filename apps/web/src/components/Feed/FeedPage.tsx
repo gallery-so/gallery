@@ -1,41 +1,29 @@
-import Head from 'next/head';
-import { graphql, useFragment } from 'react-relay';
+import { PropsWithChildren } from 'react';
 import styled from 'styled-components';
 
 import breakpoints, { pageGutter } from '~/components/core/breakpoints';
-import Feed from '~/components/Feed/Feed';
+import { VStack } from '~/components/core/Spacer/Stack';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
-import { ActivityHomePageFragment$key } from '~/generated/ActivityHomePageFragment.graphql';
 
-type Props = {
-  queryRef: ActivityHomePageFragment$key;
-};
+export const FeedSpacing = styled(VStack)`
+  width: 100%;
+  flex: 1;
+  @media only screen and ${breakpoints.tablet} {
+    padding-top: 24px;
+  }
+`;
 
-export default function ActivityHomePage({ queryRef }: Props) {
-  const query = useFragment(
-    graphql`
-      fragment ActivityHomePageFragment on Query {
-        ...FeedViewerFragment
-      }
-    `,
-    queryRef
-  );
-
+export function FeedPage({ children }: PropsWithChildren) {
   const navbarHeight = useGlobalNavbarHeight();
 
   return (
-    <>
-      <Head>
-        <title>Gallery | Activity</title>
-      </Head>
-      <StyledPage navbarHeight={navbarHeight}>
-        <Feed queryRef={query} />
-      </StyledPage>
-    </>
+    <Page navbarHeight={navbarHeight}>
+      <FeedSpacing>{children}</FeedSpacing>
+    </Page>
   );
 }
 
-const StyledPage = styled.div<{ navbarHeight: number }>`
+const Page = styled.div<{ navbarHeight: number }>`
   display: flex;
   flex-direction: column;
 

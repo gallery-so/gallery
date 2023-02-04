@@ -8,6 +8,7 @@ import { Button } from '~/components/core/Button/Button';
 import colors from '~/components/core/colors';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { TitleXS } from '~/components/core/Text/Text';
+import { FeedMode } from '~/components/Feed/types';
 import FollowListUsers from '~/components/Follow/FollowListUsers';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
@@ -19,7 +20,6 @@ import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import { removeNullValues } from '~/utils/removeNullValues';
 import { getTimeSince } from '~/utils/time';
 
-import { FeedMode } from '../Feed';
 import { StyledEvent, StyledEventHeader, StyledEventText, StyledTime } from './EventStyles';
 import UserFollowedYouEvent from './UserFollowedYouEvent';
 

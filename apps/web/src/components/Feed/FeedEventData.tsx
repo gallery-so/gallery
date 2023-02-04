@@ -8,7 +8,7 @@ import CollectorsNoteAddedToTokenFeedEvent from '~/components/Feed/Events/Collec
 import GalleryUpdatedFeedEvent from '~/components/Feed/Events/GalleryUpdatedFeedEvent';
 import TokensAddedToCollectionFeedEvent from '~/components/Feed/Events/TokensAddedToCollectionFeedEvent';
 import UserFollowedUsersFeedEvent from '~/components/Feed/Events/UserFollowedUsersFeedEvent';
-import { FeedMode } from '~/components/Feed/Feed';
+import { FeedMode } from '~/components/Feed/types';
 import { TriedToRenderUnsupportedFeedEvent } from '~/errors/TriedToRenderUnsupportedFeedEvent';
 import { FeedEventDataFragment$key } from '~/generated/FeedEventDataFragment.graphql';
 import { FeedEventDataNonRecursiveFragment$key } from '~/generated/FeedEventDataNonRecursiveFragment.graphql';

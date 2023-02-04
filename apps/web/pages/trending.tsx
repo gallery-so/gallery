@@ -4,33 +4,33 @@ import { fetchQuery } from 'relay-runtime';
 import { ITEMS_PER_PAGE, MAX_PIECES_DISPLAYED_PER_FEED_EVENT } from '~/components/Feed/constants';
 import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/NotesModal/NotesModal';
 import { HomeNavbar } from '~/contexts/globalLayout/GlobalNavbar/HomeNavbar/HomeNavbar';
-import { activityPageQuery } from '~/generated/activityPageQuery.graphql';
+import { trendingPageQuery } from '~/generated/trendingPageQuery.graphql';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
-import ActivityHomePage from '~/scenes/Home/ActivityHomePage';
+import TrendingHomePage from '~/scenes/Home/TrendingHomePage';
 import useOpenSettingsModal from '~/scenes/Modals/useOpenSettingsModal';
 import { PreloadQueryArgs } from '~/types/PageComponentPreloadQuery';
 
 const activityPageQueryNode = graphql`
-  query activityPageQuery(
+  query trendingPageQuery(
     $interactionsFirst: Int!
     $interactionsAfter: String
+    $trendingLast: Int!
+    $trendingBefore: String
     $globalLast: Int!
     $globalBefore: String
-    $viewerLast: Int!
-    $viewerBefore: String
     $visibleTokensPerFeedEvent: Int!
   ) {
-    ...ActivityHomePageFragment
+    ...TrendingHomePageFragment
     ...HomeNavbarFragment
     ...useOpenSettingsModalFragment
   }
 `;
 
-export default function Activity() {
-  const query = useLazyLoadQuery<activityPageQuery>(activityPageQueryNode, {
+export default function Trending() {
+  const query = useLazyLoadQuery<trendingPageQuery>(activityPageQueryNode, {
     interactionsFirst: NOTES_PER_PAGE,
     globalLast: ITEMS_PER_PAGE,
-    viewerLast: ITEMS_PER_PAGE,
+    trendingLast: ITEMS_PER_PAGE,
     visibleTokensPerFeedEvent: MAX_PIECES_DISPLAYED_PER_FEED_EVENT,
   });
 
@@ -39,16 +39,16 @@ export default function Activity() {
   return (
     <GalleryRoute
       navbar={<HomeNavbar queryRef={query} />}
-      element={<ActivityHomePage queryRef={query} />}
+      element={<TrendingHomePage queryRef={query} />}
     />
   );
 }
 
-Activity.preloadQuery = ({ relayEnvironment }: PreloadQueryArgs) => {
-  fetchQuery<activityPageQuery>(relayEnvironment, activityPageQueryNode, {
+Trending.preloadQuery = ({ relayEnvironment }: PreloadQueryArgs) => {
+  fetchQuery<trendingPageQuery>(relayEnvironment, activityPageQueryNode, {
     interactionsFirst: NOTES_PER_PAGE,
     globalLast: ITEMS_PER_PAGE,
-    viewerLast: ITEMS_PER_PAGE,
+    trendingLast: ITEMS_PER_PAGE,
     visibleTokensPerFeedEvent: MAX_PIECES_DISPLAYED_PER_FEED_EVENT,
   }).toPromise();
 };
