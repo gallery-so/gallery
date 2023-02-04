@@ -28,7 +28,7 @@ export function FollowingToggleSection({ active }: Props) {
 
 const FollowingSectionContainer = styled(HStack)`
   width: 100%;
-  padding-bottom: 24px;
+  padding: 24px 0px;
 
   @media only screen and ${breakpoints.desktop} {
     width: ${FEED_EVENT_ROW_WIDTH_DESKTOP}px;
