@@ -14,7 +14,7 @@ export default function Featured({ queryRef }: Props) {
   const query = useFragment(
     graphql`
       fragment FeaturedFragment on Query {
-        trendingUsers7Days: trendingUsers(input: { report: LAST_7_DAYS }) {
+        trendingUsers5Days: trendingUsers(input: { report: LAST_5_DAYS }) {
           ... on TrendingUsersPayload {
             __typename
             ...FeaturedSectionFragment
@@ -35,11 +35,11 @@ export default function Featured({ queryRef }: Props) {
 
   return (
     <StyledFeaturedPage gap={48}>
-      {query.trendingUsers7Days?.__typename === 'TrendingUsersPayload' && (
+      {query.trendingUsers5Days?.__typename === 'TrendingUsersPayload' && (
         <FeaturedSection
           title="Weekly Leaderboard"
           subTitle="Trending curators this week"
-          trendingUsersRef={query.trendingUsers7Days}
+          trendingUsersRef={query.trendingUsers5Days}
           queryRef={query}
         />
       )}
