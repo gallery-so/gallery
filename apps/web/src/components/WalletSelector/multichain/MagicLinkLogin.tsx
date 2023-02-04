@@ -89,15 +89,14 @@ export default function MagicLinkLogin({ reset }: Props) {
         ) : (
           <>
             <VStack gap={8} align="center">
-              <TitleS>Check your email (Keep this tab open!)</TitleS>
-              <Icon src="/icons/delegate_cash_logo.svg" />
+              <Icon src={walletIconMap['magic_link']} />
+              <TitleS>Almost there – keep this tab open!</TitleS>
             </VStack>
             <VStack gap={8}>
               <BaseM>
-                We emailed a magic link to <strong>{email}</strong>.
+                We sent a magic link to <strong>{email}</strong>. Open the link on any device and
+                you&#39;ll be signed in here.
               </BaseM>
-
-              <BaseM>Open the link on any device and it'll automatically sign you in here.</BaseM>
             </VStack>
           </>
         )}
