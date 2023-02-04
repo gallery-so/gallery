@@ -14,6 +14,7 @@ import useMagicLogin from '~/hooks/useMagicLink';
 import { EMAIL_FORMAT } from '~/utils/regex';
 
 import useLoginOrRedirectToOnboarding from '../mutations/useLoginOrRedirectToOnboarding';
+import { walletIconMap } from './WalletButton';
 
 type Props = {
   reset: () => void;
@@ -107,14 +108,14 @@ export default function MagicLinkLogin({ reset }: Props) {
   return (
     <EmptyState title="">
       <VStack gap={24}>
-        <TitleS>Sign in via Magic Link</TitleS>
+        <VStack align="center" gap={4}>
+          <Icon src={walletIconMap['magic_link']} />
+          <TitleS>Magic Link</TitleS>
+        </VStack>
         <VStack gap={8}>
           <StyledText>
-            If you are an existing Gallery user with a verified email address, you can sign in using
-            a magic link delivered to your inbox.
-          </StyledText>
-          <StyledText>
-            To continue, enter your verified email address and follow the instructions in the email.
+            If you&#39;re an existing Gallery user with a verified email address, we&#39;ll deliver
+            a magic sign-in link to your inbox.
           </StyledText>
         </VStack>
         <VStack gap={8}>
