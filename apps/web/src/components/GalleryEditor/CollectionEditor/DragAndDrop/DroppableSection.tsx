@@ -81,15 +81,23 @@ export default function DroppableSection({ children, columns, id, items, style, 
             <HStack gap={8} align="center">
               <StyledAddSectionButton onClick={handleAddSectionClick}>
                 <StyledPlusIcon />
+
+                {step === 5 && (
+                  <OnboardingDialog
+                    step={step}
+                    text={dialogMessage}
+                    onNext={nextStep}
+                    onClose={handleClose}
+                    options={{
+                      blinkingPosition: {
+                        left: 30,
+                      },
+                      positionOffset: 20,
+                      placement: 'bottom',
+                    }}
+                  />
+                )}
               </StyledAddSectionButton>
-              {step === 5 && (
-                <OnboardingDialog
-                  step={step}
-                  text={dialogMessage}
-                  onNext={nextStep}
-                  onClose={handleClose}
-                />
-              )}
             </HStack>
           )}
         </VStack>
@@ -109,6 +117,7 @@ const StyledAddSectionButton = styled.button`
   color: ${colors.white};
   background-color: ${colors.activeBlue};
   cursor: pointer;
+  position: relative;
 `;
 
 const StyledPlusIcon = styled(PlusIcon)``;

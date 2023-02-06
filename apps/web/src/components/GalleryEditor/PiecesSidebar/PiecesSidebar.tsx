@@ -113,27 +113,29 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
           <TitleS>Add pieces</TitleS>
           <SidebarViewSelector selectedView={selectedView} setSelectedView={setSelectedView} />
         </Header>
-        <SearchBar
-          tokensRef={nonNullTokens}
-          setSearchResults={setSearchResults}
-          setDebouncedSearchQuery={setDebouncedSearchQuery}
-        />
-        {step === 3 && (
-          <StyledOnboardingDialogContainer>
-            <StyledOnboardingDialog>
-              <OnboardingDialog
-                step={step}
-                text={dialogMessage}
-                onNext={nextStep}
-                onClose={handleClose}
-                options={{
-                  placement: 'left-start',
-                  positionOffset: 150,
-                }}
-              />
-            </StyledOnboardingDialog>
-          </StyledOnboardingDialogContainer>
-        )}
+        <StyledSearchBarContainer>
+          <SearchBar
+            tokensRef={nonNullTokens}
+            setSearchResults={setSearchResults}
+            setDebouncedSearchQuery={setDebouncedSearchQuery}
+          />
+          {step === 3 && (
+            <OnboardingDialog
+              step={step}
+              text={dialogMessage}
+              onNext={nextStep}
+              onClose={handleClose}
+              options={{
+                placement: 'left-start',
+                positionOffset: 150,
+                blinkingPosition: {
+                  top: 12,
+                  left: 110,
+                },
+              }}
+            />
+          )}
+        </StyledSearchBarContainer>
         {!isSearching && (
           <>
             <div>
@@ -150,7 +152,6 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
             )}
           </>
         )}
-
         {ownsWalletFromSelectedChain ? (
           <SidebarTokens
             isSearching={isSearching}
@@ -201,12 +202,6 @@ const Header = styled(HStack)`
   padding: 0 12px 8px;
 `;
 
-const StyledOnboardingDialogContainer = styled.div`
+const StyledSearchBarContainer = styled.div`
   position: relative;
-`;
-
-const StyledOnboardingDialog = styled.div`
-  position: absolute;
-  top: -28px;
-  left: 110px;
 `;

@@ -31,13 +31,19 @@ type Props = {
   options?: {
     placement?: Placement;
     positionOffset?: number;
+    blinkingPosition?: {
+      top?: number;
+      left?: number;
+      right?: number;
+      bottom?: number;
+    };
   };
 };
 
 export default function OnboardingDialog({ step, text, onNext, onClose, options }: Props) {
   const [open, setOpen] = useState(true);
 
-  const { placement, positionOffset } = options ?? {
+  const { placement, positionOffset, blinkingPosition } = options ?? {
     placement: 'right-start',
     positionOffset: 10,
   };
@@ -78,7 +84,9 @@ export default function OnboardingDialog({ step, text, onNext, onClose, options 
     <>
       {open && (
         <>
-          <Blinking ref={reference} {...getReferenceProps()} />
+          <StyledBlinkingContainer position={blinkingPosition}>
+            <Blinking ref={reference} {...getReferenceProps()} />
+          </StyledBlinkingContainer>
           <FloatingPortal>
             <StyledConfirmation
               className="Popover"
@@ -114,11 +122,21 @@ export default function OnboardingDialog({ step, text, onNext, onClose, options 
   );
 }
 
+const StyledBlinkingContainer = styled.div<{
+  position?: { top?: number; left?: number; right?: number; bottom?: number };
+}>`
+  position: absolute;
+  top: ${({ position }) => (position?.top ? `${position.top}px` : 'auto')};
+  right: ${({ position }) => (position?.right ? `${position.right}px` : 'auto')};
+  bottom: ${({ position }) => (position?.bottom ? `${position.bottom}px` : 'auto')};
+  left: ${({ position }) => (position?.left ? `${position.left}px` : 'auto')};
+`;
+
 const StyledConfirmation = styled.div`
   width: 311px;
   max-width: 100%;
   padding-top: 16px;
-  z-index: 2;
+  z-index: 12;
 
   background-color: ${colors.white};
   padding: 16px;

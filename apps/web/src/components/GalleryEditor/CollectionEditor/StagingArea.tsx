@@ -237,8 +237,11 @@ function StagingArea({ tokensRef }: Props) {
                     onNext={nextStep}
                     onClose={handleClose}
                     options={{
-                      placement: 'bottom',
+                      placement: 'right-end',
                       positionOffset: 30,
+                      blinkingPosition: {
+                        right: -20,
+                      },
                     }}
                   />
                 )}
@@ -254,6 +257,10 @@ function StagingArea({ tokensRef }: Props) {
                     onClose={handleClose}
                     options={{
                       placement: 'bottom',
+                      blinkingPosition: {
+                        right: -20,
+                      },
+                      positionOffset: 20,
                     }}
                   />
                 )}
@@ -349,6 +356,7 @@ const EditIconContainer = styled.div`
 const CollectionNameAndDescriptionBackground = styled(HStack)`
   padding: 4px 8px;
   cursor: pointer;
+  position: relative;
 
   :hover {
     background-color: ${colors.faint};

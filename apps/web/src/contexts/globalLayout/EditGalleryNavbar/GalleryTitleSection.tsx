@@ -37,6 +37,14 @@ export function GalleryTitleSection({
             text={dialogMessage}
             onNext={onNextStep}
             onClose={dialogOnClose}
+            options={{
+              placement: 'bottom',
+              positionOffset: 20,
+              blinkingPosition: {
+                top: 5,
+                right: -20,
+              },
+            }}
           />
         )}
       </MainGalleryText>
@@ -81,6 +89,8 @@ const MainGalleryText = styled(Paragraph)<{ hasGalleryName: boolean }>`
   align-items: center;
   justify-content: center;
   gap: 8px;
+
+  position: relative;
 
   ${({ hasGalleryName }) =>
     !hasGalleryName &&

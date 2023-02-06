@@ -106,20 +106,22 @@ function CollectionTitle({
         )}
       </CollectionTitleContainer>
 
-      <StyledBlinking>
-        {step === 4 && index === 0 && (
-          <OnboardingDialog
-            step={4}
-            text={dialogMessage}
-            onNext={nextStep}
-            onClose={handleClose}
-            options={{
-              placement: 'left-end',
-              positionOffset: 100,
-            }}
-          />
-        )}
-      </StyledBlinking>
+      {step === 4 && index === 0 && (
+        <OnboardingDialog
+          step={4}
+          text={dialogMessage}
+          onNext={nextStep}
+          onClose={handleClose}
+          options={{
+            placement: 'left',
+            positionOffset: 100,
+            blinkingPosition: {
+              top: 110,
+              left: 80,
+            },
+          }}
+        />
+      )}
     </CollectionTitleRow>
   );
 }
@@ -325,12 +327,5 @@ const StyledTooltip = styled(Tooltip)<{ visible: boolean }>`
   width: 130px;
   right: 0;
   top: 30px;
-  z-index: 1;
-`;
-
-const StyledBlinking = styled.div`
-  position: absolute;
-  top: 110px;
-  left: 80px;
   z-index: 1;
 `;
