@@ -67,6 +67,7 @@ export function OnboardingDialogProvider({ children, queryRef }: OnboardingDialo
   );
 
   const dismissUserExperience = useCallback(async () => {
+    setStep(0);
     await updateUserExperience({
       type: 'MultiGalleryAnnouncement',
       experienced: true,
