@@ -69,7 +69,7 @@ export default function MagicLinkLogin({ reset }: Props) {
       }
     } catch (error: unknown) {
       setErrorMessage(
-        `There was an error signing in with ${email}. Please verify that the email address is correct.`
+        `There was an error signing in. Please verify that the email address is correct.`
       );
       setIsAttemptingSignIn(false);
       setClickedSendLink(false);
