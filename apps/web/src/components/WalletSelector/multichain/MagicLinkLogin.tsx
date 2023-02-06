@@ -69,7 +69,7 @@ export default function MagicLinkLogin({ reset }: Props) {
       }
     } catch (error: unknown) {
       setErrorMessage(
-        'Login failed. Please ensure that the email address is associated with an existing Gallery user.'
+        `There was an error signing in with ${email}. Please verify that the email address is correct.`
       );
       setIsAttemptingSignIn(false);
       setClickedSendLink(false);
@@ -117,23 +117,29 @@ export default function MagicLinkLogin({ reset }: Props) {
             a magic sign-in link to your inbox.
           </StyledText>
         </VStack>
-        <VStack gap={8}>
-          <StyledInput
-            onChange={handleInputChange}
-            placeholder="Email"
-            autoFocus
-            defaultValue={email}
-          />
-          {errorMessage && <StyledErrorText message={errorMessage} />}
-          <HStack gap={8} justify="flex-end">
-            <Button variant="secondary" onClick={reset}>
-              Back
-            </Button>
-            <Button onClick={handleSendClick} disabled={!isValidEmail || clickedSendLink}>
-              Send Magic Link
-            </Button>
-          </HStack>
-        </VStack>
+        <form>
+          <VStack gap={8}>
+            <StyledInput
+              onChange={handleInputChange}
+              placeholder="Email"
+              autoFocus
+              defaultValue={email}
+            />
+            {errorMessage && <StyledErrorText message={errorMessage} />}
+            <HStack gap={8} justify="flex-end">
+              <Button variant="secondary" onClick={reset}>
+                Back
+              </Button>
+              <Button
+                onClick={handleSendClick}
+                disabled={!isValidEmail || clickedSendLink}
+                type="submit"
+              >
+                Send Magic Link
+              </Button>
+            </HStack>
+          </VStack>
+        </form>
       </VStack>
     </EmptyState>
   );
