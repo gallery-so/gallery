@@ -14,6 +14,7 @@ import useMagicLogin from '~/hooks/useMagicLink';
 import { EMAIL_FORMAT } from '~/utils/regex';
 
 import useLoginOrRedirectToOnboarding from '../mutations/useLoginOrRedirectToOnboarding';
+import { walletIconMap } from './WalletButton';
 
 type Props = {
   reset: () => void;
@@ -88,15 +89,14 @@ export default function MagicLinkLogin({ reset }: Props) {
         ) : (
           <>
             <VStack gap={8} align="center">
-              <TitleS>Check your email (Keep this tab open!)</TitleS>
-              <Icon src="/icons/delegate_cash_logo.svg" />
+              <Icon src={walletIconMap['magic_link']} />
+              <TitleS>Almost there – keep this tab open!</TitleS>
             </VStack>
             <VStack gap={8}>
               <BaseM>
-                We emailed a magic link to <strong>{email}</strong>.
+                We sent a magic link to <strong>{email}</strong>. Open the link on any device and
+                you&#39;ll be signed in here.
               </BaseM>
-
-              <BaseM>Open the link on any device and it'll automatically sign you in here.</BaseM>
             </VStack>
           </>
         )}
@@ -107,14 +107,14 @@ export default function MagicLinkLogin({ reset }: Props) {
   return (
     <EmptyState title="">
       <VStack gap={24}>
-        <TitleS>Sign in via Magic Link</TitleS>
+        <VStack align="center" gap={4}>
+          <Icon src={walletIconMap['magic_link']} />
+          <TitleS>Magic Link</TitleS>
+        </VStack>
         <VStack gap={8}>
           <StyledText>
-            If you are an existing Gallery user with a verified email address, you can sign in using
-            a magic link delivered to your inbox.
-          </StyledText>
-          <StyledText>
-            To continue, enter your verified email address and follow the instructions in the email.
+            If you&#39;re an existing Gallery user with a verified email address, we&#39;ll deliver
+            a magic sign-in link to your inbox.
           </StyledText>
         </VStack>
         <VStack gap={8}>
