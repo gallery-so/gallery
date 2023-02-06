@@ -102,7 +102,7 @@ export function CollectionRightContent({
 
     if (galleryId) {
       return {
-        pathname: '/gallery/[galleryId]/collection/[collectionId]/edit',
+        pathname: '/gallery/[galleryId]/edit',
         query: { collectionId, galleryId },
       };
     }
