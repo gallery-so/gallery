@@ -134,6 +134,7 @@ function NewEditGalleryPage({ galleryId, initialCollectionId }: Props) {
 
         ...GalleryEditorContextFragment
         ...editGalleryPageNewInnerFragment
+        ...OnboardingDialogContextFragment
       }
     `,
     { galleryId }
@@ -147,7 +148,7 @@ function NewEditGalleryPage({ galleryId, initialCollectionId }: Props) {
 
   return (
     <GalleryEditorProvider initialCollectionId={initialCollectionId} queryRef={query}>
-      <OnboardingDialogProvider>
+      <OnboardingDialogProvider queryRef={query}>
         <NewEditGalleryPageInner queryRef={query} />
       </OnboardingDialogProvider>
     </GalleryEditorProvider>
@@ -214,18 +215,16 @@ function OldEditGalleryPage({ galleryId }: OldEditGalleryPageProps) {
   }, [push, query.viewer?.user?.username]);
 
   return (
-    <OnboardingDialogProvider>
-      <FullPageStep navbar={<GalleryEditNavbar onDone={handleDone} />}>
-        <Wrapper>
-          <OrganizeGallery
-            onAddCollection={handleAddCollection}
-            onEditCollection={handleEditCollection}
-            queryRef={query}
-            galleryId={galleryId}
-          />
-        </Wrapper>
-      </FullPageStep>
-    </OnboardingDialogProvider>
+    <FullPageStep navbar={<GalleryEditNavbar onDone={handleDone} />}>
+      <Wrapper>
+        <OrganizeGallery
+          onAddCollection={handleAddCollection}
+          onEditCollection={handleEditCollection}
+          queryRef={query}
+          galleryId={galleryId}
+        />
+      </Wrapper>
+    </FullPageStep>
   );
 }
 

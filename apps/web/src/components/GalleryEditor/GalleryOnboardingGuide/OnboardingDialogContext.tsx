@@ -1,7 +1,9 @@
 import { createContext, useCallback, useContext, useMemo, useState } from 'react';
+import { graphql, useFragment } from 'react-relay';
 
-import { ONBOARDING_EDITOR_STORAGE_KEY } from '~/constants/storageKeys';
-import usePersistedState from '~/hooks/usePersistedState';
+import { OnboardingDialogContextFragment$key } from '~/generated/OnboardingDialogContextFragment.graphql';
+
+import useUpdateUserExperience from './useUpdateUserExperience';
 
 type OnboardingDialogContextType = {
   step: number;
@@ -24,51 +26,79 @@ export const OnboardingDialogContext = createContext<OnboardingDialogContextType
 
 type OnboardingDialogProviderProps = {
   children: React.ReactNode;
+  queryRef: OnboardingDialogContextFragment$key;
 };
 
-export function OnboardingDialogProvider({ children }: OnboardingDialogProviderProps) {
-  const [step, setStep] = useState(1);
-  const [showTooltip, setShowTooltip] = useState(true);
-
-  const [showOnboardingTooltips, setShowOnboardingTooltips] = usePersistedState(
-    ONBOARDING_EDITOR_STORAGE_KEY,
-    true
+export function OnboardingDialogProvider({ children, queryRef }: OnboardingDialogProviderProps) {
+  const query = useFragment(
+    graphql`
+      fragment OnboardingDialogContextFragment on Query {
+        viewer {
+          ... on Viewer {
+            __typename
+            userExperiences @required(action: THROW) {
+              type
+              experienced
+            }
+          }
+        }
+      }
+    `,
+    queryRef
   );
+
+  const isUserExperiencedTooltips = useMemo(() => {
+    if (query.viewer?.__typename !== 'Viewer') return true;
+
+    return (
+      (query.viewer?.userExperiences.find(
+        (userExperience) => userExperience.type === 'MultiGalleryAnnouncement'
+      )?.experienced as boolean) || false
+    );
+  }, [query.viewer]);
+
+  const [step, setStep] = useState(1);
+
+  const updateUserExperience = useUpdateUserExperience();
 
   const dialogMessage = useMemo(
     () => OnboardingDialogMessage[step as keyof typeof OnboardingDialogMessage],
     [step]
   );
 
+  const dismissUserExperience = useCallback(async () => {
+    await updateUserExperience({
+      type: 'MultiGalleryAnnouncement',
+      experienced: true,
+    });
+  }, [updateUserExperience]);
+
   const nextStep = useCallback(() => {
     if (step === 5) {
-      setShowOnboardingTooltips(false);
-      setShowTooltip(false);
+      dismissUserExperience();
       return;
     }
 
     setStep(step + 1);
-  }, [setShowOnboardingTooltips, step]);
+  }, [dismissUserExperience, step]);
 
   const currentStep = useMemo(() => {
-    if (!showTooltip || !showOnboardingTooltips) return 0;
+    if (isUserExperiencedTooltips) return 0;
     return step;
-  }, [showOnboardingTooltips, showTooltip, step]);
+  }, [isUserExperiencedTooltips, step]);
 
   const handleClose = useCallback(() => {
-    setShowTooltip(false);
-    setShowOnboardingTooltips(false);
-  }, [setShowOnboardingTooltips]);
+    dismissUserExperience();
+  }, [dismissUserExperience]);
 
   const value = useMemo(() => {
     return {
       step: currentStep,
       dialogMessage,
-      showTooltip,
       nextStep,
       handleClose,
     };
-  }, [currentStep, dialogMessage, handleClose, nextStep, showTooltip]);
+  }, [currentStep, dialogMessage, handleClose, nextStep]);
 
   return (
     <OnboardingDialogContext.Provider value={value}>{children}</OnboardingDialogContext.Provider>

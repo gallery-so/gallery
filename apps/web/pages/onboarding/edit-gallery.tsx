@@ -94,6 +94,7 @@ export default function EditGallery({ galleryId }: Props) {
         ...GalleryEditorFragment
         ...GalleryEditorContextFragment
         ...editGalleryOnboardingInnerFragment
+        ...OnboardingDialogContextFragment
       }
     `,
     { galleryId }
@@ -101,7 +102,7 @@ export default function EditGallery({ galleryId }: Props) {
 
   return (
     <GalleryEditorProvider queryRef={query}>
-      <OnboardingDialogProvider>
+      <OnboardingDialogProvider queryRef={query}>
         <EditGalleryInner queryRef={query} />
       </OnboardingDialogProvider>
     </GalleryEditorProvider>
