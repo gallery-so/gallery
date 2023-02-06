@@ -86,7 +86,7 @@ function CollectionGalleryPage({ username, queryRef }: CollectionGalleryPageProp
     if (isModalOpenRef.current) return;
     if (userOwnsCollection) {
       void push({
-        pathname: '/gallery/[galleryId]/collection/[collectionId]/edit',
+        pathname: '/gallery/[galleryId]/edit',
         query: { galleryId, collectionId },
       });
     } else {

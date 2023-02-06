@@ -176,7 +176,7 @@ function CollectionGalleryHeader({
                   {!shouldDisplayMobileLayoutToggle && (
                     <DropdownLink
                       href={{
-                        pathname: '/gallery/[galleryId]/collection/[collectionId]/edit',
+                        pathname: '/gallery/[galleryId]/edit',
                         query: { galleryId, collectionId },
                       }}
                       onClick={() => {
