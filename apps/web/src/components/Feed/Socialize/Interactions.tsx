@@ -74,8 +74,6 @@ export function Interactions({ eventRef, queryRef, onPotentialLayoutShift }: Pro
       }
     }
 
-    comments.reverse();
-
     return comments;
   }, [event.comments?.edges]);
 
@@ -140,7 +138,7 @@ export function Interactions({ eventRef, queryRef, onPotentialLayoutShift }: Pro
    * the total number of comments / admires that links to the NotesModal
    */
   if (totalComments > 0) {
-    const lastTwoComments = nonNullComments.slice(0, 2);
+    const lastTwoComments = nonNullComments.slice(-2);
 
     if (lastTwoComments.length > 0) {
       // 2 comments and "+ x others" below
