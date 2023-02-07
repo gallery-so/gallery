@@ -50,8 +50,15 @@ function NewEditGalleryPageInner({ queryRef }: NewEditGalleryPageInnerProps) {
 
   const canGoBack = useCanGoBack();
   const { replace, back } = useRouter();
-  const { saveGallery, hasSaved, canSave, hasUnsavedChanges, editGalleryNameAndDescription, name } =
-    useGalleryEditorContext();
+  const {
+    saveGallery,
+    hasSaved,
+    canSave,
+    hasUnsavedChanges,
+    editGalleryNameAndDescription,
+    name,
+    publishGallery,
+  } = useGalleryEditorContext();
 
   useConfirmationMessageBeforeClose(hasUnsavedChanges);
 
@@ -70,16 +77,20 @@ function NewEditGalleryPageInner({ queryRef }: NewEditGalleryPageInnerProps) {
 
   const handleBack = useGuardEditorUnsavedChanges(goBack, hasUnsavedChanges);
 
-  const handleDone = useCallback(
-    async (caption: string) => {
-      await saveGallery(caption);
-    },
-    [saveGallery]
-  );
+  const handleSave = useCallback(async () => {
+    await saveGallery();
+  }, [saveGallery]);
 
   const handleEdit = useCallback(() => {
     editGalleryNameAndDescription();
   }, [editGalleryNameAndDescription]);
+
+  const handleDone = useCallback(
+    async (caption: string) => {
+      await publishGallery(caption);
+    },
+    [publishGallery]
+  );
 
   const username = query.viewer?.__typename === 'Viewer' ? query.viewer.user?.username : null;
 
@@ -99,6 +110,7 @@ function NewEditGalleryPageInner({ queryRef }: NewEditGalleryPageInnerProps) {
           username={username}
           hasUnsavedChanges={hasUnsavedChanges}
           onBack={handleBack}
+          onSave={handleSave}
           onDone={handleDone}
         />
       }

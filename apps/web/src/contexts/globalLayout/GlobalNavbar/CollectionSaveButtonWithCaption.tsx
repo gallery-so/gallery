@@ -76,7 +76,7 @@ export function CollectionSaveButtonWithCaption({
     <StyledConfirmationContainer>
       <StyledButton
         onClick={isPopupDisplayed ? handleCloseCaption : handleOpenCaption}
-        disabled={disabled || !hasUnsavedChange}
+        disabled={disabled}
         pending={isLoading}
       >
         <HStack gap={4} align="center">
@@ -95,7 +95,7 @@ export function CollectionSaveButtonWithCaption({
             onChange={handleCaptionChange}
             hasPadding
             defaultValue={caption}
-            placeholder="Add an optional note..."
+            placeholder="(Optional) Write something about your latest update to your followers"
             textAreaHeight="80px"
           />
 

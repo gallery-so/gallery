@@ -471,8 +471,9 @@ export function GalleryEditorProvider({
   ]);
 
   const publishGallery = useCallback(
-    async (caption: string) => {
+    async (_caption: string | null) => {
       const galleryId = query.galleryById.dbid;
+      const caption = _caption?.trim() ? _caption : null;
 
       if (!galleryId) {
         reportError('Tried to publish a gallery without a gallery id');

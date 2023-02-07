@@ -30,6 +30,7 @@ type Props = {
   onEdit: () => void;
 
   onBack: () => void;
+  onSave: () => Promise<void>;
   onDone: (caption: string) => Promise<void>;
 };
 
@@ -42,6 +43,7 @@ type DoneAction =
 export function EditGalleryNavbar({
   canSave,
   onDone,
+  onSave,
   onBack,
   onEdit,
   hasSaved,
@@ -96,7 +98,11 @@ export function EditGalleryNavbar({
             Saved
           </SavedText>
 
-          <DoneButton onClick={onBack}>Done</DoneButton>
+          <CollectionSaveButtonWithCaption
+            // hasUnsavedChange={hasUnsavedChanges}
+            onSave={onDone}
+            label="Done"
+          />
         </>
       );
     } else if (
@@ -106,16 +112,11 @@ export function EditGalleryNavbar({
       return (
         <>
           <BaseM color={colors.metal}>Unsaved changes</BaseM>
-
-          <CollectionSaveButtonWithCaption
-            hasUnsavedChange={hasUnsavedChanges}
-            disabled={doneAction === 'has-unsaved-changes-with-validation-errors'}
-            onSave={onDone}
-          />
+          <DoneButton onClick={onSave}>Save</DoneButton>
         </>
       );
     }
-  }, [doneAction, hasUnsavedChanges, onBack, onDone, showSaved]);
+  }, [doneAction, hasUnsavedChanges, onBack, onSave, showSaved]);
 
   return (
     <Wrapper>
