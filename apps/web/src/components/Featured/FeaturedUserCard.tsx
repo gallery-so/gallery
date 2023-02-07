@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { FeaturedUserCardFollowFragment$key } from '~/generated/FeaturedUserCardFollowFragment.graphql';
 import { FeaturedUserCardFragment$key } from '~/generated/FeaturedUserCardFragment.graphql';
 import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
+import { removeNullValues } from '~/utils/removeNullValues';
 import { pluralize } from '~/utils/string';
 
 import Badge from '../Badge/Badge';
@@ -67,7 +68,9 @@ export default function FeaturedUserCard({ userRef, queryRef }: Props) {
   }, [user.galleries]);
 
   const tokenPreviews = useMemo(() => {
-    const gallery = userGalleries.find((gallery) => !gallery?.hidden);
+    const gallery = userGalleries.find(
+      (gallery) => !gallery?.hidden && removeNullValues(gallery?.tokenPreviews).length > 0
+    );
 
     return gallery?.tokenPreviews?.slice(0, 2) ?? [];
   }, [userGalleries]);
