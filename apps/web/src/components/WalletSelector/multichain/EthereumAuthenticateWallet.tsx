@@ -31,7 +31,7 @@ export const EthereumAuthenticateWallet = ({ reset }: Props) => {
   const { handleLogin } = useAuthActions();
 
   const createNonce = useCreateNonce();
-  const loginOrRedirectToOnboarding = useLoginOrRedirectToOnboarding();
+  const [loginOrRedirectToOnboarding] = useLoginOrRedirectToOnboarding();
 
   const trackSignInAttempt = useTrackSignInAttempt();
   const trackSignInSuccess = useTrackSignInSuccess();
@@ -71,7 +71,7 @@ export const EthereumAuthenticateWallet = ({ reset }: Props) => {
 
       if (userExists && userId) {
         trackSignInSuccess('Ethereum');
-        return await handleLogin(userId, address);
+        return await handleLogin(userId);
       }
     },
     [trackSignInAttempt, createNonce, loginOrRedirectToOnboarding, trackSignInSuccess, handleLogin]

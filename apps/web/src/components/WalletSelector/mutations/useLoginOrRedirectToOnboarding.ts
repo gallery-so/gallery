@@ -9,7 +9,7 @@ import {
 import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 
 export default function useLoginOrRedirectToOnboarding() {
-  const [login] = usePromisifiedMutation<useLoginOrRedirectToOnboardingMutation>(
+  const [login, isMutating] = usePromisifiedMutation<useLoginOrRedirectToOnboardingMutation>(
     graphql`
       mutation useLoginOrRedirectToOnboardingMutation($mechanism: AuthMechanism!) {
         login(authMechanism: $mechanism) {
@@ -40,7 +40,7 @@ export default function useLoginOrRedirectToOnboarding() {
 
   const { push } = useRouter();
 
-  return useCallback(
+  const mutate = useCallback(
     async ({
       authMechanism,
       userExists,
@@ -99,4 +99,6 @@ export default function useLoginOrRedirectToOnboarding() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [login]
   );
+
+  return [mutate, isMutating] as const;
 }

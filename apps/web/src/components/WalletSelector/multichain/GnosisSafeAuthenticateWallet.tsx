@@ -46,7 +46,7 @@ export const GnosisSafeAuthenticateWallet = ({ reset }: Props) => {
   const [nonce, setNonce] = useState('');
   const [userExists, setUserExists] = useState(false);
 
-  const loginOrRedirectToOnboarding = useLoginOrRedirectToOnboarding();
+  const [loginOrRedirectToOnboarding] = useLoginOrRedirectToOnboarding();
   const trackSignInAttempt = useTrackSignInAttempt();
   const trackSignInSuccess = useTrackSignInSuccess();
   const trackSignInError = useTrackSignInError();
@@ -70,7 +70,7 @@ export const GnosisSafeAuthenticateWallet = ({ reset }: Props) => {
 
       trackSignInSuccess('Gnosis Safe');
       if (userId) {
-        handleLogin(userId, address);
+        handleLogin(userId);
       }
     },
     [

@@ -20,7 +20,6 @@ type Props = {
   walletId: string;
   address: string;
   chain: string;
-  userSigninAddress: string;
   setErrorMessage: (message: string) => void;
   setRemovedAddress: (address: string) => void;
   isOnlyWalletConnected: boolean;

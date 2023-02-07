@@ -5,11 +5,9 @@ import styled from 'styled-components';
 import { Button } from '~/components/core/Button/Button';
 import { VStack } from '~/components/core/Spacer/Stack';
 import ErrorText from '~/components/core/Text/ErrorText';
-import { USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY } from '~/constants/storageKeys';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { ManageWalletsFragment$key } from '~/generated/ManageWalletsFragment.graphql';
 import useAddWalletModal from '~/hooks/useAddWalletModal';
-import usePersistedState from '~/hooks/usePersistedState';
 import SettingsRowDescription from '~/scenes/Modals/SettingsModal/SettingsRowDescription';
 import { removeNullValues } from '~/utils/removeNullValues';
 import { graphqlTruncateAddress, truncateAddress } from '~/utils/wallet';
@@ -85,7 +83,6 @@ function ManageWallets({
     () => nonPrimaryWallets.length >= MAX_ALLOWED_ADDRESSES,
     [nonPrimaryWallets]
   );
-  const [userSigninAddress] = usePersistedState(USER_SIGNIN_ADDRESS_LOCAL_STORAGE_KEY, '');
 
   useEffect(() => {
     if (removedAddress) {
@@ -132,7 +129,6 @@ function ManageWallets({
               address={wallet.chainAddress.address}
               chain={wallet.chainAddress.chain}
               setErrorMessage={setErrorMessage}
-              userSigninAddress={userSigninAddress}
               setRemovedAddress={setRemovedAddress}
               isOnlyWalletConnected={nonPrimaryWallets.length === 1}
               chainAddressRef={wallet.chainAddress}

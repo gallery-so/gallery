@@ -13,14 +13,16 @@ type Props = {
 export function EmptyState({ title, description, children }: Props) {
   return (
     <VStack align="center" gap={12}>
-      <VStack align="center">
-        <StyledTitle>{title}</StyledTitle>
-        {description && (
-          <StyledBody>
-            <Markdown text={description} />
-          </StyledBody>
-        )}
-      </VStack>
+      {title || description ? (
+        <VStack align="center">
+          <StyledTitle>{title}</StyledTitle>
+          {description && (
+            <StyledBody>
+              <Markdown text={description} />
+            </StyledBody>
+          )}
+        </VStack>
+      ) : null}
       {children}
     </VStack>
   );

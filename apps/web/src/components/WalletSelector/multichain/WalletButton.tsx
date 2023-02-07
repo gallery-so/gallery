@@ -12,7 +12,8 @@ export const walletIconMap = {
   gnosis_safe: '/icons/gnosis_safe.svg',
   ethereum: '/icons/ethereum_logo.svg',
   tezos: '/icons/tezos_logo.svg',
-  delegate_cash: 'icons/delegate_cash_logo.svg',
+  delegate_cash: '/icons/delegate_cash_logo.svg',
+  magic_link: '/icons/magiclink.svg',
 };
 
 type WalletButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
