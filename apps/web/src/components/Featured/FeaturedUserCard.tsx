@@ -36,7 +36,7 @@ export default function FeaturedUserCard({ userRef, queryRef }: Props) {
             id
           }
           tokenPreviews {
-            small
+            large
           }
           hidden
         }
@@ -102,7 +102,7 @@ export default function FeaturedUserCard({ userRef, queryRef }: Props) {
       <StyledContent gap={12} justify="space-between">
         <TokenPreviewContainer>
           {tokenPreviews.map(
-            (url) => url?.small && <TokenPreview src={url.small} key={url.small} />
+            (url) => url?.large && <TokenPreview src={url.large} key={url.large} />
           )}
         </TokenPreviewContainer>
         <UserDetailsContainer>
