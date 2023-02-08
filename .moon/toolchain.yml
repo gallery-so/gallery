@@ -8,6 +8,8 @@ $schema: 'https://moonrepo.dev/schemas/toolchain.json'
 # instead of relying on a version found on the host machine. This ensures deterministic
 # and reproducible builds across any machine.
 node:
+  version: '16.19.0'
+
   # The package manager to use when managing dependencies.
   # Accepts "npm" (default), "pnpm", or "yarn".
   packageManager: 'yarn'
