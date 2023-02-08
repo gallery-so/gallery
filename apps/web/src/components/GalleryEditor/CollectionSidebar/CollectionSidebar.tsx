@@ -15,7 +15,7 @@ import { CollectionSidebarQueryFragment$key } from '~/generated/CollectionSideba
 import { QuestionMarkIcon } from '~/icons/QuestionMarkIcon';
 
 const NOTION_DOCS_URL =
-  'https://www.notion.so/gallery-so/Creating-a-new-gallery-and-organizing-your-NFTs-b407a174a2ee44748bb9952abd803290';
+  'https://gallery-so.notion.site/Creating-a-new-gallery-and-organizing-your-NFTs-b407a174a2ee44748bb9952abd803290';
 
 function TitleSection() {
   const { createCollection } = useGalleryEditorContext();
