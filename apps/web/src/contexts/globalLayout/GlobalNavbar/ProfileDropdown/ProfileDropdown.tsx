@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { ReactNode, useCallback, useEffect, useMemo } from 'react';
+import { ReactNode, useCallback, useEffect, useMemo, useRef } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
@@ -11,6 +11,7 @@ import { GLogo } from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GLogo'
 import { NavDownArrow } from '~/contexts/globalLayout/GlobalNavbar/ProfileDropdown/NavDownArrow';
 import { ProfileDropdownContent } from '~/contexts/globalLayout/GlobalNavbar/ProfileDropdown/ProfileDropdownContent';
 import { ProfileDropdownFragment$key } from '~/generated/ProfileDropdownFragment.graphql';
+import isTouchscreenDevice from '~/utils/isTouchscreenDevice';
 
 import { NotificationsCircle } from '../NotificationCircle';
 import NavUpArrow from './NavUpArrow';
@@ -46,14 +47,26 @@ export function ProfileDropdown({ queryRef, rightContent }: ProfileDropdownProps
     queryRef
   );
 
+  const isTouchscreen = useRef(isTouchscreenDevice());
+
   const { push, pathname, query: urlQuery } = useRouter();
 
-  const { handleDropdownMouseEnter, handleDropdownMouseLeave, closeDropdown, shouldShowDropdown } =
-    useDropdownHoverControls();
+  const {
+    handleDropdownMouseEnter,
+    handleDropdownMouseLeave,
+    showDropdown,
+    closeDropdown,
+    shouldShowDropdown,
+  } = useDropdownHoverControls();
 
   const handleHomeRedirect = useCallback(() => {
-    push({ pathname: '/trending' });
-  }, [push]);
+    if (isTouchscreen.current) {
+      // users cannot hover on touchscreen devices so open the dropdown via tap
+      shouldShowDropdown ? closeDropdown() : showDropdown();
+    } else {
+      push({ pathname: '/trending' });
+    }
+  }, [closeDropdown, push, shouldShowDropdown, showDropdown]);
 
   useEffect(
     function closeDropdownWhenRouteChanges() {

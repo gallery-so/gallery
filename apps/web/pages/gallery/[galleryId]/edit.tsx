@@ -11,6 +11,10 @@ import {
   GalleryEditorProvider,
   useGalleryEditorContext,
 } from '~/components/GalleryEditor/GalleryEditorContext';
+import {
+  OnboardingDialogProvider,
+  useOnboardingDialogContext,
+} from '~/components/GalleryEditor/GalleryOnboardingGuide/OnboardingDialogContext';
 import { OrganizeGallery } from '~/components/ManageGallery/OrganizeGallery/OrganizeGallery';
 import useConfirmationMessageBeforeClose from '~/components/ManageGallery/useConfirmationMessageBeforeClose';
 import FullPageStep from '~/components/Onboarding/FullPageStep';
@@ -59,6 +63,7 @@ function NewEditGalleryPageInner({ queryRef }: NewEditGalleryPageInnerProps) {
     name,
     publishGallery,
   } = useGalleryEditorContext();
+  const { step, dialogMessage, nextStep, handleClose } = useOnboardingDialogContext();
 
   useConfirmationMessageBeforeClose(hasUnsavedChanges);
 
@@ -116,6 +121,10 @@ function NewEditGalleryPageInner({ queryRef }: NewEditGalleryPageInnerProps) {
           onSave={handleSave}
           onDone={handleDone}
           isSaving={isSaving}
+          step={step}
+          dialogMessage={dialogMessage}
+          onNextStep={nextStep}
+          dialogOnClose={handleClose}
         />
       }
     >
@@ -141,6 +150,7 @@ function NewEditGalleryPage({ galleryId, initialCollectionId }: Props) {
 
         ...GalleryEditorContextFragment
         ...editGalleryPageNewInnerFragment
+        ...OnboardingDialogContextFragment
       }
     `,
     { galleryId }
@@ -154,7 +164,9 @@ function NewEditGalleryPage({ galleryId, initialCollectionId }: Props) {
 
   return (
     <GalleryEditorProvider initialCollectionId={initialCollectionId} queryRef={query}>
-      <NewEditGalleryPageInner queryRef={query} />
+      <OnboardingDialogProvider queryRef={query}>
+        <NewEditGalleryPageInner queryRef={query} />
+      </OnboardingDialogProvider>
     </GalleryEditorProvider>
   );
 }

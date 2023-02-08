@@ -17,6 +17,8 @@ import useSyncTokens from '~/hooks/api/tokens/useSyncTokens';
 import { doesUserOwnWalletFromChain } from '~/utils/doesUserOwnWalletFromChain';
 import { removeNullValues } from '~/utils/removeNullValues';
 
+import OnboardingDialog from '../GalleryOnboardingGuide/OnboardingDialog';
+import { useOnboardingDialogContext } from '../GalleryOnboardingGuide/OnboardingDialogContext';
 import { AddWalletSidebar } from './AddWalletSidebar';
 import SearchBar from './SearchBar';
 import { SidebarView, SidebarViewSelector } from './SidebarViewSelector';
@@ -53,6 +55,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
     queryRef
   );
 
+  const { step, dialogMessage, nextStep, handleClose } = useOnboardingDialogContext();
   const { syncTokens } = useSyncTokens();
   const { addWhitespace } = useCollectionEditorContextNew();
 
@@ -110,11 +113,29 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
           <TitleS>Add pieces</TitleS>
           <SidebarViewSelector selectedView={selectedView} setSelectedView={setSelectedView} />
         </Header>
-        <SearchBar
-          tokensRef={nonNullTokens}
-          setSearchResults={setSearchResults}
-          setDebouncedSearchQuery={setDebouncedSearchQuery}
-        />
+        <StyledSearchBarContainer>
+          <SearchBar
+            tokensRef={nonNullTokens}
+            setSearchResults={setSearchResults}
+            setDebouncedSearchQuery={setDebouncedSearchQuery}
+          />
+          {step === 3 && (
+            <OnboardingDialog
+              step={step}
+              text={dialogMessage}
+              onNext={nextStep}
+              onClose={handleClose}
+              options={{
+                placement: 'left-start',
+                positionOffset: 150,
+                blinkingPosition: {
+                  top: 12,
+                  left: 110,
+                },
+              }}
+            />
+          )}
+        </StyledSearchBarContainer>
         {!isSearching && (
           <>
             <div>
@@ -131,7 +152,6 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
             )}
           </>
         )}
-
         {ownsWalletFromSelectedChain ? (
           <SidebarTokens
             isSearching={isSearching}
@@ -180,4 +200,8 @@ const StyledSidebar = styled.div<{ navbarHeight: number }>`
 
 const Header = styled(HStack)`
   padding: 0 12px 8px;
+`;
+
+const StyledSearchBarContainer = styled.div`
+  position: relative;
 `;

@@ -8,6 +8,10 @@ import {
   GalleryEditorProvider,
   useGalleryEditorContext,
 } from '~/components/GalleryEditor/GalleryEditorContext';
+import {
+  OnboardingDialogProvider,
+  useOnboardingDialogContext,
+} from '~/components/GalleryEditor/GalleryOnboardingGuide/OnboardingDialogContext';
 import useConfirmationMessageBeforeClose from '~/components/ManageGallery/useConfirmationMessageBeforeClose';
 import FullPageStep from '~/components/Onboarding/FullPageStep';
 import { OnboardingEditGalleryNavbar } from '~/contexts/globalLayout/EditGalleryNavbar/OnboardingEditGalleryNavbar';
@@ -34,6 +38,7 @@ function EditGalleryInner({ queryRef }: EditGalleryInnerProps) {
   const { replace, back, push } = useRouter();
   const { saveGallery, canSave, hasUnsavedChanges, editGalleryNameAndDescription, name } =
     useGalleryEditorContext();
+  const { step, dialogMessage, nextStep, handleClose } = useOnboardingDialogContext();
 
   useConfirmationMessageBeforeClose(hasUnsavedChanges);
 
@@ -66,6 +71,10 @@ function EditGalleryInner({ queryRef }: EditGalleryInnerProps) {
           onEdit={editGalleryNameAndDescription}
           onBack={handleBack}
           onDone={handleDone}
+          step={step}
+          dialogMessage={dialogMessage}
+          onNextStep={nextStep}
+          dialogOnClose={handleClose}
         />
       }
     >
@@ -85,6 +94,7 @@ export default function EditGallery({ galleryId }: Props) {
         ...GalleryEditorFragment
         ...GalleryEditorContextFragment
         ...editGalleryOnboardingInnerFragment
+        ...OnboardingDialogContextFragment
       }
     `,
     { galleryId }
@@ -92,7 +102,9 @@ export default function EditGallery({ galleryId }: Props) {
 
   return (
     <GalleryEditorProvider queryRef={query}>
-      <EditGalleryInner queryRef={query} />
+      <OnboardingDialogProvider queryRef={query}>
+        <EditGalleryInner queryRef={query} />
+      </OnboardingDialogProvider>
     </GalleryEditorProvider>
   );
 }

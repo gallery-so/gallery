@@ -5,18 +5,48 @@ import colors from '~/components/core/colors';
 import IconContainer from '~/components/core/IconContainer';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BODY_FONT_FAMILY, Paragraph } from '~/components/core/Text/Text';
+import OnboardingDialog from '~/components/GalleryEditor/GalleryOnboardingGuide/OnboardingDialog';
 import { EditPencilIcon } from '~/icons/EditPencilIcon';
 
 type GalleryTitleSectionProps = {
   onEdit: () => void;
   galleryName: string;
+  dialogMessage: string;
+  step: number;
+
+  dialogOnClose: () => void;
+  onNextStep: () => void;
 };
 
-export function GalleryTitleSection({ onEdit, galleryName }: GalleryTitleSectionProps) {
+export function GalleryTitleSection({
+  onEdit,
+  galleryName,
+  dialogMessage,
+  step,
+  dialogOnClose,
+  onNextStep,
+}: GalleryTitleSectionProps) {
   return (
     <GalleryTitleContainer align="center" onClick={onEdit} gap={8}>
       <MainGalleryText hasGalleryName={Boolean(galleryName)}>
         {galleryName || 'Untitled gallery'}
+
+        {step === 1 && (
+          <OnboardingDialog
+            step={1}
+            text={dialogMessage}
+            onNext={onNextStep}
+            onClose={dialogOnClose}
+            options={{
+              placement: 'bottom',
+              positionOffset: 20,
+              blinkingPosition: {
+                top: 5,
+                right: -20,
+              },
+            }}
+          />
+        )}
       </MainGalleryText>
 
       <EditIconContainer>
@@ -54,6 +84,13 @@ const MainGalleryText = styled(Paragraph)<{ hasGalleryName: boolean }>`
   white-space: nowrap;
 
   font-size: 16px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  position: relative;
 
   ${({ hasGalleryName }) =>
     !hasGalleryName &&

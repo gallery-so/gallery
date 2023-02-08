@@ -71,7 +71,7 @@ const Debugger = () => {
   const handleLogin = useCallback(async () => {
     try {
       const userId = await login({ asUsername: username });
-      await handleRegisterLogin(userId, '');
+      await handleRegisterLogin(userId);
       setErrorMessage('');
     } catch (e: unknown) {
       if (e instanceof Error) {

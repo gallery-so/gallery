@@ -77,7 +77,7 @@ export default function useAuthModal() {
     showModal({
       id: 'auth',
       content: <AuthModal queryRef={query} />,
-      headerText: 'Connect your wallet',
+      headerText: 'Sign in',
     });
   }, [query, showModal]);
 }

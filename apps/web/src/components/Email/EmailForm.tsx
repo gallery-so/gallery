@@ -2,7 +2,6 @@ import { useRouter } from 'next/router';
 import { useCallback, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import { SelectorStoreUpdater } from 'relay-runtime';
-import styled from 'styled-components';
 
 import { AdditionalContext, useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
@@ -12,7 +11,7 @@ import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 import { EMAIL_FORMAT } from '~/utils/regex';
 
 import { Button } from '../core/Button/Button';
-import colors from '../core/colors';
+import { SlimInput } from '../core/Input/Input';
 import { HStack, VStack } from '../core/Spacer/Stack';
 
 type Props = {
@@ -157,7 +156,7 @@ function EmailForm({ setIsEditMode, queryRef, onClose }: Props) {
   return (
     <form onSubmit={handleFormSubmit}>
       <VStack gap={8}>
-        <StyledInput
+        <SlimInput
           onChange={handleEmailChange}
           placeholder="Email address"
           defaultValue={savedEmail || ''}
@@ -182,13 +181,5 @@ function EmailForm({ setIsEditMode, queryRef, onClose }: Props) {
     </form>
   );
 }
-
-const StyledInput = styled.input`
-  border: 0;
-  background-color: ${colors.faint};
-  padding: 6px 12px;
-  width: 100%;
-  height: 32px;
-`;
 
 export default EmailForm;

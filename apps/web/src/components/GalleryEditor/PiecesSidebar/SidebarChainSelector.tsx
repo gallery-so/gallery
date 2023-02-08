@@ -8,6 +8,9 @@ import { Chain, chains } from '~/components/GalleryEditor/PiecesSidebar/chains';
 import { SidebarChainButton } from '~/components/GalleryEditor/PiecesSidebar/SidebarChainButton';
 import { SidebarChainSelectorNewFragment$key } from '~/generated/SidebarChainSelectorNewFragment.graphql';
 
+import Blinking from '../GalleryOnboardingGuide/Blinking';
+import { useOnboardingDialogContext } from '../GalleryOnboardingGuide/OnboardingDialogContext';
+
 type SidebarChainsProps = {
   selected: Chain;
   onChange: (chain: Chain) => void;
@@ -24,6 +27,8 @@ export function SidebarChainSelector({ selected, onChange, queryRef }: SidebarCh
     queryRef
   );
 
+  const { step } = useOnboardingDialogContext();
+
   const selectedChain = chains.find((chain) => chain.name === selected);
 
   const handleChainClick = useCallback(
@@ -39,7 +44,7 @@ export function SidebarChainSelector({ selected, onChange, queryRef }: SidebarCh
 
   return (
     <Container>
-      <HStack gap={4}>
+      <StyledSidebarChainButtonContainer gap={4}>
         <LayoutGroup>
           {chains.map((chain) => {
             const isSelected = chain.name === selected;
@@ -54,8 +59,13 @@ export function SidebarChainSelector({ selected, onChange, queryRef }: SidebarCh
               />
             );
           })}
+          {step === 3 && (
+            <StyledBlinkingContainer>
+              <Blinking />
+            </StyledBlinkingContainer>
+          )}
         </LayoutGroup>
-      </HStack>
+      </StyledSidebarChainButtonContainer>
     </Container>
   );
 }
@@ -65,4 +75,12 @@ const Container = styled.div`
   justify-content: space-between;
 
   padding: 8px 12px;
+`;
+const StyledSidebarChainButtonContainer = styled(HStack)`
+  position: relative;
+`;
+const StyledBlinkingContainer = styled.div`
+  position: absolute;
+  right: 0;
+  top: 10px;
 `;

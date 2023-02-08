@@ -2,6 +2,7 @@ import { ButtonHTMLAttributes } from 'react';
 import styled from 'styled-components';
 
 import colors from '~/components/core/colors';
+import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import transitions from '~/components/core/transitions';
 
@@ -12,12 +13,12 @@ export const walletIconMap = {
   gnosis_safe: '/icons/gnosis_safe.svg',
   ethereum: '/icons/ethereum_logo.svg',
   tezos: '/icons/tezos_logo.svg',
-  delegate_cash: 'icons/delegate_cash_logo.svg',
+  delegate_cash: '/icons/delegate_cash_logo.svg',
 };
 
 type WalletButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   label: string;
-  icon: keyof typeof walletIconMap;
+  icon?: keyof typeof walletIconMap;
   disabled?: boolean;
 };
 
@@ -28,11 +29,13 @@ export const WalletButton = ({
   ...buttonProps
 }: WalletButtonProps) => (
   <StyledButton data-testid="wallet-button" disabled={disabled} {...buttonProps}>
-    <BaseM>{label}</BaseM>
-    <StyledButtonIcon>
-      {disabled && <StyledComingSoonText>COMING SOON</StyledComingSoonText>}
-      <Icon src={walletIconMap[icon]} />
-    </StyledButtonIcon>
+    <StyledContent align="center" justify="space-between">
+      <BaseM>{label}</BaseM>
+      <StyledButtonIcon>
+        {disabled && <StyledComingSoonText>COMING SOON</StyledComingSoonText>}
+        {icon && <Icon src={walletIconMap[icon]} />}
+      </StyledButtonIcon>
+    </StyledContent>
   </StyledButton>
 );
 
@@ -43,6 +46,11 @@ const Icon = styled.img`
 
   transform: scale(1);
   transition: transform ${transitions.cubic};
+`;
+
+const StyledContent = styled(HStack)`
+  height: 34px;
+  width: 100%;
 `;
 
 const StyledButton = styled.button<{

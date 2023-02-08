@@ -64,6 +64,8 @@ export function NotesModal({ eventRef, fullscreen }: NotesModalProps) {
       }
     }
 
+    interactions.reverse();
+
     if (hasPrevious) {
       interactions.unshift({ kind: 'see-more' });
     }

@@ -22,6 +22,12 @@ type Props = {
   hasUnsavedChanges: boolean;
   galleryName: string;
 
+  dialogMessage: string;
+  step: number;
+
+  onNextStep: () => void;
+  dialogOnClose: () => void;
+
   onEdit: () => void;
 
   onBack: () => void;
@@ -30,10 +36,17 @@ type Props = {
 
 export function OnboardingEditGalleryNavbar({
   canSave,
+
   onDone,
   onBack,
   onEdit,
   hasUnsavedChanges,
+
+  dialogMessage,
+  step,
+  onNextStep,
+  dialogOnClose,
+
   galleryName,
 }: Props) {
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
@@ -47,14 +60,30 @@ export function OnboardingEditGalleryNavbar({
       <StandardNavbarContainer>
         <NavbarLeftContent>
           {isMobile ? (
-            <GalleryTitleSection galleryName={galleryName} onEdit={onEdit} />
+            <GalleryTitleSection
+              galleryName={galleryName}
+              onEdit={onEdit}
+              step={step}
+              dialogMessage={dialogMessage}
+              onNextStep={onNextStep}
+              dialogOnClose={dialogOnClose}
+            />
           ) : (
             <BackButton onClick={onBack} />
           )}
         </NavbarLeftContent>
 
         <NavbarCenterContent>
-          {!isMobile && <GalleryTitleSection galleryName={galleryName} onEdit={onEdit} />}
+          {!isMobile && (
+            <GalleryTitleSection
+              galleryName={galleryName}
+              onEdit={onEdit}
+              step={step}
+              dialogMessage={dialogMessage}
+              onNextStep={onNextStep}
+              dialogOnClose={dialogOnClose}
+            />
+          )}
         </NavbarCenterContent>
 
         <NavbarRightContent>
