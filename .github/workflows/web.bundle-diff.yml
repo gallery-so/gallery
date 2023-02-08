@@ -22,7 +22,7 @@ jobs:
         uses: transferwise/actions-next-bundle-analyzer@master
         with:
           # Filename of the workflow this step is defined in
-          workflow-id: bundle-diff.yml
+          workflow-id: web.bundle-diff.yml
           base-branch: main
           working-directory: apps/web
         env:
