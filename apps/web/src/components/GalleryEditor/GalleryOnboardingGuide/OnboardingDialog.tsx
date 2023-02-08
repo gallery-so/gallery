@@ -129,7 +129,7 @@ export default function OnboardingDialog({ step, text, onNext, onClose, options 
             </StyledTextWrapper>
             <HStack justify="space-between" align="center">
               <TitleDiatypeM>Tip {step} of 5</TitleDiatypeM>
-              <Button onClick={handleNext}>Next</Button>
+              <StyledButton onClick={handleNext}>{step === 5 ? 'Finish' : 'Next'} </StyledButton>
             </HStack>
           </StyledConfirmation>
         </FloatingPortal>
@@ -151,7 +151,6 @@ const StyledBlinkingContainer = styled.div<{
 const StyledConfirmation = styled(motion.div)`
   width: 311px;
   max-width: 100%;
-  padding-top: 16px;
   z-index: 12;
 
   background-color: ${colors.white};
@@ -161,5 +160,9 @@ const StyledConfirmation = styled(motion.div)`
 `;
 
 const StyledTextWrapper = styled.div`
-  padding: 16px 0;
+  padding: 16px 0 28px;
+`;
+
+const StyledButton = styled(Button)`
+  width: 64px;
 `;
