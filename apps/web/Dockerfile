@@ -7,7 +7,7 @@ WORKDIR /app
 COPY package.json ./
 COPY yarn.lock ./
 
-RUN yarn --frozen-lockfile --prefer-offline --no-audit
+RUN yarn --prefer-offline --no-audit
 
 FROM base as test
 
