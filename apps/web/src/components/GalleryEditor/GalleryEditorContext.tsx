@@ -438,9 +438,6 @@ export function GalleryEditorProvider({
 
       // Flash a "Saved" message next to the "Done" button
       setHasSaved(true);
-
-      // reset the edit session id
-      // setEditSessionID(uuid());
     } catch (error) {
       pushToast({
         autoClose: false,
