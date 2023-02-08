@@ -26,6 +26,6 @@ export const supportedAuthMethods: Readonly<
     name: 'Delegate Cash',
   },
   magicLink: {
-    name: 'Sign In With Email',
+    name: 'Email',
   },
 };

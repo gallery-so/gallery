@@ -191,7 +191,6 @@ export default function MultichainWalletSelector({
               onClick={() => {
                 setSelectedAuthMethod(supportedAuthMethods.magicLink);
               }}
-              icon="magic_link"
             ></WalletButton>
           ) : null}
         </VStack>
