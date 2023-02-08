@@ -15,9 +15,9 @@ type OnboardingDialogContextType = {
 const OnboardingDialogMessage = {
   1: 'You can modify your gallery name and description here.',
   2: 'You can display multiple collections in a gallery. Name your first collection title here, and add a description.',
-  3: 'Search or filter through various chains and wallets to find the pieces you want to curate',
+  3: 'Search or filter through various chains and wallets to find the pieces you want to curate.',
   4: 'Click a piece to add to your collection.',
-  5: 'You can add multiple sections to adjust the number of columns and display your pieces in creative ways',
+  5: 'You can add multiple sections to adjust the number of columns and showcase your pieces in creative ways.',
 };
 
 export const OnboardingDialogContext = createContext<OnboardingDialogContextType | undefined>(
