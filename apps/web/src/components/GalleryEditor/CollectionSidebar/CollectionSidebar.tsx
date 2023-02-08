@@ -98,7 +98,7 @@ const TitleSectionWrapper = styled(HStack)`
 
 const StyledIconContainer = styled(IconContainer)`
   background-color: ${colors.offBlack};
-  position: absolute;
+  position: fixed;
   bottom: 16px;
   left: 16px;
   cursor: pointer;
