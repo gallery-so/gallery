@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import { Button } from '~/components/core/Button/Button';
-import colors from '~/components/core/colors';
+import { SlimInput } from '~/components/core/Input/Input';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { Spinner } from '~/components/core/Spinner/Spinner';
 import ErrorText from '~/components/core/Text/ErrorText';
@@ -116,7 +116,7 @@ export default function MagicLinkLogin({ reset }: Props) {
         </VStack>
         <form>
           <VStack gap={8}>
-            <StyledInput
+            <SlimInput
               onChange={handleInputChange}
               placeholder="Email"
               autoFocus
@@ -144,14 +144,6 @@ export default function MagicLinkLogin({ reset }: Props) {
 
 const StyledText = styled(BaseM)`
   text-align: left;
-`;
-
-const StyledInput = styled.input`
-  border: 0;
-  background-color: ${colors.faint};
-  padding: 6px 12px;
-  width: 100%;
-  height: 32px;
 `;
 
 const StyledErrorText = styled(ErrorText)`
