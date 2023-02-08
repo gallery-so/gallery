@@ -18,6 +18,7 @@ import {
   createEmptyCollection,
   getInitialCollectionsFromServer,
 } from '~/components/GalleryEditor/getInitialCollectionsFromServer';
+import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
@@ -163,6 +164,8 @@ export function GalleryEditorProvider({
       }
     }
   `);
+
+  const track = useTrack();
 
   const [editSessionID, setEditSessionID] = useState(uuid());
   const [hasSaved, setHasSaved] = useState(false);
@@ -386,24 +389,28 @@ export function GalleryEditorProvider({
 
     const order = [...Object.values(collections).map((collection) => collection.dbid)];
 
+    const payload = {
+      galleryId,
+
+      name,
+      description,
+      caption: null,
+
+      order,
+
+      createdCollections,
+      updatedCollections,
+      deletedCollections,
+
+      editID: editSessionID,
+    };
+
+    track('Save Gallery', payload);
+
     try {
       const { updateGallery } = await save({
         variables: {
-          input: {
-            galleryId,
-
-            name,
-            description,
-            caption: null,
-
-            order,
-
-            createdCollections,
-            updatedCollections,
-            deletedCollections,
-
-            editID: editSessionID,
-          },
+          input: payload,
         },
       });
 
@@ -465,6 +472,7 @@ export function GalleryEditorProvider({
     query.galleryById.dbid,
     reportError,
     save,
+    track,
   ]);
 
   const publishGallery = useCallback(
@@ -477,14 +485,18 @@ export function GalleryEditorProvider({
         return;
       }
 
+      const payload = {
+        galleryId,
+        caption,
+        editID: editSessionID,
+      };
+
+      track('Publish Gallery', payload);
+
       try {
         const { publishGallery } = await publish({
           variables: {
-            input: {
-              galleryId,
-              caption,
-              editID: editSessionID,
-            },
+            input: payload,
           },
         });
 
@@ -516,7 +528,7 @@ export function GalleryEditorProvider({
         }
       }
     },
-    [editSessionID, publish, pushToast, query.galleryById.dbid, reportError]
+    [editSessionID, publish, pushToast, query.galleryById.dbid, reportError, track]
   );
 
   const [initialName, setInitialName] = useState(name);
