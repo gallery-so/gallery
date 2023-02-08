@@ -87,7 +87,7 @@ const CollectionSidebarWrapper = styled(VStack)`
   max-height: 100%;
   height: 100%;
 
-  padding-top: 16px;
+  padding: 16px 0 48px;
 
   border-right: 1px solid ${colors.porcelain};
 `;
