@@ -50,10 +50,10 @@ export function OnboardingDialogProvider({ children, queryRef }: OnboardingDialo
   const isUserExperiencedTooltips = useMemo(() => {
     if (query.viewer?.__typename !== 'Viewer') return true;
 
-    return (
-      (query.viewer?.userExperiences.find(
+    return Boolean(
+      query.viewer?.userExperiences.find(
         (userExperience) => userExperience.type === 'MultiGalleryAnnouncement'
-      )?.experienced as boolean) || false
+      )?.experienced
     );
   }, [query.viewer]);
 
