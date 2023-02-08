@@ -11,7 +11,8 @@
   "devDependencies": {
     "@babel/core": "^7.12.9",
     "@types/react-native": "^0.71.1",
-    "babel-plugin-tsconfig-paths-module-resolver": "^1.0.4"
+    "babel-plugin-tsconfig-paths-module-resolver": "^1.0.4",
+    "eas-cli": "^3.5.2"
   },
   "private": true
 }
