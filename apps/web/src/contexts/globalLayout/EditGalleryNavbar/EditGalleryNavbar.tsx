@@ -115,11 +115,7 @@ export function EditGalleryNavbar({
             Saved
           </SavedText>
 
-          <CollectionSaveButtonWithCaption
-            // hasUnsavedChange={hasUnsavedChanges}
-            onSave={onDone}
-            label="Done"
-          />
+          <CollectionSaveButtonWithCaption onSave={onDone} label="Done" />
         </>
       );
     } else if (
