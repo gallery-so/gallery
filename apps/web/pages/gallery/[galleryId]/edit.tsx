@@ -11,6 +11,10 @@ import {
   GalleryEditorProvider,
   useGalleryEditorContext,
 } from '~/components/GalleryEditor/GalleryEditorContext';
+import {
+  OnboardingDialogProvider,
+  useOnboardingDialogContext,
+} from '~/components/GalleryEditor/GalleryOnboardingGuide/OnboardingDialogContext';
 import { OrganizeGallery } from '~/components/ManageGallery/OrganizeGallery/OrganizeGallery';
 import useConfirmationMessageBeforeClose from '~/components/ManageGallery/useConfirmationMessageBeforeClose';
 import FullPageStep from '~/components/Onboarding/FullPageStep';
@@ -52,6 +56,7 @@ function NewEditGalleryPageInner({ queryRef }: NewEditGalleryPageInnerProps) {
   const { replace, back } = useRouter();
   const { saveGallery, hasSaved, canSave, hasUnsavedChanges, editGalleryNameAndDescription, name } =
     useGalleryEditorContext();
+  const { step, dialogMessage, nextStep, handleClose } = useOnboardingDialogContext();
 
   useConfirmationMessageBeforeClose(hasUnsavedChanges);
 
@@ -100,6 +105,10 @@ function NewEditGalleryPageInner({ queryRef }: NewEditGalleryPageInnerProps) {
           hasUnsavedChanges={hasUnsavedChanges}
           onBack={handleBack}
           onDone={handleDone}
+          step={step}
+          dialogMessage={dialogMessage}
+          onNextStep={nextStep}
+          dialogOnClose={handleClose}
         />
       }
     >
@@ -125,6 +134,7 @@ function NewEditGalleryPage({ galleryId, initialCollectionId }: Props) {
 
         ...GalleryEditorContextFragment
         ...editGalleryPageNewInnerFragment
+        ...OnboardingDialogContextFragment
       }
     `,
     { galleryId }
@@ -138,7 +148,9 @@ function NewEditGalleryPage({ galleryId, initialCollectionId }: Props) {
 
   return (
     <GalleryEditorProvider initialCollectionId={initialCollectionId} queryRef={query}>
-      <NewEditGalleryPageInner queryRef={query} />
+      <OnboardingDialogProvider queryRef={query}>
+        <NewEditGalleryPageInner queryRef={query} />
+      </OnboardingDialogProvider>
     </GalleryEditorProvider>
   );
 }

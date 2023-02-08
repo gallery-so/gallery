@@ -21,6 +21,8 @@ import { SidebarListTokenNewFragment$key } from '~/generated/SidebarListTokenNew
 import HideIcon from '~/icons/HideIcon';
 import ShowIcon from '~/icons/ShowIcon';
 
+import OnboardingDialog from '../GalleryOnboardingGuide/OnboardingDialog';
+import { useOnboardingDialogContext } from '../GalleryOnboardingGuide/OnboardingDialogContext';
 import { SidebarView } from './SidebarViewSelector';
 
 export type CollectionTitleRow = {
@@ -47,6 +49,7 @@ type Props = {
 function CollectionTitle({
   row,
   key,
+  index,
   style,
   selectedView,
   onToggleExpanded,
@@ -54,6 +57,7 @@ function CollectionTitle({
 }: {
   row: CollectionTitleRow;
   key: string;
+  index: number;
   style: React.CSSProperties;
   selectedView: SidebarView;
   onToggleExpanded: (address: string) => void;
@@ -61,6 +65,8 @@ function CollectionTitle({
 }) {
   const [showIcon, setShowIcon] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
+
+  const { step, dialogMessage, nextStep, handleClose } = useOnboardingDialogContext();
 
   return (
     <CollectionTitleRow style={style}>
@@ -71,9 +77,7 @@ function CollectionTitle({
         onMouseLeave={() => setShowIcon(false)}
       >
         <ExpandedIcon expanded={row.expanded} />
-
         <CollectionTitleText title={row.title}>{row.title}</CollectionTitleText>
-
         {showIcon && (
           <>
             <ShowHideContainer
@@ -101,6 +105,23 @@ function CollectionTitle({
           </>
         )}
       </CollectionTitleContainer>
+
+      {step === 4 && index === 0 && (
+        <OnboardingDialog
+          step={4}
+          text={dialogMessage}
+          onNext={nextStep}
+          onClose={handleClose}
+          options={{
+            placement: 'left',
+            positionOffset: 100,
+            blinkingPosition: {
+              top: 110,
+              left: 80,
+            },
+          }}
+        />
+      )}
     </CollectionTitleRow>
   );
 }
@@ -128,6 +149,7 @@ export function SidebarList({
             row={row}
             key={key}
             style={style}
+            index={index}
             selectedView={selectedView}
             onToggleExpanded={onToggleExpanded}
             setSpamPreferenceForCollection={setSpamPreferenceForCollection}
@@ -260,6 +282,8 @@ const CollectionTitleText = styled(TitleXS)`
 
 const CollectionTitleRow = styled.div`
   padding-bottom: ${SIDEBAR_COLLECTION_TITLE_BOTTOM_SPACE}px;
+
+  position: relative;
 `;
 
 const CollectionTitleContainer = styled.div.attrs({ role: 'button' })`

@@ -37,6 +37,8 @@ import useKeyDown from '~/hooks/useKeyDown';
 import { removeNullValues } from '~/utils/removeNullValues';
 import unescape from '~/utils/unescape';
 
+import OnboardingDialog from '../GalleryOnboardingGuide/OnboardingDialog';
+import { useOnboardingDialogContext } from '../GalleryOnboardingGuide/OnboardingDialogContext';
 import DroppableSection from './DragAndDrop/DroppableSection';
 import SectionDragging from './DragAndDrop/SectionDragging';
 import SortableStagedNft from './SortableStagedNft';
@@ -74,6 +76,8 @@ function StagingArea({ tokensRef }: Props) {
     `,
     tokensRef
   );
+
+  const { step, dialogMessage, nextStep, handleClose } = useOnboardingDialogContext();
 
   const { editCollectionNameAndNote, collectionIdBeingEdited } = useGalleryEditorContext();
   const {
@@ -216,17 +220,51 @@ function StagingArea({ tokensRef }: Props) {
             gap={48}
           >
             {hasNameOrCollectorsNote ? (
-              <VStack>
-                <StyledCollectionName hasName={Boolean(escapedCollectionName)}>
-                  {escapedCollectionName || 'Untitled Collection'}
-                </StyledCollectionName>
+              <HStack gap={8} align="center">
+                <VStack>
+                  <StyledCollectionName hasName={Boolean(escapedCollectionName)}>
+                    {escapedCollectionName || 'Untitled Collection'}
+                  </StyledCollectionName>
 
-                <BaseM>
-                  <Markdown text={collectorsNote}></Markdown>
-                </BaseM>
-              </VStack>
+                  <BaseM>
+                    <Markdown text={collectorsNote}></Markdown>
+                  </BaseM>
+                </VStack>
+                {step === 2 && (
+                  <OnboardingDialog
+                    step={step}
+                    text={dialogMessage}
+                    onNext={nextStep}
+                    onClose={handleClose}
+                    options={{
+                      placement: 'right-end',
+                      positionOffset: 30,
+                      blinkingPosition: {
+                        right: -20,
+                      },
+                    }}
+                  />
+                )}
+              </HStack>
             ) : (
-              <BaseM color={colors.metal}>Add title and description</BaseM>
+              <HStack gap={8} align="center">
+                <BaseM color={colors.metal}>Add title and description</BaseM>
+                {step === 2 && (
+                  <OnboardingDialog
+                    step={step}
+                    text={dialogMessage}
+                    onNext={nextStep}
+                    onClose={handleClose}
+                    options={{
+                      placement: 'bottom',
+                      blinkingPosition: {
+                        right: -20,
+                      },
+                      positionOffset: 20,
+                    }}
+                  />
+                )}
+              </HStack>
             )}
 
             <EditIconContainer>
@@ -318,6 +356,7 @@ const EditIconContainer = styled.div`
 const CollectionNameAndDescriptionBackground = styled(HStack)`
   padding: 4px 8px;
   cursor: pointer;
+  position: relative;
 
   :hover {
     background-color: ${colors.faint};
