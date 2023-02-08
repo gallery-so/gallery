@@ -60,6 +60,10 @@ export function EditGalleryNavbar({
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
   const handleAllGalleriesClick = useGuardEditorUnsavedChanges(() => {
+    if (doneAction === 'saved') {
+      onDone('');
+    }
+
     push({ pathname: '/[username]/galleries', query: { username } });
   }, hasUnsavedChanges);
 
