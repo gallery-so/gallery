@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import noop from '~/utils/noop';
 
+import breakpoints from '../breakpoints';
 import colors from '../colors';
 import { VStack } from '../Spacer/Stack';
 import ErrorText from '../Text/ErrorText';
@@ -55,6 +56,21 @@ const StyledBigInput = styled.input<{ variant: Props['variant'] }>`
 
   ::placeholder {
     opacity: 0.5;
+  }
+`;
+
+export const SlimInput = styled.input`
+  font-family: 'ABC Diatype', Helvetica, Arial, sans-serif;
+  border: 0;
+  background-color: ${colors.faint};
+  padding: 6px 12px;
+  width: 100%;
+  height: 32px;
+
+  font-size: 16px; // on mobile, if input font is < 16px, OS will zoom automatically on the input which we dont want
+
+  @media only screen and ${breakpoints.desktop} {
+    font-size: 14px;
   }
 `;
 
