@@ -50,6 +50,7 @@ export function CollectionSaveButtonWithCaption({
     }
     await onSave(caption);
     handleCloseCaption();
+    setCaption('');
     setIsLoading(false);
   }, [caption, handleCloseCaption, onSave, track]);
 

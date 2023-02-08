@@ -507,7 +507,9 @@ export function GalleryEditorProvider({
           );
         }
 
+        // Make sure we reset our "Has unsaved changes comparison point"
         setEditSessionID(uuid());
+        setHasSaved(false);
       } catch (error) {
         pushToast({
           autoClose: false,
