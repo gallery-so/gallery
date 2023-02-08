@@ -14,7 +14,6 @@ import useMagicLogin from '~/hooks/useMagicLink';
 import { EMAIL_FORMAT } from '~/utils/regex';
 
 import useLoginOrRedirectToOnboarding from '../mutations/useLoginOrRedirectToOnboarding';
-import { walletIconMap } from './WalletButton';
 
 type Props = {
   reset: () => void;
@@ -89,7 +88,6 @@ export default function MagicLinkLogin({ reset }: Props) {
         ) : (
           <>
             <VStack gap={8} align="center">
-              <Icon src={walletIconMap['magic_link']} />
               <TitleS>Almost there – keep this tab open!</TitleS>
             </VStack>
             <VStack gap={8}>
@@ -108,7 +106,6 @@ export default function MagicLinkLogin({ reset }: Props) {
     <EmptyState title="">
       <VStack gap={24}>
         <VStack align="center" gap={4}>
-          <Icon src={walletIconMap['magic_link']} />
           <TitleS>Magic Link</TitleS>
         </VStack>
         <VStack gap={8}>
@@ -159,10 +156,4 @@ const StyledInput = styled.input`
 
 const StyledErrorText = styled(ErrorText)`
   text-align: left;
-`;
-
-const Icon = styled.img`
-  width: 24px;
-  height: 24px;
-  margin: 5px;
 `;
