@@ -67,6 +67,7 @@ export function OnboardingDialogProvider({ children, queryRef }: OnboardingDialo
   );
 
   const dismissUserExperience = useCallback(async () => {
+    // Trick to dismiss the tooltip immediately while waiting for the mutation to finish
     setStep(0);
     await updateUserExperience({
       type: 'MultiGalleryAnnouncement',
