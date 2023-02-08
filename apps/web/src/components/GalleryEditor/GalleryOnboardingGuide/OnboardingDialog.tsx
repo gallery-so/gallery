@@ -86,54 +86,54 @@ export default function OnboardingDialog({ step, text, onNext, onClose, options 
     [onClose]
   );
 
+  if (!open) {
+    return null;
+  }
+
   return (
     <>
-      {open && (
-        <>
-          <StyledBlinkingContainer position={blinkingPosition}>
-            <Blinking ref={reference} {...getReferenceProps()} />
-          </StyledBlinkingContainer>
-          <AnimatePresence>
-            <FloatingPortal>
-              <StyledConfirmation
-                className="Popover"
-                aria-labelledby={headingId}
-                ref={floating}
-                style={{
-                  position: strategy,
-                  top: y ?? 0,
-                  left: x ?? 500,
-                }}
-                {...getFloatingProps()}
-                // Framer Motion Props
-                transition={{
-                  duration: ANIMATED_COMPONENT_TRANSITION_S,
-                  ease: rawTransitions.cubicValues,
-                }}
-                initial={{ opacity: 0, y: 0 }}
-                animate={{ opacity: 1, y: ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL }}
-                exit={{ opacity: 0, y: 0 }}
-              >
-                <HStack justify="flex-end">
-                  <IconContainer
-                    onClick={(e) => handleOnClose(e)}
-                    size="sm"
-                    variant="stacked"
-                    icon={<CloseIcon />}
-                  />
-                </HStack>
-                <StyledTextWrapper>
-                  <BaseM>{text}</BaseM>
-                </StyledTextWrapper>
-                <HStack justify="space-between" align="center">
-                  <TitleDiatypeM>Tip {step} of 5</TitleDiatypeM>
-                  <Button onClick={handleNext}>Next</Button>
-                </HStack>
-              </StyledConfirmation>
-            </FloatingPortal>
-          </AnimatePresence>
-        </>
-      )}
+      <StyledBlinkingContainer position={blinkingPosition}>
+        <Blinking ref={reference} {...getReferenceProps()} />
+      </StyledBlinkingContainer>
+      <AnimatePresence>
+        <FloatingPortal>
+          <StyledConfirmation
+            className="Popover"
+            aria-labelledby={headingId}
+            ref={floating}
+            style={{
+              position: strategy,
+              top: y ?? 0,
+              left: x ?? 500,
+            }}
+            {...getFloatingProps()}
+            // Framer Motion Props
+            transition={{
+              duration: ANIMATED_COMPONENT_TRANSITION_S,
+              ease: rawTransitions.cubicValues,
+            }}
+            initial={{ opacity: 0, y: 0 }}
+            animate={{ opacity: 1, y: ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL }}
+            exit={{ opacity: 0, y: 0 }}
+          >
+            <HStack justify="flex-end">
+              <IconContainer
+                onClick={(e) => handleOnClose(e)}
+                size="sm"
+                variant="stacked"
+                icon={<CloseIcon />}
+              />
+            </HStack>
+            <StyledTextWrapper>
+              <BaseM>{text}</BaseM>
+            </StyledTextWrapper>
+            <HStack justify="space-between" align="center">
+              <TitleDiatypeM>Tip {step} of 5</TitleDiatypeM>
+              <Button onClick={handleNext}>Next</Button>
+            </HStack>
+          </StyledConfirmation>
+        </FloatingPortal>
+      </AnimatePresence>
     </>
   );
 }
