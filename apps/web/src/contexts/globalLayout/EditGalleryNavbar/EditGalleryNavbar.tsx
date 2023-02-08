@@ -27,6 +27,8 @@ type Props = {
   galleryName: string;
   username: string;
 
+  isSaving: boolean;
+
   onEdit: () => void;
 
   onBack: () => void;
@@ -48,6 +50,8 @@ export function EditGalleryNavbar({
   onEdit,
   hasSaved,
   hasUnsavedChanges,
+
+  isSaving,
 
   username,
   galleryName,
@@ -112,11 +116,13 @@ export function EditGalleryNavbar({
       return (
         <>
           <BaseM color={colors.metal}>Unsaved changes</BaseM>
-          <DoneButton onClick={onSave}>Save</DoneButton>
+          <DoneButton onClick={onSave} pending={isSaving}>
+            Save
+          </DoneButton>
         </>
       );
     }
-  }, [doneAction, hasUnsavedChanges, onBack, onSave, showSaved]);
+  }, [doneAction, isSaving, onBack, onDone, onSave, showSaved]);
 
   return (
     <Wrapper>

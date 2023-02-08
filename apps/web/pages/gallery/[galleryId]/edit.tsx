@@ -1,6 +1,6 @@
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { useFragment, useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
@@ -77,8 +77,11 @@ function NewEditGalleryPageInner({ queryRef }: NewEditGalleryPageInnerProps) {
 
   const handleBack = useGuardEditorUnsavedChanges(goBack, hasUnsavedChanges);
 
+  const [isSaving, setIsSaving] = useState(false);
   const handleSave = useCallback(async () => {
+    setIsSaving(true);
     await saveGallery();
+    setIsSaving(false);
   }, [saveGallery]);
 
   const handleEdit = useCallback(() => {
@@ -112,6 +115,7 @@ function NewEditGalleryPageInner({ queryRef }: NewEditGalleryPageInnerProps) {
           onBack={handleBack}
           onSave={handleSave}
           onDone={handleDone}
+          isSaving={isSaving}
         />
       }
     >
