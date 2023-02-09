@@ -16,7 +16,7 @@ export function FollowingToggleSection({ active }: Props) {
     <HStack justify="center">
       <FollowingSectionContainer gap={8}>
         <ClickablePill active={!active} to={{ pathname: '/latest' }}>
-          <TitleDiatypeM color={colors.offBlack}>Worlwide</TitleDiatypeM>
+          <TitleDiatypeM color={colors.offBlack}>Worldwide</TitleDiatypeM>
         </ClickablePill>
         <ClickablePill active={active} to={{ pathname: '/latest/following' }}>
           <TitleDiatypeM color={colors.offBlack}>Following</TitleDiatypeM>
