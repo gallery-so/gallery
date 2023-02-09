@@ -14,11 +14,11 @@ type Props = {
 export function FollowingToggleSection({ active }: Props) {
   return (
     <HStack justify="center">
-      <FollowingSectionContainer>
-        <ClickablePill
-          active={active}
-          to={active ? { pathname: '/latest' } : { pathname: '/latest/following' }}
-        >
+      <FollowingSectionContainer gap={8}>
+        <ClickablePill active={!active} to={{ pathname: '/latest' }}>
+          <TitleDiatypeM color={colors.offBlack}>Worlwide</TitleDiatypeM>
+        </ClickablePill>
+        <ClickablePill active={active} to={{ pathname: '/latest/following' }}>
           <TitleDiatypeM color={colors.offBlack}>Following</TitleDiatypeM>
         </ClickablePill>
       </FollowingSectionContainer>
