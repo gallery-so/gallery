@@ -21,6 +21,7 @@ import EventMedia from './EventMedia';
 import {
   StyledClickHandler,
   StyledEvent,
+  StyledEventContent,
   StyledEventHeader,
   StyledEventLabel,
   StyledEventText,
@@ -125,16 +126,21 @@ export default function CollectorsNoteAddedToTokenFeedEvent({
             </StyledEventText>
             {!isSubEvent && <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>}
           </StyledEventHeader>
-          <StyledContent justify="center" align="center" gap={MIDDLE_GAP}>
-            <StyledMediaWrapper>
-              <EventMedia tokenRef={event.token} maxHeight={size} maxWidth={size} />
-            </StyledMediaWrapper>
-            <StyledNoteWrapper>
-              <StyledNote>
-                <Markdown text={unescape(event.newCollectorsNote ?? '')} inheritLinkStyling />
-              </StyledNote>
-            </StyledNoteWrapper>
-          </StyledContent>
+
+          <StyledEventContent align="center" justify="center" isSubEvent={isSubEvent}>
+            <StyledContent align="center" justify="center" gap={MIDDLE_GAP}>
+              <StyledMediaWrapper align="center">
+                <EventMedia tokenRef={event.token} maxHeight={size} maxWidth={size} />
+              </StyledMediaWrapper>
+              {event.newCollectorsNote && (
+                <StyledNoteWrapper>
+                  <StyledNote>
+                    <Markdown text={unescape(event.newCollectorsNote ?? '')} inheritLinkStyling />
+                  </StyledNote>
+                </StyledNoteWrapper>
+              )}
+            </StyledContent>
+          </StyledEventContent>
         </VStack>
       </StyledEvent>
     </StyledClickHandler>
@@ -157,11 +163,12 @@ const StyledNote = styled(TitleM)`
   }
 `;
 
-const StyledMediaWrapper = styled.div`
+const StyledMediaWrapper = styled(VStack)`
   width: 50%;
 `;
 
 const StyledContent = styled(HStack)`
+  width: 100%;
   @media only screen and ${breakpoints.desktop} {
     margin: 0 80px;
   }
