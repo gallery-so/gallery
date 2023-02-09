@@ -1,6 +1,6 @@
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { useFragment, useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
@@ -54,8 +54,15 @@ function NewEditGalleryPageInner({ queryRef }: NewEditGalleryPageInnerProps) {
 
   const canGoBack = useCanGoBack();
   const { replace, back } = useRouter();
-  const { saveGallery, hasSaved, canSave, hasUnsavedChanges, editGalleryNameAndDescription, name } =
-    useGalleryEditorContext();
+  const {
+    saveGallery,
+    hasSaved,
+    canSave,
+    hasUnsavedChanges,
+    editGalleryNameAndDescription,
+    name,
+    publishGallery,
+  } = useGalleryEditorContext();
   const { step, dialogMessage, nextStep, handleClose } = useOnboardingDialogContext();
 
   useConfirmationMessageBeforeClose(hasUnsavedChanges);
@@ -75,16 +82,23 @@ function NewEditGalleryPageInner({ queryRef }: NewEditGalleryPageInnerProps) {
 
   const handleBack = useGuardEditorUnsavedChanges(goBack, hasUnsavedChanges);
 
-  const handleDone = useCallback(
-    async (caption: string) => {
-      await saveGallery(caption);
-    },
-    [saveGallery]
-  );
+  const [isSaving, setIsSaving] = useState(false);
+  const handleSave = useCallback(async () => {
+    setIsSaving(true);
+    await saveGallery();
+    setIsSaving(false);
+  }, [saveGallery]);
 
   const handleEdit = useCallback(() => {
     editGalleryNameAndDescription();
   }, [editGalleryNameAndDescription]);
+
+  const handleDone = useCallback(
+    async (caption: string) => {
+      await publishGallery(caption);
+    },
+    [publishGallery]
+  );
 
   const username = query.viewer?.__typename === 'Viewer' ? query.viewer.user?.username : null;
 
@@ -104,7 +118,9 @@ function NewEditGalleryPageInner({ queryRef }: NewEditGalleryPageInnerProps) {
           username={username}
           hasUnsavedChanges={hasUnsavedChanges}
           onBack={handleBack}
+          onSave={handleSave}
           onDone={handleDone}
+          isSaving={isSaving}
           step={step}
           dialogMessage={dialogMessage}
           onNextStep={nextStep}
