@@ -1,11 +1,47 @@
 language: 'javascript'
 
+fileGroups:
+  tests:
+    - 'tests/**/*'
+    - '**/*.test.ts*'
+  lint:
+    - '**/*.*{ts,js,tsx,jsx,cjs,mjs}'
+  source:
+    - 'src/**/*.{ts,js,tsx,jsx}'
+
 tasks:
+  relay-watch:
+    command: relay-compiler --repersist --watch
+    local: true
+
+  touch-generated:
+    command: mkdir -p __generated__
+    platform: system
+
+  touch-persisted-queries:
+    command: "touch persisted_queries.json"
+    platform: system
+
+  touch-relay-files:
+    deps:
+      - "~:touch-persisted-queries"
+      - "~:touch-generated"
+
+  relay-codegen:
+    deps:
+      - "~:touch-relay-files"
+    command: relay-compiler --repersist
+    inputs:
+      - '@group(source)'
+  ios:
+    deps:
+      - "~:touch-relay-files"
+    command:
+      - concurrently
+      - -n Expo,Relay-Compiler
+      - yarn expo start --ios --clear
+      - yarn moon run mobile:relay-watch
+
   typecheck:
     command: tsc --build
 
-  android:
-    command: expo start --android
-
-  ios:
-    command: expo start --ios
