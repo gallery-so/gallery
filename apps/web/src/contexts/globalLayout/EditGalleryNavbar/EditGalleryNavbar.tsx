@@ -69,6 +69,7 @@ export function EditGalleryNavbar({
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
   const handleAllGalleriesClick = useGuardEditorUnsavedChanges(() => {
+    // if the user has saved changes, we will automatically publish the gallery with no caption
     if (doneAction === 'saved') {
       onDone('');
     }
