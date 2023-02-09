@@ -19,6 +19,7 @@ import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { CollectionGalleryHeaderFragment$key } from '~/generated/CollectionGalleryHeaderFragment.graphql';
 import { CollectionGalleryHeaderQueryFragment$key } from '~/generated/CollectionGalleryHeaderQueryFragment.graphql';
+import useUpdateCollectionInfo from '~/hooks/api/collections/useUpdateCollectionInfo';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import MobileLayoutToggle from '~/scenes/UserGalleryPage/MobileLayoutToggle';
 import noop from '~/utils/noop';
@@ -109,13 +110,15 @@ function CollectionGalleryHeader({
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
   const shouldDisplayMobileLayoutToggle = isMobile && (collection?.tokens?.length ?? 0) > 1;
 
+  const [updateCollectionInfo] = useUpdateCollectionInfo();
   const handleEditNameClick = useCallback(() => {
     showModal({
       content: (
         <CollectionCreateOrEditForm
-          // TODO(delete-old-editor): wire this up
           mode="editing"
-          onDone={noop}
+          onDone={async ({ name, collectorsNote }) => {
+            await updateCollectionInfo(collection.dbid, name, collectorsNote);
+          }}
           name={collection.name ?? undefined}
           collectorsNote={collection.collectorsNote ?? undefined}
         />

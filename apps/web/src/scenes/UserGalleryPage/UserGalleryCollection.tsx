@@ -23,6 +23,7 @@ import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { UserGalleryCollectionFragment$key } from '~/generated/UserGalleryCollectionFragment.graphql';
 import { UserGalleryCollectionQueryFragment$key } from '~/generated/UserGalleryCollectionQueryFragment.graphql';
+import useUpdateCollectionInfo from '~/hooks/api/collections/useUpdateCollectionInfo';
 import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
 import useResizeObserver from '~/hooks/useResizeObserver';
 import { baseUrl } from '~/utils/baseUrl';
@@ -113,13 +114,15 @@ function UserGalleryCollection({
     track('Share Collection', { path: collectionUrl });
   }, [track, collectionUrl]);
 
+  const [updateCollectionInfo] = useUpdateCollectionInfo();
   const handleEditNameClick = useCallback(() => {
     showModal({
       content: (
         <CollectionCreateOrEditForm
           mode="editing"
-          // TODO(delete-old-editor): wire this up
-          onDone={noop}
+          onDone={async ({ name, collectorsNote }) => {
+            await updateCollectionInfo(collection.dbid, name, collectorsNote);
+          }}
           name={collection.name}
           collectorsNote={collection.collectorsNote ?? ''}
         />
