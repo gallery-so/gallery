@@ -16,7 +16,7 @@ function generateTestNft(): StagedItem {
 
 describe('getWhitespacePositionsFromStagedItems', () => {
   it('computes the correct whitespace list given a list of staged items', () => {
-    const stagedItems = [
+    const stagedItems: StagedItem[] = [
       { id: 'blank-1', kind: 'whitespace' } as const,
       { id: 'blank-2', kind: 'whitespace' } as const,
       generateTestNft(),
@@ -123,8 +123,8 @@ describe('generateLayoutFromCollection', () => {
     expect(layout).toEqual({
       sections: [0, 5],
       sectionLayout: [
-        { columns: 3, kind: [0, 0, 1, 4, 5] },
-        { columns: 2, kind: [0, 2, 2, 4, 4] },
+        { columns: 3, whitespace: [0, 0, 1, 4, 5] },
+        { columns: 2, whitespace: [0, 2, 2, 4, 4] },
       ],
     });
   });

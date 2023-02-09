@@ -107,7 +107,7 @@ export function getWhitespacePositionsFromStagedItems(stagedItems: StagedItem[])
   let nftIndex = 0;
   const result: number[] = [];
   stagedItems.forEach((stagedItem) => {
-    if (stagedItem.kind === 'whitespace') {
+    if (stagedItem.kind === 'token') {
       nftIndex++;
     } else {
       // is whitespace
