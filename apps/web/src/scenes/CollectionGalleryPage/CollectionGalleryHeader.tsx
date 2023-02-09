@@ -22,7 +22,6 @@ import { CollectionGalleryHeaderQueryFragment$key } from '~/generated/Collection
 import useUpdateCollectionInfo from '~/hooks/api/collections/useUpdateCollectionInfo';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import MobileLayoutToggle from '~/scenes/UserGalleryPage/MobileLayoutToggle';
-import noop from '~/utils/noop';
 import unescape from '~/utils/unescape';
 
 type Props = {
@@ -125,7 +124,13 @@ function CollectionGalleryHeader({
       ),
       headerText: 'Name and describe your collection',
     });
-  }, [collection.collectorsNote, collection.name, showModal]);
+  }, [
+    collection.collectorsNote,
+    collection.dbid,
+    collection.name,
+    showModal,
+    updateCollectionInfo,
+  ]);
 
   if (isMobile) {
     return (

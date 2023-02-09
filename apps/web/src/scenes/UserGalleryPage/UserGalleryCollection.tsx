@@ -27,7 +27,6 @@ import useUpdateCollectionInfo from '~/hooks/api/collections/useUpdateCollection
 import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
 import useResizeObserver from '~/hooks/useResizeObserver';
 import { baseUrl } from '~/utils/baseUrl';
-import noop from '~/utils/noop';
 import unescape from '~/utils/unescape';
 
 type Props = {
@@ -129,7 +128,13 @@ function UserGalleryCollection({
       ),
       headerText: 'Name and describe your collection',
     });
-  }, [collection.collectorsNote, collection.name, showModal]);
+  }, [
+    collection.collectorsNote,
+    collection.dbid,
+    collection.name,
+    showModal,
+    updateCollectionInfo,
+  ]);
 
   return (
     <StyledCollectionWrapper ref={componentRef}>

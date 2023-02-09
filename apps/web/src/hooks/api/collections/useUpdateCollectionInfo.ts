@@ -76,7 +76,7 @@ export default function useUpdateCollectionInfo() {
         );
       }
     },
-    [updateCollection]
+    [pushToast, reportError, updateCollection]
   );
 
   return [mutate, isMutating] as const;
