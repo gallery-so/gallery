@@ -7,7 +7,7 @@
   ],
   "packageManager": "yarn@1.22.19",
   "engines": {
-    "node": "18.12.0"
+    "node": "16.18.1"
   },
   "resolutions": {
     "@types/react": "^18.0.0",
