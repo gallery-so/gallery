@@ -101,7 +101,7 @@ export function CollectionSaveButtonWithCaption({
           />
 
           <Button onClick={handleSubmit} disabled={isSaveDisabled} pending={isLoading}>
-            Save
+            Publish
           </Button>
 
           {error && <ErrorText message={error} />}
