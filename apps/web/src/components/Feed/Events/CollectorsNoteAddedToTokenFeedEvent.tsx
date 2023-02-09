@@ -107,8 +107,8 @@ export default function CollectorsNoteAddedToTokenFeedEvent({
         <VStack gap={isSubEvent ? 0 : 16}>
           <StyledEventHeader>
             <StyledEventText isSubEvent={isSubEvent}>
-              {!isSubEvent && <HoverCardOnUsername userRef={event.owner} queryRef={query} />} add a
-              collector's note to{' '}
+              {!isSubEvent && <HoverCardOnUsername userRef={event.owner} queryRef={query} />} added
+              a collector's note to{' '}
               <Link
                 href={{
                   pathname: '/[username]/[collectionId]/[tokenId]',
