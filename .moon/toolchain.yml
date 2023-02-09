@@ -25,7 +25,7 @@ node:
   aliasPackageNames: 'name-and-scope'
 
   # Dedupe dependencies after the lockfile has changed.
-  dedupeOnLockfileChange: true
+  dedupeOnLockfileChange: false
 
   # Version format to use when syncing dependencies within the project's `package.json`.
   # dependencyVersionFormat: 'workspace'
