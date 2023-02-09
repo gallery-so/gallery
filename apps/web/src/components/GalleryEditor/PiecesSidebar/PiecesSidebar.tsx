@@ -202,6 +202,6 @@ const Header = styled(HStack)`
   padding: 0 12px 8px;
 `;
 
-const StyledSearchBarContainer = styled.div`
+const StyledSearchBarContainer = styled(VStack)`
   position: relative;
 `;
