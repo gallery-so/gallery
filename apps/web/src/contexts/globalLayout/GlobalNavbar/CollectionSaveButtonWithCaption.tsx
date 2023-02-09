@@ -97,7 +97,7 @@ export function CollectionSaveButtonWithCaption({
             hasPadding
             defaultValue={caption}
             placeholder="(Optional) Write something about your latest update to your followers"
-            textAreaHeight="80px"
+            textAreaHeight="116px"
           />
 
           <Button onClick={handleSubmit} disabled={isSaveDisabled} pending={isLoading}>
