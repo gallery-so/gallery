@@ -1,5 +1,3 @@
-import { UniqueIdentifier } from '@dnd-kit/core';
-
 export type EditModeTokenChild = {
   dbid: string;
   name: string;

@@ -5,8 +5,6 @@ const DAY = HOUR * 24;
 const MONTH = DAY * 30;
 const YEAR = MONTH * 12; // TODO account for leapyear
 
-const _appendLeadingZero = (n: number): string => (n < 10 ? `0${n}` : `${n}`);
-
 export const pause = async (ms: number) =>
   new Promise((resolve) => {
     setTimeout(resolve, ms);
