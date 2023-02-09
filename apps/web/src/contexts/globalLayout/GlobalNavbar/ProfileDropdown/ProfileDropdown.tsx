@@ -59,15 +59,6 @@ export function ProfileDropdown({ queryRef, rightContent }: ProfileDropdownProps
     shouldShowDropdown,
   } = useDropdownHoverControls();
 
-  const handleHomeRedirect = useCallback(() => {
-    if (isTouchscreen.current) {
-      // users cannot hover on touchscreen devices so open the dropdown via tap
-      shouldShowDropdown ? closeDropdown() : showDropdown();
-    } else {
-      push({ pathname: '/trending' });
-    }
-  }, [closeDropdown, push, shouldShowDropdown, showDropdown]);
-
   useEffect(
     function closeDropdownWhenRouteChanges() {
       closeDropdown();
@@ -76,6 +67,15 @@ export function ProfileDropdown({ queryRef, rightContent }: ProfileDropdownProps
   );
 
   const isLoggedIn = query.viewer?.__typename === 'Viewer';
+
+  const handleHomeRedirect = useCallback(() => {
+    if (isTouchscreen.current && isLoggedIn) {
+      // users cannot hover on touchscreen devices so open the dropdown via tap (only if signed in)
+      shouldShowDropdown ? closeDropdown() : showDropdown();
+    } else {
+      push({ pathname: '/trending' });
+    }
+  }, [closeDropdown, isLoggedIn, push, shouldShowDropdown, showDropdown]);
 
   const notificationCount = useMemo(() => {
     if (
