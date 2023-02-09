@@ -9,7 +9,7 @@ import { TitleS } from '~/components/core/Text/Text';
 import { Chain } from '~/components/GalleryEditor/PiecesSidebar/chains';
 import { SidebarChainSelector } from '~/components/GalleryEditor/PiecesSidebar/SidebarChainSelector';
 import { SidebarTokens } from '~/components/GalleryEditor/PiecesSidebar/SidebarTokens';
-import { useCollectionEditorContextNew } from '~/contexts/collectionEditor/CollectionEditorContextNew';
+import { useCollectionEditorContext } from '~/contexts/collectionEditor/CollectionEditorContext';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { PiecesSidebarFragment$key } from '~/generated/PiecesSidebarFragment.graphql';
 import { PiecesSidebarViewerFragment$key } from '~/generated/PiecesSidebarViewerFragment.graphql';
@@ -57,7 +57,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
 
   const { step, dialogMessage, nextStep, handleClose } = useOnboardingDialogContext();
   const { syncTokens } = useSyncTokens();
-  const { addWhitespace } = useCollectionEditorContextNew();
+  const { addWhitespace } = useCollectionEditorContext();
 
   const [searchResults, setSearchResults] = useState<string[]>([]);
   const [selectedChain, setSelectedChain] = useState<Chain>('Ethereum');

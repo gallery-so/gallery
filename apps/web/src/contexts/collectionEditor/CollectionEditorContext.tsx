@@ -51,13 +51,11 @@ type CollectionEditorContextType = {
   updateNameAndCollectorsNote: (name: string, collectorsNote: string) => void;
 };
 
-const CollectionEditorContextNew = createContext<CollectionEditorContextType | undefined>(
-  undefined
-);
+const CollectionEditorContext = createContext<CollectionEditorContextType | undefined>(undefined);
 
 type Props = { children: ReactNode };
 
-export const CollectionEditorProviderNew = memo(({ children }: Props) => {
+export const CollectionEditorProvider = memo(({ children }: Props) => {
   const { collectionIdBeingEdited, collections, setCollections } = useGalleryEditorContext();
 
   const collectionBeingEdited = collectionIdBeingEdited
@@ -448,14 +446,12 @@ export const CollectionEditorProviderNew = memo(({ children }: Props) => {
   ]);
 
   return (
-    <CollectionEditorContextNew.Provider value={value}>
-      {children}
-    </CollectionEditorContextNew.Provider>
+    <CollectionEditorContext.Provider value={value}>{children}</CollectionEditorContext.Provider>
   );
 });
 
-export function useCollectionEditorContextNew() {
-  const value = useContext(CollectionEditorContextNew);
+export function useCollectionEditorContext() {
+  const value = useContext(CollectionEditorContext);
 
   if (!value) {
     throw new Error('Tried to use CollectionEditorContextNew without a provider.');
@@ -464,4 +460,4 @@ export function useCollectionEditorContextNew() {
   return value;
 }
 
-CollectionEditorProviderNew.displayName = 'CollectionEditorProvider';
+CollectionEditorProvider.displayName = 'CollectionEditorProvider';

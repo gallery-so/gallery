@@ -30,7 +30,7 @@ import {
   dragOver,
 } from '~/components/GalleryEditor/CollectionEditor/DragAndDrop/draggingActions';
 import { useGalleryEditorContext } from '~/components/GalleryEditor/GalleryEditorContext';
-import { useCollectionEditorContextNew } from '~/contexts/collectionEditor/CollectionEditorContextNew';
+import { useCollectionEditorContext } from '~/contexts/collectionEditor/CollectionEditorContext';
 import { getImageSizeForColumns } from '~/contexts/collectionEditor/useDndDimensions';
 import { StagingAreaFragment$key } from '~/generated/StagingAreaFragment.graphql';
 import useKeyDown from '~/hooks/useKeyDown';
@@ -88,7 +88,7 @@ function StagingArea({ tokensRef }: Props) {
 
     updateSections,
     deleteSection,
-  } = useCollectionEditorContextNew();
+  } = useCollectionEditorContext();
 
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
 
