@@ -81,7 +81,7 @@ export default function MoveCollectionModal({
         setIsLoading(true);
         // save the entire gallery with no caption prior to moving the collection.
         // the user will be given ample warning about this.
-        await handleSaveGallery('');
+        await handleSaveGallery();
       } catch (error) {
         reportError('Failed to save gallery changes', {
           tags: {

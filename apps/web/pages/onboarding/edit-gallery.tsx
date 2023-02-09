@@ -55,7 +55,7 @@ function EditGalleryInner({ queryRef }: EditGalleryInnerProps) {
   const handleBack = useGuardEditorUnsavedChanges(goBack, hasUnsavedChanges);
 
   const handleDone = useCallback(async () => {
-    await saveGallery(null);
+    await saveGallery();
 
     await push({ pathname: '/onboarding/add-email' });
   }, [push, saveGallery]);
