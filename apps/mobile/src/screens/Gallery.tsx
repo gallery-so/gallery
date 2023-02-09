@@ -2,7 +2,6 @@ import { graphql, useLazyLoadQuery } from "react-relay";
 import { SafeAreaView, ScrollView, Text, View } from "react-native";
 import { GalleryQuery } from "../../__generated__/GalleryQuery.graphql";
 import { ResizeMode, Video } from "expo-av";
-import { useEffect, useRef } from "react";
 
 export function Gallery() {
   const query = useLazyLoadQuery<GalleryQuery>(
