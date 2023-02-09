@@ -127,8 +127,6 @@ const StyledTextArea = styled.textarea<TextAreaProps>`
 
 TextArea.displayName = 'TextArea';
 
-export default TextArea;
-
 type TextAreaWithCharCountProps = {
   className?: string;
   currentCharCount: number;
