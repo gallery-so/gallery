@@ -14,7 +14,7 @@ import { DisplayLayout } from '~/components/core/enums';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleL } from '~/components/core/Text/Text';
-import CollectionCreateOrEditForm from '~/components/ManageGallery/OrganizeCollection/CollectionCreateOrEditForm';
+import { CollectionCreateOrEditForm } from '~/components/GalleryEditor/CollectionCreateOrEditForm';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { CollectionGalleryHeaderFragment$key } from '~/generated/CollectionGalleryHeaderFragment.graphql';
@@ -113,17 +113,16 @@ function CollectionGalleryHeader({
     showModal({
       content: (
         <CollectionCreateOrEditForm
-          // No need for onNext because this isn't part of a wizard
-          onNext={noop}
-          galleryId={galleryId}
-          collectionId={collectionId}
-          collectionName={collection.name ?? undefined}
-          collectionCollectorsNote={collection.collectorsNote ?? undefined}
+          // TODO(delete-old-editor): wire this up
+          mode="editing"
+          onDone={noop}
+          name={collection.name ?? undefined}
+          collectorsNote={collection.collectorsNote ?? undefined}
         />
       ),
       headerText: 'Name and describe your collection',
     });
-  }, [collection.collectorsNote, collectionId, galleryId, collection.name, showModal]);
+  }, [collection.collectorsNote, collection.name, showModal]);
 
   if (isMobile) {
     return (

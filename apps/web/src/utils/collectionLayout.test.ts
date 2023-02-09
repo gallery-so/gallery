@@ -1,7 +1,4 @@
-import {
-  EditModeToken,
-  EditModeTokenChild,
-} from '~/components/ManageGallery/OrganizeCollection/types';
+import { StagedItem } from '~/components/GalleryEditor/GalleryEditorContext';
 
 import {
   generateLayoutFromCollection,
@@ -10,26 +7,26 @@ import {
   parseCollectionLayout,
 } from './collectionLayout';
 
-function generateTestNft(): EditModeToken {
+function generateTestNft(): StagedItem {
   return {
+    kind: 'token',
     id: '123',
-    token: {} as EditModeTokenChild, // This is wrong but our test doesn't actually need the data inside the NFT,
   };
 }
 
 describe('getWhitespacePositionsFromStagedItems', () => {
   it('computes the correct whitespace list given a list of staged items', () => {
     const stagedItems = [
-      { id: 'blank-1', whitespace: 'whitespace' } as const,
-      { id: 'blank-2', whitespace: 'whitespace' } as const,
+      { id: 'blank-1', kind: 'whitespace' } as const,
+      { id: 'blank-2', kind: 'whitespace' } as const,
       generateTestNft(),
-      { id: 'blank-3', whitespace: 'whitespace' } as const,
+      { id: 'blank-3', kind: 'whitespace' } as const,
       generateTestNft(),
       generateTestNft(),
       generateTestNft(),
-      { id: 'blank-4', whitespace: 'whitespace' } as const,
+      { id: 'blank-4', kind: 'whitespace' } as const,
       generateTestNft(),
-      { id: 'blank-5', whitespace: 'whitespace' } as const,
+      { id: 'blank-5', kind: 'whitespace' } as const,
     ];
     const whitespaceList = getWhitespacePositionsFromStagedItems(stagedItems);
     expect(whitespaceList).toEqual([0, 0, 1, 4, 5]);
@@ -93,30 +90,30 @@ describe('generateLayoutFromCollection', () => {
       '123': {
         columns: 3,
         items: [
-          { id: 'blank-1', whitespace: 'whitespace' } as const,
-          { id: 'blank-2', whitespace: 'whitespace' } as const,
+          { id: 'blank-1', kind: 'whitespace' } as const,
+          { id: 'blank-2', kind: 'whitespace' } as const,
           generateTestNft(),
-          { id: 'blank-3', whitespace: 'whitespace' } as const,
+          { id: 'blank-3', kind: 'whitespace' } as const,
           generateTestNft(),
           generateTestNft(),
           generateTestNft(),
-          { id: 'blank-4', whitespace: 'whitespace' } as const,
+          { id: 'blank-4', kind: 'whitespace' } as const,
           generateTestNft(),
-          { id: 'blank-5', whitespace: 'whitespace' } as const,
+          { id: 'blank-5', kind: 'whitespace' } as const,
         ],
       },
       '456': {
         columns: 2,
         items: [
-          { id: 'blank-1', whitespace: 'whitespace' } as const,
+          { id: 'blank-1', kind: 'whitespace' } as const,
           generateTestNft(),
           generateTestNft(),
-          { id: 'blank-1', whitespace: 'whitespace' } as const,
-          { id: 'blank-1', whitespace: 'whitespace' } as const,
+          { id: 'blank-1', kind: 'whitespace' } as const,
+          { id: 'blank-1', kind: 'whitespace' } as const,
           generateTestNft(),
           generateTestNft(),
-          { id: 'blank-1', whitespace: 'whitespace' } as const,
-          { id: 'blank-1', whitespace: 'whitespace' } as const,
+          { id: 'blank-1', kind: 'whitespace' } as const,
+          { id: 'blank-1', kind: 'whitespace' } as const,
           generateTestNft(),
         ],
       },
@@ -126,8 +123,8 @@ describe('generateLayoutFromCollection', () => {
     expect(layout).toEqual({
       sections: [0, 5],
       sectionLayout: [
-        { columns: 3, whitespace: [0, 0, 1, 4, 5] },
-        { columns: 2, whitespace: [0, 2, 2, 4, 4] },
+        { columns: 3, kind: [0, 0, 1, 4, 5] },
+        { columns: 2, kind: [0, 2, 2, 4, 4] },
       ],
     });
   });

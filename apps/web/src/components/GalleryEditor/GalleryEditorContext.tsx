@@ -28,7 +28,7 @@ import {
   UpdateCollectionInput,
 } from '~/generated/GalleryEditorContextSaveGalleryMutation.graphql';
 import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
-import { generateLayoutFromCollectionNew } from '~/utils/collectionLayout';
+import { generateLayoutFromCollection } from '~/utils/collectionLayout';
 import { generate12DigitId } from '~/utils/generate12DigitId';
 
 const deepClone = rfdc();
@@ -314,7 +314,7 @@ export function GalleryEditorProvider({
           section.items.filter((item) => item.kind === 'token')
         );
 
-        const layout = generateLayoutFromCollectionNew(collection.sections);
+        const layout = generateLayoutFromCollection(collection.sections);
 
         return {
           collectorsNote: collection.collectorsNote,
@@ -336,7 +336,7 @@ export function GalleryEditorProvider({
           section.items.filter((item) => item.kind === 'token')
         );
 
-        const layout = generateLayoutFromCollectionNew(collection.sections);
+        const layout = generateLayoutFromCollection(collection.sections);
 
         return {
           givenID: collection.dbid,

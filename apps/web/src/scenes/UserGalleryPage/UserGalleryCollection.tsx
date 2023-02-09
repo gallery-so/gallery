@@ -17,7 +17,7 @@ import { UnstyledLink } from '~/components/core/Link/UnstyledLink';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleS } from '~/components/core/Text/Text';
-import CollectionCreateOrEditForm from '~/components/ManageGallery/OrganizeCollection/CollectionCreateOrEditForm';
+import { CollectionCreateOrEditForm } from '~/components/GalleryEditor/CollectionCreateOrEditForm';
 import NftGallery from '~/components/NftGallery/NftGallery';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
@@ -26,7 +26,6 @@ import { UserGalleryCollectionQueryFragment$key } from '~/generated/UserGalleryC
 import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
 import useResizeObserver from '~/hooks/useResizeObserver';
 import { baseUrl } from '~/utils/baseUrl';
-import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 import noop from '~/utils/noop';
 import unescape from '~/utils/unescape';
 
@@ -49,7 +48,6 @@ function UserGalleryCollection({
     graphql`
       fragment UserGalleryCollectionQueryFragment on Query {
         ...useLoggedInUserIdFragment
-        ...isFeatureEnabledFragment
       }
     `,
     queryRef
@@ -119,19 +117,16 @@ function UserGalleryCollection({
     showModal({
       content: (
         <CollectionCreateOrEditForm
-          // No need for onNext because this isn't part of a wizard
-          onNext={noop}
-          galleryId={galleryId}
-          collectionId={collectionId}
-          collectionName={collection.name}
-          collectionCollectorsNote={collection.collectorsNote ?? ''}
+          mode="editing"
+          // TODO(delete-old-editor): wire this up
+          onDone={noop}
+          name={collection.name}
+          collectorsNote={collection.collectorsNote ?? ''}
         />
       ),
       headerText: 'Name and describe your collection',
     });
-  }, [collection.collectorsNote, collectionId, collection.name, galleryId, showModal]);
-
-  const isMultiGalleryEnabled = isFeatureEnabled(FeatureFlag.MULTIGALLERY, query);
+  }, [collection.collectorsNote, collection.name, showModal]);
 
   return (
     <StyledCollectionWrapper ref={componentRef}>
@@ -152,17 +147,10 @@ function UserGalleryCollection({
                       EDIT NAME & DESCRIPTION
                     </DropdownItem>
                     <DropdownLink
-                      href={
-                        isMultiGalleryEnabled
-                          ? {
-                              pathname: '/gallery/[galleryId]/edit',
-                              query: { galleryId, collectionId },
-                            }
-                          : {
-                              pathname: '/gallery/[galleryId]/collection/[collectionId]/edit',
-                              query: { galleryId, collectionId },
-                            }
-                      }
+                      href={{
+                        pathname: '/gallery/[galleryId]/edit',
+                        query: { galleryId, collectionId },
+                      }}
                       onClick={() => track('Update existing collection button clicked')}
                     >
                       EDIT COLLECTION

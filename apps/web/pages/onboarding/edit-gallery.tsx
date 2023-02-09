@@ -14,7 +14,7 @@ import {
 } from '~/components/GalleryEditor/GalleryOnboardingGuide/OnboardingDialogContext';
 import useConfirmationMessageBeforeClose from '~/components/ManageGallery/useConfirmationMessageBeforeClose';
 import FullPageStep from '~/components/Onboarding/FullPageStep';
-import { OnboardingEditGalleryNavbar } from '~/contexts/globalLayout/EditGalleryNavbar/OnboardingEditGalleryNavbar';
+import { OnboardingEditGalleryNavbar } from '~/contexts/globalLayout/GlobalNavbar/EditGalleryNavbar/OnboardingEditGalleryNavbar';
 import { useCanGoBack } from '~/contexts/navigation/GalleryNavigationProvider';
 import { editGalleryOnboardingInnerFragment$key } from '~/generated/editGalleryOnboardingInnerFragment.graphql';
 import { editGalleryOnboardingQuery } from '~/generated/editGalleryOnboardingQuery.graphql';

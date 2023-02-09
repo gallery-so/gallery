@@ -2,18 +2,16 @@ import { graphql } from 'react-relay';
 import { readInlineData } from 'relay-runtime';
 
 import { StagedItem, StagedSectionMap } from '~/components/GalleryEditor/GalleryEditorContext';
-import {
-  EditModeTokenChild,
-  isEditModeToken,
-  StagedCollection,
-  StagingItem,
-  WhitespaceBlock,
-} from '~/components/ManageGallery/OrganizeCollection/types';
 import { DEFAULT_COLUMNS } from '~/constants/layout';
 import { collectionLayoutParseFragment$key } from '~/generated/collectionLayoutParseFragment.graphql';
 import { generate12DigitId } from '~/utils/generate12DigitId';
 import { removeNullValues } from '~/utils/removeNullValues';
 // This file contains helper methods to manipulate collections, layouts, and related data used for the Collection Editor and its drag and drop interface.
+
+type WhitespaceBlock = {
+  id: string;
+  whitespace: 'whitespace';
+};
 
 type Section<T> = {
   items: ReadonlyArray<T | WhitespaceBlock>;
@@ -103,13 +101,13 @@ export function parseCollectionLayout<T>(
 // The list of NFTs would be: [A, B, C, D, E]
 // The whitespace list would be : [0, 0, 1, 4, 5]
 
-export function getWhitespacePositionsFromStagedItems(stagedItems: StagingItem[]): number[] {
+export function getWhitespacePositionsFromStagedItems(stagedItems: StagedItem[]): number[] {
   // For every token we encounter in stagedItems, increment a counter to track its position in the list of tokens.
   // For every whitespace we encounter, add the counter's value to the list of whitespace positions.
   let nftIndex = 0;
   const result: number[] = [];
   stagedItems.forEach((stagedItem) => {
-    if (isEditModeToken(stagedItem)) {
+    if (stagedItem.kind === 'whitespace') {
       nftIndex++;
     } else {
       // is whitespace
@@ -122,50 +120,7 @@ export function getWhitespacePositionsFromStagedItems(stagedItems: StagingItem[]
 
 // Given a collection of sections and their items, return an object representing the layout of the collection.
 // The layout object corresponds to the `CollectionLayoutInput`input type in the GraphQL API.
-export function generateLayoutFromCollection(collection: StagedCollection) {
-  let sectionStartIndex = 0;
-  const filteredCollection = { ...collection };
-
-  Object.entries(collection).forEach(([sectionId, section]) => {
-    let isEmptySection = section.items.length === 0;
-    if (!isEmptySection) {
-      // see if it's only empty whitespace blocks
-      const sectionWithoutWhitespace = section.items.filter((item) => isEditModeToken(item));
-
-      isEmptySection = sectionWithoutWhitespace.length === 0;
-    }
-
-    if (isEmptySection) {
-      // delete empty section
-      delete filteredCollection[sectionId];
-    }
-  });
-
-  const sectionStartIndices = Object.keys(filteredCollection).map((sectionId, index) => {
-    const lastSectionId = Object.keys(filteredCollection)[index - 1];
-    const previousSection = lastSectionId ? filteredCollection[lastSectionId] : null;
-
-    if (!previousSection) {
-      return sectionStartIndex;
-    }
-
-    sectionStartIndex += previousSection.items.filter((item) => isEditModeToken(item)).length;
-
-    return sectionStartIndex;
-  });
-
-  return {
-    sections: sectionStartIndices,
-    sectionLayout: Object.values(filteredCollection).map((section) => ({
-      columns: section.columns,
-      whitespace: getWhitespacePositionsFromSection(section.items),
-    })),
-  };
-}
-
-// Given a collection of sections and their items, return an object representing the layout of the collection.
-// The layout object corresponds to the `CollectionLayoutInput`input type in the GraphQL API.
-export function generateLayoutFromCollectionNew(collection: StagedSectionMap) {
+export function generateLayoutFromCollection(collection: StagedSectionMap) {
   let sectionStartIndex = 0;
   const filteredCollection = { ...collection };
   Object.entries(collection).forEach(([sectionId, section]) => {
@@ -199,34 +154,12 @@ export function generateLayoutFromCollectionNew(collection: StagedSectionMap) {
     sections: sectionStartIndices,
     sectionLayout: Object.values(filteredCollection).map((section) => ({
       columns: section.columns,
-      whitespace: getWhitespacePositionsFromSectionNew(section.items),
+      whitespace: getWhitespacePositionsFromSection(section.items),
     })),
   };
 }
 
-// Given a collection of sections and their items, return a list of just the token ids in the collection.
-export function getTokenIdsFromCollection(collection: StagedCollection) {
-  const tokens = removeWhitespacesFromStagedItems(
-    Object.values(collection).flatMap((section) => section.items)
-  );
-  return tokens.map((token) => token.dbid);
-}
-
-export function getWhitespacePositionsFromSection(sectionItems: StagingItem[]): number[] {
-  let nftIndex = 0;
-  const result: number[] = [];
-  sectionItems.forEach((item) => {
-    if (isEditModeToken(item)) {
-      nftIndex++;
-    } else {
-      // is whitespace
-      result.push(nftIndex);
-    }
-  });
-  return result;
-}
-
-export function getWhitespacePositionsFromSectionNew(sectionItems: StagedItem[]): number[] {
+export function getWhitespacePositionsFromSection(sectionItems: StagedItem[]): number[] {
   let nftIndex = 0;
   const result: number[] = [];
   sectionItems.forEach((item) => {
@@ -238,17 +171,6 @@ export function getWhitespacePositionsFromSectionNew(sectionItems: StagedItem[])
     }
   });
   return result;
-}
-
-// filter whitespaces from stagedItems and map each EditModeToken -> Nft
-export function removeWhitespacesFromStagedItems(stagedItems: StagingItem[]) {
-  return stagedItems.reduce((filtered: EditModeTokenChild[], item) => {
-    if (isEditModeToken(item)) {
-      filtered.push(item.token);
-    }
-
-    return filtered;
-  }, []);
 }
 
 export function insertWhitespaceBlocks<T>(
