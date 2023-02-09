@@ -402,7 +402,7 @@ export function GalleryEditorProvider({
       updatedCollections,
       deletedCollections,
 
-      editID: editSessionID,
+      editId: editSessionID,
     };
 
     track('Save Gallery', payload);
@@ -488,7 +488,7 @@ export function GalleryEditorProvider({
       const payload = {
         galleryId,
         caption,
-        editID: editSessionID,
+        editId: editSessionID,
       };
 
       track('Publish Gallery', payload);
