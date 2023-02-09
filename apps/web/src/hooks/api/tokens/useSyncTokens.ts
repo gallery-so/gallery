@@ -18,7 +18,7 @@ export default function useSyncTokens() {
             viewer {
               # This should be sufficient to capture all the things
               # we want to refresh. Don't @me when this fails.
-              ...CollectionEditorViewerNewFragment
+              ...CollectionEditorViewerFragment
             }
           }
           ... on ErrNotAuthorized {

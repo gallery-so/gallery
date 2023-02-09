@@ -149,7 +149,7 @@ export function NftErrorProvider({ children }: PropsWithChildren) {
             ...NftPreviewTokenFragment
             ...SidebarNftIconPreviewAssetNew
             ...NftDetailAssetTokenFragment
-            ...StagingAreaNewFragment
+            ...StagingAreaFragment
           }
         }
       }

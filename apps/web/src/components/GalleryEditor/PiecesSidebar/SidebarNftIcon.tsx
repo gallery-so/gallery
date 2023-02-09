@@ -13,7 +13,7 @@ import { useCollectionEditorContextNew } from '~/contexts/collectionEditor/Colle
 import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import { ContentIsLoadedEvent } from '~/contexts/shimmer/ShimmerContext';
 import { CouldNotRenderNftError } from '~/errors/CouldNotRenderNftError';
-import { SidebarNftIconNewFragment$key } from '~/generated/SidebarNftIconNewFragment.graphql';
+import { SidebarNftIconFragment$key } from '~/generated/SidebarNftIconFragment.graphql';
 import { SidebarNftIconPollerNewQuery } from '~/generated/SidebarNftIconPollerNewQuery.graphql';
 import { SidebarNftIconPreviewAssetNew$key } from '~/generated/SidebarNftIconPreviewAssetNew.graphql';
 import { useNftRetry, useThrowOnMediaFailure } from '~/hooks/useNftRetry';
@@ -21,7 +21,7 @@ import getVideoOrImageUrlForNftPreview from '~/utils/graphql/getVideoOrImageUrlF
 import { getBackgroundColorOverrideForContract } from '~/utils/token';
 
 type SidebarNftIconProps = {
-  tokenRef: SidebarNftIconNewFragment$key;
+  tokenRef: SidebarNftIconFragment$key;
   handleTokenRenderError: (id: string) => void;
   handleTokenRenderSuccess: (id: string) => void;
 };
@@ -33,7 +33,7 @@ function SidebarNftIcon({
 }: SidebarNftIconProps) {
   const token = useFragment(
     graphql`
-      fragment SidebarNftIconNewFragment on Token {
+      fragment SidebarNftIconFragment on Token {
         dbid
         contract {
           contractAddress {
@@ -122,7 +122,7 @@ function SidebarNftIcon({
           graphql`
             query SidebarNftIconPollerNewQuery($id: DBID!) {
               tokenById(id: $id) {
-                ...SidebarNftIconNewFragment
+                ...SidebarNftIconFragment
               }
             }
           `,

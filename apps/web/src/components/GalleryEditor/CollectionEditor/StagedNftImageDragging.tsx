@@ -5,7 +5,7 @@ import styled, { keyframes } from 'styled-components';
 import colors from '~/components/core/colors';
 import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import { CouldNotRenderNftError } from '~/errors/CouldNotRenderNftError';
-import { StagedNftImageDraggingNewFragment$key } from '~/generated/StagedNftImageDraggingNewFragment.graphql';
+import { StagedNftImageDraggingFragment$key } from '~/generated/StagedNftImageDraggingFragment.graphql';
 import { useImageFailureCheck } from '~/hooks/useImageFailureCheck';
 import useMouseUp from '~/hooks/useMouseUp';
 import { useThrowOnMediaFailure } from '~/hooks/useNftRetry';
@@ -13,7 +13,7 @@ import getVideoOrImageUrlForNftPreview from '~/utils/graphql/getVideoOrImageUrlF
 import { getBackgroundColorOverrideForContract } from '~/utils/token';
 
 type Props = {
-  tokenRef: StagedNftImageDraggingNewFragment$key;
+  tokenRef: StagedNftImageDraggingFragment$key;
   onLoad: () => void;
   size: number;
 };
@@ -21,7 +21,7 @@ type Props = {
 function StagedNftImageDragging({ tokenRef, size, onLoad }: Props) {
   const token = useFragment(
     graphql`
-      fragment StagedNftImageDraggingNewFragment on Token {
+      fragment StagedNftImageDraggingFragment on Token {
         contract {
           contractAddress {
             address

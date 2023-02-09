@@ -19,8 +19,8 @@ export function GalleryEditor({ queryRef }: GalleryEditorProps) {
   const query = useFragment(
     graphql`
       fragment GalleryEditorFragment on Query {
-        ...CollectionEditorNewFragment
-        ...PiecesSidebarViewerNewFragment
+        ...CollectionEditorFragment
+        ...PiecesSidebarViewerFragment
         ...CollectionSidebarQueryFragment
 
         viewer {
@@ -29,7 +29,7 @@ export function GalleryEditor({ queryRef }: GalleryEditorProps) {
           ... on Viewer {
             user {
               tokens {
-                ...PiecesSidebarNewFragment
+                ...PiecesSidebarFragment
               }
             }
           }
