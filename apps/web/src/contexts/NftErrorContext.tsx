@@ -147,11 +147,9 @@ export function NftErrorProvider({ children }: PropsWithChildren) {
           token {
             # Ensure we're reloading the necessary data
             ...NftPreviewTokenFragment
-            ...SidebarNftIconPreviewAsset
+            ...SidebarNftIconPreviewAssetNew
             ...NftDetailAssetTokenFragment
-            ...BigNftFragment
-            ...CollectionRowCompactNftsFragment
-            ...StagingAreaFragment
+            ...StagingAreaNewFragment
           }
         }
       }
