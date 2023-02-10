@@ -38,8 +38,8 @@ tasks:
     - concurrently
     - -n Next,Relay-Compiler,GraphQL-Codegen
     - yarn next dev
-    - yarn moon run web:relay-watch
-    - yarn moon run web:graphql-codegen-watch
+    - node_modules/.bin/moon run web:relay-watch
+    - node_modules/.bin/moon run web:graphql-codegen-watch
 
   lint:
     command:

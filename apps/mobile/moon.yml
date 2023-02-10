@@ -40,7 +40,7 @@ tasks:
       - concurrently
       - -n Expo,Relay-Compiler
       - yarn expo start --ios --clear
-      - yarn moon run mobile:relay-watch
+      - node_modules/.bin/moon run mobile:relay-watch
 
   typecheck:
     command: tsc --build
