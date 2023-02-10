@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 import colors from '~/components/core/colors';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
-import { useCollectionEditorContextNew } from '~/contexts/collectionEditor/CollectionEditorContextNew';
+import { useCollectionEditorContext } from '~/contexts/collectionEditor/CollectionEditorContext';
 import PlusIcon from '~/icons/PlusIcon';
 
 import OnboardingDialog from '../../GalleryOnboardingGuide/OnboardingDialog';
@@ -35,7 +35,7 @@ export default function DroppableSection({ children, columns, id, items, style, 
   });
 
   const { activeSectionId, activateSection, addSection, deleteSection } =
-    useCollectionEditorContextNew();
+    useCollectionEditorContext();
 
   const { step, dialogMessage, nextStep, handleClose } = useOnboardingDialogContext();
 

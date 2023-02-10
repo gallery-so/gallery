@@ -1,7 +1,7 @@
 import { CollectionGroup } from '~/components/GalleryEditor/PiecesSidebar/groupCollectionsByAddress';
 import { VirtualizedRow } from '~/components/GalleryEditor/PiecesSidebar/SidebarList';
-import { SidebarListTokenNewFragment$key } from '~/generated/SidebarListTokenNewFragment.graphql';
-import { SidebarTokensNewFragment$data } from '~/generated/SidebarTokensNewFragment.graphql';
+import { SidebarListTokenFragment$key } from '~/generated/SidebarListTokenFragment.graphql';
+import { SidebarTokensFragment$data } from '~/generated/SidebarTokensFragment.graphql';
 
 type createVirtualizedRowsFromGroupsArgs = {
   groups: CollectionGroup[];
@@ -17,20 +17,18 @@ export function createVirtualizedRowsFromGroups({
   const rows: VirtualizedRow[] = [];
 
   for (const group of groups) {
-    const tokensSortedByErrored: SidebarListTokenNewFragment$key[] = [...group.tokens].sort(
-      (a, b) => {
-        const aIsErrored = erroredTokenIds.has(a.dbid);
-        const bIsErrored = erroredTokenIds.has(b.dbid);
+    const tokensSortedByErrored: SidebarListTokenFragment$key[] = [...group.tokens].sort((a, b) => {
+      const aIsErrored = erroredTokenIds.has(a.dbid);
+      const bIsErrored = erroredTokenIds.has(b.dbid);
 
-        if (aIsErrored === bIsErrored) {
-          return 0;
-        } else if (aIsErrored) {
-          return 1;
-        } else {
-          return -1;
-        }
+      if (aIsErrored === bIsErrored) {
+        return 0;
+      } else if (aIsErrored) {
+        return 1;
+      } else {
+        return -1;
       }
-    );
+    });
 
     // Default to expanded
     const expanded = !collapsedCollections.has(group.address);
@@ -49,7 +47,7 @@ export function createVirtualizedRowsFromGroups({
 }
 
 type createVirtualizedRowsFromTokensArgs = {
-  tokens: SidebarTokensNewFragment$data;
+  tokens: SidebarTokensFragment$data;
   erroredTokenIds: Set<string>;
 };
 

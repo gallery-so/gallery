@@ -9,7 +9,7 @@ import {
 import { EmptySidebar } from '~/components/GalleryEditor/PiecesSidebar/EmptySidebar';
 import { groupCollectionsByAddress } from '~/components/GalleryEditor/PiecesSidebar/groupCollectionsByAddress';
 import { SidebarList } from '~/components/GalleryEditor/PiecesSidebar/SidebarList';
-import { SidebarTokensNewFragment$key } from '~/generated/SidebarTokensNewFragment.graphql';
+import { SidebarTokensFragment$key } from '~/generated/SidebarTokensFragment.graphql';
 import useSetSpamPreference from '~/hooks/api/tokens/useSetSpamPreference';
 
 import { SidebarView } from './SidebarViewSelector';
@@ -18,7 +18,7 @@ type SidebarTokensProps = {
   isSearching: boolean;
   selectedChain: Chain;
   selectedView: SidebarView;
-  tokenRefs: SidebarTokensNewFragment$key;
+  tokenRefs: SidebarTokensFragment$key;
 };
 
 export const SidebarTokens = ({
@@ -29,7 +29,7 @@ export const SidebarTokens = ({
 }: SidebarTokensProps) => {
   const tokens = useFragment(
     graphql`
-      fragment SidebarTokensNewFragment on Token @relay(plural: true) {
+      fragment SidebarTokensFragment on Token @relay(plural: true) {
         id
         dbid
 
@@ -47,7 +47,7 @@ export const SidebarTokens = ({
           }
         }
 
-        ...SidebarListTokenNewFragment
+        ...SidebarListTokenFragment
       }
     `,
     tokenRefs

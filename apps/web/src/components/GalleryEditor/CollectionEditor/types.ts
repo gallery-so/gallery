@@ -1,5 +1,3 @@
-import { UniqueIdentifier } from '@dnd-kit/core';
-
 export type EditModeTokenChild = {
   dbid: string;
   name: string;
@@ -23,10 +21,6 @@ export type WhitespaceBlock = {
 // Accepted types for the Dnd Collection Editor
 export type StagingItem = EditModeToken | WhitespaceBlock;
 
-export function isEditModeToken(item: StagingItem): item is EditModeToken {
-  return !!item && 'token' in item && !!item.token;
-}
-
 export type Section = {
   columns: number;
   items: StagingItem[];
@@ -36,7 +30,3 @@ export type SectionWithoutIds = {
   columns: number;
   items: Omit<StagingItem, 'id'>[];
 };
-
-export type StagedCollectionWithoutIds = Record<UniqueIdentifier, SectionWithoutIds>;
-
-export type StagedCollection = Record<UniqueIdentifier, Section>;

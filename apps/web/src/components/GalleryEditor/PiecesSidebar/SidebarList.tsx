@@ -17,7 +17,7 @@ import {
   SIDEBAR_ICON_DIMENSIONS,
   SIDEBAR_ICON_GAP,
 } from '~/constants/sidebar';
-import { SidebarListTokenNewFragment$key } from '~/generated/SidebarListTokenNewFragment.graphql';
+import { SidebarListTokenFragment$key } from '~/generated/SidebarListTokenFragment.graphql';
 import HideIcon from '~/icons/HideIcon';
 import ShowIcon from '~/icons/ShowIcon';
 
@@ -34,7 +34,7 @@ export type CollectionTitleRow = {
 
 export type VirtualizedRow =
   | CollectionTitleRow
-  | { type: 'tokens'; tokens: SidebarListTokenNewFragment$key[]; expanded: boolean };
+  | { type: 'tokens'; tokens: SidebarListTokenFragment$key[]; expanded: boolean };
 
 type Props = {
   rows: VirtualizedRow[];
@@ -167,9 +167,9 @@ export function SidebarList({
             {row.tokens.map((tokenRef) => {
               const token = readInlineData(
                 graphql`
-                  fragment SidebarListTokenNewFragment on Token @inline {
+                  fragment SidebarListTokenFragment on Token @inline {
                     dbid
-                    ...SidebarNftIconNewFragment
+                    ...SidebarNftIconFragment
                   }
                 `,
                 tokenRef

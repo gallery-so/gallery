@@ -9,10 +9,10 @@ import { TitleS } from '~/components/core/Text/Text';
 import { Chain } from '~/components/GalleryEditor/PiecesSidebar/chains';
 import { SidebarChainSelector } from '~/components/GalleryEditor/PiecesSidebar/SidebarChainSelector';
 import { SidebarTokens } from '~/components/GalleryEditor/PiecesSidebar/SidebarTokens';
-import { useCollectionEditorContextNew } from '~/contexts/collectionEditor/CollectionEditorContextNew';
+import { useCollectionEditorContext } from '~/contexts/collectionEditor/CollectionEditorContext';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
-import { PiecesSidebarNewFragment$key } from '~/generated/PiecesSidebarNewFragment.graphql';
-import { PiecesSidebarViewerNewFragment$key } from '~/generated/PiecesSidebarViewerNewFragment.graphql';
+import { PiecesSidebarFragment$key } from '~/generated/PiecesSidebarFragment.graphql';
+import { PiecesSidebarViewerFragment$key } from '~/generated/PiecesSidebarViewerFragment.graphql';
 import useSyncTokens from '~/hooks/api/tokens/useSyncTokens';
 import { doesUserOwnWalletFromChain } from '~/utils/doesUserOwnWalletFromChain';
 import { removeNullValues } from '~/utils/removeNullValues';
@@ -24,21 +24,21 @@ import SearchBar from './SearchBar';
 import { SidebarView, SidebarViewSelector } from './SidebarViewSelector';
 
 type Props = {
-  tokensRef: PiecesSidebarNewFragment$key;
-  queryRef: PiecesSidebarViewerNewFragment$key;
+  tokensRef: PiecesSidebarFragment$key;
+  queryRef: PiecesSidebarViewerFragment$key;
 };
 
 export function PiecesSidebar({ tokensRef, queryRef }: Props) {
   const allTokens = useFragment(
     graphql`
-      fragment PiecesSidebarNewFragment on Token @relay(plural: true) {
+      fragment PiecesSidebarFragment on Token @relay(plural: true) {
         dbid
         chain
         isSpamByUser
         isSpamByProvider
 
-        ...SearchBarNewFragment
-        ...SidebarTokensNewFragment
+        ...SearchBarFragment
+        ...SidebarTokensFragment
       }
     `,
     tokensRef
@@ -46,10 +46,10 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
 
   const query = useFragment(
     graphql`
-      fragment PiecesSidebarViewerNewFragment on Query {
+      fragment PiecesSidebarViewerFragment on Query {
         ...doesUserOwnWalletFromChainFragment
-        ...SidebarChainSelectorNewFragment
-        ...AddWalletSidebarQueryNewFragment
+        ...SidebarChainSelectorFragment
+        ...AddWalletSidebarQueryFragment
       }
     `,
     queryRef
@@ -57,7 +57,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
 
   const { step, dialogMessage, nextStep, handleClose } = useOnboardingDialogContext();
   const { syncTokens } = useSyncTokens();
-  const { addWhitespace } = useCollectionEditorContextNew();
+  const { addWhitespace } = useCollectionEditorContext();
 
   const [searchResults, setSearchResults] = useState<string[]>([]);
   const [selectedChain, setSelectedChain] = useState<Chain>('Ethereum');

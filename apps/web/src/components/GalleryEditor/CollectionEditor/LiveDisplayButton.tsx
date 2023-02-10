@@ -2,7 +2,7 @@ import { useState } from 'react';
 import styled from 'styled-components';
 
 import Tooltip from '~/components/Tooltip/Tooltip';
-import { useCollectionEditorContextNew } from '~/contexts/collectionEditor/CollectionEditorContextNew';
+import { useCollectionEditorContext } from '~/contexts/collectionEditor/CollectionEditorContext';
 import VideoEnabledIcon from '~/icons/Video';
 import VideoDisabledIcon from '~/icons/VideoDisabled';
 
@@ -11,7 +11,7 @@ type Props = {
 };
 
 export default function LiveDisplayButton({ id }: Props) {
-  const { liveDisplayTokenIds, toggleTokenLiveDisplay } = useCollectionEditorContextNew();
+  const { liveDisplayTokenIds, toggleTokenLiveDisplay } = useCollectionEditorContext();
   const isEnabled = liveDisplayTokenIds.has(id);
 
   const [showTooltip, setShowTooltip] = useState(false);

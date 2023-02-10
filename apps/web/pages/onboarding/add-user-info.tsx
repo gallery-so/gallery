@@ -6,7 +6,6 @@ import styled from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';
 import ErrorText from '~/components/core/Text/ErrorText';
-import { Chain } from '~/components/ManageGallery/OrganizeCollection/Sidebar/chains';
 import FullPageCenteredStep from '~/components/Onboarding/FullPageCenteredStep';
 import { OnboardingFooter } from '~/components/Onboarding/OnboardingFooter';
 import UserInfoForm from '~/components/Profile/UserInfoForm';
@@ -14,8 +13,8 @@ import useUserInfoForm from '~/components/Profile/useUserInfoForm';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { addUserInfoFetchGalleryIdQuery } from '~/generated/addUserInfoFetchGalleryIdQuery.graphql';
 import { addUserInfoQuery } from '~/generated/addUserInfoQuery.graphql';
+import { Chain } from '~/generated/enums';
 import useSyncTokens from '~/hooks/api/tokens/useSyncTokens';
-import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 import noop from '~/utils/noop';
 
 function AddUserInfo() {
@@ -31,14 +30,10 @@ function AddUserInfo() {
             }
           }
         }
-
-        ...isFeatureEnabledFragment
       }
     `,
     {}
   );
-
-  const isMultigalleryEnabled = isFeatureEnabled(FeatureFlag.MULTIGALLERY, query);
 
   const { push, back, query: urlQuery } = useRouter();
   const relayEnvironment = useRelayEnvironment();
@@ -55,35 +50,31 @@ function AddUserInfo() {
     delete nextParams.authMechanism;
     delete nextParams.userFriendlyWalletName;
 
-    if (isMultigalleryEnabled) {
-      const query = await fetchQuery<addUserInfoFetchGalleryIdQuery>(
-        relayEnvironment,
-        graphql`
-          query addUserInfoFetchGalleryIdQuery {
-            viewer {
-              ... on Viewer {
-                viewerGalleries {
-                  gallery {
-                    dbid
-                  }
+    const query = await fetchQuery<addUserInfoFetchGalleryIdQuery>(
+      relayEnvironment,
+      graphql`
+        query addUserInfoFetchGalleryIdQuery {
+          viewer {
+            ... on Viewer {
+              viewerGalleries {
+                gallery {
+                  dbid
                 }
               }
             }
           }
-        `,
-        {},
-        { fetchPolicy: 'network-only' }
-      ).toPromise();
+        }
+      `,
+      {},
+      { fetchPolicy: 'network-only' }
+    ).toPromise();
 
-      const galleryId = query?.viewer?.viewerGalleries?.[0]?.gallery?.dbid;
+    const galleryId = query?.viewer?.viewerGalleries?.[0]?.gallery?.dbid;
 
-      if (galleryId) {
-        push({ pathname: '/onboarding/edit-gallery', query: { galleryId } });
-      }
-    } else {
-      push({ pathname: '/onboarding/create' });
+    if (galleryId) {
+      push({ pathname: '/onboarding/edit-gallery', query: { galleryId } });
     }
-  }, [isMultigalleryEnabled, push, relayEnvironment, urlQuery]);
+  }, [push, relayEnvironment, urlQuery]);
 
   const {
     bio,

@@ -1,10 +1,9 @@
 import { useCallback, useMemo } from 'react';
 import { graphql } from 'relay-runtime';
 
-import { Chain } from '~/components/ManageGallery/OrganizeCollection/Sidebar/chains';
 import { useSyncTokensContext } from '~/contexts/SyncTokensLockContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
-import { useSyncTokensMutation } from '~/generated/useSyncTokensMutation.graphql';
+import { Chain, useSyncTokensMutation } from '~/generated/useSyncTokensMutation.graphql';
 import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 
 export default function useSyncTokens() {
