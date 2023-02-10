@@ -50,6 +50,7 @@ export function CollectionSaveButtonWithCaption({
     }
     await onSave(caption);
     handleCloseCaption();
+    setCaption('');
     setIsLoading(false);
   }, [caption, handleCloseCaption, onSave, track]);
 
@@ -76,7 +77,7 @@ export function CollectionSaveButtonWithCaption({
     <StyledConfirmationContainer>
       <StyledButton
         onClick={isPopupDisplayed ? handleCloseCaption : handleOpenCaption}
-        disabled={disabled || !hasUnsavedChange}
+        disabled={disabled}
         pending={isLoading}
       >
         <HStack gap={4} align="center">
@@ -95,12 +96,12 @@ export function CollectionSaveButtonWithCaption({
             onChange={handleCaptionChange}
             hasPadding
             defaultValue={caption}
-            placeholder="Add an optional note..."
-            textAreaHeight="80px"
+            placeholder="(Optional) Write something about your latest update to your followers"
+            textAreaHeight="116px"
           />
 
           <Button onClick={handleSubmit} disabled={isSaveDisabled} pending={isLoading}>
-            Save
+            Publish
           </Button>
 
           {error && <ErrorText message={error} />}

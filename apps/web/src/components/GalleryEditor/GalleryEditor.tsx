@@ -8,7 +8,7 @@ import { HStack } from '~/components/core/Spacer/Stack';
 import { CollectionEditor } from '~/components/GalleryEditor/CollectionEditor/CollectionEditor';
 import { CollectionSidebar } from '~/components/GalleryEditor/CollectionSidebar/CollectionSidebar';
 import { PiecesSidebar } from '~/components/GalleryEditor/PiecesSidebar/PiecesSidebar';
-import { CollectionEditorProviderNew } from '~/contexts/collectionEditor/CollectionEditorContextNew';
+import { CollectionEditorProvider } from '~/contexts/collectionEditor/CollectionEditorContext';
 import { removeNullValues } from '~/utils/removeNullValues';
 
 type GalleryEditorProps = {
@@ -19,8 +19,8 @@ export function GalleryEditor({ queryRef }: GalleryEditorProps) {
   const query = useFragment(
     graphql`
       fragment GalleryEditorFragment on Query {
-        ...CollectionEditorNewFragment
-        ...PiecesSidebarViewerNewFragment
+        ...CollectionEditorFragment
+        ...PiecesSidebarViewerFragment
         ...CollectionSidebarQueryFragment
 
         viewer {
@@ -29,7 +29,7 @@ export function GalleryEditor({ queryRef }: GalleryEditorProps) {
           ... on Viewer {
             user {
               tokens {
-                ...PiecesSidebarNewFragment
+                ...PiecesSidebarFragment
               }
             }
           }
@@ -49,13 +49,13 @@ export function GalleryEditor({ queryRef }: GalleryEditorProps) {
 
   return (
     <GalleryEditorWrapper>
-      <CollectionEditorProviderNew>
+      <CollectionEditorProvider>
         <CollectionSidebar queryRef={query} />
 
         <CollectionEditor queryRef={query} />
 
         <PiecesSidebar tokensRef={allTokens} queryRef={query} />
-      </CollectionEditorProviderNew>
+      </CollectionEditorProvider>
     </GalleryEditorWrapper>
   );
 }

@@ -30,9 +30,9 @@ import {
   dragOver,
 } from '~/components/GalleryEditor/CollectionEditor/DragAndDrop/draggingActions';
 import { useGalleryEditorContext } from '~/components/GalleryEditor/GalleryEditorContext';
-import { useCollectionEditorContextNew } from '~/contexts/collectionEditor/CollectionEditorContextNew';
+import { useCollectionEditorContext } from '~/contexts/collectionEditor/CollectionEditorContext';
 import { getImageSizeForColumns } from '~/contexts/collectionEditor/useDndDimensions';
-import { StagingAreaNewFragment$key } from '~/generated/StagingAreaNewFragment.graphql';
+import { StagingAreaFragment$key } from '~/generated/StagingAreaFragment.graphql';
 import useKeyDown from '~/hooks/useKeyDown';
 import { removeNullValues } from '~/utils/removeNullValues';
 import unescape from '~/utils/unescape';
@@ -62,16 +62,16 @@ const layoutMeasuring = {
 };
 
 type Props = {
-  tokensRef: StagingAreaNewFragment$key;
+  tokensRef: StagingAreaFragment$key;
 };
 
 function StagingArea({ tokensRef }: Props) {
   const tokens = useFragment(
     graphql`
-      fragment StagingAreaNewFragment on Token @relay(plural: true) {
+      fragment StagingAreaFragment on Token @relay(plural: true) {
         dbid
-        ...SortableStagedNftNewFragment
-        ...StagedItemDraggingNewFragment
+        ...SortableStagedNftFragment
+        ...StagedItemDraggingFragment
       }
     `,
     tokensRef
@@ -88,7 +88,7 @@ function StagingArea({ tokensRef }: Props) {
 
     updateSections,
     deleteSection,
-  } = useCollectionEditorContextNew();
+  } = useCollectionEditorContext();
 
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
 

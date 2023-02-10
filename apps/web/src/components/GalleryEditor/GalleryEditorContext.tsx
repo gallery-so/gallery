@@ -10,6 +10,7 @@ import {
 } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import rfdc from 'rfdc';
+import { v4 as uuid } from 'uuid';
 
 import { CollectionCreateOrEditForm } from '~/components/GalleryEditor/CollectionCreateOrEditForm';
 import { GalleryNameAndDescriptionEditForm } from '~/components/GalleryEditor/GalleryNameAndDescriptionEditForm';
@@ -17,18 +18,20 @@ import {
   createEmptyCollection,
   getInitialCollectionsFromServer,
 } from '~/components/GalleryEditor/getInitialCollectionsFromServer';
+import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { ErrorWithSentryMetadata } from '~/errors/ErrorWithSentryMetadata';
 import { GalleryEditorContextFragment$key } from '~/generated/GalleryEditorContextFragment.graphql';
+import { GalleryEditorContextPublishGalleryMutation } from '~/generated/GalleryEditorContextPublishGalleryMutation.graphql';
 import {
   CreateCollectionInGalleryInput,
   GalleryEditorContextSaveGalleryMutation,
   UpdateCollectionInput,
 } from '~/generated/GalleryEditorContextSaveGalleryMutation.graphql';
 import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
-import { generateLayoutFromCollectionNew } from '~/utils/collectionLayout';
+import { generateLayoutFromCollection } from '~/utils/collectionLayout';
 import { generate12DigitId } from '~/utils/generate12DigitId';
 
 const deepClone = rfdc();
@@ -45,7 +48,7 @@ export type GalleryEditorContextType = {
   validationErrors: string[];
   canSave: boolean;
 
-  saveGallery: (caption: string | null) => void;
+  saveGallery: () => void;
   activateCollection: (collectionId: string) => void;
   deleteCollection: (collectionId: string) => void;
   editCollectionNameAndNote: (collectionId: string) => void;
@@ -55,6 +58,7 @@ export type GalleryEditorContextType = {
   collectionIdBeingEdited: string | null;
   moveCollectionToGallery: (collectionId: string) => void;
   doesCollectionHaveUnsavedChanges: (collectionId: string) => boolean;
+  publishGallery: (caption: string | null) => void;
 };
 
 export const GalleryEditorContext = createContext<GalleryEditorContextType | undefined>(undefined);
@@ -123,21 +127,13 @@ export function GalleryEditorProvider({
               # eslint-disable-next-line relay/must-colocate-fragment-spreads
               ...NftGalleryFragment
               # eslint-disable-next-line relay/must-colocate-fragment-spreads
-              ...CollectionRowFragment
-              # eslint-disable-next-line relay/must-colocate-fragment-spreads
-              ...CollectionRowDraggingFragment
-              # eslint-disable-next-line relay/must-colocate-fragment-spreads
-              ...CollectionRowSettingsFragment
-              # eslint-disable-next-line relay/must-colocate-fragment-spreads
-              ...CollectionRowWrapperFragment
-              # eslint-disable-next-line relay/must-colocate-fragment-spreads
-              ...DeleteCollectionConfirmationFragment
-              # eslint-disable-next-line relay/must-colocate-fragment-spreads
-              ...SortableCollectionRowFragment
-              # eslint-disable-next-line relay/must-colocate-fragment-spreads
               ...UserGalleryCollectionFragment
               # eslint-disable-next-line relay/must-colocate-fragment-spreads
               ...CollectionGalleryHeaderFragment
+              # eslint-disable-next-line relay/must-colocate-fragment-spreads
+              ...CollectionLinkFragment
+              # eslint-disable-next-line relay/must-colocate-fragment-spreads
+              ...FeaturedCollectorCardCollectionFragment
             }
 
             ...getInitialCollectionsFromServerFragment
@@ -147,6 +143,23 @@ export function GalleryEditorProvider({
     }
   `);
 
+  const [publish] = usePromisifiedMutation<GalleryEditorContextPublishGalleryMutation>(graphql`
+    mutation GalleryEditorContextPublishGalleryMutation($input: PublishGalleryInput!) {
+      publishGallery(input: $input) {
+        __typename
+        ... on PublishGalleryPayload {
+          __typename
+          gallery {
+            __typename
+          }
+        }
+      }
+    }
+  `);
+
+  const track = useTrack();
+
+  const [editSessionID, setEditSessionID] = useState(uuid());
   const [hasSaved, setHasSaved] = useState(false);
 
   const [name, setName] = useState(() => query.galleryById?.name ?? '');
@@ -304,151 +317,212 @@ export function GalleryEditorProvider({
   );
 
   const reportError = useReportError();
-  const saveGallery = useCallback(
+  const saveGallery = useCallback(async () => {
+    const galleryId = query.galleryById.dbid;
+
+    if (!galleryId) {
+      reportError('Tried to save a gallery without a gallery id');
+      return;
+    }
+
+    const localCollectionToUpdatedCollection = (
+      collection: CollectionState
+    ): UpdateCollectionInput => {
+      const tokens = Object.values(collection.sections).flatMap((section) =>
+        section.items.filter((item) => item.kind === 'token')
+      );
+
+      const layout = generateLayoutFromCollection(collection.sections);
+
+      return {
+        collectorsNote: collection.collectorsNote,
+        dbid: collection.dbid,
+        hidden: collection.hidden,
+        tokenSettings: tokens.map((token) => {
+          return { tokenId: token.id, renderLive: collection.liveDisplayTokenIds.has(token.id) };
+        }),
+        layout,
+        name: collection.name,
+        tokens: tokens.map((token) => token.id),
+      };
+    };
+
+    const localCollectionToCreatedCollection = (
+      collection: CollectionState
+    ): CreateCollectionInGalleryInput => {
+      const tokens = Object.values(collection.sections).flatMap((section) =>
+        section.items.filter((item) => item.kind === 'token')
+      );
+
+      const layout = generateLayoutFromCollection(collection.sections);
+
+      return {
+        givenID: collection.dbid,
+        hidden: collection.hidden,
+        collectorsNote: collection.collectorsNote,
+        tokenSettings: tokens.map((token) => {
+          return { tokenId: token.id, renderLive: collection.liveDisplayTokenIds.has(token.id) };
+        }),
+        layout,
+        name: collection.name,
+        tokens: tokens.map((token) => token.id),
+      };
+    };
+
+    const updatedCollections: UpdateCollectionInput[] = Object.values(collections)
+      .filter((collection) => !collection.localOnly)
+      .map(localCollectionToUpdatedCollection);
+
+    const createdCollections: CreateCollectionInGalleryInput[] = Object.values(collections)
+      .filter((collection) => collection.localOnly)
+      .map(localCollectionToCreatedCollection);
+
+    const deletedCollections = [...deletedCollectionIds];
+
+    const order = [...Object.values(collections).map((collection) => collection.dbid)];
+
+    const payload = {
+      galleryId,
+
+      name,
+      description,
+      caption: null,
+
+      order,
+
+      createdCollections,
+      updatedCollections,
+      deletedCollections,
+
+      editId: editSessionID,
+    };
+
+    track('Save Gallery', payload);
+
+    try {
+      const { updateGallery } = await save({
+        variables: {
+          input: payload,
+        },
+      });
+
+      if (updateGallery?.__typename !== 'UpdateGalleryPayload' || !updateGallery.gallery) {
+        throw new ErrorWithSentryMetadata(
+          'Update gallery response did not have the expected typename',
+          { __typename: updateGallery?.__typename }
+        );
+      }
+
+      const serverSourcedCollections = getInitialCollectionsFromServer(updateGallery.gallery);
+
+      // Make sure we reset our "Has unsaved changes comparison point"
+      setInitialName(name);
+      setInitialDescription(description);
+      setInitialCollections(serverSourcedCollections);
+
+      // Make sure the UI is reflecting what the server tells us happened.
+      setCollections(serverSourcedCollections);
+
+      // Reset the deleted collection ids since we just deleted them
+      setDeletedCollectionIds(new Set());
+
+      // Ensure the same collection is still activated
+      const newCollectionIdBeingEdited = collectionIdBeingEdited
+        ? Object.keys(serverSourcedCollections)[
+            Object.keys(collections).indexOf(collectionIdBeingEdited)
+          ]
+        : null;
+
+      setCollectionIdBeingEdited(newCollectionIdBeingEdited ?? null);
+
+      // Flash a "Saved" message next to the "Done" button
+      setHasSaved(true);
+    } catch (error) {
+      pushToast({
+        autoClose: false,
+        message: "Something went wrong while saving your gallery. We're looking into it.",
+      });
+
+      if (error instanceof Error) {
+        reportError(error, { tags: { galleryId } });
+      } else {
+        reportError(
+          new ErrorWithSentryMetadata('Something unexpected went wrong while saving a gallery', {
+            galleryId,
+          })
+        );
+      }
+    }
+  }, [
+    collectionIdBeingEdited,
+    collections,
+    deletedCollectionIds,
+    description,
+    editSessionID,
+    name,
+    pushToast,
+    query.galleryById.dbid,
+    reportError,
+    save,
+    track,
+  ]);
+
+  const publishGallery = useCallback(
     async (_caption: string | null) => {
+      const galleryId = query.galleryById.dbid;
       const caption = _caption?.trim() ? _caption : null;
 
-      const galleryId = query.galleryById.dbid;
-
       if (!galleryId) {
-        reportError('Tried to save a gallery without a gallery id');
+        reportError('Tried to publish a gallery without a gallery id');
         return;
       }
 
-      const localCollectionToUpdatedCollection = (
-        collection: CollectionState
-      ): UpdateCollectionInput => {
-        const tokens = Object.values(collection.sections).flatMap((section) =>
-          section.items.filter((item) => item.kind === 'token')
-        );
-
-        const layout = generateLayoutFromCollectionNew(collection.sections);
-
-        return {
-          collectorsNote: collection.collectorsNote,
-          dbid: collection.dbid,
-          hidden: collection.hidden,
-          tokenSettings: tokens.map((token) => {
-            return { tokenId: token.id, renderLive: collection.liveDisplayTokenIds.has(token.id) };
-          }),
-          layout,
-          name: collection.name,
-          tokens: tokens.map((token) => token.id),
-        };
+      const payload = {
+        galleryId,
+        caption,
+        editId: editSessionID,
       };
 
-      const localCollectionToCreatedCollection = (
-        collection: CollectionState
-      ): CreateCollectionInGalleryInput => {
-        const tokens = Object.values(collection.sections).flatMap((section) =>
-          section.items.filter((item) => item.kind === 'token')
-        );
-
-        const layout = generateLayoutFromCollectionNew(collection.sections);
-
-        return {
-          givenID: collection.dbid,
-          hidden: collection.hidden,
-          collectorsNote: collection.collectorsNote,
-          tokenSettings: tokens.map((token) => {
-            return { tokenId: token.id, renderLive: collection.liveDisplayTokenIds.has(token.id) };
-          }),
-          layout,
-          name: collection.name,
-          tokens: tokens.map((token) => token.id),
-        };
-      };
-
-      const updatedCollections: UpdateCollectionInput[] = Object.values(collections)
-        .filter((collection) => !collection.localOnly)
-        .map(localCollectionToUpdatedCollection);
-
-      const createdCollections: CreateCollectionInGalleryInput[] = Object.values(collections)
-        .filter((collection) => collection.localOnly)
-        .map(localCollectionToCreatedCollection);
-
-      const deletedCollections = [...deletedCollectionIds];
-
-      const order = [...Object.values(collections).map((collection) => collection.dbid)];
+      track('Publish Gallery', payload);
 
       try {
-        const { updateGallery } = await save({
+        const { publishGallery } = await publish({
           variables: {
-            input: {
-              galleryId,
-
-              name,
-              description,
-              caption,
-
-              order,
-
-              createdCollections,
-              updatedCollections,
-              deletedCollections,
-            },
+            input: payload,
           },
         });
 
-        if (updateGallery?.__typename !== 'UpdateGalleryPayload' || !updateGallery.gallery) {
+        if (publishGallery?.__typename !== 'PublishGalleryPayload' || !publishGallery.gallery) {
           throw new ErrorWithSentryMetadata(
-            'Update gallery response did not have the expected typename',
-            { __typename: updateGallery?.__typename }
+            'Publish gallery response did not have the expected typename',
+            { __typename: publishGallery?.__typename }
           );
         }
 
-        const serverSourcedCollections = getInitialCollectionsFromServer(updateGallery.gallery);
-
         // Make sure we reset our "Has unsaved changes comparison point"
-        setInitialName(name);
-        setInitialDescription(description);
-        setInitialCollections(serverSourcedCollections);
-
-        // Make sure the UI is reflecting what the server tells us happened.
-        setCollections(serverSourcedCollections);
-
-        // Reset the deleted collection ids since we just deleted them
-        setDeletedCollectionIds(new Set());
-
-        // Ensure the same collection is still activated
-        const newCollectionIdBeingEdited = collectionIdBeingEdited
-          ? Object.keys(serverSourcedCollections)[
-              Object.keys(collections).indexOf(collectionIdBeingEdited)
-            ]
-          : null;
-
-        setCollectionIdBeingEdited(newCollectionIdBeingEdited ?? null);
-
-        // Flash a "Saved" message next to the "Done" button
-        setHasSaved(true);
+        setEditSessionID(uuid());
+        setHasSaved(false);
       } catch (error) {
         pushToast({
           autoClose: false,
-          message: "Something went wrong while saving your gallery. We're looking into it.",
+          message: "Something went wrong while publishing your gallery. We're looking into it.",
         });
 
         if (error instanceof Error) {
           reportError(error, { tags: { galleryId } });
         } else {
           reportError(
-            new ErrorWithSentryMetadata('Something unexpected went wrong while saving a gallery', {
-              galleryId,
-            })
+            new ErrorWithSentryMetadata(
+              'Something unexpected went wrong while publishing your gallery',
+              {
+                galleryId,
+              }
+            )
           );
         }
       }
     },
-    [
-      collectionIdBeingEdited,
-      collections,
-      deletedCollectionIds,
-      description,
-      name,
-      pushToast,
-      query.galleryById.dbid,
-      reportError,
-      save,
-    ]
+    [editSessionID, publish, pushToast, query.galleryById.dbid, reportError, track]
   );
 
   const [initialName, setInitialName] = useState(name);
@@ -552,6 +626,7 @@ export function GalleryEditorProvider({
       editCollectionNameAndNote,
       editGalleryNameAndDescription,
       doesCollectionHaveUnsavedChanges,
+      publishGallery,
     };
   }, [
     name,
@@ -572,6 +647,7 @@ export function GalleryEditorProvider({
     editCollectionNameAndNote,
     editGalleryNameAndDescription,
     doesCollectionHaveUnsavedChanges,
+    publishGallery,
   ]);
 
   return <GalleryEditorContext.Provider value={value}>{children}</GalleryEditorContext.Provider>;

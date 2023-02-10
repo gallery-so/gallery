@@ -7,8 +7,8 @@ import { Button } from '~/components/core/Button/Button';
 import colors from '~/components/core/colors';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleXS } from '~/components/core/Text/Text';
-import { GalleryTitleSection } from '~/contexts/globalLayout/EditGalleryNavbar/GalleryTitleSection';
 import { CollectionSaveButtonWithCaption } from '~/contexts/globalLayout/GlobalNavbar/CollectionSaveButtonWithCaption';
+import { GalleryTitleSection } from '~/contexts/globalLayout/GlobalNavbar/EditGalleryNavbar/GalleryTitleSection';
 import {
   NavbarCenterContent,
   NavbarLeftContent,
@@ -32,9 +32,12 @@ type Props = {
   onNextStep: () => void;
   dialogOnClose: () => void;
 
+  isSaving: boolean;
+
   onEdit: () => void;
 
   onBack: () => void;
+  onSave: () => Promise<void>;
   onDone: (caption: string) => Promise<void>;
 };
 
@@ -47,11 +50,13 @@ type DoneAction =
 export function EditGalleryNavbar({
   canSave,
   onDone,
+  onSave,
   onBack,
   onEdit,
   hasSaved,
   hasUnsavedChanges,
 
+  isSaving,
   dialogMessage,
   step,
   onNextStep,
@@ -64,6 +69,11 @@ export function EditGalleryNavbar({
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
   const handleAllGalleriesClick = useGuardEditorUnsavedChanges(() => {
+    // if the user has saved changes, we will automatically publish the gallery with no caption
+    if (doneAction === 'saved') {
+      onDone('');
+    }
+
     push({ pathname: '/[username]/galleries', query: { username } });
   }, hasUnsavedChanges);
 
@@ -106,7 +116,7 @@ export function EditGalleryNavbar({
             Saved
           </SavedText>
 
-          <DoneButton onClick={onBack}>Done</DoneButton>
+          <CollectionSaveButtonWithCaption onSave={onDone} label="Done" />
         </>
       );
     } else if (
@@ -116,16 +126,13 @@ export function EditGalleryNavbar({
       return (
         <>
           <BaseM color={colors.metal}>Unsaved changes</BaseM>
-
-          <CollectionSaveButtonWithCaption
-            hasUnsavedChange={hasUnsavedChanges}
-            disabled={doneAction === 'has-unsaved-changes-with-validation-errors'}
-            onSave={onDone}
-          />
+          <DoneButton onClick={onSave} pending={isSaving}>
+            Save
+          </DoneButton>
         </>
       );
     }
-  }, [doneAction, hasUnsavedChanges, onBack, onDone, showSaved]);
+  }, [doneAction, isSaving, onBack, onDone, onSave, showSaved]);
 
   return (
     <Wrapper>

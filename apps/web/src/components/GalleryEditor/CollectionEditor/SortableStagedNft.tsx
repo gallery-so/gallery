@@ -9,7 +9,7 @@ import { NftFailureBoundary } from '~/components/NftFailureFallback/NftFailureBo
 import { NftFailureFallback } from '~/components/NftFailureFallback/NftFailureFallback';
 import { StyledNftPreviewLabel } from '~/components/NftPreview/NftPreviewLabel';
 import { SPACE_BETWEEN_ITEMS } from '~/contexts/collectionEditor/useDndDimensions';
-import { SortableStagedNftNewFragment$key } from '~/generated/SortableStagedNftNewFragment.graphql';
+import { SortableStagedNftFragment$key } from '~/generated/SortableStagedNftFragment.graphql';
 import { useNftRetry } from '~/hooks/useNftRetry';
 import isLiveMediaType from '~/utils/isLiveMediaType';
 import { getBackgroundColorOverrideForContract } from '~/utils/token';
@@ -22,7 +22,7 @@ import StagedNftImage from './StagedNftImage';
 import UnstageButton from './UnstageButton';
 
 type Props = {
-  tokenRef: SortableStagedNftNewFragment$key;
+  tokenRef: SortableStagedNftFragment$key;
   size: number;
   mini: boolean;
 };
@@ -35,7 +35,7 @@ type Props = {
 function SortableStagedNft({ tokenRef, size, mini }: Props) {
   const token = useFragment(
     graphql`
-      fragment SortableStagedNftNewFragment on Token {
+      fragment SortableStagedNftFragment on Token {
         dbid @required(action: THROW)
         contract {
           contractAddress {
@@ -45,7 +45,7 @@ function SortableStagedNft({ tokenRef, size, mini }: Props) {
         media {
           __typename
         }
-        ...StagedNftImageNewFragment
+        ...StagedNftImageFragment
       }
     `,
     tokenRef

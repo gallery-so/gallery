@@ -1,7 +1,5 @@
 import { GOOGLE_CONTENT_IMG_URL } from './regex';
 
-export const FALLBACK_URL = 'https://www.ahhe.com/images/ecommerce/no-img-large.jpg?v=1575380448';
-
 type resizeImageUrlReturnType =
   | {
       url: string;

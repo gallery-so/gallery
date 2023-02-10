@@ -1,5 +1,5 @@
 # https://moonrepo.dev/docs/config/toolchain
-$schema: 'https://moonrepo.dev/schemas/toolchain.json'
+$schema: "https://moonrepo.dev/schemas/toolchain.json"
 
 # Extend and inherit an external configuration file. Must be a valid HTTPS URL or file system path.
 # extends: './shared/toolchain.yml'
@@ -8,21 +8,21 @@ $schema: 'https://moonrepo.dev/schemas/toolchain.json'
 # instead of relying on a version found on the host machine. This ensures deterministic
 # and reproducible builds across any machine.
 node:
-  version: '16.19.0'
+  version: "16.18.1"
 
   # The package manager to use when managing dependencies.
   # Accepts "npm" (default), "pnpm", or "yarn".
-  packageManager: 'yarn'
+  packageManager: "yarn"
 
   # The version of the package manager (above) to use.
   yarn:
-    version: '1.22.19'
+    version: "1.22.19"
 
   # Add `node.version` as a constraint in the root `package.json` `engines`.
   addEnginesConstraint: true
 
   # Use the `package.json` name as an alias for the respective moon project.
-  aliasPackageNames: 'name-and-scope'
+  aliasPackageNames: "name-and-scope"
 
   # Dedupe dependencies after the lockfile has changed.
   dedupeOnLockfileChange: false
@@ -39,7 +39,7 @@ node:
 
   # Sync `node.version` to a 3rd-party version manager's config file.
   # Accepts "nodenv" (.node-version), "nvm" (.nvmrc), or none.
-  syncVersionManagerConfig: 'nvm'
+  syncVersionManagerConfig: "nvm"
 
 # Configures how moon integrates with TypeScript.
 typescript:

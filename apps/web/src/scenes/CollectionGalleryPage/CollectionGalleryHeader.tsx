@@ -14,14 +14,14 @@ import { DisplayLayout } from '~/components/core/enums';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleL } from '~/components/core/Text/Text';
-import CollectionCreateOrEditForm from '~/components/ManageGallery/OrganizeCollection/CollectionCreateOrEditForm';
+import { CollectionCreateOrEditForm } from '~/components/GalleryEditor/CollectionCreateOrEditForm';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { CollectionGalleryHeaderFragment$key } from '~/generated/CollectionGalleryHeaderFragment.graphql';
 import { CollectionGalleryHeaderQueryFragment$key } from '~/generated/CollectionGalleryHeaderQueryFragment.graphql';
+import useUpdateCollectionInfo from '~/hooks/api/collections/useUpdateCollectionInfo';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import MobileLayoutToggle from '~/scenes/UserGalleryPage/MobileLayoutToggle';
-import noop from '~/utils/noop';
 import unescape from '~/utils/unescape';
 
 type Props = {
@@ -109,21 +109,28 @@ function CollectionGalleryHeader({
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
   const shouldDisplayMobileLayoutToggle = isMobile && (collection?.tokens?.length ?? 0) > 1;
 
+  const [updateCollectionInfo] = useUpdateCollectionInfo();
   const handleEditNameClick = useCallback(() => {
     showModal({
       content: (
         <CollectionCreateOrEditForm
-          // No need for onNext because this isn't part of a wizard
-          onNext={noop}
-          galleryId={galleryId}
-          collectionId={collectionId}
-          collectionName={collection.name ?? undefined}
-          collectionCollectorsNote={collection.collectorsNote ?? undefined}
+          mode="editing"
+          onDone={async ({ name, collectorsNote }) => {
+            await updateCollectionInfo(collection.dbid, name, collectorsNote);
+          }}
+          name={collection.name ?? undefined}
+          collectorsNote={collection.collectorsNote ?? undefined}
         />
       ),
       headerText: 'Name and describe your collection',
     });
-  }, [collection.collectorsNote, collectionId, galleryId, collection.name, showModal]);
+  }, [
+    collection.collectorsNote,
+    collection.dbid,
+    collection.name,
+    showModal,
+    updateCollectionInfo,
+  ]);
 
   if (isMobile) {
     return (

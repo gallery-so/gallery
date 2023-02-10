@@ -34,5 +34,3 @@ export const Web3ProviderNetwork = memo(({ children }: PropsWithChildren) => {
 });
 
 Web3ProviderNetwork.displayName = 'Web3ProviderNetwork';
-
-export default Web3WalletProvider;

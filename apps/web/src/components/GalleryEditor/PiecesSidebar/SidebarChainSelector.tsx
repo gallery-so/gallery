@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { Chain, chains } from '~/components/GalleryEditor/PiecesSidebar/chains';
 import { SidebarChainButton } from '~/components/GalleryEditor/PiecesSidebar/SidebarChainButton';
-import { SidebarChainSelectorNewFragment$key } from '~/generated/SidebarChainSelectorNewFragment.graphql';
+import { SidebarChainSelectorFragment$key } from '~/generated/SidebarChainSelectorFragment.graphql';
 
 import Blinking from '../GalleryOnboardingGuide/Blinking';
 import { useOnboardingDialogContext } from '../GalleryOnboardingGuide/OnboardingDialogContext';
@@ -14,13 +14,13 @@ import { useOnboardingDialogContext } from '../GalleryOnboardingGuide/Onboarding
 type SidebarChainsProps = {
   selected: Chain;
   onChange: (chain: Chain) => void;
-  queryRef: SidebarChainSelectorNewFragment$key;
+  queryRef: SidebarChainSelectorFragment$key;
 };
 
 export function SidebarChainSelector({ selected, onChange, queryRef }: SidebarChainsProps) {
   const query = useFragment(
     graphql`
-      fragment SidebarChainSelectorNewFragment on Query {
+      fragment SidebarChainSelectorFragment on Query {
         ...SidebarChainButtonFragment
       }
     `,

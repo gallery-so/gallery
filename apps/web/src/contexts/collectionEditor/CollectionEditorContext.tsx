@@ -1,373 +1,463 @@
-import { DragEndEvent, UniqueIdentifier } from '@dnd-kit/core';
-import { arrayMove } from '@dnd-kit/sortable';
-import { createContext, memo, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
+import {
+  createContext,
+  Dispatch,
+  memo,
+  ReactNode,
+  SetStateAction,
+  useCallback,
+  useContext,
+  useMemo,
+} from 'react';
+import rfdc from 'rfdc';
 
 import {
-  EditModeToken,
-  StagedCollection,
-  StagingItem,
-} from '~/components/ManageGallery/OrganizeCollection/types';
+  StagedSection,
+  StagedSectionMap,
+  useGalleryEditorContext,
+} from '~/components/GalleryEditor/GalleryEditorContext';
 import { generate12DigitId } from '~/utils/generate12DigitId';
 
-type TokenId = string;
-export type SidebarTokensState = Record<TokenId, EditModeToken>;
-export type TokenSettings = Record<TokenId, boolean>;
-export type CollectionMetadataState = {
-  tokenSettings: TokenSettings;
-};
+const deepClone = rfdc();
 
 const DEFAULT_COLUMN_SETTING = 3;
 
-export type CollectionEditorState = {
-  sidebarTokens: SidebarTokensState;
-  collectionMetadata: CollectionMetadataState;
-  stagedCollection: StagedCollection;
-  activeSectionId: UniqueIdentifier | null;
-};
+type CollectionEditorContextType = {
+  // State
+  name: string;
+  collectorsNote: string;
+  sections: Record<string, StagedSection>;
+  activeSectionId: string | null;
 
-const DEFAULT_COLLECTION_METADATA = {
-  tokenSettings: {},
-};
+  // Derived
+  stagedTokenIds: Set<string>;
+  liveDisplayTokenIds: Set<string>;
 
-const CollectionEditorStateContext = createContext<CollectionEditorState>({
-  sidebarTokens: {},
-  collectionMetadata: DEFAULT_COLLECTION_METADATA,
-  stagedCollection: {},
-  activeSectionId: null,
-});
+  // Actions
+  toggleTokenStaged: (tokenId: string) => void;
+  addWhitespace: () => void;
 
-export const useSidebarTokensState = (): SidebarTokensState => {
-  const context = useContext(CollectionEditorStateContext);
-  if (!context) {
-    throw new Error('Attempted to use CollectionEditorStateContext without a provider');
-  }
+  updateSections: (sections: Record<string, StagedSection>) => void;
 
-  return context.sidebarTokens;
-};
-
-export const useCollectionMetadataState = (): CollectionMetadataState => {
-  const context = useContext(CollectionEditorStateContext);
-  if (!context) {
-    throw new Error('Attempted to use CollectionEditorStateContext without a provider');
-  }
-
-  return context.collectionMetadata;
-};
-
-export const useStagedCollectionState = (): StagedCollection => {
-  const context = useContext(CollectionEditorStateContext);
-  if (!context) {
-    throw new Error('Attempted to use CollectionEditorStateContext without a provider');
-  }
-  return context.stagedCollection;
-};
-
-export const useActiveSectionIdState = (): UniqueIdentifier | null => {
-  const context = useContext(CollectionEditorStateContext);
-  if (!context) {
-    throw new Error('Attempted to use CollectionEditorStateContext without a provider');
-  }
-  return context.activeSectionId;
-};
-
-type CollectionEditorActions = {
-  setSidebarTokens: (tokens: Record<string, EditModeToken>) => void;
-  setTokensIsSelected: (tokens: string[], isSelected: boolean) => void;
-  stageTokens: (tokens: StagingItem[]) => void;
-  unstageTokens: (ids: string[]) => void;
-  setStagedCollectionState: (collection: StagedCollection) => void;
-  reorderTokensWithinSection: (event: DragEndEvent, sectionId: UniqueIdentifier) => void;
-  reorderSection: (event: DragEndEvent) => void;
   addSection: () => void;
-  deleteSection: (sectionId: UniqueIdentifier, itemIds: string[]) => void;
-  incrementColumns: (sectionId: UniqueIdentifier) => void;
-  decrementColumns: (sectionId: UniqueIdentifier) => void;
-  setTokenLiveDisplay: (idOrIds: string | string[], active: boolean) => void;
-  setActiveSectionIdState: (id: string) => void;
+  deleteSection: (sectionId: string) => void;
+
+  incrementColumns: (sectionId: string) => void;
+  decrementColumns: (sectionId: string) => void;
+
+  toggleTokenLiveDisplay: (tokenId: string) => void;
+
+  activateSection: (sectionId: string) => void;
+
+  updateNameAndCollectorsNote: (name: string, collectorsNote: string) => void;
 };
 
-const CollectionEditorActionsContext = createContext<CollectionEditorActions | undefined>(
-  undefined
-);
-
-export const useCollectionEditorActions = (): CollectionEditorActions => {
-  const context = useContext(CollectionEditorActionsContext);
-  if (!context) {
-    throw new Error('Attempted to use CollectionEditorActionsContext without a provider');
-  }
-
-  return context;
-};
+const CollectionEditorContext = createContext<CollectionEditorContextType | undefined>(undefined);
 
 type Props = { children: ReactNode };
 
-const CollectionEditorProvider = memo(({ children }: Props) => {
-  const [sidebarTokensState, setSidebarTokensState] = useState<SidebarTokensState>({});
-  const [collectionMetadataState, setCollectionMetadataState] = useState<CollectionMetadataState>(
-    DEFAULT_COLLECTION_METADATA
-  );
-  const [stagedCollectionState, setStagedCollectionState] = useState<StagedCollection>({});
-  const [activeSectionIdState, setActiveSectionIdState] = useState<string | null>(null);
+export const CollectionEditorProvider = memo(({ children }: Props) => {
+  const { collectionIdBeingEdited, collections, setCollections } = useGalleryEditorContext();
 
-  const collectionEditorState = useMemo(
-    () => ({
-      sidebarTokens: sidebarTokensState,
-      collectionMetadata: collectionMetadataState,
-      stagedCollection: stagedCollectionState,
-      activeSectionId: activeSectionIdState,
-    }),
-    [sidebarTokensState, collectionMetadataState, stagedCollectionState, activeSectionIdState]
-  );
+  const collectionBeingEdited = collectionIdBeingEdited
+    ? collections[collectionIdBeingEdited]
+    : null;
 
-  const setSidebarTokens = useCallback((tokens: SidebarTokensState) => {
-    setSidebarTokensState(tokens);
-  }, []);
+  const liveDisplayTokenIds = useMemo(() => {
+    return collectionBeingEdited?.liveDisplayTokenIds ?? new Set<string>();
+  }, [collectionBeingEdited?.liveDisplayTokenIds]);
 
-  const setTokensIsSelected = useCallback((tokenIds: string[], isSelected: boolean) => {
-    setSidebarTokensState((previous) => {
-      const next = { ...previous };
-      for (const tokenId of tokenIds) {
-        const selectedNft = next[tokenId];
-        if (selectedNft) {
-          next[tokenId] = { ...selectedNft, isSelected };
+  const setLiveDisplayTokenIds = useCallback<Dispatch<SetStateAction<Set<string>>>>(
+    (value) => {
+      if (!collectionIdBeingEdited) {
+        return;
+      }
+
+      setCollections((previous) => {
+        const next = { ...previous };
+        const previousCollection = next[collectionIdBeingEdited];
+
+        if (!previousCollection) {
+          return previous;
         }
-      }
 
-      return next;
-    });
-  }, []);
+        const previousLiveDisplayTokenIds = previousCollection.liveDisplayTokenIds;
 
-  const addTokensToSection = useCallback((tokens: StagingItem[], sectionId: string) => {
-    setStagedCollectionState((previous) => {
-      // If there are no sections in the collection, create one.
-      if (!Object.keys(previous).length) {
-        const sectionId = generate12DigitId();
-        setActiveSectionIdState(sectionId);
+        let nextLiveDisplayTokenIds;
+        if (typeof value === 'function') {
+          nextLiveDisplayTokenIds = value(previousLiveDisplayTokenIds);
+        } else {
+          nextLiveDisplayTokenIds = value;
+        }
 
-        return { ...previous, [sectionId]: { columns: DEFAULT_COLUMN_SETTING, items: tokens } };
-      }
+        next[collectionIdBeingEdited] = {
+          ...previousCollection,
+          liveDisplayTokenIds: nextLiveDisplayTokenIds,
+        };
 
-      const section = previous[sectionId];
-      if (!section) {
-        return previous;
-      }
-      return { ...previous, [sectionId]: { ...section, items: [...section.items, ...tokens] } };
-    });
-  }, []);
-
-  const stageTokens = useCallback(
-    (tokens: StagingItem[]) => {
-      addTokensToSection(tokens, activeSectionIdState || '');
-    },
-    [activeSectionIdState, addTokensToSection]
-  );
-
-  const unstageTokens = useCallback((ids: string[]) => {
-    setStagedCollectionState((previous) => {
-      const next = { ...previous };
-
-      // For each section, filter out the tokens that are being removed.
-      Object.keys(next).forEach((sectionId) => {
-        // @ts-expect-error This file will be deleted soon
-        next[sectionId].items = next[sectionId].items.filter(
-          (stagingItem) => !ids.includes(stagingItem.id)
-        );
-      });
-
-      return next;
-    });
-
-    // remove any related token settings
-    setCollectionMetadataState((previous) => {
-      const newTokenSettings: TokenSettings = { ...previous.tokenSettings };
-      for (const id of ids) {
-        delete newTokenSettings[id];
-      }
-      return {
-        ...previous,
-        tokenSettings: newTokenSettings,
-      };
-    });
-  }, []);
-
-  const reorderTokensWithinSection = useCallback(
-    (event: DragEndEvent, sectionId: UniqueIdentifier) => {
-      const { active, over } = event;
-      // @ts-expect-error This file will be deleted soon
-      setStagedCollectionState((previous) => {
-        const section = previous[sectionId];
-        // @ts-expect-error This file will be deleted soon
-        const sectionItems = section.items;
-
-        const oldIndex = sectionItems.findIndex(({ id }) => id === active.id);
-        const newIndex = sectionItems.findIndex(({ id }) => id === over?.id);
-        const updatedSectionItems = arrayMove(sectionItems, oldIndex, newIndex);
-        return { ...previous, [sectionId]: { ...section, items: updatedSectionItems } };
+        return next;
       });
     },
-    []
+    [collectionIdBeingEdited, setCollections]
   );
 
-  const reorderSection = useCallback((event: DragEndEvent) => {
-    const { active, over } = event;
-    setStagedCollectionState((previous) => {
-      const previousOrder = Object.keys(previous); // get previous order as list of section ids
+  const sections: StagedSectionMap = useMemo(() => {
+    if (!collectionIdBeingEdited) {
+      return {};
+    }
 
-      const oldIndex = previousOrder.findIndex((id) => id === active.id);
-      const newIndex = previousOrder.findIndex((id) => id === over?.id);
-      const newOrder = arrayMove(previousOrder, oldIndex, newIndex);
+    return collections[collectionIdBeingEdited]?.sections ?? {};
+  }, [collectionIdBeingEdited, collections]);
 
-      const result = newOrder.reduce((acc, sectionId) => {
-        return { ...acc, [sectionId]: previous[sectionId] };
-      }, {});
+  const setSections: Dispatch<SetStateAction<StagedSectionMap>> = useCallback(
+    (value) => {
+      if (!collectionIdBeingEdited) {
+        return;
+      }
 
-      return result;
-    });
-  }, []);
+      setCollections((previousCollections) => {
+        const nextCollections = { ...previousCollections };
+        const previousCollection = previousCollections[collectionIdBeingEdited];
+
+        if (!previousCollection) {
+          return previousCollections;
+        }
+
+        const previousSections = previousCollection.sections;
+
+        let nextSections;
+        if (typeof value === 'function') {
+          nextSections = value(previousSections);
+        } else {
+          nextSections = value;
+        }
+
+        nextCollections[collectionIdBeingEdited] = {
+          ...previousCollection,
+          sections: nextSections,
+        };
+
+        return nextCollections;
+      });
+    },
+    [collectionIdBeingEdited, setCollections]
+  );
+
+  const setActiveSectionId = useCallback(
+    (sectionId: string) => {
+      if (!collectionIdBeingEdited) {
+        return;
+      }
+
+      setCollections((previous) => {
+        const next = { ...previous };
+        const previousCollection = previous[collectionIdBeingEdited];
+
+        if (!previousCollection) {
+          return previous;
+        }
+
+        next[collectionIdBeingEdited] = {
+          ...previousCollection,
+          activeSectionId: sectionId,
+        };
+
+        return next;
+      });
+    },
+    [collectionIdBeingEdited, setCollections]
+  );
+
+  const activeSectionId: string | null = useMemo(() => {
+    if (!collectionIdBeingEdited) {
+      return null;
+    }
+
+    return collections[collectionIdBeingEdited]?.activeSectionId ?? null;
+  }, [collectionIdBeingEdited, collections]);
+
+  const updateSections = useCallback(
+    (updatedSections: Record<string, StagedSection>) => {
+      setSections(updatedSections);
+    },
+    [setSections]
+  );
 
   const addSection = useCallback(() => {
     const newSectionId = generate12DigitId();
 
-    setStagedCollectionState((previous) => {
-      const previousOrder = Object.keys(previous); // get previous order as list of section ids
-      const activeIndex = previousOrder.findIndex((id) => id === activeSectionIdState);
-      return previousOrder.reduce((acc, sectionId, index) => {
-        if (index === activeIndex) {
-          return {
-            ...acc,
-            [sectionId]: previous[sectionId],
-            [newSectionId]: { columns: DEFAULT_COLUMN_SETTING, items: [] },
-          };
-        }
-        return { ...acc, [sectionId]: previous[sectionId] };
-      }, {});
+    setSections((previous) => {
+      const newSection: StagedSection = {
+        columns: DEFAULT_COLUMN_SETTING,
+        items: [],
+      };
+
+      return {
+        ...previous,
+        [newSectionId]: newSection,
+      };
     });
-    setActiveSectionIdState(newSectionId);
-  }, [activeSectionIdState]);
+
+    setActiveSectionId(newSectionId);
+  }, [setActiveSectionId, setSections]);
 
   const deleteSection = useCallback(
-    (sectionId: UniqueIdentifier, itemIds: string[]) => {
-      const sectionIndex = Object.keys(stagedCollectionState).indexOf(`${sectionId}`);
-      const newSectionId =
-        Object.keys(stagedCollectionState)[sectionIndex - 1] ??
-        Object.keys(stagedCollectionState)[sectionIndex + 1];
-      setTokensIsSelected(itemIds, false);
-      unstageTokens(itemIds);
-      setStagedCollectionState((previous) => {
-        const next = { ...previous };
-        delete next[sectionId];
-        return next;
+    (sectionId: string) => {
+      const sectionTokenIds =
+        sections[sectionId]?.items
+          .filter((item) => item.kind === 'token')
+          .map((token) => token.id) ?? [];
+
+      setLiveDisplayTokenIds((previous) => {
+        const cloned = new Set(previous);
+        sectionTokenIds.forEach((tokenId) => cloned.delete(tokenId));
+        return cloned;
       });
 
-      // set another section as active if there are any sections left
-      if (newSectionId) {
-        setActiveSectionIdState(newSectionId);
+      // Remove the section
+      const nextSections = { ...sections };
+      delete nextSections[sectionId];
+
+      // If this was the last section in the collection, make a new one so its not empty
+      let nextActiveSectionId: string | undefined = Object.keys(nextSections)[0];
+      if (!nextActiveSectionId) {
+        nextActiveSectionId = generate12DigitId();
+        nextSections[nextActiveSectionId] = { columns: 3, items: [] };
       }
+
+      setSections(nextSections);
+      setActiveSectionId(nextActiveSectionId);
     },
-    [setTokensIsSelected, stagedCollectionState, unstageTokens]
+    [sections, setActiveSectionId, setLiveDisplayTokenIds, setSections]
   );
 
-  const incrementColumns = useCallback((sectionId: UniqueIdentifier) => {
-    // @ts-expect-error This file will be deleted soon
-    setStagedCollectionState((previous) => {
-      return {
-        ...previous,
-        [sectionId]: {
-          ...previous[sectionId],
-          // @ts-expect-error This file will be deleted soon
-          columns: previous[sectionId].columns + 1,
-        },
-      };
-    });
-  }, []);
+  const incrementColumns = useCallback(
+    (sectionId: string) => {
+      setSections((previous) => {
+        const previousSection = previous[sectionId];
 
-  const decrementColumns = useCallback((sectionId: UniqueIdentifier) => {
-    // @ts-expect-error This file will be deleted soon
-    setStagedCollectionState((previous) => {
-      return {
-        ...previous,
-        [sectionId]: {
-          ...previous[sectionId],
-          // @ts-expect-error This file will be deleted soon
-          columns: previous[sectionId].columns - 1,
-        },
-      };
-    });
-  }, []);
+        if (!previousSection) {
+          return previous;
+        }
 
-  const setTokenLiveDisplay: CollectionEditorActions['setTokenLiveDisplay'] = useCallback(
-    (idOrIds, active) => {
-      if (typeof idOrIds === 'string') {
-        setCollectionMetadataState((previous) => ({
+        return {
           ...previous,
-          tokenSettings: {
-            ...previous.tokenSettings,
-            [idOrIds]: active,
+          [sectionId]: {
+            ...previousSection,
+            columns: previousSection.columns + 1,
           },
-        }));
+        };
+      });
+    },
+    [setSections]
+  );
+
+  const decrementColumns = useCallback(
+    (sectionId: string) => {
+      setSections((previous) => {
+        const previousSection = previous[sectionId];
+
+        if (!previousSection) {
+          return previous;
+        }
+
+        return {
+          ...previous,
+          [sectionId]: {
+            ...previousSection,
+            columns: previousSection.columns - 1,
+          },
+        };
+      });
+    },
+    [setSections]
+  );
+
+  const toggleTokenLiveDisplay = useCallback(
+    (tokenId: string) => {
+      setLiveDisplayTokenIds((previous) => {
+        const cloned = new Set(previous);
+
+        if (cloned.has(tokenId)) {
+          cloned.delete(tokenId);
+        } else {
+          cloned.add(tokenId);
+        }
+
+        return cloned;
+      });
+    },
+    [setLiveDisplayTokenIds]
+  );
+
+  const stagedItemIds = useMemo(() => {
+    const stagedTokenIds = Object.values(sections)
+      .flatMap((section) => section.items)
+      .map((token) => token.id);
+
+    return new Set(stagedTokenIds);
+  }, [sections]);
+
+  const stagedTokenIds = useMemo(() => {
+    const stagedTokenIds = Object.values(sections)
+      .flatMap((section) => section.items)
+      .filter((item) => item.kind === 'token')
+      .map((token) => token.id);
+
+    return new Set(stagedTokenIds);
+  }, [sections]);
+
+  const removeTokenFromSections = useCallback(
+    (tokenId: string) => {
+      setSections((previous) => {
+        const cloned = deepClone(previous);
+
+        Object.values(cloned).forEach((section) => {
+          section.items = section.items.filter((item) => item.id !== tokenId);
+        });
+
+        return cloned;
+      });
+    },
+    [setSections]
+  );
+
+  const addTokenToActiveSection = useCallback(
+    (tokenId: string) => {
+      if (!activeSectionId) {
+        // Maybe make a new section here for them?
+
+        return;
       }
 
-      if (Array.isArray(idOrIds)) {
-        setCollectionMetadataState((previous) => {
-          const newTokenSettings: TokenSettings = {};
-          for (const id of idOrIds) {
-            newTokenSettings[id] = active;
-          }
-          return {
-            ...previous,
-            tokenSettings: {
-              ...previous.tokenSettings,
-              ...newTokenSettings,
-            },
-          };
-        });
+      setSections((previous) => {
+        const cloned = deepClone(previous);
+
+        cloned[activeSectionId]?.items.push({ kind: 'token', id: tokenId });
+
+        return cloned;
+      });
+    },
+    [activeSectionId, setSections]
+  );
+
+  const toggleTokenStaged = useCallback(
+    (tokenId: string) => {
+      if (stagedItemIds.has(tokenId)) {
+        removeTokenFromSections(tokenId);
+      } else {
+        addTokenToActiveSection(tokenId);
       }
     },
-    []
+    [addTokenToActiveSection, removeTokenFromSections, stagedItemIds]
   );
 
-  const collectionEditorActions: CollectionEditorActions = useMemo(
-    () => ({
-      setSidebarTokens,
-      setTokensIsSelected,
-      stageTokens,
-      unstageTokens,
-      reorderTokensWithinSection,
-      reorderSection,
-      addSection,
-      deleteSection,
-      incrementColumns,
-      decrementColumns,
-      setTokenLiveDisplay,
-      setStagedCollectionState,
-      setActiveSectionIdState,
-    }),
-    [
-      setSidebarTokens,
-      setTokensIsSelected,
-      stageTokens,
-      unstageTokens,
-      reorderTokensWithinSection,
-      reorderSection,
-      addSection,
-      deleteSection,
-      incrementColumns,
-      decrementColumns,
-      setTokenLiveDisplay,
-      setStagedCollectionState,
-      setActiveSectionIdState,
-    ]
+  const addWhitespace = useCallback(() => {
+    if (!activeSectionId) {
+      // Maybe create a new section for them automatically
+
+      return;
+    }
+
+    const id = generate12DigitId();
+    setSections((previous) => {
+      const cloned = deepClone(previous);
+
+      cloned[activeSectionId]?.items.push({ kind: 'whitespace', id });
+
+      return cloned;
+    });
+
+    // auto scroll so that the new block is visible. 100ms timeout to account for async nature of staging tokens
+    setTimeout(() => {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+  }, [activeSectionId, setSections]);
+
+  const activateSection = useCallback(
+    (sectionId: string) => {
+      setActiveSectionId(sectionId);
+    },
+    [setActiveSectionId]
   );
+
+  const updateNameAndCollectorsNote = useCallback(
+    (name: string, collectorsNote: string) => {
+      if (!collectionIdBeingEdited) {
+        return;
+      }
+
+      setCollections((previousCollections) => {
+        const cloned = { ...previousCollections };
+
+        const previousCollection = previousCollections[collectionIdBeingEdited];
+
+        if (!previousCollection) {
+          return previousCollections;
+        }
+
+        cloned[collectionIdBeingEdited] = {
+          ...previousCollection,
+          name,
+          collectorsNote,
+        };
+
+        return cloned;
+      });
+    },
+    [collectionIdBeingEdited, setCollections]
+  );
+
+  const value = useMemo((): CollectionEditorContextType => {
+    return {
+      name: collectionBeingEdited?.name ?? '',
+      collectorsNote: collectionBeingEdited?.collectorsNote ?? '',
+      activateSection,
+      activeSectionId,
+      addWhitespace,
+      addSection,
+      updateSections,
+      decrementColumns,
+      deleteSection,
+      incrementColumns,
+      liveDisplayTokenIds,
+      sections,
+      stagedTokenIds,
+      toggleTokenLiveDisplay,
+      toggleTokenStaged,
+      updateNameAndCollectorsNote,
+    };
+  }, [
+    activateSection,
+    activeSectionId,
+    addSection,
+    addWhitespace,
+    collectionBeingEdited?.collectorsNote,
+    collectionBeingEdited?.name,
+    decrementColumns,
+    deleteSection,
+    incrementColumns,
+    liveDisplayTokenIds,
+    sections,
+    stagedTokenIds,
+    toggleTokenLiveDisplay,
+    toggleTokenStaged,
+    updateNameAndCollectorsNote,
+    updateSections,
+  ]);
 
   return (
-    <CollectionEditorStateContext.Provider value={collectionEditorState}>
-      <CollectionEditorActionsContext.Provider value={collectionEditorActions}>
-        {children}
-      </CollectionEditorActionsContext.Provider>
-    </CollectionEditorStateContext.Provider>
+    <CollectionEditorContext.Provider value={value}>{children}</CollectionEditorContext.Provider>
   );
 });
 
-CollectionEditorProvider.displayName = 'CollectionEditorProvider';
+export function useCollectionEditorContext() {
+  const value = useContext(CollectionEditorContext);
 
-export default CollectionEditorProvider;
+  if (!value) {
+    throw new Error('Tried to use CollectionEditorContextNew without a provider.');
+  }
+
+  return value;
+}
+
+CollectionEditorProvider.displayName = 'CollectionEditorProvider';

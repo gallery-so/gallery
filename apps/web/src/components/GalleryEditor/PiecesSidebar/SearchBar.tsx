@@ -2,11 +2,11 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
 import { FadedInput } from '~/components/core/Input/FadedInput';
-import { SearchBarNewFragment$key } from '~/generated/SearchBarNewFragment.graphql';
+import { SearchBarFragment$key } from '~/generated/SearchBarFragment.graphql';
 import useDebounce from '~/hooks/useDebounce';
 
 type Props = {
-  tokensRef: SearchBarNewFragment$key;
+  tokensRef: SearchBarFragment$key;
   setSearchResults: Dispatch<SetStateAction<string[]>>;
   setDebouncedSearchQuery: Dispatch<SetStateAction<string>>;
 };
@@ -14,7 +14,7 @@ type Props = {
 function SearchBar({ tokensRef, setSearchResults, setDebouncedSearchQuery }: Props) {
   const tokens = useFragment(
     graphql`
-      fragment SearchBarNewFragment on Token @relay(plural: true) {
+      fragment SearchBarFragment on Token @relay(plural: true) {
         dbid
         name
         contract {
