@@ -1,38 +1,36 @@
 import { graphql, useLazyLoadQuery } from "react-relay";
-import { SafeAreaView, ScrollView, Text, View } from "react-native";
+import { FlatList, ListRenderItem, SafeAreaView, View } from "react-native";
 import { GalleryQuery } from "../../__generated__/GalleryQuery.graphql";
-import { ResizeMode, Video } from "expo-av";
+import { useCallback, useEffect } from "react";
+import { Collection } from "../components/Collection";
+import { Image } from "expo-image";
 
 export function Gallery() {
   const query = useLazyLoadQuery<GalleryQuery>(
     graphql`
       query GalleryQuery {
-        userByUsername(username: "percyio") {
+        userByUsername(username: "mikey") {
           ... on GalleryUser {
             featuredGallery {
               dbid
 
               collections {
-                layout {
-                  sections
-                  sectionLayout {
-                    columns
-                    whitespace
-                  }
-                }
+                dbid
+
                 tokens {
                   token {
-                    name
                     media {
-                      __typename
-
-                      ... on VideoMedia {
-                        contentRenderURLs {
+                      ... on ImageMedia {
+                        previewURLs {
                           large
                         }
                       }
-
-                      ... on ImageMedia {
+                      ... on HtmlMedia {
+                        previewURLs {
+                          large
+                        }
+                      }
+                      ... on GIFMedia {
                         previewURLs {
                           large
                         }
@@ -40,6 +38,8 @@ export function Gallery() {
                     }
                   }
                 }
+
+                ...CollectionFragment
               }
             }
           }
@@ -49,50 +49,49 @@ export function Gallery() {
     {}
   );
 
-  console.log(query.userByUsername?.featuredGallery);
-
   const collections = query.userByUsername?.featuredGallery?.collections;
 
+  if (!collections) {
+    throw new Error("Yikes");
+  }
+  useEffect(() => {
+    const allTokenImages = collections
+      .flatMap((collection) => collection?.tokens ?? [])
+      .map((token) => token?.token?.media?.previewURLs?.large)
+      .filter(Boolean) as string[];
+
+    console.log("Prefetching");
+    console.log(JSON.stringify(allTokenImages));
+
+    Image.prefetch(allTokenImages);
+  }, []);
+
+  const renderItem = useCallback<ListRenderItem<(typeof collections)[number]>>(
+    (info) => {
+      const collection = info.item;
+
+      if (!collection) {
+        return null;
+      }
+
+      return (
+        <View key={collection.dbid} style={{ marginBottom: 24 }}>
+          <Collection key={collection.dbid} collectionRef={collection} />
+        </View>
+      );
+    },
+    []
+  );
+
   return (
-    <SafeAreaView style={{ backgroundColor: "#eee", height: "100%" }}>
+    <SafeAreaView style={{ backgroundColor: "white", height: "100%" }}>
       <View style={{ height: "100%" }}>
-        <ScrollView style={{ overflow: "hidden" }} decelerationRate="fast">
-          {collections?.map((collection) => {
-            const tokens = collection?.tokens;
-
-            return (
-              <View>
-                {tokens?.map((token) => {
-                  console.log(token?.token?.media?.__typename);
-
-                  if (token?.token?.media?.__typename === "VideoMedia") {
-                    console.log(token?.token.media.contentRenderURLs);
-                    return (
-                      <View>
-                        <Text>{token?.token?.name}</Text>
-
-                        <Video
-                          style={{ width: "100%", height: 400 }}
-                          onReadyForDisplay={console.log}
-                          shouldPlay
-                          onLoad={console.log}
-                          source={{
-                            uri:
-                              token?.token.media.contentRenderURLs?.large ?? "",
-                          }}
-                          resizeMode={ResizeMode.CONTAIN}
-                          isLooping
-                        />
-                      </View>
-                    );
-                  }
-
-                  return null;
-                })}
-              </View>
-            );
-          })}
-        </ScrollView>
+        <FlatList
+          windowSize={2}
+          keyExtractor={(item) => item?.dbid ?? "nothing"}
+          data={collections}
+          renderItem={renderItem}
+        />
       </View>
     </SafeAreaView>
   );
