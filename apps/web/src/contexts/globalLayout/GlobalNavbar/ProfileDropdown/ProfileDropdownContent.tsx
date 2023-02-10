@@ -64,7 +64,6 @@ export function ProfileDropdownContent({
           }
         }
 
-        ...getEditGalleryUrlFragment
         ...SettingsModalFragment
       }
     `,
@@ -103,8 +102,6 @@ export function ProfileDropdownContent({
   if (!username) {
     return null;
   }
-
-  const editGalleryUrl = getEditGalleryUrl(query);
 
   const userGalleryRoute: Route = { pathname: '/[username]', query: { username } };
   const editGalleriesRoute: Route = { pathname: '/[username]/galleries', query: { username } };
