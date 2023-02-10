@@ -117,6 +117,7 @@ const StyledConfirmationContainer = styled(VStack)`
 
 const StyledButton = styled(Button)`
   padding: 8px 12px;
+  min-width: 60px;
 `;
 
 const StyledCardContainer = styled(VStack)<{ isActive: boolean }>`

@@ -198,6 +198,7 @@ const SavedText = styled(BaseM)<{ show: boolean }>`
 
 const DoneButton = styled(Button)`
   padding: 8px 12px;
+  min-width: 60px;
 `;
 
 const Wrapper = styled.div`
