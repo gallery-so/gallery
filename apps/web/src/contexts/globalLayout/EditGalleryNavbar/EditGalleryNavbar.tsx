@@ -97,8 +97,10 @@ export function EditGalleryNavbar({
   // and the hit "Cmd+S" anyway
   const [showSaved, setShowSaved] = useState(true);
   useSaveHotkey(() => {
-    if (doneAction === 'saved') {
+    if (doneAction === 'can-save') {
       setShowSaved(false);
+
+      onSave();
 
       setTimeout(() => {
         setShowSaved(true);
