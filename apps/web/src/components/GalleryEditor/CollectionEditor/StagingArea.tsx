@@ -221,6 +221,21 @@ function StagingArea({ tokensRef }: Props) {
           >
             {hasNameOrCollectorsNote ? (
               <HStack gap={8} align="center">
+                {step === 2 && (
+                  <OnboardingDialog
+                    step={step}
+                    text={dialogMessage}
+                    onNext={nextStep}
+                    onClose={handleClose}
+                    options={{
+                      placement: 'bottom',
+                      positionOffset: 20,
+                      blinkingPosition: {
+                        left: -20,
+                      },
+                    }}
+                  />
+                )}
                 <VStack>
                   <StyledCollectionName hasName={Boolean(escapedCollectionName)}>
                     {escapedCollectionName || 'Untitled Collection'}
@@ -230,21 +245,6 @@ function StagingArea({ tokensRef }: Props) {
                     <Markdown text={collectorsNote}></Markdown>
                   </BaseM>
                 </VStack>
-                {step === 2 && (
-                  <OnboardingDialog
-                    step={step}
-                    text={dialogMessage}
-                    onNext={nextStep}
-                    onClose={handleClose}
-                    options={{
-                      placement: 'right-end',
-                      positionOffset: 30,
-                      blinkingPosition: {
-                        right: -20,
-                      },
-                    }}
-                  />
-                )}
               </HStack>
             ) : (
               <HStack gap={8} align="center">
@@ -257,10 +257,10 @@ function StagingArea({ tokensRef }: Props) {
                     onClose={handleClose}
                     options={{
                       placement: 'bottom',
-                      blinkingPosition: {
-                        right: -20,
-                      },
                       positionOffset: 20,
+                      blinkingPosition: {
+                        left: -20,
+                      },
                     }}
                   />
                 )}
