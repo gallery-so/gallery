@@ -77,7 +77,7 @@ export default function GalleryUpdatedFeedEvent({
   };
 
   // Max 3 sub events
-  const subEvents = useMemo(() => event?.subEventDatas?.slice(0, 3), [event?.subEventDatas]);
+  const subEvents = useMemo(() => event?.subEventDatas?.slice(0, 4), [event?.subEventDatas]);
 
   return (
     <StyledEvent>
