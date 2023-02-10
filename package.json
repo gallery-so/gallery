@@ -1,13 +1,12 @@
 {
   "name": "gallery-monorepo",
   "private": true,
-  "workspaces": {
-    "nohoist": [
-      "apps/*",
-      "packages/frames-dls"
-    ]
-  },
-  "packageManager": "yarn@1.22.19",
+  "workspaces": [
+    "apps/mobile",
+    "apps/web",
+    "packages/frames-dls"
+  ],
+  "packageManager": "yarn@3.4.1",
   "engines": {
     "node": "16.18.1"
   },
