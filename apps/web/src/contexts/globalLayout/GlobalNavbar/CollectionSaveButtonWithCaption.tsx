@@ -17,7 +17,7 @@ type Props = {
   error?: string;
   hasUnsavedChange?: boolean;
   label?: string;
-  onSave: (caption: string) => Promise<void>;
+  onSave: (caption: string) => void;
 };
 
 export function CollectionSaveButtonWithCaption({

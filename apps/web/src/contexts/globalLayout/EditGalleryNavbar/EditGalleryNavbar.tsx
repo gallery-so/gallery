@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
@@ -38,7 +38,7 @@ type Props = {
 
   onBack: () => void;
   onSave: () => Promise<void>;
-  onDone: (caption: string) => Promise<void>;
+  onDone: (caption: string, redirect?: boolean) => Promise<void>;
 };
 
 type DoneAction =
@@ -106,6 +106,13 @@ export function EditGalleryNavbar({
     }
   });
 
+  const handleDone = useCallback(
+    (caption: string) => {
+      onDone(caption, true);
+    },
+    [onDone]
+  );
+
   const doneButton = useMemo(() => {
     if (doneAction === 'no-changes') {
       return <DoneButton onClick={onBack}>Done</DoneButton>;
@@ -116,7 +123,7 @@ export function EditGalleryNavbar({
             Saved
           </SavedText>
 
-          <CollectionSaveButtonWithCaption onSave={onDone} label="Done" />
+          <CollectionSaveButtonWithCaption onSave={handleDone} label="Done" />
         </>
       );
     } else if (
@@ -132,7 +139,7 @@ export function EditGalleryNavbar({
         </>
       );
     }
-  }, [doneAction, isSaving, onBack, onDone, onSave, showSaved]);
+  }, [doneAction, isSaving, onBack, handleDone, onSave, showSaved]);
 
   return (
     <Wrapper>
