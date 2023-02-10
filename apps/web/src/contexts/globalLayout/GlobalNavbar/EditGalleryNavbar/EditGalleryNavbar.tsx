@@ -7,6 +7,7 @@ import { Button } from '~/components/core/Button/Button';
 import colors from '~/components/core/colors';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleXS } from '~/components/core/Text/Text';
+import OnboardingDialog from '~/components/GalleryEditor/GalleryOnboardingGuide/OnboardingDialog';
 import { CollectionSaveButtonWithCaption } from '~/contexts/globalLayout/GlobalNavbar/CollectionSaveButtonWithCaption';
 import { GalleryTitleSection } from '~/contexts/globalLayout/GlobalNavbar/EditGalleryNavbar/GalleryTitleSection';
 import {
@@ -178,9 +179,24 @@ export function EditGalleryNavbar({
         </NavbarCenterContent>
 
         <NavbarRightContent>
-          <HStack align="center" gap={12}>
+          <DoneButtonContainer align="center" gap={12}>
+            {step === 6 && (
+              <OnboardingDialog
+                step={step}
+                text={dialogMessage}
+                onNext={onNextStep}
+                onClose={dialogOnClose}
+                options={{
+                  placement: 'left-end',
+                  positionOffset: 20,
+                  blinkingPosition: {
+                    left: -20,
+                  },
+                }}
+              />
+            )}
             {doneButton}
-          </HStack>
+          </DoneButtonContainer>
         </NavbarRightContent>
       </StandardNavbarContainer>
     </Wrapper>
@@ -203,6 +219,10 @@ const AllGalleriesWrapper = styled(HStack)`
 const SavedText = styled(BaseM)<{ show: boolean }>`
   transition: opacity 300ms ease-in-out;
   opacity: ${({ show }) => (show ? '1' : '0')};
+`;
+
+const DoneButtonContainer = styled(HStack)`
+  position: relative;
 `;
 
 const DoneButton = styled(Button)`
