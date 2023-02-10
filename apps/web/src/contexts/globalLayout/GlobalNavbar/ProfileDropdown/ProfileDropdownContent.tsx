@@ -23,7 +23,6 @@ import { useModalActions } from '~/contexts/modal/ModalContext';
 import { ProfileDropdownContentFragment$key } from '~/generated/ProfileDropdownContentFragment.graphql';
 import usePersistedState from '~/hooks/usePersistedState';
 import SettingsModal from '~/scenes/Modals/SettingsModal/SettingsModal';
-import { getEditGalleryUrl } from '~/utils/getEditGalleryUrl';
 
 type Props = {
   shouldShowDropdown: boolean;
