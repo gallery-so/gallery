@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useMemo, useState } from 'react
 import { graphql, useFragment } from 'react-relay';
 
 import { OnboardingDialogContextFragment$key } from '~/generated/OnboardingDialogContextFragment.graphql';
+import isMac from '~/utils/isMac';
 
 import useUpdateUserExperience from './useUpdateUserExperience';
 
@@ -18,7 +19,11 @@ const OnboardingDialogMessage = {
   3: 'Search or filter through various chains and wallets to find the pieces you want to curate.',
   4: 'Click a piece to add to your collection.',
   5: 'You can add multiple sections to adjust the number of columns and showcase your pieces in creative ways.',
+  // this is set within the render below since its content depends on `window`
+  6: '<CLIENT_RENDERED_CONTENT>',
 };
+
+export const FINAL_STEP = Object.keys(OnboardingDialogMessage).length;
 
 export const OnboardingDialogContext = createContext<OnboardingDialogContextType | undefined>(
   undefined
@@ -61,10 +66,12 @@ export function OnboardingDialogProvider({ children, queryRef }: OnboardingDialo
 
   const updateUserExperience = useUpdateUserExperience();
 
-  const dialogMessage = useMemo(
-    () => OnboardingDialogMessage[step as keyof typeof OnboardingDialogMessage],
-    [step]
-  );
+  const dialogMessage = useMemo(() => {
+    if (step === 6) {
+      return `Save your changes at any point (${isMac() ? '⌘' : 'Ctrl'} + S).`;
+    }
+    return OnboardingDialogMessage[step as keyof typeof OnboardingDialogMessage];
+  }, [step]);
 
   const dismissUserExperience = useCallback(async () => {
     // Trick to dismiss the tooltip immediately while waiting for the mutation to finish
@@ -76,7 +83,7 @@ export function OnboardingDialogProvider({ children, queryRef }: OnboardingDialo
   }, [updateUserExperience]);
 
   const nextStep = useCallback(() => {
-    if (step === 5) {
+    if (step === FINAL_STEP) {
       dismissUserExperience();
       return;
     }

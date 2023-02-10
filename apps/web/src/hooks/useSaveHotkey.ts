@@ -6,7 +6,7 @@ export function useSaveHotkey(callback: () => void) {
 
   useEffect(() => {
     function handlePress(event: KeyboardEvent) {
-      if (event.key === 's' && event.metaKey) {
+      if (event.key === 's' && (event.metaKey || event.ctrlKey)) {
         // Avoid trying to save page as HTML
         event.preventDefault();
 

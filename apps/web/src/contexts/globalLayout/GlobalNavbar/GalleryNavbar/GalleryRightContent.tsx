@@ -14,7 +14,6 @@ import { DropdownSection } from '~/components/core/Dropdown/DropdownSection';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { TitleXS } from '~/components/core/Text/Text';
 import useCreateGallery from '~/components/MultiGallery/useCreateGallery';
-import Tooltip from '~/components/Tooltip/Tooltip';
 import { EditLink } from '~/contexts/globalLayout/GlobalNavbar/CollectionNavbar/EditLink';
 import { SignInButton } from '~/contexts/globalLayout/GlobalNavbar/SignInButton';
 import { useModalActions } from '~/contexts/modal/ModalContext';
@@ -25,7 +24,6 @@ import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import { useQrCode } from '~/scenes/Modals/QRCodePopover';
 import EditUserInfoModal from '~/scenes/UserGalleryPage/EditUserInfoModal';
 import LinkButton from '~/scenes/UserGalleryPage/LinkButton';
-import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 import QRCodeButton from './QRCodeButton';
 
@@ -40,7 +38,6 @@ export function GalleryRightContent({ queryRef, galleryRef, username }: GalleryR
     graphql`
       fragment GalleryRightContentFragment on Query {
         ...EditUserInfoModalFragment
-        ...isFeatureEnabledFragment
 
         viewer {
           ... on Viewer {
@@ -77,9 +74,6 @@ export function GalleryRightContent({ queryRef, galleryRef, username }: GalleryR
   const { showModal } = useModalActions();
   const { route } = useRouter();
   const { pushToast } = useToastActions();
-
-  const isMultigalleryEnabled = isFeatureEnabled(FeatureFlag.MULTIGALLERY, query);
-  const [showTooltip, setShowTooltip] = useState(false);
 
   const createGallery = useCreateGallery();
 
@@ -174,13 +168,8 @@ export function GalleryRightContent({ queryRef, galleryRef, username }: GalleryR
 
   if (showShowMultiGalleryButton) {
     return (
-      <VStack
-        onMouseEnter={() => setShowTooltip(true)}
-        onMouseLeave={() => setShowTooltip(false)}
-        align="center"
-      >
-        {!isMultigalleryEnabled && <StyledTooltip text="Soon™" showTooltip={showTooltip} />}
-        <Button variant="primary" onClick={handleCreateGallery} disabled={!isMultigalleryEnabled}>
+      <VStack align="center">
+        <Button variant="primary" onClick={handleCreateGallery}>
           Add New
         </Button>
       </VStack>
@@ -219,9 +208,4 @@ const EditButtonContainer = styled.div.attrs({ role: 'button' })`
   :hover {
     background-color: ${colors.faint};
   }
-`;
-
-const StyledTooltip = styled(Tooltip)<{ showTooltip: boolean }>`
-  opacity: ${({ showTooltip }) => (showTooltip ? 1 : 0)};
-  transform: translateY(${({ showTooltip }) => (showTooltip ? '38px' : '34px')});
 `;

@@ -87,10 +87,14 @@ function EditGalleryPageInner({ queryRef }: EditGalleryPageInnerProps) {
   }, [editGalleryNameAndDescription]);
 
   const handleDone = useCallback(
-    async (caption: string) => {
+    async (caption: string, redirect?: boolean) => {
       await publishGallery(caption);
+
+      if (redirect) {
+        handleBack();
+      }
     },
-    [publishGallery]
+    [handleBack, publishGallery]
   );
 
   const username = query.viewer?.__typename === 'Viewer' ? query.viewer.user?.username : null;
