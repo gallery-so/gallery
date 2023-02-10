@@ -27,6 +27,7 @@ import {
 import CloseIcon from '~/icons/CloseIcon';
 
 import Blinking from './Blinking';
+import { FINAL_STEP } from './OnboardingDialogContext';
 
 type Props = {
   step: number;
@@ -128,8 +129,12 @@ export default function OnboardingDialog({ step, text, onNext, onClose, options 
               <BaseM>{text}</BaseM>
             </StyledTextWrapper>
             <HStack justify="space-between" align="center">
-              <TitleDiatypeM>Tip {step} of 5</TitleDiatypeM>
-              <StyledButton onClick={handleNext}>{step === 5 ? 'Finish' : 'Next'} </StyledButton>
+              <TitleDiatypeM>
+                Tip {step} of {FINAL_STEP}
+              </TitleDiatypeM>
+              <StyledButton onClick={handleNext}>
+                {step === FINAL_STEP ? 'Finish' : 'Next'}{' '}
+              </StyledButton>
             </HStack>
           </StyledConfirmation>
         </FloatingPortal>
