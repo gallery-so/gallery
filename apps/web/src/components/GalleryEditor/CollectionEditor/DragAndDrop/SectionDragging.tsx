@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { StagedItem } from '~/components/GalleryEditor/GalleryEditorContext';
-import { SortableStagedNftNewFragment$key } from '~/generated/SortableStagedNftNewFragment.graphql';
+import { SortableStagedNftFragment$key } from '~/generated/SortableStagedNftFragment.graphql';
 
 import SortableStagedNft from '../SortableStagedNft';
 import SortableStagedWhitespace from '../SortableStagedWhitespace';
@@ -12,7 +12,7 @@ type Props = {
   items: StagedItem[];
   itemWidth: number;
   columns: number;
-  nftFragmentsKeyedByID: { [id: string]: SortableStagedNftNewFragment$key };
+  nftFragmentsKeyedByID: { [id: string]: SortableStagedNftFragment$key };
 };
 
 export default function SectionDragging({

@@ -43,24 +43,6 @@ module.exports = {
   },
 
   overrides: [
-    // This is temporary while we have two versions of the collection editor
-    // in production at once. We want to ensure that the newer version is
-    // never importing from the older version.
-    {
-      files: ['src/components/GalleryEditor/**/*'],
-      rules: {
-        'no-restricted-imports': [
-          'error',
-          {
-            patterns: [
-              '~/components/ManageGallery/OrganizeCollection/*',
-              '~/contexts/collectionEditor/CollectionEditorContext',
-            ],
-          },
-        ],
-      },
-    },
-
     {
       files: ['next.config.js', 'jest.config.js', 'scripts/**/*'],
       rules: {

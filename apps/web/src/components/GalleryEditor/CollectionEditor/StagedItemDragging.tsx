@@ -6,23 +6,23 @@ import colors from '~/components/core/colors';
 import { BaseM } from '~/components/core/Text/Text';
 import { NftFailureBoundary } from '~/components/NftFailureFallback/NftFailureBoundary';
 import { NftFailureFallback } from '~/components/NftFailureFallback/NftFailureFallback';
-import { StagedItemDraggingNewFragment$key } from '~/generated/StagedItemDraggingNewFragment.graphql';
-import { StagedItemDraggingWrapperNewFragment$key } from '~/generated/StagedItemDraggingWrapperNewFragment.graphql';
+import { StagedItemDraggingFragment$key } from '~/generated/StagedItemDraggingFragment.graphql';
+import { StagedItemDraggingWrapperFragment$key } from '~/generated/StagedItemDraggingWrapperFragment.graphql';
 import { useNftRetry } from '~/hooks/useNftRetry';
 import noop from '~/utils/noop';
 
 import StagedNftImageDragging from './StagedNftImageDragging';
 
 type Props = {
-  tokenRef: StagedItemDraggingNewFragment$key | null;
+  tokenRef: StagedItemDraggingFragment$key | null;
   size: number;
 };
 
 function StagedItemDragging({ tokenRef, size }: Props) {
   const token = useFragment(
     graphql`
-      fragment StagedItemDraggingNewFragment on Token {
-        ...StagedItemDraggingWrapperNewFragment
+      fragment StagedItemDraggingFragment on Token {
+        ...StagedItemDraggingWrapperFragment
       }
     `,
     tokenRef
@@ -40,17 +40,17 @@ function StagedItemDragging({ tokenRef, size }: Props) {
 }
 
 type StagedNftImageDraggingWrapperProps = {
-  tokenRef: StagedItemDraggingWrapperNewFragment$key;
+  tokenRef: StagedItemDraggingWrapperFragment$key;
   size: number;
 };
 
 function StagedNftImageDraggingWrapper({ tokenRef, size }: StagedNftImageDraggingWrapperProps) {
   const token = useFragment(
     graphql`
-      fragment StagedItemDraggingWrapperNewFragment on Token {
+      fragment StagedItemDraggingWrapperFragment on Token {
         dbid
 
-        ...StagedNftImageDraggingNewFragment
+        ...StagedNftImageDraggingFragment
       }
     `,
     tokenRef

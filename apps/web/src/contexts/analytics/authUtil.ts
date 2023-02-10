@@ -113,7 +113,3 @@ export function isEarlyAccessError(error: unknown) {
     error instanceof Error && error.message.toLowerCase().includes('required tokens not owned')
   );
 }
-
-export function isNotEarlyAccessError(errorMessage?: string) {
-  return errorMessage?.toLowerCase().includes('required tokens not owned');
-}

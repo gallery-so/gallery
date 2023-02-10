@@ -2,22 +2,22 @@ import React, { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
 import useNotOptimizedForMobileWarning from '~/components/ManageGallery/useNotOptimizedForMobileWarning';
-import { CollectionEditorNewFragment$key } from '~/generated/CollectionEditorNewFragment.graphql';
-import { CollectionEditorViewerNewFragment$key } from '~/generated/CollectionEditorViewerNewFragment.graphql';
+import { CollectionEditorFragment$key } from '~/generated/CollectionEditorFragment.graphql';
+import { CollectionEditorViewerFragment$key } from '~/generated/CollectionEditorViewerFragment.graphql';
 import { removeNullValues } from '~/utils/removeNullValues';
 
 import StagingArea from './StagingArea';
 
 type Props = {
-  queryRef: CollectionEditorNewFragment$key;
+  queryRef: CollectionEditorFragment$key;
 };
 
 // Separated out so we can refresh data as a part of our sync tokens mutation
 const collectionEditorViewerFragment = graphql`
-  fragment CollectionEditorViewerNewFragment on Viewer {
+  fragment CollectionEditorViewerFragment on Viewer {
     user @required(action: THROW) {
       tokens {
-        ...StagingAreaNewFragment
+        ...StagingAreaFragment
 
         # Escape hatch for data processing util files
         # CollectionEditor could use a refactor
@@ -39,10 +39,10 @@ const collectionEditorViewerFragment = graphql`
 export function CollectionEditor({ queryRef }: Props) {
   const query = useFragment(
     graphql`
-      fragment CollectionEditorNewFragment on Query {
+      fragment CollectionEditorFragment on Query {
         viewer {
           ... on Viewer {
-            ...CollectionEditorViewerNewFragment
+            ...CollectionEditorViewerFragment
           }
         }
       }
@@ -50,7 +50,7 @@ export function CollectionEditor({ queryRef }: Props) {
     queryRef
   );
 
-  const viewer = useFragment<CollectionEditorViewerNewFragment$key>(
+  const viewer = useFragment<CollectionEditorViewerFragment$key>(
     collectionEditorViewerFragment,
     query.viewer
   );

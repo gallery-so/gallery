@@ -1,7 +1,9 @@
 import { useCallback } from 'react';
 import { graphql } from 'react-relay';
 
-import { ValidationError } from '~/errors/ValidationError';
+import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
+import { useToastActions } from '~/contexts/toast/ToastContext';
+import { ErrorWithSentryMetadata } from '~/errors/ErrorWithSentryMetadata';
 import {
   useUpdateCollectionInfoMutation,
   useUpdateCollectionInfoMutation$data,
@@ -28,6 +30,9 @@ export default function useUpdateCollectionInfo() {
       }
     `);
 
+  const { pushToast } = useToastActions();
+  const reportError = useReportError();
+
   const mutate = useCallback(
     async (collectionDbid: string, name: string, collectorsNote: string) => {
       const optimisticResponse: useUpdateCollectionInfoMutation$data = {
@@ -41,16 +46,37 @@ export default function useUpdateCollectionInfo() {
         },
       };
 
+      function handleError(_error: unknown) {
+        const error =
+          _error instanceof Error
+            ? _error
+            : new ErrorWithSentryMetadata(
+                'Something unexpected went wrong while updating a collection',
+                {}
+              );
+
+        reportError(error);
+        pushToast({
+          autoClose: true,
+          message:
+            "Something went wrong while trying to update your collection. We're looking into it.",
+        });
+      }
+
       const response = await updateCollection({
         optimisticResponse,
         variables: { input: { name, collectorsNote, collectionId: collectionDbid } },
-      });
+      }).catch(handleError);
 
-      if (response.updateCollectionInfo?.__typename === 'ErrInvalidInput') {
-        throw new ValidationError('The description you entered is too long.');
+      if (response?.updateCollectionInfo?.__typename !== 'UpdateCollectionInfoPayload') {
+        handleError(
+          new ErrorWithSentryMetadata('UpdateCollectionInfo did not return expected typename', {
+            __typename: response?.updateCollectionInfo?.__typename,
+          })
+        );
       }
     },
-    [updateCollection]
+    [pushToast, reportError, updateCollection]
   );
 
   return [mutate, isMutating] as const;

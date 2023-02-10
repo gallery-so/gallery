@@ -1,15 +1,15 @@
-import { SidebarTokensNewFragment$data } from '~/generated/SidebarTokensNewFragment.graphql';
+import { SidebarTokensFragment$data } from '~/generated/SidebarTokensFragment.graphql';
 
 export type CollectionGroup = {
   title: string;
   address: string;
   //      Remove the readonly
-  tokens: Array<SidebarTokensNewFragment$data[number]>;
+  tokens: Array<SidebarTokensFragment$data[number]>;
 };
 
 type groupCollectionsByAddressArgs = {
   //      Remove the readonly
-  tokens: SidebarTokensNewFragment$data;
+  tokens: SidebarTokensFragment$data;
 };
 
 export function groupCollectionsByAddress({

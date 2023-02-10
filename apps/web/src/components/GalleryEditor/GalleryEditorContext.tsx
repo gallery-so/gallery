@@ -31,7 +31,7 @@ import {
   UpdateCollectionInput,
 } from '~/generated/GalleryEditorContextSaveGalleryMutation.graphql';
 import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
-import { generateLayoutFromCollectionNew } from '~/utils/collectionLayout';
+import { generateLayoutFromCollection } from '~/utils/collectionLayout';
 import { generate12DigitId } from '~/utils/generate12DigitId';
 
 const deepClone = rfdc();
@@ -127,21 +127,13 @@ export function GalleryEditorProvider({
               # eslint-disable-next-line relay/must-colocate-fragment-spreads
               ...NftGalleryFragment
               # eslint-disable-next-line relay/must-colocate-fragment-spreads
-              ...CollectionRowFragment
-              # eslint-disable-next-line relay/must-colocate-fragment-spreads
-              ...CollectionRowDraggingFragment
-              # eslint-disable-next-line relay/must-colocate-fragment-spreads
-              ...CollectionRowSettingsFragment
-              # eslint-disable-next-line relay/must-colocate-fragment-spreads
-              ...CollectionRowWrapperFragment
-              # eslint-disable-next-line relay/must-colocate-fragment-spreads
-              ...DeleteCollectionConfirmationFragment
-              # eslint-disable-next-line relay/must-colocate-fragment-spreads
-              ...SortableCollectionRowFragment
-              # eslint-disable-next-line relay/must-colocate-fragment-spreads
               ...UserGalleryCollectionFragment
               # eslint-disable-next-line relay/must-colocate-fragment-spreads
               ...CollectionGalleryHeaderFragment
+              # eslint-disable-next-line relay/must-colocate-fragment-spreads
+              ...CollectionLinkFragment
+              # eslint-disable-next-line relay/must-colocate-fragment-spreads
+              ...FeaturedCollectorCardCollectionFragment
             }
 
             ...getInitialCollectionsFromServerFragment
@@ -340,7 +332,7 @@ export function GalleryEditorProvider({
         section.items.filter((item) => item.kind === 'token')
       );
 
-      const layout = generateLayoutFromCollectionNew(collection.sections);
+      const layout = generateLayoutFromCollection(collection.sections);
 
       return {
         collectorsNote: collection.collectorsNote,
@@ -362,7 +354,7 @@ export function GalleryEditorProvider({
         section.items.filter((item) => item.kind === 'token')
       );
 
-      const layout = generateLayoutFromCollectionNew(collection.sections);
+      const layout = generateLayoutFromCollection(collection.sections);
 
       return {
         givenID: collection.dbid,
