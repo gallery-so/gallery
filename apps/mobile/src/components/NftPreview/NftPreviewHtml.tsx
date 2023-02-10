@@ -15,19 +15,19 @@ export function NftPreviewHtml({ htmlMediaRef }: NftPreviewHtmlProps) {
         __typename
 
         previewURLs {
-          large
+          medium
         }
       }
     `,
     htmlMediaRef
   );
 
-  if (!htmlMedia.previewURLs?.large) {
+  if (!htmlMedia.previewURLs?.medium) {
     throw new Error("Yikes");
   }
 
   const { dimensions, handleLoad } = useWidthHeight(
-    htmlMedia.previewURLs.large
+    htmlMedia.previewURLs.medium
   );
 
   return (
@@ -39,7 +39,7 @@ export function NftPreviewHtml({ htmlMediaRef }: NftPreviewHtmlProps) {
       style={{
         ...dimensions,
       }}
-      source={{ uri: htmlMedia.previewURLs.large }}
+      source={{ uri: htmlMedia.previewURLs.medium }}
     />
   );
 }

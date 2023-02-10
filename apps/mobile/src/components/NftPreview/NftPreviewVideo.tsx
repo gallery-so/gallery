@@ -2,7 +2,6 @@ import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import { NftPreviewVideoFragment$key } from "~/generated/NftPreviewVideoFragment.graphql";
 import { ResizeMode, Video } from "expo-av";
-import { useState } from "react";
 import { useWidthHeight } from "../../computeHeightAndWidth";
 
 type NftPreviewVideoProps = {
@@ -15,19 +14,19 @@ export function NftPreviewVideo({ videoMediaRef }: NftPreviewVideoProps) {
       fragment NftPreviewVideoFragment on VideoMedia {
         __typename
         contentRenderURLs {
-          large
+          medium
         }
       }
     `,
     videoMediaRef
   );
 
-  if (!media.contentRenderURLs?.large) {
+  if (!media.contentRenderURLs?.medium) {
     return null;
   }
 
   const { dimensions, handleLoad } = useWidthHeight(
-    media.contentRenderURLs?.large
+    media.contentRenderURLs?.medium
   );
 
   return (
@@ -37,7 +36,7 @@ export function NftPreviewVideo({ videoMediaRef }: NftPreviewVideoProps) {
         handleLoad(event.naturalSize.width, event.naturalSize.height);
       }}
       source={{
-        uri: media.contentRenderURLs.large,
+        uri: media.contentRenderURLs.medium,
       }}
       resizeMode={ResizeMode.CONTAIN}
       isLooping

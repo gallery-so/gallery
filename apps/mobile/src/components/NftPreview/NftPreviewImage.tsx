@@ -15,19 +15,19 @@ export function NftPreviewImage({ imageMediaRef }: NftPreviewImageProps) {
         __typename
 
         previewURLs {
-          large
+          medium
         }
       }
     `,
     imageMediaRef
   );
 
-  if (!imageMedia.previewURLs?.large) {
+  if (!imageMedia.previewURLs?.medium) {
     throw new Error("Missing image");
   }
 
   const { dimensions, handleLoad } = useWidthHeight(
-    imageMedia.previewURLs.large
+    imageMedia.previewURLs.medium
   );
 
   return (
@@ -39,7 +39,7 @@ export function NftPreviewImage({ imageMediaRef }: NftPreviewImageProps) {
       style={{
         ...dimensions,
       }}
-      source={{ uri: imageMedia.previewURLs.large }}
+      source={{ uri: imageMedia.previewURLs.medium }}
     />
   );
 }

@@ -14,14 +14,14 @@ export function NftPreviewGif({ gifMediaRef }: NftPreviewGifProps) {
         __typename
 
         previewURLs {
-          large
+          medium
         }
       }
     `,
     gifMediaRef
   );
 
-  if (!GifMedia.previewURLs?.large) {
+  if (!GifMedia.previewURLs?.medium) {
     throw new Error("Missing Gif");
   }
 
@@ -32,7 +32,7 @@ export function NftPreviewGif({ gifMediaRef }: NftPreviewGifProps) {
         width: 250,
         height: 250,
       }}
-      source={{ uri: GifMedia.previewURLs.large }}
+      source={{ uri: GifMedia.previewURLs.medium }}
     />
   );
 }
