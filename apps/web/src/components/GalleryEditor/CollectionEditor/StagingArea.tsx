@@ -231,7 +231,7 @@ function StagingArea({ tokensRef }: Props) {
                       placement: 'bottom',
                       positionOffset: 20,
                       blinkingPosition: {
-                        left: -20,
+                        left: -10,
                       },
                     }}
                   />
@@ -259,7 +259,7 @@ function StagingArea({ tokensRef }: Props) {
                       placement: 'bottom',
                       positionOffset: 20,
                       blinkingPosition: {
-                        left: -20,
+                        left: -10,
                       },
                     }}
                   />

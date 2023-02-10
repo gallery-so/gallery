@@ -116,8 +116,8 @@ function CollectionTitle({
             placement: 'left',
             positionOffset: 100,
             blinkingPosition: {
-              top: 110,
-              left: 80,
+              top: 40,
+              left: 7,
             },
           }}
         />
