@@ -30,8 +30,6 @@
   },
   "private": true,
   "scripts": {
-    "start": "expo start --dev-client",
-    "android": "expo run:android",
-    "ios": "expo run:ios"
+    "eas-build-post-install": "node_modules/.bin/moon run mobile:relay-codegen"
   }
 }
