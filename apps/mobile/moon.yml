@@ -33,13 +33,17 @@ tasks:
     command: relay-compiler --repersist
     inputs:
       - '@group(source)'
+
+  codegen-watch:
+    command: relay-compiler --repersist --watch
+
   ios:
     deps:
       - "~:touch-relay-files"
     command:
       - concurrently
       - -n Expo,Relay-Compiler
-      - yarn expo start --ios --clear
+      - yarn expo run:ios
       - node_modules/.bin/moon run mobile:relay-watch
 
   typecheck:
