@@ -1,9 +1,10 @@
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import { NftPreviewFragment$key } from "~/generated/NftPreviewFragment.graphql";
-import { Text, View } from "react-native";
+import { View } from "react-native";
 import { useMemo } from "react";
 import { RawImage } from "./RawImage";
+
 type NftPreviewProps = {
   tokenRef: NftPreviewFragment$key;
 };
@@ -22,6 +23,8 @@ export function NftPreview({ tokenRef }: NftPreviewProps) {
           ... on Media {
             previewURLs {
               medium
+              blurhash
+              aspectRatio
             }
           }
         }
@@ -31,8 +34,18 @@ export function NftPreview({ tokenRef }: NftPreviewProps) {
   );
 
   const mediaContent = useMemo(() => {
-    if (token.media?.previewURLs?.medium) {
-      return <RawImage url={token.media.previewURLs.medium} />;
+    if (
+      token.media?.previewURLs?.medium &&
+      token.media.previewURLs.aspectRatio &&
+      token.media.previewURLs.blurhash
+    ) {
+      return (
+        <RawImage
+          aspectRatio={token.media.previewURLs.aspectRatio}
+          blurhash={token.media.previewURLs.blurhash}
+          url={token.media.previewURLs.medium}
+        />
+      );
     }
 
     return null;
