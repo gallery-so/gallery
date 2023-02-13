@@ -1,15 +1,13 @@
-import { useCallback, useState } from "react";
-
-const dimensionCache = new Map<string, { width: number; height: number }>();
+type Dimension = { width: number; height: number };
 
 export function computeHeightAndWidth(
-  width: number,
-  height: number,
+  aspectRatio: number,
   maxWidth: number,
   maxHeight: number
-) {
-  console.log("Computing", { width, height });
-  const aspectRatio = width / height;
+): Dimension {
+  if (!aspectRatio || isNaN(aspectRatio)) {
+    return { width: maxWidth, height: maxHeight };
+  }
 
   if (aspectRatio === 1) {
     return { width: maxWidth, height: maxHeight };
@@ -19,19 +17,3 @@ export function computeHeightAndWidth(
     return { width: maxWidth, height: maxHeight / aspectRatio };
   }
 }
-
-export const useWidthHeight = (url: string) => {
-  const [dimensions, setDimensions] = useState(
-    dimensionCache.get(url) ?? { width: 400, height: 400 }
-  );
-
-  const handleLoad = useCallback((width: number, height: number) => {
-    const result = computeHeightAndWidth(width, height, 250, 250);
-
-    dimensionCache.set(url, result);
-
-    setDimensions(result);
-  }, []);
-
-  return { dimensions, handleLoad };
-};
