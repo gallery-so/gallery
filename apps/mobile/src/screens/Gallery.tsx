@@ -20,19 +20,9 @@ export function Gallery() {
                 tokens {
                   token {
                     media {
-                      ... on ImageMedia {
+                      ... on Media {
                         previewURLs {
-                          large
-                        }
-                      }
-                      ... on HtmlMedia {
-                        previewURLs {
-                          large
-                        }
-                      }
-                      ... on GIFMedia {
-                        previewURLs {
-                          large
+                          medium
                         }
                       }
                     }
@@ -57,11 +47,8 @@ export function Gallery() {
   useEffect(() => {
     const allTokenImages = collections
       .flatMap((collection) => collection?.tokens ?? [])
-      .map((token) => token?.token?.media?.previewURLs?.large)
+      .map((token) => token?.token?.media?.previewURLs?.medium)
       .filter(Boolean) as string[];
-
-    console.log("Prefetching");
-    console.log(JSON.stringify(allTokenImages));
 
     Image.prefetch(allTokenImages);
   }, []);
@@ -87,7 +74,7 @@ export function Gallery() {
     <SafeAreaView style={{ backgroundColor: "white", height: "100%" }}>
       <View style={{ height: "100%" }}>
         <FlatList
-          windowSize={2}
+          windowSize={10}
           keyExtractor={(item) => item?.dbid ?? "nothing"}
           data={collections}
           renderItem={renderItem}
