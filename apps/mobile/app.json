@@ -1,7 +1,8 @@
 {
   "expo": {
-    "name": "mobile",
+    "name": "Gallery",
     "slug": "gallery",
+    "privacy": "unlisted",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
