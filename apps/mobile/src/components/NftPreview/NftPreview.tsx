@@ -3,11 +3,7 @@ import { graphql } from "relay-runtime";
 import { NftPreviewFragment$key } from "~/generated/NftPreviewFragment.graphql";
 import { Text, View } from "react-native";
 import { useMemo } from "react";
-import { NftPreviewVideo } from "./NftPreviewVideo";
-import { NftPreviewImage } from "./NftPreviewImage";
-import { NftPreviewGif } from "./NftPreviewGif";
-import { NftPreviewHtml } from "./NftPreviewHtml";
-
+import { RawImage } from "./RawImage";
 type NftPreviewProps = {
   tokenRef: NftPreviewFragment$key;
 };
@@ -23,20 +19,10 @@ export function NftPreview({ tokenRef }: NftPreviewProps) {
         media {
           __typename
 
-          ... on VideoMedia {
-            ...NftPreviewVideoFragment
-          }
-
-          ... on ImageMedia {
-            ...NftPreviewImageFragment
-          }
-
-          ... on GIFMedia {
-            ...NftPreviewGifFragment
-          }
-
-          ... on HtmlMedia {
-            ...NftPreviewHtmlFragment
+          ... on Media {
+            previewURLs {
+              medium
+            }
           }
         }
       }
@@ -45,17 +31,9 @@ export function NftPreview({ tokenRef }: NftPreviewProps) {
   );
 
   const mediaContent = useMemo(() => {
-    if (token.media?.__typename === "VideoMedia") {
-      return <NftPreviewVideo videoMediaRef={token.media} />;
-    } else if (token.media?.__typename === "ImageMedia") {
-      return <NftPreviewImage imageMediaRef={token.media} />;
-    } else if (token.media?.__typename === "GIFMedia") {
-      return <NftPreviewGif gifMediaRef={token.media} />;
-    } else if (token.media?.__typename === "HtmlMedia") {
-      return <NftPreviewHtml htmlMediaRef={token.media} />;
+    if (token.media?.previewURLs?.medium) {
+      return <RawImage url={token.media.previewURLs.medium} />;
     }
-
-    console.log(token.media?.__typename, "Unsupported");
 
     return null;
   }, []);
