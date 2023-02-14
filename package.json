@@ -2,10 +2,11 @@
   "name": "gallery-monorepo",
   "private": true,
   "workspaces": [
-    "apps/*",
+    "apps/mobile",
+    "apps/web",
     "packages/frames-dls"
   ],
-  "packageManager": "yarn@1.22.19",
+  "packageManager": "yarn@3.4.1",
   "engines": {
     "node": "16.18.1"
   },
@@ -16,7 +17,7 @@
     "typescript": "^4.9.4"
   },
   "devDependencies": {
-    "@moonrepo/cli": "^0.22.0",
+    "@moonrepo/cli": "^0.23.4",
     "tsconfig-moon": "^1.2.1"
   }
 }
