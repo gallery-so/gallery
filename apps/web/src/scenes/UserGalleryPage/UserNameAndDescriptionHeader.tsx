@@ -187,8 +187,8 @@ const EditIconContainer = styled.div`
 `;
 
 const HeaderContainer = styled(HStack)<{ isAuth: boolean }>`
-  padding: 4px 12px;
   width: max-content;
+  padding: 4px 12px 4px 0px;
 
   ${({ isAuth }) =>
     isAuth &&
@@ -196,6 +196,8 @@ const HeaderContainer = styled(HStack)<{ isAuth: boolean }>`
       cursor: pointer;
 
       &:hover {
+        padding: 4px 12px 4px;
+        margin-left: -12px;
         background-color: ${colors.faint};
 
         ${EditIconContainer} {
