@@ -3,10 +3,10 @@ import { graphql, useLazyLoadQuery } from 'react-relay';
 
 import { GalleryNavbar } from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavbar';
 import { GalleryIdFocusedGalleryQuery } from '~/generated/GalleryIdFocusedGalleryQuery.graphql';
+import GalleryRedirect from '~/scenes/_Router/GalleryRedirect';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
 import { FocusedGalleryPage } from '~/scenes/UserGalleryPage/FocusedGalleryPage';
 import { openGraphMetaTags } from '~/utils/openGraphMetaTags';
-import GalleryRedirect from '~/scenes/_Router/GalleryRedirect';
 
 type Props = {
   username: string;
