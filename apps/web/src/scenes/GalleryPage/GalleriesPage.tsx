@@ -170,15 +170,6 @@ export default function GalleriesPage({ queryRef }: Props) {
       });
 
       updateGalleryOrder(formattedGalleriesPosition);
-
-      // auto scroll to the new position
-      const galleryElement = document.getElementById(galleryId);
-      if (galleryElement) {
-        galleryElement.scrollIntoView({
-          behavior: 'smooth',
-          block: 'center',
-        });
-      }
     },
     [sortedGalleryIds, updateGalleryOrder]
   );
