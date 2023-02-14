@@ -11,8 +11,12 @@ import { useToastActions } from '~/contexts/toast/ToastContext';
 import { GalleryFragment$key } from '~/generated/GalleryFragment.graphql';
 import { GalleryFragmentQuery$key } from '~/generated/GalleryFragmentQuery.graphql';
 import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
+import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
+import ArrowDownIcon from '~/icons/ArrowDownIcon';
+import ArrowUpIcon from '~/icons/ArrowUpIcon';
 import DragHandleIcon from '~/icons/DragHandleIcon';
 import { EditPencilIcon } from '~/icons/EditPencilIcon';
+import noop from '~/utils/noop';
 import { removeNullValues } from '~/utils/removeNullValues';
 
 import colors from '../core/colors';
@@ -29,15 +33,24 @@ import useSetFeaturedGallery from './useSetFeaturedGallery';
 import useUpdateGalleryHidden from './useUpdateGalleryHidden';
 import useUpdateGalleryInfo from './useUpdateGalleryInfo';
 
+export type GalleryOrderDirection = 'up' | 'down';
+
 type Props = {
   isFeatured?: boolean;
   galleryRef: GalleryFragment$key;
   queryRef: GalleryFragmentQuery$key;
+
+  onGalleryOrderChange?: (galleryId: string, direction: GalleryOrderDirection) => void;
 };
 
 const TOTAL_TOKENS = 4;
 
-export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Props) {
+export default function Gallery({
+  isFeatured = false,
+  galleryRef,
+  onGalleryOrderChange = noop,
+  queryRef,
+}: Props) {
   const gallery = useFragment(
     graphql`
       fragment GalleryFragment on Gallery {
@@ -94,10 +107,11 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
 
   const loggedInUserId = useLoggedInUserId(query);
   const isAuthenticatedUser = loggedInUserId === gallery?.owner?.id;
+  const isMobile = useIsMobileWindowWidth();
 
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: gallery.dbid.toString(),
-    disabled: !isAuthenticatedUser,
+    disabled: !isAuthenticatedUser || isMobile,
   });
 
   const style = {
@@ -233,6 +247,13 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
     };
   }, [dbid]);
 
+  const handleChangeGalleryOrder = useCallback(
+    (direction: GalleryOrderDirection) => {
+      onGalleryOrderChange(gallery.dbid, direction);
+    },
+    [gallery.dbid, onGalleryOrderChange]
+  );
+
   const nonNullTokenPreviews = removeNullValues(tokenPreviews?.map((token) => token?.large)) ?? [];
 
   const remainingTokenPreviews = TOTAL_TOKENS - nonNullTokenPreviews.length;
@@ -318,6 +339,17 @@ export default function Gallery({ isFeatured = false, galleryRef, queryRef }: Pr
           </StyledTokenPreviewWrapper>
         </StyledGalleryDraggable>
       </UnstyledLink>
+
+      {isMobile && isAuthenticatedUser && (
+        <StyledOrderingContainer>
+          <StyledOrderingButton onClick={() => handleChangeGalleryOrder('up')}>
+            <ArrowUpIcon />
+          </StyledOrderingButton>
+          <StyledOrderingButton onClick={() => handleChangeGalleryOrder('down')}>
+            <ArrowDownIcon />
+          </StyledOrderingButton>
+        </StyledOrderingContainer>
+      )}
     </StyledGalleryWrapper>
   );
 }
@@ -394,4 +426,25 @@ const StyledGalleryActionsContainer = styled.div`
 const StyledIconContainer = styled(IconContainer)<{ isDragging: boolean }>`
   user-select: none;
   cursor: ${({ isDragging }) => (isDragging ? 'grabbing' : 'grab')};
+`;
+
+const StyledOrderingContainer = styled.div`
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+
+  border: 1px solid ${colors.faint};
+`;
+
+const StyledOrderingButton = styled.button`
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  margin: 0;
+  outline: none;
+
+  &:last-child {
+    border-left: 1px solid ${colors.faint};
+  }
 `;

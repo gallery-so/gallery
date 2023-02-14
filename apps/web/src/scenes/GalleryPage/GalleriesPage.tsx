@@ -20,7 +20,7 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
-import Gallery from '~/components/MultiGallery/Gallery';
+import Gallery, { GalleryOrderDirection } from '~/components/MultiGallery/Gallery';
 import useUpdateGalleryOrder from '~/components/MultiGallery/useUpdateGalleryOrder';
 import { GalleriesPageQueryFragment$key } from '~/generated/GalleriesPageQueryFragment.graphql';
 import { GalleryPageSpacing } from '~/pages/[username]';
@@ -146,6 +146,34 @@ export default function GalleriesPage({ queryRef }: Props) {
     [activeIndex, getIndex, sortedGalleryIds, updateGalleryOrder]
   );
 
+  const handleOrderOnMobile = useCallback(
+    (galleryId: string, direction: GalleryOrderDirection) => {
+      const currentIndex = sortedGalleryIds.findIndex((id) => id === galleryId);
+
+      if (
+        (currentIndex === 0 && direction === 'up') ||
+        (currentIndex === sortedGalleryIds.length - 1 && direction === 'down')
+      ) {
+        return;
+      }
+
+      const newIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+
+      const newSortedGalleryIds = arraySwap(sortedGalleryIds, currentIndex, newIndex);
+      setSortedGalleryIds(newSortedGalleryIds);
+
+      const formattedGalleriesPosition = newSortedGalleryIds.map((galleryId, index) => {
+        return {
+          galleryId: galleryId,
+          position: index.toString(),
+        };
+      });
+
+      updateGalleryOrder(formattedGalleriesPosition);
+    },
+    [sortedGalleryIds, updateGalleryOrder]
+  );
+
   const sortedGalleries = useMemo(() => {
     return removeNullValues(
       sortedGalleryIds.map((galleryId) => {
@@ -190,6 +218,7 @@ export default function GalleriesPage({ queryRef }: Props) {
                   galleryRef={gallery}
                   queryRef={query}
                   isFeatured={featuredGalleryId === gallery.id}
+                  onGalleryOrderChange={handleOrderOnMobile}
                 />
               );
             })}
