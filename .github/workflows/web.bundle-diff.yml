@@ -17,7 +17,7 @@ jobs:
           cache: 'yarn'
       - run: 'yarn install --immutable'
       - name: Build Next.js App
-        run: DISABLE_SENTRY=true yarn moon run web:build
+        run: DISABLE_SENTRY=true node_modules/.bin/moon run web:build
       - name: Analyze bundle sizes
         uses: transferwise/actions-next-bundle-analyzer@master
         with:
