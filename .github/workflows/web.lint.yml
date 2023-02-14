@@ -13,7 +13,7 @@ jobs:
           cache: 'yarn'
       - run: 'yarn install --immutable'
       - name: Run Lint
-        run: yarn moon run web:lint
+        run: node_modules/.bin/moon run web:lint
   type-check:
     runs-on: ubuntu-latest
     steps:
@@ -26,4 +26,4 @@ jobs:
           cache: 'yarn'
       - run: 'yarn install --immutable'
       - name: Run typecheck
-        run: yarn moon run web:codegen && yarn moon run web:typecheck
+        run: node_modules/.bin/moon run web:codegen && node_modules/.bin/moon run web:typecheck

@@ -13,4 +13,4 @@ jobs:
           cache: 'yarn'
       - run: 'yarn install --immutable'
       - name: Run unit tests
-        run: yarn moon run web:codegen && yarn moon run web:test
+        run: node_modules/.bin/moon run web:codegen && node_modules/.bin/moon run web:test

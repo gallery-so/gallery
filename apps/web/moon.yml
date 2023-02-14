@@ -38,8 +38,8 @@ tasks:
     - concurrently
     - -n Next,Relay-Compiler,GraphQL-Codegen
     - yarn next dev
-    - yarn moon run web:relay-watch
-    - yarn moon run web:graphql-codegen-watch
+    - node_modules/.bin/moon run web:relay-watch
+    - node_modules/.bin/moon run web:graphql-codegen-watch
 
   lint:
     command:
@@ -63,7 +63,7 @@ tasks:
     local: true
 
   relay-watch:
-    command: relay-compiler --repersist --watch
+    command: yarn relay-compiler --repersist --watch
     local: true
 
   graphql-codegen-watch:
@@ -91,7 +91,7 @@ tasks:
   relay-codegen:
     deps:
       - "~:touch-relay-files"
-    command: relay-compiler --repersist
+    command: yarn relay-compiler --repersist
     inputs:
       - '@group(source)'
 
