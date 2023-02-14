@@ -12,6 +12,7 @@ import { FollowButtonUserFragment$key } from '~/generated/FollowButtonUserFragme
 import useAuthModal from '~/hooks/useAuthModal';
 import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
 
+import breakpoints from '../core/breakpoints';
 import useFollowUser from './mutations/useFollowUser';
 import useUnfollowUser from './mutations/useUnfollowUser';
 
@@ -182,13 +183,15 @@ const FollowingChipContainer = styled.div`
     opacity: 0;
   }
 
-  :hover {
-    ${FollowingChip} {
-      opacity: 0;
-    }
+  @media only screen and ${breakpoints.desktop} {
+    :hover {
+      ${FollowingChip} {
+        opacity: 0;
+      }
 
-    ${UnfollowChipContainer} {
-      opacity: 1;
+      ${UnfollowChipContainer} {
+        opacity: 1;
+      }
     }
   }
 `;
