@@ -1,31 +1,40 @@
 import { ReactNode, useCallback, useMemo, useState } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import Badge from '~/components/Badge/Badge';
-import breakpoints from '~/components/core/breakpoints';
 import TextButton from '~/components/core/Button/TextButton';
+import colors from '~/components/core/colors';
+import IconContainer from '~/components/core/IconContainer';
 import { StyledAnchor } from '~/components/core/InteractiveLink/InteractiveLink';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleM } from '~/components/core/Text/Text';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
+import { useModalActions } from '~/contexts/modal/ModalContext';
 import { UserNameAndDescriptionHeader$key } from '~/generated/UserNameAndDescriptionHeader.graphql';
+import { UserNameAndDescriptionHeaderQueryFragment$key } from '~/generated/UserNameAndDescriptionHeaderQueryFragment.graphql';
 import useIs3acProfilePage from '~/hooks/oneOffs/useIs3acProfilePage';
+import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
+import { EditPencilIcon } from '~/icons/EditPencilIcon';
 import LinkToNftDetailView from '~/scenes/NftDetailPage/LinkToNftDetailView';
 import handleCustomDisplayName from '~/utils/handleCustomDisplayName';
 import unescape from '~/utils/unescape';
 
+import EditUserInfoModal from './EditUserInfoModal';
+
 type Props = {
   userRef: UserNameAndDescriptionHeader$key;
+  queryRef: UserNameAndDescriptionHeaderQueryFragment$key;
 };
 
-export function UserNameAndDescriptionHeader({ userRef }: Props) {
+export function UserNameAndDescriptionHeader({ userRef, queryRef }: Props) {
   const user = useFragment(
     graphql`
       fragment UserNameAndDescriptionHeader on GalleryUser {
+        id
         username
         bio
         badges {
@@ -38,10 +47,31 @@ export function UserNameAndDescriptionHeader({ userRef }: Props) {
     userRef
   );
 
+  const query = useFragment(
+    graphql`
+      fragment UserNameAndDescriptionHeaderQueryFragment on Query {
+        ...EditUserInfoModalFragment
+        ...useLoggedInUserIdFragment
+      }
+    `,
+    queryRef
+  );
+
   const { username, bio, badges } = user;
 
   const isMobile = useIsMobileWindowWidth();
   const is3ac = useIs3acProfilePage();
+
+  const loggedInUserId = useLoggedInUserId(query);
+  const isAuthenticatedUser = loggedInUserId === user?.id;
+
+  const { showModal } = useModalActions();
+  const handleEditBioAndName = useCallback(() => {
+    showModal({
+      content: <EditUserInfoModal queryRef={query} />,
+      headerText: 'Edit username and bio',
+    });
+  }, [query, showModal]);
 
   const unescapedBio = useMemo(() => (bio ? unescape(bio) : ''), [bio]);
 
@@ -58,31 +88,45 @@ export function UserNameAndDescriptionHeader({ userRef }: Props) {
   const displayName = handleCustomDisplayName(username);
 
   return (
-    <Container gap={2}>
-      {!isMobile && (
-        <HStack align="center" gap={4}>
-          <StyledUsername>{displayName}</StyledUsername>
+    <HeaderContainer
+      gap={12}
+      align="center"
+      onClick={handleEditBioAndName}
+      inline
+      isAuth={isAuthenticatedUser}
+    >
+      <Container gap={2}>
+        {!isMobile && (
+          <HStack align="center" gap={4}>
+            <StyledUsername>{displayName}</StyledUsername>
 
-          <HStack align="center" gap={0}>
-            {userBadges.map((badge) =>
-              badge ? <Badge key={badge.name} badgeRef={badge} /> : null
-            )}
+            <HStack align="center" gap={0}>
+              {userBadges.map((badge) =>
+                badge ? <Badge key={badge.name} badgeRef={badge} /> : null
+              )}
+            </HStack>
           </HStack>
-        </HStack>
-      )}
+        )}
 
-      <HStack align="center" gap={8} grow>
-        <StyledUserDetails>
-          {is3ac ? (
-            <ExpandableBio text={unescapedBio} />
-          ) : (
-            <StyledBioWrapper>
-              <Markdown text={unescapedBio} />
-            </StyledBioWrapper>
-          )}
-        </StyledUserDetails>
-      </HStack>
-    </Container>
+        <HStack align="center" gap={8} grow>
+          <StyledUserDetails>
+            {is3ac ? (
+              <ExpandableBio text={unescapedBio} />
+            ) : (
+              <StyledBioWrapper>
+                <Markdown text={unescapedBio} />
+              </StyledBioWrapper>
+            )}
+          </StyledUserDetails>
+        </HStack>
+      </Container>
+
+      {isAuthenticatedUser && (
+        <EditIconContainer>
+          <IconContainer size="sm" variant="stacked" icon={<EditPencilIcon />} />
+        </EditIconContainer>
+      )}
+    </HeaderContainer>
   );
 }
 
@@ -136,6 +180,33 @@ const NftDetailViewer = ({ href, children }: NftDetailViewerProps) => {
   );
 };
 
+const EditIconContainer = styled.div`
+  opacity: 0;
+
+  transition: opacity 150ms ease-in-out;
+`;
+
+const HeaderContainer = styled(HStack)<{ isAuth: boolean }>`
+  width: max-content;
+  padding: 4px 12px 4px 0px;
+
+  ${({ isAuth }) =>
+    isAuth &&
+    css`
+      cursor: pointer;
+
+      &:hover {
+        padding: 4px 12px 4px;
+        margin-left: -12px;
+        background-color: ${colors.faint};
+
+        ${EditIconContainer} {
+          opacity: 1;
+        }
+      }
+    `}
+`;
+
 const StyledBioWrapper = styled(BaseM)`
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -148,18 +219,12 @@ const StyledUsername = styled(TitleM)`
   font-style: normal;
 `;
 
-const Container = styled(VStack)`
-  width: 100%;
-`;
+const Container = styled(VStack)``;
 
 const StyledUserDetails = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  width: 100%;
+  max-width: 100%;
   word-break: break-word;
-
-  @media only screen and ${breakpoints.tablet} {
-    width: 70%;
-  }
 `;

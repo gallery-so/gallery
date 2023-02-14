@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Route } from 'nextjs-routes';
 import { useCallback, useMemo, useState } from 'react';
@@ -179,10 +180,11 @@ export function GalleryRightContent({ queryRef, galleryRef, username }: GalleryR
   if (shouldShowEditButton) {
     return (
       <HStack gap={12}>
-        {shouldShowEditButton && (
-          <EditButtonContainer onClick={handleEditClick}>
-            <TitleXS>EDIT</TitleXS>
-            {dropdown}
+        {shouldShowEditButton && editGalleryUrl && (
+          <EditButtonContainer>
+            <Link href={editGalleryUrl}>
+              <TitleXS>EDIT</TitleXS>
+            </Link>
           </EditButtonContainer>
         )}
       </HStack>
