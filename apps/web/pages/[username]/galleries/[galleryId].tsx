@@ -6,6 +6,7 @@ import { GalleryIdFocusedGalleryQuery } from '~/generated/GalleryIdFocusedGaller
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
 import { FocusedGalleryPage } from '~/scenes/UserGalleryPage/FocusedGalleryPage';
 import { openGraphMetaTags } from '~/utils/openGraphMetaTags';
+import GalleryRedirect from '~/scenes/_Router/GalleryRedirect';
 
 type Props = {
   username: string;
@@ -32,6 +33,25 @@ export default function FocusedGallery({ galleryId, username }: Props) {
     `,
     { galleryId, username }
   );
+
+  const rightfulOwner = query.galleryById?.owner?.username;
+  if (typeof rightfulOwner !== 'string') {
+    return <GalleryRedirect to={{ pathname: '/' }} />;
+  }
+
+  if (rightfulOwner !== username) {
+    return (
+      <GalleryRedirect
+        to={{
+          pathname: '/[username]/galleries/[galleryId]',
+          query: {
+            username: rightfulOwner,
+            galleryId,
+          },
+        }}
+      />
+    );
+  }
 
   return (
     <GalleryRoute
