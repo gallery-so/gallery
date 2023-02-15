@@ -7097,6 +7097,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/relay-runtime@npm:^14.1.7":
+  version: 14.1.7
+  resolution: "@types/relay-runtime@npm:14.1.7"
+  checksum: 14f2df5dd8ada725103686ce9a23a9422a04d20115cdac3ac1f0bc12c26011ca04b9411db12d5fc612d70b8c7aeed9aa35c4569b385fc4195efe3f6d096b021f
+  languageName: node
+  linkType: hard
+
 "@types/relay-test-utils@npm:^6.0.5":
   version: 6.0.6
   resolution: "@types/relay-test-utils@npm:6.0.6"
@@ -26673,6 +26680,16 @@ __metadata:
   checksum: f4c1de0837f106d2dbbfd5d0720a5d059d1c66b42b580965c8f06bb1db684be8783538b684092648c981294bf817869f743a066538771dbecb293df78f765e00
   languageName: node
   linkType: hard
+
+"shared@workspace:packages/shared":
+  version: 0.0.0-use.local
+  resolution: "shared@workspace:packages/shared"
+  dependencies:
+    "@types/relay-runtime": ^14.1.7
+    relay-runtime: ^14.1.0
+    typescript: ^4.9.5
+  languageName: unknown
+  linkType: soft
 
 "shebang-command@npm:^1.2.0":
   version: 1.2.0

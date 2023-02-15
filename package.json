@@ -4,7 +4,8 @@
   "workspaces": [
     "apps/mobile",
     "apps/web",
-    "packages/frames-dls"
+    "packages/frames-dls",
+    "packages/shared"
   ],
   "packageManager": "yarn@3.4.1",
   "engines": {
