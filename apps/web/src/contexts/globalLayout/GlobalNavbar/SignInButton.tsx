@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import breakpoints from '~/components/core/breakpoints';
 
+import breakpoints from '~/components/core/breakpoints';
 import TextButton from '~/components/core/Button/TextButton';
 import colors from '~/components/core/colors';
 import transitions from '~/components/core/transitions';

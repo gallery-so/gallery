@@ -56,7 +56,7 @@ export default function WalletSelector({
 
   const numOptionsToShow: number = useMemo(
     () => (showEmail ? NUM_OPTIONS_SUPPORTED : NUM_OPTIONS_SUPPORTED - 1),
-    []
+    [showEmail]
   );
 
   const fallback = useMemo(
@@ -71,7 +71,7 @@ export default function WalletSelector({
         </VStack>
       </WalletSelectorWrapper>
     ),
-    []
+    [numOptionsToShow]
   );
 
   return (

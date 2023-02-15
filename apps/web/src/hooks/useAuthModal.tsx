@@ -1,14 +1,15 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 import styled from 'styled-components';
+
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
-
 import { WalletSelectorVariant } from '~/components/WalletSelector/multichain/MultichainWalletSelector';
 import WalletSelector from '~/components/WalletSelector/WalletSelector';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useAuthModalFragment$key } from '~/generated/useAuthModalFragment.graphql';
 import { useAuthModalQuery } from '~/generated/useAuthModalQuery.graphql';
+
 type AuthType = 'signIn' | 'signUp';
 
 type ModalProps = {
@@ -56,7 +57,7 @@ export const AuthModal = ({ queryRef, variant, authType = 'signIn' }: ModalProps
       default:
         return '';
     }
-  }, []);
+  }, [authType]);
 
   return (
     <Container>
@@ -96,5 +97,5 @@ export default function useAuthModal(authType: AuthType) {
       content: <AuthModal queryRef={query} authType={authType} />,
       headerText: authType === 'signUp' ? 'Sign Up' : 'Sign In',
     });
-  }, [query, showModal]);
+  }, [query, authType, showModal]);
 }
