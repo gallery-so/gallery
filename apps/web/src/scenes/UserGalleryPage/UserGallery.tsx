@@ -4,17 +4,17 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
-import { HStack, VStack } from '~/components/core/Spacer/Stack';
-import { ClickablePill } from '~/components/Pill';
+import { VStack } from '~/components/core/Spacer/Stack';
 import { useModalState } from '~/contexts/modal/ModalContext';
 import { UserGalleryFragment$key } from '~/generated/UserGalleryFragment.graphql';
 import useKeyDown from '~/hooks/useKeyDown';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
-import TwitterIcon from '~/icons/Twittericon';
 import useDisplayFullPageNftDetailModal from '~/scenes/NftDetailPage/useDisplayFullPageNftDetailModal';
 import NotFound from '~/scenes/NotFound/NotFound';
 import { UserGalleryLayout } from '~/scenes/UserGalleryPage/UserGalleryLayout';
 import { UserNameAndDescriptionHeader } from '~/scenes/UserGalleryPage/UserNameAndDescriptionHeader';
+
+import UserTwitterSection from './UserTwitterSection';
 
 type Props = {
   queryRef: UserGalleryFragment$key;
@@ -54,6 +54,7 @@ function UserGallery({ queryRef }: Props) {
 
         ...UserGalleryLayoutQueryFragment
         ...UserNameAndDescriptionHeaderQueryFragment
+        ...UserTwitterSectionFragment
       }
     `,
     queryRef
@@ -93,14 +94,7 @@ function UserGallery({ queryRef }: Props) {
       <VStack gap={12}>
         <UserNameAndDescriptionHeader userRef={user} queryRef={query} />
 
-        <HStack align="flex-start">
-          <ClickablePill href="https://twitter.com/i/oauth2/authorize?response_type=code&client_id=T0RhNDBVSWdVVGh2ZzBOdHJobHA6MTpjaQ&redirect_uri=http://localhost:3000/auth/twitter&scope=tweet.read%20users.read%20follows.read%20follows.write%20offline.access&state=state&code_challenge=challenge&code_challenge_method=plain">
-            <HStack gap={5} align="center">
-              <TwitterIcon />
-              <strong>Connect Twitter</strong>
-            </HStack>
-          </ClickablePill>
-        </HStack>
+        <UserTwitterSection queryRef={query} />
       </VStack>
 
       <Divider />
