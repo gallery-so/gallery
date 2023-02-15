@@ -100,12 +100,10 @@ export function HomeNavbar({ queryRef }: Props) {
       {/* Strictly here to keep spacing consistent */}
       <NavbarRightContent>
         {isLoggedIn ? null : (
-          <>
-            <HStack gap={8} align="center">
-              <SignInButton />
-              {!isMobile && <SignUpButton />}
-            </HStack>
-          </>
+          <HStack gap={8} align="center">
+            <SignInButton />
+            {!isMobile && <SignUpButton />}
+          </HStack>
         )}
       </NavbarRightContent>
     </StandardNavbarContainer>

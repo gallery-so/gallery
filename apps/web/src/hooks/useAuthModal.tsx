@@ -90,19 +90,11 @@ export default function useAuthModal(authType: AuthType) {
     {}
   );
 
-  const headerText = useMemo(() => {
-    if (authType === 'signUp') {
-      return 'Sign up';
-    }
-
-    return 'Sign In';
-  }, []);
-
   return useCallback(() => {
     showModal({
       id: 'auth',
       content: <AuthModal queryRef={query} authType={authType} />,
-      headerText,
+      headerText: authType === 'signUp' ? 'Sign Up' : 'Sign In',
     });
   }, [query, showModal]);
 }
