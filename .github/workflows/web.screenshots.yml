@@ -1,4 +1,4 @@
-name: screenshots
+name: web-screenshots
 on: [deployment_status]
 jobs:
   # start disable ---

@@ -1,4 +1,4 @@
-name: ci
+name: web-e2e
 on: [deployment_status]
 jobs:
   e2e:

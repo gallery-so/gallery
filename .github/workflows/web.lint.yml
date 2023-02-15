@@ -1,4 +1,4 @@
-name: ci
+name: web-lint
 on: [push]
 jobs:
   lint:
