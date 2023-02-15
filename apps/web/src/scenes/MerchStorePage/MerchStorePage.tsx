@@ -99,7 +99,7 @@ export default function MerchStorePage({ queryRef }: Props) {
   );
 
   const { merchTokens } = query;
-  const showAuthModal = useAuthModal();
+  const showAuthModal = useAuthModal('signIn');
   const showRedeemModal = useRedeemModal(merchTokens);
 
   const loggedInUserId = useLoggedInUserId(userQuery);

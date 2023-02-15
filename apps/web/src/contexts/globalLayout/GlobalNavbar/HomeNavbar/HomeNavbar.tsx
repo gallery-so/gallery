@@ -10,6 +10,7 @@ import { HomeNavbarFragment$key } from '~/generated/HomeNavbarFragment.graphql';
 import { NavbarLink } from '../NavbarLink';
 import { ProfileDropdown } from '../ProfileDropdown/ProfileDropdown';
 import { SignInButton } from '../SignInButton';
+import { SignUpButton } from '../SignUpButton';
 import {
   NavbarCenterContent,
   NavbarLeftContent,
@@ -94,7 +95,16 @@ export function HomeNavbar({ queryRef }: Props) {
       </NavbarCenterContent>
 
       {/* Strictly here to keep spacing consistent */}
-      <NavbarRightContent>{isLoggedIn ? null : <SignInButton />}</NavbarRightContent>
+      <NavbarRightContent>
+        {isLoggedIn ? null : (
+          <>
+            <HStack gap={8} align="center">
+              <SignInButton />
+              <SignUpButton />
+            </HStack>
+          </>
+        )}
+      </NavbarRightContent>
     </StandardNavbarContainer>
   );
 }

@@ -1,19 +1,23 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 import styled from 'styled-components';
+import { VStack } from '~/components/core/Spacer/Stack';
+import { BaseM } from '~/components/core/Text/Text';
 
 import { WalletSelectorVariant } from '~/components/WalletSelector/multichain/MultichainWalletSelector';
 import WalletSelector from '~/components/WalletSelector/WalletSelector';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useAuthModalFragment$key } from '~/generated/useAuthModalFragment.graphql';
 import { useAuthModalQuery } from '~/generated/useAuthModalQuery.graphql';
+type AuthType = 'signIn' | 'signUp';
 
 type ModalProps = {
   queryRef: useAuthModalFragment$key;
   variant?: WalletSelectorVariant;
+  authType?: AuthType;
 };
 
-export const AuthModal = ({ queryRef, variant }: ModalProps) => {
+export const AuthModal = ({ queryRef, variant, authType = 'signIn' }: ModalProps) => {
   const { hideModal } = useModalActions();
 
   const query = useFragment(
@@ -43,9 +47,23 @@ export const AuthModal = ({ queryRef, variant }: ModalProps) => {
     }
   }, [isAuthenticated, hideModal]);
 
+  const subheading = useMemo(() => {
+    switch (authType) {
+      case 'signIn':
+        return 'Sign in to your Gallery account using a wallet or email.';
+      case 'signUp':
+        return 'Join Gallery today to curate and display your NFT collection.';
+      default:
+        return '';
+    }
+  }, []);
+
   return (
     <Container>
-      <WalletSelector queryRef={query} variant={variant} />
+      <VStack gap={16}>
+        <BaseM>{subheading}</BaseM>
+        <WalletSelector queryRef={query} variant={variant} showEmail={authType !== 'signUp'} />
+      </VStack>
     </Container>
   );
 };
@@ -53,7 +71,6 @@ export const AuthModal = ({ queryRef, variant }: ModalProps) => {
 const Container = styled.div`
   display: flex;
   justify-content: center;
-  align-items: center;
 
   // the height of the inner content with all wallet options listed.
   // ensures the height of the modal doesn't shift
@@ -61,7 +78,7 @@ const Container = styled.div`
   height: 100%;
 `;
 
-export default function useAuthModal() {
+export default function useAuthModal(authType: AuthType) {
   const { showModal } = useModalActions();
 
   const query = useLazyLoadQuery<useAuthModalQuery>(
@@ -73,11 +90,19 @@ export default function useAuthModal() {
     {}
   );
 
+  const headerText = useMemo(() => {
+    if (authType === 'signUp') {
+      return 'Sign up';
+    }
+
+    return 'Sign In';
+  }, []);
+
   return useCallback(() => {
     showModal({
       id: 'auth',
-      content: <AuthModal queryRef={query} />,
-      headerText: 'Sign in',
+      content: <AuthModal queryRef={query} authType={authType} />,
+      headerText,
     });
   }, [query, showModal]);
 }

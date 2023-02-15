@@ -30,6 +30,7 @@ type Props = {
   variant?: WalletSelectorVariant;
   onEthAddWalletSuccess?: () => void;
   onTezosAddWalletSuccess?: () => void;
+  showEmail?: boolean;
 };
 
 export default function MultichainWalletSelector({
@@ -38,6 +39,7 @@ export default function MultichainWalletSelector({
   variant = 'default',
   onEthAddWalletSuccess,
   onTezosAddWalletSuccess,
+  showEmail = true,
 }: Props) {
   const query = useFragment(
     graphql`
@@ -185,7 +187,7 @@ export default function MultichainWalletSelector({
               setSelectedAuthMethod(supportedAuthMethods.delegateCash);
             }}
           />
-          {connectionMode === AUTH ? (
+          {connectionMode === AUTH && showEmail ? (
             <WalletButton
               label={supportedAuthMethods.magicLink.name}
               onClick={() => {
