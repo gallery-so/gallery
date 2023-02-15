@@ -59,6 +59,9 @@
       ],
       "~frames/*": [
         "../../packages/frames-dls/src/*"
+      ],
+      "~shared/*": [
+        "../../packages/shared/src/*"
       ]
     },
     "outDir": "../../.moon/cache/types/apps/web",
