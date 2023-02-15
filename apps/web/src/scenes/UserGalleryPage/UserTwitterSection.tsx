@@ -13,6 +13,7 @@ import { UserTwitterSectionQueryFragment$key } from '~/generated/UserTwitterSect
 import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
 import { EditPencilIcon } from '~/icons/EditPencilIcon';
 import GlobeIcon from '~/icons/Globeicon';
+import LockIcon from '~/icons/LockIcon';
 import TwitterIcon from '~/icons/Twittericon';
 
 import SettingsModal from '../Modals/SettingsModal/SettingsModal';
@@ -43,6 +44,17 @@ export default function UserTwitterSection({ queryRef, userRef }: Props) {
       fragment UserTwitterSectionQueryFragment on Query {
         ...SettingsModalFragment
         ...useLoggedInUserIdFragment
+
+        viewer {
+          ... on Viewer {
+            socialAccounts {
+              twitter {
+                username
+                display
+              }
+            }
+          }
+        }
       }
     `,
     queryRef
@@ -60,6 +72,8 @@ export default function UserTwitterSection({ queryRef, userRef }: Props) {
 
   const twitterAccount = user.socialAccounts?.twitter;
 
+  const userLoggedInTwitterAccount = query.viewer?.socialAccounts?.twitter;
+
   const handleEditButtonClick = useCallback(() => {
     showModal({
       content: <SettingsModal queryRef={query} />,
@@ -69,51 +83,72 @@ export default function UserTwitterSection({ queryRef, userRef }: Props) {
 
   const twitterUrl = `https://twitter.com/${twitterAccount?.username}`;
 
-  return (
-    <HStack align="flex-start" gap={8}>
-      {isAuthenticatedUser && !twitterAccount && (
+  // if owner of the gallery is logged in
+  if (isAuthenticatedUser && userLoggedInTwitterAccount) {
+    return (
+      <HStack align="flex-start" gap={8}>
+        <ClickablePill href={twitterUrl}>
+          <HStack gap={5} align="center">
+            <TwitterIcon />
+            <strong>{userLoggedInTwitterAccount?.username}</strong>
+          </HStack>
+        </ClickablePill>
+
+        <HStack>
+          <NewTooltip
+            {...getFloatingProps()}
+            style={floatingStyle}
+            ref={floating}
+            text={
+              userLoggedInTwitterAccount?.display ? 'Visible to everyone' : 'Visible to only me'
+            }
+          />
+          <IconContainer
+            size="md"
+            variant="default"
+            icon={userLoggedInTwitterAccount?.display ? <GlobeIcon /> : <LockIcon />}
+            ref={reference}
+            {...getReferenceProps()}
+          />
+          {isAuthenticatedUser && (
+            <IconContainer
+              onClick={handleEditButtonClick}
+              size="md"
+              variant="default"
+              icon={<EditPencilIcon />}
+            />
+          )}
+        </HStack>
+      </HStack>
+    );
+  }
+
+  if (isAuthenticatedUser && !userLoggedInTwitterAccount) {
+    return (
+      <HStack align="flex-start" gap={8}>
         <ClickablePill href={TWITTER_AUTH_URL} target="_self">
           <HStack gap={5} align="center">
             <TwitterIcon />
             <strong>Connect Twitter</strong>
           </HStack>
         </ClickablePill>
-      )}
+      </HStack>
+    );
+  }
 
-      {twitterAccount && twitterAccount?.display && (
-        <>
-          <ClickablePill href={twitterUrl}>
-            <HStack gap={5} align="center">
-              <TwitterIcon />
-              <strong>{twitterAccount.username}</strong>
-            </HStack>
-          </ClickablePill>
+  // Other users
+  if (!twitterAccount?.display) {
+    return null;
+  }
 
-          <HStack>
-            <NewTooltip
-              {...getFloatingProps()}
-              style={floatingStyle}
-              ref={floating}
-              text="Visible to everyone"
-            />
-            <IconContainer
-              size="md"
-              variant="default"
-              icon={<GlobeIcon />}
-              ref={reference}
-              {...getReferenceProps()}
-            />
-            {isAuthenticatedUser && (
-              <IconContainer
-                onClick={handleEditButtonClick}
-                size="md"
-                variant="default"
-                icon={<EditPencilIcon />}
-              />
-            )}
-          </HStack>
-        </>
-      )}
+  return (
+    <HStack align="flex-start" gap={8}>
+      <ClickablePill href={twitterUrl}>
+        <HStack gap={5} align="center">
+          <TwitterIcon />
+          <strong>{twitterAccount.username}</strong>
+        </HStack>
+      </ClickablePill>
     </HStack>
   );
 }
