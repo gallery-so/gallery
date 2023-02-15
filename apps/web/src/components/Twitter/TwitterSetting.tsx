@@ -1,11 +1,13 @@
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
+import { TWITTER_AUTH_URL } from '~/constants/twitter';
 import { TwitterSettingFragment$key } from '~/generated/TwitterSettingFragment.graphql';
 import TwitterIcon from '~/icons/Twittericon';
 
 import { Button } from '../core/Button/Button';
 import colors from '../core/colors';
+import InteractiveLink from '../core/InteractiveLink/InteractiveLink';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM } from '../core/Text/Text';
 import Toggle from '../core/Toggle/Toggle';
@@ -69,7 +71,9 @@ export default function TwitterSetting({ queryRef }: Props) {
           Connect your Twitter account to find friends and display your handle on your profile.
         </BaseM>
 
-        <Button variant="secondary">CONNECT</Button>
+        <StyledConnectLink href={TWITTER_AUTH_URL}>
+          <Button variant="secondary">CONNECT</Button>
+        </StyledConnectLink>
       </HStack>
     </StyledTwitterSettingContainer>
   );
@@ -84,4 +88,8 @@ const StyledDivider = styled.div`
   height: 1px;
   width: 100%;
   background-color: ${colors.porcelain};
+`;
+
+const StyledConnectLink = styled(InteractiveLink)`
+  text-decoration: none;
 `;
