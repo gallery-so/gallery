@@ -16459,6 +16459,8 @@ __metadata:
 "frames-dls@workspace:packages/frames-dls":
   version: 0.0.0-use.local
   resolution: "frames-dls@workspace:packages/frames-dls"
+  dependencies:
+    typescript: ^4.9.5
   languageName: unknown
   linkType: soft
 
