@@ -114,10 +114,10 @@ function CollectionTitle({
           onClose={handleClose}
           options={{
             placement: 'left',
-            positionOffset: 100,
+            positionOffset: 40,
             blinkingPosition: {
-              top: 110,
-              left: 80,
+              top: 40,
+              left: 7,
             },
           }}
         />

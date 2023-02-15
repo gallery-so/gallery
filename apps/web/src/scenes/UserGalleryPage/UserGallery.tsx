@@ -51,6 +51,7 @@ function UserGallery({ queryRef }: Props) {
         }
 
         ...UserGalleryLayoutQueryFragment
+        ...UserNameAndDescriptionHeaderQueryFragment
       }
     `,
     queryRef
@@ -87,7 +88,7 @@ function UserGallery({ queryRef }: Props) {
 
   return (
     <VStack gap={isMobile ? 12 : 24}>
-      <UserNameAndDescriptionHeader userRef={user} />
+      <UserNameAndDescriptionHeader userRef={user} queryRef={query} />
       <Divider />
       <UserGalleryLayout galleryRef={user.featuredGallery} queryRef={query} />
     </VStack>

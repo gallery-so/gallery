@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "build": "echo {} > persisted_queries.json && mkdir -p __generated__ && ../../node_modules/.bin/relay-compiler && ../../node_modules/.bin/graphql-codegen && node ./scripts/upload-persisted-queries.mjs && ../../node_modules/.bin/next build"
+    "build": "bash -c \"echo {} > persisted_queries.json && mkdir -p __generated__ && yarn relay-compiler && yarn graphql-codegen && node ./scripts/upload-persisted-queries.mjs && yarn next build\""
   },
   "devDependencies": {
     "@gallery-so/typescript-operations": "^0.0.7",

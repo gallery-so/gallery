@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
@@ -7,6 +7,7 @@ import { Button } from '~/components/core/Button/Button';
 import colors from '~/components/core/colors';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleXS } from '~/components/core/Text/Text';
+import OnboardingDialog from '~/components/GalleryEditor/GalleryOnboardingGuide/OnboardingDialog';
 import { CollectionSaveButtonWithCaption } from '~/contexts/globalLayout/GlobalNavbar/CollectionSaveButtonWithCaption';
 import { GalleryTitleSection } from '~/contexts/globalLayout/GlobalNavbar/EditGalleryNavbar/GalleryTitleSection';
 import {
@@ -38,7 +39,7 @@ type Props = {
 
   onBack: () => void;
   onSave: () => Promise<void>;
-  onDone: (caption: string) => Promise<void>;
+  onDone: (caption: string, redirect?: boolean) => Promise<void>;
 };
 
 type DoneAction =
@@ -97,14 +98,23 @@ export function EditGalleryNavbar({
   // and the hit "Cmd+S" anyway
   const [showSaved, setShowSaved] = useState(true);
   useSaveHotkey(() => {
-    if (doneAction === 'saved') {
+    if (doneAction === 'can-save') {
       setShowSaved(false);
+
+      onSave();
 
       setTimeout(() => {
         setShowSaved(true);
       }, 500);
     }
   });
+
+  const handleDone = useCallback(
+    (caption: string) => {
+      onDone(caption, true);
+    },
+    [onDone]
+  );
 
   const doneButton = useMemo(() => {
     if (doneAction === 'no-changes') {
@@ -116,7 +126,7 @@ export function EditGalleryNavbar({
             Saved
           </SavedText>
 
-          <CollectionSaveButtonWithCaption onSave={onDone} label="Done" />
+          <CollectionSaveButtonWithCaption onSave={handleDone} label="Done" />
         </>
       );
     } else if (
@@ -132,7 +142,7 @@ export function EditGalleryNavbar({
         </>
       );
     }
-  }, [doneAction, isSaving, onBack, onDone, onSave, showSaved]);
+  }, [doneAction, isSaving, onBack, handleDone, onSave, showSaved]);
 
   return (
     <Wrapper>
@@ -169,9 +179,24 @@ export function EditGalleryNavbar({
         </NavbarCenterContent>
 
         <NavbarRightContent>
-          <HStack align="center" gap={12}>
+          <DoneButtonContainer align="center" gap={12}>
+            {step === 6 && (
+              <OnboardingDialog
+                step={step}
+                text={dialogMessage}
+                onNext={onNextStep}
+                onClose={dialogOnClose}
+                options={{
+                  placement: 'left-end',
+                  positionOffset: 20,
+                  blinkingPosition: {
+                    left: -20,
+                  },
+                }}
+              />
+            )}
             {doneButton}
-          </HStack>
+          </DoneButtonContainer>
         </NavbarRightContent>
       </StandardNavbarContainer>
     </Wrapper>
@@ -196,8 +221,13 @@ const SavedText = styled(BaseM)<{ show: boolean }>`
   opacity: ${({ show }) => (show ? '1' : '0')};
 `;
 
+const DoneButtonContainer = styled(HStack)`
+  position: relative;
+`;
+
 const DoneButton = styled(Button)`
   padding: 8px 12px;
+  min-width: 60px;
 `;
 
 const Wrapper = styled.div`

@@ -41,8 +41,8 @@ export function GalleryTitleSection({
               placement: 'bottom',
               positionOffset: 20,
               blinkingPosition: {
-                top: 5,
-                right: -20,
+                top: 6,
+                left: -20,
               },
             }}
           />

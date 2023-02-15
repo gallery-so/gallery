@@ -23,8 +23,6 @@ import { useModalActions } from '~/contexts/modal/ModalContext';
 import { ProfileDropdownContentFragment$key } from '~/generated/ProfileDropdownContentFragment.graphql';
 import usePersistedState from '~/hooks/usePersistedState';
 import SettingsModal from '~/scenes/Modals/SettingsModal/SettingsModal';
-import { getEditGalleryUrl } from '~/utils/getEditGalleryUrl';
-import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 type Props = {
   shouldShowDropdown: boolean;
@@ -65,9 +63,7 @@ export function ProfileDropdownContent({
           }
         }
 
-        ...getEditGalleryUrlFragment
         ...SettingsModalFragment
-        ...isFeatureEnabledFragment
       }
     `,
     queryRef
@@ -77,7 +73,6 @@ export function ProfileDropdownContent({
   const { handleLogout } = useAuthActions();
   const showNotificationsModal = useNotificationsModal();
 
-  const isMultiGalleryEnabled = isFeatureEnabled(FeatureFlag.MULTIGALLERY, query);
   const track = useTrack();
 
   const [dismissMerchRedemption, setDismissMerchRedemption] = usePersistedState(
@@ -107,8 +102,6 @@ export function ProfileDropdownContent({
     return null;
   }
 
-  const editGalleryUrl = getEditGalleryUrl(query);
-
   const userGalleryRoute: Route = { pathname: '/[username]', query: { username } };
   const editGalleriesRoute: Route = { pathname: '/[username]/galleries', query: { username } };
 
@@ -127,23 +120,9 @@ export function ProfileDropdownContent({
         <Link href={userGalleryRoute}>
           <DropdownProfileSection href={route(userGalleryRoute)}>
             <UsernameText>{username}</UsernameText>
-            {isMultiGalleryEnabled ? (
-              // Need this to ensure the interactive link doesn't take the full width
-              <VStack align="flex-start">
-                <StyledInteractiveLink to={editGalleriesRoute}>
-                  Edit galleries
-                </StyledInteractiveLink>
-              </VStack>
-            ) : (
-              <>
-                {editGalleryUrl && (
-                  // Need this to ensure the interactive link doesn't take the full width
-                  <VStack align="flex-start">
-                    <StyledInteractiveLink to={editGalleryUrl}>Edit gallery</StyledInteractiveLink>
-                  </VStack>
-                )}
-              </>
-            )}
+            <VStack align="flex-start">
+              <StyledInteractiveLink to={editGalleriesRoute}>Edit galleries</StyledInteractiveLink>
+            </VStack>
           </DropdownProfileSection>
         </Link>
       </DropdownSection>
