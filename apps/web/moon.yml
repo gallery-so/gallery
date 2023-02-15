@@ -104,10 +104,10 @@ tasks:
       - "~:relay-codegen"
       - "~:graphql-codegen"
 
+  # Inherited from root task
   typecheck:
     deps:
       - '~:codegen'
-    command: tsc --noEmit
 
   test:
     deps:
