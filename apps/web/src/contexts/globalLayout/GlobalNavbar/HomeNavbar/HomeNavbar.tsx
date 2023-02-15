@@ -6,6 +6,7 @@ import { graphql, useFragment } from 'react-relay';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { HomeNavbarFragment$key } from '~/generated/HomeNavbarFragment.graphql';
+import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 
 import { NavbarLink } from '../NavbarLink';
 import { ProfileDropdown } from '../ProfileDropdown/ProfileDropdown';
@@ -58,6 +59,8 @@ export function HomeNavbar({ queryRef }: Props) {
   const latestFollowingRoute: Route = { pathname: '/latest/following', query: {} };
   const featuredRoute: Route = { pathname: '/featured', query: {} };
 
+  const isMobile = useIsMobileWindowWidth();
+
   return (
     <StandardNavbarContainer>
       <NavbarLeftContent>
@@ -100,7 +103,7 @@ export function HomeNavbar({ queryRef }: Props) {
           <>
             <HStack gap={8} align="center">
               <SignInButton />
-              <SignUpButton />
+              {!isMobile && <SignUpButton />}
             </HStack>
           </>
         )}

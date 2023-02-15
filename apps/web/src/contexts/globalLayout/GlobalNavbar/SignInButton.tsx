@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import breakpoints from '~/components/core/breakpoints';
 
 import TextButton from '~/components/core/Button/TextButton';
 import colors from '~/components/core/colors';
@@ -12,9 +13,11 @@ export function SignInButton() {
 }
 
 const SignInWrapper = styled(TextButton)`
-  padding: 8px 16px;
-  transition: background-color ${transitions.cubic};
-  &:hover {
-    background-color: ${colors.faint};
+  @media only screen and ${breakpoints.tablet} {
+    padding: 8px 16px;
+    transition: background-color ${transitions.cubic};
+    &:hover {
+      background-color: ${colors.faint};
+    }
   }
 `;
