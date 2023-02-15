@@ -1,0 +1,12 @@
+{
+  "name": "shared",
+  "private": true,
+  "version": "1.0.0",
+  "dependencies": {
+    "relay-runtime": "^14.1.0"
+  },
+  "devDependencies": {
+    "@types/relay-runtime": "^14.1.7",
+    "typescript": "^4.9.5"
+  }
+}
