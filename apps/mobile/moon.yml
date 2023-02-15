@@ -46,6 +46,9 @@ tasks:
       - yarn expo run:ios
       - node_modules/.bin/moon run mobile:relay-watch
 
+  # Inherited from root task
   typecheck:
-    command: tsc --build
+    deps:
+      - "~:relay-codegen"
+    command: tsc
 
