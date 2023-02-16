@@ -1,8 +1,11 @@
+import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { TWITTER_AUTH_URL } from '~/constants/twitter';
 import { TwitterSettingFragment$key } from '~/generated/TwitterSettingFragment.graphql';
+import { TwitterSettingMutation } from '~/generated/TwitterSettingMutation.graphql';
+import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 import TwitterIcon from '~/icons/Twittericon';
 
 import { Button } from '../core/Button/Button';
@@ -37,6 +40,44 @@ export default function TwitterSetting({ queryRef }: Props) {
     queryRef
   );
 
+  const [updateTwitterDisplay] = usePromisifiedMutation<TwitterSettingMutation>(graphql`
+    mutation TwitterSettingMutation($input: UpdateSocialAccountDisplayedInput!) {
+      updateSocialAccountDisplayed(input: $input) {
+        __typename
+
+        ... on UpdateSocialAccountDisplayedPayload {
+          viewer {
+            ... on Viewer {
+              user {
+                socialAccounts {
+                  twitter {
+                    username
+                    display
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  `);
+
+  const handleUpdateTwitterDisplay = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const displayed = event.target.checked;
+      updateTwitterDisplay({
+        variables: {
+          input: {
+            displayed,
+            type: 'Twitter',
+          },
+        },
+      });
+    },
+    [updateTwitterDisplay]
+  );
+
   const twitterAccount = query.viewer?.user?.socialAccounts?.twitter;
 
   if (twitterAccount) {
@@ -58,7 +99,10 @@ export default function TwitterSetting({ queryRef }: Props) {
             <strong>Display on profile</strong>
           </BaseM>
 
-          <Toggle checked={twitterAccount?.display || false} onChange={() => {}} />
+          <Toggle
+            checked={twitterAccount?.display || false}
+            onChange={handleUpdateTwitterDisplay}
+          />
         </HStack>
       </StyledTwitterSettingContainer>
     );
