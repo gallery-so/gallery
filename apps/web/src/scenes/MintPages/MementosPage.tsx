@@ -1,6 +1,5 @@
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import SplashImage from 'public/infinitaprospectus.jpg';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { useAccount } from 'wagmi';
@@ -18,13 +17,12 @@ import useTimer from '~/hooks/useTimer';
 import { useIsDesktopWindowWidth } from '~/hooks/useWindowSize';
 import isProduction from '~/utils/isProduction';
 
+import { MEMENTOS_NFT_TOKEN_ID, MINT_END, MINT_START, pathToImage } from './config';
 import MintButton from './MintButton';
-import useMintPhase, { MINT_END, MINT_START } from './useMintPhase';
+import useMintPhase from './useMintPhase';
 
 export default function MementosPage() {
   const isDesktop = useIsDesktopWindowWidth();
-
-  const NFT_TOKEN_ID = 1;
 
   const { address: rawAddress } = useAccount();
   const address = rawAddress?.toLowerCase();
@@ -35,7 +33,7 @@ export default function MementosPage() {
   const detectOwnedPosterNftFromOpensea = useCallback(
     async (address: string) => {
       const response = await fetch(
-        `${openseaBaseUrl}/api/v1/assets?owner=${address}&asset_contract_addresses=${GALLERY_MEMENTOS_CONTRACT_ADDRESS}&token_ids=${NFT_TOKEN_ID}`,
+        `${openseaBaseUrl}/api/v1/assets?owner=${address}&asset_contract_addresses=${GALLERY_MEMENTOS_CONTRACT_ADDRESS}&token_ids=${MEMENTOS_NFT_TOKEN_ID}`,
         {}
       );
       const responseBody = await response.json();
@@ -68,7 +66,7 @@ export default function MementosPage() {
       </StyledBackLink>
       <StyledWrapper>
         <StyledImageContainer>
-          <Image src={SplashImage} alt="splash-image" />
+          <Image src={pathToImage} alt="splash-image" />
         </StyledImageContainer>
         <StyledContent>
           <HStack align="center" gap={4}>
