@@ -1,5 +1,5 @@
 import { Contract } from '@ethersproject/contracts';
-import { useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import useSWR from 'swr';
 
@@ -11,6 +11,8 @@ import { TransactionStatus } from '~/constants/transaction';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { useMintMementosContract } from '~/hooks/useContract';
 import useMintContract from '~/hooks/useMintContract';
+
+import useMintPhase from './useMintPhase';
 
 type Props = {
   onMintSuccess: () => void;
@@ -27,7 +29,13 @@ export default function MintButton({ onMintSuccess }: Props) {
   const { data: allowlist } = useSWR(WHITE_RHINO_ALLOWLIST);
 
   const contract = useMintMementosContract();
-  const { transactionHash, transactionStatus, buttonText, error, handleClick } = useMintContract({
+  const {
+    transactionHash,
+    transactionStatus,
+    buttonText: mintButtonText,
+    error,
+    handleClick,
+  } = useMintContract({
     contract: contract as Contract | null,
     tokenId,
     allowlist,
@@ -43,12 +51,21 @@ export default function MintButton({ onMintSuccess }: Props) {
     }
   }, [transactionStatus, pushToast, onMintSuccess]);
 
+  const phase = useMintPhase();
+  const buttonText = useMemo(() => {
+    if (phase === 'pre-mint') return 'Mint Unavailable';
+    if (phase === 'active-mint') return mintButtonText;
+    return 'Mint Ended';
+  }, [mintButtonText, phase]);
+
+  const isDisabled =
+    phase === 'pre-mint' ||
+    phase === 'active-mint' ||
+    transactionStatus === TransactionStatus.PENDING;
+
   return (
     <>
-      <StyledButton
-        onClick={handleClick}
-        disabled={transactionStatus === TransactionStatus.PENDING}
-      >
+      <StyledButton onClick={handleClick} disabled={isDisabled}>
         {buttonText}
       </StyledButton>
       {transactionHash && (
