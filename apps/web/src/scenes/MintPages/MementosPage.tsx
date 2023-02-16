@@ -1,39 +1,28 @@
 import Image from 'next/image';
-import SplashImage from 'public/thank-u-token.jpg';
-import { useCallback, useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import SplashImage from 'public/infinitaprospectus.jpg';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { useAccount } from 'wagmi';
 
 import ActionText from '~/components/core/ActionText/ActionText';
-import breakpoints, { contentSize, pageGutter } from '~/components/core/breakpoints';
+import breakpoints, { contentSize } from '~/components/core/breakpoints';
 import colors from '~/components/core/colors';
 import HorizontalBreak from '~/components/core/HorizontalBreak/HorizontalBreak';
-import { VStack } from '~/components/core/Spacer/Stack';
-import { BaseM, BaseXL, TitleM } from '~/components/core/Text/Text';
-import StyledBackLink from '~/components/NavbarBackLink/NavbarBackLink';
+import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
+import { BaseM, BaseXL, TitleL } from '~/components/core/Text/Text';
 import { OPENSEA_API_BASEURL, OPENSEA_TESTNET_API_BASEURL } from '~/constants/opensea';
 import { GALLERY_MEMENTOS_CONTRACT_ADDRESS } from '~/hooks/useContract';
 import useTimer from '~/hooks/useTimer';
-import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
+import { useIsDesktopWindowWidth } from '~/hooks/useWindowSize';
 import isProduction from '~/utils/isProduction';
 
 import MintButton from './MintButton';
+import useMintPhase, { MINT_END, MINT_START } from './useMintPhase';
 
-function Timer() {
-  const MINT_DEADLINE = '2022-12-22T23:59:59-04:00'; // time is in EST (GMT-04:00)
-  const { timestamp } = useTimer(MINT_DEADLINE);
-  return <BaseXL>{timestamp}</BaseXL>;
-}
-
-export default function ThankYouTokenPage() {
-  const isMobile = useIsMobileWindowWidth();
-
-  // const POSTER_SECONDARY_URL =
-  //   'https://opensea.io/assets/ethereum/0x7e619a01e1a3b3a6526d0e01fbac4822d48f439b/0';
-
-  const handleBackClick = () => {
-    window.history.back();
-  };
+export default function MementosPage() {
+  const isDesktop = useIsDesktopWindowWidth();
 
   const NFT_TOKEN_ID = 1;
 
@@ -70,43 +59,69 @@ export default function ThankYouTokenPage() {
     }
   }, [address, detectOwnedPosterNftFromOpensea]);
 
+  const { push } = useRouter();
+
   return (
     <StyledPage>
-      <StyledPositionedBackLink>
-        <ActionText onClick={handleBackClick}>← Back to gallery</ActionText>
-      </StyledPositionedBackLink>
+      <StyledBackLink>
+        <ActionText onClick={() => push('/trending')}>← Back to gallery</ActionText>
+      </StyledBackLink>
       <StyledWrapper>
         <StyledImageContainer>
           <Image src={SplashImage} alt="splash-image" />
         </StyledImageContainer>
         <StyledContent>
-          <TitleM>The Next Era of Self Expression</TitleM>
+          <HStack align="center" gap={4}>
+            <StyledTitleL>
+              Gallery Mementos: <i>Infinita Prospectus</i>
+            </StyledTitleL>
+          </HStack>
           <VStack gap={16}>
             <BaseM>
-              Gallery is a limitless social canvas of curation and connection for your digital
-              objects. Now open to everyone.
+              Infinita Prospectus, latin for Infinite Perspectives, is a collectible from Gallery
+              Mementos that celebrates the release of our multi-gallery feature, an evolution in the
+              way users can express themselves on Gallery. With multi-gallery, users can create an
+              infinite number of Galleries to express their diverse tastes and the entire spectrum
+              of their collection.
             </BaseM>
             <BaseM>
-              This commemorative token is available to our most active users, as well as early
-              adopters of our social features. Thank you for being a member of Gallery. We are
-              excited for what’s to come.
+              Gallery Mementos are a living collection of treasures that will come to tell the story
+              of the development of Gallery and its community. You can read more about Gallery
+              Mementos{' '}
+              <InteractiveLink href="https://gallery.mirror.xyz/uoO9Fns67sYzX14eRQHiO6sXz2Ojh5qKR0-Sc0F2vZY">
+                here
+              </InteractiveLink>
+              .
             </BaseM>
             <BaseM>
-              Connect your wallet to see if you are eligible. Minting is available until 12/18/22 on
-              Ethereum. 1 mint per address.
-            </BaseM>
-            <BaseM>
-              Eligibility criteria: Our top 200 most active users in the last 60 days, and anyone
-              who used our social features (admired, commented, or followed on Gallery) before
-              12/12/22 were included in the snapshot.
+              Eligibility Criteria
+              <StyledUl>
+                <li>
+                  On <b>February 23rd</b>, a snapshot will be taken of all users with at least two
+                  galleries
+                </li>
+                <li>
+                  Minting will open from 
+                  <b>February 23rd 2:00PM through March 2nd 11:59PM ET</b>
+                </li>
+                <li>Mint price is free and limited to one per holder</li>
+                <li>
+                  Users must designate their primary wallet in{' '}
+                  <InteractiveLink href="https://gallery.so/settings">
+                    gallery.so/settings
+                  </InteractiveLink>
+                   to redeem their memento
+                </li>
+              </StyledUl>
             </BaseM>
             {/* <BaseM>Minting is now closed. Thank you to everyone who minted one.</BaseM> */}
           </VStack>
 
-          {!isMobile && <HorizontalBreak />}
+          {isDesktop && <HorizontalBreak />}
 
-          {/* <StyledCallToAction>
-            <StyledSecondaryLink href={POSTER_SECONDARY_URL} target="_blank">
+          {/* May come handy later
+          <StyledCallToAction>
+            <StyledSecondaryLink href={'https://opensea.io/assets/ethereum/0x7e619a01e1a3b3a6526d0e01fbac4822d48f439b/0'} target="_blank">
               <TitleXS color={colors.white}>View on Secondary</TitleXS>
             </StyledSecondaryLink>
           </StyledCallToAction> */}
@@ -115,7 +130,7 @@ export default function ThankYouTokenPage() {
             <BaseXL>You've succesfully minted this token.</BaseXL>
           ) : (
             <StyledCallToAction>
-              <Timer />
+              <Countdown />
               <MintButton onMintSuccess={() => setIsMinted(true)}></MintButton>
             </StyledCallToAction>
           )}
@@ -125,9 +140,23 @@ export default function ThankYouTokenPage() {
   );
 }
 
+function Countdown() {
+  const phase = useMintPhase();
+
+  const until = useMemo(() => {
+    if (phase === 'pre-mint') return MINT_START;
+    if (phase === 'active-mint') return MINT_END;
+    return '';
+  }, [phase]);
+
+  const { timestamp } = useTimer(until);
+
+  return <BaseXL>{until ? timestamp : null}</BaseXL>;
+}
+
 const StyledPage = styled.div`
   min-height: 100vh;
-  padding: 64px 16px 0px;
+  padding: 64px 24px 0px;
   display: flex;
   flex-direction: column;
 
@@ -140,19 +169,26 @@ const StyledPage = styled.div`
   grid-template-columns: 1fr;
   grid-template-rows: auto 1fr;
 
-  @media only screen and ${breakpoints.desktop} {
-    padding: 64px 40px 20px;
+  @media only screen and ${breakpoints.tablet} {
+    padding: 64px 48px 20px;
   }
+
+  @media only screen and ${breakpoints.desktop} {
+    padding: 64px 20px 20px;
+  }
+`;
+
+const StyledBackLink = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 16px 24px;
 `;
 
 const StyledImageContainer = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
-`;
-
-const StyledPositionedBackLink = styled(StyledBackLink)`
-  top: -0;
 `;
 
 const StyledWrapper = styled.div`
@@ -163,24 +199,33 @@ const StyledWrapper = styled.div`
 
   grid-template-columns: 1fr;
   grid-template-rows: auto 1fr;
-  gap: 24px;
+  gap: 48px;
 
   @media only screen and ${breakpoints.tablet} {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: 3fr 2fr;
     padding-bottom: 0;
   }
 `;
+
 const StyledContent = styled.div`
   display: flex;
   flex-direction: column;
   gap: 24px;
-  padding: 0 ${pageGutter.mobile}px;
-  max-width: 360px;
+  max-width: 370px;
   margin: 0 auto;
   @media (max-width: ${contentSize.desktop}px) {
-    margin: 0;
+    margin: 0 auto;
     padding: 0;
   }
+`;
+
+const StyledTitleL = styled(TitleL)`
+  font-size: 24px;
+`;
+
+const StyledUl = styled.ul`
+  margin-top: 12px;
+  padding-left: 18px;
 `;
 
 const StyledCallToAction = styled.div<{ hasEnded?: boolean }>`

@@ -1,13 +1,11 @@
 import styled from 'styled-components';
 
-import ActionText from '~/components/core/ActionText/ActionText';
 import breakpoints, { contentSize, pageGutter } from '~/components/core/breakpoints';
 import colors from '~/components/core/colors';
 import HorizontalBreak from '~/components/core/HorizontalBreak/HorizontalBreak';
 import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleM, TitleXS } from '~/components/core/Text/Text';
-import StyledBackLink from '~/components/NavbarBackLink/NavbarBackLink';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 
 export default function PosterPage() {
@@ -19,15 +17,8 @@ export default function PosterPage() {
   const POSTER_SECONDARY_URL =
     'https://opensea.io/assets/ethereum/0x7e619a01e1a3b3a6526d0e01fbac4822d48f439b/0';
 
-  const handleBackClick = () => {
-    window.history.back();
-  };
-
   return (
     <StyledPage>
-      <StyledPositionedBackLink>
-        <ActionText onClick={handleBackClick}>← Back to gallery</ActionText>
-      </StyledPositionedBackLink>
       <StyledWrapper>
         <StyledImageContainer>
           <StyledPosterImage src={POSTER_IMAGE_URL} />
@@ -97,10 +88,6 @@ const StyledPosterImage = styled.img`
 
     width: initial;
   }
-`;
-
-const StyledPositionedBackLink = styled(StyledBackLink)`
-  top: -0;
 `;
 
 const StyledWrapper = styled.div`
