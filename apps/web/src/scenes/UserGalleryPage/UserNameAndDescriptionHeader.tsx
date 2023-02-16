@@ -67,11 +67,13 @@ export function UserNameAndDescriptionHeader({ userRef, queryRef }: Props) {
 
   const { showModal } = useModalActions();
   const handleEditBioAndName = useCallback(() => {
+    if (!isAuthenticatedUser) return;
+
     showModal({
       content: <EditUserInfoModal queryRef={query} />,
       headerText: 'Edit username and bio',
     });
-  }, [query, showModal]);
+  }, [isAuthenticatedUser, query, showModal]);
 
   const unescapedBio = useMemo(() => (bio ? unescape(bio) : ''), [bio]);
 
