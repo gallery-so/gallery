@@ -5,24 +5,24 @@ import styled from 'styled-components';
 import { useAccount } from 'wagmi';
 
 import ActionText from '~/components/core/ActionText/ActionText';
-import breakpoints, { contentSize, pageGutter } from '~/components/core/breakpoints';
+import breakpoints, { contentSize } from '~/components/core/breakpoints';
 import colors from '~/components/core/colors';
 import HorizontalBreak from '~/components/core/HorizontalBreak/HorizontalBreak';
 import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
-import { BaseM, BaseXL, TitleL, TitleM } from '~/components/core/Text/Text';
+import { BaseM, BaseXL, TitleL } from '~/components/core/Text/Text';
 import StyledBackLink from '~/components/NavbarBackLink/NavbarBackLink';
 import { OPENSEA_API_BASEURL, OPENSEA_TESTNET_API_BASEURL } from '~/constants/opensea';
 import { GALLERY_MEMENTOS_CONTRACT_ADDRESS } from '~/hooks/useContract';
 import useTimer from '~/hooks/useTimer';
-import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
+import { useIsDesktopWindowWidth } from '~/hooks/useWindowSize';
 import isProduction from '~/utils/isProduction';
 
 import MintButton from './MintButton';
 import useMintPhase, { MINT_END, MINT_START } from './useMintPhase';
 
 export default function MementosPage() {
-  const isMobile = useIsMobileWindowWidth();
+  const isDesktop = useIsDesktopWindowWidth();
 
   const handleBackClick = () => {
     window.history.back();
@@ -74,8 +74,9 @@ export default function MementosPage() {
         </StyledImageContainer>
         <StyledContent>
           <HStack align="center" gap={4}>
-            <StyledTitleL>Gallery Mementos:</StyledTitleL>
-            <TitleM>Infinita Prospectus</TitleM>
+            <StyledTitleL>
+              Gallery Mementos: <i>Infinita Prospectus</i>
+            </StyledTitleL>
           </HStack>
           <VStack gap={16}>
             <BaseM>
@@ -118,7 +119,7 @@ export default function MementosPage() {
             {/* <BaseM>Minting is now closed. Thank you to everyone who minted one.</BaseM> */}
           </VStack>
 
-          {!isMobile && <HorizontalBreak />}
+          {isDesktop && <HorizontalBreak />}
 
           {/* May come handy later
           <StyledCallToAction>
@@ -215,11 +216,10 @@ const StyledContent = styled.div`
   display: flex;
   flex-direction: column;
   gap: 24px;
-  //   padding: 0 ${pageGutter.mobile}px;
   max-width: 370px;
   margin: 0 auto;
   @media (max-width: ${contentSize.desktop}px) {
-    margin: 0;
+    margin: 0 auto;
     padding: 0;
   }
 `;
