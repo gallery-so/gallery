@@ -22,7 +22,7 @@ type InteractiveLinkProps = {
   // allows the parent to override default link styles
   inheritLinkStyling?: boolean;
   // open the link in a new tab or not
-  target?: string;
+  target?: HTMLAnchorElement['target'];
 };
 
 export default function InteractiveLink({

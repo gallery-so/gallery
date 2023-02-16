@@ -115,7 +115,7 @@ export default function TwitterSetting({ queryRef }: Props) {
           Connect your Twitter account to find friends and display your handle on your profile.
         </BaseM>
 
-        <StyledConnectLink href={TWITTER_AUTH_URL}>
+        <StyledConnectLink href={TWITTER_AUTH_URL} target="_self">
           <Button variant="secondary">CONNECT</Button>
         </StyledConnectLink>
       </HStack>

@@ -60,7 +60,9 @@ export function NotificationTwitterAlert({ queryRef }: Props) {
         <StyledInfoCircleIcon />
         <BaseM>Connect Twitter to find friends and display your handle.</BaseM>
         <HStack align="center" gap={8}>
-          <InteractiveLink href={TWITTER_AUTH_URL}>Connect</InteractiveLink>
+          <InteractiveLink href={TWITTER_AUTH_URL} target="_self">
+            Connect
+          </InteractiveLink>
           <IconContainer variant="default" size="sm" onClick={handleDismiss} icon={<CloseIcon />} />
         </HStack>
       </StyledAlert>
