@@ -3,7 +3,7 @@
     "name": "Gallery Labs",
     "slug": "gallery",
     "privacy": "unlisted",
-    "version": "1.0.0",
+    "version": "0.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -23,10 +23,12 @@
       "bundleIdentifier": "com.tbgallery.gallery"
     },
     "android": {
+      "blockedPermissions": ["android.permission.RECORD_AUDIO"],
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.tbgallery.gallery"
     },
     "web": {
       "favicon": "./assets/favicon.png"
