@@ -3,7 +3,7 @@ import "expo-dev-client";
 import { RelayEnvironmentProvider } from "react-relay";
 import { Suspense, useState } from "react";
 import { createRelayEnvironment } from "./src/contexts/relay/RelayProvider";
-import { Gallery } from "./src/screens/Gallery";
+import { Text } from "react-native";
 
 export default function App() {
   const [relayEnvironment] = useState(() => createRelayEnvironment());
@@ -11,7 +11,7 @@ export default function App() {
   return (
     <RelayEnvironmentProvider environment={relayEnvironment}>
       <Suspense fallback={null}>
-        <Gallery />
+        <Text>Hello, World!</Text>
       </Suspense>
     </RelayEnvironmentProvider>
   );
