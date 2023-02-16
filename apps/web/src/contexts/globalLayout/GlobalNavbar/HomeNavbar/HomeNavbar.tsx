@@ -6,10 +6,12 @@ import { graphql, useFragment } from 'react-relay';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { HomeNavbarFragment$key } from '~/generated/HomeNavbarFragment.graphql';
+import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 
 import { NavbarLink } from '../NavbarLink';
 import { ProfileDropdown } from '../ProfileDropdown/ProfileDropdown';
 import { SignInButton } from '../SignInButton';
+import { SignUpButton } from '../SignUpButton';
 import {
   NavbarCenterContent,
   NavbarLeftContent,
@@ -57,6 +59,8 @@ export function HomeNavbar({ queryRef }: Props) {
   const latestFollowingRoute: Route = { pathname: '/latest/following', query: {} };
   const featuredRoute: Route = { pathname: '/featured', query: {} };
 
+  const isMobile = useIsMobileWindowWidth();
+
   return (
     <StandardNavbarContainer>
       <NavbarLeftContent>
@@ -94,7 +98,15 @@ export function HomeNavbar({ queryRef }: Props) {
       </NavbarCenterContent>
 
       {/* Strictly here to keep spacing consistent */}
-      <NavbarRightContent>{isLoggedIn ? null : <SignInButton />}</NavbarRightContent>
+      <NavbarRightContent>
+        {isLoggedIn ? null : (
+          <HStack gap={8} align="center">
+            <SignInButton />
+            {/* Don't show Sign Up btn on mobile bc it doesnt fit alongside Sign In, and onboarding isn't mobile optimized yet */}
+            {!isMobile && <SignUpButton />}
+          </HStack>
+        )}
+      </NavbarRightContent>
     </StandardNavbarContainer>
   );
 }

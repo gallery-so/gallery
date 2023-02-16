@@ -27,6 +27,7 @@ type Props = {
   variant?: WalletSelectorVariant;
   onEthAddWalletSuccess?: () => void;
   onTezosAddWalletSuccess?: () => void;
+  showEmail?: boolean;
 };
 
 // number of connection options supported; list available in `MultichainWalletSelector.tsx`
@@ -38,6 +39,7 @@ export default function WalletSelector({
   variant,
   onEthAddWalletSuccess,
   onTezosAddWalletSuccess,
+  showEmail = true,
 }: Props) {
   // Usually we'd want to pass in a query variable and use @skip to conditionally
   // return certain data fragments, but in this case, we have lots of queries that
@@ -52,11 +54,16 @@ export default function WalletSelector({
     queryRef
   );
 
+  const numOptionsToShow: number = useMemo(
+    () => (showEmail ? NUM_OPTIONS_SUPPORTED : NUM_OPTIONS_SUPPORTED - 1),
+    [showEmail]
+  );
+
   const fallback = useMemo(
     () => (
       <WalletSelectorWrapper>
         <VStack gap={8}>
-          {Array.from({ length: NUM_OPTIONS_SUPPORTED }).map(() => {
+          {Array.from({ length: numOptionsToShow }).map(() => {
             // We don't have anything relevant to key off of here
             // eslint-disable-next-line react/jsx-key
             return <Skeleton width="100%" height="52px" />;
@@ -64,7 +71,7 @@ export default function WalletSelector({
         </VStack>
       </WalletSelectorWrapper>
     ),
-    []
+    [numOptionsToShow]
   );
 
   return (
@@ -77,6 +84,7 @@ export default function WalletSelector({
             variant={variant}
             onEthAddWalletSuccess={onEthAddWalletSuccess}
             onTezosAddWalletSuccess={onTezosAddWalletSuccess}
+            showEmail={showEmail}
           />
         </EthereumProviders>
       </BeaconProvider>
