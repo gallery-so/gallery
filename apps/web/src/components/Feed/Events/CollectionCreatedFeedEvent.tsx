@@ -28,18 +28,12 @@ import {
 } from './EventStyles';
 
 type Props = {
-  caption: string | null;
   isSubEvent?: boolean;
   eventDataRef: CollectionCreatedFeedEventFragment$key;
   queryRef: CollectionCreatedFeedEventQueryFragment$key;
 };
 
-export default function CollectionCreatedFeedEvent({
-  caption,
-  eventDataRef,
-  isSubEvent,
-  queryRef,
-}: Props) {
+export default function CollectionCreatedFeedEvent({ eventDataRef, isSubEvent, queryRef }: Props) {
   const event = useFragment(
     graphql`
       fragment CollectionCreatedFeedEventFragment on CollectionCreatedFeedEventData {
@@ -55,6 +49,7 @@ export default function CollectionCreatedFeedEvent({
         newTokens @required(action: THROW) {
           ...FeedEventTokenPreviewsFragment
         }
+        newCollectorsNote
       }
     `,
     eventDataRef
@@ -95,7 +90,7 @@ export default function CollectionCreatedFeedEvent({
       onClick={() => track('Feed: Clicked collection created event')}
     >
       <StyledEvent isSubEvent={isSubEvent}>
-        <VStack gap={16}>
+        <VStack gap={event.newCollectorsNote ? 0 : 16}>
           <StyledEventHeader>
             <VStack gap={4}>
               <StyledEventHeaderContainer>
@@ -121,15 +116,19 @@ export default function CollectionCreatedFeedEvent({
               </StyledEventHeaderContainer>
             </VStack>
           </StyledEventHeader>
-          <StyledEventContent gap={16} hasCaption={Boolean(caption)} isSubEvent={isSubEvent}>
-            {caption && (
+          <StyledEventContent
+            gap={16}
+            hasCaption={Boolean(event.newCollectorsNote)}
+            isSubEvent={isSubEvent}
+          >
+            {event.newCollectorsNote && (
               <StyledCaptionContainer gap={8} align="center">
-                <BaseM>{caption}</BaseM>
+                <BaseM>{event.newCollectorsNote}</BaseM>
               </StyledCaptionContainer>
             )}
             <VStack gap={8}>
               <FeedEventTokenPreviews
-                isInCaption={Boolean(caption || isSubEvent)}
+                isInCaption={Boolean(event.newCollectorsNote || isSubEvent)}
                 tokenToPreviewRefs={tokensToPreview}
               />
               {showAdditionalPiecesIndicator && (
