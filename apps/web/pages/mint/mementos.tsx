@@ -1,11 +1,8 @@
 import EthereumProviders from '~/contexts/auth/EthereumProviders';
-import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
 import MementosPage from '~/scenes/MintPages/MementosPage';
 
 export default function Mementos() {
-  const isMobile = useIsMobileWindowWidth();
-
   return (
     <GalleryRoute
       element={
@@ -15,7 +12,7 @@ export default function Mementos() {
       }
       navbar={false}
       banner={false}
-      footer={!isMobile}
+      footer={false}
     />
   );
 }

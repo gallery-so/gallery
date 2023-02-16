@@ -151,8 +151,6 @@ function Countdown() {
     return '';
   }, [phase]);
 
-  console.log(until);
-
   const { timestamp } = useTimer(until);
 
   return <BaseXL>{until ? timestamp : null}</BaseXL>;
@@ -169,7 +167,7 @@ const StyledUl = styled.ul`
 
 const StyledPage = styled.div`
   min-height: 100vh;
-  padding: 64px 16px 0px;
+  padding: 64px 24px 0px;
   display: flex;
   flex-direction: column;
 
@@ -181,6 +179,10 @@ const StyledPage = styled.div`
 
   grid-template-columns: 1fr;
   grid-template-rows: auto 1fr;
+
+  @media only screen and ${breakpoints.tablet} {
+    padding: 64px 48px 20px;
+  }
 
   @media only screen and ${breakpoints.desktop} {
     padding: 64px 20px 20px;
