@@ -1,31 +1,23 @@
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
+import TextButton from '~/components/core/Button/TextButton';
 import colors from '~/components/core/colors';
-import { Paragraph } from '~/components/core/Text/Text';
+import transitions from '~/components/core/transitions';
 import useAuthModal from '~/hooks/useAuthModal';
 
 export function SignInButton() {
-  const showAuthModal = useAuthModal();
+  const showAuthModal = useAuthModal('sign-in');
 
-  return (
-    <SignInText role="button" onClick={showAuthModal} color={colors.shadow}>
-      Sign in
-    </SignInText>
-  );
+  return <SignInWrapper text="Sign In" onClick={showAuthModal} />;
 }
 
-const SignInText = styled(Paragraph)`
-  font-family: 'ABC Diatype';
-  font-style: normal;
-  font-weight: 500;
-  line-height: 21px;
-  letter-spacing: -0.04em;
-
-  cursor: pointer;
-
-  font-size: 16px;
+const SignInWrapper = styled(TextButton)`
   @media only screen and ${breakpoints.tablet} {
-    font-size: 18px;
+    padding: 8px 16px;
+    transition: background-color ${transitions.cubic};
+    &:hover {
+      background-color: ${colors.faint};
+    }
   }
 `;

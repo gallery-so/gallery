@@ -64,7 +64,7 @@ export default function FollowButton({ queryRef, userRef, className }: Props) {
   const followUser = useFollowUser();
   const unfollowUser = useUnfollowUser();
   const { pushToast } = useToastActions();
-  const showAuthModal = useAuthModal();
+  const showAuthModal = useAuthModal('sign-in');
   const track = useTrack();
 
   const handleFollowClick = useCallback(async () => {
