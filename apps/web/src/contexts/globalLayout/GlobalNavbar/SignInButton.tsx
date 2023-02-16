@@ -7,7 +7,7 @@ import transitions from '~/components/core/transitions';
 import useAuthModal from '~/hooks/useAuthModal';
 
 export function SignInButton() {
-  const showAuthModal = useAuthModal('signIn');
+  const showAuthModal = useAuthModal('sign-in');
 
   return <SignInWrapper text="Sign In" onClick={showAuthModal} />;
 }

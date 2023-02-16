@@ -23,7 +23,7 @@ export default function useOpenSettingsModal(queryRef: useOpenSettingsModalFragm
 
   const router = useRouter();
   const { showModal } = useModalActions();
-  const showAuthModal = useAuthModal('signIn');
+  const showAuthModal = useAuthModal('sign-in');
   const { settings } = router.query;
 
   const isLoggedIn = query.viewer?.__typename === 'Viewer';

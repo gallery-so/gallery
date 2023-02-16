@@ -4,7 +4,7 @@ import { Button } from '~/components/core/Button/Button';
 import useAuthModal from '~/hooks/useAuthModal';
 
 export function SignUpButton() {
-  const showAuthModal = useAuthModal('signUp');
+  const showAuthModal = useAuthModal('sign-up');
 
   return <StyledButton onClick={showAuthModal}>Sign up</StyledButton>;
 }

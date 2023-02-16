@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -22,7 +22,7 @@ import { TezosAuthenticateWallet } from './tezos/TezosAuthenticateWallet';
 import { useConnectEthereum } from './useConnectEthereum';
 import WalletButton from './WalletButton';
 
-export type WalletSelectorVariant = 'default' | 'tezos-announcement';
+export type WalletSelectorVariant = 'sign-in' | 'sign-up';
 
 type Props = {
   connectionMode?: ConnectionMode;
@@ -36,7 +36,7 @@ type Props = {
 export default function MultichainWalletSelector({
   queryRef,
   connectionMode = AUTH,
-  variant = 'default',
+  variant = 'sign-in',
   onEthAddWalletSuccess,
   onTezosAddWalletSuccess,
   showEmail = true,
@@ -60,6 +60,17 @@ export default function MultichainWalletSelector({
 
   const connectEthereum = useConnectEthereum();
   const { requestPermissions: connectTezos } = useBeaconActions();
+
+  const subheading = useMemo(() => {
+    switch (variant) {
+      case 'sign-in':
+        return 'Sign in to your Gallery account using a wallet or email.';
+      case 'sign-up':
+        return 'Join Gallery today to curate and display your NFT collection.';
+      default:
+        return '';
+    }
+  }, [variant]);
 
   if (selectedAuthMethod === supportedAuthMethods.ethereum) {
     if (connectionMode === ADD_WALLET_TO_USER) {
@@ -132,12 +143,7 @@ export default function MultichainWalletSelector({
   return (
     <WalletSelectorWrapper gap={24}>
       <VStack gap={16}>
-        {variant === 'tezos-announcement' && (
-          <StyledDescription>
-            If you’re a new user, connect your Tezos wallet. If you’re an existing user, sign in
-            with your Ethereum address before adding your Tezos wallet.
-          </StyledDescription>
-        )}
+        <StyledDescription>{subheading}</StyledDescription>
         <VStack justify="center" gap={8}>
           <WalletButton
             label={supportedAuthMethods.ethereum.name}
