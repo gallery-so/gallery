@@ -21,6 +21,8 @@ type InteractiveLinkProps = {
   onClick?: MouseEventHandler;
   // allows the parent to override default link styles
   inheritLinkStyling?: boolean;
+  // open the link in a new tab or not
+  target?: string;
 };
 
 export default function InteractiveLink({
@@ -31,6 +33,7 @@ export default function InteractiveLink({
   disabled = false,
   onClick,
   inheritLinkStyling = false,
+  target = '_blank',
 }: InteractiveLinkProps) {
   const track = useTrack();
 
@@ -73,7 +76,7 @@ export default function InteractiveLink({
     return (
       <StyledAnchor
         href={href}
-        target="_blank"
+        target={target}
         rel="noreferrer"
         onClick={handleClick}
         className={className}
