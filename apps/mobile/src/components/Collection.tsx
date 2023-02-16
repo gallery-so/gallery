@@ -1,9 +1,10 @@
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 import { CollectionFragment$key } from "~/generated/CollectionFragment.graphql";
-import { FlatList, ListRenderItem, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import { useCallback } from "react";
 import { NftPreview } from "./NftPreview/NftPreview";
+import { FlashList, ListRenderItem } from "@shopify/flash-list";
 
 type CollectionProps = {
   collectionRef: CollectionFragment$key;
@@ -47,9 +48,9 @@ export function Collection({ collectionRef }: CollectionProps) {
 
   return (
     <View style={{ display: "flex", flexDirection: "column" }}>
-      <FlatList
+      <FlashList
+        estimatedItemSize={250}
         showsHorizontalScrollIndicator={false}
-        windowSize={3}
         horizontal
         data={tokens}
         renderItem={renderItem}

@@ -1,9 +1,10 @@
 import { graphql, useLazyLoadQuery } from "react-relay";
-import { FlatList, ListRenderItem, SafeAreaView, View } from "react-native";
 import { GalleryQuery } from "../../__generated__/GalleryQuery.graphql";
 import { useCallback, useEffect } from "react";
 import { Collection } from "../components/Collection";
-import { Image } from "expo-image";
+import { FlashList, ListRenderItem } from "@shopify/flash-list";
+import { SafeAreaView, View } from "react-native";
+import FastImage, { Source } from "react-native-fast-image";
 
 export function Gallery() {
   const query = useLazyLoadQuery<GalleryQuery>(
@@ -45,12 +46,15 @@ export function Gallery() {
     throw new Error("Yikes");
   }
   useEffect(() => {
-    const allTokenImages = collections
+    const allTokenSources = collections
       .flatMap((collection) => collection?.tokens ?? [])
       .map((token) => token?.token?.media?.previewURLs?.medium)
-      .filter(Boolean) as string[];
+      .filter(Boolean)
+      .map((url): Source => {
+        return { uri: url as string };
+      });
 
-    Image.prefetch(allTokenImages);
+    FastImage.preload(allTokenSources);
   }, []);
 
   const renderItem = useCallback<ListRenderItem<(typeof collections)[number]>>(
@@ -63,7 +67,7 @@ export function Gallery() {
 
       return (
         <View key={collection.dbid} style={{ marginBottom: 24 }}>
-          <Collection key={collection.dbid} collectionRef={collection} />
+          <Collection collectionRef={collection} />
         </View>
       );
     },
@@ -73,8 +77,8 @@ export function Gallery() {
   return (
     <SafeAreaView style={{ backgroundColor: "white", height: "100%" }}>
       <View style={{ height: "100%" }}>
-        <FlatList
-          windowSize={10}
+        <FlashList
+          estimatedItemSize={300}
           keyExtractor={(item) => item?.dbid ?? "nothing"}
           data={collections}
           renderItem={renderItem}

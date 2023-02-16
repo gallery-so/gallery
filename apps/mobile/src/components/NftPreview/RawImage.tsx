@@ -1,6 +1,6 @@
 import { computeHeightAndWidth } from "../../computeHeightAndWidth";
-import { Image } from "expo-image";
 import { useMemo } from "react";
+import FastImage from "react-native-fast-image";
 
 type RawImageProps = {
   url: string;
@@ -14,13 +14,12 @@ export function RawImage({ url, aspectRatio, blurhash }: RawImageProps) {
   }, []);
 
   return (
-    <Image
-      cachePolicy="memory-disk"
+    <FastImage
       style={{
         width,
         height,
       }}
-      placeholder={blurhash}
+      // placeholder={blurhash}
       source={{ uri: url }}
     />
   );
