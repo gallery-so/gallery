@@ -46,6 +46,7 @@ function UserGallery({ queryRef }: Props) {
             }
 
             ...UserNameAndDescriptionHeader
+            ...UserTwitterSectionFragment
           }
           ... on ErrUserNotFound {
             __typename
@@ -54,7 +55,7 @@ function UserGallery({ queryRef }: Props) {
 
         ...UserGalleryLayoutQueryFragment
         ...UserNameAndDescriptionHeaderQueryFragment
-        ...UserTwitterSectionFragment
+        ...UserTwitterSectionQueryFragment
       }
     `,
     queryRef
@@ -94,7 +95,7 @@ function UserGallery({ queryRef }: Props) {
       <VStack gap={12}>
         <UserNameAndDescriptionHeader userRef={user} queryRef={query} />
 
-        <UserTwitterSection queryRef={query} />
+        <UserTwitterSection userRef={user} queryRef={query} />
       </VStack>
 
       <Divider />
