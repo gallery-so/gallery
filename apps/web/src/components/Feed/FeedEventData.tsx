@@ -86,7 +86,6 @@ export function NonRecursiveFeedEventData({
       return (
         <CollectionCreatedFeedEvent
           isSubEvent={isSubEvent}
-          caption={unescape(caption ?? '')}
           eventDataRef={eventData}
           queryRef={query}
         />

@@ -28,18 +28,12 @@ import {
 } from './EventStyles';
 
 type Props = {
-  caption: string | null;
   isSubEvent?: boolean;
   eventDataRef: CollectionCreatedFeedEventFragment$key;
   queryRef: CollectionCreatedFeedEventQueryFragment$key;
 };
 
-export default function CollectionCreatedFeedEvent({
-  caption,
-  eventDataRef,
-  isSubEvent,
-  queryRef,
-}: Props) {
+export default function CollectionCreatedFeedEvent({ eventDataRef, isSubEvent, queryRef }: Props) {
   const event = useFragment(
     graphql`
       fragment CollectionCreatedFeedEventFragment on CollectionCreatedFeedEventData {
