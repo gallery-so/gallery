@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 import SplashImage from 'public/infinitaprospectus.jpg';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
@@ -11,7 +12,6 @@ import HorizontalBreak from '~/components/core/HorizontalBreak/HorizontalBreak';
 import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, BaseXL, TitleL } from '~/components/core/Text/Text';
-import StyledBackLink from '~/components/NavbarBackLink/NavbarBackLink';
 import { OPENSEA_API_BASEURL, OPENSEA_TESTNET_API_BASEURL } from '~/constants/opensea';
 import { GALLERY_MEMENTOS_CONTRACT_ADDRESS } from '~/hooks/useContract';
 import useTimer from '~/hooks/useTimer';
@@ -23,10 +23,6 @@ import useMintPhase, { MINT_END, MINT_START } from './useMintPhase';
 
 export default function MementosPage() {
   const isDesktop = useIsDesktopWindowWidth();
-
-  const handleBackClick = () => {
-    window.history.back();
-  };
 
   const NFT_TOKEN_ID = 1;
 
@@ -63,11 +59,13 @@ export default function MementosPage() {
     }
   }, [address, detectOwnedPosterNftFromOpensea]);
 
+  const { push } = useRouter();
+
   return (
     <StyledPage>
-      <StyledPositionedBackLink>
-        <ActionText onClick={handleBackClick}>← Back to gallery</ActionText>
-      </StyledPositionedBackLink>
+      <StyledBackLink>
+        <ActionText onClick={() => push('/trending')}>← Back to gallery</ActionText>
+      </StyledBackLink>
       <StyledWrapper>
         <StyledImageContainer>
           <Image src={SplashImage} alt="splash-image" />
@@ -156,15 +154,6 @@ function Countdown() {
   return <BaseXL>{until ? timestamp : null}</BaseXL>;
 }
 
-const StyledTitleL = styled(TitleL)`
-  font-size: 24px;
-`;
-
-const StyledUl = styled.ul`
-  margin-top: 12px;
-  padding-left: 18px;
-`;
-
 const StyledPage = styled.div`
   min-height: 100vh;
   padding: 64px 24px 0px;
@@ -189,14 +178,17 @@ const StyledPage = styled.div`
   }
 `;
 
+const StyledBackLink = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 16px 24px;
+`;
+
 const StyledImageContainer = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
-`;
-
-const StyledPositionedBackLink = styled(StyledBackLink)`
-  top: -0;
 `;
 
 const StyledWrapper = styled.div`
@@ -214,6 +206,7 @@ const StyledWrapper = styled.div`
     padding-bottom: 0;
   }
 `;
+
 const StyledContent = styled.div`
   display: flex;
   flex-direction: column;
@@ -224,6 +217,15 @@ const StyledContent = styled.div`
     margin: 0 auto;
     padding: 0;
   }
+`;
+
+const StyledTitleL = styled(TitleL)`
+  font-size: 24px;
+`;
+
+const StyledUl = styled.ul`
+  margin-top: 12px;
+  padding-left: 18px;
 `;
 
 const StyledCallToAction = styled.div<{ hasEnded?: boolean }>`
