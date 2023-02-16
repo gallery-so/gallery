@@ -1,4 +1,4 @@
-name: web-unit
+name: repo-typecheck
 on: [push]
 jobs:
   unit-tests:
