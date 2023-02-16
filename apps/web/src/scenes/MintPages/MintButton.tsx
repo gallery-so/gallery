@@ -12,21 +12,19 @@ import { useToastActions } from '~/contexts/toast/ToastContext';
 import { useMintMementosContract } from '~/hooks/useContract';
 import useMintContract from '~/hooks/useMintContract';
 
+import { ALLOWLIST_URL } from './config';
 import useMintPhase from './useMintPhase';
 
 type Props = {
   onMintSuccess: () => void;
 };
 
-const WHITE_RHINO_ALLOWLIST =
-  'https://storage.googleapis.com/gallery-prod-325303.appspot.com/white-rhino-allowlist.json';
-
 export default function MintButton({ onMintSuccess }: Props) {
   const { pushToast } = useToastActions();
 
   const tokenId = 1;
 
-  const { data: allowlist } = useSWR(WHITE_RHINO_ALLOWLIST);
+  const { data: allowlist } = useSWR(ALLOWLIST_URL);
 
   const contract = useMintMementosContract();
   const {

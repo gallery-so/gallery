@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 
-export const MINT_START = '2023-02-23T14:00:00-05:00'; // time is in EST (GMT-05:00)
-export const MINT_END = '2023-03-02T23:59:00-05:00';
+import { MINT_END, MINT_START } from './config';
 
 export function useCurrentTime() {
   const [currentTime, setCurrentTime] = useState(new Date());
