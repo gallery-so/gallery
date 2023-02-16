@@ -53,7 +53,7 @@ export default function MintButton({ onMintSuccess }: Props) {
 
   const phase = useMintPhase();
   const buttonText = useMemo(() => {
-    if (phase === 'pre-mint') return 'Mint Unavailable';
+    if (phase === 'pre-mint') return 'Minting Soon™';
     if (phase === 'active-mint') return mintButtonText;
     return 'Mint Ended';
   }, [mintButtonText, phase]);
