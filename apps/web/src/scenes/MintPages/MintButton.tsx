@@ -1,5 +1,5 @@
 import { Contract } from '@ethersproject/contracts';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 import useSWR from 'swr';
 
