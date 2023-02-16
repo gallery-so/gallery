@@ -4,10 +4,6 @@ import { graphql } from 'relay-runtime';
 import { TwitterAuthMutation } from '~/generated/TwitterAuthMutation.graphql';
 import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 
-// enum SocialAccountType {
-//   Twitter = 'Twitter',
-// }
-
 type Props = {
   code: string;
 };
@@ -26,11 +22,6 @@ export default function TwitterAuth({ code }: Props) {
       twitter: {
         code: code as string,
       },
-      //   debug: {
-      //     provider: SocialAccountType.Twitter,
-      //     id: 'twitter',
-      //     username: 'twitter',
-      //   },
     };
 
     verifyTwitter({
