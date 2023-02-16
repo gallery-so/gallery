@@ -9,6 +9,8 @@ import { useTooltipHover } from '~/components/Tooltip/useTooltipHover';
 import { TWITTER_AUTH_URL } from '~/constants/twitter';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { UserTwitterSectionFragment$key } from '~/generated/UserTwitterSectionFragment.graphql';
+import { UserTwitterSectionQueryFragment$key } from '~/generated/UserTwitterSectionQueryFragment.graphql';
+import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
 import { EditPencilIcon } from '~/icons/EditPencilIcon';
 import GlobeIcon from '~/icons/Globeicon';
 import TwitterIcon from '~/icons/Twittericon';
@@ -16,31 +18,38 @@ import TwitterIcon from '~/icons/Twittericon';
 import SettingsModal from '../Modals/SettingsModal/SettingsModal';
 
 type Props = {
-  queryRef: UserTwitterSectionFragment$key;
+  queryRef: UserTwitterSectionQueryFragment$key;
+  userRef: UserTwitterSectionFragment$key;
 };
 
-export default function UserTwitterSection({ queryRef }: Props) {
-  const query = useFragment(
+export default function UserTwitterSection({ queryRef, userRef }: Props) {
+  const user = useFragment(
     graphql`
-      fragment UserTwitterSectionFragment on Query {
-        viewer {
-          ... on Viewer {
-            user {
-              socialAccounts {
-                twitter {
-                  username
-                  display
-                }
-              }
-            }
+      fragment UserTwitterSectionFragment on GalleryUser {
+        id
+        socialAccounts {
+          twitter {
+            username
+            display
           }
         }
+      }
+    `,
+    userRef
+  );
 
+  const query = useFragment(
+    graphql`
+      fragment UserTwitterSectionQueryFragment on Query {
         ...SettingsModalFragment
+        ...useLoggedInUserIdFragment
       }
     `,
     queryRef
   );
+
+  const loggedInUserId = useLoggedInUserId(query);
+  const isAuthenticatedUser = loggedInUserId === user.id;
 
   const { floating, reference, getFloatingProps, getReferenceProps, floatingStyle } =
     useTooltipHover({
@@ -49,7 +58,7 @@ export default function UserTwitterSection({ queryRef }: Props) {
 
   const { showModal } = useModalActions();
 
-  const twitterAccount = query.viewer?.user?.socialAccounts?.twitter;
+  const twitterAccount = user.socialAccounts?.twitter;
 
   const handleEditButtonClick = useCallback(() => {
     showModal({
@@ -58,11 +67,22 @@ export default function UserTwitterSection({ queryRef }: Props) {
     });
   }, [query, showModal]);
 
+  const twitterUrl = `https://twitter.com/${twitterAccount?.username}`;
+
   return (
     <HStack align="flex-start" gap={8}>
-      {twitterAccount && twitterAccount?.display ? (
+      {isAuthenticatedUser && !twitterAccount && (
+        <ClickablePill href={TWITTER_AUTH_URL} target="_self">
+          <HStack gap={5} align="center">
+            <TwitterIcon />
+            <strong>Connect Twitter</strong>
+          </HStack>
+        </ClickablePill>
+      )}
+
+      {twitterAccount && twitterAccount?.display && (
         <>
-          <ClickablePill href="https://twitter.com/0xJakz">
+          <ClickablePill href={twitterUrl}>
             <HStack gap={5} align="center">
               <TwitterIcon />
               <strong>{twitterAccount.username}</strong>
@@ -83,21 +103,16 @@ export default function UserTwitterSection({ queryRef }: Props) {
               ref={reference}
               {...getReferenceProps()}
             />
-            <IconContainer
-              onClick={handleEditButtonClick}
-              size="md"
-              variant="default"
-              icon={<EditPencilIcon />}
-            />
+            {isAuthenticatedUser && (
+              <IconContainer
+                onClick={handleEditButtonClick}
+                size="md"
+                variant="default"
+                icon={<EditPencilIcon />}
+              />
+            )}
           </HStack>
         </>
-      ) : (
-        <ClickablePill href={TWITTER_AUTH_URL}>
-          <HStack gap={5} align="center">
-            <TwitterIcon />
-            <strong>Connect Twitter</strong>
-          </HStack>
-        </ClickablePill>
       )}
     </HStack>
   );
