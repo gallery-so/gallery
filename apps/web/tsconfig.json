@@ -27,6 +27,9 @@
       "~/errors/*": [
         "src/errors/*"
       ],
+      "~/frames/*": [
+        "../../packages/frames-dls/src/*"
+      ],
       "~/generated/*": [
         "__generated__/*"
       ],
@@ -45,6 +48,9 @@
       "~/scenes/*": [
         "src/scenes/*"
       ],
+      "~/shared/*": [
+        "../../packages/shared/src/*"
+      ],
       "~/snapshots/*": [
         "src/snapshots/*"
       ],
@@ -56,12 +62,6 @@
       ],
       "~/utils/*": [
         "src/utils/*"
-      ],
-      "~frames/*": [
-        "../../packages/frames-dls/src/*"
-      ],
-      "~shared/*": [
-        "../../packages/shared/src/*"
       ]
     },
     "outDir": "../../.moon/cache/types/apps/web",

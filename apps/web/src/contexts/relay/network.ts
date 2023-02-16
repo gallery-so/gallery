@@ -1,9 +1,13 @@
 import { getCurrentHub, startTransaction } from '@sentry/nextjs';
 import { Transaction } from '@sentry/types';
-import { FetchFunction, RequestParameters } from 'relay-runtime';
+import { FetchFunction, RequestParameters, SubscribeFunction } from 'relay-runtime';
 
 import { baseurl } from '~/contexts/swr/fetch';
-import { createRelayFetchFunction, PersistedQueriesMap } from '~shared/relay/network';
+import {
+  createRelayFetchFunction,
+  createRelaySubscribeFunction,
+  PersistedQueriesMap,
+} from '~/shared/relay/network';
 // Use this once we fix the ERRCONNRESET issue
 // import { baseUrl } from '~/utils/baseUrl';
 
@@ -20,34 +24,6 @@ export function getGraphqlPath(operationName: string) {
 export function getGraphqlUrl(operationName: string) {
   return `${getGraphqlHost()}${getGraphqlPath(operationName)}`;
 }
-
-const fetchFunctionWithoutTracing = createRelayFetchFunction({
-  url: (request) => getGraphqlUrl(request.name),
-  persistedQueriesFetcher: () =>
-    import('persisted_queries.json').then((map) => {
-      // @ts-expect-error Types not aligning because it's a module
-      return map as PersistedQueriesMap;
-    }),
-});
-
-/**
- * This is how Relay takes an arbitrary GraphQL request, and asks for a response.
- * Since we don't currently have a GraphQL server, we're shimming a response as
- * an example.
- */
-export const relayFetchFunction: FetchFunction = (request, variables, cacheConfig, uploadables) => {
-  // ---------- begin pre-request hooks
-  const transaction = initSentryTracing(request);
-  // ---------- end pre-request hooks
-
-  try {
-    return fetchFunctionWithoutTracing(request, variables, cacheConfig, uploadables);
-  } finally {
-    // ---------- begin post-request hooks
-    teardownSentryTracing(transaction);
-    // ---------- end post-request hooks
-  }
-};
 
 /**
  * Configure sentry tracing.
@@ -74,3 +50,30 @@ function initSentryTracing(request: RequestParameters): Transaction | null {
 function teardownSentryTracing(transaction: Transaction | null) {
   transaction?.finish();
 }
+
+const fetchFunctionWithoutTracing = createRelayFetchFunction({
+  url: (request) => getGraphqlUrl(request.name),
+  persistedQueriesFetcher: () =>
+    import('persisted_queries.json').then((map) => {
+      // @ts-expect-error Types not aligning because it's a module
+      return map as PersistedQueriesMap;
+    }),
+});
+
+export const relaySubscribeFunction: SubscribeFunction = createRelaySubscribeFunction({
+  url: process.env.NEXT_PUBLIC_GRAPHQL_SUBSCRIPTION_URL as string,
+});
+
+export const relayFetchFunction: FetchFunction = (request, variables, cacheConfig, uploadables) => {
+  // ---------- begin pre-request hooks
+  const transaction = initSentryTracing(request);
+  // ---------- end pre-request hooks
+
+  try {
+    return fetchFunctionWithoutTracing(request, variables, cacheConfig, uploadables);
+  } finally {
+    // ---------- begin post-request hooks
+    teardownSentryTracing(transaction);
+    // ---------- end post-request hooks
+  }
+};

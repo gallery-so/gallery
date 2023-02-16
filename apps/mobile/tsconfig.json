@@ -9,6 +9,9 @@
       ],
       "~/generated/*": [
         "./__generated__/*"
+      ],
+      "~/shared/*": [
+        "../../packages/shared/src/*"
       ]
     },
     "outDir": "../../.moon/cache/types/apps/mobile"
