@@ -1,21 +1,18 @@
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
-import { add } from "~frames/add";
+import "expo-dev-client";
+
+import { RelayEnvironmentProvider } from "react-relay";
+import { Suspense, useState } from "react";
+import { createRelayEnvironment } from "./src/contexts/relay/RelayProvider";
+import { Text } from "react-native";
 
 export default function App() {
+  const [relayEnvironment] = useState(() => createRelayEnvironment());
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your {add(1, 2)}!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <RelayEnvironmentProvider environment={relayEnvironment}>
+      <Suspense fallback={null}>
+        <Text>Hello, World!</Text>
+      </Suspense>
+    </RelayEnvironmentProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});

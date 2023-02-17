@@ -1,11 +1,54 @@
 language: 'javascript'
 
-tasks:
-  typecheck:
-    command: tsc --build
+fileGroups:
+  tests:
+    - 'tests/**/*'
+    - '**/*.test.ts*'
+  lint:
+    - '**/*.*{ts,js,tsx,jsx,cjs,mjs}'
+  source:
+    - 'src/**/*.{ts,js,tsx,jsx}'
 
-  android:
-    command: expo start --android
+tasks:
+  relay-watch:
+    command: relay-compiler --repersist --watch
+    local: true
+
+  touch-generated:
+    command: mkdir -p __generated__
+    platform: system
+
+  touch-persisted-queries:
+    command: "touch persisted_queries.json"
+    platform: system
+
+  touch-relay-files:
+    deps:
+      - "~:touch-persisted-queries"
+      - "~:touch-generated"
+
+  relay-codegen:
+    deps:
+      - "~:touch-relay-files"
+    command: relay-compiler --repersist
+    inputs:
+      - '@group(source)'
+
+  codegen-watch:
+    command: relay-compiler --repersist --watch
 
   ios:
-    command: expo start --ios
+    deps:
+      - "~:touch-relay-files"
+    command:
+      - concurrently
+      - -n Expo,Relay-Compiler
+      - yarn expo run:ios
+      - node_modules/.bin/moon run mobile:relay-watch
+
+  # Inherited from root task
+  typecheck:
+    deps:
+      - "~:relay-codegen"
+    command: tsc
+

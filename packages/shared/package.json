@@ -1,0 +1,14 @@
+{
+  "name": "shared",
+  "private": true,
+  "version": "1.0.0",
+  "dependencies": {
+    "graphql": "^16.6.0",
+    "graphql-ws": "^5.11.3",
+    "relay-runtime": "^14.1.0"
+  },
+  "devDependencies": {
+    "@types/relay-runtime": "^14.1.7",
+    "typescript": "^4.9.5"
+  }
+}

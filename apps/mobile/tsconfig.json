@@ -1,10 +1,17 @@
 {
   "extends": "../../tsconfig.options.json",
   "compilerOptions": {
+    "baseUrl": ".",
     "jsx": "react-native",
     "paths": {
-      "~frames/*": [
+      "~/frames/*": [
         "../../packages/frames-dls/src/*"
+      ],
+      "~/generated/*": [
+        "./__generated__/*"
+      ],
+      "~/shared/*": [
+        "../../packages/shared/src/*"
       ]
     },
     "outDir": "../../.moon/cache/types/apps/mobile"

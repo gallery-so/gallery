@@ -1,6 +1,6 @@
 import nock from 'nock';
 
-import { getGraphqlHost, getGraphqlPath } from '~/contexts/relay/relayFetchFunction';
+import { getGraphqlHost, getGraphqlPath } from '~/contexts/relay/network';
 
 export function mockGraphqlQuery(operationName: string, response: unknown) {
   return nock(getGraphqlHost())
