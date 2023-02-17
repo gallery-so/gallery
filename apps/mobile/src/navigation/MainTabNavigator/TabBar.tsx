@@ -15,7 +15,7 @@ type TabItemProps = {
 function TabItem({ route, icon }: TabItemProps) {
   const navigation = useNavigation();
 
-  const isFocused = false;
+  const isFocused = true;
 
   const onPress = useCallback(() => {
     navigation.navigate(route);
