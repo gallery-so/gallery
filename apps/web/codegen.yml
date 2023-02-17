@@ -1,4 +1,4 @@
-schema: ./schema.graphql
+schema: ../../schema.graphql
 documents: ./src/**/*.{ts,tsx}
 generates:
   ./__generated__/enums.ts:

@@ -11,7 +11,7 @@ fileGroups:
 
 tasks:
   relay-watch:
-    command: relay-compiler --repersist --watch
+    command: relay-compiler --repersist --watch ../../relay.config.js
     local: true
 
   touch-generated:
@@ -30,12 +30,12 @@ tasks:
   relay-codegen:
     deps:
       - "~:touch-relay-files"
-    command: relay-compiler --repersist
+    command: relay-compiler --repersist ../../relay.config.js
     inputs:
       - '@group(source)'
 
   codegen-watch:
-    command: relay-compiler --repersist --watch
+    command: relay-compiler --repersist --watch ../../relay.config.js
 
   ios:
     deps:

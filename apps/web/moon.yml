@@ -63,7 +63,7 @@ tasks:
     local: true
 
   relay-watch:
-    command: yarn relay-compiler --repersist --watch
+    command: yarn relay-compiler --repersist --watch ../../relay.config.js
     local: true
 
   graphql-codegen-watch:
@@ -95,7 +95,7 @@ tasks:
   relay-codegen:
     deps:
       - "~:touch-relay-files"
-    command: yarn relay-compiler --repersist
+    command: yarn relay-compiler --repersist ../../relay.config.js
     inputs:
       - '@group(source)'
 
