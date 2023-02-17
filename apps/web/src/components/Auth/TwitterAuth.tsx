@@ -92,7 +92,7 @@ export default function TwitterAuth({ queryRef }: Props) {
       message: 'Could not authorize Gallery on Twitter',
     });
 
-    return;
+    return null;
   }
 
   return <FullPageLoader />;
