@@ -1,8 +1,8 @@
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
-import { FeaturedSectionFragment$key } from '~/generated/FeaturedSectionFragment.graphql';
-import { FeaturedSectionQueryFragment$key } from '~/generated/FeaturedSectionQueryFragment.graphql';
+import { TrendingSectionFragment$key } from '~/generated/TrendingSectionFragment.graphql';
+import { TrendingSectionQueryFragment$key } from '~/generated/TrendingSectionQueryFragment.graphql';
 
 import colors from '../core/colors';
 import { VStack } from '../core/Spacer/Stack';
@@ -12,14 +12,14 @@ import FeaturedList from './FeaturedList';
 type Props = {
   title: string;
   subTitle: string;
-  trendingUsersRef: FeaturedSectionFragment$key;
-  queryRef: FeaturedSectionQueryFragment$key;
+  trendingUsersRef: TrendingSectionFragment$key;
+  queryRef: TrendingSectionQueryFragment$key;
 };
 
-export default function FeaturedSection({ trendingUsersRef, queryRef, title, subTitle }: Props) {
+export default function TrendingSection({ trendingUsersRef, queryRef, title, subTitle }: Props) {
   const query = useFragment(
     graphql`
-      fragment FeaturedSectionQueryFragment on Query {
+      fragment TrendingSectionQueryFragment on Query {
         ...FeaturedListQueryFragment
       }
     `,
@@ -28,7 +28,7 @@ export default function FeaturedSection({ trendingUsersRef, queryRef, title, sub
 
   const trendingUsers = useFragment(
     graphql`
-      fragment FeaturedSectionFragment on TrendingUsersPayload {
+      fragment TrendingSectionFragment on TrendingUsersPayload {
         users {
           ...FeaturedListFragment
         }
@@ -38,17 +38,17 @@ export default function FeaturedSection({ trendingUsersRef, queryRef, title, sub
   );
 
   return (
-    <StyledFeaturedSection gap={32}>
+    <StyledTrendingSection gap={32}>
       <VStack gap={4}>
         <Title>{title}</Title>
         <TitleDiatypeL color={colors.metal}>{subTitle}</TitleDiatypeL>
       </VStack>
-      <FeaturedList trendingUsersRef={trendingUsers.users || []} queryRef={query} />
-    </StyledFeaturedSection>
+      <FeaturedList featuredUsersRef={trendingUsers.users || []} queryRef={query} />
+    </StyledTrendingSection>
   );
 }
 
-const StyledFeaturedSection = styled(VStack)`
+const StyledTrendingSection = styled(VStack)`
   width: 100%;
 `;
 

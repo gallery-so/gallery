@@ -4,8 +4,8 @@ import styled from 'styled-components';
 import { FeaturedFragment$key } from '~/generated/FeaturedFragment.graphql';
 
 import { VStack } from '../core/Spacer/Stack';
-import FeaturedSection from './FeaturedSection';
 import SuggestedSection from './SuggestedSection';
+import TrendingSection from './TrendingSection';
 
 type Props = {
   queryRef: FeaturedFragment$key;
@@ -18,13 +18,13 @@ export default function Featured({ queryRef }: Props) {
         trendingUsers5Days: trendingUsers(input: { report: LAST_5_DAYS }) {
           ... on TrendingUsersPayload {
             __typename
-            ...FeaturedSectionFragment
+            ...TrendingSectionFragment
           }
         }
         trendingUsersAllTime: trendingUsers(input: { report: ALL_TIME }) {
           ... on TrendingUsersPayload {
             __typename
-            ...FeaturedSectionFragment
+            ...TrendingSectionFragment
           }
         }
 
@@ -32,7 +32,7 @@ export default function Featured({ queryRef }: Props) {
           __typename
         }
 
-        ...FeaturedSectionQueryFragment
+        ...TrendingSectionQueryFragment
         ...SuggestedSectionQueryFragment
       }
     `,
@@ -49,7 +49,7 @@ export default function Featured({ queryRef }: Props) {
         />
       )}
       {query.trendingUsers5Days?.__typename === 'TrendingUsersPayload' && (
-        <FeaturedSection
+        <TrendingSection
           title="Weekly Leaderboard"
           subTitle="Trending curators this week"
           trendingUsersRef={query.trendingUsers5Days}
@@ -57,7 +57,7 @@ export default function Featured({ queryRef }: Props) {
         />
       )}
       {query.trendingUsersAllTime?.__typename === 'TrendingUsersPayload' && (
-        <FeaturedSection
+        <TrendingSection
           title="Hall of Fame"
           subTitle="Top curators with the most all-time views"
           trendingUsersRef={query.trendingUsersAllTime}

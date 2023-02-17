@@ -62,7 +62,7 @@ export default function SuggestedSection({ queryRef, title, subTitle }: Props) {
         <Title>{title}</Title>
         <TitleDiatypeL color={colors.metal}>{subTitle}</TitleDiatypeL>
       </VStack>
-      <FeaturedList trendingUsersRef={nonNullUsers} queryRef={query} />
+      <FeaturedList featuredUsersRef={nonNullUsers} queryRef={query} />
     </StyledSuggestedSection>
   );
 }
