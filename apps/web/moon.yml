@@ -71,6 +71,10 @@ tasks:
     local: true
 
   graphql-codegen:
+    deps:
+      # Relay is a dependency of GraphqlCodegen because Relay wipes the whole folder.
+      # Running the Relay Compiler first makes sure everybody's cool
+      - "~:relay-codegen"
     command: graphql-codegen
     inputs:
       - '@group(source)'
@@ -101,7 +105,6 @@ tasks:
   codegen:
     deps:
       - "~:nextjs-routes"
-      - "~:relay-codegen"
       - "~:graphql-codegen"
 
   # Inherited from root task
