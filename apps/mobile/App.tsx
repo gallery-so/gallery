@@ -1,18 +1,22 @@
 import "expo-dev-client";
 
 import { RelayEnvironmentProvider } from "react-relay";
-import { Suspense, useState } from "react";
+import { useState } from "react";
 import { createRelayEnvironment } from "./src/contexts/relay/RelayProvider";
-import { Text } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import { MainTabNavigator } from "./src/navigation/MainTabNavigator";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 export default function App() {
   const [relayEnvironment] = useState(() => createRelayEnvironment());
 
   return (
     <RelayEnvironmentProvider environment={relayEnvironment}>
-      <Suspense fallback={null}>
-        <Text>Hello, World!</Text>
-      </Suspense>
+      <SafeAreaProvider>
+        <NavigationContainer>
+          <MainTabNavigator />
+        </NavigationContainer>
+      </SafeAreaProvider>
     </RelayEnvironmentProvider>
   );
 }
