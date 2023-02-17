@@ -1,5 +1,5 @@
 import { Contract } from '@ethersproject/contracts';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 import useSWR from 'swr';
 
@@ -12,22 +12,28 @@ import { useToastActions } from '~/contexts/toast/ToastContext';
 import { useMintMementosContract } from '~/hooks/useContract';
 import useMintContract from '~/hooks/useMintContract';
 
+import { ALLOWLIST_URL } from './config';
+import useMintPhase from './useMintPhase';
+
 type Props = {
   onMintSuccess: () => void;
 };
-
-const WHITE_RHINO_ALLOWLIST =
-  'https://storage.googleapis.com/gallery-prod-325303.appspot.com/white-rhino-allowlist.json';
 
 export default function MintButton({ onMintSuccess }: Props) {
   const { pushToast } = useToastActions();
 
   const tokenId = 1;
 
-  const { data: allowlist } = useSWR(WHITE_RHINO_ALLOWLIST);
+  const { data: allowlist } = useSWR(ALLOWLIST_URL);
 
   const contract = useMintMementosContract();
-  const { transactionHash, transactionStatus, buttonText, error, handleClick } = useMintContract({
+  const {
+    transactionHash,
+    transactionStatus,
+    buttonText: mintButtonText,
+    error,
+    handleClick,
+  } = useMintContract({
     contract: contract as Contract | null,
     tokenId,
     allowlist,
@@ -43,12 +49,21 @@ export default function MintButton({ onMintSuccess }: Props) {
     }
   }, [transactionStatus, pushToast, onMintSuccess]);
 
+  const phase = useMintPhase();
+  const buttonText = useMemo(() => {
+    if (phase === 'pre-mint') return 'Minting Soon™';
+    if (phase === 'active-mint') return mintButtonText;
+    return 'Mint Ended';
+  }, [mintButtonText, phase]);
+
+  const isDisabled =
+    phase === 'pre-mint' ||
+    phase === 'active-mint' ||
+    transactionStatus === TransactionStatus.PENDING;
+
   return (
     <>
-      <StyledButton
-        onClick={handleClick}
-        disabled={transactionStatus === TransactionStatus.PENDING}
-      >
+      <StyledButton onClick={handleClick} disabled={isDisabled}>
         {buttonText}
       </StyledButton>
       {transactionHash && (

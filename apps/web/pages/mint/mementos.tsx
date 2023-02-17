@@ -1,21 +1,18 @@
 import EthereumProviders from '~/contexts/auth/EthereumProviders';
-import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
-import ThankYouTokenPage from '~/scenes/MintPages/ThankYouTokenPage';
+import MementosPage from '~/scenes/MintPages/MementosPage';
 
-export default function ThankYouToken() {
-  const isMobile = useIsMobileWindowWidth();
-
+export default function Mementos() {
   return (
     <GalleryRoute
       element={
         <EthereumProviders>
-          <ThankYouTokenPage />
+          <MementosPage />
         </EthereumProviders>
       }
       navbar={false}
       banner={false}
-      footer={!isMobile}
+      footer={false}
     />
   );
 }
