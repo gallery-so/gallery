@@ -36,11 +36,9 @@ export default function FeaturedList({ trendingUsersRef, queryRef }: Props) {
 
   const trendingUsers = useFragment(
     graphql`
-      fragment FeaturedListFragment on TrendingUsersPayload {
-        users {
-          id
-          ...FeaturedUserCardFragment
-        }
+      fragment FeaturedListFragment on GalleryUser @relay(plural: true) {
+        id
+        ...FeaturedUserCardFragment
       }
     `,
     trendingUsersRef
@@ -55,9 +53,9 @@ export default function FeaturedList({ trendingUsersRef, queryRef }: Props) {
   }, []);
 
   const shortenedUserList = useMemo(() => {
-    const users = trendingUsers.users ?? [];
+    const users = trendingUsers ?? [];
     return users.slice(0, USERS_TO_SHOW);
-  }, [trendingUsers.users]);
+  }, [trendingUsers]);
 
   const chunkSize = isMobileOrMobileLargeWindowWidth ? 4 : 8;
   const chunks = chunk(shortenedUserList, chunkSize);

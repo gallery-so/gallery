@@ -29,7 +29,9 @@ export default function FeaturedSection({ trendingUsersRef, queryRef, title, sub
   const trendingUsers = useFragment(
     graphql`
       fragment FeaturedSectionFragment on TrendingUsersPayload {
-        ...FeaturedListFragment
+        users {
+          ...FeaturedListFragment
+        }
       }
     `,
     trendingUsersRef
@@ -41,7 +43,7 @@ export default function FeaturedSection({ trendingUsersRef, queryRef, title, sub
         <Title>{title}</Title>
         <TitleDiatypeL color={colors.metal}>{subTitle}</TitleDiatypeL>
       </VStack>
-      <FeaturedList trendingUsersRef={trendingUsers} queryRef={query} />
+      <FeaturedList trendingUsersRef={trendingUsers.users || []} queryRef={query} />
     </StyledFeaturedSection>
   );
 }

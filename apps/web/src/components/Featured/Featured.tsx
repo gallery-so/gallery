@@ -5,6 +5,7 @@ import { FeaturedFragment$key } from '~/generated/FeaturedFragment.graphql';
 
 import { VStack } from '../core/Spacer/Stack';
 import FeaturedSection from './FeaturedSection';
+import SuggestedSection from './SuggestedSection';
 
 type Props = {
   queryRef: FeaturedFragment$key;
@@ -27,7 +28,12 @@ export default function Featured({ queryRef }: Props) {
           }
         }
 
+        viewer {
+          __typename
+        }
+
         ...FeaturedSectionQueryFragment
+        ...SuggestedSectionQueryFragment
       }
     `,
     queryRef
@@ -35,6 +41,13 @@ export default function Featured({ queryRef }: Props) {
 
   return (
     <StyledFeaturedPage gap={48}>
+      {query.viewer?.__typename == 'Viewer' && (
+        <SuggestedSection
+          title="Suggested for you"
+          subTitle="Curators you may be interested in based on who you follow on Gallery"
+          queryRef={query}
+        />
+      )}
       {query.trendingUsers5Days?.__typename === 'TrendingUsersPayload' && (
         <FeaturedSection
           title="Weekly Leaderboard"
