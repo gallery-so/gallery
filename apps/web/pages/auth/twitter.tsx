@@ -1,4 +1,3 @@
-import { useRouter } from 'next/router';
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
@@ -13,6 +12,7 @@ export default function Twitter() {
     graphql`
       query twitterQuery {
         ...HomeNavbarFragment
+        ...TwitterAuthQueryFragment
         viewer {
           ... on Viewer {
             user {
@@ -27,17 +27,13 @@ export default function Twitter() {
 
   const isAuthenticated = Boolean(query.viewer?.user?.id);
 
-  const { query: routerQuery } = useRouter();
-
-  const { code } = routerQuery;
-
-  if (!code || !isAuthenticated) {
+  if (!isAuthenticated) {
     return <GalleryRedirect to={{ pathname: '/' }} />;
   }
 
   return (
     <GalleryRoute
-      element={<TwitterAuth code={code as string} />}
+      element={<TwitterAuth queryRef={query} />}
       navbar={<HomeNavbar queryRef={query} />}
     />
   );
