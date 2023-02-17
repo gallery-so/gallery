@@ -65,15 +65,8 @@ function TabBar({ state, navigation }: MaterialTopTabBarProps) {
 
   return (
     <View
-      style={{
-        paddingTop: 12,
-        paddingBottom: bottom,
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-evenly",
-        backgroundColor: "#F9F9F9",
-      }}
+      style={{ paddingBottom: bottom }}
+      className="pt-3 flex flex-row items-center justify-evenly bg-[#F9F9F9]"
     >
       {state.routes.map((route, index) => {
         const isFocused = state.index === index;
@@ -100,7 +93,8 @@ function TabBar({ state, navigation }: MaterialTopTabBarProps) {
 
         return (
           <TouchableOpacity
-            style={{ paddingHorizontal: 12 }}
+            key={route.key}
+            className="px-3"
             accessibilityRole="button"
             accessibilityState={isFocused ? { selected: true } : {}}
             onPress={onPress}
