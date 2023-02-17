@@ -3,6 +3,7 @@ import { useCallback, useEffect } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
+import { useToastActions } from '~/contexts/toast/ToastContext';
 import { TwitterAuthMutation } from '~/generated/TwitterAuthMutation.graphql';
 import { TwitterAuthQueryFragment$key } from '~/generated/TwitterAuthQueryFragment.graphql';
 import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
@@ -40,11 +41,16 @@ export default function TwitterAuth({ queryRef }: Props) {
   `);
 
   const router = useRouter();
+  const { pushToast } = useToastActions();
 
-  const { code } = router.query;
+  const { code, error } = router.query;
+
+  if (!username) {
+    throw new Error('Try to authorize Twitter without username');
+  }
 
   const handleVerifyTwitter = useCallback(async () => {
-    if (!username || !code) return;
+    if (!code) return;
 
     const payload = {
       twitter: {
@@ -73,6 +79,21 @@ export default function TwitterAuth({ queryRef }: Props) {
   useEffect(() => {
     handleVerifyTwitter();
   }, [handleVerifyTwitter]);
+
+  if (error) {
+    router.push({
+      pathname: '/[username]',
+      query: {
+        username,
+      },
+    });
+
+    pushToast({
+      message: 'Could not authorize Gallery on Twitter',
+    });
+
+    return;
+  }
 
   return <FullPageLoader />;
 }
