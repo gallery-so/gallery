@@ -25,11 +25,13 @@ import useDebounce from '~/hooks/useDebounce';
 import usePrevious from '~/hooks/usePrevious';
 import useThrottle from '~/hooks/useThrottle';
 import { PreloadQueryArgs } from '~/types/PageComponentPreloadQuery';
+import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 import isTouchscreenDevice from '~/utils/isTouchscreenDevice';
 
 import { FEATURED_COLLECTION_IDS } from './GlobalAnnouncementPopover/GlobalAnnouncementPopover';
 import useGlobalAnnouncementPopover from './GlobalAnnouncementPopover/useGlobalAnnouncementPopover';
 import Banner from './GlobalBanner/GlobalBanner';
+import GlobalSidebar from './GlobalSidebar/GlobalSidebar';
 import {
   FADE_TRANSITION_TIME_MS,
   FADE_TRANSITION_TIME_SECONDS,
@@ -58,7 +60,8 @@ type GlobalLayoutActions = {
   setBannerVisible: (b: boolean) => void;
   setNavbarVisible: (b: boolean) => void;
   setIsPageInSuspenseState: (b: boolean) => void;
-  setContent: (e: ReactElement | null) => void;
+  setTopNavContent: (e: ReactElement | null) => void;
+  setSidebarContent: (e: ReactElement | null) => void;
 };
 
 const GlobalLayoutActionsContext = createContext<GlobalLayoutActions | undefined>(undefined);
@@ -82,6 +85,7 @@ const GlobalLayoutContextQueryNode = graphql`
     ...GlobalLayoutContextNavbarFragment
     # Keeping this around for the next time we want to use it
     ...useGlobalAnnouncementPopoverFragment
+    ...isFeatureEnabledFragment
   }
 `;
 
@@ -233,14 +237,16 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
     [isNavbarVisible, wasNavbarVisible]
   );
 
-  const [content, setContent] = useState<ReactElement | null>(null);
+  const [topNavContent, setTopNavContent] = useState<ReactElement | null>(null);
+  const [sidebarContent, setSidebarContent] = useState<ReactElement | null>(null);
 
   const actions: GlobalLayoutActions = useMemo(
     () => ({
       setBannerVisible,
       setNavbarVisible: handleFadeNavbarFromGalleryRoute,
       setIsPageInSuspenseState,
-      setContent,
+      setTopNavContent,
+      setSidebarContent,
     }),
     [handleFadeNavbarFromGalleryRoute]
   );
@@ -249,6 +255,8 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
   useGlobalAnnouncementPopover({ queryRef: query, authRequired: false, dismissVariant: 'global' });
 
   const locationKey = useStabilizedRouteTransitionKey();
+
+  const isGlobalSidebarEnabled = isFeatureEnabled(FeatureFlag.GLOBAL_SIDEBAR, query);
 
   return (
     // note: we render the navbar here, above the main contents of the app,
@@ -262,8 +270,10 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
         wasVisible={wasNavbarVisible}
         fadeType={fadeType}
         handleFadeNavbarOnHover={handleFadeNavbarOnHover}
-        content={content}
+        content={topNavContent}
       />
+
+      {isGlobalSidebarEnabled && <GlobalSidebar content={sidebarContent} />}
 
       <GlobalLayoutStateContext.Provider value={state}>
         <GlobalLayoutActionsContext.Provider value={actions}>

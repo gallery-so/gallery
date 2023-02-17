@@ -7,24 +7,29 @@ export type Props = {
   element: JSX.Element;
   banner?: boolean;
   navbar: JSX.Element | false;
+  sidebar?: JSX.Element | false;
   footer?: boolean;
 };
 
 export default function GalleryRoute({
   element,
-  navbar = false,
-  footer = true,
   banner = true,
+  navbar = false,
+  sidebar = false,
+  footer = true,
 }: Props) {
-  const { setContent } = useGlobalLayoutActions();
+  const { setTopNavContent, setSidebarContent } = useGlobalLayoutActions();
   const { setBannerVisible } = useGlobalLayoutActions();
 
   useEffect(() => {
     setBannerVisible(banner);
     if (navbar) {
-      setContent(navbar);
+      setTopNavContent(navbar);
     }
-  }, [banner, navbar, setBannerVisible, setContent]);
+    if (sidebar) {
+      setSidebarContent(sidebar);
+    }
+  }, [banner, navbar, setBannerVisible, setSidebarContent, setTopNavContent, sidebar]);
 
   return (
     <>
