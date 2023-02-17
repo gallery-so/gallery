@@ -73,6 +73,14 @@ export default function TwitterSetting({ queryRef }: Props) {
             type: 'Twitter',
           },
         },
+
+        optimisticUpdater: (store) => {
+          const viewer = store.getRoot().getLinkedRecord('viewer');
+          const user = viewer?.getLinkedRecord('user');
+          const socialAccounts = user?.getLinkedRecord('socialAccounts');
+          const twitter = socialAccounts?.getLinkedRecord('twitter');
+          twitter?.setValue(displayed, 'display');
+        },
       });
     },
     [updateTwitterDisplay]
