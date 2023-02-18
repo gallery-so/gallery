@@ -19,6 +19,8 @@ import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import EditUserInfoModal from '~/scenes/UserGalleryPage/EditUserInfoModal';
 import LinkButton from '~/scenes/UserGalleryPage/LinkButton';
 
+import { SignUpButton } from '../SignUpButton';
+
 type CollectionRightContentProps = {
   username: string;
   collectionId: string;
@@ -145,7 +147,13 @@ export function CollectionRightContent({
       </EditButtonContainer>
     );
   } else if (query.viewer?.__typename !== 'Viewer') {
-    return <SignInButton />;
+    return (
+      <HStack gap={8} align="center">
+        <SignInButton />
+        {/* Don't show Sign Up btn on mobile bc it doesnt fit alongside Sign In, and onboarding isn't mobile optimized yet */}
+        {!isMobile && <SignUpButton />}
+      </HStack>
+    );
   }
 
   return null;
