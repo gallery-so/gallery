@@ -1,5 +1,3 @@
-import "expo-dev-client";
-
 import { RelayEnvironmentProvider } from "react-relay";
 import { Suspense, useState } from "react";
 import { createRelayEnvironment } from "./src/contexts/relay/RelayProvider";
