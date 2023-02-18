@@ -1,4 +1,3 @@
-const relayConfig = require('../../relay.config');
 const { withSentryConfig } = require('@sentry/nextjs');
 const withRoutes = require('nextjs-routes/config')();
 const withBundleAnalyzer = require('@next/bundle-analyzer');
