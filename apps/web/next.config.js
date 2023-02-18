@@ -56,7 +56,11 @@ const nextConfig = {
     scrollRestoration: true,
   },
   compiler: {
-    relay: relayConfig,
+    relay: {
+      src: './',
+      language: 'typescript',
+      artifactDirectory: './__generated__',
+    },
     styledComponents: true,
   },
 
