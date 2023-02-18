@@ -6,7 +6,7 @@ import {
   useUnfollowUserMutation,
   useUnfollowUserMutation$data,
 } from '~/generated/useUnfollowUserMutation.graphql';
-import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
+import { usePromisifiedMutation } from '~/shared/hooks/usePromisifiedMutation';
 
 export default function useUnfollowUser() {
   const [unfollowUserMutate] = usePromisifiedMutation<useUnfollowUserMutation>(

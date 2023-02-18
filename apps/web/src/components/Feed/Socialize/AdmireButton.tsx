@@ -11,7 +11,7 @@ import { AdmireButtonMutation } from '~/generated/AdmireButtonMutation.graphql';
 import { AdmireButtonQueryFragment$key } from '~/generated/AdmireButtonQueryFragment.graphql';
 import { AdmireButtonRemoveMutation } from '~/generated/AdmireButtonRemoveMutation.graphql';
 import { AuthModal } from '~/hooks/useAuthModal';
-import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
+import { usePromisifiedMutation } from '~/shared/hooks/usePromisifiedMutation';
 import { AdmireIcon } from '~/icons/SocializeIcons';
 
 type AdmireButtonProps = {

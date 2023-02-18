@@ -4,7 +4,7 @@ import { graphql } from 'relay-runtime';
 
 import { ValidationError } from '~/errors/ValidationError';
 import { useCreateGalleryMutation } from '~/generated/useCreateGalleryMutation.graphql';
-import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
+import { usePromisifiedMutation } from '~/shared/hooks/usePromisifiedMutation';
 
 export default function useCreateGallery() {
   const router = useRouter();

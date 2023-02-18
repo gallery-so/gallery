@@ -8,7 +8,7 @@ import {
   useUpdateCollectionInfoMutation,
   useUpdateCollectionInfoMutation$data,
 } from '~/generated/useUpdateCollectionInfoMutation.graphql';
-import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
+import { usePromisifiedMutation } from '~/shared/hooks/usePromisifiedMutation';
 
 export default function useUpdateCollectionInfo() {
   const [updateCollection, isMutating] =

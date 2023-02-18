@@ -6,7 +6,7 @@ import {
   UserExperienceType,
   useUpdateUserExperienceMutation,
 } from '~/generated/useUpdateUserExperienceMutation.graphql';
-import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
+import { usePromisifiedMutation } from '~/shared/hooks/usePromisifiedMutation';
 
 type Props = {
   type: UserExperienceType;

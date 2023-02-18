@@ -4,7 +4,7 @@ import { fetchQuery, graphql } from 'relay-runtime';
 
 import { useCreateUserMutation } from '~/generated/useCreateUserMutation.graphql';
 import { useCreateUserRefreshViewerQuery } from '~/generated/useCreateUserRefreshViewerQuery.graphql';
-import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
+import { usePromisifiedMutation } from '~/shared/hooks/usePromisifiedMutation';
 
 import { AuthPayloadVariables, isEoaPayload } from './useAuthPayloadQuery';
 

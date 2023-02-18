@@ -20,7 +20,7 @@ import ErrorBoundary from '~/contexts/boundary/ErrorBoundary';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { AuthContextFetchUserQuery } from '~/generated/AuthContextFetchUserQuery.graphql';
 import { AuthContextLogoutMutation } from '~/generated/AuthContextLogoutMutation.graphql';
-import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
+import { usePromisifiedMutation } from '~/shared/hooks/usePromisifiedMutation';
 import { isWeb3Error, Web3Error } from '~/types/Error';
 import { PreloadQueryArgs } from '~/types/PageComponentPreloadQuery';
 

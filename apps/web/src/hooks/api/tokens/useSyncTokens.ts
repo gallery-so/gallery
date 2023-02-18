@@ -4,7 +4,7 @@ import { graphql } from 'relay-runtime';
 import { useSyncTokensContext } from '~/contexts/SyncTokensLockContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { Chain, useSyncTokensMutation } from '~/generated/useSyncTokensMutation.graphql';
-import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
+import { usePromisifiedMutation } from '~/shared/hooks/usePromisifiedMutation';
 
 export default function useSyncTokens() {
   const { isLocked, lock } = useSyncTokensContext();

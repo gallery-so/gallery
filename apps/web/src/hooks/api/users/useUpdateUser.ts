@@ -5,7 +5,7 @@ import {
   useUpdateUserMutation,
   useUpdateUserMutation$data,
 } from '~/generated/useUpdateUserMutation.graphql';
-import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
+import { usePromisifiedMutation } from '~/shared/hooks/usePromisifiedMutation';
 
 export default function useUpdateUser() {
   const [updateUser] = usePromisifiedMutation<useUpdateUserMutation>(

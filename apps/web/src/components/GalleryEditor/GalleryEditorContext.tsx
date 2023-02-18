@@ -30,7 +30,7 @@ import {
   GalleryEditorContextSaveGalleryMutation,
   UpdateCollectionInput,
 } from '~/generated/GalleryEditorContextSaveGalleryMutation.graphql';
-import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
+import { usePromisifiedMutation } from '~/shared/hooks/usePromisifiedMutation';
 import { generateLayoutFromCollection } from '~/utils/collectionLayout';
 import { generate12DigitId } from '~/utils/generate12DigitId';
 

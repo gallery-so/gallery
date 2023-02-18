@@ -5,7 +5,7 @@ import {
   useAddWalletMutation,
   useAddWalletMutation$variables,
 } from '~/generated/useAddWalletMutation.graphql';
-import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
+import { usePromisifiedMutation } from '~/shared/hooks/usePromisifiedMutation';
 
 export default function useAddWallet() {
   const [addWallet] = usePromisifiedMutation<useAddWalletMutation>(

@@ -5,7 +5,7 @@ import {
   UpdateTokenInfoInput,
   useUpdateNftMutation,
 } from '~/generated/useUpdateNftMutation.graphql';
-import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
+import { usePromisifiedMutation } from '~/shared/hooks/usePromisifiedMutation';
 
 export default function useUpdateNft() {
   const [updateNft] = usePromisifiedMutation<useUpdateNftMutation>(
