@@ -75,7 +75,6 @@ export function NotificaitonsRegistrar() {
           return;
         }
 
-        // TODO(Terence): Tell the backend about this token.
         await registerToken({ variables: { input: { token } } }).catch(() => {
           // TOOD(Terence): THROW HERE
         });
