@@ -23,8 +23,6 @@ tasks:
     command: relay-compiler --repersist --watch ../../relay.config.js
 
   ios:
-    deps:
-      - "~:touch-relay-files"
     command:
       - concurrently
       - -n Expo,Relay-Compiler
