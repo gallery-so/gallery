@@ -1,4 +1,3 @@
-import { GalleryEditorFragment$key } from '__generated__/GalleryEditorFragment.graphql';
 import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -9,6 +8,7 @@ import { CollectionEditor } from '~/components/GalleryEditor/CollectionEditor/Co
 import { CollectionSidebar } from '~/components/GalleryEditor/CollectionSidebar/CollectionSidebar';
 import { PiecesSidebar } from '~/components/GalleryEditor/PiecesSidebar/PiecesSidebar';
 import { CollectionEditorProvider } from '~/contexts/collectionEditor/CollectionEditorContext';
+import { GalleryEditorFragment$key } from '~/generated/GalleryEditorFragment.graphql';
 import { removeNullValues } from '~/utils/removeNullValues';
 
 type GalleryEditorProps = {

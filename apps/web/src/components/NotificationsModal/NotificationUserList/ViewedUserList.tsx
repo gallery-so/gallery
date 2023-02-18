@@ -1,10 +1,10 @@
-import { ViewedUserListFragment$key } from '__generated__/ViewedUserListFragment.graphql';
 import { useCallback } from 'react';
 import { usePaginationFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { USERS_PER_PAGE } from '~/components/NotificationsModal/constants';
 import { PureUserList } from '~/components/NotificationsModal/NotificationUserList/PureUserList';
+import { ViewedUserListFragment$key } from '~/generated/ViewedUserListFragment.graphql';
 
 type ViewedUserListProps = {
   notificationRef: ViewedUserListFragment$key;

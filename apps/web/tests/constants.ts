@@ -1,4 +1,4 @@
-import { Chain } from '~/tests/__generated__/operations';
+import { Chain } from '~/tests/__generated__/graphql-codegen/operations';
 
 export const GALLERY_VIEWER_ID = 'TestViewerId';
 export const GALLERY_USER_DBID = 'TestUserId';

@@ -1,4 +1,3 @@
-import { NotificationListFragment$key } from '__generated__/NotificationListFragment.graphql';
 import { useCallback, useMemo } from 'react';
 import { usePaginationFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -8,6 +7,7 @@ import { VStack } from '~/components/core/Spacer/Stack';
 import { TitleDiatypeL } from '~/components/core/Text/Text';
 import { SeeMore } from '~/components/NotificationsModal/SeeMore';
 import { ENABLE_EMAIL_DISMISSED_KEY } from '~/constants/storageKeys';
+import { NotificationListFragment$key } from '~/generated/NotificationListFragment.graphql';
 import usePersistedState from '~/hooks/usePersistedState';
 
 import { Notification } from './Notification';

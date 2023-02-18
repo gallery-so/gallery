@@ -1,10 +1,25 @@
+const fs = require("fs");
 const path = require("path");
 
 function generateConfig(projectDir) {
+  const generatedDirectory = path.join(projectDir, "__generated__", "relay");
+  const persistedQueriesFile = path.join(projectDir, "persisted_queries.json");
+
+  // Automatically touch the generated directory
+  fs.mkdirSync(path.resolve(__dirname, generatedDirectory), {
+    recursive: true,
+  });
+  // Automatically touch the persisted_queries file
+  fs.writeFileSync(
+    path.resolve(__dirname, persistedQueriesFile),
+    "{}",
+    "utf-8"
+  );
+
   return {
     schema: "schema.graphql",
     language: "typescript",
-    output: path.join(projectDir, "__generated__", "relay"),
+    output: generatedDirectory,
 
     customScalarTypes: {
       Email: "string",

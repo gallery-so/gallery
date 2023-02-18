@@ -1,0 +1,16 @@
+fileGroups:
+  source:
+    - "src/**/*.{ts,tsx}"
+
+tasks:
+  relay-watch:
+    command: relay-compiler --repersist --watch ../../relay.config.js
+    local: true
+
+  relay-codegen:
+    command: relay-compiler --repersist ../../relay.config.js
+    inputs:
+      - '@group(source)'
+
+  codegen-watch:
+    command: relay-compiler --repersist --watch ../../relay.config.js

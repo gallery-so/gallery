@@ -1,9 +1,9 @@
-import { SomeoneFollowedYouBackFragment$key } from '__generated__/SomeoneFollowedYouBackFragment.graphql';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { BaseM } from '~/components/core/Text/Text';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
+import { SomeoneFollowedYouBackFragment$key } from '~/generated/SomeoneFollowedYouBackFragment.graphql';
 import { SomeoneFollowedYouBackQueryFragment$key } from '~/generated/SomeoneFollowedYouBackQueryFragment.graphql';
 
 type SomeoneFollowedYouBackProps = {
