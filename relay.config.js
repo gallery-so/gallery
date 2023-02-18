@@ -4,7 +4,7 @@ function generateConfig(projectDir) {
   return {
     schema: "schema.graphql",
     language: "typescript",
-    output: path.join(projectDir, "__generated__"),
+    output: path.join(projectDir, "__generated__", "relay"),
 
     customScalarTypes: {
       Email: "string",

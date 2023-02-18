@@ -1,13 +1,13 @@
 schema: ../../schema.graphql
 documents: ./src/**/*.{ts,tsx}
 generates:
-  ./__generated__/enums.ts:
+  ./__generated__/graphql-codegen/enums.ts:
     config:
       enumsAsTypes: true
       onlyEnums: true
     plugins:
       - typescript
-  ./tests/__generated__/operations.ts:
+  ./tests/__generated__/graphql-codegen/operations.ts:
     config:
       scalars:
           Email: string
