@@ -23,9 +23,7 @@ export default function GalleryRoute({
 
   useEffect(() => {
     setBannerVisible(banner);
-    if (navbar) {
-      setTopNavContent(navbar);
-    }
+    setTopNavContent(navbar);
     if (sidebar) {
       setSidebarContent(sidebar);
     }
