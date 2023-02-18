@@ -1,4 +1,3 @@
-import { isMobile } from '@airgap/beacon-sdk';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
