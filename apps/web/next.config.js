@@ -1,4 +1,3 @@
-const relayConfig = require('./relay.config');
 const { withSentryConfig } = require('@sentry/nextjs');
 const withRoutes = require('nextjs-routes/config')();
 const withBundleAnalyzer = require('@next/bundle-analyzer');
@@ -56,7 +55,11 @@ const nextConfig = {
     scrollRestoration: true,
   },
   compiler: {
-    relay: relayConfig,
+    relay: {
+      src: './',
+      language: 'typescript',
+      artifactDirectory: './__generated__/relay',
+    },
     styledComponents: true,
   },
 

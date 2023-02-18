@@ -1,9 +1,9 @@
-import { NotificationUserListTitleFragment$key } from '__generated__/NotificationUserListTitleFragment.graphql';
 import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { TitleDiatypeM } from '~/components/core/Text/Text';
+import { NotificationUserListTitleFragment$key } from '~/generated/NotificationUserListTitleFragment.graphql';
 
 type NotificationUserListTitleProps = {
   queryRef: NotificationUserListTitleFragment$key;

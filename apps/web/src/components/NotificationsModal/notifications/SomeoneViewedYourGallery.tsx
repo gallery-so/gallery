@@ -1,9 +1,9 @@
-import { SomeoneViewedYourGalleryFragment$key } from '__generated__/SomeoneViewedYourGalleryFragment.graphql';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { BaseM } from '~/components/core/Text/Text';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
+import { SomeoneViewedYourGalleryFragment$key } from '~/generated/SomeoneViewedYourGalleryFragment.graphql';
 import { SomeoneViewedYourGalleryQueryFragment$key } from '~/generated/SomeoneViewedYourGalleryQueryFragment.graphql';
 
 type SomeoneViewedYourGalleryProps = {

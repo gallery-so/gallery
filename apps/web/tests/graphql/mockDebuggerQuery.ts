@@ -1,4 +1,4 @@
-import { DebuggerQueryQuery } from '~/tests/__generated__/operations';
+import { DebuggerQueryQuery } from '~/tests/__generated__/graphql-codegen/operations';
 
 import {
   GALLERY_USER_DBID,

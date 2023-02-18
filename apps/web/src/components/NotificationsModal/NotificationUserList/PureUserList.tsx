@@ -1,10 +1,10 @@
-import { PureUserListFragment$key } from '__generated__/PureUserListFragment.graphql';
 import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { SeeMore } from '~/components/NotificationsModal/SeeMore';
 import { UserListItem } from '~/components/NotificationsModal/UserListItem';
+import { PureUserListFragment$key } from '~/generated/PureUserListFragment.graphql';
 
 type PureUserListProps = {
   hasMore: boolean;

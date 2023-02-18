@@ -9,7 +9,7 @@ import {
   Chain,
   NftDetailAssetTestQueryQuery,
   NftErrorContextRetryMutationMutation,
-} from '~/tests/__generated__/operations';
+} from '~/tests/__generated__/graphql-codegen/operations';
 import { mockGraphqlQuery } from '~/tests/graphql/mockGraphqlQuery';
 import { mockProviderQueries } from '~/tests/graphql/mockProviderQueries';
 

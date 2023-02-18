@@ -11,31 +11,16 @@ fileGroups:
 
 tasks:
   relay-watch:
-    command: relay-compiler --repersist --watch
+    command: relay-compiler --repersist --watch ../../relay.config.js
     local: true
 
-  touch-generated:
-    command: mkdir -p __generated__
-    platform: system
-
-  touch-persisted-queries:
-    command: "touch persisted_queries.json"
-    platform: system
-
-  touch-relay-files:
-    deps:
-      - "~:touch-persisted-queries"
-      - "~:touch-generated"
-
   relay-codegen:
-    deps:
-      - "~:touch-relay-files"
-    command: relay-compiler --repersist
+    command: relay-compiler --repersist ../../relay.config.js
     inputs:
       - '@group(source)'
 
   codegen-watch:
-    command: relay-compiler --repersist --watch
+    command: relay-compiler --repersist --watch ../../relay.config.js
 
   ios:
     deps:

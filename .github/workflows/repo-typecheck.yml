@@ -13,4 +13,4 @@ jobs:
           cache: 'yarn'
       - run: 'yarn install --immutable'
       - name: Run Typecheck
-        run: node_modules/.bin/moon run web:typecheck mobile:typecheck frames:typecheck shared:typecheck
+        run: node_modules/.bin/moon run :typecheck
