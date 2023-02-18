@@ -13,7 +13,7 @@ fileGroups:
 tasks:
   start-optimized-build:
     deps:
-      - "~:build"
+      - '~:build'
     command: next start
 
   build:
@@ -27,26 +27,24 @@ tasks:
 
   cypress-gh:
     command:
-    - synpress run --record
-    - --key 9d633f22-7630-4a11-9cf4-ff9809332564
-    - --configFile cypress.config.ts
+      - synpress run --record
+      - --key 9d633f22-7630-4a11-9cf4-ff9809332564
+      - --configFile cypress.config.ts
 
   dev:
-    deps:
-      - "~:touch-relay-files"
     command:
-    - concurrently
-    - -n Next,Relay-Compiler,GraphQL-Codegen
-    - yarn next dev
-    - node_modules/.bin/moon run web:relay-watch
-    - node_modules/.bin/moon run web:graphql-codegen-watch
+      - concurrently
+      - -n Next,Relay-Compiler,GraphQL-Codegen
+      - yarn next dev
+      - node_modules/.bin/moon run web:relay-watch
+      - node_modules/.bin/moon run web:graphql-codegen-watch
 
   lint:
     command:
-    - eslint
-    - --ext
-    - .js,.ts,.tsx,.cjs
-    - '@group(lint)'
+      - eslint
+      - --ext
+      - .js,.ts,.tsx,.cjs
+      - '@group(lint)'
     inputs:
       - '@group(lint)'
 
@@ -85,9 +83,9 @@ tasks:
 
   codegen:
     deps:
-      - "~:nextjs-routes"
-      - "~:relay-codegen"
-      - "~:graphql-codegen"
+      - '~:nextjs-routes'
+      - '~:relay-codegen'
+      - '~:graphql-codegen'
 
   # Inherited from root task
   typecheck:
@@ -96,7 +94,7 @@ tasks:
 
   test:
     deps:
-      - "~:codegen"
+      - '~:codegen'
     command: jest
 
   upload-apq:
