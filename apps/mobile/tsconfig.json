@@ -8,7 +8,7 @@
         "../../packages/frames-dls/src/*"
       ],
       "~/generated/*": [
-        "./__generated__/*"
+        "./__generated__/relay/*"
       ],
       "~/shared/*": [
         "../../packages/shared/src/*"
