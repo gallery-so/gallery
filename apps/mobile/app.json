@@ -20,7 +20,7 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.tbgallery.gallery"
+      "bundleIdentifier": "com.gallerylabs.gallery"
     },
     "android": {
       "blockedPermissions": ["android.permission.RECORD_AUDIO"],
@@ -28,7 +28,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.tbgallery.gallery"
+      "package": "com.gallerylabs.gallery"
     },
     "web": {
       "favicon": "./assets/favicon.png"
