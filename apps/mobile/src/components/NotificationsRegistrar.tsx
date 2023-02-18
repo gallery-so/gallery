@@ -2,6 +2,9 @@ import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
 import { useEffect } from "react";
+import { usePromisifiedMutation } from "~/shared/hooks/usePromisifiedMutation";
+import { graphql } from "relay-runtime";
+import { NotificationsRegistrarMutation } from "~/generated/NotificationsRegistrarMutation.graphql";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -13,6 +16,7 @@ Notifications.setNotificationHandler({
 
 async function askForNotificationToken(): Promise<string | null> {
   if (!Device.isDevice) {
+    // User is not on a physical device.
     return null;
   }
 
@@ -46,6 +50,17 @@ async function askForNotificationToken(): Promise<string | null> {
 
 let hasAskedForToken = false;
 export function NotificaitonsRegistrar() {
+  const [registerToken] =
+    usePromisifiedMutation<NotificationsRegistrarMutation>(graphql`
+      mutation NotificationsRegistrarMutation(
+        $input: RegisterPushNotificationTokenInput!
+      ) {
+        registerPushNotificationToken(input: $input) {
+          __typename
+        }
+      }
+    `);
+
   useEffect(() => {
     // Make sure under no circumstance ever do we ask the user for access twice.
     if (hasAskedForToken) {
@@ -55,12 +70,15 @@ export function NotificaitonsRegistrar() {
     hasAskedForToken = true;
 
     askForNotificationToken()
-      .then((token) => {
+      .then(async (token) => {
         if (!token) {
           return;
         }
 
         // TODO(Terence): Tell the backend about this token.
+        await registerToken({ variables: { input: { token } } }).catch(() => {
+          // TOOD(Terence): THROW HERE
+        });
       })
       .catch(() => {
         // TODO(Terence): Report an error here
