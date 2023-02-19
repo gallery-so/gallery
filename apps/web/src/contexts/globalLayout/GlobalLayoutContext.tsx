@@ -156,8 +156,6 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
   }, [isPageInSuspenseState, isNavbarEnabled, fadeType, throttled, debounced]);
   const wasNavbarVisible = usePrevious(isNavbarVisible) ?? false;
 
-  console.log({ isNavbarVisible, throttled, debounced, fadeType });
-
   // whether the route wants the navbar disabled. this is an override where scrolling / hovering
   // will not make the navbar appear
   const forcedHiddenByRouteRef = useRef(false);
