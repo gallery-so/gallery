@@ -57,9 +57,9 @@ export const useGlobalLayoutState = (): GlobalLayoutState => {
 };
 
 type GlobalLayoutActions = {
-  setBannerVisible: (b: boolean) => void;
+  setIsBannerVisible: (b: boolean) => void;
   setIsPageInSuspenseState: (b: boolean) => void;
-  setTopNavContent: (e: ReactElement | false) => void;
+  setTopNavContent: (e: ReactElement | null) => void;
   setSidebarContent: (e: ReactElement | null) => void;
 };
 
@@ -94,7 +94,7 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
   });
 
   // whether the global banner is visible
-  const [isBannerVisible, setBannerVisible] = useState(false);
+  const [isBannerVisible, setIsBannerVisible] = useState(false);
 
   const navbarHeight = useGlobalNavbarHeight();
 
@@ -169,10 +169,10 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
 
   //-------------- ROUTE ---------------
   const handleFadeNavbarFromGalleryRoute = useCallback(
-    (content: ReactElement | false) => {
+    (content: ReactElement | null) => {
       setFadeType('route');
-      setTopNavContent(content || null);
-      setIsNavbarEnabled(content && window.scrollY <= navbarHeight);
+      setTopNavContent(content);
+      setIsNavbarEnabled(Boolean(content) && window.scrollY <= navbarHeight);
       forcedHiddenByRouteRef.current = !content;
       lastFadeTriggeredByRouteTimestampRef.current = Date.now();
     },
@@ -242,7 +242,7 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
 
   const actions: GlobalLayoutActions = useMemo(
     () => ({
-      setBannerVisible,
+      setIsBannerVisible,
       setIsPageInSuspenseState,
       setTopNavContent: handleFadeNavbarFromGalleryRoute,
       setSidebarContent,

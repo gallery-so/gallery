@@ -18,16 +18,13 @@ export default function GalleryRoute({
   sidebar = false,
   footer = true,
 }: Props) {
-  const { setTopNavContent, setSidebarContent } = useGlobalLayoutActions();
-  const { setBannerVisible } = useGlobalLayoutActions();
+  const { setTopNavContent, setSidebarContent, setIsBannerVisible } = useGlobalLayoutActions();
 
   useEffect(() => {
-    setBannerVisible(banner);
-    setTopNavContent(navbar);
-    if (sidebar) {
-      setSidebarContent(sidebar);
-    }
-  }, [banner, navbar, setBannerVisible, setSidebarContent, setTopNavContent, sidebar]);
+    setIsBannerVisible(banner);
+    setTopNavContent(navbar || null);
+    setSidebarContent(sidebar || null);
+  }, [banner, navbar, sidebar, setIsBannerVisible, setTopNavContent, setSidebarContent]);
 
   return (
     <>
