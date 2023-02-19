@@ -333,7 +333,6 @@ type GlobalNavbarWithFadeEnabledProps = {
 function GlobalNavbarWithFadeEnabled({
   queryRef,
   isVisible,
-  wasVisible,
   handleFadeNavbarOnHover,
   fadeType,
   isBannerVisible,
@@ -400,6 +399,7 @@ function GlobalNavbarWithFadeEnabled({
       <AnimatePresence>
         {isVisible && (
           <motion.div
+            className="GlobalNavbar"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{

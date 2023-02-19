@@ -17,8 +17,10 @@ export function useGlobalNavbarHeight() {
         return;
       }
 
-      console.log('setting', entry.borderBoxSize?.[0]?.blockSize);
-
+      // when the navbar disappears from view, we don't want it to remove top-padding from pages
+      if (entry.borderBoxSize?.[0]?.blockSize === 0) {
+        return;
+      }
       setHeight(entry.borderBoxSize?.[0]?.blockSize ?? INITIAL_HEIGHT);
     });
 
