@@ -148,9 +148,15 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
     if (isPageInSuspenseState && isNavbarEnabled) {
       return debounced;
     }
+    // prevents navbar from flickering before route transition is complete
+    if (fadeType === 'route') {
+      return debounced;
+    }
     return throttled;
-  }, [isPageInSuspenseState, isNavbarEnabled, throttled, debounced]);
+  }, [isPageInSuspenseState, isNavbarEnabled, fadeType, throttled, debounced]);
   const wasNavbarVisible = usePrevious(isNavbarVisible) ?? false;
+
+  console.log({ isNavbarVisible, throttled, debounced, fadeType });
 
   // whether the route wants the navbar disabled. this is an override where scrolling / hovering
   // will not make the navbar appear
@@ -171,10 +177,14 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
   const handleFadeNavbarFromGalleryRoute = useCallback(
     (content: ReactElement | null) => {
       setFadeType('route');
-      setTopNavContent(content);
       setIsNavbarEnabled(Boolean(content) && window.scrollY <= navbarHeight);
       forcedHiddenByRouteRef.current = !content;
       lastFadeTriggeredByRouteTimestampRef.current = Date.now();
+      // set nav content after a delay so the current content has a chance to fade out first
+      // TODO: try to get this to work using framer motion + locationKey
+      setTimeout(() => {
+        setTopNavContent(content);
+      }, FADE_TRANSITION_TIME_MS + 100);
     },
     [navbarHeight]
   );
@@ -186,7 +196,7 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
       return;
     }
     // if we recently triggered a route transition, ignore scroll-related side effects
-    if (Date.now() - lastFadeTriggeredByRouteTimestampRef.current < 100) {
+    if (Date.now() - lastFadeTriggeredByRouteTimestampRef.current < 200) {
       return;
     }
     // if we're mid-suspense, don't trigger any scroll-related side effects
@@ -339,27 +349,6 @@ function GlobalNavbarWithFadeEnabled({
     `,
     queryRef
   );
-
-  // transition styles on the navbar are in accordance with our route transitions
-  // const transitionStyles = useMemo(() => {
-  //   //----------- FADING OUT -----------
-  //   // always fade out navbar without delay
-  //   if (wasVisible) {
-  //     return `opacity ${FADE_TRANSITION_TIME_MS}ms ease-in-out;`;
-  //   }
-
-  //   //----------- FADING IN ------------
-  //   if (!wasVisible) {
-  //     // if scrolling, fade-in navbar without delay
-  //     if (fadeType === 'scroll' || fadeType === 'hover') {
-  //       return `opacity ${FADE_TRANSITION_TIME_MS}ms ease-in-out`;
-  //     }
-  //     // if moving between routes, fade-in navbar with delay
-  //     if (fadeType === 'route') {
-  //       return `opacity ${FADE_TRANSITION_TIME_MS}ms ease-in-out ${FADE_TRANSITION_TIME_MS}ms`;
-  //     }
-  //   }
-  // }, [wasVisible, fadeType]);
 
   const isTouchscreen = useRef(isTouchscreenDevice());
   const [zIndex, setZIndex] = useState(2);
