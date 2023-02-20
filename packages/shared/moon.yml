@@ -4,13 +4,13 @@ fileGroups:
 
 tasks:
   relay-watch:
-    command: relay-compiler --repersist --watch ../../relay.config.js
+    command: relay-compiler --project shared --repersist --watch ../../relay.config.js
     local: true
 
   relay-codegen:
-    command: relay-compiler --repersist ../../relay.config.js
+    command: relay-compiler --project shared --repersist ../../relay.config.js
     inputs:
       - '@group(source)'
 
   codegen-watch:
-    command: relay-compiler --repersist --watch ../../relay.config.js
+    command: relay-compiler --project shared --repersist --watch ../../relay.config.js
