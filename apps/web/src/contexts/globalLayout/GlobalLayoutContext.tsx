@@ -6,6 +6,7 @@ import {
   MutableRefObject,
   ReactElement,
   ReactNode,
+  Suspense,
   useCallback,
   useContext,
   useEffect,
@@ -17,6 +18,7 @@ import { useFragment, useLazyLoadQuery } from 'react-relay';
 import { fetchQuery, graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
+import FullPageLoader from '~/components/core/Loader/FullPageLoader';
 import { MAINTENANCE_BANNER_6_18_STORAGE_KEY } from '~/constants/storageKeys';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { GlobalLayoutContextNavbarFragment$key } from '~/generated/GlobalLayoutContextNavbarFragment.graphql';
@@ -303,7 +305,7 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
                 duration: FADE_TRANSITION_TIME_SECONDS,
               }}
             >
-              {children}
+              <Suspense fallback={<FullPageLoader />}>{children}</Suspense>
             </motion.div>
           </AnimatePresence>
         </GlobalLayoutActionsContext.Provider>
