@@ -2,16 +2,14 @@ import "expo-dev-client";
 
 import {
   graphql,
-  GraphQLTaggedNode,
   RelayEnvironmentProvider,
   useFragment,
   useLazyLoadQuery,
-  useRelayEnvironment,
 } from "react-relay";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useState } from "react";
 import { createRelayEnvironment } from "./src/contexts/relay/RelayProvider";
 import { AppDeferredDataQuery } from "~/generated/relay/AppDeferredDataQuery.graphql";
-import { SafeAreaView, Text, View } from "react-native";
+import { SafeAreaView, Text } from "react-native";
 import { AppRobinFragment$key } from "~/generated/relay/AppRobinFragment.graphql";
 
 function RobinUser({ queryRef }: { queryRef: AppRobinFragment$key }) {
@@ -31,18 +29,17 @@ function RobinUser({ queryRef }: { queryRef: AppRobinFragment$key }) {
   return <Text>{query.userByUsername?.username}</Text>;
 }
 
+const QueryNode = graphql`
+  query AppDeferredDataQuery {
+    test: userByUsername(username: "xd") {
+      __typename
+    }
+    ...AppRobinFragment @defer(label: "RobinFragment")
+  }
+`;
+
 function DeferredData() {
-  const query = useLazyLoadQuery<AppDeferredDataQuery>(
-    graphql`
-      query AppDeferredDataQuery {
-        test: userByUsername(username: "xd") {
-          __typename
-        }
-        ...AppRobinFragment @defer(label: "RobinFragment")
-      }
-    `,
-    {}
-  );
+  const query = useLazyLoadQuery<AppDeferredDataQuery>(QueryNode, {});
 
   return (
     <SafeAreaView>
