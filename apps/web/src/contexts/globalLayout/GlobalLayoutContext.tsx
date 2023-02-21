@@ -3,7 +3,6 @@ import { AnimatePresence, motion } from 'framer-motion';
 import {
   createContext,
   memo,
-  MutableRefObject,
   ReactElement,
   ReactNode,
   Suspense,
@@ -44,7 +43,6 @@ import useStabilizedRouteTransitionKey from './useStabilizedRouteTransitionKey';
 type GlobalLayoutState = {
   isNavbarVisible: boolean;
   wasNavbarVisible: boolean;
-  isPageInSuspenseRef: MutableRefObject<boolean>;
 };
 
 export const GlobalLayoutStateContext = createContext<GlobalLayoutState | undefined>(undefined);
@@ -60,7 +58,6 @@ export const useGlobalLayoutState = (): GlobalLayoutState => {
 
 type GlobalLayoutActions = {
   setIsBannerVisible: (b: boolean) => void;
-  setIsPageInSuspenseState: (b: boolean) => void;
   setTopNavContent: (e: ReactElement | null) => void;
   setSidebarContent: (e: ReactElement | null) => void;
 };
@@ -110,21 +107,6 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
    */
   const [fadeType, setFadeType] = useState<FadeTriggerType>('route');
 
-  /**
-   * we track whether the child route is in suspense in both React State and Ref:
-   * - `state` is used to determine whether we should debounce or throttle nav animation
-   * - `ref` is used to stabilizing callbacks that areused for scroll, hover handling
-   *
-   * why do we care if the app is in suspense?
-   * - it allows us to disable visibility of the navbar against the loading fallback
-   *
-   * can't we just address the above with z-index?
-   * - no, because when both the loading fallback and the navbar have between 0~1 opacity,
-   *   both elements are displayed on the screen.
-   */
-  const [isPageInSuspenseState, setIsPageInSuspenseState] = useState(false);
-  const isPageInSuspenseRef = useRef(false);
-
   // Each individual route is responsible for dictating what content to display
   const [topNavContent, setTopNavContent] = useState<ReactElement | null>(null);
   const [sidebarContent, setSidebarContent] = useState<ReactElement | null>(null);
@@ -147,15 +129,12 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
   const throttled = useThrottle(isNavbarEnabled, FADE_TRANSITION_TIME_MS);
 
   const isNavbarVisible = useMemo(() => {
-    if (isPageInSuspenseState && isNavbarEnabled) {
-      return debounced;
-    }
     // prevents navbar from flickering before route transition is complete
     if (fadeType === 'route') {
       return debounced;
     }
     return throttled;
-  }, [isPageInSuspenseState, isNavbarEnabled, fadeType, throttled, debounced]);
+  }, [fadeType, throttled, debounced]);
   const wasNavbarVisible = usePrevious(isNavbarVisible) ?? false;
 
   // whether the route wants the navbar disabled. this is an override where scrolling / hovering
@@ -199,10 +178,6 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
     if (Date.now() - lastFadeTriggeredByRouteTimestampRef.current < 200) {
       return;
     }
-    // if we're mid-suspense, don't trigger any scroll-related side effects
-    if (isPageInSuspenseRef.current) {
-      return;
-    }
 
     setFadeType('scroll');
     setIsNavbarEnabled(window.scrollY <= navbarHeight);
@@ -226,10 +201,6 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
       if (Date.now() - lastFadeTriggeredByRouteTimestampRef.current < 100) {
         return;
       }
-      // if we're mid-suspense, don't trigger any hover-related side effects
-      if (isPageInSuspenseRef.current) {
-        return;
-      }
       // prevent touchscreen users from triggering the navbar by tapping near the top of the screen
       if (isTouchscreen.current) {
         return;
@@ -246,14 +217,13 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
   );
 
   const state = useMemo(
-    () => ({ isNavbarVisible, wasNavbarVisible, isPageInSuspenseRef }),
+    () => ({ isNavbarVisible, wasNavbarVisible }),
     [isNavbarVisible, wasNavbarVisible]
   );
 
   const actions: GlobalLayoutActions = useMemo(
     () => ({
       setIsBannerVisible,
-      setIsPageInSuspenseState,
       setTopNavContent: handleFadeNavbarFromGalleryRoute,
       setSidebarContent,
     }),
