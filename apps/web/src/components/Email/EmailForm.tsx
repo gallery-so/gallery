@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import { SelectorStoreUpdater } from 'relay-runtime';
 import styled from 'styled-components';
@@ -73,7 +73,8 @@ function EmailForm({ setIsEditMode, queryRef, onClose }: Props) {
   const showCancelButton = useMemo(() => !!savedEmail || onClose, [onClose, savedEmail]);
   const { pushToast } = useToastActions();
 
-  const { isChecking, verifyEmail } = useVerifyValidEmail();
+  const { verifyEmail } = useVerifyValidEmail();
+  const reportError = useReportError();
 
   const handleEmailChange = useCallback(async (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
@@ -82,22 +83,43 @@ function EmailForm({ setIsEditMode, queryRef, onClose }: Props) {
 
   const debouncedEmail = useDebounce(email, 500);
 
+  // Don't check email on initial mount
+  const isInitialMount = useRef(true);
+
+  const [isChecking, setIsChecking] = useState(false);
   useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+
     async function checkEmail() {
       if (!EMAIL_FORMAT.test(debouncedEmail)) {
         setIsValidEmail(false);
         return;
       }
 
-      const valid = await verifyEmail(debouncedEmail);
-
-      setIsValidEmail(valid);
+      try {
+        setIsChecking(true);
+        const valid = await verifyEmail(debouncedEmail);
+        setIsValidEmail(valid);
+      } catch (error) {
+        if (error instanceof Error) {
+          reportError(error, {
+            tags: {
+              userId,
+              email: debouncedEmail,
+            },
+          });
+        }
+        setIsValidEmail(false);
+      } finally {
+        setIsChecking(false);
+      }
     }
-    setIsValidEmail(false);
+    setIsValidEmail(true);
     checkEmail();
-  }, [debouncedEmail, verifyEmail]);
-
-  const reportError = useReportError();
+  }, [debouncedEmail, reportError, userId, verifyEmail]);
 
   const handleCancelClick = useCallback(() => {
     if (onClose) {
@@ -177,6 +199,8 @@ function EmailForm({ setIsEditMode, queryRef, onClose }: Props) {
   );
 
   const showErrorMessage = useMemo(() => {
+    if (isInitialMount.current) return false;
+
     return !isValidEmail && debouncedEmail && !isChecking;
   }, [debouncedEmail, isChecking, isValidEmail]);
 
