@@ -1,4 +1,3 @@
-import fetchMultipart from "fetch-multipart-graphql";
 import { Client, createClient } from "graphql-ws";
 import { Observable, SubscribeFunction } from "relay-runtime";
 import {
@@ -6,6 +5,7 @@ import {
   GraphQLSingularResponse,
   PayloadError,
 } from "relay-runtime";
+import { isResponsePersistedQueryNotFound } from "./utils";
 
 export type PersistedQueriesMap = Record<string, string>;
 
@@ -59,40 +59,24 @@ const fetchWithHashAndQueryText: InternalFetchFunction = async (
   // @ts-expect-error Types aren't lining up here
   const queryText = persisted_queries[request.id] as string;
 
-  const response = await fetchMultipart(
+  const response = await fetch(
     url(request, variables, cacheConfig, uploadables),
     {
       method: "POST",
-      headers: {
-        "content-type": "application/json",
-        Accept: "multipart/mixed; deferSpec=20220824",
-      },
-      body: JSON.stringify({ query: queryText, variables }),
       credentials: "include",
-      onNext: (res) => {
-        const parts = res as (
-          | {
-              hasNext?: boolean;
-              incremental: {
-                path: string[];
-                label: string;
-                data: PayloadData;
-              }[];
-            }
-          | { data: PayloadData; hasNext?: boolean }
-        )[];
-        const formatted = parts.flatMap((part) => {
-          if ("incremental" in part) {
-            return part.incremental;
-          }
-          return part;
-        });
-        sink.next(formatted);
-      },
-      onError: (err) => sink.error(err),
-      onComplete: () => {
-        console.log(request.name, "Sink complete");
-        sink.complete();
+      body: JSON.stringify({
+        operationName: request.name,
+        extensions: {
+          persistedQuery: {
+            version: 1,
+            sha256Hash: request.id,
+          },
+        },
+        query: queryText,
+        variables,
+      }),
+      headers: {
+        "Content-Type": "application/json",
       },
     }
   ).then((response) => response.json());
@@ -113,61 +97,46 @@ export function createRelayFetchFunction(
    * Since we don't currently have a GraphQL server, we're shimming a response as
    * an example.
    */
-  const relayFetchFunction: FetchFunction = (
+  const relayFetchFunction: FetchFunction = async (
     request,
     variables,
     cacheConfig,
     uploadables
   ) => {
-    return Observable.create((sink) => {
-      args.persistedQueriesFetcher().then((persisted_queries) => {
-        // @ts-expect-error Types aren't lining up here
-        const queryText = persisted_queries[request.id] as string;
-        fetchMultipart(args.url(request, variables, cacheConfig, uploadables), {
-          method: "POST",
-          headers: {
-            "content-type": "application/json",
-            Accept: "multipart/mixed; deferSpec=20220824",
-          },
-          body: JSON.stringify({ query: queryText, variables }),
-          credentials: "include",
-          onNext: (res) => {
-            const parts = res as (
-              | {
-                  hasNext?: boolean;
-                  incremental: {
-                    path: string[];
-                    label: string;
-                    data: unknown;
-                  }[];
-                }
-              | { data: unknown; hasNext?: boolean }
-            )[];
+    try {
+      let response = await fetchWithJustHash(
+        args,
+        request,
+        variables,
+        cacheConfig,
+        uploadables
+      );
 
-            const formatted = parts.flatMap((part) => {
-              if ("incremental" in part) {
-                return part.incremental;
-              }
-              return part;
-            });
+      const persistedQueryWasNotFound =
+        isResponsePersistedQueryNotFound(response);
 
-            sink.next(formatted);
+      if (persistedQueryWasNotFound) {
+        response = await fetchWithHashAndQueryText(
+          args,
+          request,
+          variables,
+          cacheConfig,
+          uploadables
+        );
+      }
 
-            if (parts.some((it) => !it.hasNext)) {
-              sink.complete();
-            }
-          },
-          onError: (err) => {
-            console.error(err);
-            sink.error(err);
-          },
-          onComplete: () => {
-            console.log(request.name, "Sink complete");
-            sink.complete();
-          },
-        });
-      });
-    });
+      return response;
+    } catch (error) {
+      const payloadError: PayloadError =
+        error instanceof Error
+          ? { message: error.message, severity: "CRITICAL" }
+          : {
+              message: "An unexpected error occurred in relayFetchFunction",
+              severity: "CRITICAL",
+            };
+
+      return { errors: [payloadError] };
+    }
   };
 
   return relayFetchFunction;
