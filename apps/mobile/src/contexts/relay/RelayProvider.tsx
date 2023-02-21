@@ -16,7 +16,7 @@ const relaySubscribeFunction = createRelaySubscribeFunction({
 });
 
 export const relayFetchFunction = createRelayFetchFunction({
-  url: () => "https://api.gallery.so",
+  url: () => "https://gateway.gallery.so",
   persistedQueriesFetcher: async () => persistedQueriesMap,
 });
 
