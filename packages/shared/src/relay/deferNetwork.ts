@@ -55,6 +55,15 @@ function flattenDeferResponse(
     return false;
   });
 
+  if (anyOfTheResponsesAreTheLast) {
+    const lastPart = formatted[formatted.length - 1];
+
+    if (lastPart) {
+      // Shoutout the Coinbase folks https://github.com/facebook/relay/issues/3904
+      lastPart.extensions = { is_final: true };
+    }
+  }
+
   return { data: formatted, isLast: anyOfTheResponsesAreTheLast };
 }
 
