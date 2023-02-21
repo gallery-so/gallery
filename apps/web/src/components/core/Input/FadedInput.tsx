@@ -36,7 +36,7 @@ const StyledInput = styled.input<{ variantSize: FadedInputSize }>`
   padding: 6px 12px;
 
   ${({ variantSize }) => {
-    if (variantSize == 'md') {
+    if (variantSize === 'md') {
       return css`
         font-family: ${BODY_FONT_FAMILY};
         font-size: 14px;
