@@ -5,6 +5,7 @@ import styled from 'styled-components';
 
 import colors from '~/components/core/colors';
 import { UnstyledLink } from '~/components/core/Link/UnstyledLink';
+import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, BaseS } from '~/components/core/Text/Text';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
@@ -19,7 +20,6 @@ import unescape from '~/utils/unescape';
 import { MAX_PIECES_DISPLAYED_PER_FEED_EVENT } from '../constants';
 import FeedEventTokenPreviews from '../FeedEventTokenPreviews';
 import {
-  StyledEvent,
   StyledEventContent,
   StyledEventHeader,
   StyledEventLabel,
@@ -89,57 +89,57 @@ export default function CollectionCreatedFeedEvent({ eventDataRef, isSubEvent, q
       }}
       onClick={() => track('Feed: Clicked collection created event')}
     >
-      <StyledEvent isSubEvent={isSubEvent}>
-        <VStack gap={event.newCollectorsNote ? 0 : 16}>
-          <StyledEventHeader>
-            <VStack gap={4}>
-              <StyledEventHeaderContainer>
-                <StyledEventText isSubEvent={isSubEvent}>
-                  {!isSubEvent && <HoverCardOnUsername userRef={event.owner} queryRef={query} />}{' '}
-                  added {tokens.length} {pluralize(tokens.length, 'piece')} to their new collection
-                  {collectionName ? `, ` : ' '}
-                  {collectionName && (
-                    <Link
-                      href={{
-                        pathname: '/[username]/[collectionId]',
-                        query: {
-                          username: event.owner.username as string,
-                          collectionId: event.collection.dbid,
-                        },
-                      }}
-                    >
-                      <StyledEventLabel>{unescape(event.collection.name ?? '')}</StyledEventLabel>
-                    </Link>
-                  )}
-                  {!isSubEvent && <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>}
-                </StyledEventText>
-              </StyledEventHeaderContainer>
-            </VStack>
-          </StyledEventHeader>
-          <StyledEventContent
-            gap={16}
-            hasCaption={Boolean(event.newCollectorsNote)}
-            isSubEvent={isSubEvent}
-          >
-            {event.newCollectorsNote && (
-              <StyledCaptionContainer gap={8} align="center">
-                <BaseM>{event.newCollectorsNote}</BaseM>
-              </StyledCaptionContainer>
+      <VStack gap={event.newCollectorsNote ? 0 : 16}>
+        <StyledEventHeader>
+          <VStack gap={4}>
+            <StyledEventHeaderContainer>
+              <StyledEventText isSubEvent={isSubEvent}>
+                {!isSubEvent && <HoverCardOnUsername userRef={event.owner} queryRef={query} />}{' '}
+                added {tokens.length} {pluralize(tokens.length, 'piece')} to their new collection
+                {collectionName ? `, ` : ' '}
+                {collectionName && (
+                  <Link
+                    href={{
+                      pathname: '/[username]/[collectionId]',
+                      query: {
+                        username: event.owner.username as string,
+                        collectionId: event.collection.dbid,
+                      },
+                    }}
+                  >
+                    <StyledEventLabel>{unescape(event.collection.name ?? '')}</StyledEventLabel>
+                  </Link>
+                )}
+                {!isSubEvent && <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>}
+              </StyledEventText>
+            </StyledEventHeaderContainer>
+          </VStack>
+        </StyledEventHeader>
+        <StyledEventContent
+          gap={16}
+          hasCaption={Boolean(event.newCollectorsNote)}
+          isSubEvent={isSubEvent}
+        >
+          {event.newCollectorsNote && (
+            <StyledCaptionContainer gap={8} align="center">
+              <BaseM>
+                <Markdown text={event.newCollectorsNote} />
+              </BaseM>
+            </StyledCaptionContainer>
+          )}
+          <VStack gap={8}>
+            <FeedEventTokenPreviews
+              isInCaption={Boolean(event.newCollectorsNote || isSubEvent)}
+              tokenToPreviewRefs={tokensToPreview}
+            />
+            {showAdditionalPiecesIndicator && (
+              <StyledAdditionalPieces>
+                +{numAdditionalPieces} more {pluralize(numAdditionalPieces, 'piece')}
+              </StyledAdditionalPieces>
             )}
-            <VStack gap={8}>
-              <FeedEventTokenPreviews
-                isInCaption={Boolean(event.newCollectorsNote || isSubEvent)}
-                tokenToPreviewRefs={tokensToPreview}
-              />
-              {showAdditionalPiecesIndicator && (
-                <StyledAdditionalPieces>
-                  +{numAdditionalPieces} more {pluralize(numAdditionalPieces, 'piece')}
-                </StyledAdditionalPieces>
-              )}
-            </VStack>
-          </StyledEventContent>
-        </VStack>
-      </StyledEvent>
+          </VStack>
+        </StyledEventContent>
+      </VStack>
     </UnstyledLink>
   );
 }
