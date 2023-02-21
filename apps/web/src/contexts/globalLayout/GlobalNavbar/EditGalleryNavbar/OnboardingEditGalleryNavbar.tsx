@@ -5,6 +5,7 @@ import { Button } from '~/components/core/Button/Button';
 import colors from '~/components/core/colors';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { TitleDiatypeM } from '~/components/core/Text/Text';
+import OnboardingDialog from '~/components/GalleryEditor/GalleryOnboardingGuide/OnboardingDialog';
 import { ONBOARDING_NEXT_BUTTON_TEXT_MAP } from '~/components/Onboarding/constants';
 import { BackButton } from '~/contexts/globalLayout/GlobalNavbar/BackButton';
 import { GalleryTitleSection } from '~/contexts/globalLayout/GlobalNavbar/EditGalleryNavbar/GalleryTitleSection';
@@ -87,15 +88,30 @@ export function OnboardingEditGalleryNavbar({
         </NavbarCenterContent>
 
         <NavbarRightContent>
-          <HStack align="center" gap={12}>
+          <DoneButtonContainer align="center" gap={12}>
             {hasUnsavedChanges && (
               <TitleDiatypeM color={colors.metal}>Unsaved Changes</TitleDiatypeM>
             )}
 
+            {step === 6 && (
+              <OnboardingDialog
+                step={step}
+                text={dialogMessage}
+                onNext={onNextStep}
+                onClose={dialogOnClose}
+                options={{
+                  placement: 'left-end',
+                  positionOffset: 20,
+                  blinkingPosition: {
+                    left: -20,
+                  },
+                }}
+              />
+            )}
             <Button onClick={onDone} disabled={!canSave}>
               {ONBOARDING_NEXT_BUTTON_TEXT_MAP['edit-gallery']}
             </Button>
-          </HStack>
+          </DoneButtonContainer>
         </NavbarRightContent>
       </StandardNavbarContainer>
     </Wrapper>
@@ -108,4 +124,8 @@ const Wrapper = styled.div`
   @media only screen and ${breakpoints.tablet} {
     border: none;
   }
+`;
+
+const DoneButtonContainer = styled(HStack)`
+  position: relative;
 `;
