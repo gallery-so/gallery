@@ -2,9 +2,7 @@ import Link from 'next/link';
 import { Route } from 'nextjs-routes';
 import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
-import styled from 'styled-components';
 
-import { UnstyledAnchor, UnstyledLink } from '~/components/core/Link/UnstyledLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import { NonRecursiveFeedEventData } from '~/components/Feed/FeedEventData';
@@ -102,7 +100,7 @@ export default function GalleryUpdatedFeedEvent({
                 <BaseM>{caption}</BaseM>
               </StyledCaptionContainer>
             )}
-            <StyledSubEventContainer>
+            <VStack>
               {subEvents?.map((subEvent, index) => {
                 return (
                   <ReportingErrorBoundary key={index} fallback={<></>} dontReport>
@@ -117,17 +115,10 @@ export default function GalleryUpdatedFeedEvent({
                   </ReportingErrorBoundary>
                 );
               })}
-            </StyledSubEventContainer>
+            </VStack>
           </VStack>
         </StyledEventContent>
       </VStack>
     </StyledEvent>
   );
 }
-
-const StyledSubEventContainer = styled(VStack)`
-  ${UnstyledLink}, ${UnstyledAnchor}, ${StyledEvent} {
-    margin-top: 16px;
-    background-color: red;
-  }
-`;
