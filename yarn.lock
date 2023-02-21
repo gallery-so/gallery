@@ -15994,6 +15994,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fetch-multipart-graphql@npm:^3.1.1":
+  version: 3.1.1
+  resolution: "fetch-multipart-graphql@npm:3.1.1"
+  checksum: 7f99dca25743743bc625f5e0bcad0f7647af112953baab6941f80e3cf94789ac9b27723566fbaa642b7735e2bb531ce1f7de49742cb333fb5118479bfb016a42
+  languageName: node
+  linkType: hard
+
 "fetch-ponyfill@npm:^4.0.0":
   version: 4.1.0
   resolution: "fetch-ponyfill@npm:4.1.0"
@@ -22414,10 +22421,14 @@ __metadata:
     react: 18.1.0
     react-native: 0.70.5
     react-native-fast-image: ^8.6.3
+    react-native-fetch-api: ^3.0.0
+    react-native-polyfill-globals: ^3.1.0
     react-relay: ^14.1.0
     relay-compiler: ^14.1.0
     relay-runtime: ^14.1.0
+    text-encoding: ^0.7.0
     typescript: ^4.9.4
+    web-streams-polyfill: ^3.2.1
   languageName: unknown
   linkType: soft
 
@@ -23595,6 +23606,13 @@ __metadata:
   version: 3.0.0
   resolution: "p-cancelable@npm:3.0.0"
   checksum: 2b5ae34218f9c2cf7a7c18e5d9a726ef9b165ef07e6c959f6738371509e747334b5f78f3bcdeb03d8a12dcb978faf641fd87eb21486ed7d36fb823b8ddef3219
+  languageName: node
+  linkType: hard
+
+"p-defer@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "p-defer@npm:3.0.0"
+  checksum: ac3b0976a1c76b67cca1a34e00f7299b0cc230891f820749686aa84f8947326bbe0f8e3b7d9ca511578ee06f0c1a6e0ff68c8e9c325eac455f09d99f91697161
   languageName: node
   linkType: hard
 
@@ -25013,10 +25031,33 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-fetch-api@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "react-native-fetch-api@npm:3.0.0"
+  dependencies:
+    p-defer: ^3.0.0
+  checksum: f10f435060551c470711ba0b3663e3d49c7701aae84ea645d66992d756b13e923fb5762b324d3583d85c1c0def4138b9cc3f686bab1c1bc10d3ad82dc7175c99
+  languageName: node
+  linkType: hard
+
 "react-native-gradle-plugin@npm:^0.70.3":
   version: 0.70.3
   resolution: "react-native-gradle-plugin@npm:0.70.3"
   checksum: 04a3379842bcb4709ac6b37e093a3de59acd33b28b200885843b13908fac685a77ab81d732c34090c56e5c0eec971d578b227f302bd04fe7901e8792d434f41f
+  languageName: node
+  linkType: hard
+
+"react-native-polyfill-globals@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "react-native-polyfill-globals@npm:3.1.0"
+  peerDependencies:
+    base-64: "*"
+    react-native-fetch-api: "*"
+    react-native-get-random-values: "*"
+    react-native-url-polyfill: "*"
+    text-encoding: "*"
+    web-streams-polyfill: "*"
+  checksum: ff968f257a10c420c96fb1b5e838bf665f5312b9709ff23001fd57480a05991df6d0f8751a2f46250174f858dcc3ebfdaf5548c9f37b729d472d3152b99e3356
   languageName: node
   linkType: hard
 
@@ -26717,6 +26758,7 @@ __metadata:
   resolution: "shared@workspace:packages/shared"
   dependencies:
     "@types/relay-runtime": ^14.1.7
+    fetch-multipart-graphql: ^3.1.1
     graphql: ^16.6.0
     graphql-ws: ^5.11.3
     relay-compiler: ^14.1.0
@@ -28280,6 +28322,13 @@ __metadata:
   version: 1.0.2
   resolution: "text-encoding-utf-8@npm:1.0.2"
   checksum: ec4c15d50e738c5dba7327ad432ebf0725ec75d4d69c0bd55609254c5a3bc5341272d7003691084a0a73d60d981c8eb0e87603676fdb6f3fed60f4c9192309f9
+  languageName: node
+  linkType: hard
+
+"text-encoding@npm:^0.7.0":
+  version: 0.7.0
+  resolution: "text-encoding@npm:0.7.0"
+  checksum: b6109a843fb1b8748b32e1ecd6df74d370f46c13ac136bcb6ca15db70209bb0b8ec1f296ebb4b0dd9961150e205dcc044b89f8cf7657f6faef78c7569a2a81bc
   languageName: node
   linkType: hard
 
