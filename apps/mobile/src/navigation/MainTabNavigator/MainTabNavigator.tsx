@@ -20,7 +20,9 @@ function TabNavigator() {
       tabBar={TabBar}
       sceneContainerStyle={{ paddingTop: top, backgroundColor: "white" }}
     >
+      <Tab.Screen name="Account" component={AccountScreen} />
       <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Notifications" component={NotificationsScreen} />
     </Tab.Navigator>
   );
 }
@@ -35,17 +37,7 @@ export function MainTabNavigator() {
       initialRouteName="Tabs"
       screenOptions={{ header: EmptyHeader }}
     >
-      <Stack.Screen
-        name="Account"
-        component={AccountScreen}
-        options={{ presentation: "modal" }}
-      />
       <Stack.Screen name="Tabs" component={TabNavigator} />
-      <Stack.Screen
-        name="Notifications"
-        component={NotificationsScreen}
-        options={{ presentation: "modal" }}
-      />
     </Stack.Navigator>
   );
 }
