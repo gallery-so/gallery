@@ -6,11 +6,11 @@ import breakpoints, { contentSize } from '~/components/core/breakpoints';
 import colors from '~/components/core/colors';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { BaseM, TitleS } from '~/components/core/Text/Text';
-import { GLOBAL_BANNER_STORAGE_KEY } from '~/constants/storageKeys';
+import useUpdateUserExperience from '~/components/GalleryEditor/GalleryOnboardingGuide/useUpdateUserExperience';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { GlobalBannerFragment$key } from '~/generated/GlobalBannerFragment.graphql';
-import usePersistedState from '~/hooks/usePersistedState';
 import { DecoratedCloseIcon } from '~/icons/CloseIcon';
+import isExperienceDismissed from '~/utils/graphql/isExperienceDismissed';
 
 type Props = {
   title?: React.ReactNode | string;
@@ -19,18 +19,15 @@ type Props = {
   requireAuth?: boolean;
   actionComponent?: React.ReactNode;
   dismissOnActionComponentClick?: boolean;
-  // a localStorage key to keep track of whether the banner has been dismissed
-  localStorageKey?: string;
 };
 
-export default function Banner({
+export default function GlobalBanner({
   queryRef,
   text,
   title,
   requireAuth = false,
   actionComponent,
   dismissOnActionComponentClick = false,
-  localStorageKey = GLOBAL_BANNER_STORAGE_KEY,
 }: Props) {
   const query = useFragment(
     graphql`
@@ -42,6 +39,8 @@ export default function Banner({
             }
           }
         }
+
+        ...isExperienceDismissedFragment
       }
     `,
     queryRef
@@ -49,11 +48,16 @@ export default function Banner({
 
   const isAuthenticated = Boolean(query.viewer?.user?.id);
 
-  const [dismissed, setDismissed] = usePersistedState(localStorageKey, false);
+  const isBannerDismissed = isExperienceDismissed('MaintenanceFeb2023', query);
 
-  const hideBanner = useCallback(() => {
-    setDismissed(true);
-  }, [setDismissed]);
+  const updateUserExperience = useUpdateUserExperience();
+
+  const hideBanner = useCallback(async () => {
+    await updateUserExperience({
+      type: 'MaintenanceFeb2023',
+      experienced: true,
+    });
+  }, [updateUserExperience]);
 
   const handleActionClick = useCallback(() => {
     if (dismissOnActionComponentClick) {
@@ -63,7 +67,7 @@ export default function Banner({
 
   const navbarHeight = useGlobalNavbarHeight();
 
-  return dismissed || text.length === 0 || (requireAuth && !isAuthenticated) ? null : (
+  return isBannerDismissed || text.length === 0 || (requireAuth && !isAuthenticated) ? null : (
     <StyledContainer navbarHeight={navbarHeight}>
       <StyledBanner>
         <TextContainer>
