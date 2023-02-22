@@ -5,6 +5,7 @@ import {
   GraphQLSingularResponse,
   PayloadError,
 } from "relay-runtime";
+
 import { isResponsePersistedQueryNotFound } from "./utils";
 
 export type PersistedQueriesMap = Record<string, string>;

@@ -4,6 +4,7 @@ import {
   GraphQLSingularResponse,
   Observable,
 } from "relay-runtime";
+
 import { isResponsePersistedQueryNotFound } from "./utils";
 
 export type PersistedQueriesMap = Record<string, string>;

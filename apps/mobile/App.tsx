@@ -1,16 +1,18 @@
 import "expo-dev-client";
 
+import { Suspense, useState } from "react";
+import { SafeAreaView, Text } from "react-native";
 import {
   graphql,
   RelayEnvironmentProvider,
   useFragment,
   useLazyLoadQuery,
 } from "react-relay";
-import { Suspense, useState } from "react";
-import { createRelayEnvironment } from "./src/contexts/relay/RelayProvider";
+
 import { AppDeferredDataQuery } from "~/generated/relay/AppDeferredDataQuery.graphql";
-import { SafeAreaView, Text } from "react-native";
 import { AppRobinFragment$key } from "~/generated/relay/AppRobinFragment.graphql";
+
+import { createRelayEnvironment } from "./src/contexts/relay/RelayProvider";
 
 function RobinUser({ queryRef }: { queryRef: AppRobinFragment$key }) {
   const query = useFragment(

@@ -13,8 +13,8 @@ polyfillFetch();
 polyfillReadableStream();
 
 import registerRootComponent from "expo/build/launch/registerRootComponent";
+import { LogBox } from "react-native";
 
 import App from "./App";
-import { LogBox } from "react-native";
 
 registerRootComponent(App);
