@@ -3,6 +3,12 @@ directive @defer(
   if: Boolean = true
 ) on FRAGMENT_SPREAD | INLINE_FRAGMENT
 
+"""
+Any field decorated with the @experimental directive should not be used in production.
+It will not conform to our rules around breaking changes.
+"""
+directive @experimental on FIELD_DEFINITION
+
 # Use @goField(forceResolver: true) to lazily handle recursive or expensive fields that shouldn't be
 # resolved unless the caller asks for them
 directive @goField(
@@ -74,6 +80,7 @@ type GalleryUser implements Node @goEmbedHelper {
   traits: String
   universal: Boolean
   roles: [Role] @goField(forceResolver: true)
+  socialAccounts: SocialAccounts @goField(forceResolver: true)
 
   # Returns all tokens owned by this user. Useful for retrieving all tokens without any duplicates,
   # as opposed to retrieving user -> wallets -> tokens, which would contain duplicates for any token
@@ -158,6 +165,8 @@ type PreviewURLSet {
   medium: String
   large: String
   srcSet: String
+  blurhash: String @experimental @goField(forceResolver: true)
+  aspectRatio: Float @experimental @goField(forceResolver: true)
 }
 
 type VideoURLSet {
@@ -486,9 +495,33 @@ type NotificationsConnection @goEmbedHelper {
   pageInfo: PageInfo
 }
 
+enum SocialAccountType {
+  Twitter
+}
+
+interface SocialAccount {
+  type: SocialAccountType!
+  social_id: String!
+  display: Boolean!
+}
+
+type SocialAccounts {
+  twitter: TwitterSocialAccount
+}
+
+type TwitterSocialAccount implements SocialAccount {
+  type: SocialAccountType!
+  social_id: String!
+  name: String!
+  username: String!
+  profileImageURL: String!
+  display: Boolean!
+}
+
 type Viewer implements Node @goGqlId(fields: ["userId"]) @goEmbedHelper {
   id: ID!
   user: GalleryUser @goField(forceResolver: true)
+  socialAccounts: SocialAccounts @goField(forceResolver: true)
   viewerGalleries: [ViewerGallery] @goField(forceResolver: true)
   feed(before: String, after: String, first: Int, last: Int): FeedConnection
     @goField(forceResolver: true)
@@ -504,6 +537,8 @@ type Viewer implements Node @goGqlId(fields: ["userId"]) @goEmbedHelper {
   notificationSettings: NotificationSettings @goField(forceResolver: true)
 
   userExperiences: [UserExperience!] @goField(forceResolver: true)
+  suggestedUsers(before: String, after: String, first: Int, last: Int): UsersConnection
+    @goField(forceResolver: true)
 }
 
 type NotificationSettings {
@@ -1188,6 +1223,21 @@ input MagicLinkAuth {
   token: String!
 }
 
+input SocialAuthMechanism {
+  twitter: TwitterAuth
+  debug: DebugSocialAuth
+}
+
+input TwitterAuth {
+  code: String!
+}
+
+input DebugSocialAuth {
+  provider: SocialAccountType!
+  id: String!
+  username: String!
+}
+
 input DeepRefreshInput {
   chain: Chain!
 }
@@ -1713,6 +1763,43 @@ union MoveCollectionToGalleryPayloadOrError =
   | ErrInvalidInput
   | ErrNotAuthorized
 
+type ConnectSocialAccountPayload {
+  viewer: Viewer
+}
+
+union ConnectSocialAccountPayloadOrError =
+    ConnectSocialAccountPayload
+  | ErrInvalidInput
+  | ErrNotAuthorized
+
+input UpdateSocialAccountDisplayedInput {
+  type: SocialAccountType!
+  displayed: Boolean!
+}
+
+type UpdateSocialAccountDisplayedPayload {
+  viewer: Viewer
+}
+
+union UpdateSocialAccountDisplayedPayloadOrError =
+    UpdateSocialAccountDisplayedPayload
+  | ErrInvalidInput
+  | ErrNotAuthorized
+
+input MintPremiumCardToWalletInput {
+  tokenId: String!
+  walletAddresses: [Address!]
+}
+
+type MintPremiumCardToWalletPayload {
+  tx: String!
+}
+
+union MintPremiumCardToWalletPayloadOrError =
+    MintPremiumCardToWalletPayload
+  | ErrInvalidInput
+  | ErrNotAuthorized
+
 type Mutation {
   # User Mutations
   addUserWallet(
@@ -1762,6 +1849,14 @@ type Mutation {
   login(authMechanism: AuthMechanism!): LoginPayloadOrError
   logout: LogoutPayload
 
+  connectSocialAccount(
+    input: SocialAuthMechanism!
+    display: Boolean! = true
+  ): ConnectSocialAccountPayloadOrError @authRequired
+  updateSocialAccountDisplayed(
+    input: UpdateSocialAccountDisplayedInput!
+  ): UpdateSocialAccountDisplayedPayloadOrError @authRequired
+
   followUser(userId: DBID!): FollowUserPayloadOrError @authRequired
   unfollowUser(userId: DBID!): UnfollowUserPayloadOrError @authRequired
 
@@ -1805,6 +1900,9 @@ type Mutation {
   syncTokensForUsername(username: String!, chains: [Chain!]!): SyncTokensForUsernamePayloadOrError
     @retoolAuth
   banUserFromFeed(username: String!, action: String!): BanUserFromFeedPayloadOrError @retoolAuth
+  mintPremiumCardToWallet(
+    input: MintPremiumCardToWalletInput!
+  ): MintPremiumCardToWalletPayloadOrError @retoolAuth
 
   # Gallery Frontend Deploy Persisted Queries
   uploadPersistedQueries(input: UploadPersistedQueriesInput): UploadPersistedQueriesPayloadOrError
