@@ -1,5 +1,8 @@
 __generated__
 node_modules
+ios
+android
+.expo
 .next
 public
 persisted_queries.json
