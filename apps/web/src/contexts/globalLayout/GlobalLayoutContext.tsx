@@ -18,7 +18,6 @@ import { fetchQuery, graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import FullPageLoader from '~/components/core/Loader/FullPageLoader';
-import { MAINTENANCE_BANNER_6_18_STORAGE_KEY } from '~/constants/storageKeys';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { GlobalLayoutContextNavbarFragment$key } from '~/generated/GlobalLayoutContextNavbarFragment.graphql';
 import { GlobalLayoutContextQuery } from '~/generated/GlobalLayoutContextQuery.graphql';
@@ -31,7 +30,7 @@ import isTouchscreenDevice from '~/utils/isTouchscreenDevice';
 
 import { FEATURED_COLLECTION_IDS } from './GlobalAnnouncementPopover/GlobalAnnouncementPopover';
 import useGlobalAnnouncementPopover from './GlobalAnnouncementPopover/useGlobalAnnouncementPopover';
-import Banner from './GlobalBanner/GlobalBanner';
+import GlobalBanner from './GlobalBanner/GlobalBanner';
 import GlobalSidebar from './GlobalSidebar/GlobalSidebar';
 import {
   FADE_TRANSITION_TIME_MS,
@@ -385,8 +384,7 @@ function GlobalNavbarWithFadeEnabled({
             }}
           >
             {isBannerVisible && (
-              <Banner
-                localStorageKey={MAINTENANCE_BANNER_6_18_STORAGE_KEY}
+              <GlobalBanner
                 text=""
                 queryRef={query}
                 dismissOnActionComponentClick
