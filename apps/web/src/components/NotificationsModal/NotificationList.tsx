@@ -8,8 +8,8 @@ import { TitleDiatypeL } from '~/components/core/Text/Text';
 import { SeeMore } from '~/components/NotificationsModal/SeeMore';
 import { NotificationListFragment$key } from '~/generated/NotificationListFragment.graphql';
 import isExperienceDismissed from '~/utils/graphql/isExperienceDismissed';
-import useUpdateUserExperience from '../GalleryEditor/GalleryOnboardingGuide/useUpdateUserExperience';
 
+import useUpdateUserExperience from '../GalleryEditor/GalleryOnboardingGuide/useUpdateUserExperience';
 import { Notification } from './Notification';
 import { NotificationEmailAlert } from './NotificationEmailAlert';
 
@@ -57,16 +57,16 @@ export function NotificationList({ queryRef }: NotificationListProps) {
     queryRef
   );
 
-  const isEmailUpsellDismissed = isExperienceDismissed('EmailUpsell', query)
+  const isEmailUpsellDismissed = isExperienceDismissed('EmailUpsell', query);
 
   const updateUserExperience = useUpdateUserExperience();
-  
+
   const handleDismiss = useCallback(async () => {
     await updateUserExperience({
       type: 'EmailUpsell',
       experienced: true,
     });
-  }, []);
+  }, [updateUserExperience]);
 
   const nonNullNotifications = useMemo(() => {
     const notifications = [];

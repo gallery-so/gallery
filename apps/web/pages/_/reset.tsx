@@ -6,20 +6,24 @@ import { TitleL } from '~/components/core/Text/Text';
 import useUpdateUserExperience from '~/components/GalleryEditor/GalleryOnboardingGuide/useUpdateUserExperience';
 import { UserExperienceType } from '~/generated/enums';
 
+const experiences: UserExperienceType[] = [
+  'MultiGalleryAnnouncement',
+  'EmailUpsell',
+  'MerchStoreUpsell',
+  'MaintenanceFeb2023',
+];
+
 // This page allows users to reset their dismissed experience flags
 export default function Secret() {
   const updateUserExperience = useUpdateUserExperience();
-  
-  const experiences: UserExperienceType[] = [
-    'MultiGalleryAnnouncement',  'EmailUpsell',  'MerchStoreUpsell',  'MaintenanceFeb2023'
-  ]
+
   useEffect(() => {
-    experiences.forEach(experience => {
+    experiences.forEach((experience) => {
       updateUserExperience({
         type: experience,
         experienced: false,
-      })
-    })
+      });
+    });
   }, [updateUserExperience]);
 
   return (

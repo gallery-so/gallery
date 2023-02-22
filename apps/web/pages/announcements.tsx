@@ -12,7 +12,6 @@ export default function Announcements() {
     graphql`
       query announcementsQuery($collectionIds: [DBID!]!) {
         ...GlobalAnnouncementPopoverFragment
-        ...isExperienceDismissedFragment
       }
     `,
     { collectionIds: FEATURED_COLLECTION_IDS }

@@ -76,7 +76,7 @@ export function ProfileDropdownContent({
 
   const track = useTrack();
 
-  const isMerchStoreUpsellDismissed = isExperienceDismissed('MerchStoreUpsell', query)
+  const isMerchStoreUpsellDismissed = isExperienceDismissed('MerchStoreUpsell', query);
 
   const updateUserExperience = useUpdateUserExperience();
 
@@ -85,7 +85,7 @@ export function ProfileDropdownContent({
       type: 'MerchStoreUpsell',
       experienced: true,
     });
-  }, []);
+  }, [updateUserExperience]);
 
   const handleNotificationsClick = useCallback(() => {
     track('Open Notifications Click');
