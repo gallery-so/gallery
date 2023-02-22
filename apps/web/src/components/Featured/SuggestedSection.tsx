@@ -79,7 +79,7 @@ export default function SuggestedSection({ queryRef, title, subTitle }: Props) {
           <TitleDiatypeL color={colors.metal}>{subTitle}</TitleDiatypeL>
         </VStack>
 
-        <InteractiveLink onClick={handleSeeAllClick}>See all</InteractiveLink>
+        <StyledInteractiveLink onClick={handleSeeAllClick}>See all</StyledInteractiveLink>
       </HStack>
       <FeaturedList featuredUsersRef={nonNullUsers} queryRef={query} />
     </StyledSuggestedSection>
@@ -92,4 +92,8 @@ const StyledSuggestedSection = styled(VStack)`
 
 const Title = styled(TitleDiatypeL)`
   font-size: 24px;
+`;
+
+const StyledInteractiveLink = styled(InteractiveLink)`
+  white-space: nowrap;
 `;
