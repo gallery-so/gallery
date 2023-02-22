@@ -1,4 +1,3 @@
-import 'src/components/FadeTransitioner/transition.css';
 import 'src/scenes/WelcomeAnimation/intro.css';
 import 'src/index.css';
 import 'src/scenes/NftDetailPage/model-viewer.css';
@@ -10,9 +9,6 @@ import { useRouter } from 'next/router';
 import { ComponentType, FC, PropsWithChildren, useEffect, useState } from 'react';
 import { RecordMap } from 'relay-runtime/lib/store/RelayStoreTypes';
 
-import FadeTransitioner, {
-  useStabilizedRouteTransitionKey,
-} from '~/components/FadeTransitioner/FadeTransitioner';
 import GoogleAnalytics from '~/components/GoogleAnalytics';
 import AppProvider from '~/contexts/AppProvider';
 import AuthProvider from '~/contexts/auth/AuthContext';
@@ -56,8 +52,6 @@ const App: FC<{
 }> = ({ Component, pageProps }) => {
   const relayCache = pageProps.__relayCache as RecordMap | undefined;
   const [relayEnvironment] = useState(() => createRelayEnvironmentFromRecords(relayCache));
-
-  const locationKey = useStabilizedRouteTransitionKey();
 
   useEffect(() => {
     if (isProduction()) welcomeDoormat();
@@ -107,21 +101,19 @@ const App: FC<{
       </Head>
       <SafeHydrate>
         <AppProvider relayEnvironment={relayEnvironment}>
-          <FadeTransitioner locationKey={locationKey}>
-            <>
-              <GoogleAnalytics />
-              <Analytics
-                beforeSend={(event) => {
-                  // Ignore sending noisy events related to /opengraph previews
-                  if (event.url.includes('/opengraph')) {
-                    return null;
-                  }
-                  return event;
-                }}
-              />
-              <Component {...pageProps} />
-            </>
-          </FadeTransitioner>
+          <>
+            <GoogleAnalytics />
+            <Analytics
+              beforeSend={(event) => {
+                // Ignore sending noisy events related to /opengraph previews
+                if (event.url.includes('/opengraph')) {
+                  return null;
+                }
+                return event;
+              }}
+            />
+            <Component {...pageProps} />
+          </>
         </AppProvider>
       </SafeHydrate>
     </>

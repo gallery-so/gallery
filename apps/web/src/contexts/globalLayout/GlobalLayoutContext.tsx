@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { AnimatePresence, motion } from 'framer-motion';
 import {
   createContext,
   memo,
-  MutableRefObject,
   ReactElement,
   ReactNode,
+  Suspense,
   useCallback,
   useContext,
   useEffect,
@@ -16,7 +17,7 @@ import { useFragment, useLazyLoadQuery } from 'react-relay';
 import { fetchQuery, graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
-import { FADE_TRANSITION_TIME_MS } from '~/components/FadeTransitioner/FadeTransitioner';
+import FullPageLoader from '~/components/core/Loader/FullPageLoader';
 import { MAINTENANCE_BANNER_6_18_STORAGE_KEY } from '~/constants/storageKeys';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { GlobalLayoutContextNavbarFragment$key } from '~/generated/GlobalLayoutContextNavbarFragment.graphql';
@@ -25,17 +26,23 @@ import useDebounce from '~/hooks/useDebounce';
 import usePrevious from '~/hooks/usePrevious';
 import useThrottle from '~/hooks/useThrottle';
 import { PreloadQueryArgs } from '~/types/PageComponentPreloadQuery';
+import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 import isTouchscreenDevice from '~/utils/isTouchscreenDevice';
 
 import { FEATURED_COLLECTION_IDS } from './GlobalAnnouncementPopover/GlobalAnnouncementPopover';
 import useGlobalAnnouncementPopover from './GlobalAnnouncementPopover/useGlobalAnnouncementPopover';
 import Banner from './GlobalBanner/GlobalBanner';
-import GlobalNavbar, { Props as GlobalNavbarProps } from './GlobalNavbar/GlobalNavbar';
+import GlobalSidebar from './GlobalSidebar/GlobalSidebar';
+import {
+  FADE_TRANSITION_TIME_MS,
+  FADE_TRANSITION_TIME_SECONDS,
+  NAVIGATION_TRANSITION_TIME_SECONDS,
+} from './transitionTiming';
+import useStabilizedRouteTransitionKey from './useStabilizedRouteTransitionKey';
 
 type GlobalLayoutState = {
   isNavbarVisible: boolean;
   wasNavbarVisible: boolean;
-  isPageInSuspenseRef: MutableRefObject<boolean>;
 };
 
 export const GlobalLayoutStateContext = createContext<GlobalLayoutState | undefined>(undefined);
@@ -50,10 +57,9 @@ export const useGlobalLayoutState = (): GlobalLayoutState => {
 };
 
 type GlobalLayoutActions = {
-  setBannerVisible: (b: boolean) => void;
-  setNavbarVisible: (b: boolean) => void;
-  setIsPageInSuspenseState: (b: boolean) => void;
-  setContent: (e: ReactElement | null) => void;
+  setIsBannerVisible: (b: boolean) => void;
+  setTopNavContent: (e: ReactElement | null) => void;
+  setSidebarContent: (e: ReactElement | null) => void;
 };
 
 const GlobalLayoutActionsContext = createContext<GlobalLayoutActions | undefined>(undefined);
@@ -77,6 +83,7 @@ const GlobalLayoutContextQueryNode = graphql`
     ...GlobalLayoutContextNavbarFragment
     # Keeping this around for the next time we want to use it
     ...useGlobalAnnouncementPopoverFragment
+    ...isFeatureEnabledFragment
   }
 `;
 
@@ -86,7 +93,7 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
   });
 
   // whether the global banner is visible
-  const [isBannerVisible, setBannerVisible] = useState(false);
+  const [isBannerVisible, setIsBannerVisible] = useState(false);
 
   const navbarHeight = useGlobalNavbarHeight();
 
@@ -100,20 +107,9 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
    */
   const [fadeType, setFadeType] = useState<FadeTriggerType>('route');
 
-  /**
-   * we track whether the child route is in suspense in both React State and Ref:
-   * - `state` is used to determine whether we should debounce or throttle nav animation
-   * - `ref` is used to stabilizing callbacks that areused for scroll, hover handling
-   *
-   * why do we care if the app is in suspense?
-   * - it allows us to disable visibility of the navbar against the loading fallback
-   *
-   * can't we just address the above with z-index?
-   * - no, because when both the loading fallback and the navbar have between 0~1 opacity,
-   *   both elements are displayed on the screen.
-   */
-  const [isPageInSuspenseState, setIsPageInSuspenseState] = useState(false);
-  const isPageInSuspenseRef = useRef(false);
+  // Each individual route is responsible for dictating what content to display
+  const [topNavContent, setTopNavContent] = useState<ReactElement | null>(null);
+  const [sidebarContent, setSidebarContent] = useState<ReactElement | null>(null);
 
   /**
    * navbar-related states.
@@ -128,16 +124,17 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
    *   across transitions. for example, if the user navigates from /a => /b and the navbar
    *   is visible in both scenarios, we should keep it in view, without any fade animations.
    */
-  const [isNavbarEnabled, setIsNavbarEnabled] = useState(false);
+  const [isNavbarEnabled, setIsNavbarEnabled] = useState(true);
   const debounced = useDebounce(isNavbarEnabled, FADE_TRANSITION_TIME_MS);
   const throttled = useThrottle(isNavbarEnabled, FADE_TRANSITION_TIME_MS);
 
   const isNavbarVisible = useMemo(() => {
-    if (isPageInSuspenseState && isNavbarEnabled) {
+    // prevents navbar from flickering before route transition is complete
+    if (fadeType === 'route') {
       return debounced;
     }
     return throttled;
-  }, [isNavbarEnabled, isPageInSuspenseState, throttled, debounced]);
+  }, [fadeType, throttled, debounced]);
   const wasNavbarVisible = usePrevious(isNavbarVisible) ?? false;
 
   // whether the route wants the navbar disabled. this is an override where scrolling / hovering
@@ -157,12 +154,16 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
 
   //-------------- ROUTE ---------------
   const handleFadeNavbarFromGalleryRoute = useCallback(
-    (visible: boolean) => {
+    (content: ReactElement | null) => {
       setFadeType('route');
-      setIsNavbarEnabled(visible && window.scrollY <= navbarHeight);
-
-      forcedHiddenByRouteRef.current = !visible;
+      setIsNavbarEnabled(Boolean(content) && window.scrollY <= navbarHeight);
+      forcedHiddenByRouteRef.current = !content;
       lastFadeTriggeredByRouteTimestampRef.current = Date.now();
+      // set nav content after a delay so the current content has a chance to fade out first
+      // TODO: try to get this to work using framer motion + locationKey
+      setTimeout(() => {
+        setTopNavContent(content);
+      }, FADE_TRANSITION_TIME_MS + 100);
     },
     [navbarHeight]
   );
@@ -174,11 +175,7 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
       return;
     }
     // if we recently triggered a route transition, ignore scroll-related side effects
-    if (Date.now() - lastFadeTriggeredByRouteTimestampRef.current < 100) {
-      return;
-    }
-    // if we're mid-suspense, don't trigger any scroll-related side effects
-    if (isPageInSuspenseRef.current) {
+    if (Date.now() - lastFadeTriggeredByRouteTimestampRef.current < 200) {
       return;
     }
 
@@ -204,10 +201,6 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
       if (Date.now() - lastFadeTriggeredByRouteTimestampRef.current < 100) {
         return;
       }
-      // if we're mid-suspense, don't trigger any hover-related side effects
-      if (isPageInSuspenseRef.current) {
-        return;
-      }
       // prevent touchscreen users from triggering the navbar by tapping near the top of the screen
       if (isTouchscreen.current) {
         return;
@@ -224,24 +217,25 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
   );
 
   const state = useMemo(
-    () => ({ isNavbarVisible, wasNavbarVisible, isPageInSuspenseRef }),
+    () => ({ isNavbarVisible, wasNavbarVisible }),
     [isNavbarVisible, wasNavbarVisible]
   );
 
-  const [content, setContent] = useState<ReactElement | null>(null);
-
   const actions: GlobalLayoutActions = useMemo(
     () => ({
-      setBannerVisible,
-      setNavbarVisible: handleFadeNavbarFromGalleryRoute,
-      setIsPageInSuspenseState,
-      setContent,
+      setIsBannerVisible,
+      setTopNavContent: handleFadeNavbarFromGalleryRoute,
+      setSidebarContent,
     }),
     [handleFadeNavbarFromGalleryRoute]
   );
 
   // Keeping this around for the next time we want to use it
   useGlobalAnnouncementPopover({ queryRef: query, authRequired: false, dismissVariant: 'global' });
+
+  const locationKey = useStabilizedRouteTransitionKey();
+
+  const isGlobalSidebarEnabled = isFeatureEnabled(FeatureFlag.GLOBAL_SIDEBAR, query);
 
   return (
     // note: we render the navbar here, above the main contents of the app,
@@ -255,12 +249,35 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
         wasVisible={wasNavbarVisible}
         fadeType={fadeType}
         handleFadeNavbarOnHover={handleFadeNavbarOnHover}
-        content={content}
+        content={topNavContent}
       />
+
+      {isGlobalSidebarEnabled && <GlobalSidebar content={sidebarContent} />}
 
       <GlobalLayoutStateContext.Provider value={state}>
         <GlobalLayoutActionsContext.Provider value={actions}>
-          {children}
+          {/*
+           * Fade main page content as the user navigates across routes.
+           * This does not affect the Top Nav or Left Hand Nav.
+           */}
+          <AnimatePresence>
+            <motion.div
+              key={locationKey}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{
+                opacity: 0,
+                transition: { duration: FADE_TRANSITION_TIME_SECONDS },
+              }}
+              transition={{
+                type: 'ease-in-out',
+                delay: NAVIGATION_TRANSITION_TIME_SECONDS,
+                duration: FADE_TRANSITION_TIME_SECONDS,
+              }}
+            >
+              <Suspense fallback={<FullPageLoader />}>{children}</Suspense>
+            </motion.div>
+          </AnimatePresence>
         </GlobalLayoutActionsContext.Provider>
       </GlobalLayoutStateContext.Provider>
     </>
@@ -282,13 +299,12 @@ type GlobalNavbarWithFadeEnabledProps = {
   handleFadeNavbarOnHover: (visible: boolean) => void;
   fadeType: FadeTriggerType;
   isBannerVisible: boolean;
-  content: GlobalNavbarProps['content'];
+  content: ReactElement | null;
 };
 
 function GlobalNavbarWithFadeEnabled({
   queryRef,
   isVisible,
-  wasVisible,
   handleFadeNavbarOnHover,
   fadeType,
   isBannerVisible,
@@ -302,27 +318,6 @@ function GlobalNavbarWithFadeEnabled({
     `,
     queryRef
   );
-
-  // transition styles on the navbar are in accordance with our route transitions
-  const transitionStyles = useMemo(() => {
-    //----------- FADING OUT -----------
-    // always fade out navbar without delay
-    if (wasVisible) {
-      return `opacity ${FADE_TRANSITION_TIME_MS}ms ease-in-out;`;
-    }
-
-    //----------- FADING IN ------------
-    if (!wasVisible) {
-      // if scrolling, fade-in navbar without delay
-      if (fadeType === 'scroll' || fadeType === 'hover') {
-        return `opacity ${FADE_TRANSITION_TIME_MS}ms ease-in-out`;
-      }
-      // if moving between routes, fade-in navbar with delay
-      if (fadeType === 'route') {
-        return `opacity ${FADE_TRANSITION_TIME_MS}ms ease-in-out ${FADE_TRANSITION_TIME_MS}ms`;
-      }
-    }
-  }, [wasVisible, fadeType]);
 
   const isTouchscreen = useRef(isTouchscreenDevice());
   const [zIndex, setZIndex] = useState(2);
@@ -362,22 +357,48 @@ function GlobalNavbarWithFadeEnabled({
   return (
     <StyledGlobalNavbarWithFadeEnabled
       isVisible={isVisible}
-      transitionStyles={transitionStyles}
       zIndex={zIndex}
       navbarHeight={navbarHeight}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      {isBannerVisible && (
-        <Banner
-          localStorageKey={MAINTENANCE_BANNER_6_18_STORAGE_KEY}
-          text=""
-          queryRef={query}
-          dismissOnActionComponentClick
-          requireAuth
-        />
-      )}
-      <GlobalNavbar content={content} />
+      {/*
+       * Fade navbar as the user navigates across routes.
+       * This is tricky because, depending on context, we either want it to:
+       * 1) remain stable across route transitions, or
+       * 2) synchronize fading with the main content
+       */}
+      <AnimatePresence>
+        {isVisible && (
+          <motion.div
+            className="GlobalNavbar"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{
+              opacity: 0,
+              transition: { duration: FADE_TRANSITION_TIME_SECONDS },
+            }}
+            transition={{
+              // for some reason, setting the `type` here causes an unusual "needsInterpolation" crash
+              // https://github.com/framer/motion/issues/1847#issuecomment-1364491137
+              // type: 'ease-in-out',
+              delay: fadeType === 'route' ? NAVIGATION_TRANSITION_TIME_SECONDS : 0,
+              duration: FADE_TRANSITION_TIME_SECONDS,
+            }}
+          >
+            {isBannerVisible && (
+              <Banner
+                localStorageKey={MAINTENANCE_BANNER_6_18_STORAGE_KEY}
+                text=""
+                queryRef={query}
+                dismissOnActionComponentClick
+                requireAuth
+              />
+            )}
+            <StyledBackground>{content}</StyledBackground>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </StyledGlobalNavbarWithFadeEnabled>
   );
 }
@@ -392,14 +413,11 @@ const StyledGlobalNavbarWithFadeEnabled = styled.div<{
   width: 100%;
   z-index: ${({ zIndex }) => zIndex};
   height: ${({ navbarHeight }) => navbarHeight}px;
+`;
 
-  opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
-  transition: ${({ transitionStyles }) => transitionStyles};
-
-  // prevent nav child elements from being clickable when not in view
-  > div > div {
-    pointer-events: ${({ isVisible }) => (isVisible ? 'auto' : 'none')};
-  }
+const StyledBackground = styled.div`
+  background: rgba(254, 254, 254, 0.95);
+  backdrop-filter: blur(48px);
 `;
 
 export default GlobalLayoutContextProvider;
