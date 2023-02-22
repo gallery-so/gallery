@@ -4,8 +4,6 @@ fileGroups:
   tests:
     - 'tests/**/*'
     - '**/*.test.ts*'
-  lint:
-    - '**/*.*{ts,js,tsx,jsx,cjs,mjs}'
   source:
     - 'src/**/*.{ts,js,tsx,jsx}'
     - 'pages/**/*.{ts,js,tsx,jsx}'
@@ -38,15 +36,6 @@ tasks:
       - yarn next dev
       - node_modules/.bin/moon run web:relay-watch
       - node_modules/.bin/moon run web:graphql-codegen-watch
-
-  lint:
-    command:
-      - eslint
-      - --ext
-      - .js,.ts,.tsx,.cjs
-      - '@group(lint)'
-    inputs:
-      - '@group(lint)'
 
   start:
     command: next start
