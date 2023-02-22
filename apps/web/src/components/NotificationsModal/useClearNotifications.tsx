@@ -2,9 +2,8 @@ import { useCallback } from 'react';
 import { ConnectionHandler, graphql, SelectorStoreUpdater } from 'relay-runtime';
 
 import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
+import { useClearNotificationsMutation } from '~/generated/useClearNotificationsMutation.graphql';
 import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
-
-import { useClearNotificationsMutation } from '../../../__generated__/useClearNotificationsMutation.graphql';
 
 export function useClearNotifications() {
   const [clear] = usePromisifiedMutation<useClearNotificationsMutation>(graphql`

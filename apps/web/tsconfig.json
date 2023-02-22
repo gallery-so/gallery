@@ -31,7 +31,8 @@
         "../../packages/frames-dls/src/*"
       ],
       "~/generated/*": [
-        "__generated__/*"
+        "__generated__/relay/*",
+        "__generated__/graphql-codegen/*"
       ],
       "~/hooks/*": [
         "src/hooks/*"

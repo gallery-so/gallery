@@ -1,10 +1,10 @@
-import { NotificationUserListFragment$key } from '__generated__/NotificationUserListFragment.graphql';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { FollowedBackList } from '~/components/NotificationsModal/NotificationUserList/FollowedBackList';
 import { FollowedYouList } from '~/components/NotificationsModal/NotificationUserList/FollowedYouList';
 import { ViewedUserList } from '~/components/NotificationsModal/NotificationUserList/ViewedUserList';
+import { NotificationUserListFragment$key } from '~/generated/NotificationUserListFragment.graphql';
 
 type NotificationUserListProps = {
   queryRef: NotificationUserListFragment$key;

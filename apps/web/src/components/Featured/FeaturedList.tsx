@@ -18,13 +18,13 @@ import { HStack, VStack } from '../core/Spacer/Stack';
 import FeaturedUserCard from './FeaturedUserCard';
 
 type Props = {
-  trendingUsersRef: FeaturedListFragment$key;
+  featuredUsersRef: FeaturedListFragment$key;
   queryRef: FeaturedListQueryFragment$key;
 };
 
 const USERS_TO_SHOW = 24;
 
-export default function FeaturedList({ trendingUsersRef, queryRef }: Props) {
+export default function FeaturedList({ featuredUsersRef, queryRef }: Props) {
   const query = useFragment(
     graphql`
       fragment FeaturedListQueryFragment on Query {
@@ -34,16 +34,14 @@ export default function FeaturedList({ trendingUsersRef, queryRef }: Props) {
     queryRef
   );
 
-  const trendingUsers = useFragment(
+  const featuredUsers = useFragment(
     graphql`
-      fragment FeaturedListFragment on TrendingUsersPayload {
-        users {
-          id
-          ...FeaturedUserCardFragment
-        }
+      fragment FeaturedListFragment on GalleryUser @relay(plural: true) {
+        id
+        ...FeaturedUserCardFragment
       }
     `,
-    trendingUsersRef
+    featuredUsersRef
   );
 
   const isMobileOrMobileLargeWindowWidth = useIsMobileOrMobileLargeWindowWidth();
@@ -55,9 +53,9 @@ export default function FeaturedList({ trendingUsersRef, queryRef }: Props) {
   }, []);
 
   const shortenedUserList = useMemo(() => {
-    const users = trendingUsers.users ?? [];
+    const users = featuredUsers ?? [];
     return users.slice(0, USERS_TO_SHOW);
-  }, [trendingUsers.users]);
+  }, [featuredUsers]);
 
   const chunkSize = isMobileOrMobileLargeWindowWidth ? 4 : 8;
   const chunks = chunk(shortenedUserList, chunkSize);

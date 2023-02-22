@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
@@ -98,7 +99,8 @@ export default function FeaturedUserCard({ userRef, queryRef }: Props) {
   }, [user.badges]);
 
   return (
-    <StyledFeaturedUserCard href={`/${user.username}`}>
+    // @ts-expect-error This is the future next/link version
+    <StyledFeaturedUserCard legacyBehavior={false} href={`/${user.username}`}>
       <StyledContent gap={12} justify="space-between">
         <TokenPreviewContainer>
           {tokenPreviews.map(
@@ -128,7 +130,7 @@ export default function FeaturedUserCard({ userRef, queryRef }: Props) {
   );
 }
 
-const StyledFeaturedUserCard = styled.a`
+const StyledFeaturedUserCard = styled(Link)`
   border-radius: 12px;
   background-color: ${colors.offWhite};
   padding: 12px;

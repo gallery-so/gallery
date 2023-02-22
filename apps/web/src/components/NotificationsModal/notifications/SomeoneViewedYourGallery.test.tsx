@@ -6,7 +6,7 @@ import { SomeoneViewedYourGallery } from '~/components/NotificationsModal/notifi
 import AppProvider from '~/contexts/AppProvider';
 import { createEmptyRelayEnvironment } from '~/contexts/relay/RelayProvider';
 import { SomeoneViewedYourGalleryTestQuery } from '~/generated/SomeoneViewedYourGalleryTestQuery.graphql';
-import { SomeoneViewedYourGalleryTestQueryQuery } from '~/tests/__generated__/operations';
+import { SomeoneViewedYourGalleryTestQueryQuery } from '~/tests/__generated__/graphql-codegen/operations';
 import { mockGraphqlQuery } from '~/tests/graphql/mockGraphqlQuery';
 import { mockProviderQueries } from '~/tests/graphql/mockProviderQueries';
 

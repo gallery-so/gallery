@@ -1,6 +1,5 @@
-import { useContext, useEffect, useLayoutEffect, useState } from 'react';
+import { useEffect } from 'react';
 
-import { TransitionStateContext } from '~/components/FadeTransitioner/FadeTransitioner';
 import GlobalFooter from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
 import { useGlobalLayoutActions } from '~/contexts/globalLayout/GlobalLayoutContext';
 
@@ -8,37 +7,26 @@ export type Props = {
   element: JSX.Element;
   banner?: boolean;
   navbar: JSX.Element | false;
+  sidebar?: JSX.Element | false;
   footer?: boolean;
 };
 
 export default function GalleryRoute({
   element,
-  navbar = false,
-  footer = true,
   banner = true,
+  navbar = false,
+  sidebar = false,
+  footer = true,
 }: Props) {
-  const [mounted, setMounted] = useState(false);
-  const { setContent } = useGlobalLayoutActions();
-  const { setBannerVisible, setNavbarVisible } = useGlobalLayoutActions();
+  const { setTopNavContent, setSidebarContent, setIsBannerVisible } = useGlobalLayoutActions();
 
   useEffect(() => {
-    setBannerVisible(banner);
-    setMounted(true);
-  }, [banner, navbar, setBannerVisible, setContent, setNavbarVisible]);
+    setIsBannerVisible(banner);
+    setTopNavContent(navbar || null);
+    setSidebarContent(sidebar || null);
+  }, [banner, navbar, sidebar, setIsBannerVisible, setTopNavContent, setSidebarContent]);
 
-  const transitionState = useContext(TransitionStateContext);
-  useLayoutEffect(() => {
-    if (transitionState === 'entering' || transitionState === 'entered') {
-      if (navbar === false) {
-        setNavbarVisible(false);
-      } else {
-        setContent(navbar);
-        setNavbarVisible(true);
-      }
-    }
-  }, [navbar, setContent, setNavbarVisible, transitionState]);
-
-  return mounted ? (
+  return (
     <>
       {element}
       {
@@ -49,5 +37,5 @@ export default function GalleryRoute({
         footer && <GlobalFooter />
       }
     </>
-  ) : null;
+  );
 }

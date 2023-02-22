@@ -6,8 +6,8 @@ const path = require("path");
 const projectRoot = __dirname;
 // This can be replaced with `find-yarn-workspace-root`
 const workspaceRoot = path.resolve(projectRoot, "../..");
-const sharedPackageRoot = path.resolve(projectRoot, "../../packages/shared");
-const framesPackageRoot = path.resolve(projectRoot, "../../packages/frames");
+const sharedPackageRoot = path.resolve(workspaceRoot, "packages/shared");
+const framesPackageRoot = path.resolve(workspaceRoot, "packages/frames");
 
 const config = getDefaultConfig(projectRoot);
 
@@ -17,8 +17,8 @@ config.watchFolders = [workspaceRoot];
 config.resolver.nodeModulesPaths = [
   path.resolve(projectRoot, "node_modules"),
   path.resolve(workspaceRoot, "node_modules"),
-  path.resolve(framesPackageRoot, "node_modules"),
   path.resolve(sharedPackageRoot, "node_modules"),
+  path.resolve(framesPackageRoot, "node_modules"),
 ];
 // 3. Force Metro to resolve (sub)dependencies only from the `nodeModulesPaths`
 config.resolver.disableHierarchicalLookup = true;

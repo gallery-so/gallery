@@ -5,6 +5,7 @@ import {
   GraphQLSingularResponse,
   PayloadError,
 } from "relay-runtime";
+import { isResponsePersistedQueryNotFound } from "./utils";
 
 export type PersistedQueriesMap = Record<string, string>;
 
@@ -111,20 +112,17 @@ export function createRelayFetchFunction(
         uploadables
       );
 
-      if ("errors" in response) {
-        const persistedQueryWasNotFound = response.errors?.some(
-          (error) => error.message === "PersistedQueryNotFound"
-        );
+      const persistedQueryWasNotFound =
+        isResponsePersistedQueryNotFound(response);
 
-        if (persistedQueryWasNotFound) {
-          response = await fetchWithHashAndQueryText(
-            args,
-            request,
-            variables,
-            cacheConfig,
-            uploadables
-          );
-        }
+      if (persistedQueryWasNotFound) {
+        response = await fetchWithHashAndQueryText(
+          args,
+          request,
+          variables,
+          cacheConfig,
+          uploadables
+        );
       }
 
       return response;

@@ -1,4 +1,4 @@
-import { GlobalLayoutContextQueryQuery } from '~/tests/__generated__/operations';
+import { GlobalLayoutContextQueryQuery } from '~/tests/__generated__/graphql-codegen/operations';
 
 import { GALLERY_USER_ID, GALLERY_VIEWER_ID } from '../constants';
 import { mockGraphqlQuery } from './mockGraphqlQuery';
@@ -15,6 +15,8 @@ export function mockGlobalLayoutQuery() {
         id: GALLERY_USER_ID,
         username: 'Test Gallery User',
         wallets: [],
+        // @ts-expect-error not sure what the issue is
+        roles: ['ADMIN'],
         primaryWallet: {
           __typename: 'Wallet',
           id: '123',

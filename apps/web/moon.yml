@@ -13,7 +13,7 @@ fileGroups:
 tasks:
   start-optimized-build:
     deps:
-      - "~:build"
+      - '~:build'
     command: next start
 
   build:
@@ -27,26 +27,24 @@ tasks:
 
   cypress-gh:
     command:
-    - synpress run --record
-    - --key 9d633f22-7630-4a11-9cf4-ff9809332564
-    - --configFile cypress.config.ts
+      - synpress run --record
+      - --key 9d633f22-7630-4a11-9cf4-ff9809332564
+      - --configFile cypress.config.ts
 
   dev:
-    deps:
-      - "~:touch-relay-files"
     command:
-    - concurrently
-    - -n Next,Relay-Compiler,GraphQL-Codegen
-    - yarn next dev
-    - node_modules/.bin/moon run web:relay-watch
-    - node_modules/.bin/moon run web:graphql-codegen-watch
+      - concurrently
+      - -n Next,Relay-Compiler,GraphQL-Codegen
+      - yarn next dev
+      - node_modules/.bin/moon run web:relay-watch
+      - node_modules/.bin/moon run web:graphql-codegen-watch
 
   lint:
     command:
-    - eslint
-    - --ext
-    - .js,.ts,.tsx,.cjs
-    - '@group(lint)'
+      - eslint
+      - --ext
+      - .js,.ts,.tsx,.cjs
+      - '@group(lint)'
     inputs:
       - '@group(lint)'
 
@@ -63,7 +61,7 @@ tasks:
     local: true
 
   relay-watch:
-    command: yarn relay-compiler --repersist --watch
+    command: yarn relay-compiler --project web --repersist --watch ../../relay.config.js
     local: true
 
   graphql-codegen-watch:
@@ -71,31 +69,12 @@ tasks:
     local: true
 
   graphql-codegen:
-    deps:
-      # Relay is a dependency of GraphqlCodegen because Relay wipes the whole folder.
-      # Running the Relay Compiler first makes sure everybody's cool
-      - "~:relay-codegen"
     command: graphql-codegen
     inputs:
       - '@group(source)'
 
-  touch-generated:
-    command: mkdir -p __generated__
-    platform: system
-
-  touch-persisted-queries:
-    command: "touch persisted_queries.json"
-    platform: system
-
-  touch-relay-files:
-    deps:
-      - "~:touch-persisted-queries"
-      - "~:touch-generated"
-
   relay-codegen:
-    deps:
-      - "~:touch-relay-files"
-    command: yarn relay-compiler --repersist
+    command: yarn relay-compiler --project web --repersist ../../relay.config.js
     inputs:
       - '@group(source)'
 
@@ -104,8 +83,9 @@ tasks:
 
   codegen:
     deps:
-      - "~:nextjs-routes"
-      - "~:graphql-codegen"
+      - '~:nextjs-routes'
+      - '~:relay-codegen'
+      - '~:graphql-codegen'
 
   # Inherited from root task
   typecheck:
@@ -114,7 +94,7 @@ tasks:
 
   test:
     deps:
-      - "~:codegen"
+      - '~:codegen'
     command: jest
 
   upload-apq:
