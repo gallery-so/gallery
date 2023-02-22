@@ -1,12 +1,8 @@
-import { Client, createClient } from "graphql-ws";
-import { Observable, SubscribeFunction } from "relay-runtime";
-import {
-  FetchFunction,
-  GraphQLSingularResponse,
-  PayloadError,
-} from "relay-runtime";
+import { Client, createClient } from 'graphql-ws';
+import { Observable, SubscribeFunction } from 'relay-runtime';
+import { FetchFunction, GraphQLSingularResponse, PayloadError } from 'relay-runtime';
 
-import { isResponsePersistedQueryNotFound } from "./utils";
+import { isResponsePersistedQueryNotFound } from './utils';
 
 export type PersistedQueriesMap = Record<string, string>;
 
@@ -24,26 +20,23 @@ const fetchWithJustHash: InternalFetchFunction = async (
   cacheConfig,
   uploadables
 ) => {
-  const response = await fetch(
-    url(request, variables, cacheConfig, uploadables),
-    {
-      method: "POST",
-      credentials: "include",
-      body: JSON.stringify({
-        operationName: request.name,
-        extensions: {
-          persistedQuery: {
-            version: 1,
-            sha256Hash: request.id,
-          },
+  const response = await fetch(url(request, variables, cacheConfig, uploadables), {
+    method: 'POST',
+    credentials: 'include',
+    body: JSON.stringify({
+      operationName: request.name,
+      extensions: {
+        persistedQuery: {
+          version: 1,
+          sha256Hash: request.id,
         },
-        variables,
-      }),
-      headers: {
-        "Content-Type": "application/json",
       },
-    }
-  ).then((response) => response.json());
+      variables,
+    }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  }).then((response) => response.json());
 
   return response;
 };
@@ -60,27 +53,24 @@ const fetchWithHashAndQueryText: InternalFetchFunction = async (
   // @ts-expect-error Types aren't lining up here
   const queryText = persisted_queries[request.id] as string;
 
-  const response = await fetch(
-    url(request, variables, cacheConfig, uploadables),
-    {
-      method: "POST",
-      credentials: "include",
-      body: JSON.stringify({
-        operationName: request.name,
-        extensions: {
-          persistedQuery: {
-            version: 1,
-            sha256Hash: request.id,
-          },
+  const response = await fetch(url(request, variables, cacheConfig, uploadables), {
+    method: 'POST',
+    credentials: 'include',
+    body: JSON.stringify({
+      operationName: request.name,
+      extensions: {
+        persistedQuery: {
+          version: 1,
+          sha256Hash: request.id,
         },
-        query: queryText,
-        variables,
-      }),
-      headers: {
-        "Content-Type": "application/json",
       },
-    }
-  ).then((response) => response.json());
+      query: queryText,
+      variables,
+    }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  }).then((response) => response.json());
 
   return response;
 };
@@ -90,9 +80,7 @@ type CreateRelayFetchFunctionArgs = {
   persistedQueriesFetcher: PersistedQueriesFetcher;
 };
 
-export function createRelayFetchFunction(
-  args: CreateRelayFetchFunctionArgs
-): FetchFunction {
+export function createRelayFetchFunction(args: CreateRelayFetchFunctionArgs): FetchFunction {
   /**
    * This is how Relay takes an arbitrary GraphQL request, and asks for a response.
    * Since we don't currently have a GraphQL server, we're shimming a response as
@@ -105,16 +93,9 @@ export function createRelayFetchFunction(
     uploadables
   ) => {
     try {
-      let response = await fetchWithJustHash(
-        args,
-        request,
-        variables,
-        cacheConfig,
-        uploadables
-      );
+      let response = await fetchWithJustHash(args, request, variables, cacheConfig, uploadables);
 
-      const persistedQueryWasNotFound =
-        isResponsePersistedQueryNotFound(response);
+      const persistedQueryWasNotFound = isResponsePersistedQueryNotFound(response);
 
       if (persistedQueryWasNotFound) {
         response = await fetchWithHashAndQueryText(
@@ -130,10 +111,10 @@ export function createRelayFetchFunction(
     } catch (error) {
       const payloadError: PayloadError =
         error instanceof Error
-          ? { message: error.message, severity: "CRITICAL" }
+          ? { message: error.message, severity: 'CRITICAL' }
           : {
-              message: "An unexpected error occurred in relayFetchFunction",
-              severity: "CRITICAL",
+              message: 'An unexpected error occurred in relayFetchFunction',
+              severity: 'CRITICAL',
             };
 
       return { errors: [payloadError] };
@@ -147,12 +128,10 @@ type CreateRelaySubscribeFunctionArgs = {
   url: string;
 };
 
-export function createRelaySubscribeFunction({
-  url,
-}: CreateRelaySubscribeFunctionArgs) {
+export function createRelaySubscribeFunction({ url }: CreateRelaySubscribeFunctionArgs) {
   let websocketClient: Client;
 
-  if (typeof WebSocket !== "undefined") {
+  if (typeof WebSocket !== 'undefined') {
     websocketClient = createClient({
       url,
     });
@@ -161,9 +140,7 @@ export function createRelaySubscribeFunction({
   const relaySubscribeFunction: SubscribeFunction = (operation, variables) => {
     return Observable.create((sink) => {
       if (!operation.text) {
-        throw new Error(
-          "Relay subscribe function called without any operation text"
-        );
+        throw new Error('Relay subscribe function called without any operation text');
       }
 
       return websocketClient.subscribe(

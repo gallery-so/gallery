@@ -1,11 +1,7 @@
-import fetchMultipart from "fetch-multipart-graphql";
-import {
-  FetchFunction,
-  GraphQLSingularResponse,
-  Observable,
-} from "relay-runtime";
+import fetchMultipart from 'fetch-multipart-graphql';
+import { FetchFunction, GraphQLSingularResponse, Observable } from 'relay-runtime';
 
-import { isResponsePersistedQueryNotFound } from "./utils";
+import { isResponsePersistedQueryNotFound } from './utils';
 
 export type PersistedQueriesMap = Record<string, string>;
 
@@ -35,21 +31,17 @@ type FlattenedDeferResponse = {
   data: ReadonlyArray<GraphQLSingularResponse>;
   isLast: boolean;
 };
-function flattenDeferResponse(
-  responses: DeferResponse[]
-): FlattenedDeferResponse {
-  const formatted: ReadonlyArray<GraphQLSingularResponse> = responses.flatMap(
-    (part) => {
-      if ("incremental" in part) {
-        return part.incremental;
-      }
-
-      return [part];
+function flattenDeferResponse(responses: DeferResponse[]): FlattenedDeferResponse {
+  const formatted: ReadonlyArray<GraphQLSingularResponse> = responses.flatMap((part) => {
+    if ('incremental' in part) {
+      return part.incremental;
     }
-  );
+
+    return [part];
+  });
 
   const anyOfTheResponsesAreTheLast = responses.some((response) => {
-    if ("hasNext" in response) {
+    if ('hasNext' in response) {
       return !response.hasNext;
     }
 
@@ -76,28 +68,25 @@ const fetchWithJustHash: InternalFetchFunction = async (
   cacheConfig,
   uploadables
 ) => {
-  return fetchMultipart<DeferResponse>(
-    url(request, variables, cacheConfig, uploadables),
-    {
-      method: "POST",
-      credentials: "include",
-      body: JSON.stringify({
-        operationName: request.name,
-        extensions: {
-          persistedQuery: {
-            version: 1,
-            sha256Hash: request.id,
-          },
+  return fetchMultipart<DeferResponse>(url(request, variables, cacheConfig, uploadables), {
+    method: 'POST',
+    credentials: 'include',
+    body: JSON.stringify({
+      operationName: request.name,
+      extensions: {
+        persistedQuery: {
+          version: 1,
+          sha256Hash: request.id,
         },
-        variables,
-      }),
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "multipart/mixed; deferSpec=20220824",
       },
-      ...sinkHandlers,
-    }
-  );
+      variables,
+    }),
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'multipart/mixed; deferSpec=20220824',
+    },
+    ...sinkHandlers,
+  });
 };
 
 const fetchWithHashAndQueryText: InternalFetchFunction = async (
@@ -114,8 +103,8 @@ const fetchWithHashAndQueryText: InternalFetchFunction = async (
   const queryText = persisted_queries[request.id] as string;
 
   return fetchMultipart(url(request, variables, cacheConfig, uploadables), {
-    method: "POST",
-    credentials: "include",
+    method: 'POST',
+    credentials: 'include',
     body: JSON.stringify({
       operationName: request.name,
       query: queryText,
@@ -128,8 +117,8 @@ const fetchWithHashAndQueryText: InternalFetchFunction = async (
       variables,
     }),
     headers: {
-      "Content-Type": "application/json",
-      Accept: "multipart/mixed; deferSpec=20220824",
+      'Content-Type': 'application/json',
+      Accept: 'multipart/mixed; deferSpec=20220824',
     },
     ...sinkHandlers,
   });
@@ -143,19 +132,14 @@ type CreateRelayFetchFunctionArgs = {
 export function createRelayFetchFunctionWithDefer(
   args: CreateRelayFetchFunctionArgs
 ): FetchFunction {
-  const relayFetchFunction: FetchFunction = (
-    request,
-    variables,
-    cacheConfig,
-    uploadables
-  ) => {
+  const relayFetchFunction: FetchFunction = (request, variables, cacheConfig, uploadables) => {
     return Observable.create((sink) => {
       const sinkHandlers: SinkHandlers = {
         onComplete: () => sink.complete(),
         onError: (error) => sink.error(error as Error),
         onNext: (responses) => {
           const wasPersistedQueryNotFound = responses.some((response) => {
-            if ("errors" in response) {
+            if ('errors' in response) {
               return isResponsePersistedQueryNotFound(response);
             }
 
@@ -183,14 +167,7 @@ export function createRelayFetchFunctionWithDefer(
         },
       };
 
-      fetchWithJustHash(
-        args,
-        sinkHandlers,
-        request,
-        variables,
-        cacheConfig,
-        uploadables
-      );
+      fetchWithJustHash(args, sinkHandlers, request, variables, cacheConfig, uploadables);
     });
   };
 

@@ -129,5 +129,5 @@ const StyledQuote = styled(BaseM)`
 
   @media only screen and ${breakpoints.tablet} {
     max-width: 50%;
-  } ;
+  }
 `;
