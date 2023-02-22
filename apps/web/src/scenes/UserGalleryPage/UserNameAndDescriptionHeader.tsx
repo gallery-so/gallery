@@ -184,13 +184,13 @@ const NftDetailViewer = ({ href, children }: NftDetailViewerProps) => {
 
 const EditIconContainer = styled.div`
   opacity: 0;
-
   transition: opacity 150ms ease-in-out;
 `;
 
 const HeaderContainer = styled(HStack)<{ isAuth: boolean }>`
   width: max-content;
   padding: 4px 12px 4px 0px;
+  max-width: 100%;
 
   ${({ isAuth }) =>
     isAuth &&
