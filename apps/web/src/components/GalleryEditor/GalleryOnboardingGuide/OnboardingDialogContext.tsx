@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useMemo, useState } from 'react
 import { graphql, useFragment } from 'react-relay';
 
 import { OnboardingDialogContextFragment$key } from '~/generated/OnboardingDialogContextFragment.graphql';
+import isExperienceDismissed from '~/utils/graphql/isExperienceDismissed';
 import isMac from '~/utils/isMac';
 
 import useUpdateUserExperience from './useUpdateUserExperience';
@@ -38,29 +39,13 @@ export function OnboardingDialogProvider({ children, queryRef }: OnboardingDialo
   const query = useFragment(
     graphql`
       fragment OnboardingDialogContextFragment on Query {
-        viewer {
-          ... on Viewer {
-            __typename
-            userExperiences @required(action: THROW) {
-              type
-              experienced
-            }
-          }
-        }
+        ...isExperienceDismissedFragment
       }
     `,
     queryRef
   );
 
-  const isUserExperiencedTooltips = useMemo(() => {
-    if (query.viewer?.__typename !== 'Viewer') return true;
-
-    return Boolean(
-      query.viewer?.userExperiences.find(
-        (userExperience) => userExperience.type === 'MultiGalleryAnnouncement'
-      )?.experienced
-    );
-  }, [query.viewer]);
+  const isUserExperiencedTooltips = isExperienceDismissed('MultiGalleryAnnouncement', query);
 
   const [step, setStep] = useState(1);
 
