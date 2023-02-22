@@ -384,12 +384,7 @@ function GlobalNavbarWithFadeEnabled({
             }}
           >
             {isBannerVisible && (
-              <GlobalBanner
-                text=""
-                queryRef={query}
-                dismissOnActionComponentClick
-                requireAuth
-              />
+              <GlobalBanner text="" queryRef={query} dismissOnActionComponentClick requireAuth />
             )}
             <StyledBackground>{content}</StyledBackground>
           </motion.div>
