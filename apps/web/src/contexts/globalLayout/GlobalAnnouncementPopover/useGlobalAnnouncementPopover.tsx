@@ -37,7 +37,7 @@ export default function useGlobalAnnouncementPopover({
           }
         }
         ...GlobalAnnouncementPopoverFragment
-        # ...isExperienceDismissedFragment
+        # ...useExperienceFragment
       }
     `,
     queryRef
@@ -48,15 +48,14 @@ export default function useGlobalAnnouncementPopover({
   const { asPath, query: urlQuery } = useRouter();
 
   // NOTE: next time we use global announcements, we'll need to set a new flag in the schema
-  const isGlobalAnnouncementDismissed = true;
-  // const isGlobalAnnouncementDismissed = isExperienceDismissed('YourGlobalAnnouncementFlagHere', query);
-  // const updateUserExperience = useUpdateUserExperience();
+  const isGlobalAnnouncementExperienced = true;
+  // const [isGlobalAnnouncementExperienced, updateGlobalAnnouncementExperienced] = useExperience({
+  //   type: 'YourGlobalAnnouncementFlagHere',
+  //   queryRef: query,
+  // })
   // const handleDismissGlobalAnnouncement = useCallback(async () => {
-  //   await updateUserExperience({
-  //     type: 'YourGlobalAnnouncementFlagHere',
-  //     experienced: true,
-  //   });
-  // }, [updateUserExperience]);
+  //   return await updateGlobalAnnouncementExperienced({ experienced: true })
+  // }, [updateGlobalAnnouncementExperienced])
 
   // tracks dismissal on session, not persisted across refreshes
   const [dismissedOnSession, setDismissedOnSession] = useState(false);
@@ -93,7 +92,7 @@ export default function useGlobalAnnouncementPopover({
   useEffect(() => {
     async function handleMount() {
       if (dismissVariant === 'session' && dismissedOnSession) return;
-      if (dismissVariant === 'global' && isGlobalAnnouncementDismissed) return;
+      if (dismissVariant === 'global' && isGlobalAnnouncementExperienced) return;
 
       // TEMPORARY: only display the white rhino launch popover on the homepage
       if (asPath !== '/') {
@@ -125,7 +124,7 @@ export default function useGlobalAnnouncementPopover({
     showModal,
     query,
     asPath,
-    isGlobalAnnouncementDismissed,
+    isGlobalAnnouncementExperienced,
     authRequired,
     popoverDelayMs,
     dismissVariant,

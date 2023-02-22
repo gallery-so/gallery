@@ -12,19 +12,23 @@ export default function Announcements() {
     graphql`
       query announcementsQuery($collectionIds: [DBID!]!) {
         ...GlobalAnnouncementPopoverFragment
+        # ...useExperienceFragment
       }
     `,
     { collectionIds: FEATURED_COLLECTION_IDS }
   );
 
-  // const updateUserExperience = useUpdateUserExperience();
+  // TODO next time we do a full-page announcement, create a new Experience flag and set it here
+  // const [, updateGlobalAnnouncementExperienced] = useExperience({
+  //   type: 'YourGlobalAnnouncementFlagHere',
+  //   queryRef: query,
+  // })
+  // const handleDismissGlobalAnnouncement = useCallback(async () => {
+  //   return await updateGlobalAnnouncementExperienced({ experienced: true })
+  // }, [updateGlobalAnnouncementExperienced])
 
   useEffect(() => {
-    // TODO next time we do a full-page announcement, create a new Experience flag and set it here
-    // updateUserExperience({
-    //   type: 'YourExperienceFlagHere',
-    //   experienced: true,
-    // })
+    // handleDismissGlobalAnnouncement()
   }, []);
 
   return (

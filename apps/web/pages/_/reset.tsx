@@ -3,8 +3,8 @@ import styled from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';
 import { TitleL } from '~/components/core/Text/Text';
-import useUpdateUserExperience from '~/components/GalleryEditor/GalleryOnboardingGuide/useUpdateUserExperience';
 import { UserExperienceType } from '~/generated/enums';
+import useUpdateUserExperience from '~/utils/graphql/experiences/useUpdateUserExperience';
 
 const experiences: UserExperienceType[] = [
   'MultiGalleryAnnouncement',
@@ -14,6 +14,7 @@ const experiences: UserExperienceType[] = [
 ];
 
 // This page allows users to reset their dismissed experience flags
+// TODO: in the future, it would be great to have each flag hooked up to an explicit toggle
 export default function Secret() {
   const updateUserExperience = useUpdateUserExperience();
 
@@ -22,6 +23,7 @@ export default function Secret() {
       updateUserExperience({
         type: experience,
         experienced: false,
+        optimisticExperiencesList: experiences.map((exp) => ({ type: exp, experienced: false })),
       });
     });
   }, [updateUserExperience]);
