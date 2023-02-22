@@ -1,11 +1,13 @@
-import "expo-dev-client";
+import 'expo-dev-client';
 
-import {RelayEnvironmentProvider} from "react-relay";
-import {useState} from "react";
-import {createRelayEnvironment} from "./src/contexts/relay/RelayProvider";
-import {NavigationContainer} from "@react-navigation/native";
-import {SafeAreaProvider} from "react-native-safe-area-context";
-import {MainTabNavigator} from "~/navigation/MainTabNavigator/MainTabNavigator";
+import { NavigationContainer } from '@react-navigation/native';
+import { useState } from 'react';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { RelayEnvironmentProvider } from 'react-relay';
+
+import { MainTabNavigator } from '~/navigation/MainTabNavigator/MainTabNavigator';
+
+import { createRelayEnvironment } from './src/contexts/relay/RelayProvider';
 
 export default function App() {
   const [relayEnvironment] = useState(() => createRelayEnvironment());
