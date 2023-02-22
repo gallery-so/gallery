@@ -4,6 +4,7 @@ import { fetchQuery } from 'relay-runtime';
 import { ITEMS_PER_PAGE, MAX_PIECES_DISPLAYED_PER_FEED_EVENT } from '~/components/Feed/constants';
 import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/NotesModal/NotesModal';
 import { HomeNavbar } from '~/contexts/globalLayout/GlobalNavbar/HomeNavbar/HomeNavbar';
+import { StandardSidebar } from '~/contexts/globalLayout/GlobalSidebar/StandardSidebar';
 import { trendingPageQuery } from '~/generated/trendingPageQuery.graphql';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
 import TrendingHomePage from '~/scenes/Home/TrendingHomePage';
@@ -22,6 +23,7 @@ const activityPageQueryNode = graphql`
   ) {
     ...TrendingHomePageFragment
     ...HomeNavbarFragment
+    ...StandardSidebarFragment
     ...useOpenSettingsModalFragment
   }
 `;
@@ -39,6 +41,7 @@ export default function Trending() {
   return (
     <GalleryRoute
       navbar={<HomeNavbar queryRef={query} />}
+      sidebar={<StandardSidebar queryRef={query} />}
       element={<TrendingHomePage queryRef={query} />}
     />
   );
