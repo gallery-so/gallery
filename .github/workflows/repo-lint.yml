@@ -1,4 +1,4 @@
-name: web-lint
+name: repo-lint
 on: [push]
 jobs:
   lint:
@@ -12,5 +12,5 @@ jobs:
           node-version: 16.18.1
           cache: 'yarn'
       - run: 'yarn install --immutable'
-      - name: Run Lint
-        run: node_modules/.bin/moon run web:lint
+      - name: Run Lint & Prettier
+        run: node_modules/.bin/moon run :lint :prettier
