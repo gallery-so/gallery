@@ -16785,6 +16785,8 @@ __metadata:
     eslint-plugin-react-hooks: ^4.6.0
     eslint-plugin-relay: ^1.8.3
     eslint-plugin-simple-import-sort: ^8.0.0
+    prettier: ^2.8.4
+    prettier-plugin-tailwindcss: ^0.2.3
     tsconfig-moon: ^1.2.1
     typescript: ^4.9.5
   languageName: unknown
@@ -24544,7 +24546,62 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:^2.5.1, prettier@npm:^2.7.1":
+"prettier-plugin-tailwindcss@npm:^0.2.3":
+  version: 0.2.3
+  resolution: "prettier-plugin-tailwindcss@npm:0.2.3"
+  peerDependencies:
+    "@ianvs/prettier-plugin-sort-imports": "*"
+    "@prettier/plugin-php": "*"
+    "@prettier/plugin-pug": "*"
+    "@shopify/prettier-plugin-liquid": "*"
+    "@shufo/prettier-plugin-blade": "*"
+    "@trivago/prettier-plugin-sort-imports": "*"
+    prettier: ">=2.2.0"
+    prettier-plugin-astro: "*"
+    prettier-plugin-css-order: "*"
+    prettier-plugin-import-sort: "*"
+    prettier-plugin-jsdoc: "*"
+    prettier-plugin-organize-attributes: "*"
+    prettier-plugin-organize-imports: "*"
+    prettier-plugin-style-order: "*"
+    prettier-plugin-svelte: "*"
+    prettier-plugin-twig-melody: "*"
+  peerDependenciesMeta:
+    "@ianvs/prettier-plugin-sort-imports":
+      optional: true
+    "@prettier/plugin-php":
+      optional: true
+    "@prettier/plugin-pug":
+      optional: true
+    "@shopify/prettier-plugin-liquid":
+      optional: true
+    "@shufo/prettier-plugin-blade":
+      optional: true
+    "@trivago/prettier-plugin-sort-imports":
+      optional: true
+    prettier-plugin-astro:
+      optional: true
+    prettier-plugin-css-order:
+      optional: true
+    prettier-plugin-import-sort:
+      optional: true
+    prettier-plugin-jsdoc:
+      optional: true
+    prettier-plugin-organize-attributes:
+      optional: true
+    prettier-plugin-organize-imports:
+      optional: true
+    prettier-plugin-style-order:
+      optional: true
+    prettier-plugin-svelte:
+      optional: true
+    prettier-plugin-twig-melody:
+      optional: true
+  checksum: f43599b2b03b80899c32e436a518a5c139aa8b6cc59c4d73f7c95222d99f3c3b418adb2d61145602c86b0827804fa2469a927ed696c5270d0a91dfeb18246509
+  languageName: node
+  linkType: hard
+
+"prettier@npm:^2.7.1, prettier@npm:^2.8.4":
   version: 2.8.4
   resolution: "prettier@npm:2.8.4"
   bin:
@@ -30635,7 +30692,6 @@ __metadata:
     nextjs-routes: ^0.1.5
     nock: ^13.2.9
     node-fetch: ^2
-    prettier: ^2.5.1
     qr-code-styling: ^1.6.0-rc.1
     react: 18.2.0
     react-dom: ^18.2.0
