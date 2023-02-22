@@ -2,6 +2,9 @@
 $schema: 'https://moonrepo.dev/schemas/global-project.json'
 
 tasks:
+  prettier-fix:
+    command: prettier --write --config ../../.prettierrc.json --ignore-path ../../.prettierignore  .
+
   prettier:
     command: prettier --check --config ../../.prettierrc.json --ignore-path ../../.prettierignore  .
 
