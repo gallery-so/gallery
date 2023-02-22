@@ -4,6 +4,7 @@ import { graphql } from 'relay-runtime';
 import styled, { css } from 'styled-components';
 
 import Badge from '~/components/Badge/Badge';
+import breakpoints from '~/components/core/breakpoints';
 import TextButton from '~/components/core/Button/TextButton';
 import colors from '~/components/core/colors';
 import IconContainer from '~/components/core/IconContainer';
@@ -184,13 +185,13 @@ const NftDetailViewer = ({ href, children }: NftDetailViewerProps) => {
 
 const EditIconContainer = styled.div`
   opacity: 0;
-
   transition: opacity 150ms ease-in-out;
 `;
 
 const HeaderContainer = styled(HStack)<{ isAuth: boolean }>`
   width: max-content;
   padding: 4px 12px 4px 0px;
+  max-width: 100%;
 
   ${({ isAuth }) =>
     isAuth &&
