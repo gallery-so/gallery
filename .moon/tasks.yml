@@ -2,7 +2,11 @@
 $schema: 'https://moonrepo.dev/schemas/global-project.json'
 
 tasks:
+  prettier:
+    command: prettier --check --config ../../.prettierrc.json --ignore-path ../../.prettierignore  .
+
   lint:
     command: eslint . --ext .js,.jsx,.ts,.tsx,.cjs,.mjs
+
   typecheck:
     command: tsc --build
