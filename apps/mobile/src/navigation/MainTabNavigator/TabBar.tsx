@@ -1,25 +1,30 @@
 import { MaterialTopTabBarProps } from '@react-navigation/material-top-tabs';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
+import { ReactNode, useCallback } from 'react';
 import { TouchableOpacity, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
 import { AccountIcon } from '~/navigation/MainTabNavigator/AccountIcon';
 import { GLogo } from '~/navigation/MainTabNavigator/GLogo';
 import { NotificationsIcon } from '~/navigation/MainTabNavigator/NotificationsIcon';
-import { ReactNode, useCallback } from 'react';
-import { useNavigation } from '@react-navigation/native';
+import { MainTabNavigatorParamList, MainTabNavigatorProp } from '~/navigation/types';
 
 type TabItemProps = {
-  route: string;
+  activeRoute: keyof MainTabNavigatorParamList;
+  route: keyof MainTabNavigatorParamList;
   icon: ReactNode;
 };
 
-function TabItem({ route, icon }: TabItemProps) {
-  const navigation = useNavigation();
+function TabItem({ route, icon, activeRoute }: TabItemProps) {
+  const navigation = useNavigation<MainTabNavigatorProp>();
 
-  const isFocused = true;
+  const isFocused = activeRoute === route;
 
   const onPress = useCallback(() => {
-    navigation.navigate(route);
-  }, []);
+    if (!isFocused) {
+      navigation.navigate(route, {});
+    }
+  }, [isFocused, navigation, route]);
 
   return (
     <TouchableOpacity
@@ -33,17 +38,19 @@ function TabItem({ route, icon }: TabItemProps) {
   );
 }
 
-export function TabBar({ state, navigation }: MaterialTopTabBarProps) {
+export function TabBar({ state }: MaterialTopTabBarProps) {
   const { bottom } = useSafeAreaInsets();
+
+  const activeRoute = state.routeNames[state.index] as keyof MainTabNavigatorParamList;
 
   return (
     <View
       style={{ paddingBottom: bottom }}
       className="bg-offWhite flex flex-row items-center justify-center pt-3"
     >
-      <TabItem route="Account" icon={<AccountIcon />} />
-      <TabItem route="Home" icon={<GLogo />} />
-      <TabItem route="Notifications" icon={<NotificationsIcon />} />
+      <TabItem activeRoute={activeRoute} route="Account" icon={<AccountIcon />} />
+      <TabItem activeRoute={activeRoute} route="Home" icon={<GLogo />} />
+      <TabItem activeRoute={activeRoute} route="Notifications" icon={<NotificationsIcon />} />
     </View>
   );
 }
