@@ -1,4 +1,4 @@
-import Svg, { G, Path, SvgProps } from "react-native-svg";
+import Svg, { G, Path, SvgProps } from 'react-native-svg';
 
 export const AccountIcon = (props: SvgProps) => (
   <Svg width={25} height={24} fill="none" {...props}>

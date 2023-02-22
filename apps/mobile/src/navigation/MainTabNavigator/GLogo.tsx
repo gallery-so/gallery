@@ -1,4 +1,4 @@
-import Svg, { Path, SvgProps } from "react-native-svg";
+import Svg, { Path, SvgProps } from 'react-native-svg';
 
 export const GLogo = (props: SvgProps) => (
   <Svg width={13} height={16} fill="none" {...props}>
