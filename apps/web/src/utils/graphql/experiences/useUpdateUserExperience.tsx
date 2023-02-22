@@ -18,6 +18,9 @@ type Props = {
   }> | null;
 };
 
+/**
+ * NOTE: This is the raw request used by the more convenient `useExperience` hook. You may want to use that instead.
+ */
 export default function useUpdateUserExperience() {
   const [updateUserExperience] = usePromisifiedMutation<useUpdateUserExperienceMutation>(graphql`
     mutation useUpdateUserExperienceMutation($input: UpdateUserExperienceInput!)

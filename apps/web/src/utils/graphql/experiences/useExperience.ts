@@ -2,9 +2,9 @@ import { useCallback, useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import useUpdateUserExperience from '~/components/GalleryEditor/GalleryOnboardingGuide/useUpdateUserExperience';
 import { UserExperienceType } from '~/generated/enums';
 import { useExperienceFragment$key } from '~/generated/useExperienceFragment.graphql';
+import useUpdateUserExperience from '~/utils/graphql/experiences/useUpdateUserExperience';
 
 type Props = {
   type: UserExperienceType;
@@ -16,7 +16,10 @@ type updateUserExperienceProps = {
   experienced: boolean;
 };
 
-export default function useExperience({ type, queryRef }: Props) {
+export default function useExperience({
+  type,
+  queryRef,
+}: Props): [boolean, (u: updateUserExperienceProps) => Promise<void>] {
   const query = useFragment(
     graphql`
       fragment useExperienceFragment on Query {
