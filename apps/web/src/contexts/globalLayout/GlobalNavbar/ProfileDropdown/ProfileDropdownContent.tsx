@@ -14,15 +14,15 @@ import { DropdownSection } from '~/components/core/Dropdown/DropdownSection';
 import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, Paragraph, TITLE_FONT_FAMILY, TitleM } from '~/components/core/Text/Text';
+import useUpdateUserExperience from '~/components/GalleryEditor/GalleryOnboardingGuide/useUpdateUserExperience';
 import useNotificationsModal from '~/components/NotificationsModal/useNotificationsModal';
 import { useSubscribeToNotifications } from '~/components/NotificationsModal/useSubscribeToNotifications';
-import { MERCH_REDEMPTION_STORAGE_KEY } from '~/constants/storageKeys';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { useAuthActions } from '~/contexts/auth/AuthContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { ProfileDropdownContentFragment$key } from '~/generated/ProfileDropdownContentFragment.graphql';
-import usePersistedState from '~/hooks/usePersistedState';
 import SettingsModal from '~/scenes/Modals/SettingsModal/SettingsModal';
+import isExperienceDismissed from '~/utils/graphql/isExperienceDismissed';
 
 type Props = {
   shouldShowDropdown: boolean;
@@ -64,6 +64,7 @@ export function ProfileDropdownContent({
         }
 
         ...SettingsModalFragment
+        ...isExperienceDismissedFragment
       }
     `,
     queryRef
@@ -75,14 +76,16 @@ export function ProfileDropdownContent({
 
   const track = useTrack();
 
-  const [dismissMerchRedemption, setDismissMerchRedemption] = usePersistedState(
-    MERCH_REDEMPTION_STORAGE_KEY,
-    false
-  );
+  const isMerchStoreUpsellDismissed = isExperienceDismissed('MerchStoreUpsell', query)
 
-  const handleDismissMerchRedemption = useCallback(() => {
-    setDismissMerchRedemption(true);
-  }, [setDismissMerchRedemption]);
+  const updateUserExperience = useUpdateUserExperience();
+
+  const handleDismissMerchRedemption = useCallback(async () => {
+    await updateUserExperience({
+      type: 'MerchStoreUpsell',
+      experienced: true,
+    });
+  }, []);
 
   const handleNotificationsClick = useCallback(() => {
     track('Open Notifications Click');
@@ -147,7 +150,7 @@ export function ProfileDropdownContent({
               <span>SHOP</span>
               <StyledObjectsText>(OBJECTS)</StyledObjectsText>
             </HStack>
-            {!dismissMerchRedemption && <NotificationsCircle />}
+            {!isMerchStoreUpsellDismissed && <NotificationsCircle />}
           </HStack>
         </DropdownLink>
       </DropdownSection>
