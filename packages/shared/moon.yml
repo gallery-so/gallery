@@ -1,6 +1,6 @@
 fileGroups:
   source:
-    - "src/**/*.{ts,tsx}"
+    - 'src/**/*.{ts,tsx}'
 
 tasks:
   relay-watch:

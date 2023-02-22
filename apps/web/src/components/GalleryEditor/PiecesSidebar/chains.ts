@@ -4,6 +4,6 @@ export const chains = [
   { name: 'POAP', shortName: 'POAP', icon: '/icons/poap_logo.svg' },
 ] as const;
 
-export type Chain = typeof chains[number]['name'];
+export type Chain = (typeof chains)[number]['name'];
 
-export type ChainMetadata = typeof chains[number];
+export type ChainMetadata = (typeof chains)[number];

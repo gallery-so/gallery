@@ -270,7 +270,7 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
                 transition: { duration: FADE_TRANSITION_TIME_SECONDS },
               }}
               transition={{
-                type: 'ease-in-out',
+                ease: 'easeInOut',
                 delay: NAVIGATION_TRANSITION_TIME_SECONDS,
                 duration: FADE_TRANSITION_TIME_SECONDS,
               }}
@@ -379,9 +379,7 @@ function GlobalNavbarWithFadeEnabled({
               transition: { duration: FADE_TRANSITION_TIME_SECONDS },
             }}
             transition={{
-              // for some reason, setting the `type` here causes an unusual "needsInterpolation" crash
-              // https://github.com/framer/motion/issues/1847#issuecomment-1364491137
-              // type: 'ease-in-out',
+              ease: 'easeInOut',
               delay: fadeType === 'route' ? NAVIGATION_TRANSITION_TIME_SECONDS : 0,
               duration: FADE_TRANSITION_TIME_SECONDS,
             }}
