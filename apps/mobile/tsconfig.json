@@ -4,9 +4,15 @@
     "baseUrl": ".",
     "jsx": "react-native",
     "paths": {
-      "~/frames/*": ["../../packages/frames-dls/src/*"],
-      "~/generated/*": ["./__generated__/*"],
-      "~/shared/*": ["../../packages/shared/src/*"]
+      "~/frames/*": [
+        "../../packages/frames-dls/src/*"
+      ],
+      "~/generated/*": [
+        "./__generated__/*"
+      ],
+      "~/shared/*": [
+        "../../packages/shared/src/*"
+      ]
     },
     "outDir": "../../.moon/cache/types/apps/mobile"
   }

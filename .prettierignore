@@ -3,3 +3,4 @@ node_modules
 .next
 public
 persisted_queries.json
+tsconfig.json
