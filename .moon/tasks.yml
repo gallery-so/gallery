@@ -8,6 +8,9 @@ tasks:
   prettier:
     command: prettier --check --config ../../.prettierrc.json --ignore-path ../../.prettierignore  .
 
+  lint-fix:
+    command: eslint . --ext .js,.jsx,.ts,.tsx,.cjs,.mjs --fix
+
   lint:
     command: eslint . --ext .js,.jsx,.ts,.tsx,.cjs,.mjs
 
