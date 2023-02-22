@@ -61,10 +61,9 @@ export function NotificationList({ queryRef }: NotificationListProps) {
     queryRef: query,
   });
 
-  const handleDismiss = useCallback(
-    () => updateEmailExperience({ type: 'EmailUpsell', experienced: true }),
-    [updateEmailExperience]
-  );
+  const handleDismiss = useCallback(async () => {
+    await updateEmailExperience({ experienced: true });
+  }, [updateEmailExperience]);
 
   const nonNullNotifications = useMemo(() => {
     const notifications = [];

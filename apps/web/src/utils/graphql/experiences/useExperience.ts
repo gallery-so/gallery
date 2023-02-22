@@ -12,7 +12,6 @@ type Props = {
 };
 
 type updateUserExperienceProps = {
-  type: UserExperienceType;
   experienced: boolean;
 };
 
@@ -59,7 +58,7 @@ export default function useExperience({
   const update = useUpdateUserExperience();
 
   const updateUserExperience = useCallback(
-    async ({ type, experienced }: updateUserExperienceProps) => {
+    async ({ experienced }: updateUserExperienceProps) => {
       if (!isLoggedIn) {
         return;
       }
@@ -76,7 +75,7 @@ export default function useExperience({
 
       return await update({ type, experienced, optimisticExperiencesList });
     },
-    [isLoggedIn, userExperiences, update]
+    [isLoggedIn, userExperiences, update, type]
   );
 
   return [hasDismissedExperience, updateUserExperience];

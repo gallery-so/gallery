@@ -14,7 +14,6 @@ import { DropdownSection } from '~/components/core/Dropdown/DropdownSection';
 import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, Paragraph, TITLE_FONT_FAMILY, TitleM } from '~/components/core/Text/Text';
-import useUpdateUserExperience from '~/components/GalleryEditor/GalleryOnboardingGuide/useUpdateUserExperience';
 import useNotificationsModal from '~/components/NotificationsModal/useNotificationsModal';
 import { useSubscribeToNotifications } from '~/components/NotificationsModal/useSubscribeToNotifications';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
@@ -22,7 +21,7 @@ import { useAuthActions } from '~/contexts/auth/AuthContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { ProfileDropdownContentFragment$key } from '~/generated/ProfileDropdownContentFragment.graphql';
 import SettingsModal from '~/scenes/Modals/SettingsModal/SettingsModal';
-import isExperienceDismissed from '~/utils/graphql/isExperienceDismissed';
+import useExperience from '~/utils/graphql/experiences/useExperience';
 
 type Props = {
   shouldShowDropdown: boolean;
@@ -64,7 +63,8 @@ export function ProfileDropdownContent({
         }
 
         ...SettingsModalFragment
-        ...isExperienceDismissedFragment
+
+        ...useExperienceFragment
       }
     `,
     queryRef
@@ -76,16 +76,16 @@ export function ProfileDropdownContent({
 
   const track = useTrack();
 
-  const isMerchStoreUpsellDismissed = isExperienceDismissed('MerchStoreUpsell', query);
-
-  const updateUserExperience = useUpdateUserExperience();
+  const [isMerchStoreUpsellExperienced, updateMerchStoreUpsellExperienced] = useExperience({
+    type: 'MerchStoreUpsell',
+    queryRef: query,
+  });
 
   const handleDismissMerchRedemption = useCallback(async () => {
-    await updateUserExperience({
-      type: 'MerchStoreUpsell',
+    await updateMerchStoreUpsellExperienced({
       experienced: true,
     });
-  }, [updateUserExperience]);
+  }, [updateMerchStoreUpsellExperienced]);
 
   const handleNotificationsClick = useCallback(() => {
     track('Open Notifications Click');
@@ -150,7 +150,7 @@ export function ProfileDropdownContent({
               <span>SHOP</span>
               <StyledObjectsText>(OBJECTS)</StyledObjectsText>
             </HStack>
-            {!isMerchStoreUpsellDismissed && <NotificationsCircle />}
+            {!isMerchStoreUpsellExperienced && <NotificationsCircle />}
           </HStack>
         </DropdownLink>
       </DropdownSection>
