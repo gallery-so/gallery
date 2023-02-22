@@ -27,7 +27,7 @@ export const StyledInnerEvent = styled.div<{ isSubEvent?: boolean }>`
     isSubEvent &&
     css`
       padding: 12px;
-      border: 1px solid ${colors.porcelain};
+      border: 1px solid ${colors.faint};
 
       &:first-child {
         border-top-left-radius: 4px;
@@ -86,7 +86,7 @@ export const StyledEventContent = styled(VStack)<{ hasCaption?: boolean; isSubEv
   ${({ hasCaption }) =>
     hasCaption &&
     css`
-      border: 1px solid ${colors.porcelain};
+      border: 1px solid ${colors.faint};
       border-radius: 4px;
 
       &:hover {
