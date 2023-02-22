@@ -1,14 +1,24 @@
 {
   "extends": "../../tsconfig.options.json",
   "compilerOptions": {
+    "lib": [
+      "DOM",
+      "ESNext"
+    ],
     "baseUrl": ".",
     "jsx": "react-native",
     "paths": {
+      "~/contexts/*": [
+        "src/contexts/*"
+      ],
       "~/frames/*": [
         "../../packages/frames-dls/src/*"
       ],
       "~/generated/*": [
         "./__generated__/*"
+      ],
+      "~/navigation/*": [
+        "src/navigation/*"
       ],
       "~/shared/*": [
         "../../packages/shared/src/*"
