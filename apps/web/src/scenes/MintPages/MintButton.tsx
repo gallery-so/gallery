@@ -58,7 +58,7 @@ export default function MintButton({ onMintSuccess }: Props) {
 
   const isDisabled =
     phase === 'pre-mint' ||
-    phase === 'active-mint' ||
+    phase === 'post-mint' ||
     transactionStatus === TransactionStatus.PENDING;
 
   return (
