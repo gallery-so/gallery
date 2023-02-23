@@ -3,8 +3,8 @@ import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
-import { FeaturedUserCardFollowFragment$key } from '~/generated/FeaturedUserCardFollowFragment.graphql';
-import { FeaturedUserCardFragment$key } from '~/generated/FeaturedUserCardFragment.graphql';
+import { ExploreUserCardFollowFragment$key } from '~/generated/ExploreUserCardFollowFragment.graphql';
+import { ExploreUserCardFragment$key } from '~/generated/ExploreUserCardFragment.graphql';
 import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { pluralize } from '~/utils/string';
@@ -17,14 +17,14 @@ import { BaseM, TitleM } from '../core/Text/Text';
 import FollowButton from '../Follow/FollowButton';
 
 type Props = {
-  userRef: FeaturedUserCardFragment$key;
-  queryRef: FeaturedUserCardFollowFragment$key;
+  userRef: ExploreUserCardFragment$key;
+  queryRef: ExploreUserCardFollowFragment$key;
 };
 
-export default function FeaturedUserCard({ userRef, queryRef }: Props) {
+export default function ExploreUserCard({ userRef, queryRef }: Props) {
   const user = useFragment(
     graphql`
-      fragment FeaturedUserCardFragment on GalleryUser {
+      fragment ExploreUserCardFragment on GalleryUser {
         id
         username
         badges {
@@ -49,7 +49,7 @@ export default function FeaturedUserCard({ userRef, queryRef }: Props) {
 
   const query = useFragment(
     graphql`
-      fragment FeaturedUserCardFollowFragment on Query {
+      fragment ExploreUserCardFollowFragment on Query {
         ...FollowButtonQueryFragment
         ...useLoggedInUserIdFragment
       }
@@ -61,7 +61,7 @@ export default function FeaturedUserCard({ userRef, queryRef }: Props) {
   const isOwnProfile = loggedInUserId && loggedInUserId === user?.id;
 
   if (!user) {
-    throw new Error('No user available to showcase FeaturedUserCard');
+    throw new Error('No user available to showcase ExploreUserCard');
   }
 
   const userGalleries = useMemo(() => {
@@ -100,7 +100,7 @@ export default function FeaturedUserCard({ userRef, queryRef }: Props) {
 
   return (
     // @ts-expect-error This is the future next/link version
-    <StyledFeaturedUserCard legacyBehavior={false} href={`/${user.username}`}>
+    <StyledExploreUserCard legacyBehavior={false} href={`/${user.username}`}>
       <StyledContent gap={12} justify="space-between">
         <TokenPreviewContainer>
           {tokenPreviews.map(
@@ -126,11 +126,11 @@ export default function FeaturedUserCard({ userRef, queryRef }: Props) {
           {!isOwnProfile && <StyledFollowButton userRef={user} queryRef={query} />}
         </UserDetailsContainer>
       </StyledContent>
-    </StyledFeaturedUserCard>
+    </StyledExploreUserCard>
   );
 }
 
-const StyledFeaturedUserCard = styled(Link)`
+const StyledExploreUserCard = styled(Link)`
   border-radius: 12px;
   background-color: ${colors.offWhite};
   padding: 12px;

@@ -25,6 +25,14 @@ export function NotificationsModal({ fullscreen }: NotificationsModalProps) {
     graphql`
       query NotificationsModalQuery($notificationsLast: Int!, $notificationsBefore: String) {
         ...NotificationListFragment
+
+        viewer {
+          ... on Viewer {
+            user {
+              dbid
+            }
+          }
+        }
       }
     `,
     { notificationsLast: NOTIFICATIONS_PER_PAGE },
@@ -33,12 +41,13 @@ export function NotificationsModal({ fullscreen }: NotificationsModalProps) {
 
   const clearAllNotifications = useClearNotifications();
 
+  const userId = query.viewer?.user?.dbid ?? '';
   useEffect(() => {
     // When they close the modal, clear their notifications
     return () => {
-      clearAllNotifications();
+      clearAllNotifications(userId);
     };
-  }, [clearAllNotifications]);
+  }, [clearAllNotifications, userId]);
 
   return (
     <ModalContent fullscreen={fullscreen}>
