@@ -277,7 +277,7 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
   const handleFadeNavbarAndSidebarOnScroll = useCallback(() => {
     handleFadeNavbarOnScroll();
     handleFadeSidebarOnScroll();
-  }, [])
+  }, [handleFadeNavbarOnScroll, handleFadeSidebarOnScroll]);
 
   useEffect(() => {
     window.addEventListener('scroll', handleFadeNavbarAndSidebarOnScroll);
@@ -297,7 +297,7 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
       setTopNavContent: handleSetNavbarFromGalleryRoute,
       setSidebarContent: handleSetSidebarFromGalleryRoute,
     }),
-    [handleSetNavbarFromGalleryRoute]
+    [handleSetNavbarFromGalleryRoute, handleSetSidebarFromGalleryRoute]
   );
 
   // Keeping this around for the next time we want to use it
@@ -323,7 +323,11 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
       />
 
       {isGlobalSidebarEnabled && (
-        <GlobalSidebar content={sidebarContent} isVisible={isSidebarEnabled} handleFadeSidebarOnHover={handleFadeSidebarOnHover} />
+        <GlobalSidebar
+          content={sidebarContent}
+          isVisible={isSidebarEnabled}
+          handleFadeSidebarOnHover={handleFadeSidebarOnHover}
+        />
       )}
 
       <GlobalLayoutStateContext.Provider value={state}>
