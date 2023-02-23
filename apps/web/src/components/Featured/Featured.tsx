@@ -43,8 +43,8 @@ export default function Featured({ queryRef }: Props) {
     <StyledFeaturedPage gap={48}>
       {query.viewer?.__typename === 'Viewer' && (
         <SuggestedSection
-          title="Suggested for you"
-          subTitle="Curators you may be interested in based on who you follow on Gallery"
+          title="In your orbit"
+          subTitle="Curators you may enjoy based on your activity"
           queryRef={query}
         />
       )}

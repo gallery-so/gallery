@@ -89,7 +89,7 @@ export function HomeNavbar({ queryRef }: Props) {
           <NavbarLink
             active={pathname === exploreRoute.pathname}
             // @ts-expect-error We're not using the legacy Link
-            href={route(featuredRoute)}
+            href={route(exploreRoute)}
             onClick={handleFeaturedModeClick}
           >
             Explore
