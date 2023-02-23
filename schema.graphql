@@ -590,6 +590,9 @@ input UnsubscribeFromEmailTypeInput {
 
 enum UserExperienceType {
   MultiGalleryAnnouncement
+  EmailUpsell
+  MerchStoreUpsell
+  MaintenanceFeb2023
 }
 
 type UserExperience {

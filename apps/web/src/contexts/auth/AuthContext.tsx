@@ -14,7 +14,6 @@ import {
 import { fetchQuery, graphql, useRelayEnvironment } from 'react-relay';
 
 import FullPageLoader from '~/components/core/Loader/FullPageLoader';
-import { GLOBAL_BANNER_STORAGE_KEY, WHITE_RHINO_STORAGE_KEY } from '~/constants/storageKeys';
 import { _identify } from '~/contexts/analytics/AnalyticsContext';
 import ErrorBoundary from '~/contexts/boundary/ErrorBoundary';
 import { useToastActions } from '~/contexts/toast/ToastContext';
@@ -24,7 +23,6 @@ import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 import { isWeb3Error, Web3Error } from '~/types/Error';
 import { PreloadQueryArgs } from '~/types/PageComponentPreloadQuery';
 
-import clearLocalStorageWithException from './clearLocalStorageWithException';
 import { LOGGED_IN, LOGGED_OUT, UNKNOWN } from './types';
 
 export type AuthState = LOGGED_IN | typeof LOGGED_OUT | typeof UNKNOWN;
@@ -159,9 +157,6 @@ const AuthProvider = memo(({ children }: Props) => {
    */
   const setLoggedOut = useCallback(() => {
     setAuthState(LOGGED_OUT);
-    // keep around dismissed state of banner so that user doesn't
-    // encounter it again on login
-    clearLocalStorageWithException([GLOBAL_BANNER_STORAGE_KEY, WHITE_RHINO_STORAGE_KEY]);
   }, []);
 
   const logoutOnServer = useLogout();
