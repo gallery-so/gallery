@@ -22746,6 +22746,7 @@ __metadata:
     expo: ~47.0.12
     expo-av: ~13.0.2
     expo-dev-client: ~2.0.1
+    expo-font: ~11.0.1
     expo-splash-screen: ~0.17.5
     expo-status-bar: ~1.4.2
     nativewind: ^2.0.11
