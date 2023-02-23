@@ -9,7 +9,7 @@ import { StagedNftImageImageFragment$key } from '~/generated/StagedNftImageImage
 import { StagedNftImageVideoFragment$key } from '~/generated/StagedNftImageVideoFragment.graphql';
 import { useImageFailureCheck } from '~/hooks/useImageFailureCheck';
 import { useThrowOnMediaFailure } from '~/hooks/useNftRetry';
-import getVideoOrImageUrlForNftPreview from '~/utils/graphql/getVideoOrImageUrlForNftPreview';
+import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
 
 type Props = {
   tokenRef: StagedNftImageFragment$key;

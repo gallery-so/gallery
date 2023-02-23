@@ -12,8 +12,8 @@ import FollowButton from '~/components/Follow/FollowButton';
 import { GalleryOfTheWeekCardQueryFragment$key } from '~/generated/GalleryOfTheWeekCardQueryFragment.graphql';
 import { GalleryOfTheWeekCardUserFragment$key } from '~/generated/GalleryOfTheWeekCardUserFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
-import getVideoOrImageUrlForNftPreview from '~/utils/graphql/getVideoOrImageUrlForNftPreview';
 
 type GalleryOfTheWeekCardProps = {
   queryRef: GalleryOfTheWeekCardQueryFragment$key;

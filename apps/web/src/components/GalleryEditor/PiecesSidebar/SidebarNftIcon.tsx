@@ -17,7 +17,7 @@ import { SidebarNftIconFragment$key } from '~/generated/SidebarNftIconFragment.g
 import { SidebarNftIconPollerNewQuery } from '~/generated/SidebarNftIconPollerNewQuery.graphql';
 import { SidebarNftIconPreviewAssetNew$key } from '~/generated/SidebarNftIconPreviewAssetNew.graphql';
 import { useNftRetry, useThrowOnMediaFailure } from '~/hooks/useNftRetry';
-import getVideoOrImageUrlForNftPreview from '~/utils/graphql/getVideoOrImageUrlForNftPreview';
+import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
 import { getBackgroundColorOverrideForContract } from '~/utils/token';
 
 type SidebarNftIconProps = {

@@ -13,8 +13,8 @@ import { CouldNotRenderNftError } from '~/errors/CouldNotRenderNftError';
 import { CommunityHolderGridItemFragment$key } from '~/generated/CommunityHolderGridItemFragment.graphql';
 import { CommunityHolderGridItemQueryFragment$key } from '~/generated/CommunityHolderGridItemQueryFragment.graphql';
 import TokenDetailView from '~/scenes/TokenDetailPage/TokenDetailView';
+import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
 import { getOpenseaExternalUrl } from '~/utils/getOpenseaExternalUrl';
-import getVideoOrImageUrlForNftPreview from '~/utils/graphql/getVideoOrImageUrlForNftPreview';
 import { graphqlTruncateUniversalUsername } from '~/utils/wallet';
 
 import HoverCardOnUsername from '../HoverCard/HoverCardOnUsername';

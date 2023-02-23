@@ -9,7 +9,7 @@ import { StagedNftImageDraggingFragment$key } from '~/generated/StagedNftImageDr
 import { useImageFailureCheck } from '~/hooks/useImageFailureCheck';
 import useMouseUp from '~/hooks/useMouseUp';
 import { useThrowOnMediaFailure } from '~/hooks/useNftRetry';
-import getVideoOrImageUrlForNftPreview from '~/utils/graphql/getVideoOrImageUrlForNftPreview';
+import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
 import { getBackgroundColorOverrideForContract } from '~/utils/token';
 
 type Props = {
