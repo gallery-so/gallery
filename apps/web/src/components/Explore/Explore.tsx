@@ -1,20 +1,20 @@
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
-import { FeaturedFragment$key } from '~/generated/FeaturedFragment.graphql';
+import { ExploreFragment$key } from '~/generated/ExploreFragment.graphql';
 
 import { VStack } from '../core/Spacer/Stack';
 import SuggestedSection from './SuggestedSection';
 import TrendingSection from './TrendingSection';
 
 type Props = {
-  queryRef: FeaturedFragment$key;
+  queryRef: ExploreFragment$key;
 };
 
-export default function Featured({ queryRef }: Props) {
+export default function Explore({ queryRef }: Props) {
   const query = useFragment(
     graphql`
-      fragment FeaturedFragment on Query {
+      fragment ExploreFragment on Query {
         trendingUsers5Days: trendingUsers(input: { report: LAST_5_DAYS }) {
           ... on TrendingUsersPayload {
             __typename
@@ -40,7 +40,7 @@ export default function Featured({ queryRef }: Props) {
   );
 
   return (
-    <StyledFeaturedPage gap={48}>
+    <StyledExplorePage gap={48}>
       {query.viewer?.__typename === 'Viewer' && (
         <SuggestedSection
           title="In your orbit"
@@ -64,11 +64,11 @@ export default function Featured({ queryRef }: Props) {
           queryRef={query}
         />
       )}
-    </StyledFeaturedPage>
+    </StyledExplorePage>
   );
 }
 
-const StyledFeaturedPage = styled(VStack)`
+const StyledExplorePage = styled(VStack)`
   width: 100%;
   flex: 1;
   padding: 16px 0;

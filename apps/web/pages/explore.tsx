@@ -3,14 +3,14 @@ import { graphql, useLazyLoadQuery } from 'react-relay';
 import { HomeNavbar } from '~/contexts/globalLayout/GlobalNavbar/HomeNavbar/HomeNavbar';
 import { exploreQuery } from '~/generated/exploreQuery.graphql';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
-import FeaturedPage from '~/scenes/Home/FeaturedHomePage';
+import ExplorePage from '~/scenes/Home/ExploreHomePage';
 import useOpenSettingsModal from '~/scenes/Modals/useOpenSettingsModal';
 
 export default function Explore() {
   const query = useLazyLoadQuery<exploreQuery>(
     graphql`
       query exploreQuery {
-        ...FeaturedHomePageFragment
+        ...ExploreHomePageFragment
         ...HomeNavbarFragment
         ...useOpenSettingsModalFragment
       }
@@ -23,7 +23,7 @@ export default function Explore() {
   return (
     <GalleryRoute
       navbar={<HomeNavbar queryRef={query} />}
-      element={<FeaturedPage queryRef={query} />}
+      element={<ExplorePage queryRef={query} />}
     />
   );
 }
