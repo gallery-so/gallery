@@ -52,7 +52,7 @@ export function OnboardingDialogProvider({ children, queryRef }: OnboardingDialo
     return OnboardingDialogMessage[step as keyof typeof OnboardingDialogMessage];
   }, [step]);
 
-  const [isUserTooltipsExperienced, updateUserTooltipsExperienced] = useExperience({
+  const [isUserTooltipsExperienced, setUserTooltipsExperienced] = useExperience({
     type: 'MultiGalleryAnnouncement',
     queryRef: query,
   });
@@ -60,10 +60,8 @@ export function OnboardingDialogProvider({ children, queryRef }: OnboardingDialo
   const dismissUserExperience = useCallback(async () => {
     // Trick to dismiss the tooltip immediately while waiting for the mutation to finish
     setStep(0);
-    await updateUserTooltipsExperienced({
-      experienced: true,
-    });
-  }, [updateUserTooltipsExperienced]);
+    await setUserTooltipsExperienced();
+  }, [setUserTooltipsExperienced]);
 
   const nextStep = useCallback(() => {
     if (step === FINAL_STEP) {

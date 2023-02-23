@@ -11,14 +11,9 @@ type Props = {
   queryRef: useExperienceFragment$key;
 };
 
-type updateUserExperienceProps = {
-  experienced: boolean;
-};
+type userExperienceSetter = (p?: { experienced: boolean }) => Promise<void>;
 
-export default function useExperience({
-  type,
-  queryRef,
-}: Props): [boolean, (u: updateUserExperienceProps) => Promise<void>] {
+export default function useExperience({ type, queryRef }: Props): [boolean, userExperienceSetter] {
   const query = useFragment(
     graphql`
       fragment useExperienceFragment on Query {
@@ -57,17 +52,20 @@ export default function useExperience({
 
   const update = useUpdateUserExperience();
 
-  const updateUserExperience = useCallback(
-    async ({ experienced }: updateUserExperienceProps) => {
+  // by default, this callback will set the experienced state to `true`
+  const updateUserExperience: userExperienceSetter = useCallback(
+    async (props = { experienced: true }) => {
       if (!isLoggedIn) {
         return;
       }
+
+      const { experienced } = props;
 
       const optimisticExperiencesList = userExperiences.map((experience) => {
         if (experience.type === type) {
           return {
             type,
-            experienced: experienced,
+            experienced,
           };
         }
         return experience;
