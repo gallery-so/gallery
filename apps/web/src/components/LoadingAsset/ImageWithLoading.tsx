@@ -70,7 +70,9 @@ type StyledImageWithLoadingProps = {
 export const StyledImageWithLoading = styled.img<StyledImageWithLoadingProps>`
   display: block;
   max-height: ${({ maxHeight }) => maxHeight};
-  width: ${({ renderFullWidth }) => (renderFullWidth ? '100%' : 'auto')};
+  /* width: ${({ renderFullWidth }) => (renderFullWidth ? '100%' : 'auto')}; */
+  height: 100px;
+  width: 100px;
   max-width: 100%;
   cursor: pointer;
 `;
