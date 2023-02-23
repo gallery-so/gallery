@@ -858,9 +858,7 @@ type FeedConnection {
   pageInfo: PageInfo!
 }
 
-type SocialConnection implements Node
-  @goGqlId(fields: ["socialId", "socialType"])
-  @goEmbedHelper {
+type SocialConnection implements Node @goGqlId(fields: ["socialId", "socialType"]) @goEmbedHelper {
   id: ID!
 
   galleryUser: GalleryUser @goField(forceResolver: true)
@@ -986,13 +984,8 @@ type Query {
   trendingUsers(input: TrendingUsersInput!): TrendingUsersPayloadOrError
 
   # Retool Specific
-  usersByRole(
-    role: Role!
-    before: String
-    after: String
-    first: Int
-    last: Int
-  ): UsersConnection @retoolAuth
+  usersByRole(role: Role!, before: String, after: String, first: Int, last: Int): UsersConnection
+    @retoolAuth
 
   socialConnections(
     socialAccountType: SocialAccountType!
@@ -1704,9 +1697,7 @@ type UnbanUserFromFeedPayload {
   user: GalleryUser
 }
 
-union UnbanUserFromFeedPayloadOrError =
-    UnbanUserFromFeedPayload
-  | ErrNotAuthorized
+union UnbanUserFromFeedPayloadOrError = UnbanUserFromFeedPayload | ErrNotAuthorized
 
 input GalleryPositionInput {
   galleryId: DBID!
@@ -2020,9 +2011,8 @@ type Mutation {
     input: SocialAuthMechanism!
     display: Boolean! = true
   ): ConnectSocialAccountPayloadOrError @authRequired
-  disconnectSocialAccount(
-    accountType: SocialAccountType!
-  ): DisconnectSocialAccountPayloadOrError @authRequired
+  disconnectSocialAccount(accountType: SocialAccountType!): DisconnectSocialAccountPayloadOrError
+    @authRequired
   updateSocialAccountDisplayed(
     input: UpdateSocialAccountDisplayedInput!
   ): UpdateSocialAccountDisplayedPayloadOrError @authRequired
@@ -2085,16 +2075,10 @@ type Mutation {
     username: String!
     roles: [Role]
   ): RevokeRolesFromUserPayloadOrError @retoolAuth
-  syncTokensForUsername(
-    username: String!
-    chains: [Chain!]!
-  ): SyncTokensForUsernamePayloadOrError @retoolAuth
-  banUserFromFeed(
-    username: String!
-    action: String!
-  ): BanUserFromFeedPayloadOrError @retoolAuth
-  unbanUserFromFeed(username: String!): UnbanUserFromFeedPayloadOrError
+  syncTokensForUsername(username: String!, chains: [Chain!]!): SyncTokensForUsernamePayloadOrError
     @retoolAuth
+  banUserFromFeed(username: String!, action: String!): BanUserFromFeedPayloadOrError @retoolAuth
+  unbanUserFromFeed(username: String!): UnbanUserFromFeedPayloadOrError @retoolAuth
   mintPremiumCardToWallet(
     input: MintPremiumCardToWalletInput!
   ): MintPremiumCardToWalletPayloadOrError @retoolAuth
