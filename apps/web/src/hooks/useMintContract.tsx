@@ -76,6 +76,9 @@ export default function useMintContract({ contract, tokenId, allowlist, onMintSu
           if (errorMessage.includes('cannot mint while owning poster')) {
             errorMessage = 'You already own this item. Limit 1 per address.';
           }
+          if (errorMessage.includes('user rejected')) {
+            errorMessage = 'You rejected the transaction';
+          }
           setError(errorMessage);
           setTransactionStatus(TransactionStatus.FAILED);
         }
