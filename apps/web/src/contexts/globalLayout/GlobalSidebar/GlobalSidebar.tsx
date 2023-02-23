@@ -1,4 +1,4 @@
-import { ReactElement, useEffect } from 'react';
+import { ReactElement, useCallback, useEffect } from 'react';
 import styled from 'styled-components';
 
 import colors from '~/components/core/colors';
@@ -8,9 +8,14 @@ import SidebarDrawerProvider from './SidebarDrawerContext';
 type GlobalSidebarProps = {
   content: ReactElement | null;
   isVisible: boolean;
+  handleFadeSidebarOnHover: (visible: boolean) => void;
 };
 
-export default function GlobalSidebar({ content, isVisible }: GlobalSidebarProps) {
+export default function GlobalSidebar({
+  content,
+  isVisible,
+  handleFadeSidebarOnHover,
+}: GlobalSidebarProps) {
   console.log(content);
   useEffect(() => {
     console.log({ isVisible });
@@ -35,12 +40,23 @@ export default function GlobalSidebar({ content, isVisible }: GlobalSidebarProps
   //   }
   //   setZIndex(2);
   // }, [isVisible, fadeType]);
+
+  const handleMouseEnter = useCallback(
+    () => handleFadeSidebarOnHover(true),
+    [handleFadeSidebarOnHover]
+  );
+
+  const handleMouseLeave = useCallback(
+    () => handleFadeSidebarOnHover(false),
+    [handleFadeSidebarOnHover]
+  );
+
   if (!content) {
     return null;
   }
 
   return (
-    <StyledSidebar>
+    <StyledSidebar onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       {isVisible && (
         <StyledSidebarContent>
           <SidebarDrawerProvider>{content}</SidebarDrawerProvider>

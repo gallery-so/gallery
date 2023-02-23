@@ -139,7 +139,7 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
 
   // whether the route wants the navbar disabled. this is an override where scrolling / hovering
   // will not make the navbar appear
-  const forcedHiddenByRouteRef = useRef(false);
+  const forcedHiddenNavByRouteRef = useRef(false);
 
   // touchscreen devices will have different behavior
   const isTouchscreen = useRef(isTouchscreenDevice());
@@ -153,11 +153,11 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
   const lastFadeTriggeredByRouteTimestampRef = useRef(0);
 
   //-------------- ROUTE ---------------
-  const handleFadeNavbarFromGalleryRoute = useCallback(
+  const handleSetNavbarFromGalleryRoute = useCallback(
     (content: ReactElement | null) => {
       setFadeType('route');
       setIsNavbarEnabled(Boolean(content) && window.scrollY <= navbarHeight);
-      forcedHiddenByRouteRef.current = !content;
+      forcedHiddenNavByRouteRef.current = !content;
       lastFadeTriggeredByRouteTimestampRef.current = Date.now();
       // set nav content after a delay so the current content has a chance to fade out first
       // TODO: try to get this to work using framer motion + locationKey
@@ -168,10 +168,10 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
     [navbarHeight]
   );
 
-  //-------------- SCROLL --------------
+  //-------------- NAVBAR SCROLL --------------
   const handleFadeNavbarOnScroll = useCallback(() => {
     // the route gets ultimate override over whether the navbar is displayed
-    if (forcedHiddenByRouteRef.current) {
+    if (forcedHiddenNavByRouteRef.current) {
       return;
     }
     // if we recently triggered a route transition, ignore scroll-related side effects
@@ -183,18 +183,11 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
     setIsNavbarEnabled(window.scrollY <= navbarHeight);
   }, [navbarHeight]);
 
-  useEffect(() => {
-    window.addEventListener('scroll', handleFadeNavbarOnScroll);
-    return () => {
-      window.removeEventListener('scroll', handleFadeNavbarOnScroll);
-    };
-  }, [handleFadeNavbarOnScroll]);
-
-  //-------------- HOVER ---------------
+  //-------------- NAVBAR HOVER ---------------
   const handleFadeNavbarOnHover = useCallback(
     (visible: boolean) => {
       // handle override. the route gets ultimate power over whether the navbar is displayed
-      if (forcedHiddenByRouteRef.current) {
+      if (forcedHiddenNavByRouteRef.current) {
         return;
       }
       // if we recently triggered a route transition, ignore hover-related side effects
@@ -216,6 +209,84 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
     [navbarHeight]
   );
 
+  const [isSidebarEnabled, setIsSidebarEnabled] = useState(true);
+  const forcedHiddenSidebarByRouteRef = useRef(false);
+  /**
+   * There is a race condition that arises if a scroll-based fade is triggered immediately after
+   * a route-based fade, causing the nav to appear prematurely. We use a timestamp to determine
+   * whether an animation was recently triggered by route change. (For some reason, this bug
+   * couldn't be fixed with throttling)
+   */
+  const lastSidebarFadeTriggeredByRouteTimestampRef = useRef(0);
+  //-------------- SIDEBAR ROUTE ---------------
+  const handleSetSidebarFromGalleryRoute = useCallback(
+    (content: ReactElement | null) => {
+      setFadeType('route');
+      setIsSidebarEnabled(Boolean(content) && window.scrollY <= navbarHeight);
+      forcedHiddenSidebarByRouteRef.current = !content;
+      lastSidebarFadeTriggeredByRouteTimestampRef.current = Date.now();
+      // set nav content after a delay so the current content has a chance to fade out first
+      // TODO: try to get this to work using framer motion + locationKey
+      setTimeout(() => {
+        setSidebarContent(content);
+      }, FADE_TRANSITION_TIME_MS + 100);
+    },
+    [navbarHeight]
+  );
+
+  //-------------- SIDEBAR HOVER ---------------
+  const handleFadeSidebarOnHover = useCallback(
+    (visible: boolean) => {
+      // handle override. the route gets ultimate power over whether the sidebar is displayed
+      if (forcedHiddenSidebarByRouteRef.current) {
+        return;
+      }
+      // if we recently triggered a route transition, ignore hover-related side effects
+      if (Date.now() - lastSidebarFadeTriggeredByRouteTimestampRef.current < 100) {
+        return;
+      }
+      // prevent touchscreen users from triggering the sidebar by tapping near the top of the screen
+      if (isTouchscreen.current) {
+        return;
+      }
+      // prevent sidebar from fading out if user is near the top of the page and hovers in/out of sidebar area
+      if (!visible && window.scrollY <= navbarHeight) {
+        return;
+      }
+
+      setFadeType('hover');
+      setIsSidebarEnabled(visible);
+    },
+    [navbarHeight]
+  );
+
+  //-------------- SIDEBAR SCROLL --------------
+  const handleFadeSidebarOnScroll = useCallback(() => {
+    // the route gets ultimate override over whether the navbar is displayed
+    if (forcedHiddenSidebarByRouteRef.current) {
+      return;
+    }
+    // if we recently triggered a route transition, ignore scroll-related side effects
+    if (Date.now() - lastSidebarFadeTriggeredByRouteTimestampRef.current < 200) {
+      return;
+    }
+
+    setFadeType('scroll');
+    setIsSidebarEnabled(window.scrollY <= navbarHeight);
+  }, [navbarHeight]);
+
+  const handleFadeNavbarAndSidebarOnScroll = useCallback(() => {
+    handleFadeNavbarOnScroll();
+    handleFadeSidebarOnScroll();
+  }, [])
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleFadeNavbarAndSidebarOnScroll);
+    return () => {
+      window.removeEventListener('scroll', handleFadeNavbarAndSidebarOnScroll);
+    };
+  }, [handleFadeNavbarAndSidebarOnScroll]);
+
   const state = useMemo(
     () => ({ isNavbarVisible, wasNavbarVisible }),
     [isNavbarVisible, wasNavbarVisible]
@@ -224,10 +295,10 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
   const actions: GlobalLayoutActions = useMemo(
     () => ({
       setIsBannerVisible,
-      setTopNavContent: handleFadeNavbarFromGalleryRoute,
-      setSidebarContent,
+      setTopNavContent: handleSetNavbarFromGalleryRoute,
+      setSidebarContent: handleSetSidebarFromGalleryRoute,
     }),
-    [handleFadeNavbarFromGalleryRoute]
+    [handleSetNavbarFromGalleryRoute]
   );
 
   // Keeping this around for the next time we want to use it
@@ -253,7 +324,7 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
       />
 
       {isGlobalSidebarEnabled && (
-        <GlobalSidebar content={sidebarContent} isVisible={isNavbarVisible} />
+        <GlobalSidebar content={sidebarContent} isVisible={isSidebarEnabled} handleFadeSidebarOnHover={handleFadeSidebarOnHover} />
       )}
 
       <GlobalLayoutStateContext.Provider value={state}>
