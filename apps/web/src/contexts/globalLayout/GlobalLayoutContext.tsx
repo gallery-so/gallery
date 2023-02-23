@@ -384,7 +384,14 @@ function GlobalNavbarWithFadeEnabled({
             }}
           >
             {isBannerVisible && (
-              <GlobalBanner text="" queryRef={query} dismissOnActionComponentClick requireAuth />
+              <GlobalBanner
+                // make sure to add this to the schema on the backend
+                experienceFlag="MaintenanceFeb2023"
+                text="Gallery will be undergoing planned maintenance on **Saturday, Feb 25th** from **3:00 – 3:30PM EST** as we upgrade our infrastructure. The site will not be usable during this period."
+                queryRef={query}
+                dismissOnActionComponentClick
+                requireAuth
+              />
             )}
             <StyledBackground>{content}</StyledBackground>
           </motion.div>
