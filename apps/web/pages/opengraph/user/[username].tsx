@@ -4,8 +4,8 @@ import { graphql, useLazyLoadQuery } from 'react-relay';
 import { OpenGraphPreview } from '~/components/opengraph/OpenGraphPreview';
 import { HEIGHT_OPENGRAPH_IMAGE, WIDTH_OPENGRAPH_IMAGE } from '~/constants/opengraph';
 import { UsernameOpengraphQuery } from '~/generated/UsernameOpengraphQuery.graphql';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 import getVideoOrImageUrlForNftPreview from '~/utils/graphql/getVideoOrImageUrlForNftPreview';
-import { removeNullValues } from '~/utils/removeNullValues';
 
 export default function OpenGraphUserPage() {
   const { query } = useRouter();

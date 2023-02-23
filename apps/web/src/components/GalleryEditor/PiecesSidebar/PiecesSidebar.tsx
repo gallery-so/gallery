@@ -14,8 +14,8 @@ import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useG
 import { PiecesSidebarFragment$key } from '~/generated/PiecesSidebarFragment.graphql';
 import { PiecesSidebarViewerFragment$key } from '~/generated/PiecesSidebarViewerFragment.graphql';
 import useSyncTokens from '~/hooks/api/tokens/useSyncTokens';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { doesUserOwnWalletFromChain } from '~/utils/doesUserOwnWalletFromChain';
-import { removeNullValues } from '~/utils/removeNullValues';
 
 import OnboardingDialog from '../GalleryOnboardingGuide/OnboardingDialog';
 import { useOnboardingDialogContext } from '../GalleryOnboardingGuide/OnboardingDialogContext';

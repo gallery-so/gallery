@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { FeaturedUserCardFollowFragment$key } from '~/generated/FeaturedUserCardFollowFragment.graphql';
 import { FeaturedUserCardFragment$key } from '~/generated/FeaturedUserCardFragment.graphql';
 import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
-import { removeNullValues } from '~/utils/removeNullValues';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { pluralize } from '~/utils/string';
 
 import Badge from '../Badge/Badge';

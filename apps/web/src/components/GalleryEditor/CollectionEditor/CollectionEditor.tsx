@@ -4,7 +4,7 @@ import { graphql, useFragment } from 'react-relay';
 import useNotOptimizedForMobileWarning from '~/components/ManageGallery/useNotOptimizedForMobileWarning';
 import { CollectionEditorFragment$key } from '~/generated/CollectionEditorFragment.graphql';
 import { CollectionEditorViewerFragment$key } from '~/generated/CollectionEditorViewerFragment.graphql';
-import { removeNullValues } from '~/utils/removeNullValues';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import StagingArea from './StagingArea';
 

@@ -17,7 +17,7 @@ import { UserGalleryCollectionsFragment$key } from '~/generated/UserGalleryColle
 import { UserGalleryCollectionsQueryFragment$key } from '~/generated/UserGalleryCollectionsQueryFragment.graphql';
 import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
 import useWindowSize from '~/hooks/useWindowSize';
-import { removeNullValues } from '~/utils/removeNullValues';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import EmptyGallery from './EmptyGallery';
 import UserGalleryCollection from './UserGalleryCollection';

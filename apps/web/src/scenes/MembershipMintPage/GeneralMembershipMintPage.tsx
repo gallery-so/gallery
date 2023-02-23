@@ -15,8 +15,8 @@ import {
   GENERAL_MEMBERSHIP_CONRTACT_ADDRESS,
   useGeneralMembershipCardContract,
 } from '~/hooks/useContract';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 import MerkleTree from '~/utils/MerkleTree';
-import { removeNullValues } from '~/utils/removeNullValues';
 
 import { MEMBERSHIP_NFT_GENERAL } from './cardProperties';
 import { CustomizedGeneralMembershipMintPage } from './CustomizedGeneralMembershipMintPage';

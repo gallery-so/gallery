@@ -15,7 +15,7 @@ import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { CollectorsNoteAddedToCollectionFeedEventFragment$key } from '~/generated/CollectorsNoteAddedToCollectionFeedEventFragment.graphql';
 import { CollectorsNoteAddedToCollectionFeedEventQueryFragment$key } from '~/generated/CollectorsNoteAddedToCollectionFeedEventQueryFragment.graphql';
-import { removeNullValues } from '~/utils/removeNullValues';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { getTimeSince } from '~/utils/time';
 import unescape from '~/utils/unescape';
 

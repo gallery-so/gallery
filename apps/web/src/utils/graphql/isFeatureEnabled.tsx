@@ -2,8 +2,8 @@ import { graphql, readInlineData } from 'relay-runtime';
 
 import type { Role } from '~/generated/enums';
 import { isFeatureEnabledFragment$key } from '~/generated/isFeatureEnabledFragment.graphql';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 import isProduction from '~/utils/isProduction';
-import { removeNullValues } from '~/utils/removeNullValues';
 
 export enum FeatureFlag {
   GLOBAL_SIDEBAR = 'GLOBAL_SIDEBAR',

@@ -12,8 +12,8 @@ import FollowButton from '~/components/Follow/FollowButton';
 import { FeaturedCollectorCardCollectionFragment$key } from '~/generated/FeaturedCollectorCardCollectionFragment.graphql';
 import { FeaturedCollectorCardFragment$key } from '~/generated/FeaturedCollectorCardFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 import getVideoOrImageUrlForNftPreview from '~/utils/graphql/getVideoOrImageUrlForNftPreview';
-import { removeNullValues } from '~/utils/removeNullValues';
 
 type FeaturedCollectorCardProps = {
   queryRef: FeaturedCollectorCardFragment$key;
