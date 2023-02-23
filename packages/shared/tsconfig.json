@@ -1,11 +1,11 @@
 {
   "extends": "../../tsconfig.options.json",
   "compilerOptions": {
-    "lib": [
-      "DOM",
-      "ES2020"
-    ],
+    "lib": ["DOM", "ES2020"],
     "baseUrl": ".",
-    "outDir": "../../.moon/cache/types/packages/shared"
+    "outDir": "../../.moon/cache/types/packages/shared",
+    "paths": {
+      "~/generated/*": ["./__generated__/relay/*"]
+    }
   }
 }
