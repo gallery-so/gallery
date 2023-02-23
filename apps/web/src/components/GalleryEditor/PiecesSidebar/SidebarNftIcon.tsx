@@ -134,7 +134,7 @@ function SidebarNftIcon({
         // If the token was failing before, we need to make sure
         // that it's error state gets cleared on the chance
         // that it just got loaded.
-        clearTokenFailureState(token.dbid);
+        clearTokenFailureState([token.dbid]);
 
         timeoutId = setTimeout(refreshToken, POLLING_INTERVAL_MS);
       }
@@ -143,7 +143,7 @@ function SidebarNftIcon({
 
       return () => clearTimeout(timeoutId);
     },
-    [relayEnvironment, token.dbid, token.media?.__typename]
+    [clearTokenFailureState, relayEnvironment, token.dbid, token.media?.__typename]
   );
 
   if (token.media?.__typename === 'SyncingMedia') {
