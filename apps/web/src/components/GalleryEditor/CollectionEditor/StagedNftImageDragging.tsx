@@ -9,7 +9,7 @@ import useMouseUp from '~/hooks/useMouseUp';
 import { useThrowOnMediaFailure } from '~/hooks/useNftRetry';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
-import getVideoOrImageUrlForNftPreview from '~/utils/graphql/getVideoOrImageUrlForNftPreview';
+import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
 import { getBackgroundColorOverrideForContract } from '~/utils/token';
 
 type Props = {

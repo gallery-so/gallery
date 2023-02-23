@@ -4,7 +4,7 @@ import { graphql, useLazyLoadQuery } from 'react-relay';
 import { SingleOpenGraphPreview } from '~/components/opengraph/SingleOpenGraphPreview';
 import { HEIGHT_OPENGRAPH_IMAGE, WIDTH_OPENGRAPH_IMAGE } from '~/constants/opengraph';
 import { TokenIdOpengraphQuery } from '~/generated/TokenIdOpengraphQuery.graphql';
-import getVideoOrImageUrlForNftPreview from '~/utils/graphql/getVideoOrImageUrlForNftPreview';
+import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
 
 export default function OpenGraphCollectionPage() {
   const { query } = useRouter();
