@@ -6,7 +6,6 @@ import { graphql, useFragment } from 'react-relay';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseS } from '~/components/core/Text/Text';
 import { GalleryNavLinksFragment$key } from '~/generated/GalleryNavLinksFragment.graphql';
-import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { removeNullValues } from '~/utils/removeNullValues';
 
 import { NavbarLink } from '../NavbarLink';
@@ -46,8 +45,6 @@ export function GalleryNavLinks({ username, queryRef }: Props) {
   const followersRoute: Route = { pathname: '/[username]/followers', query: { username } };
   const activityRoute: Route = { pathname: '/[username]/activity', query: { username } };
 
-  const isMobile = useIsMobileWindowWidth();
-
   return (
     <HStack gap={8}>
       <NavbarLink
@@ -55,7 +52,7 @@ export function GalleryNavLinks({ username, queryRef }: Props) {
         href={route(galleriesRoute)}
         active={pathname === galleriesRoute.pathname}
       >
-        <HStack gap={4} align={isMobile ? 'center' : 'flex-end'}>
+        <HStack gap={4} align="baseline">
           <span>Galleries</span>
           {totalGalleries > 0 && <BaseS>{totalGalleries}</BaseS>}
         </HStack>
@@ -66,7 +63,7 @@ export function GalleryNavLinks({ username, queryRef }: Props) {
         href={route(followersRoute)}
         active={pathname === followersRoute.pathname}
       >
-        <HStack gap={4} align={isMobile ? 'center' : 'flex-end'}>
+        <HStack gap={4} align="baseline">
           Followers
           {totalFollowers > 0 && <BaseS>{totalFollowers}</BaseS>}
         </HStack>
