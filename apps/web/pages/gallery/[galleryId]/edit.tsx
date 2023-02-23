@@ -46,7 +46,7 @@ function EditGalleryPageInner({ queryRef }: EditGalleryPageInnerProps) {
   );
 
   const canGoBack = useCanGoBack();
-  const { replace, back } = useRouter();
+  const { replace, back, route } = useRouter();
   const {
     saveGallery,
     hasSaved,
@@ -101,6 +101,13 @@ function EditGalleryPageInner({ queryRef }: EditGalleryPageInnerProps) {
 
   if (!username) {
     throw new Error('Username does not exist');
+  }
+
+  // ummm shouldn't need to do this but sometimes this component
+  // renders when on another route?! this occurs when navigating
+  // away from the editor
+  if (route !== '/gallery/[galleryId]/edit') {
+    return null;
   }
 
   return (

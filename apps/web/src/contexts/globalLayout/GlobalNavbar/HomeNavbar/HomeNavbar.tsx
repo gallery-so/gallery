@@ -57,7 +57,7 @@ export function HomeNavbar({ queryRef }: Props) {
   const trendingRoute: Route = { pathname: '/trending', query: {} };
   const latestRoute: Route = { pathname: '/latest', query: {} };
   const latestFollowingRoute: Route = { pathname: '/latest/following', query: {} };
-  const featuredRoute: Route = { pathname: '/featured', query: {} };
+  const exploreRoute: Route = { pathname: '/explore', query: {} };
 
   const isMobile = useIsMobileWindowWidth();
 
@@ -87,12 +87,12 @@ export function HomeNavbar({ queryRef }: Props) {
           </NavbarLink>
 
           <NavbarLink
-            active={pathname === featuredRoute.pathname}
+            active={pathname === exploreRoute.pathname}
             // @ts-expect-error We're not using the legacy Link
-            href={route(featuredRoute)}
+            href={route(exploreRoute)}
             onClick={handleFeaturedModeClick}
           >
-            Featured
+            Explore
           </NavbarLink>
         </HStack>
       </NavbarCenterContent>

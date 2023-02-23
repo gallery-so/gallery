@@ -1,16 +1,14 @@
-import { Client, createClient } from "graphql-ws";
-import { Observable, SubscribeFunction } from "relay-runtime";
+import { Client, createClient } from 'graphql-ws';
+import { Observable, SubscribeFunction } from 'relay-runtime';
 
 type CreateRelaySubscribeFunctionArgs = {
   url: string;
 };
 
-export function createRelaySubscribeFunction({
-  url,
-}: CreateRelaySubscribeFunctionArgs) {
+export function createRelaySubscribeFunction({ url }: CreateRelaySubscribeFunctionArgs) {
   let websocketClient: Client;
 
-  if (typeof WebSocket !== "undefined") {
+  if (typeof WebSocket !== 'undefined') {
     websocketClient = createClient({
       url,
     });
@@ -19,9 +17,7 @@ export function createRelaySubscribeFunction({
   const relaySubscribeFunction: SubscribeFunction = (operation, variables) => {
     return Observable.create((sink) => {
       if (!operation.text) {
-        throw new Error(
-          "Relay subscribe function called without any operation text"
-        );
+        throw new Error('Relay subscribe function called without any operation text');
       }
 
       return websocketClient.subscribe(

@@ -590,6 +590,9 @@ input UnsubscribeFromEmailTypeInput {
 
 enum UserExperienceType {
   MultiGalleryAnnouncement
+  EmailUpsell
+  MerchStoreUpsell
+  MaintenanceFeb2023
 }
 
 type UserExperience {
@@ -697,7 +700,7 @@ interface FeedEventData {
   action: Action
 }
 
-type FeedEvent implements Node {
+type FeedEvent implements Node @key(fields: "dbid") {
   id: ID!
   dbid: DBID!
 
@@ -830,6 +833,31 @@ type FeedConnection {
   pageInfo: PageInfo!
 }
 
+type SocialConnection implements Node @goGqlId(fields: ["socialId", "socialType"]) @goEmbedHelper {
+  id: ID!
+
+  galleryUser: GalleryUser @goField(forceResolver: true)
+
+  currentlyFollowing: Boolean!
+  socialId: String!
+  socialType: SocialAccountType!
+  displayName: String!
+  socialUsername: String!
+  profileImage: String!
+}
+
+union SocialConnectionsOrError = SocialConnection | ErrInvalidInput
+
+type SocialConnectionsEdge {
+  node: SocialConnectionsOrError
+  cursor: String
+}
+
+type SocialConnectionsConnection {
+  edges: [SocialConnectionsEdge]
+  pageInfo: PageInfo!
+}
+
 type UserEdge {
   node: GalleryUser
   cursor: String
@@ -920,6 +948,15 @@ type Query {
   # Retool Specific
   usersByRole(role: Role!, before: String, after: String, first: Int, last: Int): UsersConnection
     @retoolAuth
+
+  socialConnections(
+    socialAccountType: SocialAccountType!
+    excludeAlreadyFollowing: Boolean
+    before: String
+    after: String
+    first: Int
+    last: Int
+  ): SocialConnectionsConnection @goField(forceResolver: true) @authRequired
 }
 
 input CollectionLayoutInput {
@@ -1576,6 +1613,12 @@ type BanUserFromFeedPayload {
 
 union BanUserFromFeedPayloadOrError = BanUserFromFeedPayload | ErrNotAuthorized
 
+type UnbanUserFromFeedPayload {
+  user: GalleryUser
+}
+
+union UnbanUserFromFeedPayloadOrError = UnbanUserFromFeedPayload | ErrNotAuthorized
+
 input GalleryPositionInput {
   galleryId: DBID!
   position: String!
@@ -1800,6 +1843,15 @@ union MintPremiumCardToWalletPayloadOrError =
   | ErrInvalidInput
   | ErrNotAuthorized
 
+type DisconnectSocialAccountPayload {
+  viewer: Viewer
+}
+
+union DisconnectSocialAccountPayloadOrError =
+    DisconnectSocialAccountPayload
+  | ErrInvalidInput
+  | ErrNotAuthorized
+
 type Mutation {
   # User Mutations
   addUserWallet(
@@ -1853,6 +1905,8 @@ type Mutation {
     input: SocialAuthMechanism!
     display: Boolean! = true
   ): ConnectSocialAccountPayloadOrError @authRequired
+  disconnectSocialAccount(accountType: SocialAccountType!): DisconnectSocialAccountPayloadOrError
+    @authRequired
   updateSocialAccountDisplayed(
     input: UpdateSocialAccountDisplayedInput!
   ): UpdateSocialAccountDisplayedPayloadOrError @authRequired
@@ -1900,6 +1954,7 @@ type Mutation {
   syncTokensForUsername(username: String!, chains: [Chain!]!): SyncTokensForUsernamePayloadOrError
     @retoolAuth
   banUserFromFeed(username: String!, action: String!): BanUserFromFeedPayloadOrError @retoolAuth
+  unbanUserFromFeed(username: String!): UnbanUserFromFeedPayloadOrError @retoolAuth
   mintPremiumCardToWallet(
     input: MintPremiumCardToWalletInput!
   ): MintPremiumCardToWalletPayloadOrError @retoolAuth

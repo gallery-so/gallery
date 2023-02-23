@@ -6,26 +6,26 @@ import isProduction from '~/utils/isProduction';
 import { removeNullValues } from '~/utils/removeNullValues';
 
 export enum FeatureFlag {
-  MULTIGALLERY = 'MULTIGALLERY',
+  GLOBAL_SIDEBAR = 'GLOBAL_SIDEBAR',
 }
 
 const PROD_FLAGS: Record<FeatureFlag, boolean> = {
-  MULTIGALLERY: true,
+  GLOBAL_SIDEBAR: false,
 };
 
 const DEV_FLAGS: Record<FeatureFlag, boolean> = {
-  MULTIGALLERY: true,
+  GLOBAL_SIDEBAR: true,
 };
 
 const ROLE_FLAGS: Record<Role, Record<FeatureFlag, boolean>> = {
   ADMIN: {
-    MULTIGALLERY: true,
+    GLOBAL_SIDEBAR: false,
   },
   BETA_TESTER: {
-    MULTIGALLERY: false,
+    GLOBAL_SIDEBAR: false,
   },
   EARLY_ACCESS: {
-    MULTIGALLERY: true,
+    GLOBAL_SIDEBAR: false,
   },
 };
 

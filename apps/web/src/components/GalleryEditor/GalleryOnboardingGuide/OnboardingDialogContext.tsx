@@ -2,9 +2,8 @@ import { createContext, useCallback, useContext, useMemo, useState } from 'react
 import { graphql, useFragment } from 'react-relay';
 
 import { OnboardingDialogContextFragment$key } from '~/generated/OnboardingDialogContextFragment.graphql';
+import useExperience from '~/utils/graphql/experiences/useExperience';
 import isMac from '~/utils/isMac';
-
-import useUpdateUserExperience from './useUpdateUserExperience';
 
 type OnboardingDialogContextType = {
   step: number;
@@ -38,33 +37,13 @@ export function OnboardingDialogProvider({ children, queryRef }: OnboardingDialo
   const query = useFragment(
     graphql`
       fragment OnboardingDialogContextFragment on Query {
-        viewer {
-          ... on Viewer {
-            __typename
-            userExperiences @required(action: THROW) {
-              type
-              experienced
-            }
-          }
-        }
+        ...useExperienceFragment
       }
     `,
     queryRef
   );
 
-  const isUserExperiencedTooltips = useMemo(() => {
-    if (query.viewer?.__typename !== 'Viewer') return true;
-
-    return Boolean(
-      query.viewer?.userExperiences.find(
-        (userExperience) => userExperience.type === 'MultiGalleryAnnouncement'
-      )?.experienced
-    );
-  }, [query.viewer]);
-
   const [step, setStep] = useState(1);
-
-  const updateUserExperience = useUpdateUserExperience();
 
   const dialogMessage = useMemo(() => {
     if (step === 6) {
@@ -73,14 +52,16 @@ export function OnboardingDialogProvider({ children, queryRef }: OnboardingDialo
     return OnboardingDialogMessage[step as keyof typeof OnboardingDialogMessage];
   }, [step]);
 
+  const [isUserTooltipsExperienced, setUserTooltipsExperienced] = useExperience({
+    type: 'MultiGalleryAnnouncement',
+    queryRef: query,
+  });
+
   const dismissUserExperience = useCallback(async () => {
     // Trick to dismiss the tooltip immediately while waiting for the mutation to finish
     setStep(0);
-    await updateUserExperience({
-      type: 'MultiGalleryAnnouncement',
-      experienced: true,
-    });
-  }, [updateUserExperience]);
+    await setUserTooltipsExperienced();
+  }, [setUserTooltipsExperienced]);
 
   const nextStep = useCallback(() => {
     if (step === FINAL_STEP) {
@@ -92,9 +73,9 @@ export function OnboardingDialogProvider({ children, queryRef }: OnboardingDialo
   }, [dismissUserExperience, step]);
 
   const currentStep = useMemo(() => {
-    if (isUserExperiencedTooltips) return 0;
+    if (isUserTooltipsExperienced) return 0;
     return step;
-  }, [isUserExperiencedTooltips, step]);
+  }, [isUserTooltipsExperienced, step]);
 
   const handleClose = useCallback(() => {
     dismissUserExperience();
