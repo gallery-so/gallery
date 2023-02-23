@@ -76,6 +76,7 @@ export function Notification({ notificationRef, queryRef }: NotificationProps) {
           ... on Viewer {
             user {
               username
+              dbid
             }
           }
         }
@@ -157,11 +158,12 @@ export function Notification({ notificationRef, queryRef }: NotificationProps) {
     showModal,
   ]);
 
+  const userId = query.viewer?.user?.dbid ?? '';
   const isClickable = handleNotificationClick != undefined;
   const handleClick = useCallback(() => {
     handleNotificationClick?.handleClick();
-    clearAllNotifications();
-  }, [clearAllNotifications, handleNotificationClick]);
+    clearAllNotifications(userId);
+  }, [clearAllNotifications, handleNotificationClick, userId]);
   const showCaret = handleNotificationClick?.showCaret ?? false;
 
   const timeAgo = getTimeSince(notification.updatedTime);
