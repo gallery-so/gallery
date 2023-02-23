@@ -18,7 +18,6 @@ import { fetchQuery, graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import FullPageLoader from '~/components/core/Loader/FullPageLoader';
-import { MAINTENANCE_BANNER_6_18_STORAGE_KEY } from '~/constants/storageKeys';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { GlobalLayoutContextNavbarFragment$key } from '~/generated/GlobalLayoutContextNavbarFragment.graphql';
 import { GlobalLayoutContextQuery } from '~/generated/GlobalLayoutContextQuery.graphql';
@@ -31,7 +30,7 @@ import isTouchscreenDevice from '~/utils/isTouchscreenDevice';
 
 import { FEATURED_COLLECTION_IDS } from './GlobalAnnouncementPopover/GlobalAnnouncementPopover';
 import useGlobalAnnouncementPopover from './GlobalAnnouncementPopover/useGlobalAnnouncementPopover';
-import Banner from './GlobalBanner/GlobalBanner';
+import GlobalBanner from './GlobalBanner/GlobalBanner';
 import GlobalSidebar from './GlobalSidebar/GlobalSidebar';
 import {
   FADE_TRANSITION_TIME_MS,
@@ -272,7 +271,7 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
                 transition: { duration: FADE_TRANSITION_TIME_SECONDS },
               }}
               transition={{
-                type: 'ease-in-out',
+                ease: 'easeInOut',
                 delay: NAVIGATION_TRANSITION_TIME_SECONDS,
                 duration: FADE_TRANSITION_TIME_SECONDS,
               }}
@@ -381,21 +380,13 @@ function GlobalNavbarWithFadeEnabled({
               transition: { duration: FADE_TRANSITION_TIME_SECONDS },
             }}
             transition={{
-              // for some reason, setting the `type` here causes an unusual "needsInterpolation" crash
-              // https://github.com/framer/motion/issues/1847#issuecomment-1364491137
-              // type: 'ease-in-out',
+              ease: 'easeInOut',
               delay: fadeType === 'route' ? NAVIGATION_TRANSITION_TIME_SECONDS : 0,
               duration: FADE_TRANSITION_TIME_SECONDS,
             }}
           >
             {isBannerVisible && (
-              <Banner
-                localStorageKey={MAINTENANCE_BANNER_6_18_STORAGE_KEY}
-                text=""
-                queryRef={query}
-                dismissOnActionComponentClick
-                requireAuth
-              />
+              <GlobalBanner text="" queryRef={query} dismissOnActionComponentClick requireAuth />
             )}
             <StyledBackground>{content}</StyledBackground>
           </motion.div>

@@ -103,12 +103,12 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({
       href={collectionPagePath}
       onClick={() => track('Feed: Clicked Description added to collection event')}
     >
-      <StyledEvent isSubEvent={isSubEvent}>
+      <StyledEvent>
         <VStack gap={isSubEvent ? 0 : 16}>
           <StyledEventHeader>
             <StyledEventText isSubEvent={isSubEvent}>
               {!isSubEvent && <HoverCardOnUsername userRef={event.owner} queryRef={query} />} added
-              a description to{collectionName ? ' ' : ' their collection'}
+              a description to {collectionName ? ' ' : ' their collection'}
               <Link href={collectionPagePath} passHref>
                 <StyledEventLabel>{collectionName}</StyledEventLabel>
               </Link>

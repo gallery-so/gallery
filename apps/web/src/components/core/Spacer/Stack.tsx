@@ -66,7 +66,6 @@ export const VStack = styled.div<{
 
   flex-wrap: ${({ wrap }) => wrap ?? 'unset'};
 
-
   ${({ shrink }) =>
     shrink &&
     css`

@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled, { css } from 'styled-components';
@@ -21,6 +21,8 @@ import { NotificationInnerQueryFragment$key } from '~/generated/NotificationInne
 import { NotificationQueryFragment$key } from '~/generated/NotificationQueryFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { getTimeSince } from '~/utils/time';
+
+import { useClearNotifications } from './useClearNotifications';
 
 type NotificationProps = {
   notificationRef: NotificationFragment$key;
@@ -74,6 +76,7 @@ export function Notification({ notificationRef, queryRef }: NotificationProps) {
           ... on Viewer {
             user {
               username
+              dbid
             }
           }
         }
@@ -87,6 +90,8 @@ export function Notification({ notificationRef, queryRef }: NotificationProps) {
   const { showModal } = useModalActions();
   const { push } = useRouter();
   const isMobile = useIsMobileWindowWidth();
+
+  const clearAllNotifications = useClearNotifications();
 
   /**
    * Bare with me here, this `useMemo` returns a stable function
@@ -153,8 +158,12 @@ export function Notification({ notificationRef, queryRef }: NotificationProps) {
     showModal,
   ]);
 
+  const userId = query.viewer?.user?.dbid ?? '';
   const isClickable = handleNotificationClick != undefined;
-  const handleClick = handleNotificationClick?.handleClick;
+  const handleClick = useCallback(() => {
+    handleNotificationClick?.handleClick();
+    clearAllNotifications(userId);
+  }, [clearAllNotifications, handleNotificationClick, userId]);
   const showCaret = handleNotificationClick?.showCaret ?? false;
 
   const timeAgo = getTimeSince(notification.updatedTime);

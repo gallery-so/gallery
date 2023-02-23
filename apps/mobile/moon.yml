@@ -1,13 +1,13 @@
-language: "javascript"
+language: 'javascript'
 
 fileGroups:
   tests:
-    - "tests/**/*"
-    - "**/*.test.ts*"
+    - 'tests/**/*'
+    - '**/*.test.ts*'
   lint:
-    - "**/*.*{ts,js,tsx,jsx,cjs,mjs}"
+    - '**/*.*{ts,js,tsx,jsx,cjs,mjs}'
   source:
-    - "src/**/*.{ts,js,tsx,jsx}"
+    - 'src/**/*.{ts,js,tsx,jsx}'
 
 tasks:
   relay-watch:
@@ -17,7 +17,7 @@ tasks:
   relay-codegen:
     command: relay-compiler --project mobile --repersist ../../relay.config.js
     inputs:
-      - "@group(source)"
+      - '@group(source)'
 
   codegen-watch:
     command: relay-compiler --project mobile --repersist --watch ../../relay.config.js
@@ -32,5 +32,5 @@ tasks:
   # Inherited from root task
   typecheck:
     deps:
-      - "~:relay-codegen"
+      - '~:relay-codegen'
     command: tsc
