@@ -14,6 +14,8 @@ import NotFound from '~/scenes/NotFound/NotFound';
 import { UserGalleryLayout } from '~/scenes/UserGalleryPage/UserGalleryLayout';
 import { UserNameAndDescriptionHeader } from '~/scenes/UserGalleryPage/UserNameAndDescriptionHeader';
 
+import UserTwitterSection from './UserTwitterSection';
+
 type Props = {
   queryRef: UserGalleryFragment$key;
 };
@@ -44,6 +46,7 @@ function UserGallery({ queryRef }: Props) {
             }
 
             ...UserNameAndDescriptionHeader
+            ...UserTwitterSectionFragment
           }
           ... on ErrUserNotFound {
             __typename
@@ -52,6 +55,7 @@ function UserGallery({ queryRef }: Props) {
 
         ...UserGalleryLayoutQueryFragment
         ...UserNameAndDescriptionHeaderQueryFragment
+        ...UserTwitterSectionQueryFragment
       }
     `,
     queryRef
@@ -88,7 +92,12 @@ function UserGallery({ queryRef }: Props) {
 
   return (
     <VStack gap={isMobile ? 12 : 24}>
-      <UserNameAndDescriptionHeader userRef={user} queryRef={query} />
+      <VStack gap={12}>
+        <UserNameAndDescriptionHeader userRef={user} queryRef={query} />
+
+        <UserTwitterSection userRef={user} queryRef={query} />
+      </VStack>
+
       <Divider />
       <UserGalleryLayout galleryRef={user.featuredGallery} queryRef={query} />
     </VStack>
