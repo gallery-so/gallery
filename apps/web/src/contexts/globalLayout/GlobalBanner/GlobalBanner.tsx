@@ -47,16 +47,14 @@ export default function GlobalBanner({
 
   const isAuthenticated = Boolean(query.viewer?.user?.id);
 
-  const [isMaintenanceBannerExperienced, updateMaintenanceBannerExperienced] = useExperience({
+  const [isMaintenanceBannerExperienced, setMaintenanceBannerExperienced] = useExperience({
     type: 'MaintenanceFeb2023',
     queryRef: query,
   });
 
   const hideBanner = useCallback(async () => {
-    await updateMaintenanceBannerExperienced({
-      experienced: true,
-    });
-  }, [updateMaintenanceBannerExperienced]);
+    await setMaintenanceBannerExperienced();
+  }, [setMaintenanceBannerExperienced]);
 
   const handleActionClick = useCallback(() => {
     if (dismissOnActionComponentClick) {

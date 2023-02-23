@@ -49,13 +49,13 @@ export default function useGlobalAnnouncementPopover({
 
   // NOTE: next time we use global announcements, we'll need to set a new flag in the schema
   const isGlobalAnnouncementExperienced = true;
-  // const [isGlobalAnnouncementExperienced, updateGlobalAnnouncementExperienced] = useExperience({
+  // const [isGlobalAnnouncementExperienced, setGlobalAnnouncementExperienced] = useExperience({
   //   type: 'YourGlobalAnnouncementFlagHere',
   //   queryRef: query,
   // })
   // const handleDismissGlobalAnnouncement = useCallback(async () => {
-  //   return await updateGlobalAnnouncementExperienced({ experienced: true })
-  // }, [updateGlobalAnnouncementExperienced])
+  //   return await setGlobalAnnouncementExperienced()
+  // }, [setGlobalAnnouncementExperienced])
 
   // tracks dismissal on session, not persisted across refreshes
   const [dismissedOnSession, setDismissedOnSession] = useState(false);
