@@ -66,6 +66,7 @@ export default function useMintContract({ contract, tokenId, allowlist, onMintSu
         } catch (error: unknown) {
           // @ts-expect-error: weird contract error type has `error.error`
           let errorMessage = error?.error?.message ?? error?.message;
+          console.log({ errorMessage });
           if (
             errorMessage.includes('not approved to mint') ||
             errorMessage.includes('does not exist in Merkle tree')
