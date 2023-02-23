@@ -11,10 +11,18 @@ import UserFollowedUsersFeedEvent from '~/components/Feed/Events/UserFollowedUse
 import { FeedMode } from '~/components/Feed/types';
 import { TriedToRenderUnsupportedFeedEvent } from '~/errors/TriedToRenderUnsupportedFeedEvent';
 import { FeedEventDataFragment$key } from '~/generated/FeedEventDataFragment.graphql';
-import { FeedEventDataNonRecursiveFragment$key } from '~/generated/FeedEventDataNonRecursiveFragment.graphql';
-import { FeedEventDataNonRecursiveQueryFragment$key } from '~/generated/FeedEventDataNonRecursiveQueryFragment.graphql';
+import {
+  FeedEventDataNonRecursiveFragment$data,
+  FeedEventDataNonRecursiveFragment$key,
+} from '~/generated/FeedEventDataNonRecursiveFragment.graphql';
+import {
+  FeedEventDataNonRecursiveQueryFragment$data,
+  FeedEventDataNonRecursiveQueryFragment$key,
+} from '~/generated/FeedEventDataNonRecursiveQueryFragment.graphql';
 import { FeedEventDataQueryFragment$key } from '~/generated/FeedEventDataQueryFragment.graphql';
 import unescape from '~/utils/unescape';
+
+import { StyledEvent } from './Events/EventStyles';
 
 type FeedEventDataNonRecursiveProps = {
   isSubEvent?: boolean;
@@ -23,6 +31,81 @@ type FeedEventDataNonRecursiveProps = {
   caption: string | null;
   queryRef: FeedEventDataNonRecursiveQueryFragment$key;
   eventDataRef: FeedEventDataNonRecursiveFragment$key;
+};
+
+type getEventComponentProps = {
+  eventData: FeedEventDataNonRecursiveFragment$data;
+  isSubEvent?: boolean;
+  query: FeedEventDataNonRecursiveQueryFragment$data;
+  caption: string | null;
+  feedMode: FeedMode;
+  eventDbid: string;
+};
+
+const getEventComponent = ({
+  eventData,
+  isSubEvent,
+  query,
+  caption,
+  feedMode,
+  eventDbid,
+}: getEventComponentProps) => {
+  switch (eventData?.__typename) {
+    case 'CollectionCreatedFeedEventData':
+      return (
+        <CollectionCreatedFeedEvent
+          isSubEvent={isSubEvent}
+          eventDataRef={eventData}
+          queryRef={query}
+        />
+      );
+    case 'CollectionUpdatedFeedEventData':
+      return (
+        <CollectionUpdatedFeedEvent
+          isSubEvent={isSubEvent}
+          eventDataRef={eventData}
+          queryRef={query}
+        />
+      );
+    case 'CollectorsNoteAddedToTokenFeedEventData':
+      return (
+        <CollectorsNoteAddedToTokenFeedEvent
+          isSubEvent={isSubEvent}
+          eventDataRef={eventData}
+          queryRef={query}
+        />
+      );
+    case 'TokensAddedToCollectionFeedEventData':
+      return (
+        <TokensAddedToCollectionFeedEvent
+          isSubEvent={isSubEvent}
+          caption={unescape(caption ?? '')}
+          eventDataRef={eventData}
+          queryRef={query}
+        />
+      );
+    case 'CollectorsNoteAddedToCollectionFeedEventData':
+      return (
+        <CollectorsNoteAddedToCollectionFeedEvent
+          isSubEvent={isSubEvent}
+          eventDataRef={eventData}
+          queryRef={query}
+        />
+      );
+    case 'UserFollowedUsersFeedEventData':
+      return (
+        <UserFollowedUsersFeedEvent
+          isSubEvent={isSubEvent}
+          eventDataRef={eventData}
+          queryRef={query}
+          feedMode={feedMode}
+        />
+      );
+    case 'GalleryInfoUpdatedFeedEventData':
+      return null;
+    default:
+      throw new TriedToRenderUnsupportedFeedEvent(eventDbid);
+  }
 };
 
 export function NonRecursiveFeedEventData({
@@ -81,62 +164,18 @@ export function NonRecursiveFeedEventData({
     eventDataRef
   );
 
-  switch (eventData?.__typename) {
-    case 'CollectionCreatedFeedEventData':
-      return (
-        <CollectionCreatedFeedEvent
-          isSubEvent={isSubEvent}
-          eventDataRef={eventData}
-          queryRef={query}
-        />
-      );
-    case 'CollectionUpdatedFeedEventData':
-      return (
-        <CollectionUpdatedFeedEvent
-          isSubEvent={isSubEvent}
-          eventDataRef={eventData}
-          queryRef={query}
-        />
-      );
-    case 'CollectorsNoteAddedToTokenFeedEventData':
-      return (
-        <CollectorsNoteAddedToTokenFeedEvent
-          isSubEvent={isSubEvent}
-          eventDataRef={eventData}
-          queryRef={query}
-        />
-      );
-    case 'TokensAddedToCollectionFeedEventData':
-      return (
-        <TokensAddedToCollectionFeedEvent
-          isSubEvent={isSubEvent}
-          caption={unescape(caption ?? '')}
-          eventDataRef={eventData}
-          queryRef={query}
-        />
-      );
-    case 'CollectorsNoteAddedToCollectionFeedEventData':
-      return (
-        <CollectorsNoteAddedToCollectionFeedEvent
-          isSubEvent={isSubEvent}
-          eventDataRef={eventData}
-          queryRef={query}
-        />
-      );
-    case 'UserFollowedUsersFeedEventData':
-      return (
-        <UserFollowedUsersFeedEvent
-          isSubEvent={isSubEvent}
-          eventDataRef={eventData}
-          queryRef={query}
-          feedMode={feedMode}
-        />
-      );
-    case 'GalleryInfoUpdatedFeedEventData':
-      return null;
-    default:
-      throw new TriedToRenderUnsupportedFeedEvent(eventDbid);
-  }
+  const eventComponent = getEventComponent({
+    eventData,
+    isSubEvent,
+    query,
+    caption,
+    feedMode,
+    eventDbid,
+  });
+
+  if (!eventComponent) return null;
+
+  return <StyledEvent isSubEvent={isSubEvent}>{eventComponent}</StyledEvent>;
 }
 
 type FeedEventDataProps = {
