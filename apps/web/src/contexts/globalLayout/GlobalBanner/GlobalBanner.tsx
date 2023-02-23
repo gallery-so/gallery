@@ -7,14 +7,16 @@ import colors from '~/components/core/colors';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { BaseM, TitleS } from '~/components/core/Text/Text';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
+import { UserExperienceType } from '~/generated/enums';
 import { GlobalBannerFragment$key } from '~/generated/GlobalBannerFragment.graphql';
 import { DecoratedCloseIcon } from '~/icons/CloseIcon';
 import useExperience from '~/utils/graphql/experiences/useExperience';
 
 type Props = {
-  title?: React.ReactNode | string;
   queryRef: GlobalBannerFragment$key;
+  experienceFlag: UserExperienceType;
   text: string;
+  title?: React.ReactNode | string;
   requireAuth?: boolean;
   actionComponent?: React.ReactNode;
   dismissOnActionComponentClick?: boolean;
@@ -22,6 +24,7 @@ type Props = {
 
 export default function GlobalBanner({
   queryRef,
+  experienceFlag,
   text,
   title,
   requireAuth = false,
@@ -48,7 +51,7 @@ export default function GlobalBanner({
   const isAuthenticated = Boolean(query.viewer?.user?.id);
 
   const [isMaintenanceBannerExperienced, setMaintenanceBannerExperienced] = useExperience({
-    type: 'MaintenanceFeb2023',
+    type: experienceFlag,
     queryRef: query,
   });
 
