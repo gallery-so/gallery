@@ -1,20 +1,21 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 // test/helpers/merkleTree.js
 // SPDX-License-Identifier: MIT
 // from https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v3.0.1/test/helpers/merkleTree.js
 
-import { bufferToHex, keccak256 } from 'ethereumjs-util';
+import { bufferToHex } from 'ethereumjs-util';
 import web3 from 'web3';
 
 export default class MerkleTree {
   elements: Buffer[];
   layers: Buffer[][];
 
-  constructor(elements: string[]) {
+  constructor(elements) {
     // Filter empty strings and hash elements
     this.elements = elements
       .filter((el) => el)
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      .map((el) => Buffer.from(web3.utils.hexToBytes(web3.utils.sha3(el)!)));
+      .map((el) => Buffer.from(web3.utils.hexToBytes(web3.utils.sha3(el, { encoding: 'hex' }))));
     // Sort elements
     this.elements.sort(Buffer.compare);
 
@@ -25,56 +26,55 @@ export default class MerkleTree {
     this.layers = this.getLayers(this.elements);
   }
 
-  getLayers(elements: Buffer[]) {
+  getLayers(elements) {
     if (elements.length === 0) {
-      throw new Error('Empty tree');
+      return [['']];
     }
 
     const layers = [];
     layers.push(elements);
 
     // Get next layer until we reach the root
-    let layer;
-    while ((layer = layers[layers.length - 1]) && layer.length > 1) {
-      layers.push(this.getNextLayer(layer));
+    while (layers[layers.length - 1].length > 1) {
+      layers.push(this.getNextLayer(layers[layers.length - 1]));
     }
 
     return layers;
   }
 
-  getNextLayer(elements: Buffer[]) {
-    return elements.reduce((layer: Buffer[], el, idx, arr) => {
-      const pair = arr[idx + 1];
-      if (idx % 2 === 0 && pair) {
+  getNextLayer(elements) {
+    return elements.reduce((layer, el, idx, arr) => {
+      if (idx % 2 === 0) {
         // Hash the current element with its pair element
-        layer.push(this.combinedHash(el, pair));
+        layer.push(this.combinedHash(el, arr[idx + 1]));
       }
 
       return layer;
     }, []);
   }
 
-  combinedHash(first: Buffer, second: Buffer) {
+  combinedHash(first, second) {
     if (!first) {
       return second;
     }
-
     if (!second) {
       return first;
     }
 
-    return Buffer.from(keccak256(this.sortAndConcat(first, second)));
+    return Buffer.from(
+      web3.utils.hexToBytes(web3.utils.sha3(this.sortAndConcat(first, second), { encoding: 'hex' }))
+    );
   }
 
   getRoot() {
-    return this.layers[this.layers.length - 1]?.[0];
+    return this.layers[this.layers.length - 1][0];
   }
 
   getHexRoot() {
     return bufferToHex(this.getRoot());
   }
 
-  getProof(el: string) {
+  getProof(el) {
     let idx = this.bufIndexOf(el, this.elements);
 
     if (idx === -1) {
@@ -94,36 +94,34 @@ export default class MerkleTree {
     }, []);
   }
 
-  getHexProof(el: string) {
+  getHexProof(el) {
     const proof = this.getProof(el);
 
     return this.bufArrToHexArr(proof);
   }
 
-  getPairElement(idx: number, layer: Buffer[]) {
+  getPairElement(idx, layer) {
     const pairIdx = idx % 2 === 0 ? idx + 1 : idx - 1;
 
     if (pairIdx < layer.length) {
       return layer[pairIdx];
+    } else {
+      return null;
     }
-
-    return null;
   }
 
-  bufIndexOf(el: string, arr: Buffer[]) {
+  bufIndexOf(el, arr) {
     let hash;
 
     // Convert element to 32 byte hash if it is not one already
     if (el.length !== 32 || !Buffer.isBuffer(el)) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      hash = Buffer.from(web3.utils.hexToBytes(web3.utils.sha3(el)!));
+      hash = Buffer.from(web3.utils.hexToBytes(web3.utils.sha3(el, { encoding: 'hex' })));
     } else {
       hash = el;
     }
 
     for (let i = 0; i < arr.length; i++) {
-      const current = arr[i];
-      if (current && hash.equals(current)) {
+      if (hash.equals(arr[i])) {
         return i;
       }
     }
@@ -131,16 +129,13 @@ export default class MerkleTree {
     return -1;
   }
 
-  bufDedup(elements: Buffer[]) {
+  bufDedup(elements) {
     return elements.filter((el, idx) => {
-      const previousElement = elements[idx - 1];
-      const previousEqualsCurrent = previousElement && previousElement.equals(el);
-
-      return idx === 0 || !previousEqualsCurrent;
+      return idx === 0 || !elements[idx - 1].equals(el);
     });
   }
 
-  bufArrToHexArr(arr: Buffer[]) {
+  bufArrToHexArr(arr) {
     if (arr.some((el) => !Buffer.isBuffer(el))) {
       throw new Error('Array is not an array of buffers');
     }
@@ -148,7 +143,7 @@ export default class MerkleTree {
     return arr.map((el) => '0x' + el.toString('hex'));
   }
 
-  sortAndConcat(...args: Buffer[]) {
+  sortAndConcat(...args) {
     return Buffer.concat([...args].sort(Buffer.compare));
   }
 }
