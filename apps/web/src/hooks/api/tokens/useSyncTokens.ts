@@ -22,6 +22,14 @@ export default function useSyncTokens() {
               # This should be sufficient to capture all the things
               # we want to refresh. Don't @me when this fails.
               ...CollectionEditorViewerFragment
+
+              ... on Viewer {
+                user {
+                  tokens {
+                    dbid
+                  }
+                }
+              }
             }
           }
           ... on ErrNotAuthorized {
