@@ -100,20 +100,22 @@ export default function GalleryUpdatedFeedEvent({
                 <BaseM>{caption}</BaseM>
               </StyledCaptionContainer>
             )}
-            {subEvents?.map((subEvent, index) => {
-              return (
-                <ReportingErrorBoundary key={index} fallback={<></>} dontReport>
-                  <NonRecursiveFeedEventData
-                    isSubEvent
-                    feedMode={feedMode}
-                    eventDbid={eventDbid}
-                    caption={null}
-                    queryRef={query}
-                    eventDataRef={subEvent}
-                  />
-                </ReportingErrorBoundary>
-              );
-            })}
+            <VStack>
+              {subEvents?.map((subEvent, index) => {
+                return (
+                  <ReportingErrorBoundary key={index} fallback={<></>} dontReport>
+                    <NonRecursiveFeedEventData
+                      isSubEvent
+                      feedMode={feedMode}
+                      eventDbid={eventDbid}
+                      caption={null}
+                      queryRef={query}
+                      eventDataRef={subEvent}
+                    />
+                  </ReportingErrorBoundary>
+                );
+              })}
+            </VStack>
           </VStack>
         </StyledEventContent>
       </VStack>

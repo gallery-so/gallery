@@ -7,7 +7,7 @@ import { TrendingSectionQueryFragment$key } from '~/generated/TrendingSectionQue
 import colors from '../core/colors';
 import { VStack } from '../core/Spacer/Stack';
 import { TitleDiatypeL } from '../core/Text/Text';
-import FeaturedList from './FeaturedList';
+import ExploreList from './ExploreList';
 
 type Props = {
   title: string;
@@ -20,7 +20,7 @@ export default function TrendingSection({ trendingUsersRef, queryRef, title, sub
   const query = useFragment(
     graphql`
       fragment TrendingSectionQueryFragment on Query {
-        ...FeaturedListQueryFragment
+        ...ExploreListQueryFragment
       }
     `,
     queryRef
@@ -30,7 +30,7 @@ export default function TrendingSection({ trendingUsersRef, queryRef, title, sub
     graphql`
       fragment TrendingSectionFragment on TrendingUsersPayload {
         users {
-          ...FeaturedListFragment
+          ...ExploreListFragment
         }
       }
     `,
@@ -43,7 +43,7 @@ export default function TrendingSection({ trendingUsersRef, queryRef, title, sub
         <Title>{title}</Title>
         <TitleDiatypeL color={colors.metal}>{subTitle}</TitleDiatypeL>
       </VStack>
-      <FeaturedList featuredUsersRef={trendingUsers.users || []} queryRef={query} />
+      <ExploreList exploreUsersRef={trendingUsers.users || []} queryRef={query} />
     </StyledTrendingSection>
   );
 }

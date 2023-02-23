@@ -26,9 +26,26 @@ export const StyledInnerEvent = styled.div<{ isSubEvent?: boolean }>`
   ${({ isSubEvent }) =>
     isSubEvent &&
     css`
-      background-color: ${colors.faint};
-      border-radius: 4px;
-      padding: 10px;
+      padding: 12px;
+      border: 1px solid ${colors.faint};
+
+      &:first-child {
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
+      }
+
+      &:last-child {
+        border-bottom-left-radius: 4px;
+        border-bottom-right-radius: 4px;
+      }
+
+      &:not(:last-child) {
+        border-bottom: none;
+      }
+
+      &:hover {
+        background-color: ${colors.offWhite};
+      }
     `}
 `;
 
@@ -56,8 +73,6 @@ export const StyledClickHandler = styled.a`
 `;
 
 export const StyledEventContent = styled(VStack)<{ hasCaption?: boolean; isSubEvent?: boolean }>`
-  background-color: ${({ hasCaption }) => (hasCaption ? colors.faint : 'transparent')};
-
   padding: ${({ hasCaption, isSubEvent }) => {
     if (isSubEvent) {
       return '16px 0';
@@ -67,6 +82,23 @@ export const StyledEventContent = styled(VStack)<{ hasCaption?: boolean; isSubEv
       return '0';
     }
   }};
+
+  ${({ hasCaption }) =>
+    hasCaption &&
+    css`
+      border: 1px solid ${colors.faint};
+      border-radius: 4px;
+
+      &:hover {
+        background-color: ${colors.offWhite};
+      }
+    `}
+
+  ${({ isSubEvent }) =>
+    isSubEvent &&
+    css`
+      border: none;
+    `}
 `;
 
 export const StyledEventLabel = styled(TitleDiatypeM)`

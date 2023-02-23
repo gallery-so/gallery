@@ -1,11 +1,9 @@
-import { GraphQLSingularResponse } from "relay-runtime";
+import { GraphQLSingularResponse } from 'relay-runtime';
 
-export function isResponsePersistedQueryNotFound(
-  response: GraphQLSingularResponse
-) {
-  if ("errors" in response) {
+export function isResponsePersistedQueryNotFound(response: GraphQLSingularResponse) {
+  if ('errors' in response) {
     const persistedQueryWasNotFound = response.errors?.some(
-      (error) => error.message === "PersistedQueryNotFound"
+      (error) => error.message === 'PersistedQueryNotFound'
     );
 
     return persistedQueryWasNotFound;
