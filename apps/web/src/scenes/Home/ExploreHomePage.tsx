@@ -3,19 +3,19 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import breakpoints, { pageGutter } from '~/components/core/breakpoints';
-import Featured from '~/components/Featured/Featured';
+import Explore from '~/components/Explore/Explore';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
-import { FeaturedHomePageFragment$key } from '~/generated/FeaturedHomePageFragment.graphql';
+import { ExploreHomePageFragment$key } from '~/generated/ExploreHomePageFragment.graphql';
 
 type Props = {
-  queryRef: FeaturedHomePageFragment$key;
+  queryRef: ExploreHomePageFragment$key;
 };
 
-export default function FeaturedHomePage({ queryRef }: Props) {
+export default function ExploreHomePage({ queryRef }: Props) {
   const query = useFragment(
     graphql`
-      fragment FeaturedHomePageFragment on Query {
-        ...FeaturedFragment
+      fragment ExploreHomePageFragment on Query {
+        ...ExploreFragment
       }
     `,
     queryRef
@@ -26,10 +26,10 @@ export default function FeaturedHomePage({ queryRef }: Props) {
   return (
     <>
       <Head>
-        <title>Gallery | Featured</title>
+        <title>Gallery | Explore</title>
       </Head>
       <StyledPage navbarHeight={navbarHeight}>
-        <Featured queryRef={query} />
+        <Explore queryRef={query} />
       </StyledPage>
     </>
   );

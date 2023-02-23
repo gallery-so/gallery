@@ -9,39 +9,39 @@ import SwiperType from 'swiper';
 import { Swiper, SwiperRef, SwiperSlide } from 'swiper/react';
 
 import colors from '~/components/core/colors';
-import { FeaturedListFragment$key } from '~/generated/FeaturedListFragment.graphql';
-import { FeaturedListQueryFragment$key } from '~/generated/FeaturedListQueryFragment.graphql';
+import { ExploreListFragment$key } from '~/generated/ExploreListFragment.graphql';
+import { ExploreListQueryFragment$key } from '~/generated/ExploreListQueryFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 
 import breakpoints from '../core/breakpoints';
 import { HStack, VStack } from '../core/Spacer/Stack';
-import FeaturedUserCard from './FeaturedUserCard';
+import ExploreUserCard from './ExploreUserCard';
 
 type Props = {
-  featuredUsersRef: FeaturedListFragment$key;
-  queryRef: FeaturedListQueryFragment$key;
+  exploreUsersRef: ExploreListFragment$key;
+  queryRef: ExploreListQueryFragment$key;
 };
 
 const USERS_TO_SHOW = 24;
 
-export default function FeaturedList({ featuredUsersRef, queryRef }: Props) {
+export default function ExploreList({ exploreUsersRef, queryRef }: Props) {
   const query = useFragment(
     graphql`
-      fragment FeaturedListQueryFragment on Query {
-        ...FeaturedUserCardFollowFragment
+      fragment ExploreListQueryFragment on Query {
+        ...ExploreUserCardFollowFragment
       }
     `,
     queryRef
   );
 
-  const featuredUsers = useFragment(
+  const exploreUsers = useFragment(
     graphql`
-      fragment FeaturedListFragment on GalleryUser @relay(plural: true) {
+      fragment ExploreListFragment on GalleryUser @relay(plural: true) {
         id
-        ...FeaturedUserCardFragment
+        ...ExploreUserCardFragment
       }
     `,
-    featuredUsersRef
+    exploreUsersRef
   );
 
   const isMobileOrMobileLargeWindowWidth = useIsMobileOrMobileLargeWindowWidth();
@@ -53,9 +53,9 @@ export default function FeaturedList({ featuredUsersRef, queryRef }: Props) {
   }, []);
 
   const shortenedUserList = useMemo(() => {
-    const users = featuredUsers ?? [];
+    const users = exploreUsers ?? [];
     return users.slice(0, USERS_TO_SHOW);
-  }, [featuredUsers]);
+  }, [exploreUsers]);
 
   const chunkSize = isMobileOrMobileLargeWindowWidth ? 4 : 8;
   const chunks = chunk(shortenedUserList, chunkSize);
@@ -78,7 +78,7 @@ export default function FeaturedList({ featuredUsersRef, queryRef }: Props) {
               <SwiperSlide key={index}>
                 <SlideGrid>
                   {chunk.map((user) => {
-                    return <FeaturedUserCard userRef={user} queryRef={query} key={user.id} />;
+                    return <ExploreUserCard userRef={user} queryRef={query} key={user.id} />;
                   })}
                 </SlideGrid>
               </SwiperSlide>
