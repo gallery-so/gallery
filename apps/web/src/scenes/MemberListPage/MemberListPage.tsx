@@ -8,7 +8,7 @@ import { TitleL } from '~/components/core/Text/Text';
 import TokenHolderListFilter from '~/components/TokenHolderList/TokenHolderListFilter';
 import MemberListPageProvider from '~/contexts/memberListPage/MemberListPageContext';
 import { MemberListPageFragment$key } from '~/generated/MemberListPageFragment.graphql';
-import { removeNullValues } from '~/utils/removeNullValues';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import MemberListTier from './MemberListTier';
 

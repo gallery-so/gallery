@@ -19,6 +19,7 @@ import {
 } from '~/contexts/analytics/authUtil';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { EthereumAddWalletFragment$key } from '~/generated/EthereumAddWalletFragment.graphql';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { Web3Error } from '~/types/Error';
 import {
   ADDRESS_ALREADY_CONNECTED,
@@ -28,7 +29,6 @@ import {
   PROMPT_SIGNATURE,
 } from '~/types/Wallet';
 import noop from '~/utils/noop';
-import { removeNullValues } from '~/utils/removeNullValues';
 
 import useAddWallet from '../mutations/useAddWallet';
 import useCreateNonce from '../mutations/useCreateNonce';

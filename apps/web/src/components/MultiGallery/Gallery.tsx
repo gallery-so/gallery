@@ -16,8 +16,8 @@ import ArrowDownIcon from '~/icons/ArrowDownIcon';
 import ArrowUpIcon from '~/icons/ArrowUpIcon';
 import DragHandleIcon from '~/icons/DragHandleIcon';
 import { EditPencilIcon } from '~/icons/EditPencilIcon';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 import noop from '~/utils/noop';
-import { removeNullValues } from '~/utils/removeNullValues';
 
 import colors from '../core/colors';
 import { DropdownItem } from '../core/Dropdown/DropdownItem';
