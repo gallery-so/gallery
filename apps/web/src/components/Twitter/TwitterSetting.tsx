@@ -3,6 +3,7 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { TWITTER_AUTH_URL } from '~/constants/twitter';
+import { TwitterSettingDisconnectMutation } from '~/generated/TwitterSettingDisconnectMutation.graphql';
 import { TwitterSettingFragment$key } from '~/generated/TwitterSettingFragment.graphql';
 import { TwitterSettingMutation } from '~/generated/TwitterSettingMutation.graphql';
 import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
@@ -40,6 +41,29 @@ export default function TwitterSetting({ queryRef }: Props) {
     queryRef
   );
 
+  const [disconnectTwitter] = usePromisifiedMutation<TwitterSettingDisconnectMutation>(graphql`
+    mutation TwitterSettingDisconnectMutation($input: SocialAccountType!) {
+      disconnectSocialAccount(accountType: $input) {
+        __typename
+
+        ... on DisconnectSocialAccountPayload {
+          viewer {
+            ... on Viewer {
+              user {
+                socialAccounts {
+                  twitter {
+                    username
+                    display
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  `);
+
   const [updateTwitterDisplay] = usePromisifiedMutation<TwitterSettingMutation>(graphql`
     mutation TwitterSettingMutation($input: UpdateSocialAccountDisplayedInput!) {
       updateSocialAccountDisplayed(input: $input) {
@@ -62,6 +86,14 @@ export default function TwitterSetting({ queryRef }: Props) {
       }
     }
   `);
+
+  const handleDisconnectTwitter = useCallback(() => {
+    disconnectTwitter({
+      variables: {
+        input: 'Twitter',
+      },
+    });
+  }, [disconnectTwitter]);
 
   const handleUpdateTwitterDisplay = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -99,7 +131,9 @@ export default function TwitterSetting({ queryRef }: Props) {
             </BaseM>
           </HStack>
 
-          <Button variant="secondary">DISCONNECT</Button>
+          <Button onClick={handleDisconnectTwitter} variant="secondary">
+            DISCONNECT
+          </Button>
         </HStack>
         <StyledDivider />
         <HStack align="center" justify="space-between">
