@@ -9,8 +9,8 @@ import colors from '../core/colors';
 import InteractiveLink from '../core/InteractiveLink/InteractiveLink';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { TitleDiatypeL } from '../core/Text/Text';
-import FeaturedList from './FeaturedList';
-import FeaturedPopoverList from './FeaturedPopoverList';
+import ExploreList from './ExploreList';
+import ExplorePopoverList from './ExplorePopoverList';
 
 type Props = {
   title: string;
@@ -25,7 +25,7 @@ export default function SuggestedSection({ queryRef, title, subTitle }: Props) {
         viewer @required(action: THROW) {
           ... on Viewer {
             suggestedUsers(first: 24)
-              @connection(key: "FeaturedFragment_suggestedUsers")
+              @connection(key: "ExploreFragment_suggestedUsers")
               @required(action: THROW) {
               edges {
                 node {
@@ -33,16 +33,16 @@ export default function SuggestedSection({ queryRef, title, subTitle }: Props) {
                   ... on GalleryUser {
                     __typename
 
-                    ...FeaturedListFragment
-                    ...FeaturedPopoverListFragment
+                    ...ExploreListFragment
+                    ...ExplorePopoverListFragment
                   }
                 }
               }
             }
           }
         }
-        ...FeaturedListQueryFragment
-        ...FeaturedPopoverListQueryFragment
+        ...ExploreListQueryFragment
+        ...ExplorePopoverListQueryFragment
       }
     `,
     queryRef
@@ -65,7 +65,7 @@ export default function SuggestedSection({ queryRef, title, subTitle }: Props) {
 
   const handleSeeAllClick = useCallback(() => {
     showModal({
-      content: <FeaturedPopoverList featuredUsersRef={nonNullUsers} queryRef={query} />,
+      content: <ExplorePopoverList exploreUsersRef={nonNullUsers} queryRef={query} />,
       isFullPage: false,
       isPaddingDisabled: true,
     });
@@ -81,7 +81,7 @@ export default function SuggestedSection({ queryRef, title, subTitle }: Props) {
 
         <StyledInteractiveLink onClick={handleSeeAllClick}>See all</StyledInteractiveLink>
       </HStack>
-      <FeaturedList featuredUsersRef={nonNullUsers} queryRef={query} />
+      <ExploreList exploreUsersRef={nonNullUsers} queryRef={query} />
     </StyledSuggestedSection>
   );
 }
