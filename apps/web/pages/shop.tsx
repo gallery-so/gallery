@@ -1,4 +1,4 @@
-import { graphql,useLazyLoadQuery } from 'react-relay';
+import { graphql, useLazyLoadQuery } from 'react-relay';
 
 import EthereumProviders from '~/contexts/auth/EthereumProviders';
 import { shopQuery } from '~/generated/shopQuery.graphql';

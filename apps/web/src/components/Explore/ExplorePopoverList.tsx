@@ -2,8 +2,8 @@ import Link from 'next/link';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
-import { FeaturedPopoverListFragment$key } from '~/generated/FeaturedPopoverListFragment.graphql';
-import { FeaturedPopoverListQueryFragment$key } from '~/generated/FeaturedPopoverListQueryFragment.graphql';
+import { ExplorePopoverListFragment$key } from '~/generated/ExplorePopoverListFragment.graphql';
+import { ExplorePopoverListQueryFragment$key } from '~/generated/ExplorePopoverListQueryFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 
 import breakpoints from '../core/breakpoints';
@@ -14,30 +14,30 @@ import { BaseM, TitleDiatypeL, TitleDiatypeM } from '../core/Text/Text';
 import FollowButton from '../Follow/FollowButton';
 
 type Props = {
-  featuredUsersRef: FeaturedPopoverListFragment$key;
-  queryRef: FeaturedPopoverListQueryFragment$key;
+  exploreUsersRef: ExplorePopoverListFragment$key;
+  queryRef: ExplorePopoverListQueryFragment$key;
 };
 
-export default function FeaturedPopoverList({ featuredUsersRef, queryRef }: Props) {
+export default function ExplorePopoverList({ exploreUsersRef, queryRef }: Props) {
   const query = useFragment(
     graphql`
-      fragment FeaturedPopoverListQueryFragment on Query {
+      fragment ExplorePopoverListQueryFragment on Query {
         ...FollowButtonQueryFragment
       }
     `,
     queryRef
   );
 
-  const featuredUsers = useFragment(
+  const exploreUsers = useFragment(
     graphql`
-      fragment FeaturedPopoverListFragment on GalleryUser @relay(plural: true) {
+      fragment ExplorePopoverListFragment on GalleryUser @relay(plural: true) {
         id
         username
         bio
         ...FollowButtonUserFragment
       }
     `,
-    featuredUsersRef
+    exploreUsersRef
   );
 
   const isMobile = useIsMobileWindowWidth();
@@ -46,7 +46,7 @@ export default function FeaturedPopoverList({ featuredUsersRef, queryRef }: Prop
     <StyledList fullscreen={isMobile} gap={24}>
       <StyledHeading>Suggested curators for you</StyledHeading>
       <VStack>
-        {featuredUsers.map((user) => (
+        {exploreUsers.map((user) => (
           // @ts-expect-error This is the future next/link version
           <StyledRow legacyBehavior={false} key={user.id} href={`/${user.username}`}>
             <StyledHStack justify="space-between" align="center" gap={8}>

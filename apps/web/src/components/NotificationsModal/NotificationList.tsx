@@ -6,9 +6,8 @@ import styled from 'styled-components';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { TitleDiatypeL } from '~/components/core/Text/Text';
 import { SeeMore } from '~/components/NotificationsModal/SeeMore';
-import { ENABLE_EMAIL_DISMISSED_KEY } from '~/constants/storageKeys';
 import { NotificationListFragment$key } from '~/generated/NotificationListFragment.graphql';
-import usePersistedState from '~/hooks/usePersistedState';
+import useExperience from '~/utils/graphql/experiences/useExperience';
 
 import { Notification } from './Notification';
 import { NotificationEmailAlert } from './NotificationEmailAlert';
@@ -53,15 +52,20 @@ export function NotificationList({ queryRef }: NotificationListProps) {
         ...NotificationQueryFragment
         ...NotificationEmailAlertQueryFragment
         ...NotificationTwitterAlertFragment
+        ...useExperienceFragment
       }
     `,
     queryRef
   );
 
-  const [emailDismissed, setEmailDismissed] = usePersistedState(ENABLE_EMAIL_DISMISSED_KEY, false);
-  const handleDismiss = useCallback(() => {
-    setEmailDismissed(true);
-  }, [setEmailDismissed]);
+  const [isEmailUpsellExperienced, updateEmailExperience] = useExperience({
+    type: 'EmailUpsell',
+    queryRef: query,
+  });
+
+  const handleDismiss = useCallback(async () => {
+    await updateEmailExperience({ experienced: true });
+  }, [updateEmailExperience]);
 
   const nonNullNotifications = useMemo(() => {
     const notifications = [];
@@ -85,7 +89,7 @@ export function NotificationList({ queryRef }: NotificationListProps) {
 
   const showEmailAlert =
     FAILED_EMAIL_VERIFICATION_STATUS.includes(query.viewer?.email?.verificationStatus ?? '') &&
-    !emailDismissed;
+    !isEmailUpsellExperienced;
 
   return (
     <NotificationsContent grow>

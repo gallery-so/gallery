@@ -13,11 +13,11 @@ import {
 } from 'react';
 import { v4 as uuid } from 'uuid';
 
-import { useStabilizedRouteTransitionKey } from '~/components/FadeTransitioner/FadeTransitioner';
 import useKeyDown from '~/hooks/useKeyDown';
 import { getScrollBarWidth } from '~/utils/getScrollbarWidth';
 import noop from '~/utils/noop';
 
+import useStabilizedRouteTransitionKey from '../globalLayout/useStabilizedRouteTransitionKey';
 import AnimatedModal from './AnimatedModal';
 import { ModalPaddingVariant } from './constants';
 
