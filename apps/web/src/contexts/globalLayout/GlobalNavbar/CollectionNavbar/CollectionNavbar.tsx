@@ -44,7 +44,8 @@ export function CollectionNavbar({ queryRef, username, collectionId }: Collectio
         ...ProfileDropdownFragment
         ...NavActionFollowQueryFragment
 
-        userByUsername(username: $username) {
+        userByUsername(username: $username) @required(action: THROW) {
+          ...GalleryNavLinksFragment
           ...NavActionFollowUserFragment
         }
 
@@ -125,7 +126,7 @@ export function CollectionNavbar({ queryRef, username, collectionId }: Collectio
             <BreadcrumbText>{unescapedCollectionName}</BreadcrumbText>
           </VStack>
         ) : (
-          <GalleryNavLinks username={username} />
+          <GalleryNavLinks username={username} queryRef={query.userByUsername} />
         )}
       </NavbarCenterContent>
 
