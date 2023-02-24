@@ -89,13 +89,12 @@ export function AdmireLine({ admireRef, eventRef, queryRef, totalAdmires }: Comm
       ) : (
         <>
           <AdmirerText>and</AdmirerText>
-          <AdmirerText>
-            <NoteModalOpenerText eventRef={event}>
-              {/*                                  |-- Checking for two here since we have  */}
-              {/*                                  |   to subtract one to get the remaining count */}
-              {totalAdmires - 1} {totalAdmires === 2 ? 'other' : 'others'} admired this
-            </NoteModalOpenerText>
-          </AdmirerText>
+          <NoteModalOpenerText eventRef={event}>
+            {/*                                  |-- Checking for two here since we have  */}
+            {/*                                  |   to subtract one to get the remaining count */}
+            {totalAdmires - 1} {totalAdmires === 2 ? 'other' : 'others'}
+          </NoteModalOpenerText>
+          <AdmirerText>admired this</AdmirerText>
         </>
       )}
     </HStack>
