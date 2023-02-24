@@ -60,29 +60,6 @@ export default function TwitterSetting({ queryRef }: Props) {
     }
   `);
 
-  const [disconnectTwitter] = usePromisifiedMutation<TwitterSettingDisconnectMutation>(graphql`
-    mutation TwitterSettingDisconnectMutation($input: SocialAccountType!) {
-      disconnectSocialAccount(accountType: $input) {
-        __typename
-
-        ... on DisconnectSocialAccountPayload {
-          viewer {
-            ... on Viewer {
-              user {
-                socialAccounts {
-                  twitter {
-                    username
-                    display
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  `);
-
   const [updateTwitterDisplay] = usePromisifiedMutation<TwitterSettingMutation>(graphql`
     mutation TwitterSettingMutation($input: UpdateSocialAccountDisplayedInput!) {
       updateSocialAccountDisplayed(input: $input) {
