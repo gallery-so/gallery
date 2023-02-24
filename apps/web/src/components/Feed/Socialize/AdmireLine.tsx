@@ -1,5 +1,3 @@
-import Link from 'next/link';
-import { Route, route } from 'nextjs-routes';
 import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -8,6 +6,7 @@ import styled from 'styled-components';
 import colors from '~/components/core/colors';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BODY_FONT_FAMILY } from '~/components/core/Text/Text';
+import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { AdmireLineEventFragment$key } from '~/generated/AdmireLineEventFragment.graphql';
 import { AdmireLineFragment$key } from '~/generated/AdmireLineFragment.graphql';
 import { AdmireLineQueryFragment$key } from '~/generated/AdmireLineQueryFragment.graphql';
@@ -30,6 +29,8 @@ export function AdmireLine({ admireRef, eventRef, queryRef, totalAdmires }: Comm
         admirer {
           dbid
           username
+
+          ...HoverCardOnUsernameFragment
         }
       }
     `,
@@ -46,6 +47,8 @@ export function AdmireLine({ admireRef, eventRef, queryRef, totalAdmires }: Comm
             }
           }
         }
+
+        ...HoverCardOnUsernameFollowFragment
       }
     `,
     queryRef
@@ -73,17 +76,13 @@ export function AdmireLine({ admireRef, eventRef, queryRef, totalAdmires }: Comm
     }
   }, [admire.admirer?.dbid, admire.admirer?.username, query.viewer?.user?.dbid]);
 
-  const admirerLinkRoute: Route = admire.admirer?.username
-    ? { pathname: '/[username]', query: { username: admire.admirer.username } }
-    : { pathname: '/' };
-
-  const admirerLink = route(admirerLinkRoute);
-
   return (
     <HStack gap={4} align="flex-end">
-      <Link href={admirerLinkRoute}>
-        <AdmirerName href={admirerLink}>{admirerName}</AdmirerName>
-      </Link>
+      {admire.admirer && (
+        <HoverCardOnUsername userRef={admire.admirer} queryRef={query}>
+          <AdmirerName>{admirerName}</AdmirerName>
+        </HoverCardOnUsername>
+      )}
       {totalAdmires === 1 ? (
         <AdmirerText>admired this</AdmirerText>
       ) : (
@@ -103,6 +102,7 @@ export function AdmireLine({ admireRef, eventRef, queryRef, totalAdmires }: Comm
 
 const AdmirerName = styled.a`
   font-family: ${BODY_FONT_FAMILY};
+  vertical-align: bottom;
   font-size: 12px;
   line-height: 1;
   font-weight: 700;
