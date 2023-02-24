@@ -15,7 +15,7 @@
         "../../packages/frames-dls/src/*"
       ],
       "~/generated/*": [
-        "./__generated__/*"
+        "./__generated__/relay/*"
       ],
       "~/navigation/*": [
         "src/navigation/*"
