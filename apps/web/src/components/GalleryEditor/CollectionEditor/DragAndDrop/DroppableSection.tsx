@@ -1,4 +1,4 @@
-import { AnimateLayoutChanges, defaultAnimateLayoutChanges, useSortable } from '@dnd-kit/sortable';
+import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { CSSProperties, ReactNode, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
