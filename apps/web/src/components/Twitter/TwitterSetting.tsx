@@ -26,12 +26,10 @@ export default function TwitterSetting({ queryRef }: Props) {
       fragment TwitterSettingFragment on Query {
         viewer {
           ... on Viewer {
-            user {
-              socialAccounts {
-                twitter {
-                  username
-                  display
-                }
+            socialAccounts {
+              twitter {
+                username
+                display
               }
             }
           }
@@ -49,12 +47,10 @@ export default function TwitterSetting({ queryRef }: Props) {
         ... on DisconnectSocialAccountPayload {
           viewer {
             ... on Viewer {
-              user {
-                socialAccounts {
-                  twitter {
-                    username
-                    display
-                  }
+              socialAccounts {
+                twitter {
+                  username
+                  display
                 }
               }
             }
@@ -72,12 +68,10 @@ export default function TwitterSetting({ queryRef }: Props) {
         ... on UpdateSocialAccountDisplayedPayload {
           viewer {
             ... on Viewer {
-              user {
-                socialAccounts {
-                  twitter {
-                    username
-                    display
-                  }
+              socialAccounts {
+                twitter {
+                  username
+                  display
                 }
               }
             }
@@ -108,8 +102,7 @@ export default function TwitterSetting({ queryRef }: Props) {
 
         optimisticUpdater: (store) => {
           const viewer = store.getRoot().getLinkedRecord('viewer');
-          const user = viewer?.getLinkedRecord('user');
-          const socialAccounts = user?.getLinkedRecord('socialAccounts');
+          const socialAccounts = viewer?.getLinkedRecord('socialAccounts');
           const twitter = socialAccounts?.getLinkedRecord('twitter');
           twitter?.setValue(displayed, 'display');
         },
@@ -118,7 +111,7 @@ export default function TwitterSetting({ queryRef }: Props) {
     [updateTwitterDisplay]
   );
 
-  const twitterAccount = query.viewer?.user?.socialAccounts?.twitter;
+  const twitterAccount = query.viewer?.socialAccounts?.twitter;
 
   if (twitterAccount) {
     return (
