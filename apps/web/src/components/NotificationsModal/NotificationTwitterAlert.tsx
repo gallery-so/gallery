@@ -3,12 +3,11 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import IconContainer from '~/components/core/IconContainer';
-import { ENABLE_TWITTER_DISMISSED_KEY } from '~/constants/storageKeys';
 import { TWITTER_AUTH_URL } from '~/constants/twitter';
 import { NotificationTwitterAlertFragment$key } from '~/generated/NotificationTwitterAlertFragment.graphql';
-import usePersistedState from '~/hooks/usePersistedState';
 import CloseIcon from '~/icons/CloseIcon';
 import InfoCircleIcon from '~/icons/InfoCircleIcon';
+import useExperience from '~/utils/graphql/experiences/useExperience';
 
 import colors from '../core/colors';
 import InteractiveLink from '../core/InteractiveLink/InteractiveLink';
@@ -34,23 +33,26 @@ export function NotificationTwitterAlert({ queryRef }: Props) {
             }
           }
         }
+
+        ...useExperienceFragment
       }
     `,
     queryRef
   );
 
+  const [isTwitterConnectionOnboardingUpsellExperienced, updateTwitterOnboardingExperience] =
+    useExperience({
+      type: 'TwitterConnectionOnboardingUpsell',
+      queryRef: query,
+    });
+
   const twitterAccount = query.viewer?.user?.socialAccounts?.twitter;
 
-  const [twitterDismissed, setTwitterDismissed] = usePersistedState(
-    ENABLE_TWITTER_DISMISSED_KEY,
-    false
-  );
+  const handleDismiss = useCallback(async () => {
+    await updateTwitterOnboardingExperience({ experienced: true });
+  }, [updateTwitterOnboardingExperience]);
 
-  const handleDismiss = useCallback(() => {
-    setTwitterDismissed(true);
-  }, [setTwitterDismissed]);
-
-  if (twitterAccount || twitterDismissed) {
+  if (twitterAccount || isTwitterConnectionOnboardingUpsellExperienced) {
     return null;
   }
 
