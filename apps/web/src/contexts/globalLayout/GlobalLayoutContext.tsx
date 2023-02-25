@@ -385,9 +385,9 @@ function GlobalNavbarWithFadeEnabled({
           >
             {isBannerVisible && (
               <GlobalBanner
-                // make sure to add this to the schema on the backend
+                // make sure to update this flag and add to backend sche
                 experienceFlag="MaintenanceFeb2023"
-                text="Gallery will be undergoing planned maintenance on **Saturday, Feb 25th** from **3:00 – 3:30PM EST** as we upgrade our infrastructure. The site will not be usable during this period."
+                text=""
                 queryRef={query}
                 dismissOnActionComponentClick
                 requireAuth
