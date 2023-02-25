@@ -72,9 +72,13 @@ export default function TwitterAuth({ queryRef }: Props) {
         },
       });
     } catch (error) {
-      console.error(error);
+      if (error instanceof Error) {
+        pushToast({
+          message: 'Could not authorize Gallery on Twitter',
+        });
+      }
     }
-  }, [code, router, username, verifyTwitter]);
+  }, [code, pushToast, router, username, verifyTwitter]);
 
   useEffect(() => {
     handleVerifyTwitter();
