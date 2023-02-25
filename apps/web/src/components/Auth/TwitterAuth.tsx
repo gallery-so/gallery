@@ -80,20 +80,20 @@ export default function TwitterAuth({ queryRef }: Props) {
     handleVerifyTwitter();
   }, [handleVerifyTwitter]);
 
-  if (error) {
-    router.push({
-      pathname: '/[username]',
-      query: {
-        username,
-      },
-    });
+  useEffect(() => {
+    if (error) {
+      router.push({
+        pathname: '/[username]',
+        query: {
+          username,
+        },
+      });
 
-    pushToast({
-      message: 'Could not authorize Gallery on Twitter',
-    });
-
-    return null;
-  }
+      pushToast({
+        message: 'Could not authorize Gallery on Twitter',
+      });
+    }
+  }, [error, pushToast, router, username]);
 
   return <FullPageLoader />;
 }
