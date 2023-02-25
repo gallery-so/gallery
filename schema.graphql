@@ -1,3 +1,5 @@
+directive @defer(label: String!, if: Boolean = true) on FRAGMENT_SPREAD | INLINE_FRAGMENT
+
 """
 Any field decorated with the @experimental directive should not be used in production.
 It will not conform to our rules around breaking changes.
@@ -344,9 +346,7 @@ type OwnerAtBlock {
   blockNumber: String # source is uint64
 }
 
-type CollectionToken implements Node
-  @goEmbedHelper
-  @goGqlId(fields: ["tokenId", "collectionId"]) {
+type CollectionToken implements Node @goEmbedHelper @goGqlId(fields: ["tokenId", "collectionId"]) {
   id: ID!
   token: Token @goField(forceResolver: true)
   collection: Collection @goField(forceResolver: true)
@@ -427,9 +427,7 @@ type TokenHoldersConnection {
   pageInfo: PageInfo!
 }
 
-type Community implements Node
-  @goGqlId(fields: ["contractAddress", "chain"])
-  @goEmbedHelper {
+type Community implements Node @goGqlId(fields: ["contractAddress", "chain"]) @goEmbedHelper {
   dbid: DBID!
   id: ID!
 
@@ -530,22 +528,14 @@ type Viewer implements Node @goGqlId(fields: ["userId"]) @goEmbedHelper {
   Returns a list of notifications in reverse chronological order.
   Seen notifications come after unseen notifications
   """
-  notifications(
-    before: String
-    after: String
-    first: Int
-    last: Int
-  ): NotificationsConnection @goField(forceResolver: true)
+  notifications(before: String, after: String, first: Int, last: Int): NotificationsConnection
+    @goField(forceResolver: true)
 
   notificationSettings: NotificationSettings @goField(forceResolver: true)
 
   userExperiences: [UserExperience!] @goField(forceResolver: true)
-  suggestedUsers(
-    before: String
-    after: String
-    first: Int
-    last: Int
-  ): UsersConnection @goField(forceResolver: true)
+  suggestedUsers(before: String, after: String, first: Int, last: Int): UsersConnection
+    @goField(forceResolver: true)
 }
 
 type NotificationSettings {
@@ -625,20 +615,11 @@ type ErrTokenNotFound implements Error {
   message: String!
 }
 
-union CollectionByIdOrError =
-    Collection
-  | ErrCollectionNotFound
-  | ErrInvalidInput
+union CollectionByIdOrError = Collection | ErrCollectionNotFound | ErrInvalidInput
 
-union CollectionTokenByIdOrError =
-    CollectionToken
-  | ErrCollectionNotFound
-  | ErrTokenNotFound
+union CollectionTokenByIdOrError = CollectionToken | ErrCollectionNotFound | ErrTokenNotFound
 
-union CommunityByAddressOrError =
-    Community
-  | ErrCommunityNotFound
-  | ErrInvalidInput
+union CommunityByAddressOrError = Community | ErrCommunityNotFound | ErrInvalidInput
 
 type Admire implements Node {
   id: ID!
@@ -721,18 +702,10 @@ type FeedEvent implements Node @key(fields: "dbid") {
   dbid: DBID!
 
   eventData: FeedEventData @goField(forceResolver: true)
-  admires(
-    before: String
-    after: String
-    first: Int
-    last: Int
-  ): FeedEventAdmiresConnection @goField(forceResolver: true)
-  comments(
-    before: String
-    after: String
-    first: Int
-    last: Int
-  ): FeedEventCommentsConnection @goField(forceResolver: true)
+  admires(before: String, after: String, first: Int, last: Int): FeedEventAdmiresConnection
+    @goField(forceResolver: true)
+  comments(before: String, after: String, first: Int, last: Int): FeedEventCommentsConnection
+    @goField(forceResolver: true)
   caption: String
 
   # If supplied, typeFilter will only query for the requested interaction types.
@@ -790,8 +763,7 @@ type CollectorsNoteAddedToCollectionFeedEventData implements FeedEventData {
   newCollectorsNote: String
 }
 
-type TokensAddedToCollectionFeedEventData implements FeedEventData
-  @goEmbedHelper {
+type TokensAddedToCollectionFeedEventData implements FeedEventData @goEmbedHelper {
   eventTime: Time
   owner: GalleryUser @goField(forceResolver: true)
   collection: Collection @goField(forceResolver: true)
@@ -954,29 +926,16 @@ type Query {
   collectionById(id: DBID!): CollectionByIdOrError
   collectionsByIds(ids: [DBID!]!): [CollectionByIdOrError]
   tokenById(id: DBID!): TokenByIdOrError
-  collectionTokenById(
-    tokenId: DBID!
-    collectionId: DBID!
-  ): CollectionTokenByIdOrError
+  collectionTokenById(tokenId: DBID!, collectionId: DBID!): CollectionTokenByIdOrError
   communityByAddress(
     communityAddress: ChainAddressInput!
     forceRefresh: Boolean
   ): CommunityByAddressOrError
   generalAllowlist: [ChainAddress!]
   galleryOfTheWeekWinners: [GalleryUser!]
-  globalFeed(
-    before: String
-    after: String
-    first: Int
-    last: Int
-  ): FeedConnection
+  globalFeed(before: String, after: String, first: Int, last: Int): FeedConnection
   # Paging forward i.e. providing the `first` argument will return events in order of descending popularity.
-  trendingFeed(
-    before: String
-    after: String
-    first: Int
-    last: Int
-  ): FeedConnection
+  trendingFeed(before: String, after: String, first: Int, last: Int): FeedConnection
   feedEventById(id: DBID!): FeedEventByIdOrError
   getMerchTokens(wallet: Address!): MerchTokensPayloadOrError
   galleryById(id: DBID!): GalleryByIdPayloadOrError
@@ -1022,10 +981,7 @@ input CreateCollectionInput {
   caption: String
 }
 
-union CreateCollectionPayloadOrError =
-    CreateCollectionPayload
-  | ErrNotAuthorized
-  | ErrInvalidInput
+union CreateCollectionPayloadOrError = CreateCollectionPayload | ErrNotAuthorized | ErrInvalidInput
 
 type CreateCollectionPayload {
   collection: Collection
@@ -1112,10 +1068,7 @@ input UpdateTokenInfoInput {
   collectionId: DBID
 }
 
-union UpdateTokenInfoPayloadOrError =
-    UpdateTokenInfoPayload
-  | ErrNotAuthorized
-  | ErrInvalidInput
+union UpdateTokenInfoPayloadOrError = UpdateTokenInfoPayload | ErrNotAuthorized | ErrInvalidInput
 
 type UpdateTokenInfoPayload {
   token: Token
@@ -1130,9 +1083,7 @@ type SetSpamPreferencePayload {
   tokens: [Token] @goField(forceResolver: true)
 }
 
-union SetSpamPreferencePayloadOrError =
-    SetSpamPreferencePayload
-  | ErrNotAuthorized
+union SetSpamPreferencePayloadOrError = SetSpamPreferencePayload | ErrNotAuthorized
 
 union AddUserWalletPayloadOrError =
     AddUserWalletPayload
@@ -1169,37 +1120,25 @@ type UpdateUserInfoPayload {
   viewer: Viewer
 }
 
-union SyncTokensPayloadOrError =
-    SyncTokensPayload
-  | ErrNotAuthorized
-  | ErrSyncFailed
+union SyncTokensPayloadOrError = SyncTokensPayload | ErrNotAuthorized | ErrSyncFailed
 
 type SyncTokensPayload {
   viewer: Viewer
 }
 
-union RefreshTokenPayloadOrError =
-    RefreshTokenPayload
-  | ErrInvalidInput
-  | ErrSyncFailed
+union RefreshTokenPayloadOrError = RefreshTokenPayload | ErrInvalidInput | ErrSyncFailed
 
 type RefreshTokenPayload {
   token: Token
 }
 
-union RefreshCollectionPayloadOrError =
-    RefreshCollectionPayload
-  | ErrInvalidInput
-  | ErrSyncFailed
+union RefreshCollectionPayloadOrError = RefreshCollectionPayload | ErrInvalidInput | ErrSyncFailed
 
 type RefreshCollectionPayload {
   collection: Collection
 }
 
-union RefreshContractPayloadOrError =
-    RefreshContractPayload
-  | ErrInvalidInput
-  | ErrSyncFailed
+union RefreshContractPayloadOrError = RefreshContractPayload | ErrInvalidInput | ErrSyncFailed
 
 type RefreshContractPayload {
   contract: Contract
@@ -1236,10 +1175,7 @@ type ErrCommunityNotFound implements Error {
   message: String!
 }
 
-union AuthorizationError =
-    ErrNoCookie
-  | ErrInvalidToken
-  | ErrDoesNotOwnRequiredToken
+union AuthorizationError = ErrNoCookie | ErrInvalidToken | ErrDoesNotOwnRequiredToken
 
 type ErrNotAuthorized implements Error {
   message: String!
@@ -1494,12 +1430,8 @@ type SomeoneFollowedYouNotification implements Notification & Node & GroupedNoti
   updatedTime: Time
   count: Int
 
-  followers(
-    before: String
-    after: String
-    first: Int
-    last: Int
-  ): GroupNotificationUsersConnection @goField(forceResolver: true)
+  followers(before: String, after: String, first: Int, last: Int): GroupNotificationUsersConnection
+    @goField(forceResolver: true)
 }
 
 type SomeoneFollowedYouBackNotification implements Notification & Node & GroupedNotification
@@ -1511,12 +1443,8 @@ type SomeoneFollowedYouBackNotification implements Notification & Node & Grouped
   updatedTime: Time
   count: Int
 
-  followers(
-    before: String
-    after: String
-    first: Int
-    last: Int
-  ): GroupNotificationUsersConnection @goField(forceResolver: true)
+  followers(before: String, after: String, first: Int, last: Int): GroupNotificationUsersConnection
+    @goField(forceResolver: true)
 }
 
 type SomeoneAdmiredYourFeedEventNotification implements Notification & Node & GroupedNotification
@@ -1529,16 +1457,11 @@ type SomeoneAdmiredYourFeedEventNotification implements Notification & Node & Gr
   count: Int
 
   feedEvent: FeedEvent @goField(forceResolver: true)
-  admirers(
-    before: String
-    after: String
-    first: Int
-    last: Int
-  ): GroupNotificationUsersConnection @goField(forceResolver: true)
+  admirers(before: String, after: String, first: Int, last: Int): GroupNotificationUsersConnection
+    @goField(forceResolver: true)
 }
 
-type SomeoneCommentedOnYourFeedEventNotification implements Notification & Node
-  @goEmbedHelper {
+type SomeoneCommentedOnYourFeedEventNotification implements Notification & Node @goEmbedHelper {
   id: ID!
   dbid: DBID!
   seen: Boolean
@@ -1625,9 +1548,7 @@ type ResendVerificationEmailPayload {
   viewer: Viewer
 }
 
-union ResendVerificationEmailPayloadOrError =
-    ResendVerificationEmailPayload
-  | ErrInvalidInput
+union ResendVerificationEmailPayloadOrError = ResendVerificationEmailPayload | ErrInvalidInput
 
 type UpdateEmailNotificationSettingsPayload {
   viewer: Viewer
@@ -1641,9 +1562,7 @@ type UnsubscribeFromEmailTypePayload {
   viewer: Viewer
 }
 
-union UnsubscribeFromEmailTypePayloadOrError =
-    UnsubscribeFromEmailTypePayload
-  | ErrInvalidInput
+union UnsubscribeFromEmailTypePayloadOrError = UnsubscribeFromEmailTypePayload | ErrInvalidInput
 
 union AddRolesToUserPayloadOrError = GalleryUser | ErrNotAuthorized
 union RevokeRolesFromUserPayloadOrError = GalleryUser | ErrNotAuthorized
@@ -1652,9 +1571,7 @@ input UploadPersistedQueriesInput {
   persistedQueries: String
 }
 
-union UploadPersistedQueriesPayloadOrError =
-    UploadPersistedQueriesPayload
-  | ErrNotAuthorized
+union UploadPersistedQueriesPayloadOrError = UploadPersistedQueriesPayload | ErrNotAuthorized
 
 type UploadPersistedQueriesPayload {
   message: String
@@ -1729,10 +1646,7 @@ type CreateGalleryPayload {
   gallery: Gallery
 }
 
-union CreateGalleryPayloadOrError =
-    CreateGalleryPayload
-  | ErrInvalidInput
-  | ErrNotAuthorized
+union CreateGalleryPayloadOrError = CreateGalleryPayload | ErrInvalidInput | ErrNotAuthorized
 
 type UpdateGalleryInfoPayload {
   gallery: Gallery
@@ -1756,10 +1670,7 @@ type DeleteGalleryPayload {
   deletedId: DeletedNode
 }
 
-union DeleteGalleryPayloadOrError =
-    DeleteGalleryPayload
-  | ErrInvalidInput
-  | ErrNotAuthorized
+union DeleteGalleryPayloadOrError = DeleteGalleryPayload | ErrInvalidInput | ErrNotAuthorized
 
 type UpdateGalleryOrderPayload {
   viewer: Viewer
@@ -1824,10 +1735,7 @@ type UpdateGalleryPayload {
   gallery: Gallery
 }
 
-union UpdateGalleryPayloadOrError =
-    UpdateGalleryPayload
-  | ErrInvalidInput
-  | ErrNotAuthorized
+union UpdateGalleryPayloadOrError = UpdateGalleryPayload | ErrInvalidInput | ErrNotAuthorized
 
 input PublishGalleryInput {
   galleryId: DBID!
@@ -1839,10 +1747,7 @@ type PublishGalleryPayload {
   gallery: Gallery
 }
 
-union PublishGalleryPayloadOrError =
-    PublishGalleryPayload
-  | ErrInvalidInput
-  | ErrNotAuthorized
+union PublishGalleryPayloadOrError = PublishGalleryPayload | ErrInvalidInput | ErrNotAuthorized
 
 type UpdatePrimaryWalletPayload {
   viewer: Viewer
@@ -1883,163 +1788,6 @@ union UpdateUserExperiencePayloadOrError =
   | ErrInvalidInput
   | ErrNotAuthorized
 
-type Mutation {
-  # User Mutations
-  addUserWallet(
-    chainAddress: ChainAddressInput!
-    authMechanism: AuthMechanism!
-  ): AddUserWalletPayloadOrError @authRequired
-  removeUserWallets(walletIds: [DBID!]!): RemoveUserWalletsPayloadOrError
-    @authRequired
-  updateUserInfo(input: UpdateUserInfoInput!): UpdateUserInfoPayloadOrError
-    @authRequired
-
-  # Gallery Mutations
-  updateGalleryCollections(
-    input: UpdateGalleryCollectionsInput!
-  ): UpdateGalleryCollectionsPayloadOrError @authRequired
-
-  # Collection Mutations
-
-  createCollection(
-    input: CreateCollectionInput!
-  ): CreateCollectionPayloadOrError @authRequired
-  deleteCollection(collectionId: DBID!): DeleteCollectionPayloadOrError
-    @authRequired
-  updateCollectionInfo(
-    input: UpdateCollectionInfoInput!
-  ): UpdateCollectionInfoPayloadOrError @authRequired
-  updateCollectionTokens(
-    input: UpdateCollectionTokensInput!
-  ): UpdateCollectionTokensPayloadOrError @authRequired
-  updateCollectionHidden(
-    input: UpdateCollectionHiddenInput!
-  ): UpdateCollectionHiddenPayloadOrError @authRequired
-
-  # Token Mutations
-  updateTokenInfo(input: UpdateTokenInfoInput!): UpdateTokenInfoPayloadOrError
-    @authRequired
-  setSpamPreference(
-    input: SetSpamPreferenceInput!
-  ): SetSpamPreferencePayloadOrError @authRequired
-
-  syncTokens(chains: [Chain!]): SyncTokensPayloadOrError @authRequired
-  refreshToken(tokenId: DBID!): RefreshTokenPayloadOrError
-  refreshCollection(collectionId: DBID!): RefreshCollectionPayloadOrError
-  refreshContract(contractId: DBID!): RefreshContractPayloadOrError
-  deepRefresh(input: DeepRefreshInput!): DeepRefreshPayloadOrError @authRequired
-
-  getAuthNonce(chainAddress: ChainAddressInput!): GetAuthNoncePayloadOrError
-
-  createUser(
-    authMechanism: AuthMechanism!
-    input: CreateUserInput!
-  ): CreateUserPayloadOrError
-  updateEmail(input: UpdateEmailInput!): UpdateEmailPayloadOrError @authRequired
-  resendVerificationEmail: ResendVerificationEmailPayloadOrError @authRequired
-  updateEmailNotificationSettings(
-    input: UpdateEmailNotificationSettingsInput!
-  ): UpdateEmailNotificationSettingsPayloadOrError @authRequired
-  unsubscribeFromEmailType(
-    input: UnsubscribeFromEmailTypeInput!
-  ): UnsubscribeFromEmailTypePayloadOrError
-  login(authMechanism: AuthMechanism!): LoginPayloadOrError
-  logout: LogoutPayload
-
-  connectSocialAccount(
-    input: SocialAuthMechanism!
-    display: Boolean! = true
-  ): ConnectSocialAccountPayloadOrError @authRequired
-  disconnectSocialAccount(accountType: SocialAccountType!): DisconnectSocialAccountPayloadOrError
-    @authRequired
-  updateSocialAccountDisplayed(
-    input: UpdateSocialAccountDisplayedInput!
-  ): UpdateSocialAccountDisplayedPayloadOrError @authRequired
-
-  followUser(userId: DBID!): FollowUserPayloadOrError @authRequired
-  unfollowUser(userId: DBID!): UnfollowUserPayloadOrError @authRequired
-
-  admireFeedEvent(feedEventId: DBID!): AdmireFeedEventPayloadOrError
-    @authRequired
-  removeAdmire(admireId: DBID!): RemoveAdmirePayloadOrError @authRequired
-  commentOnFeedEvent(
-    feedEventId: DBID!
-    replyToID: DBID
-    comment: String!
-  ): CommentOnFeedEventPayloadOrError @authRequired
-  removeComment(commentId: DBID!): RemoveCommentPayloadOrError @authRequired
-
-  viewGallery(galleryId: DBID!): ViewGalleryPayloadOrError
-
-  updateGallery(input: UpdateGalleryInput!): UpdateGalleryPayloadOrError
-    @authRequired
-  publishGallery(input: PublishGalleryInput!): PublishGalleryPayloadOrError
-    @authRequired
-
-  createGallery(input: CreateGalleryInput!): CreateGalleryPayloadOrError
-    @authRequired
-  updateGalleryHidden(
-    input: UpdateGalleryHiddenInput!
-  ): UpdateGalleryHiddenPayloadOrError @authRequired
-  deleteGallery(galleryId: DBID!): DeleteGalleryPayloadOrError @authRequired
-  updateGalleryOrder(
-    input: UpdateGalleryOrderInput!
-  ): UpdateGalleryOrderPayloadOrError @authRequired
-  updateGalleryInfo(
-    input: UpdateGalleryInfoInput!
-  ): UpdateGalleryInfoPayloadOrError @authRequired
-  updateFeaturedGallery(galleryId: DBID!): UpdateFeaturedGalleryPayloadOrError
-    @authRequired
-
-  clearAllNotifications: ClearAllNotificationsPayload @authRequired
-
-  updateNotificationSettings(
-    settings: NotificationSettingsInput
-  ): NotificationSettings
-
-  preverifyEmail(input: PreverifyEmailInput!): PreverifyEmailPayloadOrError
-  verifyEmail(input: VerifyEmailInput!): VerifyEmailPayloadOrError
-
-  redeemMerch(input: RedeemMerchInput!): RedeemMerchPayloadOrError @authRequired
-
-  # Retool Specific Mutations
-  addRolesToUser(
-    username: String!
-    roles: [Role]
-  ): AddRolesToUserPayloadOrError @retoolAuth
-  addWalletToUserUnchecked(
-    input: AdminAddWalletInput!
-  ): AdminAddWalletPayloadOrError @retoolAuth
-  revokeRolesFromUser(
-    username: String!
-    roles: [Role]
-  ): RevokeRolesFromUserPayloadOrError @retoolAuth
-  syncTokensForUsername(username: String!, chains: [Chain!]!): SyncTokensForUsernamePayloadOrError
-    @retoolAuth
-  banUserFromFeed(username: String!, action: String!): BanUserFromFeedPayloadOrError @retoolAuth
-  unbanUserFromFeed(username: String!): UnbanUserFromFeedPayloadOrError @retoolAuth
-  mintPremiumCardToWallet(
-    input: MintPremiumCardToWalletInput!
-  ): MintPremiumCardToWalletPayloadOrError @retoolAuth
-
-  # Gallery Frontend Deploy Persisted Queries
-  uploadPersistedQueries(
-    input: UploadPersistedQueriesInput
-  ): UploadPersistedQueriesPayloadOrError @frontendBuildAuth
-
-  updatePrimaryWallet(walletID: DBID!): UpdatePrimaryWalletPayloadOrError
-    @authRequired
-
-  updateUserExperience(
-    input: UpdateUserExperienceInput!
-  ): UpdateUserExperiencePayloadOrError @authRequired
-
-  moveCollectionToGallery(
-    input: MoveCollectionToGalleryInput
-  ): MoveCollectionToGalleryPayloadOrError @authRequired
-input UpdateUserInfoInput {
-  username: String!
-  bio: String!
 input MoveCollectionToGalleryInput {
   sourceCollectionId: DBID!
   targetGalleryId: DBID!
@@ -2107,10 +1855,8 @@ type Mutation {
     chainAddress: ChainAddressInput!
     authMechanism: AuthMechanism!
   ): AddUserWalletPayloadOrError @authRequired
-  removeUserWallets(walletIds: [DBID!]!): RemoveUserWalletsPayloadOrError
-    @authRequired
-  updateUserInfo(input: UpdateUserInfoInput!): UpdateUserInfoPayloadOrError
-    @authRequired
+  removeUserWallets(walletIds: [DBID!]!): RemoveUserWalletsPayloadOrError @authRequired
+  updateUserInfo(input: UpdateUserInfoInput!): UpdateUserInfoPayloadOrError @authRequired
 
   # Gallery Mutations
   updateGalleryCollections(
@@ -2119,27 +1865,18 @@ type Mutation {
 
   # Collection Mutations
 
-  createCollection(
-    input: CreateCollectionInput!
-  ): CreateCollectionPayloadOrError @authRequired
-  deleteCollection(collectionId: DBID!): DeleteCollectionPayloadOrError
+  createCollection(input: CreateCollectionInput!): CreateCollectionPayloadOrError @authRequired
+  deleteCollection(collectionId: DBID!): DeleteCollectionPayloadOrError @authRequired
+  updateCollectionInfo(input: UpdateCollectionInfoInput!): UpdateCollectionInfoPayloadOrError
     @authRequired
-  updateCollectionInfo(
-    input: UpdateCollectionInfoInput!
-  ): UpdateCollectionInfoPayloadOrError @authRequired
-  updateCollectionTokens(
-    input: UpdateCollectionTokensInput!
-  ): UpdateCollectionTokensPayloadOrError @authRequired
-  updateCollectionHidden(
-    input: UpdateCollectionHiddenInput!
-  ): UpdateCollectionHiddenPayloadOrError @authRequired
+  updateCollectionTokens(input: UpdateCollectionTokensInput!): UpdateCollectionTokensPayloadOrError
+    @authRequired
+  updateCollectionHidden(input: UpdateCollectionHiddenInput!): UpdateCollectionHiddenPayloadOrError
+    @authRequired
 
   # Token Mutations
-  updateTokenInfo(input: UpdateTokenInfoInput!): UpdateTokenInfoPayloadOrError
-    @authRequired
-  setSpamPreference(
-    input: SetSpamPreferenceInput!
-  ): SetSpamPreferencePayloadOrError @authRequired
+  updateTokenInfo(input: UpdateTokenInfoInput!): UpdateTokenInfoPayloadOrError @authRequired
+  setSpamPreference(input: SetSpamPreferenceInput!): SetSpamPreferencePayloadOrError @authRequired
 
   syncTokens(chains: [Chain!]): SyncTokensPayloadOrError @authRequired
   refreshToken(tokenId: DBID!): RefreshTokenPayloadOrError
@@ -2149,10 +1886,7 @@ type Mutation {
 
   getAuthNonce(chainAddress: ChainAddressInput!): GetAuthNoncePayloadOrError
 
-  createUser(
-    authMechanism: AuthMechanism!
-    input: CreateUserInput!
-  ): CreateUserPayloadOrError
+  createUser(authMechanism: AuthMechanism!, input: CreateUserInput!): CreateUserPayloadOrError
   updateEmail(input: UpdateEmailInput!): UpdateEmailPayloadOrError @authRequired
   resendVerificationEmail: ResendVerificationEmailPayloadOrError @authRequired
   updateEmailNotificationSettings(
@@ -2177,8 +1911,7 @@ type Mutation {
   followUser(userId: DBID!): FollowUserPayloadOrError @authRequired
   unfollowUser(userId: DBID!): UnfollowUserPayloadOrError @authRequired
 
-  admireFeedEvent(feedEventId: DBID!): AdmireFeedEventPayloadOrError
-    @authRequired
+  admireFeedEvent(feedEventId: DBID!): AdmireFeedEventPayloadOrError @authRequired
   removeAdmire(admireId: DBID!): RemoveAdmirePayloadOrError @authRequired
   commentOnFeedEvent(
     feedEventId: DBID!
@@ -2189,31 +1922,21 @@ type Mutation {
 
   viewGallery(galleryId: DBID!): ViewGalleryPayloadOrError
 
-  updateGallery(input: UpdateGalleryInput!): UpdateGalleryPayloadOrError
-    @authRequired
-  publishGallery(input: PublishGalleryInput!): PublishGalleryPayloadOrError
-    @authRequired
+  updateGallery(input: UpdateGalleryInput!): UpdateGalleryPayloadOrError @authRequired
+  publishGallery(input: PublishGalleryInput!): PublishGalleryPayloadOrError @authRequired
 
-  createGallery(input: CreateGalleryInput!): CreateGalleryPayloadOrError
+  createGallery(input: CreateGalleryInput!): CreateGalleryPayloadOrError @authRequired
+  updateGalleryHidden(input: UpdateGalleryHiddenInput!): UpdateGalleryHiddenPayloadOrError
     @authRequired
-  updateGalleryHidden(
-    input: UpdateGalleryHiddenInput!
-  ): UpdateGalleryHiddenPayloadOrError @authRequired
   deleteGallery(galleryId: DBID!): DeleteGalleryPayloadOrError @authRequired
-  updateGalleryOrder(
-    input: UpdateGalleryOrderInput!
-  ): UpdateGalleryOrderPayloadOrError @authRequired
-  updateGalleryInfo(
-    input: UpdateGalleryInfoInput!
-  ): UpdateGalleryInfoPayloadOrError @authRequired
-  updateFeaturedGallery(galleryId: DBID!): UpdateFeaturedGalleryPayloadOrError
+  updateGalleryOrder(input: UpdateGalleryOrderInput!): UpdateGalleryOrderPayloadOrError
     @authRequired
+  updateGalleryInfo(input: UpdateGalleryInfoInput!): UpdateGalleryInfoPayloadOrError @authRequired
+  updateFeaturedGallery(galleryId: DBID!): UpdateFeaturedGalleryPayloadOrError @authRequired
 
   clearAllNotifications: ClearAllNotificationsPayload @authRequired
 
-  updateNotificationSettings(
-    settings: NotificationSettingsInput
-  ): NotificationSettings
+  updateNotificationSettings(settings: NotificationSettingsInput): NotificationSettings
 
   preverifyEmail(input: PreverifyEmailInput!): PreverifyEmailPayloadOrError
   verifyEmail(input: VerifyEmailInput!): VerifyEmailPayloadOrError
@@ -2221,21 +1944,12 @@ type Mutation {
   redeemMerch(input: RedeemMerchInput!): RedeemMerchPayloadOrError @authRequired
 
   # Retool Specific Mutations
-  addRolesToUser(
-    username: String!
-    roles: [Role]
-  ): AddRolesToUserPayloadOrError @retoolAuth
-  addWalletToUserUnchecked(
-    input: AdminAddWalletInput!
-  ): AdminAddWalletPayloadOrError @retoolAuth
-  revokeRolesFromUser(
-    username: String!
-    roles: [Role]
-  ): RevokeRolesFromUserPayloadOrError @retoolAuth
-  syncTokensForUsername(
-    username: String!
-    chains: [Chain!]!
-  ): SyncTokensForUsernamePayloadOrError @retoolAuth
+  addRolesToUser(username: String!, roles: [Role]): AddRolesToUserPayloadOrError @retoolAuth
+  addWalletToUserUnchecked(input: AdminAddWalletInput!): AdminAddWalletPayloadOrError @retoolAuth
+  revokeRolesFromUser(username: String!, roles: [Role]): RevokeRolesFromUserPayloadOrError
+    @retoolAuth
+  syncTokensForUsername(username: String!, chains: [Chain!]!): SyncTokensForUsernamePayloadOrError
+    @retoolAuth
   banUserFromFeed(username: String!, action: String!): BanUserFromFeedPayloadOrError @retoolAuth
   unbanUserFromFeed(username: String!): UnbanUserFromFeedPayloadOrError @retoolAuth
   mintPremiumCardToWallet(
@@ -2243,16 +1957,13 @@ type Mutation {
   ): MintPremiumCardToWalletPayloadOrError @retoolAuth
 
   # Gallery Frontend Deploy Persisted Queries
-  uploadPersistedQueries(
-    input: UploadPersistedQueriesInput
-  ): UploadPersistedQueriesPayloadOrError @frontendBuildAuth
+  uploadPersistedQueries(input: UploadPersistedQueriesInput): UploadPersistedQueriesPayloadOrError
+    @frontendBuildAuth
 
-  updatePrimaryWallet(walletID: DBID!): UpdatePrimaryWalletPayloadOrError
+  updatePrimaryWallet(walletID: DBID!): UpdatePrimaryWalletPayloadOrError @authRequired
+
+  updateUserExperience(input: UpdateUserExperienceInput!): UpdateUserExperiencePayloadOrError
     @authRequired
-
-  updateUserExperience(
-    input: UpdateUserExperienceInput!
-  ): UpdateUserExperiencePayloadOrError @authRequired
 
   moveCollectionToGallery(
     input: MoveCollectionToGalleryInput
