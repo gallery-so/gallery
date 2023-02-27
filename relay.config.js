@@ -23,10 +23,14 @@ function generateConfig(projectDir) {
       DBID: 'string',
     },
 
-    persist: {
-      file: 'persisted_queries.json',
-      algorithm: 'SHA256', // this can be one of MD5, SHA256, SHA1
-    },
+    persist:
+      // Disable APQ for mobile
+      projectDir === 'apps/mobile'
+        ? undefined
+        : {
+            file: persistedQueriesFile,
+            algorithm: 'SHA256', // this can be one of MD5, SHA256, SHA1
+          },
   };
 }
 

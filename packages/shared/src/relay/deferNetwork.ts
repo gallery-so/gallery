@@ -79,6 +79,7 @@ const fetchWithJustHash: InternalFetchFunction = async (
     credentials: 'include',
     body: JSON.stringify({
       operationName: request.name,
+      query: request.text,
       extensions: {
         persistedQuery: {
           version: 1,
