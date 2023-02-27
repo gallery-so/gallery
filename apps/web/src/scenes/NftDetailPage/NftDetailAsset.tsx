@@ -203,7 +203,7 @@ type AssetContainerProps = {
 };
 
 const StyledAssetContainer = styled.div<AssetContainerProps>`
-  display: grid;
+  display: contents;
   flex-direction: column;
   align-items: center;
   justify-content: center;
