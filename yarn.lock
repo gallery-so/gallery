@@ -23417,7 +23417,6 @@ __metadata:
     babel-plugin-tsconfig-paths-module-resolver: ^1.0.4
     eas-cli: ^3.7.2
     expo: ~48.0.5
-    expo-application: ~5.1.1
     expo-av: ~13.2.1
     expo-constants: ~14.2.1
     expo-dev-client: ~2.1.5
