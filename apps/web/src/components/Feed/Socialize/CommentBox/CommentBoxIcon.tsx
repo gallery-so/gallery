@@ -75,6 +75,7 @@ export function CommentBoxIcon({ queryRef, eventRef }: Props) {
       if (!query.viewer?.user) {
         showModal({
           content: <AuthModal queryRef={query} />,
+          headerText: 'Sign In',
         });
 
         return;

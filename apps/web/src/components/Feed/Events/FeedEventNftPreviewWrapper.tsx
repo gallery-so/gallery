@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import { StyledImageWithLoading } from '~/components/LoadingAsset/ImageWithLoading';
+import { StyledVideo } from '~/components/LoadingAsset/VideoWithLoading';
 import NftPreview from '~/components/NftPreview/NftPreview';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import ShimmerProvider from '~/contexts/shimmer/ShimmerContext';
@@ -71,7 +72,7 @@ const StyledNftPreviewWrapper = styled.div<{ maxWidth: number; maxHeight: number
 
   min-width: 150px;
 
-  ${StyledImageWithLoading} {
+  ${StyledImageWithLoading}, ${StyledVideo} {
     max-height: calc((100vw - 64px) / 3);
     max-width: ${({ maxWidth }) => maxWidth}px;
     max-height: ${({ maxHeight }) => maxHeight}px;

@@ -1,4 +1,4 @@
-name: ci
+name: web-unit
 on: [push]
 jobs:
   unit-tests:

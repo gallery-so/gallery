@@ -10,6 +10,7 @@ import {
 } from 'react';
 import rfdc from 'rfdc';
 
+import { rebuildSections } from '~/components/GalleryEditor/CollectionEditor/DragAndDrop/draggingActions';
 import {
   StagedSection,
   StagedSectionMap,
@@ -39,6 +40,8 @@ type CollectionEditorContextType = {
   updateSections: (sections: Record<string, StagedSection>) => void;
 
   addSection: () => void;
+  moveSectionDown: (sectionId: string) => void;
+  moveSectionUp: (sectionId: string) => void;
   deleteSection: (sectionId: string) => void;
 
   incrementColumns: (sectionId: string) => void;
@@ -407,10 +410,52 @@ export const CollectionEditorProvider = memo(({ children }: Props) => {
     [collectionIdBeingEdited, setCollections]
   );
 
+  const moveSectionUp = useCallback(
+    (sectionId: string) => {
+      setSections((previousSections) => {
+        const sectionKeys = Object.keys(previousSections);
+        const currentIndex = sectionKeys.indexOf(sectionId);
+
+        // Can't move up from the top position
+        if (currentIndex === 0) {
+          return previousSections;
+        }
+
+        sectionKeys.splice(currentIndex, 1);
+        sectionKeys.splice(currentIndex - 1, 0, sectionId);
+
+        return rebuildSections(previousSections, sectionKeys);
+      });
+    },
+    [setSections]
+  );
+
+  const moveSectionDown = useCallback(
+    (sectionId: string) => {
+      setSections((previousSections) => {
+        const sectionKeys = Object.keys(previousSections);
+        const currentIndex = sectionKeys.indexOf(sectionId);
+
+        // Can't move down from the last position
+        if (currentIndex === sectionKeys.length - 1) {
+          return previousSections;
+        }
+
+        sectionKeys.splice(currentIndex, 1);
+        sectionKeys.splice(currentIndex + 1, 0, sectionId);
+
+        return rebuildSections(previousSections, sectionKeys);
+      });
+    },
+    [setSections]
+  );
+
   const value = useMemo((): CollectionEditorContextType => {
     return {
       name: collectionBeingEdited?.name ?? '',
       collectorsNote: collectionBeingEdited?.collectorsNote ?? '',
+      moveSectionDown,
+      moveSectionUp,
       activateSection,
       activeSectionId,
       addWhitespace,
@@ -437,6 +482,8 @@ export const CollectionEditorProvider = memo(({ children }: Props) => {
     deleteSection,
     incrementColumns,
     liveDisplayTokenIds,
+    moveSectionDown,
+    moveSectionUp,
     sections,
     stagedTokenIds,
     toggleTokenLiveDisplay,

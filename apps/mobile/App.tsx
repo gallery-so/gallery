@@ -1,21 +1,24 @@
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
-import { add } from "~frames/add";
+import 'expo-dev-client';
+
+import { NavigationContainer } from '@react-navigation/native';
+import { useState } from 'react';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { RelayEnvironmentProvider } from 'react-relay';
+
+import { MainTabNavigator } from '~/navigation/MainTabNavigator/MainTabNavigator';
+
+import { createRelayEnvironment } from './src/contexts/relay/RelayProvider';
 
 export default function App() {
+  const [relayEnvironment] = useState(() => createRelayEnvironment());
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your {add(1, 2)}!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <RelayEnvironmentProvider environment={relayEnvironment}>
+      <SafeAreaProvider>
+        <NavigationContainer>
+          <MainTabNavigator />
+        </NavigationContainer>
+      </SafeAreaProvider>
+    </RelayEnvironmentProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});

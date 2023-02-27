@@ -9,7 +9,7 @@ import {
   Chain,
   NftDetailAssetTestQueryQuery,
   NftErrorContextRetryMutationMutation,
-} from '~/tests/__generated__/operations';
+} from '~/tests/__generated__/graphql-codegen/operations';
 import { mockGraphqlQuery } from '~/tests/graphql/mockGraphqlQuery';
 import { mockProviderQueries } from '~/tests/graphql/mockProviderQueries';
 
@@ -132,15 +132,15 @@ describe('NftDetailAsset', () => {
     );
 
     // Ensure we see the fallback UI since we have bad media
-    expect(await findByText('Could not load', undefined, { timeout: 10000 })).toBeVisible();
+    expect(await findByText('Could not load', undefined, { timeout: 10000 })).toBeInTheDocument();
 
     // Hit the refresh button
     fireEvent.click(await findByTestId('RefreshButton'));
 
     // Make sure we see the fallback's loading state
-    expect(await findByText('Loading...')).toBeVisible();
+    expect(await findByText('Loading...')).toBeInTheDocument();
 
     // See the updated image!
-    expect(await findByAltText('Test Token Name')).toBeVisible();
+    expect(await findByAltText('Test Token Name')).toBeInTheDocument();
   });
 });

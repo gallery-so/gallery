@@ -1,4 +1,3 @@
-import { NotificationListFragment$key } from '__generated__/NotificationListFragment.graphql';
 import { useCallback, useMemo } from 'react';
 import { usePaginationFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -7,8 +6,8 @@ import styled from 'styled-components';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { TitleDiatypeL } from '~/components/core/Text/Text';
 import { SeeMore } from '~/components/NotificationsModal/SeeMore';
-import { ENABLE_EMAIL_DISMISSED_KEY } from '~/constants/storageKeys';
-import usePersistedState from '~/hooks/usePersistedState';
+import { NotificationListFragment$key } from '~/generated/NotificationListFragment.graphql';
+import useExperience from '~/utils/graphql/experiences/useExperience';
 
 import { Notification } from './Notification';
 import { NotificationEmailAlert } from './NotificationEmailAlert';
@@ -51,15 +50,20 @@ export function NotificationList({ queryRef }: NotificationListProps) {
 
         ...NotificationQueryFragment
         ...NotificationEmailAlertQueryFragment
+        ...useExperienceFragment
       }
     `,
     queryRef
   );
 
-  const [emailDismissed, setEmailDismissed] = usePersistedState(ENABLE_EMAIL_DISMISSED_KEY, false);
-  const handleDismiss = useCallback(() => {
-    setEmailDismissed(true);
-  }, [setEmailDismissed]);
+  const [isEmailUpsellExperienced, setEmailExperienced] = useExperience({
+    type: 'EmailUpsell',
+    queryRef: query,
+  });
+
+  const handleDismiss = useCallback(async () => {
+    await setEmailExperienced();
+  }, [setEmailExperienced]);
 
   const nonNullNotifications = useMemo(() => {
     const notifications = [];
@@ -83,7 +87,7 @@ export function NotificationList({ queryRef }: NotificationListProps) {
 
   const showEmailAlert =
     FAILED_EMAIL_VERIFICATION_STATUS.includes(query.viewer?.email?.verificationStatus ?? '') &&
-    !emailDismissed;
+    !isEmailUpsellExperienced;
 
   return (
     <NotificationsContent grow>

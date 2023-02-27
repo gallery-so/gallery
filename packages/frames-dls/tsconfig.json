@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.options.json",
+  "compilerOptions": {
+    "lib": [
+      "ES2020"
+    ],
+    "baseUrl": ".",
+    "outDir": "../../.moon/cache/types/packages/frames-dls"
+  }
+}

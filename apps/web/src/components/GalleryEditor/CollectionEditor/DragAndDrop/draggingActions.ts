@@ -6,7 +6,7 @@ import { StagedSection } from '~/components/GalleryEditor/GalleryEditorContext';
 
 const deepClone = rfdc();
 
-function rebuildSections(
+export function rebuildSections(
   previous: Record<string, StagedSection>,
   newKeyOrder: string[]
 ): Record<string, StagedSection> {

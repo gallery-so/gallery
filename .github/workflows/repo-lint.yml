@@ -1,0 +1,16 @@
+name: repo-lint
+on: [push]
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: 'actions/checkout@v3'
+        with:
+          fetch-depth: 0
+      - uses: 'actions/setup-node@v3'
+        with:
+          node-version: 16.18.1
+          cache: 'yarn'
+      - run: 'yarn install --immutable'
+      - name: Run Lint & Prettier
+        run: node_modules/.bin/moon run :lint :prettier

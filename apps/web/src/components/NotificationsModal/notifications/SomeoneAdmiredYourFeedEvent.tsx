@@ -1,4 +1,3 @@
-import { SomeoneAdmiredYourFeedEventFragment$key } from '__generated__/SomeoneAdmiredYourFeedEventFragment.graphql';
 import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -6,6 +5,7 @@ import { graphql } from 'relay-runtime';
 import { BaseM } from '~/components/core/Text/Text';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { CollectionLink } from '~/components/NotificationsModal/CollectionLink';
+import { SomeoneAdmiredYourFeedEventFragment$key } from '~/generated/SomeoneAdmiredYourFeedEventFragment.graphql';
 import { SomeoneAdmiredYourFeedEventQueryFragment$key } from '~/generated/SomeoneAdmiredYourFeedEventQueryFragment.graphql';
 
 type SomeoneAdmiredYourFeedEventProps = {

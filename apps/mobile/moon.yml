@@ -1,11 +1,36 @@
 language: 'javascript'
 
-tasks:
-  typecheck:
-    command: tsc --build
+fileGroups:
+  tests:
+    - 'tests/**/*'
+    - '**/*.test.ts*'
+  lint:
+    - '**/*.*{ts,js,tsx,jsx,cjs,mjs}'
+  source:
+    - 'src/**/*.{ts,js,tsx,jsx}'
 
-  android:
-    command: expo start --android
+tasks:
+  relay-watch:
+    command: relay-compiler --project mobile --repersist --watch ../../relay.config.js
+    local: true
+
+  relay-codegen:
+    command: relay-compiler --project mobile --repersist ../../relay.config.js
+    inputs:
+      - '@group(source)'
+
+  codegen-watch:
+    command: relay-compiler --project mobile --repersist --watch ../../relay.config.js
 
   ios:
-    command: expo start --ios
+    command:
+      - concurrently
+      - -n Expo,Relay-Compiler
+      - yarn expo run:ios
+      - node_modules/.bin/moon run mobile:relay-watch
+
+  # Inherited from root task
+  typecheck:
+    deps:
+      - '~:relay-codegen'
+    command: tsc

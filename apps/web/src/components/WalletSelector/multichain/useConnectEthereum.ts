@@ -1,5 +1,5 @@
 import { useConnectModal } from '@rainbow-me/rainbowkit';
-import { useCallback,useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useAccount, useDisconnect } from 'wagmi';
 
 // This hook does a lot of dancing around RainbowKit and wagmi to make sure

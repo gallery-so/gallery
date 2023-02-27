@@ -18,7 +18,7 @@ module.exports = async () => {
 
     moduleNameMapper: {
       // Ensure all ouf our aliases from tsconfig work in jext
-      ...pathsToModuleNameMapper(paths),
+      ...pathsToModuleNameMapper(paths, { prefix: '<rootDir>/' }),
 
       // CSS imports should do nothing
       '\\.(css|less|sass|scss)$': 'identity-obj-proxy',

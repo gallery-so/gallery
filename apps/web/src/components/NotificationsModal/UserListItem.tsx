@@ -1,4 +1,3 @@
-import { UserListItemFragment$key } from '__generated__/UserListItemFragment.graphql';
 import Link from 'next/link';
 import { Route, route } from 'nextjs-routes';
 import { useFragment } from 'react-relay';
@@ -9,6 +8,7 @@ import colors from '~/components/core/colors';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM } from '~/components/core/Text/Text';
+import { UserListItemFragment$key } from '~/generated/UserListItemFragment.graphql';
 
 type UserListItemProps = {
   userRef: UserListItemFragment$key;

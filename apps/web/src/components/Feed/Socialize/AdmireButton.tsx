@@ -192,6 +192,7 @@ export function AdmireButton({ eventRef, queryRef }: AdmireButtonProps) {
     if (query.viewer?.__typename !== 'Viewer') {
       showModal({
         content: <AuthModal queryRef={query} />,
+        headerText: 'Sign In',
       });
 
       return;
@@ -237,6 +238,11 @@ export function AdmireButton({ eventRef, queryRef }: AdmireButtonProps) {
                   id: query.viewer?.user?.id ?? 'unknown',
                   dbid: query.viewer?.user?.dbid ?? 'unknown',
                   username: query.viewer?.user?.username ?? null,
+                  badges: [],
+                  bio: '',
+                  followers: [],
+                  following: [],
+                  galleries: [],
                 },
               },
             },
@@ -273,7 +279,18 @@ export function AdmireButton({ eventRef, queryRef }: AdmireButtonProps) {
         });
       }
     }
-  }, [admire, event.dbid, event.id, interactionsConnection, notesModalConnection, pushToast, query, reportError, showModal, track]);
+  }, [
+    admire,
+    event.dbid,
+    event.id,
+    interactionsConnection,
+    notesModalConnection,
+    pushToast,
+    query,
+    reportError,
+    showModal,
+    track,
+  ]);
 
   const hasViewerAdmiredEvent = Boolean(event.viewerAdmire);
 

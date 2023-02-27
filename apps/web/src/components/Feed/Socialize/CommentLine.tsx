@@ -1,5 +1,3 @@
-import Link from 'next/link';
-import { Route, route } from 'nextjs-routes';
 import { useEffect, useState } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -8,14 +6,26 @@ import styled from 'styled-components';
 import colors from '~/components/core/colors';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BODY_FONT_FAMILY } from '~/components/core/Text/Text';
+import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { CommentLineFragment$key } from '~/generated/CommentLineFragment.graphql';
+import { CommentLineQueryFragment$key } from '~/generated/CommentLineQueryFragment.graphql';
 import { getTimeSince } from '~/utils/time';
 
 type CommentLineProps = {
+  queryRef: CommentLineQueryFragment$key;
   commentRef: CommentLineFragment$key;
 };
 
-export function CommentLine({ commentRef }: CommentLineProps) {
+export function CommentLine({ commentRef, queryRef }: CommentLineProps) {
+  const query = useFragment(
+    graphql`
+      fragment CommentLineQueryFragment on Query {
+        ...HoverCardOnUsernameFollowFragment
+      }
+    `,
+    queryRef
+  );
+
   const comment = useFragment(
     graphql`
       fragment CommentLineFragment on Comment {
@@ -26,6 +36,7 @@ export function CommentLine({ commentRef }: CommentLineProps) {
         comment @required(action: THROW)
         commenter {
           username
+          ...HoverCardOnUsernameFragment
         }
       }
     `,
@@ -43,17 +54,13 @@ export function CommentLine({ commentRef }: CommentLineProps) {
 
   const timeAgo = comment.creationTime ? getTimeSince(comment.creationTime) : null;
 
-  const usernameLinkRoute: Route = comment.commenter?.username
-    ? { pathname: '/[username]', query: { username: comment.commenter.username } }
-    : { pathname: '/' };
-  const usernameLink = route(usernameLinkRoute);
   return (
-    <HStack key={comment.dbid} gap={4} align="baseline">
-      <Link href={usernameLinkRoute}>
-        <CommenterName href={usernameLink}>
-          {comment.commenter?.username ?? '<unknown>'}
-        </CommenterName>
-      </Link>
+    <HStack key={comment.dbid} gap={4} align="flex-end">
+      {comment.commenter && (
+        <HoverCardOnUsername userRef={comment.commenter} queryRef={query}>
+          <CommenterName>{comment.commenter?.username ?? '<unknown>'}</CommenterName>
+        </HoverCardOnUsername>
+      )}
       <CommentText dangerouslySetInnerHTML={{ __html: comment.comment }} />
       {timeAgo && <TimeAgoText>{timeAgo}</TimeAgoText>}
     </HStack>
@@ -70,6 +77,7 @@ const TimeAgoText = styled.div`
 
 const CommenterName = styled.a`
   font-family: ${BODY_FONT_FAMILY};
+  vertical-align: bottom;
   font-size: 12px;
   line-height: 1;
   font-weight: 700;

@@ -2,6 +2,7 @@ import { useCallback, useEffect } from 'react';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 import styled from 'styled-components';
 
+import { VStack } from '~/components/core/Spacer/Stack';
 import { WalletSelectorVariant } from '~/components/WalletSelector/multichain/MultichainWalletSelector';
 import WalletSelector from '~/components/WalletSelector/WalletSelector';
 import { useModalActions } from '~/contexts/modal/ModalContext';
@@ -13,7 +14,7 @@ type ModalProps = {
   variant?: WalletSelectorVariant;
 };
 
-export const AuthModal = ({ queryRef, variant }: ModalProps) => {
+export const AuthModal = ({ queryRef, variant = 'sign-in' }: ModalProps) => {
   const { hideModal } = useModalActions();
 
   const query = useFragment(
@@ -45,7 +46,9 @@ export const AuthModal = ({ queryRef, variant }: ModalProps) => {
 
   return (
     <Container>
-      <WalletSelector queryRef={query} variant={variant} />
+      <VStack gap={16} justify="center">
+        <WalletSelector queryRef={query} variant={variant} showEmail={variant !== 'sign-up'} />
+      </VStack>
     </Container>
   );
 };
@@ -53,7 +56,6 @@ export const AuthModal = ({ queryRef, variant }: ModalProps) => {
 const Container = styled.div`
   display: flex;
   justify-content: center;
-  align-items: center;
 
   // the height of the inner content with all wallet options listed.
   // ensures the height of the modal doesn't shift
@@ -61,7 +63,7 @@ const Container = styled.div`
   height: 100%;
 `;
 
-export default function useAuthModal() {
+export default function useAuthModal(variant: WalletSelectorVariant) {
   const { showModal } = useModalActions();
 
   const query = useLazyLoadQuery<useAuthModalQuery>(
@@ -76,8 +78,8 @@ export default function useAuthModal() {
   return useCallback(() => {
     showModal({
       id: 'auth',
-      content: <AuthModal queryRef={query} />,
-      headerText: 'Sign in',
+      content: <AuthModal queryRef={query} variant={variant} />,
+      headerText: variant === 'sign-up' ? 'Sign Up' : 'Sign In',
     });
-  }, [query, showModal]);
+  }, [query, variant, showModal]);
 }

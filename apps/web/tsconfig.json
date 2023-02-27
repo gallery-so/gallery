@@ -27,8 +27,12 @@
       "~/errors/*": [
         "src/errors/*"
       ],
+      "~/frames/*": [
+        "../../packages/frames-dls/src/*"
+      ],
       "~/generated/*": [
-        "__generated__/*"
+        "__generated__/relay/*",
+        "__generated__/graphql-codegen/*"
       ],
       "~/hooks/*": [
         "src/hooks/*"
@@ -45,6 +49,9 @@
       "~/scenes/*": [
         "src/scenes/*"
       ],
+      "~/shared/*": [
+        "../../packages/shared/src/*"
+      ],
       "~/snapshots/*": [
         "src/snapshots/*"
       ],
@@ -56,9 +63,6 @@
       ],
       "~/utils/*": [
         "src/utils/*"
-      ],
-      "~frames/*": [
-        "../../packages/frames-dls/src/*"
       ]
     },
     "outDir": "../../.moon/cache/types/apps/web",

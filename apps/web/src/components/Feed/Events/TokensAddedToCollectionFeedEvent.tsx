@@ -22,7 +22,6 @@ import { MAX_PIECES_DISPLAYED_PER_FEED_EVENT } from '../constants';
 import FeedEventTokenPreviews from '../FeedEventTokenPreviews';
 import { StyledCaptionContainer } from './CollectionCreatedFeedEvent';
 import {
-  StyledEvent,
   StyledEventContent,
   StyledEventHeader,
   StyledEventLabel,
@@ -107,42 +106,39 @@ export default function TokensAddedToCollectionFeedEvent({
       href={collectionPagePath}
       onClick={() => track('Feed: Clicked Tokens added to collection event')}
     >
-      <StyledEvent isSubEvent={isSubEvent}>
-        <VStack gap={16}>
-          <StyledEventHeader>
-            <VStack gap={4}>
-              <HStack gap={4} inline>
-                <StyledEventText isSubEvent={isSubEvent}>
-                  {!isSubEvent && <HoverCardOnUsername userRef={event.owner} queryRef={query} />}{' '}
-                  added {isPreFeed ? '' : `${tokens.length} ${pluralize(tokens.length, 'piece')}`}{' '}
-                  to
-                  {collectionName ? ' ' : ' their collection'}
-                  <Link href={collectionPagePath} passHref>
-                    <StyledEventLabel>{collectionName}</StyledEventLabel>
-                  </Link>
-                </StyledEventText>
-                {!isSubEvent && <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>}
-              </HStack>
-            </VStack>
-          </StyledEventHeader>
-          <StyledEventContent gap={8} hasCaption={Boolean(caption)}>
-            {caption && (
-              <StyledCaptionContainer gap={8} align="center">
-                <BaseM>{caption}</BaseM>
-              </StyledCaptionContainer>
-            )}
-            <FeedEventTokenPreviews
-              isInCaption={Boolean(caption)}
-              tokenToPreviewRefs={tokensToPreview}
-            />
-            {showAdditionalPiecesIndicator && !isPreFeed && (
-              <StyledAdditionalPieces>
-                +{numAdditionalPieces} more {pluralize(numAdditionalPieces, 'piece')}
-              </StyledAdditionalPieces>
-            )}
-          </StyledEventContent>
-        </VStack>
-      </StyledEvent>
+      <VStack gap={16}>
+        <StyledEventHeader>
+          <VStack gap={4}>
+            <HStack gap={4} inline>
+              <StyledEventText isSubEvent={isSubEvent}>
+                {!isSubEvent && <HoverCardOnUsername userRef={event.owner} queryRef={query} />}{' '}
+                added {isPreFeed ? '' : `${tokens.length} ${pluralize(tokens.length, 'piece')}`} to
+                {collectionName ? ' ' : ' their collection'}
+                <Link href={collectionPagePath} passHref>
+                  <StyledEventLabel>{collectionName}</StyledEventLabel>
+                </Link>
+              </StyledEventText>
+              {!isSubEvent && <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>}
+            </HStack>
+          </VStack>
+        </StyledEventHeader>
+        <StyledEventContent gap={8} hasCaption={Boolean(caption)}>
+          {caption && (
+            <StyledCaptionContainer gap={8} align="center">
+              <BaseM>{caption}</BaseM>
+            </StyledCaptionContainer>
+          )}
+          <FeedEventTokenPreviews
+            isInCaption={Boolean(caption)}
+            tokenToPreviewRefs={tokensToPreview}
+          />
+          {showAdditionalPiecesIndicator && !isPreFeed && (
+            <StyledAdditionalPieces>
+              +{numAdditionalPieces} more {pluralize(numAdditionalPieces, 'piece')}
+            </StyledAdditionalPieces>
+          )}
+        </StyledEventContent>
+      </VStack>
     </UnstyledLink>
   );
 }
