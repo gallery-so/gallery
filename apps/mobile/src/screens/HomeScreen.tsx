@@ -1,9 +1,5 @@
-import { Text, View } from 'react-native';
+import { FeedTabNavigator } from '~/navigation/FeedTabNavigator/FeedTabNavigator';
 
 export function HomeScreen() {
-  return (
-    <View>
-      <Text>Home</Text>
-    </View>
-  );
+  return <FeedTabNavigator />;
 }
