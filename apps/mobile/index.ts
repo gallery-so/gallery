@@ -10,6 +10,7 @@ import { enableFreeze } from 'react-native-screens';
 
 // Unimportant warnings from the fetch polyfill
 LogBox.ignoreLogs(["The provided value 'moz", "The provided value 'ms-stream"]);
+LogBox.ignoreLogs(['Could not render FeedEvent']);
 
 polyfillEncoding();
 polyfillFetch();
