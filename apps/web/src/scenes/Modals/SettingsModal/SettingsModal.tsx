@@ -13,6 +13,7 @@ import Toggle from '~/components/core/Toggle/Toggle';
 import EmailManager from '~/components/Email/EmailManager';
 import ManageWallets from '~/components/ManageWallets/ManageWallets';
 import { GALLERY_DISCORD } from '~/constants/urls';
+import { useAuthActions } from '~/contexts/auth/AuthContext';
 import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
@@ -177,6 +178,12 @@ function SettingsModal({
     return query.viewer?.user?.roles?.includes('EARLY_ACCESS');
   }, [query]);
 
+  const { handleLogout } = useAuthActions();
+
+  const handleSignOutClick = useCallback(() => {
+    handleLogout();
+  }, [handleLogout]);
+
   return (
     <StyledManageWalletsModal gap={12}>
       <VStack gap={24}>
@@ -244,6 +251,12 @@ function SettingsModal({
             onEthAddWalletSuccess={onEthAddWalletSuccess}
           />
         </VStack>
+        <StyledHr />
+        <HStack>
+          <StyledButton variant="warning" onClick={handleSignOutClick}>
+            Sign Out
+          </StyledButton>
+        </HStack>
         <StyledHr />
       </VStack>
       <DoneButton onClick={handleDoneClick}>Done</DoneButton>
