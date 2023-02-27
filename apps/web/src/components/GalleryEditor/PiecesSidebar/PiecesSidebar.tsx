@@ -175,15 +175,15 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
             </div>
             {ownsWalletFromSelectedChain && (
               <StyledButtonContainer>
-                <Button
+                <StyledButton
                   onClick={handleAddBlankBlockClick}
                   variant="secondary"
                   ref={reference}
                   {...getReferenceProps()}
                 >
                   BLANK SPACE
-                </Button>
-                <Button
+                </StyledButton>
+                <StyledButton
                   onClick={handleRefresh}
                   variant="secondary"
                   disabled={refreshDisabled}
@@ -191,7 +191,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
                   {...getRefreshReferenceProps()}
                 >
                   {isLocked ? <Spinner /> : 'REFRESH'}
-                </Button>
+                </StyledButton>
               </StyledButtonContainer>
             )}
 
@@ -265,4 +265,8 @@ const StyledButtonContainer = styled.div`
   grid-template-columns: 1fr 1fr;
   gap: 4px;
   padding: 0 12px;
+`;
+
+const StyledButton = styled(Button)`
+  padding: 8px 12px;
 `;
