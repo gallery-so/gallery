@@ -76,9 +76,12 @@ function EmailForm({ setIsEditMode, queryRef, onClose }: Props) {
   const { verifyEmail } = useVerifyValidEmail();
   const reportError = useReportError();
 
+  const [isCheckingEmail, setIsCheckingEmail] = useState(false);
+
   const handleEmailChange = useCallback(async (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(event.target.value);
+    setIsCheckingEmail(true);
     setIsValidEmail(false);
+    setEmail(event.target.value);
   }, []);
 
   const debouncedEmail = useDebounce(email, 500);
@@ -86,7 +89,7 @@ function EmailForm({ setIsEditMode, queryRef, onClose }: Props) {
   // Don't check email on initial mount
   const isInitialMount = useRef(true);
 
-  const [isChecking, setIsChecking] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
   useEffect(() => {
     if (isInitialMount.current) {
       isInitialMount.current = false;
@@ -96,11 +99,12 @@ function EmailForm({ setIsEditMode, queryRef, onClose }: Props) {
     async function checkEmail() {
       if (!EMAIL_FORMAT.test(debouncedEmail)) {
         setIsValidEmail(false);
+        setIsCheckingEmail(false);
         return;
       }
 
       try {
-        setIsChecking(true);
+        setIsFetching(true);
         const valid = await verifyEmail(debouncedEmail);
         setIsValidEmail(valid);
       } catch (error) {
@@ -114,7 +118,8 @@ function EmailForm({ setIsEditMode, queryRef, onClose }: Props) {
         }
         setIsValidEmail(false);
       } finally {
-        setIsChecking(false);
+        setIsFetching(false);
+        setIsCheckingEmail(false);
       }
     }
     setIsValidEmail(true);
@@ -199,10 +204,10 @@ function EmailForm({ setIsEditMode, queryRef, onClose }: Props) {
   );
 
   const showErrorMessage = useMemo(() => {
-    if (isInitialMount.current) return false;
+    if (isInitialMount.current || isFetching || !debouncedEmail || isCheckingEmail) return false;
 
-    return !isValidEmail && debouncedEmail && !isChecking;
-  }, [debouncedEmail, isChecking, isValidEmail]);
+    return !isValidEmail;
+  }, [debouncedEmail, isFetching, isCheckingEmail, isValidEmail]);
 
   return (
     <form onSubmit={handleFormSubmit}>
@@ -228,7 +233,7 @@ function EmailForm({ setIsEditMode, queryRef, onClose }: Props) {
               variant="primary"
               disabled={!isValidEmail || savePending}
               onClick={handleSaveClick}
-              pending={isChecking}
+              pending={isCheckingEmail}
             >
               Save
             </Button>
