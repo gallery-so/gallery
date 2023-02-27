@@ -13,4 +13,4 @@ export const pathToImage = featuredImage;
 
 // this probably won't change unless the cache is broken
 export const ALLOWLIST_URL =
-  'https://storage.googleapis.com/gallery-prod-325303.appspot.com/allowlists/mementos-allowlist.json';
+  'https://storage.googleapis.com/gallery-prod-325303.appspot.com/allowlists/mementos-allowlist-v2.json';

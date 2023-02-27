@@ -215,7 +215,7 @@ const StyledContainer = styled.span`
 `;
 
 const StyledLinkContainer = styled.div`
-  display: inline-block;
+  display: inline-flex;
 `;
 
 const StyledCardWrapper = styled(motion.div)`

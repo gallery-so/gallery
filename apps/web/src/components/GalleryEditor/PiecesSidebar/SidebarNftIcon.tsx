@@ -11,6 +11,7 @@ import { NftFailureFallback } from '~/components/NftFailureFallback/NftFailureFa
 import { SIDEBAR_ICON_DIMENSIONS } from '~/constants/sidebar';
 import { useCollectionEditorContext } from '~/contexts/collectionEditor/CollectionEditorContext';
 import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
+import { useNftErrorContext } from '~/contexts/NftErrorContext';
 import { ContentIsLoadedEvent } from '~/contexts/shimmer/ShimmerContext';
 import { CouldNotRenderNftError } from '~/errors/CouldNotRenderNftError';
 import { SidebarNftIconFragment$key } from '~/generated/SidebarNftIconFragment.graphql';
@@ -107,6 +108,7 @@ function SidebarNftIcon({
   );
 
   const relayEnvironment = useRelayEnvironment();
+  const { clearTokenFailureState } = useNftErrorContext();
   useEffect(
     function pollTokenWhileStillSyncing() {
       const POLLING_INTERVAL_MS = 5000;
@@ -129,6 +131,11 @@ function SidebarNftIcon({
           { id: token.dbid }
         ).toPromise();
 
+        // If the token was failing before, we need to make sure
+        // that it's error state gets cleared on the chance
+        // that it just got loaded.
+        clearTokenFailureState([token.dbid]);
+
         timeoutId = setTimeout(refreshToken, POLLING_INTERVAL_MS);
       }
 
@@ -136,7 +143,7 @@ function SidebarNftIcon({
 
       return () => clearTimeout(timeoutId);
     },
-    [relayEnvironment, token.dbid, token.media?.__typename]
+    [clearTokenFailureState, relayEnvironment, token.dbid, token.media?.__typename]
   );
 
   if (token.media?.__typename === 'SyncingMedia') {
