@@ -23069,13 +23069,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"next-router-mock@npm:^0.7.4":
-  version: 0.7.4
-  resolution: "next-router-mock@npm:0.7.4"
+"next-router-mock@npm:^0.9.2":
+  version: 0.9.2
+  resolution: "next-router-mock@npm:0.9.2"
   peerDependencies:
     next: ">=10.0.0"
     react: ">=17.0.0"
-  checksum: 0014def3dd61b1ee7d324cef757fccbca72d2df61d17745d78bc7969fde4e5e1614a7401cc9f40735af86fe5699ec5610270a982252e1ef2c9761d24ac187fb7
+  checksum: ac83c2922c796a9830d1b0efcf1536c82506aac863da95c11703b659a90a1fcb93c4884f8324126e5b75aaab40faf0588e5fc489f5b5fe03c9c5da6da11607f2
   languageName: node
   linkType: hard
 
@@ -31201,7 +31201,7 @@ __metadata:
     magic-sdk: ^13.1.0
     mixpanel-browser: ^2.41.0
     next: ^13.2.1
-    next-router-mock: ^0.7.4
+    next-router-mock: ^0.9.2
     nextjs-routes: ^0.1.5
     nock: ^13.2.9
     node-fetch: ^2
