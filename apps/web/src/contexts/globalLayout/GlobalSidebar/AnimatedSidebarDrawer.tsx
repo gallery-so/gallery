@@ -2,10 +2,12 @@ import { ReactElement, useCallback, useRef } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 
 import colors from '~/components/core/colors';
-import { VStack } from '~/components/core/Spacer/Stack';
+import IconContainer from '~/components/core/IconContainer';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { TitleDiatypeL } from '~/components/core/Text/Text';
 import transitions from '~/components/core/transitions';
 import useDetectOutsideClick from '~/hooks/useDetectOutsideClick';
+import CloseIcon from '~/icons/CloseIcon';
 
 type Props = {
   content: ReactElement;
@@ -18,18 +20,25 @@ export default function AnimatedSidebarDrawer({ content, hideDrawer, headerText 
   const drawerRef = useRef(null);
 
   useDetectOutsideClick(drawerRef, hideDrawer);
-  const handleOverlayClick = useCallback(() => {
-    console.log('close');
+
+  const handleCloseDrawerClick = useCallback(() => {
     hideDrawer();
-  }, [hideDrawer]);
+  }, []);
   return (
     <_ToggleFade isActive={isActive}>
-      {/* <Overlay onClick={handleOverlayClick} /> */}
-      <StyledContent ref={drawerRef}>
-        <VStack gap={16}>
-          {headerText && <TitleDiatypeL>{headerText}</TitleDiatypeL>}
-          {content}
-        </VStack>
+      <StyledContent ref={drawerRef} gap={16}>
+        <StyledHeader>
+          <CloseDrawerHeader align="center" justify="flex-end">
+            <IconContainer
+              variant="default"
+              size="sm"
+              onClick={handleCloseDrawerClick}
+              icon={<CloseIcon />}
+            />
+          </CloseDrawerHeader>
+          {headerText && <StyledHeadingText>{headerText}</StyledHeadingText>}
+        </StyledHeader>
+        <VStack gap={16}>{content}</VStack>
       </StyledContent>
     </_ToggleFade>
   );
@@ -56,9 +65,20 @@ const _ToggleFade = styled.div<{ isActive: boolean }>`
   animation-fill-mode: forwards;
 `;
 
-const StyledContent = styled.div`
+const CloseDrawerHeader = styled(HStack)`
+  height: 52px;
+`;
+
+const StyledHeader = styled(VStack)`
+  padding: 0 16px;
+`;
+
+const StyledHeadingText = styled(TitleDiatypeL)`
+  font-size: 24px;
+`;
+
+const StyledContent = styled(VStack)`
   width: 375px;
-  // border: 1px solid red;
   height: 100vh;
   background-color: ${colors.offWhite};
 `;

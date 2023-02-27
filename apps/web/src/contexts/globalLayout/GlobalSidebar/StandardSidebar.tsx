@@ -12,6 +12,7 @@ import AlertIcon from '~/icons/AlertIcon';
 import BellIcon from '~/icons/BellIcon';
 import CogIcon from '~/icons/CogIcon';
 import { EditPencilIcon } from '~/icons/EditPencilIcon';
+import GLogoIcon from '~/icons/GLogoIcon';
 import ShopIcon from '~/icons/ShopIcon';
 import UserIcon from '~/icons/UserIcon';
 import SettingsModal from '~/scenes/Modals/SettingsModal/SettingsModal';
@@ -81,10 +82,15 @@ export function StandardSidebar({ queryRef }: Props) {
     push({ pathname: '/shop' });
   }, []);
 
+  const handleHomeIconClick = useCallback(() => {
+    push({ pathname: '/trending' });
+  }, []);
+
   return (
     <StyledStandardSidebar>
       <StyledIconContainer align="center" justify="space-between">
-        <VStack>
+        <VStack gap={18}>
+          <SidebarIcon tooltipLabel="Home" onClick={handleHomeIconClick} icon={<GLogoIcon />} />
           {isLoggedIn && (
             <SidebarIcon
               tooltipLabel="Edit galleries"
@@ -95,21 +101,27 @@ export function StandardSidebar({ queryRef }: Props) {
         </VStack>
         {/* SIDEBAR */}
         {/* <Button onClick={handleButtonClick}> Open</Button> */}
-        <VStack gap={32}>
-          <SidebarIcon tooltipLabel="My Profile" onClick={handleProfileClick} icon={<UserIcon />} />
-          <SidebarIcon
-            tooltipLabel="Noitifications"
-            onClick={handleNotificationsClick}
-            icon={<BellIcon />}
-            isActive={activeDrawer === 'notifications'}
-          />
-          <SidebarIcon
-            tooltipLabel="Settings"
-            onClick={handleSettingsClick}
-            icon={<CogIcon />}
-            isActive={activeDrawer === 'settings'}
-          />
-        </VStack>
+        {isLoggedIn && (
+          <VStack gap={32}>
+            <SidebarIcon
+              tooltipLabel="My Profile"
+              onClick={handleProfileClick}
+              icon={<UserIcon />}
+            />
+            <SidebarIcon
+              tooltipLabel="Noitifications"
+              onClick={handleNotificationsClick}
+              icon={<BellIcon />}
+              isActive={activeDrawer === 'notifications'}
+            />
+            <SidebarIcon
+              tooltipLabel="Settings"
+              onClick={handleSettingsClick}
+              icon={<CogIcon />}
+              isActive={activeDrawer === 'settings'}
+            />
+          </VStack>
+        )}
         <VStack>
           <SidebarIcon
             tooltipLabel="(OBJECTS) Shop"
@@ -123,8 +135,8 @@ export function StandardSidebar({ queryRef }: Props) {
 }
 
 const StyledStandardSidebar = styled.div`
-  padding-top: 100px; // remove later
   min-width: 100%;
+  padding: 16px 0;
 `;
 
 const StyledIconContainer = styled(VStack)`
