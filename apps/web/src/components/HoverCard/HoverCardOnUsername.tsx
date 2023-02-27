@@ -13,7 +13,7 @@ import {
 import { AnimatePresence, motion } from 'framer-motion';
 import unescape from 'lodash/unescape';
 import Link from 'next/link';
-import { Route, route } from 'nextjs-routes';
+import { Route } from 'nextjs-routes';
 import { MouseEventHandler, useCallback, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
