@@ -12,7 +12,6 @@ const Tab = createMaterialTopTabNavigator<FeedTabNavigatorParamList>();
 export function FeedTabNavigator() {
   return (
     <Tab.Navigator
-      screenOptions={{ swipeEnabled: false }}
       tabBarPosition="top"
       initialRouteName="Latest"
       tabBar={TabBar}
