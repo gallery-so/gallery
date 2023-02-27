@@ -132,7 +132,7 @@ export default function HoverCardOnUsername({ children, userRef, queryRef }: Pro
   return (
     <StyledContainer>
       <StyledLinkContainer ref={reference} {...getReferenceProps()}>
-        <Link href={userProfileLink}>
+        <Link href={userProfileLink} legacyBehavior>
           {children ? (
             children
           ) : (
@@ -145,61 +145,59 @@ export default function HoverCardOnUsername({ children, userRef, queryRef }: Pro
         {isHovering && (
           <FloatingFocusManager context={context} modal={false}>
             <Link href={userProfileLink}>
-              <a href={route(userProfileLink)}>
-                <StyledCardWrapper
-                  className="Popover"
-                  aria-labelledby={headingId}
-                  // Floating UI Props
-                  ref={floating}
-                  style={{
-                    position: strategy,
-                    top: y ?? 0,
-                    left: x ?? 0,
-                  }}
-                  {...getFloatingProps()}
-                  // Framer Motion Props
-                  transition={{
-                    duration: ANIMATED_COMPONENT_TRANSITION_S,
-                    ease: rawTransitions.cubicValues,
-                  }}
-                  initial={{ opacity: 0, y: 0 }}
-                  animate={{ opacity: 1, y: ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL }}
-                  exit={{ opacity: 0, y: 0 }}
-                >
-                  <StyledCardContainer>
-                    <StyledCardHeader>
+              <StyledCardWrapper
+                className="Popover"
+                aria-labelledby={headingId}
+                // Floating UI Props
+                ref={floating}
+                style={{
+                  position: strategy,
+                  top: y ?? 0,
+                  left: x ?? 0,
+                }}
+                {...getFloatingProps()}
+                // Framer Motion Props
+                transition={{
+                  duration: ANIMATED_COMPONENT_TRANSITION_S,
+                  ease: rawTransitions.cubicValues,
+                }}
+                initial={{ opacity: 0, y: 0 }}
+                animate={{ opacity: 1, y: ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL }}
+                exit={{ opacity: 0, y: 0 }}
+              >
+                <StyledCardContainer>
+                  <StyledCardHeader>
+                    <HStack align="center" gap={4}>
                       <HStack align="center" gap={4}>
-                        <HStack align="center" gap={4}>
-                          <StyledCardUsername>{displayName}</StyledCardUsername>
+                        <StyledCardUsername>{displayName}</StyledCardUsername>
 
-                          <HStack align="center" gap={0}>
-                            {userBadges.map((badge) => (
-                              // Might need to rethink this layout when we have more badges
-                              <Badge key={badge.name} badgeRef={badge} />
-                            ))}
-                          </HStack>
+                        <HStack align="center" gap={0}>
+                          {userBadges.map((badge) => (
+                            // Might need to rethink this layout when we have more badges
+                            <Badge key={badge.name} badgeRef={badge} />
+                          ))}
                         </HStack>
-
-                        {isLoggedIn && !isOwnProfile && (
-                          <StyledFollowButtonWrapper>
-                            <FollowButton userRef={user} queryRef={query} />
-                          </StyledFollowButtonWrapper>
-                        )}
                       </HStack>
 
-                      <BaseM>{totalCollections} collections</BaseM>
-                    </StyledCardHeader>
+                      {isLoggedIn && !isOwnProfile && (
+                        <StyledFollowButtonWrapper>
+                          <FollowButton userRef={user} queryRef={query} />
+                        </StyledFollowButtonWrapper>
+                      )}
+                    </HStack>
 
-                    {user.bio && (
-                      <StyledCardDescription>
-                        <BaseM>
-                          <Markdown text={unescape(user.bio)}></Markdown>
-                        </BaseM>
-                      </StyledCardDescription>
-                    )}
-                  </StyledCardContainer>
-                </StyledCardWrapper>
-              </a>
+                    <BaseM>{totalCollections} collections</BaseM>
+                  </StyledCardHeader>
+
+                  {user.bio && (
+                    <StyledCardDescription>
+                      <BaseM>
+                        <Markdown text={unescape(user.bio)}></Markdown>
+                      </BaseM>
+                    </StyledCardDescription>
+                  )}
+                </StyledCardContainer>
+              </StyledCardWrapper>
             </Link>
           </FloatingFocusManager>
         )}

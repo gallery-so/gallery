@@ -102,7 +102,7 @@ export function CollectionNavbar({ queryRef, username, collectionId }: Collectio
 
                 <SlashText>/</SlashText>
 
-                <Link href={galleryRoute}>
+                <Link href={galleryRoute} legacyBehavior>
                   <BreadcrumbLink href={route(galleryRoute)}>{galleryName}</BreadcrumbLink>
                 </Link>
 
@@ -120,7 +120,7 @@ export function CollectionNavbar({ queryRef, username, collectionId }: Collectio
       <NavbarCenterContent>
         {isMobile ? (
           <VStack align="center" shrink>
-            <Link href={usernameRoute}>
+            <Link href={usernameRoute} legacyBehavior>
               <MobileUsernameText>{username}</MobileUsernameText>
             </Link>
             <BreadcrumbText>{unescapedCollectionName}</BreadcrumbText>

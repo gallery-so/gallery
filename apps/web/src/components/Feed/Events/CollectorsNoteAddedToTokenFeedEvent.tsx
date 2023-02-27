@@ -120,6 +120,7 @@ export default function CollectorsNoteAddedToTokenFeedEvent({
                   },
                 }}
                 onClick={handleEventClick}
+                legacyBehavior
               >
                 <StyledEventLabel>{event.token.token?.name}</StyledEventLabel>
               </Link>
