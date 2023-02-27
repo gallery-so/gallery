@@ -84,5 +84,5 @@ const StyledAlert = styled(HStack)`
 const StyledInfoCircleIcon = styled(InfoCircleIcon)`
   height: 24px;
   width: 24px;
-  color: red;
+  color: ${colors.red};
 `;
