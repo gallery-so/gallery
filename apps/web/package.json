@@ -91,7 +91,7 @@
     "lodash.unescape": "^4.0.1",
     "magic-sdk": "^13.1.0",
     "mixpanel-browser": "^2.41.0",
-    "next": "^12.3.0",
+    "next": "^13.2.1",
     "nextjs-routes": "^0.1.5",
     "qr-code-styling": "^1.6.0-rc.1",
     "react": "18.2.0",
