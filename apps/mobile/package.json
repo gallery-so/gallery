@@ -25,6 +25,7 @@
     "react-native-screens": "~3.18.0",
     "react-native-svg": "13.4.0",
     "react-native-tab-view": "^3.4.0",
+    "react-native-webview": "11.23.1",
     "react-relay": "^14.1.0",
     "relay-runtime": "^14.1.0",
     "text-encoding": "^0.7.0",
