@@ -34,7 +34,7 @@ import isTouchscreenDevice from '~/utils/isTouchscreenDevice';
 import { FEATURED_COLLECTION_IDS } from './GlobalAnnouncementPopover/GlobalAnnouncementPopover';
 import useGlobalAnnouncementPopover from './GlobalAnnouncementPopover/useGlobalAnnouncementPopover';
 import GlobalBanner from './GlobalBanner/GlobalBanner';
-import GlobalSidebar, { GLOBAL_SIDEBAR_WIDTH } from './GlobalSidebar/GlobalSidebar';
+import GlobalSidebar, { GLOBAL_SIDEBAR_DESKTOP_WIDTH } from './GlobalSidebar/GlobalSidebar';
 import {
   FADE_TRANSITION_TIME_MS,
   FADE_TRANSITION_TIME_SECONDS,
@@ -295,7 +295,7 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
 
 const MainContentWrapper = styled.div`
   @media only screen and ${breakpoints.tablet} {
-    margin-left: ${GLOBAL_SIDEBAR_WIDTH}px;
+    margin-left: ${GLOBAL_SIDEBAR_DESKTOP_WIDTH}px;
   }
 `;
 

@@ -1,6 +1,7 @@
 import { ReactElement, useCallback, useRef } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 
+import breakpoints from '~/components/core/breakpoints';
 import colors from '~/components/core/colors';
 import IconContainer from '~/components/core/IconContainer';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
@@ -8,6 +9,8 @@ import { TitleDiatypeL } from '~/components/core/Text/Text';
 import transitions from '~/components/core/transitions';
 import useDetectOutsideClick from '~/hooks/useDetectOutsideClick';
 import CloseIcon from '~/icons/CloseIcon';
+
+import { GLOBAL_SIDEBAR_MOBILE_HEIGHT } from './GlobalSidebar';
 
 type Props = {
   content: ReactElement;
@@ -78,8 +81,15 @@ const StyledHeadingText = styled(TitleDiatypeL)`
 `;
 
 const StyledContent = styled(VStack)`
-  // width: 375px;
-  width: 420px;
-  height: 100vh;
   background-color: ${colors.offWhite};
+  width: 100%;
+  height: calc(100vh - 42px);
+  overflow-y: scroll;
+  overflow-x: hidden;
+
+  @media only screen and ${breakpoints.tablet} {
+    height: 100vh;
+    // width: 375px;
+    width: 420px;
+  }
 `;

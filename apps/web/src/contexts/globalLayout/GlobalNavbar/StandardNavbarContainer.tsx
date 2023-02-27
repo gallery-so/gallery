@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import breakpoints, { pageGutter } from '~/components/core/breakpoints';
 
-import { GLOBAL_SIDEBAR_WIDTH } from '../GlobalSidebar/GlobalSidebar';
+import { GLOBAL_SIDEBAR_DESKTOP_WIDTH } from '../GlobalSidebar/GlobalSidebar';
 
 export const StandardNavbarContainer = styled.div`
   width: 100%;
@@ -18,7 +18,7 @@ export const StandardNavbarContainer = styled.div`
   padding: 0 ${pageGutter.mobile}px;
 
   @media only screen and ${breakpoints.tablet} {
-    margin-left: ${GLOBAL_SIDEBAR_WIDTH}px;
+    margin-left: ${GLOBAL_SIDEBAR_DESKTOP_WIDTH}px;
   }
 `;
 
