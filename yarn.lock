@@ -15903,7 +15903,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo@npm:^48.0.4":
+"expo@npm:~48.0.4":
   version: 48.0.4
   resolution: "expo@npm:48.0.4"
   dependencies:
@@ -22914,7 +22914,7 @@ __metadata:
     babel-plugin-tsconfig-paths-module-resolver: ^1.0.4
     concurrently: ^7.6.0
     eas-cli: ^3.7.2
-    expo: ^48.0.4
+    expo: ~48.0.4
     expo-av: ~13.2.1
     expo-build-properties: ~0.5.1
     expo-dev-client: ~2.1.3

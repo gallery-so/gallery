@@ -7,7 +7,7 @@
     "@react-navigation/native": "^6.1.4",
     "@react-navigation/native-stack": "^6.9.10",
     "@shopify/flash-list": "1.4.0",
-    "expo": "^48.0.4",
+    "expo": "~48.0.4",
     "expo-av": "~13.2.1",
     "expo-build-properties": "~0.5.1",
     "expo-dev-client": "~2.1.3",
