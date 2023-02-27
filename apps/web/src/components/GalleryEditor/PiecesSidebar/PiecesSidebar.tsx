@@ -264,4 +264,5 @@ const StyledButtonContainer = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 4px;
+  padding: 0 12px;
 `;
