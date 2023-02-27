@@ -91,7 +91,7 @@ export function GalleryNavbar({
         <NavbarCenterContent>
           {isMobile ? (
             <HStack style={{ overflow: 'hidden' }} gap={4}>
-              <Link href={userGalleryRoute}>
+              <Link href={userGalleryRoute} legacyBehavior>
                 <UsernameBreadcrumbLink
                   href={route(userGalleryRoute)}
                   mainGalleryPage={pathname === '/[username]'}

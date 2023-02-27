@@ -162,7 +162,7 @@ export const ButtonLink = ({
   children,
   ...otherProps
 }: ButtonLinkProps) => (
-  <Link href={href} passHref>
+  <Link href={href} passHref legacyBehavior>
     <StyledButton
       as="a"
       tabIndex={disabled ? -1 : undefined}

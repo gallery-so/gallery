@@ -7,7 +7,7 @@ import { InternalAnchorElementProps } from '~/types/Elements';
 // - handle rel="noopener noreferrer" for target="_blank" links
 
 export const UnstyledLink = ({ href, ...props }: InternalAnchorElementProps) => (
-  <Link href={href} passHref>
+  <Link href={href} passHref legacyBehavior>
     <UnstyledAnchor {...props} />
   </Link>
 );

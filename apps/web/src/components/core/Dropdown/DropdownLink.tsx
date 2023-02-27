@@ -9,7 +9,7 @@ type DropdownLinkProps = { href: Route; children: ReactNode; onClick?: () => voi
 
 export function DropdownLink({ href, children, onClick }: DropdownLinkProps) {
   return (
-    <Link href={href}>
+    <Link href={href} legacyBehavior>
       <StyledDropdownLink href={route(href)} onClick={onClick}>
         {children}
       </StyledDropdownLink>
