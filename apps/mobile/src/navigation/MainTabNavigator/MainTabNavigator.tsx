@@ -1,11 +1,12 @@
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AccountScreen } from 'src/screens/AccountScreen';
-import { HomeScreen } from 'src/screens/HomeScreen';
 import { NotificationsScreen } from 'src/screens/NotificationsScreen';
 
 import { TabBar } from '~/navigation/MainTabNavigator/TabBar';
 import { MainTabNavigatorParamList } from '~/navigation/types';
+
+import { HomeScreen } from '../../screens/HomeScreen/HomeScreen';
 
 const Tab = createMaterialTopTabNavigator<MainTabNavigatorParamList>();
 

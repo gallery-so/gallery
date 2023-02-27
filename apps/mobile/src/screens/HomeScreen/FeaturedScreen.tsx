@@ -1,9 +1,9 @@
 import { Text, View } from 'react-native';
 
-export function LatestScreen() {
+export function FeaturedScreen() {
   return (
     <View>
-      <Text>Latest</Text>
+      <Text>Featured</Text>
     </View>
   );
 }
