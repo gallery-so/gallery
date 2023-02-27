@@ -7,14 +7,13 @@ import SidebarDrawerProvider from './SidebarDrawerContext';
 
 type GlobalSidebarProps = {
   content: ReactElement | null;
-  isVisible: boolean;
+  // isVisible: boolean;
 };
 
-export default function GlobalSidebar({ content, isVisible }: GlobalSidebarProps) {
-  console.log(content);
-  useEffect(() => {
-    console.log({ isVisible });
-  }, [isVisible]);
+export default function GlobalSidebar({ content }: GlobalSidebarProps) {
+  // useEffect(() => {
+  //   console.log({ isVisible });
+  // }, [isVisible]);
   // useEffect(() => {
   //   if (!isVisible) {
   //     if (
@@ -41,11 +40,9 @@ export default function GlobalSidebar({ content, isVisible }: GlobalSidebarProps
 
   return (
     <StyledSidebar>
-      {isVisible && (
-        <StyledSidebarContent>
-          <SidebarDrawerProvider>{content}</SidebarDrawerProvider>
-        </StyledSidebarContent>
-      )}
+      <StyledSidebarContent>
+        <SidebarDrawerProvider>{content}</SidebarDrawerProvider>
+      </StyledSidebarContent>
     </StyledSidebar>
   );
 }

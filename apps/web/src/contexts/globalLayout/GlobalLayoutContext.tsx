@@ -250,10 +250,9 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
         handleFadeNavbarOnHover={handleFadeNavbarOnHover}
         content={topNavContent}
       />
+      {/*  isVisible={isNavbarVisible} */}
 
-      {isGlobalSidebarEnabled && (
-        <GlobalSidebar content={sidebarContent} isVisible={isNavbarVisible} />
-      )}
+      {isGlobalSidebarEnabled && <GlobalSidebar content={sidebarContent} />}
 
       <GlobalLayoutStateContext.Provider value={state}>
         <GlobalLayoutActionsContext.Provider value={actions}>

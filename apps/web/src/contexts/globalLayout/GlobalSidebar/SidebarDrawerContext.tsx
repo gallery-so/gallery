@@ -6,36 +6,36 @@ import {
   ReactNode,
   useCallback,
   useContext,
+  useMemo,
   useRef,
   useState,
 } from 'react';
 
 import AnimatedSidebarDrawer from './AnimatedSidebarDrawer';
 
-type DrawerState = {
-  isDrawerOpenRef: MutableRefObject<boolean>;
+type ActiveDrawer = {
+  content: ReactElement;
+  headerText?: string;
+  drawerName: string;
 };
 
-const SidebarDrawerContext = createContext<DrawerState | undefined>(undefined);
+type DrawerState = {
+  activeDrawer: ActiveDrawer | null;
+};
+
+const DrawerStateContext = createContext<DrawerState | undefined>(undefined);
 
 export const useDrawerState = (): DrawerState => {
-  const context = useContext(SidebarDrawerContext);
+  const context = useContext(DrawerStateContext);
   if (!context) {
-    throw new Error('Attempted to use SidebarDrawerContext without a provider!');
+    throw new Error('Attempted to use DrawerStateContext without a provider!');
   }
 
   return context;
 };
 
-// type Props = {};
-
-type ShowDrawerProps = {
-  content: ReactElement;
-  headerText?: string;
-};
-
 type DrawerActions = {
-  showDrawer: (props: ShowDrawerProps) => void;
+  showDrawer: (props: ActiveDrawer) => void;
   hideDrawer: () => void;
 };
 
@@ -53,31 +53,46 @@ export const useDrawerActions = (): DrawerActions => {
 type Props = { children: ReactNode };
 
 function SidebarDrawerProvider({ children }: Props): ReactElement {
-  const isDrawerOpenRef = useRef(false);
-  const [drawerProps, setDrawerProps] = useState<ShowDrawerProps | null>(null);
+  const [drawerState, setDrawerState] = useState<DrawerState>({ activeDrawer: null });
 
-  const showDrawer = useCallback((props: ShowDrawerProps) => {
-    setDrawerProps(props);
+  const showDrawer = useCallback((props: ActiveDrawer) => {
+    setDrawerState((previous) => {
+      // todo fix bug where clicking outside the drawer closes it so this button re-opens it
+      if (previous.activeDrawer?.drawerName === props.drawerName) {
+        return { activeDrawer: null };
+      }
+
+      return { activeDrawer: props };
+    });
+    // drawerState.activeDrawer?.drawerName === props.drawerName
+    //   ? setDrawerState({ activeDrawer: null })
+    //   : setDrawerState({ activeDrawer: props });
   }, []);
 
-  const hideDrawer = (): void => {
-    setDrawerProps(null);
-  };
+  const hideDrawer = useCallback((): void => {
+    setDrawerState({ activeDrawer: null });
+  }, []);
+
+  const drawerActions: DrawerActions = useMemo(
+    () => ({ showDrawer, hideDrawer }),
+    [showDrawer, hideDrawer]
+  );
 
   return (
-    <SidebarDrawerContext.Provider value={{ isDrawerOpenRef }}>
-      <DrawerActionsContext.Provider value={{ showDrawer, hideDrawer }}>
+    <DrawerStateContext.Provider value={drawerState}>
+      <DrawerActionsContext.Provider value={drawerActions}>
         {children}
-        {drawerProps && (
+        {drawerState.activeDrawer && (
           <AnimatedSidebarDrawer
-            content={drawerProps.content}
-            headerText={drawerProps.headerText}
+            content={drawerState.activeDrawer.content}
+            headerText={drawerState.activeDrawer.headerText}
             hideDrawer={hideDrawer}
           />
         )}
       </DrawerActionsContext.Provider>
-    </SidebarDrawerContext.Provider>
+    </DrawerStateContext.Provider>
   );
 }
 
-export default memo(SidebarDrawerProvider);
+export default SidebarDrawerProvider;
+// export default memo(SidebarDrawerProvider);

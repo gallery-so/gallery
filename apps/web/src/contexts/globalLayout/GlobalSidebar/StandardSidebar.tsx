@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -17,14 +17,12 @@ import ShopIcon from '~/icons/ShopIcon';
 import UserIcon from '~/icons/UserIcon';
 import SettingsModal from '~/scenes/Modals/SettingsModal/SettingsModal';
 
-import { useDrawerActions } from './SidebarDrawerContext';
+import { useDrawerActions, useDrawerState } from './SidebarDrawerContext';
 import SidebarIcon from './SidebarIcon';
 
 type Props = {
   queryRef: StandardSidebarFragment$key;
 };
-
-type DrawerType = 'settings' | 'notifications';
 
 export function StandardSidebar({ queryRef }: Props) {
   const query = useFragment(
@@ -47,44 +45,49 @@ export function StandardSidebar({ queryRef }: Props) {
   const isLoggedIn = query.viewer?.__typename === 'Viewer';
   const username = query.viewer?.user?.username;
 
-  const [activeDrawer, setActiveDrawer] = useState<DrawerType | null>(null);
-
   const { showDrawer } = useDrawerActions();
   const { push } = useRouter();
+
+  const activeDrawerState = useDrawerState();
+  const activeDrawerName = useMemo(
+    () => activeDrawerState.activeDrawer?.drawerName,
+    [activeDrawerState]
+  );
 
   const handleSettingsClick = useCallback(() => {
     // track('click', 'settings', 'sidebar');
     showDrawer({
       content: <SettingsModal queryRef={query} />,
       headerText: 'Settings',
+      drawerName: 'settings',
     });
-    setActiveDrawer('settings');
+    // setActiveDrawer('settings');
   }, [query, showDrawer]);
 
   const handleNotificationsClick = useCallback(() => {
     showDrawer({
       content: <NotificationsModal fullscreen={false} />,
       headerText: 'Notifications',
+      drawerName: 'notifications',
     });
-    setActiveDrawer('notifications');
-  }, []);
+  }, [showDrawer]);
 
   const handleProfileClick = useCallback(() => {
     push({ pathname: '/[username]', query: { username } });
-  }, []);
+  }, [push, username]);
 
   const handleEditClick = useCallback(() => {
     // track('click', 'settings', 'sidebar');
     push({ pathname: '/[username]/galleries', query: { username } });
-  }, [username, showDrawer]);
+  }, [push, username]);
 
   const handleShopIconClick = useCallback(() => {
     push({ pathname: '/shop' });
-  }, []);
+  }, [push]);
 
   const handleHomeIconClick = useCallback(() => {
     push({ pathname: '/trending' });
-  }, []);
+  }, [push]);
 
   return (
     <StyledStandardSidebar>
@@ -112,13 +115,13 @@ export function StandardSidebar({ queryRef }: Props) {
               tooltipLabel="Noitifications"
               onClick={handleNotificationsClick}
               icon={<BellIcon />}
-              isActive={activeDrawer === 'notifications'}
+              isActive={activeDrawerName === 'notifications'}
             />
             <SidebarIcon
               tooltipLabel="Settings"
               onClick={handleSettingsClick}
               icon={<CogIcon />}
-              isActive={activeDrawer === 'settings'}
+              isActive={activeDrawerName === 'settings'}
             />
           </VStack>
         )}
