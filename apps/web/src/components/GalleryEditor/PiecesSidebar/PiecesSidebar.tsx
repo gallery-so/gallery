@@ -5,10 +5,13 @@ import styled from 'styled-components';
 import { Button } from '~/components/core/Button/Button';
 import colors from '~/components/core/colors';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
+import { Spinner } from '~/components/core/Spinner/Spinner';
 import { TitleS } from '~/components/core/Text/Text';
 import { Chain } from '~/components/GalleryEditor/PiecesSidebar/chains';
 import { SidebarChainSelector } from '~/components/GalleryEditor/PiecesSidebar/SidebarChainSelector';
 import { SidebarTokens } from '~/components/GalleryEditor/PiecesSidebar/SidebarTokens';
+import { NewTooltip } from '~/components/Tooltip/NewTooltip';
+import { useTooltipHover } from '~/components/Tooltip/useTooltipHover';
 import { useCollectionEditorContext } from '~/contexts/collectionEditor/CollectionEditorContext';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { PiecesSidebarFragment$key } from '~/generated/PiecesSidebarFragment.graphql';
@@ -20,6 +23,7 @@ import { removeNullValues } from '~/utils/removeNullValues';
 import OnboardingDialog from '../GalleryOnboardingGuide/OnboardingDialog';
 import { useOnboardingDialogContext } from '../GalleryOnboardingGuide/OnboardingDialogContext';
 import { AddWalletSidebar } from './AddWalletSidebar';
+import isRefreshDisabledForUser from './isRefreshDisabledForUser';
 import SearchBar from './SearchBar';
 import { SidebarView, SidebarViewSelector } from './SidebarViewSelector';
 
@@ -47,8 +51,14 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
   const query = useFragment(
     graphql`
       fragment PiecesSidebarViewerFragment on Query {
+        viewer {
+          ... on Viewer {
+            user {
+              dbid
+            }
+          }
+        }
         ...doesUserOwnWalletFromChainFragment
-        ...SidebarChainSelectorFragment
         ...AddWalletSidebarQueryFragment
       }
     `,
@@ -56,7 +66,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
   );
 
   const { step, dialogMessage, nextStep, handleClose } = useOnboardingDialogContext();
-  const { syncTokens } = useSyncTokens();
+  const { isLocked, syncTokens } = useSyncTokens();
   const { addWhitespace } = useCollectionEditorContext();
 
   const [searchResults, setSearchResults] = useState<string[]>([]);
@@ -106,6 +116,28 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
     });
   }, [tokenSearchResults, isSearching, selectedChain, selectedView]);
 
+  const isRefreshDisabledAtUserLevel = isRefreshDisabledForUser(query.viewer?.user?.dbid ?? '');
+  const refreshDisabled =
+    isRefreshDisabledAtUserLevel || !doesUserOwnWalletFromChain(selectedChain, query);
+  const handleRefresh = useCallback(async () => {
+    if (refreshDisabled) {
+      return;
+    }
+
+    await syncTokens(selectedChain);
+  }, [selectedChain, refreshDisabled, syncTokens]);
+
+  const { floating, reference, getFloatingProps, getReferenceProps, floatingStyle } =
+    useTooltipHover({ placement: 'top' });
+
+  const {
+    floating: refreshFloating,
+    reference: refreshReference,
+    getFloatingProps: getRefreshFloatingProps,
+    getReferenceProps: getRefreshReferenceProps,
+    floatingStyle: refreshFloatingStyle,
+  } = useTooltipHover({ disabled: refreshDisabled, placement: 'top' });
+
   return (
     <StyledSidebar navbarHeight={navbarHeight}>
       <StyledSidebarContainer gap={8}>
@@ -139,17 +171,43 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
         {!isSearching && (
           <>
             <div>
-              <SidebarChainSelector
-                queryRef={query}
-                selected={selectedChain}
-                onChange={setSelectedChain}
-              />
+              <SidebarChainSelector selected={selectedChain} onChange={setSelectedChain} />
             </div>
             {ownsWalletFromSelectedChain && (
-              <AddBlankSpaceButton onClick={handleAddBlankBlockClick} variant="secondary">
-                ADD BLANK SPACE
-              </AddBlankSpaceButton>
+              <StyledButtonContainer>
+                <Button
+                  onClick={handleAddBlankBlockClick}
+                  variant="secondary"
+                  ref={reference}
+                  {...getReferenceProps()}
+                >
+                  BLANK SPACE
+                </Button>
+                <Button
+                  onClick={handleRefresh}
+                  variant="secondary"
+                  disabled={refreshDisabled}
+                  ref={refreshReference}
+                  {...getRefreshReferenceProps()}
+                >
+                  {isLocked ? <Spinner /> : 'REFRESH'}
+                </Button>
+              </StyledButtonContainer>
             )}
+
+            <NewTooltip
+              {...getFloatingProps()}
+              style={floatingStyle}
+              ref={floating}
+              text="Add negative space to your gallery"
+            />
+
+            <NewTooltip
+              {...getRefreshFloatingProps()}
+              style={refreshFloatingStyle}
+              ref={refreshFloating}
+              text={isLocked ? `Refreshing...` : `Fetch latest ${selectedChain} pieces`}
+            />
           </>
         )}
         {ownsWalletFromSelectedChain ? (
@@ -176,10 +234,6 @@ const StyledSidebarContainer = styled(VStack)`
   height: 100%;
 `;
 
-const AddBlankSpaceButton = styled(Button)`
-  margin: 0 12px;
-`;
-
 const StyledSidebar = styled.div<{ navbarHeight: number }>`
   display: flex;
   flex-direction: column;
@@ -204,4 +258,10 @@ const Header = styled(HStack)`
 
 const StyledSearchBarContainer = styled(VStack)`
   position: relative;
+`;
+
+const StyledButtonContainer = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
 `;
