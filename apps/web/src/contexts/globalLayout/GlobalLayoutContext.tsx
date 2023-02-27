@@ -17,13 +17,16 @@ import { useFragment, useLazyLoadQuery } from 'react-relay';
 import { fetchQuery, graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
+import breakpoints from '~/components/core/breakpoints';
 import FullPageLoader from '~/components/core/Loader/FullPageLoader';
+import { HStack } from '~/components/core/Spacer/Stack';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { GlobalLayoutContextNavbarFragment$key } from '~/generated/GlobalLayoutContextNavbarFragment.graphql';
 import { GlobalLayoutContextQuery } from '~/generated/GlobalLayoutContextQuery.graphql';
 import useDebounce from '~/hooks/useDebounce';
 import usePrevious from '~/hooks/usePrevious';
 import useThrottle from '~/hooks/useThrottle';
+import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { PreloadQueryArgs } from '~/types/PageComponentPreloadQuery';
 import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 import isTouchscreenDevice from '~/utils/isTouchscreenDevice';
@@ -31,7 +34,7 @@ import isTouchscreenDevice from '~/utils/isTouchscreenDevice';
 import { FEATURED_COLLECTION_IDS } from './GlobalAnnouncementPopover/GlobalAnnouncementPopover';
 import useGlobalAnnouncementPopover from './GlobalAnnouncementPopover/useGlobalAnnouncementPopover';
 import GlobalBanner from './GlobalBanner/GlobalBanner';
-import GlobalSidebar from './GlobalSidebar/GlobalSidebar';
+import GlobalSidebar, { GLOBAL_SIDEBAR_WIDTH } from './GlobalSidebar/GlobalSidebar';
 import {
   FADE_TRANSITION_TIME_MS,
   FADE_TRANSITION_TIME_SECONDS,
@@ -236,6 +239,8 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
 
   const isGlobalSidebarEnabled = isFeatureEnabled(FeatureFlag.GLOBAL_SIDEBAR, query);
 
+  // const isMobile = useIsMobileWindowWidth();
+
   return (
     // note: we render the navbar here, above the main contents of the app,
     // so that it can remain fixed across page transitions. the footer, on
@@ -252,37 +257,47 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
       />
       {/*  isVisible={isNavbarVisible} */}
 
+      {/* <PageContent> */}
       {isGlobalSidebarEnabled && <GlobalSidebar content={sidebarContent} />}
 
-      <GlobalLayoutStateContext.Provider value={state}>
-        <GlobalLayoutActionsContext.Provider value={actions}>
-          {/*
-           * Fade main page content as the user navigates across routes.
-           * This does not affect the Top Nav or Left Hand Nav.
-           */}
-          <AnimatePresence>
-            <motion.div
-              key={locationKey}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{
-                opacity: 0,
-                transition: { duration: FADE_TRANSITION_TIME_SECONDS },
-              }}
-              transition={{
-                ease: 'easeInOut',
-                delay: NAVIGATION_TRANSITION_TIME_SECONDS,
-                duration: FADE_TRANSITION_TIME_SECONDS,
-              }}
-            >
-              <Suspense fallback={<FullPageLoader />}>{children}</Suspense>
-            </motion.div>
-          </AnimatePresence>
-        </GlobalLayoutActionsContext.Provider>
-      </GlobalLayoutStateContext.Provider>
+      <MainContentWrapper>
+        <GlobalLayoutStateContext.Provider value={state}>
+          <GlobalLayoutActionsContext.Provider value={actions}>
+            {/*
+             * Fade main page content as the user navigates across routes.
+             * This does not affect the Top Nav or Left Hand Nav.
+             */}
+            <AnimatePresence>
+              <motion.div
+                key={locationKey}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{
+                  opacity: 0,
+                  transition: { duration: FADE_TRANSITION_TIME_SECONDS },
+                }}
+                transition={{
+                  ease: 'easeInOut',
+                  delay: NAVIGATION_TRANSITION_TIME_SECONDS,
+                  duration: FADE_TRANSITION_TIME_SECONDS,
+                }}
+              >
+                <Suspense fallback={<FullPageLoader />}>{children}</Suspense>
+              </motion.div>
+            </AnimatePresence>
+          </GlobalLayoutActionsContext.Provider>
+        </GlobalLayoutStateContext.Provider>
+      </MainContentWrapper>
+      {/* </PageContent> */}
     </>
   );
 });
+
+const MainContentWrapper = styled.div`
+  @media only screen and ${breakpoints.tablet} {
+    margin-left: ${GLOBAL_SIDEBAR_WIDTH}px;
+  }
+`;
 
 GlobalLayoutContextProvider.preloadQuery = ({ relayEnvironment }: PreloadQueryArgs) => {
   fetchQuery<GlobalLayoutContextQuery>(relayEnvironment, GlobalLayoutContextQueryNode, {

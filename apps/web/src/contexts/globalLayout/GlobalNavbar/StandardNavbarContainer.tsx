@@ -1,6 +1,8 @@
 import styled from 'styled-components';
 
-import { pageGutter } from '~/components/core/breakpoints';
+import breakpoints, { pageGutter } from '~/components/core/breakpoints';
+
+import { GLOBAL_SIDEBAR_WIDTH } from '../GlobalSidebar/GlobalSidebar';
 
 export const StandardNavbarContainer = styled.div`
   width: 100%;
@@ -14,6 +16,10 @@ export const StandardNavbarContainer = styled.div`
   gap: 0 24px;
 
   padding: 0 ${pageGutter.mobile}px;
+
+  @media only screen and ${breakpoints.tablet} {
+    margin-left: ${GLOBAL_SIDEBAR_WIDTH}px;
+  }
 `;
 
 export const NavbarLeftContent = styled.div`

@@ -4,6 +4,7 @@ import { graphql, useLazyLoadQuery } from 'react-relay';
 
 import GalleryViewEmitter from '~/components/internal/GalleryViewEmitter';
 import { CollectionNavbar } from '~/contexts/globalLayout/GlobalNavbar/CollectionNavbar/CollectionNavbar';
+import { StandardSidebar } from '~/contexts/globalLayout/GlobalSidebar/StandardSidebar';
 import { CollectionIdQuery } from '~/generated/CollectionIdQuery.graphql';
 import { MetaTagProps } from '~/pages/_app';
 import GalleryRedirect from '~/scenes/_Router/GalleryRedirect';
@@ -23,6 +24,7 @@ export default function CollectionGallery({ collectionId, username }: Collection
         ...CollectionNavbarFragment
         ...CollectionGalleryPageFragment
         ...GalleryViewEmitterWithSuspenseFragment
+        ...StandardSidebarFragment
 
         collectionById(id: $collectionId) {
           ... on Collection {
@@ -66,6 +68,7 @@ export default function CollectionGallery({ collectionId, username }: Collection
           <CollectionGalleryPage queryRef={query} username={username} />
         </>
       }
+      sidebar={<StandardSidebar queryRef={query} />}
     />
   );
 }

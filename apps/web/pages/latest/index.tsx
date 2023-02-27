@@ -3,6 +3,7 @@ import { graphql, useLazyLoadQuery } from 'react-relay';
 import { ITEMS_PER_PAGE, MAX_PIECES_DISPLAYED_PER_FEED_EVENT } from '~/components/Feed/constants';
 import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/NotesModal/NotesModal';
 import { HomeNavbar } from '~/contexts/globalLayout/GlobalNavbar/HomeNavbar/HomeNavbar';
+import { StandardSidebar } from '~/contexts/globalLayout/GlobalSidebar/StandardSidebar';
 import { latestQuery } from '~/generated/latestQuery.graphql';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
 import { LatestHomePage } from '~/scenes/Home/Latest/LatestHomePage';
@@ -19,6 +20,7 @@ export default function Latest() {
       ) {
         ...LatestHomePageFragment
         ...HomeNavbarFragment
+        ...StandardSidebarFragment
       }
     `,
     {
@@ -32,6 +34,7 @@ export default function Latest() {
     <GalleryRoute
       element={<LatestHomePage queryRef={query} />}
       navbar={<HomeNavbar queryRef={query} />}
+      sidebar={<StandardSidebar queryRef={query} />}
     />
   );
 }

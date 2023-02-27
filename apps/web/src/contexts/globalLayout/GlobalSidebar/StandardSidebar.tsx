@@ -3,12 +3,11 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
-import { Button } from '~/components/core/Button/Button';
-import IconContainer from '~/components/core/IconContainer';
-import { VStack } from '~/components/core/Spacer/Stack';
+import breakpoints from '~/components/core/breakpoints';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { NotificationsModal } from '~/components/NotificationsModal/NotificationsModal';
 import { StandardSidebarFragment$key } from '~/generated/StandardSidebarFragment.graphql';
-import AlertIcon from '~/icons/AlertIcon';
+import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import BellIcon from '~/icons/BellIcon';
 import CogIcon from '~/icons/CogIcon';
 import { EditPencilIcon } from '~/icons/EditPencilIcon';
@@ -89,6 +88,39 @@ export function StandardSidebar({ queryRef }: Props) {
     push({ pathname: '/trending' });
   }, [push]);
 
+  const isMobile = useIsMobileWindowWidth();
+
+  if (isMobile) {
+    return (
+      <StyledStandardSidebar>
+        <StyledMobileIconContainer align="center" justify="space-around">
+          <SidebarIcon tooltipLabel="Home" onClick={handleHomeIconClick} icon={<GLogoIcon />} />
+          {isLoggedIn && (
+            <>
+              <SidebarIcon
+                tooltipLabel="My Profile"
+                onClick={handleProfileClick}
+                icon={<UserIcon />}
+              />
+              <SidebarIcon
+                tooltipLabel="Notifications"
+                onClick={handleNotificationsClick}
+                icon={<BellIcon />}
+                isActive={activeDrawerName === 'notifications'}
+              />
+              <SidebarIcon
+                tooltipLabel="Settings"
+                onClick={handleSettingsClick}
+                icon={<CogIcon />}
+                isActive={activeDrawerName === 'settings'}
+              />
+            </>
+          )}
+        </StyledMobileIconContainer>
+      </StyledStandardSidebar>
+    );
+  }
+
   return (
     <StyledStandardSidebar>
       <StyledIconContainer align="center" justify="space-between">
@@ -112,7 +144,7 @@ export function StandardSidebar({ queryRef }: Props) {
               icon={<UserIcon />}
             />
             <SidebarIcon
-              tooltipLabel="Noitifications"
+              tooltipLabel="Notifications"
               onClick={handleNotificationsClick}
               icon={<BellIcon />}
               isActive={activeDrawerName === 'notifications'}
@@ -139,14 +171,16 @@ export function StandardSidebar({ queryRef }: Props) {
 
 const StyledStandardSidebar = styled.div`
   min-width: 100%;
-  padding: 16px 0;
+  // padding: 12px 0;
+  @media only screen and ${breakpoints.tablet} {
+    padding: 16px 0;
+  }
 `;
 
 const StyledIconContainer = styled(VStack)`
   height: 100%;
 `;
 
-const Icon = styled.img`
-  width: 16px;
-  height: 16px;
+const StyledMobileIconContainer = styled(HStack)`
+  height: 100%;
 `;

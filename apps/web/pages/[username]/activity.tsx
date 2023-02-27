@@ -6,6 +6,7 @@ import { ITEMS_PER_PAGE, MAX_PIECES_DISPLAYED_PER_FEED_EVENT } from '~/component
 import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/NotesModal/NotesModal';
 import GalleryViewEmitter from '~/components/internal/GalleryViewEmitter';
 import { GalleryNavbar } from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavbar';
+import { StandardSidebar } from '~/contexts/globalLayout/GlobalSidebar/StandardSidebar';
 import { activityQuery } from '~/generated/activityQuery.graphql';
 import { MetaTagProps } from '~/pages/_app';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
@@ -31,6 +32,7 @@ const activityQueryNode = graphql`
     ...UserActivityPageFragment
     ...GalleryNavbarFragment
     ...GalleryViewEmitterWithSuspenseFragment
+    ...StandardSidebarFragment
   }
 `;
 
@@ -54,6 +56,7 @@ export default function UserFeed({ username, eventId }: UserActivityProps) {
           <UserActivityPage username={username} queryRef={query} />
         </>
       }
+      sidebar={<StandardSidebar queryRef={query} />}
     />
   );
 }

@@ -1,6 +1,7 @@
 import { graphql, useLazyLoadQuery } from 'react-relay';
 
 import { HomeNavbar } from '~/contexts/globalLayout/GlobalNavbar/HomeNavbar/HomeNavbar';
+import { StandardSidebar } from '~/contexts/globalLayout/GlobalSidebar/StandardSidebar';
 import { exploreQuery } from '~/generated/exploreQuery.graphql';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
 import ExplorePage from '~/scenes/Home/ExploreHomePage';
@@ -13,6 +14,7 @@ export default function Explore() {
         ...ExploreHomePageFragment
         ...HomeNavbarFragment
         ...useOpenSettingsModalFragment
+        ...StandardSidebarFragment
       }
     `,
     {}
@@ -23,6 +25,7 @@ export default function Explore() {
   return (
     <GalleryRoute
       navbar={<HomeNavbar queryRef={query} />}
+      sidebar={<StandardSidebar queryRef={query} />}
       element={<ExplorePage queryRef={query} />}
     />
   );

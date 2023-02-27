@@ -8,6 +8,7 @@ import {
   LIST_ITEM_PER_PAGE,
 } from '~/constants/community';
 import { CommunityNavbar } from '~/contexts/globalLayout/GlobalNavbar/CommunityNavbar/CommunityNavbar';
+import { StandardSidebar } from '~/contexts/globalLayout/GlobalSidebar/StandardSidebar';
 import { ContractAddressQuery } from '~/generated/ContractAddressQuery.graphql';
 import { MetaTagProps } from '~/pages/_app';
 import GalleryRedirect from '~/scenes/_Router/GalleryRedirect';
@@ -35,6 +36,7 @@ export default function CommunityPage({ contractAddress }: CommunityPageProps) {
       ) {
         ...CommunityPageFragment
         ...CommunityNavbarFragment
+        ...StandardSidebarFragment
       }
     `,
     {
@@ -62,6 +64,7 @@ export default function CommunityPage({ contractAddress }: CommunityPageProps) {
     <GalleryRoute
       navbar={<CommunityNavbar queryRef={query} />}
       element={<CommunityPageScene queryRef={query} />}
+      sidebar={<StandardSidebar queryRef={query} />}
     />
   );
 }

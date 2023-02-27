@@ -10,6 +10,7 @@ import useVerifyEmailOnPage from '~/components/Email/useVerifyEmailOnPage';
 import GalleryViewEmitter from '~/components/internal/GalleryViewEmitter';
 import { GalleryNavbar } from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavbar';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
+import { StandardSidebar } from '~/contexts/globalLayout/GlobalSidebar/StandardSidebar';
 import { UsernameQuery } from '~/generated/UsernameQuery.graphql';
 import { MetaTagProps } from '~/pages/_app';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
@@ -33,6 +34,7 @@ const UsernameQueryNode = graphql`
     ...useOpenSettingsModalFragment
     ...GalleryViewEmitterWithSuspenseFragment
     ...useVerifyEmailOnPageQueryFragment
+    ...StandardSidebarFragment
   }
 `;
 
@@ -91,6 +93,7 @@ export default function UserGallery({ username }: UserGalleryProps) {
           false
         )
       }
+      sidebar={<StandardSidebar queryRef={query} />}
       element={
         <>
           <GalleryViewEmitter queryRef={query} />

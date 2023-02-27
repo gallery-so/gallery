@@ -78,7 +78,8 @@ const StyledHeadingText = styled(TitleDiatypeL)`
 `;
 
 const StyledContent = styled(VStack)`
-  width: 375px;
+  // width: 375px;
+  width: 420px;
   height: 100vh;
   background-color: ${colors.offWhite};
 `;

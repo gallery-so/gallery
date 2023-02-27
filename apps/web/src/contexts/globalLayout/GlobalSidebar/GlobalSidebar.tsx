@@ -1,9 +1,12 @@
 import { ReactElement, useEffect } from 'react';
 import styled from 'styled-components';
 
+import breakpoints from '~/components/core/breakpoints';
 import colors from '~/components/core/colors';
 
 import SidebarDrawerProvider from './SidebarDrawerContext';
+
+export const GLOBAL_SIDEBAR_WIDTH = 64;
 
 type GlobalSidebarProps = {
   content: ReactElement | null;
@@ -49,10 +52,17 @@ export default function GlobalSidebar({ content }: GlobalSidebarProps) {
 
 const StyledSidebar = styled.div`
   position: fixed;
-  width: 64px;
-  height: 100vh;
+  bottom: 0;
+  height: 48px;
+  width: 100vw;
+
   z-index: 2;
-  // border: 1px solid blue;
+
+  @media only screen and ${breakpoints.tablet} {
+    width: ${GLOBAL_SIDEBAR_WIDTH}px;
+    height: 100vh;
+    bottom: initial;
+  }
 `;
 
 const StyledSidebarContent = styled.div`
@@ -60,4 +70,9 @@ const StyledSidebarContent = styled.div`
   height: 100%;
   width: 100%;
   background-color: ${colors.offWhite};
+  flex-direction: column-reverse;
+
+  @media only screen and ${breakpoints.tablet} {
+    flex-direction: row;
+  }
 `;
