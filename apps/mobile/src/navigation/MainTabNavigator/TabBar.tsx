@@ -28,7 +28,7 @@ function TabItem({ route, icon, activeRoute }: TabItemProps) {
 
   return (
     <TouchableOpacity
-      className={`px-8 ${isFocused ? 'opacity-100' : 'opacity-25'}`}
+      className={`px-8 pt-3 ${isFocused ? 'opacity-100' : 'opacity-25'}`}
       accessibilityRole="button"
       accessibilityState={isFocused ? { selected: true } : {}}
       onPress={onPress}
@@ -46,7 +46,7 @@ export function TabBar({ state }: MaterialTopTabBarProps) {
   return (
     <View
       style={{ paddingBottom: bottom }}
-      className="bg-offWhite flex flex-row items-center justify-center pt-3"
+      className="bg-offWhite flex flex-row items-center justify-center"
     >
       <TabItem activeRoute={activeRoute} route="Account" icon={<AccountIcon />} />
       <TabItem activeRoute={activeRoute} route="Home" icon={<GLogo />} />
