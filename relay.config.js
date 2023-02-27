@@ -9,6 +9,7 @@ function generateConfig(projectDir) {
   fs.mkdirSync(path.resolve(__dirname, generatedDirectory), {
     recursive: true,
   });
+
   // Automatically touch the persisted_queries file
   fs.writeFileSync(path.resolve(__dirname, persistedQueriesFile), '{}', 'utf-8');
 
@@ -28,7 +29,7 @@ function generateConfig(projectDir) {
       projectDir === 'apps/mobile'
         ? undefined
         : {
-            file: persistedQueriesFile,
+            file: path.resolve(__dirname, persistedQueriesFile),
             algorithm: 'SHA256', // this can be one of MD5, SHA256, SHA1
           },
   };
