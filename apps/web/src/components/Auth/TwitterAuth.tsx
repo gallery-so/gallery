@@ -3,6 +3,7 @@ import { useCallback, useEffect } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
+import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { TwitterAuthMutation } from '~/generated/TwitterAuthMutation.graphql';
 import { TwitterAuthQueryFragment$key } from '~/generated/TwitterAuthQueryFragment.graphql';
@@ -49,6 +50,8 @@ export default function TwitterAuth({ queryRef }: Props) {
     throw new Error('Try to authorize Twitter without username');
   }
 
+  const reportError = useReportError();
+
   const handleVerifyTwitter = useCallback(async () => {
     if (!code) return;
 
@@ -73,31 +76,34 @@ export default function TwitterAuth({ queryRef }: Props) {
       });
     } catch (error) {
       if (error instanceof Error) {
+        reportError(error, { tags: { username } });
         pushToast({
-          message: 'Could not authorize Gallery on Twitter',
+          message: 'Failed to authorize your Twitter account',
         });
+      } else {
+        reportError('Uncaught error in TwitterAuth');
       }
     }
-  }, [code, pushToast, router, username, verifyTwitter]);
+  }, [code, pushToast, reportError, router, username, verifyTwitter]);
 
   useEffect(() => {
-    handleVerifyTwitter();
-  }, [handleVerifyTwitter]);
-
-  useEffect(() => {
-    if (error) {
-      router.push({
-        pathname: '/[username]',
-        query: {
-          username,
-        },
-      });
-
-      pushToast({
-        message: 'Could not authorize Gallery on Twitter',
-      });
+    if (!error) {
+      handleVerifyTwitter();
+      return;
     }
-  }, [error, pushToast, router, username]);
+
+    router.push({
+      pathname: '/[username]',
+      query: {
+        username,
+      },
+    });
+
+    reportError(`${error}`, { tags: { username } });
+    pushToast({
+      message: 'Failed to authorize your Twitter account',
+    });
+  }, [error, handleVerifyTwitter, pushToast, reportError, router, username]);
 
   return <FullPageLoader />;
 }
