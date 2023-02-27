@@ -266,7 +266,7 @@ const StyledNftPreview = styled.div<{
 }>`
   cursor: pointer;
 
-  display: flex;
+  display: grid;
   justify-content: center;
   align-items: center;
   position: relative;
