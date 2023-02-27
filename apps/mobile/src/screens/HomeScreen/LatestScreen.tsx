@@ -1,20 +1,20 @@
 import { Suspense, useMemo } from 'react';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 
-import { FeaturedScreenFragment$key } from '~/generated/FeaturedScreenFragment.graphql';
-import { FeaturedScreenQuery } from '~/generated/FeaturedScreenQuery.graphql';
+import { LatestScreenFragment$key } from '~/generated/LatestScreenFragment.graphql';
+import { LatestScreenQuery } from '~/generated/LatestScreenQuery.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
-import { FeedList } from '../components/Feed/FeedList';
+import { FeedList } from '../../components/Feed/FeedList';
 
-type FeaturedScreenInnerProps = {
-  queryRef: FeaturedScreenFragment$key;
+type LatestScreenInnerProps = {
+  queryRef: LatestScreenFragment$key;
 };
 
-function FeaturedScreenInner({ queryRef }: FeaturedScreenInnerProps) {
+function LatestScreenInner({ queryRef }: LatestScreenInnerProps) {
   const query = useFragment(
     graphql`
-      fragment FeaturedScreenFragment on Query {
+      fragment LatestScreenFragment on Query {
         trendingFeed(before: $globalFeedBefore, last: $globalFeedCount) {
           edges {
             node {
@@ -36,11 +36,11 @@ function FeaturedScreenInner({ queryRef }: FeaturedScreenInnerProps) {
   return <FeedList feedEventRefs={events} />;
 }
 
-export function FeaturedScreen() {
-  const query = useLazyLoadQuery<FeaturedScreenQuery>(
+export function LatestScreen() {
+  const query = useLazyLoadQuery<LatestScreenQuery>(
     graphql`
-      query FeaturedScreenQuery($globalFeedBefore: String, $globalFeedCount: Int!) {
-        ...FeaturedScreenFragment
+      query LatestScreenQuery($globalFeedBefore: String, $globalFeedCount: Int!) {
+        ...LatestScreenFragment
       }
     `,
     { globalFeedCount: 50 }
@@ -48,7 +48,7 @@ export function FeaturedScreen() {
 
   return (
     <Suspense fallback={null}>
-      <FeaturedScreenInner queryRef={query} />
+      <LatestScreenInner queryRef={query} />
     </Suspense>
   );
 }
