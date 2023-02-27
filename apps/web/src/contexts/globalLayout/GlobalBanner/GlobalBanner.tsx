@@ -67,9 +67,11 @@ export default function GlobalBanner({
 
   const navbarHeight = useGlobalNavbarHeight();
 
-  return isMaintenanceBannerExperienced ||
-    text.length === 0 ||
-    (requireAuth && !isAuthenticated) ? null : (
+  if (text.length === 0 || isMaintenanceBannerExperienced || (requireAuth && !isAuthenticated)) {
+    return null;
+  }
+
+  return (
     <StyledContainer navbarHeight={navbarHeight}>
       <StyledBanner>
         <TextContainer>
