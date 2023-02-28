@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
 import styled from 'styled-components';
 
-import { HStack } from '~/components/core/Spacer/Stack';
 import { Chain, chains } from '~/components/GalleryEditor/PiecesSidebar/chains';
 import { SidebarChainButton } from '~/components/GalleryEditor/PiecesSidebar/SidebarChainButton';
 
@@ -31,7 +30,7 @@ export function SidebarChainSelector({ selected, onChange }: SidebarChainsProps)
 
   return (
     <Container>
-      <StyledSidebarChainButtonContainer gap={4}>
+      <StyledSidebarChainButtonContainer>
         {chains.map((chain) => {
           const isSelected = chain.name === selected;
 
@@ -58,11 +57,17 @@ const Container = styled.div`
   display: flex;
   justify-content: space-between;
 
-  padding: 8px 12px;
+  padding: 4px 12px;
 `;
-const StyledSidebarChainButtonContainer = styled(HStack)`
+
+const StyledSidebarChainButtonContainer = styled.div`
   position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  width: 100%;
+  gap: 4px;
 `;
+
 const StyledBlinkingContainer = styled.div`
   position: absolute;
   right: 0;
