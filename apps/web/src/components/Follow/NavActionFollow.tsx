@@ -50,7 +50,7 @@ export default function NavActionFollow({ userRef, queryRef }: Props) {
 
   return (
     <HStack gap={8} align="center">
-      <Link href={usernameRoute}>
+      <Link href={usernameRoute} legacyBehavior>
         <UsernameBreadcrumbLink
           href={route(usernameRoute)}
           mainGalleryPage={pathname === '/[username]'}

@@ -12,6 +12,7 @@ import { BaseM, TitleDiatypeL } from '~/components/core/Text/Text';
 import Toggle from '~/components/core/Toggle/Toggle';
 import EmailManager from '~/components/Email/EmailManager';
 import ManageWallets from '~/components/ManageWallets/ManageWallets';
+import TwitterSetting from '~/components/Twitter/TwitterSetting';
 import { GALLERY_DISCORD } from '~/constants/urls';
 import { useAuthActions } from '~/contexts/auth/AuthContext';
 import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
@@ -60,6 +61,7 @@ function SettingsModal({
 
         ...EmailManagerFragment
         ...ManageWalletsFragment
+        ...TwitterSettingFragment
       }
     `,
     queryRef
@@ -240,6 +242,11 @@ function SettingsModal({
               )}
             </HStack>
           </HStack>
+        </VStack>
+        <StyledHr />
+        <VStack gap={16}>
+          <TitleDiatypeL>Connect Twitter</TitleDiatypeL>
+          <TwitterSetting queryRef={query} />
         </VStack>
         <StyledHr />
         <VStack>

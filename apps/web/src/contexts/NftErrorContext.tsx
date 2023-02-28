@@ -30,8 +30,9 @@ type NftErrorContextType = {
   tokens: TokenErrorMap;
 
   markTokenAsLoaded: (tokenId: string) => void;
-  handleNftError: (tokenId: string, error: Error) => void;
   refreshToken: (tokenId: string) => Promise<void>;
+  clearTokenFailureState: (tokenIds: string[]) => void;
+  handleNftError: (tokenId: string, error: Error) => void;
 };
 
 const NftErrorContext = createContext<NftErrorContextType | undefined>(undefined);
@@ -139,6 +140,15 @@ export function NftErrorProvider({ children }: PropsWithChildren) {
     [FragmentResource, reportError, tokens]
   );
 
+  const clearTokenFailureState = useCallback(
+    (tokenIds: string[]) => {
+      for (const tokenId of tokenIds) {
+        retryToken(tokenId);
+      }
+    },
+    [retryToken]
+  );
+
   const [refresh] = usePromisifiedMutation<NftErrorContextRetryMutation>(graphql`
     mutation NftErrorContextRetryMutation($tokenId: DBID!) {
       refreshToken(tokenId: $tokenId) {
@@ -216,11 +226,12 @@ export function NftErrorProvider({ children }: PropsWithChildren) {
     return {
       tokens,
 
-      markTokenAsLoaded,
       refreshToken,
       handleNftError,
+      markTokenAsLoaded,
+      clearTokenFailureState,
     };
-  }, [handleNftError, markTokenAsLoaded, refreshToken, tokens]);
+  }, [clearTokenFailureState, handleNftError, markTokenAsLoaded, refreshToken, tokens]);
 
   return <NftErrorContext.Provider value={value}>{children}</NftErrorContext.Provider>;
 }

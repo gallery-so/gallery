@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import breakpoints, { pageGutter } from '~/components/core/breakpoints';
 import useVerifyEmailOnPage from '~/components/Email/useVerifyEmailOnPage';
 import GalleryViewEmitter from '~/components/internal/GalleryViewEmitter';
+import useOpenTwitterModal from '~/components/Twitter/useOpenTwitterModal';
 import { GalleryNavbar } from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavbar';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { StandardSidebar } from '~/contexts/globalLayout/GlobalSidebar/StandardSidebar';
@@ -35,6 +36,7 @@ const UsernameQueryNode = graphql`
     ...GalleryViewEmitterWithSuspenseFragment
     ...useVerifyEmailOnPageQueryFragment
     ...StandardSidebarFragment
+    ...useOpenTwitterModalFragment
   }
 `;
 
@@ -79,6 +81,7 @@ export default function UserGallery({ username }: UserGalleryProps) {
 
   useVerifyEmailOnPage(query);
   useOpenSettingsModal(query);
+  useOpenTwitterModal(query);
 
   return (
     <GalleryRoute

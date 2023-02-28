@@ -142,7 +142,13 @@ export function CommentBox({ eventRef, queryRef, onClose }: Props) {
               comment: value,
               commenter: {
                 id: query.viewer?.user?.id ?? 'unknown',
+                dbid: `GalleryUser:${query.viewer?.user?.id}`,
                 username: query.viewer?.user?.username ?? null,
+                badges: [],
+                bio: '',
+                followers: [],
+                following: [],
+                galleries: [],
               },
               creationTime: new Date().toISOString(),
               dbid: optimisticId,
