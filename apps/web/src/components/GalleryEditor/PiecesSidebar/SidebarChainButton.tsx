@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion';
 import styled, { css } from 'styled-components';
 
 import colors from '~/components/core/colors';
@@ -29,7 +28,7 @@ const ChainLogo = styled.img`
   margin-right: 4px;
 `;
 
-const ChainButton = styled(motion.div)<{ selected: boolean }>`
+const ChainButton = styled.div<{ selected: boolean }>`
   display: flex;
   gap: 0 8px;
   padding: 6px 8px;
