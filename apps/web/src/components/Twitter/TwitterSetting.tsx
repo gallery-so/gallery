@@ -26,6 +26,7 @@ export default function TwitterSetting({ queryRef }: Props) {
       fragment TwitterSettingFragment on Query {
         viewer {
           ... on Viewer {
+            id
             socialAccounts {
               twitter {
                 username
@@ -64,10 +65,11 @@ export default function TwitterSetting({ queryRef }: Props) {
     mutation TwitterSettingMutation($input: UpdateSocialAccountDisplayedInput!) {
       updateSocialAccountDisplayed(input: $input) {
         __typename
-
         ... on UpdateSocialAccountDisplayedPayload {
           viewer {
             ... on Viewer {
+              __typename
+              id
               socialAccounts {
                 twitter {
                   username
@@ -92,6 +94,23 @@ export default function TwitterSetting({ queryRef }: Props) {
   const handleUpdateTwitterDisplay = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const displayed = event.target.checked;
+
+      const optimisticResponse: TwitterSettingMutation['response'] = {
+        updateSocialAccountDisplayed: {
+          __typename: 'UpdateSocialAccountDisplayedPayload',
+          viewer: {
+            __typename: 'Viewer',
+            id: query.viewer?.id ?? '',
+            socialAccounts: {
+              twitter: {
+                username: query.viewer?.socialAccounts?.twitter?.username ?? '',
+                display: displayed,
+              },
+            },
+          },
+        },
+      };
+
       updateTwitterDisplay({
         variables: {
           input: {
@@ -99,16 +118,10 @@ export default function TwitterSetting({ queryRef }: Props) {
             type: 'Twitter',
           },
         },
-
-        optimisticUpdater: (store) => {
-          const viewer = store.getRoot().getLinkedRecord('viewer');
-          const socialAccounts = viewer?.getLinkedRecord('socialAccounts');
-          const twitter = socialAccounts?.getLinkedRecord('twitter');
-          twitter?.setValue(displayed, 'display');
-        },
+        optimisticResponse,
       });
     },
-    [updateTwitterDisplay]
+    [query.viewer?.id, query.viewer?.socialAccounts?.twitter?.username, updateTwitterDisplay]
   );
 
   const twitterAccount = query.viewer?.socialAccounts?.twitter;
