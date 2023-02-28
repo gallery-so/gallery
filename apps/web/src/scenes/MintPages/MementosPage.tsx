@@ -66,7 +66,7 @@ export default function MementosPage() {
       </StyledBackLink>
       <StyledWrapper>
         <StyledImageContainer>
-          <Image src={pathToImage} alt="splash-image" width={500} />
+          <StyledImage src={pathToImage} alt="splash-image" />
         </StyledImageContainer>
         <StyledContent>
           <HStack align="center" gap={4}>
@@ -187,6 +187,11 @@ const StyledImageContainer = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
+`;
+
+const StyledImage = styled(Image)`
+  width: 100%;
+  height: 100%;
 `;
 
 const StyledWrapper = styled.div`
