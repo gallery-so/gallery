@@ -3,6 +3,8 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { TWITTER_AUTH_URL } from '~/constants/twitter';
+import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
+import { useToastActions } from '~/contexts/toast/ToastContext';
 import { TwitterSettingDisconnectMutation } from '~/generated/TwitterSettingDisconnectMutation.graphql';
 import { TwitterSettingFragment$key } from '~/generated/TwitterSettingFragment.graphql';
 import { TwitterSettingMutation } from '~/generated/TwitterSettingMutation.graphql';
@@ -27,6 +29,9 @@ export default function TwitterSetting({ queryRef }: Props) {
         viewer {
           ... on Viewer {
             id
+            user {
+              username
+            }
             socialAccounts {
               twitter {
                 username
@@ -83,13 +88,25 @@ export default function TwitterSetting({ queryRef }: Props) {
     }
   `);
 
-  const handleDisconnectTwitter = useCallback(() => {
-    disconnectTwitter({
-      variables: {
-        input: 'Twitter',
-      },
-    });
-  }, [disconnectTwitter]);
+  const reportError = useReportError();
+  const { pushToast } = useToastActions();
+
+  const handleDisconnectTwitter = useCallback(async () => {
+    try {
+      await disconnectTwitter({
+        variables: {
+          input: 'Twitter',
+        },
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        reportError(error, { tags: { username: query.viewer?.user?.username } });
+        pushToast({
+          message: 'Failed to disconnect your Twitter account',
+        });
+      }
+    }
+  }, [disconnectTwitter, pushToast, query.viewer?.user?.username, reportError]);
 
   const handleUpdateTwitterDisplay = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
