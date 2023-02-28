@@ -175,34 +175,31 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
               <SidebarChainSelector selected={selectedChain} onChange={setSelectedChain} />
             </div>
             {ownsWalletFromSelectedChain && (
-              <StyledButtonContainer>
-                <StyledButton
-                  onClick={handleRefresh}
-                  variant="primary"
-                  disabled={refreshDisabled}
-                  ref={refreshReference}
-                  {...getRefreshReferenceProps()}
-                >
-                  <HStack gap={8} align="center">
-                    {isLocked ? (
-                      <Spinner />
-                    ) : (
-                      <>
-                        REFRESH
-                        <RefreshIcon />
-                      </>
-                    )}
-                  </HStack>
-                </StyledButton>
-                <StyledButton
-                  onClick={handleAddBlankBlockClick}
-                  variant="secondary"
-                  ref={reference}
-                  {...getReferenceProps()}
-                >
-                  BLANK SPACE
-                </StyledButton>
-              </StyledButtonContainer>
+              <StyledButtonGroupContainer>
+                <div ref={refreshReference} {...getRefreshReferenceProps()}>
+                  <StyledButton
+                    onClick={handleRefresh}
+                    variant="primary"
+                    disabled={refreshDisabled}
+                  >
+                    <HStack gap={8} align="center">
+                      {isLocked ? (
+                        <Spinner />
+                      ) : (
+                        <>
+                          REFRESH
+                          <RefreshIcon />
+                        </>
+                      )}
+                    </HStack>
+                  </StyledButton>
+                </div>
+                <div ref={reference} {...getReferenceProps()}>
+                  <StyledButton onClick={handleAddBlankBlockClick} variant="secondary">
+                    BLANK SPACE
+                  </StyledButton>
+                </div>
+              </StyledButtonGroupContainer>
             )}
 
             <NewTooltip
@@ -270,7 +267,7 @@ const StyledSearchBarContainer = styled(VStack)`
   position: relative;
 `;
 
-const StyledButtonContainer = styled.div`
+const StyledButtonGroupContainer = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 4px;
@@ -279,4 +276,6 @@ const StyledButtonContainer = styled.div`
 
 const StyledButton = styled(Button)`
   padding: 8px 12px;
+  height: 34px;
+  width: 100%;
 `;
