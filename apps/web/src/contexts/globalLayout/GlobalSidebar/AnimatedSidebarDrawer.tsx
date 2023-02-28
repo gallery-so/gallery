@@ -88,6 +88,7 @@ const StyledContent = styled(VStack)`
   height: calc(100vh - 42px);
   overflow-y: scroll;
   overflow-x: hidden;
+  overscroll-behavior: contain;
 
   @media only screen and ${breakpoints.tablet} {
     height: 100vh;

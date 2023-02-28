@@ -23,10 +23,6 @@ export function useClearNotifications() {
         const connectionIds = [
           ConnectionHandler.getConnectionID(
             `client:Viewer:${userId}`,
-            'ProfileDropdownFragment_notifications'
-          ),
-          ConnectionHandler.getConnectionID(
-            `client:Viewer:${userId}`,
             'StandardSidebarFragment_notifications'
           ),
         ];
