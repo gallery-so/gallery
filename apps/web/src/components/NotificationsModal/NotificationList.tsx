@@ -11,6 +11,7 @@ import useExperience from '~/utils/graphql/experiences/useExperience';
 
 import { Notification } from './Notification';
 import { NotificationEmailAlert } from './NotificationEmailAlert';
+import { NotificationTwitterAlert } from './NotificationTwitterAlert';
 
 export const NOTIFICATIONS_PER_PAGE = 10;
 
@@ -50,6 +51,7 @@ export function NotificationList({ queryRef }: NotificationListProps) {
 
         ...NotificationQueryFragment
         ...NotificationEmailAlertQueryFragment
+        ...NotificationTwitterAlertFragment
         ...useExperienceFragment
       }
     `,
@@ -92,6 +94,7 @@ export function NotificationList({ queryRef }: NotificationListProps) {
   return (
     <NotificationsContent grow>
       {showEmailAlert && <NotificationEmailAlert queryRef={query} onDismiss={handleDismiss} />}
+      <NotificationTwitterAlert queryRef={query} />
       {hasNotifications ? (
         <>
           {nonNullNotifications.map((notification) => {
