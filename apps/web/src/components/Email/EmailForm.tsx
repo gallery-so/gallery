@@ -220,7 +220,7 @@ function EmailForm({ setIsEditMode, queryRef, onClose }: Props) {
           disabled={savePending}
         />
 
-        <HStack align="center" justify={showErrorMessage ? 'space-between' : 'flex-end'}>
+        <HStack align="start" justify={showErrorMessage ? 'space-between' : 'flex-end'}>
           {showErrorMessage && <ErrorText message={"The email doesn't appear to be valid"} />}
 
           <HStack gap={8}>
