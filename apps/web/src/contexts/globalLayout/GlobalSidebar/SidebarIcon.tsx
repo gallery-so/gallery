@@ -1,28 +1,51 @@
+import { useCallback } from 'react';
 import styled from 'styled-components';
+
 import colors from '~/components/core/colors';
 import IconContainer from '~/components/core/IconContainer';
 import transitions from '~/components/core/transitions';
 import { NewTooltip } from '~/components/Tooltip/NewTooltip';
 import { useTooltipHover } from '~/components/Tooltip/useTooltipHover';
 
+import { NotificationsCircle } from '../GlobalNavbar/NotificationCircle';
+
 type Props = {
   onClick: () => void;
   icon: React.ReactElement;
   isActive?: boolean;
   tooltipLabel: string;
+  showUnreadDot?: boolean;
+  showBorderByDefault?: boolean;
 };
-export default function SidebarIcon({ onClick, icon, isActive = false, tooltipLabel }: Props) {
+export default function SidebarIcon({
+  onClick,
+  icon,
+  isActive = false,
+  tooltipLabel,
+  showUnreadDot = false,
+  showBorderByDefault = false,
+}: Props) {
   const { floating, reference, getFloatingProps, getReferenceProps, floatingStyle } =
-    useTooltipHover();
+    useTooltipHover({ placement: 'right' });
+
+  const handleClick = useCallback(
+    (e) => {
+      onClick();
+    },
+    [onClick]
+  );
 
   return (
     <IconWrapper>
+      {showUnreadDot && <StyledUnreadDot />}
       <StyledIconContainer
+        {...getReferenceProps()}
         ref={reference}
         variant="default"
-        onClick={onClick}
+        onClick={handleClick}
         icon={icon}
         isActive={isActive}
+        showBorderByDefault={showBorderByDefault}
       />
       <NewTooltip
         {...getFloatingProps()}
@@ -34,11 +57,27 @@ export default function SidebarIcon({ onClick, icon, isActive = false, tooltipLa
   );
 }
 
-const StyledIconContainer = styled(IconContainer)<{ isActive: boolean }>`
+const StyledIconContainer = styled(IconContainer)<{
+  isActive: boolean;
+  showBorderByDefault: boolean;
+}>`
   ${({ isActive }) => isActive && `border: 1px solid ${colors.offBlack}`};
+  ${({ showBorderByDefault }) => showBorderByDefault && `border: 1px solid ${colors.porcelain}`};
 `;
 
 const IconWrapper = styled.div`
-  &:hover {
-  }
+  position: relative;
+`;
+
+const StyledUnreadDot = styled.div`
+  width: 10px;
+  height: 10px;
+  background-color: ${colors.hyperBlue};
+  align-self: flex-start;
+  position: absolute;
+  left: 18px;
+  top: 4px;
+  z-index: 5;
+  border: 2px solid ${colors.white};
+  border-radius: 99999px;
 `;

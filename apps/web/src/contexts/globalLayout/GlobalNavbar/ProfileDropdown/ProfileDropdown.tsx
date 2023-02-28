@@ -91,7 +91,7 @@ export function ProfileDropdown({ queryRef, rightContent }: ProfileDropdownProps
 
   return (
     <Wrapper gap={4} align="center">
-      {isLoggedIn ? (
+      {/* {isLoggedIn ? (
         <LogoContainer
           gap={4}
           role="button"
@@ -111,12 +111,12 @@ export function ProfileDropdown({ queryRef, rightContent }: ProfileDropdownProps
         <LogoContainer gap={4} role="button" onClick={handleHomeRedirect} align="center">
           <GLogo />
         </LogoContainer>
-      )}
+      )} */}
 
-      {rightContent && <SlashText>/</SlashText>}
+      {/* {rightContent && <SlashText>/</SlashText>} */}
       {rightContent}
 
-      {isLoggedIn && (
+      {/* {isLoggedIn && (
         <ProfileDropdownContent
           onMouseEnter={handleDropdownMouseEnter}
           onMouseLeave={handleDropdownMouseLeave}
@@ -124,7 +124,7 @@ export function ProfileDropdown({ queryRef, rightContent }: ProfileDropdownProps
           onClose={closeDropdown}
           queryRef={query}
         />
-      )}
+      )} */}
     </Wrapper>
   );
 }

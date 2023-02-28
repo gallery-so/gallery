@@ -15,7 +15,6 @@ import { StandardSidebar } from '~/contexts/globalLayout/GlobalSidebar/StandardS
 import { UsernameQuery } from '~/generated/UsernameQuery.graphql';
 import { MetaTagProps } from '~/pages/_app';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
-import useOpenSettingsModal from '~/scenes/Modals/useOpenSettingsModal';
 import UserGalleryPage from '~/scenes/UserGalleryPage/UserGalleryPage';
 import { PreloadQueryArgs } from '~/types/PageComponentPreloadQuery';
 import { openGraphMetaTags } from '~/utils/openGraphMetaTags';
@@ -32,7 +31,6 @@ const UsernameQueryNode = graphql`
 
     ...UserGalleryPageFragment
     ...GalleryNavbarFragment
-    ...useOpenSettingsModalFragment
     ...GalleryViewEmitterWithSuspenseFragment
     ...useVerifyEmailOnPageQueryFragment
     ...StandardSidebarFragment
@@ -80,7 +78,6 @@ export default function UserGallery({ username }: UserGalleryProps) {
   const query = useLazyLoadQuery<UsernameQuery>(UsernameQueryNode, { username });
 
   useVerifyEmailOnPage(query);
-  useOpenSettingsModal(query);
   useOpenTwitterModal(query);
 
   return (

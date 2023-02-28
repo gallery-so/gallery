@@ -3,6 +3,7 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import IconContainer from '~/components/core/IconContainer';
+import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { NotificationEmailAlertQueryFragment$key } from '~/generated/NotificationEmailAlertQueryFragment.graphql';
 import CloseIcon from '~/icons/CloseIcon';
@@ -30,16 +31,22 @@ export function NotificationEmailAlert({ onDismiss, queryRef }: Props) {
   );
 
   const { showModal, hideModal } = useModalActions();
+  const { showDrawer } = useDrawerActions();
 
   const handleEnableEmails = useCallback(() => {
     // Hide notification modal
     hideModal();
 
-    showModal({
+    // showModal({
+    //   content: <SettingsModal queryRef={query} />,
+    //   headerText: 'Manage accounts',
+    // });
+    showDrawer({
       content: <SettingsModal queryRef={query} />,
-      headerText: 'Manage accounts',
+      headerText: 'Settings',
+      drawerName: 'settings',
     });
-  }, [hideModal, query, showModal]);
+  }, [hideModal, query, showDrawer]);
 
   const handleDismiss = () => {
     onDismiss();

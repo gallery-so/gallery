@@ -51,10 +51,6 @@ export function NotificationsModal({ fullscreen }: NotificationsModalProps) {
 
   return (
     <ModalContent fullscreen={fullscreen}>
-      <StyledHeader>
-        <TitleDiatypeM>Notifications</TitleDiatypeM>
-      </StyledHeader>
-
       <Suspense
         fallback={
           <VStack grow justify="center" align="center">
@@ -68,17 +64,12 @@ export function NotificationsModal({ fullscreen }: NotificationsModalProps) {
   );
 }
 
-const StyledHeader = styled.div`
-  padding-bottom: ${MODAL_PADDING_PX}px;
-  padding-left: 12px;
-`;
-
 const ModalContent = styled.div<{ fullscreen: boolean }>`
   height: ${({ fullscreen }) => (fullscreen ? '100%' : '640px')};
   width: 100%;
   display: flex;
   flex-direction: column;
-  padding: ${MODAL_PADDING_PX}px 4px;
+  padding: 4px;
 
   @media only screen and ${breakpoints.tablet} {
     width: 420px;

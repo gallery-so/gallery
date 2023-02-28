@@ -27,7 +27,7 @@ export function useClearNotifications() {
           ),
           ConnectionHandler.getConnectionID(
             `client:Viewer:${userId}`,
-            'ProfileDropdownContentFragment_notifications'
+            'StandardSidebarFragment_notifications'
           ),
         ];
 

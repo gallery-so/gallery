@@ -8,7 +8,6 @@ import { StandardSidebar } from '~/contexts/globalLayout/GlobalSidebar/StandardS
 import { trendingPageQuery } from '~/generated/trendingPageQuery.graphql';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
 import TrendingHomePage from '~/scenes/Home/TrendingHomePage';
-import useOpenSettingsModal from '~/scenes/Modals/useOpenSettingsModal';
 import { PreloadQueryArgs } from '~/types/PageComponentPreloadQuery';
 
 const activityPageQueryNode = graphql`
@@ -24,7 +23,6 @@ const activityPageQueryNode = graphql`
     ...TrendingHomePageFragment
     ...HomeNavbarFragment
     ...StandardSidebarFragment
-    ...useOpenSettingsModalFragment
   }
 `;
 
@@ -35,8 +33,6 @@ export default function Trending() {
     trendingLast: ITEMS_PER_PAGE,
     visibleTokensPerFeedEvent: MAX_PIECES_DISPLAYED_PER_FEED_EVENT,
   });
-
-  useOpenSettingsModal(query);
 
   return (
     <GalleryRoute

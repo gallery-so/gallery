@@ -15,29 +15,6 @@ type GlobalSidebarProps = {
 };
 
 export default function GlobalSidebar({ content }: GlobalSidebarProps) {
-  // useEffect(() => {
-  //   console.log({ isVisible });
-  // }, [isVisible]);
-  // useEffect(() => {
-  //   if (!isVisible) {
-  //     if (
-  //       // for touch-enabled devices, we need to keep the upper area of the screen clickable;
-  //       // without this, users wouldn't be able to click near the top of the device
-  //       isTouchscreen.current ||
-  //       // if the route doesn't want the navbar to be in view, we need to remove it completely
-  //       // so that the user can click on elements where the navbar would be
-  //       fadeType === 'route'
-  //     ) {
-  //       // this is normally as simple as setting the navbar z-index to -1, but doing so right
-  //       // away makes it look like the navbar vanishes immediately; therefore we add a delay
-  //       // until the navbar has already faded out of sight.
-  //       const timeoutId = setTimeout(() => setZIndex(-1), FADE_TRANSITION_TIME_MS);
-
-  //       return () => clearTimeout(timeoutId);
-  //     }
-  //   }
-  //   setZIndex(2);
-  // }, [isVisible, fadeType]);
   if (!content) {
     return null;
   }

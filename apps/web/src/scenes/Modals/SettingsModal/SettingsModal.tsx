@@ -272,10 +272,9 @@ function SettingsModal({
 }
 
 const StyledManageWalletsModal = styled(VStack)`
+  padding: 16px;
   @media only screen and ${breakpoints.tablet} {
-    width: 480px;
-    width: 100%; // temporary for testing how it fits in lhn, remove later
-    padding; 16px; // temporary for testing how it fits in lhn, remove later
+    width: 100%; // todo fix
   }
 `;
 

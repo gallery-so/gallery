@@ -5,7 +5,6 @@ import { StandardSidebar } from '~/contexts/globalLayout/GlobalSidebar/StandardS
 import { exploreQuery } from '~/generated/exploreQuery.graphql';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
 import ExplorePage from '~/scenes/Home/ExploreHomePage';
-import useOpenSettingsModal from '~/scenes/Modals/useOpenSettingsModal';
 
 export default function Explore() {
   const query = useLazyLoadQuery<exploreQuery>(
@@ -13,14 +12,12 @@ export default function Explore() {
       query exploreQuery {
         ...ExploreHomePageFragment
         ...HomeNavbarFragment
-        ...useOpenSettingsModalFragment
+
         ...StandardSidebarFragment
       }
     `,
     {}
   );
-
-  useOpenSettingsModal(query);
 
   return (
     <GalleryRoute

@@ -1,12 +1,16 @@
+import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Route } from 'nextjs-routes';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { NotificationsModal } from '~/components/NotificationsModal/NotificationsModal';
+import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { StandardSidebarFragment$key } from '~/generated/StandardSidebarFragment.graphql';
+import useAuthModal from '~/hooks/useAuthModal';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import BellIcon from '~/icons/BellIcon';
 import CogIcon from '~/icons/CogIcon';
@@ -15,6 +19,7 @@ import GLogoIcon from '~/icons/GLogoIcon';
 import ShopIcon from '~/icons/ShopIcon';
 import UserIcon from '~/icons/UserIcon';
 import SettingsModal from '~/scenes/Modals/SettingsModal/SettingsModal';
+import useExperience from '~/utils/graphql/experiences/useExperience';
 
 import { useDrawerActions, useDrawerState } from './SidebarDrawerContext';
 import SidebarIcon from './SidebarIcon';
@@ -33,9 +38,19 @@ export function StandardSidebar({ queryRef }: Props) {
             user {
               username
             }
+            notifications(last: 1) @connection(key: "StandardSidebarFragment_notifications") {
+              unseenCount
+              # Relay requires that we grab the edges field if we use the connection directive
+              # We're selecting __typename since that shouldn't have a cost
+              # eslint-disable-next-line relay/unused-fields
+              edges {
+                __typename
+              }
+            }
           }
         }
         ...SettingsModalFragment
+        ...useExperienceFragment
       }
     `,
     queryRef
@@ -44,8 +59,10 @@ export function StandardSidebar({ queryRef }: Props) {
   const isLoggedIn = query.viewer?.__typename === 'Viewer';
   const username = query.viewer?.user?.username;
 
+  const track = useTrack();
+
   const { showDrawer } = useDrawerActions();
-  const { push } = useRouter();
+  const router = useRouter();
 
   const activeDrawerState = useDrawerState();
   const activeDrawerName = useMemo(
@@ -53,15 +70,53 @@ export function StandardSidebar({ queryRef }: Props) {
     [activeDrawerState]
   );
 
+  const notificationCount = useMemo(() => {
+    if (
+      query.viewer &&
+      query.viewer.__typename === 'Viewer' &&
+      query.viewer.notifications?.unseenCount
+    ) {
+      return query.viewer.notifications.unseenCount;
+    }
+
+    return 0;
+  }, [query.viewer]);
+  const showAuthModal = useAuthModal('sign-in');
+
+  const { settings } = router.query;
+
+  // feels like a hack but if this hook is run multiple times via parent component re-render,
+  // the same modal is opened multiple times
+  const isSettingsOpen = useRef(false);
+
+  useEffect(() => {
+    // Only show the modal if the user is logged in and the settings query param is set
+    if (settings === 'true' && !isSettingsOpen.current) {
+      if (isLoggedIn) {
+        showDrawer({
+          content: <SettingsModal queryRef={query} />,
+          headerText: 'Settings',
+          drawerName: 'settings',
+        });
+        return;
+      }
+      showAuthModal();
+    }
+  }, [isLoggedIn, query, settings, showAuthModal, showDrawer]);
+
+  const [isMerchStoreUpsellExperienced, setMerchStoreUpsellExperienced] = useExperience({
+    type: 'MerchStoreUpsell',
+    queryRef: query,
+  });
+
   const handleSettingsClick = useCallback(() => {
-    // track('click', 'settings', 'sidebar');
+    track('Sidebar Settings Click');
     showDrawer({
       content: <SettingsModal queryRef={query} />,
       headerText: 'Settings',
       drawerName: 'settings',
     });
-    // setActiveDrawer('settings');
-  }, [query, showDrawer]);
+  }, [query, showDrawer, track]);
 
   const handleNotificationsClick = useCallback(() => {
     showDrawer({
@@ -72,41 +127,49 @@ export function StandardSidebar({ queryRef }: Props) {
   }, [showDrawer]);
 
   const handleProfileClick = useCallback(() => {
-    push({ pathname: '/[username]', query: { username } });
-  }, [push, username]);
+    track('Sidebar Profile Click', { username });
+  }, [track, username]);
 
   const handleEditClick = useCallback(() => {
-    // track('click', 'settings', 'sidebar');
-    push({ pathname: '/[username]/galleries', query: { username } });
-  }, [push, username]);
+    track('Sidebar Edit Galleries Click', { username });
+  }, [track, username]);
 
-  const handleShopIconClick = useCallback(() => {
-    push({ pathname: '/shop' });
-  }, [push]);
+  const handleShopIconClick = useCallback(async () => {
+    track('Sidebar Shop Click');
+    setMerchStoreUpsellExperienced();
+  }, [setMerchStoreUpsellExperienced, track]);
 
   const handleHomeIconClick = useCallback(() => {
-    push({ pathname: '/trending' });
-  }, [push]);
+    track('Sidebar Home Click');
+  }, [track]);
 
   const isMobile = useIsMobileWindowWidth();
+
+  const userGalleryRoute: Route = { pathname: '/[username]', query: { username } };
+  const editGalleriesRoute: Route = { pathname: '/[username]/galleries', query: { username } };
 
   if (isMobile) {
     return (
       <StyledStandardSidebar>
         <StyledMobileIconContainer align="center" justify="space-around">
-          <SidebarIcon tooltipLabel="Home" onClick={handleHomeIconClick} icon={<GLogoIcon />} />
+          <Link href={{ pathname: '/trending' }}>
+            <SidebarIcon tooltipLabel="Home" onClick={handleHomeIconClick} icon={<GLogoIcon />} />
+          </Link>
           {isLoggedIn && (
             <>
-              <SidebarIcon
-                tooltipLabel="My Profile"
-                onClick={handleProfileClick}
-                icon={<UserIcon />}
-              />
+              <Link href={userGalleryRoute}>
+                <SidebarIcon
+                  tooltipLabel="My Profile"
+                  onClick={handleProfileClick}
+                  icon={<UserIcon />}
+                />
+              </Link>
               <SidebarIcon
                 tooltipLabel="Notifications"
                 onClick={handleNotificationsClick}
                 icon={<BellIcon />}
                 isActive={activeDrawerName === 'notifications'}
+                showUnreadDot={notificationCount > 0}
               />
               <SidebarIcon
                 tooltipLabel="Settings"
@@ -125,24 +188,29 @@ export function StandardSidebar({ queryRef }: Props) {
     <StyledStandardSidebar>
       <StyledIconContainer align="center" justify="space-between">
         <VStack gap={18}>
-          <SidebarIcon tooltipLabel="Home" onClick={handleHomeIconClick} icon={<GLogoIcon />} />
+          <Link href={{ pathname: '/trending' }}>
+            <SidebarIcon tooltipLabel="Home" onClick={handleHomeIconClick} icon={<GLogoIcon />} />
+          </Link>
           {isLoggedIn && (
-            <SidebarIcon
-              tooltipLabel="Edit galleries"
-              onClick={handleEditClick}
-              icon={<EditPencilIcon />}
-            />
+            <Link href={editGalleriesRoute}>
+              <SidebarIcon
+                tooltipLabel="Edit galleries"
+                onClick={handleEditClick}
+                icon={<EditPencilIcon />}
+                showBorderByDefault
+              />
+            </Link>
           )}
         </VStack>
-        {/* SIDEBAR */}
-        {/* <Button onClick={handleButtonClick}> Open</Button> */}
         {isLoggedIn && (
           <VStack gap={32}>
-            <SidebarIcon
-              tooltipLabel="My Profile"
-              onClick={handleProfileClick}
-              icon={<UserIcon />}
-            />
+            <Link href={userGalleryRoute}>
+              <SidebarIcon
+                tooltipLabel="My Profile"
+                onClick={handleProfileClick}
+                icon={<UserIcon />}
+              />
+            </Link>
             <SidebarIcon
               tooltipLabel="Notifications"
               onClick={handleNotificationsClick}
@@ -158,11 +226,14 @@ export function StandardSidebar({ queryRef }: Props) {
           </VStack>
         )}
         <VStack>
-          <SidebarIcon
-            tooltipLabel="(OBJECTS) Shop"
-            onClick={handleShopIconClick}
-            icon={<ShopIcon />}
-          />
+          <Link href={{ pathname: '/shop' }}>
+            <SidebarIcon
+              tooltipLabel="(OBJECTS) Shop"
+              onClick={handleShopIconClick}
+              icon={<ShopIcon />}
+              showUnreadDot={!isMerchStoreUpsellExperienced}
+            />
+          </Link>
         </VStack>
       </StyledIconContainer>
     </StyledStandardSidebar>

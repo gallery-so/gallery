@@ -26,7 +26,7 @@ export default function AnimatedSidebarDrawer({ content, hideDrawer, headerText 
 
   const handleCloseDrawerClick = useCallback(() => {
     hideDrawer();
-  }, []);
+  }, [hideDrawer]);
   return (
     <_ToggleFade isActive={isActive}>
       <StyledContent ref={drawerRef} gap={16}>
@@ -60,7 +60,7 @@ const fadeOut = keyframes`
 const _ToggleFade = styled.div<{ isActive: boolean }>`
   // keeps modal on top over other elements with z-index https://stackoverflow.com/questions/50883309/how-come-css-animations-change-z-index
   position: relative;
-  z-index: 11;
+  // z-index: 11;
   animation: ${({ isActive }) =>
     css`
       ${isActive ? fadeIn : fadeOut} ${transitions.cubic}
@@ -76,8 +76,10 @@ const StyledHeader = styled(VStack)`
   padding: 0 16px;
 `;
 
+// one-off text style that's not in our design system
 const StyledHeadingText = styled(TitleDiatypeL)`
   font-size: 24px;
+  line-height: 28px;
 `;
 
 const StyledContent = styled(VStack)`
