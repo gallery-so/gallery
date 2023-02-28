@@ -119,7 +119,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
 
   const isRefreshDisabledAtUserLevel = isRefreshDisabledForUser(query.viewer?.user?.dbid ?? '');
   const refreshDisabled =
-    isRefreshDisabledAtUserLevel || !doesUserOwnWalletFromChain(selectedChain, query);
+    isRefreshDisabledAtUserLevel || !doesUserOwnWalletFromChain(selectedChain, query) || isLocked;
   const handleRefresh = useCallback(async () => {
     if (refreshDisabled) {
       return;
@@ -216,7 +216,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
               {...getRefreshFloatingProps()}
               style={refreshFloatingStyle}
               ref={refreshFloating}
-              text={isLocked ? `Refreshing...` : `Fetch latest ${selectedChain} pieces`}
+              text={`Fetch latest ${selectedChain} pieces`}
             />
           </>
         )}
