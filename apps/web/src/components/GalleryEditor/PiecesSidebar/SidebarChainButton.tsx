@@ -13,7 +13,7 @@ type Props = {
 
 export function SidebarChainButton({ isSelected, onClick, chain }: Props) {
   return (
-    <ChainButton layout role="button" onClick={onClick} selected={isSelected}>
+    <ChainButton role="button" onClick={onClick} selected={isSelected}>
       <HStack align="center">
         <ChainLogo src={chain.icon} />
         <TitleXSBold>{chain.shortName}</TitleXSBold>
