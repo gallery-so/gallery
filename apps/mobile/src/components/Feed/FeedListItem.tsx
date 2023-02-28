@@ -1,42 +1,97 @@
-import { useMemo } from 'react';
+import { Fragment, useMemo } from 'react';
+import { Text, useWindowDimensions, View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import { FeedListItemFragment$key } from '~/generated/FeedListItemFragment.graphql';
+import { GalleryUpdatedFeedEventFragment$key } from '~/generated/GalleryUpdatedFeedEventFragment.graphql';
+import { GalleryUpdatedFeedEventTokenUrlsFragment$key } from '~/generated/GalleryUpdatedFeedEventTokenUrlsFragment.graphql';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 
-import { ReportingErrorBoundary } from '../ReportingErrorBoundary';
-import { GalleryUpdatedFeedEvent } from './GalleryUpdatedFeedEvent';
+import { CollectionCreatedFeedEvent } from './CollectionCreatedFeedEvent';
+import { TokensAddedToCollectionFeedEvent } from './TokensAddedToCollectionFeedEvent';
 
-type FeedListItemProps = {
-  feedEventRef: FeedListItemFragment$key;
+type GalleryUpdatedFeedEventProps = {
+  galleryUpdatedFeedEventDataRef: GalleryUpdatedFeedEventFragment$key;
 };
 
-export function FeedListItem({ feedEventRef }: FeedListItemProps) {
-  const feedEvent = useFragment(
+export function GalleryUpdatedFeedEvent({
+  galleryUpdatedFeedEventDataRef,
+}: GalleryUpdatedFeedEventProps) {
+  const eventData = useFragment(
     graphql`
-      fragment FeedListItemFragment on FeedEvent {
-        eventData {
-          ... on GalleryUpdatedFeedEventData {
-            __typename
-            ...GalleryUpdatedFeedEventFragment
-          }
+      fragment GalleryUpdatedFeedEventFragment on GalleryUpdatedFeedEventData {
+        owner {
+          username
+        }
+
+        subEventDatas {
+          ...GalleryUpdatedFeedEventTokenUrlsFragment
         }
       }
     `,
-    feedEventRef
+    galleryUpdatedFeedEventDataRef
   );
 
-  const content = useMemo(() => {
-    if (feedEvent.eventData?.__typename === 'GalleryUpdatedFeedEventData') {
-      return <GalleryUpdatedFeedEvent galleryUpdatedFeedEventDataRef={feedEvent.eventData} />;
-    }
+  const { width } = useWindowDimensions();
 
-    return null;
-  }, [feedEvent.eventData]);
+  const subEvents = useFragment<GalleryUpdatedFeedEventTokenUrlsFragment$key>(
+    graphql`
+      fragment GalleryUpdatedFeedEventTokenUrlsFragment on FeedEventData @relay(plural: true) {
+        __typename
+        ... on GalleryInfoUpdatedFeedEventData {
+          __typename
+        }
+
+        ... on CollectionUpdatedFeedEventData {
+          __typename
+        }
+
+        ... on TokensAddedToCollectionFeedEventData {
+          __typename
+          ...TokensAddedToCollectionFeedEventFragment
+        }
+
+        ... on CollectionCreatedFeedEventData {
+          ...CollectionCreatedFeedEventFragment
+        }
+      }
+    `,
+    eventData.subEventDatas
+  );
 
   return (
-    <ReportingErrorBoundary dontReport fallback={null}>
-      {content}
-    </ReportingErrorBoundary>
+    <View className="flex flex-col space-y-3">
+      {/*<View className="flex flex-row space-x-1 px-3 py-2">*/}
+      {/*  <Text style={{ fontFamily: 'ABCDiatypeBold', fontSize: 12 }}>*/}
+      {/*    {eventData.owner?.username}*/}
+      {/*  </Text>*/}
+
+      {/*  <Text style={{ fontFamily: 'ABCDiatypeRegular', fontSize: 12 }}>/</Text>*/}
+
+      {/*  <Text style={{ fontFamily: 'ABCDiatypeBold', fontSize: 12 }}>Photography</Text>*/}
+      {/*</View>*/}
+
+      {subEvents?.map((subEvent, index) => {
+        switch (subEvent.__typename) {
+          case 'CollectionCreatedFeedEventData':
+            return (
+              <CollectionCreatedFeedEvent
+                key={index}
+                collectionUpdatedFeedEventDataRef={subEvent}
+              />
+            );
+          case 'TokensAddedToCollectionFeedEventData':
+            return (
+              <TokensAddedToCollectionFeedEvent
+                key={index}
+                collectionUpdatedFeedEventDataRef={subEvent}
+              />
+            );
+          default:
+            console.log(subEvent.__typename);
+            return null;
+        }
+      })}
+    </View>
   );
 }
