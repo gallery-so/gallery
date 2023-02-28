@@ -66,7 +66,7 @@ export default function MementosPage() {
       </StyledBackLink>
       <StyledWrapper>
         <StyledImageContainer>
-          <Image src={pathToImage} alt="splash-image" />
+          <Image src={pathToImage} alt="splash-image" width={500} />
         </StyledImageContainer>
         <StyledContent>
           <HStack align="center" gap={4}>
