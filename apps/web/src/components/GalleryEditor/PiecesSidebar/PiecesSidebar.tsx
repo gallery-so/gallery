@@ -17,6 +17,7 @@ import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useG
 import { PiecesSidebarFragment$key } from '~/generated/PiecesSidebarFragment.graphql';
 import { PiecesSidebarViewerFragment$key } from '~/generated/PiecesSidebarViewerFragment.graphql';
 import useSyncTokens from '~/hooks/api/tokens/useSyncTokens';
+import { RefreshIcon } from '~/icons/RefreshIcon';
 import { doesUserOwnWalletFromChain } from '~/utils/doesUserOwnWalletFromChain';
 import { removeNullValues } from '~/utils/removeNullValues';
 
@@ -176,21 +177,30 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
             {ownsWalletFromSelectedChain && (
               <StyledButtonContainer>
                 <StyledButton
+                  onClick={handleRefresh}
+                  variant="primary"
+                  disabled={refreshDisabled}
+                  ref={refreshReference}
+                  {...getRefreshReferenceProps()}
+                >
+                  <HStack gap={8} align="center">
+                    {isLocked ? (
+                      <Spinner />
+                    ) : (
+                      <>
+                        REFRESH
+                        <RefreshIcon />
+                      </>
+                    )}
+                  </HStack>
+                </StyledButton>
+                <StyledButton
                   onClick={handleAddBlankBlockClick}
                   variant="secondary"
                   ref={reference}
                   {...getReferenceProps()}
                 >
                   BLANK SPACE
-                </StyledButton>
-                <StyledButton
-                  onClick={handleRefresh}
-                  variant="secondary"
-                  disabled={refreshDisabled}
-                  ref={refreshReference}
-                  {...getRefreshReferenceProps()}
-                >
-                  {isLocked ? <Spinner /> : 'REFRESH'}
                 </StyledButton>
               </StyledButtonContainer>
             )}
