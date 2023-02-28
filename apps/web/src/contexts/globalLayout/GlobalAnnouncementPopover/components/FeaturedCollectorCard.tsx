@@ -73,6 +73,7 @@ export default function FeaturedCollectorCard({
     <Link
       href={{ pathname: '/[username]', query: { username: owner.username as string } }}
       passHref
+      legacyBehavior
     >
       <StyledAnchor target="_blank" rel="noopener noreferrer">
         <FeaturedCollectorContainer gap={isMobile ? 12 : 22}>

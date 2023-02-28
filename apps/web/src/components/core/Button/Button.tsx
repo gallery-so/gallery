@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ButtonHTMLAttributes } from 'react';
+import { ButtonHTMLAttributes, forwardRef } from 'react';
 import styled, { css } from 'styled-components';
 
 import { InternalAnchorElementProps } from '~/types/Elements';
@@ -129,26 +129,25 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
     pending?: boolean;
   };
 
-export const Button = ({
-  type = 'button',
-  pending,
-  disabled,
-  children,
-  ...otherProps
-}: ButtonProps) => (
-  <StyledButton
-    type={type}
-    disabled={disabled || pending}
-    aria-disabled={disabled}
-    aria-busy={pending}
-    {...otherProps}
-  >
-    <span className="Button-label">{children}</span>
-    <span className="Button-spinner" aria-hidden>
-      <Spinner />
-    </span>
-  </StyledButton>
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ type = 'button', pending, disabled, children, ...otherProps }: ButtonProps, ref) => (
+    <StyledButton
+      type={type}
+      disabled={disabled || pending}
+      aria-disabled={disabled}
+      aria-busy={pending}
+      {...otherProps}
+      ref={ref}
+    >
+      <span className="Button-label">{children}</span>
+      <span className="Button-spinner" aria-hidden>
+        <Spinner />
+      </span>
+    </StyledButton>
+  )
 );
+
+Button.displayName = 'Button';
 
 type ButtonLinkProps = InternalAnchorElementProps &
   StyledButtonProps & {
@@ -162,7 +161,7 @@ export const ButtonLink = ({
   children,
   ...otherProps
 }: ButtonLinkProps) => (
-  <Link href={href} passHref>
+  <Link href={href} passHref legacyBehavior>
     <StyledButton
       as="a"
       tabIndex={disabled ? -1 : undefined}

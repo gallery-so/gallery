@@ -46,6 +46,7 @@ export default function LinkToNftDetailView({ children, username, collectionId, 
       // disable scroll-to-top when the modal opens
       scroll={false}
       passHref
+      legacyBehavior
     >
       {children}
     </Link>

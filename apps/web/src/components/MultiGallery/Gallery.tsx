@@ -299,9 +299,7 @@ export default function Gallery({
                 {isAuthenticatedUser && (
                   <HStack>
                     <Link href={handleEditGallery}>
-                      <a>
-                        <IconContainer size="md" variant="stacked" icon={<EditPencilIcon />} />
-                      </a>
+                      <IconContainer size="md" variant="stacked" icon={<EditPencilIcon />} />
                     </Link>
                     <SettingsDropdown iconVariant="stacked">
                       <DropdownSection>

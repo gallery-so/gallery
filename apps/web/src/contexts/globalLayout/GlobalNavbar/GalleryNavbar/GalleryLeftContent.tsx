@@ -54,7 +54,7 @@ export default function GalleryLeftContent({ queryRef, galleryName }: Props) {
 
       return (
         <HStack gap={4} align="center">
-          <Link href={usernameRoute}>
+          <Link href={usernameRoute} legacyBehavior>
             <UsernameBreadcrumbLink href={route(usernameRoute)}>
               {query.userByUsername?.username}
             </UsernameBreadcrumbLink>

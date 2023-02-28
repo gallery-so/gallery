@@ -114,7 +114,7 @@ export default function TokensAddedToCollectionFeedEvent({
                 {!isSubEvent && <HoverCardOnUsername userRef={event.owner} queryRef={query} />}{' '}
                 added {isPreFeed ? '' : `${tokens.length} ${pluralize(tokens.length, 'piece')}`} to
                 {collectionName ? ' ' : ' their collection'}
-                <Link href={collectionPagePath} passHref>
+                <Link href={collectionPagePath} passHref legacyBehavior>
                   <StyledEventLabel>{collectionName}</StyledEventLabel>
                 </Link>
               </StyledEventText>

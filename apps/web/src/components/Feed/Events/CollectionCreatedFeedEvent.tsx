@@ -106,6 +106,7 @@ export default function CollectionCreatedFeedEvent({ eventDataRef, isSubEvent, q
                         collectionId: event.collection.dbid,
                       },
                     }}
+                    legacyBehavior
                   >
                     <StyledEventLabel>{unescape(event.collection.name ?? '')}</StyledEventLabel>
                   </Link>

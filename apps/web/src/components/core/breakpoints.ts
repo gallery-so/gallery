@@ -2,15 +2,15 @@
 // and progressively add styles for larger breakpoints.
 
 // Our breakpoints are as follows:
-// mobile:      0px   - 419px;
-// mobileLarge: 420px - 767px;
+// mobile:      0px   - 430px;
+// mobileLarge: 431px - 767px;
 // tablet:      768px - 1099px;
 // desktop:     1100px - ;
 
 // window sizes when breakpoints kick in
 export enum size {
   mobile = 0,
-  mobileLarge = 420,
+  mobileLarge = 431, // iphone pro max
   tablet = 768,
   desktop = 1100,
 }
