@@ -1,3 +1,4 @@
+import { ResizeMode } from 'expo-av';
 import { useMemo } from 'react';
 import { useWindowDimensions, View } from 'react-native';
 import { useFragment } from 'react-relay';
@@ -5,7 +6,7 @@ import { graphql } from 'relay-runtime';
 
 import { EventTokenGridFragment$key } from '~/generated/EventTokenGridFragment.graphql';
 
-import { CoveringNftPreview } from '../CoveringNftPreview';
+import { NftPreview } from '../NftPreview';
 
 type EventTokenGridProps = {
   tokenRefs: EventTokenGridFragment$key;
@@ -17,7 +18,7 @@ export function EventTokenGrid({ tokenRefs }: EventTokenGridProps) {
       fragment EventTokenGridFragment on Token @relay(plural: true) {
         __typename
 
-        ...CoveringNftPreviewFragment
+        ...NftPreviewFragment
       }
     `,
     tokenRefs
@@ -33,7 +34,7 @@ export function EventTokenGrid({ tokenRefs }: EventTokenGridProps) {
         throw new Error('Could not render NFT');
       }
 
-      return <CoveringNftPreview tokenRef={token} />;
+      return <NftPreview resizeMode={ResizeMode.CONTAIN} tokenRef={token} />;
     } else if (tokens.length === 2 || tokens.length === 3) {
       const [firstToken, secondToken] = tokens;
 
@@ -44,10 +45,10 @@ export function EventTokenGrid({ tokenRefs }: EventTokenGridProps) {
       return (
         <View className="flex w-full flex-row space-x-[2]">
           <View className="h-full w-1/2">
-            <CoveringNftPreview tokenRef={firstToken} />
+            <NftPreview resizeMode={ResizeMode.COVER} tokenRef={firstToken} />
           </View>
           <View className="h-full w-1/2">
-            <CoveringNftPreview tokenRef={secondToken} />
+            <NftPreview resizeMode={ResizeMode.COVER} tokenRef={secondToken} />
           </View>
         </View>
       );
@@ -62,19 +63,19 @@ export function EventTokenGrid({ tokenRefs }: EventTokenGridProps) {
         <View className="flex h-full w-full flex-col space-y-[2]">
           <View className="flex h-1/2 w-full flex-row space-x-[2]">
             <View className="h-full w-1/2">
-              <CoveringNftPreview tokenRef={firstToken} />
+              <NftPreview resizeMode={ResizeMode.COVER} tokenRef={firstToken} />
             </View>
             <View className="h-full w-1/2">
-              <CoveringNftPreview tokenRef={secondToken} />
+              <NftPreview resizeMode={ResizeMode.COVER} tokenRef={secondToken} />
             </View>
           </View>
 
           <View className="flex h-1/2 w-full flex-row space-x-[2]">
             <View className="h-full w-1/2">
-              <CoveringNftPreview tokenRef={thirdToken} />
+              <NftPreview resizeMode={ResizeMode.COVER} tokenRef={thirdToken} />
             </View>
             <View className="h-full w-1/2">
-              <CoveringNftPreview tokenRef={fourthToken} />
+              <NftPreview resizeMode={ResizeMode.COVER} tokenRef={fourthToken} />
             </View>
           </View>
         </View>

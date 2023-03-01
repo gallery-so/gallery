@@ -1,22 +1,22 @@
-import { ResizeMode } from 'expo-av';
-import { View } from 'react-native';
+import { ResizeMode, Video } from 'expo-av';
 import FastImage from 'react-native-fast-image';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import { CoveringNftPreviewFragment$key } from '~/generated/CoveringNftPreviewFragment.graphql';
+import { NftPreviewFragment$key } from '~/generated/NftPreviewFragment.graphql';
 import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
 
 import { SvgWebView } from './SvgWebView';
 
-type CoveringNftPreviewProps = {
-  tokenRef: CoveringNftPreviewFragment$key;
+type NftPreviewProps = {
+  tokenRef: NftPreviewFragment$key;
+  resizeMode: ResizeMode;
 };
 
-export function CoveringNftPreview({ tokenRef }: CoveringNftPreviewProps) {
+export function NftPreview({ tokenRef, resizeMode }: NftPreviewProps) {
   const token = useFragment(
     graphql`
-      fragment CoveringNftPreviewFragment on Token {
+      fragment NftPreviewFragment on Token {
         __typename
         ...getVideoOrImageUrlForNftPreviewFragment
       }
@@ -42,11 +42,27 @@ export function CoveringNftPreview({ tokenRef }: CoveringNftPreviewProps) {
     );
   }
 
+  // Rare case that we didn't processe the NFT correctly
+  // and we still have to deal with an image
+  // We'll just load the poster and never play the video
+  if (tokenUrl.includes('mp4')) {
+    return (
+      <Video
+        shouldPlay
+        isLooping
+        resizeMode={resizeMode}
+        source={{ uri: tokenUrl }}
+        className="h-full w-full"
+      />
+    );
+  }
+
   return (
     <FastImage
-      resizeMode={ResizeMode.COVER}
+      resizeMode={resizeMode}
       className="h-full w-full overflow-hidden"
       source={{
+        headers: { Accepts: 'image/avif;image/png' },
         uri: tokenUrl,
       }}
     />
