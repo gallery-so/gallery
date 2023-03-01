@@ -2,6 +2,7 @@ import { ReactElement, useCallback, useRef } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
+import { Button } from '~/components/core/Button/Button';
 import colors from '~/components/core/colors';
 import IconContainer from '~/components/core/IconContainer';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
@@ -16,9 +17,15 @@ type Props = {
   content: ReactElement;
   headerText?: string;
   hideDrawer: () => void;
+  showDoneFooter?: boolean;
 };
 
-export default function AnimatedSidebarDrawer({ content, hideDrawer, headerText }: Props) {
+export default function AnimatedSidebarDrawer({
+  content,
+  hideDrawer,
+  headerText,
+  showDoneFooter = false,
+}: Props) {
   const isActive = true;
   const drawerRef = useRef(null);
 
@@ -27,6 +34,11 @@ export default function AnimatedSidebarDrawer({ content, hideDrawer, headerText 
   const handleCloseDrawerClick = useCallback(() => {
     hideDrawer();
   }, [hideDrawer]);
+
+  const handleDoneClick = useCallback(() => {
+    hideDrawer();
+  }, [hideDrawer]);
+
   return (
     <_ToggleFade isActive={isActive}>
       <StyledContent ref={drawerRef} gap={16}>
@@ -41,7 +53,14 @@ export default function AnimatedSidebarDrawer({ content, hideDrawer, headerText 
           </CloseDrawerHeader>
           {headerText && <StyledHeadingText>{headerText}</StyledHeadingText>}
         </StyledHeader>
-        <VStack gap={16}>{content}</VStack>
+        <StyledContentWrapper showDoneFooter={showDoneFooter}>
+          <VStack gap={16}>{content}</VStack>
+        </StyledContentWrapper>
+        {showDoneFooter && (
+          <DoneFooter align="center" justify="flex-end">
+            <DoneButton onClick={handleDoneClick}>Done</DoneButton>
+          </DoneFooter>
+        )}
       </StyledContent>
     </_ToggleFade>
   );
@@ -82,17 +101,40 @@ const StyledHeadingText = styled(TitleDiatypeL)`
   line-height: 28px;
 `;
 
+// TODO rename
 const StyledContent = styled(VStack)`
   background-color: ${colors.offWhite};
   width: 100%;
   height: calc(100vh - 42px);
-  overflow-y: scroll;
-  overflow-x: hidden;
-  overscroll-behavior: contain;
+  // overflow-y: scroll;
+  // overflow-x: hidden;
+  // overscroll-behavior: contain;
 
   @media only screen and ${breakpoints.tablet} {
     height: 100vh;
     // width: 375px;
     width: 420px;
   }
+`;
+
+const StyledContentWrapper = styled.div<{ showDoneFooter: boolean }>`
+  overflow-y: scroll;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+
+  // to account for the fixed footer
+  // ${({ showDoneFooter }) => showDoneFooter && `margin-bottom: 64px; `})}
+`;
+
+const DoneButton = styled(Button)`
+  align-self: flex-end;
+`;
+
+const DoneFooter = styled(HStack)`
+  width: 100%;
+  background-color: ${colors.offWhite};
+  position: absolute;
+  display: flex;
+  bottom: 0;
+  padding: 12px 16px;
 `;

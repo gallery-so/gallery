@@ -16,6 +16,7 @@ import TwitterSetting from '~/components/Twitter/TwitterSetting';
 import { GALLERY_DISCORD } from '~/constants/urls';
 import { useAuthActions } from '~/contexts/auth/AuthContext';
 import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
+import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { SettingsModalFragment$key } from '~/generated/SettingsModalFragment.graphql';
@@ -99,7 +100,7 @@ function SettingsModal({
 
   const [isPending, setIsPending] = useState(false);
 
-  const { hideModal } = useModalActions();
+  const { hideDrawer } = useDrawerActions();
 
   const handleEmailNotificationChange = useCallback(
     async (checked: boolean) => {
@@ -160,8 +161,8 @@ function SettingsModal({
   }, [userEmail]);
 
   const handleDoneClick = useCallback(() => {
-    hideModal();
-  }, [hideModal]);
+    hideDrawer();
+  }, [hideDrawer]);
 
   const isEmailUnverified = useMemo(() => {
     return DISABLED_TOGGLE_BY_EMAIL_STATUS.includes(query?.viewer?.email?.verificationStatus ?? '');
@@ -188,7 +189,7 @@ function SettingsModal({
 
   return (
     <StyledManageWalletsModal gap={12}>
-      <VStack gap={24}>
+      <SettingsContents gap={24}>
         <VStack gap={16}>
           <VStack>
             <TitleDiatypeL>Email notifications</TitleDiatypeL>
@@ -264,18 +265,22 @@ function SettingsModal({
             Sign Out
           </StyledButton>
         </HStack>
-        <StyledHr />
-      </VStack>
-      <DoneButton onClick={handleDoneClick}>Done</DoneButton>
+      </SettingsContents>
+      {/* <DoneFooter align="center" justify="flex-end">
+        <DoneButton onClick={handleDoneClick}>Done</DoneButton>
+      </DoneFooter> */}
     </StyledManageWalletsModal>
   );
 }
 
 const StyledManageWalletsModal = styled(VStack)`
-  padding: 16px;
   @media only screen and ${breakpoints.tablet} {
     width: 100%; // todo fix
   }
+`;
+
+const SettingsContents = styled(VStack)`
+  padding: 16px;
 `;
 
 const StyledHr = styled.hr`
@@ -290,10 +295,6 @@ const StyledButtonContainer = styled.div`
 
 const StyledButton = styled(Button)`
   padding: 8px 12px;
-`;
-
-const DoneButton = styled(Button)`
-  align-self: flex-end;
 `;
 
 export default SettingsModal;

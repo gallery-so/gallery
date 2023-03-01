@@ -10,15 +10,16 @@ export default function useDetectOutsideClick(
   callback: () => void
 ) {
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
+    function handleClickOutside(event) {
+      console.log({ event });
       if (ref.current && !ref.current.contains(event.target)) {
         callback();
       }
     }
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('click', handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('click', handleClickOutside);
     };
   }, [callback, ref]);
 }

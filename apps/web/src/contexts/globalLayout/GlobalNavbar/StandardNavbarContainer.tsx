@@ -19,6 +19,7 @@ export const StandardNavbarContainer = styled.div`
 
   @media only screen and ${breakpoints.tablet} {
     margin-left: ${GLOBAL_SIDEBAR_DESKTOP_WIDTH}px;
+    padding: 0 ${pageGutter.tablet}px;
   }
 `;
 
@@ -27,7 +28,7 @@ export const NavbarLeftContent = styled.div`
   justify-content: flex-start;
 
   min-width: 0;
-  flex: 1 1 20%;
+  flex: 1 1 16%;
 `;
 
 export const NavbarCenterContent = styled.div`

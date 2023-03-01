@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import styled from 'styled-components';
 
+import breakpoints from '~/components/core/breakpoints';
 import colors from '~/components/core/colors';
 import IconContainer from '~/components/core/IconContainer';
 import transitions from '~/components/core/transitions';
@@ -30,6 +31,8 @@ export default function SidebarIcon({
 
   const handleClick = useCallback(
     (e) => {
+      console.log({ e });
+      e.stopPropagation();
       onClick();
     },
     [onClick]
@@ -47,7 +50,7 @@ export default function SidebarIcon({
         isActive={isActive}
         showBorderByDefault={showBorderByDefault}
       />
-      <NewTooltip
+      <StyledTooltip
         {...getFloatingProps()}
         style={floatingStyle}
         ref={floating}
@@ -80,4 +83,11 @@ const StyledUnreadDot = styled.div`
   z-index: 5;
   border: 2px solid ${colors.white};
   border-radius: 99999px;
+`;
+
+const StyledTooltip = styled(NewTooltip)`
+  display: none;
+  @media only screen and ${breakpoints.tablet} {
+    display: block;
+  }
 `;

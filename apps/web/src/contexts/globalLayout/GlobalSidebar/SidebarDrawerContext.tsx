@@ -17,11 +17,14 @@ type ActiveDrawer = {
   content: ReactElement;
   headerText?: string;
   drawerName: string;
+  showDoneFooter?: boolean;
 };
 
 type DrawerState = {
   activeDrawer: ActiveDrawer | null;
 };
+
+const ShowDoneFooter = ['settings'];
 
 const DrawerStateContext = createContext<DrawerState | undefined>(undefined);
 
@@ -87,6 +90,7 @@ function SidebarDrawerProvider({ children }: Props): ReactElement {
             content={drawerState.activeDrawer.content}
             headerText={drawerState.activeDrawer.headerText}
             hideDrawer={hideDrawer}
+            showDoneFooter={ShowDoneFooter.includes(drawerState.activeDrawer.drawerName)}
           />
         )}
       </DrawerActionsContext.Provider>
