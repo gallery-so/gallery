@@ -240,6 +240,7 @@ const StyledButtonGroupContainer = styled.div`
 `;
 
 const StyledButton = styled(Button)`
-  padding: 4px 12px;
+  padding: 8px 12px;
   width: 100%;
+  font-size: 11px;
 `;
