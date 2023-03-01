@@ -58,14 +58,14 @@ export function NotificationList({ queryRef }: NotificationListProps) {
     queryRef
   );
 
-  const [isEmailUpsellExperienced, updateEmailExperience] = useExperience({
+  const [isEmailUpsellExperienced, setEmailExperienced] = useExperience({
     type: 'EmailUpsell',
     queryRef: query,
   });
 
   const handleDismiss = useCallback(async () => {
-    await updateEmailExperience({ experienced: true });
-  }, [updateEmailExperience]);
+    await setEmailExperienced();
+  }, [setEmailExperienced]);
 
   const nonNullNotifications = useMemo(() => {
     const notifications = [];

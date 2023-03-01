@@ -60,7 +60,7 @@ export default function InteractiveLink({
 
   if (to) {
     return (
-      <Link href={to} passHref>
+      <Link href={to} passHref legacyBehavior>
         <StyledAnchor
           onClick={handleClick}
           className={className}

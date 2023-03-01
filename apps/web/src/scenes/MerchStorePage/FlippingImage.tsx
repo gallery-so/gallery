@@ -21,7 +21,11 @@ export default function FlippingImage({ alt, src, isFlipped, isInPreview = false
       isFlippedCardInPreview={src === '/merch/card' && isFlipped && isInPreview}
       isCard={src === '/merch/card'}
     >
-      <Image alt={alt} src={isFlipped ? `${src}-back.jpg` : `${src}-front.jpg`} layout="fill" />
+      <Image
+        alt={alt ?? ''}
+        src={isFlipped ? `${src}-back.jpg` : `${src}-front.jpg`}
+        layout="fill"
+      />
     </StyledContainer>
   );
 }

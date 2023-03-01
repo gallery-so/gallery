@@ -76,16 +76,14 @@ export function ProfileDropdownContent({
 
   const track = useTrack();
 
-  const [isMerchStoreUpsellExperienced, updateMerchStoreUpsellExperienced] = useExperience({
+  const [isMerchStoreUpsellExperienced, setMerchStoreUpsellExperienced] = useExperience({
     type: 'MerchStoreUpsell',
     queryRef: query,
   });
 
   const handleDismissMerchRedemption = useCallback(async () => {
-    await updateMerchStoreUpsellExperienced({
-      experienced: true,
-    });
-  }, [updateMerchStoreUpsellExperienced]);
+    await setMerchStoreUpsellExperienced();
+  }, [setMerchStoreUpsellExperienced]);
 
   const handleNotificationsClick = useCallback(() => {
     track('Open Notifications Click');
@@ -120,7 +118,7 @@ export function ProfileDropdownContent({
       onMouseEnter={onMouseEnter}
     >
       <DropdownSection>
-        <Link href={userGalleryRoute}>
+        <Link href={userGalleryRoute} legacyBehavior>
           <DropdownProfileSection href={route(userGalleryRoute)}>
             <UsernameText>{username}</UsernameText>
             <VStack align="flex-start">

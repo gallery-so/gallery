@@ -60,6 +60,7 @@ export function Interactions({ eventRef, queryRef, onPotentialLayoutShift }: Pro
     graphql`
       fragment InteractionsQueryFragment on Query {
         ...AdmireLineQueryFragment
+        ...CommentLineQueryFragment
       }
     `,
     queryRef
@@ -148,7 +149,7 @@ export function Interactions({ eventRef, queryRef, onPotentialLayoutShift }: Pro
       return (
         <VStack gap={8}>
           {lastTwoComments.map((comment) => {
-            return <CommentLine key={comment.dbid} commentRef={comment} />;
+            return <CommentLine key={comment.dbid} queryRef={query} commentRef={comment} />;
           })}
 
           <RemainingAdmireCount remainingCount={remainingAdmiresAndComments} eventRef={event} />

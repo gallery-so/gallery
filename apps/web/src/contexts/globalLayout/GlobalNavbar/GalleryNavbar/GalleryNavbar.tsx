@@ -47,7 +47,8 @@ export function GalleryNavbar({
         ...GalleryRightContentFragment
         ...FollowButtonQueryFragment
 
-        userByUsername(username: $username) {
+        userByUsername(username: $username) @required(action: THROW) {
+          ...GalleryNavLinksFragment
           ...FollowButtonUserFragment
         }
       }
@@ -90,7 +91,7 @@ export function GalleryNavbar({
         <NavbarCenterContent>
           {isMobile ? (
             <HStack style={{ overflow: 'hidden' }} gap={4}>
-              <Link href={userGalleryRoute}>
+              <Link href={userGalleryRoute} legacyBehavior>
                 <UsernameBreadcrumbLink
                   href={route(userGalleryRoute)}
                   mainGalleryPage={pathname === '/[username]'}
@@ -111,7 +112,7 @@ export function GalleryNavbar({
               )}
             </HStack>
           ) : (
-            <GalleryNavLinks username={username} />
+            <GalleryNavLinks username={username} queryRef={query.userByUsername} />
           )}
         </NavbarCenterContent>
 
@@ -124,7 +125,7 @@ export function GalleryNavbar({
       {isMobile && (
         <StandardNavbarContainer>
           <MobileNavLinks justify="center" grow>
-            <GalleryNavLinks username={username} />
+            <GalleryNavLinks username={username} queryRef={query.userByUsername} />
           </MobileNavLinks>
         </StandardNavbarContainer>
       )}

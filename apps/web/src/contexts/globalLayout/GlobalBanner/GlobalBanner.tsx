@@ -7,14 +7,16 @@ import colors from '~/components/core/colors';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { BaseM, TitleS } from '~/components/core/Text/Text';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
+import { UserExperienceType } from '~/generated/enums';
 import { GlobalBannerFragment$key } from '~/generated/GlobalBannerFragment.graphql';
 import { DecoratedCloseIcon } from '~/icons/CloseIcon';
 import useExperience from '~/utils/graphql/experiences/useExperience';
 
 type Props = {
-  title?: React.ReactNode | string;
   queryRef: GlobalBannerFragment$key;
+  experienceFlag: UserExperienceType;
   text: string;
+  title?: React.ReactNode | string;
   requireAuth?: boolean;
   actionComponent?: React.ReactNode;
   dismissOnActionComponentClick?: boolean;
@@ -22,6 +24,7 @@ type Props = {
 
 export default function GlobalBanner({
   queryRef,
+  experienceFlag,
   text,
   title,
   requireAuth = false,
@@ -47,16 +50,14 @@ export default function GlobalBanner({
 
   const isAuthenticated = Boolean(query.viewer?.user?.id);
 
-  const [isMaintenanceBannerExperienced, updateMaintenanceBannerExperienced] = useExperience({
-    type: 'MaintenanceFeb2023',
+  const [isMaintenanceBannerExperienced, setMaintenanceBannerExperienced] = useExperience({
+    type: experienceFlag,
     queryRef: query,
   });
 
   const hideBanner = useCallback(async () => {
-    await updateMaintenanceBannerExperienced({
-      experienced: true,
-    });
-  }, [updateMaintenanceBannerExperienced]);
+    await setMaintenanceBannerExperienced();
+  }, [setMaintenanceBannerExperienced]);
 
   const handleActionClick = useCallback(() => {
     if (dismissOnActionComponentClick) {
@@ -66,9 +67,11 @@ export default function GlobalBanner({
 
   const navbarHeight = useGlobalNavbarHeight();
 
-  return isMaintenanceBannerExperienced ||
-    text.length === 0 ||
-    (requireAuth && !isAuthenticated) ? null : (
+  if (text.length === 0 || isMaintenanceBannerExperienced || (requireAuth && !isAuthenticated)) {
+    return null;
+  }
+
+  return (
     <StyledContainer navbarHeight={navbarHeight}>
       <StyledBanner>
         <TextContainer>

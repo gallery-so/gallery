@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import colors from '~/components/core/colors';
-import { BODY_FONT_FAMILY } from '~/components/core/Text/Text';
+import { BaseS, BODY_FONT_FAMILY } from '~/components/core/Text/Text';
 
 // legacyBehavior: false ensures these styles are applied to the link element
 export const NavbarLink = styled(Link).attrs({ legacyBehavior: false })<{ active: boolean }>`
@@ -23,4 +23,8 @@ export const NavbarLink = styled(Link).attrs({ legacyBehavior: false })<{ active
 
   cursor: pointer;
   text-decoration: none;
+
+  ${BaseS} {
+    color: ${({ active }) => (active ? colors.offBlack : colors.metal)};
+  }
 `;
