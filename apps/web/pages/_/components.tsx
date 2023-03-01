@@ -26,7 +26,6 @@ const PendingButton = (props: React.ComponentProps<typeof Button>) => {
 };
 
 export default function DesignPage() {
-  console.log({ icons });
   return (
     <>
       <Section>
