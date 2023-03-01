@@ -1,10 +1,14 @@
-import { useCallback } from 'react';
-import { FlatList, ListRenderItem, Text, View } from 'react-native';
+import { FlashList, ListRenderItem } from '@shopify/flash-list';
+import { useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
 import { FeedListFragment$key } from '~/generated/FeedListFragment.graphql';
+import { FeedListItemFragment$key } from '~/generated/FeedListItemFragment.graphql';
+import { FeedListSectionHeaderFragment$key } from '~/generated/FeedListSectionHeaderFragment.graphql';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import { FeedListItem } from './FeedListItem';
+import { FeedListSectionHeader } from './FeedListSectionHeader';
 
 type FeedListProps = {
   feedEventRefs: FeedListFragment$key;
@@ -16,20 +20,75 @@ export function FeedList({ feedEventRefs }: FeedListProps) {
       fragment FeedListFragment on FeedEvent @relay(plural: true) {
         __typename
 
-        ...FeedListItemFragment
+        eventData {
+          ... on GalleryUpdatedFeedEventData {
+            __typename
+            subEventDatas {
+              ...FeedListItemFragment
+            }
+          }
+
+          ...FeedListItemFragment
+        }
+
+        ...FeedListSectionHeaderFragment
       }
     `,
     feedEventRefs
   );
 
-  const renderItem = useCallback<ListRenderItem<(typeof events)[number]>>(({ item }) => {
-    return <FeedListItem feedEventRef={item} />;
+  const items = useMemo(() => {
+    const items: Array<
+      | { kind: 'header'; item: FeedListSectionHeaderFragment$key }
+      | { kind: 'event'; item: FeedListItemFragment$key }
+    > = [];
+
+    for (const event of events) {
+      items.push({ kind: 'header', item: event });
+
+      const eventsInSection = [];
+      if (event.eventData?.__typename === 'GalleryUpdatedFeedEventData') {
+        eventsInSection.push(...removeNullValues(event.eventData.subEventDatas));
+      } else if (event.eventData) {
+        eventsInSection.push(event.eventData);
+      }
+
+      items.push(
+        ...eventsInSection.map((event) => {
+          return { kind: 'event', item: event } as const;
+        })
+      );
+    }
+
+    return items;
+  }, [events]);
+
+  const stickyHeaderIndices = useMemo(() => {
+    const indices: number[] = [];
+    items.forEach((item, index) => {
+      if (item.kind === 'header') {
+        indices.push(index);
+      }
+    });
+
+    return indices;
+  }, [items]);
+
+  console.log(stickyHeaderIndices);
+
+  const renderItem = useCallback<ListRenderItem<(typeof items)[number]>>(({ item }) => {
+    if (item.kind === 'header') {
+      return <FeedListSectionHeader feedEventRef={item.item} />;
+    } else {
+      return <FeedListItem eventDataRef={item.item} />;
+    }
   }, []);
 
   return (
-    <FlatList
-      ItemSeparatorComponent={() => <View className="h-3" />}
-      data={events}
+    <FlashList
+      estimatedItemSize={400}
+      data={items}
+      stickyHeaderIndices={stickyHeaderIndices}
       renderItem={renderItem}
     />
   );

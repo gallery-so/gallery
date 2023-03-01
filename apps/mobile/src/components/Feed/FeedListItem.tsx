@@ -1,43 +1,23 @@
-import { Fragment, useMemo } from 'react';
-import { Text, useWindowDimensions, View } from 'react-native';
+import { useMemo } from 'react';
+import { View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import { GalleryUpdatedFeedEventFragment$key } from '~/generated/GalleryUpdatedFeedEventFragment.graphql';
-import { GalleryUpdatedFeedEventTokenUrlsFragment$key } from '~/generated/GalleryUpdatedFeedEventTokenUrlsFragment.graphql';
-import { removeNullValues } from '~/shared/relay/removeNullValues';
+import { FeedListItemFragment$key } from '~/generated/FeedListItemFragment.graphql';
 
 import { CollectionCreatedFeedEvent } from './CollectionCreatedFeedEvent';
 import { TokensAddedToCollectionFeedEvent } from './TokensAddedToCollectionFeedEvent';
 
-type GalleryUpdatedFeedEventProps = {
-  galleryUpdatedFeedEventDataRef: GalleryUpdatedFeedEventFragment$key;
+type FeedListItemProps = {
+  eventDataRef: FeedListItemFragment$key;
 };
 
-export function GalleryUpdatedFeedEvent({
-  galleryUpdatedFeedEventDataRef,
-}: GalleryUpdatedFeedEventProps) {
-  const eventData = useFragment(
+export function FeedListItem({ eventDataRef }: FeedListItemProps) {
+  const eventData = useFragment<FeedListItemFragment$key>(
     graphql`
-      fragment GalleryUpdatedFeedEventFragment on GalleryUpdatedFeedEventData {
-        owner {
-          username
-        }
-
-        subEventDatas {
-          ...GalleryUpdatedFeedEventTokenUrlsFragment
-        }
-      }
-    `,
-    galleryUpdatedFeedEventDataRef
-  );
-
-  const { width } = useWindowDimensions();
-
-  const subEvents = useFragment<GalleryUpdatedFeedEventTokenUrlsFragment$key>(
-    graphql`
-      fragment GalleryUpdatedFeedEventTokenUrlsFragment on FeedEventData @relay(plural: true) {
+      fragment FeedListItemFragment on FeedEventData {
         __typename
+
         ... on GalleryInfoUpdatedFeedEventData {
           __typename
         }
@@ -56,42 +36,19 @@ export function GalleryUpdatedFeedEvent({
         }
       }
     `,
-    eventData.subEventDatas
+    eventDataRef
   );
 
-  return (
-    <View className="flex flex-col space-y-3">
-      {/*<View className="flex flex-row space-x-1 px-3 py-2">*/}
-      {/*  <Text style={{ fontFamily: 'ABCDiatypeBold', fontSize: 12 }}>*/}
-      {/*    {eventData.owner?.username}*/}
-      {/*  </Text>*/}
+  const inner = useMemo(() => {
+    switch (eventData.__typename) {
+      case 'CollectionCreatedFeedEventData':
+        return <CollectionCreatedFeedEvent collectionUpdatedFeedEventDataRef={eventData} />;
+      case 'TokensAddedToCollectionFeedEventData':
+        return <TokensAddedToCollectionFeedEvent collectionUpdatedFeedEventDataRef={eventData} />;
+      default:
+        return null;
+    }
+  }, [eventData]);
 
-      {/*  <Text style={{ fontFamily: 'ABCDiatypeRegular', fontSize: 12 }}>/</Text>*/}
-
-      {/*  <Text style={{ fontFamily: 'ABCDiatypeBold', fontSize: 12 }}>Photography</Text>*/}
-      {/*</View>*/}
-
-      {subEvents?.map((subEvent, index) => {
-        switch (subEvent.__typename) {
-          case 'CollectionCreatedFeedEventData':
-            return (
-              <CollectionCreatedFeedEvent
-                key={index}
-                collectionUpdatedFeedEventDataRef={subEvent}
-              />
-            );
-          case 'TokensAddedToCollectionFeedEventData':
-            return (
-              <TokensAddedToCollectionFeedEvent
-                key={index}
-                collectionUpdatedFeedEventDataRef={subEvent}
-              />
-            );
-          default:
-            console.log(subEvent.__typename);
-            return null;
-        }
-      })}
-    </View>
-  );
+  return <View>{inner}</View>;
 }

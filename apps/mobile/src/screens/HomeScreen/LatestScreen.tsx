@@ -1,4 +1,5 @@
 import { Suspense, useMemo } from 'react';
+import { View } from 'react-native';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 
 import { LatestScreenFragment$key } from '~/generated/LatestScreenFragment.graphql';

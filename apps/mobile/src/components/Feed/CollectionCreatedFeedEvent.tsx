@@ -7,7 +7,7 @@ import { CollectionCreatedFeedEventFragment$key } from '~/generated/CollectionCr
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import { CollectionAndAdditionCount } from './CollectionAndAdditionCount';
-import { EventTokenGrid } from './EventTokenGrid';
+import { TokenCarousel } from './TokenCarousel';
 
 type CollectionCreatedFeedEventProps = {
   collectionUpdatedFeedEventDataRef: CollectionCreatedFeedEventFragment$key;
@@ -25,7 +25,7 @@ export function CollectionCreatedFeedEvent({
 
         newTokens {
           token {
-            ...EventTokenGridFragment
+            ...TokenCarouselFragment
           }
         }
       }
@@ -44,7 +44,7 @@ export function CollectionCreatedFeedEvent({
         additionCount={eventData.newTokens?.length}
       />
 
-      <EventTokenGrid tokenRefs={tokens} />
+      <TokenCarousel tokenRefs={tokens} />
     </View>
   );
 }
