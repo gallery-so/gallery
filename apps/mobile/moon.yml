@@ -41,6 +41,17 @@ tasks:
     command: expo run:ios
     local: true
 
+  ios-device-raw:
+    command: expo run:ios --device
+    local: true
+
+  ios-device:
+    command: noop
+    deps:
+      - "~:ios-device-raw"
+      - "~:relay-watch"
+    local: true
+
   ios:
     command: noop
     deps:
