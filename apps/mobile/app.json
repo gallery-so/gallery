@@ -17,11 +17,12 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "buildNumber": "2",
+      "buildNumber": "5",
       "supportsTablet": true,
       "bundleIdentifier": "com.gallerylabs.gallery"
     },
     "android": {
+      "versionCode": "2",
       "blockedPermissions": ["android.permission.RECORD_AUDIO"],
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
