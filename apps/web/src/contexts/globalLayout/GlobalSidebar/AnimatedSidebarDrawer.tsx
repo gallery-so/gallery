@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { ReactElement, useCallback, useRef } from 'react';
+import { ReactElement, useCallback, useMemo, useRef } from 'react';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
@@ -14,6 +14,7 @@ import {
   rawTransitions,
 } from '~/components/core/transitions';
 import useDetectOutsideClick from '~/hooks/useDetectOutsideClick';
+import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import CloseIcon from '~/icons/CloseIcon';
 
 import { useDrawerActions } from './SidebarDrawerContext';
@@ -43,6 +44,22 @@ export default function AnimatedSidebarDrawer({
     hideDrawer();
   }, [hideDrawer]);
 
+  const isMobile = useIsMobileWindowWidth();
+
+  const motionSettings = useMemo(() => {
+    return isMobile
+      ? {
+          initial: { opacity: 0, y: ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL },
+          animate: { opacity: 1, y: 0 },
+          exit: { opacity: 0, y: ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL },
+        }
+      : {
+          initial: { opacity: 0, x: -ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL },
+          animate: { opacity: 1, x: 0 },
+          exit: { opacity: 0, x: -ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL },
+        };
+  }, [isMobile]);
+
   return (
     <motion.div
       key="drawer"
@@ -51,9 +68,9 @@ export default function AnimatedSidebarDrawer({
         duration: ANIMATED_COMPONENT_TRANSITION_S,
         ease: rawTransitions.cubicValues,
       }}
-      initial={{ opacity: 0, x: -ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL }}
+      initial={motionSettings.initial}
+      animate={motionSettings.animate}
+      exit={motionSettings.exit}
     >
       <StyledDrawer ref={drawerRef} gap={16}>
         <StyledHeader>
