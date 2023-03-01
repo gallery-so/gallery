@@ -385,7 +385,7 @@ function GlobalNavbarWithFadeEnabled({
        */}
       <AnimatePresence>
         {isVisible && (
-          <motion.div
+          <StyledMotionWrapper
             className="GlobalNavbar"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -410,7 +410,7 @@ function GlobalNavbarWithFadeEnabled({
               />
             )}
             <StyledBackground>{content}</StyledBackground>
-          </motion.div>
+          </StyledMotionWrapper>
         )}
       </AnimatePresence>
     </StyledGlobalNavbarWithFadeEnabled>
@@ -432,6 +432,12 @@ const StyledGlobalNavbarWithFadeEnabled = styled.div<{
 const StyledBackground = styled.div`
   background: rgba(254, 254, 254, 0.95);
   backdrop-filter: blur(48px);
+`;
+
+const StyledMotionWrapper = styled(motion.div)`
+  @media only screen and ${breakpoints.tablet} {
+    padding-left: ${GLOBAL_SIDEBAR_DESKTOP_WIDTH}px;
+  }
 `;
 
 export default GlobalLayoutContextProvider;
