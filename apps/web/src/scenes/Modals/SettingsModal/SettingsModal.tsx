@@ -16,8 +16,6 @@ import TwitterSetting from '~/components/Twitter/TwitterSetting';
 import { GALLERY_DISCORD } from '~/constants/urls';
 import { useAuthActions } from '~/contexts/auth/AuthContext';
 import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
-import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
-import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { SettingsModalFragment$key } from '~/generated/SettingsModalFragment.graphql';
 import CircleCheckIcon from '~/icons/CircleCheckIcon';
@@ -100,8 +98,6 @@ function SettingsModal({
 
   const [isPending, setIsPending] = useState(false);
 
-  const { hideDrawer } = useDrawerActions();
-
   const handleEmailNotificationChange = useCallback(
     async (checked: boolean) => {
       const unsubscribedFromNotifications = checked;
@@ -159,10 +155,6 @@ function SettingsModal({
       setShouldDisplayAddEmailInput(false);
     }
   }, [userEmail]);
-
-  const handleDoneClick = useCallback(() => {
-    hideDrawer();
-  }, [hideDrawer]);
 
   const isEmailUnverified = useMemo(() => {
     return DISABLED_TOGGLE_BY_EMAIL_STATUS.includes(query?.viewer?.email?.verificationStatus ?? '');
@@ -266,9 +258,6 @@ function SettingsModal({
           </StyledButton>
         </HStack>
       </SettingsContents>
-      {/* <DoneFooter align="center" justify="flex-end">
-        <DoneButton onClick={handleDoneClick}>Done</DoneButton>
-      </DoneFooter> */}
     </StyledManageWalletsModal>
   );
 }

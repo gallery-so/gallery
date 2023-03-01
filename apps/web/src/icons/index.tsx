@@ -30,14 +30,14 @@ import { QuestionMarkIcon } from './QuestionMarkIcon';
 import { RefreshIcon } from './RefreshIcon';
 import ShopIcon from './ShopIcon';
 import SnowflakeIcon from './SnowflakeIcon';
-import { CommentIcon, AdmireIcon } from './SocializeIcons';
+import { AdmireIcon, CommentIcon } from './SocializeIcons';
 import Trash from './Trash';
 import { TrashIconNew } from './TrashIconNew';
 import UserIcon from './UserIcon';
 import Video from './Video';
 import VideoDisabled from './VideoDisabled';
 
-export default {
+const icons = {
   AdmireIcon,
   AlertIcon,
   AlertTriangleIcon,
@@ -78,3 +78,5 @@ export default {
   Video,
   VideoDisabled,
 };
+
+export default icons;

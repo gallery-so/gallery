@@ -4,11 +4,8 @@ import styled from 'styled-components';
 import breakpoints from '~/components/core/breakpoints';
 import colors from '~/components/core/colors';
 import IconContainer from '~/components/core/IconContainer';
-import transitions from '~/components/core/transitions';
 import { NewTooltip } from '~/components/Tooltip/NewTooltip';
 import { useTooltipHover } from '~/components/Tooltip/useTooltipHover';
-
-import { NotificationsCircle } from '../GlobalNavbar/NotificationCircle';
 
 type Props = {
   onClick: () => void;
@@ -31,7 +28,6 @@ export default function SidebarIcon({
 
   const handleClick = useCallback(
     (e) => {
-      console.log({ e });
       e.stopPropagation();
       onClick();
     },

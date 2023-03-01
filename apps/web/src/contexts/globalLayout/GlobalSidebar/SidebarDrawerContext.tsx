@@ -1,17 +1,12 @@
 import {
   createContext,
-  memo,
-  MutableRefObject,
   ReactElement,
   ReactNode,
   useCallback,
   useContext,
   useMemo,
-  useRef,
   useState,
 } from 'react';
-
-import AnimatedSidebarDrawer from './AnimatedSidebarDrawer';
 
 type ActiveDrawer = {
   content: ReactElement;
@@ -23,8 +18,6 @@ type ActiveDrawer = {
 type DrawerState = {
   activeDrawer: ActiveDrawer | null;
 };
-
-const ShowDoneFooter = ['settings'];
 
 const DrawerStateContext = createContext<DrawerState | undefined>(undefined);
 
@@ -60,16 +53,13 @@ function SidebarDrawerProvider({ children }: Props): ReactElement {
 
   const showDrawer = useCallback((props: ActiveDrawer) => {
     setDrawerState((previous) => {
-      // todo fix bug where clicking outside the drawer closes it so this button re-opens it
+      // If the drawer is already open, close it
       if (previous.activeDrawer?.drawerName === props.drawerName) {
         return { activeDrawer: null };
       }
 
       return { activeDrawer: props };
     });
-    // drawerState.activeDrawer?.drawerName === props.drawerName
-    //   ? setDrawerState({ activeDrawer: null })
-    //   : setDrawerState({ activeDrawer: props });
   }, []);
 
   const hideDrawer = useCallback((): void => {
@@ -85,18 +75,9 @@ function SidebarDrawerProvider({ children }: Props): ReactElement {
     <DrawerStateContext.Provider value={drawerState}>
       <DrawerActionsContext.Provider value={drawerActions}>
         {children}
-        {/* {drawerState.activeDrawer && (
-          <AnimatedSidebarDrawer
-            content={drawerState.activeDrawer.content}
-            headerText={drawerState.activeDrawer.headerText}
-            hideDrawer={hideDrawer}
-            showDoneFooter={ShowDoneFooter.includes(drawerState.activeDrawer.drawerName)}
-          />
-        )} */}
       </DrawerActionsContext.Provider>
     </DrawerStateContext.Provider>
   );
 }
 
 export default SidebarDrawerProvider;
-// export default memo(SidebarDrawerProvider);

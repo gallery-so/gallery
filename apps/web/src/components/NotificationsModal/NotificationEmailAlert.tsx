@@ -30,17 +30,13 @@ export function NotificationEmailAlert({ onDismiss, queryRef }: Props) {
     queryRef
   );
 
-  const { showModal, hideModal } = useModalActions();
+  const { hideModal } = useModalActions();
   const { showDrawer } = useDrawerActions();
 
   const handleEnableEmails = useCallback(() => {
     // Hide notification modal
     hideModal();
 
-    // showModal({
-    //   content: <SettingsModal queryRef={query} />,
-    //   headerText: 'Manage accounts',
-    // });
     showDrawer({
       content: <SettingsModal queryRef={query} />,
       headerText: 'Settings',

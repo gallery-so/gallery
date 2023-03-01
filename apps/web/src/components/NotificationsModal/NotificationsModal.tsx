@@ -4,13 +4,11 @@ import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import Loader from '~/components/core/Loader/Loader';
-import { TitleDiatypeM } from '~/components/core/Text/Text';
 import {
   NotificationList,
   NOTIFICATIONS_PER_PAGE,
 } from '~/components/NotificationsModal/NotificationList';
 import { useClearNotifications } from '~/components/NotificationsModal/useClearNotifications';
-import { MODAL_PADDING_PX } from '~/contexts/modal/constants';
 import { NotificationsModalQuery } from '~/generated/NotificationsModalQuery.graphql';
 
 import breakpoints from '../core/breakpoints';

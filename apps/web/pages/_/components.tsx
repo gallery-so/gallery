@@ -92,7 +92,7 @@ export default function DesignPage() {
           {Object.keys(icons).map((iconKey) => {
             const Icon = icons[iconKey];
             return (
-              <IconContainer align="center" justify="center" gap={8}>
+              <IconContainer key={iconKey} align="center" justify="center" gap={8}>
                 <Icon />
                 <BaseM color={colors.shadow}>{iconKey}</BaseM>
               </IconContainer>
