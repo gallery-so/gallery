@@ -4,6 +4,7 @@ import { fetchQuery } from 'relay-runtime';
 import { ITEMS_PER_PAGE, MAX_PIECES_DISPLAYED_PER_FEED_EVENT } from '~/components/Feed/constants';
 import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/NotesModal/NotesModal';
 import useOpenTwitterFollowingModal from '~/components/Twitter/useOpenTwitterFollowingModal';
+import { USER_PER_PAGE } from '~/constants/twitter';
 import { HomeNavbar } from '~/contexts/globalLayout/GlobalNavbar/HomeNavbar/HomeNavbar';
 import { trendingPageQuery } from '~/generated/trendingPageQuery.graphql';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
@@ -36,7 +37,7 @@ export default function Trending() {
     globalLast: ITEMS_PER_PAGE,
     trendingLast: ITEMS_PER_PAGE,
     visibleTokensPerFeedEvent: MAX_PIECES_DISPLAYED_PER_FEED_EVENT,
-    twitterListLast: ITEMS_PER_PAGE,
+    twitterListLast: USER_PER_PAGE,
   });
 
   useOpenSettingsModal(query);
@@ -56,7 +57,7 @@ Trending.preloadQuery = ({ relayEnvironment }: PreloadQueryArgs) => {
     globalLast: ITEMS_PER_PAGE,
     trendingLast: ITEMS_PER_PAGE,
     visibleTokensPerFeedEvent: MAX_PIECES_DISPLAYED_PER_FEED_EVENT,
-    twitterListLast: ITEMS_PER_PAGE,
+    twitterListLast: USER_PER_PAGE,
   }).toPromise();
 };
 

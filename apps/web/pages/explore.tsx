@@ -1,7 +1,7 @@
 import { graphql, useLazyLoadQuery } from 'react-relay';
 
-import { ITEMS_PER_PAGE } from '~/components/Feed/constants';
 import useOpenTwitterFollowingModal from '~/components/Twitter/useOpenTwitterFollowingModal';
+import { USER_PER_PAGE } from '~/constants/twitter';
 import { HomeNavbar } from '~/contexts/globalLayout/GlobalNavbar/HomeNavbar/HomeNavbar';
 import { exploreQuery } from '~/generated/exploreQuery.graphql';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
@@ -19,7 +19,7 @@ export default function Explore() {
       }
     `,
     {
-      twitterListLast: ITEMS_PER_PAGE,
+      twitterListLast: USER_PER_PAGE,
       twitterListBefore: null,
     }
   );

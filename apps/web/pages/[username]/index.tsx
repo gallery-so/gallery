@@ -7,10 +7,10 @@ import styled from 'styled-components';
 
 import breakpoints, { pageGutter } from '~/components/core/breakpoints';
 import useVerifyEmailOnPage from '~/components/Email/useVerifyEmailOnPage';
-import { ITEMS_PER_PAGE } from '~/components/Feed/constants';
 import GalleryViewEmitter from '~/components/internal/GalleryViewEmitter';
 import useOpenTwitterFollowingModal from '~/components/Twitter/useOpenTwitterFollowingModal';
 import useOpenTwitterModal from '~/components/Twitter/useOpenTwitterModal';
+import { USER_PER_PAGE } from '~/constants/twitter';
 import { GalleryNavbar } from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavbar';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { UsernameQuery } from '~/generated/UsernameQuery.graphql';
@@ -80,7 +80,7 @@ type UserGalleryProps = MetaTagProps & {
 export default function UserGallery({ username }: UserGalleryProps) {
   const query = useLazyLoadQuery<UsernameQuery>(UsernameQueryNode, {
     username,
-    twitterListLast: ITEMS_PER_PAGE,
+    twitterListLast: USER_PER_PAGE,
   });
 
   useVerifyEmailOnPage(query);
@@ -115,7 +115,7 @@ UserGallery.preloadQuery = ({ relayEnvironment, query }: PreloadQueryArgs) => {
   if (query.username && typeof query.username === 'string') {
     fetchQuery<UsernameQuery>(relayEnvironment, UsernameQueryNode, {
       username: query.username,
-      twitterListLast: ITEMS_PER_PAGE,
+      twitterListLast: USER_PER_PAGE,
     }).toPromise();
   }
 };
