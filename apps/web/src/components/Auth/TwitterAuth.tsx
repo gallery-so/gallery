@@ -96,6 +96,7 @@ export default function TwitterAuth({ queryRef }: Props) {
       pathname: '/[username]',
       query: {
         username,
+        twitter: 'true',
       },
     });
 

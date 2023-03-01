@@ -5,20 +5,27 @@ import { exploreQuery } from '~/generated/exploreQuery.graphql';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
 import ExplorePage from '~/scenes/Home/ExploreHomePage';
 import useOpenSettingsModal from '~/scenes/Modals/useOpenSettingsModal';
+import useOpenTwitterFollowingModal from '~/components/Twitter/useOpenTwitterFollowingModal';
+import { ITEMS_PER_PAGE } from '~/components/Feed/constants';
 
 export default function Explore() {
   const query = useLazyLoadQuery<exploreQuery>(
     graphql`
-      query exploreQuery {
+      query exploreQuery($twitterListLast: Int!, $twitterListBefore: String) {
         ...ExploreHomePageFragment
         ...HomeNavbarFragment
         ...useOpenSettingsModalFragment
+        ...useOpenTwitterFollowingModalFragment
       }
     `,
-    {}
+    {
+      twitterListLast: ITEMS_PER_PAGE,
+      twitterListBefore: null,
+    }
   );
 
   useOpenSettingsModal(query);
+  useOpenTwitterFollowingModal(query);
 
   return (
     <GalleryRoute

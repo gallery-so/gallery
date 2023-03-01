@@ -9,6 +9,7 @@ import GalleryRoute from '~/scenes/_Router/GalleryRoute';
 import TrendingHomePage from '~/scenes/Home/TrendingHomePage';
 import useOpenSettingsModal from '~/scenes/Modals/useOpenSettingsModal';
 import { PreloadQueryArgs } from '~/types/PageComponentPreloadQuery';
+import useOpenTwitterFollowingModal from '~/components/Twitter/useOpenTwitterFollowingModal';
 
 const activityPageQueryNode = graphql`
   query trendingPageQuery(
@@ -19,10 +20,13 @@ const activityPageQueryNode = graphql`
     $globalLast: Int!
     $globalBefore: String
     $visibleTokensPerFeedEvent: Int!
+    $twitterListLast: Int!
+    $twitterListBefore: String
   ) {
     ...TrendingHomePageFragment
     ...HomeNavbarFragment
     ...useOpenSettingsModalFragment
+    ...useOpenTwitterFollowingModalFragment
   }
 `;
 
@@ -32,9 +36,11 @@ export default function Trending() {
     globalLast: ITEMS_PER_PAGE,
     trendingLast: ITEMS_PER_PAGE,
     visibleTokensPerFeedEvent: MAX_PIECES_DISPLAYED_PER_FEED_EVENT,
+    twitterListLast: ITEMS_PER_PAGE,
   });
 
   useOpenSettingsModal(query);
+  useOpenTwitterFollowingModal(query);
 
   return (
     <GalleryRoute
@@ -50,6 +56,7 @@ Trending.preloadQuery = ({ relayEnvironment }: PreloadQueryArgs) => {
     globalLast: ITEMS_PER_PAGE,
     trendingLast: ITEMS_PER_PAGE,
     visibleTokensPerFeedEvent: MAX_PIECES_DISPLAYED_PER_FEED_EVENT,
+    twitterListLast: ITEMS_PER_PAGE,
   }).toPromise();
 };
 
