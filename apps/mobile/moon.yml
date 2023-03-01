@@ -33,8 +33,8 @@ tasks:
   ios-device:
     command: noop
     deps:
-      - "~:ios-device-raw"
-      - "~:relay-watch"
+      - '~:ios-device-raw'
+      - '~:relay-watch'
     local: true
 
   ios:
@@ -46,7 +46,7 @@ tasks:
   ios-build:
     command: eas build -p ios --local
     env:
-      EAS_LOCAL_BUILD_SKIP_CLEANUP: "1"
+      EAS_LOCAL_BUILD_SKIP_CLEANUP: '1'
     local: true
 
   # Inherited from root task
