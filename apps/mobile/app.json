@@ -36,6 +36,7 @@
         "projectId": "0a46fb2e-423d-42e3-8609-e7772b11d3b2"
       }
     },
-    "owner": "tbgallery"
+    "owner": "tbgallery",
+    "plugins": ["sentry-expo"]
   }
 }
