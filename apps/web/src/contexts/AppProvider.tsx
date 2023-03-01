@@ -11,6 +11,7 @@ import AuthProvider from './auth/AuthContext';
 import Boundary from './boundary/Boundary';
 import ErrorReportingProvider from './errorReporting/ErrorReportingContext';
 import GlobalLayoutContextProvider from './globalLayout/GlobalLayoutContext';
+import SidebarDrawerProvider from './globalLayout/GlobalSidebar/SidebarDrawerContext';
 import ModalProvider from './modal/ModalContext';
 import { SwrProvider } from './swr/SwrContext';
 import ToastProvider from './toast/ToastContext';
@@ -34,12 +35,14 @@ export default function AppProvider({ children, relayEnvironment }: Props) {
                   <GalleryNavigationProvider>
                     <NftErrorProvider>
                       <ModalProvider>
-                        <SyncTokensLockProvider>
-                          <GlobalLayoutContextProvider>
-                            {isProd ? null : <Debugger />}
-                            {children}
-                          </GlobalLayoutContextProvider>
-                        </SyncTokensLockProvider>
+                        <SidebarDrawerProvider>
+                          <SyncTokensLockProvider>
+                            <GlobalLayoutContextProvider>
+                              {isProd ? null : <Debugger />}
+                              {children}
+                            </GlobalLayoutContextProvider>
+                          </SyncTokensLockProvider>
+                        </SidebarDrawerProvider>
                       </ModalProvider>
                     </NftErrorProvider>
                   </GalleryNavigationProvider>

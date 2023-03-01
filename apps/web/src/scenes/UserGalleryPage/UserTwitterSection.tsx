@@ -7,7 +7,7 @@ import { ClickablePill } from '~/components/Pill';
 import { NewTooltip } from '~/components/Tooltip/NewTooltip';
 import { useTooltipHover } from '~/components/Tooltip/useTooltipHover';
 import { TWITTER_AUTH_URL } from '~/constants/twitter';
-import { useModalActions } from '~/contexts/modal/ModalContext';
+import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 import { UserTwitterSectionFragment$key } from '~/generated/UserTwitterSectionFragment.graphql';
 import { UserTwitterSectionQueryFragment$key } from '~/generated/UserTwitterSectionQueryFragment.graphql';
 import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
@@ -68,18 +68,19 @@ export default function UserTwitterSection({ queryRef, userRef }: Props) {
       placement: 'top',
     });
 
-  const { showModal } = useModalActions();
+  const { showDrawer } = useDrawerActions();
 
   const twitterAccount = user.socialAccounts?.twitter;
 
   const userLoggedInTwitterAccount = query.viewer?.socialAccounts?.twitter;
 
   const handleEditButtonClick = useCallback(() => {
-    showModal({
+    showDrawer({
       content: <SettingsModal queryRef={query} />,
       headerText: 'Settings',
+      drawerName: 'settings',
     });
-  }, [query, showModal]);
+  }, [query, showDrawer]);
 
   const twitterUrl = `https://twitter.com/${twitterAccount?.username}`;
 

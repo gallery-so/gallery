@@ -85,14 +85,14 @@ function SidebarDrawerProvider({ children }: Props): ReactElement {
     <DrawerStateContext.Provider value={drawerState}>
       <DrawerActionsContext.Provider value={drawerActions}>
         {children}
-        {drawerState.activeDrawer && (
+        {/* {drawerState.activeDrawer && (
           <AnimatedSidebarDrawer
             content={drawerState.activeDrawer.content}
             headerText={drawerState.activeDrawer.headerText}
             hideDrawer={hideDrawer}
             showDoneFooter={ShowDoneFooter.includes(drawerState.activeDrawer.drawerName)}
           />
-        )}
+        )} */}
       </DrawerActionsContext.Provider>
     </DrawerStateContext.Provider>
   );
