@@ -1,12 +1,12 @@
 import { graphql, useLazyLoadQuery } from 'react-relay';
 
+import { ITEMS_PER_PAGE } from '~/components/Feed/constants';
+import useOpenTwitterFollowingModal from '~/components/Twitter/useOpenTwitterFollowingModal';
 import { HomeNavbar } from '~/contexts/globalLayout/GlobalNavbar/HomeNavbar/HomeNavbar';
 import { exploreQuery } from '~/generated/exploreQuery.graphql';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
 import ExplorePage from '~/scenes/Home/ExploreHomePage';
 import useOpenSettingsModal from '~/scenes/Modals/useOpenSettingsModal';
-import useOpenTwitterFollowingModal from '~/components/Twitter/useOpenTwitterFollowingModal';
-import { ITEMS_PER_PAGE } from '~/components/Feed/constants';
 
 export default function Explore() {
   const query = useLazyLoadQuery<exploreQuery>(

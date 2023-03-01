@@ -3,13 +3,13 @@ import { fetchQuery } from 'relay-runtime';
 
 import { ITEMS_PER_PAGE, MAX_PIECES_DISPLAYED_PER_FEED_EVENT } from '~/components/Feed/constants';
 import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/NotesModal/NotesModal';
+import useOpenTwitterFollowingModal from '~/components/Twitter/useOpenTwitterFollowingModal';
 import { HomeNavbar } from '~/contexts/globalLayout/GlobalNavbar/HomeNavbar/HomeNavbar';
 import { trendingPageQuery } from '~/generated/trendingPageQuery.graphql';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
 import TrendingHomePage from '~/scenes/Home/TrendingHomePage';
 import useOpenSettingsModal from '~/scenes/Modals/useOpenSettingsModal';
 import { PreloadQueryArgs } from '~/types/PageComponentPreloadQuery';
-import useOpenTwitterFollowingModal from '~/components/Twitter/useOpenTwitterFollowingModal';
 
 const activityPageQueryNode = graphql`
   query trendingPageQuery(
