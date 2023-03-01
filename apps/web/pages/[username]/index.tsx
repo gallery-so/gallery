@@ -7,7 +7,9 @@ import styled from 'styled-components';
 
 import breakpoints, { pageGutter } from '~/components/core/breakpoints';
 import useVerifyEmailOnPage from '~/components/Email/useVerifyEmailOnPage';
+import { ITEMS_PER_PAGE } from '~/components/Feed/constants';
 import GalleryViewEmitter from '~/components/internal/GalleryViewEmitter';
+import useOpenTwitterFollowingModal from '~/components/Twitter/useOpenTwitterFollowingModal';
 import useOpenTwitterModal from '~/components/Twitter/useOpenTwitterModal';
 import { GalleryNavbar } from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavbar';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
@@ -20,7 +22,7 @@ import { PreloadQueryArgs } from '~/types/PageComponentPreloadQuery';
 import { openGraphMetaTags } from '~/utils/openGraphMetaTags';
 
 const UsernameQueryNode = graphql`
-  query UsernameQuery($username: String!) {
+  query UsernameQuery($username: String!, $twitterListLast: Int!, $twitterListBefore: String) {
     userByUsername(username: $username) @required(action: THROW) {
       ... on GalleryUser {
         featuredGallery @required(action: THROW) {
@@ -35,6 +37,7 @@ const UsernameQueryNode = graphql`
     ...GalleryViewEmitterWithSuspenseFragment
     ...useVerifyEmailOnPageQueryFragment
     ...useOpenTwitterModalFragment
+    ...useOpenTwitterFollowingModalFragment
   }
 `;
 
@@ -75,11 +78,15 @@ type UserGalleryProps = MetaTagProps & {
 };
 
 export default function UserGallery({ username }: UserGalleryProps) {
-  const query = useLazyLoadQuery<UsernameQuery>(UsernameQueryNode, { username });
+  const query = useLazyLoadQuery<UsernameQuery>(UsernameQueryNode, {
+    username,
+    twitterListLast: ITEMS_PER_PAGE,
+  });
 
   useVerifyEmailOnPage(query);
   useOpenSettingsModal(query);
   useOpenTwitterModal(query);
+  useOpenTwitterFollowingModal(query);
 
   return (
     <GalleryRoute
@@ -108,6 +115,7 @@ UserGallery.preloadQuery = ({ relayEnvironment, query }: PreloadQueryArgs) => {
   if (query.username && typeof query.username === 'string') {
     fetchQuery<UsernameQuery>(relayEnvironment, UsernameQueryNode, {
       username: query.username,
+      twitterListLast: ITEMS_PER_PAGE,
     }).toPromise();
   }
 };
