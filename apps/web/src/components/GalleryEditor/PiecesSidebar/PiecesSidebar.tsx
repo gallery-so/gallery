@@ -10,8 +10,6 @@ import { TitleS } from '~/components/core/Text/Text';
 import { Chain } from '~/components/GalleryEditor/PiecesSidebar/chains';
 import { SidebarChainSelector } from '~/components/GalleryEditor/PiecesSidebar/SidebarChainSelector';
 import { SidebarTokens } from '~/components/GalleryEditor/PiecesSidebar/SidebarTokens';
-import { NewTooltip } from '~/components/Tooltip/NewTooltip';
-import { useTooltipHover } from '~/components/Tooltip/useTooltipHover';
 import { useCollectionEditorContext } from '~/contexts/collectionEditor/CollectionEditorContext';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { PiecesSidebarFragment$key } from '~/generated/PiecesSidebarFragment.graphql';
@@ -128,17 +126,6 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
     await syncTokens(selectedChain);
   }, [selectedChain, refreshDisabled, syncTokens]);
 
-  const { floating, reference, getFloatingProps, getReferenceProps, floatingStyle } =
-    useTooltipHover({ placement: 'top' });
-
-  const {
-    floating: refreshFloating,
-    reference: refreshReference,
-    getFloatingProps: getRefreshFloatingProps,
-    getReferenceProps: getRefreshReferenceProps,
-    floatingStyle: refreshFloatingStyle,
-  } = useTooltipHover({ disabled: refreshDisabled, placement: 'top' });
-
   return (
     <StyledSidebar navbarHeight={navbarHeight}>
       <StyledSidebarContainer gap={8}>
@@ -176,45 +163,23 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
             </div>
             {ownsWalletFromSelectedChain && (
               <StyledButtonGroupContainer>
-                <div ref={refreshReference} {...getRefreshReferenceProps()}>
-                  <StyledButton
-                    onClick={handleRefresh}
-                    variant="primary"
-                    disabled={refreshDisabled}
-                  >
-                    <HStack gap={8} align="center">
-                      {isLocked ? (
-                        <Spinner />
-                      ) : (
-                        <>
-                          REFRESH
-                          <RefreshIcon />
-                        </>
-                      )}
-                    </HStack>
-                  </StyledButton>
-                </div>
-                <div ref={reference} {...getReferenceProps()}>
-                  <StyledButton onClick={handleAddBlankBlockClick} variant="secondary">
-                    BLANK SPACE
-                  </StyledButton>
-                </div>
+                <StyledButton onClick={handleRefresh} variant="primary" disabled={refreshDisabled}>
+                  <HStack gap={8} align="center">
+                    {isLocked ? (
+                      <Spinner />
+                    ) : (
+                      <>
+                        <RefreshIcon />
+                        REFRESH
+                      </>
+                    )}
+                  </HStack>
+                </StyledButton>
+                <StyledButton onClick={handleAddBlankBlockClick} variant="secondary">
+                  BLANK SPACE
+                </StyledButton>
               </StyledButtonGroupContainer>
             )}
-
-            <NewTooltip
-              {...getFloatingProps()}
-              style={floatingStyle}
-              ref={floating}
-              text="Add negative space to your gallery"
-            />
-
-            <NewTooltip
-              {...getRefreshFloatingProps()}
-              style={refreshFloatingStyle}
-              ref={refreshFloating}
-              text={`Fetch latest ${selectedChain} pieces`}
-            />
           </>
         )}
         {ownsWalletFromSelectedChain ? (
@@ -270,12 +235,12 @@ const StyledSearchBarContainer = styled(VStack)`
 const StyledButtonGroupContainer = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 4px;
+  gap: 8px;
   padding: 0 12px;
 `;
 
 const StyledButton = styled(Button)`
   padding: 8px 12px;
-  height: 34px;
   width: 100%;
+  font-size: 11px;
 `;
