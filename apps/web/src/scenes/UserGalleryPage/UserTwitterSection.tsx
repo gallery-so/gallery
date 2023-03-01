@@ -6,6 +6,7 @@ import { HStack } from '~/components/core/Spacer/Stack';
 import { ClickablePill } from '~/components/Pill';
 import { NewTooltip } from '~/components/Tooltip/NewTooltip';
 import { useTooltipHover } from '~/components/Tooltip/useTooltipHover';
+import useUpdateTwitterDisplay from '~/components/Twitter/useUpdateTwitterDisplay';
 import { TWITTER_AUTH_URL } from '~/constants/twitter';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { UserTwitterSectionFragment$key } from '~/generated/UserTwitterSectionFragment.graphql';
@@ -44,6 +45,7 @@ export default function UserTwitterSection({ queryRef, userRef }: Props) {
       fragment UserTwitterSectionQueryFragment on Query {
         ...SettingsModalFragment
         ...useLoggedInUserIdFragment
+        ...useUpdateTwitterDisplayFragment
 
         viewer {
           ... on Viewer {
@@ -63,6 +65,8 @@ export default function UserTwitterSection({ queryRef, userRef }: Props) {
   const loggedInUserId = useLoggedInUserId(query);
   const isAuthenticatedUser = loggedInUserId === user.id;
 
+  const updateTwitterDisplay = useUpdateTwitterDisplay(query);
+
   const { floating, reference, getFloatingProps, getReferenceProps, floatingStyle } =
     useTooltipHover({
       placement: 'top',
@@ -80,6 +84,11 @@ export default function UserTwitterSection({ queryRef, userRef }: Props) {
       headerText: 'Settings',
     });
   }, [query, showModal]);
+
+  const handleUpdateTwitterDisplay = useCallback(() => {
+    const display = !userLoggedInTwitterAccount?.display;
+    updateTwitterDisplay(display);
+  }, [updateTwitterDisplay, userLoggedInTwitterAccount?.display]);
 
   const twitterUrl = `https://twitter.com/${twitterAccount?.username}`;
 
@@ -104,6 +113,7 @@ export default function UserTwitterSection({ queryRef, userRef }: Props) {
             }
           />
           <IconContainer
+            onClick={handleUpdateTwitterDisplay}
             size="md"
             variant="default"
             icon={userLoggedInTwitterAccount?.display ? <GlobeIcon /> : <LockIcon />}
