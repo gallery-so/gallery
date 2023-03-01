@@ -53,7 +53,6 @@ export default function TwitterSection({ queryRef, title, subTitle }: Props) {
     queryRef
   );
 
-  // map edge nodes to an array of GalleryUsers
   const nonNullUsers = useMemo(() => {
     const users = [];
 
