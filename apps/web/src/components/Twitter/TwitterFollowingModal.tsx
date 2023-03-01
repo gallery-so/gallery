@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { useCallback, useMemo } from 'react';
 import { graphql, useFragment, usePaginationFragment } from 'react-relay';
 import styled from 'styled-components';
@@ -89,9 +90,12 @@ export default function TwitterFollowingModal({ followingRef, queryRef }: Props)
         {twitterFollowing.map((user) => (
           <HStack key={user.username} align="center" justify="space-between">
             <VStack>
-              <BaseM>
-                <strong>{user.username}</strong>
-              </BaseM>
+              {/* @ts-expect-error This is the future next/link version */}
+              <StyledLink legacyBehavior={false} href={`/${user.username}`}>
+                <BaseM>
+                  <strong>{user.username}</strong>
+                </BaseM>
+              </StyledLink>
               <BioText>
                 <Markdown text={user.bio ?? ''} />
               </BioText>
@@ -125,6 +129,10 @@ const StyledBodyTextContainer = styled.div`
 
 const StyledFollowingContainer = styled(VStack)`
   padding: 16px 0;
+`;
+
+const StyledLink = styled(Link)`
+  text-decoration: none;
 `;
 
 const BioText = styled(BaseM)`
