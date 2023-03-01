@@ -116,7 +116,7 @@ export default function TwitterFollowingModal({ followingRef, queryRef }: Props)
 }
 
 const StyledOnboardingTwitterModal = styled.div`
-  width: 300px;
+  width: 100%;
 
   @media only screen and ${breakpoints.tablet} {
     width: 375px;
