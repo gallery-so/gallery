@@ -6,6 +6,7 @@ import { ExploreFragment$key } from '~/generated/ExploreFragment.graphql';
 import { VStack } from '../core/Spacer/Stack';
 import SuggestedSection from './SuggestedSection';
 import TrendingSection from './TrendingSection';
+import TwitterSection from './TwitterSection';
 
 type Props = {
   queryRef: ExploreFragment$key;
@@ -30,10 +31,18 @@ export default function Explore({ queryRef }: Props) {
 
         viewer {
           __typename
+          ... on Viewer {
+            socialAccounts @required(action: THROW) {
+              twitter {
+                __typename
+              }
+            }
+          }
         }
 
         ...TrendingSectionQueryFragment
         ...SuggestedSectionQueryFragment
+        ...TwitterSectionQueryFragment
       }
     `,
     queryRef
@@ -42,11 +51,20 @@ export default function Explore({ queryRef }: Props) {
   return (
     <StyledExplorePage gap={48}>
       {query.viewer?.__typename === 'Viewer' && (
-        <SuggestedSection
-          title="In your orbit"
-          subTitle="Curators you may enjoy based on your activity"
-          queryRef={query}
-        />
+        <>
+          {query.viewer.socialAccounts?.twitter?.__typename && (
+            <TwitterSection
+              title="Twitter Friends"
+              subTitle="Curators you know from Twitter"
+              queryRef={query}
+            />
+          )}
+          <SuggestedSection
+            title="In your orbit"
+            subTitle="Curators you may enjoy based on your activity"
+            queryRef={query}
+          />
+        </>
       )}
       {query.trendingUsers5Days?.__typename === 'TrendingUsersPayload' && (
         <TrendingSection
