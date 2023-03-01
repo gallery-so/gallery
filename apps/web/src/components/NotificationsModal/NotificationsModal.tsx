@@ -14,11 +14,7 @@ import { NotificationsModalQuery } from '~/generated/NotificationsModalQuery.gra
 import breakpoints from '../core/breakpoints';
 import { VStack } from '../core/Spacer/Stack';
 
-type NotificationsModalProps = {
-  fullscreen: boolean;
-};
-
-export function NotificationsModal({ fullscreen }: NotificationsModalProps) {
+export function NotificationsModal() {
   const query = useLazyLoadQuery<NotificationsModalQuery>(
     graphql`
       query NotificationsModalQuery($notificationsLast: Int!, $notificationsBefore: String) {
@@ -48,7 +44,7 @@ export function NotificationsModal({ fullscreen }: NotificationsModalProps) {
   }, [clearAllNotifications, userId]);
 
   return (
-    <ModalContent fullscreen={fullscreen}>
+    <ModalContent>
       <Suspense
         fallback={
           <VStack grow justify="center" align="center">
@@ -62,8 +58,8 @@ export function NotificationsModal({ fullscreen }: NotificationsModalProps) {
   );
 }
 
-const ModalContent = styled.div<{ fullscreen: boolean }>`
-  height: ${({ fullscreen }) => (fullscreen ? '100%' : '640px')};
+const ModalContent = styled.div`
+  height: 100%;
   width: 100%;
   display: flex;
   flex-direction: column;

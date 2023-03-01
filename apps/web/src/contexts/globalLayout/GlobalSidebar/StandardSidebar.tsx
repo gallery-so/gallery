@@ -120,7 +120,7 @@ export function StandardSidebar({ queryRef }: Props) {
 
   const handleNotificationsClick = useCallback(() => {
     showDrawer({
-      content: <NotificationsModal fullscreen={false} />,
+      content: <NotificationsModal />,
       headerText: 'Notifications',
       drawerName: 'notifications',
     });
