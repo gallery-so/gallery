@@ -29,13 +29,16 @@ tasks:
       - --key 9d633f22-7630-4a11-9cf4-ff9809332564
       - --configFile cypress.config.ts
 
+  next-dev-server:
+    command: next dev
+    local: true
+
   dev:
-    command:
-      - concurrently
-      - -n Next,Relay-Compiler,GraphQL-Codegen
-      - yarn next dev
-      - node_modules/.bin/moon run web:relay-watch
-      - node_modules/.bin/moon run web:graphql-codegen-watch
+    command: noop
+    deps:
+      - '~:next-dev-server'
+      - '~:relay-watch'
+      - '~:graphql-codegen-watch'
 
   start:
     command: next start
