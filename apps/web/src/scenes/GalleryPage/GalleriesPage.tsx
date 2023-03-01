@@ -24,7 +24,7 @@ import Gallery, { GalleryOrderDirection } from '~/components/MultiGallery/Galler
 import useUpdateGalleryOrder from '~/components/MultiGallery/useUpdateGalleryOrder';
 import { GalleriesPageQueryFragment$key } from '~/generated/GalleriesPageQueryFragment.graphql';
 import { GalleryPageSpacing } from '~/pages/[username]';
-import { removeNullValues } from '~/utils/removeNullValues';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 type Props = {
   queryRef: GalleriesPageQueryFragment$key;

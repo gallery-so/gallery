@@ -16,8 +16,8 @@ import { PiecesSidebarFragment$key } from '~/generated/PiecesSidebarFragment.gra
 import { PiecesSidebarViewerFragment$key } from '~/generated/PiecesSidebarViewerFragment.graphql';
 import useSyncTokens from '~/hooks/api/tokens/useSyncTokens';
 import { RefreshIcon } from '~/icons/RefreshIcon';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { doesUserOwnWalletFromChain } from '~/utils/doesUserOwnWalletFromChain';
-import { removeNullValues } from '~/utils/removeNullValues';
 
 import OnboardingDialog from '../GalleryOnboardingGuide/OnboardingDialog';
 import { useOnboardingDialogContext } from '../GalleryOnboardingGuide/OnboardingDialogContext';

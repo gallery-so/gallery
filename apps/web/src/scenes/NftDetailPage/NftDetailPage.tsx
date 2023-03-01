@@ -19,7 +19,7 @@ import { NftDetailPageQuery } from '~/generated/NftDetailPageQuery.graphql';
 import { NftDetailPageQueryFragment$key } from '~/generated/NftDetailPageQueryFragment.graphql';
 import useKeyDown from '~/hooks/useKeyDown';
 import NotFound from '~/scenes/NotFound/NotFound';
-import { removeNullValues } from '~/utils/removeNullValues';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import NavigationHandle from './NavigationHandle';
 import NftDetailView from './NftDetailView';

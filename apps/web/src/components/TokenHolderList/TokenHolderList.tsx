@@ -10,7 +10,7 @@ import { useMemberListPageState } from '~/contexts/memberListPage/MemberListPage
 import { TokenHolderListFragment$key } from '~/generated/TokenHolderListFragment.graphql';
 import { TokenHolderListQueryFragment$key } from '~/generated/TokenHolderListQueryFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
-import { removeNullValues } from '~/utils/removeNullValues';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import TokenHolderListItem from './TokenHolderListItem';
 

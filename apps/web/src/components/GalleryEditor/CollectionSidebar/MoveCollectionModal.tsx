@@ -12,7 +12,7 @@ import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext'
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { MoveCollectionModalFragment$key } from '~/generated/MoveCollectionModalFragment.graphql';
-import { removeNullValues } from '~/utils/removeNullValues';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import { CollectionState, GalleryEditorContextType } from '../GalleryEditorContext';
 import useMoveCollectionToGallery from './useMoveCollectionToGallery';
