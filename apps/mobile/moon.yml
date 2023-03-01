@@ -22,12 +22,32 @@ tasks:
   codegen-watch:
     command: relay-compiler --project mobile --repersist --watch ../../relay.config.js
 
+  ios-raw:
+    command: expo run:ios
+    local: true
+
+  ios-device-raw:
+    command: expo run:ios --device
+    local: true
+
+  ios-device:
+    command: noop
+    deps:
+      - "~:ios-device-raw"
+      - "~:relay-watch"
+    local: true
+
   ios:
-    command:
-      - concurrently
-      - -n Expo,Relay-Compiler
-      - yarn expo run:ios
-      - node_modules/.bin/moon run mobile:relay-watch
+    command: noop
+    deps:
+      - ~:ios-raw
+      - ~:relay-watch
+
+  ios-build:
+    command: eas build -p ios --local
+    env:
+      EAS_LOCAL_BUILD_SKIP_CLEANUP: "1"
+    local: true
 
   # Inherited from root task
   typecheck:
