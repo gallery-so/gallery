@@ -1,8 +1,10 @@
 import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
+import styled from 'styled-components';
 
 import IconContainer from '~/components/core/IconContainer';
 import { HStack } from '~/components/core/Spacer/Stack';
+import transitions from '~/components/core/transitions';
 import { ClickablePill } from '~/components/Pill';
 import { NewTooltip } from '~/components/Tooltip/NewTooltip';
 import { useTooltipHover } from '~/components/Tooltip/useTooltipHover';
@@ -95,7 +97,7 @@ export default function UserTwitterSection({ queryRef, userRef }: Props) {
   // if owner of the gallery is logged in
   if (isAuthenticatedUser && userLoggedInTwitterAccount) {
     return (
-      <HStack align="flex-start" gap={8}>
+      <StyledTwitterContainer align="flex-start" gap={8}>
         <ClickablePill href={twitterUrl}>
           <HStack gap={5} align="center">
             <TwitterIcon />
@@ -103,7 +105,7 @@ export default function UserTwitterSection({ queryRef, userRef }: Props) {
           </HStack>
         </ClickablePill>
 
-        <HStack>
+        <StyledActionContainer>
           <NewTooltip
             {...getFloatingProps()}
             style={floatingStyle}
@@ -128,8 +130,8 @@ export default function UserTwitterSection({ queryRef, userRef }: Props) {
               icon={<EditPencilIcon />}
             />
           )}
-        </HStack>
-      </HStack>
+        </StyledActionContainer>
+      </StyledTwitterContainer>
     );
   }
 
@@ -162,3 +164,17 @@ export default function UserTwitterSection({ queryRef, userRef }: Props) {
     </HStack>
   );
 }
+
+const StyledActionContainer = styled(HStack)`
+  opacity: 0;
+`;
+
+const StyledTwitterContainer = styled(HStack)`
+  max-width: max-content;
+
+  &:hover ${StyledActionContainer} {
+    opacity: 1;
+
+    transition: opacity ${transitions.cubic};
+  }
+`;
