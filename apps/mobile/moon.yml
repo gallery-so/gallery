@@ -11,7 +11,7 @@ fileGroups:
 
 tasks:
   relay-watch:
-    command: relay-compiler --project mobile --repersist --watch ../../relay.config.js
+    command: relay-compiler --project mobile --watch relay.config.js
     local: true
 
   relay-codegen:

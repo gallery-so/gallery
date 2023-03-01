@@ -31,6 +31,7 @@ type FlattenedDeferResponse = {
   data: ReadonlyArray<GraphQLSingularResponse>;
   isLast: boolean;
 };
+
 function flattenDeferResponse(responses: DeferResponse[]): FlattenedDeferResponse {
   const formatted: ReadonlyArray<GraphQLSingularResponse> = responses.flatMap((part) => {
     if ('incremental' in part) {
@@ -41,6 +42,11 @@ function flattenDeferResponse(responses: DeferResponse[]): FlattenedDeferRespons
   });
 
   const anyOfTheResponsesAreTheLast = responses.some((response) => {
+    // This query is not deferred and should finish immediately.
+    if (!response.hasOwnProperty('hasNext')) {
+      return true;
+    }
+
     if ('hasNext' in response) {
       return !response.hasNext;
     }
@@ -73,6 +79,7 @@ const fetchWithJustHash: InternalFetchFunction = async (
     credentials: 'include',
     body: JSON.stringify({
       operationName: request.name,
+      query: request.text,
       extensions: {
         persistedQuery: {
           version: 1,
