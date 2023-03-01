@@ -36,9 +36,9 @@ tasks:
   dev:
     command: noop
     deps:
-      - "~:next-dev-server"
-      - "~:relay-watch"
-      - "~:graphql-codegen-watch"
+      - '~:next-dev-server'
+      - '~:relay-watch'
+      - '~:graphql-codegen-watch'
 
   start:
     command: next start
