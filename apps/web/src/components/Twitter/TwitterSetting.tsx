@@ -7,7 +7,6 @@ import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext'
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { TwitterSettingDisconnectMutation } from '~/generated/TwitterSettingDisconnectMutation.graphql';
 import { TwitterSettingFragment$key } from '~/generated/TwitterSettingFragment.graphql';
-import { TwitterSettingMutation } from '~/generated/TwitterSettingMutation.graphql';
 import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 import TwitterIcon from '~/icons/Twittericon';
 
@@ -17,6 +16,7 @@ import InteractiveLink from '../core/InteractiveLink/InteractiveLink';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM } from '../core/Text/Text';
 import Toggle from '../core/Toggle/Toggle';
+import useUpdateTwitterDisplay from './useUpdateTwitterDisplay';
 
 type Props = {
   queryRef: TwitterSettingFragment$key;
@@ -28,7 +28,6 @@ export default function TwitterSetting({ queryRef }: Props) {
       fragment TwitterSettingFragment on Query {
         viewer {
           ... on Viewer {
-            id
             user {
               username
             }
@@ -40,10 +39,14 @@ export default function TwitterSetting({ queryRef }: Props) {
             }
           }
         }
+
+        ...useUpdateTwitterDisplayFragment
       }
     `,
     queryRef
   );
+
+  const updateTwitterDisplay = useUpdateTwitterDisplay(query);
 
   const [disconnectTwitter] = usePromisifiedMutation<TwitterSettingDisconnectMutation>(graphql`
     mutation TwitterSettingDisconnectMutation($input: SocialAccountType!) {
@@ -53,28 +56,6 @@ export default function TwitterSetting({ queryRef }: Props) {
         ... on DisconnectSocialAccountPayload {
           viewer {
             ... on Viewer {
-              socialAccounts {
-                twitter {
-                  username
-                  display
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  `);
-
-  const [updateTwitterDisplay] = usePromisifiedMutation<TwitterSettingMutation>(graphql`
-    mutation TwitterSettingMutation($input: UpdateSocialAccountDisplayedInput!) {
-      updateSocialAccountDisplayed(input: $input) {
-        __typename
-        ... on UpdateSocialAccountDisplayedPayload {
-          viewer {
-            ... on Viewer {
-              __typename
-              id
               socialAccounts {
                 twitter {
                   username
@@ -111,34 +92,9 @@ export default function TwitterSetting({ queryRef }: Props) {
   const handleUpdateTwitterDisplay = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const displayed = event.target.checked;
-
-      const optimisticResponse: TwitterSettingMutation['response'] = {
-        updateSocialAccountDisplayed: {
-          __typename: 'UpdateSocialAccountDisplayedPayload',
-          viewer: {
-            __typename: 'Viewer',
-            id: query.viewer?.id ?? '',
-            socialAccounts: {
-              twitter: {
-                username: query.viewer?.socialAccounts?.twitter?.username ?? '',
-                display: displayed,
-              },
-            },
-          },
-        },
-      };
-
-      updateTwitterDisplay({
-        variables: {
-          input: {
-            displayed,
-            type: 'Twitter',
-          },
-        },
-        optimisticResponse,
-      });
+      updateTwitterDisplay(displayed);
     },
-    [query.viewer?.id, query.viewer?.socialAccounts?.twitter?.username, updateTwitterDisplay]
+    [updateTwitterDisplay]
   );
 
   const twitterAccount = query.viewer?.socialAccounts?.twitter;

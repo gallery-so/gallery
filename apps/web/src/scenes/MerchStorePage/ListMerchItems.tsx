@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import { ListMerchItemsFragment$key } from '~/generated/ListMerchItemsFragment.graphql';
-import { removeNullValues } from '~/utils/removeNullValues';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import ItemPreview from './ItemPreview';
 import { merchItems } from './MerchStorePage';

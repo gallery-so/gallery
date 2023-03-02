@@ -1,51 +1,56 @@
 @font-face {
   font-family: 'GT Alpina';
-  src: url('/fonts/GT-Alpina-Standard-Light.otf') format('opentype'),
-    url('/fonts/GT-Alpina-Standard-Light.ttf') format('truetype');
+  src: url('../../../packages/shared/src/fonts/GT-Alpina-Standard-Light.otf') format('opentype'),
+    url('../../../packages/shared/src/fonts/GT-Alpina-Standard-Light.ttf') format('truetype');
 }
 
 @font-face {
   font-family: 'GT Alpina';
-  src: url('/fonts/GT-Alpina-Standard-Light-Italic.otf') format('opentype'),
-    url('/fonts/GT-Alpina-Standard-Light-Italic.ttf') format('truetype');
+  src: url('../../../packages/shared/src/fonts/GT-Alpina-Standard-Light-Italic.otf')
+      format('opentype'),
+    url('../../../packages/shared/src/fonts/GT-Alpina-Standard-Light-Italic.ttf') format('truetype');
   font-style: italic;
 }
 
 @font-face {
   font-family: 'GT Alpina';
-  src: url('/fonts/GT-Alpina-Standard-Light.otf') format('opentype'),
-    url('/fonts/GT-Alpina-Standard-Light.ttf') format('truetype');
+  src: url('../../../packages/shared/src/fonts/GT-Alpina-Standard-Light.otf') format('opentype'),
+    url('../../../packages/shared/src/fonts/GT-Alpina-Standard-Light.ttf') format('truetype');
   font-weight: 500;
 }
 
 @font-face {
   font-display: block;
   font-family: 'GT Alpina Condensed';
-  src: url('/fonts/GT-Alpina-Condensed-Light.otf') format('opentype'),
-    url('/fonts/GT-Alpina-Condensed-Light.ttf') format('truetype');
+  src: url('../../../packages/shared/src/fonts/GT-Alpina-Condensed-Light.otf') format('opentype'),
+    url('../../../packages/shared/src/fonts/GT-Alpina-Condensed-Light.ttf') format('truetype');
 }
 
 @font-face {
   font-display: block;
   font-family: 'GT Alpina Condensed';
-  src: url('/fonts/GT-Alpina-Condensed-Light-Italic.otf') format('opentype'),
-    url('/fonts/GT-Alpina-Condensed-Light-Italic.ttf') format('truetype');
+  src: url('../../../packages/shared/src/fonts/GT-Alpina-Condensed-Light-Italic.otf')
+      format('opentype'),
+    url('../../../packages/shared/src/fonts/GT-Alpina-Condensed-Light-Italic.ttf')
+      format('truetype');
   font-style: italic;
 }
 
 @font-face {
   font-display: block;
   font-family: 'GT Alpina Condensed';
-  src: url('/fonts/GT-Alpina-Condensed-Medium.otf') format('opentype'),
-    url('/fonts/GT-Alpina-Condensed-Medium.ttf') format('truetype');
+  src: url('../../../packages/shared/src/fonts/GT-Alpina-Condensed-Medium.otf') format('opentype'),
+    url('../../../packages/shared/src/fonts/GT-Alpina-Condensed-Medium.ttf') format('truetype');
   font-weight: 500;
 }
 
 @font-face {
   font-display: block;
   font-family: 'GT Alpina Condensed';
-  src: url('/fonts/GT-Alpina-Condensed-Medium-Italic.otf') format('opentype'),
-    url('/fonts/GT-Alpina-Condensed-Medium-Italic.ttf') format('truetype');
+  src: url('../../../packages/shared/src/fonts/GT-Alpina-Condensed-Medium-Italic.otf')
+      format('opentype'),
+    url('../../../packages/shared/src/fonts/GT-Alpina-Condensed-Medium-Italic.ttf')
+      format('truetype');
   font-weight: 500;
   font-style: italic;
 }
@@ -53,33 +58,34 @@
 @font-face {
   font-display: block;
   font-family: 'GT Alpina Condensed';
-  src: url('/fonts/GT-Alpina-Condensed-Bold-Italic.otf') format('opentype'),
-    url('/fonts/GT-Alpina-Condensed-Bold-Italic.ttf') format('truetype');
+  src: url('../../../packages/shared/src/fonts/GT-Alpina-Condensed-Bold-Italic.otf')
+      format('opentype'),
+    url('../../../packages/shared/src/fonts/GT-Alpina-Condensed-Bold-Italic.ttf') format('truetype');
   font-weight: 800;
   font-style: italic;
 }
 
 @font-face {
   font-family: 'ABC Diatype';
-  src: url('/fonts/ABCDiatype-Regular.ttf') format('truetype');
+  src: url('../../../packages/shared/src/fonts/ABCDiatype-Regular.ttf') format('truetype');
   font-weight: 400;
 }
 
 @font-face {
   font-family: 'ABC Diatype';
-  src: url('/fonts/ABCDiatype-Medium.ttf') format('truetype');
+  src: url('../../../packages/shared/src/fonts/ABCDiatype-Medium.ttf') format('truetype');
   font-weight: 500;
 }
 
 @font-face {
   font-family: 'ABC Diatype';
-  src: url('/fonts/ABCDiatype-Bold.ttf') format('truetype');
+  src: url('../../../packages/shared/src/fonts/ABCDiatype-Bold.ttf') format('truetype');
   font-weight: 700;
 }
 
 @font-face {
   font-family: 'ABC Diatype Mono';
-  src: url('/fonts/ABCDiatypeMono-Medium.ttf') format('truetype');
+  src: url('../../../packages/shared/src/fonts/ABCDiatypeMono-Medium.ttf') format('truetype');
   font-weight: 500;
 }
 

@@ -113,10 +113,15 @@ export default function UserGallery({ username }: UserGalleryProps) {
 
 UserGallery.preloadQuery = ({ relayEnvironment, query }: PreloadQueryArgs) => {
   if (query.username && typeof query.username === 'string') {
-    fetchQuery<UsernameQuery>(relayEnvironment, UsernameQueryNode, {
-      username: query.username,
-      twitterListLast: USER_PER_PAGE,
-    }).toPromise();
+    fetchQuery<UsernameQuery>(
+      relayEnvironment,
+      UsernameQueryNode,
+      {
+        username: query.username,
+        twitterListLast: USER_PER_PAGE,
+      },
+      { fetchPolicy: 'store-or-network' }
+    ).toPromise();
   }
 };
 

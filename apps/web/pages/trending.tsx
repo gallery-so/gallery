@@ -52,13 +52,17 @@ export default function Trending() {
 }
 
 Trending.preloadQuery = ({ relayEnvironment }: PreloadQueryArgs) => {
-  fetchQuery<trendingPageQuery>(relayEnvironment, activityPageQueryNode, {
-    interactionsFirst: NOTES_PER_PAGE,
-    globalLast: ITEMS_PER_PAGE,
-    trendingLast: ITEMS_PER_PAGE,
-    visibleTokensPerFeedEvent: MAX_PIECES_DISPLAYED_PER_FEED_EVENT,
-    twitterListLast: USER_PER_PAGE,
-  }).toPromise();
+  fetchQuery<trendingPageQuery>(
+    relayEnvironment,
+    activityPageQueryNode,
+    {
+      interactionsFirst: NOTES_PER_PAGE,
+      globalLast: ITEMS_PER_PAGE,
+      trendingLast: ITEMS_PER_PAGE,
+      visibleTokensPerFeedEvent: MAX_PIECES_DISPLAYED_PER_FEED_EVENT,
+    },
+    { fetchPolicy: 'store-or-network' }
+  ).toPromise();
 };
 
 /**

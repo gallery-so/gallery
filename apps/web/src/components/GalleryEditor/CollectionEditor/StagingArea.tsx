@@ -34,7 +34,7 @@ import { useCollectionEditorContext } from '~/contexts/collectionEditor/Collecti
 import { getImageSizeForColumns } from '~/contexts/collectionEditor/useDndDimensions';
 import { StagingAreaFragment$key } from '~/generated/StagingAreaFragment.graphql';
 import useKeyDown from '~/hooks/useKeyDown';
-import { removeNullValues } from '~/utils/removeNullValues';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 import unescape from '~/utils/unescape';
 
 import OnboardingDialog from '../GalleryOnboardingGuide/OnboardingDialog';

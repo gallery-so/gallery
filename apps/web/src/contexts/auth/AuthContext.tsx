@@ -300,7 +300,8 @@ AuthProvider.preloadQuery = async ({ relayEnvironment }: PreloadQueryArgs) => {
   fetchQuery<AuthContextFetchUserQuery>(
     relayEnvironment,
     AuthContextFetchUserQueryNode,
-    {}
+    {},
+    { fetchPolicy: 'store-or-network' }
   ).toPromise();
 };
 
