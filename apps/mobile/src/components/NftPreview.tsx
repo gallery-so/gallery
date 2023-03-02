@@ -4,6 +4,7 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { NftPreviewFragment$key } from '~/generated/NftPreviewFragment.graphql';
+import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
 import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
 
 import { SvgWebView } from './SvgWebView';
@@ -28,7 +29,7 @@ export function NftPreview({ tokenRef, resizeMode }: NftPreviewProps) {
   const tokenUrl = previews?.urls.medium;
 
   if (!tokenUrl) {
-    throw new Error('Could not render NFT');
+    throw new CouldNotRenderNftError('NftPreview', 'tokenUrl missing');
   }
 
   if (tokenUrl.includes('svg')) {
