@@ -55,7 +55,7 @@ export function NotificationTwitterAlert({ queryRef }: Props) {
 
   const router = useRouter();
   const route = {
-    query: router.query,
+    query: { ...router.query, twitter: 'true' },
     pathname: router.pathname,
   };
 
