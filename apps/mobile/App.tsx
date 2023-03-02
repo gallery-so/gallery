@@ -3,10 +3,11 @@ import 'expo-dev-client';
 import { NavigationContainer } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { RelayEnvironmentProvider } from 'react-relay';
 
+import { MobileErrorReportingProvider } from '~/contexts/MobileErrorReportingProvider';
 import { MainTabNavigator } from '~/navigation/MainTabNavigator/MainTabNavigator';
 
 import { createRelayEnvironment } from './src/contexts/relay/RelayProvider';
@@ -47,11 +48,15 @@ export default function App() {
 
   return (
     <RelayEnvironmentProvider environment={relayEnvironment}>
-      <SafeAreaProvider>
-        <NavigationContainer>
-          <MainTabNavigator />
-        </NavigationContainer>
-      </SafeAreaProvider>
+      <Suspense fallback={null}>
+        <MobileErrorReportingProvider>
+          <SafeAreaProvider>
+            <NavigationContainer>
+              <MainTabNavigator />
+            </NavigationContainer>
+          </SafeAreaProvider>
+        </MobileErrorReportingProvider>
+      </Suspense>
     </RelayEnvironmentProvider>
   );
 }
