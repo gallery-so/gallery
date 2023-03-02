@@ -250,7 +250,7 @@ const StyledCardUsername = styled(TitleM)`
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-  max-width: 200px;
+  max-width: 150px;
 `;
 
 const StyledCardDescription = styled.div`
