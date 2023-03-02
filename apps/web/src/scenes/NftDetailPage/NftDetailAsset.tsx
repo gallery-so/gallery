@@ -203,12 +203,13 @@ type AssetContainerProps = {
 };
 
 const StyledAssetContainer = styled.div<AssetContainerProps>`
-  display: contents;
+  display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   position: relative;
   z-index: 2; /* Above footer in event they overlap */
+  width: 100%;
 
   ${({ shouldEnforceSquareAspectRatio }) =>
     shouldEnforceSquareAspectRatio ? 'aspect-ratio: 1' : ''};
