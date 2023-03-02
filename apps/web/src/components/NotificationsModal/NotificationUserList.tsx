@@ -1,4 +1,4 @@
-import { Suspense } from 'react';
+import { Suspense, useCallback } from 'react';
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
@@ -8,10 +8,11 @@ import { USERS_PER_PAGE } from '~/components/NotificationsModal/constants';
 import { NotificationUserList } from '~/components/NotificationsModal/NotificationUserList/NotificationUserList';
 import { NotificationUserListTitle } from '~/components/NotificationsModal/NotificationUserListTitle';
 import { BackButton } from '~/contexts/globalLayout/GlobalNavbar/BackButton';
-import { useModalActions } from '~/contexts/modal/ModalContext';
+import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 import { NotificationUserListModalQuery } from '~/generated/NotificationUserListModalQuery.graphql';
 
 import Loader from '../core/Loader/Loader';
+import { NotificationsModal } from './NotificationsModal';
 
 type NotificationUserListModalProps = {
   notificationId: string;
@@ -37,7 +38,15 @@ export function NotificationUserListModal({
     { fetchPolicy: 'store-and-network' }
   );
 
-  const { hideModal } = useModalActions();
+  const { showDrawer } = useDrawerActions();
+
+  const handleBackClick = useCallback(() => {
+    showDrawer({
+      content: <NotificationsModal />,
+      headerText: 'Notifications',
+      drawerName: 'notifications',
+    });
+  }, [showDrawer]);
 
   return (
     <ModalContent fullscreen={fullscreen}>
@@ -50,7 +59,7 @@ export function NotificationUserListModal({
       >
         <StyledHeader>
           <HStack align="center" gap={8}>
-            <BackButton onClick={hideModal} />
+            <BackButton onClick={handleBackClick} />
             <ModalTitle>
               <NotificationUserListTitle queryRef={query} />
             </ModalTitle>

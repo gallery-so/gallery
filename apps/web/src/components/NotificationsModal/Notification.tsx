@@ -13,8 +13,8 @@ import { SomeoneCommentedOnYourFeedEvent } from '~/components/NotificationsModal
 import { SomeoneFollowedYou } from '~/components/NotificationsModal/notifications/SomeoneFollowedYou';
 import { SomeoneFollowedYouBack } from '~/components/NotificationsModal/notifications/SomeoneFollowedYouBack';
 import { SomeoneViewedYourGallery } from '~/components/NotificationsModal/notifications/SomeoneViewedYourGallery';
-import { NotificationUserListModal } from '~/components/NotificationsModal/NotificationUserListModal';
-import { useModalActions } from '~/contexts/modal/ModalContext';
+import { NotificationUserListModal } from '~/components/NotificationsModal/NotificationUserList';
+import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 import { NotificationFragment$key } from '~/generated/NotificationFragment.graphql';
 import { NotificationInnerFragment$key } from '~/generated/NotificationInnerFragment.graphql';
 import { NotificationInnerQueryFragment$key } from '~/generated/NotificationInnerQueryFragment.graphql';
@@ -87,7 +87,6 @@ export function Notification({ notificationRef, queryRef }: NotificationProps) {
     queryRef
   );
 
-  const { showModal } = useModalActions();
   const { push } = useRouter();
   const isMobile = useIsMobileWindowWidth();
 
@@ -108,16 +107,16 @@ export function Notification({ notificationRef, queryRef }: NotificationProps) {
       }
     | undefined;
 
+  const { showDrawer } = useDrawerActions();
+
   const handleNotificationClick = useMemo((): NotificationClick => {
     function showUserListModal() {
-      showModal({
+      showDrawer({
         content: (
           <NotificationUserListModal notificationId={notification.id} fullscreen={isMobile} />
         ),
-        isFullPage: isMobile,
-        hideClose: true,
-        isPaddingDisabled: true,
-        headerVariant: 'standard',
+        drawerName: 'notificationsUserList',
+        headerText: 'Notifications',
       });
     }
 
@@ -155,7 +154,7 @@ export function Notification({ notificationRef, queryRef }: NotificationProps) {
     notification.userViewers?.pageInfo?.total,
     push,
     query.viewer?.user?.username,
-    showModal,
+    showDrawer,
   ]);
 
   const userId = query.viewer?.user?.dbid ?? '';

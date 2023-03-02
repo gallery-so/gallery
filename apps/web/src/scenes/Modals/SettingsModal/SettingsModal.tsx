@@ -180,7 +180,7 @@ function SettingsModal({
   }, [handleLogout]);
 
   return (
-    <StyledManageWalletsModal gap={12}>
+    <StyledSettings gap={12}>
       <SettingsContents gap={24}>
         <VStack gap={16}>
           <VStack>
@@ -258,14 +258,15 @@ function SettingsModal({
           </StyledButton>
         </HStack>
       </SettingsContents>
-    </StyledManageWalletsModal>
+    </StyledSettings>
   );
 }
 
-const StyledManageWalletsModal = styled(VStack)`
+const StyledSettings = styled(VStack)`
   @media only screen and ${breakpoints.tablet} {
     width: 100%;
   }
+  margin-bottom: 64px;
 `;
 
 const SettingsContents = styled(VStack)`

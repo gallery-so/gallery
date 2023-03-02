@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { ReactElement, useCallback, useMemo, useRef } from 'react';
+import { MouseEvent, ReactElement, useCallback, useMemo, useRef } from 'react';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
@@ -14,6 +14,7 @@ import {
   rawTransitions,
 } from '~/components/core/transitions';
 import useDetectOutsideClick from '~/hooks/useDetectOutsideClick';
+import useKeyDown from '~/hooks/useKeyDown';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import CloseIcon from '~/icons/CloseIcon';
 
@@ -35,6 +36,14 @@ export default function AnimatedSidebarDrawer({
   const { hideDrawer } = useDrawerActions();
 
   useDetectOutsideClick(drawerRef, hideDrawer);
+
+  useKeyDown('Escape', hideDrawer);
+
+  // Prevent useDetectOutsideClick from triggering if the user clicks inside the drawer.
+  // This is needed for cases when the user clicks on elements that dissapear upon clicking, like the "See More" button in Notifications.
+  const handleDrawerClick = useCallback((e: MouseEvent) => {
+    e.stopPropagation();
+  }, []);
 
   const handleCloseDrawerClick = useCallback(() => {
     hideDrawer();
@@ -73,7 +82,7 @@ export default function AnimatedSidebarDrawer({
       animate={motionSettings.animate}
       exit={motionSettings.exit}
     >
-      <StyledDrawer ref={drawerRef} gap={16}>
+      <StyledDrawer ref={drawerRef} gap={16} onClick={handleDrawerClick}>
         <StyledHeader>
           <CloseDrawerHeader align="center" justify="flex-end">
             <IconContainer
@@ -85,9 +94,7 @@ export default function AnimatedSidebarDrawer({
           </CloseDrawerHeader>
           {headerText && <StyledHeadingText>{headerText}</StyledHeadingText>}
         </StyledHeader>
-        <StyledContentWrapper showDoneFooter={showDoneFooter}>
-          <VStack gap={16}>{content}</VStack>
-        </StyledContentWrapper>
+        <StyledContentWrapper showDoneFooter={showDoneFooter}>{content}</StyledContentWrapper>
         {showDoneFooter && (
           <StyledFooter align="center" justify="flex-end">
             <DoneButton onClick={handleDoneClick}>Done</DoneButton>
@@ -133,6 +140,7 @@ const StyledContentWrapper = styled.div<{ showDoneFooter: boolean }>`
   overflow-y: scroll;
   overflow-x: hidden;
   overscroll-behavior: contain;
+  height: 100%;
 `;
 
 const DoneButton = styled(Button)`
