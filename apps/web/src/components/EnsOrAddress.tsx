@@ -4,9 +4,9 @@ import { graphql } from 'relay-runtime';
 import useSWR from 'swr';
 
 import { LinkableAddress, RawLinkableAddress } from '~/components/LinkableAddress';
-import { ReportingErrorBoundary } from '~/contexts/boundary/ReportingErrorBoundary';
 import { EnsOrAddressFragment$key } from '~/generated/EnsOrAddressFragment.graphql';
 import { EnsOrAddressWithSuspenseFragment$key } from '~/generated/EnsOrAddressWithSuspenseFragment.graphql';
+import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import { getExternalAddressLink } from '~/utils/wallet';
 
 type EnsNameProps = {

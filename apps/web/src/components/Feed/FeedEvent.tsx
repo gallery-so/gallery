@@ -8,11 +8,11 @@ import { FEED_EVENT_ROW_WIDTH_DESKTOP } from '~/components/Feed/dimensions';
 import { FeedEventData } from '~/components/Feed/FeedEventData';
 import { FeedEventSocializeSection } from '~/components/Feed/Socialize/FeedEventSocializeSection';
 import { FeedMode } from '~/components/Feed/types';
-import { ReportingErrorBoundary } from '~/contexts/boundary/ReportingErrorBoundary';
 import { FeedEventFragment$key } from '~/generated/FeedEventFragment.graphql';
 import { FeedEventQueryFragment$key } from '~/generated/FeedEventQueryFragment.graphql';
 import { FeedEventWithErrorBoundaryFragment$key } from '~/generated/FeedEventWithErrorBoundaryFragment.graphql';
 import { FeedEventWithErrorBoundaryQueryFragment$key } from '~/generated/FeedEventWithErrorBoundaryQueryFragment.graphql';
+import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import { TriedToRenderUnsupportedFeedEvent } from '~/shared/errors/TriedToRenderUnsupportedFeedEvent';
 
 import colors from '../core/colors';
