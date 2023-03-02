@@ -19,7 +19,7 @@ polyfillReadableStream();
 enableFreeze(true);
 
 Sentry.init({
-  dsn: 'https://bd40a4affc1740e8b7516502389262fe@o1135798.ingest.sentry.io/6187637',
+  dsn: 'https://c26c57d7db254a8f9805fa316c6d2055@o1135798.ingest.sentry.io/4504770503114752',
   enableInExpoDevelopment: true,
 
   // If `true`, Sentry will try to print out useful debugging information if something goes wrong with sending the event. Set it to `false` in production
