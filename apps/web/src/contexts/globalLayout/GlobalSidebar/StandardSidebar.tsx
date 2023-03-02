@@ -57,7 +57,6 @@ export function StandardSidebar({ queryRef }: Props) {
   );
 
   const isLoggedIn = query.viewer?.__typename === 'Viewer';
-  const username = query.viewer?.user?.username;
 
   const track = useTrack();
 
@@ -108,6 +107,8 @@ export function StandardSidebar({ queryRef }: Props) {
     type: 'MerchStoreUpsell',
     queryRef: query,
   });
+
+  const username = (isLoggedIn && query.viewer.user?.username) || '';
 
   const handleSettingsClick = useCallback(() => {
     track('Sidebar Settings Click');

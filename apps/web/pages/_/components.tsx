@@ -89,6 +89,7 @@ export default function DesignPage() {
         <TitleM>Icons</TitleM>
         <Examples wrap="wrap">
           {Object.keys(icons).map((iconKey) => {
+            // @ts-expect-error this is for internal use, as long as icons load on the page we're good
             const Icon = icons[iconKey];
             return (
               <IconContainer key={iconKey} align="center" justify="center" gap={8}>
