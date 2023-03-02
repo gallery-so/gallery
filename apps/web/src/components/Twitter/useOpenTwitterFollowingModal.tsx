@@ -17,6 +17,16 @@ export default function useOpenTwitterFollowingModal(
           __typename
         }
 
+        socialConnections(
+          before: $twitterListBefore
+          last: $twitterListLast
+          socialAccountType: Twitter
+        ) @connection(key: "TwitterFollowingModal__socialConnections") {
+          edges {
+            __typename
+          }
+        }
+
         ...TwitterFollowingModalFragment
         ...TwitterFollowingModalQueryFragment
       }
@@ -34,8 +44,14 @@ export default function useOpenTwitterFollowingModal(
 
   const isTwitterModalOpen = useRef(false);
 
+  const totalTwitterConnections = query.socialConnections?.edges?.length ?? 0;
+
   useEffect(() => {
     if (!isLoggedIn) {
+      return;
+    }
+
+    if (totalTwitterConnections === 0) {
       return;
     }
 
@@ -45,5 +61,5 @@ export default function useOpenTwitterFollowingModal(
         content: <TwitterFollowingModal queryRef={query} followingRef={query} />,
       });
     }
-  }, [isLoggedIn, twitter, query, showModal]);
+  }, [isLoggedIn, query, showModal, totalTwitterConnections, twitter]);
 }
