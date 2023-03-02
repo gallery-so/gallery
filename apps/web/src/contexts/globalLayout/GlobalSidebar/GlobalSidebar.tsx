@@ -43,7 +43,8 @@ export default function GlobalSidebar({ content }: GlobalSidebarProps) {
 const StyledSidebar = styled.div`
   position: fixed;
   bottom: 0;
-  height: ${GLOBAL_SIDEBAR_MOBILE_HEIGHT}px;
+  height: 100%;
+  max-height: 100vh;
   width: 100vw;
   display: flex;
   flex-direction: column-reverse;
@@ -51,7 +52,7 @@ const StyledSidebar = styled.div`
   z-index: 2;
 
   @media only screen and ${breakpoints.tablet} {
-    width: ${GLOBAL_SIDEBAR_DESKTOP_WIDTH}px;
+    width: initial;
     height: 100vh;
     bottom: initial;
     flex-direction: row;
@@ -61,7 +62,13 @@ const StyledSidebar = styled.div`
 const StyledSidebarContent = styled.div`
   display: flex;
   flex-shrink: 0;
-  height: 100%;
+
   width: 100%;
   background-color: ${colors.offWhite};
+  height: ${GLOBAL_SIDEBAR_MOBILE_HEIGHT}px;
+
+  @media only screen and ${breakpoints.tablet} {
+    height: 100%;
+    width: ${GLOBAL_SIDEBAR_DESKTOP_WIDTH}px;
+  }
 `;

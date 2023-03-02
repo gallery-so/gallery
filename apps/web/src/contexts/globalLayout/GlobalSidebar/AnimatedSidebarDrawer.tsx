@@ -17,7 +17,6 @@ import useDetectOutsideClick from '~/hooks/useDetectOutsideClick';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import CloseIcon from '~/icons/CloseIcon';
 
-import { GLOBAL_SIDEBAR_MOBILE_HEIGHT } from './GlobalSidebar';
 import { useDrawerActions } from './SidebarDrawerContext';
 
 type Props = {
@@ -63,7 +62,7 @@ export default function AnimatedSidebarDrawer({
   }, [isMobile]);
 
   return (
-    <motion.div
+    <StyledMotion
       key="drawer"
       className="drawer"
       transition={{
@@ -95,7 +94,7 @@ export default function AnimatedSidebarDrawer({
           </StyledFooter>
         )}
       </StyledDrawer>
-    </motion.div>
+    </StyledMotion>
   );
 }
 
@@ -113,10 +112,15 @@ const StyledHeadingText = styled(TitleDiatypeL)`
   line-height: 28px;
 `;
 
+const StyledMotion = styled(motion.div)`
+  height: 100%;
+  min-height: 0;
+`;
+
 const StyledDrawer = styled(VStack)`
   background-color: ${colors.offWhite};
   width: 100%;
-  height: calc(100vh - ${GLOBAL_SIDEBAR_MOBILE_HEIGHT}px); // todo make 42 px a variable
+  height: 100%;
   position: relative;
 
   @media only screen and ${breakpoints.tablet} {

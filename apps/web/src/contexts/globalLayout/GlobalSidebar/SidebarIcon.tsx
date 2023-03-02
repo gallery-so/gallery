@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { MouseEvent, useCallback } from 'react';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
@@ -27,7 +27,7 @@ export default function SidebarIcon({
     useTooltipHover({ placement: 'right' });
 
   const handleClick = useCallback(
-    (e) => {
+    (e: MouseEvent) => {
       e.stopPropagation();
       onClick();
     },

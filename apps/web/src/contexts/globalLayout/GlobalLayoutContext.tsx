@@ -19,14 +19,12 @@ import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import FullPageLoader from '~/components/core/Loader/FullPageLoader';
-import { HStack } from '~/components/core/Spacer/Stack';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { GlobalLayoutContextNavbarFragment$key } from '~/generated/GlobalLayoutContextNavbarFragment.graphql';
 import { GlobalLayoutContextQuery } from '~/generated/GlobalLayoutContextQuery.graphql';
 import useDebounce from '~/hooks/useDebounce';
 import usePrevious from '~/hooks/usePrevious';
 import useThrottle from '~/hooks/useThrottle';
-import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { PreloadQueryArgs } from '~/types/PageComponentPreloadQuery';
 import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 import isTouchscreenDevice from '~/utils/isTouchscreenDevice';

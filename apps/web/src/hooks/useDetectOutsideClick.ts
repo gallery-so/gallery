@@ -5,8 +5,8 @@ export default function useDetectOutsideClick(
   callback: () => void
 ) {
   useEffect(() => {
-    function handleClickOutside(event) {
-      if (ref.current && !ref.current.contains(event.target)) {
+    function handleClickOutside(event: MouseEvent) {
+      if (ref.current && !ref.current.contains(event.target as Node)) {
         callback();
       }
     }
