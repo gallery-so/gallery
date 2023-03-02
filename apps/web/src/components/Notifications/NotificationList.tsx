@@ -13,7 +13,7 @@ import { Notification } from './Notification';
 import { NotificationEmailAlert } from './NotificationEmailAlert';
 import { NotificationTwitterAlert } from './NotificationTwitterAlert';
 
-export const NOTIFICATIONS_PER_PAGE = 10;
+export const NOTIFICATIONS_PER_PAGE = 15;
 
 type NotificationListProps = {
   queryRef: NotificationListFragment$key;
