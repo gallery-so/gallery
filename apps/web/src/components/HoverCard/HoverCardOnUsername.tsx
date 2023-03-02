@@ -33,6 +33,7 @@ import { HoverCardOnUsernameFollowFragment$key } from '~/generated/HoverCardOnUs
 import { HoverCardOnUsernameFragment$key } from '~/generated/HoverCardOnUsernameFragment.graphql';
 import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
 import handleCustomDisplayName from '~/utils/handleCustomDisplayName';
+import { pluralize } from '~/utils/string';
 
 const HOVER_POPUP_DELAY = 100;
 
@@ -186,7 +187,9 @@ export default function HoverCardOnUsername({ children, userRef, queryRef }: Pro
                       )}
                     </HStack>
 
-                    <BaseM>{totalCollections} collections</BaseM>
+                    <BaseM>
+                      {totalCollections} {pluralize(totalCollections, 'collection')}
+                    </BaseM>
                   </StyledCardHeader>
 
                   {user.bio && (
