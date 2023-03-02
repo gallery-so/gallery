@@ -3,9 +3,12 @@ import { useCallback, useMemo } from 'react';
 import { graphql, useFragment, usePaginationFragment } from 'react-relay';
 import styled from 'styled-components';
 
+import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { TwitterFollowingModalFragment$key } from '~/generated/TwitterFollowingModalFragment.graphql';
+import { TwitterFollowingModalMutation } from '~/generated/TwitterFollowingModalMutation.graphql';
 import { TwitterFollowingModalQueryFragment$key } from '~/generated/TwitterFollowingModalQueryFragment.graphql';
+import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import breakpoints from '../core/breakpoints';
@@ -78,6 +81,43 @@ export default function TwitterFollowingModal({ followingRef, queryRef }: Props)
     return removeNullValues(users);
   }, [followingPagination]);
 
+  const [followAll] = usePromisifiedMutation<TwitterFollowingModalMutation>(graphql`
+    mutation TwitterFollowingModalMutation {
+      followAllSocialConnections(accountType: Twitter) {
+        __typename
+        ... on FollowAllSocialConnectionsPayload {
+          __typename
+          viewer {
+            ... on Viewer {
+              __typename
+              user {
+                ... on GalleryUser {
+                  __typename
+                  following {
+                    __typename
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  `);
+  const reportError = useReportError();
+
+  const handleFollowAll = useCallback(async () => {
+    try {
+      await followAll({
+        variables: {},
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        reportError(error);
+      }
+    }
+  }, [followAll, reportError]);
+
   return (
     <StyledOnboardingTwitterModal>
       <StyledBodyTextContainer>
@@ -109,7 +149,9 @@ export default function TwitterFollowingModal({ followingRef, queryRef }: Props)
         <StyledButtonSkip onClick={handleClose} variant="secondary">
           SKIP
         </StyledButtonSkip>
-        <StyledButtonFollowAll variant="primary">FOLLOW ALL</StyledButtonFollowAll>
+        <StyledButtonFollowAll onClick={handleFollowAll} variant="primary">
+          FOLLOW ALL
+        </StyledButtonFollowAll>
       </StyledFooter>
     </StyledOnboardingTwitterModal>
   );
