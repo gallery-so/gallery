@@ -1,9 +1,10 @@
+import { useRouter } from 'next/router';
 import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import IconContainer from '~/components/core/IconContainer';
-import { TWITTER_AUTH_URL } from '~/constants/twitter';
+import { TWITTER_AUTH_URL, TWITTER_LOCAL_STORAGE_KEY } from '~/constants/twitter';
 import { NotificationTwitterAlertFragment$key } from '~/generated/NotificationTwitterAlertFragment.graphql';
 import CloseIcon from '~/icons/CloseIcon';
 import InfoCircleIcon from '~/icons/InfoCircleIcon';
@@ -52,9 +53,18 @@ export function NotificationTwitterAlert({ queryRef }: Props) {
     await updateTwitterOnboardingExperience({ experienced: true });
   }, [updateTwitterOnboardingExperience]);
 
+  const router = useRouter();
+  const route = {
+    query: router.query,
+    pathname: router.pathname,
+  };
+
   if (twitterAccount || isTwitterConnectionOnboardingUpsellExperienced) {
     return null;
   }
+
+  // Save the current route to localStorage so we can redirect back to it after
+  localStorage.setItem(TWITTER_LOCAL_STORAGE_KEY, JSON.stringify(route));
 
   return (
     <StyledAlertContainer>
