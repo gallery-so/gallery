@@ -9,11 +9,11 @@ import { FeedEventData } from '~/components/Feed/FeedEventData';
 import { FeedEventSocializeSection } from '~/components/Feed/Socialize/FeedEventSocializeSection';
 import { FeedMode } from '~/components/Feed/types';
 import { ReportingErrorBoundary } from '~/contexts/boundary/ReportingErrorBoundary';
-import { TriedToRenderUnsupportedFeedEvent } from '~/errors/TriedToRenderUnsupportedFeedEvent';
 import { FeedEventFragment$key } from '~/generated/FeedEventFragment.graphql';
 import { FeedEventQueryFragment$key } from '~/generated/FeedEventQueryFragment.graphql';
 import { FeedEventWithErrorBoundaryFragment$key } from '~/generated/FeedEventWithErrorBoundaryFragment.graphql';
 import { FeedEventWithErrorBoundaryQueryFragment$key } from '~/generated/FeedEventWithErrorBoundaryQueryFragment.graphql';
+import { TriedToRenderUnsupportedFeedEvent } from '~/shared/errors/TriedToRenderUnsupportedFeedEvent';
 
 import colors from '../core/colors';
 

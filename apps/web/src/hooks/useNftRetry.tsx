@@ -3,7 +3,7 @@ import { Primitive } from 'relay-runtime/lib/store/RelayStoreTypes';
 
 import { defaultTokenErrorState, useNftErrorContext } from '~/contexts/NftErrorContext';
 import { ContentIsLoadedEvent, ShimmerActionContext } from '~/contexts/shimmer/ShimmerContext';
-import { CouldNotRenderNftError } from '~/errors/CouldNotRenderNftError';
+import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
 import { isIosSafari } from '~/utils/browser';
 
 type useNftRetryArgs = {

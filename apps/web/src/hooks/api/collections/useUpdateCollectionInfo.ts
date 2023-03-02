@@ -2,13 +2,13 @@ import { useCallback } from 'react';
 import { graphql } from 'react-relay';
 
 import { useToastActions } from '~/contexts/toast/ToastContext';
-import { ErrorWithSentryMetadata } from '~/errors/ErrorWithSentryMetadata';
 import {
   useUpdateCollectionInfoMutation,
   useUpdateCollectionInfoMutation$data,
 } from '~/generated/useUpdateCollectionInfoMutation.graphql';
 import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
+import { ErrorWithSentryMetadata } from '~/shared/errors/ErrorWithSentryMetadata';
 
 export default function useUpdateCollectionInfo() {
   const [updateCollection, isMutating] =

@@ -21,7 +21,6 @@ import {
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
-import { ErrorWithSentryMetadata } from '~/errors/ErrorWithSentryMetadata';
 import { GalleryEditorContextFragment$key } from '~/generated/GalleryEditorContextFragment.graphql';
 import { GalleryEditorContextPublishGalleryMutation } from '~/generated/GalleryEditorContextPublishGalleryMutation.graphql';
 import {
@@ -31,6 +30,7 @@ import {
 } from '~/generated/GalleryEditorContextSaveGalleryMutation.graphql';
 import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
+import { ErrorWithSentryMetadata } from '~/shared/errors/ErrorWithSentryMetadata';
 import { generateLayoutFromCollection } from '~/utils/collectionLayout';
 import { generate12DigitId } from '~/utils/generate12DigitId';
 

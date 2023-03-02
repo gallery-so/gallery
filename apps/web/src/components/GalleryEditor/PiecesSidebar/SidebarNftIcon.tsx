@@ -12,12 +12,12 @@ import { SIDEBAR_ICON_DIMENSIONS } from '~/constants/sidebar';
 import { useCollectionEditorContext } from '~/contexts/collectionEditor/CollectionEditorContext';
 import { useNftErrorContext } from '~/contexts/NftErrorContext';
 import { ContentIsLoadedEvent } from '~/contexts/shimmer/ShimmerContext';
-import { CouldNotRenderNftError } from '~/errors/CouldNotRenderNftError';
 import { SidebarNftIconFragment$key } from '~/generated/SidebarNftIconFragment.graphql';
 import { SidebarNftIconPollerNewQuery } from '~/generated/SidebarNftIconPollerNewQuery.graphql';
 import { SidebarNftIconPreviewAssetNew$key } from '~/generated/SidebarNftIconPreviewAssetNew.graphql';
 import { useNftRetry, useThrowOnMediaFailure } from '~/hooks/useNftRetry';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
+import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
 import getVideoOrImageUrlForNftPreview from '~/utils/graphql/getVideoOrImageUrlForNftPreview';
 import { getBackgroundColorOverrideForContract } from '~/utils/token';
 

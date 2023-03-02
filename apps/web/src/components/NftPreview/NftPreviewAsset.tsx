@@ -4,8 +4,8 @@ import { graphql } from 'relay-runtime';
 import ImageWithLoading from '~/components/LoadingAsset/ImageWithLoading';
 import VideoWithLoading from '~/components/LoadingAsset/VideoWithLoading';
 import { ContentIsLoadedEvent } from '~/contexts/shimmer/ShimmerContext';
-import { CouldNotRenderNftError } from '~/errors/CouldNotRenderNftError';
 import { NftPreviewAssetFragment$key } from '~/generated/NftPreviewAssetFragment.graphql';
+import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
 import isVideoUrl from '~/utils/isVideoUrl';
 import { graphqlGetResizedNftImageUrlWithFallback } from '~/utils/token';
 

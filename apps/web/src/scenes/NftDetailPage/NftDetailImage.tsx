@@ -4,10 +4,10 @@ import { graphql } from 'relay-runtime';
 
 import { size } from '~/components/core/breakpoints';
 import ImageWithLoading from '~/components/LoadingAsset/ImageWithLoading';
-import { CouldNotRenderNftError } from '~/errors/CouldNotRenderNftError';
 import { NftDetailImageFragment$key } from '~/generated/NftDetailImageFragment.graphql';
 import { useThrowOnMediaFailure } from '~/hooks/useNftRetry';
 import { useBreakpoint } from '~/hooks/useWindowSize';
+import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
 import isVideoUrl from '~/utils/isVideoUrl';
 import noop from '~/utils/noop';
 import { graphqlGetResizedNftImageUrlWithFallback } from '~/utils/token';

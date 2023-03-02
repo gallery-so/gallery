@@ -6,7 +6,7 @@ import { Breadcrumbs, Dedupe, HttpContext, LinkedErrors } from '@sentry/browser'
 import { Integrations as CoreIntegrations } from '@sentry/core';
 import * as Sentry from '@sentry/nextjs';
 
-import { ErrorWithSentryMetadata } from './src/errors/ErrorWithSentryMetadata';
+import { ErrorWithSentryMetadata } from '../../packages/shared/src/errors/ErrorWithSentryMetadata';
 
 const SENTRY_DSN = process.env.SENTRY_DSN || process.env.NEXT_PUBLIC_SENTRY_DSN;
 

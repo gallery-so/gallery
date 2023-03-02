@@ -8,7 +8,7 @@ import {
   ReportingErrorBoundary,
   ReportingErrorBoundaryFallbackProps,
 } from '~/contexts/boundary/ReportingErrorBoundary';
-import formatError from '~/errors/formatError';
+import formatError from '~/shared/errors/formatError';
 
 function Fallback({ error }: ReportingErrorBoundaryFallbackProps) {
   const errorMessage = formatError(error);

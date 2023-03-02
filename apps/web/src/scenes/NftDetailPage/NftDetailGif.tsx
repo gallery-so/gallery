@@ -4,9 +4,9 @@ import { graphql } from 'relay-runtime';
 
 import { size } from '~/components/core/breakpoints';
 import ImageWithLoading from '~/components/LoadingAsset/ImageWithLoading';
-import { CouldNotRenderNftError } from '~/errors/CouldNotRenderNftError';
 import { NftDetailGifFragment$key } from '~/generated/NftDetailGifFragment.graphql';
 import { useBreakpoint } from '~/hooks/useWindowSize';
+import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
 import noop from '~/utils/noop';
 import { graphqlGetResizedNftImageUrlWithFallback } from '~/utils/token';
 

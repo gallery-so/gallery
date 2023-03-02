@@ -2,7 +2,7 @@ import { SigningType } from '@airgap/beacon-types';
 import { captureException } from '@sentry/nextjs';
 import { char2Bytes } from '@taquito/utils';
 
-import { ErrorWithSentryMetadata } from '~/errors/ErrorWithSentryMetadata';
+import { ErrorWithSentryMetadata } from '~/shared/errors/ErrorWithSentryMetadata';
 import { BeaconError } from '~/types/Error';
 
 export function generatePayload(nonce: string, address: string) {

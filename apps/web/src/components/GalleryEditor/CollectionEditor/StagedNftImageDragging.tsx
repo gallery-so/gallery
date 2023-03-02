@@ -3,12 +3,12 @@ import { graphql, useFragment } from 'react-relay';
 import styled, { keyframes } from 'styled-components';
 
 import colors from '~/components/core/colors';
-import { CouldNotRenderNftError } from '~/errors/CouldNotRenderNftError';
 import { StagedNftImageDraggingFragment$key } from '~/generated/StagedNftImageDraggingFragment.graphql';
 import { useImageFailureCheck } from '~/hooks/useImageFailureCheck';
 import useMouseUp from '~/hooks/useMouseUp';
 import { useThrowOnMediaFailure } from '~/hooks/useNftRetry';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
+import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
 import getVideoOrImageUrlForNftPreview from '~/utils/graphql/getVideoOrImageUrlForNftPreview';
 import { getBackgroundColorOverrideForContract } from '~/utils/token';
 
