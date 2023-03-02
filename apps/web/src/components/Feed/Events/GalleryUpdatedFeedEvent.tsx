@@ -86,7 +86,7 @@ export default function GalleryUpdatedFeedEvent({
           <HStack gap={4} inline>
             <BaseM>
               <HoverCardOnUsername userRef={event.owner} queryRef={query} /> updated{' '}
-              <Link href={galleryPagePath} passHref>
+              <Link href={galleryPagePath} passHref legacyBehavior>
                 <StyledEventLabel>{event?.gallery?.name || 'their gallery'}</StyledEventLabel>
               </Link>
               <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>

@@ -183,7 +183,7 @@ export function GalleryRightContent({ queryRef, galleryRef, username }: GalleryR
       <HStack gap={12}>
         {shouldShowEditButton && editGalleryUrl && (
           <EditButtonContainer>
-            <Link href={editGalleryUrl}>
+            <Link href={editGalleryUrl} legacyBehavior>
               <TitleXS>EDIT</TitleXS>
             </Link>
           </EditButtonContainer>

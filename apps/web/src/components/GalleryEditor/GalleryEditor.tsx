@@ -9,7 +9,7 @@ import { CollectionSidebar } from '~/components/GalleryEditor/CollectionSidebar/
 import { PiecesSidebar } from '~/components/GalleryEditor/PiecesSidebar/PiecesSidebar';
 import { CollectionEditorProvider } from '~/contexts/collectionEditor/CollectionEditorContext';
 import { GalleryEditorFragment$key } from '~/generated/GalleryEditorFragment.graphql';
-import { removeNullValues } from '~/utils/removeNullValues';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 type GalleryEditorProps = {
   queryRef: GalleryEditorFragment$key;

@@ -12,8 +12,8 @@ import FollowButton from '~/components/Follow/FollowButton';
 import { GalleryOfTheWeekCardQueryFragment$key } from '~/generated/GalleryOfTheWeekCardQueryFragment.graphql';
 import { GalleryOfTheWeekCardUserFragment$key } from '~/generated/GalleryOfTheWeekCardUserFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 import getVideoOrImageUrlForNftPreview from '~/utils/graphql/getVideoOrImageUrlForNftPreview';
-import { removeNullValues } from '~/utils/removeNullValues';
 
 type GalleryOfTheWeekCardProps = {
   queryRef: GalleryOfTheWeekCardQueryFragment$key;
@@ -63,7 +63,11 @@ export default function GalleryOfTheWeekCard({ queryRef, userRef }: GalleryOfThe
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
   return (
-    <Link href={{ pathname: '/[username]', query: { username: user.username as string } }} passHref>
+    <Link
+      href={{ pathname: '/[username]', query: { username: user.username as string } }}
+      passHref
+      legacyBehavior
+    >
       <StyledAnchor target="_blank" rel="noopener noreferrer">
         <GotwContainer gap={isMobile ? 16 : 32}>
           <GotwHeader gap={8}>

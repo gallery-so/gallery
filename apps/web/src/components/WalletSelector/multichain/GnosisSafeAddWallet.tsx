@@ -19,6 +19,7 @@ import {
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { GnosisSafeAddWalletFragment$key } from '~/generated/GnosisSafeAddWalletFragment.graphql';
 import ManageWalletsModal from '~/scenes/Modals/ManageWalletsModal';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { Web3Error } from '~/types/Error';
 import {
   ADDRESS_ALREADY_CONNECTED,
@@ -28,7 +29,6 @@ import {
   PROMPT_SIGNATURE,
 } from '~/types/Wallet';
 import { getLocalStorageItem } from '~/utils/localStorage';
-import { removeNullValues } from '~/utils/removeNullValues';
 
 import GnosisSafePendingMessage from '../GnosisSafePendingMessage';
 import useAddWallet from '../mutations/useAddWallet';

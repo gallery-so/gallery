@@ -15,7 +15,7 @@ import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { CollectorsNoteAddedToCollectionFeedEventFragment$key } from '~/generated/CollectorsNoteAddedToCollectionFeedEventFragment.graphql';
 import { CollectorsNoteAddedToCollectionFeedEventQueryFragment$key } from '~/generated/CollectorsNoteAddedToCollectionFeedEventQueryFragment.graphql';
-import { removeNullValues } from '~/utils/removeNullValues';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { getTimeSince } from '~/utils/time';
 import unescape from '~/utils/unescape';
 
@@ -109,7 +109,7 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({
             <StyledEventText isSubEvent={isSubEvent}>
               {!isSubEvent && <HoverCardOnUsername userRef={event.owner} queryRef={query} />} added
               a description to {collectionName ? ' ' : ' their collection'}
-              <Link href={collectionPagePath} passHref>
+              <Link href={collectionPagePath} passHref legacyBehavior>
                 <StyledEventLabel>{collectionName}</StyledEventLabel>
               </Link>
               {!isSubEvent && <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>}

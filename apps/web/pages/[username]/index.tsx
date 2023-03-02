@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import breakpoints, { pageGutter } from '~/components/core/breakpoints';
 import useVerifyEmailOnPage from '~/components/Email/useVerifyEmailOnPage';
 import GalleryViewEmitter from '~/components/internal/GalleryViewEmitter';
+import useOpenTwitterModal from '~/components/Twitter/useOpenTwitterModal';
 import { GalleryNavbar } from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavbar';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { UsernameQuery } from '~/generated/UsernameQuery.graphql';
@@ -33,6 +34,7 @@ const UsernameQueryNode = graphql`
     ...useOpenSettingsModalFragment
     ...GalleryViewEmitterWithSuspenseFragment
     ...useVerifyEmailOnPageQueryFragment
+    ...useOpenTwitterModalFragment
   }
 `;
 
@@ -77,6 +79,7 @@ export default function UserGallery({ username }: UserGalleryProps) {
 
   useVerifyEmailOnPage(query);
   useOpenSettingsModal(query);
+  useOpenTwitterModal(query);
 
   return (
     <GalleryRoute
@@ -103,9 +106,14 @@ export default function UserGallery({ username }: UserGalleryProps) {
 
 UserGallery.preloadQuery = ({ relayEnvironment, query }: PreloadQueryArgs) => {
   if (query.username && typeof query.username === 'string') {
-    fetchQuery<UsernameQuery>(relayEnvironment, UsernameQueryNode, {
-      username: query.username,
-    }).toPromise();
+    fetchQuery<UsernameQuery>(
+      relayEnvironment,
+      UsernameQueryNode,
+      {
+        username: query.username,
+      },
+      { fetchPolicy: 'store-or-network' }
+    ).toPromise();
   }
 };
 

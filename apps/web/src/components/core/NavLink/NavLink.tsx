@@ -37,7 +37,7 @@ export default function NavLink({ to, href, children, dataTestId, className, onC
 
   if (to) {
     return (
-      <Link href={to} passHref>
+      <Link href={to} passHref legacyBehavior>
         <StyledAnchor onClick={handleClick} data-testid={dataTestId} className={className}>
           {children}
         </StyledAnchor>

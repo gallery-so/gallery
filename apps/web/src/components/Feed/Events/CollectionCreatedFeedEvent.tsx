@@ -12,7 +12,7 @@ import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { CollectionCreatedFeedEventFragment$key } from '~/generated/CollectionCreatedFeedEventFragment.graphql';
 import { CollectionCreatedFeedEventQueryFragment$key } from '~/generated/CollectionCreatedFeedEventQueryFragment.graphql';
-import { removeNullValues } from '~/utils/removeNullValues';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { pluralize } from '~/utils/string';
 import { getTimeSince } from '~/utils/time';
 import unescape from '~/utils/unescape';
@@ -106,6 +106,7 @@ export default function CollectionCreatedFeedEvent({ eventDataRef, isSubEvent, q
                         collectionId: event.collection.dbid,
                       },
                     }}
+                    legacyBehavior
                   >
                     <StyledEventLabel>{unescape(event.collection.name ?? '')}</StyledEventLabel>
                   </Link>

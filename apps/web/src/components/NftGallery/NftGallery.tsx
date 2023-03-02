@@ -7,8 +7,8 @@ import breakpoints from '~/components/core/breakpoints';
 import { DisplayLayout } from '~/components/core/enums';
 import NftPreviewWrapper from '~/components/NftPreview/GalleryNftPreviewWrapper';
 import { NftGalleryFragment$key } from '~/generated/NftGalleryFragment.graphql';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { parseCollectionLayoutGraphql } from '~/utils/collectionLayout';
-import { removeNullValues } from '~/utils/removeNullValues';
 
 type Props = {
   collectionRef: NftGalleryFragment$key;

@@ -8,7 +8,7 @@ import { HStack } from '~/components/core/Spacer/Stack';
 import { MODAL_PADDING_THICC_PX } from '~/contexts/modal/constants';
 import { FollowListFragment$key } from '~/generated/FollowListFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
-import { removeNullValues } from '~/utils/removeNullValues';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import FollowListUsers from './FollowListUsers';
 

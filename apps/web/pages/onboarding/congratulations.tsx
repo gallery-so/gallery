@@ -42,7 +42,13 @@ export default function Congratulations() {
           <StyledBodyText>Let&apos;s show your collection to the world.</StyledBodyText>
         </VStack>
         <FixedWidthButtonLink
-          href={{ pathname: '/[username]', query: { username: username as string } }}
+          href={{
+            pathname: '/[username]',
+            query: {
+              username: `${username as string}`,
+              onboarding: 'true',
+            },
+          }}
         >
           Enter
         </FixedWidthButtonLink>

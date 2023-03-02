@@ -1,7 +1,4 @@
-directive @defer(
-  label: String!
-  if: Boolean = true
-) on FRAGMENT_SPREAD | INLINE_FRAGMENT
+directive @defer(label: String!, if: Boolean = true) on FRAGMENT_SPREAD | INLINE_FRAGMENT
 
 """
 Any field decorated with the @experimental directive should not be used in production.
@@ -593,6 +590,7 @@ enum UserExperienceType {
   EmailUpsell
   MerchStoreUpsell
   MaintenanceFeb2023
+  TwitterConnectionOnboardingUpsell
 }
 
 type UserExperience {

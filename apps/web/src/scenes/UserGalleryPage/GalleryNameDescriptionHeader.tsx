@@ -76,7 +76,7 @@ function GalleryNameDescriptionHeader({
 
   return (
     <Container gap={2}>
-      <Link href={galleryRoute}>
+      <Link href={galleryRoute} legacyBehavior>
         {noLink ? galleryName : <GalleryLink href={route(galleryRoute)}>{galleryName}</GalleryLink>}
       </Link>
 

@@ -55,7 +55,7 @@ type StyledVideoProps = {
   widthType: ContentWidthType;
 };
 
-const StyledVideo = styled.video<StyledVideoProps>`
+export const StyledVideo = styled.video<StyledVideoProps>`
   display: block;
   max-height: ${({ maxHeight }) => maxHeight};
   ${({ widthType }) => (widthType === 'fullWidth' ? 'width' : 'max-width')}: 100%;

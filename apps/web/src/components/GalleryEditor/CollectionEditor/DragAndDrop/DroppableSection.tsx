@@ -1,4 +1,4 @@
-import { AnimateLayoutChanges, defaultAnimateLayoutChanges, useSortable } from '@dnd-kit/sortable';
+import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { CSSProperties, ReactNode, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import colors from '~/components/core/colors';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { useCollectionEditorContext } from '~/contexts/collectionEditor/CollectionEditorContext';
+import useKeyDown from '~/hooks/useKeyDown';
 import PlusIcon from '~/icons/PlusIcon';
 
 import OnboardingDialog from '../../GalleryOnboardingGuide/OnboardingDialog';
@@ -20,9 +21,6 @@ type Props = {
   items: Array<{ id: string }>;
 };
 
-const animateLayoutChanges: AnimateLayoutChanges = (args) =>
-  defaultAnimateLayoutChanges({ ...args, wasDragging: true });
-
 export default function DroppableSection({ children, columns, id, items, style, ...props }: Props) {
   const itemIds = useMemo(() => items.map((item) => item.id), [items]);
   const { attributes, isDragging, listeners, setNodeRef, transition, transform } = useSortable({
@@ -31,11 +29,16 @@ export default function DroppableSection({ children, columns, id, items, style, 
       type: 'container',
       children: itemIds,
     },
-    animateLayoutChanges,
   });
 
-  const { activeSectionId, activateSection, addSection, deleteSection } =
-    useCollectionEditorContext();
+  const {
+    activeSectionId,
+    activateSection,
+    addSection,
+    deleteSection,
+    moveSectionUp,
+    moveSectionDown,
+  } = useCollectionEditorContext();
 
   const { step, dialogMessage, nextStep, handleClose } = useOnboardingDialogContext();
 
@@ -53,6 +56,21 @@ export default function DroppableSection({ children, columns, id, items, style, 
   const handleDeleteSectionClick = useCallback(() => {
     deleteSection(id);
   }, [deleteSection, id]);
+
+  const handleArrowUp = useCallback(() => {
+    if (id === activeSectionId) {
+      moveSectionUp(activeSectionId);
+    }
+  }, [activeSectionId, id, moveSectionUp]);
+
+  const handleArrowDown = useCallback(() => {
+    if (id === activeSectionId) {
+      moveSectionDown(activeSectionId);
+    }
+  }, [activeSectionId, id, moveSectionDown]);
+
+  useKeyDown('ArrowUp', handleArrowUp);
+  useKeyDown('ArrowDown', handleArrowDown);
 
   return (
     <>
