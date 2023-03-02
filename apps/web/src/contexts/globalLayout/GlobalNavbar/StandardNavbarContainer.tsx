@@ -25,7 +25,7 @@ export const NavbarLeftContent = styled.div`
   justify-content: flex-start;
 
   min-width: 0;
-  flex: 1 1 16%;
+  flex: 1 1 20%;
 `;
 
 export const NavbarCenterContent = styled.div`

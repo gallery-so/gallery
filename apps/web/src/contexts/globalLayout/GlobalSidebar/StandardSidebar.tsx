@@ -86,7 +86,7 @@ export function StandardSidebar({ queryRef }: Props) {
   const { settings } = router.query;
 
   // feels like a hack but if this hook is run multiple times via parent component re-render,
-  // the same modal is opened multiple times
+  // the same drawer is opened multiple times
   const isSettingsOpen = useRef(false);
 
   useEffect(() => {
@@ -242,7 +242,7 @@ export function StandardSidebar({ queryRef }: Props) {
 
 const StyledStandardSidebar = styled.div`
   min-width: 100%;
-  // padding: 12px 0;
+
   @media only screen and ${breakpoints.tablet} {
     padding: 16px 0;
   }

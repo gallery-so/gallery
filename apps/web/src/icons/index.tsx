@@ -18,10 +18,12 @@ import CopyIcon from './CopyIcon';
 import DoubleArrowsIcon from './DoubleArrowsIcon';
 import DragHandleIcon from './DragHandleIcon';
 import { EditPencilIcon } from './EditPencilIcon';
+import GlobeIcon from './GlobeIcon';
 import GLogoIcon from './GLogoIcon';
 import HideIcon from './HideIcon';
 import InfoCircleIcon from './InfoCircleIcon';
 import LinkIcon from './LinkIcon';
+import LockIcon from './LockIcon';
 import LogoBracketLeft from './LogoBracketLeft';
 import LogoBracketRight from './LogoBracketRight';
 import PlusIcon from './PlusIcon';
@@ -33,6 +35,7 @@ import SnowflakeIcon from './SnowflakeIcon';
 import { AdmireIcon, CommentIcon } from './SocializeIcons';
 import Trash from './Trash';
 import { TrashIconNew } from './TrashIconNew';
+import TwitterIcon from './TwitterIcon';
 import UserIcon from './UserIcon';
 import Video from './Video';
 import VideoDisabled from './VideoDisabled';
@@ -60,10 +63,12 @@ const icons = {
   DoubleArrowsIcon,
   DragHandleIcon,
   EditPencilIcon,
+  GlobeIcon,
   GLogoIcon,
   HideIcon,
   InfoCircleIcon,
   LinkIcon,
+  LockIcon,
   LogoBracketLeft,
   LogoBracketRight,
   PlusIcon,
@@ -74,6 +79,7 @@ const icons = {
   SnowflakeIcon,
   Trash,
   TrashIconNew,
+  TwitterIcon,
   UserIcon,
   Video,
   VideoDisabled,

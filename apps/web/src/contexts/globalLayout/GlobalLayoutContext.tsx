@@ -239,8 +239,6 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
 
   const isGlobalSidebarEnabled = isFeatureEnabled(FeatureFlag.GLOBAL_SIDEBAR, query);
 
-  // const isMobile = useIsMobileWindowWidth();
-
   return (
     // note: we render the navbar here, above the main contents of the app,
     // so that it can remain fixed across page transitions. the footer, on
@@ -255,9 +253,7 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
         handleFadeNavbarOnHover={handleFadeNavbarOnHover}
         content={topNavContent}
       />
-      {/*  isVisible={isNavbarVisible} */}
 
-      {/* <PageContent> */}
       {isGlobalSidebarEnabled && <GlobalSidebar content={sidebarContent} />}
 
       <MainContentWrapper>
@@ -288,7 +284,6 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
           </GlobalLayoutActionsContext.Provider>
         </GlobalLayoutStateContext.Provider>
       </MainContentWrapper>
-      {/* </PageContent> */}
     </>
   );
 });

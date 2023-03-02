@@ -15,9 +15,9 @@ import { UserTwitterSectionFragment$key } from '~/generated/UserTwitterSectionFr
 import { UserTwitterSectionQueryFragment$key } from '~/generated/UserTwitterSectionQueryFragment.graphql';
 import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
 import { EditPencilIcon } from '~/icons/EditPencilIcon';
-import GlobeIcon from '~/icons/Globeicon';
+import GlobeIcon from '~/icons/GlobeIcon';
 import LockIcon from '~/icons/LockIcon';
-import TwitterIcon from '~/icons/Twittericon';
+import TwitterIcon from '~/icons/TwitterIcon';
 
 import SettingsModal from '../Modals/SettingsModal/SettingsModal';
 

@@ -17,6 +17,7 @@ import useDetectOutsideClick from '~/hooks/useDetectOutsideClick';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import CloseIcon from '~/icons/CloseIcon';
 
+import { GLOBAL_SIDEBAR_MOBILE_HEIGHT } from './GlobalSidebar';
 import { useDrawerActions } from './SidebarDrawerContext';
 
 type Props = {
@@ -47,6 +48,7 @@ export default function AnimatedSidebarDrawer({
   const isMobile = useIsMobileWindowWidth();
 
   const motionSettings = useMemo(() => {
+    // On mobile, the drawer slides up from the bottom. On desktop, it slides in from the left.
     return isMobile
       ? {
           initial: { opacity: 0, y: ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL },
@@ -114,7 +116,7 @@ const StyledHeadingText = styled(TitleDiatypeL)`
 const StyledDrawer = styled(VStack)`
   background-color: ${colors.offWhite};
   width: 100%;
-  height: calc(100vh - 42px); // todo make 42 px a variable
+  height: calc(100vh - ${GLOBAL_SIDEBAR_MOBILE_HEIGHT}px); // todo make 42 px a variable
   position: relative;
 
   @media only screen and ${breakpoints.tablet} {

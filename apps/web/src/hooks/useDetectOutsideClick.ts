@@ -1,10 +1,5 @@
 import { useEffect } from 'react';
 
-// type Props = {
-//   ref: React.RefObject<HTMLElement>;
-//   callback: () => void;
-// };
-
 export default function useDetectOutsideClick(
   ref: React.RefObject<HTMLElement>,
   callback: () => void
