@@ -60,6 +60,7 @@ Trending.preloadQuery = ({ relayEnvironment }: PreloadQueryArgs) => {
       globalLast: ITEMS_PER_PAGE,
       trendingLast: ITEMS_PER_PAGE,
       visibleTokensPerFeedEvent: MAX_PIECES_DISPLAYED_PER_FEED_EVENT,
+      twitterListLast: USER_PER_PAGE,
     },
     { fetchPolicy: 'store-or-network' }
   ).toPromise();
