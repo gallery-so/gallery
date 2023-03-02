@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { TwitterFollowingModalFragment$key } from '~/generated/TwitterFollowingModalFragment.graphql';
 import { TwitterFollowingModalQueryFragment$key } from '~/generated/TwitterFollowingModalQueryFragment.graphql';
-import { removeNullValues } from '~/utils/removeNullValues';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import breakpoints from '../core/breakpoints';
 import { Button } from '../core/Button/Button';
