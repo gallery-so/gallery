@@ -1,9 +1,9 @@
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import { FollowedBackList } from '~/components/NotificationsModal/NotificationUserList/FollowedBackList';
-import { FollowedYouList } from '~/components/NotificationsModal/NotificationUserList/FollowedYouList';
-import { ViewedUserList } from '~/components/NotificationsModal/NotificationUserList/ViewedUserList';
+import { FollowedBackList } from '~/components/Notifications/NotificationUserList/FollowedBackList';
+import { FollowedYouList } from '~/components/Notifications/NotificationUserList/FollowedYouList';
+import { ViewedUserList } from '~/components/Notifications/NotificationUserList/ViewedUserList';
 import { NotificationUserListFragment$key } from '~/generated/NotificationUserListFragment.graphql';
 
 type NotificationUserListProps = {

@@ -2,8 +2,8 @@ import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import { SeeMore } from '~/components/NotificationsModal/SeeMore';
-import { UserListItem } from '~/components/NotificationsModal/UserListItem';
+import { SeeMore } from '~/components/Notifications/SeeMore';
+import { UserListItem } from '~/components/Notifications/UserListItem';
 import { PureUserListFragment$key } from '~/generated/PureUserListFragment.graphql';
 
 type PureUserListProps = {

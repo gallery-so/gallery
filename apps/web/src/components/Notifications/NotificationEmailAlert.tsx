@@ -3,12 +3,12 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import IconContainer from '~/components/core/IconContainer';
+import Settings from '~/components/Settings/Settings';
 import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { NotificationEmailAlertQueryFragment$key } from '~/generated/NotificationEmailAlertQueryFragment.graphql';
 import CloseIcon from '~/icons/CloseIcon';
 import InfoCircleIcon from '~/icons/InfoCircleIcon';
-import SettingsModal from '~/scenes/Modals/SettingsModal/SettingsModal';
 
 import colors from '../core/colors';
 import InteractiveLink from '../core/InteractiveLink/InteractiveLink';
@@ -24,7 +24,7 @@ export function NotificationEmailAlert({ onDismiss, queryRef }: Props) {
   const query = useFragment(
     graphql`
       fragment NotificationEmailAlertQueryFragment on Query {
-        ...SettingsModalFragment
+        ...SettingsFragment
       }
     `,
     queryRef
@@ -38,7 +38,7 @@ export function NotificationEmailAlert({ onDismiss, queryRef }: Props) {
     hideModal();
 
     showDrawer({
-      content: <SettingsModal queryRef={query} />,
+      content: <Settings queryRef={query} />,
       headerText: 'Settings',
       drawerName: 'settings',
     });

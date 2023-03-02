@@ -5,7 +5,7 @@ import { graphql, useFragment } from 'react-relay';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { useVerifyEmailOnPageQueryFragment$key } from '~/generated/useVerifyEmailOnPageQueryFragment.graphql';
 
-import { FAILED_EMAIL_VERIFICATION_STATUS } from '../NotificationsModal/NotificationList';
+import { FAILED_EMAIL_VERIFICATION_STATUS } from '../Notifications/NotificationList';
 import useUnsubscribeEmail from './useUnsubscribeEmail';
 import useVerifyEmailActivation from './useVerifyEmailActivation';
 

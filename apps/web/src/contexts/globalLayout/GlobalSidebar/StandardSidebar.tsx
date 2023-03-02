@@ -7,7 +7,8 @@ import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
-import { NotificationsModal } from '~/components/NotificationsModal/NotificationsModal';
+import { Notifications } from '~/components/Notifications/Notifications';
+import Settings from '~/components/Settings/Settings';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { StandardSidebarFragment$key } from '~/generated/StandardSidebarFragment.graphql';
 import useAuthModal from '~/hooks/useAuthModal';
@@ -18,7 +19,6 @@ import { EditPencilIcon } from '~/icons/EditPencilIcon';
 import GLogoIcon from '~/icons/GLogoIcon';
 import ShopIcon from '~/icons/ShopIcon';
 import UserIcon from '~/icons/UserIcon';
-import SettingsModal from '~/scenes/Modals/SettingsModal/SettingsModal';
 import useExperience from '~/utils/graphql/experiences/useExperience';
 
 import { useDrawerActions, useDrawerState } from './SidebarDrawerContext';
@@ -49,7 +49,7 @@ export function StandardSidebar({ queryRef }: Props) {
             }
           }
         }
-        ...SettingsModalFragment
+        ...SettingsFragment
         ...useExperienceFragment
       }
     `,
@@ -94,7 +94,7 @@ export function StandardSidebar({ queryRef }: Props) {
     if (settings === 'true' && !isSettingsOpen.current) {
       if (isLoggedIn) {
         showDrawer({
-          content: <SettingsModal queryRef={query} />,
+          content: <Settings queryRef={query} />,
           headerText: 'Settings',
           drawerName: 'settings',
         });
@@ -112,7 +112,7 @@ export function StandardSidebar({ queryRef }: Props) {
   const handleSettingsClick = useCallback(() => {
     track('Sidebar Settings Click');
     showDrawer({
-      content: <SettingsModal queryRef={query} />,
+      content: <Settings queryRef={query} />,
       headerText: 'Settings',
       drawerName: 'settings',
     });
@@ -120,7 +120,7 @@ export function StandardSidebar({ queryRef }: Props) {
 
   const handleNotificationsClick = useCallback(() => {
     showDrawer({
-      content: <NotificationsModal />,
+      content: <Notifications />,
       headerText: 'Notifications',
       drawerName: 'notifications',
     });

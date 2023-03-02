@@ -19,7 +19,7 @@ import GlobeIcon from '~/icons/GlobeIcon';
 import LockIcon from '~/icons/LockIcon';
 import TwitterIcon from '~/icons/TwitterIcon';
 
-import SettingsModal from '../Modals/SettingsModal/SettingsModal';
+import Settings from '../../components/Settings/Settings';
 
 type Props = {
   queryRef: UserTwitterSectionQueryFragment$key;
@@ -45,7 +45,7 @@ export default function UserTwitterSection({ queryRef, userRef }: Props) {
   const query = useFragment(
     graphql`
       fragment UserTwitterSectionQueryFragment on Query {
-        ...SettingsModalFragment
+        ...SettingsFragment
         ...useLoggedInUserIdFragment
         ...useUpdateTwitterDisplayFragment
 
@@ -82,7 +82,7 @@ export default function UserTwitterSection({ queryRef, userRef }: Props) {
 
   const handleEditButtonClick = useCallback(() => {
     showDrawer({
-      content: <SettingsModal queryRef={query} />,
+      content: <Settings queryRef={query} />,
       headerText: 'Settings',
       drawerName: 'settings',
     });

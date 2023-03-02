@@ -7,17 +7,17 @@ import Loader from '~/components/core/Loader/Loader';
 import {
   NotificationList,
   NOTIFICATIONS_PER_PAGE,
-} from '~/components/NotificationsModal/NotificationList';
-import { useClearNotifications } from '~/components/NotificationsModal/useClearNotifications';
-import { NotificationsModalQuery } from '~/generated/NotificationsModalQuery.graphql';
+} from '~/components/Notifications/NotificationList';
+import { useClearNotifications } from '~/components/Notifications/useClearNotifications';
+import { NotificationsQuery } from '~/generated/NotificationsQuery.graphql';
 
 import breakpoints from '../core/breakpoints';
 import { VStack } from '../core/Spacer/Stack';
 
-export function NotificationsModal() {
-  const query = useLazyLoadQuery<NotificationsModalQuery>(
+export function Notifications() {
+  const query = useLazyLoadQuery<NotificationsQuery>(
     graphql`
-      query NotificationsModalQuery($notificationsLast: Int!, $notificationsBefore: String) {
+      query NotificationsQuery($notificationsLast: Int!, $notificationsBefore: String) {
         ...NotificationListFragment
 
         viewer {

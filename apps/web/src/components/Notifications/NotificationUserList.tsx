@@ -4,15 +4,15 @@ import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
-import { USERS_PER_PAGE } from '~/components/NotificationsModal/constants';
-import { NotificationUserList } from '~/components/NotificationsModal/NotificationUserList/NotificationUserList';
-import { NotificationUserListTitle } from '~/components/NotificationsModal/NotificationUserListTitle';
+import { USERS_PER_PAGE } from '~/components/Notifications/constants';
+import { NotificationUserList } from '~/components/Notifications/NotificationUserList/NotificationUserList';
+import { NotificationUserListTitle } from '~/components/Notifications/NotificationUserListTitle';
 import { BackButton } from '~/contexts/globalLayout/GlobalNavbar/BackButton';
 import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 import { NotificationUserListModalQuery } from '~/generated/NotificationUserListModalQuery.graphql';
 
 import Loader from '../core/Loader/Loader';
-import { NotificationsModal } from './NotificationsModal';
+import { Notifications } from './Notifications';
 
 type NotificationUserListModalProps = {
   notificationId: string;
@@ -42,7 +42,7 @@ export function NotificationUserListModal({
 
   const handleBackClick = useCallback(() => {
     showDrawer({
-      content: <NotificationsModal />,
+      content: <Notifications />,
       headerText: 'Notifications',
       drawerName: 'notifications',
     });

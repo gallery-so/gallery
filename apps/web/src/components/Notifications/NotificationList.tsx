@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';
 import { TitleDiatypeL } from '~/components/core/Text/Text';
-import { SeeMore } from '~/components/NotificationsModal/SeeMore';
+import { SeeMore } from '~/components/Notifications/SeeMore';
 import { NotificationListFragment$key } from '~/generated/NotificationListFragment.graphql';
 import useExperience from '~/utils/graphql/experiences/useExperience';
 
@@ -34,7 +34,7 @@ export function NotificationList({ queryRef }: NotificationListProps) {
         viewer {
           ... on Viewer {
             notifications(last: $notificationsLast, before: $notificationsBefore)
-              @connection(key: "NotificationsModalFragment_notifications") {
+              @connection(key: "NotificationsFragment_notifications") {
               edges {
                 node {
                   id

@@ -17,15 +17,15 @@ import { GALLERY_DISCORD } from '~/constants/urls';
 import { useAuthActions } from '~/contexts/auth/AuthContext';
 import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
-import { SettingsModalFragment$key } from '~/generated/SettingsModalFragment.graphql';
+import { SettingsFragment$key } from '~/generated/SettingsFragment.graphql';
 import CircleCheckIcon from '~/icons/CircleCheckIcon';
 import { GALLERY_OS_ADDRESS } from '~/utils/getOpenseaExternalUrl';
 
-import useUpdateEmailNotificationSettings from '../../../components/Email/useUpdateEmailNotificationSettings';
+import useUpdateEmailNotificationSettings from '../Email/useUpdateEmailNotificationSettings';
 import SettingsRowDescription from './SettingsRowDescription';
 
 type Props = {
-  queryRef: SettingsModalFragment$key;
+  queryRef: SettingsFragment$key;
   newAddress?: string;
   onEthAddWalletSuccess?: () => void;
   onTezosAddWalletSuccess?: () => void;
@@ -33,15 +33,10 @@ type Props = {
 
 const DISABLED_TOGGLE_BY_EMAIL_STATUS = ['Unverified', 'Failed'];
 
-function SettingsModal({
-  newAddress,
-  queryRef,
-  onEthAddWalletSuccess,
-  onTezosAddWalletSuccess,
-}: Props) {
+function Settings({ newAddress, queryRef, onEthAddWalletSuccess, onTezosAddWalletSuccess }: Props) {
   const query = useFragment(
     graphql`
-      fragment SettingsModalFragment on Query {
+      fragment SettingsFragment on Query {
         viewer @required(action: THROW) {
           ... on Viewer {
             email @required(action: THROW) {
@@ -287,4 +282,4 @@ const StyledButton = styled(Button)`
   padding: 8px 12px;
 `;
 
-export default SettingsModal;
+export default Settings;
