@@ -17,7 +17,7 @@ import { useModalActions } from '~/contexts/modal/ModalContext';
 import { UserFollowedUsersFeedEventFragment$key } from '~/generated/UserFollowedUsersFeedEventFragment.graphql';
 import { UserFollowedUsersFeedEventQueryFragment$key } from '~/generated/UserFollowedUsersFeedEventQueryFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
-import { removeNullValues } from '~/utils/removeNullValues';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { getTimeSince } from '~/utils/time';
 
 import { StyledEvent, StyledEventHeader, StyledEventText, StyledTime } from './EventStyles';

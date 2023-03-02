@@ -20,6 +20,7 @@ import {
 import { useBeaconActions } from '~/contexts/beacon/BeaconContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { TezosAddWalletFragment$key } from '~/generated/TezosAddWalletFragment.graphql';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { Web3Error } from '~/types/Error';
 import {
   ADDRESS_ALREADY_CONNECTED,
@@ -29,7 +30,6 @@ import {
   PROMPT_SIGNATURE,
 } from '~/types/Wallet';
 import noop from '~/utils/noop';
-import { removeNullValues } from '~/utils/removeNullValues';
 
 import { normalizeError } from '../normalizeError';
 import { WalletError } from '../WalletError';

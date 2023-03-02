@@ -6,7 +6,7 @@ import { useSyncTokensContext } from '~/contexts/SyncTokensLockContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { Chain, useSyncTokensMutation } from '~/generated/useSyncTokensMutation.graphql';
 import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
-import { removeNullValues } from '~/utils/removeNullValues';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 export default function useSyncTokens() {
   const { clearTokenFailureState } = useNftErrorContext();

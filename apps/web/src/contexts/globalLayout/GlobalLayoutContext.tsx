@@ -300,9 +300,14 @@ const MainContentWrapper = styled.div`
 `;
 
 GlobalLayoutContextProvider.preloadQuery = ({ relayEnvironment }: PreloadQueryArgs) => {
-  fetchQuery<GlobalLayoutContextQuery>(relayEnvironment, GlobalLayoutContextQueryNode, {
-    collectionIds: FEATURED_COLLECTION_IDS,
-  }).toPromise();
+  fetchQuery<GlobalLayoutContextQuery>(
+    relayEnvironment,
+    GlobalLayoutContextQueryNode,
+    {
+      collectionIds: FEATURED_COLLECTION_IDS,
+    },
+    { fetchPolicy: 'store-or-network' }
+  ).toPromise();
 };
 
 GlobalLayoutContextProvider.displayName = 'GlobalLayoutContextProvider';

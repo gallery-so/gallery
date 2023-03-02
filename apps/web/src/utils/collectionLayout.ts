@@ -4,8 +4,8 @@ import { readInlineData } from 'relay-runtime';
 import { StagedItem, StagedSectionMap } from '~/components/GalleryEditor/GalleryEditorContext';
 import { DEFAULT_COLUMNS } from '~/constants/layout';
 import { collectionLayoutParseFragment$key } from '~/generated/collectionLayoutParseFragment.graphql';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { generate12DigitId } from '~/utils/generate12DigitId';
-import { removeNullValues } from '~/utils/removeNullValues';
 // This file contains helper methods to manipulate collections, layouts, and related data used for the Collection Editor and its drag and drop interface.
 
 type WhitespaceBlock = {

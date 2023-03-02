@@ -63,13 +63,18 @@ export default function UserFeed({ username, eventId }: UserActivityProps) {
 
 UserFeed.preloadQuery = ({ relayEnvironment, query }: PreloadQueryArgs) => {
   if (query.username && typeof query.username === 'string' && !Array.isArray(query.eventId)) {
-    fetchQuery<activityQuery>(relayEnvironment, activityQueryNode, {
-      topEventId: query.eventId ?? NON_EXISTENT_FEED_EVENT_ID,
-      username: query.username,
-      interactionsFirst: NOTES_PER_PAGE,
-      viewerLast: ITEMS_PER_PAGE,
-      visibleTokensPerFeedEvent: MAX_PIECES_DISPLAYED_PER_FEED_EVENT,
-    }).toPromise();
+    fetchQuery<activityQuery>(
+      relayEnvironment,
+      activityQueryNode,
+      {
+        topEventId: query.eventId ?? NON_EXISTENT_FEED_EVENT_ID,
+        username: query.username,
+        interactionsFirst: NOTES_PER_PAGE,
+        viewerLast: ITEMS_PER_PAGE,
+        visibleTokensPerFeedEvent: MAX_PIECES_DISPLAYED_PER_FEED_EVENT,
+      },
+      { fetchPolicy: 'store-or-network' }
+    ).toPromise();
   }
 };
 
