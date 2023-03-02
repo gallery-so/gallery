@@ -237,6 +237,8 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
 
   const isGlobalSidebarEnabled = isFeatureEnabled(FeatureFlag.GLOBAL_SIDEBAR, query);
 
+  const isSidebarPresent = sidebarContent !== null;
+
   return (
     // note: we render the navbar here, above the main contents of the app,
     // so that it can remain fixed across page transitions. the footer, on
@@ -250,11 +252,12 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
         fadeType={fadeType}
         handleFadeNavbarOnHover={handleFadeNavbarOnHover}
         content={topNavContent}
+        isSidebarPresent={isSidebarPresent}
       />
 
       {isGlobalSidebarEnabled && <GlobalSidebar content={sidebarContent} />}
 
-      <MainContentWrapper>
+      <MainContentWrapper isSidebarPresent={isSidebarPresent}>
         <GlobalLayoutStateContext.Provider value={state}>
           <GlobalLayoutActionsContext.Provider value={actions}>
             {/*
@@ -286,9 +289,10 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
   );
 });
 
-const MainContentWrapper = styled.div`
+const MainContentWrapper = styled.div<{ isSidebarPresent: boolean }>`
   @media only screen and ${breakpoints.tablet} {
-    margin-left: ${GLOBAL_SIDEBAR_DESKTOP_WIDTH}px;
+    ${({ isSidebarPresent }) =>
+      isSidebarPresent && ` margin-left: ${GLOBAL_SIDEBAR_DESKTOP_WIDTH}px;`}
   }
 `;
 
@@ -313,6 +317,7 @@ type GlobalNavbarWithFadeEnabledProps = {
   fadeType: FadeTriggerType;
   isBannerVisible: boolean;
   content: ReactElement | null;
+  isSidebarPresent: boolean;
 };
 
 function GlobalNavbarWithFadeEnabled({
@@ -322,6 +327,7 @@ function GlobalNavbarWithFadeEnabled({
   fadeType,
   isBannerVisible,
   content,
+  isSidebarPresent,
 }: GlobalNavbarWithFadeEnabledProps) {
   const query = useFragment(
     graphql`
@@ -384,6 +390,7 @@ function GlobalNavbarWithFadeEnabled({
       <AnimatePresence>
         {isVisible && (
           <StyledMotionWrapper
+            isSidebarPresent={isSidebarPresent}
             className="GlobalNavbar"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -432,9 +439,10 @@ const StyledBackground = styled.div`
   backdrop-filter: blur(48px);
 `;
 
-const StyledMotionWrapper = styled(motion.div)`
+const StyledMotionWrapper = styled(motion.div)<{ isSidebarPresent: boolean }>`
   @media only screen and ${breakpoints.tablet} {
-    padding-left: ${GLOBAL_SIDEBAR_DESKTOP_WIDTH}px;
+    ${({ isSidebarPresent }) =>
+      isSidebarPresent && `padding-left: ${GLOBAL_SIDEBAR_DESKTOP_WIDTH}px;`}
   }
 `;
 
