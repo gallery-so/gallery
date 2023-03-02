@@ -1,5 +1,5 @@
 type Props = {
-  size: 'sm' | 'md';
+  size?: 'sm' | 'md';
 };
 
 export default function TwitterIcon({ size = 'sm' }: Props) {
