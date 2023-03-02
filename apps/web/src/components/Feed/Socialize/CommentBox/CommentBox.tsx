@@ -16,12 +16,12 @@ import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM, BODY_FONT_FAMILY } from '~/components/core/Text/Text';
 import { SendButton } from '~/components/Feed/Socialize/SendButton';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
-import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { CommentBoxFragment$key } from '~/generated/CommentBoxFragment.graphql';
 import { CommentBoxMutation } from '~/generated/CommentBoxMutation.graphql';
 import { CommentBoxQueryFragment$key } from '~/generated/CommentBoxQueryFragment.graphql';
 import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
+import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 
 const MAX_TEXT_LENGTH = 100;
 

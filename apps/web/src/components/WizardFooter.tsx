@@ -6,7 +6,7 @@ import { Button } from '~/components/core/Button/Button';
 import colors from '~/components/core/colors';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { FOOTER_HEIGHT } from '~/components/Onboarding/constants';
-import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
+import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import isPromise from '~/utils/isPromise';
 
 type Props = {

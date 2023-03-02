@@ -15,12 +15,12 @@ import ManageWallets from '~/components/ManageWallets/ManageWallets';
 import TwitterSetting from '~/components/Twitter/TwitterSetting';
 import { GALLERY_DISCORD } from '~/constants/urls';
 import { useAuthActions } from '~/contexts/auth/AuthContext';
-import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import DrawerHeader from '~/contexts/globalLayout/GlobalSidebar/DrawerHeader';
 import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { SettingsFragment$key } from '~/generated/SettingsFragment.graphql';
 import CircleCheckIcon from '~/icons/CircleCheckIcon';
+import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { GALLERY_OS_ADDRESS } from '~/utils/getOpenseaExternalUrl';
 
 import useUpdateEmailNotificationSettings from '../Email/useUpdateEmailNotificationSettings';

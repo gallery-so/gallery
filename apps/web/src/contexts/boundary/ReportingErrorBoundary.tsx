@@ -8,9 +8,9 @@ import {
 } from 'react';
 import { Primitive } from 'relay-runtime/lib/store/RelayStoreTypes';
 
-import { ErrorReportingContext } from '~/contexts/errorReporting/ErrorReportingContext';
 import { CouldNotRenderNftError } from '~/errors/CouldNotRenderNftError';
 import { ErrorWithSentryMetadata } from '~/errors/ErrorWithSentryMetadata';
+import { ErrorReportingContext } from '~/shared/contexts/ErrorReportingContext';
 
 export type ReportingErrorBoundaryFallbackProps = { error: Error };
 

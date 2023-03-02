@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
 import { graphql } from 'react-relay';
 
-import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { ErrorWithSentryMetadata } from '~/errors/ErrorWithSentryMetadata';
 import {
@@ -9,6 +8,7 @@ import {
   useUpdateCollectionInfoMutation$data,
 } from '~/generated/useUpdateCollectionInfoMutation.graphql';
 import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
+import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 
 export default function useUpdateCollectionInfo() {
   const [updateCollection, isMutating] =

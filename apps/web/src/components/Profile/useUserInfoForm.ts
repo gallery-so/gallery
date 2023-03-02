@@ -2,13 +2,13 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { fetchQuery, graphql, useRelayEnvironment } from 'react-relay';
 
 import { useTrackCreateUserSuccess } from '~/contexts/analytics/authUtil';
-import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import formatError from '~/errors/formatError';
 import { useUserInfoFormIsUsernameAvailableQuery } from '~/generated/useUserInfoFormIsUsernameAvailableQuery.graphql';
 import useAuthPayloadQuery from '~/hooks/api/users/useAuthPayloadQuery';
 import useCreateUser from '~/hooks/api/users/useCreateUser';
 import useUpdateUser from '~/hooks/api/users/useUpdateUser';
 import useDebounce from '~/hooks/useDebounce';
+import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import {
   alphanumericUnderscores,
   maxLength,

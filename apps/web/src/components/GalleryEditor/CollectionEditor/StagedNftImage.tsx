@@ -2,13 +2,13 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import NftPreviewLabel from '~/components/NftPreview/NftPreviewLabel';
-import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import { CouldNotRenderNftError } from '~/errors/CouldNotRenderNftError';
 import { StagedNftImageFragment$key } from '~/generated/StagedNftImageFragment.graphql';
 import { StagedNftImageImageFragment$key } from '~/generated/StagedNftImageImageFragment.graphql';
 import { StagedNftImageVideoFragment$key } from '~/generated/StagedNftImageVideoFragment.graphql';
 import { useImageFailureCheck } from '~/hooks/useImageFailureCheck';
 import { useThrowOnMediaFailure } from '~/hooks/useNftRetry';
+import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import getVideoOrImageUrlForNftPreview from '~/utils/graphql/getVideoOrImageUrlForNftPreview';
 
 type Props = {

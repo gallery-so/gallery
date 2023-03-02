@@ -1,7 +1,7 @@
 import { memo, PropsWithChildren, useCallback, useMemo } from 'react';
 import { SWRConfig, SWRConfiguration } from 'swr';
 
-import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
+import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { SECOND } from '~/utils/time';
 
 import { vanillaFetcher } from './fetch';

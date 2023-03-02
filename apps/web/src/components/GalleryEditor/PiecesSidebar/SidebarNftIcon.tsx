@@ -10,7 +10,6 @@ import { NftFailureBoundary } from '~/components/NftFailureFallback/NftFailureBo
 import { NftFailureFallback } from '~/components/NftFailureFallback/NftFailureFallback';
 import { SIDEBAR_ICON_DIMENSIONS } from '~/constants/sidebar';
 import { useCollectionEditorContext } from '~/contexts/collectionEditor/CollectionEditorContext';
-import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import { useNftErrorContext } from '~/contexts/NftErrorContext';
 import { ContentIsLoadedEvent } from '~/contexts/shimmer/ShimmerContext';
 import { CouldNotRenderNftError } from '~/errors/CouldNotRenderNftError';
@@ -18,6 +17,7 @@ import { SidebarNftIconFragment$key } from '~/generated/SidebarNftIconFragment.g
 import { SidebarNftIconPollerNewQuery } from '~/generated/SidebarNftIconPollerNewQuery.graphql';
 import { SidebarNftIconPreviewAssetNew$key } from '~/generated/SidebarNftIconPreviewAssetNew.graphql';
 import { useNftRetry, useThrowOnMediaFailure } from '~/hooks/useNftRetry';
+import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import getVideoOrImageUrlForNftPreview from '~/utils/graphql/getVideoOrImageUrlForNftPreview';
 import { getBackgroundColorOverrideForContract } from '~/utils/token';
 
