@@ -82,7 +82,7 @@ export default function TwitterFollowingModal({ followingRef, queryRef }: Props)
     <StyledOnboardingTwitterModal>
       <StyledBodyTextContainer>
         <TitleDiatypeL>
-          We've found {twitterFollowing.length} people you know from Twitter
+          We've found {twitterFollowing.length || 0} people you know from Twitter
         </TitleDiatypeL>
       </StyledBodyTextContainer>
 
