@@ -1,5 +1,3 @@
-directive @defer(label: String!, if: Boolean = true) on FRAGMENT_SPREAD | INLINE_FRAGMENT
-
 """
 Any field decorated with the @experimental directive should not be used in production.
 It will not conform to our rules around breaking changes.
@@ -1850,6 +1848,15 @@ union DisconnectSocialAccountPayloadOrError =
   | ErrInvalidInput
   | ErrNotAuthorized
 
+type FollowAllSocialConnectionsPayload {
+  viewer: Viewer
+}
+
+union FollowAllSocialConnectionsPayloadOrError =
+    FollowAllSocialConnectionsPayload
+  | ErrInvalidInput
+  | ErrNotAuthorized
+
 type Mutation {
   # User Mutations
   addUserWallet(
@@ -1910,6 +1917,9 @@ type Mutation {
   ): UpdateSocialAccountDisplayedPayloadOrError @authRequired
 
   followUser(userId: DBID!): FollowUserPayloadOrError @authRequired
+  followAllSocialConnections(
+    accountType: SocialAccountType!
+  ): FollowAllSocialConnectionsPayloadOrError @authRequired
   unfollowUser(userId: DBID!): UnfollowUserPayloadOrError @authRequired
 
   admireFeedEvent(feedEventId: DBID!): AdmireFeedEventPayloadOrError @authRequired
