@@ -218,6 +218,11 @@ const StyledAssetContainer = styled.div<AssetContainerProps>`
     backgroundColorOverride && `background-color: ${backgroundColorOverride}`}};
 
   @media only screen and ${breakpoints.tablet} {
+    width: 450px;
+    min-height: 450px;
+  }
+
+  @media only screen and ${breakpoints.desktop} {
     width: 600px;
     min-height: 600px;
   }
