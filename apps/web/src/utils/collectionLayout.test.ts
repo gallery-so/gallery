@@ -75,9 +75,7 @@ describe('parseCollectionLayout', () => {
     const collection = parseCollectionLayout(tokens, collectionLayout);
 
     expect(Object.keys(collection).length).toEqual(3);
-    Object.keys(collection).forEach((sectionId, index) => {
-      const section = collection[sectionId];
-
+    collection.forEach((section, index) => {
       expect(section?.columns).toEqual(collectionLayout.sectionLayout[index]?.columns);
       expect(section?.items.length).toEqual(expectedItemLengths[index]);
     });
