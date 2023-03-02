@@ -79,7 +79,7 @@ export default function TwitterSection({ queryRef, title, subTitle }: Props) {
       <HStack justify="space-between" align="center">
         <VStack gap={4}>
           <HStack align="center" gap={4}>
-            <TwitterIcon />
+            <TwitterIcon size="md" />
             <Title>{title}</Title>
           </HStack>
           <TitleDiatypeL color={colors.metal}>{subTitle}</TitleDiatypeL>
