@@ -25,8 +25,8 @@ export default function GlobalSidebar({ content }: GlobalSidebarProps) {
   }
 
   return (
-    <StyledSidebar>
-      <StyledSidebarContent>{content}</StyledSidebarContent>
+    <StyledGlobalSidebar>
+      <StyledGlobalSidebarContent>{content}</StyledGlobalSidebarContent>
       <AnimatePresence>
         {drawerState.activeDrawer && (
           <AnimatedSidebarDrawer
@@ -36,11 +36,11 @@ export default function GlobalSidebar({ content }: GlobalSidebarProps) {
           />
         )}
       </AnimatePresence>
-    </StyledSidebar>
+    </StyledGlobalSidebar>
   );
 }
 
-const StyledSidebar = styled.div`
+const StyledGlobalSidebar = styled.div`
   position: fixed;
   bottom: 0;
   height: 100%;
@@ -59,7 +59,7 @@ const StyledSidebar = styled.div`
   }
 `;
 
-const StyledSidebarContent = styled.div`
+const StyledGlobalSidebarContent = styled.div`
   display: flex;
   flex-shrink: 0;
 

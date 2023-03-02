@@ -44,7 +44,7 @@ export function Notifications() {
   }, [clearAllNotifications, userId]);
 
   return (
-    <ModalContent>
+    <StyledNotifications>
       <Suspense
         fallback={
           <VStack grow justify="center" align="center">
@@ -54,11 +54,11 @@ export function Notifications() {
       >
         <NotificationList queryRef={query} />
       </Suspense>
-    </ModalContent>
+    </StyledNotifications>
   );
 }
 
-const ModalContent = styled.div`
+const StyledNotifications = styled.div`
   height: 100%;
   width: 100%;
   display: flex;
