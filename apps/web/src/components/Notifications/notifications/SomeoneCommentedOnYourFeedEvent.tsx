@@ -99,13 +99,11 @@ export function SomeoneCommentedOnYourFeedEvent({
   return (
     <VStack gap={8}>
       <BaseM>
-        <strong>
-          {notification.comment?.commenter ? (
-            <HoverCardOnUsername userRef={notification.comment?.commenter} queryRef={query} />
-          ) : (
-            'Someone'
-          )}
-        </strong>
+        {notification.comment?.commenter ? (
+          <HoverCardOnUsername userRef={notification.comment?.commenter} queryRef={query} />
+        ) : (
+          <strong>Someone</strong>
+        )}
         {` ${verb} `}
         {collection ? <CollectionLink collectionRef={collection} /> : <>your collection</>}
       </BaseM>
