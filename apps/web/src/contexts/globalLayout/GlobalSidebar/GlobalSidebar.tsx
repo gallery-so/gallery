@@ -15,7 +15,7 @@ type GlobalSidebarProps = {
   content: ReactElement | null;
 };
 
-const ShowDoneFooter = ['settings'];
+const ShowDoneFooter = ['Settings'];
 
 export default function GlobalSidebar({ content }: GlobalSidebarProps) {
   const drawerState = useDrawerState();
@@ -31,8 +31,8 @@ export default function GlobalSidebar({ content }: GlobalSidebarProps) {
         {drawerState.activeDrawer && (
           <AnimatedSidebarDrawer
             content={drawerState.activeDrawer.content}
-            headerText={drawerState.activeDrawer.headerText}
-            showDoneFooter={ShowDoneFooter.includes(drawerState.activeDrawer.drawerName)}
+            drawerType={drawerState.activeDrawer.drawerType}
+            showDoneFooter={ShowDoneFooter.includes(drawerState.activeDrawer?.drawerType ?? '')}
           />
         )}
       </AnimatePresence>

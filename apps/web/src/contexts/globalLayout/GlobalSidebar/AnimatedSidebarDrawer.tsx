@@ -18,17 +18,17 @@ import useKeyDown from '~/hooks/useKeyDown';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import CloseIcon from '~/icons/CloseIcon';
 
-import { useDrawerActions } from './SidebarDrawerContext';
+import { DrawerType, useDrawerActions } from './SidebarDrawerContext';
 
 type Props = {
   content: ReactElement;
-  headerText?: string;
+  drawerType?: DrawerType;
   showDoneFooter?: boolean;
 };
 
 export default function AnimatedSidebarDrawer({
   content,
-  headerText,
+  drawerType,
   showDoneFooter = false,
 }: Props) {
   const drawerRef = useRef(null);
@@ -92,7 +92,7 @@ export default function AnimatedSidebarDrawer({
               icon={<CloseIcon />}
             />
           </CloseDrawerHeader>
-          {headerText && <StyledHeadingText>{headerText}</StyledHeadingText>}
+          {drawerType && <StyledHeadingText>{drawerType}</StyledHeadingText>}
         </StyledHeader>
         <StyledContentWrapper showDoneFooter={showDoneFooter}>{content}</StyledContentWrapper>
         {showDoneFooter && (

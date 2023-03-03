@@ -17,11 +17,12 @@ export const NOTIFICATIONS_PER_PAGE = 15;
 
 type NotificationListProps = {
   queryRef: NotificationListFragment$key;
+  toggleSubView: (page?: JSX.Element) => void;
 };
 
 export const FAILED_EMAIL_VERIFICATION_STATUS = ['Failed', 'Unverified'];
 
-export function NotificationList({ queryRef }: NotificationListProps) {
+export function NotificationList({ queryRef, toggleSubView }: NotificationListProps) {
   const {
     data: query,
     loadPrevious,
@@ -99,7 +100,12 @@ export function NotificationList({ queryRef }: NotificationListProps) {
         <>
           {nonNullNotifications.map((notification) => {
             return (
-              <Notification queryRef={query} key={notification.id} notificationRef={notification} />
+              <Notification
+                queryRef={query}
+                key={notification.id}
+                notificationRef={notification}
+                toggleSubView={toggleSubView}
+              />
             );
           })}
 

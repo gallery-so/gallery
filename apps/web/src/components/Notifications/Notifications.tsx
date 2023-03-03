@@ -1,4 +1,4 @@
-import { Suspense, useEffect } from 'react';
+import { Suspense, useCallback, useEffect, useState } from 'react';
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
@@ -35,9 +35,14 @@ export function Notifications() {
 
   const clearAllNotifications = useClearNotifications();
 
+  const [subView, setSubView] = useState<JSX.Element | null>(null);
+  const toggleSubView = useCallback((subView?: JSX.Element) => {
+    setSubView(subView ?? null);
+  }, []);
+
   const userId = query.viewer?.user?.dbid ?? '';
   useEffect(() => {
-    // When they close the modal, clear their notifications
+    // When they close Notifications, clear their notifications
     return () => {
       clearAllNotifications(userId);
     };
@@ -52,7 +57,7 @@ export function Notifications() {
           </VStack>
         }
       >
-        <NotificationList queryRef={query} />
+        {subView ? subView : <NotificationList queryRef={query} toggleSubView={toggleSubView} />}
       </Suspense>
     </StyledNotifications>
   );

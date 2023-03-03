@@ -14,7 +14,6 @@ import { SomeoneFollowedYou } from '~/components/Notifications/notifications/Som
 import { SomeoneFollowedYouBack } from '~/components/Notifications/notifications/SomeoneFollowedYouBack';
 import { SomeoneViewedYourGallery } from '~/components/Notifications/notifications/SomeoneViewedYourGallery';
 import { NotificationUserListModal } from '~/components/Notifications/NotificationUserList';
-import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 import { NotificationFragment$key } from '~/generated/NotificationFragment.graphql';
 import { NotificationInnerFragment$key } from '~/generated/NotificationInnerFragment.graphql';
 import { NotificationInnerQueryFragment$key } from '~/generated/NotificationInnerQueryFragment.graphql';
@@ -27,9 +26,10 @@ import { useClearNotifications } from './useClearNotifications';
 type NotificationProps = {
   notificationRef: NotificationFragment$key;
   queryRef: NotificationQueryFragment$key;
+  toggleSubView: (page?: JSX.Element) => void;
 };
 
-export function Notification({ notificationRef, queryRef }: NotificationProps) {
+export function Notification({ notificationRef, queryRef, toggleSubView }: NotificationProps) {
   const notification = useFragment(
     graphql`
       fragment NotificationFragment on Notification {
@@ -107,17 +107,15 @@ export function Notification({ notificationRef, queryRef }: NotificationProps) {
       }
     | undefined;
 
-  const { showDrawer } = useDrawerActions();
-
   const handleNotificationClick = useMemo((): NotificationClick => {
     function showUserListModal() {
-      showDrawer({
-        content: (
-          <NotificationUserListModal notificationId={notification.id} fullscreen={isMobile} />
-        ),
-        drawerName: 'notificationsUserList',
-        headerText: 'Notifications',
-      });
+      toggleSubView(
+        <NotificationUserListModal
+          notificationId={notification.id}
+          fullscreen={isMobile}
+          toggleSubView={toggleSubView}
+        />
+      );
     }
 
     if (notification.feedEvent) {
@@ -154,7 +152,7 @@ export function Notification({ notificationRef, queryRef }: NotificationProps) {
     notification.userViewers?.pageInfo?.total,
     push,
     query.viewer?.user?.username,
-    showDrawer,
+    toggleSubView,
   ]);
 
   const userId = query.viewer?.user?.dbid ?? '';

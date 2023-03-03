@@ -8,20 +8,20 @@ import { USERS_PER_PAGE } from '~/components/Notifications/constants';
 import { NotificationUserList } from '~/components/Notifications/NotificationUserList/NotificationUserList';
 import { NotificationUserListTitle } from '~/components/Notifications/NotificationUserListTitle';
 import { BackButton } from '~/contexts/globalLayout/GlobalNavbar/BackButton';
-import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 import { NotificationUserListModalQuery } from '~/generated/NotificationUserListModalQuery.graphql';
 
 import Loader from '../core/Loader/Loader';
-import { Notifications } from './Notifications';
 
 type NotificationUserListModalProps = {
   notificationId: string;
   fullscreen: boolean;
+  toggleSubView: (page?: JSX.Element) => void;
 };
 
 export function NotificationUserListModal({
   fullscreen,
   notificationId,
+  toggleSubView,
 }: NotificationUserListModalProps) {
   const query = useLazyLoadQuery<NotificationUserListModalQuery>(
     graphql`
@@ -38,15 +38,9 @@ export function NotificationUserListModal({
     { fetchPolicy: 'store-and-network' }
   );
 
-  const { showDrawer } = useDrawerActions();
-
   const handleBackClick = useCallback(() => {
-    showDrawer({
-      content: <Notifications />,
-      headerText: 'Notifications',
-      drawerName: 'notifications',
-    });
-  }, [showDrawer]);
+    toggleSubView();
+  }, [toggleSubView]);
 
   return (
     <ModalContent fullscreen={fullscreen}>

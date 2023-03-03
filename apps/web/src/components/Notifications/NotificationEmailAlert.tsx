@@ -34,8 +34,6 @@ export function NotificationEmailAlert({ onDismiss, queryRef }: Props) {
   const handleEnableEmails = useCallback(() => {
     showDrawer({
       content: <Settings queryRef={query} />,
-      headerText: 'Settings',
-      drawerName: 'settings',
     });
   }, [query, showDrawer]);
 

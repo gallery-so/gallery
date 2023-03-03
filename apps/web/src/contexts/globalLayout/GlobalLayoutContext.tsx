@@ -26,7 +26,6 @@ import useDebounce from '~/hooks/useDebounce';
 import usePrevious from '~/hooks/usePrevious';
 import useThrottle from '~/hooks/useThrottle';
 import { PreloadQueryArgs } from '~/types/PageComponentPreloadQuery';
-import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 import isTouchscreenDevice from '~/utils/isTouchscreenDevice';
 
 import { FEATURED_COLLECTION_IDS } from './GlobalAnnouncementPopover/GlobalAnnouncementPopover';
@@ -83,7 +82,6 @@ const GlobalLayoutContextQueryNode = graphql`
     ...GlobalLayoutContextNavbarFragment
     # Keeping this around for the next time we want to use it
     ...useGlobalAnnouncementPopoverFragment
-    ...isFeatureEnabledFragment
   }
 `;
 

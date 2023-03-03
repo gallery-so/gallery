@@ -8,11 +8,11 @@ import {
   useState,
 } from 'react';
 
+export type DrawerType = 'Notifications' | 'Settings';
+
 type ActiveDrawer = {
   content: ReactElement;
-  headerText?: string;
-  drawerName: string;
-  showDoneFooter?: boolean;
+  drawerType?: DrawerType;
 };
 
 type DrawerState = {
@@ -48,17 +48,29 @@ export const useDrawerActions = (): DrawerActions => {
 
 type Props = { children: ReactNode };
 
+function isDrawerType(type: string): type is DrawerType {
+  return type === 'Notifications' || type === 'Settings';
+}
+
 function SidebarDrawerProvider({ children }: Props): ReactElement {
   const [drawerState, setDrawerState] = useState<DrawerState>({ activeDrawer: null });
 
   const showDrawer = useCallback((props: ActiveDrawer) => {
     setDrawerState((previous) => {
-      // If the drawer is already open, close it
-      if (previous.activeDrawer?.drawerName === props.drawerName) {
+      // infer the drawer type from the content, and check that it's a valid type
+      const propsDrawerType = typeof props.content.type !== 'string' ? props.content.type.name : '';
+      // const valid = isDrawerType(propsDrawerType);
+      if (!isDrawerType(propsDrawerType)) {
+        throw new Error('Invalid drawer type!');
+      }
+
+      // if the same drawer type is already open, close it
+      if (previous.activeDrawer?.drawerType === propsDrawerType) {
         return { activeDrawer: null };
       }
 
-      return { activeDrawer: props };
+      // otherwise, open the new drawer. save the inferred drawer type
+      return { activeDrawer: { ...props, drawerType: propsDrawerType } };
     });
   }, []);
 

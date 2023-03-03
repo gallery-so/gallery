@@ -83,8 +83,6 @@ export default function UserTwitterSection({ queryRef, userRef }: Props) {
   const handleEditButtonClick = useCallback(() => {
     showDrawer({
       content: <Settings queryRef={query} />,
-      headerText: 'Settings',
-      drawerName: 'settings',
     });
   }, [query, showDrawer]);
 

@@ -59,12 +59,12 @@ export function StandardSidebar({ queryRef }: Props) {
 
   const track = useTrack();
 
-  const { showDrawer } = useDrawerActions();
+  const { showDrawer, hideDrawer } = useDrawerActions();
   const router = useRouter();
 
   const activeDrawerState = useDrawerState();
   const activeDrawerName = useMemo(
-    () => activeDrawerState.activeDrawer?.drawerName,
+    () => activeDrawerState.activeDrawer?.drawerType,
     [activeDrawerState]
   );
 
@@ -93,8 +93,6 @@ export function StandardSidebar({ queryRef }: Props) {
       if (isLoggedIn) {
         showDrawer({
           content: <Settings queryRef={query} />,
-          headerText: 'Settings',
-          drawerName: 'settings',
         });
         return;
       }
@@ -113,26 +111,24 @@ export function StandardSidebar({ queryRef }: Props) {
     track('Sidebar Settings Click');
     showDrawer({
       content: <Settings queryRef={query} />,
-      headerText: 'Settings',
-      drawerName: 'settings',
     });
   }, [query, showDrawer, track]);
 
   const handleNotificationsClick = useCallback(() => {
     showDrawer({
       content: <Notifications />,
-      headerText: 'Notifications',
-      drawerName: 'notifications',
     });
   }, [showDrawer]);
 
   const handleProfileClick = useCallback(() => {
+    hideDrawer();
     track('Sidebar Profile Click', { username });
-  }, [track, username]);
+  }, [hideDrawer, track, username]);
 
   const handleEditClick = useCallback(() => {
+    hideDrawer();
     track('Sidebar Edit Galleries Click', { username });
-  }, [track, username]);
+  }, [hideDrawer, track, username]);
 
   const handleShopIconClick = useCallback(async () => {
     track('Sidebar Shop Click');
@@ -140,8 +136,9 @@ export function StandardSidebar({ queryRef }: Props) {
   }, [setMerchStoreUpsellExperienced, track]);
 
   const handleHomeIconClick = useCallback(() => {
+    hideDrawer();
     track('Sidebar Home Click');
-  }, [track]);
+  }, [hideDrawer, track]);
 
   const isMobile = useIsMobileWindowWidth();
 
@@ -170,14 +167,14 @@ export function StandardSidebar({ queryRef }: Props) {
                 tooltipLabel="Notifications"
                 onClick={handleNotificationsClick}
                 icon={<BellIcon />}
-                isActive={activeDrawerName === 'notifications'}
+                isActive={activeDrawerName === 'Notifications'}
                 showUnreadDot={notificationCount > 0}
               />
               <SidebarIcon
                 tooltipLabel="Settings"
                 onClick={handleSettingsClick}
                 icon={<CogIcon />}
-                isActive={activeDrawerName === 'settings'}
+                isActive={activeDrawerName === 'Settings'}
               />
             </>
           )}
@@ -218,13 +215,13 @@ export function StandardSidebar({ queryRef }: Props) {
               tooltipLabel="Notifications"
               onClick={handleNotificationsClick}
               icon={<BellIcon />}
-              isActive={activeDrawerName === 'notifications'}
+              isActive={activeDrawerName === 'Notifications'}
             />
             <SidebarIcon
               tooltipLabel="Settings"
               onClick={handleSettingsClick}
               icon={<CogIcon />}
-              isActive={activeDrawerName === 'settings'}
+              isActive={activeDrawerName === 'Settings'}
             />
           </VStack>
         )}

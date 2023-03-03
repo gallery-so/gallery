@@ -87,27 +87,25 @@ export function CollectionNavbar({ queryRef, username, collectionId }: Collectio
   return (
     <StandardNavbarContainer>
       <NavbarLeftContent>
-        <Wrapper gap={4} align="center">
-          {isMobile ? null : (
-            <RightContentWrapper shrink gap={4}>
-              {query.userByUsername && (
-                <NavActionFollow userRef={query.userByUsername} queryRef={query} />
-              )}
+        {isMobile ? null : (
+          <StyledBreadCrumbs gap={4} shrink align="center">
+            {query.userByUsername && (
+              <NavActionFollow userRef={query.userByUsername} queryRef={query} />
+            )}
 
-              <SlashText>/</SlashText>
+            <SlashText>/</SlashText>
 
-              <Link href={galleryRoute} legacyBehavior>
-                <BreadcrumbLink href={route(galleryRoute)}>{galleryName}</BreadcrumbLink>
-              </Link>
+            <Link href={galleryRoute} legacyBehavior>
+              <BreadcrumbLink href={route(galleryRoute)}>{galleryName}</BreadcrumbLink>
+            </Link>
 
-              <SlashText>/</SlashText>
+            <SlashText>/</SlashText>
 
-              <CollectionNameText title={unescapedCollectionName}>
-                {unescapedCollectionName}
-              </CollectionNameText>
-            </RightContentWrapper>
-          )}
-        </Wrapper>
+            <CollectionNameText title={unescapedCollectionName}>
+              {unescapedCollectionName}
+            </CollectionNameText>
+          </StyledBreadCrumbs>
+        )}
       </NavbarLeftContent>
 
       <NavbarCenterContent>
@@ -130,19 +128,17 @@ export function CollectionNavbar({ queryRef, username, collectionId }: Collectio
   );
 }
 
-const Wrapper = styled(HStack)`
+const StyledBreadCrumbs = styled(HStack)`
   position: relative;
   max-width: 100%;
+
+  ${BreadcrumbLink} {
+    color: ${colors.shadow};
+  }
 `;
 const CollectionNameText = styled(BreadcrumbText)`
   overflow: hidden;
   text-overflow: ellipsis;
-`;
-
-const RightContentWrapper = styled(HStack)`
-  ${BreadcrumbLink} {
-    color: ${colors.shadow};
-  }
 `;
 
 const MobileUsernameText = styled(Paragraph)`
