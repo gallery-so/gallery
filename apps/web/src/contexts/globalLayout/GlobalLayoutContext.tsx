@@ -407,32 +407,33 @@ function GlobalNavbarWithFadeEnabled({
        */}
       <AnimatePresence>
         {isVisible && (
-          <StyledMotionWrapper
-            isSidebarPresent={isSidebarPresent}
-            className="GlobalNavbar"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{
-              opacity: 0,
-              transition: { duration: FADE_TRANSITION_TIME_SECONDS },
-            }}
-            transition={{
-              ease: 'easeInOut',
-              delay: fadeType === 'route' ? NAVIGATION_TRANSITION_TIME_SECONDS : 0,
-              duration: FADE_TRANSITION_TIME_SECONDS,
-            }}
-          >
-            {isBannerVisible && (
-              <GlobalBanner
-                // make sure to update this flag and add to backend schema.graphql
-                experienceFlag="MaintenanceFeb2023"
-                text=""
-                queryRef={query}
-                dismissOnActionComponentClick
-                requireAuth
-              />
-            )}
-            <StyledBackground>{content}</StyledBackground>
+          <StyledMotionWrapper isSidebarPresent={isSidebarPresent}>
+            <motion.div
+              className="GlobalNavbar"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{
+                opacity: 0,
+                transition: { duration: FADE_TRANSITION_TIME_SECONDS },
+              }}
+              transition={{
+                ease: 'easeInOut',
+                delay: fadeType === 'route' ? NAVIGATION_TRANSITION_TIME_SECONDS : 0,
+                duration: FADE_TRANSITION_TIME_SECONDS,
+              }}
+            >
+              {isBannerVisible && (
+                <GlobalBanner
+                  // make sure to update this flag and add to backend schema.graphql
+                  experienceFlag="MaintenanceFeb2023"
+                  text=""
+                  queryRef={query}
+                  dismissOnActionComponentClick
+                  requireAuth
+                />
+              )}
+              <StyledBackground>{content}</StyledBackground>
+            </motion.div>
           </StyledMotionWrapper>
         )}
       </AnimatePresence>
@@ -457,10 +458,9 @@ const StyledBackground = styled.div`
   backdrop-filter: blur(48px);
 `;
 
-const StyledMotionWrapper = styled(motion.div)<{ isSidebarPresent: boolean }>`
+const StyledMotionWrapper = styled.div<{ isSidebarPresent: boolean }>`
   transition: margin-left ${FADE_TRANSITION_TIME_SECONDS}s ease-in-out;
   position: relative;
-  width: initial;
 
   @media only screen and ${breakpoints.tablet} {
     ${({ isSidebarPresent }) =>

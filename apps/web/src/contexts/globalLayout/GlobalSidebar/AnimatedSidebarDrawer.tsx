@@ -72,7 +72,7 @@ export default function AnimatedSidebarDrawer({ content }: Props) {
 }
 
 const StyledMotion = styled(motion.div)`
-  height: 100%;
+  height: 100vh;
   min-height: 0;
 `;
 
