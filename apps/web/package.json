@@ -94,7 +94,6 @@
     "next": "^13.2.1",
     "nextjs-routes": "^0.1.5",
     "qr-code-styling": "^1.6.0-rc.1",
-    "react": "18.2.0",
     "react-dom": "^18.2.0",
     "react-is": "^17.0.2",
     "react-markdown": "^7.1.0",
