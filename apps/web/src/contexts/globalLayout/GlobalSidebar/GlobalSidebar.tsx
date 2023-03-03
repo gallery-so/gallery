@@ -37,7 +37,6 @@ export default function GlobalSidebar({ content }: GlobalSidebarProps) {
 const StyledGlobalSidebar = styled.div`
   position: fixed;
   bottom: 0;
-  // height: 100%;
   max-height: 100vh;
   width: 100vw;
   display: flex;
