@@ -35,9 +35,8 @@ function NftGallery({ collectionRef, mobileLayout }: Props) {
 
   const parsedCollection = useMemo(() => {
     if (!collection.tokens || !collection.layout) {
-      return [];
+      return {};
     }
-
     return parseCollectionLayoutGraphql(
       removeNullValues(collection.tokens),
       collection.layout,
@@ -47,10 +46,10 @@ function NftGallery({ collectionRef, mobileLayout }: Props) {
 
   return (
     <StyledCollectionTokens>
-      {parsedCollection.map((section) => {
+      {Object.entries(parsedCollection).map(([sectionId, section]) => {
         return (
           <StyledSection
-            key={section.id}
+            key={sectionId}
             columns={section.columns}
             mobileLayout={mobileLayout}
             // we used this option for figure31's gallery. in the future, if we want
