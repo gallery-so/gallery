@@ -5,11 +5,11 @@ import styled from 'styled-components';
 
 import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
+import { useToastActions } from '~/contexts/toast/ToastContext';
 import { TwitterFollowingModalFragment$key } from '~/generated/TwitterFollowingModalFragment.graphql';
 import { TwitterFollowingModalMutation } from '~/generated/TwitterFollowingModalMutation.graphql';
 import { TwitterFollowingModalQueryFragment$key } from '~/generated/TwitterFollowingModalQueryFragment.graphql';
 import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
-import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import breakpoints from '../core/breakpoints';
 import { Button } from '../core/Button/Button';
@@ -73,12 +73,12 @@ export default function TwitterFollowingModal({ followingRef, queryRef }: Props)
     const users = [];
 
     for (const edge of followingPagination?.data?.socialConnections?.edges ?? []) {
-      if (edge?.node?.__typename === 'SocialConnection') {
+      if (edge?.node?.__typename === 'SocialConnection' && edge?.node?.galleryUser) {
         users.push(edge?.node.galleryUser);
       }
     }
 
-    return removeNullValues(users);
+    return users;
   }, [followingPagination]);
 
   const [followAll] = usePromisifiedMutation<TwitterFollowingModalMutation>(graphql`
@@ -105,6 +105,7 @@ export default function TwitterFollowingModal({ followingRef, queryRef }: Props)
     }
   `);
   const reportError = useReportError();
+  const { pushToast } = useToastActions();
 
   const handleFollowAll = useCallback(async () => {
     try {
@@ -114,9 +115,12 @@ export default function TwitterFollowingModal({ followingRef, queryRef }: Props)
     } catch (error) {
       if (error instanceof Error) {
         reportError(error);
+        pushToast({
+          message: 'Unfortunately there was an error while following all users',
+        });
       }
     }
-  }, [followAll, reportError]);
+  }, [followAll, pushToast, reportError]);
 
   return (
     <StyledOnboardingTwitterModal>
@@ -131,8 +135,15 @@ export default function TwitterFollowingModal({ followingRef, queryRef }: Props)
         {twitterFollowing.map((user) => (
           <HStack key={user.username} align="center" justify="space-between">
             <VStack>
-              {/* @ts-expect-error This is the future next/link version */}
-              <StyledLink legacyBehavior={false} href={`/${user.username}`}>
+              <StyledLink
+                href={{
+                  // @ts-expect-error TODO: fix noImplicitAny error here
+                  pathname: '/[username]',
+                  query: {
+                    username: user.username as string,
+                  },
+                }}
+              >
                 <BaseM>
                   <strong>{user.username}</strong>
                 </BaseM>
