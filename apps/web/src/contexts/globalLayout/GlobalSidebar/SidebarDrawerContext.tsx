@@ -59,7 +59,7 @@ function SidebarDrawerProvider({ children }: Props): ReactElement {
     setDrawerState((previous) => {
       // infer the drawer type from the content, and check that it's a valid type
       const propsDrawerType = typeof props.content.type !== 'string' ? props.content.type.name : '';
-      // const valid = isDrawerType(propsDrawerType);
+
       if (!isDrawerType(propsDrawerType)) {
         throw new Error('Invalid drawer type!');
       }
