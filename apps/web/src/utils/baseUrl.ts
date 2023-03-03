@@ -1,4 +1,4 @@
-const getBaseUrl = () => {
+export default function getBaseUrl() {
   const env = process.env.NEXT_PUBLIC_VERCEL_ENV;
   // If we're inside the Vercel environment
   switch (env) {
@@ -12,6 +12,4 @@ const getBaseUrl = () => {
 
   // Otherwise, we're probably running locally?
   return 'http://localhost:3000';
-};
-
-export const baseUrl = getBaseUrl();
+}
