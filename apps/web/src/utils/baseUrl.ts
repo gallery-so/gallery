@@ -1,4 +1,5 @@
 export const getBaseUrl = () => {
+  console.log('getBaseUrl', process.env.NEXT_PUBLIC_VERCEL_ENV);
   // If we're inside the Vercel environment
   switch (process.env.NEXT_PUBLIC_VERCEL_ENV) {
     case 'production':
