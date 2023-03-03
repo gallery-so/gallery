@@ -41,6 +41,8 @@ export function NotificationTwitterAlert({ queryRef }: Props) {
     queryRef
   );
 
+  const router = useRouter();
+
   const [isTwitterConnectionOnboardingUpsellExperienced, updateTwitterOnboardingExperience] =
     useExperience({
       type: 'TwitterConnectionOnboardingUpsell',
@@ -53,19 +55,17 @@ export function NotificationTwitterAlert({ queryRef }: Props) {
     await updateTwitterOnboardingExperience({ experienced: true });
   }, [updateTwitterOnboardingExperience]);
 
-  const router = useRouter();
-  const route = {
-    query: { ...router.query, twitter: 'true' },
-    pathname: router.pathname,
-  };
+  const handleConnect = useCallback(() => {
+    const route = {
+      query: { ...router.query, twitter: 'true' },
+      pathname: router.pathname,
+    };
+    localStorage.setItem(TWITTER_LOCAL_STORAGE_KEY, JSON.stringify(route));
+  }, [router.pathname, router.query]);
 
   if (twitterAccount || isTwitterConnectionOnboardingUpsellExperienced) {
     return null;
   }
-
-  const handleConnect = useCallback(() => {
-    localStorage.setItem(TWITTER_LOCAL_STORAGE_KEY, JSON.stringify(route));
-  }, [route]);
 
   return (
     <StyledAlertContainer>
