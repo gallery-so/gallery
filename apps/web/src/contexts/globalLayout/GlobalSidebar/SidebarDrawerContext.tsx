@@ -49,6 +49,7 @@ export const useDrawerActions = (): DrawerActions => {
 type Props = { children: ReactNode };
 
 function isDrawerType(type: string): type is DrawerType {
+  console.log({ type });
   return type === 'Notifications' || type === 'Settings';
 }
 
@@ -58,6 +59,11 @@ function SidebarDrawerProvider({ children }: Props): ReactElement {
   const showDrawer = useCallback((props: ActiveDrawer) => {
     setDrawerState((previous) => {
       // infer the drawer type from the content, and check that it's a valid type
+      console.log(
+        props.content.type,
+        props.content.type.name,
+        isDrawerType(props.content.type.name)
+      );
       const propsDrawerType = typeof props.content.type !== 'string' ? props.content.type.name : '';
 
       if (!isDrawerType(propsDrawerType)) {

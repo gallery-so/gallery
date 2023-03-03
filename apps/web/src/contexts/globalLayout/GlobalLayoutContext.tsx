@@ -458,11 +458,13 @@ const StyledBackground = styled.div`
 `;
 
 const StyledMotionWrapper = styled(motion.div)<{ isSidebarPresent: boolean }>`
-  transition: padding-left ${FADE_TRANSITION_TIME_SECONDS}s ease-in-out;
+  transition: margin-left ${FADE_TRANSITION_TIME_SECONDS}s ease-in-out;
+  position: relative;
+  width: initial;
 
   @media only screen and ${breakpoints.tablet} {
     ${({ isSidebarPresent }) =>
-      isSidebarPresent && `padding-left: ${GLOBAL_SIDEBAR_DESKTOP_WIDTH}px;`}
+      isSidebarPresent && `margin-left: ${GLOBAL_SIDEBAR_DESKTOP_WIDTH}px;`}
   }
 `;
 

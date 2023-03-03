@@ -8,7 +8,7 @@ export default function BellIcon() {
       <path
         d="M12.25 16.75C12.25 17.3467 12.0129 17.919 11.591 18.341C11.169 18.7629 10.5967 19 10 19C9.40326 19 8.83097 18.7629 8.40901 18.341C7.98705 17.919 7.75 17.3467 7.75 16.75"
         stroke="black"
-        stroke-linejoin="bevel"
+        strokeLinejoin="bevel"
       />
     </svg>
   );
