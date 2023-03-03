@@ -124,10 +124,10 @@ export function getWhitespacePositionsFromStagedItems(stagedItems: StagedItem[])
 
 // Given a collection of sections and their items, return an object representing the layout of the collection.
 // The layout object corresponds to the `CollectionLayoutInput`input type in the GraphQL API.
-export function generateLayoutFromCollection(collection: StagedSectionMap) {
+export function generateLayoutFromCollection(sections: StagedSectionMap) {
   let sectionStartIndex = 0;
-  const filteredCollection = { ...collection };
-  Object.entries(collection).forEach(([sectionId, section]) => {
+  let filteredSections = [...sections];
+  sections.forEach((section) => {
     let isEmptySection = section.items.length === 0;
     if (!isEmptySection) {
       // see if it's only empty whitespace blocks
@@ -137,13 +137,14 @@ export function generateLayoutFromCollection(collection: StagedSectionMap) {
 
     if (isEmptySection) {
       // delete empty section
-      delete filteredCollection[sectionId];
+      filteredSections = filteredSections.filter(
+        (sectionToFilter) => sectionToFilter.id === section.id
+      );
     }
   });
 
-  const sectionStartIndices = Object.keys(filteredCollection).map((sectionId, index) => {
-    const lastSectionId = Object.keys(filteredCollection)[index - 1];
-    const previousSection = lastSectionId ? filteredCollection[lastSectionId] : null;
+  const sectionStartIndices = filteredSections.map((section, index) => {
+    const previousSection = filteredSections[index - 1];
 
     if (!previousSection) {
       return sectionStartIndex;
@@ -156,7 +157,7 @@ export function generateLayoutFromCollection(collection: StagedSectionMap) {
 
   return {
     sections: sectionStartIndices,
-    sectionLayout: Object.values(filteredCollection).map((section) => ({
+    sectionLayout: Object.values(filteredSections).map((section) => ({
       columns: section.columns,
       whitespace: getWhitespacePositionsFromSection(section.items),
     })),

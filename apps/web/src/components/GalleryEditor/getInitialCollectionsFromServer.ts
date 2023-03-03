@@ -40,7 +40,7 @@ export function getInitialCollectionsFromServer(
     galleryRef
   );
 
-  const collections: CollectionMap = {};
+  const collections: CollectionMap = [];
 
   const queryCollections = removeNullValues(gallery?.collections);
 
@@ -48,11 +48,11 @@ export function getInitialCollectionsFromServer(
   if (queryCollections.length === 0) {
     const initialCollection = createEmptyCollection();
 
-    collections[initialCollection.dbid] = initialCollection;
+    collections.push(initialCollection);
   }
 
   for (const collection of queryCollections) {
-    const sections: StagedSectionMap = {};
+    const sections: StagedSectionMap = [];
     const nonNullTokens = removeNullValues(collection.tokens);
 
     if (!collection.layout) {
@@ -60,8 +60,9 @@ export function getInitialCollectionsFromServer(
     }
 
     const parsed = parseCollectionLayoutGraphql(nonNullTokens, collection.layout);
-    Object.entries(parsed).forEach(([sectionId, parsedSection]) => {
-      sections[sectionId] = {
+    parsed.forEach((parsedSection) => {
+      sections.push({
+        id: parsedSection.id,
         columns: parsedSection.columns,
         items: parsedSection.items.map((item) => {
           if ('whitespace' in item) {
@@ -76,14 +77,14 @@ export function getInitialCollectionsFromServer(
             return { kind: 'token', id: item.token.dbid };
           }
         }),
-      };
+      });
     });
 
-    let activeSectionId = Object.keys(sections)[0];
+    let activeSectionId = sections[0]?.id;
 
     if (!activeSectionId) {
       activeSectionId = generate12DigitId();
-      sections[activeSectionId] = { items: [], columns: 3 };
+      sections.push({ id: activeSectionId, items: [], columns: 3 });
     }
 
     const liveDisplayTokenIds = new Set<string>();
@@ -93,7 +94,7 @@ export function getInitialCollectionsFromServer(
       }
     }
 
-    collections[collection.dbid] = {
+    collections.push({
       activeSectionId,
       liveDisplayTokenIds: liveDisplayTokenIds,
       sections,
@@ -102,7 +103,7 @@ export function getInitialCollectionsFromServer(
       name: collection.name ?? '',
       collectorsNote: collection.collectorsNote ?? '',
       hidden: collection.hidden ?? false,
-    };
+    });
   }
 
   return collections;
@@ -122,9 +123,7 @@ export function createEmptyCollection(): CollectionState {
     collectorsNote: '',
     hidden: false,
 
-    sections: {
-      [generatedSectionId]: { columns: 3, items: [] },
-    },
+    sections: [{ id: generatedSectionId, columns: 3, items: [] }],
     activeSectionId: generatedSectionId,
   };
 }

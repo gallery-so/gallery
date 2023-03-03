@@ -68,16 +68,14 @@ export function CollectionSearchResults({ searchQuery, queryRef }: CollectionSea
       activateCollection(active.id as string);
 
       setCollections((previousCollections) => {
-        const items = Object.keys(previousCollections);
+        const oldIndex = previousCollections.findIndex(
+          (collection) => collection.dbid === active.id.toString()
+        );
+        const newIndex = previousCollections.findIndex(
+          (collection) => collection.dbid === over.id.toString()
+        );
 
-        const oldIndex = items.indexOf(active.id as string);
-        const newIndex = items.indexOf(over.id as string);
-
-        const nextOrder = arrayMove(items, oldIndex, newIndex);
-
-        return nextOrder.reduce((buildingCollections, currentKey) => {
-          return { ...buildingCollections, [currentKey]: previousCollections[currentKey] };
-        }, {});
+        return arrayMove(previousCollections, oldIndex, newIndex);
       });
     },
     [activateCollection, setCollections]

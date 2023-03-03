@@ -9,11 +9,11 @@ import {
 } from '@dnd-kit/core';
 import { MutableRefObject } from 'react';
 
-import { StagedSection } from '~/components/GalleryEditor/GalleryEditorContext';
+import { StagedSectionMap } from '~/components/GalleryEditor/GalleryEditorContext';
 
 type createCollisionDetectionStrategyArgs = {
   activeId: UniqueIdentifier | null;
-  localSections: Record<string, StagedSection>;
+  localSections: StagedSectionMap;
   lastOverId: MutableRefObject<UniqueIdentifier | null>;
   recentlyMovedToNewContainer: MutableRefObject<boolean | null>;
 };
@@ -33,12 +33,15 @@ export function createCollisionDetectionStrategy({
   recentlyMovedToNewContainer,
 }: createCollisionDetectionStrategyArgs) {
   return (args: Parameters<CollisionDetection>[0]): Collision[] => {
+    const localSectionIds = localSections.map((section) => section.id);
+
     // handle collisions when dragging sections
-    if (activeId && activeId in localSections) {
+    if (activeId && activeId in localSectionIds) {
+      console.log('This one');
       return closestCenter({
         ...args,
         droppableContainers: args.droppableContainers.filter(
-          (section) => section.id in localSections
+          (section) => section.id in localSectionIds
         ),
       });
     }
@@ -53,7 +56,7 @@ export function createCollisionDetectionStrategy({
 
     let overId = getFirstCollision(intersections, 'id');
     if (overId) {
-      const overSection = overId ? localSections[overId] : null;
+      const overSection = overId ? localSections.find((section) => section.id === overId) : null;
       if (overSection) {
         const sectionItems = overSection.items;
 

@@ -84,8 +84,9 @@ describe('parseCollectionLayout', () => {
 
 describe('generateLayoutFromCollection', () => {
   it('takes a StagedCollection and generates a layout object that can be saved to the backend', () => {
-    const stagedCollection = {
-      '123': {
+    const stagedCollection = [
+      {
+        id: '123',
         columns: 3,
         items: [
           { id: 'blank-1', kind: 'whitespace' } as const,
@@ -100,7 +101,8 @@ describe('generateLayoutFromCollection', () => {
           { id: 'blank-5', kind: 'whitespace' } as const,
         ],
       },
-      '456': {
+      {
+        id: '456',
         columns: 2,
         items: [
           { id: 'blank-1', kind: 'whitespace' } as const,
@@ -115,7 +117,8 @@ describe('generateLayoutFromCollection', () => {
           generateTestNft(),
         ],
       },
-    };
+    ];
+
     const layout = generateLayoutFromCollection(stagedCollection);
 
     expect(layout).toEqual({

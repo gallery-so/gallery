@@ -10,8 +10,8 @@ import {
 } from 'react';
 import rfdc from 'rfdc';
 
-import { rebuildSections } from '~/components/GalleryEditor/CollectionEditor/DragAndDrop/draggingActions';
 import {
+  CollectionState,
   StagedSection,
   StagedSectionMap,
   useGalleryEditorContext,
@@ -26,7 +26,7 @@ type CollectionEditorContextType = {
   // State
   name: string;
   collectorsNote: string;
-  sections: Record<string, StagedSection>;
+  sections: StagedSectionMap;
   activeSectionId: string | null;
 
   // Derived
@@ -37,7 +37,7 @@ type CollectionEditorContextType = {
   toggleTokenStaged: (tokenId: string) => void;
   addWhitespace: () => void;
 
-  updateSections: (sections: Record<string, StagedSection>) => void;
+  updateSections: (sections: StagedSectionMap) => void;
 
   addSection: () => void;
   moveSectionDown: (sectionId: string) => void;
@@ -62,12 +62,57 @@ export const CollectionEditorProvider = memo(({ children }: Props) => {
   const { collectionIdBeingEdited, collections, setCollections } = useGalleryEditorContext();
 
   const collectionBeingEdited = collectionIdBeingEdited
-    ? collections[collectionIdBeingEdited]
+    ? collections.find((collection) => collection.dbid === collectionIdBeingEdited)
     : null;
 
   const liveDisplayTokenIds = useMemo(() => {
     return collectionBeingEdited?.liveDisplayTokenIds ?? new Set<string>();
   }, [collectionBeingEdited?.liveDisplayTokenIds]);
+
+  const updateCollection = useCallback(
+    (collectionId: string, value: SetStateAction<CollectionState>) => {
+      setCollections((previousCollections) => {
+        return previousCollections.map((previousCollection) => {
+          if (previousCollection.dbid === collectionId) {
+            if (typeof value === 'function') {
+              return value(previousCollection);
+            } else {
+              return value;
+            }
+          }
+
+          return previousCollection;
+        });
+      });
+    },
+    [setCollections]
+  );
+
+  const updateSection = useCallback(
+    (sectionId: string, value: SetStateAction<StagedSection>) => {
+      if (!collectionIdBeingEdited) {
+        return;
+      }
+
+      updateCollection(collectionIdBeingEdited, (previousCollection) => {
+        return {
+          ...previousCollection,
+          sections: previousCollection.sections.map((previousSection) => {
+            if (previousSection.id === sectionId) {
+              if (typeof value === 'function') {
+                return value(previousSection);
+              } else {
+                return value;
+              }
+            }
+
+            return previousSection;
+          }),
+        };
+      });
+    },
+    [collectionIdBeingEdited, updateCollection]
+  );
 
   const setLiveDisplayTokenIds = useCallback<Dispatch<SetStateAction<Set<string>>>>(
     (value) => {
@@ -75,14 +120,7 @@ export const CollectionEditorProvider = memo(({ children }: Props) => {
         return;
       }
 
-      setCollections((previous) => {
-        const next = { ...previous };
-        const previousCollection = next[collectionIdBeingEdited];
-
-        if (!previousCollection) {
-          return previous;
-        }
-
+      updateCollection(collectionIdBeingEdited, (previousCollection) => {
         const previousLiveDisplayTokenIds = previousCollection.liveDisplayTokenIds;
 
         let nextLiveDisplayTokenIds;
@@ -92,24 +130,15 @@ export const CollectionEditorProvider = memo(({ children }: Props) => {
           nextLiveDisplayTokenIds = value;
         }
 
-        next[collectionIdBeingEdited] = {
-          ...previousCollection,
-          liveDisplayTokenIds: nextLiveDisplayTokenIds,
-        };
-
-        return next;
+        return { ...previousCollection, liveDisplayTokenIds: nextLiveDisplayTokenIds };
       });
     },
-    [collectionIdBeingEdited, setCollections]
+    [collectionIdBeingEdited, updateCollection]
   );
 
   const sections: StagedSectionMap = useMemo(() => {
-    if (!collectionIdBeingEdited) {
-      return {};
-    }
-
-    return collections[collectionIdBeingEdited]?.sections ?? {};
-  }, [collectionIdBeingEdited, collections]);
+    return collectionBeingEdited?.sections ?? [];
+  }, [collectionBeingEdited?.sections]);
 
   const setSections: Dispatch<SetStateAction<StagedSectionMap>> = useCallback(
     (value) => {
@@ -117,32 +146,21 @@ export const CollectionEditorProvider = memo(({ children }: Props) => {
         return;
       }
 
-      setCollections((previousCollections) => {
-        const nextCollections = { ...previousCollections };
-        const previousCollection = previousCollections[collectionIdBeingEdited];
-
-        if (!previousCollection) {
-          return previousCollections;
-        }
-
-        const previousSections = previousCollection.sections;
-
+      updateCollection(collectionIdBeingEdited, (previousCollection) => {
         let nextSections;
         if (typeof value === 'function') {
-          nextSections = value(previousSections);
+          nextSections = value(previousCollection.sections);
         } else {
           nextSections = value;
         }
 
-        nextCollections[collectionIdBeingEdited] = {
+        return {
           ...previousCollection,
           sections: nextSections,
         };
-
-        return nextCollections;
       });
     },
-    [collectionIdBeingEdited, setCollections]
+    [collectionIdBeingEdited, updateCollection]
   );
 
   const setActiveSectionId = useCallback(
@@ -151,23 +169,11 @@ export const CollectionEditorProvider = memo(({ children }: Props) => {
         return;
       }
 
-      setCollections((previous) => {
-        const next = { ...previous };
-        const previousCollection = previous[collectionIdBeingEdited];
-
-        if (!previousCollection) {
-          return previous;
-        }
-
-        next[collectionIdBeingEdited] = {
-          ...previousCollection,
-          activeSectionId: sectionId,
-        };
-
-        return next;
+      updateCollection(collectionIdBeingEdited, (previousColleciton) => {
+        return { ...previousColleciton, activeSectionId: sectionId };
       });
     },
-    [collectionIdBeingEdited, setCollections]
+    [collectionIdBeingEdited, updateCollection]
   );
 
   const activeSectionId: string | null = useMemo(() => {
@@ -175,11 +181,11 @@ export const CollectionEditorProvider = memo(({ children }: Props) => {
       return null;
     }
 
-    return collections[collectionIdBeingEdited]?.activeSectionId ?? null;
-  }, [collectionIdBeingEdited, collections]);
+    return collectionBeingEdited?.activeSectionId ?? null;
+  }, [collectionBeingEdited?.activeSectionId, collectionIdBeingEdited]);
 
   const updateSections = useCallback(
-    (updatedSections: Record<string, StagedSection>) => {
+    (updatedSections: StagedSectionMap) => {
       setSections(updatedSections);
     },
     [setSections]
@@ -187,17 +193,14 @@ export const CollectionEditorProvider = memo(({ children }: Props) => {
 
   const addSection = useCallback(() => {
     const newSectionId = generate12DigitId();
-
     setSections((previous) => {
       const newSection: StagedSection = {
+        id: newSectionId,
         columns: DEFAULT_COLUMN_SETTING,
         items: [],
       };
 
-      return {
-        ...previous,
-        [newSectionId]: newSection,
-      };
+      return [...previous, newSection];
     });
 
     setActiveSectionId(newSectionId);
@@ -205,10 +208,13 @@ export const CollectionEditorProvider = memo(({ children }: Props) => {
 
   const deleteSection = useCallback(
     (sectionId: string) => {
-      const sectionTokenIds =
-        sections[sectionId]?.items
-          .filter((item) => item.kind === 'token')
-          .map((token) => token.id) ?? [];
+      const sectionTokenIds = sections.flatMap((section) => {
+        if (section.id === sectionId) {
+          return section.items.filter((item) => item.kind === 'token').map((item) => item.id);
+        }
+
+        return [];
+      });
 
       setLiveDisplayTokenIds((previous) => {
         const cloned = new Set(previous);
@@ -216,15 +222,13 @@ export const CollectionEditorProvider = memo(({ children }: Props) => {
         return cloned;
       });
 
-      // Remove the section
-      const nextSections = { ...sections };
-      delete nextSections[sectionId];
+      const nextSections = sections.filter((section) => section.id !== sectionId);
 
       // If this was the last section in the collection, make a new one so its not empty
-      let nextActiveSectionId: string | undefined = Object.keys(nextSections)[0];
+      let nextActiveSectionId: string | undefined = nextSections[0]?.id;
       if (!nextActiveSectionId) {
         nextActiveSectionId = generate12DigitId();
-        nextSections[nextActiveSectionId] = { columns: 3, items: [] };
+        nextSections.push({ id: nextActiveSectionId, columns: 3, items: [] });
       }
 
       setSections(nextSections);
@@ -235,44 +239,20 @@ export const CollectionEditorProvider = memo(({ children }: Props) => {
 
   const incrementColumns = useCallback(
     (sectionId: string) => {
-      setSections((previous) => {
-        const previousSection = previous[sectionId];
-
-        if (!previousSection) {
-          return previous;
-        }
-
-        return {
-          ...previous,
-          [sectionId]: {
-            ...previousSection,
-            columns: previousSection.columns + 1,
-          },
-        };
+      updateSection(sectionId, (previousSection) => {
+        return { ...previousSection, columns: previousSection.columns + 1 };
       });
     },
-    [setSections]
+    [updateSection]
   );
 
   const decrementColumns = useCallback(
     (sectionId: string) => {
-      setSections((previous) => {
-        const previousSection = previous[sectionId];
-
-        if (!previousSection) {
-          return previous;
-        }
-
-        return {
-          ...previous,
-          [sectionId]: {
-            ...previousSection,
-            columns: previousSection.columns - 1,
-          },
-        };
+      updateSection(sectionId, (previousSection) => {
+        return { ...previousSection, columns: previousSection.columns - 1 };
       });
     },
-    [setSections]
+    [updateSection]
   );
 
   const toggleTokenLiveDisplay = useCallback(
@@ -328,19 +308,17 @@ export const CollectionEditorProvider = memo(({ children }: Props) => {
     (tokenId: string) => {
       if (!activeSectionId) {
         // Maybe make a new section here for them?
-
         return;
       }
 
-      setSections((previous) => {
-        const cloned = deepClone(previous);
-
-        cloned[activeSectionId]?.items.push({ kind: 'token', id: tokenId });
-
-        return cloned;
+      updateSection(activeSectionId, (previousSection) => {
+        return {
+          ...previousSection,
+          items: [...previousSection.items, { kind: 'token', id: tokenId }],
+        };
       });
     },
-    [activeSectionId, setSections]
+    [activeSectionId, updateSection]
   );
 
   const toggleTokenStaged = useCallback(
@@ -357,24 +335,19 @@ export const CollectionEditorProvider = memo(({ children }: Props) => {
   const addWhitespace = useCallback(() => {
     if (!activeSectionId) {
       // Maybe create a new section for them automatically
-
       return;
     }
 
     const id = generate12DigitId();
-    setSections((previous) => {
-      const cloned = deepClone(previous);
-
-      cloned[activeSectionId]?.items.push({ kind: 'whitespace', id });
-
-      return cloned;
+    updateSection(activeSectionId, (previousSection) => {
+      return { ...previousSection, items: [...previousSection.items, { kind: 'whitespace', id }] };
     });
 
     // auto scroll so that the new block is visible. 100ms timeout to account for async nature of staging tokens
     setTimeout(() => {
       document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
     }, 100);
-  }, [activeSectionId, setSections]);
+  }, [activeSectionId, updateSection]);
 
   const activateSection = useCallback(
     (sectionId: string) => {
@@ -389,42 +362,39 @@ export const CollectionEditorProvider = memo(({ children }: Props) => {
         return;
       }
 
-      setCollections((previousCollections) => {
-        const cloned = { ...previousCollections };
-
-        const previousCollection = previousCollections[collectionIdBeingEdited];
-
-        if (!previousCollection) {
-          return previousCollections;
-        }
-
-        cloned[collectionIdBeingEdited] = {
-          ...previousCollection,
-          name,
-          collectorsNote,
-        };
-
-        return cloned;
+      updateCollection(collectionIdBeingEdited, (previousColleciton) => {
+        return { ...previousColleciton, name, collectorsNote };
       });
     },
-    [collectionIdBeingEdited, setCollections]
+    [collectionIdBeingEdited, updateCollection]
   );
 
   const moveSectionUp = useCallback(
     (sectionId: string) => {
       setSections((previousSections) => {
-        const sectionKeys = Object.keys(previousSections);
-        const currentIndex = sectionKeys.indexOf(sectionId);
+        const currentIndex = previousSections.findIndex((section) => section.id === sectionId);
+        const sectionToMove = previousSections[currentIndex];
+
+        // Somehow it's not defined :shrug:
+        if (!sectionToMove) {
+          return previousSections;
+        }
+
+        // Section was not found
+        if (currentIndex === -1) {
+          return previousSections;
+        }
 
         // Can't move up from the top position
         if (currentIndex === 0) {
           return previousSections;
         }
 
-        sectionKeys.splice(currentIndex, 1);
-        sectionKeys.splice(currentIndex - 1, 0, sectionId);
+        const nextSections = [...previousSections];
+        nextSections.splice(currentIndex, 1);
+        nextSections.splice(currentIndex - 1, 0, sectionToMove);
 
-        return rebuildSections(previousSections, sectionKeys);
+        return nextSections;
       });
     },
     [setSections]
@@ -433,18 +403,29 @@ export const CollectionEditorProvider = memo(({ children }: Props) => {
   const moveSectionDown = useCallback(
     (sectionId: string) => {
       setSections((previousSections) => {
-        const sectionKeys = Object.keys(previousSections);
-        const currentIndex = sectionKeys.indexOf(sectionId);
+        const currentIndex = previousSections.findIndex((section) => section.id === sectionId);
+        const sectionToMove = previousSections[currentIndex];
 
-        // Can't move down from the last position
-        if (currentIndex === sectionKeys.length - 1) {
+        // Somehow it's not defined :shrug:
+        if (!sectionToMove) {
           return previousSections;
         }
 
-        sectionKeys.splice(currentIndex, 1);
-        sectionKeys.splice(currentIndex + 1, 0, sectionId);
+        // Section was not found
+        if (currentIndex === -1) {
+          return previousSections;
+        }
 
-        return rebuildSections(previousSections, sectionKeys);
+        // Can't move up from the top position
+        if (currentIndex === 0) {
+          return previousSections;
+        }
+
+        const nextSections = [...previousSections];
+        nextSections.splice(currentIndex, 1);
+        nextSections.splice(currentIndex + 1, 0, sectionToMove);
+
+        return nextSections;
       });
     },
     [setSections]

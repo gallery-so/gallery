@@ -2,23 +2,11 @@ import { DragEndEvent, DragOverEvent } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
 import rfdc from 'rfdc';
 
-import { StagedSection } from '~/components/GalleryEditor/GalleryEditorContext';
+import { StagedSectionMap } from '~/components/GalleryEditor/GalleryEditorContext';
 
 const deepClone = rfdc();
 
-export function rebuildSections(
-  previous: Record<string, StagedSection>,
-  newKeyOrder: string[]
-): Record<string, StagedSection> {
-  return newKeyOrder.reduce((acc, sectionId) => {
-    return { ...acc, [sectionId]: previous[sectionId] };
-  }, {});
-}
-
-export function dragOver(
-  sections: Record<string, StagedSection>,
-  event: DragOverEvent
-): Record<string, StagedSection> {
+export function dragOver(sections: StagedSectionMap, event: DragOverEvent): StagedSectionMap {
   const activeId = event.active?.id;
   const overId = event.over?.id;
 
@@ -28,8 +16,8 @@ export function dragOver(
 
   const cloned = deepClone(sections);
 
-  const sectionIds = Object.keys(sections);
-  const allItems = Object.values(sections).flatMap((section) => section.items);
+  const sectionIds = sections.map((section) => section.id);
+  const allItems = sections.flatMap((section) => section.items);
 
   const isTheActiveItemASection = sectionIds.includes(activeId.toString());
   const isTheOverItemASection = sectionIds.includes(overId.toString());
@@ -54,15 +42,15 @@ export function dragOver(
     });
 
     // Push the token to the new section
-    cloned[overId]?.items.push(item);
+    cloned.find((section) => section.id === overId)?.items.push(item);
 
     return cloned;
   } else {
     // Token => Token
-    const sectionWithActiveToken = Object.values(cloned).find((section) =>
+    const sectionWithActiveToken = cloned.find((section) =>
       section.items.some((item) => item.id === activeId)
     );
-    const sectionWithOverToken = Object.values(cloned).find((section) =>
+    const sectionWithOverToken = cloned.find((section) =>
       section.items.some((item) => item.id === overId)
     );
 
@@ -94,10 +82,7 @@ export function dragOver(
   return sections;
 }
 
-export function dragEnd(
-  sections: Record<string, StagedSection>,
-  event: DragEndEvent
-): Record<string, StagedSection> {
+export function dragEnd(sections: StagedSectionMap, event: DragEndEvent): StagedSectionMap {
   const activeId = event.active?.id;
   const overId = event.over?.id;
 
@@ -107,7 +92,7 @@ export function dragEnd(
 
   const cloned = deepClone(sections);
 
-  const sectionIds = Object.keys(sections);
+  const sectionIds = sections.map((section) => section.id);
   const allItems = Object.values(sections).flatMap((section) => section.items);
 
   const isTheActiveItemASection = sectionIds.includes(activeId.toString());
@@ -115,10 +100,10 @@ export function dragEnd(
 
   if (isTheActiveItemASection && isTheOverItemASection) {
     // Section => Section
-    const oldIndex = Object.keys(cloned).findIndex((id) => id === activeId);
-    const newIndex = Object.keys(cloned).findIndex((id) => id === overId);
+    const oldIndex = cloned.findIndex((section) => section.id === activeId);
+    const newIndex = cloned.findIndex((section) => section.id === overId);
 
-    return rebuildSections(cloned, arrayMove(sectionIds, oldIndex, newIndex));
+    return arrayMove(cloned, oldIndex, newIndex);
   } else if (isTheActiveItemASection && !isTheOverItemASection) {
     // Section => Token
     // In this case, we'll just assume the new position is the section owning the token
@@ -127,7 +112,7 @@ export function dragEnd(
       section.items.some((item) => item.id === overId)
     );
 
-    return rebuildSections(cloned, arrayMove(sectionIds, oldIndex, newIndex));
+    return arrayMove(cloned, oldIndex, newIndex);
   } else if (!isTheActiveItemASection && isTheOverItemASection) {
     // Token => Section
     // In this case, we'll assume they just want to go the end of the section
@@ -143,7 +128,7 @@ export function dragEnd(
     });
 
     // Push the token to the new section
-    cloned[overId]?.items.push(item);
+    cloned.find((section) => section.id === overId)?.items.push(item);
 
     return cloned;
   } else if (!isTheActiveItemASection && !isTheOverItemASection) {

@@ -43,7 +43,7 @@ export function CollectionListItem({ collectionId, queryRef }: CollectionListIte
     deleteCollection,
     editCollectionNameAndNote,
   } = useGalleryEditorContext();
-  const collection = collections[collectionId];
+  const collection = collections.find((collection) => collection.dbid === collectionId);
 
   if (!collection) {
     throw new ErrorWithSentryMetadata(

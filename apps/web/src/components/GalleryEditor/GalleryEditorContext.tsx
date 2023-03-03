@@ -71,6 +71,7 @@ type GalleryEditorProviderProps = PropsWithChildren<{
 export type StagedItem = { kind: 'whitespace'; id: string } | { kind: 'token'; id: string };
 
 export type StagedSection = {
+  id: string;
   columns: number;
   items: StagedItem[];
 };
@@ -89,8 +90,8 @@ export type CollectionState = {
   activeSectionId: string | null;
 };
 
-export type StagedSectionMap = Record<string, StagedSection>;
-export type CollectionMap = Record<string, CollectionState>;
+export type StagedSectionMap = StagedSection[];
+export type CollectionMap = CollectionState[];
 
 export function GalleryEditorProvider({
   queryRef,
@@ -196,7 +197,7 @@ export function GalleryEditorProvider({
         localOnly: true,
         hidden: false,
 
-        sections: { [defaultSectionId]: { columns: 3, items: [] } },
+        sections: [{ id: generate12DigitId(), columns: 3, items: [] }],
       };
 
       return {
@@ -212,7 +213,7 @@ export function GalleryEditorProvider({
     setCollections((previous) => {
       const cloned = deepClone(previous);
 
-      const collection = cloned[collectionId];
+      const collection = cloned.find((collection) => collection.dbid === collectionId);
       if (collection) {
         collection.hidden = !collection.hidden;
       }
@@ -243,17 +244,16 @@ export function GalleryEditorProvider({
         return next;
       });
 
-      const nextCollections = { ...collections };
-      delete nextCollections[collectionId];
+      const nextCollections = collections.filter((collection) => collection.dbid === collectionId);
 
-      setCollections(nextCollections);
-
-      let nextCollectionIdBeingEdited = Object.keys(nextCollections)[0];
+      let nextCollectionIdBeingEdited = nextCollections[0]?.dbid;
       if (!nextCollectionIdBeingEdited) {
         const emptyCollection = createEmptyCollection();
         nextCollectionIdBeingEdited = emptyCollection.dbid;
-        nextCollections[nextCollectionIdBeingEdited] = emptyCollection;
+        nextCollections.push(emptyCollection);
       }
+
+      setCollections(nextCollections);
       setCollectionIdBeingEdited(nextCollectionIdBeingEdited);
     },
     [collections]
@@ -278,7 +278,7 @@ export function GalleryEditorProvider({
 
   const editCollectionNameAndNote = useCallback(
     (collectionId: string) => {
-      const collection = collections[collectionId];
+      const collection = collections.find((collection) => collection.dbid === collectionId);
 
       if (!collection) {
         return;
@@ -292,18 +292,13 @@ export function GalleryEditorProvider({
             collectorsNote={collection.collectorsNote}
             onDone={({ name, collectorsNote }) => {
               setCollections((previous) => {
-                const next = { ...previous };
+                const next = previous.map((collection) => {
+                  if (collection.dbid === collectionId) {
+                    return { ...collection, name, collectorsNote };
+                  }
 
-                const previousCollection = previous[collectionId];
-                if (!previousCollection) {
-                  return previous;
-                }
-
-                next[collectionId] = {
-                  ...previousCollection,
-                  name,
-                  collectorsNote,
-                };
+                  return collection;
+                });
 
                 return next;
               });
@@ -550,8 +545,10 @@ export function GalleryEditorProvider({
 
   const doesCollectionHaveUnsavedChanges = useCallback(
     (collectionId: string) => {
-      const currentCollection = collections[collectionId];
-      const initialCollection = initialCollections[collectionId];
+      const currentCollection = collections.find((collection) => collection.dbid === collectionId);
+      const initialCollection = initialCollections.find(
+        (collection) => collection.dbid === collectionId
+      );
 
       if (!currentCollection || !initialCollection) {
         return false;
@@ -584,20 +581,20 @@ export function GalleryEditorProvider({
 
   const moveCollectionToGallery = useCallback(
     (collectionId: string) => {
-      const nextInitialCollections = { ...initialCollections };
-      delete nextInitialCollections[collectionId];
-      setInitialCollections(nextInitialCollections);
+      const nextCollections = collections.filter((collection) => collection.dbid === collectionId);
+      const nextInitialCollections = initialCollections.filter(
+        (collection) => collection.dbid === collectionId
+      );
 
-      const nextCollections = { ...collections };
-      delete nextCollections[collectionId];
-      setCollections(nextCollections);
-
-      let nextCollectionIdBeingEdited = Object.keys(nextCollections)[0];
+      let nextCollectionIdBeingEdited = nextCollections[0]?.dbid;
       if (!nextCollectionIdBeingEdited) {
         const emptyCollection = createEmptyCollection();
         nextCollectionIdBeingEdited = emptyCollection.dbid;
-        nextCollections[nextCollectionIdBeingEdited] = emptyCollection;
+        nextCollections.push(emptyCollection);
       }
+
+      setCollections(nextCollections);
+      setInitialCollections(nextInitialCollections);
       setCollectionIdBeingEdited(nextCollectionIdBeingEdited);
     },
     [collections, initialCollections]

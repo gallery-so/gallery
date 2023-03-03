@@ -3,6 +3,7 @@ import {
   dragOver,
 } from '~/components/GalleryEditor/CollectionEditor/DragAndDrop/draggingActions';
 import { StagedSection } from '~/components/GalleryEditor/GalleryEditorContext';
+import { generate12DigitId } from '~/utils/generate12DigitId';
 
 type TestCaseArgs = {
   initial: Record<string, StagedSection>;
@@ -31,10 +32,12 @@ describe('draggingActions', () => {
       testCase({
         initial: {
           A: {
+            id: generate12DigitId(),
             columns: 1,
             items: [{ kind: 'token', id: 'token-1' }],
           },
           B: {
+            id: generate12DigitId(),
             columns: 1,
             items: [{ kind: 'token', id: 'token-2' }],
           },
@@ -45,10 +48,12 @@ describe('draggingActions', () => {
         },
         result: {
           A: {
+            id: generate12DigitId(),
             columns: 1,
             items: [],
           },
           B: {
+            id: generate12DigitId(),
             columns: 1,
             items: [
               { kind: 'token', id: 'token-2' },
@@ -63,10 +68,12 @@ describe('draggingActions', () => {
       testCase({
         initial: {
           A: {
+            id: generate12DigitId(),
             columns: 1,
             items: [{ kind: 'token', id: 'token-1' }],
           },
           B: {
+            id: generate12DigitId(),
             columns: 1,
             items: [{ kind: 'token', id: 'token-2' }],
           },
@@ -77,10 +84,12 @@ describe('draggingActions', () => {
         },
         result: {
           A: {
+            id: generate12DigitId(),
             columns: 1,
             items: [],
           },
           B: {
+            id: generate12DigitId(),
             columns: 1,
             items: [
               { kind: 'token', id: 'token-2' },
@@ -95,10 +104,12 @@ describe('draggingActions', () => {
       testCaseNoChange({
         initial: {
           A: {
+            id: generate12DigitId(),
             columns: 1,
             items: [],
           },
           B: {
+            id: generate12DigitId(),
             columns: 1,
             items: [],
           },
@@ -111,10 +122,12 @@ describe('draggingActions', () => {
       testCaseNoChange({
         initial: {
           A: {
+            id: generate12DigitId(),
             columns: 1,
             items: [],
           },
           B: {
+            id: generate12DigitId(),
             columns: 1,
             items: [{ kind: 'token', id: 'token-1' }],
           },
@@ -145,6 +158,7 @@ describe('draggingActions', () => {
       testCase({
         initial: {
           A: {
+            id: generate12DigitId(),
             columns: 1,
             items: [
               { kind: 'token', id: 'token-1' },
@@ -155,6 +169,7 @@ describe('draggingActions', () => {
         action: { from: 'token-1', to: 'token-2' },
         result: {
           A: {
+            id: generate12DigitId(),
             columns: 1,
             items: [
               { kind: 'token', id: 'token-2' },
@@ -168,13 +183,26 @@ describe('draggingActions', () => {
     it('moves token to other section when dragging token over token in other section', () => {
       testCase({
         initial: {
-          A: { columns: 1, items: [{ kind: 'token', id: 'token-1' }] },
-          B: { columns: 1, items: [{ kind: 'token', id: 'token-2' }] },
+          A: {
+            id: generate12DigitId(),
+            columns: 1,
+            items: [{ kind: 'token', id: 'token-1' }],
+          },
+          B: {
+            id: generate12DigitId(),
+            columns: 1,
+            items: [{ kind: 'token', id: 'token-2' }],
+          },
         },
         action: { from: 'token-1', to: 'token-2' },
         result: {
-          A: { columns: 1, items: [] },
+          A: {
+            id: generate12DigitId(),
+            columns: 1,
+            items: [],
+          },
           B: {
+            id: generate12DigitId(),
             columns: 1,
             items: [
               { kind: 'token', id: 'token-1' },
@@ -188,13 +216,29 @@ describe('draggingActions', () => {
     it('moves token to other section when dragging token over empty section', () => {
       testCase({
         initial: {
-          A: { columns: 1, items: [{ kind: 'token', id: 'token-1' }] },
-          B: { columns: 1, items: [] },
+          A: {
+            id: generate12DigitId(),
+            columns: 1,
+            items: [{ kind: 'token', id: 'token-1' }],
+          },
+          B: {
+            id: generate12DigitId(),
+            columns: 1,
+            items: [],
+          },
         },
         action: { from: 'token-1', to: 'B' },
         result: {
-          A: { columns: 1, items: [] },
-          B: { columns: 1, items: [{ kind: 'token', id: 'token-1' }] },
+          A: {
+            id: generate12DigitId(),
+            columns: 1,
+            items: [],
+          },
+          B: {
+            id: generate12DigitId(),
+            columns: 1,
+            items: [{ kind: 'token', id: 'token-1' }],
+          },
         },
       });
     });
@@ -202,8 +246,16 @@ describe('draggingActions', () => {
     it('does nothing when moving token over itself', () => {
       testCaseNoChange({
         initial: {
-          A: { columns: 1, items: [{ kind: 'token', id: 'token-1' }] },
-          B: { columns: 1, items: [] },
+          A: {
+            id: generate12DigitId(),
+            columns: 1,
+            items: [{ kind: 'token', id: 'token-1' }],
+          },
+          B: {
+            id: generate12DigitId(),
+            columns: 1,
+            items: [],
+          },
         },
         action: { from: 'token-1', to: 'token-1' },
       });
@@ -212,13 +264,32 @@ describe('draggingActions', () => {
     it('swaps sections when moving section over another section', () => {
       testCase({
         initial: {
-          A: { columns: 1, items: [] },
-          B: { columns: 1, items: [] },
+          A: {
+            id: generate12DigitId(),
+            columns: 1,
+            items: [],
+          },
+          B: {
+            id: generate12DigitId(),
+            columns: 1,
+            items: [],
+          },
         },
-        action: { from: 'A', to: 'B' },
+        action: {
+          from: 'A',
+          to: 'B',
+        },
         result: {
-          B: { columns: 1, items: [] },
-          A: { columns: 1, items: [] },
+          B: {
+            id: generate12DigitId(),
+            columns: 1,
+            items: [],
+          },
+          A: {
+            id: generate12DigitId(),
+            columns: 1,
+            items: [],
+          },
         },
       });
     });
@@ -226,13 +297,29 @@ describe('draggingActions', () => {
     it('can move token over itself', () => {
       testCase({
         initial: {
-          A: { columns: 1, items: [{ kind: 'token', id: 'token-1' }] },
-          B: { columns: 1, items: [] },
+          A: {
+            id: generate12DigitId(),
+            columns: 1,
+            items: [{ kind: 'token', id: 'token-1' }],
+          },
+          B: {
+            id: generate12DigitId(),
+            columns: 1,
+            items: [],
+          },
         },
         action: { from: 'token-1', to: 'token-1' },
         result: {
-          A: { columns: 1, items: [{ kind: 'token', id: 'token-1' }] },
-          B: { columns: 1, items: [] },
+          A: {
+            id: generate12DigitId(),
+            columns: 1,
+            items: [{ kind: 'token', id: 'token-1' }],
+          },
+          B: {
+            id: generate12DigitId(),
+            columns: 1,
+            items: [],
+          },
         },
       });
     });
@@ -240,8 +327,16 @@ describe('draggingActions', () => {
     it('does nothing when moving section over itself', () => {
       testCaseNoChange({
         initial: {
-          A: { columns: 1, items: [{ kind: 'token', id: 'token-1' }] },
-          B: { columns: 1, items: [] },
+          A: {
+            id: generate12DigitId(),
+            columns: 1,
+            items: [{ kind: 'token', id: 'token-1' }],
+          },
+          B: {
+            id: generate12DigitId(),
+            columns: 1,
+            items: [],
+          },
         },
         action: { from: 'A', to: 'A' },
       });

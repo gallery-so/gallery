@@ -102,7 +102,7 @@ function StagingArea({ tokensRef }: Props) {
 
   const escapedCollectionName = unescape(name ?? '');
   const nonNullTokens = useMemo(() => removeNullValues(tokens), [tokens]);
-  const sectionIds = useMemo(() => Object.keys(localSections) as string[], [localSections]);
+  const sectionIds = useMemo(() => sections.map((section) => section.id), [sections]);
 
   const recentlyMovedToNewContainer = useRef(false);
   const lastOverId = useRef<UniqueIdentifier | null>(null);
@@ -178,7 +178,7 @@ function StagingArea({ tokensRef }: Props) {
       return null;
     }
 
-    const localActiveSection = localSections[activeId.toString()];
+    const localActiveSection = localSections.find((section) => section.id === activeId.toString());
     if (localActiveSection) {
       return (
         <SectionDragging
@@ -207,7 +207,7 @@ function StagingArea({ tokensRef }: Props) {
         />
       );
     }
-  }, [activeId, activeItem, localSections, nftFragmentsKeyedByID, sections]);
+  }, [activeId, activeItem, activeSectionId, localSections, nftFragmentsKeyedByID, sections]);
 
   const hasNameOrCollectorsNote = name || collectorsNote;
   return (
@@ -304,11 +304,11 @@ function StagingArea({ tokensRef }: Props) {
           {/* Handles sorting for sections */}
           <SortableContext items={sectionIds} strategy={verticalListSortingStrategy}>
             <VStack gap={12}>
-              {Object.entries(localSections).map(([sectionId, section]) => {
+              {localSections.map((section) => {
                 return (
                   <DroppableSection
-                    key={sectionId}
-                    id={sectionId}
+                    key={section.id}
+                    id={section.id}
                     items={section.items}
                     columns={section.columns}
                   >

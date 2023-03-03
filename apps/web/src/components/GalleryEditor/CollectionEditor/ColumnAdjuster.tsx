@@ -41,11 +41,7 @@ function ColumnAdjuster({ sectionId }: Props) {
     useCollectionEditorContext();
 
   const columns = useMemo(() => {
-    if (sectionId) {
-      return sections[sectionId]?.columns ?? 0;
-    }
-
-    return 0;
+    return sections.find((section) => section.id === sectionId)?.columns ?? 0;
   }, [sectionId, sections]);
 
   const handleIncrementClick = useCallback(() => {
