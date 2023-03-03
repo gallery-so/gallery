@@ -26,7 +26,7 @@ import { UserGalleryCollectionQueryFragment$key } from '~/generated/UserGalleryC
 import useUpdateCollectionInfo from '~/hooks/api/collections/useUpdateCollectionInfo';
 import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
 import useResizeObserver from '~/hooks/useResizeObserver';
-import { getBaseUrl } from '~/utils/baseUrl';
+import { baseUrl } from '~/utils/baseUrl';
 import unescape from '~/utils/unescape';
 
 type Props = {
@@ -135,9 +135,6 @@ function UserGalleryCollection({
     showModal,
     updateCollectionInfo,
   ]);
-
-  const baseUrl = useMemo(() => getBaseUrl(), []);
-  console.log({ baseUrl });
 
   return (
     <StyledCollectionWrapper ref={componentRef}>
