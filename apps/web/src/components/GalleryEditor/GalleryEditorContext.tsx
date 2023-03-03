@@ -416,14 +416,13 @@ export function GalleryEditorProvider({
       // Reset the deleted collection ids since we just deleted them
       setDeletedCollectionIds(new Set());
 
-      // TODO(Terence): Ensure the same collection is still activated
-      // const newCollectionIdBeingEdited = collectionIdBeingEdited
-      //   ? serverSourcedCollections[
-      //       collections.indexOf(collectionIdBeingEdited)
-      //     ]
-      //   : null;
-      //
-      // setCollectionIdBeingEdited(newCollectionIdBeingEdited ?? null);
+      const indexOfCollectionBeingEdited = collections.findIndex(
+        (collection) => collection.dbid === collectionIdBeingEdited
+      );
+      const newCollectionIdBeingEdited =
+        serverSourcedCollections[indexOfCollectionBeingEdited]?.dbid;
+
+      setCollectionIdBeingEdited(newCollectionIdBeingEdited ?? null);
 
       // Flash a "Saved" message next to the "Done" button
       setHasSaved(true);
