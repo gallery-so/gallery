@@ -22,10 +22,6 @@ tasks:
   codegen-watch:
     command: relay-compiler --repersist --watch ../../relay.config.js
 
-  ios-raw:
-    command: expo run:ios
-    local: true
-
   ios-device-raw:
     command: expo run:ios --device
     local: true
