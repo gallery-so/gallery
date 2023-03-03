@@ -14,11 +14,10 @@ import useDetectOutsideClick from '~/hooks/useDetectOutsideClick';
 import useKeyDown from '~/hooks/useKeyDown';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 
-import { DrawerType, useDrawerActions } from './SidebarDrawerContext';
+import { useDrawerActions } from './SidebarDrawerContext';
 
 type Props = {
   content: ReactElement;
-  drawerType?: DrawerType;
 };
 
 export default function AnimatedSidebarDrawer({ content }: Props) {

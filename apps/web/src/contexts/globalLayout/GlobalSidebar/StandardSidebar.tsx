@@ -63,10 +63,10 @@ export function StandardSidebar({ queryRef }: Props) {
   const router = useRouter();
 
   const activeDrawerState = useDrawerState();
-  const activeDrawerName = useMemo(
-    () => activeDrawerState.activeDrawer?.drawerType,
-    [activeDrawerState]
-  );
+  const activeDrawerType = useMemo(() => {
+    console.log(activeDrawerState.activeDrawer?.content.type === Settings);
+    return activeDrawerState.activeDrawer?.content.type;
+  }, [activeDrawerState]);
 
   const notificationCount = useMemo(() => {
     if (
@@ -167,14 +167,14 @@ export function StandardSidebar({ queryRef }: Props) {
                 tooltipLabel="Notifications"
                 onClick={handleNotificationsClick}
                 icon={<BellIcon />}
-                isActive={activeDrawerName === 'Notifications'}
+                isActive={activeDrawerType === Notifications}
                 showUnreadDot={notificationCount > 0}
               />
               <SidebarIcon
                 tooltipLabel="Settings"
                 onClick={handleSettingsClick}
                 icon={<CogIcon />}
-                isActive={activeDrawerName === 'Settings'}
+                isActive={activeDrawerType === Settings}
               />
             </>
           )}
@@ -215,13 +215,13 @@ export function StandardSidebar({ queryRef }: Props) {
               tooltipLabel="Notifications"
               onClick={handleNotificationsClick}
               icon={<BellIcon />}
-              isActive={activeDrawerName === 'Notifications'}
+              isActive={activeDrawerType === Notifications}
             />
             <SidebarIcon
               tooltipLabel="Settings"
               onClick={handleSettingsClick}
               icon={<CogIcon />}
-              isActive={activeDrawerName === 'Settings'}
+              isActive={activeDrawerType === Settings}
             />
           </VStack>
         )}
