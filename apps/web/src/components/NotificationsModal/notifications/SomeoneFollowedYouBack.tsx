@@ -43,19 +43,17 @@ export function SomeoneFollowedYouBack({ notificationRef, queryRef }: SomeoneFol
 
   return (
     <BaseM>
-      <strong>
-        {count > 1 ? (
-          <>{count} collectors</>
-        ) : (
-          <>
-            {lastFollower ? (
-              <HoverCardOnUsername userRef={lastFollower} queryRef={query} />
-            ) : (
-              'Someone'
-            )}
-          </>
-        )}
-      </strong>{' '}
+      {count > 1 ? (
+        <strong>{count} collectors</strong>
+      ) : (
+        <>
+          {lastFollower ? (
+            <HoverCardOnUsername userRef={lastFollower} queryRef={query} />
+          ) : (
+            <strong>Someone</strong>
+          )}
+        </>
+      )}{' '}
       followed you back
     </BaseM>
   );
