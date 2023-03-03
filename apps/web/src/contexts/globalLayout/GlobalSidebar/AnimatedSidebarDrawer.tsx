@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { motion, MotionProps } from 'framer-motion';
 import { MouseEvent, ReactElement, useCallback, useMemo, useRef } from 'react';
 import styled from 'styled-components';
 
@@ -55,7 +55,7 @@ export default function AnimatedSidebarDrawer({
 
   const isMobile = useIsMobileWindowWidth();
 
-  const motionSettings = useMemo(() => {
+  const motionSettings = useMemo((): MotionProps => {
     // On mobile, the drawer slides up from the bottom. On desktop, it slides in from the left.
     return isMobile
       ? {

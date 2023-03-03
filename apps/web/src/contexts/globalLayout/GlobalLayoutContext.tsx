@@ -235,8 +235,6 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
 
   const locationKey = useStabilizedRouteTransitionKey();
 
-  const isGlobalSidebarEnabled = isFeatureEnabled(FeatureFlag.GLOBAL_SIDEBAR, query);
-
   const isSidebarPresent = sidebarContent !== null;
 
   return (
@@ -255,7 +253,22 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
         isSidebarPresent={isSidebarPresent}
       />
 
-      {isGlobalSidebarEnabled && <GlobalSidebar content={sidebarContent} />}
+      <AnimatePresence>
+        {isSidebarPresent && (
+          <StyledGlobalSidebarMotion
+            key={locationKey}
+            transition={{
+              ease: 'easeInOut',
+              duration: FADE_TRANSITION_TIME_SECONDS,
+            }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <GlobalSidebar content={sidebarContent} />
+          </StyledGlobalSidebarMotion>
+        )}
+      </AnimatePresence>
 
       <MainContentWrapper isSidebarPresent={isSidebarPresent}>
         <GlobalLayoutStateContext.Provider value={state}>
@@ -290,10 +303,17 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
 });
 
 const MainContentWrapper = styled.div<{ isSidebarPresent: boolean }>`
+  transition: margin-left ${FADE_TRANSITION_TIME_SECONDS}s ease-in-out;
+
   @media only screen and ${breakpoints.tablet} {
     ${({ isSidebarPresent }) =>
       isSidebarPresent && ` margin-left: ${GLOBAL_SIDEBAR_DESKTOP_WIDTH}px;`}
   }
+`;
+
+const StyledGlobalSidebarMotion = styled(motion.div)`
+  position: relative;
+  z-index: 2; // ensure sidebar sits above navbar
 `;
 
 GlobalLayoutContextProvider.preloadQuery = ({ relayEnvironment }: PreloadQueryArgs) => {
@@ -440,6 +460,8 @@ const StyledBackground = styled.div`
 `;
 
 const StyledMotionWrapper = styled(motion.div)<{ isSidebarPresent: boolean }>`
+  transition: padding-left ${FADE_TRANSITION_TIME_SECONDS}s ease-in-out;
+
   @media only screen and ${breakpoints.tablet} {
     ${({ isSidebarPresent }) =>
       isSidebarPresent && `padding-left: ${GLOBAL_SIDEBAR_DESKTOP_WIDTH}px;`}

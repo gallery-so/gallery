@@ -1,88 +1,27 @@
-import AlertIcon from './AlertIcon';
-import AlertTriangleIcon from './AlertTriangleIcon';
-import { AllGalleriesIcon } from './AllGalleriesIcon';
-import ArrowDownIcon from './ArrowDownIcon';
-import ArrowLeftIcon from './ArrowLeftIcon';
-import ArrowRightIcon from './ArrowRightIcon';
-import ArrowUpIcon from './ArrowUpIcon';
-import ArrowUpRightIcon from './ArrowUpRightIcon';
-import BellIcon from './BellIcon';
-import CheckIcon from './CheckIcon';
-import CircleCheckIcon from './CircleCheckIcon';
-import CircleMinusIcon from './CircleMinusIcon';
-import CirclePlusIcon from './CirclePlusIcon';
-import ClockIcon from './ClockIcon';
-import CloseIcon from './CloseIcon';
-import CogIcon from './CogIcon';
-import CopyIcon from './CopyIcon';
-import DoubleArrowsIcon from './DoubleArrowsIcon';
-import DragHandleIcon from './DragHandleIcon';
-import { EditPencilIcon } from './EditPencilIcon';
-import GlobeIcon from './GlobeIcon';
-import GLogoIcon from './GLogoIcon';
-import HideIcon from './HideIcon';
-import InfoCircleIcon from './InfoCircleIcon';
-import LinkIcon from './LinkIcon';
-import LockIcon from './LockIcon';
-import LogoBracketLeft from './LogoBracketLeft';
-import LogoBracketRight from './LogoBracketRight';
-import PlusIcon from './PlusIcon';
-import QRIcon from './QRIcon';
-import { QuestionMarkIcon } from './QuestionMarkIcon';
-import { RefreshIcon } from './RefreshIcon';
-import ShopIcon from './ShopIcon';
-import SnowflakeIcon from './SnowflakeIcon';
-import { AdmireIcon, CommentIcon } from './SocializeIcons';
-import Trash from './Trash';
-import { TrashIconNew } from './TrashIconNew';
-import TwitterIcon from './TwitterIcon';
-import UserIcon from './UserIcon';
-import Video from './Video';
-import VideoDisabled from './VideoDisabled';
+// This file is used to import all of the icons in the src/icons/ directory automatically and export them as a single object, to reduce manual overhead of importing icons individually.
 
-const icons = {
-  AdmireIcon,
-  AlertIcon,
-  AlertTriangleIcon,
-  AllGalleriesIcon,
-  ArrowDownIcon,
-  ArrowLeftIcon,
-  ArrowRightIcon,
-  ArrowUpIcon,
-  ArrowUpRightIcon,
-  BellIcon,
-  CheckIcon,
-  CircleCheckIcon,
-  CircleMinusIcon,
-  CirclePlusIcon,
-  ClockIcon,
-  CloseIcon,
-  CogIcon,
-  CommentIcon,
-  CopyIcon,
-  DoubleArrowsIcon,
-  DragHandleIcon,
-  EditPencilIcon,
-  GlobeIcon,
-  GLogoIcon,
-  HideIcon,
-  InfoCircleIcon,
-  LinkIcon,
-  LockIcon,
-  LogoBracketLeft,
-  LogoBracketRight,
-  PlusIcon,
-  QRIcon,
-  QuestionMarkIcon,
-  RefreshIcon,
-  ShopIcon,
-  SnowflakeIcon,
-  Trash,
-  TrashIconNew,
-  TwitterIcon,
-  UserIcon,
-  Video,
-  VideoDisabled,
-};
+// import every file in src/icons/ except index.tsx
+const files = require.context('src/icons/', false, /^(?!.*\/index\.tsx$).*\.tsx$/);
 
-export default icons;
+const modules: Record<string, () => JSX.Element> = {};
+
+files.keys().forEach((key) => {
+  // get just the module name from the file path: ie. 'src/icons/Icon.tsx' -> 'Icon'
+  const fileName = key.match(/\/(\w+)\.tsx?$/)?.[1];
+  if (!fileName) return;
+
+  const iconModule = files(key);
+
+  // set each exported module from each file onto the modules object.
+  // "key" here is the name of each export in the module.
+  Object.keys(iconModule).forEach((key) => {
+    // not all Icon modules export a default, so we need to check for that
+    if (key !== 'default') {
+      modules[key] = iconModule[key];
+    } else {
+      modules[fileName] = iconModule[key];
+    }
+  });
+});
+
+export default modules;

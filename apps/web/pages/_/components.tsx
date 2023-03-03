@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import { Button, ButtonLink } from '~/components/core/Button/Button';
@@ -9,6 +9,7 @@ import icons from '~/icons/index';
 
 const PendingButton = (props: React.ComponentProps<typeof Button>) => {
   const [pending, setPending] = useState(false);
+
   return (
     <Button
       pending={pending}
@@ -26,6 +27,15 @@ const PendingButton = (props: React.ComponentProps<typeof Button>) => {
 };
 
 export default function DesignPage() {
+  const sortedIcons = useMemo(() => {
+    const sortedKeys = Object.keys(icons).sort();
+    return sortedKeys.reduce((acc: Record<string, () => JSX.Element>, key) => {
+      // @ts-expect-error icons[key] will not be undefined
+      acc[key] = icons[key];
+      return acc;
+    }, {});
+  }, []);
+
   return (
     <>
       <Section>
@@ -88,15 +98,17 @@ export default function DesignPage() {
       <Section>
         <TitleM>Icons</TitleM>
         <Examples wrap="wrap">
-          {Object.keys(icons).map((iconKey) => {
-            // @ts-expect-error this is for internal use, as long as icons load on the page we're good
+          {Object.keys(sortedIcons).map((iconKey) => {
             const Icon = icons[iconKey];
-            return (
-              <IconContainer key={iconKey} align="center" justify="center" gap={8}>
-                <Icon />
-                <BaseM color={colors.shadow}>{iconKey}</BaseM>
-              </IconContainer>
-            );
+
+            if (Icon) {
+              return (
+                <IconContainer key={iconKey} align="center" justify="center" gap={8}>
+                  <Icon />
+                  <BaseM color={colors.shadow}>{iconKey}</BaseM>
+                </IconContainer>
+              );
+            }
           })}
         </Examples>
       </Section>

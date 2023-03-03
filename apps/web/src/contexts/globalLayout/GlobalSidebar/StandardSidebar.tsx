@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Route } from 'nextjs-routes';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
@@ -153,18 +152,20 @@ export function StandardSidebar({ queryRef }: Props) {
     return (
       <StyledStandardSidebar>
         <StyledMobileIconContainer align="center" justify="space-around">
-          <Link href={{ pathname: '/trending' }}>
-            <SidebarIcon tooltipLabel="Home" onClick={handleHomeIconClick} icon={<GLogoIcon />} />
-          </Link>
+          <SidebarIcon
+            href={{ pathname: '/trending' }}
+            tooltipLabel="Home"
+            onClick={handleHomeIconClick}
+            icon={<GLogoIcon />}
+          />
           {isLoggedIn && (
             <>
-              <Link href={userGalleryRoute}>
-                <SidebarIcon
-                  tooltipLabel="My Profile"
-                  onClick={handleProfileClick}
-                  icon={<UserIcon />}
-                />
-              </Link>
+              <SidebarIcon
+                href={userGalleryRoute}
+                tooltipLabel="My Profile"
+                onClick={handleProfileClick}
+                icon={<UserIcon />}
+              />
               <SidebarIcon
                 tooltipLabel="Notifications"
                 onClick={handleNotificationsClick}
@@ -189,29 +190,30 @@ export function StandardSidebar({ queryRef }: Props) {
     <StyledStandardSidebar>
       <StyledIconContainer align="center" justify="space-between">
         <VStack gap={18}>
-          <Link href={{ pathname: '/trending' }}>
-            <SidebarIcon tooltipLabel="Home" onClick={handleHomeIconClick} icon={<GLogoIcon />} />
-          </Link>
+          <SidebarIcon
+            href={{ pathname: '/trending' }}
+            tooltipLabel="Home"
+            onClick={handleHomeIconClick}
+            icon={<GLogoIcon />}
+          />
           {isLoggedIn && (
-            <Link href={editGalleriesRoute}>
-              <SidebarIcon
-                tooltipLabel="Edit galleries"
-                onClick={handleEditClick}
-                icon={<EditPencilIcon />}
-                showBorderByDefault
-              />
-            </Link>
+            <SidebarIcon
+              href={editGalleriesRoute}
+              tooltipLabel="Edit galleries"
+              onClick={handleEditClick}
+              icon={<EditPencilIcon />}
+              showBorderByDefault
+            />
           )}
         </VStack>
         {isLoggedIn && (
           <VStack gap={32}>
-            <Link href={userGalleryRoute}>
-              <SidebarIcon
-                tooltipLabel="My Profile"
-                onClick={handleProfileClick}
-                icon={<UserIcon />}
-              />
-            </Link>
+            <SidebarIcon
+              href={userGalleryRoute}
+              tooltipLabel="My Profile"
+              onClick={handleProfileClick}
+              icon={<UserIcon />}
+            />
             <SidebarIcon
               tooltipLabel="Notifications"
               onClick={handleNotificationsClick}
@@ -227,14 +229,13 @@ export function StandardSidebar({ queryRef }: Props) {
           </VStack>
         )}
         <VStack>
-          <Link href={{ pathname: '/shop' }}>
-            <SidebarIcon
-              tooltipLabel="(OBJECTS) Shop"
-              onClick={handleShopIconClick}
-              icon={<ShopIcon />}
-              showUnreadDot={!isMerchStoreUpsellExperienced}
-            />
-          </Link>
+          <SidebarIcon
+            href={{ pathname: '/shop' }}
+            tooltipLabel="(OBJECTS) Shop"
+            onClick={handleShopIconClick}
+            icon={<ShopIcon />}
+            showUnreadDot={!isMerchStoreUpsellExperienced}
+          />
         </VStack>
       </StyledIconContainer>
     </StyledStandardSidebar>

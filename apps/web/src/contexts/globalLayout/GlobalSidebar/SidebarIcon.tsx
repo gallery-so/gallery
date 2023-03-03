@@ -1,3 +1,5 @@
+import Link from 'next/link';
+import { Route } from 'nextjs-routes';
 import { MouseEvent, useCallback } from 'react';
 import styled from 'styled-components';
 
@@ -14,6 +16,7 @@ type Props = {
   tooltipLabel: string;
   showUnreadDot?: boolean;
   showBorderByDefault?: boolean;
+  href?: Route;
 };
 export default function SidebarIcon({
   onClick,
@@ -22,6 +25,7 @@ export default function SidebarIcon({
   tooltipLabel,
   showUnreadDot = false,
   showBorderByDefault = false,
+  href,
 }: Props) {
   const { floating, reference, getFloatingProps, getReferenceProps, floatingStyle } =
     useTooltipHover({ placement: 'right' });
@@ -34,14 +38,13 @@ export default function SidebarIcon({
     [onClick]
   );
 
-  return (
-    <IconWrapper>
+  const content = (
+    <>
       {showUnreadDot && <StyledUnreadDot />}
       <StyledIconContainer
         {...getReferenceProps()}
         ref={reference}
         variant="default"
-        onClick={handleClick}
         icon={icon}
         isActive={isActive}
         showBorderByDefault={showBorderByDefault}
@@ -52,8 +55,18 @@ export default function SidebarIcon({
         ref={floating}
         text={tooltipLabel}
       />
-    </IconWrapper>
+    </>
   );
+
+  if (href) {
+    return (
+      <IconWrapper onClick={handleClick}>
+        <Link href={href}>{content}</Link>
+      </IconWrapper>
+    );
+  }
+
+  return <IconWrapper onClick={handleClick}>{content}</IconWrapper>;
 }
 
 const StyledIconContainer = styled(IconContainer)<{

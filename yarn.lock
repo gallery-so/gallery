@@ -7689,6 +7689,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/webpack-env@npm:^1.18.0":
+  version: 1.18.0
+  resolution: "@types/webpack-env@npm:1.18.0"
+  checksum: ecf4daa31cb37d474ac0ce058d83a3cadeb9881ca8107ae93c2299eaa9954943aae09b43e143c62ccbe4288a14db00c918c9debd707afe17c3998f873eaabc59
+  languageName: node
+  linkType: hard
+
 "@types/webpack-sources@npm:*":
   version: 3.2.0
   resolution: "@types/webpack-sources@npm:3.2.0"
@@ -31619,6 +31626,7 @@ __metadata:
     "@types/relay-test-utils": ^6.0.5
     "@types/styled-components": 5.1.9
     "@types/uuid": ^8.3.4
+    "@types/webpack-env": ^1.18.0
     "@vercel/analytics": ^0.1.1
     "@web3-react/abstract-connector": ^6.0.7
     "@web3-react/core": ^6.1.9
