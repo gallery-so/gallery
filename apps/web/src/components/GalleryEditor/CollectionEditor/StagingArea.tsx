@@ -151,7 +151,7 @@ function StagingArea({ tokensRef }: Props) {
 
   // flatten the collection into a single array of items to easily find the active item
   const allItemsInCollection = useMemo(
-    () => Object.values(localSections).flatMap((section) => section.items),
+    () => localSections.flatMap((section) => section.items),
     [localSections]
   );
 
@@ -190,7 +190,7 @@ function StagingArea({ tokensRef }: Props) {
         />
       );
     } else if (activeItem) {
-      const sectionOwningItem = Object.values(sections).find((section) =>
+      const sectionOwningItem = sections.find((section) =>
         section.items.some((item) => item.id === activeId)
       );
 

@@ -32,20 +32,18 @@ export function CollectionSearchResults({ searchQuery, queryRef }: CollectionSea
 
   const { collections, setCollections, activateCollection } = useGalleryEditorContext();
 
-  const collectionList = useMemo(() => Object.values(collections), [collections]);
-
   const filteredCollections = useMemo(() => {
     if (searchQuery.length === 0) {
-      return collectionList;
+      return collections;
     }
 
-    return collectionList.filter((collection) =>
+    return collections.filter((collection) =>
       collection.name?.toLocaleLowerCase().includes(searchQuery.toLowerCase())
     );
-  }, [collectionList, searchQuery]);
+  }, [collections, searchQuery]);
 
   const items = useMemo(() => {
-    return Object.values(collections).map((collection) => collection.dbid);
+    return collections.map((collection) => collection.dbid);
   }, [collections]);
 
   const sensors = useSensors(

@@ -175,7 +175,7 @@ export function GalleryEditorProvider({
   );
 
   const [collectionIdBeingEdited, setCollectionIdBeingEdited] = useState<string | null>(() => {
-    return initialCollectionId ?? Object.values(collections)[0]?.dbid ?? null;
+    return initialCollectionId ?? collections[0]?.dbid ?? null;
   });
 
   const { showModal } = useModalActions();
@@ -224,9 +224,7 @@ export function GalleryEditorProvider({
 
   const hiddenCollectionIds = useMemo(() => {
     return new Set(
-      Object.values(collections)
-        .filter((collection) => collection.hidden)
-        .map((collection) => collection.dbid)
+      collections.filter((collection) => collection.hidden).map((collection) => collection.dbid)
     );
   }, [collections]);
 
@@ -364,17 +362,17 @@ export function GalleryEditorProvider({
       };
     };
 
-    const updatedCollections: UpdateCollectionInput[] = Object.values(collections)
+    const updatedCollections: UpdateCollectionInput[] = collections
       .filter((collection) => !collection.localOnly)
       .map(localCollectionToUpdatedCollection);
 
-    const createdCollections: CreateCollectionInGalleryInput[] = Object.values(collections)
+    const createdCollections: CreateCollectionInGalleryInput[] = collections
       .filter((collection) => collection.localOnly)
       .map(localCollectionToCreatedCollection);
 
     const deletedCollections = [...deletedCollectionIds];
 
-    const order = [...Object.values(collections).map((collection) => collection.dbid)];
+    const order = [...collections.map((collection) => collection.dbid)];
 
     const payload = {
       galleryId,
@@ -421,14 +419,14 @@ export function GalleryEditorProvider({
       // Reset the deleted collection ids since we just deleted them
       setDeletedCollectionIds(new Set());
 
-      // Ensure the same collection is still activated
-      const newCollectionIdBeingEdited = collectionIdBeingEdited
-        ? Object.keys(serverSourcedCollections)[
-            Object.keys(collections).indexOf(collectionIdBeingEdited)
-          ]
-        : null;
-
-      setCollectionIdBeingEdited(newCollectionIdBeingEdited ?? null);
+      // TODO(Terence): Ensure the same collection is still activated
+      // const newCollectionIdBeingEdited = collectionIdBeingEdited
+      //   ? serverSourcedCollections[
+      //       collections.indexOf(collectionIdBeingEdited)
+      //     ]
+      //   : null;
+      //
+      // setCollectionIdBeingEdited(newCollectionIdBeingEdited ?? null);
 
       // Flash a "Saved" message next to the "Done" button
       setHasSaved(true);
@@ -527,10 +525,10 @@ export function GalleryEditorProvider({
   const hasUnsavedChanges = useMemo(() => {
     // Need to convert the liveDisplayTokenIds Set into an Array because sets don't store data
     // as properties to be stringified: https://stackoverflow.com/a/31190928/5377437
-    const currentCollectionsWithoutIds = Object.values(collections).map(
+    const currentCollectionsWithoutIds = collections.map(
       convertCollectionToComparisonFriendlyObject
     );
-    const initialCollectionsWithoutIds = Object.values(initialCollections).map(
+    const initialCollectionsWithoutIds = initialCollections.map(
       convertCollectionToComparisonFriendlyObject
     );
 

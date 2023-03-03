@@ -37,7 +37,7 @@ export function dragOver(sections: StagedSectionMap, event: DragOverEvent): Stag
     }
 
     // Find the active token and remove it from that section
-    Object.values(cloned).forEach((section) => {
+    cloned.forEach((section) => {
       section.items = section.items.filter((item) => item.id !== activeId);
     });
 
@@ -93,7 +93,7 @@ export function dragEnd(sections: StagedSectionMap, event: DragEndEvent): Staged
   const cloned = deepClone(sections);
 
   const sectionIds = sections.map((section) => section.id);
-  const allItems = Object.values(sections).flatMap((section) => section.items);
+  const allItems = sections.flatMap((section) => section.items);
 
   const isTheActiveItemASection = sectionIds.includes(activeId.toString());
   const isTheOverItemASection = sectionIds.includes(overId.toString());
@@ -107,8 +107,8 @@ export function dragEnd(sections: StagedSectionMap, event: DragEndEvent): Staged
   } else if (isTheActiveItemASection && !isTheOverItemASection) {
     // Section => Token
     // In this case, we'll just assume the new position is the section owning the token
-    const oldIndex = Object.keys(cloned).findIndex((id) => id === activeId);
-    const newIndex = Object.values(cloned).findIndex((section) =>
+    const oldIndex = cloned.findIndex((section) => section.id === activeId);
+    const newIndex = cloned.findIndex((section) =>
       section.items.some((item) => item.id === overId)
     );
 
@@ -123,7 +123,7 @@ export function dragEnd(sections: StagedSectionMap, event: DragEndEvent): Staged
     }
 
     // Find the active token and remove it from that section
-    Object.values(cloned).forEach((section) => {
+    cloned.forEach((section) => {
       section.items = section.items.filter((item) => item.id !== activeId);
     });
 
@@ -133,10 +133,10 @@ export function dragEnd(sections: StagedSectionMap, event: DragEndEvent): Staged
     return cloned;
   } else if (!isTheActiveItemASection && !isTheOverItemASection) {
     // Token => Token
-    const sectionWithActiveToken = Object.values(cloned).find((section) =>
+    const sectionWithActiveToken = cloned.find((section) =>
       section.items.some((item) => item.id === activeId)
     );
-    const sectionWithOverToken = Object.values(cloned).find((section) =>
+    const sectionWithOverToken = cloned.find((section) =>
       section.items.some((item) => item.id === overId)
     );
 
