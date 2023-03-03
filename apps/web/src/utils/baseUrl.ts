@@ -1,4 +1,6 @@
 const getBaseUrl = () => {
+  return `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`;
+
   // If we're inside the Vercel environment
   switch (process.env.NEXT_PUBLIC_VERCEL_ENV) {
     case 'production':
