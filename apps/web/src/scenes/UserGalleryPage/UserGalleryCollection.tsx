@@ -144,7 +144,7 @@ function UserGalleryCollection({
             <StyledCollectorsTitle>{unescapedCollectionName}</StyledCollectorsTitle>
           </UnstyledLink>
           <StyledOptionsContainer gap={16}>
-            <StyledCopyToClipboard textToCopy={`${getBaseUrl()}/${collectionUrl}`}>
+            <StyledCopyToClipboard textToCopy={`${getBaseUrl()}${collectionUrl}`}>
               <TextButton text="Share" onClick={handleShareClick} />
             </StyledCopyToClipboard>
             <SettingsDropdown iconVariant="default">
