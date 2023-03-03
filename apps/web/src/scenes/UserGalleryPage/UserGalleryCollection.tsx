@@ -137,6 +137,7 @@ function UserGalleryCollection({
   ]);
 
   const baseUrl = useMemo(() => getBaseUrl(), []);
+  console.log({ baseUrl });
 
   return (
     <StyledCollectionWrapper ref={componentRef}>
