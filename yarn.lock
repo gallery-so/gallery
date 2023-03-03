@@ -17205,6 +17205,7 @@ __metadata:
     eslint-plugin-react-hooks: ^4.6.0
     eslint-plugin-relay: ^1.8.3
     eslint-plugin-simple-import-sort: ^8.0.0
+    nextjs-routes: ^1.0.8
     prettier: ^2.8.4
     prettier-plugin-tailwindcss: ^0.2.3
     tsconfig-moon: ^1.2.1
@@ -23585,6 +23586,17 @@ __metadata:
   bin:
     nextjs-routes: cli.js
   checksum: 0a578e11b625e3362806cd184370dfc365f43fd099a15454659684374dba796d9d893e162dca4dd04303e2ae17a54697d8e9c05dad6f3a82e2afe32d84ebe38a
+  languageName: node
+  linkType: hard
+
+"nextjs-routes@npm:^1.0.8":
+  version: 1.0.8
+  resolution: "nextjs-routes@npm:1.0.8"
+  dependencies:
+    chokidar: ^3.5.3
+  peerDependencies:
+    next: "*"
+  checksum: a2c83799cd42e7940324ae011b98854f2b5d743104fb4943550520a28900ca2a7fe3fec479023a4729f64e13e2066a04c48a0624ff4cb619efce285021641a5d
   languageName: node
   linkType: hard
 
