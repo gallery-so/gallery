@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -63,8 +63,9 @@ export function NotificationTwitterAlert({ queryRef }: Props) {
     return null;
   }
 
-  // Save the current route to localStorage so we can redirect back to it after
-  localStorage.setItem(TWITTER_LOCAL_STORAGE_KEY, JSON.stringify(route));
+  const handleConnect = useCallback(() => {
+    localStorage.setItem(TWITTER_LOCAL_STORAGE_KEY, JSON.stringify(route));
+  }, [route]);
 
   return (
     <StyledAlertContainer>
@@ -72,7 +73,7 @@ export function NotificationTwitterAlert({ queryRef }: Props) {
         <StyledInfoCircleIcon />
         <BaseM>Connect Twitter to find friends and display your handle.</BaseM>
         <HStack align="center" gap={8}>
-          <InteractiveLink href={TWITTER_AUTH_URL} target="_self">
+          <InteractiveLink onClick={handleConnect} href={TWITTER_AUTH_URL} target="_self">
             Connect
           </InteractiveLink>
           <IconContainer variant="default" size="sm" onClick={handleDismiss} icon={<CloseIcon />} />
