@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link, { LinkProps } from 'next/link';
 import { useCallback, useMemo } from 'react';
 import { graphql, useFragment, usePaginationFragment } from 'react-relay';
 import styled from 'styled-components';
@@ -137,7 +137,6 @@ export default function TwitterFollowingModal({ followingRef, queryRef }: Props)
             <VStack>
               <StyledLink
                 href={{
-                  // @ts-expect-error TODO: fix noImplicitAny error here
                   pathname: '/[username]',
                   query: {
                     username: user.username as string,
@@ -185,7 +184,7 @@ const StyledFollowingContainer = styled(VStack)`
   padding: 16px 0;
 `;
 
-const StyledLink = styled(Link)`
+const StyledLink = styled(Link)<LinkProps>`
   text-decoration: none;
 `;
 
