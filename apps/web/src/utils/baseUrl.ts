@@ -1,10 +1,7 @@
 export const getBaseUrl = () => {
-  // const env = 'preview';
-  const env = process.env.NEXT_PUBLIC_VERCEL_ENV;
-  console.log('getBaseUrl env', env);
-  console.log('getBaseUrl', process.env.NEXT_PUBLIC_VERCEL_ENV);
+  console.log('getBaseUrl process env', process.env.NEXT_PUBLIC_VERCEL_ENV);
   // If we're inside the Vercel environment
-  switch (env) {
+  switch (process.env.NEXT_PUBLIC_VERCEL_ENV) {
     case 'production':
       return 'https://gallery.so';
     case 'development':
