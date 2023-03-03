@@ -26,7 +26,7 @@ import { UserGalleryCollectionQueryFragment$key } from '~/generated/UserGalleryC
 import useUpdateCollectionInfo from '~/hooks/api/collections/useUpdateCollectionInfo';
 import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
 import useResizeObserver from '~/hooks/useResizeObserver';
-import { getBaseUrl } from '~/utils/baseUrl';
+import baseUrl from '~/utils/baseUrl';
 import unescape from '~/utils/unescape';
 
 type Props = {
@@ -136,12 +136,6 @@ function UserGalleryCollection({
     updateCollectionInfo,
   ]);
 
-  const baseUrl = useMemo(() => {
-    const url = getBaseUrl();
-    console.log(url);
-    return url;
-  }, []);
-
   return (
     <StyledCollectionWrapper ref={componentRef}>
       <StyledCollectionHeader>
@@ -150,7 +144,7 @@ function UserGalleryCollection({
             <StyledCollectorsTitle>{unescapedCollectionName}</StyledCollectorsTitle>
           </UnstyledLink>
           <StyledOptionsContainer gap={16}>
-            <StyledCopyToClipboard textToCopy={`${baseUrl}/${collectionUrl}`}>
+            <StyledCopyToClipboard textToCopy={`${baseUrl()}/${collectionUrl}`}>
               <TextButton text="Share" onClick={handleShareClick} />
             </StyledCopyToClipboard>
             <SettingsDropdown iconVariant="default">
