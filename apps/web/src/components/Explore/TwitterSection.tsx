@@ -57,8 +57,7 @@ export default function TwitterSection({ queryRef, title, subTitle }: Props) {
     const users = [];
 
     for (const edge of query.socialConnections?.edges ?? []) {
-      if (edge?.node?.__typename !== 'SocialConnection') return;
-      if (edge?.node?.galleryUser) {
+      if (edge?.node?.__typename === 'SocialConnection' && edge?.node?.galleryUser) {
         users.push(edge.node.galleryUser);
       }
     }
@@ -87,7 +86,7 @@ export default function TwitterSection({ queryRef, title, subTitle }: Props) {
 
         <StyledInteractiveLink onClick={handleSeeAllClick}>See all</StyledInteractiveLink>
       </HStack>
-      <ExploreList exploreUsersRef={nonNullUsers || []} queryRef={query} rowSize={1} />
+      <ExploreList exploreUsersRef={nonNullUsers} queryRef={query} rowSize={1} />
     </StyledSuggestedSection>
   );
 }
