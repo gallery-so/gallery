@@ -8,24 +8,23 @@ import { USERS_PER_PAGE } from '~/components/Notifications/constants';
 import { NotificationUserList } from '~/components/Notifications/NotificationUserList/NotificationUserList';
 import { NotificationUserListTitle } from '~/components/Notifications/NotificationUserListTitle';
 import { BackButton } from '~/contexts/globalLayout/GlobalNavbar/BackButton';
-import { NotificationUserListModalQuery } from '~/generated/NotificationUserListModalQuery.graphql';
+import { NotificationUserListPageQuery } from '~/generated/NotificationUserListPageQuery.graphql';
 
 import Loader from '../core/Loader/Loader';
 
-type NotificationUserListModalProps = {
+type NotificationUserListPageProps = {
   notificationId: string;
-  fullscreen: boolean;
+
   toggleSubView: (page?: JSX.Element) => void;
 };
 
-export function NotificationUserListModal({
-  fullscreen,
+export function NotificationUserListPage({
   notificationId,
   toggleSubView,
-}: NotificationUserListModalProps) {
-  const query = useLazyLoadQuery<NotificationUserListModalQuery>(
+}: NotificationUserListPageProps) {
+  const query = useLazyLoadQuery<NotificationUserListPageQuery>(
     graphql`
-      query NotificationUserListModalQuery(
+      query NotificationUserListPageQuery(
         $notificationId: ID!
         $notificationUsersLast: Int!
         $notificationUsersBefore: String
@@ -43,7 +42,7 @@ export function NotificationUserListModal({
   }, [toggleSubView]);
 
   return (
-    <ModalContent fullscreen={fullscreen}>
+    <StyledUserList>
       <Suspense
         fallback={
           <VStack grow justify="center" align="center">
@@ -63,7 +62,7 @@ export function NotificationUserListModal({
           <NotificationUserList queryRef={query} />
         </ModalBody>
       </Suspense>
-    </ModalContent>
+    </StyledUserList>
   );
 }
 
@@ -79,9 +78,9 @@ const StyledHeader = styled.div`
   padding: 0 8px;
 `;
 
-const ModalContent = styled.div<{ fullscreen: boolean }>`
-  height: ${({ fullscreen }) => (fullscreen ? '100%' : '640px')};
-  width: ${({ fullscreen }) => (fullscreen ? '100%' : '420px')};
+const StyledUserList = styled.div`
+  height: 100%;
+  width: 100%;
   display: flex;
   flex-direction: column;
 `;

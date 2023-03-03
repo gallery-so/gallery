@@ -13,12 +13,11 @@ import { SomeoneCommentedOnYourFeedEvent } from '~/components/Notifications/noti
 import { SomeoneFollowedYou } from '~/components/Notifications/notifications/SomeoneFollowedYou';
 import { SomeoneFollowedYouBack } from '~/components/Notifications/notifications/SomeoneFollowedYouBack';
 import { SomeoneViewedYourGallery } from '~/components/Notifications/notifications/SomeoneViewedYourGallery';
-import { NotificationUserListModal } from '~/components/Notifications/NotificationUserList';
+import { NotificationUserListPage } from '~/components/Notifications/NotificationUserListPage';
 import { NotificationFragment$key } from '~/generated/NotificationFragment.graphql';
 import { NotificationInnerFragment$key } from '~/generated/NotificationInnerFragment.graphql';
 import { NotificationInnerQueryFragment$key } from '~/generated/NotificationInnerQueryFragment.graphql';
 import { NotificationQueryFragment$key } from '~/generated/NotificationQueryFragment.graphql';
-import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { getTimeSince } from '~/utils/time';
 
 import { useClearNotifications } from './useClearNotifications';
@@ -88,7 +87,6 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
   );
 
   const { push } = useRouter();
-  const isMobile = useIsMobileWindowWidth();
 
   const clearAllNotifications = useClearNotifications();
 
@@ -110,11 +108,7 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
   const handleNotificationClick = useMemo((): NotificationClick => {
     function showUserListModal() {
       toggleSubView(
-        <NotificationUserListModal
-          notificationId={notification.id}
-          fullscreen={isMobile}
-          toggleSubView={toggleSubView}
-        />
+        <NotificationUserListPage notificationId={notification.id} toggleSubView={toggleSubView} />
       );
     }
 
@@ -144,7 +138,6 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
 
     return undefined;
   }, [
-    isMobile,
     notification.__typename,
     notification.count,
     notification.feedEvent,

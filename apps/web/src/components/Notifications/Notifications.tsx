@@ -1,3 +1,4 @@
+import { AnimatePresence, motion } from 'framer-motion';
 import { Suspense, useCallback, useEffect, useState } from 'react';
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -9,10 +10,12 @@ import {
   NOTIFICATIONS_PER_PAGE,
 } from '~/components/Notifications/NotificationList';
 import { useClearNotifications } from '~/components/Notifications/useClearNotifications';
+import { FADE_TRANSITION_TIME_SECONDS } from '~/contexts/globalLayout/transitionTiming';
 import { NotificationsQuery } from '~/generated/NotificationsQuery.graphql';
 
 import breakpoints from '../core/breakpoints';
 import { VStack } from '../core/Spacer/Stack';
+import { ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL, rawTransitions } from '../core/transitions';
 
 export function Notifications() {
   const query = useLazyLoadQuery<NotificationsQuery>(
@@ -52,12 +55,39 @@ export function Notifications() {
     <StyledNotifications>
       <Suspense
         fallback={
-          <VStack grow justify="center" align="center">
+          <StyledLoader grow justify="center" align="center">
             <Loader size="large" />
-          </VStack>
+          </StyledLoader>
         }
       >
-        {subView ? subView : <NotificationList queryRef={query} toggleSubView={toggleSubView} />}
+        <AnimatePresence>
+          <StyledSubView
+            key={subView ? 'NotificationsSubView' : 'NotificationsList'}
+            initial={{
+              opacity: 0,
+              x: subView
+                ? ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL
+                : -ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL,
+            }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{
+              opacity: 0,
+              x: subView
+                ? ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL
+                : -ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL,
+            }}
+            transition={{
+              ease: rawTransitions.cubicValues,
+              duration: FADE_TRANSITION_TIME_SECONDS,
+            }}
+          >
+            {subView ? (
+              subView
+            ) : (
+              <NotificationList queryRef={query} toggleSubView={toggleSubView} />
+            )}
+          </StyledSubView>
+        </AnimatePresence>
       </Suspense>
     </StyledNotifications>
   );
@@ -66,11 +96,20 @@ export function Notifications() {
 const StyledNotifications = styled.div`
   height: 100%;
   width: 100%;
-  display: flex;
-  flex-direction: column;
   padding: 4px;
+  position: relative;
+  overflow-x: hidden;
 
   @media only screen and ${breakpoints.tablet} {
     width: 420px;
   }
+`;
+
+const StyledLoader = styled(VStack)`
+  height: 100%;
+`;
+
+const StyledSubView = styled(motion.div)`
+  height: 100%;
+  width: 100%;
 `;
