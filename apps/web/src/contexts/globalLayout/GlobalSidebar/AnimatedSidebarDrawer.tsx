@@ -3,11 +3,8 @@ import { MouseEvent, ReactElement, useCallback, useMemo, useRef } from 'react';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
-import { Button } from '~/components/core/Button/Button';
 import colors from '~/components/core/colors';
-import IconContainer from '~/components/core/IconContainer';
-import { HStack, VStack } from '~/components/core/Spacer/Stack';
-import { TitleDiatypeL } from '~/components/core/Text/Text';
+import { VStack } from '~/components/core/Spacer/Stack';
 import {
   ANIMATED_COMPONENT_TRANSITION_S,
   ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL,
@@ -16,21 +13,15 @@ import {
 import useDetectOutsideClick from '~/hooks/useDetectOutsideClick';
 import useKeyDown from '~/hooks/useKeyDown';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
-import CloseIcon from '~/icons/CloseIcon';
 
 import { DrawerType, useDrawerActions } from './SidebarDrawerContext';
 
 type Props = {
   content: ReactElement;
   drawerType?: DrawerType;
-  showDoneFooter?: boolean;
 };
 
-export default function AnimatedSidebarDrawer({
-  content,
-  drawerType,
-  showDoneFooter = false,
-}: Props) {
+export default function AnimatedSidebarDrawer({ content }: Props) {
   const drawerRef = useRef(null);
 
   const { hideDrawer } = useDrawerActions();
@@ -44,14 +35,6 @@ export default function AnimatedSidebarDrawer({
   const handleDrawerClick = useCallback((e: MouseEvent) => {
     e.stopPropagation();
   }, []);
-
-  const handleCloseDrawerClick = useCallback(() => {
-    hideDrawer();
-  }, [hideDrawer]);
-
-  const handleDoneClick = useCallback(() => {
-    hideDrawer();
-  }, [hideDrawer]);
 
   const isMobile = useIsMobileWindowWidth();
 
@@ -83,41 +66,11 @@ export default function AnimatedSidebarDrawer({
       exit={motionSettings.exit}
     >
       <StyledDrawer ref={drawerRef} gap={16} onClick={handleDrawerClick}>
-        <StyledHeader>
-          <CloseDrawerHeader align="center" justify="flex-end">
-            <IconContainer
-              variant="default"
-              size="sm"
-              onClick={handleCloseDrawerClick}
-              icon={<CloseIcon />}
-            />
-          </CloseDrawerHeader>
-          {drawerType && <StyledHeadingText>{drawerType}</StyledHeadingText>}
-        </StyledHeader>
-        <StyledContentWrapper showDoneFooter={showDoneFooter}>{content}</StyledContentWrapper>
-        {showDoneFooter && (
-          <StyledFooter align="center" justify="flex-end">
-            <DoneButton onClick={handleDoneClick}>Done</DoneButton>
-          </StyledFooter>
-        )}
+        {content}
       </StyledDrawer>
     </StyledMotion>
   );
 }
-
-const CloseDrawerHeader = styled(HStack)`
-  height: 52px;
-`;
-
-const StyledHeader = styled(VStack)`
-  padding: 0 16px;
-`;
-
-// one-off text style that's not in our design system
-const StyledHeadingText = styled(TitleDiatypeL)`
-  font-size: 24px;
-  line-height: 28px;
-`;
 
 const StyledMotion = styled(motion.div)`
   height: 100%;
@@ -134,24 +87,4 @@ const StyledDrawer = styled(VStack)`
     height: 100vh;
     width: 420px;
   }
-`;
-
-const StyledContentWrapper = styled.div<{ showDoneFooter: boolean }>`
-  overflow-y: scroll;
-  overflow-x: hidden;
-  overscroll-behavior: contain;
-  height: 100%;
-`;
-
-const DoneButton = styled(Button)`
-  align-self: flex-end;
-`;
-
-const StyledFooter = styled(HStack)`
-  width: 100%;
-  background-color: ${colors.offWhite};
-  position: absolute;
-  display: flex;
-  bottom: 0;
-  padding: 12px 16px;
 `;

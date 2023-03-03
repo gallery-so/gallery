@@ -10,6 +10,7 @@ import {
   NOTIFICATIONS_PER_PAGE,
 } from '~/components/Notifications/NotificationList';
 import { useClearNotifications } from '~/components/Notifications/useClearNotifications';
+import DrawerHeader from '~/contexts/globalLayout/GlobalSidebar/DrawerHeader';
 import { FADE_TRANSITION_TIME_SECONDS } from '~/contexts/globalLayout/transitionTiming';
 import { NotificationsQuery } from '~/generated/NotificationsQuery.graphql';
 
@@ -52,44 +53,47 @@ export function Notifications() {
   }, [clearAllNotifications, userId]);
 
   return (
-    <StyledNotifications>
-      <Suspense
-        fallback={
-          <StyledLoader grow justify="center" align="center">
-            <Loader size="large" />
-          </StyledLoader>
-        }
-      >
-        <AnimatePresence>
-          <StyledSubView
-            key={subView ? 'NotificationsSubView' : 'NotificationsList'}
-            initial={{
-              opacity: 0,
-              x: subView
-                ? ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL
-                : -ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL,
-            }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{
-              opacity: 0,
-              x: subView
-                ? ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL
-                : -ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL,
-            }}
-            transition={{
-              ease: rawTransitions.cubicValues,
-              duration: FADE_TRANSITION_TIME_SECONDS,
-            }}
-          >
-            {subView ? (
-              subView
-            ) : (
-              <NotificationList queryRef={query} toggleSubView={toggleSubView} />
-            )}
-          </StyledSubView>
-        </AnimatePresence>
-      </Suspense>
-    </StyledNotifications>
+    <>
+      <DrawerHeader headerText="Notifications" />
+      <StyledNotifications>
+        <Suspense
+          fallback={
+            <StyledLoader grow justify="center" align="center">
+              <Loader size="large" />
+            </StyledLoader>
+          }
+        >
+          <AnimatePresence>
+            <StyledSubView
+              key={subView ? 'NotificationsSubView' : 'NotificationsList'}
+              initial={{
+                opacity: 0,
+                x: subView
+                  ? ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL
+                  : -ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL,
+              }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{
+                opacity: 0,
+                x: subView
+                  ? ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL
+                  : -ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL,
+              }}
+              transition={{
+                ease: rawTransitions.cubicValues,
+                duration: FADE_TRANSITION_TIME_SECONDS,
+              }}
+            >
+              {subView ? (
+                subView
+              ) : (
+                <NotificationList queryRef={query} toggleSubView={toggleSubView} />
+              )}
+            </StyledSubView>
+          </AnimatePresence>
+        </Suspense>
+      </StyledNotifications>
+    </>
   );
 }
 
@@ -98,7 +102,9 @@ const StyledNotifications = styled.div`
   width: 100%;
   padding: 4px;
   position: relative;
+  overflow-y: scroll;
   overflow-x: hidden;
+  overscroll-behavior: contain;
 
   @media only screen and ${breakpoints.tablet} {
     width: 420px;

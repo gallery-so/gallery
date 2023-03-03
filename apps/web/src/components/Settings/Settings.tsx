@@ -16,6 +16,8 @@ import TwitterSetting from '~/components/Twitter/TwitterSetting';
 import { GALLERY_DISCORD } from '~/constants/urls';
 import { useAuthActions } from '~/contexts/auth/AuthContext';
 import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
+import DrawerHeader from '~/contexts/globalLayout/GlobalSidebar/DrawerHeader';
+import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { SettingsFragment$key } from '~/generated/SettingsFragment.graphql';
 import CircleCheckIcon from '~/icons/CircleCheckIcon';
@@ -174,86 +176,101 @@ function Settings({ newAddress, queryRef, onEthAddWalletSuccess, onTezosAddWalle
     handleLogout();
   }, [handleLogout]);
 
+  const { hideDrawer } = useDrawerActions();
+
+  const handleDoneClick = useCallback(() => {
+    hideDrawer();
+  }, [hideDrawer]);
+
   return (
-    <StyledSettings gap={12}>
-      <SettingsContents gap={24}>
-        <VStack gap={16}>
-          <VStack>
-            <TitleDiatypeL>Email notifications</TitleDiatypeL>
-            <HStack justify="space-between" align="center">
-              <SettingsRowDescription>
-                Receive weekly recaps about product updates, airdrop opportunities, and your most
-                recent gallery admirers.
-              </SettingsRowDescription>
-              <Toggle
-                checked={isToggleChecked}
-                isPending={isPending || isEmailUnverified}
-                onChange={toggleEmailNotification}
+    <>
+      <DrawerHeader headerText="Settings" />
+
+      <StyledContentWrapper>
+        <StyledSettings gap={12}>
+          <SettingsContents gap={24}>
+            <VStack gap={16}>
+              <VStack>
+                <TitleDiatypeL>Email notifications</TitleDiatypeL>
+                <HStack justify="space-between" align="center">
+                  <SettingsRowDescription>
+                    Receive weekly recaps about product updates, airdrop opportunities, and your
+                    most recent gallery admirers.
+                  </SettingsRowDescription>
+                  <Toggle
+                    checked={isToggleChecked}
+                    isPending={isPending || isEmailUnverified}
+                    onChange={toggleEmailNotification}
+                  />
+                </HStack>
+              </VStack>
+              <StyledButtonContainer>
+                {shouldDisplayAddEmailInput ? (
+                  <EmailManager queryRef={query} onClose={handleCloseEmailManager} />
+                ) : (
+                  <StyledButton variant="secondary" onClick={handleOpenEmailManager}>
+                    add email address
+                  </StyledButton>
+                )}
+              </StyledButtonContainer>
+            </VStack>
+            <StyledHr />
+            <VStack>
+              <TitleDiatypeL>Members Club</TitleDiatypeL>
+              <HStack justify="space-between" align="center" gap={8}>
+                <span>
+                  <SettingsRowDescription>
+                    Unlock early access to features, a profile badge, and the members-only{' '}
+                    <InteractiveLink href={GALLERY_DISCORD}>Discord channel</InteractiveLink> by
+                    holding a{' '}
+                    <InteractiveLink
+                      href={`https://opensea.io/collection/gallery-membership-cards?ref=${GALLERY_OS_ADDRESS}`}
+                    >
+                      Premium Gallery Membership Card
+                    </InteractiveLink>{' '}
+                    and verifying your email address.
+                  </SettingsRowDescription>
+                </span>
+                <HStack align="center" gap={4} shrink={false}>
+                  {hasEarlyAccess ? (
+                    <>
+                      <CircleCheckIcon />
+                      <BaseM>Active</BaseM>
+                    </>
+                  ) : (
+                    <BaseM color={colors.metal}>Inactive</BaseM>
+                  )}
+                </HStack>
+              </HStack>
+            </VStack>
+            <StyledHr />
+            <VStack gap={16}>
+              <TitleDiatypeL>Connect Twitter</TitleDiatypeL>
+              <TwitterSetting queryRef={query} />
+            </VStack>
+            <StyledHr />
+            <VStack>
+              <TitleDiatypeL>Manage accounts</TitleDiatypeL>
+              <ManageWallets
+                queryRef={query}
+                newAddress={newAddress}
+                onTezosAddWalletSuccess={onTezosAddWalletSuccess}
+                onEthAddWalletSuccess={onEthAddWalletSuccess}
               />
-            </HStack>
-          </VStack>
-          <StyledButtonContainer>
-            {shouldDisplayAddEmailInput ? (
-              <EmailManager queryRef={query} onClose={handleCloseEmailManager} />
-            ) : (
-              <StyledButton variant="secondary" onClick={handleOpenEmailManager}>
-                add email address
+            </VStack>
+            <StyledHr />
+            <HStack>
+              <StyledButton variant="warning" onClick={handleSignOutClick}>
+                Sign Out
               </StyledButton>
-            )}
-          </StyledButtonContainer>
-        </VStack>
-        <StyledHr />
-        <VStack>
-          <TitleDiatypeL>Members Club</TitleDiatypeL>
-          <HStack justify="space-between" align="center" gap={8}>
-            <span>
-              <SettingsRowDescription>
-                Unlock early access to features, a profile badge, and the members-only{' '}
-                <InteractiveLink href={GALLERY_DISCORD}>Discord channel</InteractiveLink> by holding
-                a{' '}
-                <InteractiveLink
-                  href={`https://opensea.io/collection/gallery-membership-cards?ref=${GALLERY_OS_ADDRESS}`}
-                >
-                  Premium Gallery Membership Card
-                </InteractiveLink>{' '}
-                and verifying your email address.
-              </SettingsRowDescription>
-            </span>
-            <HStack align="center" gap={4} shrink={false}>
-              {hasEarlyAccess ? (
-                <>
-                  <CircleCheckIcon />
-                  <BaseM>Active</BaseM>
-                </>
-              ) : (
-                <BaseM color={colors.metal}>Inactive</BaseM>
-              )}
             </HStack>
-          </HStack>
-        </VStack>
-        <StyledHr />
-        <VStack gap={16}>
-          <TitleDiatypeL>Connect Twitter</TitleDiatypeL>
-          <TwitterSetting queryRef={query} />
-        </VStack>
-        <StyledHr />
-        <VStack>
-          <TitleDiatypeL>Manage accounts</TitleDiatypeL>
-          <ManageWallets
-            queryRef={query}
-            newAddress={newAddress}
-            onTezosAddWalletSuccess={onTezosAddWalletSuccess}
-            onEthAddWalletSuccess={onEthAddWalletSuccess}
-          />
-        </VStack>
-        <StyledHr />
-        <HStack>
-          <StyledButton variant="warning" onClick={handleSignOutClick}>
-            Sign Out
-          </StyledButton>
-        </HStack>
-      </SettingsContents>
-    </StyledSettings>
+          </SettingsContents>
+        </StyledSettings>
+      </StyledContentWrapper>
+      <StyledFooter align="center" justify="flex-end">
+        <DoneButton onClick={handleDoneClick}>Done</DoneButton>
+      </StyledFooter>
+    </>
   );
 }
 
@@ -280,6 +297,26 @@ const StyledButtonContainer = styled.div`
 
 const StyledButton = styled(Button)`
   padding: 8px 12px;
+`;
+
+const StyledContentWrapper = styled.div`
+  overflow-y: scroll;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  height: 100%;
+`;
+
+const DoneButton = styled(Button)`
+  align-self: flex-end;
+`;
+
+const StyledFooter = styled(HStack)`
+  width: 100%;
+  background-color: ${colors.offWhite};
+  position: absolute;
+  display: flex;
+  bottom: 0;
+  padding: 12px 16px;
 `;
 
 export default Settings;
