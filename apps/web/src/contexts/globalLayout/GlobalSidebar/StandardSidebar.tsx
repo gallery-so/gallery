@@ -63,10 +63,10 @@ export function StandardSidebar({ queryRef }: Props) {
   const router = useRouter();
 
   const activeDrawerState = useDrawerState();
-  const activeDrawerType = useMemo(() => {
-    console.log(activeDrawerState.activeDrawer?.content.type === Settings);
-    return activeDrawerState.activeDrawer?.content.type;
-  }, [activeDrawerState]);
+  const activeDrawerType = useMemo(
+    () => activeDrawerState.activeDrawer?.content.type,
+    [activeDrawerState]
+  );
 
   const notificationCount = useMemo(() => {
     if (
