@@ -136,8 +136,11 @@ function UserGalleryCollection({
     updateCollectionInfo,
   ]);
 
-  const baseUrl = useMemo(() => getBaseUrl(), []);
-  console.log({ baseUrl });
+  const baseUrl = useMemo(() => {
+    const url = getBaseUrl();
+    console.log(url);
+    return url;
+  }, []);
 
   return (
     <StyledCollectionWrapper ref={componentRef}>
