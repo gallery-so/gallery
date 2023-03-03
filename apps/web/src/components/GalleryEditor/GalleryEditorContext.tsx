@@ -184,11 +184,11 @@ export function GalleryEditorProvider({
     const newCollectionId = generate12DigitId();
 
     setCollections((previous) => {
-      const defaultSectionId = generate12DigitId();
+      const newSectionId = generate12DigitId();
 
       const newCollection: CollectionState = {
         dbid: newCollectionId,
-        activeSectionId: defaultSectionId,
+        activeSectionId: newSectionId,
         liveDisplayTokenIds: new Set(),
 
         name: '',
@@ -197,13 +197,10 @@ export function GalleryEditorProvider({
         localOnly: true,
         hidden: false,
 
-        sections: [{ id: generate12DigitId(), columns: 3, items: [] }],
+        sections: [{ id: newSectionId, columns: 3, items: [] }],
       };
 
-      return {
-        ...previous,
-        [newCollectionId]: newCollection,
-      };
+      return [...previous, newCollection];
     });
 
     setCollectionIdBeingEdited(newCollectionId);
@@ -242,7 +239,7 @@ export function GalleryEditorProvider({
         return next;
       });
 
-      const nextCollections = collections.filter((collection) => collection.dbid === collectionId);
+      const nextCollections = collections.filter((collection) => collection.dbid !== collectionId);
 
       let nextCollectionIdBeingEdited = nextCollections[0]?.dbid;
       if (!nextCollectionIdBeingEdited) {
@@ -447,7 +444,6 @@ export function GalleryEditorProvider({
       }
     }
   }, [
-    collectionIdBeingEdited,
     collections,
     deletedCollectionIds,
     description,
