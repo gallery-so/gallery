@@ -134,7 +134,11 @@ const Icon = styled.img`
 `;
 
 const StyledButton = styled(Button)`
-  padding: 8px 12px;
+  padding: 8px;
+
+  @media only screen and ${breakpoints.mobileLarge} {
+    padding: 8px 12px;
+  }
 `;
 
 const StyledButtonContainer = styled.div`
@@ -142,6 +146,4 @@ const StyledButtonContainer = styled.div`
   flex-direction: row;
 
   gap: 4px;
-  @media only screen and ${breakpoints.tablet} {
-  }
 `;
