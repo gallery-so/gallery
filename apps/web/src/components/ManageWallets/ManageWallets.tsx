@@ -5,10 +5,10 @@ import styled from 'styled-components';
 import { Button } from '~/components/core/Button/Button';
 import { VStack } from '~/components/core/Spacer/Stack';
 import ErrorText from '~/components/core/Text/ErrorText';
+import SettingsRowDescription from '~/components/Settings/SettingsRowDescription';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { ManageWalletsFragment$key } from '~/generated/ManageWalletsFragment.graphql';
 import useAddWalletModal from '~/hooks/useAddWalletModal';
-import SettingsRowDescription from '~/scenes/Modals/SettingsModal/SettingsRowDescription';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { graphqlTruncateAddress, truncateAddress } from '~/utils/wallet';
 

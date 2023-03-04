@@ -14,18 +14,20 @@ import EmailManager from '~/components/Email/EmailManager';
 import ManageWallets from '~/components/ManageWallets/ManageWallets';
 import TwitterSetting from '~/components/Twitter/TwitterSetting';
 import { GALLERY_DISCORD } from '~/constants/urls';
+import { useAuthActions } from '~/contexts/auth/AuthContext';
 import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
-import { useModalActions } from '~/contexts/modal/ModalContext';
+import DrawerHeader from '~/contexts/globalLayout/GlobalSidebar/DrawerHeader';
+import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
-import { SettingsModalFragment$key } from '~/generated/SettingsModalFragment.graphql';
+import { SettingsFragment$key } from '~/generated/SettingsFragment.graphql';
 import CircleCheckIcon from '~/icons/CircleCheckIcon';
 import { GALLERY_OS_ADDRESS } from '~/utils/getOpenseaExternalUrl';
 
-import useUpdateEmailNotificationSettings from '../../../components/Email/useUpdateEmailNotificationSettings';
+import useUpdateEmailNotificationSettings from '../Email/useUpdateEmailNotificationSettings';
 import SettingsRowDescription from './SettingsRowDescription';
 
 type Props = {
-  queryRef: SettingsModalFragment$key;
+  queryRef: SettingsFragment$key;
   newAddress?: string;
   onEthAddWalletSuccess?: () => void;
   onTezosAddWalletSuccess?: () => void;
@@ -33,15 +35,10 @@ type Props = {
 
 const DISABLED_TOGGLE_BY_EMAIL_STATUS = ['Unverified', 'Failed'];
 
-function SettingsModal({
-  newAddress,
-  queryRef,
-  onEthAddWalletSuccess,
-  onTezosAddWalletSuccess,
-}: Props) {
+function Settings({ newAddress, queryRef, onEthAddWalletSuccess, onTezosAddWalletSuccess }: Props) {
   const query = useFragment(
     graphql`
-      fragment SettingsModalFragment on Query {
+      fragment SettingsFragment on Query {
         viewer @required(action: THROW) {
           ... on Viewer {
             email @required(action: THROW) {
@@ -97,8 +94,6 @@ function SettingsModal({
   );
 
   const [isPending, setIsPending] = useState(false);
-
-  const { hideModal } = useModalActions();
 
   const handleEmailNotificationChange = useCallback(
     async (checked: boolean) => {
@@ -158,10 +153,6 @@ function SettingsModal({
     }
   }, [userEmail]);
 
-  const handleDoneClick = useCallback(() => {
-    hideModal();
-  }, [hideModal]);
-
   const isEmailUnverified = useMemo(() => {
     return DISABLED_TOGGLE_BY_EMAIL_STATUS.includes(query?.viewer?.email?.verificationStatus ?? '');
   }, [query]);
@@ -179,89 +170,119 @@ function SettingsModal({
     return query.viewer?.user?.roles?.includes('EARLY_ACCESS');
   }, [query]);
 
+  const { handleLogout } = useAuthActions();
+
+  const handleSignOutClick = useCallback(() => {
+    handleLogout();
+  }, [handleLogout]);
+
+  const { hideDrawer } = useDrawerActions();
+
+  const handleDoneClick = useCallback(() => {
+    hideDrawer();
+  }, [hideDrawer]);
+
   return (
-    <StyledManageWalletsModal gap={12}>
-      <VStack gap={24}>
-        <VStack gap={16}>
-          <VStack>
-            <TitleDiatypeL>Email notifications</TitleDiatypeL>
-            <HStack justify="space-between" align="center">
-              <SettingsRowDescription>
-                Receive weekly recaps about product updates, airdrop opportunities, and your most
-                recent gallery admirers.
-              </SettingsRowDescription>
-              <Toggle
-                checked={isToggleChecked}
-                isPending={isPending || isEmailUnverified}
-                onChange={toggleEmailNotification}
+    <>
+      <DrawerHeader headerText="Settings" />
+
+      <StyledContentWrapper>
+        <StyledSettings gap={12}>
+          <SettingsContents gap={24}>
+            <VStack gap={16}>
+              <VStack>
+                <TitleDiatypeL>Email notifications</TitleDiatypeL>
+                <HStack justify="space-between" align="center">
+                  <SettingsRowDescription>
+                    Receive weekly recaps about product updates, airdrop opportunities, and your
+                    most recent gallery admirers.
+                  </SettingsRowDescription>
+                  <Toggle
+                    checked={isToggleChecked}
+                    isPending={isPending || isEmailUnverified}
+                    onChange={toggleEmailNotification}
+                  />
+                </HStack>
+              </VStack>
+              <StyledButtonContainer>
+                {shouldDisplayAddEmailInput ? (
+                  <EmailManager queryRef={query} onClose={handleCloseEmailManager} />
+                ) : (
+                  <StyledButton variant="secondary" onClick={handleOpenEmailManager}>
+                    add email address
+                  </StyledButton>
+                )}
+              </StyledButtonContainer>
+            </VStack>
+            <StyledHr />
+            <VStack>
+              <TitleDiatypeL>Members Club</TitleDiatypeL>
+              <HStack justify="space-between" align="center" gap={8}>
+                <span>
+                  <SettingsRowDescription>
+                    Unlock early access to features, a profile badge, and the members-only{' '}
+                    <InteractiveLink href={GALLERY_DISCORD}>Discord channel</InteractiveLink> by
+                    holding a{' '}
+                    <InteractiveLink
+                      href={`https://opensea.io/collection/gallery-membership-cards?ref=${GALLERY_OS_ADDRESS}`}
+                    >
+                      Premium Gallery Membership Card
+                    </InteractiveLink>{' '}
+                    and verifying your email address.
+                  </SettingsRowDescription>
+                </span>
+                <HStack align="center" gap={4} shrink={false}>
+                  {hasEarlyAccess ? (
+                    <>
+                      <CircleCheckIcon />
+                      <BaseM>Active</BaseM>
+                    </>
+                  ) : (
+                    <BaseM color={colors.metal}>Inactive</BaseM>
+                  )}
+                </HStack>
+              </HStack>
+            </VStack>
+            <StyledHr />
+            <VStack gap={16}>
+              <TitleDiatypeL>Connect Twitter</TitleDiatypeL>
+              <TwitterSetting queryRef={query} />
+            </VStack>
+            <StyledHr />
+            <VStack>
+              <TitleDiatypeL>Manage accounts</TitleDiatypeL>
+              <ManageWallets
+                queryRef={query}
+                newAddress={newAddress}
+                onTezosAddWalletSuccess={onTezosAddWalletSuccess}
+                onEthAddWalletSuccess={onEthAddWalletSuccess}
               />
-            </HStack>
-          </VStack>
-          <StyledButtonContainer>
-            {shouldDisplayAddEmailInput ? (
-              <EmailManager queryRef={query} onClose={handleCloseEmailManager} />
-            ) : (
-              <StyledButton variant="secondary" onClick={handleOpenEmailManager}>
-                add email address
+            </VStack>
+            <StyledHr />
+            <HStack>
+              <StyledButton variant="warning" onClick={handleSignOutClick}>
+                Sign Out
               </StyledButton>
-            )}
-          </StyledButtonContainer>
-        </VStack>
-        <StyledHr />
-        <VStack>
-          <TitleDiatypeL>Members Club</TitleDiatypeL>
-          <HStack justify="space-between" align="center" gap={8}>
-            <span>
-              <SettingsRowDescription>
-                Unlock early access to features, a profile badge, and the members-only{' '}
-                <InteractiveLink href={GALLERY_DISCORD}>Discord channel</InteractiveLink> by holding
-                a{' '}
-                <InteractiveLink
-                  href={`https://opensea.io/collection/gallery-membership-cards?ref=${GALLERY_OS_ADDRESS}`}
-                >
-                  Premium Gallery Membership Card
-                </InteractiveLink>{' '}
-                and verifying your email address.
-              </SettingsRowDescription>
-            </span>
-            <HStack align="center" gap={4} shrink={false}>
-              {hasEarlyAccess ? (
-                <>
-                  <CircleCheckIcon />
-                  <BaseM>Active</BaseM>
-                </>
-              ) : (
-                <BaseM color={colors.metal}>Inactive</BaseM>
-              )}
             </HStack>
-          </HStack>
-        </VStack>
-        <StyledHr />
-        <VStack gap={16}>
-          <TitleDiatypeL>Connect Twitter</TitleDiatypeL>
-          <TwitterSetting queryRef={query} />
-        </VStack>
-        <StyledHr />
-        <VStack>
-          <TitleDiatypeL>Manage accounts</TitleDiatypeL>
-          <ManageWallets
-            queryRef={query}
-            newAddress={newAddress}
-            onTezosAddWalletSuccess={onTezosAddWalletSuccess}
-            onEthAddWalletSuccess={onEthAddWalletSuccess}
-          />
-        </VStack>
-        <StyledHr />
-      </VStack>
-      <DoneButton onClick={handleDoneClick}>Done</DoneButton>
-    </StyledManageWalletsModal>
+          </SettingsContents>
+        </StyledSettings>
+      </StyledContentWrapper>
+      <StyledFooter align="center" justify="flex-end">
+        <DoneButton onClick={handleDoneClick}>Done</DoneButton>
+      </StyledFooter>
+    </>
   );
 }
 
-const StyledManageWalletsModal = styled(VStack)`
+const StyledSettings = styled(VStack)`
   @media only screen and ${breakpoints.tablet} {
-    width: 480px;
+    width: 100%;
   }
+  margin-bottom: 64px;
+`;
+
+const SettingsContents = styled(VStack)`
+  padding: 16px;
 `;
 
 const StyledHr = styled.hr`
@@ -278,8 +299,24 @@ const StyledButton = styled(Button)`
   padding: 8px 12px;
 `;
 
+const StyledContentWrapper = styled.div`
+  overflow-y: scroll;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  height: 100%;
+`;
+
 const DoneButton = styled(Button)`
   align-self: flex-end;
 `;
 
-export default SettingsModal;
+const StyledFooter = styled(HStack)`
+  width: 100%;
+  background-color: ${colors.offWhite};
+  position: absolute;
+  display: flex;
+  bottom: 0;
+  padding: 12px 16px;
+`;
+
+export default Settings;

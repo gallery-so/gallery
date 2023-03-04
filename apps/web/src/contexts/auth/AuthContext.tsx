@@ -93,10 +93,6 @@ const AuthContextFetchUserQueryNode = graphql`
         }
       }
     }
-
-    # Need to refresh user data. We don't have a good system here yet
-    # eslint-disable-next-line relay/must-colocate-fragment-spreads
-    ...ProfileDropdownFragment
   }
 `;
 

@@ -2,7 +2,6 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { HStack } from '~/components/core/Spacer/Stack';
-import { ProfileDropdown } from '~/contexts/globalLayout/GlobalNavbar/ProfileDropdown/ProfileDropdown';
 import {
   NavbarCenterContent,
   NavbarLeftContent,
@@ -22,8 +21,6 @@ export function CommunityNavbar({ queryRef }: CommunityNavbarProps) {
   const query = useFragment(
     graphql`
       fragment CommunityNavbarFragment on Query {
-        ...ProfileDropdownFragment
-
         viewer {
           ... on Viewer {
             __typename
@@ -38,9 +35,7 @@ export function CommunityNavbar({ queryRef }: CommunityNavbarProps) {
 
   return (
     <StandardNavbarContainer>
-      <NavbarLeftContent>
-        <ProfileDropdown queryRef={query} />
-      </NavbarLeftContent>
+      <NavbarLeftContent />
 
       <NavbarCenterContent />
 

@@ -6,6 +6,7 @@ import { VStack } from '~/components/core/Spacer/Stack';
 import FollowList from '~/components/Follow/FollowList';
 import GalleryViewEmitter from '~/components/internal/GalleryViewEmitter';
 import { GalleryNavbar } from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavbar';
+import { StandardSidebar } from '~/contexts/globalLayout/GlobalSidebar/StandardSidebar';
 import { followersFollowersPageFragment$key } from '~/generated/followersFollowersPageFragment.graphql';
 import { followersQuery } from '~/generated/followersQuery.graphql';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
@@ -48,6 +49,7 @@ export default function Followers({ username }: FollowersProps) {
         ...GalleryNavbarFragment
         ...followersFollowersPageFragment
         ...GalleryViewEmitterWithSuspenseFragment
+        ...StandardSidebarFragment
       }
     `,
     { username }
@@ -63,6 +65,7 @@ export default function Followers({ username }: FollowersProps) {
       }
       footer={false}
       navbar={<GalleryNavbar galleryRef={null} username={username} queryRef={query} />}
+      sidebar={<StandardSidebar queryRef={query} />}
     />
   );
 }

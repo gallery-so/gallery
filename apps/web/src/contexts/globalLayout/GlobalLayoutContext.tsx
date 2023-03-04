@@ -17,6 +17,7 @@ import { useFragment, useLazyLoadQuery } from 'react-relay';
 import { fetchQuery, graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
+import breakpoints from '~/components/core/breakpoints';
 import FullPageLoader from '~/components/core/Loader/FullPageLoader';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { GlobalLayoutContextNavbarFragment$key } from '~/generated/GlobalLayoutContextNavbarFragment.graphql';
@@ -25,13 +26,12 @@ import useDebounce from '~/hooks/useDebounce';
 import usePrevious from '~/hooks/usePrevious';
 import useThrottle from '~/hooks/useThrottle';
 import { PreloadQueryArgs } from '~/types/PageComponentPreloadQuery';
-import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 import isTouchscreenDevice from '~/utils/isTouchscreenDevice';
 
 import { FEATURED_COLLECTION_IDS } from './GlobalAnnouncementPopover/GlobalAnnouncementPopover';
 import useGlobalAnnouncementPopover from './GlobalAnnouncementPopover/useGlobalAnnouncementPopover';
 import GlobalBanner from './GlobalBanner/GlobalBanner';
-import GlobalSidebar from './GlobalSidebar/GlobalSidebar';
+import GlobalSidebar, { GLOBAL_SIDEBAR_DESKTOP_WIDTH } from './GlobalSidebar/GlobalSidebar';
 import {
   FADE_TRANSITION_TIME_MS,
   FADE_TRANSITION_TIME_SECONDS,
@@ -82,7 +82,6 @@ const GlobalLayoutContextQueryNode = graphql`
     ...GlobalLayoutContextNavbarFragment
     # Keeping this around for the next time we want to use it
     ...useGlobalAnnouncementPopoverFragment
-    ...isFeatureEnabledFragment
   }
 `;
 
@@ -234,7 +233,7 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
 
   const locationKey = useStabilizedRouteTransitionKey();
 
-  const isGlobalSidebarEnabled = isFeatureEnabled(FeatureFlag.GLOBAL_SIDEBAR, query);
+  const isSidebarPresent = sidebarContent !== null;
 
   return (
     // note: we render the navbar here, above the main contents of the app,
@@ -249,39 +248,71 @@ const GlobalLayoutContextProvider = memo(({ children }: Props) => {
         fadeType={fadeType}
         handleFadeNavbarOnHover={handleFadeNavbarOnHover}
         content={topNavContent}
+        isSidebarPresent={isSidebarPresent}
       />
 
-      {isGlobalSidebarEnabled && <GlobalSidebar content={sidebarContent} />}
+      <AnimatePresence>
+        {isSidebarPresent && (
+          <StyledGlobalSidebarMotion
+            key={locationKey}
+            transition={{
+              ease: 'easeInOut',
+              duration: FADE_TRANSITION_TIME_SECONDS,
+            }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <GlobalSidebar content={sidebarContent} />
+          </StyledGlobalSidebarMotion>
+        )}
+      </AnimatePresence>
 
-      <GlobalLayoutStateContext.Provider value={state}>
-        <GlobalLayoutActionsContext.Provider value={actions}>
-          {/*
-           * Fade main page content as the user navigates across routes.
-           * This does not affect the Top Nav or Left Hand Nav.
-           */}
-          <AnimatePresence>
-            <motion.div
-              key={locationKey}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{
-                opacity: 0,
-                transition: { duration: FADE_TRANSITION_TIME_SECONDS },
-              }}
-              transition={{
-                ease: 'easeInOut',
-                delay: NAVIGATION_TRANSITION_TIME_SECONDS,
-                duration: FADE_TRANSITION_TIME_SECONDS,
-              }}
-            >
-              <Suspense fallback={<FullPageLoader />}>{children}</Suspense>
-            </motion.div>
-          </AnimatePresence>
-        </GlobalLayoutActionsContext.Provider>
-      </GlobalLayoutStateContext.Provider>
+      <MainContentWrapper isSidebarPresent={isSidebarPresent}>
+        <GlobalLayoutStateContext.Provider value={state}>
+          <GlobalLayoutActionsContext.Provider value={actions}>
+            {/*
+             * Fade main page content as the user navigates across routes.
+             * This does not affect the Top Nav or Left Hand Nav.
+             */}
+            <AnimatePresence>
+              <motion.div
+                key={locationKey}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{
+                  opacity: 0,
+                  transition: { duration: FADE_TRANSITION_TIME_SECONDS },
+                }}
+                transition={{
+                  ease: 'easeInOut',
+                  delay: NAVIGATION_TRANSITION_TIME_SECONDS,
+                  duration: FADE_TRANSITION_TIME_SECONDS,
+                }}
+              >
+                <Suspense fallback={<FullPageLoader />}>{children}</Suspense>
+              </motion.div>
+            </AnimatePresence>
+          </GlobalLayoutActionsContext.Provider>
+        </GlobalLayoutStateContext.Provider>
+      </MainContentWrapper>
     </>
   );
 });
+
+const MainContentWrapper = styled.div<{ isSidebarPresent: boolean }>`
+  transition: margin-left ${FADE_TRANSITION_TIME_SECONDS}s ease-in-out;
+
+  @media only screen and ${breakpoints.tablet} {
+    ${({ isSidebarPresent }) =>
+      isSidebarPresent && ` margin-left: ${GLOBAL_SIDEBAR_DESKTOP_WIDTH}px;`}
+  }
+`;
+
+const StyledGlobalSidebarMotion = styled(motion.div)`
+  position: relative;
+  z-index: 2; // ensure sidebar sits above navbar
+`;
 
 GlobalLayoutContextProvider.preloadQuery = ({ relayEnvironment }: PreloadQueryArgs) => {
   fetchQuery<GlobalLayoutContextQuery>(
@@ -304,6 +335,7 @@ type GlobalNavbarWithFadeEnabledProps = {
   fadeType: FadeTriggerType;
   isBannerVisible: boolean;
   content: ReactElement | null;
+  isSidebarPresent: boolean;
 };
 
 function GlobalNavbarWithFadeEnabled({
@@ -313,6 +345,7 @@ function GlobalNavbarWithFadeEnabled({
   fadeType,
   isBannerVisible,
   content,
+  isSidebarPresent,
 }: GlobalNavbarWithFadeEnabledProps) {
   const query = useFragment(
     graphql`
@@ -374,32 +407,34 @@ function GlobalNavbarWithFadeEnabled({
        */}
       <AnimatePresence>
         {isVisible && (
-          <motion.div
-            className="GlobalNavbar"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{
-              opacity: 0,
-              transition: { duration: FADE_TRANSITION_TIME_SECONDS },
-            }}
-            transition={{
-              ease: 'easeInOut',
-              delay: fadeType === 'route' ? NAVIGATION_TRANSITION_TIME_SECONDS : 0,
-              duration: FADE_TRANSITION_TIME_SECONDS,
-            }}
-          >
-            {isBannerVisible && (
-              <GlobalBanner
-                // make sure to update this flag and add to backend schema.graphql
-                experienceFlag="MaintenanceFeb2023"
-                text=""
-                queryRef={query}
-                dismissOnActionComponentClick
-                requireAuth
-              />
-            )}
-            <StyledBackground>{content}</StyledBackground>
-          </motion.div>
+          <StyledMotionWrapper isSidebarPresent={isSidebarPresent}>
+            <motion.div
+              className="GlobalNavbar"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{
+                opacity: 0,
+                transition: { duration: FADE_TRANSITION_TIME_SECONDS },
+              }}
+              transition={{
+                ease: 'easeInOut',
+                delay: fadeType === 'route' ? NAVIGATION_TRANSITION_TIME_SECONDS : 0,
+                duration: FADE_TRANSITION_TIME_SECONDS,
+              }}
+            >
+              {isBannerVisible && (
+                <GlobalBanner
+                  // make sure to update this flag and add to backend schema.graphql
+                  experienceFlag="MaintenanceFeb2023"
+                  text=""
+                  queryRef={query}
+                  dismissOnActionComponentClick
+                  requireAuth
+                />
+              )}
+              <StyledBackground>{content}</StyledBackground>
+            </motion.div>
+          </StyledMotionWrapper>
         )}
       </AnimatePresence>
     </StyledGlobalNavbarWithFadeEnabled>
@@ -421,6 +456,16 @@ const StyledGlobalNavbarWithFadeEnabled = styled.div<{
 const StyledBackground = styled.div`
   background: rgba(254, 254, 254, 0.95);
   backdrop-filter: blur(48px);
+`;
+
+const StyledMotionWrapper = styled.div<{ isSidebarPresent: boolean }>`
+  transition: margin-left ${FADE_TRANSITION_TIME_SECONDS}s ease-in-out;
+  position: relative;
+
+  @media only screen and ${breakpoints.tablet} {
+    ${({ isSidebarPresent }) =>
+      isSidebarPresent && `margin-left: ${GLOBAL_SIDEBAR_DESKTOP_WIDTH}px;`}
+  }
 `;
 
 export default GlobalLayoutContextProvider;
