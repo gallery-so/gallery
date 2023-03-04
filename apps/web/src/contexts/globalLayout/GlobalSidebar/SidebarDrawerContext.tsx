@@ -61,7 +61,9 @@ function SidebarDrawerProvider({ children }: Props): ReactElement {
   useEffect(() => {
     if (isMobile) {
       const isDrawerOpen = drawerState.activeDrawer !== null;
+
       document.body.style.overflow = isDrawerOpen ? 'hidden' : 'unset';
+      document.body.style.position = isDrawerOpen ? 'fixed' : 'unset';
     }
   }, [drawerState.activeDrawer, isMobile]);
 
