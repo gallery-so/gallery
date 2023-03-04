@@ -3,6 +3,7 @@ import { Route } from 'nextjs-routes';
 import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
+import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import { NonRecursiveFeedEventData } from '~/components/Feed/FeedEventData';
@@ -97,7 +98,9 @@ export default function GalleryUpdatedFeedEvent({
           <VStack gap={16}>
             {caption && (
               <StyledCaptionContainer gap={8} align="center">
-                <BaseM>{caption}</BaseM>
+                <BaseM>
+                  <Markdown text={caption} />
+                </BaseM>
               </StyledCaptionContainer>
             )}
             <VStack>
