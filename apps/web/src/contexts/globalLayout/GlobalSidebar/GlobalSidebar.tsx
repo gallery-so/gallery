@@ -22,8 +22,10 @@ export default function GlobalSidebar({ content }: GlobalSidebarProps) {
     return null;
   }
 
+  const isDrawerOpen = Boolean(drawerState.activeDrawer);
+
   return (
-    <StyledGlobalSidebar>
+    <StyledGlobalSidebar isDrawerOpen={isDrawerOpen}>
       <StyledGlobalSidebarContent>{content}</StyledGlobalSidebarContent>
       <AnimatePresence>
         {drawerState.activeDrawer && (
@@ -34,13 +36,16 @@ export default function GlobalSidebar({ content }: GlobalSidebarProps) {
   );
 }
 
-const StyledGlobalSidebar = styled.div`
+const StyledGlobalSidebar = styled.div<{ isDrawerOpen: boolean }>`
   position: fixed;
   bottom: 0;
-  max-height: 100vh;
   width: 100vw;
   display: flex;
   flex-direction: column-reverse;
+
+  // this allows the drawer content height to adjust to changing mobile view area height, when the url bar changes height.
+  // height should be 100% only when drawer is open because otherwise it will cover the entire screen when drawer is closed
+  ${({ isDrawerOpen }) => isDrawerOpen && `height: 100%;`}
 
   z-index: 2;
 

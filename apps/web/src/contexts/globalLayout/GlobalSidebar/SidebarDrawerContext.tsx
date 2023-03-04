@@ -4,9 +4,12 @@ import {
   ReactNode,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
 } from 'react';
+
+import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 
 export type DrawerType = 'Notifications' | 'Settings';
 
@@ -50,6 +53,17 @@ type Props = { children: ReactNode };
 
 function SidebarDrawerProvider({ children }: Props): ReactElement {
   const [drawerState, setDrawerState] = useState<DrawerState>({ activeDrawer: null });
+  const isMobile = useIsMobileOrMobileLargeWindowWidth();
+
+  /**
+   * EFFECT: Prevent main body from being scrollable on mobile when drawer is open. On desktop we allow users to scroll the main body while the drawer is open.
+   */
+  useEffect(() => {
+    if (isMobile) {
+      const isDrawerOpen = drawerState.activeDrawer !== null;
+      document.body.style.overflow = isDrawerOpen ? 'hidden' : 'unset';
+    }
+  }, [drawerState.activeDrawer, isMobile]);
 
   const showDrawer = useCallback((props: ActiveDrawer) => {
     setDrawerState((previous) => {
