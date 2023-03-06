@@ -43,7 +43,7 @@ export function CollectionListItem({ collectionId, queryRef }: CollectionListIte
     deleteCollection,
     editCollectionNameAndNote,
   } = useGalleryEditorContext();
-  const collection = collections[collectionId];
+  const collection = collections.find((collection) => collection.dbid === collectionId);
 
   if (!collection) {
     throw new ErrorWithSentryMetadata(
@@ -154,6 +154,9 @@ export function CollectionListItem({ collectionId, queryRef }: CollectionListIte
 
 const CollectionTitleText = styled(TitleXS)<{ italicize: boolean; isHidden: boolean }>`
   text-transform: none;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 
   ${({ isHidden }) =>
     isHidden

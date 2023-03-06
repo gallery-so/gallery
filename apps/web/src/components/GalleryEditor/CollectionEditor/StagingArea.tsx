@@ -102,7 +102,7 @@ function StagingArea({ tokensRef }: Props) {
 
   const escapedCollectionName = unescape(name ?? '');
   const nonNullTokens = useMemo(() => removeNullValues(tokens), [tokens]);
-  const sectionIds = useMemo(() => Object.keys(localSections) as string[], [localSections]);
+  const sectionIds = useMemo(() => sections.map((section) => section.id), [sections]);
 
   const recentlyMovedToNewContainer = useRef(false);
   const lastOverId = useRef<UniqueIdentifier | null>(null);
@@ -151,7 +151,7 @@ function StagingArea({ tokensRef }: Props) {
 
   // flatten the collection into a single array of items to easily find the active item
   const allItemsInCollection = useMemo(
-    () => Object.values(localSections).flatMap((section) => section.items),
+    () => localSections.flatMap((section) => section.items),
     [localSections]
   );
 
@@ -178,7 +178,7 @@ function StagingArea({ tokensRef }: Props) {
       return null;
     }
 
-    const localActiveSection = localSections[activeId.toString()];
+    const localActiveSection = localSections.find((section) => section.id === activeId.toString());
     if (localActiveSection) {
       return (
         <SectionDragging
@@ -190,7 +190,7 @@ function StagingArea({ tokensRef }: Props) {
         />
       );
     } else if (activeItem) {
-      const sectionOwningItem = Object.values(sections).find((section) =>
+      const sectionOwningItem = sections.find((section) =>
         section.items.some((item) => item.id === activeId)
       );
 
@@ -304,11 +304,11 @@ function StagingArea({ tokensRef }: Props) {
           {/* Handles sorting for sections */}
           <SortableContext items={sectionIds} strategy={verticalListSortingStrategy}>
             <VStack gap={12}>
-              {Object.entries(localSections).map(([sectionId, section]) => {
+              {localSections.map((section) => {
                 return (
                   <DroppableSection
-                    key={sectionId}
-                    id={sectionId}
+                    key={section.id}
+                    id={section.id}
                     items={section.items}
                     columns={section.columns}
                   >

@@ -39,8 +39,8 @@ const deepClone = rfdc();
 export type GalleryEditorContextType = {
   name: string;
   description: string;
-  collections: CollectionMap;
-  setCollections: Dispatch<SetStateAction<CollectionMap>>;
+  collections: StagedCollectionList;
+  setCollections: Dispatch<SetStateAction<StagedCollectionList>>;
   hiddenCollectionIds: Set<string>;
 
   hasSaved: boolean;
@@ -71,11 +71,12 @@ type GalleryEditorProviderProps = PropsWithChildren<{
 export type StagedItem = { kind: 'whitespace'; id: string } | { kind: 'token'; id: string };
 
 export type StagedSection = {
+  id: string;
   columns: number;
   items: StagedItem[];
 };
 
-export type CollectionState = {
+export type StagedCollection = {
   dbid: string;
   localOnly: boolean;
 
@@ -85,12 +86,12 @@ export type CollectionState = {
   collectorsNote: string;
   hidden: boolean;
 
-  sections: StagedSectionMap;
+  sections: StagedSectionList;
   activeSectionId: string | null;
 };
 
-export type StagedSectionMap = Record<string, StagedSection>;
-export type CollectionMap = Record<string, CollectionState>;
+export type StagedSectionList = StagedSection[];
+export type StagedCollectionList = StagedCollection[];
 
 export function GalleryEditorProvider({
   queryRef,
@@ -169,12 +170,12 @@ export function GalleryEditorProvider({
     return new Set<string>();
   });
 
-  const [collections, setCollections] = useState<CollectionMap>(() =>
+  const [collections, setCollections] = useState<StagedCollectionList>(() =>
     getInitialCollectionsFromServer(query.galleryById)
   );
 
   const [collectionIdBeingEdited, setCollectionIdBeingEdited] = useState<string | null>(() => {
-    return initialCollectionId ?? Object.values(collections)[0]?.dbid ?? null;
+    return initialCollectionId ?? collections[0]?.dbid ?? null;
   });
 
   const { showModal } = useModalActions();
@@ -183,11 +184,11 @@ export function GalleryEditorProvider({
     const newCollectionId = generate12DigitId();
 
     setCollections((previous) => {
-      const defaultSectionId = generate12DigitId();
+      const newSectionId = generate12DigitId();
 
-      const newCollection: CollectionState = {
+      const newCollection: StagedCollection = {
         dbid: newCollectionId,
-        activeSectionId: defaultSectionId,
+        activeSectionId: newSectionId,
         liveDisplayTokenIds: new Set(),
 
         name: '',
@@ -196,13 +197,10 @@ export function GalleryEditorProvider({
         localOnly: true,
         hidden: false,
 
-        sections: { [defaultSectionId]: { columns: 3, items: [] } },
+        sections: [{ id: newSectionId, columns: 3, items: [] }],
       };
 
-      return {
-        ...previous,
-        [newCollectionId]: newCollection,
-      };
+      return [...previous, newCollection];
     });
 
     setCollectionIdBeingEdited(newCollectionId);
@@ -212,7 +210,7 @@ export function GalleryEditorProvider({
     setCollections((previous) => {
       const cloned = deepClone(previous);
 
-      const collection = cloned[collectionId];
+      const collection = cloned.find((collection) => collection.dbid === collectionId);
       if (collection) {
         collection.hidden = !collection.hidden;
       }
@@ -223,9 +221,7 @@ export function GalleryEditorProvider({
 
   const hiddenCollectionIds = useMemo(() => {
     return new Set(
-      Object.values(collections)
-        .filter((collection) => collection.hidden)
-        .map((collection) => collection.dbid)
+      collections.filter((collection) => collection.hidden).map((collection) => collection.dbid)
     );
   }, [collections]);
 
@@ -243,17 +239,16 @@ export function GalleryEditorProvider({
         return next;
       });
 
-      const nextCollections = { ...collections };
-      delete nextCollections[collectionId];
+      const nextCollections = collections.filter((collection) => collection.dbid !== collectionId);
 
-      setCollections(nextCollections);
-
-      let nextCollectionIdBeingEdited = Object.keys(nextCollections)[0];
+      let nextCollectionIdBeingEdited = nextCollections[0]?.dbid;
       if (!nextCollectionIdBeingEdited) {
         const emptyCollection = createEmptyCollection();
         nextCollectionIdBeingEdited = emptyCollection.dbid;
-        nextCollections[nextCollectionIdBeingEdited] = emptyCollection;
+        nextCollections.push(emptyCollection);
       }
+
+      setCollections(nextCollections);
       setCollectionIdBeingEdited(nextCollectionIdBeingEdited);
     },
     [collections]
@@ -278,7 +273,7 @@ export function GalleryEditorProvider({
 
   const editCollectionNameAndNote = useCallback(
     (collectionId: string) => {
-      const collection = collections[collectionId];
+      const collection = collections.find((collection) => collection.dbid === collectionId);
 
       if (!collection) {
         return;
@@ -292,18 +287,13 @@ export function GalleryEditorProvider({
             collectorsNote={collection.collectorsNote}
             onDone={({ name, collectorsNote }) => {
               setCollections((previous) => {
-                const next = { ...previous };
+                const next = previous.map((collection) => {
+                  if (collection.dbid === collectionId) {
+                    return { ...collection, name, collectorsNote };
+                  }
 
-                const previousCollection = previous[collectionId];
-                if (!previousCollection) {
-                  return previous;
-                }
-
-                next[collectionId] = {
-                  ...previousCollection,
-                  name,
-                  collectorsNote,
-                };
+                  return collection;
+                });
 
                 return next;
               });
@@ -326,7 +316,7 @@ export function GalleryEditorProvider({
     }
 
     const localCollectionToUpdatedCollection = (
-      collection: CollectionState
+      collection: StagedCollection
     ): UpdateCollectionInput => {
       const tokens = Object.values(collection.sections).flatMap((section) =>
         section.items.filter((item) => item.kind === 'token')
@@ -348,7 +338,7 @@ export function GalleryEditorProvider({
     };
 
     const localCollectionToCreatedCollection = (
-      collection: CollectionState
+      collection: StagedCollection
     ): CreateCollectionInGalleryInput => {
       const tokens = Object.values(collection.sections).flatMap((section) =>
         section.items.filter((item) => item.kind === 'token')
@@ -369,17 +359,17 @@ export function GalleryEditorProvider({
       };
     };
 
-    const updatedCollections: UpdateCollectionInput[] = Object.values(collections)
+    const updatedCollections: UpdateCollectionInput[] = collections
       .filter((collection) => !collection.localOnly)
       .map(localCollectionToUpdatedCollection);
 
-    const createdCollections: CreateCollectionInGalleryInput[] = Object.values(collections)
+    const createdCollections: CreateCollectionInGalleryInput[] = collections
       .filter((collection) => collection.localOnly)
       .map(localCollectionToCreatedCollection);
 
     const deletedCollections = [...deletedCollectionIds];
 
-    const order = [...Object.values(collections).map((collection) => collection.dbid)];
+    const order = [...collections.map((collection) => collection.dbid)];
 
     const payload = {
       galleryId,
@@ -426,12 +416,11 @@ export function GalleryEditorProvider({
       // Reset the deleted collection ids since we just deleted them
       setDeletedCollectionIds(new Set());
 
-      // Ensure the same collection is still activated
-      const newCollectionIdBeingEdited = collectionIdBeingEdited
-        ? Object.keys(serverSourcedCollections)[
-            Object.keys(collections).indexOf(collectionIdBeingEdited)
-          ]
-        : null;
+      const indexOfCollectionBeingEdited = collections.findIndex(
+        (collection) => collection.dbid === collectionIdBeingEdited
+      );
+      const newCollectionIdBeingEdited =
+        serverSourcedCollections[indexOfCollectionBeingEdited]?.dbid;
 
       setCollectionIdBeingEdited(newCollectionIdBeingEdited ?? null);
 
@@ -532,10 +521,10 @@ export function GalleryEditorProvider({
   const hasUnsavedChanges = useMemo(() => {
     // Need to convert the liveDisplayTokenIds Set into an Array because sets don't store data
     // as properties to be stringified: https://stackoverflow.com/a/31190928/5377437
-    const currentCollectionsWithoutIds = Object.values(collections).map(
+    const currentCollectionsWithoutIds = collections.map(
       convertCollectionToComparisonFriendlyObject
     );
-    const initialCollectionsWithoutIds = Object.values(initialCollections).map(
+    const initialCollectionsWithoutIds = initialCollections.map(
       convertCollectionToComparisonFriendlyObject
     );
 
@@ -550,8 +539,10 @@ export function GalleryEditorProvider({
 
   const doesCollectionHaveUnsavedChanges = useCallback(
     (collectionId: string) => {
-      const currentCollection = collections[collectionId];
-      const initialCollection = initialCollections[collectionId];
+      const currentCollection = collections.find((collection) => collection.dbid === collectionId);
+      const initialCollection = initialCollections.find(
+        (collection) => collection.dbid === collectionId
+      );
 
       if (!currentCollection || !initialCollection) {
         return false;
@@ -584,20 +575,20 @@ export function GalleryEditorProvider({
 
   const moveCollectionToGallery = useCallback(
     (collectionId: string) => {
-      const nextInitialCollections = { ...initialCollections };
-      delete nextInitialCollections[collectionId];
-      setInitialCollections(nextInitialCollections);
+      const nextCollections = collections.filter((collection) => collection.dbid === collectionId);
+      const nextInitialCollections = initialCollections.filter(
+        (collection) => collection.dbid === collectionId
+      );
 
-      const nextCollections = { ...collections };
-      delete nextCollections[collectionId];
-      setCollections(nextCollections);
-
-      let nextCollectionIdBeingEdited = Object.keys(nextCollections)[0];
+      let nextCollectionIdBeingEdited = nextCollections[0]?.dbid;
       if (!nextCollectionIdBeingEdited) {
         const emptyCollection = createEmptyCollection();
         nextCollectionIdBeingEdited = emptyCollection.dbid;
-        nextCollections[nextCollectionIdBeingEdited] = emptyCollection;
+        nextCollections.push(emptyCollection);
       }
+
+      setCollections(nextCollections);
+      setInitialCollections(nextInitialCollections);
       setCollectionIdBeingEdited(nextCollectionIdBeingEdited);
     },
     [collections, initialCollections]
@@ -663,12 +654,12 @@ export function useGalleryEditorContext() {
   return value;
 }
 
-type ComparisonFriendlyCollectionState = Omit<CollectionState, 'liveDisplayTokenIds'> & {
+type ComparisonFriendlyCollectionState = Omit<StagedCollection, 'liveDisplayTokenIds'> & {
   liveDisplayTokenIds: string[];
 };
 
 function convertCollectionToComparisonFriendlyObject(
-  collection: CollectionState
+  collection: StagedCollection
 ): ComparisonFriendlyCollectionState {
   return {
     ...collection,
