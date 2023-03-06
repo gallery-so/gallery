@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Gallery Labs",
-    "slug": "gallery",
+    "slug": "gallery-mobile",
     "privacy": "unlisted",
     "version": "0.1.0",
     "orientation": "portrait",
@@ -17,23 +17,25 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
+      "buildNumber": "5",
       "supportsTablet": true,
-      "bundleIdentifier": "com.tbgallery.gallery"
+      "bundleIdentifier": "com.gallerylabs.gallery"
     },
     "android": {
+      "versionCode": "2",
       "blockedPermissions": ["android.permission.RECORD_AUDIO"],
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.tbgallery.gallery"
+      "package": "com.gallerylabs.gallery"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "0a46fb2e-423d-42e3-8609-e7772b11d3b2"
+        "projectId": "67c952bc-7ade-408c-a95d-72c36ce9252c"
       }
     },
     "owner": "gallery",
