@@ -3,11 +3,11 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import IconContainer from '~/components/core/IconContainer';
-import { useModalActions } from '~/contexts/modal/ModalContext';
+import Settings from '~/components/Settings/Settings';
+import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 import { NotificationEmailAlertQueryFragment$key } from '~/generated/NotificationEmailAlertQueryFragment.graphql';
 import CloseIcon from '~/icons/CloseIcon';
 import InfoCircleIcon from '~/icons/InfoCircleIcon';
-import SettingsModal from '~/scenes/Modals/SettingsModal/SettingsModal';
 
 import colors from '../core/colors';
 import InteractiveLink from '../core/InteractiveLink/InteractiveLink';
@@ -23,23 +23,19 @@ export function NotificationEmailAlert({ onDismiss, queryRef }: Props) {
   const query = useFragment(
     graphql`
       fragment NotificationEmailAlertQueryFragment on Query {
-        ...SettingsModalFragment
+        ...SettingsFragment
       }
     `,
     queryRef
   );
 
-  const { showModal, hideModal } = useModalActions();
+  const { showDrawer } = useDrawerActions();
 
   const handleEnableEmails = useCallback(() => {
-    // Hide notification modal
-    hideModal();
-
-    showModal({
-      content: <SettingsModal queryRef={query} />,
-      headerText: 'Manage accounts',
+    showDrawer({
+      content: <Settings queryRef={query} />,
     });
-  }, [hideModal, query, showModal]);
+  }, [query, showDrawer]);
 
   const handleDismiss = () => {
     onDismiss();

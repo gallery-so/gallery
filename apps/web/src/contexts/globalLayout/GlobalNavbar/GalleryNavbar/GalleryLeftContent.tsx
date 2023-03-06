@@ -12,7 +12,6 @@ import {
   BreadcrumbLink,
   BreadcrumbText,
 } from '~/contexts/globalLayout/GlobalNavbar/ProfileDropdown/Breadcrumbs';
-import { ProfileDropdown } from '~/contexts/globalLayout/GlobalNavbar/ProfileDropdown/ProfileDropdown';
 import { GalleryLeftContentFragment$key } from '~/generated/GalleryLeftContentFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 
@@ -26,7 +25,6 @@ export default function GalleryLeftContent({ queryRef, galleryName }: Props) {
     graphql`
       fragment GalleryLeftContentFragment on Query {
         ...NavActionFollowQueryFragment
-        ...ProfileDropdownFragment
 
         userByUsername(username: $username) {
           ... on GalleryUser {
@@ -69,9 +67,18 @@ export default function GalleryLeftContent({ queryRef, galleryName }: Props) {
     }
   }, [galleryName, isMobile, query, user]);
 
-  return <ProfileDropdown queryRef={query} rightContent={rightContent} />;
+  return (
+    <Wrapper gap={4} align="center">
+      {rightContent}
+    </Wrapper>
+  );
 }
 
 const UsernameBreadcrumbLink = styled(BreadcrumbLink)`
   color: ${colors.shadow};
+`;
+
+const Wrapper = styled(HStack)`
+  position: relative;
+  max-width: 100%;
 `;

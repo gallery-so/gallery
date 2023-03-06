@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';
 import { TitleDiatypeL } from '~/components/core/Text/Text';
-import { SeeMore } from '~/components/NotificationsModal/SeeMore';
+import { SeeMore } from '~/components/Notifications/SeeMore';
 import { NotificationListFragment$key } from '~/generated/NotificationListFragment.graphql';
 import useExperience from '~/utils/graphql/experiences/useExperience';
 
@@ -13,15 +13,16 @@ import { Notification } from './Notification';
 import { NotificationEmailAlert } from './NotificationEmailAlert';
 import { NotificationTwitterAlert } from './NotificationTwitterAlert';
 
-export const NOTIFICATIONS_PER_PAGE = 10;
+export const NOTIFICATIONS_PER_PAGE = 15;
 
 type NotificationListProps = {
   queryRef: NotificationListFragment$key;
+  toggleSubView: (page?: JSX.Element) => void;
 };
 
 export const FAILED_EMAIL_VERIFICATION_STATUS = ['Failed', 'Unverified'];
 
-export function NotificationList({ queryRef }: NotificationListProps) {
+export function NotificationList({ queryRef, toggleSubView }: NotificationListProps) {
   const {
     data: query,
     loadPrevious,
@@ -34,7 +35,7 @@ export function NotificationList({ queryRef }: NotificationListProps) {
         viewer {
           ... on Viewer {
             notifications(last: $notificationsLast, before: $notificationsBefore)
-              @connection(key: "NotificationsModalFragment_notifications") {
+              @connection(key: "NotificationsFragment_notifications") {
               edges {
                 node {
                   id
@@ -99,7 +100,12 @@ export function NotificationList({ queryRef }: NotificationListProps) {
         <>
           {nonNullNotifications.map((notification) => {
             return (
-              <Notification queryRef={query} key={notification.id} notificationRef={notification} />
+              <Notification
+                queryRef={query}
+                key={notification.id}
+                notificationRef={notification}
+                toggleSubView={toggleSubView}
+              />
             );
           })}
 

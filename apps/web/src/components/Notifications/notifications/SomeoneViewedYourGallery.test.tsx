@@ -2,7 +2,7 @@ import { render } from '@testing-library/react';
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import { SomeoneViewedYourGallery } from '~/components/NotificationsModal/notifications/SomeoneViewedYourGallery';
+import { SomeoneViewedYourGallery } from '~/components/Notifications/notifications/SomeoneViewedYourGallery';
 import AppProvider from '~/contexts/AppProvider';
 import { createEmptyRelayEnvironment } from '~/contexts/relay/RelayProvider';
 import { SomeoneViewedYourGalleryTestQuery } from '~/generated/SomeoneViewedYourGalleryTestQuery.graphql';

@@ -1,15 +1,15 @@
-import { useCallback } from 'react';
+// import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
-import breakpoints from '~/components/core/breakpoints';
+// import breakpoints from '~/components/core/breakpoints';
 import { StyledImageWithLoading } from '~/components/LoadingAsset/ImageWithLoading';
 import { StyledVideo } from '~/components/LoadingAsset/VideoWithLoading';
 import NftPreview from '~/components/NftPreview/NftPreview';
-import { useModalActions } from '~/contexts/modal/ModalContext';
+// import { useModalActions } from '~/contexts/modal/ModalContext';
 import ShimmerProvider from '~/contexts/shimmer/ShimmerContext';
 import { FeedEventNftPreviewWrapperFragment$key } from '~/generated/FeedEventNftPreviewWrapperFragment.graphql';
-import NftDetailView from '~/scenes/NftDetailPage/NftDetailView';
+// import NftDetailView from '~/scenes/NftDetailPage/NftDetailView';
 
 type Props = {
   tokenRef: FeedEventNftPreviewWrapperFragment$key;
@@ -30,24 +30,24 @@ function FeedEventNftPreviewWrapper({ tokenRef, maxWidth, maxHeight }: Props) {
     graphql`
       fragment FeedEventNftPreviewWrapperFragment on CollectionToken {
         ...NftPreviewFragment
-        ...NftDetailViewFragment
+        # ...NftDetailViewFragment
       }
     `,
     tokenRef
   );
 
-  const { showModal } = useModalActions();
+  // const { showModal } = useModalActions();
 
-  const handleClick = useCallback(() => {
-    showModal({
-      content: (
-        <StyledNftDetailViewPopover>
-          <NftDetailView authenticatedUserOwnsAsset={false} queryRef={token} />
-        </StyledNftDetailViewPopover>
-      ),
-      isFullPage: true,
-    });
-  }, [showModal, token]);
+  // const handleClick = useCallback(() => {
+  //   showModal({
+  //     content: (
+  //       <StyledNftDetailViewPopover>
+  //         <NftDetailView authenticatedUserOwnsAsset={false} queryRef={token} />
+  //       </StyledNftDetailViewPopover>
+  //     ),
+  //     isFullPage: true,
+  //   });
+  // }, [showModal, token]);
 
   return (
     <StyledNftPreviewWrapper
@@ -58,7 +58,7 @@ function FeedEventNftPreviewWrapper({ tokenRef, maxWidth, maxHeight }: Props) {
       <NftPreview
         tokenRef={token}
         previewSize={maxWidth}
-        onClick={handleClick}
+        // onClick={handleClick}
         disableLiverender
         isInFeedEvent
       />
@@ -79,15 +79,15 @@ const StyledNftPreviewWrapper = styled.div<{ maxWidth: number; maxHeight: number
   }
 `;
 
-const StyledNftDetailViewPopover = styled.div`
-  display: flex;
-  justify-content: center;
-  height: 100%;
-  padding: 80px 0;
+// const StyledNftDetailViewPopover = styled.div`
+//   display: flex;
+//   justify-content: center;
+//   height: 100%;
+//   padding: 80px 0;
 
-  @media only screen and ${breakpoints.desktop} {
-    padding: 0;
-  }
-`;
+//   @media only screen and ${breakpoints.desktop} {
+//     padding: 0;
+//   }
+// `;
 
 export default NftPreviewWithShimmer;

@@ -4,6 +4,7 @@ import { graphql } from 'relay-runtime';
 
 import GalleryViewEmitter from '~/components/internal/GalleryViewEmitter';
 import { GalleryNavbar } from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavbar';
+import { StandardSidebar } from '~/contexts/globalLayout/GlobalSidebar/StandardSidebar';
 import { galleriesQuery } from '~/generated/galleriesQuery.graphql';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
 import GalleriesPage from '~/scenes/GalleryPage/GalleriesPage';
@@ -19,6 +20,7 @@ export default function Galleries({ username }: GalleriesProps) {
         ...GalleryNavbarFragment
         ...GalleryViewEmitterWithSuspenseFragment
         ...GalleriesPageQueryFragment
+        ...StandardSidebarFragment
       }
     `,
     { username },
@@ -35,6 +37,7 @@ export default function Galleries({ username }: GalleriesProps) {
       }
       footer={false}
       navbar={<GalleryNavbar galleryRef={null} username={username} queryRef={query} />}
+      sidebar={<StandardSidebar queryRef={query} />}
     />
   );
 }

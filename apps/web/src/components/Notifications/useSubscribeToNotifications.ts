@@ -7,7 +7,7 @@ import { useSubscribeToNotificationsUpdateSubscription } from '~/generated/useSu
 
 export function useSubscribeToNotifications() {
   const connections = useMemo(() => {
-    const connectionKey = 'NotificationsModalFragment_notifications';
+    const connectionKey = 'NotificationsFragment_notifications';
     const connectionId = ConnectionHandler.getConnectionID('client:root:viewer', connectionKey);
 
     return [connectionId];

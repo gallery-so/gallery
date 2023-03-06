@@ -8,7 +8,7 @@ import { useToastActions } from '~/contexts/toast/ToastContext';
 import { TwitterSettingDisconnectMutation } from '~/generated/TwitterSettingDisconnectMutation.graphql';
 import { TwitterSettingFragment$key } from '~/generated/TwitterSettingFragment.graphql';
 import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
-import TwitterIcon from '~/icons/Twittericon';
+import TwitterIcon from '~/icons/TwitterIcon';
 
 import { Button } from '../core/Button/Button';
 import colors from '../core/colors';
