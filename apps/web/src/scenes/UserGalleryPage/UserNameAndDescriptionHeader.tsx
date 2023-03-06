@@ -4,6 +4,7 @@ import { graphql } from 'relay-runtime';
 import styled, { css } from 'styled-components';
 
 import Badge from '~/components/Badge/Badge';
+import breakpoints from '~/components/core/breakpoints';
 import TextButton from '~/components/core/Button/TextButton';
 import colors from '~/components/core/colors';
 import IconContainer from '~/components/core/IconContainer';
@@ -96,6 +97,7 @@ export function UserNameAndDescriptionHeader({ userRef, queryRef }: Props) {
       onClick={handleEditBioAndName}
       inline
       isAuth={isAuthenticatedUser}
+      hasMobileContent={isMobile && !!unescapedBio}
     >
       <Container gap={2}>
         {!isMobile && (
@@ -123,7 +125,7 @@ export function UserNameAndDescriptionHeader({ userRef, queryRef }: Props) {
         </HStack>
       </Container>
 
-      {isAuthenticatedUser && (
+      {isAuthenticatedUser && !isMobile && (
         <EditIconContainer>
           <IconContainer size="sm" variant="stacked" icon={<EditPencilIcon />} />
         </EditIconContainer>
@@ -187,10 +189,16 @@ const EditIconContainer = styled.div`
   transition: opacity 150ms ease-in-out;
 `;
 
-const HeaderContainer = styled(HStack)<{ isAuth: boolean }>`
+const HeaderContainer = styled(HStack)<{ isAuth: boolean; hasMobileContent: boolean }>`
   width: max-content;
-  padding: 4px 12px 4px 0px;
+
+  padding: ${({ hasMobileContent }) => (hasMobileContent ? '4px 12px 4px 0px' : '0')};
+
   max-width: 100%;
+
+  @media only screen and ${breakpoints.tablet} {
+    padding: 4px 12px 4px 0px;
+  }
 
   ${({ isAuth }) =>
     isAuth &&
