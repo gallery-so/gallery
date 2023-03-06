@@ -5,11 +5,11 @@ import { graphql } from 'relay-runtime';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useMoveCollectionModalFragment$key } from '~/generated/useMoveCollectionModalFragment.graphql';
 
-import { CollectionState, useGalleryEditorContext } from '../GalleryEditorContext';
+import { StagedCollection, useGalleryEditorContext } from '../GalleryEditorContext';
 import MoveCollectionModal from './MoveCollectionModal';
 
 type Props = {
-  collection: CollectionState;
+  collection: StagedCollection;
   queryRef: useMoveCollectionModalFragment$key;
 };
 

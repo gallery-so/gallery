@@ -2,11 +2,11 @@ import { DragEndEvent, DragOverEvent } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
 import rfdc from 'rfdc';
 
-import { StagedSectionMap } from '~/components/GalleryEditor/GalleryEditorContext';
+import { StagedSectionList } from '~/components/GalleryEditor/GalleryEditorContext';
 
 const deepClone = rfdc();
 
-export function dragOver(sections: StagedSectionMap, event: DragOverEvent): StagedSectionMap {
+export function dragOver(sections: StagedSectionList, event: DragOverEvent): StagedSectionList {
   const activeId = event.active?.id;
   const overId = event.over?.id;
 
@@ -82,7 +82,7 @@ export function dragOver(sections: StagedSectionMap, event: DragOverEvent): Stag
   return sections;
 }
 
-export function dragEnd(sections: StagedSectionMap, event: DragEndEvent): StagedSectionMap {
+export function dragEnd(sections: StagedSectionList, event: DragEndEvent): StagedSectionList {
   const activeId = event.active?.id;
   const overId = event.over?.id;
 

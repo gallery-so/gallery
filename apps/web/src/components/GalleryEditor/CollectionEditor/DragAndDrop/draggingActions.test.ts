@@ -2,16 +2,16 @@ import {
   dragEnd,
   dragOver,
 } from '~/components/GalleryEditor/CollectionEditor/DragAndDrop/draggingActions';
-import { StagedSectionMap } from '~/components/GalleryEditor/GalleryEditorContext';
+import { StagedSectionList } from '~/components/GalleryEditor/GalleryEditorContext';
 
 type TestCaseArgs = {
-  initial: StagedSectionMap;
+  initial: StagedSectionList;
   action: { from: string; to: string };
-  result: StagedSectionMap;
+  result: StagedSectionList;
 };
 
 type TestCaseNoChangeArgs = {
-  initial: StagedSectionMap;
+  initial: StagedSectionList;
   action: { from: string; to: string };
 };
 

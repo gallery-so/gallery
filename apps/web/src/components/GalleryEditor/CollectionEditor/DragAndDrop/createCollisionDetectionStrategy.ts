@@ -9,11 +9,11 @@ import {
 } from '@dnd-kit/core';
 import { MutableRefObject } from 'react';
 
-import { StagedSectionMap } from '~/components/GalleryEditor/GalleryEditorContext';
+import { StagedSectionList } from '~/components/GalleryEditor/GalleryEditorContext';
 
 type createCollisionDetectionStrategyArgs = {
   activeId: UniqueIdentifier | null;
-  localSections: StagedSectionMap;
+  localSections: StagedSectionList;
   lastOverId: MutableRefObject<UniqueIdentifier | null>;
   recentlyMovedToNewContainer: MutableRefObject<boolean | null>;
 };

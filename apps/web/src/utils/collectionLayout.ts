@@ -1,7 +1,7 @@
 import { graphql } from 'react-relay';
 import { readInlineData } from 'relay-runtime';
 
-import { StagedItem, StagedSectionMap } from '~/components/GalleryEditor/GalleryEditorContext';
+import { StagedItem, StagedSectionList } from '~/components/GalleryEditor/GalleryEditorContext';
 import { DEFAULT_COLUMNS } from '~/constants/layout';
 import { collectionLayoutParseFragment$key } from '~/generated/collectionLayoutParseFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
@@ -124,7 +124,7 @@ export function getWhitespacePositionsFromStagedItems(stagedItems: StagedItem[])
 
 // Given a collection of sections and their items, return an object representing the layout of the collection.
 // The layout object corresponds to the `CollectionLayoutInput`input type in the GraphQL API.
-export function generateLayoutFromCollection(sections: StagedSectionMap) {
+export function generateLayoutFromCollection(sections: StagedSectionList) {
   let sectionStartIndex = 0;
   let filteredSections = [...sections];
   sections.forEach((section) => {

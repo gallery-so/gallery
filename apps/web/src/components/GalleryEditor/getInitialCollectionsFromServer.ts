@@ -2,9 +2,9 @@ import { graphql } from 'react-relay';
 import { readInlineData } from 'relay-runtime';
 
 import {
-  CollectionMap,
-  CollectionState,
-  StagedSectionMap,
+  StagedCollectionList,
+  StagedCollection,
+  StagedSectionList,
 } from '~/components/GalleryEditor/GalleryEditorContext';
 import { getInitialCollectionsFromServerFragment$key } from '~/generated/getInitialCollectionsFromServerFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
@@ -13,7 +13,7 @@ import { generate12DigitId } from '~/utils/generate12DigitId';
 
 export function getInitialCollectionsFromServer(
   galleryRef: getInitialCollectionsFromServerFragment$key
-): CollectionMap {
+): StagedCollectionList {
   const gallery = readInlineData(
     graphql`
       fragment getInitialCollectionsFromServerFragment on Gallery @inline {
@@ -40,7 +40,7 @@ export function getInitialCollectionsFromServer(
     galleryRef
   );
 
-  const collections: CollectionMap = [];
+  const collections: StagedCollectionList = [];
 
   const queryCollections = removeNullValues(gallery?.collections);
 
@@ -52,7 +52,7 @@ export function getInitialCollectionsFromServer(
   }
 
   for (const collection of queryCollections) {
-    const sections: StagedSectionMap = [];
+    const sections: StagedSectionList = [];
     const nonNullTokens = removeNullValues(collection.tokens);
 
     if (!collection.layout) {
@@ -109,7 +109,7 @@ export function getInitialCollectionsFromServer(
   return collections;
 }
 
-export function createEmptyCollection(): CollectionState {
+export function createEmptyCollection(): StagedCollection {
   const generatedCollectionId = generate12DigitId();
   const generatedSectionId = generate12DigitId();
 

@@ -14,12 +14,12 @@ import { useToastActions } from '~/contexts/toast/ToastContext';
 import { MoveCollectionModalFragment$key } from '~/generated/MoveCollectionModalFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
-import { CollectionState, GalleryEditorContextType } from '../GalleryEditorContext';
+import { StagedCollection, GalleryEditorContextType } from '../GalleryEditorContext';
 import useMoveCollectionToGallery from './useMoveCollectionToGallery';
 
 type Props = {
   queryRef: MoveCollectionModalFragment$key;
-  collection: CollectionState;
+  collection: StagedCollection;
   hasUnsavedChanges: boolean;
   handleSaveGallery: GalleryEditorContextType['saveGallery'];
   onSuccess: () => void;

@@ -12,9 +12,9 @@ import {
 import rfdc from 'rfdc';
 
 import {
-  CollectionState,
+  StagedCollection,
   StagedSection,
-  StagedSectionMap,
+  StagedSectionList,
   useGalleryEditorContext,
 } from '~/components/GalleryEditor/GalleryEditorContext';
 import { generate12DigitId } from '~/utils/generate12DigitId';
@@ -27,7 +27,7 @@ type CollectionEditorContextType = {
   // State
   name: string;
   collectorsNote: string;
-  sections: StagedSectionMap;
+  sections: StagedSectionList;
   activeSectionId: string | null;
 
   // Derived
@@ -38,7 +38,7 @@ type CollectionEditorContextType = {
   toggleTokenStaged: (tokenId: string) => void;
   addWhitespace: () => void;
 
-  updateSections: (sections: StagedSectionMap) => void;
+  updateSections: (sections: StagedSectionList) => void;
 
   addSection: () => void;
   moveSectionDown: (sectionId: string) => void;
@@ -71,7 +71,7 @@ export const CollectionEditorProvider = memo(({ children }: Props) => {
   }, [collectionBeingEdited?.liveDisplayTokenIds]);
 
   const updateCollection = useCallback(
-    (collectionId: string, value: SetStateAction<CollectionState>) => {
+    (collectionId: string, value: SetStateAction<StagedCollection>) => {
       setCollections((previousCollections) => {
         return previousCollections.map((previousCollection) => {
           if (previousCollection.dbid === collectionId) {
@@ -137,11 +137,11 @@ export const CollectionEditorProvider = memo(({ children }: Props) => {
     [collectionIdBeingEdited, updateCollection]
   );
 
-  const sections: StagedSectionMap = useMemo(() => {
+  const sections: StagedSectionList = useMemo(() => {
     return collectionBeingEdited?.sections ?? [];
   }, [collectionBeingEdited?.sections]);
 
-  const setSections: Dispatch<SetStateAction<StagedSectionMap>> = useCallback(
+  const setSections: Dispatch<SetStateAction<StagedSectionList>> = useCallback(
     (value) => {
       if (!collectionIdBeingEdited) {
         return;
@@ -186,7 +186,7 @@ export const CollectionEditorProvider = memo(({ children }: Props) => {
   }, [collectionBeingEdited?.activeSectionId, collectionIdBeingEdited]);
 
   const updateSections = useCallback(
-    (updatedSections: StagedSectionMap) => {
+    (updatedSections: StagedSectionList) => {
       setSections(updatedSections);
     },
     [setSections]

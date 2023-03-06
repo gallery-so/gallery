@@ -39,8 +39,8 @@ const deepClone = rfdc();
 export type GalleryEditorContextType = {
   name: string;
   description: string;
-  collections: CollectionMap;
-  setCollections: Dispatch<SetStateAction<CollectionMap>>;
+  collections: StagedCollectionList;
+  setCollections: Dispatch<SetStateAction<StagedCollectionList>>;
   hiddenCollectionIds: Set<string>;
 
   hasSaved: boolean;
@@ -76,7 +76,7 @@ export type StagedSection = {
   items: StagedItem[];
 };
 
-export type CollectionState = {
+export type StagedCollection = {
   dbid: string;
   localOnly: boolean;
 
@@ -86,12 +86,12 @@ export type CollectionState = {
   collectorsNote: string;
   hidden: boolean;
 
-  sections: StagedSectionMap;
+  sections: StagedSectionList;
   activeSectionId: string | null;
 };
 
-export type StagedSectionMap = StagedSection[];
-export type CollectionMap = CollectionState[];
+export type StagedSectionList = StagedSection[];
+export type StagedCollectionList = StagedCollection[];
 
 export function GalleryEditorProvider({
   queryRef,
@@ -170,7 +170,7 @@ export function GalleryEditorProvider({
     return new Set<string>();
   });
 
-  const [collections, setCollections] = useState<CollectionMap>(() =>
+  const [collections, setCollections] = useState<StagedCollectionList>(() =>
     getInitialCollectionsFromServer(query.galleryById)
   );
 
@@ -186,7 +186,7 @@ export function GalleryEditorProvider({
     setCollections((previous) => {
       const newSectionId = generate12DigitId();
 
-      const newCollection: CollectionState = {
+      const newCollection: StagedCollection = {
         dbid: newCollectionId,
         activeSectionId: newSectionId,
         liveDisplayTokenIds: new Set(),
@@ -316,7 +316,7 @@ export function GalleryEditorProvider({
     }
 
     const localCollectionToUpdatedCollection = (
-      collection: CollectionState
+      collection: StagedCollection
     ): UpdateCollectionInput => {
       const tokens = Object.values(collection.sections).flatMap((section) =>
         section.items.filter((item) => item.kind === 'token')
@@ -338,7 +338,7 @@ export function GalleryEditorProvider({
     };
 
     const localCollectionToCreatedCollection = (
-      collection: CollectionState
+      collection: StagedCollection
     ): CreateCollectionInGalleryInput => {
       const tokens = Object.values(collection.sections).flatMap((section) =>
         section.items.filter((item) => item.kind === 'token')
@@ -654,12 +654,12 @@ export function useGalleryEditorContext() {
   return value;
 }
 
-type ComparisonFriendlyCollectionState = Omit<CollectionState, 'liveDisplayTokenIds'> & {
+type ComparisonFriendlyCollectionState = Omit<StagedCollection, 'liveDisplayTokenIds'> & {
   liveDisplayTokenIds: string[];
 };
 
 function convertCollectionToComparisonFriendlyObject(
-  collection: CollectionState
+  collection: StagedCollection
 ): ComparisonFriendlyCollectionState {
   return {
     ...collection,
