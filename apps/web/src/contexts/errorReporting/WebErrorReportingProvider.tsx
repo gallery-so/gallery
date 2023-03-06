@@ -5,8 +5,6 @@ import { useLazyLoadQuery } from 'react-relay';
 import ErrorReportingProvider from '~/shared/contexts/ErrorReportingContext';
 
 export function WebErrorReportingProvider({ children }: PropsWithChildren) {
-  console.log('Web', useLazyLoadQuery);
-
   return (
     <ErrorReportingProvider
       captureException={captureException}

@@ -73,8 +73,6 @@ type Props = {
 
 const ErrorReportingProvider = memo(
   ({ children, captureException, captureMessage, setUser }: Props) => {
-    console.log('Shared', useLazyLoadQuery);
-
     const query = useLazyLoadQuery<ErrorReportingContextQuery>(
       graphql`
         query ErrorReportingContextQuery {
