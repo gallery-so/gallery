@@ -207,7 +207,7 @@ function StagingArea({ tokensRef }: Props) {
         />
       );
     }
-  }, [activeId, activeItem, activeSectionId, localSections, nftFragmentsKeyedByID, sections]);
+  }, [activeId, activeItem, localSections, nftFragmentsKeyedByID, sections]);
 
   const hasNameOrCollectorsNote = name || collectorsNote;
   return (
