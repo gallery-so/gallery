@@ -1,3 +1,4 @@
+import { arrayMove } from '@dnd-kit/sortable';
 import {
   createContext,
   Dispatch,
@@ -219,6 +220,7 @@ export const CollectionEditorProvider = memo(({ children }: Props) => {
       setLiveDisplayTokenIds((previous) => {
         const cloned = new Set(previous);
         sectionTokenIds.forEach((tokenId) => cloned.delete(tokenId));
+
         return cloned;
       });
 
@@ -373,28 +375,8 @@ export const CollectionEditorProvider = memo(({ children }: Props) => {
     (sectionId: string) => {
       setSections((previousSections) => {
         const currentIndex = previousSections.findIndex((section) => section.id === sectionId);
-        const sectionToMove = previousSections[currentIndex];
 
-        // Somehow it's not defined :shrug:
-        if (!sectionToMove) {
-          return previousSections;
-        }
-
-        // Section was not found
-        if (currentIndex === -1) {
-          return previousSections;
-        }
-
-        // Can't move up from the top position
-        if (currentIndex === 0) {
-          return previousSections;
-        }
-
-        const nextSections = [...previousSections];
-        nextSections.splice(currentIndex, 1);
-        nextSections.splice(currentIndex - 1, 0, sectionToMove);
-
-        return nextSections;
+        return arrayMove(previousSections, currentIndex, currentIndex - 1);
       });
     },
     [setSections]
@@ -404,28 +386,8 @@ export const CollectionEditorProvider = memo(({ children }: Props) => {
     (sectionId: string) => {
       setSections((previousSections) => {
         const currentIndex = previousSections.findIndex((section) => section.id === sectionId);
-        const sectionToMove = previousSections[currentIndex];
 
-        // Somehow it's not defined :shrug:
-        if (!sectionToMove) {
-          return previousSections;
-        }
-
-        // Section was not found
-        if (currentIndex === -1) {
-          return previousSections;
-        }
-
-        // Can't move up from the top position
-        if (currentIndex === 0) {
-          return previousSections;
-        }
-
-        const nextSections = [...previousSections];
-        nextSections.splice(currentIndex, 1);
-        nextSections.splice(currentIndex + 1, 0, sectionToMove);
-
-        return nextSections;
+        return arrayMove(previousSections, currentIndex, currentIndex + 1);
       });
     },
     [setSections]
