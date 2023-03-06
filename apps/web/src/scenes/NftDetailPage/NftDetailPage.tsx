@@ -206,7 +206,10 @@ function NftDetailPage({
       {prevNft && <NavigationHandle direction={Directions.LEFT} onClick={handlePrevPress} />}
       {mountedNfts.map(({ token, visibility }) => (
         <_DirectionalFade key={token.token.dbid} visibility={visibility}>
-          <NftDetailView collectionTokenRef={token} authenticatedUserOwnsAsset={authenticatedUserOwnsAsset} />
+          <NftDetailView
+            collectionTokenRef={token}
+            authenticatedUserOwnsAsset={authenticatedUserOwnsAsset}
+          />
         </_DirectionalFade>
       ))}
       {nextNft && <NavigationHandle direction={Directions.RIGHT} onClick={handleNextPress} />}

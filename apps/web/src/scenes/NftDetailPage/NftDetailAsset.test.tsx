@@ -32,7 +32,12 @@ function Fixture() {
     throw new Error('Yikes');
   }
 
-  return <NftDetailView authenticatedUserOwnsAsset={false} collectionTokenRef={query.collectionTokenById} />;
+  return (
+    <NftDetailView
+      authenticatedUserOwnsAsset={false}
+      collectionTokenRef={query.collectionTokenById}
+    />
+  );
 }
 
 const UnknownMediaResponse: NftDetailAssetTestQueryQuery = {
