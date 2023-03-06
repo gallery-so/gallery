@@ -36,12 +36,11 @@ export function createCollisionDetectionStrategy({
     const localSectionIds = localSections.map((section) => section.id);
 
     // handle collisions when dragging sections
-    if (activeId && activeId in localSectionIds) {
-      console.log('This one');
+    if (activeId && localSectionIds.includes(activeId.toString())) {
       return closestCenter({
         ...args,
-        droppableContainers: args.droppableContainers.filter(
-          (section) => section.id in localSectionIds
+        droppableContainers: args.droppableContainers.filter((section) =>
+          localSectionIds.includes(section.id.toString())
         ),
       });
     }
