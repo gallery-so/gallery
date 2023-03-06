@@ -14,7 +14,7 @@ import { useToastActions } from '~/contexts/toast/ToastContext';
 import { MoveCollectionModalFragment$key } from '~/generated/MoveCollectionModalFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
-import { StagedCollection, GalleryEditorContextType } from '../GalleryEditorContext';
+import { GalleryEditorContextType, StagedCollection } from '../GalleryEditorContext';
 import useMoveCollectionToGallery from './useMoveCollectionToGallery';
 
 type Props = {

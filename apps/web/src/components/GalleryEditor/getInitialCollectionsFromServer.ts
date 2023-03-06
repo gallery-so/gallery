@@ -2,8 +2,8 @@ import { graphql } from 'react-relay';
 import { readInlineData } from 'relay-runtime';
 
 import {
-  StagedCollectionList,
   StagedCollection,
+  StagedCollectionList,
   StagedSectionList,
 } from '~/components/GalleryEditor/GalleryEditorContext';
 import { getInitialCollectionsFromServerFragment$key } from '~/generated/getInitialCollectionsFromServerFragment.graphql';
