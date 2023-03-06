@@ -1,6 +1,5 @@
 import { captureException, captureMessage, setUser } from '@sentry/nextjs';
 import { PropsWithChildren } from 'react';
-import { useLazyLoadQuery } from 'react-relay';
 
 import ErrorReportingProvider from '~/shared/contexts/ErrorReportingContext';
 
