@@ -14,7 +14,8 @@ export default function Explore() {
       query exploreQuery($twitterListLast: Int!, $twitterListBefore: String) {
         ...ExploreHomePageFragment
         ...HomeNavbarFragment
-        ...useOpenSettingsModalFragment
+        ...StandardSidebarFragment
+
         ...useOpenTwitterFollowingModalFragment
       }
     `,
@@ -24,7 +25,6 @@ export default function Explore() {
     }
   );
 
-  useOpenSettingsModal(query);
   useOpenTwitterFollowingModal(query);
 
   return (

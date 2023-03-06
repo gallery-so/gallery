@@ -26,7 +26,6 @@ const activityPageQueryNode = graphql`
   ) {
     ...TrendingHomePageFragment
     ...HomeNavbarFragment
-    ...useOpenSettingsModalFragment
     ...useOpenTwitterFollowingModalFragment
     ...StandardSidebarFragment
   }
@@ -41,7 +40,6 @@ export default function Trending() {
     twitterListLast: USER_PER_PAGE,
   });
 
-  useOpenSettingsModal(query);
   useOpenTwitterFollowingModal(query);
 
   return (
