@@ -154,6 +154,9 @@ export function CollectionListItem({ collectionId, queryRef }: CollectionListIte
 
 const CollectionTitleText = styled(TitleXS)<{ italicize: boolean; isHidden: boolean }>`
   text-transform: none;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 
   ${({ isHidden }) =>
     isHidden
