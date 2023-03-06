@@ -4,7 +4,7 @@ import { graphql } from 'relay-runtime';
 
 import { BaseM } from '~/components/core/Text/Text';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
-import { CollectionLink } from '~/components/NotificationsModal/CollectionLink';
+import { CollectionLink } from '~/components/Notifications/CollectionLink';
 import { SomeoneAdmiredYourFeedEventFragment$key } from '~/generated/SomeoneAdmiredYourFeedEventFragment.graphql';
 import { SomeoneAdmiredYourFeedEventQueryFragment$key } from '~/generated/SomeoneAdmiredYourFeedEventQueryFragment.graphql';
 

@@ -14,11 +14,10 @@ type WhitespaceBlock = {
 };
 
 type Section<T> = {
-  id: string;
   items: ReadonlyArray<T | WhitespaceBlock>;
   columns: number;
 };
-type CollectionWithLayout<T> = Array<Section<T>>;
+type CollectionWithLayout<T> = Record<string, Section<T>>;
 
 export function parseCollectionLayoutGraphql<T>(
   tokens: T[],
@@ -64,7 +63,7 @@ export function parseCollectionLayout<T>(
   ignoreWhitespace = false
 ): CollectionWithLayout<T> {
   if (tokens.length === 0) {
-    return [{ id: generate12DigitId(), items: [], columns: DEFAULT_COLUMNS }];
+    return { [generate12DigitId()]: { items: [], columns: DEFAULT_COLUMNS } };
   }
 
   const parsedCollection = collectionLayout.sections.reduce(
@@ -83,16 +82,13 @@ export function parseCollectionLayout<T>(
         );
       }
       const sectionId = generate12DigitId();
-
-      allSections.push({
-        id: sectionId,
+      allSections[sectionId] = {
         items: section,
         columns: collectionLayout.sectionLayout[index]?.columns ?? 1,
-      });
-
+      };
       return allSections;
     },
-    []
+    {}
   );
 
   return parsedCollection;

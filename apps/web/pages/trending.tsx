@@ -6,10 +6,10 @@ import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/NotesModal/NotesModa
 import useOpenTwitterFollowingModal from '~/components/Twitter/useOpenTwitterFollowingModal';
 import { USER_PER_PAGE } from '~/constants/twitter';
 import { HomeNavbar } from '~/contexts/globalLayout/GlobalNavbar/HomeNavbar/HomeNavbar';
+import { StandardSidebar } from '~/contexts/globalLayout/GlobalSidebar/StandardSidebar';
 import { trendingPageQuery } from '~/generated/trendingPageQuery.graphql';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
 import TrendingHomePage from '~/scenes/Home/TrendingHomePage';
-import useOpenSettingsModal from '~/scenes/Modals/useOpenSettingsModal';
 import { PreloadQueryArgs } from '~/types/PageComponentPreloadQuery';
 
 const activityPageQueryNode = graphql`
@@ -28,6 +28,7 @@ const activityPageQueryNode = graphql`
     ...HomeNavbarFragment
     ...useOpenSettingsModalFragment
     ...useOpenTwitterFollowingModalFragment
+    ...StandardSidebarFragment
   }
 `;
 
@@ -46,6 +47,7 @@ export default function Trending() {
   return (
     <GalleryRoute
       navbar={<HomeNavbar queryRef={query} />}
+      sidebar={<StandardSidebar queryRef={query} />}
       element={<TrendingHomePage queryRef={query} />}
     />
   );

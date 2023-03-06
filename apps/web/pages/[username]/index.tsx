@@ -13,10 +13,10 @@ import useOpenTwitterModal from '~/components/Twitter/useOpenTwitterModal';
 import { USER_PER_PAGE } from '~/constants/twitter';
 import { GalleryNavbar } from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavbar';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
+import { StandardSidebar } from '~/contexts/globalLayout/GlobalSidebar/StandardSidebar';
 import { UsernameQuery } from '~/generated/UsernameQuery.graphql';
 import { MetaTagProps } from '~/pages/_app';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
-import useOpenSettingsModal from '~/scenes/Modals/useOpenSettingsModal';
 import UserGalleryPage from '~/scenes/UserGalleryPage/UserGalleryPage';
 import { PreloadQueryArgs } from '~/types/PageComponentPreloadQuery';
 import { openGraphMetaTags } from '~/utils/openGraphMetaTags';
@@ -33,9 +33,9 @@ const UsernameQueryNode = graphql`
 
     ...UserGalleryPageFragment
     ...GalleryNavbarFragment
-    ...useOpenSettingsModalFragment
     ...GalleryViewEmitterWithSuspenseFragment
     ...useVerifyEmailOnPageQueryFragment
+    ...StandardSidebarFragment
     ...useOpenTwitterModalFragment
     ...useOpenTwitterFollowingModalFragment
   }
@@ -84,7 +84,6 @@ export default function UserGallery({ username }: UserGalleryProps) {
   });
 
   useVerifyEmailOnPage(query);
-  useOpenSettingsModal(query);
   useOpenTwitterModal(query);
   useOpenTwitterFollowingModal(query);
 
@@ -101,6 +100,7 @@ export default function UserGallery({ username }: UserGalleryProps) {
           false
         )
       }
+      sidebar={<StandardSidebar queryRef={query} />}
       element={
         <>
           <GalleryViewEmitter queryRef={query} />

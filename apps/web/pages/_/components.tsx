@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import { Button, ButtonLink } from '~/components/core/Button/Button';
-import { TitleM } from '~/components/core/Text/Text';
+import colors from '~/components/core/colors';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
+import { BaseM, TitleM } from '~/components/core/Text/Text';
+import icons from '~/icons/index';
 
 const PendingButton = (props: React.ComponentProps<typeof Button>) => {
   const [pending, setPending] = useState(false);
+
   return (
     <Button
       pending={pending}
@@ -23,6 +27,15 @@ const PendingButton = (props: React.ComponentProps<typeof Button>) => {
 };
 
 export default function DesignPage() {
+  const sortedIcons = useMemo(() => {
+    const sortedKeys = Object.keys(icons).sort();
+    return sortedKeys.reduce((acc: Record<string, () => JSX.Element>, key) => {
+      // @ts-expect-error icons[key] will not be undefined
+      acc[key] = icons[key];
+      return acc;
+    }, {});
+  }, []);
+
   return (
     <>
       <Section>
@@ -82,18 +95,42 @@ export default function DesignPage() {
           </ButtonLink>
         </Examples>
       </Section>
+      <Section>
+        <TitleM>Icons</TitleM>
+        <Examples wrap="wrap">
+          {Object.keys(sortedIcons).map((iconKey) => {
+            const Icon = icons[iconKey];
+
+            if (Icon) {
+              return (
+                <IconContainer key={iconKey} align="center" justify="center" gap={8}>
+                  <Icon />
+                  <BaseM color={colors.shadow}>{iconKey}</BaseM>
+                </IconContainer>
+              );
+            }
+          })}
+        </Examples>
+      </Section>
     </>
   );
 }
 
-const Section = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+const Section = styled(VStack)`
   padding: 2rem;
+  gap: 16px;
+  width: 100vw;
 `;
 
-const Examples = styled.div`
-  display: flex;
-  gap: 0.5rem;
+const Examples = styled(HStack)`
+  gap: 8px;
+  width: 100%;
+`;
+
+const IconContainer = styled(HStack)`
+  border: 1px solid ${colors.porcelain};
+  border-radius: 8px;
+  color: ${colors.porcelain};
+  padding: 4px 8px;
+  height: 48px;
 `;

@@ -10,16 +10,16 @@ import { NewTooltip } from '~/components/Tooltip/NewTooltip';
 import { useTooltipHover } from '~/components/Tooltip/useTooltipHover';
 import useUpdateTwitterDisplay from '~/components/Twitter/useUpdateTwitterDisplay';
 import { TWITTER_AUTH_URL } from '~/constants/twitter';
-import { useModalActions } from '~/contexts/modal/ModalContext';
+import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 import { UserTwitterSectionFragment$key } from '~/generated/UserTwitterSectionFragment.graphql';
 import { UserTwitterSectionQueryFragment$key } from '~/generated/UserTwitterSectionQueryFragment.graphql';
 import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
 import { EditPencilIcon } from '~/icons/EditPencilIcon';
-import GlobeIcon from '~/icons/Globeicon';
+import GlobeIcon from '~/icons/GlobeIcon';
 import LockIcon from '~/icons/LockIcon';
-import TwitterIcon from '~/icons/Twittericon';
+import TwitterIcon from '~/icons/TwitterIcon';
 
-import SettingsModal from '../Modals/SettingsModal/SettingsModal';
+import Settings from '../../components/Settings/Settings';
 
 type Props = {
   queryRef: UserTwitterSectionQueryFragment$key;
@@ -45,7 +45,7 @@ export default function UserTwitterSection({ queryRef, userRef }: Props) {
   const query = useFragment(
     graphql`
       fragment UserTwitterSectionQueryFragment on Query {
-        ...SettingsModalFragment
+        ...SettingsFragment
         ...useLoggedInUserIdFragment
         ...useUpdateTwitterDisplayFragment
 
@@ -74,18 +74,17 @@ export default function UserTwitterSection({ queryRef, userRef }: Props) {
       placement: 'top',
     });
 
-  const { showModal } = useModalActions();
+  const { showDrawer } = useDrawerActions();
 
   const twitterAccount = user.socialAccounts?.twitter;
 
   const userLoggedInTwitterAccount = query.viewer?.socialAccounts?.twitter;
 
   const handleEditButtonClick = useCallback(() => {
-    showModal({
-      content: <SettingsModal queryRef={query} />,
-      headerText: 'Settings',
+    showDrawer({
+      content: <Settings queryRef={query} />,
     });
-  }, [query, showModal]);
+  }, [query, showDrawer]);
 
   const handleUpdateTwitterDisplay = useCallback(() => {
     const display = !userLoggedInTwitterAccount?.display;

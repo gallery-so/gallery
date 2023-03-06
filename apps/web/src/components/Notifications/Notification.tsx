@@ -7,19 +7,17 @@ import styled, { css } from 'styled-components';
 import colors from '~/components/core/colors';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseS } from '~/components/core/Text/Text';
-import { NotificationArrow } from '~/components/NotificationsModal/NotificationArrow';
-import { SomeoneAdmiredYourFeedEvent } from '~/components/NotificationsModal/notifications/SomeoneAdmiredYourFeedEvent';
-import { SomeoneCommentedOnYourFeedEvent } from '~/components/NotificationsModal/notifications/SomeoneCommentedOnYourFeedEvent';
-import { SomeoneFollowedYou } from '~/components/NotificationsModal/notifications/SomeoneFollowedYou';
-import { SomeoneFollowedYouBack } from '~/components/NotificationsModal/notifications/SomeoneFollowedYouBack';
-import { SomeoneViewedYourGallery } from '~/components/NotificationsModal/notifications/SomeoneViewedYourGallery';
-import { NotificationUserListModal } from '~/components/NotificationsModal/NotificationUserListModal';
-import { useModalActions } from '~/contexts/modal/ModalContext';
+import { NotificationArrow } from '~/components/Notifications/NotificationArrow';
+import { SomeoneAdmiredYourFeedEvent } from '~/components/Notifications/notifications/SomeoneAdmiredYourFeedEvent';
+import { SomeoneCommentedOnYourFeedEvent } from '~/components/Notifications/notifications/SomeoneCommentedOnYourFeedEvent';
+import { SomeoneFollowedYou } from '~/components/Notifications/notifications/SomeoneFollowedYou';
+import { SomeoneFollowedYouBack } from '~/components/Notifications/notifications/SomeoneFollowedYouBack';
+import { SomeoneViewedYourGallery } from '~/components/Notifications/notifications/SomeoneViewedYourGallery';
+import { NotificationUserListPage } from '~/components/Notifications/NotificationUserListPage';
 import { NotificationFragment$key } from '~/generated/NotificationFragment.graphql';
 import { NotificationInnerFragment$key } from '~/generated/NotificationInnerFragment.graphql';
 import { NotificationInnerQueryFragment$key } from '~/generated/NotificationInnerQueryFragment.graphql';
 import { NotificationQueryFragment$key } from '~/generated/NotificationQueryFragment.graphql';
-import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { getTimeSince } from '~/utils/time';
 
 import { useClearNotifications } from './useClearNotifications';
@@ -27,9 +25,10 @@ import { useClearNotifications } from './useClearNotifications';
 type NotificationProps = {
   notificationRef: NotificationFragment$key;
   queryRef: NotificationQueryFragment$key;
+  toggleSubView: (page?: JSX.Element) => void;
 };
 
-export function Notification({ notificationRef, queryRef }: NotificationProps) {
+export function Notification({ notificationRef, queryRef, toggleSubView }: NotificationProps) {
   const notification = useFragment(
     graphql`
       fragment NotificationFragment on Notification {
@@ -87,9 +86,7 @@ export function Notification({ notificationRef, queryRef }: NotificationProps) {
     queryRef
   );
 
-  const { showModal } = useModalActions();
   const { push } = useRouter();
-  const isMobile = useIsMobileWindowWidth();
 
   const clearAllNotifications = useClearNotifications();
 
@@ -110,15 +107,9 @@ export function Notification({ notificationRef, queryRef }: NotificationProps) {
 
   const handleNotificationClick = useMemo((): NotificationClick => {
     function showUserListModal() {
-      showModal({
-        content: (
-          <NotificationUserListModal notificationId={notification.id} fullscreen={isMobile} />
-        ),
-        isFullPage: isMobile,
-        hideClose: true,
-        isPaddingDisabled: true,
-        headerVariant: 'standard',
-      });
+      toggleSubView(
+        <NotificationUserListPage notificationId={notification.id} toggleSubView={toggleSubView} />
+      );
     }
 
     if (notification.feedEvent) {
@@ -147,7 +138,6 @@ export function Notification({ notificationRef, queryRef }: NotificationProps) {
 
     return undefined;
   }, [
-    isMobile,
     notification.__typename,
     notification.count,
     notification.feedEvent,
@@ -155,7 +145,7 @@ export function Notification({ notificationRef, queryRef }: NotificationProps) {
     notification.userViewers?.pageInfo?.total,
     push,
     query.viewer?.user?.username,
-    showModal,
+    toggleSubView,
   ]);
 
   const userId = query.viewer?.user?.dbid ?? '';

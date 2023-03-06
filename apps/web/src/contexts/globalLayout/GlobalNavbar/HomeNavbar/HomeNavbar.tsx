@@ -9,7 +9,6 @@ import { HomeNavbarFragment$key } from '~/generated/HomeNavbarFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 
 import { NavbarLink } from '../NavbarLink';
-import { ProfileDropdown } from '../ProfileDropdown/ProfileDropdown';
 import { SignInButton } from '../SignInButton';
 import { SignUpButton } from '../SignUpButton';
 import {
@@ -31,8 +30,6 @@ export function HomeNavbar({ queryRef }: Props) {
             __typename
           }
         }
-
-        ...ProfileDropdownFragment
       }
     `,
     queryRef
@@ -63,9 +60,7 @@ export function HomeNavbar({ queryRef }: Props) {
 
   return (
     <StandardNavbarContainer>
-      <NavbarLeftContent>
-        <ProfileDropdown queryRef={query} />
-      </NavbarLeftContent>
+      <NavbarLeftContent />
       <NavbarCenterContent>
         <HStack gap={8}>
           <NavbarLink
