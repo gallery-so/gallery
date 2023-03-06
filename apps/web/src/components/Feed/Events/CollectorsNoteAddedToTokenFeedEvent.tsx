@@ -93,7 +93,7 @@ export default function CollectorsNoteAddedToTokenFeedEvent({
       showModal({
         content: (
           <StyledNftDetailViewPopover>
-            <NftDetailView authenticatedUserOwnsAsset={false} queryRef={event.token} />
+            <NftDetailView authenticatedUserOwnsAsset={false} collectionTokenRef={event.token} />
           </StyledNftDetailViewPopover>
         ),
         isFullPage: true,

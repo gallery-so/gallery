@@ -1,10 +1,11 @@
-import { useFragment } from 'react-relay';
+import { useFragment, useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import ShimmerProvider from '~/contexts/shimmer/ShimmerContext';
 import { NftDetailViewFragment$key } from '~/generated/NftDetailViewFragment.graphql';
+import { NftDetailViewQuery } from '~/generated/NftDetailViewQuery.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 
 import NftDetailAsset from './NftDetailAsset';
@@ -13,10 +14,38 @@ import NftDetailText from './NftDetailText';
 
 type Props = {
   authenticatedUserOwnsAsset: boolean;
-  queryRef: NftDetailViewFragment$key;
+  collectionTokenRef: NftDetailViewFragment$key;
 };
 
-export default function NftDetailView({ authenticatedUserOwnsAsset, queryRef }: Props) {
+type LoadableNftDetailViewProps = {
+  tokenId: string;
+  collectionId: string;
+} & Omit<Props, 'collectionTokenRef'>;
+
+export function LoadableNftDetailView({
+  tokenId,
+  collectionId,
+  ...props
+}: LoadableNftDetailViewProps) {
+  const query = useLazyLoadQuery<NftDetailViewQuery>(
+    graphql`
+      query NftDetailViewQuery($tokenId: DBID!, $collectionId: DBID!) {
+        collectionTokenById(tokenId: $tokenId, collectionId: $collectionId) {
+          ...NftDetailViewFragment
+        }
+      }
+    `,
+    { tokenId: tokenId, collectionId: collectionId }
+  );
+
+  if (!query.collectionTokenById) {
+    return null;
+  }
+
+  return <NftDetailView collectionTokenRef={query.collectionTokenById} {...props} />;
+}
+
+export default function NftDetailView({ authenticatedUserOwnsAsset, collectionTokenRef }: Props) {
   const collectionNft = useFragment(
     graphql`
       fragment NftDetailViewFragment on CollectionToken {
@@ -32,7 +61,7 @@ export default function NftDetailView({ authenticatedUserOwnsAsset, queryRef }: 
         ...NftDetailAssetFragment
       }
     `,
-    queryRef
+    collectionTokenRef
   );
 
   const isMobileOrMobileLarge = useIsMobileOrMobileLargeWindowWidth();
