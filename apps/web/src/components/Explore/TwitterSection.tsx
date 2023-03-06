@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { TwitterSectionQueryFragment$key } from '~/generated/TwitterSectionQueryFragment.graphql';
-import TwitterIcon from '~/icons/Twittericon';
+import TwitterIcon from '~/icons/TwitterIcon';
 
 import colors from '../core/colors';
 import InteractiveLink from '../core/InteractiveLink/InteractiveLink';
