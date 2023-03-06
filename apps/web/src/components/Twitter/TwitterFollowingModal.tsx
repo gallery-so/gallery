@@ -1,6 +1,7 @@
 import Link, { LinkProps } from 'next/link';
 import { useCallback, useMemo } from 'react';
 import { graphql, useFragment, usePaginationFragment } from 'react-relay';
+import { SelectorStoreUpdater } from 'relay-runtime';
 import styled from 'styled-components';
 
 import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
@@ -28,6 +29,14 @@ export default function TwitterFollowingModal({ followingRef, queryRef }: Props)
     graphql`
       fragment TwitterFollowingModalQueryFragment on Query {
         ...FollowButtonQueryFragment
+
+        viewer {
+          ... on Viewer {
+            user {
+              id
+            }
+          }
+        }
       }
     `,
     queryRef
@@ -49,6 +58,7 @@ export default function TwitterFollowingModal({ followingRef, queryRef }: Props)
                 __typename
                 galleryUser {
                   ... on GalleryUser {
+                    id
                     username
                     bio
                     ...FollowButtonUserFragment
@@ -90,12 +100,12 @@ export default function TwitterFollowingModal({ followingRef, queryRef }: Props)
           viewer {
             ... on Viewer {
               __typename
-              user {
-                ... on GalleryUser {
-                  __typename
-                  following {
-                    __typename
-                  }
+              user @required(action: THROW) {
+                __typename
+                id
+                dbid
+                following {
+                  id
                 }
               }
             }
@@ -109,8 +119,39 @@ export default function TwitterFollowingModal({ followingRef, queryRef }: Props)
 
   const handleFollowAll = useCallback(async () => {
     try {
+      const updater: SelectorStoreUpdater<TwitterFollowingModalMutation['response']> = (
+        store,
+        response
+      ) => {
+        const followingUserIds = twitterFollowing.map((user) => user.id);
+
+        if (
+          response.followAllSocialConnections?.__typename === 'FollowAllSocialConnectionsPayload'
+        ) {
+          const currentId = query?.viewer?.user?.id;
+          if (!currentId) {
+            return;
+          }
+
+          const currentUserId = store.get(currentId);
+          if (!currentUserId) {
+            return;
+          }
+
+          for (const userId of followingUserIds) {
+            const user = store.get(userId);
+            const followers = user?.getLinkedRecords('followers');
+
+            if (followers) {
+              user?.setLinkedRecords([...followers, currentUserId], 'followers');
+            }
+          }
+        }
+      };
+
       await followAll({
         variables: {},
+        updater,
       });
     } catch (error) {
       if (error instanceof Error) {
@@ -120,7 +161,7 @@ export default function TwitterFollowingModal({ followingRef, queryRef }: Props)
         });
       }
     }
-  }, [followAll, pushToast, reportError]);
+  }, [followAll, pushToast, query?.viewer?.user?.id, reportError, twitterFollowing]);
 
   return (
     <StyledOnboardingTwitterModal>
