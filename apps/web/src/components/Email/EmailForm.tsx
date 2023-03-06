@@ -1,18 +1,22 @@
 import { useRouter } from 'next/router';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import { SelectorStoreUpdater } from 'relay-runtime';
+import styled from 'styled-components';
 
 import { AdditionalContext, useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { EmailFormFragment$key } from '~/generated/EmailFormFragment.graphql';
 import { EmailFormMutation } from '~/generated/EmailFormMutation.graphql';
+import useDebounce from '~/hooks/useDebounce';
 import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 import { EMAIL_FORMAT } from '~/utils/regex';
 
 import { Button } from '../core/Button/Button';
-import { SlimInput } from '../core/Input/Input';
+import colors from '../core/colors';
 import { HStack, VStack } from '../core/Spacer/Stack';
+import ErrorText from '../core/Text/ErrorText';
+import useVerifyValidEmail from './useVerifyValidEmail';
 
 type Props = {
   setIsEditMode: (editMode: boolean) => void;
@@ -63,18 +67,64 @@ function EmailForm({ setIsEditMode, queryRef, onClose }: Props) {
   const userId = query?.viewer?.user?.id;
 
   const [email, setEmail] = useState(savedEmail ?? '');
+  const [isValidEmail, setIsValidEmail] = useState(false);
   const [savePending, setSavePending] = useState(false);
 
   const showCancelButton = useMemo(() => !!savedEmail || onClose, [onClose, savedEmail]);
   const { pushToast } = useToastActions();
 
-  const handleEmailChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+  const { verifyEmail } = useVerifyValidEmail();
+  const reportError = useReportError();
+
+  const [isCheckingEmail, setIsCheckingEmail] = useState(false);
+
+  const handleEmailChange = useCallback(async (event: React.ChangeEvent<HTMLInputElement>) => {
+    setIsCheckingEmail(true);
+    setIsValidEmail(false);
     setEmail(event.target.value);
   }, []);
 
-  const isValidEmail = useMemo(() => EMAIL_FORMAT.test(email), [email]);
+  const debouncedEmail = useDebounce(email, 500);
 
-  const reportError = useReportError();
+  // Don't check email on initial mount
+  const isInitialMount = useRef(true);
+
+  const [isFetching, setIsFetching] = useState(false);
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+
+    async function checkEmail() {
+      if (!EMAIL_FORMAT.test(debouncedEmail)) {
+        setIsValidEmail(false);
+        setIsCheckingEmail(false);
+        return;
+      }
+
+      try {
+        setIsFetching(true);
+        const valid = await verifyEmail(debouncedEmail);
+        setIsValidEmail(valid);
+      } catch (error) {
+        if (error instanceof Error) {
+          reportError(error, {
+            tags: {
+              userId,
+              email: debouncedEmail,
+            },
+          });
+        }
+        setIsValidEmail(false);
+      } finally {
+        setIsFetching(false);
+        setIsCheckingEmail(false);
+      }
+    }
+    setIsValidEmail(true);
+    checkEmail();
+  }, [debouncedEmail, reportError, userId, verifyEmail]);
 
   const handleCancelClick = useCallback(() => {
     if (onClose) {
@@ -153,33 +203,53 @@ function EmailForm({ setIsEditMode, queryRef, onClose }: Props) {
     [handleSaveClick]
   );
 
+  const showErrorMessage = useMemo(() => {
+    if (isInitialMount.current || isFetching || !debouncedEmail || isCheckingEmail) return false;
+
+    return !isValidEmail;
+  }, [debouncedEmail, isFetching, isCheckingEmail, isValidEmail]);
+
   return (
     <form onSubmit={handleFormSubmit}>
       <VStack gap={8}>
-        <SlimInput
+        <StyledInput
           onChange={handleEmailChange}
           placeholder="Email address"
           defaultValue={savedEmail || ''}
           autoFocus
           disabled={savePending}
         />
-        <HStack justify="flex-end" align="flex-end" gap={8}>
-          {showCancelButton && (
-            <Button variant="secondary" disabled={savePending} onClick={handleCancelClick}>
-              Cancel
+
+        <HStack align="start" justify={showErrorMessage ? 'space-between' : 'flex-end'}>
+          {showErrorMessage && <ErrorText message={"The email doesn't appear to be valid"} />}
+
+          <HStack gap={8}>
+            {showCancelButton && (
+              <Button variant="secondary" disabled={savePending} onClick={handleCancelClick}>
+                Cancel
+              </Button>
+            )}
+            <Button
+              variant="primary"
+              disabled={!isValidEmail || savePending}
+              onClick={handleSaveClick}
+              pending={isCheckingEmail}
+            >
+              Save
             </Button>
-          )}
-          <Button
-            variant="primary"
-            disabled={!isValidEmail || savePending || savedEmail === email}
-            onClick={handleSaveClick}
-          >
-            Save
-          </Button>
+          </HStack>
         </HStack>
       </VStack>
     </form>
   );
 }
+
+const StyledInput = styled.input`
+  border: 0;
+  background-color: ${colors.faint};
+  padding: 6px 12px;
+  width: 100%;
+  height: 32px;
+`;
 
 export default EmailForm;

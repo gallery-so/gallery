@@ -99,6 +99,11 @@ function EmailVerificationStatus({ setIsEditMode, queryRef }: Props) {
         await refetch({}, { fetchPolicy: 'store-and-network' });
 
         timeoutId = setTimeout(fetchAndTimeout, POLLING_INTERVAL_MS);
+
+        // If the user has verified their email, stop polling
+        if (verificationStatus === 'Verified') {
+          clearTimeout(timeoutId);
+        }
       }
 
       timeoutId = setTimeout(fetchAndTimeout, POLLING_INTERVAL_MS);
@@ -109,7 +114,7 @@ function EmailVerificationStatus({ setIsEditMode, queryRef }: Props) {
         }
       };
     },
-    [refetch]
+    [refetch, verificationStatus]
   );
 
   const resendEmailButton = useMemo(() => {
