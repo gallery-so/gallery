@@ -443,6 +443,7 @@ export function GalleryEditorProvider({
       }
     }
   }, [
+    collectionIdBeingEdited,
     collections,
     deletedCollectionIds,
     description,
