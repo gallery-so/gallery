@@ -1,5 +1,7 @@
 import { Text, View } from 'react-native';
 
+import { Typography } from '../Typography';
+
 type CollectionAndAdditionCountProps = {
   collectionName: string | undefined | null;
   additionCount: number | undefined | null;
@@ -16,13 +18,15 @@ export function CollectionAndAdditionCount({
   return (
     <View className="flex px-3 py-2">
       {collectionName && (
-        <Text style={{ fontFamily: 'ABCDiatypeBold', fontSize: 12 }}>{collectionName}</Text>
+        <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+          {collectionName}
+        </Typography>
       )}
 
       {additionCount && (
-        <Text style={{ fontFamily: 'ABCDiatypeRegular', fontSize: 12 }}>
+        <Typography font={{ fontFamily: 'ABCDiatype', weight: 'Regular' }} className="text-sm">
           {additionCount} addition{additionCount === 1 ? '' : 's'}
-        </Text>
+        </Typography>
       )}
     </View>
   );

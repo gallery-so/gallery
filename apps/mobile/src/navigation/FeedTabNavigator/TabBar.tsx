@@ -5,6 +5,8 @@ import { Text, TouchableOpacity, View } from 'react-native';
 
 import { FeedTabNavigatorParamList, FeedTabNavigatorProp } from '~/navigation/types';
 
+import { Typography } from '../../components/Typography';
+
 type TabItemProps = {
   activeRoute: keyof FeedTabNavigatorParamList;
   route: keyof FeedTabNavigatorParamList;
@@ -28,12 +30,12 @@ function TabItem({ route, activeRoute }: TabItemProps) {
       accessibilityState={isFocused ? { selected: true } : {}}
       onPress={onPress}
     >
-      <Text
-        className={`${isFocused ? 'text-offBlack' : 'text-metal'}`}
-        style={{ fontFamily: 'ABCDiatypeMedium', fontSize: 18 }}
+      <Typography
+        className={`text-lg ${isFocused ? 'text-offBlack' : 'text-metal'}`}
+        font={{ family: 'ABCDiatype', weight: 'Medium' }}
       >
         {route}
-      </Text>
+      </Typography>
     </TouchableOpacity>
   );
 }
