@@ -123,7 +123,9 @@ export default function ExploreUserCard({ userRef, queryRef }: Props) {
               {collectionCount} {pluralize(collectionCount, 'collection')}
             </BaseM>
           </UserDetailsText>
-          {!isOwnProfile && <StyledFollowButton userRef={user} queryRef={query} />}
+          {!isOwnProfile && (
+            <StyledFollowButton userRef={user} queryRef={query} source="Explore Page user card" />
+          )}
         </UserDetailsContainer>
       </StyledContent>
     </StyledExploreUserCard>

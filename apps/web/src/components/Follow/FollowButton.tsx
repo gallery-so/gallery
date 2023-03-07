@@ -20,9 +20,10 @@ type Props = {
   queryRef: FollowButtonQueryFragment$key;
   userRef: FollowButtonUserFragment$key;
   className?: string;
+  source?: string; // where the FollowButton is being used, for analytics
 };
 
-export default function FollowButton({ queryRef, userRef, className }: Props) {
+export default function FollowButton({ queryRef, userRef, className, source }: Props) {
   const loggedInUserQuery = useFragment(
     graphql`
       fragment FollowButtonQueryFragment on Query {
@@ -75,12 +76,24 @@ export default function FollowButton({ queryRef, userRef, className }: Props) {
 
     track('Follow Click', {
       followee: user.dbid,
+      source,
     });
 
     const optimisticNewFollowersList = [{ id: loggedInUserId }, ...user.followers];
     await followUser(user.dbid, optimisticNewFollowersList, user.following);
     pushToast({ message: `You followed ${user.username}.` });
-  }, [loggedInUserId, user, track, followUser, pushToast, showAuthModal]);
+  }, [
+    loggedInUserId,
+    track,
+    user.dbid,
+    user.followers,
+    user.following,
+    user.username,
+    source,
+    followUser,
+    pushToast,
+    showAuthModal,
+  ]);
 
   const handleUnfollowClick = useCallback(async () => {
     track('Unfollow Click', {
