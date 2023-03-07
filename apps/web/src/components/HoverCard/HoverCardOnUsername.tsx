@@ -29,7 +29,6 @@ import { HoverCardOnUsernameFragment$key } from '~/generated/HoverCardOnUsername
 import { HoverCardQuery } from '~/generated/HoverCardQuery.graphql';
 import handleCustomDisplayName from '~/utils/handleCustomDisplayName';
 import noop from '~/utils/noop';
-import { pluralize } from '~/utils/string';
 
 const HOVER_POPUP_DELAY = 100;
 
@@ -39,7 +38,7 @@ type Props = {
   onClick?: () => void;
 };
 
-export default function HoverCardOnUsername({ children, userRef, onClick }: Props) {
+export default function HoverCardOnUsername({ children, userRef, onClick = noop }: Props) {
   const user = useFragment(
     graphql`
       fragment HoverCardOnUsernameFragment on GalleryUser {
@@ -68,10 +67,13 @@ export default function HoverCardOnUsername({ children, userRef, onClick }: Prop
 
   const { getReferenceProps, getFloatingProps } = useInteractions([hover, role]);
 
-  const handleUsernameClick = useCallback<MouseEventHandler>((event) => {
-    event.stopPropagation();
-    onClick();
-  }, []);
+  const handleUsernameClick = useCallback<MouseEventHandler>(
+    (event) => {
+      event.stopPropagation();
+      onClick();
+    },
+    [onClick]
+  );
 
   const userProfileLink = useMemo((): Route => {
     return { pathname: '/[username]', query: { username: user.username as string } };

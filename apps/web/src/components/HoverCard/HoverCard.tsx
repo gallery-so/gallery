@@ -9,9 +9,9 @@ import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleM } from '~/components/core/Text/Text';
 import FollowButton from '~/components/Follow/FollowButton';
-import { ErrorWithSentryMetadata } from '~/errors/ErrorWithSentryMetadata';
 import { HoverCardQuery } from '~/generated/HoverCardQuery.graphql';
 import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
+import { ErrorWithSentryMetadata } from '~/shared/errors/ErrorWithSentryMetadata';
 import handleCustomDisplayName from '~/utils/handleCustomDisplayName';
 import { pluralize } from '~/utils/string';
 
@@ -103,7 +103,7 @@ export function HoverCard({ preloadedQuery }: HoverCardProps) {
 
           {isLoggedIn && !isOwnProfile && (
             <StyledFollowButtonWrapper>
-              <FollowButton userRef={user} queryRef={query} />
+              <FollowButton userRef={user} queryRef={query} source="user hover card" />
             </StyledFollowButtonWrapper>
           )}
         </HStack>

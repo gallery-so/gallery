@@ -91,11 +91,12 @@ export default function FollowButton({ queryRef, userRef, className, source }: P
     await followUser(userToFollow.dbid);
     pushToast({ message: `You followed ${userToFollow.username}.` });
   }, [
+    loggedInUserId,
     track,
     userToFollow.dbid,
     userToFollow.username,
+    source,
     followUser,
-    loggedInUserId,
     pushToast,
     showAuthModal,
   ]);
