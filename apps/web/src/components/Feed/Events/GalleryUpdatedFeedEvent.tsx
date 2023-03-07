@@ -9,9 +9,9 @@ import { BaseM } from '~/components/core/Text/Text';
 import { NonRecursiveFeedEventData } from '~/components/Feed/FeedEventData';
 import { FeedMode } from '~/components/Feed/types';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
-import { ReportingErrorBoundary } from '~/contexts/boundary/ReportingErrorBoundary';
 import { GalleryUpdatedFeedEventFragment$key } from '~/generated/GalleryUpdatedFeedEventFragment.graphql';
 import { GalleryUpdatedFeedEventQueryFragment$key } from '~/generated/GalleryUpdatedFeedEventQueryFragment.graphql';
+import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import { getTimeSince } from '~/utils/time';
 
 import { StyledCaptionContainer } from './CollectionCreatedFeedEvent';

@@ -7,9 +7,9 @@ import { graphql } from 'relay-runtime';
 import useSWR from 'swr';
 
 import { LinkableAddress, RawLinkableAddress } from '~/components/LinkableAddress';
-import { ReportingErrorBoundary } from '~/contexts/boundary/ReportingErrorBoundary';
 import { TezosDomainOrAddressFragment$key } from '~/generated/TezosDomainOrAddressFragment.graphql';
 import { TezosDomainOrAddressWithSuspenseFragment$key } from '~/generated/TezosDomainOrAddressWithSuspenseFragment.graphql';
+import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import { getExternalAddressLink } from '~/utils/wallet';
 
 async function tezosDomainFetcher(address: string): Promise<string | null> {

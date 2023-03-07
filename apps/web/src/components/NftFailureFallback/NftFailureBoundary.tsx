@@ -1,10 +1,10 @@
 import { createElement, useMemo } from 'react';
 
+import { useNftErrorContext } from '~/contexts/NftErrorContext';
 import {
   ReportingErrorBoundary,
   ReportingErrorBoundaryProps,
-} from '~/contexts/boundary/ReportingErrorBoundary';
-import { useNftErrorContext } from '~/contexts/NftErrorContext';
+} from '~/shared/errors/ReportingErrorBoundary';
 
 type Props = {
   tokenId: string;

@@ -19,10 +19,8 @@ import {
   getInitialCollectionsFromServer,
 } from '~/components/GalleryEditor/getInitialCollectionsFromServer';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
-import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
-import { ErrorWithSentryMetadata } from '~/errors/ErrorWithSentryMetadata';
 import { GalleryEditorContextFragment$key } from '~/generated/GalleryEditorContextFragment.graphql';
 import { GalleryEditorContextPublishGalleryMutation } from '~/generated/GalleryEditorContextPublishGalleryMutation.graphql';
 import {
@@ -31,6 +29,8 @@ import {
   UpdateCollectionInput,
 } from '~/generated/GalleryEditorContextSaveGalleryMutation.graphql';
 import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
+import { useReportError } from '~/shared/contexts/ErrorReportingContext';
+import { ErrorWithSentryMetadata } from '~/shared/errors/ErrorWithSentryMetadata';
 import { generateLayoutFromCollection } from '~/utils/collectionLayout';
 import { generate12DigitId } from '~/utils/generate12DigitId';
 
