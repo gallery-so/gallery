@@ -1,7 +1,10 @@
 import { PropsWithChildren, useMemo } from 'react';
-import { Text, TextProps } from 'react-native';
+import { Text, TextProps, TextStyle } from 'react-native';
 
 type TypographyProps = PropsWithChildren<{
+  className?: string;
+  style?: TextProps['style'];
+
   font:
     | {
         family: 'GTAlpina';
@@ -18,8 +21,8 @@ type TypographyProps = PropsWithChildren<{
       };
 }>;
 
-export function Typography({ font, children }: TypographyProps) {
-  const textStyle = useMemo((): TextProps['style'] => {
+export function Typography({ font, className, style, children }: TypographyProps) {
+  const textStyle = useMemo((): TextStyle => {
     if (font.family === 'GTAlpina') {
       return { fontFamily: `GTAlpina${font.weight}${font.italic ? 'Italic' : ''}` };
     } else if (font.family === 'ABCDiatype') {
@@ -33,5 +36,9 @@ export function Typography({ font, children }: TypographyProps) {
     return {};
   }, [font]);
 
-  return <Text style={textStyle}>{children}</Text>;
+  return (
+    <Text style={[textStyle, style]} className={className}>
+      {children}
+    </Text>
+  );
 }
