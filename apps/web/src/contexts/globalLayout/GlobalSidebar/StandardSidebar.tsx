@@ -216,6 +216,7 @@ export function StandardSidebar({ queryRef }: Props) {
               onClick={handleNotificationsClick}
               icon={<BellIcon />}
               isActive={activeDrawerType === Notifications}
+              showUnreadDot={notificationCount > 0}
             />
             <SidebarIcon
               tooltipLabel="Settings"
