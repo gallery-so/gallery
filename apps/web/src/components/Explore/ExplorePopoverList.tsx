@@ -54,7 +54,11 @@ export default function ExplorePopoverList({ exploreUsersRef, queryRef }: Props)
                 <TitleDiatypeM>{user.username}</TitleDiatypeM>
                 <StyledBio>{user.bio && <Markdown text={user.bio} />}</StyledBio>
               </StyledVStack>
-              <StyledFollowButton userRef={user} queryRef={query} />
+              <StyledFollowButton
+                userRef={user}
+                queryRef={query}
+                source="Explore Page popover list"
+              />
             </StyledHStack>
           </StyledRow>
         ))}

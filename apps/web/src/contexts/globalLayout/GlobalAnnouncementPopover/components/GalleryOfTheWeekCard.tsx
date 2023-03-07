@@ -72,7 +72,7 @@ export default function GalleryOfTheWeekCard({ queryRef, userRef }: GalleryOfThe
         <GotwContainer gap={isMobile ? 16 : 32}>
           <GotwHeader gap={8}>
             <DescriptionText>{user.username}</DescriptionText>
-            <FollowButton queryRef={query} userRef={user} />
+            <FollowButton queryRef={query} userRef={user} source="gallery of the week card" />
           </GotwHeader>
           <GotwBody>
             {imageUrls.map((url) => (

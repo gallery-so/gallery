@@ -189,7 +189,7 @@ export default function HoverCardOnUsername({
 
                       {isLoggedIn && !isOwnProfile && (
                         <StyledFollowButtonWrapper>
-                          <FollowButton userRef={user} queryRef={query} />
+                          <FollowButton userRef={user} queryRef={query} source="user hover card" />
                         </StyledFollowButtonWrapper>
                       )}
                     </HStack>

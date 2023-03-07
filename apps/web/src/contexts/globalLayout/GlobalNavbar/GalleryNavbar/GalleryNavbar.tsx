@@ -105,7 +105,11 @@ export function GalleryNavbar({
                 <>
                   {query.userByUsername && (
                     <Suspense fallback={null}>
-                      <FollowButton queryRef={query} userRef={query.userByUsername} />
+                      <FollowButton
+                        queryRef={query}
+                        userRef={query.userByUsername}
+                        source="navbar mobile"
+                      />
                     </Suspense>
                   )}
                 </>
