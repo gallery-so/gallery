@@ -7,9 +7,10 @@ import { SomeoneFollowedYouBackFragment$key } from '~/generated/SomeoneFollowedY
 
 type SomeoneFollowedYouBackProps = {
   notificationRef: SomeoneFollowedYouBackFragment$key;
+  onClose: () => void;
 };
 
-export function SomeoneFollowedYouBack({ notificationRef }: SomeoneFollowedYouBackProps) {
+export function SomeoneFollowedYouBack({ notificationRef, onClose }: SomeoneFollowedYouBackProps) {
   const notification = useFragment(
     graphql`
       fragment SomeoneFollowedYouBackFragment on SomeoneFollowedYouBackNotification {
@@ -36,7 +37,11 @@ export function SomeoneFollowedYouBack({ notificationRef }: SomeoneFollowedYouBa
         <strong>{count} collectors</strong>
       ) : (
         <>
-          {lastFollower ? <HoverCardOnUsername userRef={lastFollower} /> : <strong>Someone</strong>}
+          {lastFollower ? (
+            <HoverCardOnUsername userRef={lastFollower} onClick={onClose} />
+          ) : (
+            <strong>Someone</strong>
+          )}
         </>
       )}{' '}
       followed you back

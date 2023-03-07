@@ -28,15 +28,18 @@ import { HoverCard, HoverCardQueryNode } from '~/components/HoverCard/HoverCard'
 import { HoverCardOnUsernameFragment$key } from '~/generated/HoverCardOnUsernameFragment.graphql';
 import { HoverCardQuery } from '~/generated/HoverCardQuery.graphql';
 import handleCustomDisplayName from '~/utils/handleCustomDisplayName';
+import noop from '~/utils/noop';
+import { pluralize } from '~/utils/string';
 
 const HOVER_POPUP_DELAY = 100;
 
 type Props = {
   userRef: HoverCardOnUsernameFragment$key;
   children?: React.ReactNode;
+  onClick?: () => void;
 };
 
-export default function HoverCardOnUsername({ children, userRef }: Props) {
+export default function HoverCardOnUsername({ children, userRef, onClick }: Props) {
   const user = useFragment(
     graphql`
       fragment HoverCardOnUsernameFragment on GalleryUser {
@@ -67,6 +70,7 @@ export default function HoverCardOnUsername({ children, userRef }: Props) {
 
   const handleUsernameClick = useCallback<MouseEventHandler>((event) => {
     event.stopPropagation();
+    onClick();
   }, []);
 
   const userProfileLink = useMemo((): Route => {
@@ -88,13 +92,9 @@ export default function HoverCardOnUsername({ children, userRef }: Props) {
   return (
     <StyledContainer>
       <StyledLinkContainer ref={reference} {...getReferenceProps()}>
-        <Link href={userProfileLink} legacyBehavior>
-          {children ? (
-            children
-          ) : (
-            <TitleDiatypeM onClick={handleUsernameClick}>{displayName}</TitleDiatypeM>
-          )}
-        </Link>
+        <StyledLink href={userProfileLink} onClick={handleUsernameClick}>
+          {children ? children : <TitleDiatypeM>{displayName}</TitleDiatypeM>}
+        </StyledLink>
       </StyledLinkContainer>
 
       <AnimatePresence>
@@ -142,6 +142,10 @@ const StyledCardContainer = styled.div`
   display: grid;
   gap: 8px;
   background-color: ${colors.white};
+`;
+
+const StyledLink = styled(Link)`
+  text-decoration: none;
 `;
 
 const StyledCardWrapper = styled(motion.div)`

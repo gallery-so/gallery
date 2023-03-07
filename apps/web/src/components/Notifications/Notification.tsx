@@ -14,6 +14,7 @@ import { SomeoneFollowedYou } from '~/components/Notifications/notifications/Som
 import { SomeoneFollowedYouBack } from '~/components/Notifications/notifications/SomeoneFollowedYouBack';
 import { SomeoneViewedYourGallery } from '~/components/Notifications/notifications/SomeoneViewedYourGallery';
 import { NotificationUserListPage } from '~/components/Notifications/NotificationUserListPage';
+import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 import { NotificationFragment$key } from '~/generated/NotificationFragment.graphql';
 import { NotificationInnerFragment$key } from '~/generated/NotificationInnerFragment.graphql';
 import { NotificationQueryFragment$key } from '~/generated/NotificationQueryFragment.graphql';
@@ -210,16 +211,21 @@ function NotificationInner({ notificationRef }: NotificationInnerProps) {
     notificationRef
   );
 
+  const { hideDrawer } = useDrawerActions();
+  const handleClose = useCallback(() => {
+    hideDrawer();
+  }, [hideDrawer]);
+
   if (notification.__typename === 'SomeoneAdmiredYourFeedEventNotification') {
-    return <SomeoneAdmiredYourFeedEvent notificationRef={notification} />;
+    return <SomeoneAdmiredYourFeedEvent notificationRef={notification} onClose={handleClose} />;
   } else if (notification.__typename === 'SomeoneViewedYourGalleryNotification') {
-    return <SomeoneViewedYourGallery notificationRef={notification} />;
+    return <SomeoneViewedYourGallery notificationRef={notification} onClose={handleClose} />;
   } else if (notification.__typename === 'SomeoneFollowedYouNotification') {
-    return <SomeoneFollowedYou notificationRef={notification} />;
+    return <SomeoneFollowedYou notificationRef={notification} onClose={handleClose} />;
   } else if (notification.__typename === 'SomeoneFollowedYouBackNotification') {
-    return <SomeoneFollowedYouBack notificationRef={notification} />;
+    return <SomeoneFollowedYouBack notificationRef={notification} onClose={handleClose} />;
   } else if (notification.__typename === 'SomeoneCommentedOnYourFeedEventNotification') {
-    return <SomeoneCommentedOnYourFeedEvent notificationRef={notification} />;
+    return <SomeoneCommentedOnYourFeedEvent notificationRef={notification} onClose={handleClose} />;
   }
 
   return null;

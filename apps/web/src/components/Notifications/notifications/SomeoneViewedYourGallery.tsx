@@ -7,11 +7,15 @@ import { SomeoneViewedYourGalleryFragment$key } from '~/generated/SomeoneViewedY
 
 type SomeoneViewedYourGalleryProps = {
   notificationRef: SomeoneViewedYourGalleryFragment$key;
+  onClose: () => void;
 };
 
 const testId = 'SomeoneViewedYourGallery';
 
-export function SomeoneViewedYourGallery({ notificationRef }: SomeoneViewedYourGalleryProps) {
+export function SomeoneViewedYourGallery({
+  notificationRef,
+  onClose,
+}: SomeoneViewedYourGalleryProps) {
   const notification = useFragment(
     graphql`
       fragment SomeoneViewedYourGalleryFragment on SomeoneViewedYourGalleryNotification {
@@ -45,7 +49,7 @@ export function SomeoneViewedYourGallery({ notificationRef }: SomeoneViewedYourG
     if (totalViewCount === 1) {
       return (
         <BaseM data-testid={testId}>
-          {lastViewer ? <HoverCardOnUsername userRef={lastViewer} /> : 'Someone'}
+          {lastViewer ? <HoverCardOnUsername onClick={onClose} userRef={lastViewer} /> : 'Someone'}
           <span> viewed your gallery</span>
         </BaseM>
       );

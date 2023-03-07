@@ -20,9 +20,10 @@ type Props = {
   queryRef: FollowButtonQueryFragment$key;
   userRef: FollowButtonUserFragment$key;
   className?: string;
+  source?: string; // where the FollowButton is being used, for analytics
 };
 
-export default function FollowButton({ queryRef, userRef, className }: Props) {
+export default function FollowButton({ queryRef, userRef, className, source }: Props) {
   const loggedInUserQuery = useFragment(
     graphql`
       fragment FollowButtonQueryFragment on Query {
@@ -84,6 +85,7 @@ export default function FollowButton({ queryRef, userRef, className }: Props) {
 
     track('Follow Click', {
       followee: userToFollow.dbid,
+      source,
     });
 
     await followUser(userToFollow.dbid);

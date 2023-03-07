@@ -12,10 +12,12 @@ import unescape from '~/utils/unescape';
 
 type SomeoneCommentedOnYourFeedEventProps = {
   notificationRef: SomeoneCommentedOnYourFeedEventFragment$key;
+  onClose: () => void;
 };
 
 export function SomeoneCommentedOnYourFeedEvent({
   notificationRef,
+  onClose,
 }: SomeoneCommentedOnYourFeedEventProps) {
   const notification = useFragment(
     graphql`
@@ -88,7 +90,7 @@ export function SomeoneCommentedOnYourFeedEvent({
     <VStack gap={8}>
       <BaseM>
         {notification.comment?.commenter ? (
-          <HoverCardOnUsername userRef={notification.comment?.commenter} />
+          <HoverCardOnUsername userRef={notification.comment?.commenter} onClick={onClose} />
         ) : (
           <strong>Someone</strong>
         )}

@@ -1,6 +1,6 @@
 import { Primitive } from 'relay-runtime/lib/store/RelayStoreTypes';
 
-import { ErrorWithSentryMetadata } from '~/errors/ErrorWithSentryMetadata';
+import { ErrorWithSentryMetadata } from './ErrorWithSentryMetadata';
 
 export class CouldNotRenderNftError extends ErrorWithSentryMetadata {
   public componentName: string;

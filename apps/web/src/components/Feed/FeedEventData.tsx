@@ -9,7 +9,6 @@ import GalleryUpdatedFeedEvent from '~/components/Feed/Events/GalleryUpdatedFeed
 import TokensAddedToCollectionFeedEvent from '~/components/Feed/Events/TokensAddedToCollectionFeedEvent';
 import UserFollowedUsersFeedEvent from '~/components/Feed/Events/UserFollowedUsersFeedEvent';
 import { FeedMode } from '~/components/Feed/types';
-import { TriedToRenderUnsupportedFeedEvent } from '~/errors/TriedToRenderUnsupportedFeedEvent';
 import { FeedEventDataFragment$key } from '~/generated/FeedEventDataFragment.graphql';
 import {
   FeedEventDataNonRecursiveFragment$data,
@@ -20,6 +19,7 @@ import {
   FeedEventDataNonRecursiveQueryFragment$key,
 } from '~/generated/FeedEventDataNonRecursiveQueryFragment.graphql';
 import { FeedEventDataQueryFragment$key } from '~/generated/FeedEventDataQueryFragment.graphql';
+import { TriedToRenderUnsupportedFeedEvent } from '~/shared/errors/TriedToRenderUnsupportedFeedEvent';
 import unescape from '~/utils/unescape';
 
 import { StyledEvent } from './Events/EventStyles';

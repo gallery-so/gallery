@@ -9,9 +9,13 @@ import { SomeoneAdmiredYourFeedEventFragment$key } from '~/generated/SomeoneAdmi
 
 type SomeoneAdmiredYourFeedEventProps = {
   notificationRef: SomeoneAdmiredYourFeedEventFragment$key;
+  onClose: () => void;
 };
 
-export function SomeoneAdmiredYourFeedEvent({ notificationRef }: SomeoneAdmiredYourFeedEventProps) {
+export function SomeoneAdmiredYourFeedEvent({
+  notificationRef,
+  onClose,
+}: SomeoneAdmiredYourFeedEventProps) {
   const notification = useFragment(
     graphql`
       fragment SomeoneAdmiredYourFeedEventFragment on SomeoneAdmiredYourFeedEventNotification {
@@ -88,7 +92,11 @@ export function SomeoneAdmiredYourFeedEvent({ notificationRef }: SomeoneAdmiredY
         <strong>{notification.count} collectors</strong>
       ) : (
         <>
-          {firstAdmirer ? <HoverCardOnUsername userRef={firstAdmirer} /> : <strong>Someone</strong>}
+          {firstAdmirer ? (
+            <HoverCardOnUsername userRef={firstAdmirer} onClick={onClose} />
+          ) : (
+            <strong>Someone</strong>
+          )}
         </>
       )}
       {` ${verb} `}
