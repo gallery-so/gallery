@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { graphql } from 'react-relay';
 
-import { FollowButtonUserFragment$data } from '~/generated/FollowButtonUserFragment.graphql';
+import { FollowButtonQueryFragment$data } from '~/generated/FollowButtonQueryFragment.graphql';
 import {
   useUnfollowUserMutation,
   useUnfollowUserMutation$data,
@@ -16,14 +16,14 @@ export default function useUnfollowUser() {
           __typename
 
           ... on UnfollowUserPayload {
-            user @required(action: THROW) {
+            viewer {
               __typename
-              id
-              followers {
+              user {
+                __typename
                 id
-              }
-              following {
-                id
+                following {
+                  id
+                }
               }
             }
           }
@@ -43,22 +43,25 @@ export default function useUnfollowUser() {
 
   return useCallback(
     async (
-      userId: string,
-      followerIds: FollowButtonUserFragment$data['followers'],
-      followingIds: FollowButtonUserFragment$data['following']
+      loggedInUserId: string,
+      unfolloweeId: string,
+      // optimistic list of users followed by logged in user
+      followingIds: FollowButtonQueryFragment$data['viewer']['user']['following']
     ) => {
       const optimisticResponse: useUnfollowUserMutation$data = {
         unfollowUser: {
           __typename: 'UnfollowUserPayload',
-          user: {
-            __typename: 'GalleryUser',
-            id: `GalleryUser:${userId}`,
-            followers: followerIds,
-            following: followingIds,
+          viewer: {
+            __typename: 'Viewer',
+            user: {
+              __typename: 'GalleryUser',
+              id: `GalleryUser:${loggedInUserId}`,
+              following: followingIds,
+            },
           },
         },
       };
-      await unfollowUserMutate({ optimisticResponse, variables: { userId: userId } });
+      await unfollowUserMutate({ optimisticResponse, variables: { userId: unfolloweeId } });
     },
     [unfollowUserMutate]
   );
