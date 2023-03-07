@@ -146,7 +146,7 @@ export default function TwitterSetting({ queryRef }: Props) {
 
 const StyledTwitterSettingContainer = styled(VStack)`
   padding: 12px;
-  background-color: ${colors.offWhite};
+  background-color: ${colors.faint};
 `;
 
 const StyledDivider = styled.div`
