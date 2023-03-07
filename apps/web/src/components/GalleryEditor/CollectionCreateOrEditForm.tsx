@@ -29,9 +29,9 @@ export function CollectionCreateOrEditForm({
 }: Props) {
   const { hideModal } = useModalActions();
 
-  const unescapedCollectionName = useMemo(() => unescape(initialName), [initialName]);
+  const unescapedCollectionName = useMemo(() => unescape(initialName ?? ''), [initialName]);
   const unescapedCollectorsNote = useMemo(
-    () => unescape(initialCollectorsNote),
+    () => unescape(initialCollectorsNote ?? ''),
     [initialCollectorsNote]
   );
 
