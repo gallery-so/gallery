@@ -37,7 +37,9 @@ export function TokenCarousel({ tokenRefs }: TokenCarouselProps) {
 
   const chunks = useMemo(() => {
     const chunks = [];
-    for (let i = 0; i < tokens.length; i += 4) {
+    const tokensPerPage = 4;
+    const maxTokens = tokensPerPage * 8;
+    for (let i = 0; i < Math.min(maxTokens, tokens.length); i += 4) {
       chunks.push(tokens.slice(i, i + 4));
     }
     return chunks;
