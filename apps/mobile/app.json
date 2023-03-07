@@ -17,6 +17,9 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
+      "config": {
+        "usesNonExemptEncryption": false
+      },
       "buildNumber": "5",
       "supportsTablet": true,
       "bundleIdentifier": "com.gallerylabs.gallery"
