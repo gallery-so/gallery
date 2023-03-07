@@ -188,7 +188,7 @@ function Settings({ newAddress, queryRef, onEthAddWalletSuccess, onTezosAddWalle
 
       <StyledContentWrapper>
         <StyledSettings gap={12}>
-          <SettingsContents gap={24}>
+          <SettingsContents gap={32}>
             <VStack gap={16}>
               <VStack>
                 <TitleDiatypeL>Email notifications</TitleDiatypeL>
