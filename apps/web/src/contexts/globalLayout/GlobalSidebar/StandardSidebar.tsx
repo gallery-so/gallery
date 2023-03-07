@@ -115,10 +115,11 @@ export function StandardSidebar({ queryRef }: Props) {
   }, [query, showDrawer, track]);
 
   const handleNotificationsClick = useCallback(() => {
+    track('Sidebar Notifications Click');
     showDrawer({
       content: <Notifications />,
     });
-  }, [showDrawer]);
+  }, [showDrawer, track]);
 
   const handleProfileClick = useCallback(() => {
     hideDrawer();
