@@ -12,6 +12,7 @@ import Settings from '~/components/Settings/Settings';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { StandardSidebarFragment$key } from '~/generated/StandardSidebarFragment.graphql';
 import useAuthModal from '~/hooks/useAuthModal';
+import { useSearchHotkey } from '~/hooks/useSearchHotkey';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import BellIcon from '~/icons/BellIcon';
 import CogIcon from '~/icons/CogIcon';
@@ -154,6 +155,12 @@ export function StandardSidebar({ queryRef }: Props) {
 
   const userGalleryRoute: Route = { pathname: '/[username]', query: { username } };
   const editGalleriesRoute: Route = { pathname: '/[username]/galleries', query: { username } };
+
+  useSearchHotkey(() => {
+    showDrawer({
+      content: <Search />,
+    });
+  });
 
   if (isMobile) {
     return (
