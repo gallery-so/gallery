@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import breakpoints from '~/components/core/breakpoints';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { Notifications } from '~/components/Notifications/Notifications';
+import Search from '~/components/Search/Search';
 import Settings from '~/components/Settings/Settings';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { StandardSidebarFragment$key } from '~/generated/StandardSidebarFragment.graphql';
@@ -16,6 +17,7 @@ import BellIcon from '~/icons/BellIcon';
 import CogIcon from '~/icons/CogIcon';
 import { EditPencilIcon } from '~/icons/EditPencilIcon';
 import GLogoIcon from '~/icons/GLogoIcon';
+import SearchIcon from '~/icons/SearchIcon';
 import ShopIcon from '~/icons/ShopIcon';
 import UserIcon from '~/icons/UserIcon';
 import useExperience from '~/utils/graphql/experiences/useExperience';
@@ -140,6 +142,14 @@ export function StandardSidebar({ queryRef }: Props) {
     track('Sidebar Home Click');
   }, [hideDrawer, track]);
 
+  const handleSearchIconClick = useCallback(() => {
+    hideDrawer();
+    track('Sidebar Search Click');
+    showDrawer({
+      content: <Search />,
+    });
+  }, [hideDrawer, showDrawer, track]);
+
   const isMobile = useIsMobileWindowWidth();
 
   const userGalleryRoute: Route = { pathname: '/[username]', query: { username } };
@@ -210,6 +220,14 @@ export function StandardSidebar({ queryRef }: Props) {
               tooltipLabel="My Profile"
               onClick={handleProfileClick}
               icon={<UserIcon />}
+            />
+            <SidebarIcon
+              href={userGalleryRoute}
+              tooltipLabel="Search"
+              onClick={handleSearchIconClick}
+              icon={<SearchIcon />}
+              // TODO: add search drawer
+              isActive={activeDrawerType === Notifications}
             />
             <SidebarIcon
               tooltipLabel="Notifications"
