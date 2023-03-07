@@ -1,7 +1,7 @@
 {
   "name": "mobile",
   "version": "1.0.0",
-  "main": "index.ts",
+  "main": "index.js",
   "dependencies": {
     "@react-navigation/material-top-tabs": "^6.6.0",
     "@react-navigation/native": "^6.1.4",
