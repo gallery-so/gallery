@@ -7,7 +7,11 @@ import { enableFreeze } from 'react-native-screens';
 import * as Sentry from 'sentry-expo';
 
 // Unimportant warnings from the fetch polyfill
-LogBox.ignoreLogs(["The provided value 'moz", "The provided value 'ms-stream"]);
+LogBox.ignoreLogs([
+  "The provided value 'moz",
+  "The provided value 'ms-stream",
+  'onAnimatedValueUpdate',
+]);
 LogBox.ignoreLogs(['Could not render FeedEvent']);
 
 polyfillEncoding();
@@ -21,7 +25,7 @@ Sentry.init({
   enableInExpoDevelopment: true,
 
   // If `true`, Sentry will try to print out useful debugging information if something goes wrong with sending the event. Set it to `false` in production
-  debug: true,
+  debug: false,
 });
 
 import App from './App';
