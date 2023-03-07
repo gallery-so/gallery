@@ -33,6 +33,7 @@ import { HoverCardOnUsernameFollowFragment$key } from '~/generated/HoverCardOnUs
 import { HoverCardOnUsernameFragment$key } from '~/generated/HoverCardOnUsernameFragment.graphql';
 import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
 import handleCustomDisplayName from '~/utils/handleCustomDisplayName';
+import noop from '~/utils/noop';
 import { pluralize } from '~/utils/string';
 
 const HOVER_POPUP_DELAY = 100;
@@ -41,9 +42,15 @@ type Props = {
   userRef: HoverCardOnUsernameFragment$key;
   queryRef: HoverCardOnUsernameFollowFragment$key;
   children?: React.ReactNode;
+  onClick?: () => void;
 };
 
-export default function HoverCardOnUsername({ children, userRef, queryRef }: Props) {
+export default function HoverCardOnUsername({
+  children,
+  onClick = noop,
+  userRef,
+  queryRef,
+}: Props) {
   const user = useFragment(
     graphql`
       fragment HoverCardOnUsernameFragment on GalleryUser {
@@ -104,9 +111,13 @@ export default function HoverCardOnUsername({ children, userRef, queryRef }: Pro
   const isOwnProfile = loggedInUserId === user?.id;
   const isLoggedIn = !!loggedInUserId;
 
-  const handleUsernameClick = useCallback<MouseEventHandler>((event) => {
-    event.stopPropagation();
-  }, []);
+  const handleUsernameClick = useCallback<MouseEventHandler>(
+    (event) => {
+      event.stopPropagation();
+      onClick();
+    },
+    [onClick]
+  );
 
   const userBadges = useMemo(() => {
     const badges = [];
@@ -133,13 +144,9 @@ export default function HoverCardOnUsername({ children, userRef, queryRef }: Pro
   return (
     <StyledContainer>
       <StyledLinkContainer ref={reference} {...getReferenceProps()}>
-        <Link href={userProfileLink} legacyBehavior>
-          {children ? (
-            children
-          ) : (
-            <TitleDiatypeM onClick={handleUsernameClick}>{displayName}</TitleDiatypeM>
-          )}
-        </Link>
+        <StyledLink href={userProfileLink} onClick={handleUsernameClick}>
+          {children ? children : <TitleDiatypeM>{displayName}</TitleDiatypeM>}
+        </StyledLink>
       </StyledLinkContainer>
 
       <AnimatePresence>
@@ -217,6 +224,10 @@ const StyledContainer = styled.span`
 
 const StyledLinkContainer = styled.div`
   display: inline-flex;
+`;
+
+const StyledLink = styled(Link)`
+  text-decoration: none;
 `;
 
 const StyledCardWrapper = styled(motion.div)`
