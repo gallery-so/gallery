@@ -26,7 +26,6 @@ export default function FollowButton({ queryRef, userRef, className }: Props) {
   const loggedInUserQuery = useFragment(
     graphql`
       fragment FollowButtonQueryFragment on Query {
-        ...useLoggedInUserIdFragment
         viewer {
           ... on Viewer {
             user {
@@ -37,6 +36,10 @@ export default function FollowButton({ queryRef, userRef, className }: Props) {
             }
           }
         }
+
+        ...useLoggedInUserIdFragment
+        ...useFollowUserFragment
+        ...useUnfollowUserFragment
       }
     `,
     queryRef
@@ -66,15 +69,16 @@ export default function FollowButton({ queryRef, userRef, className }: Props) {
     return followingIds.has(userToFollow.id);
   }, [followingList, userToFollow.id]);
 
-  const followUser = useFollowUser();
-  const unfollowUser = useUnfollowUser();
+  const followUser = useFollowUser({ queryRef: loggedInUserQuery });
+  const unfollowUser = useUnfollowUser({ queryRef: loggedInUserQuery });
   const { pushToast } = useToastActions();
   const showAuthModal = useAuthModal('sign-in');
   const track = useTrack();
 
   const handleFollowClick = useCallback(async () => {
-    if (!loggedInUserId || !followingList) {
+    if (!loggedInUserId) {
       showAuthModal();
+
       return;
     }
 
@@ -82,11 +86,9 @@ export default function FollowButton({ queryRef, userRef, className }: Props) {
       followee: userToFollow.dbid,
     });
 
-    const optimisticNewFollowingList = [{ id: userToFollow.dbid }, ...followingList];
-    await followUser(loggedInUserId, userToFollow.dbid, optimisticNewFollowingList);
+    await followUser(userToFollow.dbid);
     pushToast({ message: `You followed ${userToFollow.username}.` });
   }, [
-    followingList,
     track,
     userToFollow.dbid,
     userToFollow.username,
@@ -97,26 +99,13 @@ export default function FollowButton({ queryRef, userRef, className }: Props) {
   ]);
 
   const handleUnfollowClick = useCallback(async () => {
-    if (!followingList || !loggedInUserId) {
-      return;
-    }
     track('Unfollow Click', {
       followee: userToFollow.dbid,
     });
-    const optimisticNewFollowingList = followingList.filter(
-      (following: { id: string } | null) => following?.id !== userToFollow.dbid
-    );
-    await unfollowUser(loggedInUserId, userToFollow.dbid, optimisticNewFollowingList);
+
+    await unfollowUser(userToFollow.dbid);
     pushToast({ message: `You unfollowed ${userToFollow.username}.` });
-  }, [
-    followingList,
-    track,
-    userToFollow.dbid,
-    userToFollow.username,
-    unfollowUser,
-    loggedInUserId,
-    pushToast,
-  ]);
+  }, [track, userToFollow.dbid, userToFollow.username, unfollowUser, pushToast]);
 
   const isSelf = loggedInUserId === userToFollow?.id;
 
