@@ -8,24 +8,13 @@ import { HStack } from '~/components/core/Spacer/Stack';
 import { BODY_FONT_FAMILY } from '~/components/core/Text/Text';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { CommentLineFragment$key } from '~/generated/CommentLineFragment.graphql';
-import { CommentLineQueryFragment$key } from '~/generated/CommentLineQueryFragment.graphql';
 import { getTimeSince } from '~/utils/time';
 
 type CommentLineProps = {
-  queryRef: CommentLineQueryFragment$key;
   commentRef: CommentLineFragment$key;
 };
 
-export function CommentLine({ commentRef, queryRef }: CommentLineProps) {
-  const query = useFragment(
-    graphql`
-      fragment CommentLineQueryFragment on Query {
-        ...HoverCardOnUsernameFollowFragment
-      }
-    `,
-    queryRef
-  );
-
+export function CommentLine({ commentRef }: CommentLineProps) {
   const comment = useFragment(
     graphql`
       fragment CommentLineFragment on Comment {
@@ -57,7 +46,7 @@ export function CommentLine({ commentRef, queryRef }: CommentLineProps) {
   return (
     <HStack key={comment.dbid} gap={4} align="flex-end">
       {comment.commenter && (
-        <HoverCardOnUsername userRef={comment.commenter} queryRef={query}>
+        <HoverCardOnUsername userRef={comment.commenter}>
           <CommenterName>{comment.commenter?.username ?? '<unknown>'}</CommenterName>
         </HoverCardOnUsername>
       )}

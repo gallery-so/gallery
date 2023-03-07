@@ -4,28 +4,13 @@ import { graphql } from 'relay-runtime';
 import { BaseM } from '~/components/core/Text/Text';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { SomeoneFollowedYouFragment$key } from '~/generated/SomeoneFollowedYouFragment.graphql';
-import { SomeoneFollowedYouQueryFragment$key } from '~/generated/SomeoneFollowedYouQueryFragment.graphql';
 
 type SomeoneFollowedYouProps = {
   notificationRef: SomeoneFollowedYouFragment$key;
-  queryRef: SomeoneFollowedYouQueryFragment$key;
   onClose: () => void;
 };
 
-export function SomeoneFollowedYou({
-  notificationRef,
-  queryRef,
-  onClose,
-}: SomeoneFollowedYouProps) {
-  const query = useFragment(
-    graphql`
-      fragment SomeoneFollowedYouQueryFragment on Query {
-        ...HoverCardOnUsernameFollowFragment
-      }
-    `,
-    queryRef
-  );
-
+export function SomeoneFollowedYou({ notificationRef, onClose }: SomeoneFollowedYouProps) {
   const notification = useFragment(
     graphql`
       fragment SomeoneFollowedYouFragment on SomeoneFollowedYouNotification {
@@ -53,7 +38,7 @@ export function SomeoneFollowedYou({
       ) : (
         <>
           {lastFollower ? (
-            <HoverCardOnUsername userRef={lastFollower} queryRef={query} onClick={onClose} />
+            <HoverCardOnUsername userRef={lastFollower} onClick={onClose} />
           ) : (
             <strong>Someone</strong>
           )}
