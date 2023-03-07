@@ -142,7 +142,7 @@ export function StandardSidebar({ queryRef }: Props) {
     track('Sidebar Home Click');
   }, [hideDrawer, track]);
 
-  const handleSearchIconClick = useCallback(() => {
+  const handleSearchClick = useCallback(() => {
     hideDrawer();
     track('Sidebar Search Click');
     showDrawer({
@@ -172,6 +172,12 @@ export function StandardSidebar({ queryRef }: Props) {
                 tooltipLabel="My Profile"
                 onClick={handleProfileClick}
                 icon={<UserIcon />}
+              />
+              <SidebarIcon
+                tooltipLabel="Search"
+                onClick={handleSearchClick}
+                icon={<SearchIcon />}
+                isActive={activeDrawerType === Search}
               />
               <SidebarIcon
                 tooltipLabel="Notifications"
@@ -224,10 +230,9 @@ export function StandardSidebar({ queryRef }: Props) {
             <SidebarIcon
               href={userGalleryRoute}
               tooltipLabel="Search"
-              onClick={handleSearchIconClick}
+              onClick={handleSearchClick}
               icon={<SearchIcon />}
-              // TODO: add search drawer
-              isActive={activeDrawerType === Notifications}
+              isActive={activeDrawerType === Search}
             />
             <SidebarIcon
               tooltipLabel="Notifications"

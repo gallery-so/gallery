@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+
 import colors from '../core/colors';
 import { HStack } from '../core/Spacer/Stack';
 import { TitleDiatypeM } from '../core/Text/Text';
@@ -21,7 +22,7 @@ export default function SearchFilter() {
 }
 
 const StyledFilterContainer = styled(HStack)`
-  padding: 8px 0px;
+  padding: 8px 16px;
 `;
 
 const StyledButtonPill = styled(ButtonPill)<{ active?: boolean }>`
