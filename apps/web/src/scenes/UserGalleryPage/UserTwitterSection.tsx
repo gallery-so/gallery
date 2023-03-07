@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { MouseEventHandler, useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -80,11 +80,15 @@ export default function UserTwitterSection({ queryRef, userRef }: Props) {
 
   const userLoggedInTwitterAccount = query.viewer?.socialAccounts?.twitter;
 
-  const handleEditButtonClick = useCallback(() => {
-    showDrawer({
-      content: <Settings queryRef={query} />,
-    });
-  }, [query, showDrawer]);
+  const handleEditButtonClick = useCallback<MouseEventHandler>(
+    (event) => {
+      event.stopPropagation();
+      showDrawer({
+        content: <Settings queryRef={query} />,
+      });
+    },
+    [query, showDrawer]
+  );
 
   const handleUpdateTwitterDisplay = useCallback(() => {
     const display = !userLoggedInTwitterAccount?.display;
