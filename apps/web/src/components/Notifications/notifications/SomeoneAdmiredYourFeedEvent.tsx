@@ -6,26 +6,12 @@ import { BaseM } from '~/components/core/Text/Text';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { CollectionLink } from '~/components/Notifications/CollectionLink';
 import { SomeoneAdmiredYourFeedEventFragment$key } from '~/generated/SomeoneAdmiredYourFeedEventFragment.graphql';
-import { SomeoneAdmiredYourFeedEventQueryFragment$key } from '~/generated/SomeoneAdmiredYourFeedEventQueryFragment.graphql';
 
 type SomeoneAdmiredYourFeedEventProps = {
   notificationRef: SomeoneAdmiredYourFeedEventFragment$key;
-  queryRef: SomeoneAdmiredYourFeedEventQueryFragment$key;
 };
 
-export function SomeoneAdmiredYourFeedEvent({
-  notificationRef,
-  queryRef,
-}: SomeoneAdmiredYourFeedEventProps) {
-  const query = useFragment(
-    graphql`
-      fragment SomeoneAdmiredYourFeedEventQueryFragment on Query {
-        ...HoverCardOnUsernameFollowFragment
-      }
-    `,
-    queryRef
-  );
-
+export function SomeoneAdmiredYourFeedEvent({ notificationRef }: SomeoneAdmiredYourFeedEventProps) {
   const notification = useFragment(
     graphql`
       fragment SomeoneAdmiredYourFeedEventFragment on SomeoneAdmiredYourFeedEventNotification {
@@ -102,11 +88,7 @@ export function SomeoneAdmiredYourFeedEvent({
         <strong>{notification.count} collectors</strong>
       ) : (
         <>
-          {firstAdmirer ? (
-            <HoverCardOnUsername userRef={firstAdmirer} queryRef={query} />
-          ) : (
-            <strong>Someone</strong>
-          )}
+          {firstAdmirer ? <HoverCardOnUsername userRef={firstAdmirer} /> : <strong>Someone</strong>}
         </>
       )}
       {` ${verb} `}

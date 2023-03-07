@@ -11,7 +11,6 @@ import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext'
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { CouldNotRenderNftError } from '~/errors/CouldNotRenderNftError';
 import { CommunityHolderGridItemFragment$key } from '~/generated/CommunityHolderGridItemFragment.graphql';
-import { CommunityHolderGridItemQueryFragment$key } from '~/generated/CommunityHolderGridItemQueryFragment.graphql';
 import TokenDetailView from '~/scenes/TokenDetailPage/TokenDetailView';
 import { getOpenseaExternalUrl } from '~/utils/getOpenseaExternalUrl';
 import getVideoOrImageUrlForNftPreview from '~/utils/graphql/getVideoOrImageUrlForNftPreview';
@@ -21,10 +20,9 @@ import HoverCardOnUsername from '../HoverCard/HoverCardOnUsername';
 
 type Props = {
   holderRef: CommunityHolderGridItemFragment$key;
-  queryRef: CommunityHolderGridItemQueryFragment$key;
 };
 
-export default function CommunityHolderGridItem({ holderRef, queryRef }: Props) {
+export default function CommunityHolderGridItem({ holderRef }: Props) {
   const token = useFragment(
     graphql`
       fragment CommunityHolderGridItemFragment on Token {
@@ -46,15 +44,6 @@ export default function CommunityHolderGridItem({ holderRef, queryRef }: Props) 
       }
     `,
     holderRef
-  );
-
-  const query = useFragment(
-    graphql`
-      fragment CommunityHolderGridItemQueryFragment on Query {
-        ...HoverCardOnUsernameFollowFragment
-      }
-    `,
-    queryRef
   );
 
   const [isFailedToLoad, setIsFailedToLoad] = useState(false);
@@ -125,7 +114,7 @@ export default function CommunityHolderGridItem({ holderRef, queryRef }: Props) 
         {owner?.universal ? (
           <InteractiveLink href={openseaProfileLink}>{usernameWithFallback}</InteractiveLink>
         ) : (
-          <HoverCardOnUsername userRef={token.owner} queryRef={query}>
+          <HoverCardOnUsername userRef={token.owner}>
             <InteractiveLink to={{ pathname: '/[username]', query: { username: owner.username } }}>
               {usernameWithFallback}
             </InteractiveLink>

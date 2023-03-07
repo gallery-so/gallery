@@ -84,6 +84,6 @@ export default function useUnfollowUser({ queryRef }: useUnfollowUserArgs) {
         variables: { userId: unfolloweeId },
       });
     },
-    [unfollowUserMutate]
+    [query.viewer?.id, query.viewer?.user?.following, query.viewer?.user?.id, unfollowUserMutate]
   );
 }

@@ -47,8 +47,6 @@ export function AdmireLine({ admireRef, eventRef, queryRef, totalAdmires }: Comm
             }
           }
         }
-
-        ...HoverCardOnUsernameFollowFragment
       }
     `,
     queryRef
@@ -79,7 +77,7 @@ export function AdmireLine({ admireRef, eventRef, queryRef, totalAdmires }: Comm
   return (
     <HStack gap={4} align="flex-end">
       {admire.admirer && (
-        <HoverCardOnUsername userRef={admire.admirer} queryRef={query}>
+        <HoverCardOnUsername userRef={admire.admirer}>
           <AdmirerName>{admirerName}</AdmirerName>
         </HoverCardOnUsername>
       )}

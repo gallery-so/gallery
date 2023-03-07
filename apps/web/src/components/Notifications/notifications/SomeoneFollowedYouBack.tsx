@@ -4,23 +4,12 @@ import { graphql } from 'relay-runtime';
 import { BaseM } from '~/components/core/Text/Text';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { SomeoneFollowedYouBackFragment$key } from '~/generated/SomeoneFollowedYouBackFragment.graphql';
-import { SomeoneFollowedYouBackQueryFragment$key } from '~/generated/SomeoneFollowedYouBackQueryFragment.graphql';
 
 type SomeoneFollowedYouBackProps = {
   notificationRef: SomeoneFollowedYouBackFragment$key;
-  queryRef: SomeoneFollowedYouBackQueryFragment$key;
 };
 
-export function SomeoneFollowedYouBack({ notificationRef, queryRef }: SomeoneFollowedYouBackProps) {
-  const query = useFragment(
-    graphql`
-      fragment SomeoneFollowedYouBackQueryFragment on Query {
-        ...HoverCardOnUsernameFollowFragment
-      }
-    `,
-    queryRef
-  );
-
+export function SomeoneFollowedYouBack({ notificationRef }: SomeoneFollowedYouBackProps) {
   const notification = useFragment(
     graphql`
       fragment SomeoneFollowedYouBackFragment on SomeoneFollowedYouBackNotification {
@@ -47,11 +36,7 @@ export function SomeoneFollowedYouBack({ notificationRef, queryRef }: SomeoneFol
         <strong>{count} collectors</strong>
       ) : (
         <>
-          {lastFollower ? (
-            <HoverCardOnUsername userRef={lastFollower} queryRef={query} />
-          ) : (
-            <strong>Someone</strong>
-          )}
+          {lastFollower ? <HoverCardOnUsername userRef={lastFollower} /> : <strong>Someone</strong>}
         </>
       )}{' '}
       followed you back

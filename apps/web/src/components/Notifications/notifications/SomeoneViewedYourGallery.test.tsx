@@ -20,15 +20,13 @@ function Fixture() {
             ...SomeoneViewedYourGalleryFragment
           }
         }
-
-        ...SomeoneViewedYourGalleryQueryFragment
       }
     `,
     {}
   );
 
   if (query.node?.__typename === 'SomeoneViewedYourGalleryNotification') {
-    return <SomeoneViewedYourGallery notificationRef={query.node} queryRef={query} />;
+    return <SomeoneViewedYourGallery notificationRef={query.node} />;
   }
 
   throw new Error('Yikes');
@@ -41,7 +39,6 @@ type MockResponseArgs = {
 
 function mockResponse({ userViews, nonUserViews }: MockResponseArgs) {
   const result: SomeoneViewedYourGalleryTestQueryQuery = {
-    viewer: null,
     node: {
       __typename: 'SomeoneViewedYourGalleryNotification',
       id: 'SomeoneViewedYourGalleryNotification:notification-1',

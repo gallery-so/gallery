@@ -39,6 +39,7 @@ export function CommentBox({ eventRef, queryRef, onClose }: Props) {
           ... on Viewer {
             user {
               id
+              dbid
               username
             }
           }
@@ -141,14 +142,9 @@ export function CommentBox({ eventRef, queryRef, onClose }: Props) {
               __typename: 'Comment',
               comment: value,
               commenter: {
+                dbid: query.viewer?.user?.dbid ?? 'unknown',
                 id: query.viewer?.user?.id ?? 'unknown',
-                dbid: `GalleryUser:${query.viewer?.user?.id}`,
                 username: query.viewer?.user?.username ?? null,
-                badges: [],
-                bio: '',
-                followers: [],
-                following: [],
-                galleries: [],
               },
               creationTime: new Date().toISOString(),
               dbid: optimisticId,
@@ -189,6 +185,7 @@ export function CommentBox({ eventRef, queryRef, onClose }: Props) {
     isSubmittingComment,
     onClose,
     pushToast,
+    query.viewer?.user?.dbid,
     query.viewer?.user?.id,
     query.viewer?.user?.username,
     reportError,
