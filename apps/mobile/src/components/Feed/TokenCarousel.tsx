@@ -1,3 +1,4 @@
+import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import { useCallback, useMemo, useState } from 'react';
 import {
   NativeScrollEvent,
@@ -57,23 +58,23 @@ export function TokenCarousel({ tokenRefs }: TokenCarouselProps) {
     [chunks?.length, width]
   );
 
+  const renderItem = useCallback<ListRenderItem<(typeof chunks)[number]>>(({ item }) => {
+    return <EventTokenGrid tokenRefs={item} />;
+  }, []);
+
   return (
     <View className="flex flex-col space-y-3">
-      <ScrollView
+      <FlashList
         horizontal
+        data={chunks}
         pagingEnabled
-        decelerationRate={0}
         snapToInterval={width}
-        onScroll={handleScroll}
-        scrollEventThrottle={200}
-        scrollEnabled={chunks.length > 1}
-        snapToAlignment={'center'}
+        renderItem={renderItem}
+        decelerationRate="fast"
+        snapToAlignment="center"
+        estimatedItemSize={width}
         showsHorizontalScrollIndicator={false}
-      >
-        {chunks.map((chunk, index) => {
-          return <EventTokenGrid key={index} tokenRefs={chunk} />;
-        })}
-      </ScrollView>
+      />
 
       {chunks?.length > 1 && (
         <View className="flex w-full flex-row justify-center py-3">
