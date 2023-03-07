@@ -207,7 +207,7 @@ export function StandardSidebar({ queryRef }: Props) {
           <VStack gap={32}>
             <SidebarIcon
               href={userGalleryRoute}
-              tooltipLabel="My Profile"
+              tooltipLabel="My profile"
               onClick={handleProfileClick}
               icon={<UserIcon />}
             />

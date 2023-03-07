@@ -251,7 +251,7 @@ function Settings({ newAddress, queryRef, onEthAddWalletSuccess, onTezosAddWalle
             </VStack>
             <Divider />
             <VStack gap={16}>
-              <TitleDiatypeL>Connect Twitter</TitleDiatypeL>
+              <TitleDiatypeL>Connect twitter</TitleDiatypeL>
               <TwitterSetting queryRef={query} />
             </VStack>
             <Divider />
