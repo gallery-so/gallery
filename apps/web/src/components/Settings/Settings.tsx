@@ -188,7 +188,7 @@ function Settings({ newAddress, queryRef, onEthAddWalletSuccess, onTezosAddWalle
 
       <StyledContentWrapper>
         <StyledSettings gap={12}>
-          <SettingsContents gap={24}>
+          <SettingsContents gap={32}>
             <VStack gap={16}>
               <VStack>
                 <TitleDiatypeL>Email notifications</TitleDiatypeL>
@@ -197,14 +197,9 @@ function Settings({ newAddress, queryRef, onEthAddWalletSuccess, onTezosAddWalle
                     Receive weekly recaps about product updates, airdrop opportunities, and your
                     most recent gallery admirers.
                   </SettingsRowDescription>
-                  <Toggle
-                    checked={isToggleChecked}
-                    isPending={isPending || isEmailUnverified}
-                    onChange={toggleEmailNotification}
-                  />
                 </HStack>
               </VStack>
-              <StyledButtonContainer>
+              <StyledButtonContainer gap={12}>
                 {shouldDisplayAddEmailInput ? (
                   <EmailManager queryRef={query} onClose={handleCloseEmailManager} />
                 ) : (
@@ -212,9 +207,20 @@ function Settings({ newAddress, queryRef, onEthAddWalletSuccess, onTezosAddWalle
                     add email address
                   </StyledButton>
                 )}
+                <Divider />
+                <HStack justify="space-between" align="center">
+                  <strong>
+                    <SettingsRowDescription>Receive weekly recaps</SettingsRowDescription>
+                  </strong>
+                  <Toggle
+                    checked={isToggleChecked}
+                    isPending={isPending || isEmailUnverified}
+                    onChange={toggleEmailNotification}
+                  />
+                </HStack>
               </StyledButtonContainer>
             </VStack>
-            <StyledHr />
+            <Divider />
             <VStack>
               <TitleDiatypeL>Members Club</TitleDiatypeL>
               <HStack justify="space-between" align="center" gap={8}>
@@ -243,12 +249,12 @@ function Settings({ newAddress, queryRef, onEthAddWalletSuccess, onTezosAddWalle
                 </HStack>
               </HStack>
             </VStack>
-            <StyledHr />
+            <Divider />
             <VStack gap={16}>
-              <TitleDiatypeL>Connect Twitter</TitleDiatypeL>
+              <TitleDiatypeL>Connect twitter</TitleDiatypeL>
               <TwitterSetting queryRef={query} />
             </VStack>
-            <StyledHr />
+            <Divider />
             <VStack>
               <TitleDiatypeL>Manage accounts</TitleDiatypeL>
               <ManageWallets
@@ -258,7 +264,7 @@ function Settings({ newAddress, queryRef, onEthAddWalletSuccess, onTezosAddWalle
                 onEthAddWalletSuccess={onEthAddWalletSuccess}
               />
             </VStack>
-            <StyledHr />
+            <Divider />
             <HStack>
               <StyledButton variant="warning" onClick={handleSignOutClick}>
                 Sign Out
@@ -285,14 +291,15 @@ const SettingsContents = styled(VStack)`
   padding: 16px;
 `;
 
-const StyledHr = styled.hr`
+const Divider = styled.div`
   width: 100%;
-  border-top: 1px solid #e5e5e5;
-  margin: 0;
+  height: 1px;
+  background-color: ${colors.porcelain};
 `;
 
-const StyledButtonContainer = styled.div`
-  display: inline;
+const StyledButtonContainer = styled(VStack)`
+  background-color: ${colors.faint};
+  padding: 12px;
 `;
 
 const StyledButton = styled(Button)`

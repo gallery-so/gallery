@@ -9,9 +9,14 @@ import { SomeoneFollowedYouBackQueryFragment$key } from '~/generated/SomeoneFoll
 type SomeoneFollowedYouBackProps = {
   notificationRef: SomeoneFollowedYouBackFragment$key;
   queryRef: SomeoneFollowedYouBackQueryFragment$key;
+  onClose: () => void;
 };
 
-export function SomeoneFollowedYouBack({ notificationRef, queryRef }: SomeoneFollowedYouBackProps) {
+export function SomeoneFollowedYouBack({
+  notificationRef,
+  queryRef,
+  onClose,
+}: SomeoneFollowedYouBackProps) {
   const query = useFragment(
     graphql`
       fragment SomeoneFollowedYouBackQueryFragment on Query {
@@ -48,7 +53,7 @@ export function SomeoneFollowedYouBack({ notificationRef, queryRef }: SomeoneFol
       ) : (
         <>
           {lastFollower ? (
-            <HoverCardOnUsername userRef={lastFollower} queryRef={query} />
+            <HoverCardOnUsername userRef={lastFollower} queryRef={query} onClick={onClose} />
           ) : (
             <strong>Someone</strong>
           )}

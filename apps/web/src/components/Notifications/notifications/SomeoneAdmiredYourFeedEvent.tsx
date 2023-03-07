@@ -11,11 +11,13 @@ import { SomeoneAdmiredYourFeedEventQueryFragment$key } from '~/generated/Someon
 type SomeoneAdmiredYourFeedEventProps = {
   notificationRef: SomeoneAdmiredYourFeedEventFragment$key;
   queryRef: SomeoneAdmiredYourFeedEventQueryFragment$key;
+  onClose: () => void;
 };
 
 export function SomeoneAdmiredYourFeedEvent({
   notificationRef,
   queryRef,
+  onClose,
 }: SomeoneAdmiredYourFeedEventProps) {
   const query = useFragment(
     graphql`
@@ -103,7 +105,7 @@ export function SomeoneAdmiredYourFeedEvent({
       ) : (
         <>
           {firstAdmirer ? (
-            <HoverCardOnUsername userRef={firstAdmirer} queryRef={query} />
+            <HoverCardOnUsername userRef={firstAdmirer} queryRef={query} onClick={onClose} />
           ) : (
             <strong>Someone</strong>
           )}

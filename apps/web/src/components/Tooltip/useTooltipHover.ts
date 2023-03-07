@@ -49,6 +49,7 @@ export function useTooltipHover(options?: useTooltipHoverOptions) {
       reference,
       floating,
       open,
+      close: () => setOpen(false),
     }),
     [floating, floatingStyle, getFloatingProps, getReferenceProps, reference, open]
   );

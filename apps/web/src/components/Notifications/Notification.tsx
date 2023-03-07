@@ -14,6 +14,7 @@ import { SomeoneFollowedYou } from '~/components/Notifications/notifications/Som
 import { SomeoneFollowedYouBack } from '~/components/Notifications/notifications/SomeoneFollowedYouBack';
 import { SomeoneViewedYourGallery } from '~/components/Notifications/notifications/SomeoneViewedYourGallery';
 import { NotificationUserListPage } from '~/components/Notifications/NotificationUserListPage';
+import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 import { NotificationFragment$key } from '~/generated/NotificationFragment.graphql';
 import { NotificationInnerFragment$key } from '~/generated/NotificationInnerFragment.graphql';
 import { NotificationInnerQueryFragment$key } from '~/generated/NotificationInnerQueryFragment.graphql';
@@ -227,16 +228,47 @@ function NotificationInner({ notificationRef, queryRef }: NotificationInnerProps
     notificationRef
   );
 
+  const { hideDrawer } = useDrawerActions();
+  const handleClose = useCallback(() => {
+    hideDrawer();
+  }, [hideDrawer]);
+
   if (notification.__typename === 'SomeoneAdmiredYourFeedEventNotification') {
-    return <SomeoneAdmiredYourFeedEvent queryRef={query} notificationRef={notification} />;
+    return (
+      <SomeoneAdmiredYourFeedEvent
+        queryRef={query}
+        notificationRef={notification}
+        onClose={handleClose}
+      />
+    );
   } else if (notification.__typename === 'SomeoneViewedYourGalleryNotification') {
-    return <SomeoneViewedYourGallery queryRef={query} notificationRef={notification} />;
+    return (
+      <SomeoneViewedYourGallery
+        queryRef={query}
+        notificationRef={notification}
+        onClose={handleClose}
+      />
+    );
   } else if (notification.__typename === 'SomeoneFollowedYouNotification') {
-    return <SomeoneFollowedYou queryRef={query} notificationRef={notification} />;
+    return (
+      <SomeoneFollowedYou queryRef={query} notificationRef={notification} onClose={handleClose} />
+    );
   } else if (notification.__typename === 'SomeoneFollowedYouBackNotification') {
-    return <SomeoneFollowedYouBack queryRef={query} notificationRef={notification} />;
+    return (
+      <SomeoneFollowedYouBack
+        queryRef={query}
+        notificationRef={notification}
+        onClose={handleClose}
+      />
+    );
   } else if (notification.__typename === 'SomeoneCommentedOnYourFeedEventNotification') {
-    return <SomeoneCommentedOnYourFeedEvent queryRef={query} notificationRef={notification} />;
+    return (
+      <SomeoneCommentedOnYourFeedEvent
+        queryRef={query}
+        notificationRef={notification}
+        onClose={handleClose}
+      />
+    );
   }
 
   return null;

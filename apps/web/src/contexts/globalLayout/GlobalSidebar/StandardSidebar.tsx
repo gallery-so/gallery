@@ -11,7 +11,7 @@ import Settings from '~/components/Settings/Settings';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { StandardSidebarFragment$key } from '~/generated/StandardSidebarFragment.graphql';
 import useAuthModal from '~/hooks/useAuthModal';
-import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
+import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import BellIcon from '~/icons/BellIcon';
 import CogIcon from '~/icons/CogIcon';
 import { EditPencilIcon } from '~/icons/EditPencilIcon';
@@ -141,7 +141,7 @@ export function StandardSidebar({ queryRef }: Props) {
     track('Sidebar Home Click');
   }, [hideDrawer, track]);
 
-  const isMobile = useIsMobileWindowWidth();
+  const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
   const userGalleryRoute: Route = { pathname: '/[username]', query: { username } };
   const editGalleriesRoute: Route = { pathname: '/[username]/galleries', query: { username } };
@@ -208,7 +208,7 @@ export function StandardSidebar({ queryRef }: Props) {
           <VStack gap={32}>
             <SidebarIcon
               href={userGalleryRoute}
-              tooltipLabel="My Profile"
+              tooltipLabel="My profile"
               onClick={handleProfileClick}
               icon={<UserIcon />}
             />

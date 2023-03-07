@@ -9,6 +9,7 @@ import { SomeoneViewedYourGalleryQueryFragment$key } from '~/generated/SomeoneVi
 type SomeoneViewedYourGalleryProps = {
   notificationRef: SomeoneViewedYourGalleryFragment$key;
   queryRef: SomeoneViewedYourGalleryQueryFragment$key;
+  onClose: () => void;
 };
 
 const testId = 'SomeoneViewedYourGallery';
@@ -16,6 +17,7 @@ const testId = 'SomeoneViewedYourGallery';
 export function SomeoneViewedYourGallery({
   notificationRef,
   queryRef,
+  onClose,
 }: SomeoneViewedYourGalleryProps) {
   const query = useFragment(
     graphql`
@@ -59,7 +61,11 @@ export function SomeoneViewedYourGallery({
     if (totalViewCount === 1) {
       return (
         <BaseM data-testid={testId}>
-          {lastViewer ? <HoverCardOnUsername userRef={lastViewer} queryRef={query} /> : 'Someone'}
+          {lastViewer ? (
+            <HoverCardOnUsername onClick={onClose} userRef={lastViewer} queryRef={query} />
+          ) : (
+            'Someone'
+          )}
           <span> viewed your gallery</span>
         </BaseM>
       );

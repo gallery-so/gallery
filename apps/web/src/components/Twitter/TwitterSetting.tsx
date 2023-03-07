@@ -137,7 +137,7 @@ export default function TwitterSetting({ queryRef }: Props) {
         </BaseM>
 
         <StyledConnectLink href={TWITTER_AUTH_URL} target="_self">
-          <Button variant="secondary">CONNECT</Button>
+          <StyledConnectButton variant="secondary">CONNECT</StyledConnectButton>
         </StyledConnectLink>
       </HStack>
     </StyledTwitterSettingContainer>
@@ -146,7 +146,7 @@ export default function TwitterSetting({ queryRef }: Props) {
 
 const StyledTwitterSettingContainer = styled(VStack)`
   padding: 12px;
-  background-color: ${colors.offWhite};
+  background-color: ${colors.faint};
 `;
 
 const StyledDivider = styled.div`
@@ -157,4 +157,8 @@ const StyledDivider = styled.div`
 
 const StyledConnectLink = styled(InteractiveLink)`
   text-decoration: none;
+`;
+
+const StyledConnectButton = styled(Button)`
+  width: 84px;
 `;
