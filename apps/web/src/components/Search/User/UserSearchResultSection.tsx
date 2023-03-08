@@ -8,15 +8,22 @@ import colors from '../../core/colors';
 import InteractiveLink from '../../core/InteractiveLink/InteractiveLink';
 import { HStack, VStack } from '../../core/Spacer/Stack';
 import { TitleXS } from '../../core/Text/Text';
+import { SearchFilterType } from '../Search';
 import UserSearchResult from './UserSearchResult';
 
 type Props = {
   title: string;
   isShowAll?: boolean;
   queryRef: UserSearchResultSectionFragment$key;
+  onChangeFilter: (filter: SearchFilterType) => void;
 };
 
-export default function UserSearchResultSection({ isShowAll = false, title, queryRef }: Props) {
+export default function UserSearchResultSection({
+  isShowAll = false,
+  onChangeFilter,
+  title,
+  queryRef,
+}: Props) {
   const results = useFragment(
     graphql`
       fragment UserSearchResultSectionFragment on UserSearchResult @relay(plural: true) {
@@ -39,7 +46,11 @@ export default function UserSearchResultSection({ isShowAll = false, title, quer
       <StyledResultHeader align="center" justify="space-between">
         <StyledTitle>{title}</StyledTitle>
 
-        {!isShowAll && <StyledInteractiveLink onClick={() => {}}>Show all</StyledInteractiveLink>}
+        {!isShowAll && (
+          <StyledInteractiveLink onClick={() => onChangeFilter('curator')}>
+            Show all
+          </StyledInteractiveLink>
+        )}
       </StyledResultHeader>
 
       <VStack>

@@ -30,7 +30,11 @@ export default function Search() {
       <StyledSearchContent gap={8}>
         {/* TODO: Add spinner or deferred value */}
         <Suspense fallback={<div>Loading</div>}>
-          <SearchResults keyword={keyword} />
+          <SearchResults
+            activeFilter={selectedFilter}
+            keyword={keyword}
+            onChangeFilter={setSelectedFilter}
+          />
         </Suspense>
       </StyledSearchContent>
     </>

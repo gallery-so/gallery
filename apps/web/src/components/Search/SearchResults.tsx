@@ -4,13 +4,16 @@ import styled from 'styled-components';
 import { SearchResultsQuery } from '~/generated/SearchResultsQuery.graphql';
 
 import { VStack } from '../core/Spacer/Stack';
+import { SearchFilterType } from './Search';
 import UserSearchResultSection from './User/UserSearchResultSection';
 
 type Props = {
   keyword: string;
+  activeFilter: SearchFilterType;
+  onChangeFilter: (filter: SearchFilterType) => void;
 };
 
-export default function SearchResults({ keyword }: Props) {
+export default function SearchResults({ activeFilter, keyword, onChangeFilter }: Props) {
   const query = useLazyLoadQuery<SearchResultsQuery>(
     graphql`
       query SearchResultsQuery($query: String!) {
@@ -24,33 +27,6 @@ export default function SearchResults({ keyword }: Props) {
             }
           }
         }
-        searchGalleries(query: $query) {
-          ... on SearchGalleriesPayload {
-            results {
-              gallery {
-                dbid
-                name
-                hidden
-                owner {
-                  id
-                  username
-                }
-              }
-            }
-          }
-        }
-        searchCommunities(query: $query) {
-          ... on SearchCommunitiesPayload {
-            results {
-              community {
-                dbid
-                name
-                description
-                chain
-              }
-            }
-          }
-        }
       }
     `,
     { query: keyword }
@@ -59,10 +35,13 @@ export default function SearchResults({ keyword }: Props) {
   return (
     <StyledSearchResultContainer>
       {query?.searchUsers?.__typename === 'SearchUsersPayload' && query?.searchUsers?.results && (
-        <UserSearchResultSection title="curators" queryRef={query?.searchUsers?.results} />
+        <UserSearchResultSection
+          title="curators"
+          queryRef={query?.searchUsers?.results}
+          onChangeFilter={onChangeFilter}
+          isShowAll={activeFilter === 'curator'}
+        />
       )}
-      {/* <SearchResultSection title="galleries" />
-      <SearchResultSection title="communities" /> */}
     </StyledSearchResultContainer>
   );
 }
