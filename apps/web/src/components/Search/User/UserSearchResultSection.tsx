@@ -4,11 +4,11 @@ import styled from 'styled-components';
 
 import { UserSearchResultSectionFragment$key } from '~/generated/UserSearchResultSectionFragment.graphql';
 
-import colors from '../core/colors';
-import InteractiveLink from '../core/InteractiveLink/InteractiveLink';
-import { HStack, VStack } from '../core/Spacer/Stack';
-import { TitleXS } from '../core/Text/Text';
-import UserSearchResult from './SearchResult/UserSearchResult';
+import colors from '../../core/colors';
+import InteractiveLink from '../../core/InteractiveLink/InteractiveLink';
+import { HStack, VStack } from '../../core/Spacer/Stack';
+import { TitleXS } from '../../core/Text/Text';
+import UserSearchResult from './UserSearchResult';
 
 type Props = {
   title: string;

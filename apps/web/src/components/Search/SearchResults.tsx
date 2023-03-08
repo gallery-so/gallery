@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { SearchResultsQuery } from '~/generated/SearchResultsQuery.graphql';
 
 import { VStack } from '../core/Spacer/Stack';
-import UserSearchResultSection from './UserSearchResultSection';
+import UserSearchResultSection from './User/UserSearchResultSection';
 
 type Props = {
   keyword: string;
@@ -24,6 +24,33 @@ export default function SearchResults({ keyword }: Props) {
             }
           }
         }
+        searchGalleries(query: $query) {
+          ... on SearchGalleriesPayload {
+            results {
+              gallery {
+                dbid
+                name
+                hidden
+                owner {
+                  id
+                  username
+                }
+              }
+            }
+          }
+        }
+        searchCommunities(query: $query) {
+          ... on SearchCommunitiesPayload {
+            results {
+              community {
+                dbid
+                name
+                description
+                chain
+              }
+            }
+          }
+        }
       }
     `,
     { query: keyword }
@@ -34,6 +61,8 @@ export default function SearchResults({ keyword }: Props) {
       {query?.searchUsers?.__typename === 'SearchUsersPayload' && query?.searchUsers?.results && (
         <UserSearchResultSection title="curators" queryRef={query?.searchUsers?.results} />
       )}
+      {/* <SearchResultSection title="galleries" />
+      <SearchResultSection title="communities" /> */}
     </StyledSearchResultContainer>
   );
 }
