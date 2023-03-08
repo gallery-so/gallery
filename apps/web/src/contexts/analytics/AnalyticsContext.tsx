@@ -1,6 +1,6 @@
 import { captureException } from '@sentry/nextjs';
 import mixpanel from 'mixpanel-browser';
-import { createContext, memo, ReactNode, useCallback, useContext } from 'react';
+import { createContext, memo, ReactNode, useCallback, useContext, useEffect } from 'react';
 import { useRelayEnvironment } from 'react-relay';
 import { fetchQuery, graphql } from 'relay-runtime';
 
@@ -73,6 +73,26 @@ const AnalayticsContextQueryNode = graphql`
 
 const AnalyticsProvider = memo(({ children }: Props) => {
   const relayEnvironment = useRelayEnvironment();
+
+  useEffect(() => {
+    fetchQuery<AnalyticsContextQuery>(
+      relayEnvironment,
+      AnalayticsContextQueryNode,
+      {},
+      { fetchPolicy: 'store-or-network' }
+    )
+      .toPromise()
+      .then((query) => {
+        const userId = query?.viewer?.user?.dbid;
+
+        // don't track unauthenticated users
+        if (!userId) {
+          return;
+        }
+
+        _identify(userId);
+      });
+  }, [relayEnvironment]);
 
   const handleTrack: TrackFn = useCallback(
     (eventName, eventProps = {}) => {
