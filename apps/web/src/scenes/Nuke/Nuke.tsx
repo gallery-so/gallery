@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { ButtonLink } from '~/components/core/Button/Button';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseXL } from '~/components/core/Text/Text';
-import { useLogout } from '~/contexts/auth/AuthContext';
+import { useLogout } from '~/hooks/useLogout';
 
 // Suggest a user visit this page if they're in a seriously broken state
 function Nuke() {

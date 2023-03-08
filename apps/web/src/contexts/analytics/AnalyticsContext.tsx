@@ -1,8 +1,10 @@
 import { captureException } from '@sentry/nextjs';
 import mixpanel from 'mixpanel-browser';
-import { createContext, memo, ReactNode, useCallback, useContext, useRef } from 'react';
+import { createContext, memo, ReactNode, useCallback, useContext } from 'react';
+import { useRelayEnvironment } from 'react-relay';
+import { fetchQuery, graphql } from 'relay-runtime';
 
-import useAuthenticatedUserId from '~/contexts/auth/useAuthenticatedUserId';
+import { AnalyticsContextQuery } from '~/generated/AnalyticsContextQuery.graphql';
 import noop from '~/utils/noop';
 
 type EventProps = Record<string, unknown>;
@@ -57,27 +59,43 @@ export const useTrack = () => {
 
 type Props = { children: ReactNode };
 
-const AnalyticsProvider = memo(({ children }: Props) => {
-  const userId = useAuthenticatedUserId();
-
-  // Put the userId in a ref so we have something we can
-  // reach into for the current user id without needing
-  // to add a state dep to our useCallback.
-  //
-  // Without this, all of our downstream effects
-  // which rely on useTrack fire twice when
-  // the user logs in / logs out
-  const userIdRef = useRef(userId);
-  userIdRef.current = userId;
-
-  const handleTrack: TrackFn = useCallback((eventName, eventProps = {}) => {
-    // don't track unauthenticated users
-    if (!userIdRef.current) {
-      return;
+const AnalayticsContextQueryNode = graphql`
+  query AnalyticsContextQuery {
+    viewer {
+      ... on Viewer {
+        user {
+          dbid
+        }
+      }
     }
+  }
+`;
 
-    _track(eventName, eventProps, userIdRef.current);
-  }, []);
+const AnalyticsProvider = memo(({ children }: Props) => {
+  const relayEnvironment = useRelayEnvironment();
+
+  const handleTrack: TrackFn = useCallback(
+    (eventName, eventProps = {}) => {
+      fetchQuery<AnalyticsContextQuery>(
+        relayEnvironment,
+        AnalayticsContextQueryNode,
+        {},
+        { fetchPolicy: 'store-or-network' }
+      )
+        .toPromise()
+        .then((query) => {
+          const userId = query?.viewer?.user?.dbid;
+
+          // don't track unauthenticated users
+          if (!userId) {
+            return;
+          }
+
+          _track(eventName, eventProps, userId);
+        });
+    },
+    [relayEnvironment]
+  );
 
   return <AnalyticsContext.Provider value={handleTrack}>{children}</AnalyticsContext.Provider>;
 });

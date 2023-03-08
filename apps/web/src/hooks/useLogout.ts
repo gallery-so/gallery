@@ -3,12 +3,13 @@ import { graphql } from 'react-relay';
 
 import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 import { RelayResetContext } from '~/contexts/RelayResetContext';
-import { AuthContextLogoutMutation } from '~/generated/AuthContextLogoutMutation.graphql';
+import { useLogoutMutation } from '~/generated/useLogoutMutation.graphql';
 import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
+
 export const useLogout = () => {
-  const [logout] = usePromisifiedMutation<AuthContextLogoutMutation>(
+  const [logout] = usePromisifiedMutation<useLogoutMutation>(
     graphql`
-      mutation AuthContextLogoutMutation {
+      mutation useLogoutMutation {
         logout {
           __typename
         }
