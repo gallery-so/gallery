@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { SearchResultsQuery } from '~/generated/SearchResultsQuery.graphql';
 
 import { VStack } from '../core/Spacer/Stack';
+import GallerySearchResultSection from './Gallery/GallerySearchResultSection';
 import { SearchFilterType } from './Search';
 import UserSearchResultSection from './User/UserSearchResultSection';
 
@@ -27,6 +28,16 @@ export default function SearchResults({ activeFilter, keyword, onChangeFilter }:
             }
           }
         }
+        searchGalleries(query: $query) {
+          __typename
+          ... on SearchGalleriesPayload {
+            __typename
+            results {
+              __typename
+              ...GallerySearchResultSectionFragment
+            }
+          }
+        }
       }
     `,
     { query: keyword }
@@ -42,6 +53,15 @@ export default function SearchResults({ activeFilter, keyword, onChangeFilter }:
           isShowAll={activeFilter === 'curator'}
         />
       )}
+      {query?.searchGalleries?.__typename === 'SearchGalleriesPayload' &&
+        query?.searchGalleries?.results && (
+          <GallerySearchResultSection
+            title="galleries"
+            queryRef={query?.searchGalleries?.results}
+            onChangeFilter={onChangeFilter}
+            isShowAll={activeFilter === 'gallery'}
+          />
+        )}
     </StyledSearchResultContainer>
   );
 }
