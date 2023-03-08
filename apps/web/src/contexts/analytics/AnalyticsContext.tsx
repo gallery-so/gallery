@@ -59,7 +59,7 @@ export const useTrack = () => {
 
 type Props = { children: ReactNode };
 
-const AnalayticsContextQueryNode = graphql`
+const AnalyticsContextQueryNode = graphql`
   query AnalyticsContextQuery {
     viewer {
       ... on Viewer {
@@ -77,7 +77,7 @@ const AnalyticsProvider = memo(({ children }: Props) => {
   useEffect(() => {
     fetchQuery<AnalyticsContextQuery>(
       relayEnvironment,
-      AnalayticsContextQueryNode,
+      AnalyticsContextQueryNode,
       {},
       { fetchPolicy: 'store-or-network' }
     )
@@ -98,7 +98,7 @@ const AnalyticsProvider = memo(({ children }: Props) => {
     (eventName, eventProps = {}) => {
       fetchQuery<AnalyticsContextQuery>(
         relayEnvironment,
-        AnalayticsContextQueryNode,
+        AnalyticsContextQueryNode,
         {},
         { fetchPolicy: 'store-or-network' }
       )
