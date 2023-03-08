@@ -26,6 +26,8 @@ export const useLogout = () => {
       variables: {},
     });
 
+    // Wipe the relay cache and show the old content while
+    // the new content is loading in the background.
     startTransition(() => {
       hideDrawer();
       reset?.();
