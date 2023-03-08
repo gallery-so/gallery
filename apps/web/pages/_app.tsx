@@ -81,19 +81,17 @@ function Page({ Component, pageProps }: AppProps) {
         relayEnvironment={relayEnvironment}
         globalLayoutContextPreloadedQuery={globalLayoutContextPreloadedQuery}
       >
-        <>
-          <GoogleAnalytics />
-          <Analytics
-            beforeSend={(event) => {
-              // Ignore sending noisy events related to /opengraph previews
-              if (event.url.includes('/opengraph')) {
-                return null;
-              }
-              return event;
-            }}
-          />
-          <Component {...pageProps} preloadedQuery={componentPreloadedQuery} />
-        </>
+        <GoogleAnalytics />
+        <Analytics
+          beforeSend={(event) => {
+            // Ignore sending noisy events related to /opengraph previews
+            if (event.url.includes('/opengraph')) {
+              return null;
+            }
+            return event;
+          }}
+        />
+        <Component {...pageProps} preloadedQuery={componentPreloadedQuery} />
       </AppProvider>
     </RelayResetContext.Provider>
   );
