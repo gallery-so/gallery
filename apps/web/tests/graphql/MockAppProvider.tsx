@@ -1,11 +1,10 @@
 import { useRouter } from 'next/router';
 import { PropsWithChildren, useState } from 'react';
 
+import AppProvider from '~/contexts/AppProvider';
 import AuthProvider from '~/contexts/auth/AuthContext';
-
-import AppProvider from '../../src/contexts/AppProvider';
-import GlobalLayoutContextProvider from '../../src/contexts/globalLayout/GlobalLayoutContext';
-import { createRelayEnvironmentFromRecords } from '../../src/contexts/relay/RelayProvider';
+import GlobalLayoutContextProvider from '~/contexts/globalLayout/GlobalLayoutContext';
+import { createRelayEnvironmentFromRecords } from '~/contexts/relay/RelayProvider';
 
 export function MockAppProvider({ children }: PropsWithChildren) {
   const [relayEnvironment] = useState(() => createRelayEnvironmentFromRecords({}));
