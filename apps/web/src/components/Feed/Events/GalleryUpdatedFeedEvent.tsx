@@ -9,9 +9,9 @@ import { BaseM } from '~/components/core/Text/Text';
 import { NonRecursiveFeedEventData } from '~/components/Feed/FeedEventData';
 import { FeedMode } from '~/components/Feed/types';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
-import { ReportingErrorBoundary } from '~/contexts/boundary/ReportingErrorBoundary';
 import { GalleryUpdatedFeedEventFragment$key } from '~/generated/GalleryUpdatedFeedEventFragment.graphql';
 import { GalleryUpdatedFeedEventQueryFragment$key } from '~/generated/GalleryUpdatedFeedEventQueryFragment.graphql';
+import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import { getTimeSince } from '~/utils/time';
 
 import { StyledCaptionContainer } from './CollectionCreatedFeedEvent';
@@ -62,7 +62,6 @@ export default function GalleryUpdatedFeedEvent({
   const query = useFragment(
     graphql`
       fragment GalleryUpdatedFeedEventQueryFragment on Query {
-        ...HoverCardOnUsernameFollowFragment
         ...FeedEventDataNonRecursiveQueryFragment
       }
     `,
@@ -86,7 +85,7 @@ export default function GalleryUpdatedFeedEvent({
         <StyledEventHeader>
           <HStack gap={4} inline>
             <BaseM>
-              <HoverCardOnUsername userRef={event.owner} queryRef={query} /> updated{' '}
+              <HoverCardOnUsername userRef={event.owner} /> updated{' '}
               <Link href={galleryPagePath} passHref legacyBehavior>
                 <StyledEventLabel>{event?.gallery?.name || 'their gallery'}</StyledEventLabel>
               </Link>

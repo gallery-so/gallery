@@ -9,7 +9,7 @@ import isProduction from '~/utils/isProduction';
 import AnalyticsProvider from './analytics/AnalyticsContext';
 import AuthProvider from './auth/AuthContext';
 import Boundary from './boundary/Boundary';
-import ErrorReportingProvider from './errorReporting/ErrorReportingContext';
+import { WebErrorReportingProvider } from './errorReporting/WebErrorReportingProvider';
 import GlobalLayoutContextProvider from './globalLayout/GlobalLayoutContext';
 import SidebarDrawerProvider from './globalLayout/GlobalSidebar/SidebarDrawerContext';
 import ModalProvider from './modal/ModalContext';
@@ -30,7 +30,7 @@ export default function AppProvider({ children, relayEnvironment }: Props) {
         <RelayEnvironmentProvider environment={relayEnvironment}>
           <AuthProvider>
             <AnalyticsProvider>
-              <ErrorReportingProvider>
+              <WebErrorReportingProvider>
                 <SwrProvider>
                   <GalleryNavigationProvider>
                     <NftErrorProvider>
@@ -47,7 +47,7 @@ export default function AppProvider({ children, relayEnvironment }: Props) {
                     </NftErrorProvider>
                   </GalleryNavigationProvider>
                 </SwrProvider>
-              </ErrorReportingProvider>
+              </WebErrorReportingProvider>
             </AnalyticsProvider>
           </AuthProvider>
         </RelayEnvironmentProvider>

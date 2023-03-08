@@ -1,5 +1,7 @@
 schema: ../../schema.graphql
-documents: ./src/**/*.{ts,tsx}
+documents:
+  - ./src/**/*.{ts,tsx}
+  - ../../packages/shared/src/**/*.{ts,tsx}
 generates:
   ./__generated__/graphql-codegen/enums.ts:
     config:

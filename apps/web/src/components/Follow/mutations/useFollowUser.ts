@@ -1,29 +1,49 @@
 import { useCallback } from 'react';
-import { graphql } from 'react-relay';
+import { graphql, useFragment } from 'react-relay';
 
-import { FollowButtonUserFragment$data } from '~/generated/FollowButtonUserFragment.graphql';
-import {
-  useFollowUserMutation,
-  useFollowUserMutation$data,
-} from '~/generated/useFollowUserMutation.graphql';
+import { useFollowUserFragment$key } from '~/generated/useFollowUserFragment.graphql';
+import { useFollowUserMutation } from '~/generated/useFollowUserMutation.graphql';
 import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 
-export default function useFollowUser() {
+type useFollowUserArgs = {
+  queryRef: useFollowUserFragment$key;
+};
+
+export default function useFollowUser({ queryRef }: useFollowUserArgs) {
+  const query = useFragment(
+    graphql`
+      fragment useFollowUserFragment on Query {
+        viewer {
+          ... on Viewer {
+            id
+            user {
+              id
+              following {
+                id
+              }
+            }
+          }
+        }
+      }
+    `,
+    queryRef
+  );
+
   const [followUserMutate] = usePromisifiedMutation<useFollowUserMutation>(
     graphql`
-      mutation useFollowUserMutation($userId: DBID!) {
+      mutation useFollowUserMutation($userId: DBID!) @raw_response_type {
         followUser(userId: $userId) {
           __typename
 
           ... on FollowUserPayload {
-            user @required(action: THROW) {
+            viewer {
               __typename
-              id
-              followers {
+              user {
+                __typename
                 id
-              }
-              following {
-                id
+                following {
+                  id
+                }
               }
             }
           }
@@ -42,24 +62,25 @@ export default function useFollowUser() {
   );
 
   return useCallback(
-    async (
-      userId: string,
-      followerIds: FollowButtonUserFragment$data['followers'],
-      followingIds: FollowButtonUserFragment$data['following']
-    ) => {
-      const optimisticResponse: useFollowUserMutation$data = {
-        followUser: {
-          __typename: 'FollowUserPayload',
-          user: {
-            __typename: 'GalleryUser',
-            id: `GalleryUser:${userId}`,
-            followers: followerIds,
-            following: followingIds,
+    async (followeeId: string) => {
+      await followUserMutate({
+        optimisticResponse: {
+          followUser: {
+            __typename: 'FollowUserPayload',
+            viewer: {
+              __typename: 'Viewer',
+              id: query.viewer?.id as string,
+              user: {
+                __typename: 'GalleryUser',
+                id: query.viewer?.user?.id as string,
+                following: [...(query.viewer?.user?.following ?? []), { id: followeeId }],
+              },
+            },
           },
         },
-      };
-      await followUserMutate({ optimisticResponse, variables: { userId: userId } });
+        variables: { userId: followeeId },
+      });
     },
-    [followUserMutate]
+    [followUserMutate, query.viewer?.id, query.viewer?.user?.following, query.viewer?.user?.id]
   );
 }

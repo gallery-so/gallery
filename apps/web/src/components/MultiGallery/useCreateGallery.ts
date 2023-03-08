@@ -2,9 +2,9 @@ import { useRouter } from 'next/router';
 import { useCallback } from 'react';
 import { graphql } from 'relay-runtime';
 
-import { ValidationError } from '~/errors/ValidationError';
 import { useCreateGalleryMutation } from '~/generated/useCreateGalleryMutation.graphql';
 import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
+import { ValidationError } from '~/shared/errors/ValidationError';
 
 export default function useCreateGallery() {
   const router = useRouter();

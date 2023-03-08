@@ -6,19 +6,17 @@ import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { UserFollowedYouEventEventFragment$key } from '~/generated/UserFollowedYouEventEventFragment.graphql';
-import { UserFollowedYouEventEventQueryFragment$key } from '~/generated/UserFollowedYouEventEventQueryFragment.graphql';
 import { UserFollowedYouEventFragment$key } from '~/generated/UserFollowedYouEventFragment.graphql';
 import { getTimeSince } from '~/utils/time';
 
 import { StyledEvent, StyledEventHeader, StyledTime } from './EventStyles';
 
 type Props = {
-  queryRef: UserFollowedYouEventEventQueryFragment$key;
   eventRef: UserFollowedYouEventEventFragment$key;
   followInfoRef: UserFollowedYouEventFragment$key;
 };
 
-export default function UserFollowedYouEvent({ followInfoRef, eventRef, queryRef }: Props) {
+export default function UserFollowedYouEvent({ followInfoRef, eventRef }: Props) {
   const event = useFragment(
     graphql`
       fragment UserFollowedYouEventEventFragment on UserFollowedUsersFeedEventData {
@@ -40,15 +38,6 @@ export default function UserFollowedYouEvent({ followInfoRef, eventRef, queryRef
     followInfoRef
   );
 
-  const query = useFragment(
-    graphql`
-      fragment UserFollowedYouEventEventQueryFragment on Query {
-        ...HoverCardOnUsernameFollowFragment
-      }
-    `,
-    queryRef
-  );
-
   return (
     <>
       <StyledEvent>
@@ -56,7 +45,7 @@ export default function UserFollowedYouEvent({ followInfoRef, eventRef, queryRef
           <StyledEventHeader>
             <HStack gap={4} inline>
               <BaseM>
-                <HoverCardOnUsername userRef={event.owner} queryRef={query} /> followed you{' '}
+                <HoverCardOnUsername userRef={event.owner} /> followed you{' '}
                 {followInfo.followedBack && 'back'}
               </BaseM>
               <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>

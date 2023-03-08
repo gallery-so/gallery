@@ -4,12 +4,12 @@ import { graphql, useFragment } from 'react-relay';
 import { SelectorStoreUpdater } from 'relay-runtime';
 import styled from 'styled-components';
 
-import { AdditionalContext, useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { EmailFormFragment$key } from '~/generated/EmailFormFragment.graphql';
 import { EmailFormMutation } from '~/generated/EmailFormMutation.graphql';
 import useDebounce from '~/hooks/useDebounce';
 import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
+import { AdditionalContext, useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { EMAIL_FORMAT } from '~/utils/regex';
 
 import { Button } from '../core/Button/Button';

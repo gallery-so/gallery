@@ -20,49 +20,58 @@ type Props = {
   queryRef: FollowButtonQueryFragment$key;
   userRef: FollowButtonUserFragment$key;
   className?: string;
+  source?: string; // where the FollowButton is being used, for analytics
 };
 
-export default function FollowButton({ queryRef, userRef, className }: Props) {
+export default function FollowButton({ queryRef, userRef, className, source }: Props) {
   const loggedInUserQuery = useFragment(
     graphql`
       fragment FollowButtonQueryFragment on Query {
+        viewer {
+          ... on Viewer {
+            user {
+              dbid
+              following @required(action: THROW) {
+                id @required(action: THROW)
+              }
+            }
+          }
+        }
+
         ...useLoggedInUserIdFragment
+        ...useFollowUserFragment
+        ...useUnfollowUserFragment
       }
     `,
     queryRef
   );
 
-  const user = useFragment(
+  const userToFollow = useFragment(
     graphql`
       fragment FollowButtonUserFragment on GalleryUser {
         id
         dbid
         username
-        following @required(action: THROW) {
-          id @required(action: THROW)
-        }
-        followers @required(action: THROW) {
-          id @required(action: THROW)
-        }
       }
     `,
     userRef
   );
 
   const loggedInUserId = useLoggedInUserId(loggedInUserQuery);
+  const followingList = loggedInUserQuery.viewer?.user?.following;
 
-  const followerIds = useMemo(
-    () => new Set(user.followers.map((follower: { id: string } | null) => follower?.id)),
-    [user.followers]
-  );
+  const isFollowing = useMemo(() => {
+    if (!followingList) {
+      return false;
+    }
+    const followingIds = new Set(
+      followingList.map((following: { id: string } | null) => following?.id)
+    );
+    return followingIds.has(userToFollow.id);
+  }, [followingList, userToFollow.id]);
 
-  const isFollowing = useMemo(
-    () => !!loggedInUserId && followerIds.has(loggedInUserId),
-    [followerIds, loggedInUserId]
-  );
-
-  const followUser = useFollowUser();
-  const unfollowUser = useUnfollowUser();
+  const followUser = useFollowUser({ queryRef: loggedInUserQuery });
+  const unfollowUser = useUnfollowUser({ queryRef: loggedInUserQuery });
   const { pushToast } = useToastActions();
   const showAuthModal = useAuthModal('sign-in');
   const track = useTrack();
@@ -70,33 +79,41 @@ export default function FollowButton({ queryRef, userRef, className }: Props) {
   const handleFollowClick = useCallback(async () => {
     if (!loggedInUserId) {
       showAuthModal();
+
       return;
     }
 
     track('Follow Click', {
-      followee: user.dbid,
+      followee: userToFollow.dbid,
+      source,
     });
 
-    const optimisticNewFollowersList = [{ id: loggedInUserId }, ...user.followers];
-    await followUser(user.dbid, optimisticNewFollowersList, user.following);
-    pushToast({ message: `You followed ${user.username}.` });
-  }, [loggedInUserId, user, track, followUser, pushToast, showAuthModal]);
+    await followUser(userToFollow.dbid);
+    pushToast({ message: `You followed ${userToFollow.username}.` });
+  }, [
+    loggedInUserId,
+    track,
+    userToFollow.dbid,
+    userToFollow.username,
+    source,
+    followUser,
+    pushToast,
+    showAuthModal,
+  ]);
 
   const handleUnfollowClick = useCallback(async () => {
     track('Unfollow Click', {
-      followee: user.dbid,
+      followee: userToFollow.dbid,
     });
-    const optimisticNewFollowersList = user.followers.filter(
-      (follower: { id: string } | null) => follower?.id !== loggedInUserId
-    );
-    await unfollowUser(user.dbid, optimisticNewFollowersList, user.following);
-    pushToast({ message: `You unfollowed ${user.username}.` });
-  }, [user, track, unfollowUser, pushToast, loggedInUserId]);
 
-  const isAuthenticatedUsersPage = loggedInUserId === user?.id;
+    await unfollowUser(userToFollow.dbid);
+    pushToast({ message: `You unfollowed ${userToFollow.username}.` });
+  }, [track, userToFollow.dbid, userToFollow.username, unfollowUser, pushToast]);
+
+  const isSelf = loggedInUserId === userToFollow?.id;
 
   const followChip = useMemo(() => {
-    if (isAuthenticatedUsersPage) {
+    if (isSelf) {
       return null;
     } else if (isFollowing) {
       return (
@@ -117,9 +134,8 @@ export default function FollowButton({ queryRef, userRef, className }: Props) {
           Follow
         </FollowChip>
       );
-      // show follow button
     }
-  }, [className, handleFollowClick, handleUnfollowClick, isAuthenticatedUsersPage, isFollowing]);
+  }, [className, handleFollowClick, handleUnfollowClick, isSelf, isFollowing]);
 
   const handleWrapperClick = useCallback<MouseEventHandler>((event) => {
     // We want to make sure clicking these buttons doesn't bubble up to
@@ -183,7 +199,7 @@ const FollowingChipContainer = styled.div`
     opacity: 0;
   }
 
-  @media only screen and ${breakpoints.desktop} {
+  @media only screen and ${breakpoints.tablet} {
     :hover {
       ${FollowingChip} {
         opacity: 0;

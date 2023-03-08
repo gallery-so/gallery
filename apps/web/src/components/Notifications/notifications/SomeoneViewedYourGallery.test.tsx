@@ -9,6 +9,7 @@ import { SomeoneViewedYourGalleryTestQuery } from '~/generated/SomeoneViewedYour
 import { SomeoneViewedYourGalleryTestQueryQuery } from '~/tests/__generated__/graphql-codegen/operations';
 import { mockGraphqlQuery } from '~/tests/graphql/mockGraphqlQuery';
 import { mockProviderQueries } from '~/tests/graphql/mockProviderQueries';
+import noop from '~/utils/noop';
 
 function Fixture() {
   const query = useLazyLoadQuery<SomeoneViewedYourGalleryTestQuery>(
@@ -20,15 +21,13 @@ function Fixture() {
             ...SomeoneViewedYourGalleryFragment
           }
         }
-
-        ...SomeoneViewedYourGalleryQueryFragment
       }
     `,
     {}
   );
 
   if (query.node?.__typename === 'SomeoneViewedYourGalleryNotification') {
-    return <SomeoneViewedYourGallery notificationRef={query.node} queryRef={query} />;
+    return <SomeoneViewedYourGallery notificationRef={query.node} onClose={noop} />;
   }
 
   throw new Error('Yikes');
@@ -41,7 +40,6 @@ type MockResponseArgs = {
 
 function mockResponse({ userViews, nonUserViews }: MockResponseArgs) {
   const result: SomeoneViewedYourGalleryTestQueryQuery = {
-    viewer: null,
     node: {
       __typename: 'SomeoneViewedYourGalleryNotification',
       id: 'SomeoneViewedYourGalleryNotification:notification-1',

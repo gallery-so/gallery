@@ -14,7 +14,6 @@ import { BaseM } from '~/components/core/Text/Text';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { CollectorsNoteAddedToCollectionFeedEventFragment$key } from '~/generated/CollectorsNoteAddedToCollectionFeedEventFragment.graphql';
-import { CollectorsNoteAddedToCollectionFeedEventQueryFragment$key } from '~/generated/CollectorsNoteAddedToCollectionFeedEventQueryFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { getTimeSince } from '~/utils/time';
 import unescape from '~/utils/unescape';
@@ -31,14 +30,12 @@ import {
 
 type Props = {
   eventDataRef: CollectorsNoteAddedToCollectionFeedEventFragment$key;
-  queryRef: CollectorsNoteAddedToCollectionFeedEventQueryFragment$key;
   isSubEvent?: boolean;
 };
 
 export default function CollectorsNoteAddedToCollectionFeedEvent({
   eventDataRef,
   isSubEvent = false,
-  queryRef,
 }: Props) {
   const event = useFragment(
     graphql`
@@ -62,15 +59,6 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({
       }
     `,
     eventDataRef
-  );
-
-  const query = useFragment(
-    graphql`
-      fragment CollectorsNoteAddedToCollectionFeedEventQueryFragment on Query {
-        ...HoverCardOnUsernameFollowFragment
-      }
-    `,
-    queryRef
   );
 
   const collectionPagePath: Route = {
@@ -107,8 +95,8 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({
         <VStack gap={isSubEvent ? 0 : 16}>
           <StyledEventHeader>
             <StyledEventText isSubEvent={isSubEvent}>
-              {!isSubEvent && <HoverCardOnUsername userRef={event.owner} queryRef={query} />} added
-              a description to {collectionName ? ' ' : ' their collection'}
+              {!isSubEvent && <HoverCardOnUsername userRef={event.owner} />} added a description to{' '}
+              {collectionName ? ' ' : ' their collection'}
               <Link href={collectionPagePath} passHref legacyBehavior>
                 <StyledEventLabel>{collectionName}</StyledEventLabel>
               </Link>

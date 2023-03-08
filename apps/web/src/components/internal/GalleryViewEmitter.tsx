@@ -2,11 +2,11 @@ import { Suspense, useEffect } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import { GalleryViewEmitterFragment$key } from '~/generated/GalleryViewEmitterFragment.graphql';
 import { GalleryViewEmitterMutation } from '~/generated/GalleryViewEmitterMutation.graphql';
 import { GalleryViewEmitterWithSuspenseFragment$key } from '~/generated/GalleryViewEmitterWithSuspenseFragment.graphql';
 import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
+import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 
 type GalleryViewEmitterProps = {
   queryRef: GalleryViewEmitterFragment$key;

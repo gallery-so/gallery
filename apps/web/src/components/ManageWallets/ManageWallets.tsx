@@ -137,7 +137,7 @@ function ManageWallets({
         </VStack>
       </VStack>
       <StyledButton onClick={handleSubmit} disabled={addWalletDisabled} variant="secondary">
-        Add new wallet
+        Add another
       </StyledButton>
     </VStack>
   );

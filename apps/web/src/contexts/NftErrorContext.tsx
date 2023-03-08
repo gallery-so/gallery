@@ -12,10 +12,10 @@ import { useRelayEnvironment } from 'react-relay';
 import { getFragmentResourceForEnvironment } from 'react-relay/lib/relay-hooks/FragmentResource';
 import { graphql } from 'relay-runtime';
 
-import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { NftErrorContextRetryMutation } from '~/generated/NftErrorContextRetryMutation.graphql';
 import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
+import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 
 type TokenErrorState = {
   isFailed: boolean;

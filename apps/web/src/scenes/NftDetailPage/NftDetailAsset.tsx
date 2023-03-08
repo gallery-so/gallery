@@ -7,12 +7,12 @@ import { NftFailureBoundary } from '~/components/NftFailureFallback/NftFailureBo
 import { NftFailureFallback } from '~/components/NftFailureFallback/NftFailureFallback';
 import { GLOBAL_FOOTER_HEIGHT } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
 import { useContentState } from '~/contexts/shimmer/ShimmerContext';
-import { CouldNotRenderNftError } from '~/errors/CouldNotRenderNftError';
 import { NftDetailAssetComponentFragment$key } from '~/generated/NftDetailAssetComponentFragment.graphql';
 import { NftDetailAssetFragment$key } from '~/generated/NftDetailAssetFragment.graphql';
 import { NftDetailAssetTokenFragment$key } from '~/generated/NftDetailAssetTokenFragment.graphql';
 import { useNftRetry } from '~/hooks/useNftRetry';
 import { useBreakpoint } from '~/hooks/useWindowSize';
+import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
 import { getBackgroundColorOverrideForContract } from '~/utils/token';
 
 import NftDetailAnimation from './NftDetailAnimation';

@@ -1,4 +1,4 @@
-import { ErrorWithSentryMetadata } from '~/errors/ErrorWithSentryMetadata';
+import { ErrorWithSentryMetadata } from './ErrorWithSentryMetadata';
 
 export class TriedToRenderUnsupportedFeedEvent extends ErrorWithSentryMetadata {
   public eventId: string;
