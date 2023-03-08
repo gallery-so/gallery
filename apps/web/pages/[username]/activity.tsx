@@ -1,6 +1,6 @@
 import { GetServerSideProps } from 'next';
-import { useLazyLoadQuery } from 'react-relay';
-import { fetchQuery, graphql } from 'relay-runtime';
+import { loadQuery, PreloadedQuery, usePreloadedQuery } from 'react-relay';
+import { graphql } from 'relay-runtime';
 
 import { ITEMS_PER_PAGE, MAX_PIECES_DISPLAYED_PER_FEED_EVENT } from '~/components/Feed/constants';
 import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/NotesModal/NotesModal';
@@ -13,11 +13,6 @@ import GalleryRoute from '~/scenes/_Router/GalleryRoute';
 import UserActivityPage from '~/scenes/UserActivityPage/UserActivityPage';
 import { PreloadQueryArgs } from '~/types/PageComponentPreloadQuery';
 import { openGraphMetaTags } from '~/utils/openGraphMetaTags';
-
-type UserActivityProps = MetaTagProps & {
-  username: string;
-  eventId: string | null;
-};
 
 const activityQueryNode = graphql`
   query activityQuery(
@@ -38,14 +33,13 @@ const activityQueryNode = graphql`
 
 const NON_EXISTENT_FEED_EVENT_ID = 'some-non-existent-feed-event-id';
 
-export default function UserFeed({ username, eventId }: UserActivityProps) {
-  const query = useLazyLoadQuery<activityQuery>(activityQueryNode, {
-    username: username,
-    viewerLast: ITEMS_PER_PAGE,
-    interactionsFirst: NOTES_PER_PAGE,
-    topEventId: eventId ?? NON_EXISTENT_FEED_EVENT_ID,
-    visibleTokensPerFeedEvent: MAX_PIECES_DISPLAYED_PER_FEED_EVENT,
-  });
+type UserActivityProps = MetaTagProps & {
+  username: string;
+  preloadedQuery: PreloadedQuery<activityQuery>;
+};
+
+export default function UserFeed({ username, preloadedQuery }: UserActivityProps) {
+  const query = usePreloadedQuery<activityQuery>(activityQueryNode, preloadedQuery);
 
   return (
     <GalleryRoute
@@ -63,7 +57,7 @@ export default function UserFeed({ username, eventId }: UserActivityProps) {
 
 UserFeed.preloadQuery = ({ relayEnvironment, query }: PreloadQueryArgs) => {
   if (query.username && typeof query.username === 'string' && !Array.isArray(query.eventId)) {
-    fetchQuery<activityQuery>(
+    return loadQuery<activityQuery>(
       relayEnvironment,
       activityQueryNode,
       {
@@ -74,16 +68,14 @@ UserFeed.preloadQuery = ({ relayEnvironment, query }: PreloadQueryArgs) => {
         visibleTokensPerFeedEvent: MAX_PIECES_DISPLAYED_PER_FEED_EVENT,
       },
       { fetchPolicy: 'store-or-network' }
-    ).toPromise();
+    );
   }
 };
 
-export const getServerSideProps: GetServerSideProps<UserActivityProps> = async ({
-  params,
-  query,
-}) => {
+export const getServerSideProps: GetServerSideProps<
+  Omit<UserActivityProps, 'preloadedQuery'>
+> = async ({ params }) => {
   const username = params?.username ? (params.username as string) : undefined;
-  const eventId = (query?.eventId ?? null) as string | null;
 
   if (!username)
     return {
@@ -95,7 +87,6 @@ export const getServerSideProps: GetServerSideProps<UserActivityProps> = async (
 
   return {
     props: {
-      eventId,
       username,
       metaTags: username
         ? openGraphMetaTags({

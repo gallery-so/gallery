@@ -1,9 +1,11 @@
-import { Environment, RelayEnvironmentProvider } from 'react-relay';
+import { Environment, PreloadedQuery, RelayEnvironmentProvider } from 'react-relay';
 
 import Debugger from '~/components/Debugger/Debugger';
 import { GalleryNavigationProvider } from '~/contexts/navigation/GalleryNavigationProvider';
 import { NftErrorProvider } from '~/contexts/NftErrorContext';
 import { SyncTokensLockProvider } from '~/contexts/SyncTokensLockContext';
+import { AuthContextFetchUserQuery } from '~/generated/AuthContextFetchUserQuery.graphql';
+import { GlobalLayoutContextQuery } from '~/generated/GlobalLayoutContextQuery.graphql';
 import isProduction from '~/utils/isProduction';
 
 import AnalyticsProvider from './analytics/AnalyticsContext';
@@ -19,16 +21,23 @@ import ToastProvider from './toast/ToastContext';
 type Props = {
   children: React.ReactNode;
   relayEnvironment: Environment;
+  authProviderPreloadedQuery: PreloadedQuery<AuthContextFetchUserQuery>;
+  globalLayoutContextPreloadedQuery: PreloadedQuery<GlobalLayoutContextQuery>;
 };
 
 const isProd = isProduction();
 
-export default function AppProvider({ children, relayEnvironment }: Props) {
+export default function AppProvider({
+  children,
+  relayEnvironment,
+  authProviderPreloadedQuery,
+  globalLayoutContextPreloadedQuery,
+}: Props) {
   return (
     <Boundary>
       <ToastProvider>
         <RelayEnvironmentProvider environment={relayEnvironment}>
-          <AuthProvider>
+          <AuthProvider preloadedQuery={authProviderPreloadedQuery}>
             <AnalyticsProvider>
               <WebErrorReportingProvider>
                 <SwrProvider>
@@ -37,7 +46,9 @@ export default function AppProvider({ children, relayEnvironment }: Props) {
                       <ModalProvider>
                         <SidebarDrawerProvider>
                           <SyncTokensLockProvider>
-                            <GlobalLayoutContextProvider>
+                            <GlobalLayoutContextProvider
+                              preloadedQuery={globalLayoutContextPreloadedQuery}
+                            >
                               {isProd ? null : <Debugger />}
                               {children}
                             </GlobalLayoutContextProvider>

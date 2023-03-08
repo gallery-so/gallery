@@ -1,8 +1,8 @@
 import { GetServerSideProps } from 'next';
 import { route } from 'nextjs-routes';
 import { PropsWithChildren } from 'react';
-import { useLazyLoadQuery } from 'react-relay';
-import { fetchQuery, graphql } from 'relay-runtime';
+import { loadQuery, PreloadedQuery, usePreloadedQuery } from 'react-relay';
+import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import breakpoints, { pageGutter } from '~/components/core/breakpoints';
@@ -72,10 +72,11 @@ const GalleryPageSpacingContainer = styled.div<{ navbarHeight: number }>`
 
 type UserGalleryProps = MetaTagProps & {
   username: string;
+  preloadedQuery: PreloadedQuery<UsernameQuery>;
 };
 
-export default function UserGallery({ username }: UserGalleryProps) {
-  const query = useLazyLoadQuery<UsernameQuery>(UsernameQueryNode, { username });
+export default function UserGallery({ username, preloadedQuery }: UserGalleryProps) {
+  const query = usePreloadedQuery<UsernameQuery>(UsernameQueryNode, preloadedQuery);
 
   useVerifyEmailOnPage(query);
   useOpenTwitterModal(query);
@@ -106,18 +107,20 @@ export default function UserGallery({ username }: UserGalleryProps) {
 
 UserGallery.preloadQuery = ({ relayEnvironment, query }: PreloadQueryArgs) => {
   if (query.username && typeof query.username === 'string') {
-    fetchQuery<UsernameQuery>(
+    return loadQuery<UsernameQuery>(
       relayEnvironment,
       UsernameQueryNode,
       {
         username: query.username,
       },
       { fetchPolicy: 'store-or-network' }
-    ).toPromise();
+    );
   }
 };
 
-export const getServerSideProps: GetServerSideProps<UserGalleryProps> = async ({ params }) => {
+export const getServerSideProps: GetServerSideProps<
+  Omit<UserGalleryProps, 'preloadedQuery'>
+> = async ({ params }) => {
   const username = params?.username ? (params.username as string) : undefined;
 
   if (!username)

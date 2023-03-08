@@ -9,9 +9,17 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
-import { fetchQuery, graphql, useRelayEnvironment } from 'react-relay';
+import {
+  fetchQuery,
+  graphql,
+  loadQuery,
+  PreloadedQuery,
+  usePreloadedQuery,
+  useRelayEnvironment,
+} from 'react-relay';
 
 import FullPageLoader from '~/components/core/Loader/FullPageLoader';
 import { _identify } from '~/contexts/analytics/AnalyticsContext';
@@ -96,16 +104,25 @@ const AuthContextFetchUserQueryNode = graphql`
   }
 `;
 
-const useImperativelyFetchUser = () => {
+const useImperativelyFetchUser = (preloadedQuery: PreloadedQuery<AuthContextFetchUserQuery>) => {
+  const hasUsedPreloaded = useRef(false);
   const relayEnvironment = useRelayEnvironment();
 
-  return useCallback(async () => {
-    return await fetchQuery<AuthContextFetchUserQuery>(
-      relayEnvironment,
-      AuthContextFetchUserQueryNode,
-      {}
-    ).toPromise();
-  }, [relayEnvironment]);
+  const query = usePreloadedQuery(AuthContextFetchUserQueryNode, preloadedQuery);
+
+  return useCallback(() => {
+    if (hasUsedPreloaded.current) {
+      return fetchQuery<AuthContextFetchUserQuery>(
+        relayEnvironment,
+        AuthContextFetchUserQueryNode,
+        {},
+        { fetchPolicy: 'network-only' }
+      ).toPromise();
+    } else {
+      hasUsedPreloaded.current = true;
+      return query;
+    }
+  }, [query, relayEnvironment]);
 };
 
 const useLogout = () => {
@@ -143,9 +160,9 @@ const useLogout = () => {
   }, [logout]);
 };
 
-type Props = { children: ReactNode };
+type Props = { children: ReactNode; preloadedQuery: PreloadedQuery<AuthContextFetchUserQuery> };
 
-const AuthProvider = memo(({ children }: Props) => {
+const AuthProvider = memo(({ children, preloadedQuery }: Props) => {
   const [authState, setAuthState] = useState<AuthState>(UNKNOWN);
 
   /**
@@ -172,7 +189,7 @@ const AuthProvider = memo(({ children }: Props) => {
     setLoggedOut();
   }, [pushToast, setLoggedOut]);
 
-  const imperativelyFetchUser = useImperativelyFetchUser();
+  const imperativelyFetchUser = useImperativelyFetchUser(preloadedQuery);
 
   const handleLogin = useCallback(
     async (userId: string) => {
@@ -292,13 +309,13 @@ const AuthProvider = memo(({ children }: Props) => {
   );
 });
 
-AuthProvider.preloadQuery = async ({ relayEnvironment }: PreloadQueryArgs) => {
-  fetchQuery<AuthContextFetchUserQuery>(
+AuthProvider.preloadQuery = ({ relayEnvironment }: PreloadQueryArgs) => {
+  return loadQuery<AuthContextFetchUserQuery>(
     relayEnvironment,
     AuthContextFetchUserQueryNode,
     {},
     { fetchPolicy: 'store-or-network' }
-  ).toPromise();
+  );
 };
 
 AuthProvider.displayName = 'AuthProvider';
