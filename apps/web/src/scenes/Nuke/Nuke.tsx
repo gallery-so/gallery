@@ -4,16 +4,16 @@ import styled from 'styled-components';
 import { ButtonLink } from '~/components/core/Button/Button';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseXL } from '~/components/core/Text/Text';
-import { useAuthActions } from '~/contexts/auth/AuthContext';
+import { useLogout } from '~/hooks/useLogout';
 
 // Suggest a user visit this page if they're in a seriously broken state
 function Nuke() {
-  const { handleLogout } = useAuthActions();
+  const logout = useLogout();
 
   useEffect(() => {
-    handleLogout();
+    logout();
     localStorage.clear();
-  }, [handleLogout]);
+  }, [logout]);
 
   return (
     <StyledNuke gap={32}>
