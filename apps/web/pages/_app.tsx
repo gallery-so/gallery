@@ -98,16 +98,6 @@ const App: FC<AppProps> = (props) => {
     if (isProduction()) welcomeDoormat();
   }, []);
 
-  // const { query } = useRouter();
-
-  // // Kick off queries that would waterfall
-  // let pagePreloadedQuery: PreloadedQuery<any> | null;
-  // if (typeof window !== 'undefined') {
-  //   pagePreloadedQuery = Component.preloadQuery?.({ relayEnvironment, query });
-  //   GlobalLayoutContextProvider.preloadQuery?.({ relayEnvironment, query });
-  //   AuthProvider.preloadQuery?.({ relayEnvironment, query });
-  // }
-
   return (
     <>
       <Head>
