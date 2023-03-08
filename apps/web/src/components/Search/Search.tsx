@@ -8,8 +8,12 @@ import SearchFilter from './SearchFilter';
 import SearchInput from './SearchInput';
 import SearchResults from './SearchResults';
 
+export type SearchFilterType = 'curator' | 'gallery' | 'community' | null;
+
 export default function Search() {
   const [keyword, setKeyword] = useState('ja');
+
+  const [selectedFilter, setSelectedFilter] = useState<SearchFilterType>(null);
 
   const handleSearch = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setKeyword(event.target.value);
@@ -20,7 +24,8 @@ export default function Search() {
       <DrawerHeader>
         <SearchInput onChange={handleSearch} />
       </DrawerHeader>
-      <SearchFilter />
+
+      <SearchFilter activeFilter={selectedFilter} onChangeFilter={setSelectedFilter} />
 
       <StyledSearchContent gap={8}>
         {/* TODO: Add spinner or deferred value */}
