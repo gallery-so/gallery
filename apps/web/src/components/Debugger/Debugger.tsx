@@ -8,7 +8,6 @@ import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import ErrorText from '~/components/core/Text/ErrorText';
 import { TitleS } from '~/components/core/Text/Text';
 import { DEBUG_USERNAME_KEY } from '~/constants/storageKeys';
-import { useAuthActions } from '~/contexts/auth/AuthContext';
 import { DebuggerQuery } from '~/generated/DebuggerQuery.graphql';
 import useKeyDown from '~/hooks/useKeyDown';
 import useMultiKeyDown from '~/hooks/useMultiKeyDown';
@@ -66,19 +65,17 @@ const Debugger = () => {
   useMultiKeyDown(['Control', 'd'], handleToggleDebugger);
 
   const login = useDebugAuthLogin();
-  const { handleLogin: handleRegisterLogin } = useAuthActions();
 
   const handleLogin = useCallback(async () => {
     try {
-      const userId = await login({ asUsername: username });
-      await handleRegisterLogin(userId);
+      await login({ asUsername: username });
       setErrorMessage('');
     } catch (e: unknown) {
       if (e instanceof Error) {
         setErrorMessage(e.message);
       }
     }
-  }, [handleRegisterLogin, login, username]);
+  }, [login, username]);
 
   const handleUsernameChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {

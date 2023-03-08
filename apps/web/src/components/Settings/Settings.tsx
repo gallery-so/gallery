@@ -14,7 +14,7 @@ import EmailManager from '~/components/Email/EmailManager';
 import ManageWallets from '~/components/ManageWallets/ManageWallets';
 import TwitterSetting from '~/components/Twitter/TwitterSetting';
 import { GALLERY_DISCORD } from '~/constants/urls';
-import { useAuthActions } from '~/contexts/auth/AuthContext';
+import { useLogout } from '~/contexts/auth/AuthContext';
 import DrawerHeader from '~/contexts/globalLayout/GlobalSidebar/DrawerHeader';
 import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
@@ -170,11 +170,11 @@ function Settings({ newAddress, queryRef, onEthAddWalletSuccess, onTezosAddWalle
     return query.viewer?.user?.roles?.includes('EARLY_ACCESS');
   }, [query]);
 
-  const { handleLogout } = useAuthActions();
+  const logout = useLogout();
 
   const handleSignOutClick = useCallback(() => {
-    handleLogout();
-  }, [handleLogout]);
+    logout();
+  }, [logout]);
 
   const { hideDrawer } = useDrawerActions();
 

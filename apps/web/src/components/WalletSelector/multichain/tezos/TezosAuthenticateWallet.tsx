@@ -10,7 +10,6 @@ import {
   useTrackSignInError,
   useTrackSignInSuccess,
 } from '~/contexts/analytics/authUtil';
-import { useAuthActions } from '~/contexts/auth/AuthContext';
 import { useBeaconActions } from '~/contexts/beacon/BeaconContext';
 import { INITIAL, PendingState, PROMPT_SIGNATURE } from '~/types/Wallet';
 
@@ -31,8 +30,6 @@ export const TezosAuthenticateWallet = ({ reset }: Props) => {
   const messageHeaderText = `Connect with ${wallet || 'Tezos'} wallet`;
 
   const { getActiveAccount, requestSignature } = useBeaconActions();
-
-  const { handleLogin } = useAuthActions();
 
   const createNonce = useCreateNonce();
   const [loginOrRedirectToOnboarding] = useLoginOrRedirectToOnboarding();
@@ -81,12 +78,10 @@ export const TezosAuthenticateWallet = ({ reset }: Props) => {
 
       if (userExists && userId) {
         trackSignInSuccess('Tezos');
-        return handleLogin(userId);
       }
     },
     [
       createNonce,
-      handleLogin,
       loginOrRedirectToOnboarding,
       requestSignature,
       trackSignInAttempt,

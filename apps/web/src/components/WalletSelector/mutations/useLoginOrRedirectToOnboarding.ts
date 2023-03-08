@@ -1,7 +1,9 @@
 import { useRouter } from 'next/router';
-import { useCallback } from 'react';
+import { startTransition, useCallback, useContext } from 'react';
 import { graphql } from 'relay-runtime';
 
+import { useModalActions } from '~/contexts/modal/ModalContext';
+import { RelayResetContext } from '~/contexts/RelayResetContext';
 import {
   useLoginOrRedirectToOnboardingMutation,
   useLoginOrRedirectToOnboardingMutation$variables,
@@ -40,6 +42,8 @@ export default function useLoginOrRedirectToOnboarding() {
 
   const { push } = useRouter();
 
+  const { hideModal } = useModalActions();
+  const reset = useContext(RelayResetContext);
   const mutate = useCallback(
     async ({
       authMechanism,
@@ -56,6 +60,12 @@ export default function useLoginOrRedirectToOnboarding() {
         }
 
         if (result.__typename === 'LoginPayload') {
+          hideModal({ id: 'auth' });
+
+          startTransition(() => {
+            reset?.();
+          });
+
           return result.userId;
         }
 

@@ -10,7 +10,6 @@ import {
   useTrackSignInError,
   useTrackSignInSuccess,
 } from '~/contexts/analytics/authUtil';
-import { useAuthActions } from '~/contexts/auth/AuthContext';
 import { INITIAL, PendingState, PROMPT_SIGNATURE } from '~/types/Wallet';
 
 import useCreateNonce from '../mutations/useCreateNonce';
@@ -25,10 +24,8 @@ type Props = {
 export const EthereumAuthenticateWallet = ({ reset }: Props) => {
   const { address: account } = useAccount();
 
-  const [pendingState, setPendingState] = useState<PendingState>(INITIAL);
   const [error, setError] = useState<Error>();
-
-  const { handleLogin } = useAuthActions();
+  const [pendingState, setPendingState] = useState<PendingState>(INITIAL);
 
   const createNonce = useCreateNonce();
   const [loginOrRedirectToOnboarding] = useLoginOrRedirectToOnboarding();
@@ -71,10 +68,9 @@ export const EthereumAuthenticateWallet = ({ reset }: Props) => {
 
       if (userExists && userId) {
         trackSignInSuccess('Ethereum');
-        return await handleLogin(userId);
       }
     },
-    [trackSignInAttempt, createNonce, loginOrRedirectToOnboarding, trackSignInSuccess, handleLogin]
+    [trackSignInAttempt, createNonce, loginOrRedirectToOnboarding, trackSignInSuccess]
   );
 
   useEffect(() => {

@@ -9,7 +9,6 @@ import ErrorText from '~/components/core/Text/ErrorText';
 import { BaseM, TitleS } from '~/components/core/Text/Text';
 import { EmptyState } from '~/components/EmptyState/EmptyState';
 import { useTrackSignInSuccess } from '~/contexts/analytics/authUtil';
-import { useAuthActions } from '~/contexts/auth/AuthContext';
 import useMagicLogin from '~/hooks/useMagicLink';
 import { EMAIL_FORMAT } from '~/utils/regex';
 
@@ -22,7 +21,6 @@ type Props = {
 export default function MagicLinkLogin({ reset }: Props) {
   const sendMagicLink = useMagicLogin();
   const [loginOrRedirectToOnboarding] = useLoginOrRedirectToOnboarding();
-  const { handleLogin } = useAuthActions();
   const trackSignInSuccess = useTrackSignInSuccess();
 
   const [email, setEmail] = useState('');
@@ -62,7 +60,6 @@ export default function MagicLinkLogin({ reset }: Props) {
 
       if (userId) {
         trackSignInSuccess('Magic Link');
-        return await handleLogin(userId);
       } else {
         throw new Error('Invalid token');
       }
@@ -73,7 +70,7 @@ export default function MagicLinkLogin({ reset }: Props) {
       setIsAttemptingSignIn(false);
       setClickedSendLink(false);
     }
-  }, [email, handleLogin, loginOrRedirectToOnboarding, sendMagicLink, trackSignInSuccess]);
+  }, [email, loginOrRedirectToOnboarding, sendMagicLink, trackSignInSuccess]);
 
   const isValidEmail = useMemo(() => EMAIL_FORMAT.test(email), [email]);
 

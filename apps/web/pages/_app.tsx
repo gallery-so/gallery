@@ -6,14 +6,14 @@ import 'react-loading-skeleton/dist/skeleton.css';
 import { Analytics } from '@vercel/analytics/react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { ComponentType, FC, PropsWithChildren, useEffect, useState } from 'react';
+import { ComponentType, FC, PropsWithChildren, useCallback, useEffect, useState } from 'react';
 import { PreloadedQuery } from 'react-relay';
 
 import GoogleAnalytics from '~/components/GoogleAnalytics';
 import AppProvider from '~/contexts/AppProvider';
-import AuthProvider from '~/contexts/auth/AuthContext';
 import GlobalLayoutContext from '~/contexts/globalLayout/GlobalLayoutContext';
 import { createRelayEnvironmentFromRecords } from '~/contexts/relay/RelayProvider';
+import { RelayResetContext } from '~/contexts/RelayResetContext';
 import { PreloadQueryFn } from '~/types/PageComponentPreloadQuery';
 import isProduction from '~/utils/isProduction';
 import welcomeDoormat from '~/utils/welcomeDoormat';
@@ -55,41 +55,47 @@ type AppProps = {
 };
 
 function Page({ Component, pageProps }: AppProps) {
-  const [relayEnvironment] = useState(() => createRelayEnvironmentFromRecords({}));
+  const [relayEnvironment, setRelayEnvironment] = useState(() =>
+    createRelayEnvironmentFromRecords({})
+  );
 
   const { query } = useRouter();
 
   const componentPreloadedQuery = Component?.preloadQuery?.({ relayEnvironment, query });
-  const authProviderPreloadedQuery = AuthProvider.preloadQuery?.({ relayEnvironment, query });
   const globalLayoutContextPreloadedQuery = GlobalLayoutContext.preloadQuery?.({
     relayEnvironment,
     query,
   });
 
-  if (!authProviderPreloadedQuery || !globalLayoutContextPreloadedQuery) {
+  if (!globalLayoutContextPreloadedQuery) {
     throw new Error('Preloaded Queries were not returned from preloadQuery function');
   }
 
+  const resetRelayEnvironment = useCallback(() => {
+    setRelayEnvironment(createRelayEnvironmentFromRecords({}));
+  }, []);
+
   return (
-    <AppProvider
-      authProviderPreloadedQuery={authProviderPreloadedQuery}
-      globalLayoutContextPreloadedQuery={globalLayoutContextPreloadedQuery}
-      relayEnvironment={relayEnvironment}
-    >
-      <>
-        <GoogleAnalytics />
-        <Analytics
-          beforeSend={(event) => {
-            // Ignore sending noisy events related to /opengraph previews
-            if (event.url.includes('/opengraph')) {
-              return null;
-            }
-            return event;
-          }}
-        />
-        <Component {...pageProps} preloadedQuery={componentPreloadedQuery} />
-      </>
-    </AppProvider>
+    <RelayResetContext.Provider value={resetRelayEnvironment}>
+      <AppProvider
+        relayEnvironment={relayEnvironment}
+        globalLayoutContextPreloadedQuery={globalLayoutContextPreloadedQuery}
+      >
+        <>
+          <GoogleAnalytics />
+          <Analytics
+            beforeSend={(event) => {
+              // Ignore sending noisy events related to /opengraph previews
+              if (event.url.includes('/opengraph')) {
+                return null;
+              }
+              return event;
+            }}
+          />
+          <Component {...pageProps} preloadedQuery={componentPreloadedQuery} />
+        </>
+      </AppProvider>
+    </RelayResetContext.Provider>
   );
 }
 
