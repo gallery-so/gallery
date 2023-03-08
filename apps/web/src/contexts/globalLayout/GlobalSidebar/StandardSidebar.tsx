@@ -235,7 +235,6 @@ export function StandardSidebar({ queryRef }: Props) {
               icon={<UserIcon />}
             />
             <SidebarIcon
-              href={userGalleryRoute}
               tooltipLabel="Search"
               onClick={handleSearchClick}
               icon={<SearchIcon />}

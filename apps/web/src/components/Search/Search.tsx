@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { Suspense, useCallback, useState } from 'react';
 import styled from 'styled-components';
 
 import DrawerHeader from '~/contexts/globalLayout/GlobalSidebar/DrawerHeader';
@@ -6,10 +6,10 @@ import DrawerHeader from '~/contexts/globalLayout/GlobalSidebar/DrawerHeader';
 import { VStack } from '../core/Spacer/Stack';
 import SearchFilter from './SearchFilter';
 import SearchInput from './SearchInput';
-import SearchResult from './SearchResult';
+import SearchResults from './SearchResults';
 
 export default function Search() {
-  const [keyword, setKeyword] = useState('');
+  const [keyword, setKeyword] = useState('ja');
 
   const handleSearch = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setKeyword(event.target.value);
@@ -23,26 +23,10 @@ export default function Search() {
       <SearchFilter />
 
       <StyledSearchContent gap={8}>
-        <StyledSearchResultContainer>
-          {keyword ? (
-            <>
-              <SearchResult title="New curator" />
-              <SearchResult title="New galleries" />
-              <SearchResult title="New galleries" />
-              <SearchResult title="New galleries" />
-              <SearchResult title="New galleries" />
-            </>
-          ) : (
-            <>
-              <SearchResult title="curators" />
-              <SearchResult title="galleries" />
-              <SearchResult title="communities" />
-              <SearchResult title="communities" />
-              <SearchResult title="communities" />
-              <SearchResult title="communities" />
-            </>
-          )}
-        </StyledSearchResultContainer>
+        {/* TODO: Add spinner or deferred value */}
+        <Suspense fallback={<div>Loading</div>}>
+          <SearchResults keyword={keyword} />
+        </Suspense>
       </StyledSearchContent>
     </>
   );
@@ -59,5 +43,3 @@ const StyledSearchContent = styled(VStack)`
   overflow-x: hidden;
   overscroll-behavior: contain;
 `;
-
-const StyledSearchResultContainer = styled(VStack)``;
