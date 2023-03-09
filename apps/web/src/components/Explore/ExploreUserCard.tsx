@@ -8,6 +8,7 @@ import { ExploreUserCardFragment$key } from '~/generated/ExploreUserCardFragment
 import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
+import unescape from '~/utils/unescape';
 
 import Badge from '../Badge/Badge';
 import breakpoints from '../core/breakpoints';
@@ -63,6 +64,10 @@ export default function ExploreUserCard({ userRef, queryRef }: Props) {
     throw new Error('No user available to showcase ExploreUserCard');
   }
 
+  const { bio } = user;
+
+  const unescapedBio = useMemo(() => (bio ? unescape(bio) : ''), [bio]);
+
   const userGalleries = useMemo(() => {
     return user.galleries ?? [];
   }, [user.galleries]);
@@ -90,11 +95,11 @@ export default function ExploreUserCard({ userRef, queryRef }: Props) {
   const isMobile = useIsMobileWindowWidth();
 
   const bioFirstLine = useMemo(() => {
-    if (!user.bio) {
+    if (!unescapedBio) {
       return '';
     }
-    return user.bio.split('\n')[0] ?? '';
-  }, [user.bio]);
+    return unescapedBio.split('\n')[0] ?? '';
+  }, [unescapedBio]);
 
   return (
     // @ts-expect-error This is the future next/link version
