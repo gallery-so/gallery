@@ -72,8 +72,6 @@ export default function UserFollowedUsersFeedEvent({
             }
           }
         }
-        ...HoverCardOnUsernameFollowFragment
-        ...UserFollowedYouEventEventQueryFragment
       }
     `,
     queryRef
@@ -148,17 +146,16 @@ export default function UserFollowedUsersFeedEvent({
   return (
     <>
       {viewerUserId && followedYouAction && (
-        <UserFollowedYouEvent eventRef={event} followInfoRef={followedYouAction} queryRef={query} />
+        <UserFollowedYouEvent eventRef={event} followInfoRef={followedYouAction} />
       )}
       {followedNoRemainingUsers ? null : followedSingleUser ? (
         <CustomStyledEvent onClick={handleSeeFollowedUserClick} isSubEvent={isSubEvent}>
           <StyledEventContent>
             <StyledEventHeader>
               <StyledEventText isSubEvent={isSubEvent}>
-                {!isSubEvent && <HoverCardOnUsername userRef={event.owner} queryRef={query} />}{' '}
-                followed{' '}
+                {!isSubEvent && <HoverCardOnUsername userRef={event.owner} />} followed{' '}
                 {firstFollowerUsernameRef && firstFollowerUsernameRef.user && (
-                  <HoverCardOnUsername userRef={firstFollowerUsernameRef.user} queryRef={query} />
+                  <HoverCardOnUsername userRef={firstFollowerUsernameRef.user} />
                 )}
                 {!isSubEvent && <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>}
               </StyledEventText>
@@ -171,8 +168,8 @@ export default function UserFollowedUsersFeedEvent({
             <StyledEventHeaderContainer gap={16} align="center" grow>
               <StyledEventHeader>
                 <StyledEventText isSubEvent={isSubEvent}>
-                  {!isSubEvent && <HoverCardOnUsername userRef={event.owner} queryRef={query} />}{' '}
-                  followed {genericFollows.length} collectors.
+                  {!isSubEvent && <HoverCardOnUsername userRef={event.owner} />} followed{' '}
+                  {genericFollows.length} collectors.
                   <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
                 </StyledEventText>
               </StyledEventHeader>

@@ -11,7 +11,6 @@ import { BaseM, BaseS } from '~/components/core/Text/Text';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { CollectionCreatedFeedEventFragment$key } from '~/generated/CollectionCreatedFeedEventFragment.graphql';
-import { CollectionCreatedFeedEventQueryFragment$key } from '~/generated/CollectionCreatedFeedEventQueryFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { pluralize } from '~/utils/string';
 import { getTimeSince } from '~/utils/time';
@@ -30,10 +29,9 @@ import {
 type Props = {
   isSubEvent?: boolean;
   eventDataRef: CollectionCreatedFeedEventFragment$key;
-  queryRef: CollectionCreatedFeedEventQueryFragment$key;
 };
 
-export default function CollectionCreatedFeedEvent({ eventDataRef, isSubEvent, queryRef }: Props) {
+export default function CollectionCreatedFeedEvent({ eventDataRef, isSubEvent }: Props) {
   const event = useFragment(
     graphql`
       fragment CollectionCreatedFeedEventFragment on CollectionCreatedFeedEventData {
@@ -53,15 +51,6 @@ export default function CollectionCreatedFeedEvent({ eventDataRef, isSubEvent, q
       }
     `,
     eventDataRef
-  );
-
-  const query = useFragment(
-    graphql`
-      fragment CollectionCreatedFeedEventQueryFragment on Query {
-        ...HoverCardOnUsernameFollowFragment
-      }
-    `,
-    queryRef
   );
 
   const tokens = useMemo(() => event?.newTokens ?? [], [event?.newTokens]);
@@ -94,8 +83,8 @@ export default function CollectionCreatedFeedEvent({ eventDataRef, isSubEvent, q
           <VStack gap={4}>
             <StyledEventHeaderContainer>
               <StyledEventText isSubEvent={isSubEvent}>
-                {!isSubEvent && <HoverCardOnUsername userRef={event.owner} queryRef={query} />}{' '}
-                added {tokens.length} {pluralize(tokens.length, 'piece')} to their new collection
+                {!isSubEvent && <HoverCardOnUsername userRef={event.owner} />} added {tokens.length}{' '}
+                {pluralize(tokens.length, 'piece')} to their new collection
                 {collectionName ? `, ` : ' '}
                 {collectionName && (
                   <Link

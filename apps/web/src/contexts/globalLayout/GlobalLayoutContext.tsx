@@ -13,8 +13,8 @@ import {
   useRef,
   useState,
 } from 'react';
-import { useFragment, useLazyLoadQuery } from 'react-relay';
-import { fetchQuery, graphql } from 'relay-runtime';
+import { loadQuery, PreloadedQuery, useFragment, usePreloadedQuery } from 'react-relay';
+import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
@@ -72,7 +72,7 @@ export const useGlobalLayoutActions = (): GlobalLayoutActions => {
   return context;
 };
 
-type Props = { children: ReactNode };
+type Props = { children: ReactNode; preloadedQuery: PreloadedQuery<GlobalLayoutContextQuery> };
 
 // the action that triggered the fade animation
 type FadeTriggerType = 'route' | 'scroll' | 'hover';
@@ -85,10 +85,11 @@ const GlobalLayoutContextQueryNode = graphql`
   }
 `;
 
-const GlobalLayoutContextProvider = memo(({ children }: Props) => {
-  const query = useLazyLoadQuery<GlobalLayoutContextQuery>(GlobalLayoutContextQueryNode, {
-    collectionIds: FEATURED_COLLECTION_IDS,
-  });
+const GlobalLayoutContextProvider = memo(({ children, preloadedQuery }: Props) => {
+  const query = usePreloadedQuery<GlobalLayoutContextQuery>(
+    GlobalLayoutContextQueryNode,
+    preloadedQuery
+  );
 
   // whether the global banner is visible
   const [isBannerVisible, setIsBannerVisible] = useState(false);
@@ -315,14 +316,14 @@ const StyledGlobalSidebarMotion = styled(motion.div)`
 `;
 
 GlobalLayoutContextProvider.preloadQuery = ({ relayEnvironment }: PreloadQueryArgs) => {
-  fetchQuery<GlobalLayoutContextQuery>(
+  return loadQuery<GlobalLayoutContextQuery>(
     relayEnvironment,
     GlobalLayoutContextQueryNode,
     {
       collectionIds: FEATURED_COLLECTION_IDS,
     },
     { fetchPolicy: 'store-or-network' }
-  ).toPromise();
+  );
 };
 
 GlobalLayoutContextProvider.displayName = 'GlobalLayoutContextProvider';

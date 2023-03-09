@@ -17,7 +17,6 @@ import { NotificationUserListPage } from '~/components/Notifications/Notificatio
 import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 import { NotificationFragment$key } from '~/generated/NotificationFragment.graphql';
 import { NotificationInnerFragment$key } from '~/generated/NotificationInnerFragment.graphql';
-import { NotificationInnerQueryFragment$key } from '~/generated/NotificationInnerQueryFragment.graphql';
 import { NotificationQueryFragment$key } from '~/generated/NotificationQueryFragment.graphql';
 import { getTimeSince } from '~/utils/time';
 
@@ -80,8 +79,6 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
             }
           }
         }
-
-        ...NotificationInnerQueryFragment
       }
     `,
     queryRef
@@ -167,7 +164,7 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
             <UnseenDot />
           </UnseenDotContainer>
         )}
-        <NotificationInner queryRef={query} notificationRef={notification} />
+        <NotificationInner notificationRef={notification} />
         <HStack grow justify="flex-end" gap={16}>
           <TimeAgoText color={colors.metal}>{timeAgo}</TimeAgoText>
           {showCaret && <NotificationArrow />}
@@ -179,23 +176,9 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
 
 type NotificationInnerProps = {
   notificationRef: NotificationInnerFragment$key;
-  queryRef: NotificationInnerQueryFragment$key;
 };
 
-function NotificationInner({ notificationRef, queryRef }: NotificationInnerProps) {
-  const query = useFragment(
-    graphql`
-      fragment NotificationInnerQueryFragment on Query {
-        ...SomeoneCommentedOnYourFeedEventQueryFragment
-        ...SomeoneAdmiredYourFeedEventQueryFragment
-        ...SomeoneFollowedYouBackQueryFragment
-        ...SomeoneFollowedYouQueryFragment
-        ...SomeoneViewedYourGalleryQueryFragment
-      }
-    `,
-    queryRef
-  );
-
+function NotificationInner({ notificationRef }: NotificationInnerProps) {
   const notification = useFragment(
     graphql`
       fragment NotificationInnerFragment on Notification {
@@ -234,41 +217,15 @@ function NotificationInner({ notificationRef, queryRef }: NotificationInnerProps
   }, [hideDrawer]);
 
   if (notification.__typename === 'SomeoneAdmiredYourFeedEventNotification') {
-    return (
-      <SomeoneAdmiredYourFeedEvent
-        queryRef={query}
-        notificationRef={notification}
-        onClose={handleClose}
-      />
-    );
+    return <SomeoneAdmiredYourFeedEvent notificationRef={notification} onClose={handleClose} />;
   } else if (notification.__typename === 'SomeoneViewedYourGalleryNotification') {
-    return (
-      <SomeoneViewedYourGallery
-        queryRef={query}
-        notificationRef={notification}
-        onClose={handleClose}
-      />
-    );
+    return <SomeoneViewedYourGallery notificationRef={notification} onClose={handleClose} />;
   } else if (notification.__typename === 'SomeoneFollowedYouNotification') {
-    return (
-      <SomeoneFollowedYou queryRef={query} notificationRef={notification} onClose={handleClose} />
-    );
+    return <SomeoneFollowedYou notificationRef={notification} onClose={handleClose} />;
   } else if (notification.__typename === 'SomeoneFollowedYouBackNotification') {
-    return (
-      <SomeoneFollowedYouBack
-        queryRef={query}
-        notificationRef={notification}
-        onClose={handleClose}
-      />
-    );
+    return <SomeoneFollowedYouBack notificationRef={notification} onClose={handleClose} />;
   } else if (notification.__typename === 'SomeoneCommentedOnYourFeedEventNotification') {
-    return (
-      <SomeoneCommentedOnYourFeedEvent
-        queryRef={query}
-        notificationRef={notification}
-        onClose={handleClose}
-      />
-    );
+    return <SomeoneCommentedOnYourFeedEvent notificationRef={notification} onClose={handleClose} />;
   }
 
   return null;

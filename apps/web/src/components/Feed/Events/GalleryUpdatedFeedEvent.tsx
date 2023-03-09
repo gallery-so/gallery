@@ -62,7 +62,6 @@ export default function GalleryUpdatedFeedEvent({
   const query = useFragment(
     graphql`
       fragment GalleryUpdatedFeedEventQueryFragment on Query {
-        ...HoverCardOnUsernameFollowFragment
         ...FeedEventDataNonRecursiveQueryFragment
       }
     `,
@@ -86,7 +85,7 @@ export default function GalleryUpdatedFeedEvent({
         <StyledEventHeader>
           <HStack gap={4} inline>
             <BaseM>
-              <HoverCardOnUsername userRef={event.owner} queryRef={query} /> updated{' '}
+              <HoverCardOnUsername userRef={event.owner} /> updated{' '}
               <Link href={galleryPagePath} passHref legacyBehavior>
                 <StyledEventLabel>{event?.gallery?.name || 'their gallery'}</StyledEventLabel>
               </Link>

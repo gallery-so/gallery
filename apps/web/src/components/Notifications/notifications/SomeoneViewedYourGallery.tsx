@@ -4,11 +4,9 @@ import { graphql } from 'relay-runtime';
 import { BaseM } from '~/components/core/Text/Text';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { SomeoneViewedYourGalleryFragment$key } from '~/generated/SomeoneViewedYourGalleryFragment.graphql';
-import { SomeoneViewedYourGalleryQueryFragment$key } from '~/generated/SomeoneViewedYourGalleryQueryFragment.graphql';
 
 type SomeoneViewedYourGalleryProps = {
   notificationRef: SomeoneViewedYourGalleryFragment$key;
-  queryRef: SomeoneViewedYourGalleryQueryFragment$key;
   onClose: () => void;
 };
 
@@ -16,18 +14,8 @@ const testId = 'SomeoneViewedYourGallery';
 
 export function SomeoneViewedYourGallery({
   notificationRef,
-  queryRef,
   onClose,
 }: SomeoneViewedYourGalleryProps) {
-  const query = useFragment(
-    graphql`
-      fragment SomeoneViewedYourGalleryQueryFragment on Query {
-        ...HoverCardOnUsernameFollowFragment
-      }
-    `,
-    queryRef
-  );
-
   const notification = useFragment(
     graphql`
       fragment SomeoneViewedYourGalleryFragment on SomeoneViewedYourGalleryNotification {
@@ -61,11 +49,7 @@ export function SomeoneViewedYourGallery({
     if (totalViewCount === 1) {
       return (
         <BaseM data-testid={testId}>
-          {lastViewer ? (
-            <HoverCardOnUsername onClick={onClose} userRef={lastViewer} queryRef={query} />
-          ) : (
-            'Someone'
-          )}
+          {lastViewer ? <HoverCardOnUsername onClick={onClose} userRef={lastViewer} /> : 'Someone'}
           <span> viewed your gallery</span>
         </BaseM>
       );
@@ -74,7 +58,7 @@ export function SomeoneViewedYourGallery({
 
       return (
         <BaseM data-testid={testId}>
-          {lastViewer ? <HoverCardOnUsername userRef={lastViewer} queryRef={query} /> : 'Someone'}
+          {lastViewer ? <HoverCardOnUsername userRef={lastViewer} /> : 'Someone'}
           <span>
             {' '}
             and {remainingViewCount} {remainingViewCount === 1 ? 'other' : 'others'} viewed your

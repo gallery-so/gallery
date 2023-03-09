@@ -8,18 +8,15 @@ import { BaseM } from '~/components/core/Text/Text';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { CollectionLink } from '~/components/Notifications/CollectionLink';
 import { SomeoneCommentedOnYourFeedEventFragment$key } from '~/generated/SomeoneCommentedOnYourFeedEventFragment.graphql';
-import { SomeoneCommentedOnYourFeedEventQueryFragment$key } from '~/generated/SomeoneCommentedOnYourFeedEventQueryFragment.graphql';
 import unescape from '~/utils/unescape';
 
 type SomeoneCommentedOnYourFeedEventProps = {
   notificationRef: SomeoneCommentedOnYourFeedEventFragment$key;
-  queryRef: SomeoneCommentedOnYourFeedEventQueryFragment$key;
   onClose: () => void;
 };
 
 export function SomeoneCommentedOnYourFeedEvent({
   notificationRef,
-  queryRef,
   onClose,
 }: SomeoneCommentedOnYourFeedEventProps) {
   const notification = useFragment(
@@ -70,15 +67,6 @@ export function SomeoneCommentedOnYourFeedEvent({
     notificationRef
   );
 
-  const query = useFragment(
-    graphql`
-      fragment SomeoneCommentedOnYourFeedEventQueryFragment on Query {
-        ...HoverCardOnUsernameFollowFragment
-      }
-    `,
-    queryRef
-  );
-
   const eventType = notification.feedEvent?.eventData?.__typename;
 
   const verb = useMemo(() => {
@@ -102,11 +90,7 @@ export function SomeoneCommentedOnYourFeedEvent({
     <VStack gap={8}>
       <BaseM>
         {notification.comment?.commenter ? (
-          <HoverCardOnUsername
-            userRef={notification.comment?.commenter}
-            queryRef={query}
-            onClick={onClose}
-          />
+          <HoverCardOnUsername userRef={notification.comment?.commenter} onClick={onClose} />
         ) : (
           <strong>Someone</strong>
         )}

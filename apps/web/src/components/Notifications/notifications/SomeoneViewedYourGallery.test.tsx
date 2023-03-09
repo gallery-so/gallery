@@ -3,10 +3,9 @@ import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { SomeoneViewedYourGallery } from '~/components/Notifications/notifications/SomeoneViewedYourGallery';
-import AppProvider from '~/contexts/AppProvider';
-import { createEmptyRelayEnvironment } from '~/contexts/relay/RelayProvider';
 import { SomeoneViewedYourGalleryTestQuery } from '~/generated/SomeoneViewedYourGalleryTestQuery.graphql';
 import { SomeoneViewedYourGalleryTestQueryQuery } from '~/tests/__generated__/graphql-codegen/operations';
+import { MockAppProvider } from '~/tests/graphql/MockAppProvider';
 import { mockGraphqlQuery } from '~/tests/graphql/mockGraphqlQuery';
 import { mockProviderQueries } from '~/tests/graphql/mockProviderQueries';
 import noop from '~/utils/noop';
@@ -21,17 +20,13 @@ function Fixture() {
             ...SomeoneViewedYourGalleryFragment
           }
         }
-
-        ...SomeoneViewedYourGalleryQueryFragment
       }
     `,
     {}
   );
 
   if (query.node?.__typename === 'SomeoneViewedYourGalleryNotification') {
-    return (
-      <SomeoneViewedYourGallery notificationRef={query.node} queryRef={query} onClose={noop} />
-    );
+    return <SomeoneViewedYourGallery notificationRef={query.node} onClose={noop} />;
   }
 
   throw new Error('Yikes');
@@ -44,7 +39,6 @@ type MockResponseArgs = {
 
 function mockResponse({ userViews, nonUserViews }: MockResponseArgs) {
   const result: SomeoneViewedYourGalleryTestQueryQuery = {
-    viewer: null,
     node: {
       __typename: 'SomeoneViewedYourGalleryNotification',
       id: 'SomeoneViewedYourGalleryNotification:notification-1',
@@ -98,11 +92,10 @@ async function assertSituation(args: MockResponseArgs, expectedText: string) {
 
   mockGraphqlQuery('SomeoneViewedYourGalleryTestQuery', response);
 
-  const relayEnvironment = createEmptyRelayEnvironment();
   const { findByTestId } = render(
-    <AppProvider relayEnvironment={relayEnvironment}>
+    <MockAppProvider>
       <Fixture />
-    </AppProvider>
+    </MockAppProvider>
   );
 
   const element = await findByTestId('SomeoneViewedYourGallery');
