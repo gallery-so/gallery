@@ -4,13 +4,13 @@ import { graphql, useFragment, usePaginationFragment } from 'react-relay';
 import { SelectorStoreUpdater } from 'relay-runtime';
 import styled from 'styled-components';
 
-import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { TwitterFollowingModalFragment$key } from '~/generated/TwitterFollowingModalFragment.graphql';
 import { TwitterFollowingModalMutation } from '~/generated/TwitterFollowingModalMutation.graphql';
 import { TwitterFollowingModalQueryFragment$key } from '~/generated/TwitterFollowingModalQueryFragment.graphql';
 import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
+import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 
 import breakpoints from '../core/breakpoints';
 import { Button } from '../core/Button/Button';
