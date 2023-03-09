@@ -17,9 +17,7 @@ export default function GallerySearchResult({ galleryRef }: Props) {
       fragment GallerySearchResultFragment on Gallery {
         dbid
         name
-        hidden
         owner {
-          id
           username
         }
       }

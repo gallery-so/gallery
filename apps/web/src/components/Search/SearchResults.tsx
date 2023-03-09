@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { SearchResultsQuery } from '~/generated/SearchResultsQuery.graphql';
 
 import { VStack } from '../core/Spacer/Stack';
+import CommunitySearchResultSection from './Community/CommunitySearchResultSection';
 import GallerySearchResultSection from './Gallery/GallerySearchResultSection';
 import { SearchFilterType } from './Search';
 import UserSearchResultSection from './User/UserSearchResultSection';
@@ -38,6 +39,16 @@ export default function SearchResults({ activeFilter, keyword, onChangeFilter }:
             }
           }
         }
+        searchCommunities(query: $query) {
+          __typename
+          ... on SearchCommunitiesPayload {
+            __typename
+            results {
+              __typename
+              ...CommunitySearchResultSectionFragment
+            }
+          }
+        }
       }
     `,
     { query: keyword }
@@ -60,6 +71,15 @@ export default function SearchResults({ activeFilter, keyword, onChangeFilter }:
             queryRef={query?.searchGalleries?.results}
             onChangeFilter={onChangeFilter}
             isShowAll={activeFilter === 'gallery'}
+          />
+        )}
+      {query?.searchCommunities?.__typename === 'SearchCommunitiesPayload' &&
+        query?.searchCommunities?.results && (
+          <CommunitySearchResultSection
+            title="communities"
+            queryRef={query?.searchCommunities?.results}
+            onChangeFilter={onChangeFilter}
+            isShowAll={activeFilter === 'community'}
           />
         )}
     </StyledSearchResultContainer>
