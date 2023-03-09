@@ -82,6 +82,53 @@ export default function SearchResults({ activeFilter, keyword, onChangeFilter }:
     );
   }
 
+  // if there is filter, show only that filter
+  if (activeFilter === 'curator') {
+    return (
+      <StyledSearchResultContainer>
+        {query?.searchUsers?.__typename === 'SearchUsersPayload' && (
+          <UserSearchResultSection
+            title="curators"
+            queryRef={query?.searchUsers?.results}
+            onChangeFilter={onChangeFilter}
+            isShowAll
+          />
+        )}
+      </StyledSearchResultContainer>
+    );
+  }
+
+  if (activeFilter === 'gallery') {
+    return (
+      <StyledSearchResultContainer>
+        {query?.searchGalleries?.__typename === 'SearchGalleriesPayload' && (
+          <GallerySearchResultSection
+            title="galleries"
+            queryRef={query?.searchGalleries?.results}
+            onChangeFilter={onChangeFilter}
+            isShowAll
+          />
+        )}
+      </StyledSearchResultContainer>
+    );
+  }
+
+  if (activeFilter === 'community') {
+    return (
+      <StyledSearchResultContainer>
+        {query?.searchCommunities?.__typename === 'SearchCommunitiesPayload' && (
+          <CommunitySearchResultSection
+            title="communities"
+            queryRef={query?.searchCommunities?.results}
+            onChangeFilter={onChangeFilter}
+            isShowAll
+          />
+        )}
+      </StyledSearchResultContainer>
+    );
+  }
+
+  // show all
   return (
     <StyledSearchResultContainer>
       {query?.searchUsers?.__typename === 'SearchUsersPayload' && (
@@ -89,7 +136,6 @@ export default function SearchResults({ activeFilter, keyword, onChangeFilter }:
           title="curators"
           queryRef={query?.searchUsers?.results}
           onChangeFilter={onChangeFilter}
-          isShowAll={activeFilter === 'curator'}
         />
       )}
       {query?.searchGalleries?.__typename === 'SearchGalleriesPayload' && (
@@ -97,7 +143,6 @@ export default function SearchResults({ activeFilter, keyword, onChangeFilter }:
           title="galleries"
           queryRef={query?.searchGalleries?.results}
           onChangeFilter={onChangeFilter}
-          isShowAll={activeFilter === 'gallery'}
         />
       )}
       {query?.searchCommunities?.__typename === 'SearchCommunitiesPayload' && (
@@ -105,7 +150,6 @@ export default function SearchResults({ activeFilter, keyword, onChangeFilter }:
           title="communities"
           queryRef={query?.searchCommunities?.results}
           onChangeFilter={onChangeFilter}
-          isShowAll={activeFilter === 'community'}
         />
       )}
     </StyledSearchResultContainer>
