@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
 import colors from '../core/colors';
@@ -6,7 +6,9 @@ import { useSearchContext } from './SearchContext';
 
 export default function SearchInput() {
   const ref = useRef<HTMLInputElement>(null);
-  const { setKeyword } = useSearchContext();
+  const { keyword, setKeyword } = useSearchContext();
+
+  const [localKeyword, setLocalKeyword] = useState<string>(keyword);
 
   useEffect(() => {
     if (ref.current) {
@@ -17,6 +19,7 @@ export default function SearchInput() {
   const handleChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       setKeyword(event.target.value);
+      setLocalKeyword(event.target.value);
     },
     [setKeyword]
   );
@@ -27,6 +30,7 @@ export default function SearchInput() {
       type="text"
       placeholder="Search for anything..."
       onChange={handleChange}
+      value={localKeyword}
     />
   );
 }

@@ -5,7 +5,6 @@ import DrawerHeader from '~/contexts/globalLayout/GlobalSidebar/DrawerHeader';
 
 import { VStack } from '../core/Spacer/Stack';
 import { Spinner } from '../core/Spinner/Spinner';
-import SearchProvider from './SearchContext';
 import SearchFilter from './SearchFilter';
 import SearchInput from './SearchInput';
 import SearchResults from './SearchResults';
@@ -16,7 +15,7 @@ export default function Search() {
   const [selectedFilter, setSelectedFilter] = useState<SearchFilterType>(null);
 
   return (
-    <SearchProvider>
+    <>
       <DrawerHeader>
         <SearchInput />
       </DrawerHeader>
@@ -34,7 +33,7 @@ export default function Search() {
           <SearchResults activeFilter={selectedFilter} onChangeFilter={setSelectedFilter} />
         </Suspense>
       </StyledSearchContent>
-    </SearchProvider>
+    </>
   );
 }
 
