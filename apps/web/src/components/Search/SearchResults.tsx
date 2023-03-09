@@ -1,9 +1,11 @@
+import { useMemo } from 'react';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import styled from 'styled-components';
 
 import { SearchResultsQuery } from '~/generated/SearchResultsQuery.graphql';
 
 import { VStack } from '../core/Spacer/Stack';
+import { TitleDiatypeL } from '../core/Text/Text';
 import CommunitySearchResultSection from './Community/CommunitySearchResultSection';
 import GallerySearchResultSection from './Gallery/GallerySearchResultSection';
 import { SearchFilterType } from './Search';
@@ -23,7 +25,7 @@ export default function SearchResults({ activeFilter, keyword, onChangeFilter }:
           __typename
           ... on SearchUsersPayload {
             __typename
-            results {
+            results @required(action: THROW) {
               __typename
               ...UserSearchResultSectionFragment
             }
@@ -33,7 +35,7 @@ export default function SearchResults({ activeFilter, keyword, onChangeFilter }:
           __typename
           ... on SearchGalleriesPayload {
             __typename
-            results {
+            results @required(action: THROW) {
               __typename
               ...GallerySearchResultSectionFragment
             }
@@ -43,7 +45,7 @@ export default function SearchResults({ activeFilter, keyword, onChangeFilter }:
           __typename
           ... on SearchCommunitiesPayload {
             __typename
-            results {
+            results @required(action: THROW) {
               __typename
               ...CommunitySearchResultSectionFragment
             }
@@ -54,9 +56,35 @@ export default function SearchResults({ activeFilter, keyword, onChangeFilter }:
     { query: keyword }
   );
 
+  const isEmpty = useMemo(() => {
+    if (
+      query.searchUsers?.__typename === 'SearchUsersPayload' &&
+      query.searchGalleries?.__typename === 'SearchGalleriesPayload' &&
+      query.searchCommunities?.__typename === 'SearchCommunitiesPayload'
+    ) {
+      return (
+        query.searchUsers?.results?.length === 0 &&
+        query.searchGalleries?.results?.length === 0 &&
+        query.searchCommunities?.results?.length === 0
+      );
+    }
+
+    return false;
+  }, [query]);
+
+  if (isEmpty) {
+    return (
+      <StyledSearchResultContainer>
+        <StyledNoResultContainer align="center" justify="center">
+          <TitleDiatypeL>Nothing Found</TitleDiatypeL>
+        </StyledNoResultContainer>
+      </StyledSearchResultContainer>
+    );
+  }
+
   return (
     <StyledSearchResultContainer>
-      {query?.searchUsers?.__typename === 'SearchUsersPayload' && query?.searchUsers?.results && (
+      {query?.searchUsers?.__typename === 'SearchUsersPayload' && (
         <UserSearchResultSection
           title="curators"
           queryRef={query?.searchUsers?.results}
@@ -64,26 +92,30 @@ export default function SearchResults({ activeFilter, keyword, onChangeFilter }:
           isShowAll={activeFilter === 'curator'}
         />
       )}
-      {query?.searchGalleries?.__typename === 'SearchGalleriesPayload' &&
-        query?.searchGalleries?.results && (
-          <GallerySearchResultSection
-            title="galleries"
-            queryRef={query?.searchGalleries?.results}
-            onChangeFilter={onChangeFilter}
-            isShowAll={activeFilter === 'gallery'}
-          />
-        )}
-      {query?.searchCommunities?.__typename === 'SearchCommunitiesPayload' &&
-        query?.searchCommunities?.results && (
-          <CommunitySearchResultSection
-            title="communities"
-            queryRef={query?.searchCommunities?.results}
-            onChangeFilter={onChangeFilter}
-            isShowAll={activeFilter === 'community'}
-          />
-        )}
+      {query?.searchGalleries?.__typename === 'SearchGalleriesPayload' && (
+        <GallerySearchResultSection
+          title="galleries"
+          queryRef={query?.searchGalleries?.results}
+          onChangeFilter={onChangeFilter}
+          isShowAll={activeFilter === 'gallery'}
+        />
+      )}
+      {query?.searchCommunities?.__typename === 'SearchCommunitiesPayload' && (
+        <CommunitySearchResultSection
+          title="communities"
+          queryRef={query?.searchCommunities?.results}
+          onChangeFilter={onChangeFilter}
+          isShowAll={activeFilter === 'community'}
+        />
+      )}
     </StyledSearchResultContainer>
   );
 }
 
-const StyledSearchResultContainer = styled(VStack)``;
+const StyledSearchResultContainer = styled(VStack)`
+  height: 100%;
+`;
+
+const StyledNoResultContainer = styled(VStack)`
+  height: 100%;
+`;
