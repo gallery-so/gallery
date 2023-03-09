@@ -25,7 +25,7 @@
       "bundleIdentifier": "com.gallerylabs.gallery"
     },
     "android": {
-      "versionCode": 3,
+      "versionCode": 7,
       "blockedPermissions": ["android.permission.RECORD_AUDIO"],
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
