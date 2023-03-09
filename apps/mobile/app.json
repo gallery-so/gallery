@@ -3,7 +3,6 @@
     "name": "Gallery Labs",
     "slug": "gallery-mobile",
     "privacy": "unlisted",
-    "version": "0.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -20,12 +19,10 @@
       "config": {
         "usesNonExemptEncryption": false
       },
-      "buildNumber": "5",
       "supportsTablet": true,
       "bundleIdentifier": "com.gallerylabs.gallery"
     },
     "android": {
-      "versionCode": 7,
       "blockedPermissions": ["android.permission.RECORD_AUDIO"],
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
