@@ -5,6 +5,7 @@ import DrawerHeader from '~/contexts/globalLayout/GlobalSidebar/DrawerHeader';
 
 import { VStack } from '../core/Spacer/Stack';
 import { Spinner } from '../core/Spinner/Spinner';
+import { useSearchContext } from './SearchContext';
 import SearchFilter from './SearchFilter';
 import SearchInput from './SearchInput';
 import SearchResults from './SearchResults';
@@ -13,6 +14,7 @@ export type SearchFilterType = 'curator' | 'gallery' | 'community' | null;
 
 export default function Search() {
   const [selectedFilter, setSelectedFilter] = useState<SearchFilterType>(null);
+  const { keyword } = useSearchContext();
 
   return (
     <>
@@ -30,7 +32,9 @@ export default function Search() {
             </StyledSpinnerContainer>
           }
         >
-          <SearchResults activeFilter={selectedFilter} onChangeFilter={setSelectedFilter} />
+          {keyword && (
+            <SearchResults activeFilter={selectedFilter} onChangeFilter={setSelectedFilter} />
+          )}
         </Suspense>
       </StyledSearchContent>
     </>
