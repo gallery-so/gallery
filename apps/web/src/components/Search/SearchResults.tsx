@@ -1,6 +1,6 @@
-import { useMemo } from 'react';
+import { useDeferredValue, useMemo } from 'react';
 import { graphql, useLazyLoadQuery } from 'react-relay';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import { SearchResultsQuery } from '~/generated/SearchResultsQuery.graphql';
 
@@ -18,6 +18,8 @@ type Props = {
 };
 
 export default function SearchResults({ activeFilter, keyword, onChangeFilter }: Props) {
+  const deferredKeyword = useDeferredValue(keyword);
+
   const query = useLazyLoadQuery<SearchResultsQuery>(
     graphql`
       query SearchResultsQuery($query: String!) {
@@ -53,8 +55,10 @@ export default function SearchResults({ activeFilter, keyword, onChangeFilter }:
         }
       }
     `,
-    { query: keyword }
+    { query: deferredKeyword }
   );
+
+  const isLoading = keyword !== deferredKeyword;
 
   const isEmpty = useMemo(() => {
     if (
@@ -74,7 +78,7 @@ export default function SearchResults({ activeFilter, keyword, onChangeFilter }:
 
   if (isEmpty) {
     return (
-      <StyledSearchResultContainer>
+      <StyledSearchResultContainer isLoading={isLoading}>
         <StyledNoResultContainer align="center" justify="center">
           <TitleDiatypeL>Nothing Found</TitleDiatypeL>
         </StyledNoResultContainer>
@@ -85,7 +89,7 @@ export default function SearchResults({ activeFilter, keyword, onChangeFilter }:
   // if there is filter, show only that filter
   if (activeFilter === 'curator') {
     return (
-      <StyledSearchResultContainer>
+      <StyledSearchResultContainer isLoading={isLoading}>
         {query?.searchUsers?.__typename === 'SearchUsersPayload' && (
           <UserSearchResultSection
             title="curators"
@@ -100,7 +104,7 @@ export default function SearchResults({ activeFilter, keyword, onChangeFilter }:
 
   if (activeFilter === 'gallery') {
     return (
-      <StyledSearchResultContainer>
+      <StyledSearchResultContainer isLoading={isLoading}>
         {query?.searchGalleries?.__typename === 'SearchGalleriesPayload' && (
           <GallerySearchResultSection
             title="galleries"
@@ -115,7 +119,7 @@ export default function SearchResults({ activeFilter, keyword, onChangeFilter }:
 
   if (activeFilter === 'community') {
     return (
-      <StyledSearchResultContainer>
+      <StyledSearchResultContainer isLoading={isLoading}>
         {query?.searchCommunities?.__typename === 'SearchCommunitiesPayload' && (
           <CommunitySearchResultSection
             title="communities"
@@ -130,7 +134,7 @@ export default function SearchResults({ activeFilter, keyword, onChangeFilter }:
 
   // show all
   return (
-    <StyledSearchResultContainer>
+    <StyledSearchResultContainer isLoading={isLoading}>
       {query?.searchUsers?.__typename === 'SearchUsersPayload' && (
         <UserSearchResultSection
           title="curators"
@@ -156,8 +160,14 @@ export default function SearchResults({ activeFilter, keyword, onChangeFilter }:
   );
 }
 
-const StyledSearchResultContainer = styled(VStack)`
+const StyledSearchResultContainer = styled(VStack)<{ isLoading: boolean }>`
   height: 100%;
+
+  ${({ isLoading }) =>
+    isLoading &&
+    css`
+      opacity: 0.5;
+    `}
 `;
 
 const StyledNoResultContainer = styled(VStack)`
