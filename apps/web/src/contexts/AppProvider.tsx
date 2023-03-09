@@ -34,30 +34,30 @@ export default function AppProvider({
     <Boundary>
       <ToastProvider>
         <RelayEnvironmentProvider environment={relayEnvironment}>
-          <AuthProvider>
-            <AnalyticsProvider>
-              <WebErrorReportingProvider>
-                <SwrProvider>
-                  <GalleryNavigationProvider>
-                    <NftErrorProvider>
-                      <ModalProvider>
-                        <SidebarDrawerProvider>
-                          <SearchProvider>
-                            <SyncTokensLockProvider>
-                              <GlobalLayoutContextProvider>
-                                {isProd ? null : <Debugger />}
-                                {children}
-                              </GlobalLayoutContextProvider>
-                            </SyncTokensLockProvider>
-                          </SearchProvider>
-                        </SidebarDrawerProvider>
-                      </ModalProvider>
-                    </NftErrorProvider>
-                  </GalleryNavigationProvider>
-                </SwrProvider>
-              </WebErrorReportingProvider>
-            </AnalyticsProvider>
-          </AuthProvider>
+          <AnalyticsProvider>
+            <WebErrorReportingProvider>
+              <SwrProvider>
+                <GalleryNavigationProvider>
+                  <NftErrorProvider>
+                    <ModalProvider>
+                      <SidebarDrawerProvider>
+                        <SearchProvider>
+                          <SyncTokensLockProvider>
+                            <GlobalLayoutContextProvider
+                              preloadedQuery={globalLayoutContextPreloadedQuery}
+                            >
+                              {isProd ? null : <Debugger />}
+                              {children}
+                            </GlobalLayoutContextProvider>
+                          </SyncTokensLockProvider>
+                        </SearchProvider>
+                      </SidebarDrawerProvider>
+                    </ModalProvider>
+                  </NftErrorProvider>
+                </GalleryNavigationProvider>
+              </SwrProvider>
+            </WebErrorReportingProvider>
+          </AnalyticsProvider>
         </RelayEnvironmentProvider>
       </ToastProvider>
     </Boundary>
