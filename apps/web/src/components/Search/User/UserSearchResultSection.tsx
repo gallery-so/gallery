@@ -41,6 +41,8 @@ export default function UserSearchResultSection({
     [results, isShowAll]
   );
 
+  if (resultsToShow.length === 0) return null;
+
   return (
     <VStack gap={10}>
       <StyledResultHeader align="center" justify="space-between">

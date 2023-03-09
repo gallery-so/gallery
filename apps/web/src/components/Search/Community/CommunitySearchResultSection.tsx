@@ -28,6 +28,7 @@ export default function CommunitySearchResultSection({
     graphql`
       fragment CommunitySearchResultSectionFragment on CommunitySearchResult @relay(plural: true) {
         community @required(action: THROW) {
+          dbid
           ...CommunitySearchResultFragment
         }
       }
@@ -40,7 +41,7 @@ export default function CommunitySearchResultSection({
     [results, isShowAll]
   );
 
-  console.log('resultsToShow', resultsToShow);
+  if (resultsToShow.length === 0) return null;
 
   return (
     <VStack gap={10}>

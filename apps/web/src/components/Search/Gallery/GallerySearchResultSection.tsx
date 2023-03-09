@@ -41,7 +41,7 @@ export default function GallerySearchResultSection({
     [results, isShowAll]
   );
 
-  console.log('resultsToShow', resultsToShow);
+  if (resultsToShow.length === 0) return null;
 
   return (
     <VStack gap={10}>
