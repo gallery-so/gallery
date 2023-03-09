@@ -41,7 +41,7 @@ export default function CommunitySearchResultSection({
     <SearchSection
       title={title}
       isShowAll={isShowAll}
-      onShowAll={() => onChangeFilter('curator')}
+      onShowAll={() => onChangeFilter('community')}
       hasResult={results.length > 0}
     >
       {resultsToShow.map((result) => (
