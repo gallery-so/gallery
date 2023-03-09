@@ -25,10 +25,8 @@ const SearchProvider = memo(({ children }: Props) => {
 
   const value = useMemo(
     () => ({
+      setKeyword,
       keyword: debouncedKeyword,
-      setKeyword: (keyword: string) => {
-        setKeyword(keyword);
-      },
     }),
     [debouncedKeyword, setKeyword]
   );
