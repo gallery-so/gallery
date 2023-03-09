@@ -35,9 +35,13 @@ const filters: FilterElement = [
 export default function SearchFilter({ activeFilter, onChangeFilter }: Props) {
   const handleFilterChange = useCallback(
     (filter: SearchFilterType) => {
+      if (filter === activeFilter) {
+        onChangeFilter(null);
+        return;
+      }
       onChangeFilter(filter);
     },
-    [onChangeFilter]
+    [activeFilter, onChangeFilter]
   );
 
   return (
