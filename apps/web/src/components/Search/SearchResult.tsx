@@ -1,6 +1,6 @@
 import Link, { LinkProps } from 'next/link';
 import { Route, route } from 'nextjs-routes';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
@@ -37,12 +37,22 @@ export default function SearchResult({ name, description, path, type }: Props) {
     });
   }, [hideDrawer, keyword, path, track, type]);
 
+  const highlightedName = useMemo(() => {
+    return name.replace(new RegExp(keyword, 'gi'), (match) => `**${match}**`);
+  }, [keyword, name]);
+
+  const highlightedDescription = useMemo(() => {
+    return description.replace(new RegExp(keyword, 'gi'), (match) => `**${match}**`);
+  }, [keyword, description]);
+
   return (
     <StyledSearchResult href={path} onClick={handleClick}>
-      <BaseM>{name}</BaseM>
+      <BaseM>
+        <Markdown text={highlightedName} />
+      </BaseM>
       <StyledDescription>
         <BaseM>
-          <Markdown text={description} />
+          <Markdown text={highlightedDescription} />
         </BaseM>
       </StyledDescription>
     </StyledSearchResult>
