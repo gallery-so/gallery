@@ -27,15 +27,16 @@ export default function SidebarIcon({
   showBorderByDefault = false,
   href,
 }: Props) {
-  const { floating, reference, getFloatingProps, getReferenceProps, floatingStyle } =
+  const { floating, reference, getFloatingProps, getReferenceProps, floatingStyle, close } =
     useTooltipHover({ placement: 'right' });
 
   const handleClick = useCallback(
     (e: MouseEvent) => {
       e.stopPropagation();
       onClick();
+      close();
     },
-    [onClick]
+    [close, onClick]
   );
 
   const content = (

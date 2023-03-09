@@ -1,29 +1,49 @@
 import { useCallback } from 'react';
-import { graphql } from 'react-relay';
+import { graphql, useFragment } from 'react-relay';
 
-import { FollowButtonUserFragment$data } from '~/generated/FollowButtonUserFragment.graphql';
-import {
-  useUnfollowUserMutation,
-  useUnfollowUserMutation$data,
-} from '~/generated/useUnfollowUserMutation.graphql';
+import { useUnfollowUserFragment$key } from '~/generated/useUnfollowUserFragment.graphql';
+import { useUnfollowUserMutation } from '~/generated/useUnfollowUserMutation.graphql';
 import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 
-export default function useUnfollowUser() {
+type useUnfollowUserArgs = {
+  queryRef: useUnfollowUserFragment$key;
+};
+
+export default function useUnfollowUser({ queryRef }: useUnfollowUserArgs) {
+  const query = useFragment(
+    graphql`
+      fragment useUnfollowUserFragment on Query {
+        viewer {
+          ... on Viewer {
+            id
+            user {
+              id
+              following {
+                id
+              }
+            }
+          }
+        }
+      }
+    `,
+    queryRef
+  );
+
   const [unfollowUserMutate] = usePromisifiedMutation<useUnfollowUserMutation>(
     graphql`
-      mutation useUnfollowUserMutation($userId: DBID!) {
+      mutation useUnfollowUserMutation($userId: DBID!) @raw_response_type {
         unfollowUser(userId: $userId) {
           __typename
 
           ... on UnfollowUserPayload {
-            user @required(action: THROW) {
+            viewer {
               __typename
-              id
-              followers {
+              user {
+                __typename
                 id
-              }
-              following {
-                id
+                following {
+                  id
+                }
               }
             }
           }
@@ -42,24 +62,28 @@ export default function useUnfollowUser() {
   );
 
   return useCallback(
-    async (
-      userId: string,
-      followerIds: FollowButtonUserFragment$data['followers'],
-      followingIds: FollowButtonUserFragment$data['following']
-    ) => {
-      const optimisticResponse: useUnfollowUserMutation$data = {
-        unfollowUser: {
-          __typename: 'UnfollowUserPayload',
-          user: {
-            __typename: 'GalleryUser',
-            id: `GalleryUser:${userId}`,
-            followers: followerIds,
-            following: followingIds,
+    async (unfolloweeId: string) => {
+      await unfollowUserMutate({
+        optimisticResponse: {
+          unfollowUser: {
+            __typename: 'UnfollowUserPayload',
+            viewer: {
+              __typename: 'Viewer',
+              id: query.viewer?.id as string,
+              user: {
+                __typename: 'GalleryUser',
+                id: query.viewer?.user?.id as string,
+                following:
+                  query.viewer?.user?.following?.filter(
+                    (followee) => followee?.id !== unfolloweeId
+                  ) ?? [],
+              },
+            },
           },
         },
-      };
-      await unfollowUserMutate({ optimisticResponse, variables: { userId: userId } });
+        variables: { userId: unfolloweeId },
+      });
     },
-    [unfollowUserMutate]
+    [query.viewer?.id, query.viewer?.user?.following, query.viewer?.user?.id, unfollowUserMutate]
   );
 }

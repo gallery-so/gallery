@@ -13,10 +13,10 @@ import { TitleXS } from '~/components/core/Text/Text';
 import { useGalleryEditorContext } from '~/components/GalleryEditor/GalleryEditorContext';
 import { NewTooltip } from '~/components/Tooltip/NewTooltip';
 import { useTooltipHover } from '~/components/Tooltip/useTooltipHover';
-import { ErrorWithSentryMetadata } from '~/errors/ErrorWithSentryMetadata';
 import { CollectionListItemQueryFragment$key } from '~/generated/CollectionListItemQueryFragment.graphql';
 import HideIcon from '~/icons/HideIcon';
 import ShowIcon from '~/icons/ShowIcon';
+import { ErrorWithSentryMetadata } from '~/shared/errors/ErrorWithSentryMetadata';
 import unescape from '~/utils/unescape';
 
 import useMoveCollectionModal from './useMoveCollectionModal';
@@ -43,7 +43,7 @@ export function CollectionListItem({ collectionId, queryRef }: CollectionListIte
     deleteCollection,
     editCollectionNameAndNote,
   } = useGalleryEditorContext();
-  const collection = collections[collectionId];
+  const collection = collections.find((collection) => collection.dbid === collectionId);
 
   if (!collection) {
     throw new ErrorWithSentryMetadata(
@@ -154,6 +154,9 @@ export function CollectionListItem({ collectionId, queryRef }: CollectionListIte
 
 const CollectionTitleText = styled(TitleXS)<{ italicize: boolean; isHidden: boolean }>`
   text-transform: none;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 
   ${({ isHidden }) =>
     isHidden

@@ -1,7 +1,7 @@
 import { graphql } from 'react-relay';
 import { readInlineData } from 'relay-runtime';
 
-import { StagedItem, StagedSectionMap } from '~/components/GalleryEditor/GalleryEditorContext';
+import { StagedItem, StagedSectionList } from '~/components/GalleryEditor/GalleryEditorContext';
 import { DEFAULT_COLUMNS } from '~/constants/layout';
 import { collectionLayoutParseFragment$key } from '~/generated/collectionLayoutParseFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
@@ -14,10 +14,11 @@ type WhitespaceBlock = {
 };
 
 type Section<T> = {
+  id: string;
   items: ReadonlyArray<T | WhitespaceBlock>;
   columns: number;
 };
-type CollectionWithLayout<T> = Record<string, Section<T>>;
+type CollectionWithLayout<T> = Array<Section<T>>;
 
 export function parseCollectionLayoutGraphql<T>(
   tokens: T[],
@@ -63,7 +64,7 @@ export function parseCollectionLayout<T>(
   ignoreWhitespace = false
 ): CollectionWithLayout<T> {
   if (tokens.length === 0) {
-    return { [generate12DigitId()]: { items: [], columns: DEFAULT_COLUMNS } };
+    return [{ id: generate12DigitId(), items: [], columns: DEFAULT_COLUMNS }];
   }
 
   const parsedCollection = collectionLayout.sections.reduce(
@@ -82,13 +83,16 @@ export function parseCollectionLayout<T>(
         );
       }
       const sectionId = generate12DigitId();
-      allSections[sectionId] = {
+
+      allSections.push({
+        id: sectionId,
         items: section,
         columns: collectionLayout.sectionLayout[index]?.columns ?? 1,
-      };
+      });
+
       return allSections;
     },
-    {}
+    []
   );
 
   return parsedCollection;
@@ -120,10 +124,10 @@ export function getWhitespacePositionsFromStagedItems(stagedItems: StagedItem[])
 
 // Given a collection of sections and their items, return an object representing the layout of the collection.
 // The layout object corresponds to the `CollectionLayoutInput`input type in the GraphQL API.
-export function generateLayoutFromCollection(collection: StagedSectionMap) {
+export function generateLayoutFromCollection(sections: StagedSectionList) {
   let sectionStartIndex = 0;
-  const filteredCollection = { ...collection };
-  Object.entries(collection).forEach(([sectionId, section]) => {
+  let filteredSections = [...sections];
+  sections.forEach((section) => {
     let isEmptySection = section.items.length === 0;
     if (!isEmptySection) {
       // see if it's only empty whitespace blocks
@@ -133,13 +137,14 @@ export function generateLayoutFromCollection(collection: StagedSectionMap) {
 
     if (isEmptySection) {
       // delete empty section
-      delete filteredCollection[sectionId];
+      filteredSections = filteredSections.filter(
+        (sectionToFilter) => sectionToFilter.id === section.id
+      );
     }
   });
 
-  const sectionStartIndices = Object.keys(filteredCollection).map((sectionId, index) => {
-    const lastSectionId = Object.keys(filteredCollection)[index - 1];
-    const previousSection = lastSectionId ? filteredCollection[lastSectionId] : null;
+  const sectionStartIndices = filteredSections.map((section, index) => {
+    const previousSection = filteredSections[index - 1];
 
     if (!previousSection) {
       return sectionStartIndex;
@@ -152,7 +157,7 @@ export function generateLayoutFromCollection(collection: StagedSectionMap) {
 
   return {
     sections: sectionStartIndices,
-    sectionLayout: Object.values(filteredCollection).map((section) => ({
+    sectionLayout: Object.values(filteredSections).map((section) => ({
       columns: section.columns,
       whitespace: getWhitespacePositionsFromSection(section.items),
     })),

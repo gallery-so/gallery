@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 import styled from 'styled-components';
 
@@ -15,34 +15,14 @@ type ModalProps = {
 };
 
 export const AuthModal = ({ queryRef, variant = 'sign-in' }: ModalProps) => {
-  const { hideModal } = useModalActions();
-
   const query = useFragment(
     graphql`
       fragment useAuthModalFragment on Query {
-        viewer {
-          ... on Viewer {
-            user {
-              id
-            }
-          }
-          # TODO: handle ErrNotAuthorized type
-          # and display an error in the auth modal
-          # if user fetch fails
-        }
         ...WalletSelectorFragment
       }
     `,
     queryRef
   );
-
-  const isAuthenticated = Boolean(query.viewer?.user?.id);
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      hideModal({ id: 'auth' });
-    }
-  }, [isAuthenticated, hideModal]);
 
   return (
     <Container>

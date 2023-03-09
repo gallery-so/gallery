@@ -10,8 +10,8 @@ import { BaseM, TitleXS } from '~/components/core/Text/Text';
 import { AutoResizingTextAreaWithCharCount } from '~/components/core/TextArea/TextArea';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { GLOBAL_FOOTER_HEIGHT } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
-import formatError from '~/errors/formatError';
 import useUpdateNft from '~/hooks/api/tokens/useUpdateNft';
+import formatError from '~/shared/errors/formatError';
 import unescape from '~/utils/unescape';
 
 const MAX_CHAR_COUNT = 1200;

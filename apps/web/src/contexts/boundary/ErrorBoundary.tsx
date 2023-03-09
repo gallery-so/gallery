@@ -4,11 +4,11 @@ import styled from 'styled-components';
 import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, BaseXL } from '~/components/core/Text/Text';
+import formatError from '~/shared/errors/formatError';
 import {
   ReportingErrorBoundary,
   ReportingErrorBoundaryFallbackProps,
-} from '~/contexts/boundary/ReportingErrorBoundary';
-import formatError from '~/errors/formatError';
+} from '~/shared/errors/ReportingErrorBoundary';
 
 function Fallback({ error }: ReportingErrorBoundaryFallbackProps) {
   const errorMessage = formatError(error);

@@ -3,12 +3,12 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { TWITTER_AUTH_URL } from '~/constants/twitter';
-import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { TwitterSettingDisconnectMutation } from '~/generated/TwitterSettingDisconnectMutation.graphql';
 import { TwitterSettingFragment$key } from '~/generated/TwitterSettingFragment.graphql';
 import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 import TwitterIcon from '~/icons/TwitterIcon';
+import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 
 import { Button } from '../core/Button/Button';
 import colors from '../core/colors';
@@ -137,7 +137,7 @@ export default function TwitterSetting({ queryRef }: Props) {
         </BaseM>
 
         <StyledConnectLink href={TWITTER_AUTH_URL} target="_self">
-          <Button variant="secondary">CONNECT</Button>
+          <StyledConnectButton variant="secondary">CONNECT</StyledConnectButton>
         </StyledConnectLink>
       </HStack>
     </StyledTwitterSettingContainer>
@@ -146,7 +146,7 @@ export default function TwitterSetting({ queryRef }: Props) {
 
 const StyledTwitterSettingContainer = styled(VStack)`
   padding: 12px;
-  background-color: ${colors.offWhite};
+  background-color: ${colors.faint};
 `;
 
 const StyledDivider = styled.div`
@@ -157,4 +157,8 @@ const StyledDivider = styled.div`
 
 const StyledConnectLink = styled(InteractiveLink)`
   text-decoration: none;
+`;
+
+const StyledConnectButton = styled(Button)`
+  width: 84px;
 `;

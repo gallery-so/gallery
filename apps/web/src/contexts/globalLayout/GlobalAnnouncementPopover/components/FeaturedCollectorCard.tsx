@@ -79,7 +79,7 @@ export default function FeaturedCollectorCard({
         <FeaturedCollectorContainer gap={isMobile ? 12 : 22}>
           <FeaturedCollectorHeader gap={8}>
             <DescriptionText>{owner.username}</DescriptionText>
-            <FollowButton queryRef={query} userRef={owner} />
+            <FollowButton queryRef={query} userRef={owner} source="featured curator card" />
           </FeaturedCollectorHeader>
           <FeaturedCollectorBody>
             {imageUrls.map((url) => (

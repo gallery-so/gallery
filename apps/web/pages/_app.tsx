@@ -6,14 +6,14 @@ import 'react-loading-skeleton/dist/skeleton.css';
 import { Analytics } from '@vercel/analytics/react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { ComponentType, FC, PropsWithChildren, useEffect, useState } from 'react';
-import { RecordMap } from 'relay-runtime/lib/store/RelayStoreTypes';
+import { ComponentType, FC, PropsWithChildren, useCallback, useEffect, useState } from 'react';
+import { PreloadedQuery } from 'react-relay';
 
 import GoogleAnalytics from '~/components/GoogleAnalytics';
 import AppProvider from '~/contexts/AppProvider';
-import AuthProvider from '~/contexts/auth/AuthContext';
-import GlobalLayoutContextProvider from '~/contexts/globalLayout/GlobalLayoutContext';
+import GlobalLayoutContext from '~/contexts/globalLayout/GlobalLayoutContext';
 import { createRelayEnvironmentFromRecords } from '~/contexts/relay/RelayProvider';
+import { RelayResetContext } from '~/contexts/RelayResetContext';
 import { PreloadQueryFn } from '~/types/PageComponentPreloadQuery';
 import isProduction from '~/utils/isProduction';
 import welcomeDoormat from '~/utils/welcomeDoormat';
@@ -29,8 +29,10 @@ export type MetaTagProps = {
   metaTags?: MetaTag[] | null;
 };
 
-type PageComponent = ComponentType<MetaTagProps> & {
-  preloadQuery?: PreloadQueryFn;
+type PageComponent = ComponentType<
+  MetaTagProps & { preloadedQuery?: PreloadedQuery<never> | null }
+> & {
+  preloadQuery?: PreloadQueryFn<never>;
 };
 
 // This component ensures that we don't try to render anything on the server.
@@ -46,25 +48,59 @@ function SafeHydrate({ children }: PropsWithChildren) {
   return <div suppressHydrationWarning>{render ? children : null}</div>;
 }
 
-const App: FC<{
+type PageProps = MetaTagProps & { preloadedQuery: null | PreloadedQuery<never> };
+type AppProps = {
   Component: PageComponent;
-  pageProps: MetaTagProps & Record<string, unknown>;
-}> = ({ Component, pageProps }) => {
-  const relayCache = pageProps.__relayCache as RecordMap | undefined;
-  const [relayEnvironment] = useState(() => createRelayEnvironmentFromRecords(relayCache));
+  pageProps: PageProps;
+};
 
-  useEffect(() => {
-    if (isProduction()) welcomeDoormat();
-  }, []);
+function Page({ Component, pageProps }: AppProps) {
+  const [relayEnvironment, setRelayEnvironment] = useState(() =>
+    createRelayEnvironmentFromRecords({})
+  );
 
   const { query } = useRouter();
 
-  // Kick off queries that would waterfall
-  if (typeof window !== 'undefined') {
-    Component.preloadQuery?.({ relayEnvironment, query });
-    GlobalLayoutContextProvider.preloadQuery?.({ relayEnvironment, query });
-    AuthProvider.preloadQuery?.({ relayEnvironment, query });
+  const componentPreloadedQuery = Component?.preloadQuery?.({ relayEnvironment, query });
+  const globalLayoutContextPreloadedQuery = GlobalLayoutContext.preloadQuery?.({
+    relayEnvironment,
+    query,
+  });
+
+  if (!globalLayoutContextPreloadedQuery) {
+    throw new Error('Preloaded Queries were not returned from preloadQuery function');
   }
+
+  const resetRelayEnvironment = useCallback(() => {
+    setRelayEnvironment(createRelayEnvironmentFromRecords({}));
+  }, []);
+
+  return (
+    <RelayResetContext.Provider value={resetRelayEnvironment}>
+      <AppProvider
+        relayEnvironment={relayEnvironment}
+        globalLayoutContextPreloadedQuery={globalLayoutContextPreloadedQuery}
+      >
+        <GoogleAnalytics />
+        <Analytics
+          beforeSend={(event) => {
+            // Ignore sending noisy events related to /opengraph previews
+            if (event.url.includes('/opengraph')) {
+              return null;
+            }
+            return event;
+          }}
+        />
+        <Component {...pageProps} preloadedQuery={componentPreloadedQuery} />
+      </AppProvider>
+    </RelayResetContext.Provider>
+  );
+}
+
+const App: FC<AppProps> = (props) => {
+  useEffect(() => {
+    if (isProduction()) welcomeDoormat();
+  }, []);
 
   return (
     <>
@@ -75,8 +111,8 @@ const App: FC<{
         <meta name="msapplication-TileColor" content="#da532c" />
         <meta name="theme-color" content="#ffffff" />
 
-        {pageProps.metaTags?.length ? (
-          pageProps.metaTags.map((metaTag) => (
+        {props.pageProps.metaTags?.length ? (
+          props.pageProps.metaTags.map((metaTag) => (
             <meta key={metaTag.name ?? metaTag.property} {...metaTag} />
           ))
         ) : (
@@ -100,21 +136,7 @@ const App: FC<{
         )}
       </Head>
       <SafeHydrate>
-        <AppProvider relayEnvironment={relayEnvironment}>
-          <>
-            <GoogleAnalytics />
-            <Analytics
-              beforeSend={(event) => {
-                // Ignore sending noisy events related to /opengraph previews
-                if (event.url.includes('/opengraph')) {
-                  return null;
-                }
-                return event;
-              }}
-            />
-            <Component {...pageProps} />
-          </>
-        </AppProvider>
+        <Page {...props} />
       </SafeHydrate>
     </>
   );

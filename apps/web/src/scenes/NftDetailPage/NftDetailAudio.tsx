@@ -4,9 +4,9 @@ import styled from 'styled-components';
 import breakpoints from '~/components/core/breakpoints';
 import { VStack } from '~/components/core/Spacer/Stack';
 import ImageWithLoading from '~/components/LoadingAsset/ImageWithLoading';
-import { CouldNotRenderNftError } from '~/errors/CouldNotRenderNftError';
 import { NftDetailAudioFragment$key } from '~/generated/NftDetailAudioFragment.graphql';
 import { useThrowOnMediaFailure } from '~/hooks/useNftRetry';
+import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
 import noop from '~/utils/noop';
 
 type Props = {

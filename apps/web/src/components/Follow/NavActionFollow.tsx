@@ -58,7 +58,7 @@ export default function NavActionFollow({ userRef, queryRef }: Props) {
           {displayName}
         </UsernameBreadcrumbLink>
       </Link>
-      <FollowButton queryRef={loggedInUserQuery} userRef={user} />
+      <FollowButton queryRef={loggedInUserQuery} userRef={user} source="navbar desktop" />
     </HStack>
   );
 }

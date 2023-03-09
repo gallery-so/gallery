@@ -12,7 +12,6 @@ import {
   useTrackSignInError,
   useTrackSignInSuccess,
 } from '~/contexts/analytics/authUtil';
-import { useAuthActions } from '~/contexts/auth/AuthContext';
 import { Web3Error } from '~/types/Error';
 import { INITIAL, LISTENING_ONCHAIN, PendingState, PROMPT_SIGNATURE } from '~/types/Wallet';
 import { getLocalStorageItem } from '~/utils/localStorage';
@@ -40,8 +39,6 @@ export const GnosisSafeAuthenticateWallet = ({ reset }: Props) => {
 
   const [pendingState, setPendingState] = useState<PendingState>(INITIAL);
 
-  const { handleLogin } = useAuthActions();
-
   const previousAttemptNonce = useMemo(() => getLocalStorageItem(GNOSIS_NONCE_STORAGE_KEY), []);
   const [nonce, setNonce] = useState('');
   const [userExists, setUserExists] = useState(false);
@@ -68,18 +65,11 @@ export const GnosisSafeAuthenticateWallet = ({ reset }: Props) => {
 
       window.localStorage.removeItem(GNOSIS_NONCE_STORAGE_KEY);
 
-      trackSignInSuccess('Gnosis Safe');
       if (userId) {
-        handleLogin(userId);
+        trackSignInSuccess('Gnosis Safe');
       }
     },
-    [
-      loginOrRedirectToOnboarding,
-      handleLogin,
-      trackCreateUserSuccess,
-      trackSignInSuccess,
-      userExists,
-    ]
+    [loginOrRedirectToOnboarding, trackCreateUserSuccess, trackSignInSuccess, userExists]
   );
 
   const handleError = useCallback(

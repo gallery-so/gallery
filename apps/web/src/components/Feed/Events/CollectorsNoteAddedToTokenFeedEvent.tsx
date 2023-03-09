@@ -11,7 +11,6 @@ import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { CollectorsNoteAddedToTokenFeedEventFragment$key } from '~/generated/CollectorsNoteAddedToTokenFeedEventFragment.graphql';
-import { CollectorsNoteAddedToTokenFeedEventQueryFragment$key } from '~/generated/CollectorsNoteAddedToTokenFeedEventQueryFragment.graphql';
 import useWindowSize, { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import NftDetailView from '~/scenes/NftDetailPage/NftDetailView';
 import { getTimeSince } from '~/utils/time';
@@ -31,7 +30,6 @@ import {
 type Props = {
   isSubEvent?: boolean;
   eventDataRef: CollectorsNoteAddedToTokenFeedEventFragment$key;
-  queryRef: CollectorsNoteAddedToTokenFeedEventQueryFragment$key;
 };
 
 const MARGIN = 16;
@@ -42,7 +40,6 @@ const IMAGE_SPACE_SIZE = 269;
 export default function CollectorsNoteAddedToTokenFeedEvent({
   eventDataRef,
   isSubEvent = false,
-  queryRef,
 }: Props) {
   const event = useFragment(
     graphql`
@@ -69,15 +66,6 @@ export default function CollectorsNoteAddedToTokenFeedEvent({
     eventDataRef
   );
 
-  const query = useFragment(
-    graphql`
-      fragment CollectorsNoteAddedToTokenFeedEventQueryFragment on Query {
-        ...HoverCardOnUsernameFollowFragment
-      }
-    `,
-    queryRef
-  );
-
   const isMobile = useIsMobileWindowWidth();
   const windowSize = useWindowSize();
   const { showModal } = useModalActions();
@@ -93,7 +81,7 @@ export default function CollectorsNoteAddedToTokenFeedEvent({
       showModal({
         content: (
           <StyledNftDetailViewPopover>
-            <NftDetailView authenticatedUserOwnsAsset={false} queryRef={event.token} />
+            <NftDetailView authenticatedUserOwnsAsset={false} collectionTokenRef={event.token} />
           </StyledNftDetailViewPopover>
         ),
         isFullPage: true,
@@ -108,8 +96,8 @@ export default function CollectorsNoteAddedToTokenFeedEvent({
         <VStack gap={isSubEvent ? 0 : 16}>
           <StyledEventHeader>
             <StyledEventText isSubEvent={isSubEvent}>
-              {!isSubEvent && <HoverCardOnUsername userRef={event.owner} queryRef={query} />} add a
-              collector's note to{' '}
+              {!isSubEvent && <HoverCardOnUsername userRef={event.owner} />} add a collector's note
+              to{' '}
               <Link
                 href={{
                   pathname: '/[username]/[collectionId]/[tokenId]',

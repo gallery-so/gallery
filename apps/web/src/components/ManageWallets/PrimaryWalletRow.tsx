@@ -35,7 +35,7 @@ const Icon = styled.img`
 `;
 
 const PrimaryWallet = styled(VStack)`
-  background-color: ${colors.offWhite};
+  background-color: ${colors.faint};
   padding: 12px;
 `;
 

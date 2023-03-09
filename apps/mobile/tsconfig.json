@@ -1,28 +1,15 @@
 {
   "extends": "../../tsconfig.options.json",
   "compilerOptions": {
-    "lib": [
-      "DOM",
-      "ESNext"
-    ],
+    "lib": ["DOM", "ESNext"],
     "baseUrl": ".",
     "jsx": "react-native",
     "paths": {
-      "~/contexts/*": [
-        "src/contexts/*"
-      ],
-      "~/frames/*": [
-        "../../packages/frames-dls/src/*"
-      ],
-      "~/generated/*": [
-        "./__generated__/*"
-      ],
-      "~/navigation/*": [
-        "src/navigation/*"
-      ],
-      "~/shared/*": [
-        "../../packages/shared/src/*"
-      ]
+      "~/contexts/*": ["src/contexts/*"],
+      "~/frames/*": ["../../packages/frames-dls/src/*"],
+      "~/generated/*": ["./__generated__/relay/*", "../../packages/shared/__generated__/relay/*"],
+      "~/navigation/*": ["src/navigation/*"],
+      "~/shared/*": ["../../packages/shared/src/*"]
     },
     "outDir": "../../.moon/cache/types/apps/mobile"
   }

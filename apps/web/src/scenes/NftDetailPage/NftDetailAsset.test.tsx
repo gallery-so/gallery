@@ -1,8 +1,6 @@
 import { fireEvent, render } from '@testing-library/react';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 
-import AppProvider from '~/contexts/AppProvider';
-import { createEmptyRelayEnvironment } from '~/contexts/relay/RelayProvider';
 import { NftDetailAssetTestQuery } from '~/generated/NftDetailAssetTestQuery.graphql';
 import NftDetailView from '~/scenes/NftDetailPage/NftDetailView';
 import {
@@ -10,6 +8,7 @@ import {
   NftDetailAssetTestQueryQuery,
   NftErrorContextRetryMutationMutation,
 } from '~/tests/__generated__/graphql-codegen/operations';
+import { MockAppProvider } from '~/tests/graphql/MockAppProvider';
 import { mockGraphqlQuery } from '~/tests/graphql/mockGraphqlQuery';
 import { mockProviderQueries } from '~/tests/graphql/mockProviderQueries';
 
@@ -32,7 +31,12 @@ function Fixture() {
     throw new Error('Yikes');
   }
 
-  return <NftDetailView authenticatedUserOwnsAsset={false} queryRef={query.collectionTokenById} />;
+  return (
+    <NftDetailView
+      authenticatedUserOwnsAsset={false}
+      collectionTokenRef={query.collectionTokenById}
+    />
+  );
 }
 
 const UnknownMediaResponse: NftDetailAssetTestQueryQuery = {
@@ -124,11 +128,10 @@ describe('NftDetailAsset', () => {
     // Mock the retry for when they hit the button
     mockGraphqlQuery('NftErrorContextRetryMutation', RetryImageMediaResponse);
 
-    const relayEnvironment = createEmptyRelayEnvironment();
     const { findByText, findByTestId, findByAltText } = render(
-      <AppProvider relayEnvironment={relayEnvironment}>
+      <MockAppProvider>
         <Fixture />
-      </AppProvider>
+      </MockAppProvider>
     );
 
     // Ensure we see the fallback UI since we have bad media

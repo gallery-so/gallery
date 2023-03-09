@@ -10,7 +10,6 @@ import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { BaseXL } from '~/components/core/Text/Text';
 import { useMemberListPageActions } from '~/contexts/memberListPage/MemberListPageContext';
 import { TokenHolderListItemFragment$key } from '~/generated/TokenHolderListItemFragment.graphql';
-import { TokenHolderListItemQueryFragment$key } from '~/generated/TokenHolderListItemQueryFragment.graphql';
 import useDebounce from '~/hooks/useDebounce';
 import { useBreakpoint } from '~/hooks/useWindowSize';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
@@ -24,12 +23,11 @@ type Props = {
   tokenHolderRef: TokenHolderListItemFragment$key;
   direction: Directions.LEFT | Directions.RIGHT;
   fadeUsernames: boolean;
-  queryRef: TokenHolderListItemQueryFragment$key;
 };
 
 const DISABLED_GALLERY_PREVIEW = true;
 
-function TokenHolderListItem({ tokenHolderRef, direction, fadeUsernames, queryRef }: Props) {
+function TokenHolderListItem({ tokenHolderRef, direction, fadeUsernames }: Props) {
   const { setFadeUsernames } = useMemberListPageActions();
 
   const owner = useFragment(
@@ -46,15 +44,6 @@ function TokenHolderListItem({ tokenHolderRef, direction, fadeUsernames, queryRe
       }
     `,
     tokenHolderRef
-  );
-
-  const query = useFragment(
-    graphql`
-      fragment TokenHolderListItemQueryFragment on Query {
-        ...HoverCardOnUsernameFollowFragment
-      }
-    `,
-    queryRef
   );
 
   const username = graphqlTruncateUniversalUsername(owner.user);
@@ -122,7 +111,7 @@ function TokenHolderListItem({ tokenHolderRef, direction, fadeUsernames, queryRe
             <StyledUsername>{username}</StyledUsername>
           </StyledGalleryLink>
         ) : (
-          <HoverCardOnUsername userRef={owner.user} queryRef={query}>
+          <HoverCardOnUsername userRef={owner.user}>
             <StyledGalleryLink
               to={{ pathname: '/[username]', query: { username: owner.user.username } }}
               underlined={false}

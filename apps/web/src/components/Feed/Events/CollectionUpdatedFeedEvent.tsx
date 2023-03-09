@@ -14,7 +14,6 @@ import { BaseM, BaseS } from '~/components/core/Text/Text';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { CollectionUpdatedFeedEventFragment$key } from '~/generated/CollectionUpdatedFeedEventFragment.graphql';
-import { CollectionUpdatedFeedEventQueryFragment$key } from '~/generated/CollectionUpdatedFeedEventQueryFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { pluralize } from '~/utils/string';
 import { getTimeSince } from '~/utils/time';
@@ -26,15 +25,10 @@ import { StyledEvent, StyledEventHeader, StyledEventText, StyledTime } from './E
 
 type Props = {
   eventDataRef: CollectionUpdatedFeedEventFragment$key;
-  queryRef: CollectionUpdatedFeedEventQueryFragment$key;
   isSubEvent?: boolean;
 };
 
-export default function CollectionUpdatedFeedEvent({
-  eventDataRef,
-  isSubEvent = false,
-  queryRef,
-}: Props) {
+export default function CollectionUpdatedFeedEvent({ eventDataRef, isSubEvent = false }: Props) {
   const event = useFragment(
     graphql`
       fragment CollectionUpdatedFeedEventFragment on CollectionUpdatedFeedEventData {
@@ -54,15 +48,6 @@ export default function CollectionUpdatedFeedEvent({
       }
     `,
     eventDataRef
-  );
-
-  const query = useFragment(
-    graphql`
-      fragment CollectionUpdatedFeedEventQueryFragment on Query {
-        ...HoverCardOnUsernameFollowFragment
-      }
-    `,
-    queryRef
   );
 
   const tokensToPreview = useMemo(() => {
@@ -94,8 +79,8 @@ export default function CollectionUpdatedFeedEvent({
           <StyledEventHeader>
             <HStack gap={4} inline>
               <StyledEventText isSubEvent={isSubEvent}>
-                {!isSubEvent && <HoverCardOnUsername userRef={event.owner} queryRef={query} />} made
-                updates to {collectionName ? ' ' : 'their collection'}
+                {!isSubEvent && <HoverCardOnUsername userRef={event.owner} />} made updates to{' '}
+                {collectionName ? ' ' : 'their collection'}
                 <InteractiveLink to={collectionPagePath}>{collectionName}</InteractiveLink>
               </StyledEventText>
               {!isSubEvent && <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>}

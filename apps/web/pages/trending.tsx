@@ -1,5 +1,4 @@
-import { graphql, useLazyLoadQuery } from 'react-relay';
-import { fetchQuery } from 'relay-runtime';
+import { graphql, loadQuery, PreloadedQuery, usePreloadedQuery } from 'react-relay';
 
 import { ITEMS_PER_PAGE, MAX_PIECES_DISPLAYED_PER_FEED_EVENT } from '~/components/Feed/constants';
 import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/NotesModal/NotesModal';
@@ -12,7 +11,7 @@ import GalleryRoute from '~/scenes/_Router/GalleryRoute';
 import TrendingHomePage from '~/scenes/Home/TrendingHomePage';
 import { PreloadQueryArgs } from '~/types/PageComponentPreloadQuery';
 
-const activityPageQueryNode = graphql`
+const trendingPageQueryNode = graphql`
   query trendingPageQuery(
     $interactionsFirst: Int!
     $interactionsAfter: String
@@ -31,14 +30,12 @@ const activityPageQueryNode = graphql`
   }
 `;
 
-export default function Trending() {
-  const query = useLazyLoadQuery<trendingPageQuery>(activityPageQueryNode, {
-    interactionsFirst: NOTES_PER_PAGE,
-    globalLast: ITEMS_PER_PAGE,
-    trendingLast: ITEMS_PER_PAGE,
-    visibleTokensPerFeedEvent: MAX_PIECES_DISPLAYED_PER_FEED_EVENT,
-    twitterListLast: USER_PER_PAGE,
-  });
+type Props = {
+  preloadedQuery: PreloadedQuery<trendingPageQuery>;
+};
+
+export default function Trending({ preloadedQuery }: Props) {
+  const query = usePreloadedQuery(trendingPageQueryNode, preloadedQuery);
 
   useOpenTwitterFollowingModal(query);
 
@@ -52,9 +49,9 @@ export default function Trending() {
 }
 
 Trending.preloadQuery = ({ relayEnvironment }: PreloadQueryArgs) => {
-  fetchQuery<trendingPageQuery>(
+  return loadQuery<trendingPageQuery>(
     relayEnvironment,
-    activityPageQueryNode,
+    trendingPageQueryNode,
     {
       interactionsFirst: NOTES_PER_PAGE,
       globalLast: ITEMS_PER_PAGE,
@@ -63,7 +60,7 @@ Trending.preloadQuery = ({ relayEnvironment }: PreloadQueryArgs) => {
       twitterListLast: USER_PER_PAGE,
     },
     { fetchPolicy: 'store-or-network' }
-  ).toPromise();
+  );
 };
 
 /**

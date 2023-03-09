@@ -29,7 +29,7 @@ export function GalleryNameAndDescriptionEditForm({
 }: Props) {
   const { hideModal } = useModalActions();
 
-  const unescapedName = useMemo(() => unescape(initialName), [initialName]);
+  const unescapedName = useMemo(() => unescape(initialName ?? ''), [initialName]);
   const unescapedDescription = useMemo(() => unescape(initialDescription), [initialDescription]);
 
   const [name, setName] = useState(unescapedName ?? '');

@@ -3,7 +3,6 @@ import { useFragment } from 'react-relay';
 import { ConnectionHandler, graphql, SelectorStoreUpdater } from 'relay-runtime';
 
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
-import { AdditionalContext, useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { AdmireButtonFragment$key } from '~/generated/AdmireButtonFragment.graphql';
@@ -13,6 +12,7 @@ import { AdmireButtonRemoveMutation } from '~/generated/AdmireButtonRemoveMutati
 import { AuthModal } from '~/hooks/useAuthModal';
 import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 import { AdmireIcon } from '~/icons/SocializeIcons';
+import { AdditionalContext, useReportError } from '~/shared/contexts/ErrorReportingContext';
 
 type AdmireButtonProps = {
   eventRef: AdmireButtonFragment$key;
@@ -238,11 +238,6 @@ export function AdmireButton({ eventRef, queryRef }: AdmireButtonProps) {
                   id: query.viewer?.user?.id ?? 'unknown',
                   dbid: query.viewer?.user?.dbid ?? 'unknown',
                   username: query.viewer?.user?.username ?? null,
-                  badges: [],
-                  bio: '',
-                  followers: [],
-                  following: [],
-                  galleries: [],
                 },
               },
             },

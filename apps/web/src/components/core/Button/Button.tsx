@@ -90,7 +90,7 @@ const StyledButton = styled.button<StyledButtonProps>`
     if (variant === 'secondary') {
       return css`
         background: ${colors.white};
-        color: ${colors.shadow};
+        color: ${colors.offBlack};
         border: 1px solid ${colors.porcelain};
         padding: 7px 23px;
 

@@ -72,15 +72,18 @@ export default function AnimatedSidebarDrawer({ content }: Props) {
 }
 
 const StyledMotion = styled(motion.div)`
-  height: 100vh;
+  height: 100%;
   min-height: 0;
+  display: flex;
+  // flex: 1; and min-height: 0 on the child, StyledDrawer, prevents the drawer content from stretching this container beyond the viewable area
+  flex: 1;
 `;
 
 const StyledDrawer = styled(VStack)`
   background-color: ${colors.offWhite};
   width: 100%;
-  height: 100%;
   position: relative;
+  min-height: 0;
 
   @media only screen and ${breakpoints.tablet} {
     height: 100vh;

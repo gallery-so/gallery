@@ -16,12 +16,12 @@ import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM, BODY_FONT_FAMILY } from '~/components/core/Text/Text';
 import { SendButton } from '~/components/Feed/Socialize/SendButton';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
-import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { CommentBoxFragment$key } from '~/generated/CommentBoxFragment.graphql';
 import { CommentBoxMutation } from '~/generated/CommentBoxMutation.graphql';
 import { CommentBoxQueryFragment$key } from '~/generated/CommentBoxQueryFragment.graphql';
 import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
+import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 
 const MAX_TEXT_LENGTH = 100;
 
@@ -39,6 +39,7 @@ export function CommentBox({ eventRef, queryRef, onClose }: Props) {
           ... on Viewer {
             user {
               id
+              dbid
               username
             }
           }
@@ -141,14 +142,9 @@ export function CommentBox({ eventRef, queryRef, onClose }: Props) {
               __typename: 'Comment',
               comment: value,
               commenter: {
+                dbid: query.viewer?.user?.dbid ?? 'unknown',
                 id: query.viewer?.user?.id ?? 'unknown',
-                dbid: `GalleryUser:${query.viewer?.user?.id}`,
                 username: query.viewer?.user?.username ?? null,
-                badges: [],
-                bio: '',
-                followers: [],
-                following: [],
-                galleries: [],
               },
               creationTime: new Date().toISOString(),
               dbid: optimisticId,
@@ -189,6 +185,7 @@ export function CommentBox({ eventRef, queryRef, onClose }: Props) {
     isSubmittingComment,
     onClose,
     pushToast,
+    query.viewer?.user?.dbid,
     query.viewer?.user?.id,
     query.viewer?.user?.username,
     reportError,

@@ -32,20 +32,18 @@ export function CollectionSearchResults({ searchQuery, queryRef }: CollectionSea
 
   const { collections, setCollections, activateCollection } = useGalleryEditorContext();
 
-  const collectionList = useMemo(() => Object.values(collections), [collections]);
-
   const filteredCollections = useMemo(() => {
     if (searchQuery.length === 0) {
-      return collectionList;
+      return collections;
     }
 
-    return collectionList.filter((collection) =>
+    return collections.filter((collection) =>
       collection.name?.toLocaleLowerCase().includes(searchQuery.toLowerCase())
     );
-  }, [collectionList, searchQuery]);
+  }, [collections, searchQuery]);
 
   const items = useMemo(() => {
-    return Object.values(collections).map((collection) => collection.dbid);
+    return collections.map((collection) => collection.dbid);
   }, [collections]);
 
   const sensors = useSensors(
@@ -68,16 +66,14 @@ export function CollectionSearchResults({ searchQuery, queryRef }: CollectionSea
       activateCollection(active.id as string);
 
       setCollections((previousCollections) => {
-        const items = Object.keys(previousCollections);
+        const oldIndex = previousCollections.findIndex(
+          (collection) => collection.dbid === active.id.toString()
+        );
+        const newIndex = previousCollections.findIndex(
+          (collection) => collection.dbid === over.id.toString()
+        );
 
-        const oldIndex = items.indexOf(active.id as string);
-        const newIndex = items.indexOf(over.id as string);
-
-        const nextOrder = arrayMove(items, oldIndex, newIndex);
-
-        return nextOrder.reduce((buildingCollections, currentKey) => {
-          return { ...buildingCollections, [currentKey]: previousCollections[currentKey] };
-        }, {});
+        return arrayMove(previousCollections, oldIndex, newIndex);
       });
     },
     [activateCollection, setCollections]

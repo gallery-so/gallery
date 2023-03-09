@@ -2,10 +2,10 @@ import { useCallback } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { useRefreshMetadataFragment$key } from '~/generated/useRefreshMetadataFragment.graphql';
 import { useRefreshToken } from '~/hooks/api/tokens/useRefreshToken';
+import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 
 export function useRefreshMetadata(
   tokenRef: useRefreshMetadataFragment$key
