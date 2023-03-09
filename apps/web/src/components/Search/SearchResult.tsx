@@ -19,6 +19,8 @@ type Props = {
   type: SearchFilterType;
 };
 
+const MAX_DESCRIPTION_CHARACTER = 150;
+
 export default function SearchResult({ name, description, path, type }: Props) {
   const { hideDrawer } = useDrawerActions();
   const { keyword } = useSearchContext();
@@ -42,7 +44,20 @@ export default function SearchResult({ name, description, path, type }: Props) {
   }, [keyword, name]);
 
   const highlightedDescription = useMemo(() => {
-    return description.replace(new RegExp(keyword, 'gi'), (match) => `**${match}**`);
+    const regex = new RegExp(keyword, 'gi');
+    const matchIndex = description.search(regex);
+    let truncatedDescription;
+
+    const maxLength = MAX_DESCRIPTION_CHARACTER;
+
+    if (matchIndex > -1 && matchIndex + keyword.length === description.length) {
+      const endIndex = Math.min(description.length, maxLength);
+      truncatedDescription = `...${description.substring(endIndex - maxLength, endIndex)}`;
+    } else {
+      truncatedDescription = description.substring(0, maxLength);
+    }
+
+    return truncatedDescription.replace(regex, (match) => `**${match}**`);
   }, [keyword, description]);
 
   return (
