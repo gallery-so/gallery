@@ -4,6 +4,7 @@
 #      - main
 
 on: [push]
+name: mobile-release
 
 jobs:
   build:
