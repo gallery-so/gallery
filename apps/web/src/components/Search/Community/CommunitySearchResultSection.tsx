@@ -37,10 +37,13 @@ export default function CommunitySearchResultSection({
     [results, isShowAll]
   );
 
-  if (resultsToShow.length === 0) return null;
-
   return (
-    <SearchSection title={title} isShowAll={isShowAll} onShowAll={() => onChangeFilter('curator')}>
+    <SearchSection
+      title={title}
+      isShowAll={isShowAll}
+      onShowAll={() => onChangeFilter('curator')}
+      hasResult={results.length > 0}
+    >
       {resultsToShow.map((result) => (
         <CommunitySearchResult key={result.community.dbid} communityRef={result.community} />
       ))}

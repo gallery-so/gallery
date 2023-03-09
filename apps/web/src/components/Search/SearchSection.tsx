@@ -3,16 +3,32 @@ import styled from 'styled-components';
 import colors from '../core/colors';
 import InteractiveLink from '../core/InteractiveLink/InteractiveLink';
 import { HStack, VStack } from '../core/Spacer/Stack';
-import { TitleXS } from '../core/Text/Text';
+import { TitleDiatypeL, TitleXS } from '../core/Text/Text';
 
 type Props = {
   children: React.ReactNode;
   title: string;
   isShowAll?: boolean;
   onShowAll: () => void;
+  hasResult: boolean;
 };
 
-export default function SearchSection({ children, title, isShowAll = false, onShowAll }: Props) {
+export default function SearchSection({
+  children,
+  title,
+  isShowAll = false,
+  onShowAll,
+  hasResult,
+}: Props) {
+  if (!isShowAll && !hasResult) return null;
+
+  if (isShowAll && !hasResult)
+    return (
+      <StyledNoResultContainer align="center" justify="center">
+        <TitleDiatypeL>Nothing Found</TitleDiatypeL>
+      </StyledNoResultContainer>
+    );
+
   return (
     <VStack gap={10}>
       <StyledResultHeader align="center" justify="space-between">
@@ -35,4 +51,8 @@ const StyledResultHeader = styled(HStack)`
 
 const StyledInteractiveLink = styled(InteractiveLink)`
   color: ${colors.offBlack};
+`;
+
+const StyledNoResultContainer = styled(VStack)`
+  height: 100%;
 `;

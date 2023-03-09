@@ -37,10 +37,13 @@ export default function GallerySearchResultSection({
     [results, isShowAll]
   );
 
-  if (resultsToShow.length === 0) return null;
-
   return (
-    <SearchSection title={title} isShowAll={isShowAll} onShowAll={() => onChangeFilter('gallery')}>
+    <SearchSection
+      title={title}
+      isShowAll={isShowAll}
+      onShowAll={() => onChangeFilter('gallery')}
+      hasResult={results.length > 0}
+    >
       {resultsToShow.map((result) => (
         <GallerySearchResult key={result.gallery.id} galleryRef={result.gallery} />
       ))}
