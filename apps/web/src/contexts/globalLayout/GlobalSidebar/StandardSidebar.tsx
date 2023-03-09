@@ -227,7 +227,7 @@ export function StandardSidebar({ queryRef }: Props) {
             />
           )}
         </VStack>
-        {isLoggedIn && (
+        {isLoggedIn ? (
           <VStack gap={32}>
             <SidebarIcon
               href={userGalleryRoute}
@@ -255,6 +255,13 @@ export function StandardSidebar({ queryRef }: Props) {
               isActive={activeDrawerType === Settings}
             />
           </VStack>
+        ) : (
+          <SidebarIcon
+            tooltipLabel="Search"
+            onClick={handleSearchClick}
+            icon={<SearchIcon />}
+            isActive={activeDrawerType === Search}
+          />
         )}
         <VStack>
           <SidebarIcon
