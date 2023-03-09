@@ -39,7 +39,7 @@ export default function SearchResult({ name, description, path, type }: Props) {
 
   return (
     <StyledSearchResult href={path} onClick={handleClick}>
-      <StyledSearchResultTitle>{name}</StyledSearchResultTitle>
+      <BaseM>{name}</BaseM>
       <StyledDescription>
         <BaseM>
           <Markdown text={description} />
@@ -59,10 +59,6 @@ const StyledSearchResult = styled(Link)<LinkProps>`
     background-color: ${colors.faint};
     border-radius: 4px;
   }
-`;
-
-const StyledSearchResultTitle = styled(BaseM)`
-  font-weight: 700;
 `;
 
 const StyledDescription = styled.div`

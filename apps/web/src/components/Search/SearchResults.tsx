@@ -135,7 +135,7 @@ export default function SearchResults({ activeFilter, onChangeFilter }: Props) {
 
   // show all
   return (
-    <StyledSearchResultContainer isLoading={isLoading}>
+    <StyledSearchResultContainer isLoading={isLoading} gap={10}>
       {query?.searchUsers?.__typename === 'SearchUsersPayload' && (
         <UserSearchResultSection
           title="curators"
