@@ -4,7 +4,7 @@ import { graphql, useFragment, usePaginationFragment } from 'react-relay';
 import { SelectorStoreUpdater } from 'relay-runtime';
 import styled from 'styled-components';
 
-import { useReportError } from '~/contexts/errorReporting/ErrorReportingContext';
+import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { TwitterFollowingModalFragment$key } from '~/generated/TwitterFollowingModalFragment.graphql';
