@@ -29,4 +29,6 @@ jobs:
         run: yarn install
 
       - name: 🚀 Build app
-        run: eas build -p ios -e development --non-interactive
+        run: |
+          cd apps/mobile;
+          eas build -p ios -e development --non-interactive
