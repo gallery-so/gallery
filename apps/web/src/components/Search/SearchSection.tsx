@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import colors from '../core/colors';
 import InteractiveLink from '../core/InteractiveLink/InteractiveLink';
-import { HStack,VStack } from '../core/Spacer/Stack';
+import { HStack, VStack } from '../core/Spacer/Stack';
 import { TitleXS } from '../core/Text/Text';
 
 type Props = {
@@ -20,7 +20,6 @@ export default function SearchSection({ children, title, isShowAll = false, onSh
 
         {!isShowAll && <StyledInteractiveLink onClick={onShowAll}>Show all</StyledInteractiveLink>}
       </StyledResultHeader>
-
       <VStack>{children}</VStack>
     </VStack>
   );

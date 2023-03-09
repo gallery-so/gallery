@@ -1,11 +1,10 @@
+import { Route } from 'nextjs-routes';
 import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
-import { BaseM } from '~/components/core/Text/Text';
-import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 import { CommunitySearchResultFragment$key } from '~/generated/CommunitySearchResultFragment.graphql';
 
-import { StyledSearchResult, StyledSearchResultTitle } from '../SearchStyles';
+import SearchResult from '../SearchResult';
 
 type Props = {
   communityRef: CommunitySearchResultFragment$key;
@@ -26,9 +25,7 @@ export default function CommunitySearchResult({ communityRef }: Props) {
     communityRef
   );
 
-  const { hideDrawer } = useDrawerActions();
-
-  const route = useMemo(() => {
+  const route = useMemo<Route>(() => {
     const { address, chain } = community.contractAddress;
     const contractAddress = address as string;
 
@@ -42,9 +39,11 @@ export default function CommunitySearchResult({ communityRef }: Props) {
   }, [community]);
 
   return (
-    <StyledSearchResult href={route} onClick={hideDrawer}>
-      <StyledSearchResultTitle>{community.name}</StyledSearchResultTitle>
-      <BaseM>{community.description}</BaseM>
-    </StyledSearchResult>
+    <SearchResult
+      name={community.name ?? ''}
+      description={community.description ?? ''}
+      path={route}
+      type="community"
+    />
   );
 }

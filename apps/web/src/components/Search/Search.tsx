@@ -1,11 +1,11 @@
-import { Suspense, useCallback, useState } from 'react';
+import { Suspense, useState } from 'react';
 import styled from 'styled-components';
 
 import DrawerHeader from '~/contexts/globalLayout/GlobalSidebar/DrawerHeader';
-import useDebounce from '~/hooks/useDebounce';
 
 import { VStack } from '../core/Spacer/Stack';
 import { Spinner } from '../core/Spinner/Spinner';
+import SearchProvider from './SearchContext';
 import SearchFilter from './SearchFilter';
 import SearchInput from './SearchInput';
 import SearchResults from './SearchResults';
@@ -13,19 +13,12 @@ import SearchResults from './SearchResults';
 export type SearchFilterType = 'curator' | 'gallery' | 'community' | null;
 
 export default function Search() {
-  const [keyword, setKeyword] = useState<string>('');
-  const debouncedKeyword = useDebounce(keyword, 200);
-
   const [selectedFilter, setSelectedFilter] = useState<SearchFilterType>(null);
 
-  const handleSearch = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    setKeyword(event.target.value);
-  }, []);
-
   return (
-    <>
+    <SearchProvider>
       <DrawerHeader>
-        <SearchInput onChange={handleSearch} />
+        <SearchInput />
       </DrawerHeader>
 
       <SearchFilter activeFilter={selectedFilter} onChangeFilter={setSelectedFilter} />
@@ -38,14 +31,10 @@ export default function Search() {
             </StyledSpinnerContainer>
           }
         >
-          <SearchResults
-            activeFilter={selectedFilter}
-            keyword={debouncedKeyword}
-            onChangeFilter={setSelectedFilter}
-          />
+          <SearchResults activeFilter={selectedFilter} onChangeFilter={setSelectedFilter} />
         </Suspense>
       </StyledSearchContent>
-    </>
+    </SearchProvider>
   );
 }
 

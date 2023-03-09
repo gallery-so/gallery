@@ -1,10 +1,9 @@
+import { Route } from 'nextjs-routes';
 import { graphql, useFragment } from 'react-relay';
 
-import { BaseM } from '~/components/core/Text/Text';
-import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 import { GallerySearchResultFragment$key } from '~/generated/GallerySearchResultFragment.graphql';
 
-import { StyledSearchResult, StyledSearchResultTitle } from '../SearchStyles';
+import SearchResult from '../SearchResult';
 
 type Props = {
   galleryRef: GallerySearchResultFragment$key;
@@ -24,17 +23,17 @@ export default function GallerySearchResult({ galleryRef }: Props) {
     galleryRef
   );
 
-  const { hideDrawer } = useDrawerActions();
-
   const route = {
     pathname: '/[username]/galleries/[galleryId]',
     query: { username: gallery.owner?.username as string, galleryId: gallery.dbid },
-  };
+  } as Route;
 
   return (
-    <StyledSearchResult href={route} onClick={hideDrawer}>
-      <StyledSearchResultTitle>{gallery.name}</StyledSearchResultTitle>
-      <BaseM>{gallery?.owner?.username}</BaseM>
-    </StyledSearchResult>
+    <SearchResult
+      name={gallery.name ?? ''}
+      description={gallery?.owner?.username ?? ''}
+      path={route}
+      type="gallery"
+    />
   );
 }

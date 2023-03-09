@@ -1,14 +1,12 @@
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 
 import colors from '../core/colors';
+import { useSearchContext } from './SearchContext';
 
-type Props = {
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-};
-
-export default function SearchInput({ onChange }: Props) {
+export default function SearchInput() {
   const ref = useRef<HTMLInputElement>(null);
+  const { setKeyword } = useSearchContext();
 
   useEffect(() => {
     if (ref.current) {
@@ -16,8 +14,20 @@ export default function SearchInput({ onChange }: Props) {
     }
   }, []);
 
+  const handleChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setKeyword(event.target.value);
+    },
+    [setKeyword]
+  );
+
   return (
-    <StyledInput ref={ref} type="text" placeholder="Search for anything..." onChange={onChange} />
+    <StyledInput
+      ref={ref}
+      type="text"
+      placeholder="Search for anything..."
+      onChange={handleChange}
+    />
   );
 }
 

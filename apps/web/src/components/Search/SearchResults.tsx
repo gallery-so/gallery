@@ -9,15 +9,16 @@ import { TitleDiatypeL } from '../core/Text/Text';
 import CommunitySearchResultSection from './Community/CommunitySearchResultSection';
 import GallerySearchResultSection from './Gallery/GallerySearchResultSection';
 import { SearchFilterType } from './Search';
+import { useSearchContext } from './SearchContext';
 import UserSearchResultSection from './User/UserSearchResultSection';
 
 type Props = {
-  keyword: string;
   activeFilter: SearchFilterType;
   onChangeFilter: (filter: SearchFilterType) => void;
 };
 
-export default function SearchResults({ activeFilter, keyword, onChangeFilter }: Props) {
+export default function SearchResults({ activeFilter, onChangeFilter }: Props) {
+  const { keyword } = useSearchContext();
   const deferredKeyword = useDeferredValue(keyword);
 
   const query = useLazyLoadQuery<SearchResultsQuery>(
