@@ -1,12 +1,11 @@
-import Link, { LinkProps } from 'next/link';
 import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
-import styled from 'styled-components';
 
-import colors from '~/components/core/colors';
 import { BaseM } from '~/components/core/Text/Text';
 import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 import { CommunitySearchResultFragment$key } from '~/generated/CommunitySearchResultFragment.graphql';
+
+import { StyledSearchResult, StyledSearchResultTitle } from '../SearchStyles';
 
 type Props = {
   communityRef: CommunitySearchResultFragment$key;
@@ -43,24 +42,9 @@ export default function CommunitySearchResult({ communityRef }: Props) {
   }, [community]);
 
   return (
-    <StyledResult href={route} onClick={hideDrawer}>
-      <StyledResultTitle>{community.name}</StyledResultTitle>
+    <StyledSearchResult href={route} onClick={hideDrawer}>
+      <StyledSearchResultTitle>{community.name}</StyledSearchResultTitle>
       <BaseM>{community.description}</BaseM>
-    </StyledResult>
+    </StyledSearchResult>
   );
 }
-
-const StyledResult = styled(Link)<LinkProps>`
-  color: ${colors.offBlack};
-  padding: 16px 12px;
-  cursor: pointer;
-  text-decoration: none;
-
-  &:hover {
-    background-color: ${colors.faint};
-    border-radius: 4px;
-  }
-`;
-const StyledResultTitle = styled(BaseM)`
-  font-weight: 700;
-`;

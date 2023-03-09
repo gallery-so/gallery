@@ -1,11 +1,12 @@
-import Link, { LinkProps } from 'next/link';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
-import colors from '~/components/core/colors';
+import Markdown from '~/components/core/Markdown/Markdown';
 import { BaseM } from '~/components/core/Text/Text';
 import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 import { UserSearchResultFragment$key } from '~/generated/UserSearchResultFragment.graphql';
+
+import { StyledSearchResult, StyledSearchResultTitle } from '../SearchStyles';
 
 type Props = {
   userRef: UserSearchResultFragment$key;
@@ -30,24 +31,25 @@ export default function UserSearchResult({ userRef }: Props) {
   };
 
   return (
-    <StyledResult href={route} onClick={hideDrawer}>
-      <StyledResultTitle>{user.username}</StyledResultTitle>
-      <BaseM>{user.bio}</BaseM>
-    </StyledResult>
+    <StyledSearchResult href={route} onClick={hideDrawer}>
+      <StyledSearchResultTitle>{user.username}</StyledSearchResultTitle>
+      <StyledBio>
+        <BaseM>
+          <Markdown text={user.bio ?? ''} />
+        </BaseM>
+      </StyledBio>
+    </StyledSearchResult>
   );
 }
 
-const StyledResult = styled(Link)<LinkProps>`
-  color: ${colors.offBlack};
-  padding: 16px 12px;
-  cursor: pointer;
-  text-decoration: none;
-
-  &:hover {
-    background-color: ${colors.faint};
-    border-radius: 4px;
+const StyledBio = styled.div`
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  -webkit-box-pack: end;
+  p {
+    display: inline;
   }
-`;
-const StyledResultTitle = styled(BaseM)`
-  font-weight: 700;
 `;

@@ -1,11 +1,10 @@
-import Link, { LinkProps } from 'next/link';
 import { graphql, useFragment } from 'react-relay';
-import styled from 'styled-components';
 
-import colors from '~/components/core/colors';
 import { BaseM } from '~/components/core/Text/Text';
 import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 import { GallerySearchResultFragment$key } from '~/generated/GallerySearchResultFragment.graphql';
+
+import { StyledSearchResult, StyledSearchResultTitle } from '../SearchStyles';
 
 type Props = {
   galleryRef: GallerySearchResultFragment$key;
@@ -33,24 +32,9 @@ export default function GallerySearchResult({ galleryRef }: Props) {
   };
 
   return (
-    <StyledResult href={route} onClick={hideDrawer}>
-      <StyledResultTitle>{gallery.name}</StyledResultTitle>
+    <StyledSearchResult href={route} onClick={hideDrawer}>
+      <StyledSearchResultTitle>{gallery.name}</StyledSearchResultTitle>
       <BaseM>{gallery?.owner?.username}</BaseM>
-    </StyledResult>
+    </StyledSearchResult>
   );
 }
-
-const StyledResult = styled(Link)<LinkProps>`
-  color: ${colors.offBlack};
-  padding: 16px 12px;
-  cursor: pointer;
-  text-decoration: none;
-
-  &:hover {
-    background-color: ${colors.faint};
-    border-radius: 4px;
-  }
-`;
-const StyledResultTitle = styled(BaseM)`
-  font-weight: 700;
-`;
