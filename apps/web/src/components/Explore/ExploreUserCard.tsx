@@ -8,7 +8,6 @@ import { ExploreUserCardFragment$key } from '~/generated/ExploreUserCardFragment
 import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
-import { pluralize } from '~/utils/string';
 
 import Badge from '../Badge/Badge';
 import breakpoints from '../core/breakpoints';
@@ -36,9 +35,6 @@ export default function ExploreUserCard({ userRef, queryRef }: Props) {
         }
         bio
         galleries {
-          collections {
-            id
-          }
           tokenPreviews {
             large
           }
@@ -79,16 +75,6 @@ export default function ExploreUserCard({ userRef, queryRef }: Props) {
     return gallery?.tokenPreviews?.slice(0, 2) ?? [];
   }, [userGalleries]);
 
-  const collectionCount = useMemo(() => {
-    return userGalleries.reduce((sum, gallery) => {
-      if (gallery === null || gallery.hidden || !gallery.collections) {
-        return sum;
-      }
-
-      return sum + gallery.collections.length;
-    }, 0);
-  }, [userGalleries]);
-
   const userBadges = useMemo(() => {
     const badges = [];
 
@@ -102,6 +88,13 @@ export default function ExploreUserCard({ userRef, queryRef }: Props) {
   }, [user.badges]);
 
   const isMobile = useIsMobileWindowWidth();
+
+  const bioFirstLine = useMemo(() => {
+    if (!user.bio) {
+      return '';
+    }
+    return user.bio.split('\n')[0] ?? '';
+  }, [user.bio]);
 
   return (
     // @ts-expect-error This is the future next/link version
@@ -134,7 +127,7 @@ export default function ExploreUserCard({ userRef, queryRef }: Props) {
               )}
             </HStack>
             <StyledUserBio>
-              <Markdown text={user.bio ?? ''} />
+              <Markdown text={bioFirstLine} />
             </StyledUserBio>
           </UserDetailsText>
         </UserDetailsContainer>
@@ -187,15 +180,12 @@ const UserDetailsText = styled(VStack)`
 `;
 
 const StyledUserBio = styled(BaseM)`
-  height: 20px;
-  overflow: hidden;
+  height: 20px; // ensure consistent height even if bio is not present
 
-  display: block;
+  line-clamp: 1;
   -webkit-line-clamp: 1;
   display: -webkit-box;
   -webkit-box-orient: vertical;
-
-  line-clamp: 1;
 `;
 
 const TokenPreviewContainer = styled.div`
