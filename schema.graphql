@@ -1,5 +1,3 @@
-directive @defer(label: String!, if: Boolean = true) on FRAGMENT_SPREAD | INLINE_FRAGMENT
-
 """
 Any field decorated with the @experimental directive should not be used in production.
 It will not conform to our rules around breaking changes.
@@ -95,6 +93,9 @@ type GalleryUser implements Node @goEmbedHelper {
   following: [GalleryUser] @goField(forceResolver: true)
   feed(before: String, after: String, first: Int, last: Int): FeedConnection
     @goField(forceResolver: true)
+  sharedFollowers(before: String, after: String, first: Int, last: Int): UsersConnection
+    @authRequired
+    @goField(forceResolver: true)
 }
 
 type Wallet implements Node {
@@ -162,8 +163,8 @@ type PreviewURLSet {
   medium: String
   large: String
   srcSet: String
+  liveRender: String
   blurhash: String @experimental @goField(forceResolver: true)
-  aspectRatio: Float @experimental @goField(forceResolver: true)
 }
 
 type VideoURLSet {
@@ -171,6 +172,12 @@ type VideoURLSet {
   small: String
   medium: String
   large: String
+}
+
+type MediaDimensions {
+  width: Int
+  height: Int
+  aspectRatio: Float
 }
 
 interface Media {
@@ -186,6 +193,9 @@ interface Media {
 
   # All Media types will also have something like contentRenderURL or contentRenderURLs,
   # which are the URL(s) that should actually be used for rendering the media's content
+
+  # The dimensions of the media, if known
+  dimensions: MediaDimensions
 }
 
 type ImageMedia implements Media {
@@ -194,6 +204,7 @@ type ImageMedia implements Media {
   mediaType: String
 
   contentRenderURL: String
+  dimensions: MediaDimensions
 }
 
 type GIFMedia implements Media {
@@ -202,6 +213,7 @@ type GIFMedia implements Media {
   mediaType: String
 
   contentRenderURL: String
+  dimensions: MediaDimensions
 }
 
 type VideoMedia implements Media {
@@ -210,6 +222,7 @@ type VideoMedia implements Media {
   mediaType: String
 
   contentRenderURLs: VideoURLSet
+  dimensions: MediaDimensions
 }
 
 type AudioMedia implements Media {
@@ -218,6 +231,7 @@ type AudioMedia implements Media {
   mediaType: String
 
   contentRenderURL: String
+  dimensions: MediaDimensions
 }
 
 type TextMedia implements Media {
@@ -226,6 +240,7 @@ type TextMedia implements Media {
   mediaType: String
 
   contentRenderURL: String
+  dimensions: MediaDimensions
 }
 
 type PdfMedia implements Media {
@@ -234,6 +249,7 @@ type PdfMedia implements Media {
   mediaType: String
 
   contentRenderURL: String
+  dimensions: MediaDimensions
 }
 
 type HtmlMedia implements Media {
@@ -242,6 +258,7 @@ type HtmlMedia implements Media {
   mediaType: String
 
   contentRenderURL: String
+  dimensions: MediaDimensions
 }
 
 type JsonMedia implements Media {
@@ -250,6 +267,7 @@ type JsonMedia implements Media {
   mediaType: String
 
   contentRenderURL: String
+  dimensions: MediaDimensions
 }
 
 type GltfMedia implements Media {
@@ -258,6 +276,7 @@ type GltfMedia implements Media {
   mediaType: String
 
   contentRenderURL: String
+  dimensions: MediaDimensions
 }
 
 type UnknownMedia implements Media {
@@ -266,6 +285,7 @@ type UnknownMedia implements Media {
   mediaType: String
 
   contentRenderURL: String
+  dimensions: MediaDimensions
 }
 
 type SyncingMedia implements Media {
@@ -274,6 +294,7 @@ type SyncingMedia implements Media {
   mediaType: String
 
   contentRenderURL: String
+  dimensions: MediaDimensions
 }
 
 type InvalidMedia implements Media {
@@ -282,6 +303,7 @@ type InvalidMedia implements Media {
   mediaType: String
 
   contentRenderURL: String
+  dimensions: MediaDimensions
 }
 
 enum TokenType {
@@ -916,6 +938,36 @@ type TrendingUsersPayload {
 
 union TrendingUsersPayloadOrError = TrendingUsersPayload
 
+type UserSearchResult {
+  user: GalleryUser
+}
+
+type SearchUsersPayload {
+  results: [UserSearchResult!]
+}
+
+union SearchUsersPayloadOrError = SearchUsersPayload | ErrInvalidInput
+
+type GallerySearchResult {
+  gallery: Gallery
+}
+
+type SearchGalleriesPayload {
+  results: [GallerySearchResult!]
+}
+
+union SearchGalleriesPayloadOrError = SearchGalleriesPayload | ErrInvalidInput
+
+type CommunitySearchResult {
+  community: Community
+}
+
+type SearchCommunitiesPayload {
+  results: [CommunitySearchResult!]
+}
+
+union SearchCommunitiesPayloadOrError = SearchCommunitiesPayload | ErrInvalidInput
+
 type Query {
   node(id: ID!): Node
   viewer: ViewerOrError @authRequired
@@ -942,6 +994,44 @@ type Query {
   galleryById(id: DBID!): GalleryByIdPayloadOrError
   viewerGalleryById(id: DBID!): ViewerGalleryByIdPayloadOrError
   trendingUsers(input: TrendingUsersInput!): TrendingUsersPayloadOrError
+  """
+  Search for users with optional weighting. Weights are floats in the [0.0. 1.0] range
+  that help determine how matches will be ranked. usernameWeight defaults to 0.4 and
+  bioWeight defaults to 0.2, meaning that a search result matching a username is considered
+  twice as relevant as a search result matching a bio.
+  """
+  searchUsers(
+    query: String!
+    limit: Int
+    usernameWeight: Float
+    bioWeight: Float
+  ): SearchUsersPayloadOrError
+  """
+  Search for galleries with optional weighting. Weights are floats in the [0.0. 1.0] range
+  that help determine how matches will be ranked. nameWeight defaults to 0.4 and
+  descriptionWeight defaults to 0.2, meaning that a search result matching a gallery name is
+  considered twice as relevant as a search result matching a gallery description.
+  """
+  searchGalleries(
+    query: String!
+    limit: Int
+    nameWeight: Float
+    descriptionWeight: Float
+  ): SearchGalleriesPayloadOrError
+  """
+  Search for communities with optional weighting. Weights are floats in the [0.0. 1.0] range
+  that help determine how matches will be ranked. nameWeight defaults to 0.4, descriptionWeight
+  defaults to 0.2, and poapAddressWeight defaults to 0.1, meaning that a search result matching
+  a community name is considered twice as relevant as a search result matching a community
+  description, and four times as relevant as a search result matching a POAP address string.
+  """
+  searchCommunities(
+    query: String!
+    limit: Int
+    nameWeight: Float
+    descriptionWeight: Float
+    poapAddressWeight: Float
+  ): SearchCommunitiesPayloadOrError
 
   # Retool Specific
   usersByRole(role: Role!, before: String, after: String, first: Int, last: Int): UsersConnection
@@ -1850,6 +1940,15 @@ union DisconnectSocialAccountPayloadOrError =
   | ErrInvalidInput
   | ErrNotAuthorized
 
+type FollowAllSocialConnectionsPayload {
+  viewer: Viewer
+}
+
+union FollowAllSocialConnectionsPayloadOrError =
+    FollowAllSocialConnectionsPayload
+  | ErrInvalidInput
+  | ErrNotAuthorized
+
 type Mutation {
   # User Mutations
   addUserWallet(
@@ -1910,6 +2009,9 @@ type Mutation {
   ): UpdateSocialAccountDisplayedPayloadOrError @authRequired
 
   followUser(userId: DBID!): FollowUserPayloadOrError @authRequired
+  followAllSocialConnections(
+    accountType: SocialAccountType!
+  ): FollowAllSocialConnectionsPayloadOrError @authRequired
   unfollowUser(userId: DBID!): UnfollowUserPayloadOrError @authRequired
 
   admireFeedEvent(feedEventId: DBID!): AdmireFeedEventPayloadOrError @authRequired

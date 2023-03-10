@@ -14,6 +14,7 @@ import NotFound from '~/scenes/NotFound/NotFound';
 import { UserGalleryLayout } from '~/scenes/UserGalleryPage/UserGalleryLayout';
 import { UserNameAndDescriptionHeader } from '~/scenes/UserGalleryPage/UserNameAndDescriptionHeader';
 
+import UserSharedInfo from './UserSharedInfo';
 import UserTwitterSection from './UserTwitterSection';
 
 type Props = {
@@ -40,6 +41,7 @@ function UserGallery({ queryRef }: Props) {
         user: userByUsername(username: $username) @required(action: THROW) {
           ... on GalleryUser {
             __typename
+            dbid
 
             featuredGallery @required(action: THROW) {
               ...UserGalleryLayoutFragment
@@ -47,6 +49,7 @@ function UserGallery({ queryRef }: Props) {
 
             ...UserNameAndDescriptionHeader
             ...UserTwitterSectionFragment
+            ...UserSharedInfoFragment
           }
           ... on ErrUserNotFound {
             __typename
@@ -90,10 +93,15 @@ function UserGallery({ queryRef }: Props) {
     throw new Error(`Expected user to be type GalleryUser. Received: ${user.__typename}`);
   }
 
+  const isAuthenticatedUsersPage = loggedInUserId === user?.dbid;
+
   return (
     <VStack gap={isMobile ? 12 : 24}>
       <VStack gap={12}>
         <UserNameAndDescriptionHeader userRef={user} queryRef={query} />
+
+        {/* islgoged in and not own page */}
+        {isLoggedIn && !isAuthenticatedUsersPage && <UserSharedInfo userRef={user} />}
 
         <UserTwitterSection userRef={user} queryRef={query} />
       </VStack>
