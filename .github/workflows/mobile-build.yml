@@ -9,7 +9,6 @@ on:
       - apps/mobile/**/*
       - packages/shared/**/*
 
-
 jobs:
   build-android:
     runs-on: ubuntu-latest
