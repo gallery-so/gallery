@@ -137,14 +137,14 @@ function SidebarNftIcon({
           { id: token.dbid }
         ).toPromise();
 
-        if (refreshedToken?.tokenById?.media?.__typename !== 'SyncingMedia') {
+        if (refreshedToken?.tokenById?.media?.__typename === 'SyncingMedia') {
+          // We're still syncing, so queue up another refresh
+          timeoutId = setTimeout(refreshToken, POLLING_INTERVAL_MS);
+        } else {
           // If the token was failing before, we need to make sure
           // that it's error state gets cleared on the chance
           // that it just got loaded.
           clearTokenFailureState([token.dbid]);
-        } else {
-          // We're still syncing, so queue up another refresh
-          timeoutId = setTimeout(refreshToken, POLLING_INTERVAL_MS);
         }
       }
 
