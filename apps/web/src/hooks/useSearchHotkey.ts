@@ -7,9 +7,6 @@ export function useSearchHotkey(callback: () => void) {
   useEffect(() => {
     function handlePress(event: KeyboardEvent) {
       if (event.key === 'k' && (event.metaKey || event.ctrlKey)) {
-        // Avoid trying to save page as HTML
-        event.preventDefault();
-
         callbackRef.current();
       }
     }
