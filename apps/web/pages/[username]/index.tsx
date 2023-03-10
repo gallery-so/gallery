@@ -15,14 +15,17 @@ import { StandardSidebar } from '~/contexts/globalLayout/GlobalSidebar/StandardS
 import { UsernameQuery } from '~/generated/UsernameQuery.graphql';
 import { MetaTagProps } from '~/pages/_app';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
-import { FOLLOWERS_PER_PAGE } from '~/scenes/Modals/PaginatedUsersList';
+import { FOLLOWERS_PER_PAGE } from '~/scenes/Modals/PaginatedList/PaginatedUsersList';
 import UserGalleryPage from '~/scenes/UserGalleryPage/UserGalleryPage';
+import { COMMUNITIES_PER_PAGE } from '~/scenes/UserGalleryPage/UserSharedCommunities';
 import { PreloadQueryArgs } from '~/types/PageComponentPreloadQuery';
 import { openGraphMetaTags } from '~/utils/openGraphMetaTags';
 
 const UsernameQueryNode = graphql`
   query UsernameQuery(
     $username: String!
+    $sharedCommunitiesFirst: Int
+    $sharedCommunitiesAfter: String
     $sharedFollowersFirst: Int
     $sharedFollowersAfter: String
   ) {
@@ -117,6 +120,7 @@ UserGallery.preloadQuery = ({ relayEnvironment, query }: PreloadQueryArgs) => {
       UsernameQueryNode,
       {
         username: query.username,
+        sharedCommunitiesFirst: COMMUNITIES_PER_PAGE,
         sharedFollowersFirst: FOLLOWERS_PER_PAGE,
       },
       { fetchPolicy: 'store-or-network' }

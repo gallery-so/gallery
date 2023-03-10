@@ -1,17 +1,15 @@
-import Link from 'next/link';
 import { Route } from 'nextjs-routes';
 import { useCallback, useMemo, useState } from 'react';
 import { graphql, usePaginationFragment } from 'react-relay';
 import { AutoSizer, InfiniteLoader, List, ListRowRenderer } from 'react-virtualized';
 import styled from 'styled-components';
 
-import colors from '~/components/core/colors';
-import Markdown from '~/components/core/Markdown/Markdown';
-import { HStack, VStack } from '~/components/core/Spacer/Stack';
-import { BaseM, TitleDiatypeM } from '~/components/core/Text/Text';
+import { VStack } from '~/components/core/Spacer/Stack';
 import { PaginatedUsersListFragment$key } from '~/generated/PaginatedUsersListFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import unescape from '~/utils/unescape';
+
+import PaginatedListRow from './PaginatedListRow';
 
 type Props = {
   queryRef: PaginatedUsersListFragment$key;
@@ -79,14 +77,11 @@ export default function PaginatedUsersList({ queryRef }: Props) {
 
       return (
         <div style={style} key={key}>
-          <StyledRow href={userUrlPath} index={index}>
-            <StyledHStack justify="space-between" align="center" gap={8}>
-              <StyledVStack justify="center">
-                <TitleDiatypeM>{user.username}</TitleDiatypeM>
-                <StyledUserBio>{bioFirstLine && <Markdown text={bioFirstLine} />}</StyledUserBio>
-              </StyledVStack>
-            </StyledHStack>
-          </StyledRow>
+          <PaginatedListRow
+            title={user.username ?? ''}
+            subTitle={bioFirstLine}
+            href={userUrlPath}
+          />
         </div>
       );
     },
@@ -124,33 +119,4 @@ const StyledList = styled(VStack)<{ fullscreen: boolean }>`
   max-width: 375px;
   margin: 4px;
   height: ${({ fullscreen }) => (fullscreen ? '100%' : '640px')};
-`;
-
-const StyledRow = styled(Link)`
-  padding: 8px 12px;
-  text-decoration: none;
-  min-height: 56px;
-  max-height: 56px;
-  display: block;
-
-  &:hover {
-    background: ${colors.offWhite};
-  }
-`;
-
-const StyledHStack = styled(HStack)`
-  height: 100%;
-`;
-
-const StyledVStack = styled(VStack)`
-  width: 100%;
-`;
-
-const StyledUserBio = styled(BaseM)`
-  height: 20px; // ensure consistent height even if bio is not present
-  line-clamp: 1;
-  -webkit-line-clamp: 1;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
 `;
