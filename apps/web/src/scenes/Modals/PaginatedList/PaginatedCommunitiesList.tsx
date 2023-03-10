@@ -50,8 +50,6 @@ export default function PaginatedCommunitiesList({ queryRef }: Props) {
     loadNext(COMMUNITIES_PER_PAGE);
   }, [loadNext]);
 
-  // const loadMoreRows = isFetching ? () => {} : handleLoadMore;
-
   const isRowLoaded = ({ index }: { index: number }) =>
     !hasNext || index < sharedCommunities.length;
 

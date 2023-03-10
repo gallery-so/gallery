@@ -100,7 +100,6 @@ function UserGallery({ queryRef }: Props) {
       <VStack gap={12}>
         <UserNameAndDescriptionHeader userRef={user} queryRef={query} />
 
-        {/* islgoged in and not own page */}
         {isLoggedIn && !isAuthenticatedUsersPage && <UserSharedInfo userRef={user} />}
 
         <UserTwitterSection userRef={user} queryRef={query} />
