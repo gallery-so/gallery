@@ -8,19 +8,21 @@
       "distribution": "internal",
       "autoIncrement": true,
       "ios": {
-        "ascAppId": "1672735556",
         "resourceClass": "m1-medium"
       }
     },
     "production": {
       "ios": {
-        "ascAppId": "1672735556",
         "resourceClass": "m1-medium"
       },
       "autoIncrement": true
     }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "ios": {
+        "ascAppId": "1672735556"
+      }
+    }
   }
 }
