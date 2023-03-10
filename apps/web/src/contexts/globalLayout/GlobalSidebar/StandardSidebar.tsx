@@ -173,7 +173,7 @@ export function StandardSidebar({ queryRef }: Props) {
             onClick={handleHomeIconClick}
             icon={<GLogoIcon />}
           />
-          {isLoggedIn && (
+          {isLoggedIn ? (
             <>
               <SidebarIcon
                 href={userGalleryRoute}
@@ -201,6 +201,13 @@ export function StandardSidebar({ queryRef }: Props) {
                 isActive={activeDrawerType === Settings}
               />
             </>
+          ) : (
+            <SidebarIcon
+              tooltipLabel="Search"
+              onClick={handleSearchClick}
+              icon={<SearchIcon />}
+              isActive={activeDrawerType === Search}
+            />
           )}
         </StyledMobileIconContainer>
       </StyledStandardSidebar>
