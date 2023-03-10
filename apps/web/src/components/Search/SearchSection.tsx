@@ -43,6 +43,7 @@ export default function SearchSection({
 
 const StyledTitle = styled(TitleXS)`
   text-transform: uppercase;
+  color: ${colors.metal};
 `;
 
 const StyledResultHeader = styled(HStack)`
