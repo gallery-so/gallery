@@ -1,4 +1,4 @@
-name: mobile-release
+name: mobile-build
 
 on:
   push:
