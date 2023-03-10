@@ -1,0 +1,58 @@
+name: mobile-release
+
+on:
+  push:
+#    branches:
+#      - main
+
+jobs:
+  release-android:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v3
+
+      - name: 🏗 Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.18.1
+          cache: yarn
+
+      - name: 🏗 Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: 📦 Install dependencies
+        run: yarn install
+
+      - name: 🚀 Build app
+        run: |
+          cd apps/mobile;
+          eas submit -p android --wait --non-interactive
+  release-ios:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v3
+
+      - name: 🏗 Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.18.1
+          cache: yarn
+
+      - name: 🏗 Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: 📦 Install dependencies
+        run: yarn install
+
+      - name: 🚀 Build app
+        run: |
+          cd apps/mobile;
+          eas submit -p ios --wait --non-interactive
