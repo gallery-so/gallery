@@ -8,6 +8,7 @@ import { BaseS } from '~/components/core/Text/Text';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { UserSharedCommunitiesFragment$key } from '~/generated/UserSharedCommunitiesFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
+import { getUrlForCommunity } from '~/utils/getCommunityUrlForToken';
 
 import PaginatedCommunitiesList from '../Modals/PaginatedList/PaginatedCommunitiesList';
 
@@ -29,6 +30,7 @@ export default function UserSharedCommunities({ queryRef }: Props) {
               ... on Community {
                 __typename
                 name
+                chain
                 contractAddress {
                   address
                 }
@@ -73,17 +75,21 @@ export default function UserSharedCommunities({ queryRef }: Props) {
 
   const content = useMemo(() => {
     // Display up to 3 communities
-    const result = communitiesToDisplay.map(
-      (community) =>
-        community && (
-          <StyledInteractiveLink
-            href={`/community/${community.contractAddress?.address}`} // todo handle chains
-            key={community.name}
-          >
-            {community.name}
-          </StyledInteractiveLink>
-        )
-    );
+    const result = communitiesToDisplay.map((community) => {
+      if (!community) return null;
+      if (community.contractAddress?.address && community.chain) {
+        const url = getUrlForCommunity(community.contractAddress?.address, community.chain);
+
+        if (url) {
+          return (
+            <StyledInteractiveLink to={url} key={community.name}>
+              {community.name}
+            </StyledInteractiveLink>
+          );
+        }
+      }
+      return <BaseS key={community.name}>{community.name}</BaseS>;
+    });
 
     // If there are more than 3 communities, add a link to show all in a popover
     if (totalSharedCommunities > 3) {

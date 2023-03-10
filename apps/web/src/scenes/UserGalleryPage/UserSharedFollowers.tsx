@@ -72,7 +72,13 @@ export default function UserSharedFollowers({ queryRef }: Props) {
     const result = followersToDisplay.map(
       (user) =>
         user && (
-          <StyledInteractiveLink href={`/${user.username}`} key={user.username}>
+          <StyledInteractiveLink
+            to={{
+              pathname: `/[username]`,
+              query: { username: user.username ?? '' },
+            }}
+            key={user.username}
+          >
             {user.username}
           </StyledInteractiveLink>
         )

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Route } from 'nextjs-routes';
+import { useMemo } from 'react';
 import styled from 'styled-components';
 
 import colors from '~/components/core/colors';
@@ -10,23 +11,36 @@ import { BaseM, TitleDiatypeM } from '~/components/core/Text/Text';
 type Props = {
   title?: string;
   subTitle?: string;
-  href: Route;
+  href: Route | null;
 };
 
 export default function PaginatedListRow({ title, subTitle, href }: Props) {
-  return (
-    <StyledRow href={href}>
+  const rowContent = useMemo(() => {
+    return (
       <StyledHStack justify="space-between" align="center" gap={8}>
         <StyledVStack justify="center">
           <TitleDiatypeM>{title}</TitleDiatypeM>
           <StyledUserBio>{subTitle && <Markdown text={subTitle} />}</StyledUserBio>
         </StyledVStack>
       </StyledHStack>
-    </StyledRow>
-  );
+    );
+  }, [subTitle, title]);
+
+  if (href === null) {
+    return <StyledRowNonLink>{rowContent}</StyledRowNonLink>;
+  }
+
+  return <StyledRowLink href={href}>{rowContent}</StyledRowLink>;
 }
 
-const StyledRow = styled(Link)`
+const StyledRowNonLink = styled.div`
+  padding: 8px 12px;
+  &:hover {
+    background: ${colors.offWhite};
+  }
+`;
+
+const StyledRowLink = styled(Link)`
   padding: 8px 12px;
   text-decoration: none;
   min-height: 56px;

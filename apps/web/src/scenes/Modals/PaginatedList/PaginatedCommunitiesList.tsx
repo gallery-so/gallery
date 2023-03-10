@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { PaginatedCommunitiesListFragment$key } from '~/generated/PaginatedCommunitiesListFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
+import { getUrlForCommunity } from '~/utils/getCommunityUrlForToken';
 import unescape from '~/utils/unescape';
 
 import { COMMUNITIES_PER_PAGE } from '../../UserGalleryPage/UserSharedCommunities';
@@ -30,6 +31,7 @@ export default function PaginatedCommunitiesList({ queryRef }: Props) {
               contractAddress {
                 address
               }
+              chain
             }
           }
         }
@@ -70,10 +72,10 @@ export default function PaginatedCommunitiesList({ queryRef }: Props) {
       const unescapedDescription = community.description ? unescape(community.description) : '';
       const descriptionFirstLine = unescapedDescription.split('\n')[0] ?? '';
 
-      const communityUrlPath: Route = {
-        pathname: `/community/[address]`,
-        query: { address: community.contractAddress.address ?? '' }, // handle chains
-      };
+      const communityUrlPath =
+        community.contractAddress?.address && community.chain
+          ? getUrlForCommunity(community.contractAddress?.address, community.chain)
+          : null;
 
       return (
         <div style={style} key={key}>
