@@ -1,13 +1,13 @@
 name: mobile-build
 
-on:
-  pull_request:
-    # We only want to run a build if things that could've affected mobile changed.
-    paths:
-      - yarn.lock
-      - package.json
-      - apps/mobile/**/*
-      - packages/shared/**/*
+#on:
+#  pull_request:
+#    # We only want to run a build if things that could've affected mobile changed.
+#    paths:
+#      - yarn.lock
+#      - package.json
+#      - apps/mobile/**/*
+#      - packages/shared/**/*
 
 jobs:
   build-android:
