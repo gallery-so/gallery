@@ -49,8 +49,6 @@ export default function SearchResult({ name, description, path, type }: Props) {
     // Remove bold markdown tag from description
     const unformattedDescription = description.replace(/\*\*/g, '');
 
-    console.log(unformattedDescription);
-
     const matchIndex = unformattedDescription.search(regex);
     let truncatedDescription;
 
