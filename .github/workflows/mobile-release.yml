@@ -1,10 +1,14 @@
-#on:
-#  push:
-#    branches:
-#      - main
-
-on: [push]
 name: mobile-release
+
+on:
+  push:
+    # We only want to run a build if things that could've affected mobile changed.
+    paths:
+      - yarn.lock
+      - package.json
+      - apps/mobile/**/*
+      - packages/shared/**/*
+
 
 jobs:
   build-android:
