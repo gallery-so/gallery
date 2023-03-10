@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseS } from '~/components/core/Text/Text';
+import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { UserSharedCommunitiesFragment$key } from '~/generated/UserSharedCommunitiesFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
@@ -62,16 +63,18 @@ export default function UserSharedCommunities({ queryRef }: Props) {
   }, [sharedCommunities, totalSharedCommunities]);
 
   const { showModal } = useModalActions();
+  const track = useTrack();
   const isMobile = useIsMobileWindowWidth();
 
   const handleShowAllClick = useCallback(() => {
+    track('User Gallery - Show All Shared Communities Click');
     showModal({
       content: <PaginatedCommunitiesList queryRef={query} />,
       headerText: 'Pieces you both own',
       isPaddingDisabled: true,
       isFullPage: isMobile,
     });
-  }, [isMobile, query, showModal]);
+  }, [isMobile, query, showModal, track]);
 
   const content = useMemo(() => {
     // Display up to 3 communities

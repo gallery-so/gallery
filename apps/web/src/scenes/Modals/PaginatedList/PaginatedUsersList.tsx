@@ -1,5 +1,5 @@
 import { Route } from 'nextjs-routes';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import { graphql, usePaginationFragment } from 'react-relay';
 import { AutoSizer, InfiniteLoader, List, ListRowRenderer } from 'react-virtualized';
 import styled from 'styled-components';
@@ -45,18 +45,9 @@ export default function PaginatedUsersList({ queryRef }: Props) {
 
   const rowCount = hasNext ? sharedFollowers.length + 1 : sharedFollowers.length;
 
-  const [isFetching, setIsFetching] = useState(false);
-
   const handleLoadMore = useCallback(async () => {
-    setIsFetching(true);
-    loadNext(FOLLOWERS_PER_PAGE, {
-      onComplete: () => {
-        setIsFetching(false);
-      },
-    });
+    loadNext(FOLLOWERS_PER_PAGE);
   }, [loadNext]);
-
-  const loadMoreRows = isFetching ? () => {} : handleLoadMore;
 
   const isRowLoaded = ({ index }: { index: number }) => !hasNext || index < sharedFollowers.length;
 
@@ -93,7 +84,11 @@ export default function PaginatedUsersList({ queryRef }: Props) {
     <StyledList fullscreen={isMobile} gap={24}>
       <AutoSizer>
         {({ width, height }) => (
-          <InfiniteLoader isRowLoaded={isRowLoaded} loadMoreRows={loadMoreRows} rowCount={rowCount}>
+          <InfiniteLoader
+            isRowLoaded={isRowLoaded}
+            loadMoreRows={handleLoadMore}
+            rowCount={rowCount}
+          >
             {({ onRowsRendered, registerChild }) => (
               <List
                 ref={registerChild}

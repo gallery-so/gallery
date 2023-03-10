@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseS } from '~/components/core/Text/Text';
+import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { UserSharedFollowersFragment$key } from '~/generated/UserSharedFollowersFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
@@ -42,15 +43,18 @@ export default function UserSharedFollowers({ queryRef }: Props) {
   );
 
   const { showModal } = useModalActions();
+  const track = useTrack();
   const isMobile = useIsMobileWindowWidth();
+
   const handleShowAllFollowersClick = useCallback(() => {
+    track('User Gallery - Show All Shared Followers Click');
     showModal({
       content: <PaginatedUsersList queryRef={query} />,
       headerText: 'Followers you know',
       isPaddingDisabled: true,
       isFullPage: isMobile,
     });
-  }, [isMobile, query, showModal]);
+  }, [isMobile, query, showModal, track]);
 
   const sharedFollowers = useMemo(
     () => query.sharedFollowers?.edges?.map((edge) => edge?.node) ?? [],
