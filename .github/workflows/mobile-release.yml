@@ -30,7 +30,7 @@ jobs:
       - name: 🚀 Build app
         run: |
           cd apps/mobile;
-          eas submit -p android --latest --wait --non-interactive
+          eas submit -e development -p android --latest --wait --non-interactive
   release-ios:
     runs-on: ubuntu-latest
     steps:
@@ -55,4 +55,4 @@ jobs:
       - name: 🚀 Build app
         run: |
           cd apps/mobile;
-          eas submit -p ios --latest --wait --non-interactive
+          eas submit -e development -p ios --latest --wait --non-interactive
