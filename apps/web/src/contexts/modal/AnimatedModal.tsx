@@ -210,6 +210,7 @@ const StyledContainer = styled.div<{
 
 const StyledContent = styled.div<{ padding: string }>`
   display: flex;
+  flex-direction: column;
   height: 100%;
   padding: ${({ padding }) => padding};
 `;
