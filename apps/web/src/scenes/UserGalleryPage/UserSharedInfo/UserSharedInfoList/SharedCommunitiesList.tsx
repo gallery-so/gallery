@@ -4,24 +4,24 @@ import { AutoSizer, InfiniteLoader, List, ListRowRenderer } from 'react-virtuali
 import styled from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';
-import { PaginatedCommunitiesListFragment$key } from '~/generated/PaginatedCommunitiesListFragment.graphql';
+import { SharedCommunitiesListFragment$key } from '~/generated/SharedCommunitiesListFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { getUrlForCommunity } from '~/utils/getCommunityUrlForToken';
 import unescape from '~/utils/unescape';
 
-import { COMMUNITIES_PER_PAGE } from '../../UserGalleryPage/UserSharedCommunities';
-import PaginatedListRow from './PaginatedListRow';
+import { COMMUNITIES_PER_PAGE } from '../UserSharedCommunities';
+import PaginatedListRow from './SharedInfoListRow';
 
 type Props = {
-  queryRef: PaginatedCommunitiesListFragment$key;
+  queryRef: SharedCommunitiesListFragment$key;
 };
-export default function PaginatedCommunitiesList({ queryRef }: Props) {
+export default function SharedCommunitiesList({ queryRef }: Props) {
   const { data, loadNext, hasNext } = usePaginationFragment(
     graphql`
-      fragment PaginatedCommunitiesListFragment on GalleryUser
-      @refetchable(queryName: "RefetchablePaginatedCommunitiesListFragment") {
+      fragment SharedCommunitiesListFragment on GalleryUser
+      @refetchable(queryName: "RefetchableSharedCommunitiesListFragment") {
         sharedCommunities(first: $sharedCommunitiesFirst, after: $sharedCommunitiesAfter)
-          @connection(key: "PaginatedCommunitiesListFragment_sharedCommunities") {
+          @connection(key: "SharedCommunitiesListFragment_sharedCommunities") {
           edges {
             node {
               __typename

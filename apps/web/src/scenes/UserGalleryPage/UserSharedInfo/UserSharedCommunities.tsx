@@ -9,9 +9,10 @@ import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { UserSharedCommunitiesFragment$key } from '~/generated/UserSharedCommunitiesFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { getUrlForCommunity } from '~/utils/getCommunityUrlForToken';
 
-import PaginatedCommunitiesList from '../Modals/PaginatedList/PaginatedCommunitiesList';
+import PaginatedCommunitiesList from './UserSharedInfoList/SharedCommunitiesList';
 
 type Props = {
   queryRef: UserSharedCommunitiesFragment$key;
@@ -42,16 +43,16 @@ export default function UserSharedCommunities({ queryRef }: Props) {
             total
           }
         }
-        ...PaginatedCommunitiesListFragment
+        ...SharedCommunitiesListFragment
       }
     `,
     queryRef
   );
 
-  const sharedCommunities = useMemo(
-    () => query.sharedCommunities?.edges?.map((edge) => edge?.node) ?? [],
-    [query.sharedCommunities?.edges]
-  );
+  const sharedCommunities = useMemo(() => {
+    const list = query.sharedCommunities?.edges?.map((edge) => edge?.node) ?? [];
+    return removeNullValues(list);
+  }, [query.sharedCommunities?.edges]);
   const totalSharedCommunities = query.sharedCommunities?.pageInfo?.total ?? 0;
 
   // Determine how many users to display by username
@@ -79,7 +80,6 @@ export default function UserSharedCommunities({ queryRef }: Props) {
   const content = useMemo(() => {
     // Display up to 3 communities
     const result = communitiesToDisplay.map((community) => {
-      if (!community) return null;
       if (community.contractAddress?.address && community.chain) {
         const url = getUrlForCommunity(community.contractAddress?.address, community.chain);
 

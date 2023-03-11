@@ -9,8 +9,9 @@ import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { UserSharedFollowersFragment$key } from '~/generated/UserSharedFollowersFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 
-import PaginatedUsersList from '../Modals/PaginatedList/PaginatedUsersList';
+import PaginatedUsersList from './UserSharedInfoList/SharedFollowersList';
 
 type Props = {
   queryRef: UserSharedFollowersFragment$key;
@@ -36,7 +37,7 @@ export default function UserSharedFollowers({ queryRef }: Props) {
             total
           }
         }
-        ...PaginatedUsersListFragment
+        ...SharedFollowersListFragment
       }
     `,
     queryRef
@@ -56,10 +57,10 @@ export default function UserSharedFollowers({ queryRef }: Props) {
     });
   }, [isMobile, query, showModal, track]);
 
-  const sharedFollowers = useMemo(
-    () => query.sharedFollowers?.edges?.map((edge) => edge?.node) ?? [],
-    [query.sharedFollowers?.edges]
-  );
+  const sharedFollowers = useMemo(() => {
+    const list = query.sharedFollowers?.edges?.map((edge) => edge?.node) ?? [];
+    return removeNullValues(list);
+  }, [query.sharedFollowers?.edges]);
 
   const totalSharedFollowers = query.sharedFollowers?.pageInfo?.total ?? 0;
 
@@ -73,20 +74,17 @@ export default function UserSharedFollowers({ queryRef }: Props) {
 
   const content = useMemo(() => {
     // Display up to 3 usernames
-    const result = followersToDisplay.map(
-      (user) =>
-        user && (
-          <StyledInteractiveLink
-            to={{
-              pathname: `/[username]`,
-              query: { username: user.username ?? '' },
-            }}
-            key={user.username}
-          >
-            {user.username}
-          </StyledInteractiveLink>
-        )
-    );
+    const result = followersToDisplay.map((user) => (
+      <StyledInteractiveLink
+        to={{
+          pathname: `/[username]`,
+          query: { username: user.username ?? '' },
+        }}
+        key={user.username}
+      >
+        {user.username}
+      </StyledInteractiveLink>
+    ));
 
     // If there are more than 3 usernames, add a link to show all in a popover
     if (totalSharedFollowers > 3) {

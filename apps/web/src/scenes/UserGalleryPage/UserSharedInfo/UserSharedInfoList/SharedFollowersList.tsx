@@ -5,25 +5,25 @@ import { AutoSizer, InfiniteLoader, List, ListRowRenderer } from 'react-virtuali
 import styled from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';
-import { PaginatedUsersListFragment$key } from '~/generated/PaginatedUsersListFragment.graphql';
+import { SharedFollowersListFragment$key } from '~/generated/SharedFollowersListFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import unescape from '~/utils/unescape';
 
-import PaginatedListRow from './PaginatedListRow';
+import PaginatedListRow from './SharedInfoListRow';
 
 type Props = {
-  queryRef: PaginatedUsersListFragment$key;
+  queryRef: SharedFollowersListFragment$key;
 };
 
 export const FOLLOWERS_PER_PAGE = 20;
 
-export default function PaginatedUsersList({ queryRef }: Props) {
+export default function SharedFollowersList({ queryRef }: Props) {
   const { data, loadNext, hasNext } = usePaginationFragment(
     graphql`
-      fragment PaginatedUsersListFragment on GalleryUser
-      @refetchable(queryName: "RefetchablePaginatedUsersListFragment") {
+      fragment SharedFollowersListFragment on GalleryUser
+      @refetchable(queryName: "RefetchableSharedFollowersListFragment") {
         sharedFollowers(first: $sharedFollowersFirst, after: $sharedFollowersAfter)
-          @connection(key: "PaginatedUsersListFragment_sharedFollowers") {
+          @connection(key: "SharedFollowersListFragment_sharedFollowers") {
           edges {
             node {
               __typename

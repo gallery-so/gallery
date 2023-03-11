@@ -15,9 +15,9 @@ import { StandardSidebar } from '~/contexts/globalLayout/GlobalSidebar/StandardS
 import { UsernameQuery } from '~/generated/UsernameQuery.graphql';
 import { MetaTagProps } from '~/pages/_app';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
-import { FOLLOWERS_PER_PAGE } from '~/scenes/Modals/PaginatedList/PaginatedUsersList';
 import UserGalleryPage from '~/scenes/UserGalleryPage/UserGalleryPage';
-import { COMMUNITIES_PER_PAGE } from '~/scenes/UserGalleryPage/UserSharedCommunities';
+import { COMMUNITIES_PER_PAGE } from '~/scenes/UserGalleryPage/UserSharedInfo/UserSharedCommunities';
+import { FOLLOWERS_PER_PAGE } from '~/scenes/UserGalleryPage/UserSharedInfo/UserSharedInfoList/SharedFollowersList';
 import { PreloadQueryArgs } from '~/types/PageComponentPreloadQuery';
 import { openGraphMetaTags } from '~/utils/openGraphMetaTags';
 

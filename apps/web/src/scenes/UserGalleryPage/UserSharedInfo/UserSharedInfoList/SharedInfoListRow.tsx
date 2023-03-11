@@ -14,7 +14,7 @@ type Props = {
   href: Route | null;
 };
 
-export default function PaginatedListRow({ title, subTitle, href }: Props) {
+export default function SharedInfoListRow({ title, subTitle, href }: Props) {
   const rowContent = useMemo(() => {
     return (
       <StyledHStack justify="space-between" align="center" gap={8}>

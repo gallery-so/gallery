@@ -14,7 +14,7 @@ import NotFound from '~/scenes/NotFound/NotFound';
 import { UserGalleryLayout } from '~/scenes/UserGalleryPage/UserGalleryLayout';
 import { UserNameAndDescriptionHeader } from '~/scenes/UserGalleryPage/UserNameAndDescriptionHeader';
 
-import UserSharedInfo from './UserSharedInfo';
+import UserSharedInfo from './UserSharedInfo/UserSharedInfo';
 import UserTwitterSection from './UserTwitterSection';
 
 type Props = {
