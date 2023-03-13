@@ -61,5 +61,5 @@ export default function useOpenTwitterFollowingModal(
         content: <TwitterFollowingModal queryRef={query} followingRef={query} />,
       });
     }
-  }, [isLoggedIn, query, showModal, totalTwitterConnections, twitter]);
+  }, [isLoggedIn, isTwitterFollowingEnabled, query, showModal, totalTwitterConnections, twitter]);
 }
