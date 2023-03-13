@@ -4,6 +4,7 @@ import { graphql, useFragment } from 'react-relay';
 
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useOpenTwitterFollowingModalFragment$key } from '~/generated/useOpenTwitterFollowingModalFragment.graphql';
+import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 import TwitterFollowingModal from './TwitterFollowingModal';
 
@@ -29,6 +30,7 @@ export default function useOpenTwitterFollowingModal(
 
         ...TwitterFollowingModalFragment
         ...TwitterFollowingModalQueryFragment
+        ...isFeatureEnabledFragment
       }
     `,
     queryRef
@@ -44,14 +46,12 @@ export default function useOpenTwitterFollowingModal(
 
   const isTwitterModalOpen = useRef(false);
 
+  const isTwitterFollowingEnabled = isFeatureEnabled(FeatureFlag.TWITTER_FOLLOWING, query);
+
   const totalTwitterConnections = query.socialConnections?.edges?.length ?? 0;
 
   useEffect(() => {
-    if (!isLoggedIn) {
-      return;
-    }
-
-    if (totalTwitterConnections === 0) {
+    if (!isLoggedIn || !isTwitterFollowingEnabled || totalTwitterConnections === 0) {
       return;
     }
 
