@@ -46,8 +46,8 @@ export default function SearchResult({ name, description, path, type }: Props) {
   const highlightedDescription = useMemo(() => {
     const regex = new RegExp(keyword, 'gi');
 
-    // Remove bold markdown tag from description
-    const unformattedDescription = description.replace(/\*\*/g, '');
+    // Remove bold & link markdown tag from description
+    const unformattedDescription = description.replace(/\*\*/g, '').replace(/\[.*\]\(.*\)/g, '');
 
     const matchIndex = unformattedDescription.search(regex);
     let truncatedDescription;
@@ -63,7 +63,7 @@ export default function SearchResult({ name, description, path, type }: Props) {
     } else {
       truncatedDescription = unformattedDescription.substring(0, maxLength);
     }
-
+    // highlight keyword
     return truncatedDescription.replace(regex, (match) => `**${match}**`);
   }, [keyword, description]);
 
@@ -97,9 +97,11 @@ const StyledDescription = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   -webkit-box-pack: end;
+
+  height: 20px; // ensure consistent height even if description is not present
   p {
     display: inline;
   }
