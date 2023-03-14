@@ -4,6 +4,7 @@ import colors from '../core/colors';
 import InteractiveLink from '../core/InteractiveLink/InteractiveLink';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { TitleDiatypeL, TitleXS } from '../core/Text/Text';
+import { NUM_PREVIEW_SEARCH_RESULTS } from './constants';
 
 type Props = {
   children: React.ReactNode;
@@ -34,7 +35,7 @@ export default function SearchSection({
       <StyledResultHeader align="center" justify="space-between">
         <StyledTitle>{title}</StyledTitle>
 
-        {!isShowAll && numResults > 4 && (
+        {!isShowAll && numResults > NUM_PREVIEW_SEARCH_RESULTS && (
           <InteractiveLink onClick={onShowAll}>Show all</InteractiveLink>
         )}
       </StyledResultHeader>

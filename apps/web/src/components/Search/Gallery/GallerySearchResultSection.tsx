@@ -3,6 +3,7 @@ import { graphql, useFragment } from 'react-relay';
 
 import { GallerySearchResultSectionFragment$key } from '~/generated/GallerySearchResultSectionFragment.graphql';
 
+import { NUM_PREVIEW_SEARCH_RESULTS } from '../constants';
 import { SearchFilterType } from '../Search';
 import SearchSection from '../SearchSection';
 import GallerySearchResult from './GallerySearchResult';
@@ -33,7 +34,7 @@ export default function GallerySearchResultSection({
   );
 
   const resultsToShow = useMemo(
-    () => (isShowAll ? results : results?.slice(0, 4) ?? []),
+    () => (isShowAll ? results : results?.slice(0, NUM_PREVIEW_SEARCH_RESULTS) ?? []),
     [results, isShowAll]
   );
 
@@ -42,7 +43,7 @@ export default function GallerySearchResultSection({
       title={title}
       isShowAll={isShowAll}
       onShowAll={() => onChangeFilter('gallery')}
-      hasResult={results.length > 0}
+      numResults={results.length}
     >
       {resultsToShow.map((result) => (
         <GallerySearchResult key={result.gallery.id} galleryRef={result.gallery} />

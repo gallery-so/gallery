@@ -3,6 +3,7 @@ import { graphql, useFragment } from 'react-relay';
 
 import { CommunitySearchResultSectionFragment$key } from '~/generated/CommunitySearchResultSectionFragment.graphql';
 
+import { NUM_PREVIEW_SEARCH_RESULTS } from '../constants';
 import { SearchFilterType } from '../Search';
 import SearchSection from '../SearchSection';
 import CommunitySearchResult from './CommunitySearchResult';
@@ -33,7 +34,7 @@ export default function CommunitySearchResultSection({
   );
 
   const resultsToShow = useMemo(
-    () => (isShowAll ? results : results?.slice(0, 4) ?? []),
+    () => (isShowAll ? results : results?.slice(0, NUM_PREVIEW_SEARCH_RESULTS) ?? []),
     [results, isShowAll]
   );
 
