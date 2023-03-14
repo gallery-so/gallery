@@ -10,7 +10,7 @@ type Props = {
   title: string;
   isShowAll?: boolean;
   onShowAll: () => void;
-  hasResult: boolean;
+  numResults: number;
 };
 
 export default function SearchSection({
@@ -18,11 +18,11 @@ export default function SearchSection({
   title,
   isShowAll = false,
   onShowAll,
-  hasResult,
+  numResults,
 }: Props) {
-  if (!isShowAll && !hasResult) return null;
+  if (!isShowAll && numResults === 0) return null;
 
-  if (isShowAll && !hasResult)
+  if (isShowAll && numResults === 0)
     return (
       <StyledNoResultContainer align="center" justify="center">
         <TitleDiatypeL>No results</TitleDiatypeL>
@@ -34,7 +34,9 @@ export default function SearchSection({
       <StyledResultHeader align="center" justify="space-between">
         <StyledTitle>{title}</StyledTitle>
 
-        {!isShowAll && <InteractiveLink onClick={onShowAll}>Show all</InteractiveLink>}
+        {!isShowAll && numResults > 4 && (
+          <InteractiveLink onClick={onShowAll}>Show all</InteractiveLink>
+        )}
       </StyledResultHeader>
       <VStack>{children}</VStack>
     </VStack>

@@ -42,7 +42,7 @@ export default function CommunitySearchResultSection({
       title={title}
       isShowAll={isShowAll}
       onShowAll={() => onChangeFilter('community')}
-      hasResult={results.length > 0}
+      numResults={results.length}
     >
       {resultsToShow.map((result) => (
         <CommunitySearchResult key={result.community.dbid} communityRef={result.community} />
