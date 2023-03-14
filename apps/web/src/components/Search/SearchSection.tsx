@@ -25,7 +25,7 @@ export default function SearchSection({
   if (isShowAll && !hasResult)
     return (
       <StyledNoResultContainer align="center" justify="center">
-        <TitleDiatypeL>Nothing Found</TitleDiatypeL>
+        <TitleDiatypeL>No results</TitleDiatypeL>
       </StyledNoResultContainer>
     );
 
@@ -34,7 +34,7 @@ export default function SearchSection({
       <StyledResultHeader align="center" justify="space-between">
         <StyledTitle>{title}</StyledTitle>
 
-        {!isShowAll && <StyledInteractiveLink onClick={onShowAll}>Show all</StyledInteractiveLink>}
+        {!isShowAll && <InteractiveLink onClick={onShowAll}>Show all</InteractiveLink>}
       </StyledResultHeader>
       <VStack>{children}</VStack>
     </VStack>
@@ -48,10 +48,6 @@ const StyledTitle = styled(TitleXS)`
 
 const StyledResultHeader = styled(HStack)`
   padding: 0 12px;
-`;
-
-const StyledInteractiveLink = styled(InteractiveLink)`
-  color: ${colors.offBlack};
 `;
 
 const StyledNoResultContainer = styled(VStack)`
