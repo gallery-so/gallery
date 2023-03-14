@@ -57,7 +57,7 @@ function AnimatedModal({
     if (isFullPage || isPaddingDisabled) {
       return '0px';
     }
-    return `${MODAL_PADDING_PX}px ${MODAL_PADDING_PX}px 12px`;
+    return `0px ${MODAL_PADDING_PX}px 12px`;
   }, [isFullPage, isPaddingDisabled]);
 
   const maxWidth = useMemo(() => {
@@ -84,16 +84,10 @@ function AnimatedModal({
   return (
     <_ToggleFade isActive={isActive}>
       <Overlay onClick={hideModal} />
-      <StyledContentContainer isFullPage={isFullPage}>
+      <StyledModal isFullPage={isFullPage}>
         <_ToggleTranslate isActive={isActive}>
-          <StyledContent
-            isFullPage={isFullPage}
-            isPaddingDisabled={isPaddingDisabled}
-            maxWidth={maxWidth}
-            width={width}
-            padding={padding}
-          >
-            <StyledHeader>
+          <StyledContainer isFullPage={isFullPage} maxWidth={maxWidth} width={width}>
+            <StyledHeader isPaddingDisabled={!headerText}>
               {headerText ? <StyledTitleS>{headerText}</StyledTitleS> : null}
               <StyledModalActions align="center">
                 {headerActions}
@@ -102,10 +96,10 @@ function AnimatedModal({
                 )}
               </StyledModalActions>
             </StyledHeader>
-            {content}
-          </StyledContent>
+            <StyledContent padding={padding}>{content}</StyledContent>
+          </StyledContainer>
         </_ToggleTranslate>
-      </StyledContentContainer>
+      </StyledModal>
     </_ToggleFade>
   );
 }
@@ -165,7 +159,7 @@ const Overlay = styled.div`
   -webkit-backface-visibility: hidden;
 `;
 
-const StyledContentContainer = styled.div<{ isFullPage: boolean }>`
+const StyledModal = styled.div<{ isFullPage: boolean }>`
   position: fixed;
   top: 50%;
   left: 50%;
@@ -181,9 +175,11 @@ const StyledContentContainer = styled.div<{ isFullPage: boolean }>`
   z-index: 10;
 `;
 
-const StyledHeader = styled.div`
+const StyledHeader = styled.div<{ isPaddingDisabled: boolean }>`
   display: flex;
   justify-content: space-between;
+  padding: ${({ isPaddingDisabled }) =>
+    isPaddingDisabled ? '0px' : `${MODAL_PADDING_PX}px ${MODAL_PADDING_PX}px 0px`};
   padding-bottom: ${MODAL_PADDING_PX};
 `;
 
@@ -191,12 +187,10 @@ const StyledTitleS = styled(TitleS)`
   padding-bottom: ${MODAL_PADDING_PX}px;
 `;
 
-const StyledContent = styled.div<{
+const StyledContainer = styled.div<{
   isFullPage: boolean;
-  isPaddingDisabled: boolean;
   maxWidth: string;
   width: string;
-  padding: string;
 }>`
   position: relative;
   background: ${colors.white};
@@ -210,9 +204,15 @@ const StyledContent = styled.div<{
   border: ${({ isFullPage }) => `${isFullPage ? 0 : 1}px solid ${colors.shadow}`};
   max-height: ${({ isFullPage }) => `calc(100vh - ${isFullPage ? 0 : MODAL_PADDING_PX * 2}px)`};
   min-height: ${({ isFullPage }) => (isFullPage ? '-webkit-fill-available' : 'unset')};
-  padding: ${({ padding }) => padding};
   max-width: ${({ maxWidth }) => maxWidth};
   width: ${({ width }) => width};
+`;
+
+const StyledContent = styled.div<{ padding: string }>`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: ${({ padding }) => padding};
 `;
 
 const StyledModalActions = styled(HStack)`

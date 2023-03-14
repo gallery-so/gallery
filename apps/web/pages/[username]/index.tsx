@@ -18,11 +18,21 @@ import { UsernameQuery } from '~/generated/UsernameQuery.graphql';
 import { MetaTagProps } from '~/pages/_app';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
 import UserGalleryPage from '~/scenes/UserGalleryPage/UserGalleryPage';
+import { COMMUNITIES_PER_PAGE } from '~/scenes/UserGalleryPage/UserSharedInfo/UserSharedCommunities';
+import { FOLLOWERS_PER_PAGE } from '~/scenes/UserGalleryPage/UserSharedInfo/UserSharedInfoList/SharedFollowersList';
 import { PreloadQueryArgs } from '~/types/PageComponentPreloadQuery';
 import { openGraphMetaTags } from '~/utils/openGraphMetaTags';
 
 const UsernameQueryNode = graphql`
-  query UsernameQuery($username: String!, $twitterListLast: Int!, $twitterListBefore: String) {
+  query UsernameQuery(
+    $username: String!
+    $sharedCommunitiesFirst: Int
+    $sharedCommunitiesAfter: String
+    $sharedFollowersFirst: Int
+    $sharedFollowersAfter: String
+    $twitterListLast: Int!
+    $twitterListBefore: String
+  ) {
     userByUsername(username: $username) @required(action: THROW) {
       ... on GalleryUser {
         featuredGallery @required(action: THROW) {
@@ -116,6 +126,8 @@ UserGallery.preloadQuery = ({ relayEnvironment, query }: PreloadQueryArgs) => {
       UsernameQueryNode,
       {
         username: query.username,
+        sharedCommunitiesFirst: COMMUNITIES_PER_PAGE,
+        sharedFollowersFirst: FOLLOWERS_PER_PAGE,
         twitterListLast: USER_PER_PAGE,
       },
       { fetchPolicy: 'store-or-network' }
