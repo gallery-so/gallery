@@ -3,7 +3,6 @@ import { useCallback, useMemo, useState } from 'react';
 import {
   NativeScrollEvent,
   NativeSyntheticEvent,
-  ScrollView,
   StyleProp,
   useWindowDimensions,
   View,
@@ -69,9 +68,11 @@ export function TokenCarousel({ tokenRefs }: TokenCarouselProps) {
         data={chunks}
         pagingEnabled
         snapToInterval={width}
+        onScroll={handleScroll}
         renderItem={renderItem}
         decelerationRate="fast"
         snapToAlignment="center"
+        scrollEventThrottle={200}
         estimatedItemSize={width}
         showsHorizontalScrollIndicator={false}
       />

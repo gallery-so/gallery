@@ -1,7 +1,7 @@
 import { MaterialTopTabBarProps } from '@react-navigation/material-top-tabs';
 import { useNavigation } from '@react-navigation/native';
 import { useCallback } from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 
 import { FeedTabNavigatorParamList, FeedTabNavigatorProp } from '~/navigation/types';
 
