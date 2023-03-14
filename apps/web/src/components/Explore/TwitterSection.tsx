@@ -73,6 +73,10 @@ export default function TwitterSection({ queryRef, title, subTitle }: Props) {
     });
   }, [query, showModal]);
 
+  if (nonNullUsers.length === 0) {
+    return null;
+  }
+
   return (
     <StyledSuggestedSection gap={32}>
       <HStack justify="space-between" align="center">
