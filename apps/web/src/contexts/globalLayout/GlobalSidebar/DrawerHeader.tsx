@@ -10,9 +10,10 @@ import { useDrawerActions } from './SidebarDrawerContext';
 
 type Props = {
   headerText?: string;
+  children?: React.ReactNode;
 };
 
-export default function DrawerHeader({ headerText }: Props) {
+export default function DrawerHeader({ children, headerText }: Props) {
   const { hideDrawer } = useDrawerActions();
 
   const handleCloseDrawerClick = useCallback(() => {
@@ -29,6 +30,7 @@ export default function DrawerHeader({ headerText }: Props) {
         />
       </CloseDrawerHeader>
       {headerText && <StyledHeadingText>{headerText}</StyledHeadingText>}
+      {children && <>{children}</>}
     </StyledHeader>
   );
 }

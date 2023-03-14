@@ -1,6 +1,7 @@
 import { Environment, PreloadedQuery, RelayEnvironmentProvider } from 'react-relay';
 
 import Debugger from '~/components/Debugger/Debugger';
+import SearchProvider from '~/components/Search/SearchContext';
 import { GalleryNavigationProvider } from '~/contexts/navigation/GalleryNavigationProvider';
 import { NftErrorProvider } from '~/contexts/NftErrorContext';
 import { SyncTokensLockProvider } from '~/contexts/SyncTokensLockContext';
@@ -40,14 +41,16 @@ export default function AppProvider({
                   <NftErrorProvider>
                     <ModalProvider>
                       <SidebarDrawerProvider>
-                        <SyncTokensLockProvider>
-                          <GlobalLayoutContextProvider
-                            preloadedQuery={globalLayoutContextPreloadedQuery}
-                          >
-                            {isProd ? null : <Debugger />}
-                            {children}
-                          </GlobalLayoutContextProvider>
-                        </SyncTokensLockProvider>
+                        <SearchProvider>
+                          <SyncTokensLockProvider>
+                            <GlobalLayoutContextProvider
+                              preloadedQuery={globalLayoutContextPreloadedQuery}
+                            >
+                              {isProd ? null : <Debugger />}
+                              {children}
+                            </GlobalLayoutContextProvider>
+                          </SyncTokensLockProvider>
+                        </SearchProvider>
                       </SidebarDrawerProvider>
                     </ModalProvider>
                   </NftErrorProvider>
