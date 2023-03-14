@@ -81,7 +81,7 @@ export default function SearchResults({ activeFilter, onChangeFilter }: Props) {
     return (
       <StyledSearchResultContainer isLoading={isLoading}>
         <StyledNoResultContainer align="center" justify="center">
-          <TitleDiatypeL>Nothing Found</TitleDiatypeL>
+          <TitleDiatypeL>No results</TitleDiatypeL>
         </StyledNoResultContainer>
       </StyledSearchResultContainer>
     );
