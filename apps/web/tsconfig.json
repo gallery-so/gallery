@@ -3,8 +3,6 @@
   "compilerOptions": {
     "baseUrl": ".",
     "jsx": "preserve",
-    "emitDeclarationOnly": false,
-    "noEmit": true,
     "paths": {
       "~/abis/*": ["src/abis/*"],
       "~/assets/*": ["src/assets/*"],
