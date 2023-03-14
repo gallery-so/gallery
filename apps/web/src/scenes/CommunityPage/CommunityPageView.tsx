@@ -120,7 +120,7 @@ export default function CommunityPageView({ communityRef }: Props) {
                 </StyledDescriptionWrapper>
               )}
             </VStack>
-            {externalAddressLink && externalAddressLink && (
+            {externalAddressLink && (
               <StyledAddressContainer>
                 <TitleXS>Contract Address</TitleXS>
                 <InteractiveLink href={externalAddressLink}>
