@@ -12,5 +12,6 @@
       "~/shared/*": ["../../packages/shared/src/*"]
     },
     "outDir": "../../.moon/cache/types/apps/mobile"
-  }
+  },
+  "references": [{ "path": "../../packages/shared" }]
 }
