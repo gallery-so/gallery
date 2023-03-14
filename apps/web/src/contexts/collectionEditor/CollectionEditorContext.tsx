@@ -40,7 +40,7 @@ type CollectionEditorContextType = {
 
   updateSections: (sections: StagedSectionList) => void;
 
-  addSection: () => void;
+  addSection: (sectionId?: string) => void;
   moveSectionDown: (sectionId: string) => void;
   moveSectionUp: (sectionId: string) => void;
   deleteSection: (sectionId: string) => void;
@@ -192,20 +192,31 @@ export const CollectionEditorProvider = memo(({ children }: Props) => {
     [setSections]
   );
 
-  const addSection = useCallback(() => {
-    const newSectionId = generate12DigitId();
-    setSections((previous) => {
-      const newSection: StagedSection = {
-        id: newSectionId,
-        columns: DEFAULT_COLUMN_SETTING,
-        items: [],
-      };
+  const addSection = useCallback(
+    (sectionId?: string) => {
+      const newSectionId = generate12DigitId();
+      setSections((previous) => {
+        const newSection: StagedSection = {
+          id: newSectionId,
+          columns: DEFAULT_COLUMN_SETTING,
+          items: [],
+        };
 
-      return [...previous, newSection];
-    });
+        // If there is a sectionId, insert the new section after it
+        if (sectionId) {
+          const index = previous.findIndex((section) => section.id === sectionId);
+          if (index !== -1) {
+            return [...previous.slice(0, index + 1), newSection, ...previous.slice(index + 1)];
+          }
+        }
 
-    setActiveSectionId(newSectionId);
-  }, [setActiveSectionId, setSections]);
+        return [...previous, newSection];
+      });
+
+      setActiveSectionId(newSectionId);
+    },
+    [setActiveSectionId, setSections]
+  );
 
   const deleteSection = useCallback(
     (sectionId: string) => {
