@@ -23,7 +23,7 @@ const DEV_FLAGS: Record<FeatureFlag, boolean> = {
 const ROLE_FLAGS: Record<Role, Record<FeatureFlag, boolean>> = {
   ADMIN: {
     GLOBAL_SIDEBAR: false,
-    TWITTER_FOLLOWING: false,
+    TWITTER_FOLLOWING: true,
   },
   BETA_TESTER: {
     GLOBAL_SIDEBAR: false,
