@@ -9,15 +9,17 @@ import breakpoints from '~/components/core/breakpoints';
 import TextButton from '~/components/core/Button/TextButton';
 import colors from '~/components/core/colors';
 import { DisplayLayout } from '~/components/core/enums';
+import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
-import { BaseM, TitleL } from '~/components/core/Text/Text';
+import { BaseM, TitleL, TitleXS } from '~/components/core/Text/Text';
 import MemberListFilter from '~/components/TokenHolderList/TokenHolderListFilter';
 import { GRID_ENABLED_COMMUNITY_ADDRESSES } from '~/constants/community';
 import MemberListPageProvider from '~/contexts/memberListPage/MemberListPageContext';
 import { CommunityPageViewFragment$key } from '~/generated/CommunityPageViewFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import formatUrl from '~/utils/formatUrl';
+import { getExternalAddressLink, truncateAddress } from '~/utils/wallet';
 
 import LayoutToggleButton from './LayoutToggleButton';
 
@@ -34,6 +36,7 @@ export default function CommunityPageView({ communityRef }: Props) {
         badgeURL
         contractAddress {
           address
+          ...walletGetExternalAddressLinkFragment
         }
 
         ...CommunityHolderGridFragment
@@ -49,9 +52,13 @@ export default function CommunityPageView({ communityRef }: Props) {
   const [layout, setLayout] = useState<DisplayLayout>(DisplayLayout.GRID);
   const isGrid = useMemo(() => layout === DisplayLayout.GRID, [layout]);
 
+  if (!contractAddress) {
+    throw new Error('CommunityPageView: contractAddress not found on community');
+  }
+
   const isArtGobbler = useMemo(
-    () => GRID_ENABLED_COMMUNITY_ADDRESSES.includes(contractAddress?.address || ''),
-    [contractAddress]
+    () => GRID_ENABLED_COMMUNITY_ADDRESSES.includes(contractAddress.address || ''),
+    [contractAddress.address]
   );
 
   // whether "Show More" has been clicked or not
@@ -76,28 +83,43 @@ export default function CommunityPageView({ communityRef }: Props) {
 
   const formattedDescription = formatUrl(description || '');
 
+  const externalAddressLink = getExternalAddressLink(contractAddress);
+
   return (
     <MemberListPageProvider>
       <StyledCommunityPageContainer>
         <HStack>
-          <StyledHeader>
-            <HStack gap={12} align="center">
-              <TitleL>{name}</TitleL>
-              {badgeURL && <StyledBadge src={badgeURL} />}
-            </HStack>
+          <StyledHeader gap={24}>
+            <VStack>
+              <HStack gap={12} align="center">
+                <TitleL>{name}</TitleL>
+                {badgeURL && <StyledBadge src={badgeURL} />}
+              </HStack>
 
-            {description && (
-              <StyledDescriptionWrapper gap={8}>
-                <StyledBaseM showExpandedDescription={showExpandedDescription} ref={descriptionRef}>
-                  <Markdown text={formattedDescription} />
-                </StyledBaseM>
-                {isLineClampEnabled && (
-                  <TextButton
-                    text={showExpandedDescription ? 'Show less' : 'Show More'}
-                    onClick={handleShowMoreClick}
-                  />
-                )}
-              </StyledDescriptionWrapper>
+              {description && (
+                <StyledDescriptionWrapper gap={8}>
+                  <StyledBaseM
+                    showExpandedDescription={showExpandedDescription}
+                    ref={descriptionRef}
+                  >
+                    <Markdown text={formattedDescription} />
+                  </StyledBaseM>
+                  {isLineClampEnabled && (
+                    <TextButton
+                      text={showExpandedDescription ? 'Show less' : 'Show More'}
+                      onClick={handleShowMoreClick}
+                    />
+                  )}
+                </StyledDescriptionWrapper>
+              )}
+            </VStack>
+            {externalAddressLink && (
+              <StyledAddressContainer>
+                <TitleXS>Contract Address</TitleXS>
+                <InteractiveLink href={externalAddressLink}>
+                  {truncateAddress(contractAddress?.address ?? '')}
+                </InteractiveLink>
+              </StyledAddressContainer>
             )}
           </StyledHeader>
 
@@ -156,8 +178,12 @@ const StyledListWrapper = styled.div`
   width: 100%;
 `;
 
-const StyledHeader = styled.div`
+const StyledHeader = styled(VStack)`
   width: 100%;
+`;
+
+const StyledAddressContainer = styled(VStack)`
+  width: fit-content;
 `;
 
 const StyledLayoutToggleButtonContainer = styled.div`
