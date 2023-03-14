@@ -49,6 +49,7 @@ export const ButtonPill = styled.button<{ active?: boolean }>`
 
   &:hover {
     border-color: ${colors.offBlack};
+    background-color: ${colors.faint};
   }
 `;
 
