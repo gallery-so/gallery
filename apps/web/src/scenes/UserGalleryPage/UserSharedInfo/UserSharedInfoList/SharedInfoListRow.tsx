@@ -20,7 +20,11 @@ export default function SharedInfoListRow({ title, subTitle, href }: Props) {
       <StyledHStack justify="space-between" align="center" gap={8}>
         <StyledVStack justify="center">
           <TitleDiatypeM>{title}</TitleDiatypeM>
-          <StyledUserBio>{subTitle && <Markdown text={subTitle} />}</StyledUserBio>
+          {subTitle && (
+            <StyledUserBio>
+              <Markdown text={subTitle} />
+            </StyledUserBio>
+          )}
         </StyledVStack>
       </StyledHStack>
     );
@@ -43,7 +47,6 @@ const StyledRowNonLink = styled.div`
 const StyledRowLink = styled(Link)`
   padding: 8px 12px;
   text-decoration: none;
-  min-height: 56px;
   max-height: 56px;
   display: block;
 
