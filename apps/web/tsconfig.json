@@ -28,6 +28,10 @@
     "incremental": true
   },
   "include": ["tests", "src", "scripts", "pages", "next-env.d.ts", "app.d.ts", "__generated__"],
-  "references": [],
+  "references": [
+    {
+      "path": "../../packages/shared"
+    }
+  ],
   "exclude": ["node_modules"]
 }
