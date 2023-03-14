@@ -2,6 +2,8 @@ import { graphql, loadQuery, PreloadedQuery, usePreloadedQuery } from 'react-rel
 
 import { ITEMS_PER_PAGE, MAX_PIECES_DISPLAYED_PER_FEED_EVENT } from '~/components/Feed/constants';
 import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/NotesModal/NotesModal';
+import useOpenTwitterFollowingModal from '~/components/Twitter/useOpenTwitterFollowingModal';
+import { USER_PER_PAGE } from '~/constants/twitter';
 import { HomeNavbar } from '~/contexts/globalLayout/GlobalNavbar/HomeNavbar/HomeNavbar';
 import { StandardSidebar } from '~/contexts/globalLayout/GlobalSidebar/StandardSidebar';
 import { trendingPageQuery } from '~/generated/trendingPageQuery.graphql';
@@ -18,9 +20,12 @@ const trendingPageQueryNode = graphql`
     $globalLast: Int!
     $globalBefore: String
     $visibleTokensPerFeedEvent: Int!
+    $twitterListLast: Int!
+    $twitterListBefore: String
   ) {
     ...TrendingHomePageFragment
     ...HomeNavbarFragment
+    ...useOpenTwitterFollowingModalFragment
     ...StandardSidebarFragment
   }
 `;
@@ -31,6 +36,8 @@ type Props = {
 
 export default function Trending({ preloadedQuery }: Props) {
   const query = usePreloadedQuery(trendingPageQueryNode, preloadedQuery);
+
+  useOpenTwitterFollowingModal(query);
 
   return (
     <GalleryRoute
@@ -50,6 +57,7 @@ Trending.preloadQuery = ({ relayEnvironment }: PreloadQueryArgs) => {
       globalLast: ITEMS_PER_PAGE,
       trendingLast: ITEMS_PER_PAGE,
       visibleTokensPerFeedEvent: MAX_PIECES_DISPLAYED_PER_FEED_EVENT,
+      twitterListLast: USER_PER_PAGE,
     },
     { fetchPolicy: 'store-or-network' }
   );

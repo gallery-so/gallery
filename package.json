@@ -38,6 +38,7 @@
     "typescript": "^4.9.5"
   },
   "dependencies": {
+    "nextjs-routes": "^1.0.8",
     "react": "^18.2.0",
     "react-relay": "^15.0.0",
     "relay-runtime": "^15.0.0"
