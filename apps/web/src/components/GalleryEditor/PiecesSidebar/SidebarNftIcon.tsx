@@ -119,11 +119,17 @@ function SidebarNftIcon({
       let timeoutId: ReturnType<typeof setTimeout>;
 
       async function refreshToken() {
-        await fetchQuery<SidebarNftIconPollerNewQuery>(
+        const refreshedToken = await fetchQuery<SidebarNftIconPollerNewQuery>(
           relayEnvironment,
           graphql`
             query SidebarNftIconPollerNewQuery($id: DBID!) {
               tokenById(id: $id) {
+                ... on Token {
+                  media {
+                    __typename
+                  }
+                }
+
                 ...SidebarNftIconFragment
               }
             }
@@ -131,12 +137,15 @@ function SidebarNftIcon({
           { id: token.dbid }
         ).toPromise();
 
-        // If the token was failing before, we need to make sure
-        // that it's error state gets cleared on the chance
-        // that it just got loaded.
-        clearTokenFailureState([token.dbid]);
-
-        timeoutId = setTimeout(refreshToken, POLLING_INTERVAL_MS);
+        if (refreshedToken?.tokenById?.media?.__typename === 'SyncingMedia') {
+          // We're still syncing, so queue up another refresh
+          timeoutId = setTimeout(refreshToken, POLLING_INTERVAL_MS);
+        } else {
+          // If the token was failing before, we need to make sure
+          // that it's error state gets cleared on the chance
+          // that it just got loaded.
+          clearTokenFailureState([token.dbid]);
+        }
       }
 
       timeoutId = setTimeout(refreshToken, POLLING_INTERVAL_MS);

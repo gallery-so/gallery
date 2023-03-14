@@ -7,15 +7,18 @@ import styled from 'styled-components';
 import breakpoints from '~/components/core/breakpoints';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { Notifications } from '~/components/Notifications/Notifications';
+import Search from '~/components/Search/Search';
 import Settings from '~/components/Settings/Settings';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { StandardSidebarFragment$key } from '~/generated/StandardSidebarFragment.graphql';
 import useAuthModal from '~/hooks/useAuthModal';
+import { useSearchHotkey } from '~/hooks/useSearchHotkey';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import BellIcon from '~/icons/BellIcon';
 import CogIcon from '~/icons/CogIcon';
 import { EditPencilIcon } from '~/icons/EditPencilIcon';
 import GLogoIcon from '~/icons/GLogoIcon';
+import SearchIcon from '~/icons/SearchIcon';
 import ShopIcon from '~/icons/ShopIcon';
 import UserIcon from '~/icons/UserIcon';
 import useExperience from '~/utils/graphql/experiences/useExperience';
@@ -141,10 +144,24 @@ export function StandardSidebar({ queryRef }: Props) {
     track('Sidebar Home Click');
   }, [hideDrawer, track]);
 
+  const handleSearchClick = useCallback(() => {
+    hideDrawer();
+    track('Sidebar Search Click');
+    showDrawer({
+      content: <Search />,
+    });
+  }, [hideDrawer, showDrawer, track]);
+
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
   const userGalleryRoute: Route = { pathname: '/[username]', query: { username } };
   const editGalleriesRoute: Route = { pathname: '/[username]/galleries', query: { username } };
+
+  useSearchHotkey(() => {
+    showDrawer({
+      content: <Search />,
+    });
+  });
 
   if (isMobile) {
     return (
@@ -156,13 +173,19 @@ export function StandardSidebar({ queryRef }: Props) {
             onClick={handleHomeIconClick}
             icon={<GLogoIcon />}
           />
-          {isLoggedIn && (
+          {isLoggedIn ? (
             <>
               <SidebarIcon
                 href={userGalleryRoute}
                 tooltipLabel="My Profile"
                 onClick={handleProfileClick}
                 icon={<UserIcon />}
+              />
+              <SidebarIcon
+                tooltipLabel="Search"
+                onClick={handleSearchClick}
+                icon={<SearchIcon />}
+                isActive={activeDrawerType === Search}
               />
               <SidebarIcon
                 tooltipLabel="Notifications"
@@ -178,6 +201,13 @@ export function StandardSidebar({ queryRef }: Props) {
                 isActive={activeDrawerType === Settings}
               />
             </>
+          ) : (
+            <SidebarIcon
+              tooltipLabel="Search"
+              onClick={handleSearchClick}
+              icon={<SearchIcon />}
+              isActive={activeDrawerType === Search}
+            />
           )}
         </StyledMobileIconContainer>
       </StyledStandardSidebar>
@@ -204,13 +234,19 @@ export function StandardSidebar({ queryRef }: Props) {
             />
           )}
         </VStack>
-        {isLoggedIn && (
+        {isLoggedIn ? (
           <VStack gap={32}>
             <SidebarIcon
               href={userGalleryRoute}
               tooltipLabel="My profile"
               onClick={handleProfileClick}
               icon={<UserIcon />}
+            />
+            <SidebarIcon
+              tooltipLabel="Search"
+              onClick={handleSearchClick}
+              icon={<SearchIcon />}
+              isActive={activeDrawerType === Search}
             />
             <SidebarIcon
               tooltipLabel="Notifications"
@@ -226,6 +262,13 @@ export function StandardSidebar({ queryRef }: Props) {
               isActive={activeDrawerType === Settings}
             />
           </VStack>
+        ) : (
+          <SidebarIcon
+            tooltipLabel="Search"
+            onClick={handleSearchClick}
+            icon={<SearchIcon />}
+            isActive={activeDrawerType === Search}
+          />
         )}
         <VStack>
           <SidebarIcon

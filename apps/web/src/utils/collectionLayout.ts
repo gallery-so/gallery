@@ -138,7 +138,7 @@ export function generateLayoutFromCollection(sections: StagedSectionList) {
     if (isEmptySection) {
       // delete empty section
       filteredSections = filteredSections.filter(
-        (sectionToFilter) => sectionToFilter.id === section.id
+        (sectionToFilter) => sectionToFilter.id !== section.id
       );
     }
   });

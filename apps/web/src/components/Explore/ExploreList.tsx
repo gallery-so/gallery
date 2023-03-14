@@ -20,11 +20,12 @@ import ExploreUserCard from './ExploreUserCard';
 type Props = {
   exploreUsersRef: ExploreListFragment$key;
   queryRef: ExploreListQueryFragment$key;
+  rowSize?: number;
 };
 
 const USERS_TO_SHOW = 24;
 
-export default function ExploreList({ exploreUsersRef, queryRef }: Props) {
+export default function ExploreList({ exploreUsersRef, queryRef, rowSize = 2 }: Props) {
   const query = useFragment(
     graphql`
       fragment ExploreListQueryFragment on Query {
@@ -76,7 +77,7 @@ export default function ExploreList({ exploreUsersRef, queryRef }: Props) {
           {chunks.map((chunk, index) => {
             return (
               <SwiperSlide key={index}>
-                <SlideGrid>
+                <SlideGrid rowSize={rowSize}>
                   {chunk.map((user) => {
                     return <ExploreUserCard userRef={user} queryRef={query} key={user.id} />;
                   })}
@@ -123,13 +124,16 @@ const SlideDot = styled.div<{ active: boolean }>`
         `}
 `;
 
-const SlideGrid = styled.div`
+const SlideGrid = styled.div<{ rowSize: number }>`
   display: grid;
 
   gap: 16px;
 
-  grid-template-rows: repeat(2, minmax(0, 1fr));
   grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  ${({ rowSize }) => css`
+    grid-template-rows: repeat(${rowSize}, minmax(0, 1fr));
+  `}
 
   @media only screen and ${breakpoints.tablet} {
     grid-template-columns: repeat(4, minmax(0, 1fr));

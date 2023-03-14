@@ -50,8 +50,8 @@ export default function DroppableSection({ children, columns, id, items, style, 
   const isActive = activeSectionId === id;
 
   const handleAddSectionClick = useCallback(() => {
-    addSection();
-  }, [addSection]);
+    addSection(id);
+  }, [addSection, id]);
 
   const handleDeleteSectionClick = useCallback(() => {
     deleteSection(id);

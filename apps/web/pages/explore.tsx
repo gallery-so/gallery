@@ -1,5 +1,7 @@
 import { graphql, useLazyLoadQuery } from 'react-relay';
 
+import useOpenTwitterFollowingModal from '~/components/Twitter/useOpenTwitterFollowingModal';
+import { USER_PER_PAGE } from '~/constants/twitter';
 import { HomeNavbar } from '~/contexts/globalLayout/GlobalNavbar/HomeNavbar/HomeNavbar';
 import { StandardSidebar } from '~/contexts/globalLayout/GlobalSidebar/StandardSidebar';
 import { exploreQuery } from '~/generated/exploreQuery.graphql';
@@ -9,15 +11,21 @@ import ExplorePage from '~/scenes/Home/ExploreHomePage';
 export default function Explore() {
   const query = useLazyLoadQuery<exploreQuery>(
     graphql`
-      query exploreQuery {
+      query exploreQuery($twitterListLast: Int!, $twitterListBefore: String) {
         ...ExploreHomePageFragment
         ...HomeNavbarFragment
-
         ...StandardSidebarFragment
+
+        ...useOpenTwitterFollowingModalFragment
       }
     `,
-    {}
+    {
+      twitterListLast: USER_PER_PAGE,
+      twitterListBefore: null,
+    }
   );
+
+  useOpenTwitterFollowingModal(query);
 
   return (
     <GalleryRoute

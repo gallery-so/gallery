@@ -140,6 +140,10 @@ const StyledQuote = styled(BaseM)`
   border-left: 2px solid ${colors.porcelain};
   padding-left: 8px;
 
+  p {
+    padding-bottom: 0;
+  }
+
   @media only screen and ${breakpoints.tablet} {
     max-width: 50%;
   }

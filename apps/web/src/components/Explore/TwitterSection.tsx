@@ -1,0 +1,108 @@
+import { useCallback, useMemo } from 'react';
+import { graphql, useFragment } from 'react-relay';
+import styled from 'styled-components';
+
+import { useModalActions } from '~/contexts/modal/ModalContext';
+import { TwitterSectionQueryFragment$key } from '~/generated/TwitterSectionQueryFragment.graphql';
+import TwitterIcon from '~/icons/TwitterIcon';
+
+import colors from '../core/colors';
+import InteractiveLink from '../core/InteractiveLink/InteractiveLink';
+import { HStack, VStack } from '../core/Spacer/Stack';
+import { TitleDiatypeL } from '../core/Text/Text';
+import TwitterFollowingModal from '../Twitter/TwitterFollowingModal';
+import ExploreList from './ExploreList';
+
+type Props = {
+  title: string;
+  subTitle: string;
+  queryRef: TwitterSectionQueryFragment$key;
+};
+
+export default function TwitterSection({ queryRef, title, subTitle }: Props) {
+  const query = useFragment(
+    graphql`
+      fragment TwitterSectionQueryFragment on Query {
+        socialConnections(
+          before: $twitterListBefore
+          last: $twitterListLast
+          socialAccountType: Twitter
+        ) @required(action: THROW) {
+          edges {
+            node {
+              __typename
+              ... on SocialConnection {
+                __typename
+                galleryUser {
+                  ... on GalleryUser {
+                    __typename
+                    ...ExploreListFragment
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        ...ExploreListQueryFragment
+
+        ...TwitterFollowingModalFragment
+        ...TwitterFollowingModalQueryFragment
+      }
+    `,
+    queryRef
+  );
+
+  const nonNullUsers = useMemo(() => {
+    const users = [];
+
+    for (const edge of query.socialConnections?.edges ?? []) {
+      if (edge?.node?.__typename === 'SocialConnection' && edge?.node?.galleryUser) {
+        users.push(edge.node.galleryUser);
+      }
+    }
+
+    return users;
+  }, [query.socialConnections?.edges]);
+
+  const { showModal } = useModalActions();
+
+  const handleSeeAllClick = useCallback(() => {
+    showModal({
+      content: <TwitterFollowingModal queryRef={query} followingRef={query} />,
+    });
+  }, [query, showModal]);
+
+  if (nonNullUsers.length === 0) {
+    return null;
+  }
+
+  return (
+    <StyledSuggestedSection gap={32}>
+      <HStack justify="space-between" align="center">
+        <VStack gap={4}>
+          <HStack align="center" gap={4}>
+            <TwitterIcon size="md" />
+            <Title>{title}</Title>
+          </HStack>
+          <TitleDiatypeL color={colors.metal}>{subTitle}</TitleDiatypeL>
+        </VStack>
+
+        <StyledInteractiveLink onClick={handleSeeAllClick}>See all</StyledInteractiveLink>
+      </HStack>
+      <ExploreList exploreUsersRef={nonNullUsers} queryRef={query} rowSize={1} />
+    </StyledSuggestedSection>
+  );
+}
+
+const StyledSuggestedSection = styled(VStack)`
+  width: 100%;
+`;
+
+const Title = styled(TitleDiatypeL)`
+  font-size: 24px;
+`;
+
+const StyledInteractiveLink = styled(InteractiveLink)`
+  white-space: nowrap;
+`;

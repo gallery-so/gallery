@@ -6,12 +6,14 @@ import styled from 'styled-components';
 import { ExploreUserCardFollowFragment$key } from '~/generated/ExploreUserCardFollowFragment.graphql';
 import { ExploreUserCardFragment$key } from '~/generated/ExploreUserCardFragment.graphql';
 import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
+import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
-import { pluralize } from '~/utils/string';
+import unescape from '~/utils/unescape';
 
 import Badge from '../Badge/Badge';
 import breakpoints from '../core/breakpoints';
 import colors from '../core/colors';
+import Markdown from '../core/Markdown/Markdown';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM, TitleM } from '../core/Text/Text';
 import FollowButton from '../Follow/FollowButton';
@@ -32,10 +34,8 @@ export default function ExploreUserCard({ userRef, queryRef }: Props) {
           imageURL
           ...BadgeFragment
         }
+        bio
         galleries {
-          collections {
-            id
-          }
           tokenPreviews {
             large
           }
@@ -64,6 +64,10 @@ export default function ExploreUserCard({ userRef, queryRef }: Props) {
     throw new Error('No user available to showcase ExploreUserCard');
   }
 
+  const { bio } = user;
+
+  const unescapedBio = useMemo(() => (bio ? unescape(bio) : ''), [bio]);
+
   const userGalleries = useMemo(() => {
     return user.galleries ?? [];
   }, [user.galleries]);
@@ -74,16 +78,6 @@ export default function ExploreUserCard({ userRef, queryRef }: Props) {
     );
 
     return gallery?.tokenPreviews?.slice(0, 2) ?? [];
-  }, [userGalleries]);
-
-  const collectionCount = useMemo(() => {
-    return userGalleries.reduce((sum, gallery) => {
-      if (gallery === null || gallery.hidden || !gallery.collections) {
-        return sum;
-      }
-
-      return sum + gallery.collections.length;
-    }, 0);
   }, [userGalleries]);
 
   const userBadges = useMemo(() => {
@@ -98,6 +92,15 @@ export default function ExploreUserCard({ userRef, queryRef }: Props) {
     return badges;
   }, [user.badges]);
 
+  const isMobile = useIsMobileWindowWidth();
+
+  const bioFirstLine = useMemo(() => {
+    if (!unescapedBio) {
+      return '';
+    }
+    return unescapedBio.split('\n')[0] ?? '';
+  }, [unescapedBio]);
+
   return (
     // @ts-expect-error This is the future next/link version
     <StyledExploreUserCard legacyBehavior={false} href={`/${user.username}`}>
@@ -109,24 +112,33 @@ export default function ExploreUserCard({ userRef, queryRef }: Props) {
         </TokenPreviewContainer>
         <UserDetailsContainer>
           <UserDetailsText>
-            <HStack gap={4} align="center">
-              <Username>
-                <strong>{user.username}</strong>
-              </Username>
-              <HStack align="center" gap={0}>
-                {userBadges.map((badge) => (
-                  <Badge key={badge.name} badgeRef={badge} />
-                ))}
+            <HStack gap={4} align="center" justify="space-between">
+              <HStack>
+                <Username>
+                  <strong>{user.username}</strong>
+                </Username>
+                <HStack align="center" gap={0}>
+                  {userBadges.map((badge) => (
+                    <Badge key={badge.name} badgeRef={badge} />
+                  ))}
+                </HStack>
               </HStack>
+              {!isMobile && !isOwnProfile && (
+                <StyledFollowButton
+                  userRef={user}
+                  queryRef={query}
+                  source="Explore Page user card"
+                />
+              )}
             </HStack>
-            <BaseM>
-              {collectionCount} {pluralize(collectionCount, 'collection')}
-            </BaseM>
+            <StyledUserBio>
+              <Markdown text={bioFirstLine} />
+            </StyledUserBio>
           </UserDetailsText>
-          {!isOwnProfile && (
-            <StyledFollowButton userRef={user} queryRef={query} source="Explore Page user card" />
-          )}
         </UserDetailsContainer>
+        {isMobile && !isOwnProfile && (
+          <StyledFollowButton userRef={user} queryRef={query} source="Explore Page user card" />
+        )}
       </StyledContent>
     </StyledExploreUserCard>
   );
@@ -151,12 +163,14 @@ const StyledExploreUserCard = styled(Link)`
 
 const StyledContent = styled(VStack)`
   height: 100%;
+  width: 100%;
 `;
 
 const UserDetailsContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
+  width: 100%;
 
   @media only screen and ${breakpoints.desktop} {
     flex-direction: row;
@@ -167,6 +181,16 @@ const UserDetailsContainer = styled.div`
 
 const UserDetailsText = styled(VStack)`
   overflow: hidden;
+  width: 100%;
+`;
+
+const StyledUserBio = styled(BaseM)`
+  height: 20px; // ensure consistent height even if bio is not present
+
+  line-clamp: 1;
+  -webkit-line-clamp: 1;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
 `;
 
 const TokenPreviewContainer = styled.div`

@@ -147,6 +147,10 @@ export const StyledCaptionContainer = styled(HStack)`
   border-left: 2px solid #d9d9d9;
   padding-left: 8px;
 
+  p {
+    padding-bottom: 0;
+  }
+
   ${BaseS} {
     color: ${colors.metal};
   }

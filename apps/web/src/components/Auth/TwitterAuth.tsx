@@ -3,6 +3,7 @@ import { useCallback, useEffect } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
+import { TWITTER_LOCAL_STORAGE_KEY } from '~/constants/twitter';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { TwitterAuthMutation } from '~/generated/TwitterAuthMutation.graphql';
 import { TwitterAuthQueryFragment$key } from '~/generated/TwitterAuthQueryFragment.graphql';
@@ -68,6 +69,15 @@ export default function TwitterAuth({ queryRef }: Props) {
         },
       });
 
+      // If the user was redirected from the TwitterAuth page, we want to redirect them back to the page they were on
+      const previousRoute = JSON.parse(localStorage.getItem(TWITTER_LOCAL_STORAGE_KEY) ?? '');
+
+      if (previousRoute) {
+        localStorage.removeItem(TWITTER_LOCAL_STORAGE_KEY);
+        router.push(previousRoute);
+        return;
+      }
+
       router.push({
         pathname: '/[username]',
         query: {
@@ -96,6 +106,7 @@ export default function TwitterAuth({ queryRef }: Props) {
       pathname: '/[username]',
       query: {
         username,
+        twitter: 'true',
       },
     });
 

@@ -1,9 +1,10 @@
+import { useRouter } from 'next/router';
 import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import IconContainer from '~/components/core/IconContainer';
-import { TWITTER_AUTH_URL } from '~/constants/twitter';
+import { TWITTER_AUTH_URL, TWITTER_LOCAL_STORAGE_KEY } from '~/constants/twitter';
 import { NotificationTwitterAlertFragment$key } from '~/generated/NotificationTwitterAlertFragment.graphql';
 import CloseIcon from '~/icons/CloseIcon';
 import InfoCircleIcon from '~/icons/InfoCircleIcon';
@@ -40,6 +41,8 @@ export function NotificationTwitterAlert({ queryRef }: Props) {
     queryRef
   );
 
+  const router = useRouter();
+
   const [isTwitterConnectionOnboardingUpsellExperienced, updateTwitterOnboardingExperience] =
     useExperience({
       type: 'TwitterConnectionOnboardingUpsell',
@@ -52,6 +55,14 @@ export function NotificationTwitterAlert({ queryRef }: Props) {
     await updateTwitterOnboardingExperience({ experienced: true });
   }, [updateTwitterOnboardingExperience]);
 
+  const handleConnect = useCallback(() => {
+    const route = {
+      query: { ...router.query, twitter: 'true' },
+      pathname: router.pathname,
+    };
+    localStorage.setItem(TWITTER_LOCAL_STORAGE_KEY, JSON.stringify(route));
+  }, [router.pathname, router.query]);
+
   if (twitterAccount || isTwitterConnectionOnboardingUpsellExperienced) {
     return null;
   }
@@ -62,7 +73,7 @@ export function NotificationTwitterAlert({ queryRef }: Props) {
         <StyledInfoCircleIcon />
         <BaseM>Connect Twitter to find friends and display your handle.</BaseM>
         <HStack align="center" gap={8}>
-          <InteractiveLink href={TWITTER_AUTH_URL} target="_self">
+          <InteractiveLink onClick={handleConnect} href={TWITTER_AUTH_URL} target="_self">
             Connect
           </InteractiveLink>
           <IconContainer variant="default" size="sm" onClick={handleDismiss} icon={<CloseIcon />} />

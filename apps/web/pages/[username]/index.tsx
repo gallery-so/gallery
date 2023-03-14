@@ -8,7 +8,9 @@ import styled from 'styled-components';
 import breakpoints, { pageGutter } from '~/components/core/breakpoints';
 import useVerifyEmailOnPage from '~/components/Email/useVerifyEmailOnPage';
 import GalleryViewEmitter from '~/components/internal/GalleryViewEmitter';
+import useOpenTwitterFollowingModal from '~/components/Twitter/useOpenTwitterFollowingModal';
 import useOpenTwitterModal from '~/components/Twitter/useOpenTwitterModal';
+import { USER_PER_PAGE } from '~/constants/twitter';
 import { GalleryNavbar } from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavbar';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { StandardSidebar } from '~/contexts/globalLayout/GlobalSidebar/StandardSidebar';
@@ -28,6 +30,8 @@ const UsernameQueryNode = graphql`
     $sharedCommunitiesAfter: String
     $sharedFollowersFirst: Int
     $sharedFollowersAfter: String
+    $twitterListLast: Int!
+    $twitterListBefore: String
   ) {
     userByUsername(username: $username) @required(action: THROW) {
       ... on GalleryUser {
@@ -43,6 +47,7 @@ const UsernameQueryNode = graphql`
     ...useVerifyEmailOnPageQueryFragment
     ...StandardSidebarFragment
     ...useOpenTwitterModalFragment
+    ...useOpenTwitterFollowingModalFragment
   }
 `;
 
@@ -88,6 +93,7 @@ export default function UserGallery({ username, preloadedQuery }: UserGalleryPro
 
   useVerifyEmailOnPage(query);
   useOpenTwitterModal(query);
+  useOpenTwitterFollowingModal(query);
 
   return (
     <GalleryRoute
@@ -122,6 +128,7 @@ UserGallery.preloadQuery = ({ relayEnvironment, query }: PreloadQueryArgs) => {
         username: query.username,
         sharedCommunitiesFirst: COMMUNITIES_PER_PAGE,
         sharedFollowersFirst: FOLLOWERS_PER_PAGE,
+        twitterListLast: USER_PER_PAGE,
       },
       { fetchPolicy: 'store-or-network' }
     );
