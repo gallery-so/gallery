@@ -24,7 +24,7 @@ export function CollectionAndAdditionCount({
       )}
 
       {additionCount && (
-        <Typography font={{ fontFamily: 'ABCDiatype', weight: 'Regular' }} className="text-sm">
+        <Typography font={{ family: 'ABCDiatype', weight: 'Regular' }} className="text-sm">
           {additionCount} addition{additionCount === 1 ? '' : 's'}
         </Typography>
       )}
