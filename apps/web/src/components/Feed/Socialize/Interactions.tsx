@@ -147,9 +147,11 @@ export function Interactions({ eventRef, queryRef, onPotentialLayoutShift }: Pro
 
       return (
         <VStack gap={8}>
-          {lastTwoComments.map((comment) => {
-            return <CommentLine key={comment.dbid} commentRef={comment} />;
-          })}
+          <VStack>
+            {lastTwoComments.map((comment) => {
+              return <CommentLine key={comment.dbid} commentRef={comment} />;
+            })}
+          </VStack>
 
           <RemainingAdmireCount remainingCount={remainingAdmiresAndComments} eventRef={event} />
         </VStack>
