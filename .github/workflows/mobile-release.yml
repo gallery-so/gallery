@@ -1,8 +1,7 @@
 name: mobile-release
 
 on:
-#  push:
-  pull_request:
+  push:
     branches:
       - main
     # We only want to run a build if things that could've affected mobile changed.
