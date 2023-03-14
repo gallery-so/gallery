@@ -46,7 +46,7 @@ export function FeedListSectionHeader({ feedEventRef }: FeedListSectionHeaderPro
         </Typography>
 
         <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-          {feedEvent.eventData.gallery?.name}
+          {feedEvent.eventData.gallery?.name || 'Untitled'}
         </Typography>
       </View>
     );

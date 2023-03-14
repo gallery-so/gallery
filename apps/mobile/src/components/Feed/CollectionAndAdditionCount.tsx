@@ -19,7 +19,7 @@ export function CollectionAndAdditionCount({
     <View className="flex px-3 py-2">
       {collectionName && (
         <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-          {collectionName}
+          {collectionName || 'Untitled'}
         </Typography>
       )}
 
