@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { graphql, usePaginationFragment } from 'react-relay';
-import { AutoSizer, InfiniteLoader, List, ListRowRenderer } from 'react-virtualized';
+import { AutoSizer, Index, InfiniteLoader, List, ListRowRenderer } from 'react-virtualized';
 import styled from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';
@@ -53,6 +53,29 @@ export default function SharedCommunitiesList({ queryRef }: Props) {
   const isRowLoaded = ({ index }: { index: number }) =>
     !hasNext || index < sharedCommunities.length;
 
+  const getRowHeight = useCallback(
+    ({ index }: Index) => {
+      const community = sharedCommunities[index]?.node;
+      if (!community) {
+        return 0;
+      }
+
+      const unescapedDescription = community.description ? unescape(community.description) : '';
+      const descriptionFirstLine = unescapedDescription.split('\n')[0] ?? '';
+
+      if (!community.name && !descriptionFirstLine.length) {
+        return 0;
+      }
+
+      if (descriptionFirstLine.length === 0) {
+        return 40;
+      }
+
+      return 56;
+    },
+    [sharedCommunities]
+  );
+
   const rowRenderer = useCallback<ListRowRenderer>(
     ({ index, key, style }: { index: number; key: string; style: React.CSSProperties }) => {
       const community = sharedCommunities[index]?.node;
@@ -67,6 +90,10 @@ export default function SharedCommunitiesList({ queryRef }: Props) {
         community.contractAddress?.address && community.chain
           ? getUrlForCommunity(community.contractAddress?.address, community.chain)
           : null;
+
+      if (!community.name && !descriptionFirstLine) {
+        return null;
+      }
 
       return (
         <div style={style} key={key}>
@@ -99,7 +126,7 @@ export default function SharedCommunitiesList({ queryRef }: Props) {
                 rowRenderer={rowRenderer}
                 width={width}
                 height={height}
-                rowHeight={56}
+                rowHeight={getRowHeight}
                 rowCount={sharedCommunities.length}
               />
             )}
