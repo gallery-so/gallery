@@ -19,7 +19,7 @@ import MemberListPageProvider from '~/contexts/memberListPage/MemberListPageCont
 import { CommunityPageViewFragment$key } from '~/generated/CommunityPageViewFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import formatUrl from '~/utils/formatUrl';
-import { truncateAddress } from '~/utils/wallet';
+import { getExternalAddressLink, truncateAddress } from '~/utils/wallet';
 
 import LayoutToggleButton from './LayoutToggleButton';
 
@@ -34,9 +34,9 @@ export default function CommunityPageView({ communityRef }: Props) {
         name
         description
         badgeURL
-        chain
         contractAddress {
           address
+          ...walletGetExternalAddressLinkFragment
         }
 
         ...CommunityHolderGridFragment
@@ -52,9 +52,13 @@ export default function CommunityPageView({ communityRef }: Props) {
   const [layout, setLayout] = useState<DisplayLayout>(DisplayLayout.GRID);
   const isGrid = useMemo(() => layout === DisplayLayout.GRID, [layout]);
 
+  if (!contractAddress) {
+    throw new Error('CommunityPageView: contractAddress not found on community');
+  }
+
   const isArtGobbler = useMemo(
-    () => GRID_ENABLED_COMMUNITY_ADDRESSES.includes(contractAddress?.address || ''),
-    [contractAddress]
+    () => GRID_ENABLED_COMMUNITY_ADDRESSES.includes(contractAddress.address || ''),
+    [contractAddress.address]
   );
 
   // whether "Show More" has been clicked or not
@@ -79,18 +83,7 @@ export default function CommunityPageView({ communityRef }: Props) {
 
   const formattedDescription = formatUrl(description || '');
 
-  const externalAddressLink = useMemo(() => {
-    if (!contractAddress?.address) {
-      return null;
-    }
-
-    if (community.chain === 'Ethereum') {
-      return `https://etherscan.io/address/${contractAddress.address}`;
-    } else if (community.chain === 'Tezos') {
-      return `https://tzkt.io/${contractAddress.address}`;
-    }
-    return null;
-  }, [community.chain, contractAddress?.address]);
+  const externalAddressLink = getExternalAddressLink(contractAddress);
 
   return (
     <MemberListPageProvider>
