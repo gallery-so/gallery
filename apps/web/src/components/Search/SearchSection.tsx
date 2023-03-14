@@ -36,7 +36,7 @@ export default function SearchSection({
         <StyledTitle>{title}</StyledTitle>
 
         {!isShowAll && numResults > NUM_PREVIEW_SEARCH_RESULTS && (
-          <InteractiveLink onClick={onShowAll}>Show all</InteractiveLink>
+          <StyledInteractiveLink onClick={onShowAll}>Show all</StyledInteractiveLink>
         )}
       </StyledResultHeader>
       <VStack>{children}</VStack>
@@ -51,6 +51,11 @@ const StyledTitle = styled(TitleXS)`
 
 const StyledResultHeader = styled(HStack)`
   padding: 0 12px;
+`;
+
+const StyledInteractiveLink = styled(InteractiveLink)`
+  font-size: 12px;
+  line-height: 16px;
 `;
 
 const StyledNoResultContainer = styled(VStack)`
