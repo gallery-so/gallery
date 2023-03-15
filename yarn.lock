@@ -8467,6 +8467,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@wagmi/core@patch:@wagmi/core@npm%3A0.7.9#./.yarn/patches/@wagmi-core-npm-0.7.9-fde5e7dcba.patch::locator=gallery-monorepo%40workspace%3A.":
+  version: 0.7.9
+  resolution: "@wagmi/core@patch:@wagmi/core@npm%3A0.7.9#./.yarn/patches/@wagmi-core-npm-0.7.9-fde5e7dcba.patch::version=0.7.9&hash=eeb5eb&locator=gallery-monorepo%40workspace%3A."
+  dependencies:
+    abitype: ^0.1.8
+    eventemitter3: ^4.0.7
+    zustand: ^4.1.4
+  peerDependencies:
+    "@coinbase/wallet-sdk": ">=3.3.0"
+    "@walletconnect/ethereum-provider": ">=1.7.5"
+    ethers: ">=5.5.1"
+  peerDependenciesMeta:
+    "@coinbase/wallet-sdk":
+      optional: true
+    "@walletconnect/ethereum-provider":
+      optional: true
+  checksum: 685595e2d405bbc64bb4ccc5a9afbcafa3afa556cba6ecb4e5d889dad7204cef9bf0d7ff78054e7f32f9b3d54b42b0283a49d64ae17d812d59df7d148f37db1e
+  languageName: node
+  linkType: hard
+
 "@walletconnect/browser-utils@npm:^1.8.0":
   version: 1.8.0
   resolution: "@walletconnect/browser-utils@npm:1.8.0"
