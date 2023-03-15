@@ -25,7 +25,8 @@
       "~/utils/*": ["src/utils/*"]
     },
     "outDir": "../../.moon/cache/types/apps/web",
-    "incremental": true
+    "incremental": true,
+    "noEmit": false
   },
   "include": [
     "tests",
