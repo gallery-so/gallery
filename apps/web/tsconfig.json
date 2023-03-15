@@ -27,7 +27,16 @@
     "outDir": "../../.moon/cache/types/apps/web",
     "incremental": true
   },
-  "include": ["tests", "src", "scripts", "pages", "next-env.d.ts", "app.d.ts", "__generated__"],
+  "include": [
+    "tests",
+    "src",
+    "scripts",
+    "pages",
+    "next-env.d.ts",
+    "app.d.ts",
+    "__generated__",
+    "**/*.json"
+  ],
   "references": [
     {
       "path": "../../packages/shared"
