@@ -211,6 +211,7 @@ export default function TwitterFollowingModal({ followingRef, queryRef }: Props)
 
 const StyledOnboardingTwitterModal = styled.div`
   width: 100%;
+  max-height: 500px;
 
   @media only screen and ${breakpoints.tablet} {
     width: 375px;
@@ -249,5 +250,5 @@ const StyledButtonFollowAll = styled(Button)`
 `;
 
 const StyledFooter = styled(HStack)`
-  padding-top: 16px;
+  padding: 16px 0;
 `;
