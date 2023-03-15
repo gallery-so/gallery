@@ -17,13 +17,17 @@ type Props = {
 };
 
 export function NftFailureFallback({ onRetry, refreshing, size = 'medium' }: Props) {
-  const handleClick = useCallback(() => {
-    if (refreshing) {
-      return;
-    }
+  const handleClick = useCallback(
+    (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      event.preventDefault();
+      if (refreshing) {
+        return;
+      }
 
-    onRetry?.();
-  }, [onRetry, refreshing]);
+      onRetry?.();
+    },
+    [onRetry, refreshing]
+  );
 
   const handleMouseDown = useCallback<MouseEventHandler>((event) => {
     // Have to do this to stop messing with Drag & Drop stuff

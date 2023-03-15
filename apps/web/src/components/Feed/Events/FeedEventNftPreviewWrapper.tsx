@@ -86,8 +86,8 @@ function FeedEventNftPreviewWrapper({ tokenRef, maxWidth, maxHeight }: Props) {
 const StyledNftPreviewWrapper = styled.div<{ maxWidth: number; maxHeight: number }>`
   display: flex;
   width: 100%;
-
-  min-width: 150px;
+  max-height: ${({ maxHeight }) => maxHeight}px;
+  min-width: ${({ maxWidth }) => maxWidth ?? 150}px;
 
   ${StyledImageWithLoading}, ${StyledVideo} {
     max-height: calc((100vw - 64px) / 3);
