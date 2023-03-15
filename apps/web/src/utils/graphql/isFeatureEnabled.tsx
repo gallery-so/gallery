@@ -7,25 +7,31 @@ import isProduction from '~/utils/isProduction';
 
 export enum FeatureFlag {
   GLOBAL_SIDEBAR = 'GLOBAL_SIDEBAR',
+  TWITTER_FOLLOWING = 'TWITTER_FOLLOWING',
 }
 
 const PROD_FLAGS: Record<FeatureFlag, boolean> = {
   GLOBAL_SIDEBAR: false,
+  TWITTER_FOLLOWING: false,
 };
 
 const DEV_FLAGS: Record<FeatureFlag, boolean> = {
   GLOBAL_SIDEBAR: true,
+  TWITTER_FOLLOWING: true,
 };
 
 const ROLE_FLAGS: Record<Role, Record<FeatureFlag, boolean>> = {
   ADMIN: {
     GLOBAL_SIDEBAR: false,
+    TWITTER_FOLLOWING: true,
   },
   BETA_TESTER: {
     GLOBAL_SIDEBAR: false,
+    TWITTER_FOLLOWING: false,
   },
   EARLY_ACCESS: {
     GLOBAL_SIDEBAR: false,
+    TWITTER_FOLLOWING: false,
   },
 };
 

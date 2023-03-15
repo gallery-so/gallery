@@ -5,7 +5,6 @@ import { VStack } from '~/components/core/Spacer/Stack';
 
 export const WalletSelectorWrapper = styled(VStack)`
   text-align: center;
-  width: 320px;
 
   @media only screen and ${breakpoints.mobileLarge} {
     width: 400px;

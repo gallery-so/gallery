@@ -12,6 +12,20 @@ export const DISABLED_CONTRACTS = [
   '0xdfde78d2baec499fe18f2be74b6c287eed9511d7', // Braindrops
 ];
 
+export function getUrlForCommunity(contractAddress: string, chain: string): Route | null {
+  if (DISABLED_CONTRACTS.includes(contractAddress)) {
+    return null;
+  }
+
+  if (chain === 'POAP') {
+    return { pathname: '/community/poap/[contractAddress]', query: { contractAddress } };
+  } else if (chain === 'Tezos') {
+    return { pathname: '/community/tez/[contractAddress]', query: { contractAddress } };
+  } else {
+    return { pathname: '/community/[contractAddress]', query: { contractAddress } };
+  }
+}
+
 export function getCommunityUrlForToken(
   tokenRef: getCommunityUrlForTokenFragment$key
 ): Route | null {
@@ -35,15 +49,5 @@ export function getCommunityUrlForToken(
     return null;
   }
 
-  if (DISABLED_CONTRACTS.includes(contractAddress)) {
-    return null;
-  }
-
-  if (token.contract.chain === 'POAP') {
-    return { pathname: '/community/poap/[contractAddress]', query: { contractAddress } };
-  } else if (token.contract.chain === 'Tezos') {
-    return { pathname: '/community/tez/[contractAddress]', query: { contractAddress } };
-  } else {
-    return { pathname: '/community/[contractAddress]', query: { contractAddress } };
-  }
+  return getUrlForCommunity(contractAddress, token.contract.chain ?? '');
 }
