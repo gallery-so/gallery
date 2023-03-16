@@ -16,7 +16,7 @@
     "@taquito/taquito": "^14.0.0",
     "react": "18.2.0",
     "relay-runtime": "14.1.0",
-    "typescript": "^4.9.4",
+    "typescript": "^5.0.0",
     "@expo/prebuild-config": "6.0.0",
     "@expo/config-plugins": "6.0.0",
     "@wagmi/core@0.7.9": "patch:@wagmi/core@npm%3A0.7.9#./.yarn/patches/@wagmi-core-npm-0.7.9-fde5e7dcba.patch"
