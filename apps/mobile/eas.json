@@ -1,17 +1,12 @@
 {
   "cli": {
-    "version": ">= 3.5.2"
+    "version": ">= 3.5.2",
+    "appVersionSource": "remote"
   },
   "build": {
     "development": {
-      "developmentClient": true,
       "distribution": "internal",
-      "ios": {
-        "resourceClass": "m1-medium"
-      }
-    },
-    "preview": {
-      "distribution": "internal",
+      "autoIncrement": true,
       "ios": {
         "resourceClass": "m1-medium"
       }
@@ -19,10 +14,20 @@
     "production": {
       "ios": {
         "resourceClass": "m1-medium"
-      }
+      },
+      "autoIncrement": true
     }
   },
   "submit": {
-    "production": {}
+    "development": {
+      "ios": {
+        "ascAppId": "1672735556"
+      }
+    },
+    "production": {
+      "ios": {
+        "ascAppId": "1672735556"
+      }
+    }
   }
 }
