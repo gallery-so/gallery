@@ -106,7 +106,7 @@ export default function CommunityHolderGrid({ communityRef }: Props) {
     <VStack gap={48}>
       {galleryMemberTokens.length > 0 && (
         <VStack gap={16}>
-          <TitleS>Gallery members</TitleS>
+          <TitleS>Collectors on Gallery</TitleS>
           <StyledCommunityHolderGrid>
             {galleryMemberTokens.map((holder) =>
               holder ? <CommunityHolderGridItem key={holder.id} holderRef={holder} /> : null

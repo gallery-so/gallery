@@ -28,6 +28,8 @@ export default function SearchInput() {
     <StyledInput
       ref={ref}
       type="text"
+      autoComplete="off"
+      autoCorrect="off"
       placeholder="Search for anything..."
       onChange={handleChange}
       value={localKeyword}
