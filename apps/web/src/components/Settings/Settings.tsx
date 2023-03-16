@@ -15,7 +15,6 @@ import ManageWallets from '~/components/ManageWallets/ManageWallets';
 import TwitterSetting from '~/components/Twitter/TwitterSetting';
 import { GALLERY_DISCORD } from '~/constants/urls';
 import DrawerHeader from '~/contexts/globalLayout/GlobalSidebar/DrawerHeader';
-import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { SettingsFragment$key } from '~/generated/SettingsFragment.graphql';
 import { useLogout } from '~/hooks/useLogout';
@@ -176,16 +175,9 @@ function Settings({ newAddress, queryRef, onEthAddWalletSuccess, onTezosAddWalle
     logout();
   }, [logout]);
 
-  const { hideDrawer } = useDrawerActions();
-
-  const handleDoneClick = useCallback(() => {
-    hideDrawer();
-  }, [hideDrawer]);
-
   return (
     <>
       <DrawerHeader headerText="Settings" />
-
       <StyledContentWrapper>
         <StyledSettings gap={12}>
           <SettingsContents gap={32}>
@@ -273,9 +265,6 @@ function Settings({ newAddress, queryRef, onEthAddWalletSuccess, onTezosAddWalle
           </SettingsContents>
         </StyledSettings>
       </StyledContentWrapper>
-      <StyledFooter align="center" justify="flex-end">
-        <DoneButton onClick={handleDoneClick}>Done</DoneButton>
-      </StyledFooter>
     </>
   );
 }
@@ -311,19 +300,6 @@ const StyledContentWrapper = styled.div`
   overflow-x: hidden;
   overscroll-behavior: contain;
   height: 100%;
-`;
-
-const DoneButton = styled(Button)`
-  align-self: flex-end;
-`;
-
-const StyledFooter = styled(HStack)`
-  width: 100%;
-  background-color: ${colors.offWhite};
-  position: absolute;
-  display: flex;
-  bottom: 0;
-  padding: 12px 16px;
 `;
 
 export default Settings;
