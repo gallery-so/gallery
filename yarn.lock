@@ -17602,6 +17602,7 @@ __metadata:
     prettier: ^2.8.4
     prettier-plugin-tailwindcss: ^0.2.3
     react: ^18.2.0
+    react-hotkeys-hook: ^4.3.8
     react-relay: ^15.0.0
     relay-compiler: ^15.0.0
     relay-runtime: ^15.0.0
@@ -26384,6 +26385,16 @@ __metadata:
   peerDependencies:
     react: ">=17.0.0"
   checksum: 4258eabdbbf74aaebc38ad1fd7cfdc1984d2a844a2247b39a341c55c1beb02d5e855e6473ec5683205a52b2251d0f7dffa07cd8100f402dd2698af88b932d946
+  languageName: node
+  linkType: hard
+
+"react-hotkeys-hook@npm:^4.3.8":
+  version: 4.3.8
+  resolution: "react-hotkeys-hook@npm:4.3.8"
+  peerDependencies:
+    react: ">=16.8.1"
+    react-dom: ">=16.8.1"
+  checksum: cc034274def7d6f044e8efebcc0bfdc8747a5eb7bbe4e65e6179de3894509e380b70ea0b70c3eef740f0099d77cb555a7828fa7c8cab2f72fcee1171b2040a9b
   languageName: node
   linkType: hard
 
