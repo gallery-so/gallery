@@ -43,6 +43,9 @@ export default function TwitterSection({ queryRef, title, subTitle }: Props) {
               }
             }
           }
+          pageInfo {
+            total
+          }
         }
 
         ...ExploreListQueryFragment
@@ -74,7 +77,7 @@ export default function TwitterSection({ queryRef, title, subTitle }: Props) {
     });
   }, [query, showModal]);
 
-  if (nonNullUsers.length === 0) {
+  if (query.socialConnections.pageInfo.total === 0) {
     return null;
   }
 
