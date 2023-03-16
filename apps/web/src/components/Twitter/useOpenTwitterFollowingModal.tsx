@@ -19,12 +19,16 @@ export default function useOpenTwitterFollowingModal(
         }
 
         socialConnections(
-          before: $twitterListBefore
-          last: $twitterListLast
+          after: $twitterListAfter
+          first: $twitterListFirst
           socialAccountType: Twitter
+          excludeAlreadyFollowing: true
         ) @connection(key: "TwitterFollowingModal__socialConnections") {
           edges {
             __typename
+          }
+          pageInfo {
+            total
           }
         }
 
@@ -48,7 +52,7 @@ export default function useOpenTwitterFollowingModal(
 
   const isTwitterFollowingEnabled = isFeatureEnabled(FeatureFlag.TWITTER_FOLLOWING, query);
 
-  const totalTwitterConnections = query.socialConnections?.edges?.length ?? 0;
+  const totalTwitterConnections = query.socialConnections?.pageInfo?.total ?? 0;
 
   useEffect(() => {
     if (!isLoggedIn || !isTwitterFollowingEnabled || totalTwitterConnections === 0) {

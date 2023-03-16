@@ -1,9 +1,11 @@
 import Link, { LinkProps } from 'next/link';
 import { useCallback, useMemo } from 'react';
 import { graphql, useFragment, usePaginationFragment } from 'react-relay';
+import { AutoSizer, InfiniteLoader, List, ListRowRenderer } from 'react-virtualized';
 import { SelectorStoreUpdater } from 'relay-runtime';
 import styled from 'styled-components';
 
+import { USER_PER_PAGE } from '~/constants/twitter';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { TwitterFollowingModalFragment$key } from '~/generated/TwitterFollowingModalFragment.graphql';
@@ -42,14 +44,19 @@ export default function TwitterFollowingModal({ followingRef, queryRef }: Props)
     queryRef
   );
 
-  const followingPagination = usePaginationFragment(
+  const {
+    data: followingPagination,
+    loadNext,
+    hasNext,
+  } = usePaginationFragment(
     graphql`
       fragment TwitterFollowingModalFragment on Query
       @refetchable(queryName: "TwitterFollowingModalQuery") {
         socialConnections(
-          before: $twitterListBefore
-          last: $twitterListLast
+          after: $twitterListAfter
+          first: $twitterListFirst
           socialAccountType: Twitter
+          excludeAlreadyFollowing: true
         ) @connection(key: "TwitterFollowingModal__socialConnections") {
           edges {
             node {
@@ -67,6 +74,9 @@ export default function TwitterFollowingModal({ followingRef, queryRef }: Props)
               }
             }
           }
+          pageInfo {
+            total
+          }
         }
       }
     `,
@@ -82,7 +92,7 @@ export default function TwitterFollowingModal({ followingRef, queryRef }: Props)
   const twitterFollowing = useMemo(() => {
     const users = [];
 
-    for (const edge of followingPagination?.data?.socialConnections?.edges ?? []) {
+    for (const edge of followingPagination?.socialConnections?.edges ?? []) {
       if (edge?.node?.__typename === 'SocialConnection' && edge?.node?.galleryUser) {
         users.push(edge?.node.galleryUser);
       }
@@ -116,6 +126,8 @@ export default function TwitterFollowingModal({ followingRef, queryRef }: Props)
   `);
   const reportError = useReportError();
   const { pushToast } = useToastActions();
+
+  const totalFollowing = followingPagination?.socialConnections?.pageInfo?.total ?? 0;
 
   const handleFollowAll = useCallback(async () => {
     try {
@@ -163,38 +175,80 @@ export default function TwitterFollowingModal({ followingRef, queryRef }: Props)
     }
   }, [followAll, pushToast, query?.viewer?.user?.id, reportError, twitterFollowing]);
 
+  const isRowLoaded = ({ index }: { index: number }) => !hasNext || index < twitterFollowing.length;
+
+  const handleLoadMore = useCallback(async () => {
+    loadNext(USER_PER_PAGE);
+  }, [loadNext]);
+
+  const rowCount = hasNext ? twitterFollowing.length + 1 : twitterFollowing.length;
+
+  const rowRenderer = useCallback<ListRowRenderer>(
+    ({ index, key, style }: { index: number; key: string; style: React.CSSProperties }) => {
+      const user = twitterFollowing[index];
+
+      if (!user) {
+        return null;
+      }
+
+      return (
+        <StyledFollowing align="center" justify="space-between" style={style} key={key}>
+          <VStack>
+            <StyledLink
+              href={{
+                pathname: '/[username]',
+                query: {
+                  username: user.username as string,
+                },
+              }}
+            >
+              <BaseM>
+                <strong>{user.username}</strong>
+              </BaseM>
+            </StyledLink>
+            <BioText>
+              <Markdown text={user.bio ?? ''} />
+            </BioText>
+          </VStack>
+          <FollowButton queryRef={query} userRef={user} />
+        </StyledFollowing>
+      );
+    },
+    [query, twitterFollowing]
+  );
+
   return (
     <StyledOnboardingTwitterModal>
       <StyledBodyTextContainer>
         <TitleDiatypeL>
-          We've found {twitterFollowing.length}
-          {twitterFollowing.length === 1 ? ' person' : ' people'} you know from Twitter
+          We've found {totalFollowing}
+          {totalFollowing === 1 ? ' person' : ' people'} you know from Twitter
         </TitleDiatypeL>
       </StyledBodyTextContainer>
 
       <StyledFollowingContainer gap={16}>
-        {twitterFollowing.map((user) => (
-          <HStack key={user.username} align="center" justify="space-between">
-            <VStack>
-              <StyledLink
-                href={{
-                  pathname: '/[username]',
-                  query: {
-                    username: user.username as string,
-                  },
-                }}
-              >
-                <BaseM>
-                  <strong>{user.username}</strong>
-                </BaseM>
-              </StyledLink>
-              <BioText>
-                <Markdown text={user.bio ?? ''} />
-              </BioText>
-            </VStack>
-            <FollowButton queryRef={query} userRef={user} />
-          </HStack>
-        ))}
+        <AutoSizer>
+          {({ width, height }) => (
+            <InfiniteLoader
+              isRowLoaded={isRowLoaded}
+              loadMoreRows={handleLoadMore}
+              rowCount={rowCount}
+            >
+              {({ onRowsRendered, registerChild }) => (
+                <List
+                  ref={registerChild}
+                  onRowsRendered={onRowsRendered}
+                  rowRenderer={rowRenderer}
+                  width={width}
+                  height={height}
+                  rowHeight={50}
+                  rowCount={twitterFollowing.length}
+                />
+              )}
+            </InfiniteLoader>
+          )}
+        </AutoSizer>
+        <VStack></VStack>
       </StyledFollowingContainer>
 
       <StyledFooter justify="flex-end" gap={10}>
@@ -211,7 +265,6 @@ export default function TwitterFollowingModal({ followingRef, queryRef }: Props)
 
 const StyledOnboardingTwitterModal = styled.div`
   width: 100%;
-  max-height: 500px;
 
   @media only screen and ${breakpoints.tablet} {
     width: 375px;
@@ -224,6 +277,15 @@ const StyledBodyTextContainer = styled.div`
 
 const StyledFollowingContainer = styled(VStack)`
   padding: 16px 0;
+
+  width: 375px;
+  max-width: 375px;
+  min-height: 100px;
+  height: 400px;
+`;
+
+const StyledFollowing = styled(HStack)`
+  padding-right: 8px;
 `;
 
 const StyledLink = styled(Link)<LinkProps>`

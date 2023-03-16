@@ -11,7 +11,7 @@ import ExplorePage from '~/scenes/Home/ExploreHomePage';
 export default function Explore() {
   const query = useLazyLoadQuery<exploreQuery>(
     graphql`
-      query exploreQuery($twitterListLast: Int!, $twitterListBefore: String) {
+      query exploreQuery($twitterListFirst: Int!, $twitterListAfter: String) {
         ...ExploreHomePageFragment
         ...HomeNavbarFragment
         ...StandardSidebarFragment
@@ -20,8 +20,8 @@ export default function Explore() {
       }
     `,
     {
-      twitterListLast: USER_PER_PAGE,
-      twitterListBefore: null,
+      twitterListFirst: USER_PER_PAGE,
+      twitterListAfter: null,
     }
   );
 

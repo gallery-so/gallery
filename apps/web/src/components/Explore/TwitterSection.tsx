@@ -24,9 +24,10 @@ export default function TwitterSection({ queryRef, title, subTitle }: Props) {
     graphql`
       fragment TwitterSectionQueryFragment on Query {
         socialConnections(
-          before: $twitterListBefore
-          last: $twitterListLast
+          after: $twitterListAfter
+          first: $twitterListFirst
           socialAccountType: Twitter
+          excludeAlreadyFollowing: true
         ) @required(action: THROW) {
           edges {
             node {
