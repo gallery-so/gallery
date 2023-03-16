@@ -2,6 +2,7 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { ExploreFragment$key } from '~/generated/ExploreFragment.graphql';
+import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 
 import { VStack } from '../core/Spacer/Stack';
 import SuggestedSection from './SuggestedSection';
@@ -53,11 +54,13 @@ export default function Explore({ queryRef }: Props) {
       {query.viewer?.__typename === 'Viewer' && (
         <>
           {query.viewer.socialAccounts?.twitter?.__typename && (
-            <TwitterSection
-              title="Twitter Friends"
-              subTitle="Curators you know from Twitter"
-              queryRef={query}
-            />
+            <ReportingErrorBoundary fallback={null}>
+              <TwitterSection
+                title="Twitter Friends"
+                subTitle="Curators you know from Twitter"
+                queryRef={query}
+              />
+            </ReportingErrorBoundary>
           )}
           <SuggestedSection
             title="In your orbit"
