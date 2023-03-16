@@ -18,7 +18,8 @@
     "relay-runtime": "14.1.0",
     "typescript": "^4.9.4",
     "@expo/prebuild-config": "6.0.0",
-    "@expo/config-plugins": "6.0.0"
+    "@expo/config-plugins": "6.0.0",
+    "@wagmi/core@0.7.9": "patch:@wagmi/core@npm%3A0.7.9#./.yarn/patches/@wagmi-core-npm-0.7.9-fde5e7dcba.patch"
   },
   "devDependencies": {
     "@moonrepo/cli": "^0.25.0",
@@ -34,7 +35,7 @@
     "prettier": "^2.8.4",
     "prettier-plugin-tailwindcss": "^0.2.3",
     "relay-compiler": "^15.0.0",
-    "tsconfig-moon": "^1.2.1",
+    "tsconfig-moon": "^1.2.2",
     "typescript": "^4.9.5"
   },
   "dependencies": {

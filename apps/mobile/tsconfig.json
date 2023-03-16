@@ -1,5 +1,6 @@
 {
   "extends": "../../tsconfig.options.json",
+  "include": ["persisted_queries.json", "src", "app.d.ts", "__generated__"],
   "compilerOptions": {
     "lib": ["DOM", "ESNext"],
     "baseUrl": ".",
@@ -12,5 +13,6 @@
       "~/shared/*": ["../../packages/shared/src/*"]
     },
     "outDir": "../../.moon/cache/types/apps/mobile"
-  }
+  },
+  "references": [{ "path": "../../packages/shared" }]
 }
