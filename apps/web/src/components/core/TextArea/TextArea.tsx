@@ -26,6 +26,27 @@ type TextAreaProps = {
   hasPadding?: boolean;
 };
 
+function isCursorInsideParentheses(textarea: HTMLTextAreaElement) {
+  const pattern = /\[(.*?)\]\((.*?)\)/g; // matches `[text](url)`
+  const cursorPosition = textarea.selectionStart;
+  const cursorEnd = textarea.selectionEnd;
+  let match;
+
+  while ((match = pattern.exec(textarea.value)) !== null) {
+    const openParenthesisIndex = match.index + match[0].indexOf('(');
+    const closeParenthesisIndex = match.index + match[0].indexOf(')');
+
+    if (
+      (cursorPosition >= openParenthesisIndex && cursorPosition <= closeParenthesisIndex) ||
+      (cursorEnd >= openParenthesisIndex && cursorEnd <= closeParenthesisIndex)
+    ) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
   (
     {
@@ -56,14 +77,14 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
               ];
               const selectedText = textArea.value.substring(selectionStart, selectionEnd);
               const pastedText = await navigator.clipboard.readText();
-              if (pastedText.startsWith('http')) {
+              if (pastedText.startsWith('http') && !isCursorInsideParentheses(textArea)) {
                 event.preventDefault();
-
                 const textBeforeLink = textArea.value.substring(0, selectionStart);
                 const textAfterLink = textArea.value.substring(
                   selectionStart + pastedText.length,
-                  selectionEnd + pastedText.length
+                  textArea.value.length
                 );
+
                 const newValue = `${textBeforeLink}[${selectedText}](${pastedText})${textAfterLink}`;
 
                 const newSelectionStart = selectionStart + 1;
