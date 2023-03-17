@@ -192,7 +192,7 @@ export default function TwitterFollowingModal({ followingRef, queryRef }: Props)
       }
 
       return (
-        <StyledFollowing align="center" justify="space-between" style={style} key={key}>
+        <StyledFollowing align="center" justify="space-between" style={style} key={key} gap={4}>
           <VStack>
             <StyledLink
               href={{
