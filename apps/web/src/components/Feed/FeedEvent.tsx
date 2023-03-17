@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -63,19 +62,15 @@ function FeedEvent({ eventRef, queryRef, feedMode }: FeedEventProps) {
 }
 
 type FeedEventWithBoundaryProps = {
-  index: number;
   feedMode: FeedMode;
-  onPotentialLayoutShift: (index: number) => void;
   eventRef: FeedEventWithErrorBoundaryFragment$key;
   queryRef: FeedEventWithErrorBoundaryQueryFragment$key;
 };
 
 export default function FeedEventWithBoundary({
-  index,
   feedMode,
   eventRef,
   queryRef,
-  onPotentialLayoutShift,
 }: FeedEventWithBoundaryProps) {
   const event = useFragment(
     graphql`
@@ -105,10 +100,6 @@ export default function FeedEventWithBoundary({
 
   const shouldShowAdmireComment = event.eventData?.__typename !== 'UserFollowedUsersFeedEventData';
 
-  const handlePotentialLayoutShift = useCallback(() => {
-    onPotentialLayoutShift(index);
-  }, [index, onPotentialLayoutShift]);
-
   return (
     <ReportingErrorBoundary fallback={<></>}>
       <FeedEventContainer gap={16}>
@@ -118,11 +109,7 @@ export default function FeedEventWithBoundary({
           // We have another boundary here in case the socialize section fails
           // and the rest of the feed event loads
           <ReportingErrorBoundary dontReport fallback={<></>}>
-            <FeedEventSocializeSection
-              eventRef={event}
-              queryRef={query}
-              onPotentialLayoutShift={handlePotentialLayoutShift}
-            />
+            <FeedEventSocializeSection eventRef={event} queryRef={query} />
           </ReportingErrorBoundary>
         )}
       </FeedEventContainer>
@@ -141,7 +128,6 @@ const FeedEventContainer = styled(VStack)`
 
   @media only screen and ${breakpoints.desktop} {
     padding: 24px 16px;
-    max-width: initial;
-    width: ${FEED_EVENT_ROW_WIDTH_DESKTOP}px;
+    max-width: ${FEED_EVENT_ROW_WIDTH_DESKTOP}px;
   }
 `;

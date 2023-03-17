@@ -1,7 +1,6 @@
 import {
   autoUpdate,
   flip,
-  FloatingOverlay,
   offset,
   shift,
   useClick,
@@ -110,29 +109,27 @@ export function CommentBoxIcon({ queryRef, eventRef }: Props) {
 
       <AnimatePresence>
         {showCommentBox && (
-          <FloatingOverlay style={{ zIndex: 10 }}>
-            <motion.div
-              // Floating Props
-              ref={floating}
-              style={{
-                position: strategy,
-                top: y ?? 0,
-                left: x ?? 0,
-                zIndex: 10,
-              }}
-              {...getFloatingProps()}
-              // Framer Motion Props
-              transition={{
-                duration: ANIMATED_COMPONENT_TRANSITION_S,
-                ease: rawTransitions.cubicValues,
-              }}
-              initial={{ opacity: 0, y: 0 }}
-              animate={{ opacity: 1, y: ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL }}
-              exit={{ opacity: 0, y: 0 }}
-            >
-              <CommentBox onClose={handleClose} eventRef={event} queryRef={query} />
-            </motion.div>
-          </FloatingOverlay>
+          <motion.div
+            // Floating Props
+            ref={floating}
+            style={{
+              position: strategy,
+              top: y ?? 0,
+              left: x ?? 0,
+              zIndex: 10,
+            }}
+            {...getFloatingProps()}
+            // Framer Motion Props
+            transition={{
+              duration: ANIMATED_COMPONENT_TRANSITION_S,
+              ease: rawTransitions.cubicValues,
+            }}
+            initial={{ opacity: 0, y: 0 }}
+            animate={{ opacity: 1, y: ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL }}
+            exit={{ opacity: 0, y: 0 }}
+          >
+            <CommentBox onClose={handleClose} eventRef={event} queryRef={query} />
+          </motion.div>
         )}
       </AnimatePresence>
     </>
