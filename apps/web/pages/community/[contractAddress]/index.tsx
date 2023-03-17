@@ -14,7 +14,6 @@ import { MetaTagProps } from '~/pages/_app';
 import GalleryRedirect from '~/scenes/_Router/GalleryRedirect';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
 import CommunityPageScene from '~/scenes/CommunityPage/CommunityPage';
-import { DISABLED_CONTRACTS } from '~/utils/getCommunityUrlForToken';
 
 type CommunityPageProps = MetaTagProps & {
   contractAddress: string;
@@ -53,10 +52,6 @@ export default function CommunityPage({ contractAddress }: CommunityPageProps) {
 
   if (!contractAddress) {
     // Something went horribly wrong
-    return <GalleryRedirect to={{ pathname: '/' }} />;
-  }
-
-  if (DISABLED_CONTRACTS.includes(contractAddress)) {
     return <GalleryRedirect to={{ pathname: '/' }} />;
   }
 
