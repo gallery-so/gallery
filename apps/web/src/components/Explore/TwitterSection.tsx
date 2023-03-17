@@ -27,7 +27,7 @@ export default function TwitterSection({ queryRef, title, subTitle }: Props) {
           after: $twitterListAfter
           first: $twitterListFirst
           socialAccountType: Twitter
-          excludeAlreadyFollowing: true
+          excludeAlreadyFollowing: false
         ) {
           edges {
             node {

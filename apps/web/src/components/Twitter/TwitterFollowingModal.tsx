@@ -56,7 +56,7 @@ export default function TwitterFollowingModal({ followingRef, queryRef }: Props)
           after: $twitterListAfter
           first: $twitterListFirst
           socialAccountType: Twitter
-          excludeAlreadyFollowing: true
+          excludeAlreadyFollowing: false
         ) @connection(key: "TwitterFollowingModal__socialConnections") {
           edges {
             node {

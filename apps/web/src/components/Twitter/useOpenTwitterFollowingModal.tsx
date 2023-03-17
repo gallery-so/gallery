@@ -22,7 +22,7 @@ export default function useOpenTwitterFollowingModal(
           after: $twitterListAfter
           first: $twitterListFirst
           socialAccountType: Twitter
-          excludeAlreadyFollowing: true
+          excludeAlreadyFollowing: false
         ) @connection(key: "TwitterFollowingModal__socialConnections") {
           edges {
             __typename
