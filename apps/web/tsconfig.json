@@ -3,8 +3,6 @@
   "compilerOptions": {
     "baseUrl": ".",
     "jsx": "preserve",
-    "emitDeclarationOnly": false,
-    "noEmit": true,
     "paths": {
       "~/abis/*": ["src/abis/*"],
       "~/assets/*": ["src/assets/*"],
@@ -27,9 +25,23 @@
       "~/utils/*": ["src/utils/*"]
     },
     "outDir": "../../.moon/cache/types/apps/web",
-    "incremental": true
+    "incremental": true,
+    "noEmit": false
   },
-  "include": ["tests", "src", "scripts", "pages", "next-env.d.ts", "app.d.ts", "__generated__"],
-  "references": [],
+  "include": [
+    "tests",
+    "src",
+    "scripts",
+    "pages",
+    "next-env.d.ts",
+    "app.d.ts",
+    "__generated__",
+    "**/*.json"
+  ],
+  "references": [
+    {
+      "path": "../../packages/shared"
+    }
+  ],
   "exclude": ["node_modules"]
 }
