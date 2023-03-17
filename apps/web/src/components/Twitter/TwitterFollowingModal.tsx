@@ -251,14 +251,14 @@ export default function TwitterFollowingModal({ followingRef, queryRef }: Props)
         <VStack></VStack>
       </StyledFollowingContainer>
 
-      <StyledFooter justify="flex-end" gap={10}>
+      <HStack justify="flex-end" gap={10}>
         <StyledButtonSkip onClick={handleClose} variant="secondary">
           SKIP
         </StyledButtonSkip>
         <StyledButtonFollowAll onClick={handleFollowAll} variant="primary">
           FOLLOW ALL
         </StyledButtonFollowAll>
-      </StyledFooter>
+      </HStack>
     </StyledOnboardingTwitterModal>
   );
 }
@@ -309,8 +309,4 @@ const StyledButtonSkip = styled(Button)`
 
 const StyledButtonFollowAll = styled(Button)`
   padding: 8px 16px;
-`;
-
-const StyledFooter = styled(HStack)`
-  padding: 16px 0;
 `;
