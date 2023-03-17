@@ -71,48 +71,59 @@ export default function MementosPage() {
         <StyledContent>
           <HStack align="center" gap={4}>
             <StyledTitleL>
-              Gallery Mementos: <i>Infinita Prospectus</i>
+              <i>Blooming Connections</i>
             </StyledTitleL>
           </HStack>
           <VStack gap={16}>
             <BaseM>
-              Infinita Prospectus, latin for Infinite Perspectives, is a collectible from Gallery
-              Mementos that celebrates the release of our multi-gallery feature, an evolution in the
-              way users can express themselves on Gallery. With multi-gallery, users can create an
-              infinite number of Galleries to express their diverse tastes and the entire spectrum
-              of their collection.
+              Introducing the <i>Blooming Connections</i> memento, a beautiful and symbolic
+              representation of the growing network within the Gallery community. As a field
+              flourishes around a pristine white cube, it symbolizes the nurturing environment
+              Gallery offers to cultivate new connections and unlock unprecedented levels of
+              inspiration. This limited-edition NFT commemorates the bridge between Twitter and
+              Gallery, empowering collectors, curators, and creatives to connect, engage, and share
+              their passion for art.
             </BaseM>
             <BaseM>
-              Gallery Mementos are a living collection of treasures that will come to tell the story
-              of the development of Gallery and its community. You can read more about Gallery
-              Mementos{' '}
+              You can read more about Gallery Mementos{' '}
               <InteractiveLink href="https://gallery.mirror.xyz/uoO9Fns67sYzX14eRQHiO6sXz2Ojh5qKR0-Sc0F2vZY">
                 here
               </InteractiveLink>
               .
             </BaseM>
-            <BaseM>
-              Eligibility Criteria
-              <StyledUl>
-                <li>
-                  On <b>February 23rd</b>, a snapshot will be taken of all users with at least two
-                  galleries
-                </li>
-                <li>
-                  Minting will open from 
-                  <b>February 23rd 2:00PM through March 2nd 11:59PM ET</b>
-                </li>
-                <li>Mint price is free and limited to one per holder</li>
-                <li>
-                  Users must designate their primary wallet in{' '}
-                  <InteractiveLink href="https://gallery.so/settings">
-                    gallery.so/settings
-                  </InteractiveLink>
-                   to redeem their memento
-                </li>
-              </StyledUl>
-            </BaseM>
-            {/* <BaseM>Minting is now closed. Thank you to everyone who minted one.</BaseM> */}
+            <VStack>
+              <BaseM>
+                Eligibility Criteria
+                <StyledUl>
+                  <li>
+                    Connect your Twitter account to your Gallery profile. You can do so by visiting
+                    your profile page or your settings.
+                  </li>
+                  <li>
+                    Follow{' '}
+                    <InteractiveLink href="https://twitter.com/GALLERY">@GALLERY</InteractiveLink>{' '}
+                    on Twitter.
+                  </li>
+                  <li>
+                    Reply to the{' '}
+                    <InteractiveLink href="https://twitter.com/GALLERY">
+                      announcement tweet
+                    </InteractiveLink>{' '}
+                    with your Gallery profile link.
+                  </li>
+                  <li>
+                    On <b>March 27th</b>, a snapshot will be taken of qualifying users
+                  </li>
+                  <li>
+                    Minting will open from 
+                    <b>March 27th 2:00PM through April 3rd 11:59PM ET</b>
+                  </li>
+                </StyledUl>
+              </BaseM>
+              <BaseM>
+                <i>Please note that a platform fee of .000777E will be applied per mint.</i>
+              </BaseM>
+            </VStack>
           </VStack>
 
           {isDesktop && <HorizontalBreak />}
