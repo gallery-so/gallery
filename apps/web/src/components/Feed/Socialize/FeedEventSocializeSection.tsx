@@ -10,16 +10,11 @@ import { FeedEventSocializeSectionFragment$key } from '~/generated/FeedEventSoci
 import { FeedEventSocializeSectionQueryFragment$key } from '~/generated/FeedEventSocializeSectionQueryFragment.graphql';
 
 type FeedEventSocializeSectionProps = {
-  onPotentialLayoutShift: () => void;
   eventRef: FeedEventSocializeSectionFragment$key;
   queryRef: FeedEventSocializeSectionQueryFragment$key;
 };
 
-export function FeedEventSocializeSection({
-  eventRef,
-  queryRef,
-  onPotentialLayoutShift,
-}: FeedEventSocializeSectionProps) {
+export function FeedEventSocializeSection({ eventRef, queryRef }: FeedEventSocializeSectionProps) {
   const event = useFragment(
     graphql`
       fragment FeedEventSocializeSectionFragment on FeedEvent {
@@ -45,11 +40,7 @@ export function FeedEventSocializeSection({
   return (
     <HStack justify="space-between" align="flex-start" gap={24}>
       <VStack shrink>
-        <Interactions
-          onPotentialLayoutShift={onPotentialLayoutShift}
-          eventRef={event}
-          queryRef={query}
-        />
+        <Interactions eventRef={event} queryRef={query} />
       </VStack>
 
       <HStack align="center">
