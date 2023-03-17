@@ -30,8 +30,8 @@ const UsernameQueryNode = graphql`
     $sharedCommunitiesAfter: String
     $sharedFollowersFirst: Int
     $sharedFollowersAfter: String
-    $twitterListLast: Int!
-    $twitterListBefore: String
+    $twitterListFirst: Int!
+    $twitterListAfter: String
   ) {
     userByUsername(username: $username) @required(action: THROW) {
       ... on GalleryUser {
@@ -128,7 +128,7 @@ UserGallery.preloadQuery = ({ relayEnvironment, query }: PreloadQueryArgs) => {
         username: query.username,
         sharedCommunitiesFirst: COMMUNITIES_PER_PAGE,
         sharedFollowersFirst: FOLLOWERS_PER_PAGE,
-        twitterListLast: USER_PER_PAGE,
+        twitterListFirst: USER_PER_PAGE,
       },
       { fetchPolicy: 'store-or-network' }
     );
