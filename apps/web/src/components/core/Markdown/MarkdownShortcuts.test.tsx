@@ -90,7 +90,7 @@ describe('MarkdownShortcuts', () => {
       fireEvent.click(linkIcon);
     }
 
-    const message = screen.getByDisplayValue('[](https://)');
+    const message = screen.getByDisplayValue('[](url)');
     expect(message).toBeTruthy();
   });
 });
