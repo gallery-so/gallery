@@ -28,7 +28,7 @@ export default function TwitterSection({ queryRef, title, subTitle }: Props) {
           first: $twitterListFirst
           socialAccountType: Twitter
           excludeAlreadyFollowing: true
-        ) @required(action: THROW) {
+        ) {
           edges {
             node {
               __typename
@@ -77,7 +77,7 @@ export default function TwitterSection({ queryRef, title, subTitle }: Props) {
     });
   }, [query, showModal]);
 
-  if (query.socialConnections.pageInfo.total === 0) {
+  if (!query.socialConnections?.pageInfo.total) {
     return null;
   }
 
