@@ -70,7 +70,8 @@ export default function TwitterAuth({ queryRef }: Props) {
       });
 
       // If the user was redirected from the TwitterAuth page, we want to redirect them back to the page they were on
-      const previousRoute = JSON.parse(localStorage.getItem(TWITTER_LOCAL_STORAGE_KEY) ?? '');
+      const localStorageTwitterValue = localStorage.getItem(TWITTER_LOCAL_STORAGE_KEY);
+      const previousRoute = localStorageTwitterValue ? JSON.parse(localStorageTwitterValue) : null;
 
       if (previousRoute) {
         localStorage.removeItem(TWITTER_LOCAL_STORAGE_KEY);

@@ -68,7 +68,7 @@ export default function SearchResult({ name, description, path, type }: Props) {
   }, [keyword, description]);
 
   return (
-    <StyledSearchResult href={path} onClick={handleClick}>
+    <StyledSearchResult className="SearchResult" href={path} onClick={handleClick}>
       <BaseM>
         <Markdown text={highlightedName} />
       </BaseM>
@@ -81,13 +81,15 @@ export default function SearchResult({ name, description, path, type }: Props) {
   );
 }
 
-const StyledSearchResult = styled(Link)<LinkProps>`
+const StyledSearchResult = styled(Link)<LinkProps & { className: string }>`
   color: ${colors.offBlack};
   padding: 16px 12px;
   cursor: pointer;
   text-decoration: none;
 
-  &:hover {
+  &:hover,
+  &:focus {
+    outline: none;
     background-color: ${colors.faint};
     border-radius: 4px;
   }
