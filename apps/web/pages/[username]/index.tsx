@@ -72,6 +72,7 @@ const GalleryPageSpacingInner = styled.div`
 const GalleryPageSpacingContainer = styled.div<{ navbarHeight: number }>`
   display: flex;
   justify-content: center;
+  align-items: center;
   min-height: 100vh;
 
   margin: 0 ${pageGutter.mobile}px 24px;
@@ -79,7 +80,7 @@ const GalleryPageSpacingContainer = styled.div<{ navbarHeight: number }>`
 
   @media only screen and ${breakpoints.tablet} {
     margin: 0 ${pageGutter.tablet}px;
-    padding-top: ${({ navbarHeight }) => navbarHeight + 24}px;
+    padding: ${({ navbarHeight }) => navbarHeight + 24}px 0px;
   }
 `;
 
