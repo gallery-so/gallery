@@ -106,7 +106,12 @@ export default function MementosPage() {
                   </li>
                   <li>
                     Reply to the{' '}
-                    <InteractiveLink href="https://twitter.com/GALLERY">
+                    <InteractiveLink
+                      href={
+                        process.env.NEXT_PUBLIC_MEMENTO_ANNOUNCEMENT_TWEET_URL ||
+                        'https://twitter.com/GALLERY'
+                      }
+                    >
                       announcement tweet
                     </InteractiveLink>{' '}
                     with your Gallery profile link.
