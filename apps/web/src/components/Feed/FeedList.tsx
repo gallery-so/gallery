@@ -7,6 +7,8 @@ import { FeedMode } from '~/components/Feed/types';
 import { FeedListEventDataFragment$key } from '~/generated/FeedListEventDataFragment.graphql';
 import { FeedListFragment$key } from '~/generated/FeedListFragment.graphql';
 
+import Loader from '../core/Loader/Loader';
+import transitions from '../core/transitions';
 import FeedEvent from './FeedEvent';
 
 type Props = {
@@ -91,10 +93,20 @@ export default function FeedList({
         {feeds.map((virtualItem) => {
           // graphql returns the oldest event at the top of the list, so display in opposite order
           const content = feedData[feedData.length - virtualItem.index - 1];
+          const isLoaderRow = virtualItem.index > feedData.length - 1;
 
           // Better safe than sorry :)
           if (!content) {
             return;
+          }
+
+          // If we're on the last row, render the loading state
+          if (isLoaderRow && hasNext) {
+            return (
+              <StyledLoadMoreRow key={virtualItem.key}>
+                <Loader inverted size="small" />
+              </StyledLoadMoreRow>
+            );
           }
 
           return (
@@ -133,4 +145,15 @@ const StyledFeedListContainer = styled.div<{
   left: 0;
   width: 100%;
   transform: translateY(${({ yPosition }) => yPosition}px);
+`;
+
+const StyledLoadMoreRow = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  height: 92px;
+  transition: background ${transitions.cubic};
+  cursor: pointer;
 `;
