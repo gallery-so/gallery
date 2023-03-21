@@ -3,6 +3,10 @@ import { StyleSheet } from 'react-native';
 import MarkdownDisplay, { MarkdownIt } from 'react-native-markdown-display';
 
 const markdownStyles = StyleSheet.create({
+  paragraph: {
+    marginTop: 0,
+    marginBottom: 0,
+  },
   body: {
     fontSize: 12,
     color: '#141414',
