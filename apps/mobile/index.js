@@ -11,6 +11,7 @@ LogBox.ignoreLogs([
   "The provided value 'moz",
   "The provided value 'ms-stream",
   'onAnimatedValueUpdate',
+  'Could not render NFT',
 ]);
 LogBox.ignoreLogs(['Could not render FeedEvent']);
 
