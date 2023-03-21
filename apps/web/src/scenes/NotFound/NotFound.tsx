@@ -27,6 +27,7 @@ function NotFound({ resource = 'user' }: Props) {
 }
 
 const StyledNotFound = styled(VStack)`
+  height: 100%;
   justify-content: center;
   align-items: center;
   flex-direction: column;

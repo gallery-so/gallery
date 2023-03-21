@@ -72,7 +72,6 @@ const GalleryPageSpacingInner = styled.div`
 const GalleryPageSpacingContainer = styled.div<{ navbarHeight: number }>`
   display: flex;
   justify-content: center;
-  align-items: center;
   min-height: 100vh;
 
   margin: 0 ${pageGutter.mobile}px 24px;
