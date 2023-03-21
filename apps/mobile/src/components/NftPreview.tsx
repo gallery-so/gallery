@@ -5,6 +5,7 @@ import { graphql } from 'relay-runtime';
 
 import { NftPreviewFragment$key } from '~/generated/NftPreviewFragment.graphql';
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
+import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
 
 import { SvgWebView } from './SvgWebView';
@@ -14,7 +15,7 @@ type NftPreviewProps = {
   resizeMode: ResizeMode;
 };
 
-export function NftPreview({ tokenRef, resizeMode }: NftPreviewProps) {
+function NftPreviewInner({ tokenRef, resizeMode }: NftPreviewProps) {
   const token = useFragment(
     graphql`
       fragment NftPreviewFragment on Token {
@@ -67,5 +68,13 @@ export function NftPreview({ tokenRef, resizeMode }: NftPreviewProps) {
         uri: tokenUrl,
       }}
     />
+  );
+}
+
+export function NftPreview({ tokenRef, resizeMode }: NftPreviewProps) {
+  return (
+    <ReportingErrorBoundary fallback={null}>
+      <NftPreviewInner tokenRef={tokenRef} resizeMode={resizeMode} />
+    </ReportingErrorBoundary>
   );
 }
