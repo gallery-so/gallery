@@ -27,7 +27,9 @@ type State = {
 
 export class ReportingErrorBoundary extends Component<ReportingErrorBoundaryProps, State> {
   static override contextType = ErrorReportingContext;
-  declare context: ContextType<typeof ErrorReportingContext>;
+
+  // @ts-expect-error Problem w/ `declare` and the Expo babel preset
+  context: ContextType<typeof ErrorReportingContext>;
 
   constructor(props: ReportingErrorBoundaryProps) {
     super(props);
