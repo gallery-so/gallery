@@ -2,11 +2,13 @@ import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import { useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
+import { CaptionListItemFragment$key } from '~/generated/CaptionListItemFragment.graphql';
 import { FeedListFragment$key } from '~/generated/FeedListFragment.graphql';
 import { FeedListItemFragment$key } from '~/generated/FeedListItemFragment.graphql';
 import { FeedListSectionHeaderFragment$key } from '~/generated/FeedListSectionHeaderFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
+import { CaptionListItem } from './CaptionListItem';
 import { FeedListItem } from './FeedListItem';
 import { FeedListSectionHeader } from './FeedListSectionHeader';
 
@@ -32,6 +34,7 @@ export function FeedList({ feedEventRefs }: FeedListProps) {
         }
 
         ...FeedListSectionHeaderFragment
+        ...CaptionListItemFragment
       }
     `,
     feedEventRefs
@@ -40,11 +43,13 @@ export function FeedList({ feedEventRefs }: FeedListProps) {
   const items = useMemo(() => {
     const items: Array<
       | { kind: 'header'; item: FeedListSectionHeaderFragment$key }
+      | { kind: 'caption'; item: CaptionListItemFragment$key }
       | { kind: 'event'; item: FeedListItemFragment$key }
     > = [];
 
     for (const event of events) {
       items.push({ kind: 'header', item: event });
+      items.push({ kind: 'caption', item: event });
 
       const eventsInSection = [];
       if (event.eventData?.__typename === 'GalleryUpdatedFeedEventData') {
@@ -77,10 +82,13 @@ export function FeedList({ feedEventRefs }: FeedListProps) {
   console.log(stickyHeaderIndices);
 
   const renderItem = useCallback<ListRenderItem<(typeof items)[number]>>(({ item }) => {
-    if (item.kind === 'header') {
-      return <FeedListSectionHeader feedEventRef={item.item} />;
-    } else {
-      return <FeedListItem eventDataRef={item.item} />;
+    switch (item.kind) {
+      case 'header':
+        return <FeedListSectionHeader feedEventRef={item.item} />;
+      case 'caption':
+        return <CaptionListItem feedEventRef={item.item} />;
+      case 'event':
+        return <FeedListItem eventDataRef={item.item} />;
     }
   }, []);
 
