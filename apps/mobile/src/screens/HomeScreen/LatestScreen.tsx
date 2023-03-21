@@ -15,7 +15,7 @@ function LatestScreenInner({ queryRef }: LatestScreenInnerProps) {
   const query = useFragment(
     graphql`
       fragment LatestScreenFragment on Query {
-        trendingFeed(before: $globalFeedBefore, last: $globalFeedCount) {
+        globalFeed(before: $globalFeedBefore, last: $globalFeedCount) {
           edges {
             node {
               __typename
@@ -30,8 +30,8 @@ function LatestScreenInner({ queryRef }: LatestScreenInnerProps) {
   );
 
   const events = useMemo(() => {
-    return removeNullValues(query.trendingFeed?.edges?.map((it) => it?.node)).reverse();
-  }, [query.trendingFeed?.edges]);
+    return removeNullValues(query.globalFeed?.edges?.map((it) => it?.node)).reverse();
+  }, [query.globalFeed?.edges]);
 
   return <FeedList feedEventRefs={events} />;
 }
