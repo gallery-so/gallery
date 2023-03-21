@@ -59,7 +59,7 @@ Trending.preloadQuery = ({ relayEnvironment }: PreloadQueryArgs) => {
       visibleTokensPerFeedEvent: MAX_PIECES_DISPLAYED_PER_FEED_EVENT,
       twitterListFirst: USER_PER_PAGE,
     },
-    { fetchPolicy: 'store-or-network' }
+    { fetchPolicy: 'network-only' }
   );
 };
 
