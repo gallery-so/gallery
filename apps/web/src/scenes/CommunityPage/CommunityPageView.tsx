@@ -19,8 +19,10 @@ import MemberListPageProvider from '~/contexts/memberListPage/MemberListPageCont
 import { CommunityPageViewFragment$key } from '~/generated/CommunityPageViewFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import formatUrl from '~/utils/formatUrl';
+import { DISABLED_CONTRACTS } from '~/utils/getCommunityUrlForToken';
 import { getExternalAddressLink, truncateAddress } from '~/utils/wallet';
 
+import CommunityPageDisabled from './CommunityPageDisabled';
 import LayoutToggleButton from './LayoutToggleButton';
 
 type Props = {
@@ -49,17 +51,21 @@ export default function CommunityPageView({ communityRef }: Props) {
   const { name, description, contractAddress, badgeURL } = community;
   const isMobile = useIsMobileWindowWidth();
 
-  const [layout, setLayout] = useState<DisplayLayout>(DisplayLayout.GRID);
-  const isGrid = useMemo(() => layout === DisplayLayout.GRID, [layout]);
-
   if (!contractAddress) {
     throw new Error('CommunityPageView: contractAddress not found on community');
   }
 
-  const isArtGobbler = useMemo(
+  const isGridEnabled = useMemo(
     () => GRID_ENABLED_COMMUNITY_ADDRESSES.includes(contractAddress.address || ''),
     [contractAddress.address]
   );
+  const [layout, setLayout] = useState<DisplayLayout>(DisplayLayout.GRID);
+  const showGrid = useMemo(
+    () => isGridEnabled && layout === DisplayLayout.GRID,
+    [isGridEnabled, layout]
+  );
+
+  const isCommunityPageDisabled = DISABLED_CONTRACTS.includes(contractAddress.address ?? '');
 
   // whether "Show More" has been clicked or not
   const [showExpandedDescription, setShowExpandedDescription] = useState(false);
@@ -123,14 +129,16 @@ export default function CommunityPageView({ communityRef }: Props) {
             )}
           </StyledHeader>
 
-          {isArtGobbler && (
+          {isGridEnabled && (
             <StyledLayoutToggleButtonContainer>
               <LayoutToggleButton layout={layout} setLayout={setLayout} />
             </StyledLayoutToggleButtonContainer>
           )}
         </HStack>
 
-        {isGrid && isArtGobbler ? (
+        {isCommunityPageDisabled ? (
+          <CommunityPageDisabled name={name ?? ''} />
+        ) : showGrid ? (
           <StyledGridViewContainer gap={24}>
             <StyledBreakLine />
             <StyledListWrapper>

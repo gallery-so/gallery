@@ -24,10 +24,11 @@ export default function TwitterSection({ queryRef, title, subTitle }: Props) {
     graphql`
       fragment TwitterSectionQueryFragment on Query {
         socialConnections(
-          before: $twitterListBefore
-          last: $twitterListLast
+          after: $twitterListAfter
+          first: $twitterListFirst
           socialAccountType: Twitter
-        ) @required(action: THROW) {
+          excludeAlreadyFollowing: false
+        ) {
           edges {
             node {
               __typename
@@ -41,6 +42,9 @@ export default function TwitterSection({ queryRef, title, subTitle }: Props) {
                 }
               }
             }
+          }
+          pageInfo {
+            total
           }
         }
 
@@ -73,7 +77,7 @@ export default function TwitterSection({ queryRef, title, subTitle }: Props) {
     });
   }, [query, showModal]);
 
-  if (nonNullUsers.length === 0) {
+  if (!query.socialConnections?.pageInfo.total) {
     return null;
   }
 
