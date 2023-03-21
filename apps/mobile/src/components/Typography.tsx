@@ -37,7 +37,7 @@ export function Typography({ font, className, style, children }: TypographyProps
   }, [font]);
 
   return (
-    <Text style={[textStyle, style]} className={className}>
+    <Text style={[textStyle, style]} className={`text-offBlack ${className}`}>
       {children}
     </Text>
   );
