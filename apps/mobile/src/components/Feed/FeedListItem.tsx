@@ -6,6 +6,8 @@ import { graphql } from 'relay-runtime';
 import { FeedListItemFragment$key } from '~/generated/FeedListItemFragment.graphql';
 
 import { CollectionCreatedFeedEvent } from './CollectionCreatedFeedEvent';
+import { CollectionUpdatedFeedEvent } from './CollectionUpdatedFeedEvent';
+import { CollectorsNoteAddedToCollectionFeedEvent } from './CollectorsNoteAddedToCollectionFeedEvent';
 import { TokensAddedToCollectionFeedEvent } from './TokensAddedToCollectionFeedEvent';
 
 type FeedListItemProps = {
@@ -18,12 +20,9 @@ export function FeedListItem({ eventDataRef }: FeedListItemProps) {
       fragment FeedListItemFragment on FeedEventData {
         __typename
 
-        ... on GalleryInfoUpdatedFeedEventData {
-          __typename
-        }
-
         ... on CollectionUpdatedFeedEventData {
           __typename
+          ...CollectionUpdatedFeedEventFragment
         }
 
         ... on TokensAddedToCollectionFeedEventData {
@@ -34,6 +33,11 @@ export function FeedListItem({ eventDataRef }: FeedListItemProps) {
         ... on CollectionCreatedFeedEventData {
           ...CollectionCreatedFeedEventFragment
         }
+
+        ... on CollectorsNoteAddedToCollectionFeedEventData {
+          __typename
+          ...CollectorsNoteAddedToCollectionFeedEventFragment
+        }
       }
     `,
     eventDataRef
@@ -41,6 +45,12 @@ export function FeedListItem({ eventDataRef }: FeedListItemProps) {
 
   const inner = useMemo(() => {
     switch (eventData.__typename) {
+      case 'CollectorsNoteAddedToCollectionFeedEventData':
+        return (
+          <CollectorsNoteAddedToCollectionFeedEvent collectionUpdatedFeedEventDataRef={eventData} />
+        );
+      case 'CollectionUpdatedFeedEventData':
+        return <CollectionUpdatedFeedEvent collectionUpdatedFeedEventDataRef={eventData} />;
       case 'CollectionCreatedFeedEventData':
         return <CollectionCreatedFeedEvent collectionUpdatedFeedEventDataRef={eventData} />;
       case 'TokensAddedToCollectionFeedEventData':

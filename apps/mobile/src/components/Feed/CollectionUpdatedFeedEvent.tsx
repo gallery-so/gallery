@@ -3,26 +3,27 @@ import { View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import { CollectionCreatedFeedEventFragment$key } from '~/generated/CollectionCreatedFeedEventFragment.graphql';
+import { CollectionUpdatedFeedEventFragment$key } from '~/generated/CollectionUpdatedFeedEventFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import { CollectionAndAdditionCount } from './CollectionAndAdditionCount';
 import { FeedListCollectorsNote } from './FeedListCollectorsNote';
 import { TokenCarousel } from './TokenCarousel';
 
-type CollectionCreatedFeedEventProps = {
-  collectionUpdatedFeedEventDataRef: CollectionCreatedFeedEventFragment$key;
+type CollectionUpdatedFeedEventProps = {
+  collectionUpdatedFeedEventDataRef: CollectionUpdatedFeedEventFragment$key;
 };
 
-export function CollectionCreatedFeedEvent({
+export function CollectionUpdatedFeedEvent({
   collectionUpdatedFeedEventDataRef,
-}: CollectionCreatedFeedEventProps) {
+}: CollectionUpdatedFeedEventProps) {
   const eventData = useFragment(
     graphql`
-      fragment CollectionCreatedFeedEventFragment on CollectionCreatedFeedEventData {
+      fragment CollectionUpdatedFeedEventFragment on CollectionUpdatedFeedEventData {
+        newCollectorsNote
+
         collection {
           name
-          collectorsNote
         }
 
         newTokens {
@@ -46,8 +47,8 @@ export function CollectionCreatedFeedEvent({
         additionCount={eventData.newTokens?.length}
       />
 
-      {eventData.collection?.collectorsNote && (
-        <FeedListCollectorsNote collectorsNote={eventData.collection.collectorsNote} />
+      {eventData.newCollectorsNote && (
+        <FeedListCollectorsNote collectorsNote={eventData.newCollectorsNote} />
       )}
 
       <TokenCarousel tokenRefs={tokens} />
