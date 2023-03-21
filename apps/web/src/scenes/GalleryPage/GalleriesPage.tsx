@@ -199,7 +199,7 @@ export default function GalleriesPage({ queryRef }: Props) {
   );
 
   return (
-    <GalleryPageSpacing>
+    <GalleryPageSpacing alignCenter={false}>
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}

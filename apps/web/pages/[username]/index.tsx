@@ -51,14 +51,18 @@ const UsernameQueryNode = graphql`
   }
 `;
 
+type GalleryPageProps = PropsWithChildren & {
+  alignCenter?: boolean;
+};
+
 // This component exists here since all child routes of this page (/{username}/*)
 // will be using this wrapper.
 // In the future (Next 13 App Directory), we can just use a layout file
-export function GalleryPageSpacing({ children }: PropsWithChildren) {
+export function GalleryPageSpacing({ children, alignCenter = true }: GalleryPageProps) {
   const navbarHeight = useGlobalNavbarHeight();
 
   return (
-    <GalleryPageSpacingContainer navbarHeight={navbarHeight}>
+    <GalleryPageSpacingContainer alignCenter={alignCenter} navbarHeight={navbarHeight}>
       <GalleryPageSpacingInner>{children}</GalleryPageSpacingInner>
     </GalleryPageSpacingContainer>
   );
@@ -69,10 +73,12 @@ const GalleryPageSpacingInner = styled.div`
   width: 100%;
 `;
 
-const GalleryPageSpacingContainer = styled.div<{ navbarHeight: number }>`
+const GalleryPageSpacingContainer = styled.div<{ navbarHeight: number; alignCenter?: boolean }>`
   display: flex;
   justify-content: center;
-  align-items: center;
+
+  align-items: ${({ alignCenter }) => (alignCenter ? 'center' : 'flex-start')};
+
   min-height: 100vh;
 
   margin: 0 ${pageGutter.mobile}px 24px;
