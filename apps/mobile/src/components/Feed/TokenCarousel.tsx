@@ -78,7 +78,7 @@ export function TokenCarousel({ tokenRefs }: TokenCarouselProps) {
       />
 
       {chunks?.length > 1 && (
-        <View className="flex w-full flex-row justify-center py-3">
+        <View className="flex w-full flex-row justify-center">
           <View className="flex flex-row space-x-1">
             {chunks.map((_, index) => {
               return <Circle key={index} active={currentSlideIndex === index} />;

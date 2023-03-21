@@ -50,5 +50,5 @@ export function FeedListItem({ eventDataRef }: FeedListItemProps) {
     }
   }, [eventData]);
 
-  return <View>{inner}</View>;
+  return <View className="py-3">{inner}</View>;
 }
