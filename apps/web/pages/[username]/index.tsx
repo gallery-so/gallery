@@ -30,8 +30,8 @@ const UsernameQueryNode = graphql`
     $sharedCommunitiesAfter: String
     $sharedFollowersFirst: Int
     $sharedFollowersAfter: String
-    $twitterListLast: Int!
-    $twitterListBefore: String
+    $twitterListFirst: Int!
+    $twitterListAfter: String
   ) {
     userByUsername(username: $username) @required(action: THROW) {
       ... on GalleryUser {
@@ -72,6 +72,7 @@ const GalleryPageSpacingInner = styled.div`
 const GalleryPageSpacingContainer = styled.div<{ navbarHeight: number }>`
   display: flex;
   justify-content: center;
+  align-items: center;
   min-height: 100vh;
 
   margin: 0 ${pageGutter.mobile}px 24px;
@@ -79,7 +80,7 @@ const GalleryPageSpacingContainer = styled.div<{ navbarHeight: number }>`
 
   @media only screen and ${breakpoints.tablet} {
     margin: 0 ${pageGutter.tablet}px;
-    padding-top: ${({ navbarHeight }) => navbarHeight + 24}px;
+    padding: ${({ navbarHeight }) => navbarHeight + 24}px 0px;
   }
 `;
 
@@ -128,7 +129,7 @@ UserGallery.preloadQuery = ({ relayEnvironment, query }: PreloadQueryArgs) => {
         username: query.username,
         sharedCommunitiesFirst: COMMUNITIES_PER_PAGE,
         sharedFollowersFirst: FOLLOWERS_PER_PAGE,
-        twitterListLast: USER_PER_PAGE,
+        twitterListFirst: USER_PER_PAGE,
       },
       { fetchPolicy: 'store-or-network' }
     );

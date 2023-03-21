@@ -22,16 +22,16 @@ export default function Bold({
 
     const selectedText = textArea.value.substring(start, end);
 
-    // If the user clicks an empty link, remove the [](https://)
-    if (textArea.value.substring(start - 1, end + 11) === '[](https://)') {
+    // If the user clicks an empty link, remove the [](url)
+    if (textArea.value.substring(start - 1, end + 11) === '[](url)') {
       const newText =
         textArea.value.substring(0, start - 1) +
         textArea.value.substring(end + 11, textArea.value.length);
       setValueAndTriggerOnChange(textArea, newText, [start - 1, start - 1]);
       return;
     }
-    // If user is at the end of (https://), they probably just clicked the link button.
-    // Removing the [text](https://) would be difficult because [text] can be any number of chars. For now, just return
+    // If user is at the end of (url), they probably just clicked the link button.
+    // Removing the [text](url) would be difficult because [text] can be any number of chars. For now, just return
     if (textArea.value.substring(start - 1, end + 1) == '/)') {
       return;
     }
@@ -39,18 +39,18 @@ export default function Bold({
       // If the user has selected text, add a link around it
       const newText =
         textArea.value.substring(0, start) +
-        `[${selectedText}](https://)` +
+        `[${selectedText}](url)` +
         textArea.value.substring(end);
       setValueAndTriggerOnChange(textArea, newText, [
         start + 11 + selectedText.length,
         start + 11 + selectedText.length,
-      ]); // Link [0, 4] -> [Link](https://) (end)
+      ]); // Link [0, 4] -> [Link](url) (end)
       return;
     }
     if (!selectedText) {
       // If there is no selected text, just add a link where the cursor is and place the cursor in middle
       const newText =
-        textArea.value.substring(0, start) + '[](https://)' + textArea.value.substring(end);
+        textArea.value.substring(0, start) + '[](url)' + textArea.value.substring(end);
       setValueAndTriggerOnChange(textArea, newText, [start + 1, start + 1]); // [0, 0] -> []() ([1, 1])
       return;
     }

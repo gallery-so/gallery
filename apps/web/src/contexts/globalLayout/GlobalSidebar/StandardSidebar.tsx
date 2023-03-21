@@ -145,12 +145,11 @@ export function StandardSidebar({ queryRef }: Props) {
   }, [hideDrawer, track]);
 
   const handleSearchClick = useCallback(() => {
-    hideDrawer();
     track('Sidebar Search Click');
     showDrawer({
       content: <Search />,
     });
-  }, [hideDrawer, showDrawer, track]);
+  }, [showDrawer, track]);
 
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 

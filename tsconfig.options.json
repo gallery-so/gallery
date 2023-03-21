@@ -1,5 +1,5 @@
 {
-  "extends": "tsconfig-moon",
+  "extends": "tsconfig-moon/tsconfig.projects.json",
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
     "strict": true,
