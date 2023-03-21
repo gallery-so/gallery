@@ -163,6 +163,18 @@ export function createRelayFetchFunctionWithDefer(
               uploadables
             );
           } else {
+            const allErrors = responses.flatMap((response) => {
+              if ('errors' in response) {
+                return response.errors;
+              }
+
+              return [];
+            });
+
+            allErrors.forEach((error) => {
+              console.error(error);
+            });
+
             const { data, isLast } = flattenDeferResponse(responses);
 
             sink.next(data);
