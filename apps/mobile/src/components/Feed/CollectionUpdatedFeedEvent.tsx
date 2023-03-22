@@ -6,8 +6,9 @@ import { graphql } from 'relay-runtime';
 import { CollectionUpdatedFeedEventFragment$key } from '~/generated/CollectionUpdatedFeedEventFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
-import { CollectionAndAdditionCount } from './CollectionAndAdditionCount';
+import { Typography } from '../Typography';
 import { EventTokenGrid } from './EventTokenGrid';
+import { FeedEventCarouselCellHeader } from './FeedEventCarouselCellHeader';
 import { FeedListCollectorsNote } from './FeedListCollectorsNote';
 
 type CollectionUpdatedFeedEventProps = {
@@ -42,10 +43,15 @@ export function CollectionUpdatedFeedEvent({
 
   return (
     <View className="flex flex-col">
-      <CollectionAndAdditionCount
-        collectionName={eventData.collection?.name}
-        additionCount={eventData.newTokens?.length}
-      />
+      <FeedEventCarouselCellHeader>
+        <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
+          Made a change to
+        </Typography>
+
+        <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+          {eventData.collection?.name ?? 'Untitled'}
+        </Typography>
+      </FeedEventCarouselCellHeader>
 
       {eventData.newCollectorsNote && (
         <FeedListCollectorsNote collectorsNote={eventData.newCollectorsNote} />

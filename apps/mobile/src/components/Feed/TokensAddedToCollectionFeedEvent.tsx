@@ -6,8 +6,9 @@ import { graphql } from 'relay-runtime';
 import { TokensAddedToCollectionFeedEventFragment$key } from '~/generated/TokensAddedToCollectionFeedEventFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
-import { CollectionAndAdditionCount } from './CollectionAndAdditionCount';
+import { Typography } from '../Typography';
 import { EventTokenGrid } from './EventTokenGrid';
+import { FeedEventCarouselCellHeader } from './FeedEventCarouselCellHeader';
 
 type TokensAddedToCollectionFeedEventProps = {
   collectionUpdatedFeedEventDataRef: TokensAddedToCollectionFeedEventFragment$key;
@@ -39,10 +40,15 @@ export function TokensAddedToCollectionFeedEvent({
 
   return (
     <View className="flex flex-col">
-      <CollectionAndAdditionCount
-        collectionName={eventData.collection?.name}
-        additionCount={eventData.newTokens?.length}
-      />
+      <FeedEventCarouselCellHeader>
+        <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
+          Added new tokens to
+        </Typography>
+
+        <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+          {eventData.collection?.name ?? 'Untitled'}
+        </Typography>
+      </FeedEventCarouselCellHeader>
 
       <EventTokenGrid tokenRefs={tokens} />
     </View>

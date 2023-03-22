@@ -3,6 +3,7 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { FeedListSectionHeaderFragment$key } from '~/generated/FeedListSectionHeaderFragment.graphql';
+import { getTimeSince } from '~/shared/utils/time';
 
 import { Typography } from '../Typography';
 
@@ -16,8 +17,9 @@ export function FeedListSectionHeader({ feedEventRef }: FeedListSectionHeaderPro
       fragment FeedListSectionHeaderFragment on FeedEvent {
         __typename
 
-        eventData {
+        eventData @required(action: THROW) {
           __typename
+          eventTime
 
           ... on GalleryUpdatedFeedEventData {
             owner {
@@ -56,7 +58,7 @@ export function FeedListSectionHeader({ feedEventRef }: FeedListSectionHeaderPro
             className="text-metal text-xxs"
             font={{ family: 'ABCDiatype', weight: 'Regular' }}
           >
-            10m
+            {getTimeSince(feedEvent.eventData.eventTime)}
           </Typography>
         </View>
       </View>

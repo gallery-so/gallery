@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
@@ -7,8 +7,8 @@ import { CollectionCreatedFeedEventFragment$key } from '~/generated/CollectionCr
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import { Typography } from '../Typography';
-import { CollectionAndAdditionCount } from './CollectionAndAdditionCount';
 import { EventTokenGrid } from './EventTokenGrid';
+import { FeedEventCarouselCellHeader } from './FeedEventCarouselCellHeader';
 import { FeedListCollectorsNote } from './FeedListCollectorsNote';
 
 type CollectionCreatedFeedEventProps = {
@@ -42,7 +42,7 @@ export function CollectionCreatedFeedEvent({
 
   return (
     <View className="flex flex-col">
-      <View className="flex flex-row space-x-1">
+      <FeedEventCarouselCellHeader>
         <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
           Created a new collection
         </Typography>
@@ -50,7 +50,7 @@ export function CollectionCreatedFeedEvent({
         <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
           {eventData.collection?.name ?? 'Untitled'}
         </Typography>
-      </View>
+      </FeedEventCarouselCellHeader>
 
       {eventData.collection?.collectorsNote && (
         <FeedListCollectorsNote collectorsNote={eventData.collection.collectorsNote} />
