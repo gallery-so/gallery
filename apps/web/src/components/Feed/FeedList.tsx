@@ -79,6 +79,7 @@ export default function FeedList({
   }
 
   return (
+    // Set the height of the container with combined height of all the virtualized items in the list
     <StyledFeedList height={virtualizer.getTotalSize()}>
       <StyledFeedListContainer
         yPosition={(feeds[0]?.start ?? 0) - virtualizer.options.scrollMargin}
