@@ -8,7 +8,7 @@ import { HStack } from '~/components/core/Spacer/Stack';
 import { BODY_FONT_FAMILY } from '~/components/core/Text/Text';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { CommentLineFragment$key } from '~/generated/CommentLineFragment.graphql';
-import { getTimeSince } from '~/utils/time';
+import { getTimeSince } from '~/shared/utils/time';
 
 type CommentLineProps = {
   commentRef: CommentLineFragment$key;

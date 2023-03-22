@@ -13,7 +13,7 @@ import { useModalActions } from '~/contexts/modal/ModalContext';
 import { CollectorsNoteAddedToTokenFeedEventFragment$key } from '~/generated/CollectorsNoteAddedToTokenFeedEventFragment.graphql';
 import useWindowSize, { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import NftDetailView from '~/scenes/NftDetailPage/NftDetailView';
-import { getTimeSince } from '~/utils/time';
+import { getTimeSince } from '~/shared/utils/time';
 import unescape from '~/utils/unescape';
 
 import EventMedia from './EventMedia';
