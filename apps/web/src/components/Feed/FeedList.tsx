@@ -1,5 +1,5 @@
 import { useWindowVirtualizer } from '@tanstack/react-virtual';
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -46,20 +46,13 @@ export default function FeedList({
     feedEventRefs
   );
 
-  const parentRef = useRef<HTMLDivElement>(null);
-  const parentOffsetRef = useRef(0);
-
   const virtualizer = useWindowVirtualizer({
     count: hasNext ? feedData.length + 1 : feedData.length,
     estimateSize: () => 800,
-    scrollMargin: parentOffsetRef.current,
     overscan: 5,
   });
 
   const feeds = virtualizer.getVirtualItems();
-  useLayoutEffect(() => {
-    parentOffsetRef.current = parentRef.current?.offsetTop ?? 0;
-  }, []);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -86,7 +79,7 @@ export default function FeedList({
   }
 
   return (
-    <StyledFeedList ref={parentRef} height={virtualizer.getTotalSize()}>
+    <StyledFeedList height={virtualizer.getTotalSize()}>
       <StyledFeedListContainer
         yPosition={(feeds[0]?.start ?? 0) - virtualizer.options.scrollMargin}
       >
