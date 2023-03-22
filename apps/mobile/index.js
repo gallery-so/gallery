@@ -12,8 +12,8 @@ LogBox.ignoreLogs([
   "The provided value 'ms-stream",
   'onAnimatedValueUpdate',
   'Could not render NFT',
+  'Could not render FeedEvent',
 ]);
-LogBox.ignoreLogs(['Could not render FeedEvent']);
 
 polyfillEncoding();
 polyfillFetch();
