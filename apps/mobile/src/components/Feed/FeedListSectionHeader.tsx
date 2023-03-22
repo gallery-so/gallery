@@ -36,18 +36,29 @@ export function FeedListSectionHeader({ feedEventRef }: FeedListSectionHeaderPro
 
   if (feedEvent.eventData?.__typename === 'GalleryUpdatedFeedEventData') {
     return (
-      <View className="flex flex-row space-x-1 bg-white px-3 py-2">
-        <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-          {feedEvent.eventData.owner?.username}
-        </Typography>
+      <View className="flex flex-row items-center justify-between bg-white px-3 py-2">
+        <View className="flex flex-row space-x-1">
+          <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+            {feedEvent.eventData.owner?.username}
+          </Typography>
 
-        <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-          /
-        </Typography>
+          <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
+            updated
+          </Typography>
 
-        <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-          {feedEvent.eventData.gallery?.name || 'Untitled'}
-        </Typography>
+          <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+            {feedEvent.eventData.gallery?.name || 'Untitled'}
+          </Typography>
+        </View>
+
+        <View>
+          <Typography
+            className="text-metal text-xxs"
+            font={{ family: 'ABCDiatype', weight: 'Regular' }}
+          >
+            10m
+          </Typography>
+        </View>
       </View>
     );
   }

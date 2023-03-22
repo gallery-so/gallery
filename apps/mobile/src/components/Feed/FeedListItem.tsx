@@ -1,14 +1,11 @@
-import { useMemo } from 'react';
-import { View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { FeedListItemFragment$key } from '~/generated/FeedListItemFragment.graphql';
+import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 
-import { CollectionCreatedFeedEvent } from './CollectionCreatedFeedEvent';
-import { CollectionUpdatedFeedEvent } from './CollectionUpdatedFeedEvent';
-import { CollectorsNoteAddedToCollectionFeedEvent } from './CollectorsNoteAddedToCollectionFeedEvent';
-import { TokensAddedToCollectionFeedEvent } from './TokensAddedToCollectionFeedEvent';
+import { GalleryUpdatedFeedEvent } from './GalleryUpdatedFeedEvent';
+import { NonRecursiveFeedListItem } from './NonRecursiveFeedListItem';
 
 type FeedListItemProps = {
   eventDataRef: FeedListItemFragment$key;
@@ -20,45 +17,28 @@ export function FeedListItem({ eventDataRef }: FeedListItemProps) {
       fragment FeedListItemFragment on FeedEventData {
         __typename
 
-        ... on CollectionUpdatedFeedEventData {
+        ... on GalleryUpdatedFeedEventData {
           __typename
-          ...CollectionUpdatedFeedEventFragment
+          ...GalleryUpdatedFeedEventFragment
         }
 
-        ... on TokensAddedToCollectionFeedEventData {
-          __typename
-          ...TokensAddedToCollectionFeedEventFragment
-        }
-
-        ... on CollectionCreatedFeedEventData {
-          ...CollectionCreatedFeedEventFragment
-        }
-
-        ... on CollectorsNoteAddedToCollectionFeedEventData {
-          __typename
-          ...CollectorsNoteAddedToCollectionFeedEventFragment
-        }
+        ...NonRecursiveFeedListItemFragment
       }
     `,
     eventDataRef
   );
 
-  const inner = useMemo(() => {
-    switch (eventData.__typename) {
-      case 'CollectorsNoteAddedToCollectionFeedEventData':
-        return (
-          <CollectorsNoteAddedToCollectionFeedEvent collectionUpdatedFeedEventDataRef={eventData} />
-        );
-      case 'CollectionUpdatedFeedEventData':
-        return <CollectionUpdatedFeedEvent collectionUpdatedFeedEventDataRef={eventData} />;
-      case 'CollectionCreatedFeedEventData':
-        return <CollectionCreatedFeedEvent collectionUpdatedFeedEventDataRef={eventData} />;
-      case 'TokensAddedToCollectionFeedEventData':
-        return <TokensAddedToCollectionFeedEvent collectionUpdatedFeedEventDataRef={eventData} />;
-      default:
-        return null;
-    }
-  }, [eventData]);
+  if (eventData.__typename === 'GalleryUpdatedFeedEventData') {
+    return (
+      <ReportingErrorBoundary fallback={null}>
+        <GalleryUpdatedFeedEvent eventDataRef={eventData} />
+      </ReportingErrorBoundary>
+    );
+  }
 
-  return <View className="py-3">{inner}</View>;
+  return (
+    <ReportingErrorBoundary fallback={null}>
+      <NonRecursiveFeedListItem eventDataRef={eventData} />
+    </ReportingErrorBoundary>
+  );
 }

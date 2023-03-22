@@ -7,8 +7,8 @@ import { CollectionUpdatedFeedEventFragment$key } from '~/generated/CollectionUp
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import { CollectionAndAdditionCount } from './CollectionAndAdditionCount';
+import { EventTokenGrid } from './EventTokenGrid';
 import { FeedListCollectorsNote } from './FeedListCollectorsNote';
-import { TokenCarousel } from './TokenCarousel';
 
 type CollectionUpdatedFeedEventProps = {
   collectionUpdatedFeedEventDataRef: CollectionUpdatedFeedEventFragment$key;
@@ -28,7 +28,7 @@ export function CollectionUpdatedFeedEvent({
 
         newTokens {
           token {
-            ...TokenCarouselFragment
+            ...EventTokenGridFragment
           }
         }
       }
@@ -51,7 +51,7 @@ export function CollectionUpdatedFeedEvent({
         <FeedListCollectorsNote collectorsNote={eventData.newCollectorsNote} />
       )}
 
-      <TokenCarousel tokenRefs={tokens} />
+      <EventTokenGrid tokenRefs={tokens} />
     </View>
   );
 }
