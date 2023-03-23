@@ -23479,7 +23479,7 @@ __metadata:
     react-native-fast-image: ^8.6.3
     react-native-fetch-api: ^3.0.0
     react-native-gesture-handler: ~2.9.0
-    react-native-markdown-display: "git@github.com:jonasmerlin/react-native-markdown-display.git"
+    react-native-markdown-display: "https://github.com/jonasmerlin/react-native-markdown-display.git"
     react-native-pager-view: 6.1.2
     react-native-polyfill-globals: ^3.1.0
     react-native-safe-area-context: 4.5.0
@@ -26402,9 +26402,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-markdown-display@git@github.com:jonasmerlin/react-native-markdown-display.git":
+"react-native-markdown-display@https://github.com/jonasmerlin/react-native-markdown-display.git":
   version: 1.0.2
-  resolution: "react-native-markdown-display@git@github.com:jonasmerlin/react-native-markdown-display.git#commit=d4bf241ae67a33885ac69c58466c4a0e8ab79d49"
+  resolution: "react-native-markdown-display@https://github.com/jonasmerlin/react-native-markdown-display.git#commit=d4bf241ae67a33885ac69c58466c4a0e8ab79d49"
   dependencies:
     css-to-react-native: ^3.0.0
     markdown-it: ^13.0.1
