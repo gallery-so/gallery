@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 import { Route, route } from 'nextjs-routes';
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
@@ -25,7 +25,6 @@ import { UserGalleryCollectionFragment$key } from '~/generated/UserGalleryCollec
 import { UserGalleryCollectionQueryFragment$key } from '~/generated/UserGalleryCollectionQueryFragment.graphql';
 import useUpdateCollectionInfo from '~/hooks/api/collections/useUpdateCollectionInfo';
 import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
-import useResizeObserver from '~/hooks/useResizeObserver';
 import { getBaseUrl } from '~/utils/baseUrl';
 import unescape from '~/utils/unescape';
 
@@ -33,17 +32,9 @@ type Props = {
   queryRef: UserGalleryCollectionQueryFragment$key;
   collectionRef: UserGalleryCollectionFragment$key;
   mobileLayout: DisplayLayout;
-  cacheHeight: number;
-  onLoad: () => void;
 };
 
-function UserGalleryCollection({
-  queryRef,
-  collectionRef,
-  mobileLayout,
-  onLoad,
-  cacheHeight,
-}: Props) {
+function UserGalleryCollection({ queryRef, collectionRef, mobileLayout }: Props) {
   const query = useFragment(
     graphql`
       fragment UserGalleryCollectionQueryFragment on Query {
@@ -98,17 +89,6 @@ function UserGalleryCollection({
 
   const track = useTrack();
 
-  // Get height of this component
-  const componentRef = useRef<HTMLDivElement>(null);
-  const { height: collectionElHeight } = useResizeObserver(componentRef);
-
-  useEffect(() => {
-    // If the latest height is greater than the cache height, then we know that the collection has been expanded.
-    if (collectionElHeight > cacheHeight) {
-      onLoad();
-    }
-  }, [collectionElHeight, onLoad, cacheHeight]);
-
   const handleShareClick = useCallback(() => {
     track('Share Collection', { path: collectionUrl });
   }, [track, collectionUrl]);
@@ -137,7 +117,7 @@ function UserGalleryCollection({
   ]);
 
   return (
-    <StyledCollectionWrapper ref={componentRef}>
+    <StyledCollectionWrapper>
       <StyledCollectionHeader>
         <StyledCollectionTitleWrapper>
           <UnstyledLink href={collectionUrlPath}>

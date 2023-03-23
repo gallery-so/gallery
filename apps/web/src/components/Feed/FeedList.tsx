@@ -9,6 +9,7 @@ import { FeedListFragment$key } from '~/generated/FeedListFragment.graphql';
 
 import Loader from '../core/Loader/Loader';
 import transitions from '../core/transitions';
+import VirtualizedContainer from '../Virtualize/VirtualizeContainer';
 import FeedEvent from './FeedEvent';
 
 type Props = {
@@ -81,9 +82,7 @@ export default function FeedList({
   return (
     // Set the height of the container with combined height of all the virtualized items in the list
     <StyledFeedList height={virtualizer.getTotalSize()}>
-      <StyledFeedListContainer
-        yPosition={(feeds[0]?.start ?? 0) - virtualizer.options.scrollMargin}
-      >
+      <VirtualizedContainer yPosition={(feeds[0]?.start ?? 0) - virtualizer.options.scrollMargin}>
         {feeds.map((virtualItem) => {
           // graphql returns the oldest event at the top of the list, so display in opposite order
           const content = feedData[feedData.length - virtualItem.index - 1];
@@ -118,7 +117,7 @@ export default function FeedList({
             </div>
           );
         })}
-      </StyledFeedListContainer>
+      </VirtualizedContainer>
     </StyledFeedList>
   );
 }
@@ -129,16 +128,6 @@ const StyledFeedList = styled.div<{
   height: ${({ height }) => height}px;
   width: 100%;
   position: relative;
-`;
-
-const StyledFeedListContainer = styled.div<{
-  yPosition: number;
-}>`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  transform: translateY(${({ yPosition }) => yPosition}px);
 `;
 
 const StyledLoadMoreRow = styled.div`
