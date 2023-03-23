@@ -75,7 +75,6 @@ export function GalleryUpdatedFeedEvent({ eventDataRef }: GalleryUpdatedFeedEven
         decelerationRate="fast"
         snapToAlignment="center"
         scrollEventThrottle={200}
-        // estimatedItemSize={width}
         showsHorizontalScrollIndicator={false}
       />
 
