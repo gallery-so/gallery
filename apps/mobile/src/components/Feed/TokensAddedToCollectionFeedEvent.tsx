@@ -11,10 +11,12 @@ import { EventTokenGrid } from './EventTokenGrid';
 import { FeedEventCarouselCellHeader } from './FeedEventCarouselCellHeader';
 
 type TokensAddedToCollectionFeedEventProps = {
+  allowPreserveAspectRatio: boolean;
   collectionUpdatedFeedEventDataRef: TokensAddedToCollectionFeedEventFragment$key;
 };
 
 export function TokensAddedToCollectionFeedEvent({
+  allowPreserveAspectRatio,
   collectionUpdatedFeedEventDataRef,
 }: TokensAddedToCollectionFeedEventProps) {
   const eventData = useFragment(
@@ -50,7 +52,7 @@ export function TokensAddedToCollectionFeedEvent({
         </Typography>
       </FeedEventCarouselCellHeader>
 
-      <EventTokenGrid tokenRefs={tokens} />
+      <EventTokenGrid allowPreserveAspectRatio={allowPreserveAspectRatio} tokenRefs={tokens} />
     </View>
   );
 }

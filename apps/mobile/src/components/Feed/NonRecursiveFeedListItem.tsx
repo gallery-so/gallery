@@ -11,10 +11,14 @@ import { CollectorsNoteAddedToCollectionFeedEvent } from './CollectorsNoteAddedT
 import { TokensAddedToCollectionFeedEvent } from './TokensAddedToCollectionFeedEvent';
 
 type NonRecursiveFeedListItemProps = {
+  eventCount: number;
   eventDataRef: NonRecursiveFeedListItemFragment$key;
 };
 
-export function NonRecursiveFeedListItem({ eventDataRef }: NonRecursiveFeedListItemProps) {
+export function NonRecursiveFeedListItem({
+  eventDataRef,
+  eventCount,
+}: NonRecursiveFeedListItemProps) {
   const eventData = useFragment(
     graphql`
       fragment NonRecursiveFeedListItemFragment on FeedEventData {
@@ -31,6 +35,7 @@ export function NonRecursiveFeedListItem({ eventDataRef }: NonRecursiveFeedListI
         }
 
         ... on CollectionCreatedFeedEventData {
+          __typename
           ...CollectionCreatedFeedEventFragment
         }
 
@@ -46,25 +51,41 @@ export function NonRecursiveFeedListItem({ eventDataRef }: NonRecursiveFeedListI
   const { width } = useWindowDimensions();
 
   const inner = useMemo(() => {
+    const allowPreserveAspectRatio = eventCount === 1;
+
     switch (eventData.__typename) {
       case 'CollectorsNoteAddedToCollectionFeedEventData':
         return (
-          <CollectorsNoteAddedToCollectionFeedEvent collectionUpdatedFeedEventDataRef={eventData} />
+          <CollectorsNoteAddedToCollectionFeedEvent
+            allowPreserveAspectRatio={allowPreserveAspectRatio}
+            collectionUpdatedFeedEventDataRef={eventData}
+          />
         );
       case 'CollectionUpdatedFeedEventData':
-        return <CollectionUpdatedFeedEvent collectionUpdatedFeedEventDataRef={eventData} />;
+        return (
+          <CollectionUpdatedFeedEvent
+            allowPreserveAspectRatio={allowPreserveAspectRatio}
+            collectionUpdatedFeedEventDataRef={eventData}
+          />
+        );
       case 'CollectionCreatedFeedEventData':
-        return <CollectionCreatedFeedEvent collectionUpdatedFeedEventDataRef={eventData} />;
+        return (
+          <CollectionCreatedFeedEvent
+            allowPreserveAspectRatio={allowPreserveAspectRatio}
+            collectionUpdatedFeedEventDataRef={eventData}
+          />
+        );
       case 'TokensAddedToCollectionFeedEventData':
-        return <TokensAddedToCollectionFeedEvent collectionUpdatedFeedEventDataRef={eventData} />;
+        return (
+          <TokensAddedToCollectionFeedEvent
+            allowPreserveAspectRatio={allowPreserveAspectRatio}
+            collectionUpdatedFeedEventDataRef={eventData}
+          />
+        );
       default:
         return null;
     }
   }, [eventData]);
 
-  return (
-    <View className="py-3" style={{ width }}>
-      {inner}
-    </View>
-  );
+  return <View style={{ width }}>{inner}</View>;
 }

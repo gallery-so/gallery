@@ -2,7 +2,6 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { FeedListItemFragment$key } from '~/generated/FeedListItemFragment.graphql';
-import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 
 import { GalleryUpdatedFeedEvent } from './GalleryUpdatedFeedEvent';
 import { NonRecursiveFeedListItem } from './NonRecursiveFeedListItem';
@@ -29,16 +28,8 @@ export function FeedListItem({ eventDataRef }: FeedListItemProps) {
   );
 
   if (eventData.__typename === 'GalleryUpdatedFeedEventData') {
-    return (
-      <ReportingErrorBoundary fallback={null}>
-        <GalleryUpdatedFeedEvent eventDataRef={eventData} />
-      </ReportingErrorBoundary>
-    );
+    return <GalleryUpdatedFeedEvent eventDataRef={eventData} />;
   }
 
-  return (
-    <ReportingErrorBoundary fallback={null}>
-      <NonRecursiveFeedListItem eventDataRef={eventData} />
-    </ReportingErrorBoundary>
-  );
+  return <NonRecursiveFeedListItem eventCount={1} eventDataRef={eventData} />;
 }

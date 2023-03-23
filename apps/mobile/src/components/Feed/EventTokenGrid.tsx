@@ -9,10 +9,11 @@ import { EventTokenGridFragment$key } from '~/generated/EventTokenGridFragment.g
 import { NftPreview } from '../NftPreview';
 
 type EventTokenGridProps = {
+  allowPreserveAspectRatio: boolean;
   tokenRefs: EventTokenGridFragment$key;
 };
 
-export function EventTokenGrid({ tokenRefs }: EventTokenGridProps) {
+export function EventTokenGrid({ tokenRefs, allowPreserveAspectRatio }: EventTokenGridProps) {
   const tokens = useFragment(
     graphql`
       fragment EventTokenGridFragment on Token @relay(plural: true) {
@@ -23,6 +24,10 @@ export function EventTokenGrid({ tokenRefs }: EventTokenGridProps) {
     `,
     tokenRefs
   );
+
+  const dimensions = useWindowDimensions();
+
+  const preserveAspectRatio = tokens.length === 1 && allowPreserveAspectRatio;
 
   const inner = useMemo(() => {
     const [firstToken, secondToken, thirdToken, fourthToken] = tokens;
@@ -61,18 +66,22 @@ export function EventTokenGrid({ tokenRefs }: EventTokenGridProps) {
         </View>
       );
     } else if (firstToken) {
-      return <NftPreview resizeMode={ResizeMode.CONTAIN} tokenRef={firstToken} />;
+      return (
+        <NftPreview
+          resizeMode={preserveAspectRatio ? ResizeMode.CONTAIN : ResizeMode.COVER}
+          tokenRef={firstToken}
+        />
+      );
     } else {
       throw new Error('Tried to render EventTokenGrid without any tokens');
     }
-  }, [tokens]);
-
-  const dimensions = useWindowDimensions();
-  const height =
-    tokens.length === 2 || tokens.length === 3 ? dimensions.width / 2 : dimensions.width;
+  }, [preserveAspectRatio, tokens]);
 
   return (
-    <View className="p-[2]" style={{ width: dimensions.width, height: height }}>
+    <View
+      className="flex flex-row flex-wrap p-[2]"
+      style={{ width: dimensions.width, maxHeight: dimensions.height, height: dimensions.width }}
+    >
       {inner}
     </View>
   );

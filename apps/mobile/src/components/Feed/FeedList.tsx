@@ -1,11 +1,9 @@
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
-import { FeedListCaptionFragment$key } from '~/generated/FeedListCaptionFragment.graphql';
-import { FeedListFragment$key } from '~/generated/FeedListFragment.graphql';
-import { FeedListItemFragment$key } from '~/generated/FeedListItemFragment.graphql';
-import { FeedListSectionHeaderFragment$key } from '~/generated/FeedListSectionHeaderFragment.graphql';
+import { FeedListFragment$data, FeedListFragment$key } from '~/generated/FeedListFragment.graphql';
+import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 
 import { SUPPORTED_FEED_EVENT_TYPES } from './constants';
 import { FeedListCaption } from './FeedListCaption';
@@ -17,9 +15,9 @@ type FeedListProps = {
 };
 
 type FeedListItem =
-  | { kind: 'header'; item: FeedListSectionHeaderFragment$key }
-  | { kind: 'caption'; item: FeedListCaptionFragment$key }
-  | { kind: 'event'; item: FeedListItemFragment$key };
+  | { kind: 'header'; event: FeedListFragment$data[number] }
+  | { kind: 'caption'; event: FeedListFragment$data[number] }
+  | { kind: 'event'; event: FeedListFragment$data[number] };
 
 export function FeedList({ feedEventRefs }: FeedListProps) {
   const events = useFragment(
@@ -27,10 +25,16 @@ export function FeedList({ feedEventRefs }: FeedListProps) {
       fragment FeedListFragment on FeedEvent @relay(plural: true) {
         __typename
 
+        dbid
         caption
 
         eventData @required(action: THROW) {
-          __typename
+          ... on GalleryUpdatedFeedEventData {
+            __typename
+            subEventDatas {
+              __typename
+            }
+          }
 
           ...FeedListItemFragment
         }
@@ -42,26 +46,46 @@ export function FeedList({ feedEventRefs }: FeedListProps) {
     feedEventRefs
   );
 
+  const [failedEvents, setFailedEvents] = useState<Set<string>>(new Set());
+
+  const markEventAsFailure = useCallback((eventId: string) => {
+    setFailedEvents((previous) => {
+      const next = new Set(previous);
+      next.add(eventId);
+      return next;
+    });
+  }, []);
+
   const items = useMemo(() => {
     const items: FeedListItem[] = [];
 
-    // for (const event of events.slice(0, 25)) {
     for (const event of events) {
       // Make sure this is a supported feed event
-      const isSupportedFeedEvent = SUPPORTED_FEED_EVENT_TYPES.has(event.eventData?.__typename);
-      if (isSupportedFeedEvent) {
-        items.push({ kind: 'header', item: event });
+      let isSupportedFeedEvent = false;
+      if (event.eventData.__typename === 'GalleryUpdatedFeedEventData') {
+        isSupportedFeedEvent =
+          event.eventData.subEventDatas?.some((subEvent) =>
+            SUPPORTED_FEED_EVENT_TYPES.has(subEvent.__typename)
+          ) ?? false;
+      } else {
+        isSupportedFeedEvent = SUPPORTED_FEED_EVENT_TYPES.has(event.eventData.__typename);
+      }
+
+      const isAFailedEvent = failedEvents.has(event.dbid);
+
+      if (isSupportedFeedEvent && !isAFailedEvent) {
+        items.push({ kind: 'header', event });
 
         if (event.caption) {
-          items.push({ kind: 'caption', item: event });
+          items.push({ kind: 'caption', event });
         }
 
-        items.push({ kind: 'event', item: event.eventData });
+        items.push({ kind: 'event', event });
       }
     }
 
     return items;
-  }, [events]);
+  }, [events, failedEvents]);
 
   const stickyHeaderIndices = useMemo(() => {
     const indices: number[] = [];
@@ -74,16 +98,40 @@ export function FeedList({ feedEventRefs }: FeedListProps) {
     return indices;
   }, [items]);
 
-  const renderItem = useCallback<ListRenderItem<FeedListItem>>(({ item }) => {
-    switch (item.kind) {
-      case 'header':
-        return <FeedListSectionHeader feedEventRef={item.item} />;
-      case 'caption':
-        return <FeedListCaption feedEventRef={item.item} />;
-      case 'event':
-        return <FeedListItem eventDataRef={item.item} />;
-    }
-  }, []);
+  const renderItem = useCallback<ListRenderItem<FeedListItem>>(
+    ({ item }) => {
+      // If any of the components of an event fail, this whole event should be hidden
+      function Fallback() {
+        useLayoutEffect(() => {
+          markEventAsFailure(item.event.dbid);
+        }, []);
+
+        return null;
+      }
+
+      switch (item.kind) {
+        case 'header':
+          return (
+            <ReportingErrorBoundary fallback={<Fallback />}>
+              <FeedListSectionHeader feedEventRef={item.event} />
+            </ReportingErrorBoundary>
+          );
+        case 'caption':
+          return (
+            <ReportingErrorBoundary fallback={<Fallback />}>
+              <FeedListCaption feedEventRef={item.event} />
+            </ReportingErrorBoundary>
+          );
+        case 'event':
+          return (
+            <ReportingErrorBoundary fallback={<Fallback />}>
+              <FeedListItem eventDataRef={item.event.eventData} />
+            </ReportingErrorBoundary>
+          );
+      }
+    },
+    [markEventAsFailure]
+  );
 
   return (
     <FlashList

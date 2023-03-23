@@ -12,10 +12,12 @@ import { FeedEventCarouselCellHeader } from './FeedEventCarouselCellHeader';
 import { FeedListCollectorsNote } from './FeedListCollectorsNote';
 
 type CollectionUpdatedFeedEventProps = {
+  allowPreserveAspectRatio: boolean;
   collectionUpdatedFeedEventDataRef: CollectionUpdatedFeedEventFragment$key;
 };
 
 export function CollectionUpdatedFeedEvent({
+  allowPreserveAspectRatio,
   collectionUpdatedFeedEventDataRef,
 }: CollectionUpdatedFeedEventProps) {
   const eventData = useFragment(
@@ -57,7 +59,7 @@ export function CollectionUpdatedFeedEvent({
         <FeedListCollectorsNote collectorsNote={eventData.newCollectorsNote} />
       )}
 
-      <EventTokenGrid tokenRefs={tokens} />
+      <EventTokenGrid allowPreserveAspectRatio={allowPreserveAspectRatio} tokenRefs={tokens} />
     </View>
   );
 }

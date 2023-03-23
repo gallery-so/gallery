@@ -1,7 +1,7 @@
-import { ListRenderItem } from '@shopify/flash-list';
-import { FlashList } from '@shopify/flash-list';
 import { useCallback, useMemo, useState } from 'react';
 import {
+  FlatList,
+  ListRenderItem,
   NativeScrollEvent,
   NativeSyntheticEvent,
   StyleProp,
@@ -35,9 +35,9 @@ export function GalleryUpdatedFeedEvent({ eventDataRef }: GalleryUpdatedFeedEven
   );
 
   const subEvents = useMemo(() => {
-    return eventData.subEventDatas.filter((subEvent) =>
-      SUPPORTED_FEED_EVENT_TYPES.has(subEvent.__typename)
-    );
+    return eventData.subEventDatas.filter((subEvent) => {
+      return SUPPORTED_FEED_EVENT_TYPES.has(subEvent.__typename);
+    });
   }, [eventData.subEventDatas]);
 
   const { width } = useWindowDimensions();
@@ -56,13 +56,16 @@ export function GalleryUpdatedFeedEvent({ eventDataRef }: GalleryUpdatedFeedEven
     [subEvents?.length, width]
   );
 
-  const renderItem = useCallback<ListRenderItem<(typeof subEvents)[number]>>(({ item }) => {
-    return <NonRecursiveFeedListItem eventDataRef={item} />;
-  }, []);
+  const renderItem = useCallback<ListRenderItem<(typeof subEvents)[number]>>(
+    ({ item }) => {
+      return <NonRecursiveFeedListItem eventCount={subEvents.length} eventDataRef={item} />;
+    },
+    [subEvents.length]
+  );
 
   return (
     <View className="flex flex-col space-y-3">
-      <FlashList
+      <FlatList
         horizontal
         data={subEvents}
         pagingEnabled
@@ -72,7 +75,7 @@ export function GalleryUpdatedFeedEvent({ eventDataRef }: GalleryUpdatedFeedEven
         decelerationRate="fast"
         snapToAlignment="center"
         scrollEventThrottle={200}
-        estimatedItemSize={width}
+        // estimatedItemSize={width}
         showsHorizontalScrollIndicator={false}
       />
 
