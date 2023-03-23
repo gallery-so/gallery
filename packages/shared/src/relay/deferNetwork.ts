@@ -172,7 +172,8 @@ export function createRelayFetchFunctionWithDefer(
             });
 
             allErrors.forEach((error) => {
-              console.error(error);
+              // Turn this on if you want to see network errors
+              // console.error(error);
             });
 
             const { data, isLast } = flattenDeferResponse(responses);
