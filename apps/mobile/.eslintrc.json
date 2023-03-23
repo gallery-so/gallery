@@ -3,7 +3,7 @@
   "plugins": ["react-hooks"],
   "overrides": [
     {
-      "files": ["metro.config.js"],
+      "files": ["metro.config.js", "tailwind.config.js"],
       "rules": {
         // Okay to use require in these files
         "@typescript-eslint/no-var-requires": "off"

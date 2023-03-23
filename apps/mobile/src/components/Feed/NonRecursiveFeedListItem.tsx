@@ -85,7 +85,7 @@ export function NonRecursiveFeedListItem({
       default:
         return null;
     }
-  }, [eventData]);
+  }, [eventCount, eventData]);
 
   return <View style={{ width }}>{inner}</View>;
 }
