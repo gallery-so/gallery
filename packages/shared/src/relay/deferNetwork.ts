@@ -171,6 +171,7 @@ export function createRelayFetchFunctionWithDefer(
               return [];
             });
 
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             allErrors.forEach((error) => {
               // Turn this on if you want to see network errors
               // console.error(error);
