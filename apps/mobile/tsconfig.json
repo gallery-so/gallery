@@ -1,6 +1,6 @@
 {
   "extends": "../../tsconfig.options.json",
-  "include": ["persisted_queries.json", "src", "app.d.ts", "__generated__"],
+  "include": ["persisted_queries.json", "src", "app.d.ts", "__generated__", "App.tsx"],
   "compilerOptions": {
     "lib": ["DOM", "ESNext"],
     "baseUrl": ".",
