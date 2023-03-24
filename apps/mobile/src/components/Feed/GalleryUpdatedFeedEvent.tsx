@@ -65,6 +65,8 @@ export function GalleryUpdatedFeedEvent({ eventDataRef }: GalleryUpdatedFeedEven
 
   return (
     <View className="flex flex-col space-y-3">
+      {/* We're using a FlatList here instead of a FlashList due to issues */}
+      {/* with the FlashList clipping heights of views. Not sure why. */}
       <FlatList
         horizontal
         data={subEvents}
