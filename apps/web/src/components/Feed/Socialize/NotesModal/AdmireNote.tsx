@@ -10,7 +10,7 @@ import { TimeAgoText } from '~/components/Feed/Socialize/NotesModal/TimeAgoText'
 import { UsernameLink } from '~/components/Feed/Socialize/NotesModal/UsernameLink';
 import { AdmireNoteFragment$key } from '~/generated/AdmireNoteFragment.graphql';
 import { AdmireIcon, IconWrapper } from '~/icons/SocializeIcons';
-import { getTimeSince } from '~/utils/time';
+import { getTimeSince } from '~/shared/utils/time';
 
 type AdmireNoteProps = {
   admireRef: AdmireNoteFragment$key;

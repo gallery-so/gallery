@@ -8,7 +8,7 @@ import { ListItem } from '~/components/Feed/Socialize/NotesModal/ListItem';
 import { TimeAgoText } from '~/components/Feed/Socialize/NotesModal/TimeAgoText';
 import { UsernameLink } from '~/components/Feed/Socialize/NotesModal/UsernameLink';
 import { CommentNoteFragment$key } from '~/generated/CommentNoteFragment.graphql';
-import { getTimeSince } from '~/utils/time';
+import { getTimeSince } from '~/shared/utils/time';
 
 type CommentNoteProps = {
   commentRef: CommentNoteFragment$key;

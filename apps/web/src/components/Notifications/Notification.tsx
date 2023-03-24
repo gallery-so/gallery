@@ -18,7 +18,7 @@ import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarD
 import { NotificationFragment$key } from '~/generated/NotificationFragment.graphql';
 import { NotificationInnerFragment$key } from '~/generated/NotificationInnerFragment.graphql';
 import { NotificationQueryFragment$key } from '~/generated/NotificationQueryFragment.graphql';
-import { getTimeSince } from '~/utils/time';
+import { getTimeSince } from '~/shared/utils/time';
 
 import { useClearNotifications } from './useClearNotifications';
 

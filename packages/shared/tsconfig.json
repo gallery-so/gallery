@@ -6,7 +6,10 @@
     "baseUrl": ".",
     "outDir": "../../.moon/cache/types/packages/shared",
     "paths": {
-      "~/generated/*": ["./__generated__/relay/*"]
+      "~/generated/*": ["./__generated__/relay/*"],
+      "~/contexts/*": ["src/contexts/*"],
+      "~/relay/*": ["src/relay/*"],
+      "~/errors/*": ["src/errors/*"]
     }
   }
 }
