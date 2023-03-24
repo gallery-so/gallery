@@ -187,7 +187,7 @@ export function StandardSidebar({ queryRef }: Props) {
                 isActive={activeDrawerType === Search}
               />
               <SidebarIcon
-                tooltipLabel="Notifications"
+                tooltipLabel="Updates"
                 onClick={handleNotificationsClick}
                 icon={<BellIcon />}
                 isActive={activeDrawerType === Notifications}
@@ -248,7 +248,7 @@ export function StandardSidebar({ queryRef }: Props) {
               isActive={activeDrawerType === Search}
             />
             <SidebarIcon
-              tooltipLabel="Notifications"
+              tooltipLabel="Updates"
               onClick={handleNotificationsClick}
               icon={<BellIcon />}
               isActive={activeDrawerType === Notifications}
