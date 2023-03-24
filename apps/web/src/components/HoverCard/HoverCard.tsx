@@ -103,7 +103,7 @@ export function HoverCard({ preloadedQuery }: HoverCardProps) {
           </HStack>
         </StyledUsernameAndBadge>
 
-        {isLoggedIn && !isOwnProfile && (
+        {!isOwnProfile && (
           <StyledFollowButtonWrapper>
             <FollowButton userRef={user} queryRef={query} source="user hover card" />
           </StyledFollowButtonWrapper>
