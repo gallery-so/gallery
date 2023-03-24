@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { View } from 'react-native';
+import FastImage from 'react-native-fast-image';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
@@ -12,11 +13,13 @@ import { FeedEventCarouselCellHeader } from './FeedEventCarouselCellHeader';
 import { FeedListCollectorsNote } from './FeedListCollectorsNote';
 
 type CollectorsNoteAddedToCollectionFeedEventProps = {
+  isFirstSlide: boolean;
   allowPreserveAspectRatio: boolean;
   collectionUpdatedFeedEventDataRef: CollectorsNoteAddedToCollectionFeedEventFragment$key;
 };
 
 export function CollectorsNoteAddedToCollectionFeedEvent({
+  isFirstSlide,
   allowPreserveAspectRatio,
   collectionUpdatedFeedEventDataRef,
 }: CollectorsNoteAddedToCollectionFeedEventProps) {
@@ -61,7 +64,11 @@ export function CollectorsNoteAddedToCollectionFeedEvent({
         <FeedListCollectorsNote collectorsNote={eventData.newCollectorsNote} />
       )}
 
-      <EventTokenGrid allowPreserveAspectRatio={allowPreserveAspectRatio} tokenRefs={tokens} />
+      <EventTokenGrid
+        imagePriority={isFirstSlide ? FastImage.priority.high : FastImage.priority.normal}
+        allowPreserveAspectRatio={allowPreserveAspectRatio}
+        tokenRefs={tokens}
+      />
     </View>
   );
 }
