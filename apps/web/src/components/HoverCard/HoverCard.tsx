@@ -11,34 +11,35 @@ import { BaseM, TitleM } from '~/components/core/Text/Text';
 import FollowButton from '~/components/Follow/FollowButton';
 import { HoverCardQuery } from '~/generated/HoverCardQuery.graphql';
 import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
+import UserSharedInfo from '~/scenes/UserGalleryPage/UserSharedInfo/UserSharedInfo';
 import { ErrorWithSentryMetadata } from '~/shared/errors/ErrorWithSentryMetadata';
 import handleCustomDisplayName from '~/utils/handleCustomDisplayName';
-import { pluralize } from '~/utils/string';
 
 type HoverCardProps = {
   preloadedQuery: PreloadedQuery<HoverCardQuery>;
 };
 
 export const HoverCardQueryNode = graphql`
-  query HoverCardQuery($userId: DBID!) {
+  query HoverCardQuery(
+    $userId: DBID!
+    $sharedCommunitiesFirst: Int
+    $sharedCommunitiesAfter: String
+    $sharedFollowersFirst: Int
+    $sharedFollowersAfter: String
+  ) {
     userById(id: $userId) @required(action: THROW) {
       ... on GalleryUser {
         __typename
         id
         bio
         username
-        galleries @required(action: THROW) {
-          collections {
-            name
-            hidden
-          }
-        }
         badges {
           name
           imageURL
           ...BadgeFragment
         }
         ...FollowButtonUserFragment
+        ...UserSharedInfoFragment
       }
     }
 
@@ -57,12 +58,6 @@ export function HoverCard({ preloadedQuery }: HoverCardProps) {
       typename: user.__typename,
     });
   }
-
-  const filteredCollections = user?.galleries[0]?.collections?.filter(
-    (collection) => !collection?.hidden
-  );
-
-  const totalCollections = filteredCollections?.length || 0;
 
   const userBadges = useMemo(() => {
     const badges = [];
@@ -88,29 +83,24 @@ export function HoverCard({ preloadedQuery }: HoverCardProps) {
 
   return (
     <>
-      <StyledCardHeader>
-        <HStack align="center" gap={4}>
-          <HStack align="center" gap={4}>
-            <StyledCardUsername>{displayName}</StyledCardUsername>
+      <StyledCardHeader align="center" gap={4}>
+        {/* <HStack align="center" gap={4}> */}
+        <StyledUsernameAndBadge align="center" gap={4}>
+          <StyledCardUsername>{displayName}</StyledCardUsername>
 
-            <HStack align="center" gap={0}>
-              {userBadges.map((badge) => (
-                // Might need to rethink this layout when we have more badges
-                <Badge key={badge.name} badgeRef={badge} />
-              ))}
-            </HStack>
+          <HStack align="center" gap={0}>
+            {userBadges.map((badge) => (
+              // Might need to rethink this layout when we have more badges
+              <Badge key={badge.name} badgeRef={badge} />
+            ))}
           </HStack>
+        </StyledUsernameAndBadge>
 
-          {isLoggedIn && !isOwnProfile && (
-            <StyledFollowButtonWrapper>
-              <FollowButton userRef={user} queryRef={query} source="user hover card" />
-            </StyledFollowButtonWrapper>
-          )}
-        </HStack>
-
-        <BaseM>
-          {totalCollections} {pluralize(totalCollections, 'collection')}
-        </BaseM>
+        {isLoggedIn && !isOwnProfile && (
+          <StyledFollowButtonWrapper>
+            <FollowButton userRef={user} queryRef={query} source="user hover card" />
+          </StyledFollowButtonWrapper>
+        )}
       </StyledCardHeader>
 
       {user.bio && (
@@ -120,16 +110,21 @@ export function HoverCard({ preloadedQuery }: HoverCardProps) {
           </BaseM>
         </StyledCardDescription>
       )}
+      {isLoggedIn && !isOwnProfile && <UserSharedInfo userRef={user} showFollowers={false} />}
     </>
   );
 }
 
-const StyledCardHeader = styled.div`
+const StyledCardHeader = styled(HStack)`
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+
+  min-width: 0;
   // enforce height on container since the follow button causes additional height
   height: 24px;
+`;
+
+const StyledUsernameAndBadge = styled(HStack)`
+  min-width: 0;
 `;
 
 const StyledFollowButtonWrapper = styled.div`
@@ -141,7 +136,6 @@ const StyledCardUsername = styled(TitleM)`
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-  max-width: 150px;
 `;
 
 const StyledCardDescription = styled.div`
