@@ -18,7 +18,7 @@ import { UserFollowedUsersFeedEventFragment$key } from '~/generated/UserFollowed
 import { UserFollowedUsersFeedEventQueryFragment$key } from '~/generated/UserFollowedUsersFeedEventQueryFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
-import { getTimeSince } from '~/utils/time';
+import { getTimeSince } from '~/shared/utils/time';
 
 import { StyledEvent, StyledEventHeader, StyledEventText, StyledTime } from './EventStyles';
 import UserFollowedYouEvent from './UserFollowedYouEvent';

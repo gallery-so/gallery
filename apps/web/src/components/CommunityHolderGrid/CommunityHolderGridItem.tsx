@@ -12,8 +12,8 @@ import { CommunityHolderGridItemFragment$key } from '~/generated/CommunityHolder
 import TokenDetailView from '~/scenes/TokenDetailPage/TokenDetailView';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
+import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
 import { getOpenseaExternalUrl } from '~/utils/getOpenseaExternalUrl';
-import getVideoOrImageUrlForNftPreview from '~/utils/graphql/getVideoOrImageUrlForNftPreview';
 import { graphqlTruncateUniversalUsername } from '~/utils/wallet';
 
 import HoverCardOnUsername from '../HoverCard/HoverCardOnUsername';

@@ -12,7 +12,7 @@ import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { GalleryUpdatedFeedEventFragment$key } from '~/generated/GalleryUpdatedFeedEventFragment.graphql';
 import { GalleryUpdatedFeedEventQueryFragment$key } from '~/generated/GalleryUpdatedFeedEventQueryFragment.graphql';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
-import { getTimeSince } from '~/utils/time';
+import { getTimeSince } from '~/shared/utils/time';
 
 import { StyledCaptionContainer } from './CollectionCreatedFeedEvent';
 import {

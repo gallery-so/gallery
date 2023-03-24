@@ -7,7 +7,7 @@ import { BaseM } from '~/components/core/Text/Text';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { UserFollowedYouEventEventFragment$key } from '~/generated/UserFollowedYouEventEventFragment.graphql';
 import { UserFollowedYouEventFragment$key } from '~/generated/UserFollowedYouEventFragment.graphql';
-import { getTimeSince } from '~/utils/time';
+import { getTimeSince } from '~/shared/utils/time';
 
 import { StyledEvent, StyledEventHeader, StyledTime } from './EventStyles';
 

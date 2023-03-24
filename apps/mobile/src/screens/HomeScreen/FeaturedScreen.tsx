@@ -1,9 +1,9 @@
 import { Text, View } from 'react-native';
 
-export function HomeScreen() {
+export function FeaturedScreen() {
   return (
     <View>
-      <Text>Home</Text>
+      <Text>Featured</Text>
     </View>
   );
 }

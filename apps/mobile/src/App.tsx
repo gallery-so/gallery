@@ -8,9 +8,8 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { RelayEnvironmentProvider } from 'react-relay';
 
 import { MobileErrorReportingProvider } from '~/contexts/MobileErrorReportingProvider';
+import { createRelayEnvironment } from '~/contexts/relay/RelayProvider';
 import { MainTabNavigator } from '~/navigation/MainTabNavigator/MainTabNavigator';
-
-import { createRelayEnvironment } from './src/contexts/relay/RelayProvider';
 
 SplashScreen.preventAutoHideAsync();
 

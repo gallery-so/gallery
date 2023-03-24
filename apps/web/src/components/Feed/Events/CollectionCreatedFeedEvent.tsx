@@ -12,8 +12,8 @@ import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { CollectionCreatedFeedEventFragment$key } from '~/generated/CollectionCreatedFeedEventFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
+import { getTimeSince } from '~/shared/utils/time';
 import { pluralize } from '~/utils/string';
-import { getTimeSince } from '~/utils/time';
 import unescape from '~/utils/unescape';
 
 import { MAX_PIECES_DISPLAYED_PER_FEED_EVENT } from '../constants';

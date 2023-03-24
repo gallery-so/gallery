@@ -1,7 +1,7 @@
 import { graphql, readInlineData } from 'relay-runtime';
 
+import { ReportFn } from '~/contexts/ErrorReportingContext';
 import { getVideoOrImageUrlForNftPreviewFragment$key } from '~/generated/getVideoOrImageUrlForNftPreviewFragment.graphql';
-import { ReportFn } from '~/shared/contexts/ErrorReportingContext';
 
 type UrlSet = { small: string | null; medium: string | null; large: string | null };
 export type getVideoOrImageUrlForNftPreviewResult =

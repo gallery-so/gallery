@@ -6,8 +6,16 @@ import { polyfill as polyfillReadableStream } from 'react-native-polyfill-global
 import { enableFreeze } from 'react-native-screens';
 import * as Sentry from 'sentry-expo';
 
+import App from './src/App';
+
 // Unimportant warnings from the fetch polyfill
-LogBox.ignoreLogs(["The provided value 'moz", "The provided value 'ms-stream"]);
+LogBox.ignoreLogs([
+  "The provided value 'moz",
+  "The provided value 'ms-stream",
+  'onAnimatedValueUpdate',
+  'Could not render NFT',
+  'Could not render FeedEvent',
+]);
 
 polyfillEncoding();
 polyfillFetch();
@@ -20,9 +28,7 @@ Sentry.init({
   enableInExpoDevelopment: true,
 
   // If `true`, Sentry will try to print out useful debugging information if something goes wrong with sending the event. Set it to `false` in production
-  debug: true,
+  debug: false,
 });
-
-import App from './App';
 
 registerRootComponent(App);
