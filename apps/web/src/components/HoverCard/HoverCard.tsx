@@ -82,7 +82,6 @@ export function HoverCard({ preloadedQuery }: HoverCardProps) {
   return (
     <>
       <StyledCardHeader align="center" gap={4}>
-        {/* <HStack align="center" gap={4}> */}
         <StyledUsernameAndBadge align="center" gap={4}>
           <StyledCardUsername>{displayName}</StyledCardUsername>
 
