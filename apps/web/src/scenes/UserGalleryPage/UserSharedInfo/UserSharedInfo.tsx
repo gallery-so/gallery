@@ -9,10 +9,9 @@ import UserSharedFollowers from './UserSharedFollowers';
 
 type Props = {
   userRef: UserSharedInfoFragment$key;
-  showFollowers?: boolean;
 };
 
-export default function UserSharedInfo({ userRef, showFollowers = true }: Props) {
+export default function UserSharedInfo({ userRef }: Props) {
   const query = useFragment(
     graphql`
       fragment UserSharedInfoFragment on GalleryUser {
@@ -27,7 +26,7 @@ export default function UserSharedInfo({ userRef, showFollowers = true }: Props)
   return (
     <StyledUserSharedInfo>
       <UserSharedCommunities queryRef={query} />
-      {showFollowers && <UserSharedFollowers queryRef={query} />}
+      <UserSharedFollowers queryRef={query} />
     </StyledUserSharedInfo>
   );
 }

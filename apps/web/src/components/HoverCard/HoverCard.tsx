@@ -11,7 +11,7 @@ import { BaseM, TitleM } from '~/components/core/Text/Text';
 import FollowButton from '~/components/Follow/FollowButton';
 import { HoverCardQuery } from '~/generated/HoverCardQuery.graphql';
 import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
-import UserSharedInfo from '~/scenes/UserGalleryPage/UserSharedInfo/UserSharedInfo';
+import UserSharedCommunities from '~/scenes/UserGalleryPage/UserSharedInfo/UserSharedCommunities';
 import { ErrorWithSentryMetadata } from '~/shared/errors/ErrorWithSentryMetadata';
 import handleCustomDisplayName from '~/utils/handleCustomDisplayName';
 
@@ -24,8 +24,6 @@ export const HoverCardQueryNode = graphql`
     $userId: DBID!
     $sharedCommunitiesFirst: Int
     $sharedCommunitiesAfter: String
-    $sharedFollowersFirst: Int
-    $sharedFollowersAfter: String
   ) {
     userById(id: $userId) @required(action: THROW) {
       ... on GalleryUser {
@@ -39,7 +37,7 @@ export const HoverCardQueryNode = graphql`
           ...BadgeFragment
         }
         ...FollowButtonUserFragment
-        ...UserSharedInfoFragment
+        ...UserSharedCommunitiesFragment
       }
     }
 
@@ -110,7 +108,7 @@ export function HoverCard({ preloadedQuery }: HoverCardProps) {
           </BaseM>
         </StyledCardDescription>
       )}
-      {isLoggedIn && !isOwnProfile && <UserSharedInfo userRef={user} showFollowers={false} />}
+      {isLoggedIn && !isOwnProfile && <UserSharedCommunities queryRef={user} />}
     </>
   );
 }
