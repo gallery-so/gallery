@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Platform, StyleProp, View, ViewStyle } from 'react-native';
 import { WebView } from 'react-native-webview';
 
+import { ErrorWithSentryMetadata } from '~/shared/errors/ErrorWithSentryMetadata';
+
 const heightUnits = Platform.OS === 'ios' ? 'vh' : '%';
 
 const getHTML = (svgContent: string) => `
@@ -39,9 +41,20 @@ type SvgWebViewProps = {
   style: StyleProp<ViewStyle>;
 };
 
+type SvgContentState =
+  | {
+      kind: 'success';
+      content: string;
+    }
+  | {
+      kind: 'failure';
+      error: Error;
+    }
+  | { kind: 'loading' };
+
 export function SvgWebView({ source, onLoadStart, onLoadEnd, style }: SvgWebViewProps) {
-  const [svgContent, setSvgContent] = useState<string | null>(null);
   const uri = source.uri;
+  const [svgState, setSvgState] = useState<SvgContentState>({ kind: 'loading' });
 
   useEffect(() => {
     const controller = new AbortController();
@@ -53,14 +66,19 @@ export function SvgWebView({ source, onLoadStart, onLoadEnd, style }: SvgWebView
 
         if (uri.match(/^data:image\/svg/)) {
           const index = uri.indexOf('<svg');
-          setSvgContent(uri.slice(index));
+          setSvgState({ kind: 'success', content: uri.slice(index) });
         } else {
           try {
             const res = await fetch(uri, { signal });
             const text = await res.text();
-            setSvgContent(text);
-          } catch (err) {
-            console.error('got error', err);
+            setSvgState({ kind: 'success', content: text });
+          } catch (error) {
+            setSvgState({
+              kind: 'failure',
+              error: new ErrorWithSentryMetadata('Could not fetch SVG content', {
+                reason: (error as Error).message,
+              }),
+            });
           }
         }
 
@@ -75,8 +93,12 @@ export function SvgWebView({ source, onLoadStart, onLoadEnd, style }: SvgWebView
     };
   }, [onLoadEnd, onLoadStart, uri]);
 
-  if (svgContent) {
-    const html = getHTML(svgContent);
+  if (svgState.kind === 'loading') {
+    return <View pointerEvents="none" style={style} />;
+  } else if (svgState.kind === 'failure') {
+    throw svgState.error;
+  } else {
+    const html = getHTML(svgState.content);
 
     return (
       <View pointerEvents="none" style={style}>
@@ -90,7 +112,5 @@ export function SvgWebView({ source, onLoadStart, onLoadEnd, style }: SvgWebView
         />
       </View>
     );
-  } else {
-    return <View pointerEvents="none" style={style} />;
   }
 }
