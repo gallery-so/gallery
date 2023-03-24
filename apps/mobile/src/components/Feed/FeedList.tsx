@@ -1,5 +1,5 @@
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
-import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
 import { FeedListFragment$data, FeedListFragment$key } from '~/generated/FeedListFragment.graphql';
@@ -100,31 +100,24 @@ export function FeedList({ feedEventRefs }: FeedListProps) {
 
   const renderItem = useCallback<ListRenderItem<FeedListItem>>(
     ({ item }) => {
-      // If any of the components of an event fail, this whole event should be hidden
-      function Fallback() {
-        useLayoutEffect(() => {
-          markEventAsFailure(item.event.dbid);
-        }, []);
-
-        return null;
-      }
+      const markFailure = () => markEventAsFailure(item.event.dbid);
 
       switch (item.kind) {
         case 'header':
           return (
-            <ReportingErrorBoundary fallback={<Fallback />}>
+            <ReportingErrorBoundary fallback={null} onError={markFailure}>
               <FeedListSectionHeader feedEventRef={item.event} />
             </ReportingErrorBoundary>
           );
         case 'caption':
           return (
-            <ReportingErrorBoundary fallback={<Fallback />}>
+            <ReportingErrorBoundary fallback={null} onError={markFailure}>
               <FeedListCaption feedEventRef={item.event} />
             </ReportingErrorBoundary>
           );
         case 'event':
           return (
-            <ReportingErrorBoundary fallback={<Fallback />}>
+            <ReportingErrorBoundary fallback={null} onError={markFailure}>
               <FeedListItem eventDataRef={item.event.eventData} />
             </ReportingErrorBoundary>
           );
