@@ -1,4 +1,6 @@
 import unescape from 'lodash/unescape';
+import Link from 'next/link';
+import { Route } from 'nextjs-routes';
 import { useMemo } from 'react';
 import { PreloadedQuery, usePreloadedQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -11,7 +13,7 @@ import { BaseM, TitleM } from '~/components/core/Text/Text';
 import FollowButton from '~/components/Follow/FollowButton';
 import { HoverCardQuery } from '~/generated/HoverCardQuery.graphql';
 import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
-import UserSharedCommunities from '~/scenes/UserGalleryPage/UserSharedInfo/UserSharedCommunities';
+import UserSharedInfo from '~/scenes/UserGalleryPage/UserSharedInfo/UserSharedInfo';
 import { ErrorWithSentryMetadata } from '~/shared/errors/ErrorWithSentryMetadata';
 import handleCustomDisplayName from '~/utils/handleCustomDisplayName';
 
@@ -24,6 +26,8 @@ export const HoverCardQueryNode = graphql`
     $userId: DBID!
     $sharedCommunitiesFirst: Int
     $sharedCommunitiesAfter: String
+    $sharedFollowersFirst: Int
+    $sharedFollowersAfter: String
   ) {
     userById(id: $userId) @required(action: THROW) {
       ... on GalleryUser {
@@ -37,7 +41,7 @@ export const HoverCardQueryNode = graphql`
           ...BadgeFragment
         }
         ...FollowButtonUserFragment
-        ...UserSharedCommunitiesFragment
+        ...UserSharedInfoFragment
       }
     }
 
@@ -73,6 +77,10 @@ export function HoverCard({ preloadedQuery }: HoverCardProps) {
   const isOwnProfile = loggedInUserId === user?.id;
   const isLoggedIn = !!loggedInUserId;
 
+  const userProfileLink = useMemo((): Route => {
+    return { pathname: '/[username]', query: { username: user.username as string } };
+  }, [user]);
+
   if (!user.username) {
     return null;
   }
@@ -83,7 +91,9 @@ export function HoverCard({ preloadedQuery }: HoverCardProps) {
     <>
       <StyledCardHeader align="center" gap={4}>
         <StyledUsernameAndBadge align="center" gap={4}>
-          <StyledCardUsername>{displayName}</StyledCardUsername>
+          <StyledLink href={userProfileLink}>
+            <StyledCardUsername>{displayName}</StyledCardUsername>
+          </StyledLink>
 
           <HStack align="center" gap={0}>
             {userBadges.map((badge) => (
@@ -107,7 +117,7 @@ export function HoverCard({ preloadedQuery }: HoverCardProps) {
           </BaseM>
         </StyledCardDescription>
       )}
-      {isLoggedIn && !isOwnProfile && <UserSharedCommunities queryRef={user} />}
+      {isLoggedIn && !isOwnProfile && <UserSharedInfo userRef={user} />}
     </>
   );
 }
@@ -118,6 +128,11 @@ const StyledCardHeader = styled(HStack)`
   min-width: 0;
   // enforce height on container since the follow button causes additional height
   height: 24px;
+`;
+
+const StyledLink = styled(Link)`
+  text-decoration: none;
+  min-width: 0;
 `;
 
 const StyledUsernameAndBadge = styled(HStack)`

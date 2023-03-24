@@ -118,18 +118,12 @@ export default function UserSharedCommunities({ queryRef }: Props) {
   }
 
   return (
-    <StyledSharedCommunities>
+    <div>
       <StyledBaseS>Also holds&nbsp;</StyledBaseS>
       {content}
-    </StyledSharedCommunities>
+    </div>
   );
 }
-
-const StyledSharedCommunities = styled.div`
-  p {
-    display: inline-block; // allow for line breaks
-  }
-`;
 
 const StyledInteractiveLink = styled(InteractiveLink)`
   font-size: 12px;
