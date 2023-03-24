@@ -33,7 +33,7 @@ function NftPreviewInner({ tokenRef, resizeMode }: NftPreviewProps) {
     throw new CouldNotRenderNftError('NftPreview', 'tokenUrl missing');
   }
 
-  if (tokenUrl.includes('svg')) {
+  if (tokenUrl.includes('.svg')) {
     return (
       <SvgWebView
         source={{
@@ -47,7 +47,7 @@ function NftPreviewInner({ tokenRef, resizeMode }: NftPreviewProps) {
   // Rare case that we didn't processe the NFT correctly
   // and we still have to deal with an image
   // We'll just load the poster and never play the video
-  if (tokenUrl.includes('mp4')) {
+  if (tokenUrl.includes('.mp4')) {
     return (
       <Video
         shouldPlay
