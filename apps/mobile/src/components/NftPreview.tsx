@@ -1,5 +1,5 @@
 import { ResizeMode, Video } from 'expo-av';
-import FastImage from 'react-native-fast-image';
+import FastImage, { Priority } from 'react-native-fast-image';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
@@ -11,11 +11,12 @@ import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlFo
 import { SvgWebView } from './SvgWebView';
 
 type NftPreviewProps = {
+  priority?: Priority;
   tokenRef: NftPreviewFragment$key;
   resizeMode: ResizeMode;
 };
 
-function NftPreviewInner({ tokenRef, resizeMode }: NftPreviewProps) {
+function NftPreviewInner({ tokenRef, resizeMode, priority }: NftPreviewProps) {
   const token = useFragment(
     graphql`
       fragment NftPreviewFragment on Token {
@@ -66,15 +67,16 @@ function NftPreviewInner({ tokenRef, resizeMode }: NftPreviewProps) {
       source={{
         headers: { Accepts: 'image/avif;image/png' },
         uri: tokenUrl,
+        priority,
       }}
     />
   );
 }
 
-export function NftPreview({ tokenRef, resizeMode }: NftPreviewProps) {
+export function NftPreview({ tokenRef, resizeMode, priority }: NftPreviewProps) {
   return (
     <ReportingErrorBoundary fallback={null}>
-      <NftPreviewInner tokenRef={tokenRef} resizeMode={resizeMode} />
+      <NftPreviewInner tokenRef={tokenRef} resizeMode={resizeMode} priority={priority} />
     </ReportingErrorBoundary>
   );
 }

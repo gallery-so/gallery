@@ -11,6 +11,7 @@ import { CollectorsNoteAddedToCollectionFeedEvent } from './CollectorsNoteAddedT
 import { TokensAddedToCollectionFeedEvent } from './TokensAddedToCollectionFeedEvent';
 
 type NonRecursiveFeedListItemProps = {
+  slideIndex: number;
   eventCount: number;
   eventDataRef: NonRecursiveFeedListItemFragment$key;
 };
@@ -18,6 +19,7 @@ type NonRecursiveFeedListItemProps = {
 export function NonRecursiveFeedListItem({
   eventDataRef,
   eventCount,
+  slideIndex,
 }: NonRecursiveFeedListItemProps) {
   const eventData = useFragment(
     graphql`
@@ -57,6 +59,7 @@ export function NonRecursiveFeedListItem({
       case 'CollectorsNoteAddedToCollectionFeedEventData':
         return (
           <CollectorsNoteAddedToCollectionFeedEvent
+            isFirstSlide={slideIndex === 0}
             allowPreserveAspectRatio={allowPreserveAspectRatio}
             collectionUpdatedFeedEventDataRef={eventData}
           />
@@ -64,6 +67,7 @@ export function NonRecursiveFeedListItem({
       case 'CollectionUpdatedFeedEventData':
         return (
           <CollectionUpdatedFeedEvent
+            isFirstSlide={slideIndex === 0}
             allowPreserveAspectRatio={allowPreserveAspectRatio}
             collectionUpdatedFeedEventDataRef={eventData}
           />
@@ -71,6 +75,7 @@ export function NonRecursiveFeedListItem({
       case 'CollectionCreatedFeedEventData':
         return (
           <CollectionCreatedFeedEvent
+            isFirstSlide={slideIndex === 0}
             allowPreserveAspectRatio={allowPreserveAspectRatio}
             collectionUpdatedFeedEventDataRef={eventData}
           />
@@ -78,6 +83,7 @@ export function NonRecursiveFeedListItem({
       case 'TokensAddedToCollectionFeedEventData':
         return (
           <TokensAddedToCollectionFeedEvent
+            isFirstSlide={slideIndex === 0}
             allowPreserveAspectRatio={allowPreserveAspectRatio}
             collectionUpdatedFeedEventDataRef={eventData}
           />
@@ -85,7 +91,7 @@ export function NonRecursiveFeedListItem({
       default:
         return null;
     }
-  }, [eventCount, eventData]);
+  }, [eventCount, eventData, slideIndex]);
 
   return <View style={{ width }}>{inner}</View>;
 }
