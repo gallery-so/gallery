@@ -3,7 +3,6 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
-import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseS } from '~/components/core/Text/Text';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
@@ -119,16 +118,15 @@ export default function UserSharedCommunities({ queryRef }: Props) {
   }
 
   return (
-    <HStack align="center" wrap="wrap">
+    <div>
       <StyledBaseS>Also holds&nbsp;</StyledBaseS>
       {content}
-    </HStack>
+    </div>
   );
 }
 
 const StyledInteractiveLink = styled(InteractiveLink)`
   font-size: 12px;
-  white-space: nowrap;
 `;
 
 const StyledBaseS = styled(BaseS)`

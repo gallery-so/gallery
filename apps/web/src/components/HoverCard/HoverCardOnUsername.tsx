@@ -27,8 +27,12 @@ import {
 import { HoverCard, HoverCardQueryNode } from '~/components/HoverCard/HoverCard';
 import { HoverCardOnUsernameFragment$key } from '~/generated/HoverCardOnUsernameFragment.graphql';
 import { HoverCardQuery } from '~/generated/HoverCardQuery.graphql';
+import { COMMUNITIES_PER_PAGE } from '~/scenes/UserGalleryPage/UserSharedInfo/UserSharedCommunities';
+import { FOLLOWERS_PER_PAGE } from '~/scenes/UserGalleryPage/UserSharedInfo/UserSharedInfoList/SharedFollowersList';
 import handleCustomDisplayName from '~/utils/handleCustomDisplayName';
 import noop from '~/utils/noop';
+
+import breakpoints, { pageGutter } from '../core/breakpoints';
 
 const HOVER_POPUP_DELAY = 100;
 
@@ -81,7 +85,11 @@ export default function HoverCardOnUsername({ children, userRef, onClick = noop 
 
   useEffect(() => {
     if (isHovering) {
-      preloadHoverCardQuery({ userId: user.dbid });
+      preloadHoverCardQuery({
+        userId: user.dbid,
+        sharedCommunitiesFirst: COMMUNITIES_PER_PAGE,
+        sharedFollowersFirst: FOLLOWERS_PER_PAGE,
+      });
     }
   }, [preloadHoverCardQuery, user.dbid, isHovering]);
 
@@ -102,34 +110,32 @@ export default function HoverCardOnUsername({ children, userRef, onClick = noop 
       <AnimatePresence>
         {isHovering && preloadedHoverCardQuery && (
           <FloatingFocusManager context={context} modal={false}>
-            <Link href={userProfileLink}>
-              <StyledCardWrapper
-                className="Popover"
-                aria-labelledby={headingId}
-                // Floating UI Props
-                ref={floating}
-                style={{
-                  position: strategy,
-                  top: y ?? 0,
-                  left: x ?? 0,
-                }}
-                {...getFloatingProps()}
-                // Framer Motion Props
-                transition={{
-                  duration: ANIMATED_COMPONENT_TRANSITION_S,
-                  ease: rawTransitions.cubicValues,
-                }}
-                initial={{ opacity: 0, y: 0 }}
-                animate={{ opacity: 1, y: ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL }}
-                exit={{ opacity: 0, y: 0 }}
-              >
-                <StyledCardContainer>
-                  <Suspense fallback={null}>
-                    <HoverCard preloadedQuery={preloadedHoverCardQuery} />
-                  </Suspense>
-                </StyledCardContainer>
-              </StyledCardWrapper>
-            </Link>
+            <StyledCardWrapper
+              className="Popover"
+              aria-labelledby={headingId}
+              // Floating UI Props
+              ref={floating}
+              style={{
+                position: strategy,
+                top: y ?? 0,
+                left: x ?? 0,
+              }}
+              {...getFloatingProps()}
+              // Framer Motion Props
+              transition={{
+                duration: ANIMATED_COMPONENT_TRANSITION_S,
+                ease: rawTransitions.cubicValues,
+              }}
+              initial={{ opacity: 0, y: 0 }}
+              animate={{ opacity: 1, y: ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL }}
+              exit={{ opacity: 0, y: 0 }}
+            >
+              <StyledCardContainer>
+                <Suspense fallback={null}>
+                  <HoverCard preloadedQuery={preloadedHoverCardQuery} />
+                </Suspense>
+              </StyledCardContainer>
+            </StyledCardWrapper>
           </FloatingFocusManager>
         )}
       </AnimatePresence>
@@ -141,9 +147,14 @@ const StyledCardContainer = styled.div`
   border: 1px solid ${colors.offBlack};
   padding: 16px;
   width: 375px;
+  max-width: calc(100vw - ${pageGutter.mobile * 2}px);
   display: grid;
   gap: 8px;
   background-color: ${colors.white};
+
+  @media only screen and ${breakpoints.desktop} {
+    max-width: initial;
+  }
 `;
 
 const StyledLink = styled(Link)`
@@ -161,7 +172,7 @@ const StyledCardWrapper = styled(motion.div)`
 const StyledContainer = styled.span`
   position: relative;
   display: inline-grid;
-  cursor: pointer;
+  cursor: initial;
 `;
 
 const StyledLinkContainer = styled.div`
