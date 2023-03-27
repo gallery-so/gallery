@@ -31,6 +31,11 @@ export function RootStackNavigator() {
     >
       <Stack.Screen name="Login" component={LoginStackNavigator} />
       <Stack.Screen name="MainTabs" component={MainTabNavigator} />
+      <Stack.Screen
+        name="NftDetail"
+        options={{ presentation: 'modal' }}
+        component={NftDetailScreen}
+      />
     </Stack.Navigator>
   );
 }
