@@ -6,6 +6,7 @@ export const ANNOUNCEMENT_CONTENT = [
     title: 'Multi Gallery',
     description: 'You can now create multiple galleries and add them to your profile.',
     date: '2023-03-14T04:56:26.154845Z',
+    link: '/mint/mementos',
   },
   {
     key: 'EmailUpsell',

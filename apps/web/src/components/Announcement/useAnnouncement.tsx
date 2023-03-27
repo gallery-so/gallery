@@ -1,3 +1,4 @@
+import { Route } from 'nextjs-routes';
 import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
@@ -16,6 +17,7 @@ export type AnnouncementType = {
   date: string;
   time: string | null; // time since date
   experienced: boolean;
+  link?: Route;
 };
 
 export default function useAnnoucement(queryRef: useAnnouncementFragment$key) {
@@ -44,6 +46,9 @@ export default function useAnnoucement(queryRef: useAnnouncementFragment$key) {
         ...announcement,
         key: announcement.key as UserExperienceType,
         time: announcement.date ? getTimeSince(announcement.date) : null,
+        link: {
+          pathname: announcement.link,
+        } as Route,
         experienced: userExperiences.some(
           (userExperience) => userExperience.type === announcement.key && userExperience.experienced
         ),

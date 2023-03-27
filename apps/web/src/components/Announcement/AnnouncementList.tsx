@@ -1,7 +1,9 @@
+import { useRouter } from 'next/router';
 import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
+import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 import { AnnouncementListFragment$key } from '~/generated/AnnouncementListFragment.graphql';
 import useUpdateUserExperience from '~/utils/graphql/experiences/useUpdateUserExperience';
 
@@ -24,12 +26,20 @@ export default function AnnouncementList({ queryRef }: Props) {
     queryRef
   );
 
+  const router = useRouter();
   const { announcements } = useAnnoucement(query);
 
   const update = useUpdateUserExperience();
+  const { hideDrawer } = useDrawerActions();
 
   const handleClick = useCallback(
     (announcement: AnnouncementType) => {
+      // if there is a link, open it
+      if (announcement.link) {
+        router.push(announcement.link);
+        hideDrawer();
+      }
+
       update({
         type: announcement.key,
         experienced: true,
@@ -41,7 +51,7 @@ export default function AnnouncementList({ queryRef }: Props) {
         ],
       });
     },
-    [update]
+    [hideDrawer, router, update]
   );
 
   return (
