@@ -10,6 +10,7 @@ import { RelayEnvironmentProvider } from 'react-relay';
 import { MobileErrorReportingProvider } from '~/contexts/MobileErrorReportingProvider';
 import { createRelayEnvironment } from '~/contexts/relay/RelayProvider';
 import { MainTabNavigator } from '~/navigation/MainTabNavigator/MainTabNavigator';
+import { RootStackNavigator } from '~/navigation/RootStackNavigator';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -51,7 +52,7 @@ export default function App() {
         <MobileErrorReportingProvider>
           <SafeAreaProvider>
             <NavigationContainer>
-              <MainTabNavigator />
+              <RootStackNavigator />
             </NavigationContainer>
           </SafeAreaProvider>
         </MobileErrorReportingProvider>
