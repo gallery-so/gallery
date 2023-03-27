@@ -100,7 +100,7 @@ export function NonRecursiveFeedListItem({
       default:
         throw new TriedToRenderUnsupportedFeedEvent(eventId);
     }
-  }, [eventCount, eventData, slideIndex]);
+  }, [eventCount, eventData, eventId, slideIndex]);
 
   return <View style={{ width }}>{inner}</View>;
 }
