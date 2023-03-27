@@ -148,68 +148,66 @@ export function SidebarList({
   return (
     <StyledListTokenContainer
       ref={parentRef}
+      virtualizer={virtualizer}
       shouldUseCollectionGrouping={shouldUseCollectionGrouping}
-      height={virtualizer.getTotalSize()}
     >
-      <VirtualizedContainer yPosition={items[0]?.start ?? 0}>
-        {items.map((item) => {
-          const { key, index } = item;
-          const row = rows[index];
+      {items.map((item) => {
+        const { key, index } = item;
+        const row = rows[index];
 
-          if (!row) {
+        if (!row) {
+          return null;
+        }
+
+        if (row.type === 'collection-title') {
+          return (
+            <div data-index={item.index} ref={virtualizer.measureElement} key={item.key}>
+              <CollectionTitle
+                row={row}
+                key={key as string}
+                style={{}}
+                index={index}
+                selectedView={selectedView}
+                onToggleExpanded={onToggleExpanded}
+                setSpamPreferenceForCollection={setSpamPreferenceForCollection}
+              />
+            </div>
+          );
+        }
+
+        if (row.type === 'tokens') {
+          if (!row.expanded) {
             return null;
           }
 
-          if (row.type === 'collection-title') {
-            return (
-              <div data-index={item.index} ref={virtualizer.measureElement} key={item.key}>
-                <CollectionTitle
-                  row={row}
-                  key={key as string}
-                  style={{}}
-                  index={index}
-                  selectedView={selectedView}
-                  onToggleExpanded={onToggleExpanded}
-                  setSpamPreferenceForCollection={setSpamPreferenceForCollection}
-                />
-              </div>
-            );
-          }
+          return (
+            <div data-index={item.index} ref={virtualizer.measureElement} key={item.key}>
+              <Selection key={key}>
+                {row.tokens.map((tokenRef) => {
+                  const token = readInlineData(
+                    graphql`
+                      fragment SidebarListTokenFragment on Token @inline {
+                        dbid
+                        ...SidebarNftIconFragment
+                      }
+                    `,
+                    tokenRef
+                  );
 
-          if (row.type === 'tokens') {
-            if (!row.expanded) {
-              return null;
-            }
-
-            return (
-              <div data-index={item.index} ref={virtualizer.measureElement} key={item.key}>
-                <Selection key={key}>
-                  {row.tokens.map((tokenRef) => {
-                    const token = readInlineData(
-                      graphql`
-                        fragment SidebarListTokenFragment on Token @inline {
-                          dbid
-                          ...SidebarNftIconFragment
-                        }
-                      `,
-                      tokenRef
-                    );
-
-                    return (
-                      <SidebarNftIcon
-                        key={token.dbid}
-                        tokenRef={token}
-                        handleTokenRenderError={handleTokenRenderError}
-                        handleTokenRenderSuccess={handleTokenRenderSuccess}
-                      />
-                    );
-                  })}
-                </Selection>
-              </div>
-            );
-          }
-        })}
-      </VirtualizedContainer>
+                  return (
+                    <SidebarNftIcon
+                      key={token.dbid}
+                      tokenRef={token}
+                      handleTokenRenderError={handleTokenRenderError}
+                      handleTokenRenderSuccess={handleTokenRenderSuccess}
+                    />
+                  );
+                })}
+              </Selection>
+            </div>
+          );
+        }
+      })}
     </StyledListTokenContainer>
   );
 }
@@ -242,15 +240,11 @@ const CollectionTitleContainer = styled.div.attrs({ role: 'button' })`
   }
 `;
 
-const StyledListTokenContainer = styled.div<{
+const StyledListTokenContainer = styled(VirtualizedContainer)<{
   shouldUseCollectionGrouping: boolean;
-  height: number;
 }>`
   flex-grow: 1;
   overflow-y: auto;
-  width: 100%;
-  position: relative;
-  height: ${({ height }) => height}px;
 
   // Need this since typically the CollectionTitle is responsible for the spacing between
   // the SidebarChainSelector and the SidebarList component

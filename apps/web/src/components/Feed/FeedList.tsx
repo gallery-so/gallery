@@ -80,55 +80,39 @@ export default function FeedList({
   }
 
   return (
-    // Set the height of the container with combined height of all the virtualized items in the list
-    <StyledFeedList height={virtualizer.getTotalSize()}>
-      <VirtualizedContainer yPosition={(feeds[0]?.start ?? 0) - virtualizer.options.scrollMargin}>
-        {feeds.map((virtualItem) => {
-          // graphql returns the oldest event at the top of the list, so display in opposite order
-          const content = feedData[feedData.length - virtualItem.index - 1];
-          const isLoaderRow = virtualItem.index > feedData.length - 1;
+    <VirtualizedContainer virtualizer={virtualizer}>
+      {feeds.map((virtualItem) => {
+        // graphql returns the oldest event at the top of the list, so display in opposite order
+        const content = feedData[feedData.length - virtualItem.index - 1];
+        const isLoaderRow = virtualItem.index > feedData.length - 1;
 
-          // Better safe than sorry :)
-          if (!content) {
-            return;
-          }
+        // Better safe than sorry :)
+        if (!content) {
+          return;
+        }
 
-          // If we're on the last row, render the loading state
-          if (isLoaderRow && hasNext) {
-            return (
-              <StyledLoadMoreRow key={virtualItem.key}>
-                <Loader inverted size="small" />
-              </StyledLoadMoreRow>
-            );
-          }
-
+        // If we're on the last row, render the loading state
+        if (isLoaderRow && hasNext) {
           return (
-            <div
-              key={virtualItem.key}
-              data-index={virtualItem.index}
-              ref={virtualizer.measureElement}
-            >
-              <FeedEvent
-                eventRef={content}
-                key={content.dbid}
-                queryRef={query}
-                feedMode={feedMode}
-              />
-            </div>
+            <StyledLoadMoreRow key={virtualItem.key}>
+              <Loader inverted size="small" />
+            </StyledLoadMoreRow>
           );
-        })}
-      </VirtualizedContainer>
-    </StyledFeedList>
+        }
+
+        return (
+          <div
+            key={virtualItem.key}
+            data-index={virtualItem.index}
+            ref={virtualizer.measureElement}
+          >
+            <FeedEvent eventRef={content} key={content.dbid} queryRef={query} feedMode={feedMode} />
+          </div>
+        );
+      })}
+    </VirtualizedContainer>
   );
 }
-
-const StyledFeedList = styled.div<{
-  height: number;
-}>`
-  height: ${({ height }) => height}px;
-  width: 100%;
-  position: relative;
-`;
 
 const StyledLoadMoreRow = styled.div`
   width: 100%;
