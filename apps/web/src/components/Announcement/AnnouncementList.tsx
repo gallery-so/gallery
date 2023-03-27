@@ -1,12 +1,14 @@
+import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { AnnouncementListFragment$key } from '~/generated/AnnouncementListFragment.graphql';
+import useUpdateUserExperience from '~/utils/graphql/experiences/useUpdateUserExperience';
 
 import colors from '../core/colors';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM, BaseS } from '../core/Text/Text';
-import useAnnoucement from './useAnnouncement';
+import useAnnoucement, { AnnouncementType } from './useAnnouncement';
 
 type Props = {
   queryRef: AnnouncementListFragment$key;
@@ -24,11 +26,34 @@ export default function AnnouncementList({ queryRef }: Props) {
 
   const { announcements } = useAnnoucement(query);
 
+  const update = useUpdateUserExperience();
+
+  const handleClick = useCallback(
+    (announcement: AnnouncementType) => {
+      update({
+        type: announcement.key,
+        experienced: true,
+        optimisticExperiencesList: [
+          {
+            type: announcement.key,
+            experienced: true,
+          },
+        ],
+      });
+    },
+    [update]
+  );
+
   return (
     <div>
       {announcements.map((announcement) => {
         return (
-          <StyledAnnouncement key={announcement.key} align="center" justify="space-between">
+          <StyledAnnouncement
+            key={announcement.key}
+            onClick={() => handleClick(announcement)}
+            align="center"
+            justify="space-between"
+          >
             <VStack>
               <BaseM>
                 <strong>{announcement.title}</strong>
@@ -48,6 +73,7 @@ export default function AnnouncementList({ queryRef }: Props) {
 
 const StyledAnnouncement = styled(HStack)`
   padding: 16px 12px;
+  cursor: pointer;
 
   &:hover {
     background-color: ${colors.faint};
