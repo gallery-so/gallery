@@ -98,40 +98,33 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
   }
 
   return (
-    <StyledUserGalleryCollections height={virtualizer.getTotalSize()} ref={parentRef}>
-      <VirtualizedContainer
-        yPosition={(collectionsData[0]?.start ?? 0) - virtualizer.options.scrollMargin}
-      >
-        {collectionsData.map((virtualItem) => {
-          const collection = collectionsToDisplay[virtualItem.index];
+    <StyledUserGalleryCollections virtualizer={virtualizer} ref={parentRef}>
+      {collectionsData.map((virtualItem) => {
+        const collection = collectionsToDisplay[virtualItem.index];
 
-          if (!collection) {
-            return null;
-          }
+        if (!collection) {
+          return null;
+        }
 
-          return (
-            <StyledUserGalleryCollectionContainer
-              key={virtualItem.key}
-              data-index={virtualItem.index}
-              ref={virtualizer.measureElement}
-            >
-              <UserGalleryCollection
-                queryRef={query}
-                collectionRef={collection}
-                mobileLayout={mobileLayout}
-              />
-            </StyledUserGalleryCollectionContainer>
-          );
-        })}
-      </VirtualizedContainer>
+        return (
+          <StyledUserGalleryCollectionContainer
+            key={virtualItem.key}
+            data-index={virtualItem.index}
+            ref={virtualizer.measureElement}
+          >
+            <UserGalleryCollection
+              queryRef={query}
+              collectionRef={collection}
+              mobileLayout={mobileLayout}
+            />
+          </StyledUserGalleryCollectionContainer>
+        );
+      })}
     </StyledUserGalleryCollections>
   );
 }
 
-const StyledUserGalleryCollections = styled.div<{ height?: number }>`
-  height: ${({ height }) => height}px;
-  width: 100%;
-  position: relative;
+const StyledUserGalleryCollections = styled(VirtualizedContainer)`
   padding-top: 16px;
 
   @media only screen and ${breakpoints.tablet} {
