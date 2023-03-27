@@ -1,21 +1,31 @@
-import { Suspense, useMemo } from 'react';
-import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
+import { Suspense, useEffect, useMemo } from 'react';
+import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 
 import { LatestScreenFragment$key } from '~/generated/LatestScreenFragment.graphql';
 import { LatestScreenQuery } from '~/generated/LatestScreenQuery.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import { FeedList } from '../../components/Feed/FeedList';
+import { LoadingFeedList } from '../../components/Feed/LoadingFeedList';
 
 type LatestScreenInnerProps = {
   queryRef: LatestScreenFragment$key;
 };
 
+const PER_PAGE = 10;
+const INITIAL_COUNT = 3;
+
 function LatestScreenInner({ queryRef }: LatestScreenInnerProps) {
-  const query = useFragment(
+  const {
+    data: query,
+    hasPrevious,
+    loadPrevious,
+  } = usePaginationFragment(
     graphql`
-      fragment LatestScreenFragment on Query {
-        globalFeed(before: $globalFeedBefore, last: $globalFeedCount) {
+      fragment LatestScreenFragment on Query
+      @refetchable(queryName: "RefetchableLatestScreenFragmentQuery") {
+        globalFeed(before: $globalFeedBefore, last: $globalFeedCount)
+          @connection(key: "LatestScreenFragment_globalFeed") {
           edges {
             node {
               __typename
@@ -28,6 +38,12 @@ function LatestScreenInner({ queryRef }: LatestScreenInnerProps) {
     `,
     queryRef
   );
+
+  useEffect(() => {
+    if (hasPrevious) {
+      loadPrevious(PER_PAGE - INITIAL_COUNT);
+    }
+  }, [hasPrevious, loadPrevious]);
 
   const events = useMemo(() => {
     return removeNullValues(query.globalFeed?.edges?.map((it) => it?.node)).reverse();
@@ -43,11 +59,11 @@ export function LatestScreen() {
         ...LatestScreenFragment
       }
     `,
-    { globalFeedCount: 50 }
+    { globalFeedCount: INITIAL_COUNT }
   );
 
   return (
-    <Suspense fallback={null}>
+    <Suspense fallback={<LoadingFeedList />}>
       <LatestScreenInner queryRef={query} />
     </Suspense>
   );

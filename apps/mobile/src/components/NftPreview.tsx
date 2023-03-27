@@ -1,5 +1,8 @@
 import { ResizeMode, Video } from 'expo-av';
+import { useCallback, useMemo, useState } from 'react';
+import { View } from 'react-native';
 import FastImage, { Priority } from 'react-native-fast-image';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
@@ -8,6 +11,7 @@ import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
 
+import { GallerySkeleton } from './GallerySkeleton';
 import { SvgWebView } from './SvgWebView';
 
 type NftPreviewProps = {
@@ -27,6 +31,12 @@ function NftPreviewInner({ tokenRef, resizeMode, priority }: NftPreviewProps) {
     tokenRef
   );
 
+  const [loaded, setLoaded] = useState(false);
+
+  const handleLoad = useCallback(() => {
+    setLoaded(true);
+  }, []);
+
   const previews = getVideoOrImageUrlForNftPreview(token);
   const tokenUrl = previews?.urls.medium;
 
@@ -34,42 +44,60 @@ function NftPreviewInner({ tokenRef, resizeMode, priority }: NftPreviewProps) {
     throw new CouldNotRenderNftError('NftPreview', 'tokenUrl missing');
   }
 
-  if (tokenUrl.includes('.svg')) {
-    return (
-      <SvgWebView
-        source={{
-          uri: tokenUrl,
-        }}
-        style={{ width: '100%', height: '100%' }}
-      />
-    );
-  }
+  const mediaContent = useMemo(() => {
+    if (tokenUrl.includes('svg')) {
+      return (
+        <SvgWebView
+          onLoadEnd={handleLoad}
+          source={{
+            uri: tokenUrl,
+          }}
+          style={{ width: '100%', height: '100%' }}
+        />
+      );
+    }
 
-  // Rare case that we didn't processe the NFT correctly
-  // and we still have to deal with an image
-  // We'll just load the poster and never play the video
-  if (tokenUrl.includes('.mp4')) {
+    // Rare case that we didn't processe the NFT correctly
+    // and we still have to deal with an image
+    // We'll just load the poster and never play the video
+    if (tokenUrl.includes('mp4')) {
+      return (
+        <Video
+          onReadyForDisplay={handleLoad}
+          shouldPlay
+          isLooping
+          resizeMode={resizeMode}
+          source={{ uri: tokenUrl }}
+          className="h-full w-full"
+        />
+      );
+    }
+
     return (
-      <Video
-        shouldPlay
-        isLooping
+      <FastImage
+        onLoadEnd={handleLoad}
         resizeMode={resizeMode}
-        source={{ uri: tokenUrl }}
-        className="h-full w-full"
+        className="h-full w-full overflow-hidden"
+        source={{
+          headers: { Accepts: 'image/avif;image/png' },
+          uri: tokenUrl,
+          priority,
+        }}
       />
     );
-  }
+  }, [handleLoad, priority, resizeMode, tokenUrl]);
 
   return (
-    <FastImage
-      resizeMode={resizeMode}
-      className="h-full w-full overflow-hidden"
-      source={{
-        headers: { Accepts: 'image/avif;image/png' },
-        uri: tokenUrl,
-        priority,
-      }}
-    />
+    <View className="relative h-full w-full">
+      {mediaContent}
+      {loaded ? null : (
+        <View className="absolute inset-0">
+          <GallerySkeleton>
+            <SkeletonPlaceholder.Item width="100%" height="100%" />
+          </GallerySkeleton>
+        </View>
+      )}
+    </View>
   );
 }
 
