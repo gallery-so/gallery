@@ -22,7 +22,7 @@ type GalleryUpdatedFeedEventProps = {
   eventDataRef: GalleryUpdatedFeedEventFragment$key;
 };
 
-export function GalleryUpdatedFeedEvent({ eventDataRef }: GalleryUpdatedFeedEventProps) {
+export function GalleryUpdatedFeedEvent({ eventDataRef, eventId }: GalleryUpdatedFeedEventProps) {
   const eventData = useFragment(
     graphql`
       fragment GalleryUpdatedFeedEventFragment on GalleryUpdatedFeedEventData {
@@ -68,8 +68,10 @@ export function GalleryUpdatedFeedEvent({ eventDataRef }: GalleryUpdatedFeedEven
         />
       );
     },
-    [subEvents.length]
+    [eventId, subEvents.length]
   );
+
+  const isPaginated = subEvents.length > 1;
 
   return (
     <View className="flex flex-col space-y-3">
@@ -85,10 +87,11 @@ export function GalleryUpdatedFeedEvent({ eventDataRef }: GalleryUpdatedFeedEven
         decelerationRate="fast"
         snapToAlignment="center"
         scrollEventThrottle={200}
+        scrollEnabled={isPaginated}
         showsHorizontalScrollIndicator={false}
       />
 
-      {subEvents?.length > 1 && (
+      {isPaginated && (
         <View className="flex w-full flex-row justify-center">
           <View className="flex flex-row space-x-1">
             {subEvents.map((_, index) => {

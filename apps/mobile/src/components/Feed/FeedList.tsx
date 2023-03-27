@@ -118,7 +118,7 @@ export function FeedList({ feedEventRefs }: FeedListProps) {
         case 'event':
           return (
             <ReportingErrorBoundary fallback={null} onError={markFailure}>
-              <FeedListItem eventDataRef={item.event.eventData} />
+              <FeedListItem eventId={item.event.dbid} eventDataRef={item.event.eventData} />
             </ReportingErrorBoundary>
           );
       }
