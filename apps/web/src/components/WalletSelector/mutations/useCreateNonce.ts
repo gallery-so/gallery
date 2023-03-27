@@ -3,7 +3,7 @@ import { graphql } from 'relay-runtime';
 
 import { useCreateNonceMutation } from '~/generated/useCreateNonceMutation.graphql';
 import { Chain } from '~/generated/useCreateUserMutation.graphql';
-import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
+import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 import { Web3Error } from '~/types/Error';
 
 /**

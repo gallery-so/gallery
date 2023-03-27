@@ -4,7 +4,7 @@ import { graphql } from 'relay-runtime';
 
 import { useUpdateTwitterDisplayFragment$key } from '~/generated/useUpdateTwitterDisplayFragment.graphql';
 import { useUpdateTwitterDisplayMutation } from '~/generated/useUpdateTwitterDisplayMutation.graphql';
-import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
+import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 
 export default function useUpdateTwitterDisplay(queryRef: useUpdateTwitterDisplayFragment$key) {
   const query = useFragment(

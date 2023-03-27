@@ -11,8 +11,8 @@ import { useToastActions } from '~/contexts/toast/ToastContext';
 import { TwitterFollowingModalFragment$key } from '~/generated/TwitterFollowingModalFragment.graphql';
 import { TwitterFollowingModalMutation } from '~/generated/TwitterFollowingModalMutation.graphql';
 import { TwitterFollowingModalQueryFragment$key } from '~/generated/TwitterFollowingModalQueryFragment.graphql';
-import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
+import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 
 import breakpoints from '../core/breakpoints';
 import { Button } from '../core/Button/Button';

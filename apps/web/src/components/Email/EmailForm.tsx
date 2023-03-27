@@ -8,8 +8,8 @@ import { useToastActions } from '~/contexts/toast/ToastContext';
 import { EmailFormFragment$key } from '~/generated/EmailFormFragment.graphql';
 import { EmailFormMutation } from '~/generated/EmailFormMutation.graphql';
 import useDebounce from '~/hooks/useDebounce';
-import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 import { AdditionalContext, useReportError } from '~/shared/contexts/ErrorReportingContext';
+import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 import { EMAIL_FORMAT } from '~/utils/regex';
 
 import { Button } from '../core/Button/Button';

@@ -5,7 +5,7 @@ import { useAccount } from 'wagmi';
 
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { useRedeemMerchMutation } from '~/generated/useRedeemMerchMutation.graphql';
-import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
+import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 
 type Props = {
   tokenIds: string[];

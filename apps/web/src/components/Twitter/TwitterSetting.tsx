@@ -6,9 +6,9 @@ import { TWITTER_AUTH_URL } from '~/constants/twitter';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { TwitterSettingDisconnectMutation } from '~/generated/TwitterSettingDisconnectMutation.graphql';
 import { TwitterSettingFragment$key } from '~/generated/TwitterSettingFragment.graphql';
-import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 import TwitterIcon from '~/icons/TwitterIcon';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
+import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 
 import { Button } from '../core/Button/Button';
 import colors from '../core/colors';

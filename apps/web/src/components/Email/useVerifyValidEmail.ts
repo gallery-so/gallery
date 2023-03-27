@@ -3,7 +3,7 @@ import { graphql } from 'react-relay';
 
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { useVerifyValidEmailMutation } from '~/generated/useVerifyValidEmailMutation.graphql';
-import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
+import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 
 const VALID_EMAIL_STATUS = ['Risky', 'Valid'];
 

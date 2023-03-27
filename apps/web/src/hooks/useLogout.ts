@@ -4,7 +4,7 @@ import { graphql } from 'react-relay';
 import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 import { RelayResetContext } from '~/contexts/RelayResetContext';
 import { useLogoutMutation } from '~/generated/useLogoutMutation.graphql';
-import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
+import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 
 export const useLogout = () => {
   const [logout] = usePromisifiedMutation<useLogoutMutation>(

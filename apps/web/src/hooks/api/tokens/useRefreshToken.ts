@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { graphql } from 'relay-runtime';
 
 import { useRefreshTokenMutation } from '~/generated/useRefreshTokenMutation.graphql';
-import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
+import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 
 export function useRefreshToken(): [(tokenId: string) => Promise<void>, boolean] {
   const [refreshTokenMutate, isRefreshing] =

@@ -7,8 +7,8 @@ import { TWITTER_LOCAL_STORAGE_KEY } from '~/constants/twitter';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { TwitterAuthMutation } from '~/generated/TwitterAuthMutation.graphql';
 import { TwitterAuthQueryFragment$key } from '~/generated/TwitterAuthQueryFragment.graphql';
-import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
+import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 
 import FullPageLoader from '../core/Loader/FullPageLoader';
 
