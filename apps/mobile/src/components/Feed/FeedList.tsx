@@ -128,10 +128,11 @@ export function FeedList({ feedEventRefs }: FeedListProps) {
 
   return (
     <FlashList
-      estimatedItemSize={300}
       data={items}
-      stickyHeaderIndices={stickyHeaderIndices}
+      estimatedItemSize={300}
       renderItem={renderItem}
+      stickyHeaderIndices={stickyHeaderIndices}
+      keyExtractor={(item) => `${item.kind}-${item.event.dbid}`}
     />
   );
 }
