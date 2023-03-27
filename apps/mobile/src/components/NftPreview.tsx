@@ -3,42 +3,25 @@ import { useCallback, useMemo, useState } from 'react';
 import { View } from 'react-native';
 import FastImage, { Priority } from 'react-native-fast-image';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
-import { useFragment } from 'react-relay';
-import { graphql } from 'relay-runtime';
 
-import { NftPreviewFragment$key } from '~/generated/NftPreviewFragment.graphql';
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
-import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
 
 import { GallerySkeleton } from './GallerySkeleton';
 import { SvgWebView } from './SvgWebView';
 
 type NftPreviewProps = {
   priority?: Priority;
-  tokenRef: NftPreviewFragment$key;
+  tokenUrl: string | null;
   resizeMode: ResizeMode;
 };
 
-function NftPreviewInner({ tokenRef, resizeMode, priority }: NftPreviewProps) {
-  const token = useFragment(
-    graphql`
-      fragment NftPreviewFragment on Token {
-        __typename
-        ...getVideoOrImageUrlForNftPreviewFragment
-      }
-    `,
-    tokenRef
-  );
-
+function NftPreviewInner({ tokenUrl, resizeMode, priority }: NftPreviewProps) {
   const [loaded, setLoaded] = useState(false);
 
   const handleLoad = useCallback(() => {
     setLoaded(true);
   }, []);
-
-  const previews = getVideoOrImageUrlForNftPreview(token);
-  const tokenUrl = previews?.urls.medium;
 
   if (!tokenUrl) {
     throw new CouldNotRenderNftError('NftPreview', 'tokenUrl missing');
@@ -101,10 +84,10 @@ function NftPreviewInner({ tokenRef, resizeMode, priority }: NftPreviewProps) {
   );
 }
 
-export function NftPreview({ tokenRef, resizeMode, priority }: NftPreviewProps) {
+export function NftPreview({ tokenUrl, resizeMode, priority }: NftPreviewProps) {
   return (
     <ReportingErrorBoundary fallback={null}>
-      <NftPreviewInner tokenRef={tokenRef} resizeMode={resizeMode} priority={priority} />
+      <NftPreviewInner tokenUrl={tokenUrl} resizeMode={resizeMode} priority={priority} />
     </ReportingErrorBoundary>
   );
 }
