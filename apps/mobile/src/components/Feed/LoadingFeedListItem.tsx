@@ -4,7 +4,7 @@ import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { GallerySkeleton } from '../GallerySkeleton';
 
 type LoadingFeedListItemProps = {
-  style: ViewProps['style'];
+  style?: ViewProps['style'];
 };
 export function LoadingFeedListItem({ style }: LoadingFeedListItemProps) {
   const { width } = useWindowDimensions();
