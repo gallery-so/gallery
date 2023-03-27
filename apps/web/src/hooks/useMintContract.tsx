@@ -1,4 +1,5 @@
 import { Contract } from '@ethersproject/contracts';
+import { ethers } from 'ethers';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAccount } from 'wagmi';
 
@@ -62,7 +63,9 @@ export default function useMintContract({ contract, tokenId, allowlist, onMintSu
           console.log('generating', address);
           const merkleProof = allowlist ? generateMerkleProof(address, Array.from(allowlist)) : [];
           console.log({ contract: contract.address, tokenId, address, merkleProof });
-          mintResult = await contract.mint(tokenId, address, merkleProof);
+          mintResult = await contract.mint(tokenId, address, merkleProof, {
+            value: ethers.utils.parseEther('0.000777'),
+          });
         } catch (error: unknown) {
           // @ts-expect-error: weird contract error type has `error.error`
           let errorMessage = error?.error?.message ?? error?.message;
