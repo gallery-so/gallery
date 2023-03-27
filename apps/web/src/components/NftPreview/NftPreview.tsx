@@ -7,7 +7,6 @@ import Gradient from '~/components/core/Gradient/Gradient';
 import transitions from '~/components/core/transitions';
 import { NftFailureBoundary } from '~/components/NftFailureFallback/NftFailureBoundary';
 import { NftFailureFallback } from '~/components/NftFailureFallback/NftFailureFallback';
-import { useContentState } from '~/contexts/shimmer/ShimmerContext';
 import { NftPreviewFragment$key } from '~/generated/NftPreviewFragment.graphql';
 import { NftPreviewTokenFragment$key } from '~/generated/NftPreviewTokenFragment.graphql';
 import { useNftRetry } from '~/hooks/useNftRetry';
@@ -185,8 +184,6 @@ function NftPreview({
       // the asset is an iframe in single column mode
       (columns === 1 && isIFrameLiveDisplay));
 
-  const { aspectRatio } = useContentState();
-
   return (
     <NftFailureBoundary
       key={retryKey}
@@ -206,11 +203,7 @@ function NftPreview({
         {/* NextJS <Link> tags don't come with an anchor tag by default, so we're adding one here.
           This will inherit the `as` URL from the parent component. */}
         <StyledA onClick={handleClick}>
-          <StyledNftPreview
-            aspectRatio={aspectRatio}
-            backgroundColorOverride={backgroundColorOverride}
-            fullWidth={fullWidth}
-          >
+          <StyledNftPreview backgroundColorOverride={backgroundColorOverride} fullWidth={fullWidth}>
             {PreviewAsset}
             {isMobileOrLargeMobile ? null : (
               <StyledNftFooter>
@@ -262,7 +255,6 @@ const StyledNftFooter = styled.div`
 const StyledNftPreview = styled.div<{
   backgroundColorOverride: string;
   fullWidth: boolean;
-  aspectRatio: number | null;
 }>`
   cursor: pointer;
 
@@ -272,7 +264,6 @@ const StyledNftPreview = styled.div<{
   position: relative;
   overflow: hidden;
   max-height: 80vh;
-  max-width: ${({ aspectRatio }) => `calc(80vh * ${aspectRatio})`};
   width: ${({ fullWidth }) => (fullWidth ? '100%' : 'auto')};
   height: initial;
 
