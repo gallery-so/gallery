@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useMemo } from 'react';
+import { Suspense, useCallback, useEffect, useMemo } from 'react';
 import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 
 import { TrendingScreenFragment$key } from '~/generated/TrendingScreenFragment.graphql';
@@ -12,7 +12,7 @@ type TrendingScreenInnerProps = {
   queryRef: TrendingScreenFragment$key;
 };
 
-const PER_PAGE = 10;
+const PER_PAGE = 20;
 const INITIAL_COUNT = 3;
 
 function TrendingScreenInner({ queryRef }: TrendingScreenInnerProps) {
@@ -20,6 +20,7 @@ function TrendingScreenInner({ queryRef }: TrendingScreenInnerProps) {
     data: query,
     hasPrevious,
     loadPrevious,
+    isLoadingPrevious,
   } = usePaginationFragment(
     graphql`
       fragment TrendingScreenFragment on Query
@@ -45,11 +46,21 @@ function TrendingScreenInner({ queryRef }: TrendingScreenInnerProps) {
     }
   }, [hasPrevious, loadPrevious]);
 
+  const handleLoadMore = useCallback(() => {
+    loadPrevious(PER_PAGE);
+  }, [loadPrevious]);
+
   const events = useMemo(() => {
     return removeNullValues(query.trendingFeed?.edges?.map((it) => it?.node)).reverse();
   }, [query.trendingFeed?.edges]);
 
-  return <FeedList feedEventRefs={events} />;
+  return (
+    <FeedList
+      isLoadingMore={isLoadingPrevious}
+      onLoadMore={handleLoadMore}
+      feedEventRefs={events}
+    />
+  );
 }
 
 export function TrendingScreen() {

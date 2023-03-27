@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useMemo } from 'react';
+import { Suspense, useCallback, useEffect, useMemo } from 'react';
 import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 
 import { LatestScreenFragment$key } from '~/generated/LatestScreenFragment.graphql';
@@ -12,12 +12,13 @@ type LatestScreenInnerProps = {
   queryRef: LatestScreenFragment$key;
 };
 
-const PER_PAGE = 10;
+const PER_PAGE = 20;
 const INITIAL_COUNT = 3;
 
 function LatestScreenInner({ queryRef }: LatestScreenInnerProps) {
   const {
     data: query,
+    isLoadingPrevious,
     hasPrevious,
     loadPrevious,
   } = usePaginationFragment(
@@ -45,11 +46,21 @@ function LatestScreenInner({ queryRef }: LatestScreenInnerProps) {
     }
   }, [hasPrevious, loadPrevious]);
 
+  const handleLoadMore = useCallback(() => {
+    loadPrevious(PER_PAGE);
+  }, [loadPrevious]);
+
   const events = useMemo(() => {
     return removeNullValues(query.globalFeed?.edges?.map((it) => it?.node)).reverse();
   }, [query.globalFeed?.edges]);
 
-  return <FeedList feedEventRefs={events} />;
+  return (
+    <FeedList
+      isLoadingMore={isLoadingPrevious}
+      onLoadMore={handleLoadMore}
+      feedEventRefs={events}
+    />
+  );
 }
 
 export function LatestScreen() {
