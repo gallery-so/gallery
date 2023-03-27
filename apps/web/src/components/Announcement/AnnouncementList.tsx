@@ -34,6 +34,10 @@ export default function AnnouncementList({ queryRef }: Props) {
 
   const handleClick = useCallback(
     (announcement: AnnouncementType) => {
+      if (announcement.experienced || !announcement.link) {
+        return;
+      }
+
       // if there is a link, open it
       if (announcement.link) {
         router.push(announcement.link);
@@ -63,6 +67,7 @@ export default function AnnouncementList({ queryRef }: Props) {
             onClick={() => handleClick(announcement)}
             align="center"
             justify="space-between"
+            hasAction={!!announcement.link && !announcement.experienced}
           >
             <VStack>
               <BaseM>
@@ -81,12 +86,12 @@ export default function AnnouncementList({ queryRef }: Props) {
   );
 }
 
-const StyledAnnouncement = styled(HStack)`
+const StyledAnnouncement = styled(HStack)<{ hasAction: boolean }>`
   padding: 16px 12px;
-  cursor: pointer;
+  cursor: ${({ hasAction }) => (hasAction ? 'pointer' : 'default')};
 
   &:hover {
-    background-color: ${colors.faint};
+    ${({ hasAction }) => hasAction && `background-color: ${colors.faint};`}
   }
 `;
 
