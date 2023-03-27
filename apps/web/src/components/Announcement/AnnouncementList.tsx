@@ -34,26 +34,25 @@ export default function AnnouncementList({ queryRef }: Props) {
 
   const handleClick = useCallback(
     (announcement: AnnouncementType) => {
-      if (announcement.experienced || !announcement.link) {
-        return;
-      }
-
       // if there is a link, open it
       if (announcement.link) {
         router.push(announcement.link);
-        hideDrawer();
       }
 
-      update({
-        type: announcement.key,
-        experienced: true,
-        optimisticExperiencesList: [
-          {
-            type: announcement.key,
-            experienced: true,
-          },
-        ],
-      });
+      if (!announcement.experienced) {
+        update({
+          type: announcement.key,
+          experienced: true,
+          optimisticExperiencesList: [
+            {
+              type: announcement.key,
+              experienced: true,
+            },
+          ],
+        });
+      }
+
+      hideDrawer();
     },
     [hideDrawer, router, update]
   );
@@ -67,7 +66,7 @@ export default function AnnouncementList({ queryRef }: Props) {
             onClick={() => handleClick(announcement)}
             align="center"
             justify="space-between"
-            hasAction={!!announcement.link && !announcement.experienced}
+            hasAction={Boolean(announcement.link?.pathname || !announcement.experienced)}
           >
             <VStack>
               <BaseM>
