@@ -1,7 +1,6 @@
-import throttle from 'lodash.throttle';
-import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useVirtualizer } from '@tanstack/react-virtual';
+import { useRef, useState } from 'react';
 import { graphql } from 'react-relay';
-import { AutoSizer, Index, List, ListRowProps } from 'react-virtualized';
 import { readInlineData } from 'relay-runtime';
 import styled from 'styled-components';
 
@@ -11,10 +10,10 @@ import { TitleXS } from '~/components/core/Text/Text';
 import { ExpandedIcon } from '~/components/GalleryEditor/PiecesSidebar/ExpandedIcon';
 import SidebarNftIcon from '~/components/GalleryEditor/PiecesSidebar/SidebarNftIcon';
 import Tooltip from '~/components/Tooltip/Tooltip';
+import VirtualizedContainer from '~/components/Virtualize/VirtualizeContainer';
 import {
   SIDEBAR_COLLECTION_TITLE_BOTTOM_SPACE,
   SIDEBAR_COLLECTION_TITLE_HEIGHT,
-  SIDEBAR_ICON_DIMENSIONS,
   SIDEBAR_ICON_GAP,
 } from '~/constants/sidebar';
 import { SidebarListTokenFragment$key } from '~/generated/SidebarListTokenFragment.graphql';
@@ -135,141 +134,80 @@ export function SidebarList({
   shouldUseCollectionGrouping,
   setSpamPreferenceForCollection,
 }: Props) {
-  const rowRenderer = useCallback(
-    ({ key, style, index }: ListRowProps) => {
-      const row = rows[index];
+  const parentRef = useRef<HTMLDivElement | null>(null);
 
-      if (!row) {
-        return null;
-      }
+  const virtualizer = useVirtualizer({
+    count: rows.length,
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => 45,
+    overscan: 5,
+  });
 
-      if (row.type === 'collection-title') {
-        return (
-          <CollectionTitle
-            row={row}
-            key={key}
-            style={style}
-            index={index}
-            selectedView={selectedView}
-            onToggleExpanded={onToggleExpanded}
-            setSpamPreferenceForCollection={setSpamPreferenceForCollection}
-          />
-        );
-      }
+  const items = virtualizer.getVirtualItems();
 
-      if (row.type === 'tokens') {
-        if (!row.expanded) {
+  return (
+    <StyledListTokenContainer
+      ref={parentRef}
+      virtualizer={virtualizer}
+      shouldUseCollectionGrouping={shouldUseCollectionGrouping}
+    >
+      {items.map((item) => {
+        const { key, index } = item;
+        const row = rows[index];
+
+        if (!row) {
           return null;
         }
 
-        return (
-          <Selection key={key} style={style}>
-            {row.tokens.map((tokenRef) => {
-              const token = readInlineData(
-                graphql`
-                  fragment SidebarListTokenFragment on Token @inline {
-                    dbid
-                    ...SidebarNftIconFragment
-                  }
-                `,
-                tokenRef
-              );
-
-              return (
-                <SidebarNftIcon
-                  key={token.dbid}
-                  tokenRef={token}
-                  handleTokenRenderError={handleTokenRenderError}
-                  handleTokenRenderSuccess={handleTokenRenderSuccess}
-                />
-              );
-            })}
-          </Selection>
-        );
-      }
-    },
-    [
-      handleTokenRenderError,
-      handleTokenRenderSuccess,
-      onToggleExpanded,
-      rows,
-      selectedView,
-      setSpamPreferenceForCollection,
-    ]
-  );
-
-  const rowHeightCalculator = useCallback(
-    ({ index }: Index) => {
-      const row = rows[index];
-
-      if (row?.type === 'tokens') {
-        if (!row.expanded) {
-          return 0;
+        if (row.type === 'collection-title') {
+          return (
+            <div data-index={item.index} ref={virtualizer.measureElement} key={item.key}>
+              <CollectionTitle
+                row={row}
+                key={key as string}
+                style={{}}
+                index={index}
+                selectedView={selectedView}
+                onToggleExpanded={onToggleExpanded}
+                setSpamPreferenceForCollection={setSpamPreferenceForCollection}
+              />
+            </div>
+          );
         }
 
-        return SIDEBAR_ICON_DIMENSIONS + SIDEBAR_ICON_GAP;
-      } else if (row?.type === 'collection-title') {
-        if (row.expanded) {
-          return SIDEBAR_COLLECTION_TITLE_HEIGHT + SIDEBAR_COLLECTION_TITLE_BOTTOM_SPACE;
-        } else {
-          return SIDEBAR_COLLECTION_TITLE_HEIGHT;
+        if (row.type === 'tokens') {
+          if (!row.expanded) {
+            return null;
+          }
+
+          return (
+            <div data-index={item.index} ref={virtualizer.measureElement} key={item.key}>
+              <Selection key={key}>
+                {row.tokens.map((tokenRef) => {
+                  const token = readInlineData(
+                    graphql`
+                      fragment SidebarListTokenFragment on Token @inline {
+                        dbid
+                        ...SidebarNftIconFragment
+                      }
+                    `,
+                    tokenRef
+                  );
+
+                  return (
+                    <SidebarNftIcon
+                      key={token.dbid}
+                      tokenRef={token}
+                      handleTokenRenderError={handleTokenRenderError}
+                      handleTokenRenderSuccess={handleTokenRenderSuccess}
+                    />
+                  );
+                })}
+              </Selection>
+            </div>
+          );
         }
-      }
-
-      // Maybe we should report an error here
-      return 0;
-    },
-    [rows]
-  );
-
-  const virtualizedListRef = useRef<List | null>(null);
-
-  /**
-   * We have to use a throttled version here due to the following:
-   *
-   * If a user has a bunch of broken NFTs, the parent component
-   * will re-render a bunch of times while those NFTs progressively fail.
-   *
-   * Each re-render causes the "rows" to change, causing this effect
-   * to fire too many times. If we don't throttle, React thinks
-   * we're in an infinite loop and throws an error.
-   *
-   * We're using throttle not debounce here since we want
-   * to recompute the row heights as soon as possible to
-   * avoid any weird layout flickering while searching.
-   */
-  const throttledRecomputeRowHeights = useMemo(() => {
-    return throttle(
-      () => {
-        virtualizedListRef.current?.recomputeRowHeights();
-      },
-      200,
-      { leading: true, trailing: true }
-    );
-  }, []);
-
-  // Important to useLayoutEffect to avoid flashing of the
-  // React Virtualized component.
-  useLayoutEffect(() => {
-    throttledRecomputeRowHeights();
-  }, [rows, throttledRecomputeRowHeights]);
-
-  return (
-    <StyledListTokenContainer shouldUseCollectionGrouping={shouldUseCollectionGrouping}>
-      <AutoSizer>
-        {({ width, height }) => (
-          <List
-            className="SidebarTokenList"
-            ref={virtualizedListRef}
-            style={{ outline: 'none', padding: '0 4px' }}
-            rowRenderer={rowRenderer}
-            rowCount={rows.length}
-            rowHeight={rowHeightCalculator}
-            width={width}
-            height={height}
-          />
-        )}
-      </AutoSizer>
+      })}
     </StyledListTokenContainer>
   );
 }
@@ -302,8 +240,11 @@ const CollectionTitleContainer = styled.div.attrs({ role: 'button' })`
   }
 `;
 
-const StyledListTokenContainer = styled.div<{ shouldUseCollectionGrouping: boolean }>`
+const StyledListTokenContainer = styled(VirtualizedContainer)<{
+  shouldUseCollectionGrouping: boolean;
+}>`
   flex-grow: 1;
+  overflow-y: auto;
 
   // Need this since typically the CollectionTitle is responsible for the spacing between
   // the SidebarChainSelector and the SidebarList component
