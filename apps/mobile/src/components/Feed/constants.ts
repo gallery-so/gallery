@@ -4,4 +4,5 @@ export const SUPPORTED_FEED_EVENT_TYPES = new Set([
   'CollectionUpdatedFeedEventData',
   'TokensAddedToCollectionFeedEventData',
   'CollectorsNoteAddedToCollectionFeedEventData',
+  'UserFollowedUsersFeedEventData',
 ]);

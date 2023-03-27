@@ -10,6 +10,7 @@ import { CollectionCreatedFeedEvent } from './CollectionCreatedFeedEvent';
 import { CollectionUpdatedFeedEvent } from './CollectionUpdatedFeedEvent';
 import { CollectorsNoteAddedToCollectionFeedEvent } from './CollectorsNoteAddedToCollectionFeedEvent';
 import { TokensAddedToCollectionFeedEvent } from './TokensAddedToCollectionFeedEvent';
+import { UserFollowedUsersFeedEvent } from './UserFollowedUsersFeedEvent';
 
 type NonRecursiveFeedListItemProps = {
   eventId: string;
@@ -51,6 +52,7 @@ export function NonRecursiveFeedListItem({
 
         ... on UserFollowedUsersFeedEventData {
           __typename
+          ...UserFollowedUsersFeedEventFragment
         }
       }
     `,
@@ -96,7 +98,7 @@ export function NonRecursiveFeedListItem({
           />
         );
       case 'UserFollowedUsersFeedEventData':
-        return null;
+        return <UserFollowedUsersFeedEvent userFollowedUsersFeedEventDataRef={eventData} />;
       default:
         throw new TriedToRenderUnsupportedFeedEvent(eventId);
     }
