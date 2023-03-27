@@ -61,7 +61,7 @@ export function Notifications() {
     };
   }, [clearAllNotifications, userId]);
 
-  const [activeTab, setActiveTab] = useState<MenuTabs>('Announcement');
+  const [activeTab, setActiveTab] = useState<MenuTabs>('Notifications');
 
   const handleTabClick = useCallback((tab: MenuTabs) => {
     setActiveTab(tab);
@@ -129,7 +129,28 @@ export function Notifications() {
               </StyledSubView>
             </AnimatePresence>
           )}
-          {activeTab === 'Announcement' && <AnnouncementList queryRef={query} />}
+          {activeTab === 'Announcement' && (
+            <AnimatePresence>
+              <StyledSubView
+                key="AnnouncementList"
+                initial={{
+                  opacity: 0,
+                  x: -ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL,
+                }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{
+                  opacity: 0,
+                  x: -ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL,
+                }}
+                transition={{
+                  ease: rawTransitions.cubicValues,
+                  duration: FADE_TRANSITION_TIME_SECONDS,
+                }}
+              >
+                <AnnouncementList queryRef={query} />
+              </StyledSubView>
+            </AnimatePresence>
+          )}
         </Suspense>
       </StyledNotifications>
     </>
