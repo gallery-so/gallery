@@ -1,3 +1,5 @@
+// key: based on UserExperienceType schema
+
 export const ANNOUNCEMENT_CONTENT = [
   {
     key: 'MultiGalleryAnnouncement',
@@ -9,7 +11,7 @@ export const ANNOUNCEMENT_CONTENT = [
     key: 'EmailUpsell',
     title: 'Email Upsell',
     description: 'You can now add your email address to your profile. ',
-    date: '2023-03-14T04:56:26.154845Z',
+    date: '2023-03-26T04:56:26.154845Z',
   },
   {
     key: 'MaintenanceFeb2023',

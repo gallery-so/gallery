@@ -60,10 +60,10 @@ export default function AnnouncementList({ queryRef }: Props) {
               </BaseM>
               <BaseM>{announcement.description}</BaseM>
             </VStack>
-            <HStack gap={8} align="center">
+            <StyledTimeContainer gap={8} align="center" justify="flex-end">
               <BaseS>{announcement.time}</BaseS>
               {!announcement.experienced && <StyledDot />}
-            </HStack>
+            </StyledTimeContainer>
           </StyledAnnouncement>
         );
       })}
@@ -85,4 +85,8 @@ const StyledDot = styled.div`
   height: 8px;
   background-color: ${colors.activeBlue};
   border-radius: 9999px;
+`;
+
+const StyledTimeContainer = styled(HStack)`
+  width: 80px;
 `;
