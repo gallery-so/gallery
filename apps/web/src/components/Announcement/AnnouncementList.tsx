@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -7,7 +6,7 @@ import { AnnouncementListFragment$key } from '~/generated/AnnouncementListFragme
 import colors from '../core/colors';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM, BaseS } from '../core/Text/Text';
-import { ANNOUNCEMENT_CONTENT } from './constants';
+import useAnnoucement from './useAnnouncement';
 
 type Props = {
   queryRef: AnnouncementListFragment$key;
@@ -17,32 +16,13 @@ export default function AnnouncementList({ queryRef }: Props) {
   const query = useFragment(
     graphql`
       fragment AnnouncementListFragment on Query {
-        viewer {
-          ... on Viewer {
-            userExperiences {
-              type
-              experienced
-            }
-          }
-        }
+        ...useAnnouncementFragment
       }
     `,
     queryRef
   );
 
-  const announcements = useMemo(() => {
-    const userExperiences = query.viewer?.userExperiences ?? [];
-    const announcementsLists = ANNOUNCEMENT_CONTENT;
-
-    return announcementsLists.map((announcement) => {
-      return {
-        ...announcement,
-        experienced: userExperiences.some(
-          (userExperience) => userExperience.type === announcement.key && userExperience.experienced
-        ),
-      };
-    });
-  }, [query.viewer?.userExperiences]);
+  const { announcements } = useAnnoucement(query);
 
   return (
     <div>
@@ -56,7 +36,7 @@ export default function AnnouncementList({ queryRef }: Props) {
               <BaseM>{announcement.description}</BaseM>
             </VStack>
             <HStack gap={8} align="center">
-              <BaseS>Today</BaseS>
+              <BaseS>{announcement.time}</BaseS>
               {!announcement.experienced && <StyledDot />}
             </HStack>
           </StyledAnnouncement>

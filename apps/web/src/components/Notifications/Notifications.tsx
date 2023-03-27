@@ -15,6 +15,7 @@ import { FADE_TRANSITION_TIME_SECONDS } from '~/contexts/globalLayout/transition
 import { NotificationsQuery } from '~/generated/NotificationsQuery.graphql';
 
 import AnnouncementList from '../Announcement/AnnouncementList';
+import useAnnoucement from '../Announcement/useAnnouncement';
 import breakpoints from '../core/breakpoints';
 import colors from '../core/colors';
 import { HStack, VStack } from '../core/Spacer/Stack';
@@ -29,7 +30,7 @@ export function Notifications() {
       query NotificationsQuery($notificationsLast: Int!, $notificationsBefore: String) {
         ...NotificationListFragment
         ...AnnouncementListFragment
-
+        ...useAnnouncementFragment
         viewer {
           ... on Viewer {
             user {
@@ -44,6 +45,8 @@ export function Notifications() {
   );
 
   const clearAllNotifications = useClearNotifications();
+
+  const { totalUnreadAnnouncements } = useAnnoucement(query);
 
   const [subView, setSubView] = useState<JSX.Element | null>(null);
   const toggleSubView = useCallback((subView?: JSX.Element) => {
@@ -88,9 +91,11 @@ export function Notifications() {
             >
               <HStack gap={4} align="center">
                 What's new
-                <StyledUpdatesNotification align="center" justify="center">
-                  1
-                </StyledUpdatesNotification>
+                {totalUnreadAnnouncements > 0 && (
+                  <StyledUpdatesNotification align="center" justify="center">
+                    {totalUnreadAnnouncements}
+                  </StyledUpdatesNotification>
+                )}
               </HStack>
             </StyledNavText>
           </StyledUpdatesNav>
