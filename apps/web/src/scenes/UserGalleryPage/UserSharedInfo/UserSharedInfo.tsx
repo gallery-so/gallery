@@ -31,4 +31,8 @@ export default function UserSharedInfo({ userRef }: Props) {
   );
 }
 
-const StyledUserSharedInfo = styled(VStack)``;
+const StyledUserSharedInfo = styled(VStack)`
+  p {
+    display: inline-block; // allow for line breaks
+  }
+`;

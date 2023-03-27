@@ -31,5 +31,5 @@ export function FeedListItem({ eventDataRef }: FeedListItemProps) {
     return <GalleryUpdatedFeedEvent eventDataRef={eventData} />;
   }
 
-  return <NonRecursiveFeedListItem eventCount={1} eventDataRef={eventData} />;
+  return <NonRecursiveFeedListItem slideIndex={0} eventCount={1} eventDataRef={eventData} />;
 }

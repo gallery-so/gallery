@@ -1,6 +1,7 @@
 import { ResizeMode } from 'expo-av';
 import { useMemo } from 'react';
 import { useWindowDimensions, View } from 'react-native';
+import { Priority } from 'react-native-fast-image';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
@@ -9,11 +10,16 @@ import { EventTokenGridFragment$key } from '~/generated/EventTokenGridFragment.g
 import { NftPreview } from '../NftPreview';
 
 type EventTokenGridProps = {
+  imagePriority: Priority;
   allowPreserveAspectRatio: boolean;
   tokenRefs: EventTokenGridFragment$key;
 };
 
-export function EventTokenGrid({ tokenRefs, allowPreserveAspectRatio }: EventTokenGridProps) {
+export function EventTokenGrid({
+  tokenRefs,
+  allowPreserveAspectRatio,
+  imagePriority,
+}: EventTokenGridProps) {
   const tokens = useFragment(
     graphql`
       fragment EventTokenGridFragment on Token @relay(plural: true) {
@@ -37,19 +43,35 @@ export function EventTokenGrid({ tokenRefs, allowPreserveAspectRatio }: EventTok
         <View className="flex h-full w-full flex-col space-y-[2]">
           <View className="flex h-1/2 w-full flex-row space-x-[2]">
             <View className="h-full w-1/2">
-              <NftPreview resizeMode={ResizeMode.COVER} tokenRef={firstToken} />
+              <NftPreview
+                priority={imagePriority}
+                resizeMode={ResizeMode.COVER}
+                tokenRef={firstToken}
+              />
             </View>
             <View className="h-full w-1/2">
-              <NftPreview resizeMode={ResizeMode.COVER} tokenRef={secondToken} />
+              <NftPreview
+                priority={imagePriority}
+                resizeMode={ResizeMode.COVER}
+                tokenRef={secondToken}
+              />
             </View>
           </View>
 
           <View className="flex h-1/2 w-full flex-row space-x-[2]">
             <View className="h-full w-1/2">
-              <NftPreview resizeMode={ResizeMode.COVER} tokenRef={thirdToken} />
+              <NftPreview
+                priority={imagePriority}
+                resizeMode={ResizeMode.COVER}
+                tokenRef={thirdToken}
+              />
             </View>
             <View className="h-full w-1/2">
-              <NftPreview resizeMode={ResizeMode.COVER} tokenRef={fourthToken} />
+              <NftPreview
+                priority={imagePriority}
+                resizeMode={ResizeMode.COVER}
+                tokenRef={fourthToken}
+              />
             </View>
           </View>
         </View>
@@ -58,10 +80,18 @@ export function EventTokenGrid({ tokenRefs, allowPreserveAspectRatio }: EventTok
       return (
         <View className="flex w-full flex-row space-x-[2]">
           <View className="h-full w-1/2">
-            <NftPreview resizeMode={ResizeMode.COVER} tokenRef={firstToken} />
+            <NftPreview
+              priority={imagePriority}
+              resizeMode={ResizeMode.COVER}
+              tokenRef={firstToken}
+            />
           </View>
           <View className="h-full w-1/2">
-            <NftPreview resizeMode={ResizeMode.COVER} tokenRef={secondToken} />
+            <NftPreview
+              priority={imagePriority}
+              resizeMode={ResizeMode.COVER}
+              tokenRef={secondToken}
+            />
           </View>
         </View>
       );
@@ -69,13 +99,14 @@ export function EventTokenGrid({ tokenRefs, allowPreserveAspectRatio }: EventTok
       return (
         <NftPreview
           resizeMode={preserveAspectRatio ? ResizeMode.CONTAIN : ResizeMode.COVER}
+          priority={imagePriority}
           tokenRef={firstToken}
         />
       );
     } else {
       throw new Error('Tried to render EventTokenGrid without any tokens');
     }
-  }, [preserveAspectRatio, tokens]);
+  }, [imagePriority, preserveAspectRatio, tokens]);
 
   return (
     <View

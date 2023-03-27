@@ -57,8 +57,14 @@ export function GalleryUpdatedFeedEvent({ eventDataRef }: GalleryUpdatedFeedEven
   );
 
   const renderItem = useCallback<ListRenderItem<(typeof subEvents)[number]>>(
-    ({ item }) => {
-      return <NonRecursiveFeedListItem eventCount={subEvents.length} eventDataRef={item} />;
+    ({ item, index }) => {
+      return (
+        <NonRecursiveFeedListItem
+          slideIndex={index}
+          eventCount={subEvents.length}
+          eventDataRef={item}
+        />
+      );
     },
     [subEvents.length]
   );
