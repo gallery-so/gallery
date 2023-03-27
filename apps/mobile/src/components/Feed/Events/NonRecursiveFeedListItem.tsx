@@ -4,6 +4,7 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { NonRecursiveFeedListItemFragment$key } from '~/generated/NonRecursiveFeedListItemFragment.graphql';
+import { TriedToRenderUnsupportedFeedEvent } from '~/shared/errors/TriedToRenderUnsupportedFeedEvent';
 
 import { CollectionCreatedFeedEvent } from './CollectionCreatedFeedEvent';
 import { CollectionUpdatedFeedEvent } from './CollectionUpdatedFeedEvent';
@@ -11,12 +12,14 @@ import { CollectorsNoteAddedToCollectionFeedEvent } from './CollectorsNoteAddedT
 import { TokensAddedToCollectionFeedEvent } from './TokensAddedToCollectionFeedEvent';
 
 type NonRecursiveFeedListItemProps = {
+  eventId: string;
   slideIndex: number;
   eventCount: number;
   eventDataRef: NonRecursiveFeedListItemFragment$key;
 };
 
 export function NonRecursiveFeedListItem({
+  eventId,
   eventDataRef,
   eventCount,
   slideIndex,
@@ -44,6 +47,10 @@ export function NonRecursiveFeedListItem({
         ... on CollectorsNoteAddedToCollectionFeedEventData {
           __typename
           ...CollectorsNoteAddedToCollectionFeedEventFragment
+        }
+
+        ... on UserFollowedUsersFeedEventData {
+          __typename
         }
       }
     `,
@@ -88,8 +95,10 @@ export function NonRecursiveFeedListItem({
             collectionUpdatedFeedEventDataRef={eventData}
           />
         );
-      default:
+      case 'UserFollowedUsersFeedEventData':
         return null;
+      default:
+        throw new TriedToRenderUnsupportedFeedEvent(eventId);
     }
   }, [eventCount, eventData, slideIndex]);
 

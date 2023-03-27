@@ -14,10 +14,11 @@ import { graphql } from 'relay-runtime';
 
 import { GalleryUpdatedFeedEventFragment$key } from '~/generated/GalleryUpdatedFeedEventFragment.graphql';
 
-import { SUPPORTED_FEED_EVENT_TYPES } from './constants';
+import { SUPPORTED_FEED_EVENT_TYPES } from '../constants';
 import { NonRecursiveFeedListItem } from './NonRecursiveFeedListItem';
 
 type GalleryUpdatedFeedEventProps = {
+  eventId: string;
   eventDataRef: GalleryUpdatedFeedEventFragment$key;
 };
 
@@ -60,6 +61,7 @@ export function GalleryUpdatedFeedEvent({ eventDataRef }: GalleryUpdatedFeedEven
     ({ item, index }) => {
       return (
         <NonRecursiveFeedListItem
+          eventId={eventId}
           slideIndex={index}
           eventCount={subEvents.length}
           eventDataRef={item}
