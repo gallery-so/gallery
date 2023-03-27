@@ -4,7 +4,7 @@ import { LoadingFeedListItem } from './LoadingFeedListItem';
 
 export function LoadingFeedList() {
   return (
-    <ScrollView className="flex w-full flex-col space-y-3">
+    <ScrollView className="flex w-full flex-col space-y-8">
       <LoadingFeedListItem />
       <LoadingFeedListItem />
       <LoadingFeedListItem />
