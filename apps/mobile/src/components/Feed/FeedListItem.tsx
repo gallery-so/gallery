@@ -3,14 +3,15 @@ import { graphql } from 'relay-runtime';
 
 import { FeedListItemFragment$key } from '~/generated/FeedListItemFragment.graphql';
 
-import { GalleryUpdatedFeedEvent } from './GalleryUpdatedFeedEvent';
-import { NonRecursiveFeedListItem } from './NonRecursiveFeedListItem';
+import { GalleryUpdatedFeedEvent } from './Events/GalleryUpdatedFeedEvent';
+import { NonRecursiveFeedListItem } from './Events/NonRecursiveFeedListItem';
 
 type FeedListItemProps = {
+  eventId: string;
   eventDataRef: FeedListItemFragment$key;
 };
 
-export function FeedListItem({ eventDataRef }: FeedListItemProps) {
+export function FeedListItem({ eventId, eventDataRef }: FeedListItemProps) {
   const eventData = useFragment<FeedListItemFragment$key>(
     graphql`
       fragment FeedListItemFragment on FeedEventData {
@@ -28,8 +29,15 @@ export function FeedListItem({ eventDataRef }: FeedListItemProps) {
   );
 
   if (eventData.__typename === 'GalleryUpdatedFeedEventData') {
-    return <GalleryUpdatedFeedEvent eventDataRef={eventData} />;
+    return <GalleryUpdatedFeedEvent eventId={eventId} eventDataRef={eventData} />;
   }
 
-  return <NonRecursiveFeedListItem slideIndex={0} eventCount={1} eventDataRef={eventData} />;
+  return (
+    <NonRecursiveFeedListItem
+      eventId={eventId}
+      slideIndex={0}
+      eventCount={1}
+      eventDataRef={eventData}
+    />
+  );
 }

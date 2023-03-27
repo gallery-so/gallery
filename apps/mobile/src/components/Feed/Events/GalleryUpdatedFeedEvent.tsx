@@ -14,14 +14,15 @@ import { graphql } from 'relay-runtime';
 
 import { GalleryUpdatedFeedEventFragment$key } from '~/generated/GalleryUpdatedFeedEventFragment.graphql';
 
-import { SUPPORTED_FEED_EVENT_TYPES } from './constants';
+import { SUPPORTED_FEED_EVENT_TYPES } from '../constants';
 import { NonRecursiveFeedListItem } from './NonRecursiveFeedListItem';
 
 type GalleryUpdatedFeedEventProps = {
+  eventId: string;
   eventDataRef: GalleryUpdatedFeedEventFragment$key;
 };
 
-export function GalleryUpdatedFeedEvent({ eventDataRef }: GalleryUpdatedFeedEventProps) {
+export function GalleryUpdatedFeedEvent({ eventDataRef, eventId }: GalleryUpdatedFeedEventProps) {
   const eventData = useFragment(
     graphql`
       fragment GalleryUpdatedFeedEventFragment on GalleryUpdatedFeedEventData {
@@ -60,14 +61,17 @@ export function GalleryUpdatedFeedEvent({ eventDataRef }: GalleryUpdatedFeedEven
     ({ item, index }) => {
       return (
         <NonRecursiveFeedListItem
+          eventId={eventId}
           slideIndex={index}
           eventCount={subEvents.length}
           eventDataRef={item}
         />
       );
     },
-    [subEvents.length]
+    [eventId, subEvents.length]
   );
+
+  const isPaginated = subEvents.length > 1;
 
   return (
     <View className="flex flex-col space-y-3">
@@ -83,10 +87,11 @@ export function GalleryUpdatedFeedEvent({ eventDataRef }: GalleryUpdatedFeedEven
         decelerationRate="fast"
         snapToAlignment="center"
         scrollEventThrottle={200}
+        scrollEnabled={isPaginated}
         showsHorizontalScrollIndicator={false}
       />
 
-      {subEvents?.length > 1 && (
+      {isPaginated && (
         <View className="flex w-full flex-row justify-center">
           <View className="flex flex-row space-x-1">
             {subEvents.map((_, index) => {

@@ -1,10 +1,12 @@
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import { useCallback, useMemo, useState } from 'react';
+import { NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { FeedListFragment$data, FeedListFragment$key } from '~/generated/FeedListFragment.graphql';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 
+import { isNearBottom } from '../../utils/isNearBottom';
 import { SUPPORTED_FEED_EVENT_TYPES } from './constants';
 import { FeedListCaption } from './FeedListCaption';
 import { FeedListItem } from './FeedListItem';
@@ -12,6 +14,8 @@ import { FeedListSectionHeader } from './FeedListSectionHeader';
 
 type FeedListProps = {
   feedEventRefs: FeedListFragment$key;
+  onLoadMore: () => void;
+  isLoadingMore: boolean;
 };
 
 type FeedListItem =
@@ -19,7 +23,7 @@ type FeedListItem =
   | { kind: 'caption'; event: FeedListFragment$data[number] }
   | { kind: 'event'; event: FeedListFragment$data[number] };
 
-export function FeedList({ feedEventRefs }: FeedListProps) {
+export function FeedList({ feedEventRefs, isLoadingMore, onLoadMore }: FeedListProps) {
   const events = useFragment(
     graphql`
       fragment FeedListFragment on FeedEvent @relay(plural: true) {
@@ -118,7 +122,7 @@ export function FeedList({ feedEventRefs }: FeedListProps) {
         case 'event':
           return (
             <ReportingErrorBoundary fallback={null} onError={markFailure}>
-              <FeedListItem eventDataRef={item.event.eventData} />
+              <FeedListItem eventId={item.event.dbid} eventDataRef={item.event.eventData} />
             </ReportingErrorBoundary>
           );
       }
@@ -126,12 +130,24 @@ export function FeedList({ feedEventRefs }: FeedListProps) {
     [markEventAsFailure]
   );
 
+  const handleScroll = useCallback(
+    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+      if (isNearBottom(event.nativeEvent) && !isLoadingMore) {
+        onLoadMore();
+      }
+    },
+    [isLoadingMore, onLoadMore]
+  );
+
   return (
     <FlashList
-      estimatedItemSize={300}
       data={items}
-      stickyHeaderIndices={stickyHeaderIndices}
+      onScroll={handleScroll}
+      estimatedItemSize={300}
       renderItem={renderItem}
+      scrollEventThrottle={100}
+      stickyHeaderIndices={stickyHeaderIndices}
+      keyExtractor={(item) => `${item.kind}-${item.event.dbid}`}
     />
   );
 }
