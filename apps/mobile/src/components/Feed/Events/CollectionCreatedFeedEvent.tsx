@@ -4,32 +4,31 @@ import FastImage from 'react-native-fast-image';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import { CollectionUpdatedFeedEventFragment$key } from '~/generated/CollectionUpdatedFeedEventFragment.graphql';
+import { CollectionCreatedFeedEventFragment$key } from '~/generated/CollectionCreatedFeedEventFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
-import { Typography } from '../Typography';
-import { EventTokenGrid } from './EventTokenGrid';
-import { FeedEventCarouselCellHeader } from './FeedEventCarouselCellHeader';
-import { FeedListCollectorsNote } from './FeedListCollectorsNote';
+import { Typography } from '../../Typography';
+import { EventTokenGrid } from '../EventTokenGrid';
+import { FeedEventCarouselCellHeader } from '../FeedEventCarouselCellHeader';
+import { FeedListCollectorsNote } from '../FeedListCollectorsNote';
 
-type CollectionUpdatedFeedEventProps = {
+type CollectionCreatedFeedEventProps = {
   isFirstSlide: boolean;
   allowPreserveAspectRatio: boolean;
-  collectionUpdatedFeedEventDataRef: CollectionUpdatedFeedEventFragment$key;
+  collectionUpdatedFeedEventDataRef: CollectionCreatedFeedEventFragment$key;
 };
 
-export function CollectionUpdatedFeedEvent({
+export function CollectionCreatedFeedEvent({
   isFirstSlide,
   allowPreserveAspectRatio,
   collectionUpdatedFeedEventDataRef,
-}: CollectionUpdatedFeedEventProps) {
+}: CollectionCreatedFeedEventProps) {
   const eventData = useFragment(
     graphql`
-      fragment CollectionUpdatedFeedEventFragment on CollectionUpdatedFeedEventData {
-        newCollectorsNote
-
+      fragment CollectionCreatedFeedEventFragment on CollectionCreatedFeedEventData {
         collection {
           name
+          collectorsNote
         }
 
         newTokens {
@@ -50,7 +49,7 @@ export function CollectionUpdatedFeedEvent({
     <View className="flex flex-col">
       <FeedEventCarouselCellHeader>
         <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
-          Made a change to
+          Created a new collection
         </Typography>
 
         <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
@@ -58,8 +57,8 @@ export function CollectionUpdatedFeedEvent({
         </Typography>
       </FeedEventCarouselCellHeader>
 
-      {eventData.newCollectorsNote && (
-        <FeedListCollectorsNote collectorsNote={eventData.newCollectorsNote} />
+      {eventData.collection?.collectorsNote && (
+        <FeedListCollectorsNote collectorsNote={eventData.collection.collectorsNote} />
       )}
 
       <EventTokenGrid

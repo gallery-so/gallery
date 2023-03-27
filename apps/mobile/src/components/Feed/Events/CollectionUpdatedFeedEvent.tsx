@@ -4,27 +4,30 @@ import FastImage from 'react-native-fast-image';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import { TokensAddedToCollectionFeedEventFragment$key } from '~/generated/TokensAddedToCollectionFeedEventFragment.graphql';
+import { CollectionUpdatedFeedEventFragment$key } from '~/generated/CollectionUpdatedFeedEventFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
-import { Typography } from '../Typography';
-import { EventTokenGrid } from './EventTokenGrid';
-import { FeedEventCarouselCellHeader } from './FeedEventCarouselCellHeader';
+import { Typography } from '../../Typography';
+import { EventTokenGrid } from '../EventTokenGrid';
+import { FeedEventCarouselCellHeader } from '../FeedEventCarouselCellHeader';
+import { FeedListCollectorsNote } from '../FeedListCollectorsNote';
 
-type TokensAddedToCollectionFeedEventProps = {
+type CollectionUpdatedFeedEventProps = {
   isFirstSlide: boolean;
   allowPreserveAspectRatio: boolean;
-  collectionUpdatedFeedEventDataRef: TokensAddedToCollectionFeedEventFragment$key;
+  collectionUpdatedFeedEventDataRef: CollectionUpdatedFeedEventFragment$key;
 };
 
-export function TokensAddedToCollectionFeedEvent({
+export function CollectionUpdatedFeedEvent({
   isFirstSlide,
   allowPreserveAspectRatio,
   collectionUpdatedFeedEventDataRef,
-}: TokensAddedToCollectionFeedEventProps) {
+}: CollectionUpdatedFeedEventProps) {
   const eventData = useFragment(
     graphql`
-      fragment TokensAddedToCollectionFeedEventFragment on TokensAddedToCollectionFeedEventData {
+      fragment CollectionUpdatedFeedEventFragment on CollectionUpdatedFeedEventData {
+        newCollectorsNote
+
         collection {
           name
         }
@@ -47,13 +50,17 @@ export function TokensAddedToCollectionFeedEvent({
     <View className="flex flex-col">
       <FeedEventCarouselCellHeader>
         <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
-          Added new tokens to
+          Made a change to
         </Typography>
 
         <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
           {eventData.collection?.name ?? 'Untitled'}
         </Typography>
       </FeedEventCarouselCellHeader>
+
+      {eventData.newCollectorsNote && (
+        <FeedListCollectorsNote collectorsNote={eventData.newCollectorsNote} />
+      )}
 
       <EventTokenGrid
         imagePriority={isFirstSlide ? FastImage.priority.high : FastImage.priority.normal}

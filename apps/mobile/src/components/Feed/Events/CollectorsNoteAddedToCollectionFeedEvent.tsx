@@ -4,36 +4,37 @@ import FastImage from 'react-native-fast-image';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import { CollectionCreatedFeedEventFragment$key } from '~/generated/CollectionCreatedFeedEventFragment.graphql';
+import { CollectorsNoteAddedToCollectionFeedEventFragment$key } from '~/generated/CollectorsNoteAddedToCollectionFeedEventFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
-import { Typography } from '../Typography';
-import { EventTokenGrid } from './EventTokenGrid';
-import { FeedEventCarouselCellHeader } from './FeedEventCarouselCellHeader';
-import { FeedListCollectorsNote } from './FeedListCollectorsNote';
+import { Typography } from '../../Typography';
+import { EventTokenGrid } from '../EventTokenGrid';
+import { FeedEventCarouselCellHeader } from '../FeedEventCarouselCellHeader';
+import { FeedListCollectorsNote } from '../FeedListCollectorsNote';
 
-type CollectionCreatedFeedEventProps = {
+type CollectorsNoteAddedToCollectionFeedEventProps = {
   isFirstSlide: boolean;
   allowPreserveAspectRatio: boolean;
-  collectionUpdatedFeedEventDataRef: CollectionCreatedFeedEventFragment$key;
+  collectionUpdatedFeedEventDataRef: CollectorsNoteAddedToCollectionFeedEventFragment$key;
 };
 
-export function CollectionCreatedFeedEvent({
+export function CollectorsNoteAddedToCollectionFeedEvent({
   isFirstSlide,
   allowPreserveAspectRatio,
   collectionUpdatedFeedEventDataRef,
-}: CollectionCreatedFeedEventProps) {
+}: CollectorsNoteAddedToCollectionFeedEventProps) {
   const eventData = useFragment(
     graphql`
-      fragment CollectionCreatedFeedEventFragment on CollectionCreatedFeedEventData {
+      fragment CollectorsNoteAddedToCollectionFeedEventFragment on CollectorsNoteAddedToCollectionFeedEventData {
+        newCollectorsNote
+
         collection {
           name
-          collectorsNote
-        }
 
-        newTokens {
-          token {
-            ...EventTokenGridFragment
+          tokens(limit: 4) {
+            token {
+              ...EventTokenGridFragment
+            }
           }
         }
       }
@@ -42,14 +43,16 @@ export function CollectionCreatedFeedEvent({
   );
 
   const tokens = useMemo(() => {
-    return removeNullValues(eventData.newTokens?.map((collectionToken) => collectionToken?.token));
-  }, [eventData.newTokens]);
+    return removeNullValues(
+      eventData.collection?.tokens?.map((collectionToken) => collectionToken?.token)
+    );
+  }, [eventData.collection?.tokens]);
 
   return (
     <View className="flex flex-col">
       <FeedEventCarouselCellHeader>
         <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
-          Created a new collection
+          Added a colloctors note to
         </Typography>
 
         <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
@@ -57,8 +60,8 @@ export function CollectionCreatedFeedEvent({
         </Typography>
       </FeedEventCarouselCellHeader>
 
-      {eventData.collection?.collectorsNote && (
-        <FeedListCollectorsNote collectorsNote={eventData.collection.collectorsNote} />
+      {eventData.newCollectorsNote && (
+        <FeedListCollectorsNote collectorsNote={eventData.newCollectorsNote} />
       )}
 
       <EventTokenGrid
