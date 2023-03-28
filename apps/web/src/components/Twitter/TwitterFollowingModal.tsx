@@ -294,7 +294,7 @@ const StyledFollowingContainer = styled(VStack)`
 `;
 
 const StyledFollowing = styled(HStack)`
-  padding: 8px;
+  padding: 8px 8px 8px 0;
 `;
 
 const StyledLink = styled(Link)<LinkProps>`
