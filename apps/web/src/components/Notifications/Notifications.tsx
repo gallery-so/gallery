@@ -15,7 +15,7 @@ import { FADE_TRANSITION_TIME_SECONDS } from '~/contexts/globalLayout/transition
 import { NotificationsQuery } from '~/generated/NotificationsQuery.graphql';
 
 import AnnouncementList from '../Announcement/AnnouncementList';
-import useAnnoucement from '../Announcement/useAnnouncement';
+import useAnnouncement from '../Announcement/useAnnouncement';
 import breakpoints from '../core/breakpoints';
 import colors from '../core/colors';
 import { HStack, VStack } from '../core/Spacer/Stack';
@@ -46,7 +46,7 @@ export function Notifications() {
 
   const clearAllNotifications = useClearNotifications();
 
-  const { totalUnreadAnnouncements } = useAnnoucement(query);
+  const { totalUnreadAnnouncements } = useAnnouncement(query);
 
   const [subView, setSubView] = useState<JSX.Element | null>(null);
   const toggleSubView = useCallback((subView?: JSX.Element) => {

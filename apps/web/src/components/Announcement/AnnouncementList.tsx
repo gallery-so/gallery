@@ -10,7 +10,7 @@ import useUpdateUserExperience from '~/utils/graphql/experiences/useUpdateUserEx
 import colors from '../core/colors';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM, BaseS } from '../core/Text/Text';
-import useAnnoucement, { AnnouncementType } from './useAnnouncement';
+import useAnnouncement, { AnnouncementType } from './useAnnouncement';
 
 type Props = {
   queryRef: AnnouncementListFragment$key;
@@ -27,7 +27,7 @@ export default function AnnouncementList({ queryRef }: Props) {
   );
 
   const router = useRouter();
-  const { announcements } = useAnnoucement(query);
+  const { announcements } = useAnnouncement(query);
 
   const update = useUpdateUserExperience();
   const { hideDrawer } = useDrawerActions();
