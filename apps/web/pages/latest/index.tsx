@@ -48,6 +48,6 @@ Latest.preloadQuery = ({ relayEnvironment }: PreloadQueryArgs) => {
       visibleTokensPerFeedEvent: MAX_PIECES_DISPLAYED_PER_FEED_EVENT,
       interactionsFirst: NOTES_PER_PAGE,
     },
-    { fetchPolicy: 'network-only' }
+    { fetchPolicy: 'store-or-network' }
   );
 };
