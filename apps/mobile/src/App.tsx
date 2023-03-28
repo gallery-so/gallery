@@ -11,6 +11,8 @@ import { MobileErrorReportingProvider } from '~/contexts/MobileErrorReportingPro
 import { createRelayEnvironment } from '~/contexts/relay/RelayProvider';
 import { MainTabNavigator } from '~/navigation/MainTabNavigator/MainTabNavigator';
 
+import { NotificaitonsRegistrar } from './components/NotificationsRegistrar';
+
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {
@@ -51,6 +53,8 @@ export default function App() {
         <MobileErrorReportingProvider>
           <SafeAreaProvider>
             <NavigationContainer>
+              <NotificaitonsRegistrar />
+
               <MainTabNavigator />
             </NavigationContainer>
           </SafeAreaProvider>
