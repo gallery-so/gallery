@@ -1,10 +1,11 @@
+import { useVirtualizer } from '@tanstack/react-virtual';
 import { Route } from 'nextjs-routes';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { graphql, usePaginationFragment } from 'react-relay';
-import { AutoSizer, InfiniteLoader, List, ListRowRenderer } from 'react-virtualized';
 import styled from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';
+import VirtualizeContainer from '~/components/Virtualize/VirtualizeContainer';
 import { SharedFollowersListFragment$key } from '~/generated/SharedFollowersListFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import unescape from '~/utils/unescape';
@@ -43,68 +44,67 @@ export default function SharedFollowersList({ queryRef }: Props) {
     [data.sharedFollowers?.edges]
   );
 
-  const rowCount = hasNext ? sharedFollowers.length + 1 : sharedFollowers.length;
+  const parentRef = useRef<HTMLDivElement | null>(null);
+
+  const virtualizer = useVirtualizer({
+    count: sharedFollowers.length,
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => 40,
+    overscan: 5,
+  });
+
+  const virtualItems = virtualizer.getVirtualItems();
+
+  const [isFetchingNextPage, setIsFetchingNextPage] = useState(false);
 
   const handleLoadMore = useCallback(async () => {
+    setIsFetchingNextPage(true);
     loadNext(FOLLOWERS_PER_PAGE);
+    setIsFetchingNextPage(false);
   }, [loadNext]);
 
-  const isRowLoaded = ({ index }: { index: number }) => !hasNext || index < sharedFollowers.length;
+  useEffect(() => {
+    const [lastItem] = [...virtualizer.getVirtualItems()].reverse();
 
-  const rowRenderer = useCallback<ListRowRenderer>(
-    ({ index, key, style }: { index: number; key: string; style: React.CSSProperties }) => {
-      const user = sharedFollowers[index]?.node;
-      if (!user) {
-        return null;
-      }
+    if (!lastItem) {
+      return;
+    }
 
-      const unescapedBio = user.bio ? unescape(user.bio) : '';
-      const bioFirstLine = unescapedBio.split('\n')[0] ?? '';
-
-      const userUrlPath: Route = {
-        pathname: `/[username]`,
-        query: { username: user.username ?? '' },
-      };
-
-      return (
-        <div style={style} key={key}>
-          <PaginatedListRow
-            title={user.username ?? ''}
-            subTitle={bioFirstLine}
-            href={userUrlPath}
-          />
-        </div>
-      );
-    },
-    [sharedFollowers]
-  );
+    if (lastItem.index >= sharedFollowers.length - 1 && hasNext && !isFetchingNextPage) {
+      handleLoadMore();
+    }
+  }, [handleLoadMore, hasNext, isFetchingNextPage, sharedFollowers.length, virtualizer]);
 
   const isMobile = useIsMobileWindowWidth();
   return (
     <StyledList fullscreen={isMobile} gap={24}>
-      <AutoSizer>
-        {({ width, height }) => (
-          <InfiniteLoader
-            isRowLoaded={isRowLoaded}
-            loadMoreRows={handleLoadMore}
-            rowCount={rowCount}
-          >
-            {({ onRowsRendered, registerChild }) => (
-              <List
-                ref={registerChild}
-                onRowsRendered={onRowsRendered}
-                rowRenderer={rowRenderer}
-                width={width}
-                height={height}
-                rowHeight={56}
-                rowCount={sharedFollowers.length}
-              />
-            )}
-          </InfiniteLoader>
-        )}
-      </AutoSizer>
+      <VirtualizeContainer virtualizer={virtualizer} ref={parentRef}>
+        {virtualItems.map((item) => {
+          const user = sharedFollowers[item.index]?.node;
 
-      <VStack></VStack>
+          if (!user) {
+            return null;
+          }
+
+          const unescapedBio = user.bio ? unescape(user.bio) : '';
+          const bioFirstLine = unescapedBio.split('\n')[0] ?? '';
+
+          const userUrlPath: Route = {
+            pathname: `/[username]`,
+            query: { username: user.username ?? '' },
+          };
+
+          return (
+            <div data-index={item.index} ref={virtualizer.measureElement} key={item.key}>
+              <PaginatedListRow
+                title={user.username ?? ''}
+                subTitle={bioFirstLine}
+                href={userUrlPath}
+              />
+            </div>
+          );
+        })}
+      </VirtualizeContainer>
     </StyledList>
   );
 }
