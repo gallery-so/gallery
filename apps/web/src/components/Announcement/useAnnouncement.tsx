@@ -20,7 +20,7 @@ export type AnnouncementType = {
   link?: Route;
 };
 
-export default function useAnnoucement(queryRef: useAnnouncementFragment$key) {
+export default function useAnnouncement(queryRef: useAnnouncementFragment$key) {
   const query = useFragment(
     graphql`
       fragment useAnnouncementFragment on Query {
