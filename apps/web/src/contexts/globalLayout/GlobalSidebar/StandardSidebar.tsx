@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
+import useAnnouncement from '~/components/Announcement/useAnnouncement';
 import breakpoints from '~/components/core/breakpoints';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { Notifications } from '~/components/Notifications/Notifications';
@@ -53,6 +54,7 @@ export function StandardSidebar({ queryRef }: Props) {
         }
         ...SettingsFragment
         ...useExperienceFragment
+        ...useAnnouncementFragment
       }
     `,
     queryRef
@@ -71,17 +73,16 @@ export function StandardSidebar({ queryRef }: Props) {
     [activeDrawerState]
   );
 
+  const { totalUnreadAnnouncements } = useAnnouncement(query);
+
   const notificationCount = useMemo(() => {
-    if (
-      query.viewer &&
-      query.viewer.__typename === 'Viewer' &&
-      query.viewer.notifications?.unseenCount
-    ) {
-      return query.viewer.notifications.unseenCount;
+    if (query.viewer && query.viewer.__typename === 'Viewer') {
+      return (query.viewer.notifications?.unseenCount ?? 0) + totalUnreadAnnouncements;
     }
 
     return 0;
-  }, [query.viewer]);
+  }, [query.viewer, totalUnreadAnnouncements]);
+
   const showAuthModal = useAuthModal('sign-in');
 
   const { settings } = router.query;

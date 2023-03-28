@@ -58,7 +58,7 @@ export default function useAnnouncement(queryRef: useAnnouncementFragment$key) {
 
   return {
     announcements,
-    totalUnreadAnnouncements: announcements.filter((announcement) => !announcement.experienced)
-      .length,
+    totalUnreadAnnouncements:
+      announcements.filter((announcement) => !announcement.experienced).length ?? 0,
   };
 }
