@@ -1,20 +1,48 @@
+import { useNavigation } from '@react-navigation/native';
 import { useCallback, useState } from 'react';
 import { KeyboardAvoidingView, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { LoginStackNavigatorProp } from '~/navigation/types';
+
 import { Button } from '../../components/Button';
 import { FadedInput } from '../../components/FadedInput';
 import { Typography } from '../../components/Typography';
+import { useLogin } from '../../hooks/useLogin';
 import { magic } from '../../magic';
 
 export function EnterEmailScreen() {
+  const navigation = useNavigation<LoginStackNavigatorProp>();
+
   const [email, setEmail] = useState('');
+  const [error, setError] = useState('');
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+
+  const [login] = useLogin();
 
   const handleContinue = useCallback(async () => {
-    const token = await magic.auth.loginWithMagicLink({ email });
+    setIsLoggingIn(true);
+    try {
+      const token = await magic.auth.loginWithMagicLink({ email });
 
-    console.log(token);
-  }, [email]);
+      if (!token) {
+        setError('Something went wrong');
+        return;
+      }
+
+      const result = await login({ magicLink: { token } });
+
+      console.log(result);
+
+      if (result.kind === 'failure') {
+        setError(result.message);
+      } else {
+        navigation.replace('MainTabs', { screen: 'Home', params: { screen: 'Trending' } });
+      }
+    } finally {
+      setIsLoggingIn(false);
+    }
+  }, [email, login, navigation]);
 
   return (
     <SafeAreaView className="flex h-screen flex-col items-center justify-center bg-white">
@@ -38,7 +66,7 @@ export function EnterEmailScreen() {
           onChangeText={setEmail}
         />
 
-        <Button onPress={handleContinue} text="Continue" />
+        <Button loading={isLoggingIn} onPress={handleContinue} text="Continue" />
 
         {/* Add some extra space for the keyboard avoiding view */}
         <View />
