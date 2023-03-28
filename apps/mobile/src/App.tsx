@@ -11,6 +11,7 @@ import { MobileErrorReportingProvider } from '~/contexts/MobileErrorReportingPro
 import { createRelayEnvironment } from '~/contexts/relay/RelayProvider';
 import { RootStackNavigator } from '~/navigation/RootStackNavigator';
 
+import { DevMenuItems } from './components/DevMenuItems';
 import { magic } from './magic';
 
 SplashScreen.preventAutoHideAsync();
@@ -54,6 +55,7 @@ export default function App() {
           <SafeAreaProvider>
             <magic.Relayer />
             <NavigationContainer>
+              <DevMenuItems />
               <RootStackNavigator />
             </NavigationContainer>
           </SafeAreaProvider>
