@@ -6,6 +6,7 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { EventTokenGridFragment$key } from '~/generated/EventTokenGridFragment.graphql';
+import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
 
 import { NftPreview } from '../NftPreview';
 
@@ -25,7 +26,7 @@ export function EventTokenGrid({
       fragment EventTokenGridFragment on Token @relay(plural: true) {
         __typename
 
-        ...NftPreviewFragment
+        ...getVideoOrImageUrlForNftPreviewFragment
       }
     `,
     tokenRefs
@@ -36,7 +37,11 @@ export function EventTokenGrid({
   const preserveAspectRatio = tokens.length === 1 && allowPreserveAspectRatio;
 
   const inner = useMemo(() => {
-    const [firstToken, secondToken, thirdToken, fourthToken] = tokens;
+    const tokenMedia = tokens.map((token) => {
+      return getVideoOrImageUrlForNftPreview(token);
+    });
+
+    const [firstToken, secondToken, thirdToken, fourthToken] = tokenMedia;
 
     if (firstToken && secondToken && thirdToken && fourthToken) {
       return (
@@ -46,14 +51,14 @@ export function EventTokenGrid({
               <NftPreview
                 priority={imagePriority}
                 resizeMode={ResizeMode.COVER}
-                tokenRef={firstToken}
+                tokenUrl={firstToken.urls.small}
               />
             </View>
             <View className="h-full w-1/2">
               <NftPreview
                 priority={imagePriority}
                 resizeMode={ResizeMode.COVER}
-                tokenRef={secondToken}
+                tokenUrl={secondToken.urls.small}
               />
             </View>
           </View>
@@ -63,14 +68,14 @@ export function EventTokenGrid({
               <NftPreview
                 priority={imagePriority}
                 resizeMode={ResizeMode.COVER}
-                tokenRef={thirdToken}
+                tokenUrl={thirdToken.urls.small}
               />
             </View>
             <View className="h-full w-1/2">
               <NftPreview
                 priority={imagePriority}
                 resizeMode={ResizeMode.COVER}
-                tokenRef={fourthToken}
+                tokenUrl={fourthToken.urls.small}
               />
             </View>
           </View>
@@ -83,14 +88,14 @@ export function EventTokenGrid({
             <NftPreview
               priority={imagePriority}
               resizeMode={ResizeMode.COVER}
-              tokenRef={firstToken}
+              tokenUrl={firstToken.urls.medium}
             />
           </View>
           <View className="h-full w-1/2">
             <NftPreview
               priority={imagePriority}
               resizeMode={ResizeMode.COVER}
-              tokenRef={secondToken}
+              tokenUrl={secondToken.urls.medium}
             />
           </View>
         </View>
@@ -100,7 +105,7 @@ export function EventTokenGrid({
         <NftPreview
           resizeMode={preserveAspectRatio ? ResizeMode.CONTAIN : ResizeMode.COVER}
           priority={imagePriority}
-          tokenRef={firstToken}
+          tokenUrl={firstToken.urls.large}
         />
       );
     } else {
