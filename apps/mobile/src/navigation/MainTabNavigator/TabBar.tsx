@@ -22,7 +22,11 @@ function TabItem({ route, icon, activeRoute }: TabItemProps) {
 
   const onPress = useCallback(() => {
     if (!isFocused) {
-      navigation.navigate(route, {});
+      if (route === 'Home') {
+        navigation.navigate(route, { screen: 'Trending' });
+      } else {
+        navigation.navigate(route);
+      }
     }
   }, [isFocused, navigation, route]);
 

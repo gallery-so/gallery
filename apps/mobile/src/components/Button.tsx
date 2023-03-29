@@ -1,13 +1,6 @@
 import clsx from 'clsx';
 import { ReactNode } from 'react';
-import {
-  ActivityIndicator,
-  ActivityIndicatorProps,
-  NativeSyntheticEvent,
-  TouchableOpacity,
-  TouchableOpacityProps,
-  View,
-} from 'react-native';
+import { ActivityIndicator, TouchableOpacity, TouchableOpacityProps, View } from 'react-native';
 
 import { Typography } from './Typography';
 

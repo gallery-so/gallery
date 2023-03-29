@@ -15,11 +15,11 @@ export function LandingScreen() {
   const navigation = useNavigation<LoginStackNavigatorProp>();
 
   const handleEmailPress = useCallback(() => {
-    navigation.navigate('EnterEmail', {});
+    navigation.navigate('EnterEmail');
   }, [navigation]);
 
   const handleQrCodePress = useCallback(() => {
-    navigation.navigate('QRCode', {});
+    navigation.navigate('QRCode');
   }, [navigation]);
 
   return (
