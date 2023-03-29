@@ -47,7 +47,7 @@ export default function SharedFollowersList({ queryRef }: Props) {
   const parentRef = useRef<HTMLDivElement | null>(null);
 
   const virtualizer = useVirtualizer({
-    count: sharedFollowers.length,
+    count: hasNext ? sharedFollowers.length + 1 : sharedFollowers.length,
     getScrollElement: () => parentRef.current,
     estimateSize: () => 40,
     overscan: 5,
@@ -59,12 +59,12 @@ export default function SharedFollowersList({ queryRef }: Props) {
 
   const handleLoadMore = useCallback(async () => {
     setIsFetchingNextPage(true);
-    loadNext(FOLLOWERS_PER_PAGE);
+    await loadNext(FOLLOWERS_PER_PAGE);
     setIsFetchingNextPage(false);
   }, [loadNext]);
 
   useEffect(() => {
-    const [lastItem] = [...virtualizer.getVirtualItems()].reverse();
+    const [lastItem] = [...virtualItems].reverse();
 
     if (!lastItem) {
       return;
@@ -73,12 +73,12 @@ export default function SharedFollowersList({ queryRef }: Props) {
     if (lastItem.index >= sharedFollowers.length - 1 && hasNext && !isFetchingNextPage) {
       handleLoadMore();
     }
-  }, [handleLoadMore, hasNext, isFetchingNextPage, sharedFollowers.length, virtualizer]);
+  }, [handleLoadMore, hasNext, isFetchingNextPage, sharedFollowers.length, virtualItems]);
 
   const isMobile = useIsMobileWindowWidth();
   return (
-    <StyledList fullscreen={isMobile} gap={24}>
-      <VirtualizeContainer virtualizer={virtualizer} ref={parentRef}>
+    <StyledList fullscreen={isMobile} gap={24} ref={parentRef}>
+      <VirtualizeContainer virtualizer={virtualizer}>
         {virtualItems.map((item) => {
           const user = sharedFollowers[item.index]?.node;
 
@@ -95,7 +95,7 @@ export default function SharedFollowersList({ queryRef }: Props) {
           };
 
           return (
-            <div data-index={item.index} ref={virtualizer.measureElement} key={item.key}>
+            <div data-index={item.index} key={item.key} ref={virtualizer.measureElement}>
               <PaginatedListRow
                 title={user.username ?? ''}
                 subTitle={bioFirstLine}
@@ -114,4 +114,5 @@ const StyledList = styled(VStack)<{ fullscreen: boolean }>`
   max-width: 375px;
   margin: 4px;
   height: ${({ fullscreen }) => (fullscreen ? '100%' : '640px')};
+  overflow-y: auto;
 `;

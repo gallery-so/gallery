@@ -48,7 +48,7 @@ export default function SharedCommunitiesList({ queryRef }: Props) {
   const parentRef = useRef<HTMLDivElement | null>(null);
 
   const virtualizer = useVirtualizer({
-    count: sharedCommunities.length,
+    count: hasNext ? sharedCommunities.length + 1 : sharedCommunities.length,
     getScrollElement: () => parentRef.current,
     estimateSize: () => 40,
     overscan: 5,
@@ -65,7 +65,7 @@ export default function SharedCommunitiesList({ queryRef }: Props) {
   }, [loadNext]);
 
   useEffect(() => {
-    const [lastItem] = [...virtualizer.getVirtualItems()].reverse();
+    const [lastItem] = [...virtualItems].reverse();
 
     if (!lastItem) {
       return;
@@ -74,13 +74,13 @@ export default function SharedCommunitiesList({ queryRef }: Props) {
     if (lastItem.index >= sharedCommunities.length - 1 && hasNext && !isFetchingNextPage) {
       handleLoadMore();
     }
-  }, [handleLoadMore, hasNext, isFetchingNextPage, sharedCommunities.length, virtualizer]);
+  }, [handleLoadMore, hasNext, isFetchingNextPage, sharedCommunities.length, virtualItems]);
 
   const isMobile = useIsMobileWindowWidth();
 
   return (
-    <StyledList fullscreen={isMobile} gap={24}>
-      <VirtualizeContainer virtualizer={virtualizer} ref={parentRef}>
+    <StyledList fullscreen={isMobile} gap={24} ref={parentRef}>
+      <VirtualizeContainer virtualizer={virtualizer}>
         {virtualItems.map((item) => {
           const community = sharedCommunities[item.index]?.node;
 
@@ -121,4 +121,5 @@ const StyledList = styled(VStack)<{ fullscreen: boolean }>`
   max-width: 375px;
   margin: 4px;
   height: ${({ fullscreen }) => (fullscreen ? '100%' : '640px')};
+  overflow-y: auto;
 `;

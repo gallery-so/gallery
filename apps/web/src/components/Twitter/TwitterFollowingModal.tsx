@@ -105,7 +105,7 @@ export default function TwitterFollowingModal({ followingRef, queryRef }: Props)
   const parentRef = useRef<HTMLDivElement | null>(null);
 
   const virtualizer = useVirtualizer({
-    count: twitterFollowing.length,
+    count: hasNext ? twitterFollowing.length + 1 : twitterFollowing.length,
     getScrollElement: () => parentRef.current,
     estimateSize: () => 40,
     overscan: 5,
@@ -196,7 +196,7 @@ export default function TwitterFollowingModal({ followingRef, queryRef }: Props)
   }, [loadNext]);
 
   useEffect(() => {
-    const [lastItem] = [...virtualizer.getVirtualItems()].reverse();
+    const [lastItem] = [...virtualItems].reverse();
 
     if (!lastItem) {
       return;
@@ -205,7 +205,7 @@ export default function TwitterFollowingModal({ followingRef, queryRef }: Props)
     if (lastItem.index >= twitterFollowing.length - 1 && hasNext && !isFetchingNextPage) {
       handleLoadMore();
     }
-  }, [handleLoadMore, hasNext, isFetchingNextPage, twitterFollowing.length, virtualizer]);
+  }, [handleLoadMore, hasNext, isFetchingNextPage, twitterFollowing.length, virtualItems]);
 
   return (
     <StyledOnboardingTwitterModal>
@@ -216,8 +216,8 @@ export default function TwitterFollowingModal({ followingRef, queryRef }: Props)
         </TitleDiatypeL>
       </StyledBodyTextContainer>
 
-      <StyledFollowingContainer gap={16}>
-        <VirtualizeContainer virtualizer={virtualizer} ref={parentRef}>
+      <StyledFollowingContainer ref={parentRef} gap={16}>
+        <VirtualizeContainer virtualizer={virtualizer}>
           {virtualItems.map((item) => {
             const user = twitterFollowing[item.index];
 
@@ -256,7 +256,6 @@ export default function TwitterFollowingModal({ followingRef, queryRef }: Props)
             );
           })}
         </VirtualizeContainer>
-        {/* <VStack></VStack> */}
       </StyledFollowingContainer>
 
       <HStack justify="flex-end" gap={10}>
