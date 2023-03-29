@@ -6,7 +6,14 @@ type Props = TextInputProps;
 export function FadedInput({ value, onChange, style, ...props }: Props) {
   return (
     <View className="bg-faint flex flex-col justify-center py-1.5 px-3" style={style}>
-      <TextInput className="text-sm" textAlignVertical="center" value={value} {...props} />
+      <TextInput
+        style={{
+          fontSize: 14,
+        }}
+        textAlignVertical="center"
+        value={value}
+        {...props}
+      />
     </View>
   );
 }
