@@ -7,8 +7,10 @@ import { LoginStackNavigatorProp } from '~/navigation/types';
 
 import { Button } from '../../components/Button';
 import { FadedInput } from '../../components/FadedInput';
+import { IconContainer } from '../../components/IconContainer';
 import { Typography } from '../../components/Typography';
 import { useLogin } from '../../hooks/useLogin';
+import { BackIcon } from '../../icons/BackIcon';
 import { magic } from '../../magic';
 
 export function EnterEmailScreen() {
@@ -45,32 +47,36 @@ export function EnterEmailScreen() {
   }, [email, login, navigation]);
 
   return (
-    <SafeAreaView className="flex h-screen flex-col items-center justify-center bg-white">
-      <KeyboardAvoidingView behavior="position" className="flex max-w-xs flex-col space-y-4">
-        <Typography className="text-lg" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-          Enter your Verified email
-        </Typography>
+    <SafeAreaView className="flex h-screen flex-col justify-center bg-white">
+      <IconContainer className="px-6" icon={<BackIcon />} onPress={navigation.goBack} />
 
-        <Typography font={{ family: 'ABCDiatype', weight: 'Regular' }}>
-          If you’re an existing Gallery user with a verified email address, we’ll deliver a magic
-          sign-in link to your inbox.
-        </Typography>
+      <View className="flex flex-grow flex-col items-center justify-center">
+        <KeyboardAvoidingView behavior="position" className="flex max-w-xs flex-col space-y-4">
+          <Typography className="text-lg" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+            Enter your Verified email
+          </Typography>
 
-        <FadedInput
-          placeholder="Email"
-          keyboardType="email-address"
-          autoCorrect={false}
-          autoCapitalize="none"
-          autoComplete="email"
-          value={email}
-          onChangeText={setEmail}
-        />
+          <Typography font={{ family: 'ABCDiatype', weight: 'Regular' }}>
+            If you’re an existing Gallery user with a verified email address, we’ll deliver a magic
+            sign-in link to your inbox.
+          </Typography>
 
-        <Button loading={isLoggingIn} onPress={handleContinue} text="Continue" />
+          <FadedInput
+            placeholder="Email"
+            keyboardType="email-address"
+            autoCorrect={false}
+            autoCapitalize="none"
+            autoComplete="email"
+            value={email}
+            onChangeText={setEmail}
+          />
 
-        {/* Add some extra space for the keyboard avoiding view */}
-        <View />
-      </KeyboardAvoidingView>
+          <Button loading={isLoggingIn} onPress={handleContinue} text="Continue" />
+
+          {/* Add some extra space for the keyboard avoiding view */}
+          <View />
+        </KeyboardAvoidingView>
+      </View>
     </SafeAreaView>
   );
 }
