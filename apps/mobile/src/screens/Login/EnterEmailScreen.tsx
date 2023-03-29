@@ -48,7 +48,7 @@ export function EnterEmailScreen() {
 
   return (
     <SafeAreaView className="flex h-screen flex-col justify-center bg-white">
-      <IconContainer className="px-6" icon={<BackIcon />} onPress={navigation.goBack} />
+      <IconContainer className="px-6 py-2" icon={<BackIcon />} onPress={navigation.goBack} />
 
       <View className="flex flex-grow flex-col items-center justify-center">
         <KeyboardAvoidingView behavior="position" className="flex max-w-xs flex-col space-y-4">

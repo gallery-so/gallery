@@ -40,7 +40,7 @@ export function QRCodeScreen() {
       {permissionStatus === PermissionStatus.GRANTED ? (
         <BarCodeScanner
           className="h-full w-full"
-          barCodeTypes={['qr']}
+          barCodeTypes={[BarCodeScanner.Constants.BarCodeType.qr]}
           onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
         />
       ) : (
@@ -50,7 +50,7 @@ export function QRCodeScreen() {
       <View className="absolute inset-0 flex flex-col justify-between">
         <IconContainer
           style={{ top }}
-          className="px-6"
+          className="px-6 py-2"
           icon={<BackIcon />}
           onPress={navigation.goBack}
         />
