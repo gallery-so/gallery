@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Route, route } from 'nextjs-routes';
+import { useCallback } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
@@ -8,6 +9,7 @@ import colors from '~/components/core/colors';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM } from '~/components/core/Text/Text';
+import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 import { UserListItemFragment$key } from '~/generated/UserListItemFragment.graphql';
 
 type UserListItemProps = {
@@ -27,9 +29,15 @@ export function UserListItem({ userRef }: UserListItemProps) {
 
   const userRoute: Route = { pathname: '/[username]', query: { username: user.username } };
 
+  const { hideDrawer } = useDrawerActions();
+
+  const handleLinkClick = useCallback(() => {
+    hideDrawer();
+  }, [hideDrawer]);
+
   return (
     <Link href={userRoute} legacyBehavior>
-      <StyledLink href={route(userRoute)}>
+      <StyledLink onClick={handleLinkClick} href={route(userRoute)}>
         <Container>
           <TitleDiatypeM>{user.username}</TitleDiatypeM>
           {user.bio && <BioText>{user.bio && <Markdown text={user.bio} />}</BioText>}
