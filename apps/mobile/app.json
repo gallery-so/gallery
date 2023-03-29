@@ -51,6 +51,6 @@
         }
       ]
     },
-    "plugins": ["sentry-expo"]
+    "plugins": ["sentry-expo", "expo-barcode-scanner"]
   }
 }
