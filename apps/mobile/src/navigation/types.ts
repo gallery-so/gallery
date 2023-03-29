@@ -22,7 +22,6 @@ export type MainTabNavigatorParamList = {
 export type LoginStackNavigatorParamList = {
   Landing: undefined;
   EnterEmail: undefined;
-  WaitingForEmailVerification: undefined;
   QRCode: undefined;
 };
 
