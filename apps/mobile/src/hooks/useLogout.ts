@@ -29,8 +29,6 @@ export function useLogout(): [() => void, boolean] {
       magic.user.logout();
       const response = await mutate({ variables: {} });
 
-      console.log(response);
-
       if (response.logout?.__typename === 'LogoutPayload') {
         navigation.reset({ index: 0, routes: [{ name: 'Login', params: { screen: 'Landing' } }] });
       } else {
@@ -41,8 +39,6 @@ export function useLogout(): [() => void, boolean] {
         );
       }
     } catch (error) {
-      console.error(error);
-
       if (error instanceof Error) {
         reportError(error);
       } else {
