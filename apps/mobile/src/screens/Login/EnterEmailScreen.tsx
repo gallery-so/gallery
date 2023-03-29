@@ -23,7 +23,9 @@ export function EnterEmailScreen() {
   const [login] = useLogin();
 
   const handleContinue = useCallback(async () => {
+    setError('');
     setIsLoggingIn(true);
+
     try {
       const token = await magic.auth.loginWithMagicLink({ email });
 
@@ -33,8 +35,6 @@ export function EnterEmailScreen() {
       }
 
       const result = await login({ magicLink: { token } });
-
-      console.log(result);
 
       if (result.kind === 'failure') {
         setError(result.message);
@@ -56,10 +56,19 @@ export function EnterEmailScreen() {
             Enter your Verified email
           </Typography>
 
-          <Typography font={{ family: 'ABCDiatype', weight: 'Regular' }}>
+          <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
             If you’re an existing Gallery user with a verified email address, we’ll deliver a magic
             sign-in link to your inbox.
           </Typography>
+
+          {error && (
+            <Typography
+              className="text-error text-sm"
+              font={{ family: 'ABCDiatype', weight: 'Regular' }}
+            >
+              {error}
+            </Typography>
+          )}
 
           <FadedInput
             placeholder="Email"
