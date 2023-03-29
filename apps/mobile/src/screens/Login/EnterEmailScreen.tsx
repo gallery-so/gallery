@@ -39,7 +39,7 @@ export function EnterEmailScreen() {
       if (result.kind === 'failure') {
         setError(result.message);
       } else {
-        navigation.replace('MainTabs', { screen: 'Home', params: { screen: 'Trending' } });
+        navigation.replace('MainTabs', { screen: 'Home', params: { screen: 'Latest' } });
       }
     } finally {
       setIsLoggingIn(false);
