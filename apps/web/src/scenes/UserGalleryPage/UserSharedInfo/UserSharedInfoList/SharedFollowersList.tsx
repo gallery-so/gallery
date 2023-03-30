@@ -1,11 +1,10 @@
-import { useVirtualizer } from '@tanstack/react-virtual';
 import { Route } from 'nextjs-routes';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import { graphql, usePaginationFragment } from 'react-relay';
+import { AutoSizer, InfiniteLoader, List, ListRowRenderer } from 'react-virtualized';
 import styled from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';
-import VirtualizeContainer from '~/components/Virtualize/VirtualizeContainer';
 import { SharedFollowersListFragment$key } from '~/generated/SharedFollowersListFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import unescape from '~/utils/unescape';
@@ -44,67 +43,68 @@ export default function SharedFollowersList({ queryRef }: Props) {
     [data.sharedFollowers?.edges]
   );
 
-  const parentRef = useRef<HTMLDivElement | null>(null);
-
-  const virtualizer = useVirtualizer({
-    count: hasNext ? sharedFollowers.length + 1 : sharedFollowers.length,
-    getScrollElement: () => parentRef.current,
-    estimateSize: () => 40,
-    overscan: 5,
-  });
-
-  const virtualItems = virtualizer.getVirtualItems();
-
-  const [isFetchingNextPage, setIsFetchingNextPage] = useState(false);
+  const rowCount = hasNext ? sharedFollowers.length + 1 : sharedFollowers.length;
 
   const handleLoadMore = useCallback(async () => {
-    setIsFetchingNextPage(true);
-    await loadNext(FOLLOWERS_PER_PAGE);
-    setIsFetchingNextPage(false);
+    loadNext(FOLLOWERS_PER_PAGE);
   }, [loadNext]);
 
-  useEffect(() => {
-    const [lastItem] = [...virtualItems].reverse();
+  const isRowLoaded = ({ index }: { index: number }) => !hasNext || index < sharedFollowers.length;
 
-    if (!lastItem) {
-      return;
-    }
+  const rowRenderer = useCallback<ListRowRenderer>(
+    ({ index, key, style }: { index: number; key: string; style: React.CSSProperties }) => {
+      const user = sharedFollowers[index]?.node;
+      if (!user) {
+        return null;
+      }
 
-    if (lastItem.index >= sharedFollowers.length - 1 && hasNext && !isFetchingNextPage) {
-      handleLoadMore();
-    }
-  }, [handleLoadMore, hasNext, isFetchingNextPage, sharedFollowers.length, virtualItems]);
+      const unescapedBio = user.bio ? unescape(user.bio) : '';
+      const bioFirstLine = unescapedBio.split('\n')[0] ?? '';
+
+      const userUrlPath: Route = {
+        pathname: `/[username]`,
+        query: { username: user.username ?? '' },
+      };
+
+      return (
+        <div style={style} key={key}>
+          <PaginatedListRow
+            title={user.username ?? ''}
+            subTitle={bioFirstLine}
+            href={userUrlPath}
+          />
+        </div>
+      );
+    },
+    [sharedFollowers]
+  );
 
   const isMobile = useIsMobileWindowWidth();
   return (
-    <StyledList fullscreen={isMobile} gap={24} ref={parentRef}>
-      <VirtualizeContainer virtualizer={virtualizer}>
-        {virtualItems.map((item) => {
-          const user = sharedFollowers[item.index]?.node;
-
-          if (!user) {
-            return null;
-          }
-
-          const unescapedBio = user.bio ? unescape(user.bio) : '';
-          const bioFirstLine = unescapedBio.split('\n')[0] ?? '';
-
-          const userUrlPath: Route = {
-            pathname: `/[username]`,
-            query: { username: user.username ?? '' },
-          };
-
-          return (
-            <div data-index={item.index} key={item.key} ref={virtualizer.measureElement}>
-              <PaginatedListRow
-                title={user.username ?? ''}
-                subTitle={bioFirstLine}
-                href={userUrlPath}
+    <StyledList fullscreen={isMobile} gap={24}>
+      <AutoSizer>
+        {({ width, height }) => (
+          <InfiniteLoader
+            isRowLoaded={isRowLoaded}
+            loadMoreRows={handleLoadMore}
+            rowCount={rowCount}
+          >
+            {({ onRowsRendered, registerChild }) => (
+              <List
+                ref={registerChild}
+                onRowsRendered={onRowsRendered}
+                rowRenderer={rowRenderer}
+                width={width}
+                height={height}
+                rowHeight={56}
+                rowCount={sharedFollowers.length}
               />
-            </div>
-          );
-        })}
-      </VirtualizeContainer>
+            )}
+          </InfiniteLoader>
+        )}
+      </AutoSizer>
+
+      <VStack></VStack>
     </StyledList>
   );
 }
@@ -114,5 +114,4 @@ const StyledList = styled(VStack)<{ fullscreen: boolean }>`
   max-width: 375px;
   margin: 4px;
   height: ${({ fullscreen }) => (fullscreen ? '100%' : '640px')};
-  overflow-y: auto;
 `;
