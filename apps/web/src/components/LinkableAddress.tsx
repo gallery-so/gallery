@@ -4,7 +4,7 @@ import { graphql } from 'relay-runtime';
 import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { BaseM } from '~/components/core/Text/Text';
 import { LinkableAddressFragment$key } from '~/generated/LinkableAddressFragment.graphql';
-import { getExternalAddressLink, graphqlTruncateAddress } from '~/utils/wallet';
+import { getExternalAddressLink, graphqlTruncateAddress } from '~/shared/utils/wallet';
 
 type LinkableAddressProps = {
   chainAddressRef: LinkableAddressFragment$key;

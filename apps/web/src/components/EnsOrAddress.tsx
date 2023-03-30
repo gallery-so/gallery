@@ -7,7 +7,7 @@ import { LinkableAddress, RawLinkableAddress } from '~/components/LinkableAddres
 import { EnsOrAddressFragment$key } from '~/generated/EnsOrAddressFragment.graphql';
 import { EnsOrAddressWithSuspenseFragment$key } from '~/generated/EnsOrAddressWithSuspenseFragment.graphql';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
-import { getExternalAddressLink } from '~/utils/wallet';
+import { getExternalAddressLink } from '~/shared/utils/wallet';
 
 type EnsNameProps = {
   chainAddressRef: EnsOrAddressFragment$key;
