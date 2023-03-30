@@ -8,6 +8,7 @@ import { AccountIcon } from '~/navigation/MainTabNavigator/AccountIcon';
 import { GLogo } from '~/navigation/MainTabNavigator/GLogo';
 import { NotificationsIcon } from '~/navigation/MainTabNavigator/NotificationsIcon';
 import { MainTabNavigatorParamList, MainTabNavigatorProp } from '~/navigation/types';
+import { SearchIcon } from './SearchIcon';
 
 type TabItemProps = {
   activeRoute: keyof MainTabNavigatorParamList;
@@ -50,6 +51,7 @@ export function TabBar({ state }: MaterialTopTabBarProps) {
     >
       <TabItem activeRoute={activeRoute} route="Account" icon={<AccountIcon />} />
       <TabItem activeRoute={activeRoute} route="Home" icon={<GLogo />} />
+      <TabItem activeRoute={activeRoute} route="Search" icon={<SearchIcon />} />
       <TabItem activeRoute={activeRoute} route="Notifications" icon={<NotificationsIcon />} />
     </View>
   );

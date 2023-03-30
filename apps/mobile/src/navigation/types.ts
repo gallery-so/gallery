@@ -16,6 +16,8 @@ export type MainTabNavigatorParamList = {
   Home: {};
   // eslint-disable-next-line @typescript-eslint/ban-types
   Notifications: {};
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  Search: {};
 };
 
 export type MainTabNavigatorProp = MaterialTopTabNavigationProp<MainTabNavigatorParamList>;
