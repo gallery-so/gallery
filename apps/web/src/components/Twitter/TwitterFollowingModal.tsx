@@ -1,7 +1,7 @@
-import { useVirtualizer } from '@tanstack/react-virtual';
 import Link, { LinkProps } from 'next/link';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import { graphql, useFragment, usePaginationFragment } from 'react-relay';
+import { AutoSizer, InfiniteLoader, List, ListRowRenderer } from 'react-virtualized';
 import { SelectorStoreUpdater } from 'relay-runtime';
 import styled from 'styled-components';
 
@@ -20,7 +20,6 @@ import Markdown from '../core/Markdown/Markdown';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM, TitleDiatypeL } from '../core/Text/Text';
 import FollowButton from '../Follow/FollowButton';
-import VirtualizeContainer from '../Virtualize/VirtualizeContainer';
 
 type Props = {
   followingRef: TwitterFollowingModalFragment$key;
@@ -102,17 +101,6 @@ export default function TwitterFollowingModal({ followingRef, queryRef }: Props)
     return users;
   }, [followingPagination]);
 
-  const parentRef = useRef<HTMLDivElement | null>(null);
-
-  const virtualizer = useVirtualizer({
-    count: hasNext ? twitterFollowing.length + 1 : twitterFollowing.length,
-    getScrollElement: () => parentRef.current,
-    estimateSize: () => 40,
-    overscan: 5,
-  });
-
-  const virtualItems = virtualizer.getVirtualItems();
-
   const [followAll] = usePromisifiedMutation<TwitterFollowingModalMutation>(graphql`
     mutation TwitterFollowingModalMutation {
       followAllSocialConnections(accountType: Twitter) {
@@ -187,25 +175,47 @@ export default function TwitterFollowingModal({ followingRef, queryRef }: Props)
     }
   }, [followAll, pushToast, query?.viewer?.user?.id, reportError, twitterFollowing]);
 
-  const [isFetchingNextPage, setIsFetchingNextPage] = useState(false);
+  const isRowLoaded = ({ index }: { index: number }) => !hasNext || index < twitterFollowing.length;
 
   const handleLoadMore = useCallback(async () => {
-    setIsFetchingNextPage(true);
     loadNext(USER_PER_PAGE);
-    setIsFetchingNextPage(false);
   }, [loadNext]);
 
-  useEffect(() => {
-    const [lastItem] = [...virtualItems].reverse();
+  const rowCount = hasNext ? twitterFollowing.length + 1 : twitterFollowing.length;
 
-    if (!lastItem) {
-      return;
-    }
+  const rowRenderer = useCallback<ListRowRenderer>(
+    ({ index, key, style }: { index: number; key: string; style: React.CSSProperties }) => {
+      const user = twitterFollowing[index];
 
-    if (lastItem.index >= twitterFollowing.length - 1 && hasNext && !isFetchingNextPage) {
-      handleLoadMore();
-    }
-  }, [handleLoadMore, hasNext, isFetchingNextPage, twitterFollowing.length, virtualItems]);
+      if (!user) {
+        return null;
+      }
+
+      return (
+        <StyledFollowing align="center" justify="space-between" style={style} key={key} gap={4}>
+          <VStack>
+            <StyledLink
+              href={{
+                pathname: '/[username]',
+                query: {
+                  username: user.username as string,
+                },
+              }}
+            >
+              <BaseM>
+                <strong>{user.username}</strong>
+              </BaseM>
+            </StyledLink>
+            <BioText>
+              <Markdown text={user.bio ?? ''} />
+            </BioText>
+          </VStack>
+          <FollowButton queryRef={query} userRef={user} />
+        </StyledFollowing>
+      );
+    },
+    [query, twitterFollowing]
+  );
 
   return (
     <StyledOnboardingTwitterModal>
@@ -216,46 +226,29 @@ export default function TwitterFollowingModal({ followingRef, queryRef }: Props)
         </TitleDiatypeL>
       </StyledBodyTextContainer>
 
-      <StyledFollowingContainer ref={parentRef} gap={16}>
-        <VirtualizeContainer virtualizer={virtualizer}>
-          {virtualItems.map((item) => {
-            const user = twitterFollowing[item.index];
-
-            if (!user) {
-              return null;
-            }
-
-            return (
-              <StyledFollowing
-                align="center"
-                justify="space-between"
-                gap={4}
-                data-index={item.index}
-                ref={virtualizer.measureElement}
-                key={item.key}
-              >
-                <VStack>
-                  <StyledLink
-                    href={{
-                      pathname: '/[username]',
-                      query: {
-                        username: user.username as string,
-                      },
-                    }}
-                  >
-                    <BaseM>
-                      <strong>{user.username}</strong>
-                    </BaseM>
-                  </StyledLink>
-                  <BioText>
-                    <Markdown text={user.bio ?? ''} />
-                  </BioText>
-                </VStack>
-                <FollowButton queryRef={query} userRef={user} />
-              </StyledFollowing>
-            );
-          })}
-        </VirtualizeContainer>
+      <StyledFollowingContainer gap={16}>
+        <AutoSizer>
+          {({ width, height }) => (
+            <InfiniteLoader
+              isRowLoaded={isRowLoaded}
+              loadMoreRows={handleLoadMore}
+              rowCount={rowCount}
+            >
+              {({ onRowsRendered, registerChild }) => (
+                <List
+                  ref={registerChild}
+                  onRowsRendered={onRowsRendered}
+                  rowRenderer={rowRenderer}
+                  width={width}
+                  height={height}
+                  rowHeight={50}
+                  rowCount={twitterFollowing.length}
+                />
+              )}
+            </InfiniteLoader>
+          )}
+        </AutoSizer>
+        <VStack></VStack>
       </StyledFollowingContainer>
 
       <HStack justify="flex-end" gap={10}>
@@ -289,11 +282,10 @@ const StyledFollowingContainer = styled(VStack)`
   max-width: 375px;
   min-height: 100px;
   height: 400px;
-  overflow-y: auto;
 `;
 
 const StyledFollowing = styled(HStack)`
-  padding: 8px 8px 8px 0;
+  padding-right: 8px;
 `;
 
 const StyledLink = styled(Link)<LinkProps>`

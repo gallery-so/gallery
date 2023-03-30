@@ -6591,24 +6591,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/react-virtual@npm:beta":
-  version: 3.0.0-beta.54
-  resolution: "@tanstack/react-virtual@npm:3.0.0-beta.54"
-  dependencies:
-    "@tanstack/virtual-core": 3.0.0-beta.54
-  peerDependencies:
-    react: ^16.8.0 || ^17.0.0 || ^18.0.0
-  checksum: ddeb3cb46db89365609d5bc402b8a8d410dc7e5f38ee579f39e5589c62a2123799ba36586939a5a6ad1a701650a5b169f657fd24687687bf08f4827b0099bc75
-  languageName: node
-  linkType: hard
-
-"@tanstack/virtual-core@npm:3.0.0-beta.54":
-  version: 3.0.0-beta.54
-  resolution: "@tanstack/virtual-core@npm:3.0.0-beta.54"
-  checksum: a58cb30e1bbf8a0420caea8693df11c909c1190908163fef75aeddfa11bba621ca993ab218f4e7537c05c1651f9398e61016f3e3d374093c87029b52c868f0e7
-  languageName: node
-  linkType: hard
-
 "@taquito/http-utils@npm:*, @taquito/http-utils@npm:^15.1.0":
   version: 15.1.0
   resolution: "@taquito/http-utils@npm:15.1.0"
@@ -7712,6 +7694,16 @@ __metadata:
   dependencies:
     "@types/react": "*"
   checksum: 265f1c74061556708ffe8d15559e35c60d6c11478c9950d3735575d2c116ca69f461d85effa06d73a613eb8b73c84fd32682feb57cf7c5f9e4284021dbca25b0
+  languageName: node
+  linkType: hard
+
+"@types/react-virtualized@npm:^9.21.21":
+  version: 9.21.21
+  resolution: "@types/react-virtualized@npm:9.21.21"
+  dependencies:
+    "@types/prop-types": "*"
+    "@types/react": ^17
+  checksum: 7f360746ae926c93ba07d830a33940ab1598f6966263594896d0dc746d704f9c0e0d1692cf543e925bcca7b007d70d3cc53379a9b1810f60c2d43ee5cfdb591e
   languageName: node
   linkType: hard
 
@@ -12286,7 +12278,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"clsx@npm:^1.1.0, clsx@npm:^1.2.1":
+"clsx@npm:^1.0.4, clsx@npm:^1.1.0, clsx@npm:^1.2.1":
   version: 1.2.1
   resolution: "clsx@npm:1.2.1"
   checksum: 30befca8019b2eb7dbad38cff6266cf543091dae2825c856a62a8ccf2c3ab9c2907c4d12b288b73101196767f66812365400a227581484a05f968b0307cfaf12
@@ -14066,7 +14058,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dom-helpers@npm:^5.0.1":
+"dom-helpers@npm:^5.0.1, dom-helpers@npm:^5.1.3":
   version: 5.2.1
   resolution: "dom-helpers@npm:5.2.1"
   dependencies:
@@ -26320,6 +26312,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-lifecycles-compat@npm:^3.0.4":
+  version: 3.0.4
+  resolution: "react-lifecycles-compat@npm:3.0.4"
+  checksum: a904b0fc0a8eeb15a148c9feb7bc17cec7ef96e71188280061fc340043fd6d8ee3ff233381f0e8f95c1cf926210b2c4a31f38182c8f35ac55057e453d6df204f
+  languageName: node
+  linkType: hard
+
 "react-loading-skeleton@npm:^3.1.0":
   version: 3.1.1
   resolution: "react-loading-skeleton@npm:3.1.1"
@@ -26714,6 +26713,23 @@ __metadata:
     react: ">=16.6.0"
     react-dom: ">=16.6.0"
   checksum: 75602840106aa9c6545149d6d7ae1502fb7b7abadcce70a6954c4b64a438ff1cd16fc77a0a1e5197cdd72da398f39eb929ea06f9005c45b132ed34e056ebdeb1
+  languageName: node
+  linkType: hard
+
+"react-virtualized@npm:^9.22.3":
+  version: 9.22.3
+  resolution: "react-virtualized@npm:9.22.3"
+  dependencies:
+    "@babel/runtime": ^7.7.2
+    clsx: ^1.0.4
+    dom-helpers: ^5.1.3
+    loose-envify: ^1.4.0
+    prop-types: ^15.7.2
+    react-lifecycles-compat: ^3.0.4
+  peerDependencies:
+    react: ^15.3.0 || ^16.0.0-alpha
+    react-dom: ^15.3.0 || ^16.0.0-alpha
+  checksum: 5e3b566592293bc0057bc6be4f6ee29c58c8931421d2882a3ef45ca9b24c6f3ea78bbc5a182c2916af6520845e5a90f569b3a63c9b5e89428720913e6d6239cc
   languageName: node
   linkType: hard
 
@@ -31965,7 +31981,6 @@ __metadata:
     "@sentry/nextjs": ^7.23.0
     "@svgr/webpack": ^5.5.0
     "@synthetixio/synpress": 2.3.3
-    "@tanstack/react-virtual": beta
     "@taquito/taquito": 14.0.0
     "@taquito/tzip16": 14.0.0
     "@taquito/utils": ^13.0.1
@@ -31987,6 +32002,7 @@ __metadata:
     "@types/react": ^18.0.27
     "@types/react-dom": ^18.0.10
     "@types/react-transition-group": ^4.4.4
+    "@types/react-virtualized": ^9.21.21
     "@types/relay-test-utils": ^6.0.5
     "@types/styled-components": 5.1.9
     "@types/uuid": ^8.3.4
@@ -32031,6 +32047,7 @@ __metadata:
     react-spring: ^9.1.2
     react-tooltip: ^4.2.21
     react-transition-group: ^4.4.1
+    react-virtualized: ^9.22.3
     relay-compiler: ^14.1.0
     relay-test-utils: ^13.2.0
     rfdc: ^1.3.0

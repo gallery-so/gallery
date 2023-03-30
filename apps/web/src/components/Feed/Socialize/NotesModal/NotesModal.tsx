@@ -1,6 +1,12 @@
-import { useVirtualizer } from '@tanstack/react-virtual';
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { usePaginationFragment } from 'react-relay';
+import {
+  AutoSizer,
+  CellMeasurer,
+  CellMeasurerCache,
+  List,
+  ListRowRenderer,
+} from 'react-virtualized';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
@@ -10,7 +16,6 @@ import { TitleDiatypeM, TitleXS } from '~/components/core/Text/Text';
 import { AdmireNote } from '~/components/Feed/Socialize/NotesModal/AdmireNote';
 import { CommentNote } from '~/components/Feed/Socialize/NotesModal/CommentNote';
 import { ListItem } from '~/components/Feed/Socialize/NotesModal/ListItem';
-import VirtualizedContainer from '~/components/Virtualize/VirtualizeContainer';
 import { MODAL_PADDING_PX } from '~/contexts/modal/constants';
 import { NotesModalFragment$key } from '~/generated/NotesModalFragment.graphql';
 
@@ -87,20 +92,68 @@ export function NotesModal({ eventRef, fullscreen }: NotesModalProps) {
     });
   }, [nonNullInteractionsAndSeeMore]);
 
-  const parentRef = useRef<HTMLDivElement | null>(null);
-
-  const virtualizer = useVirtualizer({
-    count: sortedInteractions.length,
-    getScrollElement: () => parentRef.current,
-    estimateSize: () => 40,
-    overscan: 5,
+  const [measurerCache] = useState(() => {
+    return new CellMeasurerCache({
+      fixedWidth: true,
+      minHeight: 0,
+    });
   });
-
-  const virtualItems = virtualizer.getVirtualItems();
 
   const handleSeeMore = useCallback(() => {
     loadPrevious(NOTES_PER_PAGE);
   }, [loadPrevious]);
+
+  const rowRenderer = useCallback<ListRowRenderer>(
+    ({ index, parent, key, style }) => {
+      const interaction = sortedInteractions[sortedInteractions.length - index - 1];
+
+      if (!interaction) {
+        return null;
+      }
+
+      return (
+        <CellMeasurer
+          cache={measurerCache}
+          columnIndex={0}
+          rowIndex={index}
+          key={key}
+          parent={parent}
+        >
+          {({ registerChild }) => {
+            if ('kind' in interaction) {
+              return (
+                // @ts-expect-error Bad types from react-virtualized
+                <div style={style} ref={registerChild}>
+                  <ListItem>
+                    <SeeMoreContainer role="button" onClick={handleSeeMore}>
+                      <TitleXS color={colors.shadow}>See More</TitleXS>
+                    </SeeMoreContainer>
+                  </ListItem>
+                </div>
+              );
+            } else if (interaction.__typename === 'Admire') {
+              return (
+                // @ts-expect-error Bad types from react-virtualized
+                <div style={style} ref={registerChild}>
+                  <AdmireNote admireRef={interaction} />
+                </div>
+              );
+            } else if (interaction.__typename === 'Comment') {
+              return (
+                // @ts-expect-error Bad types from react-virtualized
+                <div style={style} ref={registerChild}>
+                  <CommentNote commentRef={interaction} />
+                </div>
+              );
+            } else {
+              return null;
+            }
+          }}
+        </CellMeasurer>
+      );
+    },
+    [handleSeeMore, measurerCache, sortedInteractions]
+  );
 
   return (
     <ModalContent fullscreen={fullscreen}>
@@ -108,42 +161,19 @@ export function NotesModal({ eventRef, fullscreen }: NotesModalProps) {
         <StyledHeader>
           <TitleDiatypeM>Notes</TitleDiatypeM>
         </StyledHeader>
-        <NotesContainer grow ref={parentRef}>
-          <VirtualizedContainer virtualizer={virtualizer}>
-            {virtualItems.map((item) => {
-              const interaction = sortedInteractions[sortedInteractions.length - item.index - 1];
-
-              if (!interaction) {
-                return null;
-              }
-              if ('kind' in interaction) {
-                return (
-                  <div data-index={item.index} ref={virtualizer.measureElement} key={item.key}>
-                    <ListItem>
-                      <SeeMoreContainer role="button" onClick={handleSeeMore}>
-                        <TitleXS color={colors.shadow}>See More</TitleXS>
-                      </SeeMoreContainer>
-                    </ListItem>
-                  </div>
-                );
-              } else if (interaction.__typename === 'Admire') {
-                return (
-                  <div data-index={item.index} ref={virtualizer.measureElement} key={item.key}>
-                    <AdmireNote admireRef={interaction} />
-                  </div>
-                );
-              } else if (interaction.__typename === 'Comment') {
-                return (
-                  <div data-index={item.index} ref={virtualizer.measureElement} key={item.key}>
-                    <CommentNote commentRef={interaction} />
-                  </div>
-                );
-              } else {
-                return null;
-              }
-            })}
-          </VirtualizedContainer>
-        </NotesContainer>
+        <VStack grow>
+          <AutoSizer>
+            {({ width, height }) => (
+              <List
+                width={width}
+                height={height}
+                rowRenderer={rowRenderer}
+                rowCount={nonNullInteractionsAndSeeMore.length}
+                rowHeight={measurerCache.rowHeight}
+              />
+            )}
+          </AutoSizer>
+        </VStack>
       </WrappingVStack>
     </ModalContent>
   );
@@ -168,8 +198,4 @@ const ModalContent = styled.div<{ fullscreen: boolean }>`
   display: flex;
   flex-direction: column;
   padding: ${MODAL_PADDING_PX}px 8px;
-`;
-
-const NotesContainer = styled(VStack)`
-  position: relative;
 `;
