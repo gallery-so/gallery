@@ -9,7 +9,7 @@ import { EnsOrAddress } from '~/components/EnsOrAddress';
 import { LinkableAddress } from '~/components/LinkableAddress';
 import { NftAdditionalDetailsEthFragment$key } from '~/generated/NftAdditionalDetailsEthFragment.graphql';
 import { useRefreshMetadata } from '~/scenes/NftDetailPage/NftAdditionalDetails/useRefreshMetadata';
-import { getOpenseaExternalUrl, hexHandler } from '~/utils/getOpenseaExternalUrl';
+import { getOpenseaExternalUrl, hexHandler } from '~/shared/utils/getOpenseaExternalUrl';
 
 type NftAdditionaDetailsNonPOAPProps = {
   showDetails: boolean;

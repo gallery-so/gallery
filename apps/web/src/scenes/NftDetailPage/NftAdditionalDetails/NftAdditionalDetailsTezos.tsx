@@ -9,7 +9,7 @@ import { LinkableAddress } from '~/components/LinkableAddress';
 import { TezosDomainOrAddress } from '~/components/TezosDomainOrAddress';
 import { NftAdditionalDetailsTezosFragment$key } from '~/generated/NftAdditionalDetailsTezosFragment.graphql';
 import { useRefreshMetadata } from '~/scenes/NftDetailPage/NftAdditionalDetails/useRefreshMetadata';
-import { hexHandler } from '~/utils/getOpenseaExternalUrl';
+import { hexHandler } from '~/shared/utils/getOpenseaExternalUrl';
 import { getFxHashExternalUrl, getObjktExternalUrl } from '~/utils/getTezosExternalUrl';
 
 type NftAdditionaDetailsNonPOAPProps = {
