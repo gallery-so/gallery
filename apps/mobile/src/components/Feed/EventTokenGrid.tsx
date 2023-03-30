@@ -26,6 +26,8 @@ export function EventTokenGrid({
       fragment EventTokenGridFragment on Token @relay(plural: true) {
         __typename
 
+        dbid
+
         ...getVideoOrImageUrlForNftPreviewFragment
       }
     `,
@@ -37,11 +39,17 @@ export function EventTokenGrid({
   const preserveAspectRatio = tokens.length === 1 && allowPreserveAspectRatio;
 
   const inner = useMemo(() => {
-    const tokenMedia = tokens.map((token) => {
-      return getVideoOrImageUrlForNftPreview(token);
+    const tokensWithMedia = tokens.map((token) => {
+      const media = getVideoOrImageUrlForNftPreview(token);
+
+      if (media) {
+        return { dbid: token.dbid, ...media };
+      } else {
+        return null;
+      }
     });
 
-    const [firstToken, secondToken, thirdToken, fourthToken] = tokenMedia;
+    const [firstToken, secondToken, thirdToken, fourthToken] = tokensWithMedia;
 
     if (firstToken && secondToken && thirdToken && fourthToken) {
       return (
@@ -51,6 +59,7 @@ export function EventTokenGrid({
               <NftPreview
                 priority={imagePriority}
                 resizeMode={ResizeMode.COVER}
+                tokenId={firstToken.dbid}
                 tokenUrl={firstToken.urls.small}
               />
             </View>
@@ -58,6 +67,7 @@ export function EventTokenGrid({
               <NftPreview
                 priority={imagePriority}
                 resizeMode={ResizeMode.COVER}
+                tokenId={secondToken.dbid}
                 tokenUrl={secondToken.urls.small}
               />
             </View>
@@ -68,6 +78,7 @@ export function EventTokenGrid({
               <NftPreview
                 priority={imagePriority}
                 resizeMode={ResizeMode.COVER}
+                tokenId={thirdToken.dbid}
                 tokenUrl={thirdToken.urls.small}
               />
             </View>
@@ -75,6 +86,7 @@ export function EventTokenGrid({
               <NftPreview
                 priority={imagePriority}
                 resizeMode={ResizeMode.COVER}
+                tokenId={fourthToken.dbid}
                 tokenUrl={fourthToken.urls.small}
               />
             </View>
@@ -88,6 +100,7 @@ export function EventTokenGrid({
             <NftPreview
               priority={imagePriority}
               resizeMode={ResizeMode.COVER}
+              tokenId={firstToken.dbid}
               tokenUrl={firstToken.urls.medium}
             />
           </View>
@@ -95,6 +108,7 @@ export function EventTokenGrid({
             <NftPreview
               priority={imagePriority}
               resizeMode={ResizeMode.COVER}
+              tokenId={secondToken.dbid}
               tokenUrl={secondToken.urls.medium}
             />
           </View>
@@ -102,11 +116,14 @@ export function EventTokenGrid({
       );
     } else if (firstToken) {
       return (
-        <NftPreview
-          resizeMode={preserveAspectRatio ? ResizeMode.CONTAIN : ResizeMode.COVER}
-          priority={imagePriority}
-          tokenUrl={firstToken.urls.large}
-        />
+        <View className="h-full w-full">
+          <NftPreview
+            resizeMode={preserveAspectRatio ? ResizeMode.CONTAIN : ResizeMode.COVER}
+            priority={imagePriority}
+            tokenId={firstToken.dbid}
+            tokenUrl={firstToken.urls.large}
+          />
+        </View>
       );
     } else {
       throw new Error('Tried to render EventTokenGrid without any tokens');
