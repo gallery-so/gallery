@@ -41,6 +41,7 @@
     "react-native-tab-view": "^3.4.0",
     "react-native-webview": "^11.26.1",
     "sentry-expo": "~6.1.0",
+    "swr": "^2.1.1",
     "text-encoding": "^0.7.0",
     "typescript": "^5.0.0",
     "web-streams-polyfill": "^3.2.1"
