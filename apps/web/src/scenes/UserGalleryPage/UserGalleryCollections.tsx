@@ -1,5 +1,5 @@
 import { useWindowVirtualizer } from '@tanstack/react-virtual';
-import { useMemo, useRef } from 'react';
+import { useLayoutEffect, useMemo, useRef } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
@@ -65,13 +65,11 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
 
   const parentRef = useRef<HTMLDivElement>(null);
 
-  const virtualizer = useWindowVirtualizer({
-    count: nonNullCollections.length,
-    estimateSize: () => 3000,
-    overscan: 10,
-  });
+  const parentOffsetRef = useRef(0);
 
-  const collectionsData = virtualizer.getVirtualItems();
+  useLayoutEffect(() => {
+    parentOffsetRef.current = parentRef.current?.offsetTop ?? 0;
+  }, []);
 
   const collectionsToDisplay = useMemo(
     () =>
@@ -89,6 +87,15 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
 
   const numCollectionsToDisplay = collectionsToDisplay.length;
 
+  const virtualizer = useWindowVirtualizer({
+    count: numCollectionsToDisplay,
+    estimateSize: () => 3000,
+    scrollMargin: parentOffsetRef.current,
+    overscan: 10,
+  });
+
+  const collectionsData = virtualizer.getVirtualItems();
+
   if (numCollectionsToDisplay === 0) {
     const emptyGalleryMessage = isAuthenticatedUsersPage
       ? 'Your gallery is empty. Display your pieces by creating a collection.'
@@ -98,29 +105,51 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
   }
 
   return (
-    <StyledUserGalleryCollections virtualizer={virtualizer} ref={parentRef}>
-      {collectionsData.map((virtualItem) => {
-        const collection = collectionsToDisplay[virtualItem.index];
+    // <StyledUserGalleryCollections virtualizer={virtualizer} ref={parentRef}>
+    <div style={{ width: '100%' }} ref={parentRef} className="List">
+      <div
+        style={{
+          height: virtualizer.getTotalSize(),
+          width: '100%',
+          position: 'relative',
+        }}
+      >
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            transform: `translateY(${
+              collectionsData[0]!.start! - virtualizer.options.scrollMargin
+            }px)`,
+          }}
+        >
+          {collectionsData.map((virtualItem) => {
+            const collection = collectionsToDisplay[virtualItem.index];
 
-        if (!collection) {
-          return null;
-        }
+            if (!collection) {
+              return null;
+            }
 
-        return (
-          <StyledUserGalleryCollectionContainer
-            key={virtualItem.key}
-            data-index={virtualItem.index}
-            ref={virtualizer.measureElement}
-          >
-            <UserGalleryCollection
-              queryRef={query}
-              collectionRef={collection}
-              mobileLayout={mobileLayout}
-            />
-          </StyledUserGalleryCollectionContainer>
-        );
-      })}
-    </StyledUserGalleryCollections>
+            return (
+              <div
+                ref={virtualizer.measureElement}
+                key={virtualItem.key}
+                data-index={virtualItem.index}
+              >
+                <UserGalleryCollection
+                  queryRef={query}
+                  collectionRef={collection}
+                  mobileLayout={mobileLayout}
+                />
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+    // </StyledUserGalleryCollections>
   );
 }
 
