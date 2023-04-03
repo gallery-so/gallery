@@ -12,6 +12,7 @@ import { createRelayEnvironment } from '~/contexts/relay/RelayProvider';
 import { RootStackNavigator } from '~/navigation/RootStackNavigator';
 
 import { DevMenuItems } from './components/DevMenuItems';
+import { FullScreenLoading } from './components/FullScreenLoading';
 import { magic } from './magic';
 
 SplashScreen.preventAutoHideAsync();
@@ -50,7 +51,7 @@ export default function App() {
 
   return (
     <RelayEnvironmentProvider environment={relayEnvironment}>
-      <Suspense fallback={null}>
+      <Suspense fallback={<FullScreenLoading />}>
         <MobileErrorReportingProvider>
           <SafeAreaProvider>
             <magic.Relayer />
