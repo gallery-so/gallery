@@ -4,6 +4,7 @@ import { KeyboardAvoidingView, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { LoginStackNavigatorProp } from '~/navigation/types';
+import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 
 import { Button } from '../../components/Button';
 import { FadedInput } from '../../components/FadedInput';
@@ -21,30 +22,45 @@ export function EnterEmailScreen() {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   const [login] = useLogin();
+  const reportError = useReportError();
 
   const handleContinue = useCallback(async () => {
     setError('');
     setIsLoggingIn(true);
 
+    // Show the waiting screen.
+    navigation.navigate('WaitingForConfirmation', { email });
+
+    function handleLoginError(message: string) {
+      reportError(`LoginError: ${message}`);
+
+      setError(message);
+
+      // Bring the user back to the login route with an error displayed.
+      navigation.goBack();
+    }
+
     try {
-      const token = await magic.auth.loginWithMagicLink({ email });
+      const token = await magic.auth.loginWithMagicLink({ email, showUI: false });
 
       if (!token) {
-        setError('Something went wrong');
+        handleLoginError(
+          "Something unexpected went wrong while logigng in. We've been notified and are looking into it"
+        );
         return;
       }
 
       const result = await login({ magicLink: { token } });
 
       if (result.kind === 'failure') {
-        setError(result.message);
+        handleLoginError(result.message);
       } else {
         navigation.replace('MainTabs', { screen: 'Home', params: { screen: 'Latest' } });
       }
     } finally {
       setIsLoggingIn(false);
     }
-  }, [email, login, navigation]);
+  }, [email, login, navigation, reportError]);
 
   return (
     <SafeAreaView className="h-screen bg-white">
