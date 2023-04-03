@@ -55,7 +55,7 @@ export function EnterEmailScreen() {
       if (result.kind === 'failure') {
         handleLoginError(result.message);
       } else {
-        navigation.replace('MainTabs', { screen: 'Home', params: { screen: 'Latest' } });
+        navigation.navigate('AskForNotifications');
       }
     } finally {
       setIsLoggingIn(false);

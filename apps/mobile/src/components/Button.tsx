@@ -7,6 +7,7 @@ import { Typography } from './Typography';
 type Variant = 'dark' | 'light';
 
 type ButtonProps = {
+  className?: string;
   style?: TouchableOpacityProps['style'];
   loading?: boolean;
   disabled?: boolean;

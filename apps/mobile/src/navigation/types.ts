@@ -24,6 +24,7 @@ export type LoginStackNavigatorParamList = {
   EnterEmail: undefined;
   QRCode: undefined;
   WaitingForConfirmation: { email: string };
+  AskForNotifications: undefined;
 };
 
 export type RootStackNavigatorProp = NativeStackNavigationProp<RootStackNavigatorParamList>;
