@@ -43,6 +43,27 @@ tasks:
       - ~:ios-raw
       - ~:relay-watch
 
+  android-raw:
+    command: expo run:android
+    local: true
+
+  android-device-raw:
+    command: expo run:android --device
+    local: true
+
+  android-device:
+    command: noop
+    deps:
+      - '~:android-device-raw'
+      - '~:relay-watch'
+    local: true
+
+  android:
+    command: noop
+    deps:
+      - ~:android-raw
+      - ~:relay-watch
+
   ios-build:
     command: eas build -p ios --local
     env:

@@ -19,7 +19,7 @@ function TabItem({ route, activeRoute }: TabItemProps) {
 
   const onPress = useCallback(() => {
     if (!isFocused) {
-      navigation.navigate(route, {});
+      navigation.navigate(route);
     }
   }, [isFocused, navigation, route]);
 

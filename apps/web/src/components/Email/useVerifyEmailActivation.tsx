@@ -4,7 +4,7 @@ import { SelectorStoreUpdater } from 'relay-runtime';
 
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { useVerifyEmailActivationMutation } from '~/generated/useVerifyEmailActivationMutation.graphql';
-import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
+import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 
 export default function useVerifyEmailActivation() {
   const [verifyEmailMutate] = usePromisifiedMutation<useVerifyEmailActivationMutation>(graphql`

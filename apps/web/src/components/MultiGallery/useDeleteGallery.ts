@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { graphql } from 'relay-runtime';
 
 import { useDeleteGalleryMutation } from '~/generated/useDeleteGalleryMutation.graphql';
-import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
+import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 
 export default function useDeleteGallery() {
   const [deleteGallery] = usePromisifiedMutation<useDeleteGalleryMutation>(graphql`

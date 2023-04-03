@@ -3,8 +3,8 @@ import { useCallback } from 'react';
 import { graphql } from 'relay-runtime';
 
 import { useCreateGalleryMutation } from '~/generated/useCreateGalleryMutation.graphql';
-import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 import { ValidationError } from '~/shared/errors/ValidationError';
+import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 
 export default function useCreateGallery() {
   const router = useRouter();

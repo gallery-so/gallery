@@ -9,7 +9,10 @@ import { RelayEnvironmentProvider } from 'react-relay';
 
 import { MobileErrorReportingProvider } from '~/contexts/MobileErrorReportingProvider';
 import { createRelayEnvironment } from '~/contexts/relay/RelayProvider';
-import { MainTabNavigator } from '~/navigation/MainTabNavigator/MainTabNavigator';
+import { RootStackNavigator } from '~/navigation/RootStackNavigator';
+
+import { DevMenuItems } from './components/DevMenuItems';
+import { magic } from './magic';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -50,8 +53,10 @@ export default function App() {
       <Suspense fallback={null}>
         <MobileErrorReportingProvider>
           <SafeAreaProvider>
+            <magic.Relayer />
             <NavigationContainer>
-              <MainTabNavigator />
+              <DevMenuItems />
+              <RootStackNavigator />
             </NavigationContainer>
           </SafeAreaProvider>
         </MobileErrorReportingProvider>

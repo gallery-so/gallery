@@ -6,9 +6,9 @@ import {
   useUpdateCollectionInfoMutation,
   useUpdateCollectionInfoMutation$data,
 } from '~/generated/useUpdateCollectionInfoMutation.graphql';
-import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { ErrorWithSentryMetadata } from '~/shared/errors/ErrorWithSentryMetadata';
+import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 
 export default function useUpdateCollectionInfo() {
   const [updateCollection, isMutating] =
