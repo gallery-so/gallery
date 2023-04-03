@@ -8,7 +8,7 @@ import {
   useLoginOrRedirectToOnboardingMutation,
   useLoginOrRedirectToOnboardingMutation$variables,
 } from '~/generated/useLoginOrRedirectToOnboardingMutation.graphql';
-import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
+import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 
 export default function useLoginOrRedirectToOnboarding() {
   const [login, isMutating] = usePromisifiedMutation<useLoginOrRedirectToOnboardingMutation>(

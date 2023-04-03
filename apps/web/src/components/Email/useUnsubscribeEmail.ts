@@ -3,7 +3,7 @@ import { graphql } from 'react-relay';
 
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { useUnsubscribeEmailMutation } from '~/generated/useUnsubscribeEmailMutation.graphql';
-import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
+import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 
 type Props = {
   type: 'All' | 'Notifications';

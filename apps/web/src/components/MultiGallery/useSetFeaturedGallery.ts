@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { graphql } from 'relay-runtime';
 
 import { useSetFeaturedGalleryMutation } from '~/generated/useSetFeaturedGalleryMutation.graphql';
-import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
+import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 
 export default function useSetFeaturedGallery() {
   const [setFeaturedGallery] = usePromisifiedMutation<useSetFeaturedGalleryMutation>(graphql`
