@@ -45,7 +45,7 @@ export function AskForNotificationsScreen() {
       <IconContainer className="px-6" icon={<BackIcon />} onPress={navigation.goBack} />
 
       <View className="flex flex-grow flex-col items-center justify-center">
-        <View className="flex max-w-xs flex-col space-y-4">
+        <View className="flex flex-col space-y-4 px-6">
           <Typography className="text-2xl" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
             Turn on push notifications?
           </Typography>
