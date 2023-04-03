@@ -58,7 +58,6 @@ export default function App() {
             <NavigationContainer>
               <NotificaitonsRegistrar />
 
-              <MainTabNavigator />
               <DevMenuItems />
               <RootStackNavigator />
             </NavigationContainer>
