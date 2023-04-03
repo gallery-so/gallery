@@ -1,8 +1,14 @@
+import { captureException } from '@sentry/react-native';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
 import { commitMutation, graphql } from 'relay-runtime';
 import RelayModernEnvironment from 'relay-runtime/lib/store/RelayModernEnvironment';
+
+import { registerNotificationTokenMutation } from '~/generated/registerNotificationTokenMutation.graphql';
+
+const fallbackErrorMessage =
+  'Something unexpected went wrong while trying to register you for push notifications.';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -59,15 +65,45 @@ export async function registerNotificationToken({
   }
 
   // Execute a mutation to register the token with our backend.
-  // commitMutation(relayEnvironment, {
-  //   mutation: graphql`
-  //     mutation registerNotificationTokenMutation($input: RegisterNotificationTokenInput!) {
-  //
-  //     }
-  //   `,
-  //   variables: {},
-  // });
+  return new Promise<Result>((resolve) => {
+    commitMutation<registerNotificationTokenMutation>(relayEnvironment, {
+      mutation: graphql`
+        mutation registerNotificationTokenMutation($token: String!) {
+          registerUserPushToken(pushToken: $token) {
+            ... on RegisterUserPushTokenPayload {
+              __typename
+            }
 
-  return { kind: 'registered' };
-  // return expoPushToken.data;
+            ... on Error {
+              __typename
+              message
+            }
+          }
+        }
+      `,
+      variables: {
+        token: expoPushToken.data,
+      },
+      onCompleted: (response) => {
+        const { registerUserPushToken } = response;
+
+        if (registerUserPushToken?.__typename === 'RegisterUserPushTokenPayload') {
+          resolve({ kind: 'registered' });
+        } else if (registerUserPushToken) {
+          resolve({
+            kind: 'failure',
+            reason: registerUserPushToken.message ?? fallbackErrorMessage,
+          });
+        }
+      },
+      onError: (error) => {
+        captureException(error);
+
+        resolve({
+          kind: 'failure',
+          reason: fallbackErrorMessage,
+        });
+      },
+    });
+  });
 }
