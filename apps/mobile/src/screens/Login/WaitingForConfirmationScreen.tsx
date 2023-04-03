@@ -14,7 +14,7 @@ export function WaitingForConfirmationScreen() {
 
   return (
     <SafeAreaViewWithPadding className="flex h-screen flex-1 flex-col bg-white">
-      <IconContainer className="px-6 py-2" icon={<BackIcon />} onPress={navigation.goBack} />
+      <IconContainer className="px-6" icon={<BackIcon />} onPress={navigation.goBack} />
 
       <View className="flex flex-grow flex-col items-center justify-center">
         <View className="flex max-w-xs flex-col space-y-4">
