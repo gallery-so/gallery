@@ -3,6 +3,7 @@ import { LogBox } from 'react-native';
 import { polyfill as polyfillEncoding } from 'react-native-polyfill-globals/src/encoding';
 import { polyfill as polyfillFetch } from 'react-native-polyfill-globals/src/fetch';
 import { polyfill as polyfillReadableStream } from 'react-native-polyfill-globals/src/readable-stream';
+import { polyfill as polyfillUrl } from 'react-native-polyfill-globals/src/url';
 import { enableFreeze } from 'react-native-screens';
 import * as Sentry from 'sentry-expo';
 
@@ -20,6 +21,7 @@ LogBox.ignoreLogs([
 polyfillEncoding();
 polyfillFetch();
 polyfillReadableStream();
+polyfillUrl();
 
 enableFreeze(true);
 
