@@ -16,7 +16,7 @@ function Empty() {
 
 export function LoginStackNavigator() {
   return (
-    <Stack.Navigator screenOptions={{ header: Empty }} initialRouteName="AskForNotifications">
+    <Stack.Navigator screenOptions={{ header: Empty }} initialRouteName="Landing">
       <Stack.Screen name="Landing" component={LandingScreen} />
       <Stack.Screen name="EnterEmail" component={EnterEmailScreen} />
       <Stack.Screen name="WaitingForConfirmation" component={WaitingForConfirmationScreen} />
