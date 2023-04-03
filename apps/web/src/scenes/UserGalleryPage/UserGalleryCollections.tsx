@@ -1,5 +1,5 @@
 import { useWindowVirtualizer } from '@tanstack/react-virtual';
-import { useMemo, useRef } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
@@ -63,16 +63,6 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
 
   const nonNullCollections = removeNullValues(collections);
 
-  const parentRef = useRef<HTMLDivElement>(null);
-
-  const virtualizer = useWindowVirtualizer({
-    count: nonNullCollections.length,
-    estimateSize: () => 3000,
-    overscan: 10,
-  });
-
-  const collectionsData = virtualizer.getVirtualItems();
-
   const collectionsToDisplay = useMemo(
     () =>
       nonNullCollections.filter((collection) => {
@@ -88,6 +78,32 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
   );
 
   const numCollectionsToDisplay = collectionsToDisplay.length;
+
+  const parentRef = useRef<HTMLDivElement>(null);
+
+  // If its a large collection, we want to overscan more items to prevent
+  // the user from seeing the virtualization in action.
+  const isLargeCollection = numCollectionsToDisplay > 30;
+
+  const layoutHeight = 1000;
+  const estimateSize = useCallback(
+    (index: number) => {
+      const collection = collectionsToDisplay[index];
+      if (!collection) return 0;
+
+      const noOfSections = collection.layout?.sectionLayout?.length || 1;
+      return noOfSections * layoutHeight;
+    },
+    [collectionsToDisplay]
+  );
+
+  const virtualizer = useWindowVirtualizer({
+    count: numCollectionsToDisplay,
+    estimateSize,
+    overscan: isLargeCollection ? 40 : 10,
+  });
+
+  const collectionsData = virtualizer.getVirtualItems();
 
   if (numCollectionsToDisplay === 0) {
     const emptyGalleryMessage = isAuthenticatedUsersPage
@@ -108,7 +124,7 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
 
         return (
           <StyledUserGalleryCollectionContainer
-            key={virtualItem.key}
+            key={virtualItem.index}
             data-index={virtualItem.index}
             ref={virtualizer.measureElement}
           >
