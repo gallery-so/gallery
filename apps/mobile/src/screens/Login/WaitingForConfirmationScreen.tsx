@@ -1,10 +1,10 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { LoginStackNavigatorParamList, LoginStackNavigatorProp } from '~/navigation/types';
 
 import { IconContainer } from '../../components/IconContainer';
+import { SafeAreaViewWithPadding } from '../../components/SafeAreaViewWithPadding';
 import { Typography } from '../../components/Typography';
 import { BackIcon } from '../../icons/BackIcon';
 
@@ -13,7 +13,7 @@ export function WaitingForConfirmationScreen() {
   const navigation = useNavigation<LoginStackNavigatorProp>();
 
   return (
-    <SafeAreaView className="flex h-screen flex-1 flex-col bg-white">
+    <SafeAreaViewWithPadding className="flex h-screen flex-1 flex-col bg-white">
       <IconContainer className="px-6 py-2" icon={<BackIcon />} onPress={navigation.goBack} />
 
       <View className="flex flex-grow flex-col items-center justify-center">
@@ -33,6 +33,6 @@ export function WaitingForConfirmationScreen() {
           <View />
         </View>
       </View>
-    </SafeAreaView>
+    </SafeAreaViewWithPadding>
   );
 }

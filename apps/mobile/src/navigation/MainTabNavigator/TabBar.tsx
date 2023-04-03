@@ -2,12 +2,13 @@ import { MaterialTopTabBarProps } from '@react-navigation/material-top-tabs';
 import { useNavigation } from '@react-navigation/native';
 import { ReactNode, useCallback } from 'react';
 import { TouchableOpacity, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AccountIcon } from '~/navigation/MainTabNavigator/AccountIcon';
 import { GLogo } from '~/navigation/MainTabNavigator/GLogo';
 import { NotificationsIcon } from '~/navigation/MainTabNavigator/NotificationsIcon';
 import { MainTabNavigatorParamList, MainTabNavigatorProp } from '~/navigation/types';
+
+import { useSafeAreaPadding } from '../../components/SafeAreaViewWithPadding';
 
 type TabItemProps = {
   activeRoute: keyof MainTabNavigatorParamList;
@@ -43,18 +44,13 @@ function TabItem({ route, icon, activeRoute }: TabItemProps) {
 }
 
 export function TabBar({ state }: MaterialTopTabBarProps) {
-  const { bottom } = useSafeAreaInsets();
-
   const activeRoute = state.routeNames[state.index] as keyof MainTabNavigatorParamList;
 
-  const hasSafeAreaIntersection = bottom !== 0;
+  const { bottom } = useSafeAreaPadding();
+
   return (
     <View
-      style={
-        hasSafeAreaIntersection
-          ? { paddingBottom: bottom, paddingTop: 12 }
-          : { paddingBottom: 12, paddingTop: 12 }
-      }
+      style={{ paddingBottom: bottom, paddingTop: 12 }}
       className="bg-offWhite flex flex-row items-center justify-center"
     >
       <TabItem activeRoute={activeRoute} route="Account" icon={<AccountIcon />} />

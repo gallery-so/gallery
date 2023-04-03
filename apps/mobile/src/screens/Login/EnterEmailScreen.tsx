@@ -1,7 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { useCallback, useState } from 'react';
 import { KeyboardAvoidingView, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { LoginStackNavigatorProp } from '~/navigation/types';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
@@ -9,6 +8,7 @@ import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { Button } from '../../components/Button';
 import { FadedInput } from '../../components/FadedInput';
 import { IconContainer } from '../../components/IconContainer';
+import { SafeAreaViewWithPadding } from '../../components/SafeAreaViewWithPadding';
 import { Typography } from '../../components/Typography';
 import { useLogin } from '../../hooks/useLogin';
 import { BackIcon } from '../../icons/BackIcon';
@@ -63,7 +63,7 @@ export function EnterEmailScreen() {
   }, [email, login, navigation, reportError]);
 
   return (
-    <SafeAreaView className="h-screen bg-white">
+    <SafeAreaViewWithPadding className="h-screen bg-white">
       <KeyboardAvoidingView behavior="padding" className="flex flex-1 flex-col">
         <IconContainer className="px-6 py-2" icon={<BackIcon />} onPress={navigation.goBack} />
 
@@ -104,6 +104,6 @@ export function EnterEmailScreen() {
           </View>
         </View>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </SafeAreaViewWithPadding>
   );
 }

@@ -1,13 +1,13 @@
 import { useNavigation } from '@react-navigation/native';
 import { useCallback, useState } from 'react';
 import { View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRelayEnvironment } from 'react-relay';
 
 import { LoginStackNavigatorProp } from '~/navigation/types';
 
 import { Button } from '../../components/Button';
 import { IconContainer } from '../../components/IconContainer';
+import { SafeAreaViewWithPadding } from '../../components/SafeAreaViewWithPadding';
 import { Typography } from '../../components/Typography';
 import { BackIcon } from '../../icons/BackIcon';
 import { registerNotificationToken } from '../../utils/registerNotificationToken';
@@ -41,7 +41,7 @@ export function AskForNotificationsScreen() {
   }, [relayEnvironment, transitionToLoggedInState]);
 
   return (
-    <SafeAreaView className="flex h-screen flex-1 flex-col bg-white">
+    <SafeAreaViewWithPadding className="flex h-screen flex-1 flex-col bg-white">
       <IconContainer className="px-6 py-2" icon={<BackIcon />} onPress={navigation.goBack} />
 
       <View className="flex flex-grow flex-col items-center justify-center">
@@ -70,6 +70,6 @@ export function AskForNotificationsScreen() {
         <Button onPress={handleSkip} className="flex-grow" text="SKIP" variant="light" />
         <Button onPress={handleContinue} className="flex-grow" text="TURN ON" variant="dark" />
       </View>
-    </SafeAreaView>
+    </SafeAreaViewWithPadding>
   );
 }
