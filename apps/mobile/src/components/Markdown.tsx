@@ -12,6 +12,9 @@ const markdownStyles = StyleSheet.create({
     color: '#141414',
     fontFamily: 'ABCDiatypeRegular',
   },
+  strong: {
+    fontFamily: 'ABCDiatypeBold',
+  },
   link: {
     color: '#707070',
   },
