@@ -34,7 +34,12 @@ export function GallerySearchResultSection({ isShowingAll, queryRef, onChangeFil
   );
 
   return (
-    <SearchSection title="galleries" onShowAll={() => onChangeFilter('gallery')}>
+    <SearchSection
+      title="galleries"
+      isShowAll={isShowingAll}
+      numResults={results.length}
+      onShowAll={() => onChangeFilter('gallery')}
+    >
       <ScrollView className="flex w-full flex-col pb-32">
         {resultsToShow.map((result) => (
           <GallerySearchResult key={result.gallery.id} galleryRef={result.gallery} />

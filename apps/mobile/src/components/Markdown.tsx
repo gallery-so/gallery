@@ -10,7 +10,7 @@ const markdownStyles = StyleSheet.create({
   body: {
     fontSize: 12,
     color: '#141414',
-    fontFamily: 'ABCDiatypeRegular',
+    // fontFamily: 'ABCDiatypeRegular',
   },
   link: {
     color: '#707070',

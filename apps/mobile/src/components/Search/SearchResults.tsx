@@ -45,6 +45,8 @@ export function SearchResults({ activeFilter, keyword, onChangeFilter }: Props) 
     { query: deferredKeyword }
   );
 
+  const isLoading = keyword !== deferredKeyword;
+
   if (activeFilter === 'curator') {
     return (
       <View>
@@ -73,8 +75,16 @@ export function SearchResults({ activeFilter, keyword, onChangeFilter }: Props) 
     );
   }
 
+  // return (
+  //   <View className={`h-full ${isLoading ? 'opacity-50' : 'opacity-100'} `}>
+  //     <View className="bg-red flex flex-1 items-center justify-center">
+  //       <Text>No results</Text>
+  //     </View>
+  //   </View>
+  // );
+
   return (
-    <View>
+    <View className={`${isLoading ? 'opacity-50' : 'opacity-100'} `}>
       {query?.searchUsers?.__typename === 'SearchUsersPayload' && (
         <UserSearchResultSection
           queryRef={query.searchUsers.results}

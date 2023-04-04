@@ -34,7 +34,12 @@ export function UserSearchResultSection({ isShowingAll, queryRef, onChangeFilter
   );
 
   return (
-    <SearchSection title="curators" onShowAll={() => onChangeFilter('curator')}>
+    <SearchSection
+      title="curators"
+      isShowAll={isShowingAll}
+      numResults={results.length}
+      onShowAll={() => onChangeFilter('curator')}
+    >
       <ScrollView className="flex w-full flex-col">
         {resultsToShow.map((result) => (
           <UserSearchResult key={result.user.id} userRef={result.user} />

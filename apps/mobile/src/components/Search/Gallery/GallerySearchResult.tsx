@@ -11,7 +11,6 @@ export function GallerySearchResult({ galleryRef }: Props) {
   const gallery = useFragment(
     graphql`
       fragment GallerySearchResultFragment on Gallery {
-        dbid
         name
         owner {
           username

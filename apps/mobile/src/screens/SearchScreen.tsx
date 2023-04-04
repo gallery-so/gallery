@@ -1,12 +1,12 @@
-import { useState } from 'react';
-import { View } from 'react-native';
+import { Suspense, useState } from 'react';
+import { Text, View } from 'react-native';
 import { SearchFilter } from 'src/components/Search/SearchFilter';
 import { SearchFilterType } from 'src/components/Search/SearchFilter';
 import { SearchInput } from 'src/components/Search/SearchInput';
 import { SearchResults } from 'src/components/Search/SearchResults';
 
 export function SearchScreen() {
-  const [keyword, setKeyword] = useState<string>('ja');
+  const [keyword, setKeyword] = useState<string>('rob');
   const [filter, setFilter] = useState<SearchFilterType>(null);
 
   return (
@@ -16,10 +16,12 @@ export function SearchScreen() {
         <SearchFilter activeFilter={filter} onChange={setFilter} />
       </View>
 
-      <View className="p-4">
-        {keyword && (
-          <SearchResults activeFilter={filter} keyword={keyword} onChangeFilter={setFilter} />
-        )}
+      <View className=" flex h-full max-h-full p-4">
+        <Suspense fallback={<Text>Loading...</Text>}>
+          {keyword && (
+            <SearchResults activeFilter={filter} keyword={keyword} onChangeFilter={setFilter} />
+          )}
+        </Suspense>
       </View>
     </View>
   );
