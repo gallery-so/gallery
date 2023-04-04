@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback, useRef, useState } from 'react';
 import { TextInput, TextInputProps, TouchableOpacity, View } from 'react-native';
 
 import { useSearchContext } from './SearchContext';
@@ -12,11 +13,15 @@ export function SearchInput({ value, onChange, style, ...props }: Props) {
 
   const ref = useRef<TextInput>(null);
 
-  useEffect(() => {
-    if (ref.current) {
-      ref.current.focus();
-    }
-  }, []);
+  useFocusEffect(() => {
+    // Need to focus after a certain number of ms, otherwise the input immediately loses focus
+    // https://github.com/facebook/react-native/issues/30162#issuecomment-1046090316
+    setTimeout(() => {
+      if (ref.current) {
+        ref.current.focus();
+      }
+    }, 500);
+  });
 
   const handleClear = useCallback(() => {
     if (ref.current) {
