@@ -11,6 +11,7 @@
       "~/generated/*": ["./__generated__/relay/*", "../../packages/shared/__generated__/relay/*"],
       "~/navigation/*": ["src/navigation/*"],
       "~/screens/*": ["src/screens/*"],
+      "~/components/*": ["src/components/*"],
       "~/shared/*": ["../../packages/shared/src/*"]
     },
     "outDir": "../../.moon/cache/types/apps/mobile"
