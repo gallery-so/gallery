@@ -85,7 +85,7 @@ const AnalyticsProvider = memo(({ children }: Props) => {
       .then((query) => {
         const userId = query?.viewer?.user?.dbid;
 
-        // don't track unauthenticated users
+        // don't identify unauthenticated users
         if (!userId) {
           return;
         }
@@ -105,11 +105,6 @@ const AnalyticsProvider = memo(({ children }: Props) => {
         .toPromise()
         .then((query) => {
           const userId = query?.viewer?.user?.dbid;
-
-          // don't track unauthenticated users
-          if (!userId) {
-            return;
-          }
 
           _track(eventName, eventProps, userId);
         });
