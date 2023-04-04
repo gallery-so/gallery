@@ -19,9 +19,10 @@ type TypographyProps = PropsWithChildren<{
         family: 'ABCDiatype';
         weight: 'Medium' | 'Regular' | 'Bold';
       };
-}>;
+}> &
+  TextProps;
 
-export function Typography({ font, style, children }: TypographyProps) {
+export function Typography({ font, style, children, ...rest }: TypographyProps) {
   const textStyle = useMemo((): TextStyle => {
     if (font.family === 'GTAlpina') {
       return { fontFamily: `GTAlpina${font.weight}${font.italic ? 'Italic' : ''}` };
@@ -37,7 +38,7 @@ export function Typography({ font, style, children }: TypographyProps) {
   }, [font]);
 
   return (
-    <Text style={[textStyle, style]} className={`text-offBlack text-base`}>
+    <Text {...rest} style={[textStyle, style]} className={`text-offBlack text-base`}>
       {children}
     </Text>
   );
