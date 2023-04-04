@@ -8,7 +8,7 @@ export function DetailSection({
   style,
 }: PropsWithChildren<{ style?: ViewProps['style'] }>) {
   return (
-    <View style={style} className="flex flex-col items-start">
+    <View style={style} className="flex flex-1 flex-col items-start">
       {children}
     </View>
   );
@@ -24,7 +24,12 @@ export function DetailLabelText({ children }: PropsWithChildren) {
 
 export function DetailValue({ children }: PropsWithChildren) {
   return (
-    <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
+    <Typography
+      numberOfLines={1}
+      ellipsizeMode="middle"
+      className="text-sm"
+      font={{ family: 'ABCDiatype', weight: 'Regular' }}
+    >
       {children}
     </Typography>
   );
