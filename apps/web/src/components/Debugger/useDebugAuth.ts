@@ -5,7 +5,7 @@ import {
   DebugAuth,
   useDebugAuthLoginMutation,
 } from '~/generated/useDebugAuthLoginMutation.graphql';
-import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
+import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 
 export function useDebugAuthLogin() {
   const [login] = usePromisifiedMutation<useDebugAuthLoginMutation>(

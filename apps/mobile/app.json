@@ -20,15 +20,11 @@
         "usesNonExemptEncryption": false
       },
       "supportsTablet": true,
-      "bundleIdentifier": "com.gallerylabs.gallery"
+      "bundleIdentifier": "com.usegallery.gallery"
     },
     "android": {
       "blockedPermissions": ["android.permission.RECORD_AUDIO"],
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
-      },
-      "package": "com.gallerylabs.gallery"
+      "package": "com.usegallery.gallery"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -51,6 +47,6 @@
         }
       ]
     },
-    "plugins": ["sentry-expo"]
+    "plugins": ["sentry-expo", "expo-barcode-scanner"]
   }
 }

@@ -1,24 +1,45 @@
 import { MaterialTopTabNavigationProp } from '@react-navigation/material-top-tabs';
+import { CompositeNavigationProp, NavigatorScreenParams } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+export type RootStackNavigatorParamList = {
+  MainTabs: NavigatorScreenParams<MainTabNavigatorParamList>;
+  Login: NavigatorScreenParams<LoginStackNavigatorParamList>;
+};
 
 export type FeedTabNavigatorParamList = {
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  Trending: {};
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  Latest: {};
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  Featured: {};
+  Trending: undefined;
+  Latest: undefined;
+  Featured: undefined;
 };
 
 export type MainTabNavigatorParamList = {
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  Account: {};
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  Home: {};
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  Notifications: {};
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  Search: {};
+  Account: undefined;
+  Home: NavigatorScreenParams<FeedTabNavigatorParamList>;
+  Notifications: undefined;
+  Search: undefined;
 };
 
-export type MainTabNavigatorProp = MaterialTopTabNavigationProp<MainTabNavigatorParamList>;
-export type FeedTabNavigatorProp = MaterialTopTabNavigationProp<FeedTabNavigatorParamList>;
+export type LoginStackNavigatorParamList = {
+  Landing: undefined;
+  EnterEmail: undefined;
+  QRCode: undefined;
+  WaitingForConfirmation: { email: string };
+};
+
+export type RootStackNavigatorProp = NativeStackNavigationProp<RootStackNavigatorParamList>;
+
+export type LoginStackNavigatorProp = CompositeNavigationProp<
+  NativeStackNavigationProp<RootStackNavigatorParamList, 'Login'>,
+  NativeStackNavigationProp<LoginStackNavigatorParamList>
+>;
+
+export type MainTabNavigatorProp = CompositeNavigationProp<
+  NativeStackNavigationProp<RootStackNavigatorParamList, 'MainTabs'>,
+  MaterialTopTabNavigationProp<MainTabNavigatorParamList>
+>;
+
+export type FeedTabNavigatorProp = CompositeNavigationProp<
+  MainTabNavigatorProp,
+  MaterialTopTabNavigationProp<FeedTabNavigatorParamList>
+>;

@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { graphql } from 'relay-runtime';
 
 import { useRemoveWalletMutation } from '~/generated/useRemoveWalletMutation.graphql';
-import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
+import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 
 export default function useRemoveWallet() {
   const [removeWallet, isMutating] = usePromisifiedMutation<useRemoveWalletMutation>(

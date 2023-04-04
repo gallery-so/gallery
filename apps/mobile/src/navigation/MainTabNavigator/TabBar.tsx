@@ -23,13 +23,17 @@ function TabItem({ route, icon, activeRoute }: TabItemProps) {
 
   const onPress = useCallback(() => {
     if (!isFocused) {
-      navigation.navigate(route, {});
+      if (route === 'Home') {
+        navigation.navigate(route, { screen: 'Trending' });
+      } else {
+        navigation.navigate(route);
+      }
     }
   }, [isFocused, navigation, route]);
 
   return (
     <TouchableOpacity
-      className={`px-8 pt-3 ${isFocused ? 'opacity-100' : 'opacity-25'}`}
+      className={`px-8 ${isFocused ? 'opacity-100' : 'opacity-25'}`}
       accessibilityRole="button"
       accessibilityState={isFocused ? { selected: true } : {}}
       onPress={onPress}
@@ -44,9 +48,14 @@ export function TabBar({ state }: MaterialTopTabBarProps) {
 
   const activeRoute = state.routeNames[state.index] as keyof MainTabNavigatorParamList;
 
+  const hasSafeAreaIntersection = bottom !== 0;
   return (
     <View
-      style={{ paddingBottom: bottom }}
+      style={
+        hasSafeAreaIntersection
+          ? { paddingBottom: bottom, paddingTop: 12 }
+          : { paddingBottom: 12, paddingTop: 12 }
+      }
       className="bg-offWhite flex flex-row items-center justify-center"
     >
       <TabItem activeRoute={activeRoute} route="Account" icon={<AccountIcon />} />

@@ -14,8 +14,8 @@ import { graphql } from 'relay-runtime';
 
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { NftErrorContextRetryMutation } from '~/generated/NftErrorContextRetryMutation.graphql';
-import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
+import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 
 type TokenErrorState = {
   isFailed: boolean;

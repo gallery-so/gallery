@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { graphql } from 'react-relay';
 
 import { useUpdateEmailNotificationSettingsMutation } from '~/generated/useUpdateEmailNotificationSettingsMutation.graphql';
-import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
+import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 
 export default function useUpdateEmailNotificationSettings() {
   const [updateEmailNotificationSettings] =

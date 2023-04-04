@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useLayoutEffect, useMemo, useRef } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
@@ -10,11 +10,12 @@ import { InteractionsFragment$key } from '~/generated/InteractionsFragment.graph
 import { InteractionsQueryFragment$key } from '~/generated/InteractionsQueryFragment.graphql';
 
 type Props = {
+  onPotentialLayoutShift: () => void;
   eventRef: InteractionsFragment$key;
   queryRef: InteractionsQueryFragment$key;
 };
 
-export function Interactions({ eventRef, queryRef }: Props) {
+export function Interactions({ eventRef, queryRef, onPotentialLayoutShift }: Props) {
   const event = useFragment(
     graphql`
       fragment InteractionsFragment on FeedEvent {
@@ -93,6 +94,17 @@ export function Interactions({ eventRef, queryRef }: Props) {
   const totalComments = event.comments?.pageInfo.total ?? 0;
   const totalAdmires = event.admires?.pageInfo.total ?? 0;
   const totalInteractions = totalComments + totalAdmires;
+
+  const isFirstMount = useRef(true);
+  useLayoutEffect(() => {
+    if (!isFirstMount.current) {
+      onPotentialLayoutShift();
+    }
+
+    isFirstMount.current = false;
+
+    // These are all the things that might cause the layout to shift
+  }, [onPotentialLayoutShift, nonNullAdmires, nonNullComments, totalComments, totalAdmires]);
 
   /**
    * The below logic is a bit annoying to read so I'll try to explain it here

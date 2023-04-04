@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { graphql } from 'react-relay';
 
 import { useUpdatePrimaryWalletMutation } from '~/generated/useUpdatePrimaryWalletMutation.graphql';
-import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
+import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 
 export default function useUpdatePrimaryWallet() {
   const [updatePrimaryWalletAddress, isMutating] =

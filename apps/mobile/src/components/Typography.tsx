@@ -21,7 +21,7 @@ type TypographyProps = PropsWithChildren<{
       };
 }>;
 
-export function Typography({ font, className, style, children }: TypographyProps) {
+export function Typography({ font, style, children }: TypographyProps) {
   const textStyle = useMemo((): TextStyle => {
     if (font.family === 'GTAlpina') {
       return { fontFamily: `GTAlpina${font.weight}${font.italic ? 'Italic' : ''}` };
@@ -37,7 +37,7 @@ export function Typography({ font, className, style, children }: TypographyProps
   }, [font]);
 
   return (
-    <Text style={[textStyle, style]} className={`text-offBlack ${className}`}>
+    <Text style={[textStyle, style]} className={`text-offBlack text-base`}>
       {children}
     </Text>
   );

@@ -6,10 +6,10 @@ import { useToastActions } from '~/contexts/toast/ToastContext';
 import { EmailVerificationStatusFragment$key } from '~/generated/EmailVerificationStatusFragment.graphql';
 import { EmailVerificationStatusMutation } from '~/generated/EmailVerificationStatusMutation.graphql';
 import { RefetchableEmailVerificationStatusFragment } from '~/generated/RefetchableEmailVerificationStatusFragment.graphql';
-import { usePromisifiedMutation } from '~/hooks/usePromisifiedMutation';
 import AlertTriangleIcon from '~/icons/AlertTriangleIcon';
 import CircleCheckIcon from '~/icons/CircleCheckIcon';
 import ClockIcon from '~/icons/ClockIcon';
+import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 
 import { Button } from '../core/Button/Button';
 import colors from '../core/colors';
