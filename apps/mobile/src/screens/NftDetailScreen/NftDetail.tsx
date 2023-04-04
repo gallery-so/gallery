@@ -2,10 +2,12 @@ import { ResizeMode, Video } from 'expo-av';
 import { useMemo, useState } from 'react';
 import { useWindowDimensions, View, ViewProps } from 'react-native';
 import FastImage from 'react-native-fast-image';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { WebView } from 'react-native-webview';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
+import { GallerySkeleton } from '~/components/GallerySkeleton';
 import { NftDetailFragment$key } from '~/generated/NftDetailFragment.graphql';
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
 
@@ -79,22 +81,24 @@ export function NftDetail({ tokenRef, style }: NftDetailProps) {
 
   const windowDimensions = useWindowDimensions();
   const [viewDimensions, setViewDimensions] = useState<Dimension | null>(null);
-  const [imageDimensions, setImageDimensions] = useState<Dimension | null>(null);
+  const [imageState, setImageState] = useState<
+    { kind: 'loading' } | { kind: 'loaded'; dimensions: Dimension | null }
+  >({ kind: 'loading' });
 
   const maxHeight = windowDimensions.height - 200;
 
   const dimensions = useMemo((): Dimension => {
-    if (viewDimensions && imageDimensions) {
+    if (viewDimensions && imageState.kind === 'loaded' && imageState.dimensions) {
       const result = fitDimensionToDimensions(
         { width: viewDimensions.width, height: maxHeight },
-        imageDimensions
+        imageState.dimensions
       );
 
       return result;
     }
 
     return { width: 300, height: 300 };
-  }, [imageDimensions, maxHeight, viewDimensions]);
+  }, [imageState, maxHeight, viewDimensions]);
 
   const inner = useMemo(() => {
     if (!token.media) {
@@ -110,6 +114,9 @@ export function NftDetail({ tokenRef, style }: NftDetailProps) {
       if (imageUrl.includes('.svg')) {
         return (
           <SvgWebView
+            onLoadEnd={() => {
+              setImageState({ kind: 'loaded', dimensions: null });
+            }}
             source={{ uri: imageUrl }}
             style={{ width: viewDimensions?.width, height: viewDimensions?.height }}
           />
@@ -120,7 +127,7 @@ export function NftDetail({ tokenRef, style }: NftDetailProps) {
         <FastImage
           style={{ ...dimensions }}
           onLoad={(event) => {
-            setImageDimensions(event.nativeEvent);
+            setImageState({ kind: 'loaded', dimensions: event.nativeEvent });
           }}
           resizeMode={ResizeMode.CONTAIN}
           source={{ uri: imageUrl, priority: FastImage.priority.high }}
@@ -135,7 +142,7 @@ export function NftDetail({ tokenRef, style }: NftDetailProps) {
         <Video
           style={{ ...dimensions }}
           onReadyForDisplay={(event) => {
-            setImageDimensions(event.naturalSize);
+            setImageState({ kind: 'loaded', dimensions: event.naturalSize });
           }}
           shouldPlay
           isLooping
@@ -155,6 +162,9 @@ export function NftDetail({ tokenRef, style }: NftDetailProps) {
       return (
         <View style={{ width: viewDimensions?.width, height: viewDimensions?.width }}>
           <WebView
+            onLoadEnd={() => {
+              setImageState({ kind: 'loaded', dimensions: null });
+            }}
             originWhitelist={['*']}
             className="h-full w-full bg-transparent"
             scrollEnabled={false}
@@ -169,7 +179,8 @@ export function NftDetail({ tokenRef, style }: NftDetailProps) {
 
   return (
     <View
-      style={[style]}
+      style={style}
+      className="relative"
       onLayout={(event) => {
         setViewDimensions({
           width: event.nativeEvent.layout.width,
@@ -178,6 +189,16 @@ export function NftDetail({ tokenRef, style }: NftDetailProps) {
       }}
     >
       {inner}
+      {imageState.kind === 'loading' && (
+        <View className="absolute">
+          <GallerySkeleton>
+            <SkeletonPlaceholder.Item
+              width={viewDimensions?.width}
+              height={viewDimensions?.height}
+            />
+          </GallerySkeleton>
+        </View>
+      )}
     </View>
   );
 }
