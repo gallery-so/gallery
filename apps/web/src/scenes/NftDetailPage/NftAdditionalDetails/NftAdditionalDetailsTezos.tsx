@@ -10,7 +10,7 @@ import { TezosDomainOrAddress } from '~/components/TezosDomainOrAddress';
 import { NftAdditionalDetailsTezosFragment$key } from '~/generated/NftAdditionalDetailsTezosFragment.graphql';
 import { useRefreshMetadata } from '~/scenes/NftDetailPage/NftAdditionalDetails/useRefreshMetadata';
 import { hexHandler } from '~/shared/utils/getOpenseaExternalUrl';
-import { getFxHashExternalUrl, getObjktExternalUrl } from '~/utils/getTezosExternalUrl';
+import { getFxHashExternalUrl, getObjktExternalUrl } from '~/shared/utils/getTezosExternalUrl';
 
 type NftAdditionaDetailsNonPOAPProps = {
   showDetails: boolean;

@@ -23526,6 +23526,7 @@ __metadata:
     babel-plugin-relay: ^14.1.0
     babel-plugin-tsconfig-paths-module-resolver: ^1.0.4
     clsx: ^1.2.1
+    date-fns: ^2.29.3
     eas-cli: ^3.7.2
     expo: ~48.0.10
     expo-av: ~13.2.1

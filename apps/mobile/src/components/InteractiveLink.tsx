@@ -1,26 +1,31 @@
+import clsx from 'clsx';
 import { PropsWithChildren, useCallback } from 'react';
-import { TouchableOpacity } from 'react-native';
+import { Linking, TouchableOpacity, TouchableOpacityProps, View } from 'react-native';
 
 import { Typography } from './Typography';
 
 type Props = PropsWithChildren<{
   href?: string;
+  noUnderline?: boolean;
   onPress?: () => void;
+  style?: TouchableOpacityProps['style'];
 }>;
 
-export function InteractiveLink({ href, onPress, children }: Props) {
+export function InteractiveLink({ href, style, onPress, noUnderline = false, children }: Props) {
   const handlePress = useCallback(() => {
     if (href) {
-      // Figure out how to open a link lol
+      Linking.openURL(href);
     } else if (onPress) {
       onPress();
     }
   }, [href, onPress]);
 
   return (
-    <TouchableOpacity onPress={handlePress}>
+    <TouchableOpacity style={style} onPress={handlePress}>
       <Typography
-        className="text-shadow underline"
+        className={clsx(`text-shadow text-sm`, {
+          underline: !noUnderline,
+        })}
         font={{ family: 'ABCDiatype', weight: 'Regular' }}
       >
         {children}

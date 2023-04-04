@@ -51,6 +51,12 @@ export function NftDetail({ tokenRef, style }: NftDetailProps) {
         media {
           __typename
 
+          ... on AudioMedia {
+            previewURLs {
+              large
+            }
+          }
+
           ... on VideoMedia {
             __typename
             contentRenderURLs {
@@ -105,7 +111,11 @@ export function NftDetail({ tokenRef, style }: NftDetailProps) {
       throw new CouldNotRenderNftError('NftDetail', 'Token media did not exist');
     }
 
-    if (token.media.__typename === 'GIFMedia' || token.media.__typename === 'ImageMedia') {
+    if (
+      token.media.__typename === 'GIFMedia' ||
+      token.media.__typename === 'ImageMedia' ||
+      token.media.__typename === 'AudioMedia'
+    ) {
       const imageUrl = token.media.previewURLs?.large;
       if (!imageUrl) {
         throw new CouldNotRenderNftError('NftDetail', 'Image had no contentRenderUrl');

@@ -1,5 +1,5 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { Share, StyleSheet, View } from 'react-native';
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -14,6 +14,7 @@ import { ModalContainer } from '../../components/ModalContainer';
 import { Typography } from '../../components/Typography';
 import { CloseIcon } from '../../icons/CloseIcon';
 import { ShareIcon } from '../../icons/ShareIcon';
+import { NftAdditionalDetails } from './NftAdditionalDetails';
 import { NftDetail } from './NftDetail';
 
 const markdownStyles = StyleSheet.create({
@@ -34,20 +35,36 @@ export function NftDetailScreen() {
             __typename
             dbid
             name
+            tokenId
             description
-            contract {
-              name
-            }
+
             owner {
               username
             }
+
             ...NftDetailFragment
+            ...NftAdditionalDetailsFragment
           }
         }
       }
     `,
     { tokenId: route.params.tokenId }
+    // Use one of these if you want to test with a specific NFT
+    // POAP
+    // { tokenId: '2Hu1U34d5UpXWDoVNOkMtguCEpk' }
+    // FX Hash
+    // { tokenId: '2FmsnRrmb57vIMXuvhzojbVLWCG' }
+    // Tezos
+    // { tokenId: '2EpXhetYK92diIazWW9iQlC9i6W' }
+    // Eth
+    // { tokenId: '2EpXhbAjixRMTIveYgoCkpxFAzJ' }
   );
+
+  const [showAdditionalDetails, setShowAdditionalDetails] = useState(false);
+
+  const toggleAdditionalDetails = useCallback(() => {
+    setShowAdditionalDetails((previous) => !previous);
+  }, []);
 
   const handleShare = useCallback(() => {
     if (
@@ -82,31 +99,19 @@ export function NftDetailScreen() {
           </Typography>
 
           {query.tokenById.description && (
-            <Markdown style={markdownStyles}>{query.tokenById.description}</Markdown>
+            <View>
+              <Markdown style={markdownStyles}>{query.tokenById.description}</Markdown>
+            </View>
           )}
 
-          <View className="flex flex-col space-y-4">
-            {query.tokenById.owner?.username && (
-              <View className="flex flex-col">
-                <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Medium' }}>
-                  OWNED BY
-                </Typography>
+          <View>
+            <NftAdditionalDetails showDetails={showAdditionalDetails} tokenRef={query.tokenById} />
+          </View>
 
-                {/* TODO(Terence) When the user profile screen is ready, setup the onPress here */}
-                <InteractiveLink>{query.tokenById.owner.username}</InteractiveLink>
-              </View>
-            )}
-
-            {query.tokenById.contract?.name && (
-              <View className="flex flex-col">
-                <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Medium' }}>
-                  OWNED BY
-                </Typography>
-
-                {/* TODO(Terence) When the contract screen is ready, setup the onPress here */}
-                <InteractiveLink>{query.tokenById.contract.name}</InteractiveLink>
-              </View>
-            )}
+          <View>
+            <InteractiveLink noUnderline={showAdditionalDetails} onPress={toggleAdditionalDetails}>
+              {showAdditionalDetails ? 'Hide Details' : 'Show Additional Details'}
+            </InteractiveLink>
           </View>
         </View>
       ) : null}

@@ -9,7 +9,7 @@ const markdownStyles = StyleSheet.create({
     marginBottom: 0,
   },
   body: {
-    fontSize: 12,
+    fontSize: 14,
     color: '#141414',
     fontFamily: 'ABCDiatypeRegular',
   },
@@ -28,7 +28,10 @@ export function Markdown({ children, style }: GalleryMarkdownProps) {
   }, [style]);
 
   return (
-    <MarkdownDisplay markdownit={MarkdownIt({ typographer: true })} style={mergedStyles}>
+    <MarkdownDisplay
+      markdownit={MarkdownIt({ typographer: true, linkify: true })}
+      style={mergedStyles}
+    >
       {children}
     </MarkdownDisplay>
   );
