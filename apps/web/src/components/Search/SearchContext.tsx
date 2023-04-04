@@ -1,6 +1,6 @@
 import { createContext, memo, ReactNode, useContext, useMemo, useState } from 'react';
 
-import useDebounce from '~/hooks/useDebounce';
+import useDebounce from '~/shared/hooks/useDebounce';
 
 type SearchState = {
   keyword: string;
