@@ -1,6 +1,6 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { useCallback } from 'react';
-import { Share, View } from 'react-native';
+import { Share, StyleSheet, View } from 'react-native';
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
@@ -9,11 +9,18 @@ import { RootStackNavigatorParamList } from '~/navigation/types';
 
 import { IconContainer } from '../../components/IconContainer';
 import { InteractiveLink } from '../../components/InteractiveLink';
+import { Markdown } from '../../components/Markdown';
 import { ModalContainer } from '../../components/ModalContainer';
 import { Typography } from '../../components/Typography';
 import { CloseIcon } from '../../icons/CloseIcon';
 import { ShareIcon } from '../../icons/ShareIcon';
 import { NftDetail } from './NftDetail';
+
+const markdownStyles = StyleSheet.create({
+  body: {
+    fontSize: 14,
+  },
+});
 
 export function NftDetailScreen() {
   const navigation = useNavigation();
@@ -52,7 +59,7 @@ export function NftDetailScreen() {
         url: `https://gallery.so/${query.tokenById.owner.username}/${query.tokenById.dbid}`,
       });
     }
-  }, []);
+  }, [query.tokenById]);
 
   return (
     <ModalContainer>
@@ -75,9 +82,7 @@ export function NftDetailScreen() {
           </Typography>
 
           {query.tokenById.description && (
-            <Typography font={{ family: 'ABCDiatype', weight: 'Regular' }}>
-              {query.tokenById.description}
-            </Typography>
+            <Markdown style={markdownStyles}>{query.tokenById.description}</Markdown>
           )}
 
           <View className="flex flex-col space-y-4">
