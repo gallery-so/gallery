@@ -1,10 +1,19 @@
 import { Text, TouchableOpacity } from 'react-native';
 
-export function SearchResult({ ...props }) {
+import { Markdown } from '../Markdown';
+
+type Props = {
+  title: string;
+  description: string;
+};
+
+export function SearchResult({ title, description, ...props }: Props) {
   return (
     <TouchableOpacity className="py-2" {...props}>
-      <Text>Altheia</Text>
-      <Text>crypto coven | tiffatron</Text>
+      <Text>{title}</Text>
+      <Text numberOfLines={1}>
+        <Markdown>{description}</Markdown>
+      </Text>
     </TouchableOpacity>
   );
 }

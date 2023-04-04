@@ -1,13 +1,19 @@
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import { TouchableOpacity, View } from 'react-native';
+
 import { Typography } from '../Typography';
 
-type SearchFilterType = 'curator' | 'gallery' | 'community' | null;
+export type SearchFilterType = 'curator' | 'gallery' | 'community' | null;
 
 type FilterElement = {
   label: string;
   value: SearchFilterType;
 }[];
+
+type Props = {
+  activeFilter: SearchFilterType;
+  onChange: (filter: SearchFilterType) => void;
+};
 
 const filters: FilterElement = [
   {
@@ -18,18 +24,19 @@ const filters: FilterElement = [
     label: 'Galleries',
     value: 'gallery',
   },
-  //   {
-  //     label: 'Communities',
-  //     value: 'community',
-  //   },
 ];
 
-export function SearchFilter({ ...props }) {
-  const [activeFilter, setActiveFilter] = useState<SearchFilterType>(null);
-
-  const handleSelectFilter = useCallback((filter: SearchFilterType) => {
-    setActiveFilter(filter);
-  }, []);
+export function SearchFilter({ activeFilter, onChange, ...props }: Props) {
+  const handleSelectFilter = useCallback(
+    (filter: SearchFilterType) => {
+      if (filter === activeFilter) {
+        onChange(null);
+      } else {
+        onChange(filter);
+      }
+    },
+    [activeFilter, onChange]
+  );
 
   return (
     <View className="flex flex-row gap-1" {...props}>

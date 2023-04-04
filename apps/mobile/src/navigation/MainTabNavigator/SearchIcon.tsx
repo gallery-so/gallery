@@ -1,4 +1,4 @@
-import Svg, { SvgProps, Path } from 'react-native-svg';
+import Svg, { Path,SvgProps } from 'react-native-svg';
 
 export const SearchIcon = (props: SvgProps) => (
   <Svg width={18} height={17} fill="none" {...props}>

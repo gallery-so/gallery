@@ -1,8 +1,8 @@
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AccountScreen } from 'src/screens/AccountScreen';
-import { SearchScreen } from 'src/screens/SearchScreen';
 import { NotificationsScreen } from 'src/screens/NotificationsScreen';
+import { SearchScreen } from 'src/screens/SearchScreen';
 
 import { TabBar } from '~/navigation/MainTabNavigator/TabBar';
 import { MainTabNavigatorParamList } from '~/navigation/types';

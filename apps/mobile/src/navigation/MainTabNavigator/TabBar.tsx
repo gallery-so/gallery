@@ -8,6 +8,7 @@ import { AccountIcon } from '~/navigation/MainTabNavigator/AccountIcon';
 import { GLogo } from '~/navigation/MainTabNavigator/GLogo';
 import { NotificationsIcon } from '~/navigation/MainTabNavigator/NotificationsIcon';
 import { MainTabNavigatorParamList, MainTabNavigatorProp } from '~/navigation/types';
+
 import { SearchIcon } from './SearchIcon';
 
 type TabItemProps = {

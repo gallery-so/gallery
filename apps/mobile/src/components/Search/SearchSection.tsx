@@ -1,8 +1,14 @@
 import { TouchableOpacity, View } from 'react-native';
-import { Typography } from '../Typography';
-import { SearchResult } from './SearchResult';
 
-export function SearchSection() {
+import { Typography } from '../Typography';
+
+type Props = {
+  title: string;
+  children: React.ReactNode;
+  onShowAll: () => void;
+};
+
+export function SearchSection({ children, title, onShowAll }: Props) {
   return (
     <View>
       <View>
@@ -14,10 +20,10 @@ export function SearchSection() {
             }}
             className=" text-metal text-xs uppercase"
           >
-            Curators
+            {title}
           </Typography>
 
-          <TouchableOpacity onPress={() => {}}>
+          <TouchableOpacity onPress={onShowAll}>
             <Typography
               font={{ family: 'ABCDiatype', weight: 'Regular' }}
               className="border-b border-black"
@@ -27,11 +33,7 @@ export function SearchSection() {
           </TouchableOpacity>
         </View>
 
-        <View className="flex flex-col ">
-          <SearchResult />
-          <SearchResult />
-          <SearchResult />
-        </View>
+        <View className="flex flex-col">{children}</View>
       </View>
     </View>
   );
