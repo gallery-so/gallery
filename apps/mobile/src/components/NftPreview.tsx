@@ -1,11 +1,8 @@
 import { useNavigation } from '@react-navigation/native';
 import { ResizeMode, Video } from 'expo-av';
 import { useCallback, useMemo, useState } from 'react';
-import { View } from 'react-native';
 import { TouchableWithoutFeedback, View } from 'react-native';
 import FastImage, { Priority } from 'react-native-fast-image';
-import FastImage, { Priority } from 'react-native-fast-image';
-import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
 import { RootStackNavigatorProp } from '~/navigation/types';

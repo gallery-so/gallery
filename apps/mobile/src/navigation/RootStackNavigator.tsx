@@ -5,6 +5,7 @@ import { RootStackNavigatorQuery } from '~/generated/RootStackNavigatorQuery.gra
 import { LoginStackNavigator } from '~/navigation/LoginStackNavigator';
 import { MainTabNavigator } from '~/navigation/MainTabNavigator/MainTabNavigator';
 import { RootStackNavigatorParamList } from '~/navigation/types';
+import { NftDetailScreen } from '~/screens/NftDetailScreen/NftDetailScreen';
 
 const Stack = createNativeStackNavigator<RootStackNavigatorParamList>();
 
