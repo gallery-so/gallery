@@ -12,6 +12,12 @@ type Props = {
 
 const MAX_DESCRIPTION_CHARACTER = 150;
 
+const markdownStyles = StyleSheet.create({
+  body: {
+    fontSize: 14,
+  },
+});
+
 export function SearchResult({ title, description, ...props }: Props) {
   const { keyword } = useSearchContext();
 
@@ -45,9 +51,9 @@ export function SearchResult({ title, description, ...props }: Props) {
 
   return (
     <TouchableOpacity className="py-2" {...props}>
-      <Markdown>{highlightedName}</Markdown>
+      <Markdown style={markdownStyles}>{highlightedName}</Markdown>
 
-      <Markdown>{highlightedDescription}</Markdown>
+      <Markdown style={markdownStyles}>{highlightedDescription}</Markdown>
     </TouchableOpacity>
   );
 }

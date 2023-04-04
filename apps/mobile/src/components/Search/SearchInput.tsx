@@ -36,7 +36,7 @@ export function SearchInput({ value, onChange, style, ...props }: Props) {
     <View className="flex flex-row items-center">
       <TextInput
         ref={ref}
-        className=" text-offBlack flex-1 py-2 text-xl"
+        className="text-offBlack flex-1 py-2 text-xl"
         value={localKeyword}
         returnKeyType="done"
         onChangeText={handleChange}
