@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { TouchableOpacity } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 
 import { Markdown } from '../Markdown';
 import { Typography } from '../Typography';
@@ -45,24 +45,9 @@ export function SearchResult({ title, description, ...props }: Props) {
 
   return (
     <TouchableOpacity className="py-2" {...props}>
-      <Typography
-        font={{
-          family: 'ABCDiatype',
-          weight: 'Regular',
-        }}
-        className="text-sm"
-      >
-        <Markdown>{highlightedName}</Markdown>
-      </Typography>
-      <Typography
-        font={{
-          family: 'ABCDiatype',
-          weight: 'Regular',
-        }}
-        className="text-sm"
-      >
-        <Markdown>{highlightedDescription}</Markdown>
-      </Typography>
+      <Markdown>{highlightedName}</Markdown>
+
+      <Markdown>{highlightedDescription}</Markdown>
     </TouchableOpacity>
   );
 }
