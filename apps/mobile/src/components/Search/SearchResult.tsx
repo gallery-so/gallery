@@ -3,6 +3,7 @@ import { TouchableOpacity } from 'react-native';
 
 import { Markdown } from '../Markdown';
 import { Typography } from '../Typography';
+import { useSearchContext } from './SearchContext';
 
 type Props = {
   title: string;
@@ -12,8 +13,7 @@ type Props = {
 const MAX_DESCRIPTION_CHARACTER = 150;
 
 export function SearchResult({ title, description, ...props }: Props) {
-  // TODO: use keyword from context
-  const keyword = 'jak';
+  const { keyword } = useSearchContext();
 
   const highlightedName = useMemo(() => {
     return title.replace(new RegExp(keyword, 'gi'), (match) => `**${match}**`);
@@ -40,7 +40,7 @@ export function SearchResult({ title, description, ...props }: Props) {
       truncatedDescription = unformattedDescription.substring(0, maxLength);
     }
     // highlight keyword
-    return truncatedDescription.replace(regex, (match) => `**${match}**`).substring(0, 50);
+    return truncatedDescription.replace(regex, (match) => `**${match}**`).substring(0, 40);
   }, [keyword, description]);
 
   return (

@@ -6,16 +6,17 @@ import { SearchResultsQuery } from '~/generated/SearchResultsQuery.graphql';
 
 import { Typography } from '../Typography';
 import { GallerySearchResultSection } from './Gallery/GallerySearchResultSection';
+import { useSearchContext } from './SearchContext';
 import { SearchFilterType } from './SearchFilter';
 import { UserSearchResultSection } from './User/UserSearchResultSection';
 
 type Props = {
   activeFilter: SearchFilterType;
-  keyword: string;
   onChangeFilter: (filter: SearchFilterType) => void;
 };
 
-export function SearchResults({ activeFilter, keyword, onChangeFilter }: Props) {
+export function SearchResults({ activeFilter, onChangeFilter }: Props) {
+  const { keyword } = useSearchContext();
   const deferredKeyword = useDeferredValue(keyword);
 
   const query = useLazyLoadQuery<SearchResultsQuery>(
