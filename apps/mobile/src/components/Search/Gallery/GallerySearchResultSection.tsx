@@ -2,26 +2,26 @@ import { useMemo } from 'react';
 import { ScrollView } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
-import { UserSearchResultSectionFragment$key } from '~/generated/UserSearchResultSectionFragment.graphql';
+import { GallerySearchResultSectionFragment$key } from '~/generated/GallerySearchResultSectionFragment.graphql';
 
 import { NUM_PREVIEW_SEARCH_RESULTS } from '../constants';
 import { SearchFilterType } from '../SearchFilter';
 import { SearchSection } from '../SearchSection';
-import { UserSearchResult } from './UserSearchResult';
+import { GallerySearchResult } from './GallerySearchResult';
 
 type Props = {
-  queryRef: UserSearchResultSectionFragment$key;
+  queryRef: GallerySearchResultSectionFragment$key;
   isShowingAll?: boolean;
   onChangeFilter: (filter: SearchFilterType) => void;
 };
 
-export function UserSearchResultSection({ isShowingAll, queryRef, onChangeFilter }: Props) {
+export function GallerySearchResultSection({ isShowingAll, queryRef, onChangeFilter }: Props) {
   const results = useFragment(
     graphql`
-      fragment UserSearchResultSectionFragment on UserSearchResult @relay(plural: true) {
-        user @required(action: THROW) {
+      fragment GallerySearchResultSectionFragment on GallerySearchResult @relay(plural: true) {
+        gallery @required(action: THROW) {
           id
-          ...UserSearchResultFragment
+          ...GallerySearchResultFragment
         }
       }
     `,
@@ -34,10 +34,10 @@ export function UserSearchResultSection({ isShowingAll, queryRef, onChangeFilter
   );
 
   return (
-    <SearchSection title="curators" onShowAll={() => onChangeFilter('curator')}>
-      <ScrollView className="flex w-full flex-col">
+    <SearchSection title="galleries" onShowAll={() => onChangeFilter('gallery')}>
+      <ScrollView className="flex w-full flex-col pb-32">
         {resultsToShow.map((result) => (
-          <UserSearchResult key={result.user.id} userRef={result.user} />
+          <GallerySearchResult key={result.gallery.id} galleryRef={result.gallery} />
         ))}
       </ScrollView>
     </SearchSection>

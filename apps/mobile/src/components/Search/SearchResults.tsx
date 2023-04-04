@@ -4,6 +4,7 @@ import { graphql, useLazyLoadQuery } from 'react-relay';
 
 import { SearchResultsQuery } from '~/generated/SearchResultsQuery.graphql';
 
+import { GallerySearchResultSection } from './Gallery/GallerySearchResultSection';
 import { SearchFilterType } from './SearchFilter';
 import { UserSearchResultSection } from './User/UserSearchResultSection';
 
@@ -29,16 +30,16 @@ export function SearchResults({ activeFilter, keyword, onChangeFilter }: Props) 
             }
           }
         }
-        # searchGalleries(query: $query) {
-        #   __typename
-        #   ... on SearchGalleriesPayload {
-        #     __typename
-        #     results @required(action: THROW) {
-        #       __typename
-        #       #  ...GallerySearchResultSectionFragment
-        #     }
-        #   }
-        # }
+        searchGalleries(query: $query) {
+          __typename
+          ... on SearchGalleriesPayload {
+            __typename
+            results @required(action: THROW) {
+              __typename
+              ...GallerySearchResultSectionFragment
+            }
+          }
+        }
       }
     `,
     { query: deferredKeyword }
@@ -58,11 +59,31 @@ export function SearchResults({ activeFilter, keyword, onChangeFilter }: Props) 
     );
   }
 
+  if (activeFilter === 'gallery') {
+    return (
+      <View>
+        {query?.searchGalleries?.__typename === 'SearchGalleriesPayload' && (
+          <GallerySearchResultSection
+            queryRef={query.searchGalleries.results}
+            isShowingAll
+            onChangeFilter={onChangeFilter}
+          />
+        )}
+      </View>
+    );
+  }
+
   return (
     <View>
       {query?.searchUsers?.__typename === 'SearchUsersPayload' && (
         <UserSearchResultSection
           queryRef={query.searchUsers.results}
+          onChangeFilter={onChangeFilter}
+        />
+      )}
+      {query?.searchGalleries?.__typename === 'SearchGalleriesPayload' && (
+        <GallerySearchResultSection
+          queryRef={query?.searchGalleries?.results}
           onChangeFilter={onChangeFilter}
         />
       )}
