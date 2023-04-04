@@ -16,7 +16,7 @@ export function SearchScreen() {
         <SearchFilter activeFilter={filter} onChange={setFilter} />
       </View>
 
-      <View className=" flex h-full max-h-full p-4">
+      <View className=" flex h-full max-h-full px-4">
         <Suspense fallback={<Text>Loading...</Text>}>
           {keyword && (
             <SearchResults activeFilter={filter} keyword={keyword} onChangeFilter={setFilter} />

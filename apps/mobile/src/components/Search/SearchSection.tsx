@@ -22,33 +22,31 @@ export function SearchSection({ children, isShowAll, numResults, onShowAll, titl
     );
 
   return (
-    <View>
-      <View>
-        <View className="flex flex-row items-center justify-between">
-          <Typography
-            font={{
-              family: 'ABCDiatype',
-              weight: 'Medium',
-            }}
-            className=" text-metal text-xs uppercase"
-          >
-            {title}
-          </Typography>
+    <View className="py-2">
+      <View className="flex flex-row items-center justify-between">
+        <Typography
+          font={{
+            family: 'ABCDiatype',
+            weight: 'Medium',
+          }}
+          className="text-metal text-xs uppercase"
+        >
+          {title}
+        </Typography>
 
-          {!isShowAll && numResults > NUM_PREVIEW_SEARCH_RESULTS && (
-            <TouchableOpacity onPress={onShowAll}>
-              <Typography
-                font={{ family: 'ABCDiatype', weight: 'Regular' }}
-                className="border-b border-black text-sm"
-              >
-                Show all
-              </Typography>
-            </TouchableOpacity>
-          )}
-        </View>
-
-        <View className="flex flex-col">{children}</View>
+        {!isShowAll && numResults > NUM_PREVIEW_SEARCH_RESULTS && (
+          <TouchableOpacity onPress={onShowAll}>
+            <Typography
+              font={{ family: 'ABCDiatype', weight: 'Regular' }}
+              className="border-b border-black text-sm"
+            >
+              Show all
+            </Typography>
+          </TouchableOpacity>
+        )}
       </View>
+
+      <View className="flex flex-col">{children}</View>
     </View>
   );
 }
