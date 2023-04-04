@@ -26,12 +26,6 @@ export function NftAdditionalDetails({ tokenRef, showDetails }: NftAdditionalDet
     tokenRef
   );
 
-  // if (token.chain === 'POAP') {
-  //   return <NftAdditionalDetailsPOAP showDetails={showDetails} tokenRef={token} />;
-  // } else if (token.chain === 'Tezos') {
-  //   return <NftAdditionalDetailsTezos showDetails={showDetails} tokenRef={token} />;
-  // }
-
   if (token.chain === 'POAP') {
     return <NftAdditionalDetailsPOAP showDetails={showDetails} tokenRef={token} />;
   } else if (token.chain === 'Tezos') {
