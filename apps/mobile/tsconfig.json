@@ -10,6 +10,7 @@
       "~/frames/*": ["../../packages/frames-dls/src/*"],
       "~/generated/*": ["./__generated__/relay/*", "../../packages/shared/__generated__/relay/*"],
       "~/navigation/*": ["src/navigation/*"],
+      "~/screens/*": ["src/screens/*"],
       "~/shared/*": ["../../packages/shared/src/*"]
     },
     "outDir": "../../.moon/cache/types/apps/mobile"
