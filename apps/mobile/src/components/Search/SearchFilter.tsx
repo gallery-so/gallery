@@ -53,7 +53,7 @@ export function SearchFilter({ activeFilter, onChange, ...props }: Props) {
               family: 'ABCDiatype',
               weight: 'Bold',
             }}
-            className={activeFilter === filter.value ? 'text-offBlack' : 'text-shadow'}
+            className={`text-sm ${activeFilter === filter.value ? 'text-offBlack' : 'text-shadow'}`}
           >
             {filter.label}
           </Typography>

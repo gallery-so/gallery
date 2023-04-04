@@ -1,4 +1,4 @@
-import { Text, TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 
 import { Typography } from '../Typography';
 import { NUM_PREVIEW_SEARCH_RESULTS } from './constants';
@@ -16,14 +16,24 @@ export function SearchSection({ children, isShowAll, numResults, onShowAll, titl
 
   if (isShowAll && numResults === 0)
     return (
-      <View className="bg-red flex flex-1 items-center justify-center">
-        <Text>No results</Text>
+      <View className="h-full">
+        <View className="flex flex-1 items-center justify-center">
+          <Typography
+            font={{
+              family: 'ABCDiatype',
+              weight: 'Bold',
+            }}
+            className="text-lg"
+          >
+            Nothing Found
+          </Typography>
+        </View>
       </View>
     );
 
   return (
     <View className="py-2">
-      <View className="flex flex-row items-center justify-between">
+      <View className="flex flex-row items-center justify-between py-2">
         <Typography
           font={{
             family: 'ABCDiatype',
