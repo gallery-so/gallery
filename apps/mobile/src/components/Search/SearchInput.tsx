@@ -26,6 +26,7 @@ export function SearchInput({ value, onChange, style, ...props }: Props) {
         ref={ref}
         className=" text-offBlack flex-1 py-2 text-xl"
         value={value}
+        returnKeyType="done"
         {...props}
       />
       <TouchableOpacity className="p-2" accessibilityRole="button" onPress={handleClear}>
