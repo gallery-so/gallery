@@ -1,9 +1,10 @@
-import { useDeferredValue } from 'react';
+import { useDeferredValue, useMemo } from 'react';
 import { View } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 
 import { SearchResultsQuery } from '~/generated/SearchResultsQuery.graphql';
 
+import { Typography } from '../Typography';
 import { GallerySearchResultSection } from './Gallery/GallerySearchResultSection';
 import { SearchFilterType } from './SearchFilter';
 import { UserSearchResultSection } from './User/UserSearchResultSection';
@@ -47,6 +48,37 @@ export function SearchResults({ activeFilter, keyword, onChangeFilter }: Props) 
 
   const isLoading = keyword !== deferredKeyword;
 
+  const isEmpty = useMemo(() => {
+    if (
+      query.searchUsers?.__typename === 'SearchUsersPayload' &&
+      query.searchGalleries?.__typename === 'SearchGalleriesPayload'
+    ) {
+      return (
+        query.searchUsers?.results?.length === 0 && query.searchGalleries?.results?.length === 0
+      );
+    }
+
+    return false;
+  }, [query]);
+
+  if (isEmpty) {
+    return (
+      <View className="h-full">
+        <View className="flex flex-1 items-center justify-center">
+          <Typography
+            font={{
+              family: 'ABCDiatype',
+              weight: 'Bold',
+            }}
+            className="text-lg"
+          >
+            Nothing Found
+          </Typography>
+        </View>
+      </View>
+    );
+  }
+
   if (activeFilter === 'curator') {
     return (
       <View>
@@ -74,14 +106,6 @@ export function SearchResults({ activeFilter, keyword, onChangeFilter }: Props) 
       </View>
     );
   }
-
-  // return (
-  //   <View className={`h-full ${isLoading ? 'opacity-50' : 'opacity-100'} `}>
-  //     <View className="bg-red flex flex-1 items-center justify-center">
-  //       <Text>No results</Text>
-  //     </View>
-  //   </View>
-  // );
 
   return (
     <View className={`${isLoading ? 'opacity-50' : 'opacity-100'} `}>
