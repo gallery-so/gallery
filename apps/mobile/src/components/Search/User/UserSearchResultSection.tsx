@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import { ScrollView } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { UserSearchResultSectionFragment$key } from '~/generated/UserSearchResultSectionFragment.graphql';
@@ -40,11 +39,9 @@ export function UserSearchResultSection({ isShowingAll, queryRef, onChangeFilter
       numResults={results.length}
       onShowAll={() => onChangeFilter('curator')}
     >
-      <ScrollView className="flex w-full flex-col">
-        {resultsToShow.map((result) => (
-          <UserSearchResult key={result.user.id} userRef={result.user} />
-        ))}
-      </ScrollView>
+      {resultsToShow.map((result) => (
+        <UserSearchResult key={result.user.id} userRef={result.user} />
+      ))}
     </SearchSection>
   );
 }

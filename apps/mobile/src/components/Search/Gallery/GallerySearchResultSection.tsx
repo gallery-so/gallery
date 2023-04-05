@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import { ScrollView } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { GallerySearchResultSectionFragment$key } from '~/generated/GallerySearchResultSectionFragment.graphql';
@@ -40,11 +39,9 @@ export function GallerySearchResultSection({ isShowingAll, queryRef, onChangeFil
       numResults={results.length}
       onShowAll={() => onChangeFilter('gallery')}
     >
-      <ScrollView className="flex w-full flex-col pb-32">
-        {resultsToShow.map((result) => (
-          <GallerySearchResult key={result.gallery.id} galleryRef={result.gallery} />
-        ))}
-      </ScrollView>
+      {resultsToShow.map((result) => (
+        <GallerySearchResult key={result.gallery.id} galleryRef={result.gallery} />
+      ))}
     </SearchSection>
   );
 }

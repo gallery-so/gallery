@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 
 import { Markdown } from '../Markdown';
-import { Typography } from '../Typography';
 import { useSearchContext } from './SearchContext';
 
 type Props = {
@@ -50,7 +49,7 @@ export function SearchResult({ title, description, ...props }: Props) {
   }, [keyword, description]);
 
   return (
-    <TouchableOpacity className="py-2" {...props}>
+    <TouchableOpacity className="py-2 px-4" {...props}>
       <Markdown style={markdownStyles}>{highlightedName}</Markdown>
 
       <Markdown style={markdownStyles}>{highlightedDescription}</Markdown>

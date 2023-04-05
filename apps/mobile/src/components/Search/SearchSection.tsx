@@ -33,7 +33,7 @@ export function SearchSection({ children, isShowAll, numResults, onShowAll, titl
 
   return (
     <View className="py-2">
-      <View className="flex flex-row items-center justify-between py-2">
+      <View className="flex flex-row items-center justify-between py-2 px-4">
         <Typography
           font={{
             family: 'ABCDiatype',
@@ -55,8 +55,7 @@ export function SearchSection({ children, isShowAll, numResults, onShowAll, titl
           </TouchableOpacity>
         )}
       </View>
-
-      <View className="flex flex-col">{children}</View>
+      {children}
     </View>
   );
 }
