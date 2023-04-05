@@ -121,7 +121,7 @@ export function NftDetailScreen() {
                         source={{ uri: query.tokenById.contract.badgeURL }}
                       />
                     )}
-                    <Typography font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+                    <Typography numberOfLines={1} font={{ family: 'ABCDiatype', weight: 'Bold' }}>
                       {query.tokenById.contract.name}
                     </Typography>
                   </Pill>
