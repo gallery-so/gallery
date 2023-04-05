@@ -1,5 +1,5 @@
 import { ResizeMode, Video } from 'expo-av';
-import { memo, useCallback } from 'react';
+import { memo } from 'react';
 import FastImage, { Priority } from 'react-native-fast-image';
 
 import { SvgWebView } from '~/components/SvgWebView';
