@@ -20,7 +20,6 @@ export function NftDetailAssetVideo({ outputDimensions, videoUrl, onLoad }: Prop
       resizeMode={ResizeMode.CONTAIN}
       source={{
         uri: videoUrl,
-        headers: { Accepts: 'image/avif;image/png' },
       }}
     />
   );

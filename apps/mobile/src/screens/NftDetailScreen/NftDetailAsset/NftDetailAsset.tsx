@@ -96,6 +96,9 @@ export function NftDetailAsset({ tokenRef, style }: NftDetailProps) {
       });
     }
 
+    // This is a fallback for when we don't have the image dimensions yet.
+    // The user will never see the image in this state since it will be covered
+    // by a loading skeleton UI anyway.
     return { width: 300, height: 300 };
   }, [imageState, viewDimensions, windowDimensions.height]);
 
