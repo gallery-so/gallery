@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { PropsWithChildren, useCallback } from 'react';
-import { Linking, TouchableOpacity, TouchableOpacityProps, View } from 'react-native';
+import { Linking, TouchableOpacity, TouchableOpacityProps } from 'react-native';
 
 import { Typography } from './Typography';
 
