@@ -12,7 +12,6 @@ type Props = {
 
 export function NftDetailAssetImage({ imageUrl, outputDimensions, onLoad }: Props) {
   if (imageUrl.includes('svg')) {
-    console.log(imageUrl);
     return (
       <SvgWebView
         source={{ uri: imageUrl }}
