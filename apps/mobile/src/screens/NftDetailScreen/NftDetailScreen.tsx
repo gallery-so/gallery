@@ -69,6 +69,8 @@ export function NftDetailScreen() {
     // { tokenId: '2EpXhbAjixRMTIveYgoCkpxFAzJ' }
     // Art Gobbler
     // { tokenId: '2GupK6MPJnGukvC36QV3pOYvheS' }
+    // SVG
+    // { tokenId: '2O1TnqK7sbhbdlAeQwLFkxo8T9i' }
   );
 
   const [showAdditionalDetails, setShowAdditionalDetails] = useState(false);
