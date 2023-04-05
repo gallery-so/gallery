@@ -21,7 +21,7 @@ type Props = { children: ReactNode };
 
 const SearchProvider = memo(({ children }: Props) => {
   const [keyword, setKeyword] = useState('');
-  const debouncedKeyword = useDebounce(keyword, 200);
+  const debouncedKeyword = useDebounce(keyword, 100);
   const value = useMemo(
     () => ({
       setKeyword,
