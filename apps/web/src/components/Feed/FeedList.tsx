@@ -171,8 +171,10 @@ export default function FeedList({
       {({ height, scrollTop, registerChild }) => (
         <AutoSizer disableHeight>
           {({ width }) => (
+            // calling registerChild resets the scroll position which fixes an issue where upon remounting this list, virtualization didn't work
+            // https://github.com/bvaughn/react-virtualized/issues/1324
             // @ts-expect-error shitty react-virtualized types
-            <div ref={registerChild}>
+            <div ref={(el) => registerChild(el)}>
               <List
                 className="FeedList"
                 ref={virtualizedListRef}
