@@ -13,14 +13,12 @@ import { RootStackNavigatorParamList } from '~/navigation/types';
 import { IconContainer } from '../../components/IconContainer';
 import { InteractiveLink } from '../../components/InteractiveLink';
 import { Markdown } from '../../components/Markdown';
-import { ModalContainer } from '../../components/ModalContainer';
 import { Typography } from '../../components/Typography';
 import { BackIcon } from '../../icons/BackIcon';
-import { CloseIcon } from '../../icons/CloseIcon';
 import { PoapIcon } from '../../icons/PoapIcon';
 import { ShareIcon } from '../../icons/ShareIcon';
 import { NftAdditionalDetails } from './NftAdditionalDetails';
-import { NftDetail } from './NftDetail';
+import { NftDetailAsset } from './NftDetailAsset/NftDetailAsset';
 
 const markdownStyles = StyleSheet.create({
   body: {
@@ -53,7 +51,7 @@ export function NftDetailScreen() {
               username
             }
 
-            ...NftDetailFragment
+            ...NftDetailAssetFragment
             ...NftAdditionalDetailsFragment
           }
         }
@@ -102,7 +100,7 @@ export function NftDetailScreen() {
                 <IconContainer icon={<ShareIcon />} onPress={handleShare} />
               </View>
 
-              <NftDetail tokenRef={query.tokenById} />
+              <NftDetailAsset tokenRef={query.tokenById} />
             </View>
 
             <View className="flex flex-col space-y-1">
