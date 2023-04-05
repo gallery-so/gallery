@@ -25,7 +25,7 @@ export function SearchSection({ children, isShowAll, numResults, onShowAll, titl
             }}
             className="text-lg"
           >
-            Nothing Found
+            No Results
           </Typography>
         </View>
       </View>

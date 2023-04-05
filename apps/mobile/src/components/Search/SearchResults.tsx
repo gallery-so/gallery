@@ -73,7 +73,7 @@ export function SearchResults({ activeFilter, onChangeFilter }: Props) {
             }}
             className="text-lg"
           >
-            Nothing Found
+            No Results
           </Typography>
         </View>
       </View>
