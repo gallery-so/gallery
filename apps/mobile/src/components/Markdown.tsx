@@ -21,16 +21,21 @@ const markdownStyles = StyleSheet.create({
 });
 
 type GalleryMarkdownProps = PropsWithChildren<{
+  rules?: MarkdownProps['rules'];
   style?: MarkdownProps['style'];
 }>;
 
-export function Markdown({ children, style }: GalleryMarkdownProps) {
+export function Markdown({ children, rules, style }: GalleryMarkdownProps) {
   const mergedStyles = useMemo(() => {
     return { ...markdownStyles, ...style };
   }, [style]);
 
   return (
-    <MarkdownDisplay markdownit={MarkdownIt({ typographer: true })} style={mergedStyles}>
+    <MarkdownDisplay
+      markdownit={MarkdownIt({ typographer: true })}
+      style={mergedStyles}
+      rules={rules}
+    >
       {children}
     </MarkdownDisplay>
   );
