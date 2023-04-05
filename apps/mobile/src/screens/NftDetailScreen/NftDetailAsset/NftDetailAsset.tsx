@@ -7,9 +7,9 @@ import { graphql } from 'relay-runtime';
 import { GallerySkeleton } from '~/components/GallerySkeleton';
 import { NftDetailAssetFragment$key } from '~/generated/NftDetailAssetFragment.graphql';
 import { fitDimensionsToContainer } from '~/screens/NftDetailScreen/NftDetailAsset/fitDimensionToContainer';
+import { NftDetailAssetHtml } from '~/screens/NftDetailScreen/NftDetailAsset/NftDetailAssetHtml';
 import { NftDetailAssetImage } from '~/screens/NftDetailScreen/NftDetailAsset/NftDetailAssetImage';
-import { NftDetailHtml } from '~/screens/NftDetailScreen/NftDetailAsset/NftDetailHtml';
-import { NftDetailVideo } from '~/screens/NftDetailScreen/NftDetailAsset/NftDetailVideo';
+import { NftDetailAssetVideo } from '~/screens/NftDetailScreen/NftDetailAsset/NftDetailAssetVideo';
 import { Dimensions } from '~/screens/NftDetailScreen/NftDetailAsset/types';
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
 
@@ -126,7 +126,7 @@ export function NftDetailAsset({ tokenRef, style }: NftDetailProps) {
       }
 
       return (
-        <NftDetailVideo
+        <NftDetailAssetVideo
           onLoad={handleLoad}
           videoUrl={videoUrl}
           outputDimensions={finalAssetDimensions}
@@ -142,7 +142,7 @@ export function NftDetailAsset({ tokenRef, style }: NftDetailProps) {
         );
       }
 
-      return <NftDetailHtml htmlUrl={htmlUrl} onLoad={handleLoad} />;
+      return <NftDetailAssetHtml htmlUrl={htmlUrl} onLoad={handleLoad} />;
     }
 
     throw new CouldNotRenderNftError('NftDetailAsset', 'Unsupported media type', {

@@ -8,7 +8,7 @@ type Props = {
   onLoad: (dimensions: Dimensions) => void;
 };
 
-export function NftDetailVideo({ outputDimensions, videoUrl, onLoad }: Props) {
+export function NftDetailAssetVideo({ outputDimensions, videoUrl, onLoad }: Props) {
   return (
     <Video
       style={outputDimensions}

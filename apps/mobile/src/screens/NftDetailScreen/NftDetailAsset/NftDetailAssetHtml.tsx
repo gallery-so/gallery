@@ -6,7 +6,7 @@ type Props = {
   onLoad: () => void;
 };
 
-export function NftDetailHtml({ onLoad, htmlUrl }: Props) {
+export function NftDetailAssetHtml({ onLoad, htmlUrl }: Props) {
   return (
     <View style={{ width: '100%', aspectRatio: 1 }}>
       <WebView
