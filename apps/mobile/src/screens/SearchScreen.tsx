@@ -1,5 +1,5 @@
-import { Suspense, useState } from 'react';
-import { Text, View } from 'react-native';
+import { useState } from 'react';
+import { View } from 'react-native';
 import { useSearchContext } from 'src/components/Search/SearchContext';
 import { SearchFilter } from 'src/components/Search/SearchFilter';
 import { SearchFilterType } from 'src/components/Search/SearchFilter';
@@ -18,9 +18,7 @@ export function SearchScreen() {
       </View>
 
       <View className=" flex h-full max-h-full">
-        <Suspense fallback={<Text>Loading...</Text>}>
-          {keyword && <SearchResults activeFilter={filter} onChangeFilter={setFilter} />}
-        </Suspense>
+        {keyword && <SearchResults activeFilter={filter} onChangeFilter={setFilter} />}
       </View>
     </View>
   );

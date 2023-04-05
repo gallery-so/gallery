@@ -64,7 +64,7 @@ export function SearchResults({ activeFilter, onChangeFilter }: Props) {
 
   if (isEmpty) {
     return (
-      <View className="h-full">
+      <View className={`h-full ${isLoading ? 'opacity-50' : 'opacity-100'} `}>
         <View className="flex flex-1 items-center justify-center">
           <Typography
             font={{
@@ -82,7 +82,7 @@ export function SearchResults({ activeFilter, onChangeFilter }: Props) {
 
   if (activeFilter === 'curator') {
     return (
-      <View>
+      <LoadingWrapper isLoading={isLoading}>
         {query?.searchUsers?.__typename === 'SearchUsersPayload' && (
           <UserSearchResultSection
             queryRef={query.searchUsers.results}
@@ -90,13 +90,13 @@ export function SearchResults({ activeFilter, onChangeFilter }: Props) {
             onChangeFilter={onChangeFilter}
           />
         )}
-      </View>
+      </LoadingWrapper>
     );
   }
 
   if (activeFilter === 'gallery') {
     return (
-      <View>
+      <LoadingWrapper isLoading={isLoading}>
         {query?.searchGalleries?.__typename === 'SearchGalleriesPayload' && (
           <GallerySearchResultSection
             queryRef={query.searchGalleries.results}
@@ -104,12 +104,12 @@ export function SearchResults({ activeFilter, onChangeFilter }: Props) {
             onChangeFilter={onChangeFilter}
           />
         )}
-      </View>
+      </LoadingWrapper>
     );
   }
 
   return (
-    <View className={`${isLoading ? 'opacity-50' : 'opacity-100'} `}>
+    <LoadingWrapper isLoading={isLoading}>
       {query?.searchUsers?.__typename === 'SearchUsersPayload' && (
         <UserSearchResultSection
           queryRef={query.searchUsers.results}
@@ -122,6 +122,15 @@ export function SearchResults({ activeFilter, onChangeFilter }: Props) {
           onChangeFilter={onChangeFilter}
         />
       )}
-    </View>
+    </LoadingWrapper>
   );
 }
+
+type LoadingWrapperProps = {
+  children: React.ReactNode;
+  isLoading: boolean;
+};
+
+const LoadingWrapper = ({ children, isLoading }: LoadingWrapperProps) => (
+  <View className={`${isLoading ? 'opacity-50' : 'opacity-100'} `}>{children}</View>
+);
