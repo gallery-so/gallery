@@ -13,9 +13,7 @@ const getHTML = (svgContent: string) => `
       html, body {
         margin: 0;
         padding: 0;
-        height: 100${heightUnits};
         width: 100${heightUnits};
-        overflow: hidden;
         background-color: transparent;
         display: flex;
         justify-content: center;
@@ -84,7 +82,10 @@ export function SvgWebView({ source, onLoadStart, onLoadEnd, style }: SvgWebView
     }
 
     fetchSvg();
-  }, [onLoadEnd, onLoadStart, uri]);
+
+    // Not dealing with memoization issues right now
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [uri]);
 
   if (svgState.kind === 'loading') {
     return <View pointerEvents="none" style={style} />;
