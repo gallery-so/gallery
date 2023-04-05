@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { FlatList } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { UserSearchResultSectionFragment$key } from '~/generated/UserSearchResultSectionFragment.graphql';
@@ -39,9 +40,12 @@ export function UserSearchResultSection({ isShowingAll, queryRef, onChangeFilter
       numResults={results.length}
       onShowAll={() => onChangeFilter('curator')}
     >
-      {resultsToShow.map((result) => (
-        <UserSearchResult key={result.user.id} userRef={result.user} />
-      ))}
+      <FlatList
+        data={resultsToShow}
+        renderItem={({ item }) => <UserSearchResult userRef={item.user} />}
+        scrollEnabled={Boolean(isShowingAll)}
+        keyExtractor={(item) => item.user.id}
+      />
     </SearchSection>
   );
 }

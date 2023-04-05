@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { FlatList } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { GallerySearchResultSectionFragment$key } from '~/generated/GallerySearchResultSectionFragment.graphql';
@@ -39,9 +40,14 @@ export function GallerySearchResultSection({ isShowingAll, queryRef, onChangeFil
       numResults={results.length}
       onShowAll={() => onChangeFilter('gallery')}
     >
-      {resultsToShow.map((result) => (
-        <GallerySearchResult key={result.gallery.id} galleryRef={result.gallery} />
-      ))}
+      <FlatList
+        data={resultsToShow}
+        renderItem={({ item }) => (
+          <GallerySearchResult galleryRef={item.gallery} key={item.gallery.id} />
+        )}
+        scrollEnabled={Boolean(isShowingAll)}
+        keyExtractor={(item) => item.gallery.id}
+      />
     </SearchSection>
   );
 }
