@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { RenderRules } from 'react-native-markdown-display';
 
 import { Markdown } from '../Markdown';
 import { useSearchContext } from './SearchContext';
@@ -17,6 +18,14 @@ const markdownStyles = StyleSheet.create({
   },
 });
 
+const markdownRules = {
+  textgroup: (node, children, _, styles) => (
+    <Text key={node.key} style={styles.textgroup} numberOfLines={1} ellipsizeMode="tail">
+      {children}
+    </Text>
+  ),
+} as RenderRules;
+
 export function SearchResult({ title, description, ...props }: Props) {
   const { keyword } = useSearchContext();
 
@@ -27,8 +36,11 @@ export function SearchResult({ title, description, ...props }: Props) {
   const highlightedDescription = useMemo(() => {
     const regex = new RegExp(keyword, 'gi');
 
-    // Remove bold & link markdown tag from description
-    const unformattedDescription = description.replace(/\*\*/g, '').replace(/\[.*\]\(.*\)/g, '');
+    // Clean the markdown
+    const unformattedDescription = description
+      .replace(/\*\*/g, '') // bold
+      .replace(/\[.*\]\(.*\)/g, '') // link markdown tag from description
+      .replace(/\n/g, ' '); // break line
 
     const matchIndex = unformattedDescription.search(regex);
     let truncatedDescription;
@@ -45,14 +57,15 @@ export function SearchResult({ title, description, ...props }: Props) {
       truncatedDescription = unformattedDescription.substring(0, maxLength);
     }
     // highlight keyword
-    return truncatedDescription.replace(regex, (match) => `**${match}**`).substring(0, 40);
+    return truncatedDescription.replace(regex, (match) => `**${match}**`);
   }, [keyword, description]);
 
   return (
-    <TouchableOpacity className="py-2 px-4" {...props}>
+    <TouchableOpacity className="h-16 py-2 px-4" {...props}>
       <Markdown style={markdownStyles}>{highlightedName}</Markdown>
-
-      <Markdown style={markdownStyles}>{highlightedDescription}</Markdown>
+      <Markdown style={markdownStyles} rules={markdownRules}>
+        {highlightedDescription}
+      </Markdown>
     </TouchableOpacity>
   );
 }
