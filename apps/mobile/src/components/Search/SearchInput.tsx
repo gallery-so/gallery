@@ -41,15 +41,23 @@ export function SearchInput({ value, onChange, style, ...props }: Props) {
     <View className="flex flex-row items-center">
       <TextInput
         ref={ref}
-        className="text-offBlack flex-1 py-2 text-xl"
+        className="text-offBlack h-10 flex-1 text-xl"
         value={localKeyword}
         returnKeyType="done"
         onChangeText={handleChange}
+        placeholder="Search for anything..."
+        placeholderTextColor="#e2e2e2"
+        autoCapitalize="none"
+        autoCorrect={false}
         {...props}
       />
-      <TouchableOpacity className="p-2" accessibilityRole="button" onPress={handleClear}>
-        <XMarkIcon />
-      </TouchableOpacity>
+      {localKeyword.length > 0 && (
+        <TouchableOpacity accessibilityRole="button" onPress={handleClear}>
+          <View className="f flex h-4 w-4 items-center justify-center">
+            <XMarkIcon />
+          </View>
+        </TouchableOpacity>
+      )}
     </View>
   );
 }
