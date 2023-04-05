@@ -58,6 +58,8 @@ export function SvgWebView({ source, onLoadStart, onLoadEnd, style }: SvgWebView
 
   useEffect(() => {
     async function fetchSvg() {
+      onLoadStart?.();
+
       if (uri) {
         if (uri.match(/^data:image\/svg/)) {
           const index = uri.indexOf('<svg');
