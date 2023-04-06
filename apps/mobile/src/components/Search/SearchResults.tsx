@@ -81,7 +81,12 @@ export function SearchResults({ activeFilter, onChangeFilter }: Props) {
 
   const isEmpty = useMemo(() => {
     if (!activeFilter) {
-      return !hasUsers && !hasGalleries;
+      return (
+        hasUsers &&
+        hasGalleries &&
+        searchUsers.results.length === 0 &&
+        searchGalleries.results.length === 0
+      );
     }
 
     if (activeFilter === 'curator' && hasUsers) {
