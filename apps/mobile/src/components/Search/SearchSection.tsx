@@ -5,13 +5,12 @@ import { NUM_PREVIEW_SEARCH_RESULTS } from './constants';
 
 type Props = {
   title: string;
-  children: React.ReactNode;
   onShowAll: () => void;
   isShowAll?: boolean;
   numResults: number;
 };
 
-export function SearchSection({ children, isShowAll, numResults, onShowAll, title }: Props) {
+export function SearchSection({ isShowAll, numResults, onShowAll, title }: Props) {
   if (!isShowAll && numResults === 0) return null;
 
   if (isShowAll && numResults === 0)
@@ -32,30 +31,27 @@ export function SearchSection({ children, isShowAll, numResults, onShowAll, titl
     );
 
   return (
-    <View className="py-2">
-      <View className="flex flex-row items-center justify-between py-2 px-4">
-        <Typography
-          font={{
-            family: 'ABCDiatype',
-            weight: 'Medium',
-          }}
-          className="text-metal text-xs uppercase"
-        >
-          {title}
-        </Typography>
+    <View className="flex flex-row items-center justify-between py-4 px-4">
+      <Typography
+        font={{
+          family: 'ABCDiatype',
+          weight: 'Medium',
+        }}
+        className="text-metal text-xs uppercase"
+      >
+        {title}
+      </Typography>
 
-        {!isShowAll && numResults > NUM_PREVIEW_SEARCH_RESULTS && (
-          <TouchableOpacity onPress={onShowAll}>
-            <Typography
-              font={{ family: 'ABCDiatype', weight: 'Regular' }}
-              className="border-b border-black text-sm"
-            >
-              Show all
-            </Typography>
-          </TouchableOpacity>
-        )}
-      </View>
-      {children}
+      {!isShowAll && numResults > NUM_PREVIEW_SEARCH_RESULTS && (
+        <TouchableOpacity onPress={onShowAll}>
+          <Typography
+            font={{ family: 'ABCDiatype', weight: 'Regular' }}
+            className="border-b border-black text-sm"
+          >
+            Show all
+          </Typography>
+        </TouchableOpacity>
+      )}
     </View>
   );
 }
