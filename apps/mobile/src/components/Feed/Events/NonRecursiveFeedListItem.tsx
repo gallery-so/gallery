@@ -104,5 +104,9 @@ export function NonRecursiveFeedListItem({
     }
   }, [eventCount, eventData, eventId, slideIndex]);
 
-  return <View style={{ width }}>{inner}</View>;
+  return (
+    <View className="flex-1" style={{ width }}>
+      {inner}
+    </View>
+  );
 }

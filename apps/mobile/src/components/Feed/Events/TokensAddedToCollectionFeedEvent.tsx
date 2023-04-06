@@ -42,7 +42,7 @@ export function TokensAddedToCollectionFeedEvent({
   }, [eventData.newTokens]);
 
   return (
-    <View className="flex flex-col">
+    <View className="flex flex-1 flex-col">
       <FeedEventCarouselCellHeader>
         <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
           Added new tokens to
@@ -53,11 +53,13 @@ export function TokensAddedToCollectionFeedEvent({
         </Typography>
       </FeedEventCarouselCellHeader>
 
-      <EventTokenGrid
-        imagePriority={isFirstSlide ? FastImage.priority.high : FastImage.priority.normal}
-        allowPreserveAspectRatio={allowPreserveAspectRatio}
-        collectionTokenRefs={tokens}
-      />
+      <View className="flex flex-grow justify-center">
+        <EventTokenGrid
+          imagePriority={isFirstSlide ? FastImage.priority.high : FastImage.priority.normal}
+          allowPreserveAspectRatio={allowPreserveAspectRatio}
+          collectionTokenRefs={tokens}
+        />
+      </View>
     </View>
   );
 }

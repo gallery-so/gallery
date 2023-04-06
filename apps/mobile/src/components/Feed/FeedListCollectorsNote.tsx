@@ -11,7 +11,7 @@ export function FeedListCollectorsNote({ collectorsNote }: Props) {
     <View className="flex flex-row space-x-2 px-3 py-2">
       <View className="bg-porcelain h-full w-0.5" />
       <View>
-        <Markdown>{collectorsNote}</Markdown>
+        <Markdown numberOfLines={3}>{collectorsNote}</Markdown>
       </View>
     </View>
   );

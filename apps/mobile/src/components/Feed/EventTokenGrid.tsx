@@ -132,7 +132,7 @@ export function EventTokenGrid({
 
   return (
     <View
-      className="flex flex-row flex-wrap"
+      className="flex flex-row"
       style={{ width: dimensions.width, maxHeight: dimensions.height, height: dimensions.width }}
     >
       {inner}
