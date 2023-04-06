@@ -27,7 +27,6 @@ export function GalleryUpdatedFeedEvent({ eventDataRef, eventId }: GalleryUpdate
       fragment GalleryUpdatedFeedEventFragment on GalleryUpdatedFeedEventData {
         subEventDatas @required(action: THROW) {
           __typename
-          eventTime
           ...NonRecursiveFeedListItemFragment
         }
       }
@@ -74,15 +73,13 @@ export function GalleryUpdatedFeedEvent({ eventDataRef, eventId }: GalleryUpdate
       >
         {subEvents.map((subEvent, index) => {
           return (
-            <View className="flex-1">
-              <NonRecursiveFeedListItem
-                key={index}
-                eventId={eventId}
-                slideIndex={index}
-                eventCount={subEvents.length}
-                eventDataRef={subEvent}
-              />
-            </View>
+            <NonRecursiveFeedListItem
+              key={index}
+              eventId={eventId}
+              slideIndex={index}
+              eventCount={subEvents.length}
+              eventDataRef={subEvent}
+            />
           );
         })}
       </ScrollView>
