@@ -1,7 +1,8 @@
+import { useNavigation } from '@react-navigation/native';
 import { ResizeMode } from 'expo-av';
 import { PropsWithChildren, useCallback, useState } from 'react';
 import { useWindowDimensions, View } from 'react-native';
-import { ContextMenuView } from 'react-native-ios-context-menu';
+import { ContextMenuView, OnPressMenuItemEvent } from 'react-native-ios-context-menu';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -10,8 +11,11 @@ import { GallerySkeleton } from '~/components/GallerySkeleton';
 import { NftPreviewAsset } from '~/components/NftPreview/NftPreviewAsset';
 import { Typography } from '~/components/Typography';
 import { NftPreviewContextMenuPopupFragment$key } from '~/generated/NftPreviewContextMenuPopupFragment.graphql';
+import { RootStackNavigatorProp } from '~/navigation/types';
 import { fitDimensionsToContainer } from '~/screens/NftDetailScreen/NftDetailAsset/fitDimensionToContainer';
 import { Dimensions } from '~/screens/NftDetailScreen/NftDetailAsset/types';
+
+import { shareToken } from '../../utils/shareToken';
 
 type NftPreviewContextMenuPopupProps = PropsWithChildren<{
   fallbackTokenUrl?: string;
@@ -30,6 +34,7 @@ export function NftPreviewContextMenuPopup({
       fragment NftPreviewContextMenuPopupFragment on Token {
         __typename
 
+        dbid
         name
 
         owner {
@@ -47,11 +52,14 @@ export function NftPreviewContextMenuPopup({
             }
           }
         }
+
+        ...shareTokenFragment
       }
     `,
     tokenRef
   );
 
+  const navigation = useNavigation<RootStackNavigatorProp>();
   const windowDimensions = useWindowDimensions();
 
   const tokenUrl = token.media?.previewURLs?.large ?? fallbackTokenUrl;
@@ -62,10 +70,22 @@ export function NftPreviewContextMenuPopup({
     setPopupAssetLoaded(true);
   }, []);
 
+  const handleMenuItemPress = useCallback<OnPressMenuItemEvent>(
+    (event) => {
+      if (event.nativeEvent.actionKey === 'view-details') {
+        navigation.navigate('NftDetail', { tokenId: token.dbid });
+      } else if (event.nativeEvent.actionKey === 'share') {
+        shareToken(token);
+      }
+    },
+    [navigation, token]
+  );
+
   return (
     <ContextMenuView
       // If we don't have a tokenUrl, we should bail
       isContextMenuEnabled={Boolean(tokenUrl)}
+      onPressMenuItem={handleMenuItemPress}
       menuConfig={{
         menuTitle: '',
         menuItems: [

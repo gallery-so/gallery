@@ -1,6 +1,6 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { useCallback, useState } from 'react';
-import { ScrollView, Share, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -17,6 +17,7 @@ import { Typography } from '../../components/Typography';
 import { BackIcon } from '../../icons/BackIcon';
 import { PoapIcon } from '../../icons/PoapIcon';
 import { ShareIcon } from '../../icons/ShareIcon';
+import { shareToken } from '../../utils/shareToken';
 import { NftAdditionalDetails } from './NftAdditionalDetails';
 import { NftDetailAsset } from './NftDetailAsset/NftDetailAsset';
 
@@ -36,7 +37,6 @@ export function NftDetailScreen() {
         tokenById(id: $tokenId) {
           ... on Token {
             __typename
-            dbid
             name
             chain
             tokenId
@@ -47,10 +47,7 @@ export function NftDetailScreen() {
               badgeURL
             }
 
-            owner {
-              username
-            }
-
+            ...shareTokenFragment
             ...NftDetailAssetFragment
             ...NftAdditionalDetailsFragment
           }
@@ -80,14 +77,8 @@ export function NftDetailScreen() {
   }, []);
 
   const handleShare = useCallback(() => {
-    if (
-      query.tokenById?.__typename === 'Token' &&
-      query.tokenById.owner?.username &&
-      query.tokenById.dbid
-    ) {
-      Share.share({
-        url: `https://gallery.so/${query.tokenById.owner.username}/${query.tokenById.dbid}`,
-      });
+    if (query.tokenById?.__typename === 'Token') {
+      shareToken(query.tokenById);
     }
   }, [query.tokenById]);
 
