@@ -46,7 +46,7 @@ export function SearchFilter({ activeFilter, onChange, ...props }: Props) {
           onPress={() => {
             handleSelectFilter(filter.value);
           }}
-          className={` rounded-3xl border px-3 py-1.5 ${
+          className={`flex h-8 items-center justify-center rounded-3xl border px-3 ${
             activeFilter === filter.value ? 'border-offBlack' : 'border-porcelain'
           }`}
         >
