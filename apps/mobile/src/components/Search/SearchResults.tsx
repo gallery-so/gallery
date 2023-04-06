@@ -1,15 +1,35 @@
-import { useDeferredValue, useMemo } from 'react';
-import { ScrollView, View } from 'react-native';
+import { FlashList, ListRenderItem } from '@shopify/flash-list';
+import { useCallback, useDeferredValue, useMemo } from 'react';
+import { View } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 
+import { GallerySearchResultFragment$key } from '~/generated/GallerySearchResultFragment.graphql';
 import { SearchResultsQuery } from '~/generated/SearchResultsQuery.graphql';
+import { UserSearchResultFragment$key } from '~/generated/UserSearchResultFragment.graphql';
 
 import { Typography } from '../Typography';
-import { GallerySearchResultSection } from './Gallery/GallerySearchResultSection';
+import { NUM_PREVIEW_SEARCH_RESULTS } from './constants';
+import { GallerySearchResult } from './Gallery/GallerySearchResult';
 import { useSearchContext } from './SearchContext';
 import { SearchFilterType } from './SearchFilter';
-import { UserSearchResultSection } from './User/UserSearchResultSection';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SearchSection } from './SearchSection';
+import { UserSearchResult } from './User/UserSearchResult';
+
+type SearchListItem =
+  | {
+      kind: 'search-section-header';
+      sectionType: SearchFilterType;
+      sectionTitle: string;
+      numberOfResults: number;
+    }
+  | {
+      kind: 'user-search-result';
+      user: UserSearchResultFragment$key;
+    }
+  | {
+      kind: 'gallery-search-result';
+      gallery: GallerySearchResultFragment$key;
+    };
 
 type Props = {
   activeFilter: SearchFilterType;
@@ -29,7 +49,9 @@ export function SearchResults({ activeFilter, onChangeFilter }: Props) {
             __typename
             results @required(action: THROW) {
               __typename
-              ...UserSearchResultSectionFragment
+              user {
+                ...UserSearchResultFragment
+              }
             }
           }
         }
@@ -39,7 +61,9 @@ export function SearchResults({ activeFilter, onChangeFilter }: Props) {
             __typename
             results @required(action: THROW) {
               __typename
-              ...GallerySearchResultSectionFragment
+              gallery {
+                ...GallerySearchResultFragment
+              }
             }
           }
         }
@@ -49,8 +73,6 @@ export function SearchResults({ activeFilter, onChangeFilter }: Props) {
   );
 
   const isLoading = keyword !== deferredKeyword;
-
-  const { bottom } = useSafeAreaInsets();
 
   const isEmpty = useMemo(() => {
     if (
@@ -64,6 +86,114 @@ export function SearchResults({ activeFilter, onChangeFilter }: Props) {
 
     return false;
   }, [query]);
+
+  const items = useMemo((): SearchListItem[] => {
+    const items: SearchListItem[] = [];
+
+    const searchUsers = query.searchUsers;
+    const searchGalleries = query.searchGalleries;
+    const hasUsers = searchUsers?.__typename === 'SearchUsersPayload';
+    const hasGalleries = searchGalleries?.__typename === 'SearchGalleriesPayload';
+
+    if (activeFilter === 'curator' && hasUsers) {
+      items.push({
+        kind: 'search-section-header',
+        sectionType: 'curator',
+        sectionTitle: 'Curators',
+        numberOfResults: searchUsers.results.length,
+      });
+
+      for (const result of searchUsers.results) {
+        if (result.user) {
+          items.push({
+            kind: 'user-search-result',
+            user: result.user,
+          });
+        }
+      }
+    } else if (activeFilter === 'gallery' && hasGalleries) {
+      items.push({
+        kind: 'search-section-header',
+        sectionType: 'gallery',
+        sectionTitle: 'Galleries',
+        numberOfResults: searchGalleries.results.length,
+      });
+
+      for (const result of searchGalleries.results) {
+        if (result.gallery) {
+          items.push({
+            kind: 'gallery-search-result',
+            gallery: result.gallery,
+          });
+        }
+      }
+
+      // if there is no active filter, show both curators and galleries
+      // but only show a preview of the results
+    } else if (!activeFilter) {
+      items.push({
+        kind: 'search-section-header',
+        sectionType: 'curator',
+        sectionTitle: 'Curators',
+        numberOfResults: hasUsers ? searchUsers.results.length : 0,
+      });
+
+      if (hasUsers) {
+        const results = searchUsers.results.slice(0, NUM_PREVIEW_SEARCH_RESULTS);
+        for (const result of results) {
+          if (result.user) {
+            items.push({
+              kind: 'user-search-result',
+              user: result.user,
+            });
+          }
+        }
+      }
+
+      items.push({
+        kind: 'search-section-header',
+        sectionType: 'gallery',
+        sectionTitle: 'Galleries',
+        numberOfResults: hasGalleries ? searchGalleries.results.length : 0,
+      });
+
+      if (hasGalleries) {
+        const results = searchGalleries.results.slice(0, NUM_PREVIEW_SEARCH_RESULTS);
+        for (const result of results) {
+          if (result.gallery) {
+            items.push({
+              kind: 'gallery-search-result',
+              gallery: result.gallery,
+            });
+          }
+        }
+      }
+    }
+
+    return items;
+  }, [activeFilter, query.searchUsers, query.searchGalleries]);
+
+  const renderItem = useCallback<ListRenderItem<SearchListItem>>(
+    ({ item }) => {
+      if (item.kind === 'search-section-header') {
+        return (
+          <SearchSection
+            title={item.sectionTitle}
+            onShowAll={() => onChangeFilter(item.sectionType)}
+            numResults={item.numberOfResults}
+            isShowAll={activeFilter === item.sectionType}
+          />
+        );
+      } else if (item.kind === 'user-search-result') {
+        return <UserSearchResult userRef={item.user} />;
+      } else if (item.kind === 'gallery-search-result') {
+        return <GallerySearchResult galleryRef={item.gallery} />;
+      }
+
+      return <View />;
+    },
+    [activeFilter, onChangeFilter]
+  );
 
   if (isEmpty) {
     return (
@@ -83,66 +213,9 @@ export function SearchResults({ activeFilter, onChangeFilter }: Props) {
     );
   }
 
-  if (activeFilter === 'curator') {
-    return (
-      <LoadingWrapper isLoading={isLoading}>
-        {query?.searchUsers?.__typename === 'SearchUsersPayload' && (
-          <UserSearchResultSection
-            queryRef={query.searchUsers.results}
-            isShowingAll
-            onChangeFilter={onChangeFilter}
-          />
-        )}
-      </LoadingWrapper>
-    );
-  }
-
-  if (activeFilter === 'gallery') {
-    return (
-      <LoadingWrapper isLoading={isLoading}>
-        {query?.searchGalleries?.__typename === 'SearchGalleriesPayload' && (
-          <GallerySearchResultSection
-            queryRef={query.searchGalleries.results}
-            isShowingAll
-            onChangeFilter={onChangeFilter}
-          />
-        )}
-      </LoadingWrapper>
-    );
-  }
-
   return (
-    <ScrollView
-      contentContainerStyle={{
-        // Bottom navbar height + padding
-        paddingBottom: 70 + 12 + bottom,
-
-        height: '100%',
-      }}
-    >
-      <LoadingWrapper isLoading={isLoading}>
-        {query?.searchUsers?.__typename === 'SearchUsersPayload' && (
-          <UserSearchResultSection
-            queryRef={query.searchUsers.results}
-            onChangeFilter={onChangeFilter}
-          />
-        )}
-        {query?.searchGalleries?.__typename === 'SearchGalleriesPayload' && (
-          <GallerySearchResultSection
-            queryRef={query?.searchGalleries?.results}
-            onChangeFilter={onChangeFilter}
-          />
-        )}
-      </LoadingWrapper>
-    </ScrollView>
+    <View className={`flex-1 ${isLoading ? 'opacity-50' : 'opacity-100'}`}>
+      <FlashList data={items} estimatedItemSize={40} renderItem={renderItem} />
+    </View>
   );
 }
-
-type LoadingWrapperProps = {
-  children: React.ReactNode;
-  isLoading: boolean;
-};
-
-const LoadingWrapper = ({ children, isLoading }: LoadingWrapperProps) => (
-  <View className={`${isLoading ? 'opacity-50' : 'opacity-100'} `}>{children}</View>
-);
