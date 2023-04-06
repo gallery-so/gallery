@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { FlatList } from 'react-native';
+import { FlatList, View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { UserSearchResultSectionFragment$key } from '~/generated/UserSearchResultSectionFragment.graphql';
@@ -45,6 +45,7 @@ export function UserSearchResultSection({ isShowingAll, queryRef, onChangeFilter
         renderItem={({ item }) => <UserSearchResult userRef={item.user} />}
         scrollEnabled={Boolean(isShowingAll)}
         keyExtractor={(item) => item.user.id}
+        contentContainerStyle={{ paddingBottom: 350 }}
       />
     </SearchSection>
   );
