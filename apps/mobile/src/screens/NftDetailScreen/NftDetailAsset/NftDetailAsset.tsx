@@ -16,52 +16,54 @@ import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
 type ImageState = { kind: 'loading' } | { kind: 'loaded'; dimensions: Dimensions | null };
 
 type NftDetailProps = {
-  tokenRef: NftDetailAssetFragment$key;
+  collectionTokenRef: NftDetailAssetFragment$key;
   style?: ViewProps['style'];
 };
 
-export function NftDetailAsset({ tokenRef, style }: NftDetailProps) {
-  const token = useFragment(
+export function NftDetailAsset({ collectionTokenRef, style }: NftDetailProps) {
+  const collectionToken = useFragment(
     graphql`
-      fragment NftDetailAssetFragment on Token {
-        __typename
-
-        media {
-          __typename
-
-          ... on AudioMedia {
-            previewURLs {
-              large
-            }
-          }
-
-          ... on VideoMedia {
+      fragment NftDetailAssetFragment on CollectionToken {
+        token @required(action: THROW) {
+          media {
             __typename
-            contentRenderURLs {
-              large
-            }
-          }
-          ... on GIFMedia {
-            __typename
-            previewURLs {
-              large
-            }
-          }
-          ... on ImageMedia {
-            __typename
-            previewURLs {
-              large
-            }
-          }
 
-          ... on HtmlMedia {
-            contentRenderURL
+            ... on AudioMedia {
+              previewURLs {
+                large
+              }
+            }
+
+            ... on VideoMedia {
+              __typename
+              contentRenderURLs {
+                large
+              }
+            }
+            ... on GIFMedia {
+              __typename
+              previewURLs {
+                large
+              }
+            }
+            ... on ImageMedia {
+              __typename
+              previewURLs {
+                large
+              }
+            }
+
+            ... on HtmlMedia {
+              contentRenderURL
+            }
           }
         }
       }
     `,
-    tokenRef
+    collectionTokenRef
   );
+
+  const { token } = collectionToken;
 
   const windowDimensions = useWindowDimensions();
 

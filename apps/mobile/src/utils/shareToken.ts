@@ -3,23 +3,33 @@ import { graphql, readInlineData } from 'relay-runtime';
 
 import { shareTokenFragment$key } from '~/generated/shareTokenFragment.graphql';
 
-export function shareToken(tokenRef: shareTokenFragment$key) {
-  const token = readInlineData(
+export async function shareToken(collectionTokenRef: shareTokenFragment$key) {
+  const collectionToken = readInlineData(
     graphql`
-      fragment shareTokenFragment on Token @inline {
-        dbid
-
-        owner {
-          username
+      fragment shareTokenFragment on CollectionToken @inline {
+        collection {
+          dbid
+        }
+        token {
+          dbid
+          owner {
+            username
+          }
         }
       }
     `,
-    tokenRef
+    collectionTokenRef
   );
 
-  if (token.owner?.username) {
-    Share.share({
-      url: `https://gallery.so/${token.owner.username}/${token.dbid}`,
-    });
+  if (
+    collectionToken.token?.owner?.username &&
+    collectionToken.collection &&
+    collectionToken.token
+  ) {
+    const url = `https://gallery.so/${collectionToken.token.owner.username}/${collectionToken.collection?.dbid}/${collectionToken.token?.dbid}`;
+
+    console.log(url);
+
+    Share.share({ url });
   }
 }

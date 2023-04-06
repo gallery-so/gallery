@@ -8,7 +8,6 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { GallerySkeleton } from '~/components/GallerySkeleton';
-import { InteractiveLink } from '~/components/InteractiveLink';
 import { NftPreviewAsset } from '~/components/NftPreview/NftPreviewAsset';
 import { Typography } from '~/components/Typography';
 import { NftPreviewContextMenuPopupFragment$key } from '~/generated/NftPreviewContextMenuPopupFragment.graphql';
@@ -21,31 +20,34 @@ import { shareToken } from '../../utils/shareToken';
 type NftPreviewContextMenuPopupProps = PropsWithChildren<{
   fallbackTokenUrl?: string;
   imageDimensions: Dimensions | null;
-  tokenRef: NftPreviewContextMenuPopupFragment$key;
+  collectionTokenRef: NftPreviewContextMenuPopupFragment$key;
 }>;
 
 export function NftPreviewContextMenuPopup({
   imageDimensions,
   fallbackTokenUrl,
-  tokenRef,
+  collectionTokenRef,
   children,
 }: NftPreviewContextMenuPopupProps) {
-  const token = useFragment(
+  const collectionToken = useFragment(
     graphql`
-      fragment NftPreviewContextMenuPopupFragment on Token {
-        __typename
-
-        dbid
-        name
-
-        contract {
-          name
+      fragment NftPreviewContextMenuPopupFragment on CollectionToken {
+        collection @required(action: THROW) {
+          dbid
         }
+        token @required(action: THROW) {
+          dbid
+          name
 
-        media {
-          ... on Media {
-            previewURLs {
-              large
+          contract {
+            name
+          }
+
+          media {
+            ... on Media {
+              previewURLs {
+                large
+              }
             }
           }
         }
@@ -53,8 +55,10 @@ export function NftPreviewContextMenuPopup({
         ...shareTokenFragment
       }
     `,
-    tokenRef
+    collectionTokenRef
   );
+
+  const { token } = collectionToken;
 
   const navigation = useNavigation<RootStackNavigatorProp>();
   const windowDimensions = useWindowDimensions();
@@ -70,12 +74,15 @@ export function NftPreviewContextMenuPopup({
   const handleMenuItemPress = useCallback<OnPressMenuItemEvent>(
     (event) => {
       if (event.nativeEvent.actionKey === 'view-details') {
-        navigation.navigate('NftDetail', { tokenId: token.dbid });
+        navigation.navigate('NftDetail', {
+          tokenId: token.dbid,
+          collectionId: collectionToken.collection.dbid,
+        });
       } else if (event.nativeEvent.actionKey === 'share') {
-        shareToken(token);
+        shareToken(collectionToken);
       }
     },
-    [navigation, token]
+    [collectionToken, navigation, token.dbid]
   );
 
   return (

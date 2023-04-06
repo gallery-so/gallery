@@ -7,6 +7,7 @@ export type RootStackNavigatorParamList = {
   Login: NavigatorScreenParams<LoginStackNavigatorParamList>;
   NftDetail: {
     tokenId: string;
+    collectionId: string;
   };
 };
 

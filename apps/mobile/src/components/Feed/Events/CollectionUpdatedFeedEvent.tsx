@@ -33,9 +33,7 @@ export function CollectionUpdatedFeedEvent({
         }
 
         newTokens {
-          token {
-            ...EventTokenGridFragment
-          }
+          ...EventTokenGridFragment
         }
       }
     `,
@@ -43,7 +41,7 @@ export function CollectionUpdatedFeedEvent({
   );
 
   const tokens = useMemo(() => {
-    return removeNullValues(eventData.newTokens?.map((collectionToken) => collectionToken?.token));
+    return removeNullValues(eventData.newTokens);
   }, [eventData.newTokens]);
 
   return (
@@ -65,7 +63,7 @@ export function CollectionUpdatedFeedEvent({
       <EventTokenGrid
         imagePriority={isFirstSlide ? FastImage.priority.high : FastImage.priority.normal}
         allowPreserveAspectRatio={allowPreserveAspectRatio}
-        tokenRefs={tokens}
+        collectionTokenRefs={tokens}
       />
     </View>
   );

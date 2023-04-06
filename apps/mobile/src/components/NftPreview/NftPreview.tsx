@@ -22,21 +22,28 @@ type ImageState = { kind: 'loading' } | { kind: 'loaded'; dimensions: Dimensions
 type NftPreviewProps = {
   priority?: Priority;
 
-  tokenRef: NftPreviewFragment$key;
+  collectionTokenRef: NftPreviewFragment$key;
   tokenUrl: string | null;
   resizeMode: ResizeMode;
 };
 
-function NftPreviewInner({ tokenRef, tokenUrl, resizeMode, priority }: NftPreviewProps) {
-  const token = useFragment(
+function NftPreviewInner({ collectionTokenRef, tokenUrl, resizeMode, priority }: NftPreviewProps) {
+  const collectionToken = useFragment(
     graphql`
-      fragment NftPreviewFragment on Token {
-        dbid
+      fragment NftPreviewFragment on CollectionToken {
+        collection @required(action: THROW) {
+          dbid
+        }
+        token @required(action: THROW) {
+          dbid
+        }
         ...NftPreviewContextMenuPopupFragment
       }
     `,
-    tokenRef
+    collectionTokenRef
   );
+
+  const { token } = collectionToken;
 
   const [imageState, setImageState] = useState<ImageState>({ kind: 'loading' });
 
@@ -48,8 +55,9 @@ function NftPreviewInner({ tokenRef, tokenUrl, resizeMode, priority }: NftPrevie
   const handlePress = useCallback(() => {
     navigation.push('NftDetail', {
       tokenId: token.dbid,
+      collectionId: collectionToken.collection.dbid,
     });
-  }, [navigation, token.dbid]);
+  }, [collectionToken.collection.dbid, navigation, token.dbid]);
 
   const handleLoad = useCallback((dimensions: Dimensions | null) => {
     setImageState({ kind: 'loaded', dimensions });
@@ -57,8 +65,8 @@ function NftPreviewInner({ tokenRef, tokenUrl, resizeMode, priority }: NftPrevie
 
   return (
     <NftPreviewContextMenuPopup
-      tokenRef={token}
       fallbackTokenUrl={tokenUrl}
+      collectionTokenRef={collectionToken}
       imageDimensions={imageState.kind === 'loaded' ? imageState.dimensions : null}
     >
       <TouchableWithoutFeedback onPress={handlePress}>
@@ -82,11 +90,16 @@ function NftPreviewInner({ tokenRef, tokenUrl, resizeMode, priority }: NftPrevie
   );
 }
 
-export function NftPreview({ tokenRef, tokenUrl, resizeMode, priority }: NftPreviewProps) {
+export function NftPreview({
+  collectionTokenRef,
+  tokenUrl,
+  resizeMode,
+  priority,
+}: NftPreviewProps) {
   return (
     <ReportingErrorBoundary fallback={null}>
       <NftPreviewInner
-        tokenRef={tokenRef}
+        collectionTokenRef={collectionTokenRef}
         tokenUrl={tokenUrl}
         resizeMode={resizeMode}
         priority={priority}
