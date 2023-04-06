@@ -492,10 +492,13 @@ export function GalleryEditorProvider({
         setEditSessionID(uuid());
         setHasSaved(false);
       } catch (error) {
-        pushToast({
-          autoClose: false,
-          message: "Something went wrong while publishing your gallery. We're looking into it.",
-        });
+        // TODO: silencing the error toast until we can get a more granular response from the server;
+        //       right now this is being presented on successful updates where the change does not produce
+        //       a feed event
+        // pushToast({
+        //   autoClose: false,
+        //   message: "Something went wrong while publishing your gallery. We're looking into it.",
+        // });
 
         if (error instanceof Error) {
           reportError(error, { tags: { galleryId } });
@@ -511,7 +514,7 @@ export function GalleryEditorProvider({
         }
       }
     },
-    [editSessionID, publish, pushToast, query.galleryById.dbid, reportError, track]
+    [editSessionID, publish, query.galleryById.dbid, reportError, track]
   );
 
   const [initialName, setInitialName] = useState(name);
