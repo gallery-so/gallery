@@ -1,6 +1,10 @@
-import { PropsWithChildren, useMemo } from 'react';
-import { StyleProp, StyleSheet } from 'react-native';
-import MarkdownDisplay, { MarkdownIt, MarkdownProps } from 'react-native-markdown-display';
+import { PropsWithChildren, useCallback, useMemo, useState } from 'react';
+import { StyleProp, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import MarkdownDisplay, {
+  MarkdownIt,
+  MarkdownProps,
+  RenderRules,
+} from 'react-native-markdown-display';
 import NamedStyles = StyleSheet.NamedStyles;
 
 const markdownStyles = StyleSheet.create({
@@ -19,20 +23,48 @@ const markdownStyles = StyleSheet.create({
 });
 
 type GalleryMarkdownProps = PropsWithChildren<{
+  numberOfLines?: number;
   style?: StyleProp<unknown>;
 }>;
 
-export function Markdown({ children, style }: GalleryMarkdownProps) {
+export function Markdown({ children, numberOfLines, style }: GalleryMarkdownProps) {
+  const [showAll, setShowAll] = useState(false);
+
   const mergedStyles = useMemo(() => {
     return StyleSheet.flatten([markdownStyles, style]) as NamedStyles<MarkdownProps>;
   }, [style]);
 
+  const rules = useMemo<RenderRules>(() => {
+    const rules: RenderRules = {};
+
+    if (numberOfLines) {
+      rules.textgroup = (node, children, parent, styles) => (
+        <Text
+          key={node.key}
+          style={styles.textgroup}
+          numberOfLines={showAll ? undefined : numberOfLines}
+        >
+          {children}
+        </Text>
+      );
+    }
+
+    return rules;
+  }, [numberOfLines, showAll]);
+
+  const handlePress = useCallback(() => {
+    setShowAll((previous) => !previous);
+  }, []);
+
   return (
-    <MarkdownDisplay
-      markdownit={MarkdownIt({ typographer: true, linkify: true })}
-      style={mergedStyles}
-    >
-      {children}
-    </MarkdownDisplay>
+    <TouchableOpacity onPress={handlePress} disabled={numberOfLines === undefined}>
+      <MarkdownDisplay
+        markdownit={MarkdownIt({ typographer: true, linkify: true })}
+        rules={rules}
+        style={mergedStyles}
+      >
+        {children}
+      </MarkdownDisplay>
+    </TouchableOpacity>
   );
 }
