@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { ScrollView, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { View } from 'react-native';
 import { useSearchContext } from 'src/components/Search/SearchContext';
 import { SearchFilter } from 'src/components/Search/SearchFilter';
 import { SearchFilterType } from 'src/components/Search/SearchFilter';
@@ -11,24 +10,13 @@ export function SearchScreen() {
   const [filter, setFilter] = useState<SearchFilterType>(null);
   const { keyword } = useSearchContext();
 
-  const { bottom } = useSafeAreaInsets();
-
   return (
     <View>
-      <View className="flex  flex-col space-y-2 p-4">
+      <View className="flex flex-col space-y-2 p-4">
         <SearchInput />
         <SearchFilter activeFilter={filter} onChange={setFilter} />
       </View>
-      <ScrollView
-        contentContainerStyle={{
-          // Bottom navbar height + padding
-          paddingBottom: 70 + 12 + bottom,
-
-          height: '100%',
-        }}
-      >
-        {keyword && <SearchResults activeFilter={filter} onChangeFilter={setFilter} />}
-      </ScrollView>
+      {keyword && <SearchResults activeFilter={filter} onChangeFilter={setFilter} />}
     </View>
   );
 }
