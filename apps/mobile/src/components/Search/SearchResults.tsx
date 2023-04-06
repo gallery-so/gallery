@@ -64,8 +64,8 @@ export function SearchResults({ activeFilter, onChangeFilter }: Props) {
 
   if (isEmpty) {
     return (
-      <View className={`h-full ${isLoading ? 'opacity-50' : 'opacity-100'} `}>
-        <View className="flex flex-1 items-center justify-center">
+      <View className={`h-full  ${isLoading ? 'opacity-50' : 'opacity-100'} `}>
+        <View className="flex-1 items-center justify-center">
           <Typography
             font={{
               family: 'ABCDiatype',

@@ -23,6 +23,8 @@ export function SearchScreen() {
         contentContainerStyle={{
           // Bottom navbar height + padding
           paddingBottom: 70 + 12 + bottom,
+
+          height: '100%',
         }}
       >
         {keyword && <SearchResults activeFilter={filter} onChangeFilter={setFilter} />}

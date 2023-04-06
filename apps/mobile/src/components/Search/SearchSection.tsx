@@ -17,7 +17,7 @@ export function SearchSection({ children, isShowAll, numResults, onShowAll, titl
   if (isShowAll && numResults === 0)
     return (
       <View className="h-full">
-        <View className="flex flex-1 items-center justify-center">
+        <View className="flex-1 items-center justify-center">
           <Typography
             font={{
               family: 'ABCDiatype',
