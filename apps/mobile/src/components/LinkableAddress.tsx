@@ -1,10 +1,11 @@
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
-import { BaseM } from '~/components/core/Text/Text';
 import { LinkableAddressFragment$key } from '~/generated/LinkableAddressFragment.graphql';
 import { getExternalAddressLink, graphqlTruncateAddress } from '~/shared/utils/wallet';
+
+import { InteractiveLink } from './InteractiveLink';
+import { Typography } from './Typography';
 
 type LinkableAddressProps = {
   chainAddressRef: LinkableAddressFragment$key;
@@ -27,12 +28,22 @@ export function LinkableAddress({ chainAddressRef }: LinkableAddressProps) {
   const truncatedAddress = graphqlTruncateAddress(address);
 
   if (!link) {
-    return <BaseM>{truncatedAddress || address.address}</BaseM>;
+    return (
+      <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
+        {truncatedAddress || address.address}
+      </Typography>
+    );
+  } else if (truncatedAddress) {
+    return (
+      <RawLinkableAddress
+        link={link}
+        truncatedAddress={truncatedAddress}
+        address={address.address}
+      />
+    );
+  } else {
+    throw new Error('Missing link & truncated address');
   }
-
-  return (
-    <RawLinkableAddress link={link} truncatedAddress={truncatedAddress} address={address.address} />
-  );
 }
 
 type RawLinkableAddressProps = {

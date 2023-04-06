@@ -10,7 +10,7 @@ import { useToastActions } from '~/contexts/toast/ToastContext';
 import { ManageWalletsFragment$key } from '~/generated/ManageWalletsFragment.graphql';
 import useAddWalletModal from '~/hooks/useAddWalletModal';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
-import { graphqlTruncateAddress, truncateAddress } from '~/utils/wallet';
+import { graphqlTruncateAddress, truncateAddress } from '~/shared/utils/wallet';
 
 import ManageWalletsRow from './ManageWalletsRow';
 import PrimaryWalletRow from './PrimaryWalletRow';

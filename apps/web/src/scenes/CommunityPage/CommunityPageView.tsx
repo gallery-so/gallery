@@ -18,9 +18,9 @@ import { GRID_ENABLED_COMMUNITY_ADDRESSES } from '~/constants/community';
 import MemberListPageProvider from '~/contexts/memberListPage/MemberListPageContext';
 import { CommunityPageViewFragment$key } from '~/generated/CommunityPageViewFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
+import { getExternalAddressLink, truncateAddress } from '~/shared/utils/wallet';
 import formatUrl from '~/utils/formatUrl';
 import { DISABLED_CONTRACTS } from '~/utils/getCommunityUrlForToken';
-import { getExternalAddressLink, truncateAddress } from '~/utils/wallet';
 
 import CommunityPageDisabled from './CommunityPageDisabled';
 import LayoutToggleButton from './LayoutToggleButton';

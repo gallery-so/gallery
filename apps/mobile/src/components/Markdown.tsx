@@ -1,6 +1,7 @@
-import { PropsWithChildren } from 'react';
-import { StyleSheet } from 'react-native';
-import MarkdownDisplay, { MarkdownIt } from 'react-native-markdown-display';
+import { PropsWithChildren, useMemo } from 'react';
+import { StyleProp, StyleSheet } from 'react-native';
+import MarkdownDisplay, { MarkdownIt, MarkdownProps } from 'react-native-markdown-display';
+import NamedStyles = StyleSheet.NamedStyles;
 
 const markdownStyles = StyleSheet.create({
   paragraph: {
@@ -8,7 +9,7 @@ const markdownStyles = StyleSheet.create({
     marginBottom: 0,
   },
   body: {
-    fontSize: 12,
+    fontSize: 14,
     color: '#141414',
     fontFamily: 'ABCDiatypeRegular',
   },
@@ -17,9 +18,20 @@ const markdownStyles = StyleSheet.create({
   },
 });
 
-export function Markdown({ children }: PropsWithChildren) {
+type GalleryMarkdownProps = PropsWithChildren<{
+  style?: StyleProp<unknown>;
+}>;
+
+export function Markdown({ children, style }: GalleryMarkdownProps) {
+  const mergedStyles = useMemo(() => {
+    return StyleSheet.flatten([markdownStyles, style]) as NamedStyles<MarkdownProps>;
+  }, [style]);
+
   return (
-    <MarkdownDisplay markdownit={MarkdownIt({ typographer: true })} style={markdownStyles}>
+    <MarkdownDisplay
+      markdownit={MarkdownIt({ typographer: true, linkify: true })}
+      style={mergedStyles}
+    >
       {children}
     </MarkdownDisplay>
   );

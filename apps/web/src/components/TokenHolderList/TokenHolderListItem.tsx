@@ -13,8 +13,8 @@ import { TokenHolderListItemFragment$key } from '~/generated/TokenHolderListItem
 import useDebounce from '~/hooks/useDebounce';
 import { useBreakpoint } from '~/hooks/useWindowSize';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
+import { graphqlTruncateUniversalUsername } from '~/shared/utils/wallet';
 import detectMobileDevice from '~/utils/detectMobileDevice';
-import { graphqlTruncateUniversalUsername } from '~/utils/wallet';
 
 import HoverCardOnUsername from '../HoverCard/HoverCardOnUsername';
 import MemberListGalleryPreview from './TokenHolderListGalleryPreview';

@@ -3,11 +3,13 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import useSWR from 'swr';
 
-import { LinkableAddress, RawLinkableAddress } from '~/components/LinkableAddress';
 import { EnsOrAddressFragment$key } from '~/generated/EnsOrAddressFragment.graphql';
 import { EnsOrAddressWithSuspenseFragment$key } from '~/generated/EnsOrAddressWithSuspenseFragment.graphql';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import { getExternalAddressLink } from '~/shared/utils/wallet';
+
+import { LinkableAddress, RawLinkableAddress } from './LinkableAddress';
+import { Typography } from './Typography';
 
 type EnsNameProps = {
   chainAddressRef: EnsOrAddressFragment$key;
@@ -61,7 +63,11 @@ export const EnsOrAddress = ({ chainAddressRef }: EnsOrAddressProps) => {
 
   return (
     <Suspense fallback={<LinkableAddress chainAddressRef={address} />}>
-      <ReportingErrorBoundary fallback={<LinkableAddress chainAddressRef={address} />}>
+      <ReportingErrorBoundary
+        fallback={
+          <Typography font={{ family: 'ABCDiatype', weight: 'Regular' }}>Not Found</Typography>
+        }
+      >
         <EnsName chainAddressRef={address} />
       </ReportingErrorBoundary>
     </Suspense>
