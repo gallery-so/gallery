@@ -9,8 +9,10 @@ import * as Sentry from 'sentry-expo';
 import App from './src/App';
 
 function filterOutAnnoyingWarnings() {
+  // eslint-disable-next-line no-console
   let previousWarn = console.warn;
 
+  // eslint-disable-next-line no-console
   console.warn = (...args) => {
     const joined = args.join(' ');
 

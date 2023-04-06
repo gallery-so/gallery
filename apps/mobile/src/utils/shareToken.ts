@@ -28,8 +28,6 @@ export async function shareToken(collectionTokenRef: shareTokenFragment$key) {
   ) {
     const url = `https://gallery.so/${collectionToken.token.owner.username}/${collectionToken.collection?.dbid}/${collectionToken.token?.dbid}`;
 
-    console.log(url);
-
     Share.share({ url });
   }
 }
