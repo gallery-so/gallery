@@ -58,8 +58,10 @@ export function SearchInput({ value, onChange, style, ...props }: Props) {
         onChangeText={handleChange}
         placeholder="Search for anything..."
         placeholderTextColor="#e2e2e2"
+        selectionColor="#141414"
         autoCapitalize="none"
         autoCorrect={false}
+        autoComplete="off"
         {...props}
       />
       {localKeyword.length > 0 && (
