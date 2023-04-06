@@ -2033,6 +2033,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@dominicstop/ts-event-emitter@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "@dominicstop/ts-event-emitter@npm:1.1.0"
+  checksum: fcecf835de9049f58faf013d0a5b940b8b4b1c6c9293d98ab18c90fa800ca55407fcaf7d4cc148fbdc361aba5d4af64ae0fde813f8958c0903df3aa2b09e4325
+  languageName: node
+  linkType: hard
+
 "@drptbl/gremlins.js@npm:^2.2.1":
   version: 2.2.1
   resolution: "@drptbl/gremlins.js@npm:2.2.1"
@@ -23526,6 +23533,7 @@ __metadata:
     babel-plugin-relay: ^14.1.0
     babel-plugin-tsconfig-paths-module-resolver: ^1.0.4
     clsx: ^1.2.1
+    date-fns: ^2.29.3
     eas-cli: ^3.7.2
     expo: ~48.0.10
     expo-av: ~13.2.1
@@ -23544,6 +23552,7 @@ __metadata:
     react-native-fast-image: ^8.6.3
     react-native-fetch-api: ^3.0.0
     react-native-gesture-handler: ~2.9.0
+    react-native-ios-context-menu: ^1.15.3
     react-native-linear-gradient: ^2.6.2
     react-native-markdown-display: "https://github.com/jonasmerlin/react-native-markdown-display.git"
     react-native-pager-view: 6.1.2
@@ -23556,6 +23565,7 @@ __metadata:
     react-native-webview: ^11.26.1
     relay-compiler: ^14.1.0
     sentry-expo: ~6.1.0
+    swr: ^2.1.1
     tailwindcss: ^3.2.7
     text-encoding: ^0.7.0
     typescript: ^5.0.0
@@ -26459,6 +26469,18 @@ __metadata:
   version: 0.71.17
   resolution: "react-native-gradle-plugin@npm:0.71.17"
   checksum: 5ff996bafc3959a36551dc34d481cefb070ede4025b5eb2ce659f51adf74ba0e6845cc019ea1d547e0b4007f1c3c68146fa719688f09bde308f25320c6c6f834
+  languageName: node
+  linkType: hard
+
+"react-native-ios-context-menu@npm:^1.15.3":
+  version: 1.15.3
+  resolution: "react-native-ios-context-menu@npm:1.15.3"
+  dependencies:
+    "@dominicstop/ts-event-emitter": ^1.1.0
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 5c587fe95296b8ae5d93caa98a9816c56425755ba3a113230a8eba70b1eb1e117aa793a1b043e7970eca8d51a32a52695947ffca7555349688bd8723a72df4c6
   languageName: node
   linkType: hard
 
@@ -29579,6 +29601,17 @@ __metadata:
   peerDependencies:
     react: ^16.11.0 || ^17.0.0 || ^18.0.0
   checksum: e7a184f0d560e9c8be85c023cc8e65e56a88a6ed46f9394b301b07f838edca23d2e303685319a4fcd620b81d447a7bcb489c7fa0a752c259f91764903c690cdb
+  languageName: node
+  linkType: hard
+
+"swr@npm:^2.1.1":
+  version: 2.1.1
+  resolution: "swr@npm:2.1.1"
+  dependencies:
+    use-sync-external-store: ^1.2.0
+  peerDependencies:
+    react: ^16.11.0 || ^17.0.0 || ^18.0.0
+  checksum: 77a7854f87c2a3244b4047eca5d88a0f5db6cb47f783fd13b8a38f5a611940142645c943e105fbfa64aac51e642361180366107ade0454744a80d6dedbe350db
   languageName: node
   linkType: hard
 

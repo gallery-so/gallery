@@ -1,6 +1,10 @@
 {
   "extends": ["../../.eslintrc.json"],
   "plugins": ["react-hooks"],
+  "ignorePatterns": ["ios/", "android/"],
+  "rules": {
+    "no-console": "error"
+  },
   "overrides": [
     {
       "files": ["metro.config.js", "tailwind.config.js"],

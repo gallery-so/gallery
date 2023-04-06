@@ -10,7 +10,7 @@ import { LinkableAddress, RawLinkableAddress } from '~/components/LinkableAddres
 import { TezosDomainOrAddressFragment$key } from '~/generated/TezosDomainOrAddressFragment.graphql';
 import { TezosDomainOrAddressWithSuspenseFragment$key } from '~/generated/TezosDomainOrAddressWithSuspenseFragment.graphql';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
-import { getExternalAddressLink } from '~/utils/wallet';
+import { getExternalAddressLink } from '~/shared/utils/wallet';
 
 async function tezosDomainFetcher(address: string): Promise<string | null> {
   const tezos = new TezosToolkit('https://mainnet.api.tez.ie');

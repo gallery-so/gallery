@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
-import { StyleSheet, Text, TouchableOpacity } from 'react-native';
-import { RenderRules } from 'react-native-markdown-display';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 
 import { Markdown } from '../Markdown';
 import { useSearchContext } from './SearchContext';
@@ -17,14 +16,6 @@ const markdownStyles = StyleSheet.create({
     fontSize: 14,
   },
 });
-
-const markdownRules = {
-  textgroup: (node, children, _, styles) => (
-    <Text key={node.key} style={styles.textgroup} numberOfLines={1} ellipsizeMode="tail">
-      {children}
-    </Text>
-  ),
-} as RenderRules;
 
 export function SearchResult({ title, description, ...props }: Props) {
   const { keyword } = useSearchContext();
@@ -63,7 +54,7 @@ export function SearchResult({ title, description, ...props }: Props) {
   return (
     <TouchableOpacity className="h-16 py-2 px-4" {...props}>
       <Markdown style={markdownStyles}>{highlightedName}</Markdown>
-      <Markdown style={markdownStyles} rules={markdownRules}>
+      <Markdown style={markdownStyles} numberOfLines={1}>
         {highlightedDescription}
       </Markdown>
     </TouchableOpacity>

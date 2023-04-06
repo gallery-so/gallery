@@ -13,9 +13,7 @@ const getHTML = (svgContent: string) => `
       html, body {
         margin: 0;
         padding: 0;
-        height: 100${heightUnits};
         width: 100${heightUnits};
-        overflow: hidden;
         background-color: transparent;
         display: flex;
         justify-content: center;
@@ -57,19 +55,16 @@ export function SvgWebView({ source, onLoadStart, onLoadEnd, style }: SvgWebView
   const [svgState, setSvgState] = useState<SvgContentState>({ kind: 'loading' });
 
   useEffect(() => {
-    const controller = new AbortController();
-    const signal = controller.signal;
-
     async function fetchSvg() {
-      if (uri) {
-        onLoadStart?.();
+      onLoadStart?.();
 
+      if (uri) {
         if (uri.match(/^data:image\/svg/)) {
           const index = uri.indexOf('<svg');
           setSvgState({ kind: 'success', content: uri.slice(index) });
         } else {
           try {
-            const res = await fetch(uri, { signal });
+            const res = await fetch(uri);
             const text = await res.text();
             setSvgState({ kind: 'success', content: text });
           } catch (error) {
@@ -88,10 +83,9 @@ export function SvgWebView({ source, onLoadStart, onLoadEnd, style }: SvgWebView
 
     fetchSvg();
 
-    return () => {
-      controller.abort();
-    };
-  }, [onLoadEnd, onLoadStart, uri]);
+    // Not dealing with memoization issues right now
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [uri]);
 
   if (svgState.kind === 'loading') {
     return <View pointerEvents="none" style={style} />;

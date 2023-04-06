@@ -6,6 +6,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { Suspense, useEffect, useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { RelayEnvironmentProvider } from 'react-relay';
+import { SWRConfig } from 'swr';
 
 import { MobileErrorReportingProvider } from '~/contexts/MobileErrorReportingProvider';
 import { createRelayEnvironment } from '~/contexts/relay/RelayProvider';
@@ -52,19 +53,21 @@ export default function App() {
 
   return (
     <RelayEnvironmentProvider environment={relayEnvironment}>
-      <Suspense fallback={<LoadingView />}>
-        <MobileErrorReportingProvider>
-          <SafeAreaProvider>
-            <magic.Relayer />
-            <SearchProvider>
-              <NavigationContainer>
-                <DevMenuItems />
-                <RootStackNavigator />
-              </NavigationContainer>
-            </SearchProvider>
-          </SafeAreaProvider>
-        </MobileErrorReportingProvider>
-      </Suspense>
+      <SWRConfig>
+        <Suspense fallback={<LoadingView />}>
+          <MobileErrorReportingProvider>
+            <SafeAreaProvider>
+              <magic.Relayer />
+              <SearchProvider>
+                <NavigationContainer>
+                  <DevMenuItems />
+                  <RootStackNavigator />
+                </NavigationContainer>
+              </SearchProvider>
+            </SafeAreaProvider>
+          </MobileErrorReportingProvider>
+        </Suspense>
+      </SWRConfig>
     </RelayEnvironmentProvider>
   );
 }

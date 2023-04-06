@@ -5,6 +5,10 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 export type RootStackNavigatorParamList = {
   MainTabs: NavigatorScreenParams<MainTabNavigatorParamList>;
   Login: NavigatorScreenParams<LoginStackNavigatorParamList>;
+  NftDetail: {
+    tokenId: string;
+    collectionId: string;
+  };
 };
 
 export type FeedTabNavigatorParamList = {

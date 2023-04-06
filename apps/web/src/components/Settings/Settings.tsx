@@ -20,7 +20,7 @@ import { SettingsFragment$key } from '~/generated/SettingsFragment.graphql';
 import { useLogout } from '~/hooks/useLogout';
 import CircleCheckIcon from '~/icons/CircleCheckIcon';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
-import { GALLERY_OS_ADDRESS } from '~/utils/getOpenseaExternalUrl';
+import { GALLERY_OS_ADDRESS } from '~/shared/utils/getOpenseaExternalUrl';
 
 import useUpdateEmailNotificationSettings from '../Email/useUpdateEmailNotificationSettings';
 import SettingsRowDescription from './SettingsRowDescription';

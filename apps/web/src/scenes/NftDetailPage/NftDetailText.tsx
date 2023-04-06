@@ -16,8 +16,8 @@ import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useG
 import { NftDetailTextFragment$key } from '~/generated/NftDetailTextFragment.graphql';
 import { useBreakpoint, useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { NftAdditionalDetails } from '~/scenes/NftDetailPage/NftAdditionalDetails/NftAdditionalDetails';
+import { getOpenseaExternalUrl } from '~/shared/utils/getOpenseaExternalUrl';
 import { getCommunityUrlForToken } from '~/utils/getCommunityUrlForToken';
-import { getOpenseaExternalUrl } from '~/utils/getOpenseaExternalUrl';
 import unescape from '~/utils/unescape';
 
 /**

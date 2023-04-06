@@ -32,9 +32,7 @@ export function CollectionCreatedFeedEvent({
         }
 
         newTokens {
-          token {
-            ...EventTokenGridFragment
-          }
+          ...EventTokenGridFragment
         }
       }
     `,
@@ -42,11 +40,11 @@ export function CollectionCreatedFeedEvent({
   );
 
   const tokens = useMemo(() => {
-    return removeNullValues(eventData.newTokens?.map((collectionToken) => collectionToken?.token));
+    return removeNullValues(eventData.newTokens);
   }, [eventData.newTokens]);
 
   return (
-    <View className="flex flex-col">
+    <View className="flex flex-1">
       <FeedEventCarouselCellHeader>
         <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
           Created a new collection
@@ -61,11 +59,13 @@ export function CollectionCreatedFeedEvent({
         <FeedListCollectorsNote collectorsNote={eventData.collection.collectorsNote} />
       )}
 
-      <EventTokenGrid
-        imagePriority={isFirstSlide ? FastImage.priority.high : FastImage.priority.normal}
-        allowPreserveAspectRatio={allowPreserveAspectRatio}
-        tokenRefs={tokens}
-      />
+      <View className="flex flex-grow justify-center">
+        <EventTokenGrid
+          imagePriority={isFirstSlide ? FastImage.priority.high : FastImage.priority.normal}
+          allowPreserveAspectRatio={allowPreserveAspectRatio}
+          collectionTokenRefs={tokens}
+        />
+      </View>
     </View>
   );
 }

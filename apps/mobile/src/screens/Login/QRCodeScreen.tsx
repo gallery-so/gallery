@@ -32,6 +32,7 @@ export function QRCodeScreen() {
     setScanned(true);
 
     // TODO: Do something w/ data
+    // eslint-disable-next-line no-console
     console.log(type, data);
   }, []);
 

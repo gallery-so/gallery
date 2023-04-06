@@ -33,9 +33,7 @@ export function CollectionUpdatedFeedEvent({
         }
 
         newTokens {
-          token {
-            ...EventTokenGridFragment
-          }
+          ...EventTokenGridFragment
         }
       }
     `,
@@ -43,11 +41,11 @@ export function CollectionUpdatedFeedEvent({
   );
 
   const tokens = useMemo(() => {
-    return removeNullValues(eventData.newTokens?.map((collectionToken) => collectionToken?.token));
+    return removeNullValues(eventData.newTokens);
   }, [eventData.newTokens]);
 
   return (
-    <View className="flex flex-col">
+    <View className="flex flex-1 flex-col">
       <FeedEventCarouselCellHeader>
         <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
           Made a change to
@@ -62,11 +60,13 @@ export function CollectionUpdatedFeedEvent({
         <FeedListCollectorsNote collectorsNote={eventData.newCollectorsNote} />
       )}
 
-      <EventTokenGrid
-        imagePriority={isFirstSlide ? FastImage.priority.high : FastImage.priority.normal}
-        allowPreserveAspectRatio={allowPreserveAspectRatio}
-        tokenRefs={tokens}
-      />
+      <View className="flex flex-grow justify-center">
+        <EventTokenGrid
+          imagePriority={isFirstSlide ? FastImage.priority.high : FastImage.priority.normal}
+          allowPreserveAspectRatio={allowPreserveAspectRatio}
+          collectionTokenRefs={tokens}
+        />
+      </View>
     </View>
   );
 }
