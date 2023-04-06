@@ -1,6 +1,13 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback, useRef, useState } from 'react';
-import { TextInput, TextInputProps, TouchableOpacity, View } from 'react-native';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  TextInput,
+  TextInputProps,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 import { useSearchContext } from './SearchContext';
 import { XMarkIcon } from './XMarkIcon';
@@ -38,7 +45,10 @@ export function SearchInput({ value, onChange, style, ...props }: Props) {
   );
 
   return (
-    <View className="flex flex-row items-center">
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      className="flex flex-row items-center"
+    >
       <TextInput
         ref={ref}
         className="text-offBlack h-10 flex-1 text-xl"
@@ -58,6 +68,6 @@ export function SearchInput({ value, onChange, style, ...props }: Props) {
           </View>
         </TouchableOpacity>
       )}
-    </View>
+    </KeyboardAvoidingView>
   );
 }
