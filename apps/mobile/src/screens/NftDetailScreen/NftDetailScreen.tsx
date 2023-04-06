@@ -1,6 +1,6 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { useCallback, useState } from 'react';
-import { ScrollView, Share, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -17,6 +17,7 @@ import { Typography } from '../../components/Typography';
 import { BackIcon } from '../../icons/BackIcon';
 import { PoapIcon } from '../../icons/PoapIcon';
 import { ShareIcon } from '../../icons/ShareIcon';
+import { shareToken } from '../../utils/shareToken';
 import { NftAdditionalDetails } from './NftAdditionalDetails';
 import { NftDetailAsset } from './NftDetailAsset/NftDetailAsset';
 
@@ -32,32 +33,33 @@ export function NftDetailScreen() {
 
   const query = useLazyLoadQuery<NftDetailScreenQuery>(
     graphql`
-      query NftDetailScreenQuery($tokenId: DBID!) {
-        tokenById(id: $tokenId) {
-          ... on Token {
+      query NftDetailScreenQuery($tokenId: DBID!, $collectionId: DBID!) {
+        collectionTokenById(tokenId: $tokenId, collectionId: $collectionId) {
+          ... on CollectionToken {
             __typename
-            dbid
-            name
-            chain
-            tokenId
-            description
 
-            contract {
+            token @required(action: THROW) {
+              __typename
               name
-              badgeURL
+              chain
+              tokenId
+              description
+
+              contract {
+                name
+                badgeURL
+              }
+
+              ...NftAdditionalDetailsFragment
             }
 
-            owner {
-              username
-            }
-
+            ...shareTokenFragment
             ...NftDetailAssetFragment
-            ...NftAdditionalDetailsFragment
           }
         }
       }
     `,
-    { tokenId: route.params.tokenId }
+    { tokenId: route.params.tokenId, collectionId: route.params.collectionId }
     // Use one of these if you want to test with a specific NFT
     // POAP
     // { tokenId: '2Hu1U34d5UpXWDoVNOkMtguCEpk' }
@@ -69,7 +71,17 @@ export function NftDetailScreen() {
     // { tokenId: '2EpXhbAjixRMTIveYgoCkpxFAzJ' }
     // Art Gobbler
     // { tokenId: '2GupK6MPJnGukvC36QV3pOYvheS' }
+    // SVG
+    // { tokenId: '2O1TnqK7sbhbdlAeQwLFkxo8T9i' }
   );
+
+  const collectionToken = query.collectionTokenById;
+
+  if (collectionToken?.__typename !== 'CollectionToken') {
+    throw new Error('Invalid token');
+  }
+
+  const token = collectionToken.token;
 
   const [showAdditionalDetails, setShowAdditionalDetails] = useState(false);
 
@@ -78,80 +90,61 @@ export function NftDetailScreen() {
   }, []);
 
   const handleShare = useCallback(() => {
-    if (
-      query.tokenById?.__typename === 'Token' &&
-      query.tokenById.owner?.username &&
-      query.tokenById.dbid
-    ) {
-      Share.share({
-        url: `https://gallery.so/${query.tokenById.owner.username}/${query.tokenById.dbid}`,
-      });
-    }
-  }, [query.tokenById]);
+    shareToken(collectionToken);
+  }, [collectionToken]);
 
   return (
     <SafeAreaViewWithPadding className="h-full bg-white">
       <ScrollView>
-        {query.tokenById?.__typename === 'Token' ? (
-          <View className="flex flex-col space-y-8 px-4">
-            <View className="flex flex-col space-y-3">
-              <View className="flex flex-row justify-between">
-                <IconContainer icon={<BackIcon />} onPress={navigation.goBack} />
-                <IconContainer icon={<ShareIcon />} onPress={handleShare} />
-              </View>
-
-              <NftDetailAsset tokenRef={query.tokenById} />
+        <View className="flex flex-col space-y-8 px-4">
+          <View className="flex flex-col space-y-3">
+            <View className="flex flex-row justify-between">
+              <IconContainer icon={<BackIcon />} onPress={navigation.goBack} />
+              <IconContainer icon={<ShareIcon />} onPress={handleShare} />
             </View>
 
-            <View className="flex flex-col space-y-1">
-              <Typography
-                className="text-2xl"
-                font={{ family: 'GTAlpina', weight: 'StandardLight', italic: true }}
-              >
-                {query.tokenById.name}
-              </Typography>
-
-              {query.tokenById.contract?.name ? (
-                <TouchableOpacity>
-                  <Pill className="flex flex-row space-x-1 self-start">
-                    {query.tokenById.chain === 'POAP' && <PoapIcon className="h-6 w-6" />}
-                    {query.tokenById.contract?.badgeURL && (
-                      <FastImage
-                        className="h-6 w-6"
-                        source={{ uri: query.tokenById.contract.badgeURL }}
-                      />
-                    )}
-                    <Typography numberOfLines={1} font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-                      {query.tokenById.contract.name}
-                    </Typography>
-                  </Pill>
-                </TouchableOpacity>
-              ) : null}
-            </View>
-
-            {query.tokenById.description && (
-              <View>
-                <Markdown style={markdownStyles}>{query.tokenById.description}</Markdown>
-              </View>
-            )}
-
-            <View className="flex-1">
-              <NftAdditionalDetails
-                showDetails={showAdditionalDetails}
-                tokenRef={query.tokenById}
-              />
-            </View>
-
-            <View>
-              <InteractiveLink
-                noUnderline={showAdditionalDetails}
-                onPress={toggleAdditionalDetails}
-              >
-                {showAdditionalDetails ? 'Hide Details' : 'Show Additional Details'}
-              </InteractiveLink>
-            </View>
+            <NftDetailAsset collectionTokenRef={collectionToken} />
           </View>
-        ) : null}
+
+          <View className="flex flex-col space-y-1">
+            <Typography
+              className="text-2xl"
+              font={{ family: 'GTAlpina', weight: 'StandardLight', italic: true }}
+            >
+              {token.name}
+            </Typography>
+
+            {token.contract?.name ? (
+              <TouchableOpacity>
+                <Pill className="flex flex-row space-x-1 self-start">
+                  {token.chain === 'POAP' && <PoapIcon className="h-6 w-6" />}
+                  {token.contract?.badgeURL && (
+                    <FastImage className="h-6 w-6" source={{ uri: token.contract.badgeURL }} />
+                  )}
+                  <Typography numberOfLines={1} font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+                    {token.contract.name}
+                  </Typography>
+                </Pill>
+              </TouchableOpacity>
+            ) : null}
+          </View>
+
+          {token.description && (
+            <View>
+              <Markdown style={markdownStyles}>{token.description}</Markdown>
+            </View>
+          )}
+
+          <View className="flex-1">
+            <NftAdditionalDetails showDetails={showAdditionalDetails} tokenRef={token} />
+          </View>
+
+          <View>
+            <InteractiveLink noUnderline={showAdditionalDetails} onPress={toggleAdditionalDetails}>
+              {showAdditionalDetails ? 'Hide Details' : 'Show Additional Details'}
+            </InteractiveLink>
+          </View>
+        </View>
       </ScrollView>
     </SafeAreaViewWithPadding>
   );

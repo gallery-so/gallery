@@ -32,9 +32,7 @@ export function CollectorsNoteAddedToCollectionFeedEvent({
           name
 
           tokens(limit: 4) {
-            token {
-              ...EventTokenGridFragment
-            }
+            ...EventTokenGridFragment
           }
         }
       }
@@ -43,9 +41,7 @@ export function CollectorsNoteAddedToCollectionFeedEvent({
   );
 
   const tokens = useMemo(() => {
-    return removeNullValues(
-      eventData.collection?.tokens?.map((collectionToken) => collectionToken?.token)
-    );
+    return removeNullValues(eventData.collection?.tokens);
   }, [eventData.collection?.tokens]);
 
   return (
@@ -67,7 +63,7 @@ export function CollectorsNoteAddedToCollectionFeedEvent({
       <EventTokenGrid
         imagePriority={isFirstSlide ? FastImage.priority.high : FastImage.priority.normal}
         allowPreserveAspectRatio={allowPreserveAspectRatio}
-        tokenRefs={tokens}
+        collectionTokenRefs={tokens}
       />
     </View>
   );

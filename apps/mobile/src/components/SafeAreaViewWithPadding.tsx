@@ -11,8 +11,8 @@ export function useSafeAreaPadding() {
   const insets = useSafeAreaInsets();
 
   return {
-    top: insets.top || 12,
-    bottom: insets.bottom || 12,
+    top: insets.top ? insets.top + 8 : 16,
+    bottom: insets.bottom ? insets.bottom + 8 : 16,
     left: insets.left,
     right: insets.right,
   };
