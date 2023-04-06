@@ -1,9 +1,8 @@
 import { useCallback, useMemo, useState } from 'react';
 import {
-  FlatList,
-  ListRenderItem,
   NativeScrollEvent,
   NativeSyntheticEvent,
+  ScrollView,
   StyleProp,
   useWindowDimensions,
   View,
@@ -28,6 +27,7 @@ export function GalleryUpdatedFeedEvent({ eventDataRef, eventId }: GalleryUpdate
       fragment GalleryUpdatedFeedEventFragment on GalleryUpdatedFeedEventData {
         subEventDatas @required(action: THROW) {
           __typename
+          eventTime
           ...NonRecursiveFeedListItemFragment
         }
       }
@@ -57,39 +57,35 @@ export function GalleryUpdatedFeedEvent({ eventDataRef, eventId }: GalleryUpdate
     [subEvents?.length, width]
   );
 
-  const renderItem = useCallback<ListRenderItem<(typeof subEvents)[number]>>(
-    ({ item, index }) => {
-      return (
-        <NonRecursiveFeedListItem
-          eventId={eventId}
-          slideIndex={index}
-          eventCount={subEvents.length}
-          eventDataRef={item}
-        />
-      );
-    },
-    [eventId, subEvents.length]
-  );
-
   const isPaginated = subEvents.length > 1;
 
   return (
     <View className="flex flex-col space-y-3">
-      {/* We're using a FlatList here instead of a FlashList due to issues */}
-      {/* with the FlashList clipping heights of views. Not sure why. */}
-      <FlatList
+      <ScrollView
         horizontal
-        data={subEvents}
         pagingEnabled
         snapToInterval={width}
         onScroll={handleScroll}
-        renderItem={renderItem}
         decelerationRate="fast"
         snapToAlignment="center"
         scrollEventThrottle={200}
         scrollEnabled={isPaginated}
         showsHorizontalScrollIndicator={false}
-      />
+      >
+        {subEvents.map((subEvent, index) => {
+          return (
+            <View className="flex-1">
+              <NonRecursiveFeedListItem
+                key={index}
+                eventId={eventId}
+                slideIndex={index}
+                eventCount={subEvents.length}
+                eventDataRef={subEvent}
+              />
+            </View>
+          );
+        })}
+      </ScrollView>
 
       {isPaginated && (
         <View className="flex w-full flex-row justify-center">

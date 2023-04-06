@@ -45,7 +45,7 @@ export function CollectorsNoteAddedToCollectionFeedEvent({
   }, [eventData.collection?.tokens]);
 
   return (
-    <View className="flex flex-col">
+    <View className="flex flex-1 flex-col">
       <FeedEventCarouselCellHeader>
         <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
           Added a colloctors note to
@@ -60,11 +60,13 @@ export function CollectorsNoteAddedToCollectionFeedEvent({
         <FeedListCollectorsNote collectorsNote={eventData.newCollectorsNote} />
       )}
 
-      <EventTokenGrid
-        imagePriority={isFirstSlide ? FastImage.priority.high : FastImage.priority.normal}
-        allowPreserveAspectRatio={allowPreserveAspectRatio}
-        collectionTokenRefs={tokens}
-      />
+      <View className="flex flex-grow justify-center">
+        <EventTokenGrid
+          imagePriority={isFirstSlide ? FastImage.priority.high : FastImage.priority.normal}
+          allowPreserveAspectRatio={allowPreserveAspectRatio}
+          collectionTokenRefs={tokens}
+        />
+      </View>
     </View>
   );
 }

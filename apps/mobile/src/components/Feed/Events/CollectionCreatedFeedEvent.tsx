@@ -44,7 +44,7 @@ export function CollectionCreatedFeedEvent({
   }, [eventData.newTokens]);
 
   return (
-    <View className="flex flex-col">
+    <View className="flex flex-1">
       <FeedEventCarouselCellHeader>
         <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
           Created a new collection
@@ -59,11 +59,13 @@ export function CollectionCreatedFeedEvent({
         <FeedListCollectorsNote collectorsNote={eventData.collection.collectorsNote} />
       )}
 
-      <EventTokenGrid
-        imagePriority={isFirstSlide ? FastImage.priority.high : FastImage.priority.normal}
-        allowPreserveAspectRatio={allowPreserveAspectRatio}
-        collectionTokenRefs={tokens}
-      />
+      <View className="flex flex-grow justify-center">
+        <EventTokenGrid
+          imagePriority={isFirstSlide ? FastImage.priority.high : FastImage.priority.normal}
+          allowPreserveAspectRatio={allowPreserveAspectRatio}
+          collectionTokenRefs={tokens}
+        />
+      </View>
     </View>
   );
 }
