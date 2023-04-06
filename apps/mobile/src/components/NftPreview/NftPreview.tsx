@@ -56,12 +56,12 @@ function NftPreviewInner({ tokenRef, tokenUrl, resizeMode, priority }: NftPrevie
   }, []);
 
   return (
-    <TouchableWithoutFeedback onPress={handlePress}>
-      <NftPreviewContextMenuPopup
-        tokenRef={token}
-        fallbackTokenUrl={tokenUrl}
-        imageDimensions={imageState.kind === 'loaded' ? imageState.dimensions : null}
-      >
+    <NftPreviewContextMenuPopup
+      tokenRef={token}
+      fallbackTokenUrl={tokenUrl}
+      imageDimensions={imageState.kind === 'loaded' ? imageState.dimensions : null}
+    >
+      <TouchableWithoutFeedback onPress={handlePress}>
         <View className="relative h-full w-full">
           <NftPreviewAsset
             tokenUrl={tokenUrl}
@@ -77,8 +77,8 @@ function NftPreviewInner({ tokenRef, tokenUrl, resizeMode, priority }: NftPrevie
             </View>
           ) : null}
         </View>
-      </NftPreviewContextMenuPopup>
-    </TouchableWithoutFeedback>
+      </TouchableWithoutFeedback>
+    </NftPreviewContextMenuPopup>
   );
 }
 
