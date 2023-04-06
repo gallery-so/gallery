@@ -8,6 +8,7 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { GallerySkeleton } from '~/components/GallerySkeleton';
+import { InteractiveLink } from '~/components/InteractiveLink';
 import { NftPreviewAsset } from '~/components/NftPreview/NftPreviewAsset';
 import { Typography } from '~/components/Typography';
 import { NftPreviewContextMenuPopupFragment$key } from '~/generated/NftPreviewContextMenuPopupFragment.graphql';
@@ -36,10 +37,6 @@ export function NftPreviewContextMenuPopup({
 
         dbid
         name
-
-        owner {
-          username
-        }
 
         contract {
           name
@@ -113,11 +110,15 @@ export function NftPreviewContextMenuPopup({
         }
 
         const MAX_WIDTH = windowDimensions.width - 40;
-        const MAX_HEIGHT = 400;
+
+        // 400px seems to be the right number to make the popup look good on all devices
+        // It's not as simple as screen height - (non image part of view) because the popup
+        // doesn't go all the way to the top of the screen.
+        const MAX_HEIGHT = Math.max(0, windowDimensions.height - 400);
 
         const finalDimensions = fitDimensionsToContainer({
-          container: { height: MAX_HEIGHT, width: MAX_WIDTH },
-          source: imageDimensions ?? { width: MAX_WIDTH, height: MAX_WIDTH },
+          container: { width: MAX_WIDTH, height: MAX_HEIGHT },
+          source: imageDimensions ?? { width: MAX_WIDTH, height: MAX_WIDTH }, // Square aspect ratio fallback
         });
 
         return (
@@ -139,48 +140,23 @@ export function NftPreviewContextMenuPopup({
               )}
             </View>
             <View className="flex flex-col space-y-2 p-4">
-              <Typography
-                className="text-2xl"
-                font={{ family: 'GTAlpina', weight: 'Light', italic: true }}
-              >
-                {token.name}
-              </Typography>
-              <View className="flex flex-row space-x-2">
-                {token.owner?.username && (
-                  <View className="flex-1 flex-col">
-                    <Typography
-                      className="text-xs"
-                      font={{ family: 'ABCDiatype', weight: 'Medium' }}
-                    >
-                      CREATED BY
-                    </Typography>
+              {token.name && (
+                <Typography
+                  className="text-2xl"
+                  font={{ family: 'GTAlpina', weight: 'Light', italic: true }}
+                >
+                  {token.name}
+                </Typography>
+              )}
 
-                    <Typography
-                      className="text-shadow text-sm"
-                      font={{ family: 'ABCDiatype', weight: 'Regular' }}
-                    >
-                      {token.owner.username}
-                    </Typography>
-                  </View>
-                )}
-                {token.contract?.name && (
-                  <View className="flex-1">
-                    <Typography
-                      className="text-xs"
-                      font={{ family: 'ABCDiatype', weight: 'Medium' }}
-                    >
-                      COMMUNITY
-                    </Typography>
-
-                    <Typography
-                      className="text-shadow text-sm"
-                      font={{ family: 'ABCDiatype', weight: 'Regular' }}
-                    >
-                      {token.contract.name}
-                    </Typography>
-                  </View>
-                )}
-              </View>
+              {token.contract?.name && (
+                <Typography
+                  className="text-shadow text-sm"
+                  font={{ family: 'ABCDiatype', weight: 'Regular' }}
+                >
+                  {token.contract.name}
+                </Typography>
+              )}
             </View>
           </View>
         );
