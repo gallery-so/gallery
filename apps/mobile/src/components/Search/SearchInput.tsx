@@ -33,8 +33,9 @@ export function SearchInput({ value, onChange, style, ...props }: Props) {
   const handleClear = useCallback(() => {
     if (ref.current) {
       ref.current.clear();
+      setKeyword('');
     }
-  }, []);
+  }, [setKeyword]);
 
   const handleChange = useCallback(
     (text: string) => {
