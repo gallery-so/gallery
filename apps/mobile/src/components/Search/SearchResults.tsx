@@ -73,27 +73,30 @@ export function SearchResults({ activeFilter, onChangeFilter }: Props) {
   );
 
   const isLoading = keyword !== deferredKeyword;
+  const searchUsers = query.searchUsers;
+  const searchGalleries = query.searchGalleries;
+
+  const hasUsers = searchUsers?.__typename === 'SearchUsersPayload';
+  const hasGalleries = searchGalleries?.__typename === 'SearchGalleriesPayload';
 
   const isEmpty = useMemo(() => {
-    if (
-      query.searchUsers?.__typename === 'SearchUsersPayload' &&
-      query.searchGalleries?.__typename === 'SearchGalleriesPayload'
-    ) {
-      return (
-        query.searchUsers?.results?.length === 0 && query.searchGalleries?.results?.length === 0
-      );
+    if (!activeFilter) {
+      return !hasUsers && !hasGalleries;
     }
 
-    return false;
-  }, [query]);
+    if (activeFilter === 'curator' && hasUsers) {
+      return searchUsers.results.length === 0;
+    }
+
+    if (activeFilter === 'gallery' && hasGalleries) {
+      return searchGalleries.results.length === 0;
+    }
+
+    return true;
+  }, [activeFilter, hasGalleries, hasUsers, searchGalleries, searchUsers]);
 
   const items = useMemo((): SearchListItem[] => {
     const items: SearchListItem[] = [];
-
-    const searchUsers = query.searchUsers;
-    const searchGalleries = query.searchGalleries;
-    const hasUsers = searchUsers?.__typename === 'SearchUsersPayload';
-    const hasGalleries = searchGalleries?.__typename === 'SearchGalleriesPayload';
 
     if (activeFilter === 'curator' && hasUsers) {
       items.push({
@@ -131,14 +134,13 @@ export function SearchResults({ activeFilter, onChangeFilter }: Props) {
       // if there is no active filter, show both curators and galleries
       // but only show a preview of the results
     } else if (!activeFilter) {
-      items.push({
-        kind: 'search-section-header',
-        sectionType: 'curator',
-        sectionTitle: 'Curators',
-        numberOfResults: hasUsers ? searchUsers.results.length : 0,
-      });
-
       if (hasUsers) {
+        items.push({
+          kind: 'search-section-header',
+          sectionType: 'curator',
+          sectionTitle: 'Curators',
+          numberOfResults: searchUsers.results.length,
+        });
         const results = searchUsers.results.slice(0, NUM_PREVIEW_SEARCH_RESULTS);
         for (const result of results) {
           if (result.user) {
@@ -150,14 +152,14 @@ export function SearchResults({ activeFilter, onChangeFilter }: Props) {
         }
       }
 
-      items.push({
-        kind: 'search-section-header',
-        sectionType: 'gallery',
-        sectionTitle: 'Galleries',
-        numberOfResults: hasGalleries ? searchGalleries.results.length : 0,
-      });
-
       if (hasGalleries) {
+        items.push({
+          kind: 'search-section-header',
+          sectionType: 'gallery',
+          sectionTitle: 'Galleries',
+          numberOfResults: searchGalleries.results.length,
+        });
+
         const results = searchGalleries.results.slice(0, NUM_PREVIEW_SEARCH_RESULTS);
         for (const result of results) {
           if (result.gallery) {
@@ -171,7 +173,7 @@ export function SearchResults({ activeFilter, onChangeFilter }: Props) {
     }
 
     return items;
-  }, [activeFilter, query.searchUsers, query.searchGalleries]);
+  }, [activeFilter, hasGalleries, hasUsers, searchGalleries, searchUsers]);
 
   const renderItem = useCallback<ListRenderItem<SearchListItem>>(
     ({ item }) => {
@@ -197,18 +199,20 @@ export function SearchResults({ activeFilter, onChangeFilter }: Props) {
 
   if (isEmpty) {
     return (
-      <View className={`h-full  ${isLoading ? 'opacity-50' : 'opacity-100'} `}>
-        <View className="flex-1 items-center justify-center">
-          <Typography
-            font={{
-              family: 'ABCDiatype',
-              weight: 'Bold',
-            }}
-            className="text-lg"
-          >
-            No Results
-          </Typography>
-        </View>
+      <View
+        className={`flex-1 items-center justify-center ${
+          isLoading ? 'opacity-50' : 'opacity-100'
+        } `}
+      >
+        <Typography
+          font={{
+            family: 'ABCDiatype',
+            weight: 'Bold',
+          }}
+          className="text-lg"
+        >
+          No Results
+        </Typography>
       </View>
     );
   }

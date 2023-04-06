@@ -13,23 +13,6 @@ type Props = {
 export function SearchSection({ isShowAll, numResults, onShowAll, title }: Props) {
   if (!isShowAll && numResults === 0) return null;
 
-  if (isShowAll && numResults === 0)
-    return (
-      <View className="h-full">
-        <View className="flex-1 items-center justify-center">
-          <Typography
-            font={{
-              family: 'ABCDiatype',
-              weight: 'Bold',
-            }}
-            className="text-lg"
-          >
-            No Results
-          </Typography>
-        </View>
-      </View>
-    );
-
   return (
     <View className="flex flex-row items-center justify-between p-4">
       <Typography
