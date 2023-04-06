@@ -1,10 +1,12 @@
 import { ResizeMode } from 'expo-av';
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, useCallback, useState } from 'react';
 import { useWindowDimensions, View } from 'react-native';
 import { ContextMenuView } from 'react-native-ios-context-menu';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
+import { GallerySkeleton } from '~/components/GallerySkeleton';
 import { NftPreviewAsset } from '~/components/NftPreview/NftPreviewAsset';
 import { Typography } from '~/components/Typography';
 import { NftPreviewContextMenuPopupFragment$key } from '~/generated/NftPreviewContextMenuPopupFragment.graphql';
@@ -54,6 +56,12 @@ export function NftPreviewContextMenuPopup({
 
   const tokenUrl = token.media?.previewURLs?.large ?? fallbackTokenUrl;
 
+  const [popupAssetLoaded, setPopupAssetLoaded] = useState(false);
+
+  const handlePopupAssetLoad = useCallback(() => {
+    setPopupAssetLoaded(true);
+  }, []);
+
   return (
     <ContextMenuView
       // If we don't have a tokenUrl, we should bail
@@ -97,9 +105,18 @@ export function NftPreviewContextMenuPopup({
             <View className="self-center" style={finalDimensions}>
               <NftPreviewAsset
                 priority="high"
-                resizeMode={ResizeMode.CONTAIN}
                 tokenUrl={tokenUrl}
+                resizeMode={ResizeMode.CONTAIN}
+                onLoad={handlePopupAssetLoad}
               />
+
+              {popupAssetLoaded ? null : (
+                <View className="absolute inset-0">
+                  <GallerySkeleton>
+                    <SkeletonPlaceholder.Item width="100%" height="100%" />
+                  </GallerySkeleton>
+                </View>
+              )}
             </View>
             <View className="flex flex-col space-y-2 p-4">
               <Typography
