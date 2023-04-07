@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import { ResizeMode } from 'expo-av';
 import { useCallback, useState } from 'react';
-import { TouchableWithoutFeedback, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { Priority } from 'react-native-fast-image';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { useFragment } from 'react-relay';
@@ -69,7 +69,8 @@ function NftPreviewInner({ collectionTokenRef, tokenUrl, resizeMode, priority }:
       collectionTokenRef={collectionToken}
       imageDimensions={imageState.kind === 'loaded' ? imageState.dimensions : null}
     >
-      <TouchableWithoutFeedback onPress={handlePress}>
+      {/* https://github.com/dominicstop/react-native-ios-context-menu/issues/9#issuecomment-1047058781 */}
+      <Pressable delayLongPress={100} onPress={handlePress} onLongPress={() => {}}>
         <View className="relative h-full w-full">
           <NftPreviewAsset
             tokenUrl={tokenUrl}
@@ -85,7 +86,7 @@ function NftPreviewInner({ collectionTokenRef, tokenUrl, resizeMode, priority }:
             </View>
           ) : null}
         </View>
-      </TouchableWithoutFeedback>
+      </Pressable>
     </NftPreviewContextMenuPopup>
   );
 }
