@@ -103,8 +103,9 @@ export function FeedList({ feedEventRefs, isLoadingMore, onLoadMore }: FeedListP
     return indices;
   }, [items]);
 
-  const ref = useRef(null);
+  const ref = useRef<FlashList<FeedListItem> | null>(null);
 
+  // @ts-expect-error - useScrollToTop is not typed correctly for FlashList
   useScrollToTop(ref);
 
   const renderItem = useCallback<ListRenderItem<FeedListItem>>(
