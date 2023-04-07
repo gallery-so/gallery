@@ -24,10 +24,16 @@ const markdownStyles = StyleSheet.create({
 
 type GalleryMarkdownProps = PropsWithChildren<{
   numberOfLines?: number;
+  touchToExpand?: boolean;
   style?: StyleProp<unknown>;
 }>;
 
-export function Markdown({ children, numberOfLines, style }: GalleryMarkdownProps) {
+export function Markdown({
+  children,
+  touchToExpand = false,
+  numberOfLines,
+  style,
+}: GalleryMarkdownProps) {
   const [showAll, setShowAll] = useState(false);
 
   const mergedStyles = useMemo(() => {
@@ -57,7 +63,10 @@ export function Markdown({ children, numberOfLines, style }: GalleryMarkdownProp
   }, []);
 
   return (
-    <TouchableOpacity onPress={handlePress} disabled={numberOfLines === undefined}>
+    <TouchableOpacity
+      onPress={handlePress}
+      disabled={numberOfLines === undefined || !touchToExpand}
+    >
       <MarkdownDisplay
         markdownit={MarkdownIt({ typographer: true, linkify: true })}
         rules={rules}
