@@ -1,5 +1,6 @@
 import { MaterialTopTabBarProps } from '@react-navigation/material-top-tabs';
 import { useNavigation } from '@react-navigation/native';
+import { NavigationRoute } from '@sentry/react-native/dist/js/tracing/reactnavigation';
 import { useCallback } from 'react';
 import { TouchableOpacity, View } from 'react-native';
 
@@ -8,18 +9,23 @@ import { FeedTabNavigatorParamList, FeedTabNavigatorProp } from '~/navigation/ty
 import { Typography } from '../../components/Typography';
 
 type TabItemProps = {
+  navigation: MaterialTopTabBarProps['navigation'];
   activeRoute: keyof FeedTabNavigatorParamList;
-  route: keyof FeedTabNavigatorParamList;
+  route: NavigationRoute;
 };
 
-function TabItem({ route, activeRoute }: TabItemProps) {
-  const navigation = useNavigation<FeedTabNavigatorProp>();
-
-  const isFocused = activeRoute === route;
+function TabItem({ navigation, route, activeRoute }: TabItemProps) {
+  const isFocused = activeRoute === route.name;
 
   const onPress = useCallback(() => {
-    if (!isFocused) {
-      navigation.navigate(route);
+    const event = navigation.emit({
+      type: 'tabPress',
+      target: route.key,
+      canPreventDefault: true,
+    });
+
+    if (!isFocused && !event.defaultPrevented) {
+      navigation.navigate(route.name);
     }
   }, [isFocused, navigation, route]);
 
@@ -34,20 +40,27 @@ function TabItem({ route, activeRoute }: TabItemProps) {
         className={`text-lg ${isFocused ? 'text-offBlack' : 'text-metal'}`}
         font={{ family: 'ABCDiatype', weight: 'Medium' }}
       >
-        {route}
+        {route.name}
       </Typography>
     </TouchableOpacity>
   );
 }
 
-export function TabBar({ state }: MaterialTopTabBarProps) {
+export function TabBar({ navigation, state }: MaterialTopTabBarProps) {
   const activeRoute = state.routeNames[state.index] as keyof FeedTabNavigatorParamList;
 
   return (
     <View className="flex flex-row items-center justify-center px-4 py-3">
-      <TabItem activeRoute={activeRoute} route="Trending" />
-      <TabItem activeRoute={activeRoute} route="Latest" />
-      <TabItem activeRoute={activeRoute} route="Featured" />
+      {state.routes.map((route) => {
+        return (
+          <TabItem
+            route={route}
+            key={route.key}
+            navigation={navigation}
+            activeRoute={activeRoute}
+          />
+        );
+      })}
     </View>
   );
 }
