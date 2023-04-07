@@ -1,10 +1,9 @@
 import { MaterialTopTabBarProps } from '@react-navigation/material-top-tabs';
-import { useNavigation } from '@react-navigation/native';
 import { NavigationRoute } from '@sentry/react-native/dist/js/tracing/reactnavigation';
 import { useCallback } from 'react';
 import { TouchableOpacity, View } from 'react-native';
 
-import { FeedTabNavigatorParamList, FeedTabNavigatorProp } from '~/navigation/types';
+import { FeedTabNavigatorParamList } from '~/navigation/types';
 
 import { Typography } from '../../components/Typography';
 
