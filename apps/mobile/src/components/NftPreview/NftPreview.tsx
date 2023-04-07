@@ -1,12 +1,11 @@
 import { useNavigation } from '@react-navigation/native';
 import { ResizeMode } from 'expo-av';
 import { useCallback, useState } from 'react';
-import { Pressable, TouchableWithoutFeedback, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { Priority } from 'react-native-fast-image';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { noop } from 'swr/_internal';
 
 import { NftPreviewAsset } from '~/components/NftPreview/NftPreviewAsset';
 import { NftPreviewContextMenuPopup } from '~/components/NftPreview/NftPreviewContextMenuPopup';

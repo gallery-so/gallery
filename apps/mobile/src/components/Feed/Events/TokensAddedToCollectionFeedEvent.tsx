@@ -53,7 +53,7 @@ export function TokensAddedToCollectionFeedEvent({
         </Typography>
       </FeedEventCarouselCellHeader>
 
-      <View className="flex flex-grow justify-center">
+      <View className="flex flex-grow">
         <EventTokenGrid
           imagePriority={isFirstSlide ? FastImage.priority.high : FastImage.priority.normal}
           allowPreserveAspectRatio={allowPreserveAspectRatio}
