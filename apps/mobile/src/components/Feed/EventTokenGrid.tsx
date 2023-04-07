@@ -60,7 +60,7 @@ export function EventTokenGrid({
                 priority={imagePriority}
                 resizeMode={ResizeMode.COVER}
                 collectionTokenRef={firstToken}
-                tokenUrl={firstToken.urls.small}
+                tokenUrl={firstToken.urls.medium}
               />
             </View>
             <View className="h-full w-1/2">
@@ -68,7 +68,7 @@ export function EventTokenGrid({
                 priority={imagePriority}
                 resizeMode={ResizeMode.COVER}
                 collectionTokenRef={secondToken}
-                tokenUrl={secondToken.urls.small}
+                tokenUrl={secondToken.urls.medium}
               />
             </View>
           </View>
@@ -79,7 +79,7 @@ export function EventTokenGrid({
                 priority={imagePriority}
                 resizeMode={ResizeMode.COVER}
                 collectionTokenRef={thirdToken}
-                tokenUrl={thirdToken.urls.small}
+                tokenUrl={thirdToken.urls.medium}
               />
             </View>
             <View className="h-full w-1/2">
@@ -87,7 +87,7 @@ export function EventTokenGrid({
                 priority={imagePriority}
                 resizeMode={ResizeMode.COVER}
                 collectionTokenRef={fourthToken}
-                tokenUrl={fourthToken.urls.small}
+                tokenUrl={fourthToken.urls.medium}
               />
             </View>
           </View>
@@ -101,7 +101,7 @@ export function EventTokenGrid({
               priority={imagePriority}
               resizeMode={ResizeMode.COVER}
               collectionTokenRef={firstToken}
-              tokenUrl={firstToken.urls.medium}
+              tokenUrl={firstToken.urls.large}
             />
           </View>
           <View className="h-full w-1/2">
@@ -109,7 +109,7 @@ export function EventTokenGrid({
               priority={imagePriority}
               resizeMode={ResizeMode.COVER}
               collectionTokenRef={secondToken}
-              tokenUrl={secondToken.urls.medium}
+              tokenUrl={secondToken.urls.large}
             />
           </View>
         </View>
