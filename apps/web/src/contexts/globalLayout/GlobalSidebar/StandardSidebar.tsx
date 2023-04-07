@@ -65,7 +65,7 @@ export function StandardSidebar({ queryRef }: Props) {
   const track = useTrack();
 
   const { showDrawer, hideDrawer } = useDrawerActions();
-  const router = useRouter();
+  const { query: routerQuery, pathname } = useRouter();
 
   const activeDrawerState = useDrawerState();
   const activeDrawerType = useMemo(
@@ -85,7 +85,7 @@ export function StandardSidebar({ queryRef }: Props) {
 
   const showAuthModal = useAuthModal('sign-in');
 
-  const { settings } = router.query;
+  const { settings } = routerQuery;
 
   // feels like a hack but if this hook is run multiple times via parent component re-render,
   // the same drawer is opened multiple times
@@ -154,8 +154,22 @@ export function StandardSidebar({ queryRef }: Props) {
 
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
-  const userGalleryRoute: Route = { pathname: '/[username]', query: { username } };
-  const editGalleriesRoute: Route = { pathname: '/[username]/galleries', query: { username } };
+  const userGalleryRoute: Route = useMemo(() => {
+    return { pathname: '/[username]', query: { username } };
+  }, [username]);
+
+  const editGalleriesRoute: Route = useMemo(() => {
+    return { pathname: '/[username]/galleries', query: { username } };
+  }, [username]);
+
+  const isLoggedInProfileActive = useMemo(() => {
+    // prevent highlight if another item in the drawer is selected
+    if (activeDrawerType) {
+      return false;
+    }
+    const currentRoute = { pathname, query: routerQuery };
+    return JSON.stringify(userGalleryRoute) === JSON.stringify(currentRoute);
+  }, [activeDrawerType, pathname, routerQuery, userGalleryRoute]);
 
   useSearchHotkey(() => {
     showDrawer({
@@ -180,6 +194,7 @@ export function StandardSidebar({ queryRef }: Props) {
                 tooltipLabel="My Profile"
                 onClick={handleProfileClick}
                 icon={<UserIcon />}
+                isActive={isLoggedInProfileActive}
               />
               <SidebarIcon
                 tooltipLabel="Search"
@@ -241,6 +256,7 @@ export function StandardSidebar({ queryRef }: Props) {
               tooltipLabel="My profile"
               onClick={handleProfileClick}
               icon={<UserIcon />}
+              isActive={isLoggedInProfileActive}
             />
             <SidebarIcon
               tooltipLabel="Search"
