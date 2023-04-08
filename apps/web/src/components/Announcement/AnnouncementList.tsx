@@ -68,12 +68,12 @@ export default function AnnouncementList({ queryRef }: Props) {
             justify="space-between"
             hasAction={Boolean(announcement.link?.pathname || !announcement.experienced)}
           >
-            <VStack>
+            <StyledAnnouncementDescriptionContainer>
               <BaseM>
                 <strong>{announcement.title}</strong>
               </BaseM>
               <BaseM>{announcement.description}</BaseM>
-            </VStack>
+            </StyledAnnouncementDescriptionContainer>
             <StyledTimeContainer gap={8} align="center" justify="flex-end">
               <BaseS>{announcement.time}</BaseS>
               {!announcement.experienced && <StyledDot />}
@@ -99,6 +99,10 @@ const StyledDot = styled.div`
   height: 8px;
   background-color: ${colors.activeBlue};
   border-radius: 9999px;
+`;
+
+const StyledAnnouncementDescriptionContainer = styled(VStack)`
+  flex: 1;
 `;
 
 const StyledTimeContainer = styled(HStack)`
