@@ -1,8 +1,8 @@
 import { Text } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { Typography } from '~/components/Typography';
 
+import { Typography } from '~/components/Typography';
 import { SomeoneFollowedYouBackFragment$key } from '~/generated/SomeoneFollowedYouBackFragment.graphql';
 
 type SomeoneFollowedYouBackProps = {
