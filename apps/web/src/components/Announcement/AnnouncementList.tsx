@@ -1,4 +1,5 @@
 import { useRouter } from 'next/router';
+import { Route } from 'nextjs-routes';
 import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
@@ -6,6 +7,7 @@ import styled from 'styled-components';
 import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 import { AnnouncementListFragment$key } from '~/generated/AnnouncementListFragment.graphql';
 import useUpdateUserExperience from '~/utils/graphql/experiences/useUpdateUserExperience';
+import { HTTPS_URL } from '~/utils/regex';
 
 import colors from '../core/colors';
 import { HStack, VStack } from '../core/Spacer/Stack';
@@ -36,7 +38,17 @@ export default function AnnouncementList({ queryRef }: Props) {
     (announcement: AnnouncementType) => {
       // if there is a link, open it
       if (announcement.link) {
-        router.push(announcement.link);
+        // Check if link is external
+        if (HTTPS_URL.test(announcement.link)) {
+          // Open link in a new tab/window
+          window.open(announcement.link, '_blank');
+        } else {
+          // Use Next.js router to navigate to internal page
+          const route = {
+            pathname: announcement.link,
+          } as Route;
+          router.push(route);
+        }
       }
 
       if (!announcement.experienced) {
@@ -66,7 +78,7 @@ export default function AnnouncementList({ queryRef }: Props) {
             onClick={() => handleClick(announcement)}
             align="center"
             justify="space-between"
-            hasAction={Boolean(announcement.link?.pathname || !announcement.experienced)}
+            hasAction={Boolean(announcement.link || !announcement.experienced)}
           >
             <StyledAnnouncementDescriptionContainer>
               <BaseM>
