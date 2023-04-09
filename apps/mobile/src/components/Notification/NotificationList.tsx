@@ -1,10 +1,12 @@
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import { useCallback, useMemo } from 'react';
+import { View } from 'react-native';
 import { graphql, usePaginationFragment } from 'react-relay';
 
 import { NotificationFragment$key } from '~/generated/NotificationFragment.graphql';
 import { NotificationListFragment$key } from '~/generated/NotificationListFragment.graphql';
 
+import { Typography } from '../Typography';
 import { NOTIFICATIONS_PER_PAGE } from './constants';
 import { Notification } from './Notification';
 
@@ -66,6 +68,22 @@ export function NotificationList({ queryRef }: Props) {
   const renderItem = useCallback<ListRenderItem<NotificationType>>(({ item }) => {
     return <Notification notificationRef={item.notification} />;
   }, []);
+
+  if (nonNullNotifications.length === 0) {
+    return (
+      <View className="flex flex-1 items-center justify-center">
+        <Typography
+          font={{
+            family: 'ABCDiatype',
+            weight: 'Bold',
+          }}
+          className="text-lg text-black"
+        >
+          Nothing to see here yet.
+        </Typography>
+      </View>
+    );
+  }
 
   return (
     <FlashList
