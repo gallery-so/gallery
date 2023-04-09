@@ -30,6 +30,7 @@ export function NotificationList({ queryRef }: Props) {
       @refetchable(queryName: "NotificationsModalRefetchableQuery") {
         viewer {
           ... on Viewer {
+            id
             notifications(last: $notificationsLast, before: $notificationsBefore)
               @connection(key: "NotificationsFragment_notifications") {
               edges {
@@ -40,6 +41,7 @@ export function NotificationList({ queryRef }: Props) {
             }
           }
         }
+        ...NotificationQueryFragment
       }
     `,
     queryRef
@@ -65,9 +67,12 @@ export function NotificationList({ queryRef }: Props) {
     }
   }, [hasPrevious, loadPrevious]);
 
-  const renderItem = useCallback<ListRenderItem<NotificationType>>(({ item }) => {
-    return <Notification notificationRef={item.notification} />;
-  }, []);
+  const renderItem = useCallback<ListRenderItem<NotificationType>>(
+    ({ item }) => {
+      return <Notification notificationRef={item.notification} queryRef={query} />;
+    },
+    [query]
+  );
 
   if (nonNullNotifications.length === 0) {
     return (
