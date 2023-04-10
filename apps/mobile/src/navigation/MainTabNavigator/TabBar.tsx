@@ -1,11 +1,9 @@
 import { MaterialTopTabBarProps } from '@react-navigation/material-top-tabs';
 import { NavigationRoute } from '@sentry/react-native/dist/js/tracing/reactnavigation';
-import { ReactNode, useCallback, useMemo } from 'react';
+import { ReactNode, useCallback } from 'react';
 import { TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { graphql, useFragment } from 'react-relay';
 
-import { TabBarFragment$key } from '~/generated/TabBarFragment.graphql';
 import { AccountIcon } from '~/navigation/MainTabNavigator/AccountIcon';
 import { GLogo } from '~/navigation/MainTabNavigator/GLogo';
 import { NotificationsIcon } from '~/navigation/MainTabNavigator/NotificationsIcon';
@@ -46,43 +44,15 @@ function TabItem({ navigation, route, icon, activeRoute }: TabItemProps) {
 }
 
 type TabBarProps = MaterialTopTabBarProps & {
-  queryRef: TabBarFragment$key;
+  hasUnreadNotifications: boolean;
 };
 
-export function TabBar({ state, navigation, queryRef }: TabBarProps) {
-  const query = useFragment(
-    graphql`
-      fragment TabBarFragment on Query {
-        viewer {
-          ... on Viewer {
-            __typename
-            notifications(last: 1) @connection(key: "TabBarFragment_notifications") {
-              unseenCount
-              # Relay requires that we grab the edges field if we use the connection directive
-              # We're selecting __typename since that shouldn't have a cost
-              # eslint-disable-next-line relay/unused-fields
-              edges {
-                __typename
-              }
-            }
-          }
-        }
-      }
-    `,
-    queryRef
-  );
-
+export function TabBar({ state, navigation, hasUnreadNotifications }: TabBarProps) {
   const { bottom } = useSafeAreaInsets();
 
   const activeRoute = state.routeNames[state.index] as keyof MainTabNavigatorParamList;
 
   const hasSafeAreaIntersection = bottom !== 0;
-
-  const hasUnreadNotifications = useMemo(() => {
-    if (query.viewer && query.viewer.__typename === 'Viewer') {
-      return (query.viewer?.notifications?.unseenCount ?? 0) > 0;
-    }
-  }, [query.viewer]);
 
   return (
     <View
