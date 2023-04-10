@@ -93,22 +93,15 @@ export function SomeoneAdmiredYourFeedEvent({ notificationRef }: SomeoneAdmiredY
           family: 'ABCDiatype',
           weight: 'Bold',
         }}
+        className="text-sm"
       >
-        {count > 1 ? (
-          `${notification.count} collectors`
-        ) : (
-          <Typography
-            font={{
-              family: 'ABCDiatype',
-              weight: 'Bold',
-            }}
-          >
-            {firstAdmirer ? firstAdmirer?.username : 'Someone'}
-          </Typography>
-        )}
+        {count > 1
+          ? `${notification.count} collectors`
+          : firstAdmirer
+          ? firstAdmirer?.username
+          : 'Someone'}
       </Typography>
       {` ${verb} `}
-
       {collection ? (
         <Typography
           font={{

@@ -31,12 +31,13 @@ export function SomeoneFollowedYouBack({ notificationRef }: SomeoneFollowedYouBa
   const lastFollower = notification.followers?.edges?.[0]?.node;
 
   return (
-    <Text>
+    <Text className="text-sm">
       <Typography
         font={{
           family: 'ABCDiatype',
           weight: 'Bold',
         }}
+        className="text-sm"
       >
         {count > 1 ? `${count} collectors` : `${lastFollower?.username ?? 'Someone'}`}
       </Typography>{' '}

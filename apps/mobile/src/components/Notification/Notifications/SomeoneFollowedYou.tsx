@@ -37,6 +37,7 @@ export function SomeoneFollowedYou({ notificationRef }: SomeoneFollowedYouProps)
           family: 'ABCDiatype',
           weight: 'Bold',
         }}
+        className="text-sm"
       >
         {count > 1 ? (
           `

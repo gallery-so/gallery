@@ -92,6 +92,7 @@ export function SomeoneCommentedOnYourFeedEvent({
             family: 'ABCDiatype',
             weight: 'Bold',
           }}
+          className="text-sm"
         >
           {notification.comment?.commenter ? notification.comment?.commenter.username : 'Someone'}
         </Typography>

@@ -94,6 +94,7 @@ function UsernameText({ text }: UsernameTextProps) {
         family: 'ABCDiatype',
         weight: 'Bold',
       }}
+      className="text-sm"
     >
       {text}
     </Typography>
