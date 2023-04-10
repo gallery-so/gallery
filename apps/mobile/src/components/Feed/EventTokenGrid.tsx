@@ -40,7 +40,10 @@ export function EventTokenGrid({
 
   const inner = useMemo(() => {
     const tokensWithMedia = collectionTokens.map((collectionToken) => {
-      const media = getVideoOrImageUrlForNftPreview(collectionToken.token);
+      const media = getVideoOrImageUrlForNftPreview({
+        tokenRef: collectionToken.token,
+        preferStillFrameFromGif: true,
+      });
 
       if (media) {
         return { ...collectionToken, ...media };
