@@ -51,16 +51,24 @@ export function EventTokenGrid({
 
     const [firstToken, secondToken, thirdToken, fourthToken] = tokensWithMedia;
 
+    const fullHeight = dimensions.width;
+    const fullWidth = dimensions.width;
+    const halfHeight = dimensions.width / 2;
+
     if (firstToken && secondToken && thirdToken && fourthToken) {
       return (
-        <View className="flex h-full w-full flex-col space-y-[2]">
+        <View
+          className="flex flex-1 flex-col space-y-[2]"
+          // We use min height here since it's possible that the
+          style={{ minHeight: fullHeight, width: fullWidth }}
+        >
           <View className="flex h-1/2 w-full flex-row space-x-[2]">
             <View className="h-full w-1/2">
               <NftPreview
                 priority={imagePriority}
                 resizeMode={ResizeMode.COVER}
                 collectionTokenRef={firstToken}
-                tokenUrl={firstToken.urls.small}
+                tokenUrl={firstToken.urls.medium}
               />
             </View>
             <View className="h-full w-1/2">
@@ -68,7 +76,7 @@ export function EventTokenGrid({
                 priority={imagePriority}
                 resizeMode={ResizeMode.COVER}
                 collectionTokenRef={secondToken}
-                tokenUrl={secondToken.urls.small}
+                tokenUrl={secondToken.urls.medium}
               />
             </View>
           </View>
@@ -79,7 +87,7 @@ export function EventTokenGrid({
                 priority={imagePriority}
                 resizeMode={ResizeMode.COVER}
                 collectionTokenRef={thirdToken}
-                tokenUrl={thirdToken.urls.small}
+                tokenUrl={thirdToken.urls.medium}
               />
             </View>
             <View className="h-full w-1/2">
@@ -87,7 +95,7 @@ export function EventTokenGrid({
                 priority={imagePriority}
                 resizeMode={ResizeMode.COVER}
                 collectionTokenRef={fourthToken}
-                tokenUrl={fourthToken.urls.small}
+                tokenUrl={fourthToken.urls.medium}
               />
             </View>
           </View>
@@ -95,13 +103,17 @@ export function EventTokenGrid({
       );
     } else if (firstToken && secondToken) {
       return (
-        <View className="flex w-full flex-row space-x-[2]">
+        <View
+          className="flex flex-row space-x-[2]"
+          // We use min height here since it's possible that the
+          style={{ minHeight: halfHeight, width: fullWidth }}
+        >
           <View className="h-full w-1/2">
             <NftPreview
               priority={imagePriority}
               resizeMode={ResizeMode.COVER}
               collectionTokenRef={firstToken}
-              tokenUrl={firstToken.urls.medium}
+              tokenUrl={firstToken.urls.large}
             />
           </View>
           <View className="h-full w-1/2">
@@ -109,14 +121,19 @@ export function EventTokenGrid({
               priority={imagePriority}
               resizeMode={ResizeMode.COVER}
               collectionTokenRef={secondToken}
-              tokenUrl={secondToken.urls.medium}
+              tokenUrl={secondToken.urls.large}
             />
           </View>
         </View>
       );
     } else if (firstToken) {
       return (
-        <View className="h-full w-full">
+        <View
+          style={{
+            minHeight: fullHeight,
+            minWidth: fullWidth,
+          }}
+        >
           <NftPreview
             resizeMode={preserveAspectRatio ? ResizeMode.CONTAIN : ResizeMode.COVER}
             priority={imagePriority}
@@ -128,13 +145,10 @@ export function EventTokenGrid({
     } else {
       throw new Error('Tried to render EventTokenGrid without any tokens');
     }
-  }, [imagePriority, preserveAspectRatio, collectionTokens]);
+  }, [collectionTokens, dimensions.width, imagePriority, preserveAspectRatio]);
 
   return (
-    <View
-      className="flex flex-row"
-      style={{ width: dimensions.width, maxHeight: dimensions.height, height: dimensions.width }}
-    >
+    <View className="flex flex-1 flex-col" style={{ width: dimensions.width }}>
       {inner}
     </View>
   );
