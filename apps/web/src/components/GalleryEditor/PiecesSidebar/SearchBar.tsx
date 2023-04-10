@@ -3,7 +3,7 @@ import { graphql, useFragment } from 'react-relay';
 
 import { FadedInput } from '~/components/core/Input/FadedInput';
 import { SearchBarFragment$key } from '~/generated/SearchBarFragment.graphql';
-import useDebounce from '~/hooks/useDebounce';
+import useDebounce from '~/shared/hooks/useDebounce';
 
 type Props = {
   tokensRef: SearchBarFragment$key;

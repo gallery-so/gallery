@@ -60,7 +60,10 @@ export default function CommunityHolderGridItem({ holderRef }: Props) {
   const openseaProfileLink = `https://opensea.io/${owner?.username}`;
 
   const reportError = useReportError();
-  const previewUrlSet = getVideoOrImageUrlForNftPreview(token, reportError);
+  const previewUrlSet = getVideoOrImageUrlForNftPreview({
+    tokenRef: token,
+    handleReportError: reportError,
+  });
 
   if (!previewUrlSet?.urls.large) {
     throw new CouldNotRenderNftError('CommunityHolderGridItem', 'could not find large image url');

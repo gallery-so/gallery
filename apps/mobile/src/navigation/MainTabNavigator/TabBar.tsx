@@ -7,6 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AccountIcon } from '~/navigation/MainTabNavigator/AccountIcon';
 import { GLogo } from '~/navigation/MainTabNavigator/GLogo';
 import { NotificationsIcon } from '~/navigation/MainTabNavigator/NotificationsIcon';
+import { SearchIcon } from '~/navigation/MainTabNavigator/SearchIcon';
 import { MainTabNavigatorParamList } from '~/navigation/types';
 
 type TabItemProps = {
@@ -31,6 +32,8 @@ function TabItem({ navigation, route, icon, activeRoute }: TabItemProps) {
     }
   }, [isFocused, navigation, route]);
 
+  const isHome = route.name === 'Home';
+
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -38,7 +41,13 @@ function TabItem({ navigation, route, icon, activeRoute }: TabItemProps) {
       accessibilityState={isFocused ? { selected: true } : {}}
       className={`px-8 ${isFocused ? 'opacity-100' : 'opacity-25'}`}
     >
-      {icon}
+      <View
+        className={`flex h-8 w-8 items-center justify-center rounded-full ${
+          isFocused && !isHome && 'border border-black'
+        }`}
+      >
+        {icon}
+      </View>
     </TouchableOpacity>
   );
 }
@@ -78,6 +87,8 @@ export function TabBar({ state, navigation, hasUnreadNotifications }: TabBarProp
               )}
             </View>
           );
+        } else if (route.name === 'Search') {
+          icon = <SearchIcon />;
         }
 
         return (
