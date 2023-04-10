@@ -9,8 +9,6 @@ import { GLogo } from '~/navigation/MainTabNavigator/GLogo';
 import { NotificationsIcon } from '~/navigation/MainTabNavigator/NotificationsIcon';
 import { MainTabNavigatorParamList, MainTabNavigatorProp } from '~/navigation/types';
 
-import { SearchIcon } from './SearchIcon';
-
 type TabItemProps = {
   activeRoute: keyof MainTabNavigatorParamList;
   route: keyof MainTabNavigatorParamList;
@@ -32,6 +30,8 @@ function TabItem({ route, icon, activeRoute }: TabItemProps) {
     }
   }, [isFocused, navigation, route]);
 
+  const isHome = route === 'Home';
+
   return (
     <TouchableOpacity
       className={`px-8 ${isFocused ? 'opacity-100' : 'opacity-25'}`}
@@ -39,7 +39,13 @@ function TabItem({ route, icon, activeRoute }: TabItemProps) {
       accessibilityState={isFocused ? { selected: true } : {}}
       onPress={onPress}
     >
-      {icon}
+      <View
+        className={`flex h-8 w-8 items-center justify-center rounded-full ${
+          isFocused && !isHome && 'border border-black'
+        }`}
+      >
+        {icon}
+      </View>
     </TouchableOpacity>
   );
 }
@@ -61,7 +67,6 @@ export function TabBar({ state }: MaterialTopTabBarProps) {
     >
       <TabItem activeRoute={activeRoute} route="Account" icon={<AccountIcon />} />
       <TabItem activeRoute={activeRoute} route="Home" icon={<GLogo />} />
-      <TabItem activeRoute={activeRoute} route="Search" icon={<SearchIcon />} />
       <TabItem activeRoute={activeRoute} route="Notifications" icon={<NotificationsIcon />} />
     </View>
   );
