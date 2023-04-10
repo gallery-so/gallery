@@ -99,6 +99,7 @@ export function NotificationList({ queryRef }: Props) {
       renderItem={renderItem}
       onEndReached={loadMore}
       refreshing={isLoadingPrevious}
+      onEndReachedThreshold={0.8}
     />
   );
 }
