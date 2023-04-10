@@ -15,6 +15,7 @@ type Props = {
 };
 
 type NotificationType = {
+  id: string;
   notification: NotificationFragment$key;
 };
 
@@ -35,6 +36,7 @@ export function NotificationList({ queryRef }: Props) {
               @connection(key: "NotificationsFragment_notifications") {
               edges {
                 node {
+                  id
                   ...NotificationFragment
                 }
               }
@@ -52,7 +54,7 @@ export function NotificationList({ queryRef }: Props) {
 
     for (const edge of query.viewer?.notifications?.edges ?? []) {
       if (edge?.node) {
-        notifications.push({ notification: edge.node });
+        notifications.push({ ...edge.node, notification: edge.node });
       }
     }
 
@@ -69,7 +71,7 @@ export function NotificationList({ queryRef }: Props) {
 
   const renderItem = useCallback<ListRenderItem<NotificationType>>(
     ({ item }) => {
-      return <Notification notificationRef={item.notification} queryRef={query} />;
+      return <Notification key={item.id} notificationRef={item.notification} queryRef={query} />;
     },
     [query]
   );
