@@ -7,6 +7,9 @@
     "packages/frames-dls",
     "packages/shared"
   ],
+  "scripts": {
+    "fetch-schema": "get-graphql-schema https://gateway.gallery.so/ > schema.graphql"
+  },
   "packageManager": "yarn@3.4.1",
   "engines": {
     "node": "16.18.1"
@@ -16,7 +19,7 @@
     "@taquito/taquito": "^14.0.0",
     "react": "18.2.0",
     "relay-runtime": "14.1.0",
-    "typescript": "^5.0.0",
+    "typecript": "^5.0.0",
     "@expo/prebuild-config": "6.0.0",
     "@expo/config-plugins": "6.0.0",
     "@wagmi/core@0.7.9": "patch:@wagmi/core@npm%3A0.7.9#./.yarn/patches/@wagmi-core-npm-0.7.9-fde5e7dcba.patch"
@@ -32,6 +35,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-relay": "^1.8.3",
     "eslint-plugin-simple-import-sort": "^8.0.0",
+    "get-graphql-schema": "^2.1.2",
     "prettier": "^2.8.4",
     "prettier-plugin-tailwindcss": "^0.2.3",
     "relay-compiler": "^15.0.0",
