@@ -3,7 +3,8 @@ import { graphql, useFragment } from 'react-relay';
 
 import { useUnfollowUserFragment$key } from '~/generated/useUnfollowUserFragment.graphql';
 import { useUnfollowUserMutation } from '~/generated/useUnfollowUserMutation.graphql';
-import { usePromisifiedMutation } from '~/relay/usePromisifiedMutation';
+
+import { usePromisifiedMutation } from './usePromisifiedMutation';
 
 type useUnfollowUserArgs = {
   queryRef: useUnfollowUserFragment$key;

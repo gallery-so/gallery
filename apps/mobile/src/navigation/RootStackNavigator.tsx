@@ -6,6 +6,7 @@ import { LoginStackNavigator } from '~/navigation/LoginStackNavigator';
 import { MainTabNavigator } from '~/navigation/MainTabNavigator/MainTabNavigator';
 import { RootStackNavigatorParamList } from '~/navigation/types';
 import { NftDetailScreen } from '~/screens/NftDetailScreen/NftDetailScreen';
+import { ProfileScreen } from '~/screens/ProifleScreen/ProfileScreen';
 
 const Stack = createNativeStackNavigator<RootStackNavigatorParamList>();
 
@@ -28,11 +29,17 @@ export function RootStackNavigator() {
   return (
     <Stack.Navigator
       screenOptions={{ header: Empty }}
-      initialRouteName={isLoggedIn ? 'MainTabs' : 'Login'}
+      // initialRouteName={isLoggedIn ? 'MainTabs' : 'Login'}
+      initialRouteName="Profile"
     >
       <Stack.Screen name="Login" component={LoginStackNavigator} />
       <Stack.Screen name="MainTabs" component={MainTabNavigator} />
       <Stack.Screen name="NftDetail" component={NftDetailScreen} />
+      <Stack.Screen
+        name="Profile"
+        component={ProfileScreen}
+        initialParams={{ username: 'robin' }}
+      />
     </Stack.Navigator>
   );
 }
