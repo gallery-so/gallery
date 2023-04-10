@@ -12,9 +12,9 @@ import { GLOBAL_FOOTER_HEIGHT } from '~/contexts/globalLayout/GlobalFooter/Globa
 import { MerchStorePageQuery } from '~/generated/MerchStorePageQuery.graphql';
 import { MerchStorePageQueryFragment$key } from '~/generated/MerchStorePageQueryFragment.graphql';
 import useAuthModal from '~/hooks/useAuthModal';
-import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
 import LogoBracketLeft from '~/icons/LogoBracketLeft';
 import LogoBracketRight from '~/icons/LogoBracketRight';
+import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 
 import Countdown from './Countdown';
 import ListMerchItems from './ListMerchItems';

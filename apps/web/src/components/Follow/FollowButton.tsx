@@ -10,7 +10,7 @@ import { useToastActions } from '~/contexts/toast/ToastContext';
 import { FollowButtonQueryFragment$key } from '~/generated/FollowButtonQueryFragment.graphql';
 import { FollowButtonUserFragment$key } from '~/generated/FollowButtonUserFragment.graphql';
 import useAuthModal from '~/hooks/useAuthModal';
-import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
+import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 
 import breakpoints from '../core/breakpoints';
 import useFollowUser from './mutations/useFollowUser';

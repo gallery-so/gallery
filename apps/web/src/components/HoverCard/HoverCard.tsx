@@ -12,9 +12,9 @@ import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleM } from '~/components/core/Text/Text';
 import FollowButton from '~/components/Follow/FollowButton';
 import { HoverCardQuery } from '~/generated/HoverCardQuery.graphql';
-import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
 import UserSharedInfo from '~/scenes/UserGalleryPage/UserSharedInfo/UserSharedInfo';
 import { ErrorWithSentryMetadata } from '~/shared/errors/ErrorWithSentryMetadata';
+import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import handleCustomDisplayName from '~/utils/handleCustomDisplayName';
 
 type HoverCardProps = {

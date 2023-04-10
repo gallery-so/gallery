@@ -10,13 +10,13 @@ import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { GalleryFragment$key } from '~/generated/GalleryFragment.graphql';
 import { GalleryFragmentQuery$key } from '~/generated/GalleryFragmentQuery.graphql';
-import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import ArrowDownIcon from '~/icons/ArrowDownIcon';
 import ArrowUpIcon from '~/icons/ArrowUpIcon';
 import DragHandleIcon from '~/icons/DragHandleIcon';
 import { EditPencilIcon } from '~/icons/EditPencilIcon';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
+import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import noop from '~/utils/noop';
 
 import colors from '../core/colors';

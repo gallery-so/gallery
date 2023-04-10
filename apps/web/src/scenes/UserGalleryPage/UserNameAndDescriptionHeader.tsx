@@ -17,10 +17,10 @@ import { useModalActions } from '~/contexts/modal/ModalContext';
 import { UserNameAndDescriptionHeader$key } from '~/generated/UserNameAndDescriptionHeader.graphql';
 import { UserNameAndDescriptionHeaderQueryFragment$key } from '~/generated/UserNameAndDescriptionHeaderQueryFragment.graphql';
 import useIs3acProfilePage from '~/hooks/oneOffs/useIs3acProfilePage';
-import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { EditPencilIcon } from '~/icons/EditPencilIcon';
 import LinkToNftDetailView from '~/scenes/NftDetailPage/LinkToNftDetailView';
+import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import handleCustomDisplayName from '~/utils/handleCustomDisplayName';
 import unescape from '~/utils/unescape';
 

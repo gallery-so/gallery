@@ -5,9 +5,9 @@ import styled from 'styled-components';
 
 import { ExploreUserCardFollowFragment$key } from '~/generated/ExploreUserCardFollowFragment.graphql';
 import { ExploreUserCardFragment$key } from '~/generated/ExploreUserCardFragment.graphql';
-import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
+import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import unescape from '~/utils/unescape';
 
 import Badge from '../Badge/Badge';
