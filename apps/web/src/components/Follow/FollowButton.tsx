@@ -10,11 +10,11 @@ import { useToastActions } from '~/contexts/toast/ToastContext';
 import { FollowButtonQueryFragment$key } from '~/generated/FollowButtonQueryFragment.graphql';
 import { FollowButtonUserFragment$key } from '~/generated/FollowButtonUserFragment.graphql';
 import useAuthModal from '~/hooks/useAuthModal';
+import useFollowUser from '~/shared/relay/useFollowUser';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
+import useUnfollowUser from '~/shared/relay/useUnfollowUser';
 
 import breakpoints from '../core/breakpoints';
-import useFollowUser from './mutations/useFollowUser';
-import useUnfollowUser from './mutations/useUnfollowUser';
 
 type Props = {
   queryRef: FollowButtonQueryFragment$key;
