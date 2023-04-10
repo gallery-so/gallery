@@ -100,6 +100,7 @@ export function NotificationList({ queryRef }: Props) {
       onEndReached={loadMore}
       refreshing={isLoadingPrevious}
       onEndReachedThreshold={0.8}
+      ItemSeparatorComponent={() => <View className="h-2" />}
     />
   );
 }

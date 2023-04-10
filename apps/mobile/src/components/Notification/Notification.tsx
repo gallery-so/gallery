@@ -63,10 +63,10 @@ export function Notification({ notificationRef, queryRef }: Props) {
 
   return (
     <TouchableOpacity onPress={handlePress} className="flex flex-row justify-between p-3">
-      <View className="w-80">
+      <View className="flex-1">
         <NotificationInner notificationRef={notification} />
       </View>
-      <View className="flex flex-row items-center justify-end space-x-2">
+      <View className="flex w-20 flex-row items-center justify-end space-x-2">
         <Typography
           className="text-metal text-xs"
           font={{ family: 'ABCDiatype', weight: 'Regular' }}
