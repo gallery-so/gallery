@@ -42,7 +42,7 @@ export default function OpenGraphCollectionPage() {
   const imageUrls = removeNullValues(
     removeNullValues(
       removeNullValues(collection.tokens).map(({ token }) =>
-        token ? getVideoOrImageUrlForNftPreview(token) : null
+        token ? getVideoOrImageUrlForNftPreview({ tokenRef: token }) : null
       )
     )
       .slice(0, 4)

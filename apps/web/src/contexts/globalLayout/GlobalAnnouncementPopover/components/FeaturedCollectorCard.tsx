@@ -58,7 +58,9 @@ export default function FeaturedCollectorCard({
   const imageUrls = removeNullValues(
     removeNullValues(collection.tokens)
       .map((galleryToken) => {
-        return galleryToken?.token ? getVideoOrImageUrlForNftPreview(galleryToken.token) : null;
+        return galleryToken?.token
+          ? getVideoOrImageUrlForNftPreview({ tokenRef: galleryToken.token })
+          : null;
       })
       .map((token) => token?.urls.large)
   ).slice(0, 4);
