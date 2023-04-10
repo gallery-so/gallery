@@ -88,26 +88,40 @@ export function SomeoneAdmiredYourFeedEvent({ notificationRef }: SomeoneAdmiredY
 
   return (
     <Text>
-      {count > 1 ? (
-        <strong>{notification.count} collectors</strong>
-      ) : (
-        <>
-          {firstAdmirer ? (
-            <Typography
-              font={{
-                family: 'ABCDiatype',
-                weight: 'Bold',
-              }}
-            >
-              {firstAdmirer.username}
-            </Typography>
-          ) : (
-            <strong>Someone</strong>
-          )}
-        </>
-      )}
+      <Typography
+        font={{
+          family: 'ABCDiatype',
+          weight: 'Bold',
+        }}
+      >
+        {count > 1 ? (
+          `${notification.count} collectors`
+        ) : (
+          <Typography
+            font={{
+              family: 'ABCDiatype',
+              weight: 'Bold',
+            }}
+          >
+            {firstAdmirer ? firstAdmirer?.username : 'Someone'}
+          </Typography>
+        )}
+      </Typography>
       {` ${verb} `}
-      <Text>{collection ? collection?.name : 'your collection'}</Text>
+
+      {collection ? (
+        <Typography
+          font={{
+            family: 'ABCDiatype',
+            weight: 'Bold',
+          }}
+          className="text-sm underline"
+        >
+          {collection.name}
+        </Typography>
+      ) : (
+        <Text>your collection</Text>
+      )}
     </Text>
   );
 }

@@ -96,7 +96,19 @@ export function SomeoneCommentedOnYourFeedEvent({
           {notification.comment?.commenter ? notification.comment?.commenter.username : 'Someone'}
         </Typography>
         {` ${verb} `}
-        <Text>{collection ? collection?.name : 'your collection'}</Text>
+        {collection ? (
+          <Typography
+            font={{
+              family: 'ABCDiatype',
+              weight: 'Bold',
+            }}
+            className="text-sm underline"
+          >
+            {collection.name}
+          </Typography>
+        ) : (
+          <Text>your collection</Text>
+        )}
       </Text>
 
       <View className="ml-4 border-l-2 border-[#d9d9d9] pl-2">
