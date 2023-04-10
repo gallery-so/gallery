@@ -4,15 +4,23 @@ import { ReportFn } from '~/contexts/ErrorReportingContext';
 import { getVideoOrImageUrlForNftPreviewFragment$key } from '~/generated/getVideoOrImageUrlForNftPreviewFragment.graphql';
 
 type UrlSet = { small: string | null; medium: string | null; large: string | null };
+
+export type getVideoOrImageUrlForNftPreviewArgs = {
+  tokenRef: getVideoOrImageUrlForNftPreviewFragment$key;
+  preferStillFrameFromGif?: boolean;
+  handleReportError?: ReportFn;
+};
+
 export type getVideoOrImageUrlForNftPreviewResult =
   | { type: 'video'; urls: UrlSet }
   | { type: 'image'; urls: UrlSet }
   | undefined;
 
-export default function getVideoOrImageUrlForNftPreview(
-  tokenRef: getVideoOrImageUrlForNftPreviewFragment$key,
-  handleReportError?: ReportFn
-): getVideoOrImageUrlForNftPreviewResult {
+export default function getVideoOrImageUrlForNftPreview({
+  tokenRef,
+  handleReportError,
+  preferStillFrameFromGif,
+}: getVideoOrImageUrlForNftPreviewArgs): getVideoOrImageUrlForNftPreviewResult {
   const result = readInlineData(
     graphql`
       fragment getVideoOrImageUrlForNftPreviewFragment on Token @inline {
@@ -65,6 +73,11 @@ export default function getVideoOrImageUrlForNftPreview(
 
           ... on GIFMedia {
             __typename
+            staticPreviewURLs {
+              small
+              medium
+              large
+            }
             previewURLs {
               small
               medium
@@ -127,6 +140,10 @@ export default function getVideoOrImageUrlForNftPreview(
 
   if (!media.previewURLs.large && !media.previewURLs.medium && !media.previewURLs.small) {
     return undefined;
+  }
+
+  if (preferStillFrameFromGif && media.__typename === 'GIFMedia' && media.staticPreviewURLs) {
+    return { type: 'image', urls: media.staticPreviewURLs };
   }
 
   if (media.__typename === 'VideoMedia') {
