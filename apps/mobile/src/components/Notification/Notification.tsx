@@ -80,10 +80,12 @@ export function Notification({ notificationRef, queryRef }: Props) {
 
   const clearNotification = useClearNotifications();
   const handlePress = useCallback(() => {
-    clearNotification(userId);
+    if (!notification.seen) {
+      clearNotification(userId);
+    }
 
     // TODO: Open a page based on the notification type
-  }, [clearNotification, userId]);
+  }, [clearNotification, notification.seen, userId]);
 
   return (
     <TouchableOpacity onPress={handlePress} className="flex flex-row justify-between p-3">
