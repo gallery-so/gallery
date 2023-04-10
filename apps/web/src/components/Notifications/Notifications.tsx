@@ -157,7 +157,7 @@ export function Notifications() {
   );
 }
 
-const StyledNotifications = styled.div`
+const StyledNotifications = styled(VStack)`
   height: 100%;
   width: 100%;
   padding: 4px;

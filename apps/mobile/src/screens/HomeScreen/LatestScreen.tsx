@@ -47,8 +47,10 @@ function LatestScreenInner({ queryRef }: LatestScreenInnerProps) {
   }, [hasPrevious, loadPrevious]);
 
   const handleLoadMore = useCallback(() => {
-    loadPrevious(PER_PAGE);
-  }, [loadPrevious]);
+    if (hasPrevious) {
+      loadPrevious(PER_PAGE);
+    }
+  }, [hasPrevious, loadPrevious]);
 
   const events = useMemo(() => {
     return removeNullValues(query.globalFeed?.edges?.map((it) => it?.node)).reverse();

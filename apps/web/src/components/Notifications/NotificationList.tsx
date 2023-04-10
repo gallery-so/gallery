@@ -112,7 +112,7 @@ export function NotificationList({ queryRef, toggleSubView }: NotificationListPr
           {hasPrevious && <SeeMore onClick={handleSeeMore} isLoading={isLoadingPrevious} />}
         </>
       ) : (
-        <EmptyContainer grow justify="center">
+        <EmptyContainer grow justify="center" align="center">
           <EmptyNotificationsText>Nothing to see here yet.</EmptyNotificationsText>
         </EmptyContainer>
       )}
@@ -128,4 +128,5 @@ const EmptyNotificationsText = styled(TitleDiatypeL)`
 
 const NotificationsContent = styled(VStack)`
   width: 100%;
+  height: 100%;
 `;

@@ -62,6 +62,7 @@ export function GalleryUpdatedFeedEvent({ eventDataRef, eventId }: GalleryUpdate
     <View className="flex flex-col space-y-3">
       <ScrollView
         horizontal
+        directionalLockEnabled
         pagingEnabled
         snapToInterval={width}
         onScroll={handleScroll}

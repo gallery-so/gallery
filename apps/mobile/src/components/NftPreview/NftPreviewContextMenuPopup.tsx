@@ -146,10 +146,10 @@ export function NftPreviewContextMenuPopup({
                 </View>
               )}
             </View>
-            <View className="flex flex-col space-y-2 p-4">
+            <View className="flex flex-col space-y-2 py-4">
               {token.name && (
                 <Typography
-                  className="text-2xl"
+                  className="px-4 text-2xl"
                   font={{ family: 'GTAlpina', weight: 'Light', italic: true }}
                 >
                   {token.name}
@@ -158,7 +158,7 @@ export function NftPreviewContextMenuPopup({
 
               {token.contract?.name && (
                 <Typography
-                  className="text-shadow text-sm"
+                  className="text-shadow px-4 text-sm"
                   font={{ family: 'ABCDiatype', weight: 'Regular' }}
                 >
                   {token.contract.name}
