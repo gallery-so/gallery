@@ -55,7 +55,9 @@ export default function GalleryOfTheWeekCard({ queryRef, userRef }: GalleryOfThe
       ?.filter((collection) => !collection?.hidden)
       .flatMap((collection) => collection?.tokens)
       .map((galleryToken) => {
-        return galleryToken?.token ? getVideoOrImageUrlForNftPreview(galleryToken.token) : null;
+        return galleryToken?.token
+          ? getVideoOrImageUrlForNftPreview({ tokenRef: galleryToken.token })
+          : null;
       })
       .map((token) => token?.urls.large)
   ).slice(0, 4);

@@ -46,7 +46,7 @@ export default function OpenGraphGalleryPage() {
     gallery?.collections
       ?.filter((collection) => !collection?.hidden)?.[0]
       ?.tokens?.map((token) => {
-        return token?.token ? getVideoOrImageUrlForNftPreview(token.token) : null;
+        return token?.token ? getVideoOrImageUrlForNftPreview({ tokenRef: token.token }) : null;
       })
       .map((token) => token?.urls.large)
   ).slice(0, 4);

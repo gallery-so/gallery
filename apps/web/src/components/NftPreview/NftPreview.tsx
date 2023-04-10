@@ -171,7 +171,7 @@ function NftPreview({
 
   const isMobileOrLargeMobile = useIsMobileOrMobileLargeWindowWidth();
 
-  const result = getVideoOrImageUrlForNftPreview(token);
+  const result = getVideoOrImageUrlForNftPreview({ tokenRef: token });
   const isFirefoxSvg = isSvg(result?.urls?.large) && isFirefox();
   // stretch the image to take up the full-width if...
   const fullWidth =
