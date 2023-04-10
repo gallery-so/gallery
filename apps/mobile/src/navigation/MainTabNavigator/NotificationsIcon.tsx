@@ -1,4 +1,4 @@
-import Svg, { ClipPath, Defs, G, Path, Rect, SvgProps } from 'react-native-svg';
+import Svg, { ClipPath, Defs, G, Path, SvgProps } from 'react-native-svg';
 
 export const NotificationsIcon = (props: SvgProps) => (
   <Svg width={25} height={24} fill="none" {...props}>
@@ -8,8 +8,6 @@ export const NotificationsIcon = (props: SvgProps) => (
         stroke="#000"
       />
       <Path d="M14.75 18.75a2.25 2.25 0 0 1-4.5 0" stroke="#000" strokeLinejoin="bevel" />
-      <Rect x={15.5} y={1} width={8} height={8} rx={4} fill="#0022F0" />
-      <Rect x={15.5} y={1} width={8} height={8} rx={4} stroke="#0022F0" strokeWidth={2} />
     </G>
     <Defs>
       <ClipPath id="a">

@@ -18,6 +18,7 @@ export function RootStackNavigator() {
             __typename
           }
         }
+        ...MainTabNavigatorFragment
       }
     `,
     {}
@@ -31,7 +32,7 @@ export function RootStackNavigator() {
       initialRouteName={isLoggedIn ? 'MainTabs' : 'Login'}
     >
       <Stack.Screen name="Login" component={LoginStackNavigator} />
-      <Stack.Screen name="MainTabs" component={MainTabNavigator} />
+      <Stack.Screen name="MainTabs">{() => <MainTabNavigator queryRef={query} />}</Stack.Screen>
       <Stack.Screen name="NftDetail" component={NftDetailScreen} />
     </Stack.Navigator>
   );
