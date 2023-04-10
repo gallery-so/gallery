@@ -7,8 +7,8 @@ import styled from 'styled-components';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { EmailFormFragment$key } from '~/generated/EmailFormFragment.graphql';
 import { EmailFormMutation } from '~/generated/EmailFormMutation.graphql';
-import useDebounce from '~/hooks/useDebounce';
 import { AdditionalContext, useReportError } from '~/shared/contexts/ErrorReportingContext';
+import useDebounce from '~/shared/hooks/useDebounce';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 import { EMAIL_FORMAT } from '~/utils/regex';
 
