@@ -25,35 +25,9 @@ export function Notification({ notificationRef, queryRef }: Props) {
   const notification = useFragment(
     graphql`
       fragment NotificationFragment on Notification {
-        id
+        __typename
         seen
         updatedTime
-
-        __typename
-
-        ... on SomeoneCommentedOnYourFeedEventNotification {
-          feedEvent {
-            dbid
-          }
-        }
-
-        ... on SomeoneAdmiredYourFeedEventNotification {
-          feedEvent {
-            dbid
-          }
-        }
-
-        ... on SomeoneViewedYourGalleryNotification {
-          userViewers(last: 1) {
-            pageInfo {
-              total
-            }
-          }
-        }
-
-        ... on GroupedNotification {
-          count
-        }
 
         ...NotificationInnerFragment
       }
