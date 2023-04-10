@@ -32,7 +32,7 @@ function TabItem({ navigation, route, icon, activeRoute }: TabItemProps) {
     }
   }, [isFocused, navigation, route]);
 
-  const isHome = route === 'Home';
+  const isHome = route.name === 'Home';
 
   return (
     <TouchableOpacity
