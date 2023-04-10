@@ -7,6 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AccountIcon } from '~/navigation/MainTabNavigator/AccountIcon';
 import { GLogo } from '~/navigation/MainTabNavigator/GLogo';
 import { NotificationsIcon } from '~/navigation/MainTabNavigator/NotificationsIcon';
+import { SearchIcon } from '~/navigation/MainTabNavigator/SearchIcon';
 import { MainTabNavigatorParamList } from '~/navigation/types';
 
 type TabItemProps = {
@@ -74,6 +75,8 @@ export function TabBar({ state, navigation }: MaterialTopTabBarProps) {
           icon = <GLogo />;
         } else if (route.name === 'Notifications') {
           icon = <NotificationsIcon />;
+        } else if (route.name === 'Search') {
+          icon = <SearchIcon />;
         }
 
         return (
