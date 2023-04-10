@@ -32,7 +32,10 @@ function StagedNftImage({ tokenRef, size, hideLabel, setNodeRef, onLoad, ...prop
   );
 
   const reportError = useReportError();
-  const result = getVideoOrImageUrlForNftPreview(token, reportError);
+  const result = getVideoOrImageUrlForNftPreview({
+    tokenRef: token,
+    handleReportError: reportError,
+  });
 
   if (!result) {
     throw new CouldNotRenderNftError(
