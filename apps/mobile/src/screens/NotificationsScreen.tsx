@@ -21,8 +21,7 @@ export function NotificationsScreen() {
   );
 
   return (
-    // TODO: Add a loading state
-    <Suspense fallback={<Text>loading</Text>}>
+    <Suspense fallback={null}>
       <View className="flex flex-1 ">
         <View className="py-4 px-3">
           <Typography
