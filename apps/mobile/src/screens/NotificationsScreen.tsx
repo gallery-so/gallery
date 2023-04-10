@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 
 import { NOTIFICATIONS_PER_PAGE } from '~/components/Notification/constants';
