@@ -1,11 +1,8 @@
-import { useCallback } from 'react';
 import { View } from 'react-native';
-import { TouchableOpacity } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { NotificationFragment$key } from '~/generated/NotificationFragment.graphql';
 import { NotificationInnerFragment$key } from '~/generated/NotificationInnerFragment.graphql';
-import { NotificationQueryFragment$key } from '~/generated/NotificationQueryFragment.graphql';
 import { getTimeSince } from '~/shared/utils/time';
 
 import { Typography } from '../Typography';
@@ -14,14 +11,12 @@ import { SomeoneCommentedOnYourFeedEvent } from './Notifications/SomeoneCommente
 import { SomeoneFollowedYou } from './Notifications/SomeoneFollowedYou';
 import { SomeoneFollowedYouBack } from './Notifications/SomeoneFollowedYouBack';
 import { SomeoneViewedYourGallery } from './Notifications/SomeoneViewedYourGallery';
-import { useClearNotifications } from './useClearNotification';
 
 type Props = {
   notificationRef: NotificationFragment$key;
-  queryRef: NotificationQueryFragment$key;
 };
 
-export function Notification({ notificationRef, queryRef }: Props) {
+export function Notification({ notificationRef }: Props) {
   const notification = useFragment(
     graphql`
       fragment NotificationFragment on Notification {
@@ -35,34 +30,8 @@ export function Notification({ notificationRef, queryRef }: Props) {
     notificationRef
   );
 
-  const query = useFragment(
-    graphql`
-      fragment NotificationQueryFragment on Query {
-        viewer {
-          ... on Viewer {
-            user {
-              dbid
-            }
-          }
-        }
-      }
-    `,
-    queryRef
-  );
-
-  const userId = query.viewer?.user?.dbid ?? '';
-
-  const clearNotification = useClearNotifications();
-  const handlePress = useCallback(() => {
-    if (!notification.seen) {
-      clearNotification(userId);
-    }
-
-    // TODO: Open a page based on the notification type
-  }, [clearNotification, notification.seen, userId]);
-
   return (
-    <TouchableOpacity onPress={handlePress} className="flex flex-row justify-between p-3">
+    <View className="flex flex-row justify-between p-3">
       <View className="flex-1">
         <NotificationInner notificationRef={notification} />
       </View>
@@ -75,7 +44,7 @@ export function Notification({ notificationRef, queryRef }: Props) {
         </Typography>
         {!notification.seen && <UnseenDot />}
       </View>
-    </TouchableOpacity>
+    </View>
   );
 }
 

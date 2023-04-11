@@ -1,5 +1,6 @@
+import { useIsFocused } from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { View } from 'react-native';
 import { graphql, usePaginationFragment } from 'react-relay';
 
@@ -9,6 +10,7 @@ import { NotificationListFragment$key } from '~/generated/NotificationListFragme
 import { Typography } from '../Typography';
 import { NOTIFICATIONS_PER_PAGE } from './constants';
 import { Notification } from './Notification';
+import { useClearNotifications } from './useClearNotification';
 
 type Props = {
   queryRef: NotificationListFragment$key;
@@ -43,11 +45,13 @@ export function NotificationList({ queryRef }: Props) {
             }
           }
         }
-        ...NotificationQueryFragment
       }
     `,
     queryRef
   );
+
+  const isFocused = useIsFocused();
+  const clearNotification = useClearNotifications();
 
   const nonNullNotifications = useMemo(() => {
     const notifications = [];
@@ -69,12 +73,21 @@ export function NotificationList({ queryRef }: Props) {
     }
   }, [hasPrevious, loadPrevious]);
 
-  const renderItem = useCallback<ListRenderItem<NotificationType>>(
-    ({ item }) => {
-      return <Notification key={item.id} notificationRef={item.notification} queryRef={query} />;
-    },
-    [query]
-  );
+  const renderItem = useCallback<ListRenderItem<NotificationType>>(({ item }) => {
+    return <Notification key={item.id} notificationRef={item.notification} />;
+  }, []);
+
+  // if user go outside of notifications screen, clear notifications
+  const isInitialMount = useRef(true);
+  useEffect(() => {
+    // User has navigated away from the page
+    if (!isFocused && !isInitialMount.current) {
+      clearNotification(query.viewer?.id ?? '');
+      return;
+    }
+
+    isInitialMount.current = false;
+  }, [clearNotification, isFocused, query.viewer?.id]);
 
   if (nonNullNotifications.length === 0) {
     return (

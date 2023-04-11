@@ -22,7 +22,7 @@ export function useClearNotifications() {
       const updater: SelectorStoreUpdater<useClearNotificationsMutation['response']> = (store) => {
         const connectionIds = [
           ConnectionHandler.getConnectionID(
-            `client:Viewer:${userId}`,
+            `client:${userId}`,
             'RootStackNavigatorFragment_notifications'
           ),
         ];
