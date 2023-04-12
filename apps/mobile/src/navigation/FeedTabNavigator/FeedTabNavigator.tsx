@@ -13,7 +13,7 @@ export function FeedTabNavigator() {
   return (
     <Tab.Navigator
       tabBarPosition="top"
-      initialRouteName="Latest"
+      initialRouteName="Featured"
       tabBar={TabBar}
       sceneContainerStyle={{ backgroundColor: 'white' }}
     >
