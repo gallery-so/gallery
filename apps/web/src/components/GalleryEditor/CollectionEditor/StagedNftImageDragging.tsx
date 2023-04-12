@@ -39,7 +39,10 @@ function StagedNftImageDragging({ tokenRef, size, onLoad }: Props) {
   const zoomedSize = useMemo(() => size * 1.02, [size]);
 
   const reportError = useReportError();
-  const result = getVideoOrImageUrlForNftPreview(token, reportError);
+  const result = getVideoOrImageUrlForNftPreview({
+    tokenRef: token,
+    handleReportError: reportError,
+  });
 
   const contractAddress = token.contract?.contractAddress?.address ?? '';
   const backgroundColorOverride = getBackgroundColorOverrideForContract(contractAddress);

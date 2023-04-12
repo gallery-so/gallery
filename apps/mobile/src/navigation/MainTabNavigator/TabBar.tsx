@@ -1,5 +1,5 @@
 import { MaterialTopTabBarProps } from '@react-navigation/material-top-tabs';
-import { useNavigation } from '@react-navigation/native';
+import { NavigationRoute } from '@sentry/react-native/dist/js/tracing/reactnavigation';
 import { ReactNode, useCallback } from 'react';
 import { TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -7,42 +7,52 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AccountIcon } from '~/navigation/MainTabNavigator/AccountIcon';
 import { GLogo } from '~/navigation/MainTabNavigator/GLogo';
 import { NotificationsIcon } from '~/navigation/MainTabNavigator/NotificationsIcon';
-import { MainTabNavigatorParamList, MainTabNavigatorProp } from '~/navigation/types';
+import { SearchIcon } from '~/navigation/MainTabNavigator/SearchIcon';
+import { MainTabNavigatorParamList } from '~/navigation/types';
 
 type TabItemProps = {
-  activeRoute: keyof MainTabNavigatorParamList;
-  route: keyof MainTabNavigatorParamList;
   icon: ReactNode;
+  route: NavigationRoute;
+  activeRoute: keyof MainTabNavigatorParamList;
+  navigation: MaterialTopTabBarProps['navigation'];
 };
 
-function TabItem({ route, icon, activeRoute }: TabItemProps) {
-  const navigation = useNavigation<MainTabNavigatorProp>();
-
-  const isFocused = activeRoute === route;
+function TabItem({ navigation, route, icon, activeRoute }: TabItemProps) {
+  const isFocused = activeRoute === route.name;
 
   const onPress = useCallback(() => {
-    if (!isFocused) {
-      if (route === 'Home') {
-        navigation.navigate(route, { screen: 'Trending' });
-      } else {
-        navigation.navigate(route);
-      }
+    const event = navigation.emit({
+      type: 'tabPress',
+      target: route.key,
+      canPreventDefault: true,
+    });
+
+    if (!isFocused && !event.defaultPrevented) {
+      navigation.navigate(route.name);
     }
   }, [isFocused, navigation, route]);
 
+  const isHome = route.name === 'Home';
+
   return (
     <TouchableOpacity
-      className={`px-8 ${isFocused ? 'opacity-100' : 'opacity-25'}`}
+      onPress={onPress}
       accessibilityRole="button"
       accessibilityState={isFocused ? { selected: true } : {}}
-      onPress={onPress}
+      className={`px-8 ${isFocused ? 'opacity-100' : 'opacity-25'}`}
     >
-      {icon}
+      <View
+        className={`flex h-8 w-8 items-center justify-center rounded-full ${
+          isFocused && !isHome && 'border border-black'
+        }`}
+      >
+        {icon}
+      </View>
     </TouchableOpacity>
   );
 }
 
-export function TabBar({ state }: MaterialTopTabBarProps) {
+export function TabBar({ state, navigation }: MaterialTopTabBarProps) {
   const { bottom } = useSafeAreaInsets();
 
   const activeRoute = state.routeNames[state.index] as keyof MainTabNavigatorParamList;
@@ -57,9 +67,28 @@ export function TabBar({ state }: MaterialTopTabBarProps) {
       }
       className="bg-offWhite flex flex-row items-center justify-center"
     >
-      <TabItem activeRoute={activeRoute} route="Account" icon={<AccountIcon />} />
-      <TabItem activeRoute={activeRoute} route="Home" icon={<GLogo />} />
-      <TabItem activeRoute={activeRoute} route="Notifications" icon={<NotificationsIcon />} />
+      {state.routes.map((route) => {
+        let icon = null;
+        if (route.name === 'Account') {
+          icon = <AccountIcon />;
+        } else if (route.name === 'Home') {
+          icon = <GLogo />;
+        } else if (route.name === 'Notifications') {
+          icon = <NotificationsIcon />;
+        } else if (route.name === 'Search') {
+          icon = <SearchIcon />;
+        }
+
+        return (
+          <TabItem
+            icon={icon}
+            route={route}
+            key={route.key}
+            navigation={navigation}
+            activeRoute={activeRoute}
+          />
+        );
+      })}
     </View>
   );
 }

@@ -1,0 +1,1 @@
+export const NUM_PREVIEW_SEARCH_RESULTS = 4;

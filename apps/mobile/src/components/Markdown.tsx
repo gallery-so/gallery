@@ -28,6 +28,8 @@ type GalleryMarkdownProps = PropsWithChildren<{
   style?: StyleProp<unknown>;
 }>;
 
+const markdownItOptions = MarkdownIt({ typographer: true, linkify: false });
+
 export function Markdown({
   children,
   touchToExpand = false,
@@ -67,11 +69,7 @@ export function Markdown({
       onPress={handlePress}
       disabled={numberOfLines === undefined || !touchToExpand}
     >
-      <MarkdownDisplay
-        markdownit={MarkdownIt({ typographer: true, linkify: true })}
-        rules={rules}
-        style={mergedStyles}
-      >
+      <MarkdownDisplay markdownit={markdownItOptions} rules={rules} style={mergedStyles}>
         {children}
       </MarkdownDisplay>
     </TouchableOpacity>

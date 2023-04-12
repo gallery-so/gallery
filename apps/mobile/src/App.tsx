@@ -14,6 +14,7 @@ import { RootStackNavigator } from '~/navigation/RootStackNavigator';
 
 import { DevMenuItems } from './components/DevMenuItems';
 import { LoadingView } from './components/LoadingView';
+import SearchProvider from './components/Search/SearchContext';
 import { magic } from './magic';
 
 SplashScreen.preventAutoHideAsync();
@@ -57,10 +58,12 @@ export default function App() {
           <MobileErrorReportingProvider>
             <SafeAreaProvider>
               <magic.Relayer />
-              <NavigationContainer>
-                <DevMenuItems />
-                <RootStackNavigator />
-              </NavigationContainer>
+              <SearchProvider>
+                <NavigationContainer>
+                  <DevMenuItems />
+                  <RootStackNavigator />
+                </NavigationContainer>
+              </SearchProvider>
             </SafeAreaProvider>
           </MobileErrorReportingProvider>
         </Suspense>

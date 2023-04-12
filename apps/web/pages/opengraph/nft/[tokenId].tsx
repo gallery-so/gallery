@@ -35,7 +35,7 @@ export default function OpenGraphCollectionPage() {
 
   const { token } = queryResponse;
 
-  const media = getVideoOrImageUrlForNftPreview(token);
+  const media = getVideoOrImageUrlForNftPreview({ tokenRef: token });
 
   const width = parseInt(query.width as string) || WIDTH_OPENGRAPH_IMAGE;
   const height = parseInt(query.height as string) || HEIGHT_OPENGRAPH_IMAGE;

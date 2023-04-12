@@ -6,9 +6,9 @@ import { useUserInfoFormIsUsernameAvailableQuery } from '~/generated/useUserInfo
 import useAuthPayloadQuery from '~/hooks/api/users/useAuthPayloadQuery';
 import useCreateUser from '~/hooks/api/users/useCreateUser';
 import useUpdateUser from '~/hooks/api/users/useUpdateUser';
-import useDebounce from '~/hooks/useDebounce';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import formatError from '~/shared/errors/formatError';
+import useDebounce from '~/shared/hooks/useDebounce';
 import {
   alphanumericUnderscores,
   maxLength,

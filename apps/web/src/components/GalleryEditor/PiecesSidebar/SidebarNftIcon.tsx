@@ -228,7 +228,10 @@ function SidebarPreviewAsset({ tokenRef, onLoad, isSelected }: SidebarPreviewAss
   );
 
   const reportError = useReportError();
-  const previewUrlSet = getVideoOrImageUrlForNftPreview(token, reportError);
+  const previewUrlSet = getVideoOrImageUrlForNftPreview({
+    tokenRef: token,
+    handleReportError: reportError,
+  });
 
   if (!previewUrlSet?.urls.small) {
     throw new CouldNotRenderNftError('SidebarNftIcon', 'could not find small image url');

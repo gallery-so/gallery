@@ -1,5 +1,6 @@
+import { useScrollToTop } from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
@@ -102,6 +103,11 @@ export function FeedList({ feedEventRefs, isLoadingMore, onLoadMore }: FeedListP
     return indices;
   }, [items]);
 
+  const ref = useRef<FlashList<FeedListItem> | null>(null);
+
+  // @ts-expect-error - useScrollToTop is not typed correctly for FlashList
+  useScrollToTop(ref);
+
   const renderItem = useCallback<ListRenderItem<FeedListItem>>(
     ({ item }) => {
       const markFailure = () => markEventAsFailure(item.event.dbid);
@@ -141,6 +147,7 @@ export function FeedList({ feedEventRefs, isLoadingMore, onLoadMore }: FeedListP
 
   return (
     <FlashList
+      ref={ref}
       data={items}
       onScroll={handleScroll}
       estimatedItemSize={300}

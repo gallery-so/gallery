@@ -21,6 +21,7 @@ export type MainTabNavigatorParamList = {
   Account: undefined;
   Home: NavigatorScreenParams<FeedTabNavigatorParamList>;
   Notifications: undefined;
+  Search: undefined;
 };
 
 export type LoginStackNavigatorParamList = {
