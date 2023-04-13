@@ -2,15 +2,15 @@ import { useFocusEffect } from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
-import { graphql, usePaginationFragment } from 'react-relay';
+import { ConnectionHandler, graphql, usePaginationFragment } from 'react-relay';
 
 import { NotificationFragment$key } from '~/generated/NotificationFragment.graphql';
 import { NotificationListFragment$key } from '~/generated/NotificationListFragment.graphql';
+import { useClearNotifications } from '~/shared/relay/useClearNotifications';
 
 import { Typography } from '../Typography';
 import { NOTIFICATIONS_PER_PAGE } from './constants';
 import { Notification } from './Notification';
-import { useClearNotifications } from './useClearNotification';
 
 type Props = {
   queryRef: NotificationListFragment$key;
@@ -34,6 +34,9 @@ export function NotificationList({ queryRef }: Props) {
         viewer {
           ... on Viewer {
             id
+            user {
+              dbid
+            }
             notifications(last: $notificationsLast, before: $notificationsBefore)
               @connection(key: "NotificationsFragment_notifications") {
               edges {
@@ -79,7 +82,18 @@ export function NotificationList({ queryRef }: Props) {
   // if user go outside of notifications screen, clear notifications
   useFocusEffect(() => {
     return () => {
-      clearNotification(query.viewer?.id ?? '');
+      if (query.viewer?.user?.dbid && query.viewer.id) {
+        clearNotification(query.viewer.user.dbid, [
+          ConnectionHandler.getConnectionID(
+            query.viewer?.id,
+            'RootStackNavigatorFragment_notifications'
+          ),
+          ConnectionHandler.getConnectionID(
+            query.viewer?.id,
+            'NotificationsFragment_notifications'
+          ),
+        ]);
+      }
     };
   });
 
