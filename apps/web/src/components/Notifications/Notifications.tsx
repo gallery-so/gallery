@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { Suspense, useCallback, useEffect, useState } from 'react';
 import { useLazyLoadQuery } from 'react-relay';
-import { graphql } from 'relay-runtime';
+import { ConnectionHandler, graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import Loader from '~/components/core/Loader/Loader';
@@ -9,10 +9,10 @@ import {
   NotificationList,
   NOTIFICATIONS_PER_PAGE,
 } from '~/components/Notifications/NotificationList';
-import { useClearNotifications } from '~/components/Notifications/useClearNotifications';
 import DrawerHeader from '~/contexts/globalLayout/GlobalSidebar/DrawerHeader';
 import { FADE_TRANSITION_TIME_SECONDS } from '~/contexts/globalLayout/transitionTiming';
 import { NotificationsQuery } from '~/generated/NotificationsQuery.graphql';
+import { useClearNotifications } from '~/shared/relay/useClearNotifications';
 
 import AnnouncementList from '../Announcement/AnnouncementList';
 import useAnnouncement from '../Announcement/useAnnouncement';
@@ -33,6 +33,7 @@ export function Notifications() {
         ...useAnnouncementFragment
         viewer {
           ... on Viewer {
+            id
             user {
               dbid
             }
@@ -53,13 +54,19 @@ export function Notifications() {
     setSubView(subView ?? null);
   }, []);
 
-  const userId = query.viewer?.user?.dbid ?? '';
   useEffect(() => {
     // When they close Notifications, clear their notifications
     return () => {
-      clearAllNotifications(userId);
+      if (!query.viewer?.user?.dbid || !query.viewer?.id) {
+        return;
+      }
+
+      clearAllNotifications(query.viewer.user.dbid, [
+        ConnectionHandler.getConnectionID(query.viewer.id, 'NotificationsFragment_notifications'),
+        ConnectionHandler.getConnectionID(query.viewer.id, 'StandardSidebarFragment_notifications'),
+      ]);
     };
-  }, [clearAllNotifications, userId]);
+  }, [clearAllNotifications, query.viewer]);
 
   const [activeTab, setActiveTab] = useState<MenuTabs>('Notifications');
 

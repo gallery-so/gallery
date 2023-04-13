@@ -1,4 +1,3 @@
-import { Route } from 'nextjs-routes';
 import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
@@ -17,7 +16,7 @@ export type AnnouncementType = {
   date: string;
   time: string | null; // time since date
   experienced: boolean;
-  link?: Route;
+  link?: string;
 };
 
 export default function useAnnouncement(queryRef: useAnnouncementFragment$key) {
@@ -41,19 +40,25 @@ export default function useAnnouncement(queryRef: useAnnouncementFragment$key) {
     const userExperiences = query.viewer?.userExperiences ?? [];
     const announcementsLists = ANNOUNCEMENT_CONTENT;
 
-    return announcementsLists.map((announcement) => {
-      return {
-        ...announcement,
-        key: announcement.key as UserExperienceType,
-        time: announcement.date ? getTimeSince(announcement.date) : null,
-        link: {
-          pathname: announcement.link,
-        } as Route,
-        experienced: userExperiences.some(
-          (userExperience) => userExperience.type === announcement.key && userExperience.experienced
-        ),
-      };
-    });
+    return announcementsLists
+      .map((announcement) => {
+        return {
+          ...announcement,
+          key: announcement.key as UserExperienceType,
+          time: announcement.date ? getTimeSince(announcement.date) : null,
+          link: announcement.link,
+          experienced: userExperiences.some(
+            (userExperience) =>
+              userExperience.type === announcement.key && userExperience.experienced
+          ),
+        };
+      })
+      .sort((a, b) => {
+        if (a.date && b.date) {
+          return new Date(b.date).getTime() - new Date(a.date).getTime();
+        }
+        return 0;
+      });
   }, [query.viewer?.userExperiences]);
 
   return {

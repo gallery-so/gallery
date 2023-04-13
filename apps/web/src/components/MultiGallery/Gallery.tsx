@@ -65,6 +65,7 @@ export default function Gallery({
         hidden @required(action: THROW)
         collections @required(action: THROW) {
           id
+          hidden
         }
         owner {
           id
@@ -127,6 +128,12 @@ export default function Gallery({
   const { name, collections, tokenPreviews, hidden, dbid } = gallery;
 
   const { pushToast } = useToastActions();
+
+  const totalCollections = useMemo(() => {
+    const visibleCollections = collections.filter((collection) => !collection?.hidden);
+
+    return visibleCollections.length;
+  }, [collections]);
 
   const reassignFeaturedGallery = useCallback(async () => {
     if (!isFeatured) return;
@@ -286,7 +293,7 @@ export default function Gallery({
                 <TitleContainer>
                   <StyledGalleryTitle tabIndex={1}>{name || 'Untitled'}</StyledGalleryTitle>
                   <BaseM>
-                    {collections.length} collection{collections.length === 1 ? '' : 's'}
+                    {totalCollections} collection{totalCollections === 1 ? '' : 's'}
                   </BaseM>
                 </TitleContainer>
               </StyledGalleryTitleWrapper>
