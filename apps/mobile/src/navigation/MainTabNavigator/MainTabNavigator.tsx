@@ -11,18 +11,14 @@ import { HomeScreen } from '../../screens/HomeScreen/HomeScreen';
 
 const Tab = createMaterialTopTabNavigator<MainTabNavigatorParamList>();
 
-type MainTabNavigatorProps = {
-  hasUnreadNotifications: boolean;
-};
-
-export function MainTabNavigator({ hasUnreadNotifications }: MainTabNavigatorProps) {
+export function MainTabNavigator() {
   const { top } = useSafeAreaInsets();
 
   return (
     <Tab.Navigator
       tabBarPosition="bottom"
       initialRouteName="Home"
-      tabBar={(props) => <TabBar {...props} hasUnreadNotifications={hasUnreadNotifications} />}
+      tabBar={TabBar}
       screenOptions={{ swipeEnabled: false }}
       sceneContainerStyle={{ paddingTop: top, backgroundColor: 'white' }}
     >

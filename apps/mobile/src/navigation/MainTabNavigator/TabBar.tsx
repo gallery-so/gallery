@@ -1,9 +1,12 @@
 import { MaterialTopTabBarProps } from '@react-navigation/material-top-tabs';
 import { NavigationRoute } from '@sentry/react-native/dist/js/tracing/reactnavigation';
-import { ReactNode, useCallback } from 'react';
+import { ReactNode, Suspense, useCallback, useMemo } from 'react';
 import { TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useLazyLoadQuery } from 'react-relay';
+import { graphql } from 'relay-runtime';
 
+import { TabBarLazyNotificationBlueDotQuery } from '~/generated/TabBarLazyNotificationBlueDotQuery.graphql';
 import { AccountIcon } from '~/navigation/MainTabNavigator/AccountIcon';
 import { GLogo } from '~/navigation/MainTabNavigator/GLogo';
 import { NotificationsIcon } from '~/navigation/MainTabNavigator/NotificationsIcon';
@@ -52,11 +55,9 @@ function TabItem({ navigation, route, icon, activeRoute }: TabItemProps) {
   );
 }
 
-type TabBarProps = MaterialTopTabBarProps & {
-  hasUnreadNotifications: boolean;
-};
+type TabBarProps = MaterialTopTabBarProps;
 
-export function TabBar({ state, navigation, hasUnreadNotifications }: TabBarProps) {
+export function TabBar({ state, navigation }: TabBarProps) {
   const { bottom } = useSafeAreaInsets();
 
   const activeRoute = state.routeNames[state.index] as keyof MainTabNavigatorParamList;
@@ -79,14 +80,7 @@ export function TabBar({ state, navigation, hasUnreadNotifications }: TabBarProp
         } else if (route.name === 'Home') {
           icon = <GLogo />;
         } else if (route.name === 'Notifications') {
-          icon = (
-            <View className="relative">
-              <NotificationsIcon />
-              {hasUnreadNotifications && (
-                <View className="bg-activeBlue absolute right-0 top-0 h-2 w-2 rounded-full" />
-              )}
-            </View>
-          );
+          icon = <LazyNotificationIcon />;
         } else if (route.name === 'Search') {
           icon = <SearchIcon />;
         }
@@ -101,6 +95,57 @@ export function TabBar({ state, navigation, hasUnreadNotifications }: TabBarProp
           />
         );
       })}
+    </View>
+  );
+}
+
+function LazyNotificationBlueDot() {
+  const query = useLazyLoadQuery<TabBarLazyNotificationBlueDotQuery>(
+    graphql`
+      query TabBarLazyNotificationBlueDotQuery {
+        viewer {
+          ... on Viewer {
+            __typename
+            notifications(last: 1) @connection(key: "TabBarMainTabNavigator_notifications") {
+              unseenCount
+              # Relay requires that we grab the edges field if we use the connection directive
+              # We're selecting __typename since that shouldn't have a cost
+              # eslint-disable-next-line relay/unused-fields
+              edges {
+                __typename
+              }
+            }
+          }
+        }
+      }
+    `,
+    {}
+  );
+
+  const hasUnreadNotifications = useMemo(() => {
+    if (query.viewer && query.viewer.__typename === 'Viewer') {
+      return (query.viewer?.notifications?.unseenCount ?? 0) > 0;
+    }
+
+    return false;
+  }, [query.viewer]);
+
+  if (hasUnreadNotifications) {
+    return <View className="bg-activeBlue absolute right-0 top-0 h-2 w-2 rounded-full" />;
+  }
+
+  return null;
+}
+
+function LazyNotificationIcon() {
+  return (
+    <View className="relative">
+      <NotificationsIcon />
+
+      {/* Don't show the blue dot until we've loaded notifications lazily */}
+      <Suspense fallback={null}>
+        <LazyNotificationBlueDot />
+      </Suspense>
     </View>
   );
 }

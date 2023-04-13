@@ -86,7 +86,7 @@ export function NotificationList({ queryRef }: Props) {
         clearNotification(query.viewer.user.dbid, [
           ConnectionHandler.getConnectionID(
             query.viewer?.id,
-            'RootStackNavigatorFragment_notifications'
+            'TabBarMainTabNavigator_notifications'
           ),
           ConnectionHandler.getConnectionID(
             query.viewer?.id,
