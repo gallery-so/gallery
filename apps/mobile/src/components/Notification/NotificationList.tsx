@@ -1,6 +1,6 @@
-import { useIsFocused } from '@react-navigation/native';
+import { useFocusEffect } from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { graphql, usePaginationFragment } from 'react-relay';
 
@@ -50,7 +50,6 @@ export function NotificationList({ queryRef }: Props) {
     queryRef
   );
 
-  const isFocused = useIsFocused();
   const clearNotification = useClearNotifications();
 
   const nonNullNotifications = useMemo(() => {
@@ -78,16 +77,11 @@ export function NotificationList({ queryRef }: Props) {
   }, []);
 
   // if user go outside of notifications screen, clear notifications
-  const isInitialMount = useRef(true);
-  useEffect(() => {
-    // User has navigated away from the page
-    if (!isFocused && !isInitialMount.current) {
+  useFocusEffect(() => {
+    return () => {
       clearNotification(query.viewer?.id ?? '');
-      return;
-    }
-
-    isInitialMount.current = false;
-  }, [clearNotification, isFocused, query.viewer?.id]);
+    };
+  });
 
   if (nonNullNotifications.length === 0) {
     return (
