@@ -4,6 +4,7 @@ import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
+import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 import { AnnouncementListFragment$key } from '~/generated/AnnouncementListFragment.graphql';
 import useUpdateUserExperience from '~/utils/graphql/experiences/useUpdateUserExperience';
@@ -30,12 +31,15 @@ export default function AnnouncementList({ queryRef }: Props) {
 
   const router = useRouter();
   const { announcements } = useAnnouncement(query);
+  const track = useTrack();
 
   const update = useUpdateUserExperience();
   const { hideDrawer } = useDrawerActions();
 
   const handleClick = useCallback(
     (announcement: AnnouncementType) => {
+      track('Announcement click', { type: announcement.key });
+
       // if there is a link, open it
       if (announcement.link) {
         // Check if link is external
@@ -66,7 +70,7 @@ export default function AnnouncementList({ queryRef }: Props) {
 
       hideDrawer();
     },
-    [hideDrawer, router, update]
+    [hideDrawer, router, track, update]
   );
 
   return (
