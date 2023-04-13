@@ -1,5 +1,4 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { useMemo } from 'react';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 
 import { RootStackNavigatorQuery } from '~/generated/RootStackNavigatorQuery.graphql';
