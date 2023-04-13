@@ -83,8 +83,10 @@ export function SomeoneAdmiredYourFeedEvent({
     }
   }, [eventType]);
 
-  // @ts-expect-error: property `collection` does not exist on type { readonly __typename: "%other" };
-  const collection = notification.feedEvent?.eventData?.collection;
+  const collection =
+    notification.feedEvent?.eventData && 'collection' in notification.feedEvent?.eventData
+      ? notification.feedEvent?.eventData?.collection
+      : null;
 
   return (
     <BaseM>
