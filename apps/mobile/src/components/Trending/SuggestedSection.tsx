@@ -37,6 +37,7 @@ export function SuggestedSection({ title, description, queryRef }: Props) {
             }
           }
         }
+        ...TrendingUserCardQueryFragment
       }
     `,
     queryRef
@@ -68,17 +69,20 @@ export function SuggestedSection({ title, description, queryRef }: Props) {
     return pages;
   }, [nonNullUsers]);
 
-  const renderPage = useCallback((pages: Array<TrendingUserCardFragment$key>) => {
-    return (
-      <View className="flex max-w-full flex-row flex-wrap justify-between">
-        {pages.map((user, index) => (
-          <View key={index} className="mb-2 w-[49%]">
-            <TrendingUserCard key={index} userRef={user} />
-          </View>
-        ))}
-      </View>
-    );
-  }, []);
+  const renderPage = useCallback(
+    (pages: Array<TrendingUserCardFragment$key>) => {
+      return (
+        <View className="flex max-w-full flex-row flex-wrap justify-between">
+          {pages.map((user, index) => (
+            <View key={index} className="mb-2 w-[49%]">
+              <TrendingUserCard key={index} userRef={user} queryRef={query} />
+            </View>
+          ))}
+        </View>
+      );
+    },
+    [query]
+  );
 
   return (
     <View className="flex-1 px-3">

@@ -1,21 +1,24 @@
 import { ResizeMode } from 'expo-av';
 import { useMemo } from 'react';
-import { TouchableOpacity, View, ViewProps } from 'react-native';
+import { View, ViewProps } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { TrendingUserCardFragment$key } from '~/generated/TrendingUserCardFragment.graphql';
+import { TrendingUserCardQueryFragment$key } from '~/generated/TrendingUserCardQueryFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import { Markdown } from '../Markdown';
 import { NftPreviewAsset } from '../NftPreview/NftPreviewAsset';
 import { Typography } from '../Typography';
+import { FollowButton } from './FollowButton';
 
 type Props = {
   userRef: TrendingUserCardFragment$key;
+  queryRef: TrendingUserCardQueryFragment$key;
   style?: ViewProps['style'];
 };
 
-export function TrendingUserCard({ style, userRef }: Props) {
+export function TrendingUserCard({ style, userRef, queryRef }: Props) {
   const user = useFragment(
     graphql`
       fragment TrendingUserCardFragment on GalleryUser {
@@ -30,9 +33,19 @@ export function TrendingUserCard({ style, userRef }: Props) {
           }
           hidden
         }
+        ...FollowButtonUserFragment
       }
     `,
     userRef
+  );
+
+  const query = useFragment(
+    graphql`
+      fragment TrendingUserCardQueryFragment on Query {
+        ...FollowButtonQueryFragment
+      }
+    `,
+    queryRef
   );
 
   const { bio } = user;
@@ -81,17 +94,7 @@ export function TrendingUserCard({ style, userRef }: Props) {
         </View>
       </View>
 
-      <TouchableOpacity onPress={() => {}} className="bg-offBlack rounded py-1">
-        <Typography
-          font={{
-            family: 'ABCDiatype',
-            weight: 'Bold',
-          }}
-          className="text-center text-xs text-white"
-        >
-          Follow
-        </Typography>
-      </TouchableOpacity>
+      <FollowButton queryRef={query} userRef={user} />
     </View>
   );
 }
