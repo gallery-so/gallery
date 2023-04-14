@@ -4,6 +4,7 @@ import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 
 import { SuggestedSection } from '~/components/Trending/SuggestedSection';
 import { TrendingSection } from '~/components/Trending/TrendingSection';
+import { TwitterSection } from '~/components/Trending/TwitterSection';
 import { FeaturedScreenFragment$key } from '~/generated/FeaturedScreenFragment.graphql';
 import { FeaturedScreenQuery } from '~/generated/FeaturedScreenQuery.graphql';
 
@@ -27,19 +28,20 @@ function FeaturedScreenInner({ queryRef }: FeaturedScreenInnerProps) {
           }
         }
 
-        # viewer {
-        #   __typename
-        #   ... on Viewer {
-        #     socialAccounts @required(action: THROW) {
-        #       twitter {
-        #         __typename
-        #       }
-        #     }
-        #   }
-        # }
+        viewer {
+          __typename
+          ... on Viewer {
+            socialAccounts @required(action: THROW) {
+              twitter {
+                __typename
+              }
+            }
+          }
+        }
 
         ...TrendingSectionQueryFragment
         ...SuggestedSectionQueryFragment
+        ...TwitterSectionQueryFragment
       }
     `,
     queryRef
@@ -47,11 +49,22 @@ function FeaturedScreenInner({ queryRef }: FeaturedScreenInnerProps) {
 
   return (
     <ScrollView className="flex-1">
-      <SuggestedSection
-        title="In your orbit"
-        description="Curators you may enjoy based on your activity"
-        queryRef={query}
-      />
+      {query.viewer?.__typename === 'Viewer' && (
+        <>
+          {query.viewer.socialAccounts?.twitter?.__typename && (
+            <TwitterSection
+              title="Twitter Friends"
+              description="Curators you know from Twitter"
+              queryRef={query}
+            />
+          )}
+          <SuggestedSection
+            title="In your orbit"
+            description="Curators you may enjoy based on your activity"
+            queryRef={query}
+          />
+        </>
+      )}
       {query.trendingUsers5Days?.__typename === 'TrendingUsersPayload' && (
         <TrendingSection
           title="Weekly leaderboard"
@@ -75,11 +88,14 @@ function FeaturedScreenInner({ queryRef }: FeaturedScreenInnerProps) {
 export function FeaturedScreen() {
   const query = useLazyLoadQuery<FeaturedScreenQuery>(
     graphql`
-      query FeaturedScreenQuery {
+      query FeaturedScreenQuery($twitterListFirst: Int!, $twitterListAfter: String) {
         ...FeaturedScreenFragment
       }
     `,
-    {}
+    {
+      twitterListFirst: 24,
+      twitterListAfter: null,
+    }
   );
 
   return (
