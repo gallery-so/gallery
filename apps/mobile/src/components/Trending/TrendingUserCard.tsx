@@ -60,12 +60,8 @@ export function TrendingUserCard({ style, userRef }: Props) {
       <View className="mb-2 flex h-20 flex-row space-x-[2]">
         {tokenPreviews.map((tokenPreview, index) => {
           return (
-            <View className="h-full w-1/2">
-              <NftPreviewAsset
-                key={index}
-                tokenUrl={tokenPreview?.large ?? ''}
-                resizeMode={ResizeMode.COVER}
-              />
+            <View key={index} className="h-full w-1/2">
+              <NftPreviewAsset tokenUrl={tokenPreview?.large ?? ''} resizeMode={ResizeMode.COVER} />
             </View>
           );
         })}
