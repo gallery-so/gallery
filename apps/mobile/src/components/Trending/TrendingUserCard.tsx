@@ -1,6 +1,7 @@
 import { ResizeMode } from 'expo-av';
 import { useMemo } from 'react';
 import { View, ViewProps } from 'react-native';
+import FastImage from 'react-native-fast-image';
 import { graphql, useFragment } from 'react-relay';
 
 import { TrendingUserCardFragment$key } from '~/generated/TrendingUserCardFragment.graphql';
@@ -23,9 +24,9 @@ export function TrendingUserCard({ style, userRef, queryRef }: Props) {
     graphql`
       fragment TrendingUserCardFragment on GalleryUser {
         username
-        # badges {
-        #   __typename
-        # }
+        badges {
+          imageURL
+        }
         bio
         galleries {
           tokenPreviews {
@@ -48,10 +49,15 @@ export function TrendingUserCard({ style, userRef, queryRef }: Props) {
     queryRef
   );
 
-  const { bio } = user;
+  const { badges, bio } = user;
+
   const userGalleries = useMemo(() => {
     return user.galleries ?? [];
   }, [user.galleries]);
+
+  const filteredBadges = useMemo(() => {
+    return badges?.filter((badge) => badge?.imageURL) ?? [];
+  }, [badges]);
 
   const tokenPreviews = useMemo(() => {
     const gallery = userGalleries.find(
@@ -81,14 +87,27 @@ export function TrendingUserCard({ style, userRef, queryRef }: Props) {
       </View>
 
       <View className="mb-2">
-        <Typography
-          font={{
-            family: 'GTAlpina',
-            weight: 'StandardLight',
-          }}
-        >
-          {user.username}
-        </Typography>
+        <View className="flex flex-row items-center space-x-1">
+          <Typography
+            font={{
+              family: 'GTAlpina',
+              weight: 'StandardLight',
+            }}
+          >
+            {user.username}
+          </Typography>
+          {filteredBadges.map((badge, index) => {
+            return (
+              <FastImage
+                key={index}
+                className="h-4 w-4 rounded-full"
+                source={{
+                  uri: badge?.imageURL ?? '',
+                }}
+              />
+            );
+          })}
+        </View>
         <View className="h-5">
           <Markdown numberOfLines={1}>{bioFirstLine}</Markdown>
         </View>
