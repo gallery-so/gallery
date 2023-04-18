@@ -6,7 +6,8 @@ import { LoginStackNavigator } from '~/navigation/LoginStackNavigator';
 import { MainTabNavigator } from '~/navigation/MainTabNavigator/MainTabNavigator';
 import { RootStackNavigatorParamList } from '~/navigation/types';
 import { NftDetailScreen } from '~/screens/NftDetailScreen/NftDetailScreen';
-import { ProfileScreen } from '~/screens/ProifleScreen/ProfileScreen';
+import { ProfileQRCodeScreen } from '~/screens/ProfileQRCodeScreen';
+import { ProfileScreen } from '~/screens/ProfileScreen/ProfileScreen';
 
 const Stack = createNativeStackNavigator<RootStackNavigatorParamList>();
 
@@ -30,15 +31,17 @@ export function RootStackNavigator() {
     <Stack.Navigator
       screenOptions={{ header: Empty }}
       // initialRouteName={isLoggedIn ? 'MainTabs' : 'Login'}
-      initialRouteName="Profile"
+      initialRouteName="ProfileQRCode"
     >
       <Stack.Screen name="Login" component={LoginStackNavigator} />
       <Stack.Screen name="MainTabs" component={MainTabNavigator} />
       <Stack.Screen name="NftDetail" component={NftDetailScreen} />
+      <Stack.Screen name="Profile" component={ProfileScreen} />
       <Stack.Screen
-        name="Profile"
-        component={ProfileScreen}
-        initialParams={{ username: 'robin' }}
+        name="ProfileQRCode"
+        options={{ presentation: 'modal' }}
+        initialParams={{ username: 'b_ez_man' }}
+        component={ProfileQRCodeScreen}
       />
     </Stack.Navigator>
   );

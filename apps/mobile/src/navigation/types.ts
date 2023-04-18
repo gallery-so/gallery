@@ -6,6 +6,7 @@ export type RootStackNavigatorParamList = {
   MainTabs: NavigatorScreenParams<MainTabNavigatorParamList>;
   Login: NavigatorScreenParams<LoginStackNavigatorParamList>;
   Profile: { username: string };
+  ProfileQRCode: { username: string };
   NftDetail: {
     tokenId: string;
     collectionId: string;
