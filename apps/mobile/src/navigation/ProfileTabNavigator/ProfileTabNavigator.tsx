@@ -14,7 +14,7 @@ export function ProfileTabNavigator() {
   return (
     <Tab.Navigator
       tabBarPosition="top"
-      initialRouteName="Featured"
+      initialRouteName="Activity"
       tabBar={TabBar}
       sceneContainerStyle={{ backgroundColor: 'white', marginTop: 16 }}
     >
