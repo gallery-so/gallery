@@ -1,21 +1,16 @@
 import { useMemo } from 'react';
+import { Text } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import { BaseM } from '~/components/core/Text/Text';
-import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
-import { CollectionLink } from '~/components/Notifications/CollectionLink';
+import { Typography } from '~/components/Typography';
 import { SomeoneAdmiredYourFeedEventFragment$key } from '~/generated/SomeoneAdmiredYourFeedEventFragment.graphql';
 
 type SomeoneAdmiredYourFeedEventProps = {
   notificationRef: SomeoneAdmiredYourFeedEventFragment$key;
-  onClose: () => void;
 };
 
-export function SomeoneAdmiredYourFeedEvent({
-  notificationRef,
-  onClose,
-}: SomeoneAdmiredYourFeedEventProps) {
+export function SomeoneAdmiredYourFeedEvent({ notificationRef }: SomeoneAdmiredYourFeedEventProps) {
   const notification = useFragment(
     graphql`
       fragment SomeoneAdmiredYourFeedEventFragment on SomeoneAdmiredYourFeedEventNotification {
@@ -26,28 +21,32 @@ export function SomeoneAdmiredYourFeedEvent({
             ... on CollectionCreatedFeedEventData {
               __typename
               collection {
-                ...CollectionLinkFragment
+                __typename
+                name
               }
             }
 
             ... on CollectorsNoteAddedToCollectionFeedEventData {
               __typename
               collection {
-                ...CollectionLinkFragment
+                __typename
+                name
               }
             }
 
             ... on TokensAddedToCollectionFeedEventData {
               __typename
               collection {
-                ...CollectionLinkFragment
+                __typename
+                name
               }
             }
 
             ... on CollectionUpdatedFeedEventData {
               __typename
               collection {
-                ...CollectionLinkFragment
+                __typename
+                name
               }
             }
           }
@@ -56,7 +55,8 @@ export function SomeoneAdmiredYourFeedEvent({
         admirers(last: 1) {
           edges {
             node {
-              ...HoverCardOnUsernameFragment
+              __typename
+              username
             }
           }
         }
@@ -89,20 +89,34 @@ export function SomeoneAdmiredYourFeedEvent({
       : null;
 
   return (
-    <BaseM>
-      {count > 1 ? (
-        <strong>{notification.count} collectors</strong>
-      ) : (
-        <>
-          {firstAdmirer ? (
-            <HoverCardOnUsername userRef={firstAdmirer} onClick={onClose} />
-          ) : (
-            <strong>Someone</strong>
-          )}
-        </>
-      )}
+    <Text>
+      <Typography
+        font={{
+          family: 'ABCDiatype',
+          weight: 'Bold',
+        }}
+        className="text-sm"
+      >
+        {count > 1
+          ? `${notification.count} collectors`
+          : firstAdmirer
+          ? firstAdmirer?.username
+          : 'Someone'}
+      </Typography>
       {` ${verb} `}
-      {collection ? <CollectionLink collectionRef={collection} /> : <>your collection</>}
-    </BaseM>
+      {collection ? (
+        <Typography
+          font={{
+            family: 'ABCDiatype',
+            weight: 'Bold',
+          }}
+          className="text-sm underline"
+        >
+          {collection.name}
+        </Typography>
+      ) : (
+        <Text>your collection</Text>
+      )}
+    </Text>
   );
 }

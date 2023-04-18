@@ -1,34 +1,32 @@
 import { useCallback } from 'react';
-import { ConnectionHandler, graphql, SelectorStoreUpdater } from 'relay-runtime';
+import { graphql, SelectorStoreUpdater } from 'relay-runtime';
 
 import { useClearNotificationsMutation } from '~/generated/useClearNotificationsMutation.graphql';
-import { useReportError } from '~/shared/contexts/ErrorReportingContext';
-import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
+
+import { useReportError } from '../contexts/ErrorReportingContext';
+import { usePromisifiedMutation } from './usePromisifiedMutation';
 
 export function useClearNotifications() {
   const [clear] = usePromisifiedMutation<useClearNotificationsMutation>(graphql`
     mutation useClearNotificationsMutation {
       clearAllNotifications {
-        notifications {
-          ...NotificationFragment
-        }
+        __typename
       }
     }
   `);
 
   const reportError = useReportError();
   return useCallback(
-    async (userId: string) => {
+    async (userId: string, connectionIds: string[]) => {
       const updater: SelectorStoreUpdater<useClearNotificationsMutation['response']> = (store) => {
-        const connectionIds = [
-          ConnectionHandler.getConnectionID(
-            `client:Viewer:${userId}`,
-            'StandardSidebarFragment_notifications'
-          ),
-        ];
-
         for (const connectionId of connectionIds) {
           const connection = store.get(connectionId);
+
+          const edges = connection?.getLinkedRecords('edges');
+
+          edges?.forEach((edge) => {
+            edge.getLinkedRecord('node')?.setValue(true, 'seen');
+          });
 
           connection?.setValue(0, 'unseenCount');
         }

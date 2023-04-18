@@ -13,3 +13,6 @@ export const EMAIL_FORMAT = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 
 // break lines
 export const BREAK_LINES = /(\r\n|\n|\r|\\\n)/gm;
+
+// check https in URL
+export const HTTPS_URL = /^https?:\/\//i;

@@ -1,11 +1,14 @@
 import { useRouter } from 'next/router';
+import { Route } from 'nextjs-routes';
 import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
+import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 import { AnnouncementListFragment$key } from '~/generated/AnnouncementListFragment.graphql';
 import useUpdateUserExperience from '~/utils/graphql/experiences/useUpdateUserExperience';
+import { HTTPS_URL } from '~/utils/regex';
 
 import colors from '../core/colors';
 import { HStack, VStack } from '../core/Spacer/Stack';
@@ -28,15 +31,28 @@ export default function AnnouncementList({ queryRef }: Props) {
 
   const router = useRouter();
   const { announcements } = useAnnouncement(query);
+  const track = useTrack();
 
   const update = useUpdateUserExperience();
   const { hideDrawer } = useDrawerActions();
 
   const handleClick = useCallback(
     (announcement: AnnouncementType) => {
+      track('Announcement click', { type: announcement.key });
+
       // if there is a link, open it
       if (announcement.link) {
-        router.push(announcement.link);
+        // Check if link is external
+        if (HTTPS_URL.test(announcement.link)) {
+          // Open link in a new tab/window
+          window.open(announcement.link, '_blank');
+        } else {
+          // Use Next.js router to navigate to internal page
+          const route = {
+            pathname: announcement.link,
+          } as Route;
+          router.push(route);
+        }
       }
 
       if (!announcement.experienced) {
@@ -54,7 +70,7 @@ export default function AnnouncementList({ queryRef }: Props) {
 
       hideDrawer();
     },
-    [hideDrawer, router, update]
+    [hideDrawer, router, track, update]
   );
 
   return (
@@ -66,14 +82,14 @@ export default function AnnouncementList({ queryRef }: Props) {
             onClick={() => handleClick(announcement)}
             align="center"
             justify="space-between"
-            hasAction={Boolean(announcement.link?.pathname || !announcement.experienced)}
+            hasAction={Boolean(announcement.link || !announcement.experienced)}
           >
-            <VStack>
+            <StyledAnnouncementDescriptionContainer>
               <BaseM>
                 <strong>{announcement.title}</strong>
               </BaseM>
               <BaseM>{announcement.description}</BaseM>
-            </VStack>
+            </StyledAnnouncementDescriptionContainer>
             <StyledTimeContainer gap={8} align="center" justify="flex-end">
               <BaseS>{announcement.time}</BaseS>
               {!announcement.experienced && <StyledDot />}
@@ -99,6 +115,10 @@ const StyledDot = styled.div`
   height: 8px;
   background-color: ${colors.activeBlue};
   border-radius: 9999px;
+`;
+
+const StyledAnnouncementDescriptionContainer = styled(VStack)`
+  flex: 1;
 `;
 
 const StyledTimeContainer = styled(HStack)`
