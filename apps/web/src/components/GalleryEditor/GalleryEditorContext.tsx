@@ -578,21 +578,13 @@ export function GalleryEditorProvider({
 
   const moveCollectionToGallery = useCallback(
     (collectionId: string) => {
-      const nextCollections = collections.filter((collection) => collection.dbid === collectionId);
+      const nextCollections = collections.filter((collection) => collection.dbid !== collectionId);
       const nextInitialCollections = initialCollections.filter(
         (collection) => collection.dbid === collectionId
       );
 
-      let nextCollectionIdBeingEdited = nextCollections[0]?.dbid;
-      if (!nextCollectionIdBeingEdited) {
-        const emptyCollection = createEmptyCollection();
-        nextCollectionIdBeingEdited = emptyCollection.dbid;
-        nextCollections.push(emptyCollection);
-      }
-
       setCollections(nextCollections);
       setInitialCollections(nextInitialCollections);
-      setCollectionIdBeingEdited(nextCollectionIdBeingEdited);
     },
     [collections, initialCollections]
   );
