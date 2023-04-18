@@ -52,13 +52,16 @@ export function FollowButton({ queryRef, userRef }: Props) {
   }, [followingList, userToFollow.id]);
 
   return (
-    <TouchableOpacity onPress={() => {}} className="bg-offBlack rounded py-1">
+    <TouchableOpacity
+      onPress={() => {}}
+      className={`${isFollowing ? 'bg-faint' : 'bg-offBlack'}  rounded py-1`}
+    >
       <Typography
         font={{
           family: 'ABCDiatype',
           weight: 'Bold',
         }}
-        className="text-center text-xs text-white"
+        className={`${isFollowing ? 'text-offBlack' : 'text-offWhite'} text-center text-xs`}
       >
         {isFollowing ? 'Following' : 'Follow'}
       </Typography>
