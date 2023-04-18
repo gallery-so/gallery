@@ -28,6 +28,13 @@ function TabItem({ navigation, route, activeRoute }: TabItemProps) {
     }
   }, [isFocused, navigation, route]);
 
+  let name = '';
+  if (route.name === 'FollowingList') {
+    name = 'Following';
+  } else if (route.name === 'FollowersList') {
+    name = 'Followers';
+  }
+
   return (
     <TouchableOpacity
       className={`px-2`}
@@ -36,10 +43,10 @@ function TabItem({ navigation, route, activeRoute }: TabItemProps) {
       onPress={onPress}
     >
       <Typography
-        className={`${isFocused ? 'text-offBlack' : 'text-metal'}`}
+        className={`text-sm ${isFocused ? 'text-offBlack' : 'text-metal'}`}
         font={{ family: 'ABCDiatype', weight: 'Medium' }}
       >
-        {route.name}
+        {name}
       </Typography>
     </TouchableOpacity>
   );
@@ -49,7 +56,7 @@ export function TabBar({ navigation, state }: MaterialTopTabBarProps) {
   const activeRoute = state.routeNames[state.index] as keyof FeedTabNavigatorParamList;
 
   return (
-    <View className="border-porcelain flex flex-row items-center justify-center border-t border-b px-2 py-3">
+    <View className="flex flex-row items-center justify-center px-3 py-3">
       {state.routes.map((route) => {
         return (
           <TabItem

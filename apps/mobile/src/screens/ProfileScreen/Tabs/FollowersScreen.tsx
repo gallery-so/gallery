@@ -1,9 +1,5 @@
-import { Text, View } from 'react-native';
+import { FollowersTabNavigator } from '~/navigation/FollowersTabNavigator/FollowersTabNavigator';
 
 export function FollowersScreen() {
-  return (
-    <View>
-      <Text>Followers Screen</Text>
-    </View>
-  );
+  return <FollowersTabNavigator />;
 }

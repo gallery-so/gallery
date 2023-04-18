@@ -2,8 +2,6 @@ import { MaterialTopTabNavigationProp } from '@react-navigation/material-top-tab
 import { CompositeNavigationProp, NavigatorScreenParams } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { RootStackNavigatorQuery } from '~/generated/RootStackNavigatorQuery.graphql';
-
 export type RootStackNavigatorParamList = {
   MainTabs: NavigatorScreenParams<MainTabNavigatorParamList>;
   Login: NavigatorScreenParams<LoginStackNavigatorParamList>;
@@ -42,6 +40,11 @@ export type ProfileTabNavigatorParamList = {
   Activity: undefined;
 };
 
+export type FollowersTabNavigatorParamList = {
+  FollowersList: undefined;
+  FollowingList: undefined;
+};
+
 export type RootStackNavigatorProp = NativeStackNavigationProp<RootStackNavigatorParamList>;
 
 export type LoginStackNavigatorProp = CompositeNavigationProp<
@@ -56,6 +59,11 @@ export type MainTabNavigatorProp = CompositeNavigationProp<
 
 export type ProfileTabNavigatorProp = CompositeNavigationProp<
   RootStackNavigatorProp,
+  MaterialTopTabNavigationProp<ProfileTabNavigatorParamList>
+>;
+
+export type FollowersTabNavigatorProp = CompositeNavigationProp<
+  ProfileTabNavigatorProp,
   MaterialTopTabNavigationProp<ProfileTabNavigatorParamList>
 >;
 

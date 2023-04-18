@@ -14,9 +14,9 @@ export function ProfileTabNavigator() {
   return (
     <Tab.Navigator
       tabBarPosition="top"
-      initialRouteName="Activity"
+      initialRouteName="Followers"
       tabBar={TabBar}
-      sceneContainerStyle={{ backgroundColor: 'white', marginTop: 16 }}
+      sceneContainerStyle={{ backgroundColor: 'white', paddingTop: 16 }}
     >
       <Tab.Screen name="Featured" component={FeaturedScreen} />
       <Tab.Screen name="Galleries" component={GalleriesScreen} />
