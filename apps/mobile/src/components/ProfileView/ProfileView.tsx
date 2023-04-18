@@ -8,6 +8,7 @@ import { FollowButton } from '~/components/FollowButton';
 import { IconContainer } from '~/components/IconContainer';
 import { ProfileViewFragment$key } from '~/generated/ProfileViewFragment.graphql';
 import { ProfileViewQueryFragment$key } from '~/generated/ProfileViewQueryFragment.graphql';
+import { RootStackNavigatorProp } from '~/navigation/types';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 
 import { BackIcon } from '../../icons/BackIcon';
@@ -20,7 +21,7 @@ type ProfileViewProps = {
 };
 
 export function ProfileView({ userRef, queryRef }: ProfileViewProps) {
-  const navigation = useNavigation();
+  const navigation = useNavigation<RootStackNavigatorProp>();
 
   const query = useFragment(
     graphql`
@@ -54,7 +55,11 @@ export function ProfileView({ userRef, queryRef }: ProfileViewProps) {
     Share.share({ url: `https://gallery.so/${user.username}` });
   }, [user.username]);
 
-  const handleQrCode = useCallback(() => {}, []);
+  const handleQrCode = useCallback(() => {
+    if (user.username) {
+      navigation.navigate('ProfileQRCode', { username: user.username });
+    }
+  }, [navigation, user.username]);
 
   return (
     <View className="flex flex-1 flex-col">
