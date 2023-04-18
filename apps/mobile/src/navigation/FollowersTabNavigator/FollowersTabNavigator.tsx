@@ -14,7 +14,7 @@ export function FollowersTabNavigator() {
       tabBarPosition="top"
       initialRouteName="FollowersList"
       tabBar={TabBar}
-      sceneContainerStyle={{ backgroundColor: 'white', paddingTop: 12 }}
+      sceneContainerStyle={{ backgroundColor: 'white' }}
     >
       <Tab.Screen name="FollowersList" component={FollowersScreen} />
       <Tab.Screen name="FollowingList" component={FollowingScreen} />
