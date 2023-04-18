@@ -1,6 +1,5 @@
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { Suspense, useMemo } from 'react';
-import { View } from 'react-native';
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
@@ -33,7 +32,7 @@ function ProfileScreenInner() {
         ...ProfileViewQueryFragment
       }
     `,
-    { username: 'robin' }
+    { username: route.params.username }
   );
 
   const inner = useMemo(() => {
