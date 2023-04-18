@@ -30,8 +30,7 @@ export function RootStackNavigator() {
   return (
     <Stack.Navigator
       screenOptions={{ header: Empty }}
-      // initialRouteName={isLoggedIn ? 'MainTabs' : 'Login'}
-      initialRouteName="ProfileQRCode"
+      initialRouteName={isLoggedIn ? 'MainTabs' : 'Login'}
     >
       <Stack.Screen name="Login" component={LoginStackNavigator} />
       <Stack.Screen name="MainTabs" component={MainTabNavigator} />
@@ -40,7 +39,6 @@ export function RootStackNavigator() {
       <Stack.Screen
         name="ProfileQRCode"
         options={{ presentation: 'modal' }}
-        initialParams={{ username: 'b_ez_man' }}
         component={ProfileQRCodeScreen}
       />
     </Stack.Navigator>
