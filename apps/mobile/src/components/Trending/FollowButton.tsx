@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { TouchableOpacity } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
@@ -6,6 +6,8 @@ import { FollowButtonQueryFragment$key } from '~/generated/FollowButtonQueryFrag
 import { FollowButtonUserFragment$key } from '~/generated/FollowButtonUserFragment.graphql';
 
 import { Typography } from '../Typography';
+import useFollowUser from './useFollowUser';
+import useUnfollowUser from './useUnfollowUser';
 
 type Props = {
   queryRef: FollowButtonQueryFragment$key;
@@ -25,6 +27,8 @@ export function FollowButton({ queryRef, userRef }: Props) {
             }
           }
         }
+        ...useFollowUserFragment
+        ...useUnfollowUserFragment
       }
     `,
     queryRef
@@ -34,10 +38,14 @@ export function FollowButton({ queryRef, userRef }: Props) {
     graphql`
       fragment FollowButtonUserFragment on GalleryUser {
         id
+        dbid
       }
     `,
     userRef
   );
+
+  const followUser = useFollowUser({ queryRef: loggedInUserQuery });
+  const unfollowUser = useUnfollowUser({ queryRef: loggedInUserQuery });
 
   const followingList = loggedInUserQuery.viewer?.user?.following;
 
@@ -51,9 +59,17 @@ export function FollowButton({ queryRef, userRef }: Props) {
     return followingIds.has(userToFollow.id);
   }, [followingList, userToFollow.id]);
 
+  const handlePress = useCallback(async () => {
+    if (isFollowing) {
+      await unfollowUser(userToFollow.dbid);
+    } else {
+      await followUser(userToFollow.dbid);
+    }
+  }, [followUser, isFollowing, unfollowUser, userToFollow.dbid]);
+
   return (
     <TouchableOpacity
-      onPress={() => {}}
+      onPress={handlePress}
       className={`${isFollowing ? 'bg-faint' : 'bg-offBlack'}  rounded py-1`}
     >
       <Typography
