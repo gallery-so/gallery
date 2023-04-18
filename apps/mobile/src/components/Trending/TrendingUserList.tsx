@@ -1,5 +1,13 @@
-import { useCallback, useMemo } from 'react';
-import { ScrollView, useWindowDimensions, View } from 'react-native';
+import { useCallback, useMemo, useState } from 'react';
+import {
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+  ScrollView,
+  StyleProp,
+  useWindowDimensions,
+  View,
+  ViewStyle,
+} from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { TrendingUserCardFragment$key } from '~/generated/TrendingUserCardFragment.graphql';
@@ -34,6 +42,7 @@ export function TrendingUserList({ usersRef, queryRef }: Props) {
     usersRef
   );
 
+  const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const { width } = useWindowDimensions();
 
   // Format the data into array of arrays of size PAGE_SIZE
@@ -47,12 +56,14 @@ export function TrendingUserList({ usersRef, queryRef }: Props) {
     return pages;
   }, [users]);
 
+  const isPaginated = pages.length > 1;
+
   const renderPage = useCallback(
     (pages: Array<TrendingUserCardFragment$key>) => {
       return (
         <View className="flex max-w-full flex-row flex-wrap justify-between">
           {pages.map((user, index) => (
-            <View key={index} className="mb-2 w-[49%]">
+            <View key={index} className="mb-1 w-[49%]">
               <TrendingUserCard key={index} userRef={user} queryRef={query} />
             </View>
           ))}
@@ -62,26 +73,59 @@ export function TrendingUserList({ usersRef, queryRef }: Props) {
     [query]
   );
 
+  const handleScroll = useCallback(
+    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+      const slides = pages?.length ?? 0;
+      const totalWidth = width * slides;
+      const contentOffset = event.nativeEvent.contentOffset.x;
+      const currentSlideIndex = Math.round((contentOffset / totalWidth) * slides);
+
+      setCurrentSlideIndex(currentSlideIndex);
+    },
+    [pages?.length, width]
+  );
+
   return (
-    <ScrollView
-      horizontal
-      directionalLockEnabled
-      pagingEnabled
-      decelerationRate="fast"
-      snapToAlignment="center"
-      scrollEventThrottle={200}
-      showsHorizontalScrollIndicator={false}
-    >
-      {pages.map((page, index) => (
-        <View
-          key={index}
-          style={{
-            width: width - 24,
-          }}
-        >
-          {renderPage(page)}
+    <View className="flex flex-col space-y-3">
+      <ScrollView
+        horizontal
+        directionalLockEnabled
+        pagingEnabled
+        decelerationRate="fast"
+        snapToAlignment="center"
+        scrollEventThrottle={200}
+        showsHorizontalScrollIndicator={false}
+        onScroll={handleScroll}
+      >
+        {pages.map((page, index) => (
+          <View
+            key={index}
+            style={{
+              width: width - 24,
+            }}
+          >
+            {renderPage(page)}
+          </View>
+        ))}
+      </ScrollView>
+      {isPaginated && (
+        <View className="flex w-full flex-row justify-center">
+          <View className="flex flex-row space-x-1">
+            {pages.map((_, index) => {
+              return <Circle key={index} active={currentSlideIndex === index} />;
+            })}
+          </View>
         </View>
-      ))}
-    </ScrollView>
+      )}
+    </View>
+  );
+}
+
+function Circle({ style, active }: { style?: StyleProp<ViewStyle>; active: boolean }) {
+  return (
+    <View
+      className={`h-1 w-1 rounded-full ${active ? 'bg-offBlack' : 'bg-porcelain'}`}
+      style={style}
+    />
   );
 }

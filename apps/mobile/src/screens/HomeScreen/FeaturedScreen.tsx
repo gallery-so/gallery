@@ -1,5 +1,6 @@
 import { Suspense } from 'react';
 import { ScrollView, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 
 import { SuggestedSection } from '~/components/Trending/SuggestedSection';
@@ -47,8 +48,15 @@ function FeaturedScreenInner({ queryRef }: FeaturedScreenInnerProps) {
     queryRef
   );
 
+  const { bottom } = useSafeAreaInsets();
+
   return (
-    <ScrollView className="flex-1">
+    <ScrollView
+      className="flex-1"
+      contentContainerStyle={{
+        paddingBottom: bottom,
+      }}
+    >
       {query.viewer?.__typename === 'Viewer' && (
         <>
           {query.viewer.socialAccounts?.twitter?.__typename && (
