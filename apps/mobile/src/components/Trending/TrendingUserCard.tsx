@@ -30,7 +30,7 @@ export function TrendingUserCard({ style, userRef, queryRef }: Props) {
         bio
         galleries {
           tokenPreviews {
-            large
+            small
           }
           hidden
         }
@@ -80,7 +80,7 @@ export function TrendingUserCard({ style, userRef, queryRef }: Props) {
         {tokenPreviews.map((tokenPreview, index) => {
           return (
             <View key={index} className="h-full w-1/2">
-              <NftPreviewAsset tokenUrl={tokenPreview?.large ?? ''} resizeMode={ResizeMode.COVER} />
+              <NftPreviewAsset tokenUrl={tokenPreview?.small ?? ''} resizeMode={ResizeMode.COVER} />
             </View>
           );
         })}
