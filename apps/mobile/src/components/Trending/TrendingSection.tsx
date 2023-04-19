@@ -1,4 +1,4 @@
-import { TouchableOpacity, View } from 'react-native';
+import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { TrendingSectionFragment$key } from '~/generated/TrendingSectionFragment.graphql';
@@ -58,17 +58,6 @@ export function TrendingSection({ title, description, queryRef, trendingUsersRef
             {description}
           </Typography>
         </View>
-        <TouchableOpacity onPress={() => {}}>
-          <Typography
-            font={{
-              family: 'ABCDiatype',
-              weight: 'Regular',
-            }}
-            className="text-shadow text-sm underline"
-          >
-            See all
-          </Typography>
-        </TouchableOpacity>
       </View>
 
       <TrendingUserList usersRef={trendingUsers.users ?? []} queryRef={query} />

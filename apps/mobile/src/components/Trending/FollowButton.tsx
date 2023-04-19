@@ -70,7 +70,7 @@ export function FollowButton({ queryRef, userRef }: Props) {
   return (
     <TouchableOpacity
       onPress={handlePress}
-      className={`${isFollowing ? 'bg-faint' : 'bg-offBlack'}  rounded py-1`}
+      className={`${isFollowing ? 'bg-faint' : 'bg-offBlack'}  rounded py-1 px-2`}
     >
       <Typography
         font={{

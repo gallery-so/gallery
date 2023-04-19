@@ -5,6 +5,7 @@ import { RootStackNavigatorQuery } from '~/generated/RootStackNavigatorQuery.gra
 import { LoginStackNavigator } from '~/navigation/LoginStackNavigator';
 import { MainTabNavigator } from '~/navigation/MainTabNavigator/MainTabNavigator';
 import { RootStackNavigatorParamList } from '~/navigation/types';
+import { UserSuggestionListScreen } from '~/screens/HomeScreen/UserSuggestionListScreen';
 import { NftDetailScreen } from '~/screens/NftDetailScreen/NftDetailScreen';
 
 const Stack = createNativeStackNavigator<RootStackNavigatorParamList>();
@@ -33,6 +34,13 @@ export function RootStackNavigator() {
       <Stack.Screen name="Login" component={LoginStackNavigator} />
       <Stack.Screen name="MainTabs" component={MainTabNavigator} />
       <Stack.Screen name="NftDetail" component={NftDetailScreen} />
+      <Stack.Screen
+        name="UserSuggestionList"
+        options={{
+          presentation: 'modal',
+        }}
+        component={UserSuggestionListScreen}
+      />
     </Stack.Navigator>
   );
 }

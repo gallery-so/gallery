@@ -9,6 +9,7 @@ export type RootStackNavigatorParamList = {
     tokenId: string;
     collectionId: string;
   };
+  UserSuggestionList: undefined;
 };
 
 export type FeedTabNavigatorParamList = {
