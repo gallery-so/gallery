@@ -11,10 +11,10 @@ import { FollowButtonQueryFragment$key } from '~/generated/FollowButtonQueryFrag
 import { FollowButtonUserFragment$key } from '~/generated/FollowButtonUserFragment.graphql';
 import useAuthModal from '~/hooks/useAuthModal';
 import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
-
-import breakpoints from '../core/breakpoints';
 import useFollowUser from '~/shared/relay/useFollowUser';
 import useUnfollowUser from '~/shared/relay/useUnfollowUser';
+
+import breakpoints from '../core/breakpoints';
 
 type Props = {
   queryRef: FollowButtonQueryFragment$key;
