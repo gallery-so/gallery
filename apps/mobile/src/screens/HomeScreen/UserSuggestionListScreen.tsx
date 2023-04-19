@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { Suspense, useCallback, useMemo } from 'react';
-import { ScrollView, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView, ScrollView, TouchableOpacity, View } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 
 import { XMarkIcon } from '~/components/Search/XMarkIcon';
@@ -56,30 +56,30 @@ export function UserSuggestionListScreen() {
 
   return (
     <Suspense fallback={<LoadingFollowerList />}>
-      <View>
-        <View className="p-4">
-          <TouchableOpacity
-            onPress={handleClose}
-            className="bg-porcelain mb-4 flex h-6 w-6 items-center justify-center rounded-full"
-          >
-            <XMarkIcon />
-          </TouchableOpacity>
-          <Typography
-            font={{
-              family: 'ABCDiatype',
-              weight: 'Bold',
-            }}
-            className="text-lg"
-          >
-            Suggested curators for you
-          </Typography>
-        </View>
+      <View className="p-4">
+        <TouchableOpacity
+          onPress={handleClose}
+          className="bg-porcelain mb-4 flex h-6 w-6 items-center justify-center rounded-full"
+        >
+          <XMarkIcon />
+        </TouchableOpacity>
+        <Typography
+          font={{
+            family: 'ABCDiatype',
+            weight: 'Bold',
+          }}
+          className="text-lg"
+        >
+          Suggested curators for you
+        </Typography>
+      </View>
+      <SafeAreaView className="flex-1">
         <ScrollView>
           {nonNullUsers.map((user, index) => (
             <SuggestionUser key={index} userRef={user} queryRef={query} />
           ))}
         </ScrollView>
-      </View>
+      </SafeAreaView>
     </Suspense>
   );
 }
