@@ -6,8 +6,8 @@ import { FollowButtonQueryFragment$key } from '~/generated/FollowButtonQueryFrag
 import { FollowButtonUserFragment$key } from '~/generated/FollowButtonUserFragment.graphql';
 
 import { Typography } from '../Typography';
-import useFollowUser from './useFollowUser';
-import useUnfollowUser from './useUnfollowUser';
+import useUnfollowUser from '~/shared/relay/useUnfollowUser';
+import useFollowUser from '~/shared/relay/useFollowUser';
 
 type Props = {
   queryRef: FollowButtonQueryFragment$key;
