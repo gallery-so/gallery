@@ -1,8 +1,9 @@
 import { Suspense } from 'react';
-import { ScrollView, View } from 'react-native';
+import { ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 
+import { LoadingTrendingPage } from '~/components/Trending/LoadingTrendingPage';
 import { SuggestedSection } from '~/components/Trending/SuggestedSection';
 import { TrendingSection } from '~/components/Trending/TrendingSection';
 import { TwitterSection } from '~/components/Trending/TwitterSection';
@@ -107,8 +108,7 @@ export function FeaturedScreen() {
   );
 
   return (
-    // TODO: Add Suspense fallback
-    <Suspense fallback={<View />}>
+    <Suspense fallback={<LoadingTrendingPage />}>
       <FeaturedScreenInner queryRef={query} />
     </Suspense>
   );
