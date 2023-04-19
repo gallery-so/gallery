@@ -583,8 +583,16 @@ export function GalleryEditorProvider({
         (collection) => collection.dbid === collectionId
       );
 
+      let nextCollectionIdBeingEdited = nextCollections[0]?.dbid;
+      if (!nextCollectionIdBeingEdited) {
+        const emptyCollection = createEmptyCollection();
+        nextCollectionIdBeingEdited = emptyCollection.dbid;
+        nextCollections.push(emptyCollection);
+      }
+
       setCollections(nextCollections);
       setInitialCollections(nextInitialCollections);
+      setCollectionIdBeingEdited(nextCollectionIdBeingEdited);
     },
     [collections, initialCollections]
   );
