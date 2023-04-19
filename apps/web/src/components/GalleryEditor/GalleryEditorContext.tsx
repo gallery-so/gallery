@@ -578,7 +578,7 @@ export function GalleryEditorProvider({
 
   const moveCollectionToGallery = useCallback(
     (collectionId: string) => {
-      const nextCollections = collections.filter((collection) => collection.dbid === collectionId);
+      const nextCollections = collections.filter((collection) => collection.dbid !== collectionId);
       const nextInitialCollections = initialCollections.filter(
         (collection) => collection.dbid === collectionId
       );
