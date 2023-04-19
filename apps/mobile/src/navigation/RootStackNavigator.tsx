@@ -5,6 +5,7 @@ import { RootStackNavigatorQuery } from '~/generated/RootStackNavigatorQuery.gra
 import { LoginStackNavigator } from '~/navigation/LoginStackNavigator';
 import { MainTabNavigator } from '~/navigation/MainTabNavigator/MainTabNavigator';
 import { RootStackNavigatorParamList } from '~/navigation/types';
+import { TwitterSuggestionListScreen } from '~/screens/HomeScreen/TwitterSuggestionListScreen';
 import { UserSuggestionListScreen } from '~/screens/HomeScreen/UserSuggestionListScreen';
 import { NftDetailScreen } from '~/screens/NftDetailScreen/NftDetailScreen';
 
@@ -40,6 +41,13 @@ export function RootStackNavigator() {
           presentation: 'modal',
         }}
         component={UserSuggestionListScreen}
+      />
+      <Stack.Screen
+        name="TwitterSuggestionList"
+        options={{
+          presentation: 'modal',
+        }}
+        component={TwitterSuggestionListScreen}
       />
     </Stack.Navigator>
   );

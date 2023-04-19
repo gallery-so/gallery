@@ -10,6 +10,7 @@ export type RootStackNavigatorParamList = {
     collectionId: string;
   };
   UserSuggestionList: undefined;
+  TwitterSuggestionList: undefined;
 };
 
 export type FeedTabNavigatorParamList = {

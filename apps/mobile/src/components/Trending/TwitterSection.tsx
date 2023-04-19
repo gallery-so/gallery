@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { TouchableOpacity, View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
@@ -7,6 +7,8 @@ import { TwitterSectionQueryFragment$key } from '~/generated/TwitterSectionQuery
 import { Typography } from '../Typography';
 import { TrendingUserList } from './TrendingUserList';
 import { TwitterIcon } from './TwitterIcon';
+import { useNavigation } from '@react-navigation/native';
+import { RootStackNavigatorProp } from '~/navigation/types';
 
 type Props = {
   title: string;
@@ -49,6 +51,12 @@ export function TwitterSection({ title, description, queryRef }: Props) {
     queryRef
   );
 
+  const navigation = useNavigation<RootStackNavigatorProp>();
+
+  const handleSeeAll = useCallback(() => {
+    navigation.navigate('TwitterSuggestionList');
+  }, [navigation]);
+
   const nonNullUsers = useMemo(() => {
     const users = [];
 
@@ -87,7 +95,7 @@ export function TwitterSection({ title, description, queryRef }: Props) {
             {description}
           </Typography>
         </View>
-        <TouchableOpacity onPress={() => {}}>
+        <TouchableOpacity onPress={handleSeeAll}>
           <Typography
             font={{
               family: 'ABCDiatype',
