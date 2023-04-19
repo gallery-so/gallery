@@ -2,6 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useCallback, useMemo } from 'react';
 import { ScrollView, TouchableOpacity, View } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
+
 import { XMarkIcon } from '~/components/Search/XMarkIcon';
 import { SuggestionUser } from '~/components/Trending/SuggestionUser';
 import { Typography } from '~/components/Typography';
@@ -25,7 +26,6 @@ export function TwitterSuggestionListScreen() {
                 galleryUser {
                   ... on GalleryUser {
                     __typename
-                    ...TrendingUserListFragment
                     ...SuggestionUserFragment
                   }
                 }

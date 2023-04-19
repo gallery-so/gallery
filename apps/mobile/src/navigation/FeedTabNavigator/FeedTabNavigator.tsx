@@ -13,13 +13,13 @@ export function FeedTabNavigator() {
   return (
     <Tab.Navigator
       tabBarPosition="top"
-      initialRouteName="Featured"
+      initialRouteName="Latest"
       tabBar={TabBar}
       sceneContainerStyle={{ backgroundColor: 'white' }}
     >
       <Tab.Screen name="Trending" component={TrendingScreen} />
       <Tab.Screen name="Latest" component={LatestScreen} />
-      <Tab.Screen name="Featured" component={FeaturedScreen} />
+      <Tab.Screen name="Explore" component={FeaturedScreen} />
     </Tab.Navigator>
   );
 }

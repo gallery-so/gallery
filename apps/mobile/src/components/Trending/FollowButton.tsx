@@ -4,10 +4,10 @@ import { graphql, useFragment } from 'react-relay';
 
 import { FollowButtonQueryFragment$key } from '~/generated/FollowButtonQueryFragment.graphql';
 import { FollowButtonUserFragment$key } from '~/generated/FollowButtonUserFragment.graphql';
+import useFollowUser from '~/shared/relay/useFollowUser';
+import useUnfollowUser from '~/shared/relay/useUnfollowUser';
 
 import { Typography } from '../Typography';
-import useUnfollowUser from '~/shared/relay/useUnfollowUser';
-import useFollowUser from '~/shared/relay/useFollowUser';
 
 type Props = {
   queryRef: FollowButtonQueryFragment$key;

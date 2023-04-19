@@ -1,13 +1,13 @@
+import { useNavigation } from '@react-navigation/native';
 import { useCallback, useMemo } from 'react';
 import { TouchableOpacity, View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { SuggestedSectionQueryFragment$key } from '~/generated/SuggestedSectionQueryFragment.graphql';
+import { RootStackNavigatorProp } from '~/navigation/types';
 
 import { Typography } from '../Typography';
 import { TrendingUserList } from './TrendingUserList';
-import { useNavigation } from '@react-navigation/native';
-import { RootStackNavigatorProp } from '~/navigation/types';
 
 type Props = {
   title: string;

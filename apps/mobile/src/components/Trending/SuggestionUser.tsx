@@ -1,10 +1,12 @@
 import { View } from 'react-native';
-import { Typography } from '../Typography';
 import { graphql, useFragment } from 'react-relay';
+
 import { SuggestionUserFragment$key } from '~/generated/SuggestionUserFragment.graphql';
-import { Markdown } from '../Markdown';
-import { FollowButton } from './FollowButton';
 import { SuggestionUserQueryFragment$key } from '~/generated/SuggestionUserQueryFragment.graphql';
+
+import { Markdown } from '../Markdown';
+import { Typography } from '../Typography';
+import { FollowButton } from './FollowButton';
 
 type Props = {
   userRef: SuggestionUserFragment$key;

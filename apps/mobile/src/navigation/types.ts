@@ -16,7 +16,7 @@ export type RootStackNavigatorParamList = {
 export type FeedTabNavigatorParamList = {
   Trending: undefined;
   Latest: undefined;
-  Featured: undefined;
+  Explore: undefined;
 };
 
 export type MainTabNavigatorParamList = {
