@@ -1,5 +1,7 @@
+import { useMemo } from 'react';
 import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
+import { sanitizeMarkdown } from 'src/utils/sanitizeMarkdown';
 
 import { SuggestionUserFragment$key } from '~/generated/SuggestionUserFragment.graphql';
 import { SuggestionUserQueryFragment$key } from '~/generated/SuggestionUserQueryFragment.graphql';
@@ -12,6 +14,8 @@ type Props = {
   userRef: SuggestionUserFragment$key;
   queryRef: SuggestionUserQueryFragment$key;
 };
+
+const MAX_DESCRIPTION_CHARACTER = 50;
 
 export function SuggestionUser({ userRef, queryRef }: Props) {
   const user = useFragment(
@@ -34,8 +38,13 @@ export function SuggestionUser({ userRef, queryRef }: Props) {
     queryRef
   );
 
+  const formattedBio = useMemo(() => {
+    const bio = sanitizeMarkdown(user.bio ?? '');
+    return bio.substring(0, MAX_DESCRIPTION_CHARACTER);
+  }, [user.bio]);
+
   return (
-    <View className="flex flex-row items-center justify-between py-3 px-4">
+    <View className="flex flex-row items-center justify-between px-4 py-3">
       <View className="flex-1 pr-4">
         <Typography
           font={{
@@ -45,7 +54,9 @@ export function SuggestionUser({ userRef, queryRef }: Props) {
         >
           {user.username}
         </Typography>
-        <Markdown numberOfLines={1}>{user.bio}</Markdown>
+        <View className="h-5">
+          <Markdown numberOfLines={1}>{formattedBio}</Markdown>
+        </View>
       </View>
 
       <FollowButton userRef={user} queryRef={query} />
