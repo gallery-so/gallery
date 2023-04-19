@@ -3,6 +3,7 @@ import { graphql, useFragment } from 'react-relay';
 
 import { useFollowUserFragment$key } from '~/generated/useFollowUserFragment.graphql';
 import { useFollowUserMutation } from '~/generated/useFollowUserMutation.graphql';
+
 import { usePromisifiedMutation } from './usePromisifiedMutation';
 
 type useFollowUserArgs = {
