@@ -1,9 +1,10 @@
 import { useNavigation } from '@react-navigation/native';
-import { useCallback, useMemo } from 'react';
+import { Suspense, useCallback, useMemo } from 'react';
 import { ScrollView, TouchableOpacity, View } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 
 import { XMarkIcon } from '~/components/Search/XMarkIcon';
+import { LoadingFollowerList } from '~/components/Trending/LoadingFollowerList';
 import { SuggestionUser } from '~/components/Trending/SuggestionUser';
 import { Typography } from '~/components/Typography';
 import { UserSuggestionListScreenQuery } from '~/generated/UserSuggestionListScreenQuery.graphql';
@@ -54,29 +55,31 @@ export function UserSuggestionListScreen() {
   }, [navigation]);
 
   return (
-    <View>
-      <View className="p-4">
-        <TouchableOpacity
-          onPress={handleClose}
-          className="bg-porcelain mb-4 flex h-6 w-6 items-center justify-center rounded-full"
-        >
-          <XMarkIcon />
-        </TouchableOpacity>
-        <Typography
-          font={{
-            family: 'ABCDiatype',
-            weight: 'Bold',
-          }}
-          className="text-lg"
-        >
-          Suggested curators for you
-        </Typography>
+    <Suspense fallback={<LoadingFollowerList />}>
+      <View>
+        <View className="p-4">
+          <TouchableOpacity
+            onPress={handleClose}
+            className="bg-porcelain mb-4 flex h-6 w-6 items-center justify-center rounded-full"
+          >
+            <XMarkIcon />
+          </TouchableOpacity>
+          <Typography
+            font={{
+              family: 'ABCDiatype',
+              weight: 'Bold',
+            }}
+            className="text-lg"
+          >
+            Suggested curators for you
+          </Typography>
+        </View>
+        <ScrollView>
+          {nonNullUsers.map((user, index) => (
+            <SuggestionUser key={index} userRef={user} queryRef={query} />
+          ))}
+        </ScrollView>
       </View>
-      <ScrollView>
-        {nonNullUsers.map((user, index) => (
-          <SuggestionUser key={index} userRef={user} queryRef={query} />
-        ))}
-      </ScrollView>
-    </View>
+    </Suspense>
   );
 }
