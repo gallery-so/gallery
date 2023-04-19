@@ -1,4 +1,4 @@
-import { TouchableOpacity, View } from 'react-native';
+import { View } from 'react-native';
 import { Typography } from '../Typography';
 import { graphql, useFragment } from 'react-relay';
 import { SuggestionUserFragment$key } from '~/generated/SuggestionUserFragment.graphql';
