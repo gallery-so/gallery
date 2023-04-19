@@ -1,24 +1,42 @@
 import { useNavigation } from '@react-navigation/native';
 import { Suspense, useCallback, useMemo } from 'react';
 import { SafeAreaView, ScrollView, TouchableOpacity, View } from 'react-native';
-import { graphql, useLazyLoadQuery } from 'react-relay';
+import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 
 import { XMarkIcon } from '~/components/Search/XMarkIcon';
 import { LoadingFollowerList } from '~/components/Trending/LoadingFollowerList';
 import { SuggestionUser } from '~/components/Trending/SuggestionUser';
 import { Typography } from '~/components/Typography';
 import { TwitterSuggestionListScreenQuery } from '~/generated/TwitterSuggestionListScreenQuery.graphql';
+import { TwitterSuggestionListScreenQueryFragment$key } from '~/generated/TwitterSuggestionListScreenQueryFragment.graphql';
+import { TwitterSuggestionListScreenRefetchableQuery } from '~/generated/TwitterSuggestionListScreenRefetchableQuery.graphql';
 
 export function TwitterSuggestionListScreen() {
-  const query = useLazyLoadQuery<TwitterSuggestionListScreenQuery>(
+  const queryRef = useLazyLoadQuery<TwitterSuggestionListScreenQuery>(
     graphql`
       query TwitterSuggestionListScreenQuery($twitterListFirst: Int!, $twitterListAfter: String) {
+        ...TwitterSuggestionListScreenQueryFragment
+      }
+    `,
+    {
+      twitterListFirst: 24,
+      twitterListAfter: null,
+    }
+  );
+
+  const { data: query } = usePaginationFragment<
+    TwitterSuggestionListScreenRefetchableQuery,
+    TwitterSuggestionListScreenQueryFragment$key
+  >(
+    graphql`
+      fragment TwitterSuggestionListScreenQueryFragment on Query
+      @refetchable(queryName: "TwitterSuggestionListScreenRefetchableQuery") {
         socialConnections(
           after: $twitterListAfter
           first: $twitterListFirst
           socialAccountType: Twitter
           excludeAlreadyFollowing: false
-        ) {
+        ) @connection(key: "TwitterSuggestionListScreen_socialConnections") {
           edges {
             node {
               __typename
@@ -40,10 +58,7 @@ export function TwitterSuggestionListScreen() {
         ...SuggestionUserQueryFragment
       }
     `,
-    {
-      twitterListFirst: 24,
-      twitterListAfter: null,
-    }
+    queryRef
   );
 
   const totalFollowing = query.socialConnections?.pageInfo.total ?? 0;
