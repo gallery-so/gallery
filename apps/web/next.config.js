@@ -53,6 +53,9 @@ const nextConfig = {
   experimental: {
     // Enables the styled-components SWC transform
     scrollRestoration: true,
+
+    asyncWebAssembly: true,
+    layers: true,
   },
   compiler: {
     relay: {
