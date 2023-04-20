@@ -67,33 +67,35 @@ export function parseCollectionLayout<T>(
     return [{ id: generate12DigitId(), items: [], columns: DEFAULT_COLUMNS }];
   }
 
-  const parsedCollection = collectionLayout.sections.reduce(
-    (allSections: CollectionWithLayout<T>, sectionStartIndex: number, index: number) => {
-      const nextSection = collectionLayout.sections[index + 1];
-      const sectionEndIndex = nextSection ? nextSection - 1 : tokens.length;
+  // const parsedCollection = collectionLayout.sections.reduce(
+  //   (allSections: CollectionWithLayout<T>, sectionStartIndex: number, index: number) => {
+  //     const nextSection = collectionLayout.sections[index + 1];
+  //     const sectionEndIndex = nextSection ? nextSection - 1 : tokens.length;
 
-      let section: ReadonlyArray<T | WhitespaceBlock> = tokens.slice(
-        sectionStartIndex,
-        sectionEndIndex + 1
-      );
-      if (!ignoreWhitespace) {
-        section = insertWhitespaceBlocks(
-          section,
-          removeNullValues(collectionLayout.sectionLayout[index]?.whitespace)
-        );
-      }
-      const sectionId = generate12DigitId();
+  //     let section: ReadonlyArray<T | WhitespaceBlock> = tokens.slice(
+  //       sectionStartIndex,
+  //       sectionEndIndex + 1
+  //     );
+  //     if (!ignoreWhitespace) {
+  //       section = insertWhitespaceBlocks(
+  //         section,
+  //         removeNullValues(collectionLayout.sectionLayout[index]?.whitespace)
+  //       );
+  //     }
+  //     const sectionId = generate12DigitId();
 
-      allSections.push({
-        id: sectionId,
-        items: section,
-        columns: collectionLayout.sectionLayout[index]?.columns ?? 1,
-      });
+  //     allSections.push({
+  //       id: sectionId,
+  //       items: section,
+  //       columns: collectionLayout.sectionLayout[index]?.columns ?? 1,
+  //     });
 
-      return allSections;
-    },
-    []
-  );
+  //     return allSections;
+  //   },
+  //   []
+  // );
+
+  const parsedCollection = [];
 
   return parsedCollection;
 }

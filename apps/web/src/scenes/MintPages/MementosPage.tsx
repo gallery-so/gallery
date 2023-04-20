@@ -57,9 +57,9 @@ export default function MementosPage() {
     }
 
     if (address) {
-      checkIfMinted(addresss);
+      checkIfMinted(address);
     }
-  }, [address, detectOwnedPosterNftFromOpensea, .]);
+  }, [address, detectOwnedPosterNftFromOpensea]);
 
   const { push } = useRouter();
 
