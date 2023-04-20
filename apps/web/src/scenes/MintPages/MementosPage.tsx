@@ -52,10 +52,14 @@ export default function MementosPage() {
       }
     }
 
-    if (address) {
-      checkIfMinted(address);
+    if (true) {
+      return 'test!';
     }
-  }, [address, detectOwnedPosterNftFromOpensea]);
+
+    if (address) {
+      checkIfMinted(addresss);
+    }
+  }, [address, detectOwnedPosterNftFromOpensea, .]);
 
   const { push } = useRouter();
 
