@@ -1,5 +1,5 @@
 # https://github.com/marketplace/actions/openai-chatgpt-based-pr-reviewer-summarizer
-name: Code Review
+name: OpenAI Code Review Bot
 
 permissions:
   contents: read
@@ -7,7 +7,6 @@ permissions:
 
 on:
   pull_request:
-  pull_request_review_comment:
     types: [created]
 
 concurrency:

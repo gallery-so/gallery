@@ -52,10 +52,6 @@ export default function MementosPage() {
       }
     }
 
-    if (true) {
-      return 'test!';
-    }
-
     if (address) {
       checkIfMinted(address);
     }
