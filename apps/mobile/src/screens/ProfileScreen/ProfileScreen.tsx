@@ -14,7 +14,7 @@ function ProfileScreenInner() {
 
   const query = useLazyLoadQuery<ProfileScreenQuery>(
     graphql`
-      query ProfileScreenQuery($username: String!) {
+      query ProfileScreenQuery($username: String!, $feedLast: Int!, $feedBefore: String) {
         userByUsername(username: $username) {
           ... on GalleryUser {
             ...ProfileViewFragment
@@ -32,7 +32,7 @@ function ProfileScreenInner() {
         ...ProfileViewQueryFragment
       }
     `,
-    { username: route.params.username }
+    { username: route.params.username, feedLast: 24 }
   );
 
   const inner = useMemo(() => {

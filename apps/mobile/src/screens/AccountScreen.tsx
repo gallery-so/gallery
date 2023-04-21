@@ -10,7 +10,7 @@ import { AccountScreenQuery } from '~/generated/AccountScreenQuery.graphql';
 function AccountScreenInner() {
   const query = useLazyLoadQuery<AccountScreenQuery>(
     graphql`
-      query AccountScreenQuery {
+      query AccountScreenQuery($feedLast: Int!, $feedBefore: String) {
         viewer {
           ... on Viewer {
             __typename
@@ -24,7 +24,7 @@ function AccountScreenInner() {
         ...ProfileViewQueryFragment
       }
     `,
-    {}
+    { feedLast: 24 }
   );
 
   const inner = useMemo(() => {
