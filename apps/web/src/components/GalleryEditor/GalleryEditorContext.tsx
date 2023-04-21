@@ -49,7 +49,7 @@ export type GalleryEditorContextType = {
   hasUnsavedChanges: boolean;
   validationErrors: string[];
   canSave: boolean;
-  isBlankSlate: boolean;
+  isEmptyGallery: boolean;
 
   saveGallery: () => void;
   activateCollection: (collectionId: string) => void;
@@ -312,7 +312,7 @@ export function GalleryEditorProvider({
     [collections, showModal]
   );
 
-  const isBlankSlate = useMemo(() => {
+  const isEmptyGallery = useMemo(() => {
     for (const collection of collections) {
       for (const section of collection.sections) {
         if (section.items.length) {
@@ -631,7 +631,7 @@ export function GalleryEditorProvider({
       hasUnsavedChanges,
       validationErrors,
       canSave,
-      isBlankSlate,
+      isEmptyGallery,
 
       saveGallery,
       setCollections,
@@ -656,7 +656,7 @@ export function GalleryEditorProvider({
     hasUnsavedChanges,
     validationErrors,
     canSave,
-    isBlankSlate,
+    isEmptyGallery,
     saveGallery,
     deleteCollection,
     createCollection,

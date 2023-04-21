@@ -51,7 +51,7 @@ export function CollectionSidebar({ queryRef }: Props) {
     queryRef
   );
 
-  const { isBlankSlate } = useGalleryEditorContext();
+  const { isEmptyGallery } = useGalleryEditorContext();
 
   return (
     <CollectionSidebarWrapper gap={8}>
@@ -63,7 +63,7 @@ export function CollectionSidebar({ queryRef }: Props) {
             <HelpIconContainer />
           </a>
         </InteractiveLink>
-        {isBlankSlate && <PaintbrushIconContainer />}
+        {isEmptyGallery && <PaintbrushIconContainer />}
       </StyledIconsContainer>
     </CollectionSidebarWrapper>
   );
