@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -103,9 +103,13 @@ function HelpIconContainer() {
 function AutoGalleryToggle() {
   const { isEmptyGallery } = useGalleryEditorContext();
 
-  const [variant, setVariant] = useState<'autogallery' | 'undo' | null>(
-    isEmptyGallery ? 'autogallery' : null
-  );
+  const [variant, setVariant] = useState<'autogallery' | 'undo' | null>(null);
+
+  useEffect(() => {
+    if (isEmptyGallery) {
+      setVariant('autogallery');
+    }
+  }, [isEmptyGallery]);
 
   if (variant === 'autogallery') {
     return <PaintbrushIconContainer onClick={() => setVariant('undo')} />;
@@ -181,7 +185,12 @@ function UndoIconContainer({ onClick }: IconContainerProps) {
 
   return (
     <>
-      <NewTooltip {...getFloatingProps()} style={floatingStyle} ref={floating} text="Undo" />
+      <NewTooltip
+        {...getFloatingProps()}
+        style={{ ...floatingStyle, left: '100px' }}
+        ref={floating}
+        text="Reset to empty state"
+      />
       <StyledUndoIconContainer
         onClick={() => {
           resetGalleryToEmptyState();
