@@ -4,26 +4,31 @@ import styled from 'styled-components';
 import breakpoints from '~/components/core/breakpoints';
 import { Button } from '~/components/core/Button/Button';
 import colors from '~/components/core/colors';
-import { VStack } from '~/components/core/Spacer/Stack';
+import IconContainer from '~/components/core/IconContainer';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { Spinner } from '~/components/core/Spinner/Spinner';
-import { BaseM } from '~/components/core/Text/Text';
+import { BaseXL, BODY_FONT_FAMILY } from '~/components/core/Text/Text';
 import {
   GLOBAL_FOOTER_HEIGHT,
   GLOBAL_FOOTER_HEIGHT_MOBILE,
 } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
+import { useModalActions } from '~/contexts/modal/ModalContext';
+import { QuestionMarkIcon } from '~/icons/QuestionMarkIcon';
+
+import BrainModal, { LogType } from './BrainModal';
+import PromptSuggestion from './PromptSuggestion';
 
 export default function BrainPage() {
   // Who has the most token for this contract - 27rgMOEBjoRerVjgAwC1Elz1mKG?
   //   how many tokens that user with username kaito has?
-  const [prompt, setPrompt] = useState<string>(
-    'Which user has the most followers? use the follows table to check'
-  );
+  const [prompt, setPrompt] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [resultText, setResultText] = useState<string>('');
-  const [log, setLogs] = useState<any[]>([]);
+  const [logs, setLogs] = useState<LogType[]>([]);
+
+  const { showModal } = useModalActions();
 
   const handleSearch = useCallback(async () => {
-    console.log(`click`);
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');
 
@@ -39,27 +44,35 @@ export default function BrainPage() {
 
     try {
       setIsLoading(true);
-      const response = await fetch('/api/hello', payload);
+      setResultText('');
+      setLogs([]);
+      const response = await fetch('/api/ask', payload);
       const data = await response.json();
-      console.log(data);
 
       setResultText(data.output.output);
       setLogs(data.output.intermediateSteps);
     } catch (error) {
       console.error(error);
+      setResultText('Something went wrong');
     } finally {
       setIsLoading(false);
     }
   }, [prompt]);
 
+  const handleShowLog = useCallback(() => {
+    showModal({
+      content: <BrainModal logs={logs} />,
+    });
+  }, [logs, showModal]);
+
   return (
     <StyledMaintenancePage gap={24}>
-      <StyledContainer gap={16}>
+      <StyledContainer gap={32}>
         <StyledLogo src="/icons/logo-large.svg" />
 
-        <VStack gap={8}>
+        <VStack gap={16}>
           <StyledTextArea
-            rows={4}
+            rows={2}
             cols={50}
             autoComplete="off"
             autoCorrect="off"
@@ -68,12 +81,30 @@ export default function BrainPage() {
             onChange={(event) => setPrompt(event.target.value)}
             disabled={isLoading}
           />
-          <Button onClick={handleSearch} disabled={isLoading}>
-            {isLoading ? <Spinner /> : 'Search'}
+          <Button onClick={handleSearch} disabled={isLoading || !prompt}>
+            {isLoading ? <Spinner /> : 'Ask'}
           </Button>
         </VStack>
 
-        {resultText && <BaseM>{resultText}</BaseM>}
+        <PromptSuggestion
+          onSelect={(selectedPrompt) => {
+            setPrompt(selectedPrompt);
+          }}
+        />
+
+        {resultText && (
+          <VStack gap={8}>
+            <HStack justify="flex-end">
+              <StyledIconContainer
+                onClick={handleShowLog}
+                variant="blue"
+                size="sm"
+                icon={<QuestionMarkIcon />}
+              />
+            </HStack>
+            <BaseXL>{resultText}</BaseXL>
+          </VStack>
+        )}
       </StyledContainer>
     </StyledMaintenancePage>
   );
@@ -98,11 +129,10 @@ const StyledMaintenancePage = styled(VStack)`
 
 const StyledContainer = styled(VStack)`
   width: 500px;
+  max-width: 100%;
 `;
 
 const StyledTextArea = styled.textarea`
-  width: 100%;
-
   border: none;
   padding: 16px;
 
@@ -111,7 +141,23 @@ const StyledTextArea = styled.textarea`
   color: ${colors.offBlack};
   caret-color: ${colors.offBlack};
 
+  font-family: ${BODY_FONT_FAMILY};
+  border: none;
+  border-bottom: 36px solid transparent;
+  resize: none;
+  background: ${colors.offWhite};
+  color: ${colors.offBlack};
+
   &::placeholder {
-    color: ${colors.porcelain};
+    color: ${colors.offBlack};
+  }
+`;
+
+const StyledIconContainer = styled(IconContainer)`
+  background-color: ${colors.offBlack};
+  cursor: pointer;
+
+  &:hover {
+    background-color: ${colors.metal};
   }
 `;

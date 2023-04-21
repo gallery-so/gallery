@@ -11,7 +11,7 @@ export const ClickablePill = styled(InteractiveLink)<{ active?: boolean }>`
   text-decoration: none;
   width: fit-content;
   max-width: 100%;
-  align-self: end;
+  /* align-self: end; */
   height: 32px;
   display: flex;
   align-items: center;
