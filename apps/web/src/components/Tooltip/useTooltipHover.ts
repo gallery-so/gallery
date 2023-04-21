@@ -10,7 +10,7 @@ import {
 import { useMemo, useState } from 'react';
 import { CSSProperties } from 'styled-components';
 
-type useTooltipHoverOptions = { disabled?: boolean; placement?: Placement };
+type useTooltipHoverOptions = { disabled?: boolean; placement?: Placement; forceDisplay?: boolean };
 
 export function useTooltipHover(options?: useTooltipHoverOptions) {
   const [_open, setOpen] = useState(false);
@@ -34,11 +34,11 @@ export function useTooltipHover(options?: useTooltipHoverOptions) {
       top: y ?? 0,
       left: x ?? 0,
       transform: open ? `translateY(0)` : `translateY(-4px)`,
-      opacity: open ? '1' : '0',
+      opacity: open ? '1' : options?.forceDisplay ? '1' : '0',
       width: 'max-content',
       zIndex: 10,
     }),
-    [open, strategy, x, y]
+    [open, options?.forceDisplay, strategy, x, y]
   );
 
   return useMemo(
