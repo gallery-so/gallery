@@ -243,13 +243,14 @@ export function ProfileView({ userRef, queryRef }: ProfileViewProps) {
   ]);
 
   const renderItem = useCallback<ListRenderItem<ListItem>>(
-    ({ item }) => {
+    ({ item, index }) => {
+      let inner;
       if (item.kind === 'bio') {
-        return <Markdown>{user.bio}</Markdown>;
+        inner = <Markdown>{user.bio}</Markdown>;
       } else if (item.kind === 'twitter') {
-        return twitterPill ?? null;
+        inner = twitterPill ?? null;
       } else if (item.kind === 'tab-headers') {
-        return (
+        inner = (
           <ProfileTabBar
             activeRoute={item.selectedTab}
             onRouteChange={setSelectedRoute}
@@ -257,7 +258,7 @@ export function ProfileView({ userRef, queryRef }: ProfileViewProps) {
           />
         );
       } else if (item.kind === 'sub-tab-headers') {
-        return (
+        inner = (
           <FollowersTabBar
             routes={['Followers', 'Following']}
             activeRoute={item.selectedTab}
@@ -265,7 +266,7 @@ export function ProfileView({ userRef, queryRef }: ProfileViewProps) {
           />
         );
       } else if (item.kind === 'user-follow-card') {
-        return <UserFollowCard userRef={item.user} queryRef={query} />;
+        inner = <UserFollowCard userRef={item.user} queryRef={query} />;
       } else if (
         item.kind === 'feed-item-header' ||
         item.kind === 'feed-item-caption' ||
@@ -273,24 +274,24 @@ export function ProfileView({ userRef, queryRef }: ProfileViewProps) {
       ) {
         const markFailure = () => markEventAsFailure(item.event.dbid);
 
-        return <FeedVirtualizedRow item={item} onFailure={markFailure} />;
+        inner = <FeedVirtualizedRow item={item} onFailure={markFailure} />;
       } else if (
         item.kind === 'collection-row' ||
         item.kind === 'collection-title' ||
         item.kind === 'collection-note' ||
         item.kind === 'gallery-header'
       ) {
-        return <GalleryVirtualizedRow item={item} />;
+        inner = <GalleryVirtualizedRow item={item} />;
       }
 
-      return null;
+      return <View className={index === 0 ? 'pt-3' : ''}>{inner}</View>;
     },
     [markEventAsFailure, query, twitterPill, user.bio]
   );
 
   return (
     <View className="flex-1">
-      <View className="flex flex-col bg-white p-4">
+      <View className="flex flex-col bg-white p-4 pb-1">
         <View className="flex flex-row justify-between bg-white">
           <IconContainer icon={<BackIcon />} onPress={navigation.goBack} />
 
