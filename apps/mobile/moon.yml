@@ -22,6 +22,10 @@ tasks:
   codegen-watch:
     command: relay-compiler --repersist --watch ../../relay.config.js
 
+  ios-prebuild:
+    command: expo prebuild -p ios
+    local: true
+
   ios-raw:
     command: expo run:ios
     local: true
@@ -42,6 +46,11 @@ tasks:
     deps:
       - ~:ios-raw
       - ~:relay-watch
+
+
+  android-prebuild:
+    command: expo prebuild -p android
+    local: true
 
   android-raw:
     command: expo run:android
