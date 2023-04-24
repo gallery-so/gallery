@@ -23571,6 +23571,7 @@ __metadata:
     "@react-navigation/native-stack": ^6.9.10
     "@sentry/react-native": ^5.1.0
     "@shopify/flash-list": 1.4.0
+    "@types/lodash.merge": ^4.6.7
     "@types/markdown-it": ^12.2.3
     "@types/react-native": ^0.71.1
     babel-plugin-relay: ^14.1.0
@@ -23590,6 +23591,7 @@ __metadata:
     expo-status-bar: ~1.4.2
     expo-system-ui: ~2.2.1
     expo-updates: ~0.16.3
+    lodash.merge: ^4.6.2
     nativewind: ^2.0.11
     react: 18.2.0
     react-native: 0.71.6

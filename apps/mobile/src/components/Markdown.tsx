@@ -1,33 +1,29 @@
+import merge from 'lodash.merge';
 import { PropsWithChildren, useCallback, useMemo, useState } from 'react';
-import { StyleProp, StyleSheet, Text, TouchableOpacity, useColorScheme } from 'react-native';
-import MarkdownDisplay, {
-  MarkdownIt,
-  MarkdownProps,
-  RenderRules,
-} from 'react-native-markdown-display';
-import NamedStyles = StyleSheet.NamedStyles;
+import { StyleProp, Text, TouchableOpacity, useColorScheme } from 'react-native';
+import MarkdownDisplay, { MarkdownIt, RenderRules } from 'react-native-markdown-display';
+
 import colors from '~/shared/theme/colors';
 
-const markdownStyles = StyleSheet.create({
+const markdownStyles = {
   paragraph: {
     marginTop: 0,
     marginBottom: 0,
   },
   body: {
     fontSize: 14,
-    color: colors.offBlack,
     fontFamily: 'ABCDiatypeRegular',
   },
   link: {
     color: '#707070',
   },
-});
+};
 
-const darkModeMarkdownStyles = StyleSheet.create({
+const darkModeMarkdownStyles = {
   body: {
     color: colors.offWhite,
   },
-});
+};
 
 type GalleryMarkdownProps = PropsWithChildren<{
   numberOfLines?: number;
@@ -47,11 +43,15 @@ export function Markdown({
   const colorScheme = useColorScheme();
 
   const mergedStyles = useMemo(() => {
-    return StyleSheet.flatten([
-      markdownStyles,
-      style,
-      colorScheme === 'dark' ? darkModeMarkdownStyles : undefined,
-    ]) as NamedStyles<MarkdownProps>;
+    const mergedStyles = { ...markdownStyles };
+
+    if (colorScheme === 'dark') {
+      merge(mergedStyles, darkModeMarkdownStyles);
+    }
+
+    merge(mergedStyles, style);
+
+    return mergedStyles;
   }, [colorScheme, style]);
 
   const rules = useMemo<RenderRules>(() => {
