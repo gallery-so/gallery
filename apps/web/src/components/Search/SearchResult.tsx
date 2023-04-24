@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 
-import colors from '../core/colors';
+import colors from '~/shared/theme/colors';
 import Markdown from '../core/Markdown/Markdown';
 import { BaseM } from '../core/Text/Text';
 import { SearchFilterType } from './Search';

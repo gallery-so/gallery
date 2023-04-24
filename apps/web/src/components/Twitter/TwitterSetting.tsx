@@ -11,7 +11,7 @@ import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 
 import { Button } from '../core/Button/Button';
-import colors from '../core/colors';
+import colors from '~/shared/theme/colors';
 import InteractiveLink from '../core/InteractiveLink/InteractiveLink';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM } from '../core/Text/Text';

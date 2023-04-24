@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-import colors from '~/components/core/colors';
+import colors from '~/shared/theme/colors';
 import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, BaseS, TitleM } from '~/components/core/Text/Text';

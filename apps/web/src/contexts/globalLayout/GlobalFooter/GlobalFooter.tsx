@@ -3,7 +3,7 @@ import { route } from 'nextjs-routes';
 import styled from 'styled-components';
 
 import breakpoints, { pageGutter } from '~/components/core/breakpoints';
-import colors from '~/components/core/colors';
+import colors from '~/shared/theme/colors';
 import NavLink from '~/components/core/NavLink/NavLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseS, TitleM } from '~/components/core/Text/Text';

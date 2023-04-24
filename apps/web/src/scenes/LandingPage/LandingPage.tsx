@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { ButtonLink } from '~/components/core/Button/Button';
-import colors from '~/components/core/colors';
+import colors from '~/shared/theme/colors';
 import NavLink from '~/components/core/NavLink/NavLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseS, BlueLabel, TitleM } from '~/components/core/Text/Text';

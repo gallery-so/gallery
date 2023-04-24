@@ -19,7 +19,7 @@ import { EditPencilIcon } from '~/icons/EditPencilIcon';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import noop from '~/utils/noop';
 
-import colors from '../core/colors';
+import colors from '~/shared/theme/colors';
 import { DropdownItem } from '../core/Dropdown/DropdownItem';
 import { DropdownSection } from '../core/Dropdown/DropdownSection';
 import SettingsDropdown from '../core/Dropdown/SettingsDropdown';

@@ -3,7 +3,7 @@ import { v4 as uuid } from 'uuid';
 
 import CheckIcon from '~/icons/CheckIcon';
 
-import colors from '../colors';
+import colors from '~/shared/theme/colors';
 
 type Props = {
   checked: boolean;

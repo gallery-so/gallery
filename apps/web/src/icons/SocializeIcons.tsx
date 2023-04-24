@@ -1,7 +1,7 @@
 import { forwardRef, MouseEvent } from 'react';
 import styled, { css } from 'styled-components';
 
-import colors from '~/components/core/colors';
+import colors from '~/shared/theme/colors';
 
 type Props = {
   active?: boolean;

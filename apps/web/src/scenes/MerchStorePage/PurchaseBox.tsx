@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import styled from 'styled-components';
 
 import { Button } from '~/components/core/Button/Button';
-import colors from '~/components/core/colors';
+import colors from '~/shared/theme/colors';
 import HorizontalBreak from '~/components/core/HorizontalBreak/HorizontalBreak';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, BaseXL, TitleDiatypeL } from '~/components/core/Text/Text';

@@ -10,7 +10,7 @@ import { AnnouncementListFragment$key } from '~/generated/AnnouncementListFragme
 import useUpdateUserExperience from '~/utils/graphql/experiences/useUpdateUserExperience';
 import { HTTPS_URL } from '~/utils/regex';
 
-import colors from '../core/colors';
+import colors from '~/shared/theme/colors';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM, BaseS } from '../core/Text/Text';
 import useAnnouncement, { AnnouncementType } from './useAnnouncement';

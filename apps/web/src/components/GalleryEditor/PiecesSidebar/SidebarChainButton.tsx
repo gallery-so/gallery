@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 
-import colors from '~/components/core/colors';
+import colors from '~/shared/theme/colors';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { TitleXSBold } from '~/components/core/Text/Text';
 import { ChainMetadata } from '~/components/GalleryEditor/PiecesSidebar/chains';

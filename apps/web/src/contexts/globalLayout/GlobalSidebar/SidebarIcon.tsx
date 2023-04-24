@@ -4,7 +4,7 @@ import { MouseEvent, useCallback } from 'react';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
-import colors from '~/components/core/colors';
+import colors from '~/shared/theme/colors';
 import IconContainer from '~/components/core/IconContainer';
 import { NewTooltip } from '~/components/Tooltip/NewTooltip';
 import { useTooltipHover } from '~/components/Tooltip/useTooltipHover';

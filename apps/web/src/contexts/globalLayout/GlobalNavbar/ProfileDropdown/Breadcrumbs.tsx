@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import colors from '~/components/core/colors';
+import colors from '~/shared/theme/colors';
 import { Paragraph, TITLE_FONT_FAMILY } from '~/components/core/Text/Text';
 
 export const BreadcrumbText = styled(Paragraph)`

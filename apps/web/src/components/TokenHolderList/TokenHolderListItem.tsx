@@ -4,7 +4,7 @@ import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import breakpoints, { size } from '~/components/core/breakpoints';
-import colors from '~/components/core/colors';
+import colors from '~/shared/theme/colors';
 import { Directions } from '~/components/core/enums';
 import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { BaseXL } from '~/components/core/Text/Text';

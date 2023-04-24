@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import colors from '../colors';
+import colors from '~/shared/theme/colors';
 import { BaseS } from '../Text/Text';
 import transitions from '../transitions';
 

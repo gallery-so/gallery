@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 
-import colors from '~/components/core/colors';
+import colors from '~/shared/theme/colors';
 import { Directions } from '~/components/core/enums';
 import { GOOGLE_CONTENT_IMG_URL } from '~/utils/regex';
 

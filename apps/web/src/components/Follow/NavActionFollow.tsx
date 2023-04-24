@@ -10,7 +10,7 @@ import { NavActionFollowQueryFragment$key } from '~/generated/NavActionFollowQue
 import { NavActionFollowUserFragment$key } from '~/generated/NavActionFollowUserFragment.graphql';
 import handleCustomDisplayName from '~/utils/handleCustomDisplayName';
 
-import colors from '../core/colors';
+import colors from '~/shared/theme/colors';
 import FollowButton from './FollowButton';
 
 type Props = {

@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
-import colors from '~/components/core/colors';
+import colors from '~/shared/theme/colors';
 import IconContainer from '~/components/core/IconContainer';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BODY_FONT_FAMILY, Paragraph } from '~/components/core/Text/Text';

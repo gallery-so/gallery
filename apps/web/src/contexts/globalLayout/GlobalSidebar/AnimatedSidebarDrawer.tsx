@@ -3,7 +3,7 @@ import { MouseEvent, ReactElement, useCallback, useMemo, useRef } from 'react';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
-import colors from '~/components/core/colors';
+import colors from '~/shared/theme/colors';
 import { VStack } from '~/components/core/Spacer/Stack';
 import {
   ANIMATED_COMPONENT_TRANSITION_S,

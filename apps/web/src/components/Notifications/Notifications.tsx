@@ -17,7 +17,7 @@ import { useClearNotifications } from '~/shared/relay/useClearNotifications';
 import AnnouncementList from '../Announcement/AnnouncementList';
 import useAnnouncement from '../Announcement/useAnnouncement';
 import breakpoints from '../core/breakpoints';
-import colors from '../core/colors';
+import colors from '~/shared/theme/colors';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM } from '../core/Text/Text';
 import { ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL, rawTransitions } from '../core/transitions';

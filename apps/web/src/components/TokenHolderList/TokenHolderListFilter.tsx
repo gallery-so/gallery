@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
-import colors from '~/components/core/colors';
+import colors from '~/shared/theme/colors';
 import { BaseXL } from '~/components/core/Text/Text';
 import {
   useMemberListPageActions,

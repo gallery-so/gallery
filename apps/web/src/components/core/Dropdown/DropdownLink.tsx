@@ -3,7 +3,7 @@ import { Route, route } from 'nextjs-routes';
 import { ReactNode } from 'react';
 import styled from 'styled-components';
 
-import colors from '~/components/core/colors';
+import colors from '~/shared/theme/colors';
 
 type DropdownLinkProps = { href: Route; children: ReactNode; onClick?: () => void };
 

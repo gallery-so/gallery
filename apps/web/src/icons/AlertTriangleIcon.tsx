@@ -1,4 +1,4 @@
-import colors from '~/components/core/colors';
+import colors from '~/shared/theme/colors';
 
 type Props = {
   className?: string;

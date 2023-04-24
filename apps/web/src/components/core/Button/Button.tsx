@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components';
 
 import { InternalAnchorElementProps } from '~/types/Elements';
 
-import colors from '../colors';
+import colors from '~/shared/theme/colors';
 import { Spinner } from '../Spinner/Spinner';
 import { BODY_FONT_FAMILY } from '../Text/Text';
 import transitions from '../transitions';

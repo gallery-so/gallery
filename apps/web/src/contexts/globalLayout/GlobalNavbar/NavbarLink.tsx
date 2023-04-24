@@ -2,7 +2,7 @@ import Link from 'next/link';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
-import colors from '~/components/core/colors';
+import colors from '~/shared/theme/colors';
 import { BaseS, BODY_FONT_FAMILY } from '~/components/core/Text/Text';
 
 // legacyBehavior: false ensures these styles are applied to the link element

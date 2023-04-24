@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled, { keyframes } from 'styled-components';
 
-import colors from '~/components/core/colors';
+import colors from '~/shared/theme/colors';
 import { StagedNftImageDraggingFragment$key } from '~/generated/StagedNftImageDraggingFragment.graphql';
 import { useImageFailureCheck } from '~/hooks/useImageFailureCheck';
 import useMouseUp from '~/hooks/useMouseUp';

@@ -3,7 +3,7 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
-import colors from '~/components/core/colors';
+import colors from '~/shared/theme/colors';
 import { BODY_FONT_FAMILY } from '~/components/core/Text/Text';
 import { NotesModal } from '~/components/Feed/Socialize/NotesModal/NotesModal';
 import { useModalActions } from '~/contexts/modal/ModalContext';

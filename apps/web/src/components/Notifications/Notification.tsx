@@ -4,7 +4,7 @@ import { useFragment } from 'react-relay';
 import { ConnectionHandler, graphql } from 'relay-runtime';
 import styled, { css } from 'styled-components';
 
-import colors from '~/components/core/colors';
+import colors from '~/shared/theme/colors';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseS } from '~/components/core/Text/Text';
 import { NotificationArrow } from '~/components/Notifications/NotificationArrow';

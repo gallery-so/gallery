@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { TrendingSectionFragment$key } from '~/generated/TrendingSectionFragment.graphql';
 import { TrendingSectionQueryFragment$key } from '~/generated/TrendingSectionQueryFragment.graphql';
 
-import colors from '../core/colors';
+import colors from '~/shared/theme/colors';
 import { VStack } from '../core/Spacer/Stack';
 import { TitleDiatypeL } from '../core/Text/Text';
 import ExploreList from './ExploreList';

@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { SuggestedSectionQueryFragment$key } from '~/generated/SuggestedSectionQueryFragment.graphql';
 
-import colors from '../core/colors';
+import colors from '~/shared/theme/colors';
 import InteractiveLink from '../core/InteractiveLink/InteractiveLink';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { TitleDiatypeL } from '../core/Text/Text';

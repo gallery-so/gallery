@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import noop from '~/utils/noop';
 
 import breakpoints from '../breakpoints';
-import colors from '../colors';
+import colors from '~/shared/theme/colors';
 import { VStack } from '../Spacer/Stack';
 import ErrorText from '../Text/ErrorText';
 

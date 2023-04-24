@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import colors from '~/components/core/colors';
+import colors from '~/shared/theme/colors';
 import { BaseS, TitleXSBold } from '~/components/core/Text/Text';
 
 type Props = {

@@ -1,4 +1,4 @@
-import colors from '~/components/core/colors';
+import colors from '~/shared/theme/colors';
 
 export default function welcomeDoormat() {
   console.log(

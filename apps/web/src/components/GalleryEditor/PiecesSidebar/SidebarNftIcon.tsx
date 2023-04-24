@@ -3,7 +3,7 @@ import { graphql, useFragment, useRelayEnvironment } from 'react-relay';
 import { fetchQuery } from 'relay-runtime';
 import styled from 'styled-components';
 
-import colors from '~/components/core/colors';
+import colors from '~/shared/theme/colors';
 import { BODY_FONT_FAMILY } from '~/components/core/Text/Text';
 import transitions from '~/components/core/transitions';
 import { NftFailureBoundary } from '~/components/NftFailureFallback/NftFailureBoundary';

@@ -7,7 +7,7 @@ import { ExplorePopoverListQueryFragment$key } from '~/generated/ExplorePopoverL
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 
 import breakpoints from '../core/breakpoints';
-import colors from '../core/colors';
+import colors from '~/shared/theme/colors';
 import Markdown from '../core/Markdown/Markdown';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM, TitleDiatypeL, TitleDiatypeM } from '../core/Text/Text';

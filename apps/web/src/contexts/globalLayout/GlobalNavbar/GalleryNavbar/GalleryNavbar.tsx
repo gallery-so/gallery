@@ -6,7 +6,7 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled, { css } from 'styled-components';
 
-import colors from '~/components/core/colors';
+import colors from '~/shared/theme/colors';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import FollowButton from '~/components/Follow/FollowButton';
 import GalleryLeftContent from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryLeftContent';

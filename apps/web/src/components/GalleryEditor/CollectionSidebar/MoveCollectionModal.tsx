@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 import { Button } from '~/components/core/Button/Button';
 import Checkbox from '~/components/core/Checkbox/Checkbox';
-import colors from '~/components/core/colors';
+import colors from '~/shared/theme/colors';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, BaseS, TitleDiatypeL } from '~/components/core/Text/Text';
 import { useModalActions } from '~/contexts/modal/ModalContext';

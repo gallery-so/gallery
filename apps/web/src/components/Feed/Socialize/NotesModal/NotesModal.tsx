@@ -10,7 +10,7 @@ import {
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
-import colors from '~/components/core/colors';
+import colors from '~/shared/theme/colors';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { TitleDiatypeM, TitleXS } from '~/components/core/Text/Text';
 import { AdmireNote } from '~/components/Feed/Socialize/NotesModal/AdmireNote';

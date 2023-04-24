@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
-import colors from '~/components/core/colors';
+import colors from '~/shared/theme/colors';
 import { BaseM, BlueLabel, TitleMonoM } from '~/components/core/Text/Text';
 import EthereumProviders from '~/contexts/auth/EthereumProviders';
 import { useModalActions } from '~/contexts/modal/ModalContext';

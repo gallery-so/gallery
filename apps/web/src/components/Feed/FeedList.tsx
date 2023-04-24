@@ -11,7 +11,7 @@ import { MeasuredCellParent } from 'react-virtualized/dist/es/CellMeasurer';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
-import colors from '~/components/core/colors';
+import colors from '~/shared/theme/colors';
 import Loader from '~/components/core/Loader/Loader';
 import { TitleM } from '~/components/core/Text/Text';
 import transitions from '~/components/core/transitions';

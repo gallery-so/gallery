@@ -5,7 +5,7 @@ import { AutoSizer, Index, List, ListRowProps } from 'react-virtualized';
 import { readInlineData } from 'relay-runtime';
 import styled from 'styled-components';
 
-import colors from '~/components/core/colors';
+import colors from '~/shared/theme/colors';
 import IconContainer from '~/components/core/IconContainer';
 import { TitleXS } from '~/components/core/Text/Text';
 import { ExpandedIcon } from '~/components/GalleryEditor/PiecesSidebar/ExpandedIcon';

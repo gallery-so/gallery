@@ -3,7 +3,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { useEffect, useMemo, useRef } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 
-import colors from '~/components/core/colors';
+import colors from '~/shared/theme/colors';
 import { BaseM } from '~/components/core/Text/Text';
 import transitions from '~/components/core/transitions';
 import { SPACE_BETWEEN_ITEMS } from '~/contexts/collectionEditor/useDndDimensions';

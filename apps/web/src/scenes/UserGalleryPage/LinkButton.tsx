@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import CopyToClipboard from '~/components/CopyToClipboard/CopyToClipboard';
-import colors from '~/components/core/colors';
+import colors from '~/shared/theme/colors';
 import LinkIcon from '~/icons/LinkIcon';
 
 export default function LinkButton({ textToCopy }: { textToCopy: string }) {

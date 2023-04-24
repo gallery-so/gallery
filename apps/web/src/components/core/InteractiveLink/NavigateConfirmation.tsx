@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { Button } from '~/components/core/Button/Button';
-import colors from '~/components/core/colors';
+import colors from '~/shared/theme/colors';
 import { MODAL_PADDING_PX } from '~/contexts/modal/constants';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 

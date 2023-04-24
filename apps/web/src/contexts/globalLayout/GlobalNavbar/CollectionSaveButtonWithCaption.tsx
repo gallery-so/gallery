@@ -2,7 +2,7 @@ import { useCallback, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
 
 import { Button } from '~/components/core/Button/Button';
-import colors from '~/components/core/colors';
+import colors from '~/shared/theme/colors';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import ErrorText from '~/components/core/Text/ErrorText';
 import { TextAreaWithCharCount } from '~/components/core/TextArea/TextArea';

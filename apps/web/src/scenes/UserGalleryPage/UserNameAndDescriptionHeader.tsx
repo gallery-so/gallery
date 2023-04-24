@@ -6,7 +6,7 @@ import styled, { css } from 'styled-components';
 import Badge from '~/components/Badge/Badge';
 import breakpoints from '~/components/core/breakpoints';
 import TextButton from '~/components/core/Button/TextButton';
-import colors from '~/components/core/colors';
+import colors from '~/shared/theme/colors';
 import IconContainer from '~/components/core/IconContainer';
 import { StyledAnchor } from '~/components/core/InteractiveLink/InteractiveLink';
 import Markdown from '~/components/core/Markdown/Markdown';

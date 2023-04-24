@@ -3,7 +3,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { CSSProperties, ReactNode, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 
-import colors from '~/components/core/colors';
+import colors from '~/shared/theme/colors';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { useCollectionEditorContext } from '~/contexts/collectionEditor/CollectionEditorContext';
 import useKeyDown from '~/hooks/useKeyDown';

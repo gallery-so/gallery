@@ -7,7 +7,7 @@ import CommunityHolderList from '~/components/Community/CommunityHolderList';
 import CommunityHolderGrid from '~/components/CommunityHolderGrid/CommunityHolderGrid';
 import breakpoints from '~/components/core/breakpoints';
 import TextButton from '~/components/core/Button/TextButton';
-import colors from '~/components/core/colors';
+import colors from '~/shared/theme/colors';
 import { DisplayLayout } from '~/components/core/enums';
 import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import Markdown from '~/components/core/Markdown/Markdown';

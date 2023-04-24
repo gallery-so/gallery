@@ -17,7 +17,7 @@ import { MouseEventHandler, Suspense, useCallback, useEffect, useMemo, useState 
 import { graphql, useFragment, useQueryLoader } from 'react-relay';
 import styled from 'styled-components';
 
-import colors from '~/components/core/colors';
+import colors from '~/shared/theme/colors';
 import { TitleDiatypeM } from '~/components/core/Text/Text';
 import {
   ANIMATED_COMPONENT_TRANSITION_S,

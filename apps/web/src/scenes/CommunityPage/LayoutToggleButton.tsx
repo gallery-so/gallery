@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import styled from 'styled-components';
 
-import colors from '~/components/core/colors';
+import colors from '~/shared/theme/colors';
 import { DisplayLayout } from '~/components/core/enums';
 import { GridLayoutIcon, ListLayoutIcon } from '~/scenes/UserGalleryPage/MobileLayoutToggle';
 

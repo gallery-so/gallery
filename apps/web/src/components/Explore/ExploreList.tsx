@@ -8,7 +8,7 @@ import styled, { css } from 'styled-components';
 import SwiperType from 'swiper';
 import { Swiper, SwiperRef, SwiperSlide } from 'swiper/react';
 
-import colors from '~/components/core/colors';
+import colors from '~/shared/theme/colors';
 import { ExploreListFragment$key } from '~/generated/ExploreListFragment.graphql';
 import { ExploreListQueryFragment$key } from '~/generated/ExploreListQueryFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';

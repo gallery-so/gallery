@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 import ActionText from '~/components/core/ActionText/ActionText';
 import breakpoints from '~/components/core/breakpoints';
-import colors from '~/components/core/colors';
+import colors from '~/shared/theme/colors';
 import { Directions } from '~/components/core/enums';
 import IconContainer from '~/components/core/IconContainer';
 import { HStack } from '~/components/core/Spacer/Stack';

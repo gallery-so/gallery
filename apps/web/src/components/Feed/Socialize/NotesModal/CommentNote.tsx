@@ -2,7 +2,7 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
-import colors from '~/components/core/colors';
+import colors from '~/shared/theme/colors';
 import { BaseM } from '~/components/core/Text/Text';
 import { ListItem } from '~/components/Feed/Socialize/NotesModal/ListItem';
 import { TimeAgoText } from '~/components/Feed/Socialize/NotesModal/TimeAgoText';
