@@ -14,7 +14,7 @@
     "@shopify/flash-list": "1.4.0",
     "clsx": "^1.2.1",
     "date-fns": "^2.29.3",
-    "expo": "~48.0.10",
+    "expo": "~48.0.11",
     "expo-av": "~13.2.1",
     "expo-barcode-scanner": "~12.3.2",
     "expo-constants": "~14.2.1",
