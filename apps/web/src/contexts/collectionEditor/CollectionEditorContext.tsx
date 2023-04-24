@@ -62,9 +62,11 @@ type Props = { children: ReactNode };
 export const CollectionEditorProvider = memo(({ children }: Props) => {
   const { collectionIdBeingEdited, collections, setCollections } = useGalleryEditorContext();
 
-  const collectionBeingEdited = collectionIdBeingEdited
-    ? collections.find((collection) => collection.dbid === collectionIdBeingEdited)
-    : null;
+  const collectionBeingEdited = useMemo(() => {
+    return collectionIdBeingEdited
+      ? collections.find((collection) => collection.dbid === collectionIdBeingEdited)
+      : null;
+  }, [collectionIdBeingEdited, collections]);
 
   const liveDisplayTokenIds = useMemo(() => {
     return collectionBeingEdited?.liveDisplayTokenIds ?? new Set<string>();

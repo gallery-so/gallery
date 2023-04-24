@@ -20,6 +20,7 @@ const OnboardingDialogMessage = {
   5: 'You can add multiple sections to adjust the number of columns and showcase your pieces in creative ways.',
   // this is set within the render below since its content depends on `window`
   6: '<CLIENT_RENDERED_CONTENT>',
+  7: 'Need some inspiration? Use our auto-gallery feature to get you started ✨',
 };
 
 export const FINAL_STEP = Object.keys(OnboardingDialogMessage).length;
