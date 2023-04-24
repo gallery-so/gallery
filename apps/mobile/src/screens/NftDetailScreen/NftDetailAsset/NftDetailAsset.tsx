@@ -6,7 +6,7 @@ import { graphql } from 'relay-runtime';
 
 import { GallerySkeleton } from '~/components/GallerySkeleton';
 import { NftDetailAssetFragment$key } from '~/generated/NftDetailAssetFragment.graphql';
-import { fitDimensionsToContainer } from '~/screens/NftDetailScreen/NftDetailAsset/fitDimensionToContainer';
+import { fitDimensionsToContainerCover } from '~/screens/NftDetailScreen/NftDetailAsset/fitDimensionToContainer';
 import { NftDetailAssetHtml } from '~/screens/NftDetailScreen/NftDetailAsset/NftDetailAssetHtml';
 import { NftDetailAssetImage } from '~/screens/NftDetailScreen/NftDetailAsset/NftDetailAssetImage';
 import { NftDetailAssetVideo } from '~/screens/NftDetailScreen/NftDetailAsset/NftDetailAssetVideo';
@@ -92,7 +92,7 @@ export function NftDetailAsset({ collectionTokenRef, style }: NftDetailProps) {
       // This will fit the image to the screen appropriately.
       const containerDimensions: Dimensions = { width: viewDimensions.width, height: MAX_HEIGHT };
 
-      return fitDimensionsToContainer({
+      return fitDimensionsToContainerCover({
         container: containerDimensions,
         source: imageState.dimensions,
       });

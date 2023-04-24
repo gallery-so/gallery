@@ -12,6 +12,11 @@ import {
 import { FeedVirtualizedRow } from '~/components/Feed/FeedVirtualizedRow';
 import { useFailedEventTracker } from '~/components/Feed/useFailedEventTracker';
 import { FollowButton } from '~/components/FollowButton';
+import {
+  createVirtualizedGalleryRows,
+  GalleryListItemType,
+} from '~/components/Gallery/createVirtualizedGalleryRows';
+import { GalleryVirtualizedRow } from '~/components/Gallery/GalleryVirtualizedRow';
 import { IconContainer } from '~/components/IconContainer';
 import { Markdown } from '~/components/Markdown';
 import { Pill } from '~/components/Pill';
@@ -33,6 +38,7 @@ import { TwitterIcon } from '../../icons/TwitterIcon';
 
 type ListItem = { key: string } & (
   | FeedListItemType
+  | GalleryListItemType
   | { kind: 'bio' }
   | { kind: 'twitter' }
   | { kind: 'tab-headers'; selectedTab: string }
@@ -74,6 +80,10 @@ export function ProfileView({ userRef, queryRef }: ProfileViewProps) {
         id
         bio
         username
+
+        featuredGallery {
+          ...createVirtualizedGalleryRows
+        }
 
         socialAccounts {
           twitter {
@@ -143,7 +153,7 @@ export function ProfileView({ userRef, queryRef }: ProfileViewProps) {
 
   const { failedEvents, markEventAsFailure } = useFailedEventTracker();
 
-  const [selectedRoute, setSelectedRoute] = useState('Followers');
+  const [selectedRoute, setSelectedRoute] = useState('Featured');
   const [subTabRoute, setSubTabRoute] = useState('Followers');
 
   const handleLoadMore = useCallback(() => {
@@ -208,10 +218,29 @@ export function ProfileView({ userRef, queryRef }: ProfileViewProps) {
       );
 
       items.push(...feedItems);
+    } else if (selectedRoute === 'Featured' && user.featuredGallery) {
+      const { items: galleryItems, stickyIndices: galleryStickyIndices } =
+        createVirtualizedGalleryRows({
+          galleryRef: user.featuredGallery,
+        });
+
+      stickyIndices.push(
+        ...galleryStickyIndices.map((galleryStickyIndex) => galleryStickyIndex + items.length)
+      );
+
+      items.push(...galleryItems);
     }
 
     return { items, stickyIndices };
-  }, [failedEvents, selectedRoute, subTabRoute, user.feed?.edges, user.followers, user.following]);
+  }, [
+    failedEvents,
+    selectedRoute,
+    subTabRoute,
+    user.featuredGallery,
+    user.feed?.edges,
+    user.followers,
+    user.following,
+  ]);
 
   const renderItem = useCallback<ListRenderItem<ListItem>>(
     ({ item }) => {
@@ -237,10 +266,21 @@ export function ProfileView({ userRef, queryRef }: ProfileViewProps) {
         );
       } else if (item.kind === 'user-follow-card') {
         return <UserFollowCard userRef={item.user} queryRef={query} />;
-      } else {
+      } else if (
+        item.kind === 'feed-item-header' ||
+        item.kind === 'feed-item-caption' ||
+        item.kind === 'feed-item-event'
+      ) {
         const markFailure = () => markEventAsFailure(item.event.dbid);
 
         return <FeedVirtualizedRow item={item} onFailure={markFailure} />;
+      } else if (
+        item.kind === 'collection-row' ||
+        item.kind === 'collection-title' ||
+        item.kind === 'collection-note' ||
+        item.kind === 'gallery-header'
+      ) {
+        return <GalleryVirtualizedRow item={item} />;
       }
 
       return null;

@@ -17,7 +17,7 @@ import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 
 import { GallerySkeleton } from '../GallerySkeleton';
 
-type ImageState = { kind: 'loading' } | { kind: 'loaded'; dimensions: Dimensions | null };
+export type ImageState = { kind: 'loading' } | { kind: 'loaded'; dimensions: Dimensions | null };
 
 type NftPreviewProps = {
   priority?: Priority;
@@ -25,9 +25,17 @@ type NftPreviewProps = {
   collectionTokenRef: NftPreviewFragment$key;
   tokenUrl: string | null;
   resizeMode: ResizeMode;
+
+  onImageStateChange?: (imageState: ImageState) => void;
 };
 
-function NftPreviewInner({ collectionTokenRef, tokenUrl, resizeMode, priority }: NftPreviewProps) {
+function NftPreviewInner({
+  collectionTokenRef,
+  tokenUrl,
+  resizeMode,
+  priority,
+  onImageStateChange,
+}: NftPreviewProps) {
   const collectionToken = useFragment(
     graphql`
       fragment NftPreviewFragment on CollectionToken {
@@ -59,9 +67,13 @@ function NftPreviewInner({ collectionTokenRef, tokenUrl, resizeMode, priority }:
     });
   }, [collectionToken.collection.dbid, navigation, token.dbid]);
 
-  const handleLoad = useCallback((dimensions: Dimensions | null) => {
-    setImageState({ kind: 'loaded', dimensions });
-  }, []);
+  const handleLoad = useCallback(
+    (dimensions: Dimensions | null) => {
+      setImageState({ kind: 'loaded', dimensions });
+      onImageStateChange?.({ kind: 'loaded', dimensions });
+    },
+    [onImageStateChange]
+  );
 
   return (
     <NftPreviewContextMenuPopup
@@ -93,6 +105,7 @@ function NftPreviewInner({ collectionTokenRef, tokenUrl, resizeMode, priority }:
 
 export function NftPreview({
   collectionTokenRef,
+  onImageStateChange,
   tokenUrl,
   resizeMode,
   priority,
@@ -100,6 +113,7 @@ export function NftPreview({
   return (
     <ReportingErrorBoundary fallback={null}>
       <NftPreviewInner
+        onImageStateChange={onImageStateChange}
         collectionTokenRef={collectionTokenRef}
         tokenUrl={tokenUrl}
         resizeMode={resizeMode}

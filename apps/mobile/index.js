@@ -33,6 +33,7 @@ LogBox.ignoreLogs([
   'onAnimatedValueUpdate',
   'Could not render NFT',
   'Could not render FeedEvent',
+  'Relay: Missing @required',
 ]);
 
 polyfillEncoding();
