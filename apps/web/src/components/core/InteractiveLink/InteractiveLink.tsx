@@ -5,8 +5,8 @@ import styled from 'styled-components';
 
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
-
 import colors from '~/shared/theme/colors';
+
 import { BODY_FONT_FAMILY } from '../Text/Text';
 import transitions from '../transitions';
 import NavigateConfirmation from './NavigateConfirmation';

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
 import colors from '~/shared/theme/colors';
+
 import { useSearchContext } from './SearchContext';
 
 export default function SearchInput() {

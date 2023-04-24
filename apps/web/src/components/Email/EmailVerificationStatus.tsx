@@ -10,9 +10,9 @@ import AlertTriangleIcon from '~/icons/AlertTriangleIcon';
 import CircleCheckIcon from '~/icons/CircleCheckIcon';
 import ClockIcon from '~/icons/ClockIcon';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
+import colors from '~/shared/theme/colors';
 
 import { Button } from '../core/Button/Button';
-import colors from '~/shared/theme/colors';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM, BaseS } from '../core/Text/Text';
 

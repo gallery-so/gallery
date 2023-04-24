@@ -3,7 +3,6 @@ import { useCallback } from 'react';
 import styled from 'styled-components';
 
 import { Button } from '~/components/core/Button/Button';
-import colors from '~/shared/theme/colors';
 import HorizontalBreak from '~/components/core/HorizontalBreak/HorizontalBreak';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, BaseXL, TitleDiatypeL } from '~/components/core/Text/Text';
@@ -14,6 +13,7 @@ import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import CircleMinusIcon from '~/icons/CircleMinusIcon';
 import CirclePlusIcon from '~/icons/CirclePlusIcon';
 import { DecoratedCloseIcon } from '~/icons/CloseIcon';
+import colors from '~/shared/theme/colors';
 
 import { MAX_NFTS_PER_WALLET } from './constants';
 import MerchMintButton from './MerchMintButton';

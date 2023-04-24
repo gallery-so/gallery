@@ -1,12 +1,12 @@
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
-import colors from '~/shared/theme/colors';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { UserFollowedYouEventEventFragment$key } from '~/generated/UserFollowedYouEventEventFragment.graphql';
 import { UserFollowedYouEventFragment$key } from '~/generated/UserFollowedYouEventFragment.graphql';
+import colors from '~/shared/theme/colors';
 import { getTimeSince } from '~/shared/utils/time';
 
 import { StyledEvent, StyledEventHeader, StyledTime } from './EventStyles';

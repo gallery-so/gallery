@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 
-import colors from '~/shared/theme/colors';
 import IconContainer from '~/components/core/IconContainer';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
@@ -13,6 +12,7 @@ import transitions, {
 } from '~/components/core/transitions';
 import AlertIcon from '~/icons/AlertIcon';
 import CloseIcon from '~/icons/CloseIcon';
+import colors from '~/shared/theme/colors';
 
 type Props = {
   message: string;

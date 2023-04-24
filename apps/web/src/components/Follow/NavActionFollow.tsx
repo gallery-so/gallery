@@ -8,9 +8,9 @@ import { HStack } from '~/components/core/Spacer/Stack';
 import { BreadcrumbLink } from '~/contexts/globalLayout/GlobalNavbar/ProfileDropdown/Breadcrumbs';
 import { NavActionFollowQueryFragment$key } from '~/generated/NavActionFollowQueryFragment.graphql';
 import { NavActionFollowUserFragment$key } from '~/generated/NavActionFollowUserFragment.graphql';
+import colors from '~/shared/theme/colors';
 import handleCustomDisplayName from '~/utils/handleCustomDisplayName';
 
-import colors from '~/shared/theme/colors';
 import FollowButton from './FollowButton';
 
 type Props = {

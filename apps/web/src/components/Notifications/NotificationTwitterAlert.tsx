@@ -8,9 +8,9 @@ import { TWITTER_AUTH_URL, TWITTER_LOCAL_STORAGE_KEY } from '~/constants/twitter
 import { NotificationTwitterAlertFragment$key } from '~/generated/NotificationTwitterAlertFragment.graphql';
 import CloseIcon from '~/icons/CloseIcon';
 import InfoCircleIcon from '~/icons/InfoCircleIcon';
+import colors from '~/shared/theme/colors';
 import useExperience from '~/utils/graphql/experiences/useExperience';
 
-import colors from '~/shared/theme/colors';
 import InteractiveLink from '../core/InteractiveLink/InteractiveLink';
 import { HStack } from '../core/Spacer/Stack';
 import { BaseM } from '../core/Text/Text';

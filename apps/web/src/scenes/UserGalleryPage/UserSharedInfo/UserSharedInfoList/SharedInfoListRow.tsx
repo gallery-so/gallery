@@ -3,10 +3,10 @@ import { Route } from 'nextjs-routes';
 import { useMemo } from 'react';
 import styled from 'styled-components';
 
-import colors from '~/shared/theme/colors';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM } from '~/components/core/Text/Text';
+import colors from '~/shared/theme/colors';
 
 type Props = {
   title?: string;

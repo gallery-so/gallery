@@ -1,8 +1,8 @@
 import { useCallback, useMemo, useState } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 
-import colors from '~/shared/theme/colors';
 import { Directions } from '~/components/core/enums';
+import colors from '~/shared/theme/colors';
 import { GOOGLE_CONTENT_IMG_URL } from '~/utils/regex';
 
 const verticalOffset = [0, 130, 260];

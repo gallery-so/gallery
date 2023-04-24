@@ -6,7 +6,6 @@ import { useAccount } from 'wagmi';
 
 import ActionText from '~/components/core/ActionText/ActionText';
 import breakpoints, { contentSize } from '~/components/core/breakpoints';
-import colors from '~/shared/theme/colors';
 import HorizontalBreak from '~/components/core/HorizontalBreak/HorizontalBreak';
 import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
@@ -15,6 +14,7 @@ import { OPENSEA_API_BASEURL, OPENSEA_TESTNET_API_BASEURL } from '~/constants/op
 import { GALLERY_MEMENTOS_CONTRACT_ADDRESS } from '~/hooks/useContract';
 import useTimer from '~/hooks/useTimer';
 import { useIsDesktopWindowWidth } from '~/hooks/useWindowSize';
+import colors from '~/shared/theme/colors';
 import isProduction from '~/utils/isProduction';
 
 import { MEMENTOS_NFT_TOKEN_ID, MINT_END, MINT_START, pathToImage } from './config';

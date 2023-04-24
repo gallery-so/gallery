@@ -1,10 +1,10 @@
 import { ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 
-import colors from '~/shared/theme/colors';
 import { FOOTER_HEIGHT } from '~/components/Onboarding/constants';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
+import colors from '~/shared/theme/colors';
 
 type Props = {
   children: ReactNode | ReactNode[];

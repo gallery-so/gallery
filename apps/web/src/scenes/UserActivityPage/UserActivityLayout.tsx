@@ -5,11 +5,11 @@ import { graphql } from 'relay-runtime';
 import styled, { css, keyframes } from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
-import colors from '~/shared/theme/colors';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { FEED_MAX_WIDTH } from '~/components/Feed/dimensions';
 import { UserActivityLayoutFragment$key } from '~/generated/UserActivityLayoutFragment.graphql';
 import { UserActivityLayoutQueryFragment$key } from '~/generated/UserActivityLayoutQueryFragment.graphql';
+import colors from '~/shared/theme/colors';
 
 import UserActivityFeed from './UserActivityFeed';
 

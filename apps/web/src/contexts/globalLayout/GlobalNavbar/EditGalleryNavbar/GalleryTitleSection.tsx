@@ -1,12 +1,12 @@
 import styled, { css } from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
-import colors from '~/shared/theme/colors';
 import IconContainer from '~/components/core/IconContainer';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BODY_FONT_FAMILY, Paragraph } from '~/components/core/Text/Text';
 import OnboardingDialog from '~/components/GalleryEditor/GalleryOnboardingGuide/OnboardingDialog';
 import { EditPencilIcon } from '~/icons/EditPencilIcon';
+import colors from '~/shared/theme/colors';
 
 type GalleryTitleSectionProps = {
   onEdit: () => void;

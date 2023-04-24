@@ -5,9 +5,9 @@ import styled from 'styled-components';
 import { ExplorePopoverListFragment$key } from '~/generated/ExplorePopoverListFragment.graphql';
 import { ExplorePopoverListQueryFragment$key } from '~/generated/ExplorePopoverListQueryFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
+import colors from '~/shared/theme/colors';
 
 import breakpoints from '../core/breakpoints';
-import colors from '~/shared/theme/colors';
 import Markdown from '../core/Markdown/Markdown';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM, TitleDiatypeL, TitleDiatypeM } from '../core/Text/Text';

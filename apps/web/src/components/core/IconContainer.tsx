@@ -2,7 +2,6 @@ import React, { ForwardedRef, forwardRef } from 'react';
 import styled, { css } from 'styled-components';
 
 import { HStack } from '~/components/core/Spacer/Stack';
-
 import colors from '~/shared/theme/colors';
 
 export type IconSize = 'xs' | 'sm' | 'md' | 'lg';

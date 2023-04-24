@@ -3,7 +3,6 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { Button } from '~/components/core/Button/Button';
-import colors from '~/shared/theme/colors';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { Spinner } from '~/components/core/Spinner/Spinner';
 import { TitleS } from '~/components/core/Text/Text';
@@ -17,6 +16,7 @@ import { PiecesSidebarViewerFragment$key } from '~/generated/PiecesSidebarViewer
 import useSyncTokens from '~/hooks/api/tokens/useSyncTokens';
 import { RefreshIcon } from '~/icons/RefreshIcon';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
+import colors from '~/shared/theme/colors';
 import { doesUserOwnWalletFromChain } from '~/utils/doesUserOwnWalletFromChain';
 
 import OnboardingDialog from '../GalleryOnboardingGuide/OnboardingDialog';

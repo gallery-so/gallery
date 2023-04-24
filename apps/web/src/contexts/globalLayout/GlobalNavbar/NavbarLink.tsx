@@ -2,8 +2,8 @@ import Link from 'next/link';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
-import colors from '~/shared/theme/colors';
 import { BaseS, BODY_FONT_FAMILY } from '~/components/core/Text/Text';
+import colors from '~/shared/theme/colors';
 
 // legacyBehavior: false ensures these styles are applied to the link element
 export const NavbarLink = styled(Link).attrs({ legacyBehavior: false })<{ active: boolean }>`

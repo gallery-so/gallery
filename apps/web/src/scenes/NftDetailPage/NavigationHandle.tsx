@@ -5,7 +5,6 @@ import styled from 'styled-components';
 
 import ActionText from '~/components/core/ActionText/ActionText';
 import breakpoints from '~/components/core/breakpoints';
-import colors from '~/shared/theme/colors';
 import { Directions } from '~/components/core/enums';
 import IconContainer from '~/components/core/IconContainer';
 import { HStack } from '~/components/core/Spacer/Stack';
@@ -13,6 +12,7 @@ import transitions from '~/components/core/transitions';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import ArrowLeftIcon from '~/icons/ArrowLeftIcon';
 import ArrowRightIcon from '~/icons/ArrowRightIcon';
+import colors from '~/shared/theme/colors';
 
 const ARROWS = new Map<number, ReactElement>([
   [Directions.LEFT, <ArrowLeftIcon key={1} />],

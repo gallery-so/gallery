@@ -13,11 +13,11 @@ import DrawerHeader from '~/contexts/globalLayout/GlobalSidebar/DrawerHeader';
 import { FADE_TRANSITION_TIME_SECONDS } from '~/contexts/globalLayout/transitionTiming';
 import { NotificationsQuery } from '~/generated/NotificationsQuery.graphql';
 import { useClearNotifications } from '~/shared/relay/useClearNotifications';
+import colors from '~/shared/theme/colors';
 
 import AnnouncementList from '../Announcement/AnnouncementList';
 import useAnnouncement from '../Announcement/useAnnouncement';
 import breakpoints from '../core/breakpoints';
-import colors from '~/shared/theme/colors';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM } from '../core/Text/Text';
 import { ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL, rawTransitions } from '../core/transitions';

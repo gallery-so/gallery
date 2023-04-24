@@ -3,13 +3,13 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import breakpoints, { contentSize } from '~/components/core/breakpoints';
-import colors from '~/shared/theme/colors';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { BaseM, TitleS } from '~/components/core/Text/Text';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { UserExperienceType } from '~/generated/enums';
 import { GlobalBannerFragment$key } from '~/generated/GlobalBannerFragment.graphql';
 import { DecoratedCloseIcon } from '~/icons/CloseIcon';
+import colors from '~/shared/theme/colors';
 import useExperience from '~/utils/graphql/experiences/useExperience';
 
 type Props = {

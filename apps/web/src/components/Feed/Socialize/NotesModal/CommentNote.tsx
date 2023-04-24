@@ -2,12 +2,12 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
-import colors from '~/shared/theme/colors';
 import { BaseM } from '~/components/core/Text/Text';
 import { ListItem } from '~/components/Feed/Socialize/NotesModal/ListItem';
 import { TimeAgoText } from '~/components/Feed/Socialize/NotesModal/TimeAgoText';
 import { UsernameLink } from '~/components/Feed/Socialize/NotesModal/UsernameLink';
 import { CommentNoteFragment$key } from '~/generated/CommentNoteFragment.graphql';
+import colors from '~/shared/theme/colors';
 import { getTimeSince } from '~/shared/utils/time';
 
 type CommentNoteProps = {

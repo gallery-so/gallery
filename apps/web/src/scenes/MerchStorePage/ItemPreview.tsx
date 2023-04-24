@@ -2,12 +2,12 @@ import { useCallback, useState } from 'react';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
-import colors from '~/shared/theme/colors';
 import { BaseM, BlueLabel, TitleMonoM } from '~/components/core/Text/Text';
 import EthereumProviders from '~/contexts/auth/EthereumProviders';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useMintMerchContract } from '~/hooks/useContract';
 import useMintContractWithQuantity from '~/hooks/useMintContractWithQuantity';
+import colors from '~/shared/theme/colors';
 
 import FlippingImage from './FlippingImage';
 import SingleItemPage from './SingleItemPage';

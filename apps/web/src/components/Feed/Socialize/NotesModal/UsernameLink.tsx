@@ -2,8 +2,8 @@ import Link from 'next/link';
 import { Route, route } from 'nextjs-routes';
 import styled from 'styled-components';
 
-import colors from '~/shared/theme/colors';
 import { TitleS } from '~/components/core/Text/Text';
+import colors from '~/shared/theme/colors';
 
 type UsernameLinkProps = { username: string | null };
 

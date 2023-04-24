@@ -4,10 +4,10 @@ import { useEffect, useMemo } from 'react';
 import styled, { keyframes } from 'styled-components';
 
 import { Button } from '~/components/core/Button/Button';
-import colors from '~/shared/theme/colors';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import { EmptyState } from '~/components/EmptyState/EmptyState';
+import colors from '~/shared/theme/colors';
 import { LISTENING_ONCHAIN, PendingState, PROMPT_SIGNATURE } from '~/types/Wallet';
 import { getLocalStorageItem } from '~/utils/localStorage';
 

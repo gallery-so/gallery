@@ -1,7 +1,6 @@
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
-import colors from '~/shared/theme/colors';
 import IconContainer from '~/components/core/IconContainer';
 import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
@@ -13,6 +12,7 @@ import { NewTooltip } from '~/components/Tooltip/NewTooltip';
 import { useTooltipHover } from '~/components/Tooltip/useTooltipHover';
 import { CollectionSidebarQueryFragment$key } from '~/generated/CollectionSidebarQueryFragment.graphql';
 import { QuestionMarkIcon } from '~/icons/QuestionMarkIcon';
+import colors from '~/shared/theme/colors';
 
 const NOTION_DOCS_URL =
   'https://gallery-so.notion.site/Creating-a-new-gallery-and-organizing-your-NFTs-b407a174a2ee44748bb9952abd803290';

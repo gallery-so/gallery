@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 
 import IconContainer from '~/components/core/IconContainer';
-
 import colors from '~/shared/theme/colors';
 
 type Props = {

@@ -19,7 +19,6 @@ import { memo, useCallback, useLayoutEffect, useMemo, useRef, useState } from 'r
 import { graphql, useFragment } from 'react-relay';
 import styled, { css } from 'styled-components';
 
-import colors from '~/shared/theme/colors';
 import IconContainer from '~/components/core/IconContainer';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
@@ -35,6 +34,7 @@ import { getImageSizeForColumns } from '~/contexts/collectionEditor/useDndDimens
 import { StagingAreaFragment$key } from '~/generated/StagingAreaFragment.graphql';
 import useKeyDown from '~/hooks/useKeyDown';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
+import colors from '~/shared/theme/colors';
 import unescape from '~/utils/unescape';
 
 import OnboardingDialog from '../GalleryOnboardingGuide/OnboardingDialog';

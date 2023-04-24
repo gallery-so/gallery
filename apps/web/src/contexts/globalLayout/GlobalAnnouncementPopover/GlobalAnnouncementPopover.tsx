@@ -7,13 +7,13 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { Button } from '~/components/core/Button/Button';
-import colors from '~/shared/theme/colors';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, BODY_FONT_FAMILY } from '~/components/core/Text/Text';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { GlobalAnnouncementPopoverFragment$key } from '~/generated/GlobalAnnouncementPopoverFragment.graphql';
 import { AuthModal } from '~/hooks/useAuthModal';
 import { useIsDesktopWindowWidth } from '~/hooks/useWindowSize';
+import colors from '~/shared/theme/colors';
 
 import FeaturedCollectorCard from './components/FeaturedCollectorCard';
 

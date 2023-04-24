@@ -5,7 +5,6 @@ import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
-import colors from '~/shared/theme/colors';
 import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { UnstyledLink } from '~/components/core/Link/UnstyledLink';
 import Markdown from '~/components/core/Markdown/Markdown';
@@ -15,6 +14,7 @@ import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { CollectionUpdatedFeedEventFragment$key } from '~/generated/CollectionUpdatedFeedEventFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
+import colors from '~/shared/theme/colors';
 import { getTimeSince } from '~/shared/utils/time';
 import { pluralize } from '~/utils/string';
 import unescape from '~/utils/unescape';

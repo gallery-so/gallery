@@ -2,13 +2,13 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
-import colors from '~/shared/theme/colors';
 import { BaseM } from '~/components/core/Text/Text';
 import { NftFailureBoundary } from '~/components/NftFailureFallback/NftFailureBoundary';
 import { NftFailureFallback } from '~/components/NftFailureFallback/NftFailureFallback';
 import { StagedItemDraggingFragment$key } from '~/generated/StagedItemDraggingFragment.graphql';
 import { StagedItemDraggingWrapperFragment$key } from '~/generated/StagedItemDraggingWrapperFragment.graphql';
 import { useNftRetry } from '~/hooks/useNftRetry';
+import colors from '~/shared/theme/colors';
 import noop from '~/utils/noop';
 
 import StagedNftImageDragging from './StagedNftImageDragging';

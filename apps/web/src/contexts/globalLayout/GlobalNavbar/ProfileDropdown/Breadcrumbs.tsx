@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
-import colors from '~/shared/theme/colors';
 import { Paragraph, TITLE_FONT_FAMILY } from '~/components/core/Text/Text';
+import colors from '~/shared/theme/colors';
 
 export const BreadcrumbText = styled(Paragraph)`
   display: inline;

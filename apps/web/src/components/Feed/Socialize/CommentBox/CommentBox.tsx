@@ -11,7 +11,6 @@ import { ConnectionHandler, graphql, SelectorStoreUpdater } from 'relay-runtime'
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
-import colors from '~/shared/theme/colors';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM, BODY_FONT_FAMILY } from '~/components/core/Text/Text';
 import { SendButton } from '~/components/Feed/Socialize/SendButton';
@@ -22,6 +21,7 @@ import { CommentBoxMutation } from '~/generated/CommentBoxMutation.graphql';
 import { CommentBoxQueryFragment$key } from '~/generated/CommentBoxQueryFragment.graphql';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
+import colors from '~/shared/theme/colors';
 
 const MAX_TEXT_LENGTH = 100;
 

@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 import colors from '~/shared/theme/colors';
+
 import InteractiveLink from '../core/InteractiveLink/InteractiveLink';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { TitleDiatypeL, TitleXS } from '../core/Text/Text';

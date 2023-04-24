@@ -3,7 +3,6 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
-import colors from '~/shared/theme/colors';
 import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
@@ -13,6 +12,7 @@ import TokenDetailView from '~/scenes/TokenDetailPage/TokenDetailView';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
 import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
+import colors from '~/shared/theme/colors';
 import { getOpenseaExternalUrl } from '~/shared/utils/getOpenseaExternalUrl';
 import { graphqlTruncateUniversalUsername } from '~/shared/utils/wallet';
 

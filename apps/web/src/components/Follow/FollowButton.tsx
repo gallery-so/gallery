@@ -2,7 +2,6 @@ import { MouseEventHandler, useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled, { css } from 'styled-components';
 
-import colors from '~/shared/theme/colors';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { TitleXSBold } from '~/components/core/Text/Text';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
@@ -11,6 +10,7 @@ import { FollowButtonQueryFragment$key } from '~/generated/FollowButtonQueryFrag
 import { FollowButtonUserFragment$key } from '~/generated/FollowButtonUserFragment.graphql';
 import useAuthModal from '~/hooks/useAuthModal';
 import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
+import colors from '~/shared/theme/colors';
 
 import breakpoints from '../core/breakpoints';
 import useFollowUser from './mutations/useFollowUser';

@@ -2,7 +2,6 @@ import { useCallback, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
 
 import { Button } from '~/components/core/Button/Button';
-import colors from '~/shared/theme/colors';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import ErrorText from '~/components/core/Text/ErrorText';
 import { TextAreaWithCharCount } from '~/components/core/TextArea/TextArea';
@@ -11,6 +10,7 @@ import transitions, {
 } from '~/components/core/transitions';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { useSaveHotkey } from '~/hooks/useSaveHotkey';
+import colors from '~/shared/theme/colors';
 
 type Props = {
   disabled?: boolean;

@@ -3,7 +3,6 @@ import { CSSProperties, MouseEventHandler, useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled, { css } from 'styled-components';
 
-import colors from '~/shared/theme/colors';
 import { DropdownItem } from '~/components/core/Dropdown/DropdownItem';
 import { DropdownSection } from '~/components/core/Dropdown/DropdownSection';
 import SettingsDropdown from '~/components/core/Dropdown/SettingsDropdown';
@@ -17,6 +16,7 @@ import { CollectionListItemQueryFragment$key } from '~/generated/CollectionListI
 import HideIcon from '~/icons/HideIcon';
 import ShowIcon from '~/icons/ShowIcon';
 import { ErrorWithSentryMetadata } from '~/shared/errors/ErrorWithSentryMetadata';
+import colors from '~/shared/theme/colors';
 import unescape from '~/utils/unescape';
 
 import useMoveCollectionModal from './useMoveCollectionModal';

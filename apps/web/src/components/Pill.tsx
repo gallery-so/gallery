@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components';
 
-import colors from '~/shared/theme/colors';
 import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import colors from '~/shared/theme/colors';
 
 export const ClickablePill = styled(InteractiveLink)<{ active?: boolean }>`
   border: 1px solid ${colors.porcelain};

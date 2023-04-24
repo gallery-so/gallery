@@ -5,12 +5,12 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
-import colors from '~/shared/theme/colors';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM } from '~/components/core/Text/Text';
 import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 import { UserListItemFragment$key } from '~/generated/UserListItemFragment.graphql';
+import colors from '~/shared/theme/colors';
 
 type UserListItemProps = {
   userRef: UserListItemFragment$key;

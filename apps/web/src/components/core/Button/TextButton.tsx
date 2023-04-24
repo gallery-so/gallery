@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 
-import ActionText from '../ActionText/ActionText';
 import colors from '~/shared/theme/colors';
+
+import ActionText from '../ActionText/ActionText';
 
 type Props = {
   className?: string;

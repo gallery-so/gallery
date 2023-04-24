@@ -1,12 +1,12 @@
 import styled from 'styled-components';
 
 import breakpoints, { contentSize, pageGutter } from '~/components/core/breakpoints';
-import colors from '~/shared/theme/colors';
 import HorizontalBreak from '~/components/core/HorizontalBreak/HorizontalBreak';
 import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleM, TitleXS } from '~/components/core/Text/Text';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
+import colors from '~/shared/theme/colors';
 
 export default function PosterPage() {
   const isMobile = useIsMobileWindowWidth();

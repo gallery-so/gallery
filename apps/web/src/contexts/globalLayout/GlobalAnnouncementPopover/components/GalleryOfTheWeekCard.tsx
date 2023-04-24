@@ -4,7 +4,6 @@ import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
-import colors from '~/shared/theme/colors';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { TitleM } from '~/components/core/Text/Text';
 import transitions from '~/components/core/transitions';
@@ -14,6 +13,7 @@ import { GalleryOfTheWeekCardUserFragment$key } from '~/generated/GalleryOfTheWe
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
+import colors from '~/shared/theme/colors';
 
 type GalleryOfTheWeekCardProps = {
   queryRef: GalleryOfTheWeekCardQueryFragment$key;

@@ -4,7 +4,6 @@ import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import { Button } from '~/components/core/Button/Button';
-import colors from '~/shared/theme/colors';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleXS } from '~/components/core/Text/Text';
 import OnboardingDialog from '~/components/GalleryEditor/GalleryOnboardingGuide/OnboardingDialog';
@@ -20,6 +19,7 @@ import { useGuardEditorUnsavedChanges } from '~/hooks/useGuardEditorUnsavedChang
 import { useSaveHotkey } from '~/hooks/useSaveHotkey';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import { AllGalleriesIcon } from '~/icons/AllGalleriesIcon';
+import colors from '~/shared/theme/colors';
 
 type Props = {
   canSave: boolean;

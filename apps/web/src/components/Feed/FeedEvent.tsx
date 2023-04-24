@@ -14,7 +14,6 @@ import { FeedEventWithErrorBoundaryFragment$key } from '~/generated/FeedEventWit
 import { FeedEventWithErrorBoundaryQueryFragment$key } from '~/generated/FeedEventWithErrorBoundaryQueryFragment.graphql';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import { TriedToRenderUnsupportedFeedEvent } from '~/shared/errors/TriedToRenderUnsupportedFeedEvent';
-
 import colors from '~/shared/theme/colors';
 
 type FeedEventProps = {

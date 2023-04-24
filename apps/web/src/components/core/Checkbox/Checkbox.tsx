@@ -2,7 +2,6 @@ import styled from 'styled-components';
 import { v4 as uuid } from 'uuid';
 
 import CheckIcon from '~/icons/CheckIcon';
-
 import colors from '~/shared/theme/colors';
 
 type Props = {

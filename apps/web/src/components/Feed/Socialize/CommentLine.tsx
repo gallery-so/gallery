@@ -3,11 +3,11 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
-import colors from '~/shared/theme/colors';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BODY_FONT_FAMILY } from '~/components/core/Text/Text';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { CommentLineFragment$key } from '~/generated/CommentLineFragment.graphql';
+import colors from '~/shared/theme/colors';
 import { getTimeSince } from '~/shared/utils/time';
 
 type CommentLineProps = {
