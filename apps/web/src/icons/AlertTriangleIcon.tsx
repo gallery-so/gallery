@@ -1,8 +1,8 @@
-import colors from '~/shared/theme/colors';
+import colors, { ColorType } from '~/shared/theme/colors';
 
 type Props = {
   className?: string;
-  color?: colors;
+  color?: ColorType;
 };
 
 export default function AlertTriangleIcon({ className, color = colors.red }: Props) {

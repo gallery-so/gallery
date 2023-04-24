@@ -1,13 +1,13 @@
 import styled from 'styled-components';
 
-import colors from '~/shared/theme/colors';
+import colors, { ColorType } from '~/shared/theme/colors';
 
 export const TITLE_FONT_FAMILY = "'GT Alpina', serif";
 export const BODY_FONT_FAMILY = "'ABC Diatype', Helvetica, Arial, sans-serif";
 export const BODY_MONO_FONT_FAMILY = "'ABC Diatype Mono', monospace";
 
 type TextProps = {
-  color?: colors;
+  color?: ColorType;
   caps?: boolean;
 };
 
