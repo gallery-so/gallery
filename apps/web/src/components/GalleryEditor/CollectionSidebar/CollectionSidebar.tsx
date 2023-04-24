@@ -13,7 +13,7 @@ import { useGalleryEditorContext } from '~/components/GalleryEditor/GalleryEdito
 import { NewTooltip } from '~/components/Tooltip/NewTooltip';
 import { useTooltipHover } from '~/components/Tooltip/useTooltipHover';
 import { CollectionSidebarQueryFragment$key } from '~/generated/CollectionSidebarQueryFragment.graphql';
-import { AdmireIcon } from '~/icons/AdmireIcon';
+import { PaintbrushIcon } from '~/icons/PaintbrushIcon';
 import { QuestionMarkIcon } from '~/icons/QuestionMarkIcon';
 import { UndoIcon } from '~/icons/UndoIcon';
 
@@ -79,7 +79,7 @@ function HelpIconContainer() {
     <>
       <NewTooltip
         {...getFloatingProps()}
-        style={floatingStyle}
+        style={{ ...floatingStyle, left: '0px' }}
         ref={floating}
         text="How to set up your gallery"
       />
@@ -139,10 +139,10 @@ function AutogalleryIconContainer({ onClick }: IconContainerProps) {
     <>
       <NewTooltip
         {...getFloatingProps()}
-        style={{ ...floatingStyle, width: '162px', left: '56px' }}
+        style={{ ...floatingStyle, width: '140px', left: '80px' }}
         ref={floating}
         whiteSpace="pre-line"
-        text={`Auto-generate a gallery based on your collections.\n\nFeel free to update it afterwards, and don't forget to save once you're done!`}
+        text={`Auto-generate a gallery organized by project.\n\nFeel free to update it afterwards, and don't forget to save once you're done!`}
       />
       <StyledAutogalleryIconContainer
         onClick={() => {
@@ -151,7 +151,7 @@ function AutogalleryIconContainer({ onClick }: IconContainerProps) {
         }}
         variant="blue"
         size="md"
-        icon={<AdmireIcon />}
+        icon={<PaintbrushIcon />}
         ref={reference}
         {...getReferenceProps()}
       />
