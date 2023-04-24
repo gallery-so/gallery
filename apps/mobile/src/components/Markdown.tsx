@@ -1,11 +1,12 @@
 import { PropsWithChildren, useCallback, useMemo, useState } from 'react';
-import { StyleProp, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { StyleProp, StyleSheet, Text, TouchableOpacity, useColorScheme } from 'react-native';
 import MarkdownDisplay, {
   MarkdownIt,
   MarkdownProps,
   RenderRules,
 } from 'react-native-markdown-display';
 import NamedStyles = StyleSheet.NamedStyles;
+import colors from '~/shared/theme/colors';
 
 const markdownStyles = StyleSheet.create({
   paragraph: {
@@ -14,11 +15,17 @@ const markdownStyles = StyleSheet.create({
   },
   body: {
     fontSize: 14,
-    color: '#141414',
+    color: colors.offBlack,
     fontFamily: 'ABCDiatypeRegular',
   },
   link: {
     color: '#707070',
+  },
+});
+
+const darkModeMarkdownStyles = StyleSheet.create({
+  body: {
+    color: colors.offWhite,
   },
 });
 
@@ -37,10 +44,15 @@ export function Markdown({
   style,
 }: GalleryMarkdownProps) {
   const [showAll, setShowAll] = useState(false);
+  const colorScheme = useColorScheme();
 
   const mergedStyles = useMemo(() => {
-    return StyleSheet.flatten([markdownStyles, style]) as NamedStyles<MarkdownProps>;
-  }, [style]);
+    return StyleSheet.flatten([
+      markdownStyles,
+      style,
+      colorScheme === 'dark' ? darkModeMarkdownStyles : undefined,
+    ]) as NamedStyles<MarkdownProps>;
+  }, [colorScheme, style]);
 
   const rules = useMemo<RenderRules>(() => {
     const rules: RenderRules = {};

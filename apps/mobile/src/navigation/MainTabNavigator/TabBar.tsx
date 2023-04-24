@@ -71,7 +71,7 @@ export function TabBar({ state, navigation }: TabBarProps) {
           ? { paddingBottom: bottom, paddingTop: 12 }
           : { paddingBottom: 12, paddingTop: 12 }
       }
-      className="bg-offWhite flex flex-row items-center justify-center"
+      className="bg-offWhite dark:bg-offBlack flex flex-row items-center justify-center"
     >
       {state.routes.map((route) => {
         let icon = null;

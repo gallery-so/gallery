@@ -1,5 +1,8 @@
 import { useMemo } from 'react';
+import { useColorScheme } from 'react-native';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+
+import colors from '~/shared/theme/colors';
 
 // The types here are not great from the Skeleton library
 // Idiomatically, the type of children would ReactNode so
@@ -9,12 +12,14 @@ export function GallerySkeleton({ children }: { children: JSX.Element }) {
     return 800 + Math.random() * 800;
   }, []);
 
+  const colorScheme = useColorScheme();
+
   return (
     <SkeletonPlaceholder
       speed={speed}
       borderRadius={4}
-      highlightColor="#f2f2f2"
-      backgroundColor="#e2e2e2"
+      highlightColor={colorScheme === 'dark' ? colors.offBlack : colors.faint}
+      backgroundColor={colorScheme === 'dark' ? colors.shadow : colors.porcelain}
     >
       {children}
     </SkeletonPlaceholder>

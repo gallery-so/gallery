@@ -79,7 +79,7 @@ function NftPreviewInner({ collectionTokenRef, tokenUrl, resizeMode, priority }:
             onLoad={handleLoad}
           />
           {imageState.kind === 'loading' ? (
-            <View className="absolute inset-0">
+            <View className="absolute inset-0 bg-white dark:bg-offBlack">
               <GallerySkeleton>
                 <SkeletonPlaceholder.Item width="100%" height="100%" />
               </GallerySkeleton>
