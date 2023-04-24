@@ -36,7 +36,7 @@ export function GalleryVirtualizedRow({ item }: Props) {
     const firstLineOfCollectorsNote = item.collectorsNote?.split('\n')?.[0];
 
     return (
-      <View className="flex flex-col bg-white">
+      <View className="flex flex-col bg-white px-4">
         <Markdown numberOfLines={1}>{firstLineOfCollectorsNote}</Markdown>
       </View>
     );
