@@ -42,7 +42,18 @@ export function GalleryVirtualizedRow({ item }: Props) {
       </View>
     );
   } else if (item.kind === 'collection-row') {
-    return <CollectionRow isLast={item.isLast} isFirst={item.isFirst} items={item.items} />;
+    return (
+      <CollectionRow
+        // Normally it is not performant to use a key in a FlashList
+        // But we have to do this to ensure the state for the token's image dimensions
+        // are reset.
+        // By default, FlashList will reuse component instances, so the state doesn't get reset
+        key={item.key}
+        isLast={item.isLast}
+        isFirst={item.isFirst}
+        items={item.items}
+      />
+    );
   }
 
   return null;
