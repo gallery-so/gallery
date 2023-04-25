@@ -49,8 +49,7 @@ export function CollectionCreatedFeedEvent({
         <Text numberOfLines={1}>
           <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
             Created a new collection
-          </Typography>
-
+          </Typography>{' '}
           <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
             {eventData.collection?.name ?? 'Untitled'}
           </Typography>
