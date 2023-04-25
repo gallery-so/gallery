@@ -23,7 +23,6 @@ export function GalleryTokenPreview({ tokenRef, containerWidth }: GalleryTokenPr
         __typename
 
         token @required(action: THROW) {
-          name
           ...getVideoOrImageUrlForNftPreviewFragment
         }
 
