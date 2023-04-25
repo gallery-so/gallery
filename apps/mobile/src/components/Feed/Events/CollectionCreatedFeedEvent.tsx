@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -46,13 +46,15 @@ export function CollectionCreatedFeedEvent({
   return (
     <View className="flex flex-1">
       <FeedEventCarouselCellHeader>
-        <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
-          Created a new collection
-        </Typography>
+        <Text numberOfLines={1}>
+          <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
+            Created a new collection
+          </Typography>
 
-        <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-          {eventData.collection?.name ?? 'Untitled'}
-        </Typography>
+          <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+            {eventData.collection?.name ?? 'Untitled'}
+          </Typography>
+        </Text>
       </FeedEventCarouselCellHeader>
 
       {eventData.collection?.collectorsNote && (
