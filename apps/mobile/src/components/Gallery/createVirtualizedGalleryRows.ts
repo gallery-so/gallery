@@ -16,8 +16,9 @@ export type GalleryListItemType = { key: string } & (
   | { kind: 'collection-note'; collectorsNote: string | null }
   | {
       kind: 'collection-row';
+      isFirst: boolean;
+      isLast: boolean;
       items: Array<WhitespaceBlock | GalleryTokenPreviewFragment$key>;
-      columns: number;
     }
 );
 
@@ -40,6 +41,7 @@ export function createVirtualizedGalleryRows({
         description
 
         collections {
+          dbid
           name
           collectorsNote
 
@@ -68,18 +70,18 @@ export function createVirtualizedGalleryRows({
   });
 
   const nonNullCollections = removeNullValues(gallery.collections);
-  nonNullCollections.forEach((collection) => {
+  nonNullCollections.forEach((collection, index) => {
     items.push({
       kind: 'collection-title',
-      key: `collection-title-${collection.name}`,
-      name: collection.name,
+      key: `collection-title-${collection.dbid}`,
+      name: `${index}-${collection.name}`,
     });
 
     stickyIndices.push(items.length - 1);
 
     items.push({
       kind: 'collection-note',
-      key: `collection-note-${collection.name}`,
+      key: `collection-note-${collection.dbid}`,
       collectorsNote: collection.collectorsNote,
     });
 
@@ -88,18 +90,28 @@ export function createVirtualizedGalleryRows({
 
     if (collection.layout) {
       const sections = parseCollectionLayoutGraphql(nonNullTokens, collection.layout);
-      for (const section of sections) {
-        for (let i = 0; i < section.items.length; i += section.columns) {
-          const rowItems = section.items.slice(i, i + section.columns);
+      sections.forEach((section, sectionIndex) => {
+        const rowCount = Math.ceil(section.items.length / section.columns);
+        for (let rowIndex = 0; rowIndex < rowCount; rowIndex++) {
+          const sectionColumnIndex = rowIndex * section.columns;
+
+          const rowItems = section.items.slice(
+            sectionColumnIndex,
+            sectionColumnIndex + section.columns
+          );
+
+          const isFirstRow = sectionIndex === 0 && rowIndex === 0;
+          const isLastRow = sectionIndex === sections.length - 1 && rowIndex === rowCount - 1;
 
           items.push({
             kind: 'collection-row',
-            key: `collection-row-${section.id}-${i}`,
-            columns: section.columns,
+            key: `collection-row-${section.id}-${rowIndex}`,
             items: rowItems,
+            isFirst: isFirstRow,
+            isLast: isLastRow,
           });
         }
-      }
+      });
     }
   });
 
