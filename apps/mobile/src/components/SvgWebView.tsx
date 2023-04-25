@@ -1,8 +1,57 @@
+import { LRUCache } from 'lru-cache';
+import { parse } from 'node-html-parser';
 import React, { useEffect, useState } from 'react';
 import { Platform, StyleProp, View, ViewStyle } from 'react-native';
 import { WebView } from 'react-native-webview';
 
-import { ErrorWithSentryMetadata } from '~/shared/errors/ErrorWithSentryMetadata';
+import { Dimensions } from '~/screens/NftDetailScreen/NftDetailAsset/types';
+
+type CachedSvgValue = {
+  dimensions: Dimensions | null;
+  content: string;
+};
+
+// At least one of 'max', 'ttl', or 'maxSize' is required, to prevent
+// unsafe unbounded storage.
+//
+// In most cases, it's best to specify a max for performance, so all
+// the required memory allocation is done up-front.
+//
+// All the other options are optional, see the sections below for
+// documentation on what each one does.  Most of them can be
+// overridden for specific items in get()/set()
+// eslint-disable-next-line @typescript-eslint/ban-types
+const options: LRUCache.Options<string, CachedSvgValue, void> = {
+  max: 500,
+
+  // how long to live in ms
+  ttl: 1000 * 60 * 5,
+
+  // return stale items before removing from cache?
+  allowStale: true,
+
+  updateAgeOnGet: true,
+  updateAgeOnHas: false,
+
+  // async method to use for cache.fetch(), for
+  // stale-while-revalidate type of behavior
+  fetchMethod: async (uri) => {
+    if (uri.match(/^data:image\/svg/)) {
+      const index = uri.indexOf('<svg');
+      const text = uri.slice(index);
+
+      return parseSvg(text);
+    } else {
+      return fetch(uri)
+        .then((response) => response.text())
+        .then((text) => {
+          return parseSvg(text);
+        });
+    }
+  },
+};
+
+const cache = new LRUCache(options);
 
 const heightUnits = Platform.OS === 'ios' ? 'vh' : '%';
 
@@ -14,6 +63,7 @@ const getHTML = (svgContent: string) => `
         margin: 0;
         padding: 0;
         width: 100${heightUnits};
+        height: 100${heightUnits};
         background-color: transparent;
         display: flex;
         justify-content: center;
@@ -35,7 +85,7 @@ const getHTML = (svgContent: string) => `
 type SvgWebViewProps = {
   source: { uri: string };
   onLoadStart?: () => void;
-  onLoadEnd?: () => void;
+  onLoadEnd?: (dimensions: Dimensions | null) => void;
   style: StyleProp<ViewStyle>;
 };
 
@@ -50,38 +100,58 @@ type SvgContentState =
     }
   | { kind: 'loading' };
 
+function parseSvg(text: string): CachedSvgValue {
+  const parsedHtml = parse(text);
+
+  const foundSvg = parsedHtml.querySelector('svg');
+
+  let width: number | null = null;
+  let height: number | null = null;
+  if (foundSvg) {
+    const viewbox = foundSvg.getAttribute('viewbox');
+
+    if (viewbox) {
+      // Viewbox comes in the form of x y width height
+      // We only care about the width and height so we just
+      // slice off the first two values.
+      const [w, h] = viewbox.split(' ').slice(2).map(parseFloat);
+
+      if (w && h) {
+        width = w;
+        height = h;
+      }
+    } else {
+      width = parseFloat(foundSvg.getAttribute('width') ?? '');
+      height = parseFloat(foundSvg.getAttribute('height') ?? '');
+
+      if (width && height) {
+        foundSvg.removeAttribute('width');
+        foundSvg.removeAttribute('height');
+        foundSvg.setAttribute('viewbox', `0 0 ${width} ${height}`);
+      }
+    }
+  }
+
+  const content = parsedHtml.toString();
+  if (width && height) {
+    return { content, dimensions: { width, height } };
+  } else {
+    return { content, dimensions: null };
+  }
+}
+
 export function SvgWebView({ source, onLoadStart, onLoadEnd, style }: SvgWebViewProps) {
   const uri = source.uri;
   const [svgState, setSvgState] = useState<SvgContentState>({ kind: 'loading' });
 
   useEffect(() => {
-    async function fetchSvg() {
-      onLoadStart?.();
-
-      if (uri) {
-        if (uri.match(/^data:image\/svg/)) {
-          const index = uri.indexOf('<svg');
-          setSvgState({ kind: 'success', content: uri.slice(index) });
-        } else {
-          try {
-            const res = await fetch(uri);
-            const text = await res.text();
-            setSvgState({ kind: 'success', content: text });
-          } catch (error) {
-            setSvgState({
-              kind: 'failure',
-              error: new ErrorWithSentryMetadata('Could not fetch SVG content', {
-                reason: (error as Error).message,
-              }),
-            });
-          }
-        }
-
-        onLoadEnd?.();
+    cache.fetch(uri).then((value) => {
+      if (value) {
+        onLoadStart?.();
+        setSvgState({ kind: 'success', content: value.content });
+        onLoadEnd?.(value.dimensions);
       }
-    }
-
-    fetchSvg();
+    });
 
     // Not dealing with memoization issues right now
     // eslint-disable-next-line react-hooks/exhaustive-deps
