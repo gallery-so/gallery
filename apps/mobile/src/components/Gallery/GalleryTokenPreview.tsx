@@ -1,6 +1,6 @@
 import { ResizeMode } from 'expo-av';
 import { useCallback, useMemo, useState } from 'react';
-import { LayoutChangeEvent, useWindowDimensions, View } from 'react-native';
+import { useWindowDimensions, View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
@@ -13,24 +13,17 @@ import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlFo
 
 type GalleryTokenPreviewProps = {
   tokenRef: GalleryTokenPreviewFragment$key;
+  containerWidth: number;
 };
 
-// We use this cache to avoid re-calculating the dimensions for the same image
-// as the user is scrolling through the gallery.
-// Without this, when the user scrolls fast, they'll have some height jitter.
-//
-// Generally speaking, you shouldn't ever keep this state outside of React.
-// But the real goal here is to avoid re-renders at all.
-// I'm not worried about transition tearing here.
-const resultDimensionCache = new Map<string, Dimensions>();
-
-export function GalleryTokenPreview({ tokenRef }: GalleryTokenPreviewProps) {
+export function GalleryTokenPreview({ tokenRef, containerWidth }: GalleryTokenPreviewProps) {
   const token = useFragment(
     graphql`
       fragment GalleryTokenPreviewFragment on CollectionToken {
         __typename
 
         token @required(action: THROW) {
+          name
           ...getVideoOrImageUrlForNftPreviewFragment
         }
 
@@ -40,28 +33,22 @@ export function GalleryTokenPreview({ tokenRef }: GalleryTokenPreviewProps) {
     tokenRef
   );
 
-  const tokenUrls = getVideoOrImageUrlForNftPreview({ tokenRef: token.token });
-  const tokenUrl = tokenUrls?.urls.medium;
+  const tokenUrl = useMemo(() => {
+    const tokenUrls = getVideoOrImageUrlForNftPreview({ tokenRef: token.token });
+    if (containerWidth < 200) {
+      return tokenUrls?.urls.small;
+    } else if (containerWidth < 400) {
+      return tokenUrls?.urls.medium;
+    } else {
+      return tokenUrls?.urls.large;
+    }
+  }, [containerWidth, token.token]);
 
   if (!tokenUrl) {
     throw new CouldNotRenderNftError('GalleryTokenPreview', 'Missing token url');
   }
 
-  const [containerDimensions, setContainerDimensions] = useState<Dimensions | null>(null);
   const [imageDimensions, setImageDimensions] = useState<Dimensions | null>(null);
-
-  const handleLayout = useCallback((event: LayoutChangeEvent) => {
-    setContainerDimensions((previous) => {
-      if (previous) {
-        return previous;
-      }
-
-      return {
-        width: event.nativeEvent.layout.width,
-        height: event.nativeEvent.layout.height,
-      };
-    });
-  }, []);
 
   const handleImageStateChange = useCallback((imageState: ImageState) => {
     if (imageState.kind === 'loaded') {
@@ -69,38 +56,26 @@ export function GalleryTokenPreview({ tokenRef }: GalleryTokenPreviewProps) {
     }
   }, []);
 
+  const screenDimensions = useWindowDimensions();
   const resultingDimensions = useMemo((): Dimensions | null => {
-    const cachedDimensions = resultDimensionCache.get(tokenUrl);
-
-    if (cachedDimensions) {
-      return cachedDimensions;
-    } else if (containerDimensions && imageDimensions) {
+    if (imageDimensions) {
       const result = fitDimensionsToContainerContain({
-        container: containerDimensions,
+        container: { width: containerWidth, height: screenDimensions.height / 2 },
         source: imageDimensions,
       });
 
-      resultDimensionCache.set(tokenUrl, result);
-
       return result;
-    } else if (containerDimensions) {
-      return containerDimensions;
+    } else if (containerWidth) {
+      return { width: containerWidth, height: containerWidth };
     }
 
     return null;
-  }, [containerDimensions, imageDimensions, tokenUrl]);
-
-  const screenDimensions = useWindowDimensions();
+  }, [containerWidth, imageDimensions, screenDimensions.height]);
 
   return (
     <View
-      className="flex-grow"
-      style={
-        resultingDimensions
-          ? resultingDimensions
-          : { height: screenDimensions.height / 2, width: '100%' }
-      }
-      onLayout={handleLayout}
+      className="flex-shrink-0 flex-grow"
+      style={resultingDimensions ? resultingDimensions : { height: 200, width: '100%' }}
     >
       <NftPreview
         onImageStateChange={handleImageStateChange}
