@@ -16,8 +16,8 @@ function NftPreviewAsset({ tokenUrl, onLoad, priority, resizeMode }: Props) {
   if (tokenUrl.includes('svg')) {
     return (
       <SvgWebView
-        onLoadEnd={() => {
-          onLoad?.(null);
+        onLoadEnd={(dimensions) => {
+          onLoad?.(dimensions);
         }}
         source={{
           uri: tokenUrl,

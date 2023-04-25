@@ -1,7 +1,9 @@
+import { parse } from 'node-html-parser';
 import React, { useEffect, useState } from 'react';
 import { Platform, StyleProp, View, ViewStyle } from 'react-native';
 import { WebView } from 'react-native-webview';
 
+import { Dimensions } from '~/screens/NftDetailScreen/NftDetailAsset/types';
 import { ErrorWithSentryMetadata } from '~/shared/errors/ErrorWithSentryMetadata';
 
 const heightUnits = Platform.OS === 'ios' ? 'vh' : '%';
@@ -14,6 +16,7 @@ const getHTML = (svgContent: string) => `
         margin: 0;
         padding: 0;
         width: 100${heightUnits};
+        height: 100${heightUnits};
         background-color: transparent;
         display: flex;
         justify-content: center;
@@ -35,7 +38,7 @@ const getHTML = (svgContent: string) => `
 type SvgWebViewProps = {
   source: { uri: string };
   onLoadStart?: () => void;
-  onLoadEnd?: () => void;
+  onLoadEnd?: (dimensions: Dimensions | null) => void;
   style: StyleProp<ViewStyle>;
 };
 
@@ -50,6 +53,32 @@ type SvgContentState =
     }
   | { kind: 'loading' };
 
+function parseSvg(text: string): { output: string; dimensions: Dimensions | null } {
+  const parsedHtml = parse(text);
+
+  const foundSvg = parsedHtml.querySelector('svg');
+
+  let width: number | null = null;
+  let height: number | null = null;
+  if (foundSvg && !foundSvg.getAttribute('viewbox')) {
+    width = parseFloat(foundSvg.getAttribute('width') ?? '');
+    height = parseFloat(foundSvg.getAttribute('height') ?? '');
+
+    if (width && height) {
+      foundSvg.removeAttribute('width');
+      foundSvg.removeAttribute('height');
+      foundSvg.setAttribute('viewbox', `0 0 ${width} ${height}`);
+    }
+  }
+
+  const output = parsedHtml.toString();
+  if (width && height) {
+    return { output, dimensions: { width, height } };
+  } else {
+    return { output, dimensions: null };
+  }
+}
+
 export function SvgWebView({ source, onLoadStart, onLoadEnd, style }: SvgWebViewProps) {
   const uri = source.uri;
   const [svgState, setSvgState] = useState<SvgContentState>({ kind: 'loading' });
@@ -61,12 +90,23 @@ export function SvgWebView({ source, onLoadStart, onLoadEnd, style }: SvgWebView
       if (uri) {
         if (uri.match(/^data:image\/svg/)) {
           const index = uri.indexOf('<svg');
-          setSvgState({ kind: 'success', content: uri.slice(index) });
+          const text = uri.slice(index);
+
+          const { output, dimensions } = parseSvg(text);
+
+          onLoadEnd?.(dimensions);
+
+          setSvgState({ kind: 'success', content: output });
         } else {
           try {
             const res = await fetch(uri);
             const text = await res.text();
-            setSvgState({ kind: 'success', content: text });
+
+            const { output, dimensions } = parseSvg(text);
+
+            onLoadEnd?.(dimensions);
+
+            setSvgState({ kind: 'success', content: output });
           } catch (error) {
             setSvgState({
               kind: 'failure',
@@ -76,8 +116,6 @@ export function SvgWebView({ source, onLoadStart, onLoadEnd, style }: SvgWebView
             });
           }
         }
-
-        onLoadEnd?.();
       }
     }
 
