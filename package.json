@@ -20,6 +20,7 @@
     "react": "18.2.0",
     "relay-runtime": "14.1.0",
     "typecript": "^5.0.0",
+    "entities": "3.0.1",
     "@expo/prebuild-config": "6.0.0",
     "@expo/config-plugins": "6.0.0",
     "@wagmi/core@0.7.9": "patch:@wagmi/core@npm%3A0.7.9#./.yarn/patches/@wagmi-core-npm-0.7.9-fde5e7dcba.patch"
