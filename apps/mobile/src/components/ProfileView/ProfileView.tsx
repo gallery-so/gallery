@@ -24,6 +24,7 @@ import { FollowersTabBar } from '~/components/ProfileView/FollowersTabBar';
 import { ProfileTabBar } from '~/components/ProfileView/ProfileTabBar';
 import { Typography } from '~/components/Typography';
 import { UserFollowCard } from '~/components/UserFollowList/UserFollowCard';
+import { GalleryTokenDimensionCacheProvider } from '~/contexts/GalleryTokenDimensionCacheContext';
 import { ProfileViewFragment$key } from '~/generated/ProfileViewFragment.graphql';
 import { ProfileViewQueryFragment$key } from '~/generated/ProfileViewQueryFragment.graphql';
 import { UserFollowCardFragment$key } from '~/generated/UserFollowCardFragment.graphql';
@@ -310,16 +311,18 @@ export function ProfileView({ userRef, queryRef }: ProfileViewProps) {
         </Typography>
       </View>
 
-      <FlashList
-        data={items}
-        keyExtractor={(item) => item.key}
-        onEndReached={handleLoadMore}
-        onEndReachedThreshold={0.8}
-        className="flex-1"
-        estimatedItemSize={82}
-        renderItem={renderItem}
-        stickyHeaderIndices={stickyIndices}
-      />
+      <GalleryTokenDimensionCacheProvider>
+        <FlashList
+          data={items}
+          keyExtractor={(item) => item.key}
+          onEndReached={handleLoadMore}
+          onEndReachedThreshold={0.8}
+          className="flex-1"
+          estimatedItemSize={200}
+          renderItem={renderItem}
+          stickyHeaderIndices={stickyIndices}
+        />
+      </GalleryTokenDimensionCacheProvider>
     </View>
   );
 }
