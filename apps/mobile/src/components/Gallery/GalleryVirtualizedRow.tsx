@@ -1,4 +1,5 @@
-import { View } from 'react-native';
+import clsx from 'clsx';
+import { useWindowDimensions, View } from 'react-native';
 
 import {
   GalleryListItemType,
@@ -41,7 +42,7 @@ export function GalleryVirtualizedRow({ item }: Props) {
       </View>
     );
   } else if (item.kind === 'collection-row') {
-    return <CollectionRow items={item.items} />;
+    return <CollectionRow isLast={item.isLast} isFirst={item.isFirst} items={item.items} />;
   }
 
   return null;
@@ -49,19 +50,45 @@ export function GalleryVirtualizedRow({ item }: Props) {
 
 function CollectionRow({
   items,
+  isFirst,
+  isLast,
 }: {
+  isFirst: boolean;
+  isLast: boolean;
   items: Array<WhitespaceBlock | GalleryTokenPreviewFragment$key>;
 }) {
+  const horizontalRowPadding = 16;
+  const inBetweenColumnPadding = 8;
+
+  const screenDimensions = useWindowDimensions();
+  const totalSpaceForTokens =
+    screenDimensions.width - horizontalRowPadding * 2 - inBetweenColumnPadding * (items.length - 1);
+
+  const widthPerToken = totalSpaceForTokens / items.length;
+
   return (
-    <View className="mb-12 flex w-full flex-row space-x-2 px-4 py-1">
+    <View
+      style={{ paddingHorizontal: horizontalRowPadding }}
+      className={clsx('flex w-full flex-row', {
+        'pt-4': isFirst, // First row should be space from header
+        'pt-2': !isFirst, // All the other rows have a bit of space between them
+        'pb-12': isLast, // Last one needs space between itself and the next collection
+      })}
+    >
       {items.map((subItem, index) => {
         return (
-          <View key={index} className="flex flex-grow">
+          <View
+            key={index}
+            style={{
+              paddingLeft: index !== 0 ? inBetweenColumnPadding : 0,
+            }}
+            className={clsx('flex flex-grow')}
+          >
             {'whitespace' in subItem ? (
               <View className="h-full bg-gray-400" />
             ) : (
               <View className="flex flex-grow items-center justify-center">
-                <GalleryTokenPreview tokenRef={subItem} />
+                <GalleryTokenPreview containerWidth={widthPerToken} tokenRef={subItem} />
               </View>
             )}
           </View>
