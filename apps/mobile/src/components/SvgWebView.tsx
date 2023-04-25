@@ -60,14 +60,28 @@ function parseSvg(text: string): { output: string; dimensions: Dimensions | null
 
   let width: number | null = null;
   let height: number | null = null;
-  if (foundSvg && !foundSvg.getAttribute('viewbox')) {
-    width = parseFloat(foundSvg.getAttribute('width') ?? '');
-    height = parseFloat(foundSvg.getAttribute('height') ?? '');
+  if (foundSvg) {
+    const viewbox = foundSvg.getAttribute('viewbox');
 
-    if (width && height) {
-      foundSvg.removeAttribute('width');
-      foundSvg.removeAttribute('height');
-      foundSvg.setAttribute('viewbox', `0 0 ${width} ${height}`);
+    if (viewbox) {
+      // Viewbox comes in the form of x y width height
+      // We only care about the width and height so we just
+      // slice off the first two values.
+      const [w, h] = viewbox.split(' ').slice(2).map(parseFloat);
+
+      if (w && h) {
+        width = w;
+        height = h;
+      }
+    } else {
+      width = parseFloat(foundSvg.getAttribute('width') ?? '');
+      height = parseFloat(foundSvg.getAttribute('height') ?? '');
+
+      if (width && height) {
+        foundSvg.removeAttribute('width');
+        foundSvg.removeAttribute('height');
+        foundSvg.setAttribute('viewbox', `0 0 ${width} ${height}`);
+      }
     }
   }
 
