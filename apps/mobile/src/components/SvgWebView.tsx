@@ -1,10 +1,58 @@
+// hybrid module, either works
+import { LRUCache } from 'lru-cache';
 import { parse } from 'node-html-parser';
 import React, { useEffect, useState } from 'react';
 import { Platform, StyleProp, View, ViewStyle } from 'react-native';
 import { WebView } from 'react-native-webview';
 
 import { Dimensions } from '~/screens/NftDetailScreen/NftDetailAsset/types';
-import { ErrorWithSentryMetadata } from '~/shared/errors/ErrorWithSentryMetadata';
+
+type CachedSvgValue = {
+  dimensions: Dimensions | null;
+  content: string;
+};
+
+// At least one of 'max', 'ttl', or 'maxSize' is required, to prevent
+// unsafe unbounded storage.
+//
+// In most cases, it's best to specify a max for performance, so all
+// the required memory allocation is done up-front.
+//
+// All the other options are optional, see the sections below for
+// documentation on what each one does.  Most of them can be
+// overridden for specific items in get()/set()
+type Context = {};
+const options: LRUCache.Options<string, CachedSvgValue, Context> = {
+  max: 500,
+
+  // how long to live in ms
+  ttl: 1000 * 60 * 5,
+
+  // return stale items before removing from cache?
+  allowStale: true,
+
+  updateAgeOnGet: true,
+  updateAgeOnHas: false,
+
+  // async method to use for cache.fetch(), for
+  // stale-while-revalidate type of behavior
+  fetchMethod: async (uri) => {
+    if (uri.match(/^data:image\/svg/)) {
+      const index = uri.indexOf('<svg');
+      const text = uri.slice(index);
+
+      return parseSvg(text);
+    } else {
+      return fetch(uri)
+        .then((response) => response.text())
+        .then((text) => {
+          return parseSvg(text);
+        });
+    }
+  },
+};
+
+const cache = new LRUCache(options);
 
 const heightUnits = Platform.OS === 'ios' ? 'vh' : '%';
 
@@ -53,7 +101,7 @@ type SvgContentState =
     }
   | { kind: 'loading' };
 
-function parseSvg(text: string): { output: string; dimensions: Dimensions | null } {
+function parseSvg(text: string): CachedSvgValue {
   const parsedHtml = parse(text);
 
   const foundSvg = parsedHtml.querySelector('svg');
@@ -85,11 +133,11 @@ function parseSvg(text: string): { output: string; dimensions: Dimensions | null
     }
   }
 
-  const output = parsedHtml.toString();
+  const content = parsedHtml.toString();
   if (width && height) {
-    return { output, dimensions: { width, height } };
+    return { content, dimensions: { width, height } };
   } else {
-    return { output, dimensions: null };
+    return { content, dimensions: null };
   }
 }
 
@@ -98,42 +146,13 @@ export function SvgWebView({ source, onLoadStart, onLoadEnd, style }: SvgWebView
   const [svgState, setSvgState] = useState<SvgContentState>({ kind: 'loading' });
 
   useEffect(() => {
-    async function fetchSvg() {
-      onLoadStart?.();
-
-      if (uri) {
-        if (uri.match(/^data:image\/svg/)) {
-          const index = uri.indexOf('<svg');
-          const text = uri.slice(index);
-
-          const { output, dimensions } = parseSvg(text);
-
-          onLoadEnd?.(dimensions);
-
-          setSvgState({ kind: 'success', content: output });
-        } else {
-          try {
-            const res = await fetch(uri);
-            const text = await res.text();
-
-            const { output, dimensions } = parseSvg(text);
-
-            onLoadEnd?.(dimensions);
-
-            setSvgState({ kind: 'success', content: output });
-          } catch (error) {
-            setSvgState({
-              kind: 'failure',
-              error: new ErrorWithSentryMetadata('Could not fetch SVG content', {
-                reason: (error as Error).message,
-              }),
-            });
-          }
-        }
+    cache.fetch(uri).then((value) => {
+      if (value) {
+        onLoadStart?.();
+        setSvgState({ kind: 'success', content: value.content });
+        onLoadEnd?.(value.dimensions);
       }
-    }
-
-    fetchSvg();
+    });
 
     // Not dealing with memoization issues right now
     // eslint-disable-next-line react-hooks/exhaustive-deps
