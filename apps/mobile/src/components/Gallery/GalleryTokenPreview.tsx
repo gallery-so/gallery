@@ -75,7 +75,7 @@ export function GalleryTokenPreview({ tokenRef, containerWidth }: GalleryTokenPr
   return (
     <View
       className="flex-grow"
-      style={resultDimensions ? resultDimensions : { width: '100%', aspectRatio: 1 }}
+      style={resultDimensions ? resultDimensions : { width: containerWidth, aspectRatio: 1 }}
     >
       <NftPreview
         onImageStateChange={handleImageStateChange}
