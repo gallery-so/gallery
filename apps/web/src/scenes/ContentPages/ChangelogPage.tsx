@@ -25,7 +25,7 @@ function dateToSlug(date: string) {
 export default function ChangelogPage({ sections }: Props) {
   const { asPath } = useRouter();
   useEffect(() => {
-    const hash =  asPath.split('#')[1];
+    const hash = asPath.split('#')[1];
     if (hash) {
       document.getElementById(hash.slice(1))?.scrollIntoView();
     }
