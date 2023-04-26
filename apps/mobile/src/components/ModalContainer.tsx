@@ -5,7 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { IconContainer } from '~/components/IconContainer';
 
-import { CloseIcon } from '../icons/CloseIcon';
+import { XMarkIcon } from '../icons/XMarkIcon';
 
 type Props = PropsWithChildren<{
   withBackButton?: boolean;
@@ -22,7 +22,7 @@ export function ModalContainer({ children, withBackButton = false }: Props) {
 
         {withBackButton && (
           <View className="px-4">
-            <IconContainer icon={<CloseIcon />} onPress={navigation.goBack} />
+            <IconContainer icon={<XMarkIcon />} onPress={navigation.goBack} />
           </View>
         )}
       </View>
