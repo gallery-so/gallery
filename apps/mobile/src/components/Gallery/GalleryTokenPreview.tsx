@@ -38,8 +38,6 @@ export function GalleryTokenPreview({ tokenRef, containerWidth }: GalleryTokenPr
     if (containerWidth < 200) {
       return tokenUrls?.urls.small;
     } else if (containerWidth < 400) {
-      return tokenUrls?.urls.medium;
-    } else {
       return tokenUrls?.urls.large;
     }
   }, [containerWidth, token.token]);
