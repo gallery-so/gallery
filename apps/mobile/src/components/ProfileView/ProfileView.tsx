@@ -1,5 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
+import clsx from 'clsx';
 import { useCallback, useMemo, useState } from 'react';
 import { Linking, Share, TouchableOpacity, View } from 'react-native';
 import { useFragment, usePaginationFragment } from 'react-relay';
@@ -170,7 +171,7 @@ export function ProfileView({ userRef, queryRef }: ProfileViewProps) {
       { kind: 'tab-headers', selectedTab: selectedRoute, key: 'tab-headers' },
     ];
 
-    const stickyIndices = [0];
+    const stickyIndices = [];
 
     if (selectedRoute === 'Followers') {
       items.push({ kind: 'sub-tab-headers', selectedTab: subTabRoute, key: 'sub-tab-headers' });
@@ -248,7 +249,11 @@ export function ProfileView({ userRef, queryRef }: ProfileViewProps) {
     ({ item, index }) => {
       let inner;
       if (item.kind === 'bio') {
-        inner = <Markdown>{user.bio}</Markdown>;
+        inner = (
+          <View className="mb-4 px-4">
+            <Markdown>{user.bio}</Markdown>
+          </View>
+        );
       } else if (item.kind === 'twitter') {
         inner = twitterPill ?? null;
       } else if (item.kind === 'tab-headers') {
@@ -286,7 +291,15 @@ export function ProfileView({ userRef, queryRef }: ProfileViewProps) {
         inner = <GalleryVirtualizedRow item={item} />;
       }
 
-      return <View className={index === 0 ? 'pt-3' : ''}>{inner}</View>;
+      return (
+        <View
+          className={clsx('bg-white', {
+            'pt-3': index === 0,
+          })}
+        >
+          {inner}
+        </View>
+      );
     },
     [markEventAsFailure, query, twitterPill, user.bio]
   );
@@ -319,8 +332,8 @@ export function ProfileView({ userRef, queryRef }: ProfileViewProps) {
       <GalleryTokenDimensionCacheProvider>
         <FlashList
           data={items}
-          getItemType={(item) => item.kind}
           keyExtractor={(item) => item.key}
+          getItemType={(item) => item.kind}
           onEndReached={handleLoadMore}
           onEndReachedThreshold={0.8}
           className="flex-1"
