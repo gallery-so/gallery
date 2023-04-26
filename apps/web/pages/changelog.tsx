@@ -1,8 +1,8 @@
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
-import AboutPage from '~/scenes/About/AboutPage';
+import ChangelogPage, { ChangelogSection } from '~/scenes/ContentPages/ChangelogPage';
 
 type Props = {
-  document: any;
+  document: ChangelogSection[];
 };
 
 export const getSanityUrl = (query: string) => {
@@ -14,22 +14,12 @@ export const getSanityUrl = (query: string) => {
   return `https://${sanityProjectId}.api.sanity.io/v1/data/query/production?query=${query}`;
 };
 
-export default function About({ document }: Props) {
-  console.log(document);
-  const page = document[0];
-  // todo handle page not found
-  return (
-    <GalleryRoute
-      element={<AboutPage title={page.title} landingSections={page.landingSections} />}
-      navbar={false}
-    />
-  );
+export default function Changelog({ document }: Props) {
+  return <GalleryRoute element={<ChangelogPage sections={document} />} navbar={false} />;
 }
 
-// const query = `*[ _type == "document" ]`;
-
 export const getServerSideProps = async () => {
-  const query = encodeURIComponent(`*[ _type == "aboutPage" ]`);
+  const query = encodeURIComponent(`*[ _type == "changelog" ]`);
   const url = getSanityUrl(query);
 
   const response = await fetch(url).then((res) => res.json());
