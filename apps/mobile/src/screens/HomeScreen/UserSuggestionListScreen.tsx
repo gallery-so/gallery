@@ -1,6 +1,5 @@
-import { useNavigation } from '@react-navigation/native';
-import { Suspense, useCallback, useMemo } from 'react';
-import { ScrollView, TouchableOpacity, View } from 'react-native';
+import { Suspense, useMemo } from 'react';
+import { ScrollView, View } from 'react-native';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 
 import { ModalContainer } from '~/components/ModalContainer';
@@ -9,8 +8,6 @@ import { SuggestionUser } from '~/components/Trending/SuggestionUser';
 import { Typography } from '~/components/Typography';
 import { UserSuggestionListScreenInnerFragment$key } from '~/generated/UserSuggestionListScreenInnerFragment.graphql';
 import { UserSuggestionListScreenQuery } from '~/generated/UserSuggestionListScreenQuery.graphql';
-
-import { XMarkIcon } from '../../icons/XMarkIcon';
 
 type Props = {
   queryRef: UserSuggestionListScreenInnerFragment$key;
@@ -42,8 +39,6 @@ export function InnerUserSuggestionListScreen({ queryRef }: Props) {
     `,
     queryRef
   );
-
-  const navigation = useNavigation();
 
   const nonNullUsers = useMemo(() => {
     const users = [];
