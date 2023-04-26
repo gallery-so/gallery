@@ -1,4 +1,3 @@
-// hybrid module, either works
 import { LRUCache } from 'lru-cache';
 import { parse } from 'node-html-parser';
 import React, { useEffect, useState } from 'react';
@@ -21,8 +20,8 @@ type CachedSvgValue = {
 // All the other options are optional, see the sections below for
 // documentation on what each one does.  Most of them can be
 // overridden for specific items in get()/set()
-type Context = {};
-const options: LRUCache.Options<string, CachedSvgValue, Context> = {
+// eslint-disable-next-line @typescript-eslint/ban-types
+const options: LRUCache.Options<string, CachedSvgValue, void> = {
   max: 500,
 
   // how long to live in ms
