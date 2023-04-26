@@ -34,6 +34,7 @@ LogBox.ignoreLogs([
   'Could not render NFT',
   'Could not render FeedEvent',
   'Relay: Missing @required',
+  'Tried to render EventTokenGrid without any tokens',
 ]);
 
 polyfillEncoding();
