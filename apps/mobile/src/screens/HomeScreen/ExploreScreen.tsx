@@ -8,16 +8,17 @@ import { LoadingTrendingPage } from '~/components/Trending/LoadingTrendingPage';
 import { SuggestedSection } from '~/components/Trending/SuggestedSection';
 import { TrendingSection } from '~/components/Trending/TrendingSection';
 import { TwitterSection } from '~/components/Trending/TwitterSection';
-import { FeaturedScreenFragment$key } from '~/generated/FeaturedScreenFragment.graphql';
-import { FeaturedScreenQuery } from '~/generated/FeaturedScreenQuery.graphql';
+import { ExploreScreenFragment$key } from '~/generated/ExploreScreenFragment.graphql';
+import { ExploreScreenQuery } from '~/generated/ExploreScreenQuery.graphql';
 
-type FeaturedScreenInnerProps = {
-  queryRef: FeaturedScreenFragment$key;
+type ExploreScreenInnerProps = {
+  queryRef: ExploreScreenFragment$key;
 };
-function FeaturedScreenInner({ queryRef }: FeaturedScreenInnerProps) {
+
+function ExploreScreenInner({ queryRef }: ExploreScreenInnerProps) {
   const query = useFragment(
     graphql`
-      fragment FeaturedScreenFragment on Query {
+      fragment ExploreScreenFragment on Query {
         trendingUsers5Days: trendingUsers(input: { report: LAST_5_DAYS }) {
           ... on TrendingUsersPayload {
             __typename
@@ -95,11 +96,11 @@ function FeaturedScreenInner({ queryRef }: FeaturedScreenInnerProps) {
   );
 }
 
-export function FeaturedScreen() {
-  const query = useLazyLoadQuery<FeaturedScreenQuery>(
+export function ExploreScreen() {
+  const query = useLazyLoadQuery<ExploreScreenQuery>(
     graphql`
-      query FeaturedScreenQuery($twitterListFirst: Int!, $twitterListAfter: String) {
-        ...FeaturedScreenFragment
+      query ExploreScreenQuery($twitterListFirst: Int!, $twitterListAfter: String) {
+        ...ExploreScreenFragment
       }
     `,
     {
@@ -110,7 +111,7 @@ export function FeaturedScreen() {
 
   return (
     <Suspense fallback={<LoadingTrendingPage />}>
-      <FeaturedScreenInner queryRef={query} />
+      <ExploreScreenInner queryRef={query} />
     </Suspense>
   );
 }
