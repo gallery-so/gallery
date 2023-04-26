@@ -14,19 +14,11 @@ import { TwitterSuggestionListScreenQuery } from '~/generated/TwitterSuggestionL
 import { TwitterSuggestionListScreenQueryFragment$key } from '~/generated/TwitterSuggestionListScreenQueryFragment.graphql';
 import { TwitterSuggestionListScreenRefetchableQuery } from '~/generated/TwitterSuggestionListScreenRefetchableQuery.graphql';
 
-export function TwitterSuggestionListScreen() {
-  const queryRef = useLazyLoadQuery<TwitterSuggestionListScreenQuery>(
-    graphql`
-      query TwitterSuggestionListScreenQuery($twitterListFirst: Int!, $twitterListAfter: String) {
-        ...TwitterSuggestionListScreenQueryFragment
-      }
-    `,
-    {
-      twitterListFirst: 24,
-      twitterListAfter: null,
-    }
-  );
+type Props = {
+  queryRef: TwitterSuggestionListScreenQueryFragment$key;
+};
 
+export function InnerSuggestionListScreen({ queryRef }: Props) {
   const {
     data: query,
     loadNext,
@@ -102,7 +94,7 @@ export function TwitterSuggestionListScreen() {
   }, [hasNext, loadNext]);
 
   return (
-    <Suspense fallback={<LoadingFollowerList />}>
+    <>
       <View className="mx-auto mt-3 h-1 w-20 rounded-md bg-[#d9d9d9]" />
       <View className="p-4">
         <TouchableOpacity
@@ -131,6 +123,26 @@ export function TwitterSuggestionListScreen() {
           estimatedItemSize={100}
         />
       </SafeAreaView>
+    </>
+  );
+}
+
+export function TwitterSuggestionListScreen() {
+  const query = useLazyLoadQuery<TwitterSuggestionListScreenQuery>(
+    graphql`
+      query TwitterSuggestionListScreenQuery($twitterListFirst: Int!, $twitterListAfter: String) {
+        ...TwitterSuggestionListScreenQueryFragment
+      }
+    `,
+    {
+      twitterListFirst: 24,
+      twitterListAfter: null,
+    }
+  );
+
+  return (
+    <Suspense fallback={<LoadingFollowerList />}>
+      <InnerSuggestionListScreen queryRef={query} />
     </Suspense>
   );
 }

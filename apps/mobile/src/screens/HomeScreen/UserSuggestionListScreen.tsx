@@ -1,18 +1,23 @@
 import { useNavigation } from '@react-navigation/native';
 import { Suspense, useCallback, useMemo } from 'react';
 import { SafeAreaView, ScrollView, TouchableOpacity, View } from 'react-native';
-import { graphql, useLazyLoadQuery } from 'react-relay';
+import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 
 import { XMarkIcon } from '~/components/Search/XMarkIcon';
 import { LoadingFollowerList } from '~/components/Trending/LoadingFollowerList';
 import { SuggestionUser } from '~/components/Trending/SuggestionUser';
 import { Typography } from '~/components/Typography';
+import { UserSuggestionListScreenInnerFragment$key } from '~/generated/UserSuggestionListScreenInnerFragment.graphql';
 import { UserSuggestionListScreenQuery } from '~/generated/UserSuggestionListScreenQuery.graphql';
 
-export function UserSuggestionListScreen() {
-  const query = useLazyLoadQuery<UserSuggestionListScreenQuery>(
+type Props = {
+  queryRef: UserSuggestionListScreenInnerFragment$key;
+};
+
+export function InnerUserSuggestionListScreen({ queryRef }: Props) {
+  const query = useFragment(
     graphql`
-      query UserSuggestionListScreenQuery {
+      fragment UserSuggestionListScreenInnerFragment on Query {
         viewer @required(action: THROW) {
           ... on Viewer {
             suggestedUsers(first: 24)
@@ -33,7 +38,7 @@ export function UserSuggestionListScreen() {
         ...SuggestionUserQueryFragment
       }
     `,
-    {}
+    queryRef
   );
 
   const navigation = useNavigation();
@@ -55,7 +60,7 @@ export function UserSuggestionListScreen() {
   }, [navigation]);
 
   return (
-    <Suspense fallback={<LoadingFollowerList />}>
+    <>
       <View className="mx-auto mt-3 h-1 w-20 rounded-md bg-[#d9d9d9]" />
       <View className="p-4">
         <TouchableOpacity
@@ -81,6 +86,22 @@ export function UserSuggestionListScreen() {
           ))}
         </ScrollView>
       </SafeAreaView>
+    </>
+  );
+}
+
+export function UserSuggestionListScreen() {
+  const query = useLazyLoadQuery<UserSuggestionListScreenQuery>(
+    graphql`
+      query UserSuggestionListScreenQuery {
+        ...UserSuggestionListScreenInnerFragment
+      }
+    `,
+    {}
+  );
+  return (
+    <Suspense fallback={<LoadingFollowerList />}>
+      <InnerUserSuggestionListScreen queryRef={query} />
     </Suspense>
   );
 }
