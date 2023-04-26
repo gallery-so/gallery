@@ -17,7 +17,7 @@ export function MainTabNavigator() {
   return (
     <Tab.Navigator
       tabBarPosition="bottom"
-      initialRouteName="Account"
+      initialRouteName="Home"
       tabBar={TabBar}
       screenOptions={{ swipeEnabled: false }}
       sceneContainerStyle={{ paddingTop: top, backgroundColor: 'white' }}
