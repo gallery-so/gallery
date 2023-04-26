@@ -1,7 +1,6 @@
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import { Suspense, useCallback, useMemo } from 'react';
 import { View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 
 import { USERS_PER_PAGE } from '~/components/Trending/constants';
@@ -136,7 +135,7 @@ function ExploreScreenInner({ queryRef }: ExploreScreenInnerProps) {
   }, [query]);
 
   return (
-    <View className="flex-1">
+    <View className="flex-1 pb-6">
       <FlashList renderItem={renderItem} data={items} estimatedItemSize={300} />
     </View>
   );

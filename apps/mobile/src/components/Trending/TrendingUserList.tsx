@@ -76,7 +76,7 @@ export function TrendingUserList({ usersRef, queryRef }: Props) {
         </View>
       );
     },
-    [query]
+    [query, width]
   );
 
   const handleScroll = useCallback(
