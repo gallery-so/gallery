@@ -103,6 +103,7 @@ export function TwitterSuggestionListScreen() {
 
   return (
     <Suspense fallback={<LoadingFollowerList />}>
+      <View className="mx-auto mt-3 h-1 w-20 rounded-md bg-[#d9d9d9]" />
       <View className="p-4">
         <TouchableOpacity
           onPress={handleClose}
