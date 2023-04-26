@@ -152,7 +152,6 @@ export function SvgWebView({ source, onLoadStart, onLoadEnd, style }: SvgWebView
     cache.fetch(uri).then((value) => {
       if (value) {
         onLoadStart?.();
-        console.log(value);
         setSvgState({ kind: 'success', content: value.content });
         onLoadEnd?.(value.dimensions);
       }
