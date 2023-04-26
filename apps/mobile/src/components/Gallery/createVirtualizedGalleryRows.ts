@@ -44,6 +44,7 @@ export function createVirtualizedGalleryRows({
           dbid
           name
           collectorsNote
+          hidden
 
           tokens {
             __typename
@@ -69,8 +70,10 @@ export function createVirtualizedGalleryRows({
     description: gallery.description,
   });
 
-  const nonNullCollections = removeNullValues(gallery.collections);
-  nonNullCollections.forEach((collection, index) => {
+  const filteredCollections = removeNullValues(gallery.collections).filter(
+    (collection) => !collection.hidden
+  );
+  filteredCollections.forEach((collection, index) => {
     items.push({
       kind: 'collection-title',
       key: `collection-title-${collection.dbid}`,
