@@ -1,12 +1,15 @@
 import { useNavigation } from '@react-navigation/native';
+import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import { Suspense, useCallback, useMemo } from 'react';
-import { SafeAreaView, ScrollView, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView, TouchableOpacity, View } from 'react-native';
 import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 
 import { XMarkIcon } from '~/components/Search/XMarkIcon';
+import { USERS_PER_PAGE } from '~/components/Trending/constants';
 import { LoadingFollowerList } from '~/components/Trending/LoadingFollowerList';
 import { SuggestionUser } from '~/components/Trending/SuggestionUser';
 import { Typography } from '~/components/Typography';
+import { SuggestionUserFragment$key } from '~/generated/SuggestionUserFragment.graphql';
 import { TwitterSuggestionListScreenQuery } from '~/generated/TwitterSuggestionListScreenQuery.graphql';
 import { TwitterSuggestionListScreenQueryFragment$key } from '~/generated/TwitterSuggestionListScreenQueryFragment.graphql';
 import { TwitterSuggestionListScreenRefetchableQuery } from '~/generated/TwitterSuggestionListScreenRefetchableQuery.graphql';
@@ -24,7 +27,11 @@ export function TwitterSuggestionListScreen() {
     }
   );
 
-  const { data: query } = usePaginationFragment<
+  const {
+    data: query,
+    loadNext,
+    hasNext,
+  } = usePaginationFragment<
     TwitterSuggestionListScreenRefetchableQuery,
     TwitterSuggestionListScreenQueryFragment$key
   >(
@@ -81,6 +88,19 @@ export function TwitterSuggestionListScreen() {
     navigation.goBack();
   }, [navigation]);
 
+  const renderItem = useCallback<ListRenderItem<SuggestionUserFragment$key>>(
+    ({ item, index }) => {
+      return <SuggestionUser key={index} userRef={item} queryRef={query} />;
+    },
+    [query]
+  );
+
+  const handleLoadMore = useCallback(() => {
+    if (hasNext) {
+      loadNext(USERS_PER_PAGE);
+    }
+  }, [hasNext, loadNext]);
+
   return (
     <Suspense fallback={<LoadingFollowerList />}>
       <View className="p-4">
@@ -101,11 +121,14 @@ export function TwitterSuggestionListScreen() {
         </Typography>
       </View>
       <SafeAreaView className="flex-1">
-        <ScrollView>
-          {nonNullUsers.map((user, index) => (
-            <SuggestionUser key={index} userRef={user} queryRef={query} />
-          ))}
-        </ScrollView>
+        <FlashList
+          data={nonNullUsers}
+          renderItem={renderItem}
+          keyExtractor={(_, index) => String(index)}
+          onEndReached={handleLoadMore}
+          onEndReachedThreshold={0.8}
+          estimatedItemSize={100}
+        />
       </SafeAreaView>
     </Suspense>
   );

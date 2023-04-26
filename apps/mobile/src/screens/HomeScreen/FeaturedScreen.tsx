@@ -3,6 +3,7 @@ import { ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 
+import { USERS_PER_PAGE } from '~/components/Trending/constants';
 import { LoadingTrendingPage } from '~/components/Trending/LoadingTrendingPage';
 import { SuggestedSection } from '~/components/Trending/SuggestedSection';
 import { TrendingSection } from '~/components/Trending/TrendingSection';
@@ -102,7 +103,7 @@ export function FeaturedScreen() {
       }
     `,
     {
-      twitterListFirst: 24,
+      twitterListFirst: USERS_PER_PAGE,
       twitterListAfter: null,
     }
   );
