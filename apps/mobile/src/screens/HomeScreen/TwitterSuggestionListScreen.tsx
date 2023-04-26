@@ -1,10 +1,10 @@
 import { useNavigation } from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import { Suspense, useCallback, useMemo } from 'react';
-import { SafeAreaView, TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 
-import { XMarkIcon } from '~/components/Search/XMarkIcon';
+import { ModalContainer } from '~/components/ModalContainer';
 import { USERS_PER_PAGE } from '~/components/Trending/constants';
 import { LoadingFollowerList } from '~/components/Trending/LoadingFollowerList';
 import { SuggestionUser } from '~/components/Trending/SuggestionUser';
@@ -13,6 +13,8 @@ import { SuggestionUserFragment$key } from '~/generated/SuggestionUserFragment.g
 import { TwitterSuggestionListScreenQuery } from '~/generated/TwitterSuggestionListScreenQuery.graphql';
 import { TwitterSuggestionListScreenQueryFragment$key } from '~/generated/TwitterSuggestionListScreenQueryFragment.graphql';
 import { TwitterSuggestionListScreenRefetchableQuery } from '~/generated/TwitterSuggestionListScreenRefetchableQuery.graphql';
+
+import { XMarkIcon } from '../../icons/XMarkIcon';
 
 type Props = {
   queryRef: TwitterSuggestionListScreenQueryFragment$key;
@@ -94,26 +96,23 @@ export function InnerSuggestionListScreen({ queryRef }: Props) {
   }, [hasNext, loadNext]);
 
   return (
-    <>
-      <View className="mx-auto mt-3 h-1 w-20 rounded-md bg-[#d9d9d9]" />
-      <View className="p-4">
-        <TouchableOpacity
-          onPress={handleClose}
-          className="bg-porcelain mb-4 flex h-6 w-6 items-center justify-center rounded-full"
-        >
-          <XMarkIcon />
-        </TouchableOpacity>
-        <Typography
-          font={{
-            family: 'ABCDiatype',
-            weight: 'Bold',
-          }}
-          className="text-lg"
-        >
-          We've found {totalFollowing} {totalFollowing ? 'person' : 'people'} you know from Twitter
-        </Typography>
-      </View>
-      <SafeAreaView className="flex-1">
+    <View className="flex flex-1 flex-col">
+      <TouchableOpacity
+        onPress={handleClose}
+        className="bg-porcelain mb-4 flex h-6 w-6 items-center justify-center rounded-full"
+      >
+        <XMarkIcon />
+      </TouchableOpacity>
+      <Typography
+        font={{
+          family: 'ABCDiatype',
+          weight: 'Bold',
+        }}
+        className="text-lg"
+      >
+        We've found {totalFollowing} {totalFollowing ? 'person' : 'people'} you know from Twitter
+      </Typography>
+      <View className="flex-grow">
         <FlashList
           data={nonNullUsers}
           renderItem={renderItem}
@@ -122,8 +121,8 @@ export function InnerSuggestionListScreen({ queryRef }: Props) {
           onEndReachedThreshold={0.8}
           estimatedItemSize={100}
         />
-      </SafeAreaView>
-    </>
+      </View>
+    </View>
   );
 }
 
@@ -141,8 +140,10 @@ export function TwitterSuggestionListScreen() {
   );
 
   return (
-    <Suspense fallback={<LoadingFollowerList />}>
-      <InnerSuggestionListScreen queryRef={query} />
-    </Suspense>
+    <ModalContainer>
+      <Suspense fallback={<LoadingFollowerList />}>
+        <InnerSuggestionListScreen queryRef={query} />
+      </Suspense>
+    </ModalContainer>
   );
 }

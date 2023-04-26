@@ -15,7 +15,7 @@ export function LoadingFollowerItem({ style }: LoadingFollowerItemProps) {
         <SkeletonPlaceholder.Item
           flexDirection="column"
           justifyContent="space-between"
-          padding={12}
+          paddingVertical={12}
           gap={8}
         >
           <SkeletonPlaceholder.Item flexDirection="row" justifyContent="space-between" gap={8}>
