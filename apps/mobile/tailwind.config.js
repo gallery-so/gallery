@@ -11,6 +11,7 @@ module.exports = {
         offWhite: '#F9F9F9',
         white: '#FEFEFE',
         offBlack: '#141414',
+        black: '#000000',
         shadow: '#707070',
         metal: '#9e9e9e',
         faint: '#f2f2f2',

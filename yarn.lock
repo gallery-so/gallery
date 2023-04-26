@@ -2655,9 +2655,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@expo/cli@npm:0.7.0":
-  version: 0.7.0
-  resolution: "@expo/cli@npm:0.7.0"
+"@expo/cli@npm:0.7.1":
+  version: 0.7.1
+  resolution: "@expo/cli@npm:0.7.1"
   dependencies:
     "@babel/runtime": ^7.20.0
     "@expo/code-signing-certificates": 0.0.5
@@ -2670,7 +2670,7 @@ __metadata:
     "@expo/osascript": ^2.0.31
     "@expo/package-manager": ~1.0.0
     "@expo/plist": ^0.0.20
-    "@expo/prebuild-config": 6.0.0
+    "@expo/prebuild-config": 6.0.1
     "@expo/rudder-sdk-node": 1.1.1
     "@expo/spawn-async": 1.5.0
     "@expo/xcpretty": ^4.2.1
@@ -2722,7 +2722,7 @@ __metadata:
     ws: ^8.12.1
   bin:
     expo-internal: build/bin/cli
-  checksum: 08f217608ec425266913140a040ed94b9b0bced11f218bea63b692486d8173a5cbb0da9fab2ecb2e43c585c9e2270188bc8d661a1b8f06a4ccbcdee683126b43
+  checksum: 5b84f3ad6c57fa9c64a0edd99558ada7fca8556d6137213df141b90cd4c93b3605dafce1a72cb11f0448857c220c7be63cde295a2cb13d99ba1f122ea362da05
   languageName: node
   linkType: hard
 
@@ -16505,15 +16505,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-splash-screen@npm:~0.18.1":
-  version: 0.18.1
-  resolution: "expo-splash-screen@npm:0.18.1"
+"expo-splash-screen@npm:~0.18.2":
+  version: 0.18.2
+  resolution: "expo-splash-screen@npm:0.18.2"
   dependencies:
     "@expo/configure-splash-screen": ^0.6.0
-    "@expo/prebuild-config": 6.0.0
+    "@expo/prebuild-config": 6.0.1
   peerDependencies:
     expo: "*"
-  checksum: 39a43bd3f779432721e845f171c51b0a64d713029ec14202e65a84434b09b9184dd6b173d13331321766854cf400186b3ae4aa8736d6fda40f380aae756d6673
+  checksum: 2c62d2989bf8945efb41056eb93b711cec260d24eed96a58789c961ab86fa3552466d221f1d3e2d926134136aa95337cdba94035d328a28c92793c31de95e718
   languageName: node
   linkType: hard
 
@@ -16575,12 +16575,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo@npm:~48.0.11":
-  version: 48.0.12
-  resolution: "expo@npm:48.0.12"
+"expo@npm:~48.0.15":
+  version: 48.0.15
+  resolution: "expo@npm:48.0.15"
   dependencies:
     "@babel/runtime": ^7.20.0
-    "@expo/cli": 0.7.0
+    "@expo/cli": 0.7.1
     "@expo/config": 8.0.2
     "@expo/config-plugins": 6.0.1
     "@expo/vector-icons": ^13.0.0
@@ -16603,7 +16603,7 @@ __metadata:
     uuid: ^3.4.0
   bin:
     expo: bin/cli.js
-  checksum: 013b29aaf741143bd1afaad867af2a1acee94ceb7e226bd1f0c40bf108b7ee41ff20617fa81c65a6680fd3dbf68a66fbddb0ead60d3bb13e825066e092cfc0c1
+  checksum: afd0b5b13af37608bba0746ade8868cbd924bca7c8a017fe266ae466059938baa9c556ab3917d15e9f2cbe65e80b0517058bf78524311c4b9aea8dc51b0aa85e
   languageName: node
   linkType: hard
 
@@ -23579,7 +23579,7 @@ __metadata:
     clsx: ^1.2.1
     date-fns: ^2.29.3
     eas-cli: ^3.7.2
-    expo: ~48.0.11
+    expo: ~48.0.15
     expo-av: ~13.2.1
     expo-barcode-scanner: ~12.3.2
     expo-constants: ~14.2.1
@@ -23587,14 +23587,14 @@ __metadata:
     expo-dev-menu: ^2.1.4
     expo-device: ~5.2.1
     expo-font: ~11.1.1
-    expo-splash-screen: ~0.18.1
+    expo-splash-screen: ~0.18.2
     expo-status-bar: ~1.4.2
     expo-system-ui: ~2.2.1
     expo-updates: ~0.16.3
     lodash.merge: ^4.6.2
     nativewind: ^2.0.11
     react: 18.2.0
-    react-native: 0.71.6
+    react-native: 0.71.7
     react-native-fast-image: ^8.6.3
     react-native-fetch-api: ^3.0.0
     react-native-gesture-handler: ~2.9.0
@@ -26598,9 +26598,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native@npm:0.71.6":
-  version: 0.71.6
-  resolution: "react-native@npm:0.71.6"
+"react-native@npm:0.71.7":
+  version: 0.71.7
+  resolution: "react-native@npm:0.71.7"
   dependencies:
     "@jest/create-cache-key-function": ^29.2.1
     "@react-native-community/cli": 10.2.2
@@ -26640,7 +26640,7 @@ __metadata:
     react: 18.2.0
   bin:
     react-native: cli.js
-  checksum: aadbd9b57dd9b10a41b60337ea1a4103e2fb2320784bf148100e807bd0a77929bdb310ea68d054165cd3c00647a3d020eecb0efb864cc7a93733b2d580e1e675
+  checksum: efd91d5560290b883e0d3d3482cc4657268c2e480171b63a0c6b7dc8f6b1331298feac7d9966e1831d95d9fee893dfa831252052561232843e4982880238f09e
   languageName: node
   linkType: hard
 
