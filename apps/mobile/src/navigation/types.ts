@@ -11,12 +11,14 @@ export type RootStackNavigatorParamList = {
     tokenId: string;
     collectionId: string;
   };
+  UserSuggestionList: undefined;
+  TwitterSuggestionList: undefined;
 };
 
 export type FeedTabNavigatorParamList = {
   Trending: undefined;
   Latest: undefined;
-  Featured: undefined;
+  Explore: undefined;
 };
 
 export type MainTabNavigatorParamList = {

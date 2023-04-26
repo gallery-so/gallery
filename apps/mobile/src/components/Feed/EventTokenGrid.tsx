@@ -65,8 +65,8 @@ export function EventTokenGrid({
           // We use min height here since it's possible that the
           style={{ minHeight: fullHeight, width: fullWidth }}
         >
-          <View className="flex h-1/2 w-full flex-row space-x-[2]">
-            <View className="h-full w-1/2">
+          <View className="flex w-full flex-grow flex-row space-x-[2]">
+            <View className="h-full flex-grow">
               <NftPreview
                 priority={imagePriority}
                 resizeMode={ResizeMode.COVER}
@@ -74,7 +74,7 @@ export function EventTokenGrid({
                 tokenUrl={firstToken.urls.medium}
               />
             </View>
-            <View className="h-full w-1/2">
+            <View className="h-full flex-grow">
               <NftPreview
                 priority={imagePriority}
                 resizeMode={ResizeMode.COVER}
@@ -84,8 +84,8 @@ export function EventTokenGrid({
             </View>
           </View>
 
-          <View className="flex h-1/2 w-full flex-row space-x-[2]">
-            <View className="h-full w-1/2">
+          <View className="flex w-full flex-grow flex-row space-x-[2]">
+            <View className="h-full flex-grow">
               <NftPreview
                 priority={imagePriority}
                 resizeMode={ResizeMode.COVER}
@@ -93,7 +93,7 @@ export function EventTokenGrid({
                 tokenUrl={thirdToken.urls.medium}
               />
             </View>
-            <View className="h-full w-1/2">
+            <View className="h-full flex-grow">
               <NftPreview
                 priority={imagePriority}
                 resizeMode={ResizeMode.COVER}
@@ -111,7 +111,7 @@ export function EventTokenGrid({
           // We use min height here since it's possible that the
           style={{ minHeight: halfHeight, width: fullWidth }}
         >
-          <View className="h-full w-1/2">
+          <View className="h-full flex-grow">
             <NftPreview
               priority={imagePriority}
               resizeMode={ResizeMode.COVER}
@@ -119,7 +119,7 @@ export function EventTokenGrid({
               tokenUrl={firstToken.urls.large}
             />
           </View>
-          <View className="h-full w-1/2">
+          <View className="h-full flex-grow">
             <NftPreview
               priority={imagePriority}
               resizeMode={ResizeMode.COVER}

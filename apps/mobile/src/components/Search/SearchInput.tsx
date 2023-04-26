@@ -2,8 +2,8 @@ import { useFocusEffect } from '@react-navigation/native';
 import { useCallback, useRef, useState } from 'react';
 import { TextInput, TextInputProps, TouchableOpacity, View } from 'react-native';
 
+import { XMarkIcon } from '../../icons/XMarkIcon';
 import { useSearchContext } from './SearchContext';
-import { XMarkIcon } from './XMarkIcon';
 
 type Props = TextInputProps;
 

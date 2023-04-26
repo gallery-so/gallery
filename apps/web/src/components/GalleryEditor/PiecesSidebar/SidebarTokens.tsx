@@ -36,6 +36,12 @@ export const SidebarTokens = ({
         # Escape hatch for data processing in util files
         # eslint-disable-next-line relay/unused-fields
         chain
+        # Escape hatch for data processing in util files
+        # eslint-disable-next-line relay/unused-fields
+        isSpamByUser
+        # Escape hatch for data processing in util files
+        # eslint-disable-next-line relay/unused-fields
+        isSpamByProvider
 
         contract {
           # Escape hatch for data processing in util files

@@ -1,9 +1,6 @@
-import { useNavigation } from '@react-navigation/native';
-import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
 import { GallerySearchResultFragment$key } from '~/generated/GallerySearchResultFragment.graphql';
-import { RootStackNavigatorProp } from '~/navigation/types';
 
 import { SearchResult } from '../SearchResult';
 

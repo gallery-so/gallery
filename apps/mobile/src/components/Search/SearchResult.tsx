@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { StyleSheet, TouchableOpacity, TouchableOpacityProps } from 'react-native';
+import { sanitizeMarkdown } from 'src/utils/sanitizeMarkdown';
 
 import { Markdown } from '../Markdown';
 import { useSearchContext } from './SearchContext';
@@ -27,11 +28,7 @@ export function SearchResult({ title, description, ...props }: Props) {
   const highlightedDescription = useMemo(() => {
     const regex = new RegExp(keyword, 'gi');
 
-    // Clean the markdown
-    const unformattedDescription = description
-      .replace(/\*\*/g, '') // bold
-      .replace(/\[.*\]\(.*\)/g, '') // link markdown tag from description
-      .replace(/\n/g, ' '); // break line
+    const unformattedDescription = sanitizeMarkdown(description ?? '');
 
     const matchIndex = unformattedDescription.search(regex);
     let truncatedDescription;

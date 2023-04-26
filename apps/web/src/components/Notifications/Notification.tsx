@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { useCallback, useMemo } from 'react';
 import { useFragment } from 'react-relay';
-import { graphql } from 'relay-runtime';
+import { ConnectionHandler, graphql } from 'relay-runtime';
 import styled, { css } from 'styled-components';
 
 import colors from '~/components/core/colors';
@@ -18,9 +18,8 @@ import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarD
 import { NotificationFragment$key } from '~/generated/NotificationFragment.graphql';
 import { NotificationInnerFragment$key } from '~/generated/NotificationInnerFragment.graphql';
 import { NotificationQueryFragment$key } from '~/generated/NotificationQueryFragment.graphql';
+import { useClearNotifications } from '~/shared/relay/useClearNotifications';
 import { getTimeSince } from '~/shared/utils/time';
-
-import { useClearNotifications } from './useClearNotifications';
 
 type NotificationProps = {
   notificationRef: NotificationFragment$key;
@@ -73,6 +72,7 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
       fragment NotificationQueryFragment on Query {
         viewer {
           ... on Viewer {
+            id
             user {
               username
               dbid
@@ -146,12 +146,18 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
     toggleSubView,
   ]);
 
-  const userId = query.viewer?.user?.dbid ?? '';
   const isClickable = handleNotificationClick != undefined;
   const handleClick = useCallback(() => {
     handleNotificationClick?.handleClick();
-    clearAllNotifications(userId);
-  }, [clearAllNotifications, handleNotificationClick, userId]);
+    if (!query.viewer?.user?.dbid || !query.viewer.id) {
+      return;
+    }
+
+    clearAllNotifications(query.viewer.user.dbid, [
+      ConnectionHandler.getConnectionID(query.viewer.id, 'NotificationsFragment_notifications'),
+      ConnectionHandler.getConnectionID(query.viewer.id, 'StandardSidebarFragment_notifications'),
+    ]);
+  }, [clearAllNotifications, handleNotificationClick, query.viewer]);
   const showCaret = handleNotificationClick?.showCaret ?? false;
 
   const timeAgo = getTimeSince(notification.updatedTime);
