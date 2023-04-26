@@ -1,8 +1,8 @@
+import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import { useCallback, useMemo, useState } from 'react';
 import {
   NativeScrollEvent,
   NativeSyntheticEvent,
-  ScrollView,
   StyleProp,
   useWindowDimensions,
   View,
@@ -46,11 +46,13 @@ export function TrendingUserList({ usersRef, queryRef }: Props) {
   const { width } = useWindowDimensions();
 
   // Format the data into array of arrays of size PAGE_SIZE
-  const pages = useMemo(() => {
-    const pages = [];
+  const pages = useMemo((): ListItemType[] => {
+    const pages: ListItemType[] = [];
 
     for (let i = 0; i < users.length; i += PAGE_SIZE) {
-      pages.push(users.slice(i, i + PAGE_SIZE));
+      const pageUsers = users.slice(i, i + PAGE_SIZE);
+
+      pages.push({ kind: 'page', cells: pageUsers });
     }
 
     return pages;
@@ -58,19 +60,23 @@ export function TrendingUserList({ usersRef, queryRef }: Props) {
 
   const isPaginated = pages.length > 1;
 
-  const renderPage = useCallback(
-    (cells: Array<TrendingUserCardFragment$key>) => {
+  type ListItemType = { kind: 'page'; cells: TrendingUserCardFragment$key[] };
+
+  const renderItem = useCallback<ListRenderItem<ListItemType>>(
+    ({ item }) => {
+      const CARD_HEIGHT = 175;
+
       return (
-        <View className="flex max-w-full flex-row flex-wrap justify-between">
-          {cells.map((user, index) => (
-            <View key={index} className="mb-1 w-[49%]">
+        <View className="flex flex-row flex-wrap justify-between" style={{ width: width - 24 }}>
+          {item.cells.map((user, index) => (
+            <View key={index} className="mb-1 w-1/2" style={{ height: CARD_HEIGHT }}>
               <TrendingUserCard key={index} userRef={user} queryRef={query} />
             </View>
           ))}
         </View>
       );
     },
-    [query]
+    [query, width]
   );
 
   const handleScroll = useCallback(
@@ -87,7 +93,10 @@ export function TrendingUserList({ usersRef, queryRef }: Props) {
 
   return (
     <View className="flex flex-col space-y-3">
-      <ScrollView
+      <FlashList
+        data={pages}
+        renderItem={renderItem}
+        estimatedItemSize={width}
         horizontal
         directionalLockEnabled
         pagingEnabled
@@ -96,18 +105,8 @@ export function TrendingUserList({ usersRef, queryRef }: Props) {
         scrollEventThrottle={200}
         showsHorizontalScrollIndicator={false}
         onScroll={handleScroll}
-      >
-        {pages.map((page, index) => (
-          <View
-            key={index}
-            style={{
-              width: width - 24,
-            }}
-          >
-            {renderPage(page)}
-          </View>
-        ))}
-      </ScrollView>
+      />
+
       {isPaginated && (
         <View className="flex w-full flex-row justify-center">
           <View className="flex flex-row space-x-1">
