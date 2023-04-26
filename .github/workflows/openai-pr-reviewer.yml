@@ -20,10 +20,11 @@ jobs:
   review:
     runs-on: ubuntu-latest
     steps:
-      - uses: Robinnnnn/openai-pr-reviewer@latest
+      - uses: fluxninja/openai-pr-reviewer@latest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         with:
+          summary_only: true
           debug: false
           review_comment_lgtm: false
