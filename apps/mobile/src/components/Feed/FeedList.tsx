@@ -34,9 +34,7 @@ export function FeedList({ feedEventRefs, onLoadMore }: FeedListProps) {
   const { failedEvents, markEventAsFailure } = useFailedEventTracker();
 
   const { items, stickyIndices } = useMemo(() => {
-    const reversedEvents = [...events].reverse();
-
-    return createVirtualizedItemsFromFeedEvents({ eventRefs: reversedEvents, failedEvents });
+    return createVirtualizedItemsFromFeedEvents({ eventRefs: events, failedEvents });
   }, [events, failedEvents]);
 
   const ref = useRef<FlashList<FeedListItemType> | null>(null);
@@ -58,7 +56,7 @@ export function FeedList({ feedEventRefs, onLoadMore }: FeedListProps) {
       ref={ref}
       data={items}
       onEndReached={onLoadMore}
-      onEndReachedThreshold={200}
+      onEndReachedThreshold={.8}
       estimatedItemSize={300}
       renderItem={renderItem}
       scrollEventThrottle={100}

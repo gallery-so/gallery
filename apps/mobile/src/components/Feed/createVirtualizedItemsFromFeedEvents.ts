@@ -15,7 +15,7 @@ export type FeedListItemType = { key: string } & (
 
 type createVirtualizedItemsFromFeedEventsArgs = {
   failedEvents: Set<string>;
-  eventRefs: createVirtualizedItemsFromFeedEvents$key[];
+  eventRefs: readonly createVirtualizedItemsFromFeedEvents$key[];
 };
 
 type createVirtualizedItemsFromFeedEventsReturnType = {
