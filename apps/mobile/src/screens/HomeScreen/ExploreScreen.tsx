@@ -1,5 +1,6 @@
-import { Suspense } from 'react';
-import { ScrollView } from 'react-native';
+import { FlashList, ListRenderItem } from '@shopify/flash-list';
+import { Suspense, useCallback, useMemo } from 'react';
+import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 
@@ -10,6 +11,10 @@ import { TrendingSection } from '~/components/Trending/TrendingSection';
 import { TwitterSection } from '~/components/Trending/TwitterSection';
 import { ExploreScreenFragment$key } from '~/generated/ExploreScreenFragment.graphql';
 import { ExploreScreenQuery } from '~/generated/ExploreScreenQuery.graphql';
+import { SuggestedSectionQueryFragment$key } from '~/generated/SuggestedSectionQueryFragment.graphql';
+import { TrendingSectionFragment$key } from '~/generated/TrendingSectionFragment.graphql';
+import { TrendingSectionQueryFragment$key } from '~/generated/TrendingSectionQueryFragment.graphql';
+import { TwitterSectionQueryFragment$key } from '~/generated/TwitterSectionQueryFragment.graphql';
 
 type ExploreScreenInnerProps = {
   queryRef: ExploreScreenFragment$key;
@@ -51,48 +56,89 @@ function ExploreScreenInner({ queryRef }: ExploreScreenInnerProps) {
     queryRef
   );
 
-  const { bottom } = useSafeAreaInsets();
+  type ListItemType =
+    | { kind: 'twitter'; queryRef: TwitterSectionQueryFragment$key }
+    | { kind: 'suggested'; queryRef: SuggestedSectionQueryFragment$key }
+    | {
+        kind: 'trending-section';
+        title: string;
+        description: string;
+        queryRef: TrendingSectionQueryFragment$key;
+        userRefs: TrendingSectionFragment$key;
+      };
 
-  return (
-    <ScrollView
-      className="flex-1"
-      contentContainerStyle={{
-        paddingBottom: bottom,
-      }}
-    >
-      {query.viewer?.__typename === 'Viewer' && (
-        <>
-          {query.viewer.socialAccounts?.twitter?.__typename && (
-            <TwitterSection
-              title="Twitter Friends"
-              description="Curators you know from Twitter"
-              queryRef={query}
-            />
-          )}
+  const renderItem = useCallback<ListRenderItem<ListItemType>>(
+    ({ item }) => {
+      if (item.kind === 'twitter') {
+        return (
+          <TwitterSection
+            title="Twitter Friends"
+            description="Curators you know from Twitter"
+            queryRef={query}
+          />
+        );
+      } else if (item.kind === 'suggested') {
+        return (
           <SuggestedSection
             title="In your orbit"
             description="Curators you may enjoy based on your activity"
             queryRef={query}
           />
-        </>
-      )}
-      {query.trendingUsers5Days?.__typename === 'TrendingUsersPayload' && (
-        <TrendingSection
-          title="Weekly leaderboard"
-          description="Trending curators this week"
-          queryRef={query}
-          trendingUsersRef={query.trendingUsers5Days}
-        />
-      )}
-      {query.trendingUsersAllTime?.__typename === 'TrendingUsersPayload' && (
-        <TrendingSection
-          title="Hall of Fame"
-          description="Top curators with the most all-time views"
-          queryRef={query}
-          trendingUsersRef={query.trendingUsersAllTime}
-        />
-      )}
-    </ScrollView>
+        );
+      } else if (item.kind === 'trending-section') {
+        return (
+          <TrendingSection
+            title={item.title}
+            description={item.description}
+            queryRef={item.queryRef}
+            trendingUsersRef={item.userRefs}
+          />
+        );
+      }
+
+      return null;
+    },
+    [query]
+  );
+
+  const items = useMemo((): ListItemType[] => {
+    const items: ListItemType[] = [];
+
+    if (query.viewer?.__typename === 'Viewer') {
+      if (query.viewer.socialAccounts.twitter?.__typename) {
+        items.push({ kind: 'twitter', queryRef: query });
+      }
+
+      items.push({ kind: 'suggested', queryRef: query });
+    }
+
+    if (query.trendingUsers5Days?.__typename === 'TrendingUsersPayload') {
+      items.push({
+        kind: 'trending-section',
+        title: 'Weekly leaderboard',
+        description: 'Trending curators this week',
+        queryRef: query,
+        userRefs: query.trendingUsers5Days,
+      });
+    }
+
+    if (query.trendingUsersAllTime?.__typename === 'TrendingUsersPayload') {
+      items.push({
+        kind: 'trending-section',
+        title: 'Hall of Fame',
+        description: 'Top curators with the most all-time views',
+        queryRef: query,
+        userRefs: query.trendingUsersAllTime,
+      });
+    }
+
+    return items;
+  }, [query]);
+
+  return (
+    <View className="flex-1">
+      <FlashList renderItem={renderItem} data={items} estimatedItemSize={300} />
+    </View>
   );
 }
 
