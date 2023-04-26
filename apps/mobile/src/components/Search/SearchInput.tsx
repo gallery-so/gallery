@@ -57,7 +57,7 @@ export function SearchInput({ value, onChange, style, ...props }: Props) {
         {...props}
       />
       {localKeyword.length > 0 && (
-        <TouchableOpacity accessibilityRole="button" onPress={handleClear}>
+        <TouchableOpacity accessibilityRole="button" onPress={handleClear} className="-m-4 p-4">
           <View className="f flex h-4 w-4 items-center justify-center">
             <XMarkIcon />
           </View>
