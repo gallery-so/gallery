@@ -93,12 +93,12 @@ function CollectionRow({
             style={{
               paddingLeft: index !== 0 ? inBetweenColumnPadding : 0,
             }}
-            className={clsx('flex flex-grow')}
+            className={clsx('flex flex-grow items-center justify-center')}
           >
             {'whitespace' in subItem ? (
-              <View className="h-full bg-gray-400" />
+              <View className="h-full" />
             ) : (
-              <View className="flex flex-grow items-center justify-center">
+              <View className="flex items-center justify-center " style={{ width: widthPerToken }}>
                 <GalleryTokenPreview containerWidth={widthPerToken} tokenRef={subItem} />
               </View>
             )}
