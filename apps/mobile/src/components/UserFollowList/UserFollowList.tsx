@@ -10,9 +10,10 @@ import { UserFollowListQueryFragment$key } from '~/generated/UserFollowListQuery
 type UserFollowListProps = {
   userRefs: UserFollowListFragment$key;
   queryRef: UserFollowListQueryFragment$key;
+  onLoadMore?: () => void;
 };
 
-export function UserFollowList({ userRefs, queryRef }: UserFollowListProps) {
+export function UserFollowList({ userRefs, queryRef, onLoadMore }: UserFollowListProps) {
   const query = useFragment(
     graphql`
       fragment UserFollowListQueryFragment on Query {
@@ -38,5 +39,13 @@ export function UserFollowList({ userRefs, queryRef }: UserFollowListProps) {
     [query]
   );
 
-  return <FlashList renderItem={renderItem} data={users} estimatedItemSize={60} />;
+  return (
+    <FlashList
+      onEndReached={onLoadMore}
+      onEndReachedThreshold={0.8}
+      renderItem={renderItem}
+      data={users}
+      estimatedItemSize={60}
+    />
+  );
 }

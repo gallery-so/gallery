@@ -33,7 +33,7 @@ function AccountScreenInner() {
     } else {
       return <Typography font={{ family: 'ABCDiatype', weight: 'Regular' }}>Not found</Typography>;
     }
-  }, [query.viewer]);
+  }, [query]);
 
   return <View className="flex-1">{inner}</View>;
 }

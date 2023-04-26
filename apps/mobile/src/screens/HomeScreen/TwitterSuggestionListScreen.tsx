@@ -1,5 +1,4 @@
 import { useNavigation } from '@react-navigation/native';
-import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import { Suspense, useCallback, useMemo } from 'react';
 import { TouchableOpacity, View } from 'react-native';
 import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
@@ -7,9 +6,8 @@ import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 import { ModalContainer } from '~/components/ModalContainer';
 import { USERS_PER_PAGE } from '~/components/Trending/constants';
 import { LoadingFollowerList } from '~/components/Trending/LoadingFollowerList';
-import { SuggestionUser } from '~/components/Trending/SuggestionUser';
 import { Typography } from '~/components/Typography';
-import { SuggestionUserFragment$key } from '~/generated/SuggestionUserFragment.graphql';
+import { UserFollowList } from '~/components/UserFollowList/UserFollowList';
 import { TwitterSuggestionListScreenQuery } from '~/generated/TwitterSuggestionListScreenQuery.graphql';
 import { TwitterSuggestionListScreenQueryFragment$key } from '~/generated/TwitterSuggestionListScreenQueryFragment.graphql';
 import { TwitterSuggestionListScreenRefetchableQuery } from '~/generated/TwitterSuggestionListScreenRefetchableQuery.graphql';
@@ -46,7 +44,7 @@ export function InnerSuggestionListScreen({ queryRef }: Props) {
                 galleryUser {
                   ... on GalleryUser {
                     __typename
-                    ...SuggestionUserFragment
+                    ...UserFollowListFragment
                   }
                 }
               }
@@ -56,7 +54,8 @@ export function InnerSuggestionListScreen({ queryRef }: Props) {
             total
           }
         }
-        ...SuggestionUserQueryFragment
+
+        ...UserFollowListQueryFragment
       }
     `,
     queryRef
@@ -82,13 +81,6 @@ export function InnerSuggestionListScreen({ queryRef }: Props) {
     navigation.goBack();
   }, [navigation]);
 
-  const renderItem = useCallback<ListRenderItem<SuggestionUserFragment$key>>(
-    ({ item, index }) => {
-      return <SuggestionUser key={index} userRef={item} queryRef={query} />;
-    },
-    [query]
-  );
-
   const handleLoadMore = useCallback(() => {
     if (hasNext) {
       loadNext(USERS_PER_PAGE);
@@ -112,15 +104,8 @@ export function InnerSuggestionListScreen({ queryRef }: Props) {
       >
         We've found {totalFollowing} {totalFollowing ? 'person' : 'people'} you know from Twitter
       </Typography>
-      <View className="flex-grow">
-        <FlashList
-          data={nonNullUsers}
-          renderItem={renderItem}
-          keyExtractor={(_, index) => String(index)}
-          onEndReached={handleLoadMore}
-          onEndReachedThreshold={0.8}
-          estimatedItemSize={100}
-        />
+      <View className="-mx-4 flex-grow">
+        <UserFollowList onLoadMore={handleLoadMore} userRefs={nonNullUsers} queryRef={query} />
       </View>
     </View>
   );
