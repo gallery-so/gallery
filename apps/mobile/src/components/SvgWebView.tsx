@@ -101,42 +101,46 @@ type SvgContentState =
   | { kind: 'loading' };
 
 function parseSvg(text: string): CachedSvgValue {
-  const parsedHtml = parse(text);
+  try {
+    const parsedHtml = parse(text);
 
-  const foundSvg = parsedHtml.querySelector('svg');
+    const foundSvg = parsedHtml.querySelector('svg');
 
-  let width: number | null = null;
-  let height: number | null = null;
-  if (foundSvg) {
-    const viewbox = foundSvg.getAttribute('viewbox');
+    let width: number | null = null;
+    let height: number | null = null;
+    if (foundSvg) {
+      const viewbox = foundSvg.getAttribute('viewbox');
 
-    if (viewbox) {
-      // Viewbox comes in the form of x y width height
-      // We only care about the width and height so we just
-      // slice off the first two values.
-      const [w, h] = viewbox.split(' ').slice(2).map(parseFloat);
+      if (viewbox) {
+        // Viewbox comes in the form of x y width height
+        // We only care about the width and height so we just
+        // slice off the first two values.
+        const [w, h] = viewbox.split(' ').slice(2).map(parseFloat);
 
-      if (w && h) {
-        width = w;
-        height = h;
-      }
-    } else {
-      width = parseFloat(foundSvg.getAttribute('width') ?? '');
-      height = parseFloat(foundSvg.getAttribute('height') ?? '');
+        if (w && h) {
+          width = w;
+          height = h;
+        }
+      } else {
+        width = parseFloat(foundSvg.getAttribute('width') ?? '');
+        height = parseFloat(foundSvg.getAttribute('height') ?? '');
 
-      if (width && height) {
-        foundSvg.removeAttribute('width');
-        foundSvg.removeAttribute('height');
-        foundSvg.setAttribute('viewbox', `0 0 ${width} ${height}`);
+        if (width && height) {
+          foundSvg.removeAttribute('width');
+          foundSvg.removeAttribute('height');
+          foundSvg.setAttribute('viewbox', `0 0 ${width} ${height}`);
+        }
       }
     }
-  }
 
-  const content = parsedHtml.toString();
-  if (width && height) {
-    return { content, dimensions: { width, height } };
-  } else {
-    return { content, dimensions: null };
+    const content = parsedHtml.toString();
+    if (width && height) {
+      return { content, dimensions: { width, height } };
+    } else {
+      return { content, dimensions: null };
+    }
+  } catch (e) {
+    return { content: text, dimensions: null };
   }
 }
 
@@ -148,6 +152,7 @@ export function SvgWebView({ source, onLoadStart, onLoadEnd, style }: SvgWebView
     cache.fetch(uri).then((value) => {
       if (value) {
         onLoadStart?.();
+        console.log(value);
         setSvgState({ kind: 'success', content: value.content });
         onLoadEnd?.(value.dimensions);
       }
