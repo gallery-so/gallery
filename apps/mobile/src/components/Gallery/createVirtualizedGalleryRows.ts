@@ -73,11 +73,11 @@ export function createVirtualizedGalleryRows({
   const filteredCollections = removeNullValues(gallery.collections).filter(
     (collection) => !collection.hidden
   );
-  filteredCollections.forEach((collection, index) => {
+  filteredCollections.forEach((collection) => {
     items.push({
       kind: 'collection-title',
       key: `collection-title-${collection.dbid}`,
-      name: `${index}-${collection.name}`,
+      name: `${collection.name}`,
     });
 
     stickyIndices.push(items.length - 1);
