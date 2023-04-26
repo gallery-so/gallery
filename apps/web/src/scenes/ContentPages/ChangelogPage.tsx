@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import styled from 'styled-components';
 
@@ -22,11 +23,13 @@ function dateToSlug(date: string) {
 }
 
 export default function ChangelogPage({ sections }: Props) {
+  const { asPath } = useRouter();
   useEffect(() => {
-    if (window.location.hash) {
-      document.getElementById(window.location.hash.slice(1))?.scrollIntoView();
+    const hash =  asPath.split('#')[1];
+    if (hash) {
+      document.getElementById(hash.slice(1))?.scrollIntoView();
     }
-  }, []);
+  }, [asPath]);
   return (
     <StyledPage gap={48}>
       <PageTitle>Changelog</PageTitle>
