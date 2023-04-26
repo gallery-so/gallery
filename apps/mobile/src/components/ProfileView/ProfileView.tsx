@@ -207,6 +207,7 @@ export function ProfileView({ userRef, queryRef }: ProfileViewProps) {
           feedEvents.push(edge.node);
         }
       }
+      feedEvents.reverse();
 
       const { items: feedItems, stickyIndices: feedStickyIndices } =
         createVirtualizedItemsFromFeedEvents({
@@ -294,7 +295,11 @@ export function ProfileView({ userRef, queryRef }: ProfileViewProps) {
     <View className="flex-1">
       <View className="flex flex-col bg-white p-4 pb-1">
         <View className="flex flex-row justify-between bg-white">
-          <IconContainer icon={<BackIcon />} onPress={navigation.goBack} />
+          {navigation.canGoBack() ? (
+            <IconContainer icon={<BackIcon />} onPress={navigation.goBack} />
+          ) : (
+            <View />
+          )}
 
           <View className="flex flex-row items-center space-x-2">
             {isLoggedInUser && <IconContainer icon={<QRCodeIcon />} onPress={handleQrCode} />}
@@ -314,6 +319,7 @@ export function ProfileView({ userRef, queryRef }: ProfileViewProps) {
       <GalleryTokenDimensionCacheProvider>
         <FlashList
           data={items}
+          getItemType={(item) => item.kind}
           keyExtractor={(item) => item.key}
           onEndReached={handleLoadMore}
           onEndReachedThreshold={0.8}

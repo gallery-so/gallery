@@ -56,11 +56,12 @@ export function FeedList({ feedEventRefs, onLoadMore }: FeedListProps) {
       ref={ref}
       data={items}
       onEndReached={onLoadMore}
-      onEndReachedThreshold={.8}
+      onEndReachedThreshold={0.8}
       estimatedItemSize={300}
       renderItem={renderItem}
       scrollEventThrottle={100}
       stickyHeaderIndices={stickyIndices}
+      getItemType={(item) => item.kind}
       keyExtractor={(item) => item.key}
     />
   );
