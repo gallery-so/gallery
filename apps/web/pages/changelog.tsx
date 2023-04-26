@@ -1,17 +1,9 @@
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
 import ChangelogPage, { ChangelogSection } from '~/scenes/ContentPages/ChangelogPage';
+import { fetchSanityContent } from '~/utils/sanity';
 
 type Props = {
   document: ChangelogSection[];
-};
-
-export const getSanityUrl = (query: string) => {
-  const sanityProjectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
-  if (!sanityProjectId) {
-    throw new Error('Missing CMS project id');
-  }
-
-  return `https://${sanityProjectId}.api.sanity.io/v1/data/query/production?query=${query}`;
 };
 
 export default function Changelog({ document }: Props) {
@@ -19,14 +11,11 @@ export default function Changelog({ document }: Props) {
 }
 
 export const getServerSideProps = async () => {
-  const query = encodeURIComponent(`*[ _type == "changelog" ]`);
-  const url = getSanityUrl(query);
+  const content = await fetchSanityContent('changelog');
 
-  const response = await fetch(url).then((res) => res.json());
-  console.log({ response });
   return {
     props: {
-      document: response.result,
+      document: content,
     },
   };
 };
