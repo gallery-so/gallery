@@ -18,13 +18,30 @@ const GalleryTokenDimensionCacheContext = createContext<
 >(undefined);
 
 export function GalleryTokenDimensionCacheProvider({ children }: PropsWithChildren) {
-  const [cache] = useState<Map<string, Dimensions>>(new Map());
+  const [cache, setCache] = useState<Map<string, Dimensions>>(new Map());
 
   const add = useCallback<GalleryTokenDimensionCacheContextType['addDimensionsToCache']>(
     (tokenUrl, dimensions) => {
-      cache.set(tokenUrl, dimensions);
+      setCache((previous) => {
+        if (!dimensions) {
+          return previous;
+        }
+
+        const existing = previous.get(tokenUrl);
+        if (
+          existing &&
+          existing.height === dimensions.height &&
+          existing.width === dimensions.width
+        ) {
+          return previous;
+        }
+
+        const newCache = new Map(previous);
+        newCache.set(tokenUrl, dimensions);
+        return newCache;
+      });
     },
-    [cache]
+    []
   );
 
   const value = useMemo((): GalleryTokenDimensionCacheContextType => {
