@@ -9,7 +9,7 @@ type Props = {
   description?: string;
   className?: string;
   dataTestId?: string;
-  whiteSpace?: 'nowrap' | 'normal';
+  whiteSpace?: 'nowrap' | 'normal' | 'pre' | 'pre-line';
   style?: CSSProperties;
 } & Omit<JSX.IntrinsicElements['div'], 'ref'>;
 
