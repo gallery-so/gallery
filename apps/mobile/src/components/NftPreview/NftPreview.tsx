@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { ResizeMode } from 'expo-av';
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { Priority } from 'react-native-fast-image';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
@@ -53,7 +53,16 @@ function NftPreviewInner({
 
   const { token } = collectionToken;
 
+  const prevTokenUrl = useRef(tokenUrl);
   const [imageState, setImageState] = useState<ImageState>({ kind: 'loading' });
+
+  // Since this component gets used in FlashList's a bunch, the state of the image will be stale
+  // So here, we track the tokenUrl this instance was previously rendered with
+  // and if its stale, we reset the image state to loading
+  if (tokenUrl !== prevTokenUrl.current) {
+    setImageState({ kind: 'loading' });
+    prevTokenUrl.current = tokenUrl;
+  }
 
   if (!tokenUrl) {
     throw new CouldNotRenderNftError('NftPreview', 'tokenUrl missing');
