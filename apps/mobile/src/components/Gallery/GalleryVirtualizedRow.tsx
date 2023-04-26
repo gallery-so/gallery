@@ -85,7 +85,7 @@ function CollectionRow({
             className={clsx('flex flex-grow items-center justify-center')}
           >
             {'whitespace' in subItem ? (
-              <View className="h-full" />
+              <View className="aspect-square h-full" style={{ width: widthPerToken }} />
             ) : (
               <View className="flex items-center justify-center " style={{ width: widthPerToken }}>
                 <GalleryTokenPreview containerWidth={widthPerToken} tokenRef={subItem} />
