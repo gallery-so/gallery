@@ -59,10 +59,10 @@ export function TrendingUserList({ usersRef, queryRef }: Props) {
   const isPaginated = pages.length > 1;
 
   const renderPage = useCallback(
-    (pages: Array<TrendingUserCardFragment$key>) => {
+    (cells: Array<TrendingUserCardFragment$key>) => {
       return (
         <View className="flex max-w-full flex-row flex-wrap justify-between">
-          {pages.map((user, index) => (
+          {cells.map((user, index) => (
             <View key={index} className="mb-1 w-[49%]">
               <TrendingUserCard key={index} userRef={user} queryRef={query} />
             </View>
