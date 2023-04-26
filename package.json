@@ -19,6 +19,7 @@
     "@taquito/taquito": "^14.0.0",
     "react": "18.2.0",
     "relay-runtime": "14.1.0",
+    "entities": "3.0.1",
     "typecript": "^5.0.0",
     "@expo/prebuild-config": "6.0.0",
     "@expo/config-plugins": "6.0.0",
