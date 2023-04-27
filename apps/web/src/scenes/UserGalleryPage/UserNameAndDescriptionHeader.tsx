@@ -21,8 +21,8 @@ import { EditPencilIcon } from '~/icons/EditPencilIcon';
 import LinkToNftDetailView from '~/scenes/NftDetailPage/LinkToNftDetailView';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import colors from '~/shared/theme/colors';
+import unescape from '~/shared/utils/unescape';
 import handleCustomDisplayName from '~/utils/handleCustomDisplayName';
-import unescape from '~/utils/unescape';
 
 import EditUserInfoModal from './EditUserInfoModal';
 

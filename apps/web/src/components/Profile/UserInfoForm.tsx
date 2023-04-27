@@ -5,7 +5,7 @@ import Input from '~/components/core/Input/Input';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { TitleS } from '~/components/core/Text/Text';
 import { TextAreaWithCharCount } from '~/components/core/TextArea/TextArea';
-import unescape from '~/utils/unescape';
+import unescape from '~/shared/utils/unescape';
 
 type Props = {
   className?: string;

@@ -9,8 +9,8 @@ import { ClickablePill, NonclickablePill } from '~/components/Pill';
 import { NftPreviewLabelCollectionNameFragment$key } from '~/generated/NftPreviewLabelCollectionNameFragment.graphql';
 import { NftPreviewLabelFragment$key } from '~/generated/NftPreviewLabelFragment.graphql';
 import colors from '~/shared/theme/colors';
+import unescape from '~/shared/utils/unescape';
 import { getCommunityUrlForToken } from '~/utils/getCommunityUrlForToken';
-import unescape from '~/utils/unescape';
 
 type Props = {
   className?: string;

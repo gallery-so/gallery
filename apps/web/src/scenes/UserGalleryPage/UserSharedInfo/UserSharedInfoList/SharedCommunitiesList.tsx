@@ -6,8 +6,8 @@ import styled from 'styled-components';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { SharedCommunitiesListFragment$key } from '~/generated/SharedCommunitiesListFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
+import unescape from '~/shared/utils/unescape';
 import { getUrlForCommunity } from '~/utils/getCommunityUrlForToken';
-import unescape from '~/utils/unescape';
 
 import { COMMUNITIES_PER_PAGE } from '../UserSharedCommunities';
 import PaginatedListRow from './SharedInfoListRow';
