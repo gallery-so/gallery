@@ -2,7 +2,6 @@ import { useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 
 import { Button } from '~/components/core/Button/Button';
-import colors from '~/components/core/colors';
 import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
@@ -11,6 +10,7 @@ import { useToastActions } from '~/contexts/toast/ToastContext';
 import { useMintMerchContract } from '~/hooks/useContract';
 import useMintContractWithQuantity from '~/hooks/useMintContractWithQuantity';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import colors from '~/shared/theme/colors';
 
 import { MAX_NFTS_PER_WALLET } from './constants';
 

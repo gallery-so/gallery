@@ -3,7 +3,7 @@ import { ReactElement } from 'react';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
-import colors from '~/components/core/colors';
+import colors from '~/shared/theme/colors';
 
 import AnimatedSidebarDrawer from './AnimatedSidebarDrawer';
 import { useDrawerState } from './SidebarDrawerContext';

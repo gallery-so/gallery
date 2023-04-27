@@ -9,9 +9,9 @@ import {
 } from 'react';
 import styled from 'styled-components';
 
+import colors from '~/shared/theme/colors';
 import noop from '~/utils/noop';
 
-import colors from '../colors';
 import MarkdownShortcuts, { setValueAndTriggerOnChange } from '../Markdown/MarkdownShortcuts';
 import { BaseM } from '../Text/Text';
 

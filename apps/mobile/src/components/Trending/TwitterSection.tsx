@@ -77,7 +77,7 @@ export function TwitterSection({ title, description, queryRef }: Props) {
                 family: 'ABCDiatype',
                 weight: 'Bold',
               }}
-              className="text-lg text-black"
+              className="text-lg text-black dark:text-white"
             >
               {title}
             </Typography>
@@ -98,7 +98,7 @@ export function TwitterSection({ title, description, queryRef }: Props) {
               family: 'ABCDiatype',
               weight: 'Regular',
             }}
-            className="text-shadow text-sm underline"
+            className="text-shadow text-sm"
           >
             See all
           </Typography>

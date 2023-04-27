@@ -4,7 +4,6 @@ import { useFragment } from 'react-relay';
 import { ConnectionHandler, graphql } from 'relay-runtime';
 import styled, { css } from 'styled-components';
 
-import colors from '~/components/core/colors';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseS } from '~/components/core/Text/Text';
 import { NotificationArrow } from '~/components/Notifications/NotificationArrow';
@@ -19,6 +18,7 @@ import { NotificationFragment$key } from '~/generated/NotificationFragment.graph
 import { NotificationInnerFragment$key } from '~/generated/NotificationInnerFragment.graphql';
 import { NotificationQueryFragment$key } from '~/generated/NotificationQueryFragment.graphql';
 import { useClearNotifications } from '~/shared/relay/useClearNotifications';
+import colors from '~/shared/theme/colors';
 import { getTimeSince } from '~/shared/utils/time';
 
 type NotificationProps = {

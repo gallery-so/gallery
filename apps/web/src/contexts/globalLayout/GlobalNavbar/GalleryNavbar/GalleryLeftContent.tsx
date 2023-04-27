@@ -5,7 +5,6 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
-import colors from '~/components/core/colors';
 import { HStack } from '~/components/core/Spacer/Stack';
 import NavActionFollow from '~/components/Follow/NavActionFollow';
 import {
@@ -14,6 +13,7 @@ import {
 } from '~/contexts/globalLayout/GlobalNavbar/ProfileDropdown/Breadcrumbs';
 import { GalleryLeftContentFragment$key } from '~/generated/GalleryLeftContentFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import colors from '~/shared/theme/colors';
 
 type Props = {
   galleryName: string | null;

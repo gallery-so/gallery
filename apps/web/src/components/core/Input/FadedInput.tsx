@@ -1,8 +1,8 @@
 import { ChangeEventHandler, useCallback } from 'react';
 import styled, { css } from 'styled-components';
 
-import colors from '~/components/core/colors';
 import { BODY_FONT_FAMILY } from '~/components/core/Text/Text';
+import colors from '~/shared/theme/colors';
 
 type FadedInputSize = 'md' | 'lg';
 

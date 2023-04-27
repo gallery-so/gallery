@@ -1,9 +1,9 @@
 import { ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 
-import colors from '~/components/core/colors';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, BaseS, TitleDiatypeM } from '~/components/core/Text/Text';
+import colors from '~/shared/theme/colors';
 
 type StyledEventProps = {
   children: ReactNode;

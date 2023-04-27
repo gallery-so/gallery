@@ -42,7 +42,7 @@ function TabItem({ navigation, route, icon, activeRoute }: TabItemProps) {
       onPress={onPress}
       accessibilityRole="button"
       accessibilityState={isFocused ? { selected: true } : {}}
-      className={`px-8 ${isFocused ? 'opacity-100' : 'opacity-25'}`}
+      className={`px-8 ${isFocused ? 'opacity-100' : 'opacity-30'}`}
     >
       <View
         className={`flex h-8 w-8 items-center justify-center rounded-full ${
@@ -71,7 +71,7 @@ export function TabBar({ state, navigation }: TabBarProps) {
           ? { paddingBottom: bottom, paddingTop: 12 }
           : { paddingBottom: 12, paddingTop: 12 }
       }
-      className="bg-offWhite flex flex-row items-center justify-center"
+      className="bg-offWhite dark:bg-black flex flex-row items-center justify-center"
     >
       {state.routes.map((route) => {
         let icon = null;

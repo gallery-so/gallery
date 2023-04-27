@@ -3,12 +3,12 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
-import colors from '~/components/core/colors';
 import { BODY_FONT_FAMILY } from '~/components/core/Text/Text';
 import { NotesModal } from '~/components/Feed/Socialize/NotesModal/NotesModal';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { NoteModalOpenerTextFragment$key } from '~/generated/NoteModalOpenerTextFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import colors from '~/shared/theme/colors';
 
 type Props = {
   children: ReactNode;

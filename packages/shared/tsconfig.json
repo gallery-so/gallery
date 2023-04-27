@@ -9,7 +9,8 @@
       "~/generated/*": ["./__generated__/relay/*"],
       "~/contexts/*": ["src/contexts/*"],
       "~/relay/*": ["src/relay/*"],
-      "~/errors/*": ["src/errors/*"]
+      "~/errors/*": ["src/errors/*"],
+      "~/theme/*": ["src/theme/*"]
     }
   }
 }

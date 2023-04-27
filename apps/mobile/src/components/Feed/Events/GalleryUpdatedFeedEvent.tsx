@@ -101,7 +101,9 @@ export function GalleryUpdatedFeedEvent({ eventDataRef, eventId }: GalleryUpdate
 function Circle({ style, active }: { style?: StyleProp<ViewStyle>; active: boolean }) {
   return (
     <View
-      className={`h-1 w-1 rounded-full ${active ? 'bg-offBlack' : 'bg-porcelain'}`}
+      className={`h-1 w-1 rounded-full ${
+        active ? 'bg-offBlack dark:bg-white' : 'bg-porcelain dark:bg-metal'
+      }`}
       style={style}
     />
   );

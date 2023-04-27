@@ -1,11 +1,16 @@
 import * as React from 'react';
+import { useColorScheme } from 'react-native';
 import Svg, { Path, SvgProps } from 'react-native-svg';
 
+import colors from '~/shared/theme/colors';
+
 export function EmailIcon(props: SvgProps) {
+  const colorScheme = useColorScheme();
+  const color = colorScheme === 'dark' ? colors.offBlack : colors.white;
   return (
     <Svg width={24} height={24} fill="none" {...props}>
-      <Path d="M21.5 5h-19v14h19V5Z" stroke="#FEFEFE" strokeMiterlimit={10} />
-      <Path d="m2.5 5 9.5 7 9.5-7" stroke="#FEFEFE" strokeMiterlimit={10} />
+      <Path d="M21.5 5h-19v14h19V5Z" stroke={color} strokeMiterlimit={10} />
+      <Path d="m2.5 5 9.5 7 9.5-7" stroke={color} strokeMiterlimit={10} />
     </Svg>
   );
 }

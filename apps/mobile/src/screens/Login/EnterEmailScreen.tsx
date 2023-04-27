@@ -63,7 +63,7 @@ export function EnterEmailScreen() {
   }, [email, login, navigation, reportError]);
 
   return (
-    <SafeAreaView className="h-screen bg-white">
+    <SafeAreaView className="h-screen bg-white dark:bg-black">
       <KeyboardAvoidingView behavior="padding" className="flex flex-1 flex-col">
         <IconContainer className="px-6 py-2" icon={<BackIcon />} onPress={navigation.goBack} />
 

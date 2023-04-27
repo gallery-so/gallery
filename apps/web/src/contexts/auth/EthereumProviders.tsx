@@ -7,7 +7,7 @@ import { configureChains, createClient, defaultChains, WagmiConfig } from 'wagmi
 import { infuraProvider } from 'wagmi/providers/infura';
 import { publicProvider } from 'wagmi/providers/public';
 
-import colors from '~/components/core/colors';
+import colors from '~/shared/theme/colors';
 
 // Unfortunately, RainbowKit has no way to customize font weight
 // https://github.com/rainbow-me/rainbowkit/discussions/361

@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
-import colors from '~/components/core/colors';
 import IconContainer from '~/components/core/IconContainer';
 import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
@@ -16,6 +15,7 @@ import { CollectionSidebarQueryFragment$key } from '~/generated/CollectionSideba
 import { PaintbrushIcon } from '~/icons/PaintbrushIcon';
 import { QuestionMarkIcon } from '~/icons/QuestionMarkIcon';
 import { UndoIcon } from '~/icons/UndoIcon';
+import colors from '~/shared/theme/colors';
 
 import OnboardingDialog from '../GalleryOnboardingGuide/OnboardingDialog';
 import { useOnboardingDialogContext } from '../GalleryOnboardingGuide/OnboardingDialogContext';

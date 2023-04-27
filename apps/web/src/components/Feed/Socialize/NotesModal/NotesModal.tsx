@@ -10,7 +10,6 @@ import {
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
-import colors from '~/components/core/colors';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { TitleDiatypeM, TitleXS } from '~/components/core/Text/Text';
 import { AdmireNote } from '~/components/Feed/Socialize/NotesModal/AdmireNote';
@@ -18,6 +17,7 @@ import { CommentNote } from '~/components/Feed/Socialize/NotesModal/CommentNote'
 import { ListItem } from '~/components/Feed/Socialize/NotesModal/ListItem';
 import { MODAL_PADDING_PX } from '~/contexts/modal/constants';
 import { NotesModalFragment$key } from '~/generated/NotesModalFragment.graphql';
+import colors from '~/shared/theme/colors';
 
 export const NOTES_PER_PAGE = 10;
 

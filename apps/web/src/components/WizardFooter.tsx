@@ -3,10 +3,10 @@ import styled from 'styled-components';
 
 import ActionText from '~/components/core/ActionText/ActionText';
 import { Button } from '~/components/core/Button/Button';
-import colors from '~/components/core/colors';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { FOOTER_HEIGHT } from '~/components/Onboarding/constants';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
+import colors from '~/shared/theme/colors';
 import isPromise from '~/utils/isPromise';
 
 type Props = {

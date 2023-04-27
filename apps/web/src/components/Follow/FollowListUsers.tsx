@@ -2,12 +2,12 @@ import { useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
-import colors from '~/components/core/colors';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleS } from '~/components/core/Text/Text';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { FollowListUsersFragment$key } from '~/generated/FollowListUsersFragment.graphql';
+import colors from '~/shared/theme/colors';
 import { BREAK_LINES } from '~/utils/regex';
 
 type Props = {

@@ -5,7 +5,6 @@ import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import { Button } from '~/components/core/Button/Button';
-import colors from '~/components/core/colors';
 import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeL } from '~/components/core/Text/Text';
@@ -20,6 +19,7 @@ import { SettingsFragment$key } from '~/generated/SettingsFragment.graphql';
 import { useLogout } from '~/hooks/useLogout';
 import CircleCheckIcon from '~/icons/CircleCheckIcon';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
+import colors from '~/shared/theme/colors';
 import { GALLERY_OS_ADDRESS } from '~/shared/utils/getOpenseaExternalUrl';
 
 import useUpdateEmailNotificationSettings from '../Email/useUpdateEmailNotificationSettings';

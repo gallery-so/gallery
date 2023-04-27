@@ -1,7 +1,7 @@
 import { forwardRef } from 'react';
 import styled, { keyframes } from 'styled-components';
 
-import colors from '~/components/core/colors';
+import colors from '~/shared/theme/colors';
 
 const Blinking = forwardRef<HTMLSpanElement, Record<string, unknown>>(({}, ref) => (
   <StyledBlinkingContainer ref={ref}>

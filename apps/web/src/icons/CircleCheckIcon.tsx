@@ -1,8 +1,8 @@
-import colors from '~/components/core/colors';
+import colors, { ColorType } from '~/shared/theme/colors';
 
 type Props = {
   className?: string;
-  color?: colors;
+  color?: ColorType;
 };
 
 export default function CircleCheckIcon({ className, color = colors.offBlack }: Props) {

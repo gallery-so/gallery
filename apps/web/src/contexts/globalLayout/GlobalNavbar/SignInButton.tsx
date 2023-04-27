@@ -2,9 +2,9 @@ import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import TextButton from '~/components/core/Button/TextButton';
-import colors from '~/components/core/colors';
 import transitions from '~/components/core/transitions';
 import useAuthModal from '~/hooks/useAuthModal';
+import colors from '~/shared/theme/colors';
 
 export function SignInButton() {
   const showAuthModal = useAuthModal('sign-in');

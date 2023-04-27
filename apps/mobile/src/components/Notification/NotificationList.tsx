@@ -105,7 +105,7 @@ export function NotificationList({ queryRef }: Props) {
             family: 'ABCDiatype',
             weight: 'Bold',
           }}
-          className="text-lg text-black"
+          className="text-lg text-black dark:text-white"
         >
           Nothing to see here yet.
         </Typography>

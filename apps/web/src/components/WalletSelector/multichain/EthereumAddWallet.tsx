@@ -7,7 +7,6 @@ import styled from 'styled-components';
 import { useAccount } from 'wagmi';
 
 import { Button } from '~/components/core/Button/Button';
-import colors from '~/components/core/colors';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import { EmptyState } from '~/components/EmptyState/EmptyState';
@@ -20,6 +19,7 @@ import {
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { EthereumAddWalletFragment$key } from '~/generated/EthereumAddWalletFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
+import colors from '~/shared/theme/colors';
 import { Web3Error } from '~/types/Error';
 import {
   ADDRESS_ALREADY_CONNECTED,

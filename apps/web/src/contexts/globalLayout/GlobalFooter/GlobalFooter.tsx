@@ -3,7 +3,6 @@ import { route } from 'nextjs-routes';
 import styled from 'styled-components';
 
 import breakpoints, { pageGutter } from '~/components/core/breakpoints';
-import colors from '~/components/core/colors';
 import NavLink from '~/components/core/NavLink/NavLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseS, TitleM } from '~/components/core/Text/Text';
@@ -18,6 +17,7 @@ import {
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import LogoBracketLeft from '~/icons/LogoBracketLeft';
 import LogoBracketRight from '~/icons/LogoBracketRight';
+import colors from '~/shared/theme/colors';
 
 function GlobalFooter() {
   const isMobile = useIsMobileOrMobileLargeWindowWidth();

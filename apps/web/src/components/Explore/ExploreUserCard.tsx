@@ -8,11 +8,11 @@ import { ExploreUserCardFragment$key } from '~/generated/ExploreUserCardFragment
 import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
+import colors from '~/shared/theme/colors';
 import unescape from '~/utils/unescape';
 
 import Badge from '../Badge/Badge';
 import breakpoints from '../core/breakpoints';
-import colors from '../core/colors';
 import Markdown from '../core/Markdown/Markdown';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM, TitleM } from '../core/Text/Text';

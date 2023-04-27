@@ -2,7 +2,6 @@ import { MouseEventHandler, useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled, { css } from 'styled-components';
 
-import colors from '~/components/core/colors';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { TitleXSBold } from '~/components/core/Text/Text';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
@@ -13,6 +12,7 @@ import useAuthModal from '~/hooks/useAuthModal';
 import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
 import useFollowUser from '~/shared/relay/useFollowUser';
 import useUnfollowUser from '~/shared/relay/useUnfollowUser';
+import colors from '~/shared/theme/colors';
 
 import breakpoints from '../core/breakpoints';
 

@@ -1,6 +1,6 @@
 import styled, { keyframes } from 'styled-components';
 
-import colors from '../colors';
+import colors from '~/shared/theme/colors';
 
 type LoaderProps = {
   inverted?: boolean;

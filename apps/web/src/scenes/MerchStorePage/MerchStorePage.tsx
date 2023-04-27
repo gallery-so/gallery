@@ -5,7 +5,6 @@ import { useAccount } from 'wagmi';
 
 import breakpoints from '~/components/core/breakpoints';
 import { Button } from '~/components/core/Button/Button';
-import colors from '~/components/core/colors';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { TitleM, TitleMonoM } from '~/components/core/Text/Text';
 import { GLOBAL_FOOTER_HEIGHT } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
@@ -15,6 +14,7 @@ import useAuthModal from '~/hooks/useAuthModal';
 import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
 import LogoBracketLeft from '~/icons/LogoBracketLeft';
 import LogoBracketRight from '~/icons/LogoBracketRight';
+import colors from '~/shared/theme/colors';
 
 import Countdown from './Countdown';
 import ListMerchItems from './ListMerchItems';

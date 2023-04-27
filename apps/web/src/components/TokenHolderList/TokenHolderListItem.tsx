@@ -4,7 +4,6 @@ import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import breakpoints, { size } from '~/components/core/breakpoints';
-import colors from '~/components/core/colors';
 import { Directions } from '~/components/core/enums';
 import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
 import { BaseXL } from '~/components/core/Text/Text';
@@ -13,6 +12,7 @@ import { TokenHolderListItemFragment$key } from '~/generated/TokenHolderListItem
 import { useBreakpoint } from '~/hooks/useWindowSize';
 import useDebounce from '~/shared/hooks/useDebounce';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
+import colors from '~/shared/theme/colors';
 import { graphqlTruncateUniversalUsername } from '~/shared/utils/wallet';
 import detectMobileDevice from '~/utils/detectMobileDevice';
 

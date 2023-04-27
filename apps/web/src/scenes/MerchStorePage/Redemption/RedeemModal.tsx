@@ -3,12 +3,12 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
-import colors from '~/components/core/colors';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { TitleXS } from '~/components/core/Text/Text';
 import { MerchType } from '~/generated/getObjectNameFragment.graphql';
 import { RedeemModalQueryFragment$key } from '~/generated/RedeemModalQueryFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
+import colors from '~/shared/theme/colors';
 
 import RedeemedPage from './RedeemedPage';
 import ToRedeemPage from './ToRedeemPage';
