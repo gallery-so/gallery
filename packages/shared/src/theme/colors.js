@@ -1,6 +1,7 @@
 const colors = {
   offWhite: '#F9F9F9',
   white: '#FEFEFE',
+  black: '#000000',
   offBlack: '#141414',
   shadow: '#707070',
   metal: '#9e9e9e',
