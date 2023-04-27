@@ -34,7 +34,7 @@ export default function ChangelogPage({ sections }: Props) {
   return (
     <>
       <Head>
-        <title>Changelog - Gallery</title>
+        <title>Gallery | Changelog</title>
       </Head>
       <StyledPage gap={48}>
         <PageTitle>Changelog</PageTitle>
