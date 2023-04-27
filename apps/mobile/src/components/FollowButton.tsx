@@ -110,14 +110,14 @@ function FollowChip({
     <TouchableOpacity
       onPress={onPress}
       className={clsx('flex h-6 w-20 items-center justify-center rounded-sm px-2', {
-        'bg-black': variant === 'follow',
-        'bg-faint': variant === 'unfollow',
+        'bg-black dark:bg-white': variant === 'follow',
+        'bg-white dark:bg-black border border-faint dark:border-graphite': variant === 'unfollow',
       })}
     >
       <Typography
         className={clsx('text-sm', {
-          'text-white': variant === 'follow',
-          'text-black': variant === 'unfollow',
+          'text-white dark:text-black': variant === 'follow',
+          'text-black dark:text-white': variant === 'unfollow',
         })}
         font={{ family: 'ABCDiatype', weight: 'Bold' }}
       >

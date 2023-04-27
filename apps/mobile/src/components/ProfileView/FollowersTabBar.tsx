@@ -24,7 +24,7 @@ function TabItem({ activeRoute, route, onRouteChange }: TabItemProps) {
       onPress={onPress}
     >
       <Typography
-        className={`text-sm ${isFocused ? 'text-offBlack' : 'text-metal'}`}
+        className={`text-sm ${isFocused ? 'text-offBlack dark:text-offWhite' : 'text-metal'}`}
         font={{ family: 'ABCDiatype', weight: 'Medium' }}
       >
         {route}

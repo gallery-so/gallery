@@ -27,7 +27,7 @@ export function GalleryVirtualizedRow({ item }: Props) {
     );
   } else if (item.kind === 'collection-title') {
     return (
-      <View className="flex flex-col bg-white py-2 px-4">
+      <View className="flex flex-col bg-white dark:bg-black py-2 px-4">
         <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
           {item.name}
         </Typography>
@@ -37,7 +37,7 @@ export function GalleryVirtualizedRow({ item }: Props) {
     const firstLineOfCollectorsNote = item.collectorsNote?.split('\n')?.[0];
 
     return (
-      <View className="flex flex-col bg-white px-4">
+      <View className="flex flex-col bg-white dark:bg-black px-4">
         <Markdown numberOfLines={1}>{firstLineOfCollectorsNote}</Markdown>
       </View>
     );

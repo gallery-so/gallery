@@ -322,7 +322,7 @@ export function ProfileView({ userRef, queryRef }: ProfileViewProps) {
 
       return (
         <View
-          className={clsx('bg-white', {
+          className={clsx('bg-white dark:bg-black', {
             'pt-3': index === 0,
           })}
         >
@@ -334,9 +334,9 @@ export function ProfileView({ userRef, queryRef }: ProfileViewProps) {
   );
 
   return (
-    <View className="flex-1">
-      <View className="flex flex-col bg-white p-4 pb-1">
-        <View className="flex flex-row justify-between bg-white">
+    <View className="flex-1 bg-white dark:bg-black">
+      <View className="flex flex-col p-4 pb-1">
+        <View className="flex flex-row justify-between bg-white dark:bg-black">
           {navigation.canGoBack() ? (
             <IconContainer icon={<BackIcon />} onPress={navigation.goBack} />
           ) : (
@@ -351,7 +351,7 @@ export function ProfileView({ userRef, queryRef }: ProfileViewProps) {
           </View>
         </View>
         <Typography
-          className="bg-white text-center text-2xl"
+          className="bg-white dark:bg-black text-center text-2xl"
           font={{ family: 'GTAlpina', weight: 'StandardLight' }}
         >
           {user.username}

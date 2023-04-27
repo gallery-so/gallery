@@ -43,7 +43,11 @@ function ProfileScreenInner() {
     }
   }, [query]);
 
-  return <SafeAreaViewWithPadding className="flex-1 bg-white">{inner}</SafeAreaViewWithPadding>;
+  return (
+    <SafeAreaViewWithPadding className="flex-1 bg-white dark:bg-black">
+      {inner}
+    </SafeAreaViewWithPadding>
+  );
 }
 
 export function ProfileScreen() {

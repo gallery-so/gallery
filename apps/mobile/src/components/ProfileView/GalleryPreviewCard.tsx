@@ -1,5 +1,5 @@
 import { ResizeMode } from 'expo-av';
-import { View, ViewProps } from 'react-native';
+import { TouchableOpacity, View, ViewProps } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
@@ -32,7 +32,7 @@ export function GalleryPreviewCard({ galleryRef, isFeatured }: GalleryPreviewCar
   const descriptionFirstLine = gallery.description?.split('\n')[0];
 
   return (
-    <View className="bg-offWhite flex w-full flex-col space-y-3 rounded-xl p-3">
+    <TouchableOpacity className="bg-offWhite dark:bg-offBlack flex w-full flex-col space-y-3 rounded-xl p-3">
       <View className="flex flex-row items-center justify-center">
         <View className="flex flex-1 flex-col">
           <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
@@ -50,9 +50,9 @@ export function GalleryPreviewCard({ galleryRef, isFeatured }: GalleryPreviewCar
         </View>
 
         {isFeatured ? (
-          <View className="border-activeBlue py-1/2 rounded-sm border px-1">
+          <View className="border-activeBlue dark:border-offWhite py-1/2 rounded-sm border px-1">
             <Typography
-              className="text-activeBlue text-xs"
+              className="text-activeBlue dark:text-offWhite text-xs"
               font={{ family: 'ABCDiatype', weight: 'Regular' }}
             >
               Featured
@@ -73,7 +73,7 @@ export function GalleryPreviewCard({ galleryRef, isFeatured }: GalleryPreviewCar
           <TokenCell tokenUrl={fourthToken?.medium} />
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
 
