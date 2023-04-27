@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 
 import { ButtonLink } from '~/components/core/Button/Button';
-import colors from '~/components/core/colors';
 import NavLink from '~/components/core/NavLink/NavLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseS, BlueLabel, TitleM } from '~/components/core/Text/Text';
@@ -9,6 +8,7 @@ import GalleryIntro from '~/components/GalleryTitleIntro/GalleryTitleIntro';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import LogoBracketLeft from '~/icons/LogoBracketLeft';
 import LogoBracketRight from '~/icons/LogoBracketRight';
+import colors from '~/shared/theme/colors';
 
 const GALLERY_OF_THE_WEEK_USER = 'masisus';
 

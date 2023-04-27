@@ -47,7 +47,7 @@ export function SearchFilter({ activeFilter, onChange, ...props }: Props) {
             handleSelectFilter(filter.value);
           }}
           className={`flex h-8 items-center justify-center rounded-3xl border px-3 ${
-            activeFilter === filter.value ? 'border-offBlack' : 'border-porcelain'
+            activeFilter === filter.value ? 'border-offBlack dark:border-white ' : 'border-metal'
           }`}
         >
           <Typography
@@ -55,7 +55,9 @@ export function SearchFilter({ activeFilter, onChange, ...props }: Props) {
               family: 'ABCDiatype',
               weight: 'Bold',
             }}
-            className={`text-sm ${activeFilter === filter.value ? 'text-offBlack' : 'text-shadow'}`}
+            className={`text-sm ${
+              activeFilter === filter.value ? 'text-offBlack dark:text-white' : 'text-metal'
+            }`}
           >
             {filter.label}
           </Typography>

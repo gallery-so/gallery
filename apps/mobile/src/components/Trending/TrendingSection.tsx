@@ -44,7 +44,7 @@ export function TrendingSection({ title, description, queryRef, trendingUsersRef
               family: 'ABCDiatype',
               weight: 'Bold',
             }}
-            className="text-lg text-black"
+            className="text-lg text-black dark:text-white"
           >
             {title}
           </Typography>

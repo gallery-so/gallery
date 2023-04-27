@@ -6,12 +6,12 @@ import { Typography } from './Typography';
 
 type Props = PropsWithChildren<{
   href?: string;
-  noUnderline?: boolean;
+  showUnderline?: boolean;
   onPress?: () => void;
   style?: TouchableOpacityProps['style'];
 }>;
 
-export function InteractiveLink({ href, style, onPress, noUnderline = false, children }: Props) {
+export function InteractiveLink({ href, style, onPress, showUnderline = false, children }: Props) {
   const handlePress = useCallback(() => {
     if (href) {
       Linking.openURL(href);
@@ -23,8 +23,8 @@ export function InteractiveLink({ href, style, onPress, noUnderline = false, chi
   return (
     <TouchableOpacity style={style} onPress={handlePress}>
       <Typography
-        className={clsx(`text-shadow text-sm`, {
-          underline: !noUnderline,
+        className={clsx(`text-shadow dark:text-white text-sm`, {
+          underline: showUnderline,
         })}
         font={{ family: 'ABCDiatype', weight: 'Regular' }}
       >

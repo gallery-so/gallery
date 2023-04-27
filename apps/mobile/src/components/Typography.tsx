@@ -38,7 +38,11 @@ export function Typography({ font, style, children, ...rest }: TypographyProps) 
   }, [font]);
 
   return (
-    <Text {...rest} style={[textStyle, style]} className={`text-offBlack text-base`}>
+    <Text
+      {...rest}
+      style={[textStyle, style]}
+      className={`text-offBlack text-base dark:text-white`}
+    >
       {children}
     </Text>
   );

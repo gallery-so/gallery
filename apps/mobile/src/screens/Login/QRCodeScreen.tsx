@@ -56,7 +56,7 @@ export function QRCodeScreen() {
           onPress={navigation.goBack}
         />
 
-        <View className="flex h-1/3 flex-col space-y-4 rounded-lg bg-white py-4 px-6">
+        <View className="flex h-1/3 flex-col space-y-4 rounded-lg bg-white dark:bg-black py-4 px-6">
           <Typography className="text-base" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
             If you’re signed in on Gallery elsewhere, you can sign in instantly via QR code.
           </Typography>

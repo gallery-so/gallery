@@ -2,7 +2,6 @@ import { ReactElement, useEffect, useMemo } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
-import colors from '~/components/core/colors';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { TitleS } from '~/components/core/Text/Text';
 import transitions, {
@@ -11,6 +10,7 @@ import transitions, {
 } from '~/components/core/transitions';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import { DecoratedCloseIcon } from '~/icons/CloseIcon';
+import colors from '~/shared/theme/colors';
 
 import { MODAL_PADDING_PX, ModalPaddingVariant } from './constants';
 

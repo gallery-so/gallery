@@ -2,10 +2,10 @@ import React, { useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import { Button, ButtonLink } from '~/components/core/Button/Button';
-import colors from '~/components/core/colors';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleM } from '~/components/core/Text/Text';
 import icons from '~/icons/index';
+import colors from '~/shared/theme/colors';
 
 const PendingButton = (props: React.ComponentProps<typeof Button>) => {
   const [pending, setPending] = useState(false);

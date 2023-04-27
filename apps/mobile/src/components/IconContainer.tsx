@@ -11,7 +11,9 @@ type IconContainerProps = {
 export function IconContainer({ icon, onPress, style }: IconContainerProps) {
   return (
     <TouchableOpacity style={style} onPress={onPress}>
-      <View className="bg-porcelain h-7 w-7 items-center justify-center rounded-full">{icon}</View>
+      <View className="bg-faint dark:bg-graphite h-7 w-7 items-center justify-center rounded-full">
+        {icon}
+      </View>
     </TouchableOpacity>
   );
 }

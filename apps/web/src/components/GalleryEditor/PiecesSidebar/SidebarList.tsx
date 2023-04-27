@@ -5,7 +5,6 @@ import { AutoSizer, Index, List, ListRowProps } from 'react-virtualized';
 import { readInlineData } from 'relay-runtime';
 import styled from 'styled-components';
 
-import colors from '~/components/core/colors';
 import IconContainer from '~/components/core/IconContainer';
 import { TitleXS } from '~/components/core/Text/Text';
 import { ExpandedIcon } from '~/components/GalleryEditor/PiecesSidebar/ExpandedIcon';
@@ -20,6 +19,7 @@ import {
 import { SidebarListTokenFragment$key } from '~/generated/SidebarListTokenFragment.graphql';
 import HideIcon from '~/icons/HideIcon';
 import ShowIcon from '~/icons/ShowIcon';
+import colors from '~/shared/theme/colors';
 
 import OnboardingDialog from '../GalleryOnboardingGuide/OnboardingDialog';
 import { useOnboardingDialogContext } from '../GalleryOnboardingGuide/OnboardingDialogContext';

@@ -17,7 +17,6 @@ import { MouseEventHandler, Suspense, useCallback, useEffect, useMemo, useState 
 import { graphql, useFragment, useQueryLoader } from 'react-relay';
 import styled from 'styled-components';
 
-import colors from '~/components/core/colors';
 import { TitleDiatypeM } from '~/components/core/Text/Text';
 import {
   ANIMATED_COMPONENT_TRANSITION_S,
@@ -29,6 +28,7 @@ import { HoverCardOnUsernameFragment$key } from '~/generated/HoverCardOnUsername
 import { HoverCardQuery } from '~/generated/HoverCardQuery.graphql';
 import { COMMUNITIES_PER_PAGE } from '~/scenes/UserGalleryPage/UserSharedInfo/UserSharedCommunities';
 import { FOLLOWERS_PER_PAGE } from '~/scenes/UserGalleryPage/UserSharedInfo/UserSharedInfoList/SharedFollowersList';
+import colors from '~/shared/theme/colors';
 import handleCustomDisplayName from '~/utils/handleCustomDisplayName';
 import noop from '~/utils/noop';
 

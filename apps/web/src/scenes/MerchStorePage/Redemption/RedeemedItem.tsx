@@ -1,10 +1,10 @@
 import styled from 'styled-components';
 
 import CopyToClipboard from '~/components/CopyToClipboard/CopyToClipboard';
-import colors from '~/components/core/colors';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { TitleMonoM } from '~/components/core/Text/Text';
 import CopyIcon from '~/icons/CopyIcon';
+import colors from '~/shared/theme/colors';
 
 import { REDEEMED_STATUS } from '../constants';
 

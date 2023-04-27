@@ -4,8 +4,8 @@ import { ReactNode, useCallback } from 'react';
 import styled from 'styled-components';
 
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
+import colors from '~/shared/theme/colors';
 
-import colors from '../colors';
 import { BODY_FONT_FAMILY } from '../Text/Text';
 import transitions from '../transitions';
 

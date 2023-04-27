@@ -5,7 +5,6 @@ import styled from 'styled-components';
 
 import { Button } from '~/components/core/Button/Button';
 import Checkbox from '~/components/core/Checkbox/Checkbox';
-import colors from '~/components/core/colors';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, BaseS, TitleDiatypeL } from '~/components/core/Text/Text';
 import { useModalActions } from '~/contexts/modal/ModalContext';
@@ -13,6 +12,7 @@ import { useToastActions } from '~/contexts/toast/ToastContext';
 import { MoveCollectionModalFragment$key } from '~/generated/MoveCollectionModalFragment.graphql';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
+import colors from '~/shared/theme/colors';
 
 import { GalleryEditorContextType, StagedCollection } from '../GalleryEditorContext';
 import useMoveCollectionToGallery from './useMoveCollectionToGallery';

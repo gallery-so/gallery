@@ -2,8 +2,7 @@ import { MouseEventHandler, ReactNode, useCallback } from 'react';
 import styled, { css } from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';
-
-import colors from '../colors';
+import colors from '~/shared/theme/colors';
 
 type Props = {
   active: boolean;

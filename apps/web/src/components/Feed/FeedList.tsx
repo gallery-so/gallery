@@ -11,13 +11,13 @@ import { MeasuredCellParent } from 'react-virtualized/dist/es/CellMeasurer';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
-import colors from '~/components/core/colors';
 import Loader from '~/components/core/Loader/Loader';
 import { TitleM } from '~/components/core/Text/Text';
 import transitions from '~/components/core/transitions';
 import { FeedMode } from '~/components/Feed/types';
 import { FeedListEventDataFragment$key } from '~/generated/FeedListEventDataFragment.graphql';
 import { FeedListFragment$key } from '~/generated/FeedListFragment.graphql';
+import colors from '~/shared/theme/colors';
 
 import FeedEvent from './FeedEvent';
 

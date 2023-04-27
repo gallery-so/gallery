@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled, { keyframes } from 'styled-components';
 
-import colors from '~/components/core/colors';
 import { StagedNftImageDraggingFragment$key } from '~/generated/StagedNftImageDraggingFragment.graphql';
 import { useImageFailureCheck } from '~/hooks/useImageFailureCheck';
 import useMouseUp from '~/hooks/useMouseUp';
@@ -10,6 +9,7 @@ import { useThrowOnMediaFailure } from '~/hooks/useNftRetry';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
 import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
+import colors from '~/shared/theme/colors';
 import { getBackgroundColorOverrideForContract } from '~/utils/token';
 
 type Props = {

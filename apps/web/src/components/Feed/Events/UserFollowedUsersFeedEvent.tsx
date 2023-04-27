@@ -5,7 +5,6 @@ import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import { Button } from '~/components/core/Button/Button';
-import colors from '~/components/core/colors';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { TitleXS } from '~/components/core/Text/Text';
 import { FeedMode } from '~/components/Feed/types';
@@ -18,6 +17,7 @@ import { UserFollowedUsersFeedEventFragment$key } from '~/generated/UserFollowed
 import { UserFollowedUsersFeedEventQueryFragment$key } from '~/generated/UserFollowedUsersFeedEventQueryFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
+import colors from '~/shared/theme/colors';
 import { getTimeSince } from '~/shared/utils/time';
 
 import { StyledEvent, StyledEventHeader, StyledEventText, StyledTime } from './EventStyles';

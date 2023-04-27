@@ -86,7 +86,7 @@ export function SomeoneCommentedOnYourFeedEvent({
 
   return (
     <View className="flex space-y-2">
-      <Text>
+      <Text className="dark:text-white">
         <Typography
           font={{
             family: 'ABCDiatype',
@@ -113,7 +113,7 @@ export function SomeoneCommentedOnYourFeedEvent({
       </Text>
 
       <View className="ml-4 border-l-2 border-[#d9d9d9] pl-2">
-        <Text>{notification.comment?.comment ?? ''}</Text>
+        <Text className="dark:text-white">{notification.comment?.comment ?? ''}</Text>
       </View>
     </View>
   );

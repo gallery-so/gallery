@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-import colors from '~/components/core/colors';
 import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, BaseS, TitleM } from '~/components/core/Text/Text';
 import useTimer from '~/hooks/useTimer';
+import colors from '~/shared/theme/colors';
 
 import { ALLOWLIST_MINTING_TIME, GALLERY_MINTING_TIME, PUBLIC_MINTING_TIME } from './times';
 

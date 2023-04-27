@@ -17,8 +17,8 @@ export function ModalContainer({ children, scrollable = false, withBackButton }:
   const navigation = useNavigation();
 
   return (
-    <View className="flex h-full flex-col bg-white" style={{ paddingBottom: bottom }}>
-      <View className="space-y-2 bg-white py-3">
+    <View className="flex h-full flex-col bg-white dark:bg-black" style={{ paddingBottom: bottom }}>
+      <View className="space-y-2 py-3">
         <View className="h-1 w-20 self-center bg-[#D9D9D9] px-4" />
 
         {withBackButton && (

@@ -2,7 +2,6 @@ import { useCallback, useMemo } from 'react';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import styled from 'styled-components';
 
-import colors from '~/components/core/colors';
 import IconContainer from '~/components/core/IconContainer';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM } from '~/components/core/Text/Text';
@@ -11,6 +10,7 @@ import useMaxColumns from '~/contexts/collectionEditor/useMaxColumns';
 import { ColumnAdjusterQuery } from '~/generated/ColumnAdjusterQuery.graphql';
 import CircleMinusIcon from '~/icons/CircleMinusIcon';
 import CirclePlusIcon from '~/icons/CirclePlusIcon';
+import colors from '~/shared/theme/colors';
 
 type Props = {
   sectionId: string;

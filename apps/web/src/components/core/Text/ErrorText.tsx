@@ -1,4 +1,5 @@
-import colors from '../colors';
+import colors from '~/shared/theme/colors';
+
 import { BaseM } from './Text';
 
 type Props = {

@@ -69,7 +69,7 @@ export function TrendingUserList({ usersRef, queryRef }: Props) {
       return (
         <View className="flex flex-row flex-wrap justify-between" style={{ width: width - 24 }}>
           {item.cells.map((user, index) => (
-            <View key={index} className="mb-1 w-1/2" style={{ height: CARD_HEIGHT }}>
+            <View key={index} className="mb-1 w-1/2 gap-x-0.5" style={{ height: CARD_HEIGHT }}>
               <TrendingUserCard key={index} userRef={user} queryRef={query} />
             </View>
           ))}
@@ -123,7 +123,9 @@ export function TrendingUserList({ usersRef, queryRef }: Props) {
 function Circle({ style, active }: { style?: StyleProp<ViewStyle>; active: boolean }) {
   return (
     <View
-      className={`h-1 w-1 rounded-full ${active ? 'bg-offBlack' : 'bg-porcelain'}`}
+      className={`h-1 w-1 rounded-full ${
+        active ? 'bg-offBlack dark:bg-white' : 'bg-porcelain dark:bg-shadow'
+      }`}
       style={style}
     />
   );

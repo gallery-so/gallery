@@ -75,7 +75,7 @@ export function TrendingUserCard({ style, userRef, queryRef }: Props) {
   }, [bio]);
 
   return (
-    <View className="bg-offWhite flex-1 rounded-md p-2" style={[style]}>
+    <View className="bg-offWhite dark:bg-offBlack flex-1 rounded-md p-2" style={[style]}>
       <View className="mb-2 flex h-20 flex-row space-x-[2]">
         {tokenPreviews.map((tokenPreview, index) => {
           return (

@@ -4,7 +4,7 @@ import { ActivityIndicator, TouchableOpacity, TouchableOpacityProps, View } from
 
 import { Typography } from './Typography';
 
-type Variant = 'dark' | 'light';
+type Variant = 'primary' | 'secondary';
 
 type ButtonProps = {
   style?: TouchableOpacityProps['style'];
@@ -22,24 +22,24 @@ export function Button({
   icon,
   text,
   onPress,
-  variant = 'dark',
+  variant = 'primary',
   loading,
   disabled,
   style,
 }: ButtonProps) {
   const containerVariants: VariantMapType = {
-    dark: 'bg-offBlack',
-    light: 'bg-white border border-faint',
+    primary: 'bg-offBlack dark:bg-white',
+    secondary: 'bg-white dark:bg-black border border-faint dark:border-graphite',
   };
 
   const textVariants: VariantMapType = {
-    dark: 'text-white',
-    light: 'text-offBlack',
+    primary: 'text-white dark:text-offBlack',
+    secondary: 'text-offBlack dark:text-white',
   };
 
   const loadingIndicatorColor: VariantMapType = {
-    dark: 'white',
-    light: 'black',
+    primary: 'white',
+    secondary: 'black',
   };
 
   return (

@@ -10,10 +10,10 @@ import { EmailFormMutation } from '~/generated/EmailFormMutation.graphql';
 import { AdditionalContext, useReportError } from '~/shared/contexts/ErrorReportingContext';
 import useDebounce from '~/shared/hooks/useDebounce';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
+import colors from '~/shared/theme/colors';
 import { EMAIL_FORMAT } from '~/utils/regex';
 
 import { Button } from '../core/Button/Button';
-import colors from '../core/colors';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import ErrorText from '../core/Text/ErrorText';
 import useVerifyValidEmail from './useVerifyValidEmail';

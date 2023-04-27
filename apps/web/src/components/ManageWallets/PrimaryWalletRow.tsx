@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
-import colors from '../core/colors';
+import colors from '~/shared/theme/colors';
+
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM, BaseS, BODY_MONO_FONT_FAMILY, TitleXS } from '../core/Text/Text';
 import { walletIconMap } from '../WalletSelector/multichain/WalletButton';

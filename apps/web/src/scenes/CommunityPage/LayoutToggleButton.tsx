@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
 import styled from 'styled-components';
 
-import colors from '~/components/core/colors';
 import { DisplayLayout } from '~/components/core/enums';
 import { GridLayoutIcon, ListLayoutIcon } from '~/scenes/UserGalleryPage/MobileLayoutToggle';
+import colors from '~/shared/theme/colors';
 
 type Props = {
   layout: DisplayLayout;

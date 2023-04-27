@@ -2655,22 +2655,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@expo/cli@npm:0.6.2":
-  version: 0.6.2
-  resolution: "@expo/cli@npm:0.6.2"
+"@expo/cli@npm:0.7.1":
+  version: 0.7.1
+  resolution: "@expo/cli@npm:0.7.1"
   dependencies:
     "@babel/runtime": ^7.20.0
     "@expo/code-signing-certificates": 0.0.5
     "@expo/config": ~8.0.0
     "@expo/config-plugins": ~6.0.0
-    "@expo/dev-server": 0.2.3
+    "@expo/dev-server": 0.3.0
     "@expo/devcert": ^1.0.0
     "@expo/json-file": ^8.2.37
     "@expo/metro-config": ~0.7.0
     "@expo/osascript": ^2.0.31
     "@expo/package-manager": ~1.0.0
     "@expo/plist": ^0.0.20
-    "@expo/prebuild-config": 6.0.0
+    "@expo/prebuild-config": 6.0.1
     "@expo/rudder-sdk-node": 1.1.1
     "@expo/spawn-async": 1.5.0
     "@expo/xcpretty": ^4.2.1
@@ -2719,9 +2719,10 @@ __metadata:
     text-table: ^0.2.0
     url-join: 4.0.0
     wrap-ansi: ^7.0.0
+    ws: ^8.12.1
   bin:
     expo-internal: build/bin/cli
-  checksum: 383076f0be5f016ed424468ec008b5d6d02decdfca6ddf1977fb8b0f5de9192b2105919fdaac5053f5ad0428181c562ddd12d310e083f326085f4ce27d1458c3
+  checksum: 5b84f3ad6c57fa9c64a0edd99558ada7fca8556d6137213df141b90cd4c93b3605dafce1a72cb11f0448857c220c7be63cde295a2cb13d99ba1f122ea362da05
   languageName: node
   linkType: hard
 
@@ -2829,9 +2830,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@expo/dev-server@npm:0.2.3":
-  version: 0.2.3
-  resolution: "@expo/dev-server@npm:0.2.3"
+"@expo/dev-server@npm:0.3.0":
+  version: 0.3.0
+  resolution: "@expo/dev-server@npm:0.3.0"
   dependencies:
     "@expo/bunyan": 4.0.0
     "@expo/metro-config": ~0.7.0
@@ -2849,7 +2850,7 @@ __metadata:
     semver: 7.3.2
     serialize-error: 6.0.0
     temp-dir: ^2.0.0
-  checksum: 65cb947d8d552f77911d61f94c2e49ebd9aecb38624fabff0f3ff8f6773b3830e95c573a968bd764d39d4142b7d03852f41a3f6b98367aedbe6ffcc9a4b4a529
+  checksum: b74ac8fb3c2681e4dde0e32a8eac7367f1cc7cb2874f31f204ae7a496e20a9e94926c0612e1686af7d43fbcfaa7796aa5760271c0be0d18d477d3650c9e9e817
   languageName: node
   linkType: hard
 
@@ -16383,9 +16384,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-modules-autolinking@npm:1.1.2":
-  version: 1.1.2
-  resolution: "expo-modules-autolinking@npm:1.1.2"
+"expo-modules-autolinking@npm:1.2.0":
+  version: 1.2.0
+  resolution: "expo-modules-autolinking@npm:1.2.0"
   dependencies:
     chalk: ^4.1.0
     commander: ^7.2.0
@@ -16394,7 +16395,7 @@ __metadata:
     fs-extra: ^9.1.0
   bin:
     expo-modules-autolinking: bin/expo-modules-autolinking.js
-  checksum: f7fe666414c5350bf5c2f591adb654fff3f2e7e674ca103a3492002421d7434b6c4782cdca059d8481663b800821570d78bd91f26b014fb64aae6a542edf2068
+  checksum: e5f7f4b66ede891ab4eb675d12de9efe1e062085dced9c04d93c967919a201072e647d8b7d08559a0f5a1662f39f07d8daff7deedd89f8e8caadb0719777198f
   languageName: node
   linkType: hard
 
@@ -16408,15 +16409,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-splash-screen@npm:~0.18.1":
-  version: 0.18.1
-  resolution: "expo-splash-screen@npm:0.18.1"
+"expo-splash-screen@npm:~0.18.2":
+  version: 0.18.2
+  resolution: "expo-splash-screen@npm:0.18.2"
   dependencies:
     "@expo/configure-splash-screen": ^0.6.0
-    "@expo/prebuild-config": 6.0.0
+    "@expo/prebuild-config": 6.0.1
   peerDependencies:
     expo: "*"
-  checksum: 39a43bd3f779432721e845f171c51b0a64d713029ec14202e65a84434b09b9184dd6b173d13331321766854cf400186b3ae4aa8736d6fda40f380aae756d6673
+  checksum: 2c62d2989bf8945efb41056eb93b711cec260d24eed96a58789c961ab86fa3552466d221f1d3e2d926134136aa95337cdba94035d328a28c92793c31de95e718
   languageName: node
   linkType: hard
 
@@ -16431,6 +16432,18 @@ __metadata:
   version: 3.1.1
   resolution: "expo-structured-headers@npm:3.1.1"
   checksum: 7bba145baf588525b47b626875b38a9ca1e6279abc6526e106c3417e6256a5a7ed0a686cc75f0235228f9322d93521b894b36d93b4172ddafceb90adfd091693
+  languageName: node
+  linkType: hard
+
+"expo-system-ui@npm:~2.2.1":
+  version: 2.2.1
+  resolution: "expo-system-ui@npm:2.2.1"
+  dependencies:
+    "@react-native/normalize-color": ^2.0.0
+    debug: ^4.3.2
+  peerDependencies:
+    expo: "*"
+  checksum: 5ea05eac2468944459072b41cbe60675d8803dfe6617045a4e516dc5158665d40eb023c19e19fb593c7c4d4140ca3bd11790b357682ec61280ccddfc7d53dbf0
   languageName: node
   linkType: hard
 
@@ -16466,12 +16479,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo@npm:~48.0.10":
-  version: 48.0.10
-  resolution: "expo@npm:48.0.10"
+"expo@npm:~48.0.15":
+  version: 48.0.15
+  resolution: "expo@npm:48.0.15"
   dependencies:
     "@babel/runtime": ^7.20.0
-    "@expo/cli": 0.6.2
+    "@expo/cli": 0.7.1
     "@expo/config": 8.0.2
     "@expo/config-plugins": 6.0.1
     "@expo/vector-icons": ^13.0.0
@@ -16483,7 +16496,7 @@ __metadata:
     expo-file-system: ~15.2.2
     expo-font: ~11.1.1
     expo-keep-awake: ~12.0.1
-    expo-modules-autolinking: 1.1.2
+    expo-modules-autolinking: 1.2.0
     expo-modules-core: 1.2.6
     fbemitter: ^3.0.0
     getenv: ^1.0.0
@@ -16494,7 +16507,7 @@ __metadata:
     uuid: ^3.4.0
   bin:
     expo: bin/cli.js
-  checksum: 93779065567b39897cab8f8cdcfbeec1c9c31e68501399822ae92504fc1f0c31a4d59dfe2c759367e92ca2a660d1f6b0131722ffb748abbcbf60cd17f1c31e7a
+  checksum: afd0b5b13af37608bba0746ade8868cbd924bca7c8a017fe266ae466059938baa9c556ab3917d15e9f2cbe65e80b0517058bf78524311c4b9aea8dc51b0aa85e
   languageName: node
   linkType: hard
 
@@ -17551,7 +17564,6 @@ __metadata:
     get-graphql-schema: ^2.1.2
     nextjs-routes: ^1.0.8
     prettier: ^2.8.4
-    prettier-plugin-tailwindcss: ^0.2.3
     react: ^18.2.0
     react-hotkeys-hook: ^4.3.8
     react-relay: ^15.0.0
@@ -23471,6 +23483,7 @@ __metadata:
     "@react-navigation/native-stack": ^6.9.10
     "@sentry/react-native": ^5.1.0
     "@shopify/flash-list": 1.4.0
+    "@types/lodash.merge": ^4.6.7
     "@types/markdown-it": ^12.2.3
     "@types/react-native": ^0.71.1
     babel-plugin-relay: ^14.1.0
@@ -23478,7 +23491,7 @@ __metadata:
     clsx: ^1.2.1
     date-fns: ^2.29.3
     eas-cli: ^3.7.2
-    expo: ~48.0.10
+    expo: ~48.0.15
     expo-av: ~13.2.1
     expo-barcode-scanner: ~12.3.2
     expo-constants: ~14.2.1
@@ -23486,14 +23499,16 @@ __metadata:
     expo-dev-menu: ^2.1.4
     expo-device: ~5.2.1
     expo-font: ~11.1.1
-    expo-splash-screen: ~0.18.1
+    expo-splash-screen: ~0.18.2
     expo-status-bar: ~1.4.2
+    expo-system-ui: ~2.2.1
     expo-updates: ~0.16.3
+    lodash.merge: ^4.6.2
     lru-cache: ^9.1.1
     nativewind: ^2.0.11
     node-html-parser: ^6.1.5
     react: 18.2.0
-    react-native: 0.71.6
+    react-native: 0.71.7
     react-native-fast-image: ^8.6.3
     react-native-fetch-api: ^3.0.0
     react-native-gesture-handler: ~2.9.0
@@ -25663,61 +25678,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier-plugin-tailwindcss@npm:^0.2.3":
-  version: 0.2.3
-  resolution: "prettier-plugin-tailwindcss@npm:0.2.3"
-  peerDependencies:
-    "@ianvs/prettier-plugin-sort-imports": "*"
-    "@prettier/plugin-php": "*"
-    "@prettier/plugin-pug": "*"
-    "@shopify/prettier-plugin-liquid": "*"
-    "@shufo/prettier-plugin-blade": "*"
-    "@trivago/prettier-plugin-sort-imports": "*"
-    prettier: ">=2.2.0"
-    prettier-plugin-astro: "*"
-    prettier-plugin-css-order: "*"
-    prettier-plugin-import-sort: "*"
-    prettier-plugin-jsdoc: "*"
-    prettier-plugin-organize-attributes: "*"
-    prettier-plugin-organize-imports: "*"
-    prettier-plugin-style-order: "*"
-    prettier-plugin-svelte: "*"
-    prettier-plugin-twig-melody: "*"
-  peerDependenciesMeta:
-    "@ianvs/prettier-plugin-sort-imports":
-      optional: true
-    "@prettier/plugin-php":
-      optional: true
-    "@prettier/plugin-pug":
-      optional: true
-    "@shopify/prettier-plugin-liquid":
-      optional: true
-    "@shufo/prettier-plugin-blade":
-      optional: true
-    "@trivago/prettier-plugin-sort-imports":
-      optional: true
-    prettier-plugin-astro:
-      optional: true
-    prettier-plugin-css-order:
-      optional: true
-    prettier-plugin-import-sort:
-      optional: true
-    prettier-plugin-jsdoc:
-      optional: true
-    prettier-plugin-organize-attributes:
-      optional: true
-    prettier-plugin-organize-imports:
-      optional: true
-    prettier-plugin-style-order:
-      optional: true
-    prettier-plugin-svelte:
-      optional: true
-    prettier-plugin-twig-melody:
-      optional: true
-  checksum: f43599b2b03b80899c32e436a518a5c139aa8b6cc59c4d73f7c95222d99f3c3b418adb2d61145602c86b0827804fa2469a927ed696c5270d0a91dfeb18246509
-  languageName: node
-  linkType: hard
-
 "prettier@npm:^2.7.1, prettier@npm:^2.8.4":
   version: 2.8.4
   resolution: "prettier@npm:2.8.4"
@@ -26591,9 +26551,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native@npm:0.71.6":
-  version: 0.71.6
-  resolution: "react-native@npm:0.71.6"
+"react-native@npm:0.71.7":
+  version: 0.71.7
+  resolution: "react-native@npm:0.71.7"
   dependencies:
     "@jest/create-cache-key-function": ^29.2.1
     "@react-native-community/cli": 10.2.2
@@ -26633,7 +26593,7 @@ __metadata:
     react: 18.2.0
   bin:
     react-native: cli.js
-  checksum: aadbd9b57dd9b10a41b60337ea1a4103e2fb2320784bf148100e807bd0a77929bdb310ea68d054165cd3c00647a3d020eecb0efb864cc7a93733b2d580e1e675
+  checksum: efd91d5560290b883e0d3d3482cc4657268c2e480171b63a0c6b7dc8f6b1331298feac7d9966e1831d95d9fee893dfa831252052561232843e4982880238f09e
   languageName: node
   linkType: hard
 
@@ -32715,6 +32675,21 @@ __metadata:
     utf-8-validate:
       optional: true
   checksum: c3c100a181b731f40b7f2fddf004aa023f79d64f489706a28bc23ff88e87f6a64b3c6651fbec3a84a53960b75159574d7a7385709847a62ddb7ad6af76f49138
+  languageName: node
+  linkType: hard
+
+"ws@npm:^8.12.1":
+  version: 8.13.0
+  resolution: "ws@npm:8.13.0"
+  peerDependencies:
+    bufferutil: ^4.0.1
+    utf-8-validate: ">=5.0.2"
+  peerDependenciesMeta:
+    bufferutil:
+      optional: true
+    utf-8-validate:
+      optional: true
+  checksum: 53e991bbf928faf5dc6efac9b8eb9ab6497c69feeb94f963d648b7a3530a720b19ec2e0ec037344257e05a4f35bd9ad04d9de6f289615ffb133282031b18c61c
   languageName: node
   linkType: hard
 

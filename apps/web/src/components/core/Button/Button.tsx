@@ -2,9 +2,9 @@ import Link from 'next/link';
 import { ButtonHTMLAttributes, forwardRef } from 'react';
 import styled, { css } from 'styled-components';
 
+import colors from '~/shared/theme/colors';
 import { InternalAnchorElementProps } from '~/types/Elements';
 
-import colors from '../colors';
 import { Spinner } from '../Spinner/Spinner';
 import { BODY_FONT_FAMILY } from '../Text/Text';
 import transitions from '../transitions';

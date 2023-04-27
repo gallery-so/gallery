@@ -1,6 +1,5 @@
-import { useNavigation } from '@react-navigation/native';
 import { Suspense, useCallback, useMemo } from 'react';
-import { TouchableOpacity, View } from 'react-native';
+import { View } from 'react-native';
 import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 
 import { ModalContainer } from '~/components/ModalContainer';
@@ -11,8 +10,6 @@ import { UserFollowList } from '~/components/UserFollowList/UserFollowList';
 import { TwitterSuggestionListScreenQuery } from '~/generated/TwitterSuggestionListScreenQuery.graphql';
 import { TwitterSuggestionListScreenQueryFragment$key } from '~/generated/TwitterSuggestionListScreenQueryFragment.graphql';
 import { TwitterSuggestionListScreenRefetchableQuery } from '~/generated/TwitterSuggestionListScreenRefetchableQuery.graphql';
-
-import { XMarkIcon } from '../../icons/XMarkIcon';
 
 type Props = {
   queryRef: TwitterSuggestionListScreenQueryFragment$key;
@@ -63,8 +60,6 @@ export function InnerSuggestionListScreen({ queryRef }: Props) {
 
   const totalFollowing = query.socialConnections?.pageInfo.total ?? 0;
 
-  const navigation = useNavigation();
-
   const nonNullUsers = useMemo(() => {
     const users = [];
 
@@ -77,10 +72,6 @@ export function InnerSuggestionListScreen({ queryRef }: Props) {
     return users;
   }, [query.socialConnections?.edges]);
 
-  const handleClose = useCallback(() => {
-    navigation.goBack();
-  }, [navigation]);
-
   const handleLoadMore = useCallback(() => {
     if (hasNext) {
       loadNext(USERS_PER_PAGE);
@@ -89,12 +80,6 @@ export function InnerSuggestionListScreen({ queryRef }: Props) {
 
   return (
     <View className="flex flex-1 flex-col">
-      <TouchableOpacity
-        onPress={handleClose}
-        className="bg-porcelain mb-4 flex h-6 w-6 items-center justify-center rounded-full"
-      >
-        <XMarkIcon />
-      </TouchableOpacity>
       <Typography
         font={{
           family: 'ABCDiatype',
@@ -102,7 +87,8 @@ export function InnerSuggestionListScreen({ queryRef }: Props) {
         }}
         className="text-lg"
       >
-        We've found {totalFollowing} {totalFollowing ? 'person' : 'people'} you know from Twitter
+        We've found {totalFollowing} {totalFollowing === 1 ? 'person' : 'people'} you know from
+        Twitter
       </Typography>
       <View className="-mx-4 flex-grow">
         <UserFollowList onLoadMore={handleLoadMore} userRefs={nonNullUsers} queryRef={query} />
@@ -125,7 +111,7 @@ export function TwitterSuggestionListScreen() {
   );
 
   return (
-    <ModalContainer>
+    <ModalContainer withBackButton>
       <Suspense fallback={<LoadingFollowerList />}>
         <InnerSuggestionListScreen queryRef={query} />
       </Suspense>

@@ -8,8 +8,8 @@ import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarD
 import { NotificationEmailAlertQueryFragment$key } from '~/generated/NotificationEmailAlertQueryFragment.graphql';
 import CloseIcon from '~/icons/CloseIcon';
 import InfoCircleIcon from '~/icons/InfoCircleIcon';
+import colors from '~/shared/theme/colors';
 
-import colors from '../core/colors';
 import InteractiveLink from '../core/InteractiveLink/InteractiveLink';
 import { HStack } from '../core/Spacer/Stack';
 import { BaseM } from '../core/Text/Text';
