@@ -1,6 +1,6 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback, useRef, useState } from 'react';
-import { TextInput, TextInputProps, TouchableOpacity, View } from 'react-native';
+import { TextInput, TextInputProps, TouchableOpacity, useColorScheme, View } from 'react-native';
 
 import colors from '~/shared/theme/colors';
 
@@ -43,6 +43,8 @@ export function SearchInput({ value, onChange, style, ...props }: Props) {
     [setKeyword]
   );
 
+  const colorScheme = useColorScheme();
+
   return (
     <View className="flex flex-row items-center">
       <TextInput
@@ -53,7 +55,7 @@ export function SearchInput({ value, onChange, style, ...props }: Props) {
         onChangeText={handleChange}
         placeholder="Search for anything..."
         placeholderTextColor={colors.metal}
-        selectionColor="#141414"
+        selectionColor={colorScheme === 'dark' ? colors.offWhite : colors.offBlack}
         autoCapitalize="none"
         autoCorrect={false}
         autoComplete="off"
