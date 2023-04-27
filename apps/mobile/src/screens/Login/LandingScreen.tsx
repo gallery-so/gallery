@@ -23,7 +23,7 @@ export function LandingScreen() {
   }, [navigation]);
 
   return (
-    <SafeAreaView className="flex h-full flex-col justify-end bg-white">
+    <SafeAreaView className="flex h-full flex-col justify-end bg-white dark:bg-black">
       <View className="mb-32 flex flex-col items-center space-y-12">
         <LandingLogo />
 
@@ -32,14 +32,10 @@ export function LandingScreen() {
             className="text-metal text-center text-sm"
             font={{ family: 'ABCDiatype', weight: 'Regular' }}
           >
-            Choose a sign in method
+            Select a sign in method
           </Typography>
 
-          <Button
-            onPress={handleEmailPress}
-            icon={<EmailIcon />}
-            text="Use verified email address"
-          />
+          <Button onPress={handleEmailPress} icon={<EmailIcon />} text="Use verified email" />
 
           <Typography
             className="text-metal text-center text-sm"
@@ -50,9 +46,9 @@ export function LandingScreen() {
 
           <Button
             onPress={handleQrCodePress}
-            variant="light"
+            variant="secondary"
             icon={<QRCodeIcon />}
-            text="Scan QR Code on gallery.so"
+            text="Scan QR Code"
           />
         </View>
       </View>

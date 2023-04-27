@@ -38,7 +38,7 @@ export function FeedListSectionHeader({ feedEventRef }: FeedListSectionHeaderPro
 
   if (feedEvent.eventData?.__typename === 'GalleryUpdatedFeedEventData') {
     return (
-      <View className="flex flex-row items-center justify-between bg-white dark:bg-offBlack px-3 py-2">
+      <View className="flex flex-row items-center justify-between bg-white dark:bg-black px-3 py-2">
         <View className="flex flex-row space-x-1">
           <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
             {feedEvent.eventData.owner?.username}

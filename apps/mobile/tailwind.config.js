@@ -6,12 +6,15 @@ module.exports = {
     extend: {
       fontSize: {
         xxs: fontScale(10),
+        xxl: fontScale(24),
       },
       colors: {
         offWhite: '#F9F9F9',
         white: '#FEFEFE',
         offBlack: '#141414',
         black: '#000000',
+        onyx: '#222222',
+        shadow: '#707070',
         shadow: '#707070',
         metal: '#9e9e9e',
         faint: '#f2f2f2',

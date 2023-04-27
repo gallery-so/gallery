@@ -94,7 +94,7 @@ export function NftDetailScreen() {
   }, [collectionToken]);
 
   return (
-    <SafeAreaViewWithPadding className="h-full bg-white">
+    <SafeAreaViewWithPadding className="h-full bg-white dark:bg-black">
       <ScrollView>
         <View className="flex flex-col space-y-8 px-4">
           <View className="flex flex-col space-y-3">
@@ -106,7 +106,7 @@ export function NftDetailScreen() {
             <NftDetailAsset collectionTokenRef={collectionToken} />
           </View>
 
-          <View className="flex flex-col space-y-1">
+          <View className="flex flex-col space-y-4">
             <Typography
               className="text-2xl"
               font={{ family: 'GTAlpina', weight: 'StandardLight', italic: true }}
@@ -140,7 +140,7 @@ export function NftDetailScreen() {
           </View>
 
           <View>
-            <InteractiveLink noUnderline={showAdditionalDetails} onPress={toggleAdditionalDetails}>
+            <InteractiveLink onPress={toggleAdditionalDetails}>
               {showAdditionalDetails ? 'Hide Details' : 'Show Additional Details'}
             </InteractiveLink>
           </View>

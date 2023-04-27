@@ -1,4 +1,4 @@
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { NotificationFragment$key } from '~/generated/NotificationFragment.graphql';
@@ -32,8 +32,10 @@ export function Notification({ notificationRef }: Props) {
 
   return (
     <View className="flex flex-row justify-between p-3">
-      <View className="flex-1">
-        <NotificationInner notificationRef={notification} />
+      <View className="flex-1 ">
+        <Text className="dark:text-white">
+          <NotificationInner notificationRef={notification} />
+        </Text>
       </View>
       <View className="flex w-20 flex-row items-center justify-end space-x-2">
         <Typography

@@ -2,6 +2,8 @@ import { useFocusEffect } from '@react-navigation/native';
 import { useCallback, useRef, useState } from 'react';
 import { TextInput, TextInputProps, TouchableOpacity, View } from 'react-native';
 
+import colors from '~/shared/theme/colors';
+
 import { useSearchContext } from './SearchContext';
 import { XMarkIcon } from './XMarkIcon';
 
@@ -44,12 +46,12 @@ export function SearchInput({ value, onChange, style, ...props }: Props) {
     <View className="flex flex-row items-center">
       <TextInput
         ref={ref}
-        className="text-offBlack h-10 flex-1 text-xl"
+        className="text-offBlack dark:text-white h-10 flex-1 text-xl"
         value={localKeyword}
         returnKeyType="done"
         onChangeText={handleChange}
         placeholder="Search for anything..."
-        placeholderTextColor="#e2e2e2"
+        placeholderTextColor={colors.metal}
         selectionColor="#141414"
         autoCapitalize="none"
         autoCorrect={false}
