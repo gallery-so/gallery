@@ -7,9 +7,9 @@ export const getSanityUrl = (query: string) => {
   return `https://${sanityProjectId}.api.sanity.io/v1/data/query/production?query=${query}`;
 };
 
-export const fetchSanityContent = async (contentType: string) => {
-  const query = encodeURIComponent(`*[ _type == "${contentType}" ]`);
-  const url = getSanityUrl(query);
+export const fetchSanityContent = async (query: string) => {
+  const encodedQuery = encodeURIComponent(query);
+  const url = getSanityUrl(encodedQuery);
   const response = await fetch(url).then((res) => res.json());
 
   return response.result;

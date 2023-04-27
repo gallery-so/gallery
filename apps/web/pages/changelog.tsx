@@ -11,7 +11,7 @@ export default function Changelog({ document }: Props) {
 }
 
 export const getServerSideProps = async () => {
-  const content = await fetchSanityContent('changelog');
+  const content = await fetchSanityContent('*[ _type == "changelog" ] | order(date desc)');
 
   return {
     props: {
