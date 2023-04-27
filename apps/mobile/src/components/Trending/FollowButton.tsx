@@ -73,7 +73,7 @@ export function FollowButton({ queryRef, userRef }: Props) {
       className={`${
         isFollowing
           ? 'bg-faint dark:bg-graphite'
-          : 'bg-offBlack dark:bg-black dark:border dark:border-shadow'
+          : 'bg-offBlack dark:border-shadow dark:border dark:bg-black'
       }  rounded py-0.5 px-2`}
     >
       <Typography

@@ -5,7 +5,10 @@ type Props = TextInputProps;
 
 export function FadedInput({ value, onChange, style, ...props }: Props) {
   return (
-    <View className="bg-faint dark:bg-onyx  flex flex-col justify-center py-1.5 px-3" style={style}>
+    <View
+      className="bg-faint dark:bg-graphite  flex flex-col justify-center py-1.5 px-3"
+      style={style}
+    >
       <TextInput
         style={{
           fontSize: 14,

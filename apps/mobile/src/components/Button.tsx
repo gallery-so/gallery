@@ -29,7 +29,7 @@ export function Button({
 }: ButtonProps) {
   const containerVariants: VariantMapType = {
     primary: 'bg-offBlack dark:bg-white',
-    secondary: 'bg-white dark:bg-black border border-faint dark:border-onyx',
+    secondary: 'bg-white dark:bg-black border border-faint dark:border-graphite',
   };
 
   const textVariants: VariantMapType = {
