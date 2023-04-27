@@ -5,7 +5,7 @@ import { GallerySkeleton } from '~/components/GallerySkeleton';
 
 export function ProfileViewFallback() {
   return (
-    <View className="flex-1 bg-white dark:bg-black">
+    <View className="flex-1 bg-white dark:bg-black px-4">
       <GallerySkeleton>
         <SkeletonPlaceholder.Item flexDirection="column" width="100%">
           <SkeletonPlaceholder.Item flexDirection="row" justifyContent="flex-end">

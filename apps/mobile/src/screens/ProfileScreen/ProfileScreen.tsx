@@ -1,5 +1,6 @@
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { Suspense, useMemo } from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
@@ -44,17 +45,15 @@ function ProfileScreenInner() {
     }
   }, [query]);
 
-  return (
-    <SafeAreaViewWithPadding className="flex-1 bg-white dark:bg-black">
-      {inner}
-    </SafeAreaViewWithPadding>
-  );
+  return inner;
 }
 
 export function ProfileScreen() {
   return (
-    <Suspense fallback={<ProfileViewFallback />}>
-      <ProfileScreenInner />
-    </Suspense>
+    <SafeAreaView className="flex-1 bg-white dark:bg-black">
+      <Suspense fallback={<ProfileViewFallback />}>
+        <ProfileScreenInner />
+      </Suspense>
+    </SafeAreaView>
   );
 }
