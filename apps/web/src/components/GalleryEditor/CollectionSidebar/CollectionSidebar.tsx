@@ -14,8 +14,8 @@ import { useTooltipHover } from '~/components/Tooltip/useTooltipHover';
 import { CollectionSidebarQueryFragment$key } from '~/generated/CollectionSidebarQueryFragment.graphql';
 import { PaintbrushIcon } from '~/icons/PaintbrushIcon';
 import { QuestionMarkIcon } from '~/icons/QuestionMarkIcon';
-import colors from '~/shared/theme/colors';
 import { UndoIcon } from '~/icons/UndoIcon';
+import colors from '~/shared/theme/colors';
 
 import OnboardingDialog from '../GalleryOnboardingGuide/OnboardingDialog';
 import { useOnboardingDialogContext } from '../GalleryOnboardingGuide/OnboardingDialogContext';

@@ -7,10 +7,10 @@ import styled from 'styled-components';
 import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 import { AnnouncementListFragment$key } from '~/generated/AnnouncementListFragment.graphql';
+import colors from '~/shared/theme/colors';
 import useUpdateUserExperience from '~/utils/graphql/experiences/useUpdateUserExperience';
 import { HTTPS_URL } from '~/utils/regex';
 
-import colors from '~/shared/theme/colors';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM, BaseS } from '../core/Text/Text';
 import useAnnouncement, { AnnouncementType } from './useAnnouncement';

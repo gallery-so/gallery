@@ -3,8 +3,8 @@ import { useColorScheme } from 'react-native';
 
 import { TabBar } from '~/navigation/FeedTabNavigator/TabBar';
 import { FeedTabNavigatorParamList } from '~/navigation/types';
-import colors from '~/shared/theme/colors';
 import { ExploreScreen } from '~/screens/HomeScreen/ExploreScreen';
+import colors from '~/shared/theme/colors';
 
 import { LatestScreen } from '../../screens/HomeScreen/LatestScreen';
 import { TrendingScreen } from '../../screens/HomeScreen/TrendingScreen';
