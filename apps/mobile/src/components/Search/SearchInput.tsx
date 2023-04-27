@@ -29,6 +29,7 @@ export function SearchInput({ value, onChange, style, ...props }: Props) {
     if (ref.current) {
       ref.current.clear();
       setKeyword('');
+      setLocalKeyword('');
     }
   }, [setKeyword]);
 
