@@ -4,8 +4,8 @@ import { TextInput, TextInputProps, TouchableOpacity, View } from 'react-native'
 
 import colors from '~/shared/theme/colors';
 
+import { XMarkIcon } from '../../icons/XMarkIcon';
 import { useSearchContext } from './SearchContext';
-import { XMarkIcon } from './XMarkIcon';
 
 type Props = TextInputProps;
 
@@ -31,6 +31,7 @@ export function SearchInput({ value, onChange, style, ...props }: Props) {
     if (ref.current) {
       ref.current.clear();
       setKeyword('');
+      setLocalKeyword('');
     }
   }, [setKeyword]);
 

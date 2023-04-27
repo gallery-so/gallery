@@ -4,8 +4,8 @@ import { useColorScheme } from 'react-native';
 import { TabBar } from '~/navigation/FeedTabNavigator/TabBar';
 import { FeedTabNavigatorParamList } from '~/navigation/types';
 import colors from '~/shared/theme/colors';
+import { ExploreScreen } from '~/screens/HomeScreen/ExploreScreen';
 
-import { FeaturedScreen } from '../../screens/HomeScreen/FeaturedScreen';
 import { LatestScreen } from '../../screens/HomeScreen/LatestScreen';
 import { TrendingScreen } from '../../screens/HomeScreen/TrendingScreen';
 
@@ -25,7 +25,7 @@ export function FeedTabNavigator() {
     >
       <Tab.Screen name="Trending" component={TrendingScreen} />
       <Tab.Screen name="Latest" component={LatestScreen} />
-      <Tab.Screen name="Featured" component={FeaturedScreen} />
+      <Tab.Screen name="Explore" component={ExploreScreen} />
     </Tab.Navigator>
   );
 }

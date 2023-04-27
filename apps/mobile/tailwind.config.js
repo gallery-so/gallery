@@ -14,7 +14,7 @@ module.exports = {
         offBlack: '#141414',
         black: '#000000',
         onyx: '#222222',
-        shadow: '#707070',
+        graphite: '#2F2F2F',
         shadow: '#707070',
         metal: '#9e9e9e',
         faint: '#f2f2f2',

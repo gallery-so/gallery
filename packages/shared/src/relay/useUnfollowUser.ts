@@ -1,18 +1,19 @@
 import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
-import { useFollowUserFragment$key } from '~/generated/useFollowUserFragment.graphql';
-import { useFollowUserMutation } from '~/generated/useFollowUserMutation.graphql';
-import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
+import { useUnfollowUserFragment$key } from '~/generated/useUnfollowUserFragment.graphql';
+import { useUnfollowUserMutation } from '~/generated/useUnfollowUserMutation.graphql';
 
-type useFollowUserArgs = {
-  queryRef: useFollowUserFragment$key;
+import { usePromisifiedMutation } from './usePromisifiedMutation';
+
+type useUnfollowUserArgs = {
+  queryRef: useUnfollowUserFragment$key;
 };
 
-export default function useFollowUser({ queryRef }: useFollowUserArgs) {
+export default function useUnfollowUser({ queryRef }: useUnfollowUserArgs) {
   const query = useFragment(
     graphql`
-      fragment useFollowUserFragment on Query {
+      fragment useUnfollowUserFragment on Query {
         viewer {
           ... on Viewer {
             id
@@ -29,13 +30,13 @@ export default function useFollowUser({ queryRef }: useFollowUserArgs) {
     queryRef
   );
 
-  const [followUserMutate] = usePromisifiedMutation<useFollowUserMutation>(
+  const [unfollowUserMutate] = usePromisifiedMutation<useUnfollowUserMutation>(
     graphql`
-      mutation useFollowUserMutation($userId: DBID!) @raw_response_type {
-        followUser(userId: $userId) {
+      mutation useUnfollowUserMutation($userId: DBID!) @raw_response_type {
+        unfollowUser(userId: $userId) {
           __typename
 
-          ... on FollowUserPayload {
+          ... on UnfollowUserPayload {
             viewer {
               __typename
               user {
@@ -62,25 +63,28 @@ export default function useFollowUser({ queryRef }: useFollowUserArgs) {
   );
 
   return useCallback(
-    async (followeeId: string) => {
-      await followUserMutate({
+    async (unfolloweeId: string) => {
+      await unfollowUserMutate({
         optimisticResponse: {
-          followUser: {
-            __typename: 'FollowUserPayload',
+          unfollowUser: {
+            __typename: 'UnfollowUserPayload',
             viewer: {
               __typename: 'Viewer',
               id: query.viewer?.id as string,
               user: {
                 __typename: 'GalleryUser',
                 id: query.viewer?.user?.id as string,
-                following: [...(query.viewer?.user?.following ?? []), { id: followeeId }],
+                following:
+                  query.viewer?.user?.following?.filter(
+                    (followee) => followee?.id !== unfolloweeId
+                  ) ?? [],
               },
             },
           },
         },
-        variables: { userId: followeeId },
+        variables: { userId: unfolloweeId },
       });
     },
-    [followUserMutate, query.viewer?.id, query.viewer?.user?.following, query.viewer?.user?.id]
+    [query.viewer?.id, query.viewer?.user?.following, query.viewer?.user?.id, unfollowUserMutate]
   );
 }

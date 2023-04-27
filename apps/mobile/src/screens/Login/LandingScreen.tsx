@@ -27,7 +27,7 @@ export function LandingScreen() {
       <View className="mb-32 flex flex-col items-center space-y-12">
         <LandingLogo />
 
-        <View className="flex flex-col space-y-4">
+        <View className="flex flex-col space-y-4 w-8/12">
           <Typography
             className="text-metal text-center text-sm"
             font={{ family: 'ABCDiatype', weight: 'Regular' }}
@@ -37,18 +37,12 @@ export function LandingScreen() {
 
           <Button onPress={handleEmailPress} icon={<EmailIcon />} text="Use verified email" />
 
-          <Typography
-            className="text-metal text-center text-sm"
-            font={{ family: 'ABCDiatype', weight: 'Regular' }}
-          >
-            or
-          </Typography>
-
           <Button
             onPress={handleQrCodePress}
             variant="secondary"
             icon={<QRCodeIcon />}
             text="Scan QR Code"
+            style={{ justifyContent: 'space-between' }}
           />
         </View>
       </View>
