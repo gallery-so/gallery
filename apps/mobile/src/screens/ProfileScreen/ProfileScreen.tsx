@@ -6,7 +6,6 @@ import { graphql } from 'relay-runtime';
 
 import { ProfileView } from '~/components/ProfileView/ProfileView';
 import { ProfileViewFallback } from '~/components/ProfileView/ProfileViewFallback';
-import { SafeAreaViewWithPadding } from '~/components/SafeAreaViewWithPadding';
 import { Typography } from '~/components/Typography';
 import { ProfileScreenQuery } from '~/generated/ProfileScreenQuery.graphql';
 import { RootStackNavigatorParamList } from '~/navigation/types';
