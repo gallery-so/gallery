@@ -22,10 +22,12 @@ import { IconContainer } from '~/components/IconContainer';
 import { Markdown } from '~/components/Markdown';
 import { Pill } from '~/components/Pill';
 import { FollowersTabBar } from '~/components/ProfileView/FollowersTabBar';
+import { GalleryPreviewCard } from '~/components/ProfileView/GalleryPreviewCard';
 import { ProfileTabBar } from '~/components/ProfileView/ProfileTabBar';
 import { Typography } from '~/components/Typography';
 import { UserFollowCard } from '~/components/UserFollowList/UserFollowCard';
 import { GalleryTokenDimensionCacheProvider } from '~/contexts/GalleryTokenDimensionCacheContext';
+import { GalleryPreviewCardFragment$key } from '~/generated/GalleryPreviewCardFragment.graphql';
 import { ProfileViewFragment$key } from '~/generated/ProfileViewFragment.graphql';
 import { ProfileViewQueryFragment$key } from '~/generated/ProfileViewQueryFragment.graphql';
 import { UserFollowCardFragment$key } from '~/generated/UserFollowCardFragment.graphql';
@@ -46,6 +48,7 @@ type ListItem = { key: string } & (
   | { kind: 'tab-headers'; selectedTab: string }
   | { kind: 'sub-tab-headers'; selectedTab: string }
   | { kind: 'user-follow-card'; user: UserFollowCardFragment$key }
+  | { kind: 'gallery-preview'; isFeatured: boolean; gallery: GalleryPreviewCardFragment$key }
 );
 
 type ProfileViewProps = {
@@ -84,6 +87,7 @@ export function ProfileView({ userRef, queryRef }: ProfileViewProps) {
         username
 
         featuredGallery {
+          dbid
           ...createVirtualizedGalleryRows
         }
 
@@ -102,6 +106,11 @@ export function ProfileView({ userRef, queryRef }: ProfileViewProps) {
               }
             }
           }
+        }
+
+        galleries {
+          dbid
+          ...GalleryPreviewCardFragment
         }
 
         followers {
@@ -232,6 +241,19 @@ export function ProfileView({ userRef, queryRef }: ProfileViewProps) {
       );
 
       items.push(...galleryItems);
+    } else if (selectedRoute === 'Galleries') {
+      const galleries = removeNullValues(user.galleries);
+
+      items.push(
+        ...galleries.map((gallery): ListItem => {
+          return {
+            key: `gallery-preview-${gallery.dbid}`,
+            kind: 'gallery-preview',
+            isFeatured: gallery.dbid === user.featuredGallery?.dbid,
+            gallery,
+          };
+        })
+      );
     }
 
     return { items, stickyIndices };
@@ -243,6 +265,7 @@ export function ProfileView({ userRef, queryRef }: ProfileViewProps) {
     user.feed?.edges,
     user.followers,
     user.following,
+    user.galleries,
   ]);
 
   const renderItem = useCallback<ListRenderItem<ListItem>>(
@@ -274,6 +297,12 @@ export function ProfileView({ userRef, queryRef }: ProfileViewProps) {
         );
       } else if (item.kind === 'user-follow-card') {
         inner = <UserFollowCard userRef={item.user} queryRef={query} />;
+      } else if (item.kind === 'gallery-preview') {
+        inner = (
+          <View className="mb-4 px-4">
+            <GalleryPreviewCard isFeatured={item.isFeatured} galleryRef={item.gallery} />
+          </View>
+        );
       } else if (
         item.kind === 'feed-item-header' ||
         item.kind === 'feed-item-caption' ||
