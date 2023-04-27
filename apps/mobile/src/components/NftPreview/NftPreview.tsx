@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { ResizeMode } from 'expo-av';
-import { useCallback, useRef, useState } from 'react';
+import { startTransition, useCallback, useRef, useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { Priority } from 'react-native-fast-image';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
@@ -78,8 +78,11 @@ function NftPreviewInner({
 
   const handleLoad = useCallback(
     (dimensions: Dimensions | null) => {
-      setImageState({ kind: 'loaded', dimensions });
-      onImageStateChange?.({ kind: 'loaded', dimensions });
+      // This is a low priority update. Interactions are much more important
+      startTransition(() => {
+        setImageState({ kind: 'loaded', dimensions });
+        onImageStateChange?.({ kind: 'loaded', dimensions });
+      });
     },
     [onImageStateChange]
   );
@@ -94,6 +97,7 @@ function NftPreviewInner({
       <Pressable delayLongPress={100} onPress={handlePress} onLongPress={() => {}}>
         <View className="relative h-full w-full">
           <NftPreviewAsset
+            key={tokenUrl}
             tokenUrl={tokenUrl}
             priority={priority}
             resizeMode={resizeMode}

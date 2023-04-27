@@ -1,6 +1,7 @@
 import {
   createContext,
   PropsWithChildren,
+  startTransition,
   useCallback,
   useContext,
   useMemo,
@@ -22,23 +23,27 @@ export function GalleryTokenDimensionCacheProvider({ children }: PropsWithChildr
 
   const add = useCallback<GalleryTokenDimensionCacheContextType['addDimensionsToCache']>(
     (tokenUrl, dimensions) => {
-      setCache((previous) => {
-        if (!dimensions) {
-          return previous;
-        }
+      // This is a low priority update, we should get better batching when many images
+      // are loaded very close to each other temporally speaking.
+      startTransition(() => {
+        setCache((previous) => {
+          if (!dimensions) {
+            return previous;
+          }
 
-        const existing = previous.get(tokenUrl);
-        if (
-          existing &&
-          existing.height === dimensions.height &&
-          existing.width === dimensions.width
-        ) {
-          return previous;
-        }
+          const existing = previous.get(tokenUrl);
+          if (
+            existing &&
+            existing.height === dimensions.height &&
+            existing.width === dimensions.width
+          ) {
+            return previous;
+          }
 
-        const newCache = new Map(previous);
-        newCache.set(tokenUrl, dimensions);
-        return newCache;
+          const newCache = new Map(previous);
+          newCache.set(tokenUrl, dimensions);
+          return newCache;
+        });
       });
     },
     []
