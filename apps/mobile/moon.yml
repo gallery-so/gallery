@@ -47,7 +47,6 @@ tasks:
       - ~:ios-raw
       - ~:relay-watch
 
-
   android-prebuild:
     command: expo prebuild -p android
     local: true
