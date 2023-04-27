@@ -109,7 +109,7 @@ function FollowChip({
   return (
     <TouchableOpacity
       onPress={onPress}
-      className={clsx('flex h-6 items-center justify-center rounded-sm px-2', {
+      className={clsx('flex h-6 w-20 items-center justify-center rounded-sm px-2', {
         'bg-black': variant === 'follow',
         'bg-faint': variant === 'unfollow',
       })}
