@@ -9,6 +9,9 @@ import { GalleryTokenPreview } from '~/components/Gallery/GalleryTokenPreview';
 import { Markdown } from '~/components/Markdown';
 import { Typography } from '~/components/Typography';
 import { GalleryTokenPreviewFragment$key } from '~/generated/GalleryTokenPreviewFragment.graphql';
+import unescape from '~/shared/utils/unescape';
+
+import { sanitizeMarkdown } from '../../utils/sanitizeMarkdown';
 
 type Props = {
   item: GalleryListItemType;
@@ -29,16 +32,22 @@ export function GalleryVirtualizedRow({ item }: Props) {
     return (
       <View className="flex flex-col bg-white dark:bg-black py-2 px-4">
         <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-          {item.name}
+          {unescape(item.name ?? '')}
         </Typography>
       </View>
     );
   } else if (item.kind === 'collection-note') {
-    const firstLineOfCollectorsNote = item.collectorsNote?.split('\n')?.[0];
+    const firstLineOfCollectorsNote = sanitizeMarkdown(item.collectorsNote ?? '');
 
     return (
       <View className="flex flex-col bg-white dark:bg-black px-4">
-        <Markdown numberOfLines={1}>{firstLineOfCollectorsNote}</Markdown>
+        <Typography
+          className="text-sm"
+          font={{ family: 'ABCDiatype', weight: 'Regular' }}
+          numberOfLines={1}
+        >
+          {firstLineOfCollectorsNote}
+        </Typography>
       </View>
     );
   } else if (item.kind === 'collection-row') {
