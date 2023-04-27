@@ -1,3 +1,4 @@
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import styled from 'styled-components';
@@ -31,30 +32,35 @@ export default function ChangelogPage({ sections }: Props) {
     }
   }, [asPath]);
   return (
-    <StyledPage gap={48}>
-      <PageTitle>Changelog</PageTitle>
-      <StyledContent gap={64} align="baseline">
-        {sections &&
-          sections.map((section) => (
-            <StyledSection key={section._id} id={dateToSlug(section.header)}>
-              <SectionDate>{section.header}</SectionDate>
-              <VStack gap={16}>
-                {section.summary && (
-                  <BaseM>
-                    <Markdown text={section.summary} />
-                  </BaseM>
-                )}
-                <VStack gap={8}>
-                  <TitleDiatypeL>Changes and Improvements</TitleDiatypeL>
-                  <BaseM>
-                    <Markdown text={section.improvementsAndFixes} />
-                  </BaseM>
+    <>
+      <Head>
+        <title>Gallery | Changelog</title>
+      </Head>
+      <StyledPage gap={48}>
+        <PageTitle>Changelog</PageTitle>
+        <StyledContent gap={64} align="baseline">
+          {sections &&
+            sections.map((section) => (
+              <StyledSection key={section._id} id={dateToSlug(section.header)}>
+                <SectionDate>{section.header}</SectionDate>
+                <VStack gap={16}>
+                  {section.summary && (
+                    <BaseM>
+                      <Markdown text={section.summary} />
+                    </BaseM>
+                  )}
+                  <VStack gap={8}>
+                    <TitleDiatypeL>Changes and Improvements</TitleDiatypeL>
+                    <BaseM>
+                      <Markdown text={section.improvementsAndFixes} />
+                    </BaseM>
+                  </VStack>
                 </VStack>
-              </VStack>
-            </StyledSection>
-          ))}
-      </StyledContent>
-    </StyledPage>
+              </StyledSection>
+            ))}
+        </StyledContent>
+      </StyledPage>
+    </>
   );
 }
 
