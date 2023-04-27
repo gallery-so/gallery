@@ -4,6 +4,7 @@ import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { ProfileView } from '~/components/ProfileView/ProfileView';
+import { ProfileViewFallback } from '~/components/ProfileView/ProfileViewFallback';
 import { Typography } from '~/components/Typography';
 import { AccountScreenQuery } from '~/generated/AccountScreenQuery.graphql';
 
@@ -40,7 +41,7 @@ function AccountScreenInner() {
 
 export function AccountScreen() {
   return (
-    <Suspense fallback={null}>
+    <Suspense fallback={<ProfileViewFallback />}>
       <AccountScreenInner />
     </Suspense>
   );
