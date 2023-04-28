@@ -1,37 +1,46 @@
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { useColorScheme } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { AccountScreen } from 'src/screens/AccountScreen';
-import { NotificationsScreen } from 'src/screens/NotificationsScreen';
-import { SearchScreen } from 'src/screens/SearchScreen';
 
+import { LoggedInStackNavigator } from '~/navigation/LoggedInStackNavigator';
 import { TabBar } from '~/navigation/MainTabNavigator/TabBar';
 import { MainTabNavigatorParamList } from '~/navigation/types';
 import colors from '~/shared/theme/colors';
 
-import { HomeScreen } from '../../screens/HomeScreen/HomeScreen';
-
 const Tab = createMaterialTopTabNavigator<MainTabNavigatorParamList>();
 
+function AccountScreen() {
+  return <LoggedInStackNavigator initialRouteName="Account" />;
+}
+
+function HomeScreen() {
+  return <LoggedInStackNavigator initialRouteName="Home" />;
+}
+
+function SearchScreen() {
+  return <LoggedInStackNavigator initialRouteName="Search" />;
+}
+
+function NotificationsScreen() {
+  return <LoggedInStackNavigator initialRouteName="Notifications" />;
+}
+
 export function MainTabNavigator() {
-  const { top } = useSafeAreaInsets();
   const colorScheme = useColorScheme();
 
   return (
     <Tab.Navigator
       tabBarPosition="bottom"
-      initialRouteName="Home"
+      initialRouteName="HomeTab"
       tabBar={TabBar}
       screenOptions={{ swipeEnabled: false }}
       sceneContainerStyle={{
-        paddingTop: top,
         backgroundColor: colorScheme === 'dark' ? '#000000' : colors.white, // todo use variable
       }}
     >
-      <Tab.Screen name="Account" component={AccountScreen} />
-      <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Search" component={SearchScreen} />
-      <Tab.Screen name="Notifications" component={NotificationsScreen} />
+      <Tab.Screen name="AccountTab" component={AccountScreen} />
+      <Tab.Screen name="HomeTab" component={HomeScreen} />
+      <Tab.Screen name="SearchTab" component={SearchScreen} />
+      <Tab.Screen name="NotificationsTab" component={NotificationsScreen} />
     </Tab.Navigator>
   );
 }

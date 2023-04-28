@@ -5,14 +5,24 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 export type RootStackNavigatorParamList = {
   MainTabs: NavigatorScreenParams<MainTabNavigatorParamList>;
   Login: NavigatorScreenParams<LoginStackNavigatorParamList>;
-  Profile: { username: string };
+  UserSuggestionList: undefined;
+  TwitterSuggestionList: undefined;
   ProfileQRCode: { username: string };
+};
+
+export type LoggedInStackNavigatorParamList = {
+  Profile: { username: string };
   NftDetail: {
     tokenId: string;
     collectionId: string;
   };
-  UserSuggestionList: undefined;
-  TwitterSuggestionList: undefined;
+
+  // The main four tabs
+  Account: undefined;
+  Home: NavigatorScreenParams<FeedTabNavigatorParamList>;
+  Notifications: undefined;
+  Search: undefined;
+  // End the main four tabs
 };
 
 export type FeedTabNavigatorParamList = {
@@ -22,10 +32,10 @@ export type FeedTabNavigatorParamList = {
 };
 
 export type MainTabNavigatorParamList = {
-  Account: undefined;
-  Home: NavigatorScreenParams<FeedTabNavigatorParamList>;
-  Notifications: undefined;
-  Search: undefined;
+  AccountTab: NavigatorScreenParams<LoggedInStackNavigatorParamList>;
+  HomeTab: NavigatorScreenParams<LoggedInStackNavigatorParamList>;
+  NotificationsTab: NavigatorScreenParams<LoggedInStackNavigatorParamList>;
+  SearchTab: NavigatorScreenParams<LoggedInStackNavigatorParamList>;
 };
 
 export type LoginStackNavigatorParamList = {
@@ -36,6 +46,11 @@ export type LoginStackNavigatorParamList = {
 };
 
 export type RootStackNavigatorProp = NativeStackNavigationProp<RootStackNavigatorParamList>;
+
+export type LoggedInStackNavigatorProp = CompositeNavigationProp<
+  NativeStackNavigationProp<RootStackNavigatorParamList, 'MainTabs'>,
+  NativeStackNavigationProp<LoggedInStackNavigatorParamList>
+>;
 
 export type LoginStackNavigatorProp = CompositeNavigationProp<
   NativeStackNavigationProp<RootStackNavigatorParamList, 'Login'>,

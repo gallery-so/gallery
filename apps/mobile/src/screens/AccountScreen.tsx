@@ -1,10 +1,12 @@
 import { Suspense, useMemo } from 'react';
 import { View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { ProfileView } from '~/components/ProfileView/ProfileView';
 import { ProfileViewFallback } from '~/components/ProfileView/ProfileViewFallback';
+import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { Typography } from '~/components/Typography';
 import { AccountScreenQuery } from '~/generated/AccountScreenQuery.graphql';
 
@@ -40,9 +42,13 @@ function AccountScreenInner() {
 }
 
 export function AccountScreen() {
+  const { top } = useSafeAreaInsets();
+
   return (
-    <Suspense fallback={<ProfileViewFallback />}>
-      <AccountScreenInner />
-    </Suspense>
+    <View className="flex-1 bg-white dark:bg-black" style={{ paddingTop: top }}>
+      <Suspense fallback={<ProfileViewFallback />}>
+        <AccountScreenInner />
+      </Suspense>
+    </View>
   );
 }

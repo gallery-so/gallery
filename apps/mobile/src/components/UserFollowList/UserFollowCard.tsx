@@ -9,7 +9,7 @@ import { Markdown } from '~/components/Markdown';
 import { Typography } from '~/components/Typography';
 import { UserFollowCardFragment$key } from '~/generated/UserFollowCardFragment.graphql';
 import { UserFollowCardQueryFragment$key } from '~/generated/UserFollowCardQueryFragment.graphql';
-import { RootStackNavigatorProp } from '~/navigation/types';
+import { LoggedInStackNavigatorProp } from '~/navigation/types';
 
 type UserFollowCardProps = {
   userRef: UserFollowCardFragment$key;
@@ -40,7 +40,7 @@ export function UserFollowCard({ userRef, queryRef }: UserFollowCardProps) {
 
   const bioFirstLine = user.bio?.split('\n')[0];
 
-  const navigation = useNavigation<RootStackNavigatorProp>();
+  const navigation = useNavigation<LoggedInStackNavigatorProp>();
   const route = useRoute();
   const handlePress = useCallback(() => {
     let delay = 0;

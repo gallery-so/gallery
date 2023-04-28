@@ -1,17 +1,19 @@
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { Suspense, useMemo } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { ProfileView } from '~/components/ProfileView/ProfileView';
 import { ProfileViewFallback } from '~/components/ProfileView/ProfileViewFallback';
+import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { Typography } from '~/components/Typography';
 import { ProfileScreenQuery } from '~/generated/ProfileScreenQuery.graphql';
-import { RootStackNavigatorParamList } from '~/navigation/types';
+import { LoggedInStackNavigatorParamList } from '~/navigation/types';
 
 function ProfileScreenInner() {
-  const route = useRoute<RouteProp<RootStackNavigatorParamList, 'Profile'>>();
+  const route = useRoute<RouteProp<LoggedInStackNavigatorParamList, 'Profile'>>();
 
   const query = useLazyLoadQuery<ProfileScreenQuery>(
     graphql`
@@ -48,11 +50,12 @@ function ProfileScreenInner() {
 }
 
 export function ProfileScreen() {
+  const { top } = useSafeAreaInsets();
   return (
-    <SafeAreaView className="flex-1 bg-white dark:bg-black">
+    <View className="flex-1 bg-white dark:bg-black" style={{ paddingTop: top }}>
       <Suspense fallback={<ProfileViewFallback />}>
         <ProfileScreenInner />
       </Suspense>
-    </SafeAreaView>
+    </View>
   );
 }
