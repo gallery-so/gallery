@@ -21,7 +21,7 @@ export function GalleryVirtualizedRow({ item }: Props) {
   if (item.kind === 'gallery-header') {
     return (
       <View className="flex flex-col px-4">
-        <Typography className="text-xl" font={{ family: 'GTAlpina', weight: 'Light' }}>
+        <Typography className="text-xl" font={{ family: 'GTAlpina', weight: 'StandardLight' }}>
           {item.name}
         </Typography>
 
