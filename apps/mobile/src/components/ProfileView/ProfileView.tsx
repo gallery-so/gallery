@@ -335,7 +335,7 @@ export function ProfileView({ userRef, queryRef }: ProfileViewProps) {
 
   return (
     <View className="flex-1 bg-white dark:bg-black">
-      <View className="flex flex-col p-4 pb-1">
+      <View className="flex flex-col p-4 pb-1 z-10">
         <View className="flex flex-row justify-between bg-white dark:bg-black">
           {navigation.canGoBack() ? (
             <IconContainer icon={<BackIcon />} onPress={navigation.goBack} />
