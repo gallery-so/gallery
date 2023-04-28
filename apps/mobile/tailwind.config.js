@@ -8,7 +8,7 @@ module.exports = {
         xxs: fontScale(10),
         xxl: fontScale(24),
       },
-      colors: require('../../packages/shared/src/theme/colors').default,
+      colors: require('../../packages/shared/src/theme/colors'),
     },
   },
   plugins: [],
