@@ -35,6 +35,7 @@ function TrendingScreenInner({ queryRef }: TrendingScreenInnerProps) {
             }
           }
         }
+        ...FeedListQueryFragment
       }
     `,
     queryRef
@@ -59,6 +60,7 @@ function TrendingScreenInner({ queryRef }: TrendingScreenInnerProps) {
       isLoadingMore={isLoadingPrevious}
       onLoadMore={handleLoadMore}
       feedEventRefs={events}
+      queryRef={query}
     />
   );
 }

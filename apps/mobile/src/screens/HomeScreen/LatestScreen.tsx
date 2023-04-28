@@ -35,6 +35,8 @@ function LatestScreenInner({ queryRef }: LatestScreenInnerProps) {
             }
           }
         }
+
+        ...FeedListQueryFragment
       }
     `,
     queryRef
@@ -61,6 +63,7 @@ function LatestScreenInner({ queryRef }: LatestScreenInnerProps) {
       isLoadingMore={isLoadingPrevious}
       onLoadMore={handleLoadMore}
       feedEventRefs={events}
+      queryRef={query}
     />
   );
 }

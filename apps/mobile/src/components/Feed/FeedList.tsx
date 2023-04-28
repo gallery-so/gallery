@@ -5,6 +5,7 @@ import { NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { FeedListFragment$data, FeedListFragment$key } from '~/generated/FeedListFragment.graphql';
+import { FeedListQueryFragment$key } from '~/generated/FeedListQueryFragment.graphql';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 
 import { isNearBottom } from '../../utils/isNearBottom';
@@ -12,9 +13,11 @@ import { SUPPORTED_FEED_EVENT_TYPES } from './constants';
 import { FeedListCaption } from './FeedListCaption';
 import { FeedListItem } from './FeedListItem';
 import { FeedListSectionHeader } from './FeedListSectionHeader';
+import { FeedEventSocializeSection } from './Socialize/FeedEventSocializeSection';
 
 type FeedListProps = {
   feedEventRefs: FeedListFragment$key;
+  queryRef: FeedListQueryFragment$key;
   onLoadMore: () => void;
   isLoadingMore: boolean;
 };
@@ -22,9 +25,10 @@ type FeedListProps = {
 type FeedListItem =
   | { kind: 'header'; event: FeedListFragment$data[number] }
   | { kind: 'caption'; event: FeedListFragment$data[number] }
-  | { kind: 'event'; event: FeedListFragment$data[number] };
+  | { kind: 'event'; event: FeedListFragment$data[number] }
+  | { kind: 'socialize'; event: FeedListFragment$data[number] };
 
-export function FeedList({ feedEventRefs, isLoadingMore, onLoadMore }: FeedListProps) {
+export function FeedList({ feedEventRefs, queryRef, isLoadingMore, onLoadMore }: FeedListProps) {
   const events = useFragment(
     graphql`
       fragment FeedListFragment on FeedEvent @relay(plural: true) {
@@ -46,9 +50,19 @@ export function FeedList({ feedEventRefs, isLoadingMore, onLoadMore }: FeedListP
 
         ...FeedListCaptionFragment
         ...FeedListSectionHeaderFragment
+        ...FeedEventSocializeSectionFragment
       }
     `,
     feedEventRefs
+  );
+
+  const query = useFragment(
+    graphql`
+      fragment FeedListQueryFragment on Query {
+        ...FeedEventSocializeSectionQueryFragment
+      }
+    `,
+    queryRef
   );
 
   const [failedEvents, setFailedEvents] = useState<Set<string>>(new Set());
@@ -86,6 +100,8 @@ export function FeedList({ feedEventRefs, isLoadingMore, onLoadMore }: FeedListP
         }
 
         items.push({ kind: 'event', event });
+
+        items.push({ kind: 'socialize', event });
       }
     }
 
@@ -131,9 +147,15 @@ export function FeedList({ feedEventRefs, isLoadingMore, onLoadMore }: FeedListP
               <FeedListItem eventId={item.event.dbid} eventDataRef={item.event.eventData} />
             </ReportingErrorBoundary>
           );
+        case 'socialize':
+          return (
+            <ReportingErrorBoundary fallback={null} onError={markFailure}>
+              <FeedEventSocializeSection feedEventRef={item.event} queryRef={query} />
+            </ReportingErrorBoundary>
+          );
       }
     },
-    [markEventAsFailure]
+    [markEventAsFailure, query]
   );
 
   const handleScroll = useCallback(
