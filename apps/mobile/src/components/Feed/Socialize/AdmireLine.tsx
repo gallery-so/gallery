@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { Text, View } from 'react-native';
-import { graphql,useFragment } from 'react-relay';
+import { graphql, useFragment } from 'react-relay';
 
 import { Typography } from '~/components/Typography';
 import { AdmireLineFragment$key } from '~/generated/AdmireLineFragment.graphql';
