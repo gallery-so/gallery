@@ -6,7 +6,6 @@ import { graphql } from 'relay-runtime';
 
 import { ProfileView } from '~/components/ProfileView/ProfileView';
 import { ProfileViewFallback } from '~/components/ProfileView/ProfileViewFallback';
-import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { Typography } from '~/components/Typography';
 import { AccountScreenQuery } from '~/generated/AccountScreenQuery.graphql';
 
