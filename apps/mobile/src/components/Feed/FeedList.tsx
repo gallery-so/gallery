@@ -1,17 +1,15 @@
 import { useScrollToTop } from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
-import { useCallback, useMemo, useRef, useState } from 'react';
-import { NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
+import { useCallback, useMemo, useRef } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
-import { FeedListFragment$data, FeedListFragment$key } from '~/generated/FeedListFragment.graphql';
-import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
-
-import { isNearBottom } from '../../utils/isNearBottom';
-import { SUPPORTED_FEED_EVENT_TYPES } from './constants';
-import { FeedListCaption } from './FeedListCaption';
-import { FeedListItem } from './FeedListItem';
-import { FeedListSectionHeader } from './FeedListSectionHeader';
+import {
+  createVirtualizedItemsFromFeedEvents,
+  FeedListItemType,
+} from '~/components/Feed/createVirtualizedItemsFromFeedEvents';
+import { FeedVirtualizedRow } from '~/components/Feed/FeedVirtualizedRow';
+import { useFailedEventTracker } from '~/components/Feed/useFailedEventTracker';
+import { FeedListFragment$key } from '~/generated/FeedListFragment.graphql';
 
 type FeedListProps = {
   feedEventRefs: FeedListFragment$key;
@@ -19,142 +17,52 @@ type FeedListProps = {
   isLoadingMore: boolean;
 };
 
-type FeedListItem =
-  | { kind: 'header'; event: FeedListFragment$data[number] }
-  | { kind: 'caption'; event: FeedListFragment$data[number] }
-  | { kind: 'event'; event: FeedListFragment$data[number] };
-
-export function FeedList({ feedEventRefs, isLoadingMore, onLoadMore }: FeedListProps) {
+export function FeedList({ feedEventRefs, onLoadMore }: FeedListProps) {
   const events = useFragment(
     graphql`
       fragment FeedListFragment on FeedEvent @relay(plural: true) {
         __typename
 
         dbid
-        caption
 
-        eventData @required(action: THROW) {
-          ... on GalleryUpdatedFeedEventData {
-            __typename
-            subEventDatas {
-              __typename
-            }
-          }
-
-          ...FeedListItemFragment
-        }
-
-        ...FeedListCaptionFragment
-        ...FeedListSectionHeaderFragment
+        ...createVirtualizedItemsFromFeedEvents
       }
     `,
     feedEventRefs
   );
 
-  const [failedEvents, setFailedEvents] = useState<Set<string>>(new Set());
+  const { failedEvents, markEventAsFailure } = useFailedEventTracker();
 
-  const markEventAsFailure = useCallback((eventId: string) => {
-    setFailedEvents((previous) => {
-      const next = new Set(previous);
-      next.add(eventId);
-      return next;
-    });
-  }, []);
-
-  const items = useMemo(() => {
-    const items: FeedListItem[] = [];
-
-    for (const event of events) {
-      // Make sure this is a supported feed event
-      let isSupportedFeedEvent = false;
-      if (event.eventData.__typename === 'GalleryUpdatedFeedEventData') {
-        isSupportedFeedEvent =
-          event.eventData.subEventDatas?.some((subEvent) =>
-            SUPPORTED_FEED_EVENT_TYPES.has(subEvent.__typename)
-          ) ?? false;
-      } else {
-        isSupportedFeedEvent = SUPPORTED_FEED_EVENT_TYPES.has(event.eventData.__typename);
-      }
-
-      const isAFailedEvent = failedEvents.has(event.dbid);
-
-      if (isSupportedFeedEvent && !isAFailedEvent) {
-        items.push({ kind: 'header', event });
-
-        if (event.caption) {
-          items.push({ kind: 'caption', event });
-        }
-
-        items.push({ kind: 'event', event });
-      }
-    }
-
-    return items;
+  const { items, stickyIndices } = useMemo(() => {
+    return createVirtualizedItemsFromFeedEvents({ eventRefs: events, failedEvents });
   }, [events, failedEvents]);
 
-  const stickyHeaderIndices = useMemo(() => {
-    const indices: number[] = [];
-    items.forEach((item, index) => {
-      if (item.kind === 'header') {
-        indices.push(index);
-      }
-    });
-
-    return indices;
-  }, [items]);
-
-  const ref = useRef<FlashList<FeedListItem> | null>(null);
+  const ref = useRef<FlashList<FeedListItemType> | null>(null);
 
   // @ts-expect-error - useScrollToTop is not typed correctly for FlashList
   useScrollToTop(ref);
 
-  const renderItem = useCallback<ListRenderItem<FeedListItem>>(
+  const renderItem = useCallback<ListRenderItem<FeedListItemType>>(
     ({ item }) => {
       const markFailure = () => markEventAsFailure(item.event.dbid);
 
-      switch (item.kind) {
-        case 'header':
-          return (
-            <ReportingErrorBoundary fallback={null} onError={markFailure}>
-              <FeedListSectionHeader feedEventRef={item.event} />
-            </ReportingErrorBoundary>
-          );
-        case 'caption':
-          return (
-            <ReportingErrorBoundary fallback={null} onError={markFailure}>
-              <FeedListCaption feedEventRef={item.event} />
-            </ReportingErrorBoundary>
-          );
-        case 'event':
-          return (
-            <ReportingErrorBoundary fallback={null} onError={markFailure}>
-              <FeedListItem eventId={item.event.dbid} eventDataRef={item.event.eventData} />
-            </ReportingErrorBoundary>
-          );
-      }
+      return <FeedVirtualizedRow item={item} onFailure={markFailure} />;
     },
     [markEventAsFailure]
-  );
-
-  const handleScroll = useCallback(
-    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-      if (isNearBottom(event.nativeEvent) && !isLoadingMore) {
-        onLoadMore();
-      }
-    },
-    [isLoadingMore, onLoadMore]
   );
 
   return (
     <FlashList
       ref={ref}
       data={items}
-      onScroll={handleScroll}
+      onEndReached={onLoadMore}
+      onEndReachedThreshold={0.8}
       estimatedItemSize={300}
       renderItem={renderItem}
       scrollEventThrottle={100}
-      stickyHeaderIndices={stickyHeaderIndices}
-      keyExtractor={(item) => `${item.kind}-${item.event.dbid}`}
+      stickyHeaderIndices={stickyIndices}
+      getItemType={(item) => item.kind}
+      keyExtractor={(item) => item.key}
     />
   );
 }

@@ -25,7 +25,7 @@ export function FeedListCaption({ feedEventRef }: FeedListCaptionProps) {
 
   return (
     <Typography
-      className="text-center text-2xl"
+      className="px-4 text-center text-2xl"
       font={{ family: 'GTAlpina', weight: 'Light', italic: true }}
     >
       {feedEvent.caption}

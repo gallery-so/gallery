@@ -8,7 +8,7 @@ import { BaseM } from '~/components/core/Text/Text';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { CollectionLink } from '~/components/Notifications/CollectionLink';
 import { SomeoneCommentedOnYourFeedEventFragment$key } from '~/generated/SomeoneCommentedOnYourFeedEventFragment.graphql';
-import unescape from '~/utils/unescape';
+import unescape from '~/shared/utils/unescape';
 
 type SomeoneCommentedOnYourFeedEventProps = {
   notificationRef: SomeoneCommentedOnYourFeedEventFragment$key;

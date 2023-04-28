@@ -8,7 +8,7 @@ import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import ErrorText from '~/components/core/Text/ErrorText';
 import { TextAreaWithCharCount } from '~/components/core/TextArea/TextArea';
 import { useModalActions } from '~/contexts/modal/ModalContext';
-import unescape from '~/utils/unescape';
+import unescape from '~/shared/utils/unescape';
 
 type Props = {
   onDone: (args: { name: string; collectorsNote: string }) => void;

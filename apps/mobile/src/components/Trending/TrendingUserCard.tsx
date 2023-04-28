@@ -4,6 +4,7 @@ import { View, ViewProps } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { graphql, useFragment } from 'react-relay';
 
+import { FollowButton } from '~/components/FollowButton';
 import { TrendingUserCardFragment$key } from '~/generated/TrendingUserCardFragment.graphql';
 import { TrendingUserCardQueryFragment$key } from '~/generated/TrendingUserCardQueryFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
@@ -11,7 +12,6 @@ import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { Markdown } from '../Markdown';
 import { NftPreviewAsset } from '../NftPreview/NftPreviewAsset';
 import { Typography } from '../Typography';
-import { FollowButton } from './FollowButton';
 
 type Props = {
   userRef: TrendingUserCardFragment$key;

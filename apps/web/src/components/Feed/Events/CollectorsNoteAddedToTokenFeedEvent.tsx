@@ -14,7 +14,7 @@ import { CollectorsNoteAddedToTokenFeedEventFragment$key } from '~/generated/Col
 import useWindowSize, { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import NftDetailView from '~/scenes/NftDetailPage/NftDetailView';
 import { getTimeSince } from '~/shared/utils/time';
-import unescape from '~/utils/unescape';
+import unescape from '~/shared/utils/unescape';
 
 import EventMedia from './EventMedia';
 import {

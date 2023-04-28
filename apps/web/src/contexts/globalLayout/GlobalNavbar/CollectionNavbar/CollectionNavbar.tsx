@@ -17,7 +17,7 @@ import {
 import { CollectionNavbarFragment$key } from '~/generated/CollectionNavbarFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import colors from '~/shared/theme/colors';
-import unescape from '~/utils/unescape';
+import unescape from '~/shared/utils/unescape';
 
 import {
   NavbarCenterContent,

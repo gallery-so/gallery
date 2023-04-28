@@ -16,7 +16,7 @@ import { CollectorsNoteAddedToCollectionFeedEventFragment$key } from '~/generate
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
 import { getTimeSince } from '~/shared/utils/time';
-import unescape from '~/utils/unescape';
+import unescape from '~/shared/utils/unescape';
 
 import FeedEventTokenPreviews from '../FeedEventTokenPreviews';
 import {

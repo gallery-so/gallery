@@ -20,7 +20,7 @@ import {
 } from '~/generated/FeedEventDataNonRecursiveQueryFragment.graphql';
 import { FeedEventDataQueryFragment$key } from '~/generated/FeedEventDataQueryFragment.graphql';
 import { TriedToRenderUnsupportedFeedEvent } from '~/shared/errors/TriedToRenderUnsupportedFeedEvent';
-import unescape from '~/utils/unescape';
+import unescape from '~/shared/utils/unescape';
 
 import { StyledEvent } from './Events/EventStyles';
 

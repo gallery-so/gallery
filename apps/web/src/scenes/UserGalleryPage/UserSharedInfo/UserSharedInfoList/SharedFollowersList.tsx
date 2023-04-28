@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { SharedFollowersListFragment$key } from '~/generated/SharedFollowersListFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
-import unescape from '~/utils/unescape';
+import unescape from '~/shared/utils/unescape';
 
 import PaginatedListRow from './SharedInfoListRow';
 

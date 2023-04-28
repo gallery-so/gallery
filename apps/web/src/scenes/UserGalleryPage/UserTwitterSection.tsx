@@ -13,11 +13,11 @@ import { TWITTER_AUTH_URL } from '~/constants/twitter';
 import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 import { UserTwitterSectionFragment$key } from '~/generated/UserTwitterSectionFragment.graphql';
 import { UserTwitterSectionQueryFragment$key } from '~/generated/UserTwitterSectionQueryFragment.graphql';
-import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
 import { EditPencilIcon } from '~/icons/EditPencilIcon';
 import GlobeIcon from '~/icons/GlobeIcon';
 import LockIcon from '~/icons/LockIcon';
 import TwitterIcon from '~/icons/TwitterIcon';
+import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 
 import Settings from '../../components/Settings/Settings';
 

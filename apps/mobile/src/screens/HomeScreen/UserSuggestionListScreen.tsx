@@ -1,11 +1,11 @@
 import { Suspense, useMemo } from 'react';
-import { ScrollView, View } from 'react-native';
+import { View } from 'react-native';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 
 import { ModalContainer } from '~/components/ModalContainer';
 import { LoadingFollowerList } from '~/components/Trending/LoadingFollowerList';
-import { SuggestionUser } from '~/components/Trending/SuggestionUser';
 import { Typography } from '~/components/Typography';
+import { UserFollowList } from '~/components/UserFollowList/UserFollowList';
 import { UserSuggestionListScreenInnerFragment$key } from '~/generated/UserSuggestionListScreenInnerFragment.graphql';
 import { UserSuggestionListScreenQuery } from '~/generated/UserSuggestionListScreenQuery.graphql';
 
@@ -27,14 +27,14 @@ export function InnerUserSuggestionListScreen({ queryRef }: Props) {
                   __typename
                   ... on GalleryUser {
                     __typename
-                    ...SuggestionUserFragment
+                    ...UserFollowListFragment
                   }
                 }
               }
             }
           }
         }
-        ...SuggestionUserQueryFragment
+        ...UserFollowListQueryFragment
       }
     `,
     queryRef
@@ -63,12 +63,8 @@ export function InnerUserSuggestionListScreen({ queryRef }: Props) {
       >
         Suggested curators for you
       </Typography>
-      <View className="flex-grow">
-        <ScrollView>
-          {nonNullUsers.map((user, index) => (
-            <SuggestionUser key={index} userRef={user} queryRef={query} />
-          ))}
-        </ScrollView>
+      <View className="-mx-4 flex-grow">
+        <UserFollowList userRefs={nonNullUsers} queryRef={query} />
       </View>
     </View>
   );

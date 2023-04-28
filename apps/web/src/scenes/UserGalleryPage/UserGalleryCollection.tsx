@@ -24,10 +24,10 @@ import { useModalActions } from '~/contexts/modal/ModalContext';
 import { UserGalleryCollectionFragment$key } from '~/generated/UserGalleryCollectionFragment.graphql';
 import { UserGalleryCollectionQueryFragment$key } from '~/generated/UserGalleryCollectionQueryFragment.graphql';
 import useUpdateCollectionInfo from '~/hooks/api/collections/useUpdateCollectionInfo';
-import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
 import useResizeObserver from '~/hooks/useResizeObserver';
+import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
+import unescape from '~/shared/utils/unescape';
 import { getBaseUrl } from '~/utils/baseUrl';
-import unescape from '~/utils/unescape';
 
 type Props = {
   queryRef: UserGalleryCollectionQueryFragment$key;
