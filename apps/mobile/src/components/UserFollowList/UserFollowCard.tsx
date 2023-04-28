@@ -1,4 +1,4 @@
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { useCallback } from 'react';
 import { TouchableOpacity, View } from 'react-native';
 import { useFragment } from 'react-relay';

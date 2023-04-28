@@ -19,4 +19,4 @@ const colors = {
   red: '#F00000',
 };
 
-export default colors;
+module.exports = colors;
