@@ -83,7 +83,7 @@ export function FollowButton({ queryRef, userRef, style }: Props) {
     } else if (isFollowing) {
       return (
         <FollowChip variant="unfollow" onPress={handleUnfollowPress}>
-          Unfollow
+          Following
         </FollowChip>
       );
     } else {
