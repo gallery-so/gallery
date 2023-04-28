@@ -46,9 +46,6 @@ export function Interactions({ eventRef, queryRef }: Props) {
             }
           }
         }
-
-        # ...AdmireLineEventFragment
-        # ...RemainingAdmireCountFragment
       }
     `,
     eventRef
@@ -123,5 +120,4 @@ export function Interactions({ eventRef, queryRef }: Props) {
   }
 
   return <View />;
-  // return <AdmireLine  />;
 }

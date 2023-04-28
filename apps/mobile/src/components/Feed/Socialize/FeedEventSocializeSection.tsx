@@ -4,7 +4,7 @@ import { graphql, useFragment } from 'react-relay';
 import { FeedEventSocializeSectionFragment$key } from '~/generated/FeedEventSocializeSectionFragment.graphql';
 import { FeedEventSocializeSectionQueryFragment$key } from '~/generated/FeedEventSocializeSectionQueryFragment.graphql';
 
-import { AdmireIcon } from './AdmireIcon';
+import { AdmireButton } from './AdmireButton';
 import { CommentIcon } from './CommentIcon';
 import { Interactions } from './Interactions';
 
@@ -18,6 +18,7 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef }: Props) {
     graphql`
       fragment FeedEventSocializeSectionFragment on FeedEvent {
         ...InteractionsFragment
+        ...AdmireButtonFragment
       }
     `,
     feedEventRef
@@ -27,6 +28,7 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef }: Props) {
     graphql`
       fragment FeedEventSocializeSectionQueryFragment on Query {
         ...InteractionsQueryFragment
+        ...AdmireButtonQueryFragment
       }
     `,
     queryRef
@@ -37,9 +39,7 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef }: Props) {
       <Interactions eventRef={event} queryRef={query} />
 
       <View className="flex flex-row space-x-4">
-        <TouchableOpacity onPress={() => {}}>
-          <AdmireIcon />
-        </TouchableOpacity>
+        <AdmireButton eventRef={event} queryRef={query} />
         <TouchableOpacity onPress={() => {}}>
           <CommentIcon />
         </TouchableOpacity>
