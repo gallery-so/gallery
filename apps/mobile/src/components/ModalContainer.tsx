@@ -12,7 +12,7 @@ type Props = PropsWithChildren<{
   withBackButton?: boolean;
 }>;
 
-export function ModalContainer({ children, scrollable = false, withBackButton }: Props) {
+export function ModalContainer({ children, scrollable = false, withBackButton = false }: Props) {
   const { bottom } = useSafeAreaInsets();
   const navigation = useNavigation();
 

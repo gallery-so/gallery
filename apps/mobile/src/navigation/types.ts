@@ -35,18 +35,6 @@ export type LoginStackNavigatorParamList = {
   WaitingForConfirmation: { email: string };
 };
 
-export type ProfileTabNavigatorParamList = {
-  Featured: undefined;
-  Galleries: undefined;
-  Followers: undefined;
-  Activity: undefined;
-};
-
-export type FollowersTabNavigatorParamList = {
-  FollowersList: undefined;
-  FollowingList: undefined;
-};
-
 export type RootStackNavigatorProp = NativeStackNavigationProp<RootStackNavigatorParamList>;
 
 export type LoginStackNavigatorProp = CompositeNavigationProp<
@@ -57,16 +45,6 @@ export type LoginStackNavigatorProp = CompositeNavigationProp<
 export type MainTabNavigatorProp = CompositeNavigationProp<
   NativeStackNavigationProp<RootStackNavigatorParamList, 'MainTabs'>,
   MaterialTopTabNavigationProp<MainTabNavigatorParamList>
->;
-
-export type ProfileTabNavigatorProp = CompositeNavigationProp<
-  RootStackNavigatorProp,
-  MaterialTopTabNavigationProp<ProfileTabNavigatorParamList>
->;
-
-export type FollowersTabNavigatorProp = CompositeNavigationProp<
-  ProfileTabNavigatorProp,
-  MaterialTopTabNavigationProp<ProfileTabNavigatorParamList>
 >;
 
 export type FeedTabNavigatorProp = CompositeNavigationProp<

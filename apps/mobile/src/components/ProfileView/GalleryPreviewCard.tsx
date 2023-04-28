@@ -6,6 +6,7 @@ import { graphql } from 'relay-runtime';
 import { NftPreviewAsset } from '~/components/NftPreview/NftPreviewAsset';
 import { Typography } from '~/components/Typography';
 import { GalleryPreviewCardFragment$key } from '~/generated/GalleryPreviewCardFragment.graphql';
+import unescape from '~/shared/utils/unescape';
 
 type GalleryPreviewCardProps = {
   isFeatured: boolean;
@@ -36,7 +37,7 @@ export function GalleryPreviewCard({ galleryRef, isFeatured }: GalleryPreviewCar
       <View className="flex flex-row items-center justify-center">
         <View className="flex flex-1 flex-col">
           <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-            {gallery.name || 'Untitled'}
+            {gallery.name ? unescape(gallery.name) : 'Untitled'}
           </Typography>
           {descriptionFirstLine && (
             <Typography
