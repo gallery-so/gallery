@@ -4,7 +4,7 @@ import { TouchableOpacity, View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { TwitterSectionQueryFragment$key } from '~/generated/TwitterSectionQueryFragment.graphql';
-import { LoggedInStackNavigatorProp, RootStackNavigatorProp } from '~/navigation/types';
+import { LoggedInStackNavigatorProp } from '~/navigation/types';
 
 import { Typography } from '../Typography';
 import { TrendingUserList } from './TrendingUserList';

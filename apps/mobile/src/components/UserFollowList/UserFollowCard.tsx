@@ -43,7 +43,7 @@ export function UserFollowCard({ userRef, queryRef, onPress }: UserFollowCardPro
     if (user.username) {
       onPress(user.username);
     }
-  }, [user.username]);
+  }, [onPress, user.username]);
 
   return (
     <View className="flex w-full flex-row items-center justify-between space-x-8 overflow-hidden py-3 px-4 h-16">
