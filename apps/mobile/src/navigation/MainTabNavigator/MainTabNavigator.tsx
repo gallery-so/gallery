@@ -25,7 +25,7 @@ export function MainTabNavigator() {
       screenOptions={{ swipeEnabled: false }}
       sceneContainerStyle={{
         paddingTop: top,
-        backgroundColor: colorScheme === 'dark' ? '#000000' : colors.white, // todo use variable
+        backgroundColor: colorScheme === 'dark' ? colors.black : colors.white,
       }}
     >
       <Tab.Screen name="Account" component={AccountScreen} />
