@@ -47,10 +47,10 @@ export function CollectionCreatedFeedEvent({
     <View className="flex flex-1">
       <FeedEventCarouselCellHeader>
         <Text numberOfLines={1}>
-          <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
+          <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
             Created a new collection
           </Typography>{' '}
-          <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+          <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
             {eventData.collection?.name ?? 'Untitled'}
           </Typography>
         </Text>

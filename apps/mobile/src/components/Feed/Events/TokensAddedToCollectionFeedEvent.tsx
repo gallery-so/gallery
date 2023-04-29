@@ -45,10 +45,10 @@ export function TokensAddedToCollectionFeedEvent({
     <View className="flex flex-1 flex-col">
       <FeedEventCarouselCellHeader>
         <Text numberOfLines={1}>
-          <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
+          <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
             Added new tokens to
           </Typography>{' '}
-          <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+          <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
             {eventData.collection?.name ?? 'Untitled'}
           </Typography>
         </Text>

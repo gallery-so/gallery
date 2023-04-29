@@ -40,22 +40,22 @@ export function FeedListSectionHeader({ feedEventRef }: FeedListSectionHeaderPro
     return (
       <View className="flex flex-row items-center justify-between bg-white dark:bg-black px-3 py-2">
         <View className="flex flex-row space-x-1">
-          <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+          <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
             {feedEvent.eventData.owner?.username}
           </Typography>
 
-          <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
+          <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
             updated
           </Typography>
 
-          <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+          <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
             {feedEvent.eventData.gallery?.name || 'Untitled'}
           </Typography>
         </View>
 
         <View>
           <Typography
-            className="text-metal text-xxs"
+            className="text-metal text-xs"
             font={{ family: 'ABCDiatype', weight: 'Regular' }}
           >
             {getTimeSince(feedEvent.eventData.eventTime)}

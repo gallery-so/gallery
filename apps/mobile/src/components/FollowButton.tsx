@@ -109,14 +109,15 @@ function FollowChip({
   return (
     <TouchableOpacity
       onPress={onPress}
-      className={clsx('flex h-6 w-20 items-center justify-center rounded-sm px-2', {
-        'bg-black dark:bg-white': variant === 'follow',
-        'bg-white dark:bg-black border border-faint dark:border-graphite': variant === 'unfollow',
+      className={clsx('flex h-6 w-20 items-center justify-center rounded-sm px-2 bg-black', {
+        'border border-black dark:border-shadow': variant === 'follow',
+        'bg-porcelain dark:bg-graphite border border-porcelain dark:border-graphite':
+          variant === 'unfollow',
       })}
     >
       <Typography
         className={clsx('text-sm', {
-          'text-white dark:text-black': variant === 'follow',
+          'text-white ': variant === 'follow',
           'text-black dark:text-white': variant === 'unfollow',
         })}
         font={{ family: 'ABCDiatype', weight: 'Bold' }}
