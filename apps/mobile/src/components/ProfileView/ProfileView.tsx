@@ -31,7 +31,7 @@ import { GalleryPreviewCardFragment$key } from '~/generated/GalleryPreviewCardFr
 import { ProfileViewFragment$key } from '~/generated/ProfileViewFragment.graphql';
 import { ProfileViewQueryFragment$key } from '~/generated/ProfileViewQueryFragment.graphql';
 import { UserFollowCardFragment$key } from '~/generated/UserFollowCardFragment.graphql';
-import { RootStackNavigatorProp } from '~/navigation/types';
+import { LoggedInStackNavigatorProp } from '~/navigation/types';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 
@@ -57,7 +57,7 @@ type ProfileViewProps = {
 };
 
 export function ProfileView({ userRef, queryRef }: ProfileViewProps) {
-  const navigation = useNavigation<RootStackNavigatorProp>();
+  const navigation = useNavigation<LoggedInStackNavigatorProp>();
 
   const query = useFragment(
     graphql`
@@ -166,6 +166,13 @@ export function ProfileView({ userRef, queryRef }: ProfileViewProps) {
 
   const [selectedRoute, setSelectedRoute] = useState('Featured');
   const [subTabRoute, setSubTabRoute] = useState('Followers');
+
+  const handleUserPress = useCallback(
+    (username: string) => {
+      navigation.push('Profile', { username });
+    },
+    [navigation]
+  );
 
   const handleLoadMore = useCallback(() => {
     if (selectedRoute === 'Activity' && hasPrevious) {
@@ -296,7 +303,7 @@ export function ProfileView({ userRef, queryRef }: ProfileViewProps) {
           />
         );
       } else if (item.kind === 'user-follow-card') {
-        inner = <UserFollowCard userRef={item.user} queryRef={query} />;
+        inner = <UserFollowCard onPress={handleUserPress} userRef={item.user} queryRef={query} />;
       } else if (item.kind === 'gallery-preview') {
         inner = (
           <View className="mb-4 px-4">
@@ -330,7 +337,7 @@ export function ProfileView({ userRef, queryRef }: ProfileViewProps) {
         </View>
       );
     },
-    [markEventAsFailure, query, twitterPill, user.bio]
+    [handleUserPress, markEventAsFailure, query, twitterPill, user.bio]
   );
 
   return (

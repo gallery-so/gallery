@@ -5,8 +5,8 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 export type RootStackNavigatorParamList = {
   MainTabs: NavigatorScreenParams<MainTabNavigatorParamList>;
   Login: NavigatorScreenParams<LoginStackNavigatorParamList>;
-  UserSuggestionList: undefined;
-  TwitterSuggestionList: undefined;
+  UserSuggestionList: { onUserPress: (username: string) => void };
+  TwitterSuggestionList: { onUserPress: (username: string) => void };
   ProfileQRCode: { username: string };
 };
 

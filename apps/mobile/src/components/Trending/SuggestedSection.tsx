@@ -4,7 +4,7 @@ import { TouchableOpacity, View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { SuggestedSectionQueryFragment$key } from '~/generated/SuggestedSectionQueryFragment.graphql';
-import { RootStackNavigatorProp } from '~/navigation/types';
+import { LoggedInStackNavigatorProp } from '~/navigation/types';
 
 import { Typography } from '../Typography';
 import { TrendingUserList } from './TrendingUserList';
@@ -43,10 +43,13 @@ export function SuggestedSection({ title, description, queryRef }: Props) {
     queryRef
   );
 
-  const navigation = useNavigation<RootStackNavigatorProp>();
-
+  const navigation = useNavigation<LoggedInStackNavigatorProp>();
   const handleSeeAll = useCallback(() => {
-    navigation.navigate('UserSuggestionList');
+    navigation.navigate('UserSuggestionList', {
+      onUserPress: (username) => {
+        navigation.push('Profile', { username });
+      },
+    });
   }, [navigation]);
 
   // map edge nodes to an array of GalleryUsers
