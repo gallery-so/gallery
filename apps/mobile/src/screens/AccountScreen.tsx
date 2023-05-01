@@ -31,7 +31,9 @@ function AccountScreenInner() {
 
   const inner = useMemo(() => {
     if (query.viewer?.__typename === 'Viewer' && query.viewer.user) {
-      return <ProfileView queryRef={query} userRef={query.viewer.user} />;
+      return (
+        <ProfileView shouldShowBackButton={false} queryRef={query} userRef={query.viewer.user} />
+      );
     } else {
       return <Typography font={{ family: 'ABCDiatype', weight: 'Regular' }}>Not found</Typography>;
     }

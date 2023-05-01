@@ -52,11 +52,12 @@ type ListItem = { key: string } & (
 );
 
 type ProfileViewProps = {
+  shouldShowBackButton: boolean;
   queryRef: ProfileViewQueryFragment$key;
   userRef: ProfileViewFragment$key;
 };
 
-export function ProfileView({ userRef, queryRef }: ProfileViewProps) {
+export function ProfileView({ userRef, queryRef, shouldShowBackButton }: ProfileViewProps) {
   const navigation = useNavigation<LoggedInStackNavigatorProp>();
 
   const query = useFragment(
@@ -344,7 +345,7 @@ export function ProfileView({ userRef, queryRef }: ProfileViewProps) {
     <View className="flex-1 bg-white dark:bg-black">
       <View className="flex flex-col p-4 pb-1 z-10">
         <View className="flex flex-row justify-between bg-white dark:bg-black">
-          {navigation.canGoBack() ? (
+          {shouldShowBackButton ? (
             <IconContainer icon={<BackIcon />} onPress={navigation.goBack} />
           ) : (
             <View />
