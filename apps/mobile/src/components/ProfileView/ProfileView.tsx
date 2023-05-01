@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import clsx from 'clsx';
 import { useCallback, useMemo, useState } from 'react';
-import { Linking, Share, TouchableOpacity, View } from 'react-native';
+import { Linking, TouchableOpacity, View } from 'react-native';
 import { useFragment, usePaginationFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
@@ -12,17 +12,16 @@ import {
 } from '~/components/Feed/createVirtualizedFeedEventItems';
 import { FeedVirtualizedRow } from '~/components/Feed/FeedVirtualizedRow';
 import { useFailedEventTracker } from '~/components/Feed/useFailedEventTracker';
-import { FollowButton } from '~/components/FollowButton';
 import {
   createVirtualizedGalleryRows,
   GalleryListItemType,
 } from '~/components/Gallery/createVirtualizedGalleryRows';
 import { GalleryVirtualizedRow } from '~/components/Gallery/GalleryVirtualizedRow';
-import { IconContainer } from '~/components/IconContainer';
 import { Markdown } from '~/components/Markdown';
 import { Pill } from '~/components/Pill';
 import { FollowersTabBar } from '~/components/ProfileView/FollowersTabBar';
 import { GalleryPreviewCard } from '~/components/ProfileView/GalleryPreviewCard';
+import { GalleryProfileNavBar } from '~/components/ProfileView/GalleryProfileNavBar';
 import { ProfileTabBar } from '~/components/ProfileView/ProfileTabBar';
 import { Typography } from '~/components/Typography';
 import { UserFollowCard } from '~/components/UserFollowList/UserFollowCard';
@@ -33,11 +32,7 @@ import { ProfileViewQueryFragment$key } from '~/generated/ProfileViewQueryFragme
 import { UserFollowCardFragment$key } from '~/generated/UserFollowCardFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
-import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 
-import { BackIcon } from '../../icons/BackIcon';
-import { QRCodeIcon } from '../../icons/QRCodeIcon';
-import { ShareIcon } from '../../icons/ShareIcon';
 import { TwitterIcon } from '../../icons/TwitterIcon';
 
 type ListItem = { key: string } & (
@@ -63,15 +58,12 @@ export function ProfileView({ userRef, queryRef, shouldShowBackButton }: Profile
   const query = useFragment(
     graphql`
       fragment ProfileViewQueryFragment on Query {
-        ...useLoggedInUserIdFragment
-        ...FollowButtonQueryFragment
         ...UserFollowCardQueryFragment
+        ...GalleryProfileNavBarQueryFragment
       }
     `,
     queryRef
   );
-
-  const loggedInUserId = useLoggedInUserId(query);
 
   const {
     data: user,
@@ -83,7 +75,6 @@ export function ProfileView({ userRef, queryRef, shouldShowBackButton }: Profile
       @refetchable(queryName: "ProfileViewFragmentRefetchableQuery") {
         __typename
 
-        id
         bio
         username
 
@@ -124,23 +115,11 @@ export function ProfileView({ userRef, queryRef, shouldShowBackButton }: Profile
           ...UserFollowCardFragment
         }
 
-        ...FollowButtonUserFragment
+        ...GalleryProfileNavBarFragment
       }
     `,
     userRef
   );
-
-  const isLoggedInUser = loggedInUserId === user.id;
-
-  const handleShare = useCallback(() => {
-    Share.share({ url: `https://gallery.so/${user.username}` });
-  }, [user.username]);
-
-  const handleQrCode = useCallback(() => {
-    if (user.username) {
-      navigation.navigate('ProfileQRCode', { username: user.username });
-    }
-  }, [navigation, user.username]);
 
   const handleTwitterPress = useCallback(() => {
     if (user.socialAccounts?.twitter?.username) {
@@ -344,20 +323,12 @@ export function ProfileView({ userRef, queryRef, shouldShowBackButton }: Profile
   return (
     <View className="flex-1 bg-white dark:bg-black">
       <View className="flex flex-col p-4 pb-1 z-10">
-        <View className="flex flex-row justify-between bg-white dark:bg-black">
-          {shouldShowBackButton ? (
-            <IconContainer icon={<BackIcon />} onPress={navigation.goBack} />
-          ) : (
-            <View />
-          )}
+        <GalleryProfileNavBar
+          userRef={user}
+          queryRef={query}
+          shouldShowBackButton={shouldShowBackButton}
+        />
 
-          <View className="flex flex-row items-center space-x-2">
-            {isLoggedInUser && <IconContainer icon={<QRCodeIcon />} onPress={handleQrCode} />}
-            <IconContainer icon={<ShareIcon />} onPress={handleShare} />
-
-            {!isLoggedInUser && <FollowButton queryRef={query} userRef={user} />}
-          </View>
-        </View>
         <Typography
           className="bg-white dark:bg-black text-center text-2xl tracking-tighter"
           font={{ family: 'GTAlpina', weight: 'StandardLight' }}
