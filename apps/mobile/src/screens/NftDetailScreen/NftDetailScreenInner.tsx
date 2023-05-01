@@ -7,7 +7,7 @@ import { graphql } from 'relay-runtime';
 
 import { Pill } from '~/components/Pill';
 import { NftDetailScreenInnerQuery } from '~/generated/NftDetailScreenInnerQuery.graphql';
-import { RootStackNavigatorParamList } from '~/navigation/types';
+import { MainTabStackNavigatorParamList } from '~/navigation/types';
 
 import { IconContainer } from '../../components/IconContainer';
 import { InteractiveLink } from '../../components/InteractiveLink';
@@ -28,7 +28,7 @@ const markdownStyles = StyleSheet.create({
 
 export function NftDetailScreenInner() {
   const navigation = useNavigation();
-  const route = useRoute<RouteProp<RootStackNavigatorParamList, 'NftDetail'>>();
+  const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'NftDetail'>>();
 
   const query = useLazyLoadQuery<NftDetailScreenInnerQuery>(
     graphql`

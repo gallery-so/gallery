@@ -1,5 +1,6 @@
 import { Suspense } from 'react';
 import { View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 
 import { NOTIFICATIONS_PER_PAGE } from '~/components/Notification/constants';
@@ -21,8 +22,10 @@ export function NotificationsScreen() {
     }
   );
 
+  const { top } = useSafeAreaInsets();
+
   return (
-    <View className="flex flex-1 ">
+    <View className="flex flex-1 bg-white dark:bg-black" style={{ paddingTop: top }}>
       <View className="py-4 px-3">
         <Typography
           font={{

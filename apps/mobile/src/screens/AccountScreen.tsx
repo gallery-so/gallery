@@ -1,5 +1,6 @@
 import { Suspense, useMemo } from 'react';
 import { View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
@@ -30,7 +31,9 @@ function AccountScreenInner() {
 
   const inner = useMemo(() => {
     if (query.viewer?.__typename === 'Viewer' && query.viewer.user) {
-      return <ProfileView queryRef={query} userRef={query.viewer.user} />;
+      return (
+        <ProfileView shouldShowBackButton={false} queryRef={query} userRef={query.viewer.user} />
+      );
     } else {
       return <Typography font={{ family: 'ABCDiatype', weight: 'Regular' }}>Not found</Typography>;
     }
@@ -40,9 +43,13 @@ function AccountScreenInner() {
 }
 
 export function AccountScreen() {
+  const { top } = useSafeAreaInsets();
+
   return (
-    <Suspense fallback={<ProfileViewFallback />}>
-      <AccountScreenInner />
-    </Suspense>
+    <View className="flex-1 bg-white dark:bg-black" style={{ paddingTop: top }}>
+      <Suspense fallback={<ProfileViewFallback />}>
+        <AccountScreenInner />
+      </Suspense>
+    </View>
   );
 }

@@ -4,7 +4,7 @@ import { TouchableOpacity, View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { TwitterSectionQueryFragment$key } from '~/generated/TwitterSectionQueryFragment.graphql';
-import { RootStackNavigatorProp } from '~/navigation/types';
+import { MainTabStackNavigatorProp } from '~/navigation/types';
 
 import { Typography } from '../Typography';
 import { TrendingUserList } from './TrendingUserList';
@@ -48,10 +48,13 @@ export function TwitterSection({ title, description, queryRef }: Props) {
     queryRef
   );
 
-  const navigation = useNavigation<RootStackNavigatorProp>();
-
+  const navigation = useNavigation<MainTabStackNavigatorProp>();
   const handleSeeAll = useCallback(() => {
-    navigation.navigate('TwitterSuggestionList');
+    navigation.navigate('TwitterSuggestionList', {
+      onUserPress: (username) => {
+        navigation.navigate('Profile', { username });
+      },
+    });
   }, [navigation]);
 
   const nonNullUsers = useMemo(() => {

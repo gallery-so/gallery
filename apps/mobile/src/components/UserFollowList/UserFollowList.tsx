@@ -11,9 +11,15 @@ type UserFollowListProps = {
   userRefs: UserFollowListFragment$key;
   queryRef: UserFollowListQueryFragment$key;
   onLoadMore?: () => void;
+  onUserPress: (username: string) => void;
 };
 
-export function UserFollowList({ userRefs, queryRef, onLoadMore }: UserFollowListProps) {
+export function UserFollowList({
+  userRefs,
+  queryRef,
+  onLoadMore,
+  onUserPress,
+}: UserFollowListProps) {
   const query = useFragment(
     graphql`
       fragment UserFollowListQueryFragment on Query {
@@ -34,9 +40,9 @@ export function UserFollowList({ userRefs, queryRef, onLoadMore }: UserFollowLis
 
   const renderItem = useCallback<ListRenderItem<(typeof users)[number]>>(
     ({ item }) => {
-      return <UserFollowCard userRef={item} queryRef={query} />;
+      return <UserFollowCard onPress={onUserPress} userRef={item} queryRef={query} />;
     },
-    [query]
+    [onUserPress, query]
   );
 
   return (

@@ -31,7 +31,7 @@ import { GalleryPreviewCardFragment$key } from '~/generated/GalleryPreviewCardFr
 import { ProfileViewFragment$key } from '~/generated/ProfileViewFragment.graphql';
 import { ProfileViewQueryFragment$key } from '~/generated/ProfileViewQueryFragment.graphql';
 import { UserFollowCardFragment$key } from '~/generated/UserFollowCardFragment.graphql';
-import { RootStackNavigatorProp } from '~/navigation/types';
+import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 
@@ -52,12 +52,13 @@ type ListItem = { key: string } & (
 );
 
 type ProfileViewProps = {
+  shouldShowBackButton: boolean;
   queryRef: ProfileViewQueryFragment$key;
   userRef: ProfileViewFragment$key;
 };
 
-export function ProfileView({ userRef, queryRef }: ProfileViewProps) {
-  const navigation = useNavigation<RootStackNavigatorProp>();
+export function ProfileView({ userRef, queryRef, shouldShowBackButton }: ProfileViewProps) {
+  const navigation = useNavigation<MainTabStackNavigatorProp>();
 
   const query = useFragment(
     graphql`
@@ -166,6 +167,13 @@ export function ProfileView({ userRef, queryRef }: ProfileViewProps) {
 
   const [selectedRoute, setSelectedRoute] = useState('Featured');
   const [subTabRoute, setSubTabRoute] = useState('Followers');
+
+  const handleUserPress = useCallback(
+    (username: string) => {
+      navigation.push('Profile', { username });
+    },
+    [navigation]
+  );
 
   const handleLoadMore = useCallback(() => {
     if (selectedRoute === 'Activity' && hasPrevious) {
@@ -296,7 +304,7 @@ export function ProfileView({ userRef, queryRef }: ProfileViewProps) {
           />
         );
       } else if (item.kind === 'user-follow-card') {
-        inner = <UserFollowCard userRef={item.user} queryRef={query} />;
+        inner = <UserFollowCard onPress={handleUserPress} userRef={item.user} queryRef={query} />;
       } else if (item.kind === 'gallery-preview') {
         inner = (
           <View className="mb-4 px-4">
@@ -330,14 +338,14 @@ export function ProfileView({ userRef, queryRef }: ProfileViewProps) {
         </View>
       );
     },
-    [markEventAsFailure, query, twitterPill, user.bio]
+    [handleUserPress, markEventAsFailure, query, twitterPill, user.bio]
   );
 
   return (
     <View className="flex-1 bg-white dark:bg-black">
       <View className="flex flex-col p-4 pb-1 z-10">
         <View className="flex flex-row justify-between bg-white dark:bg-black">
-          {navigation.canGoBack() ? (
+          {shouldShowBackButton ? (
             <IconContainer icon={<BackIcon />} onPress={navigation.goBack} />
           ) : (
             <View />

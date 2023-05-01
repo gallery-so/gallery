@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
 import { UserSearchResultFragment$key } from '~/generated/UserSearchResultFragment.graphql';
-import { RootStackNavigatorProp } from '~/navigation/types';
+import { MainTabStackNavigatorProp } from '~/navigation/types';
 
 import { SearchResult } from '../SearchResult';
 
@@ -22,7 +22,7 @@ export function UserSearchResult({ userRef }: Props) {
     userRef
   );
 
-  const navigation = useNavigation<RootStackNavigatorProp>();
+  const navigation = useNavigation<MainTabStackNavigatorProp>();
   const handlePress = useCallback(() => {
     if (user.username) {
       navigation.push('Profile', { username: user.username });

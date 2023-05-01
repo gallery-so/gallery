@@ -1,3 +1,4 @@
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { Suspense, useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
@@ -10,6 +11,7 @@ import { UserFollowList } from '~/components/UserFollowList/UserFollowList';
 import { TwitterSuggestionListScreenQuery } from '~/generated/TwitterSuggestionListScreenQuery.graphql';
 import { TwitterSuggestionListScreenQueryFragment$key } from '~/generated/TwitterSuggestionListScreenQueryFragment.graphql';
 import { TwitterSuggestionListScreenRefetchableQuery } from '~/generated/TwitterSuggestionListScreenRefetchableQuery.graphql';
+import { MainTabStackNavigatorProp, RootStackNavigatorParamList } from '~/navigation/types';
 
 type Props = {
   queryRef: TwitterSuggestionListScreenQueryFragment$key;
@@ -78,6 +80,16 @@ export function InnerSuggestionListScreen({ queryRef }: Props) {
     }
   }, [hasNext, loadNext]);
 
+  const navigation = useNavigation<MainTabStackNavigatorProp>();
+  const route = useRoute<RouteProp<RootStackNavigatorParamList, 'TwitterSuggestionList'>>();
+  const handleUserPress = useCallback(
+    (username: string) => {
+      navigation.goBack();
+      route.params.onUserPress(username);
+    },
+    [navigation, route.params]
+  );
+
   return (
     <View className="flex flex-1 flex-col">
       <Typography
@@ -91,7 +103,12 @@ export function InnerSuggestionListScreen({ queryRef }: Props) {
         Twitter
       </Typography>
       <View className="-mx-4 flex-grow">
-        <UserFollowList onLoadMore={handleLoadMore} userRefs={nonNullUsers} queryRef={query} />
+        <UserFollowList
+          onUserPress={handleUserPress}
+          onLoadMore={handleLoadMore}
+          userRefs={nonNullUsers}
+          queryRef={query}
+        />
       </View>
     </View>
   );
