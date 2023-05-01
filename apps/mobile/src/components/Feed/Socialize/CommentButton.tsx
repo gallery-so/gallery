@@ -48,7 +48,12 @@ export function CommentButton({ eventRef, queryRef, style }: Props) {
       </TouchableOpacity>
 
       <View>
-        <BottomSheetModal ref={bottomSheetRef} index={0} snapPoints={snapPoints}>
+        <BottomSheetModal
+          ref={bottomSheetRef}
+          index={0}
+          snapPoints={snapPoints}
+          handleComponent={() => null}
+        >
           <CommentBox eventRef={event} queryRef={query} />
         </BottomSheetModal>
       </View>

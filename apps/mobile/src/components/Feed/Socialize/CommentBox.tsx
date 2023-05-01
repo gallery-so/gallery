@@ -180,7 +180,7 @@ export function CommentBox({ eventRef, queryRef }: Props) {
   ]);
 
   return (
-    <View className="p-4 flex flex-row items-center space-x-3">
+    <View className="p-4 flex flex-row items-center space-x-3 border-t border-porcelain">
       <View className="flex-1 flex-row justify-between items-center bg-faint p-2 space-x-3">
         <TextInput
           ref={ref}
