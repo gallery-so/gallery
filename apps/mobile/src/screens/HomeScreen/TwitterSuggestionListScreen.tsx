@@ -11,7 +11,7 @@ import { UserFollowList } from '~/components/UserFollowList/UserFollowList';
 import { TwitterSuggestionListScreenQuery } from '~/generated/TwitterSuggestionListScreenQuery.graphql';
 import { TwitterSuggestionListScreenQueryFragment$key } from '~/generated/TwitterSuggestionListScreenQueryFragment.graphql';
 import { TwitterSuggestionListScreenRefetchableQuery } from '~/generated/TwitterSuggestionListScreenRefetchableQuery.graphql';
-import { LoggedInStackNavigatorProp, RootStackNavigatorParamList } from '~/navigation/types';
+import { MainTabStackNavigatorProp, RootStackNavigatorParamList } from '~/navigation/types';
 
 type Props = {
   queryRef: TwitterSuggestionListScreenQueryFragment$key;
@@ -80,7 +80,7 @@ export function InnerSuggestionListScreen({ queryRef }: Props) {
     }
   }, [hasNext, loadNext]);
 
-  const navigation = useNavigation<LoggedInStackNavigatorProp>();
+  const navigation = useNavigation<MainTabStackNavigatorProp>();
   const route = useRoute<RouteProp<RootStackNavigatorParamList, 'TwitterSuggestionList'>>();
   const handleUserPress = useCallback(
     (username: string) => {

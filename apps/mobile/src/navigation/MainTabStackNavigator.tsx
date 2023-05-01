@@ -14,7 +14,7 @@ type Props = {
   initialRouteName: keyof MainTabStackNavigatorParamList;
 };
 
-export function LoggedInStackNavigator({ initialRouteName }: Props) {
+export function MainTabStackNavigator({ initialRouteName }: Props) {
   return (
     <Stack.Navigator initialRouteName={initialRouteName} screenOptions={{ header: Empty }}>
       <Stack.Screen name="NftDetail" component={NftDetailScreen} />

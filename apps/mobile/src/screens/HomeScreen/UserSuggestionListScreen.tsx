@@ -9,7 +9,7 @@ import { Typography } from '~/components/Typography';
 import { UserFollowList } from '~/components/UserFollowList/UserFollowList';
 import { UserSuggestionListScreenInnerFragment$key } from '~/generated/UserSuggestionListScreenInnerFragment.graphql';
 import { UserSuggestionListScreenQuery } from '~/generated/UserSuggestionListScreenQuery.graphql';
-import { LoggedInStackNavigatorProp, RootStackNavigatorParamList } from '~/navigation/types';
+import { MainTabStackNavigatorProp, RootStackNavigatorParamList } from '~/navigation/types';
 
 type Props = {
   queryRef: UserSuggestionListScreenInnerFragment$key;
@@ -54,7 +54,7 @@ export function InnerUserSuggestionListScreen({ queryRef }: Props) {
     return users;
   }, [query.viewer.suggestedUsers?.edges]);
 
-  const navigation = useNavigation<LoggedInStackNavigatorProp>();
+  const navigation = useNavigation<MainTabStackNavigatorProp>();
   const route = useRoute<RouteProp<RootStackNavigatorParamList, 'UserSuggestionList'>>();
   const handleUserPress = useCallback(
     (username: string) => {

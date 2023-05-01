@@ -4,7 +4,7 @@ import { TouchableOpacity, View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { SuggestedSectionQueryFragment$key } from '~/generated/SuggestedSectionQueryFragment.graphql';
-import { LoggedInStackNavigatorProp } from '~/navigation/types';
+import { MainTabStackNavigatorProp } from '~/navigation/types';
 
 import { Typography } from '../Typography';
 import { TrendingUserList } from './TrendingUserList';
@@ -43,7 +43,7 @@ export function SuggestedSection({ title, description, queryRef }: Props) {
     queryRef
   );
 
-  const navigation = useNavigation<LoggedInStackNavigatorProp>();
+  const navigation = useNavigation<MainTabStackNavigatorProp>();
   const handleSeeAll = useCallback(() => {
     navigation.navigate('UserSuggestionList', {
       onUserPress: (username) => {

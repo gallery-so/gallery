@@ -10,7 +10,7 @@ import { graphql } from 'relay-runtime';
 import { NftPreviewAsset } from '~/components/NftPreview/NftPreviewAsset';
 import { NftPreviewContextMenuPopup } from '~/components/NftPreview/NftPreviewContextMenuPopup';
 import { NftPreviewFragment$key } from '~/generated/NftPreviewFragment.graphql';
-import { LoggedInStackNavigatorProp } from '~/navigation/types';
+import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { Dimensions } from '~/screens/NftDetailScreen/NftDetailAsset/types';
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
@@ -68,7 +68,7 @@ function NftPreviewInner({
     throw new CouldNotRenderNftError('NftPreview', 'tokenUrl missing');
   }
 
-  const navigation = useNavigation<LoggedInStackNavigatorProp>();
+  const navigation = useNavigation<MainTabStackNavigatorProp>();
   const handlePress = useCallback(() => {
     navigation.push('NftDetail', {
       tokenId: token.dbid,

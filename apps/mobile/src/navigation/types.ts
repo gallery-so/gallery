@@ -10,7 +10,7 @@ export type RootStackNavigatorParamList = {
   ProfileQRCode: { username: string };
 };
 
-export type LoggedInStackNavigatorParamList = {
+export type MainTabStackNavigatorParamList = {
   Profile: { username: string };
   NftDetail: {
     tokenId: string;
@@ -32,10 +32,10 @@ export type FeedTabNavigatorParamList = {
 };
 
 export type MainTabNavigatorParamList = {
-  AccountTab: NavigatorScreenParams<LoggedInStackNavigatorParamList>;
-  HomeTab: NavigatorScreenParams<LoggedInStackNavigatorParamList>;
-  NotificationsTab: NavigatorScreenParams<LoggedInStackNavigatorParamList>;
-  SearchTab: NavigatorScreenParams<LoggedInStackNavigatorParamList>;
+  AccountTab: NavigatorScreenParams<MainTabStackNavigatorParamList>;
+  HomeTab: NavigatorScreenParams<MainTabStackNavigatorParamList>;
+  NotificationsTab: NavigatorScreenParams<MainTabStackNavigatorParamList>;
+  SearchTab: NavigatorScreenParams<MainTabStackNavigatorParamList>;
 };
 
 export type LoginStackNavigatorParamList = {
@@ -47,9 +47,9 @@ export type LoginStackNavigatorParamList = {
 
 export type RootStackNavigatorProp = NativeStackNavigationProp<RootStackNavigatorParamList>;
 
-export type LoggedInStackNavigatorProp = CompositeNavigationProp<
+export type MainTabStackNavigatorProp = CompositeNavigationProp<
   NativeStackNavigationProp<RootStackNavigatorParamList, 'MainTabs'>,
-  NativeStackNavigationProp<LoggedInStackNavigatorParamList>
+  NativeStackNavigationProp<MainTabStackNavigatorParamList>
 >;
 
 export type LoginStackNavigatorProp = CompositeNavigationProp<

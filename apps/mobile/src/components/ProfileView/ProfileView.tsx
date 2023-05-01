@@ -31,7 +31,7 @@ import { GalleryPreviewCardFragment$key } from '~/generated/GalleryPreviewCardFr
 import { ProfileViewFragment$key } from '~/generated/ProfileViewFragment.graphql';
 import { ProfileViewQueryFragment$key } from '~/generated/ProfileViewQueryFragment.graphql';
 import { UserFollowCardFragment$key } from '~/generated/UserFollowCardFragment.graphql';
-import { LoggedInStackNavigatorProp } from '~/navigation/types';
+import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 
@@ -58,7 +58,7 @@ type ProfileViewProps = {
 };
 
 export function ProfileView({ userRef, queryRef, shouldShowBackButton }: ProfileViewProps) {
-  const navigation = useNavigation<LoggedInStackNavigatorProp>();
+  const navigation = useNavigation<MainTabStackNavigatorProp>();
 
   const query = useFragment(
     graphql`

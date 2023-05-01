@@ -9,10 +9,10 @@ import { ProfileView } from '~/components/ProfileView/ProfileView';
 import { ProfileViewFallback } from '~/components/ProfileView/ProfileViewFallback';
 import { Typography } from '~/components/Typography';
 import { ProfileScreenQuery } from '~/generated/ProfileScreenQuery.graphql';
-import { LoggedInStackNavigatorParamList } from '~/navigation/types';
+import { MainTabStackNavigatorParamList } from '~/navigation/types';
 
 function ProfileScreenInner() {
-  const route = useRoute<RouteProp<LoggedInStackNavigatorParamList, 'Profile'>>();
+  const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'Profile'>>();
 
   const query = useLazyLoadQuery<ProfileScreenQuery>(
     graphql`

@@ -1,27 +1,27 @@
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { useColorScheme } from 'react-native';
 
-import { LoggedInStackNavigator } from '~/navigation/LoggedInStackNavigator';
 import { TabBar } from '~/navigation/MainTabNavigator/TabBar';
+import { MainTabStackNavigator } from '~/navigation/MainTabStackNavigator';
 import { MainTabNavigatorParamList } from '~/navigation/types';
 import colors from '~/shared/theme/colors';
 
 const Tab = createMaterialTopTabNavigator<MainTabNavigatorParamList>();
 
 function AccountScreen() {
-  return <LoggedInStackNavigator initialRouteName="Account" />;
+  return <MainTabStackNavigator initialRouteName="Account" />;
 }
 
 function HomeScreen() {
-  return <LoggedInStackNavigator initialRouteName="Home" />;
+  return <MainTabStackNavigator initialRouteName="Home" />;
 }
 
 function SearchScreen() {
-  return <LoggedInStackNavigator initialRouteName="Search" />;
+  return <MainTabStackNavigator initialRouteName="Search" />;
 }
 
 function NotificationsScreen() {
-  return <LoggedInStackNavigator initialRouteName="Notifications" />;
+  return <MainTabStackNavigator initialRouteName="Notifications" />;
 }
 
 export function MainTabNavigator() {
