@@ -16,6 +16,8 @@ export type MainTabStackNavigatorParamList = {
     tokenId: string;
     collectionId: string;
   };
+  Gallery: { username: string };
+  Collection: { collectionId: string };
 
   // The main four tabs
   Account: undefined;
