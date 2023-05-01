@@ -94,7 +94,7 @@ export function NftDetailScreenInner() {
 
   return (
     <ScrollView>
-      <View className="flex flex-col space-y-8 px-4">
+      <View className="flex flex-col space-y-8 px-4 pb-4">
         <View className="flex flex-col space-y-3">
           <View className="flex flex-row justify-between">
             <IconContainer icon={<BackIcon />} onPress={navigation.goBack} />
