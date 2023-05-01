@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { TouchableOpacity } from 'react-native';
+import { TouchableOpacity, TouchableOpacityProps } from 'react-native';
 import { ConnectionHandler, graphql, useFragment } from 'react-relay';
 import { SelectorStoreUpdater } from 'relay-runtime';
 
@@ -14,9 +14,10 @@ import { AdmireIcon } from './AdmireIcon';
 type Props = {
   eventRef: AdmireButtonFragment$key;
   queryRef: AdmireButtonQueryFragment$key;
+  style?: TouchableOpacityProps['style'];
 };
 
-export function AdmireButton({ eventRef, queryRef }: Props) {
+export function AdmireButton({ eventRef, queryRef, style }: Props) {
   const event = useFragment(
     graphql`
       fragment AdmireButtonFragment on FeedEvent {
@@ -218,7 +219,10 @@ export function AdmireButton({ eventRef, queryRef }: Props) {
   const hasViewerAdmiredEvent = Boolean(event.viewerAdmire);
 
   return (
-    <TouchableOpacity onPress={hasViewerAdmiredEvent ? handleRemoveAdmire : handleAdmire}>
+    <TouchableOpacity
+      onPress={hasViewerAdmiredEvent ? handleRemoveAdmire : handleAdmire}
+      style={style}
+    >
       <AdmireIcon active={hasViewerAdmiredEvent} />
     </TouchableOpacity>
   );

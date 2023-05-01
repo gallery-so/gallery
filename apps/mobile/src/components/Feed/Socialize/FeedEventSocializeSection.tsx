@@ -5,8 +5,8 @@ import { FeedEventSocializeSectionFragment$key } from '~/generated/FeedEventSoci
 import { FeedEventSocializeSectionQueryFragment$key } from '~/generated/FeedEventSocializeSectionQueryFragment.graphql';
 
 import { AdmireButton } from './AdmireButton';
-import { CommentIcon } from './CommentIcon';
 import { Interactions } from './Interactions';
+import { CommentButton } from './CommentButton';
 
 type Props = {
   feedEventRef: FeedEventSocializeSectionFragment$key;
@@ -40,9 +40,7 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef }: Props) {
 
       <View className="flex flex-row space-x-4">
         <AdmireButton eventRef={event} queryRef={query} />
-        <TouchableOpacity onPress={() => {}}>
-          <CommentIcon />
-        </TouchableOpacity>
+        <CommentButton />
       </View>
     </View>
   );
