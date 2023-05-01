@@ -1,10 +1,12 @@
-import { useMemo } from 'react';
-import { Text, View } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { useCallback, useMemo } from 'react';
+import { TouchableOpacity, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { CollectionUpdatedFeedEventFragment$key } from '~/generated/CollectionUpdatedFeedEventFragment.graphql';
+import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import { Typography } from '../../Typography';
@@ -29,6 +31,7 @@ export function CollectionUpdatedFeedEvent({
         newCollectorsNote
 
         collection {
+          dbid
           name
         }
 
@@ -40,6 +43,13 @@ export function CollectionUpdatedFeedEvent({
     collectionUpdatedFeedEventDataRef
   );
 
+  const navigation = useNavigation<MainTabStackNavigatorProp>();
+  const handleCollectionNamePress = useCallback(() => {
+    if (eventData.collection?.dbid) {
+      navigation.push('Collection', { collectionId: eventData.collection.dbid });
+    }
+  }, [eventData.collection?.dbid, navigation]);
+
   const tokens = useMemo(() => {
     return removeNullValues(eventData.newTokens);
   }, [eventData.newTokens]);
@@ -47,14 +57,18 @@ export function CollectionUpdatedFeedEvent({
   return (
     <View className="flex flex-1 flex-col">
       <FeedEventCarouselCellHeader>
-        <Text numberOfLines={1}>
-          <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
-            Made a change to
-          </Typography>{' '}
-          <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+        <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
+          Made a change to
+        </Typography>
+        <TouchableOpacity className="flex-1" onPress={handleCollectionNamePress}>
+          <Typography
+            numberOfLines={1}
+            className="text-xs"
+            font={{ family: 'ABCDiatype', weight: 'Bold' }}
+          >
             {eventData.collection?.name ?? 'Untitled'}
           </Typography>
-        </Text>
+        </TouchableOpacity>
       </FeedEventCarouselCellHeader>
 
       {eventData.newCollectorsNote && (
