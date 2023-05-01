@@ -1,4 +1,6 @@
+import { useNavigation } from '@react-navigation/native';
 import { ResizeMode } from 'expo-av';
+import { useCallback } from 'react';
 import { TouchableOpacity, View, ViewProps } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -6,6 +8,7 @@ import { graphql } from 'relay-runtime';
 import { NftPreviewAsset } from '~/components/NftPreview/NftPreviewAsset';
 import { Typography } from '~/components/Typography';
 import { GalleryPreviewCardFragment$key } from '~/generated/GalleryPreviewCardFragment.graphql';
+import { MainTabStackNavigatorProp } from '~/navigation/types';
 import unescape from '~/shared/utils/unescape';
 
 type GalleryPreviewCardProps = {
@@ -18,6 +21,7 @@ export function GalleryPreviewCard({ galleryRef, isFeatured }: GalleryPreviewCar
     graphql`
       fragment GalleryPreviewCardFragment on Gallery {
         __typename
+        dbid
         name
         description
 
@@ -32,8 +36,16 @@ export function GalleryPreviewCard({ galleryRef, isFeatured }: GalleryPreviewCar
   const [firstToken, secondToken, thirdToken, fourthToken] = gallery.tokenPreviews ?? [];
   const descriptionFirstLine = gallery.description?.split('\n')[0];
 
+  const navigation = useNavigation<MainTabStackNavigatorProp>();
+  const handlePress = useCallback(() => {
+    navigation.push('Gallery', { galleryId: gallery.dbid });
+  }, [gallery.dbid, navigation]);
+
   return (
-    <TouchableOpacity className="bg-offWhite dark:bg-offBlack flex w-full flex-col space-y-3 rounded-xl p-3">
+    <TouchableOpacity
+      onPress={handlePress}
+      className="bg-offWhite dark:bg-offBlack flex w-full flex-col space-y-3 rounded-xl p-3"
+    >
       <View className="flex flex-row items-center justify-center">
         <View className="flex flex-1 flex-col">
           <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
