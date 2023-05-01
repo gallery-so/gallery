@@ -8,7 +8,8 @@
     "packages/shared"
   ],
   "scripts": {
-    "fetch-schema": "get-graphql-schema https://gateway.gallery.so/ > schema.graphql"
+    "fetch-schema": "get-graphql-schema https://gateway.gallery.so/ > schema.graphql",
+    "fetch-schema-dev": "get-graphql-schema https://gateway.dev.gallery.so/ > schema.graphql"
   },
   "packageManager": "yarn@3.4.1",
   "engines": {
