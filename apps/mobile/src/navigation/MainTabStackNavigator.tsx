@@ -1,6 +1,6 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { LoggedInStackNavigatorParamList } from '~/navigation/types';
+import { MainTabStackNavigatorParamList } from '~/navigation/types';
 import { AccountScreen } from '~/screens/AccountScreen';
 import { HomeScreen } from '~/screens/HomeScreen/HomeScreen';
 import { NftDetailScreen } from '~/screens/NftDetailScreen/NftDetailScreen';
@@ -8,10 +8,10 @@ import { NotificationsScreen } from '~/screens/NotificationsScreen';
 import { ProfileScreen } from '~/screens/ProfileScreen/ProfileScreen';
 import { SearchScreen } from '~/screens/SearchScreen';
 
-const Stack = createNativeStackNavigator<LoggedInStackNavigatorParamList>();
+const Stack = createNativeStackNavigator<MainTabStackNavigatorParamList>();
 
 type Props = {
-  initialRouteName: keyof LoggedInStackNavigatorParamList;
+  initialRouteName: keyof MainTabStackNavigatorParamList;
 };
 
 export function LoggedInStackNavigator({ initialRouteName }: Props) {

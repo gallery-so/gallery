@@ -8,6 +8,7 @@ import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import ErrorText from '~/components/core/Text/ErrorText';
 import { TitleS } from '~/components/core/Text/Text';
 import { DEBUG_USERNAME_KEY } from '~/constants/storageKeys';
+import { GLOBAL_SIDEBAR_DESKTOP_WIDTH } from '~/contexts/globalLayout/GlobalSidebar/GlobalSidebar';
 import { DebuggerQuery } from '~/generated/DebuggerQuery.graphql';
 import useKeyDown from '~/hooks/useKeyDown';
 import useMultiKeyDown from '~/hooks/useMultiKeyDown';
@@ -116,8 +117,8 @@ const Debugger = () => {
 
 const StyledDebugger = styled.div`
   position: fixed;
-  top: 20px;
-  left: 20px;
+  top: 76px;
+  left: ${GLOBAL_SIDEBAR_DESKTOP_WIDTH + 20}px;
   padding: 24px;
   width: 420px;
 

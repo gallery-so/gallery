@@ -34,7 +34,7 @@ export function MainTabNavigator() {
       tabBar={TabBar}
       screenOptions={{ swipeEnabled: false }}
       sceneContainerStyle={{
-        backgroundColor: colorScheme === 'dark' ? '#000000' : colors.white, // todo use variable
+        backgroundColor: colorScheme === 'dark' ? colors.black : colors.white,
       }}
     >
       <Tab.Screen name="AccountTab" component={AccountScreen} />
