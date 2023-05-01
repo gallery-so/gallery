@@ -1,6 +1,9 @@
+import { useNavigation } from '@react-navigation/native';
+import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
 import { GallerySearchResultFragment$key } from '~/generated/GallerySearchResultFragment.graphql';
+import { MainTabStackNavigatorProp } from '~/navigation/types';
 
 import { SearchResult } from '../SearchResult';
 
@@ -11,6 +14,7 @@ export function GallerySearchResult({ galleryRef }: Props) {
   const gallery = useFragment(
     graphql`
       fragment GallerySearchResultFragment on Gallery {
+        dbid
         name
         owner {
           username
@@ -20,5 +24,16 @@ export function GallerySearchResult({ galleryRef }: Props) {
     galleryRef
   );
 
-  return <SearchResult title={gallery?.name ?? ''} description={gallery?.owner?.username ?? ''} />;
+  const navigation = useNavigation<MainTabStackNavigatorProp>();
+  const handlePress = useCallback(() => {
+    navigation.push('Gallery', { galleryId: gallery.dbid });
+  }, [gallery.dbid, navigation]);
+
+  return (
+    <SearchResult
+      onPress={handlePress}
+      title={gallery?.name ?? ''}
+      description={gallery?.owner?.username ?? ''}
+    />
+  );
 }
