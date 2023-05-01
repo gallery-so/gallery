@@ -96,10 +96,10 @@ export function AdmireButton({ eventRef, queryRef }: Props) {
     event.id,
     'Interactions_admires'
   );
-  const notesModalConnection = ConnectionHandler.getConnectionID(
-    event.id,
-    'NotesModal_interactions'
-  );
+  // const notesModalConnection = ConnectionHandler.getConnectionID(
+  //   event.id,
+  //   'NotesModal_interactions'
+  // );
 
   const handleRemoveAdmire = useCallback(async () => {
     if (!event.viewerAdmire?.dbid) {
@@ -188,7 +188,10 @@ export function AdmireButton({ eventRef, queryRef }: Props) {
         },
         variables: {
           eventId: event.dbid,
-          connections: [interactionsConnection, notesModalConnection],
+          connections: [
+            interactionsConnection,
+            // notesModalConnection
+          ],
         },
       });
 
@@ -202,7 +205,15 @@ export function AdmireButton({ eventRef, queryRef }: Props) {
     } catch (error) {
       // TODO: Handle this error
     }
-  }, [admire, event.dbid, event.id, interactionsConnection, notesModalConnection, query.viewer]);
+  }, [
+    admire,
+    event.dbid,
+    event.id,
+    interactionsConnection,
+
+    // notesModalConnection,
+    query.viewer,
+  ]);
 
   const hasViewerAdmiredEvent = Boolean(event.viewerAdmire);
 
