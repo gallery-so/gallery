@@ -151,7 +151,7 @@ export function EventTokenGrid({
   }, [collectionTokens, dimensions.width, imagePriority, preserveAspectRatio]);
 
   return (
-    <View className="flex flex-1 flex-col" style={{ width: dimensions.width }}>
+    <View className="flex flex-1 flex-col pt-1" style={{ width: dimensions.width }}>
       {inner}
     </View>
   );
