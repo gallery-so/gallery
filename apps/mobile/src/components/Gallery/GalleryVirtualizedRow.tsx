@@ -1,5 +1,6 @@
+import { useNavigation } from '@react-navigation/native';
 import clsx from 'clsx';
-import { useWindowDimensions, View } from 'react-native';
+import { TouchableOpacity, useWindowDimensions, View } from 'react-native';
 
 import {
   GalleryListItemType,
@@ -9,6 +10,7 @@ import { GalleryTokenPreview } from '~/components/Gallery/GalleryTokenPreview';
 import { Markdown } from '~/components/Markdown';
 import { Typography } from '~/components/Typography';
 import { GalleryTokenPreviewFragment$key } from '~/generated/GalleryTokenPreviewFragment.graphql';
+import { MainTabStackNavigatorProp } from '~/navigation/types';
 import unescape from '~/shared/utils/unescape';
 
 import { sanitizeMarkdown } from '../../utils/sanitizeMarkdown';
@@ -18,22 +20,36 @@ type Props = {
 };
 
 export function GalleryVirtualizedRow({ item }: Props) {
+  const navigation = useNavigation<MainTabStackNavigatorProp>();
+
   if (item.kind === 'gallery-header') {
+    const handlePress = () => {
+      navigation.push('Gallery', { galleryId: item.id });
+    };
+
     return (
       <View className="flex flex-col px-4">
-        <Typography className="text-xl" font={{ family: 'GTAlpina', weight: 'StandardLight' }}>
-          {item.name}
-        </Typography>
+        <TouchableOpacity onPress={handlePress}>
+          <Typography className="text-xl" font={{ family: 'GTAlpina', weight: 'StandardLight' }}>
+            {item.name}
+          </Typography>
+        </TouchableOpacity>
 
         <Markdown>{item.description}</Markdown>
       </View>
     );
   } else if (item.kind === 'collection-title') {
+    const handlePress = () => {
+      navigation.push('Collection', { collectionId: item.id });
+    };
+
     return (
       <View className="flex flex-col bg-white dark:bg-black py-2 px-4">
-        <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-          {unescape(item.name ?? '')}
-        </Typography>
+        <TouchableOpacity onPress={handlePress}>
+          <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+            {unescape(item.name ?? '')}
+          </Typography>
+        </TouchableOpacity>
       </View>
     );
   } else if (item.kind === 'collection-note') {

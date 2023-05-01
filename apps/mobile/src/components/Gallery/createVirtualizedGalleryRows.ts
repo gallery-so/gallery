@@ -9,10 +9,11 @@ import { removeNullValues } from '~/shared/relay/removeNullValues';
 export type GalleryListItemType = { key: string } & (
   | {
       kind: 'gallery-header';
+      id: string;
       name: string | null;
       description: string | null;
     }
-  | { kind: 'collection-title'; name: string | null }
+  | { kind: 'collection-title'; name: string | null; id: string }
   | { kind: 'collection-note'; collectorsNote: string | null }
   | {
       kind: 'collection-row';
@@ -37,6 +38,7 @@ export function createVirtualizedGalleryRows({
   const gallery = readInlineData(
     graphql`
       fragment createVirtualizedGalleryRows on Gallery @inline {
+        dbid
         name
         description
 
@@ -66,6 +68,7 @@ export function createVirtualizedGalleryRows({
   items.push({
     kind: 'gallery-header',
     key: 'gallery-header',
+    id: gallery.dbid,
     name: gallery.name,
     description: gallery.description,
   });
@@ -76,6 +79,7 @@ export function createVirtualizedGalleryRows({
   filteredCollections.forEach((collection) => {
     items.push({
       kind: 'collection-title',
+      id: collection.dbid,
       key: `collection-title-${collection.dbid}`,
       name: `${collection.name}`,
     });
