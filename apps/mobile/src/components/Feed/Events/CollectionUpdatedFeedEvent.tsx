@@ -66,7 +66,7 @@ export function CollectionUpdatedFeedEvent({
             className="text-xs"
             font={{ family: 'ABCDiatype', weight: 'Bold' }}
           >
-            {eventData.collection?.name ?? 'Untitled'}
+            {eventData.collection?.name || 'Untitled'}
           </Typography>
         </TouchableOpacity>
       </FeedEventCarouselCellHeader>

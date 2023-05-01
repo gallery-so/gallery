@@ -65,7 +65,7 @@ export function CollectionCreatedFeedEvent({
             className="text-sm"
             font={{ family: 'ABCDiatype', weight: 'Bold' }}
           >
-            {eventData.collection?.name ?? 'Untitled'}
+            {eventData.collection?.name || 'Untitled'}
           </Typography>
         </TouchableOpacity>
       </FeedEventCarouselCellHeader>
