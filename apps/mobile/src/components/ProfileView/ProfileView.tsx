@@ -359,7 +359,7 @@ export function ProfileView({ userRef, queryRef, shouldShowBackButton }: Profile
           </View>
         </View>
         <Typography
-          className="bg-white dark:bg-black text-center text-2xl"
+          className="bg-white dark:bg-black text-center text-2xl tracking-tighter"
           font={{ family: 'GTAlpina', weight: 'StandardLight' }}
         >
           {user.username}

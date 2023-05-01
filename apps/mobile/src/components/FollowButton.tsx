@@ -16,9 +16,10 @@ type Props = {
   userRef: FollowButtonUserFragment$key;
   className?: string;
   source?: string; // where the FollowButton is being used, for analytics
+  width?: 'fixed' | 'grow';
 };
 
-export function FollowButton({ queryRef, userRef, style }: Props) {
+export function FollowButton({ queryRef, userRef, style, width = 'fixed' }: Props) {
   const loggedInUserQuery = useFragment(
     graphql`
       fragment FollowButtonQueryFragment on Query {
@@ -82,18 +83,18 @@ export function FollowButton({ queryRef, userRef, style }: Props) {
       return null;
     } else if (isFollowing) {
       return (
-        <FollowChip variant="unfollow" onPress={handleUnfollowPress}>
+        <FollowChip variant="unfollow" onPress={handleUnfollowPress} width={width}>
           Following
         </FollowChip>
       );
     } else {
       return (
-        <FollowChip variant="follow" onPress={handleFollowPress}>
+        <FollowChip variant="follow" onPress={handleFollowPress} width={width}>
           Follow
         </FollowChip>
       );
     }
-  }, [handleFollowPress, handleUnfollowPress, isSelf, isFollowing]);
+  }, [isSelf, isFollowing, handleUnfollowPress, width, handleFollowPress]);
 
   return <View style={style}>{followChip}</View>;
 }
@@ -102,21 +103,26 @@ function FollowChip({
   children,
   variant,
   onPress,
+  width,
 }: PropsWithChildren<{
   variant: 'follow' | 'unfollow';
   onPress: TouchableOpacityProps['onPress'];
+  width?: 'fixed' | 'grow';
 }>) {
   return (
     <TouchableOpacity
       onPress={onPress}
-      className={clsx('flex h-6 w-20 items-center justify-center rounded-sm px-2', {
-        'bg-black dark:bg-white': variant === 'follow',
-        'bg-white dark:bg-black border border-faint dark:border-graphite': variant === 'unfollow',
+      className={clsx('flex h-6  items-center justify-center rounded-sm px-2 bg-black', {
+        'border border-black dark:border-shadow': variant === 'follow',
+        'bg-porcelain dark:bg-graphite border border-porcelain dark:border-graphite':
+          variant === 'unfollow',
+        'w-20': width === 'fixed',
+        'w-auto': width === 'grow',
       })}
     >
       <Typography
         className={clsx('text-sm', {
-          'text-white dark:text-black': variant === 'follow',
+          'text-white ': variant === 'follow',
           'text-black dark:text-white': variant === 'unfollow',
         })}
         font={{ family: 'ABCDiatype', weight: 'Bold' }}

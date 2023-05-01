@@ -113,7 +113,7 @@ export function TrendingUserCard({ style, userRef, queryRef }: Props) {
         </View>
       </View>
 
-      <FollowButton queryRef={query} userRef={user} />
+      <FollowButton queryRef={query} userRef={user} width="grow" />
     </View>
   );
 }
