@@ -85,7 +85,7 @@ export function NftPreviewContextMenuPopup({
         shareToken(collectionToken);
       } else if (event.nativeEvent.actionKey === 'view-gallery') {
         if (collectionToken.collection?.gallery?.dbid) {
-          navigation.navigate('Gallery', {
+          navigation.push('Gallery', {
             galleryId: collectionToken.collection.gallery.dbid,
           });
         }
