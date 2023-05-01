@@ -34,6 +34,9 @@ export function NftPreviewContextMenuPopup({
       fragment NftPreviewContextMenuPopupFragment on CollectionToken {
         collection @required(action: THROW) {
           dbid
+          gallery {
+            dbid
+          }
         }
         token @required(action: THROW) {
           dbid
@@ -80,6 +83,12 @@ export function NftPreviewContextMenuPopup({
         });
       } else if (event.nativeEvent.actionKey === 'share') {
         shareToken(collectionToken);
+      } else if (event.nativeEvent.actionKey === 'view-gallery') {
+        if (collectionToken.collection?.gallery?.dbid) {
+          navigation.navigate('Gallery', {
+            galleryId: collectionToken.collection.gallery.dbid,
+          });
+        }
       }
     },
     [collectionToken, navigation, token.dbid]
