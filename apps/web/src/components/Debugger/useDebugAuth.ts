@@ -40,6 +40,7 @@ export function useDebugAuthLogin() {
               asUsername,
               userId,
               chainAddresses,
+              debugToolsPassword: process.env.NEXT_PUBLIC_DEBUG_TOOLS_PASSWORD,
             },
           },
         },

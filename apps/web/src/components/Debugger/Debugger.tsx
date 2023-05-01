@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import { useCallback, useMemo, useState } from 'react';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import styled from 'styled-components';
@@ -65,18 +66,22 @@ const Debugger = () => {
   useKeyDown('Escape', handleCloseDebugger);
   useMultiKeyDown(['Control', 'd'], handleToggleDebugger);
 
-  const login = useDebugAuthLogin();
+  const debugLogin = useDebugAuthLogin();
+
+  const { reload: triggerPageRefresh } = useRouter();
 
   const handleLogin = useCallback(async () => {
     try {
-      await login({ asUsername: username });
+      await debugLogin({ asUsername: username });
       setErrorMessage('');
+      // needed to apply new auth cookie to app
+      triggerPageRefresh();
     } catch (e: unknown) {
       if (e instanceof Error) {
         setErrorMessage(e.message);
       }
     }
-  }, [login, username]);
+  }, [debugLogin, triggerPageRefresh, username]);
 
   const handleUsernameChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
