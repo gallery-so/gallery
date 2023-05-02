@@ -229,21 +229,26 @@ function Settings({ newAddress, queryRef, onEthAddWalletSuccess, onTezosAddWalle
             </VStack>
             <Divider />
             <VStack>
+              <TitleDiatypeL>QR Code Sign In</TitleDiatypeL>
+              <SettingsRowDescription>
+                Use a QR Code to effortlessly sign in to the Gallery mobile app.
+              </SettingsRowDescription>
+            </VStack>
+            <Divider />
+            <VStack>
               <TitleDiatypeL>Members Club</TitleDiatypeL>
               <HStack justify="space-between" align="center" gap={8}>
-                <span>
-                  <SettingsRowDescription>
-                    Unlock early access to features, a profile badge, and the members-only{' '}
-                    <InteractiveLink href={GALLERY_DISCORD}>Discord channel</InteractiveLink> by
-                    holding a{' '}
-                    <InteractiveLink
-                      href={`https://opensea.io/collection/gallery-membership-cards?ref=${GALLERY_OS_ADDRESS}`}
-                    >
-                      Premium Gallery Membership Card
-                    </InteractiveLink>{' '}
-                    and verifying your email address.
-                  </SettingsRowDescription>
-                </span>
+                <SettingsRowDescription>
+                  Unlock early access to features, a profile badge, and the members-only{' '}
+                  <InteractiveLink href={GALLERY_DISCORD}>Discord channel</InteractiveLink> by
+                  holding a{' '}
+                  <InteractiveLink
+                    href={`https://opensea.io/collection/gallery-membership-cards?ref=${GALLERY_OS_ADDRESS}`}
+                  >
+                    Premium Gallery Membership Card
+                  </InteractiveLink>{' '}
+                  and verifying your email address.
+                </SettingsRowDescription>
                 <HStack align="center" gap={4} shrink={false}>
                   {hasEarlyAccess ? (
                     <>
@@ -257,7 +262,7 @@ function Settings({ newAddress, queryRef, onEthAddWalletSuccess, onTezosAddWalle
               </HStack>
             </VStack>
             <Divider />
-            <HStack>
+            <HStack justify="end">
               <StyledButton variant="warning" onClick={handleSignOutClick}>
                 Sign Out
               </StyledButton>
