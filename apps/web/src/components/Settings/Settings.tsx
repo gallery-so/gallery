@@ -180,7 +180,7 @@ function Settings({ newAddress, queryRef, onEthAddWalletSuccess, onTezosAddWalle
       <DrawerHeader headerText="Settings" />
       <StyledContentWrapper>
         <StyledSettings gap={12}>
-          <SettingsContents gap={32}>
+          <SettingsContents gap={24}>
             <VStack gap={16}>
               <VStack>
                 <TitleDiatypeL>Email notifications</TitleDiatypeL>
@@ -213,6 +213,21 @@ function Settings({ newAddress, queryRef, onEthAddWalletSuccess, onTezosAddWalle
               </StyledButtonContainer>
             </VStack>
             <Divider />
+            <VStack gap={16}>
+              <TitleDiatypeL>Connect twitter</TitleDiatypeL>
+              <TwitterSetting queryRef={query} />
+            </VStack>
+            <Divider />
+            <VStack>
+              <TitleDiatypeL>Manage accounts</TitleDiatypeL>
+              <ManageWallets
+                queryRef={query}
+                newAddress={newAddress}
+                onTezosAddWalletSuccess={onTezosAddWalletSuccess}
+                onEthAddWalletSuccess={onEthAddWalletSuccess}
+              />
+            </VStack>
+            <Divider />
             <VStack>
               <TitleDiatypeL>Members Club</TitleDiatypeL>
               <HStack justify="space-between" align="center" gap={8}>
@@ -240,21 +255,6 @@ function Settings({ newAddress, queryRef, onEthAddWalletSuccess, onTezosAddWalle
                   )}
                 </HStack>
               </HStack>
-            </VStack>
-            <Divider />
-            <VStack gap={16}>
-              <TitleDiatypeL>Connect twitter</TitleDiatypeL>
-              <TwitterSetting queryRef={query} />
-            </VStack>
-            <Divider />
-            <VStack>
-              <TitleDiatypeL>Manage accounts</TitleDiatypeL>
-              <ManageWallets
-                queryRef={query}
-                newAddress={newAddress}
-                onTezosAddWalletSuccess={onTezosAddWalletSuccess}
-                onEthAddWalletSuccess={onEthAddWalletSuccess}
-              />
             </VStack>
             <Divider />
             <HStack>
