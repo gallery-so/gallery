@@ -37,7 +37,7 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef }: Props) {
   );
 
   return (
-    <View className="flex flex-row items-center justify-between px-3 py-2">
+    <View className="flex flex-row items-center justify-between px-3 pb-2 pt-5">
       <Interactions eventRef={event} queryRef={query} />
 
       <View className="flex flex-row space-x-4">
