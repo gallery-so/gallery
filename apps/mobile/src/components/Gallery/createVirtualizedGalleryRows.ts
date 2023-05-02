@@ -24,6 +24,7 @@ export type GalleryListItemType = { key: string } & (
 );
 
 type createVirtualizedGalleryRowsArgs = {
+  noHeader?: boolean;
   galleryRef: createVirtualizedGalleryRows$key;
 };
 
@@ -34,6 +35,7 @@ type createVirtualizedGalleryRowsReturn = {
 
 export function createVirtualizedGalleryRows({
   galleryRef,
+  noHeader = false,
 }: createVirtualizedGalleryRowsArgs): createVirtualizedGalleryRowsReturn {
   const gallery = readInlineData(
     graphql`
@@ -65,13 +67,15 @@ export function createVirtualizedGalleryRows({
   const stickyIndices: number[] = [];
   const items: GalleryListItemType[] = [];
 
-  items.push({
-    kind: 'gallery-header',
-    key: 'gallery-header',
-    id: gallery.dbid,
-    name: gallery.name,
-    description: gallery.description,
-  });
+  if (!noHeader) {
+    items.push({
+      kind: 'gallery-header',
+      key: 'gallery-header',
+      id: gallery.dbid,
+      name: gallery.name,
+      description: gallery.description,
+    });
+  }
 
   const filteredCollections = removeNullValues(gallery.collections).filter(
     (collection) => !collection.hidden

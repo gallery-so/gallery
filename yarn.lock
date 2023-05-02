@@ -6007,9 +6007,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@shopify/flash-list@npm:1.4.0":
-  version: 1.4.0
-  resolution: "@shopify/flash-list@npm:1.4.0"
+"@shopify/flash-list@npm:^1.4.3":
+  version: 1.4.3
+  resolution: "@shopify/flash-list@npm:1.4.3"
   dependencies:
     recyclerlistview: 4.2.0
     tslib: 2.4.0
@@ -6017,7 +6017,7 @@ __metadata:
     "@babel/runtime": "*"
     react: "*"
     react-native: "*"
-  checksum: c6510b0d6ae6404fe92ede0c918ba184bc2b27ed39c627eebad16a6542792cb34e750e2004e1a9ce165f9d729f1af0555cba1e4c224fd52bfd2a600fdc9e2a65
+  checksum: a74010c70d6692b2140540c89ab094e7879066885bf4350f0216605ddbff332304516b20a0cc0f2b3628e14844607a03fd37ef33e4a2fae958e5fb1a85e4bed1
   languageName: node
   linkType: hard
 
@@ -23482,7 +23482,7 @@ __metadata:
     "@react-navigation/native": ^6.1.4
     "@react-navigation/native-stack": ^6.9.10
     "@sentry/react-native": ^5.1.0
-    "@shopify/flash-list": 1.4.0
+    "@shopify/flash-list": ^1.4.3
     "@types/lodash.merge": ^4.6.7
     "@types/markdown-it": ^12.2.3
     "@types/react-native": ^0.71.1
