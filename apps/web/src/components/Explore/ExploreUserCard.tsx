@@ -5,11 +5,11 @@ import styled from 'styled-components';
 
 import { ExploreUserCardFollowFragment$key } from '~/generated/ExploreUserCardFollowFragment.graphql';
 import { ExploreUserCardFragment$key } from '~/generated/ExploreUserCardFragment.graphql';
-import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
+import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import colors from '~/shared/theme/colors';
-import unescape from '~/utils/unescape';
+import unescape from '~/shared/utils/unescape';
 
 import Badge from '../Badge/Badge';
 import breakpoints from '../core/breakpoints';

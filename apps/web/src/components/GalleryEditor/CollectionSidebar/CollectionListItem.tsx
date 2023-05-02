@@ -17,7 +17,7 @@ import HideIcon from '~/icons/HideIcon';
 import ShowIcon from '~/icons/ShowIcon';
 import { ErrorWithSentryMetadata } from '~/shared/errors/ErrorWithSentryMetadata';
 import colors from '~/shared/theme/colors';
-import unescape from '~/utils/unescape';
+import unescape from '~/shared/utils/unescape';
 
 import useMoveCollectionModal from './useMoveCollectionModal';
 

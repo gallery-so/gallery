@@ -1,8 +1,10 @@
-import { useMemo } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { NftAdditionalDetailsTezosFragment$key } from '~/generated/NftAdditionalDetailsTezosFragment.graphql';
+import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { hexHandler } from '~/shared/utils/getOpenseaExternalUrl';
 import { getFxHashExternalUrl, getObjktExternalUrl } from '~/shared/utils/getTezosExternalUrl';
 
@@ -61,14 +63,20 @@ export function NftAdditionalDetailsTezos({
     };
   }, [token.contract?.contractAddress?.address, token.tokenId]);
 
+  const navigation = useNavigation<MainTabStackNavigatorProp>();
+  const handleUsernamePress = useCallback(() => {
+    if (token.owner?.username) {
+      navigation.push('Profile', { username: token.owner.username });
+    }
+  }, [navigation, token.owner?.username]);
+
   return (
     <View className="flex flex-col space-y-4">
       {token.owner?.username && (
         <DetailSection>
           <DetailLabelText>OWNED BY</DetailLabelText>
 
-          {/* TODO(Terence) When the user profile screen is ready, setup the onPress here */}
-          <InteractiveLink>{token.owner.username}</InteractiveLink>
+          <InteractiveLink onPress={handleUsernamePress}>{token.owner.username}</InteractiveLink>
         </DetailSection>
       )}
 

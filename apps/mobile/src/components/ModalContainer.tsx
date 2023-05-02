@@ -8,10 +8,11 @@ import { IconContainer } from '~/components/IconContainer';
 import { XMarkIcon } from '../icons/XMarkIcon';
 
 type Props = PropsWithChildren<{
+  scrollable?: boolean;
   withBackButton?: boolean;
 }>;
 
-export function ModalContainer({ children, withBackButton = false }: Props) {
+export function ModalContainer({ children, scrollable = false, withBackButton = false }: Props) {
   const { bottom } = useSafeAreaInsets();
   const navigation = useNavigation();
 
@@ -27,7 +28,8 @@ export function ModalContainer({ children, withBackButton = false }: Props) {
         )}
       </View>
 
-      <ScrollView className="px-4">{children}</ScrollView>
+      {scrollable && <ScrollView className="flex-grow px-4">{children}</ScrollView>}
+      {!scrollable && <View className="flex-grow px-4">{children}</View>}
     </View>
   );
 }

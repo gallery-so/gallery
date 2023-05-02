@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { StyleSheet, TouchableOpacity, TouchableOpacityProps } from 'react-native';
 import { sanitizeMarkdown } from 'src/utils/sanitizeMarkdown';
 
 import { Markdown } from '../Markdown';
@@ -8,7 +8,7 @@ import { useSearchContext } from './SearchContext';
 type Props = {
   title: string;
   description: string;
-};
+} & TouchableOpacityProps;
 
 const MAX_DESCRIPTION_CHARACTER = 150;
 

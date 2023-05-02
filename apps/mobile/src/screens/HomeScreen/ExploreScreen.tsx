@@ -135,8 +135,13 @@ function ExploreScreenInner({ queryRef }: ExploreScreenInnerProps) {
   }, [query]);
 
   return (
-    <View className="flex-1 pb-6">
-      <FlashList renderItem={renderItem} data={items} estimatedItemSize={300} />
+    <View className="flex-1">
+      <FlashList
+        contentContainerStyle={{ paddingBottom: 24 }}
+        renderItem={renderItem}
+        data={items}
+        estimatedItemSize={300}
+      />
     </View>
   );
 }

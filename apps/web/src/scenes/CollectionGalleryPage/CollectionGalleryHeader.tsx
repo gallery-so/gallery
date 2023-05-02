@@ -22,7 +22,7 @@ import { CollectionGalleryHeaderQueryFragment$key } from '~/generated/Collection
 import useUpdateCollectionInfo from '~/hooks/api/collections/useUpdateCollectionInfo';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import MobileLayoutToggle from '~/scenes/UserGalleryPage/MobileLayoutToggle';
-import unescape from '~/utils/unescape';
+import unescape from '~/shared/utils/unescape';
 
 type Props = {
   queryRef: CollectionGalleryHeaderQueryFragment$key;

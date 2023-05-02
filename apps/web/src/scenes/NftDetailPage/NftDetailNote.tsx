@@ -12,7 +12,7 @@ import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { GLOBAL_FOOTER_HEIGHT } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
 import useUpdateNft from '~/hooks/api/tokens/useUpdateNft';
 import formatError from '~/shared/errors/formatError';
-import unescape from '~/utils/unescape';
+import unescape from '~/shared/utils/unescape';
 
 const MAX_CHAR_COUNT = 1200;
 

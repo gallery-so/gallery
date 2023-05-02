@@ -35,7 +35,7 @@ import { StagingAreaFragment$key } from '~/generated/StagingAreaFragment.graphql
 import useKeyDown from '~/hooks/useKeyDown';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
-import unescape from '~/utils/unescape';
+import unescape from '~/shared/utils/unescape';
 
 import OnboardingDialog from '../GalleryOnboardingGuide/OnboardingDialog';
 import { useOnboardingDialogContext } from '../GalleryOnboardingGuide/OnboardingDialogContext';

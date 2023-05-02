@@ -224,7 +224,12 @@ export function SearchResults({ activeFilter, onChangeFilter }: Props) {
 
   return (
     <View className={`flex-1 ${isLoading ? 'opacity-50' : 'opacity-100'}`}>
-      <FlashList data={items} estimatedItemSize={40} renderItem={renderItem} />
+      <FlashList
+        keyboardShouldPersistTaps="always"
+        data={items}
+        estimatedItemSize={40}
+        renderItem={renderItem}
+      />
     </View>
   );
 }

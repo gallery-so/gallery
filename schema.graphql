@@ -59,6 +59,7 @@ type AudioMedia implements Media {
   mediaType: String
   contentRenderURL: String
   dimensions: MediaDimensions
+  fallbackMedia: FallbackMedia
 }
 
 input AuthMechanism {
@@ -239,6 +240,7 @@ type Community implements Node {
   dbid: DBID!
   id: ID!
   lastUpdated: Time
+  contract: Contract
   contractAddress: ChainAddress
   creatorAddress: ChainAddress
   chain: Chain
@@ -280,6 +282,7 @@ type Contract implements Node {
   profileImageURL: String
   profileBannerURL: String
   badgeURL: String
+  isSpam: Boolean
 }
 
 input CreateCollectionInGalleryInput {
@@ -344,12 +347,14 @@ input DebugAuth {
   asUsername: String
   userId: DBID
   chainAddresses: [ChainAddressInput!]
+  debugToolsPassword: String
 }
 
 input DebugSocialAuth {
   provider: SocialAccountType!
   id: String!
   username: String!
+  debugToolsPassword: String
 }
 
 input DeepRefreshInput {
@@ -479,6 +484,10 @@ interface Error {
   message: String!
 }
 
+type ErrPushTokenBelongsToAnotherUser implements Error {
+  message: String!
+}
+
 type ErrSyncFailed implements Error {
   message: String!
 }
@@ -501,6 +510,11 @@ type ErrUsernameNotAvailable implements Error {
 
 type ErrUserNotFound implements Error {
   message: String!
+}
+
+type FallbackMedia {
+  mediaURL: String
+  mediaType: String
 }
 
 type FeedConnection {
@@ -664,6 +678,7 @@ type GIFMedia implements Media {
   mediaType: String
   contentRenderURL: String
   dimensions: MediaDimensions
+  fallbackMedia: FallbackMedia
 }
 
 type GltfMedia implements Media {
@@ -672,6 +687,7 @@ type GltfMedia implements Media {
   mediaType: String
   contentRenderURL: String
   dimensions: MediaDimensions
+  fallbackMedia: FallbackMedia
 }
 
 input GnosisSafeAuth {
@@ -703,6 +719,7 @@ type HtmlMedia implements Media {
   mediaType: String
   contentRenderURL: String
   dimensions: MediaDimensions
+  fallbackMedia: FallbackMedia
 }
 
 type ImageMedia implements Media {
@@ -711,6 +728,7 @@ type ImageMedia implements Media {
   mediaType: String
   contentRenderURL: String
   dimensions: MediaDimensions
+  fallbackMedia: FallbackMedia
 }
 
 union Interaction = Admire | Comment
@@ -726,6 +744,7 @@ type InvalidMedia implements Media {
   mediaType: String
   contentRenderURL: String
   dimensions: MediaDimensions
+  fallbackMedia: FallbackMedia
 }
 
 type JsonMedia implements Media {
@@ -734,6 +753,7 @@ type JsonMedia implements Media {
   mediaType: String
   contentRenderURL: String
   dimensions: MediaDimensions
+  fallbackMedia: FallbackMedia
 }
 
 type LoginPayload {
@@ -756,6 +776,7 @@ interface Media {
   mediaURL: String
   mediaType: String
   dimensions: MediaDimensions
+  fallbackMedia: FallbackMedia
 }
 
 type MediaDimensions {
@@ -827,6 +848,8 @@ type Mutation {
   addUserWallet(chainAddress: ChainAddressInput!, authMechanism: AuthMechanism!): AddUserWalletPayloadOrError
   removeUserWallets(walletIds: [DBID!]!): RemoveUserWalletsPayloadOrError
   updateUserInfo(input: UpdateUserInfoInput!): UpdateUserInfoPayloadOrError
+  registerUserPushToken(pushToken: String!): RegisterUserPushTokenPayloadOrError
+  unregisterUserPushToken(pushToken: String!): UnregisterUserPushTokenPayloadOrError
   updateGalleryCollections(input: UpdateGalleryCollectionsInput!): UpdateGalleryCollectionsPayloadOrError
   createCollection(input: CreateCollectionInput!): CreateCollectionPayloadOrError
   deleteCollection(collectionId: DBID!): DeleteCollectionPayloadOrError
@@ -941,6 +964,7 @@ type PdfMedia implements Media {
   mediaType: String
   contentRenderURL: String
   dimensions: MediaDimensions
+  fallbackMedia: FallbackMedia
 }
 
 input PreverifyEmailInput {
@@ -1067,6 +1091,12 @@ type RefreshTokenPayload {
 }
 
 union RefreshTokenPayloadOrError = RefreshTokenPayload | ErrInvalidInput | ErrSyncFailed
+
+type RegisterUserPushTokenPayload {
+  viewer: Viewer
+}
+
+union RegisterUserPushTokenPayloadOrError = RegisterUserPushTokenPayload | ErrNotAuthorized | ErrInvalidInput | ErrPushTokenBelongsToAnotherUser
 
 type RemoveAdmirePayload {
   viewer: Viewer
@@ -1250,6 +1280,7 @@ type SyncingMedia implements Media {
   mediaType: String
   contentRenderURL: String
   dimensions: MediaDimensions
+  fallbackMedia: FallbackMedia
 }
 
 type SyncTokensForUsernamePayload {
@@ -1270,6 +1301,7 @@ type TextMedia implements Media {
   mediaType: String
   contentRenderURL: String
   dimensions: MediaDimensions
+  fallbackMedia: FallbackMedia
 }
 
 scalar Time
@@ -1387,7 +1419,14 @@ type UnknownMedia implements Media {
   mediaType: String
   contentRenderURL: String
   dimensions: MediaDimensions
+  fallbackMedia: FallbackMedia
 }
+
+type UnregisterUserPushTokenPayload {
+  viewer: Viewer
+}
+
+union UnregisterUserPushTokenPayloadOrError = UnregisterUserPushTokenPayload | ErrNotAuthorized | ErrInvalidInput | ErrPushTokenBelongsToAnotherUser
 
 input UnsubscribeFromEmailTypeInput {
   type: EmailUnsubscriptionType!
@@ -1668,6 +1707,7 @@ type VideoMedia implements Media {
   mediaType: String
   contentRenderURLs: VideoURLSet
   dimensions: MediaDimensions
+  fallbackMedia: FallbackMedia
 }
 
 type VideoURLSet {
