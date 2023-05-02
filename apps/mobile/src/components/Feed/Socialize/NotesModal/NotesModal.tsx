@@ -1,6 +1,5 @@
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import React, { useCallback, useMemo } from 'react';
-import { Text } from 'react-native';
 import { View } from 'react-native';
 import { graphql, usePaginationFragment } from 'react-relay';
 
@@ -18,9 +17,6 @@ type Props = {
 export const NOTES_PER_PAGE = 10;
 
 type SortedInteraction =
-  | {
-      kind: 'see-more';
-    }
   | {
       __typename: 'Comment';
       commentRef: CommentNoteFragment$key;
@@ -78,19 +74,11 @@ export function NotesModal({ eventRef }: Props) {
       }
     }
 
-    if (hasPrevious) {
-      interactions.unshift({ kind: 'see-more' });
-    }
-
     return interactions;
-  }, [feedEvent.interactions?.edges, hasPrevious]);
+  }, [feedEvent.interactions?.edges]);
 
   const sortedInteractions = useMemo(() => {
     return nonNullInteractionsAndSeeMore.sort((a, b) => {
-      if ('kind' in a || 'kind' in b) {
-        return 0;
-      }
-
       if (a.__typename === 'Comment' && b.__typename === 'Admire') {
         return -1;
       }
@@ -110,9 +98,7 @@ export function NotesModal({ eventRef }: Props) {
   }, [hasPrevious, loadPrevious]);
 
   const renderItem = useCallback<ListRenderItem<SortedInteraction>>(({ item }) => {
-    if ('kind' in item) {
-      return <Text className="text-center underline">See More</Text>;
-    } else if (item.__typename === 'Comment') {
+    if (item.__typename === 'Comment') {
       return <CommentNote commentRef={item.commentRef} />;
     } else if (item.__typename === 'Admire') {
       return <AdmireNote admireRef={item.admireRef} />;
