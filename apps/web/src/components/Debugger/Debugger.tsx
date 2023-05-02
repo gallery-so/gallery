@@ -14,8 +14,11 @@ import { DebuggerQuery } from '~/generated/DebuggerQuery.graphql';
 import useKeyDown from '~/hooks/useKeyDown';
 import useMultiKeyDown from '~/hooks/useMultiKeyDown';
 import usePersistedState from '~/hooks/usePersistedState';
+import { getServerEnvironment } from '~/utils/getServerEnvironment';
 
 import { useDebugAuthLogin } from './useDebugAuth';
+
+const isLocalServer = getServerEnvironment() === 'local';
 
 const Debugger = () => {
   const query = useLazyLoadQuery<DebuggerQuery>(
@@ -75,7 +78,7 @@ const Debugger = () => {
     try {
       await debugLogin({
         asUsername: username,
-        debugToolsPassword: password,
+        debugToolsPassword: isLocalServer ? undefined : password,
       });
       setErrorMessage('');
       // needed to apply new auth cookie to app
@@ -116,12 +119,14 @@ const Debugger = () => {
                 placeholder="Username"
                 defaultValue={username}
               />
-              <Input
-                onChange={handlePasswordChange}
-                placeholder="Admin Password"
-                defaultValue={password}
-                type="password"
-              />
+              {isLocalServer ? null : (
+                <Input
+                  onChange={handlePasswordChange}
+                  placeholder="Admin Password"
+                  defaultValue={password}
+                  type="password"
+                />
+              )}
               <StyledButton onClick={handleLogin} disabled={!username.length}>
                 Submit
               </StyledButton>
