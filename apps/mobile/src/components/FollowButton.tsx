@@ -116,7 +116,7 @@ function FollowChip({
         'border border-black dark:border-shadow': variant === 'follow',
         'bg-porcelain dark:bg-graphite border border-porcelain dark:border-graphite':
           variant === 'unfollow',
-        'w-20': width === 'fixed',
+        'w-24': width === 'fixed',
         'w-auto': width === 'grow',
       })}
     >
