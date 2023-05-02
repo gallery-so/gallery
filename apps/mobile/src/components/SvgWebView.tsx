@@ -1,3 +1,4 @@
+import { LRUCache } from 'lru-cache';
 import { parse } from 'node-html-parser';
 import React, { useEffect, useState } from 'react';
 import { Platform, StyleProp, View, ViewStyle } from 'react-native';
@@ -20,6 +21,37 @@ type CachedSvgValue = {
 // documentation on what each one does.  Most of them can be
 // overridden for specific items in get()/set()
 // eslint-disable-next-line @typescript-eslint/ban-types
+const options: LRUCache.Options<string, CachedSvgValue, void> = {
+  max: 500,
+
+  // how long to live in ms
+  ttl: 1000 * 60 * 5,
+
+  // return stale items before removing from cache?
+  allowStale: true,
+
+  updateAgeOnGet: true,
+  updateAgeOnHas: false,
+
+  // async method to use for cache.fetch(), for
+  // stale-while-revalidate type of behavior
+  fetchMethod: async (uri) => {
+    if (uri.match(/^data:image\/svg/)) {
+      const index = uri.indexOf('<svg');
+      const text = uri.slice(index);
+
+      return parseSvg(text);
+    } else {
+      return fetch(uri)
+        .then((response) => response.text())
+        .then((text) => {
+          return parseSvg(text);
+        });
+    }
+  },
+};
+
+const cache = new LRUCache(options);
 
 const heightUnits = Platform.OS === 'ios' ? 'vh' : '%';
 
@@ -113,7 +145,6 @@ function parseSvg(text: string): CachedSvgValue {
 }
 
 export function SvgWebView({ source, onLoadStart, onLoadEnd, style }: SvgWebViewProps) {
-  return null;
   const uri = source.uri;
   const [svgState, setSvgState] = useState<SvgContentState>({ kind: 'loading' });
 
