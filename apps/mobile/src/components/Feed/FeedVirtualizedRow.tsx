@@ -2,6 +2,7 @@ import { FeedListItemType } from '~/components/Feed/createVirtualizedFeedEventIt
 import { FeedListCaption } from '~/components/Feed/FeedListCaption';
 import { FeedListItem } from '~/components/Feed/FeedListItem';
 import { FeedListSectionHeader } from '~/components/Feed/FeedListSectionHeader';
+import { FeedEventSocializeSection } from '~/components/Feed/Socialize/FeedEventSocializeSection';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 
 type Props = {
@@ -29,6 +30,12 @@ export function FeedVirtualizedRow({ onFailure, item }: Props) {
       return (
         <ReportingErrorBoundary fallback={null} onError={onFailure}>
           <FeedListItem eventId={item.event.dbid} eventDataRef={item.event.eventData} />
+        </ReportingErrorBoundary>
+      );
+    case 'feed-item-socialize':
+      return (
+        <ReportingErrorBoundary fallback={null} onError={onFailure}>
+          <FeedEventSocializeSection feedEventRef={item.event} queryRef={item.queryRef} />
         </ReportingErrorBoundary>
       );
   }

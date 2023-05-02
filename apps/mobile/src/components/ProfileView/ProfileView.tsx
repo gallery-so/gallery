@@ -66,6 +66,7 @@ export function ProfileView({ userRef, queryRef, shouldShowBackButton }: Profile
         ...useLoggedInUserIdFragment
         ...FollowButtonQueryFragment
         ...UserFollowCardQueryFragment
+        ...createVirtualizedFeedEventItemsQueryFragment
       }
     `,
     queryRef
@@ -230,6 +231,7 @@ export function ProfileView({ userRef, queryRef, shouldShowBackButton }: Profile
       const { items: feedItems, stickyIndices: feedStickyIndices } =
         createVirtualizedFeedEventItems({
           failedEvents,
+          queryRef: query,
           eventRefs: feedEvents,
         });
 
@@ -267,6 +269,7 @@ export function ProfileView({ userRef, queryRef, shouldShowBackButton }: Profile
     return { items, stickyIndices };
   }, [
     failedEvents,
+    query,
     selectedRoute,
     subTabRoute,
     user.featuredGallery,
@@ -314,7 +317,8 @@ export function ProfileView({ userRef, queryRef, shouldShowBackButton }: Profile
       } else if (
         item.kind === 'feed-item-header' ||
         item.kind === 'feed-item-caption' ||
-        item.kind === 'feed-item-event'
+        item.kind === 'feed-item-event' ||
+        item.kind === 'feed-item-socialize'
       ) {
         const markFailure = () => markEventAsFailure(item.event.dbid);
 

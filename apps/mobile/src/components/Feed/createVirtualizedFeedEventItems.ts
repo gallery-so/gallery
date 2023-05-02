@@ -6,15 +6,23 @@ import {
   createVirtualizedFeedEventItemsFragment$data,
   createVirtualizedFeedEventItemsFragment$key,
 } from '~/generated/createVirtualizedFeedEventItemsFragment.graphql';
+import { createVirtualizedFeedEventItemsQueryFragment$key } from '~/generated/createVirtualizedFeedEventItemsQueryFragment.graphql';
+import { FeedEventSocializeSectionQueryFragment$key } from '~/generated/FeedEventSocializeSectionQueryFragment.graphql';
 
 export type FeedListItemType = { key: string } & (
   | { kind: 'feed-item-header'; event: createVirtualizedFeedEventItemsFragment$data }
   | { kind: 'feed-item-caption'; event: createVirtualizedFeedEventItemsFragment$data }
   | { kind: 'feed-item-event'; event: createVirtualizedFeedEventItemsFragment$data }
+  | {
+      kind: 'feed-item-socialize';
+      event: createVirtualizedFeedEventItemsFragment$data;
+      queryRef: FeedEventSocializeSectionQueryFragment$key;
+    }
 );
 
 type createVirtualizedItemsFromFeedEventsArgs = {
   failedEvents: Set<string>;
+  queryRef: createVirtualizedFeedEventItemsQueryFragment$key;
   eventRefs: readonly createVirtualizedFeedEventItemsFragment$key[];
 };
 
@@ -26,7 +34,18 @@ type createVirtualizedItemsFromFeedEventsReturnType = {
 export function createVirtualizedFeedEventItems({
   failedEvents,
   eventRefs,
+  queryRef,
 }: createVirtualizedItemsFromFeedEventsArgs): createVirtualizedItemsFromFeedEventsReturnType {
+  const query = readInlineData(
+    graphql`
+      fragment createVirtualizedFeedEventItemsQueryFragment on Query @inline {
+        # eslint-disable-next-line relay/must-colocate-fragment-spreads
+        ...FeedEventSocializeSectionQueryFragment
+      }
+    `,
+    queryRef
+  );
+
   const events = eventRefs.map((eventRef) =>
     readInlineData(
       graphql`
@@ -50,6 +69,8 @@ export function createVirtualizedFeedEventItems({
           ...FeedListCaptionFragment
           # eslint-disable-next-line relay/must-colocate-fragment-spreads
           ...FeedListSectionHeaderFragment
+          # eslint-disable-next-line relay/must-colocate-fragment-spreads
+          ...FeedEventSocializeSectionFragment
         }
       `,
       eventRef
@@ -82,6 +103,13 @@ export function createVirtualizedFeedEventItems({
       }
 
       items.push({ kind: 'feed-item-event', event, key: `feed-item-event-${event.dbid}` });
+
+      items.push({
+        kind: 'feed-item-socialize',
+        event,
+        key: `feed-item-socialize-${event.dbid}`,
+        queryRef: query,
+      });
     }
   }
 

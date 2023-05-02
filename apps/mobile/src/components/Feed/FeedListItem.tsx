@@ -45,5 +45,5 @@ export function FeedListItem({ eventId, eventDataRef }: FeedListItemProps) {
     );
   }, [eventData, eventId]);
 
-  return <View className="pb-8">{inner}</View>;
+  return <View>{inner}</View>;
 }

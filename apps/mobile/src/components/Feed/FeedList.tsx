@@ -10,14 +10,25 @@ import {
 import { FeedVirtualizedRow } from '~/components/Feed/FeedVirtualizedRow';
 import { useFailedEventTracker } from '~/components/Feed/useFailedEventTracker';
 import { FeedListFragment$key } from '~/generated/FeedListFragment.graphql';
+import { FeedListQueryFragment$key } from '~/generated/FeedListQueryFragment.graphql';
 
 type FeedListProps = {
+  queryRef: FeedListQueryFragment$key;
   feedEventRefs: FeedListFragment$key;
   onLoadMore: () => void;
   isLoadingMore: boolean;
 };
 
-export function FeedList({ feedEventRefs, onLoadMore }: FeedListProps) {
+export function FeedList({ feedEventRefs, onLoadMore, queryRef }: FeedListProps) {
+  const query = useFragment(
+    graphql`
+      fragment FeedListQueryFragment on Query {
+        ...createVirtualizedFeedEventItemsQueryFragment
+      }
+    `,
+    queryRef
+  );
+
   const events = useFragment(
     graphql`
       fragment FeedListFragment on FeedEvent @relay(plural: true) {
@@ -34,8 +45,8 @@ export function FeedList({ feedEventRefs, onLoadMore }: FeedListProps) {
   const { failedEvents, markEventAsFailure } = useFailedEventTracker();
 
   const { items, stickyIndices } = useMemo(() => {
-    return createVirtualizedFeedEventItems({ eventRefs: events, failedEvents });
-  }, [events, failedEvents]);
+    return createVirtualizedFeedEventItems({ eventRefs: events, failedEvents, queryRef: query });
+  }, [events, failedEvents, query]);
 
   const ref = useRef<FlashList<FeedListItemType> | null>(null);
 

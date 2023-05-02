@@ -4,6 +4,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
+import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/NotesModal/NotesModal';
 import { ProfileView } from '~/components/ProfileView/ProfileView';
 import { ProfileViewFallback } from '~/components/ProfileView/ProfileViewFallback';
 import { Typography } from '~/components/Typography';
@@ -12,7 +13,12 @@ import { AccountScreenQuery } from '~/generated/AccountScreenQuery.graphql';
 function AccountScreenInner() {
   const query = useLazyLoadQuery<AccountScreenQuery>(
     graphql`
-      query AccountScreenQuery($feedLast: Int!, $feedBefore: String) {
+      query AccountScreenQuery(
+        $feedLast: Int!
+        $feedBefore: String
+        $interactionsFirst: Int!
+        $interactionsAfter: String
+      ) {
         viewer {
           ... on Viewer {
             __typename
@@ -26,7 +32,7 @@ function AccountScreenInner() {
         ...ProfileViewQueryFragment
       }
     `,
-    { feedLast: 24 }
+    { feedLast: 24, interactionsFirst: NOTES_PER_PAGE }
   );
 
   const inner = useMemo(() => {
