@@ -11,6 +11,7 @@ export type FeedListItemType = { key: string } & (
   | { kind: 'feed-item-header'; event: createVirtualizedItemsFromFeedEvents$data }
   | { kind: 'feed-item-caption'; event: createVirtualizedItemsFromFeedEvents$data }
   | { kind: 'feed-item-event'; event: createVirtualizedItemsFromFeedEvents$data }
+  | { kind: 'feed-item-socialize'; event: createVirtualizedItemsFromFeedEvents$data }
 );
 
 type createVirtualizedItemsFromFeedEventsArgs = {
@@ -50,6 +51,8 @@ export function createVirtualizedItemsFromFeedEvents({
           ...FeedListCaptionFragment
           # eslint-disable-next-line relay/must-colocate-fragment-spreads
           ...FeedListSectionHeaderFragment
+          # eslint-disable-next-line relay/must-colocate-fragment-spreads
+          ...FeedEventSocializeSectionFragment
         }
       `,
       eventRef
@@ -82,6 +85,7 @@ export function createVirtualizedItemsFromFeedEvents({
       }
 
       items.push({ kind: 'feed-item-event', event, key: `feed-item-event-${event.dbid}` });
+      items.push({ kind: 'feed-item-socialize', event, key: `feed-item-socialize-${event.dbid}` });
     }
   }
 
