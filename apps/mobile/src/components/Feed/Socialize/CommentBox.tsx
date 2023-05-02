@@ -1,7 +1,8 @@
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
 import { Text, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { ConnectionHandler, graphql, useFragment } from 'react-relay';
 import { SelectorStoreUpdater } from 'relay-runtime';
 import { XMarkIcon } from 'src/icons/XMarkIcon';
@@ -178,9 +179,25 @@ export function CommentBox({
     return value.length === 0 || characterCount < 0 || isSubmittingComment;
   }, [value.length, characterCount, isSubmittingComment]);
 
+  const width = useSharedValue(0);
+  const xmarkIconStyle = useAnimatedStyle(() => {
+    return {
+      overflow: 'hidden',
+      width: width.value,
+    };
+  });
+
+  useLayoutEffect(() => {
+    if (showXMark) {
+      width.value = withSpring(20, { overshootClamping: true });
+    } else {
+      width.value = withSpring(0, { overshootClamping: true });
+    }
+  }, [showXMark, width]);
+
   return (
     <View className="px-2 pb-2 flex flex-row items-center space-x-3">
-      <View className="flex-1 flex-row justify-between items-center bg-faint p-2 space-x-3">
+      <Animated.View className="flex-1 flex-row justify-between items-center bg-faint p-2 space-x-3">
         <BottomSheetTextInput
           value={value}
           onChangeText={setValue}
@@ -203,13 +220,13 @@ export function CommentBox({
         >
           <SendIcon />
         </TouchableOpacity>
-      </View>
+      </Animated.View>
 
-      {showXMark && (
+      <Animated.View style={xmarkIconStyle}>
         <TouchableOpacity onPress={handleDismiss}>
           <XMarkIcon />
         </TouchableOpacity>
-      )}
+      </Animated.View>
     </View>
   );
 }
