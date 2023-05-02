@@ -3,6 +3,7 @@ module.exports = function (api) {
   return {
     presets: ['babel-preset-expo'],
     plugins: [
+      'react-native-reanimated/plugin',
       'nativewind/babel',
       [
         'babel-plugin-relay',
@@ -11,7 +12,6 @@ module.exports = function (api) {
         },
       ],
       'tsconfig-paths-module-resolver',
-      ['@babel/plugin-proposal-private-methods', { loose: true }],
     ],
   };
 };
