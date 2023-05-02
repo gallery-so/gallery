@@ -85,7 +85,7 @@ export function RemainingAdmireCount({ remainingCount, eventRef, queryRef }: Pro
             }}
           >
             <View className="px-4">
-              <IconContainer icon={<XMarkIcon />} onPress={handleClose} />
+              <IconContainer size="sm" icon={<XMarkIcon height={10} />} onPress={handleClose} />
             </View>
             <View className="py-4 flex-1">
               <NotesModal eventRef={event} />

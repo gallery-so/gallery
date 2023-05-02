@@ -6,12 +6,17 @@ type IconContainerProps = {
   style?: TouchableOpacityProps['style'];
   icon: ReactElement;
   onPress: () => void;
+  size?: 'sm' | 'md';
 };
 
-export function IconContainer({ icon, onPress, style }: IconContainerProps) {
+export function IconContainer({ icon, onPress, style, size }: IconContainerProps) {
   return (
     <TouchableOpacity style={style} onPress={onPress}>
-      <View className="bg-faint dark:bg-graphite h-8 w-8 items-center justify-center rounded-full">
+      <View
+        className={`bg-faint dark:bg-graphite items-center justify-center rounded-full ${
+          size === 'sm' ? 'h-6 w-6' : 'h-8 w-8'
+        } `}
+      >
         {icon}
       </View>
     </TouchableOpacity>
