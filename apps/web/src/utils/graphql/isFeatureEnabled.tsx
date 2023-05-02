@@ -7,25 +7,31 @@ import isProduction from '~/utils/isProduction';
 
 export enum FeatureFlag {
   TWITTER_FOLLOWING = 'TWITTER_FOLLOWING',
+  MOBILE_BETA = 'MOBILE_BETA',
 }
 
 const PROD_FLAGS: Record<FeatureFlag, boolean> = {
   TWITTER_FOLLOWING: true,
+  MOBILE_BETA: false,
 };
 
 const DEV_FLAGS: Record<FeatureFlag, boolean> = {
   TWITTER_FOLLOWING: true,
+  MOBILE_BETA: true,
 };
 
 const ROLE_FLAGS: Record<Role, Record<FeatureFlag, boolean>> = {
   ADMIN: {
     TWITTER_FOLLOWING: true,
+    MOBILE_BETA: true,
   },
   BETA_TESTER: {
     TWITTER_FOLLOWING: true,
+    MOBILE_BETA: false,
   },
   EARLY_ACCESS: {
     TWITTER_FOLLOWING: true,
+    MOBILE_BETA: false,
   },
 };
 

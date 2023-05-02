@@ -10,6 +10,7 @@ import DrawerHeader from '~/contexts/globalLayout/GlobalSidebar/DrawerHeader';
 import { SettingsFragment$key } from '~/generated/SettingsFragment.graphql';
 import { useLogout } from '~/hooks/useLogout';
 import colors from '~/shared/theme/colors';
+import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 import ManageAuthSection from './ManageAccountsSection/ManageAccountsSection';
 import ManageEmailSection from './ManageEmailSection/ManageEmailSection';
@@ -29,6 +30,8 @@ function Settings({ queryRef }: Props) {
         ...ManageAccountsSectionFragment
         ...ManageTwitterSectionFragment
         ...MembersClubSectionFragment
+
+        ...isFeatureEnabledFragment
       }
     `,
     queryRef
@@ -51,6 +54,8 @@ function Settings({ queryRef }: Props) {
     logout();
   }, [logout]);
 
+  const isMobileLoginEnabled = isFeatureEnabled(FeatureFlag.MOBILE_BETA, query);
+
   return (
     <>
       <DrawerHeader headerText="Settings" />
@@ -69,9 +74,12 @@ function Settings({ queryRef }: Props) {
 
             <Divider />
 
-            <MobileAuthManagerSection />
-
-            <Divider />
+            {isMobileLoginEnabled && (
+              <>
+                <MobileAuthManagerSection />
+                <Divider />
+              </>
+            )}
 
             <MembersClubSection queryRef={query} />
 
