@@ -63,7 +63,7 @@ export function CommentButton({ eventRef, queryRef, style }: Props) {
           snapPoints={snapPoints}
           handleComponent={() => null}
         >
-          <CommentBox eventRef={event} queryRef={query} />
+          <CommentBox autoFocus eventRef={event} queryRef={query} onClose={toggleCommentBox} />
         </BottomSheetModal>
       </View>
     </View>

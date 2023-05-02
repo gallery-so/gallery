@@ -3,15 +3,17 @@ import Svg, { Path, SvgProps } from 'react-native-svg';
 
 type Props = {
   active?: boolean;
+  style?: SvgProps['style'];
 } & SvgProps;
 
-export function AdmireIcon({ active = false, ...props }: Props) {
+export function AdmireIcon({ active = false, style, ...props }: Props) {
   return (
     <Svg
       width={19}
       height={18}
       fill="none"
       {...props}
+      style={style}
       className={active ? 'text-activeBlue' : 'text-offBlack'}
     >
       <Path

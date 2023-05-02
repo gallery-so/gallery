@@ -46,6 +46,8 @@ export function Interactions({ eventRef, queryRef }: Props) {
             }
           }
         }
+
+        ...RemainingAdmireCountFragment
       }
     `,
     eventRef
@@ -55,6 +57,7 @@ export function Interactions({ eventRef, queryRef }: Props) {
     graphql`
       fragment InteractionsQueryFragment on Query {
         ...AdmireLineQueryFragment
+        ...RemainingAdmireCountQueryFragment
       }
     `,
     queryRef
@@ -103,12 +106,18 @@ export function Interactions({ eventRef, queryRef }: Props) {
             return <CommentLine key={comment.dbid} commentRef={comment} />;
           })}
 
-          <RemainingAdmireCount remainingCount={remainingAdmiresAndComments} />
+          <RemainingAdmireCount
+            remainingCount={remainingAdmiresAndComments}
+            eventRef={event}
+            queryRef={query}
+          />
         </View>
       );
     }
 
-    return <RemainingAdmireCount remainingCount={totalInteractions} />;
+    return (
+      <RemainingAdmireCount remainingCount={totalInteractions} eventRef={event} queryRef={query} />
+    );
   }
 
   if (totalAdmires > 0) {

@@ -1,6 +1,7 @@
 import { Suspense, useCallback, useEffect, useMemo } from 'react';
 import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 
+import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/NotesModal/NotesModal';
 import { LatestScreenFragment$key } from '~/generated/LatestScreenFragment.graphql';
 import { LatestScreenQuery } from '~/generated/LatestScreenQuery.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
@@ -71,11 +72,16 @@ function LatestScreenInner({ queryRef }: LatestScreenInnerProps) {
 export function LatestScreen() {
   const query = useLazyLoadQuery<LatestScreenQuery>(
     graphql`
-      query LatestScreenQuery($globalFeedBefore: String, $globalFeedCount: Int!) {
+      query LatestScreenQuery(
+        $globalFeedBefore: String
+        $globalFeedCount: Int!
+        $interactionsFirst: Int!
+        $interactionsAfter: String
+      ) {
         ...LatestScreenFragment
       }
     `,
-    { globalFeedCount: INITIAL_COUNT }
+    { globalFeedCount: INITIAL_COUNT, interactionsFirst: NOTES_PER_PAGE }
   );
 
   return (

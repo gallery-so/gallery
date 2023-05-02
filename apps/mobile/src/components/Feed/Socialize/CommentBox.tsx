@@ -17,9 +17,11 @@ import { SendIcon } from './SendIcon';
 type Props = {
   eventRef: CommentBoxFragment$key;
   queryRef: CommentBoxQueryFragment$key;
+  onClose: () => void;
+  autoFocus?: boolean;
 };
 
-export function CommentBox({ eventRef, queryRef }: Props) {
+export function CommentBox({ autoFocus, eventRef, queryRef, onClose }: Props) {
   const query = useFragment(
     graphql`
       fragment CommentBoxQueryFragment on Query {
@@ -65,8 +67,10 @@ export function CommentBox({ eventRef, queryRef }: Props) {
 
   // Seems like can't use useFocusEffect in this context since it's not inside a navigator
   useEffect(() => {
-    handleFocus();
-  }, [handleFocus]);
+    if (autoFocus) {
+      handleFocus();
+    }
+  }, [autoFocus, handleFocus]);
 
   const characterCount = useMemo(() => 100 - comment.length, [comment]);
 
@@ -157,7 +161,7 @@ export function CommentBox({ eventRef, queryRef }: Props) {
 
       if (response.commentOnFeedEvent?.__typename === 'CommentOnFeedEventPayload') {
         resetComment();
-        // onClose();
+        onClose();
       } else {
         // TODO: handle error
         // pushErrorToast();
@@ -177,6 +181,7 @@ export function CommentBox({ eventRef, queryRef }: Props) {
     query.viewer?.user?.username,
     submitComment,
     resetComment,
+    onClose,
   ]);
 
   return (
