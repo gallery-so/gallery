@@ -5,9 +5,9 @@ import { usePaginationFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import {
-  createVirtualizedItemsFromFeedEvents,
+  createVirtualizedFeedEventItems,
   FeedListItemType,
-} from '~/components/Feed/createVirtualizedItemsFromFeedEvents';
+} from '~/components/Feed/createVirtualizedFeedEventItems';
 import { FeedVirtualizedRow } from '~/components/Feed/FeedVirtualizedRow';
 import { useFailedEventTracker } from '~/components/Feed/useFailedEventTracker';
 import { useListContentStyle } from '~/components/ProfileView/Tabs/useListContentStyle';
@@ -27,7 +27,7 @@ export function ProfileViewActivityTab({ userRef }: ProfileViewActivityTabProps)
           @connection(key: "ProfileViewActivityTabFragment_feed") {
           edges {
             node {
-              ...createVirtualizedItemsFromFeedEvents
+              ...createVirtualizedFeedEventItemsFragment
             }
           }
         }
@@ -45,7 +45,7 @@ export function ProfileViewActivityTab({ userRef }: ProfileViewActivityTabProps)
     }
   }
 
-  const { items, stickyIndices } = createVirtualizedItemsFromFeedEvents({
+  const { items, stickyIndices } = createVirtualizedFeedEventItems({
     failedEvents,
     eventRefs: events,
   });

@@ -50,7 +50,7 @@ export function ProfileViewGalleriesTab({ userRef }: ProfileViewGalleriesTabProp
         isFeatured: galleryUser.featuredGallery?.dbid === gallery.dbid,
       };
     });
-  }, []);
+  }, [galleryUser.featuredGallery?.dbid, galleryUser.galleries]);
 
   const renderItem = useCallback<ListRenderItem<ListItem>>(({ item }) => {
     return (

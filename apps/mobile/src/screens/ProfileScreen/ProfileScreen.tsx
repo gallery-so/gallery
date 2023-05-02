@@ -1,7 +1,6 @@
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { Suspense, useMemo } from 'react';
 import { View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
