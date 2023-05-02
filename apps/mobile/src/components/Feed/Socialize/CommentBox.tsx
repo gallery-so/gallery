@@ -59,9 +59,9 @@ export function CommentBox({
     eventRef
   );
 
-  const [comment, setComment] = useState('');
+  const [value, setValue] = useState('');
 
-  const characterCount = useMemo(() => 100 - comment.length, [comment]);
+  const characterCount = useMemo(() => 100 - value.length, [value]);
 
   const isKeyboardActive = useKeyboardStatus();
 
@@ -70,7 +70,7 @@ export function CommentBox({
   }, [onClose]);
 
   const resetComment = useCallback(() => {
-    setComment('');
+    setValue('');
   }, []);
 
   const showXMark = useMemo(() => {
@@ -105,7 +105,7 @@ export function CommentBox({
   `);
 
   const handleSubmit = useCallback(async () => {
-    if (comment.length === 0) {
+    if (value.length === 0) {
       return;
     }
 
@@ -136,7 +136,7 @@ export function CommentBox({
             __typename: 'CommentOnFeedEventPayload',
             comment: {
               __typename: 'Comment',
-              comment: comment,
+              comment: value,
               commenter: {
                 dbid: query.viewer?.user?.dbid ?? 'unknown',
                 id: query.viewer?.user?.id ?? 'unknown',
@@ -149,7 +149,7 @@ export function CommentBox({
           },
         },
         variables: {
-          comment: comment,
+          comment: value,
           eventId: event.dbid,
           connections: [
             interactionsConnection,
@@ -171,7 +171,7 @@ export function CommentBox({
       // TODO: handle error
     }
   }, [
-    comment,
+    value,
     event.dbid,
     event.id,
     query.viewer?.user?.dbid,
@@ -181,12 +181,16 @@ export function CommentBox({
     resetComment,
   ]);
 
+  const disabledSendButton = useMemo(() => {
+    return value.length === 0 || characterCount < 0 || isSubmittingComment;
+  }, [value.length, characterCount, isSubmittingComment]);
+
   return (
     <View className="px-2 pb-2 flex flex-row items-center space-x-3">
       <View className="flex-1 flex-row justify-between items-center bg-faint p-2 space-x-3">
         <BottomSheetTextInput
-          value={comment}
-          onChangeText={setComment}
+          value={value}
+          onChangeText={setValue}
           className="text-offBlack text-sm"
           style={{ flex: 1 }}
           selectionColor={colors.offBlack}
@@ -198,9 +202,9 @@ export function CommentBox({
         <Text className="text-sm text-metal">{characterCount}</Text>
         <TouchableOpacity
           onPress={handleSubmit}
-          disabled={comment.length === 0 || isSubmittingComment}
+          disabled={disabledSendButton}
           className={`h-6 w-6 rounded-full flex items-center justify-center
-            ${comment.length === 0 ? 'bg-metal' : 'bg-activeBlue'}
+            ${disabledSendButton ? 'bg-metal' : 'bg-activeBlue'}
         `}
         >
           <SendIcon />
