@@ -13,7 +13,7 @@ function AccountScreen() {
 }
 
 function HomeScreen() {
-  return <MainTabStackNavigator initialRouteName="Profile" />;
+  return <MainTabStackNavigator initialRouteName="Home" />;
 }
 
 function SearchScreen() {
