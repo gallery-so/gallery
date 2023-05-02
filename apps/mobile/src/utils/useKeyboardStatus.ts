@@ -5,11 +5,11 @@ const useKeyboardStatus = () => {
   const [isKeyboardActive, setIsKeyboardActive] = useState(false);
 
   useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+    const keyboardDidShowListener = Keyboard.addListener('keyboardWillShow', () => {
       setIsKeyboardActive(true);
     });
 
-    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+    const keyboardDidHideListener = Keyboard.addListener('keyboardWillHide', () => {
       setIsKeyboardActive(false);
     });
 
