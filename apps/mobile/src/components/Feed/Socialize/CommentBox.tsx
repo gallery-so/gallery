@@ -191,6 +191,7 @@ export function CommentBox({
           autoCorrect={false}
           autoComplete="off"
           autoFocus={autoFocus}
+          onSubmitEditing={handleDismiss}
         />
         <Text className="text-sm text-metal">{characterCount}</Text>
         <TouchableOpacity
