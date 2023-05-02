@@ -10,11 +10,9 @@ import {
 import { FeedVirtualizedRow } from '~/components/Feed/FeedVirtualizedRow';
 import { useFailedEventTracker } from '~/components/Feed/useFailedEventTracker';
 import { FeedListFragment$key } from '~/generated/FeedListFragment.graphql';
-import { FeedListQueryFragment$key } from '~/generated/FeedListQueryFragment.graphql';
 
 type FeedListProps = {
   feedEventRefs: FeedListFragment$key;
-  queryRef: FeedListQueryFragment$key;
   onLoadMore: () => void;
   isLoadingMore: boolean;
 };
@@ -50,7 +48,7 @@ export function FeedList({ feedEventRefs, onLoadMore }: FeedListProps) {
 
       return <FeedVirtualizedRow item={item} onFailure={markFailure} />;
     },
-    [markEventAsFailure, query]
+    [markEventAsFailure]
   );
 
   return (
