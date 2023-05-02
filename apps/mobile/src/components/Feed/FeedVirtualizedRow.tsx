@@ -7,11 +7,12 @@ import { FeedListSectionHeader } from '~/components/Feed/FeedListSectionHeader';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 
 type Props = {
+  eventId: string;
   item: FeedListItemType;
   onFailure: () => void;
 };
 
-export function FeedVirtualizedRow({ onFailure, item }: Props) {
+export function FeedVirtualizedRow({ onFailure, item, eventId }: Props) {
   const inner = useMemo(() => {
     switch (item.kind) {
       case 'feed-item-header':
@@ -19,14 +20,14 @@ export function FeedVirtualizedRow({ onFailure, item }: Props) {
       case 'feed-item-caption':
         return <FeedListCaption feedEventRef={item.event} />;
       case 'feed-item-event':
-        if (!item.event.eventData) return null;
-
-        return <FeedListItem eventId={item.event.dbid} eventDataRef={item.event.eventData} />;
+        return (
+          <FeedListItem eventId={item.event.dbid} eventDataRef={item.event.eventData ?? null} />
+        );
     }
   }, [item.event, item.kind]);
 
   return (
-    <ReportingErrorBoundary fallback={null} onError={onFailure}>
+    <ReportingErrorBoundary fallback={null} onError={onFailure} additionalTags={{ eventId }}>
       {inner}
     </ReportingErrorBoundary>
   );

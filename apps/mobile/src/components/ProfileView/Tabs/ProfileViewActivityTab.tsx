@@ -56,7 +56,7 @@ export function ProfileViewActivityTab({ userRef }: ProfileViewActivityTabProps)
         markEventAsFailure(item.event.dbid);
       };
 
-      return <FeedVirtualizedRow item={item} onFailure={markFailure} />;
+      return <FeedVirtualizedRow eventId={item.eventId} item={item} onFailure={markFailure} />;
     },
     [markEventAsFailure]
   );
