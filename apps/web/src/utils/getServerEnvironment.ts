@@ -8,6 +8,7 @@ export function getServerEnvironment() {
   }
 
   const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+
   // if the app is running locally
   if (apiBaseUrl === 'https://api.gallery.so') {
     return 'production';
