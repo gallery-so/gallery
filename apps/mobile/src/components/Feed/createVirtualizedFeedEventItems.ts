@@ -3,19 +3,19 @@ import { readInlineData } from 'relay-runtime';
 
 import { SUPPORTED_FEED_EVENT_TYPES } from '~/components/Feed/constants';
 import {
-  createVirtualizedItemsFromFeedEvents$data,
-  createVirtualizedItemsFromFeedEvents$key,
-} from '~/generated/createVirtualizedItemsFromFeedEvents.graphql';
+  createVirtualizedFeedEventItemsFragment$data,
+  createVirtualizedFeedEventItemsFragment$key,
+} from '~/generated/createVirtualizedFeedEventItemsFragment.graphql';
 
 export type FeedListItemType = { key: string } & (
-  | { kind: 'feed-item-header'; event: createVirtualizedItemsFromFeedEvents$data }
-  | { kind: 'feed-item-caption'; event: createVirtualizedItemsFromFeedEvents$data }
-  | { kind: 'feed-item-event'; event: createVirtualizedItemsFromFeedEvents$data }
+  | { kind: 'feed-item-header'; event: createVirtualizedFeedEventItemsFragment$data }
+  | { kind: 'feed-item-caption'; event: createVirtualizedFeedEventItemsFragment$data }
+  | { kind: 'feed-item-event'; event: createVirtualizedFeedEventItemsFragment$data }
 );
 
 type createVirtualizedItemsFromFeedEventsArgs = {
   failedEvents: Set<string>;
-  eventRefs: readonly createVirtualizedItemsFromFeedEvents$key[];
+  eventRefs: readonly createVirtualizedFeedEventItemsFragment$key[];
 };
 
 type createVirtualizedItemsFromFeedEventsReturnType = {
@@ -23,14 +23,14 @@ type createVirtualizedItemsFromFeedEventsReturnType = {
   stickyIndices: number[];
 };
 
-export function createVirtualizedItemsFromFeedEvents({
+export function createVirtualizedFeedEventItems({
   failedEvents,
   eventRefs,
 }: createVirtualizedItemsFromFeedEventsArgs): createVirtualizedItemsFromFeedEventsReturnType {
   const events = eventRefs.map((eventRef) =>
     readInlineData(
       graphql`
-        fragment createVirtualizedItemsFromFeedEvents on FeedEvent @inline {
+        fragment createVirtualizedFeedEventItemsFragment on FeedEvent @inline {
           dbid
           caption
 

@@ -7,9 +7,9 @@ import { useFragment, usePaginationFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import {
-  createVirtualizedItemsFromFeedEvents,
+  createVirtualizedFeedEventItems,
   FeedListItemType,
-} from '~/components/Feed/createVirtualizedItemsFromFeedEvents';
+} from '~/components/Feed/createVirtualizedFeedEventItems';
 import { FeedVirtualizedRow } from '~/components/Feed/FeedVirtualizedRow';
 import { useFailedEventTracker } from '~/components/Feed/useFailedEventTracker';
 import { FollowButton } from '~/components/FollowButton';
@@ -103,7 +103,7 @@ export function ProfileView({ userRef, queryRef, shouldShowBackButton }: Profile
             node {
               ... on FeedEvent {
                 dbid
-                ...createVirtualizedItemsFromFeedEvents
+                ...createVirtualizedFeedEventItemsFragment
               }
             }
           }
@@ -228,7 +228,7 @@ export function ProfileView({ userRef, queryRef, shouldShowBackButton }: Profile
       feedEvents.reverse();
 
       const { items: feedItems, stickyIndices: feedStickyIndices } =
-        createVirtualizedItemsFromFeedEvents({
+        createVirtualizedFeedEventItems({
           failedEvents,
           eventRefs: feedEvents,
         });

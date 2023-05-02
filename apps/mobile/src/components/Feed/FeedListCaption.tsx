@@ -25,9 +25,9 @@ export function FeedListCaption({ feedEventRef }: FeedListCaptionProps) {
   }
 
   return (
-    <View className="ml-[12px] h-[28px] border-porcelain dark:border-shadow border-l-2">
+    <View className="ml-[12px] h-[28px] border-porcelain dark:border-shadow border-l-2 mb-1">
       <Typography
-        className="  px-2  text-base tracking-tight"
+        className="px-2 text-base tracking-tight"
         font={{ family: 'GTAlpina', weight: 'Light', italic: true }}
       >
         {feedEvent.caption}
