@@ -1,5 +1,6 @@
 import 'expo-dev-client';
 
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { NavigationContainer } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
@@ -57,13 +58,15 @@ export default function App() {
         <Suspense fallback={<LoadingView />}>
           <MobileErrorReportingProvider>
             <SafeAreaProvider>
-              <magic.Relayer />
-              <SearchProvider>
-                <NavigationContainer>
-                  <DevMenuItems />
-                  <RootStackNavigator />
-                </NavigationContainer>
-              </SearchProvider>
+              <BottomSheetModalProvider>
+                <magic.Relayer />
+                <SearchProvider>
+                  <NavigationContainer>
+                    <DevMenuItems />
+                    <RootStackNavigator />
+                  </NavigationContainer>
+                </SearchProvider>
+              </BottomSheetModalProvider>
             </SafeAreaProvider>
           </MobileErrorReportingProvider>
         </Suspense>
