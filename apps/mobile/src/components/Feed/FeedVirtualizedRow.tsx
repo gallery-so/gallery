@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 
-import { FeedListItemType } from '~/components/Feed/createVirtualizedItemsFromFeedEvents';
-import { FeedListCaption } from '~/components/Feed/FeedListCaption';
+import { FeedListItemType } from '~/components/Feed/createVirtualizedFeedEventItems';
 import { FeedListItem } from '~/components/Feed/FeedListItem';
 import { FeedListSectionHeader } from '~/components/Feed/FeedListSectionHeader';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';

@@ -1,10 +1,12 @@
 import { useNavigation } from '@react-navigation/native';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Share, StyleSheet, useColorScheme, View } from 'react-native';
+import { Share, StyleSheet, View } from 'react-native';
 import { CollapsibleRef, Tabs } from 'react-native-collapsible-tab-view';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
+import { createVirtualizedFeedEventItems } from '~/components/Feed/createVirtualizedFeedEventItems';
+import { FeedVirtualizedRow } from '~/components/Feed/FeedVirtualizedRow';
 import { FollowButton } from '~/components/FollowButton';
 import { IconContainer } from '~/components/IconContainer';
 import { ProfileViewHeader } from '~/components/ProfileView/ProfileViewHeader';

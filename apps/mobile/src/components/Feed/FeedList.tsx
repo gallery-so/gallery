@@ -4,9 +4,9 @@ import { useCallback, useMemo, useRef } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
 import {
-  createVirtualizedItemsFromFeedEvents,
+  createVirtualizedFeedEventItems,
   FeedListItemType,
-} from '~/components/Feed/createVirtualizedItemsFromFeedEvents';
+} from '~/components/Feed/createVirtualizedFeedEventItems';
 import { FeedVirtualizedRow } from '~/components/Feed/FeedVirtualizedRow';
 import { useFailedEventTracker } from '~/components/Feed/useFailedEventTracker';
 import { FeedListFragment$key } from '~/generated/FeedListFragment.graphql';
@@ -25,7 +25,7 @@ export function FeedList({ feedEventRefs, onLoadMore }: FeedListProps) {
 
         dbid
 
-        ...createVirtualizedItemsFromFeedEvents
+        ...createVirtualizedFeedEventItemsFragment
       }
     `,
     feedEventRefs
@@ -34,7 +34,7 @@ export function FeedList({ feedEventRefs, onLoadMore }: FeedListProps) {
   const { failedEvents, markEventAsFailure } = useFailedEventTracker();
 
   const { items, stickyIndices } = useMemo(() => {
-    return createVirtualizedItemsFromFeedEvents({ eventRefs: events, failedEvents });
+    return createVirtualizedFeedEventItems({ eventRefs: events, failedEvents });
   }, [events, failedEvents]);
 
   const ref = useRef<FlashList<FeedListItemType> | null>(null);

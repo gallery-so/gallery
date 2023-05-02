@@ -27,7 +27,7 @@ import useUpdateCollectionInfo from '~/hooks/api/collections/useUpdateCollection
 import useResizeObserver from '~/hooks/useResizeObserver';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import unescape from '~/shared/utils/unescape';
-import { getBaseUrl } from '~/utils/baseUrl';
+import { getBaseUrl } from '~/utils/getBaseUrl';
 
 type Props = {
   queryRef: UserGalleryCollectionQueryFragment$key;
