@@ -114,10 +114,10 @@ export function CommentBox({
         event.id,
         'Interactions_comments'
       );
-      // const notesModalConnection = ConnectionHandler.getConnectionID(
-      //   event.id,
-      //   'NotesModal_interactions'
-      // );
+      const notesModalConnection = ConnectionHandler.getConnectionID(
+        event.id,
+        'NotesModal_interactions'
+      );
 
       const updater: SelectorStoreUpdater<CommentBoxMutation['response']> = (store, response) => {
         if (response.commentOnFeedEvent?.__typename === 'CommentOnFeedEventPayload') {
@@ -151,24 +151,17 @@ export function CommentBox({
         variables: {
           comment: value,
           eventId: event.dbid,
-          connections: [
-            interactionsConnection,
-            // notesModalConnection
-          ],
+          connections: [interactionsConnection, notesModalConnection],
         },
       });
 
       if (response.commentOnFeedEvent?.__typename === 'CommentOnFeedEventPayload') {
         resetComment();
       } else {
-        // TODO: handle error
-        // pushErrorToast();
-        // reportError(
-        //   `Error while commenting on feed event, typename was ${response.commentOnFeedEvent?.__typename}`
-        // );
+        // TODO: handle or track error whenever we setup tracker
       }
     } catch {
-      // TODO: handle error
+      // TODO: handle or track error whenever we setup tracker
     }
   }, [
     value,
