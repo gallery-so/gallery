@@ -1,4 +1,4 @@
-import { ChangeEventHandler } from 'react';
+import { ChangeEventHandler, HTMLInputTypeAttribute } from 'react';
 import styled from 'styled-components';
 
 import colors from '~/shared/theme/colors';
@@ -15,6 +15,7 @@ type Props = {
   autoFocus?: boolean;
   errorMessage?: string;
   variant?: 'grande' | 'medium';
+  type?: HTMLInputTypeAttribute;
 };
 
 function Input({
@@ -24,6 +25,7 @@ function Input({
   autoFocus = false,
   errorMessage,
   variant = 'medium',
+  type,
 }: Props) {
   return (
     <VStack gap={4}>
@@ -38,6 +40,7 @@ function Input({
         autoCapitalize="off"
         spellCheck="false"
         variant={variant}
+        type={type}
       />
       {errorMessage && <ErrorText message={errorMessage} />}
     </VStack>
