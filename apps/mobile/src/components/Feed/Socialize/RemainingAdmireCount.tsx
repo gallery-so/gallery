@@ -1,8 +1,10 @@
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useCallback, useMemo, useRef } from 'react';
-import { TouchableOpacity, View } from 'react-native';
+import { Keyboard, TouchableOpacity, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { graphql, useFragment } from 'react-relay';
 import { XMarkIcon } from 'src/icons/XMarkIcon';
+import useKeyboardStatus from 'src/utils/useKeyboardStatus';
 
 import { IconContainer } from '~/components/IconContainer';
 import { Typography } from '~/components/Typography';
@@ -38,11 +40,24 @@ export function RemainingAdmireCount({ remainingCount, eventRef, queryRef }: Pro
     queryRef
   );
 
+  const isKeyboardActive = useKeyboardStatus();
+  const { bottom } = useSafeAreaInsets();
   const bottomSheetRef = useRef<BottomSheetModal>(null);
   const snapPoints = useMemo(() => [380], []);
 
   const handleOpen = useCallback(() => {
     bottomSheetRef.current?.present();
+  }, []);
+
+  const handleCloseCommentBox = useCallback(() => {
+    Keyboard.dismiss();
+
+    // Reset the bottom sheet to the initial snap point
+    bottomSheetRef.current?.expand();
+  }, []);
+
+  const handleClose = useCallback(() => {
+    bottomSheetRef.current?.close();
   }, []);
 
   return (
@@ -63,20 +78,24 @@ export function RemainingAdmireCount({ remainingCount, eventRef, queryRef }: Pro
             </View>
           )}
         >
-          <View className="flex justify-between flex-1">
+          <View
+            className="flex justify-between flex-1"
+            style={{
+              paddingBottom: isKeyboardActive ? 0 : bottom,
+            }}
+          >
             <View className="px-4">
-              <IconContainer
-                icon={<XMarkIcon />}
-                onPress={() => bottomSheetRef.current?.dismiss()}
-              />
+              <IconContainer icon={<XMarkIcon />} onPress={handleClose} />
             </View>
             <View className="py-4 flex-1">
               <NotesModal eventRef={event} />
             </View>
+            <View className="bg-white h-2 border-t border-porcelain" />
             <CommentBox
               eventRef={event}
               queryRef={query}
-              onClose={() => bottomSheetRef.current?.dismiss()}
+              onClose={handleCloseCommentBox}
+              isNotesModal
             />
           </View>
         </BottomSheetModal>

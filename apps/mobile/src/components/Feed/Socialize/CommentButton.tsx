@@ -37,7 +37,7 @@ export function CommentButton({ eventRef, queryRef, style }: Props) {
   const [isCommentBoxOpen, setIsCommentBoxOpen] = useState(false);
 
   const bottomSheetRef = useRef<BottomSheetModal>(null);
-  const snapPoints = useMemo(() => ['15%'], []);
+  const snapPoints = useMemo(() => [52], []);
 
   const toggleCommentBox = useCallback(() => {
     if (isCommentBoxOpen) {
@@ -50,6 +50,11 @@ export function CommentButton({ eventRef, queryRef, style }: Props) {
     setIsCommentBoxOpen(true);
   }, [isCommentBoxOpen]);
 
+  const handleCloseCommentBox = useCallback(() => {
+    bottomSheetRef.current?.dismiss();
+    setIsCommentBoxOpen(false);
+  }, []);
+
   return (
     <View className="flex flex-row space-x-4" style={style}>
       <TouchableOpacity onPress={toggleCommentBox}>
@@ -61,9 +66,17 @@ export function CommentButton({ eventRef, queryRef, style }: Props) {
           ref={bottomSheetRef}
           index={0}
           snapPoints={snapPoints}
-          handleComponent={() => null}
+          handleComponent={() => <View className="bg-white h-2 border-t border-porcelain" />}
+          handleIndicatorStyle={{ display: 'none' }}
         >
-          <CommentBox autoFocus eventRef={event} queryRef={query} onClose={toggleCommentBox} />
+          <View className="bg-white">
+            <CommentBox
+              autoFocus
+              eventRef={event}
+              queryRef={query}
+              onClose={handleCloseCommentBox}
+            />
+          </View>
         </BottomSheetModal>
       </View>
     </View>

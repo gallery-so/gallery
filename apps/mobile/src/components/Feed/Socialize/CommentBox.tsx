@@ -1,10 +1,11 @@
-import { useBottomSheetModal } from '@gorhom/bottom-sheet';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Text, TextInput, View } from 'react-native';
+import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
+import { useCallback, useMemo, useState } from 'react';
+import { Text, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { ConnectionHandler, graphql, useFragment } from 'react-relay';
 import { SelectorStoreUpdater } from 'relay-runtime';
 import { XMarkIcon } from 'src/icons/XMarkIcon';
+import useKeyboardStatus from 'src/utils/useKeyboardStatus';
 
 import { CommentBoxFragment$key } from '~/generated/CommentBoxFragment.graphql';
 import { CommentBoxMutation } from '~/generated/CommentBoxMutation.graphql';
@@ -19,9 +20,18 @@ type Props = {
   queryRef: CommentBoxQueryFragment$key;
   onClose: () => void;
   autoFocus?: boolean;
+
+  // If its coming from comment button, show the x mark
+  isNotesModal?: boolean;
 };
 
-export function CommentBox({ autoFocus, eventRef, queryRef, onClose }: Props) {
+export function CommentBox({
+  autoFocus,
+  eventRef,
+  queryRef,
+  onClose,
+  isNotesModal = false,
+}: Props) {
   const query = useFragment(
     graphql`
       fragment CommentBoxQueryFragment on Query {
@@ -51,36 +61,25 @@ export function CommentBox({ autoFocus, eventRef, queryRef, onClose }: Props) {
 
   const [comment, setComment] = useState('');
 
-  const { dismiss } = useBottomSheetModal();
-
-  const ref = useRef<TextInput>(null);
-
-  const handleFocus = useCallback(() => {
-    // Need to focus after a certain number of ms, otherwise the input immediately loses focus
-    // https://github.com/facebook/react-native/issues/30162#issuecomment-1046090316
-    setTimeout(() => {
-      if (ref.current) {
-        ref.current.focus();
-      }
-    }, 500);
-  }, [ref]);
-
-  // Seems like can't use useFocusEffect in this context since it's not inside a navigator
-  useEffect(() => {
-    if (autoFocus) {
-      handleFocus();
-    }
-  }, [autoFocus, handleFocus]);
-
   const characterCount = useMemo(() => 100 - comment.length, [comment]);
 
+  const isKeyboardActive = useKeyboardStatus();
+
   const handleDismiss = useCallback(() => {
-    dismiss();
-  }, [dismiss]);
+    onClose();
+  }, [onClose]);
 
   const resetComment = useCallback(() => {
     setComment('');
   }, []);
+
+  const showXMark = useMemo(() => {
+    // If its coming from comment button, show the x mark
+    if (!isNotesModal) return true;
+
+    // If not, check the KeyboardActive
+    return isKeyboardActive;
+  }, [isKeyboardActive, isNotesModal]);
 
   const [submitComment, isSubmittingComment] = usePromisifiedMutation<CommentBoxMutation>(graphql`
     mutation CommentBoxMutation($eventId: DBID!, $comment: String!, $connections: [ID!]!)
@@ -161,7 +160,6 @@ export function CommentBox({ autoFocus, eventRef, queryRef, onClose }: Props) {
 
       if (response.commentOnFeedEvent?.__typename === 'CommentOnFeedEventPayload') {
         resetComment();
-        onClose();
       } else {
         // TODO: handle error
         // pushErrorToast();
@@ -181,21 +179,21 @@ export function CommentBox({ autoFocus, eventRef, queryRef, onClose }: Props) {
     query.viewer?.user?.username,
     submitComment,
     resetComment,
-    onClose,
   ]);
 
   return (
-    <View className="p-4 flex flex-row items-center space-x-3 border-t border-porcelain">
+    <View className="px-2 pb-2 flex flex-row items-center space-x-3">
       <View className="flex-1 flex-row justify-between items-center bg-faint p-2 space-x-3">
-        <TextInput
-          ref={ref}
-          className="text-offBlack text-sm flex-1"
+        <BottomSheetTextInput
+          value={comment}
+          onChangeText={setComment}
+          className="text-offBlack text-sm"
+          style={{ flex: 1 }}
           selectionColor={colors.offBlack}
           autoCapitalize="none"
           autoCorrect={false}
           autoComplete="off"
-          value={comment}
-          onChangeText={setComment}
+          autoFocus={autoFocus}
         />
         <Text className="text-sm text-metal">{characterCount}</Text>
         <TouchableOpacity
@@ -208,9 +206,12 @@ export function CommentBox({ autoFocus, eventRef, queryRef, onClose }: Props) {
           <SendIcon />
         </TouchableOpacity>
       </View>
-      <TouchableOpacity onPress={handleDismiss}>
-        <XMarkIcon />
-      </TouchableOpacity>
+
+      {showXMark && (
+        <TouchableOpacity onPress={handleDismiss}>
+          <XMarkIcon />
+        </TouchableOpacity>
+      )}
     </View>
   );
 }
