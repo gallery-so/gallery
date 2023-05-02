@@ -1,3 +1,5 @@
+import { useMemo } from 'react';
+
 import { FeedListItemType } from '~/components/Feed/createVirtualizedItemsFromFeedEvents';
 import { FeedListCaption } from '~/components/Feed/FeedListCaption';
 import { FeedListItem } from '~/components/Feed/FeedListItem';
@@ -10,26 +12,22 @@ type Props = {
 };
 
 export function FeedVirtualizedRow({ onFailure, item }: Props) {
-  switch (item.kind) {
-    case 'feed-item-header':
-      return (
-        <ReportingErrorBoundary fallback={null} onError={onFailure}>
-          <FeedListSectionHeader feedEventRef={item.event} />
-        </ReportingErrorBoundary>
-      );
-    case 'feed-item-caption':
-      return (
-        <ReportingErrorBoundary fallback={null} onError={onFailure}>
-          <FeedListCaption feedEventRef={item.event} />
-        </ReportingErrorBoundary>
-      );
-    case 'feed-item-event':
-      if (!item.event.eventData) return null;
+  const inner = useMemo(() => {
+    switch (item.kind) {
+      case 'feed-item-header':
+        return <FeedListSectionHeader feedEventRef={item.event} />;
+      case 'feed-item-caption':
+        return <FeedListCaption feedEventRef={item.event} />;
+      case 'feed-item-event':
+        if (!item.event.eventData) return null;
 
-      return (
-        <ReportingErrorBoundary fallback={null} onError={onFailure}>
-          <FeedListItem eventId={item.event.dbid} eventDataRef={item.event.eventData} />
-        </ReportingErrorBoundary>
-      );
-  }
+        return <FeedListItem eventId={item.event.dbid} eventDataRef={item.event.eventData} />;
+    }
+  }, [item.event, item.kind]);
+
+  return (
+    <ReportingErrorBoundary fallback={null} onError={onFailure}>
+      {inner}
+    </ReportingErrorBoundary>
+  );
 }

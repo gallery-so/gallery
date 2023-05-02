@@ -3,10 +3,13 @@ import { TouchableOpacity, View } from 'react-native';
 
 import { Typography } from '../../components/Typography';
 
+const routes = ['Followers', 'Following'] as const;
+export type FollowersTabName = (typeof routes)[number];
+
 type TabItemProps = {
   activeRoute: string;
-  route: string;
-  onRouteChange: (route: string) => void;
+  route: FollowersTabName;
+  onRouteChange: (route: FollowersTabName) => void;
 };
 
 function TabItem({ activeRoute, route, onRouteChange }: TabItemProps) {
@@ -34,12 +37,11 @@ function TabItem({ activeRoute, route, onRouteChange }: TabItemProps) {
 }
 
 type Props = {
-  routes: string[];
-  activeRoute: string;
-  onRouteChange: (route: string) => void;
+  activeRoute: FollowersTabName;
+  onRouteChange: (route: FollowersTabName) => void;
 };
 
-export function FollowersTabBar({ routes, activeRoute, onRouteChange }: Props) {
+export function FollowersTabBar({ activeRoute, onRouteChange }: Props) {
   return (
     <View className="flex flex-row items-center justify-center py-3">
       {routes.map((route) => {

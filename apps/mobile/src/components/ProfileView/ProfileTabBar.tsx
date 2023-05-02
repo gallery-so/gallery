@@ -41,7 +41,7 @@ type Props = {
 
 export function ProfileTabBar({ routes, activeRoute, onRouteChange }: Props) {
   return (
-    <View className="border-porcelain dark:border-graphite my-4 flex flex-row items-center justify-center border-t border-b px-2 py-3">
+    <View className="border-porcelain dark:border-graphite mt-4 flex flex-row items-center justify-center border-t border-b px-2 py-3">
       {routes.map((route) => {
         return (
           <TabItem

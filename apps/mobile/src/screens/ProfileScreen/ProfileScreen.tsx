@@ -49,9 +49,8 @@ function ProfileScreenInner() {
 }
 
 export function ProfileScreen() {
-  const { top } = useSafeAreaInsets();
   return (
-    <View className="flex-1 bg-white dark:bg-black" style={{ paddingTop: top }}>
+    <View className="flex-1 bg-white dark:bg-black">
       <Suspense fallback={<ProfileViewFallback />}>
         <ProfileScreenInner />
       </Suspense>
