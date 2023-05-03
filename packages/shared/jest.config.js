@@ -16,4 +16,6 @@ module.exports = {
     // Ensure all ouf our aliases from tsconfig work in jext
     ...pathsToModuleNameMapper(paths, { prefix: '<rootDir>/' }),
   },
+
+  testEnvironment: 'jest-environment-jsdom',
 };
