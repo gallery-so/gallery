@@ -29,7 +29,7 @@ export function CommentNote({ commentRef, style }: Props) {
 
   return (
     <View className="flex flex-row justify-between items-center px-4" style={style}>
-      <Text>
+      <Text className="dark:text-white">
         <Typography
           font={{
             family: 'ABCDiatype',

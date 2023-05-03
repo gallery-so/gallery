@@ -1,4 +1,5 @@
-import * as React from 'react';
+import { useMemo } from 'react';
+import { useColorScheme } from 'react-native';
 import Svg, { Path, SvgProps } from 'react-native-svg';
 
 type Props = {
@@ -8,8 +9,18 @@ type Props = {
 } & SvgProps;
 
 export function AdmireIcon({ active = false, style, height = 18, ...props }: Props) {
+  const colorScheme = useColorScheme();
+
   const originalHeight = 18;
   const scale = height / originalHeight;
+
+  const iconColor = useMemo(() => {
+    if (active) {
+      return 'text-activeBlue';
+    }
+
+    return colorScheme === 'dark' ? 'text-white' : 'text-offBlack';
+  }, [active, colorScheme]);
 
   return (
     <Svg
@@ -18,7 +29,7 @@ export function AdmireIcon({ active = false, style, height = 18, ...props }: Pro
       fill="none"
       {...props}
       style={style}
-      className={active ? 'text-activeBlue' : 'text-offBlack'}
+      className={iconColor}
     >
       <Path
         stroke="currentColor"

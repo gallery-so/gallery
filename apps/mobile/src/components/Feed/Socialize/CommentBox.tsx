@@ -1,6 +1,6 @@
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
-import { Text, View } from 'react-native';
+import { Text, useColorScheme, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { ConnectionHandler, graphql, useFragment } from 'react-relay';
@@ -60,6 +60,7 @@ export function CommentBox({
     eventRef
   );
 
+  const colorScheme = useColorScheme();
   const [value, setValue] = useState('');
 
   const characterCount = useMemo(() => 100 - value.length, [value]);
@@ -197,18 +198,18 @@ export function CommentBox({
 
   return (
     <View className="px-2 pb-2 flex flex-row items-center space-x-3">
-      <Animated.View className="flex-1 flex-row justify-between items-center bg-faint p-2 space-x-3">
+      <Animated.View className="flex-1 flex-row justify-between items-center bg-faint dark:bg-offBlack p-2 space-x-3">
         <BottomSheetTextInput
           value={value}
           onChangeText={setValue}
-          className="text-offBlack text-sm"
-          style={{ flex: 1 }}
-          selectionColor={colors.offBlack}
+          className="text-sm"
+          selectionColor={colorScheme === 'dark' ? colors.white : colors.offBlack}
           autoCapitalize="none"
           autoCorrect={false}
           autoComplete="off"
           autoFocus={autoFocus}
           onSubmitEditing={handleDismiss}
+          style={{ flex: 1, color: colorScheme === 'dark' ? colors.white : colors.offBlack }}
         />
         <Text className="text-sm text-metal">{characterCount}</Text>
         <TouchableOpacity

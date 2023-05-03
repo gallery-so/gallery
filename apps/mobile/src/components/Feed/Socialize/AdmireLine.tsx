@@ -59,7 +59,7 @@ export function AdmireLine({ admireRef, queryRef }: Props) {
         <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
           {admirerName}
         </Typography>
-        <Text className="text-xs">admired this</Text>
+        <Text className="text-xs dark:text-white">admired this</Text>
       </View>
     </View>
   );

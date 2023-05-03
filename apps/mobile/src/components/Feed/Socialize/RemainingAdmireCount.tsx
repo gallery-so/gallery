@@ -1,6 +1,6 @@
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useCallback, useLayoutEffect, useMemo, useRef } from 'react';
-import { Keyboard, TouchableOpacity, View } from 'react-native';
+import { Keyboard, TouchableOpacity, useColorScheme,View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { graphql, useFragment } from 'react-relay';
@@ -41,6 +41,7 @@ export function RemainingAdmireCount({ remainingCount, eventRef, queryRef }: Pro
     queryRef
   );
 
+  const colorScheme = useColorScheme();
   const isKeyboardActive = useKeyboardStatus();
   const { bottom } = useSafeAreaInsets();
   const bottomSheetRef = useRef<BottomSheetModal>(null);
@@ -92,19 +93,33 @@ export function RemainingAdmireCount({ remainingCount, eventRef, queryRef }: Pro
           index={0}
           snapPoints={snapPoints}
           handleComponent={() => (
-            <View className="space-y-2 py-3">
-              <View className="h-1 w-20 self-center bg-[#D9D9D9] px-4" />
+            <View
+              className={`h-2 border-t rounded-t-[40px] ${
+                colorScheme === 'dark' ? 'bg-black border-offBlack' : 'bg-white border-porcelain'
+              }`}
+            >
+              <View className="space-y-2 py-3">
+                <View className="h-1 w-20 self-center bg-[#D9D9D9] px-4" />
+              </View>
             </View>
           )}
         >
-          <Animated.View className="flex justify-between flex-1" style={paddingStyle}>
+          <Animated.View
+            className="flex justify-between flex-1 bg-white dark:bg-black pt-6"
+            style={paddingStyle}
+          >
             <View className="px-4">
               <IconContainer size="sm" icon={<XMarkIcon height={10} />} onPress={handleClose} />
             </View>
             <View className="pt-4 flex-1">
               <NotesModal eventRef={event} />
             </View>
-            <View className="bg-white h-2 border-t border-porcelain" />
+            <View
+              className={`h-2 border-t ${
+                colorScheme === 'dark' ? 'bg-black border-offBlack' : 'bg-white border-porcelain'
+              }
+            `}
+            />
             <CommentBox
               eventRef={event}
               queryRef={query}

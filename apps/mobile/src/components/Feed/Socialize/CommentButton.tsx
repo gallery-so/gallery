@@ -1,6 +1,6 @@
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useCallback, useMemo, useRef, useState } from 'react';
-import { TouchableOpacity, View, ViewProps } from 'react-native';
+import { TouchableOpacity, useColorScheme, View, ViewProps } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { CommentButtonFragment$key } from '~/generated/CommentButtonFragment.graphql';
@@ -34,6 +34,7 @@ export function CommentButton({ eventRef, queryRef, style }: Props) {
     queryRef
   );
 
+  const colorScheme = useColorScheme();
   const [isCommentBoxOpen, setIsCommentBoxOpen] = useState(false);
 
   const bottomSheetRef = useRef<BottomSheetModal>(null);
@@ -66,10 +67,16 @@ export function CommentButton({ eventRef, queryRef, style }: Props) {
           ref={bottomSheetRef}
           index={0}
           snapPoints={snapPoints}
-          handleComponent={() => <View className="bg-white h-2 border-t border-porcelain" />}
+          handleComponent={() => (
+            <View
+              className={`h-2 border-t ${
+                colorScheme === 'dark' ? 'bg-black border-offBlack' : 'bg-white border-porcelain'
+              }`}
+            />
+          )}
           handleIndicatorStyle={{ display: 'none' }}
         >
-          <View className="bg-white">
+          <View className={`${colorScheme === 'dark' ? 'bg-black' : 'bg-white'}`}>
             <CommentBox
               autoFocus
               eventRef={event}
