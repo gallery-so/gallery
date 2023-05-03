@@ -61,7 +61,7 @@ function TokenDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
 
   return (
     <StyledAssetContainer
-      data-tokenId={token.dbid}
+      data-tokenid={token.dbid}
       footerHeight={GLOBAL_FOOTER_HEIGHT}
       shouldEnforceSquareAspectRatio={shouldEnforceSquareAspectRatio}
       hasExtraPaddingForNote={hasExtraPaddingForNote}

@@ -199,7 +199,11 @@ function NftPreview({
       tokenId={token.dbid}
       fallback={
         <NftFailureWrapper>
-          <NftFailureFallback refreshing={refreshingMetadata} onRetry={refreshMetadata} />
+          <NftFailureFallback
+            tokenId={token.dbid}
+            refreshing={refreshingMetadata}
+            onRetry={refreshMetadata}
+          />
         </NftFailureWrapper>
       }
       onError={handleNftError}
@@ -211,7 +215,7 @@ function NftPreview({
       >
         {/* NextJS <Link> tags don't come with an anchor tag by default, so we're adding one here.
           This will inherit the `as` URL from the parent component. */}
-        <StyledA data-tokenId={token.dbid} onClick={handleClick}>
+        <StyledA data-tokenid={token.dbid} onClick={handleClick}>
           <StyledNftPreview backgroundColorOverride={backgroundColorOverride} fullWidth={fullWidth}>
             <ReportingErrorBoundary
               fallback={
