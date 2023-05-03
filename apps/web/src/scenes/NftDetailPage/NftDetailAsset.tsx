@@ -221,6 +221,7 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
 
   return (
     <StyledAssetContainer
+      data-tokenId={token.dbid}
       footerHeight={GLOBAL_FOOTER_HEIGHT}
       shouldEnforceSquareAspectRatio={shouldEnforceSquareAspectRatio}
       hasExtraPaddingForNote={hasExtraPaddingForNote}

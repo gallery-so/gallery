@@ -211,7 +211,7 @@ function NftPreview({
       >
         {/* NextJS <Link> tags don't come with an anchor tag by default, so we're adding one here.
           This will inherit the `as` URL from the parent component. */}
-        <StyledA onClick={handleClick}>
+        <StyledA data-tokenId={token.dbid} onClick={handleClick}>
           <StyledNftPreview backgroundColorOverride={backgroundColorOverride} fullWidth={fullWidth}>
             <ReportingErrorBoundary
               fallback={
