@@ -7,6 +7,7 @@ import { BODY_FONT_FAMILY } from '~/components/core/Text/Text';
 import transitions from '~/components/core/transitions';
 import { NftFailureBoundary } from '~/components/NftFailureFallback/NftFailureBoundary';
 import { NftFailureFallback } from '~/components/NftFailureFallback/NftFailureFallback';
+import { RawNftPreviewAsset } from '~/components/NftPreview/NftPreviewAsset';
 import { SIDEBAR_ICON_DIMENSIONS } from '~/constants/sidebar';
 import { useCollectionEditorContext } from '~/contexts/collectionEditor/CollectionEditorContext';
 import { useNftErrorContext } from '~/contexts/NftErrorContext';
@@ -17,6 +18,7 @@ import { SidebarNftIconPreviewAssetNew$key } from '~/generated/SidebarNftIconPre
 import { useNftRetry, useThrowOnMediaFailure } from '~/hooks/useNftRetry';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
+import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
 import colors from '~/shared/theme/colors';
 import { getBackgroundColorOverrideForContract } from '~/utils/token';
@@ -42,6 +44,12 @@ function SidebarNftIcon({
           }
         }
         media {
+          ... on Media {
+            fallbackMedia {
+              mediaURL
+            }
+          }
+
           ... on SyncingMedia {
             __typename
           }
@@ -171,21 +179,33 @@ function SidebarNftIcon({
         <StyledSidebarNftIcon backgroundColorOverride={backgroundColorOverride}>
           <NftFailureFallback
             size="tiny"
+            tokenId={token.dbid}
             onRetry={refreshMetadata}
             refreshing={refreshingMetadata}
           />
         </StyledSidebarNftIcon>
       }
-      onError={handleError}
+      // onError={handleError}
     >
-      <StyledSidebarNftIcon backgroundColorOverride={backgroundColorOverride}>
-        <SidebarPreviewAsset
-          tokenRef={token}
-          onLoad={handleLoad}
-          isSelected={isSelected ?? false}
-        />
-        <StyledOutline onClick={handleClick} isSelected={isSelected} />
-      </StyledSidebarNftIcon>
+      <ReportingErrorBoundary
+        fallback={
+          <RawSidebarPreviewAsset
+            onLoad={handleLoad}
+            type="image"
+            isSelected={isSelected ?? false}
+            src={token.media?.fallbackMedia?.mediaURL}
+          />
+        }
+      >
+        <StyledSidebarNftIcon backgroundColorOverride={backgroundColorOverride}>
+          <SidebarPreviewAsset
+            tokenRef={token}
+            onLoad={handleLoad}
+            isSelected={isSelected ?? false}
+          />
+          <StyledOutline onClick={handleClick} isSelected={isSelected} />
+        </StyledSidebarNftIcon>
+      </ReportingErrorBoundary>
     </NftFailureBoundary>
   );
 }
@@ -210,6 +230,42 @@ const LoadingText = styled.span`
 
   color: ${colors.metal};
 `;
+
+function RawSidebarPreviewAsset({
+  type,
+  isSelected,
+  src,
+  onLoad,
+}: {
+  type: 'video' | 'image';
+  isSelected: boolean;
+  src: string | null | undefined;
+  onLoad: () => void;
+  alt?: string | null;
+}) {
+  if (!src) {
+    throw new CouldNotRenderNftError('SidebarNftIcon', 'missing src');
+  }
+
+  const { handleError } = useThrowOnMediaFailure('SidebarPreviewAsset');
+
+  // Some OpenSea assets don't have an image url,
+  // so render a freeze-frame of the video instead
+  if (type === 'video')
+    return (
+      <StyledVideo onLoadedData={onLoad} onError={handleError} isSelected={isSelected} src={src} />
+    );
+
+  return (
+    <StyledImage
+      isSelected={isSelected}
+      src={src}
+      alt="token"
+      onLoad={onLoad}
+      onError={handleError}
+    />
+  );
+}
 
 type SidebarPreviewAssetProps = {
   tokenRef: SidebarNftIconPreviewAssetNew$key;
@@ -237,27 +293,12 @@ function SidebarPreviewAsset({ tokenRef, onLoad, isSelected }: SidebarPreviewAss
     throw new CouldNotRenderNftError('SidebarNftIcon', 'could not find small image url');
   }
 
-  const { handleError } = useThrowOnMediaFailure('SidebarPreviewAsset');
-
-  // Some OpenSea assets don't have an image url,
-  // so render a freeze-frame of the video instead
-  if (previewUrlSet?.type === 'video')
-    return (
-      <StyledVideo
-        onLoadedData={onLoad}
-        onError={handleError}
-        isSelected={isSelected}
-        src={previewUrlSet.urls.small}
-      />
-    );
-
   return (
-    <StyledImage
+    <RawSidebarPreviewAsset
+      type={previewUrlSet.type}
       isSelected={isSelected}
       src={previewUrlSet.urls.small}
-      alt="token"
       onLoad={onLoad}
-      onError={handleError}
     />
   );
 }
