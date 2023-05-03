@@ -4,7 +4,6 @@ import { MouseEventHandler, useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
 import { HStack } from '~/components/core/Spacer/Stack';
-import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { BasicNavbarFragment$key } from '~/generated/BasicNavbarFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 
@@ -36,19 +35,12 @@ export function BasicNavbar({ queryRef }: Props) {
 
   const isLoggedIn = query.viewer?.__typename === 'Viewer';
 
-  const track = useTrack();
-
-
-  const { pathname } = useRouter();
-
-
   const isMobile = useIsMobileWindowWidth();
 
   return (
     <StandardNavbarContainer>
       <NavbarLeftContent />
-      <NavbarCenterContent/>
-
+      <NavbarCenterContent />
 
       {/* Strictly here to keep spacing consistent */}
       <NavbarRightContent>
