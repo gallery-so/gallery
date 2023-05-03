@@ -99,7 +99,7 @@ export function AdmireButton({ eventRef, queryRef, style }: Props) {
   );
   const notesModalConnection = ConnectionHandler.getConnectionID(
     event.id,
-    'NotesModal_interactions'
+    'NotesList_interactions'
   );
 
   const handleRemoveAdmire = useCallback(async () => {

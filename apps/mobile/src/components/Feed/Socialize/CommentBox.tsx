@@ -118,7 +118,7 @@ export function CommentBox({
       );
       const notesModalConnection = ConnectionHandler.getConnectionID(
         event.id,
-        'NotesModal_interactions'
+        'NotesList_interactions'
       );
 
       const updater: SelectorStoreUpdater<CommentBoxMutation['response']> = (store, response) => {
