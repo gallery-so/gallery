@@ -1,6 +1,6 @@
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useCallback, useLayoutEffect, useMemo, useRef } from 'react';
-import { Keyboard, TouchableOpacity, useColorScheme,View } from 'react-native';
+import { Keyboard, TouchableOpacity, useColorScheme, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { graphql, useFragment } from 'react-relay';
@@ -47,6 +47,21 @@ export function RemainingAdmireCount({ remainingCount, eventRef, queryRef }: Pro
   const bottomSheetRef = useRef<BottomSheetModal>(null);
   const snapPoints = useMemo(() => [380], []);
 
+  const paddingBottomValue = useSharedValue(isKeyboardActive ? 0 : bottom);
+  const paddingStyle = useAnimatedStyle(() => {
+    return {
+      paddingBottom: paddingBottomValue.value,
+    };
+  });
+
+  useLayoutEffect(() => {
+    if (isKeyboardActive) {
+      paddingBottomValue.value = withSpring(0, { overshootClamping: true });
+    } else {
+      paddingBottomValue.value = withSpring(bottom, { overshootClamping: true });
+    }
+  }, [bottom, isKeyboardActive, paddingBottomValue]);
+
   const handleOpen = useCallback(() => {
     bottomSheetRef.current?.present();
   }, []);
@@ -65,20 +80,6 @@ export function RemainingAdmireCount({ remainingCount, eventRef, queryRef }: Pro
   if (remainingCount === 0) {
     return null;
   }
-  const paddingBottomValue = useSharedValue(isKeyboardActive ? 0 : bottom);
-  const paddingStyle = useAnimatedStyle(() => {
-    return {
-      paddingBottom: paddingBottomValue.value,
-    };
-  });
-
-  useLayoutEffect(() => {
-    if (isKeyboardActive) {
-      paddingBottomValue.value = withSpring(0, { overshootClamping: true });
-    } else {
-      paddingBottomValue.value = withSpring(bottom, { overshootClamping: true });
-    }
-  }, [bottom, isKeyboardActive, paddingBottomValue]);
 
   return (
     <>
