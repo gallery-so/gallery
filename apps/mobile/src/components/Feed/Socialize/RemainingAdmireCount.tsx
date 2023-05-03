@@ -60,6 +60,10 @@ export function RemainingAdmireCount({ remainingCount, eventRef, queryRef }: Pro
     bottomSheetRef.current?.close();
   }, []);
 
+  if (remainingCount === 0) {
+    return null;
+  }
+
   return (
     <>
       <TouchableOpacity onPress={handleOpen}>
