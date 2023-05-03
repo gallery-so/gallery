@@ -11,7 +11,7 @@ import { GallerySkeleton } from '~/components/GallerySkeleton';
 import { NftPreviewAsset } from '~/components/NftPreview/NftPreviewAsset';
 import { Typography } from '~/components/Typography';
 import { NftPreviewContextMenuPopupFragment$key } from '~/generated/NftPreviewContextMenuPopupFragment.graphql';
-import { RootStackNavigatorProp } from '~/navigation/types';
+import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { fitDimensionsToContainerCover } from '~/screens/NftDetailScreen/NftDetailAsset/fitDimensionToContainer';
 import { Dimensions } from '~/screens/NftDetailScreen/NftDetailAsset/types';
 
@@ -34,6 +34,9 @@ export function NftPreviewContextMenuPopup({
       fragment NftPreviewContextMenuPopupFragment on CollectionToken {
         collection @required(action: THROW) {
           dbid
+          gallery {
+            dbid
+          }
         }
         token @required(action: THROW) {
           dbid
@@ -60,7 +63,7 @@ export function NftPreviewContextMenuPopup({
 
   const { token } = collectionToken;
 
-  const navigation = useNavigation<RootStackNavigatorProp>();
+  const navigation = useNavigation<MainTabStackNavigatorProp>();
   const windowDimensions = useWindowDimensions();
 
   const tokenUrl = token.media?.previewURLs?.large ?? fallbackTokenUrl;
@@ -80,6 +83,12 @@ export function NftPreviewContextMenuPopup({
         });
       } else if (event.nativeEvent.actionKey === 'share') {
         shareToken(collectionToken);
+      } else if (event.nativeEvent.actionKey === 'view-gallery') {
+        if (collectionToken.collection?.gallery?.dbid) {
+          navigation.push('Gallery', {
+            galleryId: collectionToken.collection.gallery.dbid,
+          });
+        }
       }
     },
     [collectionToken, navigation, token.dbid]

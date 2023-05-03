@@ -1,19 +1,24 @@
+import { useRouter } from 'next/router';
 import { useCallback, useMemo, useState } from 'react';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import styled from 'styled-components';
 
 import { Button } from '~/components/core/Button/Button';
 import Input from '~/components/core/Input/Input';
-import { HStack, VStack } from '~/components/core/Spacer/Stack';
+import { VStack } from '~/components/core/Spacer/Stack';
 import ErrorText from '~/components/core/Text/ErrorText';
 import { TitleS } from '~/components/core/Text/Text';
-import { DEBUG_USERNAME_KEY } from '~/constants/storageKeys';
+import { DEBUG_PASSWORD_KEY, DEBUG_USERNAME_KEY } from '~/constants/storageKeys';
+import { GLOBAL_SIDEBAR_DESKTOP_WIDTH } from '~/contexts/globalLayout/GlobalSidebar/GlobalSidebar';
 import { DebuggerQuery } from '~/generated/DebuggerQuery.graphql';
 import useKeyDown from '~/hooks/useKeyDown';
 import useMultiKeyDown from '~/hooks/useMultiKeyDown';
 import usePersistedState from '~/hooks/usePersistedState';
+import { getServerEnvironment } from '~/utils/getServerEnvironment';
 
 import { useDebugAuthLogin } from './useDebugAuth';
+
+const isLocalServer = getServerEnvironment() === 'local';
 
 const Debugger = () => {
   const query = useLazyLoadQuery<DebuggerQuery>(
@@ -50,6 +55,7 @@ const Debugger = () => {
   );
 
   const [username, setUsername] = usePersistedState(DEBUG_USERNAME_KEY, '');
+  const [password, setPassword] = usePersistedState(DEBUG_PASSWORD_KEY, '');
   const [errorMessage, setErrorMessage] = useState('');
   const [isDebuggerVisible, setIsDebuggerVisible] = useState(false);
 
@@ -64,18 +70,25 @@ const Debugger = () => {
   useKeyDown('Escape', handleCloseDebugger);
   useMultiKeyDown(['Control', 'd'], handleToggleDebugger);
 
-  const login = useDebugAuthLogin();
+  const debugLogin = useDebugAuthLogin();
+
+  const { reload: triggerPageRefresh } = useRouter();
 
   const handleLogin = useCallback(async () => {
     try {
-      await login({ asUsername: username });
+      await debugLogin({
+        asUsername: username,
+        debugToolsPassword: isLocalServer ? undefined : password,
+      });
       setErrorMessage('');
+      // needed to apply new auth cookie to app
+      triggerPageRefresh();
     } catch (e: unknown) {
       if (e instanceof Error) {
         setErrorMessage(e.message);
       }
     }
-  }, [login, username]);
+  }, [debugLogin, triggerPageRefresh, username, password]);
 
   const handleUsernameChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -85,6 +98,14 @@ const Debugger = () => {
     [setUsername]
   );
 
+  const handlePasswordChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setPassword(event.target.value);
+      setErrorMessage('');
+    },
+    [setPassword]
+  );
+
   return isDebuggerVisible ? (
     <StyledDebugger>
       <VStack gap={16}>
@@ -92,16 +113,24 @@ const Debugger = () => {
           <TitleS>☢️ DEBUG MODE</TitleS>
           <LoginContainer gap={4}>
             <TitleS>Login As</TitleS>
-            <HStack gap={8}>
+            <VStack gap={8}>
               <Input
                 onChange={handleUsernameChange}
                 placeholder="Username"
                 defaultValue={username}
               />
+              {isLocalServer ? null : (
+                <Input
+                  onChange={handlePasswordChange}
+                  placeholder="Admin Password"
+                  defaultValue={password}
+                  type="password"
+                />
+              )}
               <StyledButton onClick={handleLogin} disabled={!username.length}>
                 Submit
               </StyledButton>
-            </HStack>
+            </VStack>
             <ErrorText message={errorMessage} />
           </LoginContainer>
         </VStack>
@@ -116,8 +145,8 @@ const Debugger = () => {
 
 const StyledDebugger = styled.div`
   position: fixed;
-  top: 20px;
-  left: 20px;
+  top: 76px;
+  left: ${GLOBAL_SIDEBAR_DESKTOP_WIDTH + 20}px;
   padding: 24px;
   width: 420px;
 

@@ -1,4 +1,4 @@
-import { FeedListItemType } from '~/components/Feed/createVirtualizedItemsFromFeedEvents';
+import { FeedListItemType } from '~/components/Feed/createVirtualizedFeedEventItems';
 import { FeedListCaption } from '~/components/Feed/FeedListCaption';
 import { FeedListItem } from '~/components/Feed/FeedListItem';
 import { FeedListSectionHeader } from '~/components/Feed/FeedListSectionHeader';

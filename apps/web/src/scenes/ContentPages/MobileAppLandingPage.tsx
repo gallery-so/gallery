@@ -34,11 +34,6 @@ export default function MobileAppLandingPage() {
             </VStack>
           </VStack>
           <VStack gap={8}>
-            <StyledSlimInput
-              placeholder="Enter your email address"
-              onChange={handleInputChange}
-              defaultValue={email}
-            />
             <StyledButton onClick={handleSubmitClick}>Join the waitlist</StyledButton>
           </VStack>
         </VStack>
@@ -69,4 +64,5 @@ const StyledSlimInput = styled(SlimInput)`
 
 const StyledButton = styled(Button)`
   width: 240px;
+  height: 40px;
 `;

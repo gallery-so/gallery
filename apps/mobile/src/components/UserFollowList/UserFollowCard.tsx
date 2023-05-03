@@ -1,4 +1,3 @@
-import { useNavigation, useRoute } from '@react-navigation/native';
 import { useCallback } from 'react';
 import { TouchableOpacity, View } from 'react-native';
 import { useFragment } from 'react-relay';
@@ -9,14 +8,14 @@ import { Markdown } from '~/components/Markdown';
 import { Typography } from '~/components/Typography';
 import { UserFollowCardFragment$key } from '~/generated/UserFollowCardFragment.graphql';
 import { UserFollowCardQueryFragment$key } from '~/generated/UserFollowCardQueryFragment.graphql';
-import { RootStackNavigatorProp } from '~/navigation/types';
 
 type UserFollowCardProps = {
   userRef: UserFollowCardFragment$key;
   queryRef: UserFollowCardQueryFragment$key;
+  onPress: (username: string) => void;
 };
 
-export function UserFollowCard({ userRef, queryRef }: UserFollowCardProps) {
+export function UserFollowCard({ userRef, queryRef, onPress }: UserFollowCardProps) {
   const query = useFragment(
     graphql`
       fragment UserFollowCardQueryFragment on Query {
@@ -40,25 +39,11 @@ export function UserFollowCard({ userRef, queryRef }: UserFollowCardProps) {
 
   const bioFirstLine = user.bio?.split('\n')[0];
 
-  const navigation = useNavigation<RootStackNavigatorProp>();
-  const route = useRoute();
   const handlePress = useCallback(() => {
-    let delay = 0;
-
-    // These routes need to close their modal first
-    if (route.name === 'UserSuggestionList' || route.name === 'TwitterSuggestionList') {
-      delay = 250;
-      navigation.goBack();
+    if (user.username) {
+      onPress(user.username);
     }
-
-    setTimeout(() => {
-      if (!user.username) {
-        return;
-      }
-
-      navigation.push('Profile', { username: user.username });
-    }, delay);
-  }, [navigation, route.name, user.username]);
+  }, [onPress, user.username]);
 
   return (
     <View className="flex w-full flex-row items-center justify-between space-x-8 overflow-hidden py-3 px-4 h-16">

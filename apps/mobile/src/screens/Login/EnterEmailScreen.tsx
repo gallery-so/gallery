@@ -55,7 +55,10 @@ export function EnterEmailScreen() {
       if (result.kind === 'failure') {
         handleLoginError(result.message);
       } else {
-        navigation.replace('MainTabs', { screen: 'Home', params: { screen: 'Latest' } });
+        navigation.replace('MainTabs', {
+          screen: 'HomeTab',
+          params: { screen: 'Home', params: { screen: 'Latest' } },
+        });
       }
     } finally {
       setIsLoggingIn(false);

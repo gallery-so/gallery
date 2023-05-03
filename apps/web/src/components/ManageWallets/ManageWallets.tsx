@@ -3,7 +3,7 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { Button } from '~/components/core/Button/Button';
-import { VStack } from '~/components/core/Spacer/Stack';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import ErrorText from '~/components/core/Text/ErrorText';
 import SettingsRowDescription from '~/components/Settings/SettingsRowDescription';
 import { useToastActions } from '~/contexts/toast/ToastContext';
@@ -121,7 +121,7 @@ function ManageWallets({
             chain={primaryWallet.chainAddress.chain}
           />
         )}
-        <VStack>
+        <VStack gap={8}>
           {nonPrimaryWallets.map((wallet) => (
             <ManageWalletsRow
               key={wallet.dbid}
@@ -136,15 +136,18 @@ function ManageWallets({
           ))}
         </VStack>
       </VStack>
-      <StyledButton onClick={handleSubmit} disabled={addWalletDisabled} variant="secondary">
-        Add another
-      </StyledButton>
+      <HStack justify="end">
+        <StyledButton onClick={handleSubmit} disabled={addWalletDisabled} variant="secondary">
+          Add new wallet
+        </StyledButton>
+      </HStack>
     </VStack>
   );
 }
 
 const StyledButton = styled(Button)`
   align-self: flex-start;
+  padding: 8px 12px;
 `;
 
 const StyledErrorText = styled(ErrorText)`

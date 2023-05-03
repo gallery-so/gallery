@@ -1,12 +1,14 @@
+import { useNavigation } from '@react-navigation/native';
 import { ResizeMode } from 'expo-av';
-import { useMemo } from 'react';
-import { View, ViewProps } from 'react-native';
+import { useCallback, useMemo } from 'react';
+import { TouchableOpacity, View, ViewProps } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { graphql, useFragment } from 'react-relay';
 
 import { FollowButton } from '~/components/FollowButton';
 import { TrendingUserCardFragment$key } from '~/generated/TrendingUserCardFragment.graphql';
 import { TrendingUserCardQueryFragment$key } from '~/generated/TrendingUserCardQueryFragment.graphql';
+import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import { Markdown } from '../Markdown';
@@ -74,8 +76,19 @@ export function TrendingUserCard({ style, userRef, queryRef }: Props) {
     return bio.split('\n')[0] ?? '';
   }, [bio]);
 
+  const navigation = useNavigation<MainTabStackNavigatorProp>();
+  const handlePress = useCallback(() => {
+    if (user.username) {
+      navigation.push('Profile', { username: user.username });
+    }
+  }, [navigation, user.username]);
+
   return (
-    <View className="bg-offWhite dark:bg-offBlack flex-1 rounded-md p-2" style={[style]}>
+    <TouchableOpacity
+      onPress={handlePress}
+      className="bg-offWhite dark:bg-offBlack flex-1 rounded-md p-2"
+      style={[style]}
+    >
       <View className="mb-2 flex h-20 flex-row space-x-[2]">
         {tokenPreviews.map((tokenPreview, index) => {
           return (
@@ -113,7 +126,7 @@ export function TrendingUserCard({ style, userRef, queryRef }: Props) {
         </View>
       </View>
 
-      <FollowButton queryRef={query} userRef={user} />
-    </View>
+      <FollowButton queryRef={query} userRef={user} width="grow" />
+    </TouchableOpacity>
   );
 }

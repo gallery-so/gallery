@@ -1,6 +1,7 @@
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { Suspense, useMemo } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
@@ -8,10 +9,10 @@ import { ProfileView } from '~/components/ProfileView/ProfileView';
 import { ProfileViewFallback } from '~/components/ProfileView/ProfileViewFallback';
 import { Typography } from '~/components/Typography';
 import { ProfileScreenQuery } from '~/generated/ProfileScreenQuery.graphql';
-import { RootStackNavigatorParamList } from '~/navigation/types';
+import { MainTabStackNavigatorParamList } from '~/navigation/types';
 
 function ProfileScreenInner() {
-  const route = useRoute<RouteProp<RootStackNavigatorParamList, 'Profile'>>();
+  const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'Profile'>>();
 
   const query = useLazyLoadQuery<ProfileScreenQuery>(
     graphql`
@@ -38,7 +39,7 @@ function ProfileScreenInner() {
 
   const inner = useMemo(() => {
     if (query.userByUsername?.__typename === 'GalleryUser') {
-      return <ProfileView queryRef={query} userRef={query.userByUsername} />;
+      return <ProfileView shouldShowBackButton queryRef={query} userRef={query.userByUsername} />;
     } else {
       return <Typography font={{ family: 'ABCDiatype', weight: 'Regular' }}>Not found</Typography>;
     }
@@ -48,11 +49,12 @@ function ProfileScreenInner() {
 }
 
 export function ProfileScreen() {
+  const { top } = useSafeAreaInsets();
   return (
-    <SafeAreaView className="flex-1 bg-white dark:bg-black">
+    <View className="flex-1 bg-white dark:bg-black" style={{ paddingTop: top }}>
       <Suspense fallback={<ProfileViewFallback />}>
         <ProfileScreenInner />
       </Suspense>
-    </SafeAreaView>
+    </View>
   );
 }

@@ -1,16 +1,19 @@
 import { Suspense } from 'react';
+import { View } from 'react-native';
 
-import { SafeAreaViewWithPadding } from '~/components/SafeAreaViewWithPadding';
+import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 
 import { LoadingNftDetailScreenInner } from './LoadingNftDetailScreenInner';
 import { NftDetailScreenInner } from './NftDetailScreenInner';
 
 export function NftDetailScreen() {
+  const { top } = useSafeAreaPadding();
+
   return (
-    <SafeAreaViewWithPadding className="h-full bg-white dark:bg-black">
+    <View style={{ paddingTop: top }} className="h-full bg-white dark:bg-black">
       <Suspense fallback={<LoadingNftDetailScreenInner />}>
         <NftDetailScreenInner />
       </Suspense>
-    </SafeAreaViewWithPadding>
+    </View>
   );
 }
