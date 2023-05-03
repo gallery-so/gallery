@@ -2,7 +2,7 @@ import { RouteProp, useRoute } from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import { Suspense, useCallback, useMemo } from 'react';
 import { View } from 'react-native';
-import { graphql, useLazyLoadQuery } from 'react-relay';
+import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 
 import {
   createVirtualizedGalleryRows,
@@ -14,6 +14,7 @@ import { Markdown } from '~/components/Markdown';
 import { GalleryProfileNavBar } from '~/components/ProfileView/GalleryProfileNavBar';
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { GalleryTokenDimensionCacheProvider } from '~/contexts/GalleryTokenDimensionCacheContext';
+import { GalleryScreenGalleryFragment$key } from '~/generated/GalleryScreenGalleryFragment.graphql';
 import { GalleryScreenQuery } from '~/generated/GalleryScreenQuery.graphql';
 import { MainTabStackNavigatorParamList } from '~/navigation/types';
 import { GalleryScreenFallback } from '~/screens/GalleryScreen/GalleryScreenFallback';
@@ -30,14 +31,7 @@ function GalleryScreenInner() {
           ... on Gallery {
             __typename
 
-            description
-
-            owner {
-              ...GalleryProfileNavBarFragment
-            }
-
-            ...GalleryNameHeaderFragment
-            ...createVirtualizedGalleryRows
+            ...GalleryScreenGalleryFragment
           }
         }
 
@@ -47,8 +41,27 @@ function GalleryScreenInner() {
     { galleryId: route.params.galleryId }
   );
 
-  const gallery = query.galleryById;
-  if (gallery?.__typename !== 'Gallery' || !gallery.owner) {
+  if (query.galleryById?.__typename !== 'Gallery') {
+    throw new Error('');
+  }
+
+  const gallery = useFragment<GalleryScreenGalleryFragment$key>(
+    graphql`
+      fragment GalleryScreenGalleryFragment on Gallery {
+        description
+
+        owner {
+          ...GalleryProfileNavBarFragment
+        }
+
+        ...GalleryNameHeaderFragment
+        ...createVirtualizedGalleryRows
+      }
+    `,
+    query.galleryById
+  );
+
+  if (!gallery.owner) {
     throw new Error('');
   }
 

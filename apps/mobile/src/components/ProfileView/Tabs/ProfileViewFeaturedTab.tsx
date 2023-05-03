@@ -24,6 +24,8 @@ export function ProfileViewFeaturedTab({ userRef }: ProfileViewFeaturedTabProps)
 
         featuredGallery {
           ...createVirtualizedGalleryRows
+
+          ...GalleryScreenGalleryFragment @defer
         }
       }
     `,
