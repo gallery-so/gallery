@@ -15,12 +15,13 @@ import LinkToNftDetailView from '~/scenes/NftDetailPage/LinkToNftDetailView';
 import NftDetailAnimation from '~/scenes/NftDetailPage/NftDetailAnimation';
 import NftDetailGif from '~/scenes/NftDetailPage/NftDetailGif';
 import NftDetailVideo from '~/scenes/NftDetailPage/NftDetailVideo';
+import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
 import { isFirefox } from '~/utils/browser';
 import isSvg from '~/utils/isSvg';
 import { getBackgroundColorOverrideForContract } from '~/utils/token';
 
-import NftPreviewAsset from './NftPreviewAsset';
+import NftPreviewAsset, { RawNftPreviewAsset } from './NftPreviewAsset';
 import NftPreviewLabel from './NftPreviewLabel';
 
 type Props = {
@@ -43,6 +44,13 @@ const nftPreviewTokenFragment = graphql`
       }
     }
     media {
+      ... on Media {
+        __typename
+        fallbackMedia {
+          mediaURL
+        }
+      }
+
       ... on VideoMedia {
         __typename
         ...NftDetailVideoFragment
@@ -50,6 +58,7 @@ const nftPreviewTokenFragment = graphql`
       ... on GIFMedia {
         __typename
       }
+
       ... on HtmlMedia {
         __typename
       }
@@ -204,7 +213,17 @@ function NftPreview({
           This will inherit the `as` URL from the parent component. */}
         <StyledA onClick={handleClick}>
           <StyledNftPreview backgroundColorOverride={backgroundColorOverride} fullWidth={fullWidth}>
-            {PreviewAsset}
+            <ReportingErrorBoundary
+              fallback={
+                <RawNftPreviewAsset
+                  src={token.media?.fallbackMedia?.mediaURL}
+                  onLoad={handleNftLoaded}
+                />
+              }
+            >
+              {PreviewAsset}
+            </ReportingErrorBoundary>
+
             {isMobileOrLargeMobile ? null : (
               <StyledNftFooter>
                 <StyledNftLabel tokenRef={token} />
