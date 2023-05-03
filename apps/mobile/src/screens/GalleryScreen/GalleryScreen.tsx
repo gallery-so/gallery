@@ -1,23 +1,26 @@
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
-import { useCallback } from 'react';
-import { Text, View } from 'react-native';
+import { Suspense, useCallback, useMemo } from 'react';
+import { View } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 
 import {
   createVirtualizedGalleryRows,
   GalleryListItemType,
 } from '~/components/Gallery/createVirtualizedGalleryRows';
+import { GalleryNameHeader } from '~/components/Gallery/GalleryNameHeader';
 import { GalleryVirtualizedRow } from '~/components/Gallery/GalleryVirtualizedRow';
 import { Markdown } from '~/components/Markdown';
 import { GalleryProfileNavBar } from '~/components/ProfileView/GalleryProfileNavBar';
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
-import { Typography } from '~/components/Typography';
 import { GalleryTokenDimensionCacheProvider } from '~/contexts/GalleryTokenDimensionCacheContext';
 import { GalleryScreenQuery } from '~/generated/GalleryScreenQuery.graphql';
 import { MainTabStackNavigatorParamList } from '~/navigation/types';
+import { GalleryScreenFallback } from '~/screens/GalleryScreen/GalleryScreenFallback';
 
-export function GalleryScreen() {
+type ListItem = GalleryListItemType | { kind: 'description'; description: string; key: string };
+
+function GalleryScreenInner() {
   const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'Gallery'>>();
 
   const query = useLazyLoadQuery<GalleryScreenQuery>(
@@ -27,14 +30,13 @@ export function GalleryScreen() {
           ... on Gallery {
             __typename
 
-            name
             description
 
             owner {
-              username
               ...GalleryProfileNavBarFragment
             }
 
+            ...GalleryNameHeaderFragment
             ...createVirtualizedGalleryRows
           }
         }
@@ -50,43 +52,47 @@ export function GalleryScreen() {
     throw new Error('');
   }
 
-  const { items, stickyIndices } = createVirtualizedGalleryRows({
-    galleryRef: gallery,
-    noHeader: true,
-  });
+  const { items, stickyIndices } = useMemo(() => {
+    const galleryRows = createVirtualizedGalleryRows({
+      galleryRef: gallery,
+      noHeader: true,
+    });
+
+    const items: ListItem[] = [];
+
+    if (gallery.description) {
+      items.push({ key: 'description', kind: 'description', description: gallery.description });
+    }
+
+    const stickyIndices: number[] = [];
+
+    const offset = items.length;
+    items.push(...galleryRows.items);
+    stickyIndices.push(...galleryRows.stickyIndices.map((index) => index + offset));
+
+    return { items, stickyIndices };
+  }, [gallery]);
+
+  const renderItem: ListRenderItem<ListItem> = useCallback(({ item }) => {
+    if (item.kind === 'description') {
+      return <Markdown>{item.description}</Markdown>;
+    } else {
+      return <GalleryVirtualizedRow item={item} />;
+    }
+  }, []);
 
   const { top } = useSafeAreaPadding();
 
-  const renderItem: ListRenderItem<GalleryListItemType> = useCallback(({ item }) => {
-    return <GalleryVirtualizedRow item={item} />;
-  }, []);
-
   return (
     <View className="flex flex-col flex-1 bg-white dark:bg-black" style={{ paddingTop: top }}>
-      <View className="px-4 pb-4">
+      <View className="px-4 pb-2">
         <GalleryProfileNavBar shouldShowBackButton queryRef={query} userRef={gallery.owner} />
       </View>
 
-      <View className="flex flex-col space-y-1">
-        <View className="flex flex-row px-4">
-          <Text numberOfLines={1}>
-            <Typography
-              className="text-metal text-lg"
-              font={{ family: 'GTAlpina', weight: 'StandardLight' }}
-            >
-              {gallery.owner.username}
-            </Typography>
-            <Typography className="text-lg" font={{ family: 'GTAlpina', weight: 'StandardLight' }}>
-              {' '}
-              /{' '}
-            </Typography>
-            <Typography className="text-lg" font={{ family: 'GTAlpina', weight: 'StandardLight' }}>
-              {gallery.name || 'Untitled'}
-            </Typography>
-          </Text>
+      <View className="flex flex-col space-y-1 pb-2">
+        <View className="px-4">
+          <GalleryNameHeader galleryRef={gallery} />
         </View>
-
-        <Markdown>{gallery.description}</Markdown>
       </View>
 
       <View className="flex-grow">
@@ -100,5 +106,13 @@ export function GalleryScreen() {
         </GalleryTokenDimensionCacheProvider>
       </View>
     </View>
+  );
+}
+
+export function GalleryScreen() {
+  return (
+    <Suspense fallback={<GalleryScreenFallback />}>
+      <GalleryScreenInner />
+    </Suspense>
   );
 }

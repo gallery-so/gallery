@@ -2,8 +2,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { MainTabStackNavigatorParamList } from '~/navigation/types';
 import { AccountScreen } from '~/screens/AccountScreen';
-import { CollectionScreen } from '~/screens/CollectionScreen';
-import { GalleryScreen } from '~/screens/GalleryScreen';
+import { CollectionScreen } from '~/screens/CollectionScreen/CollectionScreen';
+import { GalleryScreen } from '~/screens/GalleryScreen/GalleryScreen';
 import { HomeScreen } from '~/screens/HomeScreen/HomeScreen';
 import { NftDetailScreen } from '~/screens/NftDetailScreen/NftDetailScreen';
 import { NotificationsScreen } from '~/screens/NotificationsScreen';
@@ -25,8 +25,19 @@ export function MainTabStackNavigator({ initialRouteName }: Props) {
         component={ProfileScreen}
         initialParams={{ username: 'kaito' }}
       />
-      <Stack.Screen name="Gallery" component={GalleryScreen} />
-      <Stack.Screen name="Collection" component={CollectionScreen} />
+      <Stack.Screen
+        name="Gallery"
+        component={GalleryScreen}
+        // Kaito
+        initialParams={{ galleryId: 'f5b37add77e4ac9c5c1cf61077a7a587' }}
+        // Kyt
+        // initialParams={{ galleryId: '2EBBSUmICuq8lQLo3xnCFBzMcTK' }}
+      />
+      <Stack.Screen
+        name="Collection"
+        component={CollectionScreen}
+        initialParams={{ collectionId: '2FNoFFKRc2bRGqbQbmkLcZrrfIw' }}
+      />
 
       {/* The 4 main tabs */}
       <Stack.Screen name="Account" component={AccountScreen} />
