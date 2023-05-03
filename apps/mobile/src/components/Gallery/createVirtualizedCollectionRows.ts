@@ -35,7 +35,6 @@ export function createVirtualizedCollectionRows({
         dbid
         name
         collectorsNote
-        hidden
 
         tokens {
           __typename

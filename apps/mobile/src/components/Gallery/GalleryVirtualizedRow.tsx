@@ -2,10 +2,8 @@ import { useNavigation } from '@react-navigation/native';
 import clsx from 'clsx';
 import { TouchableOpacity, useWindowDimensions, View } from 'react-native';
 
-import {
-  GalleryListItemType,
-  WhitespaceBlock,
-} from '~/components/Gallery/createVirtualizedGalleryRows';
+import { WhitespaceBlock } from '~/components/Gallery/createVirtualizedCollectionRows';
+import { GalleryListItemType } from '~/components/Gallery/createVirtualizedGalleryRows';
 import { GalleryTokenPreview } from '~/components/Gallery/GalleryTokenPreview';
 import { Markdown } from '~/components/Markdown';
 import { Typography } from '~/components/Typography';
