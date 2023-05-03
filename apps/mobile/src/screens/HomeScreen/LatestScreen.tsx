@@ -1,7 +1,7 @@
 import { Suspense, useCallback, useEffect, useMemo } from 'react';
 import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 
-import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/NotesModal/NotesModal';
+import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/NotesModal/NotesList';
 import { LatestScreenFragment$key } from '~/generated/LatestScreenFragment.graphql';
 import { LatestScreenQuery } from '~/generated/LatestScreenQuery.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';

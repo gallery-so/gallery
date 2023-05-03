@@ -5,13 +5,13 @@ import { graphql, usePaginationFragment } from 'react-relay';
 
 import { AdmireNoteFragment$key } from '~/generated/AdmireNoteFragment.graphql';
 import { CommentNoteFragment$key } from '~/generated/CommentNoteFragment.graphql';
-import { NotesModalFragment$key } from '~/generated/NotesModalFragment.graphql';
+import { NotesListFragment$key } from '~/generated/NotesListFragment.graphql';
 
 import { AdmireNote } from './AdmireNote';
 import { CommentNote } from './CommentNote';
 
 type Props = {
-  eventRef: NotesModalFragment$key;
+  eventRef: NotesListFragment$key;
 };
 
 export const NOTES_PER_PAGE = 10;
@@ -29,7 +29,7 @@ type SortedInteraction =
       __typename: '%other';
     };
 
-export function NotesModal({ eventRef }: Props) {
+export function NotesList({ eventRef }: Props) {
   const {
     data: feedEvent,
     loadPrevious,
@@ -37,10 +37,10 @@ export function NotesModal({ eventRef }: Props) {
     isLoadingPrevious,
   } = usePaginationFragment(
     graphql`
-      fragment NotesModalFragment on FeedEvent
-      @refetchable(queryName: "NotesModalRefetchableFragment") {
+      fragment NotesListFragment on FeedEvent
+      @refetchable(queryName: "NotesListRefetchableFragment") {
         interactions(last: $interactionsFirst, before: $interactionsAfter)
-          @connection(key: "NotesModal_interactions") {
+          @connection(key: "NotesList_interactions") {
           edges {
             node {
               __typename

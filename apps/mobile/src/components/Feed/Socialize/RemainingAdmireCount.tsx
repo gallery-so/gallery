@@ -13,7 +13,7 @@ import { RemainingAdmireCountFragment$key } from '~/generated/RemainingAdmireCou
 import { RemainingAdmireCountQueryFragment$key } from '~/generated/RemainingAdmireCountQueryFragment.graphql';
 
 import { CommentBox } from './CommentBox';
-import { NotesModal } from './NotesModal/NotesModal';
+import { NotesList } from './NotesModal/NotesList';
 
 type Props = {
   remainingCount: number;
@@ -25,7 +25,7 @@ export function RemainingAdmireCount({ remainingCount, eventRef, queryRef }: Pro
   const event = useFragment(
     graphql`
       fragment RemainingAdmireCountFragment on FeedEvent {
-        ...NotesModalFragment
+        ...NotesListFragment
         ...CommentBoxFragment
       }
     `,
@@ -113,7 +113,7 @@ export function RemainingAdmireCount({ remainingCount, eventRef, queryRef }: Pro
               <IconContainer size="sm" icon={<XMarkIcon height={10} />} onPress={handleClose} />
             </View>
             <View className="pt-4 flex-1">
-              <NotesModal eventRef={event} />
+              <NotesList eventRef={event} />
             </View>
             <View
               className={`h-2 border-t ${
