@@ -4,6 +4,7 @@ import RelayModernEnvironment from 'relay-runtime/lib/store/RelayModernEnvironme
 import { RecordMap } from 'relay-runtime/lib/store/RelayStoreTypes';
 
 import { createRelayFetchFunctionWithDefer } from '~/shared/relay/deferNetwork';
+import { createMissingFieldHandlers } from '~/shared/relay/missingFieldHandlers';
 import { createRelaySubscribeFunction, PersistedQueriesMap } from '~/shared/relay/network';
 
 import persistedQueries from '../../../persisted_queries.json';
@@ -21,6 +22,7 @@ export const relayFetchFunction = createRelayFetchFunctionWithDefer({
 
 export const createRelayEnvironment = (records?: RecordMap): Environment =>
   new RelayModernEnvironment({
+    missingFieldHandlers: createMissingFieldHandlers(),
     store: new Store(new RecordSource(records ?? {})),
     network: Network.create(relayFetchFunction, relaySubscribeFunction),
   });
