@@ -114,7 +114,7 @@ export function NotesModal({ eventRef }: Props) {
       renderItem={renderItem}
       onEndReached={loadMore}
       refreshing={isLoadingPrevious}
-      onEndReachedThreshold={0.8}
+      onEndReachedThreshold={0.1}
     />
   );
 }
