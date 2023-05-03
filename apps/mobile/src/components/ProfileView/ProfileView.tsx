@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import clsx from 'clsx';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { Linking, Share, TouchableOpacity, View } from 'react-native';
 import { useFragment, usePaginationFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -279,6 +279,13 @@ export function ProfileView({ userRef, queryRef, shouldShowBackButton }: Profile
     user.galleries,
   ]);
 
+  const ref = useRef<FlashList<ListItem> | null>(null);
+  const scrollToFeedEvent = useCallback((item: FeedListItemType) => {
+    if (ref.current) {
+      ref.current.scrollToItem({ item, animated: true, viewPosition: 0.5, viewOffset: -20 });
+    }
+  }, []);
+
   const renderItem = useCallback<ListRenderItem<ListItem>>(
     ({ item, index }) => {
       let inner;
@@ -322,7 +329,13 @@ export function ProfileView({ userRef, queryRef, shouldShowBackButton }: Profile
       ) {
         const markFailure = () => markEventAsFailure(item.event.dbid);
 
-        inner = <FeedVirtualizedRow item={item} onFailure={markFailure} />;
+        inner = (
+          <FeedVirtualizedRow
+            item={item}
+            onFailure={markFailure}
+            onCommentPress={scrollToFeedEvent}
+          />
+        );
       } else if (
         item.kind === 'collection-row' ||
         item.kind === 'collection-title' ||
@@ -342,7 +355,7 @@ export function ProfileView({ userRef, queryRef, shouldShowBackButton }: Profile
         </View>
       );
     },
-    [handleUserPress, markEventAsFailure, query, twitterPill, user.bio]
+    [handleUserPress, markEventAsFailure, query, scrollToFeedEvent, twitterPill, user.bio]
   );
 
   return (
@@ -372,6 +385,7 @@ export function ProfileView({ userRef, queryRef, shouldShowBackButton }: Profile
 
       <GalleryTokenDimensionCacheProvider>
         <FlashList
+          ref={ref}
           data={items}
           keyExtractor={(item) => item.key}
           getItemType={(item) => item.kind}

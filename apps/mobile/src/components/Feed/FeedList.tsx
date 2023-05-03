@@ -53,13 +53,25 @@ export function FeedList({ feedEventRefs, onLoadMore, queryRef }: FeedListProps)
   // @ts-expect-error - useScrollToTop is not typed correctly for FlashList
   useScrollToTop(ref);
 
+  const scrollToFeedEvent = useCallback((item: FeedListItemType) => {
+    if (ref.current) {
+      ref.current.scrollToItem({ item, animated: true, viewPosition: 0.5 });
+    }
+  }, []);
+
   const renderItem = useCallback<ListRenderItem<FeedListItemType>>(
     ({ item }) => {
       const markFailure = () => markEventAsFailure(item.event.dbid);
 
-      return <FeedVirtualizedRow item={item} onFailure={markFailure} />;
+      return (
+        <FeedVirtualizedRow
+          item={item}
+          onFailure={markFailure}
+          onCommentPress={scrollToFeedEvent}
+        />
+      );
     },
-    [markEventAsFailure]
+    [markEventAsFailure, scrollToFeedEvent]
   );
 
   return (

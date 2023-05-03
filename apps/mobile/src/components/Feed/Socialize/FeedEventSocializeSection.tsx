@@ -11,9 +11,10 @@ import { Interactions } from './Interactions';
 type Props = {
   feedEventRef: FeedEventSocializeSectionFragment$key;
   queryRef: FeedEventSocializeSectionQueryFragment$key;
+  onCommentPress: () => void;
 };
 
-export function FeedEventSocializeSection({ feedEventRef, queryRef }: Props) {
+export function FeedEventSocializeSection({ feedEventRef, queryRef, onCommentPress }: Props) {
   const event = useFragment(
     graphql`
       fragment FeedEventSocializeSectionFragment on FeedEvent {
@@ -42,7 +43,7 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef }: Props) {
 
       <View className="flex flex-row space-x-4">
         <AdmireButton eventRef={event} queryRef={query} />
-        <CommentButton eventRef={event} queryRef={query} />
+        <CommentButton eventRef={event} queryRef={query} onClick={onCommentPress} />
       </View>
     </View>
   );

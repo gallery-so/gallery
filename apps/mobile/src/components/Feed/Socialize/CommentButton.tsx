@@ -13,9 +13,10 @@ type Props = {
   eventRef: CommentButtonFragment$key;
   queryRef: CommentButtonQueryFragment$key;
   style?: ViewProps['style'];
+  onClick: () => void;
 };
 
-export function CommentButton({ eventRef, queryRef, style }: Props) {
+export function CommentButton({ eventRef, queryRef, style, onClick }: Props) {
   const event = useFragment(
     graphql`
       fragment CommentButtonFragment on FeedEvent {
@@ -46,10 +47,10 @@ export function CommentButton({ eventRef, queryRef, style }: Props) {
       setIsCommentBoxOpen(false);
       return;
     }
-
+    onClick();
     bottomSheetRef.current?.present();
     setIsCommentBoxOpen(true);
-  }, [isCommentBoxOpen]);
+  }, [isCommentBoxOpen, onClick]);
 
   const handleCloseCommentBox = useCallback(() => {
     bottomSheetRef.current?.dismiss();

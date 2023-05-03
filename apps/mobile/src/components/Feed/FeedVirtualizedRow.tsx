@@ -1,3 +1,5 @@
+import { useCallback } from 'react';
+
 import { FeedListItemType } from '~/components/Feed/createVirtualizedFeedEventItems';
 import { FeedListCaption } from '~/components/Feed/FeedListCaption';
 import { FeedListItem } from '~/components/Feed/FeedListItem';
@@ -8,9 +10,14 @@ import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 type Props = {
   item: FeedListItemType;
   onFailure: () => void;
+  onCommentPress: (key: FeedListItemType) => void;
 };
 
-export function FeedVirtualizedRow({ onFailure, item }: Props) {
+export function FeedVirtualizedRow({ onFailure, item, onCommentPress }: Props) {
+  const handleScrollToElement = useCallback(() => {
+    onCommentPress(item);
+  }, [onCommentPress, item]);
+
   switch (item.kind) {
     case 'feed-item-header':
       return (
@@ -35,7 +42,11 @@ export function FeedVirtualizedRow({ onFailure, item }: Props) {
     case 'feed-item-socialize':
       return (
         <ReportingErrorBoundary fallback={null} onError={onFailure}>
-          <FeedEventSocializeSection feedEventRef={item.event} queryRef={item.queryRef} />
+          <FeedEventSocializeSection
+            feedEventRef={item.event}
+            queryRef={item.queryRef}
+            onCommentPress={handleScrollToElement}
+          />
         </ReportingErrorBoundary>
       );
   }
