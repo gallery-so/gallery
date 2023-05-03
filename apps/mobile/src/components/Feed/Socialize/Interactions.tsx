@@ -48,6 +48,7 @@ export function Interactions({ eventRef, queryRef }: Props) {
         }
 
         ...RemainingAdmireCountFragment
+        ...AdmireLineEventFragment
       }
     `,
     eventRef
@@ -124,7 +125,14 @@ export function Interactions({ eventRef, queryRef }: Props) {
     const [admire] = nonNullAdmires;
 
     if (admire) {
-      return <AdmireLine admireRef={admire} queryRef={query} />;
+      return (
+        <AdmireLine
+          admireRef={admire}
+          eventRef={event}
+          queryRef={query}
+          totalAdmires={totalAdmires}
+        />
+      );
     }
   }
 
