@@ -1,10 +1,5 @@
-import { useMemo } from 'react';
-import { useFragment } from 'react-relay';
-import { graphql } from 'relay-runtime';
-
 import { size } from '~/components/core/breakpoints';
 import ImageWithLoading from '~/components/LoadingAsset/ImageWithLoading';
-import { NftDetailImageFragment$key } from '~/generated/NftDetailImageFragment.graphql';
 import { useThrowOnMediaFailure } from '~/hooks/useNftRetry';
 import { useBreakpoint } from '~/hooks/useWindowSize';
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
@@ -15,42 +10,20 @@ import { graphqlGetResizedNftImageUrlWithFallback } from '~/utils/token';
 import { StyledVideo } from './NftDetailVideo';
 
 type Props = {
-  tokenRef: NftDetailImageFragment$key;
+  imageUrl: string | null | undefined;
   onClick?: () => void;
   onLoad: () => void;
 };
 
-function NftDetailImage({ tokenRef, onClick = noop, onLoad }: Props) {
-  const token = useFragment(
-    graphql`
-      fragment NftDetailImageFragment on Token {
-        name
-        media @required(action: THROW) {
-          ... on ImageMedia {
-            __typename
-            contentRenderURL
-          }
-        }
-      }
-    `,
-    tokenRef
-  );
+function NftDetailImage({ imageUrl, onClick = noop, onLoad }: Props) {
   const breakpoint = useBreakpoint();
   const { handleError } = useThrowOnMediaFailure('NftDetailImage');
 
-  const contentRenderURL = useMemo(() => {
-    if (token.media.__typename === 'ImageMedia') {
-      return token.media.contentRenderURL;
-    }
-
-    return '';
-  }, [token.media]);
-
-  const resizedImage = graphqlGetResizedNftImageUrlWithFallback(contentRenderURL, 1200);
+  const resizedImage = imageUrl ? graphqlGetResizedNftImageUrlWithFallback(imageUrl, 1200) : null;
 
   if (!resizedImage) {
     throw new CouldNotRenderNftError('NftDetailImage', 'resizedImage could not be computed', {
-      contentRenderURL,
+      imageUrl,
     });
   }
 
@@ -77,7 +50,6 @@ function NftDetailImage({ tokenRef, onClick = noop, onLoad }: Props) {
   return (
     <ImageWithLoading
       src={url}
-      alt={token.name ?? ''}
       heightType={breakpoint === size.desktop ? 'maxHeightMinScreen' : undefined}
       onClick={onClick}
       onLoad={onLoad}
