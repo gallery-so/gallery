@@ -91,6 +91,10 @@ export function TrendingUserList({ usersRef, queryRef }: Props) {
     [pages?.length, width]
   );
 
+  if (pages.length === 0) {
+    return null;
+  }
+
   return (
     <View className="flex flex-col space-y-3">
       <FlashList

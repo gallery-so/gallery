@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { ResizeMode } from 'expo-av';
-import { useCallback, useState } from 'react';
+import { startTransition, useCallback, useRef, useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { Priority } from 'react-native-fast-image';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
@@ -10,14 +10,14 @@ import { graphql } from 'relay-runtime';
 import { NftPreviewAsset } from '~/components/NftPreview/NftPreviewAsset';
 import { NftPreviewContextMenuPopup } from '~/components/NftPreview/NftPreviewContextMenuPopup';
 import { NftPreviewFragment$key } from '~/generated/NftPreviewFragment.graphql';
-import { RootStackNavigatorProp } from '~/navigation/types';
+import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { Dimensions } from '~/screens/NftDetailScreen/NftDetailAsset/types';
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 
 import { GallerySkeleton } from '../GallerySkeleton';
 
-type ImageState = { kind: 'loading' } | { kind: 'loaded'; dimensions: Dimensions | null };
+export type ImageState = { kind: 'loading' } | { kind: 'loaded'; dimensions: Dimensions | null };
 
 type NftPreviewProps = {
   priority?: Priority;
@@ -25,9 +25,17 @@ type NftPreviewProps = {
   collectionTokenRef: NftPreviewFragment$key;
   tokenUrl: string | null;
   resizeMode: ResizeMode;
+
+  onImageStateChange?: (imageState: ImageState) => void;
 };
 
-function NftPreviewInner({ collectionTokenRef, tokenUrl, resizeMode, priority }: NftPreviewProps) {
+function NftPreviewInner({
+  collectionTokenRef,
+  tokenUrl,
+  resizeMode,
+  priority,
+  onImageStateChange,
+}: NftPreviewProps) {
   const collectionToken = useFragment(
     graphql`
       fragment NftPreviewFragment on CollectionToken {
@@ -45,13 +53,22 @@ function NftPreviewInner({ collectionTokenRef, tokenUrl, resizeMode, priority }:
 
   const { token } = collectionToken;
 
+  const prevTokenUrl = useRef(tokenUrl);
   const [imageState, setImageState] = useState<ImageState>({ kind: 'loading' });
+
+  // Since this component gets used in FlashList's a bunch, the state of the image will be stale
+  // So here, we track the tokenUrl this instance was previously rendered with
+  // and if its stale, we reset the image state to loading
+  if (tokenUrl !== prevTokenUrl.current) {
+    setImageState({ kind: 'loading' });
+    prevTokenUrl.current = tokenUrl;
+  }
 
   if (!tokenUrl) {
     throw new CouldNotRenderNftError('NftPreview', 'tokenUrl missing');
   }
 
-  const navigation = useNavigation<RootStackNavigatorProp>();
+  const navigation = useNavigation<MainTabStackNavigatorProp>();
   const handlePress = useCallback(() => {
     navigation.push('NftDetail', {
       tokenId: token.dbid,
@@ -59,9 +76,16 @@ function NftPreviewInner({ collectionTokenRef, tokenUrl, resizeMode, priority }:
     });
   }, [collectionToken.collection.dbid, navigation, token.dbid]);
 
-  const handleLoad = useCallback((dimensions: Dimensions | null) => {
-    setImageState({ kind: 'loaded', dimensions });
-  }, []);
+  const handleLoad = useCallback(
+    (dimensions: Dimensions | null) => {
+      // This is a low priority update. Interactions are much more important
+      startTransition(() => {
+        setImageState({ kind: 'loaded', dimensions });
+        onImageStateChange?.({ kind: 'loaded', dimensions });
+      });
+    },
+    [onImageStateChange]
+  );
 
   return (
     <NftPreviewContextMenuPopup
@@ -73,6 +97,7 @@ function NftPreviewInner({ collectionTokenRef, tokenUrl, resizeMode, priority }:
       <Pressable delayLongPress={100} onPress={handlePress} onLongPress={() => {}}>
         <View className="relative h-full w-full">
           <NftPreviewAsset
+            key={tokenUrl}
             tokenUrl={tokenUrl}
             priority={priority}
             resizeMode={resizeMode}
@@ -93,6 +118,7 @@ function NftPreviewInner({ collectionTokenRef, tokenUrl, resizeMode, priority }:
 
 export function NftPreview({
   collectionTokenRef,
+  onImageStateChange,
   tokenUrl,
   resizeMode,
   priority,
@@ -100,6 +126,7 @@ export function NftPreview({
   return (
     <ReportingErrorBoundary fallback={null}>
       <NftPreviewInner
+        onImageStateChange={onImageStateChange}
         collectionTokenRef={collectionTokenRef}
         tokenUrl={tokenUrl}
         resizeMode={resizeMode}

@@ -75,13 +75,13 @@ export function TabBar({ state, navigation }: TabBarProps) {
     >
       {state.routes.map((route) => {
         let icon = null;
-        if (route.name === 'Account') {
+        if (route.name === 'AccountTab') {
           icon = <AccountIcon />;
-        } else if (route.name === 'Home') {
+        } else if (route.name === 'HomeTab') {
           icon = <GLogo />;
-        } else if (route.name === 'Notifications') {
+        } else if (route.name === 'NotificationsTab') {
           icon = <LazyNotificationIcon />;
-        } else if (route.name === 'Search') {
+        } else if (route.name === 'SearchTab') {
           icon = <SearchIcon />;
         }
 

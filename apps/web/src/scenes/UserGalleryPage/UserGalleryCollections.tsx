@@ -15,9 +15,9 @@ import breakpoints from '~/components/core/breakpoints';
 import { DisplayLayout } from '~/components/core/enums';
 import { UserGalleryCollectionsFragment$key } from '~/generated/UserGalleryCollectionsFragment.graphql';
 import { UserGalleryCollectionsQueryFragment$key } from '~/generated/UserGalleryCollectionsQueryFragment.graphql';
-import { useLoggedInUserId } from '~/hooks/useLoggedInUserId';
 import useWindowSize from '~/hooks/useWindowSize';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
+import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 
 import EmptyGallery from './EmptyGallery';
 import UserGalleryCollection from './UserGalleryCollection';

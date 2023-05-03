@@ -17,8 +17,8 @@ import { NftDetailTextFragment$key } from '~/generated/NftDetailTextFragment.gra
 import { useBreakpoint, useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { NftAdditionalDetails } from '~/scenes/NftDetailPage/NftAdditionalDetails/NftAdditionalDetails';
 import { getOpenseaExternalUrl } from '~/shared/utils/getOpenseaExternalUrl';
+import unescape from '~/shared/utils/unescape';
 import { getCommunityUrlForToken } from '~/utils/getCommunityUrlForToken';
-import unescape from '~/utils/unescape';
 
 /**
  * TODO: Figure out when to support creator addresses

@@ -35,9 +35,11 @@ export function GalleryUpdatedFeedEvent({ eventDataRef, eventId }: GalleryUpdate
   );
 
   const subEvents = useMemo(() => {
-    return eventData.subEventDatas.filter((subEvent) => {
-      return SUPPORTED_FEED_EVENT_TYPES.has(subEvent.__typename);
-    });
+    return eventData.subEventDatas
+      .filter((subEvent) => {
+        return SUPPORTED_FEED_EVENT_TYPES.has(subEvent.__typename);
+      })
+      .slice(0, 4);
   }, [eventData.subEventDatas]);
 
   const { width } = useWindowDimensions();

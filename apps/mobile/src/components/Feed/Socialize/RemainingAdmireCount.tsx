@@ -1,6 +1,7 @@
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useLayoutEffect, useMemo, useRef } from 'react';
 import { Keyboard, TouchableOpacity, View } from 'react-native';
+import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { graphql, useFragment } from 'react-relay';
 import { XMarkIcon } from 'src/icons/XMarkIcon';
@@ -63,6 +64,20 @@ export function RemainingAdmireCount({ remainingCount, eventRef, queryRef }: Pro
   if (remainingCount === 0) {
     return null;
   }
+  const paddingBottomValue = useSharedValue(isKeyboardActive ? 0 : bottom);
+  const paddingStyle = useAnimatedStyle(() => {
+    return {
+      paddingBottom: paddingBottomValue.value,
+    };
+  });
+
+  useLayoutEffect(() => {
+    if (isKeyboardActive) {
+      paddingBottomValue.value = withSpring(0, { overshootClamping: true });
+    } else {
+      paddingBottomValue.value = withSpring(bottom, { overshootClamping: true });
+    }
+  }, [bottom, isKeyboardActive, paddingBottomValue]);
 
   return (
     <>
@@ -82,16 +97,11 @@ export function RemainingAdmireCount({ remainingCount, eventRef, queryRef }: Pro
             </View>
           )}
         >
-          <View
-            className="flex justify-between flex-1"
-            style={{
-              paddingBottom: isKeyboardActive ? 0 : bottom,
-            }}
-          >
+          <Animated.View className="flex justify-between flex-1" style={paddingStyle}>
             <View className="px-4">
               <IconContainer size="sm" icon={<XMarkIcon height={10} />} onPress={handleClose} />
             </View>
-            <View className="py-4 flex-1">
+            <View className="pt-4 flex-1">
               <NotesModal eventRef={event} />
             </View>
             <View className="bg-white h-2 border-t border-porcelain" />
@@ -101,7 +111,7 @@ export function RemainingAdmireCount({ remainingCount, eventRef, queryRef }: Pro
               onClose={handleCloseCommentBox}
               isNotesModal
             />
-          </View>
+          </Animated.View>
         </BottomSheetModal>
       </View>
     </>

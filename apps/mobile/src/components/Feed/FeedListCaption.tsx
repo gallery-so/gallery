@@ -1,3 +1,4 @@
+import { View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
@@ -24,11 +25,13 @@ export function FeedListCaption({ feedEventRef }: FeedListCaptionProps) {
   }
 
   return (
-    <Typography
-      className="text-center text-2xl"
-      font={{ family: 'GTAlpina', weight: 'Light', italic: true }}
-    >
-      {feedEvent.caption}
-    </Typography>
+    <View className="ml-[12px] h-[28px] border-porcelain dark:border-shadow border-l-2 mb-1">
+      <Typography
+        className="px-2 text-base tracking-tight"
+        font={{ family: 'GTAlpina', weight: 'Light', italic: true }}
+      >
+        {feedEvent.caption}
+      </Typography>
+    </View>
   );
 }

@@ -20,7 +20,7 @@ export function FeedTabNavigator() {
       initialRouteName="Latest"
       tabBar={TabBar}
       sceneContainerStyle={{
-        backgroundColor: colorScheme === 'dark' ? '#000000' : colors.white, // todo use variable
+        backgroundColor: colorScheme === 'dark' ? colors.black : colors.white,
       }}
     >
       <Tab.Screen name="Trending" component={TrendingScreen} />

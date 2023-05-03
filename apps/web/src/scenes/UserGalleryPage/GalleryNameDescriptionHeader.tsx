@@ -13,7 +13,7 @@ import { BaseM, TitleM } from '~/components/core/Text/Text';
 import { GalleryNameDescriptionHeaderFragment$key } from '~/generated/GalleryNameDescriptionHeaderFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import colors from '~/shared/theme/colors';
-import unescape from '~/utils/unescape';
+import unescape from '~/shared/utils/unescape';
 
 import MobileLayoutToggle from './MobileLayoutToggle';
 

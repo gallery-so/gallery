@@ -33,6 +33,10 @@ LogBox.ignoreLogs([
   'onAnimatedValueUpdate',
   'Could not render NFT',
   'Could not render FeedEvent',
+  'Relay: Missing @required',
+  'Tried to render EventTokenGrid without any tokens',
+  'Non-serializable values were found',
+  'Overriding previous layout animation',
 ]);
 
 polyfillEncoding();

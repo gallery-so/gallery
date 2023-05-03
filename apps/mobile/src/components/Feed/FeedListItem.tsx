@@ -1,3 +1,5 @@
+import { useMemo } from 'react';
+import { View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
@@ -28,16 +30,20 @@ export function FeedListItem({ eventId, eventDataRef }: FeedListItemProps) {
     eventDataRef
   );
 
-  if (eventData.__typename === 'GalleryUpdatedFeedEventData') {
-    return <GalleryUpdatedFeedEvent eventId={eventId} eventDataRef={eventData} />;
-  }
+  const inner = useMemo(() => {
+    if (eventData.__typename === 'GalleryUpdatedFeedEventData') {
+      return <GalleryUpdatedFeedEvent eventId={eventId} eventDataRef={eventData} />;
+    }
 
-  return (
-    <NonRecursiveFeedListItem
-      eventId={eventId}
-      slideIndex={0}
-      eventCount={1}
-      eventDataRef={eventData}
-    />
-  );
+    return (
+      <NonRecursiveFeedListItem
+        eventId={eventId}
+        slideIndex={0}
+        eventCount={1}
+        eventDataRef={eventData}
+      />
+    );
+  }, [eventData, eventId]);
+
+  return <View>{inner}</View>;
 }

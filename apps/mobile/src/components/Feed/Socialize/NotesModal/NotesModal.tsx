@@ -98,12 +98,13 @@ export function NotesModal({ eventRef }: Props) {
   }, [hasPrevious, loadPrevious]);
 
   const renderItem = useCallback<ListRenderItem<SortedInteraction>>(({ item }) => {
+    let inner = null;
     if (item.__typename === 'Comment') {
-      return <CommentNote commentRef={item.commentRef} />;
+      inner = <CommentNote commentRef={item.commentRef} />;
     } else if (item.__typename === 'Admire') {
-      return <AdmireNote admireRef={item.admireRef} />;
+      inner = <AdmireNote admireRef={item.admireRef} />;
     }
-    return <View />;
+    return <View className="pb-2">{inner}</View>;
   }, []);
 
   return (
@@ -114,7 +115,6 @@ export function NotesModal({ eventRef }: Props) {
       onEndReached={loadMore}
       refreshing={isLoadingPrevious}
       onEndReachedThreshold={0.8}
-      ItemSeparatorComponent={() => <View className="h-2" />}
     />
   );
 }

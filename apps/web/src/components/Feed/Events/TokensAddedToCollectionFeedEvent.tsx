@@ -15,8 +15,8 @@ import { TokensAddedToCollectionFeedEventFragment$key } from '~/generated/Tokens
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
 import { getTimeSince } from '~/shared/utils/time';
+import unescape from '~/shared/utils/unescape';
 import { pluralize } from '~/utils/string';
-import unescape from '~/utils/unescape';
 
 import { MAX_PIECES_DISPLAYED_PER_FEED_EVENT } from '../constants';
 import FeedEventTokenPreviews from '../FeedEventTokenPreviews';
