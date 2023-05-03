@@ -25,14 +25,7 @@ export function MainTabStackNavigator({ initialRouteName }: Props) {
         component={ProfileScreen}
         initialParams={{ username: 'kaito' }}
       />
-      <Stack.Screen
-        name="Gallery"
-        component={GalleryScreen}
-        // Kaito
-        initialParams={{ galleryId: 'f5b37add77e4ac9c5c1cf61077a7a587' }}
-        // Kyt
-        // initialParams={{ galleryId: '2EBBSUmICuq8lQLo3xnCFBzMcTK' }}
-      />
+      <Stack.Screen name="Gallery" component={GalleryScreen} />
       <Stack.Screen
         name="Collection"
         component={CollectionScreen}
