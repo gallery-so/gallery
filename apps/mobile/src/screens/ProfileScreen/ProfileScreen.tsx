@@ -1,7 +1,6 @@
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { Suspense, useMemo } from 'react';
 import { View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
@@ -49,9 +48,8 @@ function ProfileScreenInner() {
 }
 
 export function ProfileScreen() {
-  const { top } = useSafeAreaInsets();
   return (
-    <View className="flex-1 bg-white dark:bg-black" style={{ paddingTop: top }}>
+    <View className="flex-1 bg-white dark:bg-black">
       <Suspense fallback={<ProfileViewFallback />}>
         <ProfileScreenInner />
       </Suspense>

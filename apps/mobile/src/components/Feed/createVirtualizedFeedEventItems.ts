@@ -7,7 +7,7 @@ import {
   createVirtualizedFeedEventItemsFragment$key,
 } from '~/generated/createVirtualizedFeedEventItemsFragment.graphql';
 
-export type FeedListItemType = { key: string } & (
+export type FeedListItemType = { key: string; eventId: string } & (
   | { kind: 'feed-item-header'; event: createVirtualizedFeedEventItemsFragment$data }
   | { kind: 'feed-item-caption'; event: createVirtualizedFeedEventItemsFragment$data }
   | { kind: 'feed-item-event'; event: createVirtualizedFeedEventItemsFragment$data }
@@ -75,13 +75,28 @@ export function createVirtualizedFeedEventItems({
     const isAFailedEvent = failedEvents.has(event.dbid);
 
     if (isSupportedFeedEvent && !isAFailedEvent) {
-      items.push({ kind: 'feed-item-header', event, key: `feed-item-header-${event.dbid}` });
+      items.push({
+        kind: 'feed-item-header',
+        event,
+        key: `feed-item-header-${event.dbid}`,
+        eventId: event.dbid,
+      });
 
       if (event.caption) {
-        items.push({ kind: 'feed-item-caption', event, key: `feed-item-caption-${event.dbid}` });
+        items.push({
+          kind: 'feed-item-caption',
+          event,
+          key: `feed-item-caption-${event.dbid}`,
+          eventId: event.dbid,
+        });
       }
 
-      items.push({ kind: 'feed-item-event', event, key: `feed-item-event-${event.dbid}` });
+      items.push({
+        kind: 'feed-item-event',
+        event,
+        key: `feed-item-event-${event.dbid}`,
+        eventId: event.dbid,
+      });
     }
   }
 
