@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Share, StyleSheet, useColorScheme, View } from 'react-native';
+import { Share, useColorScheme, View } from 'react-native';
 import { CollapsibleRef, Tabs } from 'react-native-collapsible-tab-view';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -137,7 +137,13 @@ export function ProfileView({ userRef, queryRef, shouldShowBackButton }: Profile
           containerStyle={{
             backgroundColor: colorScheme === 'light' ? colors.white : colors.black,
           }}
-          headerContainerStyle={styles.headerReset}
+          headerContainerStyle={{
+            margin: 0,
+            elevation: 0,
+            shadowOpacity: 0,
+            borderBottomColor: 'transparent',
+            backgroundColor: colorScheme === 'light' ? colors.white : colors.black,
+          }}
           renderTabBar={Empty}
           renderHeader={Header}
         >
@@ -161,15 +167,6 @@ export function ProfileView({ userRef, queryRef, shouldShowBackButton }: Profile
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  headerReset: {
-    margin: 0,
-    elevation: 0,
-    shadowOpacity: 0,
-    borderBottomColor: 'transparent',
-  },
-});
 
 function Empty() {
   return null;
