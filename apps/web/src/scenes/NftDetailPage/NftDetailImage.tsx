@@ -10,12 +10,13 @@ import { graphqlGetResizedNftImageUrlWithFallback } from '~/utils/token';
 import { StyledVideo } from './NftDetailVideo';
 
 type Props = {
+  alt: string | null | undefined;
   imageUrl: string | null | undefined;
   onClick?: () => void;
   onLoad: () => void;
 };
 
-function NftDetailImage({ imageUrl, onClick = noop, onLoad }: Props) {
+function NftDetailImage({ alt, imageUrl, onClick = noop, onLoad }: Props) {
   const breakpoint = useBreakpoint();
   const { handleError } = useThrowOnMediaFailure('NftDetailImage');
 
@@ -49,6 +50,7 @@ function NftDetailImage({ imageUrl, onClick = noop, onLoad }: Props) {
 
   return (
     <ImageWithLoading
+      alt={alt ?? ''}
       src={url}
       heightType={breakpoint === size.desktop ? 'maxHeightMinScreen' : undefined}
       onClick={onClick}

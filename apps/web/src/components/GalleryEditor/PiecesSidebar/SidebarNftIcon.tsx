@@ -7,7 +7,6 @@ import { BODY_FONT_FAMILY } from '~/components/core/Text/Text';
 import transitions from '~/components/core/transitions';
 import { NftFailureBoundary } from '~/components/NftFailureFallback/NftFailureBoundary';
 import { NftFailureFallback } from '~/components/NftFailureFallback/NftFailureFallback';
-import { RawNftPreviewAsset } from '~/components/NftPreview/NftPreviewAsset';
 import { SIDEBAR_ICON_DIMENSIONS } from '~/constants/sidebar';
 import { useCollectionEditorContext } from '~/contexts/collectionEditor/CollectionEditorContext';
 import { useNftErrorContext } from '~/contexts/NftErrorContext';
@@ -185,7 +184,7 @@ function SidebarNftIcon({
           />
         </StyledSidebarNftIcon>
       }
-      // onError={handleError}
+      onError={handleError}
     >
       <ReportingErrorBoundary
         fallback={

@@ -49,7 +49,13 @@ export function NftDetailAssetComponent({ tokenRef, onLoad }: NftDetailAssetComp
 
   return (
     <ReportingErrorBoundary
-      fallback={<NftDetailImage onLoad={onLoad} imageUrl={token.media?.fallbackMedia?.mediaURL} />}
+      fallback={
+        <NftDetailImage
+          alt={null}
+          onLoad={onLoad}
+          imageUrl={token.media?.fallbackMedia?.mediaURL}
+        />
+      }
     >
       <NftDetailAssetComponentWithouFallback tokenRef={token} onLoad={onLoad} />
     </ReportingErrorBoundary>
@@ -68,6 +74,8 @@ function NftDetailAssetComponentWithouFallback({
   const token = useFragment(
     graphql`
       fragment NftDetailAssetComponentWithoutFallbackFragment on Token {
+        name
+
         media @required(action: THROW) {
           ... on VideoMedia {
             __typename
@@ -132,6 +140,7 @@ function NftDetailAssetComponentWithouFallback({
 
       return (
         <NftDetailImage
+          alt={token.name}
           onLoad={onLoad}
           imageUrl={imageMedia.contentRenderURL}
           onClick={() => {
@@ -231,7 +240,13 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
         key={retryKey}
         tokenId={token.dbid}
         onError={handleNftError}
-        fallback={<NftFailureFallback onRetry={refreshMetadata} refreshing={refreshingMetadata} />}
+        fallback={
+          <NftFailureFallback
+            tokenId={token.dbid}
+            onRetry={refreshMetadata}
+            refreshing={refreshingMetadata}
+          />
+        }
       >
         <NftDetailAssetComponent onLoad={handleNftLoaded} tokenRef={token} />
       </NftFailureBoundary>

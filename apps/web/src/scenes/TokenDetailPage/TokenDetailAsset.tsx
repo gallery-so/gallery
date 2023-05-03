@@ -71,7 +71,13 @@ function TokenDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
         key={retryKey}
         tokenId={token.dbid}
         onError={handleNftError}
-        fallback={<NftFailureFallback onRetry={refreshMetadata} refreshing={refreshingMetadata} />}
+        fallback={
+          <NftFailureFallback
+            tokenId={token.dbid}
+            onRetry={refreshMetadata}
+            refreshing={refreshingMetadata}
+          />
+        }
       >
         <NftDetailAssetComponent onLoad={handleNftLoaded} tokenRef={token} />
       </NftFailureBoundary>
