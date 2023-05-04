@@ -38,7 +38,7 @@ export function CommentButton({ eventRef, queryRef, style, onClick }: Props) {
   const colorScheme = useColorScheme();
 
   const bottomSheetRef = useRef<BottomSheetModal>(null);
-  const snapPoints = useMemo(() => [52], []);
+  const snapPoints = useMemo(() => [56], []);
 
   const handleCloseCommentBox = useCallback(() => {
     bottomSheetRef.current?.close();
