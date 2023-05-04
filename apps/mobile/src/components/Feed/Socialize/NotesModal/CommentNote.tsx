@@ -28,8 +28,8 @@ export function CommentNote({ commentRef, style }: Props) {
   );
 
   return (
-    <View className="flex flex-row justify-between items-center px-4" style={style}>
-      <Text className="dark:text-white">
+    <View className="flex flex-row gap-1 justify-between items-center px-4" style={style}>
+      <Text className="dark:text-white flex-1">
         <Typography
           font={{
             family: 'ABCDiatype',
