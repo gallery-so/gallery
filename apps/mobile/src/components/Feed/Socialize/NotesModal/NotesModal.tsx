@@ -40,7 +40,7 @@ export function NotesModal({ eventRef, queryRef, bottomSheetRef }: Props) {
 
   const colorScheme = useColorScheme();
 
-  const snapPoints = useMemo(() => [380], []);
+  const snapPoints = useMemo(() => [320], []);
 
   const isKeyboardActive = useKeyboardStatus();
   const { bottom } = useSafeAreaInsets();
