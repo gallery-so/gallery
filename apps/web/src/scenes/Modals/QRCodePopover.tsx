@@ -8,7 +8,7 @@ export default function QRCodePopover({ username }: { username: string }) {
   return (
     <StyledQRCodePopover>
       <VStack gap={24} align="center">
-        <QRCode width={159} height={159} encodedData={`https://gallery.so/${username}`} />
+        <QRCode width={250} height={250} encodedData={`https://gallery.so/${username}`} />
         <TitleM>
           <strong>{username}</strong>
         </TitleM>

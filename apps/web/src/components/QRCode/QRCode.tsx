@@ -17,8 +17,10 @@ export default function QRCode({ width, height, encodedData }: Props) {
     // Without calling update(), the appended QR code does not consistently display the logo image upon initial render. (especially on mobile)
     // This is likely because it is painted before the image has finished loading.
     // Calling update() refreshes the canvas content, which fixes the issue.
-    qrCode.current.update({ data: encodedData });
-    qrCode.current.append(ref.current ?? undefined);
+    setTimeout(() => {
+      qrCode.current.update({ data: encodedData });
+      qrCode.current.append(ref.current ?? undefined);
+    }, 100);
   }, [encodedData, qrCode]);
 
   return <StyledQRCode ref={ref} width={width} height={height} />;
