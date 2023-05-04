@@ -22,6 +22,9 @@ export function SearchResult({ title, description, ...props }: Props) {
   const { keyword } = useSearchContext();
 
   const highlightedName = useMemo(() => {
+    if (!keyword) {
+      return title;
+    }
     return title.replace(new RegExp(keyword, 'gi'), (match) => `**${match}**`);
   }, [keyword, title]);
 
@@ -29,6 +32,9 @@ export function SearchResult({ title, description, ...props }: Props) {
     const regex = new RegExp(keyword, 'gi');
 
     const unformattedDescription = sanitizeMarkdown(description ?? '');
+    if (!keyword) {
+      return unformattedDescription.substring(0, MAX_DESCRIPTION_CHARACTER);
+    }
 
     const matchIndex = unformattedDescription.search(regex);
     let truncatedDescription;
