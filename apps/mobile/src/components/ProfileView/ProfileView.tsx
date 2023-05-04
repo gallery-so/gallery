@@ -24,6 +24,7 @@ import colors from '~/shared/theme/colors';
 import { BackIcon } from '../../icons/BackIcon';
 import { QRCodeIcon } from '../../icons/QRCodeIcon';
 import { ShareIcon } from '../../icons/ShareIcon';
+import { FeedbackButton } from '../FeedbackButton';
 
 type ProfileViewProps = {
   shouldShowBackButton: boolean;
@@ -108,6 +109,7 @@ export function ProfileView({ userRef, queryRef, shouldShowBackButton }: Profile
         style={{ paddingTop: top }}
       >
         <View className="flex flex-row justify-between">
+          {isLoggedInUser && !shouldShowBackButton && <FeedbackButton />}
           {shouldShowBackButton ? (
             <IconContainer icon={<BackIcon />} onPress={navigation.goBack} />
           ) : (

@@ -1,5 +1,7 @@
 import 'expo-dev-client';
 
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import { PortalProvider } from '@gorhom/portal';
 import { NavigationContainer } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
@@ -54,19 +56,23 @@ export default function App() {
   return (
     <RelayEnvironmentProvider environment={relayEnvironment}>
       <SWRConfig>
-        <Suspense fallback={<LoadingView />}>
-          <MobileErrorReportingProvider>
-            <SafeAreaProvider>
-              <magic.Relayer />
-              <SearchProvider>
-                <NavigationContainer>
-                  <DevMenuItems />
-                  <RootStackNavigator />
-                </NavigationContainer>
-              </SearchProvider>
-            </SafeAreaProvider>
-          </MobileErrorReportingProvider>
-        </Suspense>
+        <PortalProvider>
+          <Suspense fallback={<LoadingView />}>
+            <MobileErrorReportingProvider>
+              <SafeAreaProvider>
+                <BottomSheetModalProvider>
+                  <magic.Relayer />
+                  <SearchProvider>
+                    <NavigationContainer>
+                      <DevMenuItems />
+                      <RootStackNavigator />
+                    </NavigationContainer>
+                  </SearchProvider>
+                </BottomSheetModalProvider>
+              </SafeAreaProvider>
+            </MobileErrorReportingProvider>
+          </Suspense>
+        </PortalProvider>
       </SWRConfig>
     </RelayEnvironmentProvider>
   );
