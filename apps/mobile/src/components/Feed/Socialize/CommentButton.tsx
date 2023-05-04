@@ -1,4 +1,5 @@
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
+import { Portal } from '@gorhom/portal';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { TouchableOpacity, useColorScheme, View, ViewProps } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
@@ -62,31 +63,32 @@ export function CommentButton({ eventRef, queryRef, style, onClick }: Props) {
       <TouchableOpacity onPress={toggleCommentBox}>
         <CommentIcon />
       </TouchableOpacity>
-
-      <View>
-        <BottomSheetModal
-          ref={bottomSheetRef}
-          index={0}
-          snapPoints={snapPoints}
-          handleComponent={() => (
-            <View
-              className={`h-2 border-t ${
-                colorScheme === 'dark' ? 'bg-black border-offBlack' : 'bg-white border-porcelain'
-              }`}
-            />
-          )}
-          handleIndicatorStyle={{ display: 'none' }}
-        >
-          <View className={`${colorScheme === 'dark' ? 'bg-black' : 'bg-white'}`}>
-            <CommentBox
-              autoFocus
-              eventRef={event}
-              queryRef={query}
-              onClose={handleCloseCommentBox}
-            />
-          </View>
-        </BottomSheetModal>
-      </View>
+      <Portal>
+        <View>
+          <BottomSheetModal
+            ref={bottomSheetRef}
+            index={0}
+            snapPoints={snapPoints}
+            handleComponent={() => (
+              <View
+                className={`h-2 border-t ${
+                  colorScheme === 'dark' ? 'bg-black border-offBlack' : 'bg-white border-porcelain'
+                }`}
+              />
+            )}
+            handleIndicatorStyle={{ display: 'none' }}
+          >
+            <View className={`${colorScheme === 'dark' ? 'bg-black' : 'bg-white'}`}>
+              <CommentBox
+                autoFocus
+                eventRef={event}
+                queryRef={query}
+                onClose={handleCloseCommentBox}
+              />
+            </View>
+          </BottomSheetModal>
+        </View>
+      </Portal>
     </View>
   );
 }

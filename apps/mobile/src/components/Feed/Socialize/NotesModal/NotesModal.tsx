@@ -1,4 +1,5 @@
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
+import { Portal } from '@gorhom/portal';
 import { useCallback, useLayoutEffect, useMemo } from 'react';
 import { Keyboard, useColorScheme, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
@@ -67,44 +68,46 @@ export function NotesModal({ eventRef, queryRef, bottomSheetRef }: Props) {
   }, [bottomSheetRef]);
 
   return (
-    <View>
-      <BottomSheetModal
-        ref={bottomSheetRef}
-        index={0}
-        snapPoints={snapPoints}
-        handleComponent={() => (
-          <View
-            className={`h-2 border-t rounded-t-[40px] ${
-              colorScheme === 'dark' ? 'bg-black border-offBlack' : 'bg-white border-porcelain'
-            }`}
-          >
-            <View className="space-y-2 py-3">
-              <View className="h-1 w-20 self-center bg-[#D9D9D9] px-4 rounded-full" />
+    <Portal>
+      <View>
+        <BottomSheetModal
+          ref={bottomSheetRef}
+          index={0}
+          snapPoints={snapPoints}
+          handleComponent={() => (
+            <View
+              className={`h-2 border-t rounded-t-[40px] ${
+                colorScheme === 'dark' ? 'bg-black border-offBlack' : 'bg-white border-porcelain'
+              }`}
+            >
+              <View className="space-y-2 py-3">
+                <View className="h-1 w-20 self-center bg-[#D9D9D9] px-4 rounded-full" />
+              </View>
             </View>
-          </View>
-        )}
-      >
-        <Animated.View
-          className="flex justify-between flex-1 bg-white dark:bg-black pt-6"
-          style={paddingStyle}
+          )}
         >
-          <View className="pt-4 flex-1">
-            <NotesList eventRef={event} />
-          </View>
-          <View
-            className={`h-2 border-t ${
-              colorScheme === 'dark' ? 'bg-black border-offBlack' : 'bg-white border-porcelain'
-            }
+          <Animated.View
+            className="flex justify-between flex-1 bg-white dark:bg-black pt-6"
+            style={paddingStyle}
+          >
+            <View className="pt-4 flex-1">
+              <NotesList eventRef={event} />
+            </View>
+            <View
+              className={`h-2 border-t ${
+                colorScheme === 'dark' ? 'bg-black border-offBlack' : 'bg-white border-porcelain'
+              }
             `}
-          />
-          <CommentBox
-            eventRef={event}
-            queryRef={query}
-            onClose={handleCloseCommentBox}
-            isNotesModal
-          />
-        </Animated.View>
-      </BottomSheetModal>
-    </View>
+            />
+            <CommentBox
+              eventRef={event}
+              queryRef={query}
+              onClose={handleCloseCommentBox}
+              isNotesModal
+            />
+          </Animated.View>
+        </BottomSheetModal>
+      </View>
+    </Portal>
   );
 }

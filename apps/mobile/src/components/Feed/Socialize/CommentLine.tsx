@@ -26,7 +26,7 @@ export function CommentLine({ commentRef }: Props) {
       <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
         {comment.commenter?.username}
       </Typography>
-      <Text className="text-xs dark:text-white">{comment.comment}</Text>
+      <Text className="text-xs dark:text-white flex-1">{comment.comment}</Text>
     </View>
   );
 }
