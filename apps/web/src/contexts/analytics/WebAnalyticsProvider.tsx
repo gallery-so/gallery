@@ -7,7 +7,7 @@ import AnalyticsProvider, {
   TrackFunction,
 } from '~/shared/contexts/AnalyticsContext';
 
-let mixpanelEnabled = true;
+let mixpanelEnabled = false;
 
 if (process.env.NEXT_PUBLIC_MIXPANEL_TOKEN && process.env.NEXT_PUBLIC_ANALYTICS_API_URL) {
   mixpanel.init(process.env.NEXT_PUBLIC_MIXPANEL_TOKEN, {
