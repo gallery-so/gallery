@@ -206,7 +206,7 @@ export function CommentBox({
   }, [showXMark, width]);
 
   return (
-    <View className="px-2 pb-2 flex flex-row items-center space-x-3">
+    <View className="px-2 pb-3 flex flex-row items-center space-x-3">
       <Animated.View className="flex-1 flex-row justify-between items-center bg-faint dark:bg-offBlack p-2 space-x-3">
         <BottomSheetTextInput
           value={value}

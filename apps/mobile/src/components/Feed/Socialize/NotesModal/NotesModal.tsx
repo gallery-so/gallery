@@ -90,7 +90,7 @@ export function NotesModal({ eventRef, queryRef, bottomSheetRef }: Props) {
             className="flex justify-between flex-1 bg-white dark:bg-black pt-6"
             style={paddingStyle}
           >
-            <View className="pt-4 flex-1">
+            <View className="pt-2 flex-1">
               <NotesList eventRef={event} />
             </View>
             <View
