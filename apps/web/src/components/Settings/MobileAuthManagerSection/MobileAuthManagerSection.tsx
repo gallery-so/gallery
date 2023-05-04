@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import { Button } from '~/components/core/Button/Button';
@@ -7,8 +7,10 @@ import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeL } from '~/components/core/Text/Text';
 import QRCode from '~/components/QRCode/QRCode';
 import { useModalActions } from '~/contexts/modal/ModalContext';
+import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 
 import SettingsRowDescription from '../SettingsRowDescription';
+import useGenerateMobileOTPToken from './useGenerateMobileOTPToken';
 
 export default function MobileAuthManagerSection() {
   const { showModal } = useModalActions();
@@ -37,6 +39,26 @@ export default function MobileAuthManagerSection() {
 }
 
 function MobileAuthBody() {
+  const [token, setToken] = useState('');
+  const generateToken = useGenerateMobileOTPToken();
+  const reportError = useReportError();
+
+  useEffect(() => {
+    async function getToken() {
+      try {
+        setToken(await generateToken());
+      } catch (error) {
+        if (error instanceof Error) {
+          reportError(error);
+        } else {
+          reportError('Something unexpected went wrong');
+        }
+      }
+    }
+
+    getToken();
+  }, [generateToken, reportError]);
+
   return (
     <StyledBody>
       <BaseM>
@@ -44,7 +66,7 @@ function MobileAuthBody() {
         account, so be careful who you share it with.
       </BaseM>
       <StyledHStack justify="center">
-        <QRCode width={250} height={250} encodedData="jwt" />
+        {token && <QRCode width={250} height={250} encodedData={token} />}
       </StyledHStack>
     </StyledBody>
   );
