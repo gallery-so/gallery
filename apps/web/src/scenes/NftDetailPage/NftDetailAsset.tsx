@@ -8,11 +8,13 @@ import { NftFailureFallback } from '~/components/NftFailureFallback/NftFailureFa
 import { GLOBAL_FOOTER_HEIGHT } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
 import { useContentState } from '~/contexts/shimmer/ShimmerContext';
 import { NftDetailAssetComponentFragment$key } from '~/generated/NftDetailAssetComponentFragment.graphql';
+import { NftDetailAssetComponentWithoutFallbackFragment$key } from '~/generated/NftDetailAssetComponentWithoutFallbackFragment.graphql';
 import { NftDetailAssetFragment$key } from '~/generated/NftDetailAssetFragment.graphql';
 import { NftDetailAssetTokenFragment$key } from '~/generated/NftDetailAssetTokenFragment.graphql';
 import { useNftRetry } from '~/hooks/useNftRetry';
 import { useBreakpoint } from '~/hooks/useWindowSize';
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
+import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import { getBackgroundColorOverrideForContract } from '~/utils/token';
 
 import NftDetailAnimation from './NftDetailAnimation';
@@ -31,6 +33,49 @@ export function NftDetailAssetComponent({ tokenRef, onLoad }: NftDetailAssetComp
   const token = useFragment(
     graphql`
       fragment NftDetailAssetComponentFragment on Token {
+        media {
+          ... on Media {
+            fallbackMedia {
+              mediaURL
+            }
+          }
+        }
+
+        ...NftDetailAssetComponentWithoutFallbackFragment
+      }
+    `,
+    tokenRef
+  );
+
+  return (
+    <ReportingErrorBoundary
+      fallback={
+        <NftDetailImage
+          alt={null}
+          onLoad={onLoad}
+          imageUrl={token.media?.fallbackMedia?.mediaURL}
+        />
+      }
+    >
+      <NftDetailAssetComponentWithouFallback tokenRef={token} onLoad={onLoad} />
+    </ReportingErrorBoundary>
+  );
+}
+
+type NftDetailAssetComponentWithoutFallbackProps = {
+  tokenRef: NftDetailAssetComponentWithoutFallbackFragment$key;
+  onLoad: () => void;
+};
+
+function NftDetailAssetComponentWithouFallback({
+  tokenRef,
+  onLoad,
+}: NftDetailAssetComponentWithoutFallbackProps) {
+  const token = useFragment(
+    graphql`
+      fragment NftDetailAssetComponentWithoutFallbackFragment on Token {
+        name
+
         media @required(action: THROW) {
           ... on VideoMedia {
             __typename
@@ -63,7 +108,6 @@ export function NftDetailAssetComponent({ tokenRef, onLoad }: NftDetailAssetComp
         }
         ...NftDetailAnimationFragment
         ...NftDetailAudioFragment
-        ...NftDetailImageFragment
         ...NftDetailGifFragment
       }
     `,
@@ -87,10 +131,18 @@ export function NftDetailAssetComponent({ tokenRef, onLoad }: NftDetailAssetComp
     case 'ImageMedia':
       const imageMedia = token.media;
 
+      if (!imageMedia.contentRenderURL) {
+        throw new CouldNotRenderNftError(
+          'NftDetailAsset',
+          'Token media type was `ImageMedia` but contentRenderURL was null'
+        );
+      }
+
       return (
         <NftDetailImage
+          alt={token.name}
           onLoad={onLoad}
-          tokenRef={token}
+          imageUrl={imageMedia.contentRenderURL}
           onClick={() => {
             if (imageMedia.contentRenderURL) {
               window.open(imageMedia.contentRenderURL);
@@ -178,6 +230,7 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
 
   return (
     <StyledAssetContainer
+      data-tokenid={token.dbid}
       footerHeight={GLOBAL_FOOTER_HEIGHT}
       shouldEnforceSquareAspectRatio={shouldEnforceSquareAspectRatio}
       hasExtraPaddingForNote={hasExtraPaddingForNote}
@@ -187,7 +240,13 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
         key={retryKey}
         tokenId={token.dbid}
         onError={handleNftError}
-        fallback={<NftFailureFallback onRetry={refreshMetadata} refreshing={refreshingMetadata} />}
+        fallback={
+          <NftFailureFallback
+            tokenId={token.dbid}
+            onRetry={refreshMetadata}
+            refreshing={refreshingMetadata}
+          />
+        }
       >
         <NftDetailAssetComponent onLoad={handleNftLoaded} tokenRef={token} />
       </NftFailureBoundary>

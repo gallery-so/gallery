@@ -12,11 +12,12 @@ type Size = 'tiny' | 'medium';
 
 type Props = {
   size?: Size;
+  tokenId: string;
   onRetry: () => void;
   refreshing: boolean;
 };
 
-export function NftFailureFallback({ onRetry, refreshing, size = 'medium' }: Props) {
+export function NftFailureFallback({ tokenId, onRetry, refreshing, size = 'medium' }: Props) {
   const handleClick = useCallback(
     (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       event.preventDefault();
@@ -57,7 +58,7 @@ export function NftFailureFallback({ onRetry, refreshing, size = 'medium' }: Pro
 
   return (
     <AspectRatioWrapper>
-      <Wrapper gap={spaceY} align="center" justify="center">
+      <Wrapper data-tokenid={tokenId} gap={spaceY} align="center" justify="center">
         {refreshing ? (
           <Label size={size}>Loading...</Label>
         ) : (

@@ -83,6 +83,22 @@ function NftPreviewAsset({ tokenRef, size, onLoad }: Props) {
 
   const { url: src } = resizedNft;
 
+  return <RawNftPreviewAsset src={src} onLoad={onLoad} alt={token.name} />;
+}
+
+export function RawNftPreviewAsset({
+  src,
+  onLoad,
+  alt,
+}: {
+  alt?: string | undefined | null;
+  src: string | null | undefined;
+  onLoad: () => void;
+}) {
+  if (!src) {
+    throw new CouldNotRenderNftError('RawNftPreviewAsset', 'Missing src');
+  }
+
   // TODO: this is a hack to handle videos that are returned by OS as images.
   // i.e., assets that do not have animation_urls, and whose image_urls all contain
   // links to videos. we should be able to remove this hack once we're off of OS.
@@ -91,12 +107,7 @@ function NftPreviewAsset({ tokenRef, size, onLoad }: Props) {
   }
 
   return (
-    <ImageWithLoading
-      onLoad={onLoad}
-      src={src}
-      heightType="maxHeightScreen"
-      alt={token.name ?? ''}
-    />
+    <ImageWithLoading onLoad={onLoad} src={src} heightType="maxHeightScreen" alt={alt ?? ''} />
   );
 }
 
