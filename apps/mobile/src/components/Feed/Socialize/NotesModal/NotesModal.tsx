@@ -1,6 +1,6 @@
 import { BottomSheetBackdrop, BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useCallback, useLayoutEffect, useMemo } from 'react';
-import { Keyboard, useColorScheme, View } from 'react-native';
+import { Keyboard, Pressable, useColorScheme, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { graphql, useFragment } from 'react-relay';
@@ -85,15 +85,18 @@ export function NotesModal({ eventRef, queryRef, bottomSheetRef }: Props) {
           borderRadius: 40,
         }}
         handleComponent={() => (
-          <View
-            className={`rounded-t-[40px] ${
-              colorScheme === 'dark' ? 'bg-black  border-offBlack' : 'bg-white border-porcelain'
-            }`}
-          >
-            <View className="space-y-2 py-3">
-              <View className="h-1 w-20 self-center bg-[#D9D9D9] px-4 rounded-full" />
+          // Temporary workaround https://github.com/gorhom/react-native-bottom-sheet/issues/1351#issuecomment-1518718101
+          <Pressable onPressIn={() => Keyboard.dismiss()}>
+            <View
+              className={`rounded-t-[40px] ${
+                colorScheme === 'dark' ? 'bg-black  border-offBlack' : 'bg-white border-porcelain'
+              }`}
+            >
+              <View className="space-y-2 py-3">
+                <View className="h-1 w-20 self-center bg-[#D9D9D9] px-4 rounded-full" />
+              </View>
             </View>
-          </View>
+          </Pressable>
         )}
       >
         <Animated.View
