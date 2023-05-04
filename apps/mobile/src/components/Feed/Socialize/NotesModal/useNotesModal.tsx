@@ -16,17 +16,8 @@ export function useNotesModal(
     bottomSheetRef.current?.present();
   }, []);
 
-  const handleClose = useCallback(() => {
-    bottomSheetRef.current?.close();
-  }, []);
-
   const notesModal = (
-    <NotesModal
-      eventRef={eventRef}
-      queryRef={queryRef}
-      bottomSheetRef={bottomSheetRef}
-      handleClose={handleClose}
-    />
+    <NotesModal eventRef={eventRef} queryRef={queryRef} bottomSheetRef={bottomSheetRef} />
   );
 
   return { handleOpen, notesModal };

@@ -4,10 +4,8 @@ import { Keyboard, useColorScheme, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { graphql, useFragment } from 'react-relay';
-import { XMarkIcon } from 'src/icons/XMarkIcon';
 import useKeyboardStatus from 'src/utils/useKeyboardStatus';
 
-import { IconContainer } from '~/components/IconContainer';
 import { NotesModalFragment$key } from '~/generated/NotesModalFragment.graphql';
 import { NotesModalQueryFragment$key } from '~/generated/NotesModalQueryFragment.graphql';
 
@@ -18,10 +16,9 @@ type Props = {
   eventRef: NotesModalFragment$key;
   queryRef: NotesModalQueryFragment$key;
   bottomSheetRef: React.RefObject<BottomSheetModal>;
-  handleClose: () => void;
 };
 
-export function NotesModal({ eventRef, queryRef, bottomSheetRef, handleClose }: Props) {
+export function NotesModal({ eventRef, queryRef, bottomSheetRef }: Props) {
   const event = useFragment(
     graphql`
       fragment NotesModalFragment on FeedEvent {
@@ -91,9 +88,6 @@ export function NotesModal({ eventRef, queryRef, bottomSheetRef, handleClose }: 
           className="flex justify-between flex-1 bg-white dark:bg-black pt-6"
           style={paddingStyle}
         >
-          <View className="px-4">
-            <IconContainer size="sm" icon={<XMarkIcon height={10} />} onPress={handleClose} />
-          </View>
           <View className="pt-4 flex-1">
             <NotesList eventRef={event} />
           </View>
