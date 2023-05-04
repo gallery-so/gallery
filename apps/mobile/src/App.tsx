@@ -56,23 +56,21 @@ export default function App() {
   return (
     <RelayEnvironmentProvider environment={relayEnvironment}>
       <SWRConfig>
-        <PortalProvider>
-          <Suspense fallback={<LoadingView />}>
-            <MobileErrorReportingProvider>
-              <SafeAreaProvider>
-                <BottomSheetModalProvider>
-                  <magic.Relayer />
-                  <SearchProvider>
-                    <NavigationContainer>
-                      <DevMenuItems />
-                      <RootStackNavigator />
-                    </NavigationContainer>
-                  </SearchProvider>
-                </BottomSheetModalProvider>
-              </SafeAreaProvider>
-            </MobileErrorReportingProvider>
-          </Suspense>
-        </PortalProvider>
+        <Suspense fallback={<LoadingView />}>
+          <MobileErrorReportingProvider>
+            <SafeAreaProvider>
+              <BottomSheetModalProvider>
+                <magic.Relayer />
+                <SearchProvider>
+                  <NavigationContainer>
+                    <DevMenuItems />
+                    <RootStackNavigator />
+                  </NavigationContainer>
+                </SearchProvider>
+              </BottomSheetModalProvider>
+            </SafeAreaProvider>
+          </MobileErrorReportingProvider>
+        </Suspense>
       </SWRConfig>
     </RelayEnvironmentProvider>
   );
