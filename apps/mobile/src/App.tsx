@@ -1,7 +1,6 @@
 import 'expo-dev-client';
 
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
-import { PortalProvider } from '@gorhom/portal';
 import { NavigationContainer } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
