@@ -13,7 +13,6 @@ module.exports = function (api) {
       ],
       'tsconfig-paths-module-resolver',
       ['@babel/plugin-proposal-private-methods', { loose: true }],
-      'react-native-reanimated/plugin',
     ],
   };
 };

@@ -38,7 +38,7 @@ export function FeedVirtualizedRow({ onCommentPress, onFailure, item, eventId }:
           />
         );
     }
-  }, [handleScrollToElement, item.event, item.kind]);
+  }, [handleScrollToElement, item.event, item.kind, item.queryRef]);
 
   return (
     <ReportingErrorBoundary fallback={null} onError={onFailure} additionalTags={{ eventId }}>
