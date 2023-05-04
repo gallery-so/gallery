@@ -81,10 +81,13 @@ export function NotesModal({ eventRef, queryRef, bottomSheetRef }: Props) {
             opacity={0.1}
           />
         )}
+        backgroundStyle={{
+          borderRadius: 40,
+        }}
         handleComponent={() => (
           <View
             className={`rounded-t-[40px] ${
-              colorScheme === 'dark' ? 'bg-black border-offBlack' : 'bg-white border-porcelain'
+              colorScheme === 'dark' ? 'bg-black  border-offBlack' : 'bg-white border-porcelain'
             }`}
           >
             <View className="space-y-2 py-3">
