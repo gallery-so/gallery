@@ -77,7 +77,13 @@ export function SearchDefault({ queryRef, blurInputFocus }: Props) {
 
   return (
     <View className="flex-grow">
-      <FlashList data={items} renderItem={renderItem} onTouchStart={blurInputFocus} />
+      <FlashList
+        keyboardShouldPersistTaps="always"
+        data={items}
+        estimatedItemSize={25}
+        renderItem={renderItem}
+        onTouchStart={blurInputFocus}
+      />
     </View>
   );
 }

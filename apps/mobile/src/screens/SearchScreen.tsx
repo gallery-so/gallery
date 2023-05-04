@@ -45,7 +45,7 @@ export function SearchScreen() {
       className="flex flex-1 flex-col bg-white dark:bg-black"
     >
       <View className="flex flex-col space-y-2 p-4">
-        <SearchInput inputRef={searchInputRef} />
+        <SearchInput inputRef={searchInputRef} setFilter={setFilter} />
         {keyword && <SearchFilter activeFilter={filter} onChange={setFilter} />}
       </View>
 

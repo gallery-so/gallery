@@ -7,12 +7,14 @@ import colors from '~/shared/theme/colors';
 import { XMarkIcon } from '../../icons/XMarkIcon';
 import { Typography } from '../Typography';
 import { useSearchContext } from './SearchContext';
+import { SearchFilterType } from './SearchFilter';
 
 type Props = TextInputProps & {
   inputRef: React.RefObject<TextInput>;
+  setFilter: (filter: SearchFilterType) => void;
 };
 
-export function SearchInput({ inputRef, value, onChange, style, ...props }: Props) {
+export function SearchInput({ inputRef, setFilter, value, onChange, style, ...props }: Props) {
   const { keyword, setKeyword } = useSearchContext();
   const [localKeyword, setLocalKeyword] = useState<string>(keyword);
 
@@ -48,10 +50,11 @@ export function SearchInput({ inputRef, value, onChange, style, ...props }: Prop
 
   const handleCancel = useCallback(() => {
     handleClear();
+    setFilter('top');
     if (inputRef.current) {
       inputRef.current.blur();
     }
-  }, [handleClear, inputRef]);
+  }, [handleClear, inputRef, setFilter]);
 
   const handleChange = useCallback(
     (text: string) => {
