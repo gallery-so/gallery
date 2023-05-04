@@ -1,6 +1,7 @@
 import { Suspense, useCallback, useEffect, useMemo } from 'react';
 import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 
+import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/NotesModal/NotesList';
 import { TrendingScreenFragment$key } from '~/generated/TrendingScreenFragment.graphql';
 import { TrendingScreenQuery } from '~/generated/TrendingScreenQuery.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
@@ -35,6 +36,7 @@ function TrendingScreenInner({ queryRef }: TrendingScreenInnerProps) {
             }
           }
         }
+        ...FeedListQueryFragment
       }
     `,
     queryRef
@@ -59,6 +61,7 @@ function TrendingScreenInner({ queryRef }: TrendingScreenInnerProps) {
       isLoadingMore={isLoadingPrevious}
       onLoadMore={handleLoadMore}
       feedEventRefs={events}
+      queryRef={query}
     />
   );
 }
@@ -66,11 +69,19 @@ function TrendingScreenInner({ queryRef }: TrendingScreenInnerProps) {
 export function TrendingScreen() {
   const query = useLazyLoadQuery<TrendingScreenQuery>(
     graphql`
-      query TrendingScreenQuery($trendingFeedBefore: String, $trendingFeedCount: Int!) {
+      query TrendingScreenQuery(
+        $trendingFeedBefore: String
+        $trendingFeedCount: Int!
+        $interactionsFirst: Int!
+        $interactionsAfter: String
+      ) {
         ...TrendingScreenFragment
       }
     `,
-    { trendingFeedCount: INITIAL_COUNT }
+    {
+      trendingFeedCount: INITIAL_COUNT,
+      interactionsFirst: NOTES_PER_PAGE,
+    }
   );
 
   return (

@@ -40,6 +40,7 @@ export function ProfileView({ userRef, queryRef, shouldShowBackButton }: Profile
         ...useLoggedInUserIdFragment
         ...FollowButtonQueryFragment
         ...ProfileViewFollowersTabQueryFragment
+        ...ProfileViewActivityTabQueryFragment
       }
     `,
     queryRef
@@ -160,7 +161,7 @@ export function ProfileView({ userRef, queryRef, shouldShowBackButton }: Profile
           </Tabs.Tab>
 
           <Tabs.Tab name="Activity">
-            <ProfileViewActivityTab userRef={user} />
+            <ProfileViewActivityTab userRef={user} queryRef={query} />
           </Tabs.Tab>
         </Tabs.Container>
       </GalleryTokenDimensionCacheProvider>

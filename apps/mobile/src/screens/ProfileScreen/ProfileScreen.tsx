@@ -4,6 +4,7 @@ import { View } from 'react-native';
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
+import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/NotesModal/NotesList';
 import { ProfileView } from '~/components/ProfileView/ProfileView';
 import { ProfileViewFallback } from '~/components/ProfileView/ProfileViewFallback';
 import { Typography } from '~/components/Typography';
@@ -15,7 +16,13 @@ function ProfileScreenInner() {
 
   const query = useLazyLoadQuery<ProfileScreenQuery>(
     graphql`
-      query ProfileScreenQuery($username: String!, $feedLast: Int!, $feedBefore: String) {
+      query ProfileScreenQuery(
+        $username: String!
+        $feedLast: Int!
+        $feedBefore: String
+        $interactionsFirst: Int!
+        $interactionsAfter: String
+      ) {
         userByUsername(username: $username) {
           ... on GalleryUser {
             ...ProfileViewFragment
@@ -33,7 +40,11 @@ function ProfileScreenInner() {
         ...ProfileViewQueryFragment
       }
     `,
-    { username: route.params.username, feedLast: 24 }
+    {
+      username: route.params.username,
+      feedLast: 24,
+      interactionsFirst: NOTES_PER_PAGE,
+    }
   );
 
   const inner = useMemo(() => {
