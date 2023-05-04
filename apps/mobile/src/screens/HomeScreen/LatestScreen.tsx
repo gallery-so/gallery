@@ -81,7 +81,10 @@ export function LatestScreen() {
         ...LatestScreenFragment
       }
     `,
-    { globalFeedCount: INITIAL_COUNT, interactionsFirst: NOTES_PER_PAGE }
+    {
+      globalFeedCount: INITIAL_COUNT,
+      interactionsFirst: NOTES_PER_PAGE,
+    }
   );
 
   return (

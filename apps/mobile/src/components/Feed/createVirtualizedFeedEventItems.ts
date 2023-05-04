@@ -83,6 +83,8 @@ export function createVirtualizedFeedEventItems({
           ...FeedListCaptionFragment
           # eslint-disable-next-line relay/must-colocate-fragment-spreads
           ...FeedListSectionHeaderFragment
+          # eslint-disable-next-line relay/must-colocate-fragment-spreads
+          ...FeedEventSocializeSectionFragment
         }
       `,
       eventRef

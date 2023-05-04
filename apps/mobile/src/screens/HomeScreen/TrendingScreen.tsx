@@ -78,7 +78,10 @@ export function TrendingScreen() {
         ...TrendingScreenFragment
       }
     `,
-    { trendingFeedCount: INITIAL_COUNT, interactionsFirst: NOTES_PER_PAGE }
+    {
+      trendingFeedCount: INITIAL_COUNT,
+      interactionsFirst: NOTES_PER_PAGE,
+    }
   );
 
   return (

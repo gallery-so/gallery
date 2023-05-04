@@ -40,7 +40,11 @@ function ProfileScreenInner() {
         ...ProfileViewQueryFragment
       }
     `,
-    { username: route.params.username, feedLast: 24, interactionsFirst: NOTES_PER_PAGE }
+    {
+      username: route.params.username,
+      feedLast: 24,
+      interactionsFirst: NOTES_PER_PAGE,
+    }
   );
 
   const inner = useMemo(() => {

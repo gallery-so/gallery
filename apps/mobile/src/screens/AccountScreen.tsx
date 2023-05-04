@@ -31,7 +31,10 @@ function AccountScreenInner() {
         ...ProfileViewQueryFragment
       }
     `,
-    { feedLast: 24, interactionsFirst: NOTES_PER_PAGE }
+    {
+      feedLast: 24,
+      interactionsFirst: NOTES_PER_PAGE,
+    }
   );
 
   const inner = useMemo(() => {
