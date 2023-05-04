@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { FeedListItemType } from '~/components/Feed/createVirtualizedFeedEventItems';
 import { FeedListCaption } from '~/components/Feed/FeedListCaption';
@@ -8,46 +8,41 @@ import { FeedEventSocializeSection } from '~/components/Feed/Socialize/FeedEvent
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 
 type Props = {
+  eventId: string;
   item: FeedListItemType;
   onFailure: () => void;
   onCommentPress: (key: FeedListItemType) => void;
 };
 
-export function FeedVirtualizedRow({ onFailure, item, onCommentPress }: Props) {
+export function FeedVirtualizedRow({ onCommentPress, onFailure, item, eventId }: Props) {
   const handleScrollToElement = useCallback(() => {
     onCommentPress(item);
   }, [onCommentPress, item]);
 
-  switch (item.kind) {
-    case 'feed-item-header':
-      return (
-        <ReportingErrorBoundary fallback={null} onError={onFailure}>
-          <FeedListSectionHeader feedEventRef={item.event} />
-        </ReportingErrorBoundary>
-      );
-    case 'feed-item-caption':
-      return (
-        <ReportingErrorBoundary fallback={null} onError={onFailure}>
-          <FeedListCaption feedEventRef={item.event} />
-        </ReportingErrorBoundary>
-      );
-    case 'feed-item-event':
-      if (!item.event.eventData) return null;
-
-      return (
-        <ReportingErrorBoundary fallback={null} onError={onFailure}>
-          <FeedListItem eventId={item.event.dbid} eventDataRef={item.event.eventData} />
-        </ReportingErrorBoundary>
-      );
-    case 'feed-item-socialize':
-      return (
-        <ReportingErrorBoundary fallback={null} onError={onFailure}>
+  const inner = useMemo(() => {
+    switch (item.kind) {
+      case 'feed-item-header':
+        return <FeedListSectionHeader feedEventRef={item.event} />;
+      case 'feed-item-caption':
+        return <FeedListCaption feedEventRef={item.event} />;
+      case 'feed-item-event':
+        return (
+          <FeedListItem eventId={item.event.dbid} eventDataRef={item.event.eventData ?? null} />
+        );
+      case 'feed-item-socialize':
+        return (
           <FeedEventSocializeSection
             feedEventRef={item.event}
             queryRef={item.queryRef}
             onCommentPress={handleScrollToElement}
           />
-        </ReportingErrorBoundary>
-      );
-  }
+        );
+    }
+  }, [handleScrollToElement, item.event, item.kind]);
+
+  return (
+    <ReportingErrorBoundary fallback={null} onError={onFailure} additionalTags={{ eventId }}>
+      {inner}
+    </ReportingErrorBoundary>
+  );
 }

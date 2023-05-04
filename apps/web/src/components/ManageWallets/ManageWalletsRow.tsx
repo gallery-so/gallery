@@ -114,7 +114,6 @@ export default ManageWalletsRow;
 
 const StyledWalletRow = styled.div`
   display: flex;
-  padding: 8px 0px;
   justify-content: space-between;
   flex-direction: row;
   align-items: center;

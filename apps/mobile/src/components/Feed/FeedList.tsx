@@ -65,6 +65,7 @@ export function FeedList({ feedEventRefs, onLoadMore, queryRef }: FeedListProps)
 
       return (
         <FeedVirtualizedRow
+          eventId={item.eventId}
           item={item}
           onFailure={markFailure}
           onCommentPress={scrollToFeedEvent}

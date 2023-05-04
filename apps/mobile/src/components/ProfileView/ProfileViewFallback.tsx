@@ -2,10 +2,13 @@ import { View } from 'react-native';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
 import { GallerySkeleton } from '~/components/GallerySkeleton';
+import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 
 export function ProfileViewFallback() {
+  const { top } = useSafeAreaPadding();
+
   return (
-    <View className="flex-1 bg-white dark:bg-black px-4">
+    <View className="flex-1 bg-white dark:bg-black px-4" style={{ paddingTop: top }}>
       <GallerySkeleton>
         <SkeletonPlaceholder.Item flexDirection="column" width="100%">
           <SkeletonPlaceholder.Item flexDirection="row" justifyContent="flex-end">

@@ -6,24 +6,38 @@ import {
   createVirtualizedFeedEventItemsFragment$data,
   createVirtualizedFeedEventItemsFragment$key,
 } from '~/generated/createVirtualizedFeedEventItemsFragment.graphql';
-import { createVirtualizedFeedEventItemsQueryFragment$key } from '~/generated/createVirtualizedFeedEventItemsQueryFragment.graphql';
-import { FeedEventSocializeSectionQueryFragment$key } from '~/generated/FeedEventSocializeSectionQueryFragment.graphql';
+import {
+  createVirtualizedFeedEventItemsQueryFragment$data,
+  createVirtualizedFeedEventItemsQueryFragment$key,
+} from '~/generated/createVirtualizedFeedEventItemsQueryFragment.graphql';
 
-export type FeedListItemType = { key: string } & (
-  | { kind: 'feed-item-header'; event: createVirtualizedFeedEventItemsFragment$data }
-  | { kind: 'feed-item-caption'; event: createVirtualizedFeedEventItemsFragment$data }
-  | { kind: 'feed-item-event'; event: createVirtualizedFeedEventItemsFragment$data }
+export type FeedListItemType = { key: string; eventId: string } & (
+  | {
+      kind: 'feed-item-header';
+      event: createVirtualizedFeedEventItemsFragment$data;
+      queryRef?: null;
+    }
+  | {
+      kind: 'feed-item-caption';
+      event: createVirtualizedFeedEventItemsFragment$data;
+      queryRef?: null;
+    }
+  | {
+      kind: 'feed-item-event';
+      event: createVirtualizedFeedEventItemsFragment$data;
+      queryRef?: null;
+    }
   | {
       kind: 'feed-item-socialize';
       event: createVirtualizedFeedEventItemsFragment$data;
-      queryRef: FeedEventSocializeSectionQueryFragment$key;
+      queryRef: createVirtualizedFeedEventItemsQueryFragment$data;
     }
 );
 
 type createVirtualizedItemsFromFeedEventsArgs = {
   failedEvents: Set<string>;
-  queryRef: createVirtualizedFeedEventItemsQueryFragment$key;
   eventRefs: readonly createVirtualizedFeedEventItemsFragment$key[];
+  queryRef: createVirtualizedFeedEventItemsQueryFragment$key;
 };
 
 type createVirtualizedItemsFromFeedEventsReturnType = {
@@ -69,8 +83,6 @@ export function createVirtualizedFeedEventItems({
           ...FeedListCaptionFragment
           # eslint-disable-next-line relay/must-colocate-fragment-spreads
           ...FeedListSectionHeaderFragment
-          # eslint-disable-next-line relay/must-colocate-fragment-spreads
-          ...FeedEventSocializeSectionFragment
         }
       `,
       eventRef
@@ -96,18 +108,34 @@ export function createVirtualizedFeedEventItems({
     const isAFailedEvent = failedEvents.has(event.dbid);
 
     if (isSupportedFeedEvent && !isAFailedEvent) {
-      items.push({ kind: 'feed-item-header', event, key: `feed-item-header-${event.dbid}` });
+      items.push({
+        kind: 'feed-item-header',
+        event,
+        key: `feed-item-header-${event.dbid}`,
+        eventId: event.dbid,
+      });
 
       if (event.caption) {
-        items.push({ kind: 'feed-item-caption', event, key: `feed-item-caption-${event.dbid}` });
+        items.push({
+          kind: 'feed-item-caption',
+          event,
+          key: `feed-item-caption-${event.dbid}`,
+          eventId: event.dbid,
+        });
       }
 
-      items.push({ kind: 'feed-item-event', event, key: `feed-item-event-${event.dbid}` });
+      items.push({
+        kind: 'feed-item-event',
+        event,
+        key: `feed-item-event-${event.dbid}`,
+        eventId: event.dbid,
+      });
 
       items.push({
         kind: 'feed-item-socialize',
         event,
         key: `feed-item-socialize-${event.dbid}`,
+        eventId: event.dbid,
         queryRef: query,
       });
     }
