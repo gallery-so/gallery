@@ -9,6 +9,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { RelayEnvironmentProvider } from 'react-relay';
 import { SWRConfig } from 'swr';
 
+import { MobileAnalyticsProvider } from '~/contexts/MobileAnalyticsProvider';
 import { MobileErrorReportingProvider } from '~/contexts/MobileErrorReportingProvider';
 import { createRelayEnvironment } from '~/contexts/relay/RelayProvider';
 import { RootStackNavigator } from '~/navigation/RootStackNavigator';
@@ -57,17 +58,19 @@ export default function App() {
       <SWRConfig>
         <Suspense fallback={<LoadingView />}>
           <MobileErrorReportingProvider>
-            <SafeAreaProvider>
-              <BottomSheetModalProvider>
-                <magic.Relayer />
-                <SearchProvider>
-                  <NavigationContainer>
-                    <DevMenuItems />
-                    <RootStackNavigator />
-                  </NavigationContainer>
-                </SearchProvider>
-              </BottomSheetModalProvider>
-            </SafeAreaProvider>
+            <MobileAnalyticsProvider>
+              <SafeAreaProvider>
+                <BottomSheetModalProvider>
+                  <magic.Relayer />
+                  <SearchProvider>
+                    <NavigationContainer>
+                      <DevMenuItems />
+                      <RootStackNavigator />
+                    </NavigationContainer>
+                  </SearchProvider>
+                </BottomSheetModalProvider>
+              </SafeAreaProvider>
+            </MobileAnalyticsProvider>
           </MobileErrorReportingProvider>
         </Suspense>
       </SWRConfig>
