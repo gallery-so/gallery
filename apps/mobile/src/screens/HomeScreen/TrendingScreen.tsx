@@ -43,14 +43,16 @@ function TrendingScreenInner({ queryRef }: TrendingScreenInnerProps) {
   );
 
   useEffect(() => {
-    if (hasPrevious) {
+    if (hasPrevious && !isLoadingPrevious) {
       loadPrevious(PER_PAGE - INITIAL_COUNT);
     }
-  }, [hasPrevious, loadPrevious]);
+  }, [hasPrevious, isLoadingPrevious, loadPrevious]);
 
   const handleLoadMore = useCallback(() => {
-    loadPrevious(PER_PAGE);
-  }, [loadPrevious]);
+    if (hasPrevious && !isLoadingPrevious) {
+      loadPrevious(PER_PAGE);
+    }
+  }, [hasPrevious, isLoadingPrevious, loadPrevious]);
 
   const events = useMemo(() => {
     return removeNullValues(query.trendingFeed?.edges?.map((it) => it?.node)).reverse();
