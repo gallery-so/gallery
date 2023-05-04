@@ -60,6 +60,7 @@ export function CommentButton({ eventRef, queryRef, style, onClick }: Props) {
         ref={bottomSheetRef}
         index={0}
         snapPoints={snapPoints}
+        enableHandlePanningGesture={false}
         backdropComponent={({ animatedIndex, ...props }) => (
           <BottomSheetBackdrop
             {...props}
