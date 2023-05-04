@@ -44,16 +44,16 @@ function LatestScreenInner({ queryRef }: LatestScreenInnerProps) {
   );
 
   useEffect(() => {
-    if (hasPrevious) {
+    if (hasPrevious && !isLoadingPrevious) {
       loadPrevious(PER_PAGE - INITIAL_COUNT);
     }
-  }, [hasPrevious, loadPrevious]);
+  }, [hasPrevious, isLoadingPrevious, loadPrevious]);
 
   const handleLoadMore = useCallback(() => {
-    if (hasPrevious) {
+    if (hasPrevious && !isLoadingPrevious) {
       loadPrevious(PER_PAGE);
     }
-  }, [hasPrevious, loadPrevious]);
+  }, [hasPrevious, isLoadingPrevious, loadPrevious]);
 
   const events = useMemo(() => {
     return removeNullValues(query.globalFeed?.edges?.map((it) => it?.node)).reverse();
