@@ -212,11 +212,11 @@ export function CommentBox({
 
   return (
     <View className="px-2 pb-2 flex flex-row items-center space-x-3">
-      <Animated.View className="flex-1 flex-row justify-between items-center bg-faint dark:bg-offBlack p-2 space-x-3">
+      <Animated.View className="flex-1 flex-row justify-between items-center bg-faint dark:bg-offBlack p-1.5 space-x-3">
         <BottomSheetTextInput
           value={value}
           onChangeText={setValue}
-          className="text-sm"
+          className="text-sm h-5"
           selectionColor={colorScheme === 'dark' ? colors.white : colors.offBlack}
           autoCapitalize="none"
           autoCorrect={false}
