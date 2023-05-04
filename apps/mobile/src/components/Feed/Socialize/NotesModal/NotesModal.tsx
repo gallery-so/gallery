@@ -76,7 +76,7 @@ export function NotesModal({ eventRef, queryRef, bottomSheetRef }: Props) {
           snapPoints={snapPoints}
           handleComponent={() => (
             <View
-              className={`h-2 border-t rounded-t-[40px] ${
+              className={`rounded-t-[40px] ${
                 colorScheme === 'dark' ? 'bg-black border-offBlack' : 'bg-white border-porcelain'
               }`}
             >
