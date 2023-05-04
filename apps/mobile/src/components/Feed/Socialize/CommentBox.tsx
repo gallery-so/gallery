@@ -11,6 +11,7 @@ import useKeyboardStatus from 'src/utils/useKeyboardStatus';
 import { CommentBoxFragment$key } from '~/generated/CommentBoxFragment.graphql';
 import { CommentBoxMutation } from '~/generated/CommentBoxMutation.graphql';
 import { CommentBoxQueryFragment$key } from '~/generated/CommentBoxQueryFragment.graphql';
+import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 import colors from '~/shared/theme/colors';
 
@@ -60,6 +61,7 @@ export function CommentBox({
     eventRef
   );
 
+  const reportError = useReportError();
   const colorScheme = useColorScheme();
   const [value, setValue] = useState('');
 
@@ -160,10 +162,16 @@ export function CommentBox({
       if (response.commentOnFeedEvent?.__typename === 'CommentOnFeedEventPayload') {
         resetComment();
       } else {
-        // TODO: handle or track error whenever we setup tracker
+        reportError(
+          `Error while commenting on feed event, typename was ${response.commentOnFeedEvent?.__typename}`
+        );
       }
-    } catch {
-      // TODO: handle or track error whenever we setup tracker
+    } catch (error) {
+      if (error instanceof Error) {
+        reportError(error);
+      } else {
+        reportError('An unexpected error occurred while posting a comment.');
+      }
     }
   }, [
     value,
@@ -173,6 +181,7 @@ export function CommentBox({
     query.viewer?.user?.id,
     query.viewer?.user?.username,
     submitComment,
+    reportError,
     resetComment,
   ]);
 

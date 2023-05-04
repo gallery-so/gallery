@@ -7,6 +7,7 @@ import { AdmireButtonFragment$key } from '~/generated/AdmireButtonFragment.graph
 import { AdmireButtonMutation } from '~/generated/AdmireButtonMutation.graphql';
 import { AdmireButtonQueryFragment$key } from '~/generated/AdmireButtonQueryFragment.graphql';
 import { AdmireButtonRemoveMutation } from '~/generated/AdmireButtonRemoveMutation.graphql';
+import { AdditionalContext, useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 
 import { AdmireIcon } from './AdmireIcon';
@@ -51,6 +52,8 @@ export function AdmireButton({ eventRef, queryRef, style }: Props) {
     `,
     queryRef
   );
+
+  const reportError = useReportError();
 
   const [admire] = usePromisifiedMutation<AdmireButtonMutation>(graphql`
     mutation AdmireButtonMutation($eventId: DBID!, $connections: [ID!]!) @raw_response_type {
@@ -107,6 +110,10 @@ export function AdmireButton({ eventRef, queryRef, style }: Props) {
       return;
     }
 
+    const errorMetadata: AdditionalContext['tags'] = {
+      eventId: event.dbid,
+    };
+
     const updater: SelectorStoreUpdater<AdmireButtonRemoveMutation['response']> = (
       store,
       response
@@ -144,17 +151,33 @@ export function AdmireButton({ eventRef, queryRef, style }: Props) {
         // We can silently fail if the post was already not admired
         response.removeAdmire?.__typename !== 'ErrAdmireNotFound'
       ) {
-        // TODO: handle or track error whenever we setup tracker
+        reportError(
+          `Could not unadmire feed event, typename was ${response.removeAdmire?.__typename}`,
+          {
+            tags: errorMetadata,
+          }
+        );
       }
     } catch (error) {
-      // TODO: handle or track error whenever we setup tracker
+      if (error instanceof Error) {
+        reportError(error);
+      } else {
+        reportError(`Could not remove admire on feed event for an unknown reason`, {
+          tags: errorMetadata,
+        });
+      }
     }
-  }, [event.viewerAdmire?.dbid, interactionsConnection, removeAdmire]);
+  }, [event.dbid, event.viewerAdmire?.dbid, interactionsConnection, removeAdmire, reportError]);
 
   const handleAdmire = useCallback(async () => {
     if (query.viewer?.__typename !== 'Viewer') {
       return;
     }
+
+    const errorMetadata: AdditionalContext['tags'] = {
+      eventId: event.dbid,
+    };
+
     const updater: SelectorStoreUpdater<AdmireButtonMutation['response']> = (store, response) => {
       if (response?.admireFeedEvent?.__typename === 'AdmireFeedEventPayload') {
         const pageInfo = store.get(interactionsConnection)?.getLinkedRecord('pageInfo');
@@ -198,12 +221,31 @@ export function AdmireButton({ eventRef, queryRef, style }: Props) {
         // We can silently fail if the post was already admired
         response.admireFeedEvent?.__typename !== 'ErrAdmireAlreadyExists'
       ) {
-        // TODO: Handle this error
+        reportError(
+          `Could not admire feed event, typename was ${response.admireFeedEvent?.__typename}`,
+          {
+            tags: errorMetadata,
+          }
+        );
       }
     } catch (error) {
-      // TODO: Handle this error
+      if (error instanceof Error) {
+        reportError(error);
+      } else {
+        reportError(`Could not post comment on feed event for an unknown reason`, {
+          tags: errorMetadata,
+        });
+      }
     }
-  }, [admire, event.dbid, event.id, interactionsConnection, notesModalConnection, query.viewer]);
+  }, [
+    admire,
+    event.dbid,
+    event.id,
+    interactionsConnection,
+    notesModalConnection,
+    query.viewer,
+    reportError,
+  ]);
 
   const hasViewerAdmiredEvent = Boolean(event.viewerAdmire);
 
