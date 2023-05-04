@@ -3,26 +3,12 @@ import styled from 'styled-components';
 
 import { Button } from '~/components/core/Button/Button';
 import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
-import { VStack } from '~/components/core/Spacer/Stack';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeL } from '~/components/core/Text/Text';
+import QRCode from '~/components/QRCode/QRCode';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 
 import SettingsRowDescription from '../SettingsRowDescription';
-
-function MobileAuthBody() {
-  return (
-    <StyledBody>
-      <BaseM>
-        Scan the QR code to sign in to your Gallery mobile app. This code grants access to your
-        account, so be careful who you share it with.
-      </BaseM>
-    </StyledBody>
-  );
-}
-
-const StyledBody = styled(VStack)`
-  max-width: 400px;
-`;
 
 export default function MobileAuthManagerSection() {
   const { showModal } = useModalActions();
@@ -49,3 +35,25 @@ export default function MobileAuthManagerSection() {
     </VStack>
   );
 }
+
+function MobileAuthBody() {
+  return (
+    <StyledBody>
+      <BaseM>
+        Scan the QR code to sign in to your Gallery mobile app. This code grants access to your
+        account, so be careful who you share it with.
+      </BaseM>
+      <StyledHStack justify="center">
+        <QRCode width={250} height={250} encodedData="jwt" />
+      </StyledHStack>
+    </StyledBody>
+  );
+}
+
+const StyledBody = styled(VStack)`
+  max-width: 350px;
+`;
+
+const StyledHStack = styled(HStack)`
+  padding: 20px;
+`;
