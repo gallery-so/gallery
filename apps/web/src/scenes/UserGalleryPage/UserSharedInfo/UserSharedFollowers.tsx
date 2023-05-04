@@ -4,10 +4,10 @@ import styled from 'styled-components';
 
 import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { BaseS } from '~/components/core/Text/Text';
-import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { UserSharedFollowersFragment$key } from '~/generated/UserSharedFollowersFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import PaginatedUsersList from './UserSharedInfoList/SharedFollowersList';

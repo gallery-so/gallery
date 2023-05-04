@@ -3,11 +3,11 @@ import { useEffect } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { FocusedGalleryPageFragment$key } from '~/generated/FocusedGalleryPageFragment.graphql';
 import { GalleryPageSpacing } from '~/pages/[username]';
 import useDisplayFullPageNftDetailModal from '~/scenes/NftDetailPage/useDisplayFullPageNftDetailModal';
 import { UserGalleryLayout } from '~/scenes/UserGalleryPage/UserGalleryLayout';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 
 type FocusedGalleryPageProps = {
   queryRef: FocusedGalleryPageFragment$key;

@@ -4,9 +4,9 @@ import { MouseEventHandler, useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
 import { HStack } from '~/components/core/Spacer/Stack';
-import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { HomeNavbarFragment$key } from '~/generated/HomeNavbarFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 
 import { NavbarLink } from '../NavbarLink';
 import { SignInButton } from '../SignInButton';

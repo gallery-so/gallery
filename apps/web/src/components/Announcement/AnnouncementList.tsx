@@ -4,9 +4,9 @@ import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
-import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 import { AnnouncementListFragment$key } from '~/generated/AnnouncementListFragment.graphql';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
 import useUpdateUserExperience from '~/utils/graphql/experiences/useUpdateUserExperience';
 import { HTTPS_URL } from '~/utils/regex';

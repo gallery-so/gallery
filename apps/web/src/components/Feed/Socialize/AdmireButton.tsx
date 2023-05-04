@@ -2,7 +2,6 @@ import { useCallback } from 'react';
 import { useFragment } from 'react-relay';
 import { ConnectionHandler, graphql, SelectorStoreUpdater } from 'relay-runtime';
 
-import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { AdmireButtonFragment$key } from '~/generated/AdmireButtonFragment.graphql';
@@ -11,6 +10,7 @@ import { AdmireButtonQueryFragment$key } from '~/generated/AdmireButtonQueryFrag
 import { AdmireButtonRemoveMutation } from '~/generated/AdmireButtonRemoveMutation.graphql';
 import { AuthModal } from '~/hooks/useAuthModal';
 import { AdmireIcon } from '~/icons/SocializeIcons';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { AdditionalContext, useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 

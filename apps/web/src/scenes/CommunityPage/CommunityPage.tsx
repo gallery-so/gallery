@@ -5,10 +5,10 @@ import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import breakpoints, { pageGutter } from '~/components/core/breakpoints';
-import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { CommunityPageFragment$key } from '~/generated/CommunityPageFragment.graphql';
 import NotFound from '~/scenes/NotFound/NotFound';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 
 import CommunityPageView from './CommunityPageView';
 

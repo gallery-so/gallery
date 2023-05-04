@@ -3,7 +3,7 @@ import { Route } from 'nextjs-routes';
 import { ReactNode, useCallback } from 'react';
 import styled from 'styled-components';
 
-import { useTrack } from '~/contexts/analytics/AnalyticsContext';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
 
 import { BODY_FONT_FAMILY } from '../Text/Text';

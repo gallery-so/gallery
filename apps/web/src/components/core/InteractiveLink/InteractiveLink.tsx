@@ -3,8 +3,8 @@ import { Route } from 'nextjs-routes';
 import { MouseEvent, MouseEventHandler, ReactNode, useCallback } from 'react';
 import styled from 'styled-components';
 
-import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
 
 import { BODY_FONT_FAMILY } from '../Text/Text';
