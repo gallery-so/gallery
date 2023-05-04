@@ -23704,6 +23704,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"mixpanel-react-native@npm:^2.2.5":
+  version: 2.2.5
+  resolution: "mixpanel-react-native@npm:2.2.5"
+  checksum: 2b9c0291fdbdd31811dfc1d209523780cc5966e7a513f8fbc5566ce576c912c7c08bfee49782f2794ca28a0d180e52589f2b7050cd457fc8e1ea6e507a8874ff
+  languageName: node
+  linkType: hard
+
 "mkdirp-promise@npm:^5.0.1":
   version: 5.0.1
   resolution: "mkdirp-promise@npm:5.0.1"
@@ -23781,6 +23788,7 @@ __metadata:
     expo-updates: ~0.16.3
     lodash.merge: ^4.6.2
     lru-cache: ^9.1.1
+    mixpanel-react-native: ^2.2.5
     nativewind: ^2.0.11
     node-html-parser: ^6.1.5
     react: 18.2.0
