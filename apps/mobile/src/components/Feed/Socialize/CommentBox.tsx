@@ -1,8 +1,9 @@
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
-import { Text, useColorScheme, View } from 'react-native';
+import { Text, useColorScheme, View, ViewStyle } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
+import { AnimatedStyleProp } from 'react-native-reanimated';
 import { ConnectionHandler, graphql, useFragment } from 'react-relay';
 import { SelectorStoreUpdater } from 'relay-runtime';
 import { XMarkIcon } from 'src/icons/XMarkIcon';
@@ -190,20 +191,24 @@ export function CommentBox({
   }, [value.length, characterCount, isSubmittingComment]);
 
   const width = useSharedValue(0);
+  const display = useSharedValue('none');
   const xmarkIconStyle = useAnimatedStyle(() => {
     return {
       overflow: 'hidden',
       width: width.value,
-    };
+      display: display.value,
+    } as AnimatedStyleProp<ViewStyle>;
   });
 
   useLayoutEffect(() => {
     if (showXMark) {
       width.value = withSpring(20, { overshootClamping: true });
+      display.value = 'flex';
     } else {
       width.value = withSpring(0, { overshootClamping: true });
+      display.value = 'none';
     }
-  }, [showXMark, width]);
+  }, [showXMark, width, display]);
 
   return (
     <View className="px-2 pb-3 flex flex-row items-center space-x-3">
