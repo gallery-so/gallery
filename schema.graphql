@@ -67,6 +67,7 @@ input AuthMechanism {
   gnosisSafe: GnosisSafeAuth
   debug: DebugAuth
   magicLink: MagicLinkAuth
+  oneTimeLoginToken: OneTimeLoginTokenAuth
 }
 
 type AuthNonce {
@@ -669,6 +670,12 @@ union GalleryUserOrAddress = GalleryUser | ChainAddress
 
 union GalleryUserOrWallet = GalleryUser | Wallet
 
+type GenerateQRCodeLoginTokenPayload {
+  token: String!
+}
+
+union GenerateQRCodeLoginTokenPayloadOrError = GenerateQRCodeLoginTokenPayload | ErrNotAuthorized
+
 union GetAuthNoncePayloadOrError = AuthNonce | ErrDoesNotOwnRequiredToken
 
 type GIFMedia implements Media {
@@ -906,6 +913,7 @@ type Mutation {
   updatePrimaryWallet(walletID: DBID!): UpdatePrimaryWalletPayloadOrError
   updateUserExperience(input: UpdateUserExperienceInput!): UpdateUserExperiencePayloadOrError
   moveCollectionToGallery(input: MoveCollectionToGalleryInput): MoveCollectionToGalleryPayloadOrError
+  generateQRCodeLoginToken: GenerateQRCodeLoginTokenPayloadOrError
 }
 
 interface Node {
@@ -942,6 +950,10 @@ input NotificationSettingsInput {
   someoneAdmiredYourUpdate: Boolean
   someoneCommentedOnYourUpdate: Boolean
   someoneViewedYourGallery: Boolean
+}
+
+input OneTimeLoginTokenAuth {
+  token: String!
 }
 
 type OwnerAtBlock {

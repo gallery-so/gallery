@@ -7,18 +7,7 @@ import QRIcon from '~/icons/QRIcon';
 import QRCodePopover from '~/scenes/Modals/QRCodePopover';
 import colors from '~/shared/theme/colors';
 
-export default function QRCode({
-  username,
-  styledQrCode,
-}: {
-  username: string;
-
-  // Figure out if not using the QRCodeStyling type is actually
-  // helping with code splitting
-  //
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  styledQrCode: any;
-}) {
+export default function QRCode({ username }: { username: string }) {
   const { showModal } = useModalActions();
   const track = useTrack();
 
@@ -26,10 +15,10 @@ export default function QRCode({
     track('Profile QR Code Click', { username });
 
     showModal({
-      content: <QRCodePopover username={username} styledQrCode={styledQrCode} />,
+      content: <QRCodePopover username={username} />,
       isFullPage: true,
     });
-  }, [track, username, showModal, styledQrCode]);
+  }, [track, username, showModal]);
 
   return (
     <StyledButton onClick={handleClick} title="Open QR code">
