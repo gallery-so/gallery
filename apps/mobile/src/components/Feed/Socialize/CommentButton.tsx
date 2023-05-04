@@ -1,6 +1,5 @@
-import { BottomSheetModal } from '@gorhom/bottom-sheet';
-import { Portal } from '@gorhom/portal';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { BottomSheetBackdrop, BottomSheetModal } from '@gorhom/bottom-sheet';
+import { useCallback, useMemo, useRef } from 'react';
 import { TouchableOpacity, useColorScheme, View, ViewProps } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
@@ -37,58 +36,54 @@ export function CommentButton({ eventRef, queryRef, style, onClick }: Props) {
   );
 
   const colorScheme = useColorScheme();
-  const [isCommentBoxOpen, setIsCommentBoxOpen] = useState(false);
 
   const bottomSheetRef = useRef<BottomSheetModal>(null);
   const snapPoints = useMemo(() => [52], []);
 
-  const toggleCommentBox = useCallback(() => {
-    if (isCommentBoxOpen) {
-      bottomSheetRef.current?.dismiss();
-      setIsCommentBoxOpen(false);
-      return;
-    }
-    onClick();
-    bottomSheetRef.current?.present();
-    setIsCommentBoxOpen(true);
-  }, [isCommentBoxOpen, onClick]);
-
   const handleCloseCommentBox = useCallback(() => {
-    bottomSheetRef.current?.dismiss();
-    setIsCommentBoxOpen(false);
+    bottomSheetRef.current?.close();
   }, []);
 
+  const toggleCommentBox = useCallback(() => {
+    onClick();
+    bottomSheetRef.current?.present();
+  }, [onClick]);
+
   return (
-    <View className="flex flex-row space-x-4" style={style}>
-      <TouchableOpacity onPress={toggleCommentBox}>
-        <CommentIcon />
-      </TouchableOpacity>
-      <Portal>
-        <View>
-          <BottomSheetModal
-            ref={bottomSheetRef}
-            index={0}
-            snapPoints={snapPoints}
-            handleComponent={() => (
-              <View
-                className={`h-2 border-t ${
-                  colorScheme === 'dark' ? 'bg-black border-offBlack' : 'bg-white border-porcelain'
-                }`}
-              />
-            )}
-            handleIndicatorStyle={{ display: 'none' }}
-          >
-            <View className={`${colorScheme === 'dark' ? 'bg-black' : 'bg-white'}`}>
-              <CommentBox
-                autoFocus
-                eventRef={event}
-                queryRef={query}
-                onClose={handleCloseCommentBox}
-              />
-            </View>
-          </BottomSheetModal>
+    <>
+      <View className="flex flex-row space-x-4" style={style}>
+        <TouchableOpacity onPress={toggleCommentBox}>
+          <CommentIcon />
+        </TouchableOpacity>
+      </View>
+      <BottomSheetModal
+        ref={bottomSheetRef}
+        index={0}
+        snapPoints={snapPoints}
+        backdropComponent={({ animatedIndex, ...props }) => (
+          <BottomSheetBackdrop
+            {...props}
+            animatedIndex={animatedIndex}
+            appearsOnIndex={0}
+            disappearsOnIndex={-1}
+            opacity={0.1}
+          />
+        )}
+        handleComponent={() => (
+          <View
+            className={`h-2 border-t ${
+              colorScheme === 'dark' ? 'bg-black border-offBlack' : 'bg-white border-porcelain'
+            }`}
+          />
+        )}
+        handleIndicatorStyle={{
+          display: 'none',
+        }}
+      >
+        <View className={`${colorScheme === 'dark' ? 'bg-black' : 'bg-white'}`}>
+          <CommentBox autoFocus eventRef={event} queryRef={query} onClose={handleCloseCommentBox} />
         </View>
-      </Portal>
-    </View>
+      </BottomSheetModal>
+    </>
   );
 }
