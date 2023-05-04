@@ -3,7 +3,7 @@ import { TouchableOpacity, View } from 'react-native';
 
 import { Typography } from '../Typography';
 
-export type SearchFilterType = 'curator' | 'gallery' | 'community' | null;
+export type SearchFilterType = 'top' | 'curator' | 'gallery' | 'community' | null;
 
 type FilterElement = {
   label: string;
@@ -16,6 +16,10 @@ type Props = {
 };
 
 const filters: FilterElement = [
+  {
+    label: 'Top',
+    value: 'top',
+  },
   {
     label: 'Curators',
     value: 'curator',
