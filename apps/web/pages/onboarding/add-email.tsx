@@ -10,8 +10,8 @@ import { BaseM, TitleDiatypeL, TitleL } from '~/components/core/Text/Text';
 import EmailManager from '~/components/Email/EmailManager';
 import FullPageCenteredStep from '~/components/Onboarding/FullPageCenteredStep';
 import { OnboardingFooter } from '~/components/Onboarding/OnboardingFooter';
-import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { addEmailQuery } from '~/generated/addEmailQuery.graphql';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 
 export default function AddEmail() {
   const query = useLazyLoadQuery<addEmailQuery>(

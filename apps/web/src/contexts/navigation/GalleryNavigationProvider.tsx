@@ -1,7 +1,7 @@
 import { NextRouter, useRouter } from 'next/router';
 import { createContext, ReactNode, useContext, useEffect, useMemo, useRef, useState } from 'react';
 
-import { useTrack } from '~/contexts/analytics/AnalyticsContext';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 
 import { FADE_TRANSITION_TIME_MS } from '../globalLayout/transitionTiming';
 import useStabilizedRouteTransitionKey from '../globalLayout/useStabilizedRouteTransitionKey';

@@ -8,11 +8,11 @@ import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { TitleM } from '~/components/core/Text/Text';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
-import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { CollectorsNoteAddedToTokenFeedEventFragment$key } from '~/generated/CollectorsNoteAddedToTokenFeedEventFragment.graphql';
 import useWindowSize, { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import NftDetailView from '~/scenes/NftDetailPage/NftDetailView';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { getTimeSince } from '~/shared/utils/time';
 import unescape from '~/shared/utils/unescape';
 

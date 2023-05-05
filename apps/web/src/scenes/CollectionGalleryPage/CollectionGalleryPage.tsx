@@ -3,12 +3,12 @@ import { useRouter } from 'next/router';
 import { useCallback, useEffect } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
-import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { useModalState } from '~/contexts/modal/ModalContext';
 import { CollectionGalleryPageFragment$key } from '~/generated/CollectionGalleryPageFragment.graphql';
 import useKeyDown from '~/hooks/useKeyDown';
 import { GalleryPageSpacing } from '~/pages/[username]';
 import useDisplayFullPageNftDetailModal from '~/scenes/NftDetailPage/useDisplayFullPageNftDetailModal';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 
 import CollectionGallery from './CollectionGallery';
 

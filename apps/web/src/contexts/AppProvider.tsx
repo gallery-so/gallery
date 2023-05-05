@@ -8,7 +8,7 @@ import { SyncTokensLockProvider } from '~/contexts/SyncTokensLockContext';
 import { GlobalLayoutContextQuery } from '~/generated/GlobalLayoutContextQuery.graphql';
 import isProduction from '~/utils/isProduction';
 
-import AnalyticsProvider from './analytics/AnalyticsContext';
+import AnalyticsProvider from './analytics/WebAnalyticsProvider';
 import Boundary from './boundary/Boundary';
 import { WebErrorReportingProvider } from './errorReporting/WebErrorReportingProvider';
 import GlobalLayoutContextProvider from './globalLayout/GlobalLayoutContext';

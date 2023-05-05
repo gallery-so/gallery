@@ -10,7 +10,6 @@ import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { Notifications } from '~/components/Notifications/Notifications';
 import Search from '~/components/Search/Search';
 import Settings from '~/components/Settings/Settings';
-import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { StandardSidebarFragment$key } from '~/generated/StandardSidebarFragment.graphql';
 import useAuthModal from '~/hooks/useAuthModal';
 import { useSearchHotkey } from '~/hooks/useSearchHotkey';
@@ -22,6 +21,7 @@ import GLogoIcon from '~/icons/GLogoIcon';
 import SearchIcon from '~/icons/SearchIcon';
 import ShopIcon from '~/icons/ShopIcon';
 import UserIcon from '~/icons/UserIcon';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import useExperience from '~/utils/graphql/experiences/useExperience';
 
 import { useDrawerActions, useDrawerState } from './SidebarDrawerContext';

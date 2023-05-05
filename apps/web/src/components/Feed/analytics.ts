@@ -1,6 +1,6 @@
 import { useCallback, useRef } from 'react';
 
-import { useTrack } from '~/contexts/analytics/AnalyticsContext';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 
 export function useTrackLoadMoreFeedEvents() {
   const track = useTrack();
