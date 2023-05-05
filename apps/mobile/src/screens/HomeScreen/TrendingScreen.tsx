@@ -1,4 +1,4 @@
-import { Suspense, useCallback, useEffect, useMemo } from 'react';
+import { Suspense, useCallback, useEffect, useMemo, useRef } from 'react';
 import { graphql, useFragment, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 
 import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/NotesModal/NotesList';
@@ -77,10 +77,13 @@ function TrendingScreenInner({ queryRef }: TrendingScreenInnerProps) {
     query
   );
 
+  const firstMountRef = useRef(true);
   useEffect(() => {
-    if (trendingFeed.hasPrevious) {
+    if (firstMountRef.current && trendingFeed.hasPrevious) {
       trendingFeed.loadPrevious(PER_PAGE - INITIAL_COUNT);
     }
+
+    firstMountRef.current = false;
   }, [trendingFeed]);
 
   const handleLoadMore = useCallback(() => {
