@@ -188,7 +188,7 @@ function SidebarNftIcon({
     >
       <ReportingErrorBoundary
         fallback={
-          <StyledSidebarNftIcon>
+          <StyledSidebarNftIcon backgroundColorOverride={backgroundColorOverride}>
             <RawSidebarPreviewAsset
               onLoad={handleLoad}
               type="image"
