@@ -188,12 +188,15 @@ function SidebarNftIcon({
     >
       <ReportingErrorBoundary
         fallback={
-          <RawSidebarPreviewAsset
-            onLoad={handleLoad}
-            type="image"
-            isSelected={isSelected ?? false}
-            src={token.media?.fallbackMedia?.mediaURL}
-          />
+          <StyledSidebarNftIcon>
+            <RawSidebarPreviewAsset
+              onLoad={handleLoad}
+              type="image"
+              isSelected={isSelected ?? false}
+              src={token.media?.fallbackMedia?.mediaURL}
+            />
+            <StyledOutline onClick={handleClick} isSelected={isSelected} />
+          </StyledSidebarNftIcon>
         }
       >
         <StyledSidebarNftIcon backgroundColorOverride={backgroundColorOverride}>
