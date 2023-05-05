@@ -1,14 +1,9 @@
-import { useNavigation } from '@react-navigation/native';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { StyleSheet, useColorScheme, View } from 'react-native';
-import { Share, useColorScheme, View } from 'react-native';
+import { useColorScheme, View } from 'react-native';
 import { CollapsibleRef, Tabs } from 'react-native-collapsible-tab-view';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import { FollowButton } from '~/components/FollowButton';
-import { IconContainer } from '~/components/IconContainer';
 import { GalleryProfileNavBar } from '~/components/ProfileView/GalleryProfileNavBar';
 import { ProfileViewHeader } from '~/components/ProfileView/ProfileViewHeader';
 import { ProfileViewActivityTab } from '~/components/ProfileView/Tabs/ProfileViewActivityTab';
@@ -20,15 +15,7 @@ import { Typography } from '~/components/Typography';
 import { GalleryTokenDimensionCacheProvider } from '~/contexts/GalleryTokenDimensionCacheContext';
 import { ProfileViewFragment$key } from '~/generated/ProfileViewFragment.graphql';
 import { ProfileViewQueryFragment$key } from '~/generated/ProfileViewQueryFragment.graphql';
-import { MainTabStackNavigatorProp } from '~/navigation/types';
-import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import colors from '~/shared/theme/colors';
-import colors from '~/shared/theme/colors';
-
-import { BackIcon } from '../../icons/BackIcon';
-import { QRCodeIcon } from '../../icons/QRCodeIcon';
-import { ShareIcon } from '../../icons/ShareIcon';
-import { FeedbackButton } from '../FeedbackButton';
 
 type ProfileViewProps = {
   shouldShowBackButton: boolean;
@@ -41,8 +28,6 @@ export function ProfileView({ userRef, queryRef, shouldShowBackButton }: Profile
     graphql`
       fragment ProfileViewQueryFragment on Query {
         ...GalleryProfileNavBarQueryFragment
-        ...useLoggedInUserIdFragment
-        ...FollowButtonQueryFragment
         ...ProfileViewFollowersTabQueryFragment
         ...ProfileViewActivityTabQueryFragment
       }
@@ -50,14 +35,11 @@ export function ProfileView({ userRef, queryRef, shouldShowBackButton }: Profile
     queryRef
   );
 
-  const loggedInUserId = useLoggedInUserId(query);
-
   const user = useFragment(
     graphql`
       fragment ProfileViewFragment on GalleryUser {
         __typename
 
-        id
         username
 
         ...ProfileViewHeaderFragment
@@ -67,7 +49,6 @@ export function ProfileView({ userRef, queryRef, shouldShowBackButton }: Profile
         ...ProfileViewFollowersTabFragment
 
         ...GalleryProfileNavBarFragment
-        ...FollowButtonUserFragment
       }
     `,
     userRef
@@ -124,7 +105,13 @@ export function ProfileView({ userRef, queryRef, shouldShowBackButton }: Profile
             containerStyle={{
               backgroundColor: colorScheme === 'light' ? colors.white : colors.black,
             }}
-            headerContainerStyle={styles.headerReset}
+            headerContainerStyle={{
+              margin: 0,
+              elevation: 0,
+              shadowOpacity: 0,
+              borderBottomColor: 'transparent',
+              backgroundColor: colorScheme === 'light' ? colors.white : colors.black,
+            }}
             renderTabBar={Empty}
             renderHeader={Header}
           >
@@ -141,7 +128,7 @@ export function ProfileView({ userRef, queryRef, shouldShowBackButton }: Profile
             </Tabs.Tab>
 
             <Tabs.Tab name="Activity">
-              <ProfileViewActivityTab userRef={user} />
+              <ProfileViewActivityTab queryRef={query} userRef={user} />
             </Tabs.Tab>
           </Tabs.Container>
         </GalleryTokenDimensionCacheProvider>

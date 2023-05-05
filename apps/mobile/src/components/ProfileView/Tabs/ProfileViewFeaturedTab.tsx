@@ -25,6 +25,7 @@ export function ProfileViewFeaturedTab({ userRef }: ProfileViewFeaturedTabProps)
         featuredGallery {
           ...createVirtualizedGalleryRows
 
+          # eslint-disable-next-line relay/must-colocate-fragment-spreads
           ...GalleryScreenGalleryFragment @defer
         }
       }
