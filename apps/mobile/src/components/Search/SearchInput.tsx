@@ -1,39 +1,60 @@
 import { useFocusEffect } from '@react-navigation/native';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { TextInput, TextInputProps, TouchableOpacity, useColorScheme, View } from 'react-native';
 
 import colors from '~/shared/theme/colors';
 
 import { XMarkIcon } from '../../icons/XMarkIcon';
+import { Typography } from '../Typography';
 import { useSearchContext } from './SearchContext';
+import { SearchFilterType } from './SearchFilter';
 
-type Props = TextInputProps;
+type Props = TextInputProps & {
+  inputRef: React.RefObject<TextInput>;
+  setFilter: (filter: SearchFilterType) => void;
+};
 
-export function SearchInput({ value, onChange, style, ...props }: Props) {
+export function SearchInput({ inputRef, setFilter, value, onChange, style, ...props }: Props) {
   const { keyword, setKeyword } = useSearchContext();
   const [localKeyword, setLocalKeyword] = useState<string>(keyword);
 
-  const ref = useRef<TextInput>(null);
+  const [isFocused, setIsFocused] = useState(false);
 
-  const handleFocus = useCallback(() => {
+  const setFocus = useCallback(() => {
     // Need to focus after a certain number of ms, otherwise the input immediately loses focus
     // https://github.com/facebook/react-native/issues/30162#issuecomment-1046090316
     setTimeout(() => {
-      if (ref.current) {
-        ref.current.focus();
+      if (inputRef.current) {
+        inputRef.current.focus();
       }
     }, 500);
-  }, [ref]);
+  }, [inputRef]);
 
-  useFocusEffect(handleFocus);
+  useFocusEffect(setFocus);
+
+  const handleFocus = useCallback(() => {
+    setIsFocused(true);
+  }, []);
+
+  const handleBlur = useCallback(() => {
+    setIsFocused(false);
+  }, []);
 
   const handleClear = useCallback(() => {
-    if (ref.current) {
-      ref.current.clear();
+    if (inputRef.current) {
+      inputRef.current.clear();
       setKeyword('');
       setLocalKeyword('');
     }
-  }, [setKeyword]);
+  }, [inputRef, setKeyword]);
+
+  const handleCancel = useCallback(() => {
+    handleClear();
+    setFilter('top');
+    if (inputRef.current) {
+      inputRef.current.blur();
+    }
+  }, [handleClear, inputRef, setFilter]);
 
   const handleChange = useCallback(
     (text: string) => {
@@ -46,10 +67,10 @@ export function SearchInput({ value, onChange, style, ...props }: Props) {
   const colorScheme = useColorScheme();
 
   return (
-    <View className="flex flex-row items-center">
+    <View className="flex flex-row items-center space-x-[0px]">
       <TextInput
-        ref={ref}
-        className="text-offBlack dark:text-white h-10 flex-1 text-xl"
+        ref={inputRef}
+        className="text-offBlack dark:text-white h-10 flex-1 text-xxl"
         value={localKeyword}
         returnKeyType="done"
         onChangeText={handleChange}
@@ -59,6 +80,8 @@ export function SearchInput({ value, onChange, style, ...props }: Props) {
         autoCapitalize="none"
         autoCorrect={false}
         autoComplete="off"
+        onFocus={handleFocus}
+        onBlur={handleBlur}
         {...props}
       />
       {localKeyword.length > 0 && (
@@ -66,6 +89,16 @@ export function SearchInput({ value, onChange, style, ...props }: Props) {
           <View className="f flex h-4 w-4 items-center justify-center">
             <XMarkIcon />
           </View>
+        </TouchableOpacity>
+      )}
+      {isFocused && (
+        <TouchableOpacity accessibilityRole="button" onPress={handleCancel} className="-m-4 p-4">
+          <Typography
+            font={{ family: 'ABCDiatype', weight: 'Regular' }}
+            className="border-b border-black text-sm"
+          >
+            Cancel
+          </Typography>
         </TouchableOpacity>
       )}
     </View>

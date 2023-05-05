@@ -18,7 +18,6 @@ import {
   createEmptyCollection,
   getInitialCollectionsFromServer,
 } from '~/components/GalleryEditor/getInitialCollectionsFromServer';
-import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { GalleryEditorContextFragment$key } from '~/generated/GalleryEditorContextFragment.graphql';
@@ -28,6 +27,7 @@ import {
   GalleryEditorContextSaveGalleryMutation,
   UpdateCollectionInput,
 } from '~/generated/GalleryEditorContextSaveGalleryMutation.graphql';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { ErrorWithSentryMetadata } from '~/shared/errors/ErrorWithSentryMetadata';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';

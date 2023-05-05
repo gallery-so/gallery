@@ -4,11 +4,11 @@ import styled, { css } from 'styled-components';
 
 import { HStack } from '~/components/core/Spacer/Stack';
 import { TitleXSBold } from '~/components/core/Text/Text';
-import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { FollowButtonQueryFragment$key } from '~/generated/FollowButtonQueryFragment.graphql';
 import { FollowButtonUserFragment$key } from '~/generated/FollowButtonUserFragment.graphql';
 import useAuthModal from '~/hooks/useAuthModal';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import useFollowUser from '~/shared/relay/useFollowUser';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import useUnfollowUser from '~/shared/relay/useUnfollowUser';

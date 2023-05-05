@@ -64,6 +64,7 @@ const UnknownMediaResponse: NftDetailAssetTestQueryQuery = {
       collectorsNote: 'Test Collectors Note',
       media: {
         __typename: 'UnknownMedia',
+        fallbackMedia: null,
         contentRenderURL: 'bad url here',
       },
       contract: {
@@ -97,6 +98,7 @@ const RetryImageMediaResponse: NftErrorContextRetryMutationMutation = {
       chain: Chain.Ethereum,
       media: {
         __typename: 'ImageMedia',
+        fallbackMedia: null,
         contentRenderURL: 'bad url here',
         previewURLs: {
           small: 'http://someimage.com',

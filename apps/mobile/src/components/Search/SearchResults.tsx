@@ -34,9 +34,10 @@ type SearchListItem =
 type Props = {
   activeFilter: SearchFilterType;
   onChangeFilter: (filter: SearchFilterType) => void;
+  blurInputFocus: () => void;
 };
 
-export function SearchResults({ activeFilter, onChangeFilter }: Props) {
+export function SearchResults({ activeFilter, onChangeFilter, blurInputFocus }: Props) {
   const { keyword } = useSearchContext();
   const deferredKeyword = useDeferredValue(keyword);
 
@@ -80,7 +81,7 @@ export function SearchResults({ activeFilter, onChangeFilter }: Props) {
   const hasGalleries = searchGalleries?.__typename === 'SearchGalleriesPayload';
 
   const isEmpty = useMemo(() => {
-    if (!activeFilter) {
+    if (activeFilter === 'top') {
       return (
         hasUsers &&
         hasGalleries &&
@@ -138,7 +139,7 @@ export function SearchResults({ activeFilter, onChangeFilter }: Props) {
 
       // if there is no active filter, show both curators and galleries
       // but only show a preview of the results
-    } else if (!activeFilter) {
+    } else if (activeFilter === 'top') {
       if (hasUsers) {
         items.push({
           kind: 'search-section-header',
@@ -229,6 +230,7 @@ export function SearchResults({ activeFilter, onChangeFilter }: Props) {
         data={items}
         estimatedItemSize={40}
         renderItem={renderItem}
+        onTouchStart={blurInputFocus}
       />
     </View>
   );

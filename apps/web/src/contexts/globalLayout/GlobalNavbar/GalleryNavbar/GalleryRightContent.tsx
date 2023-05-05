@@ -21,7 +21,6 @@ import { useToastActions } from '~/contexts/toast/ToastContext';
 import { GalleryRightContentFragment$key } from '~/generated/GalleryRightContentFragment.graphql';
 import { GalleryRightContentGalleryFragment$key } from '~/generated/GalleryRightContentGalleryFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
-import { useQrCode } from '~/scenes/Modals/QRCodePopover';
 import EditUserInfoModal from '~/scenes/UserGalleryPage/EditUserInfoModal';
 import LinkButton from '~/scenes/UserGalleryPage/LinkButton';
 import colors from '~/shared/theme/colors';
@@ -72,7 +71,6 @@ export function GalleryRightContent({ queryRef, galleryRef, username }: GalleryR
     galleryRef
   );
 
-  const styledQrCode = useQrCode();
   const { showModal } = useModalActions();
   const { route } = useRouter();
   const { pushToast } = useToastActions();
@@ -155,7 +153,7 @@ export function GalleryRightContent({ queryRef, galleryRef, username }: GalleryR
   if (isMobile) {
     return (
       <HStack gap={8} align="center">
-        <QRCodeButton username={username} styledQrCode={styledQrCode} />
+        <QRCodeButton username={username} />
         <LinkButton textToCopy={`https://gallery.so/${username}`} />
         {shouldShowEditButton && (
           <EditLinkWrapper>

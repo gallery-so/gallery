@@ -10,11 +10,11 @@ import FullPageCenteredStep from '~/components/Onboarding/FullPageCenteredStep';
 import { OnboardingFooter } from '~/components/Onboarding/OnboardingFooter';
 import UserInfoForm from '~/components/Profile/UserInfoForm';
 import useUserInfoForm from '~/components/Profile/useUserInfoForm';
-import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { addUserInfoFetchGalleryIdQuery } from '~/generated/addUserInfoFetchGalleryIdQuery.graphql';
 import { addUserInfoQuery } from '~/generated/addUserInfoQuery.graphql';
 import { Chain } from '~/generated/enums';
 import useSyncTokens from '~/hooks/api/tokens/useSyncTokens';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import noop from '~/utils/noop';
 
 function AddUserInfo() {

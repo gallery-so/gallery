@@ -1,13 +1,16 @@
 import 'expo-dev-client';
 
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { NavigationContainer } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { Suspense, useEffect, useState } from 'react';
+import { View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { RelayEnvironmentProvider } from 'react-relay';
 import { SWRConfig } from 'swr';
 
+import { MobileAnalyticsProvider } from '~/contexts/MobileAnalyticsProvider';
 import { MobileErrorReportingProvider } from '~/contexts/MobileErrorReportingProvider';
 import { createRelayEnvironment } from '~/contexts/relay/RelayProvider';
 import { RootStackNavigator } from '~/navigation/RootStackNavigator';
@@ -52,22 +55,28 @@ export default function App() {
   }
 
   return (
-    <RelayEnvironmentProvider environment={relayEnvironment}>
-      <SWRConfig>
-        <Suspense fallback={<LoadingView />}>
-          <MobileErrorReportingProvider>
-            <SafeAreaProvider>
-              <magic.Relayer />
-              <SearchProvider>
-                <NavigationContainer>
-                  <DevMenuItems />
-                  <RootStackNavigator />
-                </NavigationContainer>
-              </SearchProvider>
-            </SafeAreaProvider>
-          </MobileErrorReportingProvider>
-        </Suspense>
-      </SWRConfig>
-    </RelayEnvironmentProvider>
+    <View className="flex-1 bg-white dark:bg-black">
+      <RelayEnvironmentProvider environment={relayEnvironment}>
+        <SWRConfig>
+          <Suspense fallback={<LoadingView />}>
+            <MobileAnalyticsProvider>
+              <MobileErrorReportingProvider>
+                <SafeAreaProvider>
+                  <BottomSheetModalProvider>
+                    <magic.Relayer />
+                    <SearchProvider>
+                      <NavigationContainer>
+                        <DevMenuItems />
+                        <RootStackNavigator />
+                      </NavigationContainer>
+                    </SearchProvider>
+                  </BottomSheetModalProvider>
+                </SafeAreaProvider>
+              </MobileErrorReportingProvider>
+            </MobileAnalyticsProvider>
+          </Suspense>
+        </SWRConfig>
+      </RelayEnvironmentProvider>
+    </View>
   );
 }

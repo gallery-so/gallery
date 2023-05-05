@@ -61,6 +61,7 @@ function TokenDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
 
   return (
     <StyledAssetContainer
+      data-tokenid={token.dbid}
       footerHeight={GLOBAL_FOOTER_HEIGHT}
       shouldEnforceSquareAspectRatio={shouldEnforceSquareAspectRatio}
       hasExtraPaddingForNote={hasExtraPaddingForNote}
@@ -70,7 +71,13 @@ function TokenDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
         key={retryKey}
         tokenId={token.dbid}
         onError={handleNftError}
-        fallback={<NftFailureFallback onRetry={refreshMetadata} refreshing={refreshingMetadata} />}
+        fallback={
+          <NftFailureFallback
+            tokenId={token.dbid}
+            onRetry={refreshMetadata}
+            refreshing={refreshingMetadata}
+          />
+        }
       >
         <NftDetailAssetComponent onLoad={handleNftLoaded} tokenRef={token} />
       </NftFailureBoundary>
