@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { View } from 'react-native';
+import { useWindowDimensions, View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
@@ -41,12 +41,14 @@ export function FeedListItem({ eventId, eventDataRef }: FeedListItemProps) {
     }
 
     return (
-      <NonRecursiveFeedListItem
-        eventId={eventId}
-        slideIndex={0}
-        eventCount={1}
-        eventDataRef={eventData}
-      />
+      <View className="overflow-hidden">
+        <NonRecursiveFeedListItem
+          eventId={eventId}
+          slideIndex={0}
+          eventCount={1}
+          eventDataRef={eventData}
+        />
+      </View>
     );
   }, [eventData, eventId]);
 
