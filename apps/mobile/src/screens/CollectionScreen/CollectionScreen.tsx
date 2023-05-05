@@ -69,7 +69,7 @@ function CollectionScreenInner() {
 
   return (
     <View className="flex flex-col flex-1 bg-white dark:bg-black" style={{ paddingTop: top }}>
-      <View className="px-4 pb-2">
+      <View className="px-4 pb-4">
         <GalleryProfileNavBar
           shouldShowBackButton
           queryRef={query}

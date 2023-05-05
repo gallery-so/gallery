@@ -29,7 +29,7 @@ export function GalleryVirtualizedRow({ item }: Props) {
       <View className="flex flex-col px-4">
         <TouchableOpacity onPress={handlePress}>
           <Typography className="text-xl" font={{ family: 'GTAlpina', weight: 'StandardLight' }}>
-            {item.name}
+            {item.name || 'Untitled'}
           </Typography>
         </TouchableOpacity>
 
@@ -45,12 +45,16 @@ export function GalleryVirtualizedRow({ item }: Props) {
       <View className="flex flex-col bg-white dark:bg-black py-2 px-4">
         <TouchableOpacity onPress={handlePress}>
           <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-            {unescape(item.name ?? '')}
+            {unescape(item.name || 'Untitled')}
           </Typography>
         </TouchableOpacity>
       </View>
     );
   } else if (item.kind === 'collection-note') {
+    if (!item.collectorsNote) {
+      return null;
+    }
+
     const firstLineOfCollectorsNote = sanitizeMarkdown(item.collectorsNote ?? '');
 
     return (
