@@ -1,4 +1,3 @@
-import { Suspense, useCallback, useEffect, useMemo, useRef } from 'react';
 import { Suspense, useCallback, useMemo } from 'react';
 import { graphql, useFragment, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 
