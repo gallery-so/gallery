@@ -18,6 +18,12 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef, onCommentPre
   const event = useFragment(
     graphql`
       fragment FeedEventSocializeSectionFragment on FeedEvent {
+        eventData {
+          ... on UserFollowedUsersFeedEventData {
+            __typename
+          }
+        }
+
         ...InteractionsFragment
         ...AdmireButtonFragment
         ...CommentButtonFragment
@@ -36,6 +42,10 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef, onCommentPre
     `,
     queryRef
   );
+
+  if (event.eventData?.__typename === 'UserFollowedUsersFeedEventData') {
+    return <View className="pb-6" />;
+  }
 
   return (
     <View className="flex flex-row px-3 justify-between pb-8 pt-5">
