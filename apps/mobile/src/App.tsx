@@ -5,6 +5,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { Suspense, useEffect, useState } from 'react';
+import { View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { RelayEnvironmentProvider } from 'react-relay';
 import { SWRConfig } from 'swr';
@@ -53,24 +54,26 @@ export default function App() {
   }
 
   return (
-    <RelayEnvironmentProvider environment={relayEnvironment}>
-      <SWRConfig>
-        <Suspense fallback={<LoadingView />}>
-          <MobileErrorReportingProvider>
-            <SafeAreaProvider>
-              <BottomSheetModalProvider>
-                <magic.Relayer />
-                <SearchProvider>
-                  <NavigationContainer>
-                    <DevMenuItems />
-                    <RootStackNavigator />
-                  </NavigationContainer>
-                </SearchProvider>
-              </BottomSheetModalProvider>
-            </SafeAreaProvider>
-          </MobileErrorReportingProvider>
-        </Suspense>
-      </SWRConfig>
-    </RelayEnvironmentProvider>
+    <View className="flex-1 bg-white dark:bg-black">
+      <RelayEnvironmentProvider environment={relayEnvironment}>
+        <SWRConfig>
+          <Suspense fallback={<LoadingView />}>
+            <MobileErrorReportingProvider>
+              <SafeAreaProvider>
+                <BottomSheetModalProvider>
+                  <magic.Relayer />
+                  <SearchProvider>
+                    <NavigationContainer>
+                      <DevMenuItems />
+                      <RootStackNavigator />
+                    </NavigationContainer>
+                  </SearchProvider>
+                </BottomSheetModalProvider>
+              </SafeAreaProvider>
+            </MobileErrorReportingProvider>
+          </Suspense>
+        </SWRConfig>
+      </RelayEnvironmentProvider>
+    </View>
   );
 }
