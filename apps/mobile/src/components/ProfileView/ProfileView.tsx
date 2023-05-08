@@ -134,7 +134,6 @@ export function ProfileView({ userRef, queryRef, shouldShowBackButton }: Profile
 
       <GalleryTokenDimensionCacheProvider>
         <Tabs.Container
-          revealHeaderOnScroll
           ref={containerRef}
           pagerProps={{ scrollEnabled: false }}
           containerStyle={{
