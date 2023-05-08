@@ -5,6 +5,7 @@ import { graphql, useFragment } from 'react-relay';
 
 import { CommentButtonFragment$key } from '~/generated/CommentButtonFragment.graphql';
 import { CommentButtonQueryFragment$key } from '~/generated/CommentButtonQueryFragment.graphql';
+import colors from '~/shared/theme/colors';
 
 import { CommentBox } from './CommentBox';
 import { CommentIcon } from './CommentIcon';
@@ -79,6 +80,9 @@ export function CommentButton({ eventRef, queryRef, style, onClick }: Props) {
         )}
         handleIndicatorStyle={{
           display: 'none',
+        }}
+        backgroundStyle={{
+          backgroundColor: colorScheme === 'dark' ? colors.offBlack : colors.white,
         }}
       >
         <View className={`${colorScheme === 'dark' ? 'bg-black' : 'bg-white'}`}>
