@@ -22,6 +22,7 @@ import FullPageLoader from '~/components/core/Loader/FullPageLoader';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { GlobalLayoutContextNavbarFragment$key } from '~/generated/GlobalLayoutContextNavbarFragment.graphql';
 import { GlobalLayoutContextQuery } from '~/generated/GlobalLayoutContextQuery.graphql';
+import useIsBaseProfilePage from '~/hooks/oneOffs/useIsBaseProfilePage';
 import usePrevious from '~/hooks/usePrevious';
 import useThrottle from '~/hooks/useThrottle';
 import useDebounce from '~/shared/hooks/useDebounce';
@@ -237,6 +238,9 @@ const GlobalLayoutContextProvider = memo(({ children, preloadedQuery }: Props) =
 
   const isSidebarPresent = sidebarContent !== null;
 
+  const isBaseProfilePage = useIsBaseProfilePage();
+  const backgroundOverride = isBaseProfilePage ? colors.offWhite : undefined;
+
   return (
     // note: we render the navbar here, above the main contents of the app,
     // so that it can remain fixed across page transitions. the footer, on
@@ -270,7 +274,10 @@ const GlobalLayoutContextProvider = memo(({ children, preloadedQuery }: Props) =
         )}
       </AnimatePresence>
 
-      <MainContentWrapper isSidebarPresent={isSidebarPresent}>
+      <MainContentWrapper
+        isSidebarPresent={isSidebarPresent}
+        backgroundOverride={backgroundOverride}
+      >
         <GlobalLayoutStateContext.Provider value={state}>
           <GlobalLayoutActionsContext.Provider value={actions}>
             {/*
@@ -302,13 +309,15 @@ const GlobalLayoutContextProvider = memo(({ children, preloadedQuery }: Props) =
   );
 });
 
-const MainContentWrapper = styled.div<{ isSidebarPresent: boolean }>`
+const MainContentWrapper = styled.div<{ isSidebarPresent: boolean; backgroundOverride?: string }>`
   transition: margin-left ${FADE_TRANSITION_TIME_SECONDS}s ease-in-out;
 
   @media only screen and ${breakpoints.tablet} {
     ${({ isSidebarPresent }) =>
       isSidebarPresent && ` margin-left: ${GLOBAL_SIDEBAR_DESKTOP_WIDTH}px;`}
   }
+
+  background: ${({ backgroundOverride }) => backgroundOverride};
 `;
 
 const StyledGlobalSidebarMotion = styled(motion.div)`
