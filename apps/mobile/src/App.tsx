@@ -5,6 +5,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { Suspense, useEffect, useState } from 'react';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { RelayEnvironmentProvider } from 'react-relay';
 import { SWRConfig } from 'swr';
@@ -57,17 +58,19 @@ export default function App() {
       <SWRConfig>
         <Suspense fallback={<LoadingView />}>
           <MobileErrorReportingProvider>
-            <SafeAreaProvider>
-              <BottomSheetModalProvider>
-                <magic.Relayer />
-                <SearchProvider>
-                  <NavigationContainer>
-                    <DevMenuItems />
-                    <RootStackNavigator />
-                  </NavigationContainer>
-                </SearchProvider>
-              </BottomSheetModalProvider>
-            </SafeAreaProvider>
+            <GestureHandlerRootView style={{ flex: 1 }}>
+              <SafeAreaProvider>
+                <BottomSheetModalProvider>
+                  <magic.Relayer />
+                  <SearchProvider>
+                    <NavigationContainer>
+                      <DevMenuItems />
+                      <RootStackNavigator />
+                    </NavigationContainer>
+                  </SearchProvider>
+                </BottomSheetModalProvider>
+              </SafeAreaProvider>
+            </GestureHandlerRootView>
           </MobileErrorReportingProvider>
         </Suspense>
       </SWRConfig>
