@@ -11,7 +11,7 @@
   "devDependencies": {
     "@sentry/types": "^7.40.0",
     "@types/lodash.unescape": "^4.0.7",
-    "relay-compiler": "^14.1.0",
+    "relay-compiler": "^15.0.0",
     "typescript": "^5.0.0"
   }
 }
