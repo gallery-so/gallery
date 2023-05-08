@@ -25,6 +25,7 @@ export function ProfileViewFeaturedTab({ userRef }: ProfileViewFeaturedTabProps)
         featuredGallery {
           ...createVirtualizedGalleryRows
 
+          # This is so we have the cache prefilled for their full gallery page / collection page
           # eslint-disable-next-line relay/must-colocate-fragment-spreads
           ...GalleryScreenGalleryFragment @defer
         }
