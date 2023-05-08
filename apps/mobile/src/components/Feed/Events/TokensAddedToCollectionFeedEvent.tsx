@@ -27,9 +27,15 @@ export function TokensAddedToCollectionFeedEvent({
   const eventData = useFragment(
     graphql`
       fragment TokensAddedToCollectionFeedEventFragment on TokensAddedToCollectionFeedEventData {
+        isPreFeed
+
         collection {
           dbid
           name
+
+          tokens(limit: 4) @required(action: THROW) {
+            ...EventTokenGridFragment
+          }
         }
 
         newTokens {
@@ -48,8 +54,10 @@ export function TokensAddedToCollectionFeedEvent({
   }, [eventData.collection?.dbid, navigation]);
 
   const tokens = useMemo(() => {
-    return removeNullValues(eventData.newTokens);
-  }, [eventData.newTokens]);
+    return removeNullValues(
+      eventData.isPreFeed ? eventData.collection?.tokens : eventData.newTokens
+    );
+  }, [eventData.collection?.tokens, eventData.isPreFeed, eventData.newTokens]);
 
   return (
     <View className="flex flex-1 flex-col">
