@@ -39,18 +39,21 @@ export function EventTokenGrid({
   const preserveAspectRatio = collectionTokens.length === 1 && allowPreserveAspectRatio;
 
   const inner = useMemo(() => {
-    const tokensWithMedia = collectionTokens.map((collectionToken) => {
-      const media = getVideoOrImageUrlForNftPreview({
-        tokenRef: collectionToken.token,
-        preferStillFrameFromGif: true,
-      });
+    const tokensWithMedia = collectionTokens
+      .map((collectionToken) => {
+        const media = getVideoOrImageUrlForNftPreview({
+          tokenRef: collectionToken.token,
+          preferStillFrameFromGif: true,
+        });
 
-      if (media) {
-        return { ...collectionToken, ...media };
-      } else {
-        return null;
-      }
-    });
+        if (media) {
+          return { ...collectionToken, ...media };
+        } else {
+          return null;
+        }
+      })
+      // This makes sure we're only working with valid media
+      .filter(Boolean);
 
     const [firstToken, secondToken, thirdToken, fourthToken] = tokensWithMedia;
 
@@ -146,7 +149,7 @@ export function EventTokenGrid({
         </View>
       );
     } else {
-      throw new Error('Tried to render EventTokenGrid without any tokens');
+      return null;
     }
   }, [collectionTokens, dimensions.width, imagePriority, preserveAspectRatio]);
 
