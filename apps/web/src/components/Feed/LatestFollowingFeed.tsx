@@ -5,9 +5,9 @@ import styled from 'styled-components';
 import { Button } from '~/components/core/Button/Button';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeL } from '~/components/core/Text/Text';
-import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { LatestFollowingFeedFragment$key } from '~/generated/LatestFollowingFeedFragment.graphql';
 import { LatestFollowingFeedPaginationQuery } from '~/generated/LatestFollowingFeedPaginationQuery.graphql';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 
 import { useTrackLoadMoreFeedEvents } from './analytics';
 import { ITEMS_PER_PAGE } from './constants';

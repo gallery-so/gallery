@@ -1,9 +1,13 @@
-import { Suspense, useCallback, useEffect, useMemo } from 'react';
-import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
+import { Suspense, useCallback, useMemo } from 'react';
+import { graphql, useFragment, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 
 import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/NotesModal/NotesList';
+import { RefetchableTrendingScreenGlobalFragmentQuery } from '~/generated/RefetchableTrendingScreenGlobalFragmentQuery.graphql';
+import { RefetchableTrendingScreenTrendingFragmentQuery } from '~/generated/RefetchableTrendingScreenTrendingFragmentQuery.graphql';
 import { TrendingScreenFragment$key } from '~/generated/TrendingScreenFragment.graphql';
+import { TrendingScreenGlobalFragment$key } from '~/generated/TrendingScreenGlobalFragment.graphql';
 import { TrendingScreenQuery } from '~/generated/TrendingScreenQuery.graphql';
+import { TrendingScreenTrendingFragment$key } from '~/generated/TrendingScreenTrendingFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import { FeedList } from '../../components/Feed/FeedList';
@@ -14,18 +18,49 @@ type TrendingScreenInnerProps = {
 };
 
 const PER_PAGE = 20;
-const INITIAL_COUNT = 3;
 
 function TrendingScreenInner({ queryRef }: TrendingScreenInnerProps) {
-  const {
-    data: query,
-    hasPrevious,
-    loadPrevious,
-    isLoadingPrevious,
-  } = usePaginationFragment(
+  const query = useFragment(
     graphql`
-      fragment TrendingScreenFragment on Query
-      @refetchable(queryName: "RefetchableTrendingScreenFragmentQuery") {
+      fragment TrendingScreenFragment on Query {
+        ...TrendingScreenTrendingFragment
+        ...TrendingScreenGlobalFragment
+
+        ...FeedListQueryFragment
+      }
+    `,
+    queryRef
+  );
+
+  const globalFeed = usePaginationFragment<
+    RefetchableTrendingScreenGlobalFragmentQuery,
+    TrendingScreenGlobalFragment$key
+  >(
+    graphql`
+      fragment TrendingScreenGlobalFragment on Query
+      @refetchable(queryName: "RefetchableTrendingScreenGlobalFragmentQuery") {
+        globalFeed(before: $trendingFeedBefore, last: $trendingFeedCount)
+          @connection(key: "TrendingScreenFragment_globalFeed") {
+          edges {
+            node {
+              __typename
+
+              ...FeedListFragment
+            }
+          }
+        }
+      }
+    `,
+    query
+  );
+
+  const trendingFeed = usePaginationFragment<
+    RefetchableTrendingScreenTrendingFragmentQuery,
+    TrendingScreenTrendingFragment$key
+  >(
+    graphql`
+      fragment TrendingScreenTrendingFragment on Query
+      @refetchable(queryName: "RefetchableTrendingScreenTrendingFragmentQuery") {
         trendingFeed(before: $trendingFeedBefore, last: $trendingFeedCount)
           @connection(key: "TrendingScreenFragment_trendingFeed") {
           edges {
@@ -36,31 +71,38 @@ function TrendingScreenInner({ queryRef }: TrendingScreenInnerProps) {
             }
           }
         }
-        ...FeedListQueryFragment
       }
     `,
-    queryRef
+    query
   );
 
-  useEffect(() => {
-    if (hasPrevious && !isLoadingPrevious) {
-      loadPrevious(PER_PAGE - INITIAL_COUNT);
-    }
-  }, [hasPrevious, isLoadingPrevious, loadPrevious]);
-
   const handleLoadMore = useCallback(() => {
-    if (hasPrevious && !isLoadingPrevious) {
-      loadPrevious(PER_PAGE);
+    if (trendingFeed.isLoadingPrevious || globalFeed.isLoadingPrevious) {
+      return;
     }
-  }, [hasPrevious, isLoadingPrevious, loadPrevious]);
+
+    if (trendingFeed.hasPrevious) {
+      trendingFeed.loadPrevious(PER_PAGE);
+    } else if (globalFeed.hasPrevious) {
+      globalFeed.loadPrevious(PER_PAGE);
+    }
+  }, [globalFeed, trendingFeed]);
 
   const events = useMemo(() => {
-    return removeNullValues(query.trendingFeed?.edges?.map((it) => it?.node)).reverse();
-  }, [query.trendingFeed?.edges]);
+    const trendingEvents = removeNullValues(
+      trendingFeed.data.trendingFeed?.edges?.map((it) => it?.node).reverse()
+    );
+
+    const globalEvents = removeNullValues(
+      globalFeed.data.globalFeed?.edges?.map((it) => it?.node).reverse()
+    );
+
+    return [...trendingEvents, ...globalEvents];
+  }, [globalFeed.data.globalFeed?.edges, trendingFeed.data.trendingFeed?.edges]);
 
   return (
     <FeedList
-      isLoadingMore={isLoadingPrevious}
+      isLoadingMore={trendingFeed.isLoadingPrevious || globalFeed.isLoadingPrevious}
       onLoadMore={handleLoadMore}
       feedEventRefs={events}
       queryRef={query}
@@ -81,7 +123,7 @@ export function TrendingScreen() {
       }
     `,
     {
-      trendingFeedCount: INITIAL_COUNT,
+      trendingFeedCount: PER_PAGE,
       interactionsFirst: NOTES_PER_PAGE,
     }
   );

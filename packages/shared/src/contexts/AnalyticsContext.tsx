@@ -1,63 +1,24 @@
-import { captureException } from '@sentry/nextjs';
-import mixpanel from 'mixpanel-browser';
 import { createContext, memo, ReactNode, useCallback, useContext, useEffect } from 'react';
 import { useRelayEnvironment } from 'react-relay';
 import { fetchQuery, graphql } from 'relay-runtime';
 
 import { AnalyticsContextQuery } from '~/generated/AnalyticsContextQuery.graphql';
-import noop from '~/utils/noop';
 
 type EventProps = Record<string, unknown>;
 
-type TrackFn = (eventName: string, eventProps?: EventProps, checkAuth?: boolean) => void;
+type HookTrackFunction = (eventName: string, eventProps?: EventProps, checkAuth?: boolean) => void;
 
-const AnalyticsContext = createContext<TrackFn | undefined>(undefined);
-
-let mixpanelEnabled = true;
-
-if (process.env.NEXT_PUBLIC_MIXPANEL_TOKEN && process.env.NEXT_PUBLIC_ANALYTICS_API_URL) {
-  mixpanel.init(process.env.NEXT_PUBLIC_MIXPANEL_TOKEN, {
-    api_host: process.env.NEXT_PUBLIC_ANALYTICS_API_URL,
-  });
-  mixpanelEnabled = true;
-}
-
-// raw tracking. use this sparingly if you can't use hooks, or are outside the analytics context.
-export const _track = (eventName: string, eventProps: EventProps, userId?: string) => {
-  if (!mixpanelEnabled) return;
-
-  try {
-    mixpanel.track(eventName, {
-      userId, // field will be `null` if no user ID exists
-      ...eventProps,
-    });
-  } catch (error: unknown) {
-    // mixpanel errors shouldn't disrupt app
-    captureException(error);
-  }
-};
-
-export const _identify = (userId: string) => {
-  if (!mixpanelEnabled) return;
-
-  try {
-    mixpanel.identify(userId);
-  } catch (error: unknown) {
-    // mixpanel errors shouldn't disrupt app
-    captureException(error);
-  }
-};
+const AnalyticsContext = createContext<HookTrackFunction | undefined>(undefined);
 
 export const useTrack = () => {
   const track = useContext(AnalyticsContext);
+
   if (!track) {
-    return noop;
+    return () => {};
   }
 
   return track;
 };
-
-type Props = { children: ReactNode };
 
 const AnalyticsContextQueryNode = graphql`
   query AnalyticsContextQuery {
@@ -71,7 +32,16 @@ const AnalyticsContextQueryNode = graphql`
   }
 `;
 
-const AnalyticsProvider = memo(({ children }: Props) => {
+export type TrackFunction = (eventName: string, eventProps: EventProps, userId?: string) => void;
+export type IdentifyFunction = (userId?: string) => void;
+
+type Props = {
+  children: ReactNode;
+  track: TrackFunction;
+  identify: IdentifyFunction;
+};
+
+const AnalyticsProvider = memo(({ children, identify, track }: Props) => {
   const relayEnvironment = useRelayEnvironment();
 
   useEffect(() => {
@@ -90,11 +60,11 @@ const AnalyticsProvider = memo(({ children }: Props) => {
           return;
         }
 
-        _identify(userId);
+        identify(userId);
       });
-  }, [relayEnvironment]);
+  }, [identify, relayEnvironment]);
 
-  const handleTrack: TrackFn = useCallback(
+  const handleTrack: HookTrackFunction = useCallback(
     (eventName, eventProps = {}) => {
       fetchQuery<AnalyticsContextQuery>(
         relayEnvironment,
@@ -106,10 +76,10 @@ const AnalyticsProvider = memo(({ children }: Props) => {
         .then((query) => {
           const userId = query?.viewer?.user?.dbid;
 
-          _track(eventName, eventProps, userId);
+          track(eventName, eventProps, userId);
         });
     },
-    [relayEnvironment]
+    [relayEnvironment, track]
   );
 
   return <AnalyticsContext.Provider value={handleTrack}>{children}</AnalyticsContext.Provider>;

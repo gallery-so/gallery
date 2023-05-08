@@ -3,8 +3,8 @@ import { Route, route } from 'nextjs-routes';
 import { useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 
-import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
 
 import Markdown from '../core/Markdown/Markdown';

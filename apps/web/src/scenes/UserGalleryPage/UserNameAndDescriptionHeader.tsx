@@ -11,7 +11,6 @@ import { StyledAnchor } from '~/components/core/InteractiveLink/InteractiveLink'
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleM } from '~/components/core/Text/Text';
-import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { UserNameAndDescriptionHeader$key } from '~/generated/UserNameAndDescriptionHeader.graphql';
 import { UserNameAndDescriptionHeaderQueryFragment$key } from '~/generated/UserNameAndDescriptionHeaderQueryFragment.graphql';
@@ -19,6 +18,7 @@ import useIs3acProfilePage from '~/hooks/oneOffs/useIs3acProfilePage';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { EditPencilIcon } from '~/icons/EditPencilIcon';
 import LinkToNftDetailView from '~/scenes/NftDetailPage/LinkToNftDetailView';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import colors from '~/shared/theme/colors';
 import unescape from '~/shared/utils/unescape';

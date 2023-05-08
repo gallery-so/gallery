@@ -65,7 +65,7 @@ function MobileAuthBody() {
         Scan the QR code to sign in to your Gallery mobile app. This code grants access to your
         account, so be careful who you share it with.
       </BaseM>
-      <StyledHStack justify="center">
+      <StyledHStack justify="center" height={250}>
         {token && <QRCode width={250} height={250} encodedData={token} />}
       </StyledHStack>
     </StyledBody>
@@ -76,6 +76,7 @@ const StyledBody = styled(VStack)`
   max-width: 350px;
 `;
 
-const StyledHStack = styled(HStack)`
-  padding: 20px;
+const StyledHStack = styled(HStack)<{ height: number }>`
+  margin: 20px;
+  height: ${({ height }) => height}px;
 `;

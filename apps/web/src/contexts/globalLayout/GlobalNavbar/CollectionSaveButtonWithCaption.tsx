@@ -8,8 +8,8 @@ import { TextAreaWithCharCount } from '~/components/core/TextArea/TextArea';
 import transitions, {
   ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL,
 } from '~/components/core/transitions';
-import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { useSaveHotkey } from '~/hooks/useSaveHotkey';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
 
 type Props = {

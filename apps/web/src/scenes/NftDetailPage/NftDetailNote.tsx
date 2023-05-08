@@ -8,9 +8,9 @@ import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import ErrorText from '~/components/core/Text/ErrorText';
 import { BaseM, TitleXS } from '~/components/core/Text/Text';
 import { AutoResizingTextAreaWithCharCount } from '~/components/core/TextArea/TextArea';
-import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { GLOBAL_FOOTER_HEIGHT } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
 import useUpdateNft from '~/hooks/api/tokens/useUpdateNft';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import formatError from '~/shared/errors/formatError';
 import unescape from '~/shared/utils/unescape';
 

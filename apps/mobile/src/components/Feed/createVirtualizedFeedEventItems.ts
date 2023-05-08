@@ -68,6 +68,8 @@ export function createVirtualizedFeedEventItems({
           caption
 
           eventData {
+            __typename
+
             ... on GalleryUpdatedFeedEventData {
               __typename
               subEventDatas {

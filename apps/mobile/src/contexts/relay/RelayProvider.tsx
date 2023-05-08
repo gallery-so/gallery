@@ -10,10 +10,12 @@ import persistedQueries from '../../../persisted_queries.json';
 
 const persistedQueriesMap = persistedQueries as PersistedQueriesMap;
 
+// TODO env
 const relaySubscribeFunction = createRelaySubscribeFunction({
   url: 'wss://api.gallery.so/glry/graphql/query',
 });
 
+// TODO env
 export const relayFetchFunction = createRelayFetchFunctionWithDefer({
   url: () => 'https://gateway.gallery.so',
   persistedQueriesFetcher: async () => persistedQueriesMap,

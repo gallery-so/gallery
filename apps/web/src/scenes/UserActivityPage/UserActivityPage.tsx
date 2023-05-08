@@ -3,9 +3,9 @@ import { useEffect } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import { UserActivityPageFragment$key } from '~/generated/UserActivityPageFragment.graphql';
 import { GalleryPageSpacing } from '~/pages/[username]';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 
 import UserActivity from './UserActivity';
 

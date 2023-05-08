@@ -6,8 +6,8 @@ import styled, { css, keyframes } from 'styled-components';
 import { Button } from '~/components/core/Button/Button';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleL } from '~/components/core/Text/Text';
-import { useTrack } from '~/contexts/analytics/AnalyticsContext';
 import useWindowSize from '~/hooks/useWindowSize';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 
 import Image from './Image';
 import { AnimatedImage, animatedImages } from './Images';
