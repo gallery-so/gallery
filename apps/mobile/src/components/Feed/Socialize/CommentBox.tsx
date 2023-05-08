@@ -109,7 +109,6 @@ export function CommentBox({
   `);
 
   const handleSubmit = useCallback(async () => {
-    return;
     if (value.length === 0) {
       return;
     }
