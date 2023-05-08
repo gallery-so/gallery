@@ -23,7 +23,9 @@ import { useModalActions } from '~/contexts/modal/ModalContext';
 import { UserGalleryCollectionFragment$key } from '~/generated/UserGalleryCollectionFragment.graphql';
 import { UserGalleryCollectionQueryFragment$key } from '~/generated/UserGalleryCollectionQueryFragment.graphql';
 import useUpdateCollectionInfo from '~/hooks/api/collections/useUpdateCollectionInfo';
+import useIsBaseProfilePage from '~/hooks/oneOffs/useIsBaseProfilePage';
 import useResizeObserver from '~/hooks/useResizeObserver';
+import { useIsDesktopWindowWidth } from '~/hooks/useWindowSize';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import unescape from '~/shared/utils/unescape';
@@ -136,48 +138,54 @@ function UserGalleryCollection({
     updateCollectionInfo,
   ]);
 
+  const isBaseProfilePage = useIsBaseProfilePage();
+  const isDesktop = useIsDesktopWindowWidth();
+  const width = isBaseProfilePage && isDesktop ? '50%' : '100%';
+
   return (
     <StyledCollectionWrapper ref={componentRef}>
-      <StyledCollectionHeader>
-        <StyledCollectionTitleWrapper>
-          <UnstyledLink href={collectionUrlPath}>
-            <StyledCollectorsTitle>{unescapedCollectionName}</StyledCollectorsTitle>
-          </UnstyledLink>
-          <StyledOptionsContainer gap={16}>
-            <StyledCopyToClipboard textToCopy={`${getBaseUrl()}${collectionUrl}`}>
-              <TextButton text="Share" onClick={handleShareClick} />
-            </StyledCopyToClipboard>
-            <SettingsDropdown iconVariant="default">
-              <DropdownSection>
-                {showEditActions && (
-                  <>
-                    <DropdownItem onClick={handleEditNameClick}>
-                      EDIT NAME & DESCRIPTION
-                    </DropdownItem>
-                    <DropdownLink
-                      href={{
-                        pathname: '/gallery/[galleryId]/edit',
-                        query: { galleryId, collectionId },
-                      }}
-                      onClick={() => track('Update existing collection button clicked')}
-                    >
-                      EDIT COLLECTION
-                    </DropdownLink>
-                  </>
-                )}
-                <DropdownLink href={collectionUrlPath}>VIEW COLLECTION</DropdownLink>
-              </DropdownSection>
-            </SettingsDropdown>
-          </StyledOptionsContainer>
-        </StyledCollectionTitleWrapper>
-        {unescapedCollectorsNote && (
-          <>
-            <StyledCollectorsNote>
-              <Markdown text={unescapedCollectorsNote} />
-            </StyledCollectorsNote>
-          </>
-        )}
-      </StyledCollectionHeader>
+      <HStack justify="center">
+        <StyledCollectionHeader width={width}>
+          <StyledCollectionTitleWrapper>
+            <UnstyledLink href={collectionUrlPath}>
+              <StyledCollectorsTitle>{unescapedCollectionName}</StyledCollectorsTitle>
+            </UnstyledLink>
+            <StyledOptionsContainer gap={16}>
+              <StyledCopyToClipboard textToCopy={`${getBaseUrl()}${collectionUrl}`}>
+                <TextButton text="Share" onClick={handleShareClick} />
+              </StyledCopyToClipboard>
+              <SettingsDropdown iconVariant="default">
+                <DropdownSection>
+                  {showEditActions && (
+                    <>
+                      <DropdownItem onClick={handleEditNameClick}>
+                        EDIT NAME & DESCRIPTION
+                      </DropdownItem>
+                      <DropdownLink
+                        href={{
+                          pathname: '/gallery/[galleryId]/edit',
+                          query: { galleryId, collectionId },
+                        }}
+                        onClick={() => track('Update existing collection button clicked')}
+                      >
+                        EDIT COLLECTION
+                      </DropdownLink>
+                    </>
+                  )}
+                  <DropdownLink href={collectionUrlPath}>VIEW COLLECTION</DropdownLink>
+                </DropdownSection>
+              </SettingsDropdown>
+            </StyledOptionsContainer>
+          </StyledCollectionTitleWrapper>
+          {unescapedCollectorsNote && (
+            <>
+              <StyledCollectorsNote>
+                <Markdown text={unescapedCollectorsNote} />
+              </StyledCollectorsNote>
+            </>
+          )}
+        </StyledCollectionHeader>
+      </HStack>
       <NftGallery collectionRef={collection} mobileLayout={mobileLayout} />
     </StyledCollectionWrapper>
   );
@@ -210,10 +218,10 @@ const StyledCollectionWrapper = styled.div`
   }
 `;
 
-const StyledCollectionHeader = styled.div`
+const StyledCollectionHeader = styled.div<{ width: string }>`
   display: flex;
   flex-direction: column;
-  width: 100%;
+  width: ${({ width }) => width};
 
   // to appear above content underneath
   z-index: 1;

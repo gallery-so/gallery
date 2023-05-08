@@ -9,8 +9,12 @@ import { NftFailureBoundary } from '~/components/NftFailureFallback/NftFailureBo
 import { NftFailureFallback } from '~/components/NftFailureFallback/NftFailureFallback';
 import { NftPreviewFragment$key } from '~/generated/NftPreviewFragment.graphql';
 import { NftPreviewTokenFragment$key } from '~/generated/NftPreviewTokenFragment.graphql';
+import useIsBaseProfilePage from '~/hooks/oneOffs/useIsBaseProfilePage';
 import { useNftRetry } from '~/hooks/useNftRetry';
-import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import {
+  useIsDesktopWindowWidth,
+  useIsMobileOrMobileLargeWindowWidth,
+} from '~/hooks/useWindowSize';
 import LinkToNftDetailView from '~/scenes/NftDetailPage/LinkToNftDetailView';
 import NftDetailAnimation from '~/scenes/NftDetailPage/NftDetailAnimation';
 import NftDetailGif from '~/scenes/NftDetailPage/NftDetailGif';
@@ -193,6 +197,21 @@ function NftPreview({
       // the asset is an iframe in single column mode
       (columns === 1 && isIFrameLiveDisplay));
 
+  const isBaseProfilePage = useIsBaseProfilePage();
+  const isDesktop = useIsDesktopWindowWidth();
+  const width = useMemo(() => {
+    if (isBaseProfilePage) {
+      if (isDesktop) {
+        return '50%';
+      }
+      return '100%';
+    }
+    if (fullWidth) {
+      return '100%';
+    }
+    return 'auto';
+  }, [fullWidth, isBaseProfilePage, isDesktop]);
+
   return (
     <NftFailureBoundary
       key={retryKey}
@@ -216,7 +235,7 @@ function NftPreview({
         {/* NextJS <Link> tags don't come with an anchor tag by default, so we're adding one here.
           This will inherit the `as` URL from the parent component. */}
         <StyledA data-tokenid={token.dbid} onClick={handleClick}>
-          <StyledNftPreview backgroundColorOverride={backgroundColorOverride} fullWidth={fullWidth}>
+          <StyledNftPreview backgroundColorOverride={backgroundColorOverride} width={width}>
             <ReportingErrorBoundary
               fallback={
                 <RawNftPreviewAsset
@@ -277,7 +296,7 @@ const StyledNftFooter = styled.div`
 
 const StyledNftPreview = styled.div<{
   backgroundColorOverride: string;
-  fullWidth: boolean;
+  width: string;
 }>`
   cursor: pointer;
 
@@ -287,7 +306,7 @@ const StyledNftPreview = styled.div<{
   position: relative;
   overflow: hidden;
   max-height: 80vh;
-  width: ${({ fullWidth }) => (fullWidth ? '100%' : 'auto')};
+  width: ${({ width }) => width};
   height: initial;
 
   ${({ backgroundColorOverride }) =>
