@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useWindowDimensions, View } from 'react-native';
+import { View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 

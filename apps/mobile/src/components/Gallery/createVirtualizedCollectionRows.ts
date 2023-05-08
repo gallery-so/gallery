@@ -13,6 +13,7 @@ export type CollectionListItemType = { key: string } & (
       kind: 'collection-row';
       isFirst: boolean;
       isLast: boolean;
+      columns: number;
       items: Array<WhitespaceBlock | GalleryTokenPreviewFragment$key>;
     }
 );
@@ -89,6 +90,7 @@ export function createVirtualizedCollectionRows({
           kind: 'collection-row',
           key: `collection-row-${section.id}-${rowIndex}`,
           items: rowItems,
+          columns: section.columns,
           isFirst: isFirstRow,
           isLast: isLastRow,
         });
