@@ -12,7 +12,7 @@
     "@react-navigation/native": "^6.1.4",
     "@react-navigation/native-stack": "^6.9.10",
     "@sentry/react-native": "^5.1.0",
-    "@shopify/flash-list": "^1.4.3",
+    "@shopify/flash-list": "1.4.0",
     "clsx": "^1.2.1",
     "date-fns": "^2.29.3",
     "expo": "~48.0.15",
