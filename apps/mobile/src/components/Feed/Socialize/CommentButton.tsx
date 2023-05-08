@@ -61,6 +61,7 @@ export function CommentButton({ eventRef, queryRef, style, onClick }: Props) {
         index={0}
         snapPoints={snapPoints}
         enableHandlePanningGesture={false}
+        android_keyboardInputMode="adjustResize"
         backdropComponent={({ animatedIndex, ...props }) => (
           <BottomSheetBackdrop
             {...props}

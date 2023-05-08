@@ -1,7 +1,6 @@
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
-import { Text, useColorScheme, View, ViewStyle } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { Text, TouchableOpacity, useColorScheme, View, ViewStyle } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { AnimatedStyleProp } from 'react-native-reanimated';
 import { ConnectionHandler, graphql, useFragment } from 'react-relay';
@@ -226,20 +225,22 @@ export function CommentBox({
           style={{ flex: 1, color: colorScheme === 'dark' ? colors.white : colors.offBlack }}
         />
         <Text className="text-sm text-metal">{characterCount}</Text>
-        <TouchableOpacity
-          onPress={handleSubmit}
-          disabled={disabledSendButton}
-          className={`h-6 w-6 rounded-full flex items-center justify-center
+        <TouchableOpacity onPress={handleSubmit} disabled={disabledSendButton}>
+          <View
+            className={`h-6 w-6 rounded-full flex items-center justify-center bg-red
             ${disabledSendButton ? 'bg-metal' : 'bg-activeBlue'}
         `}
-        >
-          <SendIcon />
+          >
+            <SendIcon />
+          </View>
         </TouchableOpacity>
       </Animated.View>
 
       <Animated.View style={xmarkIconStyle}>
         <TouchableOpacity onPress={handleDismiss}>
-          <XMarkIcon />
+          <View className="h-6 w-6  items-center justify-center rounded-full">
+            <XMarkIcon />
+          </View>
         </TouchableOpacity>
       </Animated.View>
     </View>
