@@ -1,5 +1,4 @@
 import { MissingFieldHandler } from 'relay-runtime';
-import { ReadOnlyRecordSourceProxy } from 'relay-runtime/lib/store/RelayStoreTypes';
 import { NormalizationLinkedField } from 'relay-runtime/lib/util/NormalizationNode';
 import { ReaderLinkedField } from 'relay-runtime/lib/util/ReaderNode';
 import { Variables } from 'relay-runtime/lib/util/RelayRuntimeTypes';
@@ -10,8 +9,7 @@ export function createMissingFieldHandlers(): MissingFieldHandler[] {
     handle: (
       field: NormalizationLinkedField | ReaderLinkedField,
       parentRecord: unknown,
-      args: Variables,
-      _: ReadOnlyRecordSourceProxy
+      args: Variables
     ) => {
       if (field.name === 'galleryById') {
         return `Gallery:${args.id}`;
