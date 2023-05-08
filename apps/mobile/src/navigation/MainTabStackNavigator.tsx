@@ -20,17 +20,9 @@ export function MainTabStackNavigator({ initialRouteName }: Props) {
   return (
     <Stack.Navigator initialRouteName={initialRouteName} screenOptions={{ header: Empty }}>
       <Stack.Screen name="NftDetail" component={NftDetailScreen} />
-      <Stack.Screen
-        name="Profile"
-        component={ProfileScreen}
-        initialParams={{ username: 'kaito' }}
-      />
+      <Stack.Screen name="Profile" component={ProfileScreen} />
       <Stack.Screen name="Gallery" component={GalleryScreen} />
-      <Stack.Screen
-        name="Collection"
-        component={CollectionScreen}
-        initialParams={{ collectionId: '2FNoFFKRc2bRGqbQbmkLcZrrfIw' }}
-      />
+      <Stack.Screen name="Collection" component={CollectionScreen} />
 
       {/* The 4 main tabs */}
       <Stack.Screen name="Account" component={AccountScreen} />
