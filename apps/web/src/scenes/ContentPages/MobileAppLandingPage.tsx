@@ -23,7 +23,8 @@ export default function MobileAppLandingPage() {
               <GiantTitle>A New Era of Gallery</GiantTitle>
               <VStack align="center" gap={8}>
                 <BaseXL>
-                  We’re building a new way to be creative and that starts with a mobile app.
+                  We’re building a fresh approach to creativity and self expression, and that starts
+                  with a mobile app.
                 </BaseXL>
                 <BaseXL>TestFlight access is rolling out soon to current Gallery users.</BaseXL>
                 <BaseXL>Join the waitlist to be the first to try it out.</BaseXL>
