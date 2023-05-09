@@ -1,33 +1,46 @@
 import { useNavigationState } from '@react-navigation/native';
 import { useCallback } from 'react';
-import { TouchableOpacity, TouchableOpacityProps } from 'react-native';
+import { GestureResponderEvent, TouchableOpacity, TouchableOpacityProps } from 'react-native';
 
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 
-type Props = {
+export type GalleryTouchableOpacityProps = {
   // unique identifier for the element
   id: string;
-  onPress?: () => void;
+  eventName?: string;
+  onPress?: (event: GestureResponderEvent) => void;
   properties?: Record<string, unknown>;
 } & Omit<TouchableOpacityProps, 'onPress'>;
 
-export function GalleryTouchableOpacity({ children, id, onPress, ...props }: Props) {
+export function GalleryTouchableOpacity({
+  children,
+  eventName,
+  id,
+  onPress,
+  properties,
+  ...props
+}: GalleryTouchableOpacityProps) {
   const track = useTrack();
 
   const currentScreen = useNavigationState((state) => {
     return state.routes[state.index]?.name;
   });
 
-  const handlePress = useCallback(() => {
-    track('Button Press', {
-      id,
-      screen: currentScreen,
-      ...props.properties,
-    });
-    if (onPress) {
-      onPress();
-    }
-  }, [currentScreen, id, onPress, track]);
+  const handlePress = useCallback(
+    (event: GestureResponderEvent) => {
+      const eventNameToUse = eventName || 'Button Press';
+
+      track(eventNameToUse, {
+        id,
+        screen: currentScreen,
+        ...properties,
+      });
+      if (onPress) {
+        onPress(event);
+      }
+    },
+    [currentScreen, eventName, id, onPress, properties, track]
+  );
 
   return (
     <TouchableOpacity {...props} onPress={handlePress}>
