@@ -15,34 +15,17 @@ export default function MobileAppLandingPage() {
       <Head>
         <title>Gallery | Mobile App</title>
       </Head>
-      {/* <StyledPage navbarHeight={navbarHeight} gap={32}>
-        <HStack gap={64}>
-          <StyledImage src="https://storage.googleapis.com/gallery-prod-325303.appspot.com/mobile_app_mock_light.png" />
-          <VStack align="center">
-            <TitleDiatypeL>Introducing</TitleDiatypeL>
-            <VStack align="center" gap={24}>
-              <VStack align="center" gap={16}>
-                <GiantTitle>The Gallery Mobile App</GiantTitle>
-                <VStack align="center" gap={8}>
-                  <BaseXL>Opening TestFlight access soon to current Gallery users.</BaseXL>
-                  <BaseXL>Join the waitlist to be the first to try it out.</BaseXL>
-                </VStack>
-              </VStack>
-              <VStack gap={8}>
-                <StyledButton >Join the waitlist</StyledButton>
-              </VStack>
-            </VStack>
-          </VStack>
-        </HStack>
-      </StyledPage> */}
       <StyledPage navbarHeight={navbarHeight} gap={32} align="center">
         <VStack align="center">
           <TitleDiatypeL>Introducing</TitleDiatypeL>
           <VStack align="center" gap={24}>
             <VStack align="center" gap={16}>
-              <GiantTitle>The Gallery Mobile App</GiantTitle>
+              <GiantTitle>A New Era of Gallery</GiantTitle>
               <VStack align="center" gap={8}>
-                <BaseXL>Opening TestFlight access soon to current Gallery users.</BaseXL>
+                <BaseXL>
+                  We’re building a new way to be creative and that starts with a mobile app.
+                </BaseXL>
+                <BaseXL>TestFlight access is rolling out soon to current Gallery users.</BaseXL>
                 <BaseXL>Join the waitlist to be the first to try it out.</BaseXL>
               </VStack>
             </VStack>
