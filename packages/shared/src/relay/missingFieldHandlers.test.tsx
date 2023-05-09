@@ -10,7 +10,7 @@ import { missingFieldHandlersTestSecondQuery } from '~/generated/missingFieldHan
 import { createMissingFieldHandlers } from '~/relay/missingFieldHandlers';
 import { createRelayFetchFunction } from '~/relay/network';
 
-describe('missingFieldHadlers', () => {
+describe('missingFieldHandlers', () => {
   it('should work', async () => {
     const firstQuery = graphql`
       query missingFieldHandlersTestFirstQuery {
