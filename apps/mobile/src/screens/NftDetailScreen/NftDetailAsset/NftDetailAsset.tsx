@@ -12,6 +12,7 @@ import { NftDetailAssetImage } from '~/screens/NftDetailScreen/NftDetailAsset/Nf
 import { NftDetailAssetVideo } from '~/screens/NftDetailScreen/NftDetailAsset/NftDetailAssetVideo';
 import { Dimensions } from '~/screens/NftDetailScreen/NftDetailAsset/types';
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
+import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
 
 type ImageState = { kind: 'loading' } | { kind: 'loaded'; dimensions: Dimensions | null };
 
@@ -28,10 +29,23 @@ export function NftDetailAsset({ collectionTokenRef, style }: NftDetailProps) {
           media {
             __typename
 
+            ... on InvalidMedia {
+              __typename
+            }
+
             ... on AudioMedia {
-              previewURLs {
-                large
-              }
+              __typename
+            }
+
+            ... on GIFMedia {
+              __typename
+            }
+            ... on ImageMedia {
+              __typename
+            }
+
+            ... on HtmlMedia {
+              contentRenderURL
             }
 
             ... on VideoMedia {
@@ -40,23 +54,9 @@ export function NftDetailAsset({ collectionTokenRef, style }: NftDetailProps) {
                 large
               }
             }
-            ... on GIFMedia {
-              __typename
-              previewURLs {
-                large
-              }
-            }
-            ... on ImageMedia {
-              __typename
-              previewURLs {
-                large
-              }
-            }
-
-            ... on HtmlMedia {
-              contentRenderURL
-            }
           }
+
+          ...getVideoOrImageUrlForNftPreviewFragment
         }
       }
     `,
@@ -84,7 +84,7 @@ export function NftDetailAsset({ collectionTokenRef, style }: NftDetailProps) {
     if (viewDimensions && imageState.kind === 'loaded' && imageState.dimensions) {
       // Give the piece a little bit of breathing room. This might be an issue
       // if we evers upport landscape view (turning your phone horizontally).
-      const MAX_HEIGHT = windowDimensions.height - 200;
+      const MAX_HEIGHT = windowDimensions.height - 400;
 
       // Width is the width of the parent view (the screen - some padding)
       // Height is the max height for the image
@@ -108,9 +108,13 @@ export function NftDetailAsset({ collectionTokenRef, style }: NftDetailProps) {
     if (
       token.media?.__typename === 'GIFMedia' ||
       token.media?.__typename === 'ImageMedia' ||
-      token.media?.__typename === 'AudioMedia'
+      token.media?.__typename === 'AudioMedia' ||
+      token.media?.__typename === 'InvalidMedia'
     ) {
-      const imageUrl = token.media.previewURLs?.large;
+      const imageUrl = getVideoOrImageUrlForNftPreview({
+        tokenRef: token,
+        preferStillFrameFromGif: false,
+      })?.urls.large;
 
       if (!imageUrl) {
         throw new CouldNotRenderNftError('NftDetailAsset', 'Image had no contentRenderUrl');
@@ -156,7 +160,11 @@ export function NftDetailAsset({ collectionTokenRef, style }: NftDetailProps) {
   }, [finalAssetDimensions, handleLoad, token.media]);
 
   return (
-    <View style={style} className="relative" onLayout={handleViewLayout}>
+    <View
+      style={style}
+      className="relative flex flex-row justify-center"
+      onLayout={handleViewLayout}
+    >
       {inner}
 
       {/* Show a skeleton placeholder over the image while it's loading */}
