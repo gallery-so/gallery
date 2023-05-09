@@ -24820,6 +24820,7 @@ __metadata:
     react-native-fast-image: ^8.6.3
     react-native-fetch-api: ^3.0.0
     react-native-gesture-handler: ^2.9.0
+    react-native-haptic-feedback: ^2.0.3
     react-native-ios-context-menu: ^1.15.3
     react-native-linear-gradient: ^2.6.2
     react-native-markdown-display: "https://github.com/jonasmerlin/react-native-markdown-display.git"
@@ -27800,6 +27801,15 @@ __metadata:
   version: 0.71.17
   resolution: "react-native-gradle-plugin@npm:0.71.17"
   checksum: 5ff996bafc3959a36551dc34d481cefb070ede4025b5eb2ce659f51adf74ba0e6845cc019ea1d547e0b4007f1c3c68146fa719688f09bde308f25320c6c6f834
+  languageName: node
+  linkType: hard
+
+"react-native-haptic-feedback@npm:^2.0.3":
+  version: 2.0.3
+  resolution: "react-native-haptic-feedback@npm:2.0.3"
+  peerDependencies:
+    react-native: ">=0.60.0"
+  checksum: c0952135c54535439b3b307f4ecc11721eb208ef7210f56becd5471488d5ee130d78cdf0c8515aa80097ba284347925d2df3f402a09200e645522fe99fad3d64
   languageName: node
   linkType: hard
 
