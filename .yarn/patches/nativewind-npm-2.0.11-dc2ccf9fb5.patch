@@ -1,0 +1,37 @@
+diff --git a/dist/style-sheet/runtime.js b/dist/style-sheet/runtime.js
+index 513e6cf6ab6b3884b1b387dd8879eb6788800cb5..05652c10922da5b8f0a5caa84feafa21d3ab197a 100644
+--- a/dist/style-sheet/runtime.js
++++ b/dist/style-sheet/runtime.js
+@@ -15,6 +15,14 @@ const units = {
+     vw: vw_1.default,
+     vh: vh_1.default,
+ };
++
++let appBackgroundTime = -Infinity;
++const appStateListener = react_native_1.AppState.addEventListener('change', state => {
++    if(state ==='background') {
++        appBackgroundTime = Date.now();
++    }
++});
++
+ /**
+  * Tailwind styles are strings of atomic classes. eg "a b" compiles to [a, b]
+  *
+@@ -95,9 +103,16 @@ class StyleSheetRuntime extends color_scheme_1.ColorSchemeStore {
+         });
+     }
+     setAppearance(appearance) {
++
+         var _a;
+         (_a = this.appearanceListener) === null || _a === void 0 ? void 0 : _a.remove();
+-        this.appearanceListener = appearance.addChangeListener(({ colorScheme }) => {
++        this.appearanceListener = appearance.addChangeListener(({colorScheme}) => {
++            const timeSinceBackground = Date.now() - appBackgroundTime;
++
++            if(timeSinceBackground < 1000) {
++                return;
++            }
++
+             if (this.colorSchemeSystem === "system") {
+                 this.colorScheme = colorScheme || "light";
+                 this.notifyMedia(["colorScheme"]);

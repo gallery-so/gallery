@@ -33,6 +33,10 @@ export default function getVideoOrImageUrlForNftPreview({
               medium
               large
             }
+
+            fallbackMedia {
+              mediaURL
+            }
           }
 
           ... on AudioMedia {
@@ -41,6 +45,9 @@ export default function getVideoOrImageUrlForNftPreview({
               small
               medium
               large
+            }
+            fallbackMedia {
+              mediaURL
             }
           }
 
@@ -51,6 +58,9 @@ export default function getVideoOrImageUrlForNftPreview({
               medium
               large
             }
+            fallbackMedia {
+              mediaURL
+            }
           }
 
           ... on HtmlMedia {
@@ -60,6 +70,9 @@ export default function getVideoOrImageUrlForNftPreview({
               medium
               large
             }
+            fallbackMedia {
+              mediaURL
+            }
           }
 
           ... on ImageMedia {
@@ -68,6 +81,9 @@ export default function getVideoOrImageUrlForNftPreview({
               small
               medium
               large
+            }
+            fallbackMedia {
+              mediaURL
             }
           }
 
@@ -83,6 +99,9 @@ export default function getVideoOrImageUrlForNftPreview({
               medium
               large
             }
+            fallbackMedia {
+              mediaURL
+            }
           }
 
           ... on InvalidMedia {
@@ -91,6 +110,9 @@ export default function getVideoOrImageUrlForNftPreview({
               small
               medium
               large
+            }
+            fallbackMedia {
+              mediaURL
             }
           }
 
@@ -101,6 +123,9 @@ export default function getVideoOrImageUrlForNftPreview({
               medium
               large
             }
+            fallbackMedia {
+              mediaURL
+            }
           }
 
           ... on TextMedia {
@@ -109,6 +134,9 @@ export default function getVideoOrImageUrlForNftPreview({
               small
               medium
               large
+            }
+            fallbackMedia {
+              mediaURL
             }
           }
 
@@ -119,6 +147,9 @@ export default function getVideoOrImageUrlForNftPreview({
               medium
               large
             }
+            fallbackMedia {
+              mediaURL
+            }
           }
         }
       }
@@ -128,7 +159,26 @@ export default function getVideoOrImageUrlForNftPreview({
 
   const media = result?.media;
 
-  if (!media || !('previewURLs' in media) || media?.previewURLs === null) {
+  if (!media) {
+    return undefined;
+  }
+
+  let previewUrls: UrlSet | null = null;
+  if (
+    'previewURLs' in media &&
+    media.previewURLs &&
+    (media.previewURLs.small || media.previewURLs.medium || media.previewURLs.large)
+  ) {
+    previewUrls = media.previewURLs;
+  } else if ('fallbackMedia' in media && media.fallbackMedia?.mediaURL) {
+    previewUrls = {
+      small: media.fallbackMedia.mediaURL,
+      medium: media.fallbackMedia.mediaURL,
+      large: media.fallbackMedia.mediaURL,
+    };
+  }
+
+  if (!previewUrls) {
     handleReportError?.(new Error('no media or preview URLs found for NFT'), {
       tags: {
         id: result?.dbid,
@@ -138,12 +188,10 @@ export default function getVideoOrImageUrlForNftPreview({
     return undefined;
   }
 
-  if (!media.previewURLs.large && !media.previewURLs.medium && !media.previewURLs.small) {
-    return undefined;
-  }
-
-  if (preferStillFrameFromGif && media.__typename === 'GIFMedia' && media.staticPreviewURLs) {
-    return { type: 'image', urls: media.staticPreviewURLs };
+  if (preferStillFrameFromGif && media.__typename === 'GIFMedia') {
+    if (media.staticPreviewURLs) {
+      return { type: 'image', urls: media.staticPreviewURLs };
+    }
   }
 
   if (media.__typename === 'VideoMedia') {
@@ -151,10 +199,12 @@ export default function getVideoOrImageUrlForNftPreview({
     // until we're on the indexer. in summary, we don't know whether something was categorized
     // as VideoMedia due to its OpenseaImageURL or OpenseaAnimationURL, so we need to do one
     // more check ourselves
-    if (media.previewURLs.large?.endsWith('mp4') || media.previewURLs.large?.endsWith('webm')) {
-      return { type: 'video', urls: media.previewURLs };
+    if (previewUrls.large?.endsWith('mp4') || previewUrls.large?.endsWith('webm')) {
+      return { type: 'video', urls: previewUrls };
     }
-    return { type: 'image', urls: media.previewURLs };
+
+    return { type: 'image', urls: previewUrls };
   }
-  return { type: 'image', urls: media.previewURLs };
+
+  return { type: 'image', urls: previewUrls };
 }

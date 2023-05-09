@@ -72,6 +72,7 @@ export function NotesModal({ eventRef, queryRef, bottomSheetRef }: Props) {
         ref={bottomSheetRef}
         index={0}
         snapPoints={snapPoints}
+        android_keyboardInputMode="adjustResize"
         backdropComponent={({ animatedIndex, ...props }) => (
           <BottomSheetBackdrop
             {...props}
