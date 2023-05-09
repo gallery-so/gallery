@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import { TouchableOpacity, TouchableOpacityProps } from 'react-native';
+import { trigger } from 'react-native-haptic-feedback';
 import { ConnectionHandler, graphql, useFragment } from 'react-relay';
 import { SelectorStoreUpdater } from 'relay-runtime';
 
@@ -106,6 +107,8 @@ export function AdmireButton({ eventRef, queryRef, style }: Props) {
   );
 
   const handleRemoveAdmire = useCallback(async () => {
+    trigger('impactLight');
+
     if (!event.viewerAdmire?.dbid) {
       return;
     }
@@ -170,6 +173,8 @@ export function AdmireButton({ eventRef, queryRef, style }: Props) {
   }, [event.dbid, event.viewerAdmire?.dbid, interactionsConnection, removeAdmire, reportError]);
 
   const handleAdmire = useCallback(async () => {
+    trigger('impactLight');
+
     if (query.viewer?.__typename !== 'Viewer') {
       return;
     }
