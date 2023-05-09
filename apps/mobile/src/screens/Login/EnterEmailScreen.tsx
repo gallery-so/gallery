@@ -4,6 +4,7 @@ import { KeyboardAvoidingView, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { LoginStackNavigatorProp } from '~/navigation/types';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 
 import { Button } from '../../components/Button';
@@ -23,6 +24,7 @@ export function EnterEmailScreen() {
 
   const [login] = useLogin();
   const reportError = useReportError();
+  const track = useTrack();
 
   const handleContinue = useCallback(async () => {
     setError('');
@@ -53,8 +55,10 @@ export function EnterEmailScreen() {
       const result = await login({ magicLink: { token } });
 
       if (result.kind === 'failure') {
+        track('Sign In Failure', { 'Sign in method': 'Email', error: result.message });
         handleLoginError(result.message);
       } else {
+        track('Sign In Success', { 'Sign in method': 'Email' });
         navigation.replace('MainTabs', {
           screen: 'HomeTab',
           params: { screen: 'Home', params: { screen: 'Latest' } },
@@ -63,7 +67,7 @@ export function EnterEmailScreen() {
     } finally {
       setIsLoggingIn(false);
     }
-  }, [email, login, navigation, reportError]);
+  }, [email, login, navigation, reportError, track]);
 
   return (
     <SafeAreaView className="h-screen bg-white dark:bg-black">
