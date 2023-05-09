@@ -35,7 +35,7 @@ export function GalleryTokenPreview({ tokenRef, containerWidth }: GalleryTokenPr
   const tokenUrl = useMemo(() => {
     const tokenUrls = getVideoOrImageUrlForNftPreview({ tokenRef: token.token });
     if (containerWidth < 200) {
-      return tokenUrls?.urls.small;
+      return tokenUrls?.urls.medium;
     } else if (containerWidth < 400) {
       return tokenUrls?.urls.large;
     }
