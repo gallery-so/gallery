@@ -90,7 +90,11 @@ function GalleryScreenInner() {
 
   const renderItem: ListRenderItem<ListItem> = useCallback(({ item }) => {
     if (item.kind === 'description') {
-      return <Markdown>{item.description}</Markdown>;
+      return (
+        <View className="px-4">
+          <Markdown>{item.description}</Markdown>
+        </View>
+      );
     } else {
       return <GalleryVirtualizedRow item={item} />;
     }
