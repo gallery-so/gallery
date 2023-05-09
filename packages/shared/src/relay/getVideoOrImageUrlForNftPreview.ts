@@ -179,6 +179,12 @@ export default function getVideoOrImageUrlForNftPreview({
   }
 
   if (!previewUrls) {
+    handleReportError?.(new Error('no media or preview URLs found for NFT'), {
+      tags: {
+        id: result?.dbid,
+        assetType: media?.__typename,
+      },
+    });
     return undefined;
   }
 
