@@ -1,7 +1,6 @@
 import { BottomSheetBackdrop, BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useCallback, useMemo, useRef } from 'react';
 import { Keyboard, TouchableOpacity, useColorScheme, View, ViewProps } from 'react-native';
-import { trigger } from 'react-native-haptic-feedback';
 import { graphql, useFragment } from 'react-relay';
 
 import { CommentButtonFragment$key } from '~/generated/CommentButtonFragment.graphql';
@@ -46,8 +45,6 @@ export function CommentButton({ eventRef, queryRef, style, onClick }: Props) {
   }, []);
 
   const toggleCommentBox = useCallback(() => {
-    trigger('impactLight');
-
     onClick();
 
     bottomSheetRef.current?.present();
