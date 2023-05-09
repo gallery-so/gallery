@@ -1,6 +1,10 @@
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { Suspense } from 'react';
 import { useColorScheme } from 'react-native';
+import { graphql, useLazyLoadQuery } from 'react-relay';
 
+import { ProfileViewFallback } from '~/components/ProfileView/ProfileViewFallback';
+import { MainTabNavigatorAccountScreenQuery } from '~/generated/MainTabNavigatorAccountScreenQuery.graphql';
 import { TabBar } from '~/navigation/MainTabNavigator/TabBar';
 import { MainTabStackNavigator } from '~/navigation/MainTabStackNavigator';
 import { MainTabNavigatorParamList } from '~/navigation/types';
@@ -8,8 +12,37 @@ import colors from '~/shared/theme/colors';
 
 const Tab = createMaterialTopTabNavigator<MainTabNavigatorParamList>();
 
+function AccountScreenInner() {
+  const query = useLazyLoadQuery<MainTabNavigatorAccountScreenQuery>(
+    graphql`
+      query MainTabNavigatorAccountScreenQuery {
+        viewer {
+          ... on Viewer {
+            user {
+              username
+            }
+          }
+        }
+      }
+    `,
+    {},
+    { fetchPolicy: 'network-only' }
+  );
+
+  return (
+    <MainTabStackNavigator
+      initialRouteName="Profile"
+      initialProfileParams={{ username: query.viewer?.user?.username ?? '' }}
+    />
+  );
+}
+
 function AccountScreen() {
-  return <MainTabStackNavigator initialRouteName="Account" />;
+  return (
+    <Suspense fallback={<ProfileViewFallback />}>
+      <AccountScreenInner />
+    </Suspense>
+  );
 }
 
 function HomeScreen() {
