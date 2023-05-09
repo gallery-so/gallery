@@ -21,14 +21,14 @@ export default function MobileAppLandingPage() {
           <VStack align="center" gap={24}>
             <VStack align="center" gap={16}>
               <GiantTitle>A New Era of Gallery</GiantTitle>
-              <VStack align="center" gap={8}>
+              <BodyText align="center" gap={8}>
                 <BaseXL>
                   We’re building a fresh approach to creativity and self expression, and that starts
                   with a mobile app.
                 </BaseXL>
                 <BaseXL>TestFlight access is rolling out soon to current Gallery users.</BaseXL>
                 <BaseXL>Join the waitlist to be the first to try it out.</BaseXL>
-              </VStack>
+              </BodyText>
             </VStack>
             <VStack gap={8}>
               <StyledLink
@@ -78,6 +78,10 @@ const StyledLink = styled.a`
 const StyledButton = styled(Button)`
   width: 240px;
   height: 40px;
+`;
+
+const BodyText = styled(VStack)`
+  text-align: center;
 `;
 
 const StyledImage = styled.img`
