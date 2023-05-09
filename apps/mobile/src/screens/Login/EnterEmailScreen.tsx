@@ -91,6 +91,7 @@ export function EnterEmailScreen() {
             )}
 
             <FadedInput
+              autoFocus
               placeholder="Email"
               keyboardType="email-address"
               autoCorrect={false}

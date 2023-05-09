@@ -34,6 +34,9 @@ function AccountScreenInner() {
     {
       feedLast: 24,
       interactionsFirst: NOTES_PER_PAGE,
+    },
+    {
+      fetchPolicy: 'network-only',
     }
   );
 
