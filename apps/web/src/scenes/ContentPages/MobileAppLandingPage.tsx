@@ -21,7 +21,7 @@ export default function MobileAppLandingPage() {
           <VStack align="center" gap={24}>
             <VStack align="center" gap={16}>
               <GiantTitle>A New Era of Gallery</GiantTitle>
-              <BodyText align="center" gap={8}>
+              <BodyText gap={8}>
                 <BaseXL>
                   We’re building a fresh approach to creativity and self expression, and that starts
                   with a mobile app.
@@ -81,7 +81,12 @@ const StyledButton = styled(Button)`
 `;
 
 const BodyText = styled(VStack)`
-  text-align: center;
+  align-items: baseline;
+
+  @media only screen and ${breakpoints.tablet} {
+    align-items: center;
+    text-align: center;
+  }
 `;
 
 const StyledImage = styled.img`
