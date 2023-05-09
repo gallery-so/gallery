@@ -57,9 +57,11 @@ export function ProfileViewHeader({ userRef, selectedRoute, onRouteChange }: Pro
 
   return (
     <View>
-      <View className="mb-4 px-4">
-        <Markdown>{user.bio}</Markdown>
-      </View>
+      {user.bio && (
+        <View className="mb-4 px-4">
+          <Markdown>{user.bio}</Markdown>
+        </View>
+      )}
 
       {twitterPill ?? null}
 

@@ -1,9 +1,8 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { MainTabStackNavigatorParamList } from '~/navigation/types';
-import { AccountScreen } from '~/screens/AccountScreen';
-import { CollectionScreen } from '~/screens/CollectionScreen';
-import { GalleryScreen } from '~/screens/GalleryScreen';
+import { CollectionScreen } from '~/screens/CollectionScreen/CollectionScreen';
+import { GalleryScreen } from '~/screens/GalleryScreen/GalleryScreen';
 import { HomeScreen } from '~/screens/HomeScreen/HomeScreen';
 import { NftDetailScreen } from '~/screens/NftDetailScreen/NftDetailScreen';
 import { NotificationsScreen } from '~/screens/NotificationsScreen';
@@ -13,19 +12,19 @@ import { SearchScreen } from '~/screens/SearchScreen';
 const Stack = createNativeStackNavigator<MainTabStackNavigatorParamList>();
 
 type Props = {
+  initialProfileParams?: MainTabStackNavigatorParamList['Profile'];
   initialRouteName: keyof MainTabStackNavigatorParamList;
 };
 
-export function MainTabStackNavigator({ initialRouteName }: Props) {
+export function MainTabStackNavigator({ initialRouteName, initialProfileParams }: Props) {
   return (
     <Stack.Navigator initialRouteName={initialRouteName} screenOptions={{ header: Empty }}>
       <Stack.Screen name="NftDetail" component={NftDetailScreen} />
-      <Stack.Screen name="Profile" component={ProfileScreen} />
+      <Stack.Screen name="Profile" component={ProfileScreen} initialParams={initialProfileParams} />
       <Stack.Screen name="Gallery" component={GalleryScreen} />
       <Stack.Screen name="Collection" component={CollectionScreen} />
 
-      {/* The 4 main tabs */}
-      <Stack.Screen name="Account" component={AccountScreen} />
+      {/* The 4 main tabs excluding "Account" since that just uses Profile */}
       <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen name="Search" component={SearchScreen} />
       <Stack.Screen name="Notifications" component={NotificationsScreen} />

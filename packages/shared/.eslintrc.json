@@ -1,4 +1,13 @@
 {
   "extends": ["../../.eslintrc.json"],
-  "plugins": ["react-hooks"]
+  "plugins": ["react-hooks"],
+  "overrides": [
+    {
+      "files": ["jest.config.js"],
+      "rules": {
+        // Okay to use require in these files
+        "@typescript-eslint/no-var-requires": "off"
+      }
+    }
+  ]
 }
