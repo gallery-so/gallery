@@ -1,6 +1,7 @@
 import clsx from 'clsx';
 import { PropsWithChildren, useCallback, useMemo } from 'react';
 import { TouchableOpacity, TouchableOpacityProps, View, ViewProps } from 'react-native';
+import { trigger } from 'react-native-haptic-feedback';
 import { graphql, useFragment } from 'react-relay';
 
 import { Typography } from '~/components/Typography';
@@ -69,10 +70,14 @@ export function FollowButton({ queryRef, userRef, style, width = 'fixed' }: Prop
   const unfollowUser = useUnfollowUser({ queryRef: loggedInUserQuery });
 
   const handleFollowPress = useCallback(async () => {
+    trigger('impactLight');
+
     await followUser(userToFollow.dbid);
   }, [userToFollow.dbid, followUser]);
 
   const handleUnfollowPress = useCallback(async () => {
+    trigger('impactLight');
+
     await unfollowUser(userToFollow.dbid);
   }, [userToFollow.dbid, unfollowUser]);
 
