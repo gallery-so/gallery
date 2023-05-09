@@ -49,8 +49,14 @@ function CollectionScreenInner() {
   );
 
   const collection = query.collectionById;
-  if (collection?.__typename !== 'Collection' || !collection.gallery?.owner) {
-    throw new Error('');
+  if (collection?.__typename !== 'Collection') {
+    throw new Error(
+      `Expected collection to have typename \`Collection\`, but received ${collection?.__typename}`
+    );
+  }
+
+  if (!collection.gallery?.owner) {
+    throw new Error('Expected collection to have an owner, received null instead');
   }
 
   const { items, stickyIndices } = useMemo(() => {

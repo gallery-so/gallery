@@ -42,7 +42,9 @@ function GalleryScreenInner() {
   );
 
   if (query.galleryById?.__typename !== 'Gallery') {
-    throw new Error('');
+    throw new Error(
+      `Expected gallery to have typename \`Gallery\`, but received ${query.galleryById?.__typename}`
+    );
   }
 
   const gallery = useFragment<GalleryScreenGalleryFragment$key>(
@@ -62,7 +64,7 @@ function GalleryScreenInner() {
   );
 
   if (!gallery.owner) {
-    throw new Error('');
+    throw new Error('Expected gallery to have an owner, received null instead');
   }
 
   const { items, stickyIndices } = useMemo(() => {
