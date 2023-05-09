@@ -24047,7 +24047,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nativewind@npm:^2.0.11":
+"nativewind@npm:2.0.11":
   version: 2.0.11
   resolution: "nativewind@npm:2.0.11"
   dependencies:
@@ -24067,6 +24067,29 @@ __metadata:
   peerDependencies:
     tailwindcss: ~3
   checksum: 5fb7c73220ef42962af6798173c8ccbe3f538254c156519ff41d4aa922bd09446d79a1e9b89bb92d03c321ca038c00a8334b1734c5b9da16965c0a8dca88565f
+  languageName: node
+  linkType: hard
+
+"nativewind@patch:nativewind@npm%3A2.0.11#./.yarn/patches/nativewind-npm-2.0.11-dc2ccf9fb5.patch::locator=gallery-monorepo%40workspace%3A.":
+  version: 2.0.11
+  resolution: "nativewind@patch:nativewind@npm%3A2.0.11#./.yarn/patches/nativewind-npm-2.0.11-dc2ccf9fb5.patch::version=2.0.11&hash=343be1&locator=gallery-monorepo%40workspace%3A."
+  dependencies:
+    "@babel/generator": ^7.18.7
+    "@babel/helper-module-imports": 7.18.6
+    "@babel/types": 7.19.0
+    css-mediaquery: ^0.1.2
+    css-to-react-native: ^3.0.0
+    micromatch: ^4.0.5
+    postcss: ^8.4.12
+    postcss-calc: ^8.2.4
+    postcss-color-functional-notation: ^4.2.2
+    postcss-css-variables: ^0.18.0
+    postcss-nested: ^5.0.6
+    react-is: ^18.1.0
+    use-sync-external-store: ^1.1.0
+  peerDependencies:
+    tailwindcss: ~3
+  checksum: 16d3bb6f0416d369044e5925b45ea32de095ff6eb3cb4ecd56ad580c3f6b0052c93acfe57d98e969706d361d8d3566eb88a386414aadd54b4137ac5d6a13d59e
   languageName: node
   linkType: hard
 
