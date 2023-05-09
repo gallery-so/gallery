@@ -139,7 +139,7 @@ export function EventTokenGrid({
         </View>
       );
     } else {
-      return null;
+      throw new Error('Tried to render EventTokenGrid without any tokens');
     }
   }, [collectionTokens, fullHeight, fullWidth, imagePriority, preserveAspectRatio]);
 
