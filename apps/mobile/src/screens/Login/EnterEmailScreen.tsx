@@ -100,7 +100,16 @@ export function EnterEmailScreen() {
               onChangeText={setEmail}
             />
 
-            <Button loading={isLoggingIn} onPress={handleContinue} text="Continue" />
+            <Button
+              id="Submit Email Button"
+              loading={isLoggingIn}
+              onPress={handleContinue}
+              text="Continue"
+              eventName="Sign In Attempt"
+              trackProperties={{
+                'Sign In Selection': 'Email',
+              }}
+            />
 
             {/* Add some extra space for the keyboard avoiding view */}
             <View />

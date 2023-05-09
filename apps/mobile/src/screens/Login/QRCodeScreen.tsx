@@ -4,6 +4,8 @@ import { useCallback, useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
+
 import { IconContainer } from '../../components/IconContainer';
 import { Typography } from '../../components/Typography';
 import { BackIcon } from '../../icons/BackIcon';
@@ -17,6 +19,7 @@ export function QRCodeScreen() {
   );
 
   const [scanned, setScanned] = useState(false);
+  const track = useTrack();
 
   useEffect(() => {
     const getBarCodeScannerPermissions = async () => {
@@ -28,13 +31,18 @@ export function QRCodeScreen() {
     getBarCodeScannerPermissions();
   }, []);
 
-  const handleBarCodeScanned = useCallback<BarCodeScannedCallback>(({ type, data }) => {
-    setScanned(true);
+  const handleBarCodeScanned = useCallback<BarCodeScannedCallback>(
+    ({ type, data }) => {
+      setScanned(true);
 
-    // TODO: Do something w/ data
-    // eslint-disable-next-line no-console
-    console.log(type, data);
-  }, []);
+      // TODO: Do something w/ data
+      // eslint-disable-next-line no-console
+      console.log(type, data);
+      // TODO: Track this when QR code is implemented
+      track('Sign In Attempt', { 'Sign In Selection': 'QR code' });
+    },
+    [track]
+  );
 
   return (
     <View className="relative flex h-full w-full flex-col">
