@@ -62,7 +62,7 @@ export function QRCodeScreen() {
         handleLoginError(result.message);
       }
     },
-    [login]
+    [login, navigation, reportError]
   );
 
   return (
