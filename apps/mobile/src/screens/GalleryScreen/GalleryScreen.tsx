@@ -110,7 +110,7 @@ function GalleryScreenInner() {
 
       <View className="flex flex-col space-y-1 pb-2">
         <View className="px-4">
-          <GalleryNameHeader galleryRef={gallery} />
+          <GalleryNameHeader isOnGalleryScreen galleryRef={gallery} />
         </View>
       </View>
 

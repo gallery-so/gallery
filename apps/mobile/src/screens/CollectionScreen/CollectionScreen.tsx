@@ -85,7 +85,7 @@ function CollectionScreenInner() {
 
       <View className="flex flex-col space-y-1 pb-2">
         <View className="px-4">
-          <GalleryNameHeader galleryRef={collection.gallery} />
+          <GalleryNameHeader isOnGalleryScreen={false} galleryRef={collection.gallery} />
         </View>
       </View>
 
