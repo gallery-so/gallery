@@ -157,7 +157,7 @@ export function NftDetailAsset({ collectionTokenRef, style }: NftDetailProps) {
     throw new CouldNotRenderNftError('NftDetailAsset', 'Unsupported media type', {
       typename: token.media?.__typename,
     });
-  }, [finalAssetDimensions, handleLoad, token.media]);
+  }, [finalAssetDimensions, handleLoad, token]);
 
   return (
     <View
