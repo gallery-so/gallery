@@ -1,4 +1,4 @@
-import { Suspense, useCallback, useEffect, useMemo, useRef } from 'react';
+import { Suspense, useCallback, useMemo } from 'react';
 import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 
 import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/NotesModal/NotesList';
@@ -14,7 +14,6 @@ type LatestScreenInnerProps = {
 };
 
 const PER_PAGE = 20;
-const INITIAL_COUNT = 3;
 
 function LatestScreenInner({ queryRef }: LatestScreenInnerProps) {
   const {
@@ -42,14 +41,6 @@ function LatestScreenInner({ queryRef }: LatestScreenInnerProps) {
     `,
     queryRef
   );
-
-  const firstMountRef = useRef(true);
-  useEffect(() => {
-    if (firstMountRef.current && hasPrevious) {
-      loadPrevious(PER_PAGE - INITIAL_COUNT);
-    }
-    firstMountRef.current = false;
-  }, [hasPrevious, isLoadingPrevious, loadPrevious]);
 
   const handleLoadMore = useCallback(() => {
     if (hasPrevious && !isLoadingPrevious) {
@@ -84,7 +75,7 @@ export function LatestScreen() {
       }
     `,
     {
-      globalFeedCount: INITIAL_COUNT,
+      globalFeedCount: PER_PAGE,
       interactionsFirst: NOTES_PER_PAGE,
     }
   );

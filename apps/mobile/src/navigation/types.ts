@@ -11,7 +11,7 @@ export type RootStackNavigatorParamList = {
 };
 
 export type MainTabStackNavigatorParamList = {
-  Profile: { username: string };
+  Profile: { username: string; hideBackButton?: boolean };
   NftDetail: {
     tokenId: string;
     collectionId: string;

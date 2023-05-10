@@ -1,6 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import { ListRenderItem } from '@shopify/flash-list';
 import { useCallback, useMemo, useState } from 'react';
+import { View } from 'react-native';
 import { Tabs } from 'react-native-collapsible-tab-view';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -102,11 +103,8 @@ export function ProfileViewFollowersTab({ userRef, queryRef }: ProfileViewFollow
   const contentContainerStyle = useListContentStyle();
 
   return (
-    <Tabs.FlashList
-      data={items}
-      estimatedItemSize={40}
-      renderItem={renderItem}
-      contentContainerStyle={contentContainerStyle}
-    />
+    <View style={contentContainerStyle}>
+      <Tabs.FlashList data={items} estimatedItemSize={40} renderItem={renderItem} />
+    </View>
   );
 }

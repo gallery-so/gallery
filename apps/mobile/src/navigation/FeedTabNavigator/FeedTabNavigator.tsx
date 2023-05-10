@@ -19,6 +19,7 @@ export function FeedTabNavigator() {
       tabBarPosition="top"
       initialRouteName="Latest"
       tabBar={TabBar}
+      screenOptions={{ lazy: true }}
       sceneContainerStyle={{
         backgroundColor: colorScheme === 'dark' ? colors.black : colors.white,
       }}

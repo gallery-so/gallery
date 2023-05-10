@@ -99,7 +99,6 @@ export function ProfileView({ userRef, queryRef, shouldShowBackButton }: Profile
       <View className="flex-grow">
         <GalleryTokenDimensionCacheProvider>
           <Tabs.Container
-            revealHeaderOnScroll
             ref={containerRef}
             pagerProps={{ scrollEnabled: false }}
             containerStyle={{
