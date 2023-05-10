@@ -1,4 +1,4 @@
-import { BottomSheetBackdrop, BottomSheetModal } from '@gorhom/bottom-sheet';
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useCallback, useMemo, useRef } from 'react';
 import { Keyboard, TouchableOpacity, useColorScheme, View, ViewProps } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
