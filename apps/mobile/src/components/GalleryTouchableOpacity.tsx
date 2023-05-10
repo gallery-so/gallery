@@ -6,7 +6,7 @@ import { useTrack } from '~/shared/contexts/AnalyticsContext';
 
 export type GalleryTouchableOpacityProps = {
   // unique identifier for the element
-  id: string;
+  id?: string;
   eventName?: string;
   onPress?: (event: GestureResponderEvent) => void;
   properties?: Record<string, unknown>;
