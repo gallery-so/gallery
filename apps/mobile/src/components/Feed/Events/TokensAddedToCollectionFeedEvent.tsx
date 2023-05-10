@@ -1,10 +1,11 @@
 import { useNavigation } from '@react-navigation/native';
 import { useCallback, useMemo } from 'react';
-import { TouchableOpacity, View } from 'react-native';
+import { View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
+import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { TokensAddedToCollectionFeedEventFragment$key } from '~/generated/TokensAddedToCollectionFeedEventFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
@@ -65,7 +66,7 @@ export function TokensAddedToCollectionFeedEvent({
         <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
           Added new tokens to
         </Typography>
-        <TouchableOpacity className="flex-1" onPress={handleCollectionNamePress}>
+        <GalleryTouchableOpacity className="flex-1" onPress={handleCollectionNamePress}>
           <Typography
             numberOfLines={1}
             className="text-sm"
@@ -73,7 +74,7 @@ export function TokensAddedToCollectionFeedEvent({
           >
             {eventData.collection?.name || 'Untitled'}
           </Typography>
-        </TouchableOpacity>
+        </GalleryTouchableOpacity>
       </FeedEventCarouselCellHeader>
 
       <View className="flex flex-grow">

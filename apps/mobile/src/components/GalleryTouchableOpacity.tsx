@@ -1,6 +1,6 @@
 import { useNavigationState } from '@react-navigation/native';
 import { useCallback } from 'react';
-import { GestureResponderEvent, TouchableOpacity, TouchableOpacityProps } from 'react-native';
+import { GestureResponderEvent, TouchableOpacityProps } from 'react-native';
 
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 
@@ -30,12 +30,14 @@ export function GalleryTouchableOpacity({
     (event: GestureResponderEvent) => {
       const eventNameToUse = eventName || 'Button Press';
 
-      // Only include id in the properties if it's provided
-      const trackProperties = id
-        ? { id, screen: currentScreen, ...properties }
-        : { screen: currentScreen, ...properties };
+      if (id) {
+        track(eventNameToUse, {
+          id,
+          screen: currentScreen,
+          ...properties,
+        });
+      }
 
-      track(eventNameToUse, trackProperties);
       if (onPress) {
         onPress(event);
       }
@@ -44,8 +46,8 @@ export function GalleryTouchableOpacity({
   );
 
   return (
-    <TouchableOpacity {...props} onPress={handlePress}>
+    <GalleryTouchableOpacity {...props} onPress={handlePress}>
       {children}
-    </TouchableOpacity>
+    </GalleryTouchableOpacity>
   );
 }

@@ -1,8 +1,9 @@
 import { MaterialTopTabBarProps } from '@react-navigation/material-top-tabs';
 import { NavigationRoute } from '@sentry/react-native/dist/js/tracing/reactnavigation';
 import { useCallback } from 'react';
-import { TouchableOpacity, View } from 'react-native';
+import { View } from 'react-native';
 
+import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { FeedTabNavigatorParamList } from '~/navigation/types';
 
 import { Typography } from '../../components/Typography';
@@ -29,7 +30,7 @@ function TabItem({ navigation, route, activeRoute }: TabItemProps) {
   }, [isFocused, navigation, route]);
 
   return (
-    <TouchableOpacity
+    <GalleryTouchableOpacity
       className={`px-2`}
       accessibilityRole="button"
       accessibilityState={isFocused ? { selected: true } : {}}
@@ -43,7 +44,7 @@ function TabItem({ navigation, route, activeRoute }: TabItemProps) {
       >
         {route.name}
       </Typography>
-    </TouchableOpacity>
+    </GalleryTouchableOpacity>
   );
 }
 

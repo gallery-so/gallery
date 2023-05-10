@@ -1,5 +1,7 @@
 import { ReactElement } from 'react';
-import { TouchableOpacity, TouchableOpacityProps, View } from 'react-native';
+import { TouchableOpacityProps, View } from 'react-native';
+
+import { GalleryTouchableOpacity } from './GalleryTouchableOpacity';
 
 type IconContainerProps = {
   className?: string;
@@ -11,7 +13,7 @@ type IconContainerProps = {
 
 export function IconContainer({ icon, onPress, style, size }: IconContainerProps) {
   return (
-    <TouchableOpacity style={style} onPress={onPress}>
+    <GalleryTouchableOpacity style={style} onPress={onPress}>
       <View
         className={`bg-faint dark:bg-graphite items-center justify-center rounded-full ${
           size === 'sm' ? 'h-6 w-6' : 'h-8 w-8'
@@ -19,6 +21,6 @@ export function IconContainer({ icon, onPress, style, size }: IconContainerProps
       >
         {icon}
       </View>
-    </TouchableOpacity>
+    </GalleryTouchableOpacity>
   );
 }

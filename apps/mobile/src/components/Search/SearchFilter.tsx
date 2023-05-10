@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
-import { TouchableOpacity, View } from 'react-native';
+import { View } from 'react-native';
 
+import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import { Typography } from '../Typography';
 
 export type SearchFilterType = 'top' | 'curator' | 'gallery' | 'community' | null;
@@ -45,7 +46,7 @@ export function SearchFilter({ activeFilter, onChange, ...props }: Props) {
   return (
     <View className="flex flex-row gap-1 " {...props}>
       {filters.map((filter) => (
-        <TouchableOpacity
+        <GalleryTouchableOpacity
           key={filter.value}
           onPress={() => {
             handleSelectFilter(filter.value);
@@ -65,7 +66,7 @@ export function SearchFilter({ activeFilter, onChange, ...props }: Props) {
           >
             {filter.label}
           </Typography>
-        </TouchableOpacity>
+        </GalleryTouchableOpacity>
       ))}
     </View>
   );

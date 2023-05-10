@@ -1,6 +1,6 @@
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
-import { Text, TouchableOpacity, useColorScheme, View, ViewStyle } from 'react-native';
+import { Text, useColorScheme, View, ViewStyle } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { AnimatedStyleProp } from 'react-native-reanimated';
 import { ConnectionHandler, graphql, useFragment } from 'react-relay';
@@ -8,6 +8,7 @@ import { SelectorStoreUpdater } from 'relay-runtime';
 import { XMarkIcon } from 'src/icons/XMarkIcon';
 import useKeyboardStatus from 'src/utils/useKeyboardStatus';
 
+import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { CommentBoxFragment$key } from '~/generated/CommentBoxFragment.graphql';
 import { CommentBoxMutation } from '~/generated/CommentBoxMutation.graphql';
 import { CommentBoxQueryFragment$key } from '~/generated/CommentBoxQueryFragment.graphql';
@@ -226,7 +227,7 @@ export function CommentBox({
           style={{ flex: 1, color: colorScheme === 'dark' ? colors.white : colors.offBlack }}
         />
         <Text className="text-sm text-metal">{characterCount}</Text>
-        <TouchableOpacity onPress={handleSubmit} disabled={disabledSendButton}>
+        <GalleryTouchableOpacity onPress={handleSubmit} disabled={disabledSendButton}>
           <View
             className={`h-6 w-6 rounded-full flex items-center justify-center bg-red
             ${disabledSendButton ? 'bg-metal' : 'bg-activeBlue'}
@@ -234,15 +235,15 @@ export function CommentBox({
           >
             <SendIcon />
           </View>
-        </TouchableOpacity>
+        </GalleryTouchableOpacity>
       </Animated.View>
 
       <Animated.View style={xmarkIconStyle}>
-        <TouchableOpacity onPress={handleDismiss}>
+        <GalleryTouchableOpacity onPress={handleDismiss}>
           <View className="h-6 w-6  items-center justify-center rounded-full">
             <XMarkIcon />
           </View>
-        </TouchableOpacity>
+        </GalleryTouchableOpacity>
       </Animated.View>
     </View>
   );

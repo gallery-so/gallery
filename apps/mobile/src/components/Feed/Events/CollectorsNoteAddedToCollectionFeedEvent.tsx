@@ -1,10 +1,11 @@
 import { useNavigation } from '@react-navigation/native';
 import { useCallback, useMemo } from 'react';
-import { TouchableOpacity, View } from 'react-native';
+import { View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
+import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { CollectorsNoteAddedToCollectionFeedEventFragment$key } from '~/generated/CollectorsNoteAddedToCollectionFeedEventFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
@@ -60,7 +61,7 @@ export function CollectorsNoteAddedToCollectionFeedEvent({
         <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
           Added a colloctors note to
         </Typography>
-        <TouchableOpacity className="flex-1" onPress={handleCollectionNamePress}>
+        <GalleryTouchableOpacity className="flex-1" onPress={handleCollectionNamePress}>
           <Typography
             numberOfLines={1}
             className="text-xs"
@@ -68,7 +69,7 @@ export function CollectorsNoteAddedToCollectionFeedEvent({
           >
             {eventData.collection?.name || 'Untitled'}
           </Typography>
-        </TouchableOpacity>
+        </GalleryTouchableOpacity>
       </FeedEventCarouselCellHeader>
 
       {eventData.newCollectorsNote && (

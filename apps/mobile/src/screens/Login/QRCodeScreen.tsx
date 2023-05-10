@@ -4,8 +4,8 @@ import { useCallback, useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { LoginStackNavigatorProp } from '~/navigation/types';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 
 import { IconContainer } from '../../components/IconContainer';

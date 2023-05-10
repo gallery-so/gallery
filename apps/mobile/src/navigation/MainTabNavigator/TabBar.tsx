@@ -1,11 +1,12 @@
 import { MaterialTopTabBarProps } from '@react-navigation/material-top-tabs';
 import { NavigationRoute } from '@sentry/react-native/dist/js/tracing/reactnavigation';
 import { ReactNode, Suspense, useCallback, useMemo } from 'react';
-import { TouchableOpacity, View } from 'react-native';
+import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
+import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { TabBarLazyNotificationBlueDotQuery } from '~/generated/TabBarLazyNotificationBlueDotQuery.graphql';
 import { AccountIcon } from '~/navigation/MainTabNavigator/AccountIcon';
 import { GLogo } from '~/navigation/MainTabNavigator/GLogo';
@@ -51,7 +52,7 @@ function TabItem({ navigation, route, icon, activeRoute }: TabItemProps) {
   const isHome = route.name === 'Home';
 
   return (
-    <TouchableOpacity
+    <GalleryTouchableOpacity
       onPress={onPress}
       accessibilityRole="button"
       accessibilityState={isFocused ? { selected: true } : {}}
@@ -64,7 +65,7 @@ function TabItem({ navigation, route, icon, activeRoute }: TabItemProps) {
       >
         {icon}
       </View>
-    </TouchableOpacity>
+    </GalleryTouchableOpacity>
   );
 }
 

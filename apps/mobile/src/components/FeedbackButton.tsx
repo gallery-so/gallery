@@ -1,12 +1,12 @@
 import { BottomSheetBackdrop, BottomSheetModal } from '@gorhom/bottom-sheet';
 import React, { useCallback, useMemo, useRef } from 'react';
 import { Linking, useColorScheme, View } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { ChatIcon } from 'src/icons/ChatIcon';
 
 import colors from '~/shared/theme/colors';
 
 import { Button } from './Button';
+import { GalleryTouchableOpacity } from './GalleryTouchableOpacity';
 import { Typography } from './Typography';
 
 const FEEDBACK_FORM_URL =
@@ -27,9 +27,9 @@ export function FeedbackButton() {
   return (
     <>
       <View className="flex flex-row space-x-4 h-full items-center">
-        <TouchableOpacity onPress={handleOpenSheet}>
+        <GalleryTouchableOpacity onPress={handleOpenSheet}>
           <ChatIcon width={20} height={20} />
-        </TouchableOpacity>
+        </GalleryTouchableOpacity>
       </View>
       <BottomSheetModal
         ref={bottomSheetRef}

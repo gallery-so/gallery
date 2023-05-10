@@ -1,10 +1,11 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback, useState } from 'react';
-import { TextInput, TextInputProps, TouchableOpacity, useColorScheme, View } from 'react-native';
+import { TextInput, TextInputProps, useColorScheme, View } from 'react-native';
 
 import colors from '~/shared/theme/colors';
 
 import { XMarkIcon } from '../../icons/XMarkIcon';
+import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import { Typography } from '../Typography';
 import { useSearchContext } from './SearchContext';
 import { SearchFilterType } from './SearchFilter';
@@ -85,21 +86,29 @@ export function SearchInput({ inputRef, setFilter, value, onChange, style, ...pr
         {...props}
       />
       {localKeyword.length > 0 && (
-        <TouchableOpacity accessibilityRole="button" onPress={handleClear} className="-m-4 p-4">
+        <GalleryTouchableOpacity
+          accessibilityRole="button"
+          onPress={handleClear}
+          className="-m-4 p-4"
+        >
           <View className="f flex h-4 w-4 items-center justify-center">
             <XMarkIcon />
           </View>
-        </TouchableOpacity>
+        </GalleryTouchableOpacity>
       )}
       {isFocused && (
-        <TouchableOpacity accessibilityRole="button" onPress={handleCancel} className="-m-4 p-4">
+        <GalleryTouchableOpacity
+          accessibilityRole="button"
+          onPress={handleCancel}
+          className="-m-4 p-4"
+        >
           <Typography
             font={{ family: 'ABCDiatype', weight: 'Regular' }}
             className="border-b border-black text-sm"
           >
             Cancel
           </Typography>
-        </TouchableOpacity>
+        </GalleryTouchableOpacity>
       )}
     </View>
   );

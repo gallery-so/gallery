@@ -1,9 +1,10 @@
 import { useCallback } from 'react';
-import { TouchableOpacity, TouchableOpacityProps } from 'react-native';
+import { TouchableOpacityProps } from 'react-native';
 import { trigger } from 'react-native-haptic-feedback';
 import { ConnectionHandler, graphql, useFragment } from 'react-relay';
 import { SelectorStoreUpdater } from 'relay-runtime';
 
+import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { AdmireButtonFragment$key } from '~/generated/AdmireButtonFragment.graphql';
 import { AdmireButtonMutation } from '~/generated/AdmireButtonMutation.graphql';
 import { AdmireButtonQueryFragment$key } from '~/generated/AdmireButtonQueryFragment.graphql';
@@ -255,11 +256,11 @@ export function AdmireButton({ eventRef, queryRef, style }: Props) {
   const hasViewerAdmiredEvent = Boolean(event.viewerAdmire);
 
   return (
-    <TouchableOpacity
+    <GalleryTouchableOpacity
       onPress={hasViewerAdmiredEvent ? handleRemoveAdmire : handleAdmire}
       style={style}
     >
       <AdmireIcon active={hasViewerAdmiredEvent} />
-    </TouchableOpacity>
+    </GalleryTouchableOpacity>
   );
 }

@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { PropsWithChildren, useCallback, useMemo } from 'react';
-import { TouchableOpacity, TouchableOpacityProps, View, ViewProps } from 'react-native';
+import { TouchableOpacityProps, View, ViewProps } from 'react-native';
 import { trigger } from 'react-native-haptic-feedback';
 import { graphql, useFragment } from 'react-relay';
 
@@ -10,6 +10,8 @@ import { FollowButtonUserFragment$key } from '~/generated/FollowButtonUserFragme
 import useFollowUser from '~/shared/relay/useFollowUser';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import useUnfollowUser from '~/shared/relay/useUnfollowUser';
+
+import { GalleryTouchableOpacity } from './GalleryTouchableOpacity';
 
 type Props = {
   style?: ViewProps['style'];
@@ -115,7 +117,7 @@ function FollowChip({
   width?: 'fixed' | 'grow';
 }>) {
   return (
-    <TouchableOpacity
+    <GalleryTouchableOpacity
       onPress={onPress}
       className={clsx('flex h-6 items-center justify-center rounded-sm px-2 bg-black', {
         'border border-black dark:border-shadow': variant === 'follow',
@@ -134,6 +136,6 @@ function FollowChip({
       >
         {children}
       </Typography>
-    </TouchableOpacity>
+    </GalleryTouchableOpacity>
   );
 }

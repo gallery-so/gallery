@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { TouchableOpacity, View } from 'react-native';
+import { View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
@@ -8,6 +8,8 @@ import { Markdown } from '~/components/Markdown';
 import { Typography } from '~/components/Typography';
 import { UserFollowCardFragment$key } from '~/generated/UserFollowCardFragment.graphql';
 import { UserFollowCardQueryFragment$key } from '~/generated/UserFollowCardQueryFragment.graphql';
+
+import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 
 type UserFollowCardProps = {
   userRef: UserFollowCardFragment$key;
@@ -47,12 +49,15 @@ export function UserFollowCard({ userRef, queryRef, onPress }: UserFollowCardPro
 
   return (
     <View className="flex w-full flex-row items-center justify-between space-x-8 overflow-hidden py-3 px-4 h-16">
-      <TouchableOpacity onPress={handlePress} className="flex flex-1 flex-grow flex-col h-full">
+      <GalleryTouchableOpacity
+        onPress={handlePress}
+        className="flex flex-1 flex-grow flex-col h-full"
+      >
         <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
           {user.username}
         </Typography>
         <Markdown numberOfLines={1}>{bioFirstLine}</Markdown>
-      </TouchableOpacity>
+      </GalleryTouchableOpacity>
 
       <FollowButton queryRef={query} userRef={user} />
     </View>
