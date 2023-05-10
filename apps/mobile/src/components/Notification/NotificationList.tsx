@@ -80,22 +80,24 @@ export function NotificationList({ queryRef }: Props) {
   }, []);
 
   // if user go outside of notifications screen, clear notifications
-  useFocusEffect(() => {
-    return () => {
-      if (query.viewer?.user?.dbid && query.viewer.id) {
-        clearNotification(query.viewer.user.dbid, [
-          ConnectionHandler.getConnectionID(
-            query.viewer?.id,
-            'TabBarMainTabNavigator_notifications'
-          ),
-          ConnectionHandler.getConnectionID(
-            query.viewer?.id,
-            'NotificationsFragment_notifications'
-          ),
-        ]);
-      }
-    };
-  });
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        if (query.viewer?.user?.dbid && query.viewer.id) {
+          clearNotification(query.viewer.user.dbid, [
+            ConnectionHandler.getConnectionID(
+              query.viewer?.id,
+              'TabBarMainTabNavigator_notifications'
+            ),
+            ConnectionHandler.getConnectionID(
+              query.viewer?.id,
+              'NotificationsFragment_notifications'
+            ),
+          ]);
+        }
+      };
+    }, [clearNotification, query.viewer?.id, query.viewer?.user?.dbid])
+  );
 
   if (nonNullNotifications.length === 0) {
     return (
