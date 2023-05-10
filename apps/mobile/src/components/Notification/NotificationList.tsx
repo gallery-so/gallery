@@ -56,7 +56,7 @@ export function NotificationList({ queryRef }: Props) {
   const clearNotification = useClearNotifications();
 
   const nonNullNotifications = useMemo(() => {
-    const notifications = [];
+    const notifications: NotificationType[] = [];
 
     for (const edge of query.viewer?.notifications?.edges ?? []) {
       if (edge?.node) {
@@ -67,7 +67,7 @@ export function NotificationList({ queryRef }: Props) {
     notifications.reverse();
 
     return notifications;
-  }, [query.viewer?.notifications?.edges]);
+  }, [query]);
 
   const loadMore = useCallback(() => {
     if (hasPrevious) {

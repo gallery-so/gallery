@@ -1,8 +1,9 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { Text } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
+import { NotificationSkeleton } from '~/components/Notification/NotificationSkeleton';
 import { Typography } from '~/components/Typography';
 import { SomeoneAdmiredYourFeedEventFragment$key } from '~/generated/SomeoneAdmiredYourFeedEventFragment.graphql';
 
@@ -60,6 +61,8 @@ export function SomeoneAdmiredYourFeedEvent({ notificationRef }: SomeoneAdmiredY
             }
           }
         }
+
+        ...NotificationSkeletonFragment
       }
     `,
     notificationRef
@@ -88,35 +91,41 @@ export function SomeoneAdmiredYourFeedEvent({ notificationRef }: SomeoneAdmiredY
       ? notification.feedEvent?.eventData?.collection
       : null;
 
+  const handlePress = useCallback(() => {
+    // TODO navigate to feed event
+  }, []);
+
   return (
-    <Text>
-      <Typography
-        font={{
-          family: 'ABCDiatype',
-          weight: 'Bold',
-        }}
-        className="text-sm"
-      >
-        {count > 1
-          ? `${notification.count} collectors`
-          : firstAdmirer
-          ? firstAdmirer?.username
-          : 'Someone'}
-      </Typography>
-      {` ${verb} `}
-      {collection ? (
+    <NotificationSkeleton onPress={handlePress} notificationRef={notification}>
+      <Text>
         <Typography
           font={{
             family: 'ABCDiatype',
             weight: 'Bold',
           }}
-          className="text-sm underline"
+          className="text-sm"
         >
-          {collection.name}
+          {count > 1
+            ? `${notification.count} collectors`
+            : firstAdmirer
+            ? firstAdmirer?.username
+            : 'Someone'}
         </Typography>
-      ) : (
-        <Text>your collection</Text>
-      )}
-    </Text>
+        {` ${verb} `}
+        {collection ? (
+          <Typography
+            font={{
+              family: 'ABCDiatype',
+              weight: 'Bold',
+            }}
+            className="text-sm underline"
+          >
+            {collection.name}
+          </Typography>
+        ) : (
+          <Text>your collection</Text>
+        )}
+      </Text>
+    </NotificationSkeleton>
   );
 }
