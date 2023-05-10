@@ -52,7 +52,7 @@ export function NotificationUpsellScreen() {
       <View className="flex flex-grow flex-col items-center justify-center px-6">
         <View className="flex flex-col space-y-4">
           <Typography className="text-2xl" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-            Turn on push notifications?
+            Turn on push{'\n'}notifications?
           </Typography>
 
           <Typography className="text-md" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
