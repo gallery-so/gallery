@@ -123,5 +123,9 @@ function NotificationBottomSheetUserList(
   );
 }
 
-const ForwardedNotificationBottomSheetUserList = forwardRef(NotificationBottomSheetUserList);
+const ForwardedNotificationBottomSheetUserList = forwardRef<
+  GalleryBottomSheetModalType,
+  NotificationBottomSheetUserListProps
+>(NotificationBottomSheetUserList);
+
 export { ForwardedNotificationBottomSheetUserList as NotificationBottomSheetUserList };
