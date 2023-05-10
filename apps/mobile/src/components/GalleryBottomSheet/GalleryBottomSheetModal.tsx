@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-restricted-imports
 import { BottomSheetModal, BottomSheetModalProps } from '@gorhom/bottom-sheet';
-import { forwardRef } from 'react';
+import { ForwardedRef, forwardRef } from 'react';
 
 import { GalleryBottomSheetBackdrop } from '~/components/GalleryBottomSheet/GalleryBottomSheetBackdrop';
 import { GalleryBottomSheetBackground } from '~/components/GalleryBottomSheet/GalleryBottomSheetBackground';
@@ -8,9 +8,13 @@ import { GalleryBottomSheetHandle } from '~/components/GalleryBottomSheet/Galler
 
 export type GalleryBottomSheetModalType = BottomSheetModal;
 
-function GalleryBottomSheetModal(props: BottomSheetModalProps) {
+function GalleryBottomSheetModal(
+  props: BottomSheetModalProps,
+  ref: ForwardedRef<GalleryBottomSheetModalType>
+) {
   return (
     <BottomSheetModal
+      ref={ref}
       backgroundStyle={{
         borderRadius: 40,
       }}
