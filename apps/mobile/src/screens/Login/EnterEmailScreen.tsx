@@ -1,9 +1,10 @@
 import { useNavigation } from '@react-navigation/native';
 import { useCallback, useState } from 'react';
 import { KeyboardAvoidingView, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { SafeAreaViewWithPadding } from '~/components/SafeAreaViewWithPadding';
 import { LoginStackNavigatorProp } from '~/navigation/types';
+import { navigateToNotificationUpsellOrHomeScreen } from '~/screens/Login/navigateToNotificationUpsellOrHomeScreen';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 
 import { Button } from '../../components/Button';
@@ -55,10 +56,7 @@ export function EnterEmailScreen() {
       if (result.kind === 'failure') {
         handleLoginError(result.message);
       } else {
-        navigation.replace('MainTabs', {
-          screen: 'HomeTab',
-          params: { screen: 'Home', params: { screen: 'Latest' } },
-        });
+        await navigateToNotificationUpsellOrHomeScreen(navigation);
       }
     } finally {
       setIsLoggingIn(false);
@@ -66,7 +64,7 @@ export function EnterEmailScreen() {
   }, [email, login, navigation, reportError]);
 
   return (
-    <SafeAreaView className="h-screen bg-white dark:bg-black">
+    <SafeAreaViewWithPadding className="h-screen bg-white dark:bg-black">
       <KeyboardAvoidingView behavior="padding" className="flex flex-1 flex-col">
         <IconContainer className="px-6 py-2" icon={<BackIcon />} onPress={navigation.goBack} />
 
@@ -108,6 +106,6 @@ export function EnterEmailScreen() {
           </View>
         </View>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </SafeAreaViewWithPadding>
   );
 }
