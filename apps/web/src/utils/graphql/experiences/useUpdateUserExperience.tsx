@@ -75,3 +75,24 @@ export default function useUpdateUserExperience() {
     [pushToast, updateUserExperience]
   );
 }
+
+// Optimistically marking experiences as dismissed is almost always the intent
+export function useOptimisticallyDismissExperience() {
+  const update = useUpdateUserExperience();
+
+  return useCallback(
+    (experienceKey: UserExperienceType) => {
+      update({
+        type: experienceKey,
+        experienced: true,
+        optimisticExperiencesList: [
+          {
+            type: experienceKey,
+            experienced: true,
+          },
+        ],
+      });
+    },
+    [update]
+  );
+}
