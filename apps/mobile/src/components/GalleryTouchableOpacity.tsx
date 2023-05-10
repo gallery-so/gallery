@@ -30,11 +30,12 @@ export function GalleryTouchableOpacity({
     (event: GestureResponderEvent) => {
       const eventNameToUse = eventName || 'Button Press';
 
-      track(eventNameToUse, {
-        id,
-        screen: currentScreen,
-        ...properties,
-      });
+      // Only include id in the properties if it's provided
+      const trackProperties = id
+        ? { id, screen: currentScreen, ...properties }
+        : { screen: currentScreen, ...properties };
+
+      track(eventNameToUse, trackProperties);
       if (onPress) {
         onPress(event);
       }
