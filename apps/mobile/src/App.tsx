@@ -1,10 +1,10 @@
 import 'expo-dev-client';
 
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useNavigationContainerRef } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import { Suspense, useEffect, useState } from 'react';
+import { Suspense, useCallback, useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -15,6 +15,7 @@ import { MobileAnalyticsProvider } from '~/contexts/MobileAnalyticsProvider';
 import { MobileErrorReportingProvider } from '~/contexts/MobileErrorReportingProvider';
 import { createRelayEnvironment } from '~/contexts/relay/RelayProvider';
 import { RootStackNavigator } from '~/navigation/RootStackNavigator';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 
 import { DevMenuItems } from './components/DevMenuItems';
 import { LoadingView } from './components/LoadingView';
@@ -45,6 +46,18 @@ export default function App() {
     ABCDiatypeBold: require('~/shared/fonts/ABCDiatype-Bold.ttf'),
   });
 
+  const track = useTrack();
+
+  const navigationRef = useNavigationContainerRef();
+
+  const handlePageView = useCallback(() => {
+    // TODO: for some reason, this track is not being called
+    track('Page View', {
+      page: navigationRef.getCurrentRoute()?.name,
+      params: navigationRef.getCurrentRoute()?.params,
+    });
+  }, [navigationRef, track]);
+
   useEffect(() => {
     if (fontsLoaded) {
       SplashScreen.hideAsync();
@@ -67,7 +80,7 @@ export default function App() {
                     <BottomSheetModalProvider>
                       <magic.Relayer />
                       <SearchProvider>
-                        <NavigationContainer>
+                        <NavigationContainer ref={navigationRef} onStateChange={handlePageView}>
                           <DevMenuItems />
                           <RootStackNavigator />
                         </NavigationContainer>
