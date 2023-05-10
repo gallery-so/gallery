@@ -1,10 +1,10 @@
-import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useNavigation } from '@react-navigation/native';
 import { useCallback, useRef } from 'react';
 import { Text } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
+import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { NotificationBottomSheetUserList } from '~/components/Notification/NotificationBottomSheetUserList';
 import { NotificationSkeleton } from '~/components/Notification/NotificationSkeleton';
 import { Typography } from '~/components/Typography';
@@ -41,7 +41,7 @@ export function SomeoneFollowedYouBack({ notificationRef }: SomeoneFollowedYouBa
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
 
-  const bottomSheetRef = useRef<BottomSheetModal | null>(null);
+  const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
   const handlePress = useCallback(() => {
     if (count > 1) {
       bottomSheetRef.current?.present();

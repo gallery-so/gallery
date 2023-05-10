@@ -1,9 +1,13 @@
-import { BottomSheetModal, BottomSheetModalProps } from '@gorhom/bottom-sheet';
+import { BottomSheetModalProps } from '@gorhom/bottom-sheet';
 import { ForwardedRef, forwardRef, Suspense, useCallback, useState } from 'react';
+import { View } from 'react-native';
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import { BottomSheetUserFollowList } from '~/components/UserFollowList/BottomSheetUserFollowList';
+import {
+  GalleryBottomSheetModal,
+  GalleryBottomSheetModalType,
+} from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { UserFollowList } from '~/components/UserFollowList/UserFollowList';
 import { UserFollowListFallback } from '~/components/UserFollowList/UserFollowListFallback';
 import { NotificationBottomSheetUserListQuery } from '~/generated/NotificationBottomSheetUserListQuery.graphql';
@@ -75,7 +79,11 @@ function NotificationBottomSheetUserListInner({
     users = removeNullValues(query.node.userViewers?.edges?.map((edge) => edge?.node));
   }
 
-  return <UserFollowList userRefs={users} queryRef={query} onUserPress={onUserPress} />;
+  return (
+    <View className="flex-1 bg-white dark:bg-black">
+      <UserFollowList userRefs={users} queryRef={query} onUserPress={onUserPress} />
+    </View>
+  );
 }
 
 type NotificationBottomSheetUserListProps = NotificationBottomSheetUserListInnerProps &
@@ -83,7 +91,7 @@ type NotificationBottomSheetUserListProps = NotificationBottomSheetUserListInner
 
 function NotificationBottomSheetUserList(
   { onUserPress, notificationId, ...rest }: NotificationBottomSheetUserListProps,
-  ref: ForwardedRef<BottomSheetModal>
+  ref: ForwardedRef<GalleryBottomSheetModalType>
 ) {
   const [showing, setShowing] = useState(false);
 
@@ -100,7 +108,7 @@ function NotificationBottomSheetUserList(
   );
 
   return (
-    <BottomSheetUserFollowList {...rest} onAnimate={handleAnimate} ref={ref}>
+    <GalleryBottomSheetModal snapPoints={[320]} {...rest} onAnimate={handleAnimate} ref={ref}>
       <Suspense fallback={<UserFollowListFallback />}>
         {showing ? (
           <NotificationBottomSheetUserListInner
@@ -111,7 +119,7 @@ function NotificationBottomSheetUserList(
           <UserFollowListFallback />
         )}
       </Suspense>
-    </BottomSheetUserFollowList>
+    </GalleryBottomSheetModal>
   );
 }
 

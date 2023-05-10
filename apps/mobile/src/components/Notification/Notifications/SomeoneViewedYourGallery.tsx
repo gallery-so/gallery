@@ -1,9 +1,9 @@
-import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useNavigation } from '@react-navigation/native';
 import { useCallback, useMemo, useRef } from 'react';
 import { Text } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
+import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { NotificationBottomSheetUserList } from '~/components/Notification/NotificationBottomSheetUserList';
 import { NotificationSkeleton } from '~/components/Notification/NotificationSkeleton';
 import { Typography } from '~/components/Typography';
@@ -49,7 +49,7 @@ export function SomeoneViewedYourGallery({ notificationRef }: Props) {
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
 
-  const bottomSheetRef = useRef<BottomSheetModal | null>(null);
+  const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
 
   const handlePress = useCallback(() => {
     if (userViewerCount > 1) {
