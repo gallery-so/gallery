@@ -1,6 +1,6 @@
 import { useNavigationState } from '@react-navigation/native';
 import { useCallback } from 'react';
-import { GestureResponderEvent, TouchableOpacityProps } from 'react-native';
+import { GestureResponderEvent, TouchableOpacity, TouchableOpacityProps } from 'react-native';
 
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 
@@ -46,8 +46,8 @@ export function GalleryTouchableOpacity({
   );
 
   return (
-    <GalleryTouchableOpacity {...props} onPress={handlePress}>
+    <TouchableOpacity {...props} onPress={handlePress}>
       {children}
-    </GalleryTouchableOpacity>
+    </TouchableOpacity>
   );
 }

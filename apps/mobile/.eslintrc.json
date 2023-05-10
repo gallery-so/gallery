@@ -11,7 +11,7 @@
           {
             "name": "react-native",
             "importNames": ["TouchableOpacity"],
-            "message": "Please avoid using TouchableOpacity from 'react-native'. Use our custom GalleryTouchableOpacity component instead."
+            "message": "Please use the GalleryTouchableOpacity component instead of TouchableOpacity from 'react-native'."
           }
         ]
       }
@@ -23,6 +23,13 @@
       "rules": {
         // Okay to use require in these files
         "@typescript-eslint/no-var-requires": "off"
+      }
+    },
+    {
+      "files": ["src/components/GalleryTouchableOpacity.tsx"],
+      "rules": {
+        // Only allow TouchableOpacity import in this file
+        "no-restricted-imports": "off"
       }
     }
   ]
