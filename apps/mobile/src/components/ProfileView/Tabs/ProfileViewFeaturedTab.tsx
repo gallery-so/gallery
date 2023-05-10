@@ -1,5 +1,6 @@
 import { ListRenderItem } from '@shopify/flash-list';
 import { useCallback } from 'react';
+import { View } from 'react-native';
 import { Tabs } from 'react-native-collapsible-tab-view';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -49,12 +50,13 @@ export function ProfileViewFeaturedTab({ userRef }: ProfileViewFeaturedTabProps)
   const contentContainerStyle = useListContentStyle();
 
   return (
-    <Tabs.FlashList
-      estimatedItemSize={300}
-      data={items}
-      stickyHeaderIndices={stickyIndices}
-      renderItem={renderItem}
-      contentContainerStyle={contentContainerStyle}
-    />
+    <View style={contentContainerStyle}>
+      <Tabs.FlashList
+        estimatedItemSize={300}
+        data={items}
+        stickyHeaderIndices={stickyIndices}
+        renderItem={renderItem}
+      />
+    </View>
   );
 }
