@@ -2,6 +2,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { MainTabStackNavigatorParamList } from '~/navigation/types';
 import { CollectionScreen } from '~/screens/CollectionScreen/CollectionScreen';
+import { FeedEventScreen } from '~/screens/FeedEventScreen';
 import { GalleryScreen } from '~/screens/GalleryScreen/GalleryScreen';
 import { HomeScreen } from '~/screens/HomeScreen/HomeScreen';
 import { NftDetailScreen } from '~/screens/NftDetailScreen/NftDetailScreen';
@@ -23,6 +24,7 @@ export function MainTabStackNavigator({ initialRouteName, initialProfileParams }
       <Stack.Screen name="Profile" component={ProfileScreen} initialParams={initialProfileParams} />
       <Stack.Screen name="Gallery" component={GalleryScreen} />
       <Stack.Screen name="Collection" component={CollectionScreen} />
+      <Stack.Screen name="FeedEvent" component={FeedEventScreen} />
 
       {/* The 4 main tabs excluding "Account" since that just uses Profile */}
       <Stack.Screen name="Home" component={HomeScreen} />

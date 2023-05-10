@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native';
 import { useCallback, useMemo } from 'react';
 import { Text } from 'react-native';
 import { useFragment } from 'react-relay';
@@ -6,6 +7,7 @@ import { graphql } from 'relay-runtime';
 import { NotificationSkeleton } from '~/components/Notification/NotificationSkeleton';
 import { Typography } from '~/components/Typography';
 import { SomeoneAdmiredYourFeedEventFragment$key } from '~/generated/SomeoneAdmiredYourFeedEventFragment.graphql';
+import { MainTabStackNavigatorProp } from '~/navigation/types';
 
 type SomeoneAdmiredYourFeedEventProps = {
   notificationRef: SomeoneAdmiredYourFeedEventFragment$key;
@@ -18,6 +20,7 @@ export function SomeoneAdmiredYourFeedEvent({ notificationRef }: SomeoneAdmiredY
         count
 
         feedEvent {
+          dbid
           eventData {
             ... on CollectionCreatedFeedEventData {
               __typename
@@ -91,9 +94,12 @@ export function SomeoneAdmiredYourFeedEvent({ notificationRef }: SomeoneAdmiredY
       ? notification.feedEvent?.eventData?.collection
       : null;
 
+  const navigation = useNavigation<MainTabStackNavigatorProp>();
   const handlePress = useCallback(() => {
-    // TODO navigate to feed event
-  }, []);
+    if (notification.feedEvent?.dbid) {
+      navigation.navigate('FeedEvent', { eventId: notification.feedEvent?.dbid });
+    }
+  }, [navigation, notification.feedEvent?.dbid]);
 
   return (
     <NotificationSkeleton onPress={handlePress} notificationRef={notification}>

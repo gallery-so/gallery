@@ -29,6 +29,7 @@ export function SomeoneCommentedOnYourFeedEvent({
         }
 
         feedEvent {
+          dbid
           eventData {
             ... on CollectionCreatedFeedEventData {
               __typename
@@ -92,8 +93,10 @@ export function SomeoneCommentedOnYourFeedEvent({
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
   const handlePress = useCallback(() => {
-    // TODO navigate to feed event
-  }, []);
+    if (notification.feedEvent?.dbid) {
+      navigation.navigate('FeedEvent', { eventId: notification.feedEvent?.dbid });
+    }
+  }, [navigation, notification.feedEvent?.dbid]);
 
   return (
     <NotificationSkeleton onPress={handlePress} notificationRef={notification}>
