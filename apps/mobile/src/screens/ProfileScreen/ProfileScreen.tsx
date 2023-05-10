@@ -50,7 +50,13 @@ function ProfileScreenInner() {
 
   const inner = useMemo(() => {
     if (query.userByUsername?.__typename === 'GalleryUser') {
-      return <ProfileView shouldShowBackButton queryRef={query} userRef={query.userByUsername} />;
+      return (
+        <ProfileView
+          shouldShowBackButton={!route.params.hideBackButton}
+          queryRef={query}
+          userRef={query.userByUsername}
+        />
+      );
     } else {
       return <Typography font={{ family: 'ABCDiatype', weight: 'Regular' }}>Not found</Typography>;
     }
