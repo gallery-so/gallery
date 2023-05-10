@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { registerDevMenuItems } from 'expo-dev-menu';
 import { useEffect } from 'react';
 
@@ -8,6 +9,12 @@ export function DevMenuItems() {
 
   useEffect(() => {
     registerDevMenuItems([
+      {
+        name: 'Clear Async Storage',
+        callback: () => {
+          AsyncStorage.clear();
+        },
+      },
       {
         name: 'Logout',
         callback: () => {
