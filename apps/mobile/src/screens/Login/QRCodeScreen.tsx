@@ -42,6 +42,8 @@ export function QRCodeScreen() {
     async ({ data }) => {
       setScanned(true);
 
+      track('Sign In Attempt', { 'Sign In Selection': 'QR code' });
+
       function handleLoginError(message: string) {
         reportError(`LoginError: ${message}`);
 
@@ -55,7 +57,7 @@ export function QRCodeScreen() {
       });
 
       if (result.kind === 'success') {
-        track('Sign In Failure', { 'Sign In Selection': 'QR code' });
+        track('Sign In Success', { 'Sign In Selection': 'QR code' });
         navigation.replace('MainTabs', {
           screen: 'HomeTab',
           params: { screen: 'Home', params: { screen: 'Latest' } },
