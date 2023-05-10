@@ -60,7 +60,7 @@ function ProfileScreenInner() {
     } else {
       return <Typography font={{ family: 'ABCDiatype', weight: 'Regular' }}>Not found</Typography>;
     }
-  }, [query]);
+  }, [query, route.params.hideBackButton]);
 
   return inner;
 }
