@@ -2,7 +2,8 @@ import { BottomSheetBackdrop, BottomSheetModal, BottomSheetModalProps } from '@g
 import { useFocusEffect } from '@react-navigation/native';
 import { ForwardedRef, forwardRef, PropsWithChildren, useRef } from 'react';
 
-import { BottomSheetHandle } from '~/components/BottomSheetHandle';
+import { GalleryBottomSheetBackdrop } from '~/components/GalleryBottomSheetBackdrop';
+import { GalleryBottomSheetHandle } from '~/components/GalleryBottomSheetHandle';
 
 type BottomSheetUserFollowListProps = PropsWithChildren<Omit<BottomSheetModalProps, 'snapPoints'>>;
 
@@ -11,12 +12,6 @@ function BottomSheetUserFollowList(
   ref: ForwardedRef<BottomSheetModal>
 ) {
   const localRef = useRef<BottomSheetModal | null>(null);
-
-  useFocusEffect(() => {
-    return () => {
-      localRef.current?.dismiss();
-    };
-  });
 
   return (
     <BottomSheetModal
@@ -29,8 +24,9 @@ function BottomSheetUserFollowList(
           ref.current = instance;
         }
       }}
-      handleComponent={BottomSheetHandle}
       snapPoints={[320]}
+      handleComponent={GalleryBottomSheetHandle}
+      backdropComponent={GalleryBottomSheetBackdrop}
       {...rest}
     >
       {children}

@@ -2,9 +2,7 @@ import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { View } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 
-import { createVirtualizedFeedEventItems } from '~/components/Feed/createVirtualizedFeedEventItems';
 import { FeedList } from '~/components/Feed/FeedList';
-import { useFailedEventTracker } from '~/components/Feed/useFailedEventTracker';
 import { IconContainer } from '~/components/IconContainer';
 import { SafeAreaViewWithPadding } from '~/components/SafeAreaViewWithPadding';
 import { FeedEventScreenQuery } from '~/generated/FeedEventScreenQuery.graphql';

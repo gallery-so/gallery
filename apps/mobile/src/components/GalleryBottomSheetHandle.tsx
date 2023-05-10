@@ -1,6 +1,6 @@
 import { useColorScheme, View } from 'react-native';
 
-export function BottomSheetHandle() {
+export function GalleryBottomSheetHandle() {
   const colorScheme = useColorScheme();
 
   return (

@@ -6,7 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { graphql, useFragment } from 'react-relay';
 import useKeyboardStatus from 'src/utils/useKeyboardStatus';
 
-import { BottomSheetHandle } from '~/components/BottomSheetHandle';
+import { GalleryBottomSheetHandle } from '~/components/GalleryBottomSheetHandle';
 import { NotesModalFragment$key } from '~/generated/NotesModalFragment.graphql';
 import { NotesModalQueryFragment$key } from '~/generated/NotesModalQueryFragment.graphql';
 
@@ -90,7 +90,7 @@ export function NotesModal({ eventRef, queryRef, bottomSheetRef }: Props) {
         handleComponent={() => (
           // Temporary workaround https://github.com/gorhom/react-native-bottom-sheet/issues/1351#issuecomment-1518718101
           <Pressable onPressIn={() => Keyboard.dismiss()}>
-            <BottomSheetHandle />
+            <GalleryBottomSheetHandle />
           </Pressable>
         )}
       >

@@ -3,6 +3,7 @@ import { useCallback, useMemo, useRef } from 'react';
 import { Keyboard, TouchableOpacity, useColorScheme, View, ViewProps } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
+import { GalleryBottomSheetBackdrop } from '~/components/GalleryBottomSheetBackdrop';
 import { CommentButtonFragment$key } from '~/generated/CommentButtonFragment.graphql';
 import { CommentButtonQueryFragment$key } from '~/generated/CommentButtonQueryFragment.graphql';
 
@@ -70,15 +71,7 @@ export function CommentButton({ eventRef, queryRef, style, onClick }: Props) {
         snapPoints={snapPoints}
         enableHandlePanningGesture={false}
         android_keyboardInputMode="adjustResize"
-        backdropComponent={({ animatedIndex, ...props }) => (
-          <BottomSheetBackdrop
-            {...props}
-            animatedIndex={animatedIndex}
-            appearsOnIndex={0}
-            disappearsOnIndex={-1}
-            opacity={0.1}
-          />
-        )}
+        backdropComponent={GalleryBottomSheetBackdrop}
         handleComponent={() => (
           <View
             className={`h-2 border-t ${
