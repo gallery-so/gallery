@@ -2,6 +2,7 @@ import { Suspense, useCallback, useMemo } from 'react';
 import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 
 import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/NotesModal/NotesList';
+import { WelcomeToBeta } from '~/components/WelcomeToBeta';
 import { LatestScreenFragment$key } from '~/generated/LatestScreenFragment.graphql';
 import { LatestScreenQuery } from '~/generated/LatestScreenQuery.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
@@ -35,6 +36,13 @@ function LatestScreenInner({ queryRef }: LatestScreenInnerProps) {
             }
           }
         }
+        viewer {
+          ... on Viewer {
+            user {
+              username
+            }
+          }
+        }
 
         ...FeedListQueryFragment
       }
@@ -53,12 +61,15 @@ function LatestScreenInner({ queryRef }: LatestScreenInnerProps) {
   }, [query.globalFeed?.edges]);
 
   return (
-    <FeedList
-      isLoadingMore={isLoadingPrevious}
-      onLoadMore={handleLoadMore}
-      feedEventRefs={events}
-      queryRef={query}
-    />
+    <>
+      <FeedList
+        isLoadingMore={isLoadingPrevious}
+        onLoadMore={handleLoadMore}
+        feedEventRefs={events}
+        queryRef={query}
+      />
+      <WelcomeToBeta username={query.viewer?.user?.username ?? ''} />
+    </>
   );
 }
 
