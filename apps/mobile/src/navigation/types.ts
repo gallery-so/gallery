@@ -22,7 +22,14 @@ export type MainTabStackNavigatorParamList = {
   // The main four tabs
   Account: undefined;
   Home: NavigatorScreenParams<FeedTabNavigatorParamList>;
-  Notifications: undefined;
+
+  Notifications:
+    | {
+        // We pass a fetch key when the user presses a notification so the content is guaranteed to be fresh.
+        fetchKey?: string;
+      }
+    | undefined;
+
   Search: undefined;
   // End the main four tabs
 };
