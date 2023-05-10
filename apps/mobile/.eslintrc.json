@@ -3,7 +3,19 @@
   "plugins": ["react-hooks"],
   "ignorePatterns": ["ios/", "android/"],
   "rules": {
-    "no-console": "error"
+    "no-console": "error",
+    "no-restricted-imports": [
+      "error",
+      {
+        "paths": [
+          {
+            "name": "react-native",
+            "importNames": ["TouchableOpacity"],
+            "message": "Please avoid using TouchableOpacity from 'react-native'. Use our custom GalleryTouchableOpacity component instead."
+          }
+        ]
+      }
+    ]
   },
   "overrides": [
     {
