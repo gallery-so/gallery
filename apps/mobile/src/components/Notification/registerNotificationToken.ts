@@ -36,7 +36,7 @@ export async function registerNotificationToken({
 }: Args): Promise<Result> {
   if (!Device.isDevice) {
     // User is not on a physical device.
-    return { kind: 'did_not_register' };
+    return { kind: 'failure', reason: "You're not on a real device silly!" };
   }
 
   const existingPermissions = await Notifications.getPermissionsAsync();
