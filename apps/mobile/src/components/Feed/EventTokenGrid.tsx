@@ -1,6 +1,6 @@
 import { ResizeMode } from 'expo-av';
-import { useMemo } from 'react';
-import { useWindowDimensions, View } from 'react-native';
+import { PropsWithChildren, useMemo } from 'react';
+import { useWindowDimensions, View, ViewProps } from 'react-native';
 import { Priority } from 'react-native-fast-image';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -38,96 +38,89 @@ export function EventTokenGrid({
 
   const preserveAspectRatio = collectionTokens.length === 1 && allowPreserveAspectRatio;
 
-  const inner = useMemo(() => {
-    const tokensWithMedia = collectionTokens.map((collectionToken) => {
-      const media = getVideoOrImageUrlForNftPreview({
-        tokenRef: collectionToken.token,
-        preferStillFrameFromGif: true,
-      });
+  const { fullWidth, fullHeight } = useGridDimensions();
 
-      if (media) {
-        return { ...collectionToken, ...media };
-      } else {
-        return null;
-      }
-    });
+  const inner = useMemo(() => {
+    const tokensWithMedia = collectionTokens
+      .map((collectionToken) => {
+        const media = getVideoOrImageUrlForNftPreview({
+          tokenRef: collectionToken.token,
+          preferStillFrameFromGif: true,
+        });
+
+        if (media) {
+          return { ...collectionToken, ...media };
+        } else {
+          return null;
+        }
+      })
+      // This makes sure we're only working with valid media
+      .filter(Boolean);
 
     const [firstToken, secondToken, thirdToken, fourthToken] = tokensWithMedia;
 
-    const fullHeight = dimensions.width;
-    const fullWidth = dimensions.width;
-    const halfHeight = dimensions.width / 2;
-
     if (firstToken && secondToken && thirdToken && fourthToken) {
       return (
-        <View
-          className="flex flex-1 flex-col space-y-[2]"
-          // We use min height here since it's possible that the
-          style={{ minHeight: fullHeight, width: fullWidth }}
-        >
-          <View className="flex w-full flex-grow flex-row space-x-[2]">
-            <View className="h-full flex-grow">
+        <FullCell className="flex flex-1 flex-col justify-between overflow-hidden">
+          <HalfHeightRow>
+            <QuarterCell>
               <NftPreview
                 priority={imagePriority}
                 resizeMode={ResizeMode.COVER}
                 collectionTokenRef={firstToken}
                 tokenUrl={firstToken.urls.medium}
               />
-            </View>
-            <View className="h-full flex-grow">
+            </QuarterCell>
+            <QuarterCell>
               <NftPreview
                 priority={imagePriority}
                 resizeMode={ResizeMode.COVER}
                 collectionTokenRef={secondToken}
                 tokenUrl={secondToken.urls.medium}
               />
-            </View>
-          </View>
+            </QuarterCell>
+          </HalfHeightRow>
 
-          <View className="flex w-full flex-grow flex-row space-x-[2]">
-            <View className="h-full flex-grow">
+          <HalfHeightRow>
+            <QuarterCell>
               <NftPreview
                 priority={imagePriority}
                 resizeMode={ResizeMode.COVER}
                 collectionTokenRef={thirdToken}
                 tokenUrl={thirdToken.urls.medium}
               />
-            </View>
-            <View className="h-full flex-grow">
+            </QuarterCell>
+            <QuarterCell>
               <NftPreview
                 priority={imagePriority}
                 resizeMode={ResizeMode.COVER}
                 collectionTokenRef={fourthToken}
                 tokenUrl={fourthToken.urls.medium}
               />
-            </View>
-          </View>
-        </View>
+            </QuarterCell>
+          </HalfHeightRow>
+        </FullCell>
       );
     } else if (firstToken && secondToken) {
       return (
-        <View
-          className="flex flex-row space-x-[2]"
-          // We use min height here since it's possible that the
-          style={{ minHeight: halfHeight, width: fullWidth }}
-        >
-          <View className="h-full flex-grow">
+        <HalfHeightRow>
+          <QuarterCell>
             <NftPreview
               priority={imagePriority}
               resizeMode={ResizeMode.COVER}
               collectionTokenRef={firstToken}
               tokenUrl={firstToken.urls.large}
             />
-          </View>
-          <View className="h-full flex-grow">
+          </QuarterCell>
+          <QuarterCell>
             <NftPreview
               priority={imagePriority}
               resizeMode={ResizeMode.COVER}
               collectionTokenRef={secondToken}
               tokenUrl={secondToken.urls.large}
             />
-          </View>
-        </View>
+          </QuarterCell>
+        </HalfHeightRow>
       );
     } else if (firstToken) {
       return (
@@ -148,11 +141,62 @@ export function EventTokenGrid({
     } else {
       throw new Error('Tried to render EventTokenGrid without any tokens');
     }
-  }, [collectionTokens, dimensions.width, imagePriority, preserveAspectRatio]);
+  }, [collectionTokens, fullHeight, fullWidth, imagePriority, preserveAspectRatio]);
 
   return (
     <View className="flex flex-1 flex-col pt-1" style={{ width: dimensions.width }}>
       {inner}
     </View>
   );
+}
+
+function FullCell({
+  children,
+  style,
+}: PropsWithChildren<{ className?: string; style?: ViewProps['style'] }>) {
+  const { fullWidth, fullHeight } = useGridDimensions();
+
+  return (
+    <View
+      // We use min height here since it's possible that the
+      style={[style, { height: fullHeight, width: fullWidth }]}
+    >
+      {children}
+    </View>
+  );
+}
+
+function QuarterCell({ children }: PropsWithChildren) {
+  const { halfHeight, halfWidth } = useGridDimensions();
+
+  return <View style={{ height: halfHeight, width: halfWidth }}>{children}</View>;
+}
+
+function HalfHeightRow({ children }: PropsWithChildren) {
+  const { halfHeight, fullWidth } = useGridDimensions();
+
+  return (
+    <View
+      className="flex flex-row justify-between"
+      style={{ height: halfHeight, width: fullWidth }}
+    >
+      {children}
+    </View>
+  );
+}
+
+function useGridDimensions() {
+  const dimensions = useWindowDimensions();
+
+  const fullHeight = dimensions.width;
+  const fullWidth = dimensions.width;
+  const halfWidth = dimensions.width / 2 - 1; // Account for 2px spacing
+  const halfHeight = dimensions.width / 2 - 1; // Account for 2px spacing
+
+  return {
+    fullHeight,
+    fullWidth,
+    halfHeight,
+    halfWidth,
+  };
 }

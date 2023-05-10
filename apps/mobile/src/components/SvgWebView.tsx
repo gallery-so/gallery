@@ -171,6 +171,7 @@ export function SvgWebView({ source, onLoadStart, onLoadEnd, style }: SvgWebView
     return (
       <View pointerEvents="none" style={style}>
         <WebView
+          androidLayerType="hardware"
           javaScriptEnabled={false}
           originWhitelist={['*']}
           className="h-full w-full bg-transparent"

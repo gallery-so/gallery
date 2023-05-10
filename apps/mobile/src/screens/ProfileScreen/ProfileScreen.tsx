@@ -44,16 +44,23 @@ function ProfileScreenInner() {
       username: route.params.username,
       feedLast: 24,
       interactionsFirst: NOTES_PER_PAGE,
-    }
+    },
+    { fetchPolicy: 'network-only' }
   );
 
   const inner = useMemo(() => {
     if (query.userByUsername?.__typename === 'GalleryUser') {
-      return <ProfileView shouldShowBackButton queryRef={query} userRef={query.userByUsername} />;
+      return (
+        <ProfileView
+          shouldShowBackButton={!route.params.hideBackButton}
+          queryRef={query}
+          userRef={query.userByUsername}
+        />
+      );
     } else {
       return <Typography font={{ family: 'ABCDiatype', weight: 'Regular' }}>Not found</Typography>;
     }
-  }, [query]);
+  }, [query, route.params.hideBackButton]);
 
   return inner;
 }

@@ -1,6 +1,6 @@
 import { BottomSheetBackdrop, BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useCallback, useMemo, useRef } from 'react';
-import { TouchableOpacity, useColorScheme, View, ViewProps } from 'react-native';
+import { Keyboard, TouchableOpacity, useColorScheme, View, ViewProps } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { CommentButtonFragment$key } from '~/generated/CommentButtonFragment.graphql';
@@ -46,8 +46,15 @@ export function CommentButton({ eventRef, queryRef, style, onClick }: Props) {
 
   const toggleCommentBox = useCallback(() => {
     onClick();
+
     bottomSheetRef.current?.present();
   }, [onClick]);
+
+  const handleBottomSheetChange = useCallback((fromIndex: number, toIndex: number) => {
+    if (toIndex === -1) {
+      Keyboard.dismiss();
+    }
+  }, []);
 
   return (
     <>
@@ -58,6 +65,7 @@ export function CommentButton({ eventRef, queryRef, style, onClick }: Props) {
       </View>
       <BottomSheetModal
         ref={bottomSheetRef}
+        onAnimate={handleBottomSheetChange}
         index={0}
         snapPoints={snapPoints}
         enableHandlePanningGesture={false}

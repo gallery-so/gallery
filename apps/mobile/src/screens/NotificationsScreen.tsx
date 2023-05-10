@@ -19,7 +19,8 @@ export function NotificationsScreen() {
     {
       notificationsLast: NOTIFICATIONS_PER_PAGE,
       notificationsBefore: null,
-    }
+    },
+    { fetchPolicy: 'network-only' }
   );
 
   const { top } = useSafeAreaInsets();

@@ -60,32 +60,44 @@ export function GalleryUpdatedFeedEvent({ eventDataRef, eventId }: GalleryUpdate
 
   const isPaginated = subEvents.length > 1;
 
+  const maybeScrollView = useMemo(() => {
+    const inner = subEvents.map((subEvent, index) => {
+      return (
+        <NonRecursiveFeedListItem
+          key={index}
+          eventId={eventId}
+          slideIndex={index}
+          eventCount={subEvents.length}
+          eventDataRef={subEvent}
+        />
+      );
+    });
+
+    if (inner.length > 1) {
+      return (
+        <ScrollView
+          horizontal
+          directionalLockEnabled
+          pagingEnabled
+          snapToInterval={width}
+          onScroll={handleScroll}
+          decelerationRate="fast"
+          snapToAlignment="center"
+          scrollEventThrottle={200}
+          scrollEnabled={isPaginated}
+          showsHorizontalScrollIndicator={false}
+        >
+          {inner}
+        </ScrollView>
+      );
+    } else {
+      return inner;
+    }
+  }, [eventId, handleScroll, isPaginated, subEvents, width]);
+
   return (
     <View className="flex flex-col space-y-3">
-      <ScrollView
-        horizontal
-        directionalLockEnabled
-        pagingEnabled
-        snapToInterval={width}
-        onScroll={handleScroll}
-        decelerationRate="fast"
-        snapToAlignment="center"
-        scrollEventThrottle={200}
-        scrollEnabled={isPaginated}
-        showsHorizontalScrollIndicator={false}
-      >
-        {subEvents.map((subEvent, index) => {
-          return (
-            <NonRecursiveFeedListItem
-              key={index}
-              eventId={eventId}
-              slideIndex={index}
-              eventCount={subEvents.length}
-              eventDataRef={subEvent}
-            />
-          );
-        })}
-      </ScrollView>
+      {maybeScrollView}
 
       {isPaginated && (
         <View className="flex w-full flex-row justify-center">
