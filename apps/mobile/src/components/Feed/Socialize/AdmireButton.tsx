@@ -258,6 +258,7 @@ export function AdmireButton({ eventRef, queryRef, style }: Props) {
   return (
     <GalleryTouchableOpacity
       onPress={hasViewerAdmiredEvent ? handleRemoveAdmire : handleAdmire}
+      className="flex justify-center align-center w-8 h-8 pt-0.5"
       style={style}
     >
       <AdmireIcon active={hasViewerAdmiredEvent} />
