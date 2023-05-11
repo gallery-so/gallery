@@ -61,11 +61,13 @@ export function CommentButton({ eventRef, queryRef, style, onClick }: Props) {
 
   return (
     <>
-      <View className="flex flex-row space-x-4" style={style}>
-        <TouchableOpacity onPress={toggleCommentBox}>
-          <CommentIcon />
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity
+        onPress={toggleCommentBox}
+        className="flex justify-center items-center w-[32] h-[32] pt-1 "
+        style={style}
+      >
+        <CommentIcon className="h-[20]" />
+      </TouchableOpacity>
       <GalleryBottomSheetModal
         index={0}
         ref={bottomSheetRef}
