@@ -58,7 +58,7 @@ export function CollectorsNoteAddedToCollectionFeedEvent({
     <View className="flex flex-1 flex-col">
       <FeedEventCarouselCellHeader>
         <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
-          Added a colloctors note to
+          Added a collector's note to
         </Typography>
         <TouchableOpacity className="flex-1" onPress={handleCollectionNamePress}>
           <Typography

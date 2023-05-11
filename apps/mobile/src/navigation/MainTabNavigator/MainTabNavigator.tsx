@@ -70,10 +70,10 @@ export function MainTabNavigator() {
         backgroundColor: colorScheme === 'dark' ? colors.black : colors.white,
       }}
     >
-      <Tab.Screen name="AccountTab" component={AccountScreen} />
       <Tab.Screen name="HomeTab" component={HomeScreen} />
       <Tab.Screen name="SearchTab" component={SearchScreen} />
       <Tab.Screen name="NotificationsTab" component={NotificationsScreen} />
+      <Tab.Screen name="AccountTab" component={AccountScreen} />
     </Tab.Navigator>
   );
 }
