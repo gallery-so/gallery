@@ -9,11 +9,13 @@ import { graphql } from 'relay-runtime';
 
 import { GallerySkeleton } from '~/components/GallerySkeleton';
 import { NftPreviewAsset } from '~/components/NftPreview/NftPreviewAsset';
+import { NftPreviewErrorFallback } from '~/components/NftPreview/NftPreviewErrorFallback';
 import { Typography } from '~/components/Typography';
 import { NftPreviewContextMenuPopupFragment$key } from '~/generated/NftPreviewContextMenuPopupFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { fitDimensionsToContainerCover } from '~/screens/NftDetailScreen/NftDetailAsset/fitDimensionToContainer';
 import { Dimensions } from '~/screens/NftDetailScreen/NftDetailAsset/types';
+import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 
 import { shareToken } from '../../utils/shareToken';
 
@@ -32,7 +34,7 @@ export function NftPreviewContextMenuPopup({
   const collectionToken = useFragment(
     graphql`
       fragment NftPreviewContextMenuPopupFragment on CollectionToken {
-        collection @required(action: THROW) {
+        collection {
           dbid
           gallery {
             dbid
@@ -77,10 +79,12 @@ export function NftPreviewContextMenuPopup({
   const handleMenuItemPress = useCallback<OnPressMenuItemEvent>(
     (event) => {
       if (event.nativeEvent.actionKey === 'view-details') {
-        navigation.navigate('NftDetail', {
-          tokenId: token.dbid,
-          collectionId: collectionToken.collection.dbid,
-        });
+        if (collectionToken.collection?.dbid) {
+          navigation.navigate('NftDetail', {
+            tokenId: token.dbid,
+            collectionId: collectionToken.collection.dbid,
+          });
+        }
       } else if (event.nativeEvent.actionKey === 'share') {
         shareToken(collectionToken);
       } else if (event.nativeEvent.actionKey === 'view-gallery') {
@@ -140,12 +144,14 @@ export function NftPreviewContextMenuPopup({
         return (
           <View className="bg-white dark:bg-black">
             <View className="self-center" style={finalDimensions}>
-              <NftPreviewAsset
-                priority="high"
-                tokenUrl={tokenUrl}
-                resizeMode={ResizeMode.CONTAIN}
-                onLoad={handlePopupAssetLoad}
-              />
+              <ReportingErrorBoundary fallback={<NftPreviewErrorFallback />}>
+                <NftPreviewAsset
+                  priority="high"
+                  tokenUrl={tokenUrl}
+                  resizeMode={ResizeMode.CONTAIN}
+                  onLoad={handlePopupAssetLoad}
+                />
+              </ReportingErrorBoundary>
 
               {popupAssetLoaded ? null : (
                 <View className="absolute inset-0">

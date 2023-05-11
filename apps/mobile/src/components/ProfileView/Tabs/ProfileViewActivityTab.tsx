@@ -57,6 +57,8 @@ export function ProfileViewActivityTab({ userRef, queryRef }: ProfileViewActivit
     }
   }
 
+  events.reverse();
+
   const { items, stickyIndices } = createVirtualizedFeedEventItems({
     failedEvents,
     eventRefs: events,
