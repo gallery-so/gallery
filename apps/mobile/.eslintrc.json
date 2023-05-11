@@ -29,13 +29,6 @@
         // Okay to use require in these files
         "@typescript-eslint/no-var-requires": "off"
       }
-    },
-    {
-      "files": ["src/components/GalleryTouchableOpacity.tsx"],
-      "rules": {
-        // Only allow TouchableOpacity import in this file
-        "no-restricted-imports": "off"
-      }
     }
   ]
 }

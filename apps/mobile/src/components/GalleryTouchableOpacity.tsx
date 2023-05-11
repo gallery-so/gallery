@@ -1,5 +1,6 @@
 import { useNavigationState } from '@react-navigation/native';
 import { useCallback } from 'react';
+// eslint-disable-next-line no-restricted-imports
 import { GestureResponderEvent, TouchableOpacity, TouchableOpacityProps } from 'react-native';
 
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
