@@ -5,8 +5,9 @@ import { graphql } from 'relay-runtime';
 import { GalleryViewEmitterFragment$key } from '~/generated/GalleryViewEmitterFragment.graphql';
 import { GalleryViewEmitterMutation } from '~/generated/GalleryViewEmitterMutation.graphql';
 import { GalleryViewEmitterWithSuspenseFragment$key } from '~/generated/GalleryViewEmitterWithSuspenseFragment.graphql';
-import { useReportError } from '~/shared/contexts/ErrorReportingContext';
-import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
+
+import { useReportError } from '../contexts/ErrorReportingContext';
+import { usePromisifiedMutation } from '../relay/usePromisifiedMutation';
 
 type GalleryViewEmitterProps = {
   queryRef: GalleryViewEmitterFragment$key;

@@ -4,12 +4,12 @@ import { graphql } from 'relay-runtime';
 
 import { VStack } from '~/components/core/Spacer/Stack';
 import FollowList from '~/components/Follow/FollowList';
-import GalleryViewEmitter from '~/components/internal/GalleryViewEmitter';
 import { GalleryNavbar } from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavbar';
 import { StandardSidebar } from '~/contexts/globalLayout/GlobalSidebar/StandardSidebar';
 import { followersFollowersPageFragment$key } from '~/generated/followersFollowersPageFragment.graphql';
 import { followersQuery } from '~/generated/followersQuery.graphql';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
+import GalleryViewEmitter from '~/shared/components/GalleryViewEmitter';
 
 import { GalleryPageSpacing } from '.';
 

@@ -11,6 +11,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { RelayEnvironmentProvider } from 'react-relay';
 import { SWRConfig } from 'swr';
 
+import { NotificationRegistrar } from '~/components/Notification/NotificationRegistrar';
 import { MobileAnalyticsProvider } from '~/contexts/MobileAnalyticsProvider';
 import { MobileErrorReportingProvider } from '~/contexts/MobileErrorReportingProvider';
 import { createRelayEnvironment } from '~/contexts/relay/RelayProvider';
@@ -68,6 +69,8 @@ export default function App() {
                       <magic.Relayer />
                       <SearchProvider>
                         <NavigationContainer>
+                          {/* Register the user's push token if one exists (does not prompt the user) */}
+                          <NotificationRegistrar />
                           <DevMenuItems />
                           <RootStackNavigator />
                         </NavigationContainer>

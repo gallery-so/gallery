@@ -1,8 +1,8 @@
 import { useNavigation } from '@react-navigation/native';
 import { useCallback } from 'react';
 import { View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { SafeAreaViewWithPadding } from '~/components/SafeAreaViewWithPadding';
 import { LoginStackNavigatorProp } from '~/navigation/types';
 
 import { Button } from '../../components/Button';
@@ -23,7 +23,7 @@ export function LandingScreen() {
   }, [navigation]);
 
   return (
-    <SafeAreaView className="flex h-full flex-col justify-end bg-white dark:bg-black">
+    <SafeAreaViewWithPadding className="flex h-full flex-col justify-end bg-white dark:bg-black">
       <View className="mb-32 flex flex-col items-center space-y-12">
         <LandingLogo />
 
@@ -55,6 +55,6 @@ export function LandingScreen() {
           New user? Please sign up on gallery.so first.
         </Typography>
       </View>
-    </SafeAreaView>
+    </SafeAreaViewWithPadding>
   );
 }

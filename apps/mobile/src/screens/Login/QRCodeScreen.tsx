@@ -5,6 +5,7 @@ import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { LoginStackNavigatorProp } from '~/navigation/types';
+import { navigateToNotificationUpsellOrHomeScreen } from '~/screens/Login/navigateToNotificationUpsellOrHomeScreen';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 
 import { IconContainer } from '../../components/IconContainer';
@@ -53,10 +54,7 @@ export function QRCodeScreen() {
       });
 
       if (result.kind === 'success') {
-        navigation.replace('MainTabs', {
-          screen: 'HomeTab',
-          params: { screen: 'Home', params: { screen: 'Latest' } },
-        });
+        await navigateToNotificationUpsellOrHomeScreen(navigation);
       } else {
         setScanned(false);
         handleLoginError(result.message);

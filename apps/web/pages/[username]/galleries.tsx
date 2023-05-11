@@ -2,12 +2,12 @@ import { GetServerSideProps } from 'next';
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import GalleryViewEmitter from '~/components/internal/GalleryViewEmitter';
 import { GalleryNavbar } from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavbar';
 import { StandardSidebar } from '~/contexts/globalLayout/GlobalSidebar/StandardSidebar';
 import { galleriesQuery } from '~/generated/galleriesQuery.graphql';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
 import GalleriesPage from '~/scenes/GalleryPage/GalleriesPage';
+import GalleryViewEmitter from '~/shared/components/GalleryViewEmitter';
 
 type GalleriesProps = {
   username: string;

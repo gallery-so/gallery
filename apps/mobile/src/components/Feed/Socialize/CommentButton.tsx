@@ -1,8 +1,11 @@
-import { BottomSheetBackdrop, BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useCallback, useMemo, useRef } from 'react';
 import { Keyboard, TouchableOpacity, useColorScheme, View, ViewProps } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
+import {
+  GalleryBottomSheetModal,
+  GalleryBottomSheetModalType,
+} from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { CommentButtonFragment$key } from '~/generated/CommentButtonFragment.graphql';
 import { CommentButtonQueryFragment$key } from '~/generated/CommentButtonQueryFragment.graphql';
 
@@ -37,7 +40,7 @@ export function CommentButton({ eventRef, queryRef, style, onClick }: Props) {
 
   const colorScheme = useColorScheme();
 
-  const bottomSheetRef = useRef<BottomSheetModal>(null);
+  const bottomSheetRef = useRef<GalleryBottomSheetModalType>(null);
   const snapPoints = useMemo(() => [52], []);
 
   const handleCloseCommentBox = useCallback(() => {
@@ -63,29 +66,14 @@ export function CommentButton({ eventRef, queryRef, style, onClick }: Props) {
           <CommentIcon />
         </TouchableOpacity>
       </View>
-      <BottomSheetModal
+      <GalleryBottomSheetModal
+        index={0}
         ref={bottomSheetRef}
         onAnimate={handleBottomSheetChange}
-        index={0}
         snapPoints={snapPoints}
         enableHandlePanningGesture={false}
         android_keyboardInputMode="adjustResize"
-        backdropComponent={({ animatedIndex, ...props }) => (
-          <BottomSheetBackdrop
-            {...props}
-            animatedIndex={animatedIndex}
-            appearsOnIndex={0}
-            disappearsOnIndex={-1}
-            opacity={0.1}
-          />
-        )}
-        handleComponent={() => (
-          <View
-            className={`h-2 border-t ${
-              colorScheme === 'dark' ? 'bg-black border-offBlack' : 'bg-white border-porcelain'
-            }`}
-          />
-        )}
+        handleComponent={Handle}
         handleIndicatorStyle={{
           display: 'none',
         }}
@@ -93,7 +81,18 @@ export function CommentButton({ eventRef, queryRef, style, onClick }: Props) {
         <View className={`${colorScheme === 'dark' ? 'bg-black' : 'bg-white'}`}>
           <CommentBox autoFocus eventRef={event} queryRef={query} onClose={handleCloseCommentBox} />
         </View>
-      </BottomSheetModal>
+      </GalleryBottomSheetModal>
     </>
+  );
+}
+
+function Handle() {
+  const colorScheme = useColorScheme();
+  return (
+    <View
+      className={`h-2 border-t ${
+        colorScheme === 'dark' ? 'bg-black border-offBlack' : 'bg-white border-porcelain'
+      }`}
+    />
   );
 }
