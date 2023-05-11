@@ -30,7 +30,7 @@ export function AdmireNote({ admireRef, style }: Props) {
   return (
     <View className="flex flex-row justify-between items-center px-4" style={style}>
       <View className="flex flex-row items-center space-x-2">
-        <AdmireIcon active height={16} />
+        <AdmireIcon active height={20} />
         <Text>
           <Typography
             font={{
