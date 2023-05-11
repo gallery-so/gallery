@@ -53,6 +53,26 @@ function teardownSentryTracing(transaction: Transaction | null) {
 
 const fetchFunctionWithoutTracing = createRelayFetchFunction({
   url: (request) => getGraphqlUrl(request.name),
+  headers: () => {
+    const platform = navigator.platform;
+
+    let osHeader = 'Unknown';
+    if (platform.startsWith('Mac')) {
+      // The user is on a Mac
+      osHeader = 'Mac';
+    } else if (platform.startsWith('Win')) {
+      // The user is on Windows
+      osHeader = 'Windows';
+    } else if (platform.startsWith('Linux')) {
+      // The user is on Linux
+      osHeader = 'Linux';
+    }
+
+    return {
+      'X-Platform': 'Web',
+      'X-OS': osHeader,
+    };
+  },
   persistedQueriesFetcher: () =>
     import('persisted_queries.json').then((map) => {
       // @ts-expect-error Types not aligning because it's a module

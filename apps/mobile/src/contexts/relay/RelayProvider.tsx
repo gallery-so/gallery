@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import { Environment } from 'react-relay';
 import { Network, RecordSource, Store } from 'relay-runtime';
 import RelayModernEnvironment from 'relay-runtime/lib/store/RelayModernEnvironment';
@@ -19,6 +20,12 @@ const relaySubscribeFunction = createRelaySubscribeFunction({
 // TODO env
 export const relayFetchFunction = createRelayFetchFunctionWithDefer({
   url: () => 'https://gateway.gallery.so',
+  headers: () => {
+    return {
+      'X-OS': Platform.OS,
+      'X-Platform': 'Mobile',
+    };
+  },
   persistedQueriesFetcher: async () => persistedQueriesMap,
 });
 
