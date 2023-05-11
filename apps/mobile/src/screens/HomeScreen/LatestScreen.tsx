@@ -1,4 +1,5 @@
-import { Suspense, useCallback, useMemo } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 
 import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/NotesModal/NotesList';
@@ -60,6 +61,20 @@ function LatestScreenInner({ queryRef }: LatestScreenInnerProps) {
     return removeNullValues(query.globalFeed?.edges?.map((it) => it?.node)).reverse();
   }, [query.globalFeed?.edges]);
 
+  const [showWelcome, setShowWelcome] = useState(false);
+
+  const checkIsShouldShowWelcome = useCallback(async () => {
+    const shown = await AsyncStorage.getItem('welcomeMessageShown');
+    if (shown !== 'true') {
+      setShowWelcome(true);
+      await AsyncStorage.setItem('welcomeMessageShown', 'true');
+    }
+  }, [setShowWelcome]);
+
+  useEffect(() => {
+    checkIsShouldShowWelcome();
+  }, [checkIsShouldShowWelcome]);
+
   return (
     <>
       <FeedList
@@ -68,7 +83,7 @@ function LatestScreenInner({ queryRef }: LatestScreenInnerProps) {
         feedEventRefs={events}
         queryRef={query}
       />
-      <WelcomeToBeta username={query.viewer?.user?.username ?? ''} />
+      {showWelcome && <WelcomeToBeta username={query.viewer?.user?.username ?? ''} />}
     </>
   );
 }

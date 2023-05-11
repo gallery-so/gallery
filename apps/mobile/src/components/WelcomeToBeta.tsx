@@ -1,46 +1,30 @@
-import { BottomSheetBackdrop, BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useEffect, useMemo, useRef } from 'react';
-import { useColorScheme, View } from 'react-native';
+import { View } from 'react-native';
 
-import colors from '~/shared/theme/colors';
-
+import {
+  GalleryBottomSheetModal,
+  GalleryBottomSheetModalType,
+} from './GalleryBottomSheet/GalleryBottomSheetModal';
 import { Typography } from './Typography';
 
 type Props = {
-  username?: string;
+  username: string;
 };
 
 export function WelcomeToBeta({ username }: Props) {
-  const colorScheme = useColorScheme();
   const snapPoints = useMemo(() => ['50%'], []);
-  const bottomSheetRef = useRef<BottomSheetModal>(null);
+  const bottomSheetRef = useRef<GalleryBottomSheetModalType>(null);
   useEffect(() => bottomSheetRef.current?.present(), []);
 
+  const capitalizedUsername = useMemo(() => {
+    return username.charAt(0).toUpperCase() + username.slice(1);
+  }, [username]);
+
   return (
-    <BottomSheetModal
-      ref={bottomSheetRef}
-      index={0}
-      snapPoints={snapPoints}
-      backdropComponent={({ animatedIndex, ...props }) => (
-        <BottomSheetBackdrop
-          {...props}
-          animatedIndex={animatedIndex}
-          appearsOnIndex={0}
-          disappearsOnIndex={-1}
-          opacity={0.3}
-        />
-      )}
-      handleIndicatorStyle={{
-        backgroundColor: colorScheme === 'dark' ? colors.shadow : colors.porcelain,
-        width: 80,
-      }}
-      backgroundStyle={{
-        backgroundColor: colorScheme === 'dark' ? colors.offBlack : colors.white,
-      }}
-    >
+    <GalleryBottomSheetModal ref={bottomSheetRef} index={0} snapPoints={snapPoints}>
       <View className="flex flex-column space-y-2 mx-4 mt-2">
         <Typography className="text-xl" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-          Welcome, {username}.
+          Welcome, {capitalizedUsername}.
         </Typography>
         <Typography font={{ family: 'ABCDiatype', weight: 'Regular' }}>
           Thank you for trying the Gallery mobile app.
@@ -64,6 +48,6 @@ export function WelcomeToBeta({ username }: Props) {
           The Gallery Team
         </Typography>
       </View>
-    </BottomSheetModal>
+    </GalleryBottomSheetModal>
   );
 }
