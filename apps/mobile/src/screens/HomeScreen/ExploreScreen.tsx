@@ -1,7 +1,7 @@
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import { Suspense, useCallback, useMemo } from 'react';
-import { View } from 'react-native';
-import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
+import { RefreshControl, View } from 'react-native';
+import { graphql, useLazyLoadQuery, useRefetchableFragment } from 'react-relay';
 
 import { USERS_PER_PAGE } from '~/components/Trending/constants';
 import { LoadingTrendingPage } from '~/components/Trending/LoadingTrendingPage';
@@ -15,14 +15,28 @@ import { TrendingSectionFragment$key } from '~/generated/TrendingSectionFragment
 import { TrendingSectionQueryFragment$key } from '~/generated/TrendingSectionQueryFragment.graphql';
 import { TwitterSectionQueryFragment$key } from '~/generated/TwitterSectionQueryFragment.graphql';
 
+import { useRefreshHandle } from '../../hooks/useRefreshHandle';
+
+type ListItemType =
+  | { kind: 'twitter'; queryRef: TwitterSectionQueryFragment$key }
+  | { kind: 'suggested'; queryRef: SuggestedSectionQueryFragment$key }
+  | {
+      kind: 'trending-section';
+      title: string;
+      description: string;
+      queryRef: TrendingSectionQueryFragment$key;
+      userRefs: TrendingSectionFragment$key;
+    };
+
 type ExploreScreenInnerProps = {
   queryRef: ExploreScreenFragment$key;
 };
 
 function ExploreScreenInner({ queryRef }: ExploreScreenInnerProps) {
-  const query = useFragment(
+  const [query, refetch] = useRefetchableFragment(
     graphql`
-      fragment ExploreScreenFragment on Query {
+      fragment ExploreScreenFragment on Query
+      @refetchable(queryName: "ExploreScreenRefetchableQuery") {
         trendingUsers5Days: trendingUsers(input: { report: LAST_5_DAYS }) {
           ... on TrendingUsersPayload {
             __typename
@@ -55,16 +69,7 @@ function ExploreScreenInner({ queryRef }: ExploreScreenInnerProps) {
     queryRef
   );
 
-  type ListItemType =
-    | { kind: 'twitter'; queryRef: TwitterSectionQueryFragment$key }
-    | { kind: 'suggested'; queryRef: SuggestedSectionQueryFragment$key }
-    | {
-        kind: 'trending-section';
-        title: string;
-        description: string;
-        queryRef: TrendingSectionQueryFragment$key;
-        userRefs: TrendingSectionFragment$key;
-      };
+  const { isRefreshing, handleRefresh } = useRefreshHandle(refetch);
 
   const renderItem = useCallback<ListRenderItem<ListItemType>>(
     ({ item }) => {
@@ -137,10 +142,11 @@ function ExploreScreenInner({ queryRef }: ExploreScreenInnerProps) {
   return (
     <View className="flex-1">
       <FlashList
-        contentContainerStyle={{ paddingBottom: 24 }}
-        renderItem={renderItem}
         data={items}
+        renderItem={renderItem}
         estimatedItemSize={300}
+        contentContainerStyle={{ paddingBottom: 24 }}
+        refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />}
       />
     </View>
   );

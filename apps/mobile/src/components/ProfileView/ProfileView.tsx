@@ -10,7 +10,6 @@ import { ProfileViewActivityTab } from '~/components/ProfileView/Tabs/ProfileVie
 import { ProfileViewFeaturedTab } from '~/components/ProfileView/Tabs/ProfileViewFeaturedTab';
 import { ProfileViewFollowersTab } from '~/components/ProfileView/Tabs/ProfileViewFollowersTab';
 import { ProfileViewGalleriesTab } from '~/components/ProfileView/Tabs/ProfileViewGalleriesTab';
-import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { Typography } from '~/components/Typography';
 import { GalleryTokenDimensionCacheProvider } from '~/contexts/GalleryTokenDimensionCacheContext';
 import { ProfileViewFragment$key } from '~/generated/ProfileViewFragment.graphql';
@@ -76,20 +75,17 @@ export function ProfileView({ userRef, queryRef, shouldShowBackButton }: Profile
   }, [selectedRoute]);
 
   const colorScheme = useColorScheme();
-  const { top } = useSafeAreaPadding();
 
   return (
     <View className="flex-1">
       <GalleryViewEmitter queryRef={query} />
 
-      <View
-        className="flex flex-col p-4 pb-1 z-10 bg-white dark:bg-black"
-        style={{ paddingTop: top }}
-      >
+      <View className="flex flex-col px-4 pb-1 z-10 bg-white dark:bg-black">
         <GalleryProfileNavBar
           shouldShowBackButton={shouldShowBackButton}
           queryRef={query}
           userRef={user}
+          screen="Profile"
         />
 
         <Typography

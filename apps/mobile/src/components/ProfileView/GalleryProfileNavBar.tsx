@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/native';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { useCallback } from 'react';
 import { Share, View, ViewProps } from 'react-native';
 import { useFragment } from 'react-relay';
@@ -15,11 +15,19 @@ import { BackIcon } from '../../icons/BackIcon';
 import { QRCodeIcon } from '../../icons/QRCodeIcon';
 import { ShareIcon } from '../../icons/ShareIcon';
 
+type ScreenName = 'Profile' | 'Gallery' | 'Collection';
+type RouteParams = {
+  Gallery: { galleryId: string };
+  Collection: { collectionId: string };
+  Profile: { username: string };
+};
+
 type GalleryProfileNavBarProps = {
   style?: ViewProps['style'];
   shouldShowBackButton: boolean;
   queryRef: GalleryProfileNavBarQueryFragment$key;
   userRef: GalleryProfileNavBarFragment$key;
+  screen: ScreenName;
 };
 
 export function GalleryProfileNavBar({
@@ -27,6 +35,7 @@ export function GalleryProfileNavBar({
   queryRef,
   userRef,
   shouldShowBackButton,
+  screen,
 }: GalleryProfileNavBarProps) {
   const query = useFragment(
     graphql`
@@ -57,9 +66,26 @@ export function GalleryProfileNavBar({
 
   const isLoggedInUser = loggedInUserId === user.id;
 
+  const route = useRoute<RouteProp<RouteParams, ScreenName>>();
+  const { params } = route;
+
   const handleShare = useCallback(() => {
+    if (screen === 'Gallery' && 'galleryId' in params) {
+      Share.share({
+        url: `https://gallery.so/${user.username}/galleries/${params.galleryId}`,
+      });
+      return;
+    }
+
+    if (screen === 'Collection' && 'collectionId' in params) {
+      Share.share({
+        url: `https://gallery.so/${user.username}/${params.collectionId}`,
+      });
+      return;
+    }
+
     Share.share({ url: `https://gallery.so/${user.username}` });
-  }, [user.username]);
+  }, [params, screen, user.username]);
 
   const handleQrCode = useCallback(() => {
     if (user.username) {

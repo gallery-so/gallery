@@ -7,6 +7,7 @@ import { Pill } from '~/components/Pill';
 import { ProfileTabBar } from '~/components/ProfileView/ProfileTabBar';
 import { Typography } from '~/components/Typography';
 import { ProfileViewHeaderFragment$key } from '~/generated/ProfileViewHeaderFragment.graphql';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import { TwitterIcon } from '../../icons/TwitterIcon';
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
@@ -23,6 +24,14 @@ export function ProfileViewHeader({ userRef, selectedRoute, onRouteChange }: Pro
     graphql`
       fragment ProfileViewHeaderFragment on GalleryUser {
         bio
+
+        galleries {
+          __typename
+          hidden
+        }
+        followers {
+          __typename
+        }
 
         socialAccounts {
           twitter {
@@ -56,6 +65,33 @@ export function ProfileViewHeader({ userRef, selectedRoute, onRouteChange }: Pro
     }
   }, [handleTwitterPress, user.socialAccounts?.twitter?.username]);
 
+  const totalFollowers = user.followers?.length ?? 0;
+  const totalGalleries = useMemo(() => {
+    return (
+      removeNullValues(user.galleries?.map((gallery) => (gallery?.hidden ? null : gallery)))
+        .length ?? 0
+    );
+  }, [user.galleries]);
+
+  const routes = useMemo(() => {
+    return [
+      {
+        name: 'Featured',
+      },
+      {
+        name: 'Galleries',
+        counter: totalGalleries,
+      },
+      {
+        name: 'Followers',
+        counter: totalFollowers,
+      },
+      {
+        name: 'Activity',
+      },
+    ];
+  }, [totalGalleries, totalFollowers]);
+
   return (
     <View>
       {user.bio && (
@@ -66,11 +102,7 @@ export function ProfileViewHeader({ userRef, selectedRoute, onRouteChange }: Pro
 
       {twitterPill ?? null}
 
-      <ProfileTabBar
-        activeRoute={selectedRoute}
-        onRouteChange={onRouteChange}
-        routes={['Featured', 'Galleries', 'Followers', 'Activity']}
-      />
+      <ProfileTabBar activeRoute={selectedRoute} onRouteChange={onRouteChange} routes={routes} />
     </View>
   );
 }

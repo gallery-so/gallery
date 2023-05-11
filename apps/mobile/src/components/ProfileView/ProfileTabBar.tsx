@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { Typography } from '../../components/Typography';
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
@@ -7,10 +7,11 @@ import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 type TabItemProps = {
   activeRoute: string;
   route: string;
+  counter?: number;
   onRouteChange: (route: string) => void;
 };
 
-function TabItem({ activeRoute, route, onRouteChange }: TabItemProps) {
+function TabItem({ activeRoute, counter = 0, route, onRouteChange }: TabItemProps) {
   const isFocused = activeRoute === route;
 
   const onPress = useCallback(() => {
@@ -29,15 +30,21 @@ function TabItem({ activeRoute, route, onRouteChange }: TabItemProps) {
         font={{ family: 'ABCDiatype', weight: 'Medium' }}
       >
         {route}
+        {counter > 0 && <Text> {counter}</Text>}
       </Typography>
     </GalleryTouchableOpacity>
   );
 }
 
+type ProfileTabRoutes = {
+  name: string;
+  counter?: number;
+};
+
 type Props = {
   activeRoute: string;
   onRouteChange: (route: string) => void;
-  routes: string[];
+  routes: ProfileTabRoutes[];
 };
 
 export function ProfileTabBar({ routes, activeRoute, onRouteChange }: Props) {
@@ -46,10 +53,11 @@ export function ProfileTabBar({ routes, activeRoute, onRouteChange }: Props) {
       {routes.map((route) => {
         return (
           <TabItem
-            key={route}
-            route={route}
+            key={route.name}
+            route={route.name}
             onRouteChange={onRouteChange}
             activeRoute={activeRoute}
+            counter={route.counter}
           />
         );
       })}
