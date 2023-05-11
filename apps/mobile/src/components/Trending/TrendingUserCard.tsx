@@ -6,9 +6,11 @@ import FastImage from 'react-native-fast-image';
 import { graphql, useFragment } from 'react-relay';
 
 import { FollowButton } from '~/components/FollowButton';
+import { NftPreviewErrorFallback } from '~/components/NftPreview/NftPreviewErrorFallback';
 import { TrendingUserCardFragment$key } from '~/generated/TrendingUserCardFragment.graphql';
 import { TrendingUserCardQueryFragment$key } from '~/generated/TrendingUserCardQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import { Markdown } from '../Markdown';
@@ -93,7 +95,12 @@ export function TrendingUserCard({ style, userRef, queryRef }: Props) {
         {tokenPreviews.map((tokenPreview, index) => {
           return (
             <View key={index} className="h-full w-1/2">
-              <NftPreviewAsset tokenUrl={tokenPreview?.small ?? ''} resizeMode={ResizeMode.COVER} />
+              <ReportingErrorBoundary fallback={<NftPreviewErrorFallback />}>
+                <NftPreviewAsset
+                  tokenUrl={tokenPreview?.small ?? ''}
+                  resizeMode={ResizeMode.COVER}
+                />
+              </ReportingErrorBoundary>
             </View>
           );
         })}

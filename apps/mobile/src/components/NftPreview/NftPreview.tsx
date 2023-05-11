@@ -9,6 +9,7 @@ import { graphql } from 'relay-runtime';
 
 import { NftPreviewAsset } from '~/components/NftPreview/NftPreviewAsset';
 import { NftPreviewContextMenuPopup } from '~/components/NftPreview/NftPreviewContextMenuPopup';
+import { NftPreviewErrorFallback } from '~/components/NftPreview/NftPreviewErrorFallback';
 import { NftPreviewFragment$key } from '~/generated/NftPreviewFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { Dimensions } from '~/screens/NftDetailScreen/NftDetailAsset/types';
@@ -126,7 +127,7 @@ export function NftPreview({
   priority,
 }: NftPreviewProps) {
   return (
-    <ReportingErrorBoundary fallback={null}>
+    <ReportingErrorBoundary fallback={<NftPreviewErrorFallback />}>
       <NftPreviewInner
         onImageStateChange={onImageStateChange}
         collectionTokenRef={collectionTokenRef}
