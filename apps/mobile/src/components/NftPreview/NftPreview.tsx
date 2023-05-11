@@ -39,7 +39,7 @@ function NftPreviewInner({
   const collectionToken = useFragment(
     graphql`
       fragment NftPreviewFragment on CollectionToken {
-        collection @required(action: THROW) {
+        collection {
           dbid
         }
         token @required(action: THROW) {
@@ -70,11 +70,13 @@ function NftPreviewInner({
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
   const handlePress = useCallback(() => {
-    navigation.push('NftDetail', {
-      tokenId: token.dbid,
-      collectionId: collectionToken.collection.dbid,
-    });
-  }, [collectionToken.collection.dbid, navigation, token.dbid]);
+    if (collectionToken.collection?.dbid) {
+      navigation.push('NftDetail', {
+        tokenId: token.dbid,
+        collectionId: collectionToken.collection.dbid,
+      });
+    }
+  }, [collectionToken.collection?.dbid, navigation, token.dbid]);
 
   const handleLoad = useCallback(
     (dimensions: Dimensions | null) => {

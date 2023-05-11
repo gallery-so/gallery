@@ -32,7 +32,7 @@ export function NftPreviewContextMenuPopup({
   const collectionToken = useFragment(
     graphql`
       fragment NftPreviewContextMenuPopupFragment on CollectionToken {
-        collection @required(action: THROW) {
+        collection {
           dbid
           gallery {
             dbid
@@ -77,10 +77,12 @@ export function NftPreviewContextMenuPopup({
   const handleMenuItemPress = useCallback<OnPressMenuItemEvent>(
     (event) => {
       if (event.nativeEvent.actionKey === 'view-details') {
-        navigation.navigate('NftDetail', {
-          tokenId: token.dbid,
-          collectionId: collectionToken.collection.dbid,
-        });
+        if (collectionToken.collection?.dbid) {
+          navigation.navigate('NftDetail', {
+            tokenId: token.dbid,
+            collectionId: collectionToken.collection.dbid,
+          });
+        }
       } else if (event.nativeEvent.actionKey === 'share') {
         shareToken(collectionToken);
       } else if (event.nativeEvent.actionKey === 'view-gallery') {
