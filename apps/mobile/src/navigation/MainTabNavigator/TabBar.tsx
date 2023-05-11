@@ -22,7 +22,7 @@ type TabItemProps = {
   navigation: MaterialTopTabBarProps['navigation'];
 };
 
-const TAB_NAMES = {
+const TAB_NAMES: { [key in keyof MainTabNavigatorParamList]: string } = {
   AccountTab: 'Account',
   HomeTab: 'Home',
   SearchTab: 'Search',
