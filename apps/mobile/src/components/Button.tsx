@@ -9,6 +9,7 @@ type Variant = 'primary' | 'secondary';
 
 type ButtonProps = {
   style?: GalleryTouchableOpacityProps['style'];
+  className?: string;
   loading?: boolean;
   disabled?: boolean;
   text: string;

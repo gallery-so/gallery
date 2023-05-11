@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { LoginStackNavigatorProp } from '~/navigation/types';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
+import { navigateToNotificationUpsellOrHomeScreen } from '~/screens/Login/navigateToNotificationUpsellOrHomeScreen';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 
 import { IconContainer } from '../../components/IconContainer';
@@ -62,6 +63,7 @@ export function QRCodeScreen() {
           screen: 'HomeTab',
           params: { screen: 'Home', params: { screen: 'Latest' } },
         });
+        await navigateToNotificationUpsellOrHomeScreen(navigation);
       } else {
         setScanned(false);
         track('Sign In Failure', { 'Sign In Selection': 'QR code' });

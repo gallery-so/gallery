@@ -1,4 +1,3 @@
-import { BottomSheetBackdrop, BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useCallback, useLayoutEffect, useMemo } from 'react';
 import { Keyboard, Pressable, useColorScheme, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
@@ -6,6 +5,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { graphql, useFragment } from 'react-relay';
 import useKeyboardStatus from 'src/utils/useKeyboardStatus';
 
+import { GalleryBottomSheetHandle } from '~/components/GalleryBottomSheet/GalleryBottomSheetHandle';
+import {
+  GalleryBottomSheetModal,
+  GalleryBottomSheetModalType,
+} from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { NotesModalFragment$key } from '~/generated/NotesModalFragment.graphql';
 import { NotesModalQueryFragment$key } from '~/generated/NotesModalQueryFragment.graphql';
 
@@ -15,7 +19,7 @@ import { NotesList } from './NotesList';
 type Props = {
   eventRef: NotesModalFragment$key;
   queryRef: NotesModalQueryFragment$key;
-  bottomSheetRef: React.RefObject<BottomSheetModal>;
+  bottomSheetRef: React.RefObject<GalleryBottomSheetModalType>;
 };
 
 export function NotesModal({ eventRef, queryRef, bottomSheetRef }: Props) {
@@ -68,38 +72,13 @@ export function NotesModal({ eventRef, queryRef, bottomSheetRef }: Props) {
 
   return (
     <View>
-      <BottomSheetModal
+      <GalleryBottomSheetModal
         ref={bottomSheetRef}
         index={0}
         snapPoints={snapPoints}
         android_keyboardInputMode="adjustResize"
         keyboardBlurBehavior="restore"
-        backdropComponent={({ animatedIndex, ...props }) => (
-          <BottomSheetBackdrop
-            {...props}
-            animatedIndex={animatedIndex}
-            appearsOnIndex={0}
-            disappearsOnIndex={-1}
-            opacity={0.1}
-          />
-        )}
-        backgroundStyle={{
-          borderRadius: 40,
-        }}
-        handleComponent={() => (
-          // Temporary workaround https://github.com/gorhom/react-native-bottom-sheet/issues/1351#issuecomment-1518718101
-          <Pressable onPressIn={() => Keyboard.dismiss()}>
-            <View
-              className={`rounded-t-[40px] ${
-                colorScheme === 'dark' ? 'bg-black  border-offBlack' : 'bg-white border-porcelain'
-              }`}
-            >
-              <View className="space-y-2 py-3">
-                <View className="h-1 w-20 self-center bg-[#D9D9D9] px-4 rounded-full" />
-              </View>
-            </View>
-          </Pressable>
-        )}
+        handleComponent={Handle}
       >
         <Animated.View
           className="flex justify-between flex-1 bg-white dark:bg-black pt-2"
@@ -121,7 +100,15 @@ export function NotesModal({ eventRef, queryRef, bottomSheetRef }: Props) {
             isNotesModal
           />
         </Animated.View>
-      </BottomSheetModal>
+      </GalleryBottomSheetModal>
     </View>
+  );
+}
+
+function Handle() {
+  return (
+    <Pressable onPressIn={() => Keyboard.dismiss()}>
+      <GalleryBottomSheetHandle />
+    </Pressable>
   );
 }

@@ -17,4 +17,12 @@ export const ANNOUNCEMENT_CONTENT = [
     date: '2023-04-10T13:00:00.154845Z',
     link: 'https://gallery.mirror.xyz/GzEODA-g4mvdb1onS1jSRMSKqfMoGJCNu5yOSTV9RM8',
   },
+  {
+    key: 'MobileUpsell1',
+    title: 'The Gallery Mobile App',
+    description:
+      'The waitlist for the Gallery mobile app is now open. Claim your spot now and be among the first to experience effortless browsing and the magic of the creative web in your pocket.',
+    date: '2023-05-08T16:00:00.154845Z',
+    link: '/mobile',
+  },
 ];

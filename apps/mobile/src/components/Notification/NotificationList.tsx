@@ -56,7 +56,7 @@ export function NotificationList({ queryRef }: Props) {
   const clearNotification = useClearNotifications();
 
   const nonNullNotifications = useMemo(() => {
-    const notifications = [];
+    const notifications: NotificationType[] = [];
 
     for (const edge of query.viewer?.notifications?.edges ?? []) {
       if (edge?.node) {
@@ -67,7 +67,7 @@ export function NotificationList({ queryRef }: Props) {
     notifications.reverse();
 
     return notifications;
-  }, [query.viewer?.notifications?.edges]);
+  }, [query]);
 
   const loadMore = useCallback(() => {
     if (hasPrevious) {
@@ -80,22 +80,24 @@ export function NotificationList({ queryRef }: Props) {
   }, []);
 
   // if user go outside of notifications screen, clear notifications
-  useFocusEffect(() => {
-    return () => {
-      if (query.viewer?.user?.dbid && query.viewer.id) {
-        clearNotification(query.viewer.user.dbid, [
-          ConnectionHandler.getConnectionID(
-            query.viewer?.id,
-            'TabBarMainTabNavigator_notifications'
-          ),
-          ConnectionHandler.getConnectionID(
-            query.viewer?.id,
-            'NotificationsFragment_notifications'
-          ),
-        ]);
-      }
-    };
-  });
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        if (query.viewer?.user?.dbid && query.viewer.id) {
+          clearNotification(query.viewer.user.dbid, [
+            ConnectionHandler.getConnectionID(
+              query.viewer?.id,
+              'TabBarMainTabNavigator_notifications'
+            ),
+            ConnectionHandler.getConnectionID(
+              query.viewer?.id,
+              'NotificationsFragment_notifications'
+            ),
+          ]);
+        }
+      };
+    }, [clearNotification, query.viewer?.id, query.viewer?.user?.dbid])
+  );
 
   if (nonNullNotifications.length === 0) {
     return (

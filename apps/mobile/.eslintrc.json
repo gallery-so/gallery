@@ -12,6 +12,11 @@
             "name": "react-native",
             "importNames": ["TouchableOpacity"],
             "message": "Please use the GalleryTouchableOpacity component instead of TouchableOpacity from 'react-native'."
+          },
+          {
+            "name": "@gorhom/bottom-sheet",
+            "importNames": ["BottomSheetModal"],
+            "message": "Please use Bar from GalleryBottomSheetModal instead."
           }
         ]
       }

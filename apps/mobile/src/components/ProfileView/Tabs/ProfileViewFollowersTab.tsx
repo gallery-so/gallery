@@ -80,7 +80,7 @@ export function ProfileViewFollowersTab({ userRef, queryRef }: ProfileViewFollow
   const navigation = useNavigation<MainTabStackNavigatorProp>();
   const handleUserPress = useCallback(
     (username: string) => {
-      navigation.push('Profile', { username });
+      navigation.push('Profile', { username, hideBackButton: false });
     },
     [navigation]
   );

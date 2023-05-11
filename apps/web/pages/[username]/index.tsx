@@ -7,7 +7,6 @@ import styled from 'styled-components';
 
 import breakpoints, { pageGutter } from '~/components/core/breakpoints';
 import useVerifyEmailOnPage from '~/components/Email/useVerifyEmailOnPage';
-import GalleryViewEmitter from '~/components/internal/GalleryViewEmitter';
 import useOpenTwitterFollowingModal from '~/components/Twitter/useOpenTwitterFollowingModal';
 import useOpenTwitterModal from '~/components/Twitter/useOpenTwitterModal';
 import { USER_PER_PAGE } from '~/constants/twitter';
@@ -20,6 +19,7 @@ import GalleryRoute from '~/scenes/_Router/GalleryRoute';
 import UserGalleryPage from '~/scenes/UserGalleryPage/UserGalleryPage';
 import { COMMUNITIES_PER_PAGE } from '~/scenes/UserGalleryPage/UserSharedInfo/UserSharedCommunities';
 import { FOLLOWERS_PER_PAGE } from '~/scenes/UserGalleryPage/UserSharedInfo/UserSharedInfoList/SharedFollowersList';
+import GalleryViewEmitter from '~/shared/components/GalleryViewEmitter';
 import { PreloadQueryArgs } from '~/types/PageComponentPreloadQuery';
 import { openGraphMetaTags } from '~/utils/openGraphMetaTags';
 
