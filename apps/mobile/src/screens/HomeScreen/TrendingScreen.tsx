@@ -1,4 +1,4 @@
-import { Suspense, useCallback, useMemo } from 'react';
+import { Suspense, useCallback, useMemo, useState } from 'react';
 import { graphql, useFragment, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 
 import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/NotesModal/NotesList';
@@ -76,6 +76,35 @@ function TrendingScreenInner({ queryRef }: TrendingScreenInnerProps) {
     query
   );
 
+  const [isGlobalFeedRefreshing, setIsGlobalFeedRefreshing] = useState(false);
+  const [isTrendingFeedRefreshing, setIsTrendingFeedRefreshing] = useState(false);
+  const isRefreshing = isGlobalFeedRefreshing || isTrendingFeedRefreshing;
+
+  const handleRefresh = useCallback(() => {
+    setIsGlobalFeedRefreshing(true);
+    setIsTrendingFeedRefreshing(true);
+
+    trendingFeed.refetch(
+      {},
+      {
+        fetchPolicy: 'store-and-network',
+        onComplete: () => {
+          setIsTrendingFeedRefreshing(false);
+        },
+      }
+    );
+
+    globalFeed.refetch(
+      {},
+      {
+        fetchPolicy: 'store-and-network',
+        onComplete: () => {
+          setIsGlobalFeedRefreshing(false);
+        },
+      }
+    );
+  }, [globalFeed, trendingFeed]);
+
   const handleLoadMore = useCallback(() => {
     if (trendingFeed.isLoadingPrevious || globalFeed.isLoadingPrevious) {
       return;
@@ -103,6 +132,8 @@ function TrendingScreenInner({ queryRef }: TrendingScreenInnerProps) {
   return (
     <FeedList
       isLoadingMore={trendingFeed.isLoadingPrevious || globalFeed.isLoadingPrevious}
+      isRefreshing={isRefreshing}
+      onRefresh={handleRefresh}
       onLoadMore={handleLoadMore}
       feedEventRefs={events}
       queryRef={query}

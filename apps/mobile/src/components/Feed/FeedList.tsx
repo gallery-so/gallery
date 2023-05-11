@@ -1,6 +1,7 @@
 import { useScrollToTop } from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import { useCallback, useMemo, useRef } from 'react';
+import { RefreshControl } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import {
@@ -17,9 +18,18 @@ type FeedListProps = {
   feedEventRefs: FeedListFragment$key;
   onLoadMore: () => void;
   isLoadingMore: boolean;
+
+  isRefreshing: boolean;
+  onRefresh: () => void;
 };
 
-export function FeedList({ feedEventRefs, onLoadMore, queryRef }: FeedListProps) {
+export function FeedList({
+  feedEventRefs,
+  onLoadMore,
+  queryRef,
+  isRefreshing,
+  onRefresh,
+}: FeedListProps) {
   const query = useFragment(
     graphql`
       fragment FeedListQueryFragment on Query {
@@ -87,6 +97,7 @@ export function FeedList({ feedEventRefs, onLoadMore, queryRef }: FeedListProps)
       stickyHeaderIndices={stickyIndices}
       getItemType={(item) => item.kind}
       keyExtractor={(item) => item.key}
+      refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />}
     />
   );
 }
