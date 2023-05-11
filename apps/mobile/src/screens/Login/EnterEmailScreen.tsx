@@ -4,8 +4,8 @@ import { KeyboardAvoidingView, View } from 'react-native';
 
 import { SafeAreaViewWithPadding } from '~/components/SafeAreaViewWithPadding';
 import { LoginStackNavigatorProp } from '~/navigation/types';
-import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { navigateToNotificationUpsellOrHomeScreen } from '~/screens/Login/navigateToNotificationUpsellOrHomeScreen';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 
 import { Button } from '../../components/Button';

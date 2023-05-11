@@ -2,11 +2,11 @@ import { useCallback, useMemo, useRef } from 'react';
 import { Keyboard, useColorScheme, View, ViewProps } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
-import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import {
   GalleryBottomSheetModal,
   GalleryBottomSheetModalType,
 } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
+import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { CommentButtonFragment$key } from '~/generated/CommentButtonFragment.graphql';
 import { CommentButtonQueryFragment$key } from '~/generated/CommentButtonQueryFragment.graphql';
 

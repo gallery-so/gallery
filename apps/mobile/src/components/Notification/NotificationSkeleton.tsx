@@ -1,10 +1,12 @@
 import { PropsWithChildren } from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { Text, View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { Typography } from '~/components/Typography';
 import { NotificationSkeletonFragment$key } from '~/generated/NotificationSkeletonFragment.graphql';
 import { getTimeSince } from '~/shared/utils/time';
+
+import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 
 type Props = PropsWithChildren<{
   onPress: () => void;
@@ -24,7 +26,7 @@ export function NotificationSkeleton({ children, notificationRef, onPress }: Pro
   );
 
   return (
-    <TouchableOpacity onPress={onPress} className="flex flex-row justify-between p-3">
+    <GalleryTouchableOpacity onPress={onPress} className="flex flex-row justify-between p-3">
       <View className="flex-1 ">
         <Text className="dark:text-white">{children}</Text>
       </View>
@@ -37,7 +39,7 @@ export function NotificationSkeleton({ children, notificationRef, onPress }: Pro
         </Typography>
         {!notification.seen && <UnseenDot />}
       </View>
-    </TouchableOpacity>
+    </GalleryTouchableOpacity>
   );
 }
 

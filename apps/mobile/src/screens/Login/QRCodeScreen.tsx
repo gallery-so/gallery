@@ -5,8 +5,8 @@ import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { LoginStackNavigatorProp } from '~/navigation/types';
-import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { navigateToNotificationUpsellOrHomeScreen } from '~/screens/Login/navigateToNotificationUpsellOrHomeScreen';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 
 import { IconContainer } from '../../components/IconContainer';
