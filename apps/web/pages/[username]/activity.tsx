@@ -4,13 +4,13 @@ import { graphql } from 'relay-runtime';
 
 import { ITEMS_PER_PAGE, MAX_PIECES_DISPLAYED_PER_FEED_EVENT } from '~/components/Feed/constants';
 import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/NotesModal/NotesModal';
-import GalleryViewEmitter from '~/components/internal/GalleryViewEmitter';
 import { GalleryNavbar } from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavbar';
 import { StandardSidebar } from '~/contexts/globalLayout/GlobalSidebar/StandardSidebar';
 import { activityQuery } from '~/generated/activityQuery.graphql';
 import { MetaTagProps } from '~/pages/_app';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
 import UserActivityPage from '~/scenes/UserActivityPage/UserActivityPage';
+import GalleryViewEmitter from '~/shared/components/GalleryViewEmitter';
 import { PreloadQueryArgs } from '~/types/PageComponentPreloadQuery';
 import { openGraphMetaTags } from '~/utils/openGraphMetaTags';
 

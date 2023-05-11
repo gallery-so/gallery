@@ -14,3 +14,10 @@ tasks:
 
   codegen-watch:
     command: relay-compiler --project shared --repersist --watch ../../relay.config.js
+
+  test:
+    command: jest
+
+  test-watch:
+    local: true
+    command: jest --watch

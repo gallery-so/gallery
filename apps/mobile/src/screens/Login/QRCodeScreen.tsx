@@ -4,13 +4,18 @@ import { useCallback, useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { LoginStackNavigatorProp } from '~/navigation/types';
+import { navigateToNotificationUpsellOrHomeScreen } from '~/screens/Login/navigateToNotificationUpsellOrHomeScreen';
+import { useReportError } from '~/shared/contexts/ErrorReportingContext';
+
 import { IconContainer } from '../../components/IconContainer';
 import { Typography } from '../../components/Typography';
+import { useLogin } from '../../hooks/useLogin';
 import { BackIcon } from '../../icons/BackIcon';
 
 export function QRCodeScreen() {
   const { top } = useSafeAreaInsets();
-  const navigation = useNavigation();
+  const navigation = useNavigation<LoginStackNavigatorProp>();
 
   const [permissionStatus, setPermissionStatus] = useState<PermissionStatus>(
     PermissionStatus.UNDETERMINED
@@ -28,13 +33,35 @@ export function QRCodeScreen() {
     getBarCodeScannerPermissions();
   }, []);
 
-  const handleBarCodeScanned = useCallback<BarCodeScannedCallback>(({ type, data }) => {
-    setScanned(true);
+  const [login] = useLogin();
+  const [error, setError] = useState('');
 
-    // TODO: Do something w/ data
-    // eslint-disable-next-line no-console
-    console.log(type, data);
-  }, []);
+  const reportError = useReportError();
+  const handleBarCodeScanned = useCallback<BarCodeScannedCallback>(
+    async ({ data }) => {
+      setScanned(true);
+
+      function handleLoginError(message: string) {
+        reportError(`LoginError: ${message}`);
+
+        setError(message);
+      }
+
+      const result = await login({
+        oneTimeLoginToken: {
+          token: data,
+        },
+      });
+
+      if (result.kind === 'success') {
+        await navigateToNotificationUpsellOrHomeScreen(navigation);
+      } else {
+        setScanned(false);
+        handleLoginError(result.message);
+      }
+    },
+    [login, navigation, reportError]
+  );
 
   return (
     <View className="relative flex h-full w-full flex-col">
@@ -57,6 +84,14 @@ export function QRCodeScreen() {
         />
 
         <View className="flex h-1/3 flex-col space-y-4 rounded-lg bg-white dark:bg-black py-4 px-6">
+          {error && (
+            <View>
+              <Typography className="text-error" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
+                {error}
+              </Typography>
+            </View>
+          )}
+
           <Typography className="text-base" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
             If you’re signed in on Gallery elsewhere, you can sign in instantly via QR code.
           </Typography>

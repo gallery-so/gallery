@@ -1,12 +1,10 @@
-import { useNavigation } from '@react-navigation/native';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Share, useColorScheme, View } from 'react-native';
+import { useColorScheme, View } from 'react-native';
 import { CollapsibleRef, Tabs } from 'react-native-collapsible-tab-view';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import { FollowButton } from '~/components/FollowButton';
-import { IconContainer } from '~/components/IconContainer';
+import { GalleryProfileNavBar } from '~/components/ProfileView/GalleryProfileNavBar';
 import { ProfileViewHeader } from '~/components/ProfileView/ProfileViewHeader';
 import { ProfileViewActivityTab } from '~/components/ProfileView/Tabs/ProfileViewActivityTab';
 import { ProfileViewFeaturedTab } from '~/components/ProfileView/Tabs/ProfileViewFeaturedTab';
@@ -17,14 +15,8 @@ import { Typography } from '~/components/Typography';
 import { GalleryTokenDimensionCacheProvider } from '~/contexts/GalleryTokenDimensionCacheContext';
 import { ProfileViewFragment$key } from '~/generated/ProfileViewFragment.graphql';
 import { ProfileViewQueryFragment$key } from '~/generated/ProfileViewQueryFragment.graphql';
-import { MainTabStackNavigatorProp } from '~/navigation/types';
-import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
+import GalleryViewEmitter from '~/shared/components/GalleryViewEmitter';
 import colors from '~/shared/theme/colors';
-
-import { BackIcon } from '../../icons/BackIcon';
-import { QRCodeIcon } from '../../icons/QRCodeIcon';
-import { ShareIcon } from '../../icons/ShareIcon';
-import { FeedbackButton } from '../FeedbackButton';
 
 type ProfileViewProps = {
   shouldShowBackButton: boolean;
@@ -33,28 +25,23 @@ type ProfileViewProps = {
 };
 
 export function ProfileView({ userRef, queryRef, shouldShowBackButton }: ProfileViewProps) {
-  const navigation = useNavigation<MainTabStackNavigatorProp>();
-
   const query = useFragment(
     graphql`
       fragment ProfileViewQueryFragment on Query {
-        ...useLoggedInUserIdFragment
-        ...FollowButtonQueryFragment
+        ...GalleryProfileNavBarQueryFragment
         ...ProfileViewFollowersTabQueryFragment
         ...ProfileViewActivityTabQueryFragment
+        ...GalleryViewEmitterWithSuspenseFragment
       }
     `,
     queryRef
   );
-
-  const loggedInUserId = useLoggedInUserId(query);
 
   const user = useFragment(
     graphql`
       fragment ProfileViewFragment on GalleryUser {
         __typename
 
-        id
         username
 
         ...ProfileViewHeaderFragment
@@ -63,23 +50,11 @@ export function ProfileView({ userRef, queryRef, shouldShowBackButton }: Profile
         ...ProfileViewActivityTabFragment
         ...ProfileViewFollowersTabFragment
 
-        ...FollowButtonUserFragment
+        ...GalleryProfileNavBarFragment
       }
     `,
     userRef
   );
-
-  const isLoggedInUser = loggedInUserId === user.id;
-
-  const handleShare = useCallback(() => {
-    Share.share({ url: `https://gallery.so/${user.username}` });
-  }, [user.username]);
-
-  const handleQrCode = useCallback(() => {
-    if (user.username) {
-      navigation.navigate('ProfileQRCode', { username: user.username });
-    }
-  }, [navigation, user.username]);
 
   const [selectedRoute, setSelectedRoute] = useState('Featured');
 
@@ -105,25 +80,18 @@ export function ProfileView({ userRef, queryRef, shouldShowBackButton }: Profile
 
   return (
     <View className="flex-1">
+      <GalleryViewEmitter queryRef={query} />
+
       <View
         className="flex flex-col p-4 pb-1 z-10 bg-white dark:bg-black"
         style={{ paddingTop: top }}
       >
-        <View className="flex flex-row justify-between">
-          {isLoggedInUser && !shouldShowBackButton && <FeedbackButton />}
-          {shouldShowBackButton ? (
-            <IconContainer icon={<BackIcon />} onPress={navigation.goBack} />
-          ) : (
-            <View />
-          )}
+        <GalleryProfileNavBar
+          shouldShowBackButton={shouldShowBackButton}
+          queryRef={query}
+          userRef={user}
+        />
 
-          <View className="flex flex-row items-center space-x-2">
-            {isLoggedInUser && <IconContainer icon={<QRCodeIcon />} onPress={handleQrCode} />}
-            <IconContainer icon={<ShareIcon />} onPress={handleShare} />
-
-            {!isLoggedInUser && <FollowButton queryRef={query} userRef={user} />}
-          </View>
-        </View>
         <Typography
           className="bg-white dark:bg-black text-center text-2xl tracking-tighter"
           font={{ family: 'GTAlpina', weight: 'StandardLight' }}
@@ -132,41 +100,42 @@ export function ProfileView({ userRef, queryRef, shouldShowBackButton }: Profile
         </Typography>
       </View>
 
-      <GalleryTokenDimensionCacheProvider>
-        <Tabs.Container
-          revealHeaderOnScroll
-          ref={containerRef}
-          pagerProps={{ scrollEnabled: false }}
-          containerStyle={{
-            backgroundColor: colorScheme === 'light' ? colors.white : colors.black,
-          }}
-          headerContainerStyle={{
-            margin: 0,
-            elevation: 0,
-            shadowOpacity: 0,
-            borderBottomColor: 'transparent',
-            backgroundColor: colorScheme === 'light' ? colors.white : colors.black,
-          }}
-          renderTabBar={Empty}
-          renderHeader={Header}
-        >
-          <Tabs.Tab name="Featured">
-            <ProfileViewFeaturedTab userRef={user} />
-          </Tabs.Tab>
+      <View className="flex-grow">
+        <GalleryTokenDimensionCacheProvider>
+          <Tabs.Container
+            ref={containerRef}
+            pagerProps={{ scrollEnabled: false }}
+            containerStyle={{
+              backgroundColor: colorScheme === 'light' ? colors.white : colors.black,
+            }}
+            headerContainerStyle={{
+              margin: 0,
+              elevation: 0,
+              shadowOpacity: 0,
+              borderBottomColor: 'transparent',
+              backgroundColor: colorScheme === 'light' ? colors.white : colors.black,
+            }}
+            renderTabBar={Empty}
+            renderHeader={Header}
+          >
+            <Tabs.Tab name="Featured">
+              <ProfileViewFeaturedTab userRef={user} />
+            </Tabs.Tab>
 
-          <Tabs.Tab name="Galleries">
-            <ProfileViewGalleriesTab userRef={user} />
-          </Tabs.Tab>
+            <Tabs.Tab name="Galleries">
+              <ProfileViewGalleriesTab userRef={user} />
+            </Tabs.Tab>
 
-          <Tabs.Tab name="Followers">
-            <ProfileViewFollowersTab userRef={user} queryRef={query} />
-          </Tabs.Tab>
+            <Tabs.Tab name="Followers">
+              <ProfileViewFollowersTab userRef={user} queryRef={query} />
+            </Tabs.Tab>
 
-          <Tabs.Tab name="Activity">
-            <ProfileViewActivityTab userRef={user} queryRef={query} />
-          </Tabs.Tab>
-        </Tabs.Container>
-      </GalleryTokenDimensionCacheProvider>
+            <Tabs.Tab name="Activity">
+              <ProfileViewActivityTab queryRef={query} userRef={user} />
+            </Tabs.Tab>
+          </Tabs.Container>
+        </GalleryTokenDimensionCacheProvider>
+      </View>
     </View>
   );
 }

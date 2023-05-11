@@ -3,7 +3,19 @@
   "plugins": ["react-hooks"],
   "ignorePatterns": ["ios/", "android/"],
   "rules": {
-    "no-console": "error"
+    "no-console": "error",
+    "no-restricted-imports": [
+      "error",
+      {
+        "paths": [
+          {
+            "name": "@gorhom/bottom-sheet",
+            "importNames": ["BottomSheetModal"],
+            "message": "Please use Bar from GalleryBottomSheetModal instead."
+          }
+        ]
+      }
+    ]
   },
   "overrides": [
     {

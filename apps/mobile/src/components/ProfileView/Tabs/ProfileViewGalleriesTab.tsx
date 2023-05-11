@@ -63,11 +63,8 @@ export function ProfileViewGalleriesTab({ userRef }: ProfileViewGalleriesTabProp
   const contentContainerStyle = useListContentStyle();
 
   return (
-    <Tabs.FlashList
-      data={items}
-      estimatedItemSize={300}
-      renderItem={renderItem}
-      contentContainerStyle={contentContainerStyle}
-    />
+    <View style={contentContainerStyle}>
+      <Tabs.FlashList data={items} estimatedItemSize={300} renderItem={renderItem} />
+    </View>
   );
 }

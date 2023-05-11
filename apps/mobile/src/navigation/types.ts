@@ -11,18 +11,26 @@ export type RootStackNavigatorParamList = {
 };
 
 export type MainTabStackNavigatorParamList = {
-  Profile: { username: string };
+  Profile: { username: string; hideBackButton?: boolean };
   NftDetail: {
     tokenId: string;
     collectionId: string;
   };
   Gallery: { galleryId: string };
   Collection: { collectionId: string };
+  FeedEvent: { eventId: string };
 
   // The main four tabs
   Account: undefined;
   Home: NavigatorScreenParams<FeedTabNavigatorParamList>;
-  Notifications: undefined;
+
+  Notifications:
+    | {
+        // We pass a fetch key when the user presses a notification so the content is guaranteed to be fresh.
+        fetchKey?: string;
+      }
+    | undefined;
+
   Search: undefined;
   // End the main four tabs
 };
@@ -45,6 +53,7 @@ export type LoginStackNavigatorParamList = {
   EnterEmail: undefined;
   QRCode: undefined;
   WaitingForConfirmation: { email: string };
+  NotificationUpsell: undefined;
 };
 
 export type RootStackNavigatorProp = NativeStackNavigationProp<RootStackNavigatorParamList>;

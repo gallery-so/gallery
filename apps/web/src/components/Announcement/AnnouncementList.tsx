@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 import { Route } from 'nextjs-routes';
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -8,7 +8,7 @@ import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarD
 import { AnnouncementListFragment$key } from '~/generated/AnnouncementListFragment.graphql';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
-import useUpdateUserExperience from '~/utils/graphql/experiences/useUpdateUserExperience';
+import { useOptimisticallyDismissExperience } from '~/utils/graphql/experiences/useUpdateUserExperience';
 import { HTTPS_URL } from '~/utils/regex';
 
 import { HStack, VStack } from '../core/Spacer/Stack';
@@ -33,7 +33,7 @@ export default function AnnouncementList({ queryRef }: Props) {
   const { announcements } = useAnnouncement(query);
   const track = useTrack();
 
-  const update = useUpdateUserExperience();
+  const dismissExperience = useOptimisticallyDismissExperience();
   const { hideDrawer } = useDrawerActions();
 
   const handleClick = useCallback(
@@ -56,22 +56,24 @@ export default function AnnouncementList({ queryRef }: Props) {
       }
 
       if (!announcement.experienced) {
-        update({
-          type: announcement.key,
-          experienced: true,
-          optimisticExperiencesList: [
-            {
-              type: announcement.key,
-              experienced: true,
-            },
-          ],
-        });
+        dismissExperience(announcement.key);
       }
 
       hideDrawer();
     },
-    [hideDrawer, router, track, update]
+    [dismissExperience, hideDrawer, router, track]
   );
+
+  // TODO [GAL-3033]: come up with a system to "dismiss all announcement-type experiences"
+  useEffect(() => {
+    return () => {
+      for (const announcement of announcements) {
+        if (!announcement.experienced) {
+          dismissExperience(announcement.key);
+        }
+      }
+    };
+  }, [announcements, dismissExperience]);
 
   return (
     <div>

@@ -102,9 +102,9 @@ export function createVirtualizedFeedEventItems({
     let isSupportedFeedEvent = false;
     if (event.eventData.__typename === 'GalleryUpdatedFeedEventData') {
       isSupportedFeedEvent =
-        event.eventData.subEventDatas?.some((subEvent) =>
-          SUPPORTED_FEED_EVENT_TYPES.has(subEvent.__typename)
-        ) ?? false;
+        event.eventData.subEventDatas?.some((subEvent) => {
+          return SUPPORTED_FEED_EVENT_TYPES.has(subEvent.__typename);
+        }) ?? false;
     } else {
       isSupportedFeedEvent = SUPPORTED_FEED_EVENT_TYPES.has(event.eventData.__typename);
     }

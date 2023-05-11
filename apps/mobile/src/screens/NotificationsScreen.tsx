@@ -1,3 +1,4 @@
+import { RouteProp, useRoute } from '@react-navigation/native';
 import { Suspense } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -8,8 +9,11 @@ import { LoadingNotificationList } from '~/components/Notification/LoadingNotifi
 import { NotificationList } from '~/components/Notification/NotificationList';
 import { Typography } from '~/components/Typography';
 import { NotificationsScreenQuery } from '~/generated/NotificationsScreenQuery.graphql';
+import { MainTabStackNavigatorParamList } from '~/navigation/types';
 
 export function NotificationsScreen() {
+  const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'Notifications'>>();
+
   const query = useLazyLoadQuery<NotificationsScreenQuery>(
     graphql`
       query NotificationsScreenQuery($notificationsLast: Int!, $notificationsBefore: String) {
@@ -19,6 +23,10 @@ export function NotificationsScreen() {
     {
       notificationsLast: NOTIFICATIONS_PER_PAGE,
       notificationsBefore: null,
+    },
+    {
+      fetchPolicy: 'network-only',
+      fetchKey: route.params?.fetchKey,
     }
   );
 

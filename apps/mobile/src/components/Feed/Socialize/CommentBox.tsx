@@ -221,6 +221,7 @@ export function CommentBox({
           autoCorrect={false}
           autoComplete="off"
           autoFocus={autoFocus}
+          onBlur={handleDismiss}
           onSubmitEditing={handleDismiss}
           style={{ flex: 1, color: colorScheme === 'dark' ? colors.white : colors.offBlack }}
         />
