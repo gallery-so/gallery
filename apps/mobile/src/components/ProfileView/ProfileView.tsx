@@ -90,6 +90,7 @@ export function ProfileView({ userRef, queryRef, shouldShowBackButton }: Profile
           shouldShowBackButton={shouldShowBackButton}
           queryRef={query}
           userRef={user}
+          screen="Profile"
         />
 
         <Typography

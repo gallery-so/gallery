@@ -80,6 +80,7 @@ function CollectionScreenInner() {
           shouldShowBackButton
           queryRef={query}
           userRef={collection.gallery.owner}
+          screen="Collection"
         />
       </View>
 
