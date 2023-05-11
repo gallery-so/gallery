@@ -14,7 +14,7 @@ type InternalFetchFunction = (
 ) => Promise<GraphQLSingularResponse>;
 
 const fetchWithJustHash: InternalFetchFunction = async (
-  { url },
+  { url, headers },
   request,
   variables,
   cacheConfig,
@@ -35,6 +35,7 @@ const fetchWithJustHash: InternalFetchFunction = async (
     }),
     headers: {
       'Content-Type': 'application/json',
+      ...headers(request, variables, cacheConfig, uploadables),
     },
   }).then((response) => response.json());
 
@@ -42,7 +43,7 @@ const fetchWithJustHash: InternalFetchFunction = async (
 };
 
 const fetchWithHashAndQueryText: InternalFetchFunction = async (
-  { url, persistedQueriesFetcher },
+  { url, persistedQueriesFetcher, headers },
   request,
   variables,
   cacheConfig,
@@ -69,6 +70,7 @@ const fetchWithHashAndQueryText: InternalFetchFunction = async (
     }),
     headers: {
       'Content-Type': 'application/json',
+      ...headers(request, variables, cacheConfig, uploadables),
     },
   }).then((response) => response.json());
 
@@ -77,6 +79,7 @@ const fetchWithHashAndQueryText: InternalFetchFunction = async (
 
 type CreateRelayFetchFunctionArgs = {
   url: (...args: Parameters<FetchFunction>) => string;
+  headers: (...args: Parameters<FetchFunction>) => Record<string, string>;
   persistedQueriesFetcher: PersistedQueriesFetcher;
 };
 

@@ -67,7 +67,7 @@ function flattenDeferResponse(responses: DeferResponse[]): FlattenedDeferRespons
 }
 
 const fetchWithJustHash: InternalFetchFunction = async (
-  { url },
+  { url, headers },
   sinkHandlers,
   request,
   variables,
@@ -91,13 +91,14 @@ const fetchWithJustHash: InternalFetchFunction = async (
     headers: {
       'Content-Type': 'application/json',
       Accept: 'multipart/mixed; deferSpec=20220824',
+      ...headers(request, variables, cacheConfig, uploadables),
     },
     ...sinkHandlers,
   });
 };
 
 const fetchWithHashAndQueryText: InternalFetchFunction = async (
-  { url, persistedQueriesFetcher },
+  { url, persistedQueriesFetcher, headers },
   sinkHandlers,
   request,
   variables,
@@ -126,12 +127,14 @@ const fetchWithHashAndQueryText: InternalFetchFunction = async (
     headers: {
       'Content-Type': 'application/json',
       Accept: 'multipart/mixed; deferSpec=20220824',
+      ...headers(request, variables, cacheConfig, uploadables),
     },
     ...sinkHandlers,
   });
 };
 
 type CreateRelayFetchFunctionArgs = {
+  headers: (...args: Parameters<FetchFunction>) => Record<string, string>;
   url: (...args: Parameters<FetchFunction>) => string;
   persistedQueriesFetcher: PersistedQueriesFetcher;
 };
