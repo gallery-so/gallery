@@ -15,7 +15,6 @@ type ButtonProps = {
   text: string;
   icon?: ReactNode;
   variant?: Variant;
-  trackProperties?: Record<string, unknown>;
 } & GalleryTouchableOpacityProps;
 
 type VariantMapType = { [variant in Variant]: string };
@@ -27,7 +26,6 @@ export function Button({
   loading,
   disabled,
   style,
-  trackProperties,
   ...props
 }: ButtonProps) {
   const containerVariants: VariantMapType = {
@@ -46,12 +44,7 @@ export function Button({
   };
 
   return (
-    <GalleryTouchableOpacity
-      disabled={loading || disabled}
-      style={style}
-      properties={trackProperties}
-      {...props}
-    >
+    <GalleryTouchableOpacity disabled={loading || disabled} style={style} {...props}>
       {/* Setting a height explicitly here to ensure icons / text gets the same treatment */}
       <View
         className={clsx(

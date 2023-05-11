@@ -113,7 +113,7 @@ export function EnterEmailScreen() {
               onPress={handleContinue}
               text="Continue"
               eventName="Sign In Attempt"
-              trackProperties={{
+              properties={{
                 'Sign In Selection': 'Email',
               }}
             />

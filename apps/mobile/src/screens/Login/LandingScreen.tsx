@@ -38,7 +38,7 @@ export function LandingScreen() {
           <Button
             id="Email Button"
             eventName="Sign In Selection"
-            trackProperties={{
+            properties={{
               'Sign In Method': 'Email',
             }}
             onPress={handleEmailPress}
@@ -49,7 +49,7 @@ export function LandingScreen() {
           <Button
             id="QR Code Button"
             eventName="Sign In Selection"
-            trackProperties={{
+            properties={{
               'Sign In Method': 'QR Code',
             }}
             onPress={handleQrCodePress}
