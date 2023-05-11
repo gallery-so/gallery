@@ -15,6 +15,7 @@ import { Typography } from '~/components/Typography';
 import { GalleryTokenDimensionCacheProvider } from '~/contexts/GalleryTokenDimensionCacheContext';
 import { ProfileViewFragment$key } from '~/generated/ProfileViewFragment.graphql';
 import { ProfileViewQueryFragment$key } from '~/generated/ProfileViewQueryFragment.graphql';
+import GalleryViewEmitter from '~/shared/components/GalleryViewEmitter';
 import colors from '~/shared/theme/colors';
 
 type ProfileViewProps = {
@@ -30,6 +31,7 @@ export function ProfileView({ userRef, queryRef, shouldShowBackButton }: Profile
         ...GalleryProfileNavBarQueryFragment
         ...ProfileViewFollowersTabQueryFragment
         ...ProfileViewActivityTabQueryFragment
+        ...GalleryViewEmitterWithSuspenseFragment
       }
     `,
     queryRef
@@ -78,6 +80,8 @@ export function ProfileView({ userRef, queryRef, shouldShowBackButton }: Profile
 
   return (
     <View className="flex-1">
+      <GalleryViewEmitter queryRef={query} />
+
       <View
         className="flex flex-col p-4 pb-1 z-10 bg-white dark:bg-black"
         style={{ paddingTop: top }}
