@@ -9,7 +9,7 @@ export type GalleryTouchableOpacityProps = {
   // unique identifier for the element
   id?: string;
   eventName?: string;
-  onPress?: (event: GestureResponderEvent) => void;
+  onPress?: TouchableOpacityProps['onPress'];
   properties?: Record<string, unknown>;
 } & Omit<TouchableOpacityProps, 'onPress'>;
 
