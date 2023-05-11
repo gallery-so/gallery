@@ -1,10 +1,13 @@
-import { useMemo } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import { useCallback, useMemo } from 'react';
 import { Text } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
+import { NotificationSkeleton } from '~/components/Notification/NotificationSkeleton';
 import { Typography } from '~/components/Typography';
 import { SomeoneAdmiredYourFeedEventFragment$key } from '~/generated/SomeoneAdmiredYourFeedEventFragment.graphql';
+import { MainTabStackNavigatorProp } from '~/navigation/types';
 
 type SomeoneAdmiredYourFeedEventProps = {
   notificationRef: SomeoneAdmiredYourFeedEventFragment$key;
@@ -17,6 +20,7 @@ export function SomeoneAdmiredYourFeedEvent({ notificationRef }: SomeoneAdmiredY
         count
 
         feedEvent {
+          dbid
           eventData {
             ... on CollectionCreatedFeedEventData {
               __typename
@@ -60,6 +64,8 @@ export function SomeoneAdmiredYourFeedEvent({ notificationRef }: SomeoneAdmiredY
             }
           }
         }
+
+        ...NotificationSkeletonFragment
       }
     `,
     notificationRef
@@ -88,35 +94,44 @@ export function SomeoneAdmiredYourFeedEvent({ notificationRef }: SomeoneAdmiredY
       ? notification.feedEvent?.eventData?.collection
       : null;
 
+  const navigation = useNavigation<MainTabStackNavigatorProp>();
+  const handlePress = useCallback(() => {
+    if (notification.feedEvent?.dbid) {
+      navigation.navigate('FeedEvent', { eventId: notification.feedEvent?.dbid });
+    }
+  }, [navigation, notification.feedEvent?.dbid]);
+
   return (
-    <Text>
-      <Typography
-        font={{
-          family: 'ABCDiatype',
-          weight: 'Bold',
-        }}
-        className="text-sm"
-      >
-        {count > 1
-          ? `${notification.count} collectors`
-          : firstAdmirer
-          ? firstAdmirer?.username
-          : 'Someone'}
-      </Typography>
-      {` ${verb} `}
-      {collection ? (
+    <NotificationSkeleton onPress={handlePress} notificationRef={notification}>
+      <Text>
         <Typography
           font={{
             family: 'ABCDiatype',
             weight: 'Bold',
           }}
-          className="text-sm underline"
+          className="text-sm"
         >
-          {collection.name}
+          {count > 1
+            ? `${notification.count} collectors`
+            : firstAdmirer
+            ? firstAdmirer?.username
+            : 'Someone'}
         </Typography>
-      ) : (
-        <Text>your collection</Text>
-      )}
-    </Text>
+        {` ${verb} `}
+        {collection ? (
+          <Typography
+            font={{
+              family: 'ABCDiatype',
+              weight: 'Bold',
+            }}
+            className="text-sm underline"
+          >
+            {collection.name}
+          </Typography>
+        ) : (
+          <Text>your collection</Text>
+        )}
+      </Text>
+    </NotificationSkeleton>
   );
 }

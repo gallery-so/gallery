@@ -1,10 +1,13 @@
-import { useMemo } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import { useCallback, useMemo } from 'react';
 import { Text, View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
+import { NotificationSkeleton } from '~/components/Notification/NotificationSkeleton';
 import { Typography } from '~/components/Typography';
 import { SomeoneCommentedOnYourFeedEventFragment$key } from '~/generated/SomeoneCommentedOnYourFeedEventFragment.graphql';
+import { MainTabStackNavigatorProp } from '~/navigation/types';
 
 type SomeoneCommentedOnYourFeedEventProps = {
   notificationRef: SomeoneCommentedOnYourFeedEventFragment$key;
@@ -26,6 +29,7 @@ export function SomeoneCommentedOnYourFeedEvent({
         }
 
         feedEvent {
+          dbid
           eventData {
             ... on CollectionCreatedFeedEventData {
               __typename
@@ -60,6 +64,8 @@ export function SomeoneCommentedOnYourFeedEvent({
             }
           }
         }
+
+        ...NotificationSkeletonFragment
       }
     `,
     notificationRef
@@ -83,38 +89,48 @@ export function SomeoneCommentedOnYourFeedEvent({
 
   // @ts-expect-error: property `collection` does not exist on type { readonly __typename: "%other" };
   const collection = notification.feedEvent?.eventData?.collection;
+  const commenter = notification.comment?.commenter;
+
+  const navigation = useNavigation<MainTabStackNavigatorProp>();
+  const handlePress = useCallback(() => {
+    if (notification.feedEvent?.dbid) {
+      navigation.navigate('FeedEvent', { eventId: notification.feedEvent?.dbid });
+    }
+  }, [navigation, notification.feedEvent?.dbid]);
 
   return (
-    <View className="flex space-y-2">
-      <Text className="dark:text-white">
-        <Typography
-          font={{
-            family: 'ABCDiatype',
-            weight: 'Bold',
-          }}
-          className="text-sm"
-        >
-          {notification.comment?.commenter ? notification.comment?.commenter.username : 'Someone'}
-        </Typography>
-        {` ${verb} `}
-        {collection ? (
+    <NotificationSkeleton onPress={handlePress} notificationRef={notification}>
+      <View className="flex space-y-2">
+        <Text className="dark:text-white">
           <Typography
             font={{
               family: 'ABCDiatype',
               weight: 'Bold',
             }}
-            className="text-sm underline"
+            className="text-sm"
           >
-            {collection.name}
+            {commenter ? commenter.username : 'Someone'}
           </Typography>
-        ) : (
-          <Text>your collection</Text>
-        )}
-      </Text>
+          {` ${verb} `}
+          {collection ? (
+            <Typography
+              font={{
+                family: 'ABCDiatype',
+                weight: 'Bold',
+              }}
+              className="text-sm underline"
+            >
+              {collection.name}
+            </Typography>
+          ) : (
+            <Text>your collection</Text>
+          )}
+        </Text>
 
-      <View className="ml-4 border-l-2 border-[#d9d9d9] pl-2">
-        <Text className="dark:text-white">{notification.comment?.comment ?? ''}</Text>
+        <View className="ml-4 border-l-2 border-[#d9d9d9] pl-2">
+          <Text className="dark:text-white">{notification.comment?.comment ?? ''}</Text>
+        </View>
       </View>
-    </View>
+    </NotificationSkeleton>
   );
 }
