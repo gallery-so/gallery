@@ -57,13 +57,13 @@ export function CollectionUpdatedFeedEvent({
   return (
     <View className="flex flex-1 flex-col">
       <FeedEventCarouselCellHeader>
-        <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
+        <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
           Made a change to
         </Typography>
         <TouchableOpacity className="flex-1" onPress={handleCollectionNamePress}>
           <Typography
             numberOfLines={1}
-            className="text-xs"
+            className="text-sm"
             font={{ family: 'ABCDiatype', weight: 'Bold' }}
           >
             {eventData.collection?.name || 'Untitled'}

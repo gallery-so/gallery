@@ -1,13 +1,14 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import { useCallback, useMemo } from 'react';
-import { View } from 'react-native';
+import { RefreshControl, View } from 'react-native';
 import { ConnectionHandler, graphql, usePaginationFragment } from 'react-relay';
 
 import { NotificationFragment$key } from '~/generated/NotificationFragment.graphql';
 import { NotificationListFragment$key } from '~/generated/NotificationListFragment.graphql';
 import { useClearNotifications } from '~/shared/relay/useClearNotifications';
 
+import { useRefreshHandle } from '../../hooks/useRefreshHandle';
 import { Typography } from '../Typography';
 import { NOTIFICATIONS_PER_PAGE } from './constants';
 import { Notification } from './Notification';
@@ -24,6 +25,7 @@ type NotificationType = {
 export function NotificationList({ queryRef }: Props) {
   const {
     data: query,
+    refetch,
     loadPrevious,
     hasPrevious,
     isLoadingPrevious,
@@ -54,6 +56,7 @@ export function NotificationList({ queryRef }: Props) {
   );
 
   const clearNotification = useClearNotifications();
+  const { isRefreshing, handleRefresh } = useRefreshHandle(refetch);
 
   const nonNullNotifications = useMemo(() => {
     const notifications: NotificationType[] = [];
@@ -124,6 +127,7 @@ export function NotificationList({ queryRef }: Props) {
       refreshing={isLoadingPrevious}
       onEndReachedThreshold={0.8}
       ItemSeparatorComponent={() => <View className="h-2" />}
+      refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />}
     />
   );
 }

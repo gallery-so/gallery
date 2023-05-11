@@ -105,7 +105,12 @@ function GalleryScreenInner() {
   return (
     <View className="flex flex-col flex-1 bg-white dark:bg-black" style={{ paddingTop: top }}>
       <View className="px-4 pb-4">
-        <GalleryProfileNavBar shouldShowBackButton queryRef={query} userRef={gallery.owner} />
+        <GalleryProfileNavBar
+          shouldShowBackButton
+          queryRef={query}
+          userRef={gallery.owner}
+          screen="Gallery"
+        />
       </View>
 
       <View className="flex flex-col space-y-1 pb-2">

@@ -10,6 +10,7 @@ import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import { FeedList } from '../../components/Feed/FeedList';
 import { LoadingFeedList } from '../../components/Feed/LoadingFeedList';
+import { useRefreshHandle } from '../../hooks/useRefreshHandle';
 
 type LatestScreenInnerProps = {
   queryRef: LatestScreenFragment$key;
@@ -23,6 +24,7 @@ function LatestScreenInner({ queryRef }: LatestScreenInnerProps) {
     isLoadingPrevious,
     hasPrevious,
     loadPrevious,
+    refetch,
   } = usePaginationFragment(
     graphql`
       fragment LatestScreenFragment on Query
@@ -51,6 +53,8 @@ function LatestScreenInner({ queryRef }: LatestScreenInnerProps) {
     queryRef
   );
 
+  const { isRefreshing, handleRefresh } = useRefreshHandle(refetch);
+
   const handleLoadMore = useCallback(() => {
     if (hasPrevious && !isLoadingPrevious) {
       loadPrevious(PER_PAGE);
@@ -63,7 +67,7 @@ function LatestScreenInner({ queryRef }: LatestScreenInnerProps) {
 
   const [showWelcome, setShowWelcome] = useState(false);
 
-  const checkIsShouldShowWelcome = useCallback(async () => {
+  const checkShouldShowWelcome = useCallback(async () => {
     const shown = await AsyncStorage.getItem('welcomeMessageShown');
     if (shown !== 'true') {
       setShowWelcome(true);
@@ -72,12 +76,14 @@ function LatestScreenInner({ queryRef }: LatestScreenInnerProps) {
   }, [setShowWelcome]);
 
   useEffect(() => {
-    checkIsShouldShowWelcome();
-  }, [checkIsShouldShowWelcome]);
+    checkShouldShowWelcome();
+  }, [checkShouldShowWelcome]);
 
   return (
     <>
       <FeedList
+        isRefreshing={isRefreshing}
+        onRefresh={handleRefresh}
         isLoadingMore={isLoadingPrevious}
         onLoadMore={handleLoadMore}
         feedEventRefs={events}
