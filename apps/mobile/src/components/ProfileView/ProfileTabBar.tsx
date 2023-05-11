@@ -29,7 +29,7 @@ function TabItem({ activeRoute, counter = 0, route, onRouteChange }: TabItemProp
         font={{ family: 'ABCDiatype', weight: 'Medium' }}
       >
         {route}
-        {counter > 0 && <Text> {counter}</Text>}
+        {counter > 0 && <Text className="text-xs"> {counter}</Text>}
       </Typography>
     </TouchableOpacity>
   );
