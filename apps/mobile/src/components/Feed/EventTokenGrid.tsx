@@ -1,7 +1,6 @@
 import { ResizeMode } from 'expo-av';
-import { Style } from 'nativewind/dist/style-sheet/runtime';
 import { PropsWithChildren, useMemo } from 'react';
-import { StyleProp, useWindowDimensions, View, ViewProps, ViewStyle } from 'react-native';
+import { useWindowDimensions, View, ViewProps } from 'react-native';
 import { Priority } from 'react-native-fast-image';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
