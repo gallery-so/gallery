@@ -103,12 +103,12 @@ export function QRCodeScreen() {
           )}
 
           <Typography className="text-base" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
-            If you’re signed in on Gallery elsewhere, you can sign in instantly via QR code.
+            If you’re signed into Gallery elsewhere, you can authenticate instantly via QR code.
           </Typography>
 
           <View className="flex flex-col">
             <Typography className="text-lg" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-              Scan QR Code
+              Pair with Desktop
             </Typography>
 
             <View className="flex flex-col">
@@ -122,13 +122,19 @@ export function QRCodeScreen() {
                 className="text-base leading-loose"
                 font={{ family: 'ABCDiatype', weight: 'Regular' }}
               >
-                2. Click “QR Code for Login”.
+                2. Click the QR Code button under “Pair with Mobile”.
               </Typography>
               <Typography
                 className="text-base leading-loose"
                 font={{ family: 'ABCDiatype', weight: 'Regular' }}
               >
                 3. Scan the QR Code.
+              </Typography>
+              <Typography
+                className="text-base leading-loose"
+                font={{ family: 'ABCDiatype', weight: 'Regular' }}
+              >
+                4. Profit.
               </Typography>
             </View>
           </View>
