@@ -17,15 +17,11 @@ export function WelcomeToBeta({ username }: Props) {
   const bottomSheetRef = useRef<GalleryBottomSheetModalType>(null);
   useEffect(() => bottomSheetRef.current?.present(), []);
 
-  const capitalizedUsername = useMemo(() => {
-    return username.charAt(0).toUpperCase() + username.slice(1);
-  }, [username]);
-
   return (
     <GalleryBottomSheetModal ref={bottomSheetRef} index={0} snapPoints={snapPoints}>
       <View className="flex flex-column space-y-2 mx-4 mt-2">
         <Typography className="text-xl" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-          ☀️ Welcome, {capitalizedUsername}.
+          ☀️ Welcome, {username}.
         </Typography>
         <Typography font={{ family: 'ABCDiatype', weight: 'Regular' }}>
           Thank you for testing the Gallery mobile app!
