@@ -4,7 +4,7 @@ import { View } from 'react-native';
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import { Typography } from '../Typography';
 
-export type SearchFilterType = 'top' | 'curator' | 'gallery' | 'community' | null;
+export type SearchFilterType = 'top' | 'curator' | 'gallery' | 'community';
 
 type FilterElement = {
   label: string;
@@ -35,7 +35,9 @@ export function SearchFilter({ activeFilter, onChange, ...props }: Props) {
   const handleSelectFilter = useCallback(
     (filter: SearchFilterType) => {
       if (filter === activeFilter) {
-        onChange(null);
+        if (filter !== 'top') {
+          onChange('top');
+        }
       } else {
         onChange(filter);
       }
