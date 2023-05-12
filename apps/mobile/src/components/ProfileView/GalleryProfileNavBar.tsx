@@ -14,6 +14,7 @@ import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import { BackIcon } from '../../icons/BackIcon';
 import { QRCodeIcon } from '../../icons/QRCodeIcon';
 import { ShareIcon } from '../../icons/ShareIcon';
+import { FeedbackButton } from '../FeedbackButton';
 
 type ScreenName = 'Profile' | 'Gallery' | 'Collection';
 type RouteParams = {
@@ -95,6 +96,7 @@ export function GalleryProfileNavBar({
 
   return (
     <View style={style} className="flex flex-row justify-between bg-white dark:bg-black">
+      {isLoggedInUser && !shouldShowBackButton && <FeedbackButton />}
       {shouldShowBackButton ? (
         <IconContainer icon={<BackIcon />} onPress={navigation.goBack} />
       ) : (
