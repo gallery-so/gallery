@@ -1,7 +1,7 @@
 import 'expo-dev-client';
 
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useNavigationContainerRef } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { Suspense, useEffect, useState } from 'react';
@@ -46,6 +46,8 @@ export default function App() {
     ABCDiatypeBold: require('~/shared/fonts/ABCDiatype-Bold.ttf'),
   });
 
+  const navigationRef = useNavigationContainerRef();
+
   useEffect(() => {
     if (fontsLoaded) {
       SplashScreen.hideAsync();
@@ -68,11 +70,11 @@ export default function App() {
                     <BottomSheetModalProvider>
                       <magic.Relayer />
                       <SearchProvider>
-                        <NavigationContainer>
+                        <NavigationContainer ref={navigationRef}>
                           {/* Register the user's push token if one exists (does not prompt the user) */}
                           <NotificationRegistrar />
                           <DevMenuItems />
-                          <RootStackNavigator />
+                          <RootStackNavigator navigationContainerRef={navigationRef} />
                         </NavigationContainer>
                       </SearchProvider>
                     </BottomSheetModalProvider>

@@ -1,11 +1,12 @@
 import { useCallback, useMemo, useRef } from 'react';
-import { Keyboard, TouchableOpacity, useColorScheme, View, ViewProps } from 'react-native';
+import { Keyboard, useColorScheme, View, ViewProps } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import {
   GalleryBottomSheetModal,
   GalleryBottomSheetModalType,
 } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
+import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { CommentButtonFragment$key } from '~/generated/CommentButtonFragment.graphql';
 import { CommentButtonQueryFragment$key } from '~/generated/CommentButtonQueryFragment.graphql';
 
@@ -61,13 +62,13 @@ export function CommentButton({ eventRef, queryRef, style, onClick }: Props) {
 
   return (
     <>
-      <TouchableOpacity
+      <GalleryTouchableOpacity
         onPress={toggleCommentBox}
         className="flex justify-center items-center w-[32] h-[32] pt-1 "
         style={style}
       >
         <CommentIcon className="h-[20]" />
-      </TouchableOpacity>
+      </GalleryTouchableOpacity>
       <GalleryBottomSheetModal
         index={0}
         ref={bottomSheetRef}

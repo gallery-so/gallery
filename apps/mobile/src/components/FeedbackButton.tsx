@@ -1,6 +1,5 @@
 import React, { useCallback, useMemo, useRef } from 'react';
 import { Linking, View } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { ChatIcon } from 'src/icons/ChatIcon';
 
 import {
@@ -9,6 +8,7 @@ import {
 } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 
 import { Button } from './Button';
+import { GalleryTouchableOpacity } from './GalleryTouchableOpacity';
 import { Typography } from './Typography';
 
 const FEEDBACK_FORM_URL =
@@ -29,9 +29,9 @@ export function FeedbackButton() {
   return (
     <>
       <View className="flex flex-row space-x-4 h-full items-center">
-        <TouchableOpacity onPress={handleOpenSheet}>
+        <GalleryTouchableOpacity onPress={handleOpenSheet}>
           <ChatIcon width={20} height={20} />
-        </TouchableOpacity>
+        </GalleryTouchableOpacity>
       </View>
       <GalleryBottomSheetModal ref={bottomSheetRef} index={0} snapPoints={snapPoints}>
         <View className="flex flex-column space-y-2 mx-4">

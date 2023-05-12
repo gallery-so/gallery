@@ -1,10 +1,11 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { useCallback, useState } from 'react';
-import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
+import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { Pill } from '~/components/Pill';
 import { NftDetailScreenInnerQuery } from '~/generated/NftDetailScreenInnerQuery.graphql';
 import { MainTabStackNavigatorParamList } from '~/navigation/types';
@@ -113,7 +114,7 @@ export function NftDetailScreenInner() {
           </Typography>
 
           {token.contract?.name ? (
-            <TouchableOpacity>
+            <GalleryTouchableOpacity>
               <Pill className="flex flex-row space-x-1 self-start">
                 {token.chain === 'POAP' && <PoapIcon className="h-6 w-6" />}
                 {token.contract?.badgeURL && (
@@ -123,7 +124,7 @@ export function NftDetailScreenInner() {
                   {token.contract.name}
                 </Typography>
               </Pill>
-            </TouchableOpacity>
+            </GalleryTouchableOpacity>
           ) : null}
         </View>
 

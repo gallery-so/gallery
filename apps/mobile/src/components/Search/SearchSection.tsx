@@ -1,5 +1,6 @@
-import { TouchableOpacity, View } from 'react-native';
+import { View } from 'react-native';
 
+import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import { Typography } from '../Typography';
 import { NUM_PREVIEW_SEARCH_RESULTS } from './constants';
 
@@ -26,14 +27,14 @@ export function SearchSection({ isShowAll, numResults, onShowAll, title }: Props
       </Typography>
 
       {!isShowAll && numResults > NUM_PREVIEW_SEARCH_RESULTS && (
-        <TouchableOpacity onPress={onShowAll}>
+        <GalleryTouchableOpacity onPress={onShowAll}>
           <Typography
             font={{ family: 'ABCDiatype', weight: 'Regular' }}
             className="border-b border-black text-sm"
           >
             Show all
           </Typography>
-        </TouchableOpacity>
+        </GalleryTouchableOpacity>
       )}
     </View>
   );

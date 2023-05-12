@@ -169,7 +169,7 @@ function FullCell({
 function QuarterCell({ children }: PropsWithChildren) {
   const { halfHeight, halfWidth } = useGridDimensions();
 
-  return <View style={{ height: halfHeight, width: halfWidth }}>{children}</View>;
+  return <View style={{ width: halfWidth, flex: 1, minHeight: halfHeight }}>{children}</View>;
 }
 
 function HalfHeightRow({ children }: PropsWithChildren) {
@@ -178,7 +178,7 @@ function HalfHeightRow({ children }: PropsWithChildren) {
   return (
     <View
       className="flex flex-row justify-between"
-      style={{ height: halfHeight, width: fullWidth }}
+      style={{ width: fullWidth, minHeight: halfHeight, flex: 1 }}
     >
       {children}
     </View>

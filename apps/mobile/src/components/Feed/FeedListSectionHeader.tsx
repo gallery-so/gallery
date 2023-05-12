@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { useCallback } from 'react';
-import { TouchableOpacity, View } from 'react-native';
+import { View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
@@ -8,6 +8,7 @@ import { FeedListSectionHeaderFragment$key } from '~/generated/FeedListSectionHe
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { getTimeSince } from '~/shared/utils/time';
 
+import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import { Typography } from '../Typography';
 
 type FeedListSectionHeaderProps = {
@@ -60,21 +61,21 @@ export function FeedListSectionHeader({ feedEventRef }: FeedListSectionHeaderPro
   return (
     <View className="flex flex-row items-center justify-between bg-white dark:bg-black px-3 pb-2">
       <View className="flex flex-row space-x-1">
-        <TouchableOpacity onPress={handleUsernamePress}>
+        <GalleryTouchableOpacity onPress={handleUsernamePress}>
           <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
             {feedEvent.eventData.owner?.username}
           </Typography>
-        </TouchableOpacity>
+        </GalleryTouchableOpacity>
 
         <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
           updated
         </Typography>
 
-        <TouchableOpacity onPress={handleGalleryNamePress}>
+        <GalleryTouchableOpacity onPress={handleGalleryNamePress}>
           <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
             {feedEvent.eventData.gallery?.name || 'Untitled'}
           </Typography>
-        </TouchableOpacity>
+        </GalleryTouchableOpacity>
       </View>
 
       <View>

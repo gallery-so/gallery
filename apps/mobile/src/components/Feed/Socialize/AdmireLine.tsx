@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { Text, View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
+import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { Typography } from '~/components/Typography';
 import { AdmireLineEventFragment$key } from '~/generated/AdmireLineEventFragment.graphql';
 import { AdmireLineFragment$key } from '~/generated/AdmireLineFragment.graphql';
@@ -86,14 +87,14 @@ export function AdmireLine({ admireRef, eventRef, queryRef, totalAdmires }: Prop
           <View className="flex flex-row">
             <Text className="text-xs dark:text-white">and </Text>
 
-            <TouchableOpacity onPress={handleOpen}>
+            <GalleryTouchableOpacity onPress={handleOpen}>
               <Typography
                 className="text-xs underline"
                 font={{ family: 'ABCDiatype', weight: 'Bold' }}
               >
                 {totalAdmires - 1} {totalAdmires === 2 ? 'other' : 'others'}
               </Typography>
-            </TouchableOpacity>
+            </GalleryTouchableOpacity>
 
             <Text className="text-xs dark:text-white"> admired this</Text>
           </View>

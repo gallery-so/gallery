@@ -5,11 +5,15 @@ import { Platform, StyleProp, View, ViewStyle } from 'react-native';
 import { WebView } from 'react-native-webview';
 
 import { Dimensions } from '~/screens/NftDetailScreen/NftDetailAsset/types';
+import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
 
-type CachedSvgValue = {
-  dimensions: Dimensions | null;
-  content: string;
-};
+type CachedSvgValue =
+  | {
+      kind: 'success';
+      dimensions: Dimensions | null;
+      content: string;
+    }
+  | { kind: 'failure' };
 
 // At least one of 'max', 'ttl', or 'maxSize' is required, to prevent
 // unsafe unbounded storage.
@@ -42,11 +46,19 @@ const options: LRUCache.Options<string, CachedSvgValue, void> = {
 
       return parseSvg(text);
     } else {
-      return fetch(uri)
-        .then((response) => response.text())
-        .then((text) => {
-          return parseSvg(text);
-        });
+      try {
+        const response = await fetch(uri);
+
+        if (!response.ok) {
+          return { kind: 'failure' };
+        }
+
+        const text = await response.text();
+
+        return parseSvg(text);
+      } catch (e) {
+        return { kind: 'failure' };
+      }
     }
   },
 };
@@ -135,12 +147,12 @@ function parseSvg(text: string): CachedSvgValue {
 
     const content = parsedHtml.toString();
     if (width && height) {
-      return { content, dimensions: { width, height } };
+      return { kind: 'success', content, dimensions: { width, height } };
     } else {
-      return { content, dimensions: null };
+      return { kind: 'success', content, dimensions: null };
     }
   } catch (e) {
-    return { content: text, dimensions: null };
+    return { kind: 'failure' };
   }
 }
 
@@ -149,13 +161,26 @@ export function SvgWebView({ source, onLoadStart, onLoadEnd, style }: SvgWebView
   const [svgState, setSvgState] = useState<SvgContentState>({ kind: 'loading' });
 
   useEffect(() => {
-    cache.fetch(uri).then((value) => {
-      if (value) {
+    cache
+      .fetch(uri)
+      .then((value) => {
+        if (!value || value.kind === 'failure') {
+          return setSvgState({
+            kind: 'failure',
+            error: new CouldNotRenderNftError('SvgWebView', 'Network Failure'),
+          });
+        }
+
         onLoadStart?.();
         setSvgState({ kind: 'success', content: value.content });
         onLoadEnd?.(value.dimensions);
-      }
-    });
+      })
+      .catch(() => {
+        setSvgState({
+          kind: 'failure',
+          error: new CouldNotRenderNftError('SvgWebView', 'Network Failure'),
+        });
+      });
 
     // Not dealing with memoization issues right now
     // eslint-disable-next-line react-hooks/exhaustive-deps

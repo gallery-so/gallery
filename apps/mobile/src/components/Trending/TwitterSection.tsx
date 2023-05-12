@@ -1,11 +1,12 @@
 import { useNavigation } from '@react-navigation/native';
 import { useCallback, useMemo } from 'react';
-import { TouchableOpacity, View } from 'react-native';
+import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { TwitterSectionQueryFragment$key } from '~/generated/TwitterSectionQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 
+import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import { Typography } from '../Typography';
 import { TrendingUserList } from './TrendingUserList';
 import { TwitterIcon } from './TwitterIcon';
@@ -95,7 +96,7 @@ export function TwitterSection({ title, description, queryRef }: Props) {
             {description}
           </Typography>
         </View>
-        <TouchableOpacity onPress={handleSeeAll}>
+        <GalleryTouchableOpacity onPress={handleSeeAll}>
           <Typography
             font={{
               family: 'ABCDiatype',
@@ -105,7 +106,7 @@ export function TwitterSection({ title, description, queryRef }: Props) {
           >
             See all
           </Typography>
-        </TouchableOpacity>
+        </GalleryTouchableOpacity>
       </View>
 
       <TrendingUserList usersRef={nonNullUsers} queryRef={query} />

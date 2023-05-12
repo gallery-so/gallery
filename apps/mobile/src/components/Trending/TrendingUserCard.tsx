@@ -1,16 +1,19 @@
 import { useNavigation } from '@react-navigation/native';
 import { ResizeMode } from 'expo-av';
 import { useCallback, useMemo } from 'react';
-import { TouchableOpacity, View, ViewProps } from 'react-native';
+import { View, ViewProps } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { graphql, useFragment } from 'react-relay';
 
 import { FollowButton } from '~/components/FollowButton';
+import { NftPreviewErrorFallback } from '~/components/NftPreview/NftPreviewErrorFallback';
 import { TrendingUserCardFragment$key } from '~/generated/TrendingUserCardFragment.graphql';
 import { TrendingUserCardQueryFragment$key } from '~/generated/TrendingUserCardQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
+import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import { Markdown } from '../Markdown';
 import { NftPreviewAsset } from '../NftPreview/NftPreviewAsset';
 import { Typography } from '../Typography';
@@ -84,7 +87,7 @@ export function TrendingUserCard({ style, userRef, queryRef }: Props) {
   }, [navigation, user.username]);
 
   return (
-    <TouchableOpacity
+    <GalleryTouchableOpacity
       onPress={handlePress}
       className="bg-offWhite dark:bg-offBlack flex-1 rounded-md p-2"
       style={[style]}
@@ -93,7 +96,12 @@ export function TrendingUserCard({ style, userRef, queryRef }: Props) {
         {tokenPreviews.map((tokenPreview, index) => {
           return (
             <View key={index} className="h-full w-1/2">
-              <NftPreviewAsset tokenUrl={tokenPreview?.small ?? ''} resizeMode={ResizeMode.COVER} />
+              <ReportingErrorBoundary fallback={<NftPreviewErrorFallback />}>
+                <NftPreviewAsset
+                  tokenUrl={tokenPreview?.small ?? ''}
+                  resizeMode={ResizeMode.COVER}
+                />
+              </ReportingErrorBoundary>
             </View>
           );
         })}
@@ -127,6 +135,6 @@ export function TrendingUserCard({ style, userRef, queryRef }: Props) {
       </View>
 
       <FollowButton queryRef={query} userRef={user} width="grow" />
-    </TouchableOpacity>
+    </GalleryTouchableOpacity>
   );
 }

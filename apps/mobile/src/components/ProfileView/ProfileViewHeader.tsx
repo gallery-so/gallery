@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import { Linking, TouchableOpacity, View } from 'react-native';
+import { Linking, View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { Markdown } from '~/components/Markdown';
@@ -10,6 +10,7 @@ import { ProfileViewHeaderFragment$key } from '~/generated/ProfileViewHeaderFrag
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import { TwitterIcon } from '../../icons/TwitterIcon';
+import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 
 type Props = {
   selectedRoute: string;
@@ -52,14 +53,14 @@ export function ProfileViewHeader({ userRef, selectedRoute, onRouteChange }: Pro
   const twitterPill = useMemo(() => {
     if (user.socialAccounts?.twitter?.username) {
       return (
-        <TouchableOpacity onPress={handleTwitterPress} className="px-4">
+        <GalleryTouchableOpacity onPress={handleTwitterPress} className="px-4">
           <Pill className="flex flex-row items-center space-x-2 self-start">
             <TwitterIcon />
             <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
               {user.socialAccounts.twitter.username}
             </Typography>
           </Pill>
-        </TouchableOpacity>
+        </GalleryTouchableOpacity>
       );
     }
   }, [handleTwitterPress, user.socialAccounts?.twitter?.username]);

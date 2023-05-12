@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import { TouchableOpacity, View } from 'react-native';
+import { View } from 'react-native';
 
 import { CollectionRow } from '~/components/Gallery/CollectionVirtualizedRow';
 import { GalleryListItemType } from '~/components/Gallery/createVirtualizedGalleryRows';
@@ -9,6 +9,7 @@ import { MainTabStackNavigatorProp } from '~/navigation/types';
 import unescape from '~/shared/utils/unescape';
 
 import { sanitizeMarkdown } from '../../utils/sanitizeMarkdown';
+import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 
 type Props = {
   item: GalleryListItemType;
@@ -24,11 +25,11 @@ export function GalleryVirtualizedRow({ item }: Props) {
 
     return (
       <View className="flex flex-col px-4">
-        <TouchableOpacity onPress={handlePress}>
+        <GalleryTouchableOpacity onPress={handlePress}>
           <Typography className="text-xl" font={{ family: 'GTAlpina', weight: 'StandardLight' }}>
             {item.name || 'Untitled'}
           </Typography>
-        </TouchableOpacity>
+        </GalleryTouchableOpacity>
 
         <Markdown>{item.description}</Markdown>
       </View>
@@ -40,11 +41,11 @@ export function GalleryVirtualizedRow({ item }: Props) {
 
     return (
       <View className="flex flex-col bg-white dark:bg-black py-2 px-4">
-        <TouchableOpacity onPress={handlePress}>
+        <GalleryTouchableOpacity onPress={handlePress}>
           <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
             {unescape(item.name || 'Untitled')}
           </Typography>
-        </TouchableOpacity>
+        </GalleryTouchableOpacity>
       </View>
     );
   } else if (item.kind === 'collection-note') {
