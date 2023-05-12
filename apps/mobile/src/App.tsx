@@ -67,17 +67,17 @@ export default function App() {
               <MobileErrorReportingProvider>
                 <GestureHandlerRootView style={{ flex: 1 }}>
                   <SafeAreaProvider>
-                    <BottomSheetModalProvider>
-                      <magic.Relayer />
-                      <SearchProvider>
-                        <NavigationContainer ref={navigationRef}>
+                    <magic.Relayer />
+                    <SearchProvider>
+                      <NavigationContainer ref={navigationRef}>
+                        <BottomSheetModalProvider>
                           {/* Register the user's push token if one exists (does not prompt the user) */}
                           <NotificationRegistrar />
                           <DevMenuItems />
                           <RootStackNavigator navigationContainerRef={navigationRef} />
-                        </NavigationContainer>
-                      </SearchProvider>
-                    </BottomSheetModalProvider>
+                        </BottomSheetModalProvider>
+                      </NavigationContainer>
+                    </SearchProvider>
                   </SafeAreaProvider>
                 </GestureHandlerRootView>
               </MobileErrorReportingProvider>
