@@ -79,6 +79,7 @@ export function SearchInput({ inputRef, setFilter, value, onChange, style, ...pr
         placeholderTextColor={colors.metal}
         selectionColor={colorScheme === 'dark' ? colors.offWhite : colors.offBlack}
         autoCapitalize="none"
+        autoCorrect={false}
         autoComplete="off"
         onFocus={handleFocus}
         onBlur={handleBlur}
