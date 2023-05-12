@@ -24,7 +24,7 @@ export function LandingScreen() {
 
   return (
     <SafeAreaViewWithPadding className="flex h-full flex-col justify-end bg-white dark:bg-black">
-      <View className="mb-32 flex flex-col items-center space-y-12">
+      <View className="flex flex-grow flex-col justify-center items-center space-y-12">
         <LandingLogo />
 
         <View className="flex flex-col space-y-4 w-8/12">
@@ -61,7 +61,7 @@ export function LandingScreen() {
         </View>
       </View>
 
-      <View className="py-8">
+      <View className="pb-5">
         <Typography
           className="text-metal text-center text-sm"
           font={{ family: 'ABCDiatype', weight: 'Regular' }}
