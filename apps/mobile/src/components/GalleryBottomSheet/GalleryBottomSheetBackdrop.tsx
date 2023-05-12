@@ -7,7 +7,7 @@ export function GalleryBottomSheetBackdrop({ animatedIndex, ...props }: BottomSh
       animatedIndex={animatedIndex}
       appearsOnIndex={0}
       disappearsOnIndex={-1}
-      opacity={0.25}
+      opacity={0.3}
     />
   );
 }
