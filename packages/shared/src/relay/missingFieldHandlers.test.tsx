@@ -40,6 +40,7 @@ describe('missingFieldHandlers', () => {
       missingFieldHandlers: createMissingFieldHandlers(),
       network: Network.create(
         createRelayFetchFunction({
+          headers: () => ({}),
           url: () => 'http://localhost:3000/graphql',
           persistedQueriesFetcher: () => Promise.resolve({}),
         })
