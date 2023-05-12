@@ -65,7 +65,7 @@ export function MainTabNavigator() {
       tabBarPosition="bottom"
       initialRouteName="HomeTab"
       tabBar={TabBar}
-      screenOptions={{ swipeEnabled: false }}
+      screenOptions={{ swipeEnabled: false, animationEnabled: false }}
       sceneContainerStyle={{
         backgroundColor: colorScheme === 'dark' ? colors.black : colors.white,
       }}
