@@ -52,12 +52,12 @@ export function NotificationUpsellScreen() {
       <View className="flex flex-grow flex-col items-center justify-center px-6">
         <View className="flex flex-col space-y-4">
           <Typography className="text-2xl" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-            Turn on push{'\n'}notifications?
+            Stay in the loop
           </Typography>
 
           <Typography className="text-md" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
-            Don’t miss important messages like friend activity, feature updates, member-only events,
-            and exclusive gallery events.
+            Enable push notifications to receive updates on friend activity, feature releases, and
+            exclusive gallery events.
           </Typography>
 
           {error && (
@@ -75,7 +75,7 @@ export function NotificationUpsellScreen() {
 
       <View className="flex-row px-6 space-x-3">
         <Button onPress={handleSkip} className="flex-1" text="SKIP" variant="secondary" />
-        <Button onPress={handleTurnOn} className="flex-1" text="TURN ON" variant="primary" />
+        <Button onPress={handleTurnOn} className="flex-1" text="ENABLE" variant="primary" />
       </View>
     </SafeAreaViewWithPadding>
   );
