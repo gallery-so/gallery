@@ -1,9 +1,10 @@
 import { useNavigation } from '@react-navigation/native';
 import { useCallback } from 'react';
-import { TouchableOpacity, View } from 'react-native';
+import { View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
+import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { UserFollowedUsersFeedEventFragment$key } from '~/generated/UserFollowedUsersFeedEventFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { getTimeSince } from '~/shared/utils/time';
@@ -55,21 +56,21 @@ export function UserFollowedUsersFeedEvent({
   return (
     <View className="flex flex-row justify-between items-center px-3">
       <View className="flex flex-row space-x-1">
-        <TouchableOpacity onPress={handleFollowerPress}>
+        <GalleryTouchableOpacity onPress={handleFollowerPress}>
           <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
             {followerUsername}
           </Typography>
-        </TouchableOpacity>
+        </GalleryTouchableOpacity>
 
         <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
           followed
         </Typography>
 
-        <TouchableOpacity onPress={handleFolloweePress}>
+        <GalleryTouchableOpacity onPress={handleFolloweePress}>
           <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
             {followeeUsername}
           </Typography>
-        </TouchableOpacity>
+        </GalleryTouchableOpacity>
       </View>
 
       <View>

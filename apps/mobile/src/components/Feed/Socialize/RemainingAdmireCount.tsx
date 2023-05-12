@@ -1,6 +1,6 @@
-import { TouchableOpacity } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
+import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { Typography } from '~/components/Typography';
 import { RemainingAdmireCountFragment$key } from '~/generated/RemainingAdmireCountFragment.graphql';
 import { RemainingAdmireCountQueryFragment$key } from '~/generated/RemainingAdmireCountQueryFragment.graphql';
@@ -42,11 +42,11 @@ export function RemainingAdmireCount({ remainingCount, eventRef, queryRef }: Pro
 
   return (
     <>
-      <TouchableOpacity onPress={handleOpen}>
+      <GalleryTouchableOpacity onPress={handleOpen}>
         <Typography className="text-xs underline" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
           + {remainingCount} others
         </Typography>
-      </TouchableOpacity>
+      </GalleryTouchableOpacity>
 
       {notesModal}
     </>

@@ -19,7 +19,7 @@ if (token && apiUrl) {
 
 const track: TrackFunction = (eventName, eventProps, userId) => {
   try {
-    instance?.track(eventName, { userId, ...eventProps });
+    instance?.track(eventName, { userId, platform: 'mobile', ...eventProps });
   } catch (error: unknown) {
     // Handle error here
   }

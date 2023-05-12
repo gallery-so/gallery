@@ -1,13 +1,15 @@
 import { useNavigation } from '@react-navigation/native';
 import clsx from 'clsx';
 import { useCallback } from 'react';
-import { TouchableOpacity, View } from 'react-native';
+import { View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { Typography } from '~/components/Typography';
 import { GalleryNameHeaderFragment$key } from '~/generated/GalleryNameHeaderFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+
+import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 
 type GalleryNameHeaderProps = {
   galleryRef: GalleryNameHeaderFragment$key;
@@ -42,7 +44,7 @@ export function GalleryNameHeader({ galleryRef, isOnGalleryScreen }: GalleryName
 
   return (
     <View className="flex flex-row items-center">
-      <TouchableOpacity onPress={handleUsernamePress}>
+      <GalleryTouchableOpacity onPress={handleUsernamePress}>
         <Typography
           numberOfLines={1}
           className="text-metal text-lg"
@@ -50,12 +52,12 @@ export function GalleryNameHeader({ galleryRef, isOnGalleryScreen }: GalleryName
         >
           {gallery?.owner?.username}
         </Typography>
-      </TouchableOpacity>
+      </GalleryTouchableOpacity>
       <Typography className="text-lg" font={{ family: 'GTAlpina', weight: 'StandardLight' }}>
         {' '}
         /{' '}
       </Typography>
-      <TouchableOpacity disabled={isOnGalleryScreen} onPress={handleGalleryNamePress}>
+      <GalleryTouchableOpacity disabled={isOnGalleryScreen} onPress={handleGalleryNamePress}>
         <Typography
           numberOfLines={1}
           className={clsx('text-lg', {
@@ -65,7 +67,7 @@ export function GalleryNameHeader({ galleryRef, isOnGalleryScreen }: GalleryName
         >
           {gallery.name || 'Untitled'}
         </Typography>
-      </TouchableOpacity>
+      </GalleryTouchableOpacity>
     </View>
   );
 

@@ -1,17 +1,19 @@
 import { MaterialTopTabBarProps } from '@react-navigation/material-top-tabs';
 import { NavigationRoute } from '@sentry/react-native/dist/js/tracing/reactnavigation';
 import { ReactNode, Suspense, useCallback, useMemo } from 'react';
-import { TouchableOpacity, View } from 'react-native';
+import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
+import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { TabBarLazyNotificationBlueDotQuery } from '~/generated/TabBarLazyNotificationBlueDotQuery.graphql';
 import { AccountIcon } from '~/navigation/MainTabNavigator/AccountIcon';
 import { GLogo } from '~/navigation/MainTabNavigator/GLogo';
 import { NotificationsIcon } from '~/navigation/MainTabNavigator/NotificationsIcon';
 import { SearchIcon } from '~/navigation/MainTabNavigator/SearchIcon';
 import { MainTabNavigatorParamList } from '~/navigation/types';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 
 type TabItemProps = {
   icon: ReactNode;
@@ -20,8 +22,17 @@ type TabItemProps = {
   navigation: MaterialTopTabBarProps['navigation'];
 };
 
+const TAB_NAMES: { [key in keyof MainTabNavigatorParamList]: string } = {
+  AccountTab: 'Account',
+  HomeTab: 'Home',
+  SearchTab: 'Search',
+  NotificationsTab: 'Notifications',
+};
+
 function TabItem({ navigation, route, icon, activeRoute }: TabItemProps) {
   const isFocused = activeRoute === route.name;
+
+  const track = useTrack();
 
   const onPress = useCallback(() => {
     const event = navigation.emit({
@@ -30,15 +41,18 @@ function TabItem({ navigation, route, icon, activeRoute }: TabItemProps) {
       canPreventDefault: true,
     });
 
+    const routeName = TAB_NAMES[route.name as keyof typeof TAB_NAMES];
+    track(`Navigate to ${routeName}`, {});
+
     if (!isFocused && !event.defaultPrevented) {
       navigation.navigate(route.name);
     }
-  }, [isFocused, navigation, route]);
+  }, [isFocused, navigation, route, track]);
 
   const isHome = route.name === 'Home';
 
   return (
-    <TouchableOpacity
+    <GalleryTouchableOpacity
       onPress={onPress}
       accessibilityRole="button"
       accessibilityState={isFocused ? { selected: true } : {}}
@@ -51,7 +65,7 @@ function TabItem({ navigation, route, icon, activeRoute }: TabItemProps) {
       >
         {icon}
       </View>
-    </TouchableOpacity>
+    </GalleryTouchableOpacity>
   );
 }
 

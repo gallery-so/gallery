@@ -1,7 +1,8 @@
 import clsx from 'clsx';
 import { PropsWithChildren, useCallback } from 'react';
-import { Linking, TouchableOpacity, TouchableOpacityProps } from 'react-native';
+import { Linking, TouchableOpacityProps } from 'react-native';
 
+import { GalleryTouchableOpacity } from './GalleryTouchableOpacity';
 import { Typography } from './Typography';
 
 type Props = PropsWithChildren<{
@@ -21,7 +22,7 @@ export function InteractiveLink({ href, style, onPress, showUnderline = false, c
   }, [href, onPress]);
 
   return (
-    <TouchableOpacity style={style} onPress={handlePress}>
+    <GalleryTouchableOpacity style={style} onPress={handlePress}>
       <Typography
         className={clsx(`text-shadow dark:text-white text-sm`, {
           underline: showUnderline,
@@ -30,6 +31,6 @@ export function InteractiveLink({ href, style, onPress, showUnderline = false, c
       >
         {children}
       </Typography>
-    </TouchableOpacity>
+    </GalleryTouchableOpacity>
   );
 }

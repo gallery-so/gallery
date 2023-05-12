@@ -1,9 +1,11 @@
 import merge from 'lodash.merge';
 import { PropsWithChildren, useCallback, useMemo, useState } from 'react';
-import { StyleProp, Text, TouchableOpacity, useColorScheme } from 'react-native';
+import { StyleProp, Text, useColorScheme } from 'react-native';
 import MarkdownDisplay, { MarkdownIt, RenderRules } from 'react-native-markdown-display';
 
 import colors from '~/shared/theme/colors';
+
+import { GalleryTouchableOpacity } from './GalleryTouchableOpacity';
 
 const markdownStyles = {
   paragraph: {
@@ -77,13 +79,13 @@ export function Markdown({
   }, []);
 
   return (
-    <TouchableOpacity
+    <GalleryTouchableOpacity
       onPress={handlePress}
       disabled={numberOfLines === undefined || !touchToExpand}
     >
       <MarkdownDisplay markdownit={markdownItOptions} rules={rules} style={mergedStyles}>
         {children}
       </MarkdownDisplay>
-    </TouchableOpacity>
+    </GalleryTouchableOpacity>
   );
 }

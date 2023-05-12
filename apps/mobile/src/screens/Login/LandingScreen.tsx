@@ -35,9 +35,23 @@ export function LandingScreen() {
             Select a sign in method
           </Typography>
 
-          <Button onPress={handleEmailPress} icon={<EmailIcon />} text="Use verified email" />
+          <Button
+            id="Email Button"
+            eventName="Sign In Selection"
+            properties={{
+              'Sign In Method': 'Email',
+            }}
+            onPress={handleEmailPress}
+            icon={<EmailIcon />}
+            text="Use verified email"
+          />
 
           <Button
+            id="QR Code Button"
+            eventName="Sign In Selection"
+            properties={{
+              'Sign In Method': 'QR Code',
+            }}
             onPress={handleQrCodePress}
             variant="secondary"
             icon={<QRCodeIcon />}

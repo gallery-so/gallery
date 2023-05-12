@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import { ResizeMode } from 'expo-av';
 import { useCallback, useMemo } from 'react';
-import { TouchableOpacity, View, ViewProps } from 'react-native';
+import { View, ViewProps } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { graphql, useFragment } from 'react-relay';
 
@@ -13,6 +13,7 @@ import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
+import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import { Markdown } from '../Markdown';
 import { NftPreviewAsset } from '../NftPreview/NftPreviewAsset';
 import { Typography } from '../Typography';
@@ -86,7 +87,7 @@ export function TrendingUserCard({ style, userRef, queryRef }: Props) {
   }, [navigation, user.username]);
 
   return (
-    <TouchableOpacity
+    <GalleryTouchableOpacity
       onPress={handlePress}
       className="bg-offWhite dark:bg-offBlack flex-1 rounded-md p-2"
       style={[style]}
@@ -134,6 +135,6 @@ export function TrendingUserCard({ style, userRef, queryRef }: Props) {
       </View>
 
       <FollowButton queryRef={query} userRef={user} width="grow" />
-    </TouchableOpacity>
+    </GalleryTouchableOpacity>
   );
 }

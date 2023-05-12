@@ -1,7 +1,8 @@
 import { useCallback } from 'react';
-import { TouchableOpacity, View } from 'react-native';
+import { View } from 'react-native';
 
 import { Typography } from '../../components/Typography';
+import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 
 const routes = ['Followers', 'Following'] as const;
 export type FollowersTabName = (typeof routes)[number];
@@ -20,7 +21,7 @@ function TabItem({ activeRoute, route, onRouteChange }: TabItemProps) {
   }, [onRouteChange, route]);
 
   return (
-    <TouchableOpacity
+    <GalleryTouchableOpacity
       className={`px-2`}
       accessibilityRole="button"
       accessibilityState={isFocused ? { selected: true } : {}}
@@ -32,7 +33,7 @@ function TabItem({ activeRoute, route, onRouteChange }: TabItemProps) {
       >
         {route}
       </Typography>
-    </TouchableOpacity>
+    </GalleryTouchableOpacity>
   );
 }
 

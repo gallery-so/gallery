@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import { ResizeMode } from 'expo-av';
 import { useCallback } from 'react';
-import { TouchableOpacity, View, ViewProps } from 'react-native';
+import { View, ViewProps } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
@@ -12,6 +12,8 @@ import { GalleryPreviewCardFragment$key } from '~/generated/GalleryPreviewCardFr
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import unescape from '~/shared/utils/unescape';
+
+import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 
 type GalleryPreviewCardProps = {
   isFeatured: boolean;
@@ -44,7 +46,7 @@ export function GalleryPreviewCard({ galleryRef, isFeatured }: GalleryPreviewCar
   }, [gallery.dbid, navigation]);
 
   return (
-    <TouchableOpacity
+    <GalleryTouchableOpacity
       onPress={handlePress}
       className="bg-offWhite dark:bg-offBlack flex w-full flex-col space-y-3 rounded-xl p-3"
     >
@@ -88,7 +90,7 @@ export function GalleryPreviewCard({ galleryRef, isFeatured }: GalleryPreviewCar
           <TokenCell tokenUrl={fourthToken?.medium} />
         </View>
       </View>
-    </TouchableOpacity>
+    </GalleryTouchableOpacity>
   );
 }
 

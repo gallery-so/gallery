@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { LoginStackNavigatorProp } from '~/navigation/types';
 import { navigateToNotificationUpsellOrHomeScreen } from '~/screens/Login/navigateToNotificationUpsellOrHomeScreen';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 
 import { IconContainer } from '../../components/IconContainer';
@@ -22,6 +23,7 @@ export function QRCodeScreen() {
   );
 
   const [scanned, setScanned] = useState(false);
+  const track = useTrack();
 
   useEffect(() => {
     const getBarCodeScannerPermissions = async () => {
@@ -41,6 +43,8 @@ export function QRCodeScreen() {
     async ({ data }) => {
       setScanned(true);
 
+      track('Sign In Attempt', { 'Sign In Selection': 'QR code' });
+
       function handleLoginError(message: string) {
         reportError(`LoginError: ${message}`);
 
@@ -54,13 +58,19 @@ export function QRCodeScreen() {
       });
 
       if (result.kind === 'success') {
+        track('Sign In Success', { 'Sign In Selection': 'QR code' });
+        navigation.replace('MainTabs', {
+          screen: 'HomeTab',
+          params: { screen: 'Home', params: { screen: 'Latest' } },
+        });
         await navigateToNotificationUpsellOrHomeScreen(navigation);
       } else {
         setScanned(false);
+        track('Sign In Failure', { 'Sign In Selection': 'QR code' });
         handleLoginError(result.message);
       }
     },
-    [login, navigation, reportError]
+    [login, navigation, reportError, track]
   );
 
   return (
