@@ -39,6 +39,7 @@ const darkMode = {
 
 if (isDarkMode()) {
   document.body.style.background = darkMode.white;
+  document.body.style.color = darkMode.black;
 }
 
 const scheme = isDarkMode() ? darkMode : lightMode;
