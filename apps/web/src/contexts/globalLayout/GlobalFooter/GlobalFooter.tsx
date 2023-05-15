@@ -27,7 +27,7 @@ function GlobalFooter() {
     <StyledGlobalFooter isMobile={isMobile}>
       {isMobile && <StyledHr />}
       <VStack gap={4}>
-        <HStack justify="flex-start" gap={4}>
+        <HStack gap={4}>
           <Link href={{ pathname: '/' }} legacyBehavior>
             <StyledLogo />
           </Link>
