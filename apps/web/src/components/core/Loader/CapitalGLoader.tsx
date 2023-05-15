@@ -1,11 +1,13 @@
 import styled, { keyframes } from 'styled-components';
 
+import { CapitalG } from '~/icons/CapitalG';
+
 import { TitleL } from '../Text/Text';
 
 export default function CapitalGLoader() {
   return (
     <AnimatedDisplay>
-      <CapitalG src="/icons/secondary_logo.svg" />
+      <CapitalG />
     </AnimatedDisplay>
   );
 }
@@ -18,8 +20,4 @@ const fade = keyframes`
 const AnimatedDisplay = styled(TitleL)`
   animation: ${fade} 800ms cubic-bezier(0, 0, 0.4, 1) infinite;
   animation-direction: alternate;
-`;
-
-const CapitalG = styled.img`
-  height: 64px;
 `;
