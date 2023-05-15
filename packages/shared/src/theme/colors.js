@@ -21,6 +21,8 @@ const lightMode = {
   red: '#F00000',
 };
 
+// Any code related to dark mode is here exclusively to support the `base` iFrame embed
+// This is very hacky and brittle, so if you're updating it, treat it that way.
 const darkMode = {
   black: '#FEFEFE',
   offBlack: '#F9F9F9',
