@@ -17,6 +17,7 @@ import {
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import LogoBracketLeft from '~/icons/LogoBracketLeft';
 import LogoBracketRight from '~/icons/LogoBracketRight';
+import { LogoLarge } from '~/icons/LogoLarge';
 import colors from '~/shared/theme/colors';
 
 function GlobalFooter() {
@@ -26,9 +27,9 @@ function GlobalFooter() {
     <StyledGlobalFooter isMobile={isMobile}>
       {isMobile && <StyledHr />}
       <VStack gap={4}>
-        <HStack gap={4}>
+        <HStack justify="flex-start" gap={4}>
           <Link href={{ pathname: '/' }} legacyBehavior>
-            <StyledLogo src="/icons/logo-large.svg" />
+            <StyledLogo />
           </Link>
         </HStack>
         <HStack gap={8} wrap="wrap">
@@ -120,7 +121,7 @@ const StyledHr = styled.hr`
   margin: 16px 0px;
 `;
 
-const StyledLogo = styled.img`
+const StyledLogo = styled(LogoLarge)`
   height: 24px;
   cursor: pointer;
 `;
