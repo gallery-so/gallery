@@ -24,7 +24,7 @@ type NftPreviewProps = {
   priority?: Priority;
 
   collectionTokenRef: NftPreviewFragment$key;
-  tokenUrl: string | null;
+  tokenUrl: string | null | undefined;
   resizeMode: ResizeMode;
 
   onImageStateChange?: (imageState: ImageState) => void;
