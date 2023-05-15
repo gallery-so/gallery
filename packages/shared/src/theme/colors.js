@@ -51,7 +51,8 @@ function isDarkMode() {
     return false;
   }
 
-  return window.location.pathname === '/base';
+  // for some reason `window` is defined on RN but `window.location` is not
+  return window.location?.pathname === '/base';
 }
 
 module.exports = scheme;
