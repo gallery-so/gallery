@@ -23,6 +23,7 @@ export type ReportingErrorBoundaryProps = PropsWithChildren<{
 
 type State = {
   error: Error | null;
+  fallbackError: Error | null;
 };
 
 export class ReportingErrorBoundary extends Component<ReportingErrorBoundaryProps, State> {
@@ -36,10 +37,17 @@ export class ReportingErrorBoundary extends Component<ReportingErrorBoundaryProp
 
     this.state = {
       error: null,
+      fallbackError: null,
     };
   }
 
   componentDidCatch(error: Error) {
+    if (this.state.error) {
+      // If there's already an error, that means the fallback is throwing an error
+      // We'll rely on the parent to catch this error
+      this.setState({ fallbackError: error });
+    }
+
     if (error instanceof ErrorWithSentryMetadata) {
       error.addMetadata(this.props.additionalTags ?? {});
     }
@@ -57,6 +65,10 @@ export class ReportingErrorBoundary extends Component<ReportingErrorBoundaryProp
   }
 
   render() {
+    if (this.state.fallbackError) {
+      throw this.state.fallbackError;
+    }
+
     if (this.state.error) {
       const fallback = this.props.fallback;
 
