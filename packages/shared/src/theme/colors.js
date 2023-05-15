@@ -51,11 +51,7 @@ function isDarkMode() {
     return false;
   }
 
-  return (
-    window.location.pathname === '/base' &&
-    window.matchMedia &&
-    window.matchMedia('(prefers-color-scheme: dark)').matches
-  );
+  return window.location.pathname === '/base';
 }
 
 module.exports = scheme;
