@@ -154,11 +154,3 @@ code {
   --base-color: #f2f2f2 !important;
   --highlight-color: #f9f9f9 !important;
 }
-
-
-@media(prefers-color-scheme: dark) {
-  body {
-    background: black;
-    color: white;
-  }
-}
