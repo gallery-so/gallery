@@ -17,12 +17,9 @@ import { MobileErrorReportingProvider } from '~/contexts/MobileErrorReportingPro
 import { createRelayEnvironment } from '~/contexts/relay/RelayProvider';
 import { RootStackNavigator } from '~/navigation/RootStackNavigator';
 
-import { getEnv } from '../env/runtime';
-import { env } from '../env/runtime';
 import { DevMenuItems } from './components/DevMenuItems';
 import { LoadingView } from './components/LoadingView';
 import SearchProvider from './components/Search/SearchContext';
-import { loadRememberedEnvironment } from './env';
 import { magic } from './magic';
 
 SplashScreen.preventAutoHideAsync();
@@ -56,10 +53,6 @@ export default function App() {
       SplashScreen.hideAsync();
     }
   }, [fontsLoaded]);
-
-  useEffect(() => {
-    console.log(env);
-  }, []);
 
   if (!fontsLoaded) {
     return null;
