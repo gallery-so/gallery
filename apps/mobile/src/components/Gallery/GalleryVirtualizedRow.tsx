@@ -13,9 +13,10 @@ import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 
 type Props = {
   item: GalleryListItemType;
+  isOnCollectionScreen?: boolean;
 };
 
-export function GalleryVirtualizedRow({ item }: Props) {
+export function GalleryVirtualizedRow({ item, isOnCollectionScreen }: Props) {
   const navigation = useNavigation<MainTabStackNavigatorProp>();
 
   if (item.kind === 'gallery-header') {
@@ -36,6 +37,7 @@ export function GalleryVirtualizedRow({ item }: Props) {
     );
   } else if (item.kind === 'collection-title') {
     const handlePress = () => {
+      if (isOnCollectionScreen) return;
       navigation.push('Collection', { collectionId: item.id });
     };
 
