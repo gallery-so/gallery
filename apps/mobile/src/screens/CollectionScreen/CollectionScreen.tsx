@@ -67,7 +67,7 @@ function CollectionScreenInner() {
     if (item.kind === 'description') {
       return <Markdown>{item.description}</Markdown>;
     } else {
-      return <GalleryVirtualizedRow item={item} />;
+      return <GalleryVirtualizedRow item={item} isOnCollectionScreen />;
     }
   }, []);
 
