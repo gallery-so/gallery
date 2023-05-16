@@ -86,5 +86,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       },
     ],
   },
-  plugins: ['sentry-expo', 'expo-barcode-scanner'],
+  plugins: [
+    ['sentry-expo', { setCommits: true, release: process.env.EAS_BUILD_GIT_COMMIT_HASH }],
+    'expo-barcode-scanner',
+  ],
 });
