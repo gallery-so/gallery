@@ -8,18 +8,19 @@ import { createRelayFetchFunctionWithDefer } from '~/shared/relay/deferNetwork';
 import { createMissingFieldHandlers } from '~/shared/relay/missingFieldHandlers';
 import { createRelaySubscribeFunction, PersistedQueriesMap } from '~/shared/relay/network';
 
+import { env } from '../../../env/runtime';
 import persistedQueries from '../../../persisted_queries.json';
 
 const persistedQueriesMap = persistedQueries as PersistedQueriesMap;
 
 // TODO env
 const relaySubscribeFunction = createRelaySubscribeFunction({
-  url: 'wss://api.gallery.so/glry/graphql/query',
+  url: env.GRAPHQL_SUBSCRIPTION_URL,
 });
 
 // TODO env
 export const relayFetchFunction = createRelayFetchFunctionWithDefer({
-  url: () => 'https://gateway.gallery.so',
+  url: () => env.GRAPHQL_API_URL,
   headers: () => {
     return {
       'X-OS': Platform.OS,

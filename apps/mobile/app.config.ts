@@ -1,29 +1,23 @@
 import * as dotenv from 'dotenv';
 import { ConfigContext, ExpoConfig } from 'expo/config';
 import * as fs from 'fs';
-import { z } from 'zod';
 
-const EnvironmentSchema = z.object({
-  GRAPHQL_API_URL: z.string(),
-  GRAPHQL_SUBSCRIPTION_URL: z.string(),
-});
+import { EnvironmentSchema } from './env/env';
 
 function readEnvironmentFromFile(file: string) {
   const object = dotenv.parse(fs.readFileSync(file, 'utf-8'));
 
   const result = EnvironmentSchema.safeParse(object);
 
-  if (result.success) {
+  if (result.success === true) {
     return result.data;
   } else if (result.success === false) {
-    throw new Error(`Could not validate your ${file}:\n${result.error.message}`);
+    throw new Error(`Could not validate your ${file}:\n\n${result.error.message}`);
   }
 }
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
-
-  extra: readEnvironmentFromFile('./env/.env.production'),
 
   name: 'gallery.so',
   slug: 'gallery-mobile',
@@ -72,6 +66,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     eas: {
       projectId: '67c952bc-7ade-408c-a95d-72c36ce9252c',
     },
+    ...readEnvironmentFromFile('./env/.env.prod'),
   },
   owner: 'gallery',
   hooks: {

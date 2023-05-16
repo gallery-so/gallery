@@ -1,9 +1,10 @@
 {
   "extends": "../../tsconfig.options.json",
-  "include": ["persisted_queries.json", "src", "app.d.ts", "__generated__"],
+  "include": ["persisted_queries.json", "src", "app.d.ts", "__generated__", "env"],
   "compilerOptions": {
     "lib": ["DOM", "ESNext"],
     "baseUrl": ".",
+    "allowJs": true,
     "jsx": "react-native",
     "paths": {
       "~/contexts/*": ["src/contexts/*"],
