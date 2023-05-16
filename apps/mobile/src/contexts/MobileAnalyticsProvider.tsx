@@ -1,12 +1,11 @@
 import { Mixpanel } from 'mixpanel-react-native';
 import { PropsWithChildren } from 'react';
 
+import { env } from '~/env/runtime';
 import AnalyticsProvider, {
   IdentifyFunction,
   TrackFunction,
 } from '~/shared/contexts/AnalyticsContext';
-
-import { env } from '../../env/runtime';
 
 let instance: Mixpanel | undefined = undefined;
 

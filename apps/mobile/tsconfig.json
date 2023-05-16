@@ -11,9 +11,10 @@
       "~/frames/*": ["../../packages/frames-dls/src/*"],
       "~/generated/*": ["./__generated__/relay/*", "../../packages/shared/__generated__/relay/*"],
       "~/navigation/*": ["src/navigation/*"],
+      "~/env/*": ["env/*"],
       "~/screens/*": ["src/screens/*"],
       "~/components/*": ["src/components/*"],
-      "~/shared/*": ["../../packages/shared/src/*"]
+      "~/shared/*": ["../../packages/shared/src/*"],
     },
     "outDir": "../../.moon/cache/types/apps/mobile"
   },

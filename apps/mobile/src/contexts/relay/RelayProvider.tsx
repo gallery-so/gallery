@@ -4,11 +4,11 @@ import { Network, RecordSource, Store } from 'relay-runtime';
 import RelayModernEnvironment from 'relay-runtime/lib/store/RelayModernEnvironment';
 import { RecordMap } from 'relay-runtime/lib/store/RelayStoreTypes';
 
+import { env } from '~/env/runtime';
 import { createRelayFetchFunctionWithDefer } from '~/shared/relay/deferNetwork';
 import { createMissingFieldHandlers } from '~/shared/relay/missingFieldHandlers';
 import { createRelaySubscribeFunction, PersistedQueriesMap } from '~/shared/relay/network';
 
-import { env } from '../../../env/runtime';
 import persistedQueries from '../../../persisted_queries.json';
 
 const persistedQueriesMap = persistedQueries as PersistedQueriesMap;
