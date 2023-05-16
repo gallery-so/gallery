@@ -87,6 +87,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     ],
   },
   plugins: [
+    // EAS_BUILD_GIT_COMMIT_HASH is provided by Expo https://docs.expo.dev/build-reference/variables/#built-in-environment-variables
     ['sentry-expo', { setCommits: true, release: process.env.EAS_BUILD_GIT_COMMIT_HASH }],
     'expo-barcode-scanner',
   ],
