@@ -25,6 +25,7 @@ import { GlobalLayoutContextQuery } from '~/generated/GlobalLayoutContextQuery.g
 import usePrevious from '~/hooks/usePrevious';
 import useThrottle from '~/hooks/useThrottle';
 import useDebounce from '~/shared/hooks/useDebounce';
+import colors from '~/shared/theme/colors';
 import { PreloadQueryArgs } from '~/types/PageComponentPreloadQuery';
 import isTouchscreenDevice from '~/utils/isTouchscreenDevice';
 
@@ -455,8 +456,8 @@ const StyledGlobalNavbarWithFadeEnabled = styled.div<{
 `;
 
 const StyledBackground = styled.div`
-  background: rgba(254, 254, 254, 0.95);
-  backdrop-filter: blur(48px);
+  background: ${colors.white};
+  backdrop-filter: blur(48px) opacity(0.95);
 `;
 
 const StyledMotionWrapper = styled.div<{ isSidebarPresent: boolean }>`
