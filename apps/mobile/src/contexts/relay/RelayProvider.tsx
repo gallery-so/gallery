@@ -13,12 +13,10 @@ import persistedQueries from '../../../persisted_queries.json';
 
 const persistedQueriesMap = persistedQueries as PersistedQueriesMap;
 
-// TODO env
 const relaySubscribeFunction = createRelaySubscribeFunction({
   url: env.GRAPHQL_SUBSCRIPTION_URL,
 });
 
-// TODO env
 export const relayFetchFunction = createRelayFetchFunctionWithDefer({
   url: () => env.GRAPHQL_API_URL,
   headers: () => {
