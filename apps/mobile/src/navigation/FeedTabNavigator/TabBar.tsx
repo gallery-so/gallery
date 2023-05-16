@@ -3,6 +3,7 @@ import { NavigationRoute } from '@sentry/react-native/dist/js/tracing/reactnavig
 import { useCallback } from 'react';
 import { View } from 'react-native';
 
+import { FeedbackButton } from '~/components/FeedbackButton';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { FeedTabNavigatorParamList } from '~/navigation/types';
 
@@ -52,7 +53,7 @@ export function TabBar({ navigation, state }: MaterialTopTabBarProps) {
   const activeRoute = state.routeNames[state.index] as keyof FeedTabNavigatorParamList;
 
   return (
-    <View className="flex flex-row items-center justify-center px-4 py-3">
+    <View className="relative flex flex-row items-center justify-center px-4 py-3">
       {state.routes.map((route) => {
         return (
           <TabItem
@@ -63,6 +64,10 @@ export function TabBar({ navigation, state }: MaterialTopTabBarProps) {
           />
         );
       })}
+
+      <View className="absolute right-0 px-4">
+        <FeedbackButton />
+      </View>
     </View>
   );
 }
