@@ -1,3 +1,4 @@
+import Constants from 'expo-constants';
 import React, { useCallback, useMemo, useRef } from 'react';
 import { Linking, View } from 'react-native';
 
@@ -11,8 +12,10 @@ import { Button } from './Button';
 import { GalleryTouchableOpacity } from './GalleryTouchableOpacity';
 import { Typography } from './Typography';
 
-const FEEDBACK_FORM_URL =
-  'https://docs.google.com/forms/d/1jHf7BrfdcO507YUlcfpT94XkgDLAi7slOW-uGUb0o34';
+const appVersion = Constants.expoConfig?.version;
+const commitHash = Constants.expoConfig?.extra?.commitHash;
+
+const FEEDBACK_FORM_URL = `https://docs.google.com/forms/d/e/1FAIpQLScEG3M1-R5BLcmK-hiaDhaUC_QybtiYZBh1op0KX5wK-8H--w/viewform?usp=pp_url&entry.2078886577=${appVersion}&entry.1683794134=${commitHash}`;
 
 export function FeedbackButton() {
   const snapPoints = useMemo(() => ['35%'], []);
