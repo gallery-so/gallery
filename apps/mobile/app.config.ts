@@ -16,6 +16,11 @@ function readEnvironmentFromFile(file: string) {
   }
 }
 
+const environmentVariablePath = `./env/.env.${process.env.ENV ?? 'prod'}`;
+// eslint-disable-next-line no-console
+console.log(`Loading Environment Variables from: ${environmentVariablePath}`);
+const environmentVariables = readEnvironmentFromFile(environmentVariablePath);
+
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
 
@@ -66,7 +71,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     eas: {
       projectId: '67c952bc-7ade-408c-a95d-72c36ce9252c',
     },
-    ...readEnvironmentFromFile('./env/.env.prod'),
+    ...environmentVariables,
   },
   owner: 'gallery',
   hooks: {
