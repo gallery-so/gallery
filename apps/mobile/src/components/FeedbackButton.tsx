@@ -1,12 +1,12 @@
 import React, { useCallback, useMemo, useRef } from 'react';
 import { Linking, View } from 'react-native';
-import { ChatIcon } from 'src/icons/ChatIcon';
 
 import {
   GalleryBottomSheetModal,
   GalleryBottomSheetModalType,
 } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 
+import { BugReportIcon } from '../icons/BugReportIcon';
 import { Button } from './Button';
 import { GalleryTouchableOpacity } from './GalleryTouchableOpacity';
 import { Typography } from './Typography';
@@ -30,7 +30,7 @@ export function FeedbackButton() {
     <>
       <View className="flex flex-row space-x-4 h-full items-center">
         <GalleryTouchableOpacity onPress={handleOpenSheet}>
-          <ChatIcon width={20} height={20} />
+          <BugReportIcon width={24} height={24} />
         </GalleryTouchableOpacity>
       </View>
       <GalleryBottomSheetModal ref={bottomSheetRef} index={0} snapPoints={snapPoints}>
