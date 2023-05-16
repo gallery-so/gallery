@@ -1,7 +1,7 @@
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import { Suspense, useCallback, useMemo } from 'react';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 
 import {
@@ -67,7 +67,7 @@ function CollectionScreenInner() {
     if (item.kind === 'description') {
       return <Markdown>{item.description}</Markdown>;
     } else {
-      return <GalleryVirtualizedRow item={item} />;
+      return <GalleryVirtualizedRow item={item} isOnCollectionScreen />;
     }
   }, []);
 
