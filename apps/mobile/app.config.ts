@@ -21,6 +21,8 @@ const environmentVariablePath = `./env/.env.${process.env.ENV ?? 'prod'}`;
 console.log(`Loading Environment Variables from: ${environmentVariablePath}`);
 const environmentVariables = readEnvironmentFromFile(environmentVariablePath);
 
+const commitHash = process.env.EAS_BUILD_GIT_COMMIT_HASH;
+
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
 
@@ -30,7 +32,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   orientation: 'portrait',
   icon: './assets/icon.png',
   userInterfaceStyle: 'automatic',
-
+  version: '1.0.1',
   updates: {
     fallbackToCacheTimeout: 0,
   },
@@ -72,6 +74,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       projectId: '67c952bc-7ade-408c-a95d-72c36ce9252c',
     },
     ...environmentVariables,
+    commitHash,
   },
   owner: 'gallery',
   hooks: {
