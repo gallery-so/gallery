@@ -1,6 +1,7 @@
 import * as dotenv from 'dotenv';
 import { ConfigContext, ExpoConfig } from 'expo/config';
 import * as fs from 'fs';
+import * as path from 'path';
 
 import { EnvironmentSchema } from './env/env';
 
@@ -16,7 +17,7 @@ function readEnvironmentFromFile(file: string) {
   }
 }
 
-const environmentVariablePath = `./env/.env.${process.env.ENV ?? 'prod'}`;
+const environmentVariablePath = path.join(__dirname, `./env/.env.${process.env.ENV ?? 'prod'}`);
 // eslint-disable-next-line no-console
 console.log(`Loading Environment Variables from: ${environmentVariablePath}`);
 const environmentVariables = readEnvironmentFromFile(environmentVariablePath);
