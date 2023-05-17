@@ -1,13 +1,19 @@
 import { PropsWithChildren } from 'react';
 import { View, ViewProps } from 'react-native';
 
-type Props = PropsWithChildren<{ className?: string; style?: ViewProps['style'] }>;
+type Props = PropsWithChildren<{
+  className?: string;
+  style?: ViewProps['style'];
+  active?: boolean;
+}>;
 
-export function Pill({ children, style }: Props) {
+export function Pill({ active = false, children, style }: Props) {
   return (
     <View
       style={style}
-      className="border-porcelain dark:border-shadow rounded-full border py-1 px-3"
+      className={`dark:border-shadow rounded-full border py-1 px-3 ${
+        active ? 'border-offBlack dark:border-porcelain' : 'border-porcelain dark:border-offBlack'
+      }`}
     >
       {children}
     </View>
