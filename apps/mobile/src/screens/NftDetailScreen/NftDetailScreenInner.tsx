@@ -5,6 +5,7 @@ import FastImage from 'react-native-fast-image';
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
+import { BackButton } from '~/components/BackButton';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { Pill } from '~/components/Pill';
 import { NftDetailScreenInnerQuery } from '~/generated/NftDetailScreenInnerQuery.graphql';
@@ -14,7 +15,6 @@ import { IconContainer } from '../../components/IconContainer';
 import { InteractiveLink } from '../../components/InteractiveLink';
 import { Markdown } from '../../components/Markdown';
 import { Typography } from '../../components/Typography';
-import { BackIcon } from '../../icons/BackIcon';
 import { PoapIcon } from '../../icons/PoapIcon';
 import { ShareIcon } from '../../icons/ShareIcon';
 import { shareToken } from '../../utils/shareToken';
@@ -98,7 +98,7 @@ export function NftDetailScreenInner() {
       <View className="flex flex-col space-y-8 px-4 pb-4">
         <View className="flex flex-col space-y-3">
           <View className="flex flex-row justify-between">
-            <IconContainer icon={<BackIcon />} onPress={navigation.goBack} />
+            <BackButton />
             <IconContainer icon={<ShareIcon />} onPress={handleShare} />
           </View>
 

@@ -1,9 +1,9 @@
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { RouteProp, useRoute } from '@react-navigation/native';
 import { View } from 'react-native';
 import { graphql, useLazyLoadQuery, useRefetchableFragment } from 'react-relay';
 
+import { BackButton } from '~/components/BackButton';
 import { FeedList } from '~/components/Feed/FeedList';
-import { IconContainer } from '~/components/IconContainer';
 import { SafeAreaViewWithPadding } from '~/components/SafeAreaViewWithPadding';
 import { FeedEventRefetchableFragmentQuery } from '~/generated/FeedEventRefetchableFragmentQuery.graphql';
 import { FeedEventScreenFragment$key } from '~/generated/FeedEventScreenFragment.graphql';
@@ -11,7 +11,6 @@ import { FeedEventScreenQuery } from '~/generated/FeedEventScreenQuery.graphql';
 import { MainTabStackNavigatorParamList } from '~/navigation/types';
 
 import { useRefreshHandle } from '../hooks/useRefreshHandle';
-import { BackIcon } from '../icons/BackIcon';
 
 export function FeedEventScreen() {
   const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'FeedEvent'>>();
@@ -50,13 +49,12 @@ export function FeedEventScreen() {
 
   const { isRefreshing, handleRefresh } = useRefreshHandle(refetch);
 
-  const navigation = useNavigation();
   if (query.feedEventById?.__typename === 'FeedEvent') {
     return (
       <View className="flex-1 bg-white dark:bg-black">
         <SafeAreaViewWithPadding className="flex-1">
           <View className="px-3 pb-6">
-            <IconContainer icon={<BackIcon />} onPress={navigation.goBack} />
+            <BackButton />
           </View>
 
           <FeedList

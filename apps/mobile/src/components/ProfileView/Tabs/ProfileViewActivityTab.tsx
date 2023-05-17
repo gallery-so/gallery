@@ -2,7 +2,7 @@ import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import { useCallback, useRef } from 'react';
 import { View } from 'react-native';
 import { Tabs } from 'react-native-collapsible-tab-view';
-import { useFragment, usePaginationFragment } from 'react-relay';
+import { usePaginationFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import {
@@ -13,35 +13,29 @@ import { FeedVirtualizedRow } from '~/components/Feed/FeedVirtualizedRow';
 import { useFailedEventTracker } from '~/components/Feed/useFailedEventTracker';
 import { useListContentStyle } from '~/components/ProfileView/Tabs/useListContentStyle';
 import { ProfileViewActivityTabFragment$key } from '~/generated/ProfileViewActivityTabFragment.graphql';
-import { ProfileViewActivityTabQueryFragment$key } from '~/generated/ProfileViewActivityTabQueryFragment.graphql';
 
 type ProfileViewActivityTabProps = {
-  userRef: ProfileViewActivityTabFragment$key;
-  queryRef: ProfileViewActivityTabQueryFragment$key;
+  queryRef: ProfileViewActivityTabFragment$key;
 };
 
-export function ProfileViewActivityTab({ userRef, queryRef }: ProfileViewActivityTabProps) {
-  const { data: user } = usePaginationFragment(
+export function ProfileViewActivityTab({ queryRef }: ProfileViewActivityTabProps) {
+  const { data: query } = usePaginationFragment(
     graphql`
-      fragment ProfileViewActivityTabFragment on GalleryUser
+      fragment ProfileViewActivityTabFragment on Query
       @refetchable(queryName: "ProfileViewActivityTabFragmentPaginationQuery") {
-        __typename
-        feed(before: $feedBefore, last: $feedLast)
-          @connection(key: "ProfileViewActivityTabFragment_feed") {
-          edges {
-            node {
-              ...createVirtualizedFeedEventItemsFragment
+        userByUsername(username: $username) {
+          ... on GalleryUser {
+            feed(before: $feedBefore, last: $feedLast)
+              @connection(key: "ProfileViewActivityTabFragment_feed") {
+              edges {
+                node {
+                  ...createVirtualizedFeedEventItemsFragment
+                }
+              }
             }
           }
         }
-      }
-    `,
-    userRef
-  );
 
-  const query = useFragment(
-    graphql`
-      fragment ProfileViewActivityTabQueryFragment on Query {
         ...createVirtualizedFeedEventItemsQueryFragment
       }
     `,
@@ -50,8 +44,10 @@ export function ProfileViewActivityTab({ userRef, queryRef }: ProfileViewActivit
 
   const { markEventAsFailure, failedEvents } = useFailedEventTracker();
 
+  const user = query.userByUsername;
+
   const events = [];
-  for (const edge of user.feed?.edges ?? []) {
+  for (const edge of user?.feed?.edges ?? []) {
     if (edge?.node) {
       events.push(edge.node);
     }

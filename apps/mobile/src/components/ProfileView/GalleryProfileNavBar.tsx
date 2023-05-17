@@ -4,6 +4,7 @@ import { Share, View, ViewProps } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
+import { BackButton } from '~/components/BackButton';
 import { FollowButton } from '~/components/FollowButton';
 import { IconContainer } from '~/components/IconContainer';
 import { GalleryProfileNavBarFragment$key } from '~/generated/GalleryProfileNavBarFragment.graphql';
@@ -97,11 +98,7 @@ export function GalleryProfileNavBar({
   return (
     <View style={style} className="flex flex-row justify-between bg-white dark:bg-black">
       {isLoggedInUser && !shouldShowBackButton && <FeedbackButton />}
-      {shouldShowBackButton ? (
-        <IconContainer icon={<BackIcon />} onPress={navigation.goBack} />
-      ) : (
-        <View />
-      )}
+      {shouldShowBackButton ? <BackButton /> : <View />}
 
       <View className="flex flex-row items-center space-x-2">
         {isLoggedInUser && <IconContainer icon={<QRCodeIcon />} onPress={handleQrCode} />}
@@ -109,6 +106,24 @@ export function GalleryProfileNavBar({
 
         {!isLoggedInUser && <FollowButton queryRef={query} userRef={user} />}
       </View>
+    </View>
+  );
+}
+
+type GalleryProfileNavbarFallbackProps = {
+  style?: ViewProps['style'];
+  shouldShowBackButton: boolean;
+};
+
+export function GalleryProfileNavbarFallback({
+  style,
+  shouldShowBackButton,
+}: GalleryProfileNavbarFallbackProps) {
+  return (
+    <View style={style} className="flex flex-row justify-between bg-white dark:bg-black">
+      {shouldShowBackButton ? <BackButton /> : <FeedbackButton />}
+
+      <View className="flex flex-row items-center space-x-2"></View>
     </View>
   );
 }
