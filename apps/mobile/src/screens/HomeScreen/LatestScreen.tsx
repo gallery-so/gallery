@@ -1,44 +1,29 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
-import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
+import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 
+import { FEED_PER_PAGE } from '~/components/Feed/constants';
+import { ActiveFeed } from '~/components/Feed/FeedFilter';
+import { FollowingFeed } from '~/components/Feed/FollowingFeed';
 import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/NotesModal/NotesList';
 import { WelcomeToBeta } from '~/components/WelcomeToBeta';
-import { LatestScreenFragment$key } from '~/generated/LatestScreenFragment.graphql';
 import { LatestScreenQuery } from '~/generated/LatestScreenQuery.graphql';
-import { removeNullValues } from '~/shared/relay/removeNullValues';
+import { LatestScreenQueryFragment$key } from '~/generated/LatestScreenQueryFragment.graphql';
 
-import { FeedList } from '../../components/Feed/FeedList';
 import { LoadingFeedList } from '../../components/Feed/LoadingFeedList';
-import { useRefreshHandle } from '../../hooks/useRefreshHandle';
+import { WorldwideFeed } from '../../components/Feed/WorldwideFeed';
 
 type LatestScreenInnerProps = {
-  queryRef: LatestScreenFragment$key;
+  queryRef: LatestScreenQueryFragment$key;
 };
 
-const PER_PAGE = 20;
-
 function LatestScreenInner({ queryRef }: LatestScreenInnerProps) {
-  const {
-    data: query,
-    isLoadingPrevious,
-    hasPrevious,
-    loadPrevious,
-    refetch,
-  } = usePaginationFragment(
+  const query = useFragment(
     graphql`
-      fragment LatestScreenFragment on Query
-      @refetchable(queryName: "RefetchableLatestScreenFragmentQuery") {
-        globalFeed(before: $globalFeedBefore, last: $globalFeedCount)
-          @connection(key: "LatestScreenFragment_globalFeed") {
-          edges {
-            node {
-              __typename
+      fragment LatestScreenQueryFragment on Query {
+        ...FollowingFeedFragment
+        ...WorldwideFeedFragment
 
-              ...FeedListFragment
-            }
-          }
-        }
         viewer {
           ... on Viewer {
             user {
@@ -46,24 +31,12 @@ function LatestScreenInner({ queryRef }: LatestScreenInnerProps) {
             }
           }
         }
-
-        ...FeedListQueryFragment
       }
     `,
     queryRef
   );
 
-  const { isRefreshing, handleRefresh } = useRefreshHandle(refetch);
-
-  const handleLoadMore = useCallback(() => {
-    if (hasPrevious && !isLoadingPrevious) {
-      loadPrevious(PER_PAGE);
-    }
-  }, [hasPrevious, isLoadingPrevious, loadPrevious]);
-
-  const events = useMemo(() => {
-    return removeNullValues(query.globalFeed?.edges?.map((it) => it?.node)).reverse();
-  }, [query.globalFeed?.edges]);
+  const [activeFeed, setActiveFeed] = useState<ActiveFeed>('Worldwide');
 
   const [showWelcome, setShowWelcome] = useState(false);
 
@@ -79,16 +52,17 @@ function LatestScreenInner({ queryRef }: LatestScreenInnerProps) {
     checkShouldShowWelcome();
   }, [checkShouldShowWelcome]);
 
+  const FeedComponent = useMemo(() => {
+    if (activeFeed === 'Following') {
+      return <FollowingFeed queryRef={query} onChangeFeedMode={setActiveFeed} />;
+    } else {
+      return <WorldwideFeed queryRef={query} onChangeFeedMode={setActiveFeed} />;
+    }
+  }, [activeFeed, query]);
+
   return (
     <>
-      <FeedList
-        isRefreshing={isRefreshing}
-        onRefresh={handleRefresh}
-        isLoadingMore={isLoadingPrevious}
-        onLoadMore={handleLoadMore}
-        feedEventRefs={events}
-        queryRef={query}
-      />
+      {FeedComponent}
       {showWelcome && <WelcomeToBeta username={query.viewer?.user?.username ?? ''} />}
     </>
   );
@@ -100,14 +74,17 @@ export function LatestScreen() {
       query LatestScreenQuery(
         $globalFeedBefore: String
         $globalFeedCount: Int!
+        $followingFeedBefore: String
+        $followingFeedCount: Int!
         $interactionsFirst: Int!
         $interactionsAfter: String
       ) {
-        ...LatestScreenFragment
+        ...LatestScreenQueryFragment
       }
     `,
     {
-      globalFeedCount: PER_PAGE,
+      globalFeedCount: FEED_PER_PAGE,
+      followingFeedCount: FEED_PER_PAGE,
       interactionsFirst: NOTES_PER_PAGE,
     }
   );

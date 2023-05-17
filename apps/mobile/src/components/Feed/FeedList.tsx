@@ -13,6 +13,8 @@ import { useFailedEventTracker } from '~/components/Feed/useFailedEventTracker';
 import { FeedListFragment$key } from '~/generated/FeedListFragment.graphql';
 import { FeedListQueryFragment$key } from '~/generated/FeedListQueryFragment.graphql';
 
+import { ActiveFeed } from './FeedFilter';
+
 type FeedListProps = {
   queryRef: FeedListQueryFragment$key;
   feedEventRefs: FeedListFragment$key;
@@ -21,14 +23,19 @@ type FeedListProps = {
 
   isRefreshing: boolean;
   onRefresh: () => void;
+
+  activeFeed: ActiveFeed;
+  onChangeFeedMode?: (feedMode: ActiveFeed) => void;
 };
 
 export function FeedList({
+  activeFeed,
   feedEventRefs,
   onLoadMore,
   queryRef,
   isRefreshing,
   onRefresh,
+  onChangeFeedMode = () => {},
 }: FeedListProps) {
   const query = useFragment(
     graphql`
@@ -71,18 +78,20 @@ export function FeedList({
 
   const renderItem = useCallback<ListRenderItem<FeedListItemType>>(
     ({ item }) => {
-      const markFailure = () => markEventAsFailure(item.event.dbid);
+      const markFailure = () => (item.event ? markEventAsFailure(item.event.dbid) : () => {});
 
       return (
         <FeedVirtualizedRow
+          activeFeed={activeFeed}
           eventId={item.eventId}
           item={item}
           onFailure={markFailure}
           onCommentPress={scrollToFeedEvent}
+          onChangeFeed={onChangeFeedMode}
         />
       );
     },
-    [markEventAsFailure, scrollToFeedEvent]
+    [activeFeed, markEventAsFailure, onChangeFeedMode, scrollToFeedEvent]
   );
 
   return (

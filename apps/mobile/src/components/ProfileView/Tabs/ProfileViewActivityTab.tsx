@@ -74,9 +74,14 @@ export function ProfileViewActivityTab({ userRef, queryRef }: ProfileViewActivit
 
   const renderItem = useCallback<ListRenderItem<FeedListItemType>>(
     ({ item }) => {
-      const markFailure = () => {
-        markEventAsFailure(item.event.dbid);
-      };
+      // Set a default for feed navigation pill
+      let markFailure = () => {};
+
+      if (item.event) {
+        markFailure = () => {
+          markEventAsFailure(item.event.dbid);
+        };
+      }
 
       return (
         <FeedVirtualizedRow
@@ -84,6 +89,7 @@ export function ProfileViewActivityTab({ userRef, queryRef }: ProfileViewActivit
           item={item}
           onFailure={markFailure}
           onCommentPress={scrollToFeedEvent}
+          activeFeed={'Profile'}
         />
       );
     },
