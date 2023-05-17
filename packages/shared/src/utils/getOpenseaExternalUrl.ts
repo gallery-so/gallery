@@ -18,5 +18,5 @@ export const getOpenseaExternalUrl = (contractAddress: string, tokenId: string) 
   // Allows us to get referral credit
   const ref = GALLERY_OS_ADDRESS;
 
-  return `https://opensea.io/assets/${contractAddress}/${hexTokenId}?ref=${ref}`;
+  return `https://opensea.io/assets/ethereum/${contractAddress}/${hexTokenId}?ref=${ref}`;
 };
