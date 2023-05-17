@@ -15,6 +15,7 @@ type ButtonProps = {
   text: string;
   icon?: ReactNode;
   variant?: Variant;
+  size?: 'sm' | 'md';
 } & GalleryTouchableOpacityProps;
 
 type VariantMapType = { [variant in Variant]: string };
@@ -26,6 +27,7 @@ export function Button({
   loading,
   disabled,
   style,
+  size = 'md',
   ...props
 }: ButtonProps) {
   const containerVariants: VariantMapType = {
@@ -43,13 +45,19 @@ export function Button({
     secondary: 'black',
   };
 
+  const sizeVariants: { [size in 'sm' | 'md']: string } = {
+    sm: 'h-[36] px-6',
+    md: 'h-[44] px-4',
+  };
+
   return (
     <GalleryTouchableOpacity disabled={loading || disabled} style={style} {...props}>
       {/* Setting a height explicitly here to ensure icons / text gets the same treatment */}
       <View
         className={clsx(
-          'relative flex h-[44] items-center justify-center  px-4',
-          containerVariants[variant]
+          'relative flex h-[36] items-center justify-center  px-6',
+          containerVariants[variant],
+          sizeVariants[size]
         )}
       >
         {!loading && (
