@@ -13,6 +13,11 @@ import {
 
 export type FeedListItemType = { key: string; eventId: string } & (
   | {
+      kind: 'feed-item-navigation';
+      event: null;
+      queryRef?: null;
+    }
+  | {
       kind: 'feed-item-header';
       event: createVirtualizedFeedEventItemsFragment$data;
       queryRef?: null;
@@ -94,6 +99,13 @@ export function createVirtualizedFeedEventItems({
   );
 
   const items: FeedListItemType[] = [];
+
+  items.push({
+    kind: 'feed-item-navigation',
+    event: null,
+    key: 'feed-item-navigation',
+    eventId: 'feed-item-navigation',
+  });
 
   for (const event of events) {
     if (!event.eventData) continue;
