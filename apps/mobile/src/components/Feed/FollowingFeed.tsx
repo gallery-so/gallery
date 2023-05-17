@@ -67,7 +67,7 @@ export function FollowingFeed({ queryRef, onChangeFeedMode }: Props) {
   }, [query.viewer?.feed?.edges]);
 
   if (!feedData.length) {
-    return <EmptyFeed />;
+    return <EmptyFeed onChangeFeedMode={onChangeFeedMode} />;
   }
 
   return (
