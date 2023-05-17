@@ -5,6 +5,7 @@ import { useRefreshHandle } from 'src/hooks/useRefreshHandle';
 import { FollowingFeedFragment$key } from '~/generated/FollowingFeedFragment.graphql';
 
 import { FEED_PER_PAGE } from './constants';
+import { EmptyFeed } from './EmptyFeed';
 import { ActiveFeed } from './FeedFilter';
 import { FeedList } from './FeedList';
 
@@ -64,6 +65,10 @@ export function FollowingFeed({ queryRef, onChangeFeedMode }: Props) {
 
     return events.reverse();
   }, [query.viewer?.feed?.edges]);
+
+  if (!feedData.length) {
+    return <EmptyFeed />;
+  }
 
   return (
     <FeedList
