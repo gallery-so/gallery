@@ -7,20 +7,20 @@ import { ActiveFeed } from '~/components/Feed/FeedFilter';
 import { FollowingFeed } from '~/components/Feed/FollowingFeed';
 import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/NotesModal/NotesList';
 import { WelcomeToBeta } from '~/components/WelcomeToBeta';
+import { LatestScreenFragment$key } from '~/generated/LatestScreenFragment.graphql';
 import { LatestScreenQuery } from '~/generated/LatestScreenQuery.graphql';
-import { LatestScreenQueryFragment$key } from '~/generated/LatestScreenQueryFragment.graphql';
 
 import { LoadingFeedList } from '../../components/Feed/LoadingFeedList';
 import { WorldwideFeed } from '../../components/Feed/WorldwideFeed';
 
 type LatestScreenInnerProps = {
-  queryRef: LatestScreenQueryFragment$key;
+  queryRef: LatestScreenFragment$key;
 };
 
 function LatestScreenInner({ queryRef }: LatestScreenInnerProps) {
   const query = useFragment(
     graphql`
-      fragment LatestScreenQueryFragment on Query {
+      fragment LatestScreenFragment on Query {
         ...FollowingFeedFragment
         ...WorldwideFeedFragment
 
@@ -79,7 +79,7 @@ export function LatestScreen() {
         $interactionsFirst: Int!
         $interactionsAfter: String
       ) {
-        ...LatestScreenQueryFragment
+        ...LatestScreenFragment
       }
     `,
     {
