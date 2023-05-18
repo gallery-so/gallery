@@ -1,7 +1,10 @@
+import { FlashList } from '@shopify/flash-list';
+import { MutableRefObject } from 'react';
 import { graphql } from 'react-relay';
 import { readInlineData } from 'relay-runtime';
 
 import { SUPPORTED_FEED_EVENT_TYPES } from '~/components/Feed/constants';
+import { ActiveFeed } from '~/components/Feed/FeedFilter';
 import {
   createVirtualizedFeedEventItemsFragment$data,
   createVirtualizedFeedEventItemsFragment$key,
@@ -14,6 +17,8 @@ import {
 export type FeedListItemType = { key: string; eventId: string } & (
   | {
       kind: 'feed-item-navigation';
+      activeFeed: ActiveFeed;
+      onFilterChange: (feed: ActiveFeed) => void;
       event: null;
       queryRef?: null;
     }
@@ -36,13 +41,20 @@ export type FeedListItemType = { key: string; eventId: string } & (
       kind: 'feed-item-socialize';
       event: createVirtualizedFeedEventItemsFragment$data;
       queryRef: createVirtualizedFeedEventItemsQueryFragment$data;
+      onCommentPress: () => void;
     }
 );
 
-type createVirtualizedItemsFromFeedEventsArgs = {
+export type createVirtualizedItemsFromFeedEventsArgs = {
   failedEvents: Set<string>;
   eventRefs: readonly createVirtualizedFeedEventItemsFragment$key[];
   queryRef: createVirtualizedFeedEventItemsQueryFragment$key;
+  listRef: MutableRefObject<FlashList<FeedListItemType> | null>;
+
+  feedFilter?: {
+    activeFeed: ActiveFeed;
+    onFeedChange: (feed: ActiveFeed) => void;
+  };
 };
 
 type createVirtualizedItemsFromFeedEventsReturnType = {
@@ -54,6 +66,8 @@ export function createVirtualizedFeedEventItems({
   failedEvents,
   eventRefs,
   queryRef,
+  listRef,
+  feedFilter,
 }: createVirtualizedItemsFromFeedEventsArgs): createVirtualizedItemsFromFeedEventsReturnType {
   const query = readInlineData(
     graphql`
@@ -100,12 +114,16 @@ export function createVirtualizedFeedEventItems({
 
   const items: FeedListItemType[] = [];
 
-  items.push({
-    kind: 'feed-item-navigation',
-    event: null,
-    key: 'feed-item-navigation',
-    eventId: 'feed-item-navigation',
-  });
+  if (feedFilter) {
+    items.push({
+      kind: 'feed-item-navigation',
+      event: null,
+      key: 'feed-item-navigation',
+      eventId: 'feed-item-navigation',
+      onFilterChange: feedFilter.onFeedChange,
+      activeFeed: feedFilter.activeFeed,
+    });
+  }
 
   for (const event of events) {
     if (!event.eventData) continue;
@@ -153,6 +171,9 @@ export function createVirtualizedFeedEventItems({
         key: `feed-item-socialize-${event.dbid}`,
         eventId: event.dbid,
         queryRef: query,
+        onCommentPress: function () {
+          listRef.current?.scrollToItem({ item: this, animated: true, viewOffset: 0.5 });
+        },
       });
     }
   }

@@ -78,8 +78,10 @@ export function FollowingFeed({ queryRef, onChangeFeedMode }: Props) {
       onLoadMore={handleLoadMore}
       feedEventRefs={feedData}
       queryRef={query}
-      activeFeed="Following"
-      onChangeFeedMode={onChangeFeedMode}
+      feedFilter={{
+        activeFeed: 'Following',
+        onFeedChange: onChangeFeedMode,
+      }}
     />
   );
 }

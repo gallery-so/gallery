@@ -61,8 +61,10 @@ export function WorldwideFeed({ queryRef, onChangeFeedMode }: Props) {
       onLoadMore={handleLoadMore}
       feedEventRefs={events}
       queryRef={query}
-      activeFeed="Worldwide"
-      onChangeFeedMode={onChangeFeedMode}
+      feedFilter={{
+        activeFeed: 'Worldwide',
+        onFeedChange: onChangeFeedMode,
+      }}
     />
   );
 }

@@ -66,7 +66,6 @@ export function FeedEventScreen() {
             onRefresh={handleRefresh}
             isRefreshing={isRefreshing}
             feedEventRefs={[query.feedEventById]}
-            activeFeed={'Profile'}
           />
         </SafeAreaViewWithPadding>
       </View>

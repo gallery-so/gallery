@@ -59,18 +59,13 @@ export function ProfileViewActivityTab({ userRef, queryRef }: ProfileViewActivit
 
   events.reverse();
 
+  const ref = useRef<FlashList<FeedListItemType> | null>(null);
   const { items, stickyIndices } = createVirtualizedFeedEventItems({
+    listRef: ref,
     failedEvents,
     eventRefs: events,
     queryRef: query,
   });
-
-  const ref = useRef<FlashList<FeedListItemType> | null>(null);
-  const scrollToFeedEvent = useCallback((item: FeedListItemType) => {
-    if (ref.current) {
-      ref.current.scrollToItem({ item, animated: true, viewPosition: 0.5 });
-    }
-  }, []);
 
   const renderItem = useCallback<ListRenderItem<FeedListItemType>>(
     ({ item }) => {
@@ -83,17 +78,9 @@ export function ProfileViewActivityTab({ userRef, queryRef }: ProfileViewActivit
         };
       }
 
-      return (
-        <FeedVirtualizedRow
-          eventId={item.eventId}
-          item={item}
-          onFailure={markFailure}
-          onCommentPress={scrollToFeedEvent}
-          activeFeed={'Profile'}
-        />
-      );
+      return <FeedVirtualizedRow eventId={item.eventId} item={item} onFailure={markFailure} />;
     },
-    [markEventAsFailure, scrollToFeedEvent]
+    [markEventAsFailure]
   );
 
   const contentContainerStyle = useListContentStyle();

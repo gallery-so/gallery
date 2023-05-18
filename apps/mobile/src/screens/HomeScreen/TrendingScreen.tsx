@@ -137,7 +137,6 @@ function TrendingScreenInner({ queryRef }: TrendingScreenInnerProps) {
       onLoadMore={handleLoadMore}
       feedEventRefs={events}
       queryRef={query}
-      activeFeed="Trending"
     />
   );
 }
