@@ -36,27 +36,28 @@ export function LandingScreen() {
           </Typography>
 
           <Button
-            id="Email Button"
-            eventName="Sign In Selection"
-            properties={{
-              'Sign In Method': 'Email',
-            }}
-            onPress={handleEmailPress}
-            icon={<EmailIcon />}
-            text="Use verified email"
-          />
-
-          <Button
             id="QR Code Button"
             eventName="Sign In Selection"
             properties={{
               'Sign In Method': 'QR Code',
             }}
             onPress={handleQrCodePress}
-            variant="secondary"
+            variant="primary"
             icon={<QRCodeIcon />}
             text="Scan QR Code"
             style={{ justifyContent: 'space-between' }}
+          />
+
+          <Button
+            id="Email Button"
+            eventName="Sign In Selection"
+            variant="secondary"
+            properties={{
+              'Sign In Method': 'Email',
+            }}
+            onPress={handleEmailPress}
+            icon={<EmailIcon />}
+            text="Use verified email"
           />
         </View>
       </View>
