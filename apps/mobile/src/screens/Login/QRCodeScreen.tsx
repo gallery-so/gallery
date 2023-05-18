@@ -1,21 +1,21 @@
-import { useNavigation } from '@react-navigation/native';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { BarCodeScannedCallback, BarCodeScanner, PermissionStatus } from 'expo-barcode-scanner';
 import { useCallback, useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { LoginStackNavigatorProp } from '~/navigation/types';
+import { LoginStackNavigatorParamList, LoginStackNavigatorProp } from '~/navigation/types';
 import { navigateToNotificationUpsellOrHomeScreen } from '~/screens/Login/navigateToNotificationUpsellOrHomeScreen';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 
 import { IconContainer } from '../../components/IconContainer';
-import { Typography } from '../../components/Typography';
 import { useLogin } from '../../hooks/useLogin';
 import { BackIcon } from '../../icons/BackIcon';
 
 export function QRCodeScreen() {
   const { top } = useSafeAreaInsets();
+  const route = useRoute<RouteProp<LoginStackNavigatorParamList, 'QRCode'>>();
   const navigation = useNavigation<LoginStackNavigatorProp>();
 
   const [permissionStatus, setPermissionStatus] = useState<PermissionStatus>(
@@ -36,7 +36,6 @@ export function QRCodeScreen() {
   }, []);
 
   const [login] = useLogin();
-  const [error, setError] = useState('');
 
   const reportError = useReportError();
   const handleBarCodeScanned = useCallback<BarCodeScannedCallback>(
@@ -48,7 +47,7 @@ export function QRCodeScreen() {
       function handleLoginError(message: string) {
         reportError(`LoginError: ${message}`);
 
-        setError(message);
+        route.params.onError(message);
       }
 
       const result = await login({
@@ -70,7 +69,7 @@ export function QRCodeScreen() {
         handleLoginError(result.message);
       }
     },
-    [login, navigation, reportError, track]
+    [login, navigation, reportError, route.params, track]
   );
 
   return (
@@ -92,53 +91,6 @@ export function QRCodeScreen() {
           icon={<BackIcon />}
           onPress={navigation.goBack}
         />
-
-        <View className="flex h-1/3 flex-col space-y-4 rounded-lg bg-white dark:bg-black py-4 px-6">
-          {error && (
-            <View>
-              <Typography className="text-error" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
-                {error}
-              </Typography>
-            </View>
-          )}
-
-          <Typography className="text-base" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
-            If you’re signed into Gallery elsewhere, you can authenticate instantly via QR code.
-          </Typography>
-
-          <View className="flex flex-col">
-            <Typography className="text-lg" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-              Pair with Desktop
-            </Typography>
-
-            <View className="flex flex-col">
-              <Typography
-                className="text-base leading-loose"
-                font={{ family: 'ABCDiatype', weight: 'Regular' }}
-              >
-                1. Open gallery.so/settings on a different device.
-              </Typography>
-              <Typography
-                className="text-base leading-loose"
-                font={{ family: 'ABCDiatype', weight: 'Regular' }}
-              >
-                2. Click the QR Code button under “Pair with Mobile”.
-              </Typography>
-              <Typography
-                className="text-base leading-loose"
-                font={{ family: 'ABCDiatype', weight: 'Regular' }}
-              >
-                3. Scan the QR Code.
-              </Typography>
-              <Typography
-                className="text-base leading-loose"
-                font={{ family: 'ABCDiatype', weight: 'Regular' }}
-              >
-                4. Profit.
-              </Typography>
-            </View>
-          </View>
-        </View>
       </View>
     </View>
   );
