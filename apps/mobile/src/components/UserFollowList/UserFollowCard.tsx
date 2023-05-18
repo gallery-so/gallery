@@ -52,6 +52,8 @@ export function UserFollowCard({ userRef, queryRef, onPress }: UserFollowCardPro
       <GalleryTouchableOpacity
         onPress={handlePress}
         className="flex flex-1 flex-grow flex-col h-full"
+        id="User Follow Username"
+        eventName="User Follow Username Clicked"
       >
         <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
           {user.username}

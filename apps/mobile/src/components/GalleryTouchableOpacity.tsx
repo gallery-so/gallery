@@ -15,8 +15,8 @@ export type GalleryTouchableOpacityProps = {
 
 export function GalleryTouchableOpacity({
   children,
-  eventName,
   id,
+  eventName = 'undefined',
   onPress,
   properties,
   ...props
@@ -29,11 +29,10 @@ export function GalleryTouchableOpacity({
 
   const handlePress = useCallback(
     (event: GestureResponderEvent) => {
-      const eventNameToUse = eventName || 'Button Press';
-
       if (id) {
-        track(eventNameToUse, {
+        track('Button Press', {
           id,
+          name: eventName,
           screen: currentScreen,
           ...properties,
         });

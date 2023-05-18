@@ -22,7 +22,13 @@ export function InteractiveLink({ href, style, onPress, showUnderline = false, c
   }, [href, onPress]);
 
   return (
-    <GalleryTouchableOpacity style={style} onPress={handlePress}>
+    <GalleryTouchableOpacity
+      style={style}
+      onPress={handlePress}
+      id="Interactive Link"
+      eventName="Link Clicked"
+      properties={{ href: href ?? 'undefined' }}
+    >
       <Typography
         className={clsx(`text-shadow dark:text-white text-sm`, {
           underline: showUnderline,

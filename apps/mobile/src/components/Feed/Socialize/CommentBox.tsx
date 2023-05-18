@@ -226,7 +226,12 @@ export function CommentBox({
           style={{ flex: 1, color: colorScheme === 'dark' ? colors.white : colors.offBlack }}
         />
         <Text className="text-sm text-metal">{characterCount}</Text>
-        <GalleryTouchableOpacity onPress={handleSubmit} disabled={disabledSendButton}>
+        <GalleryTouchableOpacity
+          onPress={handleSubmit}
+          disabled={disabledSendButton}
+          id="Submit Comment Button"
+          eventName="Submit Comment Button Clicked"
+        >
           <View
             className={`h-6 w-6 rounded-full flex items-center justify-center bg-red
             ${disabledSendButton ? 'bg-metal' : 'bg-activeBlue'}

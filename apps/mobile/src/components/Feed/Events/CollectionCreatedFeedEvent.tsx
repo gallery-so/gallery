@@ -60,7 +60,12 @@ export function CollectionCreatedFeedEvent({
         <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
           Created a new collection
         </Typography>
-        <GalleryTouchableOpacity className="flex-1" onPress={handleCollectionNamePress}>
+        <GalleryTouchableOpacity
+          className="flex-1"
+          onPress={handleCollectionNamePress}
+          id="Feed Collection Button"
+          eventName="Feed Collection Name Clicked"
+        >
           <Typography
             numberOfLines={1}
             className="text-sm"

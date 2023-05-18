@@ -44,7 +44,12 @@ export function GalleryNameHeader({ galleryRef, isOnGalleryScreen }: GalleryName
 
   return (
     <View className="flex flex-row items-center">
-      <GalleryTouchableOpacity onPress={handleUsernamePress}>
+      <GalleryTouchableOpacity
+        onPress={handleUsernamePress}
+        id="Gallery Header"
+        eventName="Gallery Header Clicked"
+        properties={{ variant: 'username' }}
+      >
         <Typography
           numberOfLines={1}
           className="text-metal text-lg"
@@ -57,7 +62,13 @@ export function GalleryNameHeader({ galleryRef, isOnGalleryScreen }: GalleryName
         {' '}
         /{' '}
       </Typography>
-      <GalleryTouchableOpacity disabled={isOnGalleryScreen} onPress={handleGalleryNamePress}>
+      <GalleryTouchableOpacity
+        disabled={isOnGalleryScreen}
+        onPress={handleGalleryNamePress}
+        id="Gallery Header"
+        eventName="Gallery Header Clicked"
+        properties={{ variant: 'gallery title' }}
+      >
         <Typography
           numberOfLines={1}
           className={clsx('text-lg', {

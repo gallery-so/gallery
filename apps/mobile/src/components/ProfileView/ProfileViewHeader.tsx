@@ -64,7 +64,13 @@ export function ProfileViewHeader({ queryRef, selectedRoute, onRouteChange }: Pr
   const twitterPill = useMemo(() => {
     if (user.socialAccounts?.twitter?.username) {
       return (
-        <GalleryTouchableOpacity onPress={handleTwitterPress} className="px-4">
+        <GalleryTouchableOpacity
+          onPress={handleTwitterPress}
+          className="px-4"
+          id="Social Pill"
+          eventName="Social Pill Clicked"
+          properties={{ variant: 'Twitter' }}
+        >
           <Pill className="flex flex-row items-center space-x-2 self-start">
             <TwitterIcon />
             <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>

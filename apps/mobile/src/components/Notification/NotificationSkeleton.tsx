@@ -26,7 +26,12 @@ export function NotificationSkeleton({ children, notificationRef, onPress }: Pro
   );
 
   return (
-    <GalleryTouchableOpacity onPress={onPress} className="flex flex-row justify-between p-3">
+    <GalleryTouchableOpacity
+      onPress={onPress}
+      className="flex flex-row justify-between p-3"
+      id="Notification Row"
+      eventName="Notification Row Clicked"
+    >
       <View className="flex-1 ">
         <Text className="dark:text-white">{children}</Text>
       </View>

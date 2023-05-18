@@ -25,7 +25,12 @@ export function GalleryVirtualizedRow({ item, isOnCollectionScreen }: Props) {
 
     return (
       <View className="flex flex-col px-4">
-        <GalleryTouchableOpacity onPress={handlePress}>
+        <GalleryTouchableOpacity
+          onPress={handlePress}
+          id="Feed Event Descriptor"
+          eventName="Feed Event Descriptor Clicked"
+          properties={{ variant: 'gallery title' }}
+        >
           <Typography className="text-xl" font={{ family: 'GTAlpina', weight: 'StandardLight' }}>
             {item.name || 'Untitled'}
           </Typography>
@@ -42,7 +47,12 @@ export function GalleryVirtualizedRow({ item, isOnCollectionScreen }: Props) {
 
     return (
       <View className="flex flex-col bg-white dark:bg-black pt-2 pb-1 px-4">
-        <GalleryTouchableOpacity onPress={handlePress}>
+        <GalleryTouchableOpacity
+          onPress={handlePress}
+          id="Feed Event Descriptor"
+          eventName="Feed Event Descriptor Clicked"
+          properties={{ variant: 'collection title' }}
+        >
           <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
             {unescape(item.name || 'Untitled')}
           </Typography>
