@@ -1,4 +1,4 @@
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { RouteProp, useRoute } from '@react-navigation/native';
 import { useCallback, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
@@ -28,7 +28,6 @@ const markdownStyles = StyleSheet.create({
 });
 
 export function NftDetailScreenInner() {
-  const navigation = useNavigation();
   const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'NftDetail'>>();
 
   const query = useLazyLoadQuery<NftDetailScreenInnerQuery>(

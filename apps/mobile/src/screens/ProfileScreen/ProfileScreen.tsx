@@ -1,5 +1,5 @@
 import { RouteProp, useRoute } from '@react-navigation/native';
-import { Suspense, useMemo } from 'react';
+import { Suspense } from 'react';
 import { RefreshControl, ScrollView, View } from 'react-native';
 import { useLazyLoadQuery, useRefetchableFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -8,7 +8,6 @@ import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/NotesModal/NotesList
 import { ProfileView } from '~/components/ProfileView/ProfileView';
 import { ProfileViewFallback } from '~/components/ProfileView/ProfileViewFallback';
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
-import { Typography } from '~/components/Typography';
 import { ProfileScreenQuery } from '~/generated/ProfileScreenQuery.graphql';
 import { ProfileScreenRefetchableFragment$key } from '~/generated/ProfileScreenRefetchableFragment.graphql';
 import { ProfileScreenRefetchableFragmentQuery } from '~/generated/ProfileScreenRefetchableFragmentQuery.graphql';

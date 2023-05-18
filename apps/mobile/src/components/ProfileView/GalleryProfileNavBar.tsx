@@ -12,7 +12,6 @@ import { GalleryProfileNavBarQueryFragment$key } from '~/generated/GalleryProfil
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 
-import { BackIcon } from '../../icons/BackIcon';
 import { QRCodeIcon } from '../../icons/QRCodeIcon';
 import { ShareIcon } from '../../icons/ShareIcon';
 import { FeedbackButton } from '../FeedbackButton';

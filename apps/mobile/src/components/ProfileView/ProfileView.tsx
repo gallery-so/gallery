@@ -1,15 +1,10 @@
 import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { useColorScheme, View } from 'react-native';
 import { CollapsibleRef, Tabs } from 'react-native-collapsible-tab-view';
-import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import { GallerySkeleton } from '~/components/GallerySkeleton';
-import {
-  GalleryProfileNavBar,
-  GalleryProfileNavbarFallback,
-} from '~/components/ProfileView/GalleryProfileNavBar';
+import { GalleryProfileNavBar } from '~/components/ProfileView/GalleryProfileNavBar';
 import { ProfileViewHeader } from '~/components/ProfileView/ProfileViewHeader';
 import { ProfileViewActivityTab } from '~/components/ProfileView/Tabs/ProfileViewActivityTab';
 import { ProfileViewFeaturedTab } from '~/components/ProfileView/Tabs/ProfileViewFeaturedTab';
@@ -187,7 +182,7 @@ export function ProfileViewUsername({ queryRef }: ProfileViewUsernameProps) {
       className="bg-white dark:bg-black text-center text-2xl tracking-tighter"
       font={{ family: 'GTAlpina', weight: 'StandardLight' }}
     >
-      {query.userByUsername.username}
+      {query.userByUsername?.username}
     </Typography>
   );
 }
