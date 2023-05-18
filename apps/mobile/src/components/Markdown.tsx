@@ -27,6 +27,12 @@ const darkModeMarkdownStyles = {
   },
 };
 
+const lightModeMarkdownStyles = {
+  body: {
+    color: colors.offBlack,
+  },
+};
+
 type GalleryMarkdownProps = PropsWithChildren<{
   numberOfLines?: number;
   touchToExpand?: boolean;
@@ -49,6 +55,10 @@ export function Markdown({
 
     if (colorScheme === 'dark') {
       merge(mergedStyles, darkModeMarkdownStyles);
+    }
+
+    if (colorScheme === 'light') {
+      merge(mergedStyles, lightModeMarkdownStyles);
     }
 
     merge(mergedStyles, style);
