@@ -8,7 +8,6 @@ import { Typography } from '~/components/Typography';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import unescape from '~/shared/utils/unescape';
 
-import { sanitizeMarkdown } from '../../utils/sanitizeMarkdown';
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 
 type Props = {
@@ -42,7 +41,7 @@ export function GalleryVirtualizedRow({ item, isOnCollectionScreen }: Props) {
     };
 
     return (
-      <View className="flex flex-col bg-white dark:bg-black py-2 px-4">
+      <View className="flex flex-col bg-white dark:bg-black pt-2 pb-1 px-4">
         <GalleryTouchableOpacity onPress={handlePress}>
           <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
             {unescape(item.name || 'Untitled')}
@@ -55,16 +54,10 @@ export function GalleryVirtualizedRow({ item, isOnCollectionScreen }: Props) {
       return null;
     }
 
-    const firstLineOfCollectorsNote = sanitizeMarkdown(item.collectorsNote ?? '');
-
     return (
       <View className="flex flex-col bg-white dark:bg-black px-4">
-        <Typography
-          className="text-sm"
-          font={{ family: 'ABCDiatype', weight: 'Regular' }}
-          numberOfLines={1}
-        >
-          {firstLineOfCollectorsNote}
+        <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
+          <Markdown>{item.collectorsNote}</Markdown>
         </Typography>
       </View>
     );
