@@ -35,7 +35,7 @@ export function FeedList({
   queryRef,
   isRefreshing,
   onRefresh,
-  onChangeFeedMode = () => {},
+  onChangeFeedMode,
 }: FeedListProps) {
   const query = useFragment(
     graphql`
