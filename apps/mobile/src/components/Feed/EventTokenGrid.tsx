@@ -48,11 +48,10 @@ export function EventTokenGrid({
           preferStillFrameFromGif: true,
         });
 
-        if (media) {
-          return { ...collectionToken, ...media };
-        } else {
-          return null;
-        }
+        return {
+          ...collectionToken,
+          ...media?.urls,
+        };
       })
       // This makes sure we're only working with valid media
       .filter(Boolean);
@@ -68,7 +67,7 @@ export function EventTokenGrid({
                 priority={imagePriority}
                 resizeMode={ResizeMode.COVER}
                 collectionTokenRef={firstToken}
-                tokenUrl={firstToken.urls.medium}
+                tokenUrl={firstToken.medium}
               />
             </QuarterCell>
             <QuarterCell>
@@ -76,7 +75,7 @@ export function EventTokenGrid({
                 priority={imagePriority}
                 resizeMode={ResizeMode.COVER}
                 collectionTokenRef={secondToken}
-                tokenUrl={secondToken.urls.medium}
+                tokenUrl={secondToken.medium}
               />
             </QuarterCell>
           </HalfHeightRow>
@@ -87,7 +86,7 @@ export function EventTokenGrid({
                 priority={imagePriority}
                 resizeMode={ResizeMode.COVER}
                 collectionTokenRef={thirdToken}
-                tokenUrl={thirdToken.urls.medium}
+                tokenUrl={thirdToken.medium}
               />
             </QuarterCell>
             <QuarterCell>
@@ -95,7 +94,7 @@ export function EventTokenGrid({
                 priority={imagePriority}
                 resizeMode={ResizeMode.COVER}
                 collectionTokenRef={fourthToken}
-                tokenUrl={fourthToken.urls.medium}
+                tokenUrl={fourthToken.medium}
               />
             </QuarterCell>
           </HalfHeightRow>
@@ -109,7 +108,7 @@ export function EventTokenGrid({
               priority={imagePriority}
               resizeMode={ResizeMode.COVER}
               collectionTokenRef={firstToken}
-              tokenUrl={firstToken.urls.large}
+              tokenUrl={firstToken.large}
             />
           </QuarterCell>
           <QuarterCell>
@@ -117,7 +116,7 @@ export function EventTokenGrid({
               priority={imagePriority}
               resizeMode={ResizeMode.COVER}
               collectionTokenRef={secondToken}
-              tokenUrl={secondToken.urls.large}
+              tokenUrl={secondToken.large}
             />
           </QuarterCell>
         </HalfHeightRow>
@@ -134,7 +133,7 @@ export function EventTokenGrid({
             resizeMode={preserveAspectRatio ? ResizeMode.CONTAIN : ResizeMode.COVER}
             priority={imagePriority}
             collectionTokenRef={firstToken}
-            tokenUrl={firstToken.urls.large}
+            tokenUrl={firstToken.large}
           />
         </View>
       );
