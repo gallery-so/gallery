@@ -36,13 +36,14 @@ tasks:
 
   ios-device:
     command: noop
+    local: true
     deps:
       - '~:ios-device-raw'
       - '~:relay-watch'
-    local: true
 
   ios:
     command: noop
+    local: true
     deps:
       - ~:ios-raw
       - ~:relay-watch
@@ -61,10 +62,10 @@ tasks:
 
   android-device:
     command: noop
+    local: true
     deps:
       - '~:android-device-raw'
       - '~:relay-watch'
-    local: true
 
   android:
     command: noop
