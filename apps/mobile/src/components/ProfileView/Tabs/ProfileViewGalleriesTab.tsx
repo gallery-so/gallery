@@ -18,39 +18,43 @@ type ListItem = {
 };
 
 type ProfileViewGalleriesTabProps = {
-  userRef: ProfileViewGalleriesTabFragment$key;
+  queryRef: ProfileViewGalleriesTabFragment$key;
 };
 
-export function ProfileViewGalleriesTab({ userRef }: ProfileViewGalleriesTabProps) {
-  const galleryUser = useFragment(
+export function ProfileViewGalleriesTab({ queryRef }: ProfileViewGalleriesTabProps) {
+  const query = useFragment(
     graphql`
-      fragment ProfileViewGalleriesTabFragment on GalleryUser {
-        __typename
+      fragment ProfileViewGalleriesTabFragment on Query {
+        userByUsername(username: $username) {
+          ... on GalleryUser {
+            featuredGallery {
+              dbid
+            }
 
-        featuredGallery {
-          dbid
-        }
+            galleries {
+              dbid
 
-        galleries {
-          dbid
-
-          ...GalleryPreviewCardFragment
+              ...GalleryPreviewCardFragment
+            }
+          }
         }
       }
     `,
-    userRef
+    queryRef
   );
 
+  const user = query.userByUsername;
+
   const items = useMemo<ListItem[]>(() => {
-    return removeNullValues(galleryUser.galleries).map((gallery): ListItem => {
+    return removeNullValues(user?.galleries).map((gallery): ListItem => {
       return {
         kind: 'gallery',
 
         gallery,
-        isFeatured: galleryUser.featuredGallery?.dbid === gallery.dbid,
+        isFeatured: user?.featuredGallery?.dbid === gallery.dbid,
       };
     });
-  }, [galleryUser.featuredGallery?.dbid, galleryUser.galleries]);
+  }, [user?.featuredGallery?.dbid, user?.galleries]);
 
   const renderItem = useCallback<ListRenderItem<ListItem>>(({ item }) => {
     return (

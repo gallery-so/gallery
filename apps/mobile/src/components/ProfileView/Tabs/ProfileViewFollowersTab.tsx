@@ -9,7 +9,6 @@ import { graphql } from 'relay-runtime';
 import { FollowersTabBar, FollowersTabName } from '~/components/ProfileView/FollowersTabBar';
 import { useListContentStyle } from '~/components/ProfileView/Tabs/useListContentStyle';
 import { UserFollowCard } from '~/components/UserFollowList/UserFollowCard';
-import { ProfileViewFollowersTabFragment$key } from '~/generated/ProfileViewFollowersTabFragment.graphql';
 import { ProfileViewFollowersTabQueryFragment$key } from '~/generated/ProfileViewFollowersTabQueryFragment.graphql';
 import { UserFollowCardFragment$key } from '~/generated/UserFollowCardFragment.graphql';
 import { UserFollowCardQueryFragment$key } from '~/generated/UserFollowCardQueryFragment.graphql';
@@ -24,36 +23,32 @@ type ListItem =
   | { kind: 'user'; user: UserFollowCardFragment$key; query: UserFollowCardQueryFragment$key };
 
 type ProfileViewFollowersTabProps = {
-  userRef: ProfileViewFollowersTabFragment$key;
   queryRef: ProfileViewFollowersTabQueryFragment$key;
 };
 
-export function ProfileViewFollowersTab({ userRef, queryRef }: ProfileViewFollowersTabProps) {
+export function ProfileViewFollowersTab({ queryRef }: ProfileViewFollowersTabProps) {
   const query = useFragment(
     graphql`
       fragment ProfileViewFollowersTabQueryFragment on Query {
+        userByUsername(username: $username) {
+          ... on GalleryUser {
+            following {
+              ...UserFollowCardFragment
+            }
+
+            followers {
+              ...UserFollowCardFragment
+            }
+          }
+        }
+
         ...UserFollowCardQueryFragment
       }
     `,
     queryRef
   );
 
-  const user = useFragment(
-    graphql`
-      fragment ProfileViewFollowersTabFragment on GalleryUser {
-        __typename
-
-        following {
-          ...UserFollowCardFragment
-        }
-
-        followers {
-          ...UserFollowCardFragment
-        }
-      }
-    `,
-    userRef
-  );
+  const user = query.userByUsername;
 
   const [selectedTab, setSelectedTab] = useState<FollowersTabName>('Following');
 
@@ -62,7 +57,7 @@ export function ProfileViewFollowersTab({ userRef, queryRef }: ProfileViewFollow
 
     items.push({ kind: 'tab-bar', selectedTab });
 
-    const users = removeNullValues(selectedTab === 'Following' ? user.following : user.followers);
+    const users = removeNullValues(selectedTab === 'Following' ? user?.following : user?.followers);
 
     items.push(
       ...users.map((user): ListItem => {
@@ -75,7 +70,7 @@ export function ProfileViewFollowersTab({ userRef, queryRef }: ProfileViewFollow
     );
 
     return items;
-  }, [query, selectedTab, user.followers, user.following]);
+  }, [query, selectedTab, user?.followers, user?.following]);
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
   const handleUserPress = useCallback(
