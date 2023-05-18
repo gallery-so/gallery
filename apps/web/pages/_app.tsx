@@ -75,6 +75,31 @@ function Page({ Component, pageProps }: AppProps) {
     setRelayEnvironment(createRelayEnvironmentFromRecords({}));
   }, []);
 
+  const router = useRouter();
+
+  useEffect(
+    // This effect exists to ensure the page gets fully reloaded if we navigate
+    // in or out of the `/base` page.
+    //
+    // This is because we're doing a dumb hack for dark mode and we cannot
+    // have the theme be changed dynamically.
+    function reloadPageWhenNavigatingInAndOutOfBase() {
+      let lastRoute = window.location.pathname;
+      function handleRouteChange(url: string) {
+        if (lastRoute === '/base' || url === '/base') {
+          window.location.href = url;
+        }
+
+        lastRoute = url;
+      }
+
+      router.events.on('routeChangeStart', handleRouteChange);
+
+      return () => router.events.off('routeChangeStart', handleRouteChange);
+    },
+    [router.events]
+  );
+
   return (
     <RelayResetContext.Provider value={resetRelayEnvironment}>
       <AppProvider

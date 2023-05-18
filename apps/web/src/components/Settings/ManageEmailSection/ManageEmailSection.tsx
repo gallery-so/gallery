@@ -174,6 +174,11 @@ export default function ManageEmailSection({ queryRef }: Props) {
 
 const StyledButtonContainer = styled(VStack)`
   background-color: ${colors.faint};
+
+  @media (prefers-color-scheme: dark) {
+    background-color: ${colors.graphite};
+  }
+
   padding: 12px;
 `;
 

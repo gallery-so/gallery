@@ -10,12 +10,13 @@ import {
   GLOBAL_FOOTER_HEIGHT,
   GLOBAL_FOOTER_HEIGHT_MOBILE,
 } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
+import { LogoLarge } from '~/icons/LogoLarge';
 
 function MaintenancePage() {
   return (
     <StyledMaintenancePage gap={24}>
       <VStack gap={8}>
-        <StyledLogo src="/icons/logo-large.svg" />
+        <StyledLogo />
         <StyledBaseM>
           Gallery is currently undergoing planned maintenance until{' '}
           <strong>Saturday Feb 25th, 3:30pm EST</strong> and is not usable at this time. Keep up to
@@ -31,7 +32,7 @@ function MaintenancePage() {
   );
 }
 
-const StyledLogo = styled.img`
+const StyledLogo = styled(LogoLarge)`
   height: 32px;
 `;
 

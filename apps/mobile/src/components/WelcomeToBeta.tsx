@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { View } from 'react-native';
-import { ChatIcon } from 'src/icons/ChatIcon';
 
+import { BugReportIcon } from '../icons/BugReportIcon';
 import {
   GalleryBottomSheetModal,
   GalleryBottomSheetModalType,
@@ -33,7 +33,7 @@ export function WelcomeToBeta({ username }: Props) {
         <Typography font={{ family: 'ABCDiatype', weight: 'Regular' }}>
           Your feedback is invaluable — if there's something you'd love to see, any rough edges you
           spot, (or just want to say something nice) let us know using the{' '}
-          <ChatIcon width={20} height={20} /> icon.
+          <BugReportIcon width={20} height={20} /> icon.
         </Typography>
         <Typography font={{ family: 'ABCDiatype', weight: 'Regular' }}>
           We’re building the best way for people to connect through creativity and we’re so thrilled

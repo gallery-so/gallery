@@ -17,7 +17,13 @@ function filterOutAnnoyingWarnings() {
   console.warn = (...args) => {
     const joined = args.join(' ');
 
-    if (joined.includes('The provided value')) {
+    if (
+      joined.includes('The provided value') ||
+      joined.includes('Constants.manifest has been deprecated in favor of Constants.expoConfig.') ||
+      joined.includes(
+        'There was a problem sending log messages to your development environment [RangeError: Maximum call stack size exceeded (native stack depth)]'
+      )
+    ) {
       return;
     }
 
@@ -38,6 +44,7 @@ LogBox.ignoreLogs([
   'Tried to render EventTokenGrid without any tokens',
   'Non-serializable values were found',
   'Overriding previous layout animation',
+  'There was a problem sending log message',
 ]);
 
 polyfillEncoding();
