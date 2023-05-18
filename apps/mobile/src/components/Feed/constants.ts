@@ -6,3 +6,5 @@ export const SUPPORTED_FEED_EVENT_TYPES = new Set([
   'CollectorsNoteAddedToCollectionFeedEventData',
   'UserFollowedUsersFeedEventData',
 ]);
+
+export const FEED_PER_PAGE = 20;

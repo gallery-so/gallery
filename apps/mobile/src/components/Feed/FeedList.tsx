@@ -6,6 +6,7 @@ import { graphql, useFragment } from 'react-relay';
 
 import {
   createVirtualizedFeedEventItems,
+  createVirtualizedItemsFromFeedEventsArgs,
   FeedListItemType,
 } from '~/components/Feed/createVirtualizedFeedEventItems';
 import { FeedVirtualizedRow } from '~/components/Feed/FeedVirtualizedRow';
@@ -21,6 +22,8 @@ type FeedListProps = {
 
   isRefreshing: boolean;
   onRefresh: () => void;
+
+  feedFilter?: createVirtualizedItemsFromFeedEventsArgs['feedFilter'];
 };
 
 export function FeedList({
@@ -29,6 +32,7 @@ export function FeedList({
   queryRef,
   isRefreshing,
   onRefresh,
+  feedFilter,
 }: FeedListProps) {
   const query = useFragment(
     graphql`
@@ -53,36 +57,28 @@ export function FeedList({
   );
 
   const { failedEvents, markEventAsFailure } = useFailedEventTracker();
+  const ref = useRef<FlashList<FeedListItemType> | null>(null);
 
   const { items, stickyIndices } = useMemo(() => {
-    return createVirtualizedFeedEventItems({ eventRefs: events, failedEvents, queryRef: query });
-  }, [events, failedEvents, query]);
-
-  const ref = useRef<FlashList<FeedListItemType> | null>(null);
+    return createVirtualizedFeedEventItems({
+      eventRefs: events,
+      failedEvents,
+      queryRef: query,
+      feedFilter,
+      listRef: ref,
+    });
+  }, [events, failedEvents, feedFilter, query]);
 
   // @ts-expect-error - useScrollToTop is not typed correctly for FlashList
   useScrollToTop(ref);
 
-  const scrollToFeedEvent = useCallback((item: FeedListItemType) => {
-    if (ref.current) {
-      ref.current.scrollToItem({ item, animated: true, viewPosition: 0.5 });
-    }
-  }, []);
-
   const renderItem = useCallback<ListRenderItem<FeedListItemType>>(
     ({ item }) => {
-      const markFailure = () => markEventAsFailure(item.event.dbid);
+      const markFailure = () => (item.event ? markEventAsFailure(item.event.dbid) : () => {});
 
-      return (
-        <FeedVirtualizedRow
-          eventId={item.eventId}
-          item={item}
-          onFailure={markFailure}
-          onCommentPress={scrollToFeedEvent}
-        />
-      );
+      return <FeedVirtualizedRow eventId={item.eventId} item={item} onFailure={markFailure} />;
     },
-    [markEventAsFailure, scrollToFeedEvent]
+    [markEventAsFailure]
   );
 
   return (

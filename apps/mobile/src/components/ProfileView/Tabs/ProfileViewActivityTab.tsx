@@ -59,35 +59,28 @@ export function ProfileViewActivityTab({ userRef, queryRef }: ProfileViewActivit
 
   events.reverse();
 
+  const ref = useRef<FlashList<FeedListItemType> | null>(null);
   const { items, stickyIndices } = createVirtualizedFeedEventItems({
+    listRef: ref,
     failedEvents,
     eventRefs: events,
     queryRef: query,
   });
 
-  const ref = useRef<FlashList<FeedListItemType> | null>(null);
-  const scrollToFeedEvent = useCallback((item: FeedListItemType) => {
-    if (ref.current) {
-      ref.current.scrollToItem({ item, animated: true, viewPosition: 0.5 });
-    }
-  }, []);
-
   const renderItem = useCallback<ListRenderItem<FeedListItemType>>(
     ({ item }) => {
-      const markFailure = () => {
-        markEventAsFailure(item.event.dbid);
-      };
+      // Set a default for feed navigation pill
+      let markFailure = () => {};
 
-      return (
-        <FeedVirtualizedRow
-          eventId={item.eventId}
-          item={item}
-          onFailure={markFailure}
-          onCommentPress={scrollToFeedEvent}
-        />
-      );
+      if (item.event) {
+        markFailure = () => {
+          markEventAsFailure(item.event.dbid);
+        };
+      }
+
+      return <FeedVirtualizedRow eventId={item.eventId} item={item} onFailure={markFailure} />;
     },
-    [markEventAsFailure, scrollToFeedEvent]
+    [markEventAsFailure]
   );
 
   const contentContainerStyle = useListContentStyle();
