@@ -60,10 +60,6 @@ export function EnterEmailScreen() {
         handleLoginError(result.message);
       } else {
         track('Sign In Success', { 'Sign in method': 'Email' });
-        navigation.replace('MainTabs', {
-          screen: 'HomeTab',
-          params: { screen: 'Home', params: { screen: 'Latest' } },
-        });
         await navigateToNotificationUpsellOrHomeScreen(navigation);
       }
     } finally {

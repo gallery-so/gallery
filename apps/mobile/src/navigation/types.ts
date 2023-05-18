@@ -51,7 +51,7 @@ export type MainTabNavigatorParamList = {
 export type LoginStackNavigatorParamList = {
   Landing: undefined;
   EnterEmail: undefined;
-  QRCode: undefined;
+  QRCode: { onError: (message: string) => void };
   WaitingForConfirmation: { email: string };
   NotificationUpsell: undefined;
 };

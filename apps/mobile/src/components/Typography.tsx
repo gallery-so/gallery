@@ -1,5 +1,5 @@
 import { PropsWithChildren, useMemo } from 'react';
-import { Text, TextProps, TextStyle } from 'react-native';
+import { Text, TextProps, TextStyle, View } from 'react-native';
 
 type TypographyProps = PropsWithChildren<{
   className?: string;
@@ -45,5 +45,21 @@ export function Typography({ font, style, children, ...rest }: TypographyProps) 
     >
       {children}
     </Text>
+  );
+}
+
+type OrderedListItemProps = {
+  number: number;
+} & TypographyProps;
+export function OrderedListItem({ number, children, ...rest }: OrderedListItemProps) {
+  return (
+    <View className="relative flex flex-row">
+      <Typography {...rest} style={[rest.style, { fontVariant: ['tabular-nums'] }]}>
+        {number}.{' '}
+      </Typography>
+      <Typography {...rest} style={[rest.style, { flex: 1 }]}>
+        {children}
+      </Typography>
+    </View>
   );
 }
