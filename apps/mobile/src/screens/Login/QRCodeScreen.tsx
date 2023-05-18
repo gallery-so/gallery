@@ -58,10 +58,6 @@ export function QRCodeScreen() {
 
       if (result.kind === 'success') {
         track('Sign In Success', { 'Sign In Selection': 'QR code' });
-        navigation.replace('MainTabs', {
-          screen: 'HomeTab',
-          params: { screen: 'Home', params: { screen: 'Latest' } },
-        });
         await navigateToNotificationUpsellOrHomeScreen(navigation);
       } else {
         setScanned(false);
