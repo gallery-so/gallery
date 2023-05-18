@@ -24,7 +24,7 @@ export function GalleryTouchableOpacity({
   const track = useTrack();
 
   const currentScreen = useNavigationState((state) => {
-    return state.routes[state.index]?.name;
+    return state?.routes[state.index]?.name;
   });
 
   const handlePress = useCallback(
