@@ -8,7 +8,6 @@ import { ImageState, NftPreview } from '~/components/NftPreview/NftPreview';
 import { useGalleryTokenDimensionCache } from '~/contexts/GalleryTokenDimensionCacheContext';
 import { GalleryTokenPreviewFragment$key } from '~/generated/GalleryTokenPreviewFragment.graphql';
 import { fitDimensionsToContainerContain } from '~/screens/NftDetailScreen/NftDetailAsset/fitDimensionToContainer';
-import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
 import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
 
 type GalleryTokenPreviewProps = {
@@ -36,21 +35,17 @@ export function GalleryTokenPreview({ tokenRef, containerWidth }: GalleryTokenPr
     const tokenUrls = getVideoOrImageUrlForNftPreview({ tokenRef: token.token });
     if (containerWidth < 200) {
       return tokenUrls?.urls.medium;
-    } else if (containerWidth < 400) {
+    } else {
       return tokenUrls?.urls.large;
     }
   }, [containerWidth, token.token]);
-
-  if (!tokenUrl) {
-    throw new CouldNotRenderNftError('GalleryTokenPreview', 'Missing token url');
-  }
 
   const { cache, addDimensionsToCache } = useGalleryTokenDimensionCache();
 
   const screenDimensions = useWindowDimensions();
   const handleImageStateChange = useCallback(
     (imageState: ImageState) => {
-      if (imageState.kind === 'loaded' && imageState.dimensions) {
+      if (imageState.kind === 'loaded' && imageState.dimensions && tokenUrl) {
         addDimensionsToCache(tokenUrl, imageState.dimensions);
       }
     },
@@ -58,6 +53,10 @@ export function GalleryTokenPreview({ tokenRef, containerWidth }: GalleryTokenPr
   );
 
   const resultDimensions = useMemo(() => {
+    if (!tokenUrl) {
+      return null;
+    }
+
     const cachedDimensions = cache.get(tokenUrl) ?? null;
 
     if (cachedDimensions) {

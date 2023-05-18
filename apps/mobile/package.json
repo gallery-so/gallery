@@ -15,10 +15,11 @@
     "@shopify/flash-list": "1.4.0",
     "clsx": "^1.2.1",
     "date-fns": "^2.29.3",
+    "dotenv": "^16.0.3",
     "expo": "~48.0.15",
     "expo-av": "~13.2.1",
     "expo-barcode-scanner": "~12.3.2",
-    "expo-constants": "~14.2.1",
+    "expo-constants": "^14.2.1",
     "expo-dev-client": "~2.1.5",
     "expo-dev-menu": "^2.1.4",
     "expo-device": "~5.2.1",
@@ -58,7 +59,8 @@
     "swr": "^2.1.1",
     "text-encoding": "^0.7.0",
     "typescript": "^5.0.0",
-    "web-streams-polyfill": "^3.2.1"
+    "web-streams-polyfill": "^3.2.1",
+    "zod": "^3.21.4"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

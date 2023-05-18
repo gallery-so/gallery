@@ -15118,7 +15118,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dotenv@npm:16.0.3, dotenv@npm:^16.0.0, dotenv@npm:^16.0.2":
+"dotenv@npm:16.0.3, dotenv@npm:^16.0.0, dotenv@npm:^16.0.2, dotenv@npm:^16.0.3":
   version: 16.0.3
   resolution: "dotenv@npm:16.0.3"
   checksum: afcf03f373d7a6d62c7e9afea6328e62851d627a4e73f2e12d0a8deae1cd375892004f3021883f8aec85932cd2834b091f568ced92b4774625b321db83b827f8
@@ -17138,6 +17138,18 @@ __metadata:
   peerDependencies:
     expo: "*"
   checksum: b07831a8b7205c838be54268ac927ca4ce431065f55f551d37e9957e3b2bae0c6b208fee278d846a9f06d9cd9e71d54f3821818c80327fa8387a7b56ee1291af
+  languageName: node
+  linkType: hard
+
+"expo-constants@npm:^14.2.1":
+  version: 14.3.0
+  resolution: "expo-constants@npm:14.3.0"
+  dependencies:
+    "@expo/config": ~8.0.0
+    uuid: ^3.3.2
+  peerDependencies:
+    expo: "*"
+  checksum: 647fda433b302780eae453a6dc58ea6da4aed42753729b04fd3ecaca277cc1979a67cfeaea2c6a60b82ca5d79f139b08b94576986264a1f13b0ef1bfc2911d01
   languageName: node
   linkType: hard
 
@@ -24877,11 +24889,12 @@ __metadata:
     babel-plugin-tsconfig-paths-module-resolver: ^1.0.4
     clsx: ^1.2.1
     date-fns: ^2.29.3
+    dotenv: ^16.0.3
     eas-cli: ^3.7.2
     expo: ~48.0.15
     expo-av: ~13.2.1
     expo-barcode-scanner: ~12.3.2
-    expo-constants: ~14.2.1
+    expo-constants: ^14.2.1
     expo-dev-client: ~2.1.5
     expo-dev-menu: ^2.1.4
     expo-device: ~5.2.1
@@ -24924,6 +24937,7 @@ __metadata:
     text-encoding: ^0.7.0
     typescript: ^5.0.0
     web-streams-polyfill: ^3.2.1
+    zod: ^3.21.4
   languageName: unknown
   linkType: soft
 
@@ -34656,6 +34670,13 @@ __metadata:
   version: 1.0.0
   resolution: "yocto-queue@npm:1.0.0"
   checksum: 2cac84540f65c64ccc1683c267edce396b26b1e931aa429660aefac8fbe0188167b7aee815a3c22fa59a28a58d898d1a2b1825048f834d8d629f4c2a5d443801
+  languageName: node
+  linkType: hard
+
+"zod@npm:^3.21.4":
+  version: 3.21.4
+  resolution: "zod@npm:3.21.4"
+  checksum: f185ba87342ff16f7a06686767c2b2a7af41110c7edf7c1974095d8db7a73792696bcb4a00853de0d2edeb34a5b2ea6a55871bc864227dace682a0a28de33e1f
   languageName: node
   linkType: hard
 

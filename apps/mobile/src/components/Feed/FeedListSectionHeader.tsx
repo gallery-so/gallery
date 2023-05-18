@@ -73,7 +73,7 @@ export function FeedListSectionHeader({ feedEventRef }: FeedListSectionHeaderPro
 
         <GalleryTouchableOpacity onPress={handleGalleryNamePress}>
           <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-            {feedEvent.eventData.gallery?.name || 'Untitled'}
+            {feedEvent.eventData.gallery?.name || 'their gallery'}
           </Typography>
         </GalleryTouchableOpacity>
       </View>

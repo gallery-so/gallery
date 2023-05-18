@@ -29,6 +29,7 @@ export function FeedListCaption({ feedEventRef }: FeedListCaptionProps) {
       <Typography
         className="px-2 text-base tracking-tight"
         font={{ family: 'GTAlpina', weight: 'Light', italic: true }}
+        numberOfLines={1}
       >
         {feedEvent.caption}
       </Typography>

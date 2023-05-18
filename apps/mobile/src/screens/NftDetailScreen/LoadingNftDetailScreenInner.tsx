@@ -1,17 +1,14 @@
-import { useNavigation } from '@react-navigation/native';
 import { View } from 'react-native';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
-import { BackIcon } from 'src/icons/BackIcon';
 
+import { BackButton } from '~/components/BackButton';
 import { GallerySkeleton } from '~/components/GallerySkeleton';
-import { IconContainer } from '~/components/IconContainer';
 
 export function LoadingNftDetailScreenInner() {
-  const navigation = useNavigation();
   return (
     <View className="flex flex-col space-y-3 px-4">
       <View className="flex flex-row justify-between">
-        <IconContainer icon={<BackIcon />} onPress={navigation.goBack} />
+        <BackButton />
       </View>
       <View>
         <GallerySkeleton>

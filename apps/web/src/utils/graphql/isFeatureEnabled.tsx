@@ -10,7 +10,7 @@ export enum FeatureFlag {
 }
 
 const PROD_FLAGS: Record<FeatureFlag, boolean> = {
-  MOBILE_BETA: false,
+  MOBILE_BETA: true,
 };
 
 const DEV_FLAGS: Record<FeatureFlag, boolean> = {
@@ -22,10 +22,10 @@ const ROLE_FLAGS: Record<Role, Record<FeatureFlag, boolean>> = {
     MOBILE_BETA: true,
   },
   BETA_TESTER: {
-    MOBILE_BETA: false,
+    MOBILE_BETA: true,
   },
   EARLY_ACCESS: {
-    MOBILE_BETA: false,
+    MOBILE_BETA: true,
   },
 };
 
