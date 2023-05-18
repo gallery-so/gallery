@@ -16,7 +16,7 @@ function GalleryBottomSheetModal(
     <BottomSheetModal
       ref={ref}
       backgroundStyle={{
-        borderRadius: 40,
+        borderRadius: 20,
       }}
       backgroundComponent={GalleryBottomSheetBackground}
       backdropComponent={GalleryBottomSheetBackdrop}
