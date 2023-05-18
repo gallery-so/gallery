@@ -1,4 +1,5 @@
 import { RouteProp, useRoute } from '@react-navigation/native';
+import { Suspense } from 'react';
 import { View } from 'react-native';
 import { graphql, useLazyLoadQuery, useRefetchableFragment } from 'react-relay';
 
@@ -12,7 +13,7 @@ import { MainTabStackNavigatorParamList } from '~/navigation/types';
 
 import { useRefreshHandle } from '../hooks/useRefreshHandle';
 
-export function FeedEventScreen() {
+function FeedEventScreenInner() {
   const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'FeedEvent'>>();
   const wrapperQuery = useLazyLoadQuery<FeedEventScreenQuery>(
     graphql`
@@ -51,24 +52,32 @@ export function FeedEventScreen() {
 
   if (query.feedEventById?.__typename === 'FeedEvent') {
     return (
-      <View className="flex-1 bg-white dark:bg-black">
-        <SafeAreaViewWithPadding className="flex-1">
-          <View className="px-3 pb-6">
-            <BackButton />
-          </View>
-
-          <FeedList
-            queryRef={query}
-            isLoadingMore={false}
-            onLoadMore={() => {}}
-            onRefresh={handleRefresh}
-            isRefreshing={isRefreshing}
-            feedEventRefs={[query.feedEventById]}
-          />
-        </SafeAreaViewWithPadding>
-      </View>
+      <FeedList
+        queryRef={query}
+        isLoadingMore={false}
+        onLoadMore={() => {}}
+        onRefresh={handleRefresh}
+        isRefreshing={isRefreshing}
+        feedEventRefs={[query.feedEventById]}
+      />
     );
   }
 
   return null;
+}
+
+export function FeedEventScreen() {
+  return (
+    <View className="flex-1 bg-white dark:bg-black">
+      <SafeAreaViewWithPadding className="flex-1">
+        <View className="px-3 pb-6">
+          <BackButton />
+        </View>
+
+        <Suspense fallback={null}>
+          <FeedEventScreenInner />
+        </Suspense>
+      </SafeAreaViewWithPadding>
+    </View>
+  );
 }
