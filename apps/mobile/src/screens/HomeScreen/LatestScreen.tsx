@@ -36,7 +36,7 @@ function LatestScreenInner({ queryRef }: LatestScreenInnerProps) {
     queryRef
   );
 
-  const [activeFeed, setActiveFeed] = useState<ActiveFeed>('Following');
+  const [activeFeed, setActiveFeed] = useState<ActiveFeed>('Worldwide');
 
   const [showWelcome, setShowWelcome] = useState(false);
 

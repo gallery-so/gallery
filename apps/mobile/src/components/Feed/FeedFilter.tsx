@@ -13,7 +13,7 @@ type Props = {
 
 export function FeedFilter({ activeFeed, onChange }: Props) {
   return (
-    <View className="flex flex-row justify-center space-x-2 py-4">
+    <View className="flex flex-row justify-center space-x-2 pt-5 pb-6">
       <GalleryTouchableOpacity onPress={() => onChange('Worldwide')}>
         <Pill
           className="flex flex-row items-center space-x-2 self-start"
