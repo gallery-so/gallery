@@ -35,6 +35,7 @@ tasks:
 
   dev:
     command: noop
+    local: true
     deps:
       - '~:next-dev-server'
       - '~:relay-watch'
