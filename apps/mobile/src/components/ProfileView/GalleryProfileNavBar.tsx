@@ -100,8 +100,20 @@ export function GalleryProfileNavBar({
       {shouldShowBackButton ? <BackButton /> : <View />}
 
       <View className="flex flex-row items-center space-x-2">
-        {isLoggedInUser && <IconContainer icon={<QRCodeIcon />} onPress={handleQrCode} />}
-        <IconContainer icon={<ShareIcon />} onPress={handleShare} />
+        {isLoggedInUser && (
+          <IconContainer
+            eventElementId="Profile QR Code Icon"
+            eventName="Profile QR Code Icon Clicked"
+            icon={<QRCodeIcon />}
+            onPress={handleQrCode}
+          />
+        )}
+        <IconContainer
+          eventElementId="Profile Share Icon"
+          eventName="Profile Share Icon Clicked"
+          icon={<ShareIcon />}
+          onPress={handleShare}
+        />
 
         {!isLoggedInUser && <FollowButton queryRef={query} userRef={user} />}
       </View>

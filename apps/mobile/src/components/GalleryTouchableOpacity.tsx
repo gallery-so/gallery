@@ -3,20 +3,14 @@ import { useCallback } from 'react';
 // eslint-disable-next-line no-restricted-imports
 import { GestureResponderEvent, TouchableOpacity, TouchableOpacityProps } from 'react-native';
 
-import { useTrack } from '~/shared/contexts/AnalyticsContext';
+import { GalleryElementTrackingProps, useTrack } from '~/shared/contexts/AnalyticsContext';
 
-export type GalleryTouchableOpacityProps = {
-  // unique identifier for the element
-  id?: string;
-  eventName?: string;
-  onPress?: TouchableOpacityProps['onPress'];
-  properties?: Record<string, unknown>;
-} & Omit<TouchableOpacityProps, 'onPress'>;
+export type GalleryTouchableOpacityProps = GalleryElementTrackingProps & TouchableOpacityProps;
 
 export function GalleryTouchableOpacity({
   children,
+  eventElementId,
   eventName,
-  id,
   onPress,
   properties,
   ...props
@@ -29,11 +23,10 @@ export function GalleryTouchableOpacity({
 
   const handlePress = useCallback(
     (event: GestureResponderEvent) => {
-      const eventNameToUse = eventName || 'Button Press';
-
-      if (id) {
-        track(eventNameToUse, {
-          id,
+      if (eventElementId) {
+        track('Button Press', {
+          id: eventElementId,
+          name: eventName,
           screen: currentScreen,
           ...properties,
         });
@@ -43,7 +36,7 @@ export function GalleryTouchableOpacity({
         onPress(event);
       }
     },
-    [currentScreen, eventName, id, onPress, properties, track]
+    [currentScreen, eventElementId, eventName, onPress, properties, track]
   );
 
   return (

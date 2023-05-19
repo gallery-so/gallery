@@ -118,6 +118,9 @@ function FollowChip({
 }>) {
   return (
     <GalleryTouchableOpacity
+      eventElementId="Follow Button"
+      eventName="Follow Button Clicked"
+      properties={{ variant }}
       onPress={onPress}
       className={clsx('flex h-6 items-center justify-center rounded-sm px-2 bg-black', {
         'border border-black dark:border-shadow': variant === 'follow',

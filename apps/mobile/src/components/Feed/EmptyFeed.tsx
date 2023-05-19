@@ -42,7 +42,13 @@ export function EmptyFeed({ onChangeFeedMode }: Props) {
         <Text className="mb-3">
           Start following people and you’ll see their gallery updates here.
         </Text>
-        <Button onPress={handleNavigation} text="Explore" size="sm" />
+        <Button
+          eventElementId="Empty Feed Explore Button"
+          eventName="Empty Feed Explore Button Clicked"
+          onPress={handleNavigation}
+          text="Explore"
+          size="sm"
+        />
       </View>
     </View>
   );

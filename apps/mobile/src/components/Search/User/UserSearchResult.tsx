@@ -34,6 +34,7 @@ export function UserSearchResult({ userRef }: Props) {
       onPress={handlePress}
       title={user?.username ?? ''}
       description={user?.bio ?? ''}
+      variant="User"
     />
   );
 }

@@ -226,7 +226,12 @@ export function CommentBox({
           style={{ flex: 1, color: colorScheme === 'dark' ? colors.white : colors.offBlack }}
         />
         <Text className="text-sm text-metal">{characterCount}</Text>
-        <GalleryTouchableOpacity onPress={handleSubmit} disabled={disabledSendButton}>
+        <GalleryTouchableOpacity
+          eventElementId="Submit Comment Button"
+          eventName="Submit Comment Button Clicked"
+          onPress={handleSubmit}
+          disabled={disabledSendButton}
+        >
           <View
             className={`h-6 w-6 rounded-full flex items-center justify-center bg-red
             ${disabledSendButton ? 'bg-metal' : 'bg-activeBlue'}
@@ -238,7 +243,7 @@ export function CommentBox({
       </Animated.View>
 
       <Animated.View style={xmarkIconStyle}>
-        <GalleryTouchableOpacity onPress={handleDismiss}>
+        <GalleryTouchableOpacity eventElementId={null} eventName={null} onPress={handleDismiss}>
           <View className="h-6 w-6  items-center justify-center rounded-full">
             <XMarkIcon />
           </View>

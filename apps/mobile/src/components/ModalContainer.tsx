@@ -23,7 +23,12 @@ export function ModalContainer({ children, scrollable = false, withBackButton = 
 
         {withBackButton && (
           <View className="px-4">
-            <IconContainer icon={<XMarkIcon />} onPress={navigation.goBack} />
+            <IconContainer
+              eventElementId={null}
+              eventName={null}
+              icon={<XMarkIcon />}
+              onPress={navigation.goBack}
+            />
           </View>
         )}
       </View>

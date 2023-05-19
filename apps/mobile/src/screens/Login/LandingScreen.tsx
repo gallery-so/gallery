@@ -95,6 +95,8 @@ export function LandingScreen() {
           </View>
 
           <Button
+            eventElementId="Scan QR Code Button"
+            eventName="Scan QR Code Button Clicked"
             onPress={handleBottomSheetQRCodePress}
             icon={<QRCodeIcon />}
             text="SCAN QR CODE"
@@ -114,7 +116,7 @@ export function LandingScreen() {
           </Typography>
 
           <Button
-            id="QR Code Button"
+            eventElementId="QR Code Button"
             eventName="Sign In Selection"
             properties={{
               'Sign In Method': 'QR Code',
@@ -127,7 +129,7 @@ export function LandingScreen() {
           />
 
           <Button
-            id="Email Button"
+            eventElementId="Email Button"
             eventName="Sign In Selection"
             variant="secondary"
             properties={{

@@ -7,5 +7,12 @@ import { BackIcon } from '../icons/BackIcon';
 export function BackButton() {
   const navigation = useNavigation();
 
-  return <IconContainer icon={<BackIcon />} onPress={navigation.goBack} />;
+  return (
+    <IconContainer
+      eventElementId={null}
+      eventName={null}
+      icon={<BackIcon />}
+      onPress={navigation.goBack}
+    />
+  );
 }

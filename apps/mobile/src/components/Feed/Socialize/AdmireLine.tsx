@@ -87,7 +87,11 @@ export function AdmireLine({ admireRef, eventRef, queryRef, totalAdmires }: Prop
           <View className="flex flex-row">
             <Text className="text-xs dark:text-white">and </Text>
 
-            <GalleryTouchableOpacity onPress={handleOpen}>
+            <GalleryTouchableOpacity
+              onPress={handleOpen}
+              eventElementId="Expand Admirers Button"
+              eventName="Expand Admirers Button Clicked"
+            >
               <Typography
                 className="text-xs underline"
                 font={{ family: 'ABCDiatype', weight: 'Bold' }}

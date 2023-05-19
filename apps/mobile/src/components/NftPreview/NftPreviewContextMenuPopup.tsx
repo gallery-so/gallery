@@ -15,6 +15,7 @@ import { NftPreviewContextMenuPopupFragment$key } from '~/generated/NftPreviewCo
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { fitDimensionsToContainerCover } from '~/screens/NftDetailScreen/NftDetailAsset/fitDimensionToContainer';
 import { Dimensions } from '~/screens/NftDetailScreen/NftDetailAsset/types';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 
 import { shareToken } from '../../utils/shareToken';
@@ -98,11 +99,16 @@ export function NftPreviewContextMenuPopup({
     [collectionToken, navigation, token.dbid]
   );
 
+  const track = useTrack();
+
   return (
     <ContextMenuView
       // If we don't have a tokenUrl, we should bail
       isContextMenuEnabled={Boolean(tokenUrl)}
       onPressMenuItem={handleMenuItemPress}
+      onMenuDidShow={() => {
+        track('NFT Preview Long Press Popup');
+      }}
       menuConfig={{
         menuTitle: '',
         menuItems: [

@@ -85,7 +85,12 @@ export function UserFollowedUsersFeedEvent({
       </GalleryBottomSheetModal>
 
       <View className="flex flex-row space-x-1">
-        <GalleryTouchableOpacity onPress={handleFollowerPress}>
+        <GalleryTouchableOpacity
+          onPress={handleFollowerPress}
+          eventElementId="Feed Username Button"
+          eventName="Feed Username Clicked"
+          properties={{ variant: 'Follower' }}
+        >
           <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
             {followerUsername}
           </Typography>
@@ -95,7 +100,12 @@ export function UserFollowedUsersFeedEvent({
           followed
         </Typography>
 
-        <GalleryTouchableOpacity onPress={handleFolloweePress}>
+        <GalleryTouchableOpacity
+          onPress={handleFolloweePress}
+          eventElementId="Feed Username Button"
+          eventName="Feed Username Clicked"
+          properties={{ variant: 'Followee' }}
+        >
           <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
             {followeeUsername}
           </Typography>

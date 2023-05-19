@@ -61,7 +61,12 @@ export function FeedListSectionHeader({ feedEventRef }: FeedListSectionHeaderPro
   return (
     <View className="flex flex-row items-center justify-between bg-white dark:bg-black px-3 pb-2">
       <View className="flex flex-row space-x-1">
-        <GalleryTouchableOpacity onPress={handleUsernamePress}>
+        <GalleryTouchableOpacity
+          onPress={handleUsernamePress}
+          eventElementId="Feed Username Button"
+          eventName="Feed Username Clicked"
+          properties={{ variant: 'Feed event author' }}
+        >
           <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
             {feedEvent.eventData.owner?.username}
           </Typography>
@@ -71,7 +76,11 @@ export function FeedListSectionHeader({ feedEventRef }: FeedListSectionHeaderPro
           updated
         </Typography>
 
-        <GalleryTouchableOpacity onPress={handleGalleryNamePress}>
+        <GalleryTouchableOpacity
+          onPress={handleGalleryNamePress}
+          eventElementId="Feed Gallery Name Button"
+          eventName="Feed Gallery Name Clicked"
+        >
           <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
             {feedEvent.eventData.gallery?.name || 'their gallery'}
           </Typography>

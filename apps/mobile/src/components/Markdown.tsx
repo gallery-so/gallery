@@ -90,6 +90,8 @@ export function Markdown({
 
   return (
     <GalleryTouchableOpacity
+      eventElementId={null}
+      eventName={null}
       onPress={handlePress}
       disabled={numberOfLines === undefined || !touchToExpand}
     >
