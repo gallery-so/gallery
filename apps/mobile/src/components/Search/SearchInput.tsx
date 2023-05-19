@@ -87,6 +87,8 @@ export function SearchInput({ inputRef, setFilter, value, onChange, style, ...pr
       />
       {localKeyword.length > 0 && (
         <GalleryTouchableOpacity
+          eventElementId={null}
+          eventName={null}
           accessibilityRole="button"
           onPress={handleClear}
           className="-m-4 p-4"
@@ -98,6 +100,8 @@ export function SearchInput({ inputRef, setFilter, value, onChange, style, ...pr
       )}
       {isFocused && (
         <GalleryTouchableOpacity
+          eventElementId={null}
+          eventName={null}
           accessibilityRole="button"
           onPress={handleCancel}
           className="-m-4 p-4"

@@ -49,7 +49,7 @@ export function GalleryPreviewCard({ galleryRef, isFeatured }: GalleryPreviewCar
     <GalleryTouchableOpacity
       onPress={handlePress}
       className="bg-offWhite dark:bg-offBlack flex w-full flex-col space-y-3 rounded-xl p-3"
-      id="Gallery Preview Card"
+      eventElementId="Gallery Preview Card"
       eventName="Gallery Preview Card Clicked"
     >
       <View className="flex flex-row items-center justify-center">

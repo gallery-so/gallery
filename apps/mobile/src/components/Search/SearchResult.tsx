@@ -59,7 +59,7 @@ export function SearchResult({ title, description, variant, ...props }: Props) {
   return (
     <GalleryTouchableOpacity
       className="h-16 py-2 px-4"
-      id="Search Result Row"
+      eventElementId="Search Result Row"
       eventName="Search Result Row Clicked"
       properties={{ variant }}
       {...props}

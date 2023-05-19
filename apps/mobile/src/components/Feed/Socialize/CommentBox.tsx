@@ -227,10 +227,10 @@ export function CommentBox({
         />
         <Text className="text-sm text-metal">{characterCount}</Text>
         <GalleryTouchableOpacity
+          eventElementId="Submit Comment Button"
+          eventName="Submit Comment Button Clicked"
           onPress={handleSubmit}
           disabled={disabledSendButton}
-          id="Submit Comment Button"
-          eventName="Submit Comment Button Clicked"
         >
           <View
             className={`h-6 w-6 rounded-full flex items-center justify-center bg-red
@@ -243,7 +243,7 @@ export function CommentBox({
       </Animated.View>
 
       <Animated.View style={xmarkIconStyle}>
-        <GalleryTouchableOpacity onPress={handleDismiss}>
+        <GalleryTouchableOpacity eventElementId={null} eventName={null} onPress={handleDismiss}>
           <View className="h-6 w-6  items-center justify-center rounded-full">
             <XMarkIcon />
           </View>

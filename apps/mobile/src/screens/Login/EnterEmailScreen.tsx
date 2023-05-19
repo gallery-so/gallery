@@ -104,7 +104,7 @@ export function EnterEmailScreen() {
             />
 
             <Button
-              id="Submit Email Button"
+              eventElementId="Submit Email Button"
               eventName="Sign In Attempt"
               loading={isLoggingIn}
               onPress={handleContinue}

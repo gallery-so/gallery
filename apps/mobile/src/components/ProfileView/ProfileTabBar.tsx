@@ -24,7 +24,7 @@ function TabItem({ activeRoute, counter = 0, route, onRouteChange }: TabItemProp
       accessibilityRole="button"
       accessibilityState={isFocused ? { selected: true } : {}}
       onPress={onPress}
-      id="Profile Tab"
+      eventElementId="Profile Tab"
       eventName="Profile Tab Clicked"
       properties={{ variant: route }}
     >

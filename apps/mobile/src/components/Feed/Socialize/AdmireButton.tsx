@@ -260,7 +260,7 @@ export function AdmireButton({ eventRef, queryRef, style }: Props) {
       onPress={hasViewerAdmiredEvent ? handleRemoveAdmire : handleAdmire}
       className="flex justify-center align-center w-8 h-8 pt-0.5"
       style={style}
-      id="Admire Button"
+      eventElementId="Admire Button"
       eventName="Admire Button Clicked"
     >
       <AdmireIcon active={hasViewerAdmiredEvent} />

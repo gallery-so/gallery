@@ -44,7 +44,7 @@ export function RemainingAdmireCount({ remainingCount, eventRef, queryRef }: Pro
     <>
       <GalleryTouchableOpacity
         onPress={handleOpen}
-        id="Expand Admirers Button"
+        eventElementId="Expand Admirers Button"
         eventName="Expand Admirers Button Clicked"
       >
         <Typography className="text-xs underline" font={{ family: 'ABCDiatype', weight: 'Bold' }}>

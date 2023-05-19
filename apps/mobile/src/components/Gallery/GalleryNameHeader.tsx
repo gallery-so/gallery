@@ -46,7 +46,7 @@ export function GalleryNameHeader({ galleryRef, isOnGalleryScreen }: GalleryName
     <View className="flex flex-row items-center">
       <GalleryTouchableOpacity
         onPress={handleUsernamePress}
-        id="Gallery Header"
+        eventElementId="Gallery Header"
         eventName="Gallery Header Clicked"
         properties={{ variant: 'username' }}
       >
@@ -65,7 +65,7 @@ export function GalleryNameHeader({ galleryRef, isOnGalleryScreen }: GalleryName
       <GalleryTouchableOpacity
         disabled={isOnGalleryScreen}
         onPress={handleGalleryNamePress}
-        id="Gallery Header"
+        eventElementId="Gallery Header"
         eventName="Gallery Header Clicked"
         properties={{ variant: 'gallery title' }}
       >

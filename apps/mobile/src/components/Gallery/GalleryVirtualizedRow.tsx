@@ -27,7 +27,7 @@ export function GalleryVirtualizedRow({ item, isOnCollectionScreen }: Props) {
       <View className="flex flex-col px-4">
         <GalleryTouchableOpacity
           onPress={handlePress}
-          id="Feed Event Descriptor"
+          eventElementId="Feed Event Descriptor"
           eventName="Feed Event Descriptor Clicked"
           properties={{ variant: 'gallery title' }}
         >
@@ -49,7 +49,7 @@ export function GalleryVirtualizedRow({ item, isOnCollectionScreen }: Props) {
       <View className="flex flex-col bg-white dark:bg-black pt-2 pb-1 px-4">
         <GalleryTouchableOpacity
           onPress={handlePress}
-          id="Feed Event Descriptor"
+          eventElementId="Feed Event Descriptor"
           eventName="Feed Event Descriptor Clicked"
           properties={{ variant: 'collection title' }}
         >

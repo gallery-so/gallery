@@ -58,7 +58,7 @@ export function UserFollowedUsersFeedEvent({
       <View className="flex flex-row space-x-1">
         <GalleryTouchableOpacity
           onPress={handleFollowerPress}
-          id="Feed Username Button"
+          eventElementId="Feed Username Button"
           eventName="Feed Username Clicked"
           properties={{ variant: 'Follower' }}
         >
@@ -73,7 +73,7 @@ export function UserFollowedUsersFeedEvent({
 
         <GalleryTouchableOpacity
           onPress={handleFolloweePress}
-          id="Feed Username Button"
+          eventElementId="Feed Username Button"
           eventName="Feed Username Clicked"
           properties={{ variant: 'Followee' }}
         >

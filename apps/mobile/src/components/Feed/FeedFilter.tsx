@@ -16,7 +16,7 @@ export function FeedFilter({ activeFeed, onChange }: Props) {
     <View className="flex flex-row justify-center space-x-2 pt-5 pb-6">
       <GalleryTouchableOpacity
         onPress={() => onChange('Worldwide')}
-        id="Feed Filter Button"
+        eventElementId="Feed Filter Button"
         eventName="Feed Filter Clicked"
         properties={{ variant: 'Worldwide' }}
       >
@@ -34,7 +34,7 @@ export function FeedFilter({ activeFeed, onChange }: Props) {
       </GalleryTouchableOpacity>
       <GalleryTouchableOpacity
         onPress={() => onChange('Following')}
-        id="Feed Filter Button"
+        eventElementId="Feed Filter Button"
         eventName="Feed Filter Clicked"
         properties={{ variant: 'Following' }}
       >

@@ -36,7 +36,7 @@ function TabItem({ navigation, route, activeRoute }: TabItemProps) {
       accessibilityRole="button"
       accessibilityState={isFocused ? { selected: true } : {}}
       onPress={onPress}
-      id="Navigation Tab Item"
+      eventElementId="Navigation Tab Item"
       eventName="Navigation Tab Item Clicked"
       properties={{ variant: 'Feed', route: route.name }}
     >

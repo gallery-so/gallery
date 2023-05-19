@@ -67,7 +67,7 @@ export function ProfileViewHeader({ queryRef, selectedRoute, onRouteChange }: Pr
         <GalleryTouchableOpacity
           onPress={handleTwitterPress}
           className="px-4"
-          id="Social Pill"
+          eventElementId="Social Pill"
           eventName="Social Pill Clicked"
           properties={{ variant: 'Twitter' }}
         >

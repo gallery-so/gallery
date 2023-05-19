@@ -118,7 +118,7 @@ function FollowChip({
 }>) {
   return (
     <GalleryTouchableOpacity
-      id="Follow Button"
+      eventElementId="Follow Button"
       eventName="Follow Button Clicked"
       properties={{ variant }}
       onPress={onPress}

@@ -32,7 +32,7 @@ export function FeedbackButton() {
   return (
     <>
       <View className="flex flex-row space-x-4 h-full items-center">
-        <GalleryTouchableOpacity onPress={handleOpenSheet}>
+        <GalleryTouchableOpacity eventElementId={null} eventName={null} onPress={handleOpenSheet}>
           <BugReportIcon width={24} height={24} />
         </GalleryTouchableOpacity>
       </View>
@@ -52,7 +52,12 @@ export function FeedbackButton() {
             Your feedback will help shape the future of the app.
           </Typography>
           <View className="flex pt-4 w-full  content-center justify-center">
-            <Button text="Open Feedback Form" onPress={handleOpenForm} />
+            <Button
+              eventElementId={null}
+              eventName={null}
+              text="Open Feedback Form"
+              onPress={handleOpenForm}
+            />
           </View>
         </View>
       </GalleryBottomSheetModal>

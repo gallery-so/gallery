@@ -113,7 +113,10 @@ export function NftDetailScreenInner() {
           </Typography>
 
           {token.contract?.name ? (
-            <GalleryTouchableOpacity>
+            <GalleryTouchableOpacity
+              eventElementId="NFT Detail Contract Name Pill"
+              eventName="NFT Detail Contract Name Pill Clicked"
+            >
               <Pill className="flex flex-row space-x-1 self-start">
                 {token.chain === 'POAP' && <PoapIcon className="h-6 w-6" />}
                 {token.contract?.badgeURL && (

@@ -13,7 +13,7 @@ type IconContainerProps = {
 
 export function IconContainer({ icon, onPress, style, size }: IconContainerProps) {
   return (
-    <GalleryTouchableOpacity style={style} onPress={onPress}>
+    <GalleryTouchableOpacity eventElementId={null} eventName={null} style={style} onPress={onPress}>
       <View
         className={`bg-faint dark:bg-graphite items-center justify-center rounded-full ${
           size === 'sm' ? 'h-6 w-6' : 'h-8 w-8'

@@ -74,8 +74,24 @@ export function NotificationUpsellScreen() {
       </View>
 
       <View className="flex-row px-6 space-x-3">
-        <Button onPress={handleSkip} className="flex-1" text="SKIP" variant="secondary" />
-        <Button onPress={handleTurnOn} className="flex-1" text="ENABLE" variant="primary" />
+        <Button
+          eventElementId="Skip Enable Notification Upsell Button"
+          eventName="Toggle Mobile Notification"
+          properties={{ variant: 'disable' }}
+          onPress={handleSkip}
+          className="flex-1"
+          text="SKIP"
+          variant="secondary"
+        />
+        <Button
+          eventElementId="Skip Enable Notification Upsell Button"
+          eventName="Toggle Mobile Notification"
+          properties={{ variant: 'enable' }}
+          onPress={handleTurnOn}
+          className="flex-1"
+          text="ENABLE"
+          variant="primary"
+        />
       </View>
     </SafeAreaViewWithPadding>
   );

@@ -89,7 +89,7 @@ export function AdmireLine({ admireRef, eventRef, queryRef, totalAdmires }: Prop
 
             <GalleryTouchableOpacity
               onPress={handleOpen}
-              id="Expand Admirers Button"
+              eventElementId="Expand Admirers Button"
               eventName="Expand Admirers Button Clicked"
             >
               <Typography

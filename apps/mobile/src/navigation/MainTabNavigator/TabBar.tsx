@@ -44,7 +44,7 @@ function TabItem({ navigation, route, icon, activeRoute }: TabItemProps) {
       accessibilityRole="button"
       accessibilityState={isFocused ? { selected: true } : {}}
       className={`px-8 ${isFocused ? 'opacity-100' : 'opacity-30'}`}
-      id="Navigation Tab Item"
+      eventElementId="Navigation Tab Item"
       eventName="Navigation Tab Item Clicked"
       properties={{ variant: 'Main', route: route.name }}
     >

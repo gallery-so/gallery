@@ -66,7 +66,7 @@ export function CommentButton({ eventRef, queryRef, style, onClick }: Props) {
         onPress={toggleCommentBox}
         className="flex justify-center items-center w-[32] h-[32] pt-1 "
         style={style}
-        id="Toggle Comment Box"
+        eventElementId="Toggle Comment Box"
         eventName="Toggle Comment Box Clicked"
       >
         <CommentIcon className="h-[20]" />

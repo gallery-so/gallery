@@ -10,7 +10,7 @@ export type GalleryElementTrackingProps = {
   // identifier for the element being acted upon.
   // this should be unique across the app.
   // e.g. `Feed Username Button`
-  id: string | null;
+  eventElementId: string | null;
   // name of the action. this can be duplicated.
   // e.g. `Follow User`
   eventName: string | null;

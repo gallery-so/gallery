@@ -64,7 +64,7 @@ export function CollectionUpdatedFeedEvent({
         <GalleryTouchableOpacity
           className="flex-1"
           onPress={handleCollectionNamePress}
-          id="Feed Collection Button"
+          eventElementId="Feed Collection Button"
           eventName="Feed Collection Name Clicked"
         >
           <Typography

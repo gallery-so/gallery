@@ -91,7 +91,7 @@ export function TrendingUserCard({ style, userRef, queryRef }: Props) {
       onPress={handlePress}
       className="bg-offWhite dark:bg-offBlack flex-1 rounded-md p-2"
       style={[style]}
-      id="Trending User Card"
+      eventElementId="Trending User Card"
       eventName="Trending User Card Clicked"
     >
       <View className="mb-2 flex h-20 flex-row space-x-[2]">

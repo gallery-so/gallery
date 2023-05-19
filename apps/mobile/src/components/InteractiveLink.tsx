@@ -25,7 +25,7 @@ export function InteractiveLink({ href, style, onPress, showUnderline = false, c
     <GalleryTouchableOpacity
       style={style}
       onPress={handlePress}
-      id="Interactive Link"
+      eventElementId="Interactive Link"
       eventName="Link Clicked"
       properties={{ href: href ?? 'undefined' }}
     >
