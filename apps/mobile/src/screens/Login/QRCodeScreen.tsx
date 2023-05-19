@@ -82,6 +82,8 @@ export function QRCodeScreen() {
 
       <View className="absolute inset-0 flex flex-col justify-between">
         <IconContainer
+          eventElementId={null}
+          eventName={null}
           style={{ top }}
           className="px-6 py-2"
           icon={<BackIcon />}

@@ -98,7 +98,12 @@ export function NftDetailScreenInner() {
         <View className="flex flex-col space-y-3">
           <View className="flex flex-row justify-between">
             <BackButton />
-            <IconContainer icon={<ShareIcon />} onPress={handleShare} />
+            <IconContainer
+              eventElementId="NFT Detail Share Icon"
+              eventName="NFT Detail Share Icon Clicked"
+              icon={<ShareIcon />}
+              onPress={handleShare}
+            />
           </View>
 
           <NftDetailAsset collectionTokenRef={collectionToken} />
