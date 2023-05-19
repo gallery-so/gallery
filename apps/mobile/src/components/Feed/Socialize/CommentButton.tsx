@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useRef } from 'react';
-import { Keyboard, useColorScheme, View, ViewProps } from 'react-native';
+import { useColorScheme, View, ViewProps } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import {
@@ -54,12 +54,6 @@ export function CommentButton({ eventRef, queryRef, style, onClick }: Props) {
     bottomSheetRef.current?.present();
   }, [onClick]);
 
-  const handleBottomSheetChange = useCallback((fromIndex: number, toIndex: number) => {
-    if (toIndex === -1) {
-      Keyboard.dismiss();
-    }
-  }, []);
-
   return (
     <>
       <GalleryTouchableOpacity
@@ -72,7 +66,6 @@ export function CommentButton({ eventRef, queryRef, style, onClick }: Props) {
       <GalleryBottomSheetModal
         index={0}
         ref={bottomSheetRef}
-        onAnimate={handleBottomSheetChange}
         snapPoints={snapPoints}
         enableHandlePanningGesture={false}
         android_keyboardInputMode="adjustResize"
