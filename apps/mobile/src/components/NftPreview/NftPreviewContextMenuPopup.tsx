@@ -106,6 +106,9 @@ export function NftPreviewContextMenuPopup({
       // If we don't have a tokenUrl, we should bail
       isContextMenuEnabled={Boolean(tokenUrl)}
       onPressMenuItem={handleMenuItemPress}
+      onMenuDidShow={() => {
+        track('NFT Preview Long Press Popup');
+      }}
       menuConfig={{
         menuTitle: '',
         menuItems: [
@@ -143,8 +146,6 @@ export function NftPreviewContextMenuPopup({
           container: { width: MAX_WIDTH, height: MAX_HEIGHT },
           source: imageDimensions ?? { width: MAX_WIDTH, height: MAX_WIDTH }, // Square aspect ratio fallback
         });
-
-        track('NFT Preview Long Press Popup');
 
         return (
           <View className="bg-white dark:bg-black">
