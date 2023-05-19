@@ -90,5 +90,16 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       },
     ],
   },
-  plugins: [['sentry-expo', { setCommits: true }], 'expo-barcode-scanner'],
+  plugins: [
+    ['sentry-expo', { setCommits: true }],
+    'expo-barcode-scanner',
+    [
+      'expo-build-properties',
+      {
+        ios: {
+          unstable_networkInspector: true,
+        },
+      },
+    ],
+  ],
 });
