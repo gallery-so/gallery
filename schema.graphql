@@ -1,11 +1,5 @@
 directive @defer(label: String, if: Boolean! = true) on FRAGMENT_SPREAD | INLINE_FRAGMENT
 
-"""Exposes a URL that specifies the behavior of this scalar."""
-directive @specifiedBy(
-  """The URL that specifies the behavior of this scalar."""
-  url: String!
-) on SCALAR
-
 enum Action {
   UserCreated
   UserFollowedUsers
@@ -535,7 +529,7 @@ type FeedEvent implements Node {
   admires(before: String, after: String, first: Int, last: Int): FeedEventAdmiresConnection
   comments(before: String, after: String, first: Int, last: Int): FeedEventCommentsConnection
   caption: String
-  interactions(before: String, after: String, first: Int, last: Int, typeFilter: [InteractionType!]): FeedEventInteractionsConnection
+  interactions(before: String, after: String, first: Int, last: Int): FeedEventInteractionsConnection
   viewerAdmire: Admire
   hasViewerAdmiredEvent: Boolean
 }
@@ -702,7 +696,7 @@ input GnosisSafeAuth {
   nonce: String!
 }
 
-interface GroupedNotification {
+interface GroupedNotification implements Notification & Node {
   id: ID!
   seen: Boolean
   creationTime: Time
@@ -877,7 +871,7 @@ type Mutation {
   updateEmailNotificationSettings(input: UpdateEmailNotificationSettingsInput!): UpdateEmailNotificationSettingsPayloadOrError
   unsubscribeFromEmailType(input: UnsubscribeFromEmailTypeInput!): UnsubscribeFromEmailTypePayloadOrError
   login(authMechanism: AuthMechanism!): LoginPayloadOrError
-  logout: LogoutPayload
+  logout(pushTokenToUnregister: String): LogoutPayload
   connectSocialAccount(input: SocialAuthMechanism!, display: Boolean! = true): ConnectSocialAccountPayloadOrError
   disconnectSocialAccount(accountType: SocialAccountType!): DisconnectSocialAccountPayloadOrError
   updateSocialAccountDisplayed(input: UpdateSocialAccountDisplayedInput!): UpdateSocialAccountDisplayedPayloadOrError
@@ -901,6 +895,7 @@ type Mutation {
   updateNotificationSettings(settings: NotificationSettingsInput): NotificationSettings
   preverifyEmail(input: PreverifyEmailInput!): PreverifyEmailPayloadOrError
   verifyEmail(input: VerifyEmailInput!): VerifyEmailPayloadOrError
+  verifyEmailMagicLink(input: VerifyEmailMagicLinkInput!): VerifyEmailMagicLinkPayloadOrError
   redeemMerch(input: RedeemMerchInput!): RedeemMerchPayloadOrError
   addRolesToUser(username: String!, roles: [Role]): AddRolesToUserPayloadOrError
   addWalletToUserUnchecked(input: AdminAddWalletInput!): AdminAddWalletPayloadOrError
@@ -920,7 +915,7 @@ interface Node {
   id: ID!
 }
 
-interface Notification {
+interface Notification implements Node {
   id: ID!
   seen: Boolean
   creationTime: Time
@@ -1708,6 +1703,16 @@ input VerifyEmailInput {
   token: String!
 }
 
+input VerifyEmailMagicLinkInput {
+  email: Email!
+}
+
+type VerifyEmailMagicLinkPayload {
+  canSend: Boolean!
+}
+
+union VerifyEmailMagicLinkPayloadOrError = VerifyEmailMagicLinkPayload | ErrInvalidInput
+
 type VerifyEmailPayload {
   email: Email!
 }
@@ -1775,4 +1780,3 @@ enum WalletType {
   EOA
   GnosisSafe
 }
-
