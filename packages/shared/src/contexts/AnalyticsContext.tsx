@@ -6,6 +6,19 @@ import { AnalyticsContextQuery } from '~/generated/AnalyticsContextQuery.graphql
 
 type EventProps = Record<string, unknown>;
 
+export type GalleryElementTrackingProps = {
+  // identifier for the element being acted upon.
+  // this should be unique across the app.
+  // e.g. `Feed Username Button`
+  id: string | null;
+  // name of the action. this can be duplicated.
+  // e.g. `Follow User`
+  eventName: string | null;
+  // custom metadata.
+  // e.g. { variant: 'Worldwide' }
+  properties?: EventProps;
+};
+
 type HookTrackFunction = (eventName: string, eventProps?: EventProps, checkAuth?: boolean) => void;
 
 const AnalyticsContext = createContext<HookTrackFunction | undefined>(undefined);
