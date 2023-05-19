@@ -5,6 +5,7 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { BackButton } from '~/components/BackButton';
+import { DarkModeToggle } from '~/components/DarkModeToggle';
 import { FollowButton } from '~/components/FollowButton';
 import { IconContainer } from '~/components/IconContainer';
 import { GalleryProfileNavBarFragment$key } from '~/generated/GalleryProfileNavBarFragment.graphql';
@@ -96,8 +97,7 @@ export function GalleryProfileNavBar({
 
   return (
     <View style={style} className="flex flex-row justify-between bg-white dark:bg-black">
-      {isLoggedInUser && !shouldShowBackButton && <FeedbackButton />}
-      {shouldShowBackButton ? <BackButton /> : <View />}
+      {shouldShowBackButton ? <BackButton /> : <DarkModeToggle />}
 
       <View className="flex flex-row items-center space-x-2">
         {isLoggedInUser && <IconContainer icon={<QRCodeIcon />} onPress={handleQrCode} />}
