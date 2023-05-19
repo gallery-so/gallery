@@ -44,6 +44,8 @@ export function EnterEmailScreen() {
       message: string;
       underlyingError?: Error;
     }) {
+      track('Sign In Failure', { 'Sign in method': 'Email', error: message });
+
       if (underlyingError) {
         reportError(underlyingError);
       } else {
@@ -87,7 +89,6 @@ export function EnterEmailScreen() {
       const result = await login({ magicLink: { token } });
 
       if (result.kind === 'failure') {
-        track('Sign In Failure', { 'Sign in method': 'Email', error: result.message });
         handleLoginError({ message: result.message });
       } else {
         track('Sign In Success', { 'Sign in method': 'Email' });
