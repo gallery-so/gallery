@@ -2,6 +2,7 @@ import { View } from 'react-native';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
 import { GallerySkeleton } from '~/components/GallerySkeleton';
+import { GalleryProfileNavbarFallback } from '~/components/ProfileView/GalleryProfileNavBar';
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 
 export function ProfileViewFallback() {
@@ -9,17 +10,12 @@ export function ProfileViewFallback() {
 
   return (
     <View className="flex-1 bg-white dark:bg-black px-4" style={{ paddingTop: top }}>
+      <GalleryProfileNavbarFallback shouldShowBackButton={true} />
+
       <GallerySkeleton>
         <SkeletonPlaceholder.Item flexDirection="column" width="100%">
-          <SkeletonPlaceholder.Item flexDirection="row" justifyContent="flex-end">
-            <SkeletonPlaceholder.Item flexDirection="row" gap={4}>
-              <SkeletonPlaceholder.Item height={28} width={28} />
-              <SkeletonPlaceholder.Item height={28} width={28} />
-            </SkeletonPlaceholder.Item>
-          </SkeletonPlaceholder.Item>
-
-          <SkeletonPlaceholder.Item marginVertical={16} flexDirection="row" justifyContent="center">
-            <SkeletonPlaceholder.Item width={100} height={20} />
+          <SkeletonPlaceholder.Item marginBottom={16} flexDirection="row" justifyContent="center">
+            <SkeletonPlaceholder.Item width={100} height={32} />
           </SkeletonPlaceholder.Item>
 
           <SkeletonPlaceholder.Item flexDirection="column" gap={4}>

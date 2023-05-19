@@ -16,33 +16,44 @@ type Props = {
   selectedRoute: string;
   onRouteChange: (value: string) => void;
 
-  userRef: ProfileViewHeaderFragment$key;
+  queryRef: ProfileViewHeaderFragment$key;
 };
 
-export function ProfileViewHeader({ userRef, selectedRoute, onRouteChange }: Props) {
-  const user = useFragment(
+export function ProfileViewHeader({ queryRef, selectedRoute, onRouteChange }: Props) {
+  const query = useFragment(
     graphql`
-      fragment ProfileViewHeaderFragment on GalleryUser {
-        bio
-
-        galleries {
-          __typename
-          hidden
-        }
-        followers {
-          __typename
-        }
-
-        socialAccounts {
-          twitter {
+      fragment ProfileViewHeaderFragment on Query {
+        userByUsername(username: $username) {
+          ... on GalleryUser {
             __typename
-            username
+            bio
+
+            galleries {
+              __typename
+              hidden
+            }
+            followers {
+              __typename
+            }
+
+            socialAccounts {
+              twitter {
+                __typename
+                username
+              }
+            }
           }
         }
       }
     `,
-    userRef
+    queryRef
   );
+
+  const user = query?.userByUsername;
+
+  if (user?.__typename !== 'GalleryUser') {
+    throw new Error(`Unable to fetch the current user`);
+  }
 
   const handleTwitterPress = useCallback(() => {
     if (user.socialAccounts?.twitter?.username) {

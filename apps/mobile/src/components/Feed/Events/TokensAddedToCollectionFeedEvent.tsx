@@ -72,7 +72,7 @@ export function TokensAddedToCollectionFeedEvent({
             className="text-sm"
             font={{ family: 'ABCDiatype', weight: 'Bold' }}
           >
-            {eventData.collection?.name || 'Untitled'}
+            {eventData.collection?.name || 'their collection'}
           </Typography>
         </GalleryTouchableOpacity>
       </FeedEventCarouselCellHeader>

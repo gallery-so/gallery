@@ -14,29 +14,33 @@ import { useListContentStyle } from '~/components/ProfileView/Tabs/useListConten
 import { ProfileViewFeaturedTabFragment$key } from '~/generated/ProfileViewFeaturedTabFragment.graphql';
 
 type ProfileViewFeaturedTabProps = {
-  userRef: ProfileViewFeaturedTabFragment$key;
+  queryRef: ProfileViewFeaturedTabFragment$key;
 };
 
-export function ProfileViewFeaturedTab({ userRef }: ProfileViewFeaturedTabProps) {
-  const user = useFragment(
+export function ProfileViewFeaturedTab({ queryRef }: ProfileViewFeaturedTabProps) {
+  const query = useFragment(
     graphql`
-      fragment ProfileViewFeaturedTabFragment on GalleryUser {
-        __typename
+      fragment ProfileViewFeaturedTabFragment on Query {
+        userByUsername(username: $username) {
+          ... on GalleryUser {
+            featuredGallery {
+              ...createVirtualizedGalleryRows
 
-        featuredGallery {
-          ...createVirtualizedGalleryRows
-
-          # This is so we have the cache prefilled for their full gallery page / collection page
-          # eslint-disable-next-line relay/must-colocate-fragment-spreads
-          ...GalleryScreenGalleryFragment @defer
+              # This is so we have the cache prefilled for their full gallery page / collection page
+              # eslint-disable-next-line relay/must-colocate-fragment-spreads
+              ...GalleryScreenGalleryFragment @defer
+            }
+          }
         }
       }
     `,
-    userRef
+    queryRef
   );
 
-  if (!user.featuredGallery) {
-    throw new Error('Yikes');
+  const user = query.userByUsername;
+
+  if (!user?.featuredGallery) {
+    throw new Error('TODO');
   }
 
   const { items, stickyIndices } = createVirtualizedGalleryRows({
