@@ -17,14 +17,11 @@ if (process.env.NEXT_PUBLIC_MIXPANEL_TOKEN && process.env.NEXT_PUBLIC_ANALYTICS_
 }
 
 // raw tracking. use this sparingly if you can't use hooks, or are outside the analytics context.
-export const _track: TrackFunction = (eventName, eventProps, userId) => {
+export const _track: TrackFunction = (eventName, eventProps) => {
   if (!mixpanelEnabled) return;
 
   try {
-    mixpanel.track(eventName, {
-      userId, // field will be `null` if no user ID exists
-      ...eventProps,
-    });
+    mixpanel.track(eventName, eventProps);
   } catch (error: unknown) {
     // mixpanel errors shouldn't disrupt app
     captureException(error);
