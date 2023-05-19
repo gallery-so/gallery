@@ -1,12 +1,21 @@
 import { useNavigation } from '@react-navigation/native';
-import { useCallback } from 'react';
+import { Suspense, useCallback, useMemo, useRef, useState } from 'react';
 import { View } from 'react-native';
-import { useFragment } from 'react-relay';
+import { useFragment, useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
+import {
+  GalleryBottomSheetModal,
+  GalleryBottomSheetModalType,
+} from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
+import { UserFollowList } from '~/components/UserFollowList/UserFollowList';
+import { UserFollowListFallback } from '~/components/UserFollowList/UserFollowListFallback';
+import { UserFollowedUsersFeedEventFollowersFragment$key } from '~/generated/UserFollowedUsersFeedEventFollowersFragment.graphql';
+import { UserFollowedUsersFeedEventFollowListQuery } from '~/generated/UserFollowedUsersFeedEventFollowListQuery.graphql';
 import { UserFollowedUsersFeedEventFragment$key } from '~/generated/UserFollowedUsersFeedEventFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { getTimeSince } from '~/shared/utils/time';
 
 import { Typography } from '../../Typography';
@@ -30,6 +39,7 @@ export function UserFollowedUsersFeedEvent({
         followed {
           user {
             username
+            ...UserFollowedUsersFeedEventFollowersFragment
           }
         }
       }
@@ -37,8 +47,13 @@ export function UserFollowedUsersFeedEvent({
     userFollowedUsersFeedEventDataRef
   );
 
+  const followedUsers = useMemo(() => {
+    return removeNullValues(eventData.followed?.map((followed) => followed?.user));
+  }, [eventData.followed]);
+
   const followerUsername = eventData.owner?.username;
   const followeeUsername = eventData.followed?.[0]?.user?.username;
+  const remainingFolloweeCount = eventData.followed?.length ? eventData.followed?.length - 1 : 0;
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
   const handleFollowerPress = useCallback(() => {
@@ -53,8 +68,22 @@ export function UserFollowedUsersFeedEvent({
     }
   }, [followeeUsername, navigation]);
 
+  const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
+
+  const [opened, setOpened] = useState(false);
+  const handleOthersPress = useCallback(() => {
+    setOpened(true);
+    bottomSheetRef.current?.present();
+  }, []);
+
   return (
     <View className="flex flex-row justify-between items-center px-3">
+      <GalleryBottomSheetModal ref={bottomSheetRef} snapPoints={[320]}>
+        <Suspense fallback={<UserFollowListFallback />}>
+          {opened && <FollowList userRefs={followedUsers} />}
+        </Suspense>
+      </GalleryBottomSheetModal>
+
       <View className="flex flex-row space-x-1">
         <GalleryTouchableOpacity onPress={handleFollowerPress}>
           <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
@@ -71,6 +100,23 @@ export function UserFollowedUsersFeedEvent({
             {followeeUsername}
           </Typography>
         </GalleryTouchableOpacity>
+
+        {remainingFolloweeCount && (
+          <View className="flex flex-row space-x-1">
+            <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
+              and
+            </Typography>
+
+            <GalleryTouchableOpacity onPress={handleOthersPress}>
+              <Typography
+                className="text-sm underline"
+                font={{ family: 'ABCDiatype', weight: 'Bold' }}
+              >
+                {remainingFolloweeCount} {remainingFolloweeCount === 1 ? 'other' : 'others'}
+              </Typography>
+            </GalleryTouchableOpacity>
+          </View>
+        )}
       </View>
 
       <View>
@@ -83,4 +129,30 @@ export function UserFollowedUsersFeedEvent({
       </View>
     </View>
   );
+}
+
+type FollowListProps = {
+  userRefs: UserFollowedUsersFeedEventFollowersFragment$key;
+};
+
+function FollowList({ userRefs }: FollowListProps) {
+  const query = useLazyLoadQuery<UserFollowedUsersFeedEventFollowListQuery>(
+    graphql`
+      query UserFollowedUsersFeedEventFollowListQuery {
+        ...UserFollowListQueryFragment
+      }
+    `,
+    {}
+  );
+
+  const users = useFragment(
+    graphql`
+      fragment UserFollowedUsersFeedEventFollowersFragment on GalleryUser @relay(plural: true) {
+        ...UserFollowListFragment
+      }
+    `,
+    userRefs
+  );
+
+  return <UserFollowList userRefs={users} queryRef={query} onUserPress={() => {}} />;
 }
