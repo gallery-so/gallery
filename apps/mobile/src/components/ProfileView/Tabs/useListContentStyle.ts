@@ -1,9 +1,9 @@
-import { useColorScheme } from 'react-native';
+import { useColorScheme } from 'nativewind';
 
 import colors from '~/shared/theme/colors';
 
 export function useListContentStyle() {
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useColorScheme();
 
   return {
     flex: 1,

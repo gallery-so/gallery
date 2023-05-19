@@ -1,11 +1,11 @@
+import { useColorScheme } from 'nativewind';
 import * as React from 'react';
-import { useColorScheme } from 'react-native';
 import Svg, { Path, SvgProps } from 'react-native-svg';
 
 import colors from '~/shared/theme/colors';
 
 export function TwitterIcon(props: SvgProps) {
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useColorScheme();
 
   return (
     <Svg width={14} height={12} viewBox="0 0 14 12" fill="none" {...props}>

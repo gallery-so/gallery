@@ -1,6 +1,6 @@
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { useColorScheme } from 'nativewind';
 import { Suspense } from 'react';
-import { useColorScheme } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 
 import { ProfileViewFallback } from '~/components/ProfileView/ProfileViewFallback';
@@ -58,7 +58,7 @@ function NotificationsScreen() {
 }
 
 export function MainTabNavigator() {
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useColorScheme();
 
   return (
     <Tab.Navigator

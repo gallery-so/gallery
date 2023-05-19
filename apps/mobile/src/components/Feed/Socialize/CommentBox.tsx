@@ -1,6 +1,7 @@
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
+import { useColorScheme } from 'nativewind';
 import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
-import { Text, useColorScheme, View, ViewStyle } from 'react-native';
+import { Text, View, ViewStyle } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { AnimatedStyleProp } from 'react-native-reanimated';
 import { ConnectionHandler, graphql, useFragment } from 'react-relay';
@@ -63,7 +64,7 @@ export function CommentBox({
   );
 
   const reportError = useReportError();
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useColorScheme();
   const [value, setValue] = useState('');
 
   const characterCount = useMemo(() => 100 - value.length, [value]);

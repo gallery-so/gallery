@@ -1,11 +1,11 @@
+import { useColorScheme } from 'nativewind';
 import * as React from 'react';
-import { useColorScheme } from 'react-native';
 import Svg, { ClipPath, Defs, G, Path, SvgProps } from 'react-native-svg';
 
 import colors from '~/shared/theme/colors';
 
 export function QRCodeIcon(props: SvgProps) {
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useColorScheme();
 
   return (
     <Svg width={16} height={16} viewBox="0 0 16 16" fill="none" {...props}>

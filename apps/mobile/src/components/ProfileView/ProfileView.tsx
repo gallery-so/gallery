@@ -1,5 +1,6 @@
+import { useColorScheme } from 'nativewind';
 import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
-import { useColorScheme, View } from 'react-native';
+import { View } from 'react-native';
 import { CollapsibleRef, Tabs } from 'react-native-collapsible-tab-view';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -59,7 +60,7 @@ export function ProfileView({ queryRef, shouldShowBackButton }: ProfileViewProps
     }
   }, [selectedRoute]);
 
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useColorScheme();
 
   return (
     <View className="flex-1">

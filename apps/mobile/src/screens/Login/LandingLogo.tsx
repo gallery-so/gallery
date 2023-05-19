@@ -1,11 +1,11 @@
+import { useColorScheme } from 'nativewind';
 import * as React from 'react';
-import { useColorScheme } from 'react-native';
 import Svg, { Path, SvgProps } from 'react-native-svg';
 
 import colors from '~/shared/theme/colors';
 
 export function LandingLogo(props: SvgProps) {
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useColorScheme();
   return (
     <Svg width={147} height={35} fill="none" {...props}>
       <Path

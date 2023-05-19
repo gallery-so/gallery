@@ -1,11 +1,11 @@
+import { useColorScheme } from 'nativewind';
 import * as React from 'react';
-import { useColorScheme } from 'react-native';
 import Svg, { Path, SvgProps } from 'react-native-svg';
 
 import colors from '~/shared/theme/colors';
 
 export function ShareIcon(props: SvgProps) {
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useColorScheme();
   const stroke = colorScheme === 'dark' ? colors.white : colors.offBlack;
   return (
     <Svg width={16} height={16} fill="none" {...props}>
