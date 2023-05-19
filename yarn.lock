@@ -17193,15 +17193,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-dev-menu-interface@npm:1.1.1":
-  version: 1.1.1
-  resolution: "expo-dev-menu-interface@npm:1.1.1"
-  peerDependencies:
-    expo: "*"
-  checksum: 04d9efe30916d520e7d8ec46fb31a7971b6efae2af3b7e787affc20b17f9dc0a409d3b0f73d4fd757133201ece9e119e3da3fb2082ee801fbf7291e5403914ce
-  languageName: node
-  linkType: hard
-
 "expo-dev-menu-interface@npm:1.2.0":
   version: 1.2.0
   resolution: "expo-dev-menu-interface@npm:1.2.0"
@@ -17211,7 +17202,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-dev-menu@npm:3.0.0":
+"expo-dev-menu@npm:3.0.0, expo-dev-menu@npm:^3.0.0":
   version: 3.0.0
   resolution: "expo-dev-menu@npm:3.0.0"
   dependencies:
@@ -17220,18 +17211,6 @@ __metadata:
   peerDependencies:
     expo: "*"
   checksum: 223dee3da8553e7b42ee23f79f4ab6974472944b547fcc4d0a7b950ecbd4020d213622e80b50a08503239f30458cb2e108ee377500e44bd4180c1fa26fbf1404
-  languageName: node
-  linkType: hard
-
-"expo-dev-menu@npm:^2.1.4":
-  version: 2.1.4
-  resolution: "expo-dev-menu@npm:2.1.4"
-  dependencies:
-    expo-dev-menu-interface: 1.1.1
-    semver: ^7.3.5
-  peerDependencies:
-    expo: "*"
-  checksum: 6d61c1eea64715b684c3ef06fa020cb9c5a59375fd2479a010f2c81918bd44c7139b64df6604bdc507317d5e68e21d261238d3b0e32ed6e8f96eed5eef90739e
   languageName: node
   linkType: hard
 
@@ -24921,7 +24900,7 @@ __metadata:
     expo-barcode-scanner: ~12.3.2
     expo-constants: ^14.2.1
     expo-dev-client: ^2.2.1
-    expo-dev-menu: ^2.1.4
+    expo-dev-menu: ^3.0.0
     expo-device: ~5.2.1
     expo-font: ~11.1.1
     expo-notifications: ^0.18.1
@@ -24935,7 +24914,7 @@ __metadata:
     nativewind: ^2.0.11
     node-html-parser: ^6.1.5
     react: 18.2.0
-    react-native: 0.71.7
+    react-native: 0.71.8
     react-native-collapsible-tab-view: ^6.1.4
     react-native-fast-image: ^8.6.3
     react-native-fetch-api: ^3.0.0
@@ -27929,10 +27908,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-gradle-plugin@npm:^0.71.17":
-  version: 0.71.17
-  resolution: "react-native-gradle-plugin@npm:0.71.17"
-  checksum: 5ff996bafc3959a36551dc34d481cefb070ede4025b5eb2ce659f51adf74ba0e6845cc019ea1d547e0b4007f1c3c68146fa719688f09bde308f25320c6c6f834
+"react-native-gradle-plugin@npm:^0.71.18":
+  version: 0.71.18
+  resolution: "react-native-gradle-plugin@npm:0.71.18"
+  checksum: 19f0a41e29c9210ff495010aaa612f2c2f4f5f937b6c20266c8dc62f4ccedc65bb7576de59b2f3fd2bb8044ce9785e56673879f2eb452f948e6659a5e1fa5894
   languageName: node
   linkType: hard
 
@@ -28126,9 +28105,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native@npm:0.71.7":
-  version: 0.71.7
-  resolution: "react-native@npm:0.71.7"
+"react-native@npm:0.71.8":
+  version: 0.71.8
+  resolution: "react-native@npm:0.71.8"
   dependencies:
     "@jest/create-cache-key-function": ^29.2.1
     "@react-native-community/cli": 10.2.2
@@ -28155,7 +28134,7 @@ __metadata:
     promise: ^8.3.0
     react-devtools-core: ^4.26.1
     react-native-codegen: ^0.71.5
-    react-native-gradle-plugin: ^0.71.17
+    react-native-gradle-plugin: ^0.71.18
     react-refresh: ^0.4.0
     react-shallow-renderer: ^16.15.0
     regenerator-runtime: ^0.13.2
@@ -28168,7 +28147,7 @@ __metadata:
     react: 18.2.0
   bin:
     react-native: cli.js
-  checksum: efd91d5560290b883e0d3d3482cc4657268c2e480171b63a0c6b7dc8f6b1331298feac7d9966e1831d95d9fee893dfa831252052561232843e4982880238f09e
+  checksum: fe887c1b8bded23f9efea9dc10a8a8b2f32147e06418fc9a78294944874797abb0185ebcb0fdc5ce88046280bca72264ae8d119f4ca681a3e0bc502d0f75bfbe
   languageName: node
   linkType: hard
 
