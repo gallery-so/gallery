@@ -5,6 +5,7 @@ import { KeyboardAvoidingView, View } from 'react-native';
 import { SafeAreaViewWithPadding } from '~/components/SafeAreaViewWithPadding';
 import { LoginStackNavigatorProp } from '~/navigation/types';
 import { navigateToNotificationUpsellOrHomeScreen } from '~/screens/Login/navigateToNotificationUpsellOrHomeScreen';
+import { useVerifyEmailMagicLink } from '~/screens/Login/useVerifyEmailMagicLink';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 
@@ -16,6 +17,8 @@ import { useLogin } from '../../hooks/useLogin';
 import { BackIcon } from '../../icons/BackIcon';
 import { magic } from '../../magic';
 
+const FALLBACK_ERROR_MESSAGE = `Something unexpected went wrong while logging in. We've been notified and are looking into it`;
+
 export function EnterEmailScreen() {
   const navigation = useNavigation<LoginStackNavigatorProp>();
 
@@ -24,48 +27,82 @@ export function EnterEmailScreen() {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   const [login] = useLogin();
+  const [verifyEmail] = useVerifyEmailMagicLink();
   const reportError = useReportError();
   const track = useTrack();
 
   const handleContinue = useCallback(async () => {
+    let hasNavigatedForward = false;
+
     setError('');
     setIsLoggingIn(true);
 
-    // Show the waiting screen.
-    navigation.navigate('WaitingForConfirmation', { email });
+    function handleLoginError({
+      message,
+      underlyingError,
+    }: {
+      message: string;
+      underlyingError?: Error;
+    }) {
+      track('Sign In Failure', { 'Sign in method': 'Email', error: message });
 
-    function handleLoginError(message: string) {
-      reportError(`LoginError: ${message}`);
+      if (underlyingError) {
+        reportError(underlyingError);
+      } else {
+        reportError(`LoginError: ${message}`);
+      }
 
       setError(message);
 
-      // Bring the user back to the login route with an error displayed.
-      navigation.goBack();
+      if (hasNavigatedForward) {
+        navigation.goBack();
+      }
     }
 
     try {
+      const { verifyEmailMagicLink } = await verifyEmail({ variables: { input: { email } } });
+
+      if (verifyEmailMagicLink?.__typename === 'ErrInvalidInput') {
+        return handleLoginError({
+          message: `The email address you entered doesn't look valid. Please try again.`,
+        });
+      } else if (verifyEmailMagicLink?.__typename === 'VerifyEmailMagicLinkPayload') {
+        if (!verifyEmailMagicLink.canSend) {
+          return handleLoginError({
+            message: `We don't recognize the email you entered. Login with QR code instead, or verify your email at gallery.so/settings`,
+          });
+        }
+      } else {
+        return handleLoginError({ message: FALLBACK_ERROR_MESSAGE });
+      }
+
+      // Show the waiting screen.
+      hasNavigatedForward = true;
+      navigation.navigate('WaitingForConfirmation', { email });
+
       const token = await magic.auth.loginWithMagicLink({ email, showUI: false });
 
       if (!token) {
-        handleLoginError(
-          "Something unexpected went wrong while logigng in. We've been notified and are looking into it"
-        );
-        return;
+        return handleLoginError({ message: FALLBACK_ERROR_MESSAGE });
       }
 
       const result = await login({ magicLink: { token } });
 
       if (result.kind === 'failure') {
-        track('Sign In Failure', { 'Sign in method': 'Email', error: result.message });
-        handleLoginError(result.message);
+        handleLoginError({ message: result.message });
       } else {
         track('Sign In Success', { 'Sign in method': 'Email' });
         await navigateToNotificationUpsellOrHomeScreen(navigation);
       }
+    } catch (error) {
+      handleLoginError({
+        message: FALLBACK_ERROR_MESSAGE,
+        underlyingError: error as Error,
+      });
     } finally {
       setIsLoggingIn(false);
     }
-  }, [email, login, navigation, reportError, track]);
+  }, [email, login, navigation, reportError, track, verifyEmail]);
 
   return (
     <SafeAreaViewWithPadding className="h-screen bg-white dark:bg-black">
