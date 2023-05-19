@@ -1,5 +1,5 @@
+import { useColorScheme } from 'nativewind';
 import { useMemo } from 'react';
-import { useColorScheme } from 'react-native';
 import Svg, { G, Path, SvgProps } from 'react-native-svg';
 
 import colors from '~/shared/theme/colors';
@@ -11,7 +11,7 @@ type Props = {
 } & SvgProps;
 
 export function AdmireIcon({ active = false, style, height = 28, ...props }: Props) {
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useColorScheme();
 
   const originalHeight = 24;
   const scale = height / originalHeight;

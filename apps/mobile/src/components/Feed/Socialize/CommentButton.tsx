@@ -1,5 +1,6 @@
+import { useColorScheme } from 'nativewind';
 import { useCallback, useMemo, useRef } from 'react';
-import { useColorScheme, View, ViewProps } from 'react-native';
+import { View, ViewProps } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import {
@@ -39,7 +40,7 @@ export function CommentButton({ eventRef, queryRef, style, onClick }: Props) {
     queryRef
   );
 
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useColorScheme();
 
   const bottomSheetRef = useRef<GalleryBottomSheetModalType>(null);
   const snapPoints = useMemo(() => [52], []);
@@ -83,7 +84,7 @@ export function CommentButton({ eventRef, queryRef, style, onClick }: Props) {
 }
 
 function Handle() {
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useColorScheme();
   return (
     <View
       className={`h-2 border-t ${

@@ -1,4 +1,5 @@
-import { TextInput, TextInputProps, useColorScheme, View } from 'react-native';
+import { useColorScheme } from 'nativewind';
+import { TextInput, TextInputProps, View } from 'react-native';
 
 import colors from '~/shared/theme/colors';
 
@@ -6,7 +7,7 @@ import colors from '~/shared/theme/colors';
 type Props = TextInputProps;
 
 export function FadedInput({ value, onChange, style, ...props }: Props) {
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useColorScheme();
 
   return (
     <View

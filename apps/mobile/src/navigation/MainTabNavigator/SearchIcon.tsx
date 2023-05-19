@@ -1,10 +1,10 @@
-import { useColorScheme } from 'react-native';
+import { useColorScheme } from 'nativewind';
 import Svg, { Path, SvgProps } from 'react-native-svg';
 
 import colors from '~/shared/theme/colors';
 
 export const SearchIcon = (props: SvgProps) => {
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useColorScheme();
 
   return (
     <Svg width={18} height={17} fill="none" {...props}>

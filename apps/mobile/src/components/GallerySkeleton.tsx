@@ -1,5 +1,5 @@
+import { useColorScheme } from 'nativewind';
 import { useMemo } from 'react';
-import { useColorScheme } from 'react-native';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
 import colors from '~/shared/theme/colors';
@@ -12,7 +12,7 @@ export function GallerySkeleton({ children }: { children: JSX.Element }) {
     return 800 + Math.random() * 800;
   }, []);
 
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useColorScheme();
 
   return (
     <SkeletonPlaceholder

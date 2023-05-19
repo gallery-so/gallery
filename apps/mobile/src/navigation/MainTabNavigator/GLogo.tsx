@@ -1,10 +1,10 @@
-import { useColorScheme } from 'react-native';
+import { useColorScheme } from 'nativewind';
 import Svg, { Path, SvgProps } from 'react-native-svg';
 
 import colors from '~/shared/theme/colors';
 
 export const GLogo = (props: SvgProps) => {
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useColorScheme();
 
   return (
     <Svg width={13} height={16} fill="none" {...props}>

@@ -1,10 +1,10 @@
-import { useColorScheme } from 'react-native';
+import { useColorScheme } from 'nativewind';
 import Svg, { Path, SvgProps } from 'react-native-svg';
 
 import colors from '~/shared/theme/colors';
 
 export const BugReportIcon = (props: SvgProps) => {
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useColorScheme();
   const stroke = colorScheme === 'dark' ? colors.white : colors.black;
 
   return (

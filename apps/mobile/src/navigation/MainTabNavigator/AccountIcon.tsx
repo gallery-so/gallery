@@ -1,10 +1,10 @@
-import { useColorScheme } from 'react-native';
+import { useColorScheme } from 'nativewind';
 import Svg, { G, Path, SvgProps } from 'react-native-svg';
 
 import colors from '~/shared/theme/colors';
 
 export const AccountIcon = (props: SvgProps) => {
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useColorScheme();
 
   return (
     <Svg width={25} height={24} fill="none" {...props}>
