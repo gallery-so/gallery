@@ -1,11 +1,14 @@
 import 'expo-dev-client';
 
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationContainer, useNavigationContainerRef } from '@react-navigation/native';
+import { addBreadcrumb } from '@sentry/react-native';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
+import { useColorScheme } from 'nativewind';
 import { Suspense, useEffect, useState } from 'react';
-import { View } from 'react-native';
+import { Appearance, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { RelayEnvironmentProvider } from 'react-relay';
@@ -48,13 +51,67 @@ export default function App() {
 
   const navigationRef = useNavigationContainerRef();
 
-  useEffect(() => {
-    if (fontsLoaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [fontsLoaded]);
+  const [colorSchemeLoaded, setColorSchemeLoaded] = useState(false);
+  const { setColorScheme, colorScheme } = useColorScheme();
 
-  if (!fontsLoaded) {
+  useEffect(
+    function loadInitialColorSchemeFromAsyncStorage() {
+      Promise.all([Appearance.getColorScheme(), AsyncStorage.getItem('colorScheme')])
+        .then(([systemColorScheme, storedColorScheme]) => {
+          const colorScheme = storedColorScheme ?? systemColorScheme ?? 'light';
+
+          addBreadcrumb({
+            category: 'theme',
+            message: `Loaded initial color scheme: ${colorScheme}`,
+          });
+
+          setColorScheme(colorScheme as 'light' | 'dark');
+
+          setColorSchemeLoaded(true);
+        })
+        .catch((error) => {
+          reportError(error);
+
+          setColorScheme('light');
+          setColorSchemeLoaded(true);
+        });
+    },
+    [setColorScheme]
+  );
+
+  useEffect(
+    function saveUsersColorSchemeToAsyncStorage() {
+      if (colorSchemeLoaded) {
+        addBreadcrumb({
+          category: 'theme',
+          message: `Saving color scheme to async storage: ${colorScheme}`,
+        });
+
+        AsyncStorage.setItem('colorScheme', colorScheme)
+          .then(() => {
+            addBreadcrumb({
+              category: 'theme',
+              message: `Saved color scheme to async storage: ${colorScheme}`,
+            });
+          })
+          .catch((error) => {
+            reportError(error);
+          });
+      }
+    },
+    [colorScheme, colorSchemeLoaded]
+  );
+
+  useEffect(
+    function markTheAppAsReadyWhenTheFontsAndColorSchemeHaveLoaded() {
+      if (fontsLoaded && colorSchemeLoaded) {
+        SplashScreen.hideAsync();
+      }
+    },
+    [colorSchemeLoaded, fontsLoaded]
+  );
+
+  if (!fontsLoaded || !colorSchemeLoaded) {
     return null;
   }
 
