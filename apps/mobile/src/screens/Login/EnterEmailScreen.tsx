@@ -69,7 +69,7 @@ export function EnterEmailScreen() {
       } else if (verifyEmailMagicLink?.__typename === 'VerifyEmailMagicLinkPayload') {
         if (!verifyEmailMagicLink.canSend) {
           return handleLoginError({
-            message: `We don't recognize the email you entered. Login with QR code instead, or verify your email at gallery.so/settings`,
+            message: `You have not verified your email. First verify at gallery.so/settings before signing in. Or login with QR Code instead.`,
           });
         }
       } else {
