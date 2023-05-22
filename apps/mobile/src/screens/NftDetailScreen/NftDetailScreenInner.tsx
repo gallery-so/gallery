@@ -35,26 +35,30 @@ export function NftDetailScreenInner() {
       query NftDetailScreenInnerQuery($tokenId: DBID!, $collectionId: DBID!) {
         collectionTokenById(tokenId: $tokenId, collectionId: $collectionId) {
           ... on CollectionToken {
+            collection {
+              ...shareTokenCollectionFragment
+            }
+          }
+        }
+
+        tokenById(id: $tokenId) {
+          ... on Token {
             __typename
+            name
+            chain
+            tokenId
+            description
 
-            token @required(action: THROW) {
-              __typename
+            contract {
               name
-              chain
-              tokenId
-              description
-
-              contract {
-                name
-                badgeURL
-              }
-
-              ...NftAdditionalDetailsFragment
+              badgeURL
             }
 
-            ...shareTokenFragment
+            ...NftAdditionalDetailsFragment
             ...NftDetailAssetFragment
           }
+
+          ...shareTokenFragment
         }
       }
     `,
@@ -74,13 +78,11 @@ export function NftDetailScreenInner() {
     // { tokenId: '2O1TnqK7sbhbdlAeQwLFkxo8T9i' }
   );
 
-  const collectionToken = query.collectionTokenById;
+  const token = query.tokenById;
 
-  if (collectionToken?.__typename !== 'CollectionToken') {
-    throw new Error('Invalid token');
+  if (token?.__typename !== 'Token') {
+    throw new Error("We couldn't find that token. Something went wrong and we're looking into it.");
   }
-
-  const token = collectionToken.token;
 
   const [showAdditionalDetails, setShowAdditionalDetails] = useState(false);
 
@@ -89,8 +91,8 @@ export function NftDetailScreenInner() {
   }, []);
 
   const handleShare = useCallback(() => {
-    shareToken(collectionToken);
-  }, [collectionToken]);
+    shareToken(token, query.collectionTokenById?.collection ?? null);
+  }, [query.collectionTokenById, token]);
 
   return (
     <ScrollView>
@@ -106,7 +108,7 @@ export function NftDetailScreenInner() {
             />
           </View>
 
-          <NftDetailAsset collectionTokenRef={collectionToken} />
+          <NftDetailAsset tokenRef={token} />
         </View>
 
         <View className="flex flex-col space-y-4">

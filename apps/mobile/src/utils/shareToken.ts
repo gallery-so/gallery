@@ -1,32 +1,37 @@
 import { Share } from 'react-native';
 import { graphql, readInlineData } from 'relay-runtime';
 
+import { shareTokenCollectionFragment$key } from '~/generated/shareTokenCollectionFragment.graphql';
 import { shareTokenFragment$key } from '~/generated/shareTokenFragment.graphql';
 
-export async function shareToken(collectionTokenRef: shareTokenFragment$key) {
-  const collectionToken = readInlineData(
+export async function shareToken(
+  tokenRef: shareTokenFragment$key,
+  collectionRef: shareTokenCollectionFragment$key | null
+) {
+  const collection = readInlineData(
     graphql`
-      fragment shareTokenFragment on CollectionToken @inline {
-        collection {
-          dbid
-        }
-        token {
-          dbid
-          owner {
-            username
-          }
+      fragment shareTokenCollectionFragment on Collection @inline {
+        dbid
+      }
+    `,
+    collectionRef
+  );
+
+  const token = readInlineData(
+    graphql`
+      fragment shareTokenFragment on Token @inline {
+        dbid
+        owner {
+          username
         }
       }
     `,
-    collectionTokenRef
+    tokenRef
   );
 
-  if (
-    collectionToken.token?.owner?.username &&
-    collectionToken.collection &&
-    collectionToken.token
-  ) {
-    const url = `https://gallery.so/${collectionToken.token.owner.username}/${collectionToken.collection?.dbid}/${collectionToken.token?.dbid}`;
+  // TODO(Terence) We need to handle the case where we're missing a collectionId
+  if (token.owner?.username && collection?.dbid) {
+    const url = `https://gallery.so/${token.owner.username}/${collection?.dbid}/${token.dbid}`;
 
     Share.share({ url });
   }

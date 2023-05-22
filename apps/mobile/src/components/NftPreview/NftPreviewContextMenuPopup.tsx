@@ -40,7 +40,10 @@ export function NftPreviewContextMenuPopup({
           gallery {
             dbid
           }
+
+          ...shareTokenCollectionFragment
         }
+
         token @required(action: THROW) {
           dbid
           name
@@ -56,9 +59,9 @@ export function NftPreviewContextMenuPopup({
               }
             }
           }
-        }
 
-        ...shareTokenFragment
+          ...shareTokenFragment
+        }
       }
     `,
     collectionTokenRef
@@ -87,7 +90,7 @@ export function NftPreviewContextMenuPopup({
           });
         }
       } else if (event.nativeEvent.actionKey === 'share') {
-        shareToken(collectionToken);
+        shareToken(token, collectionToken.collection ?? null);
       } else if (event.nativeEvent.actionKey === 'view-gallery') {
         if (collectionToken.collection?.gallery?.dbid) {
           navigation.push('Gallery', {
@@ -96,7 +99,7 @@ export function NftPreviewContextMenuPopup({
         }
       }
     },
-    [collectionToken, navigation, token.dbid]
+    [collectionToken.collection, navigation, token]
   );
 
   const track = useTrack();

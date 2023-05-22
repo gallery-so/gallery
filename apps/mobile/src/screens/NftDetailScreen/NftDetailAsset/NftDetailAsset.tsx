@@ -17,53 +17,49 @@ import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlFo
 type ImageState = { kind: 'loading' } | { kind: 'loaded'; dimensions: Dimensions | null };
 
 type NftDetailProps = {
-  collectionTokenRef: NftDetailAssetFragment$key;
+  tokenRef: NftDetailAssetFragment$key;
   style?: ViewProps['style'];
 };
 
-export function NftDetailAsset({ collectionTokenRef, style }: NftDetailProps) {
-  const collectionToken = useFragment(
+export function NftDetailAsset({ tokenRef, style }: NftDetailProps) {
+  const token = useFragment(
     graphql`
-      fragment NftDetailAssetFragment on CollectionToken {
-        token @required(action: THROW) {
-          media {
+      fragment NftDetailAssetFragment on Token {
+        media {
+          __typename
+
+          ... on InvalidMedia {
             __typename
-
-            ... on InvalidMedia {
-              __typename
-            }
-
-            ... on AudioMedia {
-              __typename
-            }
-
-            ... on GIFMedia {
-              __typename
-            }
-            ... on ImageMedia {
-              __typename
-            }
-
-            ... on HtmlMedia {
-              contentRenderURL
-            }
-
-            ... on VideoMedia {
-              __typename
-              contentRenderURLs {
-                large
-              }
-            }
           }
 
-          ...getVideoOrImageUrlForNftPreviewFragment
+          ... on AudioMedia {
+            __typename
+          }
+
+          ... on GIFMedia {
+            __typename
+          }
+          ... on ImageMedia {
+            __typename
+          }
+
+          ... on HtmlMedia {
+            contentRenderURL
+          }
+
+          ... on VideoMedia {
+            __typename
+            contentRenderURLs {
+              large
+            }
+          }
         }
+
+        ...getVideoOrImageUrlForNftPreviewFragment
       }
     `,
-    collectionTokenRef
+    tokenRef
   );
-
-  const { token } = collectionToken;
 
   const windowDimensions = useWindowDimensions();
 
@@ -83,7 +79,7 @@ export function NftDetailAsset({ collectionTokenRef, style }: NftDetailProps) {
   const finalAssetDimensions = useMemo((): Dimensions => {
     if (viewDimensions && imageState.kind === 'loaded' && imageState.dimensions) {
       // Give the piece a little bit of breathing room. This might be an issue
-      // if we evers upport landscape view (turning your phone horizontally).
+      // if we ever support landscape view (turning your phone horizontally).
       const MAX_HEIGHT = windowDimensions.height - 400;
 
       // Width is the width of the parent view (the screen - some padding)
