@@ -117,7 +117,11 @@ export function UserFollowedUsersFeedEvent({
               and
             </Typography>
 
-            <GalleryTouchableOpacity onPress={handleOthersPress}>
+            <GalleryTouchableOpacity
+              onPress={handleOthersPress}
+              eventElementId={null}
+              eventName={null}
+            >
               <Typography
                 className="text-sm underline"
                 font={{ family: 'ABCDiatype', weight: 'Bold' }}
