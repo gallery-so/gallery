@@ -56,6 +56,25 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     },
   },
   android: {
+    intentFilters: [
+      {
+        action: 'VIEW',
+        autoVerify: true,
+        data: [
+          {
+            scheme: 'https',
+            host: 'gallery.so',
+            pathPrefix: '/',
+          },
+          {
+            scheme: 'https',
+            host: 'gallery-dev.vercel.app',
+            pathPrefix: '/',
+          },
+        ],
+        category: ['BROWSABLE', 'DEFAULT'],
+      },
+    ],
     blockedPermissions: ['android.permission.RECORD_AUDIO'],
     package: 'com.usegallery.gallery',
     splash: {
