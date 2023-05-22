@@ -36,9 +36,7 @@ export function NotificationList({ queryRef }: Props) {
         viewer {
           ... on Viewer {
             id
-            user {
-              dbid
-            }
+
             notifications(last: $notificationsLast, before: $notificationsBefore)
               @connection(key: "NotificationsFragment_notifications") {
               edges {
@@ -85,12 +83,8 @@ export function NotificationList({ queryRef }: Props) {
   // if user go outside of notifications screen, clear notifications
   useFocusEffect(
     useCallback(() => {
-      return () => {
-        if (query.viewer?.user?.dbid && query.viewer.id) {
-          clearNotifications();
-        }
-      };
-    }, [clearNotifications, query.viewer?.id, query.viewer?.user?.dbid])
+      clearNotifications();
+    }, [clearNotifications])
   );
 
   if (nonNullNotifications.length === 0) {
