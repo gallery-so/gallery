@@ -71,8 +71,9 @@ export function ProfileView({ queryRef, shouldShowBackButton }: ProfileViewProps
           queryRef={query}
           shouldShowBackButton={shouldShowBackButton}
         />
-
-        <ProfileViewUsername queryRef={query} />
+        <View className="pt-4">
+          <ProfileViewUsername queryRef={query} />
+        </View>
       </View>
 
       <View className="flex-grow">
@@ -180,7 +181,7 @@ export function ProfileViewUsername({ queryRef }: ProfileViewUsernameProps) {
 
   return (
     <Typography
-      className="bg-white dark:bg-black text-center text-2xl tracking-tighter"
+      className="bg-white dark:bg-black text-2xl tracking-tighter"
       font={{ family: 'GTAlpina', weight: 'StandardLight' }}
     >
       {query.userByUsername?.username}
