@@ -71,12 +71,10 @@ function NftPreviewInner({
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
   const handlePress = useCallback(() => {
-    if (collectionToken.collection?.dbid) {
-      navigation.push('NftDetail', {
-        tokenId: token.dbid,
-        collectionId: collectionToken.collection.dbid,
-      });
-    }
+    navigation.push('NftDetail', {
+      tokenId: token.dbid,
+      collectionId: collectionToken.collection?.dbid ?? null,
+    });
   }, [collectionToken.collection?.dbid, navigation, token.dbid]);
 
   const handleLoad = useCallback(

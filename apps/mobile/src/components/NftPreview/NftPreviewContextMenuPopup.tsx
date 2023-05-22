@@ -83,20 +83,16 @@ export function NftPreviewContextMenuPopup({
   const handleMenuItemPress = useCallback<OnPressMenuItemEvent>(
     (event) => {
       if (event.nativeEvent.actionKey === 'view-details') {
-        if (collectionToken.collection?.dbid) {
-          navigation.navigate('NftDetail', {
-            tokenId: token.dbid,
-            collectionId: collectionToken.collection.dbid,
-          });
-        }
+        navigation.navigate('NftDetail', {
+          tokenId: token.dbid,
+          collectionId: collectionToken?.collection?.dbid ?? null,
+        });
       } else if (event.nativeEvent.actionKey === 'share') {
         shareToken(token, collectionToken.collection ?? null);
       } else if (event.nativeEvent.actionKey === 'view-gallery') {
-        if (collectionToken.collection?.gallery?.dbid) {
-          navigation.push('Gallery', {
-            galleryId: collectionToken.collection.gallery.dbid,
-          });
-        }
+        navigation.push('Gallery', {
+          galleryId: collectionToken.collection?.gallery?.dbid ?? 'not-found',
+        });
       }
     },
     [collectionToken.collection, navigation, token]
