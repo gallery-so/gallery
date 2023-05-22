@@ -62,7 +62,10 @@ export function NftDetailScreenInner() {
         }
       }
     `,
-    { tokenId: route.params.tokenId, collectionId: route.params.collectionId }
+    {
+      tokenId: route.params.tokenId,
+      collectionId: route.params.collectionId ?? 'definitely-not-a-collection',
+    }
     // Use one of these if you want to test with a specific NFT
     // POAP
     // { tokenId: '2Hu1U34d5UpXWDoVNOkMtguCEpk' }
