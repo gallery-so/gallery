@@ -17,6 +17,8 @@ export function DarkModeToggle() {
     <IconContainer
       icon={colorScheme === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
       onPress={handlePress}
+      eventElementId={null}
+      eventName={null}
     />
   );
 }
