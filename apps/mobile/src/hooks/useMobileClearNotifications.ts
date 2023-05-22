@@ -1,4 +1,4 @@
-import { dismissAllNotificationsAsync } from 'expo-notifications';
+import { setBadgeCountAsync } from 'expo-notifications';
 import { useCallback } from 'react';
 import { ConnectionHandler, fetchQuery, graphql, useRelayEnvironment } from 'react-relay';
 
@@ -8,7 +8,7 @@ import { clearNotifications } from '~/shared/relay/useClearNotifications';
 export function useMobileClearNotifications() {
   const environment = useRelayEnvironment();
   return useCallback(async () => {
-    dismissAllNotificationsAsync();
+    setBadgeCountAsync(0);
 
     const query = await fetchQuery<useMobileClearNotificationsQuery>(
       environment,
