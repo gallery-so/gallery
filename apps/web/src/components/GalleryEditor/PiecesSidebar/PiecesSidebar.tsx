@@ -60,6 +60,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
         }
         ...doesUserOwnWalletFromChainFragment
         ...AddWalletSidebarQueryFragment
+        ...SidebarViewSelectorFragment
       }
     `,
     queryRef
@@ -182,7 +183,11 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
       <StyledSidebarContainer gap={8}>
         <Header align="center" justify="space-between" gap={4}>
           <TitleS>Add pieces</TitleS>
-          <SidebarViewSelector selectedView={selectedView} setSelectedView={setSelectedView} />
+          <SidebarViewSelector
+            selectedView={selectedView}
+            setSelectedView={setSelectedView}
+            queryRef={query}
+          />
         </Header>
         <StyledSearchBarContainer>
           <SearchBar
