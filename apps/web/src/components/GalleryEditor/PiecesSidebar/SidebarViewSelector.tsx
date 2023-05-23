@@ -9,7 +9,7 @@ import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import DoubleArrowsIcon from '~/icons/DoubleArrowsIcon';
 
-export type SidebarView = 'Collected' | 'Hidden';
+export type SidebarView = 'Collected' | 'Created' | 'Hidden';
 
 type SidebarViewSelectorProps = {
   selectedView: SidebarView;
@@ -36,6 +36,7 @@ export function SidebarViewSelector({ selectedView, setSelectedView }: SidebarVi
       <Dropdown position="right" active={isDropdownOpen} onClose={() => setIsDropdownOpen(false)}>
         <DropdownSection>
           <DropdownItem onClick={() => onSelectView('Collected')}>COLLECTED</DropdownItem>
+          <DropdownItem onClick={() => onSelectView('Created')}>CREATED</DropdownItem>
           <DropdownItem onClick={() => onSelectView('Hidden')}>HIDDEN</DropdownItem>
         </DropdownSection>
       </Dropdown>
