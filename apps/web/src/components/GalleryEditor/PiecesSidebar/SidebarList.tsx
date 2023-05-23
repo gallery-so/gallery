@@ -78,7 +78,7 @@ function CollectionTitle({
       >
         <ExpandedIcon expanded={row.expanded} />
         <CollectionTitleText title={row.title}>{row.title}</CollectionTitleText>
-        {showIcon && (
+        {selectedView !== 'Created' && showIcon && (
           <>
             <ShowHideContainer
               onMouseEnter={() => setShowTooltip(true)}
