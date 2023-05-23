@@ -48,7 +48,7 @@ export function RemainingAdmireCount({ remainingCount, eventRef, queryRef }: Pro
         eventName="Expand Admirers Button Clicked"
       >
         <Typography className="text-xs underline" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-          + {remainingCount} others
+          + {remainingCount} {remainingCount === 1 ? 'other' : 'others'}
         </Typography>
       </GalleryTouchableOpacity>
 
