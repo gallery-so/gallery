@@ -19,7 +19,7 @@ type Props = {
   collectorsNote?: string;
 };
 
-export const COLLECTION_DESCRIPTION_MAX_CHAR_COUNT = 600;
+export const COLLECTION_DESCRIPTION_MAX_CHAR_COUNT = 1200;
 
 export function CollectionCreateOrEditForm({
   onDone,
