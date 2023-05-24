@@ -80,6 +80,7 @@ export function NotesModal({ eventRef, queryRef, bottomSheetRef }: Props) {
         android_keyboardInputMode="adjustResize"
         keyboardBlurBehavior="restore"
         handleComponent={Handle}
+        border
       >
         <Animated.View
           className="flex justify-between flex-1 bg-white dark:bg-black pt-2"

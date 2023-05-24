@@ -224,7 +224,13 @@ export function CommentBox({
           autoFocus={autoFocus}
           onBlur={handleDismiss}
           onSubmitEditing={handleDismiss}
-          style={{ flex: 1, color: colorScheme === 'dark' ? colors.white : colors.offBlack }}
+          style={{
+            flex: 1,
+            color: colorScheme === 'dark' ? colors.white : colors.offBlack,
+            lineHeight: 20,
+            paddingTop: 0,
+          }}
+          multiline
         />
         <Text className="text-sm text-metal">{characterCount}</Text>
         <GalleryTouchableOpacity

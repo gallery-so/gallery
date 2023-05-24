@@ -8,25 +8,36 @@ import { GalleryBottomSheetHandle } from '~/components/GalleryBottomSheet/Galler
 
 export type GalleryBottomSheetModalType = BottomSheetModal;
 
+type GalleryBottomSheetModalProps = {
+  border?: boolean;
+} & Omit<BottomSheetModalProps, 'backgroundComponent' | 'backdropComponent'>;
+
 function GalleryBottomSheetModal(
-  props: BottomSheetModalProps,
+  props: GalleryBottomSheetModalProps,
   ref: ForwardedRef<GalleryBottomSheetModalType>
 ) {
+  const borderRadius = props.border ? 20 : 0;
+
   return (
     <BottomSheetModal
       ref={ref}
       backgroundStyle={{
-        borderRadius: 20,
+        borderRadius,
       }}
       backgroundComponent={GalleryBottomSheetBackground}
-      backdropComponent={GalleryBottomSheetBackdrop}
       handleComponent={GalleryBottomSheetHandle}
+      // Hack to avoid flickering backdrop when using `useBottomSheetDynamicSnapPoints`
+      // issue: https://github.com/gorhom/react-native-bottom-sheet/issues/436
+      containerStyle={{
+        backgroundColor: 'rgba(0,0,0,0.5)',
+      }}
+      backdropComponent={GalleryBottomSheetBackdrop}
       {...props}
     />
   );
 }
 
-const ForwardedGalleryBottomSheetModal = forwardRef<BottomSheetModal, BottomSheetModalProps>(
+const ForwardedGalleryBottomSheetModal = forwardRef<BottomSheetModal, GalleryBottomSheetModalProps>(
   GalleryBottomSheetModal
 );
 

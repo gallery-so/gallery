@@ -1,3 +1,4 @@
+import { BottomSheetView, useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
 import { useColorScheme } from 'nativewind';
 import { useCallback, useMemo, useRef } from 'react';
 import { View, ViewProps } from 'react-native';
@@ -43,7 +44,11 @@ export function CommentButton({ eventRef, queryRef, style, onClick }: Props) {
   const { colorScheme } = useColorScheme();
 
   const bottomSheetRef = useRef<GalleryBottomSheetModalType>(null);
-  const snapPoints = useMemo(() => [52], []);
+
+  const initialSnapPoints = useMemo(() => [52, 'CONTENT_HEIGHT'], []);
+
+  const { animatedHandleHeight, animatedSnapPoints, animatedContentHeight, handleContentLayout } =
+    useBottomSheetDynamicSnapPoints(initialSnapPoints);
 
   const handleCloseCommentBox = useCallback(() => {
     bottomSheetRef.current?.close();
@@ -69,17 +74,23 @@ export function CommentButton({ eventRef, queryRef, style, onClick }: Props) {
       <GalleryBottomSheetModal
         index={0}
         ref={bottomSheetRef}
-        snapPoints={snapPoints}
+        snapPoints={animatedSnapPoints}
         enableHandlePanningGesture={false}
         android_keyboardInputMode="adjustResize"
         handleComponent={Handle}
         handleIndicatorStyle={{
           display: 'none',
         }}
+        handleHeight={animatedHandleHeight}
+        contentHeight={animatedContentHeight}
       >
-        <View className={`${colorScheme === 'dark' ? 'bg-black' : 'bg-white'}`}>
+        <BottomSheetView
+          enableFooterMarginAdjustment
+          className={`${colorScheme === 'dark' ? 'bg-black' : 'bg-white'}`}
+          onLayout={handleContentLayout}
+        >
           <CommentBox autoFocus eventRef={event} queryRef={query} onClose={handleCloseCommentBox} />
-        </View>
+        </BottomSheetView>
       </GalleryBottomSheetModal>
     </>
   );
