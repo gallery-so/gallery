@@ -7,7 +7,6 @@ import ImageWithLoading from '~/components/LoadingAsset/ImageWithLoading';
 import { NftDetailAudioFragment$key } from '~/generated/NftDetailAudioFragment.graphql';
 import { useThrowOnMediaFailure } from '~/hooks/useNftRetry';
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
-import noop from '~/utils/noop';
 
 type Props = {
   tokenRef: NftDetailAudioFragment$key;
@@ -45,13 +44,16 @@ function NftDetailAudio({ tokenRef, onLoad }: Props) {
   return (
     <StyledAudioContainer>
       {/* TODO(Terence): How do we want to handle onLoad / onError since this loads two things? */}
-      <ImageWithLoading onLoad={noop} src={token.media?.previewURLs.large} alt={token.name ?? ''} />
+      <ImageWithLoading
+        onLoad={onLoad}
+        src={token.media?.previewURLs.large}
+        alt={token.name ?? ''}
+      />
       <StyledAudio
         controls
         loop
         controlsList="nodownload"
-        preload="auto"
-        onLoadedData={onLoad}
+        preload="none"
         onError={handleError}
         src={token.media.contentRenderURL}
       />
