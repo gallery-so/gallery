@@ -50,8 +50,8 @@ function NftDetailAudio({ tokenRef, onLoad }: Props) {
         controls
         loop
         controlsList="nodownload"
-        preload="none"
-        onLoad={onLoad}
+        preload="auto"
+        onLoadedData={onLoad}
         onError={handleError}
         src={token.media.contentRenderURL}
       />
