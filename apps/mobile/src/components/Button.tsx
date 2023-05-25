@@ -1,11 +1,12 @@
 import clsx from 'clsx';
+import { useColorScheme } from 'nativewind';
 import { ReactNode } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 
 import { GalleryTouchableOpacity, GalleryTouchableOpacityProps } from './GalleryTouchableOpacity';
 import { Typography } from './Typography';
 
-type Variant = 'primary' | 'secondary';
+type Variant = 'primary' | 'secondary' | 'danger';
 
 type ButtonProps = {
   style?: GalleryTouchableOpacityProps['style'];
@@ -19,6 +20,11 @@ type ButtonProps = {
 } & GalleryTouchableOpacityProps;
 
 type VariantMapType = { [variant in Variant]: string };
+type ExplicitSchemeVariantMapType = {
+  [variant in Variant]: {
+    [scheme in 'light' | 'dark']: string;
+  };
+};
 
 export function Button({
   icon,
@@ -33,22 +39,36 @@ export function Button({
   const containerVariants: VariantMapType = {
     primary: 'bg-offBlack dark:bg-white',
     secondary: 'bg-white dark:bg-black border border-faint dark:border-graphite',
+    danger: 'bg-white dark:bg-black border border-red',
   };
 
   const textVariants: VariantMapType = {
     primary: 'text-white dark:text-offBlack',
     secondary: 'text-offBlack dark:text-white',
+    danger: 'text-red',
   };
 
-  const loadingIndicatorColor: VariantMapType = {
-    primary: 'white',
-    secondary: 'black',
+  const loadingIndicatorColor: ExplicitSchemeVariantMapType = {
+    primary: {
+      light: 'white',
+      dark: 'black',
+    },
+    secondary: {
+      light: 'black',
+      dark: 'white',
+    },
+    danger: {
+      light: 'red',
+      dark: 'red',
+    },
   };
 
   const sizeVariants: { [size in 'sm' | 'md']: string } = {
     sm: 'h-[36] px-6',
     md: 'h-[44] px-4',
   };
+
+  const { colorScheme } = useColorScheme();
 
   return (
     <GalleryTouchableOpacity disabled={loading || disabled} style={style} {...props}>
@@ -60,22 +80,25 @@ export function Button({
           sizeVariants[size]
         )}
       >
-        {!loading && (
-          <View className="flex flex-row items-center justify-center space-x-4">
-            {icon}
+        <View
+          className={clsx('flex flex-row items-center justify-center space-x-4', {
+            'opacity-0': loading,
+            'opacity-100': !loading,
+          })}
+        >
+          {icon}
 
-            <Typography
-              font={{ family: 'ABCDiatype', weight: 'Medium' }}
-              className={clsx('text-xs uppercase', textVariants[variant])}
-            >
-              {text}
-            </Typography>
-          </View>
-        )}
+          <Typography
+            font={{ family: 'ABCDiatype', weight: 'Medium' }}
+            className={clsx('text-xs uppercase', textVariants[variant])}
+          >
+            {text}
+          </Typography>
+        </View>
 
         {loading && (
-          <View>
-            <ActivityIndicator color={loadingIndicatorColor[variant]} />
+          <View className="absolute inset-0 flex justify-center items-center">
+            <ActivityIndicator color={loadingIndicatorColor[variant][colorScheme]} />
           </View>
         )}
       </View>
