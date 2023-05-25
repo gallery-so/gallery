@@ -21,7 +21,9 @@ export const _track: TrackFunction = (eventName, eventProps) => {
   if (!mixpanelEnabled) return;
 
   try {
-    mixpanel.track(eventName, eventProps);
+    // Apparently mixpanel mutates eventProps so we need to clone it to make
+    // sure we don't affect downstream code.
+    mixpanel.track(eventName, { ...eventProps });
   } catch (error: unknown) {
     // mixpanel errors shouldn't disrupt app
     captureException(error);
