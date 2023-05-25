@@ -14,6 +14,8 @@ import { NotificationsIcon } from '~/navigation/MainTabNavigator/NotificationsIc
 import { SearchIcon } from '~/navigation/MainTabNavigator/SearchIcon';
 import { MainTabNavigatorParamList } from '~/navigation/types';
 
+import { SettingsIcon } from '../../icons/SettingsIcon';
+
 type TabItemProps = {
   icon: ReactNode;
   route: NavigationRoute;
@@ -43,7 +45,7 @@ function TabItem({ navigation, route, icon, activeRoute }: TabItemProps) {
       onPress={onPress}
       accessibilityRole="button"
       accessibilityState={isFocused ? { selected: true } : {}}
-      className={`px-8 ${isFocused ? 'opacity-100' : 'opacity-30'}`}
+      className={`px-0 ${isFocused ? 'opacity-100' : 'opacity-30'}`}
       eventElementId="Navigation Tab Item"
       eventName="Navigation Tab Item Clicked"
       properties={{ variant: 'Main', route: route.name }}
@@ -75,7 +77,7 @@ export function TabBar({ state, navigation }: TabBarProps) {
           ? { paddingBottom: bottom, paddingTop: 12 }
           : { paddingBottom: 12, paddingTop: 12 }
       }
-      className="bg-offWhite dark:bg-black flex flex-row items-center justify-center"
+      className="bg-offWhite dark:bg-black flex flex-row items-center justify-evenly"
     >
       {state.routes.map((route) => {
         let icon = null;
@@ -87,6 +89,8 @@ export function TabBar({ state, navigation }: TabBarProps) {
           icon = <LazyNotificationIcon />;
         } else if (route.name === 'SearchTab') {
           icon = <SearchIcon />;
+        } else if (route.name === 'SettingsTab') {
+          icon = <SettingsIcon />;
         }
 
         return (
