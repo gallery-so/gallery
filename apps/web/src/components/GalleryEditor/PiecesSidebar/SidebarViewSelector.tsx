@@ -10,6 +10,7 @@ import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import { SidebarViewSelectorFragment$key } from '~/generated/SidebarViewSelectorFragment.graphql';
 import DoubleArrowsIcon from '~/icons/DoubleArrowsIcon';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 export type SidebarView = 'Collected' | 'Created' | 'Hidden';
@@ -36,15 +37,21 @@ export function SidebarViewSelector({
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
+  const isCreatedTabEnabled = isFeatureEnabled(FeatureFlag.BIG_EASEL, query);
+
+  const track = useTrack();
+
   const onSelectView = useCallback(
     (selectedView: SidebarView) => {
+      track('Editor Sidebar Dropdown Clicked', { variant: selectedView });
+      if (selectedView === 'Created' && !isCreatedTabEnabled) {
+        return;
+      }
       setSelectedView(selectedView);
       setIsDropdownOpen(false);
     },
-    [setSelectedView, setIsDropdownOpen]
+    [track, isCreatedTabEnabled, setSelectedView]
   );
-
-  const isCreatedTabEnabled = isFeatureEnabled(FeatureFlag.BIG_EASEL, query);
 
   return (
     <Container>
@@ -55,10 +62,10 @@ export function SidebarViewSelector({
       <Dropdown position="right" active={isDropdownOpen} onClose={() => setIsDropdownOpen(false)}>
         <DropdownSection>
           <DropdownItem onClick={() => onSelectView('Collected')}>COLLECTED</DropdownItem>
-          {isCreatedTabEnabled && (
-            <DropdownItem onClick={() => onSelectView('Created')}>CREATED</DropdownItem>
-          )}
           <DropdownItem onClick={() => onSelectView('Hidden')}>HIDDEN</DropdownItem>
+          <DropdownItem onClick={() => onSelectView('Created')} disabled={!isCreatedTabEnabled}>
+            CREATED (SOON)
+          </DropdownItem>
         </DropdownSection>
       </Dropdown>
     </Container>
