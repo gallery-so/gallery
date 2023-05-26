@@ -96,7 +96,7 @@ export function GalleryProfileNavBar({
   }, [navigation, user.username]);
 
   return (
-    <View style={style} className="flex flex-row justify-between bg-white dark:bg-black">
+    <View style={style} className="flex flex-row justify-between bg-white dark:bg-black-900">
       {shouldShowBackButton ? <BackButton /> : <DarkModeToggle />}
 
       <View className="flex flex-row items-center space-x-2">
@@ -131,7 +131,7 @@ export function GalleryProfileNavbarFallback({
   shouldShowBackButton,
 }: GalleryProfileNavbarFallbackProps) {
   return (
-    <View style={style} className="flex flex-row justify-between bg-white dark:bg-black">
+    <View style={style} className="flex flex-row justify-between bg-white dark:bg-black-900">
       {shouldShowBackButton ? <BackButton /> : <FeedbackButton />}
 
       <View className="flex flex-row items-center space-x-2"></View>

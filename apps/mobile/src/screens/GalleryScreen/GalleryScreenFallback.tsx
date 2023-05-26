@@ -9,7 +9,7 @@ export function GalleryScreenFallback() {
   const { top } = useSafeAreaPadding();
 
   return (
-    <View className="flex-1 bg-white dark:bg-black px-4" style={{ paddingTop: top }}>
+    <View className="flex-1 bg-white dark:bg-black-900 px-4" style={{ paddingTop: top }}>
       <GalleryProfileNavbarFallback shouldShowBackButton />
 
       <GallerySkeleton>

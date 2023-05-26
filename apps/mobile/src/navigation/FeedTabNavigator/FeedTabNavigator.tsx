@@ -21,7 +21,7 @@ export function FeedTabNavigator() {
       tabBar={TabBar}
       screenOptions={{ lazy: true, swipeEnabled: false, animationEnabled: false }}
       sceneContainerStyle={{
-        backgroundColor: colorScheme === 'dark' ? colors.black : colors.white,
+        backgroundColor: colorScheme === 'dark' ? colors.black['900'] : colors.white,
       }}
     >
       <Tab.Screen name="Trending" component={TrendingScreen} />

@@ -10,7 +10,7 @@ export function NftDetailScreen() {
   const { top } = useSafeAreaPadding();
 
   return (
-    <View style={{ paddingTop: top }} className="h-full bg-white dark:bg-black">
+    <View style={{ paddingTop: top }} className="h-full bg-white dark:bg-black-900">
       <Suspense fallback={<LoadingNftDetailScreenInner />}>
         <NftDetailScreenInner />
       </Suspense>

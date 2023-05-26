@@ -66,7 +66,7 @@ export function ProfileView({ queryRef, shouldShowBackButton }: ProfileViewProps
     <View className="flex-1">
       <GalleryViewEmitter queryRef={query} />
 
-      <View className="flex flex-col px-4 pb-1 z-10 bg-white dark:bg-black">
+      <View className="flex flex-col px-4 pb-1 z-10 bg-white dark:bg-black-900">
         <ConnectedGalleryProfileNavbar
           queryRef={query}
           shouldShowBackButton={shouldShowBackButton}
@@ -83,14 +83,14 @@ export function ProfileView({ queryRef, shouldShowBackButton }: ProfileViewProps
               ref={containerRef}
               pagerProps={{ scrollEnabled: false }}
               containerStyle={{
-                backgroundColor: colorScheme === 'light' ? colors.white : colors.black,
+                backgroundColor: colorScheme === 'light' ? colors.white : colors.black.DEFAULT,
               }}
               headerContainerStyle={{
                 margin: 0,
                 elevation: 0,
                 shadowOpacity: 0,
                 borderBottomColor: 'transparent',
-                backgroundColor: colorScheme === 'light' ? colors.white : colors.black,
+                backgroundColor: colorScheme === 'light' ? colors.white : colors.black.DEFAULT,
               }}
               renderTabBar={Empty}
               renderHeader={Header}
@@ -181,7 +181,7 @@ export function ProfileViewUsername({ queryRef }: ProfileViewUsernameProps) {
 
   return (
     <Typography
-      className="bg-white dark:bg-black text-2xl tracking-tighter"
+      className="bg-white dark:bg-black-900 text-2xl tracking-tighter"
       font={{ family: 'GTAlpina', weight: 'StandardLight' }}
     >
       {query.userByUsername?.username}

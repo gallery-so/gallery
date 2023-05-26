@@ -50,7 +50,7 @@ export function LandingScreen() {
   }, [navigation]);
 
   return (
-    <SafeAreaViewWithPadding className="flex h-full flex-col justify-end bg-white dark:bg-black">
+    <SafeAreaViewWithPadding className="flex h-full flex-col justify-end bg-white dark:bg-black-900">
       <GalleryBottomSheetModal
         ref={qrCodeSheetRef}
         snapPoints={animatedSnapPoints}

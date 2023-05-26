@@ -13,7 +13,7 @@ export function WaitingForConfirmationScreen() {
   const navigation = useNavigation<LoginStackNavigatorProp>();
 
   return (
-    <SafeAreaViewWithPadding className="flex h-screen flex-1 flex-col bg-white dark:bg-black">
+    <SafeAreaViewWithPadding className="flex h-screen flex-1 flex-col bg-white dark:bg-black-900">
       <IconContainer
         eventElementId={null}
         eventName={null}

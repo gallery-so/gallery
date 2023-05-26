@@ -68,7 +68,7 @@ function FeedEventScreenInner() {
 
 export function FeedEventScreen() {
   return (
-    <View className="flex-1 bg-white dark:bg-black">
+    <View className="flex-1 bg-white dark:bg-black-900">
       <SafeAreaViewWithPadding className="flex-1">
         <View className="px-3 pb-6">
           <BackButton />

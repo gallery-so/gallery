@@ -105,7 +105,7 @@ export function EnterEmailScreen() {
   }, [email, login, navigation, reportError, track, verifyEmail]);
 
   return (
-    <SafeAreaViewWithPadding className="h-screen bg-white dark:bg-black">
+    <SafeAreaViewWithPadding className="h-screen bg-white dark:bg-black-900">
       <KeyboardAvoidingView behavior="padding" className="flex flex-1 flex-col">
         <IconContainer
           eventElementId={null}
