@@ -83,14 +83,14 @@ export function ProfileView({ queryRef, shouldShowBackButton }: ProfileViewProps
               ref={containerRef}
               pagerProps={{ scrollEnabled: false }}
               containerStyle={{
-                backgroundColor: colorScheme === 'light' ? colors.white : colors.black,
+                backgroundColor: colorScheme === 'light' ? colors.white : colors.black.DEFAULT,
               }}
               headerContainerStyle={{
                 margin: 0,
                 elevation: 0,
                 shadowOpacity: 0,
                 borderBottomColor: 'transparent',
-                backgroundColor: colorScheme === 'light' ? colors.white : colors.black,
+                backgroundColor: colorScheme === 'light' ? colors.white : colors.black.DEFAULT,
               }}
               renderTabBar={Empty}
               renderHeader={Header}

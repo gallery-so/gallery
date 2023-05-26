@@ -57,6 +57,10 @@ function NotificationsScreen() {
   return <MainTabStackNavigator initialRouteName="Notifications" />;
 }
 
+function SettingsScreen() {
+  return <MainTabStackNavigator initialRouteName="Settings" />;
+}
+
 export function MainTabNavigator() {
   const { colorScheme } = useColorScheme();
 
@@ -67,13 +71,14 @@ export function MainTabNavigator() {
       tabBar={TabBar}
       screenOptions={{ swipeEnabled: false, animationEnabled: false }}
       sceneContainerStyle={{
-        backgroundColor: colorScheme === 'dark' ? colors.black : colors.white,
+        backgroundColor: colorScheme === 'dark' ? colors.black.DEFAULT : colors.white,
       }}
     >
       <Tab.Screen name="HomeTab" component={HomeScreen} />
       <Tab.Screen name="SearchTab" component={SearchScreen} />
       <Tab.Screen name="NotificationsTab" component={NotificationsScreen} />
       <Tab.Screen name="AccountTab" component={AccountScreen} />
+      <Tab.Screen name="SettingsTab" component={SettingsScreen} />
     </Tab.Navigator>
   );
 }

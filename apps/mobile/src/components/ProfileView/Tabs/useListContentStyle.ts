@@ -8,6 +8,6 @@ export function useListContentStyle() {
   return {
     flex: 1,
     paddingTop: 16,
-    backgroundColor: colorScheme === 'light' ? colors.white : colors.black,
+    backgroundColor: colorScheme === 'light' ? colors.white : colors.black.DEFAULT,
   };
 }

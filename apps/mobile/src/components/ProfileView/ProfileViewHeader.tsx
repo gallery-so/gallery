@@ -72,7 +72,7 @@ export function ProfileViewHeader({ queryRef, selectedRoute, onRouteChange }: Pr
           properties={{ variant: 'Twitter' }}
         >
           <Pill className="flex flex-row items-center space-x-2 self-start">
-            <TwitterIcon />
+            <TwitterIcon width={14} />
             <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
               {user.socialAccounts.twitter.username}
             </Typography>

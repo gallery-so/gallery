@@ -5,7 +5,7 @@ import colors from '~/shared/theme/colors';
 
 export const BugReportIcon = (props: SvgProps) => {
   const { colorScheme } = useColorScheme();
-  const stroke = colorScheme === 'dark' ? colors.white : colors.black;
+  const stroke = colorScheme === 'dark' ? colors.white : colors.black.DEFAULT;
 
   return (
     <Svg viewBox="0 0 24 24" {...props}>
