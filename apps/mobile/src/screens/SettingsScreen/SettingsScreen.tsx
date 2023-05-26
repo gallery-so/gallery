@@ -52,10 +52,7 @@ export function SettingsScreen() {
   }, []);
 
   return (
-    <View
-      style={{ paddingTop: top }}
-      className="relative flex-1 bg-white dark:bg-black-900 space-y-4"
-    >
+    <View style={{ paddingTop: top }} className="relative flex-1 bg-white dark:bg-black-900">
       <View className="p-4">
         <Typography
           font={{
@@ -70,7 +67,7 @@ export function SettingsScreen() {
 
       <ScrollView
         contentContainerStyle={{ paddingBottom: bottomSectionHeight + 24 }}
-        className="px-2 py-2 space-y-2 flex flex-col"
+        className="px-2 pt-2 space-y-2 flex flex-col"
       >
         <SettingsRow
           onPress={handleBugReportPress}
