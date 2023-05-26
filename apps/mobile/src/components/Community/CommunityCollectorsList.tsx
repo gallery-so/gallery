@@ -77,6 +77,7 @@ export function CommunityCollectorsList({ communityRef }: Props) {
     (username: string) => {
       navigation.navigate('Profile', {
         username,
+        hideBackButton: false,
       });
     },
     [navigation]
