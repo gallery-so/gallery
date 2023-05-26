@@ -52,7 +52,10 @@ export function SettingsScreen() {
   }, []);
 
   return (
-    <View style={{ paddingTop: top }} className="relative flex-1 bg-white dark:bg-black space-y-4">
+    <View
+      style={{ paddingTop: top }}
+      className="relative flex-1 bg-white dark:bg-black-900 space-y-4"
+    >
       <View className="p-4">
         <Typography
           font={{
@@ -89,7 +92,7 @@ export function SettingsScreen() {
 
       <View
         onLayout={handleBottomSectionLayout}
-        className="absolute bottom-0 left-0 right-0 bg-white dark:bg-black border-t border-porcelain dark:border-graphite py-8 flex flex-col items-center space-y-3"
+        className="absolute bottom-0 left-0 right-0 bg-white dark:bg-black-900 border-t border-porcelain dark:border-graphite py-8 flex flex-col items-center space-y-3"
       >
         <Button
           onPress={handleSignOut}
@@ -144,7 +147,7 @@ function SettingsRow({ style, icon, text, onPress }: SettingsRowProps) {
       eventName="settings-row-clicked"
       properties={{ text }}
       style={style}
-      className="flex flex-row justify-between items-center bg-offWhite dark:bg-offBlack px-3 h-12"
+      className="flex flex-row justify-between items-center bg-offWhite dark:bg-black-800 px-3 h-12"
     >
       <View className="flex flex-row space-x-3 items-center">
         <View className="w-6 h-full flex items-center">{icon}</View>

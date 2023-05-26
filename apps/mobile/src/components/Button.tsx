@@ -39,7 +39,7 @@ export function Button({
   const containerVariants: VariantMapType = {
     primary: 'bg-offBlack dark:bg-white',
     secondary: 'bg-white dark:bg-black border border-faint dark:border-graphite',
-    danger: 'bg-white dark:bg-black border border-red',
+    danger: 'bg-transparent border border-red',
   };
 
   const textVariants: VariantMapType = {
