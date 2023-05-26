@@ -107,7 +107,7 @@ export function NftDetailScreenInner() {
     const contractAddress = token.contract?.contractAddress;
     const { address, chain } = contractAddress ?? {};
     if (!address || !chain) return;
-    navigation.navigate('Community', {
+    navigation.push('Community', {
       contractAddress: address,
       chain,
     });
