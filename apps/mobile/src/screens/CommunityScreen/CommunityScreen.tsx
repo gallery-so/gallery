@@ -4,7 +4,7 @@ import { ScrollView, View } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 
 import { CommunityView } from '~/components/Community/CommunityView';
-import { ProfileViewFallback } from '~/components/ProfileView/ProfileViewFallback';
+import { CommunityViewFallback } from '~/components/Community/CommunityViewFallback';
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { CommunityScreenQuery } from '~/generated/CommunityScreenQuery.graphql';
 import { Chain } from '~/generated/CommunityScreenQuery.graphql';
@@ -55,7 +55,7 @@ export function CommunityScreen() {
 
   return (
     <View className="flex-1 bg-white dark:bg-black">
-      <Suspense fallback={<ProfileViewFallback />}>
+      <Suspense fallback={<CommunityViewFallback />}>
         <CommunityScreenInner contractAddress={contractAddress} chain={chain as Chain} />
       </Suspense>
     </View>
