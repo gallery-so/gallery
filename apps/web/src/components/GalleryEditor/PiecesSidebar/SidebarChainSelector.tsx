@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 
 import { Chain, chains } from '~/components/GalleryEditor/PiecesSidebar/chains';
@@ -6,13 +6,15 @@ import { SidebarChainButton } from '~/components/GalleryEditor/PiecesSidebar/Sid
 
 import Blinking from '../GalleryOnboardingGuide/Blinking';
 import { useOnboardingDialogContext } from '../GalleryOnboardingGuide/OnboardingDialogContext';
+import { SidebarView } from './SidebarViewSelector';
 
 type SidebarChainsProps = {
   selected: Chain;
   onChange: (chain: Chain) => void;
+  selectedView: SidebarView;
 };
 
-export function SidebarChainSelector({ selected, onChange }: SidebarChainsProps) {
+export function SidebarChainSelector({ selected, onChange, selectedView }: SidebarChainsProps) {
   const { step } = useOnboardingDialogContext();
 
   const selectedChain = chains.find((chain) => chain.name === selected);
@@ -28,10 +30,17 @@ export function SidebarChainSelector({ selected, onChange }: SidebarChainsProps)
     throw new Error(`Could not find a chain for selected value '${selected}'`);
   }
 
+  const availableChains = useMemo(() => {
+    if (selectedView === 'Created') {
+      return chains.filter((chain) => chain.name === 'Ethereum');
+    }
+    return chains;
+  }, [selectedView]);
+
   return (
     <Container>
       <StyledSidebarChainButtonContainer>
-        {chains.map((chain) => {
+        {availableChains.map((chain) => {
           const isSelected = chain.name === selected;
 
           return (

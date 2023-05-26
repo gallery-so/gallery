@@ -12,8 +12,8 @@ declare const colors: {
   graphite: '#2F2F2F';
   shadow: '#707070';
   metal: '#9e9e9e';
-  faint: '#f2f2f2';
   porcelain: '#e2e2e2';
+  faint: '#f2f2f2';
   hyperBlue: '#001CC1';
   activeBlue: '#0022F0';
   error: '#FF6666';
