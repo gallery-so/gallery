@@ -29,6 +29,10 @@ const filters: FilterElement = [
     label: 'Galleries',
     value: 'gallery',
   },
+  {
+    label: 'Communities',
+    value: 'community',
+  },
 ];
 
 export function SearchFilter({ activeFilter, onChange, ...props }: Props) {
