@@ -27,6 +27,9 @@ export function CommunityViewFallback() {
             <SkeletonPlaceholder.Item width="40%" height={12} />
           </SkeletonPlaceholder.Item>
 
+          <SkeletonPlaceholder.Item flexDirection="column" gap={4} marginBottom={16}>
+            <SkeletonPlaceholder.Item width="50%" height={12} />
+          </SkeletonPlaceholder.Item>
           {Array.from({ length: TOTAL_ROWS }).map((_, index) => (
             <SkeletonPlaceholder.Item key={index} flexDirection="row" gap={4} marginBottom={4}>
               <SkeletonPlaceholder.Item width="50%" height={30} />
