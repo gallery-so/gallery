@@ -150,8 +150,8 @@ export function NftDetailScreenInner() {
                 )}
                 <GalleryTouchableOpacity
                   onPress={handleOpenCommunityScreen}
-                  eventElementId={null}
-                  eventName={null}
+                  eventElementId="Community Pill"
+                  eventName="Community Pill Clicked"
                 >
                   <Typography numberOfLines={1} font={{ family: 'ABCDiatype', weight: 'Bold' }}>
                     {token.contract.name}
