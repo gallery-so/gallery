@@ -19,7 +19,7 @@ type Props = {
   description: string;
 };
 
-export const GALLERY_DESCRIPTION_MAX_CHAR_COUNT = 600;
+export const GALLERY_DESCRIPTION_MAX_CHAR_COUNT = 1200;
 
 export function GalleryNameAndDescriptionEditForm({
   onDone,

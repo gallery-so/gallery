@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import colors from '~/shared/theme/colors';
 
-export const DropdownItem = styled.div`
+export const DropdownItem = styled.div<{ disabled?: boolean }>`
   padding: 8px;
 
   font-family: 'Helvetica Neue';
@@ -11,13 +11,13 @@ export const DropdownItem = styled.div`
   font-size: 12px;
   line-height: 16px;
 
-  color: #808080;
-  cursor: pointer;
+  color: ${({ disabled }) => (disabled ? '#c2c2c2' : colors.shadow)};
+  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
 
   white-space: nowrap;
 
-  :hover {
-    color: ${colors.offBlack};
-    background-color: ${colors.faint};
+  &:hover {
+    color: ${({ disabled }) => (disabled ? '#c2c2c2' : colors.offBlack)};
+    background-color: ${({ disabled }) => (disabled ? colors.faint : colors.faint)};
   }
 `;

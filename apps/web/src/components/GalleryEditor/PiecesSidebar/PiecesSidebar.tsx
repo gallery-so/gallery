@@ -22,6 +22,7 @@ import { doesUserOwnWalletFromChain } from '~/utils/doesUserOwnWalletFromChain';
 import OnboardingDialog from '../GalleryOnboardingGuide/OnboardingDialog';
 import { useOnboardingDialogContext } from '../GalleryOnboardingGuide/OnboardingDialogContext';
 import { AddWalletSidebar } from './AddWalletSidebar';
+import CreatorEmptyStateSidebar from './CreatorEmptyStateSidebar';
 import isRefreshDisabledForUser from './isRefreshDisabledForUser';
 import SearchBar from './SearchBar';
 import { SidebarView, SidebarViewSelector } from './SidebarViewSelector';
@@ -59,6 +60,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
         }
         ...doesUserOwnWalletFromChainFragment
         ...AddWalletSidebarQueryFragment
+        ...SidebarViewSelectorFragment
       }
     `,
     queryRef
@@ -96,6 +98,11 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
   }, [addWhitespace]);
 
   const tokensToDisplay = useMemo(() => {
+    // [GAL-2710] TODO. we may have to update the logic for `tokenSearchResults` to handle created tokens
+    if (selectedView === 'Created') {
+      return [];
+    }
+
     return tokenSearchResults.filter((token) => {
       // If we're searching, we want to search across all chains
       if (isSearching) {
@@ -118,6 +125,16 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
   const isRefreshDisabledAtUserLevel = isRefreshDisabledForUser(query.viewer?.user?.dbid ?? '');
   const refreshDisabled =
     isRefreshDisabledAtUserLevel || !doesUserOwnWalletFromChain(selectedChain, query) || isLocked;
+
+  const handleSelectedViewChange = useCallback((view: SidebarView) => {
+    setSelectedView(view);
+
+    if (view === 'Created') {
+      setSelectedChain('Ethereum');
+    }
+  }, []);
+
+  // [GAL-2710] call syncTokens conditionally based on what the `SelectedView` is
   const handleRefresh = useCallback(async () => {
     if (refreshDisabled) {
       return;
@@ -126,12 +143,59 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
     await syncTokens(selectedChain);
   }, [selectedChain, refreshDisabled, syncTokens]);
 
+  const sidebarMainContent = useMemo(() => {
+    // [GAL-2710] TODO
+    if (selectedView === 'Created') {
+      if (tokensToDisplay.length) {
+        return (
+          <SidebarTokens
+            isSearching={isSearching}
+            tokenRefs={tokensToDisplay}
+            selectedChain={selectedChain}
+            selectedView={selectedView}
+          />
+        );
+      }
+      return <CreatorEmptyStateSidebar />;
+    }
+
+    if (ownsWalletFromSelectedChain) {
+      return (
+        <SidebarTokens
+          isSearching={isSearching}
+          tokenRefs={tokensToDisplay}
+          selectedChain={selectedChain}
+          selectedView={selectedView}
+        />
+      );
+    }
+    return (
+      <AddWalletSidebar
+        selectedChain={selectedChain}
+        queryRef={query}
+        handleRefresh={handleRefresh}
+      />
+    );
+  }, [
+    handleRefresh,
+    isSearching,
+    ownsWalletFromSelectedChain,
+    query,
+    selectedChain,
+    selectedView,
+    tokensToDisplay,
+  ]);
+
   return (
     <StyledSidebar navbarHeight={navbarHeight}>
       <StyledSidebarContainer gap={8}>
         <Header align="center" justify="space-between" gap={4}>
           <TitleS>Add pieces</TitleS>
-          <SidebarViewSelector selectedView={selectedView} setSelectedView={setSelectedView} />
+          <SidebarViewSelector
+            selectedView={selectedView}
+            onSelectedViewChange={handleSelectedViewChange}
+            queryRef={query}
+          />
         </Header>
         <StyledSearchBarContainer>
           <SearchBar
@@ -159,7 +223,11 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
         {!isSearching && (
           <>
             <div>
-              <SidebarChainSelector selected={selectedChain} onChange={setSelectedChain} />
+              <SidebarChainSelector
+                selected={selectedChain}
+                onChange={setSelectedChain}
+                selectedView={selectedView}
+              />
             </div>
             {ownsWalletFromSelectedChain && (
               <StyledButtonGroupContainer>
@@ -182,20 +250,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
             )}
           </>
         )}
-        {ownsWalletFromSelectedChain ? (
-          <SidebarTokens
-            isSearching={isSearching}
-            tokenRefs={tokensToDisplay}
-            selectedChain={selectedChain}
-            selectedView={selectedView}
-          />
-        ) : (
-          <AddWalletSidebar
-            selectedChain={selectedChain}
-            queryRef={query}
-            handleRefresh={() => syncTokens(selectedChain)}
-          />
-        )}
+        {sidebarMainContent}
       </StyledSidebarContainer>
     </StyledSidebar>
   );

@@ -7,9 +7,15 @@
 const lightMode = {
   offWhite: '#F9F9F9',
   white: '#FEFEFE',
-  black: '#000000',
+  black: {
+    DEFAULT: '#000000',
+    500: '#303030',
+    600: '#2A2A2A',
+    700: '#202020',
+    800: '#141414',
+    900: '#0C0C0C',
+  },
   offBlack: '#141414',
-  black: '#000000',
   graphite: '#2F2F2F',
   shadow: '#707070',
   metal: '#9e9e9e',
@@ -24,7 +30,14 @@ const lightMode = {
 // Any code related to dark mode is here exclusively to support the `base` iFrame embed
 // This is very hacky and brittle, so if you're updating it, treat it that way.
 const darkMode = {
-  black: '#FEFEFE',
+  black: {
+    DEFAULT: '#FEFEFE',
+    500: '#303030',
+    600: '#2A2A2A',
+    700: '#202020',
+    800: '#141414',
+    900: '#0C0C0C',
+  },
   offBlack: '#F9F9F9',
   white: '#000000',
   offWhite: '#141414',
