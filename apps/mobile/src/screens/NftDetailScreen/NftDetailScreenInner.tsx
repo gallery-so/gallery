@@ -104,12 +104,14 @@ export function NftDetailScreenInner() {
   }, [query.collectionTokenById, token]);
 
   const handleOpenCommunityScreen = useCallback(() => {
-    const contractAddress = token.contract?.contractAddress?.address ?? '';
-    if (!contractAddress) return;
+    const contractAddress = token.contract?.contractAddress;
+    const { address, chain } = contractAddress ?? {};
+    if (!address || !chain) return;
     navigation.navigate('Community', {
-      contractAddress,
+      contractAddress: address,
+      chain,
     });
-  }, [navigation, token.contract?.contractAddress?.address]);
+  }, [navigation, token.contract?.contractAddress]);
 
   return (
     <ScrollView>

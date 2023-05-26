@@ -7,13 +7,15 @@ import { CommunityView } from '~/components/Community/CommunityView';
 import { ProfileViewFallback } from '~/components/ProfileView/ProfileViewFallback';
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { CommunityScreenQuery } from '~/generated/CommunityScreenQuery.graphql';
+import { Chain } from '~/generated/CommunityScreenQuery.graphql';
 import { MainTabStackNavigatorParamList } from '~/navigation/types';
 
 type CommunityScreenInnerProps = {
+  chain: Chain;
   contractAddress: string;
 };
 
-function CommunityScreenInner({ contractAddress }: CommunityScreenInnerProps) {
+function CommunityScreenInner({ chain, contractAddress }: CommunityScreenInnerProps) {
   const query = useLazyLoadQuery<CommunityScreenQuery>(
     graphql`
       query CommunityScreenQuery(
@@ -28,9 +30,8 @@ function CommunityScreenInner({ contractAddress }: CommunityScreenInnerProps) {
     {
       communityAddress: {
         address: contractAddress,
-        chain: 'Ethereum',
+        chain: chain,
       },
-      //   listOwnersFirst: LIST_ITEM_PER_PAGE,
       listOwnersFirst: 200,
       onlyGalleryUsers: true,
     },
@@ -39,7 +40,6 @@ function CommunityScreenInner({ contractAddress }: CommunityScreenInnerProps) {
 
   const { top } = useSafeAreaPadding();
 
-  console.log('contractAddress', contractAddress);
   return (
     <View style={{ flex: 1, paddingTop: top }}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ flex: 1 }}>
@@ -51,13 +51,12 @@ function CommunityScreenInner({ contractAddress }: CommunityScreenInnerProps) {
 
 export function CommunityScreen() {
   const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'Community'>>();
-  const contractAddress = route.params.contractAddress;
+  const { chain, contractAddress } = route.params;
 
   return (
     <View className="flex-1 bg-white dark:bg-black">
       <Suspense fallback={<ProfileViewFallback />}>
-        {/* <CommunityScreenInner contractAddress={contractAddress} /> */}
-        <CommunityScreenInner contractAddress={'0x57f1887a8bf19b14fc0df6fd9b2acc9af147ea85'} />
+        <CommunityScreenInner contractAddress={contractAddress} chain={chain as Chain} />
       </Suspense>
     </View>
   );

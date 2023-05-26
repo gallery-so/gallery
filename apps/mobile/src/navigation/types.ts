@@ -19,7 +19,7 @@ export type MainTabStackNavigatorParamList = {
   Gallery: { galleryId: string };
   Collection: { collectionId: string };
   FeedEvent: { eventId: string };
-  Community: { contractAddress: string };
+  Community: { contractAddress: string; chain: string };
 
   // The main four tabs
   Account: undefined;
