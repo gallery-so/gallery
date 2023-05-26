@@ -75,7 +75,7 @@ export function CommunityCollectorsList({ communityRef }: Props) {
   const navigation = useNavigation<MainTabStackNavigatorProp>();
   const handleOpenProfile = useCallback(
     (username: string) => {
-      navigation.navigate('Profile', {
+      navigation.push('Profile', {
         username,
         hideBackButton: false,
       });
