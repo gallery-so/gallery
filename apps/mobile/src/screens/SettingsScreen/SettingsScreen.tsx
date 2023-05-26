@@ -1,13 +1,13 @@
 import Constants from 'expo-constants';
 import { ReactNode, useCallback, useRef, useState } from 'react';
 import { LayoutChangeEvent, Linking, ScrollView, View, ViewProps } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Button } from '~/components/Button';
 import { FeedbackBottomSheet } from '~/components/FeedbackBottomSheet';
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { InteractiveLink } from '~/components/InteractiveLink';
-import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { Typography } from '~/components/Typography';
 
 import { useLogout } from '../../hooks/useLogout';
@@ -21,7 +21,7 @@ const appVersion = Constants.expoConfig?.version;
 const commitHash = Constants.expoConfig?.extra?.commitHash;
 
 export function SettingsScreen() {
-  const { top } = useSafeAreaPadding();
+  const { top } = useSafeAreaInsets();
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
 
   const [bottomSectionHeight, setBottomSectionHeight] = useState(200);
