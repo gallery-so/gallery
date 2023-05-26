@@ -97,8 +97,9 @@ export function CommunityCollectorsList({ communityRef }: Props) {
             <View key={`${index}-${subIndex}`} className="w-1/2">
               <GalleryTouchableOpacity
                 onPress={() => handleOpenProfile(holder.username)}
-                eventElementId={null}
-                eventName={null}
+                eventElementId="community-collectors-list-user"
+                eventName={'community-collectors-list-user-pressed'}
+                properties={{ username: holder.username }}
               >
                 <Typography font={{ family: 'ABCDiatype', weight: 'Regular' }}>
                   {holder.username}
