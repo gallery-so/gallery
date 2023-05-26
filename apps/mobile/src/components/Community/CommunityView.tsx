@@ -1,4 +1,4 @@
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { CommunityViewFragment$key } from '~/generated/CommunityViewFragment.graphql';
@@ -17,7 +17,8 @@ export function CommunityView({ queryRef }: Props) {
   const query = useFragment(
     graphql`
       fragment CommunityViewFragment on Query {
-        community: communityByAddress(communityAddress: $communityAddress) {
+        community: communityByAddress(communityAddress: $communityAddress)
+          @required(action: THROW) {
           ... on ErrCommunityNotFound {
             __typename
           }
@@ -38,9 +39,8 @@ export function CommunityView({ queryRef }: Props) {
 
   const { community } = query;
 
-  //   TODO: Implement this
   if (!community || community.__typename !== 'Community') {
-    return <Text>Community not found</Text>;
+    throw new Error(`Unable to fetch the community`);
   }
   const { contractAddress } = community;
 
