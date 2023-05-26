@@ -1,4 +1,4 @@
-import { RouteProp, useRoute } from '@react-navigation/native';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { useCallback, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
@@ -9,7 +9,7 @@ import { BackButton } from '~/components/BackButton';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { Pill } from '~/components/Pill';
 import { NftDetailScreenInnerQuery } from '~/generated/NftDetailScreenInnerQuery.graphql';
-import { MainTabStackNavigatorParamList } from '~/navigation/types';
+import { MainTabStackNavigatorParamList, MainTabStackNavigatorProp } from '~/navigation/types';
 
 import { IconContainer } from '../../components/IconContainer';
 import { InteractiveLink } from '../../components/InteractiveLink';
@@ -52,6 +52,10 @@ export function NftDetailScreenInner() {
             contract {
               name
               badgeURL
+              contractAddress {
+                address
+                chain
+              }
             }
 
             ...NftAdditionalDetailsFragment
@@ -87,6 +91,8 @@ export function NftDetailScreenInner() {
     throw new Error("We couldn't find that token. Something went wrong and we're looking into it.");
   }
 
+  const navigation = useNavigation<MainTabStackNavigatorProp>();
+
   const [showAdditionalDetails, setShowAdditionalDetails] = useState(false);
 
   const toggleAdditionalDetails = useCallback(() => {
@@ -96,6 +102,16 @@ export function NftDetailScreenInner() {
   const handleShare = useCallback(() => {
     shareToken(token, query.collectionTokenById?.collection ?? null);
   }, [query.collectionTokenById, token]);
+
+  const handleOpenCommunityScreen = useCallback(() => {
+    const contractAddress = token.contract?.contractAddress;
+    const { address, chain } = contractAddress ?? {};
+    if (!address || !chain) return;
+    navigation.push('Community', {
+      contractAddress: address,
+      chain,
+    });
+  }, [navigation, token.contract?.contractAddress]);
 
   return (
     <ScrollView>
@@ -132,9 +148,15 @@ export function NftDetailScreenInner() {
                 {token.contract?.badgeURL && (
                   <FastImage className="h-6 w-6" source={{ uri: token.contract.badgeURL }} />
                 )}
-                <Typography numberOfLines={1} font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-                  {token.contract.name}
-                </Typography>
+                <GalleryTouchableOpacity
+                  onPress={handleOpenCommunityScreen}
+                  eventElementId="Community Pill"
+                  eventName="Community Pill Clicked"
+                >
+                  <Typography numberOfLines={1} font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+                    {token.contract.name}
+                  </Typography>
+                </GalleryTouchableOpacity>
               </Pill>
             </GalleryTouchableOpacity>
           ) : null}
