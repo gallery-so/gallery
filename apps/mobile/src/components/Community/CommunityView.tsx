@@ -78,6 +78,10 @@ export function CommunityView({ queryRef }: Props) {
           </Typography>
           {contractAddress && <LinkableAddress chainAddressRef={contractAddress} />}
         </View>
+
+        <Typography font={{ family: 'ABCDiatype', weight: 'Bold' }} className="text-sm mb-4 px-4">
+          Collectors on Gallery
+        </Typography>
         <CommunityCollectorsList communityRef={community} />
       </View>
     </View>
