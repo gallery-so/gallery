@@ -31,6 +31,10 @@ export function GalleryEditor({ queryRef }: GalleryEditorProps) {
               tokens {
                 ...PiecesSidebarFragment
               }
+              # [GAL-2710] createdTokens
+              # createdTokens {
+              #   ...CreatedPiecesSidebarFragment
+              # }
             }
           }
         }
