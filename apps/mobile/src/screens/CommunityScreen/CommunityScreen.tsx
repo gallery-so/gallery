@@ -1,6 +1,6 @@
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { Suspense } from 'react';
-import { ScrollView, View } from 'react-native';
+import { View } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 
 import { CommunityView } from '~/components/Community/CommunityView';
@@ -42,9 +42,7 @@ function CommunityScreenInner({ chain, contractAddress }: CommunityScreenInnerPr
 
   return (
     <View style={{ flex: 1, paddingTop: top }}>
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ flex: 1 }}>
-        <CommunityView queryRef={query} />
-      </ScrollView>
+      <CommunityView queryRef={query} />
     </View>
   );
 }
