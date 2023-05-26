@@ -2,7 +2,6 @@ import { Text, View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { CommunityViewFragment$key } from '~/generated/CommunityViewFragment.graphql';
-import GalleryViewEmitter from '~/shared/components/GalleryViewEmitter';
 
 import { BackButton } from '../BackButton';
 import { LinkableAddress } from '../LinkableAddress';
@@ -30,7 +29,6 @@ export function CommunityView({ queryRef }: Props) {
             ...CommunityCollectorsListFragment
           }
         }
-        # ...GalleryViewEmitterWithSuspenseFragment
       }
     `,
     queryRef
@@ -46,8 +44,6 @@ export function CommunityView({ queryRef }: Props) {
 
   return (
     <View className="flex-1">
-      {/* <GalleryViewEmitter queryRef={query} /> */}
-
       <View className="flex flex-col px-4 pb-4 z-10 bg-white dark:bg-black">
         <View className="flex flex-row justify-between bg-white dark:bg-black">
           <BackButton />
