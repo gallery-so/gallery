@@ -5,6 +5,7 @@ import { CommunityViewFragment$key } from '~/generated/CommunityViewFragment.gra
 
 import { BackButton } from '../BackButton';
 import { LinkableAddress } from '../LinkableAddress';
+import { Markdown } from '../Markdown';
 import { Typography } from '../Typography';
 import { CommunityCollectorsList } from './CommunityCollectorsList';
 
@@ -23,6 +24,7 @@ export function CommunityView({ queryRef }: Props) {
           ... on Community {
             __typename
             name
+            description
             contractAddress {
               ...LinkableAddressFragment
             }
@@ -52,13 +54,22 @@ export function CommunityView({ queryRef }: Props) {
 
       <View className="flex-grow">
         <View className="mb-4 px-4">
-          <Typography
-            font={{ family: 'GTAlpina', weight: 'StandardLight', italic: true }}
-            className="text-2xl mb-4"
-          >
-            {community.name}
-          </Typography>
-
+          <View className="mb-4">
+            <Typography
+              font={{ family: 'GTAlpina', weight: 'StandardLight', italic: true }}
+              className="text-2xl"
+            >
+              {community.name}
+            </Typography>
+            {community.description && (
+              <Typography
+                font={{ family: 'ABCDiatype', weight: 'Regular' }}
+                className="text-sm mt-1"
+              >
+                <Markdown>{community.description}</Markdown>
+              </Typography>
+            )}
+          </View>
           <Typography
             font={{ family: 'ABCDiatype', weight: 'Regular' }}
             className="text-xs uppercase"
