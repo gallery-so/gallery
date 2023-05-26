@@ -17,13 +17,13 @@ export type SidebarView = 'Collected' | 'Created' | 'Hidden';
 
 type SidebarViewSelectorProps = {
   selectedView: SidebarView;
-  setSelectedView: (selectedView: SidebarView) => void;
+  onSelectedViewChange: (selectedView: SidebarView) => void;
   queryRef: SidebarViewSelectorFragment$key;
 };
 
 export function SidebarViewSelector({
   selectedView,
-  setSelectedView,
+  onSelectedViewChange,
   queryRef,
 }: SidebarViewSelectorProps) {
   const query = useFragment(
@@ -47,10 +47,10 @@ export function SidebarViewSelector({
       if (selectedView === 'Created' && !isCreatedTabEnabled) {
         return;
       }
-      setSelectedView(selectedView);
+      onSelectedViewChange(selectedView);
       setIsDropdownOpen(false);
     },
-    [track, isCreatedTabEnabled, setSelectedView]
+    [track, isCreatedTabEnabled, onSelectedViewChange]
   );
 
   return (

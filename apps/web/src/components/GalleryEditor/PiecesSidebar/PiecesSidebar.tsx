@@ -126,6 +126,14 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
   const refreshDisabled =
     isRefreshDisabledAtUserLevel || !doesUserOwnWalletFromChain(selectedChain, query) || isLocked;
 
+  const handleSelectedViewChange = useCallback((view: SidebarView) => {
+    setSelectedView(view);
+
+    if (view === 'Created') {
+      setSelectedChain('Ethereum');
+    }
+  }, []);
+
   // [GAL-2710] call syncTokens conditionally based on what the `SelectedView` is
   const handleRefresh = useCallback(async () => {
     if (refreshDisabled) {
@@ -185,7 +193,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
           <TitleS>Add pieces</TitleS>
           <SidebarViewSelector
             selectedView={selectedView}
-            setSelectedView={setSelectedView}
+            onSelectedViewChange={handleSelectedViewChange}
             queryRef={query}
           />
         </Header>

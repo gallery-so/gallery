@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 
 import { Chain, chains } from '~/components/GalleryEditor/PiecesSidebar/chains';
@@ -36,12 +36,6 @@ export function SidebarChainSelector({ selected, onChange, selectedView }: Sideb
     }
     return chains;
   }, [selectedView]);
-
-  useEffect(() => {
-    if (selectedView === 'Created' && selected !== 'Ethereum') {
-      onChange('Ethereum');
-    }
-  }, [onChange, selected, selectedView]);
 
   return (
     <Container>
