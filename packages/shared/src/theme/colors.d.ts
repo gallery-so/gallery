@@ -27,6 +27,10 @@ declare const colors: {
   red: '#F00000';
 };
 
-export type ColorType = (typeof colors)[keyof typeof colors];
+type FlattenColors<T> = T extends string ? T : T extends Record<string, infer U> ? U : never;
+
+type AllColorValues = (typeof colors)[keyof typeof colors];
+
+export type ColorType = FlattenColors<AllColorValues>;
 
 export default colors;
