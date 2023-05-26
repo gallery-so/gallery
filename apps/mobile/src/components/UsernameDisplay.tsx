@@ -37,8 +37,8 @@ export function UsernameDisplay({ userRef, style, size = 'xs', text }: Props) {
     <GalleryTouchableOpacity
       onPress={handlePress}
       style={style}
-      eventElementId={null}
-      eventName={null}
+      eventElementId="Username Interaction"
+      eventName="Username Interaction Clicked"
     >
       <Typography className={`text-${size}`} font={{ family: 'ABCDiatype', weight: 'Bold' }}>
         {text ? text : user.username}
