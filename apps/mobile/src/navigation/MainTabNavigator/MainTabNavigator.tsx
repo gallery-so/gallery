@@ -71,7 +71,7 @@ export function MainTabNavigator() {
       tabBar={TabBar}
       screenOptions={{ swipeEnabled: false, animationEnabled: false }}
       sceneContainerStyle={{
-        backgroundColor: colorScheme === 'dark' ? colors.black : colors.white,
+        backgroundColor: colorScheme === 'dark' ? colors.black.DEFAULT : colors.white,
       }}
     >
       <Tab.Screen name="HomeTab" component={HomeScreen} />
