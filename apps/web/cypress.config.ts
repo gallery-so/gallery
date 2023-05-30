@@ -16,6 +16,7 @@ export default defineConfig({
   requestTimeout: 30000,
   projectId: 'igfgns',
   e2e: {
+    testIsolation: true,
     setupNodeEvents(on, config) {
       synpressPlugins(on, config);
     },

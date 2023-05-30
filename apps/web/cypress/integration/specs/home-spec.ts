@@ -4,14 +4,13 @@ const home = new HomePage();
 
 describe('Homepage test', () => {
   beforeEach(() => {
-    cy.disconnectMetamaskWalletFromAllDapps();
     cy.visit('/');
   });
 
   context('Homepage', () => {
     it('should redirect to the feed when visiting the homepage', () => {
       cy.visit('/');
-      cy.url().should('include', '/activity');
+      cy.url().should('include', '/trending');
       home.getFeedList().should('be.exist');
     });
 
