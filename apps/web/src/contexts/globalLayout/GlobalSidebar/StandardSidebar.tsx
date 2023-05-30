@@ -246,6 +246,7 @@ export function StandardSidebar({ queryRef }: Props) {
               onClick={handleEditClick}
               icon={<EditPencilIcon />}
               showBorderByDefault
+              dataTestId="edit-galleries-icon"
             />
           )}
         </VStack>

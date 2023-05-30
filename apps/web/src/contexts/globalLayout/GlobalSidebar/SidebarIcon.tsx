@@ -17,6 +17,7 @@ type Props = {
   showUnreadDot?: boolean;
   showBorderByDefault?: boolean;
   href?: Route;
+  dataTestId?: string;
 };
 export default function SidebarIcon({
   onClick,
@@ -26,6 +27,7 @@ export default function SidebarIcon({
   showUnreadDot = false,
   showBorderByDefault = false,
   href,
+  dataTestId,
 }: Props) {
   const { floating, reference, getFloatingProps, getReferenceProps, floatingStyle, close } =
     useTooltipHover({ placement: 'right' });
@@ -61,7 +63,7 @@ export default function SidebarIcon({
 
   if (href) {
     return (
-      <IconWrapper onClick={handleClick}>
+      <IconWrapper data-test-id={dataTestId} onClick={handleClick}>
         <Link href={href}>{content}</Link>
       </IconWrapper>
     );

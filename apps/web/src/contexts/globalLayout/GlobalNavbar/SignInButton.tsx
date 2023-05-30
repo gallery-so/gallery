@@ -9,7 +9,7 @@ import colors from '~/shared/theme/colors';
 export function SignInButton() {
   const showAuthModal = useAuthModal('sign-in');
 
-  return <SignInWrapper text="Sign In" onClick={showAuthModal} />;
+  return <SignInWrapper dataTestId="sign-in-button" text="Sign In" onClick={showAuthModal} />;
 }
 
 const SignInWrapper = styled(TextButton)`
