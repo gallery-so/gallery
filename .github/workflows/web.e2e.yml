@@ -24,9 +24,9 @@ jobs:
           KEYBASE_USERNAME: ${{secrets.KEYBASE_USERNAME}}
           KEYBASE_PAPERKEY: ${{secrets.KEYBASE_PAPER_KEY}}
       - name: 'Decrypt secrets'
-        run: keybase decrypt -i _encrypted_internal -o _internal.zip
+        run: keybase decrypt -i apps/web/_encrypted_internal -o _internal.zip
       - name: 'Unzip'
-        run: echo "A" | unzip _internal.zip -d _internal
+        run: echo "A" | unzip apps/web/_internal.zip -d _internal
       - name: 'Check file'
         run: ls
       - id: set_var
