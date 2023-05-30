@@ -1,11 +1,11 @@
 # syntax=docker/dockerfile:1
-FROM synthetixio/docker-e2e:16.17-ubuntu as base
+FROM synthetixio/docker-e2e:18.13-ubuntu as base
 
 RUN mkdir /app
 WORKDIR /app
 
 COPY apps/web/package.json ./
-COPY apps/web/yarn.lock ./
+COPY yarn.lock ./
 
 RUN yarn --frozen-lockfile --prefer-offline --no-audit
 
