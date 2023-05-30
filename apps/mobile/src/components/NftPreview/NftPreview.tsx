@@ -91,6 +91,7 @@ function NftPreviewInner({
 
   return (
     <NftPreviewContextMenuPopup
+      cachedPreviewAssetUrl={tokenUrl}
       fallbackTokenUrl={tokenUrl}
       collectionTokenRef={collectionToken}
       imageDimensions={imageState.kind === 'loaded' ? imageState.dimensions : null}
