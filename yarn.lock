@@ -7097,7 +7097,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@synthetixio/synpress@npm:^3.7.0":
+"@synthetixio/synpress@npm:^3.5.1":
   version: 3.7.0
   resolution: "@synthetixio/synpress@npm:3.7.0"
   dependencies:
@@ -12808,7 +12808,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cypress@npm:^12.11.0, cypress@npm:^12.7.0":
+"cypress@npm:^12.11.0":
   version: 12.13.0
   resolution: "cypress@npm:12.13.0"
   dependencies:
@@ -30330,7 +30330,7 @@ __metadata:
     "@rainbow-me/rainbowkit": ^0.8.0
     "@sentry/nextjs": ^7.23.0
     "@svgr/webpack": ^5.5.0
-    "@synthetixio/synpress": ^3.7.0
+    "@synthetixio/synpress": ^3.5.1
     "@taquito/taquito": 14.0.0
     "@taquito/tzip16": 14.0.0
     "@taquito/utils": ^13.0.1
@@ -30365,7 +30365,6 @@ __metadata:
     "@web3-react/walletconnect-connector": ^6.1.9
     "@web3-react/walletlink-connector": 6.1.9
     bufferutil: ^4.0.5
-    cypress: ^12.7.0
     date-fns: ^2.29.3
     eslint-config-next: ^13.1.6
     ethers: ^5.6.9
