@@ -32,4 +32,8 @@ export default class HomePage extends Page {
   getSignInButtonNav() {
     return cy.get('button').contains('Sign In');
   }
+
+  getEditGalleryButton() {
+    return cy.get('[data-testid="edit-galleries-icon"]');
+  }
 }
