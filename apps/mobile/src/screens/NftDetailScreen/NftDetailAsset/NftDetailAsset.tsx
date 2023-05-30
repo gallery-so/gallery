@@ -1,10 +1,8 @@
 import { useCallback, useContext, useMemo } from 'react';
 import { View, ViewProps } from 'react-native';
-import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import { GallerySkeleton } from '~/components/GallerySkeleton';
 import { NftDetailAssetFragment$key } from '~/generated/NftDetailAssetFragment.graphql';
 import { NftDetailAssetCacheSwapperContext } from '~/screens/NftDetailScreen/NftDetailAsset/NftDetailAssetCacheSwapper';
 import { NftDetailAssetHtml } from '~/screens/NftDetailScreen/NftDetailAsset/NftDetailAssetHtml';
