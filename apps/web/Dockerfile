@@ -4,8 +4,8 @@ FROM synthetixio/docker-e2e:16.17-ubuntu as base
 RUN mkdir /app
 WORKDIR /app
 
-COPY package.json ./
-COPY yarn.lock ./
+COPY apps/web/package.json ./
+COPY apps/web/yarn.lock ./
 
 RUN yarn --frozen-lockfile --prefer-offline --no-audit
 
