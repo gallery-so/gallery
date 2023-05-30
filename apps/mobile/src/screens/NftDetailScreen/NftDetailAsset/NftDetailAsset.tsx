@@ -134,18 +134,6 @@ export function NftDetailAsset({ tokenRef, style }: NftDetailProps) {
       onLayout={assetSizer.handleViewLayout}
     >
       {inner}
-
-      {/* Show a skeleton placeholder over the image while it's loading */}
-      {assetSizer.imageState.kind === 'loading' && (
-        <View className="absolute">
-          <GallerySkeleton>
-            <SkeletonPlaceholder.Item
-              width={assetSizer.viewDimensions?.width}
-              height={assetSizer.viewDimensions?.height}
-            />
-          </GallerySkeleton>
-        </View>
-      )}
     </View>
   );
 }
