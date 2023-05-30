@@ -1,6 +1,6 @@
 import { ResizeMode } from 'expo-av';
 import { createContext, PropsWithChildren, useCallback, useMemo, useState } from 'react';
-import { View, ViewProps } from 'react-native';
+import { LayoutChangeEvent, View, ViewProps } from 'react-native';
 
 import { NftPreviewAsset } from '~/components/NftPreview/NftPreviewAsset';
 import { useNftDetailAssetSizer } from '~/screens/NftDetailScreen/NftDetailAsset/useNftDetailAssetSizer';
@@ -37,15 +37,25 @@ export function NftDetailAssetCacheSwapper({ children, style, cachedPreviewAsset
     };
   }, [markDetailAssetAsLoaded]);
 
+  const [detailLayoutHeight, setDetailLayoutHeight] = useState<number | null>(null);
+  const handleDetailLayout = useCallback((event: LayoutChangeEvent) => {
+    setDetailLayoutHeight(event.nativeEvent.layout.height);
+  }, []);
+
   if (!cachedPreviewAssetUrl) {
     return <>{children}</>;
   }
+
+  // We need to do this in case the detail asset is taller than the preview asset.
+  // This is because the detail asset is positioned absolutely, so it won't affect
+  // the layout of the parent view.
+  const maxHeight = Math.max(assetSizer.finalAssetDimensions.height, detailLayoutHeight ?? 0);
 
   return (
     <View style={[style, { position: 'relative' }]}>
       <View
         onLayout={assetSizer.handleViewLayout}
-        style={[assetSizer.finalAssetDimensions, { width: '100%' }]}
+        style={[assetSizer.finalAssetDimensions, { width: '100%', height: maxHeight }]}
       >
         <NftPreviewAsset
           onLoad={assetSizer.handleLoad}
@@ -56,6 +66,7 @@ export function NftDetailAssetCacheSwapper({ children, style, cachedPreviewAsset
 
       <NftDetailAssetCacheSwapperContext.Provider value={contextValue}>
         <View
+          onLayout={handleDetailLayout}
           style={{
             position: 'absolute',
             top: 0,
