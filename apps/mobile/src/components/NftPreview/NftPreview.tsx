@@ -74,8 +74,9 @@ function NftPreviewInner({
     navigation.push('NftDetail', {
       tokenId: token.dbid,
       collectionId: collectionToken.collection?.dbid ?? null,
+      cachedPreviewAssetUrl: tokenUrl,
     });
-  }, [collectionToken.collection?.dbid, navigation, token.dbid]);
+  }, [collectionToken.collection?.dbid, navigation, token.dbid, tokenUrl]);
 
   const handleLoad = useCallback(
     (dimensions: Dimensions | null) => {
