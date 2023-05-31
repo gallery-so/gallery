@@ -9,6 +9,7 @@ import { useSearchContext } from './SearchContext';
 type Props = {
   title: string;
   description: string;
+  variant: 'Gallery' | 'User';
 } & TouchableOpacityProps;
 
 const MAX_DESCRIPTION_CHARACTER = 150;
@@ -19,7 +20,7 @@ const markdownStyles = StyleSheet.create({
   },
 });
 
-export function SearchResult({ title, description, ...props }: Props) {
+export function SearchResult({ title, description, variant, ...props }: Props) {
   const { keyword } = useSearchContext();
 
   const highlightedName = useMemo(() => {
@@ -56,7 +57,13 @@ export function SearchResult({ title, description, ...props }: Props) {
   }, [keyword, description]);
 
   return (
-    <GalleryTouchableOpacity className="h-16 py-2 px-4" {...props}>
+    <GalleryTouchableOpacity
+      className="h-16 py-2 px-4"
+      eventElementId="Search Result Row"
+      eventName="Search Result Row Clicked"
+      properties={{ variant }}
+      {...props}
+    >
       <Markdown style={markdownStyles}>{highlightedName}</Markdown>
       <Markdown style={markdownStyles} numberOfLines={1}>
         {highlightedDescription}

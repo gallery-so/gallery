@@ -1,12 +1,12 @@
+import { useColorScheme } from 'nativewind';
 import * as React from 'react';
-import { useColorScheme } from 'react-native';
 import Svg, { Path, SvgProps } from 'react-native-svg';
 
 import colors from '~/shared/theme/colors';
 
 export function EmailIcon(props: SvgProps) {
-  const colorScheme = useColorScheme();
-  const color = colorScheme === 'dark' ? colors.offWhite : colors.black;
+  const { colorScheme } = useColorScheme();
+  const color = colorScheme === 'dark' ? colors.offWhite : colors.black.DEFAULT;
   return (
     <Svg width={24} height={24} fill="none" {...props}>
       <Path d="M21.5 5h-19v14h19V5Z" stroke={color} strokeMiterlimit={10} />

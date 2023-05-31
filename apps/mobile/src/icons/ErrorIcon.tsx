@@ -1,18 +1,18 @@
+import { useColorScheme } from 'nativewind';
 import * as React from 'react';
-import { useColorScheme } from 'react-native';
 import Svg, { Path, SvgProps } from 'react-native-svg';
 
 import colors from '~/shared/theme/colors';
 
 export function ErrorIcon(props: SvgProps) {
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useColorScheme();
 
   return (
     <Svg
       fill="none"
       viewBox="0 0 24 24"
       strokeWidth={1.5}
-      stroke={colorScheme === 'dark' ? colors.white : colors.black}
+      stroke={colorScheme === 'dark' ? colors.white : colors.black.DEFAULT}
       className="w-6 h-6"
       {...props}
     >

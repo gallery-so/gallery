@@ -1,17 +1,28 @@
+import { useColorScheme } from 'nativewind';
 import * as React from 'react';
-import { useColorScheme } from 'react-native';
-import Svg, { Path, SvgProps } from 'react-native-svg';
+import Svg, { Path } from 'react-native-svg';
 
 import colors from '~/shared/theme/colors';
 
-export function TwitterIcon(props: SvgProps) {
-  const colorScheme = useColorScheme();
+const originalWidth = 21;
+const originalHeight = 18;
+
+type Props = {
+  height?: number;
+  width?: number;
+};
+
+export function TwitterIcon({ width = originalWidth, height = originalHeight }: Props) {
+  const { colorScheme } = useColorScheme();
+
+  const scaledWidth = (height * originalWidth) / originalHeight;
+  const scaledHeight = (width * originalHeight) / originalWidth;
 
   return (
-    <Svg width={14} height={12} viewBox="0 0 14 12" fill="none" {...props}>
+    <Svg width={scaledWidth} height={scaledHeight} viewBox="0 0 21 18" fill="none">
       <Path
-        d="M13.973 1.667c-.524.23-1.08.383-1.648.452a2.891 2.891 0 001.262-1.59 5.938 5.938 0 01-1.824.691 2.867 2.867 0 00-4.889 2.614A8.13 8.13 0 01.957.844a2.817 2.817 0 00-.388 1.444 2.871 2.871 0 001.276 2.39 2.861 2.861 0 01-1.3-.36v.035A2.87 2.87 0 002.847 7.17c-.421.113-.862.13-1.29.05A2.879 2.879 0 004.242 9.21 5.752 5.752 0 010 10.4a8.17 8.17 0 004.409 1.288 8.105 8.105 0 008.165-8.155c0-.122 0-.244-.009-.367A5.794 5.794 0 0014 1.677l-.027-.01z"
-        fill={colorScheme === 'dark' ? colors.white : colors.black}
+        d="M20.959 2.037a8.763 8.763 0 01-2.471.678A4.337 4.337 0 0020.38.33a8.907 8.907 0 01-2.736 1.036A4.3 4.3 0 0010.2 4.305c0 .33.038.66.111.983A12.194 12.194 0 011.435.803a4.226 4.226 0 00-.582 2.166 4.307 4.307 0 001.914 3.584 4.292 4.292 0 01-1.949-.54v.054A4.306 4.306 0 004.27 10.29a4.34 4.34 0 01-1.935.075 4.318 4.318 0 004.028 2.989 8.629 8.629 0 01-5.339 1.841c-.342 0-.684-.02-1.024-.059a12.253 12.253 0 006.613 1.933A12.16 12.16 0 0018.861 4.837c0-.183 0-.367-.013-.551A8.69 8.69 0 0021 2.053l-.041-.016z"
+        fill={colorScheme === 'dark' ? colors.white : colors.black.DEFAULT}
       />
     </Svg>
   );

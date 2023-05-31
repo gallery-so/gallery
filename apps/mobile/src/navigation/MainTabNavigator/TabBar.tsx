@@ -13,7 +13,8 @@ import { GLogo } from '~/navigation/MainTabNavigator/GLogo';
 import { NotificationsIcon } from '~/navigation/MainTabNavigator/NotificationsIcon';
 import { SearchIcon } from '~/navigation/MainTabNavigator/SearchIcon';
 import { MainTabNavigatorParamList } from '~/navigation/types';
-import { useTrack } from '~/shared/contexts/AnalyticsContext';
+
+import { SettingsIcon } from '../../icons/SettingsIcon';
 
 type TabItemProps = {
   icon: ReactNode;
@@ -22,17 +23,8 @@ type TabItemProps = {
   navigation: MaterialTopTabBarProps['navigation'];
 };
 
-const TAB_NAMES: { [key in keyof MainTabNavigatorParamList]: string } = {
-  AccountTab: 'Account',
-  HomeTab: 'Home',
-  SearchTab: 'Search',
-  NotificationsTab: 'Notifications',
-};
-
 function TabItem({ navigation, route, icon, activeRoute }: TabItemProps) {
   const isFocused = activeRoute === route.name;
-
-  const track = useTrack();
 
   const onPress = useCallback(() => {
     const event = navigation.emit({
@@ -41,13 +33,10 @@ function TabItem({ navigation, route, icon, activeRoute }: TabItemProps) {
       canPreventDefault: true,
     });
 
-    const routeName = TAB_NAMES[route.name as keyof typeof TAB_NAMES];
-    track(`Navigate to ${routeName}`, {});
-
     if (!isFocused && !event.defaultPrevented) {
       navigation.navigate(route.name);
     }
-  }, [isFocused, navigation, route, track]);
+  }, [isFocused, navigation, route]);
 
   const isHome = route.name === 'Home';
 
@@ -56,7 +45,10 @@ function TabItem({ navigation, route, icon, activeRoute }: TabItemProps) {
       onPress={onPress}
       accessibilityRole="button"
       accessibilityState={isFocused ? { selected: true } : {}}
-      className={`px-8 ${isFocused ? 'opacity-100' : 'opacity-30'}`}
+      className={`px-0 ${isFocused ? 'opacity-100' : 'opacity-30'}`}
+      eventElementId="Navigation Tab Item"
+      eventName="Navigation Tab Item Clicked"
+      properties={{ variant: 'Main', route: route.name }}
     >
       <View
         className={`flex h-8 w-8 items-center justify-center rounded-full ${
@@ -85,7 +77,7 @@ export function TabBar({ state, navigation }: TabBarProps) {
           ? { paddingBottom: bottom, paddingTop: 12 }
           : { paddingBottom: 12, paddingTop: 12 }
       }
-      className="bg-offWhite dark:bg-black flex flex-row items-center justify-center"
+      className="bg-offWhite dark:bg-black flex flex-row items-center justify-evenly"
     >
       {state.routes.map((route) => {
         let icon = null;
@@ -97,6 +89,8 @@ export function TabBar({ state, navigation }: TabBarProps) {
           icon = <LazyNotificationIcon />;
         } else if (route.name === 'SearchTab') {
           icon = <SearchIcon />;
+        } else if (route.name === 'SettingsTab') {
+          icon = <SettingsIcon />;
         }
 
         return (

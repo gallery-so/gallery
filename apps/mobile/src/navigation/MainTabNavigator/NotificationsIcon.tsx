@@ -1,10 +1,10 @@
-import { useColorScheme } from 'react-native';
+import { useColorScheme } from 'nativewind';
 import Svg, { ClipPath, Defs, G, Path, SvgProps } from 'react-native-svg';
 
 import colors from '~/shared/theme/colors';
 
 export const NotificationsIcon = (props: SvgProps) => {
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useColorScheme();
 
   const strokeColor = colorScheme === 'dark' ? colors.white : colors.offBlack;
   const fillColor = colorScheme === 'light' ? colors.white : colors.offBlack;

@@ -15,6 +15,7 @@ import { NftPreviewContextMenuPopupFragment$key } from '~/generated/NftPreviewCo
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { fitDimensionsToContainerCover } from '~/screens/NftDetailScreen/NftDetailAsset/fitDimensionToContainer';
 import { Dimensions } from '~/screens/NftDetailScreen/NftDetailAsset/types';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 
 import { shareToken } from '../../utils/shareToken';
@@ -22,14 +23,17 @@ import { shareToken } from '../../utils/shareToken';
 type NftPreviewContextMenuPopupProps = PropsWithChildren<{
   fallbackTokenUrl?: string;
   imageDimensions: Dimensions | null;
+  cachedPreviewAssetUrl: string | null;
   collectionTokenRef: NftPreviewContextMenuPopupFragment$key;
 }>;
 
 export function NftPreviewContextMenuPopup({
+  children,
+
   imageDimensions,
   fallbackTokenUrl,
   collectionTokenRef,
-  children,
+  cachedPreviewAssetUrl,
 }: NftPreviewContextMenuPopupProps) {
   const collectionToken = useFragment(
     graphql`
@@ -39,7 +43,10 @@ export function NftPreviewContextMenuPopup({
           gallery {
             dbid
           }
+
+          ...shareTokenCollectionFragment
         }
+
         token @required(action: THROW) {
           dbid
           name
@@ -55,9 +62,9 @@ export function NftPreviewContextMenuPopup({
               }
             }
           }
-        }
 
-        ...shareTokenFragment
+          ...shareTokenFragment
+        }
       }
     `,
     collectionTokenRef
@@ -79,30 +86,33 @@ export function NftPreviewContextMenuPopup({
   const handleMenuItemPress = useCallback<OnPressMenuItemEvent>(
     (event) => {
       if (event.nativeEvent.actionKey === 'view-details') {
-        if (collectionToken.collection?.dbid) {
-          navigation.navigate('NftDetail', {
-            tokenId: token.dbid,
-            collectionId: collectionToken.collection.dbid,
-          });
-        }
+        navigation.navigate('NftDetail', {
+          cachedPreviewAssetUrl,
+
+          tokenId: token.dbid,
+          collectionId: collectionToken?.collection?.dbid ?? null,
+        });
       } else if (event.nativeEvent.actionKey === 'share') {
-        shareToken(collectionToken);
+        shareToken(token, collectionToken.collection ?? null);
       } else if (event.nativeEvent.actionKey === 'view-gallery') {
-        if (collectionToken.collection?.gallery?.dbid) {
-          navigation.push('Gallery', {
-            galleryId: collectionToken.collection.gallery.dbid,
-          });
-        }
+        navigation.push('Gallery', {
+          galleryId: collectionToken.collection?.gallery?.dbid ?? 'not-found',
+        });
       }
     },
-    [collectionToken, navigation, token.dbid]
+    [cachedPreviewAssetUrl, collectionToken.collection, navigation, token]
   );
+
+  const track = useTrack();
 
   return (
     <ContextMenuView
       // If we don't have a tokenUrl, we should bail
       isContextMenuEnabled={Boolean(tokenUrl)}
       onPressMenuItem={handleMenuItemPress}
+      onMenuDidShow={() => {
+        track('NFT Preview Long Press Popup');
+      }}
       menuConfig={{
         menuTitle: '',
         menuItems: [

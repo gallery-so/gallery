@@ -1,6 +1,7 @@
 import { useFocusEffect } from '@react-navigation/native';
+import { useColorScheme } from 'nativewind';
 import { useCallback, useState } from 'react';
-import { TextInput, TextInputProps, useColorScheme, View } from 'react-native';
+import { TextInput, TextInputProps, View } from 'react-native';
 
 import colors from '~/shared/theme/colors';
 
@@ -65,7 +66,7 @@ export function SearchInput({ inputRef, setFilter, value, onChange, style, ...pr
     [setKeyword]
   );
 
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useColorScheme();
 
   return (
     <View className="flex flex-row items-center space-x-[0px]">
@@ -87,6 +88,8 @@ export function SearchInput({ inputRef, setFilter, value, onChange, style, ...pr
       />
       {localKeyword.length > 0 && (
         <GalleryTouchableOpacity
+          eventElementId={null}
+          eventName={null}
           accessibilityRole="button"
           onPress={handleClear}
           className="-m-4 p-4"
@@ -98,6 +101,8 @@ export function SearchInput({ inputRef, setFilter, value, onChange, style, ...pr
       )}
       {isFocused && (
         <GalleryTouchableOpacity
+          eventElementId={null}
+          eventName={null}
           accessibilityRole="button"
           onPress={handleCancel}
           className="-m-4 p-4"

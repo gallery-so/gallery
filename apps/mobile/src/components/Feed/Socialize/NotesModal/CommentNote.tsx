@@ -2,6 +2,7 @@ import { Text, View, ViewProps } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { Typography } from '~/components/Typography';
+import { UsernameDisplay } from '~/components/UsernameDisplay';
 import { CommentNoteFragment$key } from '~/generated/CommentNoteFragment.graphql';
 import { getTimeSince } from '~/shared/utils/time';
 
@@ -19,8 +20,8 @@ export function CommentNote({ commentRef, style }: Props) {
         comment
         creationTime
 
-        commenter {
-          username
+        commenter @required(action: THROW) {
+          ...UsernameDisplayFragment
         }
       }
     `,
@@ -29,18 +30,8 @@ export function CommentNote({ commentRef, style }: Props) {
 
   return (
     <View className="flex flex-row gap-1 justify-between items-center px-4" style={style}>
-      <Text className="dark:text-white flex-1">
-        <Typography
-          font={{
-            family: 'ABCDiatype',
-            weight: 'Bold',
-          }}
-          className="text-sm"
-        >
-          {comment.commenter?.username ?? null}
-        </Typography>{' '}
-        {comment.comment}
-      </Text>
+      <UsernameDisplay size="sm" userRef={comment.commenter} />
+      <Text className="dark:text-white flex-1">{comment.comment}</Text>
       <Typography className="text-metal text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
         {getTimeSince(comment.creationTime)}
       </Typography>

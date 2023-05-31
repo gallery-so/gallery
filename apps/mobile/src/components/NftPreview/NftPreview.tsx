@@ -71,13 +71,12 @@ function NftPreviewInner({
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
   const handlePress = useCallback(() => {
-    if (collectionToken.collection?.dbid) {
-      navigation.push('NftDetail', {
-        tokenId: token.dbid,
-        collectionId: collectionToken.collection.dbid,
-      });
-    }
-  }, [collectionToken.collection?.dbid, navigation, token.dbid]);
+    navigation.push('NftDetail', {
+      tokenId: token.dbid,
+      collectionId: collectionToken.collection?.dbid ?? null,
+      cachedPreviewAssetUrl: tokenUrl,
+    });
+  }, [collectionToken.collection?.dbid, navigation, token.dbid, tokenUrl]);
 
   const handleLoad = useCallback(
     (dimensions: Dimensions | null) => {
@@ -92,6 +91,7 @@ function NftPreviewInner({
 
   return (
     <NftPreviewContextMenuPopup
+      cachedPreviewAssetUrl={tokenUrl}
       fallbackTokenUrl={tokenUrl}
       collectionTokenRef={collectionToken}
       imageDimensions={imageState.kind === 'loaded' ? imageState.dimensions : null}

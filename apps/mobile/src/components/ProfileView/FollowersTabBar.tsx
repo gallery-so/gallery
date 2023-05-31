@@ -26,6 +26,9 @@ function TabItem({ activeRoute, route, onRouteChange }: TabItemProps) {
       accessibilityRole="button"
       accessibilityState={isFocused ? { selected: true } : {}}
       onPress={onPress}
+      eventElementId="Followers Tab"
+      eventName="Followers Tab Clicked"
+      properties={{ variant: route }}
     >
       <Typography
         className={`text-sm ${isFocused ? 'text-offBlack dark:text-offWhite' : 'text-metal'}`}

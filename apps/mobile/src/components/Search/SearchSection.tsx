@@ -27,7 +27,7 @@ export function SearchSection({ isShowAll, numResults, onShowAll, title }: Props
       </Typography>
 
       {!isShowAll && numResults > NUM_PREVIEW_SEARCH_RESULTS && (
-        <GalleryTouchableOpacity onPress={onShowAll}>
+        <GalleryTouchableOpacity eventElementId={null} eventName={null} onPress={onShowAll}>
           <Typography
             font={{ family: 'ABCDiatype', weight: 'Regular' }}
             className="border-b border-black text-sm"

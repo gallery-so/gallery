@@ -14,7 +14,12 @@ type Props = {
 export function FeedFilter({ activeFeed, onChange }: Props) {
   return (
     <View className="flex flex-row justify-center space-x-2 pt-5 pb-6">
-      <GalleryTouchableOpacity onPress={() => onChange('Worldwide')}>
+      <GalleryTouchableOpacity
+        onPress={() => onChange('Worldwide')}
+        eventElementId="Feed Filter Button"
+        eventName="Feed Filter Clicked"
+        properties={{ variant: 'Worldwide' }}
+      >
         <Pill
           className="flex flex-row items-center space-x-2 self-start"
           active={activeFeed === 'Worldwide'}
@@ -27,7 +32,12 @@ export function FeedFilter({ activeFeed, onChange }: Props) {
           </Typography>
         </Pill>
       </GalleryTouchableOpacity>
-      <GalleryTouchableOpacity onPress={() => onChange('Following')}>
+      <GalleryTouchableOpacity
+        onPress={() => onChange('Following')}
+        eventElementId="Feed Filter Button"
+        eventName="Feed Filter Clicked"
+        properties={{ variant: 'Following' }}
+      >
         <Pill
           className="flex flex-row items-center space-x-2 self-start"
           active={activeFeed === 'Following'}

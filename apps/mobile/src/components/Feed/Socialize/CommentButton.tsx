@@ -1,5 +1,6 @@
+import { useColorScheme } from 'nativewind';
 import { useCallback, useMemo, useRef } from 'react';
-import { useColorScheme, View, ViewProps } from 'react-native';
+import { View, ViewProps } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import {
@@ -39,7 +40,7 @@ export function CommentButton({ eventRef, queryRef, style, onClick }: Props) {
     queryRef
   );
 
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useColorScheme();
 
   const bottomSheetRef = useRef<GalleryBottomSheetModalType>(null);
   const snapPoints = useMemo(() => [52], []);
@@ -60,6 +61,8 @@ export function CommentButton({ eventRef, queryRef, style, onClick }: Props) {
         onPress={toggleCommentBox}
         className="flex justify-center items-center w-[32] h-[32] pt-1 "
         style={style}
+        eventElementId="Toggle Comment Box"
+        eventName="Toggle Comment Box Clicked"
       >
         <CommentIcon className="h-[20]" />
       </GalleryTouchableOpacity>
@@ -83,7 +86,7 @@ export function CommentButton({ eventRef, queryRef, style, onClick }: Props) {
 }
 
 function Handle() {
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useColorScheme();
   return (
     <View
       className={`h-2 border-t ${

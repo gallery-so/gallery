@@ -6,6 +6,19 @@ import { AnalyticsContextQuery } from '~/generated/AnalyticsContextQuery.graphql
 
 type EventProps = Record<string, unknown>;
 
+export type GalleryElementTrackingProps = {
+  // identifier for the element being acted upon.
+  // this should be unique across the app.
+  // e.g. `Feed Username Button`
+  eventElementId: string | null;
+  // name of the action. this can be duplicated.
+  // e.g. `Follow User`
+  eventName: string | null;
+  // custom metadata.
+  // e.g. { variant: 'Worldwide' }
+  properties?: EventProps;
+};
+
 type HookTrackFunction = (eventName: string, eventProps?: EventProps, checkAuth?: boolean) => void;
 
 const AnalyticsContext = createContext<HookTrackFunction | undefined>(undefined);
@@ -32,8 +45,8 @@ const AnalyticsContextQueryNode = graphql`
   }
 `;
 
-export type TrackFunction = (eventName: string, eventProps: EventProps, userId?: string) => void;
-export type IdentifyFunction = (userId?: string) => void;
+export type TrackFunction = (eventName: string, eventProps: EventProps) => void;
+export type IdentifyFunction = (userId: string) => void;
 
 type Props = {
   children: ReactNode;
@@ -66,20 +79,9 @@ const AnalyticsProvider = memo(({ children, identify, track }: Props) => {
 
   const handleTrack: HookTrackFunction = useCallback(
     (eventName, eventProps = {}) => {
-      fetchQuery<AnalyticsContextQuery>(
-        relayEnvironment,
-        AnalyticsContextQueryNode,
-        {},
-        { fetchPolicy: 'store-or-network' }
-      )
-        .toPromise()
-        .then((query) => {
-          const userId = query?.viewer?.user?.dbid;
-
-          track(eventName, eventProps, userId);
-        });
+      track(eventName, eventProps);
     },
-    [relayEnvironment, track]
+    [track]
   );
 
   return <AnalyticsContext.Provider value={handleTrack}>{children}</AnalyticsContext.Provider>;

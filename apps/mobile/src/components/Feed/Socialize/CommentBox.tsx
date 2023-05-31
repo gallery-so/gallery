@@ -1,6 +1,7 @@
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
+import { useColorScheme } from 'nativewind';
 import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
-import { Text, useColorScheme, View, ViewStyle } from 'react-native';
+import { Text, View, ViewStyle } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { AnimatedStyleProp } from 'react-native-reanimated';
 import { ConnectionHandler, graphql, useFragment } from 'react-relay';
@@ -63,7 +64,7 @@ export function CommentBox({
   );
 
   const reportError = useReportError();
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useColorScheme();
   const [value, setValue] = useState('');
 
   const characterCount = useMemo(() => 100 - value.length, [value]);
@@ -226,7 +227,12 @@ export function CommentBox({
           style={{ flex: 1, color: colorScheme === 'dark' ? colors.white : colors.offBlack }}
         />
         <Text className="text-sm text-metal">{characterCount}</Text>
-        <GalleryTouchableOpacity onPress={handleSubmit} disabled={disabledSendButton}>
+        <GalleryTouchableOpacity
+          eventElementId="Submit Comment Button"
+          eventName="Submit Comment Button Clicked"
+          onPress={handleSubmit}
+          disabled={disabledSendButton}
+        >
           <View
             className={`h-6 w-6 rounded-full flex items-center justify-center bg-red
             ${disabledSendButton ? 'bg-metal' : 'bg-activeBlue'}
@@ -238,7 +244,7 @@ export function CommentBox({
       </Animated.View>
 
       <Animated.View style={xmarkIconStyle}>
-        <GalleryTouchableOpacity onPress={handleDismiss}>
+        <GalleryTouchableOpacity eventElementId={null} eventName={null} onPress={handleDismiss}>
           <View className="h-6 w-6  items-center justify-center rounded-full">
             <XMarkIcon />
           </View>

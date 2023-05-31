@@ -1,5 +1,5 @@
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { useColorScheme } from 'react-native';
+import { useColorScheme } from 'nativewind';
 
 import { TabBar } from '~/navigation/FeedTabNavigator/TabBar';
 import { FeedTabNavigatorParamList } from '~/navigation/types';
@@ -12,7 +12,7 @@ import { TrendingScreen } from '../../screens/HomeScreen/TrendingScreen';
 const Tab = createMaterialTopTabNavigator<FeedTabNavigatorParamList>();
 
 export function FeedTabNavigator() {
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useColorScheme();
 
   return (
     <Tab.Navigator
@@ -21,7 +21,7 @@ export function FeedTabNavigator() {
       tabBar={TabBar}
       screenOptions={{ lazy: true, swipeEnabled: false, animationEnabled: false }}
       sceneContainerStyle={{
-        backgroundColor: colorScheme === 'dark' ? colors.black : colors.white,
+        backgroundColor: colorScheme === 'dark' ? colors.black.DEFAULT : colors.white,
       }}
     >
       <Tab.Screen name="Trending" component={TrendingScreen} />

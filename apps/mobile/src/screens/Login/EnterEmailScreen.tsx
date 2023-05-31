@@ -69,7 +69,7 @@ export function EnterEmailScreen() {
       } else if (verifyEmailMagicLink?.__typename === 'VerifyEmailMagicLinkPayload') {
         if (!verifyEmailMagicLink.canSend) {
           return handleLoginError({
-            message: `We don't recognize the email you entered. Login with QR code instead, or verify your email at gallery.so/settings`,
+            message: `You have not verified your email. First verify at gallery.so/settings before signing in. Or login with QR Code instead.`,
           });
         }
       } else {
@@ -107,7 +107,13 @@ export function EnterEmailScreen() {
   return (
     <SafeAreaViewWithPadding className="h-screen bg-white dark:bg-black">
       <KeyboardAvoidingView behavior="padding" className="flex flex-1 flex-col">
-        <IconContainer className="px-6 py-2" icon={<BackIcon />} onPress={navigation.goBack} />
+        <IconContainer
+          eventElementId={null}
+          eventName={null}
+          className="px-6 py-2"
+          icon={<BackIcon />}
+          onPress={navigation.goBack}
+        />
 
         <View className="flex flex-grow flex-col items-center justify-center">
           <View className="flex max-w-xs flex-col space-y-4">
@@ -141,11 +147,11 @@ export function EnterEmailScreen() {
             />
 
             <Button
-              id="Submit Email Button"
+              eventElementId="Submit Email Button"
+              eventName="Sign In Attempt"
               loading={isLoggingIn}
               onPress={handleContinue}
               text="Continue"
-              eventName="Sign In Attempt"
               properties={{
                 'Sign In Selection': 'Email',
               }}

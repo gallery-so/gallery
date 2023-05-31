@@ -1,5 +1,6 @@
+import { useColorScheme } from 'nativewind';
 import { useCallback, useLayoutEffect, useMemo } from 'react';
-import { Keyboard, Pressable, useColorScheme, View } from 'react-native';
+import { Keyboard, Pressable, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { graphql, useFragment } from 'react-relay';
@@ -42,7 +43,7 @@ export function NotesModal({ eventRef, queryRef, bottomSheetRef }: Props) {
     queryRef
   );
 
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useColorScheme();
 
   const snapPoints = useMemo(() => [320], []);
 

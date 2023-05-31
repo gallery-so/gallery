@@ -61,7 +61,12 @@ export function CollectionUpdatedFeedEvent({
         <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
           Made a change to
         </Typography>
-        <GalleryTouchableOpacity className="flex-1" onPress={handleCollectionNamePress}>
+        <GalleryTouchableOpacity
+          className="flex-1"
+          onPress={handleCollectionNamePress}
+          eventElementId="Feed Collection Button"
+          eventName="Feed Collection Name Clicked"
+        >
           <Typography
             numberOfLines={1}
             className="text-sm"

@@ -8,6 +8,7 @@ import { graphql } from 'relay-runtime';
 
 import { FollowersTabBar, FollowersTabName } from '~/components/ProfileView/FollowersTabBar';
 import { useListContentStyle } from '~/components/ProfileView/Tabs/useListContentStyle';
+import { Typography } from '~/components/Typography';
 import { UserFollowCard } from '~/components/UserFollowList/UserFollowCard';
 import { ProfileViewFollowersTabQueryFragment$key } from '~/generated/ProfileViewFollowersTabQueryFragment.graphql';
 import { UserFollowCardFragment$key } from '~/generated/UserFollowCardFragment.graphql';
@@ -20,7 +21,8 @@ type ListItem =
       kind: 'tab-bar';
       selectedTab: FollowersTabName;
     }
-  | { kind: 'user'; user: UserFollowCardFragment$key; query: UserFollowCardQueryFragment$key };
+  | { kind: 'user'; user: UserFollowCardFragment$key; query: UserFollowCardQueryFragment$key }
+  | { kind: 'empty' };
 
 type ProfileViewFollowersTabProps = {
   queryRef: ProfileViewFollowersTabQueryFragment$key;
@@ -59,15 +61,19 @@ export function ProfileViewFollowersTab({ queryRef }: ProfileViewFollowersTabPro
 
     const users = removeNullValues(selectedTab === 'Following' ? user?.following : user?.followers);
 
-    items.push(
-      ...users.map((user): ListItem => {
-        return {
-          kind: 'user',
-          user,
-          query,
-        };
-      })
-    );
+    if (users.length === 0) {
+      items.push({ kind: 'empty' });
+    } else {
+      items.push(
+        ...users.map((user): ListItem => {
+          return {
+            kind: 'user',
+            user,
+            query,
+          };
+        })
+      );
+    }
 
     return items;
   }, [query, selectedTab, user?.followers, user?.following]);
@@ -88,11 +94,25 @@ export function ProfileViewFollowersTab({ queryRef }: ProfileViewFollowersTabPro
         );
       } else if (item.kind === 'tab-bar') {
         return <FollowersTabBar activeRoute={item.selectedTab} onRouteChange={setSelectedTab} />;
+      } else if (item.kind === 'empty') {
+        return (
+          <View className="py-8">
+            <Typography
+              font={{
+                family: 'ABCDiatype',
+                weight: 'Regular',
+              }}
+              className="text-center text-sm"
+            >
+              {selectedTab === 'Following' ? 'Not following anyone yet.' : 'No followers yet.'}
+            </Typography>
+          </View>
+        );
       }
 
       return null;
     },
-    [handleUserPress]
+    [handleUserPress, selectedTab]
   );
 
   const contentContainerStyle = useListContentStyle();

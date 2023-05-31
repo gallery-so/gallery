@@ -1,6 +1,7 @@
 import merge from 'lodash.merge';
+import { useColorScheme } from 'nativewind';
 import { PropsWithChildren, useCallback, useMemo, useState } from 'react';
-import { StyleProp, Text, useColorScheme } from 'react-native';
+import { StyleProp, Text } from 'react-native';
 import MarkdownDisplay, { MarkdownIt, RenderRules } from 'react-native-markdown-display';
 
 import colors from '~/shared/theme/colors';
@@ -48,7 +49,7 @@ export function Markdown({
   style,
 }: GalleryMarkdownProps) {
   const [showAll, setShowAll] = useState(false);
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useColorScheme();
 
   const mergedStyles = useMemo(() => {
     const mergedStyles = { ...markdownStyles };
@@ -90,6 +91,8 @@ export function Markdown({
 
   return (
     <GalleryTouchableOpacity
+      eventElementId={null}
+      eventName={null}
       onPress={handlePress}
       disabled={numberOfLines === undefined || !touchToExpand}
     >

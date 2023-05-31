@@ -10,25 +10,23 @@ import AnalyticsProvider, {
 let instance: Mixpanel | undefined = undefined;
 
 const token = env.MIXPANEL_TOKEN;
-const apiUrl = env.GRAPHQL_API_URL;
+const apiUrl = env.MIXPANEL_API_URL;
 
 if (token && apiUrl) {
   instance = new Mixpanel(token, true);
   instance.init(false, {}, apiUrl);
 }
 
-const track: TrackFunction = (eventName, eventProps, userId) => {
+const track: TrackFunction = (eventName, eventProps) => {
   try {
-    instance?.track(eventName, { userId, platform: 'mobile', ...eventProps });
+    instance?.track(eventName, eventProps);
   } catch (error: unknown) {
     // Handle error here
   }
 };
 
 const identify: IdentifyFunction = (userId) => {
-  if (userId) {
-    instance?.identify(userId);
-  }
+  instance?.identify(userId);
 };
 
 export function MobileAnalyticsProvider({ children }: PropsWithChildren) {

@@ -4,6 +4,7 @@ import { graphql, useFragment } from 'react-relay';
 
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { Typography } from '~/components/Typography';
+import { UsernameDisplay } from '~/components/UsernameDisplay';
 import { AdmireLineEventFragment$key } from '~/generated/AdmireLineEventFragment.graphql';
 import { AdmireLineFragment$key } from '~/generated/AdmireLineFragment.graphql';
 import { AdmireLineQueryFragment$key } from '~/generated/AdmireLineQueryFragment.graphql';
@@ -23,9 +24,10 @@ export function AdmireLine({ admireRef, eventRef, queryRef, totalAdmires }: Prop
       fragment AdmireLineFragment on Admire {
         dbid
 
-        admirer {
+        admirer @required(action: THROW) {
           dbid
           username
+          ...UsernameDisplayFragment
         }
       }
     `,
@@ -76,18 +78,18 @@ export function AdmireLine({ admireRef, eventRef, queryRef, totalAdmires }: Prop
   return (
     <View>
       <View className="flex flex-row">
-        {admire.admirer && (
-          <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-            {admirerName}{' '}
-          </Typography>
-        )}
+        <UsernameDisplay userRef={admire.admirer} text={admirerName} />
         {totalAdmires === 1 ? (
-          <Text className="text-xs dark:text-white">admired this</Text>
+          <Text className="text-xs dark:text-white"> admired this</Text>
         ) : (
           <View className="flex flex-row">
-            <Text className="text-xs dark:text-white">and </Text>
+            <Text className="text-xs dark:text-white"> and </Text>
 
-            <GalleryTouchableOpacity onPress={handleOpen}>
+            <GalleryTouchableOpacity
+              onPress={handleOpen}
+              eventElementId="Expand Admirers Button"
+              eventName="Expand Admirers Button Clicked"
+            >
               <Typography
                 className="text-xs underline"
                 font={{ family: 'ABCDiatype', weight: 'Bold' }}

@@ -1,5 +1,6 @@
+import { useColorScheme } from 'nativewind';
 import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
-import { useColorScheme, View } from 'react-native';
+import { View } from 'react-native';
 import { CollapsibleRef, Tabs } from 'react-native-collapsible-tab-view';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -59,7 +60,7 @@ export function ProfileView({ queryRef, shouldShowBackButton }: ProfileViewProps
     }
   }, [selectedRoute]);
 
-  const colorScheme = useColorScheme();
+  const { colorScheme } = useColorScheme();
 
   return (
     <View className="flex-1">
@@ -70,8 +71,9 @@ export function ProfileView({ queryRef, shouldShowBackButton }: ProfileViewProps
           queryRef={query}
           shouldShowBackButton={shouldShowBackButton}
         />
-
-        <ProfileViewUsername queryRef={query} />
+        <View className="pt-4">
+          <ProfileViewUsername queryRef={query} />
+        </View>
       </View>
 
       <View className="flex-grow">
@@ -81,14 +83,14 @@ export function ProfileView({ queryRef, shouldShowBackButton }: ProfileViewProps
               ref={containerRef}
               pagerProps={{ scrollEnabled: false }}
               containerStyle={{
-                backgroundColor: colorScheme === 'light' ? colors.white : colors.black,
+                backgroundColor: colorScheme === 'light' ? colors.white : colors.black.DEFAULT,
               }}
               headerContainerStyle={{
                 margin: 0,
                 elevation: 0,
                 shadowOpacity: 0,
                 borderBottomColor: 'transparent',
-                backgroundColor: colorScheme === 'light' ? colors.white : colors.black,
+                backgroundColor: colorScheme === 'light' ? colors.white : colors.black.DEFAULT,
               }}
               renderTabBar={Empty}
               renderHeader={Header}
@@ -179,7 +181,7 @@ export function ProfileViewUsername({ queryRef }: ProfileViewUsernameProps) {
 
   return (
     <Typography
-      className="bg-white dark:bg-black text-center text-2xl tracking-tighter"
+      className="bg-white dark:bg-black text-2xl tracking-tighter"
       font={{ family: 'GTAlpina', weight: 'StandardLight' }}
     >
       {query.userByUsername?.username}

@@ -89,7 +89,7 @@ export function SuggestedSection({ title, description, queryRef }: Props) {
             {description}
           </Typography>
         </View>
-        <GalleryTouchableOpacity onPress={handleSeeAll}>
+        <GalleryTouchableOpacity eventElementId={null} eventName={null} onPress={handleSeeAll}>
           <Typography
             font={{
               family: 'ABCDiatype',

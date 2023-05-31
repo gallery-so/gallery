@@ -34,6 +34,7 @@ export function GallerySearchResult({ galleryRef }: Props) {
       onPress={handlePress}
       title={gallery?.name ?? ''}
       description={gallery?.owner?.username ?? ''}
+      variant="Gallery"
     />
   );
 }

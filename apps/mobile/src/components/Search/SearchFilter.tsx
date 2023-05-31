@@ -29,6 +29,10 @@ const filters: FilterElement = [
     label: 'Galleries',
     value: 'gallery',
   },
+  {
+    label: 'Communities',
+    value: 'community',
+  },
 ];
 
 export function SearchFilter({ activeFilter, onChange, ...props }: Props) {
@@ -56,6 +60,9 @@ export function SearchFilter({ activeFilter, onChange, ...props }: Props) {
           className={`flex h-8 items-center justify-center rounded-3xl border px-3 ${
             activeFilter === filter.value ? 'border-offBlack dark:border-white ' : 'border-metal'
           }`}
+          eventElementId="Search Filter Button"
+          eventName="Search Filter Button Clicked"
+          properties={{ variant: filter.value }}
         >
           <Typography
             font={{

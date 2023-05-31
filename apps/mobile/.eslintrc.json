@@ -10,6 +10,11 @@
         "paths": [
           {
             "name": "react-native",
+            "importNames": ["useColorScheme"],
+            "message": "Please use `useColorScheme` from 'nativewind' instead"
+          },
+          {
+            "name": "react-native",
             "importNames": ["TouchableOpacity"],
             "message": "Please use the GalleryTouchableOpacity component instead of TouchableOpacity from 'react-native'."
           },
