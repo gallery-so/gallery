@@ -10,6 +10,7 @@ import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { Pill } from '~/components/Pill';
 import { NftDetailScreenInnerQuery } from '~/generated/NftDetailScreenInnerQuery.graphql';
 import { MainTabStackNavigatorParamList, MainTabStackNavigatorProp } from '~/navigation/types';
+import { NftDetailAssetCacheSwapper } from '~/screens/NftDetailScreen/NftDetailAsset/NftDetailAssetCacheSwapper';
 
 import { IconContainer } from '../../components/IconContainer';
 import { InteractiveLink } from '../../components/InteractiveLink';
@@ -127,7 +128,9 @@ export function NftDetailScreenInner() {
             />
           </View>
 
-          <NftDetailAsset tokenRef={token} />
+          <NftDetailAssetCacheSwapper cachedPreviewAssetUrl={route.params.cachedPreviewAssetUrl}>
+            <NftDetailAsset tokenRef={token} />
+          </NftDetailAssetCacheSwapper>
         </View>
 
         <View className="flex flex-col space-y-4">
