@@ -1,5 +1,6 @@
 import { MaterialTopTabBarProps } from '@react-navigation/material-top-tabs';
 import { NavigationRoute } from '@sentry/react-native/dist/js/tracing/reactnavigation';
+import clsx from 'clsx';
 import { ReactNode, Suspense, useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -38,25 +39,23 @@ function TabItem({ navigation, route, icon, activeRoute }: TabItemProps) {
     }
   }, [isFocused, navigation, route]);
 
-  const isHome = route.name === 'Home';
-
   return (
     <GalleryTouchableOpacity
       onPress={onPress}
       accessibilityRole="button"
       accessibilityState={isFocused ? { selected: true } : {}}
-      className={`px-0 ${isFocused ? 'opacity-100' : 'opacity-30'}`}
+      activeOpacity={1}
+      className={clsx(
+        `px-0 flex h-8 w-8 items-center justify-center rounded-full active:bg-faint dark:active:bg-[#2B2B2B]`,
+        {
+          'border border-black dark:border-white': isFocused,
+        }
+      )}
       eventElementId="Navigation Tab Item"
       eventName="Navigation Tab Item Clicked"
       properties={{ variant: 'Main', route: route.name }}
     >
-      <View
-        className={`flex h-8 w-8 items-center justify-center rounded-full ${
-          isFocused && !isHome && 'border border-black'
-        }`}
-      >
-        {icon}
-      </View>
+      {icon}
     </GalleryTouchableOpacity>
   );
 }
@@ -77,7 +76,7 @@ export function TabBar({ state, navigation }: TabBarProps) {
           ? { paddingBottom: bottom, paddingTop: 12 }
           : { paddingBottom: 12, paddingTop: 12 }
       }
-      className="bg-offWhite dark:bg-black flex flex-row items-center justify-evenly"
+      className="bg-white dark:bg-black flex flex-row items-center justify-evenly border-t border-porcelain dark:border-black-600"
     >
       {state.routes.map((route) => {
         let icon = null;
