@@ -23,14 +23,17 @@ import { shareToken } from '../../utils/shareToken';
 type NftPreviewContextMenuPopupProps = PropsWithChildren<{
   fallbackTokenUrl?: string;
   imageDimensions: Dimensions | null;
+  cachedPreviewAssetUrl: string | null;
   collectionTokenRef: NftPreviewContextMenuPopupFragment$key;
 }>;
 
 export function NftPreviewContextMenuPopup({
+  children,
+
   imageDimensions,
   fallbackTokenUrl,
   collectionTokenRef,
-  children,
+  cachedPreviewAssetUrl,
 }: NftPreviewContextMenuPopupProps) {
   const collectionToken = useFragment(
     graphql`
@@ -84,6 +87,8 @@ export function NftPreviewContextMenuPopup({
     (event) => {
       if (event.nativeEvent.actionKey === 'view-details') {
         navigation.navigate('NftDetail', {
+          cachedPreviewAssetUrl,
+
           tokenId: token.dbid,
           collectionId: collectionToken?.collection?.dbid ?? null,
         });
@@ -95,7 +100,7 @@ export function NftPreviewContextMenuPopup({
         });
       }
     },
-    [collectionToken.collection, navigation, token]
+    [cachedPreviewAssetUrl, collectionToken.collection, navigation, token]
   );
 
   const track = useTrack();

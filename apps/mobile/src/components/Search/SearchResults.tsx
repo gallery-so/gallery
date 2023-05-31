@@ -3,11 +3,13 @@ import { useCallback, useDeferredValue, useMemo } from 'react';
 import { View } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 
+import { CommunitySearchResultFragment$key } from '~/generated/CommunitySearchResultFragment.graphql';
 import { GallerySearchResultFragment$key } from '~/generated/GallerySearchResultFragment.graphql';
 import { SearchResultsQuery } from '~/generated/SearchResultsQuery.graphql';
 import { UserSearchResultFragment$key } from '~/generated/UserSearchResultFragment.graphql';
 
 import { Typography } from '../Typography';
+import { CommunitySearchResult } from './Community/CommunitySearchResult';
 import { NUM_PREVIEW_SEARCH_RESULTS } from './constants';
 import { GallerySearchResult } from './Gallery/GallerySearchResult';
 import { useSearchContext } from './SearchContext';
@@ -29,6 +31,10 @@ type SearchListItem =
   | {
       kind: 'gallery-search-result';
       gallery: GallerySearchResultFragment$key;
+    }
+  | {
+      kind: 'community-search-result';
+      community: CommunitySearchResultFragment$key;
     };
 
 type Props = {
@@ -68,6 +74,18 @@ export function SearchResults({ activeFilter, onChangeFilter, blurInputFocus }: 
             }
           }
         }
+        searchCommunities(query: $query) {
+          __typename
+          ... on SearchCommunitiesPayload {
+            __typename
+            results @required(action: THROW) {
+              __typename
+              community {
+                ...CommunitySearchResultFragment
+              }
+            }
+          }
+        }
       }
     `,
     { query: deferredKeyword }
@@ -76,17 +94,21 @@ export function SearchResults({ activeFilter, onChangeFilter, blurInputFocus }: 
   const isLoading = keyword !== deferredKeyword;
   const searchUsers = query.searchUsers;
   const searchGalleries = query.searchGalleries;
+  const searchCommunities = query.searchCommunities;
 
   const hasUsers = searchUsers?.__typename === 'SearchUsersPayload';
   const hasGalleries = searchGalleries?.__typename === 'SearchGalleriesPayload';
+  const hasCommunities = searchCommunities?.__typename === 'SearchCommunitiesPayload';
 
   const isEmpty = useMemo(() => {
     if (activeFilter === 'top') {
       return (
         hasUsers &&
         hasGalleries &&
+        hasCommunities &&
         searchUsers.results.length === 0 &&
-        searchGalleries.results.length === 0
+        searchGalleries.results.length === 0 &&
+        searchCommunities.results.length === 0
       );
     }
 
@@ -98,8 +120,20 @@ export function SearchResults({ activeFilter, onChangeFilter, blurInputFocus }: 
       return searchGalleries.results.length === 0;
     }
 
+    if (activeFilter === 'community' && hasCommunities) {
+      return searchCommunities.results.length === 0;
+    }
+
     return true;
-  }, [activeFilter, hasGalleries, hasUsers, searchGalleries, searchUsers]);
+  }, [
+    activeFilter,
+    hasCommunities,
+    hasGalleries,
+    hasUsers,
+    searchCommunities,
+    searchGalleries,
+    searchUsers,
+  ]);
 
   const items = useMemo((): SearchListItem[] => {
     const items: SearchListItem[] = [];
@@ -136,10 +170,27 @@ export function SearchResults({ activeFilter, onChangeFilter, blurInputFocus }: 
           });
         }
       }
+    } else if (activeFilter === 'community' && hasCommunities) {
+      items.push({
+        kind: 'search-section-header',
+        sectionType: 'community',
+        sectionTitle: 'Communities',
+        numberOfResults: searchCommunities.results.length,
+      });
 
-      // if there is no active filter, show both curators and galleries
-      // but only show a preview of the results
-    } else if (activeFilter === 'top') {
+      for (const result of searchCommunities.results) {
+        if (result.community) {
+          items.push({
+            kind: 'community-search-result',
+            community: result.community,
+          });
+        }
+      }
+    }
+
+    // if there is no active filter, show both curators and galleries
+    // but only show a preview of the results
+    else if (activeFilter === 'top') {
       if (hasUsers) {
         items.push({
           kind: 'search-section-header',
@@ -176,10 +227,37 @@ export function SearchResults({ activeFilter, onChangeFilter, blurInputFocus }: 
           }
         }
       }
+
+      if (hasCommunities) {
+        items.push({
+          kind: 'search-section-header',
+          sectionType: 'community',
+          sectionTitle: 'Communities',
+          numberOfResults: searchCommunities.results.length,
+        });
+
+        const results = searchCommunities.results.slice(0, NUM_PREVIEW_SEARCH_RESULTS);
+        for (const result of results) {
+          if (result.community) {
+            items.push({
+              kind: 'community-search-result',
+              community: result.community,
+            });
+          }
+        }
+      }
     }
 
     return items;
-  }, [activeFilter, hasGalleries, hasUsers, searchGalleries, searchUsers]);
+  }, [
+    activeFilter,
+    hasCommunities,
+    hasGalleries,
+    hasUsers,
+    searchCommunities,
+    searchGalleries,
+    searchUsers,
+  ]);
 
   const renderItem = useCallback<ListRenderItem<SearchListItem>>(
     ({ item }) => {
@@ -196,6 +274,8 @@ export function SearchResults({ activeFilter, onChangeFilter, blurInputFocus }: 
         return <UserSearchResult userRef={item.user} />;
       } else if (item.kind === 'gallery-search-result') {
         return <GallerySearchResult galleryRef={item.gallery} />;
+      } else if (item.kind === 'community-search-result') {
+        return <CommunitySearchResult communityRef={item.community} />;
       }
 
       return <View />;

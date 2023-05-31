@@ -15,10 +15,12 @@ export type MainTabStackNavigatorParamList = {
   NftDetail: {
     tokenId: string;
     collectionId: string | null;
+    cachedPreviewAssetUrl: string | null;
   };
   Gallery: { galleryId: string };
   Collection: { collectionId: string };
   FeedEvent: { eventId: string };
+  Community: { contractAddress: string; chain: string };
 
   // The main five tabs
   Account: undefined;
