@@ -1,5 +1,6 @@
 import clsx from 'clsx';
-import { PropsWithChildren, useCallback, useMemo } from 'react';
+import { useColorScheme } from 'nativewind';
+import { PropsWithChildren, useCallback, useMemo, useState } from 'react';
 import { TouchableOpacityProps, View, ViewProps } from 'react-native';
 import { trigger } from 'react-native-haptic-feedback';
 import { graphql, useFragment } from 'react-relay';
@@ -106,35 +107,102 @@ export function FollowButton({ queryRef, userRef, style, width = 'fixed' }: Prop
   return <View style={style}>{followChip}</View>;
 }
 
-function FollowChip({
-  children,
-  variant,
-  onPress,
-  width,
-}: PropsWithChildren<{
-  variant: 'follow' | 'unfollow';
+type FollowChipVariant = 'follow' | 'unfollow';
+
+type FollowChipProps = PropsWithChildren<{
+  variant: FollowChipVariant;
   onPress: TouchableOpacityProps['onPress'];
   width?: 'fixed' | 'grow';
-}>) {
+}>;
+
+type ChipContainerVariants = {
+  [variant in FollowChipVariant]: {
+    [colorSchem in 'light' | 'dark']: {
+      [activeState in 'active' | 'inactive']: {
+        containerClassName: string;
+        textClassName: string;
+      };
+    };
+  };
+};
+
+// This is a typesafe object to represent the variants of the FollowButton.
+// You can find an up to date source of truth at the following link.
+// https://www.figma.com/file/9SV2MUDU1DVieJclgr3Z43/Dark-Mode-%5BDesktop-%2B-Mobile%5D?type=design&node-id=430-8037&t=ZwDhf5OcEhuhgQKy-0
+const chipContainerVariants: ChipContainerVariants = {
+  follow: {
+    light: {
+      inactive: {
+        containerClassName: 'bg-black-800',
+        textClassName: 'text-white',
+      },
+      active: {
+        containerClassName: 'bg-black-600',
+        textClassName: 'text-white',
+      },
+    },
+    dark: {
+      inactive: {
+        containerClassName: 'bg-white',
+        textClassName: 'text-black-800',
+      },
+      active: {
+        containerClassName: 'bg-metal',
+        textClassName: 'text-black-800',
+      },
+    },
+  },
+  unfollow: {
+    light: {
+      inactive: {
+        containerClassName: 'bg-metal',
+        textClassName: 'text-black-800',
+      },
+      active: {
+        containerClassName: 'bg-porcelain',
+        textClassName: 'text-black-800',
+      },
+    },
+    dark: {
+      inactive: {
+        containerClassName: 'bg-[#303030]',
+        textClassName: 'text-white',
+      },
+      active: {
+        containerClassName: 'bg-black-600',
+        textClassName: 'text-white',
+      },
+    },
+  },
+};
+
+function FollowChip({ children, variant, onPress, width }: FollowChipProps) {
+  const { colorScheme } = useColorScheme();
+  const [active, setActive] = useState(false);
+
+  const chipContainerClassNames =
+    chipContainerVariants[variant][colorScheme][active ? 'active' : 'inactive'];
+
   return (
     <GalleryTouchableOpacity
+      onPressIn={() => setActive(true)}
+      onPressOut={() => setActive(false)}
       eventElementId="Follow Button"
       eventName="Follow Button Clicked"
+      activeOpacity={1}
       properties={{ variant }}
       onPress={onPress}
-      className={clsx('flex h-6 items-center justify-center rounded-sm px-2 bg-black', {
-        'border border-black dark:border-shadow': variant === 'follow',
-        'bg-porcelain dark:bg-graphite border border-porcelain dark:border-graphite':
-          variant === 'unfollow',
-        'w-24': width === 'fixed',
-        'w-auto': width === 'grow',
-      })}
+      className={clsx(
+        'flex h-6 items-center justify-center rounded-sm px-2 bg-black',
+        chipContainerClassNames.containerClassName,
+        {
+          'w-24': width === 'fixed',
+          'w-auto': width === 'grow',
+        }
+      )}
     >
       <Typography
-        className={clsx('text-sm', {
-          'text-white ': variant === 'follow',
-          'text-black dark:text-white': variant === 'unfollow',
-        })}
+        className={clsx('text-sm', chipContainerClassNames.textClassName)}
         font={{ family: 'ABCDiatype', weight: 'Bold' }}
       >
         {children}
