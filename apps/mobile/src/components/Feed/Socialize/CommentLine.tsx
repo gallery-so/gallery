@@ -1,7 +1,7 @@
 import { Text, View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
-import { Typography } from '~/components/Typography';
+import { UsernameDisplay } from '~/components/UsernameDisplay';
 import { CommentLineFragment$key } from '~/generated/CommentLineFragment.graphql';
 
 type Props = {
@@ -13,8 +13,8 @@ export function CommentLine({ commentRef }: Props) {
     graphql`
       fragment CommentLineFragment on Comment {
         comment @required(action: THROW)
-        commenter {
-          username
+        commenter @required(action: THROW) {
+          ...UsernameDisplayFragment
         }
       }
     `,
@@ -22,10 +22,8 @@ export function CommentLine({ commentRef }: Props) {
   );
 
   return (
-    <View className="flex flex-row gap-1">
-      <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-        {comment.commenter?.username}
-      </Typography>
+    <View className="flex flex-row items-center gap-1">
+      <UsernameDisplay userRef={comment.commenter} />
       <Text className="text-xs dark:text-white flex-1">{comment.comment}</Text>
     </View>
   );

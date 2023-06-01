@@ -20,6 +20,8 @@ type Props = {
   onSave: (caption: string) => void;
 };
 
+const FEED_CAPTION_MAX_CHAR_COUNT = 1200;
+
 export function CollectionSaveButtonWithCaption({
   disabled,
   error,
@@ -62,7 +64,7 @@ export function CollectionSaveButtonWithCaption({
   }, []);
 
   const isSaveDisabled = useMemo(() => {
-    return caption.length > 600;
+    return caption.length > FEED_CAPTION_MAX_CHAR_COUNT;
   }, [caption]);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -92,7 +94,7 @@ export function CollectionSaveButtonWithCaption({
         <VStack gap={12}>
           <TextAreaWithCharCount
             currentCharCount={caption.length}
-            maxCharCount={600}
+            maxCharCount={FEED_CAPTION_MAX_CHAR_COUNT}
             onChange={handleCaptionChange}
             hasPadding
             defaultValue={caption}

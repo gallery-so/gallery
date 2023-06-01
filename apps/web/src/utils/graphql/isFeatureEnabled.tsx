@@ -6,26 +6,26 @@ import { removeNullValues } from '~/shared/relay/removeNullValues';
 import isProduction from '~/utils/isProduction';
 
 export enum FeatureFlag {
-  MOBILE_BETA = 'MOBILE_BETA',
+  BIG_EASEL = 'BIG_EASEL',
 }
 
 const PROD_FLAGS: Record<FeatureFlag, boolean> = {
-  MOBILE_BETA: true,
+  BIG_EASEL: false,
 };
 
 const DEV_FLAGS: Record<FeatureFlag, boolean> = {
-  MOBILE_BETA: true,
+  BIG_EASEL: false,
 };
 
 const ROLE_FLAGS: Record<Role, Record<FeatureFlag, boolean>> = {
   ADMIN: {
-    MOBILE_BETA: true,
+    BIG_EASEL: true,
   },
   BETA_TESTER: {
-    MOBILE_BETA: true,
+    BIG_EASEL: false,
   },
   EARLY_ACCESS: {
-    MOBILE_BETA: true,
+    BIG_EASEL: false,
   },
 };
 

@@ -15,12 +15,14 @@ export type MainTabStackNavigatorParamList = {
   NftDetail: {
     tokenId: string;
     collectionId: string | null;
+    cachedPreviewAssetUrl: string | null;
   };
   Gallery: { galleryId: string };
   Collection: { collectionId: string };
   FeedEvent: { eventId: string };
+  Community: { contractAddress: string; chain: string };
 
-  // The main four tabs
+  // The main five tabs
   Account: undefined;
   Home: NavigatorScreenParams<FeedTabNavigatorParamList>;
 
@@ -32,6 +34,7 @@ export type MainTabStackNavigatorParamList = {
     | undefined;
 
   Search: undefined;
+  Settings: undefined;
   // End the main four tabs
 };
 
@@ -46,6 +49,7 @@ export type MainTabNavigatorParamList = {
   HomeTab: NavigatorScreenParams<MainTabStackNavigatorParamList>;
   NotificationsTab: NavigatorScreenParams<MainTabStackNavigatorParamList>;
   SearchTab: NavigatorScreenParams<MainTabStackNavigatorParamList>;
+  SettingsTab: NavigatorScreenParams<MainTabStackNavigatorParamList>;
 };
 
 export type LoginStackNavigatorParamList = {

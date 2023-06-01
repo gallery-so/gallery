@@ -55,6 +55,13 @@ const options: LRUCache.Options<string, CachedSvgValue, void> = {
 
         const text = await response.text();
 
+        const size = new Blob([text]).size;
+
+        // If the size is greater than 1MB, we'll just return
+        if (size > 1024 * 1024) {
+          return { kind: 'failure' };
+        }
+
         return parseSvg(text);
       } catch (e) {
         return { kind: 'failure' };
