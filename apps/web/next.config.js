@@ -9,6 +9,14 @@ const nextConfig = {
     // This is fine since we do a type check in Github Actions.
     ignoreBuildErrors: true,
   },
+  headers() {
+    return [
+      {
+        source: '/.well-known/apple-app-site-association',
+        headers: [{ key: 'content-type', value: 'application/json' }],
+      },
+    ];
+  },
   eslint: {
     // Save time in Vercel builds by avoiding linting.
     // This is fine since we do a lint in Github Actions.
