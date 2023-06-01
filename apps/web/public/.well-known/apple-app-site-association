@@ -1,10 +1,65 @@
 {
   "applinks": {
-    "apps": [], // This is usually left empty, but still must be included
+    "apps": [],
     "details": [
       {
-        "appID": "com.usegallery.gallery",
-        "paths": ["/*"]
+        "appID": "5SD5N7PXU5.com.usegallery.gallery",
+        "paths": [
+          "/*",
+          "NOT /auth",
+          "NOT /about",
+          "NOT /about",
+          "NOT /account",
+          "NOT /analytics",
+          "NOT /artist",
+          "NOT /artists",
+          "NOT /auth",
+          "NOT /blog",
+          "NOT /bookmarks",
+          "NOT /careers",
+          "NOT /chain",
+          "NOT /changelog",
+          "NOT /collection",
+          "NOT /collections",
+          "NOT /community",
+          "NOT /contact",
+          "NOT /edit",
+          "NOT /explore",
+          "NOT /faq",
+          "NOT /featured",
+          "NOT /feed",
+          "NOT /feeds",
+          "NOT /gallery",
+          "NOT /guestbook",
+          "NOT /help",
+          "NOT /home",
+          "NOT /info",
+          "NOT /investors",
+          "NOT /latest",
+          "NOT /maintenance",
+          "NOT /members",
+          "NOT /membership",
+          "NOT /messages",
+          "NOT /nft",
+          "NOT /nfts",
+          "NOT /notifications",
+          "NOT /nuke",
+          "NOT /password",
+          "NOT /privacy",
+          "NOT /profile",
+          "NOT /search",
+          "NOT /settings",
+          "NOT /shop",
+          "NOT /support",
+          "NOT /team",
+          "NOT /terms",
+          "NOT /trending",
+          "NOT /universal",
+          "NOT /unsubscribe",
+          "NOT /verify",
+          "NOT /welcome",
+          "NOT /404"
+        ]
       }
     ]
   }
