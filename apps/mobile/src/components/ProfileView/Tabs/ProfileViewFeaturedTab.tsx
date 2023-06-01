@@ -1,5 +1,5 @@
 import { ListRenderItem } from '@shopify/flash-list';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { Tabs } from 'react-native-collapsible-tab-view';
 import { useFragment } from 'react-relay';
@@ -25,10 +25,6 @@ export function ProfileViewFeaturedTab({ queryRef }: ProfileViewFeaturedTabProps
           ... on GalleryUser {
             featuredGallery {
               ...createVirtualizedGalleryRows
-
-              # This is so we have the cache prefilled for their full gallery page / collection page
-              # eslint-disable-next-line relay/must-colocate-fragment-spreads
-              ...GalleryScreenGalleryFragment @defer
             }
           }
         }
@@ -39,13 +35,15 @@ export function ProfileViewFeaturedTab({ queryRef }: ProfileViewFeaturedTabProps
 
   const user = query.userByUsername;
 
-  if (!user?.featuredGallery) {
-    throw new Error('TODO');
-  }
+  const { items, stickyIndices } = useMemo(() => {
+    if (!user?.featuredGallery) {
+      return { items: [], stickyIndices: [] };
+    }
 
-  const { items, stickyIndices } = createVirtualizedGalleryRows({
-    galleryRef: user.featuredGallery,
-  });
+    return createVirtualizedGalleryRows({
+      galleryRef: user.featuredGallery,
+    });
+  }, [user?.featuredGallery]);
 
   const renderItem = useCallback<ListRenderItem<GalleryListItemType>>(({ item }) => {
     return <GalleryVirtualizedRow item={item} />;
@@ -56,7 +54,9 @@ export function ProfileViewFeaturedTab({ queryRef }: ProfileViewFeaturedTabProps
   return (
     <View style={contentContainerStyle}>
       <Tabs.FlashList
-        estimatedItemSize={300}
+        getItemType={(item) => item.kind}
+        keyExtractor={(item) => item.key}
+        estimatedItemSize={100}
         data={items}
         stickyHeaderIndices={stickyIndices}
         renderItem={renderItem}

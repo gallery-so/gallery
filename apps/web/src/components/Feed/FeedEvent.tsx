@@ -46,7 +46,6 @@ function FeedEvent({ eventRef, queryRef, feedMode }: FeedEventProps) {
   );
 
   if (!event.eventData) {
-    debugger;
     throw new TriedToRenderUnsupportedFeedEvent(event.dbid);
   }
 
