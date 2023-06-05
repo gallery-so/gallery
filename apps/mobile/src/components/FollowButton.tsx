@@ -155,11 +155,11 @@ const chipContainerVariants: ChipContainerVariants = {
   unfollow: {
     light: {
       inactive: {
-        containerClassName: 'bg-metal',
+        containerClassName: 'bg-porcelain',
         textClassName: 'text-black-800',
       },
       active: {
-        containerClassName: 'bg-porcelain',
+        containerClassName: 'bg-metal',
         textClassName: 'text-black-800',
       },
     },
