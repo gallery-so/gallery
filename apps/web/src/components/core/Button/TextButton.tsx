@@ -51,7 +51,7 @@ export const StyledButton = styled.button<Pick<Props, 'underlineOnHover' | 'disa
   pointer-events: ${({ disabled }) => (disabled ? 'none' : 'inherit')};
 
   &:hover ${StyledButtonText} {
-    color: ${colors.offBlack};
+    color: ${colors.black['800']};
   }
 `;
 

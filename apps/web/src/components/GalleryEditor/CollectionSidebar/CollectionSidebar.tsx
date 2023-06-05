@@ -235,11 +235,11 @@ const StyledIconsContainer = styled(HStack)`
 `;
 
 const StyledHelpIconContainer = styled(IconContainer)`
-  background-color: ${colors.offBlack};
+  background-color: ${colors.black['800']};
   cursor: pointer;
 
   &:hover {
-    background-color: ${colors.offBlack};
+    background-color: ${colors.black['800']};
   }
 `;
 
@@ -253,10 +253,10 @@ const StyledAutogalleryIconContainer = styled(IconContainer)`
 `;
 
 const StyledUndoIconContainer = styled(IconContainer)`
-  background-color: ${colors.offBlack};
+  background-color: ${colors.black['800']};
   cursor: pointer;
 
   &:hover {
-    background-color: ${colors.offBlack};
+    background-color: ${colors.black['800']};
   }
 `;

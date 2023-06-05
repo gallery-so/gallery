@@ -33,7 +33,7 @@ const StyledDropdownLink = styled.a`
   white-space: nowrap;
 
   :hover {
-    color: ${colors.offBlack};
+    color: ${colors.black['800']};
     background-color: ${colors.faint};
   }
 `;

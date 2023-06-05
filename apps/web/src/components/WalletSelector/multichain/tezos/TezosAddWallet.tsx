@@ -209,7 +209,7 @@ export const TezosAddWallet = ({ queryRef, reset, onSuccess = noop }: Props) => 
       <EmptyState title="Connect with Tezos">
         <VStack>
           <BaseM>The following address is already connected to this account:</BaseM>
-          <BaseM color={colors.offBlack}>{account}</BaseM>
+          <BaseM color={colors.black['800']}>{account}</BaseM>
         </VStack>
       </EmptyState>
     );
@@ -222,7 +222,7 @@ export const TezosAddWallet = ({ queryRef, reset, onSuccess = noop }: Props) => 
           <VStack gap={16}>
             <VStack>
               <BaseM>Confirm the following wallet address:</BaseM>
-              <BaseM color={colors.offBlack}>{account}</BaseM>
+              <BaseM color={colors.black['800']}>{account}</BaseM>
             </VStack>
             <BaseM>
               If you want to connect a different address via Tezos wallet, please switch accounts in

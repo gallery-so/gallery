@@ -218,13 +218,13 @@ export function CommentBox({
           value={value}
           onChangeText={setValue}
           className="text-sm h-5"
-          selectionColor={colorScheme === 'dark' ? colors.white : colors.offBlack}
+          selectionColor={colorScheme === 'dark' ? colors.white : colors.black['800']}
           autoCapitalize="none"
           autoComplete="off"
           autoFocus={autoFocus}
           onBlur={handleDismiss}
           onSubmitEditing={handleDismiss}
-          style={{ flex: 1, color: colorScheme === 'dark' ? colors.white : colors.offBlack }}
+          style={{ flex: 1, color: colorScheme === 'dark' ? colors.white : colors.black['800'] }}
         />
         <Text className="text-sm text-metal">{characterCount}</Text>
         <GalleryTouchableOpacity

@@ -74,6 +74,6 @@ const StyledAnchor = styled.a`
   text-transform: uppercase;
 
   &:hover {
-    color: ${colors.offBlack};
+    color: ${colors.black['800']};
   }
 `;

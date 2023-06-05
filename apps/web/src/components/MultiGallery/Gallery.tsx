@@ -286,7 +286,7 @@ export default function Gallery({
                     isDragging={isDragging}
                     size="sm"
                     variant="stacked"
-                    icon={<DragHandleIcon color={colors.offBlack} />}
+                    icon={<DragHandleIcon color={colors.black['800']} />}
                     onClick={(e) => e.preventDefault()}
                   />
                 )}

@@ -22,7 +22,7 @@ export default function RedeemedItem({ name, discountCode }: Props) {
         {discountCode === REDEEMED_STATUS ? null : (
           <StyledCopyCodeButton>
             <CopyToClipboard textToCopy={discountCode} successText="Copied.">
-              <CopyIcon color={colors.offBlack} />
+              <CopyIcon color={colors.black['800']} />
             </CopyToClipboard>
           </StyledCopyCodeButton>
         )}

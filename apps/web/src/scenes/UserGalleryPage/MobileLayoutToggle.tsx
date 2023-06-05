@@ -74,7 +74,7 @@ const StyledToggleButton = styled.button`
   width: 24px;
 
   & svg path {
-    stroke: ${colors.offBlack};
+    stroke: ${colors.black['800']};
   }
 `;
 

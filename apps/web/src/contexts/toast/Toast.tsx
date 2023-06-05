@@ -116,7 +116,7 @@ const ToastContainer = styled.div`
 `;
 
 const StyledToast = styled(HStack)<{ variant: Props['variant'] }>`
-  border: 1px solid ${({ variant }) => (variant === 'error' ? colors.red : colors.offBlack)};
+  border: 1px solid ${({ variant }) => (variant === 'error' ? colors.red : colors.black['800'])};
   padding: 6px 10px 6px 16px;
   max-width: min(80vw, 628px); // Set width of toast to 80% of viewport
   background: ${colors.white};

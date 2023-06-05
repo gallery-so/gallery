@@ -123,7 +123,7 @@ const StyledButton = styled(Button)`
 `;
 
 const StyledCardContainer = styled(VStack)<{ isActive: boolean }>`
-  border: 1px solid ${colors.offBlack};
+  border: 1px solid ${colors.black['800']};
   padding: 12px 16px;
   width: 250px;
   display: grid;

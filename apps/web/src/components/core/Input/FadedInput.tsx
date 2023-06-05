@@ -66,6 +66,6 @@ const StyledInput = styled.input<{ variantSize: FadedInputSize }>`
   }
 
   &:focus {
-    color: ${colors.offBlack};
+    color: ${colors.black['800']};
   }
 `;

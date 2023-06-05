@@ -55,7 +55,7 @@ function GlobalFooter() {
       </VStack>
       <StyledFooterLinkContainer isMobile={isMobile}>
         <HStack gap={8}>
-          <BaseS color={colors.offBlack}>© {new Date().getFullYear()} All rights reserved</BaseS>
+          <BaseS color={colors.black['800']}>© {new Date().getFullYear()} All rights reserved</BaseS>
           <BaseS color={colors.metal}>·</BaseS>
           <StyledFooterLink href={route({ pathname: '/privacy' })}>Privacy</StyledFooterLink>
           <StyledFooterLink href={route({ pathname: '/terms' })}>Terms</StyledFooterLink>

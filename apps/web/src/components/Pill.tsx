@@ -7,7 +7,7 @@ export const ClickablePill = styled(InteractiveLink)<{ active?: boolean }>`
   border: 1px solid ${colors.porcelain};
   padding: 0 12px;
   border-radius: 24px;
-  color: ${colors.offBlack};
+  color: ${colors.black['800']};
   text-decoration: none;
   width: fit-content;
   max-width: 100%;
@@ -19,11 +19,11 @@ export const ClickablePill = styled(InteractiveLink)<{ active?: boolean }>`
   ${({ active }) =>
     active &&
     css`
-      border-color: ${colors.offBlack};
+      border-color: ${colors.black['800']};
     `}
 
   &:hover {
-    border-color: ${colors.offBlack};
+    border-color: ${colors.black['800']};
   }
 `;
 
@@ -44,17 +44,17 @@ export const ButtonPill = styled.button<{ active?: boolean }>`
   ${({ active }) =>
     active &&
     css`
-      border-color: ${colors.offBlack};
+      border-color: ${colors.black['800']};
     `}
 
   &:hover {
-    border-color: ${colors.offBlack};
+    border-color: ${colors.black['800']};
     background-color: ${colors.faint};
   }
 `;
 
 export const NonclickablePill = styled.div`
-  color: ${colors.offBlack};
+  color: ${colors.black['800']};
   width: fit-content;
   max-width: 100%;
   align-self: end;

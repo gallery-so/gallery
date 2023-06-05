@@ -64,5 +64,5 @@ export default function NavActionFollow({ userRef, queryRef }: Props) {
 }
 
 const UsernameBreadcrumbLink = styled(BreadcrumbLink)<{ mainGalleryPage: boolean }>`
-  color: ${({ mainGalleryPage }) => (mainGalleryPage ? colors.offBlack : colors.shadow)};
+  color: ${({ mainGalleryPage }) => (mainGalleryPage ? colors.black['800'] : colors.shadow)};
 `;

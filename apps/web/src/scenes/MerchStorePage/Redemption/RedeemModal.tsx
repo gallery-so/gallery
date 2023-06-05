@@ -99,6 +99,6 @@ const StyledRedeemTab = styled.button<{ active: boolean }>`
   text-transform: uppercase;
 
   ${TitleXS} {
-    color: ${({ active }) => (active ? colors.offBlack : colors.metal)};
+    color: ${({ active }) => (active ? colors.black['800'] : colors.metal)};
   }
 `;

@@ -106,7 +106,7 @@ const AdmirerName = styled.a`
   font-weight: 700;
 
   text-decoration: none;
-  color: ${colors.offBlack};
+  color: ${colors.black['800']};
 `;
 
 const AdmirerText = styled.div`

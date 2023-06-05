@@ -149,8 +149,8 @@ const StyledTopRightLabels = styled.div`
 `;
 
 const StyledSoldOutText = styled(BlueLabel)`
-  color: ${colors.offBlack};
-  border-color: ${colors.offBlack};
+  color: ${colors.black['800']};
+  border-color: ${colors.black['800']};
 `;
 
 const StyledOwnedText = styled(BlueLabel)``;

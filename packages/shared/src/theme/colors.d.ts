@@ -7,7 +7,6 @@
 declare const colors: {
   offWhite: '#F9F9F9';
   white: '#FEFEFE';
-  offBlack: '#141414';
   black: {
     DEFAULT: '#000000';
     500: '#303030';

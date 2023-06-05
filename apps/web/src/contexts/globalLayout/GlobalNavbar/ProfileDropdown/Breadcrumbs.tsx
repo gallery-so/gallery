@@ -8,7 +8,7 @@ export const BreadcrumbText = styled(Paragraph)`
   font-family: ${TITLE_FONT_FAMILY};
   font-weight: 400;
   line-height: 21px;
-  color: ${colors.offBlack};
+  color: ${colors.black['800']};
   text-align: center;
   letter-spacing: -0.04em;
 
@@ -27,7 +27,7 @@ export const BreadcrumbLink = styled.a`
   text-decoration: none;
   text-align: center;
   letter-spacing: -0.04em;
-  color: ${colors.offBlack};
+  color: ${colors.black['800']};
 
   max-width: 100%;
   text-overflow: ellipsis;

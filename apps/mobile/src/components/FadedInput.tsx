@@ -19,7 +19,7 @@ export function FadedInput({ value, onChange, style, ...props }: Props) {
           fontSize: 14,
         }}
         className="dark:text-white"
-        selectionColor={colorScheme === 'dark' ? colors.offWhite : colors.offBlack}
+        selectionColor={colorScheme === 'dark' ? colors.offWhite : colors.black['800']}
         textAlignVertical="center"
         value={value}
         {...props}

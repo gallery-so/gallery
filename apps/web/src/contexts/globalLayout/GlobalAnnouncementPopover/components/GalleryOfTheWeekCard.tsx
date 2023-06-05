@@ -101,7 +101,7 @@ const GotwContainer = styled(VStack)`
   border-color: ${colors.white};
   transition: border ${transitions.cubic};
   &:hover {
-    border-color: ${colors.offBlack};
+    border-color: ${colors.black['800']};
   }
 
   width: 343px;

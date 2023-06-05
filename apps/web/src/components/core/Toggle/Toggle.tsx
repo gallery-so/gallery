@@ -39,7 +39,7 @@ const StyledToggle = styled.div<{ disabled?: boolean }>`
 `;
 
 const StyledToggleContainer = styled.div<{ active: boolean }>`
-  border: 1px solid ${({ active }) => (active ? colors.activeBlue : colors.offBlack)};
+  border: 1px solid ${({ active }) => (active ? colors.activeBlue : colors.black['800'])};
   height: 12px;
   width: 12px;
   display: flex;
@@ -55,7 +55,7 @@ const StyledTogglePill = styled.div<{ active: boolean }>`
   height: 8px;
   width: 8px;
   border-radius: 20px;
-  border: 1px solid ${({ active }) => (active ? colors.activeBlue : colors.offBlack)};
+  border: 1px solid ${({ active }) => (active ? colors.activeBlue : colors.black['800'])};
 `;
 
 const StyledInput = styled.input`

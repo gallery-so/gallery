@@ -19,7 +19,7 @@ export function GallerySkeleton({ children }: { children: JSX.Element }) {
       speed={speed}
       borderRadius={4}
       highlightColor={colorScheme === 'dark' ? colors.black['500'] : colors.faint}
-      backgroundColor={colorScheme === 'dark' ? colors.offBlack : colors.porcelain}
+      backgroundColor={colorScheme === 'dark' ? colors.black['800'] : colors.porcelain}
     >
       {children}
     </SkeletonPlaceholder>

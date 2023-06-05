@@ -117,10 +117,10 @@ export default function MerchStorePage({ queryRef }: Props) {
     <StyledPage>
       <Countdown />
       <StyledLogoContainer>
-        <StyledLogoBracketLeft color={colors.offBlack} />
+        <StyledLogoBracketLeft color={colors.black['800']} />
         <HStack gap={1}>
           <StyledShopText>OBJECTS</StyledShopText>
-          <StyledLogoBracketRight color={colors.offBlack} />
+          <StyledLogoBracketRight color={colors.black['800']} />
         </HStack>
       </StyledLogoContainer>
       <StyledButtonContainer>

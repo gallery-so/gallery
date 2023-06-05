@@ -196,7 +196,7 @@ export const EthereumAddWallet = ({ queryRef, reset, onSuccess = noop }: Props) 
         <VStack gap={8}>
           <VStack>
             <BaseM>The following address is already connected to this account:</BaseM>
-            <BaseM color={colors.offBlack}>{account}</BaseM>
+            <BaseM color={colors.black['800']}>{account}</BaseM>
           </VStack>
           {isMetamask && (
             <BaseM>
@@ -217,7 +217,7 @@ export const EthereumAddWallet = ({ queryRef, reset, onSuccess = noop }: Props) 
           <VStack gap={16}>
             <VStack>
               <BaseM>Confirm the following wallet address:</BaseM>
-              <BaseM color={colors.offBlack}>{account}</BaseM>
+              <BaseM color={colors.black['800']}>{account}</BaseM>
             </VStack>
             <BaseM>
               If you want to connect a different address via Metamask, please switch accounts in the

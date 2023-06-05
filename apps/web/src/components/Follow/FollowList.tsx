@@ -99,6 +99,6 @@ const StyledTextButton = styled(TextButton)<{ active: boolean }>`
   ${({ active }) =>
     active &&
     `${StyledButtonText} {
-    color: ${colors.offBlack};
+    color: ${colors.black['800']};
   }`}
 `;

@@ -78,7 +78,7 @@ export function SearchInput({ inputRef, setFilter, value, onChange, style, ...pr
         onChangeText={handleChange}
         placeholder="Search for anything..."
         placeholderTextColor={colors.metal}
-        selectionColor={colorScheme === 'dark' ? colors.offWhite : colors.offBlack}
+        selectionColor={colorScheme === 'dark' ? colors.offWhite : colors.black['800']}
         autoCapitalize="none"
         autoCorrect={false}
         autoComplete="off"

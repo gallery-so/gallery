@@ -62,7 +62,7 @@ const StyledButton = styled.button<{
   position: relative;
 
   background: ${colors.white};
-  border: 1px solid ${({ disabled }) => (disabled ? colors.metal : colors.offBlack)};
+  border: 1px solid ${({ disabled }) => (disabled ? colors.metal : colors.black['800'])};
   padding: 8px 16px;
   font-size: 16px;
   transition: border-color ${transitions.cubic};
@@ -70,7 +70,7 @@ const StyledButton = styled.button<{
   :enabled {
     cursor: pointer;
     &:hover {
-      border-color: ${colors.offBlack};
+      border-color: ${colors.black['800']};
 
       ${Icon} {
         transform: scale(1.15);
@@ -79,7 +79,7 @@ const StyledButton = styled.button<{
   }
 
   ${BaseM} {
-    color: ${({ disabled }) => (disabled ? colors.metal : colors.offBlack)};
+    color: ${({ disabled }) => (disabled ? colors.metal : colors.black['800'])};
   }
 
   ${Icon} {

@@ -83,11 +83,11 @@ const StyledTextWrapper = styled(HStack)<{ direction: Directions }>`
   left: ${({ direction }) => (direction ? 'unset' : '16px')};
 
   &:hover ${StyledHoverText} ${ActionText} {
-    color: ${colors.offBlack};
+    color: ${colors.black['800']};
   }
 
   &:hover ${StyledArrow} path {
-    stroke: ${colors.offBlack};
+    stroke: ${colors.black['800']};
   }
 
   @media only screen and ${breakpoints.desktop} {

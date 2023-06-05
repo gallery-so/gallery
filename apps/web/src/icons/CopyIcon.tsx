@@ -5,7 +5,7 @@ type Props = {
   color?: ColorType;
 };
 
-export default function CopyIcon({ className, color = colors.offBlack }: Props) {
+export default function CopyIcon({ className, color = colors.black['800'] }: Props) {
   return (
     <svg
       className={className}

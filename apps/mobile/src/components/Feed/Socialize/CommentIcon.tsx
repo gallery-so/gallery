@@ -10,7 +10,7 @@ export function CommentIcon(props: SvgProps) {
   return (
     <Svg width={22} height={22} fill="none" {...props} viewBox="0 0 20 20">
       <Path
-        stroke={colorScheme === 'dark' ? colors.white : colors.offBlack}
+        stroke={colorScheme === 'dark' ? colors.white : colors.black['800']}
         d="M1 14V1h18v13h-9l-5 4v-4H1Z"
       />
     </Svg>

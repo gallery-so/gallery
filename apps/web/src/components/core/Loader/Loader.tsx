@@ -16,9 +16,9 @@ const spin = keyframes`
 
 const Loader = styled.div<LoaderProps>`
   border: ${({ thicc, extraThicc }) => (extraThicc ? 4 : thicc ? 3 : 2)}px solid
-    ${({ inverted }) => (inverted ? colors.white : colors.offBlack)};
+    ${({ inverted }) => (inverted ? colors.white : colors.black['800'])};
   border-top: ${({ thicc, extraThicc }) => (extraThicc ? 4 : thicc ? 3 : 2)}px solid
-    ${({ inverted }) => (inverted ? colors.offBlack : colors.white)};
+    ${({ inverted }) => (inverted ? colors.black['800'] : colors.white)};
   border-radius: 50%;
 
   ${({ size = 'small' }) => {

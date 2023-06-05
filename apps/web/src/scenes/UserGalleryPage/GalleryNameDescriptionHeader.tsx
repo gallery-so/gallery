@@ -64,13 +64,13 @@ function GalleryNameDescriptionHeader({
 
   const galleryName = useMemo(() => {
     if (isMobile) {
-      <GalleryNameMobile color={noLink ? colors.offBlack : colors.shadow}>
+      <GalleryNameMobile color={noLink ? colors.black['800'] : colors.shadow}>
         {gallery.name}
       </GalleryNameMobile>;
     }
 
     return (
-      <GalleryName color={noLink ? colors.offBlack : colors.shadow}>{gallery.name}</GalleryName>
+      <GalleryName color={noLink ? colors.black['800'] : colors.shadow}>{gallery.name}</GalleryName>
     );
   }, [gallery.name, isMobile, noLink]);
 

@@ -218,9 +218,9 @@ const CustomStyledEvent = styled(StyledEvent)`
   &:hover {
     ${StyledSecondaryButton} {
       ${TitleXS} {
-        color: ${colors.offBlack};
+        color: ${colors.black['800']};
       }
-      border: 1px solid ${colors.offBlack};
+      border: 1px solid ${colors.black['800']};
     }
   }
 `;

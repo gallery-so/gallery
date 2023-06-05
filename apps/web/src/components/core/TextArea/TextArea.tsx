@@ -142,7 +142,7 @@ const StyledTextArea = styled.textarea<TextAreaProps>`
   font-size: 14px;
   line-height: 20px;
   background: none;
-  color: ${colors.offBlack};
+  color: ${colors.black['800']};
   ${({ textAreaHeight }) => `min-height: ${textAreaHeight}`};
 `;
 
