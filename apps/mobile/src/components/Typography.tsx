@@ -41,7 +41,7 @@ export function Typography({ font, style, children, ...rest }: TypographyProps) 
     <Text
       {...rest}
       style={[textStyle, style]}
-      className={`text-offBlack text-base dark:text-white`}
+      className={`text-black-800 text-base dark:text-white`}
     >
       {children}
     </Text>

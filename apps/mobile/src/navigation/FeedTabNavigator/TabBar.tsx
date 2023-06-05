@@ -42,7 +42,7 @@ function TabItem({ navigation, route, activeRoute }: TabItemProps) {
     >
       <Typography
         className={`text-lg ${
-          isFocused ? 'text-offBlack dark:text-white' : 'text-metal dark:text-metal'
+          isFocused ? 'text-black-800 dark:text-white' : 'text-metal dark:text-metal'
         }`}
         font={{ family: 'ABCDiatype', weight: 'Medium' }}
       >

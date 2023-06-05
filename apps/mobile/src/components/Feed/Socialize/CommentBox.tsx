@@ -213,7 +213,7 @@ export function CommentBox({
 
   return (
     <View className="px-2 pb-2 flex flex-row items-center space-x-3">
-      <Animated.View className="flex-1 flex-row justify-between items-center bg-faint dark:bg-offBlack p-1.5 space-x-3">
+      <Animated.View className="flex-1 flex-row justify-between items-center bg-faint dark:bg-black-800 p-1.5 space-x-3">
         <BottomSheetTextInput
           value={value}
           onChangeText={setValue}

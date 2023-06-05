@@ -128,7 +128,7 @@ function Circle({ style, active }: { style?: StyleProp<ViewStyle>; active: boole
   return (
     <View
       className={`h-1 w-1 rounded-full ${
-        active ? 'bg-offBlack dark:bg-white' : 'bg-porcelain dark:bg-shadow'
+        active ? 'bg-black-800 dark:bg-white' : 'bg-porcelain dark:bg-shadow'
       }`}
       style={style}
     />
