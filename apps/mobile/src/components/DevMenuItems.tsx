@@ -32,7 +32,7 @@ export function DevMenuItems() {
         },
       },
     ]);
-  }, [logout]);
+  }, [logout, navigation]);
 
   return null;
 }
