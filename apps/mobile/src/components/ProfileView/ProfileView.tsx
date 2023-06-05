@@ -12,7 +12,6 @@ import { ProfileViewFeaturedTab } from '~/components/ProfileView/Tabs/ProfileVie
 import { ProfileViewFollowersTab } from '~/components/ProfileView/Tabs/ProfileViewFollowersTab';
 import { ProfileViewGalleriesTab } from '~/components/ProfileView/Tabs/ProfileViewGalleriesTab';
 import { Typography } from '~/components/Typography';
-import { GalleryTokenDimensionCacheProvider } from '~/contexts/GalleryTokenDimensionCacheContext';
 import { ProfileViewConnectedQueryFragment$key } from '~/generated/ProfileViewConnectedQueryFragment.graphql';
 import { ProfileViewQueryFragment$key } from '~/generated/ProfileViewQueryFragment.graphql';
 import { ProfileViewUsernameFragment$key } from '~/generated/ProfileViewUsernameFragment.graphql';
@@ -77,42 +76,40 @@ export function ProfileView({ queryRef, shouldShowBackButton }: ProfileViewProps
       </View>
 
       <View className="flex-grow">
-        <GalleryTokenDimensionCacheProvider>
-          <Suspense fallback={null}>
-            <Tabs.Container
-              ref={containerRef}
-              pagerProps={{ scrollEnabled: false }}
-              containerStyle={{
-                backgroundColor: colorScheme === 'light' ? colors.white : colors.black['900'],
-              }}
-              headerContainerStyle={{
-                margin: 0,
-                elevation: 0,
-                shadowOpacity: 0,
-                borderBottomColor: 'transparent',
-                backgroundColor: colorScheme === 'light' ? colors.white : colors.black['900'],
-              }}
-              renderTabBar={Empty}
-              renderHeader={Header}
-            >
-              <Tabs.Tab name="Featured">
-                <ProfileViewFeaturedTab queryRef={query} />
-              </Tabs.Tab>
+        <Suspense fallback={null}>
+          <Tabs.Container
+            ref={containerRef}
+            pagerProps={{ scrollEnabled: false }}
+            containerStyle={{
+              backgroundColor: colorScheme === 'light' ? colors.white : colors.black['900'],
+            }}
+            headerContainerStyle={{
+              margin: 0,
+              elevation: 0,
+              shadowOpacity: 0,
+              borderBottomColor: 'transparent',
+              backgroundColor: colorScheme === 'light' ? colors.white : colors.black['900'],
+            }}
+            renderTabBar={Empty}
+            renderHeader={Header}
+          >
+            <Tabs.Tab name="Featured">
+              <ProfileViewFeaturedTab queryRef={query} />
+            </Tabs.Tab>
 
-              <Tabs.Tab name="Galleries">
-                <ProfileViewGalleriesTab queryRef={query} />
-              </Tabs.Tab>
+            <Tabs.Tab name="Galleries">
+              <ProfileViewGalleriesTab queryRef={query} />
+            </Tabs.Tab>
 
-              <Tabs.Tab name="Followers">
-                <ProfileViewFollowersTab queryRef={query} />
-              </Tabs.Tab>
+            <Tabs.Tab name="Followers">
+              <ProfileViewFollowersTab queryRef={query} />
+            </Tabs.Tab>
 
-              <Tabs.Tab name="Activity">
-                <ProfileViewActivityTab queryRef={query} />
-              </Tabs.Tab>
-            </Tabs.Container>
-          </Suspense>
-        </GalleryTokenDimensionCacheProvider>
+            <Tabs.Tab name="Activity">
+              <ProfileViewActivityTab queryRef={query} />
+            </Tabs.Tab>
+          </Tabs.Container>
+        </Suspense>
       </View>
     </View>
   );

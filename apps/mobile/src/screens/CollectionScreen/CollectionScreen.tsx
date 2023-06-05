@@ -13,7 +13,6 @@ import { GalleryVirtualizedRow } from '~/components/Gallery/GalleryVirtualizedRo
 import { Markdown } from '~/components/Markdown';
 import { GalleryProfileNavBar } from '~/components/ProfileView/GalleryProfileNavBar';
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
-import { GalleryTokenDimensionCacheProvider } from '~/contexts/GalleryTokenDimensionCacheContext';
 import { CollectionScreenQuery } from '~/generated/CollectionScreenQuery.graphql';
 import { MainTabStackNavigatorParamList } from '~/navigation/types';
 import { CollectionScreenFallback } from '~/screens/CollectionScreen/CollectionScreenFallback';
@@ -91,14 +90,12 @@ function CollectionScreenInner() {
       </View>
 
       <View className="flex-grow">
-        <GalleryTokenDimensionCacheProvider>
-          <FlashList
-            data={items}
-            estimatedItemSize={300}
-            renderItem={renderItem}
-            stickyHeaderIndices={stickyIndices}
-          />
-        </GalleryTokenDimensionCacheProvider>
+        <FlashList
+          data={items}
+          estimatedItemSize={300}
+          renderItem={renderItem}
+          stickyHeaderIndices={stickyIndices}
+        />
       </View>
     </View>
   );

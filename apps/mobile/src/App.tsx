@@ -14,6 +14,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { RelayEnvironmentProvider } from 'react-relay';
 import { SWRConfig } from 'swr';
 
+import { DeepLinkRegistrar } from '~/components/DeepLinkRegistrar';
 import { NotificationRegistrar } from '~/components/Notification/NotificationRegistrar';
 import { MobileAnalyticsProvider } from '~/contexts/MobileAnalyticsProvider';
 import { MobileErrorReportingProvider } from '~/contexts/MobileErrorReportingProvider';
@@ -131,6 +132,7 @@ export default function App() {
                           {/* Register the user's push token if one exists (does not prompt the user) */}
                           <NotificationRegistrar />
                           <DevMenuItems />
+                          <DeepLinkRegistrar />
                           <RootStackNavigator navigationContainerRef={navigationRef} />
                         </BottomSheetModalProvider>
                       </NavigationContainer>
