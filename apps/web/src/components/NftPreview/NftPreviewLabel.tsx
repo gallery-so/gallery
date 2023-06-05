@@ -167,7 +167,6 @@ export const StyledNftPreviewLabel = styled.div`
 
   bottom: 0;
   width: 100%;
-  // text-align: right;
   padding: 8px;
   z-index: 10;
   // this helps position the label correctly in Safari
