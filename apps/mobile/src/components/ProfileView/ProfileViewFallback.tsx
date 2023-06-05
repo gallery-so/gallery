@@ -5,12 +5,16 @@ import { GallerySkeleton } from '~/components/GallerySkeleton';
 import { GalleryProfileNavbarFallback } from '~/components/ProfileView/GalleryProfileNavBar';
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 
-export function ProfileViewFallback() {
+type Props = {
+  shouldShowBackButton: boolean;
+};
+
+export function ProfileViewFallback({ shouldShowBackButton }: Props) {
   const { top } = useSafeAreaPadding();
 
   return (
     <View className="flex-1 bg-white dark:bg-black-900 px-4" style={{ paddingTop: top }}>
-      <GalleryProfileNavbarFallback shouldShowBackButton={true} />
+      <GalleryProfileNavbarFallback shouldShowBackButton={shouldShowBackButton} />
 
       <GallerySkeleton>
         <SkeletonPlaceholder.Item flexDirection="column" width="100%">
