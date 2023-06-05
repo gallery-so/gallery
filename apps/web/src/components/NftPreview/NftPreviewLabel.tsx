@@ -4,13 +4,14 @@ import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
-import { BaseM, TitleDiatypeM } from '~/components/core/Text/Text';
-import { ClickablePill, NonclickablePill } from '~/components/Pill';
+import { BaseM } from '~/components/core/Text/Text';
 import { NftPreviewLabelCollectionNameFragment$key } from '~/generated/NftPreviewLabelCollectionNameFragment.graphql';
 import { NftPreviewLabelFragment$key } from '~/generated/NftPreviewLabelFragment.graphql';
 import colors from '~/shared/theme/colors';
 import unescape from '~/shared/utils/unescape';
 import { getCommunityUrlForToken } from '~/utils/getCommunityUrlForToken';
+
+import InteractiveLink from '../core/InteractiveLink/InteractiveLink';
 
 type Props = {
   className?: string;
@@ -19,6 +20,8 @@ type Props = {
   // if false, the label will appear flat.
   interactive?: boolean;
 };
+
+const ENABLED_ARTIST = false;
 
 function NftPreviewLabel({ className, tokenRef, interactive = true }: Props) {
   const token = useFragment(
@@ -45,20 +48,21 @@ function NftPreviewLabel({ className, tokenRef, interactive = true }: Props) {
 
   return (
     <StyledNftPreviewLabel className={className}>
-      <HStack gap={4} justify={'flex-end'} align="center">
-        <VStack gap={4} align="flex-end" shrink>
+      <HStack gap={4} justify={'flex-start'} align="center">
+        <StyledNftPreviewContainer align="flex-start" shrink>
           {
             // Since POAPs' collection names are the same as the
             // token name, we don't want to show duplicate information
             token.chain === 'POAP' ? null : (
-              <StyledBaseM color={colors.white} lines={1}>
-                {decodedTokenName}
-              </StyledBaseM>
+              <StyledLabelText>
+                <StyledBaseM color={colors.white} lines={2}>
+                  {decodedTokenName}
+                </StyledBaseM>
+              </StyledLabelText>
             )
           }
-
           {showCollectionName && <CollectionName tokenRef={token} interactive={interactive} />}
-        </VStack>
+        </StyledNftPreviewContainer>
       </HStack>
     </StyledNftPreviewLabel>
   );
@@ -96,41 +100,53 @@ function CollectionName({ tokenRef, interactive }: CollectionNameProps) {
 
   if (token.chain === 'POAP') {
     return shouldDisplayLinkToCommunityPage ? (
-      <ClickablePill to={communityUrl}>
+      <StyledInteractiveLink to={communityUrl}>
         <POAPWrapperHStack gap={4} align="center" justify="flex-end">
           <POAPLogo />
-          <POAPTitle color={colors.white} lines={1}>
-            {collectionName}
-          </POAPTitle>
+          <POAPTitle color={colors.white}>{collectionName}</POAPTitle>
         </POAPWrapperHStack>
-      </ClickablePill>
+      </StyledInteractiveLink>
     ) : (
-      <NonclickablePill>
-        <POAPWrapperHStack gap={4} align="center" justify="flex-end">
-          <POAPLogo />
-          <POAPTitle color={colors.white} lines={1}>
-            {collectionName}
-          </POAPTitle>
-        </POAPWrapperHStack>
-      </NonclickablePill>
+      <POAPWrapperHStack gap={4} align="center" justify="flex-end">
+        <POAPLogo />
+        <POAPTitle color={colors.white}>{collectionName}</POAPTitle>
+      </POAPWrapperHStack>
     );
   }
 
   return shouldDisplayLinkToCommunityPage ? (
-    <ClickablePill to={communityUrl}>
+    <StyledInteractiveLink to={communityUrl}>
       <HStack gap={4} align="center" justify="flex-end">
         {token.contract?.badgeURL && <StyledBadge src={token.contract.badgeURL} />}
-        <StyledTitleDiatypeM lines={1} color={colors.white}>
-          {collectionName}
-        </StyledTitleDiatypeM>
+        <StyledLabelText wrap>
+          <BaseM color={colors.porcelain} as="span">
+            {collectionName}
+          </BaseM>
+          {ENABLED_ARTIST && (
+            <>
+              {' '}
+              <BaseM color={colors.metal} as="span">
+                by Artist
+              </BaseM>
+            </>
+          )}
+        </StyledLabelText>
       </HStack>
-    </ClickablePill>
+    </StyledInteractiveLink>
   ) : (
-    <NonclickablePill>
-      <StyledTitleDiatypeM color={colors.white} lines={1}>
+    <StyledLabelText wrap>
+      <BaseM color={colors.porcelain} as="span">
         {collectionName}
-      </StyledTitleDiatypeM>
-    </NonclickablePill>
+      </BaseM>
+      {ENABLED_ARTIST && (
+        <>
+          {' '}
+          <BaseM color={colors.metal} as="span">
+            by Artist
+          </BaseM>
+        </>
+      )}
+    </StyledLabelText>
   );
 }
 
@@ -151,7 +167,7 @@ export const StyledNftPreviewLabel = styled.div`
 
   bottom: 0;
   width: 100%;
-  text-align: right;
+  // text-align: right;
   padding: 8px;
   z-index: 10;
   // this helps position the label correctly in Safari
@@ -159,18 +175,22 @@ export const StyledNftPreviewLabel = styled.div`
   min-height: 56px;
 `;
 
+const StyledNftPreviewContainer = styled(VStack)`
+  background-color: ${colors.offBlack};
+  padding: 8px;
+`;
+
 const StyledBaseM = styled(BaseM)<{ lines: number }>`
   word-wrap: break-word;
   word-break: break-all;
+  font-weight: 700;
 
   margin: 0;
-  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
   display: -webkit-box;
   -webkit-box-orient: vertical;
   line-clamp: ${({ lines }) => lines};
   -webkit-line-clamp: ${({ lines }) => lines};
   overflow: hidden;
-  font-size: 12px;
   line-height: 16px;
   text-overflow: ellipsis;
   padding-right: 16px;
@@ -195,7 +215,28 @@ const StyledBaseM = styled(BaseM)<{ lines: number }>`
   }
 `;
 
-const StyledTitleDiatypeM = styled(TitleDiatypeM)<{ lines: number }>`
+const StyledInteractiveLink = styled(InteractiveLink)`
+  text-decoration: none;
+`;
+
+const StyledLabelText = styled.p<{ wrap?: boolean }>`
+  ${({ wrap }) =>
+    wrap &&
+    `
+    word-wrap: break-word;
+    word-break: break-all;
+
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    line-clamp: 1;
+    -webkit-line-clamp: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+`}
+  color: ${colors.metal};
+`;
+
+const StyledTitleDiatypeM = styled(BaseM)`
   word-wrap: break-word;
   word-break: break-all;
 
@@ -203,8 +244,6 @@ const StyledTitleDiatypeM = styled(TitleDiatypeM)<{ lines: number }>`
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  line-clamp: ${({ lines }) => lines};
-  -webkit-line-clamp: ${({ lines }) => lines};
   overflow: hidden;
   font-size: 12px;
   line-height: 16px;
