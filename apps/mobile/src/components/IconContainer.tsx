@@ -14,7 +14,7 @@ export function IconContainer({ icon, onPress, style, size, ...props }: IconCont
   return (
     <GalleryTouchableOpacity style={style} onPress={onPress} {...props}>
       <View
-        className={`bg-faint dark:bg-graphite items-center justify-center rounded-full ${
+        className={`bg-faint dark:bg-black-500 items-center justify-center rounded-full ${
           size === 'sm' ? 'h-6 w-6' : 'h-8 w-8'
         } `}
       >

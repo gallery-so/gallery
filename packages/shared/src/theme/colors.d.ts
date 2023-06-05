@@ -16,7 +16,6 @@ declare const colors: {
     800: '#141414';
     900: '#0C0C0C';
   };
-  graphite: '#2F2F2F';
   shadow: '#707070';
   metal: '#9e9e9e';
   porcelain: '#e2e2e2';

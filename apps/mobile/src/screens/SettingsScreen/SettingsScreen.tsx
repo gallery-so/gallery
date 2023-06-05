@@ -89,7 +89,7 @@ export function SettingsScreen() {
 
       <View
         onLayout={handleBottomSectionLayout}
-        className="absolute bottom-0 left-0 right-0 bg-white dark:bg-black-900 border-t border-porcelain dark:border-graphite py-8 flex flex-col items-center space-y-3"
+        className="absolute bottom-0 left-0 right-0 bg-white dark:bg-black-900 border-t border-porcelain dark:border-black-500 py-8 flex flex-col items-center space-y-3"
       >
         <Button
           onPress={handleSignOut}
