@@ -39,7 +39,7 @@ type GalleryMarkdownProps = PropsWithChildren<{
   style?: StyleProp<unknown>;
 }>;
 
-const markdownItOptions = MarkdownIt({ typographer: true, linkify: false });
+const markdownItOptions = MarkdownIt({ typographer: true, linkify: false }).disable(['lheading']);
 
 export function Markdown({
   children,
