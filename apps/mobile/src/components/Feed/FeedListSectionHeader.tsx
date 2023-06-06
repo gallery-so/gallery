@@ -7,6 +7,7 @@ import { graphql } from 'relay-runtime';
 import { FeedListSectionHeaderFragment$key } from '~/generated/FeedListSectionHeaderFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { getTimeSince } from '~/shared/utils/time';
+import unescape from '~/shared/utils/unescape';
 
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import { Typography } from '../Typography';
@@ -58,6 +59,8 @@ export function FeedListSectionHeader({ feedEventRef }: FeedListSectionHeaderPro
     return null;
   }
 
+  const galleryName = unescape(feedEvent.eventData.gallery?.name || '');
+
   return (
     <View className="flex flex-row items-center justify-between bg-white dark:bg-black px-3 pb-2">
       <View className="flex flex-row space-x-1">
@@ -82,7 +85,7 @@ export function FeedListSectionHeader({ feedEventRef }: FeedListSectionHeaderPro
           eventName="Feed Gallery Name Clicked"
         >
           <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-            {feedEvent.eventData.gallery?.name || 'their gallery'}
+            {galleryName || 'their gallery'}
           </Typography>
         </GalleryTouchableOpacity>
       </View>

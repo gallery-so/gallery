@@ -13,8 +13,8 @@ export function ProfileViewFallback() {
       <GalleryProfileNavbarFallback shouldShowBackButton={true} />
 
       <GallerySkeleton>
-        <SkeletonPlaceholder.Item flexDirection="column" width="100%">
-          <SkeletonPlaceholder.Item marginBottom={16} flexDirection="row" justifyContent="center">
+        <SkeletonPlaceholder.Item flexDirection="column" width="100%" paddingTop={16}>
+          <SkeletonPlaceholder.Item marginBottom={16} flexDirection="row">
             <SkeletonPlaceholder.Item width={100} height={32} />
           </SkeletonPlaceholder.Item>
 
