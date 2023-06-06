@@ -154,8 +154,8 @@ const POAPLogo = styled.img.attrs({
   src: '/icons/poap_logo.svg',
   alt: 'POAP Logo',
 })`
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
 `;
 
 export const StyledNftPreviewLabel = styled.div`
@@ -264,8 +264,8 @@ const StyledTitleDiatypeM = styled(BaseM)`
 
 const StyledBadge = styled.img`
   width: 100%;
-  max-width: 24px;
-  max-height: 24px;
+  max-width: 20px;
+  max-height: 20px;
 `;
 
 /**
