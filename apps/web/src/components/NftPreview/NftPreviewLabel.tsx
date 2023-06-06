@@ -176,7 +176,7 @@ export const StyledNftPreviewLabel = styled.div`
 
 const StyledNftPreviewContainer = styled(VStack)`
   background-color: ${colors.offBlack};
-  padding: 8px;
+  padding: 4px 8px;
 `;
 
 const StyledBaseM = styled(BaseM)<{ lines: number }>`
