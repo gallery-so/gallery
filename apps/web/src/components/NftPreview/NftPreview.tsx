@@ -3,7 +3,6 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
-import Gradient from '~/components/core/Gradient/Gradient';
 import transitions from '~/components/core/transitions';
 import { NftFailureBoundary } from '~/components/NftFailureFallback/NftFailureBoundary';
 import { NftFailureFallback } from '~/components/NftFailureFallback/NftFailureFallback';
@@ -231,7 +230,6 @@ function NftPreview({
             {isMobileOrLargeMobile ? null : (
               <StyledNftFooter>
                 <StyledNftLabel tokenRef={token} />
-                <StyledGradient type="bottom" direction="down" />
               </StyledNftFooter>
             )}
           </StyledNftPreview>
@@ -253,11 +251,6 @@ const StyledA = styled.a`
   width: inherit;
   height: inherit;
   text-decoration: none;
-`;
-
-const StyledGradient = styled(Gradient)<{ type: 'top' | 'bottom' }>`
-  position: absolute;
-  ${({ type }) => type}: 0;
 `;
 
 const StyledNftLabel = styled(NftPreviewLabel)`
