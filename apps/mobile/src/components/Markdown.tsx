@@ -11,7 +11,6 @@ import { GalleryTouchableOpacity } from './GalleryTouchableOpacity';
 const markdownStyles = {
   paragraph: {
     marginTop: 0,
-    marginBottom: 0,
   },
   body: {
     fontSize: 14,
