@@ -42,6 +42,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     config: {
       usesNonExemptEncryption: false,
     },
+    associatedDomains: ['applinks:gallery.so', 'applinks:gallery-dev.vercel.app'],
     supportsTablet: true,
     bundleIdentifier: 'com.usegallery.gallery',
     splash: {
