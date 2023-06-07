@@ -67,12 +67,12 @@ const StyledFilterContainer = styled(HStack)`
 const StyledButtonPill = styled(ButtonPill)<{ active?: boolean }>`
   cursor: pointer;
   ${TitleDiatypeM} {
-    color: ${({ active }) => (active ? colors.offBlack : colors.shadow)};
+    color: ${({ active }) => (active ? colors.black['800'] : colors.shadow)};
   }
 
   &:hover {
     ${TitleDiatypeM} {
-      color: ${colors.offBlack};
+      color: ${colors.black['800']};
     }
   }
 `;

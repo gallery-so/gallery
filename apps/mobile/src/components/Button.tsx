@@ -1,7 +1,9 @@
 import clsx from 'clsx';
 import { useColorScheme } from 'nativewind';
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
+
+import colors from '~/shared/theme/colors';
 
 import { GalleryTouchableOpacity, GalleryTouchableOpacityProps } from './GalleryTouchableOpacity';
 import { Typography } from './Typography';
@@ -17,13 +19,98 @@ type ButtonProps = {
   icon?: ReactNode;
   variant?: Variant;
   size?: 'sm' | 'md';
+  DO_NOT_USE_OR_YOU_WILL_BE_FIRED_colorScheme?: 'light' | 'dark';
 } & GalleryTouchableOpacityProps;
 
-type VariantMapType = { [variant in Variant]: string };
-type ExplicitSchemeVariantMapType = {
-  [variant in Variant]: {
-    [scheme in 'light' | 'dark']: string;
+type ButtonVariants = {
+  [colorScheme in 'light' | 'dark']: {
+    [variant in Variant]: {
+      [activeState in 'active' | 'inactive']: {
+        containerClassName: string;
+        textClassName: string;
+        loadingColor: string;
+      };
+    };
   };
+};
+
+const buttonVariants: ButtonVariants = {
+  light: {
+    primary: {
+      inactive: {
+        containerClassName: 'bg-black-800',
+        textClassName: 'text-white',
+        loadingColor: 'white',
+      },
+      active: {
+        containerClassName: 'bg-[#303030]',
+        textClassName: 'text-white',
+        loadingColor: 'white',
+      },
+    },
+    secondary: {
+      inactive: {
+        containerClassName: 'bg-white border border-faint',
+        textClassName: 'text-black-800',
+        loadingColor: 'black',
+      },
+      active: {
+        containerClassName: 'bg-white border border-black-800',
+        textClassName: 'text-black-800',
+        loadingColor: 'black',
+      },
+    },
+    danger: {
+      inactive: {
+        containerClassName: 'bg-white border border-red',
+        textClassName: 'text-red',
+        loadingColor: colors.red,
+      },
+      active: {
+        containerClassName: 'bg-faint border border-red',
+        textClassName: 'text-red',
+        loadingColor: colors.red,
+      },
+    },
+  },
+  dark: {
+    primary: {
+      inactive: {
+        containerClassName: 'bg-white',
+        textClassName: 'text-black-800',
+        loadingColor: 'black',
+      },
+      active: {
+        containerClassName: 'bg-porcelain',
+        textClassName: 'text-black-800',
+        loadingColor: 'black',
+      },
+    },
+    secondary: {
+      inactive: {
+        containerClassName: 'bg-black-900 border border-[#303030]',
+        textClassName: 'text-white',
+        loadingColor: 'white',
+      },
+      active: {
+        containerClassName: 'bg-black-900 border border-white',
+        textClassName: 'text-white',
+        loadingColor: 'white',
+      },
+    },
+    danger: {
+      inactive: {
+        containerClassName: 'bg-black-900 border border-red',
+        textClassName: 'text-red',
+        loadingColor: colors.red,
+      },
+      active: {
+        containerClassName: 'bg-black-700 border border-red',
+        textClassName: 'text-red',
+        loadingColor: colors.red,
+      },
+    },
+  },
 };
 
 export function Button({
@@ -34,49 +121,35 @@ export function Button({
   disabled,
   style,
   size = 'md',
+  DO_NOT_USE_OR_YOU_WILL_BE_FIRED_colorScheme,
   ...props
 }: ButtonProps) {
-  const containerVariants: VariantMapType = {
-    primary: 'bg-offBlack dark:bg-white',
-    secondary: 'bg-white dark:bg-black border border-faint dark:border-graphite',
-    danger: 'bg-transparent border border-red',
-  };
+  const { colorScheme: hookColorScheme } = useColorScheme();
+  const colorScheme = DO_NOT_USE_OR_YOU_WILL_BE_FIRED_colorScheme ?? hookColorScheme;
 
-  const textVariants: VariantMapType = {
-    primary: 'text-white dark:text-offBlack',
-    secondary: 'text-offBlack dark:text-white',
-    danger: 'text-red',
-  };
+  const [active, setActive] = useState(false);
 
-  const loadingIndicatorColor: ExplicitSchemeVariantMapType = {
-    primary: {
-      light: 'white',
-      dark: 'black',
-    },
-    secondary: {
-      light: 'black',
-      dark: 'white',
-    },
-    danger: {
-      light: 'red',
-      dark: 'red',
-    },
-  };
+  const variantClassNames = buttonVariants[colorScheme][variant][active ? 'active' : 'inactive'];
 
   const sizeVariants: { [size in 'sm' | 'md']: string } = {
     sm: 'h-[36] px-6',
     md: 'h-[44] px-4',
   };
 
-  const { colorScheme } = useColorScheme();
-
   return (
-    <GalleryTouchableOpacity disabled={loading || disabled} style={style} {...props}>
+    <GalleryTouchableOpacity
+      onPressIn={() => setActive(true)}
+      onPressOut={() => setActive(false)}
+      disabled={loading || disabled}
+      activeOpacity={1}
+      style={style}
+      {...props}
+    >
       {/* Setting a height explicitly here to ensure icons / text gets the same treatment */}
       <View
         className={clsx(
           'relative flex h-[36] items-center justify-center  px-6',
-          containerVariants[variant],
+          variantClassNames.containerClassName,
           sizeVariants[size]
         )}
       >
@@ -90,7 +163,7 @@ export function Button({
 
           <Typography
             font={{ family: 'ABCDiatype', weight: 'Medium' }}
-            className={clsx('text-xs uppercase', textVariants[variant])}
+            className={clsx('text-xs uppercase', variantClassNames.textClassName)}
           >
             {text}
           </Typography>
@@ -98,7 +171,7 @@ export function Button({
 
         {loading && (
           <View className="absolute inset-0 flex justify-center items-center">
-            <ActivityIndicator color={loadingIndicatorColor[variant][colorScheme]} />
+            <ActivityIndicator color={variantClassNames.loadingColor} />
           </View>
         )}
       </View>

@@ -58,7 +58,7 @@ export function SearchFilter({ activeFilter, onChange, ...props }: Props) {
             handleSelectFilter(filter.value);
           }}
           className={`flex h-8 items-center justify-center rounded-3xl border px-3 ${
-            activeFilter === filter.value ? 'border-offBlack dark:border-white ' : 'border-metal'
+            activeFilter === filter.value ? 'border-black-800 dark:border-white ' : 'border-metal'
           }`}
           eventElementId="Search Filter Button"
           eventName="Search Filter Button Clicked"
@@ -70,7 +70,7 @@ export function SearchFilter({ activeFilter, onChange, ...props }: Props) {
               weight: 'Bold',
             }}
             className={`text-sm ${
-              activeFilter === filter.value ? 'text-offBlack dark:text-white' : 'text-metal'
+              activeFilter === filter.value ? 'text-black-800 dark:text-white' : 'text-metal'
             }`}
           >
             {filter.label}

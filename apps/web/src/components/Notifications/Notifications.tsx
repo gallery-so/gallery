@@ -190,7 +190,7 @@ const StyledSubView = styled(motion.div)`
 const StyledNavText = styled(BaseM)<{ active: boolean }>`
   font-size: 12px;
   text-transform: uppercase;
-  color: ${({ active }) => (active ? colors.offBlack : colors.metal)};
+  color: ${({ active }) => (active ? colors.black['800'] : colors.metal)};
   cursor: pointer;
 `;
 

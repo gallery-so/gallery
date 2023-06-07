@@ -46,8 +46,8 @@ const StyledInput = styled.input`
 
   font-size: 24px;
   background-color: transparent;
-  color: ${colors.offBlack};
-  caret-color: ${colors.offBlack};
+  color: ${colors.black['800']};
+  caret-color: ${colors.black['800']};
 
   &::placeholder {
     color: ${colors.porcelain};

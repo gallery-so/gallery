@@ -29,7 +29,7 @@ function TabItem({ activeRoute, counter = 0, route, onRouteChange }: TabItemProp
       properties={{ variant: route }}
     >
       <Typography
-        className={`${isFocused ? 'text-offBlack dark:text-white' : 'text-metal'}`}
+        className={`${isFocused ? 'text-black-800 dark:text-white' : 'text-metal'}`}
         font={{ family: 'ABCDiatype', weight: 'Medium' }}
       >
         {route}
@@ -52,7 +52,7 @@ type Props = {
 
 export function ProfileTabBar({ routes, activeRoute, onRouteChange }: Props) {
   return (
-    <View className="border-porcelain dark:border-graphite mt-4 flex flex-row items-center justify-center border-t border-b px-2 py-3">
+    <View className="border-porcelain dark:border-black-500 mt-4 flex flex-row items-center justify-center border-t border-b px-2 py-3">
       {routes.map((route) => {
         return (
           <TabItem

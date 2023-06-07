@@ -73,16 +73,16 @@ const StyledButton = styled.button<StyledButtonProps>`
   ${({ variant = 'primary' }) => {
     if (variant === 'primary') {
       return css`
-        background: ${colors.offBlack};
+        background: ${colors.black['800']};
         color: ${colors.white};
 
         &:hover:not(:disabled) {
           // Assumes hex color, lightened with alpha because opacity + animations break things
-          background: ${colors.offBlack} ${alphaHex(0.8)};
+          background: ${colors.black['800']} ${alphaHex(0.8)};
         }
         &[aria-disabled='true'] {
           // Assumes hex color, lightened with alpha because opacity + animations break things
-          background: ${colors.offBlack} ${alphaHex(0.2)};
+          background: ${colors.black['800']} ${alphaHex(0.2)};
         }
       `;
     }
@@ -90,13 +90,13 @@ const StyledButton = styled.button<StyledButtonProps>`
     if (variant === 'secondary') {
       return css`
         background: ${colors.white};
-        color: ${colors.offBlack};
+        color: ${colors.black['800']};
         border: 1px solid ${colors.porcelain};
         padding: 7px 23px;
 
         &:hover:not(:disabled) {
-          color: ${colors.offBlack};
-          border: 1px solid ${colors.offBlack};
+          color: ${colors.black['800']};
+          border: 1px solid ${colors.black['800']};
         }
         &[aria-disabled='true'] {
           // Assumes hex color, lightened with alpha because opacity + animations break things

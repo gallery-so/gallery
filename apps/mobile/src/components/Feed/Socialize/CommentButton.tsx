@@ -90,7 +90,7 @@ function Handle() {
   return (
     <View
       className={`h-2 border-t ${
-        colorScheme === 'dark' ? 'bg-black border-offBlack' : 'bg-white border-porcelain'
+        colorScheme === 'dark' ? 'bg-black border-black-800' : 'bg-white border-porcelain'
       }`}
     />
   );

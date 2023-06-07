@@ -108,6 +108,6 @@ export const IconWrapper = styled.div<{ active: boolean }>`
           color: ${colors.activeBlue};
         `
       : css`
-          color: ${colors.offBlack};
+          color: ${colors.black['800']};
         `}
 `;

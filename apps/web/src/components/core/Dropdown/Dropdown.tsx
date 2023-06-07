@@ -87,7 +87,7 @@ const DropdownContainer = styled(VStack)<{
 
   background-color: ${colors.white};
 
-  border: 1px solid ${colors.offBlack};
+  border: 1px solid ${colors.black['800']};
   padding: 0 4px;
 
   > *:not(:last-child) {

@@ -48,7 +48,7 @@ export function GalleryPreviewCard({ galleryRef, isFeatured }: GalleryPreviewCar
   return (
     <GalleryTouchableOpacity
       onPress={handlePress}
-      className="bg-offWhite dark:bg-offBlack flex w-full flex-col space-y-3 rounded-xl p-3"
+      className="bg-offWhite dark:bg-black-800 flex w-full flex-col space-y-3 rounded-xl p-3"
       eventElementId="Gallery Preview Card"
       eventName="Gallery Preview Card Clicked"
     >

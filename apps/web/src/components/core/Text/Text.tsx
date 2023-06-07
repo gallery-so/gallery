@@ -13,25 +13,25 @@ type TextProps = {
 
 const H1 = styled.h1<TextProps>`
   margin: 0;
-  color: ${({ color }) => (color ? color : colors.offBlack)};
+  color: ${({ color }) => (color ? color : colors.black['800'])};
   text-transform: ${({ caps }) => (caps ? 'uppercase' : undefined)};
 `;
 
 const H2 = styled.h2<TextProps>`
   margin: 0;
-  color: ${({ color }) => (color ? color : colors.offBlack)};
+  color: ${({ color }) => (color ? color : colors.black['800'])};
   text-transform: ${({ caps }) => (caps ? 'uppercase' : undefined)};
 `;
 
 const H3 = styled.h3<TextProps>`
   margin: 0;
-  color: ${({ color }) => (color ? color : colors.offBlack)};
+  color: ${({ color }) => (color ? color : colors.black['800'])};
   text-transform: ${({ caps }) => (caps ? 'uppercase' : undefined)};
 `;
 
 export const Paragraph = styled.p<TextProps>`
   margin: 0;
-  color: ${({ color }) => (color ? color : colors.offBlack)};
+  color: ${({ color }) => (color ? color : colors.black['800'])};
   text-transform: ${({ caps }) => (caps ? 'uppercase' : undefined)};
 `;
 

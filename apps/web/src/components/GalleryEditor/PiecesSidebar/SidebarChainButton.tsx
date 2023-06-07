@@ -35,7 +35,7 @@ const ChainButton = styled.div<{ selected: boolean }>`
 
   z-index: 1;
 
-  border: 1px solid ${colors.offBlack};
+  border: 1px solid ${colors.black['800']};
   border-radius: 24px;
 
   position: relative;

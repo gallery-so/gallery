@@ -19,11 +19,11 @@ const ActionText = styled(BaseS)<Props>`
 
   pointer-events: ${({ disabled }) => (disabled ? 'none' : 'inherit')};
 
-  color: ${({ focused }) => (focused ? colors.offBlack : colors.shadow)};
+  color: ${({ focused }) => (focused ? colors.black['800'] : colors.shadow)};
   text-decoration: ${({ underlined }) => (underlined ? 'underline' : undefined)};
 
   &:hover {
-    color: ${colors.offBlack};
+    color: ${colors.black['800']};
   }
 `;
 

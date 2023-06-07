@@ -267,7 +267,7 @@ export const GnosisSafeAddWallet = ({ queryRef, reset }: Props) => {
       <EmptyState title="Connect with Gnosis Safe">
         <VStack>
           <BaseM>The following address is already connected to this account:</BaseM>
-          <BaseM color={colors.offBlack}>{account.toLowerCase()}</BaseM>
+          <BaseM color={colors.black['800']}>{account.toLowerCase()}</BaseM>
         </VStack>
       </EmptyState>
     );

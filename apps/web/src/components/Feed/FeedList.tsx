@@ -226,7 +226,7 @@ const StyledLoadMoreRow = styled.div<{ width: number }>`
   &:hover {
     background: ${colors.faint};
     ${TitleM} {
-      color: ${colors.offBlack};
+      color: ${colors.black['800']};
     }
   }
   cursor: pointer;

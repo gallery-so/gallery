@@ -141,7 +141,7 @@ const UsernameBreadcrumbLink = styled(BreadcrumbLink)<{ mainGalleryPage: boolean
   ${({ mainGalleryPage }) =>
     mainGalleryPage
       ? css`
-          color: ${colors.offBlack};
+          color: ${colors.black['800']};
         `
       : css`
           color: ${colors.shadow};

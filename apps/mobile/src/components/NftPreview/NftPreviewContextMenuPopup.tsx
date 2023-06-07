@@ -152,7 +152,7 @@ export function NftPreviewContextMenuPopup({
         });
 
         return (
-          <View className="bg-white dark:bg-black">
+          <View className="bg-white dark:bg-black-900">
             <View className="self-center" style={finalDimensions}>
               <ReportingErrorBoundary fallback={<NftPreviewErrorFallback />}>
                 <NftPreviewAsset

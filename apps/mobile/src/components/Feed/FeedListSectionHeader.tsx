@@ -62,7 +62,7 @@ export function FeedListSectionHeader({ feedEventRef }: FeedListSectionHeaderPro
   const galleryName = unescape(feedEvent.eventData.gallery?.name || '');
 
   return (
-    <View className="flex flex-row items-center justify-between bg-white dark:bg-black px-3 pb-2">
+    <View className="flex flex-row items-center justify-between bg-white dark:bg-black-900 px-3 pb-2">
       <View className="flex flex-row space-x-1">
         <GalleryTouchableOpacity
           onPress={handleUsernamePress}

@@ -80,7 +80,7 @@ function NotificationBottomSheetUserListInner({
   }
 
   return (
-    <View className="flex-1 bg-white dark:bg-black">
+    <View className="flex-1 bg-white dark:bg-black-900">
       <UserFollowList userRefs={users} queryRef={query} onUserPress={onUserPress} />
     </View>
   );

@@ -211,7 +211,7 @@ const AllGalleriesWrapper = styled(HStack)`
     background-color: ${colors.faint};
 
     ${TitleXS} {
-      color: ${colors.offBlack};
+      color: ${colors.black['800']};
     }
   }
 `;

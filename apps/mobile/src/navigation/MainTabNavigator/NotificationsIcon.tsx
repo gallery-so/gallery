@@ -6,8 +6,8 @@ import colors from '~/shared/theme/colors';
 export const NotificationsIcon = (props: SvgProps) => {
   const { colorScheme } = useColorScheme();
 
-  const strokeColor = colorScheme === 'dark' ? colors.white : colors.offBlack;
-  const fillColor = colorScheme === 'light' ? colors.white : colors.offBlack;
+  const strokeColor = colorScheme === 'dark' ? colors.white : colors.black['800'];
+  const fillColor = colorScheme === 'light' ? colors.white : colors.black['800'];
 
   return (
     <Svg width={25} height={24} fill="none" {...props}>

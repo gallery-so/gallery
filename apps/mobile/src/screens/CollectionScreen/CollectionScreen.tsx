@@ -73,7 +73,7 @@ function CollectionScreenInner() {
   const { top } = useSafeAreaPadding();
 
   return (
-    <View className="flex flex-col flex-1 bg-white dark:bg-black" style={{ paddingTop: top }}>
+    <View className="flex flex-col flex-1 bg-white dark:bg-black-900" style={{ paddingTop: top }}>
       <View className="px-4 pb-4">
         <GalleryProfileNavBar
           shouldShowBackButton

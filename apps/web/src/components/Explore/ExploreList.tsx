@@ -115,7 +115,7 @@ const SlideDot = styled.div<{ active: boolean }>`
   ${({ active }) =>
     active
       ? css`
-          background-color: ${colors.offBlack};
+          background-color: ${colors.black['800']};
           transform: scale(1.2);
         `
       : css`

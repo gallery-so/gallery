@@ -55,7 +55,7 @@ const StyledBigInput = styled.input<{ variant: Props['variant'] }>`
   letter-spacing: -0.03em;
   border: 0;
   background: ${colors.faint};
-  color: ${colors.offBlack};
+  color: ${colors.black['800']};
 
   ::placeholder {
     opacity: 0.5;

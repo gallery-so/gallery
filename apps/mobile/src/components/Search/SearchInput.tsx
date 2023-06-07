@@ -72,13 +72,13 @@ export function SearchInput({ inputRef, setFilter, value, onChange, style, ...pr
     <View className="flex flex-row items-center space-x-[0px]">
       <TextInput
         ref={inputRef}
-        className="text-offBlack dark:text-white h-10 flex-1 text-xxl"
+        className="text-black-800 dark:text-white h-10 flex-1 text-xxl"
         value={localKeyword}
         returnKeyType="done"
         onChangeText={handleChange}
         placeholder="Search for anything..."
         placeholderTextColor={colors.metal}
-        selectionColor={colorScheme === 'dark' ? colors.offWhite : colors.offBlack}
+        selectionColor={colorScheme === 'dark' ? colors.offWhite : colors.black['800']}
         autoCapitalize="none"
         autoCorrect={false}
         autoComplete="off"

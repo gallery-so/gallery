@@ -7,7 +7,7 @@ export function HomeScreen() {
   const { top } = useSafeAreaInsets();
 
   return (
-    <View className="flex-1 bg-white dark:bg-black" style={{ paddingTop: top }}>
+    <View className="flex-1 bg-white dark:bg-black-900" style={{ paddingTop: top }}>
       <FeedTabNavigator />
     </View>
   );

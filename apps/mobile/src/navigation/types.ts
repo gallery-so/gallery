@@ -8,6 +8,7 @@ export type RootStackNavigatorParamList = {
   UserSuggestionList: { onUserPress: (username: string) => void };
   TwitterSuggestionList: { onUserPress: (username: string) => void };
   ProfileQRCode: { username: string };
+  DesignSystemButtons: undefined;
 };
 
 export type MainTabStackNavigatorParamList = {

@@ -29,7 +29,7 @@ const darkModeMarkdownStyles = {
 
 const lightModeMarkdownStyles = {
   body: {
-    color: colors.offBlack,
+    color: colors.black['800'],
   },
 };
 

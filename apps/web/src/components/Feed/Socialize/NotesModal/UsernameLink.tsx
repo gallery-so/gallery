@@ -21,6 +21,6 @@ export function UsernameLink({ username }: UsernameLinkProps) {
 }
 
 const UsernameLinkWrapper = styled.a`
-  color: ${colors.offBlack};
+  color: ${colors.black['800']};
   text-decoration: none;
 `;

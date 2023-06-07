@@ -32,7 +32,7 @@ function NewTooltip(
 }
 
 export const StyledTooltip = styled.div`
-  background: ${colors.offBlack};
+  background: ${colors.black['800']};
   border-radius: 1px;
   padding: 2px 4px;
   pointer-events: none;

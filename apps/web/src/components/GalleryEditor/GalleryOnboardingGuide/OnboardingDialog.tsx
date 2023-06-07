@@ -161,7 +161,7 @@ const StyledConfirmation = styled(motion.div)`
   background-color: ${colors.white};
   padding: 16px;
 
-  border: 1px solid ${colors.offBlack};
+  border: 1px solid ${colors.black['800']};
 `;
 
 const StyledTextWrapper = styled.div`

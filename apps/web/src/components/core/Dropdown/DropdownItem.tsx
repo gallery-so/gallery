@@ -17,7 +17,7 @@ export const DropdownItem = styled.div<{ disabled?: boolean }>`
   white-space: nowrap;
 
   &:hover {
-    color: ${({ disabled }) => (disabled ? '#c2c2c2' : colors.offBlack)};
+    color: ${({ disabled }) => (disabled ? '#c2c2c2' : colors.black['800'])};
     background-color: ${({ disabled }) => (disabled ? colors.faint : colors.faint)};
   }
 `;

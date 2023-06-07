@@ -19,12 +19,12 @@ export const NavbarLink = styled(Link).attrs({ legacyBehavior: false })<{ active
 
   margin: 0;
 
-  color: ${({ active }) => (active ? colors.offBlack : colors.metal)};
+  color: ${({ active }) => (active ? colors.black['800'] : colors.metal)};
 
   cursor: pointer;
   text-decoration: none;
 
   ${BaseS} {
-    color: ${({ active }) => (active ? colors.offBlack : colors.metal)};
+    color: ${({ active }) => (active ? colors.black['800'] : colors.metal)};
   }
 `;

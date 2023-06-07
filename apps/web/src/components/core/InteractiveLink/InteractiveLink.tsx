@@ -154,6 +154,6 @@ export const StyledAnchor = styled.a<{ disabled?: boolean; inheritStyles?: boole
   cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
   &:hover {
     text-decoration: none;
-    color: ${colors.offBlack};
+    color: ${colors.black['800']};
   }
 `;

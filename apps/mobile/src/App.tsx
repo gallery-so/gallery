@@ -117,7 +117,7 @@ export default function App() {
   }
 
   return (
-    <View className="flex-1 bg-white dark:bg-black">
+    <View className="flex-1 bg-white dark:bg-black-900">
       <RelayEnvironmentProvider environment={relayEnvironment}>
         <SWRConfig>
           <Suspense fallback={<LoadingView />}>

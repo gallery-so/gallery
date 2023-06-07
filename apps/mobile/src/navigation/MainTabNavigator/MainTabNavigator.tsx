@@ -39,7 +39,7 @@ function AccountScreenInner() {
 
 function AccountScreen() {
   return (
-    <Suspense fallback={<ProfileViewFallback />}>
+    <Suspense fallback={<ProfileViewFallback shouldShowBackButton={false} />}>
       <AccountScreenInner />
     </Suspense>
   );

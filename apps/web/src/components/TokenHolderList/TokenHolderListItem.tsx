@@ -151,7 +151,7 @@ const StyledOwner = styled.div`
   }
 
   &:hover {
-    color: ${colors.offBlack};
+    color: ${colors.black['800']};
   }
 `;
 
@@ -161,9 +161,9 @@ const StyledUsernameWrapper = styled.div`
 
 const StyledGalleryLink = styled(GalleryLink)<{ fadeUsernames: boolean }>`
   transition: color 0.15s ease-in-out;
-  color: ${({ fadeUsernames }) => (fadeUsernames ? colors.porcelain : colors.offBlack)};
+  color: ${({ fadeUsernames }) => (fadeUsernames ? colors.porcelain : colors.black['800'])};
   &:hover {
-    color: ${colors.offBlack};
+    color: ${colors.black['800']};
   }
 `;
 

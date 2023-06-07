@@ -328,7 +328,7 @@ const Textarea = styled(BaseM).attrs({
 
   :focus {
     outline: none;
-    color: ${colors.offBlack};
+    color: ${colors.black['800']};
   }
 `;
 
@@ -340,7 +340,7 @@ const Wrapper = styled.div`
     width: 375px;
   }
 
-  border: 1px solid ${colors.offBlack};
+  border: 1px solid ${colors.black['800']};
 
   background: ${colors.white};
 

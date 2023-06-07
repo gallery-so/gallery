@@ -5,7 +5,7 @@ type Props = {
   color?: ColorType;
 };
 
-export default function LogoBracketRight({ className, color = colors.offBlack }: Props) {
+export default function LogoBracketRight({ className, color = colors.black['800'] }: Props) {
   return (
     <svg
       className={className}

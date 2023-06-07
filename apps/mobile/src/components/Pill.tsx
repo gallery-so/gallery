@@ -12,7 +12,7 @@ export function Pill({ active = false, children, style }: Props) {
     <View
       style={style}
       className={`dark:border-shadow rounded-full border py-1 px-3 ${
-        active ? 'border-offBlack dark:border-porcelain' : 'border-porcelain dark:border-offBlack'
+        active ? 'border-black-800 dark:border-porcelain' : 'border-porcelain dark:border-black-800'
       }`}
     >
       {children}

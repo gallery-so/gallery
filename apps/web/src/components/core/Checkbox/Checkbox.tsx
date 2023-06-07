@@ -41,7 +41,7 @@ const StyledCheckbox = styled.div`
 `;
 
 const StyledCheckboxContainer = styled.div<{ active: boolean }>`
-  border: 1px solid ${({ active }) => (active ? colors.activeBlue : colors.offBlack)};
+  border: 1px solid ${({ active }) => (active ? colors.activeBlue : colors.black['800'])};
   height: 12px;
   width: 12px;
   display: flex;

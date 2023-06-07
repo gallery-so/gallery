@@ -46,7 +46,7 @@ export function GalleryVirtualizedRow({ item, isOnCollectionScreen }: Props) {
     };
 
     return (
-      <View className="flex flex-col bg-white dark:bg-black pt-2 pb-1 px-4">
+      <View className="flex flex-col bg-white dark:bg-black-900 pt-2 pb-1 px-4">
         <GalleryTouchableOpacity
           onPress={handlePress}
           eventElementId="Feed Event Descriptor"
@@ -65,7 +65,7 @@ export function GalleryVirtualizedRow({ item, isOnCollectionScreen }: Props) {
     }
 
     return (
-      <View className="flex flex-col bg-white dark:bg-black px-4">
+      <View className="flex flex-col bg-white dark:bg-black-900 px-4">
         <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
           <Markdown>{item.collectorsNote}</Markdown>
         </Typography>

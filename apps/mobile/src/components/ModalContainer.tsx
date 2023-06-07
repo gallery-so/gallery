@@ -17,7 +17,10 @@ export function ModalContainer({ children, scrollable = false, withBackButton = 
   const navigation = useNavigation();
 
   return (
-    <View className="flex h-full flex-col bg-white dark:bg-black" style={{ paddingBottom: bottom }}>
+    <View
+      className="flex h-full flex-col bg-white dark:bg-black-900"
+      style={{ paddingBottom: bottom }}
+    >
       <View className="space-y-2 py-3">
         <View className="h-1 w-20 self-center bg-[#D9D9D9] px-4" />
 

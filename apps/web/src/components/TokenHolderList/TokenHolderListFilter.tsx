@@ -54,10 +54,10 @@ const StyledFilterButton = styled.button<TextProps>`
   width: 48px;
   height: 48px;
 
-  color: ${(props) => (props.selected ? colors.offBlack : colors.porcelain)};
+  color: ${(props) => (props.selected ? colors.black['800'] : colors.porcelain)};
 
   &:hover {
-    color: ${colors.offBlack} !important;
+    color: ${colors.black['800']} !important;
   }
 
   @media only screen and ${breakpoints.tablet} {

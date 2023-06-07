@@ -7,7 +7,7 @@ import colors from '~/shared/theme/colors';
 export function SettingsIcon(props: SvgProps) {
   const { colorScheme } = useColorScheme();
 
-  const strokeColor = colorScheme === 'dark' ? colors.white : colors.offBlack;
+  const strokeColor = colorScheme === 'dark' ? colors.white : colors.black['800'];
 
   return (
     <Svg width={25} height={24} viewBox="0 0 25 24" fill="none" {...props}>

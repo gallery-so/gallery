@@ -74,7 +74,7 @@ const StyledIconContainer = styled(IconContainer)<{
   isActive: boolean;
   showBorderByDefault: boolean;
 }>`
-  ${({ isActive }) => isActive && `border: 1px solid ${colors.offBlack}`};
+  ${({ isActive }) => isActive && `border: 1px solid ${colors.black['800']}`};
   ${({ showBorderByDefault }) => showBorderByDefault && `border: 1px solid ${colors.porcelain}`};
 `;
 

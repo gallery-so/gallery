@@ -33,7 +33,7 @@ export default function Tooltip({
 }
 
 export const StyledTooltip = styled.div`
-  background: ${colors.offBlack};
+  background: ${colors.black['800']};
   border-radius: 1px;
   padding: 2px 4px;
   position: absolute;

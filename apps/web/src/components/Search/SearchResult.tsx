@@ -82,7 +82,7 @@ export default function SearchResult({ name, description, path, type }: Props) {
 }
 
 const StyledSearchResult = styled(Link)<LinkProps & { className: string }>`
-  color: ${colors.offBlack};
+  color: ${colors.black['800']};
   padding: 16px 12px;
   cursor: pointer;
   text-decoration: none;

@@ -36,6 +36,6 @@ export default function welcomeDoormat() {
                   gallery.so/careers                  
                                                       
 `,
-    `background: ${colors.offBlack}; color: ${colors.offWhite}`
+    `background: ${colors.black['800']}; color: ${colors.offWhite}`
   );
 }

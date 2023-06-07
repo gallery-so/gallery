@@ -11,7 +11,7 @@ export function FadedInput({ value, onChange, style, ...props }: Props) {
 
   return (
     <View
-      className="bg-faint dark:bg-graphite flex flex-col justify-center py-1.5 px-3"
+      className="bg-faint dark:bg-black-500 flex flex-col justify-center py-1.5 px-3"
       style={style}
     >
       <TextInput
@@ -19,7 +19,7 @@ export function FadedInput({ value, onChange, style, ...props }: Props) {
           fontSize: 14,
         }}
         className="dark:text-white"
-        selectionColor={colorScheme === 'dark' ? colors.offWhite : colors.offBlack}
+        selectionColor={colorScheme === 'dark' ? colors.offWhite : colors.black['800']}
         textAlignVertical="center"
         value={value}
         {...props}

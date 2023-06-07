@@ -343,7 +343,7 @@ const StyledSecondaryLink = styled.a`
   display: flex;
   justify-content: center;
   align-items: center;
-  background: ${colors.offBlack};
+  background: ${colors.black['800']};
   cursor: pointer;
   height: 40px;
   text-decoration: none;

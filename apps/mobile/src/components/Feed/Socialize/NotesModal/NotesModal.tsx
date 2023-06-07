@@ -82,7 +82,7 @@ export function NotesModal({ eventRef, queryRef, bottomSheetRef }: Props) {
         handleComponent={Handle}
       >
         <Animated.View
-          className="flex justify-between flex-1 bg-white dark:bg-black pt-2"
+          className="flex justify-between flex-1 bg-white dark:bg-black-900 pt-2"
           style={paddingStyle}
         >
           <View className="pt-2 flex-1">
@@ -90,7 +90,7 @@ export function NotesModal({ eventRef, queryRef, bottomSheetRef }: Props) {
           </View>
           <View
             className={`h-2 border-t ${
-              colorScheme === 'dark' ? 'bg-black border-offBlack' : 'bg-white border-porcelain'
+              colorScheme === 'dark' ? 'bg-black border-black-800' : 'bg-white border-porcelain'
             }
             `}
           />

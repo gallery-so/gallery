@@ -30,10 +30,10 @@ const COLOR_STATES: ColorStates = {
     disabledForeground: colors.porcelain,
 
     idleBackground: 'transparent',
-    idleForeground: colors.offBlack,
+    idleForeground: colors.black['800'],
 
     hoverBackground: colors.porcelain,
-    hoverForeground: colors.offBlack,
+    hoverForeground: colors.black['800'],
 
     activeBackground: 'transparent',
     activeForeground: colors.porcelain,
@@ -43,10 +43,10 @@ const COLOR_STATES: ColorStates = {
     disabledForeground: colors.metal,
 
     idleBackground: 'transparent',
-    idleForeground: colors.offBlack,
+    idleForeground: colors.black['800'],
 
     hoverBackground: colors.faint,
-    hoverForeground: colors.offBlack,
+    hoverForeground: colors.black['800'],
 
     activeBackground: 'transparent',
     activeForeground: colors.porcelain,
@@ -59,10 +59,10 @@ const COLOR_STATES: ColorStates = {
     idleForeground: colors.white,
 
     hoverBackground: colors.faint,
-    hoverForeground: colors.offBlack,
+    hoverForeground: colors.black['800'],
 
     activeBackground: 'transparent',
-    activeForeground: colors.offBlack,
+    activeForeground: colors.black['800'],
   },
 };
 

@@ -29,7 +29,7 @@ export function AdmireIcon({ active = false, style, height = 28, ...props }: Pro
       return blueToDisplay;
     }
 
-    return colorScheme === 'dark' ? colors.white : colors.offBlack;
+    return colorScheme === 'dark' ? colors.white : colors.black['800'];
   }, [active, blueToDisplay, colorScheme]);
 
   const fillColor = useMemo(() => {

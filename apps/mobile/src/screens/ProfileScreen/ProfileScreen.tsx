@@ -69,8 +69,8 @@ function ProfileScreenInner() {
 
 export function ProfileScreen() {
   return (
-    <View className="flex-1 bg-white dark:bg-black">
-      <Suspense fallback={<ProfileViewFallback />}>
+    <View className="flex-1 bg-white dark:bg-black-900">
+      <Suspense fallback={<ProfileViewFallback shouldShowBackButton />}>
         <ProfileScreenInner />
       </Suspense>
     </View>
