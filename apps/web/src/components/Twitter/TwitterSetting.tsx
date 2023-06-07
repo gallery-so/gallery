@@ -15,8 +15,6 @@ import { Button } from '../core/Button/Button';
 import InteractiveLink from '../core/InteractiveLink/InteractiveLink';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM } from '../core/Text/Text';
-import Toggle from '../core/Toggle/Toggle';
-import useUpdateTwitterDisplay from './useUpdateTwitterDisplay';
 
 type Props = {
   queryRef: TwitterSettingFragment$key;
@@ -34,19 +32,14 @@ export default function TwitterSetting({ queryRef }: Props) {
             socialAccounts {
               twitter {
                 username
-                display
               }
             }
           }
         }
-
-        ...useUpdateTwitterDisplayFragment
       }
     `,
     queryRef
   );
-
-  const updateTwitterDisplay = useUpdateTwitterDisplay(query);
 
   const [disconnectTwitter] = usePromisifiedMutation<TwitterSettingDisconnectMutation>(graphql`
     mutation TwitterSettingDisconnectMutation($input: SocialAccountType!) {
@@ -59,7 +52,6 @@ export default function TwitterSetting({ queryRef }: Props) {
               socialAccounts {
                 twitter {
                   username
-                  display
                 }
               }
             }
@@ -89,14 +81,6 @@ export default function TwitterSetting({ queryRef }: Props) {
     }
   }, [disconnectTwitter, pushToast, query.viewer?.user?.username, reportError]);
 
-  const handleUpdateTwitterDisplay = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      const displayed = event.target.checked;
-      updateTwitterDisplay(displayed);
-    },
-    [updateTwitterDisplay]
-  );
-
   const twitterAccount = query.viewer?.socialAccounts?.twitter;
 
   if (twitterAccount) {
@@ -113,17 +97,6 @@ export default function TwitterSetting({ queryRef }: Props) {
           <Button onClick={handleDisconnectTwitter} variant="secondary">
             DISCONNECT
           </Button>
-        </HStack>
-        <StyledDivider />
-        <HStack align="center" justify="space-between">
-          <BaseM>
-            <strong>Display on profile</strong>
-          </BaseM>
-
-          <Toggle
-            checked={twitterAccount?.display || false}
-            onChange={handleUpdateTwitterDisplay}
-          />
         </HStack>
       </StyledTwitterSettingContainer>
     );
@@ -147,12 +120,6 @@ export default function TwitterSetting({ queryRef }: Props) {
 const StyledTwitterSettingContainer = styled(VStack)`
   padding: 12px;
   background-color: ${colors.faint};
-`;
-
-const StyledDivider = styled.div`
-  height: 1px;
-  width: 100%;
-  background-color: ${colors.porcelain};
 `;
 
 const StyledConnectLink = styled(InteractiveLink)`
