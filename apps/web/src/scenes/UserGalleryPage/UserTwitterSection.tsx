@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import IconContainer from '~/components/core/IconContainer';
 import { HStack } from '~/components/core/Spacer/Stack';
+import transitions from '~/components/core/transitions';
 import { ClickablePill } from '~/components/Pill';
 import { TWITTER_AUTH_URL } from '~/constants/twitter';
 import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
@@ -109,4 +110,9 @@ export default function UserTwitterSection({ queryRef, userRef }: Props) {
 
 const StyledActionContainer = styled(HStack)`
   opacity: 0;
+
+  &:hover {
+    opacity: 1;
+    transition: opacity ${transitions.cubic};
+  }
 `;
