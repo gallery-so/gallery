@@ -6,16 +6,11 @@ import IconContainer from '~/components/core/IconContainer';
 import { HStack } from '~/components/core/Spacer/Stack';
 import transitions from '~/components/core/transitions';
 import { ClickablePill } from '~/components/Pill';
-import { NewTooltip } from '~/components/Tooltip/NewTooltip';
-import { useTooltipHover } from '~/components/Tooltip/useTooltipHover';
-import useUpdateTwitterDisplay from '~/components/Twitter/useUpdateTwitterDisplay';
 import { TWITTER_AUTH_URL } from '~/constants/twitter';
 import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 import { UserTwitterSectionFragment$key } from '~/generated/UserTwitterSectionFragment.graphql';
 import { UserTwitterSectionQueryFragment$key } from '~/generated/UserTwitterSectionQueryFragment.graphql';
 import { EditPencilIcon } from '~/icons/EditPencilIcon';
-import GlobeIcon from '~/icons/GlobeIcon';
-import LockIcon from '~/icons/LockIcon';
 import TwitterIcon from '~/icons/TwitterIcon';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 
@@ -34,7 +29,6 @@ export default function UserTwitterSection({ queryRef, userRef }: Props) {
         socialAccounts {
           twitter {
             username
-            display
           }
         }
       }
@@ -47,18 +41,6 @@ export default function UserTwitterSection({ queryRef, userRef }: Props) {
       fragment UserTwitterSectionQueryFragment on Query {
         ...SettingsFragment
         ...useLoggedInUserIdFragment
-        ...useUpdateTwitterDisplayFragment
-
-        viewer {
-          ... on Viewer {
-            socialAccounts {
-              twitter {
-                username
-                display
-              }
-            }
-          }
-        }
       }
     `,
     queryRef
@@ -67,18 +49,9 @@ export default function UserTwitterSection({ queryRef, userRef }: Props) {
   const loggedInUserId = useLoggedInUserId(query);
   const isAuthenticatedUser = loggedInUserId === user.id;
 
-  const updateTwitterDisplay = useUpdateTwitterDisplay(query);
-
-  const { floating, reference, getFloatingProps, getReferenceProps, floatingStyle } =
-    useTooltipHover({
-      placement: 'top',
-    });
-
   const { showDrawer } = useDrawerActions();
 
-  const twitterAccount = user.socialAccounts?.twitter;
-
-  const userLoggedInTwitterAccount = query.viewer?.socialAccounts?.twitter;
+  const userTwitterAccount = user.socialAccounts?.twitter;
 
   const handleEditButtonClick = useCallback<MouseEventHandler>(
     (event) => {
@@ -90,55 +63,10 @@ export default function UserTwitterSection({ queryRef, userRef }: Props) {
     [query, showDrawer]
   );
 
-  const handleUpdateTwitterDisplay = useCallback(() => {
-    const display = !userLoggedInTwitterAccount?.display;
-    updateTwitterDisplay(display);
-  }, [updateTwitterDisplay, userLoggedInTwitterAccount?.display]);
+  const twitterUrl = `https://twitter.com/${userTwitterAccount?.username}`;
 
-  const twitterUrl = `https://twitter.com/${twitterAccount?.username}`;
-
-  // if owner of the gallery is logged in
-  if (isAuthenticatedUser && userLoggedInTwitterAccount) {
-    return (
-      <StyledTwitterContainer align="flex-start" gap={8}>
-        <ClickablePill href={twitterUrl}>
-          <HStack gap={5} align="center">
-            <TwitterIcon />
-            <strong>{userLoggedInTwitterAccount?.username}</strong>
-          </HStack>
-        </ClickablePill>
-
-        <StyledActionContainer>
-          <NewTooltip
-            {...getFloatingProps()}
-            style={floatingStyle}
-            ref={floating}
-            text={
-              userLoggedInTwitterAccount?.display ? 'Visible to everyone' : 'Visible to only me'
-            }
-          />
-          <IconContainer
-            onClick={handleUpdateTwitterDisplay}
-            size="md"
-            variant="default"
-            icon={userLoggedInTwitterAccount?.display ? <GlobeIcon /> : <LockIcon />}
-            ref={reference}
-            {...getReferenceProps()}
-          />
-          {isAuthenticatedUser && (
-            <IconContainer
-              onClick={handleEditButtonClick}
-              size="md"
-              variant="default"
-              icon={<EditPencilIcon />}
-            />
-          )}
-        </StyledActionContainer>
-      </StyledTwitterContainer>
-    );
-  }
-
-  if (isAuthenticatedUser && !userLoggedInTwitterAccount) {
+  // logged in users without twitter connected should get the upsell button
+  if (isAuthenticatedUser && !userTwitterAccount) {
     return (
       <HStack align="flex-start" gap={8}>
         <ClickablePill href={TWITTER_AUTH_URL} target="_self">
@@ -151,33 +79,40 @@ export default function UserTwitterSection({ queryRef, userRef }: Props) {
     );
   }
 
-  // Other users
-  if (!twitterAccount?.display) {
+  // twitter account is not connected
+  if (!userTwitterAccount) {
     return null;
   }
 
+  // twitter account is connected
   return (
     <HStack align="flex-start" gap={8}>
       <ClickablePill href={twitterUrl}>
         <HStack gap={5} align="center">
           <TwitterIcon />
-          <strong>{twitterAccount.username}</strong>
+          <strong>{userTwitterAccount.username}</strong>
         </HStack>
       </ClickablePill>
+
+      {isAuthenticatedUser && (
+        <StyledActionContainer>
+          <IconContainer
+            onClick={handleEditButtonClick}
+            size="md"
+            variant="default"
+            icon={<EditPencilIcon />}
+          />
+        </StyledActionContainer>
+      )}
     </HStack>
   );
 }
 
 const StyledActionContainer = styled(HStack)`
   opacity: 0;
-`;
 
-const StyledTwitterContainer = styled(HStack)`
-  max-width: max-content;
-
-  &:hover ${StyledActionContainer} {
+  &:hover {
     opacity: 1;
-
     transition: opacity ${transitions.cubic};
   }
 `;
