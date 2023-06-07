@@ -11,7 +11,6 @@ import { GalleryTouchableOpacity } from './GalleryTouchableOpacity';
 const markdownStyles = {
   paragraph: {
     marginTop: 0,
-    marginBottom: 0,
   },
   body: {
     fontSize: 14,
@@ -40,7 +39,7 @@ type GalleryMarkdownProps = PropsWithChildren<{
   style?: StyleProp<unknown>;
 }>;
 
-const markdownItOptions = MarkdownIt({ typographer: true, linkify: false });
+const markdownItOptions = MarkdownIt({ typographer: true, linkify: false }).disable(['lheading']);
 
 export function Markdown({
   children,

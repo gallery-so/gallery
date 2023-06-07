@@ -9,6 +9,7 @@ import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { TokensAddedToCollectionFeedEventFragment$key } from '~/generated/TokensAddedToCollectionFeedEventFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
+import unescape from '~/shared/utils/unescape';
 
 import { Typography } from '../../Typography';
 import { EventTokenGrid } from '../EventTokenGrid';
@@ -60,6 +61,8 @@ export function TokensAddedToCollectionFeedEvent({
     );
   }, [eventData.collection?.tokens, eventData.isPreFeed, eventData.newTokens]);
 
+  const collectionName = unescape(eventData.collection?.name ?? '');
+
   return (
     <View className="flex flex-1 flex-col">
       <FeedEventCarouselCellHeader>
@@ -77,7 +80,7 @@ export function TokensAddedToCollectionFeedEvent({
             className="text-sm"
             font={{ family: 'ABCDiatype', weight: 'Bold' }}
           >
-            {eventData.collection?.name || 'their collection'}
+            {collectionName || 'their collection'}
           </Typography>
         </GalleryTouchableOpacity>
       </FeedEventCarouselCellHeader>

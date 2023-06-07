@@ -46,8 +46,12 @@ export default function OpenGraphUserPage() {
 
   const { user } = queryResponse;
 
+  const nonEmptyGalleries = user.galleries?.filter((gallery) =>
+    gallery?.collections?.some((collection) => collection?.tokens?.length)
+  );
+
   const imageUrls = removeNullValues(
-    user.galleries?.[0]?.collections
+    nonEmptyGalleries?.[0]?.collections
       ?.filter((collection) => !collection?.hidden)
       .flatMap((collection) => collection?.tokens)
       .map((galleryToken) => {
