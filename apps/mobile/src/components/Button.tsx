@@ -62,12 +62,12 @@ const buttonVariants: ButtonVariants = {
     },
     danger: {
       inactive: {
-        containerClassName: 'bg-transparent border border-red',
+        containerClassName: 'bg-white border border-red',
         textClassName: 'text-red',
         loadingColor: colors.red,
       },
       active: {
-        containerClassName: 'bg-transparent border border-red',
+        containerClassName: 'bg-faint border border-red',
         textClassName: 'text-red',
         loadingColor: colors.red,
       },
@@ -100,12 +100,12 @@ const buttonVariants: ButtonVariants = {
     },
     danger: {
       inactive: {
-        containerClassName: 'bg-transparent border border-red',
+        containerClassName: 'bg-black-900 border border-red',
         textClassName: 'text-red',
         loadingColor: colors.red,
       },
       active: {
-        containerClassName: 'bg-transparent border border-red',
+        containerClassName: 'bg-black-700 border border-red',
         textClassName: 'text-red',
         loadingColor: colors.red,
       },
