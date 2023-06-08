@@ -9,7 +9,6 @@ import { DropdownItem } from '~/components/core/Dropdown/DropdownItem';
 import { DropdownLink } from '~/components/core/Dropdown/DropdownLink';
 import { DropdownSection } from '~/components/core/Dropdown/DropdownSection';
 import { HStack } from '~/components/core/Spacer/Stack';
-import { TitleXS } from '~/components/core/Text/Text';
 import { EditLink } from '~/contexts/globalLayout/GlobalNavbar/CollectionNavbar/EditLink';
 import { SignInButton } from '~/contexts/globalLayout/GlobalNavbar/SignInButton';
 import { useModalActions } from '~/contexts/modal/ModalContext';
@@ -17,7 +16,6 @@ import { CollectionRightContentFragment$key } from '~/generated/CollectionRightC
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import EditUserInfoModal from '~/scenes/UserGalleryPage/EditUserInfoModal';
 import LinkButton from '~/scenes/UserGalleryPage/LinkButton';
-import colors from '~/shared/theme/colors';
 
 import { SignUpButton } from '../SignUpButton';
 
@@ -138,14 +136,6 @@ export function CollectionRightContent({
         )}
       </HStack>
     );
-  } else if (shouldShowEditButton) {
-    return (
-      <EditButtonContainer onClick={handleEditClick}>
-        <TitleXS>EDIT</TitleXS>
-
-        {dropdown}
-      </EditButtonContainer>
-    );
   } else if (query.viewer?.__typename !== 'Viewer') {
     return (
       <HStack gap={8} align="center">
@@ -161,20 +151,4 @@ export function CollectionRightContent({
 
 const EditLinkWrapper = styled.div`
   position: relative;
-`;
-
-const EditButtonContainer = styled.div`
-  position: relative;
-
-  padding: 8px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-decoration: none;
-
-  cursor: pointer;
-
-  :hover {
-    background-color: ${colors.faint};
-  }
 `;

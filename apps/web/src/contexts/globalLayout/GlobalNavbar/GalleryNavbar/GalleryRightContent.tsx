@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Route } from 'nextjs-routes';
 import { useCallback, useMemo, useState } from 'react';
@@ -12,7 +11,6 @@ import { DropdownItem } from '~/components/core/Dropdown/DropdownItem';
 import { DropdownLink } from '~/components/core/Dropdown/DropdownLink';
 import { DropdownSection } from '~/components/core/Dropdown/DropdownSection';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
-import { TitleXS } from '~/components/core/Text/Text';
 import useCreateGallery from '~/components/MultiGallery/useCreateGallery';
 import { EditLink } from '~/contexts/globalLayout/GlobalNavbar/CollectionNavbar/EditLink';
 import { SignInButton } from '~/contexts/globalLayout/GlobalNavbar/SignInButton';
@@ -23,7 +21,6 @@ import { GalleryRightContentGalleryFragment$key } from '~/generated/GalleryRight
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import EditUserInfoModal from '~/scenes/UserGalleryPage/EditUserInfoModal';
 import LinkButton from '~/scenes/UserGalleryPage/LinkButton';
-import colors from '~/shared/theme/colors';
 
 import { SignUpButton } from '../SignUpButton';
 import QRCodeButton from './QRCodeButton';
@@ -176,19 +173,7 @@ export function GalleryRightContent({ queryRef, galleryRef, username }: GalleryR
     );
   }
 
-  if (shouldShowEditButton) {
-    return (
-      <HStack gap={12}>
-        {shouldShowEditButton && editGalleryUrl && (
-          <EditButtonContainer>
-            <Link href={editGalleryUrl} legacyBehavior>
-              <TitleXS>EDIT</TitleXS>
-            </Link>
-          </EditButtonContainer>
-        )}
-      </HStack>
-    );
-  } else if (query.viewer?.__typename !== 'Viewer') {
+  if (query.viewer?.__typename !== 'Viewer') {
     return (
       <HStack gap={8} align="center">
         <SignInButton />
@@ -203,16 +188,4 @@ export function GalleryRightContent({ queryRef, galleryRef, username }: GalleryR
 
 const EditLinkWrapper = styled.div`
   position: relative;
-`;
-
-const EditButtonContainer = styled.div.attrs({ role: 'button' })`
-  position: relative;
-  padding: 8px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  :hover {
-    background-color: ${colors.faint};
-  }
 `;
