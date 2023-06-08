@@ -61,7 +61,16 @@ export function NftDetailAssetCacheSwapper({ children, style, cachedPreviewAsset
     <View style={[style, { position: 'relative' }]}>
       <View
         onLayout={assetSizer.handleViewLayout}
-        style={[assetSizer.finalAssetDimensions, { width: '100%', height: maxHeight }]}
+        style={[
+          assetSizer.finalAssetDimensions,
+          {
+            width: '100%',
+
+            // The goal here is to ensure that the preview doesn't affect the height
+            // after the detail asset has loaded and the preview asset is gone.
+            height: fullyRemoved ? detailLayoutHeight ?? 0 : maxHeight,
+          },
+        ]}
       >
         {fullyRemoved ? null : (
           <NftPreviewAsset
