@@ -1,11 +1,15 @@
-import React, { useMemo, useState } from 'react';
+import React, { PropsWithChildren, useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import { Button, ButtonLink } from '~/components/core/Button/Button';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleM } from '~/components/core/Text/Text';
+import { RawProfilePicture } from '~/components/RawProfilePicture';
 import icons from '~/icons/index';
 import colors from '~/shared/theme/colors';
+
+const avatarUrl =
+  'https://s3-alpha-sig.figma.com/img/9a4f/b777/fe4c335512ca4297ad4fd60554e66f18?Expires=1687132800&Signature=I3Q4ovLmvhWUw7EIsyaXhgv6T7hQiKdJHGNL~6c37Y7WLA0pAReuVxFyedUP3RDKemx~IqEg4fNSnqMJl0Y1h7UeQDGIN8Pk9tPn84DW0rHM5DA7himn6yBbbJE0EkEERnmMA4SjQBDoM4axl4-nFVkq~6jNXwjP2ikp7-4ECO-ZOqS0IB8Z-w2ej1bkh2OU6dLZCw4rap2O6zo0egtH6nhHVXMZQnxfHbg2yZzvk3mJflP4vh5g8bFV478Ixxh7gLK-JZV5HvxjKUusvmcWomQpMNE-WasMjp4DapBQijhAyBjl7h03L09Rc0Z2uLRZwt0OoliaIBdzTh8m17NNtw__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4';
 
 const PendingButton = (props: React.ComponentProps<typeof Button>) => {
   const [pending, setPending] = useState(false);
@@ -95,6 +99,70 @@ export default function DesignPage() {
           </ButtonLink>
         </Examples>
       </Section>
+
+      <Section>
+        <TitleM>Profile Pictures</TitleM>
+        <Examples wrap="wrap">
+          <ProfilePictureSection>
+            <RawProfilePicture letter="F" hasInset size="sm" />
+            <RawProfilePicture letter="F" hasInset size="md" />
+            <RawProfilePicture letter="F" hasInset size="lg" />
+            <RawProfilePicture letter="F" hasInset size="xl" />
+          </ProfilePictureSection>
+
+          <ProfilePictureSection>
+            <RawProfilePicture letter="F" size="sm" />
+            <RawProfilePicture letter="F" size="md" />
+            <RawProfilePicture letter="F" size="lg" />
+            <RawProfilePicture letter="F" size="xl" />
+          </ProfilePictureSection>
+
+          <ProfilePictureSection>
+            <RawProfilePicture imageUrl={avatarUrl} size="sm" />
+            <RawProfilePicture imageUrl={avatarUrl} size="md" />
+            <RawProfilePicture imageUrl={avatarUrl} size="lg" />
+            <RawProfilePicture imageUrl={avatarUrl} size="xl" />
+          </ProfilePictureSection>
+
+          <ProfilePictureSection>
+            <RawProfilePicture hasInset imageUrl={avatarUrl} size="sm" />
+            <RawProfilePicture hasInset imageUrl={avatarUrl} size="md" />
+            <RawProfilePicture hasInset imageUrl={avatarUrl} size="lg" />
+            <RawProfilePicture hasInset imageUrl={avatarUrl} size="xl" />
+          </ProfilePictureSection>
+        </Examples>
+
+        <Examples wrap="wrap">
+          <ProfilePictureSection>
+            <RawProfilePicture isEditable letter="F" hasInset size="sm" />
+            <RawProfilePicture isEditable letter="F" hasInset size="md" />
+            <RawProfilePicture isEditable letter="F" hasInset size="lg" />
+            <RawProfilePicture isEditable letter="F" hasInset size="xl" />
+          </ProfilePictureSection>
+
+          <ProfilePictureSection>
+            <RawProfilePicture isEditable letter="F" size="sm" />
+            <RawProfilePicture isEditable letter="F" size="md" />
+            <RawProfilePicture isEditable letter="F" size="lg" />
+            <RawProfilePicture isEditable letter="F" size="xl" />
+          </ProfilePictureSection>
+
+          <ProfilePictureSection>
+            <RawProfilePicture isEditable imageUrl={avatarUrl} size="sm" />
+            <RawProfilePicture isEditable imageUrl={avatarUrl} size="md" />
+            <RawProfilePicture isEditable imageUrl={avatarUrl} size="lg" />
+            <RawProfilePicture isEditable imageUrl={avatarUrl} size="xl" />
+          </ProfilePictureSection>
+
+          <ProfilePictureSection>
+            <RawProfilePicture isEditable hasInset imageUrl={avatarUrl} size="sm" />
+            <RawProfilePicture isEditable hasInset imageUrl={avatarUrl} size="md" />
+            <RawProfilePicture isEditable hasInset imageUrl={avatarUrl} size="lg" />
+            <RawProfilePicture isEditable hasInset imageUrl={avatarUrl} size="xl" />
+          </ProfilePictureSection>
+        </Examples>
+      </Section>
+
       <Section>
         <TitleM>Icons</TitleM>
         <Examples wrap="wrap">
@@ -113,6 +181,18 @@ export default function DesignPage() {
         </Examples>
       </Section>
     </>
+  );
+}
+
+function ProfilePictureSection({ children }: PropsWithChildren) {
+  return (
+    <HStack
+      style={{ backgroundColor: '#e2e2e2', padding: 8, borderRadius: '4px' }}
+      align="center"
+      gap={4}
+    >
+      {children}
+    </HStack>
   );
 }
 
