@@ -69,9 +69,7 @@ export function SomeoneFollowedYou({ notificationRef }: SomeoneFollowedYouProps)
           className="text-sm"
         >
           {count > 1 ? (
-            `
-          ${count} collectors
-        `
+            `${count} collectors`
           ) : (
             <>{lastFollower ? lastFollower.username : 'Someone'}</>
           )}
