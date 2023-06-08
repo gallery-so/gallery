@@ -51,6 +51,8 @@ export function SettingsScreen() {
     setBottomSectionHeight(event.nativeEvent.layout.height);
   }, []);
 
+  const formattedCommitHash = commitHash?.slice(0, 6);
+
   return (
     <View style={{ paddingTop: top }} className="relative flex-1 bg-white dark:bg-black-900">
       <View className="p-4">
@@ -106,16 +108,7 @@ export function SettingsScreen() {
               className="text-sm text-metal"
               font={{ family: 'ABCDiatype', weight: 'Regular' }}
             >
-              v{appVersion}
-            </Typography>
-          )}
-
-          {commitHash && (
-            <Typography
-              className="text-sm text-metal"
-              font={{ family: 'ABCDiatype', weight: 'Regular' }}
-            >
-              #{commitHash}
+              v{appVersion} {formattedCommitHash && `| ${formattedCommitHash}`}
             </Typography>
           )}
 

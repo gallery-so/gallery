@@ -39,7 +39,7 @@ export function GalleryVirtualizedRow({ item, isOnCollectionScreen }: Props) {
         <Markdown>{item.description}</Markdown>
       </View>
     );
-  } else if (item.kind === 'collection-title') {
+  } else if (item.kind === 'collection-title' && item.name) {
     const handlePress = () => {
       if (isOnCollectionScreen) return;
       navigation.push('Collection', { collectionId: item.id });
