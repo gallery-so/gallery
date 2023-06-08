@@ -34,6 +34,10 @@ type Props = {
   isInFeedEvent?: boolean;
 };
 
+const contractsWhoseIFrameNFTsShouldNotTakeUpFullHeight = new Set([
+  'KT1U6EHmNxJTkvaWJ4ThczG4FSDaHC21ssvi',
+]);
+
 const nftPreviewTokenFragment = graphql`
   fragment NftPreviewTokenFragment on Token {
     dbid
@@ -84,6 +88,11 @@ function NftPreview({
       fragment NftPreviewFragment on CollectionToken {
         token @required(action: THROW) {
           ...NftPreviewTokenFragment
+          contract {
+            contractAddress {
+              address
+            }
+          }
         }
         tokenSettings {
           renderLive
@@ -192,6 +201,20 @@ function NftPreview({
       // the asset is an iframe in single column mode
       (columns === 1 && isIFrameLiveDisplay));
 
+  // iframes generally look better if they are free to occupy the full height of their container.
+  // however, there are exceptions to this rule as some canvases produce weird behavior if the parent
+  // container size is unexpected. since we're unable to parse the contents of an iframe easily,
+  // we keep track of a list of contracts manually to exempt from this rule.
+  //
+  // in the long run, we should give the user the tools to size their NFTs manually (fit-to-X) on a per-
+  // NFT or per-collection basis, similar to the Live Render setting
+  const shouldBeExemptedFromFullHeightDisplay = useMemo(() => {
+    const contractAddress = collectionToken.token.contract?.contractAddress?.address ?? '';
+    return contractsWhoseIFrameNFTsShouldNotTakeUpFullHeight.has(contractAddress);
+  }, [collectionToken.token.contract?.contractAddress]);
+
+  const fullHeight = isIFrameLiveDisplay && !shouldBeExemptedFromFullHeightDisplay;
+
   return (
     <NftFailureBoundary
       key={retryKey}
@@ -218,7 +241,7 @@ function NftPreview({
           <StyledNftPreview
             backgroundColorOverride={backgroundColorOverride}
             fullWidth={fullWidth}
-            fullHeight={isIFrameLiveDisplay}
+            fullHeight={fullHeight}
           >
             <ReportingErrorBoundary
               fallback={
