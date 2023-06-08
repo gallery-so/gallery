@@ -101,6 +101,8 @@ const OpacityImageOverlay = styled.div`
   inset: 0;
 
   border-radius: 99999px;
+
+  transition: background 100ms ease-in-out;
 `;
 
 const EditCircle = styled(VStack)`
@@ -123,6 +125,8 @@ const InnerCircle = styled(VStack)`
 
   background-color: ${colors.offWhite};
   border: 1px solid ${colors.black['800']};
+
+  transition: background 100ms ease-in-out;
 `;
 
 const OuterCircle = styled(VStack)<{ inset?: boolean; isEditable?: boolean }>`
