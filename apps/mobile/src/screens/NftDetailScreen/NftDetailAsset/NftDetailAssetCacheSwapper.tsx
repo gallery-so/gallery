@@ -25,10 +25,18 @@ type Props = PropsWithChildren<{
  */
 export function NftDetailAssetCacheSwapper({ children, style, cachedPreviewAssetUrl }: Props) {
   const [loaded, setLoaded] = useState(false);
+  const [fullyRemoved, setFullyRemoved] = useState(false);
+
   const assetSizer = useNftDetailAssetSizer();
 
   const markDetailAssetAsLoaded = useCallback(() => {
     setLoaded(true);
+
+    // This is very intentionally done w/ a delay to ensure
+    // the user doesn't see a flash if they are swapped out in the same render
+    setTimeout(() => {
+      setFullyRemoved(true);
+    }, 50);
   }, []);
 
   const contextValue = useMemo((): NftDetailAssetCacheSwapperContextType => {
@@ -55,13 +63,24 @@ export function NftDetailAssetCacheSwapper({ children, style, cachedPreviewAsset
     <View style={[style, { position: 'relative' }]}>
       <View
         onLayout={assetSizer.handleViewLayout}
-        style={[assetSizer.finalAssetDimensions, { width: '100%', height: maxHeight }]}
+        style={[
+          assetSizer.finalAssetDimensions,
+          {
+            width: '100%',
+
+            // The goal here is to ensure that the preview doesn't affect the height
+            // after the detail asset has loaded and the preview asset is gone.
+            height: fullyRemoved ? detailLayoutHeight ?? 0 : maxHeight,
+          },
+        ]}
       >
-        <NftPreviewAsset
-          onLoad={assetSizer.handleLoad}
-          tokenUrl={cachedPreviewAssetUrl}
-          resizeMode={ResizeMode.CONTAIN}
-        />
+        {fullyRemoved ? null : (
+          <NftPreviewAsset
+            onLoad={assetSizer.handleLoad}
+            tokenUrl={cachedPreviewAssetUrl}
+            resizeMode={ResizeMode.CONTAIN}
+          />
+        )}
       </View>
 
       <NftDetailAssetCacheSwapperContext.Provider value={contextValue}>
