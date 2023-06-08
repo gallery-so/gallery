@@ -34,6 +34,10 @@ type Props = {
   isInFeedEvent?: boolean;
 };
 
+const contractsWhoseIFrameNFTsShouldNotTakeUpFullHeight = new Set([
+  'KT1U6EHmNxJTkvaWJ4ThczG4FSDaHC21ssvi',
+]);
+
 const nftPreviewTokenFragment = graphql`
   fragment NftPreviewTokenFragment on Token {
     dbid
@@ -84,6 +88,11 @@ function NftPreview({
       fragment NftPreviewFragment on CollectionToken {
         token @required(action: THROW) {
           ...NftPreviewTokenFragment
+          contract {
+            contractAddress {
+              address
+            }
+          }
         }
         tokenSettings {
           renderLive
@@ -192,6 +201,13 @@ function NftPreview({
       // the asset is an iframe in single column mode
       (columns === 1 && isIFrameLiveDisplay));
 
+  const shouldBeExemptedFromFullHeightDisplay = useMemo(() => {
+    const contractAddress = collectionToken.token.contract?.contractAddress?.address ?? '';
+    return contractsWhoseIFrameNFTsShouldNotTakeUpFullHeight.has(contractAddress);
+  }, [collectionToken.token.contract?.contractAddress]);
+
+  const fullHeight = isIFrameLiveDisplay && !shouldBeExemptedFromFullHeightDisplay;
+
   return (
     <NftFailureBoundary
       key={retryKey}
@@ -218,7 +234,7 @@ function NftPreview({
           <StyledNftPreview
             backgroundColorOverride={backgroundColorOverride}
             fullWidth={fullWidth}
-            fullHeight={isIFrameLiveDisplay}
+            fullHeight={fullHeight}
           >
             <ReportingErrorBoundary
               fallback={
