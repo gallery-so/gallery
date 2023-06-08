@@ -45,6 +45,10 @@ function NftPreviewLabel({ className, tokenRef, interactive = true }: Props) {
     return null;
   }, [token.name]);
 
+  if (!decodedTokenName) {
+    return null;
+  }
+
   return (
     <StyledNftPreviewLabel className={className}>
       {
