@@ -2,8 +2,7 @@ import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
-import breakpoints from '~/components/core/breakpoints';
-import { HStack, VStack } from '~/components/core/Spacer/Stack';
+import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import { NftPreviewLabelCollectionNameFragment$key } from '~/generated/NftPreviewLabelCollectionNameFragment.graphql';
 import { NftPreviewLabelFragment$key } from '~/generated/NftPreviewLabelFragment.graphql';
@@ -21,7 +20,7 @@ type Props = {
   interactive?: boolean;
 };
 
-const ENABLED_ARTIST = false;
+const ENABLED_ARTIST = true;
 
 function NftPreviewLabel({ className, tokenRef, interactive = true }: Props) {
   const token = useFragment(
@@ -48,22 +47,14 @@ function NftPreviewLabel({ className, tokenRef, interactive = true }: Props) {
 
   return (
     <StyledNftPreviewLabel className={className}>
-      <HStack gap={4} justify={'flex-start'} align="center">
-        <StyledNftPreviewContainer align="flex-start" shrink>
-          {
-            // Since POAPs' collection names are the same as the
-            // token name, we don't want to show duplicate information
-            token.chain === 'POAP' ? null : (
-              <StyledLabelText>
-                <StyledBaseM color={colors.white} lines={2}>
-                  {decodedTokenName}
-                </StyledBaseM>
-              </StyledLabelText>
-            )
-          }
-          {showCollectionName && <CollectionName tokenRef={token} interactive={interactive} />}
-        </StyledNftPreviewContainer>
-      </HStack>
+      {
+        // Since POAPs' collection names are the same as the
+        // token name, we don't want to show duplicate information
+        token.chain === 'POAP' ? null : (
+          <StyledBaseM color={colors.white}>{decodedTokenName}</StyledBaseM>
+        )
+      }
+      {showCollectionName && <CollectionName tokenRef={token} interactive={interactive} />}
     </StyledNftPreviewLabel>
   );
 }
@@ -101,13 +92,13 @@ function CollectionName({ tokenRef, interactive }: CollectionNameProps) {
   if (token.chain === 'POAP') {
     return shouldDisplayLinkToCommunityPage ? (
       <StyledInteractiveLink to={communityUrl}>
-        <POAPWrapperHStack gap={4} align="center" justify="flex-end">
+        <POAPWrapperHStack gap={4} align="center">
           <POAPLogo />
           <POAPTitle color={colors.white}>{collectionName}</POAPTitle>
         </POAPWrapperHStack>
       </StyledInteractiveLink>
     ) : (
-      <POAPWrapperHStack gap={4} align="center" justify="flex-end">
+      <POAPWrapperHStack gap={4} align="center">
         <POAPLogo />
         <POAPTitle color={colors.white}>{collectionName}</POAPTitle>
       </POAPWrapperHStack>
@@ -116,39 +107,50 @@ function CollectionName({ tokenRef, interactive }: CollectionNameProps) {
 
   return shouldDisplayLinkToCommunityPage ? (
     <StyledInteractiveLink to={communityUrl}>
-      <HStack gap={4} align="center" justify="flex-end">
+      <HStack gap={4} align="center">
         {token.contract?.badgeURL && <StyledBadge src={token.contract.badgeURL} />}
-        <StyledLabelText wrap>
-          <BaseM color={colors.porcelain} as="span">
-            {collectionName}
-          </BaseM>
+
+        <StyledBaseM color={colors.porcelain}>
+          {collectionName}
+
           {ENABLED_ARTIST && (
             <>
               {' '}
-              <BaseM color={colors.metal} as="span">
-                by Artist
-              </BaseM>
+              <StyledArtistText as="span">by Artist asd asd as da sd</StyledArtistText>
             </>
           )}
-        </StyledLabelText>
+        </StyledBaseM>
       </HStack>
     </StyledInteractiveLink>
   ) : (
-    <StyledLabelText wrap>
-      <BaseM color={colors.porcelain} as="span">
+    <HStack gap={4} align="center">
+      <StyledBaseM color={colors.porcelain}>
         {collectionName}
-      </BaseM>
-      {ENABLED_ARTIST && (
-        <>
-          {' '}
-          <BaseM color={colors.metal} as="span">
-            by Artist
-          </BaseM>
-        </>
-      )}
-    </StyledLabelText>
+
+        {ENABLED_ARTIST && (
+          <>
+            {' '}
+            <StyledArtistText as="span">by Artist</StyledArtistText>
+          </>
+        )}
+      </StyledBaseM>
+    </HStack>
   );
 }
+
+const StyledNftPreviewLabel = styled.div`
+  position: absolute;
+
+  bottom: 8px;
+  left: 8px;
+  right: 8px;
+  width: fit-content;
+  max-width: calc(100% - 16px);
+  padding: 8px;
+  z-index: 10;
+
+  background-color: ${colors.offBlack};
+`;
 
 const POAPLogo = styled.img.attrs({
   src: '/icons/poap_logo.svg',
@@ -158,114 +160,24 @@ const POAPLogo = styled.img.attrs({
   height: 20px;
 `;
 
-export const StyledNftPreviewLabel = styled.div`
-  position: absolute;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-
-  bottom: 0;
-  width: 100%;
-  padding: 8px;
-  z-index: 10;
-  // this helps position the label correctly in Safari
-  // Safari differs from Chrome in how it renders height: 100% on position: absolute elements
-  min-height: 56px;
-`;
-
-const StyledNftPreviewContainer = styled(VStack)`
-  background-color: ${colors.offBlack};
-  padding: 4px 8px;
-`;
-
-const StyledBaseM = styled(BaseM)<{ lines: number }>`
-  word-wrap: break-word;
-  word-break: break-all;
-  font-weight: 700;
-
-  margin: 0;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  line-clamp: ${({ lines }) => lines};
-  -webkit-line-clamp: ${({ lines }) => lines};
-  overflow: hidden;
-  line-height: 16px;
-  text-overflow: ellipsis;
-  padding-right: 16px;
-  margin-right: -16px;
-
-  @media only screen and ${breakpoints.mobileLarge} {
-    word-wrap: unset;
-    word-break: unset;
-  }
-
-  @media only screen and ${breakpoints.tablet} {
-    font-size: 14px;
-    line-height: 20px;
-    padding-right: 0;
-    margin-right: 0;
-    display: unset;
-    -webkit-box-orient: unset;
-    line-clamp: unset;
-    -webkit-line-clamp: unset;
-    overflow: visible;
-    text-overflow: unset;
-  }
-`;
-
 const StyledInteractiveLink = styled(InteractiveLink)`
   text-decoration: none;
 `;
 
-const StyledLabelText = styled.p<{ wrap?: boolean }>`
-  ${({ wrap }) =>
-    wrap &&
-    `
-    word-wrap: break-word;
-    word-break: break-all;
-
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    line-clamp: 1;
-    -webkit-line-clamp: 1;
-    overflow: hidden;
-    text-overflow: ellipsis;
-`}
-  color: ${colors.metal};
-`;
-
-const StyledTitleDiatypeM = styled(BaseM)`
+const StyledBaseM = styled(BaseM)`
   word-wrap: break-word;
   word-break: break-all;
 
-  margin: 0;
-  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
   display: -webkit-box;
   -webkit-box-orient: vertical;
+  line-clamp: 1;
+  -webkit-line-clamp: 1;
   overflow: hidden;
-  font-size: 12px;
-  line-height: 16px;
   text-overflow: ellipsis;
-  padding-right: 16px;
-  margin-right: -16px;
-
-  @media only screen and ${breakpoints.mobileLarge} {
-    word-wrap: unset;
-  }
-
-  @media only screen and ${breakpoints.tablet} {
-    font-size: 14px;
-    line-height: 20px;
-    padding-right: 0;
-    margin-right: 0;
-  }
 `;
 
-const StyledBadge = styled.img`
-  width: 100%;
-  max-width: 20px;
-  max-height: 20px;
+const StyledArtistText = styled(BaseM)`
+  color: ${colors.metal};
 `;
 
 /**
@@ -276,7 +188,7 @@ const StyledBadge = styled.img`
  * of the text and multiline text causes unnecessary
  * extra width to show up
  */
-const POAPTitle = styled(StyledTitleDiatypeM)`
+const POAPTitle = styled(BaseM)`
   line-clamp: 1;
   -webkit-line-clamp: 1;
   white-space: nowrap;
@@ -287,6 +199,12 @@ const POAPTitle = styled(StyledTitleDiatypeM)`
 
 const POAPWrapperHStack = styled(HStack)`
   width: 100%;
+`;
+
+const StyledBadge = styled.img`
+  width: 100%;
+  max-width: 20px;
+  max-height: 20px;
 `;
 
 export default NftPreviewLabel;
