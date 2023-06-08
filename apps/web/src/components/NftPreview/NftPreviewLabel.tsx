@@ -142,7 +142,7 @@ function CollectionName({ tokenRef, interactive }: CollectionNameProps) {
   );
 }
 
-const StyledNftPreviewLabel = styled.div`
+export const StyledNftPreviewLabel = styled.div`
   position: absolute;
 
   bottom: 8px;

@@ -4,7 +4,6 @@ import { memo, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
-import Gradient from '~/components/core/Gradient/Gradient';
 import { NftFailureBoundary } from '~/components/NftFailureFallback/NftFailureBoundary';
 import { NftFailureFallback } from '~/components/NftFailureFallback/NftFailureFallback';
 import { StyledNftPreviewLabel } from '~/components/NftPreview/NftPreviewLabel';
@@ -107,8 +106,6 @@ function SortableStagedNft({ tokenRef, size, mini }: Props) {
       </NftFailureBoundary>
       <StyledUnstageButton id={id} />
       {isLiveType && <LiveDisplayButton id={id} />}
-      <StyledGradient type="top" direction="up" height={mini ? 40 : 64} />
-      {mini ? null : <StyledGradient type="bottom" direction="down" />}
     </StyledSortableNft>
   );
 }
@@ -116,13 +113,6 @@ function SortableStagedNft({ tokenRef, size, mini }: Props) {
 const FallbackContainer = styled.div<{ size: number }>`
   height: ${({ size }) => size}px;
   width: ${({ size }) => size}px;
-`;
-
-const StyledGradient = styled(Gradient)<{ type: 'top' | 'bottom' }>`
-  position: absolute;
-  ${({ type }) => type}: 0;
-
-  opacity: 0;
 `;
 
 const StyledUnstageButton = styled(UnstageButton)`
@@ -162,10 +152,6 @@ export const StyledSortableNft = styled.div<{
   }
 
   &:hover ${StyledNftPreviewLabel} {
-    opacity: 1;
-  }
-
-  &:hover ${StyledGradient} {
     opacity: 1;
   }
 `;
