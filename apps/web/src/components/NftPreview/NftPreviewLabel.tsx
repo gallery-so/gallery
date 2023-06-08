@@ -157,7 +157,7 @@ export const StyledNftPreviewLabel = styled.div`
   padding: 4px 8px;
   z-index: 10;
 
-  background-color: ${colors.offBlack};
+  background-color: ${colors.black['800']};
 `;
 
 const POAPLogo = styled.img.attrs({
