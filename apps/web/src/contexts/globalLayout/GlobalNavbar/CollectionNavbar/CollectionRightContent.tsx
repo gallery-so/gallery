@@ -9,7 +9,6 @@ import { DropdownItem } from '~/components/core/Dropdown/DropdownItem';
 import { DropdownLink } from '~/components/core/Dropdown/DropdownLink';
 import { DropdownSection } from '~/components/core/Dropdown/DropdownSection';
 import { HStack } from '~/components/core/Spacer/Stack';
-import { TitleXS } from '~/components/core/Text/Text';
 import { EditLink } from '~/contexts/globalLayout/GlobalNavbar/CollectionNavbar/EditLink';
 import { SignInButton } from '~/contexts/globalLayout/GlobalNavbar/SignInButton';
 import { useModalActions } from '~/contexts/modal/ModalContext';
@@ -137,14 +136,6 @@ export function CollectionRightContent({
           </EditLinkWrapper>
         )}
       </HStack>
-    );
-  } else if (shouldShowEditButton) {
-    return (
-      <EditButtonContainer onClick={handleEditClick}>
-        <TitleXS>EDIT</TitleXS>
-
-        {dropdown}
-      </EditButtonContainer>
     );
   } else if (query.viewer?.__typename !== 'Viewer') {
     return (
