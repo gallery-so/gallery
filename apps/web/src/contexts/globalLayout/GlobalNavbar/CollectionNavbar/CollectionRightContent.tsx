@@ -16,7 +16,6 @@ import { CollectionRightContentFragment$key } from '~/generated/CollectionRightC
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import EditUserInfoModal from '~/scenes/UserGalleryPage/EditUserInfoModal';
 import LinkButton from '~/scenes/UserGalleryPage/LinkButton';
-import colors from '~/shared/theme/colors';
 
 import { SignUpButton } from '../SignUpButton';
 
@@ -152,20 +151,4 @@ export function CollectionRightContent({
 
 const EditLinkWrapper = styled.div`
   position: relative;
-`;
-
-const EditButtonContainer = styled.div`
-  position: relative;
-
-  padding: 8px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-decoration: none;
-
-  cursor: pointer;
-
-  :hover {
-    background-color: ${colors.faint};
-  }
 `;
