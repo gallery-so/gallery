@@ -20,7 +20,7 @@ type Props = {
   interactive?: boolean;
 };
 
-const ENABLED_ARTIST = true;
+const ENABLED_ARTIST = false;
 
 function NftPreviewLabel({ className, tokenRef, interactive = true }: Props) {
   const token = useFragment(
@@ -116,7 +116,9 @@ function CollectionName({ tokenRef, interactive }: CollectionNameProps) {
           {ENABLED_ARTIST && (
             <>
               {' '}
-              <StyledArtistText as="span">by Artist asd asd as da sd</StyledArtistText>
+              <BaseM color={colors.metal} as="span">
+                by Artist
+              </BaseM>
             </>
           )}
         </StyledBaseM>
@@ -130,7 +132,9 @@ function CollectionName({ tokenRef, interactive }: CollectionNameProps) {
         {ENABLED_ARTIST && (
           <>
             {' '}
-            <StyledArtistText as="span">by Artist</StyledArtistText>
+            <BaseM color={colors.metal} as="span">
+              xby Artist
+            </BaseM>
           </>
         )}
       </StyledBaseM>
@@ -146,7 +150,7 @@ const StyledNftPreviewLabel = styled.div`
   right: 8px;
   width: fit-content;
   max-width: calc(100% - 16px);
-  padding: 8px;
+  padding: 4px 8px;
   z-index: 10;
 
   background-color: ${colors.offBlack};
@@ -174,10 +178,6 @@ const StyledBaseM = styled(BaseM)`
   -webkit-line-clamp: 1;
   overflow: hidden;
   text-overflow: ellipsis;
-`;
-
-const StyledArtistText = styled(BaseM)`
-  color: ${colors.metal};
 `;
 
 /**
