@@ -1,7 +1,7 @@
 import { MaterialTopTabBarProps } from '@react-navigation/material-top-tabs';
 import { NavigationRoute } from '@sentry/react-native/dist/js/tracing/reactnavigation';
 import clsx from 'clsx';
-import { ReactNode, Suspense, useCallback, useMemo } from 'react';
+import { ReactNode, Suspense, useCallback, useMemo, useState } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLazyLoadQuery } from 'react-relay';
@@ -25,6 +25,8 @@ type TabItemProps = {
 };
 
 function TabItem({ navigation, route, icon, activeRoute }: TabItemProps) {
+  const [isPressed, setIsPressed] = useState(false);
+
   const isFocused = activeRoute === route.name;
 
   const onPress = useCallback(() => {
@@ -45,17 +47,21 @@ function TabItem({ navigation, route, icon, activeRoute }: TabItemProps) {
       accessibilityRole="button"
       accessibilityState={isFocused ? { selected: true } : {}}
       activeOpacity={1}
-      className={clsx(
-        `px-0 flex h-8 w-8 items-center justify-center rounded-full active:bg-faint dark:active:bg-[#2B2B2B]`,
-        {
-          'border border-black dark:border-white': isFocused,
-        }
-      )}
+      className="pt-3 px-4 flex items-center justify-center"
       eventElementId="Navigation Tab Item"
       eventName="Navigation Tab Item Clicked"
       properties={{ variant: 'Main', route: route.name }}
+      onPressIn={() => setIsPressed(true)}
+      onPressOut={() => setIsPressed(false)}
     >
-      {icon}
+      <View
+        className={clsx(`px-0 flex h-8 w-8 items-center justify-center rounded-full`, {
+          'border border-black dark:border-white ': isFocused,
+          'bg-faint dark:bg-[#2B2B2B]': isPressed,
+        })}
+      >
+        {icon}
+      </View>
     </GalleryTouchableOpacity>
   );
 }
@@ -71,11 +77,7 @@ export function TabBar({ state, navigation }: TabBarProps) {
 
   return (
     <View
-      style={
-        hasSafeAreaIntersection
-          ? { paddingBottom: bottom, paddingTop: 12 }
-          : { paddingBottom: 12, paddingTop: 12 }
-      }
+      style={hasSafeAreaIntersection ? { paddingBottom: bottom } : { paddingBottom: 12 }}
       className="bg-white dark:bg-black-900 flex flex-row items-center justify-evenly border-t border-porcelain dark:border-black-600"
     >
       {state.routes.map((route) => {
