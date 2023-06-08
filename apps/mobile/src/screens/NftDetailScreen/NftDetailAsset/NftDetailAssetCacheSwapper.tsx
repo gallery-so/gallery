@@ -32,6 +32,8 @@ export function NftDetailAssetCacheSwapper({ children, style, cachedPreviewAsset
   const markDetailAssetAsLoaded = useCallback(() => {
     setLoaded(true);
 
+    // This is very intentionally done w/ a delay to ensure
+    // the user doesn't see a flash if they are swapped out in the same render
     setTimeout(() => {
       setFullyRemoved(true);
     }, 200);
