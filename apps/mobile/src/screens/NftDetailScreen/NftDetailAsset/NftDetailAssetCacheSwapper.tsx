@@ -25,10 +25,16 @@ type Props = PropsWithChildren<{
  */
 export function NftDetailAssetCacheSwapper({ children, style, cachedPreviewAssetUrl }: Props) {
   const [loaded, setLoaded] = useState(false);
+  const [fullyRemoved, setFullyRemoved] = useState(false);
+
   const assetSizer = useNftDetailAssetSizer();
 
   const markDetailAssetAsLoaded = useCallback(() => {
     setLoaded(true);
+
+    setTimeout(() => {
+      setFullyRemoved(true);
+    }, 200);
   }, []);
 
   const contextValue = useMemo((): NftDetailAssetCacheSwapperContextType => {
@@ -57,11 +63,13 @@ export function NftDetailAssetCacheSwapper({ children, style, cachedPreviewAsset
         onLayout={assetSizer.handleViewLayout}
         style={[assetSizer.finalAssetDimensions, { width: '100%', height: maxHeight }]}
       >
-        <NftPreviewAsset
-          onLoad={assetSizer.handleLoad}
-          tokenUrl={cachedPreviewAssetUrl}
-          resizeMode={ResizeMode.CONTAIN}
-        />
+        {fullyRemoved ? null : (
+          <NftPreviewAsset
+            onLoad={assetSizer.handleLoad}
+            tokenUrl={cachedPreviewAssetUrl}
+            resizeMode={ResizeMode.CONTAIN}
+          />
+        )}
       </View>
 
       <NftDetailAssetCacheSwapperContext.Provider value={contextValue}>
