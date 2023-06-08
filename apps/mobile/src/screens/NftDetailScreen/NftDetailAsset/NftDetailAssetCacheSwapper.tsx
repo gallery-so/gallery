@@ -36,7 +36,7 @@ export function NftDetailAssetCacheSwapper({ children, style, cachedPreviewAsset
     // the user doesn't see a flash if they are swapped out in the same render
     setTimeout(() => {
       setFullyRemoved(true);
-    }, 200);
+    }, 50);
   }, []);
 
   const contextValue = useMemo((): NftDetailAssetCacheSwapperContextType => {
