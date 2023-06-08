@@ -265,7 +265,7 @@ const StyledNftFooter = styled.div`
 
   transition: opacity ${transitions.cubic};
 
-  /* opacity: 0; */
+  opacity: 0;
 `;
 
 const StyledNftPreview = styled.div<{
