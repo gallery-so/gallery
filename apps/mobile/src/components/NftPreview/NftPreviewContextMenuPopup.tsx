@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import { ResizeMode } from 'expo-av';
 import { PropsWithChildren, useCallback, useState } from 'react';
-import { useWindowDimensions, View } from 'react-native';
+import { Text, useWindowDimensions, View } from 'react-native';
 import { ContextMenuView, OnPressMenuItemEvent } from 'react-native-ios-context-menu';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { useFragment } from 'react-relay';
@@ -26,6 +26,8 @@ type NftPreviewContextMenuPopupProps = PropsWithChildren<{
   cachedPreviewAssetUrl: string | null;
   collectionTokenRef: NftPreviewContextMenuPopupFragment$key;
 }>;
+
+const ENABLED_ARTIST = false;
 
 export function NftPreviewContextMenuPopup({
   children,
@@ -99,6 +101,11 @@ export function NftPreviewContextMenuPopup({
           galleryId: collectionToken.collection?.gallery?.dbid ?? 'not-found',
         });
       }
+      // else if (event.nativeEvent.actionKey === 'view-artist') {
+      //   navigation.push('Profile', {
+      //     username: collectionToken.collection?.owner?.username ?? 'not-found',
+      //   });
+      // }
     },
     [cachedPreviewAssetUrl, collectionToken.collection, navigation, token]
   );
@@ -124,6 +131,10 @@ export function NftPreviewContextMenuPopup({
             actionKey: 'view-gallery',
             actionTitle: 'View Gallery',
           },
+          // {
+          //   actionKey: 'view-artist',
+          //   actionTitle: 'View Artist',
+          // },
           {
             actionKey: 'share',
             actionTitle: 'Share',
@@ -171,11 +182,11 @@ export function NftPreviewContextMenuPopup({
                 </View>
               )}
             </View>
-            <View className="flex flex-col space-y-2 py-4">
+            <View className="flex flex-col py-3 px-4 bg-black/90">
               {token.name && (
                 <Typography
-                  className="px-4 text-2xl"
-                  font={{ family: 'GTAlpina', weight: 'Light', italic: true }}
+                  className="text-offWhite"
+                  font={{ family: 'ABCDiatype', weight: 'Bold' }}
                 >
                   {token.name}
                 </Typography>
@@ -183,10 +194,14 @@ export function NftPreviewContextMenuPopup({
 
               {token.contract?.name && (
                 <Typography
-                  className="text-shadow px-4 text-sm"
-                  font={{ family: 'ABCDiatype', weight: 'Regular' }}
+                  font={{
+                    family: 'ABCDiatype',
+                    weight: 'Regular',
+                  }}
+                  className="text-sm"
                 >
-                  {token.contract.name}
+                  <Text className="text-porcelain">{token.contract.name}</Text>
+                  {ENABLED_ARTIST && <Text className="text-metal"> by riley.eth</Text>}
                 </Typography>
               )}
             </View>
