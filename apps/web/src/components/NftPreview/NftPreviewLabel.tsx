@@ -11,6 +11,7 @@ import unescape from '~/shared/utils/unescape';
 import { getCommunityUrlForToken } from '~/utils/getCommunityUrlForToken';
 
 import InteractiveLink from '../core/InteractiveLink/InteractiveLink';
+import { ENABLED_CREATOR } from '~/constants/creator';
 
 type Props = {
   className?: string;
@@ -19,8 +20,6 @@ type Props = {
   // if false, the label will appear flat.
   interactive?: boolean;
 };
-
-const ENABLED_ARTIST = false;
 
 function NftPreviewLabel({ className, tokenRef, interactive = true }: Props) {
   const token = useFragment(
@@ -117,7 +116,7 @@ function CollectionName({ tokenRef, interactive }: CollectionNameProps) {
         <StyledBaseM color={colors.porcelain}>
           {collectionName}
 
-          {ENABLED_ARTIST && (
+          {ENABLED_CREATOR && (
             <>
               {' '}
               <BaseM color={colors.metal} as="span">
@@ -133,11 +132,11 @@ function CollectionName({ tokenRef, interactive }: CollectionNameProps) {
       <StyledBaseM color={colors.porcelain}>
         {collectionName}
 
-        {ENABLED_ARTIST && (
+        {ENABLED_CREATOR && (
           <>
             {' '}
             <BaseM color={colors.metal} as="span">
-              xby Artist
+              by Artist
             </BaseM>
           </>
         )}
