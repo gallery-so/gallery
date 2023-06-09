@@ -288,6 +288,7 @@ const StyledNftLabel = styled(NftPreviewLabel)`
 const StyledNftFooter = styled.div`
   position: absolute;
   bottom: 0;
+  left: 0;
   width: 100%;
 
   transition: opacity ${transitions.cubic};

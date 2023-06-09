@@ -40,6 +40,9 @@ export const StyledUnstageButton = styled.button`
   border: none;
   z-index: 4;
   cursor: pointer;
+
+  // dark magic that allows the child SVG to be visible regardless of background color
+  mix-blend-mode: exclusion;
 `;
 
 export default UnstageButton;
