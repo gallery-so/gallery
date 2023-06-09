@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
+import { ENABLED_CREATOR } from '~/constants/creator';
 import { NftPreviewLabelCollectionNameFragment$key } from '~/generated/NftPreviewLabelCollectionNameFragment.graphql';
 import { NftPreviewLabelFragment$key } from '~/generated/NftPreviewLabelFragment.graphql';
 import colors from '~/shared/theme/colors';
@@ -11,7 +12,6 @@ import unescape from '~/shared/utils/unescape';
 import { getCommunityUrlForToken } from '~/utils/getCommunityUrlForToken';
 
 import InteractiveLink from '../core/InteractiveLink/InteractiveLink';
-import { ENABLED_CREATOR } from '~/constants/creator';
 
 type Props = {
   className?: string;
