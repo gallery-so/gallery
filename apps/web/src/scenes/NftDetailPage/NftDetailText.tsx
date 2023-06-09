@@ -11,11 +11,13 @@ import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM, TitleM, TitleXS } from '~/components/core/Text/Text';
 import { ClickablePill, NonclickablePill } from '~/components/Pill';
+import { ENABLED_CREATOR } from '~/constants/creator';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { NftDetailTextFragment$key } from '~/generated/NftDetailTextFragment.graphql';
 import { useBreakpoint, useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { NftAdditionalDetails } from '~/scenes/NftDetailPage/NftAdditionalDetails/NftAdditionalDetails';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
+import colors from '~/shared/theme/colors';
 import { getOpenseaExternalUrl } from '~/shared/utils/getOpenseaExternalUrl';
 import unescape from '~/shared/utils/unescape';
 import { getCommunityUrlForToken } from '~/utils/getCommunityUrlForToken';
@@ -129,40 +131,58 @@ function NftDetailText({ tokenRef }: Props) {
           </HStack>
         </VStack>
 
+        <HStack justify="space-between">
+          {ENABLED_CREATOR && (
+            // TODO: Update this to use the creator's username
+            <VStack>
+              <TitleXS>CREATOR</TitleXS>
+              <StyledInteractiveLink to={{ pathname: '/[username]', query: { username: 'riley' } }}>
+                <BaseM color={colors.shadow}>riley.eth</BaseM>
+              </StyledInteractiveLink>
+              <StyledInteractiveLink to={{ pathname: '/[username]', query: { username: 'riley' } }}>
+                <BaseM color={colors.shadow}>peterson.eth</BaseM>
+              </StyledInteractiveLink>
+            </VStack>
+          )}
+          {token.owner?.username && (
+            <VStack>
+              <TitleXS>OWNER</TitleXS>
+              <StyledInteractiveLink
+                to={{ pathname: '/[username]', query: { username: token.owner.username } }}
+              >
+                <BaseM color={colors.shadow}>{token.owner.username}</BaseM>
+              </StyledInteractiveLink>
+            </VStack>
+          )}
+        </HStack>
+
         {token.description && (
           <BaseM>
             <Markdown text={token.description} />
           </BaseM>
         )}
 
-        <VStack gap={16}>
-          {token.owner?.username && (
-            <div>
-              <TitleXS>Owner</TitleXS>
-              <InteractiveLink
-                to={{ pathname: '/[username]', query: { username: token.owner.username } }}
-              >
-                {token.owner.username}
-              </InteractiveLink>
-            </div>
-          )}
+        {showDetails || SHOW_BUY_NOW_BUTTON ? (
+          <VStack gap={16}>
+            {showDetails && <NftAdditionalDetails showDetails={showDetails} tokenRef={token} />}
 
-          {showDetails && <NftAdditionalDetails showDetails={showDetails} tokenRef={token} />}
+            {SHOW_BUY_NOW_BUTTON && (
+              <VStack gap={24}>
+                <HorizontalBreak />
+                <StyledInteractiveLink href={openseaExternalUrl} onClick={handleBuyNowClick}>
+                  <StyledButton>Buy Now</StyledButton>
+                </StyledInteractiveLink>
+              </VStack>
+            )}
+          </VStack>
+        ) : null}
 
-          {SHOW_BUY_NOW_BUTTON && (
-            <VStack gap={24}>
-              <HorizontalBreak />
-              <StyledInteractiveLink href={openseaExternalUrl} onClick={handleBuyNowClick}>
-                <StyledButton>Buy Now</StyledButton>
-              </StyledInteractiveLink>
-            </VStack>
-          )}
-        </VStack>
-
-        <VStack gap={16}>
-          {poapMoreInfoUrl && <InteractiveLink href={poapMoreInfoUrl}>More Info</InteractiveLink>}
-          {poapUrl && <InteractiveLink href={poapUrl}>View on POAP</InteractiveLink>}
-        </VStack>
+        {poapMoreInfoUrl || poapUrl ? (
+          <VStack gap={16}>
+            {poapMoreInfoUrl && <InteractiveLink href={poapMoreInfoUrl}>More Info</InteractiveLink>}
+            {poapUrl && <InteractiveLink href={poapUrl}>View on POAP</InteractiveLink>}
+          </VStack>
+        ) : null}
 
         {!showDetails && <TextButton text="Show Details" onClick={handleToggleClick} />}
         {showDetails && <TextButton text="Hide Details" onClick={handleToggleClick} />}
