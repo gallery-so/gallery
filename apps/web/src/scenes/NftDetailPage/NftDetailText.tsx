@@ -94,6 +94,37 @@ function NftDetailText({ tokenRef }: Props) {
     openseaExternalUrl,
   ]);
 
+  const handleCreatorNameClick = useCallback(() => {
+    // TODO: Update this to track the creator name click
+    track('Creator Name Click', {
+      username: token.owner?.username ? token.owner.username.toLowerCase() : undefined,
+      contractAddress: token.contract?.contractAddress?.address,
+      tokenId: token.tokenId,
+      externaUrl: openseaExternalUrl,
+    });
+  }, [
+    track,
+    token.owner?.username,
+    token.contract?.contractAddress?.address,
+    token.tokenId,
+    openseaExternalUrl,
+  ]);
+
+  const handleCollectorNameClick = useCallback(() => {
+    track('Collector Name Click', {
+      username: token.owner?.username ? token.owner.username.toLowerCase() : undefined,
+      contractAddress: token.contract?.contractAddress?.address,
+      tokenId: token.tokenId,
+      externaUrl: openseaExternalUrl,
+    });
+  }, [
+    track,
+    token.owner?.username,
+    token.contract?.contractAddress?.address,
+    token.tokenId,
+    openseaExternalUrl,
+  ]);
+
   const communityUrl = getCommunityUrlForToken(token);
 
   const metadata = JSON.parse(token.tokenMetadata ?? '{}') ?? {};
@@ -136,10 +167,16 @@ function NftDetailText({ tokenRef }: Props) {
             // TODO: Update this to use the creator's username
             <VStack>
               <TitleXS>CREATOR</TitleXS>
-              <StyledInteractiveLink to={{ pathname: '/[username]', query: { username: 'riley' } }}>
+              <StyledInteractiveLink
+                onClick={handleCreatorNameClick}
+                to={{ pathname: '/[username]', query: { username: 'riley' } }}
+              >
                 <BaseM color={colors.shadow}>riley.eth</BaseM>
               </StyledInteractiveLink>
-              <StyledInteractiveLink to={{ pathname: '/[username]', query: { username: 'riley' } }}>
+              <StyledInteractiveLink
+                onClick={handleCreatorNameClick}
+                to={{ pathname: '/[username]', query: { username: 'riley' } }}
+              >
                 <BaseM color={colors.shadow}>peterson.eth</BaseM>
               </StyledInteractiveLink>
             </VStack>
@@ -149,6 +186,7 @@ function NftDetailText({ tokenRef }: Props) {
               <TitleXS>OWNER</TitleXS>
               <StyledInteractiveLink
                 to={{ pathname: '/[username]', query: { username: token.owner.username } }}
+                onClick={handleCollectorNameClick}
               >
                 <BaseM color={colors.shadow}>{token.owner.username}</BaseM>
               </StyledInteractiveLink>
