@@ -167,29 +167,29 @@ function NftDetailText({ tokenRef }: Props) {
             // TODO: Update this to use the creator's username
             <VStack>
               <TitleXS>CREATOR</TitleXS>
-              <StyledInteractiveLink
+              <InteractiveLink
                 onClick={handleCreatorNameClick}
                 to={{ pathname: '/[username]', query: { username: 'riley' } }}
               >
                 <BaseM color={colors.shadow}>riley.eth</BaseM>
-              </StyledInteractiveLink>
-              <StyledInteractiveLink
+              </InteractiveLink>
+              <InteractiveLink
                 onClick={handleCreatorNameClick}
                 to={{ pathname: '/[username]', query: { username: 'riley' } }}
               >
                 <BaseM color={colors.shadow}>peterson.eth</BaseM>
-              </StyledInteractiveLink>
+              </InteractiveLink>
             </VStack>
           )}
           {token.owner?.username && (
             <VStack>
               <TitleXS>OWNER</TitleXS>
-              <StyledInteractiveLink
+              <InteractiveLink
                 to={{ pathname: '/[username]', query: { username: token.owner.username } }}
                 onClick={handleCollectorNameClick}
               >
                 <BaseM color={colors.shadow}>{token.owner.username}</BaseM>
-              </StyledInteractiveLink>
+              </InteractiveLink>
             </VStack>
           )}
         </HStack>
