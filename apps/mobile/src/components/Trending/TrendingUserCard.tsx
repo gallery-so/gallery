@@ -24,6 +24,12 @@ type Props = {
   style?: ViewProps['style'];
 };
 
+const markdownStyle = {
+  paragraph: {
+    marginBottom: 0,
+  },
+};
+
 export function TrendingUserCard({ style, userRef, queryRef }: Props) {
   const user = useFragment(
     graphql`
@@ -132,7 +138,9 @@ export function TrendingUserCard({ style, userRef, queryRef }: Props) {
           })}
         </View>
         <View className="h-5">
-          <Markdown numberOfLines={1}>{bioFirstLine}</Markdown>
+          <Markdown numberOfLines={1} style={markdownStyle}>
+            {bioFirstLine}
+          </Markdown>
         </View>
       </View>
 
