@@ -34,7 +34,7 @@ export function AdmireNote({ admireRef, style }: Props) {
         <AdmireIcon active height={20} />
         <View className="flex flex-row items-center">
           <UsernameDisplay userRef={admire.admirer} size="sm" />
-          <Text> admired this</Text>
+          <Text className="dark:text-white"> admired this</Text>
         </View>
       </View>
       <Typography className="text-metal text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
