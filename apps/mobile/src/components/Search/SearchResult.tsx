@@ -15,6 +15,9 @@ type Props = {
 const MAX_DESCRIPTION_CHARACTER = 150;
 
 const markdownStyles = StyleSheet.create({
+  paragraph: {
+    marginBottom: 0,
+  },
   body: {
     fontSize: 14,
   },
@@ -58,7 +61,7 @@ export function SearchResult({ title, description, variant, ...props }: Props) {
 
   return (
     <GalleryTouchableOpacity
-      className="h-16 py-2 px-4"
+      className="py-2 px-4 max-h-16"
       eventElementId="Search Result Row"
       eventName="Search Result Row Clicked"
       properties={{ variant }}
