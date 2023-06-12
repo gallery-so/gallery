@@ -28,6 +28,8 @@ const markdownStyles = StyleSheet.create({
   },
 });
 
+const ENABLED_CREATOR = false;
+
 export function NftDetailScreenInner() {
   const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'NftDetail'>>();
 
@@ -57,6 +59,9 @@ export function NftDetailScreenInner() {
                 address
                 chain
               }
+            }
+            owner {
+              username
             }
 
             ...NftAdditionalDetailsFragment
@@ -114,9 +119,15 @@ export function NftDetailScreenInner() {
     });
   }, [navigation, token.contract?.contractAddress]);
 
+  const handleUsernamePress = useCallback(() => {
+    if (token.owner?.username) {
+      navigation.push('Profile', { username: token.owner.username });
+    }
+  }, [navigation, token.owner?.username]);
+
   return (
     <ScrollView>
-      <View className="flex flex-col space-y-8 px-4 pb-4">
+      <View className="flex flex-col space-y-6 px-4 pb-4">
         <View className="flex flex-col space-y-3">
           <View className="flex flex-row justify-between">
             <BackButton />
@@ -163,6 +174,40 @@ export function NftDetailScreenInner() {
               </Pill>
             </GalleryTouchableOpacity>
           ) : null}
+        </View>
+
+        <View className="flex-row">
+          {ENABLED_CREATOR && (
+            <View className="w-1/2">
+              <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
+                CREATOR
+              </Typography>
+
+              <Typography
+                className="text-sm text-shadow"
+                font={{ family: 'ABCDiatype', weight: 'Regular' }}
+              >
+                riley.eth
+              </Typography>
+              <Typography
+                className="text-sm text-shadow"
+                font={{ family: 'ABCDiatype', weight: 'Regular' }}
+              >
+                riley.eth
+              </Typography>
+            </View>
+          )}
+          {token.owner && (
+            <View className="w-1/2">
+              <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
+                OWNER
+              </Typography>
+
+              <InteractiveLink onPress={handleUsernamePress}>
+                {token.owner.username}
+              </InteractiveLink>
+            </View>
+          )}
         </View>
 
         {token.description && (
