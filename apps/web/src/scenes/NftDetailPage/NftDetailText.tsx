@@ -96,7 +96,7 @@ function NftDetailText({ tokenRef }: Props) {
 
   const handleCreatorNameClick = useCallback(() => {
     // TODO: Update this to track the creator name click
-    track('Creator Name Click', {
+    track('NFT Detail Creator Name Click', {
       username: token.owner?.username ? token.owner.username.toLowerCase() : undefined,
       contractAddress: token.contract?.contractAddress?.address,
       tokenId: token.tokenId,
@@ -111,7 +111,7 @@ function NftDetailText({ tokenRef }: Props) {
   ]);
 
   const handleCollectorNameClick = useCallback(() => {
-    track('Collector Name Click', {
+    track('NFT Detail Collector Name Click', {
       username: token.owner?.username ? token.owner.username.toLowerCase() : undefined,
       contractAddress: token.contract?.contractAddress?.address,
       tokenId: token.tokenId,

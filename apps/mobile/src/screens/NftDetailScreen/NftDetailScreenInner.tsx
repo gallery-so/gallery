@@ -11,6 +11,7 @@ import { Pill } from '~/components/Pill';
 import { NftDetailScreenInnerQuery } from '~/generated/NftDetailScreenInnerQuery.graphql';
 import { MainTabStackNavigatorParamList, MainTabStackNavigatorProp } from '~/navigation/types';
 import { NftDetailAssetCacheSwapper } from '~/screens/NftDetailScreen/NftDetailAsset/NftDetailAssetCacheSwapper';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 
 import { IconContainer } from '../../components/IconContainer';
 import { InteractiveLink } from '../../components/InteractiveLink';
@@ -97,6 +98,8 @@ export function NftDetailScreenInner() {
     throw new Error("We couldn't find that token. Something went wrong and we're looking into it.");
   }
 
+  const track = useTrack();
+
   const navigation = useNavigation<MainTabStackNavigatorProp>();
 
   const [showAdditionalDetails, setShowAdditionalDetails] = useState(false);
@@ -121,9 +124,31 @@ export function NftDetailScreenInner() {
 
   const handleUsernamePress = useCallback(() => {
     if (token.owner?.username) {
+      track('NFT Detail Collector Name Clicked', {
+        username: token.owner.username,
+        contractAddress: token.contract?.contractAddress?.address,
+        tokenId: token.tokenId,
+      });
       navigation.push('Profile', { username: token.owner.username });
     }
-  }, [navigation, token.owner?.username]);
+  }, [
+    navigation,
+    track,
+    token.owner?.username,
+    token.contract?.contractAddress?.address,
+    token.tokenId,
+  ]);
+
+  // const handleCreatorPress = useCallback(() => {
+  //   if (token.creator?.username) {
+  //     track('NFT Detail Creator Name Clicked', {
+  //       username: token.creator.username,
+  //       contractAddress: token.contract?.contractAddress?.address,
+  //       tokenId: token.tokenId,
+  //     });
+  //     navigation.push('Profile', { username: token.creator.username });
+  //   }
+  // }, [navigation, track, token.creator?.username]);
 
   return (
     <ScrollView>
@@ -183,18 +208,8 @@ export function NftDetailScreenInner() {
                 CREATOR
               </Typography>
 
-              <Typography
-                className="text-sm text-shadow"
-                font={{ family: 'ABCDiatype', weight: 'Regular' }}
-              >
-                riley.eth
-              </Typography>
-              <Typography
-                className="text-sm text-shadow"
-                font={{ family: 'ABCDiatype', weight: 'Regular' }}
-              >
-                riley.eth
-              </Typography>
+              <InteractiveLink onPress={handleUsernamePress}>riley.eth</InteractiveLink>
+              <InteractiveLink onPress={handleUsernamePress}>riley.eth</InteractiveLink>
             </View>
           )}
           {token.owner && (
