@@ -5,7 +5,7 @@ import {
   useAnnouncementFragment$key,
   UserExperienceType,
 } from '~/generated/useAnnouncementFragment.graphql';
-import { getTimeSince } from '~/shared/utils/time';
+import { getDaysSince, getTimeSince } from '~/shared/utils/time';
 
 import { ANNOUNCEMENT_CONTENT } from './constants';
 
@@ -40,25 +40,31 @@ export default function useAnnouncement(queryRef: useAnnouncementFragment$key) {
     const userExperiences = query.viewer?.userExperiences ?? [];
     const announcementsLists = ANNOUNCEMENT_CONTENT;
 
-    return announcementsLists
-      .map((announcement) => {
-        return {
-          ...announcement,
-          key: announcement.key as UserExperienceType,
-          time: announcement.date ? getTimeSince(announcement.date) : null,
-          link: announcement.link,
-          experienced: userExperiences.some(
-            (userExperience) =>
-              userExperience.type === announcement.key && userExperience.experienced
-          ),
-        };
-      })
-      .sort((a, b) => {
-        if (a.date && b.date) {
-          return new Date(b.date).getTime() - new Date(a.date).getTime();
-        }
-        return 0;
-      });
+    return (
+      announcementsLists
+        // hide older announcements
+        .filter((announcement) => {
+          return getDaysSince(announcement.date) <= 30;
+        })
+        .map((announcement) => {
+          return {
+            ...announcement,
+            key: announcement.key as UserExperienceType,
+            time: getTimeSince(announcement.date),
+            link: announcement.link,
+            experienced: userExperiences.some(
+              (userExperience) =>
+                userExperience.type === announcement.key && userExperience.experienced
+            ),
+          };
+        })
+        .sort((a, b) => {
+          if (a.date && b.date) {
+            return new Date(b.date).getTime() - new Date(a.date).getTime();
+          }
+          return 0;
+        })
+    );
   }, [query.viewer?.userExperiences]);
 
   return {
