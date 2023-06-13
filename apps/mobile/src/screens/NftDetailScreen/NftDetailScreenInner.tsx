@@ -202,16 +202,6 @@ export function NftDetailScreenInner() {
         </View>
 
         <View className="flex-row">
-          {ENABLED_CREATOR && (
-            <View className="w-1/2">
-              <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
-                CREATOR
-              </Typography>
-
-              <InteractiveLink onPress={handleUsernamePress}>riley.eth</InteractiveLink>
-              <InteractiveLink onPress={handleUsernamePress}>riley.eth</InteractiveLink>
-            </View>
-          )}
           {token.owner && (
             <View className="w-1/2">
               <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
@@ -221,6 +211,16 @@ export function NftDetailScreenInner() {
               <InteractiveLink onPress={handleUsernamePress}>
                 {token.owner.username}
               </InteractiveLink>
+            </View>
+          )}
+          {ENABLED_CREATOR && (
+            <View className="w-1/2">
+              <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
+                CREATOR
+              </Typography>
+
+              <InteractiveLink onPress={handleUsernamePress}>riley.eth</InteractiveLink>
+              <InteractiveLink onPress={handleUsernamePress}>riley.eth</InteractiveLink>
             </View>
           )}
         </View>
