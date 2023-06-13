@@ -17,6 +17,7 @@ export type AnnouncementType = {
   time: string | null; // time since date
   experienced: boolean;
   link?: string;
+  ctaText?: string;
 };
 
 export default function useAnnouncement(queryRef: useAnnouncementFragment$key) {
@@ -51,7 +52,6 @@ export default function useAnnouncement(queryRef: useAnnouncementFragment$key) {
             ...announcement,
             key: announcement.key as UserExperienceType,
             time: getTimeSince(announcement.date),
-            link: announcement.link,
             experienced: userExperiences.some(
               (userExperience) =>
                 userExperience.type === announcement.key && userExperience.experienced

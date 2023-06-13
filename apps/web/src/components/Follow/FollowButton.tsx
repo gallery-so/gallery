@@ -1,9 +1,8 @@
 import { MouseEventHandler, useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 import { HStack } from '~/components/core/Spacer/Stack';
-import { TitleXSBold } from '~/components/core/Text/Text';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { FollowButtonQueryFragment$key } from '~/generated/FollowButtonQueryFragment.graphql';
 import { FollowButtonUserFragment$key } from '~/generated/FollowButtonUserFragment.graphql';
@@ -15,6 +14,7 @@ import useUnfollowUser from '~/shared/relay/useUnfollowUser';
 import colors from '~/shared/theme/colors';
 
 import breakpoints from '../core/breakpoints';
+import { Chip } from '../core/Chip/Chip';
 
 type Props = {
   queryRef: FollowButtonQueryFragment$key;
@@ -154,30 +154,6 @@ export default function FollowButton({ queryRef, userRef, className, source }: P
     </HStack>
   );
 }
-
-const Chip = styled(TitleXSBold).attrs({ role: 'button' })<{ disabled?: boolean }>`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  padding: 2px 4px;
-  cursor: pointer;
-
-  height: 20px;
-  line-height: 1;
-
-  border-radius: 2px;
-
-  white-space: nowrap;
-
-  ${({ disabled }) =>
-    disabled
-      ? css`
-          pointer-events: none;
-          cursor: default;
-        `
-      : null};
-`;
 
 const FollowingChip = styled(Chip)`
   background-color: ${colors.faint};
