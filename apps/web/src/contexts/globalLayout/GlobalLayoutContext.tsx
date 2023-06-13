@@ -31,7 +31,7 @@ import isTouchscreenDevice from '~/utils/isTouchscreenDevice';
 
 import { FEATURED_COLLECTION_IDS } from './GlobalAnnouncementPopover/GlobalAnnouncementPopover';
 import useGlobalAnnouncementPopover from './GlobalAnnouncementPopover/useGlobalAnnouncementPopover';
-import GlobalBanner from './GlobalBanner/GlobalBanner';
+import GlobalBanner, { CTAChip } from './GlobalBanner/GlobalBanner';
 import GlobalSidebar, { GLOBAL_SIDEBAR_DESKTOP_WIDTH } from './GlobalSidebar/GlobalSidebar';
 import {
   FADE_TRANSITION_TIME_MS,
@@ -427,10 +427,12 @@ function GlobalNavbarWithFadeEnabled({
               {isBannerVisible && (
                 <GlobalBanner
                   // make sure to update this flag and add to backend schema.graphql
-                  experienceFlag="MaintenanceFeb2023"
-                  text=""
-                  queryRef={query}
+                  experienceFlag="MobileBetaUpsell"
+                  variant="lit"
+                  text="**The new mobile era is here!** Download the new mobile app beta and take your collection everywhere."
+                  actionComponent={<CTAChip />}
                   dismissOnActionComponentClick
+                  queryRef={query}
                   requireAuth
                 />
               )}
