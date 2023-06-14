@@ -22,5 +22,5 @@ export function ProfilePicture({ userRef }: Props) {
 
   const firstLetter = user?.username?.substring(0, 1) ?? '';
 
-  return <RawProfilePicture letter={firstLetter} hasInset isEditable size="lg" />;
+  return <RawProfilePicture letter={firstLetter} hasInset isEditable size="xl" />;
 }
