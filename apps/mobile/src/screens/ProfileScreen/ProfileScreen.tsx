@@ -7,6 +7,7 @@ import { graphql } from 'relay-runtime';
 import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/NotesModal/NotesList';
 import { ProfileView } from '~/components/ProfileView/ProfileView';
 import { ProfileViewFallback } from '~/components/ProfileView/ProfileViewFallback';
+import { MUTUAL_FOLLOWERS_PER_PAGE } from '~/components/ProfileView/ProfileViewMutualInfo/ProfileViewMutualFollowers';
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { ProfileScreenQuery } from '~/generated/ProfileScreenQuery.graphql';
 import { ProfileScreenRefetchableFragment$key } from '~/generated/ProfileScreenRefetchableFragment.graphql';
@@ -26,6 +27,10 @@ function ProfileScreenInner() {
         $feedBefore: String
         $interactionsFirst: Int!
         $interactionsAfter: String
+        # $sharedCommunitiesFirst: Int
+        # $sharedCommunitiesAfter: String
+        $sharedFollowersFirst: Int
+        $sharedFollowersAfter: String
       ) {
         ...ProfileScreenRefetchableFragment
       }
@@ -34,6 +39,7 @@ function ProfileScreenInner() {
       username: route.params.username,
       feedLast: 24,
       interactionsFirst: NOTES_PER_PAGE,
+      sharedFollowersFirst: MUTUAL_FOLLOWERS_PER_PAGE,
     },
     { fetchPolicy: 'store-or-network', UNSTABLE_renderPolicy: 'partial' }
   );

@@ -11,6 +11,7 @@ import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import { TwitterIcon } from '../../icons/TwitterIcon';
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
+import ProfileViewMutualInfo from './ProfileViewMutualInfo/ProfileViewMutualInfo';
 
 type Props = {
   selectedRoute: string;
@@ -42,8 +43,10 @@ export function ProfileViewHeader({ queryRef, selectedRoute, onRouteChange }: Pr
                 username
               }
             }
+            ...ProfileViewMutualInfoFragment
           }
         }
+        # ...ProfileViewMutualFollowersSheetQueryFragment
       }
     `,
     queryRef
@@ -116,6 +119,7 @@ export function ProfileViewHeader({ queryRef, selectedRoute, onRouteChange }: Pr
           <Markdown>{user.bio}</Markdown>
         </View>
       )}
+      <ProfileViewMutualInfo userRef={user} queryRef={query} />
 
       {twitterPill ?? null}
 
