@@ -26,6 +26,8 @@ function EditUserInfoModal({ queryRef }: Props) {
               dbid
               username
               bio
+
+              ...UserInfoFormFragment
             }
           }
         }
@@ -82,6 +84,7 @@ function EditUserInfoModal({ queryRef }: Props) {
           onUsernameChange={onUsernameChange}
           bio={bio}
           onBioChange={onBioChange}
+          userRef={existingUser}
         />
         {generalError && <ErrorText message={generalError} />}
       </VStack>

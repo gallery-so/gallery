@@ -1,11 +1,16 @@
 import { FormEvent, useCallback, useMemo, useState } from 'react';
+import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import Input from '~/components/core/Input/Input';
-import { VStack } from '~/components/core/Spacer/Stack';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { TitleS } from '~/components/core/Text/Text';
 import { TextAreaWithCharCount } from '~/components/core/TextArea/TextArea';
+import { UserInfoFormFragment$key } from '~/generated/UserInfoFormFragment.graphql';
 import unescape from '~/shared/utils/unescape';
+
+import useNftSelector from '../NftSelector/useNftSelector';
+import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
 
 type Props = {
   className?: string;
@@ -16,6 +21,8 @@ type Props = {
   onUsernameChange: (username: string) => void;
   bio: string;
   onBioChange: (bio: string) => void;
+
+  userRef: UserInfoFormFragment$key;
 };
 
 export const BIO_MAX_CHAR_COUNT = 600;
@@ -29,8 +36,20 @@ function UserInfoForm({
   bio,
   onBioChange,
   mode,
+
+  userRef,
 }: Props) {
+  const user = useFragment(
+    graphql`
+      fragment UserInfoFormFragment on GalleryUser {
+        ...ProfilePictureFragment
+      }
+    `,
+    userRef
+  );
+
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const showNftSelector = useNftSelector();
 
   const unescapedBio = useMemo(() => unescape(bio), [bio]);
 
@@ -73,14 +92,23 @@ function UserInfoForm({
   return (
     <StyledUserInformContainer as="form" className={className} gap={16} onSubmit={handleSubmit}>
       {mode === 'Add' && <TitleS>Add username and bio</TitleS>}
-      <Input
-        onChange={handleUsernameChange}
-        placeholder="Username"
-        defaultValue={username}
-        errorMessage={usernameError}
-        autoFocus={shouldAutofocusUsername}
-        variant="grande"
-      />
+
+      <HStack gap={16} align="center">
+        <div onClick={showNftSelector}>
+          <ProfilePicture userRef={user} />
+        </div>
+        <StyledInputContainer>
+          <Input
+            onChange={handleUsernameChange}
+            placeholder="Username"
+            defaultValue={username}
+            errorMessage={usernameError}
+            autoFocus={shouldAutofocusUsername}
+            variant="grande"
+          />
+        </StyledInputContainer>
+      </HStack>
+
       <StyledTextAreaWithCharCount
         onChange={handleBioChange}
         placeholder="Tell us about yourself..."
@@ -101,6 +129,10 @@ const StyledUserInformContainer = styled(VStack)`
 
 const StyledTextAreaWithCharCount = styled(TextAreaWithCharCount)`
   height: 144px;
+`;
+
+const StyledInputContainer = styled.div`
+  width: 100%;
 `;
 
 export default UserInfoForm;
