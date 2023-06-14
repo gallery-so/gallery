@@ -4,6 +4,8 @@ import styled from 'styled-components';
 import { Button, ButtonLink } from '~/components/core/Button/Button';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleM } from '~/components/core/Text/Text';
+import useNftSelector from '~/components/NftSelector/useNftSelector';
+import { ProfilePictureStack } from '~/components/ProfilePictureStack';
 import { RawProfilePicture } from '~/components/RawProfilePicture';
 import icons from '~/icons/index';
 import colors from '~/shared/theme/colors';
@@ -39,6 +41,8 @@ export default function DesignPage() {
       return acc;
     }, {});
   }, []);
+
+  const showNftSelector = useNftSelector();
 
   return (
     <>
@@ -130,6 +134,10 @@ export default function DesignPage() {
             <RawProfilePicture hasInset imageUrl={avatarUrl} size="lg" />
             <RawProfilePicture hasInset imageUrl={avatarUrl} size="xl" />
           </ProfilePictureSection>
+
+          <ProfilePictureSection>
+            <ProfilePictureStack />
+          </ProfilePictureSection>
         </Examples>
 
         <Examples wrap="wrap">
@@ -160,6 +168,13 @@ export default function DesignPage() {
             <RawProfilePicture isEditable hasInset imageUrl={avatarUrl} size="lg" />
             <RawProfilePicture isEditable hasInset imageUrl={avatarUrl} size="xl" />
           </ProfilePictureSection>
+        </Examples>
+      </Section>
+
+      <Section>
+        <TitleM>NFT Selector</TitleM>
+        <Examples>
+          <Button onClick={showNftSelector}>Open Nft Selector</Button>
         </Examples>
       </Section>
 
