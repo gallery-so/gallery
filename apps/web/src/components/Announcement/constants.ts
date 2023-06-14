@@ -5,7 +5,7 @@ export const ANNOUNCEMENT_CONTENT = [
     key: 'MobileBetaUpsell',
     title: 'The Gallery Mobile App',
     description:
-      'The wait is over! Download the new mobile app beta and take your collection everywhere.',
+      'The wait is over! Download the Gallery Mobile App on Testflight and take your collection everywhere.',
     date: '2023-06-15T16:00:00.154845Z',
     link: '/mobile',
     ctaText: 'Download',

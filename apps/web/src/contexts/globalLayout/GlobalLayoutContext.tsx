@@ -429,7 +429,7 @@ function GlobalNavbarWithFadeEnabled({
                   // make sure to update this flag and add to backend schema.graphql
                   experienceFlag="MobileBetaUpsell"
                   variant="lit"
-                  text="**The new mobile era is here!** Download the new mobile app beta and take your collection everywhere."
+                  text="Embrace the new era of creativity at Gallery! Download the Gallery Mobile App Beta and take your collection everywhere."
                   actionComponent={<CTAChip />}
                   dismissOnActionComponentClick
                   queryRef={query}
