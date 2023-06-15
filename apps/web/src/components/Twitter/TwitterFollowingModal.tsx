@@ -1,5 +1,5 @@
 import Link, { LinkProps } from 'next/link';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { graphql, useFragment, usePaginationFragment } from 'react-relay';
 import { AutoSizer, InfiniteLoader, List, ListRowRenderer } from 'react-virtualized';
 import { SelectorStoreUpdater } from 'relay-runtime';
@@ -129,7 +129,10 @@ export default function TwitterFollowingModal({ followingRef, queryRef }: Props)
 
   const totalFollowing = followingPagination?.socialConnections?.pageInfo?.total ?? 0;
 
+  const [isFollowingAll, setIsFollowingAll] = useState(false);
+
   const handleFollowAll = useCallback(async () => {
+    setIsFollowingAll(true);
     try {
       const updater: SelectorStoreUpdater<TwitterFollowingModalMutation['response']> = (
         store,
@@ -172,6 +175,8 @@ export default function TwitterFollowingModal({ followingRef, queryRef }: Props)
           message: 'Unfortunately there was an error while following all users',
         });
       }
+    } finally {
+      setIsFollowingAll(false);
     }
   }, [followAll, pushToast, query?.viewer?.user?.id, reportError, twitterFollowing]);
 
@@ -255,7 +260,7 @@ export default function TwitterFollowingModal({ followingRef, queryRef }: Props)
         <StyledButtonSkip onClick={handleClose} variant="secondary">
           SKIP
         </StyledButtonSkip>
-        <StyledButtonFollowAll onClick={handleFollowAll} variant="primary">
+        <StyledButtonFollowAll onClick={handleFollowAll} variant="primary" pending={isFollowingAll}>
           FOLLOW ALL
         </StyledButtonFollowAll>
       </HStack>
