@@ -96,9 +96,9 @@ export default function GlobalBanner({
             <Markdown text={text} />
           </BaseM>
         </TextContainer>
-        <StyledAction align="center">
+        <StyledAction align="center" gap={isMobile ? 4 : 8}>
           <span onClick={handleActionClick}>{actionComponent}</span>
-          <StyledClose onClick={hideBanner} />
+          <StyledClose onClick={hideBanner} mode="dark" />
         </StyledAction>
       </StyledBanner>
     </StyledContainer>

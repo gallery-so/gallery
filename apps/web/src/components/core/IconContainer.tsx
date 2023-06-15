@@ -69,6 +69,8 @@ const COLOR_STATES: ColorStates = {
 type Props = {
   size?: IconSize;
   variant: ColorVariant;
+  // TODO: this is a temporary measure. need to refactor with official dark mode support
+  mode: 'light' | 'dark';
   disabled?: boolean;
   className?: string;
   icon: React.ReactElement;
@@ -80,6 +82,8 @@ function IconContainer(
     icon,
     onClick,
     variant,
+    // TODO: this is a temporary measure. need to refactor with official dark mode support
+    mode,
     disabled,
     className,
     size = 'md',
@@ -97,6 +101,8 @@ function IconContainer(
       disabled={disabled}
       className={className}
       variant={variant}
+      // TODO: this is a temporary measure. need to refactor with official dark mode support
+      mode={mode}
       disableHoverPadding={disableHoverPadding}
       onMouseDown={(e) => {
         // This will prevent the textarea from losing focus when user clicks a markdown icon
@@ -142,6 +148,8 @@ const StyledIcon = styled.div<{
   size: IconSize;
   disabled?: boolean;
   variant: ColorVariant;
+  // TODO: this is a temporary measure. need to refactor with official dark mode support
+  mode: 'light' | 'dark';
   disableHoverPadding: boolean;
 }>`
   position: relative;
@@ -151,7 +159,7 @@ const StyledIcon = styled.div<{
   align-items: center;
   cursor: pointer;
 
-  ${({ variant, disabled }) => {
+  ${({ variant, disabled, mode }) => {
     const variantState = COLOR_STATES[variant];
 
     return css`
@@ -178,12 +186,23 @@ const StyledIcon = styled.div<{
             }
 
             :hover {
+              ${mode === 'light'
+                ? `
               color: ${variantState.hoverForeground};
               background-color: ${variantState.hoverBackground};
 
               ${HoverCircle} {
                 background-color: ${variantState.hoverBackground};
               }
+              `
+                : // TODO: this is a temporary measure. need to refactor with official dark mode support
+                  `
+              color: ${variantState.hoverForeground};
+              background-color: ${colors.black['700']};
+              ${HoverCircle} {
+                background-color: ${colors.black['700']};
+              }
+              `}
             }
           `};
     `;
