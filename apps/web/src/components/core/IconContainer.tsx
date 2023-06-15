@@ -70,7 +70,7 @@ type Props = {
   size?: IconSize;
   variant: ColorVariant;
   // TODO: this is a temporary measure. need to refactor with official dark mode support
-  mode: 'light' | 'dark';
+  mode?: 'light' | 'dark';
   disabled?: boolean;
   className?: string;
   icon: React.ReactElement;
@@ -83,7 +83,7 @@ function IconContainer(
     onClick,
     variant,
     // TODO: this is a temporary measure. need to refactor with official dark mode support
-    mode,
+    mode = 'light',
     disabled,
     className,
     size = 'md',
