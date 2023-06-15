@@ -1,5 +1,4 @@
 import { graphql, useFragment } from 'react-relay';
-import styled from 'styled-components';
 
 import { NftSelectorTokenFragment$key } from '~/generated/NftSelectorTokenFragment.graphql';
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
@@ -15,6 +14,7 @@ export function NftSelectorToken({ tokenRef }: Props) {
     graphql`
       fragment NftSelectorTokenFragment on Token {
         dbid
+        name
         contract {
           contractAddress {
             address
@@ -42,24 +42,18 @@ export function NftSelectorToken({ tokenRef }: Props) {
     handleReportError: reportError,
   });
 
+  // TODO: handle this error
   if (!previewUrlSet?.urls.small) {
     return null;
-    // throw new CouldNotRenderNftError('SidebarNftIcon', 'could not find small image url');
+    throw new CouldNotRenderNftError('SidebarNftIcon', 'could not find small image url');
   }
 
   return (
-    <StyledNftContainer>
-      <RawNftSelectorPreviewAsset
-        type={previewUrlSet.type}
-        isSelected={false}
-        src={previewUrlSet.urls.small}
-        onLoad={() => {}}
-      />
-    </StyledNftContainer>
+    <RawNftSelectorPreviewAsset
+      type={previewUrlSet.type}
+      isSelected={false}
+      src={previewUrlSet.urls.small}
+      onLoad={() => {}}
+    />
   );
 }
-
-const StyledNftContainer = styled.div`
-  /* height: 128px; */
-  /* width: 128px; */
-`;

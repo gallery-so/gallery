@@ -1,16 +1,28 @@
+import { useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
+import { AutoSizer, List, ListRowProps } from 'react-virtualized';
 import styled from 'styled-components';
 
 import { NftSelectorViewFragment$key } from '~/generated/NftSelectorViewFragment.graphql';
 
-import { groupCollectionsByAddress } from '../GalleryEditor/PiecesSidebar/groupCollectionsByAddress';
+import {
+  CollectionGroup,
+  groupCollectionsByAddress,
+} from '../GalleryEditor/PiecesSidebar/groupCollectionsByAddress';
 import { NftSelectorTokenPreview } from './NftSelectorTokenPreview';
 
 type Props = {
+  selectedContractAddress: string | null;
+  onSelectContractAddress: (contractAddress: string) => void;
   tokenRefs: NftSelectorViewFragment$key;
 };
+const COLUMN_COUNT = 4;
 
-export function NftSelectorView({ tokenRefs }: Props) {
+export function NftSelectorView({
+  selectedContractAddress,
+  onSelectContractAddress,
+  tokenRefs,
+}: Props) {
   const tokens = useFragment(
     graphql`
       fragment NftSelectorViewFragment on Token @relay(plural: true) {
@@ -49,16 +61,86 @@ export function NftSelectorView({ tokenRefs }: Props) {
     ignoreSpam: true,
   });
 
-  console.log(groupedTokens);
+  const rows = useMemo(() => {
+    const rows = [];
+
+    let tokens = [...groupedTokens];
+
+    if (selectedContractAddress) {
+      const groupOfTokens = groupedTokens.find(
+        (group) => group.address === selectedContractAddress
+      );
+
+      if (groupOfTokens) {
+        const selectedCollectionTokens: CollectionGroup[] = [];
+
+        groupOfTokens.tokens.forEach((token) => {
+          selectedCollectionTokens.push({
+            title: groupOfTokens.title,
+            address: groupOfTokens.address,
+            tokens: [token],
+          });
+        });
+
+        tokens = selectedCollectionTokens;
+      }
+    }
+
+    for (let i = 0; i < tokens.length; i += COLUMN_COUNT) {
+      const row = tokens.slice(i, i + COLUMN_COUNT);
+
+      rows.push(row);
+    }
+
+    return rows;
+  }, [groupedTokens, selectedContractAddress]);
+
+  const rowRenderer = useCallback(
+    ({ key, style, index }: ListRowProps) => {
+      const row = rows[index];
+
+      if (!row) {
+        return null;
+      }
+
+      return (
+        <StyledNftSelectorViewContainer key={key} style={style}>
+          {row.map((column) => {
+            return (
+              <NftSelectorTokenPreview
+                key={column.address}
+                group={column}
+                onSelectGroup={onSelectContractAddress}
+              />
+            );
+          })}
+        </StyledNftSelectorViewContainer>
+      );
+    },
+    [onSelectContractAddress, rows]
+  );
 
   return (
-    <StyledNftSelectorViewContainer>
-      {groupedTokens.map((group) => {
-        return <NftSelectorTokenPreview key={group.title} group={group} />;
-      })}
-    </StyledNftSelectorViewContainer>
+    <StyledWrapper>
+      <AutoSizer>
+        {({ width, height }) => (
+          <List
+            width={width}
+            height={height}
+            rowHeight={220}
+            rowCount={rows.length}
+            rowRenderer={rowRenderer}
+          />
+        )}
+      </AutoSizer>
+    </StyledWrapper>
   );
 }
+
+const StyledWrapper = styled.div`
+  position: relative;
+  height: 500px;
+`;
 
 const StyledNftSelectorViewContainer = styled.div`
   padding: 16px 0;

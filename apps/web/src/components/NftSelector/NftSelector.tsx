@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -6,6 +6,7 @@ import { NftSelectorQueryFragment$key } from '~/generated/NftSelectorQueryFragme
 import SearchIcon from '~/icons/SearchIcon';
 import colors from '~/shared/theme/colors';
 
+import { Button } from '../core/Button/Button';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM } from '../core/Text/Text';
 import { SidebarView } from '../GalleryEditor/PiecesSidebar/SidebarViewSelector';
@@ -39,39 +40,62 @@ export function NftSelector({ queryRef }: Props) {
   const [selectedNetworkView, setSelectedNetworkView] =
     useState<NftSelectorNetworkView>('All networks');
 
+  const [selectedContractAddress, setSelectedContractAddress] = useState<string | null>(null);
+
+  const handleResetSelectedContractAddress = useCallback(() => {
+    setSelectedContractAddress(null);
+  }, []);
   return (
     <StyledNftSelectorModal>
       <StyledTitle>
         <StyledTitleText>Select an NFT</StyledTitleText>
       </StyledTitle>
 
-      <HStack gap={16} justify="space-between">
-        <StyledInputContainer align="center" gap={10}>
-          <SearchIcon />
-          <StyledInputSearch
-            type="text"
-            autoComplete="off"
-            autoCorrect="off"
-            placeholder="Search collection"
-          />
-        </StyledInputContainer>
-        <HStack gap={8}>
-          <NftSelectorViewSelector
-            selectedView={selectedView}
-            onSelectedViewChange={setSelectedView}
-          />
+      <StyledActionContainer gap={16} justify="space-between">
+        {!selectedContractAddress && (
+          <StyledInputContainer align="center" gap={10}>
+            <SearchIcon />
+            <StyledInputSearch
+              type="text"
+              autoComplete="off"
+              autoCorrect="off"
+              placeholder="Search collection"
+            />
+          </StyledInputContainer>
+        )}
+        <HStack gap={8} align="center">
+          {selectedContractAddress && (
+            // TODO: Temporary button while finalize design
+            <StyledButton onClick={handleResetSelectedContractAddress} variant="secondary">
+              Back
+            </StyledButton>
+          )}
+          {!selectedContractAddress && (
+            <NftSelectorViewSelector
+              selectedView={selectedView}
+              onSelectedViewChange={setSelectedView}
+            />
+          )}
+
           <NftSelectorFilterSort
             selectedView={selectedSortView}
             onSelectedViewChange={setSelectedSortView}
           />
-          <NftSelectorFilterNetwork
-            selectedView={selectedNetworkView}
-            onSelectedViewChange={setSelectedNetworkView}
-          />
-        </HStack>
-      </HStack>
 
-      <NftSelectorView tokenRefs={tokens} />
+          {!selectedContractAddress && (
+            <NftSelectorFilterNetwork
+              selectedView={selectedNetworkView}
+              onSelectedViewChange={setSelectedNetworkView}
+            />
+          )}
+        </HStack>
+      </StyledActionContainer>
+
+      <NftSelectorView
+        tokenRefs={tokens}
+        selectedContractAddress={selectedContractAddress}
+        onSelectContractAddress={setSelectedContractAddress}
+      />
     </StyledNftSelectorModal>
   );
 }
@@ -86,6 +110,9 @@ const StyledTitle = styled.div`
 `;
 const StyledTitleText = styled(BaseM)`
   font-weight: 700;
+`;
+const StyledActionContainer = styled(HStack)`
+  padding-bottom: 16px;
 `;
 
 const StyledInputContainer = styled(HStack)`
@@ -107,4 +134,9 @@ const StyledInputSearch = styled.input`
   &::placeholder {
     color: ${colors.porcelain};
   }
+`;
+
+const StyledButton = styled(Button)`
+  height: 30px;
+  width: 70px;
 `;
