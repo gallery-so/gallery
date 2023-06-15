@@ -98,7 +98,7 @@ export default function GlobalBanner({
         </TextContainer>
         <StyledAction align="center" gap={isMobile ? 4 : 8}>
           <span onClick={handleActionClick}>{actionComponent}</span>
-          <StyledClose onClick={hideBanner} mode="dark" />
+          <StyledClose onClick={hideBanner} mode={variant === 'lit' ? 'dark' : 'light'} />
         </StyledAction>
       </StyledBanner>
     </StyledContainer>
