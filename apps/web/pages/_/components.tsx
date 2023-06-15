@@ -42,7 +42,7 @@ export default function DesignPage() {
     }, {});
   }, []);
 
-  const showNftSelector = useNftSelector();
+  const showNftSelector = useNftSelector([]);
 
   return (
     <>

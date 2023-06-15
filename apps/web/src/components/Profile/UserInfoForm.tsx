@@ -7,6 +7,7 @@ import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { TitleS } from '~/components/core/Text/Text';
 import { TextAreaWithCharCount } from '~/components/core/TextArea/TextArea';
 import { UserInfoFormFragment$key } from '~/generated/UserInfoFormFragment.graphql';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 import unescape from '~/shared/utils/unescape';
 
 import useNftSelector from '../NftSelector/useNftSelector';
@@ -43,13 +44,19 @@ function UserInfoForm({
     graphql`
       fragment UserInfoFormFragment on GalleryUser {
         ...ProfilePictureFragment
+
+        tokens {
+          ...useNftSelectorQueryFragment
+        }
       }
     `,
     userRef
   );
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const showNftSelector = useNftSelector();
+
+  const tokens = removeNullValues(user.tokens) ?? [];
+  const showNftSelector = useNftSelector(tokens);
 
   const unescapedBio = useMemo(() => unescape(bio), [bio]);
 

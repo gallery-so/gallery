@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
+import { NftSelectorQueryFragment$key } from '~/generated/NftSelectorQueryFragment.graphql';
 import SearchIcon from '~/icons/SearchIcon';
 import colors from '~/shared/theme/colors';
 
@@ -16,8 +18,22 @@ import {
   NftSelectorSortView,
 } from './NftSelectorFilter/NftSelectorFilterSort';
 import { NftSelectorViewSelector } from './NftSelectorFilter/NftSelectorViewSelector';
+import { NftSelectorView } from './NftSelectorView';
 
-export function NftSelector() {
+type Props = {
+  queryRef: NftSelectorQueryFragment$key;
+};
+
+export function NftSelector({ queryRef }: Props) {
+  const tokens = useFragment(
+    graphql`
+      fragment NftSelectorQueryFragment on Token @relay(plural: true) {
+        ...NftSelectorViewFragment
+      }
+    `,
+    queryRef
+  );
+
   const [selectedView, setSelectedView] = useState<SidebarView>('Collected');
   const [selectedSortView, setSelectedSortView] = useState<NftSelectorSortView>('Recently added');
   const [selectedNetworkView, setSelectedNetworkView] =
@@ -54,6 +70,8 @@ export function NftSelector() {
           />
         </HStack>
       </HStack>
+
+      <NftSelectorView tokenRefs={tokens} />
     </StyledNftSelectorModal>
   );
 }
