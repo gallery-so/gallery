@@ -189,4 +189,7 @@ const StyledChip = styled(Chip)`
   background-color: ${colors.white};
   color: ${colors.black['800']};
   width: 88px;
+  &:hover {
+    background-color: ${colors.metal};
+  }
 `;
