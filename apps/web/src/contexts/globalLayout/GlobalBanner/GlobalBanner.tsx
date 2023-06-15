@@ -10,9 +10,13 @@ import { BaseM, TitleS } from '~/components/core/Text/Text';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { UserExperienceType } from '~/generated/enums';
 import { GlobalBannerFragment$key } from '~/generated/GlobalBannerFragment.graphql';
+import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { DecoratedCloseIcon } from '~/icons/CloseIcon';
 import colors from '~/shared/theme/colors';
 import useExperience from '~/utils/graphql/experiences/useExperience';
+import isIOS from '~/utils/isIOS';
+
+import MobileBetaReleaseBanner from './MobileBetaReleaseBanner';
 
 type Variant = 'default' | 'lit';
 
@@ -72,6 +76,12 @@ export default function GlobalBanner({
   }, [dismissOnActionComponentClick, hideBanner]);
 
   const navbarHeight = useGlobalNavbarHeight();
+
+  // TEMPORARY BANNER FOR IOS BETA ANNOUNCEMENT
+  const isMobile = useIsMobileWindowWidth();
+  if (isIOS() && isMobile) {
+    return <MobileBetaReleaseBanner />;
+  }
 
   if (text.length === 0 || isBannerExperienced || (requireAuth && !isAuthenticated)) {
     return null;
