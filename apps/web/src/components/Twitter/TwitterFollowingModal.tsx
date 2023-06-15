@@ -1,5 +1,5 @@
 import Link, { LinkProps } from 'next/link';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { graphql, useFragment, usePaginationFragment } from 'react-relay';
 import { AutoSizer, InfiniteLoader, List, ListRowRenderer } from 'react-virtualized';
 import { SelectorStoreUpdater } from 'relay-runtime';
@@ -36,6 +36,9 @@ export default function TwitterFollowingModal({ followingRef, queryRef }: Props)
           ... on Viewer {
             user {
               id
+              following {
+                id
+              }
             }
           }
         }
@@ -129,7 +132,10 @@ export default function TwitterFollowingModal({ followingRef, queryRef }: Props)
 
   const totalFollowing = followingPagination?.socialConnections?.pageInfo?.total ?? 0;
 
+  const [isMutationLoading, setIsMutationLoading] = useState(false);
+
   const handleFollowAll = useCallback(async () => {
+    setIsMutationLoading(true);
     try {
       const updater: SelectorStoreUpdater<TwitterFollowingModalMutation['response']> = (
         store,
@@ -172,6 +178,8 @@ export default function TwitterFollowingModal({ followingRef, queryRef }: Props)
           message: 'Unfortunately there was an error while following all users',
         });
       }
+    } finally {
+      setIsMutationLoading(false);
     }
   }, [followAll, pushToast, query?.viewer?.user?.id, reportError, twitterFollowing]);
 
@@ -217,6 +225,20 @@ export default function TwitterFollowingModal({ followingRef, queryRef }: Props)
     [query, twitterFollowing]
   );
 
+  // a non-ideal way to calculate this value but for now we can't easily
+  // grab whether the logged in user is already following another user
+  const isFollowingEveryone = useMemo(() => {
+    const followingList = new Set(
+      (query.viewer?.user?.following ?? []).map((following: { id: string } | null) => following?.id)
+    );
+    for (const suggestedUser of twitterFollowing) {
+      if (!followingList.has(suggestedUser.id)) {
+        return false;
+      }
+    }
+    return true;
+  }, [query.viewer?.user?.following, twitterFollowing]);
+
   return (
     <StyledOnboardingTwitterModal>
       <StyledBodyTextContainer>
@@ -255,7 +277,12 @@ export default function TwitterFollowingModal({ followingRef, queryRef }: Props)
         <StyledButtonSkip onClick={handleClose} variant="secondary">
           SKIP
         </StyledButtonSkip>
-        <StyledButtonFollowAll onClick={handleFollowAll} variant="primary">
+        <StyledButtonFollowAll
+          onClick={handleFollowAll}
+          variant="primary"
+          disabled={isFollowingEveryone}
+          pending={isMutationLoading}
+        >
           FOLLOW ALL
         </StyledButtonFollowAll>
       </HStack>
