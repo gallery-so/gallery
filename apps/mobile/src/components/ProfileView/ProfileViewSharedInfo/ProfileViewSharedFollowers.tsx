@@ -1,29 +1,28 @@
 import { useNavigation } from '@react-navigation/native';
-import { useCallback, useMemo, useRef, useState } from 'react';
-import { Text, View } from 'react-native';
+import { useCallback, useMemo, useRef } from 'react';
+import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { InteractiveLink } from '~/components/InteractiveLink';
 import { Typography } from '~/components/Typography';
-import { ProfileViewMutualFollowersFragment$key } from '~/generated/ProfileViewMutualFollowersFragment.graphql';
+import { ProfileViewSharedFollowersFragment$key } from '~/generated/ProfileViewSharedFollowersFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
-import { ProfileViewMutualFollowersSheet } from './ProfileViewMutualFollowersSheet';
+import { ProfileViewSharedFollowersSheet } from './ProfileViewSharedFollowersSheet';
 
-export const MUTUAL_FOLLOWERS_PER_PAGE = 20;
+export const SHARED_FOLLOWERS_PER_PAGE = 20;
 
 type Props = {
-  userRef: ProfileViewMutualFollowersFragment$key;
-  queryRef;
+  userRef: ProfileViewSharedFollowersFragment$key;
 };
 
-export default function ProfileViewMutualFollowers({ userRef, queryRef }: Props) {
+export default function ProfileViewSharedFollowers({ userRef }: Props) {
   const user = useFragment(
     graphql`
-      fragment ProfileViewMutualFollowersFragment on GalleryUser {
+      fragment ProfileViewSharedFollowersFragment on GalleryUser {
         __typename
         sharedFollowers(first: $sharedFollowersFirst, after: $sharedFollowersAfter)
           @connection(key: "UserSharedInfoFragment_sharedFollowers") {
@@ -40,13 +39,11 @@ export default function ProfileViewMutualFollowers({ userRef, queryRef }: Props)
             total
           }
         }
-        ...ProfileViewMutualFollowersSheetFragment
+        ...ProfileViewSharedFollowersSheetFragment
       }
     `,
     userRef
   );
-
-  // console.log({ user });
 
   const sharedFollowers = useMemo(() => {
     const list = user.sharedFollowers?.edges?.map((edge) => edge?.node) ?? [];
@@ -66,14 +63,12 @@ export default function ProfileViewMutualFollowers({ userRef, queryRef }: Props)
   const navigation = useNavigation<MainTabStackNavigatorProp>();
   const handleUsernamePress = useCallback(
     (username: string) => {
-      // if (token.owner?.username) {
       navigation.push('Profile', { username: username });
-      // }
     },
     [navigation]
   );
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
-  const [bottomSectionHeight, setBottomSectionHeight] = useState(200);
+  // const [bottomSectionHeight, setBottomSectionHeight] = useState(200);
 
   const handleSeeAllPress = useCallback(() => {
     bottomSheetRef.current?.present();
@@ -82,7 +77,10 @@ export default function ProfileViewMutualFollowers({ userRef, queryRef }: Props)
   const content = useMemo(() => {
     // Display up to 3 usernames
     const result = followersToDisplay.map((user) => (
-      <InteractiveLink onPress={() => handleUsernamePress(user.username)}>
+      <InteractiveLink
+        onPress={() => user.username && handleUsernamePress(user.username)}
+        key={user.username}
+      >
         <Typography
           className="text-xs underline text-shadow"
           font={{ family: 'ABCDiatype', weight: 'Regular' }}
@@ -97,8 +95,8 @@ export default function ProfileViewMutualFollowers({ userRef, queryRef }: Props)
       result.push(
         <GalleryTouchableOpacity
           onPress={handleSeeAllPress}
-          eventElementId="See All Mutual Followers Button"
-          eventName="See All Mutual Followers Clicked"
+          eventElementId="See All Shared Followers Button"
+          eventName="See All Shared Followers Clicked"
         >
           <Typography
             className="text-xs underline text-shadow"
@@ -143,7 +141,7 @@ export default function ProfileViewMutualFollowers({ userRef, queryRef }: Props)
         Followed by&nbsp;
       </Typography>
       {content}
-      <ProfileViewMutualFollowersSheet ref={bottomSheetRef} userRef={user} />
+      <ProfileViewSharedFollowersSheet ref={bottomSheetRef} userRef={user} />
     </View>
   );
 }
