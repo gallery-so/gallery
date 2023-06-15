@@ -36,6 +36,9 @@ export default function TwitterFollowingModal({ followingRef, queryRef }: Props)
           ... on Viewer {
             user {
               id
+              following {
+                id
+              }
             }
           }
         }
@@ -129,10 +132,10 @@ export default function TwitterFollowingModal({ followingRef, queryRef }: Props)
 
   const totalFollowing = followingPagination?.socialConnections?.pageInfo?.total ?? 0;
 
-  const [isFollowingAll, setIsFollowingAll] = useState(false);
+  const [isMutationLoading, setIsMutationLoading] = useState(false);
 
   const handleFollowAll = useCallback(async () => {
-    setIsFollowingAll(true);
+    setIsMutationLoading(true);
     try {
       const updater: SelectorStoreUpdater<TwitterFollowingModalMutation['response']> = (
         store,
@@ -176,7 +179,7 @@ export default function TwitterFollowingModal({ followingRef, queryRef }: Props)
         });
       }
     } finally {
-      setIsFollowingAll(false);
+      setIsMutationLoading(false);
     }
   }, [followAll, pushToast, query?.viewer?.user?.id, reportError, twitterFollowing]);
 
@@ -222,6 +225,20 @@ export default function TwitterFollowingModal({ followingRef, queryRef }: Props)
     [query, twitterFollowing]
   );
 
+  // a non-ideal way to calculate this value but for now we can't easily
+  // grab whether the logged in user is already following another user
+  const isFollowingEveryone = useMemo(() => {
+    const followingList = new Set(
+      (query.viewer?.user?.following ?? []).map((following: { id: string } | null) => following?.id)
+    );
+    for (const suggestedUser of twitterFollowing) {
+      if (!followingList.has(suggestedUser.id)) {
+        return false;
+      }
+    }
+    return true;
+  }, [query.viewer?.user?.following, twitterFollowing]);
+
   return (
     <StyledOnboardingTwitterModal>
       <StyledBodyTextContainer>
@@ -260,7 +277,12 @@ export default function TwitterFollowingModal({ followingRef, queryRef }: Props)
         <StyledButtonSkip onClick={handleClose} variant="secondary">
           SKIP
         </StyledButtonSkip>
-        <StyledButtonFollowAll onClick={handleFollowAll} variant="primary" pending={isFollowingAll}>
+        <StyledButtonFollowAll
+          onClick={handleFollowAll}
+          variant="primary"
+          disabled={isFollowingEveryone}
+          pending={isMutationLoading}
+        >
           FOLLOW ALL
         </StyledButtonFollowAll>
       </HStack>
