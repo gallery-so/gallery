@@ -32,6 +32,7 @@ export default function ProfileViewSharedFollowers({ userRef }: Props) {
               ... on GalleryUser {
                 __typename
                 username
+                id
               }
             }
           }
@@ -78,7 +79,7 @@ export default function ProfileViewSharedFollowers({ userRef }: Props) {
     const result = followersToDisplay.map((user) => (
       <InteractiveLink
         onPress={() => user.username && handleUsernamePress(user.username)}
-        key={user.username}
+        key={user.id}
       >
         <Typography
           className="text-xs underline text-shadow"
@@ -96,6 +97,7 @@ export default function ProfileViewSharedFollowers({ userRef }: Props) {
           onPress={handleSeeAllPress}
           eventElementId="See All Shared Followers Button"
           eventName="See All Shared Followers Clicked"
+          key="shared-followers-see-all"
         >
           <Typography
             className="text-xs underline text-shadow"
@@ -112,7 +114,11 @@ export default function ProfileViewSharedFollowers({ userRef }: Props) {
       result.splice(
         1,
         0,
-        <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+        <Typography
+          className="text-xs"
+          font={{ family: 'ABCDiatype', weight: 'Bold' }}
+          key="shared-followers-comma"
+        >
           ,&nbsp;
         </Typography>
       );
@@ -121,7 +127,11 @@ export default function ProfileViewSharedFollowers({ userRef }: Props) {
       result.splice(
         -1,
         0,
-        <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+        <Typography
+          className="text-xs"
+          font={{ family: 'ABCDiatype', weight: 'Bold' }}
+          key="shared-followers-and"
+        >
           &nbsp;and&nbsp;
         </Typography>
       );

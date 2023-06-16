@@ -55,10 +55,13 @@ export function ProfileViewHeader({ queryRef, selectedRoute, onRouteChange }: Pr
   );
 
   const user = query?.userByUsername;
+  const loggedInUserId = useLoggedInUserId(query);
 
   if (user?.__typename !== 'GalleryUser') {
     throw new Error(`Unable to fetch the current user`);
   }
+
+  const isLoggedInUser = loggedInUserId === user.id;
 
   const handleTwitterPress = useCallback(() => {
     if (user.socialAccounts?.twitter?.username) {
@@ -113,10 +116,6 @@ export function ProfileViewHeader({ queryRef, selectedRoute, onRouteChange }: Pr
       },
     ];
   }, [totalGalleries, totalFollowers]);
-
-  const loggedInUserId = useLoggedInUserId(query);
-
-  const isLoggedInUser = loggedInUserId === user.id;
 
   return (
     <View>

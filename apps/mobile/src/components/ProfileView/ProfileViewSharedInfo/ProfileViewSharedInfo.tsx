@@ -17,7 +17,6 @@ export default function ProfileViewSharedInfo({ userRef }: Props) {
         __typename
         ...ProfileViewSharedFollowersFragment
         ...ProfileViewSharedCommunitiesFragment
-        # ...UserSharedCommunitiesFragment
       }
     `,
     userRef

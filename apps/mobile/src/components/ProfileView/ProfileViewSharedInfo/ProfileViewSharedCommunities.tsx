@@ -34,6 +34,7 @@ export default function ProfileViewSharedCommunities({ userRef }: Props) {
               __typename
               ... on Community {
                 __typename
+                id
                 name
                 chain
                 contractAddress {
@@ -97,7 +98,7 @@ export default function ProfileViewSharedCommunities({ userRef }: Props) {
             onPress={() =>
               community.contractAddress && handleCommunityPress(community.contractAddress)
             }
-            key={community.name}
+            key={community.id}
           >
             <Typography
               className="text-xs underline text-shadow"
@@ -112,6 +113,7 @@ export default function ProfileViewSharedCommunities({ userRef }: Props) {
         <Typography
           className="text-xs underline text-shadow"
           font={{ family: 'ABCDiatype', weight: 'Regular' }}
+          key={community.id}
         >
           {community.name}
         </Typography>
@@ -125,6 +127,7 @@ export default function ProfileViewSharedCommunities({ userRef }: Props) {
           onPress={handleSeeAllPress}
           eventElementId="See All Shared Followers Button"
           eventName="See All Shared Followers Clicked"
+          key="shared-communities-see-all"
         >
           <Typography
             className="text-xs underline text-shadow"
@@ -141,7 +144,11 @@ export default function ProfileViewSharedCommunities({ userRef }: Props) {
       result.splice(
         1,
         0,
-        <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+        <Typography
+          className="text-xs"
+          font={{ family: 'ABCDiatype', weight: 'Bold' }}
+          key="shared-communities-comma"
+        >
           ,&nbsp;
         </Typography>
       );
@@ -150,7 +157,11 @@ export default function ProfileViewSharedCommunities({ userRef }: Props) {
       result.splice(
         -1,
         0,
-        <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+        <Typography
+          className="text-xs"
+          font={{ family: 'ABCDiatype', weight: 'Bold' }}
+          key="shared-communities-and"
+        >
           &nbsp;and&nbsp;
         </Typography>
       );

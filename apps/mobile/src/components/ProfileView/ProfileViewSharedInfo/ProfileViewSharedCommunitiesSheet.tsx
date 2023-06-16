@@ -97,7 +97,7 @@ function ProfileViewSharedCommunitiesSheet(
   const renderItem = useCallback<ListRenderItem<ListItemType>>(
     ({ item }) => {
       return (
-        <View className="mb-4 px-4">
+        <View className="mb-4 px-4" key={item.name}>
           <InteractiveLink
             onPress={() => item.contractAddress && handleCommunityPress(item.contractAddress)}
           >
