@@ -1,12 +1,36 @@
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 import appIcon from 'public/gallery-app-ios-icon.png';
+import { useCallback } from 'react';
 import styled from 'styled-components';
 
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { TitleXSBold } from '~/components/core/Text/Text';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
 
-export default function MobileBetaReleaseBanner() {
+type Props = {
+  handleCTAClick: () => void;
+};
+
+export default function MobileBetaReleaseBanner({ handleCTAClick }: Props) {
+  const { push } = useRouter();
+
+  const track = useTrack();
+
+  const handleClick = useCallback(() => {
+    // TODO: standardize this tracking across all buttons, chips, and icons, like mobile
+    track('Button Click', {
+      id: 'Global Banner Button',
+      name: 'Global Banner Button Clicked',
+      variant: 'iOS',
+    });
+
+    push('/mobile');
+
+    handleCTAClick();
+  }, [handleCTAClick, push, track]);
+
   return (
     <StyledContainer align="center">
       <StyledContent align="center" justify="space-between">
@@ -17,7 +41,7 @@ export default function MobileBetaReleaseBanner() {
             <StyledDescription>Mobile app beta now available</StyledDescription>
           </VStack>
         </StyledLeftContent>
-        <StyledDownloadButton>
+        <StyledDownloadButton onClick={handleClick}>
           <StyledDownloadText>DOWNLOAD</StyledDownloadText>
         </StyledDownloadButton>
       </StyledContent>

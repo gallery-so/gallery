@@ -12,6 +12,7 @@ import { UserExperienceType } from '~/generated/enums';
 import { GlobalBannerFragment$key } from '~/generated/GlobalBannerFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { DecoratedCloseIcon } from '~/icons/CloseIcon';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
 import useExperience from '~/utils/graphql/experiences/useExperience';
 import isIOS from '~/utils/isIOS';
@@ -77,14 +78,15 @@ export default function GlobalBanner({
 
   const navbarHeight = useGlobalNavbarHeight();
 
-  // TEMPORARY BANNER FOR IOS BETA ANNOUNCEMENT
   const isMobile = useIsMobileWindowWidth();
-  if (isIOS() && isMobile) {
-    return <MobileBetaReleaseBanner />;
-  }
 
   if (text.length === 0 || isBannerExperienced || (requireAuth && !isAuthenticated)) {
     return null;
+  }
+
+  // TEMPORARY BANNER FOR IOS BETA ANNOUNCEMENT
+  if (isIOS() && isMobile) {
+    return <MobileBetaReleaseBanner handleCTAClick={handleActionClick} />;
   }
 
   return (
@@ -171,19 +173,24 @@ const StyledAction = styled(HStack)`
   margin-right: -16px;
 `;
 
-export const CTAChip = function () {
+export function CTAChip() {
   const { push } = useRouter();
 
-  return (
-    <StyledChip
-      onClick={() => {
-        push('/mobile');
-      }}
-    >
-      Download
-    </StyledChip>
-  );
-};
+  const track = useTrack();
+
+  const handleClick = useCallback(() => {
+    // TODO: standardize this tracking across all buttons, chips, and icons, like mobile
+    track('Button Click', {
+      id: 'Banner Button',
+      name: 'Global Banner Button Clicked',
+      variant: 'default',
+    });
+
+    push('/mobile');
+  }, [push, track]);
+
+  return <StyledChip onClick={handleClick}>Download</StyledChip>;
+}
 
 const StyledChip = styled(Chip)`
   background-color: ${colors.white};
