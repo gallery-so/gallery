@@ -81,10 +81,7 @@ export default function ProfileViewSharedFollowers({ userRef }: Props) {
         onPress={() => user.username && handleUsernamePress(user.username)}
         key={user.id}
       >
-        <Typography
-          className="text-xs underline text-shadow"
-          font={{ family: 'ABCDiatype', weight: 'Regular' }}
-        >
+        <Typography className="text-xs " font={{ family: 'ABCDiatype', weight: 'Bold' }}>
           {user.username}
         </Typography>
       </InteractiveLink>
@@ -99,10 +96,7 @@ export default function ProfileViewSharedFollowers({ userRef }: Props) {
           eventName="See All Shared Followers Clicked"
           key="shared-followers-see-all"
         >
-          <Typography
-            className="text-xs underline text-shadow"
-            font={{ family: 'ABCDiatype', weight: 'Regular' }}
-          >
+          <Typography className="text-xs " font={{ family: 'ABCDiatype', weight: 'Bold' }}>
             {totalSharedFollowers - 2} others
           </Typography>
         </GalleryTouchableOpacity>
@@ -116,7 +110,7 @@ export default function ProfileViewSharedFollowers({ userRef }: Props) {
         0,
         <Typography
           className="text-xs"
-          font={{ family: 'ABCDiatype', weight: 'Bold' }}
+          font={{ family: 'ABCDiatype', weight: 'Regular' }}
           key="shared-followers-comma"
         >
           ,&nbsp;
@@ -129,7 +123,7 @@ export default function ProfileViewSharedFollowers({ userRef }: Props) {
         0,
         <Typography
           className="text-xs"
-          font={{ family: 'ABCDiatype', weight: 'Bold' }}
+          font={{ family: 'ABCDiatype', weight: 'Regular' }}
           key="shared-followers-and"
         >
           &nbsp;and&nbsp;
@@ -146,7 +140,7 @@ export default function ProfileViewSharedFollowers({ userRef }: Props) {
 
   return (
     <View className="flex flex-row flex-wrap">
-      <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+      <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
         Followed by&nbsp;
       </Typography>
       {content}
