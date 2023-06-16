@@ -8,9 +8,11 @@ import { ProfileTabBar } from '~/components/ProfileView/ProfileTabBar';
 import { Typography } from '~/components/Typography';
 import { ProfileViewHeaderFragment$key } from '~/generated/ProfileViewHeaderFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
+import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 
 import { TwitterIcon } from '../../icons/TwitterIcon';
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
+import ProfileViewSharedInfo from './ProfileViewSharedInfo/ProfileViewSharedInfo';
 
 type Props = {
   selectedRoute: string;
@@ -26,6 +28,7 @@ export function ProfileViewHeader({ queryRef, selectedRoute, onRouteChange }: Pr
         userByUsername(username: $username) {
           ... on GalleryUser {
             __typename
+            id
             bio
 
             galleries {
@@ -42,18 +45,23 @@ export function ProfileViewHeader({ queryRef, selectedRoute, onRouteChange }: Pr
                 username
               }
             }
+            ...ProfileViewSharedInfoFragment
           }
         }
+        ...useLoggedInUserIdFragment
       }
     `,
     queryRef
   );
 
   const user = query?.userByUsername;
+  const loggedInUserId = useLoggedInUserId(query);
 
   if (user?.__typename !== 'GalleryUser') {
     throw new Error(`Unable to fetch the current user`);
   }
+
+  const isLoggedInUser = loggedInUserId === user.id;
 
   const handleTwitterPress = useCallback(() => {
     if (user.socialAccounts?.twitter?.username) {
@@ -116,6 +124,7 @@ export function ProfileViewHeader({ queryRef, selectedRoute, onRouteChange }: Pr
           <Markdown>{user.bio}</Markdown>
         </View>
       )}
+      {!isLoggedInUser && <ProfileViewSharedInfo userRef={user} />}
 
       {twitterPill ?? null}
 
