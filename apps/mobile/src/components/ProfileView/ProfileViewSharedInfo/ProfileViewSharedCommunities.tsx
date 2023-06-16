@@ -164,7 +164,7 @@ export default function ProfileViewSharedCommunities({ userRef }: Props) {
   }
 
   return (
-    <View className="flex flex-row">
+    <View className="flex flex-row flex-wrap">
       <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
         Also holds&nbsp;
       </Typography>

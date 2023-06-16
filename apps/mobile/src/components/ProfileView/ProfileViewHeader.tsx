@@ -8,6 +8,7 @@ import { ProfileTabBar } from '~/components/ProfileView/ProfileTabBar';
 import { Typography } from '~/components/Typography';
 import { ProfileViewHeaderFragment$key } from '~/generated/ProfileViewHeaderFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
+import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 
 import { TwitterIcon } from '../../icons/TwitterIcon';
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
@@ -27,6 +28,7 @@ export function ProfileViewHeader({ queryRef, selectedRoute, onRouteChange }: Pr
         userByUsername(username: $username) {
           ... on GalleryUser {
             __typename
+            id
             bio
 
             galleries {
@@ -46,6 +48,7 @@ export function ProfileViewHeader({ queryRef, selectedRoute, onRouteChange }: Pr
             ...ProfileViewSharedInfoFragment
           }
         }
+        ...useLoggedInUserIdFragment
       }
     `,
     queryRef
@@ -111,6 +114,10 @@ export function ProfileViewHeader({ queryRef, selectedRoute, onRouteChange }: Pr
     ];
   }, [totalGalleries, totalFollowers]);
 
+  const loggedInUserId = useLoggedInUserId(query);
+
+  const isLoggedInUser = loggedInUserId === user.id;
+
   return (
     <View>
       {user.bio && (
@@ -118,7 +125,7 @@ export function ProfileViewHeader({ queryRef, selectedRoute, onRouteChange }: Pr
           <Markdown>{user.bio}</Markdown>
         </View>
       )}
-      <ProfileViewSharedInfo userRef={user} />
+      {!isLoggedInUser && <ProfileViewSharedInfo userRef={user} />}
 
       {twitterPill ?? null}
 

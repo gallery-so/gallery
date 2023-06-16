@@ -68,7 +68,6 @@ export default function ProfileViewSharedFollowers({ userRef }: Props) {
     [navigation]
   );
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
-  // const [bottomSectionHeight, setBottomSectionHeight] = useState(200);
 
   const handleSeeAllPress = useCallback(() => {
     bottomSheetRef.current?.present();
@@ -136,7 +135,7 @@ export default function ProfileViewSharedFollowers({ userRef }: Props) {
   }
 
   return (
-    <View className="flex flex-row">
+    <View className="flex flex-row flex-wrap">
       <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
         Followed by&nbsp;
       </Typography>
