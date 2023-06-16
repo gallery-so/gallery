@@ -69,7 +69,10 @@ export function NftAdditionalDetailsEth({ tokenRef, showDetails }: NftAdditional
             {contract?.contractAddress?.address && (
               <DetailSection>
                 <DetailLabelText>CONTRACT ADDRESS</DetailLabelText>
-                <LinkableAddress chainAddressRef={contract.contractAddress} />
+                <LinkableAddress
+                  chainAddressRef={contract.contractAddress}
+                  type="NFT Detail Contract Address"
+                />
               </DetailSection>
             )}
 
@@ -90,13 +93,17 @@ export function NftAdditionalDetailsEth({ tokenRef, showDetails }: NftAdditional
 
           {openSeaExternalUrl && (
             <DetailSection>
-              <InteractiveLink href={openSeaExternalUrl}>View on OpenSea</InteractiveLink>
+              <InteractiveLink href={openSeaExternalUrl} type="NFT Detail View on Opensea">
+                View on OpenSea
+              </InteractiveLink>
             </DetailSection>
           )}
 
           {externalUrl && (
             <DetailSection>
-              <InteractiveLink href={externalUrl}>More Info</InteractiveLink>
+              <InteractiveLink href={externalUrl} type="NFT Detail More Info URL">
+                More Info
+              </InteractiveLink>
             </DetailSection>
           )}
         </View>

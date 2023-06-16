@@ -112,8 +112,12 @@ export function SettingsScreen() {
             </Typography>
           )}
 
-          <InteractiveLink href="https://gallery.so/terms">TERMS</InteractiveLink>
-          <InteractiveLink href="https://gallery.so/privacy">PRIVACY POLICY</InteractiveLink>
+          <InteractiveLink href="https://gallery.so/terms" type={null}>
+            TERMS
+          </InteractiveLink>
+          <InteractiveLink href="https://gallery.so/privacy" type={null}>
+            PRIVACY POLICY
+          </InteractiveLink>
         </View>
       </View>
 

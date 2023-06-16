@@ -37,11 +37,18 @@ const EnsName = ({ chainAddressRef }: EnsNameProps) => {
   const link = getExternalAddressLink(address);
 
   if (data?.name && link) {
-    return <RawLinkableAddress link={link} address={data.address} truncatedAddress={data.name} />;
+    return (
+      <RawLinkableAddress
+        link={link}
+        address={data.address}
+        truncatedAddress={data.name}
+        type="ENS Name"
+      />
+    );
   }
 
   // If we couldn't resolve, let's fallback to the default component
-  return <LinkableAddress chainAddressRef={address} />;
+  return <LinkableAddress chainAddressRef={address} type="ENS Name Fallback" />;
 };
 
 type EnsOrAddressProps = {
@@ -62,7 +69,7 @@ export const EnsOrAddress = ({ chainAddressRef }: EnsOrAddressProps) => {
   );
 
   return (
-    <Suspense fallback={<LinkableAddress chainAddressRef={address} />}>
+    <Suspense fallback={<LinkableAddress chainAddressRef={address} type="ENS Name Fallback" />}>
       <ReportingErrorBoundary
         fallback={
           <Typography font={{ family: 'ABCDiatype', weight: 'Regular' }}>Not Found</Typography>

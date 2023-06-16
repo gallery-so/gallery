@@ -95,12 +95,13 @@ export default function ProfileViewSharedCommunities({ userRef }: Props) {
       if (!!community.contractAddress && community.chain) {
         return (
           <InteractiveLink
+            type="Profile View Shared Communities"
+            key={community.id}
             onPress={() =>
               community.contractAddress && handleCommunityPress(community.contractAddress)
             }
-            key={community.id}
           >
-            <Typography className="text-xs " font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+            <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
               {community.name}
             </Typography>
           </InteractiveLink>

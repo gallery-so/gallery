@@ -208,7 +208,7 @@ export function NftDetailScreenInner() {
                 OWNER
               </Typography>
 
-              <InteractiveLink onPress={handleUsernamePress}>
+              <InteractiveLink onPress={handleUsernamePress} type="NFT Detail Token Owner Username">
                 {token.owner.username}
               </InteractiveLink>
             </View>
@@ -219,8 +219,12 @@ export function NftDetailScreenInner() {
                 CREATOR
               </Typography>
 
-              <InteractiveLink onPress={handleUsernamePress}>riley.eth</InteractiveLink>
-              <InteractiveLink onPress={handleUsernamePress}>riley.eth</InteractiveLink>
+              <InteractiveLink onPress={handleUsernamePress} type="NFT Detail Token Creator">
+                riley.eth
+              </InteractiveLink>
+              <InteractiveLink onPress={handleUsernamePress} type="NFT Detail Token Creator">
+                riley.eth
+              </InteractiveLink>
             </View>
           )}
         </View>
@@ -236,7 +240,10 @@ export function NftDetailScreenInner() {
         </View>
 
         <View>
-          <InteractiveLink onPress={toggleAdditionalDetails}>
+          <InteractiveLink
+            onPress={toggleAdditionalDetails}
+            type="NFT Detail Show Additional Details"
+          >
             {showAdditionalDetails ? 'Hide Details' : 'Show Additional Details'}
           </InteractiveLink>
         </View>

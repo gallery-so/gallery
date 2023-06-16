@@ -100,6 +100,7 @@ function ProfileViewSharedCommunitiesSheet(
         <View className="mb-4 px-4" key={item.name}>
           <InteractiveLink
             onPress={() => item.contractAddress && handleCommunityPress(item.contractAddress)}
+            type="Profile View Shared Communities"
           >
             <Typography
               className="text-sm mb-4 px-4"

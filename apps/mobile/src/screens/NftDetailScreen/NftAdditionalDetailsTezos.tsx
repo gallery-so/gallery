@@ -65,7 +65,10 @@ export function NftAdditionalDetailsTezos({
           <DetailLabelText>CREATED BY</DetailLabelText>
 
           {/* TODO(Terence) When the contract screen is ready, setup the onPress here */}
-          <LinkableAddress chainAddressRef={token.contract.creatorAddress} />
+          <LinkableAddress
+            chainAddressRef={token.contract.creatorAddress}
+            type="NFT Detail Creator Address"
+          />
         </DetailSection>
       )}
 
@@ -75,14 +78,19 @@ export function NftAdditionalDetailsTezos({
             {contract?.contractAddress?.address && (
               <DetailSection>
                 <DetailLabelText>CONTRACT ADDRESS</DetailLabelText>
-                <LinkableAddress chainAddressRef={contract.contractAddress} />
+                <LinkableAddress
+                  chainAddressRef={contract.contractAddress}
+                  type="NFT Detail Contract Address"
+                />
               </DetailSection>
             )}
 
             {tokenId && token.externalUrl && (
               <DetailSection>
                 <DetailLabelText>TOKEN ID</DetailLabelText>
-                <InteractiveLink href={token.externalUrl}>{hexHandler(tokenId)}</InteractiveLink>
+                <InteractiveLink href={token.externalUrl} type="NFT Detail Token ID">
+                  {hexHandler(tokenId)}
+                </InteractiveLink>
               </DetailSection>
             )}
           </View>
@@ -90,14 +98,26 @@ export function NftAdditionalDetailsTezos({
           {token.chain && (
             <DetailSection>
               <DetailLabelText>CHAIN</DetailLabelText>
-              <InteractiveLink>{token.chain}</InteractiveLink>
+              <InteractiveLink type="NFT Detail Chain">{token.chain}</InteractiveLink>
             </DetailSection>
           )}
 
           <View className="flex flex-row space-x-1">
-            {fxhashUrl && <InteractiveLink href={fxhashUrl}>View on fx(hash)</InteractiveLink>}
-            {objktUrl && <InteractiveLink href={objktUrl}>View on objkt</InteractiveLink>}
-            {externalUrl && <InteractiveLink href={externalUrl}>More Info</InteractiveLink>}
+            {fxhashUrl && (
+              <InteractiveLink href={fxhashUrl} type="NFT Detail FX Hash URL">
+                View on fx(hash)
+              </InteractiveLink>
+            )}
+            {objktUrl && (
+              <InteractiveLink href={objktUrl} type="NFT Detail OBJKT URL">
+                View on objkt
+              </InteractiveLink>
+            )}
+            {externalUrl && (
+              <InteractiveLink href={externalUrl} type="NFT Detail More Info URL">
+                More Info
+              </InteractiveLink>
+            )}
           </View>
         </View>
       )}
