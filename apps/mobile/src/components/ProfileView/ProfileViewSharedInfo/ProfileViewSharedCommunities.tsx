@@ -100,10 +100,7 @@ export default function ProfileViewSharedCommunities({ userRef }: Props) {
             }
             key={community.id}
           >
-            <Typography
-              className="text-xs underline text-shadow"
-              font={{ family: 'ABCDiatype', weight: 'Regular' }}
-            >
+            <Typography className="text-xs " font={{ family: 'ABCDiatype', weight: 'Bold' }}>
               {community.name}
             </Typography>
           </InteractiveLink>
@@ -111,8 +108,8 @@ export default function ProfileViewSharedCommunities({ userRef }: Props) {
       }
       return (
         <Typography
-          className="text-xs underline text-shadow"
-          font={{ family: 'ABCDiatype', weight: 'Regular' }}
+          className="text-xs "
+          font={{ family: 'ABCDiatype', weight: 'Bold' }}
           key={community.id}
         >
           {community.name}
@@ -129,10 +126,7 @@ export default function ProfileViewSharedCommunities({ userRef }: Props) {
           eventName="See All Shared Followers Clicked"
           key="shared-communities-see-all"
         >
-          <Typography
-            className="text-xs underline text-shadow"
-            font={{ family: 'ABCDiatype', weight: 'Regular' }}
-          >
+          <Typography className="text-xs " font={{ family: 'ABCDiatype', weight: 'Bold' }}>
             {totalSharedCommunities - 2} others
           </Typography>
         </GalleryTouchableOpacity>
@@ -146,7 +140,7 @@ export default function ProfileViewSharedCommunities({ userRef }: Props) {
         0,
         <Typography
           className="text-xs"
-          font={{ family: 'ABCDiatype', weight: 'Bold' }}
+          font={{ family: 'ABCDiatype', weight: 'Regular' }}
           key="shared-communities-comma"
         >
           ,&nbsp;
@@ -159,7 +153,7 @@ export default function ProfileViewSharedCommunities({ userRef }: Props) {
         0,
         <Typography
           className="text-xs"
-          font={{ family: 'ABCDiatype', weight: 'Bold' }}
+          font={{ family: 'ABCDiatype', weight: 'Regular' }}
           key="shared-communities-and"
         >
           &nbsp;and&nbsp;
@@ -176,7 +170,7 @@ export default function ProfileViewSharedCommunities({ userRef }: Props) {
 
   return (
     <View className="flex flex-row flex-wrap">
-      <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+      <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
         Also holds&nbsp;
       </Typography>
       {content}
