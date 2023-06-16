@@ -1,11 +1,9 @@
-import { useNavigation } from '@react-navigation/native';
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 import { View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { NftAdditionalDetailsEthFragment$key } from '~/generated/NftAdditionalDetailsEthFragment.graphql';
-import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { getOpenseaExternalUrl, hexHandler } from '~/shared/utils/getOpenseaExternalUrl';
 
 import { EnsOrAddress } from '../../components/EnsOrAddress';
@@ -26,10 +24,6 @@ export function NftAdditionalDetailsEth({ tokenRef, showDetails }: NftAdditional
         tokenId
 
         chain
-
-        owner {
-          username
-        }
 
         contract {
           creatorAddress {
@@ -58,25 +52,8 @@ export function NftAdditionalDetailsEth({ tokenRef, showDetails }: NftAdditional
     return null;
   }, [contract?.contractAddress?.address, tokenId]);
 
-  const navigation = useNavigation<MainTabStackNavigatorProp>();
-  const handleUsernamePress = useCallback(() => {
-    if (token.owner?.username) {
-      navigation.push('Profile', { username: token.owner.username });
-    }
-  }, [navigation, token.owner?.username]);
-
   return (
     <View className="flex flex-col space-y-4">
-      {token.owner?.username && (
-        <DetailSection>
-          <DetailLabelText>OWNED BY</DetailLabelText>
-
-          <InteractiveLink onPress={handleUsernamePress} type="NFT Detail Token Owner Username">
-            {token.owner.username}
-          </InteractiveLink>
-        </DetailSection>
-      )}
-
       {token.contract?.creatorAddress?.address && (
         <DetailSection>
           <DetailLabelText>CREATED BY</DetailLabelText>

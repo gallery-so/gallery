@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
+import { ENABLED_CREATOR } from '~/constants/creator';
 import { NftPreviewLabelCollectionNameFragment$key } from '~/generated/NftPreviewLabelCollectionNameFragment.graphql';
 import { NftPreviewLabelFragment$key } from '~/generated/NftPreviewLabelFragment.graphql';
 import colors from '~/shared/theme/colors';
@@ -19,8 +20,6 @@ type Props = {
   // if false, the label will appear flat.
   interactive?: boolean;
 };
-
-const ENABLED_ARTIST = false;
 
 function NftPreviewLabel({ className, tokenRef, interactive = true }: Props) {
   const token = useFragment(
@@ -117,7 +116,7 @@ function CollectionName({ tokenRef, interactive }: CollectionNameProps) {
         <StyledBaseM color={colors.porcelain}>
           {collectionName}
 
-          {ENABLED_ARTIST && (
+          {ENABLED_CREATOR && (
             <>
               {' '}
               <BaseM color={colors.metal} as="span">
@@ -133,11 +132,11 @@ function CollectionName({ tokenRef, interactive }: CollectionNameProps) {
       <StyledBaseM color={colors.porcelain}>
         {collectionName}
 
-        {ENABLED_ARTIST && (
+        {ENABLED_CREATOR && (
           <>
             {' '}
             <BaseM color={colors.metal} as="span">
-              xby Artist
+              by Artist
             </BaseM>
           </>
         )}

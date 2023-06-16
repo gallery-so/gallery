@@ -11,11 +11,13 @@ import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM, TitleM, TitleXS } from '~/components/core/Text/Text';
 import { ClickablePill, NonclickablePill } from '~/components/Pill';
+import { ENABLED_CREATOR } from '~/constants/creator';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { NftDetailTextFragment$key } from '~/generated/NftDetailTextFragment.graphql';
 import { useBreakpoint, useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { NftAdditionalDetails } from '~/scenes/NftDetailPage/NftAdditionalDetails/NftAdditionalDetails';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
+import colors from '~/shared/theme/colors';
 import { getOpenseaExternalUrl } from '~/shared/utils/getOpenseaExternalUrl';
 import unescape from '~/shared/utils/unescape';
 import { getCommunityUrlForToken } from '~/utils/getCommunityUrlForToken';
@@ -92,6 +94,37 @@ function NftDetailText({ tokenRef }: Props) {
     openseaExternalUrl,
   ]);
 
+  const handleCreatorNameClick = useCallback(() => {
+    // TODO: Update this to track the creator name click
+    track('NFT Detail Creator Name Click', {
+      username: token.owner?.username ? token.owner.username.toLowerCase() : undefined,
+      contractAddress: token.contract?.contractAddress?.address,
+      tokenId: token.tokenId,
+      externaUrl: openseaExternalUrl,
+    });
+  }, [
+    track,
+    token.owner?.username,
+    token.contract?.contractAddress?.address,
+    token.tokenId,
+    openseaExternalUrl,
+  ]);
+
+  const handleCollectorNameClick = useCallback(() => {
+    track('NFT Detail Collector Name Click', {
+      username: token.owner?.username ? token.owner.username.toLowerCase() : undefined,
+      contractAddress: token.contract?.contractAddress?.address,
+      tokenId: token.tokenId,
+      externaUrl: openseaExternalUrl,
+    });
+  }, [
+    track,
+    token.owner?.username,
+    token.contract?.contractAddress?.address,
+    token.tokenId,
+    openseaExternalUrl,
+  ]);
+
   const communityUrl = getCommunityUrlForToken(token);
 
   const metadata = JSON.parse(token.tokenMetadata ?? '{}') ?? {};
@@ -129,40 +162,65 @@ function NftDetailText({ tokenRef }: Props) {
           </HStack>
         </VStack>
 
+        <HStack justify="space-between">
+          {token.owner?.username && (
+            <VStack>
+              <TitleXS>OWNER</TitleXS>
+              <InteractiveLink
+                to={{ pathname: '/[username]', query: { username: token.owner.username } }}
+                onClick={handleCollectorNameClick}
+              >
+                <BaseM color={colors.shadow}>{token.owner.username}</BaseM>
+              </InteractiveLink>
+            </VStack>
+          )}
+          {ENABLED_CREATOR && (
+            // TODO: Update this to use the creator's username
+            <VStack>
+              <TitleXS>CREATOR</TitleXS>
+              <InteractiveLink
+                onClick={handleCreatorNameClick}
+                to={{ pathname: '/[username]', query: { username: 'riley' } }}
+              >
+                <BaseM color={colors.shadow}>riley.eth</BaseM>
+              </InteractiveLink>
+              <InteractiveLink
+                onClick={handleCreatorNameClick}
+                to={{ pathname: '/[username]', query: { username: 'riley' } }}
+              >
+                <BaseM color={colors.shadow}>peterson.eth</BaseM>
+              </InteractiveLink>
+            </VStack>
+          )}
+        </HStack>
+
         {token.description && (
           <BaseM>
             <Markdown text={token.description} />
           </BaseM>
         )}
 
-        <VStack gap={16}>
-          {token.owner?.username && (
-            <div>
-              <TitleXS>Owner</TitleXS>
-              <InteractiveLink
-                to={{ pathname: '/[username]', query: { username: token.owner.username } }}
-              >
-                {token.owner.username}
-              </InteractiveLink>
-            </div>
-          )}
+        {showDetails || SHOW_BUY_NOW_BUTTON ? (
+          <VStack gap={16}>
+            {showDetails && <NftAdditionalDetails showDetails={showDetails} tokenRef={token} />}
 
-          {showDetails && <NftAdditionalDetails showDetails={showDetails} tokenRef={token} />}
+            {SHOW_BUY_NOW_BUTTON && (
+              <VStack gap={24}>
+                <HorizontalBreak />
+                <StyledInteractiveLink href={openseaExternalUrl} onClick={handleBuyNowClick}>
+                  <StyledButton>Buy Now</StyledButton>
+                </StyledInteractiveLink>
+              </VStack>
+            )}
+          </VStack>
+        ) : null}
 
-          {SHOW_BUY_NOW_BUTTON && (
-            <VStack gap={24}>
-              <HorizontalBreak />
-              <StyledInteractiveLink href={openseaExternalUrl} onClick={handleBuyNowClick}>
-                <StyledButton>Buy Now</StyledButton>
-              </StyledInteractiveLink>
-            </VStack>
-          )}
-        </VStack>
-
-        <VStack gap={16}>
-          {poapMoreInfoUrl && <InteractiveLink href={poapMoreInfoUrl}>More Info</InteractiveLink>}
-          {poapUrl && <InteractiveLink href={poapUrl}>View on POAP</InteractiveLink>}
-        </VStack>
+        {poapMoreInfoUrl || poapUrl ? (
+          <VStack gap={16}>
+            {poapMoreInfoUrl && <InteractiveLink href={poapMoreInfoUrl}>More Info</InteractiveLink>}
+            {poapUrl && <InteractiveLink href={poapUrl}>View on POAP</InteractiveLink>}
+          </VStack>
+        ) : null}
 
         {!showDetails && <TextButton text="Show Details" onClick={handleToggleClick} />}
         {showDetails && <TextButton text="Hide Details" onClick={handleToggleClick} />}
