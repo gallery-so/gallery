@@ -1,9 +1,17 @@
+import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
+import { ContentIsLoadedEvent } from '~/contexts/shimmer/ShimmerContext';
 import { NftSelectorTokenFragment$key } from '~/generated/NftSelectorTokenFragment.graphql';
+import { useNftRetry } from '~/hooks/useNftRetry';
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
+import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
+import { getBackgroundColorOverrideForContract } from '~/utils/token';
 
+import { StyledSidebarNftIcon } from '../GalleryEditor/PiecesSidebar/SidebarNftIcon';
+import { NftFailureBoundary } from '../NftFailureFallback/NftFailureBoundary';
+import { NftFailureFallback } from '../NftFailureFallback/NftFailureFallback';
 import { RawNftSelectorPreviewAsset } from './RawNftSelectorPreviewAsset';
 
 type Props = {
@@ -14,7 +22,6 @@ export function NftSelectorToken({ tokenRef }: Props) {
     graphql`
       fragment NftSelectorTokenFragment on Token {
         dbid
-        name
         contract {
           contractAddress {
             address
@@ -37,10 +44,46 @@ export function NftSelectorToken({ tokenRef }: Props) {
     tokenRef
   );
 
+  const {
+    isFailed,
+    handleNftLoaded,
+    handleNftError,
+    retryKey,
+    refreshMetadata,
+    refreshingMetadata,
+  } = useNftRetry({ tokenId: token.dbid });
+
+  const contractAddress = token.contract?.contractAddress?.address ?? '';
+  const backgroundColorOverride = getBackgroundColorOverrideForContract(contractAddress);
+
   const previewUrlSet = getVideoOrImageUrlForNftPreview({
     tokenRef: token,
     handleReportError: reportError,
   });
+
+  const handleError = useCallback<ContentIsLoadedEvent>(
+    (event) => {
+      handleNftError(event);
+      // handleTokenRenderError(token.dbid);
+    },
+    [handleNftError]
+  );
+
+  const handleLoad = useCallback<ContentIsLoadedEvent>(
+    (event) => {
+      handleNftLoaded(event);
+      // handleTokenRenderSuccess(token.dbid);
+    },
+    [handleNftLoaded]
+  );
+
+  const handleClick = useCallback(() => {
+    if (isFailed) {
+      refreshMetadata();
+
+      return;
+    }
+  }, [isFailed, refreshMetadata]);
 
   // TODO: handle this error
   if (!previewUrlSet?.urls.small) {
@@ -49,11 +92,41 @@ export function NftSelectorToken({ tokenRef }: Props) {
   }
 
   return (
-    <RawNftSelectorPreviewAsset
-      type={previewUrlSet.type}
-      isSelected={false}
-      src={previewUrlSet.urls.small}
-      onLoad={() => {}}
-    />
+    <NftFailureBoundary
+      key={retryKey}
+      tokenId={token.dbid}
+      fallback={
+        // <div>Fail</div>
+        <StyledSidebarNftIcon backgroundColorOverride={backgroundColorOverride}>
+          <NftFailureFallback
+            size="medium"
+            tokenId={token.dbid}
+            onRetry={refreshMetadata}
+            refreshing={refreshingMetadata}
+          />
+        </StyledSidebarNftIcon>
+      }
+      onError={handleError}
+    >
+      <ReportingErrorBoundary
+        fallback={
+          // <div>Fail 2</div>
+
+          <RawNftSelectorPreviewAsset
+            type="image"
+            isSelected={false}
+            src={token.media?.fallbackMedia?.mediaURL}
+            onLoad={handleLoad}
+          />
+        }
+      >
+        <RawNftSelectorPreviewAsset
+          type={previewUrlSet.type}
+          isSelected={false}
+          src={previewUrlSet.urls.small}
+          onLoad={handleLoad}
+        />
+      </ReportingErrorBoundary>
+    </NftFailureBoundary>
   );
 }

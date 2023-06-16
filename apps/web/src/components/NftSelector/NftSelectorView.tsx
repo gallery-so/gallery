@@ -26,9 +26,6 @@ export function NftSelectorView({
   const tokens = useFragment(
     graphql`
       fragment NftSelectorViewFragment on Token @relay(plural: true) {
-        id
-        dbid
-
         # Escape hatch for data processing in util files
         # eslint-disable-next-line relay/unused-fields
         chain
@@ -38,7 +35,8 @@ export function NftSelectorView({
         # Escape hatch for data processing in util files
         # eslint-disable-next-line relay/unused-fields
         isSpamByProvider
-
+        # Escape hatch for data processing in util files
+        # eslint-disable-next-line relay/unused-fields
         contract {
           # Escape hatch for data processing in util files
           # eslint-disable-next-line relay/unused-fields
@@ -48,7 +46,7 @@ export function NftSelectorView({
             address
           }
         }
-
+        # eslint-disable-next-line relay/must-colocate-fragment-spreads
         ...NftSelectorTokenFragment
       }
     `,
@@ -58,7 +56,7 @@ export function NftSelectorView({
   const groupedTokens = groupCollectionsByAddress({
     // @ts-expect-error: fix this
     tokens,
-    ignoreSpam: true,
+    ignoreSpam: false,
   });
 
   const rows = useMemo(() => {

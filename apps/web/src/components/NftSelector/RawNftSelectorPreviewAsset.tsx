@@ -5,6 +5,8 @@ import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
 
 import transitions from '../core/transitions';
 
+export function NftSelectorPreviewAsset() {}
+
 export function RawNftSelectorPreviewAsset({
   type,
   isSelected,

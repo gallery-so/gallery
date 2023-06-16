@@ -5,6 +5,7 @@ import { BaseM } from '~/components/core/Text/Text';
 import DoubleArrowsIcon from '~/icons/DoubleArrowsIcon';
 import GlobeIcon from '~/icons/GlobeIcon';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
+import colors from '~/shared/theme/colors';
 
 import { Dropdown } from '../../core/Dropdown/Dropdown';
 import { DropdownItem } from '../../core/Dropdown/DropdownItem';
@@ -103,6 +104,11 @@ export function NftSelectorFilterNetwork({
 
 const Selector = styled(HStack)`
   cursor: pointer;
+  padding: 4px 8px;
+
+  &:hover {
+    background-color: ${colors.faint};
+  }
 `;
 
 const Container = styled.div`

@@ -1,8 +1,9 @@
-import { useCallback,useState } from 'react';
+import { useCallback, useState } from 'react';
 import styled from 'styled-components';
 
 import DoubleArrowsIcon from '~/icons/DoubleArrowsIcon';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
+import colors from '~/shared/theme/colors';
 
 import { Dropdown } from '../../core/Dropdown/Dropdown';
 import { DropdownItem } from '../../core/Dropdown/DropdownItem';
@@ -56,6 +57,11 @@ export function NftSelectorViewSelector({
 
 const Selector = styled(HStack)`
   cursor: pointer;
+  padding: 4px 8px;
+
+  &:hover {
+    background-color: ${colors.faint};
+  }
 `;
 
 const Container = styled.div`

@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -30,6 +30,12 @@ export function NftSelector({ queryRef }: Props) {
     graphql`
       fragment NftSelectorQueryFragment on Token @relay(plural: true) {
         ...NftSelectorViewFragment
+        name
+        chain
+        lastUpdated
+
+        isSpamByUser
+        isSpamByProvider
       }
     `,
     queryRef
@@ -45,6 +51,61 @@ export function NftSelector({ queryRef }: Props) {
   const handleResetSelectedContractAddress = useCallback(() => {
     setSelectedContractAddress(null);
   }, []);
+
+  console.log(tokens);
+
+  const filteredTokens = useMemo(() => {
+    let filteredTokens = [];
+
+    // Filter by network
+    if (selectedNetworkView === 'All networks') {
+      filteredTokens = [...tokens];
+    } else {
+      filteredTokens = tokens.filter((token) => token.chain === selectedNetworkView);
+    }
+
+    // Filter by view
+    if (selectedView === 'Collected') {
+      filteredTokens = filteredTokens;
+    } else if (selectedView === 'Hidden') {
+      filteredTokens = filteredTokens.filter((token) => {
+        // const isSpam = token.isSpamByUser !== null ? token.isSpamByUser : token.isSpamByProvider;
+        // return token.isSpamByUser;
+        return token.isSpamByUser !== null ? token.isSpamByUser : token.isSpamByProvider;
+      });
+    }
+
+    // Filter by sort
+    if (selectedSortView === 'Recently added') {
+      filteredTokens.sort((a, b) => {
+        return new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime();
+      });
+    } else if (selectedSortView === 'Oldest') {
+      filteredTokens.sort((a, b) => {
+        return new Date(a.lastUpdated).getTime() - new Date(b.lastUpdated).getTime();
+      });
+    } else if (selectedSortView === 'Alphabetical') {
+      filteredTokens.sort((a, b) => {
+        if (a.name && b.name) {
+          if (a.name?.toLocaleLowerCase() < b.name?.toLocaleLowerCase()) {
+            return -1;
+          }
+
+          if (a.name?.toLocaleLowerCase() > b.name?.toLocaleLowerCase()) {
+            return 1;
+          }
+
+          return 0;
+        }
+        return 0;
+      });
+    }
+
+    return filteredTokens;
+  }, [selectedNetworkView, selectedSortView, selectedView, tokens]);
+
+  console.log(filteredTokens);
+
   return (
     <StyledNftSelectorModal>
       <StyledTitle>
@@ -92,7 +153,7 @@ export function NftSelector({ queryRef }: Props) {
       </StyledActionContainer>
 
       <NftSelectorView
-        tokenRefs={tokens}
+        tokenRefs={filteredTokens}
         selectedContractAddress={selectedContractAddress}
         onSelectContractAddress={setSelectedContractAddress}
       />
@@ -102,6 +163,7 @@ export function NftSelector({ queryRef }: Props) {
 
 const StyledNftSelectorModal = styled(VStack)`
   width: 880px;
+  max-height: 100%;
   min-height: 250px;
 `;
 
