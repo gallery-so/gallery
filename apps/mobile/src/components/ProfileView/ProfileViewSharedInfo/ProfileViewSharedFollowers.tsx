@@ -78,6 +78,7 @@ export default function ProfileViewSharedFollowers({ userRef }: Props) {
     // Display up to 3 usernames
     const result = followersToDisplay.map((user) => (
       <InteractiveLink
+        type="Profile View Shared Followers"
         onPress={() => user.username && handleUsernamePress(user.username)}
         key={user.id}
       >

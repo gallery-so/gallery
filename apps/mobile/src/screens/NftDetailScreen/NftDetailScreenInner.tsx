@@ -176,7 +176,10 @@ export function NftDetailScreenInner() {
         </View>
 
         <View>
-          <InteractiveLink onPress={toggleAdditionalDetails}>
+          <InteractiveLink
+            onPress={toggleAdditionalDetails}
+            type="NFT Detail Show Additional Details"
+          >
             {showAdditionalDetails ? 'Hide Details' : 'Show Additional Details'}
           </InteractiveLink>
         </View>
