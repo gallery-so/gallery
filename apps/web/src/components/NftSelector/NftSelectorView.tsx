@@ -5,6 +5,8 @@ import styled from 'styled-components';
 
 import { NftSelectorViewFragment$key } from '~/generated/NftSelectorViewFragment.graphql';
 
+import { VStack } from '../core/Spacer/Stack';
+import { BaseXL } from '../core/Text/Text';
 import {
   CollectionGroup,
   groupCollectionsByAddress,
@@ -118,6 +120,16 @@ export function NftSelectorView({
     [onSelectContractAddress, rows]
   );
 
+  if (!rows.length) {
+    return (
+      <StyledWrapper>
+        <StyledEmptyStateContainer align="center" justify="center">
+          <StyledEmptyStateText>No results</StyledEmptyStateText>
+        </StyledEmptyStateContainer>
+      </StyledWrapper>
+    );
+  }
+
   return (
     <StyledWrapper>
       <AutoSizer>
@@ -147,4 +159,12 @@ const StyledNftSelectorViewContainer = styled.div`
   grid-template-columns: repeat(4, minmax(0, 1fr));
 
   gap: 16px;
+`;
+
+const StyledEmptyStateContainer = styled(VStack)`
+  height: 100%;
+`;
+
+const StyledEmptyStateText = styled(BaseXL)`
+  font-weight: 700;
 `;
