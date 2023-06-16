@@ -3,8 +3,7 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { NftSelectorQueryFragment$key } from '~/generated/NftSelectorQueryFragment.graphql';
-import SearchIcon from '~/icons/SearchIcon';
-import colors from '~/shared/theme/colors';
+import useDebounce from '~/shared/hooks/useDebounce';
 
 import { Button } from '../core/Button/Button';
 import { HStack, VStack } from '../core/Spacer/Stack';
@@ -19,6 +18,7 @@ import {
   NftSelectorSortView,
 } from './NftSelectorFilter/NftSelectorFilterSort';
 import { NftSelectorViewSelector } from './NftSelectorFilter/NftSelectorViewSelector';
+import { NftSelectorSearchBar } from './NftSelectorSearchBar';
 import { NftSelectorView } from './NftSelectorView';
 
 type Props = {
@@ -36,10 +36,17 @@ export function NftSelector({ queryRef }: Props) {
 
         isSpamByUser
         isSpamByProvider
+
+        contract {
+          name
+        }
       }
     `,
     queryRef
   );
+
+  const [searchKeyword, setSearchKeyword] = useState<string>('');
+  const debouncedSearchKeyword = useDebounce(searchKeyword, 200);
 
   const [selectedView, setSelectedView] = useState<SidebarView>('Collected');
   const [selectedSortView, setSelectedSortView] = useState<NftSelectorSortView>('Recently added');
@@ -62,6 +69,23 @@ export function NftSelector({ queryRef }: Props) {
       filteredTokens = [...tokens];
     } else {
       filteredTokens = tokens.filter((token) => token.chain === selectedNetworkView);
+    }
+
+    // Filter by search
+    if (debouncedSearchKeyword) {
+      const lowerCaseQuery = debouncedSearchKeyword.toLowerCase();
+
+      filteredTokens = tokens.filter((token) => {
+        if (token.name?.toLowerCase().includes(debouncedSearchKeyword)) {
+          return true;
+        }
+
+        if (token.contract?.name?.toLowerCase().includes(lowerCaseQuery)) {
+          return true;
+        }
+
+        return false;
+      });
     }
 
     // Filter by view
@@ -102,7 +126,7 @@ export function NftSelector({ queryRef }: Props) {
     }
 
     return filteredTokens;
-  }, [selectedNetworkView, selectedSortView, selectedView, tokens]);
+  }, [debouncedSearchKeyword, selectedNetworkView, selectedSortView, selectedView, tokens]);
 
   console.log(filteredTokens);
 
@@ -114,15 +138,7 @@ export function NftSelector({ queryRef }: Props) {
 
       <StyledActionContainer gap={16} justify="space-between">
         {!selectedContractAddress && (
-          <StyledInputContainer align="center" gap={10}>
-            <SearchIcon />
-            <StyledInputSearch
-              type="text"
-              autoComplete="off"
-              autoCorrect="off"
-              placeholder="Search collection"
-            />
-          </StyledInputContainer>
+          <NftSelectorSearchBar keyword={searchKeyword} onChange={setSearchKeyword} />
         )}
         <HStack gap={8} align="center">
           {selectedContractAddress && (
@@ -175,27 +191,6 @@ const StyledTitleText = styled(BaseM)`
 `;
 const StyledActionContainer = styled(HStack)`
   padding-bottom: 16px;
-`;
-
-const StyledInputContainer = styled(HStack)`
-  padding: 4px 8px;
-  background-color: ${colors.offWhite};
-  flex: 1;
-`;
-
-const StyledInputSearch = styled.input`
-  width: 100%;
-
-  border: none;
-  padding: 0;
-
-  background-color: transparent;
-
-  color: ${colors.metal};
-
-  &::placeholder {
-    color: ${colors.porcelain};
-  }
 `;
 
 const StyledButton = styled(Button)`
