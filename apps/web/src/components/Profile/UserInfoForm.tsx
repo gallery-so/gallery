@@ -10,8 +10,8 @@ import { UserInfoFormFragment$key } from '~/generated/UserInfoFormFragment.graph
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import unescape from '~/shared/utils/unescape';
 
-import useNftSelector from '../NftSelector/useNftSelector';
 import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
+import { ProfilePictureDropdown } from './ProfilePictureDropdown';
 
 type Props = {
   className?: string;
@@ -46,17 +46,17 @@ function UserInfoForm({
         ...ProfilePictureFragment
 
         tokens {
-          ...useNftSelectorQueryFragment
+          ...ProfilePictureDropdownFragment
         }
       }
     `,
     userRef
   );
 
+  const [showPfpDropdown, setShowPfpDropdown] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const tokens = removeNullValues(user.tokens) ?? [];
-  const showNftSelector = useNftSelector(tokens);
 
   const unescapedBio = useMemo(() => unescape(bio), [bio]);
 
@@ -96,14 +96,27 @@ function UserInfoForm({
   // Otherwise, focus on bio
   const shouldAutofocusBio = !shouldAutofocusUsername;
 
+  const handleOpenPfpDropdown = useCallback(() => {
+    setShowPfpDropdown(true);
+  }, []);
+  const handleClosePfpDropdown = useCallback(() => {
+    setShowPfpDropdown(false);
+  }, []);
+
   return (
     <StyledUserInformContainer as="form" className={className} gap={16} onSubmit={handleSubmit}>
       {mode === 'Add' && <TitleS>Add username and bio</TitleS>}
 
       <HStack gap={16} align="center">
-        <div onClick={showNftSelector}>
+        <StyledProfilePictureContainer onClick={handleOpenPfpDropdown}>
           <ProfilePicture userRef={user} />
-        </div>
+          <ProfilePictureDropdown
+            open={showPfpDropdown}
+            onClose={handleClosePfpDropdown}
+            tokensRef={tokens}
+          />
+        </StyledProfilePictureContainer>
+
         <StyledInputContainer>
           <Input
             onChange={handleUsernameChange}
@@ -140,6 +153,10 @@ const StyledTextAreaWithCharCount = styled(TextAreaWithCharCount)`
 
 const StyledInputContainer = styled.div`
   width: 100%;
+`;
+
+const StyledProfilePictureContainer = styled.div`
+  position: relative;
 `;
 
 export default UserInfoForm;
