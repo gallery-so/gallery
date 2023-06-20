@@ -52,6 +52,8 @@ const StyledNftSelectorTokensContainer = styled.div<{
   position: relative;
   aspect-ratio: 1;
 
+  overflow: hidden;
+
   ${({ isGrouped }) =>
     isGrouped &&
     css`

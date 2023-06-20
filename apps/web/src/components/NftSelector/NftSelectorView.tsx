@@ -165,7 +165,7 @@ const StyledWrapper = styled.div`
 `;
 
 const StyledNftSelectorViewContainer = styled.div`
-  padding: 16px 0;
+  padding: 8px 0;
 
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));

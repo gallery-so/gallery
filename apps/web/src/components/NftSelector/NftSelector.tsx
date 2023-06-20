@@ -187,7 +187,7 @@ const StyledTitleText = styled(BaseM)`
   font-weight: 700;
 `;
 const StyledActionContainer = styled(HStack)`
-  padding-bottom: 16px;
+  padding-bottom: 8px;
 `;
 
 const StyledButton = styled(Button)`
