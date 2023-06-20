@@ -91,8 +91,6 @@ export function NftSelector({ queryRef }: Props) {
       filteredTokens = filteredTokens;
     } else if (selectedView === 'Hidden') {
       filteredTokens = filteredTokens.filter((token) => {
-        // const isSpam = token.isSpamByUser !== null ? token.isSpamByUser : token.isSpamByProvider;
-        // return token.isSpamByUser;
         return token.isSpamByUser !== null ? token.isSpamByUser : token.isSpamByProvider;
       });
     }
@@ -108,12 +106,15 @@ export function NftSelector({ queryRef }: Props) {
       });
     } else if (selectedSortView === 'Alphabetical') {
       filteredTokens.sort((a, b) => {
-        if (a.name && b.name) {
-          if (a.name?.toLocaleLowerCase() < b.name?.toLocaleLowerCase()) {
+        const contractA = a.contract?.name?.toLocaleLowerCase();
+        const contractB = b.contract?.name?.toLocaleLowerCase();
+
+        if (contractA && contractB) {
+          if (contractA < contractB) {
             return -1;
           }
 
-          if (a.name?.toLocaleLowerCase() > b.name?.toLocaleLowerCase()) {
+          if (contractA > contractB) {
             return 1;
           }
 
