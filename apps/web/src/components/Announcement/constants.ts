@@ -2,12 +2,22 @@
 
 export const ANNOUNCEMENT_CONTENT = [
   {
-    key: 'UpsellMintMemento4',
-    title: 'Now Minting: Blooming Connections',
+    key: 'MobileBetaUpsell',
+    title: 'The Wait is Over!',
     description:
-      'Gallery Memento #4 is now available for minting, a beautiful and symbolic representation of the growing network within the Gallery community.',
-    date: '2023-03-27T13:00:00.154845Z',
-    link: '/mint/mementos',
+      'Download the Gallery Mobile App on Testflight and take your collection everywhere.',
+    date: '2023-06-20T16:00:00.154845Z',
+    link: '/mobile',
+    ctaText: 'Download',
+  },
+  // older notifications
+  {
+    key: 'MobileUpsell1',
+    title: 'The Gallery Mobile App',
+    description:
+      'The waitlist for the Gallery mobile app is now open. Claim your spot now and be among the first to experience effortless browsing and the magic of the creative web in your pocket.',
+    date: '2023-05-08T16:00:00.154845Z',
+    link: '/mobile',
   },
   {
     key: 'UpsellGallerySelects1',
@@ -18,11 +28,11 @@ export const ANNOUNCEMENT_CONTENT = [
     link: 'https://gallery.mirror.xyz/GzEODA-g4mvdb1onS1jSRMSKqfMoGJCNu5yOSTV9RM8',
   },
   {
-    key: 'MobileUpsell1',
-    title: 'The Gallery Mobile App',
+    key: 'UpsellMintMemento4',
+    title: 'Now Minting: Blooming Connections',
     description:
-      'The waitlist for the Gallery mobile app is now open. Claim your spot now and be among the first to experience effortless browsing and the magic of the creative web in your pocket.',
-    date: '2023-05-08T16:00:00.154845Z',
-    link: '/mobile',
+      'Gallery Memento #4 is now available for minting, a beautiful and symbolic representation of the growing network within the Gallery community.',
+    date: '2023-03-27T13:00:00.154845Z',
+    link: '/mint/mementos',
   },
 ];

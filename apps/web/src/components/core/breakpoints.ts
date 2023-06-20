@@ -10,7 +10,7 @@
 // window sizes when breakpoints kick in
 export enum size {
   mobile = 0,
-  mobileLarge = 431, // iphone pro max
+  mobileLarge = 460, // galaxy s22
   tablet = 768,
   desktop = 1100,
 }

@@ -11,6 +11,7 @@ import colors from '~/shared/theme/colors';
 import { useOptimisticallyDismissExperience } from '~/utils/graphql/experiences/useUpdateUserExperience';
 import { HTTPS_URL } from '~/utils/regex';
 
+import { Chip } from '../core/Chip/Chip';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM, BaseS } from '../core/Text/Text';
 import useAnnouncement, { AnnouncementType } from './useAnnouncement';
@@ -85,6 +86,7 @@ export default function AnnouncementList({ queryRef }: Props) {
             align="center"
             justify="space-between"
             hasAction={Boolean(announcement.link || !announcement.experienced)}
+            gap={announcement.ctaText ? 24 : 64}
           >
             <StyledAnnouncementDescriptionContainer>
               <BaseM>
@@ -92,10 +94,17 @@ export default function AnnouncementList({ queryRef }: Props) {
               </BaseM>
               <BaseM>{announcement.description}</BaseM>
             </StyledAnnouncementDescriptionContainer>
-            <StyledTimeContainer gap={8} align="center" justify="flex-end">
-              <BaseS>{announcement.time}</BaseS>
-              {!announcement.experienced && <StyledDot />}
-            </StyledTimeContainer>
+            <HStack gap={12}>
+              {announcement.ctaText && (
+                <StyledCTAContainer>
+                  <StyledChip>Download</StyledChip>
+                </StyledCTAContainer>
+              )}
+              <StyledTimeContainer gap={8} align="center" justify="flex-end">
+                <BaseS>{announcement.time}</BaseS>
+                {!announcement.experienced && <StyledDot />}
+              </StyledTimeContainer>
+            </HStack>
           </StyledAnnouncement>
         );
       })}
@@ -123,6 +132,12 @@ const StyledAnnouncementDescriptionContainer = styled(VStack)`
   flex: 1;
 `;
 
-const StyledTimeContainer = styled(HStack)`
-  width: 80px;
+const StyledCTAContainer = styled(HStack)``;
+
+const StyledChip = styled(Chip)`
+  background-color: ${colors.black['800']};
+  color: ${colors.offWhite};
+  width: 88px;
 `;
+
+const StyledTimeContainer = styled(HStack)``;

@@ -32,3 +32,7 @@ export const getTimeSince = (time: string) => {
 
   return `${Math.floor(interval / YEAR)}y`;
 };
+
+export const getDaysSince = (time: string) => {
+  return Math.floor((Date.now() - new Date(time).getTime()) / (1000 * 60 * 60 * 24));
+};
