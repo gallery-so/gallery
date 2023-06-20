@@ -7,11 +7,13 @@ import { graphql } from 'relay-runtime';
 
 import { BackButton } from '~/components/BackButton';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
+import { NftPreviewErrorFallback } from '~/components/NftPreview/NftPreviewErrorFallback';
 import { Pill } from '~/components/Pill';
 import { NftDetailScreenInnerQuery } from '~/generated/NftDetailScreenInnerQuery.graphql';
 import { MainTabStackNavigatorParamList, MainTabStackNavigatorProp } from '~/navigation/types';
 import { NftDetailAssetCacheSwapper } from '~/screens/NftDetailScreen/NftDetailAsset/NftDetailAssetCacheSwapper';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
+import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 
 import { IconContainer } from '../../components/IconContainer';
 import { InteractiveLink } from '../../components/InteractiveLink';
@@ -164,9 +166,21 @@ export function NftDetailScreenInner() {
             />
           </View>
 
-          <NftDetailAssetCacheSwapper cachedPreviewAssetUrl={route.params.cachedPreviewAssetUrl}>
-            <NftDetailAsset tokenRef={token} />
-          </NftDetailAssetCacheSwapper>
+          <View>
+            <ReportingErrorBoundary
+              fallback={
+                <View className="w-full aspect-square">
+                  <NftPreviewErrorFallback />
+                </View>
+              }
+            >
+              <NftDetailAssetCacheSwapper
+                cachedPreviewAssetUrl={route.params.cachedPreviewAssetUrl}
+              >
+                <NftDetailAsset tokenRef={token} />
+              </NftDetailAssetCacheSwapper>
+            </ReportingErrorBoundary>
+          </View>
         </View>
 
         <View className="flex flex-col space-y-4">
