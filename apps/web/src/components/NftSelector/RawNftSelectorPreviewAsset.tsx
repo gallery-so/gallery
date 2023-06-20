@@ -1,11 +1,13 @@
+import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
+import { RawNftSelectorPreviewAssetFragment$key } from '~/generated/RawNftSelectorPreviewAssetFragment.graphql';
 import { useThrowOnMediaFailure } from '~/hooks/useNftRetry';
+import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
+import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
 
 import transitions from '../core/transitions';
-
-export function NftSelectorPreviewAsset() {}
 
 export function RawNftSelectorPreviewAsset({
   type,
@@ -42,6 +44,42 @@ export function RawNftSelectorPreviewAsset({
     />
   );
 }
+
+type NftSelectorPreviewAssetProps = {
+  tokenRef: RawNftSelectorPreviewAssetFragment$key;
+  onLoad: () => void;
+};
+
+export function NftSelectorPreviewAsset({ tokenRef, onLoad }: NftSelectorPreviewAssetProps) {
+  const token = useFragment(
+    graphql`
+      fragment RawNftSelectorPreviewAssetFragment on Token {
+        ...getVideoOrImageUrlForNftPreviewFragment
+      }
+    `,
+    tokenRef
+  );
+
+  const reportError = useReportError();
+  const previewUrlSet = getVideoOrImageUrlForNftPreview({
+    tokenRef: token,
+    handleReportError: reportError,
+  });
+
+  if (!previewUrlSet?.urls.small) {
+    throw new CouldNotRenderNftError('SidebarNftIcon', 'could not find small image url');
+  }
+
+  return (
+    <RawNftSelectorPreviewAsset
+      type={previewUrlSet.type}
+      isSelected={false}
+      src={previewUrlSet.urls.small}
+      onLoad={onLoad}
+    />
+  );
+}
+
 type SelectedProps = {
   isSelected?: boolean;
 };

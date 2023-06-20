@@ -59,8 +59,6 @@ export function NftSelector({ queryRef }: Props) {
     setSelectedContractAddress(null);
   }, []);
 
-  console.log(tokens);
-
   const filteredTokens = useMemo(() => {
     let filteredTokens = [];
 
@@ -127,8 +125,6 @@ export function NftSelector({ queryRef }: Props) {
 
     return filteredTokens;
   }, [debouncedSearchKeyword, selectedNetworkView, selectedSortView, selectedView, tokens]);
-
-  console.log(filteredTokens);
 
   return (
     <StyledNftSelectorModal>

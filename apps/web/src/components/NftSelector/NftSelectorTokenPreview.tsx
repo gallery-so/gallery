@@ -6,11 +6,11 @@ import noop from '~/utils/noop';
 
 import { VStack } from '../core/Spacer/Stack';
 import { BaseM } from '../core/Text/Text';
-import { CollectionGroup } from '../GalleryEditor/PiecesSidebar/groupCollectionsByAddress';
+import { NftSelectorCollectionGroup } from './groupNftSelectorCollectionsByAddress';
 import { NftSelectorToken } from './NftSelectorToken';
 
 type Props = {
-  group: CollectionGroup;
+  group: NftSelectorCollectionGroup;
   onSelectGroup?: (address: string) => void;
 };
 
@@ -24,8 +24,7 @@ export function NftSelectorTokenPreview({ group, onSelectGroup = noop }: Props) 
   if (tokens.length === 1) {
     return (
       <StyledNftSelectorTokensContainer>
-        {/* @ts-ignore TODO: fix this  */}
-        <NftSelectorToken tokenRef={tokens[0]} />
+        {tokens[0] && <NftSelectorToken tokenRef={tokens[0]} />}
       </StyledNftSelectorTokensContainer>
     );
   }
@@ -35,10 +34,9 @@ export function NftSelectorTokenPreview({ group, onSelectGroup = noop }: Props) 
 
   return (
     <StyledNftSelectorTokensContainer isGrouped onClick={handleSelectGroup}>
-      {showTokens.map((token) => {
-        // @ts-ignore TODO: fix this
-        return <NftSelectorToken key={token.id} tokenRef={token} />;
-      })}
+      {showTokens.map((token) => (
+        <NftSelectorToken key={token.id} tokenRef={token} />
+      ))}
       {remainingTokens > 0 && (
         <StyledRemainingTokens align="center" justify="center">
           <BaseM>+ {remainingTokens}</BaseM>

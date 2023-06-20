@@ -8,9 +8,9 @@ import { NftSelectorViewFragment$key } from '~/generated/NftSelectorViewFragment
 import { VStack } from '../core/Spacer/Stack';
 import { BaseXL } from '../core/Text/Text';
 import {
-  CollectionGroup,
-  groupCollectionsByAddress,
-} from '../GalleryEditor/PiecesSidebar/groupCollectionsByAddress';
+  groupNftSelectorCollectionsByAddress,
+  NftSelectorCollectionGroup,
+} from './groupNftSelectorCollectionsByAddress';
 import { NftSelectorTokenPreview } from './NftSelectorTokenPreview';
 
 type Props = {
@@ -28,6 +28,9 @@ export function NftSelectorView({
   const tokens = useFragment(
     graphql`
       fragment NftSelectorViewFragment on Token @relay(plural: true) {
+        # Escape hatch for data processing in util files
+        # eslint-disable-next-line relay/unused-fields
+        id
         # Escape hatch for data processing in util files
         # eslint-disable-next-line relay/unused-fields
         chain
@@ -55,12 +58,12 @@ export function NftSelectorView({
     tokenRefs
   );
 
-  const groupedTokens = groupCollectionsByAddress({
-    // @ts-expect-error: fix this
+  const groupedTokens = groupNftSelectorCollectionsByAddress({
     tokens,
     ignoreSpam: false,
   });
 
+  const virtualizedListRef = useRef<List | null>(null);
   const viewRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -80,7 +83,7 @@ export function NftSelectorView({
       );
 
       if (groupOfTokens) {
-        const selectedCollectionTokens: CollectionGroup[] = [];
+        const selectedCollectionTokens: NftSelectorCollectionGroup[] = [];
 
         groupOfTokens.tokens.forEach((token) => {
           selectedCollectionTokens.push({
@@ -143,6 +146,7 @@ export function NftSelectorView({
       <AutoSizer>
         {({ width, height }) => (
           <List
+            ref={virtualizedListRef}
             width={width}
             height={height}
             rowHeight={220}
