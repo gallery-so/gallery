@@ -40,6 +40,7 @@
     "eslint-plugin-relay": "^1.8.3",
     "eslint-plugin-simple-import-sort": "^8.0.0",
     "get-graphql-schema": "^2.1.2",
+    "graphql-language-service-server": "^2.11.1",
     "prettier": "^2.8.4",
     "relay-compiler": "^15.0.0",
     "tsconfig-moon": "^1.2.2",
