@@ -6,7 +6,7 @@ export const ANNOUNCEMENT_CONTENT = [
     title: 'The Wait is Over!',
     description:
       'Download the Gallery Mobile App on Testflight and take your collection everywhere.',
-    date: '2023-06-15T16:00:00.154845Z',
+    date: '2023-06-20T16:00:00.154845Z',
     link: '/mobile',
     ctaText: 'Download',
   },
