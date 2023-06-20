@@ -18,7 +18,7 @@ export function DeepLinkRegistrar() {
     // 2. /:username/:collectionId
     // 3. /:username/:collectionId/:tokenId
     // 4. /:username/galleries/:galleryId
-    const listener = Linking.addEventListener('url', async ({ url }) => {
+    async function handleDeepLinkToUrl({ url }: { url: string }) {
       track('Deep Link Opened', { url });
 
       const response = await fetchQuery<DeepLinkRegistrarAuthCheckQuery>(
@@ -95,6 +95,16 @@ export function DeepLinkRegistrar() {
             });
           }
         }
+      }
+    }
+
+    const listener = Linking.addEventListener('url', handleDeepLinkToUrl);
+
+    // Make sure we handle the case where the app is on a cold start
+    // and we don't receive an event.
+    Linking.getInitialURL().then((maybeUrl) => {
+      if (maybeUrl) {
+        handleDeepLinkToUrl({ url: maybeUrl });
       }
     });
 
