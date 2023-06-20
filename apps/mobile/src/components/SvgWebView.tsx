@@ -85,13 +85,15 @@ const getHTML = (svgContent: string) => `
         height: 100${heightUnits};
         background-color: transparent;
         display: flex;
-        justify-content: center;
-        align-items: center;
       }
       svg {
-        min-height: 100%;
-        min-width: 100%;
-        overflow: hidden;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        max-width: 100vw;
+        max-height: 100vh;
       }
     </style>
   </head>
