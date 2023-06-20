@@ -140,6 +140,18 @@ export default function getVideoOrImageUrlForNftPreview({
             }
           }
 
+          ... on PdfMedia {
+            __typename
+            previewURLs {
+              small
+              medium
+              large
+            }
+            fallbackMedia {
+              mediaURL
+            }
+          }
+
           ... on UnknownMedia {
             __typename
             previewURLs {
