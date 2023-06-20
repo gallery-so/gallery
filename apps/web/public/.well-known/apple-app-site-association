@@ -5,7 +5,6 @@
       {
         "appID": "5SD5N7PXU5.com.usegallery.gallery",
         "paths": [
-          "/*",
           "NOT /auth",
           "NOT /about",
           "NOT /about",
@@ -59,6 +58,7 @@
           "NOT /verify",
           "NOT /welcome",
           "NOT /404"
+          "/*",
         ]
       }
     ]
