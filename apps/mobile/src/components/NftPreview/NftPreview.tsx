@@ -27,6 +27,7 @@ type NftPreviewProps = {
   tokenUrl: string | null | undefined;
   resizeMode: ResizeMode;
 
+  onDoubleTap: () => void;
   onImageStateChange?: (imageState: ImageState) => void;
 };
 
@@ -35,6 +36,8 @@ function NftPreviewInner({
   tokenUrl,
   resizeMode,
   priority,
+
+  onDoubleTap,
   onImageStateChange,
 }: NftPreviewProps) {
   const collectionToken = useFragment(
@@ -69,14 +72,26 @@ function NftPreviewInner({
     throw new CouldNotRenderNftError('NftPreview', 'tokenUrl missing');
   }
 
+  const lastPressTimeRef = useRef<number | null>(null);
   const navigation = useNavigation<MainTabStackNavigatorProp>();
   const handlePress = useCallback(() => {
-    navigation.push('NftDetail', {
-      tokenId: token.dbid,
-      collectionId: collectionToken.collection?.dbid ?? null,
-      cachedPreviewAssetUrl: tokenUrl,
-    });
-  }, [collectionToken.collection?.dbid, navigation, token.dbid, tokenUrl]);
+    const DOUBLE_TAP_WINDOW = 100;
+    const timeSinceLastTap = lastPressTimeRef.current
+      ? Date.now() - lastPressTimeRef.current
+      : null;
+
+    if (timeSinceLastTap && timeSinceLastTap < DOUBLE_TAP_WINDOW) {
+      onDoubleTap();
+    } else {
+      navigation.push('NftDetail', {
+        tokenId: token.dbid,
+        collectionId: collectionToken.collection?.dbid ?? null,
+        cachedPreviewAssetUrl: tokenUrl,
+      });
+    }
+
+    lastPressTimeRef.current = Date.now();
+  }, [collectionToken.collection?.dbid, navigation, onDoubleTap, token.dbid, tokenUrl]);
 
   const handleLoad = useCallback(
     (dimensions: Dimensions | null) => {
@@ -125,10 +140,12 @@ export function NftPreview({
   tokenUrl,
   resizeMode,
   priority,
+  onDoubleTap,
 }: NftPreviewProps) {
   return (
     <ReportingErrorBoundary fallback={<NftPreviewErrorFallback />}>
       <NftPreviewInner
+        onDoubleTap={onDoubleTap}
         onImageStateChange={onImageStateChange}
         collectionTokenRef={collectionTokenRef}
         tokenUrl={tokenUrl}
