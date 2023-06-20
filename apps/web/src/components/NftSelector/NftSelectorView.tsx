@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import { AutoSizer, List, ListRowProps } from 'react-virtualized';
 import styled from 'styled-components';
@@ -60,6 +60,14 @@ export function NftSelectorView({
     tokens,
     ignoreSpam: false,
   });
+
+  const viewRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (viewRef.current) {
+      viewRef.current.scrollTop = 0;
+    }
+  }, [selectedContractAddress]);
 
   const rows = useMemo(() => {
     const rows = [];
@@ -131,7 +139,7 @@ export function NftSelectorView({
   }
 
   return (
-    <StyledWrapper>
+    <StyledWrapper ref={viewRef}>
       <AutoSizer>
         {({ width, height }) => (
           <List
