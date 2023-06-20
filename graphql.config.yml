@@ -1,2 +1,6 @@
-schema: schema.graphql
+schema:
+  [
+    './schema.graphql',
+    'https://raw.githubusercontent.com/facebook/relay/main/compiler/crates/relay-schema/src/relay-extensions.graphql',
+  ]
 documents: '**/*.{ts,tsx,js,jsx,graphql}'
