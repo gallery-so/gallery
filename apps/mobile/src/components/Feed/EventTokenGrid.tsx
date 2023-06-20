@@ -14,12 +14,15 @@ type EventTokenGridProps = {
   imagePriority: Priority;
   allowPreserveAspectRatio: boolean;
   collectionTokenRefs: EventTokenGridFragment$key;
+
+  onDoubleTap: () => void;
 };
 
 export function EventTokenGrid({
   collectionTokenRefs,
   allowPreserveAspectRatio,
   imagePriority,
+  onDoubleTap,
 }: EventTokenGridProps) {
   const collectionTokens = useFragment(
     graphql`
@@ -64,6 +67,7 @@ export function EventTokenGrid({
           <HalfHeightRow>
             <QuarterCell>
               <NftPreview
+                onDoubleTap={onDoubleTap}
                 priority={imagePriority}
                 resizeMode={ResizeMode.COVER}
                 collectionTokenRef={firstToken}
@@ -72,6 +76,7 @@ export function EventTokenGrid({
             </QuarterCell>
             <QuarterCell>
               <NftPreview
+                onDoubleTap={onDoubleTap}
                 priority={imagePriority}
                 resizeMode={ResizeMode.COVER}
                 collectionTokenRef={secondToken}
@@ -83,6 +88,7 @@ export function EventTokenGrid({
           <HalfHeightRow>
             <QuarterCell>
               <NftPreview
+                onDoubleTap={onDoubleTap}
                 priority={imagePriority}
                 resizeMode={ResizeMode.COVER}
                 collectionTokenRef={thirdToken}
@@ -91,6 +97,7 @@ export function EventTokenGrid({
             </QuarterCell>
             <QuarterCell>
               <NftPreview
+                onDoubleTap={onDoubleTap}
                 priority={imagePriority}
                 resizeMode={ResizeMode.COVER}
                 collectionTokenRef={fourthToken}
@@ -105,6 +112,7 @@ export function EventTokenGrid({
         <HalfHeightRow>
           <QuarterCell>
             <NftPreview
+              onDoubleTap={onDoubleTap}
               priority={imagePriority}
               resizeMode={ResizeMode.COVER}
               collectionTokenRef={firstToken}
@@ -113,6 +121,7 @@ export function EventTokenGrid({
           </QuarterCell>
           <QuarterCell>
             <NftPreview
+              onDoubleTap={onDoubleTap}
               priority={imagePriority}
               resizeMode={ResizeMode.COVER}
               collectionTokenRef={secondToken}
@@ -130,6 +139,7 @@ export function EventTokenGrid({
           }}
         >
           <NftPreview
+            onDoubleTap={onDoubleTap}
             resizeMode={preserveAspectRatio ? ResizeMode.CONTAIN : ResizeMode.COVER}
             priority={imagePriority}
             collectionTokenRef={firstToken}
@@ -140,7 +150,7 @@ export function EventTokenGrid({
     } else {
       throw new Error('Tried to render EventTokenGrid without any tokens');
     }
-  }, [collectionTokens, fullHeight, fullWidth, imagePriority, preserveAspectRatio]);
+  }, [collectionTokens, fullHeight, fullWidth, imagePriority, onDoubleTap, preserveAspectRatio]);
 
   return (
     <View className="flex flex-1 flex-col pt-1" style={{ width: dimensions.width }}>
