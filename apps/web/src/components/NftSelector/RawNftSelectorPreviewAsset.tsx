@@ -66,15 +66,15 @@ export function NftSelectorPreviewAsset({ tokenRef, onLoad }: NftSelectorPreview
     handleReportError: reportError,
   });
 
-  if (!previewUrlSet?.urls.small) {
-    throw new CouldNotRenderNftError('SidebarNftIcon', 'could not find small image url');
+  if (!previewUrlSet?.urls.medium) {
+    throw new CouldNotRenderNftError('SidebarNftIcon', 'could not find medium image url');
   }
 
   return (
     <RawNftSelectorPreviewAsset
       type={previewUrlSet.type}
       isSelected={false}
-      src={previewUrlSet.urls.small}
+      src={previewUrlSet.urls.medium}
       onLoad={onLoad}
     />
   );
