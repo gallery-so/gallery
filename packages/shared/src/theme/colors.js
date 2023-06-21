@@ -29,11 +29,11 @@ const lightMode = {
 // This is very hacky and brittle, so if you're updating it, treat it that way.
 const darkMode = {
   black: {
-    DEFAULT: '#FEFEFE',
+    DEFAULT: '#FFFFFF',
     500: '#303030',
     600: '#2A2A2A',
     700: '#202020',
-    800: '#141414',
+    800: '#FEFEFE',
     900: '#0C0C0C',
   },
   white: '#000000',
