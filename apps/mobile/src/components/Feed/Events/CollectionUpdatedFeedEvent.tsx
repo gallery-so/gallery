@@ -19,12 +19,14 @@ type CollectionUpdatedFeedEventProps = {
   isFirstSlide: boolean;
   allowPreserveAspectRatio: boolean;
   collectionUpdatedFeedEventDataRef: CollectionUpdatedFeedEventFragment$key;
+  onDoubleTap: () => void;
 };
 
 export function CollectionUpdatedFeedEvent({
   isFirstSlide,
   allowPreserveAspectRatio,
   collectionUpdatedFeedEventDataRef,
+  onDoubleTap,
 }: CollectionUpdatedFeedEventProps) {
   const eventData = useFragment(
     graphql`
@@ -83,6 +85,7 @@ export function CollectionUpdatedFeedEvent({
 
       <View className="flex flex-grow">
         <EventTokenGrid
+          onDoubleTap={onDoubleTap}
           imagePriority={isFirstSlide ? FastImage.priority.high : FastImage.priority.normal}
           allowPreserveAspectRatio={allowPreserveAspectRatio}
           collectionTokenRefs={tokens}
