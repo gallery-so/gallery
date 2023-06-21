@@ -69,6 +69,8 @@ export function useToggleAdmire({ eventRef, queryRef }: Args) {
                 username
               }
             }
+
+            ...useToggleAdmireFragment
           }
         }
         ... on ErrAdmireAlreadyExists {
@@ -198,6 +200,7 @@ export function useToggleAdmire({ eventRef, queryRef }: Args) {
             __typename: 'AdmireFeedEventPayload',
             feedEvent: {
               id: event.id,
+              dbid: event.dbid,
               viewerAdmire: {
                 __typename: 'Admire',
                 id: `Admire:${optimisticAdmireId}`,
