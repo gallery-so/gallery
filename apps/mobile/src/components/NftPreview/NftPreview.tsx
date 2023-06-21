@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { ResizeMode } from 'expo-av';
-import { startTransition, useCallback, useRef, useState } from 'react';
+import { startTransition, useCallback, useEffect, useRef, useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { Priority } from 'react-native-fast-image';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
@@ -27,7 +27,7 @@ type NftPreviewProps = {
   tokenUrl: string | null | undefined;
   resizeMode: ResizeMode;
 
-  onDoubleTap: () => void;
+  onDoubleTap?: () => void;
   onImageStateChange?: (imageState: ImageState) => void;
 };
 
@@ -72,26 +72,43 @@ function NftPreviewInner({
     throw new CouldNotRenderNftError('NftPreview', 'tokenUrl missing');
   }
 
-  const lastPressTimeRef = useRef<number | null>(null);
   const navigation = useNavigation<MainTabStackNavigatorProp>();
+  const navigateToNftDetail = useCallback(() => {
+    navigation.push('NftDetail', {
+      tokenId: token.dbid,
+      collectionId: collectionToken.collection?.dbid ?? null,
+      cachedPreviewAssetUrl: tokenUrl,
+    });
+  }, [collectionToken.collection?.dbid, navigation, token.dbid, tokenUrl]);
+
+  const singleTapTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const handlePress = useCallback(() => {
-    const DOUBLE_TAP_WINDOW = 100;
-    const timeSinceLastTap = lastPressTimeRef.current
-      ? Date.now() - lastPressTimeRef.current
-      : null;
+    // ChatGPT says 200ms is at the fast end for double tapping.
+    // I want the single tap flow to feel fast, so I'm going for speed here.
+    // Our users better be nimble af.
+    const DOUBLE_TAP_WINDOW = 200;
 
-    if (timeSinceLastTap && timeSinceLastTap < DOUBLE_TAP_WINDOW) {
-      onDoubleTap();
+    if (singleTapTimeoutRef.current) {
+      clearTimeout(singleTapTimeoutRef.current);
+      singleTapTimeoutRef.current = null;
+
+      onDoubleTap?.();
     } else {
-      navigation.push('NftDetail', {
-        tokenId: token.dbid,
-        collectionId: collectionToken.collection?.dbid ?? null,
-        cachedPreviewAssetUrl: tokenUrl,
-      });
+      singleTapTimeoutRef.current = setTimeout(() => {
+        singleTapTimeoutRef.current = null;
+        navigateToNftDetail();
+      }, DOUBLE_TAP_WINDOW);
     }
+  }, [navigateToNftDetail, onDoubleTap]);
 
-    lastPressTimeRef.current = Date.now();
-  }, [collectionToken.collection?.dbid, navigation, onDoubleTap, token.dbid, tokenUrl]);
+  useEffect(function cleanupLeftoverTimeouts() {
+    return () => {
+      if (singleTapTimeoutRef.current) {
+        clearTimeout(singleTapTimeoutRef.current);
+        singleTapTimeoutRef.current = null;
+      }
+    };
+  }, []);
 
   const handleLoad = useCallback(
     (dimensions: Dimensions | null) => {
