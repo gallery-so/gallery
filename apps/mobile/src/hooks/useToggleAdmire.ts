@@ -105,11 +105,11 @@ export function useToggleAdmire({ eventRef, queryRef }: Args) {
   );
 
   const handleRemoveAdmire = useCallback(async () => {
-    trigger('impactLight');
-
     if (!event.viewerAdmire?.dbid) {
       return;
     }
+
+    trigger('impactLight');
 
     const errorMetadata: AdditionalContext['tags'] = {
       eventId: event.dbid,
@@ -174,6 +174,8 @@ export function useToggleAdmire({ eventRef, queryRef }: Args) {
     if (query.viewer?.__typename !== 'Viewer') {
       return;
     }
+
+    trigger('impactLight');
 
     const errorMetadata: AdditionalContext['tags'] = {
       eventId: event.dbid,
