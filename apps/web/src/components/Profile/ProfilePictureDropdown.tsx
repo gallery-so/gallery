@@ -12,6 +12,7 @@ import { DropdownSection } from '../core/Dropdown/DropdownSection';
 import { HStack } from '../core/Spacer/Stack';
 import { BaseS } from '../core/Text/Text';
 import useNftSelector from '../NftSelector/useNftSelector';
+import useUpdateProfileImage from '../NftSelector/useUpdateProfileImage';
 
 type Props = {
   open: boolean;
@@ -30,6 +31,7 @@ export function ProfilePictureDropdown({ open, onClose, tokensRef }: Props) {
   );
 
   const showNftSelector = useNftSelector(tokens);
+  const { removeProfileImage } = useUpdateProfileImage();
 
   return (
     <Dropdown position="left" active={open} onClose={onClose}>
@@ -46,7 +48,7 @@ export function ProfilePictureDropdown({ open, onClose, tokensRef }: Props) {
             <BaseS>Choose an NFT</BaseS>
           </StyledDropdownItemContainer>
         </StyledDropdownItem>
-        <StyledDropdownItem onClick={() => {}}>
+        <StyledDropdownItem onClick={removeProfileImage}>
           <StyledDropdownItemContainer gap={8}>
             <TrashIconNew color="#E12E16" />
             <StyledRemoveText>Remove current profile picture</StyledRemoveText>
