@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { ResizeMode } from 'expo-av';
-import { startTransition, useCallback, useEffect, useRef, useState } from 'react';
+import { startTransition, useCallback, useRef, useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { Priority } from 'react-native-fast-image';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
@@ -27,7 +27,7 @@ type NftPreviewProps = {
   tokenUrl: string | null | undefined;
   resizeMode: ResizeMode;
 
-  onDoubleTap?: () => void;
+  onPress?: () => void;
   onImageStateChange?: (imageState: ImageState) => void;
 };
 
@@ -37,7 +37,7 @@ function NftPreviewInner({
   resizeMode,
   priority,
 
-  onDoubleTap,
+  onPress,
   onImageStateChange,
 }: NftPreviewProps) {
   const collectionToken = useFragment(
@@ -81,34 +81,13 @@ function NftPreviewInner({
     });
   }, [collectionToken.collection?.dbid, navigation, token.dbid, tokenUrl]);
 
-  const singleTapTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const handlePress = useCallback(() => {
-    // ChatGPT says 200ms is at the fast end for double tapping.
-    // I want the single tap flow to feel fast, so I'm going for speed here.
-    // Our users better be nimble af.
-    const DOUBLE_TAP_WINDOW = 200;
-
-    if (singleTapTimeoutRef.current) {
-      clearTimeout(singleTapTimeoutRef.current);
-      singleTapTimeoutRef.current = null;
-
-      onDoubleTap?.();
+    if (onPress) {
+      onPress();
     } else {
-      singleTapTimeoutRef.current = setTimeout(() => {
-        singleTapTimeoutRef.current = null;
-        navigateToNftDetail();
-      }, DOUBLE_TAP_WINDOW);
+      navigateToNftDetail();
     }
-  }, [navigateToNftDetail, onDoubleTap]);
-
-  useEffect(function cleanupLeftoverTimeouts() {
-    return () => {
-      if (singleTapTimeoutRef.current) {
-        clearTimeout(singleTapTimeoutRef.current);
-        singleTapTimeoutRef.current = null;
-      }
-    };
-  }, []);
+  }, [navigateToNftDetail, onPress]);
 
   const handleLoad = useCallback(
     (dimensions: Dimensions | null) => {
@@ -157,12 +136,12 @@ export function NftPreview({
   tokenUrl,
   resizeMode,
   priority,
-  onDoubleTap,
+  onPress,
 }: NftPreviewProps) {
   return (
     <ReportingErrorBoundary fallback={<NftPreviewErrorFallback />}>
       <NftPreviewInner
-        onDoubleTap={onDoubleTap}
+        onPress={onPress}
         onImageStateChange={onImageStateChange}
         collectionTokenRef={collectionTokenRef}
         tokenUrl={tokenUrl}

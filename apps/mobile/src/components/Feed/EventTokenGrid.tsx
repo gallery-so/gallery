@@ -1,11 +1,16 @@
+import { useNavigation } from '@react-navigation/native';
 import { ResizeMode } from 'expo-av';
-import { PropsWithChildren, useMemo } from 'react';
+import { PropsWithChildren, useCallback, useEffect, useMemo, useRef } from 'react';
 import { useWindowDimensions, View, ViewProps } from 'react-native';
 import { Priority } from 'react-native-fast-image';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import { EventTokenGridFragment$key } from '~/generated/EventTokenGridFragment.graphql';
+import {
+  EventTokenGridFragment$data,
+  EventTokenGridFragment$key,
+} from '~/generated/EventTokenGridFragment.graphql';
+import { MainTabStackNavigatorProp } from '~/navigation/types';
 import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
 
 import { NftPreview } from '../NftPreview/NftPreview';
@@ -27,11 +32,16 @@ export function EventTokenGrid({
   const collectionTokens = useFragment(
     graphql`
       fragment EventTokenGridFragment on CollectionToken @relay(plural: true) {
-        ...NftPreviewFragment
+        collection {
+          dbid
+        }
 
         token @required(action: THROW) {
+          dbid
           ...getVideoOrImageUrlForNftPreviewFragment
         }
+
+        ...NftPreviewFragment
       }
     `,
     collectionTokenRefs
@@ -42,6 +52,59 @@ export function EventTokenGrid({
   const preserveAspectRatio = collectionTokens.length === 1 && allowPreserveAspectRatio;
 
   const { fullWidth, fullHeight } = useGridDimensions();
+
+  const navigation = useNavigation<MainTabStackNavigatorProp>();
+  const navigateToNftDetail = useCallback(
+    (
+      collectionToken: EventTokenGridFragment$data[number],
+      cachedPreviewAssetUrl: string | null | undefined
+    ) => {
+      if (collectionToken.token) {
+        navigation.push('NftDetail', {
+          tokenId: collectionToken.token.dbid,
+          collectionId: collectionToken.collection?.dbid ?? null,
+
+          cachedPreviewAssetUrl: cachedPreviewAssetUrl ?? null,
+        });
+      }
+    },
+    [navigation]
+  );
+
+  const singleTapTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const handlePress = useCallback(
+    (
+      collectionToken: EventTokenGridFragment$data[number],
+      cachedPreviewAssetUrl: string | null | undefined
+    ) => {
+      // ChatGPT says 200ms is at the fast end for double tapping.
+      // I want the single tap flow to feel fast, so I'm going for speed here.
+      // Our users better be nimble af.
+      const DOUBLE_TAP_WINDOW = 200;
+
+      if (singleTapTimeoutRef.current) {
+        clearTimeout(singleTapTimeoutRef.current);
+        singleTapTimeoutRef.current = null;
+
+        onDoubleTap?.();
+      } else {
+        singleTapTimeoutRef.current = setTimeout(() => {
+          singleTapTimeoutRef.current = null;
+          navigateToNftDetail(collectionToken, cachedPreviewAssetUrl);
+        }, DOUBLE_TAP_WINDOW);
+      }
+    },
+    [navigateToNftDetail, onDoubleTap]
+  );
+
+  useEffect(function cleanupLeftoverTimeouts() {
+    return () => {
+      if (singleTapTimeoutRef.current) {
+        clearTimeout(singleTapTimeoutRef.current);
+        singleTapTimeoutRef.current = null;
+      }
+    };
+  }, []);
 
   const inner = useMemo(() => {
     const tokensWithMedia = collectionTokens
@@ -67,7 +130,7 @@ export function EventTokenGrid({
           <HalfHeightRow>
             <QuarterCell>
               <NftPreview
-                onDoubleTap={onDoubleTap}
+                onPress={() => handlePress(firstToken, firstToken.medium)}
                 priority={imagePriority}
                 resizeMode={ResizeMode.COVER}
                 collectionTokenRef={firstToken}
@@ -76,7 +139,7 @@ export function EventTokenGrid({
             </QuarterCell>
             <QuarterCell>
               <NftPreview
-                onDoubleTap={onDoubleTap}
+                onPress={() => handlePress(secondToken, secondToken.medium)}
                 priority={imagePriority}
                 resizeMode={ResizeMode.COVER}
                 collectionTokenRef={secondToken}
@@ -88,7 +151,7 @@ export function EventTokenGrid({
           <HalfHeightRow>
             <QuarterCell>
               <NftPreview
-                onDoubleTap={onDoubleTap}
+                onPress={() => handlePress(thirdToken, thirdToken.medium)}
                 priority={imagePriority}
                 resizeMode={ResizeMode.COVER}
                 collectionTokenRef={thirdToken}
@@ -97,7 +160,7 @@ export function EventTokenGrid({
             </QuarterCell>
             <QuarterCell>
               <NftPreview
-                onDoubleTap={onDoubleTap}
+                onPress={() => handlePress(fourthToken, fourthToken.medium)}
                 priority={imagePriority}
                 resizeMode={ResizeMode.COVER}
                 collectionTokenRef={fourthToken}
@@ -112,7 +175,7 @@ export function EventTokenGrid({
         <HalfHeightRow>
           <QuarterCell>
             <NftPreview
-              onDoubleTap={onDoubleTap}
+              onPress={() => handlePress(firstToken, firstToken.large)}
               priority={imagePriority}
               resizeMode={ResizeMode.COVER}
               collectionTokenRef={firstToken}
@@ -121,7 +184,7 @@ export function EventTokenGrid({
           </QuarterCell>
           <QuarterCell>
             <NftPreview
-              onDoubleTap={onDoubleTap}
+              onPress={() => handlePress(secondToken, secondToken.large)}
               priority={imagePriority}
               resizeMode={ResizeMode.COVER}
               collectionTokenRef={secondToken}
@@ -139,7 +202,7 @@ export function EventTokenGrid({
           }}
         >
           <NftPreview
-            onDoubleTap={onDoubleTap}
+            onPress={() => handlePress(firstToken, firstToken.large)}
             resizeMode={preserveAspectRatio ? ResizeMode.CONTAIN : ResizeMode.COVER}
             priority={imagePriority}
             collectionTokenRef={firstToken}
@@ -150,7 +213,7 @@ export function EventTokenGrid({
     } else {
       throw new Error('Tried to render EventTokenGrid without any tokens');
     }
-  }, [collectionTokens, fullHeight, fullWidth, imagePriority, onDoubleTap, preserveAspectRatio]);
+  }, [collectionTokens, fullHeight, fullWidth, handlePress, imagePriority, preserveAspectRatio]);
 
   return (
     <View className="flex flex-1 flex-col pt-1" style={{ width: dimensions.width }}>
