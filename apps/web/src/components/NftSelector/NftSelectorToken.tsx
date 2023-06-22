@@ -10,11 +10,13 @@ import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import { NftFailureBoundary } from '../NftFailureFallback/NftFailureBoundary';
 import { NftFailureFallback } from '../NftFailureFallback/NftFailureFallback';
 import { NftSelectorPreviewAsset, RawNftSelectorPreviewAsset } from './RawNftSelectorPreviewAsset';
+import useUpdateProfileImage from './useUpdateProfileImage';
 
 type Props = {
   tokenRef: NftSelectorTokenFragment$key;
+  isInGroup?: boolean;
 };
-export function NftSelectorToken({ tokenRef }: Props) {
+export function NftSelectorToken({ tokenRef, isInGroup = false }: Props) {
   const token = useFragment(
     graphql`
       fragment NftSelectorTokenFragment on Token {
@@ -36,6 +38,8 @@ export function NftSelectorToken({ tokenRef }: Props) {
     tokenRef
   );
 
+  const { setProfileImage } = useUpdateProfileImage();
+
   const { handleNftLoaded, handleNftError, retryKey, refreshMetadata, refreshingMetadata } =
     useNftRetry({ tokenId: token.dbid });
 
@@ -52,6 +56,14 @@ export function NftSelectorToken({ tokenRef }: Props) {
     },
     [handleNftLoaded]
   );
+
+  const handleClick = useCallback(() => {
+    if (isInGroup) {
+      return;
+    }
+    setProfileImage(token.dbid);
+    console.log('setProfileImage', token.dbid);
+  }, [isInGroup, token.dbid, setProfileImage]);
 
   return (
     <NftFailureBoundary
@@ -71,15 +83,19 @@ export function NftSelectorToken({ tokenRef }: Props) {
     >
       <ReportingErrorBoundary
         fallback={
-          <RawNftSelectorPreviewAsset
-            type="image"
-            isSelected={false}
-            src={token.media?.fallbackMedia?.mediaURL}
-            onLoad={handleLoad}
-          />
+          <div>
+            <RawNftSelectorPreviewAsset
+              type="image"
+              isSelected={false}
+              src={token.media?.fallbackMedia?.mediaURL}
+              onLoad={handleLoad}
+            />
+            <StyledOutline onClick={handleClick} />
+          </div>
         }
       >
         <NftSelectorPreviewAsset tokenRef={token} onLoad={handleLoad} />
+        <StyledOutline onClick={handleClick} />
       </ReportingErrorBoundary>
     </NftFailureBoundary>
   );
@@ -89,4 +105,15 @@ const StyledNftFailureFallbackWrapper = styled.div`
   height: 100%;
   width: 100%;
   position: relative;
+`;
+
+const StyledOutline = styled.div`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+
+  user-select: none;
+  z-index: 2;
 `;
