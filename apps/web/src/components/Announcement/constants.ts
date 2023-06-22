@@ -1,6 +1,15 @@
-// key: based on UserExperienceType schema
+// key: based on `UserExperienceType` schema
 
 export const ANNOUNCEMENT_CONTENT = [
+  // Enable this in the future
+  // {
+  //   key: 'UpsellMintMemento5',
+  //   title: 'Now Minting: Worlds Beyond',
+  //   description:
+  //     'Gallery Memento #5 is now available for minting, an emblem of the transformational steps Gallery is taking into the exciting world of mobile web3.',
+  //   date: '2023-06-23T15:00:00.154845Z',
+  //   link: '/mint/mementos',
+  // },
   {
     key: 'MobileBetaUpsell',
     title: 'The Wait is Over!',
