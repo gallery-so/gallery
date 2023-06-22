@@ -65,7 +65,6 @@ export function AdmireButton({ eventRef, queryRef }: AdmireButtonProps) {
             viewerAdmire
               @appendNode(edgeTypeName: "FeedEventAdmireEdge", connections: $connections) {
               dbid
-              ...AdmireLineFragment
               ...AdmireNoteFragment
             }
           }
@@ -236,7 +235,7 @@ export function AdmireButton({ eventRef, queryRef }: AdmireButtonProps) {
                 creationTime: new Date().toISOString(),
                 admirer: {
                   id: query.viewer?.user?.id ?? 'unknown',
-                  dbid: query.viewer?.user?.dbid ?? 'unknown',
+                  // dbid: query.viewer?.user?.dbid ?? 'unknown',
                   username: query.viewer?.user?.username ?? null,
                 },
               },

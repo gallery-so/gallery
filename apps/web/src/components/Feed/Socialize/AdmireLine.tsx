@@ -1,123 +1,58 @@
 import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import styled from 'styled-components';
 
 import { HStack } from '~/components/core/Spacer/Stack';
-import { BODY_FONT_FAMILY } from '~/components/core/Text/Text';
-import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
+import { ProfilePictureStack } from '~/components/ProfilePictureStack';
 import { AdmireLineEventFragment$key } from '~/generated/AdmireLineEventFragment.graphql';
-import { AdmireLineFragment$key } from '~/generated/AdmireLineFragment.graphql';
-import { AdmireLineQueryFragment$key } from '~/generated/AdmireLineQueryFragment.graphql';
-import colors from '~/shared/theme/colors';
-
-import { NoteModalOpenerText } from './NoteModalOpenerText';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 type CommentLineProps = {
-  totalAdmires: number;
-  admireRef: AdmireLineFragment$key;
-  queryRef: AdmireLineQueryFragment$key;
   eventRef: AdmireLineEventFragment$key;
 };
 
-export function AdmireLine({ admireRef, eventRef, queryRef, totalAdmires }: CommentLineProps) {
-  const admire = useFragment(
+export function AdmireLine({ eventRef }: CommentLineProps) {
+  const event = useFragment(
     graphql`
-      fragment AdmireLineFragment on Admire {
-        dbid
-
-        admirer {
-          dbid
-          username
-
-          ...HoverCardOnUsernameFragment
-        }
-      }
-    `,
-    admireRef
-  );
-
-  const query = useFragment(
-    graphql`
-      fragment AdmireLineQueryFragment on Query {
-        viewer {
-          ... on Viewer {
-            user {
-              dbid
+      fragment AdmireLineEventFragment on FeedEvent {
+        # We only show 1 but in case the user deletes something
+        # we want to be sure that we can show another comment beneath
+        admires(last: 5) @connection(key: "Interactions_admires") {
+          pageInfo {
+            total
+          }
+          edges {
+            node {
+              admirer {
+                ...ProfilePictureStackFragment
+              }
             }
           }
         }
       }
     `,
-    queryRef
-  );
-
-  const event = useFragment(
-    graphql`
-      fragment AdmireLineEventFragment on FeedEvent {
-        dbid
-        ...NoteModalOpenerTextFragment
-      }
-    `,
     eventRef
   );
 
-  const admirerName = useMemo(() => {
-    const isTheAdmirerTheLoggedInUser = query.viewer?.user?.dbid === admire.admirer?.dbid;
+  const nonNullAdmires = useMemo(() => {
+    const admires = [];
 
-    if (isTheAdmirerTheLoggedInUser) {
-      return 'You';
-    } else if (admire.admirer?.username) {
-      return admire.admirer.username;
-    } else {
-      return '<unknown>';
+    for (const edge of event.admires?.edges ?? []) {
+      if (edge?.node) {
+        admires.push(edge.node.admirer);
+      }
     }
-  }, [admire.admirer?.dbid, admire.admirer?.username, query.viewer?.user?.dbid]);
+
+    admires.reverse();
+
+    return removeNullValues(admires);
+  }, [event.admires?.edges]);
+
+  const totalAdmires = event.admires?.pageInfo.total ?? 0;
 
   return (
     <HStack gap={4} align="flex-end">
-      {admire.admirer && (
-        <HoverCardOnUsername userRef={admire.admirer}>
-          <AdmirerName>{admirerName}</AdmirerName>
-        </HoverCardOnUsername>
-      )}
-      {totalAdmires === 1 ? (
-        <AdmirerText>admired this</AdmirerText>
-      ) : (
-        <>
-          <AdmirerText>and</AdmirerText>
-          <NoteModalOpenerText eventRef={event}>
-            {/*                                  |-- Checking for two here since we have  */}
-            {/*                                  |   to subtract one to get the remaining count */}
-            {totalAdmires - 1} {totalAdmires === 2 ? 'other' : 'others'}
-          </NoteModalOpenerText>
-          <AdmirerText>admired this</AdmirerText>
-        </>
-      )}
+      <ProfilePictureStack usersRef={nonNullAdmires} total={totalAdmires} />
     </HStack>
   );
 }
-
-const AdmirerName = styled.a`
-  font-family: ${BODY_FONT_FAMILY};
-  vertical-align: bottom;
-  font-size: 12px;
-  line-height: 1;
-  font-weight: 700;
-
-  text-decoration: none;
-  color: ${colors.black['800']};
-`;
-
-const AdmirerText = styled.div`
-  font-family: ${BODY_FONT_FAMILY};
-  font-size: 12px;
-  line-height: 1;
-  font-weight: 400;
-
-  flex-shrink: 1;
-  min-width: 0;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-`;

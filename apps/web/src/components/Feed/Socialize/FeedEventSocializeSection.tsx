@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
@@ -8,6 +9,8 @@ import { CommentBoxIcon } from '~/components/Feed/Socialize/CommentBox/CommentBo
 import { Interactions } from '~/components/Feed/Socialize/Interactions';
 import { FeedEventSocializeSectionFragment$key } from '~/generated/FeedEventSocializeSectionFragment.graphql';
 import { FeedEventSocializeSectionQueryFragment$key } from '~/generated/FeedEventSocializeSectionQueryFragment.graphql';
+
+import { AdmireLine } from './AdmireLine';
 
 type FeedEventSocializeSectionProps = {
   onPotentialLayoutShift: () => void;
@@ -26,6 +29,18 @@ export function FeedEventSocializeSection({
         ...CommentBoxIconEventFragment
         ...InteractionsFragment
         ...AdmireButtonFragment
+        ...AdmireLineEventFragment
+
+        # We only show 1 but in case the user deletes something
+        # we want to be sure that we can show another comment beneath
+        admires(last: 5) @connection(key: "Interactions_admires") {
+          edges {
+            node {
+              __typename
+            }
+          }
+        }
+        ...AdmireLineEventFragment
       }
     `,
     eventRef
@@ -35,33 +50,45 @@ export function FeedEventSocializeSection({
     graphql`
       fragment FeedEventSocializeSectionQueryFragment on Query {
         ...AdmireButtonQueryFragment
-        ...InteractionsQueryFragment
         ...CommentBoxIconQueryFragment
       }
     `,
     queryRef
   );
 
+  const nonNullAdmires = useMemo(() => {
+    const admires = [];
+
+    for (const edge of event.admires?.edges ?? []) {
+      if (edge?.node) {
+        admires.push(edge.node);
+      }
+    }
+
+    admires.reverse();
+
+    return admires;
+  }, [event.admires?.edges]);
+  const [admire] = nonNullAdmires;
   return (
-    <HStack justify="space-between" align="flex-start" gap={24}>
-      <VStack shrink>
-        <Interactions
-          onPotentialLayoutShift={onPotentialLayoutShift}
-          eventRef={event}
-          queryRef={query}
-        />
-      </VStack>
+    <VStack gap={4}>
+      {admire && <AdmireLine eventRef={event} />}
+      <HStack justify="space-between" align="flex-start" gap={24}>
+        <VStack shrink>
+          <Interactions onPotentialLayoutShift={onPotentialLayoutShift} eventRef={event} />
+        </VStack>
 
-      <HStack align="center">
-        <IconWrapper>
-          <AdmireButton eventRef={event} queryRef={query} />
-        </IconWrapper>
+        <HStack align="center">
+          <IconWrapper>
+            <AdmireButton eventRef={event} queryRef={query} />
+          </IconWrapper>
 
-        <IconWrapper>
-          <CommentBoxIcon eventRef={event} queryRef={query} />
-        </IconWrapper>
+          <IconWrapper>
+            <CommentBoxIcon eventRef={event} queryRef={query} />
+          </IconWrapper>
+        </HStack>
       </HStack>
-    </HStack>
+    </VStack>
   );
 }
 

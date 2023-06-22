@@ -3,19 +3,16 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { VStack } from '~/components/core/Spacer/Stack';
-import { AdmireLine } from '~/components/Feed/Socialize/AdmireLine';
 import { CommentLine } from '~/components/Feed/Socialize/CommentLine';
 import { RemainingAdmireCount } from '~/components/Feed/Socialize/RemainingAdmireCount';
 import { InteractionsFragment$key } from '~/generated/InteractionsFragment.graphql';
-import { InteractionsQueryFragment$key } from '~/generated/InteractionsQueryFragment.graphql';
 
 type Props = {
   onPotentialLayoutShift: () => void;
   eventRef: InteractionsFragment$key;
-  queryRef: InteractionsQueryFragment$key;
 };
 
-export function Interactions({ eventRef, queryRef, onPotentialLayoutShift }: Props) {
+export function Interactions({ eventRef, onPotentialLayoutShift }: Props) {
   const event = useFragment(
     graphql`
       fragment InteractionsFragment on FeedEvent {
@@ -28,8 +25,6 @@ export function Interactions({ eventRef, queryRef, onPotentialLayoutShift }: Pro
           edges {
             node {
               dbid
-
-              ...AdmireLineFragment
             }
           }
         }
@@ -49,20 +44,10 @@ export function Interactions({ eventRef, queryRef, onPotentialLayoutShift }: Pro
           }
         }
 
-        ...AdmireLineEventFragment
         ...RemainingAdmireCountFragment
       }
     `,
     eventRef
-  );
-
-  const query = useFragment(
-    graphql`
-      fragment InteractionsQueryFragment on Query {
-        ...AdmireLineQueryFragment
-      }
-    `,
-    queryRef
   );
 
   const nonNullComments = useMemo(() => {
@@ -77,19 +62,19 @@ export function Interactions({ eventRef, queryRef, onPotentialLayoutShift }: Pro
     return comments;
   }, [event.comments?.edges]);
 
-  const nonNullAdmires = useMemo(() => {
-    const admires = [];
+  // const nonNullAdmires = useMemo(() => {
+  //   const admires = [];
 
-    for (const edge of event.admires?.edges ?? []) {
-      if (edge?.node) {
-        admires.push(edge.node);
-      }
-    }
+  //   for (const edge of event.admires?.edges ?? []) {
+  //     if (edge?.node) {
+  //       admires.push(edge.node);
+  //     }
+  //   }
 
-    admires.reverse();
+  //   admires.reverse();
 
-    return admires;
-  }, [event.admires?.edges]);
+  //   return admires;
+  // }, [event.admires?.edges]);
 
   const totalComments = event.comments?.pageInfo.total ?? 0;
   const totalAdmires = event.admires?.pageInfo.total ?? 0;
@@ -104,7 +89,7 @@ export function Interactions({ eventRef, queryRef, onPotentialLayoutShift }: Pro
     isFirstMount.current = false;
 
     // These are all the things that might cause the layout to shift
-  }, [onPotentialLayoutShift, nonNullAdmires, nonNullComments, totalComments, totalAdmires]);
+  }, [onPotentialLayoutShift, nonNullComments, totalComments, totalAdmires]);
 
   /**
    * The below logic is a bit annoying to read so I'll try to explain it here
@@ -143,7 +128,7 @@ export function Interactions({ eventRef, queryRef, onPotentialLayoutShift }: Pro
     if (lastTwoComments.length > 0) {
       // 2 comments and "+ x others" below
       // Not hard coding 2 here since there might only be one comment from the slice
-      const remainingAdmiresAndComments = Math.max(totalInteractions - lastTwoComments.length, 0);
+      const remainingAdmiresAndComments = Math.max(totalComments - lastTwoComments.length, 0);
 
       return (
         <VStack gap={8}>
@@ -159,21 +144,6 @@ export function Interactions({ eventRef, queryRef, onPotentialLayoutShift }: Pro
     }
 
     return <RemainingAdmireCount remainingCount={totalInteractions} eventRef={event} />;
-  }
-
-  if (totalAdmires > 0) {
-    const [admire] = nonNullAdmires;
-
-    if (admire) {
-      return (
-        <AdmireLine
-          totalAdmires={totalAdmires}
-          admireRef={admire}
-          queryRef={query}
-          eventRef={event}
-        />
-      );
-    }
   }
 
   return null;
