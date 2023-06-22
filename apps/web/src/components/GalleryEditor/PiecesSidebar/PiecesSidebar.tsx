@@ -97,7 +97,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
   }, [addWhitespace]);
 
   const tokensToDisplay = useMemo(() => {
-    // [GAL-2710] TODO. we may have to update the logic for `tokenSearchResults` to handle created tokens
+    // [GAL-3407] TODO. we may have to update the logic for `tokenSearchResults` to handle created tokens
     if (selectedView === 'Created') {
       return [];
     }
@@ -133,7 +133,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
     }
   }, []);
 
-  // [GAL-2710] call syncTokens conditionally based on what the `SelectedView` is
+  // [GAL-3406] – enable this once the button is ready to be hooked up end-to-end
   const handleRefresh = useCallback(async () => {
     if (refreshDisabled) {
       return;
@@ -143,7 +143,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
   }, [selectedChain, refreshDisabled, syncTokens]);
 
   const sidebarMainContent = useMemo(() => {
-    // [GAL-2710] TODO
+    // [GAL-3407] – display creator tokens if they exist
     if (selectedView === 'Created') {
       if (tokensToDisplay.length) {
         return (
@@ -187,6 +187,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
 
   // this can be a 1-liner but this is easier to read tbh
   const shouldDisplayRefreshButtonGroup = useMemo(() => {
+    // [GAL-3406] – enable this once the button is ready to be hooked up end-to-end
     if (selectedView === 'Created') {
       return false;
     }
