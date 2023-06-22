@@ -19,9 +19,14 @@ import { NonRecursiveFeedListItem } from './NonRecursiveFeedListItem';
 type GalleryUpdatedFeedEventProps = {
   eventId: string;
   eventDataRef: GalleryUpdatedFeedEventFragment$key;
+  onAdmire: () => void;
 };
 
-export function GalleryUpdatedFeedEvent({ eventDataRef, eventId }: GalleryUpdatedFeedEventProps) {
+export function GalleryUpdatedFeedEvent({
+  eventDataRef,
+  eventId,
+  onAdmire,
+}: GalleryUpdatedFeedEventProps) {
   const eventData = useFragment(
     graphql`
       fragment GalleryUpdatedFeedEventFragment on GalleryUpdatedFeedEventData {
@@ -65,6 +70,7 @@ export function GalleryUpdatedFeedEvent({ eventDataRef, eventId }: GalleryUpdate
       return (
         <NonRecursiveFeedListItem
           key={index}
+          onAdmire={onAdmire}
           eventId={eventId}
           slideIndex={index}
           eventCount={subEvents.length}
@@ -93,7 +99,7 @@ export function GalleryUpdatedFeedEvent({ eventDataRef, eventId }: GalleryUpdate
     } else {
       return inner;
     }
-  }, [eventId, handleScroll, isPaginated, subEvents, width]);
+  }, [eventId, handleScroll, isPaginated, onAdmire, subEvents, width]);
 
   return (
     <View className="flex flex-col space-y-3">

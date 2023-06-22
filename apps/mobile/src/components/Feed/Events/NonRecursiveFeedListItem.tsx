@@ -17,6 +17,7 @@ type NonRecursiveFeedListItemProps = {
   slideIndex: number;
   eventCount: number;
   eventDataRef: NonRecursiveFeedListItemFragment$key;
+  onAdmire: () => void;
 };
 
 export function NonRecursiveFeedListItem({
@@ -24,6 +25,7 @@ export function NonRecursiveFeedListItem({
   eventDataRef,
   eventCount,
   slideIndex,
+  onAdmire,
 }: NonRecursiveFeedListItemProps) {
   const eventData = useFragment(
     graphql`
@@ -68,6 +70,7 @@ export function NonRecursiveFeedListItem({
       case 'CollectorsNoteAddedToCollectionFeedEventData':
         return (
           <CollectorsNoteAddedToCollectionFeedEvent
+            onDoubleTap={onAdmire}
             isFirstSlide={slideIndex === 0}
             allowPreserveAspectRatio={allowPreserveAspectRatio}
             collectionUpdatedFeedEventDataRef={eventData}
@@ -76,6 +79,7 @@ export function NonRecursiveFeedListItem({
       case 'CollectionUpdatedFeedEventData':
         return (
           <CollectionUpdatedFeedEvent
+            onDoubleTap={onAdmire}
             isFirstSlide={slideIndex === 0}
             allowPreserveAspectRatio={allowPreserveAspectRatio}
             collectionUpdatedFeedEventDataRef={eventData}
@@ -84,6 +88,7 @@ export function NonRecursiveFeedListItem({
       case 'CollectionCreatedFeedEventData':
         return (
           <CollectionCreatedFeedEvent
+            onDoubleTap={onAdmire}
             isFirstSlide={slideIndex === 0}
             allowPreserveAspectRatio={allowPreserveAspectRatio}
             collectionUpdatedFeedEventDataRef={eventData}
@@ -92,6 +97,7 @@ export function NonRecursiveFeedListItem({
       case 'TokensAddedToCollectionFeedEventData':
         return (
           <TokensAddedToCollectionFeedEvent
+            onDoubleTap={onAdmire}
             isFirstSlide={slideIndex === 0}
             allowPreserveAspectRatio={allowPreserveAspectRatio}
             collectionUpdatedFeedEventDataRef={eventData}
@@ -102,7 +108,7 @@ export function NonRecursiveFeedListItem({
       default:
         throw new TriedToRenderUnsupportedFeedEvent(eventId);
     }
-  }, [eventCount, eventData, eventId, slideIndex]);
+  }, [eventCount, eventData, eventId, onAdmire, slideIndex]);
 
   return (
     <View className="flex-1" style={{ width }}>
