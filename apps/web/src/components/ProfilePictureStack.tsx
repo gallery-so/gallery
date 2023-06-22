@@ -2,26 +2,26 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { ProfilePictureStackFragment$key } from '~/generated/ProfilePictureStackFragment.graphql';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
 
 import { HStack, VStack } from './core/Spacer/Stack';
 import { TitleXS } from './core/Text/Text';
-import { RawProfilePicture } from './RawProfilePicture';
 import { ProfilePicture } from './ProfilePicture/ProfilePicture';
-import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 type Props = {
   usersRef: ProfilePictureStackFragment$key;
+  total: number;
 };
 
 const TOTAL_USERS_SHOWN = 3;
 
-export function ProfilePictureStack({ usersRef }: Props) {
+export function ProfilePictureStack({ usersRef, total }: Props) {
   const users = useFragment(
     graphql`
       fragment ProfilePictureStackFragment on GalleryUser @relay(plural: true) {
         __typename
-        username
+        dbid
         profileImage {
           __typename
         }
@@ -49,14 +49,14 @@ export function ProfilePictureStack({ usersRef }: Props) {
   const usersToShow = sortedUsers.slice(0, TOTAL_USERS_SHOWN);
 
   // If there are more than 3 users, we show the remaining count
-  const remainingCount = sortedUsers.length - TOTAL_USERS_SHOWN;
+  const remainingCount = total - TOTAL_USERS_SHOWN;
 
   return (
     <StyledProfilePictureStackContainer align="center">
       {usersToShow.map((user) => (
-        <StyledRawProfilePictureContainer>
+        <StyledProfilePictureContainer key={user.dbid}>
           <ProfilePicture userRef={user} />
-        </StyledRawProfilePictureContainer>
+        </StyledProfilePictureContainer>
       ))}
       {remainingCount > 0 && (
         <StyledRemainings align="center" justify="center" shrink>
@@ -67,14 +67,14 @@ export function ProfilePictureStack({ usersRef }: Props) {
   );
 }
 
-const StyledRawProfilePictureContainer = styled.div`
+const StyledProfilePictureContainer = styled.div`
   margin-left: -8px;
   position: relative;
   z-index: 1;
 `;
 
 const StyledProfilePictureStackContainer = styled(HStack)`
-  ${StyledRawProfilePictureContainer}:nth-child(1) {
+  ${StyledProfilePictureContainer}:nth-child(1) {
     margin-left: 0;
   }
 `;
