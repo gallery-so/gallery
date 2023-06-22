@@ -51,6 +51,7 @@ export function FeedEventSocializeSection({
       fragment FeedEventSocializeSectionQueryFragment on Query {
         ...AdmireButtonQueryFragment
         ...CommentBoxIconQueryFragment
+        ...AdmireLineQueryFragment
       }
     `,
     queryRef
@@ -72,7 +73,7 @@ export function FeedEventSocializeSection({
   const [admire] = nonNullAdmires;
   return (
     <VStack gap={4}>
-      {admire && <AdmireLine eventRef={event} />}
+      {admire && <AdmireLine eventRef={event} queryRef={query} />}
       <HStack justify="space-between" align="flex-start" gap={24}>
         <VStack shrink>
           <Interactions onPotentialLayoutShift={onPotentialLayoutShift} eventRef={event} />

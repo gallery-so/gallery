@@ -5,13 +5,17 @@ import { graphql } from 'relay-runtime';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { ProfilePictureStack } from '~/components/ProfilePictureStack';
 import { AdmireLineEventFragment$key } from '~/generated/AdmireLineEventFragment.graphql';
+import { AdmireLineQueryFragment$key } from '~/generated/AdmireLineQueryFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
+
+import { useAdmireModal } from './AdmireModal/useAdmireModal';
 
 type CommentLineProps = {
   eventRef: AdmireLineEventFragment$key;
+  queryRef: AdmireLineQueryFragment$key;
 };
 
-export function AdmireLine({ eventRef }: CommentLineProps) {
+export function AdmireLine({ eventRef, queryRef }: CommentLineProps) {
   const event = useFragment(
     graphql`
       fragment AdmireLineEventFragment on FeedEvent {
@@ -29,10 +33,22 @@ export function AdmireLine({ eventRef }: CommentLineProps) {
             }
           }
         }
+        ...useAdmireModalFragment
       }
     `,
     eventRef
   );
+
+  const query = useFragment(
+    graphql`
+      fragment AdmireLineQueryFragment on Query {
+        ...useAdmireModalQueryFragment
+      }
+    `,
+    queryRef
+  );
+
+  const openAdmireModal = useAdmireModal({ eventRef: event, queryRef: query });
 
   const nonNullAdmires = useMemo(() => {
     const admires = [];
@@ -51,7 +67,7 @@ export function AdmireLine({ eventRef }: CommentLineProps) {
   const totalAdmires = event.admires?.pageInfo.total ?? 0;
 
   return (
-    <HStack gap={4} align="flex-end">
+    <HStack gap={4} align="flex-end" onClick={openAdmireModal}>
       <ProfilePictureStack usersRef={nonNullAdmires} total={totalAdmires} />
     </HStack>
   );

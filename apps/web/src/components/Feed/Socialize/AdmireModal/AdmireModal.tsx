@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
-import { usePaginationFragment } from 'react-relay';
+import { useFragment, usePaginationFragment } from 'react-relay';
 import {
   AutoSizer,
   CellMeasurer,
@@ -12,36 +12,38 @@ import styled from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';
 import { TitleDiatypeM, TitleXS } from '~/components/core/Text/Text';
-import { CommentNote } from '~/components/Feed/Socialize/NotesModal/CommentNote';
+import { AdmireNote } from '~/components/Feed/Socialize/AdmireModal/AdmireNote';
 import { ListItem } from '~/components/Feed/Socialize/NotesModal/ListItem';
 import { MODAL_PADDING_PX } from '~/contexts/modal/constants';
-import { NotesModalFragment$key } from '~/generated/NotesModalFragment.graphql';
+import { AdmireModalFragment$key } from '~/generated/AdmireModalFragment.graphql';
+import { AdmireModalQueryFragment$key } from '~/generated/AdmireModalQueryFragment.graphql';
 import colors from '~/shared/theme/colors';
 
 export const NOTES_PER_PAGE = 10;
 
 type NotesModalProps = {
   fullscreen: boolean;
-  eventRef: NotesModalFragment$key;
+  eventRef: AdmireModalFragment$key;
+  queryRef: AdmireModalQueryFragment$key;
 };
 
-export function NotesModal({ eventRef, fullscreen }: NotesModalProps) {
+export function AdmireModal({ eventRef, queryRef, fullscreen }: NotesModalProps) {
   const {
     data: feedEvent,
     loadPrevious,
     hasPrevious,
   } = usePaginationFragment(
     graphql`
-      fragment NotesModalFragment on FeedEvent
-      @refetchable(queryName: "NotesModalRefetchableFragment") {
+      fragment AdmireModalFragment on FeedEvent
+      @refetchable(queryName: "AdmireModalRefetchableFragment") {
         interactions(last: $interactionsFirst, before: $interactionsAfter)
-          @connection(key: "NotesModal_interactions") {
+          @connection(key: "AdmiresModal_interactions") {
           edges {
             node {
               __typename
 
-              ... on Comment {
-                ...CommentNoteFragment
+              ... on Admire {
+                ...AdmireNoteFragment
               }
             }
           }
@@ -49,6 +51,15 @@ export function NotesModal({ eventRef, fullscreen }: NotesModalProps) {
       }
     `,
     eventRef
+  );
+
+  const query = useFragment(
+    graphql`
+      fragment AdmireModalQueryFragment on Query {
+        ...AdmireNoteQueryFragment
+      }
+    `,
+    queryRef
   );
 
   const nonNullInteractionsAndSeeMore = useMemo(() => {
@@ -69,18 +80,14 @@ export function NotesModal({ eventRef, fullscreen }: NotesModalProps) {
     return interactions;
   }, [feedEvent.interactions?.edges, hasPrevious]);
 
-  // sort interactions by comment and admire
+  // sort interactions by admire
   const sortedInteractions = useMemo(() => {
     return nonNullInteractionsAndSeeMore.sort((a, b) => {
       if ('kind' in a || 'kind' in b) {
         return 0;
       }
 
-      if (a.__typename === 'Comment') {
-        return 1;
-      }
-
-      if (b.__typename === 'Comment') {
+      if (a.__typename === 'Admire') {
         return -1;
       }
 
@@ -127,11 +134,11 @@ export function NotesModal({ eventRef, fullscreen }: NotesModalProps) {
                   </ListItem>
                 </div>
               );
-            } else if (interaction.__typename === 'Comment') {
+            } else if (interaction.__typename === 'Admire') {
               return (
                 // @ts-expect-error Bad types from react-virtualized
                 <div style={style} ref={registerChild}>
-                  <CommentNote commentRef={interaction} />
+                  <AdmireNote admireRef={interaction} queryRef={query} />
                 </div>
               );
             } else {
@@ -141,14 +148,14 @@ export function NotesModal({ eventRef, fullscreen }: NotesModalProps) {
         </CellMeasurer>
       );
     },
-    [handleSeeMore, measurerCache, sortedInteractions]
+    [handleSeeMore, measurerCache, query, sortedInteractions]
   );
 
   return (
     <ModalContent fullscreen={fullscreen}>
       <WrappingVStack>
         <StyledHeader>
-          <TitleDiatypeM>Notes</TitleDiatypeM>
+          <TitleDiatypeM>Admires</TitleDiatypeM>
         </StyledHeader>
         <VStack grow>
           <AutoSizer>
@@ -159,6 +166,10 @@ export function NotesModal({ eventRef, fullscreen }: NotesModalProps) {
                 rowRenderer={rowRenderer}
                 rowCount={nonNullInteractionsAndSeeMore.length}
                 rowHeight={measurerCache.rowHeight}
+                containerStyle={{
+                  height: '100%',
+                  maxHeight: '100%',
+                }}
               />
             )}
           </AutoSizer>
