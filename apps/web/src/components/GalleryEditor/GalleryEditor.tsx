@@ -31,7 +31,7 @@ export function GalleryEditor({ queryRef }: GalleryEditorProps) {
               tokens {
                 ...PiecesSidebarFragment
               }
-              # [GAL-2710] createdTokens
+              # [GAL-3407] – display creator tokens if they exist
               # createdTokens {
               #   ...CreatedPiecesSidebarFragment
               # }
