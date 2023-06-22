@@ -91,13 +91,15 @@ export function NftSelector({ queryRef }: Props) {
     }
 
     // Filter by view
-    if (selectedView === 'Collected') {
-      filteredTokens = filteredTokens;
-    } else if (selectedView === 'Hidden') {
-      filteredTokens = filteredTokens.filter((token) => {
-        return token.isSpamByUser !== null ? token.isSpamByUser : token.isSpamByProvider;
-      });
-    }
+
+    filteredTokens = filteredTokens.filter((token) => {
+      const isSpam = token.isSpamByUser !== null ? token.isSpamByUser : token.isSpamByProvider;
+      if (selectedView === 'Hidden') {
+        return isSpam;
+      }
+
+      return !isSpam;
+    });
 
     // Filter by sort
     if (selectedSortView === 'Recently added') {
