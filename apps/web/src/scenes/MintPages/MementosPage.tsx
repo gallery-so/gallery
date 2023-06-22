@@ -78,10 +78,11 @@ export default function MementosPage() {
             <BaseM>
               Introducing the <b>Worlds Beyond</b> memento, an emblem of the transformational steps
               Gallery is taking into the exciting world of mobile web3. This limited edition piece
-              is both a celebration of the public beta launch of the Gallery App and a symbol of the
-              endless potential of creativity on-the-go. The memento encapsulates the spirit of our
-              mobile-first era, manifesting our commitment to delivering unparalleled creative
-              experiences, right in your pocket.
+              is both a celebration of the public beta launch of{' '}
+              <InteractiveLink href="https://gallery.so/mobile">the Gallery App</InteractiveLink>{' '}
+              and a symbol of the endless potential of creativity on-the-go. The memento
+              encapsulates the spirit of our mobile-first era, manifesting our commitment to
+              delivering unparalleled creative experiences, right in your pocket.
             </BaseM>
             <BaseM>
               You can read more about Gallery Mementos{' '}
