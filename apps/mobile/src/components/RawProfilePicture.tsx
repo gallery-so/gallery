@@ -77,10 +77,11 @@ export function RawProfilePicture({
         },
       ]}
     >
-      <View className="flex justify-center items-center w-full h-full rounded-full bg-offWhite dark:bg-black-800 border border-black-800">
+      <View className="flex justify-center items-center w-full h-full rounded-full bg-offWhite">
         {'letter' in rest && (
           <Typography
             font={{ family: 'GTAlpina', weight: 'Light' }}
+            className="text-black-800"
             style={{
               fontSize,
               lineHeight: undefined,
