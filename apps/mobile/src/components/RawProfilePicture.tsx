@@ -77,7 +77,7 @@ export function RawProfilePicture({
         },
       ]}
     >
-      <View className="flex justify-center items-center w-full h-full rounded-full bg-offWhite">
+      <View className="flex justify-center items-center w-full h-full rounded-full bg-offWhite border border-black-800">
         {'letter' in rest && (
           <Typography
             font={{ family: 'GTAlpina', weight: 'Light' }}
