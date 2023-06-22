@@ -60,7 +60,6 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
         }
         ...doesUserOwnWalletFromChainFragment
         ...AddWalletSidebarQueryFragment
-        ...SidebarViewSelectorFragment
       }
     `,
     queryRef
@@ -186,6 +185,17 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
     tokensToDisplay,
   ]);
 
+  // this can be a 1-liner but this is easier to read tbh
+  const shouldDisplayRefreshButtonGroup = useMemo(() => {
+    if (selectedView === 'Created') {
+      return false;
+    }
+    if (!ownsWalletFromSelectedChain) {
+      return false;
+    }
+    return true;
+  }, [ownsWalletFromSelectedChain, selectedView]);
+
   return (
     <StyledSidebar navbarHeight={navbarHeight}>
       <StyledSidebarContainer gap={8}>
@@ -194,7 +204,6 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
           <SidebarViewSelector
             selectedView={selectedView}
             onSelectedViewChange={handleSelectedViewChange}
-            queryRef={query}
           />
         </Header>
         <StyledSearchBarContainer>
@@ -229,7 +238,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
                 selectedView={selectedView}
               />
             </div>
-            {ownsWalletFromSelectedChain && (
+            {shouldDisplayRefreshButtonGroup && (
               <StyledButtonGroupContainer>
                 <StyledButton onClick={handleRefresh} variant="primary" disabled={refreshDisabled}>
                   <HStack gap={8} align="center">
