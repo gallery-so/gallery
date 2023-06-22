@@ -11,20 +11,17 @@ import {
   groupNftSelectorCollectionsByAddress,
   NftSelectorCollectionGroup,
 } from './groupNftSelectorCollectionsByAddress';
+import { NftSelectorContractType } from './NftSelector';
 import { NftSelectorTokenPreview } from './NftSelectorTokenPreview';
 
 type Props = {
   selectedContractAddress: string | null;
-  onSelectContractAddress: (contractAddress: string) => void;
+  onSelectContract: (collection: NftSelectorContractType) => void;
   tokenRefs: NftSelectorViewFragment$key;
 };
 const COLUMN_COUNT = 4;
 
-export function NftSelectorView({
-  selectedContractAddress,
-  onSelectContractAddress,
-  tokenRefs,
-}: Props) {
+export function NftSelectorView({ selectedContractAddress, onSelectContract, tokenRefs }: Props) {
   const tokens = useFragment(
     graphql`
       fragment NftSelectorViewFragment on Token @relay(plural: true) {
@@ -121,14 +118,14 @@ export function NftSelectorView({
               <NftSelectorTokenPreview
                 key={column.address}
                 group={column}
-                onSelectGroup={onSelectContractAddress}
+                onSelectGroup={onSelectContract}
               />
             );
           })}
         </StyledNftSelectorViewContainer>
       );
     },
-    [onSelectContractAddress, rows]
+    [onSelectContract, rows]
   );
 
   if (!rows.length) {

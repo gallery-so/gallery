@@ -3,12 +3,14 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { NftSelectorQueryFragment$key } from '~/generated/NftSelectorQueryFragment.graphql';
+import { ChevronLeftIcon } from '~/icons/ChevronLeftIcon';
 import useDebounce from '~/shared/hooks/useDebounce';
 
-import { Button } from '../core/Button/Button';
+import IconContainer from '../core/IconContainer';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM } from '../core/Text/Text';
 import { SidebarView } from '../GalleryEditor/PiecesSidebar/SidebarViewSelector';
+import { NftSelectorCollectionGroup } from './groupNftSelectorCollectionsByAddress';
 import {
   NftSelectorFilterNetwork,
   NftSelectorNetworkView,
@@ -24,6 +26,8 @@ import { NftSelectorView } from './NftSelectorView';
 type Props = {
   queryRef: NftSelectorQueryFragment$key;
 };
+
+export type NftSelectorContractType = Omit<NftSelectorCollectionGroup, 'tokens'> | null;
 
 export function NftSelector({ queryRef }: Props) {
   const tokens = useFragment(
@@ -53,10 +57,10 @@ export function NftSelector({ queryRef }: Props) {
   const [selectedNetworkView, setSelectedNetworkView] =
     useState<NftSelectorNetworkView>('All networks');
 
-  const [selectedContractAddress, setSelectedContractAddress] = useState<string | null>(null);
+  const [selectedContract, setSelectedContract] = useState<NftSelectorContractType>(null);
 
   const handleResetSelectedContractAddress = useCallback(() => {
-    setSelectedContractAddress(null);
+    setSelectedContract(null);
   }, []);
 
   const filteredTokens = useMemo(() => {
@@ -130,21 +134,30 @@ export function NftSelector({ queryRef }: Props) {
   return (
     <StyledNftSelectorModal>
       <StyledTitle>
-        <StyledTitleText>Select an NFT</StyledTitleText>
+        {selectedContract ? (
+          <HStack gap={8} align="center">
+            <IconContainer
+              onClick={handleResetSelectedContractAddress}
+              variant="default"
+              size="sm"
+              icon={<ChevronLeftIcon />}
+            />
+            <StyledTitleText>
+              Select{' '}
+              {selectedContract.title === 'Undefined contract' ? 'an NFT' : selectedContract.title}
+            </StyledTitleText>
+          </HStack>
+        ) : (
+          <StyledTitleText>Select an NFT</StyledTitleText>
+        )}
       </StyledTitle>
 
       <StyledActionContainer gap={16} justify="space-between">
-        {!selectedContractAddress && (
+        {!selectedContract && (
           <NftSelectorSearchBar keyword={searchKeyword} onChange={setSearchKeyword} />
         )}
         <HStack gap={8} align="center">
-          {selectedContractAddress && (
-            // TODO: Temporary button while finalize design
-            <StyledButton onClick={handleResetSelectedContractAddress} variant="secondary">
-              Back
-            </StyledButton>
-          )}
-          {!selectedContractAddress && (
+          {!selectedContract && (
             <NftSelectorViewSelector
               selectedView={selectedView}
               onSelectedViewChange={setSelectedView}
@@ -156,7 +169,7 @@ export function NftSelector({ queryRef }: Props) {
             onSelectedViewChange={setSelectedSortView}
           />
 
-          {!selectedContractAddress && (
+          {!selectedContract && (
             <NftSelectorFilterNetwork
               selectedView={selectedNetworkView}
               onSelectedViewChange={setSelectedNetworkView}
@@ -167,8 +180,8 @@ export function NftSelector({ queryRef }: Props) {
 
       <NftSelectorView
         tokenRefs={filteredTokens}
-        selectedContractAddress={selectedContractAddress}
-        onSelectContractAddress={setSelectedContractAddress}
+        selectedContractAddress={selectedContract?.address ?? null}
+        onSelectContract={setSelectedContract}
       />
     </StyledNftSelectorModal>
   );
@@ -188,9 +201,4 @@ const StyledTitleText = styled(BaseM)`
 `;
 const StyledActionContainer = styled(HStack)`
   padding-bottom: 8px;
-`;
-
-const StyledButton = styled(Button)`
-  height: 30px;
-  width: 70px;
 `;

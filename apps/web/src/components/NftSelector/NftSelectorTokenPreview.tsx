@@ -7,19 +7,25 @@ import noop from '~/utils/noop';
 import { VStack } from '../core/Spacer/Stack';
 import { BaseM } from '../core/Text/Text';
 import { NftSelectorCollectionGroup } from './groupNftSelectorCollectionsByAddress';
+import { NftSelectorContractType } from './NftSelector';
 import { NftSelectorToken } from './NftSelectorToken';
 
 type Props = {
   group: NftSelectorCollectionGroup;
-  onSelectGroup?: (address: string) => void;
+  onSelectGroup?: (collection: NftSelectorContractType) => void;
 };
 
 export function NftSelectorTokenPreview({ group, onSelectGroup = noop }: Props) {
   const tokens = group.tokens;
 
   const handleSelectGroup = useCallback(() => {
-    onSelectGroup(group.address);
-  }, [group.address, onSelectGroup]);
+    const collection = {
+      title: group.title,
+      address: group.address,
+    };
+
+    onSelectGroup(collection);
+  }, [group.address, group.title, onSelectGroup]);
 
   if (tokens.length === 1) {
     return (
