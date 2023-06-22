@@ -1,0 +1,123 @@
+import { ResizeMode } from 'expo-av';
+import { useState } from 'react';
+import { View, ViewProps } from 'react-native';
+import FastImage from 'react-native-fast-image';
+import { EditPencilIcon } from 'src/icons/EditPencilIcon';
+
+import { GalleryTouchableOpacity, GalleryTouchableOpacityProps } from './GalleryTouchableOpacity';
+import { Typography } from './Typography';
+
+const sizeMapping: { [size in Size]: number } = {
+  sm: 24,
+  md: 32,
+  lg: 48,
+  xl: 56,
+};
+
+const fontSizeMapping: { [size in Size]: number } = {
+  sm: 14,
+  md: 18,
+  lg: 28,
+  xl: 32,
+};
+
+type Size = 'sm' | 'md' | 'lg' | 'xl';
+
+type Props = {
+  size: Size;
+  hasInset?: boolean;
+  isEditable?: boolean;
+  onEdit?: () => void;
+  style?: ViewProps['style'];
+} & (
+  | {
+      letter: string;
+    }
+  | {
+      imageUrl: string;
+    }
+) &
+  Pick<GalleryTouchableOpacityProps, 'eventElementId' | 'eventName' | 'onPress'>;
+
+export function RawProfilePicture({
+  size,
+  hasInset,
+  onEdit,
+  onPress,
+  isEditable,
+  style,
+  eventElementId,
+  eventName,
+  ...rest
+}: Props) {
+  const widthAndHeight = sizeMapping[size];
+
+  let fontSize: number | null = fontSizeMapping[size];
+  if (hasInset) {
+    fontSize -= 2;
+  }
+
+  const [isActive, setIsActive] = useState(false);
+
+  return (
+    <GalleryTouchableOpacity
+      onPress={onPress}
+      onPressIn={() => setIsActive(true)}
+      onPressOut={() => setIsActive(false)}
+      activeOpacity={1}
+      eventName={eventName}
+      eventElementId={eventElementId}
+      className="flex justify-center items-center relative rounded-full bg-offWhite dark:bg-black-800"
+      style={[
+        style,
+        {
+          width: widthAndHeight,
+          height: widthAndHeight,
+          padding: hasInset ? 2 : 0,
+        },
+      ]}
+    >
+      <View className="flex justify-center items-center w-full h-full rounded-full bg-offWhite">
+        {'letter' in rest && (
+          <Typography
+            font={{ family: 'GTAlpina', weight: 'Light' }}
+            className="text-black-800"
+            style={{
+              fontSize,
+              lineHeight: undefined,
+            }}
+          >
+            {rest.letter}
+          </Typography>
+        )}
+
+        {'imageUrl' in rest && (
+          <FastImage
+            className="rounded-full"
+            style={{
+              width: widthAndHeight - (hasInset ? 4 : 0),
+              height: widthAndHeight - (hasInset ? 4 : 0),
+            }}
+            source={{ uri: rest.imageUrl }}
+            resizeMode={ResizeMode.COVER}
+          />
+        )}
+
+        {isActive && <View className="absolute inset-0 bg-black opacity-25 rounded-full" />}
+      </View>
+
+      {isEditable && (
+        <View
+          className="absolute flex justify-center items-center bg-faint bottom-0 right-0 rounded-full"
+          style={{
+            width: widthAndHeight / 2,
+            height: widthAndHeight / 2,
+            transform: [{ translateX: widthAndHeight / 12 }, { translateY: widthAndHeight / 12 }],
+          }}
+        >
+          <EditPencilIcon width={widthAndHeight / 4} height={widthAndHeight / 4} />
+        </View>
+      )}
+    </GalleryTouchableOpacity>
+  );
+}
