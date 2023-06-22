@@ -136,6 +136,13 @@ export default function DesignPage() {
           </ProfilePictureSection>
 
           <ProfilePictureSection>
+            <RawProfilePicture hasInset default size="sm" />
+            <RawProfilePicture hasInset default size="md" />
+            <RawProfilePicture hasInset default size="lg" />
+            <RawProfilePicture hasInset default size="xl" />
+          </ProfilePictureSection>
+
+          <ProfilePictureSection>
             <ProfilePictureStack />
           </ProfilePictureSection>
         </Examples>

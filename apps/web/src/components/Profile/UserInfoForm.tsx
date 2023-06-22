@@ -10,7 +10,9 @@ import { UserInfoFormFragment$key } from '~/generated/UserInfoFormFragment.graph
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import unescape from '~/shared/utils/unescape';
 
+import useNftSelector from '../NftSelector/useNftSelector';
 import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
+import { RawProfilePicture } from '../RawProfilePicture';
 import { ProfilePictureDropdown } from './ProfilePictureDropdown';
 
 type Props = {
@@ -44,9 +46,13 @@ function UserInfoForm({
     graphql`
       fragment UserInfoFormFragment on GalleryUser {
         ...ProfilePictureFragment
+        profileImage {
+          __typename
+        }
 
         tokens {
           ...ProfilePictureDropdownFragment
+          ...useNftSelectorQueryFragment
         }
       }
     `,
@@ -57,8 +63,11 @@ function UserInfoForm({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const tokens = removeNullValues(user.tokens) ?? [];
+  const showNftSelector = useNftSelector(tokens);
 
   const unescapedBio = useMemo(() => unescape(bio), [bio]);
+
+  const hasProfileImage = user.profileImage?.__typename === 'TokenProfileImage';
 
   const handleSubmit = useCallback(
     async (event: FormEvent) => {
@@ -103,19 +112,34 @@ function UserInfoForm({
     setShowPfpDropdown(false);
   }, []);
 
+  const firstLetter = username?.substring(0, 1) ?? undefined;
+
   return (
     <StyledUserInformContainer as="form" className={className} gap={16} onSubmit={handleSubmit}>
-      {mode === 'Add' && <TitleS>Add username and bio</TitleS>}
+      {mode === 'Add' && (
+        <>
+          <TitleS>Let's set up your profile</TitleS>
+          <div onClick={showNftSelector}>
+            {hasProfileImage ? (
+              <ProfilePicture userRef={user} />
+            ) : (
+              <RawProfilePicture letter={firstLetter} default hasInset isEditable size="xl" />
+            )}
+          </div>
+        </>
+      )}
 
       <HStack gap={16} align="center">
-        <StyledProfilePictureContainer onClick={handleOpenPfpDropdown}>
-          <ProfilePicture userRef={user} />
-          <ProfilePictureDropdown
-            open={showPfpDropdown}
-            onClose={handleClosePfpDropdown}
-            tokensRef={tokens}
-          />
-        </StyledProfilePictureContainer>
+        {!mode && (
+          <StyledProfilePictureContainer onClick={handleOpenPfpDropdown}>
+            <ProfilePicture userRef={user} />
+            <ProfilePictureDropdown
+              open={showPfpDropdown}
+              onClose={handleClosePfpDropdown}
+              tokensRef={tokens}
+            />
+          </StyledProfilePictureContainer>
+        )}
 
         <StyledInputContainer>
           <Input
