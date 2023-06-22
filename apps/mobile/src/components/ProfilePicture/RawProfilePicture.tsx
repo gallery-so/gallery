@@ -4,8 +4,8 @@ import { View, ViewProps } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { EditPencilIcon } from 'src/icons/EditPencilIcon';
 
-import { GalleryTouchableOpacity, GalleryTouchableOpacityProps } from './GalleryTouchableOpacity';
-import { Typography } from './Typography';
+import { GalleryTouchableOpacity, GalleryTouchableOpacityProps } from '../GalleryTouchableOpacity';
+import { Typography } from '../Typography';
 
 const sizeMapping: { [size in Size]: number } = {
   sm: 24,
