@@ -1,11 +1,9 @@
-import { useNavigation } from '@react-navigation/native';
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 import { View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { NftAdditionalDetailsEthFragment$key } from '~/generated/NftAdditionalDetailsEthFragment.graphql';
-import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { getOpenseaExternalUrl, hexHandler } from '~/shared/utils/getOpenseaExternalUrl';
 
 import { EnsOrAddress } from '../../components/EnsOrAddress';
@@ -26,10 +24,6 @@ export function NftAdditionalDetailsEth({ tokenRef, showDetails }: NftAdditional
         tokenId
 
         chain
-
-        owner {
-          username
-        }
 
         contract {
           creatorAddress {
@@ -58,23 +52,8 @@ export function NftAdditionalDetailsEth({ tokenRef, showDetails }: NftAdditional
     return null;
   }, [contract?.contractAddress?.address, tokenId]);
 
-  const navigation = useNavigation<MainTabStackNavigatorProp>();
-  const handleUsernamePress = useCallback(() => {
-    if (token.owner?.username) {
-      navigation.push('Profile', { username: token.owner.username });
-    }
-  }, [navigation, token.owner?.username]);
-
   return (
     <View className="flex flex-col space-y-4">
-      {token.owner?.username && (
-        <DetailSection>
-          <DetailLabelText>OWNED BY</DetailLabelText>
-
-          <InteractiveLink onPress={handleUsernamePress}>{token.owner.username}</InteractiveLink>
-        </DetailSection>
-      )}
-
       {token.contract?.creatorAddress?.address && (
         <DetailSection>
           <DetailLabelText>CREATED BY</DetailLabelText>
@@ -90,7 +69,10 @@ export function NftAdditionalDetailsEth({ tokenRef, showDetails }: NftAdditional
             {contract?.contractAddress?.address && (
               <DetailSection>
                 <DetailLabelText>CONTRACT ADDRESS</DetailLabelText>
-                <LinkableAddress chainAddressRef={contract.contractAddress} />
+                <LinkableAddress
+                  chainAddressRef={contract.contractAddress}
+                  type="NFT Detail Contract Address"
+                />
               </DetailSection>
             )}
 
@@ -111,13 +93,17 @@ export function NftAdditionalDetailsEth({ tokenRef, showDetails }: NftAdditional
 
           {openSeaExternalUrl && (
             <DetailSection>
-              <InteractiveLink href={openSeaExternalUrl}>View on OpenSea</InteractiveLink>
+              <InteractiveLink href={openSeaExternalUrl} type="NFT Detail View on Opensea">
+                View on OpenSea
+              </InteractiveLink>
             </DetailSection>
           )}
 
           {externalUrl && (
             <DetailSection>
-              <InteractiveLink href={externalUrl}>More Info</InteractiveLink>
+              <InteractiveLink href={externalUrl} type="NFT Detail More Info URL">
+                More Info
+              </InteractiveLink>
             </DetailSection>
           )}
         </View>

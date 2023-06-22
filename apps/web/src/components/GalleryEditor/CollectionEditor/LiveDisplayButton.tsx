@@ -45,8 +45,7 @@ export default function LiveDisplayButton({ id }: Props) {
 const sharedStyles = `
   position: absolute;
   left: 8px;
-  bottom: 8px;
-  z-index: 11; // above the gradient
+  top: 8px;
 `;
 
 const StyledTooltip = styled(Tooltip)<{ showTooltip: boolean }>`

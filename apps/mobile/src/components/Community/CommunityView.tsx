@@ -76,7 +76,9 @@ export function CommunityView({ queryRef }: Props) {
           >
             contract address
           </Typography>
-          {contractAddress && <LinkableAddress chainAddressRef={contractAddress} />}
+          {contractAddress && (
+            <LinkableAddress chainAddressRef={contractAddress} type="Community Contract Address" />
+          )}
         </View>
 
         <Typography font={{ family: 'ABCDiatype', weight: 'Bold' }} className="text-sm mb-4 px-4">

@@ -4,14 +4,15 @@ import { graphql } from 'relay-runtime';
 import { LinkableAddressFragment$key } from '~/generated/LinkableAddressFragment.graphql';
 import { getExternalAddressLink, graphqlTruncateAddress } from '~/shared/utils/wallet';
 
-import { InteractiveLink } from './InteractiveLink';
+import { InteractiveLink, InteractiveLinkProps } from './InteractiveLink';
 import { Typography } from './Typography';
 
 type LinkableAddressProps = {
   chainAddressRef: LinkableAddressFragment$key;
+  type: InteractiveLinkProps['type'];
 };
 
-export function LinkableAddress({ chainAddressRef }: LinkableAddressProps) {
+export function LinkableAddress({ chainAddressRef, type }: LinkableAddressProps) {
   const address = useFragment(
     graphql`
       fragment LinkableAddressFragment on ChainAddress {
@@ -36,6 +37,7 @@ export function LinkableAddress({ chainAddressRef }: LinkableAddressProps) {
   } else if (truncatedAddress) {
     return (
       <RawLinkableAddress
+        type={type}
         link={link}
         truncatedAddress={truncatedAddress}
         address={address.address}
@@ -50,8 +52,18 @@ type RawLinkableAddressProps = {
   link: string;
   address: string;
   truncatedAddress: string | null;
+  type: InteractiveLinkProps['type'];
 };
 
-export function RawLinkableAddress({ link, truncatedAddress, address }: RawLinkableAddressProps) {
-  return <InteractiveLink href={link}>{truncatedAddress || address}</InteractiveLink>;
+export function RawLinkableAddress({
+  link,
+  truncatedAddress,
+  address,
+  type,
+}: RawLinkableAddressProps) {
+  return (
+    <InteractiveLink href={link} type={type}>
+      {truncatedAddress || address}
+    </InteractiveLink>
+  );
 }

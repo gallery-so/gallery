@@ -26,17 +26,17 @@ export default function MobileAppLandingPage() {
                   We’re building a fresh approach to creativity and self expression, and that starts
                   with a mobile app.
                 </BaseXL>
-                <BaseXL>TestFlight access is rolling out soon to current Gallery users.</BaseXL>
-                <BaseXL>Join the waitlist to be the first to try it out.</BaseXL>
+                <BaseXL>TestFlight access on iOS is now open to all Gallery users.</BaseXL>
+                {/* <BaseXL>Join the waitlist to be the first to try it out.</BaseXL> */}
               </BodyText>
             </VStack>
             <VStack gap={8}>
               <StyledLink
-                href="https://docs.google.com/forms/d/1YIqU78MmkRuTniTBWKbRYnqgixC2qAW-kOdaKnb5YYw"
+                href="https://testflight.apple.com/join/rc0NcVih"
                 target="_blank"
                 rel="noreferrer"
               >
-                <StyledButton>Join the waitlist</StyledButton>
+                <StyledButton>Download The App</StyledButton>
               </StyledLink>
             </VStack>
           </VStack>

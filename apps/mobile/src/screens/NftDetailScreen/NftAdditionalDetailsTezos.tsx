@@ -1,10 +1,8 @@
-import { useNavigation } from '@react-navigation/native';
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { NftAdditionalDetailsTezosFragment$key } from '~/generated/NftAdditionalDetailsTezosFragment.graphql';
-import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { hexHandler } from '~/shared/utils/getOpenseaExternalUrl';
 import { getFxHashExternalUrl, getObjktExternalUrl } from '~/shared/utils/getTezosExternalUrl';
 
@@ -27,9 +25,6 @@ export function NftAdditionalDetailsTezos({
         externalUrl
         tokenId
         chain
-        owner {
-          username
-        }
         contract {
           creatorAddress {
             address
@@ -63,29 +58,17 @@ export function NftAdditionalDetailsTezos({
     };
   }, [token.contract?.contractAddress?.address, token.tokenId]);
 
-  const navigation = useNavigation<MainTabStackNavigatorProp>();
-  const handleUsernamePress = useCallback(() => {
-    if (token.owner?.username) {
-      navigation.push('Profile', { username: token.owner.username });
-    }
-  }, [navigation, token.owner?.username]);
-
   return (
     <View className="flex flex-col space-y-4">
-      {token.owner?.username && (
-        <DetailSection>
-          <DetailLabelText>OWNED BY</DetailLabelText>
-
-          <InteractiveLink onPress={handleUsernamePress}>{token.owner.username}</InteractiveLink>
-        </DetailSection>
-      )}
-
       {token.contract?.creatorAddress?.address && (
         <DetailSection>
           <DetailLabelText>CREATED BY</DetailLabelText>
 
           {/* TODO(Terence) When the contract screen is ready, setup the onPress here */}
-          <LinkableAddress chainAddressRef={token.contract.creatorAddress} />
+          <LinkableAddress
+            chainAddressRef={token.contract.creatorAddress}
+            type="NFT Detail Creator Address"
+          />
         </DetailSection>
       )}
 
@@ -95,14 +78,19 @@ export function NftAdditionalDetailsTezos({
             {contract?.contractAddress?.address && (
               <DetailSection>
                 <DetailLabelText>CONTRACT ADDRESS</DetailLabelText>
-                <LinkableAddress chainAddressRef={contract.contractAddress} />
+                <LinkableAddress
+                  chainAddressRef={contract.contractAddress}
+                  type="NFT Detail Contract Address"
+                />
               </DetailSection>
             )}
 
             {tokenId && token.externalUrl && (
               <DetailSection>
                 <DetailLabelText>TOKEN ID</DetailLabelText>
-                <InteractiveLink href={token.externalUrl}>{hexHandler(tokenId)}</InteractiveLink>
+                <InteractiveLink href={token.externalUrl} type="NFT Detail Token ID">
+                  {hexHandler(tokenId)}
+                </InteractiveLink>
               </DetailSection>
             )}
           </View>
@@ -110,14 +98,26 @@ export function NftAdditionalDetailsTezos({
           {token.chain && (
             <DetailSection>
               <DetailLabelText>CHAIN</DetailLabelText>
-              <InteractiveLink>{token.chain}</InteractiveLink>
+              <InteractiveLink type="NFT Detail Chain">{token.chain}</InteractiveLink>
             </DetailSection>
           )}
 
           <View className="flex flex-row space-x-1">
-            {fxhashUrl && <InteractiveLink href={fxhashUrl}>View on fx(hash)</InteractiveLink>}
-            {objktUrl && <InteractiveLink href={objktUrl}>View on objkt</InteractiveLink>}
-            {externalUrl && <InteractiveLink href={externalUrl}>More Info</InteractiveLink>}
+            {fxhashUrl && (
+              <InteractiveLink href={fxhashUrl} type="NFT Detail FX Hash URL">
+                View on fx(hash)
+              </InteractiveLink>
+            )}
+            {objktUrl && (
+              <InteractiveLink href={objktUrl} type="NFT Detail OBJKT URL">
+                View on objkt
+              </InteractiveLink>
+            )}
+            {externalUrl && (
+              <InteractiveLink href={externalUrl} type="NFT Detail More Info URL">
+                More Info
+              </InteractiveLink>
+            )}
           </View>
         </View>
       )}

@@ -23,16 +23,24 @@ type DecoratedCloseIconProps = {
   className?: string;
   onClick?: () => void;
   variant?: ModalPaddingVariant;
+  mode?: 'light' | 'dark';
 };
 
 export function DecoratedCloseIcon({
   className,
   onClick,
   variant = 'standard',
+  mode = 'light',
 }: DecoratedCloseIconProps) {
   return (
     <StyledDecoratedCloseIcon className={className} variant={variant}>
-      <IconContainer variant="default" onClick={onClick} icon={<CloseIcon />} />
+      <IconContainer
+        variant="default"
+        mode={mode}
+        size="sm"
+        onClick={onClick}
+        icon={<CloseIcon />}
+      />
     </StyledDecoratedCloseIcon>
   );
 }

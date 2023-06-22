@@ -7,10 +7,13 @@ import { graphql } from 'relay-runtime';
 
 import { BackButton } from '~/components/BackButton';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
+import { NftPreviewErrorFallback } from '~/components/NftPreview/NftPreviewErrorFallback';
 import { Pill } from '~/components/Pill';
 import { NftDetailScreenInnerQuery } from '~/generated/NftDetailScreenInnerQuery.graphql';
 import { MainTabStackNavigatorParamList, MainTabStackNavigatorProp } from '~/navigation/types';
 import { NftDetailAssetCacheSwapper } from '~/screens/NftDetailScreen/NftDetailAsset/NftDetailAssetCacheSwapper';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
+import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 
 import { IconContainer } from '../../components/IconContainer';
 import { InteractiveLink } from '../../components/InteractiveLink';
@@ -27,6 +30,8 @@ const markdownStyles = StyleSheet.create({
     fontSize: 14,
   },
 });
+
+const ENABLED_CREATOR = false;
 
 export function NftDetailScreenInner() {
   const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'NftDetail'>>();
@@ -57,6 +62,9 @@ export function NftDetailScreenInner() {
                 address
                 chain
               }
+            }
+            owner {
+              username
             }
 
             ...NftAdditionalDetailsFragment
@@ -92,6 +100,8 @@ export function NftDetailScreenInner() {
     throw new Error("We couldn't find that token. Something went wrong and we're looking into it.");
   }
 
+  const track = useTrack();
+
   const navigation = useNavigation<MainTabStackNavigatorProp>();
 
   const [showAdditionalDetails, setShowAdditionalDetails] = useState(false);
@@ -114,9 +124,37 @@ export function NftDetailScreenInner() {
     });
   }, [navigation, token.contract?.contractAddress]);
 
+  const handleUsernamePress = useCallback(() => {
+    if (token.owner?.username) {
+      track('NFT Detail Collector Name Clicked', {
+        username: token.owner.username,
+        contractAddress: token.contract?.contractAddress?.address,
+        tokenId: token.tokenId,
+      });
+      navigation.push('Profile', { username: token.owner.username });
+    }
+  }, [
+    navigation,
+    track,
+    token.owner?.username,
+    token.contract?.contractAddress?.address,
+    token.tokenId,
+  ]);
+
+  // const handleCreatorPress = useCallback(() => {
+  //   if (token.creator?.username) {
+  //     track('NFT Detail Creator Name Clicked', {
+  //       username: token.creator.username,
+  //       contractAddress: token.contract?.contractAddress?.address,
+  //       tokenId: token.tokenId,
+  //     });
+  //     navigation.push('Profile', { username: token.creator.username });
+  //   }
+  // }, [navigation, track, token.creator?.username]);
+
   return (
     <ScrollView>
-      <View className="flex flex-col space-y-8 px-4 pb-4">
+      <View className="flex flex-col space-y-6 px-4 pb-4">
         <View className="flex flex-col space-y-3">
           <View className="flex flex-row justify-between">
             <BackButton />
@@ -128,9 +166,21 @@ export function NftDetailScreenInner() {
             />
           </View>
 
-          <NftDetailAssetCacheSwapper cachedPreviewAssetUrl={route.params.cachedPreviewAssetUrl}>
-            <NftDetailAsset tokenRef={token} />
-          </NftDetailAssetCacheSwapper>
+          <View>
+            <ReportingErrorBoundary
+              fallback={
+                <View className="w-full aspect-square">
+                  <NftPreviewErrorFallback />
+                </View>
+              }
+            >
+              <NftDetailAssetCacheSwapper
+                cachedPreviewAssetUrl={route.params.cachedPreviewAssetUrl}
+              >
+                <NftDetailAsset tokenRef={token} />
+              </NftDetailAssetCacheSwapper>
+            </ReportingErrorBoundary>
+          </View>
         </View>
 
         <View className="flex flex-col space-y-4">
@@ -165,6 +215,34 @@ export function NftDetailScreenInner() {
           ) : null}
         </View>
 
+        <View className="flex-row">
+          {token.owner && (
+            <View className="w-1/2">
+              <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
+                OWNER
+              </Typography>
+
+              <InteractiveLink onPress={handleUsernamePress} type="NFT Detail Token Owner Username">
+                {token.owner.username}
+              </InteractiveLink>
+            </View>
+          )}
+          {ENABLED_CREATOR && (
+            <View className="w-1/2">
+              <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
+                CREATOR
+              </Typography>
+
+              <InteractiveLink onPress={handleUsernamePress} type="NFT Detail Token Creator">
+                riley.eth
+              </InteractiveLink>
+              <InteractiveLink onPress={handleUsernamePress} type="NFT Detail Token Creator">
+                riley.eth
+              </InteractiveLink>
+            </View>
+          )}
+        </View>
+
         {token.description && (
           <View>
             <Markdown style={markdownStyles}>{token.description}</Markdown>
@@ -176,7 +254,10 @@ export function NftDetailScreenInner() {
         </View>
 
         <View>
-          <InteractiveLink onPress={toggleAdditionalDetails}>
+          <InteractiveLink
+            onPress={toggleAdditionalDetails}
+            type="NFT Detail Show Additional Details"
+          >
             {showAdditionalDetails ? 'Hide Details' : 'Show Additional Details'}
           </InteractiveLink>
         </View>
