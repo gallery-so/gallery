@@ -17,7 +17,7 @@ type Props = {
 };
 
 function EditUserInfoModal({ queryRef }: Props) {
-  const { viewer } = useFragment(
+  const query = useFragment(
     graphql`
       fragment EditUserInfoModalFragment on Query {
         viewer {
@@ -31,10 +31,13 @@ function EditUserInfoModal({ queryRef }: Props) {
             }
           }
         }
+        ...UserInfoFormQueryFragment
       }
     `,
     queryRef
   );
+
+  const { viewer } = query;
 
   if (!viewer?.user) {
     throw new Error('Entered the EditUserInfoModal without a logged in user in the cache');
@@ -85,6 +88,7 @@ function EditUserInfoModal({ queryRef }: Props) {
           bio={bio}
           onBioChange={onBioChange}
           userRef={existingUser}
+          queryRef={query}
         />
         {generalError && <ErrorText message={generalError} />}
       </VStack>

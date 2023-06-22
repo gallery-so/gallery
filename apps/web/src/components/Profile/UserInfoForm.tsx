@@ -7,8 +7,10 @@ import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { TitleS } from '~/components/core/Text/Text';
 import { TextAreaWithCharCount } from '~/components/core/TextArea/TextArea';
 import { UserInfoFormFragment$key } from '~/generated/UserInfoFormFragment.graphql';
+import { UserInfoFormQueryFragment$key } from '~/generated/UserInfoFormQueryFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import unescape from '~/shared/utils/unescape';
+import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 import useNftSelector from '../NftSelector/useNftSelector';
 import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
@@ -26,6 +28,7 @@ type Props = {
   onBioChange: (bio: string) => void;
 
   userRef: UserInfoFormFragment$key;
+  queryRef: UserInfoFormQueryFragment$key;
 };
 
 export const BIO_MAX_CHAR_COUNT = 600;
@@ -41,6 +44,7 @@ function UserInfoForm({
   mode,
 
   userRef,
+  queryRef,
 }: Props) {
   const user = useFragment(
     graphql`
@@ -59,8 +63,19 @@ function UserInfoForm({
     userRef
   );
 
+  const query = useFragment(
+    graphql`
+      fragment UserInfoFormQueryFragment on Query {
+        ...isFeatureEnabledFragment
+      }
+    `,
+    queryRef
+  );
+
   const [showPfpDropdown, setShowPfpDropdown] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const isPfpEnabled = isFeatureEnabled(FeatureFlag.PFP, query);
 
   const tokens = removeNullValues(user.tokens) ?? [];
   const showNftSelector = useNftSelector(tokens);
@@ -119,18 +134,20 @@ function UserInfoForm({
       {mode === 'Add' && (
         <>
           <TitleS>Let's set up your profile</TitleS>
-          <div onClick={showNftSelector}>
-            {hasProfileImage ? (
-              <ProfilePicture userRef={user} />
-            ) : (
-              <RawProfilePicture letter={firstLetter} default hasInset isEditable size="xl" />
-            )}
-          </div>
+          {isPfpEnabled && (
+            <div onClick={showNftSelector}>
+              {hasProfileImage ? (
+                <ProfilePicture userRef={user} />
+              ) : (
+                <RawProfilePicture letter={firstLetter} default hasInset isEditable size="xl" />
+              )}
+            </div>
+          )}
         </>
       )}
 
       <HStack gap={16} align="center">
-        {!mode && (
+        {!mode && isPfpEnabled && (
           <StyledProfilePictureContainer onClick={handleOpenPfpDropdown}>
             <ProfilePicture userRef={user} />
             <ProfilePictureDropdown

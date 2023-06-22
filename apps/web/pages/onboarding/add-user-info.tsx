@@ -32,6 +32,7 @@ function AddUserInfo() {
             }
           }
         }
+        ...UserInfoFormQueryFragment
       }
     `,
     {}
@@ -133,6 +134,7 @@ function AddUserInfo() {
             onUsernameChange={onUsernameChange}
             onBioChange={onBioChange}
             userRef={user}
+            queryRef={query}
           />
           <ErrorContainer>
             <ErrorText message={generalError} />
