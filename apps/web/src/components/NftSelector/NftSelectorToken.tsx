@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
+import { useModalActions } from '~/contexts/modal/ModalContext';
 import { ContentIsLoadedEvent } from '~/contexts/shimmer/ShimmerContext';
 import { NftSelectorTokenFragment$key } from '~/generated/NftSelectorTokenFragment.graphql';
 import { useNftRetry } from '~/hooks/useNftRetry';
@@ -38,6 +39,7 @@ export function NftSelectorToken({ tokenRef, isInGroup = false }: Props) {
     tokenRef
   );
 
+  const { hideModal } = useModalActions();
   const { setProfileImage } = useUpdateProfileImage();
 
   const { handleNftLoaded, handleNftError, retryKey, refreshMetadata, refreshingMetadata } =
@@ -62,8 +64,8 @@ export function NftSelectorToken({ tokenRef, isInGroup = false }: Props) {
       return;
     }
     setProfileImage(token.dbid);
-    console.log('setProfileImage', token.dbid);
-  }, [isInGroup, token.dbid, setProfileImage]);
+    hideModal();
+  }, [hideModal, isInGroup, token.dbid, setProfileImage]);
 
   return (
     <NftFailureBoundary

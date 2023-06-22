@@ -14,6 +14,11 @@ export default function useUpdateProfileImage() {
             user {
               profileImage {
                 __typename
+                ... on TokenProfileImage {
+                  token {
+                    ...getVideoOrImageUrlForNftPreviewFragment
+                  }
+                }
               }
             }
           }
