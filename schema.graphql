@@ -69,7 +69,7 @@ type AuthNonce {
   userExists: Boolean
 }
 
-union AuthorizationError = ErrNoCookie | ErrInvalidToken | ErrDoesNotOwnRequiredToken
+union AuthorizationError = ErrNoCookie | ErrInvalidToken | ErrSessionInvalidated | ErrDoesNotOwnRequiredToken
 
 type Badge {
   name: String
@@ -144,6 +144,11 @@ type CollectionCreatedFeedEventData implements FeedEventData {
   newCollectorsNote: String
 }
 
+type CollectionEdge {
+  node: Collection
+  cursor: String
+}
+
 type CollectionLayout {
   sections: [Int]
   sectionLayout: [CollectionSectionLayout]
@@ -152,6 +157,11 @@ type CollectionLayout {
 input CollectionLayoutInput {
   sections: [Int!]!
   sectionLayout: [CollectionSectionLayoutInput!]!
+}
+
+type CollectionsConnection {
+  edges: [CollectionEdge]
+  pageInfo: PageInfo!
 }
 
 type CollectionSectionLayout {
@@ -238,6 +248,7 @@ type Community implements Node {
   contract: Contract
   contractAddress: ChainAddress
   creatorAddress: ChainAddress
+  creator: GalleryUserOrAddress
   chain: Chain
   name: String
   description: String
@@ -245,6 +256,8 @@ type Community implements Node {
   profileImageURL: String
   profileBannerURL: String
   badgeURL: String
+  parentCommunity: CommunityLink
+  subCommunities(before: String, after: String, first: Int, last: Int): CommunitiesConnection
   tokensInCommunity(before: String, after: String, first: Int, last: Int, onlyGalleryUsers: Boolean): TokensConnection
   owners(before: String, after: String, first: Int, last: Int, onlyGalleryUsers: Boolean): TokenHoldersConnection
 }
@@ -254,6 +267,10 @@ union CommunityByAddressOrError = Community | ErrCommunityNotFound | ErrInvalidI
 type CommunityEdge {
   node: Community
   cursor: String
+}
+
+type CommunityLink {
+  node: Community
 }
 
 type CommunitySearchResult {
@@ -307,6 +324,10 @@ type CreateCollectionPayload {
 
 union CreateCollectionPayloadOrError = CreateCollectionPayload | ErrNotAuthorized | ErrInvalidInput
 
+input CreatedCommunitiesInput {
+  includeChains: [Chain!]
+}
+
 input CreateGalleryInput {
   name: String
   description: String
@@ -351,17 +372,6 @@ input DebugSocialAuth {
   username: String!
   debugToolsPassword: String
 }
-
-input DeepRefreshInput {
-  chain: Chain!
-}
-
-type DeepRefreshPayload {
-  chain: Chain
-  submitted: Boolean
-}
-
-union DeepRefreshPayloadOrError = DeepRefreshPayload | ErrNotAuthorized
 
 type DeleteCollectionPayload {
   gallery: Gallery
@@ -480,6 +490,10 @@ interface Error {
 }
 
 type ErrPushTokenBelongsToAnotherUser implements Error {
+  message: String!
+}
+
+type ErrSessionInvalidated implements Error {
   message: String!
 }
 
@@ -640,12 +654,13 @@ type GalleryUser implements Node {
   id: ID!
   dbid: DBID!
   username: String
+  profileImage: ProfileImage
   bio: String
   traits: String
   universal: Boolean
   roles: [Role]
   socialAccounts: SocialAccounts
-  tokens: [Token]
+  tokens(ownershipFilter: [TokenOwnershipType!]): [Token]
   tokensByChain(chain: Chain!): ChainTokens
   wallets: [Wallet]
   primaryWallet: Wallet
@@ -658,6 +673,7 @@ type GalleryUser implements Node {
   feed(before: String, after: String, first: Int, last: Int): FeedConnection
   sharedFollowers(before: String, after: String, first: Int, last: Int): UsersConnection
   sharedCommunities(before: String, after: String, first: Int, last: Int): CommunitiesConnection
+  createdCommunities(input: CreatedCommunitiesInput!, before: String, after: String, first: Int, last: Int): CommunitiesConnection
 }
 
 union GalleryUserOrAddress = GalleryUser | ChainAddress
@@ -851,6 +867,8 @@ type Mutation {
   updateUserInfo(input: UpdateUserInfoInput!): UpdateUserInfoPayloadOrError
   registerUserPushToken(pushToken: String!): RegisterUserPushTokenPayloadOrError
   unregisterUserPushToken(pushToken: String!): UnregisterUserPushTokenPayloadOrError
+  setProfileImage(input: SetProfileImageInput!): SetProfileImagePayloadOrError
+  removeProfileImage: RemoveProfileImagePayloadOrError
   updateGalleryCollections(input: UpdateGalleryCollectionsInput!): UpdateGalleryCollectionsPayloadOrError
   createCollection(input: CreateCollectionInput!): CreateCollectionPayloadOrError
   deleteCollection(collectionId: DBID!): DeleteCollectionPayloadOrError
@@ -860,10 +878,10 @@ type Mutation {
   updateTokenInfo(input: UpdateTokenInfoInput!): UpdateTokenInfoPayloadOrError
   setSpamPreference(input: SetSpamPreferenceInput!): SetSpamPreferencePayloadOrError
   syncTokens(chains: [Chain!]): SyncTokensPayloadOrError
+  syncCreatedTokens(input: SyncCreatedTokensInput!): SyncCreatedTokensPayloadOrError
   refreshToken(tokenId: DBID!): RefreshTokenPayloadOrError
   refreshCollection(collectionId: DBID!): RefreshCollectionPayloadOrError
   refreshContract(contractId: DBID!): RefreshContractPayloadOrError
-  deepRefresh(input: DeepRefreshInput!): DeepRefreshPayloadOrError
   getAuthNonce(chainAddress: ChainAddressInput!): GetAuthNoncePayloadOrError
   createUser(authMechanism: AuthMechanism!, input: CreateUserInput!): CreateUserPayloadOrError
   updateEmail(input: UpdateEmailInput!): UpdateEmailPayloadOrError
@@ -904,6 +922,7 @@ type Mutation {
   banUserFromFeed(username: String!, action: String!): BanUserFromFeedPayloadOrError
   unbanUserFromFeed(username: String!): UnbanUserFromFeedPayloadOrError
   mintPremiumCardToWallet(input: MintPremiumCardToWalletInput!): MintPremiumCardToWalletPayloadOrError
+  setCommunityOverrideCreator(communityID: DBID!, creatorUserID: DBID): SetCommunityOverrideCreatorPayloadOrError
   uploadPersistedQueries(input: UploadPersistedQueriesInput): UploadPersistedQueriesPayloadOrError
   updatePrimaryWallet(walletID: DBID!): UpdatePrimaryWalletPayloadOrError
   updateUserExperience(input: UpdateUserExperienceInput!): UpdateUserExperiencePayloadOrError
@@ -1002,6 +1021,8 @@ type PreviewURLSet {
   blurhash: String
 }
 
+union ProfileImage = TokenProfileImage
+
 scalar PubKey
 
 input PublishGalleryInput {
@@ -1066,6 +1087,7 @@ type Query {
   usersByRole(role: Role!, before: String, after: String, first: Int, last: Int): UsersConnection
   socialConnections(socialAccountType: SocialAccountType!, excludeAlreadyFollowing: Boolean, before: String, after: String, first: Int, last: Int): SocialConnectionsConnection
   socialQueries: SocialQueriesOrError
+  topCollectionsForCommunity(input: topCollectionsForCommunityInput!, before: String, after: String, first: Int, last: Int): CollectionsConnection
 }
 
 input RedeemMerchInput {
@@ -1120,6 +1142,12 @@ type RemoveCommentPayload {
 
 union RemoveCommentPayloadOrError = RemoveCommentPayload | ErrAuthenticationFailed | ErrFeedEventNotFound | ErrInvalidInput | ErrCommentNotFound
 
+type RemoveProfileImagePayload {
+  viewer: Viewer
+}
+
+union RemoveProfileImagePayloadOrError = RemoveProfileImagePayload | ErrAuthenticationFailed | ErrUserNotFound
+
 type RemoveUserWalletsPayload {
   viewer: Viewer
 }
@@ -1163,6 +1191,22 @@ type SearchUsersPayload {
 }
 
 union SearchUsersPayloadOrError = SearchUsersPayload | ErrInvalidInput
+
+type SetCommunityOverrideCreatorPayload {
+  user: GalleryUser
+}
+
+union SetCommunityOverrideCreatorPayloadOrError = SetCommunityOverrideCreatorPayload | ErrNotAuthorized
+
+input SetProfileImageInput {
+  tokenId: DBID
+}
+
+type SetProfileImagePayload {
+  viewer: Viewer
+}
+
+union SetProfileImagePayloadOrError = SetProfileImagePayload | ErrAuthenticationFailed | ErrUserNotFound | ErrInvalidInput | ErrTokenNotFound | ErrNotAuthorized
 
 input SetSpamPreferenceInput {
   tokens: [DBID!]!
@@ -1281,6 +1325,16 @@ type Subscription {
   notificationUpdated: Notification
 }
 
+input SyncCreatedTokensInput {
+  includeChains: [Chain!]
+}
+
+type SyncCreatedTokensPayload {
+  viewer: Viewer
+}
+
+union SyncCreatedTokensPayloadOrError = SyncCreatedTokensPayload | ErrNotAuthorized | ErrSyncFailed
+
 type SyncingMedia implements Media {
   previewURLs: PreviewURLSet
   mediaURL: String
@@ -1329,8 +1383,11 @@ type Token implements Node {
   owner: GalleryUser
   ownedByWallets: [Wallet]
   ownershipHistory: [OwnerAtBlock]
+  ownerIsHolder: Boolean
+  ownerIsCreator: Boolean
   tokenMetadata: String
   contract: Contract
+  community: Community
   externalUrl: String
   blockNumber: String
   isSpamByUser: Boolean
@@ -1364,6 +1421,15 @@ type TokenHoldersConnection {
   pageInfo: PageInfo!
 }
 
+enum TokenOwnershipType {
+  Holder
+  Creator
+}
+
+type TokenProfileImage {
+  token: Token!
+}
+
 type TokensAddedToCollectionFeedEventData implements FeedEventData {
   eventTime: Time
   owner: GalleryUser
@@ -1382,6 +1448,10 @@ enum TokenType {
   ERC721
   ERC1155
   ERC20
+}
+
+input topCollectionsForCommunityInput {
+  chainAddress: ChainAddressInput!
 }
 
 input TrendingUsersInput {
