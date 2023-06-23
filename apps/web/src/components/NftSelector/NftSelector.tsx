@@ -36,7 +36,7 @@ export function NftSelector({ queryRef }: Props) {
         ...NftSelectorViewFragment
         name
         chain
-        lastUpdated
+        creationTime
 
         isSpamByUser
         isSpamByProvider
@@ -104,11 +104,11 @@ export function NftSelector({ queryRef }: Props) {
     // Filter by sort
     if (selectedSortView === 'Recently added') {
       filteredTokens.sort((a, b) => {
-        return new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime();
+        return new Date(b.creationTime).getTime() - new Date(a.creationTime).getTime();
       });
     } else if (selectedSortView === 'Oldest') {
       filteredTokens.sort((a, b) => {
-        return new Date(a.lastUpdated).getTime() - new Date(b.lastUpdated).getTime();
+        return new Date(a.creationTime).getTime() - new Date(b.creationTime).getTime();
       });
     } else if (selectedSortView === 'Alphabetical') {
       filteredTokens.sort((a, b) => {
