@@ -1,6 +1,6 @@
 import { useColorScheme } from 'nativewind';
 import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
-import { View } from 'react-native';
+import { View, ViewProps } from 'react-native';
 import { CollapsibleRef, Tabs } from 'react-native-collapsible-tab-view';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -12,11 +12,16 @@ import { ProfileViewFeaturedTab } from '~/components/ProfileView/Tabs/ProfileVie
 import { ProfileViewFollowersTab } from '~/components/ProfileView/Tabs/ProfileViewFollowersTab';
 import { ProfileViewGalleriesTab } from '~/components/ProfileView/Tabs/ProfileViewGalleriesTab';
 import { Typography } from '~/components/Typography';
+import { ProfileViewConnectedProfilePictureFragment$key } from '~/generated/ProfileViewConnectedProfilePictureFragment.graphql';
 import { ProfileViewConnectedQueryFragment$key } from '~/generated/ProfileViewConnectedQueryFragment.graphql';
 import { ProfileViewQueryFragment$key } from '~/generated/ProfileViewQueryFragment.graphql';
 import { ProfileViewUsernameFragment$key } from '~/generated/ProfileViewUsernameFragment.graphql';
 import GalleryViewEmitter from '~/shared/components/GalleryViewEmitter';
 import colors from '~/shared/theme/colors';
+
+import { GalleryBottomSheetModalType } from '../GalleryBottomSheet/GalleryBottomSheetModal';
+import { PfpBottomSheet } from '../PfpPicker/PfpBottomSheet';
+import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
 
 type ProfileViewProps = {
   shouldShowBackButton: boolean;
@@ -35,6 +40,7 @@ export function ProfileView({ queryRef, shouldShowBackButton }: ProfileViewProps
         ...ProfileViewFeaturedTabFragment
         ...ProfileViewActivityTabFragment
         ...ProfileViewUsernameFragment
+        ...ProfileViewConnectedProfilePictureFragment
       }
     `,
     queryRef
@@ -70,7 +76,9 @@ export function ProfileView({ queryRef, shouldShowBackButton }: ProfileViewProps
           queryRef={query}
           shouldShowBackButton={shouldShowBackButton}
         />
-        <View className="pt-4">
+        <View className="flex flex-row space-x-2 pt-4">
+          <ConnectedProfilePicture queryRef={query} />
+
           <ProfileViewUsername queryRef={query} />
         </View>
       </View>
@@ -159,10 +167,11 @@ function ConnectedGalleryProfileNavbar({
 }
 
 type ProfileViewUsernameProps = {
+  style?: ViewProps['style'];
   queryRef: ProfileViewUsernameFragment$key;
 };
 
-export function ProfileViewUsername({ queryRef }: ProfileViewUsernameProps) {
+export function ProfileViewUsername({ queryRef, style }: ProfileViewUsernameProps) {
   const query = useFragment(
     graphql`
       fragment ProfileViewUsernameFragment on Query {
@@ -177,11 +186,76 @@ export function ProfileViewUsername({ queryRef }: ProfileViewUsernameProps) {
   );
 
   return (
-    <Typography
-      className="bg-white dark:bg-black-900 text-2xl tracking-tighter"
-      font={{ family: 'GTAlpina', weight: 'StandardLight' }}
-    >
-      {query.userByUsername?.username}
-    </Typography>
+    <View style={style}>
+      <Typography
+        className="bg-white dark:bg-black-900 text-2xl tracking-tighter"
+        font={{ family: 'GTAlpina', weight: 'StandardLight' }}
+      >
+        {query.userByUsername?.username}
+      </Typography>
+    </View>
+  );
+}
+
+type ConnectedProfilePictureProps = {
+  queryRef: ProfileViewConnectedProfilePictureFragment$key;
+};
+
+function ConnectedProfilePicture({ queryRef }: ConnectedProfilePictureProps) {
+  const query = useFragment(
+    graphql`
+      fragment ProfileViewConnectedProfilePictureFragment on Query {
+        viewer {
+          ... on Viewer {
+            user {
+              dbid
+            }
+          }
+        }
+
+        userByUsername(username: $username) {
+          ... on GalleryUser {
+            __typename
+
+            dbid
+
+            ...ProfilePictureFragment
+          }
+        }
+
+        ...PfpBottomSheetFragment
+      }
+    `,
+    queryRef
+  );
+
+  const isLoggedInUser = Boolean(
+    query.userByUsername &&
+      'dbid' in query.userByUsername &&
+      query.viewer?.user?.dbid === query.userByUsername?.dbid
+  );
+
+  const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
+  const handlePress = useCallback(() => {
+    console.log('INPRESS');
+
+    if (!isLoggedInUser) {
+      return;
+    }
+
+    bottomSheetRef.current?.present();
+  }, [isLoggedInUser]);
+
+  return (
+    <>
+      <ProfilePicture
+        size="md"
+        onPress={handlePress}
+        isEditable={isLoggedInUser}
+        userRef={query.userByUsername?.__typename === 'GalleryUser' ? query.userByUsername : null}
+      />
+
+      <PfpBottomSheet ref={bottomSheetRef} queryRef={query} />
+    </>
   );
 }

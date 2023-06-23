@@ -23,11 +23,10 @@ const fontSizeMapping: { [size in Size]: number } = {
 
 type Size = 'sm' | 'md' | 'lg' | 'xl';
 
-type Props = {
+export type RawProfilePictureProps = {
   size: Size;
   hasInset?: boolean;
   isEditable?: boolean;
-  onEdit?: () => void;
   style?: ViewProps['style'];
 } & (
   | {
@@ -42,14 +41,13 @@ type Props = {
 export function RawProfilePicture({
   size,
   hasInset,
-  onEdit,
   onPress,
   isEditable,
   style,
   eventElementId,
   eventName,
   ...rest
-}: Props) {
+}: RawProfilePictureProps) {
   const widthAndHeight = sizeMapping[size];
 
   let fontSize: number | null = fontSizeMapping[size];
