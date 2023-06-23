@@ -113,11 +113,11 @@ export default function MementosPage() {
                     with your Gallery profile link.
                   </li>
                   <li>
-                    On <b>Tues June 27th</b>, a snapshot will be taken of qualifying users
+                    On <b>Friday June 30th</b>, a snapshot will be taken of qualifying users
                   </li>
                   <li>
                     Minting will open from 
-                    <b>June 27th 2:00PM through July 7th 11:59PM ET</b>
+                    <b>June 30th 2:00PM through July 7th 11:59PM ET</b>
                   </li>
                 </StyledUl>
               </BaseM>
