@@ -191,11 +191,13 @@ union CollectionTokenByIdOrError = CollectionToken | ErrCollectionNotFound | Err
 
 type CollectionTokenSettings {
   renderLive: Boolean
+  highDefinition: Boolean
 }
 
 input CollectionTokenSettingsInput {
   tokenId: DBID!
   renderLive: Boolean!
+  highDefinition: Boolean!
 }
 
 type CollectionUpdatedFeedEventData implements FeedEventData {
@@ -419,6 +421,11 @@ enum EmailVerificationStatus {
   Verified
   Failed
   Admin
+}
+
+type EnsProfileImage {
+  chainAddress: ChainAddress!
+  profileImage: ProfileImage
 }
 
 input EoaAuth {
@@ -745,6 +752,10 @@ type HtmlMedia implements Media {
   fallbackMedia: FallbackMedia
 }
 
+type HTTPSProfileImage {
+  previewURLs: PreviewURLSet
+}
+
 type ImageMedia implements Media {
   previewURLs: PreviewURLSet
   mediaURL: String
@@ -925,6 +936,7 @@ type Mutation {
   addWalletToUserUnchecked(input: AdminAddWalletInput!): AdminAddWalletPayloadOrError
   revokeRolesFromUser(username: String!, roles: [Role]): RevokeRolesFromUserPayloadOrError
   syncTokensForUsername(username: String!, chains: [Chain!]!): SyncTokensForUsernamePayloadOrError
+  syncCreatedTokensForUsername(username: String!, chains: [Chain!]!): SyncCreatedTokensForUsernamePayloadOrError
   banUserFromFeed(username: String!, action: String!): BanUserFromFeedPayloadOrError
   unbanUserFromFeed(username: String!): UnbanUserFromFeedPayloadOrError
   mintPremiumCardToWallet(input: MintPremiumCardToWalletInput!): MintPremiumCardToWalletPayloadOrError
@@ -1027,7 +1039,7 @@ type PreviewURLSet {
   blurhash: String
 }
 
-union ProfileImage = TokenProfileImage
+union ProfileImage = TokenProfileImage | HTTPSProfileImage
 
 scalar PubKey
 
@@ -1094,6 +1106,11 @@ type Query {
   socialConnections(socialAccountType: SocialAccountType!, excludeAlreadyFollowing: Boolean, before: String, after: String, first: Int, last: Int): SocialConnectionsConnection
   socialQueries: SocialQueriesOrError
   topCollectionsForCommunity(input: topCollectionsForCommunityInput!, before: String, after: String, first: Int, last: Int): CollectionsConnection
+
+  """
+  Returns a profile image from one of the user's wallets if the wallet is registered with ENS and has an avatar record set
+  """
+  ensProfileImageByUserId(userId: DBID!): EnsProfileImage
 }
 
 input RedeemMerchInput {
@@ -1206,6 +1223,7 @@ union SetCommunityOverrideCreatorPayloadOrError = SetCommunityOverrideCreatorPay
 
 input SetProfileImageInput {
   tokenId: DBID
+  walletAddress: ChainAddressInput
 }
 
 type SetProfileImagePayload {
@@ -1330,6 +1348,12 @@ type Subscription {
   newNotification: Notification
   notificationUpdated: Notification
 }
+
+type SyncCreatedTokensForUsernamePayload {
+  message: String!
+}
+
+union SyncCreatedTokensForUsernamePayloadOrError = SyncCreatedTokensForUsernamePayload | ErrNotAuthorized | ErrSyncFailed
 
 input SyncCreatedTokensInput {
   includeChains: [Chain!]
@@ -1758,6 +1782,7 @@ enum UserExperienceType {
   UpsellGallerySelects1
   MobileUpsell1
   MobileBetaUpsell
+  UpsellMintMemento5
 }
 
 type UserFollowedUsersFeedEventData implements FeedEventData {

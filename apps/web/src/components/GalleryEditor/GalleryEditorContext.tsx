@@ -86,6 +86,7 @@ export type StagedCollection = {
   localOnly: boolean;
 
   liveDisplayTokenIds: Set<string>;
+  highDefinitionTokenIds: Set<string>;
 
   name: string;
   collectorsNote: string;
@@ -197,6 +198,7 @@ export function GalleryEditorProvider({
         dbid: newCollectionId,
         activeSectionId: newSectionId,
         liveDisplayTokenIds: new Set(),
+        highDefinitionTokenIds: new Set(),
 
         name: '',
         collectorsNote: '',
@@ -359,7 +361,11 @@ export function GalleryEditorProvider({
         dbid: collection.dbid,
         hidden: collection.hidden,
         tokenSettings: tokens.map((token) => {
-          return { tokenId: token.id, renderLive: collection.liveDisplayTokenIds.has(token.id) };
+          return {
+            tokenId: token.id,
+            renderLive: collection.liveDisplayTokenIds.has(token.id),
+            highDefinition: collection.highDefinitionTokenIds.has(token.id),
+          };
         }),
         layout,
         name: collection.name,
@@ -381,7 +387,11 @@ export function GalleryEditorProvider({
         hidden: collection.hidden,
         collectorsNote: collection.collectorsNote,
         tokenSettings: tokens.map((token) => {
-          return { tokenId: token.id, renderLive: collection.liveDisplayTokenIds.has(token.id) };
+          return {
+            tokenId: token.id,
+            renderLive: collection.liveDisplayTokenIds.has(token.id),
+            highDefinition: collection.highDefinitionTokenIds.has(token.id),
+          };
         }),
         layout,
         name: collection.name,
@@ -693,8 +703,12 @@ export function useGalleryEditorContext() {
   return value;
 }
 
-type ComparisonFriendlyCollectionState = Omit<StagedCollection, 'liveDisplayTokenIds'> & {
+type ComparisonFriendlyCollectionState = Omit<
+  StagedCollection,
+  'liveDisplayTokenIds' | 'highDefinitionTokenIds'
+> & {
   liveDisplayTokenIds: string[];
+  highDefinitionTokenIds: string[];
 };
 
 function convertCollectionToComparisonFriendlyObject(
@@ -704,5 +718,6 @@ function convertCollectionToComparisonFriendlyObject(
     ...collection,
     activeSectionId: null,
     liveDisplayTokenIds: [...collection.liveDisplayTokenIds].sort(),
+    highDefinitionTokenIds: [...collection.highDefinitionTokenIds].sort(),
   };
 }
