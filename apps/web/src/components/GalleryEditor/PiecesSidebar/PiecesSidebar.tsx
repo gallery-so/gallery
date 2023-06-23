@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -40,6 +40,8 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
         chain
         isSpamByUser
         isSpamByProvider
+        ownerIsHolder
+        ownerIsCreator
 
         ...SearchBarFragment
         ...SidebarTokensFragment
@@ -96,14 +98,10 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
     addWhitespace();
   }, [addWhitespace]);
 
+  // TODO: we should unit test this function
   const tokensToDisplay = useMemo(() => {
-    // [GAL-3407] TODO. we may have to update the logic for `tokenSearchResults` to handle created tokens
-    if (selectedView === 'Created') {
-      return [];
-    }
-
     return tokenSearchResults.filter((token) => {
-      // If we're searching, we want to search across all chains
+      // If we're searching, we want to search across all chains; the chain selector will be hidden during search
       if (isSearching) {
         return true;
       }
@@ -112,8 +110,20 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
         return false;
       }
 
-      const isSpam = token.isSpamByUser !== null ? token.isSpamByUser : token.isSpamByProvider;
+      // Early return created tokens as we don't need to filter out spam
+      if (selectedView === 'Created') {
+        return token.ownerIsCreator;
+      }
 
+      // Filter out created tokens in Collected view...
+      if (selectedView === 'Collected') {
+        if (token.ownerIsCreator) {
+          return false;
+        }
+      }
+
+      // ...but incorporate with spam filtering logic for Collected view
+      const isSpam = token.isSpamByUser !== null ? token.isSpamByUser : token.isSpamByProvider;
       if (selectedView === 'Hidden') {
         return isSpam;
       }
@@ -143,7 +153,6 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
   }, [selectedChain, refreshDisabled, syncTokens]);
 
   const sidebarMainContent = useMemo(() => {
-    // [GAL-3407] – display creator tokens if they exist
     if (selectedView === 'Created') {
       if (tokensToDisplay.length) {
         return (
