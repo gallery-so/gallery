@@ -28,13 +28,9 @@ export function GalleryEditor({ queryRef }: GalleryEditorProps) {
 
           ... on Viewer {
             user {
-              tokens {
+              tokens(ownershipFilter: [Creator, Holder]) {
                 ...PiecesSidebarFragment
               }
-              # [GAL-3407] – display creator tokens if they exist
-              # createdTokens {
-              #   ...CreatedPiecesSidebarFragment
-              # }
             }
           }
         }

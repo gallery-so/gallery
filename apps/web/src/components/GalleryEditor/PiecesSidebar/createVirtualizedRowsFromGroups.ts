@@ -1,5 +1,5 @@
 import { CollectionGroup } from '~/components/GalleryEditor/PiecesSidebar/groupCollectionsByAddress';
-import { VirtualizedRow } from '~/components/GalleryEditor/PiecesSidebar/SidebarList';
+import { VirtualizedRow } from '~/components/GalleryEditor/PiecesSidebar/SidebarList/SidebarList';
 import { SidebarListTokenFragment$key } from '~/generated/SidebarListTokenFragment.graphql';
 import { SidebarTokensFragment$data } from '~/generated/SidebarTokensFragment.graphql';
 
@@ -33,13 +33,23 @@ export function createVirtualizedRowsFromGroups({
     // Default to expanded
     const expanded = !collapsedCollections.has(group.address);
 
-    rows.push({ type: 'collection-title', expanded, address: group.address, title: group.title });
+    rows.push({
+      type: 'collection-title',
+      expanded,
+      address: group.address,
+      title: group.title,
+      count: group.tokens.length,
+    });
 
     const COLUMNS_PER_ROW = 3;
     for (let i = 0; i < tokensSortedByErrored.length; i += COLUMNS_PER_ROW) {
       const rowTokens = tokensSortedByErrored.slice(i, i + COLUMNS_PER_ROW);
 
-      rows.push({ type: 'tokens', tokens: rowTokens, expanded });
+      rows.push({
+        type: 'tokens',
+        tokens: rowTokens,
+        expanded,
+      });
     }
   }
 
