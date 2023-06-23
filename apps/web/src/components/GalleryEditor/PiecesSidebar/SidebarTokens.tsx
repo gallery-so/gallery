@@ -121,7 +121,11 @@ export const SidebarTokens = ({
     if (shouldUseCollectionGrouping) {
       const groups = groupCollectionsByAddress({ tokens });
 
-      return createVirtualizedRowsFromGroups({ groups, erroredTokenIds, collapsedCollections });
+      return createVirtualizedRowsFromGroups({
+        groups,
+        erroredTokenIds,
+        collapsedCollections,
+      });
     } else {
       return createVirtualizedRowsFromTokens({
         tokens,
@@ -130,8 +134,6 @@ export const SidebarTokens = ({
     }
   }, [collapsedCollections, erroredTokenIds, shouldUseCollectionGrouping, tokens]);
 
-  console.log(rows);
-
   useEffect(
     function resetCollapsedSectionsWhileSearching() {
       if (isSearching) {
@@ -139,6 +141,24 @@ export const SidebarTokens = ({
       }
     },
     [isSearching]
+  );
+
+  useEffect(
+    function collapseLargeSectionsByDefault() {
+      const DEFAULT_COLLAPSE_TOKEN_COUNT = 24;
+
+      const collapsed = new Set<string>();
+      if (shouldUseCollectionGrouping) {
+        const groups = groupCollectionsByAddress({ tokens });
+        for (const group of groups) {
+          if (group.tokens.length > DEFAULT_COLLAPSE_TOKEN_COUNT) {
+            collapsed.add(group.address);
+          }
+        }
+      }
+      setCollapsedCollections(collapsed);
+    },
+    [shouldUseCollectionGrouping, tokens]
   );
 
   if (rows.length === 0) {
