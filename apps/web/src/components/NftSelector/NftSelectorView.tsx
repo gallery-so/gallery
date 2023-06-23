@@ -113,10 +113,10 @@ export function NftSelectorView({ selectedContractAddress, onSelectContract, tok
 
       return (
         <StyledNftSelectorViewContainer key={key} style={style}>
-          {row.map((column) => {
+          {row.map((column, index) => {
             return (
               <NftSelectorTokenPreview
-                key={column.address}
+                key={index}
                 group={column}
                 onSelectGroup={onSelectContract}
               />
