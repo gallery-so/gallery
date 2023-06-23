@@ -110,7 +110,7 @@ export default function MementosPage() {
                     >
                       announcement tweet
                     </InteractiveLink>{' '}
-                    with your Gallery profile link.
+                    with your ENS or wallet.
                   </li>
                   <li>
                     On <b>Friday June 30th</b>, a snapshot will be taken of qualifying users
