@@ -117,7 +117,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
 
       // Filter out created tokens in Collected view...
       if (selectedView === 'Collected') {
-        if (token.ownerIsCreator) {
+        if (!token.ownerIsHolder) {
           return false;
         }
       }
