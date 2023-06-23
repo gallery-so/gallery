@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
-import { usePaginationFragment } from 'react-relay';
+import { useFragment, usePaginationFragment } from 'react-relay';
 import {
   AutoSizer,
   CellMeasurer,
@@ -16,16 +16,20 @@ import { CommentNote } from '~/components/Feed/Socialize/NotesModal/CommentNote'
 import { ListItem } from '~/components/Feed/Socialize/NotesModal/ListItem';
 import { MODAL_PADDING_PX } from '~/contexts/modal/constants';
 import { NotesModalFragment$key } from '~/generated/NotesModalFragment.graphql';
+import { NotesModalQueryFragment$key } from '~/generated/NotesModalQueryFragment.graphql';
 import colors from '~/shared/theme/colors';
+
+import { CommentBox } from '../CommentBox/CommentBox';
 
 export const NOTES_PER_PAGE = 10;
 
 type NotesModalProps = {
   fullscreen: boolean;
   eventRef: NotesModalFragment$key;
+  queryRef: NotesModalQueryFragment$key;
 };
 
-export function NotesModal({ eventRef, fullscreen }: NotesModalProps) {
+export function NotesModal({ eventRef, queryRef, fullscreen }: NotesModalProps) {
   const {
     data: feedEvent,
     loadPrevious,
@@ -46,9 +50,19 @@ export function NotesModal({ eventRef, fullscreen }: NotesModalProps) {
             }
           }
         }
+        ...CommentBoxFragment
       }
     `,
     eventRef
+  );
+
+  const query = useFragment(
+    graphql`
+      fragment NotesModalQueryFragment on Query {
+        ...CommentBoxQueryFragment
+      }
+    `,
+    queryRef
   );
 
   const nonNullInteractionsAndSeeMore = useMemo(() => {
@@ -148,7 +162,7 @@ export function NotesModal({ eventRef, fullscreen }: NotesModalProps) {
     <ModalContent fullscreen={fullscreen}>
       <WrappingVStack>
         <StyledHeader>
-          <TitleDiatypeM>Notes</TitleDiatypeM>
+          <TitleDiatypeM>Comments</TitleDiatypeM>
         </StyledHeader>
         <VStack grow>
           <AutoSizer>
@@ -163,6 +177,7 @@ export function NotesModal({ eventRef, fullscreen }: NotesModalProps) {
             )}
           </AutoSizer>
         </VStack>
+        <CommentBox onClose={() => {}} eventRef={feedEvent} queryRef={query} />
       </WrappingVStack>
     </ModalContent>
   );
@@ -186,5 +201,5 @@ const ModalContent = styled.div<{ fullscreen: boolean }>`
   width: ${({ fullscreen }) => (fullscreen ? '100%' : '540px')};
   display: flex;
   flex-direction: column;
-  padding: ${MODAL_PADDING_PX}px 8px;
+  padding: ${MODAL_PADDING_PX}px 0px 0px;
 `;

@@ -4,31 +4,20 @@ import { graphql } from 'relay-runtime';
 
 import { VStack } from '~/components/core/Spacer/Stack';
 import { CommentLine } from '~/components/Feed/Socialize/CommentLine';
-import { RemainingAdmireCount } from '~/components/Feed/Socialize/RemainingAdmireCount';
+import { RemainingCommentCount } from '~/components/Feed/Socialize/RemainingCommentCount';
 import { InteractionsFragment$key } from '~/generated/InteractionsFragment.graphql';
+import { InteractionsQueryFragment$key } from '~/generated/InteractionsQueryFragment.graphql';
 
 type Props = {
   onPotentialLayoutShift: () => void;
   eventRef: InteractionsFragment$key;
+  queryRef: InteractionsQueryFragment$key;
 };
 
-export function Interactions({ eventRef, onPotentialLayoutShift }: Props) {
+export function Interactions({ eventRef, queryRef, onPotentialLayoutShift }: Props) {
   const event = useFragment(
     graphql`
       fragment InteractionsFragment on FeedEvent {
-        # We only show 1 but in case the user deletes something
-        # we want to be sure that we can show another comment beneath
-        admires(last: 5) @connection(key: "Interactions_admires") {
-          pageInfo {
-            total
-          }
-          edges {
-            node {
-              dbid
-            }
-          }
-        }
-
         # We only show 2 but in case the user deletes something
         # we want to be sure that we can show another comment beneath
         comments(last: 5) @connection(key: "Interactions_comments") {
@@ -44,10 +33,19 @@ export function Interactions({ eventRef, onPotentialLayoutShift }: Props) {
           }
         }
 
-        ...RemainingAdmireCountFragment
+        ...RemainingCommentCountFragment
       }
     `,
     eventRef
+  );
+
+  const query = useFragment(
+    graphql`
+      fragment InteractionsQueryFragment on Query {
+        ...RemainingCommentCountQueryFragment
+      }
+    `,
+    queryRef
   );
 
   const nonNullComments = useMemo(() => {
@@ -62,23 +60,7 @@ export function Interactions({ eventRef, onPotentialLayoutShift }: Props) {
     return comments;
   }, [event.comments?.edges]);
 
-  // const nonNullAdmires = useMemo(() => {
-  //   const admires = [];
-
-  //   for (const edge of event.admires?.edges ?? []) {
-  //     if (edge?.node) {
-  //       admires.push(edge.node);
-  //     }
-  //   }
-
-  //   admires.reverse();
-
-  //   return admires;
-  // }, [event.admires?.edges]);
-
   const totalComments = event.comments?.pageInfo.total ?? 0;
-  const totalAdmires = event.admires?.pageInfo.total ?? 0;
-  const totalInteractions = totalComments + totalAdmires;
 
   const isFirstMount = useRef(true);
   useLayoutEffect(() => {
@@ -89,14 +71,13 @@ export function Interactions({ eventRef, onPotentialLayoutShift }: Props) {
     isFirstMount.current = false;
 
     // These are all the things that might cause the layout to shift
-  }, [onPotentialLayoutShift, nonNullComments, totalComments, totalAdmires]);
+  }, [onPotentialLayoutShift, nonNullComments, totalComments]);
 
   /**
    * The below logic is a bit annoying to read so I'll try to explain it here
    *
    * If there are any comments, we'll show the following
    * - Comment 1
-   * - Comment 2
    * - X Others => Link to NotesModal
    *
    * If there are no comments, but there are any admires, we'll show the following
@@ -123,27 +104,25 @@ export function Interactions({ eventRef, onPotentialLayoutShift }: Props) {
    * the total number of comments / admires that links to the NotesModal
    */
   if (totalComments > 0) {
-    const lastTwoComments = nonNullComments.slice(-2);
+    const lastComment = nonNullComments.slice(-1);
 
-    if (lastTwoComments.length > 0) {
-      // 2 comments and "+ x others" below
-      // Not hard coding 2 here since there might only be one comment from the slice
-      const remainingAdmiresAndComments = Math.max(totalComments - lastTwoComments.length, 0);
-
+    if (lastComment.length > 0) {
       return (
         <VStack gap={8}>
           <VStack>
-            {lastTwoComments.map((comment) => {
+            {lastComment.map((comment) => {
               return <CommentLine key={comment.dbid} commentRef={comment} />;
             })}
           </VStack>
 
-          <RemainingAdmireCount remainingCount={remainingAdmiresAndComments} eventRef={event} />
+          <RemainingCommentCount eventRef={event} totalComments={totalComments} queryRef={query} />
         </VStack>
       );
     }
 
-    return <RemainingAdmireCount remainingCount={totalInteractions} eventRef={event} />;
+    return (
+      <RemainingCommentCount eventRef={event} totalComments={totalComments} queryRef={query} />
+    );
   }
 
   return null;

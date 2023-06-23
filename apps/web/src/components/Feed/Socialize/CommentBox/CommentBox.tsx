@@ -10,7 +10,6 @@ import { useFragment } from 'react-relay';
 import { ConnectionHandler, graphql, SelectorStoreUpdater } from 'relay-runtime';
 import styled from 'styled-components';
 
-import breakpoints from '~/components/core/breakpoints';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM, BODY_FONT_FAMILY } from '~/components/core/Text/Text';
 import { SendButton } from '~/components/Feed/Socialize/SendButton';
@@ -286,7 +285,7 @@ export function CommentBox({ eventRef, queryRef, onClose }: Props) {
 }
 
 const ControlsContainer = styled(HStack)`
-  position: absolute;
+  /* position: absolute; */
   top: 0;
   bottom: 0;
   right: 16px;
@@ -324,7 +323,7 @@ const Textarea = styled(BaseM).attrs({
 
   color: ${colors.metal};
 
-  padding: 6px 64px 6px 0;
+  padding: 8px 64px 8px 0;
 
   :focus {
     outline: none;
@@ -334,15 +333,11 @@ const Textarea = styled(BaseM).attrs({
 
 const Wrapper = styled.div`
   // Full width with 16px of padding on either side
-  width: calc(100vw - 32px);
+  width: 100%;
 
-  @media only screen and ${breakpoints.mobileLarge} {
-    width: 375px;
-  }
-
-  border: 1px solid ${colors.black['800']};
+  border-top: 1px solid ${colors.porcelain};
 
   background: ${colors.white};
 
-  padding: 8px;
+  padding: 16px;
 `;

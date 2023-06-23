@@ -33,7 +33,7 @@ export function ProfilePicture({ userRef }: Props) {
 
   const firstLetter = user?.username?.substring(0, 1) ?? '';
 
-  if (!token) return <RawProfilePicture letter={firstLetter} hasInset size="sm" />;
+  if (!token) return <RawProfilePicture letter={firstLetter} hasInset size="md" />;
 
   const result = getVideoOrImageUrlForNftPreview({
     tokenRef: token,
@@ -51,5 +51,5 @@ export function ProfilePicture({ userRef }: Props) {
     throw new CouldNotRenderNftError('StagedNftImage', 'could not find a small url');
   }
 
-  return <RawProfilePicture imageUrl={result.urls.small} hasInset size="sm" />;
+  return <RawProfilePicture imageUrl={result.urls.small} hasInset size="md" />;
 }
