@@ -6,7 +6,7 @@ export const ANNOUNCEMENT_CONTENT = [
   //   key: 'UpsellMintMemento5',
   //   title: 'Now Minting: Worlds Beyond',
   //   description:
-  //     'Gallery Memento #5 is now available for minting, an emblem of the transformational steps Gallery is taking into the exciting world of mobile web3.',
+  //     'Gallery Memento #5 is now available for minting, an emblem of the transformational steps Gallery is taking into the exciting world of mobile.',
   //   date: '2023-06-23T15:00:00.154845Z',
   //   link: '/mint/mementos',
   // },
