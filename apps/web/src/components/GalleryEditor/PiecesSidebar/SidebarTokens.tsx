@@ -8,7 +8,7 @@ import {
 } from '~/components/GalleryEditor/PiecesSidebar/createVirtualizedRowsFromGroups';
 import { EmptySidebar } from '~/components/GalleryEditor/PiecesSidebar/EmptySidebar';
 import { groupCollectionsByAddress } from '~/components/GalleryEditor/PiecesSidebar/groupCollectionsByAddress';
-import { SidebarList } from '~/components/GalleryEditor/PiecesSidebar/SidebarList';
+import { SidebarList } from '~/components/GalleryEditor/PiecesSidebar/SidebarList/SidebarList';
 import { SidebarTokensFragment$key } from '~/generated/SidebarTokensFragment.graphql';
 import useSetSpamPreference from '~/hooks/api/tokens/useSetSpamPreference';
 
@@ -129,6 +129,8 @@ export const SidebarTokens = ({
       });
     }
   }, [collapsedCollections, erroredTokenIds, shouldUseCollectionGrouping, tokens]);
+
+  console.log(rows);
 
   useEffect(
     function resetCollapsedSectionsWhileSearching() {
