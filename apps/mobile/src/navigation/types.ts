@@ -22,6 +22,7 @@ export type MainTabStackNavigatorParamList = {
   Collection: { collectionId: string };
   FeedEvent: { eventId: string };
   Community: { contractAddress: string; chain: string };
+  ProfilePicturePicker: undefined;
 
   // The main five tabs
   Account: undefined;

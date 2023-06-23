@@ -1,19 +1,20 @@
 import { useColorScheme } from 'nativewind';
+import { ReactNode } from 'react';
 import { TextInput, TextInputProps, View } from 'react-native';
 
 import colors from '~/shared/theme/colors';
 
-// We don't have any custom props yet
-type Props = TextInputProps;
+type Props = TextInputProps & { icon?: ReactNode };
 
-export function FadedInput({ value, onChange, style, ...props }: Props) {
+export function FadedInput({ value, onChange, icon, style, ...props }: Props) {
   const { colorScheme } = useColorScheme();
 
   return (
     <View
-      className="bg-faint dark:bg-black-500 flex flex-col justify-center py-1.5 px-3"
+      className="bg-faint dark:bg-black-500 flex flex-row items-center space-x-2 py-1.5 px-3"
       style={style}
     >
+      {icon && <View>{icon}</View>}
       <TextInput
         style={{
           fontSize: 14,

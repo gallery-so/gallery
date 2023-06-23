@@ -50,6 +50,8 @@ function PfpBottomSheet(
   const handleChooseFromCollectionPress = useCallback(() => {}, []);
   const handleRemovePress = useCallback(() => {}, []);
 
+  const hasProfilePictureSet = false;
+
   return (
     <GalleryBottomSheetModal
       ref={ref}
@@ -82,11 +84,13 @@ function PfpBottomSheet(
             icon={<CollectionGridIcon />}
             text="Choose from collection"
           />
-          <SettingsRow
-            onPress={handleRemovePress}
-            icon={<TrashIcon />}
-            text={<Text className="text-red">Remove current profile picture</Text>}
-          />
+          {hasProfilePictureSet && (
+            <SettingsRow
+              onPress={handleRemovePress}
+              icon={<TrashIcon />}
+              text={<Text className="text-red">Remove current profile picture</Text>}
+            />
+          )}
         </View>
       </View>
     </GalleryBottomSheetModal>
