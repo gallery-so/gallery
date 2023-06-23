@@ -110,6 +110,7 @@ const CollectionTitleContainer = styled(HStack).attrs({ role: 'button' })`
 
   height: ${SIDEBAR_COLLECTION_TITLE_HEIGHT}px;
   padding: 0 4px;
+  margin: 4px 0px;
 
   border-radius: 2px;
 
