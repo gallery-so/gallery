@@ -53,11 +53,12 @@ export default function CollectionTitle({
         onMouseLeave={() => setIsMouseHovering(false)}
         align="center"
         justify="space-between"
+        gap={4}
       >
-        <HStack align="center">
+        <LeftContent align="center">
           <ExpandedIcon expanded={row.expanded} />
           <CollectionTitleText title={row.title}>{row.title}</CollectionTitleText>
-        </HStack>
+        </LeftContent>
         {shouldDisplayToggleSpamIcon ? (
           <ToggleSpamIcon
             row={row}
@@ -88,6 +89,10 @@ export default function CollectionTitle({
     </CollectionTitleRow>
   );
 }
+
+const LeftContent = styled(HStack)`
+  overflow: hidden;
+`;
 
 const CollectionTitleText = styled(TitleXS)`
   white-space: nowrap;
