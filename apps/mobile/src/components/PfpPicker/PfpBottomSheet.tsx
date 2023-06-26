@@ -1,4 +1,5 @@
 import { useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
+import { useNavigation } from '@react-navigation/native';
 import { ForwardedRef, forwardRef, ReactNode, useCallback } from 'react';
 import { Text, View, ViewProps } from 'react-native';
 import { useFragment } from 'react-relay';
@@ -9,6 +10,7 @@ import { RightArrowIcon } from 'src/icons/RightArrowIcon';
 import { TrashIcon } from 'src/icons/TrashIcon';
 
 import { PfpBottomSheetFragment$key } from '~/generated/PfpBottomSheetFragment.graphql';
+import { MainTabStackNavigatorProp } from '~/navigation/types';
 
 import {
   GalleryBottomSheetModal,
@@ -46,8 +48,11 @@ function PfpBottomSheet(
   const { animatedHandleHeight, animatedSnapPoints, animatedContentHeight, handleContentLayout } =
     useBottomSheetDynamicSnapPoints(SNAP_POINTS);
 
+  const navigation = useNavigation<MainTabStackNavigatorProp>();
   const handleEnsPress = useCallback(() => {}, []);
-  const handleChooseFromCollectionPress = useCallback(() => {}, []);
+  const handleChooseFromCollectionPress = useCallback(() => {
+    navigation.navigate('ProfilePicturePicker');
+  }, [navigation]);
   const handleRemovePress = useCallback(() => {}, []);
 
   const hasProfilePictureSet = false;
