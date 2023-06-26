@@ -237,8 +237,6 @@ function ConnectedProfilePicture({ queryRef }: ConnectedProfilePictureProps) {
 
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
   const handlePress = useCallback(() => {
-    console.log('INPRESS');
-
     if (!isLoggedInUser) {
       return;
     }

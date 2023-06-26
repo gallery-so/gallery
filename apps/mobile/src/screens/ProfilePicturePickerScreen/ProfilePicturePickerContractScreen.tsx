@@ -1,8 +1,7 @@
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { ResizeMode } from 'expo-av';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { View } from 'react-native';
-import FastImage from 'react-native-fast-image';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 
 import { BackButton } from '~/components/BackButton';
@@ -44,6 +43,8 @@ export function ProfilePicturePickerContractScreen() {
   );
 
   const { top } = useSafeAreaPadding();
+
+  const [sort, setSort] = useState<'Collected' | 'Created'>('Collected');
 
   const tokens = useMemo(() => {
     return removeNullValues(
@@ -100,10 +101,14 @@ export function ProfilePicturePickerContractScreen() {
 
         <View className="px-4">
           <Select
+            eventElementId="ProfilePictureSort"
             className="w-32"
-            selectedId="1"
-            options={[{ id: '1', label: 'All' }]}
-            onChange={() => {}}
+            options={[
+              { id: 'Collected', label: 'Collected' },
+              { id: 'Created', label: 'Created' },
+            ]}
+            onChange={setSort}
+            selectedId={sort}
           />
         </View>
 

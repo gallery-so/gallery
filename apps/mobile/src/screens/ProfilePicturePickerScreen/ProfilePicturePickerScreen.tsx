@@ -64,6 +64,7 @@ export function ProfilePicturePickerScreen() {
 
           <View className="px-4 flex flex-row items-center justify-between">
             <Select
+              eventElementId="ProfilePictureFilter"
               onChange={setFilter}
               selectedId={filter}
               options={[

@@ -18,6 +18,8 @@ import { Typography } from '~/components/Typography';
 
 const SNAP_POINTS = ['CONTENT_HEIGHT'];
 
+// We don't take any props yet
+// eslint-disable-next-line @typescript-eslint/ban-types
 type ProfilePicturePickerFilterBottomSheetProps = {};
 
 type NetworkChoice = 'all' | 'Ethereum' | 'Tezos' | 'POAP';

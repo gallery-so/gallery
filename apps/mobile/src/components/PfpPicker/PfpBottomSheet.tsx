@@ -5,8 +5,6 @@ import { Text, View, ViewProps } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { CollectionGridIcon } from 'src/icons/CollectionGridIcon';
-import { EditPencilIcon } from 'src/icons/EditPencilIcon';
-import { RightArrowIcon } from 'src/icons/RightArrowIcon';
 import { TrashIcon } from 'src/icons/TrashIcon';
 
 import { PfpBottomSheetFragment$key } from '~/generated/PfpBottomSheetFragment.graphql';
@@ -31,6 +29,8 @@ function PfpBottomSheet(
   { queryRef }: PfpBottomSheetProps,
   ref: ForwardedRef<GalleryBottomSheetModalType>
 ) {
+  /* eslint-disable @typescript-eslint/no-unused-vars */
+  // @ts-expect-error Will need this in the future for when we pull the ENS picture from the user
   const query = useFragment(
     graphql`
       fragment PfpBottomSheetFragment on Query {
@@ -43,6 +43,7 @@ function PfpBottomSheet(
     `,
     queryRef
   );
+  /* eslint-enable @typescript-eslint/no-unused-vars */
 
   const { bottom } = useSafeAreaPadding();
   const { animatedHandleHeight, animatedSnapPoints, animatedContentHeight, handleContentLayout } =
