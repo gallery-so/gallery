@@ -28,13 +28,9 @@ export function GalleryEditor({ queryRef }: GalleryEditorProps) {
 
           ... on Viewer {
             user {
-              tokens {
+              tokens(ownershipFilter: [Creator, Holder]) {
                 ...PiecesSidebarFragment
               }
-              # [GAL-2710] createdTokens
-              # createdTokens {
-              #   ...CreatedPiecesSidebarFragment
-              # }
             }
           }
         }

@@ -29,6 +29,7 @@ export function getInitialCollectionsFromServer(
           tokens {
             tokenSettings {
               renderLive
+              highDefinition
             }
             token {
               dbid
@@ -88,15 +89,20 @@ export function getInitialCollectionsFromServer(
     }
 
     const liveDisplayTokenIds = new Set<string>();
+    const highDefinitionTokenIds = new Set<string>();
     for (const token of nonNullTokens) {
       if (token.tokenSettings?.renderLive && token.token) {
         liveDisplayTokenIds.add(token.token.dbid);
+      }
+      if (token.tokenSettings?.highDefinition && token.token) {
+        highDefinitionTokenIds.add(token.token.dbid);
       }
     }
 
     collections.push({
       activeSectionId,
-      liveDisplayTokenIds: liveDisplayTokenIds,
+      liveDisplayTokenIds,
+      highDefinitionTokenIds,
       sections,
       localOnly: false,
       dbid: collection.dbid,
@@ -118,6 +124,7 @@ export function createEmptyCollection(): StagedCollection {
     localOnly: true,
 
     liveDisplayTokenIds: new Set(),
+    highDefinitionTokenIds: new Set(),
 
     name: '',
     collectorsNote: '',

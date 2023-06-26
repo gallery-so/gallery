@@ -13,7 +13,7 @@ export function NftDetailAssetHtml({ onLoad, htmlUrl }: Props) {
         onLoadEnd={onLoad}
         originWhitelist={['*']}
         className="h-full w-full bg-transparent"
-        scrollEnabled={false}
+        scrollEnabled
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}
         source={{ uri: htmlUrl }}

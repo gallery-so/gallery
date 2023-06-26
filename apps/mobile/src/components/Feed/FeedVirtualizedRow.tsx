@@ -26,7 +26,11 @@ export function FeedVirtualizedRow({ onFailure, item, eventId }: Props) {
         return <FeedListCaption feedEventRef={item.event} />;
       case 'feed-item-event':
         return (
-          <FeedListItem eventId={item.event.dbid} eventDataRef={item.event.eventData ?? null} />
+          <FeedListItem
+            eventId={item.event.dbid}
+            queryRef={item.queryRef}
+            eventDataRef={item.event ?? null}
+          />
         );
       case 'feed-item-socialize':
         return (

@@ -126,7 +126,7 @@ const StyledContainer = styled.div<{ navbarHeight: number; variant: Variant }>`
     if (variant === 'lit') {
       return `
         border: 1px solid ${colors.black['800']};
-        background: ${colors.black['800']};
+        background: ${colors.hyperBlue};
         
         ${BaseM} {
           color: ${colors.white};

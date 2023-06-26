@@ -34,6 +34,9 @@ export function FollowButton({ queryRef, userRef, style, width = 'fixed' }: Prop
               following @required(action: THROW) {
                 id @required(action: THROW)
               }
+              followers @required(action: THROW) {
+                id @required(action: THROW)
+              }
             }
           }
         }
@@ -58,6 +61,7 @@ export function FollowButton({ queryRef, userRef, style, width = 'fixed' }: Prop
 
   const loggedInUserId = useLoggedInUserId(loggedInUserQuery);
   const followingList = loggedInUserQuery.viewer?.user?.following;
+  const followersList = loggedInUserQuery.viewer?.user?.followers;
 
   const isFollowing = useMemo(() => {
     if (!followingList) {
@@ -68,6 +72,16 @@ export function FollowButton({ queryRef, userRef, style, width = 'fixed' }: Prop
     );
     return followingIds.has(userToFollow.id);
   }, [followingList, userToFollow.id]);
+
+  const followsYou = useMemo(() => {
+    if (!followersList) {
+      return false;
+    }
+    const followerIds = new Set(
+      followersList.map((following: { id: string } | null) => following?.id)
+    );
+    return followerIds.has(userToFollow.id);
+  }, [followersList, userToFollow.id]);
 
   const followUser = useFollowUser({ queryRef: loggedInUserQuery });
   const unfollowUser = useUnfollowUser({ queryRef: loggedInUserQuery });
@@ -97,12 +111,17 @@ export function FollowButton({ queryRef, userRef, style, width = 'fixed' }: Prop
       );
     } else {
       return (
-        <FollowChip variant="follow" onPress={handleFollowPress} width={width}>
-          Follow
+        <FollowChip
+          variant="follow"
+          onPress={handleFollowPress}
+          width={width}
+          eventProperties={{ followType: followsYou ? 'Follow back' : 'Single follow' }}
+        >
+          {followsYou ? 'Follow back' : 'Follow'}
         </FollowChip>
       );
     }
-  }, [isSelf, isFollowing, handleUnfollowPress, width, handleFollowPress]);
+  }, [isSelf, isFollowing, handleUnfollowPress, width, handleFollowPress, followsYou]);
 
   return <View style={style}>{followChip}</View>;
 }
@@ -113,6 +132,7 @@ type FollowChipProps = PropsWithChildren<{
   variant: FollowChipVariant;
   onPress: TouchableOpacityProps['onPress'];
   width?: 'fixed' | 'grow';
+  eventProperties?: Record<string, string>;
 }>;
 
 type ChipContainerVariants = {
@@ -176,7 +196,7 @@ const chipContainerVariants: ChipContainerVariants = {
   },
 };
 
-function FollowChip({ children, variant, onPress, width }: FollowChipProps) {
+function FollowChip({ children, variant, onPress, width, eventProperties }: FollowChipProps) {
   const { colorScheme } = useColorScheme();
   const [active, setActive] = useState(false);
 
@@ -190,7 +210,7 @@ function FollowChip({ children, variant, onPress, width }: FollowChipProps) {
       eventElementId="Follow Button"
       eventName="Follow Button Clicked"
       activeOpacity={1}
-      properties={{ variant }}
+      properties={{ variant, ...eventProperties }}
       onPress={onPress}
       className={clsx(
         'flex h-6 items-center justify-center rounded-sm px-2 bg-black',

@@ -40,6 +40,8 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
         chain
         isSpamByUser
         isSpamByProvider
+        ownerIsHolder
+        ownerIsCreator
 
         ...SearchBarFragment
         ...SidebarTokensFragment
@@ -60,7 +62,6 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
         }
         ...doesUserOwnWalletFromChainFragment
         ...AddWalletSidebarQueryFragment
-        ...SidebarViewSelectorFragment
       }
     `,
     queryRef
@@ -97,14 +98,10 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
     addWhitespace();
   }, [addWhitespace]);
 
+  // TODO: we should unit test this function
   const tokensToDisplay = useMemo(() => {
-    // [GAL-2710] TODO. we may have to update the logic for `tokenSearchResults` to handle created tokens
-    if (selectedView === 'Created') {
-      return [];
-    }
-
     return tokenSearchResults.filter((token) => {
-      // If we're searching, we want to search across all chains
+      // If we're searching, we want to search across all chains; the chain selector will be hidden during search
       if (isSearching) {
         return true;
       }
@@ -113,8 +110,20 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
         return false;
       }
 
-      const isSpam = token.isSpamByUser !== null ? token.isSpamByUser : token.isSpamByProvider;
+      // Early return created tokens as we don't need to filter out spam
+      if (selectedView === 'Created') {
+        return token.ownerIsCreator;
+      }
 
+      // Filter out created tokens in Collected view...
+      if (selectedView === 'Collected') {
+        if (!token.ownerIsHolder) {
+          return false;
+        }
+      }
+
+      // ...but incorporate with spam filtering logic for Collected view
+      const isSpam = token.isSpamByUser !== null ? token.isSpamByUser : token.isSpamByProvider;
       if (selectedView === 'Hidden') {
         return isSpam;
       }
@@ -134,7 +143,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
     }
   }, []);
 
-  // [GAL-2710] call syncTokens conditionally based on what the `SelectedView` is
+  // [GAL-3406] – enable this once the button is ready to be hooked up end-to-end
   const handleRefresh = useCallback(async () => {
     if (refreshDisabled) {
       return;
@@ -144,7 +153,6 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
   }, [selectedChain, refreshDisabled, syncTokens]);
 
   const sidebarMainContent = useMemo(() => {
-    // [GAL-2710] TODO
     if (selectedView === 'Created') {
       if (tokensToDisplay.length) {
         return (
@@ -186,6 +194,18 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
     tokensToDisplay,
   ]);
 
+  // this can be a 1-liner but this is easier to read tbh
+  const shouldDisplayRefreshButtonGroup = useMemo(() => {
+    // [GAL-3406] – enable this once the button is ready to be hooked up end-to-end
+    if (selectedView === 'Created') {
+      return false;
+    }
+    if (!ownsWalletFromSelectedChain) {
+      return false;
+    }
+    return true;
+  }, [ownsWalletFromSelectedChain, selectedView]);
+
   return (
     <StyledSidebar navbarHeight={navbarHeight}>
       <StyledSidebarContainer gap={8}>
@@ -194,7 +214,6 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
           <SidebarViewSelector
             selectedView={selectedView}
             onSelectedViewChange={handleSelectedViewChange}
-            queryRef={query}
           />
         </Header>
         <StyledSearchBarContainer>
@@ -229,7 +248,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
                 selectedView={selectedView}
               />
             </div>
-            {ownsWalletFromSelectedChain && (
+            {shouldDisplayRefreshButtonGroup && (
               <StyledButtonGroupContainer>
                 <StyledButton onClick={handleRefresh} variant="primary" disabled={refreshDisabled}>
                   <HStack gap={8} align="center">
