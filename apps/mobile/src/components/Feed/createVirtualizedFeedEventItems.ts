@@ -35,7 +35,7 @@ export type FeedListItemType = { key: string; eventId: string } & (
   | {
       kind: 'feed-item-event';
       event: createVirtualizedFeedEventItemsFragment$data;
-      queryRef?: null;
+      queryRef: createVirtualizedFeedEventItemsQueryFragment$data;
     }
   | {
       kind: 'feed-item-socialize';
@@ -74,6 +74,8 @@ export function createVirtualizedFeedEventItems({
       fragment createVirtualizedFeedEventItemsQueryFragment on Query @inline {
         # eslint-disable-next-line relay/must-colocate-fragment-spreads
         ...FeedEventSocializeSectionQueryFragment
+        # eslint-disable-next-line relay/must-colocate-fragment-spreads
+        ...FeedListItemQueryFragment
       }
     `,
     queryRef
@@ -95,11 +97,10 @@ export function createVirtualizedFeedEventItems({
                 __typename
               }
             }
-
-            # eslint-disable-next-line relay/must-colocate-fragment-spreads
-            ...FeedListItemFragment
           }
 
+          # eslint-disable-next-line relay/must-colocate-fragment-spreads
+          ...FeedListItemFragment
           # eslint-disable-next-line relay/must-colocate-fragment-spreads
           ...FeedListCaptionFragment
           # eslint-disable-next-line relay/must-colocate-fragment-spreads
@@ -162,6 +163,7 @@ export function createVirtualizedFeedEventItems({
         kind: 'feed-item-event',
         event,
         key: `feed-item-event-${event.dbid}`,
+        queryRef: query,
         eventId: event.dbid,
       });
 

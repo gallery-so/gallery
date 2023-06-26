@@ -71,18 +71,18 @@ export default function MementosPage() {
         <StyledContent>
           <HStack align="center" gap={4}>
             <StyledTitleL>
-              <i>Blooming Connections</i>
+              <i>Worlds Beyond</i>
             </StyledTitleL>
           </HStack>
           <VStack gap={16}>
             <BaseM>
-              Introducing the <i>Blooming Connections</i> memento, a beautiful and symbolic
-              representation of the growing network within the Gallery community. As a field
-              flourishes around a pristine white cube, it symbolizes the nurturing environment
-              Gallery offers to cultivate new connections and unlock unprecedented levels of
-              inspiration. This limited-edition NFT commemorates the bridge between Twitter and
-              Gallery, empowering collectors, curators, and creatives to connect, engage, and share
-              their passion for art.
+              Introducing the <b>Worlds Beyond</b> memento, an emblem of the transformational steps
+              Gallery is taking into the exciting world of mobile. This limited edition piece is
+              both a celebration of the public beta launch of{' '}
+              <InteractiveLink href="https://gallery.so/mobile">the Gallery App</InteractiveLink>{' '}
+              and a symbol of the endless potential of creativity on-the-go. The memento
+              encapsulates the spirit of our mobile-first era, manifesting our commitment to
+              delivering unparalleled creative experiences, right in your pocket.
             </BaseM>
             <BaseM>
               You can read more about Gallery Mementos{' '}
@@ -95,10 +95,6 @@ export default function MementosPage() {
               <BaseM>
                 Eligibility Criteria
                 <StyledUl>
-                  <li>
-                    Connect your Twitter account to your Gallery profile. You can do so by visiting
-                    your profile page or your settings.
-                  </li>
                   <li>
                     Follow{' '}
                     <InteractiveLink href="https://twitter.com/GALLERY">@GALLERY</InteractiveLink>{' '}
@@ -114,14 +110,14 @@ export default function MementosPage() {
                     >
                       announcement tweet
                     </InteractiveLink>{' '}
-                    with your Gallery profile link.
+                    with your ENS or wallet.
                   </li>
                   <li>
-                    On <b>March 27th</b>, a snapshot will be taken of qualifying users
+                    On <b>Friday June 30th</b>, a snapshot will be taken of qualifying users
                   </li>
                   <li>
                     Minting will open from 
-                    <b>March 27th 2:00PM through April 3rd 11:59PM ET</b>
+                    <b>June 30th 2:00PM through July 7th 11:59PM ET</b>
                   </li>
                 </StyledUl>
               </BaseM>

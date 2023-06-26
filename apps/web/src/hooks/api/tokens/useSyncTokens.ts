@@ -25,7 +25,7 @@ export default function useSyncTokens() {
 
               ... on Viewer {
                 user {
-                  tokens {
+                  tokens(ownershipFilter: [Creator, Holder]) {
                     dbid
                   }
                 }

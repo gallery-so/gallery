@@ -12,17 +12,16 @@ export default function CreatorEmptyStateSidebar() {
 
   const handleClick = useCallback(() => {
     track('Creator sidebar share project details click');
-    // [GAL-2710] open google form
+    window.open('https://forms.gle/yJLK93LLw3618Y8y8', '_blank');
   }, [track]);
 
   return (
     <StyledContainer gap={16} justify="center">
       <TitleS>Are you a creator?</TitleS>
       <BaseM>
-        If you have created onchain work that you'd like to display on Gallery, we can associate
-        them with your account.
+        If you've created onchain work that you'd like to display in your Gallery, please provide
+        details about your project and our team will handle the rest!
       </BaseM>
-      <BaseM>Please provide details about your project and our team will handle the rest!</BaseM>
       <Button onClick={handleClick}>Share project details</Button>
     </StyledContainer>
   );

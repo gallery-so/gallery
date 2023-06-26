@@ -27,6 +27,7 @@ type NftPreviewProps = {
   tokenUrl: string | null | undefined;
   resizeMode: ResizeMode;
 
+  onPress?: () => void;
   onImageStateChange?: (imageState: ImageState) => void;
 };
 
@@ -35,6 +36,8 @@ function NftPreviewInner({
   tokenUrl,
   resizeMode,
   priority,
+
+  onPress,
   onImageStateChange,
 }: NftPreviewProps) {
   const collectionToken = useFragment(
@@ -70,13 +73,21 @@ function NftPreviewInner({
   }
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
-  const handlePress = useCallback(() => {
+  const navigateToNftDetail = useCallback(() => {
     navigation.push('NftDetail', {
       tokenId: token.dbid,
       collectionId: collectionToken.collection?.dbid ?? null,
       cachedPreviewAssetUrl: tokenUrl,
     });
   }, [collectionToken.collection?.dbid, navigation, token.dbid, tokenUrl]);
+
+  const handlePress = useCallback(() => {
+    if (onPress) {
+      onPress();
+    } else {
+      navigateToNftDetail();
+    }
+  }, [navigateToNftDetail, onPress]);
 
   const handleLoad = useCallback(
     (dimensions: Dimensions | null) => {
@@ -125,10 +136,12 @@ export function NftPreview({
   tokenUrl,
   resizeMode,
   priority,
+  onPress,
 }: NftPreviewProps) {
   return (
     <ReportingErrorBoundary fallback={<NftPreviewErrorFallback />}>
       <NftPreviewInner
+        onPress={onPress}
         onImageStateChange={onImageStateChange}
         collectionTokenRef={collectionTokenRef}
         tokenUrl={tokenUrl}
