@@ -75,10 +75,10 @@ export function MainTabNavigator() {
       }}
     >
       <Tab.Screen name="HomeTab" component={HomeScreen} />
-      {/* <Tab.Screen name="SearchTab" component={SearchScreen} /> */}
-      {/* <Tab.Screen name="NotificationsTab" component={NotificationsScreen} /> */}
-      {/* <Tab.Screen name="AccountTab" component={AccountScreen} /> */}
-      {/* <Tab.Screen name="SettingsTab" component={SettingsScreen} /> */}
+      <Tab.Screen name="SearchTab" component={SearchScreen} />
+      <Tab.Screen name="NotificationsTab" component={NotificationsScreen} />
+      <Tab.Screen name="AccountTab" component={AccountScreen} />
+      <Tab.Screen name="SettingsTab" component={SettingsScreen} />
     </Tab.Navigator>
   );
 }

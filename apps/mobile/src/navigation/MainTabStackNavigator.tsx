@@ -23,7 +23,7 @@ type Props = {
 
 export function MainTabStackNavigator({ initialRouteName, initialProfileParams }: Props) {
   return (
-    <Stack.Navigator initialRouteName="ProfilePicturePicker" screenOptions={{ header: Empty }}>
+    <Stack.Navigator initialRouteName={initialRouteName} screenOptions={{ header: Empty }}>
       <Stack.Screen name="NftDetail" component={NftDetailScreen} />
       <Stack.Screen name="Profile" component={ProfileScreen} initialParams={initialProfileParams} />
       <Stack.Screen name="Gallery" component={GalleryScreen} />
