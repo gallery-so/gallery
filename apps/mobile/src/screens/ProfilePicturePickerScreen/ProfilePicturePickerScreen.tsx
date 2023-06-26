@@ -1,5 +1,4 @@
-import { Picker } from '@react-native-picker/picker';
-import { useCallback, useRef } from 'react';
+import { Suspense, useCallback, useRef, useState } from 'react';
 import { View } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import { RefreshIcon } from 'src/icons/RefreshIcon';
@@ -12,12 +11,14 @@ import { IconContainer } from '~/components/IconContainer';
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { Select } from '~/components/Select';
 import { Typography } from '~/components/Typography';
+import { ProfilePicturePickerScreenQuery } from '~/generated/ProfilePicturePickerScreenQuery.graphql';
 import { SearchIcon } from '~/navigation/MainTabNavigator/SearchIcon';
 
 import { ProfilePicturePickerFilterBottomSheet } from './ProfilePicturePickerFilterBottomSheet';
+import { ProfilePicturePickerGrid } from './ProfilePicturePickerGrid';
 
 export function ProfilePicturePickerScreen() {
-  const query = useLazyLoadQuery(
+  const query = useLazyLoadQuery<ProfilePicturePickerScreenQuery>(
     graphql`
       query ProfilePicturePickerScreenQuery {
         ...ProfilePicturePickerGridFragment
@@ -33,29 +34,43 @@ export function ProfilePicturePickerScreen() {
     filterBottomSheetRef.current?.present();
   }, []);
 
+  const [filter, setFilter] = useState<'Collected' | 'Created'>('Collected');
+
   return (
     <View className="flex-1 bg-white dark:bg-black-900" style={{ paddingTop: top }}>
-      <View className="flex flex-col space-y-8">
+      <View className="flex flex-col flex-grow space-y-8">
         <View className="px-4 relative">
           <BackButton />
 
-          <View className="absolute inset-0 flex flex-row justify-center items-center">
+          <View
+            className="absolute inset-0 flex flex-row justify-center items-center"
+            pointerEvents="none"
+          >
             <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
               Select a profile picture
             </Typography>
           </View>
         </View>
 
-        <View className="px-4 flex flex-col space-y-4">
-          <FadedInput
-            // TODO: Follow up w/ Fraser on input divergence here
-            style={{ height: 36 }}
-            icon={<SearchIcon width={16} height={16} />}
-            placeholder="Search collection"
-          />
+        <View className="flex flex-col flex-grow space-y-4">
+          <View className="px-4">
+            <FadedInput
+              // TODO: Follow up w/ Fraser on input divergence here
+              style={{ height: 36 }}
+              icon={<SearchIcon width={16} height={16} />}
+              placeholder="Search collection"
+            />
+          </View>
 
-          <View className="flex flex-row items-center justify-between">
-            <View />
+          <View className="px-4 flex flex-row items-center justify-between">
+            <Select
+              onChange={setFilter}
+              selectedId={filter}
+              options={[
+                { id: 'Collected', label: 'Collected' },
+                { id: 'Created', label: 'Created' },
+              ]}
+            />
 
             <View className="flex flex-row space-x-1">
               <IconContainer
@@ -75,6 +90,12 @@ export function ProfilePicturePickerScreen() {
 
               <ProfilePicturePickerFilterBottomSheet ref={filterBottomSheetRef} />
             </View>
+          </View>
+
+          <View className="flex-grow flex-1 w-full">
+            <Suspense fallback={null}>
+              <ProfilePicturePickerGrid queryRef={query} />
+            </Suspense>
           </View>
         </View>
       </View>
