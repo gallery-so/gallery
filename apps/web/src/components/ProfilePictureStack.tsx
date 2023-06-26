@@ -72,13 +72,6 @@ const StyledProfilePictureContainer = styled.div`
   position: relative;
   z-index: 1;
 `;
-
-const StyledProfilePictureStackContainer = styled(HStack)`
-  ${StyledProfilePictureContainer}:nth-child(1) {
-    margin-left: 0;
-  }
-`;
-
 const StyledRemainings = styled(VStack)`
   background-color: ${colors.porcelain};
   padding: 2px 8px;
@@ -93,4 +86,19 @@ const StyledRemainings = styled(VStack)`
 
 const StyledRemainingsText = styled(TitleXS)`
   font-weight: 500;
+`;
+
+const StyledProfilePictureStackContainer = styled(HStack)`
+  ${StyledProfilePictureContainer}:nth-child(1) {
+    margin-left: 0;
+  }
+
+  &:hover {
+    ${StyledRemainings} {
+      background-color: ${colors.metal};
+      ${StyledRemainingsText} {
+        color: ${colors.black[800]};
+      }
+    }
+  }
 `;
