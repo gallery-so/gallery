@@ -27,6 +27,7 @@ export function AdmireLine({ eventRef, queryRef }: CommentLineProps) {
           }
           edges {
             node {
+              __typename
               admirer {
                 ...ProfilePictureStackFragment
               }
