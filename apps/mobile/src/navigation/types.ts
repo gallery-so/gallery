@@ -23,6 +23,7 @@ export type MainTabStackNavigatorParamList = {
   FeedEvent: { eventId: string };
   Community: { contractAddress: string; chain: string };
   ProfilePicturePicker: undefined;
+  ProfilePicturePickerContract: { contractAddress: string };
 
   // The main five tabs
   Account: undefined;
