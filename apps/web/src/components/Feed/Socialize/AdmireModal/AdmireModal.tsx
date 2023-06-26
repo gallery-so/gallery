@@ -4,6 +4,7 @@ import {
   AutoSizer,
   CellMeasurer,
   CellMeasurerCache,
+  InfiniteLoader,
   List,
   ListRowRenderer,
 } from 'react-virtualized';
@@ -11,13 +12,11 @@ import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';
-import { TitleDiatypeM, TitleXS } from '~/components/core/Text/Text';
+import { TitleDiatypeM } from '~/components/core/Text/Text';
 import { AdmireNote } from '~/components/Feed/Socialize/AdmireModal/AdmireNote';
-import { ListItem } from '~/components/Feed/Socialize/NotesModal/ListItem';
 import { MODAL_PADDING_PX } from '~/contexts/modal/constants';
 import { AdmireModalFragment$key } from '~/generated/AdmireModalFragment.graphql';
 import { AdmireModalQueryFragment$key } from '~/generated/AdmireModalQueryFragment.graphql';
-import colors from '~/shared/theme/colors';
 
 export const NOTES_PER_PAGE = 10;
 
@@ -62,38 +61,17 @@ export function AdmireModal({ eventRef, queryRef, fullscreen }: NotesModalProps)
     queryRef
   );
 
-  const nonNullInteractionsAndSeeMore = useMemo(() => {
+  const nonNullInteractions = useMemo(() => {
     const interactions = [];
 
     for (const interaction of feedEvent.interactions?.edges ?? []) {
-      if (interaction?.node) {
+      if (interaction?.node && interaction.node.__typename === 'Admire') {
         interactions.push(interaction.node);
       }
     }
 
-    interactions.reverse();
-
-    if (hasPrevious) {
-      interactions.unshift({ kind: 'see-more' });
-    }
-
-    return interactions;
-  }, [feedEvent.interactions?.edges, hasPrevious]);
-
-  // sort interactions by admire
-  const sortedInteractions = useMemo(() => {
-    return nonNullInteractionsAndSeeMore.sort((a, b) => {
-      if ('kind' in a || 'kind' in b) {
-        return 0;
-      }
-
-      if (a.__typename === 'Admire') {
-        return -1;
-      }
-
-      return 0;
-    });
-  }, [nonNullInteractionsAndSeeMore]);
+    return interactions.reverse();
+  }, [feedEvent.interactions?.edges]);
 
   const [measurerCache] = useState(() => {
     return new CellMeasurerCache({
@@ -102,13 +80,18 @@ export function AdmireModal({ eventRef, queryRef, fullscreen }: NotesModalProps)
     });
   });
 
-  const handleSeeMore = useCallback(() => {
+  const isRowLoaded = ({ index }: { index: number }) =>
+    !hasPrevious || index < nonNullInteractions.length;
+
+  const rowCount = hasPrevious ? nonNullInteractions.length + 1 : nonNullInteractions.length;
+
+  const handleLoadMore = useCallback(async () => {
     loadPrevious(NOTES_PER_PAGE);
   }, [loadPrevious]);
 
   const rowRenderer = useCallback<ListRowRenderer>(
     ({ index, parent, key, style }) => {
-      const interaction = sortedInteractions[sortedInteractions.length - index - 1];
+      const interaction = nonNullInteractions[nonNullInteractions.length - index - 1];
 
       if (!interaction) {
         return null;
@@ -123,32 +106,17 @@ export function AdmireModal({ eventRef, queryRef, fullscreen }: NotesModalProps)
           parent={parent}
         >
           {({ registerChild }) => {
-            if ('kind' in interaction) {
-              return (
-                // @ts-expect-error Bad types from react-virtualized
-                <div style={style} ref={registerChild}>
-                  <ListItem>
-                    <SeeMoreContainer role="button" onClick={handleSeeMore}>
-                      <TitleXS color={colors.shadow}>See More</TitleXS>
-                    </SeeMoreContainer>
-                  </ListItem>
-                </div>
-              );
-            } else if (interaction.__typename === 'Admire') {
-              return (
-                // @ts-expect-error Bad types from react-virtualized
-                <div style={style} ref={registerChild}>
-                  <AdmireNote admireRef={interaction} queryRef={query} />
-                </div>
-              );
-            } else {
-              return null;
-            }
+            return (
+              // @ts-expect-error Bad types from react-virtualized
+              <div style={style} ref={registerChild}>
+                <AdmireNote admireRef={interaction} queryRef={query} />
+              </div>
+            );
           }}
         </CellMeasurer>
       );
     },
-    [handleSeeMore, measurerCache, query, sortedInteractions]
+    [measurerCache, query, nonNullInteractions]
   );
 
   return (
@@ -160,17 +128,23 @@ export function AdmireModal({ eventRef, queryRef, fullscreen }: NotesModalProps)
         <VStack grow>
           <AutoSizer>
             {({ width, height }) => (
-              <List
-                width={width}
-                height={height}
-                rowRenderer={rowRenderer}
-                rowCount={nonNullInteractionsAndSeeMore.length}
-                rowHeight={measurerCache.rowHeight}
-                containerStyle={{
-                  height: '100%',
-                  maxHeight: '100%',
-                }}
-              />
+              <InfiniteLoader
+                isRowLoaded={isRowLoaded}
+                loadMoreRows={handleLoadMore}
+                rowCount={rowCount}
+              >
+                {({ onRowsRendered, registerChild }) => (
+                  <List
+                    width={width}
+                    height={height}
+                    rowRenderer={rowRenderer}
+                    rowCount={nonNullInteractions.length}
+                    rowHeight={measurerCache.rowHeight}
+                    onRowsRendered={onRowsRendered}
+                    ref={registerChild}
+                  />
+                )}
+              </InfiniteLoader>
             )}
           </AutoSizer>
         </VStack>
@@ -178,10 +152,6 @@ export function AdmireModal({ eventRef, queryRef, fullscreen }: NotesModalProps)
     </ModalContent>
   );
 }
-
-const SeeMoreContainer = styled.div`
-  cursor: pointer;
-`;
 
 const WrappingVStack = styled(VStack)`
   height: 100%;
@@ -198,4 +168,5 @@ const ModalContent = styled.div<{ fullscreen: boolean }>`
   display: flex;
   flex-direction: column;
   padding: ${MODAL_PADDING_PX}px 8px;
+  max-height: 420px;
 `;
