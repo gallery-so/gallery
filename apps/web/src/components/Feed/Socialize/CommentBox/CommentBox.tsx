@@ -275,21 +275,14 @@ export function CommentBox({ eventRef, queryRef, onClose }: Props) {
           onInput={handleInput}
         />
 
-        <ControlsContainer gap={12} align="center">
+        <HStack gap={12} align="center">
           <BaseM color={colors.metal}>{MAX_TEXT_LENGTH - value.length}</BaseM>
           <SendButton enabled={value.length > 0 && !isSubmittingComment} onClick={handleSubmit} />
-        </ControlsContainer>
+        </HStack>
       </InputWrapper>
     </Wrapper>
   );
 }
-
-const ControlsContainer = styled(HStack)`
-  /* position: absolute; */
-  top: 0;
-  bottom: 0;
-  right: 16px;
-`;
 
 const InputWrapper = styled(HStack)`
   width: 100%;

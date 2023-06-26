@@ -69,7 +69,7 @@ export function NotesModal({ eventRef, queryRef, fullscreen }: NotesModalProps) 
     const interactions = [];
 
     for (const interaction of feedEvent.interactions?.edges ?? []) {
-      if (interaction?.node) {
+      if (interaction?.node && interaction.node.__typename === 'Comment') {
         interactions.push(interaction.node);
       }
     }
