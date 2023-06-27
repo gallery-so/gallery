@@ -1,17 +1,15 @@
-import { RouteProp, useRoute } from '@react-navigation/native';
-import { ResizeMode } from 'expo-av';
-import { useMemo, useState } from 'react';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { useCallback, useMemo, useState } from 'react';
 import { View } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 
 import { BackButton } from '~/components/BackButton';
-import { NftPreviewAsset } from '~/components/NftPreview/NftPreviewAsset';
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { Select } from '~/components/Select';
 import { Typography } from '~/components/Typography';
 import { ProfilePicturePickerContractScreenQuery } from '~/generated/ProfilePicturePickerContractScreenQuery.graphql';
-import { MainTabStackNavigatorParamList } from '~/navigation/types';
-import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
+import { MainTabStackNavigatorParamList, MainTabStackNavigatorProp } from '~/navigation/types';
+import { ProfilePicturePickerSingularAsset } from '~/screens/ProfilePicturePickerScreen/ProfilePicturePickerSingularAsset';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 export function ProfilePicturePickerContractScreen() {
@@ -32,7 +30,7 @@ export function ProfilePicturePickerContractScreen() {
                   }
                 }
 
-                ...getVideoOrImageUrlForNftPreviewFragment
+                ...ProfilePicturePickerSingularAssetFragment
               }
             }
           }
@@ -43,32 +41,23 @@ export function ProfilePicturePickerContractScreen() {
   );
 
   const { top } = useSafeAreaPadding();
+  const navigation = useNavigation<MainTabStackNavigatorProp>();
 
   const [sort, setSort] = useState<'Collected' | 'Created'>('Collected');
 
+  const handleProfilePictureChange = useCallback(() => {
+    navigation.pop(2);
+  }, [navigation]);
+
   const tokens = useMemo(() => {
     return removeNullValues(
-      query.viewer?.user?.tokens
-        ?.filter((token) => {
-          return token?.contract?.contractAddress?.address === route.params.contractAddress;
-        })
-        .map((token) => {
-          if (!token) {
-            return null;
-          }
-
-          const url = getVideoOrImageUrlForNftPreview({ tokenRef: token })?.urls.large;
-
-          if (!url) {
-            return null;
-          }
-
-          return { tokenUrl: url, dbid: token.dbid, contractName: token.contract?.name };
-        })
+      query.viewer?.user?.tokens?.filter((token) => {
+        return token?.contract?.contractAddress?.address === route.params.contractAddress;
+      })
     );
   }, [query.viewer?.user?.tokens, route.params.contractAddress]);
 
-  const contractName = tokens[0]?.contractName;
+  const contractName = tokens[0]?.contract?.name;
 
   const rows = useMemo(() => {
     const rows = [];
@@ -118,9 +107,11 @@ export function ProfilePicturePickerContractScreen() {
               <View className="flex flex-row space-x-4">
                 {row.map((token) => {
                   return (
-                    <View key={token.dbid} className="flex-1 aspect-square bg-orange-300">
-                      <NftPreviewAsset tokenUrl={token.tokenUrl} resizeMode={ResizeMode.COVER} />
-                    </View>
+                    <ProfilePicturePickerSingularAsset
+                      onProfilePictureChange={handleProfilePictureChange}
+                      key={token.dbid}
+                      tokenRef={token}
+                    />
                   );
                 })}
 

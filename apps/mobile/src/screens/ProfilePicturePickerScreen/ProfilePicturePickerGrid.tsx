@@ -16,6 +16,7 @@ import {
   ProfilePicturePickerGridTokensFragment$key,
 } from '~/generated/ProfilePicturePickerGridTokensFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { ProfilePicturePickerSingularAsset } from '~/screens/ProfilePicturePickerScreen/ProfilePicturePickerSingularAsset';
 import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
@@ -212,27 +213,30 @@ function TokenGroup({ tokenRefs, contractAddress, style }: TokenGroupProps) {
       fragment ProfilePicturePickerGridOneOrManyFragment on Token @relay(plural: true) {
         ...ProfilePicturePickerGridTokenGridFragment
         ...getVideoOrImageUrlForNftPreviewFragment
+        ...ProfilePicturePickerSingularAssetFragment
       }
     `,
     tokenRefs
   );
 
+  const navigation = useNavigation<MainTabStackNavigatorProp>();
+
+  const handleProfilePictureChange = useCallback(() => {
+    navigation.pop();
+  }, []);
+
   const [firstToken] = tokens;
-
   if (!firstToken) {
-    return null;
-  }
-
-  const tokenUrl = getVideoOrImageUrlForNftPreview({ tokenRef: firstToken })?.urls.medium;
-
-  if (!tokenUrl) {
     return null;
   }
 
   return (
     <View style={style} className="flex-1 aspect-square bg-[#EEEEEE]">
       {tokens.length === 1 ? (
-        <NftPreviewAsset tokenUrl={tokenUrl} resizeMode={ResizeMode.COVER} />
+        <ProfilePicturePickerSingularAsset
+          onProfilePictureChange={handleProfilePictureChange}
+          tokenRef={firstToken}
+        />
       ) : (
         <TokenGrid contractAddress={contractAddress} tokenRefs={tokens} />
       )}
