@@ -424,8 +424,8 @@ enum EmailVerificationStatus {
 }
 
 type EnsProfileImage {
-  chainAddress: ChainAddress!
-  profileImage: ProfileImage
+  wallet: Wallet
+  profileImage: HTTPSProfileImage
 }
 
 input EoaAuth {
@@ -1039,7 +1039,7 @@ type PreviewURLSet {
   blurhash: String
 }
 
-union ProfileImage = TokenProfileImage | HTTPSProfileImage
+union ProfileImage = TokenProfileImage | EnsProfileImage
 
 scalar PubKey
 
