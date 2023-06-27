@@ -1,9 +1,20 @@
 import { useCallback } from 'react';
 import { graphql } from 'react-relay';
 
-import { useUpdateProfileImageMutation } from '~/generated/useUpdateProfileImageMutation.graphql';
+import {
+  ChainAddressInput,
+  useUpdateProfileImageMutation,
+} from '~/generated/useUpdateProfileImageMutation.graphql';
 import { useUpdateProfileImageRemoveMutation } from '~/generated/useUpdateProfileImageRemoveMutation.graphql';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
+
+type setProfileImageProps =
+  | {
+      tokenId: string;
+    }
+  | {
+      walletAddress: ChainAddressInput;
+    };
 
 export default function useUpdateProfileImage() {
   const [setProfileImageMutation] = usePromisifiedMutation<useUpdateProfileImageMutation>(graphql`
@@ -19,19 +30,24 @@ export default function useUpdateProfileImage() {
                     ...getVideoOrImageUrlForNftPreviewFragment
                   }
                 }
+                ... on EnsProfileImage {
+                  __typename
+                  profileImage {
+                    __typename
+                    previewURLs {
+                      medium
+                    }
+                  }
+                  wallet {
+                    __typename
+                  }
+                }
               }
             }
           }
-        }
-        ... on SetProfileImagePayloadOrError {
-          __typename
-        }
-        ... on ErrInvalidInput {
-          __typename
-        }
-        ... on ErrNotAuthorized {
-          __typename
-          message
+          ... on SetProfileImagePayloadOrError {
+            __typename
+          }
         }
       }
     }
@@ -66,12 +82,27 @@ export default function useUpdateProfileImage() {
     `);
 
   const setProfileImage = useCallback(
-    (tokenId: string) => {
+    (props: setProfileImageProps) => {
+      let input = {};
+
+      if ('tokenId' in props) {
+        input = {
+          tokenId: props.tokenId,
+        };
+      }
+
+      if ('walletAddress' in props) {
+        input = {
+          walletAddress: {
+            address: props.walletAddress.address,
+            chain: props.walletAddress.chain,
+          },
+        };
+      }
+
       return setProfileImageMutation({
         variables: {
-          input: {
-            tokenId,
-          },
+          input,
         },
       });
     },

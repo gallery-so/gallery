@@ -1,7 +1,9 @@
+import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { ProfilePictureDropdownFragment$key } from '~/generated/ProfilePictureDropdownFragment.graphql';
+import { ProfilePictureDropdownQueryFragment$key } from '~/generated/ProfilePictureDropdownQueryFragment.graphql';
 import { AllGalleriesIcon } from '~/icons/AllGalleriesIcon';
 import { TrashIconNew } from '~/icons/TrashIconNew';
 import colors from '~/shared/theme/colors';
@@ -18,9 +20,10 @@ type Props = {
   open: boolean;
   onClose: () => void;
   tokensRef: ProfilePictureDropdownFragment$key;
+  queryRef: ProfilePictureDropdownQueryFragment$key;
 };
 
-export function ProfilePictureDropdown({ open, onClose, tokensRef }: Props) {
+export function ProfilePictureDropdown({ open, onClose, tokensRef, queryRef }: Props) {
   const tokens = useFragment(
     graphql`
       fragment ProfilePictureDropdownFragment on Token @relay(plural: true) {
@@ -30,13 +33,54 @@ export function ProfilePictureDropdown({ open, onClose, tokensRef }: Props) {
     tokensRef
   );
 
+  const query = useFragment(
+    graphql`
+      fragment ProfilePictureDropdownQueryFragment on Query {
+        viewer {
+          ... on Viewer {
+            user {
+              __typename
+              primaryWallet {
+                chainAddress {
+                  address
+                  chain
+                }
+              }
+            }
+          }
+        }
+      }
+    `,
+    queryRef
+  );
+
   const showNftSelector = useNftSelector(tokens);
-  const { removeProfileImage } = useUpdateProfileImage();
+  const { setProfileImage, removeProfileImage } = useUpdateProfileImage();
+
+  const user = query.viewer?.user;
+
+  if (!user) {
+    throw new Error('Try to update profile image without user');
+  }
+
+  const { chainAddress } = user.primaryWallet || {};
+
+  const handleSetEnsProfilePicture = useCallback(() => {
+    const { address, chain } = chainAddress || {};
+
+    if (!address || !chain || chain !== 'Ethereum') return;
+    setProfileImage({
+      walletAddress: {
+        address,
+        chain,
+      },
+    });
+  }, [chainAddress, setProfileImage]);
 
   return (
     <Dropdown position="left" active={open} onClose={onClose}>
       <DropdownSection>
-        <StyledDropdownItem onClick={() => {}}>
+        <StyledDropdownItem onClick={handleSetEnsProfilePicture}>
           <StyledDropdownItemContainer gap={8}>
             <StyledEnsAvatar />
             <BaseS>Use ENS Avatar</BaseS>
@@ -45,7 +89,7 @@ export function ProfilePictureDropdown({ open, onClose, tokensRef }: Props) {
         <StyledDropdownItem onClick={showNftSelector}>
           <StyledDropdownItemContainer gap={8}>
             <AllGalleriesIcon />
-            <BaseS>Choose an NFT</BaseS>
+            <BaseS>Choose from collection</BaseS>
           </StyledDropdownItemContainer>
         </StyledDropdownItem>
         <StyledDropdownItem onClick={removeProfileImage}>

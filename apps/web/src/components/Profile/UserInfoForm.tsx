@@ -67,6 +67,7 @@ function UserInfoForm({
     graphql`
       fragment UserInfoFormQueryFragment on Query {
         ...isFeatureEnabledFragment
+        ...ProfilePictureDropdownQueryFragment
       }
     `,
     queryRef
@@ -154,6 +155,7 @@ function UserInfoForm({
               open={showPfpDropdown}
               onClose={handleClosePfpDropdown}
               tokensRef={tokens}
+              queryRef={query}
             />
           </StyledProfilePictureContainer>
         )}
