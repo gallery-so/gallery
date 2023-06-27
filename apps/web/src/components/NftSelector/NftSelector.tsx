@@ -144,13 +144,10 @@ export function NftSelector({ queryRef }: Props) {
               size="sm"
               icon={<ChevronLeftIcon />}
             />
-            <StyledTitleText>
-              Select{' '}
-              {selectedContract.title === 'Undefined contract' ? 'an NFT' : selectedContract.title}
-            </StyledTitleText>
+            <StyledTitleText>Select profile picture</StyledTitleText>
           </HStack>
         ) : (
-          <StyledTitleText>Select an NFT</StyledTitleText>
+          <StyledTitleText>Select profile picture</StyledTitleText>
         )}
       </StyledTitle>
 
@@ -158,26 +155,31 @@ export function NftSelector({ queryRef }: Props) {
         {!selectedContract && (
           <NftSelectorSearchBar keyword={searchKeyword} onChange={setSearchKeyword} />
         )}
-        <HStack gap={8} align="center">
-          {!selectedContract && (
+        {selectedContract ? (
+          <StyledHeaderContainer justify="space-between" align="center">
+            <StyledTitleText>{selectedContract?.title}</StyledTitleText>
+
+            <NftSelectorFilterSort
+              selectedView={selectedSortView}
+              onSelectedViewChange={setSelectedSortView}
+            />
+          </StyledHeaderContainer>
+        ) : (
+          <HStack gap={8} align="center">
             <NftSelectorViewSelector
               selectedView={selectedView}
               onSelectedViewChange={setSelectedView}
             />
-          )}
-
-          <NftSelectorFilterSort
-            selectedView={selectedSortView}
-            onSelectedViewChange={setSelectedSortView}
-          />
-
-          {!selectedContract && (
+            <NftSelectorFilterSort
+              selectedView={selectedSortView}
+              onSelectedViewChange={setSelectedSortView}
+            />
             <NftSelectorFilterNetwork
               selectedView={selectedNetworkView}
               onSelectedViewChange={setSelectedNetworkView}
             />
-          )}
-        </HStack>
+          </HStack>
+        )}
       </StyledActionContainer>
 
       <NftSelectorView
@@ -203,4 +205,8 @@ const StyledTitleText = styled(BaseM)`
 `;
 const StyledActionContainer = styled(HStack)`
   padding-bottom: 8px;
+`;
+
+const StyledHeaderContainer = styled(HStack)`
+  width: 100%;
 `;

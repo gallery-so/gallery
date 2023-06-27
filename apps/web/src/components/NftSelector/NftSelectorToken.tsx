@@ -63,7 +63,7 @@ export function NftSelectorToken({ tokenRef, isInGroup = false }: Props) {
     if (isInGroup) {
       return;
     }
-    setProfileImage(token.dbid);
+    setProfileImage({ tokenId: token.dbid });
     hideModal();
   }, [hideModal, isInGroup, token.dbid, setProfileImage]);
 
