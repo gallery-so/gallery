@@ -159,7 +159,7 @@ const WrappingVStack = styled(VStack)`
 
 const StyledHeader = styled.div`
   padding-bottom: ${MODAL_PADDING_PX}px;
-  padding-left: 12px;
+  padding-left: ${MODAL_PADDING_PX}px;
 `;
 
 const ModalContent = styled.div<{ fullscreen: boolean }>`
@@ -167,6 +167,6 @@ const ModalContent = styled.div<{ fullscreen: boolean }>`
   width: ${({ fullscreen }) => (fullscreen ? '100%' : '540px')};
   display: flex;
   flex-direction: column;
-  padding: ${MODAL_PADDING_PX}px 8px;
+  padding: ${MODAL_PADDING_PX}px 0px 0px;
   max-height: 420px;
 `;
