@@ -12,6 +12,7 @@ import { ProfilePicturePickerContractScreen } from '~/screens/ProfilePicturePick
 import { ProfilePicturePickerScreen } from '~/screens/ProfilePicturePickerScreen/ProfilePicturePickerScreen';
 import { ProfileScreen } from '~/screens/ProfileScreen/ProfileScreen';
 import { SearchScreen } from '~/screens/SearchScreen';
+import { SettingsProfileScreen } from '~/screens/SettingsProfileScreen';
 import { SettingsScreen } from '~/screens/SettingsScreen/SettingsScreen';
 
 const Stack = createNativeStackNavigator<MainTabStackNavigatorParamList>();
@@ -35,6 +36,7 @@ export function MainTabStackNavigator({ initialRouteName, initialProfileParams }
         name="ProfilePicturePickerContract"
         component={ProfilePicturePickerContractScreen}
       />
+      <Stack.Screen name="SettingsProfile" component={SettingsProfileScreen} />
 
       {/* The 5 main tabs excluding "Account" since that just uses Profile */}
       <Stack.Screen name="Home" component={HomeScreen} />

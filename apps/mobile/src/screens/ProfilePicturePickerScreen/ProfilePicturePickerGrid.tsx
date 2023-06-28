@@ -223,7 +223,7 @@ function TokenGroup({ tokenRefs, contractAddress, style }: TokenGroupProps) {
 
   const handleProfilePictureChange = useCallback(() => {
     navigation.pop();
-  }, []);
+  }, [navigation]);
 
   const [firstToken] = tokens;
   if (!firstToken) {

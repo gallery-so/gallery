@@ -1,6 +1,6 @@
 import { ResizeMode } from 'expo-av';
 import { useCallback, useState } from 'react';
-import { ActivityIndicator, View } from 'react-native';
+import { ActivityIndicator, View, ViewProps } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
@@ -15,6 +15,7 @@ import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 import colors from '~/shared/theme/colors';
 
 type ProfilePicturePickerSingularAssetProps = {
+  style?: ViewProps['style'];
   onProfilePictureChange: () => void;
   tokenRef: ProfilePicturePickerSingularAssetFragment$key;
 };
@@ -54,7 +55,7 @@ export function ProfilePicturePickerSingularAsset({
   const reportError = useReportError();
   const tokenUrl = getVideoOrImageUrlForNftPreview({ tokenRef: token })?.urls.large;
 
-  const [error, setError] = useState<string | null>(null);
+  const [, setError] = useState<string | null>(null);
 
   const handlePress = useCallback(() => {
     setError(null);
@@ -66,7 +67,7 @@ export function ProfilePicturePickerSingularAsset({
         },
       },
     })
-      .then((response) => {
+      .then(() => {
         onProfilePictureChange();
       })
       .catch((error) => {

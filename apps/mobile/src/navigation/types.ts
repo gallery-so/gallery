@@ -24,6 +24,7 @@ export type MainTabStackNavigatorParamList = {
   Community: { contractAddress: string; chain: string };
   ProfilePicturePicker: undefined;
   ProfilePicturePickerContract: { contractAddress: string };
+  SettingsProfile: undefined;
 
   // The main five tabs
   Account: undefined;
