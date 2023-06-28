@@ -185,11 +185,13 @@ union CollectionTokenByIdOrError = CollectionToken | ErrCollectionNotFound | Err
 
 type CollectionTokenSettings {
   renderLive: Boolean
+  highDefinition: Boolean
 }
 
 input CollectionTokenSettingsInput {
   tokenId: DBID!
   renderLive: Boolean!
+  highDefinition: Boolean!
 }
 
 type CollectionUpdatedFeedEventData implements FeedEventData {
@@ -413,6 +415,11 @@ enum EmailVerificationStatus {
   Verified
   Failed
   Admin
+}
+
+type EnsProfileImage {
+  wallet: Wallet
+  profileImage: HTTPSProfileImage
 }
 
 input EoaAuth {
@@ -655,6 +662,7 @@ type GalleryUser implements Node {
   dbid: DBID!
   username: String
   profileImage: ProfileImage
+  potentialEnsProfileImage: EnsProfileImage
   bio: String
   traits: String
   universal: Boolean
@@ -737,6 +745,10 @@ type HtmlMedia implements Media {
   contentRenderURL: String
   dimensions: MediaDimensions
   fallbackMedia: FallbackMedia
+}
+
+type HTTPSProfileImage {
+  previewURLs: PreviewURLSet
 }
 
 type ImageMedia implements Media {
@@ -919,6 +931,7 @@ type Mutation {
   addWalletToUserUnchecked(input: AdminAddWalletInput!): AdminAddWalletPayloadOrError
   revokeRolesFromUser(username: String!, roles: [Role]): RevokeRolesFromUserPayloadOrError
   syncTokensForUsername(username: String!, chains: [Chain!]!): SyncTokensForUsernamePayloadOrError
+  syncCreatedTokensForUsername(username: String!, chains: [Chain!]!): SyncCreatedTokensForUsernamePayloadOrError
   banUserFromFeed(username: String!, action: String!): BanUserFromFeedPayloadOrError
   unbanUserFromFeed(username: String!): UnbanUserFromFeedPayloadOrError
   mintPremiumCardToWallet(input: MintPremiumCardToWalletInput!): MintPremiumCardToWalletPayloadOrError
@@ -1021,7 +1034,7 @@ type PreviewURLSet {
   blurhash: String
 }
 
-union ProfileImage = TokenProfileImage
+union ProfileImage = TokenProfileImage | EnsProfileImage
 
 scalar PubKey
 
@@ -1200,6 +1213,7 @@ union SetCommunityOverrideCreatorPayloadOrError = SetCommunityOverrideCreatorPay
 
 input SetProfileImageInput {
   tokenId: DBID
+  walletAddress: ChainAddressInput
 }
 
 type SetProfileImagePayload {
@@ -1324,6 +1338,12 @@ type Subscription {
   newNotification: Notification
   notificationUpdated: Notification
 }
+
+type SyncCreatedTokensForUsernamePayload {
+  message: String!
+}
+
+union SyncCreatedTokensForUsernamePayloadOrError = SyncCreatedTokensForUsernamePayload | ErrNotAuthorized | ErrSyncFailed
 
 input SyncCreatedTokensInput {
   includeChains: [Chain!]
@@ -1752,6 +1772,7 @@ enum UserExperienceType {
   UpsellGallerySelects1
   MobileUpsell1
   MobileBetaUpsell
+  UpsellMintMemento5
 }
 
 type UserFollowedUsersFeedEventData implements FeedEventData {
