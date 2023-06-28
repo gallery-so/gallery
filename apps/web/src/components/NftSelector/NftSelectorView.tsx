@@ -12,16 +12,23 @@ import {
   NftSelectorCollectionGroup,
 } from './groupNftSelectorCollectionsByAddress';
 import { NftSelectorContractType } from './NftSelector';
+import { NftSelectorNetworkView } from './NftSelectorFilter/NftSelectorFilterNetwork';
 import { NftSelectorTokenPreview } from './NftSelectorTokenPreview';
 
 type Props = {
   selectedContractAddress: string | null;
+  selectedNetworkView: NftSelectorNetworkView;
   onSelectContract: (collection: NftSelectorContractType) => void;
   tokenRefs: NftSelectorViewFragment$key;
 };
 const COLUMN_COUNT = 4;
 
-export function NftSelectorView({ selectedContractAddress, onSelectContract, tokenRefs }: Props) {
+export function NftSelectorView({
+  selectedContractAddress,
+  onSelectContract,
+  tokenRefs,
+  selectedNetworkView,
+}: Props) {
   const tokens = useFragment(
     graphql`
       fragment NftSelectorViewFragment on Token @relay(plural: true) {
@@ -50,7 +57,23 @@ export function NftSelectorView({ selectedContractAddress, onSelectContract, tok
 
     let tokens = [...groupedTokens];
 
-    if (selectedContractAddress) {
+    if (selectedNetworkView === 'POAP') {
+      const groupOfPoapTokens = groupedTokens[0];
+
+      if (groupOfPoapTokens) {
+        const selectedCollectionTokens: NftSelectorCollectionGroup[] = [];
+
+        groupOfPoapTokens.tokens.forEach((token) => {
+          selectedCollectionTokens.push({
+            title: groupOfPoapTokens.title,
+            address: groupOfPoapTokens.address,
+            tokens: [token],
+          });
+        });
+
+        tokens = selectedCollectionTokens;
+      }
+    } else if (selectedContractAddress) {
       const groupOfTokens = groupedTokens.find(
         (group) => group.address === selectedContractAddress
       );
@@ -77,7 +100,7 @@ export function NftSelectorView({ selectedContractAddress, onSelectContract, tok
     }
 
     return rows;
-  }, [groupedTokens, selectedContractAddress]);
+  }, [groupedTokens, selectedContractAddress, selectedNetworkView]);
 
   const rowRenderer = useCallback(
     ({ key, style, index }: ListRowProps) => {
