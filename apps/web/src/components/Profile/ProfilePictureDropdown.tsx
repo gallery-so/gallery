@@ -46,6 +46,17 @@ export function ProfilePictureDropdown({ open, onClose, tokensRef, queryRef }: P
                   chain
                 }
               }
+
+              potentialEnsProfileImage {
+                __typename
+                ... on EnsProfileImage {
+                  profileImage {
+                    previewURLs {
+                      small
+                    }
+                  }
+                }
+              }
             }
           }
         }
@@ -63,6 +74,8 @@ export function ProfilePictureDropdown({ open, onClose, tokensRef, queryRef }: P
   if (!user) {
     throw new Error('Try to update profile image without user');
   }
+
+  const ensProfileImage = user.potentialEnsProfileImage?.profileImage?.previewURLs?.small;
 
   const { chainAddress } = user.primaryWallet || {};
 
@@ -83,7 +96,11 @@ export function ProfilePictureDropdown({ open, onClose, tokensRef, queryRef }: P
       <DropdownSection>
         <StyledDropdownItem onClick={handleSetEnsProfilePicture}>
           <StyledDropdownItemContainer gap={8}>
-            <StyledEnsAvatar />
+            {ensProfileImage ? (
+              <StyledEnsImage src={ensProfileImage} />
+            ) : (
+              <StyledDefaultEnsAvatar />
+            )}
             <BaseS>Use ENS Avatar</BaseS>
           </StyledDropdownItemContainer>
         </StyledDropdownItem>
@@ -104,11 +121,17 @@ export function ProfilePictureDropdown({ open, onClose, tokensRef, queryRef }: P
   );
 }
 
-const StyledEnsAvatar = styled.div`
+const StyledDefaultEnsAvatar = styled.div`
   height: 16px;
   width: 16px;
   border-radius: 50%;
   background-color: ${colors.metal};
+`;
+
+const StyledEnsImage = styled.img`
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
 `;
 
 const StyledDropdownItemContainer = styled(HStack)``;
