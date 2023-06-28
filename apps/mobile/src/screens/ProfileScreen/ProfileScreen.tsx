@@ -76,9 +76,13 @@ function ProfileScreenInner() {
 }
 
 export function ProfileScreen() {
+  const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'Profile'>>();
+
   return (
     <View className="flex-1 bg-white dark:bg-black-900">
-      <Suspense fallback={<ProfileViewFallback shouldShowBackButton />}>
+      <Suspense
+        fallback={<ProfileViewFallback shouldShowBackButton={!route.params.hideBackButton} />}
+      >
         <ProfileScreenInner />
       </Suspense>
     </View>
