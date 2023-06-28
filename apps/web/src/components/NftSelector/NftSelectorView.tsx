@@ -47,7 +47,7 @@ export function NftSelectorView({
 
   const groupedTokens = groupNftSelectorCollectionsByAddress({
     ignoreSpam: false,
-    tokensRef: tokens,
+    tokenRefs: tokens,
   });
 
   const virtualizedListRef = useRef<List | null>(null);
@@ -61,7 +61,7 @@ export function NftSelectorView({
 
   const { hideModal } = useModalActions();
 
-  const onNewWallectConnected = useCallback(async () => {
+  const onNewWalletConnected = useCallback(async () => {
     handleRefresh();
     hideModal();
   }, [hideModal, handleRefresh]);
@@ -69,10 +69,10 @@ export function NftSelectorView({
   const showAddWalletModal = useAddWalletModal();
   const handleManageWalletsClick = useCallback(() => {
     showAddWalletModal({
-      onEthAddWalletSuccess: onNewWallectConnected,
-      onTezosAddWalletSuccess: onNewWallectConnected,
+      onEthAddWalletSuccess: onNewWalletConnected,
+      onTezosAddWalletSuccess: onNewWalletConnected,
     });
-  }, [onNewWallectConnected, showAddWalletModal]);
+  }, [onNewWalletConnected, showAddWalletModal]);
 
   const rows = useMemo(() => {
     const rows = [];
