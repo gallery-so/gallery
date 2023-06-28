@@ -25,39 +25,15 @@ export function NftSelectorView({ selectedContractAddress, onSelectContract, tok
   const tokens = useFragment(
     graphql`
       fragment NftSelectorViewFragment on Token @relay(plural: true) {
-        # Escape hatch for data processing in util files
-        # eslint-disable-next-line relay/unused-fields
-        id
-        # Escape hatch for data processing in util files
-        # eslint-disable-next-line relay/unused-fields
-        chain
-        # Escape hatch for data processing in util files
-        # eslint-disable-next-line relay/unused-fields
-        isSpamByUser
-        # Escape hatch for data processing in util files
-        # eslint-disable-next-line relay/unused-fields
-        isSpamByProvider
-        # Escape hatch for data processing in util files
-        # eslint-disable-next-line relay/unused-fields
-        contract {
-          # Escape hatch for data processing in util files
-          # eslint-disable-next-line relay/unused-fields
-          name
-
-          contractAddress {
-            address
-          }
-        }
-        # eslint-disable-next-line relay/must-colocate-fragment-spreads
-        ...NftSelectorTokenFragment
+        ...groupNftSelectorCollectionsByAddressTokenFragment
       }
     `,
     tokenRefs
   );
 
   const groupedTokens = groupNftSelectorCollectionsByAddress({
-    tokens,
     ignoreSpam: false,
+    tokensRef: tokens,
   });
 
   const virtualizedListRef = useRef<List | null>(null);

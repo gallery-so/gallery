@@ -1,22 +1,46 @@
+import { graphql, readInlineData } from 'react-relay';
+
+import { groupNftSelectorCollectionsByAddressTokenFragment$data } from '~/generated/groupNftSelectorCollectionsByAddressTokenFragment.graphql';
 import { NftSelectorViewFragment$data } from '~/generated/NftSelectorViewFragment.graphql';
 
 export type NftSelectorCollectionGroup = {
   title: string;
   address: string;
-  //      Remove the readonly
-  tokens: Array<NftSelectorViewFragment$data[number]>;
+  tokens: Array<groupNftSelectorCollectionsByAddressTokenFragment$data>;
 };
 
 type groupCollectionsByAddressArgs = {
-  //      Remove the readonly
-  tokens: NftSelectorViewFragment$data;
   ignoreSpam?: boolean;
+  tokensRef: NftSelectorViewFragment$data;
 };
 
 export function groupNftSelectorCollectionsByAddress({
-  tokens,
   ignoreSpam = false,
+  tokensRef,
 }: groupCollectionsByAddressArgs): NftSelectorCollectionGroup[] {
+  const tokens = tokensRef.map(
+    (tokenRef) =>
+      readInlineData(
+        graphql`
+          fragment groupNftSelectorCollectionsByAddressTokenFragment on Token @inline {
+            chain
+            isSpamByProvider
+            isSpamByUser
+            contract {
+              chain
+              name
+              contractAddress {
+                address
+              }
+            }
+            # eslint-disable-next-line relay/must-colocate-fragment-spreads
+            ...NftSelectorTokenFragment
+          }
+        `,
+        tokenRef
+      ) as groupNftSelectorCollectionsByAddressTokenFragment$data
+  );
+
   const map: Record<string, NftSelectorCollectionGroup> = {};
   for (const token of tokens) {
     if (ignoreSpam) {
@@ -26,8 +50,6 @@ export function groupNftSelectorCollectionsByAddress({
     }
 
     if (token.contract?.contractAddress?.address) {
-      // Since POAP tokens don't have unique contracts, we give them
-      // all a title of "POAP" and an address of "POAP"
       const title = token.chain === 'POAP' ? 'POAP' : token.contract.name || '<untitled>';
       const address = token.chain === 'POAP' ? 'POAP' : token.contract.contractAddress.address;
 

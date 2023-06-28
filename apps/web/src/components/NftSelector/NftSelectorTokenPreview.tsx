@@ -50,8 +50,8 @@ export function NftSelectorTokenPreview({ group, onSelectGroup = noop }: Props) 
 
   return (
     <StyledNftSelectorTokensContainer isGrouped onClick={handleSelectGroup}>
-      {showTokens.map((token) => (
-        <NftSelectorToken key={token.id} tokenRef={token} isInGroup />
+      {showTokens.map((token, index) => (
+        <NftSelectorToken key={index} tokenRef={token} isInGroup />
       ))}
       {remainingTokens > 0 && (
         <StyledRemainingTokens align="center" justify="center">
