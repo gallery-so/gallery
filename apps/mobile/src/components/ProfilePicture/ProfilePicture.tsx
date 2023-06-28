@@ -22,7 +22,7 @@ export function ProfilePicture({ userRef, ...rest }: ProfilePictureProps) {
               media {
                 ... on Media {
                   previewURLs {
-                    thumbnail
+                    medium
                   }
                 }
               }
@@ -34,7 +34,7 @@ export function ProfilePicture({ userRef, ...rest }: ProfilePictureProps) {
     userRef
   );
 
-  const thumbnailUrl = user?.profileImage?.token?.media?.previewURLs?.thumbnail;
+  const imageUrl = user?.profileImage?.token?.media?.previewURLs?.medium;
   const letter = user?.username?.[0]?.toUpperCase();
 
   const fallbackProfilePicture = (
@@ -46,13 +46,13 @@ export function ProfilePicture({ userRef, ...rest }: ProfilePictureProps) {
     />
   );
 
-  if (thumbnailUrl) {
+  if (imageUrl) {
     return (
       <ReportingErrorBoundary fallback={fallbackProfilePicture}>
         <RawProfilePicture
           eventElementId="ProfilePicture"
           eventName="ProfilePicture pressed"
-          imageUrl={thumbnailUrl}
+          imageUrl={imageUrl}
           {...rest}
         />
       </ReportingErrorBoundary>
