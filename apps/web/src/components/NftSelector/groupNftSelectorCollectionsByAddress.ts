@@ -25,6 +25,7 @@ export function groupNftSelectorCollectionsByAddress({
     readInlineData<groupNftSelectorCollectionsByAddressTokenFragment$key>(
       graphql`
         fragment groupNftSelectorCollectionsByAddressTokenFragment on Token @inline {
+          dbid
           chain
           isSpamByProvider
           isSpamByUser
