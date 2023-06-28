@@ -668,6 +668,7 @@ type GalleryUser implements Node {
   dbid: DBID!
   username: String
   profileImage: ProfileImage
+  potentialEnsProfileImage: EnsProfileImage
   bio: String
   traits: String
   universal: Boolean
@@ -1106,11 +1107,6 @@ type Query {
   socialConnections(socialAccountType: SocialAccountType!, excludeAlreadyFollowing: Boolean, before: String, after: String, first: Int, last: Int): SocialConnectionsConnection
   socialQueries: SocialQueriesOrError
   topCollectionsForCommunity(input: topCollectionsForCommunityInput!, before: String, after: String, first: Int, last: Int): CollectionsConnection
-
-  """
-  Returns a profile image from one of the user's wallets if the wallet is registered with ENS and has an avatar record set
-  """
-  ensProfileImageByUserId(userId: DBID!): EnsProfileImage
 }
 
 input RedeemMerchInput {
