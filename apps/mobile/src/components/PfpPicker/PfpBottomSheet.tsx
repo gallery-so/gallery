@@ -1,6 +1,6 @@
 import { useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
 import { useNavigation } from '@react-navigation/native';
-import { ForwardedRef, forwardRef, ReactNode, useCallback } from 'react';
+import { ForwardedRef, forwardRef, ReactNode, useCallback, useRef } from 'react';
 import { Text, View, ViewProps } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -8,7 +8,13 @@ import { CollectionGridIcon } from 'src/icons/CollectionGridIcon';
 import { TrashIcon } from 'src/icons/TrashIcon';
 
 import { PfpBottomSheetFragment$key } from '~/generated/PfpBottomSheetFragment.graphql';
+import {
+  PfpBottomSheetMutation,
+  PfpBottomSheetMutation$rawResponse,
+} from '~/generated/PfpBottomSheetMutation.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { useReportError } from '~/shared/contexts/ErrorReportingContext';
+import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 
 import {
   GalleryBottomSheetModal,
@@ -29,38 +35,107 @@ function PfpBottomSheet(
   { queryRef }: PfpBottomSheetProps,
   ref: ForwardedRef<GalleryBottomSheetModalType>
 ) {
-  /* eslint-disable @typescript-eslint/no-unused-vars */
-  // @ts-expect-error Will need this in the future for when we pull the ENS picture from the user
   const query = useFragment(
     graphql`
       fragment PfpBottomSheetFragment on Query {
         viewer {
           ... on Viewer {
-            __typename
+            id
+            user {
+              id
+              profileImage {
+                __typename
+              }
+
+              potentialEnsProfileImage {
+                profileImage {
+                  previewURLs {
+                    medium
+                  }
+                }
+              }
+            }
           }
         }
       }
     `,
     queryRef
   );
-  /* eslint-enable @typescript-eslint/no-unused-vars */
 
+  const [removeProfileImage, isRemovingProfileImage] =
+    usePromisifiedMutation<PfpBottomSheetMutation>(graphql`
+      mutation PfpBottomSheetMutation @raw_response_type {
+        removeProfileImage {
+          ... on RemoveProfileImagePayload {
+            viewer {
+              user {
+                profileImage {
+                  __typename
+                }
+              }
+            }
+          }
+        }
+      }
+    `);
+
+  const reportError = useReportError();
   const { bottom } = useSafeAreaPadding();
+  const navigation = useNavigation<MainTabStackNavigatorProp>();
+
+  const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
+
   const { animatedHandleHeight, animatedSnapPoints, animatedContentHeight, handleContentLayout } =
     useBottomSheetDynamicSnapPoints(SNAP_POINTS);
 
-  const navigation = useNavigation<MainTabStackNavigatorProp>();
   const handleEnsPress = useCallback(() => {}, []);
+
   const handleChooseFromCollectionPress = useCallback(() => {
     navigation.navigate('ProfilePicturePicker');
   }, [navigation]);
-  const handleRemovePress = useCallback(() => {}, []);
 
-  const hasProfilePictureSet = false;
+  const handleRemovePress = useCallback(() => {
+    let optimisticResponse: PfpBottomSheetMutation$rawResponse | undefined = undefined;
+    if (query.viewer?.id && query.viewer?.user?.id) {
+      optimisticResponse = {
+        removeProfileImage: {
+          __typename: 'RemoveProfileImagePayload',
+          viewer: {
+            id: query.viewer?.id,
+            user: {
+              id: query.viewer?.user?.id,
+              profileImage: null,
+            },
+          },
+        },
+      };
+    }
+
+    removeProfileImage({
+      variables: {},
+      optimisticResponse,
+    })
+      .catch(reportError)
+      .then(() => {
+        bottomSheetRef.current?.close();
+      });
+  }, [query.viewer?.id, query.viewer?.user?.id, removeProfileImage, reportError]);
+
+  const hasProfilePictureSet = Boolean(query.viewer?.user?.profileImage?.__typename);
+  const potentialEnsProfileImageUrl =
+    query.viewer?.user?.potentialEnsProfileImage?.profileImage?.previewURLs?.medium;
 
   return (
     <GalleryBottomSheetModal
-      ref={ref}
+      ref={(value) => {
+        bottomSheetRef.current = value;
+
+        if (typeof ref === 'function') {
+          ref(value);
+        } else if (ref) {
+          ref.current = value;
+        }
+      }}
       snapPoints={animatedSnapPoints}
       handleHeight={animatedHandleHeight}
       contentHeight={animatedContentHeight}
@@ -73,18 +148,20 @@ function PfpBottomSheet(
         <Typography font={{ family: 'ABCDiatype', weight: 'Bold' }}>Profile picture</Typography>
 
         <View className="flex flex-col space-y-2">
-          <SettingsRow
-            onPress={handleEnsPress}
-            icon={
-              <RawProfilePicture
-                eventElementId={null}
-                eventName={null}
-                imageUrl="https://s3-alpha-sig.figma.com/img/9424/9002/fa4d390875d2934261baeff954218f5c?Expires=1688342400&Signature=qDpsEWGdY0OX48OJqqgp2ul0NDeiUsBElABsq~Wk-7H7ouyhaNmTQtg~R~AtsJ7kAo03lUgjSqVNrsbQOmnmt-cZEAvG7hH4UZn7LratyWlCq8SKznpQcx8TD3mgvcN-EPzx1bsPAIWGUZ9ahmLHfYhTVs~Nqwi7-~KKCnDTFaxT~Zs6hZHgM9A-~2aNdesbVfnVqAKz1Odt7P2-gsCvvGzrH-D0mhCLcMJR7pBFK8L3V7zOAa4hE8x4i~HLik0jsjNwEdcKs2qv1ruz2m~~egXaTiZC9n4Avta8Ksl4sG4OsxVmbgqWEEYeLLrlGwTiiM7bSqvasO6-G5BoduXQOw__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4"
-                size="md"
-              />
-            }
-            text="Use ENS Avatar"
-          />
+          {potentialEnsProfileImageUrl && (
+            <SettingsRow
+              onPress={handleEnsPress}
+              icon={
+                <RawProfilePicture
+                  eventElementId={null}
+                  eventName={null}
+                  imageUrl={potentialEnsProfileImageUrl}
+                  size="md"
+                />
+              }
+              text="Use ENS Avatar"
+            />
+          )}
           <SettingsRow
             onPress={handleChooseFromCollectionPress}
             icon={<CollectionGridIcon />}
@@ -94,7 +171,8 @@ function PfpBottomSheet(
             <SettingsRow
               onPress={handleRemovePress}
               icon={<TrashIcon />}
-              text={<Text className="text-red">Remove current profile picture</Text>}
+              textClassName="text-red"
+              text="Remove current profile picture"
             />
           )}
         </View>
@@ -108,9 +186,10 @@ type SettingsRowProps = {
   text: ReactNode;
   icon: ReactNode;
   style?: ViewProps['style'];
+  textClassName?: string;
 };
 
-function SettingsRow({ style, icon, text, onPress }: SettingsRowProps) {
+function SettingsRow({ style, icon, text, onPress, textClassName }: SettingsRowProps) {
   return (
     <GalleryTouchableOpacity
       onPress={onPress}
@@ -123,7 +202,9 @@ function SettingsRow({ style, icon, text, onPress }: SettingsRowProps) {
       <View className="flex flex-row space-x-3 items-center">
         <View className="w-6 h-full flex items-center">{icon}</View>
 
-        <Typography font={{ family: 'ABCDiatype', weight: 'Regular' }}>{text}</Typography>
+        <Typography className={textClassName} font={{ family: 'ABCDiatype', weight: 'Regular' }}>
+          {text}
+        </Typography>
       </View>
     </GalleryTouchableOpacity>
   );
