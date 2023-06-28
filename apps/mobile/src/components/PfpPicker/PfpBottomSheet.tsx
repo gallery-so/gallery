@@ -1,7 +1,7 @@
 import { useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
 import { useNavigation } from '@react-navigation/native';
 import { ForwardedRef, forwardRef, ReactNode, useCallback, useRef } from 'react';
-import { Text, View, ViewProps } from 'react-native';
+import { View, ViewProps } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { CollectionGridIcon } from 'src/icons/CollectionGridIcon';
@@ -62,22 +62,21 @@ function PfpBottomSheet(
     queryRef
   );
 
-  const [removeProfileImage, isRemovingProfileImage] =
-    usePromisifiedMutation<PfpBottomSheetMutation>(graphql`
-      mutation PfpBottomSheetMutation @raw_response_type {
-        removeProfileImage {
-          ... on RemoveProfileImagePayload {
-            viewer {
-              user {
-                profileImage {
-                  __typename
-                }
+  const [removeProfileImage] = usePromisifiedMutation<PfpBottomSheetMutation>(graphql`
+    mutation PfpBottomSheetMutation @raw_response_type {
+      removeProfileImage {
+        ... on RemoveProfileImagePayload {
+          viewer {
+            user {
+              profileImage {
+                __typename
               }
             }
           }
         }
       }
-    `);
+    }
+  `);
 
   const reportError = useReportError();
   const { bottom } = useSafeAreaPadding();
