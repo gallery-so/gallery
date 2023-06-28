@@ -6,6 +6,7 @@ import noop from '~/utils/noop';
 
 import { VStack } from '../core/Spacer/Stack';
 import { BaseM } from '../core/Text/Text';
+import transitions from '../core/transitions';
 import { NftSelectorCollectionGroup } from './groupNftSelectorCollectionsByAddress';
 import { NftSelectorContractType } from './NftSelector';
 import { NftSelectorToken } from './NftSelectorToken';
@@ -27,10 +28,19 @@ export function NftSelectorTokenPreview({ group, onSelectGroup = noop }: Props) 
     onSelectGroup(collection);
   }, [group.address, group.title, onSelectGroup]);
 
+  const NftSelectorTokenCollection = () => {
+    return (
+      <StyledNftSelectorTokenCollection>
+        <BaseM>{group.title}</BaseM>
+      </StyledNftSelectorTokenCollection>
+    );
+  };
+
   if (tokens.length === 1) {
     return (
       <StyledNftSelectorTokensContainer>
         {tokens[0] && <NftSelectorToken tokenRef={tokens[0]} />}
+        <NftSelectorTokenCollection />
       </StyledNftSelectorTokensContainer>
     );
   }
@@ -48,9 +58,29 @@ export function NftSelectorTokenPreview({ group, onSelectGroup = noop }: Props) 
           <BaseM>+ {remainingTokens}</BaseM>
         </StyledRemainingTokens>
       )}
+      <NftSelectorTokenCollection />
     </StyledNftSelectorTokensContainer>
   );
 }
+
+const StyledNftSelectorTokenCollection = styled.div`
+  position: absolute;
+  bottom: 4px;
+  left: 4px;
+  background-color: ${colors.black[800]};
+  border: 1px solid ${colors.black['DEFAULT']};
+  padding: 4px 8px;
+
+  transition: opacity ${transitions.cubic};
+  opacity: 0;
+
+  transition: transform ${transitions.cubic};
+  transform: translateY(5px);
+
+  ${BaseM} {
+    color: ${colors.white};
+  }
+`;
 
 const StyledNftSelectorTokensContainer = styled.div<{
   isGrouped?: boolean;
@@ -81,7 +111,13 @@ const StyledNftSelectorTokensContainer = styled.div<{
       left: 0;
       right: 0;
       bottom: 0;
-      background-color: rgba(0, 0, 0, 0.25);
+      background-color: rgba(0, 0, 0, 0.55);
+    }
+
+    ${StyledNftSelectorTokenCollection} {
+      opacity: 1;
+      z-index: 1;
+      transform: translateY(0px);
     }
   }
 `;
