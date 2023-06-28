@@ -15,6 +15,8 @@ import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM } from '../core/Text/Text';
 import isRefreshDisabledForUser from '../GalleryEditor/PiecesSidebar/isRefreshDisabledForUser';
 import { SidebarView } from '../GalleryEditor/PiecesSidebar/SidebarViewSelector';
+import { NewTooltip } from '../Tooltip/NewTooltip';
+import { useTooltipHover } from '../Tooltip/useTooltipHover';
 import { NftSelectorCollectionGroup } from './groupNftSelectorCollectionsByAddress';
 import {
   NftSelectorFilterNetwork,
@@ -167,6 +169,11 @@ export function NftSelector({ tokensRef, queryRef }: Props) {
     await syncTokens(selectedNetworkView);
   }, [selectedNetworkView, refreshDisabled, syncTokens]);
 
+  const { floating, reference, getFloatingProps, getReferenceProps, floatingStyle } =
+    useTooltipHover({
+      placement: 'bottom-end',
+    });
+
   return (
     <StyledNftSelectorModal>
       <StyledTitle>
@@ -219,6 +226,16 @@ export function NftSelector({ tokensRef, queryRef }: Props) {
               size="xs"
               variant="default"
               icon={<RefreshIcon />}
+              ref={reference}
+              {...getReferenceProps()}
+            />
+
+            <NewTooltip
+              {...getFloatingProps()}
+              style={{ ...floatingStyle }}
+              ref={floating}
+              whiteSpace="pre-line"
+              text={`Refresh to update your collection`}
             />
           </HStack>
         )}
