@@ -56,6 +56,23 @@ const UnknownMediaResponse: NftDetailAssetTestQueryQuery = {
       owner: {
         id: 'GalleryUser:TestOwnerId',
         username: 'Test Username',
+        profileImage: {
+          token: {
+            dbid: 'testTokenId',
+            id: 'Token:testTokenId',
+            media: {
+              __typename: 'ImageMedia',
+              previewURLs: {
+                small: 'http://someurl.com',
+                medium: 'http://someurl.com',
+                large: 'http://someurl.com',
+              },
+              fallbackMedia: {
+                mediaURL: 'http://someurl.com',
+              },
+            },
+          },
+        },
       },
       name: 'Test Token Name',
       description: 'Test Description',

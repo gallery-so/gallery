@@ -11,6 +11,7 @@ import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM, TitleM, TitleXS } from '~/components/core/Text/Text';
 import { ClickablePill, NonclickablePill } from '~/components/Pill';
+import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { ENABLED_CREATOR } from '~/constants/creator';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { NftDetailTextFragment$key } from '~/generated/NftDetailTextFragment.graphql';
@@ -43,6 +44,7 @@ function NftDetailText({ tokenRef }: Props) {
         tokenMetadata
         owner {
           username
+          ...ProfilePictureFragment
         }
         contract {
           name
@@ -164,19 +166,22 @@ function NftDetailText({ tokenRef }: Props) {
 
         <HStack justify="space-between">
           {token.owner?.username && (
-            <VStack>
+            <VStack gap={2}>
               <TitleXS>OWNER</TitleXS>
               <InteractiveLink
                 to={{ pathname: '/[username]', query: { username: token.owner.username } }}
                 onClick={handleCollectorNameClick}
               >
-                <BaseM color={colors.shadow}>{token.owner.username}</BaseM>
+                <HStack align="center" gap={4}>
+                  <ProfilePicture size="sm" userRef={token.owner} />
+                  <BaseM color={colors.shadow}>{token.owner.username}</BaseM>
+                </HStack>
               </InteractiveLink>
             </VStack>
           )}
           {ENABLED_CREATOR && (
             // TODO: Update this to use the creator's username
-            <VStack>
+            <VStack gap={2}>
               <TitleXS>CREATOR</TitleXS>
               <InteractiveLink
                 onClick={handleCreatorNameClick}
