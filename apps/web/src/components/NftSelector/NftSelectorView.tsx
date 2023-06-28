@@ -3,8 +3,11 @@ import { graphql, useFragment } from 'react-relay';
 import { AutoSizer, List, ListRowProps } from 'react-virtualized';
 import styled from 'styled-components';
 
+import { useModalActions } from '~/contexts/modal/ModalContext';
 import { NftSelectorViewFragment$key } from '~/generated/NftSelectorViewFragment.graphql';
+import useAddWalletModal from '~/hooks/useAddWalletModal';
 
+import { Button } from '../core/Button/Button';
 import { VStack } from '../core/Spacer/Stack';
 import { BaseXL } from '../core/Text/Text';
 import {
@@ -20,6 +23,8 @@ type Props = {
   selectedNetworkView: NftSelectorNetworkView;
   onSelectContract: (collection: NftSelectorContractType) => void;
   tokenRefs: NftSelectorViewFragment$key;
+  hasSearchKeyword: boolean;
+  handleRefresh: () => void;
 };
 const COLUMN_COUNT = 4;
 
@@ -28,6 +33,8 @@ export function NftSelectorView({
   onSelectContract,
   tokenRefs,
   selectedNetworkView,
+  hasSearchKeyword,
+  handleRefresh,
 }: Props) {
   const tokens = useFragment(
     graphql`
@@ -51,6 +58,21 @@ export function NftSelectorView({
       viewRef.current.scrollTop = 0;
     }
   }, [selectedContractAddress]);
+
+  const { hideModal } = useModalActions();
+
+  const onNewWallectConnected = useCallback(async () => {
+    handleRefresh();
+    hideModal();
+  }, [hideModal, handleRefresh]);
+
+  const showAddWalletModal = useAddWalletModal();
+  const handleManageWalletsClick = useCallback(() => {
+    showAddWalletModal({
+      onEthAddWalletSuccess: onNewWallectConnected,
+      onTezosAddWalletSuccess: onNewWallectConnected,
+    });
+  }, [onNewWallectConnected, showAddWalletModal]);
 
   const rows = useMemo(() => {
     const rows = [];
@@ -127,7 +149,20 @@ export function NftSelectorView({
     [onSelectContract, rows]
   );
 
-  if (!rows.length) {
+  if (!rows.length && !hasSearchKeyword) {
+    return (
+      <StyledWrapper>
+        <StyledEmptyStateContainer align="center" justify="center" gap={24}>
+          <StyledEmptyStateText>No NFTs found, try another wallet?</StyledEmptyStateText>
+          <Button variant="primary" onClick={handleManageWalletsClick}>
+            Connect Wallet
+          </Button>
+        </StyledEmptyStateContainer>
+      </StyledWrapper>
+    );
+  }
+
+  if (!rows.length && hasSearchKeyword) {
     return (
       <StyledWrapper>
         <StyledEmptyStateContainer align="center" justify="center">

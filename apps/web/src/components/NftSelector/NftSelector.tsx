@@ -249,6 +249,8 @@ export function NftSelector({ tokensRef, queryRef }: Props) {
           selectedContractAddress={selectedContract?.address ?? null}
           onSelectContract={setSelectedContract}
           selectedNetworkView={selectedNetworkView}
+          hasSearchKeyword={!!debouncedSearchKeyword}
+          handleRefresh={handleRefresh}
         />
       )}
     </StyledNftSelectorModal>
