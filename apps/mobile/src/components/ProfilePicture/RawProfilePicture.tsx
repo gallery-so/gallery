@@ -33,7 +33,7 @@ export type RawProfilePictureProps = {
       letter: string;
     }
   | {
-      imageUrl: string;
+      imageUrl: string | undefined;
     }
 ) &
   Pick<GalleryTouchableOpacityProps, 'eventElementId' | 'eventName' | 'onPress'>;

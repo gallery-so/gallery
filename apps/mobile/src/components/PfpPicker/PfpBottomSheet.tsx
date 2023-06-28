@@ -1,5 +1,7 @@
 import { useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
 import { useNavigation } from '@react-navigation/native';
+import clsx from 'clsx';
+import { useAssets } from 'expo-asset';
 import { ForwardedRef, forwardRef, ReactNode, useCallback, useRef } from 'react';
 import { View, ViewProps } from 'react-native';
 import { useFragment } from 'react-relay';
@@ -124,6 +126,26 @@ function PfpBottomSheet(
   const potentialEnsProfileImageUrl =
     query.viewer?.user?.potentialEnsProfileImage?.profileImage?.previewURLs?.medium;
 
+  const [assets] = useAssets([require('../../icons/ens.png')]);
+
+  const ensFallback = assets?.[0]?.localUri;
+
+  const ensSettingsRow = (
+    <SettingsRow
+      disabled
+      onPress={handleEnsPress}
+      icon={
+        <RawProfilePicture
+          size="md"
+          eventName={null}
+          eventElementId={null}
+          imageUrl={potentialEnsProfileImageUrl ?? ensFallback ?? undefined}
+        />
+      }
+      text="Use ENS Avatar"
+    />
+  );
+
   return (
     <GalleryBottomSheetModal
       ref={(value) => {
@@ -147,20 +169,8 @@ function PfpBottomSheet(
         <Typography font={{ family: 'ABCDiatype', weight: 'Bold' }}>Profile picture</Typography>
 
         <View className="flex flex-col space-y-2">
-          {potentialEnsProfileImageUrl && (
-            <SettingsRow
-              onPress={handleEnsPress}
-              icon={
-                <RawProfilePicture
-                  eventElementId={null}
-                  eventName={null}
-                  imageUrl={potentialEnsProfileImageUrl}
-                  size="md"
-                />
-              }
-              text="Use ENS Avatar"
-            />
-          )}
+          {potentialEnsProfileImageUrl && ensSettingsRow}
+
           <SettingsRow
             onPress={handleChooseFromCollectionPress}
             icon={<CollectionGridIcon />}
@@ -174,6 +184,8 @@ function PfpBottomSheet(
               text="Remove current profile picture"
             />
           )}
+
+          {!potentialEnsProfileImageUrl && ensSettingsRow}
         </View>
       </View>
     </GalleryBottomSheetModal>
@@ -186,17 +198,24 @@ type SettingsRowProps = {
   icon: ReactNode;
   style?: ViewProps['style'];
   textClassName?: string;
+  disabled?: boolean;
 };
 
-function SettingsRow({ style, icon, text, onPress, textClassName }: SettingsRowProps) {
+function SettingsRow({ style, disabled, icon, text, onPress, textClassName }: SettingsRowProps) {
   return (
     <GalleryTouchableOpacity
+      disabled={disabled}
       onPress={onPress}
       eventElementId="settings-row"
       eventName="settings-row-clicked"
       properties={{ text }}
       style={style}
-      className="flex flex-row justify-between items-center bg-offWhite dark:bg-black-800 px-3 h-12"
+      className={clsx(
+        'flex flex-row justify-between items-center bg-offWhite dark:bg-black-800 px-3 h-12',
+        {
+          'opacity-50': disabled,
+        }
+      )}
     >
       <View className="flex flex-row space-x-3 items-center">
         <View className="w-6 h-full flex items-center">{icon}</View>
