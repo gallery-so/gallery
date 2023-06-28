@@ -3,15 +3,30 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { useModalActions } from '~/contexts/modal/ModalContext';
+import { useNftSelectorFragment$key } from '~/generated/useNftSelectorFragment.graphql';
 import { useNftSelectorQueryFragment$key } from '~/generated/useNftSelectorQueryFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import { NftSelector } from './NftSelector';
 
-export default function useNftSelector(queryRef: useNftSelectorQueryFragment$key) {
+type Props = {
+  tokensRef: useNftSelectorFragment$key;
+  queryRef: useNftSelectorQueryFragment$key;
+};
+
+export default function useNftSelector({ tokensRef, queryRef }: Props) {
   const tokens = useFragment(
     graphql`
-      fragment useNftSelectorQueryFragment on Token @relay(plural: true) {
+      fragment useNftSelectorFragment on Token @relay(plural: true) {
+        ...NftSelectorFragment
+      }
+    `,
+    tokensRef
+  );
+
+  const query = useFragment(
+    graphql`
+      fragment useNftSelectorQueryFragment on Query {
         ...NftSelectorQueryFragment
       }
     `,
@@ -24,7 +39,7 @@ export default function useNftSelector(queryRef: useNftSelectorQueryFragment$key
 
   return useCallback(() => {
     showModal({
-      content: <NftSelector queryRef={nonNullTokens} />,
+      content: <NftSelector tokensRef={nonNullTokens} queryRef={query} />,
     });
-  }, [nonNullTokens, showModal]);
+  }, [nonNullTokens, query, showModal]);
 }

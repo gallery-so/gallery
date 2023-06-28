@@ -2,13 +2,18 @@ import { useCallback, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
+import { NftSelectorFragment$key } from '~/generated/NftSelectorFragment.graphql';
 import { NftSelectorQueryFragment$key } from '~/generated/NftSelectorQueryFragment.graphql';
+import useSyncTokens from '~/hooks/api/tokens/useSyncTokens';
 import { ChevronLeftIcon } from '~/icons/ChevronLeftIcon';
+import { RefreshIcon } from '~/icons/RefreshIcon';
 import useDebounce from '~/shared/hooks/useDebounce';
+import { doesUserOwnWalletFromChain } from '~/utils/doesUserOwnWalletFromChain';
 
 import IconContainer from '../core/IconContainer';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM } from '../core/Text/Text';
+import isRefreshDisabledForUser from '../GalleryEditor/PiecesSidebar/isRefreshDisabledForUser';
 import { SidebarView } from '../GalleryEditor/PiecesSidebar/SidebarViewSelector';
 import { NftSelectorCollectionGroup } from './groupNftSelectorCollectionsByAddress';
 import {
@@ -20,19 +25,21 @@ import {
   NftSelectorSortView,
 } from './NftSelectorFilter/NftSelectorFilterSort';
 import { NftSelectorViewSelector } from './NftSelectorFilter/NftSelectorViewSelector';
+import { NftSelectorLoadingView } from './NftSelectorLoadingView';
 import { NftSelectorSearchBar } from './NftSelectorSearchBar';
 import { NftSelectorView } from './NftSelectorView';
 
 type Props = {
+  tokensRef: NftSelectorFragment$key;
   queryRef: NftSelectorQueryFragment$key;
 };
 
 export type NftSelectorContractType = Omit<NftSelectorCollectionGroup, 'tokens'> | null;
 
-export function NftSelector({ queryRef }: Props) {
+export function NftSelector({ tokensRef, queryRef }: Props) {
   const tokens = useFragment(
     graphql`
-      fragment NftSelectorQueryFragment on Token @relay(plural: true) {
+      fragment NftSelectorFragment on Token @relay(plural: true) {
         ...NftSelectorViewFragment
         name
         chain
@@ -46,6 +53,22 @@ export function NftSelector({ queryRef }: Props) {
         }
       }
     `,
+    tokensRef
+  );
+
+  const query = useFragment(
+    graphql`
+      fragment NftSelectorQueryFragment on Query {
+        viewer {
+          ... on Viewer {
+            user {
+              dbid
+            }
+          }
+        }
+        ...doesUserOwnWalletFromChainFragment
+      }
+    `,
     queryRef
   );
 
@@ -55,23 +78,21 @@ export function NftSelector({ queryRef }: Props) {
   const [selectedView, setSelectedView] = useState<SidebarView>('Collected');
   const [selectedSortView, setSelectedSortView] = useState<NftSelectorSortView>('Recently added');
   const [selectedNetworkView, setSelectedNetworkView] =
-    useState<NftSelectorNetworkView>('All networks');
+    useState<NftSelectorNetworkView>('Ethereum');
 
   const [selectedContract, setSelectedContract] = useState<NftSelectorContractType>(null);
+
+  const { isLocked, syncTokens } = useSyncTokens();
 
   const handleResetSelectedContractAddress = useCallback(() => {
     setSelectedContract(null);
   }, []);
 
   const filteredTokens = useMemo(() => {
-    let filteredTokens = [];
+    let filteredTokens = [...tokens];
 
     // Filter by network
-    if (selectedNetworkView === 'All networks') {
-      filteredTokens = [...tokens];
-    } else {
-      filteredTokens = tokens.filter((token) => token.chain === selectedNetworkView);
-    }
+    filteredTokens = tokens.filter((token) => token.chain === selectedNetworkView);
 
     // Filter by search
     if (debouncedSearchKeyword) {
@@ -133,6 +154,19 @@ export function NftSelector({ queryRef }: Props) {
     return filteredTokens;
   }, [debouncedSearchKeyword, selectedNetworkView, selectedSortView, selectedView, tokens]);
 
+  const isRefreshDisabledAtUserLevel = isRefreshDisabledForUser(query.viewer?.user?.dbid ?? '');
+  const refreshDisabled =
+    isRefreshDisabledAtUserLevel ||
+    !doesUserOwnWalletFromChain(selectedNetworkView, query) ||
+    isLocked;
+  const handleRefresh = useCallback(async () => {
+    if (refreshDisabled) {
+      return;
+    }
+
+    await syncTokens(selectedNetworkView);
+  }, [selectedNetworkView, refreshDisabled, syncTokens]);
+
   return (
     <StyledNftSelectorModal>
       <StyledTitle>
@@ -165,7 +199,7 @@ export function NftSelector({ queryRef }: Props) {
             />
           </StyledHeaderContainer>
         ) : (
-          <HStack gap={8} align="center">
+          <HStack gap={4} align="center">
             <NftSelectorViewSelector
               selectedView={selectedView}
               onSelectedViewChange={setSelectedView}
@@ -178,15 +212,27 @@ export function NftSelector({ queryRef }: Props) {
               selectedView={selectedNetworkView}
               onSelectedViewChange={setSelectedNetworkView}
             />
+
+            <IconContainer
+              disabled={refreshDisabled}
+              onClick={handleRefresh}
+              size="xs"
+              variant="default"
+              icon={<RefreshIcon />}
+            />
           </HStack>
         )}
       </StyledActionContainer>
 
-      <NftSelectorView
-        tokenRefs={filteredTokens}
-        selectedContractAddress={selectedContract?.address ?? null}
-        onSelectContract={setSelectedContract}
-      />
+      {isLocked ? (
+        <NftSelectorLoadingView />
+      ) : (
+        <NftSelectorView
+          tokenRefs={filteredTokens}
+          selectedContractAddress={selectedContract?.address ?? null}
+          onSelectContract={setSelectedContract}
+        />
+      )}
     </StyledNftSelectorModal>
   );
 }

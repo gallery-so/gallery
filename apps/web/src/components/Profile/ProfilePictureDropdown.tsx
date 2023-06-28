@@ -27,7 +27,7 @@ export function ProfilePictureDropdown({ open, onClose, tokensRef, queryRef }: P
   const tokens = useFragment(
     graphql`
       fragment ProfilePictureDropdownFragment on Token @relay(plural: true) {
-        ...useNftSelectorQueryFragment
+        ...useNftSelectorFragment
       }
     `,
     tokensRef
@@ -49,12 +49,13 @@ export function ProfilePictureDropdown({ open, onClose, tokensRef, queryRef }: P
             }
           }
         }
+        ...useNftSelectorQueryFragment
       }
     `,
     queryRef
   );
 
-  const showNftSelector = useNftSelector(tokens);
+  const showNftSelector = useNftSelector({ tokensRef: tokens, queryRef: query });
   const { setProfileImage, removeProfileImage } = useUpdateProfileImage();
 
   const user = query.viewer?.user;

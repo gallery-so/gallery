@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import { Button, ButtonLink } from '~/components/core/Button/Button';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleM } from '~/components/core/Text/Text';
-import useNftSelector from '~/components/NftSelector/useNftSelector';
 import { ProfilePictureStack } from '~/components/ProfilePictureStack';
 import { RawProfilePicture } from '~/components/RawProfilePicture';
 import icons from '~/icons/index';
@@ -42,7 +41,7 @@ export default function DesignPage() {
     }, {});
   }, []);
 
-  const showNftSelector = useNftSelector([]);
+  const showNftSelector = () => {};
 
   return (
     <>

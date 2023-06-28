@@ -56,7 +56,7 @@ function UserInfoForm({
 
         tokens {
           ...ProfilePictureDropdownFragment
-          ...useNftSelectorQueryFragment
+          ...useNftSelectorFragment
         }
       }
     `,
@@ -68,6 +68,7 @@ function UserInfoForm({
       fragment UserInfoFormQueryFragment on Query {
         ...isFeatureEnabledFragment
         ...ProfilePictureDropdownQueryFragment
+        ...useNftSelectorQueryFragment
       }
     `,
     queryRef
@@ -79,7 +80,7 @@ function UserInfoForm({
   const isPfpEnabled = isFeatureEnabled(FeatureFlag.PFP, query);
 
   const tokens = removeNullValues(user.tokens) ?? [];
-  const showNftSelector = useNftSelector(tokens);
+  const showNftSelector = useNftSelector({ tokensRef: tokens, queryRef: query });
 
   const unescapedBio = useMemo(() => unescape(bio), [bio]);
 

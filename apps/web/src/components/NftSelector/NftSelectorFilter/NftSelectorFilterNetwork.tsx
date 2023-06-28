@@ -3,7 +3,6 @@ import styled from 'styled-components';
 
 import { BaseM } from '~/components/core/Text/Text';
 import DoubleArrowsIcon from '~/icons/DoubleArrowsIcon';
-import GlobeIcon from '~/icons/GlobeIcon';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
 
@@ -13,7 +12,7 @@ import { DropdownSection } from '../../core/Dropdown/DropdownSection';
 import IconContainer from '../../core/IconContainer';
 import { HStack } from '../../core/Spacer/Stack';
 
-export type NftSelectorNetworkView = 'All networks' | 'Ethereum' | 'Tezos' | 'POAP';
+export type NftSelectorNetworkView = 'Ethereum' | 'Tezos' | 'POAP';
 
 type NftSelectorViewSelectorProps = {
   selectedView: NftSelectorNetworkView;
@@ -31,13 +30,6 @@ type NetworkDropdownProps = {
 
 const NetworkDropdownByNetwork = ({ option }: NetworkDropdownProps) => {
   switch (option) {
-    case 'All networks':
-      return (
-        <HStack gap={4} align="center">
-          <GlobeIcon />
-          <BaseM>All networks</BaseM>
-        </HStack>
-      );
     case 'Ethereum':
       return (
         <HStack gap={4} align="center">
@@ -64,7 +56,7 @@ const NetworkDropdownByNetwork = ({ option }: NetworkDropdownProps) => {
   }
 };
 
-const options: NftSelectorNetworkView[] = ['All networks', 'Ethereum', 'Tezos', 'POAP'];
+const options: NftSelectorNetworkView[] = ['Ethereum', 'Tezos', 'POAP'];
 
 export function NftSelectorFilterNetwork({
   selectedView,
