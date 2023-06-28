@@ -11,6 +11,7 @@ import { StyledAnchor } from '~/components/core/InteractiveLink/InteractiveLink'
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleM } from '~/components/core/Text/Text';
+import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { UserNameAndDescriptionHeader$key } from '~/generated/UserNameAndDescriptionHeader.graphql';
 import { UserNameAndDescriptionHeaderQueryFragment$key } from '~/generated/UserNameAndDescriptionHeaderQueryFragment.graphql';
@@ -43,6 +44,7 @@ export function UserNameAndDescriptionHeader({ userRef, queryRef }: Props) {
           imageURL
           ...BadgeFragment
         }
+        ...ProfilePictureFragment
       }
     `,
     userRef
@@ -107,8 +109,10 @@ export function UserNameAndDescriptionHeader({ userRef, queryRef }: Props) {
       <Container gap={2}>
         {!isMobile && (
           <HStack align="center" gap={4}>
-            <StyledUsername>{displayName}</StyledUsername>
-
+            <HStack gap={8} align="center">
+              <ProfilePicture userRef={user} size="xl" />
+              <StyledUsername>{displayName}</StyledUsername>
+            </HStack>
             <HStack align="center" gap={0}>
               {userBadges.map((badge) =>
                 badge ? <Badge key={badge.name} badgeRef={badge} /> : null
