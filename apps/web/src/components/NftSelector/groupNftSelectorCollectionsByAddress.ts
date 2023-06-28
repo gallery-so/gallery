@@ -1,6 +1,9 @@
 import { graphql, readInlineData } from 'react-relay';
 
-import { groupNftSelectorCollectionsByAddressTokenFragment$data } from '~/generated/groupNftSelectorCollectionsByAddressTokenFragment.graphql';
+import {
+  groupNftSelectorCollectionsByAddressTokenFragment$data,
+  groupNftSelectorCollectionsByAddressTokenFragment$key,
+} from '~/generated/groupNftSelectorCollectionsByAddressTokenFragment.graphql';
 import { NftSelectorViewFragment$data } from '~/generated/NftSelectorViewFragment.graphql';
 
 export type NftSelectorCollectionGroup = {
@@ -11,34 +14,34 @@ export type NftSelectorCollectionGroup = {
 
 type groupCollectionsByAddressArgs = {
   ignoreSpam?: boolean;
-  tokensRef: NftSelectorViewFragment$data;
+  tokenRefs: NftSelectorViewFragment$data;
 };
 
 export function groupNftSelectorCollectionsByAddress({
   ignoreSpam = false,
-  tokensRef,
+  tokenRefs,
 }: groupCollectionsByAddressArgs): NftSelectorCollectionGroup[] {
-  const tokens = tokensRef.map(
-    (tokenRef) =>
-      readInlineData(
-        graphql`
-          fragment groupNftSelectorCollectionsByAddressTokenFragment on Token @inline {
+  const tokens = tokenRefs.map((tokenRef) =>
+    readInlineData<groupNftSelectorCollectionsByAddressTokenFragment$key>(
+      graphql`
+        fragment groupNftSelectorCollectionsByAddressTokenFragment on Token @inline {
+          chain
+          isSpamByProvider
+          isSpamByUser
+          contract {
             chain
-            isSpamByProvider
-            isSpamByUser
-            contract {
-              chain
-              name
-              contractAddress {
-                address
-              }
+            name
+            contractAddress {
+              address
             }
-            # eslint-disable-next-line relay/must-colocate-fragment-spreads
-            ...NftSelectorTokenFragment
           }
-        `,
-        tokenRef
-      ) as groupNftSelectorCollectionsByAddressTokenFragment$data
+
+          # eslint-disable-next-line relay/must-colocate-fragment-spreads
+          ...NftSelectorTokenFragment
+        }
+      `,
+      tokenRef
+    )
   );
 
   const map: Record<string, NftSelectorCollectionGroup> = {};
