@@ -4,7 +4,6 @@ import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
-import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { InteractiveLink } from '~/components/InteractiveLink';
 import { Typography } from '~/components/Typography';
 import { ProfileViewSharedCommunitiesFragment$key } from '~/generated/ProfileViewSharedCommunitiesFragment.graphql';
@@ -97,20 +96,21 @@ export default function ProfileViewSharedCommunities({ userRef }: Props) {
           <InteractiveLink
             type="Profile View Shared Communities"
             key={community.id}
+            textStyle={{ fontSize: 12 }}
+            showUnderline
             onPress={() =>
               community.contractAddress && handleCommunityPress(community.contractAddress)
             }
           >
-            <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-              {community.name}
-            </Typography>
+            {community.name}
           </InteractiveLink>
         );
       }
+
       return (
         <Typography
           className="text-xs "
-          font={{ family: 'ABCDiatype', weight: 'Bold' }}
+          font={{ family: 'ABCDiatype', weight: 'Regular' }}
           key={community.id}
         >
           {community.name}
@@ -121,16 +121,15 @@ export default function ProfileViewSharedCommunities({ userRef }: Props) {
     // If there are more than 3 communities, add a link to show all in a popover
     if (totalSharedCommunities > 3) {
       result.push(
-        <GalleryTouchableOpacity
+        <InteractiveLink
+          type="Shared Communmities See All"
+          showUnderline
           onPress={handleSeeAllPress}
-          eventElementId="See All Shared Followers Button"
-          eventName="See All Shared Followers Clicked"
+          textStyle={{ fontSize: 12 }}
           key="shared-communities-see-all"
         >
-          <Typography className="text-xs " font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-            {totalSharedCommunities - 2} others
-          </Typography>
-        </GalleryTouchableOpacity>
+          {totalSharedCommunities - 2} others
+        </InteractiveLink>
       );
     }
 
@@ -141,7 +140,7 @@ export default function ProfileViewSharedCommunities({ userRef }: Props) {
         0,
         <Typography
           className="text-xs"
-          font={{ family: 'ABCDiatype', weight: 'Regular' }}
+          font={{ family: 'ABCDiatype', weight: 'Bold' }}
           key="shared-communities-comma"
         >
           ,&nbsp;
@@ -154,7 +153,7 @@ export default function ProfileViewSharedCommunities({ userRef }: Props) {
         0,
         <Typography
           className="text-xs"
-          font={{ family: 'ABCDiatype', weight: 'Regular' }}
+          font={{ family: 'ABCDiatype', weight: 'Bold' }}
           key="shared-communities-and"
         >
           &nbsp;and&nbsp;
@@ -171,8 +170,8 @@ export default function ProfileViewSharedCommunities({ userRef }: Props) {
 
   return (
     <View className="flex flex-row flex-wrap">
-      <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
-        Also holds&nbsp;
+      <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+        Also holds{' '}
       </Typography>
       {content}
       <ProfileViewSharedCommunitiesSheet ref={bottomSheetRef} userRef={user} />
