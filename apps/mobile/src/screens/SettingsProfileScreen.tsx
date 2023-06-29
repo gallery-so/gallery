@@ -13,6 +13,8 @@ import { Typography } from '~/components/Typography';
 import { SettingsProfileScreenQuery } from '~/generated/SettingsProfileScreenQuery.graphql';
 import colors from '~/shared/theme/colors';
 
+import isFeatureEnabled, { FeatureFlag } from '../utils/isFeatureEnabled';
+
 export function SettingsProfileScreen() {
   const { top } = useSafeAreaPadding();
 
@@ -31,12 +33,14 @@ export function SettingsProfileScreen() {
         }
 
         ...PfpBottomSheetFragment
+        ...isFeatureEnabledFragment
       }
     `,
     {}
   );
 
   const user = query.viewer?.user;
+  const isPfpEnabled = isFeatureEnabled(FeatureFlag.PFP, query);
 
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
 
@@ -49,41 +53,55 @@ export function SettingsProfileScreen() {
   }
 
   return (
-    <View style={{ paddingTop: top }} className="flex-1 flex flex-col bg-white dark:bg-black-900">
-      <View className="px-4 pb-4">
+    <View
+      style={{ paddingTop: top }}
+      className="flex-1 flex flex-col bg-white dark:bg-black-900 space-y-4"
+    >
+      <View className="px-4">
         <BackButton />
       </View>
 
-      <View className="px-4 flex flex-col space-y-2">
-        <Typography className="text-lg" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-          Your profile
-        </Typography>
-
-        <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
-          Edit your profile details
-        </Typography>
-      </View>
-
-      <View className="flex items-center justify-center px-4 py-6">
-        <ProfilePicture userRef={user} size="xl" isEditable onPress={handlePress} />
-
-        <PfpBottomSheet ref={bottomSheetRef} queryRef={query} />
-      </View>
-
-      <View className="px-3 py-4 bg-offWhite dark:bg-black-800 flex flex-row justify-between mx-4">
-        <View className="flex flex-col space-y-2">
-          <Typography className="text-2xl" font={{ family: 'GTAlpina', weight: 'StandardLight' }}>
-            {user.username}
+      <View className="flex flex-col space-y-6">
+        <View className="px-4 flex flex-col space-y-2">
+          <Typography className="text-lg" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+            Your profile
           </Typography>
 
-          <View>
-            <Markdown style={markdownOverrides} numberOfLines={1}>
-              {user.bio}
-            </Markdown>
-          </View>
+          <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
+            Edit your profile details
+          </Typography>
         </View>
 
-        <Button size="sm" variant="secondary" text="EDIT" eventElementId={null} eventName={null} />
+        {isPfpEnabled && (
+          <View className="flex items-center justify-center px-4">
+            <ProfilePicture userRef={user} size="xl" isEditable onPress={handlePress} />
+
+            <PfpBottomSheet ref={bottomSheetRef} queryRef={query} />
+          </View>
+        )}
+
+        <View className="px-3 py-4 bg-offWhite dark:bg-black-800 flex flex-row justify-between mx-4">
+          <View className="flex flex-col space-y-2">
+            <Typography className="text-2xl" font={{ family: 'GTAlpina', weight: 'StandardLight' }}>
+              {user.username}
+            </Typography>
+
+            <View>
+              <Markdown style={markdownOverrides} numberOfLines={1}>
+                {user.bio}
+              </Markdown>
+            </View>
+          </View>
+
+          <Button
+            disabled
+            size="sm"
+            variant="secondary"
+            text="EDIT"
+            eventElementId={null}
+            eventName={null}
+          />
+        </View>
       </View>
     </View>
   );

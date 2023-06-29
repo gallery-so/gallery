@@ -23,6 +23,7 @@ import { MainTabStackNavigatorProp } from '~/navigation/types';
 import GalleryViewEmitter from '~/shared/components/GalleryViewEmitter';
 import colors from '~/shared/theme/colors';
 
+import isFeatureEnabled, { FeatureFlag } from '../../utils/isFeatureEnabled';
 import { GalleryBottomSheetModalType } from '../GalleryBottomSheet/GalleryBottomSheetModal';
 import { PfpBottomSheet } from '../PfpPicker/PfpBottomSheet';
 import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
@@ -83,7 +84,7 @@ export function ProfileView({ queryRef, shouldShowBackButton }: ProfileViewProps
         />
 
         <View className="flex flex-row items-center justify-between pt-4">
-          <View className="flex flex-row space-x-2">
+          <View className="flex flex-row">
             <ConnectedProfilePicture queryRef={query} />
 
             <ProfileViewUsername queryRef={query} />
@@ -234,10 +235,14 @@ function ConnectedProfilePicture({ queryRef }: ConnectedProfilePictureProps) {
         }
 
         ...PfpBottomSheetFragment
+
+        ...isFeatureEnabledFragment
       }
     `,
     queryRef
   );
+
+  const isPfpEnabled = isFeatureEnabled(FeatureFlag.PFP, query);
 
   const isLoggedInUser = Boolean(
     query.userByUsername &&
@@ -254,8 +259,12 @@ function ConnectedProfilePicture({ queryRef }: ConnectedProfilePictureProps) {
     bottomSheetRef.current?.present();
   }, [isLoggedInUser]);
 
+  if (!isPfpEnabled) {
+    return null;
+  }
+
   return (
-    <>
+    <View className="mr-2">
       <ProfilePicture
         size="md"
         onPress={handlePress}
@@ -264,7 +273,7 @@ function ConnectedProfilePicture({ queryRef }: ConnectedProfilePictureProps) {
       />
 
       <PfpBottomSheet ref={bottomSheetRef} queryRef={query} />
-    </>
+    </View>
   );
 }
 
@@ -289,11 +298,14 @@ function EditProfileButton({ queryRef }: EditProfileButtonProps) {
             }
           }
         }
+
+        ...isFeatureEnabledFragment
       }
     `,
     queryRef
   );
 
+  const isPfpEnabled = isFeatureEnabled(FeatureFlag.PFP, query);
   const isLoggedInUser = Boolean(query.viewer?.user?.dbid === query.userByUsername?.dbid);
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
@@ -301,7 +313,7 @@ function EditProfileButton({ queryRef }: EditProfileButtonProps) {
     navigation.navigate('SettingsProfile');
   }, [navigation]);
 
-  if (!isLoggedInUser) {
+  if (!isLoggedInUser || !isPfpEnabled) {
     return null;
   }
 

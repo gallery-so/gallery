@@ -12,19 +12,31 @@ import { Typography } from '~/components/Typography';
 import { ProfileViewSharedFollowersBubblesFragment$key } from '~/generated/ProfileViewSharedFollowersBubblesFragment.graphql';
 import { ProfileViewSharedFollowersFollowingTextFragment$key } from '~/generated/ProfileViewSharedFollowersFollowingTextFragment.graphql';
 import { ProfileViewSharedFollowersFragment$key } from '~/generated/ProfileViewSharedFollowersFragment.graphql';
+import { ProfileViewSharedFollowersQueryFragment$key } from '~/generated/ProfileViewSharedFollowersQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
+import isFeatureEnabled, { FeatureFlag } from '../../../utils/isFeatureEnabled';
 import { ProfileViewSharedFollowersSheet } from './ProfileViewSharedFollowersSheet';
 
 export const SHARED_FOLLOWERS_PER_PAGE = 20;
 
 type Props = {
+  queryRef: ProfileViewSharedFollowersQueryFragment$key;
   userRef: ProfileViewSharedFollowersFragment$key;
 };
 
-export default function ProfileViewSharedFollowers({ userRef }: Props) {
+export default function ProfileViewSharedFollowers({ userRef, queryRef }: Props) {
+  const query = useFragment(
+    graphql`
+      fragment ProfileViewSharedFollowersQueryFragment on Query {
+        ...isFeatureEnabledFragment
+      }
+    `,
+    queryRef
+  );
+
   const user = useFragment(
     graphql`
       fragment ProfileViewSharedFollowersFragment on GalleryUser {
@@ -51,6 +63,8 @@ export default function ProfileViewSharedFollowers({ userRef }: Props) {
     userRef
   );
 
+  const isPfpEnabled = isFeatureEnabled(FeatureFlag.PFP, query);
+
   const sharedFollowers = useMemo(() => {
     const list = user.sharedFollowers?.edges?.map((edge) => edge?.node) ?? [];
     return removeNullValues(list);
@@ -69,12 +83,14 @@ export default function ProfileViewSharedFollowers({ userRef }: Props) {
 
   return (
     <View className="flex flex-row flex-wrap space-x-1">
-      <ProfilePictureBubblesWithCount
-        onPress={handleSeeAllPress}
-        eventElementId="Shared Followers Bubbles"
-        eventName="Shared Followers Bubbles pressed"
-        userRefs={sharedFollowers}
-      />
+      {isPfpEnabled && (
+        <ProfilePictureBubblesWithCount
+          onPress={handleSeeAllPress}
+          eventElementId="Shared Followers Bubbles"
+          eventName="Shared Followers Bubbles pressed"
+          userRefs={sharedFollowers}
+        />
+      )}
 
       <FollowingText onSeeAll={handleSeeAllPress} userRefs={sharedFollowers} />
 
