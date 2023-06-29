@@ -75,7 +75,7 @@ export function FeedEventSocializeSection({
   return (
     <VStack gap={4}>
       <HStack justify="space-between" align="center" gap={24}>
-        {admire && <AdmireLine eventRef={event} queryRef={query} />}
+        <div>{admire && <AdmireLine eventRef={event} queryRef={query} />}</div>
         <HStack align="center">
           <IconWrapper>
             <AdmireButton eventRef={event} queryRef={query} />
