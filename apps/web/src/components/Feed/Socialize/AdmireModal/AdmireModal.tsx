@@ -13,43 +13,40 @@ import styled from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';
 import { TitleDiatypeM } from '~/components/core/Text/Text';
-import { CommentNote } from '~/components/Feed/Socialize/NotesModal/CommentNote';
+import { AdmireNote } from '~/components/Feed/Socialize/AdmireModal/AdmireNote';
 import { MODAL_PADDING_PX } from '~/contexts/modal/constants';
-import { NotesModalFragment$key } from '~/generated/NotesModalFragment.graphql';
-import { NotesModalQueryFragment$key } from '~/generated/NotesModalQueryFragment.graphql';
-
-import { CommentBox } from '../CommentBox/CommentBox';
+import { AdmireModalFragment$key } from '~/generated/AdmireModalFragment.graphql';
+import { AdmireModalQueryFragment$key } from '~/generated/AdmireModalQueryFragment.graphql';
 
 export const NOTES_PER_PAGE = 10;
 
 type NotesModalProps = {
   fullscreen: boolean;
-  eventRef: NotesModalFragment$key;
-  queryRef: NotesModalQueryFragment$key;
+  eventRef: AdmireModalFragment$key;
+  queryRef: AdmireModalQueryFragment$key;
 };
 
-export function NotesModal({ eventRef, queryRef, fullscreen }: NotesModalProps) {
+export function AdmireModal({ eventRef, queryRef, fullscreen }: NotesModalProps) {
   const {
     data: feedEvent,
     loadPrevious,
     hasPrevious,
   } = usePaginationFragment(
     graphql`
-      fragment NotesModalFragment on FeedEvent
-      @refetchable(queryName: "NotesModalRefetchableFragment") {
+      fragment AdmireModalFragment on FeedEvent
+      @refetchable(queryName: "AdmireModalRefetchableFragment") {
         interactions(last: $interactionsFirst, before: $interactionsAfter)
-          @connection(key: "NotesModal_interactions") {
+          @connection(key: "AdmiresModal_interactions") {
           edges {
             node {
               __typename
 
-              ... on Comment {
-                ...CommentNoteFragment
+              ... on Admire {
+                ...AdmireNoteFragment
               }
             }
           }
         }
-        ...CommentBoxFragment
       }
     `,
     eventRef
@@ -57,8 +54,8 @@ export function NotesModal({ eventRef, queryRef, fullscreen }: NotesModalProps) 
 
   const query = useFragment(
     graphql`
-      fragment NotesModalQueryFragment on Query {
-        ...CommentBoxQueryFragment
+      fragment AdmireModalQueryFragment on Query {
+        ...AdmireNoteQueryFragment
       }
     `,
     queryRef
@@ -68,7 +65,7 @@ export function NotesModal({ eventRef, queryRef, fullscreen }: NotesModalProps) 
     const interactions = [];
 
     for (const interaction of feedEvent.interactions?.edges ?? []) {
-      if (interaction?.node && interaction.node.__typename === 'Comment') {
+      if (interaction?.node && interaction.node.__typename === 'Admire') {
         interactions.push(interaction.node);
       }
     }
@@ -91,11 +88,15 @@ export function NotesModal({ eventRef, queryRef, fullscreen }: NotesModalProps) 
     }
 
     // 68 is the height of the modal header + bottom padding
-    // 69 is the height of the comment box
-    return height + 68 + 69;
+    return height + 68;
   }, [measurerCache, nonNullInteractions.length]);
 
-  console.log(modalHeight);
+  console.log('modalHeight', modalHeight);
+
+  const isRowLoaded = ({ index }: { index: number }) =>
+    !hasPrevious || index < nonNullInteractions.length;
+
+  const rowCount = hasPrevious ? nonNullInteractions.length + 1 : nonNullInteractions.length;
 
   const handleLoadMore = useCallback(async () => {
     loadPrevious(NOTES_PER_PAGE);
@@ -121,26 +122,21 @@ export function NotesModal({ eventRef, queryRef, fullscreen }: NotesModalProps) 
             return (
               // @ts-expect-error Bad types from react-virtualized
               <div style={style} ref={registerChild}>
-                <CommentNote commentRef={interaction} />
+                <AdmireNote admireRef={interaction} queryRef={query} />
               </div>
             );
           }}
         </CellMeasurer>
       );
     },
-    [measurerCache, nonNullInteractions]
+    [measurerCache, query, nonNullInteractions]
   );
-
-  const isRowLoaded = ({ index }: { index: number }) =>
-    !hasPrevious || index < nonNullInteractions.length;
-
-  const rowCount = hasPrevious ? nonNullInteractions.length + 1 : nonNullInteractions.length;
 
   return (
     <ModalContent fullscreen={fullscreen} height={modalHeight}>
       <WrappingVStack>
         <StyledHeader>
-          <TitleDiatypeM>Comments</TitleDiatypeM>
+          <TitleDiatypeM>Admires</TitleDiatypeM>
         </StyledHeader>
         <VStack grow>
           <AutoSizer>
@@ -165,7 +161,6 @@ export function NotesModal({ eventRef, queryRef, fullscreen }: NotesModalProps) 
             )}
           </AutoSizer>
         </VStack>
-        <CommentBox onClose={() => {}} eventRef={feedEvent} queryRef={query} />
       </WrappingVStack>
     </ModalContent>
   );
