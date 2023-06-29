@@ -91,8 +91,6 @@ export function AdmireModal({ eventRef, queryRef, fullscreen }: NotesModalProps)
     return height + 68;
   }, [measurerCache, nonNullInteractions.length]);
 
-  console.log('modalHeight', modalHeight);
-
   const isRowLoaded = ({ index }: { index: number }) =>
     !hasPrevious || index < nonNullInteractions.length;
 
