@@ -15,6 +15,7 @@ export default function UserSearchResult({ userRef }: Props) {
       fragment UserSearchResultFragment on GalleryUser {
         username
         bio
+        ...SearchResultUserFragment
       }
     `,
     userRef
@@ -31,6 +32,7 @@ export default function UserSearchResult({ userRef }: Props) {
       description={user.bio ?? ''}
       path={route}
       type="curator"
+      userRef={user}
     />
   );
 }

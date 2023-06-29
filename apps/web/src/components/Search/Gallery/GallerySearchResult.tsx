@@ -17,6 +17,7 @@ export default function GallerySearchResult({ galleryRef }: Props) {
         name
         owner {
           username
+          ...SearchResultUserFragment
         }
       }
     `,
@@ -34,6 +35,7 @@ export default function GallerySearchResult({ galleryRef }: Props) {
       description={gallery?.owner?.username ?? ''}
       path={route}
       type="gallery"
+      userRef={gallery.owner}
     />
   );
 }

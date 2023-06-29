@@ -1,14 +1,18 @@
 import Link, { LinkProps } from 'next/link';
 import { Route, route } from 'nextjs-routes';
 import { useCallback, useMemo } from 'react';
+import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
+import { SearchResultUserFragment$key } from '~/generated/SearchResultUserFragment.graphql';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
 
 import Markdown from '../core/Markdown/Markdown';
+import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM } from '../core/Text/Text';
+import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
 import { SearchFilterType } from './Search';
 import { useSearchContext } from './SearchContext';
 
@@ -17,11 +21,22 @@ type Props = {
   description: string;
   path: Route;
   type: SearchFilterType;
+  userRef?: SearchResultUserFragment$key | null;
 };
 
 const MAX_DESCRIPTION_CHARACTER = 150;
 
-export default function SearchResult({ name, description, path, type }: Props) {
+export default function SearchResult({ name, description, path, type, userRef }: Props) {
+  const user = useFragment(
+    graphql`
+      fragment SearchResultUserFragment on GalleryUser {
+        __typename
+        ...ProfilePictureFragment
+      }
+    `,
+    userRef || null
+  );
+
   const { hideDrawer } = useDrawerActions();
   const { keyword } = useSearchContext();
 
@@ -69,14 +84,23 @@ export default function SearchResult({ name, description, path, type }: Props) {
 
   return (
     <StyledSearchResult className="SearchResult" href={path} onClick={handleClick}>
-      <BaseM>
-        <Markdown text={highlightedName} />
-      </BaseM>
-      <StyledDescription>
-        <BaseM>
-          <Markdown text={highlightedDescription} />
-        </BaseM>
-      </StyledDescription>
+      <HStack gap={4} align="center">
+        {user && (
+          <div>
+            <ProfilePicture size="md" userRef={user} />
+          </div>
+        )}
+        <VStack>
+          <BaseM>
+            <Markdown text={highlightedName} />
+          </BaseM>
+          <StyledDescription>
+            <BaseM>
+              <Markdown text={highlightedDescription} />
+            </BaseM>
+          </StyledDescription>
+        </VStack>
+      </HStack>
     </StyledSearchResult>
   );
 }
