@@ -17,7 +17,7 @@ const PROD_FLAGS: Record<FeatureFlag, boolean> = {
 
 const DEV_FLAGS: Record<FeatureFlag, boolean> = {
   BIG_EASEL: false,
-  PFP: false,
+  PFP: true,
 };
 
 const ROLE_FLAGS: Record<Role, Record<FeatureFlag, boolean>> = {

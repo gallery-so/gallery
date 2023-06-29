@@ -24,6 +24,7 @@ function MemberListPage({ queryRef }: Props) {
           id
           ...MemberListTierFragment
         }
+        ...MemberListTierQueryFragment
       }
     `,
     queryRef
@@ -42,7 +43,7 @@ function MemberListPage({ queryRef }: Props) {
         </StyledTokenHolderListFilterContainer>
         <StyledTierWrapper>
           {removeNullValues(query.membershipTiers).map((tier) => (
-            <MemberListTier key={tier.id} tierRef={tier} />
+            <MemberListTier key={tier.id} tierRef={tier} queryRef={query} />
           ))}
         </StyledTierWrapper>
       </MemberListPageProvider>

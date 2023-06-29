@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { graphql, usePaginationFragment } from 'react-relay';
+import { graphql, useFragment, usePaginationFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import Loader from '~/components/core/Loader/Loader';
@@ -8,12 +8,14 @@ import TokenHolderList from '~/components/TokenHolderList/TokenHolderList';
 import { LIST_ITEM_PER_PAGE } from '~/constants/community';
 import { GLOBAL_FOOTER_HEIGHT } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
 import { CommunityHolderListFragment$key } from '~/generated/CommunityHolderListFragment.graphql';
+import { CommunityHolderListQueryFragment$key } from '~/generated/CommunityHolderListQueryFragment.graphql';
 
 type Props = {
   communityRef: CommunityHolderListFragment$key;
+  queryRef: CommunityHolderListQueryFragment$key;
 };
 
-export default function CommunityHolderList({ communityRef }: Props) {
+export default function CommunityHolderList({ communityRef, queryRef }: Props) {
   const {
     data: community,
     loadNext,
@@ -42,6 +44,15 @@ export default function CommunityHolderList({ communityRef }: Props) {
       }
     `,
     communityRef
+  );
+
+  const query = useFragment(
+    graphql`
+      fragment CommunityHolderListQueryFragment on Query {
+        ...TokenHolderListQueryFragment
+      }
+    `,
+    queryRef
   );
 
   const [isFetching, setIsFetching] = useState(false);
@@ -97,10 +108,18 @@ export default function CommunityHolderList({ communityRef }: Props) {
     <div>
       <StyledListWrapper>
         {galleryMembers.length > 0 && (
-          <TokenHolderList title="Collectors on Gallery" tokenHoldersRef={galleryMembers} />
+          <TokenHolderList
+            title="Collectors on Gallery"
+            tokenHoldersRef={galleryMembers}
+            queryRef={query}
+          />
         )}
         {nonGalleryMembers.length > 0 && (
-          <TokenHolderList title="Other owners" tokenHoldersRef={nonGalleryMembers} />
+          <TokenHolderList
+            title="Other owners"
+            tokenHoldersRef={nonGalleryMembers}
+            queryRef={query}
+          />
         )}
 
         {isFetching && (

@@ -16,6 +16,7 @@ import MemberListFilter from '~/components/TokenHolderList/TokenHolderListFilter
 import { GRID_ENABLED_COMMUNITY_ADDRESSES } from '~/constants/community';
 import MemberListPageProvider from '~/contexts/memberListPage/MemberListPageContext';
 import { CommunityPageViewFragment$key } from '~/generated/CommunityPageViewFragment.graphql';
+import { CommunityPageViewQueryFragment$key } from '~/generated/CommunityPageViewQueryFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import colors from '~/shared/theme/colors';
 import { getExternalAddressLink, truncateAddress } from '~/shared/utils/wallet';
@@ -27,9 +28,10 @@ import LayoutToggleButton from './LayoutToggleButton';
 
 type Props = {
   communityRef: CommunityPageViewFragment$key;
+  queryRef: CommunityPageViewQueryFragment$key;
 };
 
-export default function CommunityPageView({ communityRef }: Props) {
+export default function CommunityPageView({ communityRef, queryRef }: Props) {
   const community = useFragment(
     graphql`
       fragment CommunityPageViewFragment on Community {
@@ -46,6 +48,15 @@ export default function CommunityPageView({ communityRef }: Props) {
       }
     `,
     communityRef
+  );
+
+  const query = useFragment(
+    graphql`
+      fragment CommunityPageViewQueryFragment on Query {
+        ...CommunityHolderListQueryFragment
+      }
+    `,
+    queryRef
   );
 
   const { name, description, contractAddress, badgeURL } = community;
@@ -151,7 +162,7 @@ export default function CommunityPageView({ communityRef }: Props) {
               <MemberListFilter />
             </StyledMemberListFilterContainer>
             <StyledListWrapper>
-              <CommunityHolderList communityRef={community} />
+              <CommunityHolderList communityRef={community} queryRef={query} />
             </StyledListWrapper>
           </>
         )}

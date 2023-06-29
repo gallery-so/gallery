@@ -6,28 +6,33 @@ import styled from 'styled-components';
 import breakpoints, { size } from '~/components/core/breakpoints';
 import { Directions } from '~/components/core/enums';
 import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
-import { BaseXL } from '~/components/core/Text/Text';
+import { BaseM } from '~/components/core/Text/Text';
 import { useMemberListPageActions } from '~/contexts/memberListPage/MemberListPageContext';
 import { TokenHolderListItemFragment$key } from '~/generated/TokenHolderListItemFragment.graphql';
+import { TokenHolderListItemQueryFragment$key } from '~/generated/TokenHolderListItemQueryFragment.graphql';
 import { useBreakpoint } from '~/hooks/useWindowSize';
 import useDebounce from '~/shared/hooks/useDebounce';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
 import { graphqlTruncateUniversalUsername } from '~/shared/utils/wallet';
 import detectMobileDevice from '~/utils/detectMobileDevice';
+import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
+import { HStack } from '../core/Spacer/Stack';
 import HoverCardOnUsername from '../HoverCard/HoverCardOnUsername';
+import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
 import MemberListGalleryPreview from './TokenHolderListGalleryPreview';
 
 type Props = {
   tokenHolderRef: TokenHolderListItemFragment$key;
   direction: Directions.LEFT | Directions.RIGHT;
   fadeUsernames: boolean;
+  queryRef: TokenHolderListItemQueryFragment$key;
 };
 
 const DISABLED_GALLERY_PREVIEW = true;
 
-function TokenHolderListItem({ tokenHolderRef, direction, fadeUsernames }: Props) {
+function TokenHolderListItem({ tokenHolderRef, direction, fadeUsernames, queryRef }: Props) {
   const { setFadeUsernames } = useMemberListPageActions();
 
   const owner = useFragment(
@@ -39,12 +44,24 @@ function TokenHolderListItem({ tokenHolderRef, direction, fadeUsernames }: Props
 
           ...walletTruncateUniversalUsernameFragment
           ...HoverCardOnUsernameFragment
+          ...ProfilePictureFragment
         }
         previewTokens
       }
     `,
     tokenHolderRef
   );
+
+  const query = useFragment(
+    graphql`
+      fragment TokenHolderListItemQueryFragment on Query {
+        ...isFeatureEnabledFragment
+      }
+    `,
+    queryRef
+  );
+
+  const isPfpEnabled = isFeatureEnabled(FeatureFlag.PFP, query);
 
   const username = graphqlTruncateUniversalUsername(owner.user);
 
@@ -117,7 +134,10 @@ function TokenHolderListItem({ tokenHolderRef, direction, fadeUsernames }: Props
               underlined={false}
               fadeUsernames={fadeUsernames}
             >
-              <StyledUsername>{username}</StyledUsername>
+              <HStack gap={4} align="center">
+                {isPfpEnabled && <ProfilePicture size="sm" userRef={owner.user} />}
+                <StyledUsername>{username}</StyledUsername>
+              </HStack>
             </StyledGalleryLink>
           </HoverCardOnUsername>
         )}
@@ -167,11 +187,12 @@ const StyledGalleryLink = styled(GalleryLink)<{ fadeUsernames: boolean }>`
   }
 `;
 
-const StyledUsername = styled(BaseXL)`
+const StyledUsername = styled(BaseM)`
   overflow: hidden;
   text-overflow: ellipsis;
   margin-right: 16px;
   color: inherit;
+  font-weight: 700;
 `;
 
 export default TokenHolderListItem;
