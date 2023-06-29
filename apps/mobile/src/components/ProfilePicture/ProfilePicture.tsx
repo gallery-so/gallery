@@ -1,3 +1,4 @@
+import { ViewProps } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
@@ -7,10 +8,11 @@ import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import { RawProfilePicture, RawProfilePictureProps } from './RawProfilePicture';
 
 export type ProfilePictureProps = {
+  style?: ViewProps['style'];
   userRef: ProfilePictureFragment$key | null;
 } & Pick<RawProfilePictureProps, 'size' | 'isEditable' | 'onPress' | 'hasInset' | 'style'>;
 
-export function ProfilePicture({ userRef, ...rest }: ProfilePictureProps) {
+export function ProfilePicture({ userRef, style, ...rest }: ProfilePictureProps) {
   const user = useFragment(
     graphql`
       fragment ProfilePictureFragment on GalleryUser {
@@ -42,6 +44,7 @@ export function ProfilePicture({ userRef, ...rest }: ProfilePictureProps) {
       eventElementId="ProfilePicture"
       eventName="ProfilePicture pressed"
       letter={letter ?? '?'}
+      style={style}
       {...rest}
     />
   );
@@ -53,6 +56,7 @@ export function ProfilePicture({ userRef, ...rest }: ProfilePictureProps) {
           eventElementId="ProfilePicture"
           eventName="ProfilePicture pressed"
           imageUrl={imageUrl}
+          style={style}
           {...rest}
         />
       </ReportingErrorBoundary>

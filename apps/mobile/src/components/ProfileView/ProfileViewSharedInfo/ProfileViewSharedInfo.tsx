@@ -23,9 +23,13 @@ export default function ProfileViewSharedInfo({ userRef }: Props) {
   );
 
   return (
-    <View className="px-4 mb-3">
-      <ProfileViewSharedCommunities userRef={user} />
-      <ProfileViewSharedFollowers userRef={user} />
+    <View className="px-4 mb-3 space-y-1">
+      <View>
+        <ProfileViewSharedCommunities userRef={user} />
+      </View>
+      <View>
+        <ProfileViewSharedFollowers userRef={user} />
+      </View>
     </View>
   );
 }

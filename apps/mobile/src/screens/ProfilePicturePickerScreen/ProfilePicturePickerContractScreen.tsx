@@ -102,14 +102,14 @@ export function ProfilePicturePickerContractScreen() {
         </View>
 
         <View className="flex flex-col space-y-4 px-4">
-          {rows.map((row) => {
+          {rows.map((row, index) => {
             return (
-              <View className="flex flex-row space-x-4">
+              <View key={index} className="flex flex-row space-x-4">
                 {row.map((token) => {
                   return (
                     <ProfilePicturePickerSingularAsset
-                      onProfilePictureChange={handleProfilePictureChange}
                       key={token.dbid}
+                      onProfilePictureChange={handleProfilePictureChange}
                       tokenRef={token}
                     />
                   );

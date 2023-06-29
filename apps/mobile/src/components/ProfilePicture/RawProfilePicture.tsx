@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import { ResizeMode } from 'expo-av';
 import { useState } from 'react';
 import { View, ViewProps } from 'react-native';
@@ -60,6 +61,7 @@ export function RawProfilePicture({
   return (
     <GalleryTouchableOpacity
       onPress={onPress}
+      disabled={!onPress}
       onPressIn={() => setIsActive(true)}
       onPressOut={() => setIsActive(false)}
       activeOpacity={1}
@@ -75,7 +77,12 @@ export function RawProfilePicture({
         },
       ]}
     >
-      <View className="flex justify-center items-center w-full h-full rounded-full bg-offWhite border border-black-800">
+      <View
+        className={clsx('flex justify-center items-center w-full h-full rounded-full bg-offWhite', {
+          'border border-black-800': 'letter' in rest,
+          'border border-faint': 'imageUrl' in rest,
+        })}
+      >
         {'letter' in rest && (
           <Typography
             font={{ family: 'GTAlpina', weight: 'Light' }}

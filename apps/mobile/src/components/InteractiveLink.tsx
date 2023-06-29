@@ -1,11 +1,11 @@
 import clsx from 'clsx';
 import { PropsWithChildren, useCallback } from 'react';
-import { Linking, TouchableOpacityProps } from 'react-native';
+import { Linking, TextProps, TouchableOpacityProps } from 'react-native';
 
 import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext';
 
 import { GalleryTouchableOpacity } from './GalleryTouchableOpacity';
-import { Typography } from './Typography';
+import { Typography, TypographyProps } from './Typography';
 
 export type InteractiveLinkProps = PropsWithChildren<{
   href?: string;
@@ -14,6 +14,8 @@ export type InteractiveLinkProps = PropsWithChildren<{
   style?: TouchableOpacityProps['style'];
   // for tracking
   type: string | null;
+  textStyle?: TextProps['style'];
+  font?: TypographyProps['font'];
   trackingProps?: GalleryElementTrackingProps['properties'];
 }>;
 
@@ -24,6 +26,8 @@ export function InteractiveLink({
   showUnderline = false,
   children,
   type,
+  textStyle,
+  font,
   trackingProps = {},
 }: InteractiveLinkProps) {
   const handlePress = useCallback(() => {
@@ -50,7 +54,8 @@ export function InteractiveLink({
         className={clsx(`text-shadow dark:text-white text-sm`, {
           underline: showUnderline,
         })}
-        font={{ family: 'ABCDiatype', weight: 'Regular' }}
+        style={[textStyle, { lineHeight: undefined }]}
+        font={font ?? { family: 'ABCDiatype', weight: 'Regular' }}
       >
         {children}
       </Typography>

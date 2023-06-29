@@ -50,11 +50,11 @@ export function SettingsProfileScreen() {
 
   return (
     <View style={{ paddingTop: top }} className="flex-1 flex flex-col bg-white dark:bg-black-900">
-      <View className="px-4 pb-8">
+      <View className="px-4 pb-4">
         <BackButton />
       </View>
 
-      <View className="px-4 flex flex-col space-y-4">
+      <View className="px-4 flex flex-col space-y-2">
         <Typography className="text-lg" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
           Your profile
         </Typography>
