@@ -74,16 +74,8 @@ export function FeedEventSocializeSection({
   const [admire] = nonNullAdmires;
   return (
     <VStack gap={4}>
-      {admire && <AdmireLine eventRef={event} queryRef={query} />}
-      <HStack justify="space-between" align="flex-start" gap={24}>
-        <VStack shrink>
-          <Interactions
-            onPotentialLayoutShift={onPotentialLayoutShift}
-            eventRef={event}
-            queryRef={query}
-          />
-        </VStack>
-
+      <HStack justify="space-between" align="center" gap={24}>
+        {admire && <AdmireLine eventRef={event} queryRef={query} />}
         <HStack align="center">
           <IconWrapper>
             <AdmireButton eventRef={event} queryRef={query} />
@@ -93,6 +85,15 @@ export function FeedEventSocializeSection({
             <CommentBoxIcon eventRef={event} queryRef={query} />
           </IconWrapper>
         </HStack>
+      </HStack>
+      <HStack justify="space-between" align="flex-start" gap={24}>
+        <VStack shrink>
+          <Interactions
+            onPotentialLayoutShift={onPotentialLayoutShift}
+            eventRef={event}
+            queryRef={query}
+          />
+        </VStack>
       </HStack>
     </VStack>
   );
