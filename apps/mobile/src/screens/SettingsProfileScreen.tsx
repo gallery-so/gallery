@@ -70,7 +70,7 @@ export function SettingsProfileScreen() {
         <PfpBottomSheet ref={bottomSheetRef} queryRef={query} />
       </View>
 
-      <View className="px-3 py-4 bg-offWhite flex flex-row justify-between mx-4">
+      <View className="px-3 py-4 bg-offWhite dark:bg-black-800 flex flex-row justify-between mx-4">
         <View className="flex flex-col space-y-2">
           <Typography className="text-2xl" font={{ family: 'GTAlpina', weight: 'StandardLight' }}>
             {user.username}

@@ -31,7 +31,7 @@ export function Select<T extends string>({
       style={style}
       eventName={`${eventElementId} opened`}
       eventElementId={eventElementId}
-      className="bg-faint h-7 py-1 px-2 flex flex-row items-center justify-between space-x-2"
+      className="bg-faint dark:bg-black-500 h-7 py-1 px-2 flex flex-row items-center justify-between space-x-2"
     >
       <Typography font={{ family: 'ABCDiatype', weight: 'Regular' }} className="text-sm">
         {selected?.label}

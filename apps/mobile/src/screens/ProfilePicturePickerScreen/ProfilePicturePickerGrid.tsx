@@ -231,7 +231,7 @@ function TokenGroup({ tokenRefs, contractAddress, style }: TokenGroupProps) {
   }
 
   return (
-    <View style={style} className="flex-1 aspect-square bg-[#EEEEEE]">
+    <View style={style} className="flex-1 aspect-square bg-offWhite dark:bg-black-800">
       {tokens.length === 1 ? (
         <ProfilePicturePickerSingularAsset
           onProfilePictureChange={handleProfilePictureChange}
