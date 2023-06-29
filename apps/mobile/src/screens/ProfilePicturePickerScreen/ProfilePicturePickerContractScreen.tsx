@@ -23,6 +23,8 @@ export function ProfilePicturePickerContractScreen() {
             user {
               tokens {
                 dbid
+                ownerIsCreator
+                ownerIsHolder
                 contract {
                   name
                   contractAddress {
@@ -55,17 +57,31 @@ export function ProfilePicturePickerContractScreen() {
         return token?.contract?.contractAddress?.address === route.params.contractAddress;
       })
     );
-  }, [query.viewer?.user?.tokens, route.params.contractAddress]);
+  }, [query.viewer?.user?.tokens, route.params.contractAddress, sort]);
+
+  const filteredTokens = useMemo(() => {
+    return tokens.filter((token) => {
+      if (sort === 'Collected') {
+        return token.ownerIsHolder;
+      }
+
+      if (sort === 'Created') {
+        return token.ownerIsCreator;
+      }
+
+      return false;
+    });
+  }, []);
 
   const contractName = tokens[0]?.contract?.name;
 
   const rows = useMemo(() => {
     const rows = [];
-    for (let i = 0; i < tokens.length; i += 3) {
-      rows.push(tokens.slice(i, i + 3));
+    for (let i = 0; i < filteredTokens.length; i += 3) {
+      rows.push(filteredTokens.slice(i, i + 3));
     }
     return rows;
-  }, [tokens]);
+  }, [filteredTokens]);
 
   return (
     <View className="flex-1 bg-white dark:bg-black-900" style={{ paddingTop: top }}>
