@@ -119,7 +119,7 @@ function FollowingText({ userRefs, onSeeAll, style }: FollowingTextProps) {
         const isLast = index === usersToShow.length - 1;
 
         return (
-          <View key={user.dbid} className="flex flex-row items-baseline">
+          <View key={user.dbid} className="flex flex-row">
             <InteractiveLink
               onPress={() => {
                 if (user.username) {
@@ -142,7 +142,7 @@ function FollowingText({ userRefs, onSeeAll, style }: FollowingTextProps) {
       })}
 
       {hasMore && (
-        <View className="flex flex-row items-baseline">
+        <View className="flex flex-row">
           <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
             and{' '}
           </Typography>
