@@ -16,19 +16,24 @@ import {
   ProfilePicturePickerGridTokensFragment$key,
 } from '~/generated/ProfilePicturePickerGridTokensFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { NetworkChoice } from '~/screens/ProfilePicturePickerScreen/ProfilePicturePickerFilterBottomSheet';
 import { ProfilePicturePickerSingularAsset } from '~/screens/ProfilePicturePickerScreen/ProfilePicturePickerSingularAsset';
 import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 type ProfilePicturePickerGridProps = {
   style?: ViewProps['style'];
-  searchQuery: string;
+  searchCriteria: {
+    searchQuery: string;
+    ownerFilter: 'Collected' | 'Created';
+    networkFilter: NetworkChoice;
+  };
   queryRef: ProfilePicturePickerGridFragment$key;
 };
 
 export function ProfilePicturePickerGrid({
   queryRef,
-  searchQuery,
+  searchCriteria,
   style,
 }: ProfilePicturePickerGridProps) {
   const query = useFragment(
@@ -53,6 +58,8 @@ export function ProfilePicturePickerGrid({
   const tokens = useFragment<ProfilePicturePickerGridTokensFragment$key>(
     graphql`
       fragment ProfilePicturePickerGridTokensFragment on Token @relay(plural: true) {
+        chain
+
         contract {
           # Keeping name in the cache so the contract picker screen
           # already has the name in the cache
@@ -75,10 +82,24 @@ export function ProfilePicturePickerGrid({
   );
 
   const filteredTokens = useMemo(() => {
-    return tokens.filter((token) => {
-      return token?.contract?.name?.toLowerCase().includes(searchQuery.toLowerCase());
-    });
-  }, [searchQuery, tokens]);
+    return tokens
+      .filter((token) => {
+        if (!searchCriteria.searchQuery) {
+          return true;
+        }
+
+        return token?.contract?.name
+          ?.toLowerCase()
+          .includes(searchCriteria.searchQuery.toLowerCase());
+      })
+      .filter((token) => {
+        if (searchCriteria.networkFilter === 'all') {
+          return true;
+        }
+
+        return token.chain === searchCriteria.networkFilter;
+      });
+  }, [searchCriteria.networkFilter, searchCriteria.searchQuery, tokens]);
 
   type Group = {
     address: string;

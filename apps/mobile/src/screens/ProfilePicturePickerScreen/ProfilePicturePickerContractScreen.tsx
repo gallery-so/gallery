@@ -90,7 +90,8 @@ export function ProfilePicturePickerContractScreen() {
 
         <View className="px-4">
           <Select
-            eventElementId="ProfilePictureSort"
+            title="Owner Filter"
+            eventElementId="ProfilePictureOwnerFilter"
             className="w-32"
             options={[
               { id: 'Collected', label: 'Collected' },

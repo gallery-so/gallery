@@ -14,7 +14,10 @@ import { Typography } from '~/components/Typography';
 import { ProfilePicturePickerScreenQuery } from '~/generated/ProfilePicturePickerScreenQuery.graphql';
 import { SearchIcon } from '~/navigation/MainTabNavigator/SearchIcon';
 
-import { ProfilePicturePickerFilterBottomSheet } from './ProfilePicturePickerFilterBottomSheet';
+import {
+  NetworkChoice,
+  ProfilePicturePickerFilterBottomSheet,
+} from './ProfilePicturePickerFilterBottomSheet';
 import { ProfilePicturePickerGrid } from './ProfilePicturePickerGrid';
 
 export function ProfilePicturePickerScreen() {
@@ -36,6 +39,7 @@ export function ProfilePicturePickerScreen() {
 
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [filter, setFilter] = useState<'Collected' | 'Created'>('Collected');
+  const [networkFilter, setNetworkFilter] = useState<NetworkChoice>('all');
 
   return (
     <View className="flex-1 bg-white dark:bg-black-900" style={{ paddingTop: top }}>
@@ -57,6 +61,7 @@ export function ProfilePicturePickerScreen() {
           <View className="px-4">
             <FadedInput
               // TODO: Follow up w/ Fraser on input divergence here
+              inputMode="search"
               value={searchQuery}
               onChangeText={setSearchQuery}
               style={{ height: 36 }}
@@ -68,8 +73,8 @@ export function ProfilePicturePickerScreen() {
           <View className="px-4 flex flex-row items-center justify-between">
             <Select
               className="w-32"
-              title="Set Filter"
-              eventElementId="ProfilePictureFilter"
+              title="Owner Filter"
+              eventElementId="ProfilePictureOwnerFilter"
               onChange={setFilter}
               selectedId={filter}
               options={[
@@ -94,13 +99,24 @@ export function ProfilePicturePickerScreen() {
                 eventName="ProfilePictureSelectorSettingsButton pressed"
               />
 
-              <ProfilePicturePickerFilterBottomSheet ref={filterBottomSheetRef} />
+              <ProfilePicturePickerFilterBottomSheet
+                network={networkFilter}
+                onNetworkChange={setNetworkFilter}
+                bottomSheetRef={filterBottomSheetRef}
+              />
             </View>
           </View>
 
           <View className="flex-grow flex-1 w-full">
             <Suspense fallback={null}>
-              <ProfilePicturePickerGrid searchQuery={searchQuery} queryRef={query} />
+              <ProfilePicturePickerGrid
+                searchCriteria={{
+                  searchQuery,
+                  ownerFilter: 'Created',
+                  networkFilter: networkFilter,
+                }}
+                queryRef={query}
+              />
             </Suspense>
           </View>
         </View>
