@@ -4,7 +4,7 @@ import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import { HStack } from '~/components/core/Spacer/Stack';
-import { BODY_FONT_FAMILY } from '~/components/core/Text/Text';
+import { BaseS, BODY_FONT_FAMILY } from '~/components/core/Text/Text';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { ProfilePictureStack } from '~/components/ProfilePictureStack';
 import { AdmireLineEventFragment$key } from '~/generated/AdmireLineEventFragment.graphql';
@@ -103,8 +103,17 @@ export function AdmireLine({ eventRef, queryRef }: CommentLineProps) {
 
   if (isPfpEnabled) {
     return (
-      <HStack gap={4} align="flex-end" onClick={openAdmireModal}>
+      <HStack gap={4} align="center" onClick={openAdmireModal}>
         <ProfilePictureStack usersRef={nonNullAdmires} total={totalAdmires} />
+
+        <BaseS>
+          {totalAdmires > 1 ? (
+            <strong>{totalAdmires} collectors </strong>
+          ) : (
+            <strong>{admirerName} </strong>
+          )}
+          admired this
+        </BaseS>
       </HStack>
     );
   }
