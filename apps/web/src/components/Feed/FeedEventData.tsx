@@ -52,12 +52,28 @@ const getEventComponent = ({
 }: getEventComponentProps) => {
   switch (eventData?.__typename) {
     case 'CollectionCreatedFeedEventData':
-      return <CollectionCreatedFeedEvent isSubEvent={isSubEvent} eventDataRef={eventData} />;
+      return (
+        <CollectionCreatedFeedEvent
+          isSubEvent={isSubEvent}
+          eventDataRef={eventData}
+          queryRef={query}
+        />
+      );
     case 'CollectionUpdatedFeedEventData':
-      return <CollectionUpdatedFeedEvent isSubEvent={isSubEvent} eventDataRef={eventData} />;
+      return (
+        <CollectionUpdatedFeedEvent
+          isSubEvent={isSubEvent}
+          eventDataRef={eventData}
+          queryRef={query}
+        />
+      );
     case 'CollectorsNoteAddedToTokenFeedEventData':
       return (
-        <CollectorsNoteAddedToTokenFeedEvent isSubEvent={isSubEvent} eventDataRef={eventData} />
+        <CollectorsNoteAddedToTokenFeedEvent
+          isSubEvent={isSubEvent}
+          eventDataRef={eventData}
+          queryRef={query}
+        />
       );
     case 'TokensAddedToCollectionFeedEventData':
       return (
@@ -65,6 +81,7 @@ const getEventComponent = ({
           isSubEvent={isSubEvent}
           caption={unescape(caption ?? '')}
           eventDataRef={eventData}
+          queryRef={query}
         />
       );
     case 'CollectorsNoteAddedToCollectionFeedEventData':
@@ -72,6 +89,7 @@ const getEventComponent = ({
         <CollectorsNoteAddedToCollectionFeedEvent
           isSubEvent={isSubEvent}
           eventDataRef={eventData}
+          queryRef={query}
         />
       );
     case 'UserFollowedUsersFeedEventData':
@@ -102,6 +120,11 @@ export function NonRecursiveFeedEventData({
     graphql`
       fragment FeedEventDataNonRecursiveQueryFragment on Query {
         ...UserFollowedUsersFeedEventQueryFragment
+        ...CollectionCreatedFeedEventQueryFragment
+        ...CollectionUpdatedFeedEventQueryFragment
+        ...CollectorsNoteAddedToTokenFeedEventQueryFragment
+        ...TokensAddedToCollectionFeedEventQueryFragment
+        ...CollectorsNoteAddedToCollectionFeedEventQueryFragment
       }
     `,
     queryRef

@@ -12,6 +12,7 @@ import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { CollectorsNoteAddedToCollectionFeedEventFragment$key } from '~/generated/CollectorsNoteAddedToCollectionFeedEventFragment.graphql';
+import { CollectorsNoteAddedToCollectionFeedEventQueryFragment$key } from '~/generated/CollectorsNoteAddedToCollectionFeedEventQueryFragment.graphql';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
@@ -30,11 +31,13 @@ import {
 
 type Props = {
   eventDataRef: CollectorsNoteAddedToCollectionFeedEventFragment$key;
+  queryRef: CollectorsNoteAddedToCollectionFeedEventQueryFragment$key;
   isSubEvent?: boolean;
 };
 
 export default function CollectorsNoteAddedToCollectionFeedEvent({
   eventDataRef,
+  queryRef,
   isSubEvent = false,
 }: Props) {
   const event = useFragment(
@@ -59,6 +62,15 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({
       }
     `,
     eventDataRef
+  );
+
+  const query = useFragment(
+    graphql`
+      fragment CollectorsNoteAddedToCollectionFeedEventQueryFragment on Query {
+        ...FeedEventTokenPreviewsQueryFragment
+      }
+    `,
+    queryRef
   );
 
   const collectionPagePath: Route = {
@@ -115,6 +127,7 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({
             <FeedEventTokenPreviews
               isInCaption={Boolean(event.newCollectorsNote)}
               tokenToPreviewRefs={nonNullTokens}
+              queryRef={query}
             />
           </StyledEventContent>
           {/* [GAL-608] Bring this back once we fix perf around tokenURI

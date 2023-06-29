@@ -9,6 +9,7 @@ import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, BaseS } from '~/components/core/Text/Text';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { CollectionCreatedFeedEventFragment$key } from '~/generated/CollectionCreatedFeedEventFragment.graphql';
+import { CollectionCreatedFeedEventQueryFragment$key } from '~/generated/CollectionCreatedFeedEventQueryFragment.graphql';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
@@ -29,9 +30,10 @@ import {
 type Props = {
   isSubEvent?: boolean;
   eventDataRef: CollectionCreatedFeedEventFragment$key;
+  queryRef: CollectionCreatedFeedEventQueryFragment$key;
 };
 
-export default function CollectionCreatedFeedEvent({ eventDataRef, isSubEvent }: Props) {
+export default function CollectionCreatedFeedEvent({ eventDataRef, queryRef, isSubEvent }: Props) {
   const event = useFragment(
     graphql`
       fragment CollectionCreatedFeedEventFragment on CollectionCreatedFeedEventData {
@@ -51,6 +53,15 @@ export default function CollectionCreatedFeedEvent({ eventDataRef, isSubEvent }:
       }
     `,
     eventDataRef
+  );
+
+  const query = useFragment(
+    graphql`
+      fragment CollectionCreatedFeedEventQueryFragment on Query {
+        ...FeedEventTokenPreviewsQueryFragment
+      }
+    `,
+    queryRef
   );
 
   const tokens = useMemo(() => event?.newTokens ?? [], [event?.newTokens]);
@@ -121,6 +132,7 @@ export default function CollectionCreatedFeedEvent({ eventDataRef, isSubEvent }:
             <FeedEventTokenPreviews
               isInCaption={Boolean(event.newCollectorsNote || isSubEvent)}
               tokenToPreviewRefs={tokensToPreview}
+              queryRef={query}
             />
             {showAdditionalPiecesIndicator && (
               <StyledAdditionalPieces>

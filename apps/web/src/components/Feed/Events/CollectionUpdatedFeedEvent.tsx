@@ -12,6 +12,7 @@ import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, BaseS } from '~/components/core/Text/Text';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { CollectionUpdatedFeedEventFragment$key } from '~/generated/CollectionUpdatedFeedEventFragment.graphql';
+import { CollectionUpdatedFeedEventQueryFragment$key } from '~/generated/CollectionUpdatedFeedEventQueryFragment.graphql';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
@@ -25,10 +26,15 @@ import { StyledEvent, StyledEventHeader, StyledEventText, StyledTime } from './E
 
 type Props = {
   eventDataRef: CollectionUpdatedFeedEventFragment$key;
+  queryRef: CollectionUpdatedFeedEventQueryFragment$key;
   isSubEvent?: boolean;
 };
 
-export default function CollectionUpdatedFeedEvent({ eventDataRef, isSubEvent = false }: Props) {
+export default function CollectionUpdatedFeedEvent({
+  eventDataRef,
+  queryRef,
+  isSubEvent = false,
+}: Props) {
   const event = useFragment(
     graphql`
       fragment CollectionUpdatedFeedEventFragment on CollectionUpdatedFeedEventData {
@@ -48,6 +54,15 @@ export default function CollectionUpdatedFeedEvent({ eventDataRef, isSubEvent = 
       }
     `,
     eventDataRef
+  );
+
+  const query = useFragment(
+    graphql`
+      fragment CollectionUpdatedFeedEventQueryFragment on Query {
+        ...FeedEventTokenPreviewsQueryFragment
+      }
+    `,
+    queryRef
   );
 
   const tokensToPreview = useMemo(() => {
@@ -90,7 +105,11 @@ export default function CollectionUpdatedFeedEvent({ eventDataRef, isSubEvent = 
             <Markdown text={unescape(event.newCollectorsNote ?? '')} inheritLinkStyling />
           </StyledQuote>
           <VStack gap={8}>
-            <FeedEventTokenPreviews isInCaption={false} tokenToPreviewRefs={tokensToPreview} />
+            <FeedEventTokenPreviews
+              isInCaption={false}
+              tokenToPreviewRefs={tokensToPreview}
+              queryRef={query}
+            />
             {showAdditionalPiecesIndicator && (
               <StyledAdditionalPieces>
                 +{numAdditionalPieces} more {pluralize(numAdditionalPieces, 'piece')}

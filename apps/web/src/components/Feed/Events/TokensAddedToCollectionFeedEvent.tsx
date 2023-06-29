@@ -11,6 +11,7 @@ import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, BaseS } from '~/components/core/Text/Text';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { TokensAddedToCollectionFeedEventFragment$key } from '~/generated/TokensAddedToCollectionFeedEventFragment.graphql';
+import { TokensAddedToCollectionFeedEventQueryFragment$key } from '~/generated/TokensAddedToCollectionFeedEventQueryFragment.graphql';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
@@ -33,11 +34,13 @@ type Props = {
   caption: string | null;
   isSubEvent?: boolean;
   eventDataRef: TokensAddedToCollectionFeedEventFragment$key;
+  queryRef: TokensAddedToCollectionFeedEventQueryFragment$key;
 };
 
 export default function TokensAddedToCollectionFeedEvent({
   caption,
   eventDataRef,
+  queryRef,
   isSubEvent = false,
 }: Props) {
   const event = useFragment(
@@ -62,6 +65,15 @@ export default function TokensAddedToCollectionFeedEvent({
       }
     `,
     eventDataRef
+  );
+
+  const query = useFragment(
+    graphql`
+      fragment TokensAddedToCollectionFeedEventQueryFragment on Query {
+        ...FeedEventTokenPreviewsQueryFragment
+      }
+    `,
+    queryRef
   );
 
   const { isPreFeed } = event;
@@ -122,6 +134,7 @@ export default function TokensAddedToCollectionFeedEvent({
           <FeedEventTokenPreviews
             isInCaption={Boolean(caption)}
             tokenToPreviewRefs={tokensToPreview}
+            queryRef={query}
           />
           {showAdditionalPiecesIndicator && !isPreFeed && (
             <StyledAdditionalPieces>
