@@ -95,8 +95,6 @@ export function NotesModal({ eventRef, queryRef, fullscreen }: NotesModalProps) 
     return height + 68 + 69;
   }, [measurerCache, nonNullInteractions.length]);
 
-  console.log(modalHeight);
-
   const handleLoadMore = useCallback(async () => {
     loadPrevious(NOTES_PER_PAGE);
   }, [loadPrevious]);
@@ -165,7 +163,7 @@ export function NotesModal({ eventRef, queryRef, fullscreen }: NotesModalProps) 
             )}
           </AutoSizer>
         </VStack>
-        <CommentBox onClose={() => {}} eventRef={feedEvent} queryRef={query} />
+        <CommentBox eventRef={feedEvent} queryRef={query} />
       </WrappingVStack>
     </ModalContent>
   );

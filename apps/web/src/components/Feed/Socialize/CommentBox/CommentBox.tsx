@@ -25,12 +25,11 @@ import colors from '~/shared/theme/colors';
 const MAX_TEXT_LENGTH = 100;
 
 type Props = {
-  onClose: () => void;
   eventRef: CommentBoxFragment$key;
   queryRef: CommentBoxQueryFragment$key;
 };
 
-export function CommentBox({ eventRef, queryRef, onClose }: Props) {
+export function CommentBox({ eventRef, queryRef }: Props) {
   const query = useFragment(
     graphql`
       fragment CommentBoxQueryFragment on Query {
@@ -160,8 +159,6 @@ export function CommentBox({ eventRef, queryRef, onClose }: Props) {
 
       if (response.commentOnFeedEvent?.__typename === 'CommentOnFeedEventPayload') {
         resetInputState();
-
-        onClose();
       } else {
         pushErrorToast();
 
@@ -182,7 +179,6 @@ export function CommentBox({ eventRef, queryRef, onClose }: Props) {
     event.dbid,
     event.id,
     isSubmittingComment,
-    onClose,
     pushToast,
     query.viewer?.user?.dbid,
     query.viewer?.user?.id,
