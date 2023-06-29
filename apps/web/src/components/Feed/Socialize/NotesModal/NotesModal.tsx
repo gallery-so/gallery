@@ -83,6 +83,20 @@ export function NotesModal({ eventRef, queryRef, fullscreen }: NotesModalProps) 
     });
   });
 
+  const modalHeight = useMemo(() => {
+    let height = 0;
+
+    for (let i = 0; i < nonNullInteractions.length; i++) {
+      height += measurerCache.getHeight(i, 0);
+    }
+
+    // 68 is the height of the modal header + bottom padding
+    // 69 is the height of the comment box
+    return height + 68 + 69;
+  }, [measurerCache, nonNullInteractions.length]);
+
+  console.log(modalHeight);
+
   const handleLoadMore = useCallback(async () => {
     loadPrevious(NOTES_PER_PAGE);
   }, [loadPrevious]);
@@ -123,7 +137,7 @@ export function NotesModal({ eventRef, queryRef, fullscreen }: NotesModalProps) 
   const rowCount = hasPrevious ? nonNullInteractions.length + 1 : nonNullInteractions.length;
 
   return (
-    <ModalContent fullscreen={fullscreen}>
+    <ModalContent fullscreen={fullscreen} height={modalHeight}>
       <WrappingVStack>
         <StyledHeader>
           <TitleDiatypeM>Comments</TitleDiatypeM>
@@ -166,11 +180,12 @@ const StyledHeader = styled.div`
   padding-left: ${MODAL_PADDING_PX}px;
 `;
 
-const ModalContent = styled.div<{ fullscreen: boolean }>`
-  height: ${({ fullscreen }) => (fullscreen ? '100%' : '640px')};
+const ModalContent = styled.div<{ fullscreen: boolean; height: number }>`
+  height: ${({ fullscreen, height }) => (fullscreen ? '100%' : `${height}px`)};
   width: ${({ fullscreen }) => (fullscreen ? '100%' : '540px')};
   display: flex;
   flex-direction: column;
   padding: ${MODAL_PADDING_PX}px 0px 0px;
   max-height: 420px;
+  min-height: 170px;
 `;
