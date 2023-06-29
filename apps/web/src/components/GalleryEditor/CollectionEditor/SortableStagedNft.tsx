@@ -13,10 +13,7 @@ import { useNftRetry } from '~/hooks/useNftRetry';
 import isLiveMediaType from '~/utils/isLiveMediaType';
 import { getBackgroundColorOverrideForContract } from '~/utils/token';
 
-import LiveDisplayButton, {
-  StyledVideoDisabledIcon,
-  StyledVideoEnabledIcon,
-} from './LiveDisplayButton';
+import LiveDisplayButton from './LiveDisplayButton';
 import StagedNftImage from './StagedNftImage';
 import UnstageButton from './UnstageButton';
 
@@ -137,15 +134,6 @@ export const StyledSortableNft = styled.div<{
     backgroundColorOverride && `background-color: ${backgroundColorOverride}`}};
   
   user-select: none;
-
-  &:hover ${StyledVideoEnabledIcon} {
-    mix-blend-mode: unset;
-  }
-
-  &:hover ${StyledVideoDisabledIcon} {
-    mix-blend-mode: unset;
-  }
-
 
   &:hover ${StyledUnstageButton} {
     opacity: 1;

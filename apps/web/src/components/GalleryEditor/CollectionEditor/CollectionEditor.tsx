@@ -16,7 +16,7 @@ type Props = {
 const collectionEditorViewerFragment = graphql`
   fragment CollectionEditorViewerFragment on Viewer {
     user @required(action: THROW) {
-      tokens {
+      tokens(ownershipFilter: [Creator, Holder]) {
         ...StagingAreaFragment
 
         # Escape hatch for data processing util files

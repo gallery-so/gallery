@@ -34,6 +34,9 @@ export default function FollowButton({ queryRef, userRef, className, source }: P
               following @required(action: THROW) {
                 id @required(action: THROW)
               }
+              followers @required(action: THROW) {
+                id @required(action: THROW)
+              }
             }
           }
         }
@@ -59,6 +62,7 @@ export default function FollowButton({ queryRef, userRef, className, source }: P
 
   const loggedInUserId = useLoggedInUserId(loggedInUserQuery);
   const followingList = loggedInUserQuery.viewer?.user?.following;
+  const followersList = loggedInUserQuery.viewer?.user?.followers;
 
   const isFollowing = useMemo(() => {
     if (!followingList) {
@@ -69,6 +73,16 @@ export default function FollowButton({ queryRef, userRef, className, source }: P
     );
     return followingIds.has(userToFollow.id);
   }, [followingList, userToFollow.id]);
+
+  const followsYou = useMemo(() => {
+    if (!followersList) {
+      return false;
+    }
+    const followerIds = new Set(
+      followersList.map((following: { id: string } | null) => following?.id)
+    );
+    return followerIds.has(userToFollow.id);
+  }, [followersList, userToFollow.id]);
 
   const followUser = useFollowUser({ queryRef: loggedInUserQuery });
   const unfollowUser = useUnfollowUser({ queryRef: loggedInUserQuery });
@@ -85,6 +99,7 @@ export default function FollowButton({ queryRef, userRef, className, source }: P
 
     track('Follow Click', {
       followee: userToFollow.dbid,
+      followType: followsYou ? 'Follow back' : 'Single follow',
       source,
     });
 
@@ -95,6 +110,7 @@ export default function FollowButton({ queryRef, userRef, className, source }: P
     track,
     userToFollow.dbid,
     userToFollow.username,
+    followsYou,
     source,
     followUser,
     pushToast,
@@ -131,11 +147,11 @@ export default function FollowButton({ queryRef, userRef, className, source }: P
     } else {
       return (
         <FollowChip onClick={handleFollowClick} className={className}>
-          Follow
+          {followsYou ? 'Follow back' : 'Follow'}
         </FollowChip>
       );
     }
-  }, [className, handleFollowClick, handleUnfollowClick, isSelf, isFollowing]);
+  }, [isSelf, isFollowing, className, handleUnfollowClick, handleFollowClick, followsYou]);
 
   const handleWrapperClick = useCallback<MouseEventHandler>((event) => {
     // We want to make sure clicking these buttons doesn't bubble up to

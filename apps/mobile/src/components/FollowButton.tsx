@@ -30,6 +30,9 @@ export function FollowButton({ queryRef, userRef, style, width = 'fixed' }: Prop
               following @required(action: THROW) {
                 id @required(action: THROW)
               }
+              followers @required(action: THROW) {
+                id @required(action: THROW)
+              }
             }
           }
         }
@@ -54,6 +57,7 @@ export function FollowButton({ queryRef, userRef, style, width = 'fixed' }: Prop
 
   const loggedInUserId = useLoggedInUserId(loggedInUserQuery);
   const followingList = loggedInUserQuery.viewer?.user?.following;
+  const followersList = loggedInUserQuery.viewer?.user?.followers;
 
   const isFollowing = useMemo(() => {
     if (!followingList) {
@@ -64,6 +68,16 @@ export function FollowButton({ queryRef, userRef, style, width = 'fixed' }: Prop
     );
     return followingIds.has(userToFollow.id);
   }, [followingList, userToFollow.id]);
+
+  const followsYou = useMemo(() => {
+    if (!followersList) {
+      return false;
+    }
+    const followerIds = new Set(
+      followersList.map((following: { id: string } | null) => following?.id)
+    );
+    return followerIds.has(userToFollow.id);
+  }, [followersList, userToFollow.id]);
 
   const followUser = useFollowUser({ queryRef: loggedInUserQuery });
   const unfollowUser = useUnfollowUser({ queryRef: loggedInUserQuery });
@@ -93,12 +107,17 @@ export function FollowButton({ queryRef, userRef, style, width = 'fixed' }: Prop
       );
     } else {
       return (
-        <ButtonChip variant="primary" onPress={handleFollowPress} width={width}>
-          Follow
+        <ButtonChip
+          variant="primary"
+          width={width}
+          onPress={handleFollowPress}
+          eventProperties={{ followType: followsYou ? 'Follow back' : 'Single follow' }}
+        >
+          {followsYou ? 'Follow back' : 'Follow'}
         </ButtonChip>
       );
     }
-  }, [isSelf, isFollowing, handleUnfollowPress, width, handleFollowPress]);
+  }, [isSelf, isFollowing, handleUnfollowPress, width, handleFollowPress, followsYou]);
 
   return <View style={style}>{followChip}</View>;
 }

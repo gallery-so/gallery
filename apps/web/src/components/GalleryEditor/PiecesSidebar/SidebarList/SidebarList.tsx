@@ -1,15 +1,11 @@
 import throttle from 'lodash.throttle';
-import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useLayoutEffect, useMemo, useRef } from 'react';
 import { graphql } from 'react-relay';
 import { AutoSizer, Index, List, ListRowProps } from 'react-virtualized';
 import { readInlineData } from 'relay-runtime';
 import styled from 'styled-components';
 
-import IconContainer from '~/components/core/IconContainer';
-import { TitleXS } from '~/components/core/Text/Text';
-import { ExpandedIcon } from '~/components/GalleryEditor/PiecesSidebar/ExpandedIcon';
 import SidebarNftIcon from '~/components/GalleryEditor/PiecesSidebar/SidebarNftIcon';
-import Tooltip from '~/components/Tooltip/Tooltip';
 import {
   SIDEBAR_COLLECTION_TITLE_BOTTOM_SPACE,
   SIDEBAR_COLLECTION_TITLE_HEIGHT,
@@ -17,19 +13,17 @@ import {
   SIDEBAR_ICON_GAP,
 } from '~/constants/sidebar';
 import { SidebarListTokenFragment$key } from '~/generated/SidebarListTokenFragment.graphql';
-import HideIcon from '~/icons/HideIcon';
-import ShowIcon from '~/icons/ShowIcon';
-import colors from '~/shared/theme/colors';
 
-import OnboardingDialog from '../GalleryOnboardingGuide/OnboardingDialog';
-import { useOnboardingDialogContext } from '../GalleryOnboardingGuide/OnboardingDialogContext';
-import { SidebarView } from './SidebarViewSelector';
+import { SidebarView } from '../SidebarViewSelector';
+import CollectionTitle from './CollectionTitle';
+import { SetSpamFn } from './ToggleSpamIcon';
 
 export type CollectionTitleRow = {
   type: 'collection-title';
   expanded: boolean;
   address: string;
   title: string;
+  count: number;
 };
 
 export type VirtualizedRow =
@@ -43,88 +37,8 @@ type Props = {
   onToggleExpanded(address: string): void;
   handleTokenRenderError: (id: string) => void;
   handleTokenRenderSuccess: (id: string) => void;
-  setSpamPreferenceForCollection: (address: string, isSpam: boolean) => void;
+  setSpamPreferenceForCollection: SetSpamFn;
 };
-
-function CollectionTitle({
-  row,
-  key,
-  index,
-  style,
-  selectedView,
-  onToggleExpanded,
-  setSpamPreferenceForCollection,
-}: {
-  row: CollectionTitleRow;
-  key: string;
-  index: number;
-  style: React.CSSProperties;
-  selectedView: SidebarView;
-  onToggleExpanded: (address: string) => void;
-  setSpamPreferenceForCollection: (address: string, isSpam: boolean) => void;
-}) {
-  const [showIcon, setShowIcon] = useState(false);
-  const [showTooltip, setShowTooltip] = useState(false);
-
-  const { step, dialogMessage, nextStep, handleClose } = useOnboardingDialogContext();
-
-  return (
-    <CollectionTitleRow style={style}>
-      <CollectionTitleContainer
-        onClick={() => onToggleExpanded(row.address)}
-        key={key}
-        onMouseEnter={() => setShowIcon(true)}
-        onMouseLeave={() => setShowIcon(false)}
-      >
-        <ExpandedIcon expanded={row.expanded} />
-        <CollectionTitleText title={row.title}>{row.title}</CollectionTitleText>
-        {selectedView !== 'Created' && showIcon && (
-          <>
-            <ShowHideContainer
-              onMouseEnter={() => setShowTooltip(true)}
-              onMouseLeave={() => setShowTooltip(false)}
-              onClick={(e) => {
-                e.stopPropagation();
-                setSpamPreferenceForCollection(row.address, selectedView === 'Collected');
-              }}
-            >
-              <IconContainer
-                variant="stacked"
-                size="sm"
-                icon={selectedView === 'Hidden' ? <ShowIcon /> : <HideIcon />}
-              />
-            </ShowHideContainer>
-            <StyledTooltip
-              text={selectedView === 'Hidden' ? 'Show' : 'Hide'}
-              description={`This will move "${row.title}" to your ${
-                selectedView === 'Hidden' ? 'Collected' : 'Hidden'
-              } folder.`}
-              whiteSpace="normal"
-              visible={showTooltip}
-            />
-          </>
-        )}
-      </CollectionTitleContainer>
-
-      {step === 4 && index === 0 && (
-        <OnboardingDialog
-          step={4}
-          text={dialogMessage}
-          onNext={nextStep}
-          onClose={handleClose}
-          options={{
-            placement: 'left',
-            positionOffset: 40,
-            blinkingPosition: {
-              top: 40,
-              left: 7,
-            },
-          }}
-        />
-      )}
-    </CollectionTitleRow>
-  );
-}
 
 export function SidebarList({
   rows,
@@ -274,34 +188,6 @@ export function SidebarList({
   );
 }
 
-const CollectionTitleText = styled(TitleXS)`
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-`;
-
-const CollectionTitleRow = styled.div`
-  padding-bottom: ${SIDEBAR_COLLECTION_TITLE_BOTTOM_SPACE}px;
-
-  position: relative;
-`;
-
-const CollectionTitleContainer = styled.div.attrs({ role: 'button' })`
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  cursor: pointer;
-
-  height: ${SIDEBAR_COLLECTION_TITLE_HEIGHT}px;
-  padding: 0 8px;
-
-  border-radius: 2px;
-
-  &:hover {
-    background: ${colors.faint};
-  }
-`;
-
 const StyledListTokenContainer = styled.div<{ shouldUseCollectionGrouping: boolean }>`
   flex-grow: 1;
 
@@ -314,18 +200,4 @@ const Selection = styled.div`
   padding: 0 12px;
   display: flex;
   grid-gap: ${SIDEBAR_ICON_GAP}px;
-`;
-
-const ShowHideContainer = styled.div`
-  display: flex;
-  align-items: center;
-  margin-left: auto;
-`;
-
-const StyledTooltip = styled(Tooltip)<{ visible: boolean }>`
-  opacity: ${({ visible }) => (visible ? 1 : 0)};
-  width: 130px;
-  right: 0;
-  top: 30px;
-  z-index: 1;
 `;
