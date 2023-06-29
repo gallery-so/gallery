@@ -1,4 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
+import clsx from 'clsx';
 import { useCallback, useMemo, useRef } from 'react';
 import { View, ViewProps } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
@@ -153,7 +154,7 @@ function FollowingText({ userRefs, onSeeAll, style }: FollowingTextProps) {
             type="Shared Followers See All"
             showUnderline
           >
-            {users.length - 3} others
+            {users.length - usersToShow.length} others
           </InteractiveLink>
         </View>
       )}
@@ -181,6 +182,8 @@ function ProfilePictureBubblesWithCount({
     userRefs
   );
 
+  const remainingCount = Math.max(users.length - 3, 0);
+
   return (
     <GalleryTouchableOpacity
       onPress={onPress}
@@ -189,21 +192,28 @@ function ProfilePictureBubblesWithCount({
     >
       {users.slice(0, 3).map((user, index) => {
         return (
-          <View key={user.dbid} style={{ marginLeft: index === 0 ? 0 : -8 }}>
+          <View
+            key={user.dbid}
+            className={clsx({
+              '-ml-2': index !== 0,
+            })}
+          >
             <ProfilePicture userRef={user} size="sm" hasInset />
           </View>
         );
       })}
 
-      <View className="bg-porcelain border-2 border-white rounded-3xl px-1.5 -ml-2">
-        <Typography
-          className="text-xs text-metal"
-          font={{ family: 'ABCDiatype', weight: 'Medium' }}
-          style={{ fontVariant: ['tabular-nums'] }}
-        >
-          +6
-        </Typography>
-      </View>
+      {remainingCount && (
+        <View className="bg-porcelain border-2 border-white rounded-3xl px-1.5 -ml-2">
+          <Typography
+            className="text-xs text-metal"
+            font={{ family: 'ABCDiatype', weight: 'Medium' }}
+            style={{ fontVariant: ['tabular-nums'] }}
+          >
+            +{remainingCount}
+          </Typography>
+        </View>
+      )}
     </GalleryTouchableOpacity>
   );
 }
