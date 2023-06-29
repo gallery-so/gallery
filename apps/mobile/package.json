@@ -39,6 +39,7 @@
     "react": "18.2.0",
     "react-native": "0.71.8",
     "react-native-collapsible-tab-view": "^6.1.4",
+    "react-native-context-menu-view": "^1.9.2",
     "react-native-fast-image": "^8.6.3",
     "react-native-fetch-api": "^3.0.0",
     "react-native-gesture-handler": "^2.9.0",

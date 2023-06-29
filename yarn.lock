@@ -25238,6 +25238,7 @@ __metadata:
     react: 18.2.0
     react-native: 0.71.8
     react-native-collapsible-tab-view: ^6.1.4
+    react-native-context-menu-view: ^1.9.2
     react-native-fast-image: ^8.6.3
     react-native-fetch-api: ^3.0.0
     react-native-gesture-handler: ^2.9.0
@@ -28200,6 +28201,16 @@ __metadata:
     "@shopify/flash-list":
       optional: true
   checksum: b59a6ef6b220ce1505719c76788d904c4a0de351ff45a502c1914dc58f690ae9830a9adcd237ad04a32db5f7d2455121e566181eef3b461d6125a8c1f8d40cf2
+  languageName: node
+  linkType: hard
+
+"react-native-context-menu-view@npm:^1.9.2":
+  version: 1.9.2
+  resolution: "react-native-context-menu-view@npm:1.9.2"
+  peerDependencies:
+    react: ^16.8.1 || ^17.0.0 || ^18.0.0
+    react-native: ">=0.60.0-rc.0 <1.0.x"
+  checksum: 429e75cb277c9e8f6e65c0b1dc5f8c823cdaee01570b250f6b15274422fa3fd63cc7a846ac17322edd19fee281c143d8daf80e886bdeb70ba6ce75b841f66270
   languageName: node
   linkType: hard
 
