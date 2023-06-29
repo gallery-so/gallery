@@ -98,8 +98,20 @@ export function ProfilePicturePickerGrid({
         }
 
         return token.chain === searchCriteria.networkFilter;
+      })
+      .filter((token) => {
+        if (searchCriteria.ownerFilter === 'Collected') {
+          return token.ownerIsHolder;
+        }
+
+        return token.ownerIsCreator;
       });
-  }, [searchCriteria.networkFilter, searchCriteria.searchQuery, tokens]);
+  }, [
+    searchCriteria.networkFilter,
+    searchCriteria.ownerFilter,
+    searchCriteria.searchQuery,
+    tokens,
+  ]);
 
   type Group = {
     address: string;

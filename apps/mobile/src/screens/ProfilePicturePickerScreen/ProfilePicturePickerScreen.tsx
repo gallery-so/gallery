@@ -112,7 +112,7 @@ export function ProfilePicturePickerScreen() {
               <ProfilePicturePickerGrid
                 searchCriteria={{
                   searchQuery,
-                  ownerFilter: 'Created',
+                  ownerFilter: filter,
                   networkFilter: networkFilter,
                 }}
                 queryRef={query}
