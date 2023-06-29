@@ -1,5 +1,4 @@
 import { useNavigation } from '@react-navigation/native';
-import { ja } from 'date-fns/locale';
 import { useCallback, useMemo, useRef } from 'react';
 import { View, ViewProps } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
@@ -57,14 +56,6 @@ export default function ProfileViewSharedFollowers({ userRef }: Props) {
   }, [user.sharedFollowers?.edges]);
 
   const totalSharedFollowers = user.sharedFollowers?.pageInfo?.total ?? 0;
-
-  const navigation = useNavigation<MainTabStackNavigatorProp>();
-  const handleUsernamePress = useCallback(
-    (username: string) => {
-      navigation.push('Profile', { username: username });
-    },
-    [navigation]
-  );
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
 
   const handleSeeAllPress = useCallback(() => {
