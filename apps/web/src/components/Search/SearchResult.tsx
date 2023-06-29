@@ -5,9 +5,11 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
+import { SearchResultQueryFragment$key } from '~/generated/SearchResultQueryFragment.graphql';
 import { SearchResultUserFragment$key } from '~/generated/SearchResultUserFragment.graphql';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
+import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 import Markdown from '../core/Markdown/Markdown';
 import { HStack, VStack } from '../core/Spacer/Stack';
@@ -22,11 +24,12 @@ type Props = {
   path: Route;
   type: SearchFilterType;
   userRef?: SearchResultUserFragment$key | null;
+  queryRef: SearchResultQueryFragment$key;
 };
 
 const MAX_DESCRIPTION_CHARACTER = 150;
 
-export default function SearchResult({ name, description, path, type, userRef }: Props) {
+export default function SearchResult({ name, description, path, type, userRef, queryRef }: Props) {
   const user = useFragment(
     graphql`
       fragment SearchResultUserFragment on GalleryUser {
@@ -36,6 +39,17 @@ export default function SearchResult({ name, description, path, type, userRef }:
     `,
     userRef || null
   );
+
+  const query = useFragment(
+    graphql`
+      fragment SearchResultQueryFragment on Query {
+        ...isFeatureEnabledFragment
+      }
+    `,
+    queryRef
+  );
+
+  const isPfpEnabled = isFeatureEnabled(FeatureFlag.PFP, query);
 
   const { hideDrawer } = useDrawerActions();
   const { keyword } = useSearchContext();
@@ -85,7 +99,7 @@ export default function SearchResult({ name, description, path, type, userRef }:
   return (
     <StyledSearchResult className="SearchResult" href={path} onClick={handleClick}>
       <HStack gap={4} align="center">
-        {user && (
+        {user && isPfpEnabled && (
           <div>
             <ProfilePicture size="md" userRef={user} />
           </div>

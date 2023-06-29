@@ -3,14 +3,16 @@ import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
 import { CommunitySearchResultFragment$key } from '~/generated/CommunitySearchResultFragment.graphql';
+import { CommunitySearchResultQueryFragment$key } from '~/generated/CommunitySearchResultQueryFragment.graphql';
 
 import SearchResult from '../SearchResult';
 
 type Props = {
   communityRef: CommunitySearchResultFragment$key;
+  queryRef: CommunitySearchResultQueryFragment$key;
 };
 
-export default function CommunitySearchResult({ communityRef }: Props) {
+export default function CommunitySearchResult({ communityRef, queryRef }: Props) {
   const community = useFragment(
     graphql`
       fragment CommunitySearchResultFragment on Community {
@@ -23,6 +25,15 @@ export default function CommunitySearchResult({ communityRef }: Props) {
       }
     `,
     communityRef
+  );
+
+  const query = useFragment(
+    graphql`
+      fragment CommunitySearchResultQueryFragment on Query {
+        ...SearchResultQueryFragment
+      }
+    `,
+    queryRef
   );
 
   const route = useMemo<Route>(() => {
@@ -44,6 +55,7 @@ export default function CommunitySearchResult({ communityRef }: Props) {
       description={community.description ?? ''}
       path={route}
       type="community"
+      queryRef={query}
     />
   );
 }
