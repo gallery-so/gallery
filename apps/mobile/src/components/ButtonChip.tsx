@@ -3,13 +3,17 @@ import { useColorScheme } from 'nativewind';
 import { PropsWithChildren, useState } from 'react';
 import { TouchableOpacityProps, ViewProps } from 'react-native';
 
-import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
+import {
+  GalleryTouchableOpacity,
+  GalleryTouchableOpacityProps,
+} from '~/components/GalleryTouchableOpacity';
 import { Typography } from '~/components/Typography';
 
 type ButtonChipVariant = 'primary' | 'secondary';
 
 type ButtonChipProps = PropsWithChildren<{
   style?: ViewProps['style'];
+  eventProperties?: GalleryTouchableOpacityProps['properties'];
   variant: ButtonChipVariant;
   onPress: TouchableOpacityProps['onPress'];
   width?: 'fixed' | 'grow';
@@ -76,7 +80,14 @@ const chipContainerVariants: ChipContainerVariants = {
   },
 };
 
-export function ButtonChip({ style, children, variant, onPress, width }: ButtonChipProps) {
+export function ButtonChip({
+  style,
+  eventProperties,
+  children,
+  variant,
+  onPress,
+  width,
+}: ButtonChipProps) {
   const { colorScheme } = useColorScheme();
   const [active, setActive] = useState(false);
 
@@ -90,7 +101,7 @@ export function ButtonChip({ style, children, variant, onPress, width }: ButtonC
       eventElementId="Follow Button"
       eventName="Follow Button Clicked"
       activeOpacity={1}
-      properties={{ variant }}
+      properties={{ variant, ...eventProperties }}
       onPress={onPress}
       className={clsx(
         'flex h-6 items-center justify-center rounded-sm px-2 bg-black',
