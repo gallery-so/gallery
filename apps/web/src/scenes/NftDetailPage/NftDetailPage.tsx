@@ -52,6 +52,7 @@ function NftDetailPage({
         }
 
         ...GalleryViewEmitterWithSuspenseFragment
+        ...NftDetailViewQueryFragment
       }
     `,
     queryRef
@@ -209,6 +210,7 @@ function NftDetailPage({
           <NftDetailView
             collectionTokenRef={token}
             authenticatedUserOwnsAsset={authenticatedUserOwnsAsset}
+            queryRef={query}
           />
         </_DirectionalFade>
       ))}

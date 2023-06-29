@@ -10,6 +10,7 @@ import { TitleM } from '~/components/core/Text/Text';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { CollectorsNoteAddedToTokenFeedEventFragment$key } from '~/generated/CollectorsNoteAddedToTokenFeedEventFragment.graphql';
+import { CollectorsNoteAddedToTokenFeedEventQueryFragment$key } from '~/generated/CollectorsNoteAddedToTokenFeedEventQueryFragment.graphql';
 import useWindowSize, { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import NftDetailView from '~/scenes/NftDetailPage/NftDetailView';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
@@ -30,6 +31,7 @@ import {
 type Props = {
   isSubEvent?: boolean;
   eventDataRef: CollectorsNoteAddedToTokenFeedEventFragment$key;
+  queryRef: CollectorsNoteAddedToTokenFeedEventQueryFragment$key;
 };
 
 const MARGIN = 16;
@@ -39,6 +41,7 @@ const IMAGE_SPACE_SIZE = 269;
 
 export default function CollectorsNoteAddedToTokenFeedEvent({
   eventDataRef,
+  queryRef,
   isSubEvent = false,
 }: Props) {
   const event = useFragment(
@@ -66,6 +69,15 @@ export default function CollectorsNoteAddedToTokenFeedEvent({
     eventDataRef
   );
 
+  const query = useFragment(
+    graphql`
+      fragment CollectorsNoteAddedToTokenFeedEventQueryFragment on Query {
+        ...NftDetailViewQueryFragment
+      }
+    `,
+    queryRef
+  );
+
   const isMobile = useIsMobileWindowWidth();
   const windowSize = useWindowSize();
   const { showModal } = useModalActions();
@@ -81,13 +93,17 @@ export default function CollectorsNoteAddedToTokenFeedEvent({
       showModal({
         content: (
           <StyledNftDetailViewPopover>
-            <NftDetailView authenticatedUserOwnsAsset={false} collectionTokenRef={event.token} />
+            <NftDetailView
+              authenticatedUserOwnsAsset={false}
+              collectionTokenRef={event.token}
+              queryRef={query}
+            />
           </StyledNftDetailViewPopover>
         ),
         isFullPage: true,
       });
     },
-    [event.token, showModal, track]
+    [event.token, query, showModal, track]
   );
 
   return (
