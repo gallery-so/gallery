@@ -128,7 +128,7 @@ function FollowingText({ userRefs, onSeeAll, style }: FollowingTextProps) {
               }}
               textStyle={{ fontSize: 12 }}
               showUnderline
-              type="Test"
+              type="Shared Followers Username"
             >
               {user.username}
             </InteractiveLink>
@@ -150,7 +150,7 @@ function FollowingText({ userRefs, onSeeAll, style }: FollowingTextProps) {
           <InteractiveLink
             onPress={onSeeAll}
             textStyle={{ fontSize: 12 }}
-            type="Test"
+            type="Shared Followers See All"
             showUnderline
           >
             {users.length - 3} others
