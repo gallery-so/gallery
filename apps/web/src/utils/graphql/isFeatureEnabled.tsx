@@ -7,25 +7,31 @@ import isProduction from '~/utils/isProduction';
 
 export enum FeatureFlag {
   BIG_EASEL = 'BIG_EASEL',
+  PFP = 'PFP',
 }
 
 const PROD_FLAGS: Record<FeatureFlag, boolean> = {
   BIG_EASEL: false,
+  PFP: false,
 };
 
 const DEV_FLAGS: Record<FeatureFlag, boolean> = {
   BIG_EASEL: false,
+  PFP: false,
 };
 
 const ROLE_FLAGS: Record<Role, Record<FeatureFlag, boolean>> = {
   ADMIN: {
     BIG_EASEL: true,
+    PFP: true,
   },
   BETA_TESTER: {
     BIG_EASEL: false,
+    PFP: false,
   },
   EARLY_ACCESS: {
     BIG_EASEL: false,
+    PFP: false,
   },
 };
 
