@@ -22,10 +22,15 @@ import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 type ProfilePicturePickerGridProps = {
   style?: ViewProps['style'];
+  searchQuery: string;
   queryRef: ProfilePicturePickerGridFragment$key;
 };
 
-export function ProfilePicturePickerGrid({ queryRef, style }: ProfilePicturePickerGridProps) {
+export function ProfilePicturePickerGrid({
+  queryRef,
+  searchQuery,
+  style,
+}: ProfilePicturePickerGridProps) {
   const query = useFragment(
     graphql`
       fragment ProfilePicturePickerGridFragment on Query {
@@ -69,6 +74,12 @@ export function ProfilePicturePickerGrid({ queryRef, style }: ProfilePicturePick
     tokenRefs
   );
 
+  const filteredTokens = useMemo(() => {
+    return tokens.filter((token) => {
+      return token?.contract?.name?.toLowerCase().includes(searchQuery.toLowerCase());
+    });
+  }, [searchQuery, tokens]);
+
   type Group = {
     address: string;
     tokens: Array<ProfilePicturePickerGridTokensFragment$data[number]>;
@@ -77,7 +88,7 @@ export function ProfilePicturePickerGrid({ queryRef, style }: ProfilePicturePick
   const groups = useMemo(() => {
     const groups: GroupedTokens = {};
 
-    for (const token of tokens) {
+    for (const token of filteredTokens) {
       const address = token?.contract?.contractAddress?.address;
 
       if (!address) {
@@ -96,7 +107,7 @@ export function ProfilePicturePickerGrid({ queryRef, style }: ProfilePicturePick
     }
 
     return groups;
-  }, [tokens]);
+  }, [filteredTokens]);
 
   type Row = { groups: Group[] };
   const rows = useMemo(() => {

@@ -34,6 +34,7 @@ export function ProfilePicturePickerScreen() {
     filterBottomSheetRef.current?.present();
   }, []);
 
+  const [searchQuery, setSearchQuery] = useState<string>('');
   const [filter, setFilter] = useState<'Collected' | 'Created'>('Collected');
 
   return (
@@ -56,14 +57,18 @@ export function ProfilePicturePickerScreen() {
           <View className="px-4">
             <FadedInput
               // TODO: Follow up w/ Fraser on input divergence here
+              value={searchQuery}
+              onChangeText={setSearchQuery}
               style={{ height: 36 }}
               icon={<SearchIcon width={16} height={16} />}
-              placeholder="Search collection"
+              placeholder="Search pieces"
             />
           </View>
 
           <View className="px-4 flex flex-row items-center justify-between">
             <Select
+              className="w-32"
+              title="Set Filter"
               eventElementId="ProfilePictureFilter"
               onChange={setFilter}
               selectedId={filter}
@@ -95,7 +100,7 @@ export function ProfilePicturePickerScreen() {
 
           <View className="flex-grow flex-1 w-full">
             <Suspense fallback={null}>
-              <ProfilePicturePickerGrid queryRef={query} />
+              <ProfilePicturePickerGrid searchQuery={searchQuery} queryRef={query} />
             </Suspense>
           </View>
         </View>
