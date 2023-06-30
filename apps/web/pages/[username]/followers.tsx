@@ -8,7 +8,11 @@ import { GalleryNavbar } from '~/contexts/globalLayout/GlobalNavbar/GalleryNavba
 import { StandardSidebar } from '~/contexts/globalLayout/GlobalSidebar/StandardSidebar';
 import { followersFollowersPageFragment$key } from '~/generated/followersFollowersPageFragment.graphql';
 import { followersQuery } from '~/generated/followersQuery.graphql';
+import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
+import UserGalleryHeader from '~/scenes/UserGalleryPage/UserGalleryHeader';
+import { COMMUNITIES_PER_PAGE } from '~/scenes/UserGalleryPage/UserSharedInfo/UserSharedCommunities';
+import { FOLLOWERS_PER_PAGE } from '~/scenes/UserGalleryPage/UserSharedInfo/UserSharedInfoList/SharedFollowersList';
 import GalleryViewEmitter from '~/shared/components/GalleryViewEmitter';
 
 import { GalleryPageSpacing } from '.';
@@ -23,16 +27,24 @@ function FollowersPage({ queryRef }: FollowersPageProps) {
       fragment followersFollowersPageFragment on Query {
         userByUsername(username: $username) @required(action: THROW) {
           ...FollowListFragment
+          ... on GalleryUser {
+            ...UserGalleryHeaderFragment
+          }
         }
+        ...UserGalleryHeaderQueryFragment
       }
     `,
     queryRef
   );
 
+  const isMobile = useIsMobileOrMobileLargeWindowWidth();
   return (
     <GalleryPageSpacing>
-      <VStack align="center">
-        <FollowList userRef={query.userByUsername} />
+      <VStack gap={isMobile ? 12 : 24}>
+        <UserGalleryHeader userRef={query.userByUsername} queryRef={query} />
+        <VStack align="center">
+          <FollowList userRef={query.userByUsername} />
+        </VStack>
       </VStack>
     </GalleryPageSpacing>
   );
@@ -45,14 +57,24 @@ type FollowersProps = {
 export default function Followers({ username }: FollowersProps) {
   const query = useLazyLoadQuery<followersQuery>(
     graphql`
-      query followersQuery($username: String!) {
+      query followersQuery(
+        $username: String!
+        $sharedCommunitiesFirst: Int
+        $sharedCommunitiesAfter: String
+        $sharedFollowersFirst: Int
+        $sharedFollowersAfter: String
+      ) {
         ...GalleryNavbarFragment
         ...followersFollowersPageFragment
         ...GalleryViewEmitterWithSuspenseFragment
         ...StandardSidebarFragment
       }
     `,
-    { username }
+    {
+      username,
+      sharedCommunitiesFirst: COMMUNITIES_PER_PAGE,
+      sharedFollowersFirst: FOLLOWERS_PER_PAGE,
+    }
   );
 
   return (

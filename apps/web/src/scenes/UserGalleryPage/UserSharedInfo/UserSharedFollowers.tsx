@@ -89,7 +89,7 @@ export default function UserSharedFollowers({ queryRef }: Props) {
     if (totalSharedFollowers > 3) {
       result.push(
         <StyledInteractiveLink onClick={handleShowAllFollowersClick}>
-          {totalSharedFollowers - 2} others you follow
+          {totalSharedFollowers - 2} others
         </StyledInteractiveLink>
       );
     }
