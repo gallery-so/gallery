@@ -87,8 +87,8 @@ export function AdmireModal({ eventRef, queryRef, fullscreen }: NotesModalProps)
       height += measurerCache.getHeight(i, 0);
     }
 
-    // 68 is the height of the modal header + bottom padding
-    return height + 68;
+    // 60 is the height of the modal header + bottom padding
+    return height + 60;
   }, [measurerCache, nonNullInteractions.length]);
 
   const isRowLoaded = ({ index }: { index: number }) =>
@@ -180,5 +180,5 @@ const ModalContent = styled.div<{ fullscreen: boolean; height: number }>`
   flex-direction: column;
   padding: ${MODAL_PADDING_PX}px 0px 0px;
   max-height: 420px;
-  min-height: 170px;
+  min-height: 112px;
 `;

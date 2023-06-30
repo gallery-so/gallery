@@ -90,9 +90,9 @@ export function NotesModal({ eventRef, queryRef, fullscreen }: NotesModalProps) 
       height += measurerCache.getHeight(i, 0);
     }
 
-    // 68 is the height of the modal header + bottom padding
+    // 52 is the height of the modal header + bottom padding
     // 69 is the height of the comment box
-    return height + 68 + 69;
+    return height + 52 + 69;
   }, [measurerCache, nonNullInteractions.length]);
 
   const handleLoadMore = useCallback(async () => {
@@ -157,6 +157,9 @@ export function NotesModal({ eventRef, queryRef, fullscreen }: NotesModalProps) 
                     rowHeight={measurerCache.rowHeight}
                     onRowsRendered={onRowsRendered}
                     ref={registerChild}
+                    style={{
+                      paddingTop: '16px',
+                    }}
                   />
                 )}
               </InfiniteLoader>
