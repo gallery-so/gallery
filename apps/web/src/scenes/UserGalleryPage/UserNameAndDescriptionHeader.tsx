@@ -105,7 +105,6 @@ export function UserNameAndDescriptionHeader({ userRef, queryRef }: Props) {
       hasMobileContent={isMobile && !!unescapedBio}
     >
       <Container gap={2}>
-        {/* {!isMobile && ( */}
         <HStack align="center" gap={4}>
           <StyledUsername>{displayName}</StyledUsername>
 
@@ -115,7 +114,6 @@ export function UserNameAndDescriptionHeader({ userRef, queryRef }: Props) {
             )}
           </HStack>
         </HStack>
-        {/* )} */}
 
         <HStack align="center" gap={8} grow>
           <StyledUserDetails>
