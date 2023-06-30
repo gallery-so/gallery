@@ -25,19 +25,10 @@ export function CommentButton({ eventRef, queryRef, style, onClick }: Props) {
   const event = useFragment(
     graphql`
       fragment CommentButtonFragment on FeedEvent {
-        ...CommentBoxFragment
+        dbid
       }
     `,
     eventRef
-  );
-
-  const query = useFragment(
-    graphql`
-      fragment CommentButtonQueryFragment on Query {
-        ...CommentBoxQueryFragment
-      }
-    `,
-    queryRef
   );
 
   const { colorScheme } = useColorScheme();
@@ -78,7 +69,7 @@ export function CommentButton({ eventRef, queryRef, style, onClick }: Props) {
         }}
       >
         <View className={`${colorScheme === 'dark' ? 'bg-black' : 'bg-white'}`}>
-          <CommentBox autoFocus eventRef={event} queryRef={query} onClose={handleCloseCommentBox} />
+          <CommentBox feedEventId={event.dbid} autoFocus onClose={handleCloseCommentBox} />
         </View>
       </GalleryBottomSheetModal>
     </>

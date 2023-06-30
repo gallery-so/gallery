@@ -86,6 +86,7 @@ export default function ProfileViewSharedFollowers({ userRef, queryRef }: Props)
       {isPfpEnabled && (
         <ProfilePictureBubblesWithCount
           onPress={handleSeeAllPress}
+          totalCount={sharedFollowers.length}
           eventElementId="Shared Followers Bubbles"
           eventName="Shared Followers Bubbles pressed"
           userRefs={sharedFollowers}
@@ -180,12 +181,14 @@ function FollowingText({ userRefs, onSeeAll, style }: FollowingTextProps) {
 
 type ProfilePictureBubblesWithCountProps = {
   userRefs: ProfileViewSharedFollowersBubblesFragment$key;
+  totalCount: number;
   onPress: () => void;
 } & GalleryElementTrackingProps;
 
-function ProfilePictureBubblesWithCount({
-  userRefs,
+export function ProfilePictureBubblesWithCount({
   onPress,
+  userRefs,
+  totalCount,
   ...trackingProps
 }: ProfilePictureBubblesWithCountProps) {
   const users = useFragment(
@@ -198,7 +201,11 @@ function ProfilePictureBubblesWithCount({
     userRefs
   );
 
-  const remainingCount = Math.max(users.length - 3, 0);
+  if (users.length === 0) {
+    return null;
+  }
+
+  const remainingCount = Math.max(totalCount - 3, 0);
 
   return (
     <GalleryTouchableOpacity
@@ -219,7 +226,7 @@ function ProfilePictureBubblesWithCount({
         );
       })}
 
-      {remainingCount && (
+      {Boolean(remainingCount) && (
         <View className="bg-porcelain border-2 border-white dark:border-black-900 rounded-3xl px-1.5 -ml-2">
           <Typography
             className="text-xs text-metal"

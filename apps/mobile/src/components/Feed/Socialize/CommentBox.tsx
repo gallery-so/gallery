@@ -2,17 +2,20 @@ import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import { useColorScheme } from 'nativewind';
 import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
 import { Text, View, ViewStyle } from 'react-native';
-import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
-import { AnimatedStyleProp } from 'react-native-reanimated';
-import { ConnectionHandler, graphql, useFragment } from 'react-relay';
+import Animated, {
+  AnimatedStyleProp,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from 'react-native-reanimated';
+import { ConnectionHandler, fetchQuery, graphql, useRelayEnvironment } from 'react-relay';
 import { SelectorStoreUpdater } from 'relay-runtime';
 import { XMarkIcon } from 'src/icons/XMarkIcon';
 import useKeyboardStatus from 'src/utils/useKeyboardStatus';
 
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
-import { CommentBoxFragment$key } from '~/generated/CommentBoxFragment.graphql';
 import { CommentBoxMutation } from '~/generated/CommentBoxMutation.graphql';
-import { CommentBoxQueryFragment$key } from '~/generated/CommentBoxQueryFragment.graphql';
+import { CommentBoxQuery } from '~/generated/CommentBoxQuery.graphql';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 import colors from '~/shared/theme/colors';
@@ -20,8 +23,8 @@ import colors from '~/shared/theme/colors';
 import { SendIcon } from './SendIcon';
 
 type Props = {
-  eventRef: CommentBoxFragment$key;
-  queryRef: CommentBoxQueryFragment$key;
+  feedEventId: string;
+
   onClose: () => void;
   autoFocus?: boolean;
 
@@ -29,40 +32,7 @@ type Props = {
   isNotesModal?: boolean;
 };
 
-export function CommentBox({
-  autoFocus,
-  eventRef,
-  queryRef,
-  onClose,
-  isNotesModal = false,
-}: Props) {
-  const query = useFragment(
-    graphql`
-      fragment CommentBoxQueryFragment on Query {
-        viewer {
-          ... on Viewer {
-            user {
-              id
-              dbid
-              username
-            }
-          }
-        }
-      }
-    `,
-    queryRef
-  );
-
-  const event = useFragment(
-    graphql`
-      fragment CommentBoxFragment on FeedEvent {
-        id
-        dbid
-      }
-    `,
-    eventRef
-  );
-
+export function CommentBox({ autoFocus, onClose, isNotesModal = false, feedEventId }: Props) {
   const reportError = useReportError();
   const { colorScheme } = useColorScheme();
   const [value, setValue] = useState('');
@@ -110,19 +80,40 @@ export function CommentBox({
     }
   `);
 
+  const relayEnvironment = useRelayEnvironment();
   const handleSubmit = useCallback(async () => {
     if (value.length === 0) {
       return;
     }
 
     try {
+      const eventRelayId = `FeedEvent:${feedEventId}`;
+      const query = await fetchQuery<CommentBoxQuery>(
+        relayEnvironment,
+        graphql`
+          query CommentBoxQuery {
+            viewer {
+              ... on Viewer {
+                user {
+                  id
+                  dbid
+                  username
+                }
+              }
+            }
+          }
+        `,
+        {},
+        { fetchPolicy: 'store-or-network' }
+      ).toPromise();
+
       const interactionsConnection = ConnectionHandler.getConnectionID(
-        event.id,
+        eventRelayId,
         'Interactions_comments'
       );
-      const notesModalConnection = ConnectionHandler.getConnectionID(
-        event.id,
-        'NotesList_interactions'
+      const commentsBottomSheetConnection = ConnectionHandler.getConnectionID(
+        eventRelayId,
+        'CommentsBottomSheet_comments'
       );
 
       const updater: SelectorStoreUpdater<CommentBoxMutation['response']> = (store, response) => {
@@ -144,9 +135,9 @@ export function CommentBox({
               __typename: 'Comment',
               comment: value,
               commenter: {
-                dbid: query.viewer?.user?.dbid ?? 'unknown',
-                id: query.viewer?.user?.id ?? 'unknown',
-                username: query.viewer?.user?.username ?? null,
+                dbid: query?.viewer?.user?.dbid ?? 'unknown',
+                id: query?.viewer?.user?.id ?? 'unknown',
+                username: query?.viewer?.user?.username ?? null,
               },
               creationTime: new Date().toISOString(),
               dbid: optimisticId,
@@ -156,8 +147,8 @@ export function CommentBox({
         },
         variables: {
           comment: value,
-          eventId: event.dbid,
-          connections: [interactionsConnection, notesModalConnection],
+          eventId: feedEventId,
+          connections: [interactionsConnection, commentsBottomSheetConnection],
         },
       });
 
@@ -175,17 +166,7 @@ export function CommentBox({
         reportError('An unexpected error occurred while posting a comment.');
       }
     }
-  }, [
-    value,
-    event.dbid,
-    event.id,
-    query.viewer?.user?.dbid,
-    query.viewer?.user?.id,
-    query.viewer?.user?.username,
-    submitComment,
-    reportError,
-    resetComment,
-  ]);
+  }, [value, feedEventId, relayEnvironment, submitComment, resetComment, reportError]);
 
   const disabledSendButton = useMemo(() => {
     return value.length === 0 || characterCount < 0 || isSubmittingComment;

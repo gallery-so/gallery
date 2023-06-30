@@ -31,16 +31,23 @@ export function CommentsBottomSheetLine({ commentRef }: CommentLineProps) {
   const timeAgo = getTimeSince(comment.creationTime);
 
   return (
-    <View className="flex flex-row justify-between items-center">
-      <View className="flex flex-row items-center">
+    <View className="flex flex-row justify-between items-center px-4">
+      <View className="flex flex-row items-center space-x-1">
         {comment.commenter && <ProfilePicture userRef={comment.commenter} size="sm" />}
 
-        <Typography font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+        <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
           {comment.commenter?.username}
+        </Typography>
+
+        <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
+          {comment.comment}
         </Typography>
       </View>
 
-      <Typography className="text-xxs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
+      <Typography
+        className="text-xxs text-metal"
+        font={{ family: 'ABCDiatype', weight: 'Regular' }}
+      >
         {timeAgo}
       </Typography>
     </View>

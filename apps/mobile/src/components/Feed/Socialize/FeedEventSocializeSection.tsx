@@ -35,9 +35,7 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef, onCommentPre
   const query = useFragment(
     graphql`
       fragment FeedEventSocializeSectionQueryFragment on Query {
-        ...InteractionsQueryFragment
         ...AdmireButtonQueryFragment
-        ...CommentButtonQueryFragment
       }
     `,
     queryRef
@@ -50,7 +48,7 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef, onCommentPre
   return (
     <View className="flex flex-row px-3 justify-between pb-8 pt-5">
       <View className="flex-1 pr-4 pt-1">
-        <Interactions eventRef={event} queryRef={query} />
+        <Interactions eventRef={event} />
       </View>
 
       <View className="flex flex-row space-x-1">
