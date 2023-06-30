@@ -4,6 +4,7 @@ import { View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
+import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { FeedListSectionHeaderFragment$key } from '~/generated/FeedListSectionHeaderFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { getTimeSince } from '~/shared/utils/time';
@@ -29,6 +30,7 @@ export function FeedListSectionHeader({ feedEventRef }: FeedListSectionHeaderPro
           ... on GalleryUpdatedFeedEventData {
             owner {
               username
+              ...ProfilePictureFragment
             }
 
             gallery {
@@ -63,13 +65,18 @@ export function FeedListSectionHeader({ feedEventRef }: FeedListSectionHeaderPro
 
   return (
     <View className="flex flex-row items-center justify-between bg-white dark:bg-black-900 px-3 pb-2">
-      <View className="flex flex-row space-x-1">
+      <View className="flex flex-row space-x-1 items-center">
         <GalleryTouchableOpacity
+          className="flex flex-row items-center space-x-1"
           onPress={handleUsernamePress}
           eventElementId="Feed Username Button"
           eventName="Feed Username Clicked"
           properties={{ variant: 'Feed event author' }}
         >
+          {feedEvent.eventData.owner && (
+            <ProfilePicture userRef={feedEvent.eventData.owner} size="sm" />
+          )}
+
           <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
             {feedEvent.eventData.owner?.username}
           </Typography>
