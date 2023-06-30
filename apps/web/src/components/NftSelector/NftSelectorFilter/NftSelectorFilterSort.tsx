@@ -44,9 +44,15 @@ export function NftSelectorFilterSort({
       </Selector>
       <Dropdown position="right" active={isDropdownOpen} onClose={() => setIsDropdownOpen(false)}>
         <DropdownSection>
-          <DropdownItem onClick={() => onSelectView('Recently added')}>Recently added</DropdownItem>
-          <DropdownItem onClick={() => onSelectView('Oldest')}>Oldest</DropdownItem>
-          <DropdownItem onClick={() => onSelectView('Alphabetical')}>Alphabetical</DropdownItem>
+          <DropdownItem onClick={() => onSelectView('Recently added')}>
+            <BaseM>Recently added</BaseM>
+          </DropdownItem>
+          <DropdownItem onClick={() => onSelectView('Oldest')}>
+            <BaseM>Oldest</BaseM>
+          </DropdownItem>
+          <DropdownItem onClick={() => onSelectView('Alphabetical')}>
+            <BaseM>Alphabetical</BaseM>
+          </DropdownItem>
         </DropdownSection>
       </Dropdown>
     </Container>

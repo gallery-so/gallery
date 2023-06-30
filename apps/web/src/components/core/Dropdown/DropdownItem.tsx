@@ -2,6 +2,8 @@ import styled from 'styled-components';
 
 import colors from '~/shared/theme/colors';
 
+type fontSize = 'sm' | 'md';
+
 export const DropdownItem = styled.div<{ disabled?: boolean }>`
   padding: 8px;
 
