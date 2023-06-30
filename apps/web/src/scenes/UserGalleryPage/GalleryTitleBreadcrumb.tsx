@@ -51,7 +51,7 @@ export default function GalleryTitleBreadcrumb({ username, galleryRef }: Props) 
               {username}
             </StyledBreadcrumbLink>
           </Link>
-          <BreadcrumbText>&nbsp;/</BreadcrumbText>
+          <StyledBreadcrumbText>&nbsp;/</StyledBreadcrumbText>
         </>
       )}
 
@@ -70,5 +70,12 @@ export default function GalleryTitleBreadcrumb({ username, galleryRef }: Props) 
 }
 
 const StyledBreadcrumbLink = styled(BreadcrumbLink)<{ isActive: boolean }>`
-  color: ${({ isActive }) => (isActive ? colors.black['800'] : colors.shadow)};
+  color: ${({ isActive }) => (isActive ? colors.black['800'] : colors.metal)};
+  font-size: 20px;
+  line-height: 28px;
+`;
+
+const StyledBreadcrumbText = styled(BreadcrumbText)`
+  font-size: 20px;
+  line-height: 28px;
 `;
