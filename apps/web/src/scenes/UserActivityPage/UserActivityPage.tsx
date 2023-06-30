@@ -3,10 +3,13 @@ import { useEffect } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
+import { VStack } from '~/components/core/Spacer/Stack';
 import { UserActivityPageFragment$key } from '~/generated/UserActivityPageFragment.graphql';
+import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import { GalleryPageSpacing } from '~/pages/[username]';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 
+import UserGalleryHeader from '../UserGalleryPage/UserGalleryHeader';
 import UserActivity from './UserActivity';
 
 type UserActivityPageProps = {
@@ -18,7 +21,11 @@ function UserActivityPage({ queryRef, username }: UserActivityPageProps) {
   const query = useFragment(
     graphql`
       fragment UserActivityPageFragment on Query {
+        userByUsername(username: $username) {
+          ...UserGalleryHeaderFragment
+        }
         ...UserActivityFragment
+        ...UserGalleryHeaderQueryFragment
       }
     `,
     queryRef
@@ -32,13 +39,20 @@ function UserActivityPage({ queryRef, username }: UserActivityPageProps) {
     track('Page View: User Gallery', { username }, true);
   }, [username, track]);
 
+  const isMobile = useIsMobileOrMobileLargeWindowWidth();
+
   return (
     <>
       <Head>
         <title>{headTitle}</title>
       </Head>
       <GalleryPageSpacing>
-        <UserActivity queryRef={query} />
+        <VStack gap={isMobile ? 12 : 24}>
+          {query.userByUsername && (
+            <UserGalleryHeader queryRef={query} userRef={query.userByUsername} />
+          )}
+          <UserActivity queryRef={query} />
+        </VStack>
       </GalleryPageSpacing>
     </>
   );

@@ -15,6 +15,7 @@ import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import colors from '~/shared/theme/colors';
 import unescape from '~/shared/utils/unescape';
 
+import GalleryTitleBreadcrumb from './GalleryTitleBreadcrumb';
 import MobileLayoutToggle from './MobileLayoutToggle';
 
 type Props = {
@@ -42,6 +43,7 @@ function GalleryNameDescriptionHeader({
         owner @required(action: THROW) {
           username @required(action: THROW)
         }
+        ...GalleryTitleBreadcrumbFragment
       }
     `,
     galleryRef
@@ -52,7 +54,7 @@ function GalleryNameDescriptionHeader({
   const username = gallery.owner.username;
   const galleryId = gallery.dbid;
 
-  const unescapedBio = useMemo(
+  const unescapedDescription = useMemo(
     () => (gallery.description ? unescape(gallery.description) : ''),
     [gallery.description]
   );
@@ -64,36 +66,39 @@ function GalleryNameDescriptionHeader({
 
   const galleryName = useMemo(() => {
     if (isMobile) {
-      <GalleryNameMobile color={noLink ? colors.black['800'] : colors.shadow}>
-        {gallery.name}
-      </GalleryNameMobile>;
+      return <GalleryTitleBreadcrumb username={username} galleryRef={gallery} />;
     }
 
     return (
       <GalleryName color={noLink ? colors.black['800'] : colors.shadow}>{gallery.name}</GalleryName>
     );
-  }, [gallery.name, isMobile, noLink]);
+  }, [gallery, isMobile, noLink, username]);
 
   return (
     <Container gap={2}>
-      <Link href={galleryRoute} legacyBehavior>
-        {noLink ? galleryName : <GalleryLink href={route(galleryRoute)}>{galleryName}</GalleryLink>}
-      </Link>
-
       <HStack align="flex-start" justify="space-between">
-        <HStack align="center" gap={8} grow>
-          <StyledUserDetails>
-            <StyledBioWrapper>
-              <Markdown text={unescapedBio} />
-            </StyledBioWrapper>
-          </StyledUserDetails>
-        </HStack>
-
+        <Link href={galleryRoute} legacyBehavior>
+          {noLink ? (
+            galleryName
+          ) : (
+            <GalleryLink href={route(galleryRoute)}>{galleryName}</GalleryLink>
+          )}
+        </Link>
         {showMobileLayoutToggle && (
           <StyledButtonsWrapper gap={8} align="center" justify="space-between">
             <MobileLayoutToggle mobileLayout={mobileLayout} setMobileLayout={setMobileLayout} />
           </StyledButtonsWrapper>
         )}
+      </HStack>
+
+      <HStack align="flex-start" justify="space-between">
+        <HStack align="center" gap={8} grow>
+          <StyledUserDetails>
+            <StyledBioWrapper>
+              <Markdown text={unescapedDescription} />
+            </StyledBioWrapper>
+          </StyledUserDetails>
+        </HStack>
       </HStack>
     </Container>
   );
@@ -108,12 +113,6 @@ const StyledBioWrapper = styled(BaseM)`
 
 const GalleryName = styled(TitleM)`
   font-style: normal;
-  overflow-wrap: break-word;
-`;
-
-const GalleryNameMobile = styled(TitleM)`
-  font-style: normal;
-  font-size: 18px;
   overflow-wrap: break-word;
 `;
 

@@ -10,6 +10,8 @@ import { activityQuery } from '~/generated/activityQuery.graphql';
 import { MetaTagProps } from '~/pages/_app';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
 import UserActivityPage from '~/scenes/UserActivityPage/UserActivityPage';
+import { COMMUNITIES_PER_PAGE } from '~/scenes/UserGalleryPage/UserSharedInfo/UserSharedCommunities';
+import { FOLLOWERS_PER_PAGE } from '~/scenes/UserGalleryPage/UserSharedInfo/UserSharedInfoList/SharedFollowersList';
 import GalleryViewEmitter from '~/shared/components/GalleryViewEmitter';
 import { PreloadQueryArgs } from '~/types/PageComponentPreloadQuery';
 import { openGraphMetaTags } from '~/utils/openGraphMetaTags';
@@ -23,6 +25,10 @@ const activityQueryNode = graphql`
     $viewerBefore: String
     $visibleTokensPerFeedEvent: Int!
     $topEventId: DBID!
+    $sharedCommunitiesFirst: Int
+    $sharedCommunitiesAfter: String
+    $sharedFollowersFirst: Int
+    $sharedFollowersAfter: String
   ) {
     ...UserActivityPageFragment
     ...GalleryNavbarFragment
@@ -66,6 +72,8 @@ UserFeed.preloadQuery = ({ relayEnvironment, query }: PreloadQueryArgs) => {
         interactionsFirst: NOTES_PER_PAGE,
         viewerLast: ITEMS_PER_PAGE,
         visibleTokensPerFeedEvent: MAX_PIECES_DISPLAYED_PER_FEED_EVENT,
+        sharedCommunitiesFirst: COMMUNITIES_PER_PAGE,
+        sharedFollowersFirst: FOLLOWERS_PER_PAGE,
       },
       { fetchPolicy: 'store-or-network' }
     );
