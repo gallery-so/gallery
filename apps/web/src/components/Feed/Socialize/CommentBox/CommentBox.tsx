@@ -19,6 +19,7 @@ import { CommentBoxMutation } from '~/generated/CommentBoxMutation.graphql';
 import { CommentBoxQueryFragment$key } from '~/generated/CommentBoxQueryFragment.graphql';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
+import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 import colors from '~/shared/theme/colors';
 
@@ -39,6 +40,15 @@ export function CommentBox({ eventRef, queryRef }: Props) {
               id
               dbid
               username
+              profileImage {
+                ... on TokenProfileImage {
+                  token {
+                    dbid
+                    id
+                    ...getVideoOrImageUrlForNftPreviewFragment
+                  }
+                }
+              }
             }
           }
         }
@@ -130,6 +140,15 @@ export function CommentBox({ eventRef, queryRef }: Props) {
       };
 
       const optimisticId = Math.random().toString();
+
+      const { token } = query.viewer?.user?.profileImage ?? {};
+
+      const result = token
+        ? getVideoOrImageUrlForNftPreview({
+            tokenRef: token,
+          })
+        : null;
+
       const response = await submitComment({
         updater,
         optimisticUpdater: updater,
@@ -143,6 +162,24 @@ export function CommentBox({ eventRef, queryRef }: Props) {
                 dbid: query.viewer?.user?.dbid ?? 'unknown',
                 id: query.viewer?.user?.id ?? 'unknown',
                 username: query.viewer?.user?.username ?? null,
+                profileImage: {
+                  __typename: 'TokenProfileImage',
+                  token: {
+                    dbid: token?.dbid ?? 'unknown',
+                    id: token?.id ?? 'unknown',
+                    media: {
+                      __typename: 'ImageMedia',
+                      fallbackMedia: {
+                        mediaURL: result?.urls?.small ?? null,
+                      },
+                      previewURLs: {
+                        large: result?.urls?.large ?? null,
+                        medium: result?.urls?.medium ?? null,
+                        small: result?.urls?.small ?? null,
+                      },
+                    },
+                  },
+                },
               },
               creationTime: new Date().toISOString(),
               dbid: optimisticId,
@@ -183,6 +220,7 @@ export function CommentBox({ eventRef, queryRef }: Props) {
     query.viewer?.user?.dbid,
     query.viewer?.user?.id,
     query.viewer?.user?.username,
+    query.viewer?.user?.profileImage,
     reportError,
     resetInputState,
     submitComment,
