@@ -3,21 +3,24 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
-import { VStack } from '~/components/core/Spacer/Stack';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { CollectionLink } from '~/components/Notifications/CollectionLink';
+import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { SomeoneCommentedOnYourFeedEventFragment$key } from '~/generated/SomeoneCommentedOnYourFeedEventFragment.graphql';
 import unescape from '~/shared/utils/unescape';
 
 type SomeoneCommentedOnYourFeedEventProps = {
   notificationRef: SomeoneCommentedOnYourFeedEventFragment$key;
   onClose: () => void;
+  isPfpVisible: boolean;
 };
 
 export function SomeoneCommentedOnYourFeedEvent({
   notificationRef,
   onClose,
+  isPfpVisible,
 }: SomeoneCommentedOnYourFeedEventProps) {
   const notification = useFragment(
     graphql`
@@ -27,6 +30,7 @@ export function SomeoneCommentedOnYourFeedEvent({
         comment {
           commenter {
             ...HoverCardOnUsernameFragment
+            ...ProfilePictureFragment
           }
           comment
         }
@@ -90,7 +94,10 @@ export function SomeoneCommentedOnYourFeedEvent({
     <VStack gap={8}>
       <BaseM>
         {notification.comment?.commenter ? (
-          <HoverCardOnUsername userRef={notification.comment?.commenter} onClick={onClose} />
+          <HStack align="center" gap={4} inline>
+            {isPfpVisible && <ProfilePicture size="sm" userRef={notification.comment?.commenter} />}
+            <HoverCardOnUsername userRef={notification.comment?.commenter} onClick={onClose} />
+          </HStack>
         ) : (
           <strong>Someone</strong>
         )}

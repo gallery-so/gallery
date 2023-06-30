@@ -25,6 +25,7 @@ export type RawProfilePictureProps = {
   size: Size;
   hasInset?: boolean;
   isEditable?: boolean;
+  inline?: boolean;
   onEdit?: () => void;
 } & (
   | {
@@ -40,6 +41,7 @@ export function RawProfilePicture({
   hasInset,
   onEdit,
   isEditable,
+  inline,
   ...rest
 }: RawProfilePictureProps) {
   const widthAndHeight = sizeMapping[size];
@@ -55,6 +57,7 @@ export function RawProfilePicture({
       inset={hasInset}
       justify="center"
       align="center"
+      inline={inline}
       style={{
         width: widthAndHeight,
         height: widthAndHeight,

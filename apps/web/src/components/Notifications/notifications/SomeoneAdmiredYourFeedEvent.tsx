@@ -2,19 +2,23 @@ import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
+import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { CollectionLink } from '~/components/Notifications/CollectionLink';
+import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { SomeoneAdmiredYourFeedEventFragment$key } from '~/generated/SomeoneAdmiredYourFeedEventFragment.graphql';
 
 type SomeoneAdmiredYourFeedEventProps = {
   notificationRef: SomeoneAdmiredYourFeedEventFragment$key;
   onClose: () => void;
+  isPfpVisible: boolean;
 };
 
 export function SomeoneAdmiredYourFeedEvent({
   notificationRef,
   onClose,
+  isPfpVisible,
 }: SomeoneAdmiredYourFeedEventProps) {
   const notification = useFragment(
     graphql`
@@ -57,6 +61,7 @@ export function SomeoneAdmiredYourFeedEvent({
           edges {
             node {
               ...HoverCardOnUsernameFragment
+              ...ProfilePictureFragment
             }
           }
         }
@@ -91,18 +96,25 @@ export function SomeoneAdmiredYourFeedEvent({
   return (
     <BaseM>
       {count > 1 ? (
-        <strong>{notification.count} collectors</strong>
+        <BaseM>
+          <strong>{notification.count} asdasd collectors</strong>
+        </BaseM>
       ) : (
         <>
           {firstAdmirer ? (
-            <HoverCardOnUsername userRef={firstAdmirer} onClick={onClose} />
+            <HStack align="center" gap={4} inline>
+              {isPfpVisible && <ProfilePicture size="sm" userRef={firstAdmirer} />}
+              <HoverCardOnUsername userRef={firstAdmirer} onClick={onClose} />
+            </HStack>
           ) : (
-            <strong>Someone</strong>
+            <BaseM as="span">
+              <strong>Someone</strong>
+            </BaseM>
           )}
         </>
       )}
-      {` ${verb} `}
-      {collection ? <CollectionLink collectionRef={collection} /> : <>your collection</>}
+      <BaseM as="span">{` ${verb} `}</BaseM>
+      {collection ? <CollectionLink collectionRef={collection} /> : <BaseM>your collection</BaseM>}
     </BaseM>
   );
 }
