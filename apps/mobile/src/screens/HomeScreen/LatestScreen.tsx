@@ -5,7 +5,6 @@ import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 import { FEED_PER_PAGE } from '~/components/Feed/constants';
 import { ActiveFeed } from '~/components/Feed/FeedFilter';
 import { FollowingFeed } from '~/components/Feed/FollowingFeed';
-import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/NotesModal/NotesList';
 import { WelcomeToBeta } from '~/components/WelcomeToBeta';
 import { LatestScreenFragment$key } from '~/generated/LatestScreenFragment.graphql';
 import { LatestScreenQuery } from '~/generated/LatestScreenQuery.graphql';
@@ -76,8 +75,6 @@ export function LatestScreen() {
         $globalFeedCount: Int!
         $followingFeedBefore: String
         $followingFeedCount: Int!
-        $interactionsFirst: Int!
-        $interactionsAfter: String
       ) {
         ...LatestScreenFragment
       }
@@ -85,7 +82,6 @@ export function LatestScreen() {
     {
       globalFeedCount: FEED_PER_PAGE,
       followingFeedCount: FEED_PER_PAGE,
-      interactionsFirst: NOTES_PER_PAGE,
     }
   );
 

@@ -17,15 +17,11 @@ function FeedEventScreenInner() {
   const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'FeedEvent'>>();
   const wrapperQuery = useLazyLoadQuery<FeedEventScreenQuery>(
     graphql`
-      query FeedEventScreenQuery(
-        $feedEventId: DBID!
-        $interactionsFirst: Int!
-        $interactionsAfter: String
-      ) {
+      query FeedEventScreenQuery($feedEventId: DBID!) {
         ...FeedEventScreenFragment
       }
     `,
-    { interactionsFirst: 10, feedEventId: route.params.eventId }
+    { feedEventId: route.params.eventId }
   );
 
   const [query, refetch] = useRefetchableFragment<

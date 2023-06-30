@@ -26,8 +26,6 @@ function ProfileScreenInner() {
         $username: String!
         $feedLast: Int!
         $feedBefore: String
-        $interactionsFirst: Int!
-        $interactionsAfter: String
         $sharedCommunitiesFirst: Int
         $sharedCommunitiesAfter: String
         $sharedFollowersFirst: Int
@@ -39,7 +37,6 @@ function ProfileScreenInner() {
     {
       username: route.params.username,
       feedLast: 24,
-      interactionsFirst: NOTES_PER_PAGE,
       sharedCommunitiesFirst: SHARED_COMMUNITIES_PER_PAGE,
       sharedFollowersFirst: SHARED_FOLLOWERS_PER_PAGE,
     },

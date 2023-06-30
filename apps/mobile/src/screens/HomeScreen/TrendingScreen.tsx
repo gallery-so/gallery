@@ -144,18 +144,12 @@ function TrendingScreenInner({ queryRef }: TrendingScreenInnerProps) {
 export function TrendingScreen() {
   const query = useLazyLoadQuery<TrendingScreenQuery>(
     graphql`
-      query TrendingScreenQuery(
-        $trendingFeedBefore: String
-        $trendingFeedCount: Int!
-        $interactionsFirst: Int!
-        $interactionsAfter: String
-      ) {
+      query TrendingScreenQuery($trendingFeedBefore: String, $trendingFeedCount: Int!) {
         ...TrendingScreenFragment
       }
     `,
     {
       trendingFeedCount: PER_PAGE,
-      interactionsFirst: NOTES_PER_PAGE,
     }
   );
 
