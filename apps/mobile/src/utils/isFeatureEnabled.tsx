@@ -19,7 +19,7 @@ type Role = Exclude<RelayRole, '%future added value'>;
 const ROLE_FLAGS: Record<Role, Record<FeatureFlag, boolean>> = {
   ADMIN: {
     BIG_EASEL: true,
-    PFP: false,
+    PFP: true,
   },
   BETA_TESTER: {
     BIG_EASEL: false,
