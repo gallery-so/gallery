@@ -1,11 +1,10 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 
 import { BackButton } from '~/components/BackButton';
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
-import { Select } from '~/components/Select';
 import { Typography } from '~/components/Typography';
 import { ProfilePicturePickerContractScreenQuery } from '~/generated/ProfilePicturePickerContractScreenQuery.graphql';
 import { MainTabStackNavigatorParamList, MainTabStackNavigatorProp } from '~/navigation/types';
@@ -23,8 +22,6 @@ export function ProfilePicturePickerContractScreen() {
             user {
               tokens {
                 dbid
-                ownerIsCreator
-                ownerIsHolder
                 contract {
                   name
                   contractAddress {
@@ -45,8 +42,6 @@ export function ProfilePicturePickerContractScreen() {
   const { top } = useSafeAreaPadding();
   const navigation = useNavigation<MainTabStackNavigatorProp>();
 
-  const [sort, setSort] = useState<'Collected' | 'Created'>('Collected');
-
   const handleProfilePictureChange = useCallback(() => {
     navigation.pop(2);
   }, [navigation]);
@@ -57,31 +52,17 @@ export function ProfilePicturePickerContractScreen() {
         return token?.contract?.contractAddress?.address === route.params.contractAddress;
       })
     );
-  }, [query.viewer?.user?.tokens, route.params.contractAddress, sort]);
-
-  const filteredTokens = useMemo(() => {
-    return tokens.filter((token) => {
-      if (sort === 'Collected') {
-        return token.ownerIsHolder;
-      }
-
-      if (sort === 'Created') {
-        return token.ownerIsCreator;
-      }
-
-      return false;
-    });
-  }, []);
+  }, [query.viewer?.user?.tokens, route.params.contractAddress]);
 
   const contractName = tokens[0]?.contract?.name;
 
   const rows = useMemo(() => {
     const rows = [];
-    for (let i = 0; i < filteredTokens.length; i += 3) {
-      rows.push(filteredTokens.slice(i, i + 3));
+    for (let i = 0; i < tokens.length; i += 3) {
+      rows.push(tokens.slice(i, i + 3));
     }
     return rows;
-  }, [filteredTokens]);
+  }, [tokens]);
 
   return (
     <View className="flex-1 bg-white dark:bg-black-900" style={{ paddingTop: top }}>
@@ -102,20 +83,6 @@ export function ProfilePicturePickerContractScreen() {
               {contractName}
             </Typography>
           </View>
-        </View>
-
-        <View className="px-4">
-          <Select
-            title="Owner Filter"
-            eventElementId="ProfilePictureOwnerFilter"
-            className="w-32"
-            options={[
-              { id: 'Collected', label: 'Collected' },
-              { id: 'Created', label: 'Created' },
-            ]}
-            onChange={setSort}
-            selectedId={sort}
-          />
         </View>
 
         <View className="flex flex-col space-y-4 px-4">
