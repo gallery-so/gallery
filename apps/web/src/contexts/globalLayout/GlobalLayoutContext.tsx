@@ -30,7 +30,7 @@ import { PreloadQueryArgs } from '~/types/PageComponentPreloadQuery';
 import isTouchscreenDevice from '~/utils/isTouchscreenDevice';
 
 import { FEATURED_COLLECTION_IDS } from './GlobalAnnouncementPopover/GlobalAnnouncementPopover';
-import useGlobalAnnouncementPopover from './GlobalAnnouncementPopover/useGlobalAnnouncementPopover';
+// import useGlobalAnnouncementPopover from './GlobalAnnouncementPopover/useGlobalAnnouncementPopover';
 import GlobalBanner, { CTAChip } from './GlobalBanner/GlobalBanner';
 import GlobalSidebar, { GLOBAL_SIDEBAR_DESKTOP_WIDTH } from './GlobalSidebar/GlobalSidebar';
 import {
@@ -79,10 +79,11 @@ type Props = { children: ReactNode; preloadedQuery: PreloadedQuery<GlobalLayoutC
 type FadeTriggerType = 'route' | 'scroll' | 'hover';
 
 const GlobalLayoutContextQueryNode = graphql`
-  query GlobalLayoutContextQuery($collectionIds: [DBID!]!) {
+  # query GlobalLayoutContextQuery($collectionIds: [DBID!]!) {
+  query GlobalLayoutContextQuery {
     ...GlobalLayoutContextNavbarFragment
     # Keeping this around for the next time we want to use it
-    ...useGlobalAnnouncementPopoverFragment
+    # ...useGlobalAnnouncementPopoverFragment
   }
 `;
 
@@ -231,7 +232,7 @@ const GlobalLayoutContextProvider = memo(({ children, preloadedQuery }: Props) =
   );
 
   // Keeping this around for the next time we want to use it
-  useGlobalAnnouncementPopover({ queryRef: query, authRequired: false, dismissVariant: 'global' });
+  // useGlobalAnnouncementPopover({ queryRef: query, authRequired: false, dismissVariant: 'global' });
 
   const locationKey = useStabilizedRouteTransitionKey();
 
