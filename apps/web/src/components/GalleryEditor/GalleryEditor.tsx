@@ -9,11 +9,22 @@ import { CollectionSidebar } from '~/components/GalleryEditor/CollectionSidebar/
 import { PiecesSidebar } from '~/components/GalleryEditor/PiecesSidebar/PiecesSidebar';
 import { CollectionEditorProvider } from '~/contexts/collectionEditor/CollectionEditorContext';
 import { GalleryEditorFragment$key } from '~/generated/GalleryEditorFragment.graphql';
+import { GalleryEditorViewerFragment$key } from '~/generated/GalleryEditorViewerFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 type GalleryEditorProps = {
   queryRef: GalleryEditorFragment$key;
 };
+
+const galleryEditorViewerFragment = graphql`
+  fragment GalleryEditorViewerFragment on Viewer {
+    user {
+      tokens(ownershipFilter: [Creator, Holder]) {
+        ...PiecesSidebarFragment
+      }
+    }
+  }
+`;
 
 export function GalleryEditor({ queryRef }: GalleryEditorProps) {
   const query = useFragment(
@@ -24,14 +35,8 @@ export function GalleryEditor({ queryRef }: GalleryEditorProps) {
         ...CollectionSidebarQueryFragment
 
         viewer {
-          __typename
-
           ... on Viewer {
-            user {
-              tokens(ownershipFilter: [Creator, Holder]) {
-                ...PiecesSidebarFragment
-              }
-            }
+            ...GalleryEditorViewerFragment
           }
         }
       }
@@ -39,13 +44,18 @@ export function GalleryEditor({ queryRef }: GalleryEditorProps) {
     queryRef
   );
 
-  const allTokens = useMemo(() => {
-    if (query.viewer?.__typename !== 'Viewer') {
-      return [];
-    }
+  const viewer = useFragment<GalleryEditorViewerFragment$key>(
+    galleryEditorViewerFragment,
+    query.viewer
+  );
 
-    return removeNullValues(query.viewer?.user?.tokens);
-  }, [query.viewer]);
+  if (!viewer) {
+    throw new Error('GalleryEditor rendered without a Viewer');
+  }
+
+  const allTokens = useMemo(() => {
+    return removeNullValues(viewer.user?.tokens);
+  }, [viewer]);
 
   return (
     <GalleryEditorWrapper>
