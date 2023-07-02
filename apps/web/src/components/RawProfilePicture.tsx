@@ -169,4 +169,5 @@ const ProfilePictureText = styled.div`
   font-weight: 300;
   line-height: 13px;
   font-family: ${TITLE_FONT_FAMILY};
+  color: ${colors.black['800']};
 `;

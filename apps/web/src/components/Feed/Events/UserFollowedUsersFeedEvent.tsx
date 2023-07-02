@@ -5,11 +5,12 @@ import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import { Button } from '~/components/core/Button/Button';
-import { VStack } from '~/components/core/Spacer/Stack';
-import { TitleXS } from '~/components/core/Text/Text';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
+import { BaseM, TitleXS } from '~/components/core/Text/Text';
 import { FeedMode } from '~/components/Feed/types';
 import FollowListUsers from '~/components/Follow/FollowListUsers';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
+import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { MODAL_PADDING_THICC_PX } from '~/contexts/modal/constants';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { UserFollowedUsersFeedEventFragment$key } from '~/generated/UserFollowedUsersFeedEventFragment.graphql';
@@ -19,6 +20,7 @@ import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
 import { getTimeSince } from '~/shared/utils/time';
+import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 import { StyledEvent, StyledEventHeader, StyledEventText, StyledTime } from './EventStyles';
 import UserFollowedYouEvent from './UserFollowedYouEvent';
@@ -43,6 +45,7 @@ export default function UserFollowedUsersFeedEvent({
         owner @required(action: THROW) {
           username @required(action: THROW)
           ...HoverCardOnUsernameFragment
+          ...ProfilePictureFragment
         }
         followed @required(action: THROW) {
           user {
@@ -50,6 +53,7 @@ export default function UserFollowedUsersFeedEvent({
             dbid
             ...FollowListUsersFragment
             ...HoverCardOnUsernameFragment
+            ...ProfilePictureFragment
           }
 
           ...UserFollowedYouEventFragment
@@ -72,12 +76,17 @@ export default function UserFollowedUsersFeedEvent({
             }
           }
         }
+        ...isFeatureEnabledFragment
+        ...FollowListUsersQueryFragment
+        ...UserFollowedYouEventQueryFragment
       }
     `,
     queryRef
   );
 
   const { push } = useRouter();
+
+  const isPfpEnabled = isFeatureEnabled(FeatureFlag.PFP, query);
 
   const viewerUserId = query?.viewer?.user?.dbid;
 
@@ -128,7 +137,7 @@ export default function UserFollowedUsersFeedEvent({
       showModal({
         content: (
           <StyledFollowList fullscreen={isMobile}>
-            <FollowListUsers userRefs={flattenedGenericFollows} />
+            <FollowListUsers userRefs={flattenedGenericFollows} queryRef={query} />
           </StyledFollowList>
         ),
         isFullPage: isMobile,
@@ -136,7 +145,7 @@ export default function UserFollowedUsersFeedEvent({
         headerVariant: 'thicc',
       });
     },
-    [flattenedGenericFollows, isMobile, showModal, track]
+    [flattenedGenericFollows, isMobile, query, showModal, track]
   );
 
   const followedNoRemainingUsers = genericFollows.length === 0;
@@ -146,16 +155,27 @@ export default function UserFollowedUsersFeedEvent({
   return (
     <>
       {viewerUserId && followedYouAction && (
-        <UserFollowedYouEvent eventRef={event} followInfoRef={followedYouAction} />
+        <UserFollowedYouEvent eventRef={event} followInfoRef={followedYouAction} queryRef={query} />
       )}
       {followedNoRemainingUsers ? null : followedSingleUser ? (
         <CustomStyledEvent onClick={handleSeeFollowedUserClick} isSubEvent={isSubEvent}>
           <StyledEventContent>
             <StyledEventHeader>
               <StyledEventText isSubEvent={isSubEvent}>
-                {!isSubEvent && <HoverCardOnUsername userRef={event.owner} />} followed{' '}
+                {!isSubEvent && (
+                  <HStack gap={4} align="center" inline>
+                    {isPfpEnabled && <ProfilePicture userRef={event.owner} size="sm" />}
+                    <HoverCardOnUsername userRef={event.owner} />
+                  </HStack>
+                )}
+                <BaseM>followed</BaseM>
                 {firstFollowerUsernameRef && firstFollowerUsernameRef.user && (
-                  <HoverCardOnUsername userRef={firstFollowerUsernameRef.user} />
+                  <HStack gap={4} align="center" inline>
+                    {isPfpEnabled && (
+                      <ProfilePicture userRef={firstFollowerUsernameRef.user} size="sm" />
+                    )}
+                    <HoverCardOnUsername userRef={firstFollowerUsernameRef.user} />
+                  </HStack>
                 )}
                 {!isSubEvent && <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>}
               </StyledEventText>
@@ -168,8 +188,13 @@ export default function UserFollowedUsersFeedEvent({
             <StyledEventHeaderContainer gap={16} align="center" grow>
               <StyledEventHeader>
                 <StyledEventText isSubEvent={isSubEvent}>
-                  {!isSubEvent && <HoverCardOnUsername userRef={event.owner} />} followed{' '}
-                  {genericFollows.length} collectors.
+                  {!isSubEvent && (
+                    <HStack gap={4} align="center" inline>
+                      <ProfilePicture userRef={event.owner} size="sm" />
+                      <HoverCardOnUsername userRef={event.owner} />
+                    </HStack>
+                  )}
+                  <BaseM>followed {genericFollows.length} collectors.</BaseM>
                   <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
                 </StyledEventText>
               </StyledEventHeader>

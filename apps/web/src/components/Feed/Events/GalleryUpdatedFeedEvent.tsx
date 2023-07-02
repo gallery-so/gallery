@@ -9,10 +9,12 @@ import { BaseM } from '~/components/core/Text/Text';
 import { NonRecursiveFeedEventData } from '~/components/Feed/FeedEventData';
 import { FeedMode } from '~/components/Feed/types';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
+import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { GalleryUpdatedFeedEventFragment$key } from '~/generated/GalleryUpdatedFeedEventFragment.graphql';
 import { GalleryUpdatedFeedEventQueryFragment$key } from '~/generated/GalleryUpdatedFeedEventQueryFragment.graphql';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import { getTimeSince } from '~/shared/utils/time';
+import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 import { StyledCaptionContainer } from './CollectionCreatedFeedEvent';
 import {
@@ -50,6 +52,7 @@ export default function GalleryUpdatedFeedEvent({
         owner @required(action: THROW) {
           username @required(action: THROW)
           ...HoverCardOnUsernameFragment
+          ...ProfilePictureFragment
         }
         subEventDatas {
           ...FeedEventDataNonRecursiveFragment
@@ -63,10 +66,13 @@ export default function GalleryUpdatedFeedEvent({
     graphql`
       fragment GalleryUpdatedFeedEventQueryFragment on Query {
         ...FeedEventDataNonRecursiveQueryFragment
+        ...isFeatureEnabledFragment
       }
     `,
     queryRef
   );
+
+  const isPfpEnabled = isFeatureEnabled(FeatureFlag.PFP, query);
 
   const galleryPagePath: Route = {
     pathname: '/[username]/galleries/[galleryId]',
@@ -83,14 +89,16 @@ export default function GalleryUpdatedFeedEvent({
     <StyledEvent>
       <VStack gap={16}>
         <StyledEventHeader>
-          <HStack gap={4} inline>
-            <BaseM>
-              <HoverCardOnUsername userRef={event.owner} /> updated{' '}
-              <Link href={galleryPagePath} passHref legacyBehavior>
-                <StyledEventLabel>{event?.gallery?.name || 'their gallery'}</StyledEventLabel>
-              </Link>
-              <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
-            </BaseM>
+          <HStack gap={4} align="center" inline>
+            <HStack gap={4} align="center" inline>
+              {isPfpEnabled && <ProfilePicture size="sm" userRef={event.owner} />}
+              <HoverCardOnUsername userRef={event.owner} />
+            </HStack>
+            <BaseM>updated</BaseM>
+            <Link href={galleryPagePath} passHref legacyBehavior>
+              <StyledEventLabel>{event?.gallery?.name || 'their gallery'}</StyledEventLabel>
+            </Link>
+            <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>
           </HStack>
         </StyledEventHeader>
         <StyledEventContent>

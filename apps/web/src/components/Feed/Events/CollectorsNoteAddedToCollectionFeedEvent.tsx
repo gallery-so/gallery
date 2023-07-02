@@ -8,9 +8,10 @@ import styled from 'styled-components';
 import breakpoints from '~/components/core/breakpoints';
 import { UnstyledLink } from '~/components/core/Link/UnstyledLink';
 import Markdown from '~/components/core/Markdown/Markdown';
-import { VStack } from '~/components/core/Spacer/Stack';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
+import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { CollectorsNoteAddedToCollectionFeedEventFragment$key } from '~/generated/CollectorsNoteAddedToCollectionFeedEventFragment.graphql';
 import { CollectorsNoteAddedToCollectionFeedEventQueryFragment$key } from '~/generated/CollectorsNoteAddedToCollectionFeedEventQueryFragment.graphql';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
@@ -18,6 +19,7 @@ import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
 import { getTimeSince } from '~/shared/utils/time';
 import unescape from '~/shared/utils/unescape';
+import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 import FeedEventTokenPreviews from '../FeedEventTokenPreviews';
 import {
@@ -47,6 +49,7 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({
         owner @required(action: THROW) {
           username
           ...HoverCardOnUsernameFragment
+          ...ProfilePictureFragment
         }
         collection @required(action: THROW) {
           dbid
@@ -68,6 +71,7 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({
     graphql`
       fragment CollectorsNoteAddedToCollectionFeedEventQueryFragment on Query {
         ...FeedEventTokenPreviewsQueryFragment
+        ...isFeatureEnabledFragment
       }
     `,
     queryRef
@@ -79,6 +83,8 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({
   };
 
   const track = useTrack();
+
+  const isPfpEnabled = isFeatureEnabled(FeatureFlag.PFP, query);
 
   const nonNullTokens = useMemo(() => {
     return removeNullValues(event.collection.tokens);
@@ -107,8 +113,13 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({
         <VStack gap={isSubEvent ? 0 : 16}>
           <StyledEventHeader>
             <StyledEventText isSubEvent={isSubEvent}>
-              {!isSubEvent && <HoverCardOnUsername userRef={event.owner} />} added a description to{' '}
-              {collectionName ? ' ' : ' their collection'}
+              {!isSubEvent && (
+                <HStack gap={4} align="center">
+                  {isPfpEnabled && <ProfilePicture userRef={event.owner} size="sm" />}
+                  <HoverCardOnUsername userRef={event.owner} />
+                </HStack>
+              )}
+              <BaseM>added a description to {collectionName ? ' ' : ' their collection'}</BaseM>
               <Link href={collectionPagePath} passHref legacyBehavior>
                 <StyledEventLabel>{collectionName}</StyledEventLabel>
               </Link>

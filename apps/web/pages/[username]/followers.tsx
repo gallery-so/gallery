@@ -24,6 +24,7 @@ function FollowersPage({ queryRef }: FollowersPageProps) {
         userByUsername(username: $username) @required(action: THROW) {
           ...FollowListFragment
         }
+        ...FollowListQueryFragment
       }
     `,
     queryRef
@@ -32,7 +33,7 @@ function FollowersPage({ queryRef }: FollowersPageProps) {
   return (
     <GalleryPageSpacing>
       <VStack align="center">
-        <FollowList userRef={query.userByUsername} />
+        <FollowList userRef={query.userByUsername} queryRef={query} />
       </VStack>
     </GalleryPageSpacing>
   );

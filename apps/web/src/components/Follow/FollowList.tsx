@@ -6,6 +6,7 @@ import TextButton, { StyledButtonText } from '~/components/core/Button/TextButto
 import { HStack } from '~/components/core/Spacer/Stack';
 import { MODAL_PADDING_THICC_PX } from '~/contexts/modal/constants';
 import { FollowListFragment$key } from '~/generated/FollowListFragment.graphql';
+import { FollowListQueryFragment$key } from '~/generated/FollowListQueryFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
@@ -14,9 +15,10 @@ import FollowListUsers from './FollowListUsers';
 
 type Props = {
   userRef: FollowListFragment$key;
+  queryRef: FollowListQueryFragment$key;
 };
 
-export default function FollowList({ userRef }: Props) {
+export default function FollowList({ userRef, queryRef }: Props) {
   const user = useFragment(
     graphql`
       fragment FollowListFragment on GalleryUser {
@@ -29,6 +31,15 @@ export default function FollowList({ userRef }: Props) {
       }
     `,
     userRef
+  );
+
+  const query = useFragment(
+    graphql`
+      fragment FollowListQueryFragment on Query {
+        ...FollowListUsersQueryFragment
+      }
+    `,
+    queryRef
   );
 
   const [displayedList, setDisplayedList] = useState<'followers' | 'following'>('followers');
@@ -58,6 +69,7 @@ export default function FollowList({ userRef }: Props) {
       </StyledHeader>
       <FollowListUsers
         userRefs={nonNullUserList}
+        queryRef={query}
         emptyListText={
           displayedList === 'followers' ? 'No followers yet.' : 'Not following anyone yet.'
         }

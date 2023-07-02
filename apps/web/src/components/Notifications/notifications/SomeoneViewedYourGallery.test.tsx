@@ -26,7 +26,7 @@ function Fixture() {
   );
 
   if (query.node?.__typename === 'SomeoneViewedYourGalleryNotification') {
-    return <SomeoneViewedYourGallery notificationRef={query.node} onClose={noop} />;
+    return <SomeoneViewedYourGallery notificationRef={query.node} onClose={noop} isPfpVisible />;
   }
 
   throw new Error('Yikes');
@@ -52,9 +52,12 @@ function mockResponse({ userViews, nonUserViews }: MockResponseArgs) {
           return {
             __typename: 'GroupNotificationUserEdge',
             node: {
+              __typename: 'GalleryUser',
               id: `GalleryUser:user-${index}`,
               dbid: `user-${index}`,
               username: `User ${index}`,
+
+              profileImage: null,
 
               // Irrelevant properties
               bio: null,

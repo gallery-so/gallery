@@ -3,20 +3,26 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import Markdown from '~/components/core/Markdown/Markdown';
-import { VStack } from '~/components/core/Spacer/Stack';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleS } from '~/components/core/Text/Text';
 import { FollowListUsersFragment$key } from '~/generated/FollowListUsersFragment.graphql';
+import { FollowListUsersQueryFragment$key } from '~/generated/FollowListUsersQueryFragment.graphql';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
+import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 import { BREAK_LINES } from '~/utils/regex';
+
+import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
 
 type Props = {
   userRefs: FollowListUsersFragment$key;
+  queryRef: FollowListUsersQueryFragment$key;
   emptyListText?: string;
 };
 
 export default function FollowListUsers({
   userRefs,
+  queryRef,
   emptyListText = 'No users to display.',
 }: Props) {
   const track = useTrack();
@@ -27,10 +33,22 @@ export default function FollowListUsers({
         dbid
         bio
         username
+        ...ProfilePictureFragment
       }
     `,
     userRefs
   );
+
+  const query = useFragment(
+    graphql`
+      fragment FollowListUsersQueryFragment on Query {
+        ...isFeatureEnabledFragment
+      }
+    `,
+    queryRef
+  );
+
+  const isPfpEnabled = isFeatureEnabled(FeatureFlag.PFP, query);
 
   const handleClick = useCallback(() => {
     track('Follower List Username Click');
@@ -49,7 +67,10 @@ export default function FollowListUsers({
     <StyledList>
       {formattedUsersBio.map((user) => (
         <StyledListItem key={user.dbid} href={`/${user.username}`} onClick={handleClick}>
-          <TitleS>{user.username}</TitleS>
+          <HStack gap={4} align="center" inline>
+            {isPfpEnabled && <ProfilePicture userRef={user} size="sm" />}
+            <TitleS>{user.username}</TitleS>
+          </HStack>
           <StyledBaseM>{user.bio && <Markdown text={user.bio} />}</StyledBaseM>
         </StyledListItem>
       ))}
