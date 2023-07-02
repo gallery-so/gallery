@@ -1,11 +1,21 @@
 import { FormEvent, useCallback, useMemo, useState } from 'react';
+import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import Input from '~/components/core/Input/Input';
-import { VStack } from '~/components/core/Spacer/Stack';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { TitleS } from '~/components/core/Text/Text';
 import { TextAreaWithCharCount } from '~/components/core/TextArea/TextArea';
+import { UserInfoFormFragment$key } from '~/generated/UserInfoFormFragment.graphql';
+import { UserInfoFormQueryFragment$key } from '~/generated/UserInfoFormQueryFragment.graphql';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 import unescape from '~/shared/utils/unescape';
+import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
+
+import useNftSelector from '../NftSelector/useNftSelector';
+import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
+import { RawProfilePicture } from '../RawProfilePicture';
+import { ProfilePictureDropdown } from './ProfilePictureDropdown';
 
 type Props = {
   className?: string;
@@ -16,6 +26,9 @@ type Props = {
   onUsernameChange: (username: string) => void;
   bio: string;
   onBioChange: (bio: string) => void;
+
+  userRef: UserInfoFormFragment$key;
+  queryRef: UserInfoFormQueryFragment$key;
 };
 
 export const BIO_MAX_CHAR_COUNT = 600;
@@ -29,10 +42,49 @@ function UserInfoForm({
   bio,
   onBioChange,
   mode,
+
+  userRef,
+  queryRef,
 }: Props) {
+  const user = useFragment(
+    graphql`
+      fragment UserInfoFormFragment on GalleryUser {
+        ...ProfilePictureFragment
+        profileImage {
+          __typename
+        }
+
+        tokens {
+          ...ProfilePictureDropdownFragment
+          ...useNftSelectorFragment
+        }
+      }
+    `,
+    userRef
+  );
+
+  const query = useFragment(
+    graphql`
+      fragment UserInfoFormQueryFragment on Query {
+        ...isFeatureEnabledFragment
+        ...ProfilePictureDropdownQueryFragment
+        ...useNftSelectorQueryFragment
+      }
+    `,
+    queryRef
+  );
+
+  const [showPfpDropdown, setShowPfpDropdown] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const isPfpEnabled = isFeatureEnabled(FeatureFlag.PFP, query);
+
+  const tokens = removeNullValues(user.tokens) ?? [];
+  const showNftSelector = useNftSelector({ tokensRef: tokens, queryRef: query });
+
   const unescapedBio = useMemo(() => unescape(bio), [bio]);
+
+  const hasProfileImage = user.profileImage?.__typename === 'TokenProfileImage';
 
   const handleSubmit = useCallback(
     async (event: FormEvent) => {
@@ -70,17 +122,57 @@ function UserInfoForm({
   // Otherwise, focus on bio
   const shouldAutofocusBio = !shouldAutofocusUsername;
 
+  const handleOpenPfpDropdown = useCallback(() => {
+    setShowPfpDropdown(true);
+  }, []);
+  const handleClosePfpDropdown = useCallback(() => {
+    setShowPfpDropdown(false);
+  }, []);
+
+  const firstLetter = username?.substring(0, 1) ?? undefined;
+
   return (
     <StyledUserInformContainer as="form" className={className} gap={16} onSubmit={handleSubmit}>
-      {mode === 'Add' && <TitleS>Add username and bio</TitleS>}
-      <Input
-        onChange={handleUsernameChange}
-        placeholder="Username"
-        defaultValue={username}
-        errorMessage={usernameError}
-        autoFocus={shouldAutofocusUsername}
-        variant="grande"
-      />
+      {mode === 'Add' && (
+        <>
+          <TitleS>Let's set up your profile</TitleS>
+          {isPfpEnabled && (
+            <div onClick={showNftSelector}>
+              {hasProfileImage ? (
+                <ProfilePicture userRef={user} />
+              ) : (
+                <RawProfilePicture letter={firstLetter} default hasInset isEditable size="xl" />
+              )}
+            </div>
+          )}
+        </>
+      )}
+
+      <HStack gap={16} align="center">
+        {!mode && isPfpEnabled && (
+          <StyledProfilePictureContainer onClick={handleOpenPfpDropdown}>
+            <ProfilePicture userRef={user} />
+            <ProfilePictureDropdown
+              open={showPfpDropdown}
+              onClose={handleClosePfpDropdown}
+              tokensRef={tokens}
+              queryRef={query}
+            />
+          </StyledProfilePictureContainer>
+        )}
+
+        <StyledInputContainer>
+          <Input
+            onChange={handleUsernameChange}
+            placeholder="Username"
+            defaultValue={username}
+            errorMessage={usernameError}
+            autoFocus={shouldAutofocusUsername}
+            variant="grande"
+          />
+        </StyledInputContainer>
+      </HStack>
+
       <StyledTextAreaWithCharCount
         onChange={handleBioChange}
         placeholder="Tell us about yourself..."
@@ -101,6 +193,14 @@ const StyledUserInformContainer = styled(VStack)`
 
 const StyledTextAreaWithCharCount = styled(TextAreaWithCharCount)`
   height: 144px;
+`;
+
+const StyledInputContainer = styled.div`
+  width: 100%;
+`;
+
+const StyledProfilePictureContainer = styled.div`
+  position: relative;
 `;
 
 export default UserInfoForm;

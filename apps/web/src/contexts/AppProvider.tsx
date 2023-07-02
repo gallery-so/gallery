@@ -39,20 +39,20 @@ export default function AppProvider({
               <SwrProvider>
                 <GalleryNavigationProvider>
                   <NftErrorProvider>
-                    <ModalProvider>
-                      <SidebarDrawerProvider>
-                        <SearchProvider>
-                          <SyncTokensLockProvider>
+                    <SyncTokensLockProvider>
+                      <ModalProvider>
+                        <SidebarDrawerProvider>
+                          <SearchProvider>
                             <GlobalLayoutContextProvider
                               preloadedQuery={globalLayoutContextPreloadedQuery}
                             >
                               {isProd ? null : <Debugger />}
                               {children}
                             </GlobalLayoutContextProvider>
-                          </SyncTokensLockProvider>
-                        </SearchProvider>
-                      </SidebarDrawerProvider>
-                    </ModalProvider>
+                          </SearchProvider>
+                        </SidebarDrawerProvider>
+                      </ModalProvider>
+                    </SyncTokensLockProvider>
                   </NftErrorProvider>
                 </GalleryNavigationProvider>
               </SwrProvider>

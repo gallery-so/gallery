@@ -13,7 +13,7 @@ import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleM } from '~/components/core/Text/Text';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { useModalActions } from '~/contexts/modal/ModalContext';
-import { UserNameAndDescriptionHeader$key } from '~/generated/UserNameAndDescriptionHeader.graphql';
+import { UserNameAndDescriptionHeaderFragment$key } from '~/generated/UserNameAndDescriptionHeaderFragment.graphql';
 import { UserNameAndDescriptionHeaderQueryFragment$key } from '~/generated/UserNameAndDescriptionHeaderQueryFragment.graphql';
 import useIs3acProfilePage from '~/hooks/oneOffs/useIs3acProfilePage';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
@@ -29,14 +29,14 @@ import handleCustomDisplayName from '~/utils/handleCustomDisplayName';
 import EditUserInfoModal from './EditUserInfoModal';
 
 type Props = {
-  userRef: UserNameAndDescriptionHeader$key;
+  userRef: UserNameAndDescriptionHeaderFragment$key;
   queryRef: UserNameAndDescriptionHeaderQueryFragment$key;
 };
 
 export function UserNameAndDescriptionHeader({ userRef, queryRef }: Props) {
   const user = useFragment(
     graphql`
-      fragment UserNameAndDescriptionHeader on GalleryUser {
+      fragment UserNameAndDescriptionHeaderFragment on GalleryUser {
         id
         username
         bio
@@ -110,19 +110,18 @@ export function UserNameAndDescriptionHeader({ userRef, queryRef }: Props) {
       hasMobileContent={isMobile && !!unescapedBio}
     >
       <Container gap={2}>
-        {!isMobile && (
-          <HStack align="center" gap={4}>
-            <HStack gap={8} align="center">
-              {isPfpEnabled && <ProfilePicture userRef={user} size="xl" />}
-              <StyledUsername>{displayName}</StyledUsername>
-            </HStack>
-            <HStack align="center" gap={0}>
-              {userBadges.map((badge) =>
-                badge ? <Badge key={badge.name} badgeRef={badge} /> : null
-              )}
-            </HStack>
+        <HStack align="center" gap={4}>
+          <HStack gap={8} align="center">
+            {isPfpEnabled && <ProfilePicture userRef={user} size="xl" />}
+            <StyledUsername>{displayName}</StyledUsername>
           </HStack>
-        )}
+
+          <HStack align="center" gap={0}>
+            {userBadges.map((badge) =>
+              badge ? <Badge key={badge.name} badgeRef={badge} /> : null
+            )}
+          </HStack>
+        </HStack>
 
         <HStack align="center" gap={8} grow>
           <StyledUserDetails>

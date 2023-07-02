@@ -13,7 +13,7 @@ import SettingsDropdown from '~/components/core/Dropdown/SettingsDropdown';
 import { DisplayLayout } from '~/components/core/enums';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
-import { BaseM, TitleL } from '~/components/core/Text/Text';
+import { BaseM, TitleDiatypeM, TitleL } from '~/components/core/Text/Text';
 import { CollectionCreateOrEditForm } from '~/components/GalleryEditor/CollectionCreateOrEditForm';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { CollectionGalleryHeaderFragment$key } from '~/generated/CollectionGalleryHeaderFragment.graphql';
@@ -23,6 +23,8 @@ import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import MobileLayoutToggle from '~/scenes/UserGalleryPage/MobileLayoutToggle';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import unescape from '~/shared/utils/unescape';
+
+import GalleryTitleBreadcrumb from '../UserGalleryPage/GalleryTitleBreadcrumb';
 
 type Props = {
   queryRef: CollectionGalleryHeaderQueryFragment$key;
@@ -62,9 +64,11 @@ function CollectionGalleryHeader({
         collectorsNote
         gallery @required(action: THROW) {
           dbid
+          name
           owner {
             username
           }
+          ...GalleryTitleBreadcrumbFragment
         }
 
         tokens {
@@ -136,13 +140,23 @@ function CollectionGalleryHeader({
     return (
       <StyledCollectionGalleryHeaderWrapper>
         <HStack align="flex-start" justify="space-between">
-          {unescapedCollectorsNote ? (
-            <StyledCollectionNote>
-              <Markdown text={unescapedCollectorsNote} />
-            </StyledCollectionNote>
-          ) : (
-            <div />
-          )}
+          <VStack grow gap={16}>
+            <GalleryTitleBreadcrumb username={username ?? ''} galleryRef={collection.gallery} />
+            <VStack>
+              <StyledBreadcrumbsWrapper>
+                <StyledCollectionName>
+                  <TitleDiatypeM>{unescapedCollectionName}</TitleDiatypeM>
+                </StyledCollectionName>
+              </StyledBreadcrumbsWrapper>
+              {unescapedCollectorsNote ? (
+                <StyledCollectionNote>
+                  <Markdown text={unescapedCollectorsNote} />
+                </StyledCollectionNote>
+              ) : (
+                <div />
+              )}
+            </VStack>
+          </VStack>
 
           {shouldDisplayMobileLayoutToggle && (
             <StyledMobileLayoutToggleContainer>

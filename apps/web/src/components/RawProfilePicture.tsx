@@ -3,6 +3,7 @@ import styled, { css } from 'styled-components';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { TITLE_FONT_FAMILY } from '~/components/core/Text/Text';
 import { EditPencilIcon } from '~/icons/EditPencilIcon';
+import UserIcon from '~/icons/UserIcon';
 import colors from '~/shared/theme/colors';
 
 const sizeMapping: { [size in Size]: number } = {
@@ -33,6 +34,9 @@ export type RawProfilePictureProps = {
     }
   | {
       imageUrl: string;
+    }
+  | {
+      default: boolean;
     }
 );
 
@@ -78,6 +82,10 @@ export function RawProfilePicture({
 
         {'imageUrl' in rest && <ProfileImage src={rest.imageUrl} />}
 
+        {'default' in rest && (!('letter' in rest) || rest.letter === '') && (
+          <DefaultProfilePicture />
+        )}
+
         {isEditable && <OpacityImageOverlay />}
       </InnerCircle>
 
@@ -97,6 +105,10 @@ export function RawProfilePicture({
     </OuterCircle>
   );
 }
+
+const DefaultProfilePicture = () => {
+  return <UserIcon />;
+};
 
 const ProfileImage = styled.img`
   width: 100%;

@@ -27,9 +27,12 @@ function AddUserInfo() {
               dbid
               bio
               username
+
+              ...UserInfoFormFragment
             }
           }
         }
+        ...UserInfoFormQueryFragment
       }
     `,
     {}
@@ -94,6 +97,11 @@ function AddUserInfo() {
 
   const track = useTrack();
   const { isLocked, syncTokens } = useSyncTokens();
+  const user = query.viewer?.user;
+
+  if (!user) {
+    throw new Error('User not found');
+  }
 
   const handleSubmit = useCallback(async () => {
     const { success } = await onEditUser();
@@ -125,6 +133,8 @@ function AddUserInfo() {
             usernameError={usernameError}
             onUsernameChange={onUsernameChange}
             onBioChange={onBioChange}
+            userRef={user}
+            queryRef={query}
           />
           <ErrorContainer>
             <ErrorText message={generalError} />

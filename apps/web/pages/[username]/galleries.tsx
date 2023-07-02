@@ -7,6 +7,8 @@ import { StandardSidebar } from '~/contexts/globalLayout/GlobalSidebar/StandardS
 import { galleriesQuery } from '~/generated/galleriesQuery.graphql';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
 import GalleriesPage from '~/scenes/GalleryPage/GalleriesPage';
+import { COMMUNITIES_PER_PAGE } from '~/scenes/UserGalleryPage/UserSharedInfo/UserSharedCommunities';
+import { FOLLOWERS_PER_PAGE } from '~/scenes/UserGalleryPage/UserSharedInfo/UserSharedInfoList/SharedFollowersList';
 import GalleryViewEmitter from '~/shared/components/GalleryViewEmitter';
 
 type GalleriesProps = {
@@ -16,14 +18,24 @@ type GalleriesProps = {
 export default function Galleries({ username }: GalleriesProps) {
   const query = useLazyLoadQuery<galleriesQuery>(
     graphql`
-      query galleriesQuery($username: String!) {
+      query galleriesQuery(
+        $username: String!
+        $sharedCommunitiesFirst: Int
+        $sharedCommunitiesAfter: String
+        $sharedFollowersFirst: Int
+        $sharedFollowersAfter: String
+      ) {
         ...GalleryNavbarFragment
         ...GalleryViewEmitterWithSuspenseFragment
         ...GalleriesPageQueryFragment
         ...StandardSidebarFragment
       }
     `,
-    { username },
+    {
+      username,
+      sharedCommunitiesFirst: COMMUNITIES_PER_PAGE,
+      sharedFollowersFirst: FOLLOWERS_PER_PAGE,
+    },
     { fetchPolicy: 'network-only' }
   );
 
@@ -32,6 +44,7 @@ export default function Galleries({ username }: GalleriesProps) {
       element={
         <>
           <GalleryViewEmitter queryRef={query} />
+
           <GalleriesPage queryRef={query} />
         </>
       }
