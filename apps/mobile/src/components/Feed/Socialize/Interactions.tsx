@@ -2,6 +2,7 @@ import { useCallback, useMemo, useRef } from 'react';
 import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
+import { AdmireBottomSheet } from '~/components/Feed/AdmireBottomSheet/AdmireBottomSheet';
 import { CommentsBottomSheet } from '~/components/Feed/CommentsBottomSheet/CommentsBottomSheet';
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { ProfilePictureBubblesWithCount } from '~/components/ProfileView/ProfileViewSharedInfo/ProfileViewSharedFollowers';
@@ -55,9 +56,8 @@ export function Interactions({ eventRef }: Props) {
     eventRef
   );
 
-  const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
   const handleOpen = useCallback(() => {
-    bottomSheetRef?.current?.present();
+    admiresBottomSheetRef.current?.present();
   }, []);
 
   const nonNullComments = useMemo(() => {
@@ -102,6 +102,7 @@ export function Interactions({ eventRef }: Props) {
   const previewComments = nonNullComments.slice(-PREVIEW_COMMENT_COUNT);
 
   const commentsBottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
+  const admiresBottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
 
   return (
     <View className="flex flex-col space-y-1">
@@ -125,6 +126,8 @@ export function Interactions({ eventRef }: Props) {
       />
 
       <CommentsBottomSheet feedEventId={event.dbid} bottomSheetRef={commentsBottomSheetRef} />
+
+      <AdmireBottomSheet feedEventId={event.dbid} bottomSheetRef={admiresBottomSheetRef} />
     </View>
   );
 }

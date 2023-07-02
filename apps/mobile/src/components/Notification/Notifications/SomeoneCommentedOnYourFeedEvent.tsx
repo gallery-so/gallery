@@ -8,6 +8,7 @@ import { NotificationSkeleton } from '~/components/Notification/NotificationSkel
 import { Typography } from '~/components/Typography';
 import { SomeoneCommentedOnYourFeedEventFragment$key } from '~/generated/SomeoneCommentedOnYourFeedEventFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 type SomeoneCommentedOnYourFeedEventProps = {
   notificationRef: SomeoneCommentedOnYourFeedEventFragment$key;
@@ -24,6 +25,7 @@ export function SomeoneCommentedOnYourFeedEvent({
         comment {
           commenter {
             username
+            ...NotificationSkeletonResponsibleUsersFragment
           }
           comment
         }
@@ -87,6 +89,10 @@ export function SomeoneCommentedOnYourFeedEvent({
     }
   }, [eventType]);
 
+  const commenters = useMemo(() => {
+    return removeNullValues([notification.comment?.commenter]);
+  }, [notification.comment?.commenter]);
+
   // @ts-expect-error: property `collection` does not exist on type { readonly __typename: "%other" };
   const collection = notification.feedEvent?.eventData?.collection;
   const commenter = notification.comment?.commenter;
@@ -99,7 +105,11 @@ export function SomeoneCommentedOnYourFeedEvent({
   }, [navigation, notification.feedEvent?.dbid]);
 
   return (
-    <NotificationSkeleton onPress={handlePress} notificationRef={notification}>
+    <NotificationSkeleton
+      responsibleUserRefs={commenters}
+      onPress={handlePress}
+      notificationRef={notification}
+    >
       <View className="flex space-y-2">
         <Text className="dark:text-white">
           <Typography

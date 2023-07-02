@@ -99,9 +99,9 @@ export function useToggleAdmire({ eventRef, queryRef }: Args) {
     event.id,
     'Interactions_admires'
   );
-  const notesModalConnection = ConnectionHandler.getConnectionID(
+  const admireBottomSheetConnection = ConnectionHandler.getConnectionID(
     event.id,
-    'NotesList_interactions'
+    'AdmireBottomSheet_admires'
   );
 
   const handleRemoveAdmire = useCallback(async () => {
@@ -219,7 +219,7 @@ export function useToggleAdmire({ eventRef, queryRef }: Args) {
         },
         variables: {
           eventId: event.dbid,
-          connections: [interactionsConnection, notesModalConnection],
+          connections: [interactionsConnection, admireBottomSheetConnection],
         },
       });
 
@@ -246,10 +246,10 @@ export function useToggleAdmire({ eventRef, queryRef }: Args) {
     }
   }, [
     admire,
+    admireBottomSheetConnection,
     event.dbid,
     event.id,
     interactionsConnection,
-    notesModalConnection,
     query.viewer,
     reportError,
   ]);

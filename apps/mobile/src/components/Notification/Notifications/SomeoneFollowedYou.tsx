@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import { useCallback, useRef } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import { Text } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -10,6 +10,7 @@ import { NotificationSkeleton } from '~/components/Notification/NotificationSkel
 import { Typography } from '~/components/Typography';
 import { SomeoneFollowedYouFragment$key } from '~/generated/SomeoneFollowedYouFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 type SomeoneFollowedYouProps = {
   notificationRef: SomeoneFollowedYouFragment$key;
@@ -26,6 +27,8 @@ export function SomeoneFollowedYou({ notificationRef }: SomeoneFollowedYouProps)
           edges {
             node {
               username
+
+              ...NotificationSkeletonResponsibleUsersFragment
             }
           }
         }
@@ -35,6 +38,10 @@ export function SomeoneFollowedYou({ notificationRef }: SomeoneFollowedYouProps)
     `,
     notificationRef
   );
+
+  const followers = useMemo(() => {
+    return removeNullValues(notification.followers?.edges?.map((edge) => edge?.node));
+  }, [notification.followers?.edges]);
 
   const count = notification.count ?? 1;
   const lastFollower = notification.followers?.edges?.[0]?.node;
@@ -59,7 +66,11 @@ export function SomeoneFollowedYou({ notificationRef }: SomeoneFollowedYouProps)
   );
 
   return (
-    <NotificationSkeleton onPress={handlePress} notificationRef={notification}>
+    <NotificationSkeleton
+      responsibleUserRefs={followers}
+      onPress={handlePress}
+      notificationRef={notification}
+    >
       <Text>
         <Typography
           font={{

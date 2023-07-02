@@ -9,6 +9,7 @@ import { NotificationSkeleton } from '~/components/Notification/NotificationSkel
 import { Typography } from '~/components/Typography';
 import { SomeoneViewedYourGalleryFragment$key } from '~/generated/SomeoneViewedYourGalleryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 type Props = {
   notificationRef: SomeoneViewedYourGalleryFragment$key;
@@ -32,6 +33,7 @@ export function SomeoneViewedYourGallery({ notificationRef }: Props) {
             node {
               __typename
               username
+              ...NotificationSkeletonResponsibleUsersFragment
             }
           }
         }
@@ -41,6 +43,10 @@ export function SomeoneViewedYourGallery({ notificationRef }: Props) {
     `,
     notificationRef
   );
+
+  const viewers = useMemo(() => {
+    return removeNullValues(notification.userViewers?.edges?.map((edge) => edge?.node));
+  }, [notification.userViewers?.edges]);
 
   const userViewerCount = notification.userViewers?.pageInfo?.total ?? 0;
   const nonUserViewerCount = notification.nonUserViewerCount ?? 0;
@@ -112,7 +118,11 @@ export function SomeoneViewedYourGallery({ notificationRef }: Props) {
   }, [lastViewer, nonUserViewerCount, totalViewCount, userViewerCount]);
 
   return (
-    <NotificationSkeleton onPress={handlePress} notificationRef={notification}>
+    <NotificationSkeleton
+      responsibleUserRefs={viewers}
+      onPress={handlePress}
+      notificationRef={notification}
+    >
       {inner}
 
       <NotificationBottomSheetUserList
