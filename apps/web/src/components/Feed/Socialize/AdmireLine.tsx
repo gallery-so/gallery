@@ -103,7 +103,7 @@ export function AdmireLine({ eventRef, queryRef }: CommentLineProps) {
 
   if (isPfpEnabled) {
     return (
-      <HStack gap={4} align="center" onClick={openAdmireModal}>
+      <Container gap={4} align="center" onClick={openAdmireModal}>
         <ProfilePictureStack usersRef={nonNullAdmires} total={totalAdmires} />
 
         <BaseS>
@@ -114,7 +114,7 @@ export function AdmireLine({ eventRef, queryRef }: CommentLineProps) {
           )}
           admired this
         </BaseS>
-      </HStack>
+      </Container>
     );
   }
 
@@ -141,6 +141,10 @@ export function AdmireLine({ eventRef, queryRef }: CommentLineProps) {
     </HStack>
   );
 }
+
+const Container = styled(HStack)`
+  cursor: pointer;
+`;
 
 const AdmirerName = styled.a`
   font-family: ${BODY_FONT_FAMILY};
