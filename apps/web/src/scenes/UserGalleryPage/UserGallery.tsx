@@ -2,7 +2,6 @@ import { useRouter } from 'next/router';
 import { useCallback } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import styled from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';
 import { useModalState } from '~/contexts/modal/ModalContext';
@@ -12,10 +11,8 @@ import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import useDisplayFullPageNftDetailModal from '~/scenes/NftDetailPage/useDisplayFullPageNftDetailModal';
 import NotFound from '~/scenes/NotFound/NotFound';
 import { UserGalleryLayout } from '~/scenes/UserGalleryPage/UserGalleryLayout';
-import { UserNameAndDescriptionHeader } from '~/scenes/UserGalleryPage/UserNameAndDescriptionHeader';
 
-import UserSharedInfo from './UserSharedInfo/UserSharedInfo';
-import UserTwitterSection from './UserTwitterSection';
+import UserGalleryHeader from './UserGalleryHeader';
 
 type Props = {
   queryRef: UserGalleryFragment$key;
@@ -47,9 +44,7 @@ function UserGallery({ queryRef }: Props) {
               ...UserGalleryLayoutFragment
             }
 
-            ...UserNameAndDescriptionHeader
-            ...UserTwitterSectionFragment
-            ...UserSharedInfoFragment
+            ...UserGalleryHeaderFragment
           }
           ... on ErrUserNotFound {
             __typename
@@ -57,8 +52,7 @@ function UserGallery({ queryRef }: Props) {
         }
 
         ...UserGalleryLayoutQueryFragment
-        ...UserNameAndDescriptionHeaderQueryFragment
-        ...UserTwitterSectionQueryFragment
+        ...UserGalleryHeaderQueryFragment
       }
     `,
     queryRef
@@ -93,28 +87,13 @@ function UserGallery({ queryRef }: Props) {
     throw new Error(`Expected user to be type GalleryUser. Received: ${user.__typename}`);
   }
 
-  const isAuthenticatedUsersPage = loggedInUserId === user?.dbid;
-
   return (
     <VStack gap={isMobile ? 12 : 24}>
-      <VStack gap={12}>
-        <UserNameAndDescriptionHeader userRef={user} queryRef={query} />
+      <UserGalleryHeader userRef={user} queryRef={query} />
 
-        {isLoggedIn && !isAuthenticatedUsersPage && <UserSharedInfo userRef={user} />}
-
-        <UserTwitterSection userRef={user} queryRef={query} />
-      </VStack>
-
-      <Divider />
       <UserGalleryLayout galleryRef={user.featuredGallery} queryRef={query} />
     </VStack>
   );
 }
-
-const Divider = styled.div`
-  width: 100%;
-  height: 1px;
-  background-color: #e7e7e7;
-`;
 
 export default UserGallery;

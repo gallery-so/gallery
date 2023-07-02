@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 import { Route } from 'nextjs-routes';
-import { useCallback, useMemo, useState } from 'react';
+import { Suspense, useCallback, useMemo, useState } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
@@ -11,6 +11,7 @@ import { DropdownItem } from '~/components/core/Dropdown/DropdownItem';
 import { DropdownLink } from '~/components/core/Dropdown/DropdownLink';
 import { DropdownSection } from '~/components/core/Dropdown/DropdownSection';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
+import FollowButton from '~/components/Follow/FollowButton';
 import useCreateGallery from '~/components/MultiGallery/useCreateGallery';
 import { EditLink } from '~/contexts/globalLayout/GlobalNavbar/CollectionNavbar/EditLink';
 import { SignInButton } from '~/contexts/globalLayout/GlobalNavbar/SignInButton';
@@ -36,6 +37,7 @@ export function GalleryRightContent({ queryRef, galleryRef, username }: GalleryR
     graphql`
       fragment GalleryRightContentFragment on Query {
         ...EditUserInfoModalFragment
+        ...FollowButtonQueryFragment
 
         viewer {
           ... on Viewer {
@@ -52,6 +54,7 @@ export function GalleryRightContent({ queryRef, galleryRef, username }: GalleryR
             galleries {
               __typename
             }
+            ...FollowButtonUserFragment
           }
         }
       }
@@ -158,6 +161,11 @@ export function GalleryRightContent({ queryRef, galleryRef, username }: GalleryR
 
             {dropdown}
           </EditLinkWrapper>
+        )}
+        {query.userByUsername && (
+          <Suspense fallback={null}>
+            <FollowButton queryRef={query} userRef={query.userByUsername} source="navbar mobile" />
+          </Suspense>
         )}
       </HStack>
     );

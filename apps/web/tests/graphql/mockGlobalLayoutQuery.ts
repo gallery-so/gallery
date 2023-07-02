@@ -13,9 +13,9 @@ export function mockGlobalLayoutQuery() {
       user: {
         __typename: 'GalleryUser',
         id: GALLERY_USER_ID,
+        // @ts-expect-error not sure what the issue is
         username: 'Test Gallery User',
         wallets: [],
-        // @ts-expect-error not sure what the issue is
         roles: ['ADMIN'],
         primaryWallet: {
           __typename: 'Wallet',

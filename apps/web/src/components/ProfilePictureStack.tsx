@@ -52,10 +52,10 @@ export function ProfilePictureStack({ usersRef, total }: Props) {
   const remainingCount = total - TOTAL_USERS_SHOWN;
 
   return (
-    <StyledProfilePictureStackContainer align="center">
+    <StyledProfilePictureStackContainer align="center" inline>
       {usersToShow.map((user) => (
         <StyledProfilePictureContainer key={user.dbid}>
-          <ProfilePicture userRef={user} size="sm" hasInset />
+          <ProfilePicture userRef={user} size="sm" />
         </StyledProfilePictureContainer>
       ))}
       {remainingCount > 0 && (

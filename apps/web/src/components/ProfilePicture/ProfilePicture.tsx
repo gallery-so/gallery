@@ -21,6 +21,15 @@ export function ProfilePicture({ userRef, ...rest }: Props) {
               ...getVideoOrImageUrlForNftPreviewFragment
             }
           }
+          ... on EnsProfileImage {
+            __typename
+            profileImage {
+              __typename
+              previewURLs {
+                medium
+              }
+            }
+          }
         }
       }
     `,
@@ -29,9 +38,12 @@ export function ProfilePicture({ userRef, ...rest }: Props) {
 
   if (!user) return null;
 
-  const { token } = user.profileImage ?? {};
+  const { token, profileImage } = user.profileImage ?? {};
 
   const firstLetter = user?.username?.substring(0, 1) ?? '';
+
+  if (profileImage && profileImage.previewURLs?.medium)
+    return <RawProfilePicture imageUrl={profileImage.previewURLs.medium} {...rest} />;
 
   if (!token) return <RawProfilePicture letter={firstLetter} {...rest} />;
 

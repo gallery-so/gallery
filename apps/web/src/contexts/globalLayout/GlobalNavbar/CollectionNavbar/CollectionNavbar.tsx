@@ -5,7 +5,7 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
-import { HStack, VStack } from '~/components/core/Spacer/Stack';
+import { HStack } from '~/components/core/Spacer/Stack';
 import { Paragraph, TITLE_FONT_FAMILY } from '~/components/core/Text/Text';
 import NavActionFollow from '~/components/Follow/NavActionFollow';
 import { CollectionRightContent } from '~/contexts/globalLayout/GlobalNavbar/CollectionNavbar/CollectionRightContent';
@@ -67,8 +67,6 @@ export function CollectionNavbar({ queryRef, username, collectionId }: Collectio
 
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
-  const usernameRoute: Route = { pathname: '/[username]', query: { username } };
-
   const galleryRoute: Route = {
     pathname: '/[username]/galleries/[galleryId]',
     query: { username, galleryId: query.collectionById?.gallery.dbid },
@@ -109,16 +107,7 @@ export function CollectionNavbar({ queryRef, username, collectionId }: Collectio
       </NavbarLeftContent>
 
       <NavbarCenterContent>
-        {isMobile ? (
-          <VStack align="center" shrink>
-            <Link href={usernameRoute} legacyBehavior>
-              <MobileUsernameText>{username}</MobileUsernameText>
-            </Link>
-            <BreadcrumbText>{unescapedCollectionName}</BreadcrumbText>
-          </VStack>
-        ) : (
-          <GalleryNavLinks username={username} queryRef={query.userByUsername} />
-        )}
+        {!isMobile && <GalleryNavLinks username={username} queryRef={query.userByUsername} />}
       </NavbarCenterContent>
 
       <NavbarRightContent>
@@ -139,17 +128,6 @@ const StyledBreadCrumbs = styled(HStack)`
 const CollectionNameText = styled(BreadcrumbText)`
   overflow: hidden;
   text-overflow: ellipsis;
-`;
-
-const MobileUsernameText = styled(Paragraph)`
-  font-family: ${TITLE_FONT_FAMILY};
-  font-style: normal;
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 18px;
-  letter-spacing: -0.04em;
-
-  color: ${colors.shadow};
 `;
 
 const SlashText = styled(Paragraph)`

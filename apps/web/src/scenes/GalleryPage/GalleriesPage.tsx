@@ -20,11 +20,15 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
+import { VStack } from '~/components/core/Spacer/Stack';
 import Gallery, { GalleryOrderDirection } from '~/components/MultiGallery/Gallery';
 import useUpdateGalleryOrder from '~/components/MultiGallery/useUpdateGalleryOrder';
 import { GalleriesPageQueryFragment$key } from '~/generated/GalleriesPageQueryFragment.graphql';
+import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import { GalleryPageSpacing } from '~/pages/[username]';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
+
+import UserGalleryHeader from '../UserGalleryPage/UserGalleryHeader';
 
 type Props = {
   queryRef: GalleriesPageQueryFragment$key;
@@ -47,8 +51,10 @@ export default function GalleriesPage({ queryRef }: Props) {
               ...GalleryFragment
             }
           }
+          ...UserGalleryHeaderFragment
         }
         ...GalleryFragmentQuery
+        ...UserGalleryHeaderQueryFragment
       }
     `,
     queryRef
@@ -197,47 +203,53 @@ export default function GalleriesPage({ queryRef }: Props) {
       },
     })
   );
+  const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
   return (
     <GalleryPageSpacing>
-      <DndContext
-        sensors={sensors}
-        collisionDetection={closestCenter}
-        measuring={layoutMeasuring}
-        onDragStart={handleDragStart}
-        onDragEnd={handleDragEnd}
-        onDragOver={handleDragOver}
-        onDragCancel={() => setActiveId(null)}
-      >
-        <SortableContext items={sortedGalleryIds} strategy={rectSortingStrategy}>
-          <GalleryWrapper>
-            {sortedGalleries.map((gallery) => {
-              return (
-                <Gallery
-                  key={gallery.id}
-                  galleryRef={gallery}
-                  queryRef={query}
-                  isFeatured={featuredGalleryId === gallery.id}
-                  onGalleryOrderChange={handleOrderOnMobile}
-                />
-              );
-            })}
-          </GalleryWrapper>
-        </SortableContext>
-        {createPortal(
-          <DragOverlay dropAnimation={dropAnimation}>
-            {activeGallery && (
-              <Gallery
-                key={activeGallery.dbid}
-                galleryRef={activeGallery}
-                queryRef={query}
-                isFeatured={featuredGalleryId === `Gallery:${activeId}`}
-              />
-            )}
-          </DragOverlay>,
-          document.body
+      <VStack gap={isMobile ? 12 : 24}>
+        {query.userByUsername && (
+          <UserGalleryHeader queryRef={query} userRef={query.userByUsername} />
         )}
-      </DndContext>
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          measuring={layoutMeasuring}
+          onDragStart={handleDragStart}
+          onDragEnd={handleDragEnd}
+          onDragOver={handleDragOver}
+          onDragCancel={() => setActiveId(null)}
+        >
+          <SortableContext items={sortedGalleryIds} strategy={rectSortingStrategy}>
+            <GalleryWrapper>
+              {sortedGalleries.map((gallery) => {
+                return (
+                  <Gallery
+                    key={gallery.id}
+                    galleryRef={gallery}
+                    queryRef={query}
+                    isFeatured={featuredGalleryId === gallery.id}
+                    onGalleryOrderChange={handleOrderOnMobile}
+                  />
+                );
+              })}
+            </GalleryWrapper>
+          </SortableContext>
+          {createPortal(
+            <DragOverlay dropAnimation={dropAnimation}>
+              {activeGallery && (
+                <Gallery
+                  key={activeGallery.dbid}
+                  galleryRef={activeGallery}
+                  queryRef={query}
+                  isFeatured={featuredGalleryId === `Gallery:${activeId}`}
+                />
+              )}
+            </DragOverlay>,
+            document.body
+          )}
+        </DndContext>
+      </VStack>
     </GalleryPageSpacing>
   );
 }

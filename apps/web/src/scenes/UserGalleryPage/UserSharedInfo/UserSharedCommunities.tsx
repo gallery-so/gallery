@@ -97,7 +97,7 @@ export default function UserSharedCommunities({ queryRef }: Props) {
     if (totalSharedCommunities > 3) {
       result.push(
         <StyledInteractiveLink onClick={handleShowAllClick}>
-          {totalSharedCommunities - 2} others you own
+          {totalSharedCommunities - 2} others
         </StyledInteractiveLink>
       );
     }
