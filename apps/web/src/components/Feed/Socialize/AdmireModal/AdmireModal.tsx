@@ -20,13 +20,13 @@ import { AdmireModalQueryFragment$key } from '~/generated/AdmireModalQueryFragme
 
 export const NOTES_PER_PAGE = 10;
 
-type NotesModalProps = {
+type AdmireModalProps = {
   fullscreen: boolean;
   eventRef: AdmireModalFragment$key;
   queryRef: AdmireModalQueryFragment$key;
 };
 
-export function AdmireModal({ eventRef, queryRef, fullscreen }: NotesModalProps) {
+export function AdmireModal({ eventRef, queryRef, fullscreen }: AdmireModalProps) {
   const {
     data: feedEvent,
     loadPrevious,

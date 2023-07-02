@@ -3,9 +3,9 @@ import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import { BaseM } from '~/components/core/Text/Text';
-import { ListItem } from '~/components/Feed/Socialize/NotesModal/ListItem';
-import { TimeAgoText } from '~/components/Feed/Socialize/NotesModal/TimeAgoText';
-import { UsernameLink } from '~/components/Feed/Socialize/NotesModal/UsernameLink';
+import { ListItem } from '~/components/Feed/Socialize/CommentsModal/ListItem';
+import { TimeAgoText } from '~/components/Feed/Socialize/CommentsModal/TimeAgoText';
+import { UsernameLink } from '~/components/Feed/Socialize/CommentsModal/UsernameLink';
 import { CommentNoteFragment$key } from '~/generated/CommentNoteFragment.graphql';
 import colors from '~/shared/theme/colors';
 import { getTimeSince } from '~/shared/utils/time';

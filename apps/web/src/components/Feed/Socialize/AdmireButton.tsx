@@ -92,7 +92,7 @@ export function AdmireButton({ eventRef, queryRef }: AdmireButtonProps) {
     event.id,
     'Interactions_admires'
   );
-  const notesModalConnection = ConnectionHandler.getConnectionID(
+  const admireModalConnection = ConnectionHandler.getConnectionID(
     event.id,
     'AdmiresModal_interactions'
   );
@@ -216,7 +216,7 @@ export function AdmireButton({ eventRef, queryRef }: AdmireButtonProps) {
         optimisticUpdater: updater,
         variables: {
           eventId: event.dbid,
-          connections: [interactionsConnection, notesModalConnection],
+          connections: [interactionsConnection, admireModalConnection],
         },
       });
 
@@ -249,7 +249,7 @@ export function AdmireButton({ eventRef, queryRef }: AdmireButtonProps) {
     admire,
     event.dbid,
     interactionsConnection,
-    notesModalConnection,
+    admireModalConnection,
     pushToast,
     query,
     reportError,

@@ -2,7 +2,7 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
-import { ListItem } from '~/components/Feed/Socialize/NotesModal/ListItem';
+import { ListItem } from '~/components/Feed/Socialize/CommentsModal/ListItem';
 import FollowButton from '~/components/Follow/FollowButton';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { AdmireNoteFragment$key } from '~/generated/AdmireNoteFragment.graphql';

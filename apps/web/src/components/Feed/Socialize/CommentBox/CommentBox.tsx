@@ -116,9 +116,9 @@ export function CommentBox({ eventRef, queryRef }: Props) {
         event.id,
         'Interactions_comments'
       );
-      const notesModalConnection = ConnectionHandler.getConnectionID(
+      const commentsModalConnection = ConnectionHandler.getConnectionID(
         event.id,
-        'NotesModal_interactions'
+        'CommentsModal_interactions'
       );
 
       const updater: SelectorStoreUpdater<CommentBoxMutation['response']> = (store, response) => {
@@ -153,7 +153,7 @@ export function CommentBox({ eventRef, queryRef }: Props) {
         variables: {
           comment: value,
           eventId: event.dbid,
-          connections: [interactionsConnection, notesModalConnection],
+          connections: [interactionsConnection, commentsModalConnection],
         },
       });
 

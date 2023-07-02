@@ -4,7 +4,7 @@ import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import { BODY_FONT_FAMILY } from '~/components/core/Text/Text';
-import { NotesModal } from '~/components/Feed/Socialize/NotesModal/NotesModal';
+import { CommentsModal } from '~/components/Feed/Socialize/CommentsModal/CommentsModal';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { NoteModalOpenerTextFragment$key } from '~/generated/NoteModalOpenerTextFragment.graphql';
 import { NoteModalOpenerTextQueryFragment$key } from '~/generated/NoteModalOpenerTextQueryFragment.graphql';
@@ -21,7 +21,7 @@ export function NoteModalOpenerText({ children, eventRef, queryRef }: Props) {
   const event = useFragment(
     graphql`
       fragment NoteModalOpenerTextFragment on FeedEvent {
-        ...NotesModalFragment
+        ...CommentsModalFragment
       }
     `,
     eventRef
@@ -30,7 +30,7 @@ export function NoteModalOpenerText({ children, eventRef, queryRef }: Props) {
   const query = useFragment(
     graphql`
       fragment NoteModalOpenerTextQueryFragment on Query {
-        ...NotesModalQueryFragment
+        ...CommentsModalQueryFragment
       }
     `,
     queryRef
@@ -41,7 +41,7 @@ export function NoteModalOpenerText({ children, eventRef, queryRef }: Props) {
 
   const handleClick = useCallback(() => {
     showModal({
-      content: <NotesModal fullscreen={isMobile} eventRef={event} queryRef={query} />,
+      content: <CommentsModal fullscreen={isMobile} eventRef={event} queryRef={query} />,
       isFullPage: isMobile,
       isPaddingDisabled: true,
       headerVariant: 'standard',

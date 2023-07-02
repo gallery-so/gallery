@@ -13,32 +13,32 @@ import styled from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';
 import { TitleDiatypeM } from '~/components/core/Text/Text';
-import { CommentNote } from '~/components/Feed/Socialize/NotesModal/CommentNote';
+import { CommentNote } from '~/components/Feed/Socialize/CommentsModal/CommentNote';
 import { MODAL_PADDING_PX } from '~/contexts/modal/constants';
-import { NotesModalFragment$key } from '~/generated/NotesModalFragment.graphql';
-import { NotesModalQueryFragment$key } from '~/generated/NotesModalQueryFragment.graphql';
+import { CommentsModalFragment$key } from '~/generated/CommentsModalFragment.graphql';
+import { CommentsModalQueryFragment$key } from '~/generated/CommentsModalQueryFragment.graphql';
 
 import { CommentBox } from '../CommentBox/CommentBox';
 
 export const NOTES_PER_PAGE = 10;
 
-type NotesModalProps = {
+type CommentsModalProps = {
   fullscreen: boolean;
-  eventRef: NotesModalFragment$key;
-  queryRef: NotesModalQueryFragment$key;
+  eventRef: CommentsModalFragment$key;
+  queryRef: CommentsModalQueryFragment$key;
 };
 
-export function NotesModal({ eventRef, queryRef, fullscreen }: NotesModalProps) {
+export function CommentsModal({ eventRef, queryRef, fullscreen }: CommentsModalProps) {
   const {
     data: feedEvent,
     loadPrevious,
     hasPrevious,
   } = usePaginationFragment(
     graphql`
-      fragment NotesModalFragment on FeedEvent
-      @refetchable(queryName: "NotesModalRefetchableFragment") {
+      fragment CommentsModalFragment on FeedEvent
+      @refetchable(queryName: "CommentsModalRefetchableFragment") {
         interactions(last: $interactionsFirst, before: $interactionsAfter)
-          @connection(key: "NotesModal_interactions") {
+          @connection(key: "CommentsModal_interactions") {
           edges {
             node {
               __typename
@@ -57,7 +57,7 @@ export function NotesModal({ eventRef, queryRef, fullscreen }: NotesModalProps) 
 
   const query = useFragment(
     graphql`
-      fragment NotesModalQueryFragment on Query {
+      fragment CommentsModalQueryFragment on Query {
         ...CommentBoxQueryFragment
       }
     `,
