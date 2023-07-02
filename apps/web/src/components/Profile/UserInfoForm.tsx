@@ -139,7 +139,7 @@ function UserInfoForm({
           {isPfpEnabled && (
             <div onClick={showNftSelector}>
               {hasProfileImage ? (
-                <ProfilePicture userRef={user} />
+                <ProfilePicture userRef={user} size="xl" isEditable hasInset />
               ) : (
                 <RawProfilePicture letter={firstLetter} default hasInset isEditable size="xl" />
               )}
@@ -151,7 +151,7 @@ function UserInfoForm({
       <HStack gap={16} align="center">
         {!mode && isPfpEnabled && (
           <StyledProfilePictureContainer onClick={handleOpenPfpDropdown}>
-            <ProfilePicture userRef={user} />
+            <ProfilePicture userRef={user} size="xl" isEditable hasInset />
             <ProfilePictureDropdown
               open={showPfpDropdown}
               onClose={handleClosePfpDropdown}
