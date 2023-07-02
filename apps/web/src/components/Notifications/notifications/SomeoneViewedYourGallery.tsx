@@ -79,9 +79,11 @@ export function SomeoneViewedYourGallery({
 
       return (
         <BaseM data-testid={testId}>
-          <StyledProfilePictureStackContainer>
-            <ProfilePictureStack usersRef={totalViewerUsers} total={2} />
-          </StyledProfilePictureStackContainer>
+          {isPfpVisible && (
+            <StyledProfilePictureStackContainer>
+              <ProfilePictureStack usersRef={totalViewerUsers} total={userViewerCount} />
+            </StyledProfilePictureStackContainer>
+          )}
           {lastViewer ? <HoverCardOnUsername userRef={lastViewer} /> : 'Someone'}
           <span>
             {' '}
