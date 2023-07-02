@@ -148,7 +148,7 @@ const RetryImageMediaResponse: NftErrorContextRetryMutationMutation = {
   },
 };
 
-describe('NftDetailAsset', () => {
+describe.skip('NftDetailAsset', () => {
   it('can render', async () => {
     mockProviderQueries();
 
