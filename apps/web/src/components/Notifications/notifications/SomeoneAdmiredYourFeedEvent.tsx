@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
+import styled from 'styled-components';
 
-import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { CollectionLink } from '~/components/Notifications/CollectionLink';
@@ -102,10 +102,14 @@ export function SomeoneAdmiredYourFeedEvent({
       ) : (
         <>
           {firstAdmirer ? (
-            <HStack align="center" gap={4} inline>
-              {isPfpVisible && <ProfilePicture size="sm" userRef={firstAdmirer} />}
+            <>
+              {isPfpVisible && (
+                <StyledProfilePictureContainer>
+                  <ProfilePicture size="sm" userRef={firstAdmirer} />
+                </StyledProfilePictureContainer>
+              )}
               <HoverCardOnUsername userRef={firstAdmirer} onClick={onClose} />
-            </HStack>
+            </>
           ) : (
             <BaseM as="span">
               <strong>Someone</strong>
@@ -118,3 +122,8 @@ export function SomeoneAdmiredYourFeedEvent({
     </BaseM>
   );
 }
+
+const StyledProfilePictureContainer = styled.div`
+  display: inline-block;
+  padding-right: 4px;
+`;

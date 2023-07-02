@@ -3,7 +3,7 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
-import { HStack, VStack } from '~/components/core/Spacer/Stack';
+import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { CollectionLink } from '~/components/Notifications/CollectionLink';
@@ -94,10 +94,14 @@ export function SomeoneCommentedOnYourFeedEvent({
     <VStack gap={8}>
       <BaseM>
         {notification.comment?.commenter ? (
-          <HStack align="center" gap={4} inline>
-            {isPfpVisible && <ProfilePicture size="sm" userRef={notification.comment?.commenter} />}
+          <>
+            {isPfpVisible && (
+              <StyledProfilePictureContainer>
+                <ProfilePicture size="sm" userRef={notification.comment?.commenter} />
+              </StyledProfilePictureContainer>
+            )}
             <HoverCardOnUsername userRef={notification.comment?.commenter} onClick={onClose} />
-          </HStack>
+          </>
         ) : (
           <strong>Someone</strong>
         )}
@@ -117,4 +121,9 @@ const CommentPreviewContainer = styled.div`
   padding-left: 8px;
 
   border-left: 2px solid #d9d9d9;
+`;
+
+const StyledProfilePictureContainer = styled.div`
+  display: inline-block;
+  padding-right: 4px;
 `;
