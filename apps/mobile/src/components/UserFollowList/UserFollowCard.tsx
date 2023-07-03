@@ -10,6 +10,7 @@ import { Typography } from '~/components/Typography';
 import { UserFollowCardFragment$key } from '~/generated/UserFollowCardFragment.graphql';
 import { UserFollowCardQueryFragment$key } from '~/generated/UserFollowCardQueryFragment.graphql';
 
+import isFeatureEnabled, { FeatureFlag } from '../../utils/isFeatureEnabled';
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 
 type UserFollowCardProps = {
@@ -23,6 +24,7 @@ export function UserFollowCard({ userRef, queryRef, onPress }: UserFollowCardPro
     graphql`
       fragment UserFollowCardQueryFragment on Query {
         ...FollowButtonQueryFragment
+        ...isFeatureEnabledFragment
       }
     `,
     queryRef
@@ -43,6 +45,8 @@ export function UserFollowCard({ userRef, queryRef, onPress }: UserFollowCardPro
 
   const bioFirstLine = user.bio?.split('\n')[0];
 
+  const isPfpEnabled = isFeatureEnabled(FeatureFlag.PFP, query);
+
   const handlePress = useCallback(() => {
     if (user.username) {
       onPress(user.username);
@@ -58,7 +62,7 @@ export function UserFollowCard({ userRef, queryRef, onPress }: UserFollowCardPro
         eventName="User Follow Username Clicked"
       >
         <View className="flex flex-row items-center space-x-2">
-          <ProfilePicture userRef={user} size="sm" />
+          {isPfpEnabled && <ProfilePicture userRef={user} size="sm" />}
 
           <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
             {user.username}
