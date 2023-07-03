@@ -66,7 +66,7 @@ export default function App() {
             message: `Loaded initial color scheme: ${colorScheme}`,
           });
 
-          setColorScheme('dark' as 'light' | 'dark');
+          setColorScheme(colorScheme as 'light' | 'dark');
 
           setColorSchemeLoaded(true);
         })
