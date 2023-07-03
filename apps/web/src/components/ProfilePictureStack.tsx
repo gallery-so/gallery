@@ -1,7 +1,9 @@
+import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { ProfilePictureStackFragment$key } from '~/generated/ProfilePictureStackFragment.graphql';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
 
@@ -12,11 +14,12 @@ import { ProfilePicture } from './ProfilePicture/ProfilePicture';
 type Props = {
   usersRef: ProfilePictureStackFragment$key;
   total: number;
+  onClick?(): void;
 };
 
 const TOTAL_USERS_SHOWN = 3;
 
-export function ProfilePictureStack({ usersRef, total }: Props) {
+export function ProfilePictureStack({ usersRef, total, onClick }: Props) {
   const users = useFragment(
     graphql`
       fragment ProfilePictureStackFragment on GalleryUser @relay(plural: true) {
@@ -30,6 +33,16 @@ export function ProfilePictureStack({ usersRef, total }: Props) {
     `,
     usersRef
   );
+
+  const track = useTrack();
+
+  const handleClick = useCallback(() => {
+    track('ProfilePictureStack Click');
+
+    if (onClick) {
+      onClick();
+    }
+  }, [track, onClick]);
 
   // Sort by user that has a profile image
   // Priority is given to the user that has a profile image
@@ -52,7 +65,12 @@ export function ProfilePictureStack({ usersRef, total }: Props) {
   const remainingCount = total - TOTAL_USERS_SHOWN;
 
   return (
-    <StyledProfilePictureStackContainer align="center" inline>
+    <StyledProfilePictureStackContainer
+      align="center"
+      inline
+      onClick={handleClick}
+      isClickable={!!onClick}
+    >
       {usersToShow.map((user) => (
         <StyledProfilePictureContainer key={user.dbid}>
           <ProfilePicture userRef={user} size="sm" hasInset />
@@ -88,10 +106,12 @@ const StyledRemainingsText = styled(TitleXS)`
   font-weight: 500;
 `;
 
-const StyledProfilePictureStackContainer = styled(HStack)`
+const StyledProfilePictureStackContainer = styled(HStack)<{ isClickable: boolean }>`
   ${StyledProfilePictureContainer}:nth-child(1) {
     margin-left: 0;
   }
+
+  cursor: ${({ isClickable }) => (isClickable ? 'pointer' : 'default')};
 
   &:hover {
     ${StyledRemainings} {

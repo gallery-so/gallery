@@ -3,7 +3,9 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseS } from '~/components/core/Text/Text';
+import { ProfilePictureStack } from '~/components/ProfilePictureStack';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { UserSharedFollowersFragment$key } from '~/generated/UserSharedFollowersFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
@@ -29,6 +31,7 @@ export default function UserSharedFollowers({ queryRef }: Props) {
               ... on GalleryUser {
                 __typename
                 username
+                ...ProfilePictureStackFragment
               }
             }
           }
@@ -110,10 +113,17 @@ export default function UserSharedFollowers({ queryRef }: Props) {
   }
 
   return (
-    <div>
-      <StyledBaseS>Followed by&nbsp;</StyledBaseS>
-      {content}
-    </div>
+    <HStack align="center" gap={isMobile ? 4 : 8}>
+      <ProfilePictureStack
+        usersRef={sharedFollowers}
+        total={totalSharedFollowers}
+        onClick={handleShowAllFollowersClick}
+      />
+      <div>
+        <StyledBaseS>Followed by&nbsp;</StyledBaseS>
+        {content}
+      </div>
+    </HStack>
   );
 }
 
