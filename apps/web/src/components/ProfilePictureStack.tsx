@@ -55,7 +55,7 @@ export function ProfilePictureStack({ usersRef, total }: Props) {
     <StyledProfilePictureStackContainer align="center" inline>
       {usersToShow.map((user) => (
         <StyledProfilePictureContainer key={user.dbid}>
-          <ProfilePicture userRef={user} size="sm" />
+          <ProfilePicture userRef={user} size="sm" hasInset />
         </StyledProfilePictureContainer>
       ))}
       {remainingCount > 0 && (
