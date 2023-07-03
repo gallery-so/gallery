@@ -24,7 +24,7 @@ export default function UserSharedInfo({ userRef }: Props) {
   );
 
   return (
-    <StyledUserSharedInfo>
+    <StyledUserSharedInfo gap={4}>
       <UserSharedCommunities queryRef={query} />
       <UserSharedFollowers queryRef={query} />
     </StyledUserSharedInfo>
