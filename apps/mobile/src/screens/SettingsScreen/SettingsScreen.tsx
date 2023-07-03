@@ -48,7 +48,7 @@ export function SettingsScreen() {
 
   const handleProfilePress = useCallback(() => {
     navigation.navigate('SettingsProfile');
-  }, []);
+  }, [navigation]);
 
   const [logout, isLoggingOut] = useLogout();
   const handleSignOut = useCallback(() => {

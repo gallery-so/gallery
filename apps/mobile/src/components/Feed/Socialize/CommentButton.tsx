@@ -9,19 +9,17 @@ import {
 } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { CommentButtonFragment$key } from '~/generated/CommentButtonFragment.graphql';
-import { CommentButtonQueryFragment$key } from '~/generated/CommentButtonQueryFragment.graphql';
 
 import { CommentBox } from './CommentBox';
 import { CommentIcon } from './CommentIcon';
 
 type Props = {
   eventRef: CommentButtonFragment$key;
-  queryRef: CommentButtonQueryFragment$key;
   style?: ViewProps['style'];
   onClick: () => void;
 };
 
-export function CommentButton({ eventRef, queryRef, style, onClick }: Props) {
+export function CommentButton({ eventRef, style, onClick }: Props) {
   const event = useFragment(
     graphql`
       fragment CommentButtonFragment on FeedEvent {

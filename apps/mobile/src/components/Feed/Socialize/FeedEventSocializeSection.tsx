@@ -53,7 +53,7 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef, onCommentPre
 
       <View className="flex flex-row space-x-1">
         <AdmireButton eventRef={event} queryRef={query} />
-        <CommentButton eventRef={event} queryRef={query} onClick={onCommentPress} />
+        <CommentButton eventRef={event} onClick={onCommentPress} />
       </View>
     </View>
   );

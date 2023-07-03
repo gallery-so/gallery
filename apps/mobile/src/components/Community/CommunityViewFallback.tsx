@@ -6,8 +6,6 @@ import { GalleryProfileNavbarFallback } from '~/components/ProfileView/GalleryPr
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { UserFollowListFallback } from '~/components/UserFollowList/UserFollowListFallback';
 
-const TOTAL_ROWS = 20;
-
 export function CommunityViewFallback() {
   const { top } = useSafeAreaPadding();
 

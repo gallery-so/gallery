@@ -84,7 +84,7 @@ export function CommunityCollectorsList({ communityRef, queryRef }: Props) {
         />
       );
     },
-    [query]
+    [navigation, query]
   );
 
   return (
