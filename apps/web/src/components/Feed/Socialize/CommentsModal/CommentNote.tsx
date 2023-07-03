@@ -4,9 +4,9 @@ import styled from 'styled-components';
 
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
-import { ListItem } from '~/components/Feed/Socialize/NotesModal/ListItem';
-import { TimeAgoText } from '~/components/Feed/Socialize/NotesModal/TimeAgoText';
-import { UsernameLink } from '~/components/Feed/Socialize/NotesModal/UsernameLink';
+import { ListItem } from '~/components/Feed/Socialize/CommentsModal/ListItem';
+import { TimeAgoText } from '~/components/Feed/Socialize/CommentsModal/TimeAgoText';
+import { UsernameLink } from '~/components/Feed/Socialize/CommentsModal/UsernameLink';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { CommentNoteFragment$key } from '~/generated/CommentNoteFragment.graphql';
 import { CommentNoteQueryFragment$key } from '~/generated/CommentNoteQueryFragment.graphql';

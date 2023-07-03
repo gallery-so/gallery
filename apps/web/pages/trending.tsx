@@ -1,7 +1,7 @@
 import { graphql, loadQuery, PreloadedQuery, usePreloadedQuery } from 'react-relay';
 
 import { ITEMS_PER_PAGE, MAX_PIECES_DISPLAYED_PER_FEED_EVENT } from '~/components/Feed/constants';
-import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/NotesModal/NotesModal';
+import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/CommentsModal/CommentsModal';
 import useOpenTwitterFollowingModal from '~/components/Twitter/useOpenTwitterFollowingModal';
 import { USER_PER_PAGE } from '~/constants/twitter';
 import { HomeNavbar } from '~/contexts/globalLayout/GlobalNavbar/HomeNavbar/HomeNavbar';

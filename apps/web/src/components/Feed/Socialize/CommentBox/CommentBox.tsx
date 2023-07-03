@@ -13,10 +13,12 @@ import styled from 'styled-components';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM, BODY_FONT_FAMILY } from '~/components/core/Text/Text';
 import { SendButton } from '~/components/Feed/Socialize/SendButton';
+import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { CommentBoxFragment$key } from '~/generated/CommentBoxFragment.graphql';
 import { CommentBoxMutation } from '~/generated/CommentBoxMutation.graphql';
 import { CommentBoxQueryFragment$key } from '~/generated/CommentBoxQueryFragment.graphql';
+import { AuthModal } from '~/hooks/useAuthModal';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
@@ -35,6 +37,7 @@ export function CommentBox({ eventRef, queryRef }: Props) {
     graphql`
       fragment CommentBoxQueryFragment on Query {
         viewer {
+          __typename
           ... on Viewer {
             user {
               id
@@ -52,6 +55,7 @@ export function CommentBox({ eventRef, queryRef }: Props) {
             }
           }
         }
+        ...useAuthModalFragment
       }
     `,
     queryRef
@@ -97,6 +101,7 @@ export function CommentBox({ eventRef, queryRef }: Props) {
   const { pushToast } = useToastActions();
   const reportError = useReportError();
   const track = useTrack();
+  const { showModal } = useModalActions();
 
   const resetInputState = useCallback(() => {
     setValue('');
@@ -108,6 +113,15 @@ export function CommentBox({ eventRef, queryRef }: Props) {
   }, []);
 
   const handleSubmit = useCallback(async () => {
+    if (query.viewer?.__typename !== 'Viewer') {
+      showModal({
+        content: <AuthModal queryRef={query} />,
+        headerText: 'Sign In',
+      });
+
+      return;
+    }
+
     if (isSubmittingComment || value.length === 0) {
       return;
     }
@@ -126,9 +140,9 @@ export function CommentBox({ eventRef, queryRef }: Props) {
         event.id,
         'Interactions_comments'
       );
-      const notesModalConnection = ConnectionHandler.getConnectionID(
+      const commentsModalConnection = ConnectionHandler.getConnectionID(
         event.id,
-        'NotesModal_interactions'
+        'CommentsModal_interactions'
       );
 
       const updater: SelectorStoreUpdater<CommentBoxMutation['response']> = (store, response) => {
@@ -190,7 +204,7 @@ export function CommentBox({ eventRef, queryRef }: Props) {
         variables: {
           comment: value,
           eventId: event.dbid,
-          connections: [interactionsConnection, notesModalConnection],
+          connections: [interactionsConnection, commentsModalConnection],
         },
       });
 
@@ -217,10 +231,8 @@ export function CommentBox({ eventRef, queryRef }: Props) {
     event.id,
     isSubmittingComment,
     pushToast,
-    query.viewer?.user?.dbid,
-    query.viewer?.user?.id,
-    query.viewer?.user?.username,
-    query.viewer?.user?.profileImage,
+    query,
+    showModal,
     reportError,
     resetInputState,
     submitComment,

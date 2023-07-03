@@ -7,7 +7,7 @@ import { CommentBoxIconQueryFragment$key } from '~/generated/CommentBoxIconQuery
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import { CommentIcon } from '~/icons/SocializeIcons';
 
-import { NotesModal } from '../NotesModal/NotesModal';
+import { CommentsModal } from '../CommentsModal/CommentsModal';
 
 type Props = {
   queryRef: CommentBoxIconQueryFragment$key;
@@ -18,7 +18,7 @@ export function CommentBoxIcon({ queryRef, eventRef }: Props) {
   const event = useFragment(
     graphql`
       fragment CommentBoxIconEventFragment on FeedEvent {
-        ...NotesModalFragment
+        ...CommentsModalFragment
       }
     `,
     eventRef
@@ -27,7 +27,7 @@ export function CommentBoxIcon({ queryRef, eventRef }: Props) {
   const query = useFragment(
     graphql`
       fragment CommentBoxIconQueryFragment on Query {
-        ...NotesModalQueryFragment
+        ...CommentsModalQueryFragment
       }
     `,
     queryRef
@@ -39,7 +39,7 @@ export function CommentBoxIcon({ queryRef, eventRef }: Props) {
 
   const handleClick = useCallback(() => {
     showModal({
-      content: <NotesModal fullscreen={isMobile} eventRef={event} queryRef={query} />,
+      content: <CommentsModal fullscreen={isMobile} eventRef={event} queryRef={query} />,
       isFullPage: isMobile,
       isPaddingDisabled: true,
       headerVariant: 'standard',
