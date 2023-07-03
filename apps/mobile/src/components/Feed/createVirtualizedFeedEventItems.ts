@@ -25,7 +25,7 @@ export type FeedListItemType = { key: string; eventId: string } & (
   | {
       kind: 'feed-item-header';
       event: createVirtualizedFeedEventItemsFragment$data;
-      queryRef?: null;
+      queryRef: createVirtualizedFeedEventItemsQueryFragment$data;
     }
   | {
       kind: 'feed-item-caption';
@@ -76,6 +76,8 @@ export function createVirtualizedFeedEventItems({
         ...FeedEventSocializeSectionQueryFragment
         # eslint-disable-next-line relay/must-colocate-fragment-spreads
         ...FeedListItemQueryFragment
+        # eslint-disable-next-line relay/must-colocate-fragment-spreads
+        ...FeedListSectionHeaderQueryFragment
       }
     `,
     queryRef
@@ -146,6 +148,7 @@ export function createVirtualizedFeedEventItems({
       items.push({
         kind: 'feed-item-header',
         event,
+        queryRef: query,
         key: `feed-item-header-${event.dbid}`,
         eventId: event.dbid,
       });
