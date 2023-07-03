@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useFragment, usePaginationFragment } from 'react-relay';
 import {
   AutoSizer,
@@ -20,7 +20,7 @@ import { CommentsModalQueryFragment$key } from '~/generated/CommentsModalQueryFr
 
 import { CommentBox } from '../CommentBox/CommentBox';
 
-export const NOTES_PER_PAGE = 10;
+export const NOTES_PER_PAGE = 20;
 
 type CommentsModalProps = {
   fullscreen: boolean;
@@ -83,18 +83,7 @@ export function CommentsModal({ eventRef, queryRef, fullscreen }: CommentsModalP
     });
   });
 
-  const modalHeight = useMemo(() => {
-    let height = 0;
-
-    for (let i = 0; i < nonNullInteractions.length; i++) {
-      height += measurerCache.getHeight(i, 0);
-    }
-
-    // 52 is the height of the modal header + bottom padding
-    // 69 is the height of the comment box
-    return height + 52 + 69;
-  }, [measurerCache, nonNullInteractions.length]);
-
+  const virtualizedListRef = useRef<List | null>(null);
   const handleLoadMore = useCallback(async () => {
     loadPrevious(NOTES_PER_PAGE);
   }, [loadPrevious]);
@@ -118,7 +107,7 @@ export function CommentsModal({ eventRef, queryRef, fullscreen }: CommentsModalP
           {({ registerChild }) => {
             return (
               // @ts-expect-error Bad types from react-virtualized
-              <div style={style} ref={registerChild}>
+              <div style={style} ref={registerChild} key={key}>
                 <CommentNote commentRef={interaction} />
               </div>
             );
@@ -134,33 +123,51 @@ export function CommentsModal({ eventRef, queryRef, fullscreen }: CommentsModalP
 
   const rowCount = hasPrevious ? nonNullInteractions.length + 1 : nonNullInteractions.length;
 
+  const estimatedItemHeight = 50;
+
+  const estimatedContentHeight = useMemo(() => {
+    // 420 is the max height of the modal
+    // 121 is the height of the modal header + bottom padding + comment box
+    return Math.min(nonNullInteractions.length * estimatedItemHeight, 420 - 121);
+  }, [nonNullInteractions.length, estimatedItemHeight]);
+
+  useEffect(
+    function recalculateHeightsWhenEventsChange() {
+      measurerCache.clearAll();
+      virtualizedListRef.current?.recomputeRowHeights();
+    },
+    [nonNullInteractions, measurerCache]
+  );
+
   return (
-    <ModalContent fullscreen={fullscreen} height={modalHeight}>
+    <ModalContent fullscreen={fullscreen}>
       <WrappingVStack>
         <StyledHeader>
           <TitleDiatypeM>Comments</TitleDiatypeM>
         </StyledHeader>
         <VStack grow>
-          <AutoSizer>
-            {({ width, height }) => (
+          <AutoSizer disableHeight>
+            {({ width }) => (
               <InfiniteLoader
                 isRowLoaded={isRowLoaded}
                 loadMoreRows={handleLoadMore}
                 rowCount={rowCount}
               >
                 {({ onRowsRendered, registerChild }) => (
-                  <List
-                    width={width}
-                    height={height}
-                    rowRenderer={rowRenderer}
-                    rowCount={nonNullInteractions.length}
-                    rowHeight={measurerCache.rowHeight}
-                    onRowsRendered={onRowsRendered}
-                    ref={registerChild}
-                    style={{
-                      paddingTop: '16px',
-                    }}
-                  />
+                  <div ref={(el) => registerChild(el)}>
+                    <List
+                      width={width}
+                      height={estimatedContentHeight}
+                      rowRenderer={rowRenderer}
+                      rowCount={nonNullInteractions.length}
+                      rowHeight={measurerCache.rowHeight}
+                      onRowsRendered={onRowsRendered}
+                      ref={virtualizedListRef}
+                      style={{
+                        paddingTop: '16px',
+                      }}
+                    />
+                  </div>
                 )}
               </InfiniteLoader>
             )}
@@ -181,12 +188,11 @@ const StyledHeader = styled.div`
   padding-left: ${MODAL_PADDING_PX}px;
 `;
 
-const ModalContent = styled.div<{ fullscreen: boolean; height: number }>`
-  height: ${({ fullscreen, height }) => (fullscreen ? '100%' : `${height}px`)};
+const ModalContent = styled.div<{ fullscreen: boolean }>`
   width: ${({ fullscreen }) => (fullscreen ? '100%' : '540px')};
   display: flex;
   flex-direction: column;
   padding: ${MODAL_PADDING_PX}px 0px 0px;
-  max-height: 420px;
   min-height: 170px;
+  height: 100%;
 `;

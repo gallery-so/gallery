@@ -80,17 +80,6 @@ export function AdmireModal({ eventRef, queryRef, fullscreen }: AdmireModalProps
     });
   });
 
-  const modalHeight = useMemo(() => {
-    let height = 0;
-
-    for (let i = 0; i < nonNullInteractions.length; i++) {
-      height += measurerCache.getHeight(i, 0);
-    }
-
-    // 60 is the height of the modal header + bottom padding
-    return height + 60;
-  }, [measurerCache, nonNullInteractions.length]);
-
   const isRowLoaded = ({ index }: { index: number }) =>
     !hasPrevious || index < nonNullInteractions.length;
 
@@ -130,15 +119,21 @@ export function AdmireModal({ eventRef, queryRef, fullscreen }: AdmireModalProps
     [measurerCache, query, nonNullInteractions]
   );
 
+  const estimatedItemHeight = 50; // assuming each item is around 50px
+
+  const estimatedContentHeight = useMemo(() => {
+    return Math.min(nonNullInteractions.length * estimatedItemHeight, 420);
+  }, [nonNullInteractions.length, estimatedItemHeight]);
+
   return (
-    <ModalContent fullscreen={fullscreen} height={modalHeight}>
+    <ModalContent fullscreen={fullscreen}>
       <WrappingVStack>
         <StyledHeader>
           <TitleDiatypeM>Admires</TitleDiatypeM>
         </StyledHeader>
-        <VStack grow>
-          <AutoSizer>
-            {({ width, height }) => (
+        <AutoSizerWrapper>
+          <AutoSizer disableHeight>
+            {({ width }) => (
               <InfiniteLoader
                 isRowLoaded={isRowLoaded}
                 loadMoreRows={handleLoadMore}
@@ -147,7 +142,7 @@ export function AdmireModal({ eventRef, queryRef, fullscreen }: AdmireModalProps
                 {({ onRowsRendered, registerChild }) => (
                   <List
                     width={width}
-                    height={height}
+                    height={estimatedContentHeight}
                     rowRenderer={rowRenderer}
                     rowCount={nonNullInteractions.length}
                     rowHeight={measurerCache.rowHeight}
@@ -158,7 +153,7 @@ export function AdmireModal({ eventRef, queryRef, fullscreen }: AdmireModalProps
               </InfiniteLoader>
             )}
           </AutoSizer>
-        </VStack>
+        </AutoSizerWrapper>
       </WrappingVStack>
     </ModalContent>
   );
@@ -173,12 +168,16 @@ const StyledHeader = styled.div`
   padding-left: ${MODAL_PADDING_PX}px;
 `;
 
-const ModalContent = styled.div<{ fullscreen: boolean; height: number }>`
-  height: ${({ fullscreen, height }) => (fullscreen ? '100%' : `${height}px`)};
+const ModalContent = styled.div<{ fullscreen: boolean }>`
   width: ${({ fullscreen }) => (fullscreen ? '100%' : '540px')};
   display: flex;
   flex-direction: column;
   padding: ${MODAL_PADDING_PX}px 0px 0px;
   max-height: 420px;
-  min-height: 112px;
+  min-height: 100px;
+  height: 100%;
+`;
+
+const AutoSizerWrapper = styled(VStack)`
+  height: 100%;
 `;
