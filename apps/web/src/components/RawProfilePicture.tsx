@@ -55,6 +55,8 @@ export function RawProfilePicture({
     fontSize -= 2;
   }
 
+  const hasImage = 'imageUrl' in rest;
+
   return (
     <OuterCircle
       isEditable={isEditable}
@@ -69,7 +71,7 @@ export function RawProfilePicture({
         cursor: isEditable ? 'pointer' : undefined,
       }}
     >
-      <InnerCircle justify="center" align="center">
+      <InnerCircle hasImage={hasImage} justify="center" align="center">
         {'letter' in rest && (
           <ProfilePictureText
             style={{
@@ -137,7 +139,7 @@ const EditCircle = styled(VStack)`
   transform: translate(25%, 25%);
 `;
 
-const InnerCircle = styled(VStack)`
+const InnerCircle = styled(VStack)<{ hasImage?: boolean }>`
   position: relative;
   border-radius: 999999px;
 
@@ -145,7 +147,7 @@ const InnerCircle = styled(VStack)`
   height: 100%;
 
   background-color: ${colors.offWhite};
-  border: 1px solid ${colors.black['800']};
+  border: 1px solid ${({ hasImage }) => (hasImage ? 'transparent' : colors.black['800'])};
 
   transition: background 100ms ease-in-out;
 `;
