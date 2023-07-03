@@ -46,7 +46,7 @@ export function AdmireBottomSheet({ bottomSheetRef, feedEventId }: AdmireBottomS
     >
       <View style={{ paddingBottom: bottom }} className="flex flex-1 flex-col space-y-5">
         <Typography className="text-sm px-4" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-          Comments
+          Admires
         </Typography>
 
         <View className="flex-grow">
