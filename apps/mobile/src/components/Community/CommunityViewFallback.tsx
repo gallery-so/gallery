@@ -4,6 +4,7 @@ import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { GallerySkeleton } from '~/components/GallerySkeleton';
 import { GalleryProfileNavbarFallback } from '~/components/ProfileView/GalleryProfileNavBar';
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
+import { UserFollowListFallback } from '~/components/UserFollowList/UserFollowListFallback';
 
 const TOTAL_ROWS = 20;
 
@@ -30,14 +31,12 @@ export function CommunityViewFallback() {
           <SkeletonPlaceholder.Item flexDirection="column" gap={4} marginBottom={16}>
             <SkeletonPlaceholder.Item width="50%" height={12} />
           </SkeletonPlaceholder.Item>
-          {Array.from({ length: TOTAL_ROWS }).map((_, index) => (
-            <SkeletonPlaceholder.Item key={index} flexDirection="row" gap={4} marginBottom={4}>
-              <SkeletonPlaceholder.Item width="50%" height={30} />
-              <SkeletonPlaceholder.Item width="50%" height={30} />
-            </SkeletonPlaceholder.Item>
-          ))}
         </SkeletonPlaceholder.Item>
       </GallerySkeleton>
+
+      <View className="-mx-4">
+        <UserFollowListFallback />
+      </View>
     </View>
   );
 }
