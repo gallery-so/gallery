@@ -6,8 +6,7 @@ import { Button } from '~/components/core/Button/Button';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { Spinner } from '~/components/core/Spinner/Spinner';
 import { TitleS } from '~/components/core/Text/Text';
-import { Chain } from '~/components/GalleryEditor/PiecesSidebar/chains';
-import { SidebarChainSelector } from '~/components/GalleryEditor/PiecesSidebar/SidebarChainSelector';
+import { ChainMetadata, chainsMap } from '~/components/GalleryEditor/PiecesSidebar/chains';
 import { SidebarTokens } from '~/components/GalleryEditor/PiecesSidebar/SidebarTokens';
 import { useCollectionEditorContext } from '~/contexts/collectionEditor/CollectionEditorContext';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
@@ -25,6 +24,7 @@ import { AddWalletSidebar } from './AddWalletSidebar';
 import CreatorEmptyStateSidebar from './CreatorEmptyStateSidebar';
 import isRefreshDisabledForUser from './isRefreshDisabledForUser';
 import SearchBar from './SearchBar';
+import SidebarChainDropdown from './SidebarChainDropdown';
 import { SidebarView, SidebarViewSelector } from './SidebarViewSelector';
 
 type Props = {
@@ -60,6 +60,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
             }
           }
         }
+        ...SidebarChainDropdownFragment
         ...doesUserOwnWalletFromChainFragment
         ...AddWalletSidebarQueryFragment
       }
@@ -72,7 +73,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
   const { addWhitespace } = useCollectionEditorContext();
 
   const [searchResults, setSearchResults] = useState<string[]>([]);
-  const [selectedChain, setSelectedChain] = useState<Chain>('Ethereum');
+  const [selectedChain, setSelectedChain] = useState<ChainMetadata>(chainsMap['Ethereum']);
   const [selectedView, setSelectedView] = useState<SidebarView>('Collected');
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
 
@@ -82,7 +83,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
 
   const nonNullTokens = removeNullValues(allTokens);
 
-  const ownsWalletFromSelectedChain = doesUserOwnWalletFromChain(selectedChain, query);
+  const ownsWalletFromSelectedChain = doesUserOwnWalletFromChain(selectedChain.name, query);
 
   const tokenSearchResults = useMemo(() => {
     if (!debouncedSearchQuery) {
@@ -106,7 +107,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
         return true;
       }
 
-      if (token.chain !== selectedChain) {
+      if (token.chain !== selectedChain.name) {
         return false;
       }
 
@@ -133,13 +134,15 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
 
   const isRefreshDisabledAtUserLevel = isRefreshDisabledForUser(query.viewer?.user?.dbid ?? '');
   const refreshDisabled =
-    isRefreshDisabledAtUserLevel || !doesUserOwnWalletFromChain(selectedChain, query) || isLocked;
+    isRefreshDisabledAtUserLevel ||
+    !doesUserOwnWalletFromChain(selectedChain.name, query) ||
+    isLocked;
 
   const handleSelectedViewChange = useCallback((view: SidebarView) => {
     setSelectedView(view);
 
     if (view === 'Created') {
-      setSelectedChain('Ethereum');
+      setSelectedChain(chainsMap['Ethereum']);
     }
   }, []);
 
@@ -149,7 +152,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
       return;
     }
 
-    await syncTokens(selectedChain);
+    await syncTokens(selectedChain.name);
   }, [selectedChain, refreshDisabled, syncTokens]);
 
   const sidebarMainContent = useMemo(() => {
@@ -159,7 +162,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
           <SidebarTokens
             isSearching={isSearching}
             tokenRefs={tokensToDisplay}
-            selectedChain={selectedChain}
+            selectedChain={selectedChain.name}
             selectedView={selectedView}
           />
         );
@@ -172,14 +175,14 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
         <SidebarTokens
           isSearching={isSearching}
           tokenRefs={tokensToDisplay}
-          selectedChain={selectedChain}
+          selectedChain={selectedChain.name}
           selectedView={selectedView}
         />
       );
     }
     return (
       <AddWalletSidebar
-        selectedChain={selectedChain}
+        selectedChain={selectedChain.name}
         queryRef={query}
         handleRefresh={handleRefresh}
       />
@@ -216,6 +219,19 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
             onSelectedViewChange={handleSelectedViewChange}
           />
         </Header>
+        <Header align="center" justify="space-between" gap={4}>
+          <TitleS>Network</TitleS>
+          {isSearching ? (
+            <StyledNull>---</StyledNull>
+          ) : (
+            <SidebarChainDropdown
+              queryRef={query}
+              selectedChain={selectedChain}
+              onSelectChain={setSelectedChain}
+              selectedView={selectedView}
+            />
+          )}
+        </Header>
         <StyledSearchBarContainer>
           <SearchBar
             tokensRef={nonNullTokens}
@@ -239,35 +255,24 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
             />
           )}
         </StyledSearchBarContainer>
-        {!isSearching && (
-          <>
-            <div>
-              <SidebarChainSelector
-                selected={selectedChain}
-                onChange={setSelectedChain}
-                selectedView={selectedView}
-              />
-            </div>
-            {shouldDisplayRefreshButtonGroup && (
-              <StyledButtonGroupContainer>
-                <StyledButton onClick={handleRefresh} variant="primary" disabled={refreshDisabled}>
-                  <HStack gap={8} align="center">
-                    {isLocked ? (
-                      <Spinner />
-                    ) : (
-                      <>
-                        <RefreshIcon />
-                        REFRESH
-                      </>
-                    )}
-                  </HStack>
-                </StyledButton>
-                <StyledButton onClick={handleAddBlankBlockClick} variant="secondary">
-                  BLANK SPACE
-                </StyledButton>
-              </StyledButtonGroupContainer>
-            )}
-          </>
+        {!isSearching && shouldDisplayRefreshButtonGroup && (
+          <StyledButtonGroupContainer>
+            <StyledButton onClick={handleRefresh} variant="primary" disabled={refreshDisabled}>
+              <HStack gap={8} align="center">
+                {isLocked ? (
+                  <Spinner />
+                ) : (
+                  <>
+                    <RefreshIcon />
+                    REFRESH
+                  </>
+                )}
+              </HStack>
+            </StyledButton>
+            <StyledButton onClick={handleAddBlankBlockClick} variant="secondary">
+              BLANK SPACE
+            </StyledButton>
+          </StyledButtonGroupContainer>
         )}
         {sidebarMainContent}
       </StyledSidebarContainer>
@@ -299,7 +304,12 @@ const StyledSidebar = styled.div<{ navbarHeight: number }>`
 `;
 
 const Header = styled(HStack)`
+  height: 32px;
   padding: 0 12px 8px;
+`;
+
+const StyledNull = styled.div`
+  padding-right: 8px;
 `;
 
 const StyledSearchBarContainer = styled(VStack)`

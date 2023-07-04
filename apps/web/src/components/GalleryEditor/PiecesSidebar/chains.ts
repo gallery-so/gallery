@@ -1,3 +1,5 @@
+import keyBy from 'lodash.keyby';
+
 export const chains = [
   { name: 'Ethereum', shortName: 'ETH', icon: '/icons/ethereum_logo.svg' },
   { name: 'Tezos', shortName: 'TEZ', icon: '/icons/tezos_logo.svg' },
@@ -11,3 +13,5 @@ export const chains = [
 export type Chain = (typeof chains)[number]['name'];
 
 export type ChainMetadata = (typeof chains)[number];
+
+export const chainsMap = keyBy(chains, 'name') as Record<Chain, ChainMetadata>;

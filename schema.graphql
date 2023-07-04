@@ -96,6 +96,7 @@ enum Chain {
   Optimism
   Tezos
   POAP
+  Zora
 }
 
 type ChainAddress {
