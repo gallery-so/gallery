@@ -40,13 +40,23 @@ export function SidebarViewSelector({
         <BaseM>{selectedView}</BaseM>
         <IconContainer variant="stacked" size="sm" icon={<DoubleArrowsIcon />} />
       </Selector>
-      <Dropdown position="right" active={isDropdownOpen} onClose={() => setIsDropdownOpen(false)}>
+      <StyledDropdown
+        position="right"
+        active={isDropdownOpen}
+        onClose={() => setIsDropdownOpen(false)}
+      >
         <DropdownSection>
-          <DropdownItem onClick={() => onSelectView('Collected')}>COLLECTED</DropdownItem>
-          <DropdownItem onClick={() => onSelectView('Created')}>CREATED</DropdownItem>
-          <DropdownItem onClick={() => onSelectView('Hidden')}>HIDDEN</DropdownItem>
+          <DropdownItem onClick={() => onSelectView('Collected')}>
+            <BaseM>Collected</BaseM>
+          </DropdownItem>
+          <DropdownItem onClick={() => onSelectView('Created')}>
+            <BaseM>Created</BaseM>
+          </DropdownItem>
+          <DropdownItem onClick={() => onSelectView('Hidden')}>
+            <BaseM>Hidden</BaseM>
+          </DropdownItem>
         </DropdownSection>
-      </Dropdown>
+      </StyledDropdown>
     </Container>
   );
 }
@@ -57,4 +67,8 @@ const Selector = styled(HStack)`
 
 const Container = styled.div`
   position: relative;
+`;
+
+const StyledDropdown = styled(Dropdown)`
+  width: 100px;
 `;
