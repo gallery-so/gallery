@@ -20,7 +20,7 @@ const DEV_FLAGS: Record<FeatureFlag, boolean> = {
   PFP: true,
 };
 
-const ROLE_FLAGS: Record<Role, Record<FeatureFlag, boolean>> = {
+export const ROLE_FLAGS: Record<Role, Record<FeatureFlag, boolean>> = {
   ADMIN: {
     BIG_EASEL: true,
     PFP: true,
