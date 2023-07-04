@@ -97,7 +97,7 @@ export function SomeoneAdmiredYourFeedEvent({
     <BaseM>
       {count > 1 ? (
         <BaseM>
-          <strong>{notification.count} asdasd collectors</strong>
+          <strong>{notification.count} collectors</strong>
         </BaseM>
       ) : (
         <>
