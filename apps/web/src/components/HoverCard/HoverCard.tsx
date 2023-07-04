@@ -52,6 +52,7 @@ export const HoverCardQueryNode = graphql`
     ...FollowButtonQueryFragment
     ...useLoggedInUserIdFragment
     ...isFeatureEnabledFragment
+    ...UserSharedInfoQueryFragment
   }
 `;
 
@@ -128,7 +129,7 @@ export function HoverCard({ preloadedQuery }: HoverCardProps) {
           </StyledCardDescription>
         )}
       </StyledCardHeaderContainer>
-      {isLoggedIn && !isOwnProfile && <UserSharedInfo userRef={user} />}
+      {isLoggedIn && !isOwnProfile && <UserSharedInfo userRef={user} queryRef={query} />}
     </VStack>
   );
 }

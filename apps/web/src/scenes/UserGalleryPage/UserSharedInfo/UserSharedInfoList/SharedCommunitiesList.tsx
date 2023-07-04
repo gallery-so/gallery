@@ -13,9 +13,9 @@ import { COMMUNITIES_PER_PAGE } from '../UserSharedCommunities';
 import PaginatedListRow from './SharedInfoListRow';
 
 type Props = {
-  queryRef: SharedCommunitiesListFragment$key;
+  userRef: SharedCommunitiesListFragment$key;
 };
-export default function SharedCommunitiesList({ queryRef }: Props) {
+export default function SharedCommunitiesList({ userRef }: Props) {
   const { data, loadNext, hasNext } = usePaginationFragment(
     graphql`
       fragment SharedCommunitiesListFragment on GalleryUser
@@ -36,7 +36,7 @@ export default function SharedCommunitiesList({ queryRef }: Props) {
         }
       }
     `,
-    queryRef
+    userRef
   );
 
   const sharedCommunities = useMemo(

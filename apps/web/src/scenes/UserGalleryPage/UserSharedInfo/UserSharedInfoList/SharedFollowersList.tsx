@@ -1,23 +1,25 @@
 import { Route } from 'nextjs-routes';
 import { useCallback, useMemo } from 'react';
-import { graphql, usePaginationFragment } from 'react-relay';
+import { graphql, useFragment, usePaginationFragment } from 'react-relay';
 import { AutoSizer, InfiniteLoader, List, ListRowRenderer } from 'react-virtualized';
 import styled from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';
+import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { SharedFollowersListFragment$key } from '~/generated/SharedFollowersListFragment.graphql';
+import { SharedFollowersListRowFragment$key } from '~/generated/SharedFollowersListRowFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import unescape from '~/shared/utils/unescape';
 
 import PaginatedListRow from './SharedInfoListRow';
 
 type Props = {
-  queryRef: SharedFollowersListFragment$key;
+  userRef: SharedFollowersListFragment$key;
 };
 
 export const FOLLOWERS_PER_PAGE = 20;
 
-export default function SharedFollowersList({ queryRef }: Props) {
+export default function SharedFollowersList({ userRef }: Props) {
   const { data, loadNext, hasNext } = usePaginationFragment(
     graphql`
       fragment SharedFollowersListFragment on GalleryUser
@@ -29,13 +31,13 @@ export default function SharedFollowersList({ queryRef }: Props) {
               __typename
 
               username
-              bio
+              ...SharedFollowersListRowFragment
             }
           }
         }
       }
     `,
-    queryRef
+    userRef
   );
 
   const sharedFollowers = useMemo(
@@ -58,21 +60,9 @@ export default function SharedFollowersList({ queryRef }: Props) {
         return null;
       }
 
-      const unescapedBio = user.bio ? unescape(user.bio) : '';
-      const bioFirstLine = unescapedBio.split('\n')[0] ?? '';
-
-      const userUrlPath: Route = {
-        pathname: `/[username]`,
-        query: { username: user.username ?? '' },
-      };
-
       return (
         <div style={style} key={key}>
-          <PaginatedListRow
-            title={user.username ?? ''}
-            subTitle={bioFirstLine}
-            href={userUrlPath}
-          />
+          <SharedFollowersListRow userRef={user} />
         </div>
       );
     },
@@ -115,3 +105,33 @@ const StyledList = styled(VStack)<{ fullscreen: boolean }>`
   margin: 4px;
   height: ${({ fullscreen }) => (fullscreen ? '100%' : '640px')};
 `;
+
+function SharedFollowersListRow({ userRef }: { userRef: SharedFollowersListRowFragment$key }) {
+  const user = useFragment(
+    graphql`
+      fragment SharedFollowersListRowFragment on GalleryUser {
+        username
+        bio
+        ...ProfilePictureFragment
+      }
+    `,
+    userRef
+  );
+
+  const unescapedBio = user.bio ? unescape(user.bio) : '';
+  const bioFirstLine = unescapedBio.split('\n')[0] ?? '';
+
+  const userUrlPath: Route = {
+    pathname: `/[username]`,
+    query: { username: user.username ?? '' },
+  };
+
+  return (
+    <PaginatedListRow
+      href={userUrlPath}
+      title={user.username ?? ''}
+      subTitle={bioFirstLine}
+      imageContent={<ProfilePicture userRef={user} size="md" />}
+    />
+  );
+}
