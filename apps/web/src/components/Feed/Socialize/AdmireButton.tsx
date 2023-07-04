@@ -40,14 +40,6 @@ export function AdmireButton({ eventRef, queryRef }: AdmireButtonProps) {
       fragment AdmireButtonQueryFragment on Query {
         viewer {
           __typename
-
-          ... on Viewer {
-            user {
-              id
-              dbid
-              username
-            }
-          }
         }
 
         ...useAuthModalFragment
@@ -65,7 +57,6 @@ export function AdmireButton({ eventRef, queryRef }: AdmireButtonProps) {
             viewerAdmire
               @appendNode(edgeTypeName: "FeedEventAdmireEdge", connections: $connections) {
               dbid
-              ...AdmireLineFragment
               ...AdmireNoteFragment
             }
           }
@@ -101,9 +92,9 @@ export function AdmireButton({ eventRef, queryRef }: AdmireButtonProps) {
     event.id,
     'Interactions_admires'
   );
-  const notesModalConnection = ConnectionHandler.getConnectionID(
+  const admireModalConnection = ConnectionHandler.getConnectionID(
     event.id,
-    'NotesModal_interactions'
+    'AdmiresModal_interactions'
   );
 
   const handleRemoveAdmire = useCallback(async () => {
@@ -220,32 +211,12 @@ export function AdmireButton({ eventRef, queryRef }: AdmireButtonProps) {
     };
 
     try {
-      const optimisticAdmireId = Math.random().toString();
       const response = await admire({
         updater,
         optimisticUpdater: updater,
-        optimisticResponse: {
-          admireFeedEvent: {
-            __typename: 'AdmireFeedEventPayload',
-            feedEvent: {
-              id: event.id,
-              viewerAdmire: {
-                __typename: 'Admire',
-                id: `Admire:${optimisticAdmireId}`,
-                dbid: optimisticAdmireId,
-                creationTime: new Date().toISOString(),
-                admirer: {
-                  id: query.viewer?.user?.id ?? 'unknown',
-                  dbid: query.viewer?.user?.dbid ?? 'unknown',
-                  username: query.viewer?.user?.username ?? null,
-                },
-              },
-            },
-          },
-        },
         variables: {
           eventId: event.dbid,
-          connections: [interactionsConnection, notesModalConnection],
+          connections: [interactionsConnection, admireModalConnection],
         },
       });
 
@@ -277,9 +248,8 @@ export function AdmireButton({ eventRef, queryRef }: AdmireButtonProps) {
   }, [
     admire,
     event.dbid,
-    event.id,
     interactionsConnection,
-    notesModalConnection,
+    admireModalConnection,
     pushToast,
     query,
     reportError,

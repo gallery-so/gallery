@@ -135,8 +135,6 @@ const FeedEventContainer = styled(VStack)`
 
   padding: 24px 0px;
 
-  cursor: pointer;
-
   @media only screen and ${breakpoints.desktop} {
     padding: 24px 16px;
     max-width: initial;

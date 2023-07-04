@@ -3,9 +3,9 @@ import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import { BaseM } from '~/components/core/Text/Text';
-import { ListItem } from '~/components/Feed/Socialize/NotesModal/ListItem';
-import { TimeAgoText } from '~/components/Feed/Socialize/NotesModal/TimeAgoText';
-import { UsernameLink } from '~/components/Feed/Socialize/NotesModal/UsernameLink';
+import { ListItem } from '~/components/Feed/Socialize/CommentsModal/ListItem';
+import { TimeAgoText } from '~/components/Feed/Socialize/CommentsModal/TimeAgoText';
+import { UsernameLink } from '~/components/Feed/Socialize/CommentsModal/UsernameLink';
 import { CommentNoteFragment$key } from '~/generated/CommentNoteFragment.graphql';
 import colors from '~/shared/theme/colors';
 import { getTimeSince } from '~/shared/utils/time';
@@ -34,7 +34,7 @@ export function CommentNote({ commentRef }: CommentNoteProps) {
   const timeAgo = comment.creationTime ? getTimeSince(comment.creationTime) : null;
 
   return (
-    <ListItem justify="space-between" gap={4}>
+    <StyledListItem justify="space-between" gap={4}>
       <p>
         <StyledUsernameContainer>
           <UsernameLink username={comment.commenter?.username ?? null} />
@@ -43,10 +43,14 @@ export function CommentNote({ commentRef }: CommentNoteProps) {
       </p>
 
       <TimeAgoText color={colors.metal}>{timeAgo}</TimeAgoText>
-    </ListItem>
+    </StyledListItem>
   );
 }
 
 const StyledUsernameContainer = styled.span`
   padding-right: 4px;
+`;
+
+const StyledListItem = styled(ListItem)`
+  padding: 0px 16px 16px;
 `;
