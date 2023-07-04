@@ -108,11 +108,13 @@ export default function SearchResult({ name, description, path, type, userRef, q
           <BaseM>
             <Markdown text={highlightedName} />
           </BaseM>
-          <StyledDescription>
-            <BaseM>
-              <Markdown text={highlightedDescription} />
-            </BaseM>
-          </StyledDescription>
+          {highlightedDescription && (
+            <StyledDescription>
+              <BaseM>
+                <Markdown text={highlightedDescription} />
+              </BaseM>
+            </StyledDescription>
+          )}
         </VStack>
       </HStack>
     </StyledSearchResult>

@@ -109,10 +109,10 @@ export function UserNameAndDescriptionHeader({ userRef, queryRef }: Props) {
       isAuth={isAuthenticatedUser}
       hasMobileContent={isMobile && !!unescapedBio}
     >
-      <Container gap={2}>
+      <Container gap={4}>
         <HStack align="center" gap={4}>
           <HStack gap={8} align="center">
-            {isPfpEnabled && <ProfilePicture userRef={user} size="xl" />}
+            {isPfpEnabled && <ProfilePicture userRef={user} size="md" />}
             <StyledUsername>{displayName}</StyledUsername>
           </HStack>
 
