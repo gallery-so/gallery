@@ -59,6 +59,7 @@ export function CommentsModal({ eventRef, queryRef, fullscreen }: CommentsModalP
     graphql`
       fragment CommentsModalQueryFragment on Query {
         ...CommentBoxQueryFragment
+        ...CommentNoteQueryFragment
       }
     `,
     queryRef
@@ -108,14 +109,14 @@ export function CommentsModal({ eventRef, queryRef, fullscreen }: CommentsModalP
             return (
               // @ts-expect-error Bad types from react-virtualized
               <div style={style} ref={registerChild} key={key}>
-                <CommentNote commentRef={interaction} />
+                <CommentNote commentRef={interaction} queryRef={query} />
               </div>
             );
           }}
         </CellMeasurer>
       );
     },
-    [measurerCache, nonNullInteractions]
+    [measurerCache, nonNullInteractions, query]
   );
 
   const isRowLoaded = ({ index }: { index: number }) =>

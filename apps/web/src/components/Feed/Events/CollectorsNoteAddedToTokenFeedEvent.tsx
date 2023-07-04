@@ -6,15 +6,18 @@ import styled from 'styled-components';
 import breakpoints from '~/components/core/breakpoints';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
-import { TitleM } from '~/components/core/Text/Text';
+import { BaseM, TitleM } from '~/components/core/Text/Text';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
+import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { CollectorsNoteAddedToTokenFeedEventFragment$key } from '~/generated/CollectorsNoteAddedToTokenFeedEventFragment.graphql';
+import { CollectorsNoteAddedToTokenFeedEventQueryFragment$key } from '~/generated/CollectorsNoteAddedToTokenFeedEventQueryFragment.graphql';
 import useWindowSize, { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import NftDetailView from '~/scenes/NftDetailPage/NftDetailView';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { getTimeSince } from '~/shared/utils/time';
 import unescape from '~/shared/utils/unescape';
+import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 import EventMedia from './EventMedia';
 import {
@@ -30,6 +33,7 @@ import {
 type Props = {
   isSubEvent?: boolean;
   eventDataRef: CollectorsNoteAddedToTokenFeedEventFragment$key;
+  queryRef: CollectorsNoteAddedToTokenFeedEventQueryFragment$key;
 };
 
 const MARGIN = 16;
@@ -39,6 +43,7 @@ const IMAGE_SPACE_SIZE = 269;
 
 export default function CollectorsNoteAddedToTokenFeedEvent({
   eventDataRef,
+  queryRef,
   isSubEvent = false,
 }: Props) {
   const event = useFragment(
@@ -48,6 +53,7 @@ export default function CollectorsNoteAddedToTokenFeedEvent({
         owner @required(action: THROW) {
           username
           ...HoverCardOnUsernameFragment
+          ...ProfilePictureFragment
         }
         newCollectorsNote
         token @required(action: THROW) {
@@ -66,9 +72,22 @@ export default function CollectorsNoteAddedToTokenFeedEvent({
     eventDataRef
   );
 
+  const query = useFragment(
+    graphql`
+      fragment CollectorsNoteAddedToTokenFeedEventQueryFragment on Query {
+        ...NftDetailViewQueryFragment
+        ...EventMediaQueryFragment
+        ...isFeatureEnabledFragment
+      }
+    `,
+    queryRef
+  );
+
   const isMobile = useIsMobileWindowWidth();
   const windowSize = useWindowSize();
   const { showModal } = useModalActions();
+
+  const isPfpEnabled = isFeatureEnabled(FeatureFlag.PFP, query);
 
   const size = isMobile ? (windowSize.width - 2 * MARGIN - MIDDLE_GAP) / 2 : IMAGE_SPACE_SIZE;
   const track = useTrack();
@@ -81,13 +100,17 @@ export default function CollectorsNoteAddedToTokenFeedEvent({
       showModal({
         content: (
           <StyledNftDetailViewPopover>
-            <NftDetailView authenticatedUserOwnsAsset={false} collectionTokenRef={event.token} />
+            <NftDetailView
+              authenticatedUserOwnsAsset={false}
+              collectionTokenRef={event.token}
+              queryRef={query}
+            />
           </StyledNftDetailViewPopover>
         ),
         isFullPage: true,
       });
     },
-    [event.token, showModal, track]
+    [event.token, query, showModal, track]
   );
 
   return (
@@ -96,8 +119,13 @@ export default function CollectorsNoteAddedToTokenFeedEvent({
         <VStack gap={isSubEvent ? 0 : 16}>
           <StyledEventHeader>
             <StyledEventText isSubEvent={isSubEvent}>
-              {!isSubEvent && <HoverCardOnUsername userRef={event.owner} />} add a collector's note
-              to{' '}
+              {!isSubEvent && (
+                <HStack gap={4} align="center">
+                  {isPfpEnabled && <ProfilePicture userRef={event.owner} size="sm" />}
+                  <HoverCardOnUsername userRef={event.owner} />
+                </HStack>
+              )}
+              <BaseM>add a collector's note to</BaseM>
               <Link
                 href={{
                   pathname: '/[username]/[collectionId]/[tokenId]',
@@ -119,7 +147,12 @@ export default function CollectorsNoteAddedToTokenFeedEvent({
           <StyledEventContent align="center" justify="center" isSubEvent={isSubEvent}>
             <StyledContent align="center" justify="center" gap={MIDDLE_GAP}>
               <StyledMediaWrapper align="center">
-                <EventMedia tokenRef={event.token} maxHeight={size} maxWidth={size} />
+                <EventMedia
+                  tokenRef={event.token}
+                  queryRef={query}
+                  maxHeight={size}
+                  maxWidth={size}
+                />
               </StyledMediaWrapper>
               {event.newCollectorsNote && (
                 <StyledNoteWrapper>

@@ -54,6 +54,9 @@ export default function SearchResults({ activeFilter, onChangeFilter }: Props) {
             }
           }
         }
+        ...UserSearchResultSectionQueryFragment
+        ...GallerySearchResultSectionQueryFragment
+        ...CommunitySearchResultSectionQueryFragment
       }
     `,
     { query: deferredKeyword }
@@ -94,7 +97,8 @@ export default function SearchResults({ activeFilter, onChangeFilter }: Props) {
         {query?.searchUsers?.__typename === 'SearchUsersPayload' && (
           <UserSearchResultSection
             title="curators"
-            queryRef={query?.searchUsers?.results}
+            resultRefs={query?.searchUsers?.results}
+            queryRef={query}
             onChangeFilter={onChangeFilter}
             isShowAll
           />
@@ -109,7 +113,8 @@ export default function SearchResults({ activeFilter, onChangeFilter }: Props) {
         {query?.searchGalleries?.__typename === 'SearchGalleriesPayload' && (
           <GallerySearchResultSection
             title="galleries"
-            queryRef={query?.searchGalleries?.results}
+            resultRefs={query?.searchGalleries?.results}
+            queryRef={query}
             onChangeFilter={onChangeFilter}
             isShowAll
           />
@@ -124,7 +129,8 @@ export default function SearchResults({ activeFilter, onChangeFilter }: Props) {
         {query?.searchCommunities?.__typename === 'SearchCommunitiesPayload' && (
           <CommunitySearchResultSection
             title="communities"
-            queryRef={query?.searchCommunities?.results}
+            resultRefs={query?.searchCommunities?.results}
+            queryRef={query}
             onChangeFilter={onChangeFilter}
             isShowAll
           />
@@ -139,21 +145,24 @@ export default function SearchResults({ activeFilter, onChangeFilter }: Props) {
       {query?.searchUsers?.__typename === 'SearchUsersPayload' && (
         <UserSearchResultSection
           title="curators"
-          queryRef={query?.searchUsers?.results}
+          resultRefs={query?.searchUsers?.results}
+          queryRef={query}
           onChangeFilter={onChangeFilter}
         />
       )}
       {query?.searchGalleries?.__typename === 'SearchGalleriesPayload' && (
         <GallerySearchResultSection
           title="galleries"
-          queryRef={query?.searchGalleries?.results}
+          resultRefs={query?.searchGalleries?.results}
+          queryRef={query}
           onChangeFilter={onChangeFilter}
         />
       )}
       {query?.searchCommunities?.__typename === 'SearchCommunitiesPayload' && (
         <CommunitySearchResultSection
           title="communities"
-          queryRef={query?.searchCommunities?.results}
+          resultRefs={query?.searchCommunities?.results}
+          queryRef={query}
           onChangeFilter={onChangeFilter}
         />
       )}

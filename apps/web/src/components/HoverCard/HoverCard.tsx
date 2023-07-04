@@ -8,14 +8,17 @@ import styled from 'styled-components';
 
 import Badge from '~/components/Badge/Badge';
 import Markdown from '~/components/core/Markdown/Markdown';
-import { HStack } from '~/components/core/Spacer/Stack';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleM } from '~/components/core/Text/Text';
 import FollowButton from '~/components/Follow/FollowButton';
 import { HoverCardQuery } from '~/generated/HoverCardQuery.graphql';
 import UserSharedInfo from '~/scenes/UserGalleryPage/UserSharedInfo/UserSharedInfo';
 import { ErrorWithSentryMetadata } from '~/shared/errors/ErrorWithSentryMetadata';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
+import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 import handleCustomDisplayName from '~/utils/handleCustomDisplayName';
+
+import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
 
 type HoverCardProps = {
   preloadedQuery: PreloadedQuery<HoverCardQuery>;
@@ -42,11 +45,13 @@ export const HoverCardQueryNode = graphql`
         }
         ...FollowButtonUserFragment
         ...UserSharedInfoFragment
+        ...ProfilePictureFragment
       }
     }
 
     ...FollowButtonQueryFragment
     ...useLoggedInUserIdFragment
+    ...isFeatureEnabledFragment
   }
 `;
 
@@ -86,39 +91,45 @@ export function HoverCard({ preloadedQuery }: HoverCardProps) {
   }
 
   const displayName = handleCustomDisplayName(user.username);
+  const isPfpEnabled = isFeatureEnabled(FeatureFlag.PFP, query);
 
   return (
-    <>
-      <StyledCardHeader align="center" gap={4}>
-        <StyledUsernameAndBadge align="center" gap={4}>
-          <StyledLink href={userProfileLink}>
-            <StyledCardUsername>{displayName}</StyledCardUsername>
-          </StyledLink>
+    <VStack gap={4}>
+      <StyledCardHeaderContainer gap={8}>
+        <StyledCardHeader align="center" justify="space-between">
+          <StyledUsernameAndBadge align="center" gap={4}>
+            <StyledLink href={userProfileLink}>
+              <HStack align="center" gap={4}>
+                {isPfpEnabled && <ProfilePicture userRef={user} size="md" />}
+                <StyledCardUsername>{displayName}</StyledCardUsername>
+              </HStack>
+            </StyledLink>
 
-          <HStack align="center" gap={0}>
-            {userBadges.map((badge) => (
-              // Might need to rethink this layout when we have more badges
-              <Badge key={badge.name} badgeRef={badge} />
-            ))}
-          </HStack>
-        </StyledUsernameAndBadge>
+            <HStack align="center" gap={0}>
+              {userBadges.map((badge) => (
+                // Might need to rethink this layout when we have more badges
+                <Badge key={badge.name} badgeRef={badge} />
+              ))}
+            </HStack>
+          </StyledUsernameAndBadge>
 
-        {!isOwnProfile && (
-          <StyledFollowButtonWrapper>
-            <FollowButton userRef={user} queryRef={query} source="user hover card" />
-          </StyledFollowButtonWrapper>
+          {!isOwnProfile && (
+            <StyledFollowButtonWrapper>
+              <StyledFollowButton userRef={user} queryRef={query} source="user hover card" />
+            </StyledFollowButtonWrapper>
+          )}
+        </StyledCardHeader>
+
+        {user.bio && (
+          <StyledCardDescription>
+            <BaseM>
+              <Markdown text={unescape(user.bio)}></Markdown>
+            </BaseM>
+          </StyledCardDescription>
         )}
-      </StyledCardHeader>
-
-      {user.bio && (
-        <StyledCardDescription>
-          <BaseM>
-            <Markdown text={unescape(user.bio)}></Markdown>
-          </BaseM>
-        </StyledCardDescription>
-      )}
+      </StyledCardHeaderContainer>
       {isLoggedIn && !isOwnProfile && <UserSharedInfo userRef={user} />}
-    </>
+    </VStack>
   );
 }
 
@@ -128,6 +139,10 @@ const StyledCardHeader = styled(HStack)`
   min-width: 0;
   // enforce height on container since the follow button causes additional height
   height: 24px;
+`;
+
+const StyledCardHeaderContainer = styled(VStack)`
+  padding: 12px 0;
 `;
 
 const StyledLink = styled(Link)`
@@ -160,4 +175,10 @@ const StyledCardDescription = styled.div`
   p {
     display: inline;
   }
+`;
+
+const StyledFollowButton = styled(FollowButton)`
+  padding: 2px 8px;
+  width: 92px;
+  height: 24px;
 `;

@@ -26,6 +26,7 @@ export type RawProfilePictureProps = {
   size: Size;
   hasInset?: boolean;
   isEditable?: boolean;
+  inline?: boolean;
   onEdit?: () => void;
 } & (
   | {
@@ -44,6 +45,7 @@ export function RawProfilePicture({
   hasInset,
   onEdit,
   isEditable,
+  inline,
   ...rest
 }: RawProfilePictureProps) {
   const widthAndHeight = sizeMapping[size];
@@ -53,27 +55,32 @@ export function RawProfilePicture({
     fontSize -= 2;
   }
 
+  const hasImage = 'imageUrl' in rest;
+
   return (
     <OuterCircle
       isEditable={isEditable}
       inset={hasInset}
       justify="center"
       align="center"
+      inline={inline}
       style={{
         width: widthAndHeight,
         height: widthAndHeight,
+        minWidth: widthAndHeight,
+        minHeight: widthAndHeight,
         padding: hasInset ? '2px' : 0,
         cursor: isEditable ? 'pointer' : undefined,
       }}
     >
-      <InnerCircle justify="center" align="center">
+      <InnerCircle hasImage={hasImage} justify="center" align="center">
         {'letter' in rest && (
           <ProfilePictureText
             style={{
               fontSize,
             }}
           >
-            {rest.letter}
+            {rest.letter.toUpperCase()}
           </ProfilePictureText>
         )}
 
@@ -134,7 +141,7 @@ const EditCircle = styled(VStack)`
   transform: translate(25%, 25%);
 `;
 
-const InnerCircle = styled(VStack)`
+const InnerCircle = styled(VStack)<{ hasImage?: boolean }>`
   position: relative;
   border-radius: 999999px;
 
@@ -142,7 +149,7 @@ const InnerCircle = styled(VStack)`
   height: 100%;
 
   background-color: ${colors.offWhite};
-  border: 1px solid ${colors.black['800']};
+  border: 1px solid ${({ hasImage }) => (hasImage ? 'transparent' : colors.black['800'])};
 
   transition: background 100ms ease-in-out;
 `;
@@ -178,4 +185,5 @@ const ProfilePictureText = styled.div`
   font-weight: 300;
   line-height: 13px;
   font-family: ${TITLE_FONT_FAMILY};
+  color: ${colors.black['800']};
 `;

@@ -6,6 +6,7 @@ import breakpoints from '~/components/core/breakpoints';
 import { GLOBAL_FOOTER_HEIGHT } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
 import ShimmerProvider from '~/contexts/shimmer/ShimmerContext';
 import { TokenDetailViewFragment$key } from '~/generated/TokenDetailViewFragment.graphql';
+import { TokenDetailViewQueryFragment$key } from '~/generated/TokenDetailViewQueryFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import { NoteViewer, StyledContainer } from '~/scenes/NftDetailPage/NftDetailNote';
 import NftDetailText from '~/scenes/NftDetailPage/NftDetailText';
@@ -14,10 +15,11 @@ import TokenDetailAsset from './TokenDetailAsset';
 
 type Props = {
   authenticatedUserOwnsAsset: boolean;
-  queryRef: TokenDetailViewFragment$key;
+  tokenRef: TokenDetailViewFragment$key;
+  queryRef: TokenDetailViewQueryFragment$key;
 };
 
-export default function TokenDetailView({ authenticatedUserOwnsAsset, queryRef }: Props) {
+export default function TokenDetailView({ authenticatedUserOwnsAsset, tokenRef, queryRef }: Props) {
   const token = useFragment(
     graphql`
       fragment TokenDetailViewFragment on Token {
@@ -25,6 +27,15 @@ export default function TokenDetailView({ authenticatedUserOwnsAsset, queryRef }
 
         ...NftDetailTextFragment
         ...TokenDetailAssetFragment
+      }
+    `,
+    tokenRef
+  );
+
+  const query = useFragment(
+    graphql`
+      fragment TokenDetailViewQueryFragment on Query {
+        ...NftDetailTextQueryFragment
       }
     `,
     queryRef
@@ -53,7 +64,7 @@ export default function TokenDetailView({ authenticatedUserOwnsAsset, queryRef }
           )}
         </StyledAssetAndNoteContainer>
 
-        <NftDetailText tokenRef={token} />
+        <NftDetailText tokenRef={token} queryRef={query} />
       </StyledContentContainer>
       {!useIsMobileOrMobileLargeWindowWidth && <StyledNavigationBuffer />}
     </StyledBody>
