@@ -67,6 +67,8 @@ export function RawProfilePicture({
       style={{
         width: widthAndHeight,
         height: widthAndHeight,
+        minWidth: widthAndHeight,
+        minHeight: widthAndHeight,
         padding: hasInset ? '2px' : 0,
         cursor: isEditable ? 'pointer' : undefined,
       }}

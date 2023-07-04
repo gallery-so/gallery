@@ -180,10 +180,12 @@ const StyledUsernameWrapper = styled.div`
 `;
 
 const StyledGalleryLink = styled(GalleryLink)<{ fadeUsernames: boolean }>`
-  transition: color 0.15s ease-in-out;
-  color: ${({ fadeUsernames }) => (fadeUsernames ? colors.porcelain : colors.black['800'])};
+  transition: color 0.15s ease-in-out, opacity 0.15s ease-in-out;
+  color: ${colors.black['800']};
+  opacity: ${({ fadeUsernames }) => (fadeUsernames ? 0.5 : 1)};
   &:hover {
     color: ${colors.black['800']};
+    opacity: 1;
   }
 `;
 
