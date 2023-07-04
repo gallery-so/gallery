@@ -80,7 +80,7 @@ export function RawProfilePicture({
               fontSize,
             }}
           >
-            {rest.letter}
+            {rest.letter.toUpperCase()}
           </ProfilePictureText>
         )}
 
