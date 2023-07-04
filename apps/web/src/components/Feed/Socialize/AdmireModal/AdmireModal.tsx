@@ -18,7 +18,7 @@ import { MODAL_PADDING_PX } from '~/contexts/modal/constants';
 import { AdmireModalFragment$key } from '~/generated/AdmireModalFragment.graphql';
 import { AdmireModalQueryFragment$key } from '~/generated/AdmireModalQueryFragment.graphql';
 
-export const NOTES_PER_PAGE = 10;
+export const ADMIRES_PER_PAGE = 10;
 
 type AdmireModalProps = {
   fullscreen: boolean;
@@ -86,7 +86,7 @@ export function AdmireModal({ eventRef, queryRef, fullscreen }: AdmireModalProps
   const rowCount = hasPrevious ? nonNullInteractions.length + 1 : nonNullInteractions.length;
 
   const handleLoadMore = useCallback(async () => {
-    loadPrevious(NOTES_PER_PAGE);
+    loadPrevious(ADMIRES_PER_PAGE);
   }, [loadPrevious]);
 
   const rowRenderer = useCallback<ListRowRenderer>(
