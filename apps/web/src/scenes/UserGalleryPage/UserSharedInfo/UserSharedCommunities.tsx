@@ -14,12 +14,12 @@ import { getUrlForCommunity } from '~/utils/getCommunityUrlForToken';
 import PaginatedCommunitiesList from './UserSharedInfoList/SharedCommunitiesList';
 
 type Props = {
-  queryRef: UserSharedCommunitiesFragment$key;
+  userRef: UserSharedCommunitiesFragment$key;
 };
 
 export const COMMUNITIES_PER_PAGE = 20;
-export default function UserSharedCommunities({ queryRef }: Props) {
-  const query = useFragment(
+export default function UserSharedCommunities({ userRef }: Props) {
+  const user = useFragment(
     graphql`
       fragment UserSharedCommunitiesFragment on GalleryUser {
         __typename
@@ -45,14 +45,14 @@ export default function UserSharedCommunities({ queryRef }: Props) {
         ...SharedCommunitiesListFragment
       }
     `,
-    queryRef
+    userRef
   );
 
   const sharedCommunities = useMemo(() => {
-    const list = query.sharedCommunities?.edges?.map((edge) => edge?.node) ?? [];
+    const list = user.sharedCommunities?.edges?.map((edge) => edge?.node) ?? [];
     return removeNullValues(list);
-  }, [query.sharedCommunities?.edges]);
-  const totalSharedCommunities = query.sharedCommunities?.pageInfo?.total ?? 0;
+  }, [user.sharedCommunities?.edges]);
+  const totalSharedCommunities = user.sharedCommunities?.pageInfo?.total ?? 0;
 
   // Determine how many users to display by username
   const communitiesToDisplay = useMemo(() => {
@@ -69,12 +69,12 @@ export default function UserSharedCommunities({ queryRef }: Props) {
   const handleShowAllClick = useCallback(() => {
     track('User Gallery - Show All Shared Communities Click');
     showModal({
-      content: <PaginatedCommunitiesList queryRef={query} />,
+      content: <PaginatedCommunitiesList userRef={user} />,
       headerText: 'Pieces you both own',
       isPaddingDisabled: true,
       isFullPage: isMobile,
     });
-  }, [isMobile, query, showModal, track]);
+  }, [isMobile, user, showModal, track]);
 
   const content = useMemo(() => {
     // Display up to 3 communities

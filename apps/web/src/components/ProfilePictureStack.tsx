@@ -104,6 +104,7 @@ const StyledRemainings = styled(VStack)`
 
 const StyledRemainingsText = styled(TitleXS)`
   font-weight: 500;
+  white-space: nowrap;
 `;
 
 const StyledProfilePictureStackContainer = styled(HStack)<{ isClickable: boolean }>`

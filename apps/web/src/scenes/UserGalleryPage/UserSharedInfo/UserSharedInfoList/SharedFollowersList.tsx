@@ -14,12 +14,12 @@ import unescape from '~/shared/utils/unescape';
 import PaginatedListRow from './SharedInfoListRow';
 
 type Props = {
-  queryRef: SharedFollowersListFragment$key;
+  userRef: SharedFollowersListFragment$key;
 };
 
 export const FOLLOWERS_PER_PAGE = 20;
 
-export default function SharedFollowersList({ queryRef }: Props) {
+export default function SharedFollowersList({ userRef }: Props) {
   const { data, loadNext, hasNext } = usePaginationFragment(
     graphql`
       fragment SharedFollowersListFragment on GalleryUser
@@ -37,7 +37,7 @@ export default function SharedFollowersList({ queryRef }: Props) {
         }
       }
     `,
-    queryRef
+    userRef
   );
 
   const sharedFollowers = useMemo(
