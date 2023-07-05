@@ -8,6 +8,7 @@ import { TitleS } from '~/components/core/Text/Text';
 import { TextAreaWithCharCount } from '~/components/core/TextArea/TextArea';
 import { UserInfoFormFragment$key } from '~/generated/UserInfoFormFragment.graphql';
 import { UserInfoFormQueryFragment$key } from '~/generated/UserInfoFormQueryFragment.graphql';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import unescape from '~/shared/utils/unescape';
 import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
@@ -81,6 +82,12 @@ function UserInfoForm({
 
   const tokens = removeNullValues(user.tokens) ?? [];
   const showNftSelector = useNftSelector({ tokensRef: tokens, queryRef: query });
+  const track = useTrack();
+
+  const handleEditPfp = useCallback(() => {
+    track('PFP: Clicked PFP setup in Onboarding');
+    showNftSelector();
+  }, [showNftSelector, track]);
 
   const unescapedBio = useMemo(() => unescape(bio), [bio]);
 
@@ -137,7 +144,7 @@ function UserInfoForm({
         <>
           <TitleS>Let's set up your profile</TitleS>
           {isPfpEnabled && (
-            <div onClick={showNftSelector}>
+            <div onClick={handleEditPfp}>
               {hasProfileImage ? (
                 <ProfilePicture userRef={user} size="xl" isEditable hasInset />
               ) : (

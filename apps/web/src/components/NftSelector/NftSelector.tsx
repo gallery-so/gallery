@@ -7,6 +7,7 @@ import { NftSelectorQueryFragment$key } from '~/generated/NftSelectorQueryFragme
 import useSyncTokens from '~/hooks/api/tokens/useSyncTokens';
 import { ChevronLeftIcon } from '~/icons/ChevronLeftIcon';
 import { RefreshIcon } from '~/icons/RefreshIcon';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import useDebounce from '~/shared/hooks/useDebounce';
 import { doesUserOwnWalletFromChain } from '~/utils/doesUserOwnWalletFromChain';
 
@@ -156,6 +157,7 @@ export function NftSelector({ tokensRef, queryRef }: Props) {
     return filteredTokens;
   }, [debouncedSearchKeyword, selectedNetworkView, selectedSortView, selectedView, tokens]);
 
+  const track = useTrack();
   const isRefreshDisabledAtUserLevel = isRefreshDisabledForUser(query.viewer?.user?.dbid ?? '');
   const refreshDisabled =
     isRefreshDisabledAtUserLevel ||
@@ -166,8 +168,10 @@ export function NftSelector({ tokensRef, queryRef }: Props) {
       return;
     }
 
+    track('NFT Selector: Clicked Refresh');
+
     await syncTokens(selectedNetworkView);
-  }, [selectedNetworkView, refreshDisabled, syncTokens]);
+  }, [refreshDisabled, track, syncTokens, selectedNetworkView]);
 
   const { floating, reference, getFloatingProps, getReferenceProps, floatingStyle } =
     useTooltipHover({

@@ -6,6 +6,7 @@ import { useModalActions } from '~/contexts/modal/ModalContext';
 import { ContentIsLoadedEvent } from '~/contexts/shimmer/ShimmerContext';
 import { NftSelectorTokenFragment$key } from '~/generated/NftSelectorTokenFragment.graphql';
 import { useNftRetry } from '~/hooks/useNftRetry';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 
 import { NftFailureBoundary } from '../NftFailureFallback/NftFailureBoundary';
@@ -41,6 +42,7 @@ export function NftSelectorToken({ tokenRef, isInGroup = false }: Props) {
 
   const { hideModal } = useModalActions();
   const { setProfileImage } = useUpdateProfileImage();
+  const track = useTrack();
 
   const { handleNftLoaded, handleNftError, retryKey, refreshMetadata, refreshingMetadata } =
     useNftRetry({ tokenId: token.dbid });
@@ -63,9 +65,10 @@ export function NftSelectorToken({ tokenRef, isInGroup = false }: Props) {
     if (isInGroup) {
       return;
     }
+    track('NFT Selector: Selected NFT');
     setProfileImage({ tokenId: token.dbid });
     hideModal();
-  }, [hideModal, isInGroup, token.dbid, setProfileImage]);
+  }, [isInGroup, track, setProfileImage, token.dbid, hideModal]);
 
   return (
     <NftFailureBoundary

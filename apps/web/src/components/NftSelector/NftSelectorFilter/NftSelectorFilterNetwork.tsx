@@ -68,7 +68,7 @@ export function NftSelectorFilterNetwork({
 
   const onSelectView = useCallback(
     (selectedView: NftSelectorNetworkView) => {
-      track('Nft Selector Network Dropdown Clicked', { variant: selectedView });
+      track('NFT Selector: Changed Network', { variant: selectedView });
       onSelectedViewChange(selectedView);
       setIsDropdownOpen(false);
     },
