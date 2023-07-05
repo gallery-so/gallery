@@ -308,7 +308,7 @@ const StyledNftPreview = styled.div<{
   align-items: center;
   position: relative;
   overflow: hidden;
-  max-height: 80vh;
+  max-height: 100%;
   width: ${({ fullWidth }) => (fullWidth ? '100%' : 'auto')};
   height: ${({ fullHeight }) => (fullHeight ? '100%' : 'initial')};
 
