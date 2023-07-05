@@ -87,6 +87,10 @@ export function CommentBox({ autoFocus, onClose, isNotesModal = false, feedEvent
     }
 
     try {
+      // We're using `fetchQuery` here instead of a `useFragment` in the render method
+      // since we don't need our data requirements blocking the initial render of the screen.
+      // We also don't have to prop drill a bunch of refs down to get what we need.
+      // If the data you need is only needed in a callback, it's fine to use `fetchQuery`.
       const eventRelayId = `FeedEvent:${feedEventId}`;
       const query = await fetchQuery<CommentBoxQuery>(
         relayEnvironment,
