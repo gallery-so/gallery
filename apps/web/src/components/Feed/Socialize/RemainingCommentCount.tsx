@@ -34,13 +34,13 @@ export function RemainingCommentCount({
     queryRef
   );
 
-  if (totalComments === 0) {
+  if (totalComments <= 1) {
     return null;
   }
 
   return (
     <NoteModalOpenerText eventRef={event} queryRef={query}>
-      {totalComments === 1 ? 'View all comments' : `View all ${totalComments} comments`}
+      View all {totalComments} comments
     </NoteModalOpenerText>
   );
 }
