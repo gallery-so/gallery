@@ -28,7 +28,7 @@ export function NftSelectorViewSelector({
 
   const onSelectView = useCallback(
     (selectedView: SidebarView) => {
-      track('Nft Selector Dropdown Clicked', { variant: selectedView });
+      track('NFT Selector: Changed View Filter', { variant: selectedView });
       if (selectedView === 'Created') {
         return;
       }

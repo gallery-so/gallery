@@ -70,16 +70,19 @@ export function UserNameAndDescriptionHeader({ userRef, queryRef }: Props) {
 
   const loggedInUserId = useLoggedInUserId(query);
   const isAuthenticatedUser = loggedInUserId === user?.id;
+  const track = useTrack();
 
   const { showModal } = useModalActions();
   const handleEditBioAndName = useCallback(() => {
     if (!isAuthenticatedUser) return;
 
+    track('Edit User Info Clicked');
+
     showModal({
       content: <EditUserInfoModal queryRef={query} />,
-      headerText: 'Edit username and bio',
+      headerText: 'Edit user info clicked',
     });
-  }, [isAuthenticatedUser, query, showModal]);
+  }, [isAuthenticatedUser, query, showModal, track]);
 
   const unescapedBio = useMemo(() => (bio ? unescape(bio) : ''), [bio]);
 

@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -6,6 +6,7 @@ import { ProfilePictureDropdownFragment$key } from '~/generated/ProfilePictureDr
 import { ProfilePictureDropdownQueryFragment$key } from '~/generated/ProfilePictureDropdownQueryFragment.graphql';
 import { AllGalleriesIcon } from '~/icons/AllGalleriesIcon';
 import { TrashIconNew } from '~/icons/TrashIconNew';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
 
 import { Dropdown } from '../core/Dropdown/Dropdown';
@@ -68,6 +69,7 @@ export function ProfilePictureDropdown({ open, onClose, tokensRef, queryRef }: P
 
   const showNftSelector = useNftSelector({ tokensRef: tokens, queryRef: query });
   const { setProfileImage, removeProfileImage } = useUpdateProfileImage();
+  const track = useTrack();
 
   const user = query.viewer?.user;
 
@@ -80,6 +82,7 @@ export function ProfilePictureDropdown({ open, onClose, tokensRef, queryRef }: P
   const { chainAddress } = user.primaryWallet || {};
 
   const handleSetEnsProfilePicture = useCallback(() => {
+    track('PFP: Clicked Use ENS Avatar');
     const { address, chain } = chainAddress || {};
 
     if (!address || !chain || chain !== 'Ethereum') return;
@@ -89,7 +92,21 @@ export function ProfilePictureDropdown({ open, onClose, tokensRef, queryRef }: P
         chain,
       },
     });
-  }, [chainAddress, setProfileImage]);
+  }, [chainAddress, setProfileImage, track]);
+
+  const handleShowNftSelector = useCallback(() => {
+    track('PFP: Clicked Choose from collection');
+    showNftSelector();
+  }, [showNftSelector, track]);
+
+  useEffect(() => {
+    open ? track('PFP: Opened Edit PFP Dropdown') : track('PFP: Closed Edit PFP Dropdown');
+  }, [open, track]);
+
+  const handleRemoveProfileImage = useCallback(() => {
+    track('PFP: Clicked Remove current profile picture');
+    removeProfileImage();
+  }, [removeProfileImage, track]);
 
   return (
     <Dropdown position="left" active={open} onClose={onClose}>
@@ -104,13 +121,13 @@ export function ProfilePictureDropdown({ open, onClose, tokensRef, queryRef }: P
             <BaseS>Use ENS Avatar</BaseS>
           </StyledDropdownItemContainer>
         </StyledDropdownItem>
-        <StyledDropdownItem onClick={showNftSelector}>
+        <StyledDropdownItem onClick={handleShowNftSelector}>
           <StyledDropdownItemContainer gap={8}>
             <AllGalleriesIcon />
             <BaseS>Choose from collection</BaseS>
           </StyledDropdownItemContainer>
         </StyledDropdownItem>
-        <StyledDropdownItem onClick={removeProfileImage}>
+        <StyledDropdownItem onClick={handleRemoveProfileImage}>
           <StyledDropdownItemContainer gap={8}>
             <TrashIconNew color="#E12E16" />
             <StyledRemoveText>Remove current profile picture</StyledRemoveText>
