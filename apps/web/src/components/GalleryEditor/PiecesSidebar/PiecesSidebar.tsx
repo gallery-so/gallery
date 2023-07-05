@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -146,6 +146,16 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
     }
   }, []);
 
+  // Auto-sync tokens when the chain changes, and there are 0 tokens to display
+  useEffect(() => {
+    if (tokensToDisplay.length === 0) {
+      syncTokens(selectedChain.name);
+    }
+    // important to use tokensToDisplay.length here instead of tokensToDisplay, because tokensToDisplay changes multiple times without the chain changing
+    // we also only want to consider auto-syncing tokens if tokensToDisplay.length changes, so limit dependencies
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tokensToDisplay.length]);
+
   // [GAL-3406] – enable this once the button is ready to be hooked up end-to-end
   const handleRefresh = useCallback(async () => {
     if (refreshDisabled) {
@@ -220,7 +230,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
           />
         </Header>
         <Header align="center" justify="space-between" gap={4}>
-          <TitleS>Network</TitleS>
+          <TitleS color={isSearching ? colors.metal : colors.black['800']}>Network</TitleS>
           {isSearching ? (
             <StyledNull>---</StyledNull>
           ) : (
@@ -310,6 +320,7 @@ const Header = styled(HStack)`
 
 const StyledNull = styled.div`
   padding-right: 8px;
+  color: ${colors.metal};
 `;
 
 const StyledSearchBarContainer = styled(VStack)`
