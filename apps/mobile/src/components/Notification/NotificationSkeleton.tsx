@@ -74,8 +74,8 @@ export function NotificationSkeleton({
     >
       <View className="flex-1 flex-row space-x-1 items-start">
         <ProfilePictureBubblesWithCount
-          eventElementId={null}
-          eventName={null}
+          eventElementId="Notification Row PFP Bubbles"
+          eventName="Notification Row PFP Bubbles Pressed"
           onPress={handleBubblesPress}
           userRefs={responsibleUsers}
           totalCount={responsibleUserRefs.length}

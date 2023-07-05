@@ -107,8 +107,8 @@ export function Interactions({ eventRef }: Props) {
   return (
     <View className="flex flex-col space-y-1">
       <ProfilePictureBubblesWithCount
-        eventName={null}
-        eventElementId={null}
+        eventName="Feed Event Admire Bubbles Pressed"
+        eventElementId="Feed Event Admire Bubbles"
         onPress={handleOpen}
         userRefs={admireUsers}
         totalCount={totalAdmires}
