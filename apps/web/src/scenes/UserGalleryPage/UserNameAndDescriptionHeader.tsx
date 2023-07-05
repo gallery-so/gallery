@@ -80,7 +80,7 @@ export function UserNameAndDescriptionHeader({ userRef, queryRef }: Props) {
 
     showModal({
       content: <EditUserInfoModal queryRef={query} />,
-      headerText: 'Edit user info clicked',
+      headerText: 'Edit profile',
     });
   }, [isAuthenticatedUser, query, showModal, track]);
 
