@@ -9,14 +9,25 @@ import { NotificationBottomSheetUserList } from '~/components/Notification/Notif
 import { NotificationSkeleton } from '~/components/Notification/NotificationSkeleton';
 import { Typography } from '~/components/Typography';
 import { SomeoneFollowedYouFragment$key } from '~/generated/SomeoneFollowedYouFragment.graphql';
+import { SomeoneFollowedYouQueryFragment$key } from '~/generated/SomeoneFollowedYouQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 type SomeoneFollowedYouProps = {
+  queryRef: SomeoneFollowedYouQueryFragment$key;
   notificationRef: SomeoneFollowedYouFragment$key;
 };
 
-export function SomeoneFollowedYou({ notificationRef }: SomeoneFollowedYouProps) {
+export function SomeoneFollowedYou({ notificationRef, queryRef }: SomeoneFollowedYouProps) {
+  const query = useFragment(
+    graphql`
+      fragment SomeoneFollowedYouQueryFragment on Query {
+        ...NotificationSkeletonQueryFragment
+      }
+    `,
+    queryRef
+  );
+
   const notification = useFragment(
     graphql`
       fragment SomeoneFollowedYouFragment on SomeoneFollowedYouNotification {
@@ -67,8 +78,9 @@ export function SomeoneFollowedYou({ notificationRef }: SomeoneFollowedYouProps)
 
   return (
     <NotificationSkeleton
-      responsibleUserRefs={followers}
+      queryRef={query}
       onPress={handlePress}
+      responsibleUserRefs={followers}
       notificationRef={notification}
     >
       <Text>

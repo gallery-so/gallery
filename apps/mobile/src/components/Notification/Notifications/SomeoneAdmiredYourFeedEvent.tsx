@@ -7,14 +7,28 @@ import { graphql } from 'relay-runtime';
 import { NotificationSkeleton } from '~/components/Notification/NotificationSkeleton';
 import { Typography } from '~/components/Typography';
 import { SomeoneAdmiredYourFeedEventFragment$key } from '~/generated/SomeoneAdmiredYourFeedEventFragment.graphql';
+import { SomeoneAdmiredYourFeedEventQueryFragment$key } from '~/generated/SomeoneAdmiredYourFeedEventQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 type SomeoneAdmiredYourFeedEventProps = {
+  queryRef: SomeoneAdmiredYourFeedEventQueryFragment$key;
   notificationRef: SomeoneAdmiredYourFeedEventFragment$key;
 };
 
-export function SomeoneAdmiredYourFeedEvent({ notificationRef }: SomeoneAdmiredYourFeedEventProps) {
+export function SomeoneAdmiredYourFeedEvent({
+  notificationRef,
+  queryRef,
+}: SomeoneAdmiredYourFeedEventProps) {
+  const query = useFragment(
+    graphql`
+      fragment SomeoneAdmiredYourFeedEventQueryFragment on Query {
+        ...NotificationSkeletonQueryFragment
+      }
+    `,
+    queryRef
+  );
+
   const notification = useFragment(
     graphql`
       fragment SomeoneAdmiredYourFeedEventFragment on SomeoneAdmiredYourFeedEventNotification {
@@ -110,8 +124,9 @@ export function SomeoneAdmiredYourFeedEvent({ notificationRef }: SomeoneAdmiredY
 
   return (
     <NotificationSkeleton
-      responsibleUserRefs={admirers}
+      queryRef={query}
       onPress={handlePress}
+      responsibleUserRefs={admirers}
       notificationRef={notification}
     >
       <Text>

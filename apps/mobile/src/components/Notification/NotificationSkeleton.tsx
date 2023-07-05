@@ -1,6 +1,6 @@
 import { PropsWithChildren, useCallback, useRef } from 'react';
 import { Text, View } from 'react-native';
-import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
+import { graphql, useFragment } from 'react-relay';
 
 import {
   GalleryBottomSheetModal,
@@ -10,37 +10,33 @@ import { ProfilePictureBubblesWithCount } from '~/components/ProfileView/Profile
 import { Typography } from '~/components/Typography';
 import { UserFollowList } from '~/components/UserFollowList/UserFollowList';
 import { NotificationSkeletonFragment$key } from '~/generated/NotificationSkeletonFragment.graphql';
-import { NotificationSkeletonQuery } from '~/generated/NotificationSkeletonQuery.graphql';
+import { NotificationSkeletonQueryFragment$key } from '~/generated/NotificationSkeletonQueryFragment.graphql';
 import { NotificationSkeletonResponsibleUsersFragment$key } from '~/generated/NotificationSkeletonResponsibleUsersFragment.graphql';
 import { getTimeSince } from '~/shared/utils/time';
 
-import isFeatureEnabled, { FeatureFlag } from '../../utils/isFeatureEnabled';
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 
 type Props = PropsWithChildren<{
   onPress: () => void;
+  queryRef: NotificationSkeletonQueryFragment$key;
   notificationRef: NotificationSkeletonFragment$key;
   responsibleUserRefs: NotificationSkeletonResponsibleUsersFragment$key;
 }>;
 
 export function NotificationSkeleton({
+  onPress,
   children,
+  queryRef,
   notificationRef,
   responsibleUserRefs = [],
-  onPress,
 }: Props) {
-  // Leaving this potential waterfall in here since
-  // - It's short term
-  // - It should be a very fast query
-  // - It is likely to already be in the cache
-  const query = useLazyLoadQuery<NotificationSkeletonQuery>(
+  const query = useFragment(
     graphql`
-      query NotificationSkeletonQuery {
-        ...isFeatureEnabledFragment
+      fragment NotificationSkeletonQueryFragment on Query {
         ...UserFollowListQueryFragment
       }
     `,
-    {}
+    queryRef
   );
 
   const responsibleUsers = useFragment(
@@ -64,8 +60,6 @@ export function NotificationSkeleton({
     notificationRef
   );
 
-  const isPfpEnabled = isFeatureEnabled(FeatureFlag.PFP, query);
-
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
   const handleBubblesPress = useCallback(() => {
     bottomSheetRef.current?.present();
@@ -79,21 +73,17 @@ export function NotificationSkeleton({
       eventName="Notification Row Clicked"
     >
       <View className="flex-1 flex-row space-x-1 items-start">
-        {isPfpEnabled && (
-          <>
-            <ProfilePictureBubblesWithCount
-              eventElementId={null}
-              eventName={null}
-              onPress={handleBubblesPress}
-              userRefs={responsibleUsers}
-              totalCount={responsibleUserRefs.length}
-            />
+        <ProfilePictureBubblesWithCount
+          eventElementId={null}
+          eventName={null}
+          onPress={handleBubblesPress}
+          userRefs={responsibleUsers}
+          totalCount={responsibleUserRefs.length}
+        />
 
-            <GalleryBottomSheetModal ref={bottomSheetRef} snapPoints={[350]}>
-              <UserFollowList userRefs={responsibleUsers} queryRef={query} onUserPress={() => {}} />
-            </GalleryBottomSheetModal>
-          </>
-        )}
+        <GalleryBottomSheetModal ref={bottomSheetRef} snapPoints={[350]}>
+          <UserFollowList userRefs={responsibleUsers} queryRef={query} onUserPress={() => {}} />
+        </GalleryBottomSheetModal>
 
         <Text className="dark:text-white mt-[1]">{children}</Text>
       </View>
