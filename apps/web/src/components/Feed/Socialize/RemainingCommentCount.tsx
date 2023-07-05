@@ -40,7 +40,7 @@ export function RemainingCommentCount({
 
   return (
     <NoteModalOpenerText eventRef={event} queryRef={query}>
-      View all {totalComments} comments
+      {totalComments === 1 ? 'View all comments' : `View all ${totalComments} comments`}
     </NoteModalOpenerText>
   );
 }
