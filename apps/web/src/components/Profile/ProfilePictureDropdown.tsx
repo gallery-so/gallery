@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -99,7 +99,13 @@ export function ProfilePictureDropdown({ open, onClose, tokensRef, queryRef }: P
     showNftSelector();
   }, [showNftSelector, track]);
 
+  const isFirstMount = useRef(true);
+
   useEffect(() => {
+    if (isFirstMount.current) {
+      isFirstMount.current = false; // this is so we don't track an event on first mount. otherwise it will track the Closed event since `open` is false
+      return;
+    }
     open ? track('PFP: Opened Edit PFP Dropdown') : track('PFP: Closed Edit PFP Dropdown');
   }, [open, track]);
 
