@@ -103,10 +103,14 @@ export function AdmireLine({ eventRef, queryRef }: CommentLineProps) {
 
   if (isPfpEnabled) {
     return (
-      <Container gap={2} align="center" onClick={openAdmireModal}>
-        <ProfilePictureStack usersRef={nonNullAdmires} total={totalAdmires} />
+      <Container gap={2} align="center">
+        <ProfilePictureStack
+          onClick={openAdmireModal}
+          usersRef={nonNullAdmires}
+          total={totalAdmires}
+        />
 
-        <BaseS>
+        <BaseS onClick={openAdmireModal}>
           {totalAdmires > 1 ? (
             <strong>{totalAdmires} collectors </strong>
           ) : (
