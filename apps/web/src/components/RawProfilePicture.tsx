@@ -170,6 +170,10 @@ const OuterCircle = styled(VStack)<{ inset?: boolean; isEditable?: boolean }>`
               background: linear-gradient(0deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)), #f9f9f9;
             }
 
+            ${EditCircle} {
+              background: linear-gradient(0deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)), #f9f9f9;
+            }
+
             ${OpacityImageOverlay} {
               background: rgba(0, 0, 0, 0.25);
             }
