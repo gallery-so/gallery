@@ -27,6 +27,7 @@ export type RawProfilePictureProps = {
   hasInset?: boolean;
   isEditable?: boolean;
   inline?: boolean;
+  isHover?: boolean;
   onEdit?: () => void;
 } & (
   | {
@@ -46,6 +47,7 @@ export function RawProfilePicture({
   onEdit,
   isEditable,
   inline,
+  isHover,
   ...rest
 }: RawProfilePictureProps) {
   const widthAndHeight = sizeMapping[size];
@@ -64,6 +66,7 @@ export function RawProfilePicture({
       justify="center"
       align="center"
       inline={inline}
+      isHover={isHover}
       style={{
         width: widthAndHeight,
         height: widthAndHeight,
@@ -154,7 +157,7 @@ const InnerCircle = styled(VStack)<{ hasImage?: boolean }>`
   transition: background 100ms ease-in-out;
 `;
 
-const OuterCircle = styled(VStack)<{ inset?: boolean; isEditable?: boolean }>`
+const OuterCircle = styled(VStack)<{ inset?: boolean; isEditable?: boolean; isHover?: boolean }>`
   position: relative;
   box-sizing: border-box;
 
@@ -162,11 +165,30 @@ const OuterCircle = styled(VStack)<{ inset?: boolean; isEditable?: boolean }>`
 
   border-radius: 999999px;
 
+  ${({ isHover }) =>
+    isHover &&
+    css`
+      &:after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.25);
+        border-radius: 999999px;
+      }
+    `}
+
   ${({ isEditable }) =>
     isEditable
       ? css`
           :hover {
             ${InnerCircle} {
+              background: linear-gradient(0deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)), #f9f9f9;
+            }
+
+            ${EditCircle} {
               background: linear-gradient(0deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)), #f9f9f9;
             }
 

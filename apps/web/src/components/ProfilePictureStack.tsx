@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -33,6 +33,8 @@ export function ProfilePictureStack({ usersRef, total, onClick }: Props) {
     `,
     usersRef
   );
+
+  const [isHovered, setIsHovered] = useState(false);
 
   const track = useTrack();
 
@@ -70,15 +72,17 @@ export function ProfilePictureStack({ usersRef, total, onClick }: Props) {
       inline
       onClick={handleClick}
       isClickable={!!onClick}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       {usersToShow.map((user) => (
         <StyledProfilePictureContainer key={user.dbid}>
-          <ProfilePicture userRef={user} size="sm" hasInset />
+          <ProfilePicture userRef={user} size="sm" hasInset isHover={isHovered} />
         </StyledProfilePictureContainer>
       ))}
       {remainingCount > 0 && (
         <StyledRemainings align="center" justify="center" shrink>
-          <StyledRemainingsText color={colors.metal}>+ {remainingCount}</StyledRemainingsText>
+          <StyledRemainingsText color={colors.metal}>+{remainingCount}</StyledRemainingsText>
         </StyledRemainings>
       )}
     </StyledProfilePictureStackContainer>
@@ -108,6 +112,7 @@ const StyledRemainingsText = styled(TitleXS)`
 `;
 
 const StyledProfilePictureStackContainer = styled(HStack)<{ isClickable: boolean }>`
+  position: relative;
   ${StyledProfilePictureContainer}:nth-child(1) {
     margin-left: 0;
   }

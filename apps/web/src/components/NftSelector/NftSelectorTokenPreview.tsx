@@ -128,7 +128,6 @@ const StyledRemainingTokens = styled(VStack)`
   right: 4px;
 
   background-color: ${colors.black[800]};
-  border: 2px solid ${colors.white};
   padding: 4px 8px;
 
   ${BaseM} {
