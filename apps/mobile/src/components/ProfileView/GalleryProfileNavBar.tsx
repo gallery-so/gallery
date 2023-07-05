@@ -15,7 +15,6 @@ import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 
 import { QRCodeIcon } from '../../icons/QRCodeIcon';
 import { ShareIcon } from '../../icons/ShareIcon';
-import { FeedbackButton } from '../FeedbackButton';
 
 type ScreenName = 'Profile' | 'Gallery' | 'Collection';
 type RouteParams = {
@@ -132,7 +131,7 @@ export function GalleryProfileNavbarFallback({
 }: GalleryProfileNavbarFallbackProps) {
   return (
     <View style={style} className="flex flex-row justify-between bg-white dark:bg-black-900">
-      {shouldShowBackButton ? <BackButton /> : <FeedbackButton />}
+      {shouldShowBackButton ? <BackButton /> : <DarkModeToggle />}
 
       <View className="flex flex-row items-center space-x-2"></View>
     </View>

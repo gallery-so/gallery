@@ -6,6 +6,7 @@ import { graphql, usePaginationFragment } from 'react-relay';
 
 import { NotificationFragment$key } from '~/generated/NotificationFragment.graphql';
 import { NotificationListFragment$key } from '~/generated/NotificationListFragment.graphql';
+import { NotificationQueryFragment$key } from '~/generated/NotificationQueryFragment.graphql';
 
 import { useMobileClearNotifications } from '../../hooks/useMobileClearNotifications';
 import { useRefreshHandle } from '../../hooks/useRefreshHandle';
@@ -20,6 +21,7 @@ type Props = {
 type NotificationType = {
   id: string;
   notification: NotificationFragment$key;
+  query: NotificationQueryFragment$key;
 };
 
 export function NotificationList({ queryRef }: Props) {
@@ -48,6 +50,8 @@ export function NotificationList({ queryRef }: Props) {
             }
           }
         }
+
+        ...NotificationQueryFragment
       }
     `,
     queryRef
@@ -61,7 +65,7 @@ export function NotificationList({ queryRef }: Props) {
 
     for (const edge of query.viewer?.notifications?.edges ?? []) {
       if (edge?.node) {
-        notifications.push({ ...edge.node, notification: edge.node });
+        notifications.push({ ...edge.node, notification: edge.node, query });
       }
     }
 
@@ -77,7 +81,7 @@ export function NotificationList({ queryRef }: Props) {
   }, [hasPrevious, loadPrevious]);
 
   const renderItem = useCallback<ListRenderItem<NotificationType>>(({ item }) => {
-    return <Notification key={item.id} notificationRef={item.notification} />;
+    return <Notification key={item.id} queryRef={item.query} notificationRef={item.notification} />;
   }, []);
 
   // if user go outside of notifications screen, clear notifications

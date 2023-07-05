@@ -1,19 +1,54 @@
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, useCallback, useRef } from 'react';
 import { Text, View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
+import {
+  GalleryBottomSheetModal,
+  GalleryBottomSheetModalType,
+} from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
+import { ProfilePictureBubblesWithCount } from '~/components/ProfileView/ProfileViewSharedInfo/ProfileViewSharedFollowers';
 import { Typography } from '~/components/Typography';
+import { UserFollowList } from '~/components/UserFollowList/UserFollowList';
 import { NotificationSkeletonFragment$key } from '~/generated/NotificationSkeletonFragment.graphql';
+import { NotificationSkeletonQueryFragment$key } from '~/generated/NotificationSkeletonQueryFragment.graphql';
+import { NotificationSkeletonResponsibleUsersFragment$key } from '~/generated/NotificationSkeletonResponsibleUsersFragment.graphql';
 import { getTimeSince } from '~/shared/utils/time';
 
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 
 type Props = PropsWithChildren<{
   onPress: () => void;
+  queryRef: NotificationSkeletonQueryFragment$key;
   notificationRef: NotificationSkeletonFragment$key;
+  responsibleUserRefs: NotificationSkeletonResponsibleUsersFragment$key;
 }>;
 
-export function NotificationSkeleton({ children, notificationRef, onPress }: Props) {
+export function NotificationSkeleton({
+  onPress,
+  children,
+  queryRef,
+  notificationRef,
+  responsibleUserRefs = [],
+}: Props) {
+  const query = useFragment(
+    graphql`
+      fragment NotificationSkeletonQueryFragment on Query {
+        ...UserFollowListQueryFragment
+      }
+    `,
+    queryRef
+  );
+
+  const responsibleUsers = useFragment(
+    graphql`
+      fragment NotificationSkeletonResponsibleUsersFragment on GalleryUser @relay(plural: true) {
+        ...UserFollowListFragment
+        ...ProfileViewSharedFollowersBubblesFragment
+      }
+    `,
+    responsibleUserRefs
+  );
+
   const notification = useFragment(
     graphql`
       fragment NotificationSkeletonFragment on Notification {
@@ -25,6 +60,11 @@ export function NotificationSkeleton({ children, notificationRef, onPress }: Pro
     notificationRef
   );
 
+  const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
+  const handleBubblesPress = useCallback(() => {
+    bottomSheetRef.current?.present();
+  }, []);
+
   return (
     <GalleryTouchableOpacity
       onPress={onPress}
@@ -32,8 +72,20 @@ export function NotificationSkeleton({ children, notificationRef, onPress }: Pro
       eventElementId="Notification Row"
       eventName="Notification Row Clicked"
     >
-      <View className="flex-1 ">
-        <Text className="dark:text-white">{children}</Text>
+      <View className="flex-1 flex-row space-x-1 items-start">
+        <ProfilePictureBubblesWithCount
+          eventElementId="Notification Row PFP Bubbles"
+          eventName="Notification Row PFP Bubbles Pressed"
+          onPress={handleBubblesPress}
+          userRefs={responsibleUsers}
+          totalCount={responsibleUserRefs.length}
+        />
+
+        <GalleryBottomSheetModal ref={bottomSheetRef} snapPoints={[350]}>
+          <UserFollowList userRefs={responsibleUsers} queryRef={query} onUserPress={() => {}} />
+        </GalleryBottomSheetModal>
+
+        <Text className="dark:text-white mt-[1]">{children}</Text>
       </View>
       <View className="flex w-20 flex-row items-center justify-end space-x-2">
         <Typography

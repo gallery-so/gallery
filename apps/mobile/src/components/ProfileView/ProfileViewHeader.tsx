@@ -48,7 +48,9 @@ export function ProfileViewHeader({ queryRef, selectedRoute, onRouteChange }: Pr
             ...ProfileViewSharedInfoFragment
           }
         }
+
         ...useLoggedInUserIdFragment
+        ...ProfileViewSharedInfoQueryFragment
       }
     `,
     queryRef
@@ -124,7 +126,7 @@ export function ProfileViewHeader({ queryRef, selectedRoute, onRouteChange }: Pr
           <Markdown>{user.bio}</Markdown>
         </View>
       )}
-      {!isLoggedInUser && <ProfileViewSharedInfo userRef={user} />}
+      {!isLoggedInUser && <ProfileViewSharedInfo queryRef={query} userRef={user} />}
 
       {twitterPill ?? null}
 

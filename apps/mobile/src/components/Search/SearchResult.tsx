@@ -1,5 +1,6 @@
-import { useMemo } from 'react';
+import { ReactNode, useMemo } from 'react';
 import { StyleSheet, TouchableOpacityProps } from 'react-native';
+import { View } from 'react-native';
 import { sanitizeMarkdown } from 'src/utils/sanitizeMarkdown';
 
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
@@ -10,6 +11,7 @@ type Props = {
   title: string;
   description: string;
   variant: 'Gallery' | 'User';
+  profilePicture?: ReactNode;
 } & TouchableOpacityProps;
 
 const MAX_DESCRIPTION_CHARACTER = 150;
@@ -23,7 +25,7 @@ const markdownStyles = StyleSheet.create({
   },
 });
 
-export function SearchResult({ title, description, variant, ...props }: Props) {
+export function SearchResult({ title, description, variant, profilePicture, ...props }: Props) {
   const { keyword } = useSearchContext();
 
   const highlightedName = useMemo(() => {
@@ -61,16 +63,19 @@ export function SearchResult({ title, description, variant, ...props }: Props) {
 
   return (
     <GalleryTouchableOpacity
-      className="py-2 px-4 max-h-16"
+      className="py-2 px-4 max-h-16 flex flex-row items-center space-x-2"
       eventElementId="Search Result Row"
       eventName="Search Result Row Clicked"
       properties={{ variant }}
       {...props}
     >
-      <Markdown style={markdownStyles}>{highlightedName}</Markdown>
-      <Markdown style={markdownStyles} numberOfLines={1}>
-        {highlightedDescription}
-      </Markdown>
+      {profilePicture}
+      <View className="flex flex-grow flex-1 flex-col">
+        <Markdown style={markdownStyles}>{highlightedName}</Markdown>
+        <Markdown style={markdownStyles} numberOfLines={1}>
+          {highlightedDescription}
+        </Markdown>
+      </View>
     </GalleryTouchableOpacity>
   );
 }

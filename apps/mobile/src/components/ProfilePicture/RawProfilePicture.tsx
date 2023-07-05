@@ -1,11 +1,12 @@
+import clsx from 'clsx';
 import { ResizeMode } from 'expo-av';
 import { useState } from 'react';
 import { View, ViewProps } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { EditPencilIcon } from 'src/icons/EditPencilIcon';
 
-import { GalleryTouchableOpacity, GalleryTouchableOpacityProps } from './GalleryTouchableOpacity';
-import { Typography } from './Typography';
+import { GalleryTouchableOpacity, GalleryTouchableOpacityProps } from '../GalleryTouchableOpacity';
+import { Typography } from '../Typography';
 
 const sizeMapping: { [size in Size]: number } = {
   sm: 24,
@@ -23,18 +24,17 @@ const fontSizeMapping: { [size in Size]: number } = {
 
 type Size = 'sm' | 'md' | 'lg' | 'xl';
 
-type Props = {
+export type RawProfilePictureProps = {
   size: Size;
   hasInset?: boolean;
   isEditable?: boolean;
-  onEdit?: () => void;
   style?: ViewProps['style'];
 } & (
   | {
       letter: string;
     }
   | {
-      imageUrl: string;
+      imageUrl: string | undefined;
     }
 ) &
   Pick<GalleryTouchableOpacityProps, 'eventElementId' | 'eventName' | 'onPress'>;
@@ -42,14 +42,13 @@ type Props = {
 export function RawProfilePicture({
   size,
   hasInset,
-  onEdit,
   onPress,
   isEditable,
   style,
   eventElementId,
   eventName,
   ...rest
-}: Props) {
+}: RawProfilePictureProps) {
   const widthAndHeight = sizeMapping[size];
 
   let fontSize: number | null = fontSizeMapping[size];
@@ -62,6 +61,7 @@ export function RawProfilePicture({
   return (
     <GalleryTouchableOpacity
       onPress={onPress}
+      disabled={!onPress}
       onPressIn={() => setIsActive(true)}
       onPressOut={() => setIsActive(false)}
       activeOpacity={1}
@@ -77,7 +77,12 @@ export function RawProfilePicture({
         },
       ]}
     >
-      <View className="flex justify-center items-center w-full h-full rounded-full bg-offWhite border border-black-800">
+      <View
+        className={clsx('flex justify-center items-center w-full h-full rounded-full bg-offWhite', {
+          'border border-black-800': 'letter' in rest,
+          'border border-faint': 'imageUrl' in rest,
+        })}
+      >
         {'letter' in rest && (
           <Typography
             font={{ family: 'GTAlpina', weight: 'Light' }}

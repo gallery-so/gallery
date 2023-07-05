@@ -1,7 +1,6 @@
 import { Suspense, useCallback, useMemo, useState } from 'react';
 import { graphql, useFragment, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 
-import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/NotesModal/NotesList';
 import { RefetchableTrendingScreenGlobalFragmentQuery } from '~/generated/RefetchableTrendingScreenGlobalFragmentQuery.graphql';
 import { RefetchableTrendingScreenTrendingFragmentQuery } from '~/generated/RefetchableTrendingScreenTrendingFragmentQuery.graphql';
 import { TrendingScreenFragment$key } from '~/generated/TrendingScreenFragment.graphql';
@@ -144,18 +143,12 @@ function TrendingScreenInner({ queryRef }: TrendingScreenInnerProps) {
 export function TrendingScreen() {
   const query = useLazyLoadQuery<TrendingScreenQuery>(
     graphql`
-      query TrendingScreenQuery(
-        $trendingFeedBefore: String
-        $trendingFeedCount: Int!
-        $interactionsFirst: Int!
-        $interactionsAfter: String
-      ) {
+      query TrendingScreenQuery($trendingFeedBefore: String, $trendingFeedCount: Int!) {
         ...TrendingScreenFragment
       }
     `,
     {
       trendingFeedCount: PER_PAGE,
-      interactionsFirst: NOTES_PER_PAGE,
     }
   );
 

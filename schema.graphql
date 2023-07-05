@@ -1,11 +1,5 @@
 directive @defer(label: String, if: Boolean! = true) on FRAGMENT_SPREAD | INLINE_FRAGMENT
 
-"""Exposes a URL that specifies the behavior of this scalar."""
-directive @specifiedBy(
-  """The URL that specifies the behavior of this scalar."""
-  url: String!
-) on SCALAR
-
 enum Action {
   UserCreated
   UserFollowedUsers
@@ -726,7 +720,7 @@ input GnosisSafeAuth {
   nonce: String!
 }
 
-interface GroupedNotification {
+interface GroupedNotification implements Notification & Node {
   id: ID!
   seen: Boolean
   creationTime: Time
@@ -953,7 +947,7 @@ interface Node {
   id: ID!
 }
 
-interface Notification {
+interface Notification implements Node {
   id: ID!
   seen: Boolean
   creationTime: Time
@@ -1878,4 +1872,3 @@ enum WalletType {
   EOA
   GnosisSafe
 }
-

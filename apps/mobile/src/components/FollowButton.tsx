@@ -1,18 +1,14 @@
-import clsx from 'clsx';
-import { useColorScheme } from 'nativewind';
-import { PropsWithChildren, useCallback, useMemo, useState } from 'react';
-import { TouchableOpacityProps, View, ViewProps } from 'react-native';
+import { useCallback, useMemo } from 'react';
+import { View, ViewProps } from 'react-native';
 import { trigger } from 'react-native-haptic-feedback';
 import { graphql, useFragment } from 'react-relay';
 
-import { Typography } from '~/components/Typography';
+import { ButtonChip } from '~/components/ButtonChip';
 import { FollowButtonQueryFragment$key } from '~/generated/FollowButtonQueryFragment.graphql';
 import { FollowButtonUserFragment$key } from '~/generated/FollowButtonUserFragment.graphql';
 import useFollowUser from '~/shared/relay/useFollowUser';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import useUnfollowUser from '~/shared/relay/useUnfollowUser';
-
-import { GalleryTouchableOpacity } from './GalleryTouchableOpacity';
 
 type Props = {
   style?: ViewProps['style'];
@@ -105,128 +101,23 @@ export function FollowButton({ queryRef, userRef, style, width = 'fixed' }: Prop
       return null;
     } else if (isFollowing) {
       return (
-        <FollowChip variant="unfollow" onPress={handleUnfollowPress} width={width}>
+        <ButtonChip variant="secondary" onPress={handleUnfollowPress} width={width}>
           Following
-        </FollowChip>
+        </ButtonChip>
       );
     } else {
       return (
-        <FollowChip
-          variant="follow"
-          onPress={handleFollowPress}
+        <ButtonChip
+          variant="primary"
           width={width}
+          onPress={handleFollowPress}
           eventProperties={{ followType: followsYou ? 'Follow back' : 'Single follow' }}
         >
           {followsYou ? 'Follow back' : 'Follow'}
-        </FollowChip>
+        </ButtonChip>
       );
     }
   }, [isSelf, isFollowing, handleUnfollowPress, width, handleFollowPress, followsYou]);
 
   return <View style={style}>{followChip}</View>;
-}
-
-type FollowChipVariant = 'follow' | 'unfollow';
-
-type FollowChipProps = PropsWithChildren<{
-  variant: FollowChipVariant;
-  onPress: TouchableOpacityProps['onPress'];
-  width?: 'fixed' | 'grow';
-  eventProperties?: Record<string, string>;
-}>;
-
-type ChipContainerVariants = {
-  [variant in FollowChipVariant]: {
-    [colorSchem in 'light' | 'dark']: {
-      [activeState in 'active' | 'inactive']: {
-        containerClassName: string;
-        textClassName: string;
-      };
-    };
-  };
-};
-
-// This is a typesafe object to represent the variants of the FollowButton.
-// You can find an up to date source of truth at the following link.
-// https://www.figma.com/file/9SV2MUDU1DVieJclgr3Z43/Dark-Mode-%5BDesktop-%2B-Mobile%5D?type=design&node-id=430-8037&t=ZwDhf5OcEhuhgQKy-0
-const chipContainerVariants: ChipContainerVariants = {
-  follow: {
-    light: {
-      inactive: {
-        containerClassName: 'bg-black-800',
-        textClassName: 'text-white',
-      },
-      active: {
-        containerClassName: 'bg-black-600',
-        textClassName: 'text-white',
-      },
-    },
-    dark: {
-      inactive: {
-        containerClassName: 'bg-white',
-        textClassName: 'text-black-800',
-      },
-      active: {
-        containerClassName: 'bg-metal',
-        textClassName: 'text-black-800',
-      },
-    },
-  },
-  unfollow: {
-    light: {
-      inactive: {
-        containerClassName: 'bg-porcelain',
-        textClassName: 'text-black-800',
-      },
-      active: {
-        containerClassName: 'bg-metal',
-        textClassName: 'text-black-800',
-      },
-    },
-    dark: {
-      inactive: {
-        containerClassName: 'bg-[#303030]',
-        textClassName: 'text-white',
-      },
-      active: {
-        containerClassName: 'bg-black-600',
-        textClassName: 'text-white',
-      },
-    },
-  },
-};
-
-function FollowChip({ children, variant, onPress, width, eventProperties }: FollowChipProps) {
-  const { colorScheme } = useColorScheme();
-  const [active, setActive] = useState(false);
-
-  const chipContainerClassNames =
-    chipContainerVariants[variant][colorScheme][active ? 'active' : 'inactive'];
-
-  return (
-    <GalleryTouchableOpacity
-      onPressIn={() => setActive(true)}
-      onPressOut={() => setActive(false)}
-      eventElementId="Follow Button"
-      eventName="Follow Button Clicked"
-      activeOpacity={1}
-      properties={{ variant, ...eventProperties }}
-      onPress={onPress}
-      className={clsx(
-        'flex h-6 items-center justify-center rounded-sm px-2 bg-black',
-        chipContainerClassNames.containerClassName,
-        {
-          'w-24': width === 'fixed',
-          'w-auto': width === 'grow',
-        }
-      )}
-    >
-      <Typography
-        className={clsx('text-sm', chipContainerClassNames.textClassName)}
-        font={{ family: 'ABCDiatype', weight: 'Bold' }}
-      >
-        {children}
-      </Typography>
-    </GalleryTouchableOpacity>
-  );
 }

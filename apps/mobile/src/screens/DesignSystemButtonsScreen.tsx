@@ -3,7 +3,7 @@ import { ScrollView, View, ViewProps } from 'react-native';
 
 import { Button } from '~/components/Button';
 import { DarkModeToggle } from '~/components/DarkModeToggle';
-import { RawProfilePicture } from '~/components/RawProfilePicture';
+import { RawProfilePicture } from '~/components/ProfilePicture/RawProfilePicture';
 import { SafeAreaViewWithPadding } from '~/components/SafeAreaViewWithPadding';
 import { Typography } from '~/components/Typography';
 

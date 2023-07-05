@@ -4,7 +4,6 @@ import { RefreshControl, ScrollView, View } from 'react-native';
 import { useLazyLoadQuery, useRefetchableFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/NotesModal/NotesList';
 import { ProfileView } from '~/components/ProfileView/ProfileView';
 import { ProfileViewFallback } from '~/components/ProfileView/ProfileViewFallback';
 import { SHARED_COMMUNITIES_PER_PAGE } from '~/components/ProfileView/ProfileViewSharedInfo/ProfileViewSharedCommunities';
@@ -26,8 +25,6 @@ function ProfileScreenInner() {
         $username: String!
         $feedLast: Int!
         $feedBefore: String
-        $interactionsFirst: Int!
-        $interactionsAfter: String
         $sharedCommunitiesFirst: Int
         $sharedCommunitiesAfter: String
         $sharedFollowersFirst: Int
@@ -39,7 +36,6 @@ function ProfileScreenInner() {
     {
       username: route.params.username,
       feedLast: 24,
-      interactionsFirst: NOTES_PER_PAGE,
       sharedCommunitiesFirst: SHARED_COMMUNITIES_PER_PAGE,
       sharedFollowersFirst: SHARED_FOLLOWERS_PER_PAGE,
     },
@@ -76,9 +72,13 @@ function ProfileScreenInner() {
 }
 
 export function ProfileScreen() {
+  const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'Profile'>>();
+
   return (
     <View className="flex-1 bg-white dark:bg-black-900">
-      <Suspense fallback={<ProfileViewFallback shouldShowBackButton />}>
+      <Suspense
+        fallback={<ProfileViewFallback shouldShowBackButton={!route.params.hideBackButton} />}
+      >
         <ProfileScreenInner />
       </Suspense>
     </View>
