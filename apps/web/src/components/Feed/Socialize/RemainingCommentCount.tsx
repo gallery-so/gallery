@@ -34,7 +34,7 @@ export function RemainingCommentCount({
     queryRef
   );
 
-  if (totalComments === 0) {
+  if (totalComments <= 1) {
     return null;
   }
 
