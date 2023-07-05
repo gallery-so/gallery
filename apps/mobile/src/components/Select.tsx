@@ -67,6 +67,7 @@ export function Select<T extends string>({
         bottomSheetRef={bottomSheetRef}
         title={title}
         onChange={onChange}
+        eventElementId={eventElementId}
         selected={selectedId}
         options={options}
       />
@@ -79,6 +80,7 @@ type OptionsProps<ValueType extends string> = {
   onChange: (value: ValueType) => void;
   selected: ValueType | null;
   options: Option<ValueType>[];
+  eventElementId: string;
 };
 
 function Options<ValueType extends string>({
@@ -86,6 +88,7 @@ function Options<ValueType extends string>({
   options,
   style,
   onChange,
+  eventElementId,
 }: OptionsProps<ValueType>) {
   return (
     <View style={style} className="flex flex-col bg-offWhite dark:bg-black-800 px-3">
@@ -93,8 +96,8 @@ function Options<ValueType extends string>({
         return (
           <GalleryTouchableOpacity
             key={option.id}
-            eventElementId="ProfilePictureFilter"
-            eventName="ProfilePictureFilter Pressed"
+            eventElementId={eventElementId}
+            eventName={`${eventElementId} Option Pressed`}
             properties={{ value: option.id }}
             onPress={() => onChange(option.id)}
             className={clsx('h-12 flex flex-row items-center justify-between', {

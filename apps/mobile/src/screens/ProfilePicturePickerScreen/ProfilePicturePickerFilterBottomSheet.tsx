@@ -24,6 +24,7 @@ export function ProfilePicturePickerFilterBottomSheet({
     <SelectBottomSheet
       title="Filters"
       bottomSheetRef={bottomSheetRef}
+      eventElementId="ProfilePicturePickerFilterBottomSheet Network Select"
       onChange={onNetworkChange}
       selected={network}
       options={[
