@@ -78,7 +78,7 @@ export function ProfilePictureStack({ usersRef, total, onClick }: Props) {
       ))}
       {remainingCount > 0 && (
         <StyledRemainings align="center" justify="center" shrink>
-          <StyledRemainingsText color={colors.metal}>+ {remainingCount}</StyledRemainingsText>
+          <StyledRemainingsText color={colors.metal}>+{remainingCount}</StyledRemainingsText>
         </StyledRemainings>
       )}
     </StyledProfilePictureStackContainer>
