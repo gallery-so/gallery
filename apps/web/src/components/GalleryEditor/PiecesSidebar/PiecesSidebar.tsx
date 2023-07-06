@@ -152,16 +152,6 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
     }
   }, []);
 
-  // Auto-sync tokens when the chain changes, and there are 0 tokens to display
-  useEffect(() => {
-    if (tokensToDisplay.length === 0) {
-      syncTokens(selectedChain.name);
-    }
-    // important to use tokensToDisplay.length here instead of tokensToDisplay, because tokensToDisplay changes multiple times without the chain changing
-    // we also only want to consider auto-syncing tokens if tokensToDisplay.length changes, so limit dependencies
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tokensToDisplay.length]);
-
   // [GAL-3406] – enable this once the button is ready to be hooked up end-to-end
   const handleRefresh = useCallback(async () => {
     if (refreshDisabled) {
@@ -170,6 +160,16 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
 
     await syncTokens(selectedChain.name);
   }, [selectedChain, refreshDisabled, syncTokens]);
+
+  // Auto-sync tokens when the chain changes, and there are 0 tokens to display
+  useEffect(() => {
+    if (tokensToDisplay.length === 0 && !isSearching) {
+      handleRefresh();
+    }
+
+    // we only want to consider auto-syncing tokens if selectedChain.name changes, so limit dependencies
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedChain.name]);
 
   const sidebarMainContent = useMemo(() => {
     if (selectedView === 'Created') {
@@ -186,7 +186,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
       return <CreatorEmptyStateSidebar />;
     }
 
-    if (ownsWalletFromSelectedChainFamily) {
+    if ((ownsWalletFromSelectedChainFamily && tokensToDisplay.length) || isSearching) {
       return (
         <SidebarTokens
           isSearching={isSearching}

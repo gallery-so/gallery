@@ -1,12 +1,14 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
+import styled from 'styled-components';
 
+import { VStack } from '~/components/core/Spacer/Stack';
+import { BaseM, TitleDiatypeL } from '~/components/core/Text/Text';
 import { Chain } from '~/components/GalleryEditor/PiecesSidebar/chains';
 import {
   createVirtualizedRowsFromGroups,
   createVirtualizedRowsFromTokens,
 } from '~/components/GalleryEditor/PiecesSidebar/createVirtualizedRowsFromGroups';
-import { EmptySidebar } from '~/components/GalleryEditor/PiecesSidebar/EmptySidebar';
 import { groupCollectionsByAddress } from '~/components/GalleryEditor/PiecesSidebar/groupCollectionsByAddress';
 import { SidebarList } from '~/components/GalleryEditor/PiecesSidebar/SidebarList/SidebarList';
 import { SidebarTokensFragment$key } from '~/generated/SidebarTokensFragment.graphql';
@@ -163,11 +165,10 @@ export const SidebarTokens = ({
 
   if (rows.length === 0) {
     return (
-      <EmptySidebar
-        reason={isSearching ? 'no-search-results' : 'no-nfts'}
-        chain={selectedChain}
-        view={selectedView}
-      />
+      <StyledVStack grow align="center" justify="center">
+        <TitleDiatypeL>It&apos;s looking empty</TitleDiatypeL>
+        <BaseM>No pieces matching your search query</BaseM>
+      </StyledVStack>
     );
   }
 
@@ -183,3 +184,7 @@ export const SidebarTokens = ({
     />
   );
 };
+
+const StyledVStack = styled(VStack)`
+  text-align: center;
+`;
