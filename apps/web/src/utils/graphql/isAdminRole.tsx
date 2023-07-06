@@ -3,8 +3,6 @@ import { graphql, readInlineData } from 'relay-runtime';
 import { isAdminRoleFragment$key } from '~/generated/isAdminRoleFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
-import { ROLE_FLAGS } from './isFeatureEnabled';
-
 export default function isAdminRole(queryRef: isAdminRoleFragment$key) {
   const result = readInlineData(
     graphql`
@@ -23,5 +21,5 @@ export default function isAdminRole(queryRef: isAdminRoleFragment$key) {
 
   const roles = removeNullValues(result.viewer?.user?.roles);
 
-  return roles.some((role) => role in ROLE_FLAGS);
+  return roles.some((role) => role === 'ADMIN');
 }
