@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
+import { chains } from '~/components/GalleryEditor/PiecesSidebar/chains';
 import { WalletSelectorWrapper } from '~/components/WalletSelector/multichain/WalletSelectorWrapper';
 import { useBeaconActions } from '~/contexts/beacon/BeaconContext';
 import { MultichainWalletSelectorFragment$key } from '~/generated/MultichainWalletSelectorFragment.graphql';
@@ -71,6 +72,14 @@ export default function MultichainWalletSelector({
         return '';
     }
   }, [variant]);
+
+  const additionalEthereumChains = useMemo(
+    () =>
+      chains.filter(
+        (chain) => chain.baseChain === 'Ethereum' && chain.name !== 'Ethereum' && chain.isEnabled
+      ),
+    []
+  );
 
   if (selectedAuthMethod === supportedAuthMethods.ethereum) {
     if (connectionMode === ADD_WALLET_TO_USER) {
@@ -144,10 +153,11 @@ export default function MultichainWalletSelector({
     <WalletSelectorWrapper gap={24}>
       <VStack gap={16}>
         <StyledDescription>{subheading}</StyledDescription>
-        <VStack justify="center" gap={8}>
+        <VStack justify="center" gap={12}>
           <WalletButton
             label={supportedAuthMethods.ethereum.name}
             icon="ethereum"
+            additionalChains={additionalEthereumChains}
             onClick={() => {
               console.log('connecting to ethereum');
               connectEthereum().then(

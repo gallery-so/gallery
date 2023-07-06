@@ -56,17 +56,12 @@ export default function SidebarChainDropdown({
 
   const availableChains = useMemo(() => {
     if (selectedView === 'Created') {
-      return chains.filter((chain) => chain.name === 'Ethereum');
+      return chains.filter((chain) => chain.hasCreatorSupport);
     }
     if (isAdmin) {
       return chains;
     }
-    return chains.filter((chain) => {
-      if (chain.name === 'Optimism') return false;
-      if (chain.name === 'Arbitrum') return false;
-      if (chain.name === 'Polygon') return false;
-      return true;
-    });
+    return chains.filter((chain) => chain.isEnabled);
   }, [isAdmin, selectedView]);
 
   return (
