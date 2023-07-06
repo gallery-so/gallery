@@ -61,7 +61,6 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
           }
         }
         ...SidebarChainDropdownFragment
-        ...doesUserOwnWalletFromChainFragment
         ...doesUserOwnWalletFromChainFamilyFragment
         ...AddWalletSidebarQueryFragment
       }
