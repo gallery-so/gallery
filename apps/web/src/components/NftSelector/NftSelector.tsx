@@ -8,7 +8,7 @@ import useSyncTokens from '~/hooks/api/tokens/useSyncTokens';
 import { ChevronLeftIcon } from '~/icons/ChevronLeftIcon';
 import { RefreshIcon } from '~/icons/RefreshIcon';
 import useDebounce from '~/shared/hooks/useDebounce';
-import { doesUserOwnWalletFromChainFamily } from '~/utils/doesUserOwnWalletFromChainFamily';
+import { doesUserOwnWalletFromChain } from '~/utils/doesUserOwnWalletFromChain';
 
 import IconContainer from '../core/IconContainer';
 import { HStack, VStack } from '../core/Spacer/Stack';
@@ -68,7 +68,7 @@ export function NftSelector({ tokensRef, queryRef }: Props) {
             }
           }
         }
-        ...doesUserOwnWalletFromChainFamilyFragment
+        ...doesUserOwnWalletFromChainFragment
       }
     `,
     queryRef
@@ -159,7 +159,7 @@ export function NftSelector({ tokensRef, queryRef }: Props) {
   const isRefreshDisabledAtUserLevel = isRefreshDisabledForUser(query.viewer?.user?.dbid ?? '');
   const refreshDisabled =
     isRefreshDisabledAtUserLevel ||
-    !doesUserOwnWalletFromChainFamily(selectedNetworkView, query) ||
+    !doesUserOwnWalletFromChain(selectedNetworkView, query) ||
     isLocked;
   const handleRefresh = useCallback(async () => {
     if (refreshDisabled) {

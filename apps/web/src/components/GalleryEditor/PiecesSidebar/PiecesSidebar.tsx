@@ -16,6 +16,7 @@ import useSyncTokens from '~/hooks/api/tokens/useSyncTokens';
 import { RefreshIcon } from '~/icons/RefreshIcon';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
+import { doesUserOwnWalletFromChain } from '~/utils/doesUserOwnWalletFromChain';
 import { doesUserOwnWalletFromChainFamily } from '~/utils/doesUserOwnWalletFromChainFamily';
 
 import OnboardingDialog from '../GalleryOnboardingGuide/OnboardingDialog';
@@ -61,6 +62,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
           }
         }
         ...SidebarChainDropdownFragment
+        ...doesUserOwnWalletFromChainFragment
         ...doesUserOwnWalletFromChainFamilyFragment
         ...AddWalletSidebarQueryFragment
       }
@@ -83,7 +85,11 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
 
   const nonNullTokens = removeNullValues(allTokens);
 
-  const ownsWalletFromSelectedChain = doesUserOwnWalletFromChainFamily(selectedChain.name, query);
+  const ownsWalletFromSelectedChainFamily = doesUserOwnWalletFromChainFamily(
+    selectedChain.name,
+    query
+  );
+  const ownsWalletFromSelectedChain = doesUserOwnWalletFromChain(selectedChain.name, query);
 
   const tokenSearchResults = useMemo(() => {
     if (!debouncedSearchQuery) {
@@ -180,7 +186,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
       return <CreatorEmptyStateSidebar />;
     }
 
-    if (ownsWalletFromSelectedChain) {
+    if (ownsWalletFromSelectedChainFamily) {
       return (
         <SidebarTokens
           isSearching={isSearching}
@@ -200,9 +206,9 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
   }, [
     handleRefresh,
     isSearching,
-    ownsWalletFromSelectedChain,
+    ownsWalletFromSelectedChainFamily,
     query,
-    selectedChain,
+    selectedChain.name,
     selectedView,
     tokensToDisplay,
   ]);
@@ -213,11 +219,11 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
     if (selectedView === 'Created') {
       return false;
     }
-    if (!ownsWalletFromSelectedChain) {
+    if (!ownsWalletFromSelectedChainFamily) {
       return false;
     }
     return true;
-  }, [ownsWalletFromSelectedChain, selectedView]);
+  }, [ownsWalletFromSelectedChainFamily, selectedView]);
 
   return (
     <StyledSidebar navbarHeight={navbarHeight}>
