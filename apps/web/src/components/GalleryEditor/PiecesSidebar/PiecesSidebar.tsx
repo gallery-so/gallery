@@ -16,7 +16,7 @@ import useSyncTokens from '~/hooks/api/tokens/useSyncTokens';
 import { RefreshIcon } from '~/icons/RefreshIcon';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
-import { doesUserOwnWalletFromChain } from '~/utils/doesUserOwnWalletFromChain';
+import { doesUserOwnWalletFromChainFamily } from '~/utils/doesUserOwnWalletFromChainFamily';
 
 import OnboardingDialog from '../GalleryOnboardingGuide/OnboardingDialog';
 import { useOnboardingDialogContext } from '../GalleryOnboardingGuide/OnboardingDialogContext';
@@ -61,7 +61,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
           }
         }
         ...SidebarChainDropdownFragment
-        ...doesUserOwnWalletFromChainFragment
+        ...doesUserOwnWalletFromChainFamilyFragment
         ...AddWalletSidebarQueryFragment
       }
     `,
@@ -83,7 +83,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
 
   const nonNullTokens = removeNullValues(allTokens);
 
-  const ownsWalletFromSelectedChain = doesUserOwnWalletFromChain(selectedChain.name, query);
+  const ownsWalletFromSelectedChain = doesUserOwnWalletFromChainFamily(selectedChain.name, query);
 
   const tokenSearchResults = useMemo(() => {
     if (!debouncedSearchQuery) {
@@ -135,7 +135,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
   const isRefreshDisabledAtUserLevel = isRefreshDisabledForUser(query.viewer?.user?.dbid ?? '');
   const refreshDisabled =
     isRefreshDisabledAtUserLevel ||
-    !doesUserOwnWalletFromChain(selectedChain.name, query) ||
+    !doesUserOwnWalletFromChainFamily(selectedChain.name, query) ||
     isLocked;
 
   const handleSelectedViewChange = useCallback((view: SidebarView) => {
