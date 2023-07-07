@@ -18,6 +18,7 @@ export function ProfilePicture({ userRef, ...rest }: Props) {
         profileImage {
           ... on TokenProfileImage {
             token {
+              dbid
               ...getVideoOrImageUrlForNftPreviewFragment
             }
           }
@@ -45,7 +46,8 @@ export function ProfilePicture({ userRef, ...rest }: Props) {
   if (profileImage && profileImage.previewURLs?.medium)
     return <RawProfilePicture imageUrl={profileImage.previewURLs.medium} {...rest} />;
 
-  if (!token) return <RawProfilePicture letter={firstLetter} {...rest} />;
+  if (!token || token.dbid === 'unknown')
+    return <RawProfilePicture letter={firstLetter} {...rest} />;
 
   const result = getVideoOrImageUrlForNftPreview({
     tokenRef: token,
@@ -53,10 +55,7 @@ export function ProfilePicture({ userRef, ...rest }: Props) {
   });
 
   if (!result) {
-    throw new CouldNotRenderNftError(
-      'StatedNftImage',
-      'could not compute getVideoOrImageUrlForNftPreview'
-    );
+    return <RawProfilePicture letter={firstLetter} {...rest} />;
   }
 
   if (!result.urls.small) {
