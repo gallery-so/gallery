@@ -59,6 +59,8 @@ export function ProfilePicturePickerGrid({
     graphql`
       fragment ProfilePicturePickerGridTokensFragment on Token @relay(plural: true) {
         chain
+        isSpamByUser
+        isSpamByProvider
 
         contract {
           # Keeping name in the cache so the contract picker screen
@@ -83,6 +85,11 @@ export function ProfilePicturePickerGrid({
 
   const filteredTokens = useMemo(() => {
     return tokens
+      .filter((token) => {
+        const isSpam = token.isSpamByProvider || token.isSpamByUser;
+
+        return !isSpam;
+      })
       .filter((token) => {
         if (!searchCriteria.searchQuery) {
           return true;
