@@ -4,6 +4,7 @@ import { graphql, useFragment } from 'react-relay';
 
 import { AdmireBottomSheet } from '~/components/Feed/AdmireBottomSheet/AdmireBottomSheet';
 import { CommentsBottomSheet } from '~/components/Feed/CommentsBottomSheet/CommentsBottomSheet';
+import { AdmireLine } from '~/components/Feed/Socialize/AdmireLine';
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { ProfilePictureBubblesWithCount } from '~/components/ProfileView/ProfileViewSharedInfo/ProfileViewSharedFollowers';
 import { InteractionsFragment$key } from '~/generated/InteractionsFragment.graphql';
@@ -32,6 +33,7 @@ export function Interactions({ eventRef }: Props) {
             node {
               dbid
               admirer {
+                ...AdmireLineFragment
                 ...ProfileViewSharedFollowersBubblesFragment
               }
             }
@@ -56,8 +58,12 @@ export function Interactions({ eventRef }: Props) {
     eventRef
   );
 
-  const handleOpen = useCallback(() => {
+  const handleSeeAllAdmires = useCallback(() => {
     admiresBottomSheetRef.current?.present();
+  }, []);
+
+  const handleSeeAllComments = useCallback(() => {
+    commentsBottomSheetRef.current?.present();
   }, []);
 
   const nonNullComments = useMemo(() => {
@@ -106,24 +112,23 @@ export function Interactions({ eventRef }: Props) {
 
   return (
     <View className="flex flex-col space-y-1">
-      <ProfilePictureBubblesWithCount
-        eventName="Feed Event Admire Bubbles Pressed"
-        eventElementId="Feed Event Admire Bubbles"
-        onPress={handleOpen}
-        userRefs={admireUsers}
-        totalCount={totalAdmires}
-      />
+      <View className="flex flex-row space-x-1 items-center">
+        <ProfilePictureBubblesWithCount
+          eventName="Feed Event Admire Bubbles Pressed"
+          eventElementId="Feed Event Admire Bubbles"
+          onPress={handleSeeAllAdmires}
+          userRefs={admireUsers}
+          totalCount={totalAdmires}
+        />
+
+        <AdmireLine onMultiUserPress={handleSeeAllAdmires} userRefs={admireUsers} />
+      </View>
 
       {previewComments.map((comment) => {
         return <CommentLine key={comment.dbid} commentRef={comment} />;
       })}
 
-      <RemainingCommentCount
-        totalCount={totalComments}
-        onPress={() => {
-          commentsBottomSheetRef.current?.present();
-        }}
-      />
+      <RemainingCommentCount totalCount={totalComments} onPress={handleSeeAllComments} />
 
       <CommentsBottomSheet feedEventId={event.dbid} bottomSheetRef={commentsBottomSheetRef} />
 

@@ -1,9 +1,10 @@
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { Suspense } from 'react';
-import { RefreshControl, ScrollView, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { useLazyLoadQuery, useRefetchableFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
+import { GalleryRefreshControl } from '~/components/GalleryRefreshControl';
 import { ProfileView } from '~/components/ProfileView/ProfileView';
 import { ProfileViewFallback } from '~/components/ProfileView/ProfileViewFallback';
 import { SHARED_COMMUNITIES_PER_PAGE } from '~/components/ProfileView/ProfileViewSharedInfo/ProfileViewSharedCommunities';
@@ -63,7 +64,9 @@ function ProfileScreenInner() {
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ flex: 1 }}
-        refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />}
+        refreshControl={
+          <GalleryRefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />
+        }
       >
         <ProfileView queryRef={query} shouldShowBackButton={!route.params.hideBackButton} />
       </ScrollView>

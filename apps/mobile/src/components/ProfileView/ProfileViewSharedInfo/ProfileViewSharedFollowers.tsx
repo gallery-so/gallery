@@ -221,7 +221,7 @@ export function ProfilePictureBubblesWithCount({
               '-ml-2': index !== 0,
             })}
           >
-            <ProfilePicture userRef={user} size="sm" hasInset />
+            <ProfilePicture userRef={user} size="sm" hasInset={users.length > 1} />
           </View>
         );
       })}
