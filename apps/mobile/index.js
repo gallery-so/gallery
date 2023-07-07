@@ -19,7 +19,7 @@ function filterOutAnnoyingWarnings() {
 
     if (
       joined.includes('The provided value') ||
-      joined.includes('Constants.manifest has been deprecated in favor of Constants.expoConfig.') ||
+      joined.includes('Constants.manifest') ||
       joined.includes(
         'There was a problem sending log messages to your development environment [RangeError: Maximum call stack size exceeded (native stack depth)]'
       )
@@ -45,6 +45,7 @@ LogBox.ignoreLogs([
   'Non-serializable values were found',
   'Overriding previous layout animation',
   'There was a problem sending log message',
+  'Constants.manifest has been deprecated in favor of Constants.expoConfig',
 ]);
 
 polyfillEncoding();
