@@ -91,6 +91,18 @@ const StyledContent = styled(HStack)`
   width: 100%;
 `;
 
+const StyledAdditionalIconContainer = styled.div`
+  margin-left: -12px;
+  position: relative;
+  z-index: 1;
+  padding: 2px;
+  background: ${colors.white};
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
 const StyledButton = styled.button<{
   disabled: boolean;
 }>`
@@ -110,8 +122,9 @@ const StyledButton = styled.button<{
     &:hover {
       border-color: ${colors.black['800']};
       background: ${colors.faint};
-      ${Icon} {
-        transform: scale(1.15);
+
+      ${StyledAdditionalIconContainer} {
+        background: ${colors.faint};
       }
     }
   }
@@ -134,18 +147,6 @@ const StyledButtonIcon = styled.span`
 const StyledComingSoonText = styled(BaseM)`
   color: ${colors.metal};
   margin-right: 24px;
-`;
-
-const StyledAdditionalIconContainer = styled.div`
-  margin-left: -8px;
-  position: relative;
-  z-index: 1;
-  padding: 2px;
-  background: ${colors.white};
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 `;
 
 const StyledAdditionIcon = styled.img`

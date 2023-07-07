@@ -31,7 +31,7 @@ export const chains = [
     icon: '/icons/zora_logo.svg',
     baseChain: 'Ethereum',
     hasCreatorSupport: false,
-    isEnabled: false,
+    isEnabled: true,
   },
   {
     name: 'POAP',
@@ -47,7 +47,7 @@ export const chains = [
     icon: '/icons/arbitrum_logo.svg',
     baseChain: 'Ethereum',
     hasCreatorSupport: false,
-    isEnabled: false,
+    isEnabled: true,
   },
   {
     name: 'Polygon',

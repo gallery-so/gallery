@@ -104,9 +104,3 @@ const Container = styled.div`
 const StyledDropdown = styled(Dropdown)`
   width: 120px;
 `;
-
-// const StyledBlinkingContainer = styled.div`
-//   position: absolute;
-//   right: 0;
-//   top: 10px;
-// `;
