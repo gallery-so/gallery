@@ -3,7 +3,7 @@ import { useNavigation } from '@react-navigation/native';
 import clsx from 'clsx';
 import { useAssets } from 'expo-asset';
 import { ForwardedRef, forwardRef, ReactNode, useCallback, useRef } from 'react';
-import { View, ViewProps } from 'react-native';
+import { ActivityIndicator, View, ViewProps } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { CollectionGridIcon } from 'src/icons/CollectionGridIcon';
@@ -11,12 +11,14 @@ import { TrashIcon } from 'src/icons/TrashIcon';
 
 import { PfpBottomSheetFragment$key } from '~/generated/PfpBottomSheetFragment.graphql';
 import {
-  PfpBottomSheetMutation,
-  PfpBottomSheetMutation$rawResponse,
-} from '~/generated/PfpBottomSheetMutation.graphql';
+  PfpBottomSheetRemoveProfileImageMutation,
+  PfpBottomSheetRemoveProfileImageMutation$rawResponse,
+} from '~/generated/PfpBottomSheetRemoveProfileImageMutation.graphql';
+import { PfpBottomSheetSetEnsProfileImageMutation } from '~/generated/PfpBottomSheetSetEnsProfileImageMutation.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
+import colors from '~/shared/theme/colors';
 
 import {
   GalleryBottomSheetModal,
@@ -50,6 +52,12 @@ function PfpBottomSheet(
               }
 
               potentialEnsProfileImage {
+                wallet {
+                  chainAddress {
+                    chain @required(action: NONE)
+                    address @required(action: NONE)
+                  }
+                }
                 profileImage {
                   previewURLs {
                     medium
@@ -64,21 +72,38 @@ function PfpBottomSheet(
     queryRef
   );
 
-  const [removeProfileImage] = usePromisifiedMutation<PfpBottomSheetMutation>(graphql`
-    mutation PfpBottomSheetMutation @raw_response_type {
-      removeProfileImage {
-        ... on RemoveProfileImagePayload {
-          viewer {
-            user {
-              profileImage {
-                __typename
+  const [removeProfileImage] =
+    usePromisifiedMutation<PfpBottomSheetRemoveProfileImageMutation>(graphql`
+      mutation PfpBottomSheetRemoveProfileImageMutation @raw_response_type {
+        removeProfileImage {
+          ... on RemoveProfileImagePayload {
+            viewer {
+              user {
+                profileImage {
+                  __typename
+                }
               }
             }
           }
         }
       }
-    }
-  `);
+    `);
+
+  const [setEnsProfileImage, isSettingsEnsProfilePicture] =
+    usePromisifiedMutation<PfpBottomSheetSetEnsProfileImageMutation>(graphql`
+      mutation PfpBottomSheetSetEnsProfileImageMutation($input: SetProfileImageInput!)
+      @raw_response_type {
+        setProfileImage(input: $input) {
+          ... on SetProfileImagePayload {
+            viewer {
+              user {
+                ...ProfilePictureFragment
+              }
+            }
+          }
+        }
+      }
+    `);
 
   const reportError = useReportError();
   const { bottom } = useSafeAreaPadding();
@@ -89,14 +114,37 @@ function PfpBottomSheet(
   const { animatedHandleHeight, animatedSnapPoints, animatedContentHeight, handleContentLayout } =
     useBottomSheetDynamicSnapPoints(SNAP_POINTS);
 
-  const handleEnsPress = useCallback(() => {}, []);
+  const handleEnsPress = useCallback(() => {
+    const ensAddress = query.viewer?.user?.potentialEnsProfileImage?.wallet?.chainAddress;
+
+    if (!ensAddress) {
+      return;
+    }
+
+    setEnsProfileImage({
+      variables: {
+        input: {
+          walletAddress: { address: ensAddress.address, chain: ensAddress.chain },
+        },
+      },
+    })
+      .catch(reportError)
+      .then(() => {
+        bottomSheetRef.current?.close();
+      });
+  }, [
+    query.viewer?.user?.potentialEnsProfileImage?.wallet?.chainAddress,
+    reportError,
+    setEnsProfileImage,
+  ]);
 
   const handleChooseFromCollectionPress = useCallback(() => {
     navigation.navigate('ProfilePicturePicker');
   }, [navigation]);
 
   const handleRemovePress = useCallback(() => {
-    let optimisticResponse: PfpBottomSheetMutation$rawResponse | undefined = undefined;
+    let optimisticResponse: PfpBottomSheetRemoveProfileImageMutation$rawResponse | undefined =
+      undefined;
     if (query.viewer?.id && query.viewer?.user?.id) {
       optimisticResponse = {
         removeProfileImage: {
@@ -132,8 +180,9 @@ function PfpBottomSheet(
 
   const ensSettingsRow = (
     <SettingsRow
-      disabled
+      loading={isSettingsEnsProfilePicture}
       onPress={handleEnsPress}
+      disabled={!potentialEnsProfileImageUrl}
       icon={
         <RawProfilePicture
           size="md"
@@ -199,9 +248,18 @@ type SettingsRowProps = {
   style?: ViewProps['style'];
   textClassName?: string;
   disabled?: boolean;
+  loading?: boolean;
 };
 
-function SettingsRow({ style, disabled, icon, text, onPress, textClassName }: SettingsRowProps) {
+function SettingsRow({
+  style,
+  loading,
+  disabled,
+  icon,
+  text,
+  onPress,
+  textClassName,
+}: SettingsRowProps) {
   return (
     <GalleryTouchableOpacity
       disabled={disabled}
@@ -211,7 +269,7 @@ function SettingsRow({ style, disabled, icon, text, onPress, textClassName }: Se
       properties={{ text }}
       style={style}
       className={clsx(
-        'flex flex-row justify-between items-center bg-offWhite dark:bg-black-800 px-3 h-12',
+        'relative flex flex-row justify-between items-center bg-offWhite dark:bg-black-800 px-3 h-12',
         {
           'opacity-50': disabled,
         }
@@ -224,6 +282,12 @@ function SettingsRow({ style, disabled, icon, text, onPress, textClassName }: Se
           {text}
         </Typography>
       </View>
+
+      {loading && (
+        <View className="absolute inset-0 bg-black opacity-50 flex justify-center">
+          <ActivityIndicator color={colors.white} />
+        </View>
+      )}
     </GalleryTouchableOpacity>
   );
 }
