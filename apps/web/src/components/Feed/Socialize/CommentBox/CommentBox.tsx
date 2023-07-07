@@ -3,6 +3,7 @@ import {
   KeyboardEventHandler,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -112,6 +113,13 @@ export function CommentBox({ eventRef, queryRef }: Props) {
     }
   }, []);
 
+  const hasProfileImage = useMemo(() => {
+    if (query?.viewer?.__typename !== 'Viewer') {
+      return false;
+    }
+    return query.viewer?.user?.profileImage?.token != null;
+  }, [query.viewer]);
+
   const handleSubmit = useCallback(async () => {
     if (query.viewer?.__typename !== 'Viewer') {
       showModal({
@@ -163,6 +171,26 @@ export function CommentBox({ eventRef, queryRef }: Props) {
           })
         : null;
 
+      const tokenProfileImagePayload = hasProfileImage
+        ? {
+            token: {
+              dbid: token?.dbid ?? 'unknown',
+              id: token?.id ?? 'unknown',
+              media: {
+                __typename: 'ImageMedia',
+                fallbackMedia: {
+                  mediaURL: result?.urls?.small ?? null,
+                },
+                previewURLs: {
+                  large: result?.urls?.large ?? null,
+                  medium: result?.urls?.medium ?? null,
+                  small: result?.urls?.small ?? null,
+                },
+              },
+            },
+          }
+        : { token: null };
+
       const response = await submitComment({
         updater,
         optimisticUpdater: updater,
@@ -178,21 +206,7 @@ export function CommentBox({ eventRef, queryRef }: Props) {
                 username: query.viewer?.user?.username ?? null,
                 profileImage: {
                   __typename: 'TokenProfileImage',
-                  token: {
-                    dbid: token?.dbid ?? 'unknown',
-                    id: token?.id ?? 'unknown',
-                    media: {
-                      __typename: 'ImageMedia',
-                      fallbackMedia: {
-                        mediaURL: result?.urls?.small ?? null,
-                      },
-                      previewURLs: {
-                        large: result?.urls?.large ?? null,
-                        medium: result?.urls?.medium ?? null,
-                        small: result?.urls?.small ?? null,
-                      },
-                    },
-                  },
+                  ...tokenProfileImagePayload,
                 },
               },
               creationTime: new Date().toISOString(),
@@ -229,6 +243,7 @@ export function CommentBox({ eventRef, queryRef }: Props) {
   }, [
     event.dbid,
     event.id,
+    hasProfileImage,
     isSubmittingComment,
     pushToast,
     query,
