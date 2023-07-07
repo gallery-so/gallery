@@ -182,15 +182,15 @@ function NftDetailText({ tokenRef, queryRef }: Props) {
           {token.owner?.username && (
             <VStack gap={2}>
               <TitleXS>OWNER</TitleXS>
-              <InteractiveLink
+              <StyledInteractiveLink
                 to={{ pathname: '/[username]', query: { username: token.owner.username } }}
                 onClick={handleCollectorNameClick}
               >
                 <HStack align="center" gap={4}>
                   {isPfpEnabled && <ProfilePicture size="sm" userRef={token.owner} />}
-                  <BaseM color={colors.shadow}>{token.owner.username}</BaseM>
+                  <TitleDiatypeM>{token.owner.username}</TitleDiatypeM>
                 </HStack>
-              </InteractiveLink>
+              </StyledInteractiveLink>
             </VStack>
           )}
           {ENABLED_CREATOR && (
