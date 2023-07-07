@@ -1,7 +1,6 @@
 import { useScrollToTop } from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import { useCallback, useMemo, useRef } from 'react';
-import { RefreshControl } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import {

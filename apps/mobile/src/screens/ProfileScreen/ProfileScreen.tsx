@@ -1,6 +1,6 @@
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { Suspense } from 'react';
-import { RefreshControl, ScrollView, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { useLazyLoadQuery, useRefetchableFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
