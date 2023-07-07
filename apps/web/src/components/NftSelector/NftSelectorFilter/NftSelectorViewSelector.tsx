@@ -49,9 +49,6 @@ export function NftSelectorViewSelector({
           <DropdownItem onClick={() => onSelectView('Collected')}>
             <BaseM>Collected</BaseM>
           </DropdownItem>
-          <DropdownItem onClick={() => onSelectView('Hidden')}>
-            <BaseM>Hidden</BaseM>
-          </DropdownItem>
           <DropdownItem onClick={() => onSelectView('Created')}>
             <BaseM color={colors.metal}>Created (Soon)</BaseM>
           </DropdownItem>
