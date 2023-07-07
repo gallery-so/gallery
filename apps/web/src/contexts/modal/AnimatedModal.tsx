@@ -207,6 +207,9 @@ const StyledContainer = styled.div<{
   max-width: ${({ maxWidth }) => maxWidth};
   width: ${({ width }) => width};
   height: 100%;
+
+  display: flex;
+  flex-direction: column;
 `;
 
 const StyledContent = styled.div<{ padding: string }>`
