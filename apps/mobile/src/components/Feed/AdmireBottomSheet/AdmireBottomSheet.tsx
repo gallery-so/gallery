@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native';
 import { ForwardedRef, Suspense, useCallback, useMemo, useRef, useState } from 'react';
 import { View } from 'react-native';
 import { useLazyLoadQuery, usePaginationFragment } from 'react-relay';
@@ -14,6 +15,7 @@ import { UserFollowListFallback } from '~/components/UserFollowList/UserFollowLi
 import { AdmireBottomSheetConnectedAdmireListFragment$key } from '~/generated/AdmireBottomSheetConnectedAdmireListFragment.graphql';
 import { AdmireBottomSheetConnectedAdmireListFragmentQuery } from '~/generated/AdmireBottomSheetConnectedAdmireListFragmentQuery.graphql';
 import { AdmireBottomSheetConnectedAdmireListQuery } from '~/generated/AdmireBottomSheetConnectedAdmireListQuery.graphql';
+import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 const SNAP_POINTS = [350];
@@ -120,12 +122,21 @@ export function ConnectedAdmireList({ feedEventId }: ConnectedAdmireListProps) {
     }
   }, [hasPrevious, loadPrevious]);
 
+  const navigation = useNavigation<MainTabStackNavigatorProp>();
+
+  const handleUserPress = useCallback(
+    (username: string) => {
+      navigation.push('Profile', { username: username });
+    },
+    [navigation]
+  );
+
   return (
     <UserFollowList
       onLoadMore={handleLoadMore}
       userRefs={admirers}
       queryRef={query}
-      onUserPress={() => {}}
+      onUserPress={handleUserPress}
     />
   );
 }
