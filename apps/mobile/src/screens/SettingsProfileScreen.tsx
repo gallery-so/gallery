@@ -3,7 +3,6 @@ import { StyleSheet, View } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 
 import { BackButton } from '~/components/BackButton';
-import { Button } from '~/components/Button';
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { Markdown } from '~/components/Markdown';
 import { PfpBottomSheet } from '~/components/PfpPicker/PfpBottomSheet';
