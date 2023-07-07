@@ -93,14 +93,14 @@ export function SettingsProfileScreen() {
             </View>
           </View>
 
-          <Button
+          {/* <Button
             disabled
             size="sm"
             variant="secondary"
             text="EDIT"
             eventElementId={null}
             eventName={null}
-          />
+          /> */}
         </View>
       </View>
     </View>
