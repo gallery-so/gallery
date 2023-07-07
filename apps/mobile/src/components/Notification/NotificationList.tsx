@@ -1,9 +1,10 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import { useCallback, useMemo } from 'react';
-import { RefreshControl, View } from 'react-native';
+import { View } from 'react-native';
 import { graphql, usePaginationFragment } from 'react-relay';
 
+import { GalleryRefreshControl } from '~/components/GalleryRefreshControl';
 import { NotificationFragment$key } from '~/generated/NotificationFragment.graphql';
 import { NotificationListFragment$key } from '~/generated/NotificationListFragment.graphql';
 import { NotificationQueryFragment$key } from '~/generated/NotificationQueryFragment.graphql';
@@ -87,8 +88,10 @@ export function NotificationList({ queryRef }: Props) {
   // if user go outside of notifications screen, clear notifications
   useFocusEffect(
     useCallback(() => {
+      refetch({});
+
       clearNotifications();
-    }, [clearNotifications])
+    }, [clearNotifications, refetch])
   );
 
   if (nonNullNotifications.length === 0) {
@@ -116,7 +119,7 @@ export function NotificationList({ queryRef }: Props) {
       refreshing={isLoadingPrevious}
       onEndReachedThreshold={0.8}
       ItemSeparatorComponent={() => <View className="h-2" />}
-      refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />}
+      refreshControl={<GalleryRefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />}
     />
   );
 }

@@ -1,8 +1,9 @@
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import { Suspense, useCallback, useMemo } from 'react';
-import { RefreshControl, View } from 'react-native';
+import { View } from 'react-native';
 import { graphql, useLazyLoadQuery, useRefetchableFragment } from 'react-relay';
 
+import { GalleryRefreshControl } from '~/components/GalleryRefreshControl';
 import { USERS_PER_PAGE } from '~/components/Trending/constants';
 import { LoadingTrendingPage } from '~/components/Trending/LoadingTrendingPage';
 import { SuggestedSection } from '~/components/Trending/SuggestedSection';
@@ -146,7 +147,9 @@ function ExploreScreenInner({ queryRef }: ExploreScreenInnerProps) {
         renderItem={renderItem}
         estimatedItemSize={300}
         contentContainerStyle={{ paddingBottom: 24 }}
-        refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />}
+        refreshControl={
+          <GalleryRefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />
+        }
       />
     </View>
   );
