@@ -223,6 +223,7 @@ function TokenGrid({ tokenRefs, contractAddress, style }: TokenGridProps) {
       onPress={() => {
         navigation.navigate('ProfilePicturePickerContract', {
           contractAddress: contractAddress,
+          screen: 'ProfilePicture',
         });
       }}
       style={style}

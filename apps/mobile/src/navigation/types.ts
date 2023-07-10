@@ -11,6 +11,7 @@ export type RootStackNavigatorParamList = {
   DesignSystemButtons: undefined;
 };
 
+type ScreenWithNftSelector = 'ProfilePicture' | 'Post';
 export type MainTabStackNavigatorParamList = {
   Profile: { username: string; hideBackButton?: boolean };
   NftDetail: {
@@ -23,9 +24,9 @@ export type MainTabStackNavigatorParamList = {
   FeedEvent: { eventId: string };
   Community: { contractAddress: string; chain: string };
   ProfilePicturePicker: {
-    screen: 'ProfilePicture' | 'Post';
+    screen: ScreenWithNftSelector;
   };
-  ProfilePicturePickerContract: { contractAddress: string };
+  ProfilePicturePickerContract: { contractAddress: string; screen: ScreenWithNftSelector };
   SettingsProfile: undefined;
 
   // The main five tabs
