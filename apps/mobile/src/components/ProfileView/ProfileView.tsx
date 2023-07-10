@@ -289,8 +289,6 @@ function EditProfileButton({ queryRef }: EditProfileButtonProps) {
             }
           }
         }
-
-        ...isFeatureEnabledFragment
       }
     `,
     queryRef
