@@ -1,4 +1,4 @@
-import { RouteProp, useRoute } from '@react-navigation/native';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { ResizeMode } from 'expo-av';
 import { useCallback, useState } from 'react';
 import { ActivityIndicator, View, ViewProps } from 'react-native';
@@ -9,7 +9,7 @@ import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { NftPreviewAsset } from '~/components/NftPreview/NftPreviewAsset';
 import { NftPreviewErrorFallback } from '~/components/NftPreview/NftPreviewErrorFallback';
 import { ProfilePicturePickerSingularAssetFragment$key } from '~/generated/ProfilePicturePickerSingularAssetFragment.graphql';
-import { MainTabStackNavigatorParamList } from '~/navigation/types';
+import { MainTabStackNavigatorParamList, MainTabStackNavigatorProp } from '~/navigation/types';
 import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
 import colors from '~/shared/theme/colors';
 
@@ -41,6 +41,8 @@ export function ProfilePicturePickerSingularAsset({
   const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'ProfilePicturePicker'>>();
   const currentScreen = route.params.screen;
 
+  const navigation = useNavigation<MainTabStackNavigatorProp>();
+
   const { setProfileImage, isSettingProfileImage } = useProfilePicture();
 
   const tokenUrl = getVideoOrImageUrlForNftPreview({ tokenRef: token })?.urls.large;
@@ -55,9 +57,11 @@ export function ProfilePicturePickerSingularAsset({
         onProfilePictureChange();
       });
     } else {
-      console.log('TODO: redirect to post screen');
+      navigation.navigate('Post', {
+        tokenId: token.dbid,
+      });
     }
-  }, [currentScreen, onProfilePictureChange, setProfileImage, token.dbid]);
+  }, [currentScreen, navigation, onProfilePictureChange, setProfileImage, token.dbid]);
   return (
     <GalleryTouchableOpacity
       style={style}
