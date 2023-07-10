@@ -63,7 +63,7 @@ export function AdmireLine({ userRefs, onMultiUserPress, style }: AdmireLineProp
           eventName={'AdmireLine Single User'}
         >
           <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-            3 collectors{' '}
+            {users.length} collectors{' '}
           </Typography>
         </GalleryTouchableOpacity>
 
