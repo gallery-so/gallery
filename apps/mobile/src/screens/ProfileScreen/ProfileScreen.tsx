@@ -7,7 +7,7 @@ import { graphql } from 'relay-runtime';
 import { GalleryRefreshControl } from '~/components/GalleryRefreshControl';
 import { ProfileView } from '~/components/ProfileView/ProfileView';
 import { ProfileViewFallback } from '~/components/ProfileView/ProfileViewFallback';
-import { SHARED_COMMUNITIES_PER_PAGE } from '~/components/ProfileView/ProfileViewSharedInfo/ProfileViewSharedCommunities';
+import { SHARED_COMMUNITIES_PER_PAGE } from '~/components/ProfileView/ProfileViewSharedInfo/ProfileViewSharedCommunitiesSheet';
 import { SHARED_FOLLOWERS_PER_PAGE } from '~/components/ProfileView/ProfileViewSharedInfo/ProfileViewSharedFollowers';
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { ProfileScreenQuery } from '~/generated/ProfileScreenQuery.graphql';

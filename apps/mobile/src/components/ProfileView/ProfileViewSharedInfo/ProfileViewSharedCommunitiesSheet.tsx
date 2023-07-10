@@ -14,7 +14,6 @@ import { ProfileViewSharedCommunitiesSheetFragment$key } from '~/generated/Profi
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 
 import { useListContentStyle } from '../Tabs/useListContentStyle';
-import { SHARED_COMMUNITIES_PER_PAGE } from './ProfileViewSharedCommunities';
 
 type Props = {
   userRef: ProfileViewSharedCommunitiesSheetFragment$key;
@@ -22,6 +21,7 @@ type Props = {
 
 const snapPoints = ['50%'];
 
+export const SHARED_COMMUNITIES_PER_PAGE = 20;
 export type ContractAddress = {
   address: string | null;
   chain: string | null;

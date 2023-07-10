@@ -86,8 +86,6 @@ export function SearchResults({ activeFilter, onChangeFilter, blurInputFocus }: 
             }
           }
         }
-
-        ...UserSearchResultQueryFragment
       }
     `,
     { query: deferredKeyword }
@@ -273,7 +271,7 @@ export function SearchResults({ activeFilter, onChangeFilter, blurInputFocus }: 
           />
         );
       } else if (item.kind === 'user-search-result') {
-        return <UserSearchResult queryRef={query} userRef={item.user} />;
+        return <UserSearchResult userRef={item.user} />;
       } else if (item.kind === 'gallery-search-result') {
         return <GallerySearchResult galleryRef={item.gallery} />;
       } else if (item.kind === 'community-search-result') {
@@ -282,7 +280,7 @@ export function SearchResults({ activeFilter, onChangeFilter, blurInputFocus }: 
 
       return <View />;
     },
-    [activeFilter, onChangeFilter, query]
+    [activeFilter, onChangeFilter]
   );
 
   if (isEmpty) {
