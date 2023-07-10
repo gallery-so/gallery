@@ -4,6 +4,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BackButton } from '~/components/BackButton';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { PostInput } from '~/components/Post/PostInput';
+import { PostTokenPreview } from '~/components/Post/PostTokenPreview';
 import { Typography } from '~/components/Typography';
 
 export function PostScreen() {
@@ -34,8 +35,12 @@ export function PostScreen() {
           </GalleryTouchableOpacity>
         </View>
 
-        <View className="px-4 flex flex-col flex-grow space-y-4">
+        <View className="px-4 flex flex-col flex-grow space-y-2">
           <PostInput />
+
+          <View className="py-4">
+            <PostTokenPreview />
+          </View>
         </View>
       </View>
     </View>

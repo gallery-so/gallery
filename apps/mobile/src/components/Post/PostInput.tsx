@@ -50,18 +50,20 @@ export function PostInput() {
           Your text is too long
         </Typography>
       )}
-      <Typography
-        className={clsx(
-          'text-sm absolute bottom-3 right-3',
-          isTextTooLong ? 'text-red' : 'text-metal'
-        )}
-        font={{
-          family: 'ABCDiatype',
-          weight: isTextTooLong ? 'Medium' : 'Regular',
-        }}
-      >
-        {characterCount}/600
-      </Typography>
+      {value.length > 0 && (
+        <Typography
+          className={clsx(
+            'text-sm absolute bottom-3 right-3',
+            isTextTooLong ? 'text-red' : 'text-metal'
+          )}
+          font={{
+            family: 'ABCDiatype',
+            weight: isTextTooLong ? 'Medium' : 'Regular',
+          }}
+        >
+          {characterCount}/600
+        </Typography>
+      )}
     </View>
   );
 }
