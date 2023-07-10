@@ -168,7 +168,10 @@ const POAPLogo = styled.img.attrs({
 `;
 
 const StyledInteractiveLink = styled(InteractiveLink)`
-  text-decoration: none;
+  cursor: pointer;
+  &:hover {
+    text-decoration: none;
+  }
 `;
 
 const StyledBaseM = styled(BaseM)`
