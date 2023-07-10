@@ -69,15 +69,13 @@ export default function ProfileViewSharedFollowers({ userRef }: Props) {
 
   return (
     <View className="flex flex-row flex-wrap space-x-1">
-      {
-        <ProfilePictureBubblesWithCount
-          onPress={handleSeeAllPress}
-          totalCount={sharedFollowers.length}
-          eventElementId="Shared Followers Bubbles"
-          eventName="Shared Followers Bubbles pressed"
-          userRefs={sharedFollowers}
-        />
-      }
+      <ProfilePictureBubblesWithCount
+        onPress={handleSeeAllPress}
+        totalCount={sharedFollowers.length}
+        eventElementId="Shared Followers Bubbles"
+        eventName="Shared Followers Bubbles pressed"
+        userRefs={sharedFollowers}
+      />
 
       <FollowingText onSeeAll={handleSeeAllPress} userRefs={sharedFollowers} />
 
