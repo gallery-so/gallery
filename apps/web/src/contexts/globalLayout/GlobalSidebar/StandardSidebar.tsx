@@ -23,6 +23,7 @@ import ShopIcon from '~/icons/ShopIcon';
 import UserIcon from '~/icons/UserIcon';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import useExperience from '~/utils/graphql/experiences/useExperience';
+import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 import { useDrawerActions, useDrawerState } from './SidebarDrawerContext';
 import SidebarIcon from './SidebarIcon';
@@ -57,6 +58,7 @@ export function StandardSidebar({ queryRef }: Props) {
         ...SettingsFragment
         ...useExperienceFragment
         ...useAnnouncementFragment
+        ...isFeatureEnabledFragment
       }
     `,
     queryRef
@@ -182,6 +184,8 @@ export function StandardSidebar({ queryRef }: Props) {
     return JSON.stringify(editGalleriesRoute) === JSON.stringify(currentRoute);
   }, [activeDrawerType, pathname, routerQuery, editGalleriesRoute]);
 
+  const isPfpEnabled = isFeatureEnabled(FeatureFlag.PFP, query);
+
   useSearchHotkey(() => {
     showDrawer({
       content: <Search />,
@@ -250,13 +254,23 @@ export function StandardSidebar({ queryRef }: Props) {
             onClick={handleHomeIconClick}
             icon={<GLogoIcon />}
           />
-          {isLoggedIn && query.viewer.user && (
-            <SidebarPfp
-              userRef={query.viewer.user}
-              href={userGalleryRoute}
-              onClick={handleProfileClick}
-            />
-          )}
+          {isLoggedIn &&
+            query.viewer.user &&
+            (isPfpEnabled ? (
+              <SidebarPfp
+                userRef={query.viewer.user}
+                href={userGalleryRoute}
+                onClick={handleProfileClick}
+              />
+            ) : (
+              <SidebarIcon
+                href={userGalleryRoute}
+                tooltipLabel="My Profile"
+                onClick={handleProfileClick}
+                icon={<UserIcon />}
+                isActive={isLoggedInProfileActive}
+              />
+            ))}
         </VStack>
         {isLoggedIn ? (
           <VStack gap={32}>
