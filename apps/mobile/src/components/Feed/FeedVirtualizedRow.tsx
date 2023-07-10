@@ -21,7 +21,7 @@ export function FeedVirtualizedRow({ onFailure, item, eventId }: Props) {
       case 'feed-item-navigation':
         return <FeedFilter activeFeed={item.activeFeed} onChange={item.onFilterChange} />;
       case 'feed-item-header':
-        return <FeedListSectionHeader queryRef={item.queryRef} feedEventRef={item.event} />;
+        return <FeedListSectionHeader feedEventRef={item.event} />;
       case 'feed-item-caption':
         return <FeedListCaption feedEventRef={item.event} />;
       case 'feed-item-event':

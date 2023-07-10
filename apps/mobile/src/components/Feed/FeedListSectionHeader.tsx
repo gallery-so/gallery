@@ -6,30 +6,18 @@ import { graphql } from 'relay-runtime';
 
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { FeedListSectionHeaderFragment$key } from '~/generated/FeedListSectionHeaderFragment.graphql';
-import { FeedListSectionHeaderQueryFragment$key } from '~/generated/FeedListSectionHeaderQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { getTimeSince } from '~/shared/utils/time';
 import unescape from '~/shared/utils/unescape';
 
-import isFeatureEnabled, { FeatureFlag } from '../../utils/isFeatureEnabled';
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import { Typography } from '../Typography';
 
 type FeedListSectionHeaderProps = {
-  queryRef: FeedListSectionHeaderQueryFragment$key;
   feedEventRef: FeedListSectionHeaderFragment$key;
 };
 
-export function FeedListSectionHeader({ feedEventRef, queryRef }: FeedListSectionHeaderProps) {
-  const query = useFragment(
-    graphql`
-      fragment FeedListSectionHeaderQueryFragment on Query {
-        ...isFeatureEnabledFragment
-      }
-    `,
-    queryRef
-  );
-
+export function FeedListSectionHeader({ feedEventRef }: FeedListSectionHeaderProps) {
   const feedEvent = useFragment(
     graphql`
       fragment FeedListSectionHeaderFragment on FeedEvent {
@@ -75,8 +63,6 @@ export function FeedListSectionHeader({ feedEventRef, queryRef }: FeedListSectio
 
   const galleryName = unescape(feedEvent.eventData.gallery?.name || '');
 
-  const isPfpEnabled = isFeatureEnabled(FeatureFlag.PFP, query);
-
   return (
     <View className="flex flex-row items-center justify-between bg-white dark:bg-black-900 px-3 pb-2">
       <View className="flex flex-row space-x-1 items-center">
@@ -87,7 +73,7 @@ export function FeedListSectionHeader({ feedEventRef, queryRef }: FeedListSectio
           eventName="Feed Username Clicked"
           properties={{ variant: 'Feed event author' }}
         >
-          {feedEvent.eventData.owner && isPfpEnabled && (
+          {feedEvent.eventData.owner && (
             <ProfilePicture userRef={feedEvent.eventData.owner} size="sm" />
           )}
 

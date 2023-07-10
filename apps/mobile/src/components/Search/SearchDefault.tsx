@@ -30,35 +30,30 @@ export function SearchDefault({ queryRef, blurInputFocus }: Props) {
             }
           }
         }
-
-        ...UserSearchResultQueryFragment
       }
     `,
     queryRef
   );
 
-  const renderItem = useCallback<ListRenderItem<ListItemType>>(
-    ({ item }) => {
-      if (item.kind === 'header') {
-        return (
-          <View className="p-4">
-            <Typography
-              font={{
-                family: 'ABCDiatype',
-                weight: 'Medium',
-              }}
-              className="text-metal text-xs uppercase"
-            >
-              {item.title}
-            </Typography>
-          </View>
-        );
-      } else {
-        return <UserSearchResult queryRef={query} userRef={item.user} />;
-      }
-    },
-    [query]
-  );
+  const renderItem = useCallback<ListRenderItem<ListItemType>>(({ item }) => {
+    if (item.kind === 'header') {
+      return (
+        <View className="p-4">
+          <Typography
+            font={{
+              family: 'ABCDiatype',
+              weight: 'Medium',
+            }}
+            className="text-metal text-xs uppercase"
+          >
+            {item.title}
+          </Typography>
+        </View>
+      );
+    } else {
+      return <UserSearchResult userRef={item.user} />;
+    }
+  }, []);
 
   const items = useMemo((): ListItemType[] => {
     const items: ListItemType[] = [];
