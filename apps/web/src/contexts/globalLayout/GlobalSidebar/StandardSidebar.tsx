@@ -26,6 +26,7 @@ import useExperience from '~/utils/graphql/experiences/useExperience';
 
 import { useDrawerActions, useDrawerState } from './SidebarDrawerContext';
 import SidebarIcon from './SidebarIcon';
+import SidebarPfp from './SidebarPfp';
 
 type Props = {
   queryRef: StandardSidebarFragment$key;
@@ -40,6 +41,7 @@ export function StandardSidebar({ queryRef }: Props) {
             __typename
             user {
               username
+              ...SidebarPfpFragment
             }
             notifications(last: 1) @connection(key: "StandardSidebarFragment_notifications") {
               unseenCount
@@ -171,6 +173,15 @@ export function StandardSidebar({ queryRef }: Props) {
     return JSON.stringify(userGalleryRoute) === JSON.stringify(currentRoute);
   }, [activeDrawerType, pathname, routerQuery, userGalleryRoute]);
 
+  const isEditGalleriesActive = useMemo(() => {
+    // prevent highlight if another item in the drawer is selected
+    if (activeDrawerType) {
+      return false;
+    }
+    const currentRoute = { pathname, query: routerQuery };
+    return JSON.stringify(editGalleriesRoute) === JSON.stringify(currentRoute);
+  }, [activeDrawerType, pathname, routerQuery, editGalleriesRoute]);
+
   useSearchHotkey(() => {
     showDrawer({
       content: <Search />,
@@ -239,24 +250,22 @@ export function StandardSidebar({ queryRef }: Props) {
             onClick={handleHomeIconClick}
             icon={<GLogoIcon />}
           />
-          {isLoggedIn && (
-            <SidebarIcon
-              href={editGalleriesRoute}
-              tooltipLabel="Edit galleries"
-              onClick={handleEditClick}
-              icon={<EditPencilIcon />}
-              showBorderByDefault
+          {isLoggedIn && query.viewer.user && (
+            <SidebarPfp
+              userRef={query.viewer.user}
+              href={userGalleryRoute}
+              onClick={handleProfileClick}
             />
           )}
         </VStack>
         {isLoggedIn ? (
           <VStack gap={32}>
             <SidebarIcon
-              href={userGalleryRoute}
-              tooltipLabel="My profile"
-              onClick={handleProfileClick}
-              icon={<UserIcon />}
-              isActive={isLoggedInProfileActive}
+              href={editGalleriesRoute}
+              tooltipLabel="Edit galleries"
+              onClick={handleEditClick}
+              icon={<EditPencilIcon />}
+              isActive={isEditGalleriesActive}
             />
             <SidebarIcon
               tooltipLabel="Search"

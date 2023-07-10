@@ -83,7 +83,7 @@ export function RawProfilePicture({
               fontSize,
             }}
           >
-            {rest.letter.toUpperCase()}
+            <InlineBlockWrapper>{rest.letter.toUpperCase()}</InlineBlockWrapper>
           </ProfilePictureText>
         )}
 
@@ -208,4 +208,11 @@ const ProfilePictureText = styled.div`
   line-height: 13px;
   font-family: ${TITLE_FONT_FAMILY};
   color: ${colors.black['800']};
+  display: inline-block;
+`;
+
+// This prevents the placeholder Letter from inheriting text-decoration: underline from any ancestor <a> tags.
+// This only works if it's nested within ProfilePictureText for some reason, so we have to use this wrapper.
+const InlineBlockWrapper = styled.div`
+  display: inline-block;
 `;
