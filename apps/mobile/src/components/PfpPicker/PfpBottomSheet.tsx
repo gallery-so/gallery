@@ -139,7 +139,9 @@ function PfpBottomSheet(
   ]);
 
   const handleChooseFromCollectionPress = useCallback(() => {
-    navigation.navigate('ProfilePicturePicker');
+    navigation.navigate('ProfilePicturePicker', {
+      screen: 'ProfilePicture',
+    });
   }, [navigation]);
 
   const handleRemovePress = useCallback(() => {

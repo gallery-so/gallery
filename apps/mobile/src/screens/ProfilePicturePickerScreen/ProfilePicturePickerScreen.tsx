@@ -1,4 +1,5 @@
-import { Suspense, useCallback, useRef, useState } from 'react';
+import { RouteProp, useRoute } from '@react-navigation/native';
+import { Suspense, useCallback, useMemo, useRef, useState } from 'react';
 import { View } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import { RefreshIcon } from 'src/icons/RefreshIcon';
@@ -13,6 +14,7 @@ import { Select } from '~/components/Select';
 import { Typography } from '~/components/Typography';
 import { ProfilePicturePickerScreenQuery } from '~/generated/ProfilePicturePickerScreenQuery.graphql';
 import { SearchIcon } from '~/navigation/MainTabNavigator/SearchIcon';
+import { MainTabStackNavigatorParamList } from '~/navigation/types';
 
 import {
   NetworkChoice,
@@ -21,6 +23,8 @@ import {
 import { ProfilePicturePickerGrid } from './ProfilePicturePickerGrid';
 
 export function ProfilePicturePickerScreen() {
+  const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'ProfilePicturePicker'>>();
+
   const query = useLazyLoadQuery<ProfilePicturePickerScreenQuery>(
     graphql`
       query ProfilePicturePickerScreenQuery {
@@ -29,6 +33,8 @@ export function ProfilePicturePickerScreen() {
     `,
     {}
   );
+
+  const currentScreen = route.params.screen;
 
   const { top } = useSafeAreaPadding();
   const filterBottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
@@ -41,6 +47,10 @@ export function ProfilePicturePickerScreen() {
   const [filter, setFilter] = useState<'Collected' | 'Created'>('Collected');
   const [networkFilter, setNetworkFilter] = useState<NetworkChoice>('all');
 
+  const screenTitle = useMemo(() => {
+    return currentScreen === 'ProfilePicture' ? 'Select a profile picture' : 'Select an NFT';
+  }, [currentScreen]);
+
   return (
     <View className="flex-1 bg-white dark:bg-black-900" style={{ paddingTop: top }}>
       <View className="flex flex-col flex-grow space-y-8">
@@ -52,7 +62,7 @@ export function ProfilePicturePickerScreen() {
             pointerEvents="none"
           >
             <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-              Select a profile picture
+              {screenTitle}
             </Typography>
           </View>
         </View>

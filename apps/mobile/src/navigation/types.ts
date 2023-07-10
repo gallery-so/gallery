@@ -22,7 +22,9 @@ export type MainTabStackNavigatorParamList = {
   Collection: { collectionId: string };
   FeedEvent: { eventId: string };
   Community: { contractAddress: string; chain: string };
-  ProfilePicturePicker: undefined;
+  ProfilePicturePicker: {
+    screen: 'ProfilePicture' | 'Post';
+  };
   ProfilePicturePickerContract: { contractAddress: string };
   SettingsProfile: undefined;
 
@@ -39,6 +41,7 @@ export type MainTabStackNavigatorParamList = {
 
   Search: undefined;
   Settings: undefined;
+  Post: undefined;
   // End the main four tabs
 };
 
@@ -54,6 +57,7 @@ export type MainTabNavigatorParamList = {
   NotificationsTab: NavigatorScreenParams<MainTabStackNavigatorParamList>;
   SearchTab: NavigatorScreenParams<MainTabStackNavigatorParamList>;
   SettingsTab: NavigatorScreenParams<MainTabStackNavigatorParamList>;
+  PostTab: NavigatorScreenParams<MainTabStackNavigatorParamList>;
 };
 
 export type LoginStackNavigatorParamList = {

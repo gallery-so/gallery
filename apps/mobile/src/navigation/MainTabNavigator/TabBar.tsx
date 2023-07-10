@@ -16,6 +16,7 @@ import { MainTabNavigatorParamList } from '~/navigation/types';
 
 import { AccountIcon } from '../../icons/AccountIcon';
 import { SettingsIcon } from '../../icons/SettingsIcon';
+import { PostIcon } from './PostIcon';
 
 type TabItemProps = {
   icon: ReactNode;
@@ -56,7 +57,7 @@ function TabItem({ navigation, route, icon, activeRoute }: TabItemProps) {
     >
       <View
         className={clsx(`px-0 flex h-8 w-8 items-center justify-center rounded-full`, {
-          'border border-black dark:border-white ': isFocused,
+          'border border-black dark:border-white ': isFocused && route.name !== 'PostTab',
           'bg-faint dark:bg-[#2B2B2B]': isPressed,
         })}
       >
@@ -92,6 +93,8 @@ export function TabBar({ state, navigation }: TabBarProps) {
           icon = <SearchIcon />;
         } else if (route.name === 'SettingsTab') {
           icon = <SettingsIcon />;
+        } else if (route.name === 'PostTab') {
+          icon = <PostIcon />;
         }
 
         return (
