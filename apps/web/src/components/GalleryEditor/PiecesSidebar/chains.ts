@@ -37,7 +37,7 @@ export const chains = [
     name: 'POAP',
     shortName: 'POAP',
     icon: '/icons/poap_logo.svg',
-    baseChain: 'Gnosis',
+    baseChain: 'Ethereum',
     hasCreatorSupport: false,
     isEnabled: true,
   },

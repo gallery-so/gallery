@@ -23,7 +23,6 @@ import { MainTabStackNavigatorProp } from '~/navigation/types';
 import GalleryViewEmitter from '~/shared/components/GalleryViewEmitter';
 import colors from '~/shared/theme/colors';
 
-import isFeatureEnabled, { FeatureFlag } from '../../utils/isFeatureEnabled';
 import { GalleryBottomSheetModalType } from '../GalleryBottomSheet/GalleryBottomSheetModal';
 import { PfpBottomSheet } from '../PfpPicker/PfpBottomSheet';
 import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
@@ -235,14 +234,10 @@ function ConnectedProfilePicture({ queryRef }: ConnectedProfilePictureProps) {
         }
 
         ...PfpBottomSheetFragment
-
-        ...isFeatureEnabledFragment
       }
     `,
     queryRef
   );
-
-  const isPfpEnabled = isFeatureEnabled(FeatureFlag.PFP, query);
 
   const isLoggedInUser = Boolean(
     query.userByUsername &&
@@ -258,10 +253,6 @@ function ConnectedProfilePicture({ queryRef }: ConnectedProfilePictureProps) {
 
     bottomSheetRef.current?.present();
   }, [isLoggedInUser]);
-
-  if (!isPfpEnabled) {
-    return null;
-  }
 
   return (
     <View className="mr-2">
@@ -298,14 +289,11 @@ function EditProfileButton({ queryRef }: EditProfileButtonProps) {
             }
           }
         }
-
-        ...isFeatureEnabledFragment
       }
     `,
     queryRef
   );
 
-  const isPfpEnabled = isFeatureEnabled(FeatureFlag.PFP, query);
   const isLoggedInUser = Boolean(query.viewer?.user?.dbid === query.userByUsername?.dbid);
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
@@ -313,7 +301,7 @@ function EditProfileButton({ queryRef }: EditProfileButtonProps) {
     navigation.navigate('SettingsProfile');
   }, [navigation]);
 
-  if (!isLoggedInUser || !isPfpEnabled) {
+  if (!isLoggedInUser) {
     return null;
   }
 

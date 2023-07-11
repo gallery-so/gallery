@@ -19,8 +19,6 @@ type Props = {
   userRef: ProfileViewSharedCommunitiesFragment$key;
 };
 
-export const SHARED_COMMUNITIES_PER_PAGE = 20;
-
 export default function ProfileViewSharedCommunities({ userRef }: Props) {
   const user = useFragment(
     graphql`

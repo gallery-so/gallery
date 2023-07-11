@@ -12,8 +12,6 @@ import { Typography } from '~/components/Typography';
 import { SettingsProfileScreenQuery } from '~/generated/SettingsProfileScreenQuery.graphql';
 import colors from '~/shared/theme/colors';
 
-import isFeatureEnabled, { FeatureFlag } from '../utils/isFeatureEnabled';
-
 export function SettingsProfileScreen() {
   const { top } = useSafeAreaPadding();
 
@@ -32,14 +30,12 @@ export function SettingsProfileScreen() {
         }
 
         ...PfpBottomSheetFragment
-        ...isFeatureEnabledFragment
       }
     `,
     {}
   );
 
   const user = query.viewer?.user;
-  const isPfpEnabled = isFeatureEnabled(FeatureFlag.PFP, query);
 
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
 
@@ -71,13 +67,11 @@ export function SettingsProfileScreen() {
           </Typography>
         </View>
 
-        {isPfpEnabled && (
-          <View className="flex items-center justify-center px-4">
-            <ProfilePicture userRef={user} size="xl" isEditable onPress={handlePress} />
+        <View className="flex items-center justify-center px-4">
+          <ProfilePicture userRef={user} size="xl" isEditable onPress={handlePress} />
 
-            <PfpBottomSheet ref={bottomSheetRef} queryRef={query} />
-          </View>
-        )}
+          <PfpBottomSheet ref={bottomSheetRef} queryRef={query} />
+        </View>
 
         <View className="px-3 py-4 bg-offWhite dark:bg-black-800 flex flex-row justify-between mx-4">
           <View className="flex flex-col space-y-2">
