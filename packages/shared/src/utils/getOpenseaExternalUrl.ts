@@ -12,7 +12,7 @@ export const hexHandler = (str: string) => {
   return d;
 };
 
-export const getOpenseaExternalUrl = (chainStr: string, contractAddress: string, tokenId: string, ) => {
+export const getOpenseaExternalUrl = (chainStr: string, contractAddress: string, tokenId: string) => {
   const chain = chainStr.toLocaleLowerCase();
   const hexTokenId = hexHandler(tokenId);
 
