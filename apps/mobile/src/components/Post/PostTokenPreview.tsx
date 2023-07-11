@@ -1,8 +1,9 @@
 import { RouteProp, useRoute } from '@react-navigation/native';
+import { useColorScheme } from 'nativewind';
 import { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
-import { XMarkIcon } from 'src/icons/XMarkIcon';
+import { BareXMarkIcon } from 'src/icons/BareXMarkIcon';
 
 import { PostTokenPreviewQuery } from '~/generated/PostTokenPreviewQuery.graphql';
 import { MainTabStackNavigatorParamList } from '~/navigation/types';
@@ -77,21 +78,12 @@ export function PostTokenPreview({ bottomSheetRef }: Props) {
           </NftDetailAssetCacheSwapper>
         </ReportingErrorBoundary>
 
-        <IconContainer
-          eventElementId={null}
-          eventName={null}
-          icon={<XMarkIcon height={8} />}
-          onPress={handleBackPress}
-          size="xs"
-          border
-          color="white"
-          className="absolute -top-2 -right-2"
-        />
+        <CloseButton onPress={handleBackPress} />
       </View>
 
       <View className="flex flex-col">
         <Typography
-          className="text-lg text-black-800 leading-none"
+          className="text-lg text-black-800 dark:text-offWhite leading-none"
           font={{ family: 'ABCDiatype', weight: 'Bold' }}
         >
           {token.name}
@@ -104,5 +96,25 @@ export function PostTokenPreview({ bottomSheetRef }: Props) {
         </Typography>
       </View>
     </View>
+  );
+}
+
+type CloseButtonProps = {
+  onPress: () => void;
+};
+function CloseButton({ onPress }: CloseButtonProps) {
+  const { colorScheme } = useColorScheme();
+
+  return (
+    <IconContainer
+      eventElementId={null}
+      eventName={null}
+      icon={<BareXMarkIcon />}
+      onPress={onPress}
+      size="xs"
+      border
+      color={colorScheme === 'dark' ? 'black' : 'white'}
+      className="absolute -top-2 -right-2"
+    />
   );
 }
