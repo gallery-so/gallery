@@ -10,6 +10,7 @@ import { LinkableAddress } from '~/components/LinkableAddress';
 import { NftAdditionalDetailsEthFragment$key } from '~/generated/NftAdditionalDetailsEthFragment.graphql';
 import { useRefreshMetadata } from '~/scenes/NftDetailPage/NftAdditionalDetails/useRefreshMetadata';
 import { getOpenseaExternalUrl, hexHandler } from '~/shared/utils/getOpenseaExternalUrl';
+import { extractMirrorXyzUrl } from '~/shared/utils/extractMirrorXyzUrl';
 
 type NftAdditionaDetailsNonPOAPProps = {
   showDetails: boolean;
@@ -43,8 +44,6 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionaDetailsNonPOAP
   );
 
   const { tokenId, contract, externalUrl, tokenMetadata, chain } = token;
-  const metadataObj = JSON.parse(tokenMetadata ?? "");
-  const tokenDesc = metadataObj.description;
 
   const [refresh, isRefreshing] = useRefreshMetadata(token);
 
@@ -56,11 +55,12 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionaDetailsNonPOAP
     return null;
   }, [chain, contract?.contractAddress?.address, tokenId]);
 
-  const isMirrorXyzUrl = useMemo(() => {
-    const startsWithMirrorXYZ = tokenDesc?.startsWith("https://mirror.xyz");
-    const hasWhitespaceInMiddle = /\s/.test(tokenDesc);
-    return startsWithMirrorXYZ && !hasWhitespaceInMiddle;
-  }, [tokenDesc, tokenId]);
+  const mirrorXyzUrl = useMemo(() => {
+    if (tokenMetadata) {
+      return extractMirrorXyzUrl(tokenMetadata)
+    }
+    
+  }, [tokenMetadata]);
 
   return (
     <VStack gap={16}>
@@ -86,7 +86,7 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionaDetailsNonPOAP
       )}
 
       <StyledLinkContainer>
-        {isMirrorXyzUrl && <InteractiveLink href={tokenDesc}>View on Mirror</InteractiveLink>}
+        {mirrorXyzUrl && <InteractiveLink href={mirrorXyzUrl}>View on Mirror</InteractiveLink>}
         {openSeaExternalUrl && (
           <>
             <InteractiveLink href={openSeaExternalUrl}>View on OpenSea</InteractiveLink>
