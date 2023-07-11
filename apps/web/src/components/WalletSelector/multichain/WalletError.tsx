@@ -1,6 +1,6 @@
 import { BeaconErrorType } from '@airgap/beacon-types';
 import { useMemo } from 'react';
-import { UserRejectedRequestError } from 'wagmi';
+import { UserRejectedRequestError } from 'viem';
 
 import { isEarlyAccessError } from '~/contexts/analytics/authUtil';
 import { isWeb3Error } from '~/types/Error';
