@@ -47,12 +47,12 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionaDetailsNonPOAP
   const [refresh, isRefreshing] = useRefreshMetadata(token);
 
   const openSeaExternalUrl = useMemo(() => {
-    if (contract?.contractAddress?.address && tokenId && chain) {
+    if (chain && contract?.contractAddress?.address && tokenId) {
       return getOpenseaExternalUrl(chain, contract.contractAddress.address, tokenId);
     }
 
     return null;
-  }, [contract?.contractAddress?.address, tokenId, chain]);
+  }, [chain, contract?.contractAddress?.address, tokenId]);
 
   const mirrorXyzUrl = useMemo(() => {
     const metadata = JSON.parse(tokenMetadata ?? "");

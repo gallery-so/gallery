@@ -82,12 +82,12 @@ export default function CommunityHolderGridItem({ holderRef, queryRef }: Props) 
   }
 
   const openSeaExternalUrl = useMemo(() => {
-    if (contract?.contractAddress?.address && tokenId && chain) {
+    if (chain && contract?.contractAddress?.address && tokenId) {
       return getOpenseaExternalUrl(chain, contract.contractAddress.address, tokenId);
     }
 
     return '';
-  }, [contract?.contractAddress?.address, tokenId, chain]);
+  }, [chain, contract?.contractAddress?.address, tokenId]);
 
   const handleClick = useCallback(() => {
     if (owner?.universal) {

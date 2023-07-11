@@ -45,12 +45,12 @@ export function NftAdditionalDetailsEth({ tokenRef, showDetails }: NftAdditional
   const { tokenId, contract, externalUrl, chain } = token;
 
   const openSeaExternalUrl = useMemo(() => {
-    if (contract?.contractAddress?.address && tokenId && chain) {
+    if (chain && contract?.contractAddress?.address && tokenId) {
       return getOpenseaExternalUrl(chain, contract.contractAddress.address, tokenId);
     }
 
     return null;
-  }, [contract?.contractAddress?.address, tokenId, chain]);
+  }, [chain, contract?.contractAddress?.address, tokenId]);
 
   return (
     <View className="flex flex-col space-y-4">
