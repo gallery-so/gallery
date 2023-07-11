@@ -35,7 +35,9 @@ export function PostInput() {
         selectionColor={colorScheme === 'dark' ? colors.white : colors.black['800']}
         placeholderTextColor={colorScheme === 'dark' ? colors.metal : colors.shadow}
         multiline
-        placeholder="Add a description"
+        autoCapitalize="none"
+        autoComplete="off"
+        style={{ flex: 1, color: colorScheme === 'dark' ? colors.white : colors.black['800'] }}
       />
       {isTextTooLong && (
         <Typography
