@@ -54,7 +54,7 @@ function NftDetailAnimation({ mediaRef, onLoad }: Props) {
   }, [token.media]);
 
   if (contentRenderURL.endsWith('.glb')) {
-    return <RawNftDetailModel onLoad={onLoad} url={contentRenderURL} />;
+    return <RawNftDetailModel onLoad={onLoad} url={contentRenderURL} fullHeight />;
   }
 
   return (
