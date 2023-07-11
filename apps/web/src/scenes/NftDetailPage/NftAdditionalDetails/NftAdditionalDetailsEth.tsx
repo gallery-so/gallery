@@ -60,6 +60,7 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionaDetailsNonPOAP
       return extractMirrorXyzUrl(tokenMetadata)
     }
     
+    return null; 
   }, [tokenMetadata]);
 
   return (
