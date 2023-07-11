@@ -48,16 +48,20 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionaDetailsNonPOAP
 
   const openSeaExternalUrl = useMemo(() => {
     if (contract?.contractAddress?.address && tokenId && chain) {
-      return getOpenseaExternalUrl(contract.contractAddress.address, tokenId, chain);
+      return getOpenseaExternalUrl(chain, contract.contractAddress.address, tokenId);
     }
 
     return null;
-  }, [contract?.contractAddress?.address, tokenId]);
+  }, [contract?.contractAddress?.address, tokenId, chain]);
 
   const mirrorXyzUrl = useMemo(() => {
-    const mirrorUrlPattern = /(https?:\/\/\S*mirror\.xyz\S*)/;
-    const mirrorXyzUrl = tokenMetadata?.match(mirrorUrlPattern);
-    return mirrorXyzUrl ? mirrorXyzUrl[0] : "";
+    const metadata = JSON.parse(tokenMetadata ?? "");
+    const description = metadata.description;
+    const startsWithMirrorXYZ = description?.startsWith("https://mirror.xyz");
+    if (startsWithMirrorXYZ) {
+      return description
+    }
+    return "";
   }, [tokenMetadata, tokenId]);
 
   return (

@@ -30,6 +30,7 @@ export default function CommunityHolderGridItem({ holderRef, queryRef }: Props) 
       fragment CommunityHolderGridItemFragment on Token {
         name
         tokenId
+        chain
         contract {
           contractAddress {
             address
@@ -64,7 +65,7 @@ export default function CommunityHolderGridItem({ holderRef, queryRef }: Props) 
 
   const { showModal } = useModalActions();
 
-  const { tokenId, contract, owner } = token;
+  const { tokenId, contract, owner, chain } = token;
 
   const usernameWithFallback = owner ? graphqlTruncateUniversalUsername(owner) : null;
 
@@ -81,12 +82,12 @@ export default function CommunityHolderGridItem({ holderRef, queryRef }: Props) 
   }
 
   const openSeaExternalUrl = useMemo(() => {
-    if (contract?.contractAddress?.address && tokenId) {
-      return getOpenseaExternalUrl(contract.contractAddress.address, tokenId);
+    if (contract?.contractAddress?.address && tokenId && chain) {
+      return getOpenseaExternalUrl(chain, contract.contractAddress.address, tokenId);
     }
 
     return '';
-  }, [contract?.contractAddress?.address, tokenId]);
+  }, [contract?.contractAddress?.address, tokenId, chain]);
 
   const handleClick = useCallback(() => {
     if (owner?.universal) {

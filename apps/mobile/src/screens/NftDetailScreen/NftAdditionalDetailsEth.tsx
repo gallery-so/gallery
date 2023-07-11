@@ -42,15 +42,15 @@ export function NftAdditionalDetailsEth({ tokenRef, showDetails }: NftAdditional
     tokenRef
   );
 
-  const { tokenId, contract, externalUrl } = token;
+  const { tokenId, contract, externalUrl, chain } = token;
 
   const openSeaExternalUrl = useMemo(() => {
-    if (contract?.contractAddress?.address && tokenId) {
-      return getOpenseaExternalUrl(contract.contractAddress.address, tokenId);
+    if (contract?.contractAddress?.address && tokenId && chain) {
+      return getOpenseaExternalUrl(chain, contract.contractAddress.address, tokenId);
     }
 
     return null;
-  }, [contract?.contractAddress?.address, tokenId]);
+  }, [contract?.contractAddress?.address, tokenId, chain]);
 
   return (
     <View className="flex flex-col space-y-4">
