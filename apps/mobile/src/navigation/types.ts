@@ -11,7 +11,7 @@ export type RootStackNavigatorParamList = {
   DesignSystemButtons: undefined;
 };
 
-type ScreenWithNftSelector = 'ProfilePicture' | 'Post';
+export type ScreenWithNftSelector = 'ProfilePicture' | 'Post';
 export type MainTabStackNavigatorParamList = {
   Profile: { username: string; hideBackButton?: boolean };
   NftDetail: {

@@ -126,6 +126,7 @@ export function ProfilePicturePickerScreen() {
                   networkFilter: networkFilter,
                 }}
                 queryRef={query}
+                screen={currentScreen}
               />
             </Suspense>
           </View>

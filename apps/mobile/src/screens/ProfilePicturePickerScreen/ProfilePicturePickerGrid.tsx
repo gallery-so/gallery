@@ -15,7 +15,7 @@ import {
   ProfilePicturePickerGridTokensFragment$data,
   ProfilePicturePickerGridTokensFragment$key,
 } from '~/generated/ProfilePicturePickerGridTokensFragment.graphql';
-import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { MainTabStackNavigatorProp, ScreenWithNftSelector } from '~/navigation/types';
 import { NetworkChoice } from '~/screens/ProfilePicturePickerScreen/ProfilePicturePickerFilterBottomSheet';
 import { ProfilePicturePickerSingularAsset } from '~/screens/ProfilePicturePickerScreen/ProfilePicturePickerSingularAsset';
 import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
@@ -28,12 +28,15 @@ type ProfilePicturePickerGridProps = {
     ownerFilter: 'Collected' | 'Created';
     networkFilter: NetworkChoice;
   };
+  screen: ScreenWithNftSelector;
+
   queryRef: ProfilePicturePickerGridFragment$key;
 };
 
 export function ProfilePicturePickerGrid({
   queryRef,
   searchCriteria,
+  screen,
   style,
 }: ProfilePicturePickerGridProps) {
   const query = useFragment(
@@ -160,22 +163,30 @@ export function ProfilePicturePickerGrid({
     return rows;
   }, [groups]);
 
-  const renderItem = useCallback<ListRenderItem<Row>>(({ item }) => {
-    return (
-      <View className="flex space-x-4 flex-row mb-4 px-4">
-        {item.groups.map((group, index) => {
-          return (
-            <TokenGroup key={index} tokenRefs={group.tokens} contractAddress={group.address} />
-          );
-        })}
+  const renderItem = useCallback<ListRenderItem<Row>>(
+    ({ item }) => {
+      return (
+        <View className="flex space-x-4 flex-row mb-4 px-4">
+          {item.groups.map((group, index) => {
+            return (
+              <TokenGroup
+                key={index}
+                tokenRefs={group.tokens}
+                contractAddress={group.address}
+                screen={screen}
+              />
+            );
+          })}
 
-        {/* Fill the remaining space for this row */}
-        {Array.from({ length: 3 - item.groups.length }).map((_, index) => {
-          return <View key={index} className="flex-1" />;
-        })}
-      </View>
-    );
-  }, []);
+          {/* Fill the remaining space for this row */}
+          {Array.from({ length: 3 - item.groups.length }).map((_, index) => {
+            return <View key={index} className="flex-1" />;
+          })}
+        </View>
+      );
+    },
+    [screen]
+  );
 
   return (
     <View className="flex flex-col flex-1" style={style}>
@@ -188,9 +199,10 @@ type TokenGridProps = {
   style?: ViewProps['style'];
   tokenRefs: ProfilePicturePickerGridTokenGridFragment$key;
   contractAddress: string;
+  screen: ScreenWithNftSelector;
 };
 
-function TokenGrid({ tokenRefs, contractAddress, style }: TokenGridProps) {
+function TokenGrid({ tokenRefs, contractAddress, screen, style }: TokenGridProps) {
   const tokens = useFragment(
     graphql`
       fragment ProfilePicturePickerGridTokenGridFragment on Token @relay(plural: true) {
@@ -223,7 +235,7 @@ function TokenGrid({ tokenRefs, contractAddress, style }: TokenGridProps) {
       onPress={() => {
         navigation.navigate('ProfilePicturePickerContract', {
           contractAddress: contractAddress,
-          screen: 'ProfilePicture',
+          screen,
         });
       }}
       style={style}
@@ -257,9 +269,10 @@ type TokenGroupProps = {
   style?: ViewProps['style'];
   tokenRefs: ProfilePicturePickerGridOneOrManyFragment$key;
   contractAddress: string;
+  screen: ScreenWithNftSelector;
 };
 
-function TokenGroup({ tokenRefs, contractAddress, style }: TokenGroupProps) {
+function TokenGroup({ tokenRefs, contractAddress, style, screen }: TokenGroupProps) {
   const tokens = useFragment(
     graphql`
       fragment ProfilePicturePickerGridOneOrManyFragment on Token @relay(plural: true) {
@@ -290,7 +303,7 @@ function TokenGroup({ tokenRefs, contractAddress, style }: TokenGroupProps) {
           tokenRef={firstToken}
         />
       ) : (
-        <TokenGrid contractAddress={contractAddress} tokenRefs={tokens} />
+        <TokenGrid contractAddress={contractAddress} tokenRefs={tokens} screen={screen} />
       )}
     </View>
   );
