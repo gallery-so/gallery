@@ -22,6 +22,7 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionaDetailsNonPOAP
       fragment NftAdditionalDetailsEthFragment on Token {
         externalUrl
         tokenId
+        tokenMetadata
         contract {
           creatorAddress {
             address
@@ -40,7 +41,7 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionaDetailsNonPOAP
     tokenRef
   );
 
-  const { tokenId, contract, externalUrl } = token;
+  const { tokenId, contract, externalUrl, tokenMetadata } = token;
 
   const [refresh, isRefreshing] = useRefreshMetadata(token);
 
@@ -51,6 +52,12 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionaDetailsNonPOAP
 
     return null;
   }, [contract?.contractAddress?.address, tokenId]);
+
+  const mirrorXyzUrl = useMemo(() => {
+    const mirrorUrlPattern = /(https?:\/\/\S*mirror\.xyz\S*)/;
+    const mirrorXyzUrl = tokenMetadata?.match(mirrorUrlPattern);
+    return mirrorXyzUrl ? mirrorXyzUrl[0] : "";
+  }, [tokenMetadata, tokenId]);
 
   return (
     <VStack gap={16}>
@@ -76,6 +83,7 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionaDetailsNonPOAP
       )}
 
       <StyledLinkContainer>
+        {mirrorXyzUrl && <InteractiveLink href={mirrorXyzUrl}>View on Mirror</InteractiveLink>}
         {openSeaExternalUrl && (
           <>
             <InteractiveLink href={openSeaExternalUrl}>View on OpenSea</InteractiveLink>
@@ -85,6 +93,7 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionaDetailsNonPOAP
           </>
         )}
         {externalUrl && <InteractiveLink href={externalUrl}>More Info</InteractiveLink>}
+        
       </StyledLinkContainer>
     </VStack>
   );

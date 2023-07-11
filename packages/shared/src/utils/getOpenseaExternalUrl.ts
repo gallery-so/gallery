@@ -12,11 +12,11 @@ export const hexHandler = (str: string) => {
   return d;
 };
 
-export const getOpenseaExternalUrl = (contractAddress: string, tokenId: string) => {
+export const getOpenseaExternalUrl = (contractAddress: string, tokenId: string, chain: string = "ethereum") => {
   const hexTokenId = hexHandler(tokenId);
 
   // Allows us to get referral credit
   const ref = GALLERY_OS_ADDRESS;
 
-  return `https://opensea.io/assets/ethereum/${contractAddress}/${hexTokenId}?ref=${ref}`;
+  return `https://opensea.io/assets/${chain}/${contractAddress}/${hexTokenId}?ref=${ref}`;
 };
