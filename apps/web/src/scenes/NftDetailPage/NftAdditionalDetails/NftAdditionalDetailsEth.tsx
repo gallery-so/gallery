@@ -43,6 +43,8 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionaDetailsNonPOAP
   );
 
   const { tokenId, contract, externalUrl, tokenMetadata, chain } = token;
+  const metadataObj = JSON.parse(tokenMetadata ?? "");
+  const tokenDesc = metadataObj.description;
 
   const [refresh, isRefreshing] = useRefreshMetadata(token);
 
@@ -54,15 +56,11 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionaDetailsNonPOAP
     return null;
   }, [chain, contract?.contractAddress?.address, tokenId]);
 
-  const mirrorXyzUrl = useMemo(() => {
-    const metadata = JSON.parse(tokenMetadata ?? "");
-    const description = metadata.description;
-    const startsWithMirrorXYZ = description?.startsWith("https://mirror.xyz");
-    if (startsWithMirrorXYZ) {
-      return description
-    }
-    return "";
-  }, [tokenMetadata, tokenId]);
+  const isMirrorXyzUrl = useMemo(() => {
+    const startsWithMirrorXYZ = tokenDesc?.startsWith("https://mirror.xyz");
+    const hasWhitespaceInMiddle = /\s/.test(tokenDesc);
+    return startsWithMirrorXYZ && !hasWhitespaceInMiddle;
+  }, [tokenDesc, tokenId]);
 
   return (
     <VStack gap={16}>
@@ -88,7 +86,7 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionaDetailsNonPOAP
       )}
 
       <StyledLinkContainer>
-        {mirrorXyzUrl && <InteractiveLink href={mirrorXyzUrl}>View on Mirror</InteractiveLink>}
+        {isMirrorXyzUrl && <InteractiveLink href={tokenDesc}>View on Mirror</InteractiveLink>}
         {openSeaExternalUrl && (
           <>
             <InteractiveLink href={openSeaExternalUrl}>View on OpenSea</InteractiveLink>
