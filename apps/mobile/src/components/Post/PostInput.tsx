@@ -8,9 +8,7 @@ import colors from '~/shared/theme/colors';
 import { Typography } from '../Typography';
 
 export function PostInput() {
-  const [value, setValue] = useState(
-    'asda asda asdas asda asda asdas asda asda asdas asda asda asdas asda asda asdas asda asda asdas asda asda asdas asdas asda asda asdas asda asda asdas asda asda asdas asda asda asdas asdas asda asda asdas asda asda asdas asda asda asdas asda asda asdasx asda asda asdas asda asda asdas asda asda asdas asda asda asdas asda asda asdas asda asda asdas asda asda asdas asdas asda asda asdas asda asda asdas asda asda asdas asda asda asdas asdas asda asda asdas asda asda asdas asda asda asdas asda asda asdasx asda asda asdas asda asda asdas asda asda asdas asda asda asdas asda asda asdas asda asda asda'
-  );
+  const [value, setValue] = useState('');
 
   const { colorScheme } = useColorScheme();
 
