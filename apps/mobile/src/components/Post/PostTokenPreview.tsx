@@ -54,8 +54,8 @@ export function PostTokenPreview() {
   }, [token]);
 
   return (
-    <View>
-      <View className="bg-red">
+    <View className="flex flex-col space-y-2">
+      <View className="bg-offWhite">
         <ReportingErrorBoundary
           fallback={
             <View className="w-full aspect-square">
@@ -75,19 +75,20 @@ export function PostTokenPreview() {
           onPress={() => {}}
           size="xs"
           border
+          color="white"
           className="absolute -top-2 -right-2"
         />
       </View>
 
-      <View className="flex flex-col space-y-2">
+      <View className="flex flex-col">
         <Typography
-          className="text-lg text-black-800 mb-2"
+          className="text-lg text-black-800 leading-none"
           font={{ family: 'ABCDiatype', weight: 'Bold' }}
         >
           {token.name}
         </Typography>
         <Typography
-          className="text-lg text-metal"
+          className="text-lg text-metal leading-none"
           font={{ family: 'ABCDiatype', weight: 'Regular' }}
         >
           {token.contract?.name}

@@ -10,6 +10,7 @@ type IconContainerProps = {
   onPress: () => void;
   size?: 'xs' | 'sm' | 'md';
   border?: boolean;
+  color?: 'default' | 'white';
 } & GalleryTouchableOpacityProps;
 
 export function IconContainer({
@@ -18,6 +19,7 @@ export function IconContainer({
   style,
   size,
   border,
+  color,
   ...props
 }: IconContainerProps) {
   const sizeVariants: { [size in 'xs' | 'sm' | 'md']: string } = {
@@ -26,12 +28,18 @@ export function IconContainer({
     md: 'h-8 w-8',
   };
 
+  const colorVariants: { [color in 'default' | 'white']: string } = {
+    default: 'bg-faint dark:bg-black-500',
+    white: 'bg-white dark:bg-black-900',
+  };
+
   return (
     <GalleryTouchableOpacity style={style} onPress={onPress} {...props}>
       <View
         className={clsx(
           'bg-faint dark:bg-black-500 items-center justify-center rounded-full',
           sizeVariants[size ?? 'md'],
+          colorVariants[color ?? 'default'],
           border && 'border-[0.5px] border-black-800'
         )}
       >
