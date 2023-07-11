@@ -24,9 +24,10 @@ export function PostScreen() {
   const navigation = useNavigation<FeedTabNavigatorProp>();
   const { pushToast } = useToastActions();
   const handlePost = useCallback(() => {
+    navigation.pop(1);
     navigation.navigate('Trending');
-
     pushToast({
+      // TODO: Replace with actual token name
       message: 'Successfully posted **Finiliar #196**',
     });
   }, [navigation, pushToast]);
