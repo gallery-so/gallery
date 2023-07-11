@@ -53,13 +53,13 @@ function WarningPostBottomSheet(props: Props, ref: ForwardedRef<GalleryBottomShe
       >
         <View className="flex flex-col space-y-4">
           <Typography
-            className="text-lg text-black-900"
+            className="text-lg text-black-900 dark:text-offWhite"
             font={{ family: 'ABCDiatype', weight: 'Bold' }}
           >
             Are you sure?
           </Typography>
           <Typography
-            className="text-lg text-black-900"
+            className="text-lg text-black-900 dark:text-offWhite"
             font={{ family: 'ABCDiatype', weight: 'Regular' }}
           >
             If you go back now, this post will be discarded.

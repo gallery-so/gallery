@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Animated, StyleSheet,View } from 'react-native';
+import { Animated, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { XMarkIcon } from 'src/icons/XMarkIcon';
 
@@ -77,7 +77,7 @@ export function AnimatedToast({ message, onClose = () => {}, autoClose = true }:
         animatedStyles,
       ]}
     >
-      <View className="flex-row items-center p-2 space-x-2 bg-white border">
+      <View className="flex-row items-center p-2 space-x-2 bg-offWhite dark:bg-black-800 border border-black-800 dark:border-porcelain">
         <Markdown style={markdownStyles}>{message}</Markdown>
 
         <GalleryTouchableOpacity onPress={handleClose} eventElementId={null} eventName={null}>

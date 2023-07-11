@@ -1,6 +1,6 @@
 import { createContext, memo, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
 
-import { AnimatedToast } from '~/components/Toast/toast';
+import { AnimatedToast } from '~/components/Toast/Toast';
 
 type DismissToastHandler = () => void;
 

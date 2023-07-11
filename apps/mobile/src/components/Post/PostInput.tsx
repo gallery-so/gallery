@@ -23,7 +23,7 @@ export function PostInput() {
 
   return (
     <View
-      className="relative border bg-offWhite border-porcelain pb-6"
+      className="relative border bg-offWhite dark:bg-black-900 border-porcelain dark:border-black-500 pb-6"
       style={{
         height: 117,
       }}
@@ -37,6 +37,7 @@ export function PostInput() {
         multiline
         autoCapitalize="none"
         autoComplete="off"
+        placeholder="Add a description"
         style={{ flex: 1, color: colorScheme === 'dark' ? colors.white : colors.black['800'] }}
       />
       {isTextTooLong && (
