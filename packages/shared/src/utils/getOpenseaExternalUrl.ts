@@ -12,7 +12,8 @@ export const hexHandler = (str: string) => {
   return d;
 };
 
-export const getOpenseaExternalUrl = (contractAddress: string, tokenId: string, chain: string = "ethereum") => {
+export const getOpenseaExternalUrl = (contractAddress: string, tokenId: string, chainStr: string = "ethereum") => {
+  const chain = chainStr.toLocaleLowerCase();
   const hexTokenId = hexHandler(tokenId);
 
   // Allows us to get referral credit

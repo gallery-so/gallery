@@ -22,6 +22,7 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionaDetailsNonPOAP
       fragment NftAdditionalDetailsEthFragment on Token {
         externalUrl
         tokenId
+        chain
         tokenMetadata
         contract {
           creatorAddress {
@@ -41,13 +42,13 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionaDetailsNonPOAP
     tokenRef
   );
 
-  const { tokenId, contract, externalUrl, tokenMetadata } = token;
+  const { tokenId, contract, externalUrl, tokenMetadata, chain } = token;
 
   const [refresh, isRefreshing] = useRefreshMetadata(token);
 
   const openSeaExternalUrl = useMemo(() => {
-    if (contract?.contractAddress?.address && tokenId) {
-      return getOpenseaExternalUrl(contract.contractAddress.address, tokenId);
+    if (contract?.contractAddress?.address && tokenId && chain) {
+      return getOpenseaExternalUrl(contract.contractAddress.address, tokenId, chain);
     }
 
     return null;
@@ -93,7 +94,6 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionaDetailsNonPOAP
           </>
         )}
         {externalUrl && <InteractiveLink href={externalUrl}>More Info</InteractiveLink>}
-        
       </StyledLinkContainer>
     </VStack>
   );
