@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Animated, View } from 'react-native';
+import { Animated, View, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { XMarkIcon } from 'src/icons/XMarkIcon';
 
@@ -17,9 +17,13 @@ type Props = {
   autoClose?: boolean;
 };
 
-const noop = () => {};
+const markdownStyles = StyleSheet.create({
+  paragraph: {
+    marginBottom: 0,
+  },
+});
 
-export function AnimatedToast({ message, onClose = noop, autoClose = true }: Props) {
+export function AnimatedToast({ message, onClose = () => {}, autoClose = true }: Props) {
   const animationValue = useState(new Animated.Value(0))[0];
 
   const { bottom } = useSafeAreaInsets();
@@ -35,7 +39,7 @@ export function AnimatedToast({ message, onClose = noop, autoClose = true }: Pro
       const timeoutId = setTimeout(() => {
         Animated.timing(animationValue, {
           toValue: 0,
-          duration: 300,
+          duration: ANIMATED_COMPONENT_TRANSITION_MS,
           useNativeDriver: true,
         }).start(() => onClose());
       }, ANIMATED_COMPONENT_TIMEOUT_MS);
@@ -47,7 +51,7 @@ export function AnimatedToast({ message, onClose = noop, autoClose = true }: Pro
   const handleClose = useCallback(() => {
     Animated.timing(animationValue, {
       toValue: 0,
-      duration: 300,
+      duration: ANIMATED_COMPONENT_TRANSITION_MS,
       useNativeDriver: true,
     }).start(onClose);
   }, [onClose, animationValue]);
@@ -74,7 +78,7 @@ export function AnimatedToast({ message, onClose = noop, autoClose = true }: Pro
       ]}
     >
       <View className="flex-row items-center p-2 space-x-2 bg-white border">
-        <Markdown>{message}</Markdown>
+        <Markdown style={markdownStyles}>{message}</Markdown>
 
         <GalleryTouchableOpacity onPress={handleClose} eventElementId={null} eventName={null}>
           <XMarkIcon />
