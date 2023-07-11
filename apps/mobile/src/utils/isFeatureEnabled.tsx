@@ -9,6 +9,7 @@ import { removeNullValues } from '~/shared/relay/removeNullValues';
 export enum FeatureFlag {
   PFP = 'PFP',
   BIG_EASEL = 'BIG_EASEL',
+  KOALA = 'KOALA',
 }
 
 // We need to ignore this fake value from Relay here since we're expecting
@@ -20,14 +21,17 @@ const ROLE_FLAGS: Record<Role, Record<FeatureFlag, boolean>> = {
   ADMIN: {
     BIG_EASEL: true,
     PFP: true,
+    KOALA: true,
   },
   BETA_TESTER: {
     BIG_EASEL: false,
     PFP: false,
+    KOALA: false,
   },
   EARLY_ACCESS: {
     BIG_EASEL: false,
     PFP: false,
+    KOALA: false,
   },
 };
 
