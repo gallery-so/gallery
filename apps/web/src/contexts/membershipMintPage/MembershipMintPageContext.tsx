@@ -63,8 +63,8 @@ const MembershipMintPageProvider = memo(({ children }: Props) => {
 
   const getSupply = useCallback(
     async (contract: Contract, tokenId: number) => {
-      const totalSupply = await contract.getTotalSupply(tokenId);
-      const usedSupply = await contract.getUsedSupply(tokenId);
+      const totalSupply = await contract.read.getTotalSupply([tokenId]);
+      const usedSupply = await contract.read.getUsedSupply([tokenId]);
 
       setTotalSupply(Number(totalSupply));
       setRemainingSupply(computeRemainingSupply(Number(usedSupply), Number(totalSupply)));
@@ -74,7 +74,7 @@ const MembershipMintPageProvider = memo(({ children }: Props) => {
 
   const getPrice = useCallback(
     async (contract: Contract, tokenId: number) => {
-      const price = await contract.getPrice(tokenId);
+      const price = await contract.read.getPrice([tokenId]);
       setPrice(Number(price));
     },
     [setPrice]

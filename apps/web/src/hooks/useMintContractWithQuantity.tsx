@@ -1,5 +1,4 @@
 import { Contract } from '@ethersproject/contracts';
-import { BigNumber } from 'ethers';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAccount } from 'wagmi';
 import web3 from 'web3';
@@ -38,7 +37,7 @@ export default function useMintContractWithQuantity({
   const [usedPublicSupply, setUsedPublicSupply] = useState(0);
   const [userOwnedSupply, setUserOwnedSupply] = useState(0);
   const [soldOut, setSoldOut] = useState(false);
-  const [tokenPrice, setTokenPrice] = useState(BigNumber.from(0));
+  const [tokenPrice, setTokenPrice] = useState(BigInt(0));
 
   // Show first 3 and last 3 characters of address
   const truncate = (address: string) => {
@@ -49,7 +48,10 @@ export default function useMintContractWithQuantity({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const updateSupplies = useCallback(async (contract: any, tokenId: number) => {
     if (contract) {
-      return [await contract.getPublicSupply(tokenId), await contract.getUsedPublicSupply(tokenId)];
+      return [
+        await contract.read.getPublicSupply([tokenId]),
+        await contract.read.getUsedPublicSupply([tokenId]),
+      ];
     }
   }, []);
 
@@ -59,7 +61,7 @@ export default function useMintContractWithQuantity({
     async (contract: any) => {
       if (contract && address) {
         try {
-          const balance = await contract.balanceOfType(tokenId, address);
+          const balance = await contract.read.balanceOfType([tokenId, address]);
           return web3.utils.hexToNumber(balance);
         } catch {
           return 0;
@@ -74,7 +76,7 @@ export default function useMintContractWithQuantity({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async (contract: any) => {
       if (contract) {
-        return await contract.getPrice(tokenId);
+        return await contract.read.getPrice([tokenId]);
       }
     },
     [tokenId]
@@ -84,8 +86,8 @@ export default function useMintContractWithQuantity({
   useEffect(() => {
     async function effect() {
       const supplies = await updateSupplies(contract, tokenId);
-      const sup = web3.utils.hexToNumber(supplies?.[0]);
-      const used = web3.utils.hexToNumber(supplies?.[1]);
+      const sup = Number(supplies?.[0]);
+      const used = Number(supplies?.[1]);
       setPublicSupply(sup);
       setUsedPublicSupply(used);
       setSoldOut(sup - used === 0);
@@ -128,8 +130,8 @@ export default function useMintContractWithQuantity({
     async (contract: any) => {
       if (!quantity) return;
       if (contract) {
-        const price = tokenPrice.mul(quantity);
-        return price;
+        const price = Number(tokenPrice) * quantity;
+        return BigInt(price);
       }
     },
     [quantity, tokenPrice]
@@ -142,10 +144,10 @@ export default function useMintContractWithQuantity({
       const price = await totalPrice(contract);
 
       if (contract && address) {
-        const merkleProof = (await contract.isAllowlistOnly(tokenId))
+        const merkleProof = (await contract.read.isAllowlistOnly([tokenId]))
           ? generateMerkleProof(address, Array.from(premiumAndActiveDiscordMembers))
           : [];
-        return contract.mint(address, tokenId, quantity, merkleProof, {
+        return contract.write.mint([address, tokenId, quantity, merkleProof], {
           value: price,
         });
       }

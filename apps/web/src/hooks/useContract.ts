@@ -1,10 +1,11 @@
-import { ContractInterface } from '@ethersproject/contracts';
-import { useContract, useProvider, useSigner } from 'wagmi';
+import { getContract } from '@wagmi/core';
+import { GetContractReturnType } from 'viem';
+import { usePublicClient, useWalletClient } from 'wagmi';
 
-import GALLERY_MEMENTOS_CONTRACT_ABI from '~/abis/gallery-mementos-contract.json';
-import GALLERY_MERCH_CONTRACT_ABI from '~/abis/gallery-merch-contract.json';
-import GENERAL_MEMBERSHIP_CONTRACT_ABI from '~/abis/general-membership-contract.json';
-import PREMIUM_MEMBERSHIP_CONTRACT_ABI from '~/abis/premium-membership-contract.json';
+import { GALLERY_MEMENTOS_CONTRACT_ABI } from '~/abis/galleryMementosContractAbi';
+import { GALLERY_MERCH_CONTRACT_ABI } from '~/abis/galleryMerchContractAbi';
+import { GENERAL_MEMBERSHIP_CONTRACT_ABI } from '~/abis/generalMembershipContractAbi';
+import { PREMIUM_MEMBERSHIP_CONTRACT_ABI } from '~/abis/premiumMembershipContractAbi';
 
 export const PREMIUM_MEMBERSHIP_CONTRACT_ADDRESS =
   process.env.NEXT_PUBLIC_PREMIUM_MEMBERSHIP_CONTRACT_ADDRESS ?? '';
@@ -15,17 +16,35 @@ export const GALLERY_MEMENTOS_CONTRACT_ADDRESS =
 export const GALLERY_MERCH_CONTRACT_ADDRESS =
   process.env.NEXT_PUBLIC_GALLERY_MERCH_CONTRACT_ADDRESS ?? '';
 
-function useContractWithAbi(contractAddress: string, contractAbi: ContractInterface) {
-  const { data: signer } = useSigner();
-  const chainId = parseInt(process.env.NEXT_PUBLIC_NETWORK_CONNECTOR_CHAIN_ID || '1');
-  const provider = useProvider({ chainId: chainId });
+type EthereumAddress = `0x${string}`;
 
-  return useContract({
-    address: contractAddress,
-    // @ts-expect-error typescript incompatibility between ethersproject <> wagmi
-    abi: contractAbi,
-    signerOrProvider: signer ?? provider,
+// getContract() from wagmi is strict about the address format
+function validateEthereumAddressFormat(input: string): EthereumAddress {
+  if (!input.match(/^0x[a-fA-F0-9]+$/)) {
+    throw new Error('Invalid input!');
+  }
+
+  return input as EthereumAddress;
+}
+
+function useContractWithAbi(contractAddress: string, contractAbi: object[]): GetContractReturnType {
+  const validatedAddress = validateEthereumAddressFormat(contractAddress);
+  const chainId = parseInt(process.env.NEXT_PUBLIC_NETWORK_CONNECTOR_CHAIN_ID || '1');
+  const { data: walletClient } = useWalletClient({
+    chainId,
   });
+
+  const publicClient = usePublicClient();
+
+  const contract = getContract({
+    address: validatedAddress,
+    abi: contractAbi,
+    // @ts-expect-error typescript
+    walletClient: walletClient ?? publicClient,
+  });
+
+  // @ts-expect-error typescript
+  return contract;
 }
 
 export function useMintMerchContract() {

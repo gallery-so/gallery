@@ -63,7 +63,7 @@ export default function useMintContract({ contract, tokenId, allowlist, onMintSu
           console.log('generating', address);
           const merkleProof = allowlist ? generateMerkleProof(address, Array.from(allowlist)) : [];
           console.log({ contract: contract.address, tokenId, address, merkleProof });
-          mintResult = await contract.mint(tokenId, address, merkleProof, {
+          mintResult = await contract.write.mint([tokenId, address, merkleProof], {
             value: ethers.utils.parseEther('0.000777'),
           });
         } catch (error: unknown) {

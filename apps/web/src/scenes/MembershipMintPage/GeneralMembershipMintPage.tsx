@@ -118,7 +118,7 @@ function GeneralMembershipMintPageContent({ queryRef }: ContentProps) {
     async (contract: Contract, tokenId: number) => {
       if (contract && account) {
         const merkleProof = generateMerkleProof(account, Array.from(allowlist));
-        return contract.mint(account, tokenId, merkleProof);
+        return contract.write.mint([account, tokenId, merkleProof]);
       }
     },
     [account, allowlist]

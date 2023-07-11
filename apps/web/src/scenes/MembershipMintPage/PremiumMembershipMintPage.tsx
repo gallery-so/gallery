@@ -28,7 +28,10 @@ function PremiumMembershipMintPage({ membershipNft }: Props) {
   const getCanMintToken = useCallback(
     async (contract: Contract) => {
       if (account) {
-        const canMintTokenResult = await contract.canMintToken(account, membershipNft.tokenId);
+        const canMintTokenResult = await contract.read.canMintToken([
+          account,
+          membershipNft.tokenId,
+        ]);
         setCanMintToken(canMintTokenResult);
       }
     },
@@ -37,7 +40,7 @@ function PremiumMembershipMintPage({ membershipNft }: Props) {
 
   const mintToken = useCallback(
     async (contract: Contract, tokenId: number) =>
-      contract.mint(account, tokenId, { value: price }),
+      contract.write.mint([account, tokenId], { value: price }),
     [account, price]
   );
 
