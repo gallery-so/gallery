@@ -24,6 +24,7 @@ export function NftAdditionalDetailsEth({ tokenRef, showDetails }: NftAdditional
         tokenId
 
         chain
+        tokenMetadata
 
         contract {
           creatorAddress {
@@ -42,7 +43,7 @@ export function NftAdditionalDetailsEth({ tokenRef, showDetails }: NftAdditional
     tokenRef
   );
 
-  const { tokenId, contract, externalUrl, chain } = token;
+  const { tokenId, contract, externalUrl, chain, tokenMetadata } = token;
 
   const openSeaExternalUrl = useMemo(() => {
     if (chain && contract?.contractAddress?.address && tokenId) {
@@ -51,6 +52,14 @@ export function NftAdditionalDetailsEth({ tokenRef, showDetails }: NftAdditional
 
     return null;
   }, [chain, contract?.contractAddress?.address, tokenId]);
+
+  const mirrorXyzUrl = useMemo(() => {
+    if (tokenMetadata) {
+      return extractMirrorXyzUrl(tokenMetadata)
+    }
+    
+    return null; 
+  }, [tokenMetadata]);
 
   return (
     <View className="flex flex-col space-y-4">
@@ -88,6 +97,14 @@ export function NftAdditionalDetailsEth({ tokenRef, showDetails }: NftAdditional
             <DetailSection>
               <DetailLabelText>CHAIN</DetailLabelText>
               <DetailValue>{token.chain}</DetailValue>
+            </DetailSection>
+          )}
+
+          {mirrorXyzUrl && (
+            <DetailSection>
+              <InteractiveLink href={mirrorXyzUrl} type="NFT Detail View on Mirror">
+                View on Mirror
+              </InteractiveLink>
             </DetailSection>
           )}
 
