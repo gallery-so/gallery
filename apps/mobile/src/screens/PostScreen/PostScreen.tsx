@@ -44,7 +44,11 @@ export function PostScreen() {
             </Typography>
           </View>
 
-          <GalleryTouchableOpacity onPress={handlePost} eventElementId={null} eventName={null}>
+          <GalleryTouchableOpacity
+            onPress={handlePost}
+            eventElementId="Post Button"
+            eventName="Post button clicked"
+          >
             <Typography
               className="text-sm text-activeBlue"
               font={{

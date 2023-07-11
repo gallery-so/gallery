@@ -80,7 +80,11 @@ export function AnimatedToast({ message, onClose = () => {}, autoClose = true }:
       <View className="flex-row items-center p-2 space-x-2 bg-offWhite dark:bg-black-800 border border-black-800 dark:border-porcelain">
         <Markdown style={markdownStyles}>{message}</Markdown>
 
-        <GalleryTouchableOpacity onPress={handleClose} eventElementId={null} eventName={null}>
+        <GalleryTouchableOpacity
+          onPress={handleClose}
+          eventElementId="Toast"
+          eventName="Toast closed clicked"
+        >
           <XMarkIcon />
         </GalleryTouchableOpacity>
       </View>
