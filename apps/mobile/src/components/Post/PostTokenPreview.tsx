@@ -1,5 +1,5 @@
 import { RouteProp, useRoute } from '@react-navigation/native';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import { XMarkIcon } from 'src/icons/XMarkIcon';
@@ -11,11 +11,16 @@ import { NftDetailAssetCacheSwapper } from '~/screens/NftDetailScreen/NftDetailA
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
 
+import { GalleryBottomSheetModalType } from '../GalleryBottomSheet/GalleryBottomSheetModal';
 import { IconContainer } from '../IconContainer';
 import { NftPreviewErrorFallback } from '../NftPreview/NftPreviewErrorFallback';
 import { Typography } from '../Typography';
 
-export function PostTokenPreview() {
+type Props = {
+  bottomSheetRef: React.RefObject<GalleryBottomSheetModalType>;
+};
+
+export function PostTokenPreview({ bottomSheetRef }: Props) {
   const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'Post'>>();
 
   const query = useLazyLoadQuery<PostTokenPreviewQuery>(
@@ -53,6 +58,10 @@ export function PostTokenPreview() {
     return tokenUrls?.urls.large;
   }, [token]);
 
+  const handleBackPress = useCallback(() => {
+    bottomSheetRef.current?.present();
+  }, [bottomSheetRef]);
+
   return (
     <View className="flex flex-col space-y-2">
       <View className="bg-offWhite">
@@ -72,7 +81,7 @@ export function PostTokenPreview() {
           eventElementId={null}
           eventName={null}
           icon={<XMarkIcon height={8} />}
-          onPress={() => {}}
+          onPress={handleBackPress}
           size="xs"
           border
           color="white"
