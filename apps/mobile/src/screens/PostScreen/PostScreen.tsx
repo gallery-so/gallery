@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native';
 import { useCallback, useRef } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -9,6 +10,8 @@ import { PostInput } from '~/components/Post/PostInput';
 import { PostTokenPreview } from '~/components/Post/PostTokenPreview';
 import { WarningPostBottomSheet } from '~/components/Post/WarningPostBottomSheet';
 import { Typography } from '~/components/Typography';
+import { useToastActions } from '~/contexts/ToastContext';
+import { FeedTabNavigatorProp } from '~/navigation/types';
 
 export function PostScreen() {
   const { top } = useSafeAreaInsets();
@@ -17,6 +20,16 @@ export function PostScreen() {
   const handleBackPress = useCallback(() => {
     bottomSheetRef.current?.present();
   }, []);
+
+  const navigation = useNavigation<FeedTabNavigatorProp>();
+  const { pushToast } = useToastActions();
+  const handlePost = useCallback(() => {
+    navigation.navigate('Trending');
+
+    pushToast({
+      message: 'Successfully posted **Finiliar #196**',
+    });
+  }, [navigation, pushToast]);
 
   return (
     <View className="flex-1 bg-white dark:bg-black-900" style={{ paddingTop: top }}>
@@ -30,7 +43,7 @@ export function PostScreen() {
             </Typography>
           </View>
 
-          <GalleryTouchableOpacity onPress={() => {}} eventElementId={null} eventName={null}>
+          <GalleryTouchableOpacity onPress={handlePost} eventElementId={null} eventName={null}>
             <Typography
               className="text-sm text-activeBlue"
               font={{

@@ -24,6 +24,7 @@ import { RootStackNavigator } from '~/navigation/RootStackNavigator';
 import { DevMenuItems } from './components/DevMenuItems';
 import { LoadingView } from './components/LoadingView';
 import SearchProvider from './components/Search/SearchContext';
+import ToastProvider from './contexts/ToastContext';
 import { magic } from './magic';
 
 SplashScreen.preventAutoHideAsync();
@@ -128,13 +129,15 @@ export default function App() {
                     <magic.Relayer />
                     <SearchProvider>
                       <NavigationContainer ref={navigationRef}>
-                        <BottomSheetModalProvider>
-                          {/* Register the user's push token if one exists (does not prompt the user) */}
-                          <NotificationRegistrar />
-                          <DevMenuItems />
-                          <DeepLinkRegistrar />
-                          <RootStackNavigator navigationContainerRef={navigationRef} />
-                        </BottomSheetModalProvider>
+                        <ToastProvider>
+                          <BottomSheetModalProvider>
+                            {/* Register the user's push token if one exists (does not prompt the user) */}
+                            <NotificationRegistrar />
+                            <DevMenuItems />
+                            <DeepLinkRegistrar />
+                            <RootStackNavigator navigationContainerRef={navigationRef} />
+                          </BottomSheetModalProvider>
+                        </ToastProvider>
                       </NavigationContainer>
                     </SearchProvider>
                   </SafeAreaProvider>
