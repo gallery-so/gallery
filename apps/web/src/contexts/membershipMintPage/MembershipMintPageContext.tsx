@@ -1,5 +1,6 @@
-import { Contract } from '@ethersproject/contracts';
 import { createContext, memo, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
+
+import { WagmiContract } from '~/hooks/useContract';
 
 function computeRemainingSupply(usedSupply: number, totalSupply: number) {
   return Math.max(totalSupply - usedSupply, 0);
@@ -27,8 +28,8 @@ export const useMembershipMintPageState = (): MembershipMintPageState => {
 type MembershipMintPageActions = {
   setTotalSupply: (totalSupply: number) => void;
   setRemainingSupply: (remainingSupply: number) => void;
-  getSupply: (contract: Contract, tokenId: number) => void;
-  getPrice: (contract: Contract, tokenId: number) => void;
+  getSupply: (contract: WagmiContract, tokenId: number) => void;
+  getPrice: (contract: WagmiContract, tokenId: number) => void;
   setPrice: (price: number) => void;
 };
 
@@ -62,7 +63,7 @@ const MembershipMintPageProvider = memo(({ children }: Props) => {
   );
 
   const getSupply = useCallback(
-    async (contract: Contract, tokenId: number) => {
+    async (contract: WagmiContract, tokenId: number) => {
       const totalSupply = await contract.read.getTotalSupply([tokenId]);
       const usedSupply = await contract.read.getUsedSupply([tokenId]);
 
@@ -73,7 +74,7 @@ const MembershipMintPageProvider = memo(({ children }: Props) => {
   );
 
   const getPrice = useCallback(
-    async (contract: Contract, tokenId: number) => {
+    async (contract: WagmiContract, tokenId: number) => {
       const price = await contract.read.getPrice([tokenId]);
       setPrice(Number(price));
     },

@@ -1,4 +1,3 @@
-import { Contract } from '@ethersproject/contracts';
 import { ethers } from 'ethers';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAccount } from 'wagmi';
@@ -7,8 +6,10 @@ import { useConnectEthereum } from '~/components/WalletSelector/multichain/useCo
 import { TransactionStatus } from '~/constants/transaction';
 import MerkleTree, { generateMerkleProof } from '~/utils/MerkleTree';
 
+import { WagmiContract } from './useContract';
+
 type Props = {
-  contract: Contract | null;
+  contract: WagmiContract | null;
   tokenId: number;
   allowlist?: string[];
   onMintSuccess?: () => void;

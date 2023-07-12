@@ -1,4 +1,3 @@
-import { Contract } from '@ethersproject/contracts';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAccount } from 'wagmi';
 import web3 from 'web3';
@@ -9,8 +8,10 @@ import { MAX_NFTS_PER_WALLET } from '~/scenes/MerchStorePage/constants';
 import premiumAndActiveDiscordMembers from '~/snapshots/aug_2022_merch/premiumAndActiveDiscordMembers.json';
 import MerkleTree from '~/utils/MerkleTree';
 
+import { WagmiContract } from './useContract';
+
 type Props = {
-  contract: Contract | null;
+  contract: WagmiContract | null;
   tokenId: number;
   onMintSuccess?: () => void;
   quantity?: number;
@@ -138,7 +139,7 @@ export default function useMintContractWithQuantity({
   );
 
   const mintToken = useCallback(
-    async (contract: Contract, tokenId: number, quantity: number) => {
+    async (contract: WagmiContract, tokenId: number, quantity: number) => {
       console.log({ premiumAndActiveDiscordMembers });
 
       const price = await totalPrice(contract);

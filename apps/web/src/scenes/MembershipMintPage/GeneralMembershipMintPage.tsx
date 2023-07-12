@@ -1,4 +1,3 @@
-import { Contract } from '@ethersproject/contracts';
 import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -14,6 +13,7 @@ import { GeneralMembershipMintPageUseAllowlistFragment$key } from '~/generated/G
 import {
   GENERAL_MEMBERSHIP_CONRTACT_ADDRESS,
   useGeneralMembershipCardContract,
+  WagmiContract,
 } from '~/hooks/useContract';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import MerkleTree from '~/utils/MerkleTree';
@@ -115,7 +115,7 @@ function GeneralMembershipMintPageContent({ queryRef }: ContentProps) {
   }, [account]);
 
   const mintToken = useCallback(
-    async (contract: Contract, tokenId: number) => {
+    async (contract: WagmiContract, tokenId: number) => {
       if (contract && account) {
         const merkleProof = generateMerkleProof(account, Array.from(allowlist));
         return contract.write.mint([account, tokenId, merkleProof]);

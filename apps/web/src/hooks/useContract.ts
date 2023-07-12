@@ -1,5 +1,5 @@
 import { getContract } from '@wagmi/core';
-import { GetContractReturnType } from 'viem';
+import { Abi, GetContractReturnType } from 'viem';
 import { usePublicClient, useWalletClient } from 'wagmi';
 
 import { GALLERY_MEMENTOS_CONTRACT_ABI } from '~/abis/galleryMementosContractAbi';
@@ -27,38 +27,58 @@ function validateEthereumAddressFormat(input: string): EthereumAddress {
   return input as EthereumAddress;
 }
 
-function useContractWithAbi(contractAddress: string, contractAbi: object[]): GetContractReturnType {
+// This is a workaround for the fact that the type of the contract returned by getContract() is not
+// compatible with the type of the contract returned by useContract() from viem.
+
+// To avoid a refactor now, whenever we interact with the contract, we're using the legacy `write` and `read` properties
+// from the contract which allows us to call the abi methods directly.
+// This isn't ideal because getContract() returns a viem Contract instance whose type doesnt include `write` and `read` properties.
+// The WagmiContract type is a workaround to satisfy typecheck and allow us to use the `write` and `read` properties without needing to ignore typescript errors everywhere we use the contract.
+// TODO: refactor contract interactions to use viem syntax https://viem.sh/docs/contract/readContract.html
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type WagmiContract = GetContractReturnType<Abi> & { write?: any; read?: any };
+
+function useContractWithAbi(contractAddress: string, contractAbi: Abi): WagmiContract {
   const validatedAddress = validateEthereumAddressFormat(contractAddress);
   const chainId = parseInt(process.env.NEXT_PUBLIC_NETWORK_CONNECTOR_CHAIN_ID || '1');
   const { data: walletClient } = useWalletClient({
     chainId,
   });
-
+  const abi = [...contractAbi] as const;
   const publicClient = usePublicClient();
 
   const contract = getContract({
     address: validatedAddress,
-    abi: contractAbi,
+    abi: abi,
     // @ts-expect-error typescript
     walletClient: walletClient ?? publicClient,
   });
 
-  // @ts-expect-error typescript
   return contract;
 }
 
 export function useMintMerchContract() {
-  return useContractWithAbi(GALLERY_MERCH_CONTRACT_ADDRESS, GALLERY_MERCH_CONTRACT_ABI);
+  return useContractWithAbi(GALLERY_MERCH_CONTRACT_ADDRESS, GALLERY_MERCH_CONTRACT_ABI as Abi);
 }
 
 export function usePremiumMembershipCardContract() {
-  return useContractWithAbi(PREMIUM_MEMBERSHIP_CONTRACT_ADDRESS, PREMIUM_MEMBERSHIP_CONTRACT_ABI);
+  return useContractWithAbi(
+    PREMIUM_MEMBERSHIP_CONTRACT_ADDRESS,
+    PREMIUM_MEMBERSHIP_CONTRACT_ABI as Abi
+  );
 }
 
 export function useGeneralMembershipCardContract() {
-  return useContractWithAbi(GENERAL_MEMBERSHIP_CONRTACT_ADDRESS, GENERAL_MEMBERSHIP_CONTRACT_ABI);
+  return useContractWithAbi(
+    GENERAL_MEMBERSHIP_CONRTACT_ADDRESS,
+    GENERAL_MEMBERSHIP_CONTRACT_ABI as Abi
+  );
 }
 
 export function useMintMementosContract() {
-  return useContractWithAbi(GALLERY_MEMENTOS_CONTRACT_ADDRESS, GALLERY_MEMENTOS_CONTRACT_ABI);
+  return useContractWithAbi(
+    GALLERY_MEMENTOS_CONTRACT_ADDRESS,
+    GALLERY_MEMENTOS_CONTRACT_ABI as Abi
+  );
 }
