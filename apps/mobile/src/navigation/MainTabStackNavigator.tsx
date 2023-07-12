@@ -31,13 +31,7 @@ export function MainTabStackNavigator({ initialRouteName, initialProfileParams }
       <Stack.Screen name="Collection" component={CollectionScreen} />
       <Stack.Screen name="FeedEvent" component={FeedEventScreen} />
       <Stack.Screen name="Community" component={CommunityScreen} />
-      <Stack.Screen
-        name="ProfilePicturePicker"
-        component={ProfilePicturePickerScreen}
-        initialParams={{
-          page: 'Post',
-        }}
-      />
+      <Stack.Screen name="ProfilePicturePicker" component={ProfilePicturePickerScreen} />
       <Stack.Screen
         name="ProfilePicturePickerContract"
         component={ProfilePicturePickerContractScreen}

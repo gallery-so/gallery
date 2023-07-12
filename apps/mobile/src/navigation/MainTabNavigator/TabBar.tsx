@@ -30,6 +30,17 @@ function TabItem({ navigation, route, icon, activeRoute }: TabItemProps) {
 
   const isFocused = activeRoute === route.name;
 
+  const handleOnPressIn = useCallback(() => {
+    if (route.name === 'PostTab') {
+      return;
+    }
+    setIsPressed(true);
+  }, [route.name]);
+
+  const handleOnPressOut = useCallback(() => {
+    setIsPressed(false);
+  }, []);
+
   const onPress = useCallback(() => {
     const event = navigation.emit({
       type: 'tabPress',
@@ -57,8 +68,8 @@ function TabItem({ navigation, route, icon, activeRoute }: TabItemProps) {
       eventElementId="Navigation Tab Item"
       eventName="Navigation Tab Item Clicked"
       properties={{ variant: 'Main', route: route.name }}
-      onPressIn={() => setIsPressed(true)}
-      onPressOut={() => setIsPressed(false)}
+      onPressIn={handleOnPressIn}
+      onPressOut={handleOnPressOut}
     >
       <View
         className={clsx(`px-0 flex h-8 w-8 items-center justify-center rounded-full`, {
