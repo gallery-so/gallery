@@ -43,7 +43,6 @@ export function CommunityCollectorsList({ communityRef, queryRef }: Props) {
               __typename
 
               user {
-                id
                 username
                 ...UserFollowCardFragment
               }

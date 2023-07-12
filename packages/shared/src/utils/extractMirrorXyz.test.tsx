@@ -9,10 +9,13 @@ describe('extractMirrorXyzUrl', () => {
     expect(extractMirrorXyzUrl(generateData('https://mirror.xyz/test/post'))).toEqual(
       'https://mirror.xyz/test/post'
     );
+
     expect(extractMirrorXyzUrl(generateData('https://mirror.xyz/'))).toEqual('https://mirror.xyz/');
     expect(extractMirrorXyzUrl(generateData('https://mirror'))).toEqual('');
     expect(extractMirrorXyzUrl(generateData('https://mirror.xzy'))).toEqual('');
-    expect(extractMirrorXyzUrl(generateData('https://mirror.xyz/posts/235 is the link'))).toEqual('');
+    expect(extractMirrorXyzUrl(generateData('https://mirror.xyz/posts/235 is the link'))).toEqual(
+      ''
+    );
     expect(extractMirrorXyzUrl(generateData('mirror.xyz'))).toEqual('');
   });
 });
