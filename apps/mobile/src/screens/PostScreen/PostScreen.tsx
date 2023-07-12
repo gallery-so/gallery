@@ -27,8 +27,7 @@ export function PostScreen() {
     navigation.pop(1);
     navigation.navigate('Trending');
     pushToast({
-      // TODO: Replace with actual token name
-      message: 'Successfully posted **Finiliar #196**',
+      children: <ToastMessage />,
     });
   }, [navigation, pushToast]);
 
@@ -71,6 +70,26 @@ export function PostScreen() {
       </View>
 
       <WarningPostBottomSheet ref={bottomSheetRef} />
+    </View>
+  );
+}
+
+// TODO: Replace with actual token name
+export function ToastMessage() {
+  return (
+    <View className="flex flex-row items-center gap-1">
+      <Typography
+        className="text-sm text-offBlack dark:text-offWhite"
+        font={{ family: 'ABCDiatype', weight: 'Regular' }}
+      >
+        Successfully posted
+      </Typography>
+      <Typography
+        className="text-sm text-offBlack dark:text-offWhite"
+        font={{ family: 'ABCDiatype', weight: 'Bold' }}
+      >
+        Finiliar #196
+      </Typography>
     </View>
   );
 }

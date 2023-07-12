@@ -1,10 +1,10 @@
-import { useCallback, useEffect, useState } from 'react';
-import { Animated, StyleSheet, View } from 'react-native';
+import { ReactNode,useCallback, useEffect, useState } from 'react';
+import { Animated, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { XMarkIcon } from 'src/icons/XMarkIcon';
 
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
-import { Markdown } from '../Markdown';
+import { Typography } from '../Typography';
 import {
   ANIMATED_COMPONENT_TIMEOUT_MS,
   ANIMATED_COMPONENT_TRANSITION_MS,
@@ -12,18 +12,13 @@ import {
 } from './transition';
 
 type Props = {
-  message: string;
+  message?: string;
   onClose?: () => void;
   autoClose?: boolean;
+  children?: ReactNode;
 };
 
-const markdownStyles = StyleSheet.create({
-  paragraph: {
-    marginBottom: 0,
-  },
-});
-
-export function AnimatedToast({ message, onClose = () => {}, autoClose = true }: Props) {
+export function AnimatedToast({ message, onClose = () => {}, autoClose = true, children }: Props) {
   const animationValue = useState(new Animated.Value(0))[0];
 
   const { bottom } = useSafeAreaInsets();
@@ -78,7 +73,16 @@ export function AnimatedToast({ message, onClose = () => {}, autoClose = true }:
       ]}
     >
       <View className="flex-row items-center p-2 space-x-2 bg-offWhite dark:bg-black-800 border border-black-800 dark:border-porcelain">
-        <Markdown style={markdownStyles}>{message}</Markdown>
+        {message && (
+          <Typography
+            className="text-sm text-offBlack dark:text-offWhite"
+            font={{ family: 'ABCDiatype', weight: 'Regular' }}
+          >
+            {message}
+          </Typography>
+        )}
+
+        {children && children}
 
         <GalleryTouchableOpacity
           onPress={handleClose}
