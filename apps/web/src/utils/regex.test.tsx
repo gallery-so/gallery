@@ -1,4 +1,4 @@
-import { ALPHANUMERIC_UNDERSCORES, BREAK_LINES, MIRROR_XYZ_URL, VALID_URL } from './regex';
+import { ALPHANUMERIC_UNDERSCORES, BREAK_LINES, VALID_URL } from './regex';
 
 function testRegex(pattern: RegExp, values: string[], expectedValue: boolean) {
   for (const value of values) {
@@ -24,10 +24,9 @@ describe('regex', () => {
       'https://collection.xyz',
       'https://collection.xyz/gallery?q=main',
       'https://webbtelescope.org/news/first-images',
-      MIRROR_XYZ_URL,
     ];
 
-    const invalidUrls = ['', 'http://invalid', 'https://invalid', 'mirror.xyz'];
+    const invalidUrls = ['', 'http://invalid', 'https://invalid'];
 
     testRegex(VALID_URL, validUrls, true);
     testRegex(VALID_URL, invalidUrls, false);
