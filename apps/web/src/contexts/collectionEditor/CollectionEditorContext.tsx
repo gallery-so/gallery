@@ -152,7 +152,6 @@ export const CollectionEditorProvider = memo(({ children }: Props) => {
       }
 
       updateCollection(collectionIdBeingEdited, (previousCollection) => {
-        console.log('previousCollection:', previousCollection);
         const previousHdDisplayTokenIds = previousCollection.highDefinitionTokenIds;
 
         let nextHdDisplayTokenIds;
