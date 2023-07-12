@@ -15,4 +15,4 @@ jobs:
       - name: Run web unit tests
         run: node_modules/.bin/moon run web:codegen && node_modules/.bin/moon run web:test
       - name: Run shared package tests
-        run: node_modules/.bin/moon run shared:test
+        run: node_modules/.bin/moon run shared:relay-codegen && node_modules/.bin/moon run shared:test
