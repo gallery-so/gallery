@@ -14,7 +14,7 @@ import { ChainMetadata } from '~/components/GalleryEditor/PiecesSidebar/chains';
 import { SidebarWalletSelectorFragment$key } from '~/generated/SidebarWalletSelectorFragment.graphql';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 
-export type SidebarWallet = string;
+export type SidebarWallet = any;
 
 type SidebarWalletSelectorProps = {
   queryRef: SidebarWalletSelectorFragment$key;
@@ -74,11 +74,18 @@ export default function SidebarWalletSelector({
     },
     [track, onSelectedWalletChange]
   );
-
+  const dispVal = () => {
+    if (typeof selectedWallet === 'string') {
+      return 'All';
+    } else if (selectedWallet) {
+      return selectedWallet.chainAddress.address.slice(0, 6);
+    }
+    return 'All';
+  };
   return (
     <Container>
       <Selector gap={10} align="center" onClick={() => setIsDropdownOpen(true)}>
-        <BaseM>{selectedWallet}</BaseM>
+        <BaseM>{dispVal()}</BaseM>
         <IconContainer variant="stacked" size="sm" icon={<DoubleArrowsIcon />} />
       </Selector>
       <StyledDropdown
@@ -88,12 +95,12 @@ export default function SidebarWalletSelector({
       >
         <DropdownSection>
           <DropdownItem onClick={() => onSelectWallet('ALL')}>
-            <BaseM>ALL</BaseM>
+            <BaseM>All</BaseM>
           </DropdownItem>
           {userWalletsOnSelectedNetwork.map((wallet) => (
-          <DropdownItem onClick={() => onSelectWallet(wallet)}>
-            <BaseM>{wallet.chainAddress.address}</BaseM>
-          </DropdownItem>
+            <DropdownItem onClick={() => onSelectWallet(wallet)}>
+              <BaseM>{wallet.chainAddress.address.slice(0, 6)}</BaseM>
+            </DropdownItem>
           ))}
         </DropdownSection>
       </StyledDropdown>

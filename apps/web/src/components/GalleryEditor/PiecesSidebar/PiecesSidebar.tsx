@@ -76,7 +76,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
 
   const [searchResults, setSearchResults] = useState<string[]>([]);
   const [selectedChain, setSelectedChain] = useState<ChainMetadata>(chainsMap['Ethereum']);
-  const [selectedWallet, setSelectedWallet] = useState<string>("ALL");
+  const [selectedWallet, setSelectedWallet] = useState<any>("All");
   const [selectedView, setSelectedView] = useState<SidebarView>('Collected');
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
 
