@@ -13,6 +13,7 @@ import { useNftRetry } from '~/hooks/useNftRetry';
 import isLiveMediaType from '~/utils/isLiveMediaType';
 import { getBackgroundColorOverrideForContract } from '~/utils/token';
 
+import HdButton from './HdButton';
 import LiveDisplayButton from './LiveDisplayButton';
 import StagedNftImage from './StagedNftImage';
 import UnstageButton from './UnstageButton';
@@ -102,7 +103,7 @@ function SortableStagedNft({ tokenRef, size, mini }: Props) {
         />
       </NftFailureBoundary>
       <StyledUnstageButton id={id} />
-      {isLiveType && <LiveDisplayButton id={id} />}
+      {isLiveType ? <LiveDisplayButton id={id} /> : <HdButton id={id} />}
     </StyledSortableNft>
   );
 }

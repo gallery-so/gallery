@@ -33,6 +33,7 @@ type CollectionEditorContextType = {
   // Derived
   stagedTokenIds: Set<string>;
   liveDisplayTokenIds: Set<string>;
+  highDefinitionTokenIds: Set<string>;
 
   // Actions
   toggleTokenStaged: (tokenId: string) => void;
@@ -49,6 +50,7 @@ type CollectionEditorContextType = {
   decrementColumns: (sectionId: string) => void;
 
   toggleTokenLiveDisplay: (tokenId: string) => void;
+  toggleTokenHighDefinition: (tokenId: string) => void;
 
   activateSection: (sectionId: string) => void;
 
@@ -71,6 +73,10 @@ export const CollectionEditorProvider = memo(({ children }: Props) => {
   const liveDisplayTokenIds = useMemo(() => {
     return collectionBeingEdited?.liveDisplayTokenIds ?? new Set<string>();
   }, [collectionBeingEdited?.liveDisplayTokenIds]);
+
+  const highDefinitionTokenIds = useMemo(() => {
+    return collectionBeingEdited?.highDefinitionTokenIds ?? new Set<string>();
+  }, [collectionBeingEdited?.highDefinitionTokenIds]);
 
   const updateCollection = useCallback(
     (collectionId: string, value: SetStateAction<StagedCollection>) => {
@@ -134,6 +140,29 @@ export const CollectionEditorProvider = memo(({ children }: Props) => {
         }
 
         return { ...previousCollection, liveDisplayTokenIds: nextLiveDisplayTokenIds };
+      });
+    },
+    [collectionIdBeingEdited, updateCollection]
+  );
+
+  const setHighDefinitionTokenIds = useCallback<Dispatch<SetStateAction<Set<string>>>>(
+    (value) => {
+      if (!collectionIdBeingEdited) {
+        return;
+      }
+
+      updateCollection(collectionIdBeingEdited, (previousCollection) => {
+        console.log('previousCollection:', previousCollection);
+        const previousHdDisplayTokenIds = previousCollection.highDefinitionTokenIds;
+
+        let nextHdDisplayTokenIds;
+        if (typeof value === 'function') {
+          nextHdDisplayTokenIds = value(previousHdDisplayTokenIds);
+        } else {
+          nextHdDisplayTokenIds = value;
+        }
+
+        return { ...previousCollection, highDefinitionTokenIds: nextHdDisplayTokenIds };
       });
     },
     [collectionIdBeingEdited, updateCollection]
@@ -237,6 +266,13 @@ export const CollectionEditorProvider = memo(({ children }: Props) => {
         return cloned;
       });
 
+      setHighDefinitionTokenIds((previous) => {
+        const cloned = new Set(previous);
+        sectionTokenIds.forEach((tokenId) => cloned.delete(tokenId));
+
+        return cloned;
+      });
+
       const nextSections = sections.filter((section) => section.id !== sectionId);
 
       // If this was the last section in the collection, make a new one so its not empty
@@ -249,7 +285,7 @@ export const CollectionEditorProvider = memo(({ children }: Props) => {
       setSections(nextSections);
       setActiveSectionId(nextActiveSectionId);
     },
-    [sections, setActiveSectionId, setLiveDisplayTokenIds, setSections]
+    [sections, setActiveSectionId, setLiveDisplayTokenIds, setHighDefinitionTokenIds, setSections]
   );
 
   const incrementColumns = useCallback(
@@ -285,6 +321,23 @@ export const CollectionEditorProvider = memo(({ children }: Props) => {
       });
     },
     [setLiveDisplayTokenIds]
+  );
+
+  const toggleTokenHighDefinition = useCallback(
+    (tokenId: string) => {
+      setHighDefinitionTokenIds((previous) => {
+        const cloned = new Set(previous);
+
+        if (cloned.has(tokenId)) {
+          cloned.delete(tokenId);
+        } else {
+          cloned.add(tokenId);
+        }
+
+        return cloned;
+      });
+    },
+    [setHighDefinitionTokenIds]
   );
 
   const stagedItemIds = useMemo(() => {
@@ -421,9 +474,11 @@ export const CollectionEditorProvider = memo(({ children }: Props) => {
       deleteSection,
       incrementColumns,
       liveDisplayTokenIds,
+      highDefinitionTokenIds,
       sections,
       stagedTokenIds,
       toggleTokenLiveDisplay,
+      toggleTokenHighDefinition,
       toggleTokenStaged,
       updateNameAndCollectorsNote,
     };
@@ -438,11 +493,13 @@ export const CollectionEditorProvider = memo(({ children }: Props) => {
     deleteSection,
     incrementColumns,
     liveDisplayTokenIds,
+    highDefinitionTokenIds,
     moveSectionDown,
     moveSectionUp,
     sections,
     stagedTokenIds,
     toggleTokenLiveDisplay,
+    toggleTokenHighDefinition,
     toggleTokenStaged,
     updateNameAndCollectorsNote,
     updateSections,
