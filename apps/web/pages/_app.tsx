@@ -1,6 +1,5 @@
 import 'src/scenes/WelcomeAnimation/intro.css';
 import 'src/index.css';
-import 'src/scenes/NftDetailPage/model-viewer.css';
 import 'react-loading-skeleton/dist/skeleton.css';
 
 import { Analytics } from '@vercel/analytics/react';

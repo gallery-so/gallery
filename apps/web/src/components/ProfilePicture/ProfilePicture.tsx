@@ -4,13 +4,13 @@ import { ProfilePictureFragment$key } from '~/generated/ProfilePictureFragment.g
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
 import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
 
-import { RawProfilePicture } from '../RawProfilePicture';
+import { RawProfilePicture, RawProfilePictureProps } from '../RawProfilePicture';
 
 type Props = {
   userRef: ProfilePictureFragment$key;
-};
+} & Omit<RawProfilePictureProps, 'imageUrl'>;
 
-export function ProfilePicture({ userRef }: Props) {
+export function ProfilePicture({ userRef, ...rest }: Props) {
   const user = useFragment(
     graphql`
       fragment ProfilePictureFragment on GalleryUser {
@@ -43,11 +43,9 @@ export function ProfilePicture({ userRef }: Props) {
   const firstLetter = user?.username?.substring(0, 1) ?? '';
 
   if (profileImage && profileImage.previewURLs?.medium)
-    return (
-      <RawProfilePicture imageUrl={profileImage.previewURLs.medium} hasInset isEditable size="xl" />
-    );
+    return <RawProfilePicture imageUrl={profileImage.previewURLs.medium} {...rest} />;
 
-  if (!token) return <RawProfilePicture letter={firstLetter} hasInset isEditable size="xl" />;
+  if (!token) return <RawProfilePicture letter={firstLetter} {...rest} />;
 
   const result = getVideoOrImageUrlForNftPreview({
     tokenRef: token,
@@ -65,5 +63,5 @@ export function ProfilePicture({ userRef }: Props) {
     throw new CouldNotRenderNftError('StagedNftImage', 'could not find a small url');
   }
 
-  return <RawProfilePicture imageUrl={result.urls.small} hasInset isEditable size="xl" />;
+  return <RawProfilePicture imageUrl={result.urls.small} {...rest} />;
 }

@@ -29,7 +29,7 @@ export function NftSelectorFilterSort({
 
   const onSelectView = useCallback(
     (selectedView: NftSelectorSortView) => {
-      track('Nft Selector Sort Dropdown Clicked', { variant: selectedView });
+      track('NFT Selector: Changed Sort Order', { variant: selectedView });
       onSelectedViewChange(selectedView);
       setIsDropdownOpen(false);
     },

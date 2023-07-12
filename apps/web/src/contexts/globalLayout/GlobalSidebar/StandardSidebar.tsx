@@ -23,9 +23,11 @@ import ShopIcon from '~/icons/ShopIcon';
 import UserIcon from '~/icons/UserIcon';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import useExperience from '~/utils/graphql/experiences/useExperience';
+import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 import { useDrawerActions, useDrawerState } from './SidebarDrawerContext';
 import SidebarIcon from './SidebarIcon';
+import SidebarPfp from './SidebarPfp';
 
 type Props = {
   queryRef: StandardSidebarFragment$key;
@@ -40,6 +42,7 @@ export function StandardSidebar({ queryRef }: Props) {
             __typename
             user {
               username
+              ...SidebarPfpFragment
             }
             notifications(last: 1) @connection(key: "StandardSidebarFragment_notifications") {
               unseenCount
@@ -55,6 +58,7 @@ export function StandardSidebar({ queryRef }: Props) {
         ...SettingsFragment
         ...useExperienceFragment
         ...useAnnouncementFragment
+        ...isFeatureEnabledFragment
       }
     `,
     queryRef
@@ -171,6 +175,17 @@ export function StandardSidebar({ queryRef }: Props) {
     return JSON.stringify(userGalleryRoute) === JSON.stringify(currentRoute);
   }, [activeDrawerType, pathname, routerQuery, userGalleryRoute]);
 
+  const isEditGalleriesActive = useMemo(() => {
+    // prevent highlight if another item in the drawer is selected
+    if (activeDrawerType) {
+      return false;
+    }
+    const currentRoute = { pathname, query: routerQuery };
+    return JSON.stringify(editGalleriesRoute) === JSON.stringify(currentRoute);
+  }, [activeDrawerType, pathname, routerQuery, editGalleriesRoute]);
+
+  const isPfpEnabled = isFeatureEnabled(FeatureFlag.PFP, query);
+
   useSearchHotkey(() => {
     showDrawer({
       content: <Search />,
@@ -239,24 +254,32 @@ export function StandardSidebar({ queryRef }: Props) {
             onClick={handleHomeIconClick}
             icon={<GLogoIcon />}
           />
-          {isLoggedIn && (
+          {isLoggedIn &&
+            query.viewer.user &&
+            (isPfpEnabled ? (
+              <SidebarPfp
+                userRef={query.viewer.user}
+                href={userGalleryRoute}
+                onClick={handleProfileClick}
+              />
+            ) : (
+              <SidebarIcon
+                href={userGalleryRoute}
+                tooltipLabel="My Profile"
+                onClick={handleProfileClick}
+                icon={<UserIcon />}
+                isActive={isLoggedInProfileActive}
+              />
+            ))}
+        </VStack>
+        {isLoggedIn ? (
+          <VStack gap={32}>
             <SidebarIcon
               href={editGalleriesRoute}
               tooltipLabel="Edit galleries"
               onClick={handleEditClick}
               icon={<EditPencilIcon />}
-              showBorderByDefault
-            />
-          )}
-        </VStack>
-        {isLoggedIn ? (
-          <VStack gap={32}>
-            <SidebarIcon
-              href={userGalleryRoute}
-              tooltipLabel="My profile"
-              onClick={handleProfileClick}
-              icon={<UserIcon />}
-              isActive={isLoggedInProfileActive}
+              isActive={isEditGalleriesActive}
             />
             <SidebarIcon
               tooltipLabel="Search"

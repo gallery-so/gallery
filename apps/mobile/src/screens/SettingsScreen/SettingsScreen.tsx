@@ -1,5 +1,6 @@
+import { useNavigation } from '@react-navigation/native';
 import Constants from 'expo-constants';
-import { ReactNode, useCallback, useRef, useState } from 'react';
+import { PropsWithChildren, ReactNode, useCallback, useRef, useState } from 'react';
 import { LayoutChangeEvent, Linking, ScrollView, View, ViewProps } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -9,8 +10,10 @@ import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/Gal
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { InteractiveLink } from '~/components/InteractiveLink';
 import { Typography } from '~/components/Typography';
+import { MainTabStackNavigatorProp } from '~/navigation/types';
 
 import { useLogout } from '../../hooks/useLogout';
+import { AccountIcon } from '../../icons/AccountIcon';
 import { BugReportIcon } from '../../icons/BugReportIcon';
 import { DiscordIcon } from '../../icons/DiscordIcon';
 import { GLogoIcon } from '../../icons/GLogoIcon';
@@ -22,6 +25,7 @@ const commitHash = Constants.expoConfig?.extra?.commitHash;
 
 export function SettingsScreen() {
   const { top } = useSafeAreaInsets();
+  const navigation = useNavigation<MainTabStackNavigatorProp>();
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
 
   const [bottomSectionHeight, setBottomSectionHeight] = useState(200);
@@ -41,6 +45,10 @@ export function SettingsScreen() {
   const handleTwitterPress = useCallback(() => {
     Linking.openURL('https://twitter.com/GALLERY');
   }, []);
+
+  const handleProfilePress = useCallback(() => {
+    navigation.navigate('SettingsProfile');
+  }, [navigation]);
 
   const [logout, isLoggingOut] = useLogout();
   const handleSignOut = useCallback(() => {
@@ -69,24 +77,33 @@ export function SettingsScreen() {
 
       <ScrollView
         contentContainerStyle={{ paddingBottom: bottomSectionHeight + 24 }}
-        className="px-2 pt-2 space-y-2 flex flex-col"
+        className="px-2 pt-2 space-y-6 flex flex-col"
       >
-        <SettingsRow
-          onPress={handleBugReportPress}
-          text="Report a bug"
-          icon={<BugReportIcon width={24} height={24} />}
-        />
-        <SettingsRow onPress={handleFaqPress} text="FAQ" icon={<GLogoIcon height={24} />} />
-        <SettingsRow
-          onPress={handleDiscordPress}
-          text="Discord"
-          icon={<DiscordIcon width={24} />}
-        />
-        <SettingsRow
-          onPress={handleTwitterPress}
-          text="Twitter"
-          icon={<TwitterIcon width={24} />}
-        />
+        <SettingsSection>
+          <SettingsRow
+            onPress={handleProfilePress}
+            text="Profile"
+            icon={<AccountIcon width={24} height={24} />}
+          />
+        </SettingsSection>
+        <SettingsSection>
+          <SettingsRow
+            onPress={handleBugReportPress}
+            text="Report a bug"
+            icon={<BugReportIcon width={24} height={24} />}
+          />
+          <SettingsRow onPress={handleFaqPress} text="FAQ" icon={<GLogoIcon height={24} />} />
+          <SettingsRow
+            onPress={handleDiscordPress}
+            text="Discord"
+            icon={<DiscordIcon width={24} />}
+          />
+          <SettingsRow
+            onPress={handleTwitterPress}
+            text="Twitter"
+            icon={<TwitterIcon width={24} />}
+          />
+        </SettingsSection>
       </ScrollView>
 
       <View
@@ -122,6 +139,14 @@ export function SettingsScreen() {
       </View>
 
       <FeedbackBottomSheet ref={bottomSheetRef} />
+    </View>
+  );
+}
+
+function SettingsSection({ children, style }: PropsWithChildren<{ style?: ViewProps['style'] }>) {
+  return (
+    <View className="space-y-2" style={style}>
+      {children}
     </View>
   );
 }

@@ -1,16 +1,23 @@
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
+import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
+import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { SomeoneFollowedYouFragment$key } from '~/generated/SomeoneFollowedYouFragment.graphql';
 
 type SomeoneFollowedYouProps = {
   notificationRef: SomeoneFollowedYouFragment$key;
   onClose: () => void;
+  isPfpVisible: boolean;
 };
 
-export function SomeoneFollowedYou({ notificationRef, onClose }: SomeoneFollowedYouProps) {
+export function SomeoneFollowedYou({
+  notificationRef,
+  onClose,
+  isPfpVisible,
+}: SomeoneFollowedYouProps) {
   const notification = useFragment(
     graphql`
       fragment SomeoneFollowedYouFragment on SomeoneFollowedYouNotification {
@@ -20,6 +27,7 @@ export function SomeoneFollowedYou({ notificationRef, onClose }: SomeoneFollowed
           edges {
             node {
               ...HoverCardOnUsernameFragment
+              ...ProfilePictureFragment
             }
           }
         }
@@ -32,19 +40,26 @@ export function SomeoneFollowedYou({ notificationRef, onClose }: SomeoneFollowed
   const lastFollower = notification.followers?.edges?.[0]?.node;
 
   return (
-    <BaseM>
+    <HStack gap={4} align="center">
       {count > 1 ? (
-        <strong>{count} collectors</strong>
+        <BaseM>
+          <strong>{count} collectors</strong>
+        </BaseM>
       ) : (
         <>
           {lastFollower ? (
-            <HoverCardOnUsername userRef={lastFollower} onClick={onClose} />
+            <HStack gap={4} align="center">
+              {isPfpVisible && <ProfilePicture size="sm" userRef={lastFollower} />}
+              <HoverCardOnUsername userRef={lastFollower} onClick={onClose} />
+            </HStack>
           ) : (
-            <strong>Someone</strong>
+            <BaseM>
+              <strong>Someone</strong>
+            </BaseM>
           )}
         </>
       )}{' '}
-      followed you
-    </BaseM>
+      <BaseM>followed you</BaseM>
+    </HStack>
   );
 }

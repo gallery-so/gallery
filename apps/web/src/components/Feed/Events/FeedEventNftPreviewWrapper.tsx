@@ -10,10 +10,12 @@ import NftPreview from '~/components/NftPreview/NftPreview';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import ShimmerProvider from '~/contexts/shimmer/ShimmerContext';
 import { FeedEventNftPreviewWrapperFragment$key } from '~/generated/FeedEventNftPreviewWrapperFragment.graphql';
+import { FeedEventNftPreviewWrapperQueryFragment$key } from '~/generated/FeedEventNftPreviewWrapperQueryFragment.graphql';
 import { LoadableNftDetailView } from '~/scenes/NftDetailPage/NftDetailView';
 
 type Props = {
   tokenRef: FeedEventNftPreviewWrapperFragment$key;
+  queryRef: FeedEventNftPreviewWrapperQueryFragment$key;
   maxWidth: number;
   maxHeight: number;
 };
@@ -26,7 +28,7 @@ function NftPreviewWithShimmer(props: Props) {
     </ShimmerProvider>
   );
 }
-function FeedEventNftPreviewWrapper({ tokenRef, maxWidth, maxHeight }: Props) {
+function FeedEventNftPreviewWrapper({ tokenRef, queryRef, maxWidth, maxHeight }: Props) {
   const token = useFragment(
     graphql`
       fragment FeedEventNftPreviewWrapperFragment on CollectionToken {
@@ -41,6 +43,15 @@ function FeedEventNftPreviewWrapper({ tokenRef, maxWidth, maxHeight }: Props) {
       }
     `,
     tokenRef
+  );
+
+  const query = useFragment(
+    graphql`
+      fragment FeedEventNftPreviewWrapperQueryFragment on Query {
+        ...NftDetailViewQueryFragment
+      }
+    `,
+    queryRef
   );
 
   const { showModal } = useModalActions();
@@ -58,13 +69,14 @@ function FeedEventNftPreviewWrapper({ tokenRef, maxWidth, maxHeight }: Props) {
               tokenId={token.token.dbid}
               collectionId={token.collection.dbid}
               authenticatedUserOwnsAsset={false}
+              queryRef={query}
             />
           </Suspense>
         </StyledNftDetailViewPopover>
       ),
       isFullPage: true,
     });
-  }, [showModal, token]);
+  }, [query, showModal, token]);
 
   return (
     <StyledNftPreviewWrapper

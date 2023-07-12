@@ -1,25 +1,29 @@
 import { useNavigation } from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import { useCallback, useMemo } from 'react';
-import { View } from 'react-native';
-import { graphql, usePaginationFragment } from 'react-relay';
+import { graphql, useFragment, usePaginationFragment } from 'react-relay';
 
+import { UserFollowCard } from '~/components/UserFollowList/UserFollowCard';
 import { CommunityCollectorsListFragment$key } from '~/generated/CommunityCollectorsListFragment.graphql';
+import { CommunityCollectorsListQueryFragment$key } from '~/generated/CommunityCollectorsListQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
-
-import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
-import { Typography } from '../Typography';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 type Props = {
+  queryRef: CommunityCollectorsListQueryFragment$key;
   communityRef: CommunityCollectorsListFragment$key;
 };
 
-type HolderType = {
-  id: string;
-  username: string;
-};
+export function CommunityCollectorsList({ communityRef, queryRef }: Props) {
+  const query = useFragment(
+    graphql`
+      fragment CommunityCollectorsListQueryFragment on Query {
+        ...UserFollowCardQueryFragment
+      }
+    `,
+    queryRef
+  );
 
-export function CommunityCollectorsList({ communityRef }: Props) {
   const {
     data: community,
     loadNext,
@@ -41,6 +45,7 @@ export function CommunityCollectorsList({ communityRef }: Props) {
               user {
                 id
                 username
+                ...UserFollowCardFragment
               }
             }
           }
@@ -50,72 +55,41 @@ export function CommunityCollectorsList({ communityRef }: Props) {
     communityRef
   );
 
-  const nonNullTokenHolders = useMemo(() => {
-    const holders: HolderType[] = [];
-
-    for (const owner of community?.owners?.edges ?? []) {
-      if (owner?.node) {
-        if (!owner.node.user) return;
-        holders.push({
-          id: owner.node.user.id,
-          username: owner.node.user.username || '',
-        });
-      }
-    }
-
-    const holderPairs = [];
-
-    for (let i = 0; i < holders.length; i += 2) {
-      holderPairs.push(holders.slice(i, i + 2));
-    }
-
-    return holderPairs;
+  const holders = useMemo(() => {
+    return removeNullValues(community?.owners?.edges?.map((edge) => edge?.node?.user));
   }, [community?.owners?.edges]);
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
-  const handleOpenProfile = useCallback(
-    (username: string) => {
-      navigation.push('Profile', {
-        username,
-        hideBackButton: false,
-      });
-    },
-    [navigation]
-  );
-
   const loadMore = useCallback(() => {
     if (hasNext) {
       loadNext(100);
     }
   }, [hasNext, loadNext]);
 
-  const renderItem = useCallback<ListRenderItem<HolderType[]>>(
-    ({ item: holderPair, index }) => {
+  type ListItemType = (typeof holders)[number];
+  const renderItem = useCallback<ListRenderItem<ListItemType>>(
+    ({ item: user }) => {
       return (
-        <View key={index} className="flex-row justify-between px-4">
-          {holderPair.map((holder, subIndex) => (
-            <View key={`${index}-${subIndex}`} className="w-1/2">
-              <GalleryTouchableOpacity
-                onPress={() => handleOpenProfile(holder.username)}
-                eventElementId="community-collectors-list-user"
-                eventName={'community-collectors-list-user-pressed'}
-                properties={{ username: holder.username }}
-              >
-                <Typography font={{ family: 'ABCDiatype', weight: 'Regular' }}>
-                  {holder.username}
-                </Typography>
-              </GalleryTouchableOpacity>
-            </View>
-          ))}
-        </View>
+        <UserFollowCard
+          userRef={user}
+          queryRef={query}
+          onPress={() => {
+            if (user.username) {
+              navigation.push('Profile', {
+                username: user.username,
+                hideBackButton: false,
+              });
+            }
+          }}
+        />
       );
     },
-    [handleOpenProfile]
+    [navigation, query]
   );
 
   return (
     <FlashList
-      data={nonNullTokenHolders}
+      data={holders}
       estimatedItemSize={40}
       renderItem={renderItem}
       onEndReached={loadMore}

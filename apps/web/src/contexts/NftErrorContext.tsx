@@ -76,11 +76,14 @@ export function NftErrorProvider({ children }: PropsWithChildren) {
       // we'll show them a new toast telling them things failed to load,
       // and we're looking into the issue asap.
       if (token.refreshed) {
-        pushToast({
-          message:
-            'This piece has failed to load. This issue has been reported to the Gallery team.',
-          autoClose: true,
-        });
+        // Commenting this out because it's being displayed even without the user explicitly
+        // refreshing anything in the editor
+        //
+        // pushToast({
+        //   message:
+        //     'This piece has failed to load. This issue has been reported to the Gallery team.',
+        //   autoClose: true,
+        // });
       }
 
       setTokens((previous) => {
@@ -91,7 +94,7 @@ export function NftErrorProvider({ children }: PropsWithChildren) {
         return next;
       });
     },
-    [pushToast, tokens]
+    [tokens]
   );
 
   const environment = useRelayEnvironment();

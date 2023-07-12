@@ -119,8 +119,8 @@ export function UserFollowedUsersFeedEvent({
 
             <GalleryTouchableOpacity
               onPress={handleOthersPress}
-              eventElementId={null}
-              eventName={null}
+              eventElementId="User Followed Users See All"
+              eventName="User Followed Users See All Pressed"
             >
               <Typography
                 className="text-sm underline"

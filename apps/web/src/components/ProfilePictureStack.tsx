@@ -1,45 +1,99 @@
+import { useCallback, useState } from 'react';
+import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
+import { ProfilePictureStackFragment$key } from '~/generated/ProfilePictureStackFragment.graphql';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
 
 import { HStack, VStack } from './core/Spacer/Stack';
 import { TitleXS } from './core/Text/Text';
-import { RawProfilePicture } from './RawProfilePicture';
+import { ProfilePicture } from './ProfilePicture/ProfilePicture';
 
-const avatarUrl =
-  'https://s3-alpha-sig.figma.com/img/9a4f/b777/fe4c335512ca4297ad4fd60554e66f18?Expires=1687132800&Signature=I3Q4ovLmvhWUw7EIsyaXhgv6T7hQiKdJHGNL~6c37Y7WLA0pAReuVxFyedUP3RDKemx~IqEg4fNSnqMJl0Y1h7UeQDGIN8Pk9tPn84DW0rHM5DA7himn6yBbbJE0EkEERnmMA4SjQBDoM4axl4-nFVkq~6jNXwjP2ikp7-4ECO-ZOqS0IB8Z-w2ej1bkh2OU6dLZCw4rap2O6zo0egtH6nhHVXMZQnxfHbg2yZzvk3mJflP4vh5g8bFV478Ixxh7gLK-JZV5HvxjKUusvmcWomQpMNE-WasMjp4DapBQijhAyBjl7h03L09Rc0Z2uLRZwt0OoliaIBdzTh8m17NNtw__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4';
+type Props = {
+  usersRef: ProfilePictureStackFragment$key;
+  total: number;
+  onClick?(): void;
+};
 
-export function ProfilePictureStack() {
+const TOTAL_USERS_SHOWN = 3;
+
+export function ProfilePictureStack({ usersRef, total, onClick }: Props) {
+  const users = useFragment(
+    graphql`
+      fragment ProfilePictureStackFragment on GalleryUser @relay(plural: true) {
+        __typename
+        dbid
+        profileImage {
+          __typename
+        }
+        ...ProfilePictureFragment
+      }
+    `,
+    usersRef
+  );
+
+  const [isHovered, setIsHovered] = useState(false);
+
+  const track = useTrack();
+
+  const handleClick = useCallback(() => {
+    track('ProfilePictureStack Click');
+
+    if (onClick) {
+      onClick();
+    }
+  }, [track, onClick]);
+
+  // Sort by user that has a profile image
+  // Priority is given to the user that has a profile image
+  const sortedUsers = removeNullValues(users).sort((a, b) => {
+    if (a.profileImage && !b.profileImage) {
+      return -1;
+    }
+
+    if (!a.profileImage && b.profileImage) {
+      return 1;
+    }
+
+    return 0;
+  });
+
+  // We only show 3 users
+  const usersToShow = sortedUsers.slice(0, TOTAL_USERS_SHOWN);
+
+  // If there are more than 3 users, we show the remaining count
+  const remainingCount = total - TOTAL_USERS_SHOWN;
+
   return (
-    <StyledProfilePictureStackContainer align="center">
-      <StyledRawProfilePictureContainer>
-        <RawProfilePicture imageUrl={avatarUrl} hasInset size="sm" />
-      </StyledRawProfilePictureContainer>
-      <StyledRawProfilePictureContainer>
-        <RawProfilePicture imageUrl={avatarUrl} hasInset size="sm" />
-      </StyledRawProfilePictureContainer>
-      <StyledRawProfilePictureContainer>
-        <RawProfilePicture imageUrl={avatarUrl} hasInset size="sm" />
-      </StyledRawProfilePictureContainer>
-      <StyledRemainings align="center" justify="center" shrink>
-        <StyledRemainingsText color={colors.metal}>+ 6</StyledRemainingsText>
-      </StyledRemainings>
+    <StyledProfilePictureStackContainer
+      align="center"
+      inline
+      onClick={handleClick}
+      isClickable={!!onClick}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {usersToShow.map((user) => (
+        <StyledProfilePictureContainer key={user.dbid}>
+          <ProfilePicture userRef={user} size="sm" hasInset isHover={isHovered} />
+        </StyledProfilePictureContainer>
+      ))}
+      {remainingCount > 0 && (
+        <StyledRemainings align="center" justify="center" shrink>
+          <StyledRemainingsText color={colors.metal}>+{remainingCount}</StyledRemainingsText>
+        </StyledRemainings>
+      )}
     </StyledProfilePictureStackContainer>
   );
 }
 
-const StyledRawProfilePictureContainer = styled.div`
+const StyledProfilePictureContainer = styled.div`
   margin-left: -8px;
   position: relative;
   z-index: 1;
 `;
-
-const StyledProfilePictureStackContainer = styled(HStack)`
-  ${StyledRawProfilePictureContainer}:nth-child(1) {
-    margin-left: 0;
-  }
-`;
-
 const StyledRemainings = styled(VStack)`
   background-color: ${colors.porcelain};
   padding: 2px 8px;
@@ -54,4 +108,23 @@ const StyledRemainings = styled(VStack)`
 
 const StyledRemainingsText = styled(TitleXS)`
   font-weight: 500;
+  white-space: nowrap;
+`;
+
+const StyledProfilePictureStackContainer = styled(HStack)<{ isClickable: boolean }>`
+  position: relative;
+  ${StyledProfilePictureContainer}:nth-child(1) {
+    margin-left: 0;
+  }
+
+  cursor: ${({ isClickable }) => (isClickable ? 'pointer' : 'default')};
+
+  &:hover {
+    ${StyledRemainings} {
+      background-color: ${colors.metal};
+      ${StyledRemainingsText} {
+        color: ${colors.black[800]};
+      }
+    }
+  }
 `;

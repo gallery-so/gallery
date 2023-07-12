@@ -3,21 +3,26 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseS } from '~/components/core/Text/Text';
+import { ProfilePictureStack } from '~/components/ProfilePictureStack';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { UserSharedFollowersFragment$key } from '~/generated/UserSharedFollowersFragment.graphql';
+import { UserSharedFollowersQueryFragment$key } from '~/generated/UserSharedFollowersQueryFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
+import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 import PaginatedUsersList from './UserSharedInfoList/SharedFollowersList';
 
 type Props = {
-  queryRef: UserSharedFollowersFragment$key;
+  userRef: UserSharedFollowersFragment$key;
+  queryRef: UserSharedFollowersQueryFragment$key;
 };
 
-export default function UserSharedFollowers({ queryRef }: Props) {
-  const query = useFragment(
+export default function UserSharedFollowers({ userRef, queryRef }: Props) {
+  const user = useFragment(
     graphql`
       fragment UserSharedFollowersFragment on GalleryUser {
         __typename
@@ -29,6 +34,7 @@ export default function UserSharedFollowers({ queryRef }: Props) {
               ... on GalleryUser {
                 __typename
                 username
+                ...ProfilePictureStackFragment
               }
             }
           }
@@ -39,29 +45,39 @@ export default function UserSharedFollowers({ queryRef }: Props) {
         ...SharedFollowersListFragment
       }
     `,
+    userRef
+  );
+
+  const query = useFragment(
+    graphql`
+      fragment UserSharedFollowersQueryFragment on Query {
+        ...isFeatureEnabledFragment
+      }
+    `,
     queryRef
   );
 
   const { showModal } = useModalActions();
   const track = useTrack();
   const isMobile = useIsMobileWindowWidth();
+  const isPfpEnabled = isFeatureEnabled(FeatureFlag.PFP, query);
 
   const handleShowAllFollowersClick = useCallback(() => {
     track('User Gallery - Show All Shared Followers Click');
     showModal({
-      content: <PaginatedUsersList queryRef={query} />,
+      content: <PaginatedUsersList userRef={user} />,
       headerText: 'Followers you know',
       isPaddingDisabled: true,
       isFullPage: isMobile,
     });
-  }, [isMobile, query, showModal, track]);
+  }, [isMobile, user, showModal, track]);
 
   const sharedFollowers = useMemo(() => {
-    const list = query.sharedFollowers?.edges?.map((edge) => edge?.node) ?? [];
+    const list = user.sharedFollowers?.edges?.map((edge) => edge?.node) ?? [];
     return removeNullValues(list);
-  }, [query.sharedFollowers?.edges]);
+  }, [user.sharedFollowers?.edges]);
 
-  const totalSharedFollowers = query.sharedFollowers?.pageInfo?.total ?? 0;
+  const totalSharedFollowers = user.sharedFollowers?.pageInfo?.total ?? 0;
 
   // Determine how many users to display by username
   const followersToDisplay = useMemo(() => {
@@ -110,10 +126,19 @@ export default function UserSharedFollowers({ queryRef }: Props) {
   }
 
   return (
-    <div>
-      <StyledBaseS>Followed by&nbsp;</StyledBaseS>
-      {content}
-    </div>
+    <HStack align="center" gap={isMobile ? 4 : 8}>
+      {isPfpEnabled && (
+        <ProfilePictureStack
+          usersRef={sharedFollowers}
+          total={totalSharedFollowers}
+          onClick={handleShowAllFollowersClick}
+        />
+      )}
+      <div>
+        <StyledBaseS>Followed by&nbsp;</StyledBaseS>
+        {content}
+      </div>
+    </HStack>
   );
 }
 

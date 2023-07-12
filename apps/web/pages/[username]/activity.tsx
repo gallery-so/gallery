@@ -3,7 +3,7 @@ import { loadQuery, PreloadedQuery, usePreloadedQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { ITEMS_PER_PAGE, MAX_PIECES_DISPLAYED_PER_FEED_EVENT } from '~/components/Feed/constants';
-import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/NotesModal/NotesModal';
+import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/CommentsModal/CommentsModal';
 import { GalleryNavbar } from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavbar';
 import { StandardSidebar } from '~/contexts/globalLayout/GlobalSidebar/StandardSidebar';
 import { activityQuery } from '~/generated/activityQuery.graphql';

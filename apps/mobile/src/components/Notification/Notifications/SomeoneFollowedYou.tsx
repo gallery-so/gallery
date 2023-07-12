@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import { useCallback, useRef } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import { Text } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -9,13 +9,25 @@ import { NotificationBottomSheetUserList } from '~/components/Notification/Notif
 import { NotificationSkeleton } from '~/components/Notification/NotificationSkeleton';
 import { Typography } from '~/components/Typography';
 import { SomeoneFollowedYouFragment$key } from '~/generated/SomeoneFollowedYouFragment.graphql';
+import { SomeoneFollowedYouQueryFragment$key } from '~/generated/SomeoneFollowedYouQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 type SomeoneFollowedYouProps = {
+  queryRef: SomeoneFollowedYouQueryFragment$key;
   notificationRef: SomeoneFollowedYouFragment$key;
 };
 
-export function SomeoneFollowedYou({ notificationRef }: SomeoneFollowedYouProps) {
+export function SomeoneFollowedYou({ notificationRef, queryRef }: SomeoneFollowedYouProps) {
+  const query = useFragment(
+    graphql`
+      fragment SomeoneFollowedYouQueryFragment on Query {
+        ...NotificationSkeletonQueryFragment
+      }
+    `,
+    queryRef
+  );
+
   const notification = useFragment(
     graphql`
       fragment SomeoneFollowedYouFragment on SomeoneFollowedYouNotification {
@@ -26,6 +38,8 @@ export function SomeoneFollowedYou({ notificationRef }: SomeoneFollowedYouProps)
           edges {
             node {
               username
+
+              ...NotificationSkeletonResponsibleUsersFragment
             }
           }
         }
@@ -35,6 +49,10 @@ export function SomeoneFollowedYou({ notificationRef }: SomeoneFollowedYouProps)
     `,
     notificationRef
   );
+
+  const followers = useMemo(() => {
+    return removeNullValues(notification.followers?.edges?.map((edge) => edge?.node));
+  }, [notification.followers?.edges]);
 
   const count = notification.count ?? 1;
   const lastFollower = notification.followers?.edges?.[0]?.node;
@@ -59,7 +77,12 @@ export function SomeoneFollowedYou({ notificationRef }: SomeoneFollowedYouProps)
   );
 
   return (
-    <NotificationSkeleton onPress={handlePress} notificationRef={notification}>
+    <NotificationSkeleton
+      queryRef={query}
+      onPress={handlePress}
+      responsibleUserRefs={followers}
+      notificationRef={notification}
+    >
       <Text>
         <Typography
           font={{

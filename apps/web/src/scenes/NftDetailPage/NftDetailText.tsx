@@ -11,9 +11,11 @@ import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM, TitleM, TitleXS } from '~/components/core/Text/Text';
 import { ClickablePill, NonclickablePill } from '~/components/Pill';
+import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { ENABLED_CREATOR } from '~/constants/creator';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { NftDetailTextFragment$key } from '~/generated/NftDetailTextFragment.graphql';
+import { NftDetailTextQueryFragment$key } from '~/generated/NftDetailTextQueryFragment.graphql';
 import { useBreakpoint, useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { NftAdditionalDetails } from '~/scenes/NftDetailPage/NftAdditionalDetails/NftAdditionalDetails';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
@@ -21,6 +23,7 @@ import colors from '~/shared/theme/colors';
 import { getOpenseaExternalUrl } from '~/shared/utils/getOpenseaExternalUrl';
 import unescape from '~/shared/utils/unescape';
 import { getCommunityUrlForToken } from '~/utils/getCommunityUrlForToken';
+import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 /**
  * TODO: Figure out when to support creator addresses
@@ -30,9 +33,10 @@ const SHOW_BUY_NOW_BUTTON = false;
 
 type Props = {
   tokenRef: NftDetailTextFragment$key;
+  queryRef: NftDetailTextQueryFragment$key;
 };
 
-function NftDetailText({ tokenRef }: Props) {
+function NftDetailText({ tokenRef, queryRef }: Props) {
   const token = useFragment(
     graphql`
       fragment NftDetailTextFragment on Token {
@@ -43,6 +47,7 @@ function NftDetailText({ tokenRef }: Props) {
         tokenMetadata
         owner {
           username
+          ...ProfilePictureFragment
         }
         contract {
           name
@@ -59,6 +64,17 @@ function NftDetailText({ tokenRef }: Props) {
     `,
     tokenRef
   );
+
+  const query = useFragment(
+    graphql`
+      fragment NftDetailTextQueryFragment on Query {
+        ...isFeatureEnabledFragment
+      }
+    `,
+    queryRef
+  );
+
+  const isPfpEnabled = isFeatureEnabled(FeatureFlag.PFP, query);
 
   const [showDetails, setShowDetails] = useState(false);
 
@@ -164,19 +180,22 @@ function NftDetailText({ tokenRef }: Props) {
 
         <HStack justify="space-between">
           {token.owner?.username && (
-            <VStack>
+            <VStack gap={2}>
               <TitleXS>OWNER</TitleXS>
-              <InteractiveLink
+              <StyledInteractiveLink
                 to={{ pathname: '/[username]', query: { username: token.owner.username } }}
                 onClick={handleCollectorNameClick}
               >
-                <BaseM color={colors.shadow}>{token.owner.username}</BaseM>
-              </InteractiveLink>
+                <HStack align="center" gap={4}>
+                  {isPfpEnabled && <ProfilePicture size="sm" userRef={token.owner} />}
+                  <TitleDiatypeM>{token.owner.username}</TitleDiatypeM>
+                </HStack>
+              </StyledInteractiveLink>
             </VStack>
           )}
           {ENABLED_CREATOR && (
             // TODO: Update this to use the creator's username
-            <VStack>
+            <VStack gap={2}>
               <TitleXS>CREATOR</TitleXS>
               <InteractiveLink
                 onClick={handleCreatorNameClick}

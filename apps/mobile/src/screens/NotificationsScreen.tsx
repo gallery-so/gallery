@@ -25,7 +25,6 @@ export function NotificationsScreen() {
       notificationsBefore: null,
     },
     {
-      fetchPolicy: 'network-only',
       fetchKey: route.params?.fetchKey,
     }
   );

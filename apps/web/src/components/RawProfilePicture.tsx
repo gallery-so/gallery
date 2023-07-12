@@ -22,10 +22,12 @@ const fontSizeMapping: { [size in Size]: number } = {
 
 type Size = 'sm' | 'md' | 'lg' | 'xl';
 
-type Props = {
+export type RawProfilePictureProps = {
   size: Size;
   hasInset?: boolean;
   isEditable?: boolean;
+  inline?: boolean;
+  isHover?: boolean;
   onEdit?: () => void;
 } & (
   | {
@@ -39,7 +41,15 @@ type Props = {
     }
 );
 
-export function RawProfilePicture({ size, hasInset, onEdit, isEditable, ...rest }: Props) {
+export function RawProfilePicture({
+  size,
+  hasInset,
+  onEdit,
+  isEditable,
+  inline,
+  isHover,
+  ...rest
+}: RawProfilePictureProps) {
   const widthAndHeight = sizeMapping[size];
 
   let fontSize: number | null = fontSizeMapping[size];
@@ -47,27 +57,33 @@ export function RawProfilePicture({ size, hasInset, onEdit, isEditable, ...rest 
     fontSize -= 2;
   }
 
+  const hasImage = 'imageUrl' in rest;
+
   return (
     <OuterCircle
       isEditable={isEditable}
       inset={hasInset}
       justify="center"
       align="center"
+      inline={inline}
+      isHover={isHover}
       style={{
         width: widthAndHeight,
         height: widthAndHeight,
+        minWidth: widthAndHeight,
+        minHeight: widthAndHeight,
         padding: hasInset ? '2px' : 0,
         cursor: isEditable ? 'pointer' : undefined,
       }}
     >
-      <InnerCircle justify="center" align="center">
+      <InnerCircle hasImage={hasImage} justify="center" align="center">
         {'letter' in rest && (
           <ProfilePictureText
             style={{
               fontSize,
             }}
           >
-            {rest.letter}
+            <InlineBlockWrapper>{rest.letter.toUpperCase()}</InlineBlockWrapper>
           </ProfilePictureText>
         )}
 
@@ -128,7 +144,7 @@ const EditCircle = styled(VStack)`
   transform: translate(25%, 25%);
 `;
 
-const InnerCircle = styled(VStack)`
+const InnerCircle = styled(VStack)<{ hasImage?: boolean }>`
   position: relative;
   border-radius: 999999px;
 
@@ -136,12 +152,12 @@ const InnerCircle = styled(VStack)`
   height: 100%;
 
   background-color: ${colors.offWhite};
-  border: 1px solid ${colors.black['800']};
+  border: 1px solid ${({ hasImage }) => (hasImage ? 'transparent' : colors.black['800'])};
 
   transition: background 100ms ease-in-out;
 `;
 
-const OuterCircle = styled(VStack)<{ inset?: boolean; isEditable?: boolean }>`
+const OuterCircle = styled(VStack)<{ inset?: boolean; isEditable?: boolean; isHover?: boolean }>`
   position: relative;
   box-sizing: border-box;
 
@@ -149,11 +165,30 @@ const OuterCircle = styled(VStack)<{ inset?: boolean; isEditable?: boolean }>`
 
   border-radius: 999999px;
 
+  ${({ isHover }) =>
+    isHover &&
+    css`
+      &:after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.25);
+        border-radius: 999999px;
+      }
+    `}
+
   ${({ isEditable }) =>
     isEditable
       ? css`
           :hover {
             ${InnerCircle} {
+              background: linear-gradient(0deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)), #f9f9f9;
+            }
+
+            ${EditCircle} {
               background: linear-gradient(0deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)), #f9f9f9;
             }
 
@@ -172,4 +207,12 @@ const ProfilePictureText = styled.div`
   font-weight: 300;
   line-height: 13px;
   font-family: ${TITLE_FONT_FAMILY};
+  color: ${colors.black['800']};
+  display: inline-block;
+`;
+
+// This prevents the placeholder Letter from inheriting text-decoration: underline from any ancestor <a> tags.
+// This only works if it's nested within ProfilePictureText for some reason, so we have to use this wrapper.
+const InlineBlockWrapper = styled.div`
+  display: inline-block;
 `;

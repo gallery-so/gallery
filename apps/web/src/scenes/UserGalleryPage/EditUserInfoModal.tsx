@@ -7,7 +7,7 @@ import breakpoints from '~/components/core/breakpoints';
 import { Button } from '~/components/core/Button/Button';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import ErrorText from '~/components/core/Text/ErrorText';
-import UserInfoForm from '~/components/Profile/UserInfoForm';
+import EditUserInfoForm from '~/components/Profile/EditUserInfoForm';
 import useUserInfoForm from '~/components/Profile/useUserInfoForm';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { EditUserInfoModalFragment$key } from '~/generated/EditUserInfoModalFragment.graphql';
@@ -27,11 +27,11 @@ function EditUserInfoModal({ queryRef }: Props) {
               username
               bio
 
-              ...UserInfoFormFragment
+              ...EditUserInfoFormFragment
             }
           }
         }
-        ...UserInfoFormQueryFragment
+        ...EditUserInfoFormQueryFragment
       }
     `,
     queryRef
@@ -80,7 +80,7 @@ function EditUserInfoModal({ queryRef }: Props) {
   return (
     <StyledEditUserInfoModal gap={16}>
       <VStack gap={8}>
-        <UserInfoForm
+        <EditUserInfoForm
           onSubmit={handleSubmit}
           username={username}
           usernameError={usernameError}

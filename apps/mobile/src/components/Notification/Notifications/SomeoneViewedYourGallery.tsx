@@ -8,13 +8,25 @@ import { NotificationBottomSheetUserList } from '~/components/Notification/Notif
 import { NotificationSkeleton } from '~/components/Notification/NotificationSkeleton';
 import { Typography } from '~/components/Typography';
 import { SomeoneViewedYourGalleryFragment$key } from '~/generated/SomeoneViewedYourGalleryFragment.graphql';
+import { SomeoneViewedYourGalleryQueryFragment$key } from '~/generated/SomeoneViewedYourGalleryQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 type Props = {
+  queryRef: SomeoneViewedYourGalleryQueryFragment$key;
   notificationRef: SomeoneViewedYourGalleryFragment$key;
 };
 
-export function SomeoneViewedYourGallery({ notificationRef }: Props) {
+export function SomeoneViewedYourGallery({ notificationRef, queryRef }: Props) {
+  const query = useFragment(
+    graphql`
+      fragment SomeoneViewedYourGalleryQueryFragment on Query {
+        ...NotificationSkeletonQueryFragment
+      }
+    `,
+    queryRef
+  );
+
   const notification = useFragment(
     graphql`
       fragment SomeoneViewedYourGalleryFragment on SomeoneViewedYourGalleryNotification {
@@ -32,6 +44,7 @@ export function SomeoneViewedYourGallery({ notificationRef }: Props) {
             node {
               __typename
               username
+              ...NotificationSkeletonResponsibleUsersFragment
             }
           }
         }
@@ -41,6 +54,10 @@ export function SomeoneViewedYourGallery({ notificationRef }: Props) {
     `,
     notificationRef
   );
+
+  const viewers = useMemo(() => {
+    return removeNullValues(notification.userViewers?.edges?.map((edge) => edge?.node));
+  }, [notification.userViewers?.edges]);
 
   const userViewerCount = notification.userViewers?.pageInfo?.total ?? 0;
   const nonUserViewerCount = notification.nonUserViewerCount ?? 0;
@@ -112,7 +129,12 @@ export function SomeoneViewedYourGallery({ notificationRef }: Props) {
   }, [lastViewer, nonUserViewerCount, totalViewCount, userViewerCount]);
 
   return (
-    <NotificationSkeleton onPress={handlePress} notificationRef={notification}>
+    <NotificationSkeleton
+      queryRef={query}
+      onPress={handlePress}
+      responsibleUserRefs={viewers}
+      notificationRef={notification}
+    >
       {inner}
 
       <NotificationBottomSheetUserList

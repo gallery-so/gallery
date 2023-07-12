@@ -32,6 +32,8 @@ export function CommunityView({ queryRef }: Props) {
             ...CommunityCollectorsListFragment
           }
         }
+
+        ...CommunityCollectorsListQueryFragment
       }
     `,
     queryRef
@@ -84,7 +86,8 @@ export function CommunityView({ queryRef }: Props) {
         <Typography font={{ family: 'ABCDiatype', weight: 'Bold' }} className="text-sm mb-4 px-4">
           Collectors on Gallery
         </Typography>
-        <CommunityCollectorsList communityRef={community} />
+
+        <CommunityCollectorsList queryRef={query} communityRef={community} />
       </View>
     </View>
   );

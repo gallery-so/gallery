@@ -11,6 +11,7 @@ import { StyledAnchor } from '~/components/core/InteractiveLink/InteractiveLink'
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleM } from '~/components/core/Text/Text';
+import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { UserNameAndDescriptionHeaderFragment$key } from '~/generated/UserNameAndDescriptionHeaderFragment.graphql';
 import { UserNameAndDescriptionHeaderQueryFragment$key } from '~/generated/UserNameAndDescriptionHeaderQueryFragment.graphql';
@@ -22,6 +23,7 @@ import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import colors from '~/shared/theme/colors';
 import unescape from '~/shared/utils/unescape';
+import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 import handleCustomDisplayName from '~/utils/handleCustomDisplayName';
 
 import EditUserInfoModal from './EditUserInfoModal';
@@ -43,6 +45,7 @@ export function UserNameAndDescriptionHeader({ userRef, queryRef }: Props) {
           imageURL
           ...BadgeFragment
         }
+        ...ProfilePictureFragment
       }
     `,
     userRef
@@ -53,10 +56,12 @@ export function UserNameAndDescriptionHeader({ userRef, queryRef }: Props) {
       fragment UserNameAndDescriptionHeaderQueryFragment on Query {
         ...EditUserInfoModalFragment
         ...useLoggedInUserIdFragment
+        ...isFeatureEnabledFragment
       }
     `,
     queryRef
   );
+  const isPfpEnabled = isFeatureEnabled(FeatureFlag.PFP, query);
 
   const { username, bio, badges } = user;
 
@@ -65,16 +70,19 @@ export function UserNameAndDescriptionHeader({ userRef, queryRef }: Props) {
 
   const loggedInUserId = useLoggedInUserId(query);
   const isAuthenticatedUser = loggedInUserId === user?.id;
+  const track = useTrack();
 
   const { showModal } = useModalActions();
   const handleEditBioAndName = useCallback(() => {
     if (!isAuthenticatedUser) return;
 
+    track('Edit User Info Clicked');
+
     showModal({
       content: <EditUserInfoModal queryRef={query} />,
-      headerText: 'Edit username and bio',
+      headerText: 'Edit profile',
     });
-  }, [isAuthenticatedUser, query, showModal]);
+  }, [isAuthenticatedUser, query, showModal, track]);
 
   const unescapedBio = useMemo(() => (bio ? unescape(bio) : ''), [bio]);
 
@@ -104,9 +112,12 @@ export function UserNameAndDescriptionHeader({ userRef, queryRef }: Props) {
       isAuth={isAuthenticatedUser}
       hasMobileContent={isMobile && !!unescapedBio}
     >
-      <Container gap={2}>
+      <Container gap={4}>
         <HStack align="center" gap={4}>
-          <StyledUsername>{displayName}</StyledUsername>
+          <HStack gap={8} align="center">
+            {isPfpEnabled && <ProfilePicture userRef={user} size="md" />}
+            <StyledUsername>{displayName}</StyledUsername>
+          </HStack>
 
           <HStack align="center" gap={0}>
             {userBadges.map((badge) =>

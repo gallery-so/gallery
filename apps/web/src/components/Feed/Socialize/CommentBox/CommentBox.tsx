@@ -3,6 +3,7 @@ import {
   KeyboardEventHandler,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -10,40 +11,52 @@ import { useFragment } from 'react-relay';
 import { ConnectionHandler, graphql, SelectorStoreUpdater } from 'relay-runtime';
 import styled from 'styled-components';
 
-import breakpoints from '~/components/core/breakpoints';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM, BODY_FONT_FAMILY } from '~/components/core/Text/Text';
 import { SendButton } from '~/components/Feed/Socialize/SendButton';
+import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { CommentBoxFragment$key } from '~/generated/CommentBoxFragment.graphql';
 import { CommentBoxMutation } from '~/generated/CommentBoxMutation.graphql';
 import { CommentBoxQueryFragment$key } from '~/generated/CommentBoxQueryFragment.graphql';
+import { AuthModal } from '~/hooks/useAuthModal';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
+import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 import colors from '~/shared/theme/colors';
 
 const MAX_TEXT_LENGTH = 100;
 
 type Props = {
-  onClose: () => void;
   eventRef: CommentBoxFragment$key;
   queryRef: CommentBoxQueryFragment$key;
 };
 
-export function CommentBox({ eventRef, queryRef, onClose }: Props) {
+export function CommentBox({ eventRef, queryRef }: Props) {
   const query = useFragment(
     graphql`
       fragment CommentBoxQueryFragment on Query {
         viewer {
+          __typename
           ... on Viewer {
             user {
               id
               dbid
               username
+              profileImage {
+                ... on TokenProfileImage {
+                  token {
+                    dbid
+                    id
+                    ...getVideoOrImageUrlForNftPreviewFragment
+                  }
+                }
+              }
             }
           }
         }
+        ...useAuthModalFragment
       }
     `,
     queryRef
@@ -89,6 +102,7 @@ export function CommentBox({ eventRef, queryRef, onClose }: Props) {
   const { pushToast } = useToastActions();
   const reportError = useReportError();
   const track = useTrack();
+  const { showModal } = useModalActions();
 
   const resetInputState = useCallback(() => {
     setValue('');
@@ -99,7 +113,23 @@ export function CommentBox({ eventRef, queryRef, onClose }: Props) {
     }
   }, []);
 
+  const hasProfileImage = useMemo(() => {
+    if (query?.viewer?.__typename !== 'Viewer') {
+      return false;
+    }
+    return query.viewer?.user?.profileImage?.token != null;
+  }, [query.viewer]);
+
   const handleSubmit = useCallback(async () => {
+    if (query.viewer?.__typename !== 'Viewer') {
+      showModal({
+        content: <AuthModal queryRef={query} />,
+        headerText: 'Sign In',
+      });
+
+      return;
+    }
+
     if (isSubmittingComment || value.length === 0) {
       return;
     }
@@ -118,9 +148,9 @@ export function CommentBox({ eventRef, queryRef, onClose }: Props) {
         event.id,
         'Interactions_comments'
       );
-      const notesModalConnection = ConnectionHandler.getConnectionID(
+      const commentsModalConnection = ConnectionHandler.getConnectionID(
         event.id,
-        'NotesModal_interactions'
+        'CommentsModal_interactions'
       );
 
       const updater: SelectorStoreUpdater<CommentBoxMutation['response']> = (store, response) => {
@@ -132,6 +162,35 @@ export function CommentBox({ eventRef, queryRef, onClose }: Props) {
       };
 
       const optimisticId = Math.random().toString();
+
+      const { token } = query.viewer?.user?.profileImage ?? {};
+
+      const result = token
+        ? getVideoOrImageUrlForNftPreview({
+            tokenRef: token,
+          })
+        : null;
+
+      const tokenProfileImagePayload = hasProfileImage
+        ? {
+            token: {
+              dbid: token?.dbid ?? 'unknown',
+              id: token?.id ?? 'unknown',
+              media: {
+                __typename: 'ImageMedia',
+                fallbackMedia: {
+                  mediaURL: result?.urls?.small ?? null,
+                },
+                previewURLs: {
+                  large: result?.urls?.large ?? null,
+                  medium: result?.urls?.medium ?? null,
+                  small: result?.urls?.small ?? null,
+                },
+              },
+            },
+          }
+        : { token: null };
+
       const response = await submitComment({
         updater,
         optimisticUpdater: updater,
@@ -145,6 +204,10 @@ export function CommentBox({ eventRef, queryRef, onClose }: Props) {
                 dbid: query.viewer?.user?.dbid ?? 'unknown',
                 id: query.viewer?.user?.id ?? 'unknown',
                 username: query.viewer?.user?.username ?? null,
+                profileImage: {
+                  __typename: 'TokenProfileImage',
+                  ...tokenProfileImagePayload,
+                },
               },
               creationTime: new Date().toISOString(),
               dbid: optimisticId,
@@ -155,14 +218,12 @@ export function CommentBox({ eventRef, queryRef, onClose }: Props) {
         variables: {
           comment: value,
           eventId: event.dbid,
-          connections: [interactionsConnection, notesModalConnection],
+          connections: [interactionsConnection, commentsModalConnection],
         },
       });
 
       if (response.commentOnFeedEvent?.__typename === 'CommentOnFeedEventPayload') {
         resetInputState();
-
-        onClose();
       } else {
         pushErrorToast();
 
@@ -182,12 +243,11 @@ export function CommentBox({ eventRef, queryRef, onClose }: Props) {
   }, [
     event.dbid,
     event.id,
+    hasProfileImage,
     isSubmittingComment,
-    onClose,
     pushToast,
-    query.viewer?.user?.dbid,
-    query.viewer?.user?.id,
-    query.viewer?.user?.username,
+    query,
+    showModal,
     reportError,
     resetInputState,
     submitComment,
@@ -276,21 +336,14 @@ export function CommentBox({ eventRef, queryRef, onClose }: Props) {
           onInput={handleInput}
         />
 
-        <ControlsContainer gap={12} align="center">
+        <HStack gap={12} align="center">
           <BaseM color={colors.metal}>{MAX_TEXT_LENGTH - value.length}</BaseM>
           <SendButton enabled={value.length > 0 && !isSubmittingComment} onClick={handleSubmit} />
-        </ControlsContainer>
+        </HStack>
       </InputWrapper>
     </Wrapper>
   );
 }
-
-const ControlsContainer = styled(HStack)`
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  right: 16px;
-`;
 
 const InputWrapper = styled(HStack)`
   width: 100%;
@@ -324,7 +377,7 @@ const Textarea = styled(BaseM).attrs({
 
   color: ${colors.metal};
 
-  padding: 6px 64px 6px 0;
+  padding: 8px 64px 8px 0;
 
   :focus {
     outline: none;
@@ -334,15 +387,11 @@ const Textarea = styled(BaseM).attrs({
 
 const Wrapper = styled.div`
   // Full width with 16px of padding on either side
-  width: calc(100vw - 32px);
+  width: 100%;
 
-  @media only screen and ${breakpoints.mobileLarge} {
-    width: 375px;
-  }
-
-  border: 1px solid ${colors.black['800']};
+  border-top: 1px solid ${colors.porcelain};
 
   background: ${colors.white};
 
-  padding: 8px;
+  padding: 16px;
 `;

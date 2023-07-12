@@ -132,8 +132,8 @@ export function Button({
   const variantClassNames = buttonVariants[colorScheme][variant][active ? 'active' : 'inactive'];
 
   const sizeVariants: { [size in 'sm' | 'md']: string } = {
-    sm: 'h-[36] px-6',
-    md: 'h-[44] px-4',
+    sm: 'h-[36] px-4',
+    md: 'h-[44] px-6',
   };
 
   return (

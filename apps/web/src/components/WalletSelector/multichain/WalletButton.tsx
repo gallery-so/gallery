@@ -1,9 +1,10 @@
-import { ButtonHTMLAttributes } from 'react';
+import { ButtonHTMLAttributes, useMemo } from 'react';
 import styled from 'styled-components';
 
-import { HStack } from '~/components/core/Spacer/Stack';
-import { BaseM } from '~/components/core/Text/Text';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
+import { BaseM, BaseS, TitleS } from '~/components/core/Text/Text';
 import transitions from '~/components/core/transitions';
+import { ChainMetadata } from '~/components/GalleryEditor/PiecesSidebar/chains';
 import colors from '~/shared/theme/colors';
 
 export const walletIconMap = {
@@ -20,37 +21,86 @@ type WalletButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   label: string;
   icon?: keyof typeof walletIconMap;
   disabled?: boolean;
+  additionalChains?: ChainMetadata[];
 };
+
+// takes a list of chain names like ['Zora', 'Optimism'] and converts it to user facing copy like "Including Zora and Optimism"
+function convertChainListToSubLabelString(list: string[]) {
+  if (list.length === 0) {
+    return '';
+  } else if (list.length === 1) {
+    return `Including ${list[0]}`;
+  } else {
+    const last = list.pop();
+    return `Including ${list.join(', ')} and ${last}`;
+  }
+}
 
 export const WalletButton = ({
   label,
+  additionalChains,
   icon,
   disabled = false,
   ...buttonProps
-}: WalletButtonProps) => (
-  <StyledButton data-testid="wallet-button" disabled={disabled} {...buttonProps}>
-    <StyledContent align="center" justify="space-between">
-      <BaseM>{label}</BaseM>
-      <StyledButtonIcon>
-        {disabled && <StyledComingSoonText>COMING SOON</StyledComingSoonText>}
-        {icon && <Icon src={walletIconMap[icon]} />}
-      </StyledButtonIcon>
-    </StyledContent>
-  </StyledButton>
-);
+}: WalletButtonProps) => {
+  const additionalIcons = useMemo(
+    () => (additionalChains ? additionalChains.map((chain) => chain.icon) : []),
+    [additionalChains]
+  );
+
+  const subLabel = useMemo(
+    () =>
+      additionalChains
+        ? convertChainListToSubLabelString(additionalChains.map((chain) => chain.name))
+        : '',
+    [additionalChains]
+  );
+
+  return (
+    <StyledButton data-testid="wallet-button" disabled={disabled} {...buttonProps}>
+      <StyledContent align="center" justify="space-between">
+        <VStack align="baseline">
+          <TitleS>{label}</TitleS>
+          {subLabel && <BaseS color={colors.shadow}>{subLabel}</BaseS>}
+        </VStack>
+        <StyledButtonIcon>
+          {disabled && <StyledComingSoonText>COMING SOON</StyledComingSoonText>}
+          <HStack gap={4}>
+            {additionalIcons.map((additionalIcon) => (
+              <StyledAdditionalIconContainer key={additionalIcon}>
+                <StyledAdditionIcon src={additionalIcon} />
+              </StyledAdditionalIconContainer>
+            ))}
+            {icon && <Icon src={walletIconMap[icon]} />}
+          </HStack>
+        </StyledButtonIcon>
+      </StyledContent>
+    </StyledButton>
+  );
+};
 
 const Icon = styled.img`
   width: 24px;
   height: 24px;
-  margin: 5px;
 
   transform: scale(1);
   transition: transform ${transitions.cubic};
 `;
 
 const StyledContent = styled(HStack)`
-  height: 34px;
   width: 100%;
+`;
+
+const StyledAdditionalIconContainer = styled.div`
+  margin-left: -12px;
+  position: relative;
+  z-index: 1;
+  padding: 2px;
+  background: ${colors.white};
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 const StyledButton = styled.button<{
@@ -63,7 +113,7 @@ const StyledButton = styled.button<{
 
   background: ${colors.white};
   border: 1px solid ${({ disabled }) => (disabled ? colors.metal : colors.black['800'])};
-  padding: 8px 16px;
+  padding: 16px;
   font-size: 16px;
   transition: border-color ${transitions.cubic};
 
@@ -71,9 +121,10 @@ const StyledButton = styled.button<{
     cursor: pointer;
     &:hover {
       border-color: ${colors.black['800']};
+      background: ${colors.faint};
 
-      ${Icon} {
-        transform: scale(1.15);
+      ${StyledAdditionalIconContainer} {
+        background: ${colors.faint};
       }
     }
   }
@@ -96,6 +147,11 @@ const StyledButtonIcon = styled.span`
 const StyledComingSoonText = styled(BaseM)`
   color: ${colors.metal};
   margin-right: 24px;
+`;
+
+const StyledAdditionIcon = styled.img`
+  width: 20px;
+  height: 20px;
 `;
 
 export default WalletButton;

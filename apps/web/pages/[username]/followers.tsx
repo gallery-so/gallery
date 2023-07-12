@@ -31,6 +31,7 @@ function FollowersPage({ queryRef }: FollowersPageProps) {
             ...UserGalleryHeaderFragment
           }
         }
+        ...FollowListQueryFragment
         ...UserGalleryHeaderQueryFragment
       }
     `,
@@ -43,7 +44,7 @@ function FollowersPage({ queryRef }: FollowersPageProps) {
       <VStack gap={isMobile ? 12 : 24}>
         <UserGalleryHeader userRef={query.userByUsername} queryRef={query} />
         <VStack align="center">
-          <FollowList userRef={query.userByUsername} />
+          <FollowList userRef={query.userByUsername} queryRef={query} />
         </VStack>
       </VStack>
     </GalleryPageSpacing>

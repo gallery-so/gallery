@@ -1,7 +1,7 @@
 import { PropsWithChildren, useMemo } from 'react';
 import { Text, TextProps, TextStyle, View } from 'react-native';
 
-type TypographyProps = PropsWithChildren<{
+export type TypographyProps = PropsWithChildren<{
   className?: string;
   style?: TextProps['style'];
 

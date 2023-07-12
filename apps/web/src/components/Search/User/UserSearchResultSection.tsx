@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
 import { UserSearchResultSectionFragment$key } from '~/generated/UserSearchResultSectionFragment.graphql';
+import { UserSearchResultSectionQueryFragment$key } from '~/generated/UserSearchResultSectionQueryFragment.graphql';
 
 import { NUM_PREVIEW_SEARCH_RESULTS } from '../constants';
 import { SearchFilterType } from '../Search';
@@ -11,7 +12,8 @@ import UserSearchResult from './UserSearchResult';
 type Props = {
   title: string;
   isShowAll?: boolean;
-  queryRef: UserSearchResultSectionFragment$key;
+  resultRefs: UserSearchResultSectionFragment$key;
+  queryRef: UserSearchResultSectionQueryFragment$key;
   onChangeFilter: (filter: SearchFilterType) => void;
 };
 
@@ -19,6 +21,7 @@ export default function UserSearchResultSection({
   isShowAll = false,
   onChangeFilter,
   title,
+  resultRefs,
   queryRef,
 }: Props) {
   const results = useFragment(
@@ -28,6 +31,15 @@ export default function UserSearchResultSection({
           id
           ...UserSearchResultFragment
         }
+      }
+    `,
+    resultRefs
+  );
+
+  const query = useFragment(
+    graphql`
+      fragment UserSearchResultSectionQueryFragment on Query {
+        ...UserSearchResultQueryFragment
       }
     `,
     queryRef
@@ -46,7 +58,7 @@ export default function UserSearchResultSection({
       numResults={results.length}
     >
       {resultsToShow.map((result) => (
-        <UserSearchResult key={result.user.id} userRef={result.user} />
+        <UserSearchResult key={result.user.id} userRef={result.user} queryRef={query} />
       ))}
     </SearchSection>
   );

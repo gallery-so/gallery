@@ -1,108 +1,78 @@
-import { useMemo } from 'react';
-import { Text, View } from 'react-native';
-import { graphql, useFragment } from 'react-relay';
+import { useNavigation } from '@react-navigation/native';
+import { View, ViewProps } from 'react-native';
+import { useFragment } from 'react-relay';
+import { graphql } from 'relay-runtime';
 
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { Typography } from '~/components/Typography';
-import { UsernameDisplay } from '~/components/UsernameDisplay';
-import { AdmireLineEventFragment$key } from '~/generated/AdmireLineEventFragment.graphql';
 import { AdmireLineFragment$key } from '~/generated/AdmireLineFragment.graphql';
-import { AdmireLineQueryFragment$key } from '~/generated/AdmireLineQueryFragment.graphql';
+import { MainTabStackNavigatorProp } from '~/navigation/types';
 
-import { useNotesModal } from './NotesModal/useNotesModal';
+type AdmireLineProps = {
+  style?: ViewProps['style'];
+  userRefs: AdmireLineFragment$key;
 
-type Props = {
-  totalAdmires: number;
-  admireRef: AdmireLineFragment$key;
-  eventRef: AdmireLineEventFragment$key;
-  queryRef: AdmireLineQueryFragment$key;
+  onMultiUserPress: () => void;
 };
 
-export function AdmireLine({ admireRef, eventRef, queryRef, totalAdmires }: Props) {
-  const admire = useFragment(
+export function AdmireLine({ userRefs, onMultiUserPress, style }: AdmireLineProps) {
+  const users = useFragment(
     graphql`
-      fragment AdmireLineFragment on Admire {
-        dbid
-
-        admirer @required(action: THROW) {
-          dbid
-          username
-          ...UsernameDisplayFragment
-        }
+      fragment AdmireLineFragment on GalleryUser @relay(plural: true) {
+        __typename
+        username
       }
     `,
-    admireRef
+    userRefs
   );
 
-  const query = useFragment(
-    graphql`
-      fragment AdmireLineQueryFragment on Query {
-        viewer {
-          ... on Viewer {
-            user {
-              dbid
-            }
-          }
-        }
-        # eslint-disable-next-line relay/must-colocate-fragment-spreads
-        ...NotesModalQueryFragment
+  const navigation = useNavigation<MainTabStackNavigatorProp>();
+
+  const [firstUser] = users;
+  if (users.length === 1 && firstUser) {
+    function handleUserPress() {
+      if (firstUser?.username) {
+        navigation.push('Profile', { username: firstUser.username, hideBackButton: false });
       }
-    `,
-    queryRef
-  );
-
-  const event = useFragment(
-    graphql`
-      fragment AdmireLineEventFragment on FeedEvent {
-        # eslint-disable-next-line relay/must-colocate-fragment-spreads
-        ...NotesModalFragment
-      }
-    `,
-    eventRef
-  );
-
-  const { handleOpen, notesModal } = useNotesModal(event, query);
-
-  const admirerName = useMemo(() => {
-    const isTheAdmirerTheLoggedInUser = query.viewer?.user?.dbid === admire.admirer?.dbid;
-
-    if (isTheAdmirerTheLoggedInUser) {
-      return 'You';
-    } else if (admire.admirer?.username) {
-      return admire.admirer.username;
-    } else {
-      return '<unknown>';
     }
-  }, [admire.admirer?.dbid, admire.admirer?.username, query.viewer?.user?.dbid]);
 
-  return (
-    <View>
-      <View className="flex flex-row">
-        <UsernameDisplay userRef={admire.admirer} text={admirerName} />
-        {totalAdmires === 1 ? (
-          <Text className="text-xs dark:text-white"> admired this</Text>
-        ) : (
-          <View className="flex flex-row">
-            <Text className="text-xs dark:text-white"> and </Text>
+    return (
+      <View style={style} className="flex flex-row items-center">
+        <GalleryTouchableOpacity
+          style={style}
+          onPress={handleUserPress}
+          eventElementId={'AdmireLine Single User'}
+          eventName={'AdmireLine Single User'}
+        >
+          <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+            {firstUser.username}{' '}
+          </Typography>
+        </GalleryTouchableOpacity>
 
-            <GalleryTouchableOpacity
-              onPress={handleOpen}
-              eventElementId="Expand Admirers Button"
-              eventName="Expand Admirers Button Clicked"
-            >
-              <Typography
-                className="text-xs underline"
-                font={{ family: 'ABCDiatype', weight: 'Bold' }}
-              >
-                {totalAdmires - 1} {totalAdmires === 2 ? 'other' : 'others'}
-              </Typography>
-            </GalleryTouchableOpacity>
-
-            <Text className="text-xs dark:text-white"> admired this</Text>
-          </View>
-        )}
+        <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
+          admired this
+        </Typography>
       </View>
-      {notesModal}
-    </View>
-  );
+    );
+  } else if (users.length > 1) {
+    return (
+      <View style={style} className="flex flex-row items-center">
+        <GalleryTouchableOpacity
+          onPress={onMultiUserPress}
+          eventElementId={'AdmireLine Single User'}
+          eventName={'AdmireLine Single User'}
+        >
+          <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+            {users.length} collectors{' '}
+          </Typography>
+        </GalleryTouchableOpacity>
+
+        <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
+          admired this
+        </Typography>
+      </View>
+    );
+  }
+
+  return null;
 }

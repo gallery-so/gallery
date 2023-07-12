@@ -1,20 +1,24 @@
 import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
+import styled from 'styled-components';
 
 import { BaseM } from '~/components/core/Text/Text';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { CollectionLink } from '~/components/Notifications/CollectionLink';
+import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { SomeoneAdmiredYourFeedEventFragment$key } from '~/generated/SomeoneAdmiredYourFeedEventFragment.graphql';
 
 type SomeoneAdmiredYourFeedEventProps = {
   notificationRef: SomeoneAdmiredYourFeedEventFragment$key;
   onClose: () => void;
+  isPfpVisible: boolean;
 };
 
 export function SomeoneAdmiredYourFeedEvent({
   notificationRef,
   onClose,
+  isPfpVisible,
 }: SomeoneAdmiredYourFeedEventProps) {
   const notification = useFragment(
     graphql`
@@ -57,6 +61,7 @@ export function SomeoneAdmiredYourFeedEvent({
           edges {
             node {
               ...HoverCardOnUsernameFragment
+              ...ProfilePictureFragment
             }
           }
         }
@@ -91,18 +96,34 @@ export function SomeoneAdmiredYourFeedEvent({
   return (
     <BaseM>
       {count > 1 ? (
-        <strong>{notification.count} collectors</strong>
+        <BaseM>
+          <strong>{notification.count} collectors</strong>
+        </BaseM>
       ) : (
         <>
           {firstAdmirer ? (
-            <HoverCardOnUsername userRef={firstAdmirer} onClick={onClose} />
+            <>
+              {isPfpVisible && (
+                <StyledProfilePictureContainer>
+                  <ProfilePicture size="sm" userRef={firstAdmirer} />
+                </StyledProfilePictureContainer>
+              )}
+              <HoverCardOnUsername userRef={firstAdmirer} onClick={onClose} />
+            </>
           ) : (
-            <strong>Someone</strong>
+            <BaseM as="span">
+              <strong>Someone</strong>
+            </BaseM>
           )}
         </>
       )}
-      {` ${verb} `}
-      {collection ? <CollectionLink collectionRef={collection} /> : <>your collection</>}
+      <BaseM as="span">{` ${verb} `}</BaseM>
+      {collection ? <CollectionLink collectionRef={collection} /> : <BaseM>your collection</BaseM>}
     </BaseM>
   );
 }
+
+const StyledProfilePictureContainer = styled.div`
+  display: inline-block;
+  padding-right: 4px;
+`;

@@ -206,6 +206,10 @@ const StyledContainer = styled.div<{
   min-height: ${({ isFullPage }) => (isFullPage ? '-webkit-fill-available' : 'unset')};
   max-width: ${({ maxWidth }) => maxWidth};
   width: ${({ width }) => width};
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
 `;
 
 const StyledContent = styled.div<{ padding: string }>`

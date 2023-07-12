@@ -8,8 +8,11 @@ import { GalleryScreen } from '~/screens/GalleryScreen/GalleryScreen';
 import { HomeScreen } from '~/screens/HomeScreen/HomeScreen';
 import { NftDetailScreen } from '~/screens/NftDetailScreen/NftDetailScreen';
 import { NotificationsScreen } from '~/screens/NotificationsScreen';
+import { ProfilePicturePickerContractScreen } from '~/screens/ProfilePicturePickerScreen/ProfilePicturePickerContractScreen';
+import { ProfilePicturePickerScreen } from '~/screens/ProfilePicturePickerScreen/ProfilePicturePickerScreen';
 import { ProfileScreen } from '~/screens/ProfileScreen/ProfileScreen';
 import { SearchScreen } from '~/screens/SearchScreen';
+import { SettingsProfileScreen } from '~/screens/SettingsProfileScreen';
 import { SettingsScreen } from '~/screens/SettingsScreen/SettingsScreen';
 
 const Stack = createNativeStackNavigator<MainTabStackNavigatorParamList>();
@@ -28,6 +31,12 @@ export function MainTabStackNavigator({ initialRouteName, initialProfileParams }
       <Stack.Screen name="Collection" component={CollectionScreen} />
       <Stack.Screen name="FeedEvent" component={FeedEventScreen} />
       <Stack.Screen name="Community" component={CommunityScreen} />
+      <Stack.Screen name="ProfilePicturePicker" component={ProfilePicturePickerScreen} />
+      <Stack.Screen
+        name="ProfilePicturePickerContract"
+        component={ProfilePicturePickerContractScreen}
+      />
+      <Stack.Screen name="SettingsProfile" component={SettingsProfileScreen} />
 
       {/* The 5 main tabs excluding "Account" since that just uses Profile */}
       <Stack.Screen name="Home" component={HomeScreen} />

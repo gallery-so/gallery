@@ -142,7 +142,7 @@ export default function DesignPage() {
           </ProfilePictureSection>
 
           <ProfilePictureSection>
-            <ProfilePictureStack />
+            <ProfilePictureStack usersRef={[]} total={0} />
           </ProfilePictureSection>
         </Examples>
 

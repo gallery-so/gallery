@@ -2,6 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
+import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { UserSearchResultFragment$key } from '~/generated/UserSearchResultFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 
@@ -17,6 +18,8 @@ export function UserSearchResult({ userRef }: Props) {
       fragment UserSearchResultFragment on GalleryUser {
         username
         bio
+
+        ...ProfilePictureFragment
       }
     `,
     userRef
@@ -31,6 +34,7 @@ export function UserSearchResult({ userRef }: Props) {
 
   return (
     <SearchResult
+      profilePicture={<ProfilePicture userRef={user} size="sm" />}
       onPress={handlePress}
       title={user?.username ?? ''}
       description={user?.bio ?? ''}

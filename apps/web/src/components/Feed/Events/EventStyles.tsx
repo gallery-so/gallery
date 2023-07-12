@@ -1,8 +1,8 @@
 import { ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 
-import { VStack } from '~/components/core/Spacer/Stack';
-import { BaseM, BaseS, TitleDiatypeM } from '~/components/core/Text/Text';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
+import { BaseS, TitleDiatypeM } from '~/components/core/Text/Text';
 import colors from '~/shared/theme/colors';
 
 type StyledEventProps = {
@@ -105,9 +105,11 @@ export const StyledEventLabel = styled(TitleDiatypeM)`
   display: inline-block;
 `;
 
-export const StyledEventText = styled(BaseM)<{ isSubEvent?: boolean }>`
-  display: contents;
-
+export const StyledEventText = styled(HStack).attrs({
+  inline: true,
+  gap: 4,
+  align: 'center',
+})<{ isSubEvent?: boolean }>`
   ${({ isSubEvent }) =>
     isSubEvent &&
     css`

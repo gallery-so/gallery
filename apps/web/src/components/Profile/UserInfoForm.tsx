@@ -1,21 +1,22 @@
 import { FormEvent, useCallback, useMemo, useState } from 'react';
-import { graphql, useFragment } from 'react-relay';
+// import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import Input from '~/components/core/Input/Input';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { TitleS } from '~/components/core/Text/Text';
 import { TextAreaWithCharCount } from '~/components/core/TextArea/TextArea';
-import { UserInfoFormFragment$key } from '~/generated/UserInfoFormFragment.graphql';
-import { UserInfoFormQueryFragment$key } from '~/generated/UserInfoFormQueryFragment.graphql';
-import { removeNullValues } from '~/shared/relay/removeNullValues';
+// import { UserInfoFormFragment$key } from '~/generated/UserInfoFormFragment.graphql';
+// import { UserInfoFormQueryFragment$key } from '~/generated/UserInfoFormQueryFragment.graphql';
+// import { useTrack } from '~/shared/contexts/AnalyticsContext';
+// import { removeNullValues } from '~/shared/relay/removeNullValues';
 import unescape from '~/shared/utils/unescape';
-import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
+// import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
-import useNftSelector from '../NftSelector/useNftSelector';
-import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
-import { RawProfilePicture } from '../RawProfilePicture';
-import { ProfilePictureDropdown } from './ProfilePictureDropdown';
+// import useNftSelector from '../NftSelector/useNftSelector';
+// import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
+// import { RawProfilePicture } from '../RawProfilePicture';
+// import { ProfilePictureDropdown } from './ProfilePictureDropdown';
 
 type Props = {
   className?: string;
@@ -27,8 +28,8 @@ type Props = {
   bio: string;
   onBioChange: (bio: string) => void;
 
-  userRef: UserInfoFormFragment$key;
-  queryRef: UserInfoFormQueryFragment$key;
+  // userRef: UserInfoFormFragment$key;
+  // queryRef: UserInfoFormQueryFragment$key;
 };
 
 export const BIO_MAX_CHAR_COUNT = 600;
@@ -42,49 +43,54 @@ function UserInfoForm({
   bio,
   onBioChange,
   mode,
+}: // userRef,
+// queryRef,
+Props) {
+  // const user = useFragment(
+  //   graphql`
+  //     fragment UserInfoFormFragment on GalleryUser {
+  //       ...ProfilePictureFragment
+  //       profileImage {
+  //         __typename
+  //       }
 
-  userRef,
-  queryRef,
-}: Props) {
-  const user = useFragment(
-    graphql`
-      fragment UserInfoFormFragment on GalleryUser {
-        ...ProfilePictureFragment
-        profileImage {
-          __typename
-        }
+  //       tokens {
+  //         ...ProfilePictureDropdownFragment
+  //         ...useNftSelectorFragment
+  //       }
+  //     }
+  //   `,
+  //   userRef
+  // );
 
-        tokens {
-          ...ProfilePictureDropdownFragment
-          ...useNftSelectorFragment
-        }
-      }
-    `,
-    userRef
-  );
+  // const query = useFragment(
+  //   graphql`
+  //     fragment UserInfoFormQueryFragment on Query {
+  //       ...isFeatureEnabledFragment
+  //       ...ProfilePictureDropdownQueryFragment
+  //       ...useNftSelectorQueryFragment
+  //     }
+  //   `,
+  //   queryRef
+  // );
 
-  const query = useFragment(
-    graphql`
-      fragment UserInfoFormQueryFragment on Query {
-        ...isFeatureEnabledFragment
-        ...ProfilePictureDropdownQueryFragment
-        ...useNftSelectorQueryFragment
-      }
-    `,
-    queryRef
-  );
-
-  const [showPfpDropdown, setShowPfpDropdown] = useState(false);
+  // const [showPfpDropdown, setShowPfpDropdown] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const isPfpEnabled = isFeatureEnabled(FeatureFlag.PFP, query);
+  // const isPfpEnabled = isFeatureEnabled(FeatureFlag.PFP, query);
 
-  const tokens = removeNullValues(user.tokens) ?? [];
-  const showNftSelector = useNftSelector({ tokensRef: tokens, queryRef: query });
+  // const tokens = removeNullValues(user.tokens) ?? [];
+  // const showNftSelector = useNftSelector({ tokensRef: tokens, queryRef: query });
+  // const track = useTrack();
+
+  // const handleEditPfp = useCallback(() => {
+  //   track('PFP: Clicked PFP setup in Onboarding');
+  //   showNftSelector();
+  // }, [showNftSelector, track]);
 
   const unescapedBio = useMemo(() => unescape(bio), [bio]);
 
-  const hasProfileImage = user.profileImage?.__typename === 'TokenProfileImage';
+  // const hasProfileImage = user.profileImage?.__typename === 'TokenProfileImage';
 
   const handleSubmit = useCallback(
     async (event: FormEvent) => {
@@ -122,36 +128,36 @@ function UserInfoForm({
   // Otherwise, focus on bio
   const shouldAutofocusBio = !shouldAutofocusUsername;
 
-  const handleOpenPfpDropdown = useCallback(() => {
-    setShowPfpDropdown(true);
-  }, []);
-  const handleClosePfpDropdown = useCallback(() => {
-    setShowPfpDropdown(false);
-  }, []);
+  // const handleOpenPfpDropdown = useCallback(() => {
+  //   setShowPfpDropdown(true);
+  // }, []);
+  // const handleClosePfpDropdown = useCallback(() => {
+  //   setShowPfpDropdown(false);
+  // }, []);
 
-  const firstLetter = username?.substring(0, 1) ?? undefined;
+  // const firstLetter = username?.substring(0, 1) ?? undefined;
 
   return (
     <StyledUserInformContainer as="form" className={className} gap={16} onSubmit={handleSubmit}>
       {mode === 'Add' && (
         <>
           <TitleS>Let's set up your profile</TitleS>
-          {isPfpEnabled && (
-            <div onClick={showNftSelector}>
+          {/* {isPfpEnabled && (
+            <div onClick={handleEditPfp}>
               {hasProfileImage ? (
-                <ProfilePicture userRef={user} />
+                <ProfilePicture userRef={user} size="xl" isEditable hasInset />
               ) : (
                 <RawProfilePicture letter={firstLetter} default hasInset isEditable size="xl" />
               )}
             </div>
-          )}
+          )} */}
         </>
       )}
 
       <HStack gap={16} align="center">
-        {!mode && isPfpEnabled && (
+        {/* {!mode && isPfpEnabled && (
           <StyledProfilePictureContainer onClick={handleOpenPfpDropdown}>
-            <ProfilePicture userRef={user} />
+            <ProfilePicture userRef={user} size="xl" isEditable hasInset />
             <ProfilePictureDropdown
               open={showPfpDropdown}
               onClose={handleClosePfpDropdown}
@@ -159,7 +165,7 @@ function UserInfoForm({
               queryRef={query}
             />
           </StyledProfilePictureContainer>
-        )}
+        )} */}
 
         <StyledInputContainer>
           <Input
@@ -199,8 +205,8 @@ const StyledInputContainer = styled.div`
   width: 100%;
 `;
 
-const StyledProfilePictureContainer = styled.div`
-  position: relative;
-`;
+// const StyledProfilePictureContainer = styled.div`
+//   position: relative;
+// `;
 
 export default UserInfoForm;

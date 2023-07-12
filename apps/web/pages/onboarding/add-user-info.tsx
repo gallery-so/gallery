@@ -28,15 +28,17 @@ function AddUserInfo() {
               bio
               username
 
-              ...UserInfoFormFragment
+              # ...UserInfoFormFragment
             }
           }
         }
-        ...UserInfoFormQueryFragment
+        # ...UserInfoFormQueryFragment
       }
     `,
     {}
   );
+
+  console.log({ query });
 
   const { push, back, query: urlQuery } = useRouter();
   const relayEnvironment = useRelayEnvironment();
@@ -97,11 +99,7 @@ function AddUserInfo() {
 
   const track = useTrack();
   const { isLocked, syncTokens } = useSyncTokens();
-  const user = query.viewer?.user;
-
-  if (!user) {
-    throw new Error('User not found');
-  }
+  // const user = query.viewer?.user;
 
   const handleSubmit = useCallback(async () => {
     const { success } = await onEditUser();
@@ -133,8 +131,8 @@ function AddUserInfo() {
             usernameError={usernameError}
             onUsernameChange={onUsernameChange}
             onBioChange={onBioChange}
-            userRef={user}
-            queryRef={query}
+            // userRef={user}
+            // queryRef={query}
           />
           <ErrorContainer>
             <ErrorText message={generalError} />

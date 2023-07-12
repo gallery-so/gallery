@@ -48,6 +48,7 @@ export function ProfileViewHeader({ queryRef, selectedRoute, onRouteChange }: Pr
             ...ProfileViewSharedInfoFragment
           }
         }
+
         ...useLoggedInUserIdFragment
       }
     `,

@@ -2,6 +2,7 @@ import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { NotificationFragment$key } from '~/generated/NotificationFragment.graphql';
+import { NotificationQueryFragment$key } from '~/generated/NotificationQueryFragment.graphql';
 
 import { SomeoneAdmiredYourFeedEvent } from './Notifications/SomeoneAdmiredYourFeedEvent';
 import { SomeoneCommentedOnYourFeedEvent } from './Notifications/SomeoneCommentedOnYourFeedEvent';
@@ -10,10 +11,24 @@ import { SomeoneFollowedYouBack } from './Notifications/SomeoneFollowedYouBack';
 import { SomeoneViewedYourGallery } from './Notifications/SomeoneViewedYourGallery';
 
 type NotificationInnerProps = {
+  queryRef: NotificationQueryFragment$key;
   notificationRef: NotificationFragment$key;
 };
 
-export function Notification({ notificationRef }: NotificationInnerProps) {
+export function Notification({ notificationRef, queryRef }: NotificationInnerProps) {
+  const query = useFragment(
+    graphql`
+      fragment NotificationQueryFragment on Query {
+        ...SomeoneFollowedYouBackQueryFragment
+        ...SomeoneFollowedYouQueryFragment
+        ...SomeoneAdmiredYourFeedEventQueryFragment
+        ...SomeoneCommentedOnYourFeedEventQueryFragment
+        ...SomeoneViewedYourGalleryQueryFragment
+      }
+    `,
+    queryRef
+  );
+
   const notification = useFragment(
     graphql`
       fragment NotificationFragment on Notification {
@@ -47,15 +62,15 @@ export function Notification({ notificationRef }: NotificationInnerProps) {
   );
 
   if (notification.__typename === 'SomeoneViewedYourGalleryNotification') {
-    return <SomeoneViewedYourGallery notificationRef={notification} />;
+    return <SomeoneViewedYourGallery queryRef={query} notificationRef={notification} />;
   } else if (notification.__typename === 'SomeoneAdmiredYourFeedEventNotification') {
-    return <SomeoneAdmiredYourFeedEvent notificationRef={notification} />;
+    return <SomeoneAdmiredYourFeedEvent queryRef={query} notificationRef={notification} />;
   } else if (notification.__typename === 'SomeoneFollowedYouBackNotification') {
-    return <SomeoneFollowedYouBack notificationRef={notification} />;
+    return <SomeoneFollowedYouBack queryRef={query} notificationRef={notification} />;
   } else if (notification.__typename === 'SomeoneFollowedYouNotification') {
-    return <SomeoneFollowedYou notificationRef={notification} />;
+    return <SomeoneFollowedYou queryRef={query} notificationRef={notification} />;
   } else if (notification.__typename === 'SomeoneCommentedOnYourFeedEventNotification') {
-    return <SomeoneCommentedOnYourFeedEvent notificationRef={notification} />;
+    return <SomeoneCommentedOnYourFeedEvent queryRef={query} notificationRef={notification} />;
   }
 
   return <View />;

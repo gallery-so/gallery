@@ -15,6 +15,8 @@ type Props = {
 
   children?: ReactNode;
   position: 'right' | 'left' | 'full-width';
+
+  className?: string;
 };
 
 export function Dropdown({
@@ -25,6 +27,7 @@ export function Dropdown({
   onMouseLeave,
   onMouseEnter,
   isActivatedByHover,
+  className,
 }: Props) {
   const handleClose = useCallback<MouseEventHandler>(
     (event) => {
@@ -44,6 +47,7 @@ export function Dropdown({
       {active && !isActivatedByHover && <Backdrop onClick={handleClose} />}
 
       <DropdownContainer
+        className={className}
         position={position}
         active={active}
         onMouseLeave={onMouseLeave}

@@ -13,6 +13,7 @@ import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import LinkToNftDetailView from '~/scenes/NftDetailPage/LinkToNftDetailView';
 import NftDetailAnimation from '~/scenes/NftDetailPage/NftDetailAnimation';
 import NftDetailGif from '~/scenes/NftDetailPage/NftDetailGif';
+import NftDetailModel from '~/scenes/NftDetailPage/NftDetailModel';
 import NftDetailVideo from '~/scenes/NftDetailPage/NftDetailVideo';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
@@ -61,9 +62,12 @@ const nftPreviewTokenFragment = graphql`
       ... on GIFMedia {
         __typename
       }
-
       ... on HtmlMedia {
         __typename
+      }
+      ... on GltfMedia {
+        __typename
+        ...NftDetailModelFragment
       }
     }
 
@@ -164,6 +168,9 @@ function NftPreview({
     }
     if (shouldLiverender && token.media?.__typename === 'GIFMedia') {
       return <NftDetailGif onLoad={handleNftLoaded} tokenRef={token} />;
+    }
+    if (shouldLiverender && token.media?.__typename === 'GltfMedia') {
+      return <NftDetailModel onLoad={handleNftLoaded} mediaRef={token.media} fullHeight={false} />;
     }
     if (isIFrameLiveDisplay) {
       return <NftDetailAnimation onLoad={handleNftLoaded} mediaRef={token} />;
@@ -308,7 +315,7 @@ const StyledNftPreview = styled.div<{
   align-items: center;
   position: relative;
   overflow: hidden;
-  max-height: 80vh;
+  max-height: 100%;
   width: ${({ fullWidth }) => (fullWidth ? '100%' : 'auto')};
   height: ${({ fullHeight }) => (fullHeight ? '100%' : 'initial')};
 

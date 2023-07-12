@@ -1,7 +1,6 @@
 import { useScrollToTop } from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import { useCallback, useMemo, useRef } from 'react';
-import { RefreshControl } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import {
@@ -11,6 +10,7 @@ import {
 } from '~/components/Feed/createVirtualizedFeedEventItems';
 import { FeedVirtualizedRow } from '~/components/Feed/FeedVirtualizedRow';
 import { useFailedEventTracker } from '~/components/Feed/useFailedEventTracker';
+import { GalleryRefreshControl } from '~/components/GalleryRefreshControl';
 import { FeedListFragment$key } from '~/generated/FeedListFragment.graphql';
 import { FeedListQueryFragment$key } from '~/generated/FeedListQueryFragment.graphql';
 
@@ -93,7 +93,7 @@ export function FeedList({
       stickyHeaderIndices={stickyIndices}
       getItemType={(item) => item.kind}
       keyExtractor={(item) => item.key}
-      refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />}
+      refreshControl={<GalleryRefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />}
     />
   );
 }

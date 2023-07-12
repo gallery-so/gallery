@@ -7,15 +7,28 @@ import { graphql } from 'relay-runtime';
 import { NotificationSkeleton } from '~/components/Notification/NotificationSkeleton';
 import { Typography } from '~/components/Typography';
 import { SomeoneCommentedOnYourFeedEventFragment$key } from '~/generated/SomeoneCommentedOnYourFeedEventFragment.graphql';
+import { SomeoneCommentedOnYourFeedEventQueryFragment$key } from '~/generated/SomeoneCommentedOnYourFeedEventQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 type SomeoneCommentedOnYourFeedEventProps = {
+  queryRef: SomeoneCommentedOnYourFeedEventQueryFragment$key;
   notificationRef: SomeoneCommentedOnYourFeedEventFragment$key;
 };
 
 export function SomeoneCommentedOnYourFeedEvent({
+  queryRef,
   notificationRef,
 }: SomeoneCommentedOnYourFeedEventProps) {
+  const query = useFragment(
+    graphql`
+      fragment SomeoneCommentedOnYourFeedEventQueryFragment on Query {
+        ...NotificationSkeletonQueryFragment
+      }
+    `,
+    queryRef
+  );
+
   const notification = useFragment(
     graphql`
       fragment SomeoneCommentedOnYourFeedEventFragment on SomeoneCommentedOnYourFeedEventNotification {
@@ -24,6 +37,7 @@ export function SomeoneCommentedOnYourFeedEvent({
         comment {
           commenter {
             username
+            ...NotificationSkeletonResponsibleUsersFragment
           }
           comment
         }
@@ -87,6 +101,10 @@ export function SomeoneCommentedOnYourFeedEvent({
     }
   }, [eventType]);
 
+  const commenters = useMemo(() => {
+    return removeNullValues([notification.comment?.commenter]);
+  }, [notification.comment?.commenter]);
+
   // @ts-expect-error: property `collection` does not exist on type { readonly __typename: "%other" };
   const collection = notification.feedEvent?.eventData?.collection;
   const commenter = notification.comment?.commenter;
@@ -99,7 +117,12 @@ export function SomeoneCommentedOnYourFeedEvent({
   }, [navigation, notification.feedEvent?.dbid]);
 
   return (
-    <NotificationSkeleton onPress={handlePress} notificationRef={notification}>
+    <NotificationSkeleton
+      queryRef={query}
+      onPress={handlePress}
+      responsibleUserRefs={commenters}
+      notificationRef={notification}
+    >
       <View className="flex space-y-2">
         <Text className="dark:text-white">
           <Typography

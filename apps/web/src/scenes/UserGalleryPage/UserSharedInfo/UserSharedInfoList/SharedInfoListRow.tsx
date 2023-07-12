@@ -12,12 +12,15 @@ type Props = {
   title?: string;
   subTitle?: string;
   href: Route | null;
+
+  imageContent?: React.ReactNode;
 };
 
-export default function SharedInfoListRow({ title, subTitle, href }: Props) {
+export default function SharedInfoListRow({ title, subTitle, href, imageContent }: Props) {
   const rowContent = useMemo(() => {
     return (
       <StyledHStack justify="space-between" align="center" gap={8}>
+        {imageContent && <VStack>{imageContent}</VStack>}
         <StyledVStack justify="center">
           <TitleDiatypeM>{title}</TitleDiatypeM>
           {subTitle && (
@@ -28,7 +31,7 @@ export default function SharedInfoListRow({ title, subTitle, href }: Props) {
         </StyledVStack>
       </StyledHStack>
     );
-  }, [subTitle, title]);
+  }, [imageContent, subTitle, title]);
 
   if (href === null) {
     return <StyledRowNonLink>{rowContent}</StyledRowNonLink>;

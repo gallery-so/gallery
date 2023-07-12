@@ -5,6 +5,7 @@ import { graphql } from 'relay-runtime';
 
 import { FollowButton } from '~/components/FollowButton';
 import { Markdown } from '~/components/Markdown';
+import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { Typography } from '~/components/Typography';
 import { UserFollowCardFragment$key } from '~/generated/UserFollowCardFragment.graphql';
 import { UserFollowCardQueryFragment$key } from '~/generated/UserFollowCardQueryFragment.graphql';
@@ -33,6 +34,7 @@ export function UserFollowCard({ userRef, queryRef, onPress }: UserFollowCardPro
         username
         bio
 
+        ...ProfilePictureFragment
         ...FollowButtonUserFragment
       }
     `,
@@ -51,14 +53,21 @@ export function UserFollowCard({ userRef, queryRef, onPress }: UserFollowCardPro
     <View className="flex w-full flex-row items-center justify-between space-x-8 overflow-hidden py-3 px-4 h-16">
       <GalleryTouchableOpacity
         onPress={handlePress}
-        className="flex flex-1 flex-grow flex-col h-full"
+        className="flex flex-1 flex-grow flex-col h-full space-y-1"
         eventElementId="User Follow Username"
         eventName="User Follow Username Clicked"
       >
-        <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-          {user.username}
-        </Typography>
-        <Markdown numberOfLines={1}>{bioFirstLine}</Markdown>
+        <View className="flex flex-row items-center space-x-2">
+          <ProfilePicture userRef={user} size="sm" />
+
+          <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+            {user.username}
+          </Typography>
+        </View>
+
+        <View>
+          <Markdown numberOfLines={1}>{bioFirstLine}</Markdown>
+        </View>
       </GalleryTouchableOpacity>
 
       <FollowButton queryRef={query} userRef={user} />

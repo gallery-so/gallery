@@ -7,13 +7,28 @@ import { graphql } from 'relay-runtime';
 import { NotificationSkeleton } from '~/components/Notification/NotificationSkeleton';
 import { Typography } from '~/components/Typography';
 import { SomeoneAdmiredYourFeedEventFragment$key } from '~/generated/SomeoneAdmiredYourFeedEventFragment.graphql';
+import { SomeoneAdmiredYourFeedEventQueryFragment$key } from '~/generated/SomeoneAdmiredYourFeedEventQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 type SomeoneAdmiredYourFeedEventProps = {
+  queryRef: SomeoneAdmiredYourFeedEventQueryFragment$key;
   notificationRef: SomeoneAdmiredYourFeedEventFragment$key;
 };
 
-export function SomeoneAdmiredYourFeedEvent({ notificationRef }: SomeoneAdmiredYourFeedEventProps) {
+export function SomeoneAdmiredYourFeedEvent({
+  notificationRef,
+  queryRef,
+}: SomeoneAdmiredYourFeedEventProps) {
+  const query = useFragment(
+    graphql`
+      fragment SomeoneAdmiredYourFeedEventQueryFragment on Query {
+        ...NotificationSkeletonQueryFragment
+      }
+    `,
+    queryRef
+  );
+
   const notification = useFragment(
     graphql`
       fragment SomeoneAdmiredYourFeedEventFragment on SomeoneAdmiredYourFeedEventNotification {
@@ -61,6 +76,8 @@ export function SomeoneAdmiredYourFeedEvent({ notificationRef }: SomeoneAdmiredY
             node {
               __typename
               username
+
+              ...NotificationSkeletonResponsibleUsersFragment
             }
           }
         }
@@ -71,8 +88,12 @@ export function SomeoneAdmiredYourFeedEvent({ notificationRef }: SomeoneAdmiredY
     notificationRef
   );
 
+  const admirers = useMemo(() => {
+    return removeNullValues(notification.admirers?.edges?.map((edge) => edge?.node));
+  }, [notification.admirers?.edges]);
+
   const count = notification.count ?? 1;
-  const firstAdmirer = notification.admirers?.edges?.[0]?.node;
+  const firstAdmirer = admirers[0];
   const eventType = notification.feedEvent?.eventData?.__typename;
 
   const verb = useMemo(() => {
@@ -102,7 +123,12 @@ export function SomeoneAdmiredYourFeedEvent({ notificationRef }: SomeoneAdmiredY
   }, [navigation, notification.feedEvent?.dbid]);
 
   return (
-    <NotificationSkeleton onPress={handlePress} notificationRef={notification}>
+    <NotificationSkeleton
+      queryRef={query}
+      onPress={handlePress}
+      responsibleUserRefs={admirers}
+      notificationRef={notification}
+    >
       <Text>
         <Typography
           font={{

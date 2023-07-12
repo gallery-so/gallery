@@ -11,12 +11,15 @@ import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, BaseS } from '~/components/core/Text/Text';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
+import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { CollectionUpdatedFeedEventFragment$key } from '~/generated/CollectionUpdatedFeedEventFragment.graphql';
+import { CollectionUpdatedFeedEventQueryFragment$key } from '~/generated/CollectionUpdatedFeedEventQueryFragment.graphql';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
 import { getTimeSince } from '~/shared/utils/time';
 import unescape from '~/shared/utils/unescape';
+import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 import { pluralize } from '~/utils/string';
 
 import { MAX_PIECES_DISPLAYED_PER_FEED_EVENT } from '../constants';
@@ -25,10 +28,15 @@ import { StyledEvent, StyledEventHeader, StyledEventText, StyledTime } from './E
 
 type Props = {
   eventDataRef: CollectionUpdatedFeedEventFragment$key;
+  queryRef: CollectionUpdatedFeedEventQueryFragment$key;
   isSubEvent?: boolean;
 };
 
-export default function CollectionUpdatedFeedEvent({ eventDataRef, isSubEvent = false }: Props) {
+export default function CollectionUpdatedFeedEvent({
+  eventDataRef,
+  queryRef,
+  isSubEvent = false,
+}: Props) {
   const event = useFragment(
     graphql`
       fragment CollectionUpdatedFeedEventFragment on CollectionUpdatedFeedEventData {
@@ -36,6 +44,7 @@ export default function CollectionUpdatedFeedEvent({ eventDataRef, isSubEvent = 
         owner @required(action: THROW) {
           username
           ...HoverCardOnUsernameFragment
+          ...ProfilePictureFragment
         }
         collection @required(action: THROW) {
           dbid
@@ -49,6 +58,18 @@ export default function CollectionUpdatedFeedEvent({ eventDataRef, isSubEvent = 
     `,
     eventDataRef
   );
+
+  const query = useFragment(
+    graphql`
+      fragment CollectionUpdatedFeedEventQueryFragment on Query {
+        ...FeedEventTokenPreviewsQueryFragment
+        ...isFeatureEnabledFragment
+      }
+    `,
+    queryRef
+  );
+
+  const isPfpEnabled = isFeatureEnabled(FeatureFlag.PFP, query);
 
   const tokensToPreview = useMemo(() => {
     return removeNullValues(event.newTokens).slice(0, MAX_PIECES_DISPLAYED_PER_FEED_EVENT);
@@ -79,8 +100,13 @@ export default function CollectionUpdatedFeedEvent({ eventDataRef, isSubEvent = 
           <StyledEventHeader>
             <HStack gap={4} inline>
               <StyledEventText isSubEvent={isSubEvent}>
-                {!isSubEvent && <HoverCardOnUsername userRef={event.owner} />} made updates to{' '}
-                {collectionName ? ' ' : 'their collection'}
+                {!isSubEvent && (
+                  <HStack align="center" gap={4}>
+                    {isPfpEnabled && <ProfilePicture userRef={event.owner} size="sm" />}
+                    <HoverCardOnUsername userRef={event.owner} />
+                  </HStack>
+                )}{' '}
+                made updates to {collectionName ? ' ' : 'their collection'}
                 <InteractiveLink to={collectionPagePath}>{collectionName}</InteractiveLink>
               </StyledEventText>
               {!isSubEvent && <StyledTime>{getTimeSince(event.eventTime)}</StyledTime>}
@@ -90,7 +116,11 @@ export default function CollectionUpdatedFeedEvent({ eventDataRef, isSubEvent = 
             <Markdown text={unescape(event.newCollectorsNote ?? '')} inheritLinkStyling />
           </StyledQuote>
           <VStack gap={8}>
-            <FeedEventTokenPreviews isInCaption={false} tokenToPreviewRefs={tokensToPreview} />
+            <FeedEventTokenPreviews
+              isInCaption={false}
+              tokenToPreviewRefs={tokensToPreview}
+              queryRef={query}
+            />
             {showAdditionalPiecesIndicator && (
               <StyledAdditionalPieces>
                 +{numAdditionalPieces} more {pluralize(numAdditionalPieces, 'piece')}

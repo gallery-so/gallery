@@ -57,7 +57,7 @@
           "NOT /unsubscribe",
           "NOT /verify",
           "NOT /welcome",
-          "NOT /404"
+          "NOT /404",
           "/*",
         ]
       }

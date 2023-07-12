@@ -16,10 +16,12 @@ import { NotificationUserListPage } from '~/components/Notifications/Notificatio
 import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 import { NotificationFragment$key } from '~/generated/NotificationFragment.graphql';
 import { NotificationInnerFragment$key } from '~/generated/NotificationInnerFragment.graphql';
+import { NotificationInnerQueryFragment$key } from '~/generated/NotificationInnerQueryFragment.graphql';
 import { NotificationQueryFragment$key } from '~/generated/NotificationQueryFragment.graphql';
 import { useClearNotifications } from '~/shared/relay/useClearNotifications';
 import colors from '~/shared/theme/colors';
 import { getTimeSince } from '~/shared/utils/time';
+import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 type NotificationProps = {
   notificationRef: NotificationFragment$key;
@@ -50,7 +52,7 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
         }
 
         ... on SomeoneViewedYourGalleryNotification {
-          userViewers(last: 1) {
+          userViewers(last: 3) {
             pageInfo {
               total
             }
@@ -79,6 +81,7 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
             }
           }
         }
+        ...NotificationInnerQueryFragment
       }
     `,
     queryRef
@@ -170,7 +173,7 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
             <UnseenDot />
           </UnseenDotContainer>
         )}
-        <NotificationInner notificationRef={notification} />
+        <NotificationInner notificationRef={notification} queryRef={query} />
         <HStack grow justify="flex-end" gap={16}>
           <TimeAgoText color={colors.metal}>{timeAgo}</TimeAgoText>
           {showCaret && <NotificationArrow />}
@@ -182,9 +185,10 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
 
 type NotificationInnerProps = {
   notificationRef: NotificationInnerFragment$key;
+  queryRef: NotificationInnerQueryFragment$key;
 };
 
-function NotificationInner({ notificationRef }: NotificationInnerProps) {
+function NotificationInner({ notificationRef, queryRef }: NotificationInnerProps) {
   const notification = useFragment(
     graphql`
       fragment NotificationInnerFragment on Notification {
@@ -217,21 +221,62 @@ function NotificationInner({ notificationRef }: NotificationInnerProps) {
     notificationRef
   );
 
+  const query = useFragment(
+    graphql`
+      fragment NotificationInnerQueryFragment on Query {
+        ...isFeatureEnabledFragment
+      }
+    `,
+    queryRef
+  );
+
+  const isPfpEnabled = isFeatureEnabled(FeatureFlag.PFP, query);
+
   const { hideDrawer } = useDrawerActions();
   const handleClose = useCallback(() => {
     hideDrawer();
   }, [hideDrawer]);
 
   if (notification.__typename === 'SomeoneAdmiredYourFeedEventNotification') {
-    return <SomeoneAdmiredYourFeedEvent notificationRef={notification} onClose={handleClose} />;
+    return (
+      <SomeoneAdmiredYourFeedEvent
+        notificationRef={notification}
+        onClose={handleClose}
+        isPfpVisible={isPfpEnabled}
+      />
+    );
   } else if (notification.__typename === 'SomeoneViewedYourGalleryNotification') {
-    return <SomeoneViewedYourGallery notificationRef={notification} onClose={handleClose} />;
+    return (
+      <SomeoneViewedYourGallery
+        notificationRef={notification}
+        onClose={handleClose}
+        isPfpVisible={isPfpEnabled}
+      />
+    );
   } else if (notification.__typename === 'SomeoneFollowedYouNotification') {
-    return <SomeoneFollowedYou notificationRef={notification} onClose={handleClose} />;
+    return (
+      <SomeoneFollowedYou
+        notificationRef={notification}
+        onClose={handleClose}
+        isPfpVisible={isPfpEnabled}
+      />
+    );
   } else if (notification.__typename === 'SomeoneFollowedYouBackNotification') {
-    return <SomeoneFollowedYouBack notificationRef={notification} onClose={handleClose} />;
+    return (
+      <SomeoneFollowedYouBack
+        notificationRef={notification}
+        onClose={handleClose}
+        isPfpVisible={isPfpEnabled}
+      />
+    );
   } else if (notification.__typename === 'SomeoneCommentedOnYourFeedEventNotification') {
-    return <SomeoneCommentedOnYourFeedEvent notificationRef={notification} onClose={handleClose} />;
+    return (
+      <SomeoneCommentedOnYourFeedEvent
+        notificationRef={notification}
+        onClose={handleClose}
+        isPfpVisible={isPfpEnabled}
+      />
+    );
   }
 
   return null;

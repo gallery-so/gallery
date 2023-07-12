@@ -2,6 +2,7 @@ import {
   autoUpdate,
   flip,
   FloatingFocusManager,
+  FloatingPortal,
   inline,
   shift,
   useFloating,
@@ -109,34 +110,36 @@ export default function HoverCardOnUsername({ children, userRef, onClick = noop 
 
       <AnimatePresence>
         {isHovering && preloadedHoverCardQuery && (
-          <FloatingFocusManager context={context} modal={false}>
-            <StyledCardWrapper
-              className="Popover"
-              aria-labelledby={headingId}
-              // Floating UI Props
-              ref={floating}
-              style={{
-                position: strategy,
-                top: y ?? 0,
-                left: x ?? 0,
-              }}
-              {...getFloatingProps()}
-              // Framer Motion Props
-              transition={{
-                duration: ANIMATED_COMPONENT_TRANSITION_S,
-                ease: rawTransitions.cubicValues,
-              }}
-              initial={{ opacity: 0, y: 0 }}
-              animate={{ opacity: 1, y: ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL }}
-              exit={{ opacity: 0, y: 0 }}
-            >
-              <StyledCardContainer>
-                <Suspense fallback={null}>
-                  <HoverCard preloadedQuery={preloadedHoverCardQuery} />
-                </Suspense>
-              </StyledCardContainer>
-            </StyledCardWrapper>
-          </FloatingFocusManager>
+          <FloatingPortal preserveTabOrder={false}>
+            <FloatingFocusManager context={context} modal={false}>
+              <StyledCardWrapper
+                className="Popover"
+                aria-labelledby={headingId}
+                // Floating UI Props
+                ref={floating}
+                style={{
+                  position: strategy,
+                  top: y ?? 0,
+                  left: x ?? 0,
+                }}
+                {...getFloatingProps()}
+                // Framer Motion Props
+                transition={{
+                  duration: ANIMATED_COMPONENT_TRANSITION_S,
+                  ease: rawTransitions.cubicValues,
+                }}
+                initial={{ opacity: 0, y: 0 }}
+                animate={{ opacity: 1, y: ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL }}
+                exit={{ opacity: 0, y: 0 }}
+              >
+                <StyledCardContainer>
+                  <Suspense fallback={null}>
+                    <HoverCard preloadedQuery={preloadedHoverCardQuery} />
+                  </Suspense>
+                </StyledCardContainer>
+              </StyledCardWrapper>
+            </FloatingFocusManager>
+          </FloatingPortal>
         )}
       </AnimatePresence>
     </StyledContainer>
@@ -162,7 +165,7 @@ const StyledLink = styled(Link)`
 `;
 
 const StyledCardWrapper = styled(motion.div)`
-  z-index: 1;
+  z-index: 11;
 
   :focus {
     outline: none;
