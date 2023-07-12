@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import IconContainer from '~/components/core/IconContainer';
 import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import Tooltip from '~/components/Tooltip/Tooltip';
+import { BADGE_ENABLED_COMMUNITY_ADDRESSES } from '~/constants/community';
 import { BadgeFragment$key } from '~/generated/BadgeFragment.graphql';
 
 type Props = {
@@ -61,6 +62,14 @@ export default function Badge({ badgeRef }: Props) {
   const handleMouseExit = useCallback(() => {
     setShowTooltip(false);
   }, []);
+
+  const isEnabled = useMemo(() => {
+    return BADGE_ENABLED_COMMUNITY_ADDRESSES.has(contract?.contractAddress?.address ?? '');
+  }, [contract?.contractAddress?.address]);
+
+  if (!isEnabled) {
+    return null;
+  }
 
   return (
     <StyledInteractiveLink to={communityUrl}>
