@@ -26,7 +26,7 @@ import isRefreshDisabledForUser from './isRefreshDisabledForUser';
 import SearchBar from './SearchBar';
 import SidebarChainDropdown from './SidebarChainDropdown';
 import { SidebarView, SidebarViewSelector } from './SidebarViewSelector';
-import { SidebarWalletSelector } from "./SidebarWalletSelector";
+import  SidebarWalletSelector from "./SidebarWalletSelector";
 
 type Props = {
   tokensRef: PiecesSidebarFragment$key;
@@ -58,21 +58,13 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
           ... on Viewer {
             user {
               dbid
-              wallets {
-                dbid @required(action: THROW)
-                chainAddress @required(action: THROW) {
-                  address @required(action: THROW)
-                  chain @required(action: THROW)
-                  ...ManageWalletsRow
-                }
-              }
             }
           }
         }
         ...SidebarChainDropdownFragment
         ...doesUserOwnWalletFromChainFamilyFragment
         ...AddWalletSidebarQueryFragment
-        ...SelectWalletSidebarQueryFragment
+        ...SidebarWalletSelectorFragment
       }
     `,
     queryRef
