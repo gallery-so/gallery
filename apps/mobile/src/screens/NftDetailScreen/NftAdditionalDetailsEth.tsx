@@ -5,6 +5,7 @@ import { graphql } from 'relay-runtime';
 
 import { NftAdditionalDetailsEthFragment$key } from '~/generated/NftAdditionalDetailsEthFragment.graphql';
 import { getOpenseaExternalUrl, hexHandler } from '~/shared/utils/getOpenseaExternalUrl';
+import { extractMirrorXyzUrl } from '~/shared/utils/extractMirrorXyzUrl';
 
 import { EnsOrAddress } from '../../components/EnsOrAddress';
 import { InteractiveLink } from '../../components/InteractiveLink';
