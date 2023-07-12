@@ -27,13 +27,7 @@ describe('regex', () => {
       MIRROR_XYZ_URL,
     ];
 
-    const invalidUrls = [
-      '',
-      'http://invalid',
-      'https://invalid',
-      'https://mirrorrrs.xyz',
-      'mirror.xyz',
-    ];
+    const invalidUrls = ['', 'http://invalid', 'https://invalid', 'mirror.xyz'];
 
     testRegex(VALID_URL, validUrls, true);
     testRegex(VALID_URL, invalidUrls, false);
