@@ -8,6 +8,8 @@ export const GOOGLE_CONTENT_IMG_URL = /=s\d{3}$/;
 export const VALID_URL =
   /https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9(@:%_\+.~#?&\/=]*)/;
 
+export const MIRROR_XYZ_URL = 'https://mirror.xyz';
+
 // standard email format x@x.xx
 export const EMAIL_FORMAT = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 
