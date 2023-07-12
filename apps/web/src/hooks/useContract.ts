@@ -27,10 +27,8 @@ function validateEthereumAddressFormat(input: string): EthereumAddress {
   return input as EthereumAddress;
 }
 
-// This is a workaround for the fact that the type of the contract returned by getContract() is not
-// compatible with the type of the contract returned by useContract() from viem.
-
-// To avoid a refactor now, whenever we interact with the contract, we're using the legacy `write` and `read` properties
+// Newer versions of wagmi use viem to interact with contracts, while our codebase uses ethers.
+// To avoid a refactor now, whenever we interact with the contract, we're still using the legacy `write` and `read` properties
 // from the contract which allows us to call the abi methods directly.
 // This isn't ideal because getContract() returns a viem Contract instance whose type doesnt include `write` and `read` properties.
 // The WagmiContract type is a workaround to satisfy typecheck and allow us to use the `write` and `read` properties without needing to ignore typescript errors everywhere we use the contract.
@@ -50,7 +48,7 @@ function useContractWithAbi(contractAddress: string, contractAbi: Abi): WagmiCon
 
   const contract = getContract({
     address: validatedAddress,
-    abi: abi,
+    abi,
     // @ts-expect-error typescript
     walletClient: walletClient ?? publicClient,
   });
