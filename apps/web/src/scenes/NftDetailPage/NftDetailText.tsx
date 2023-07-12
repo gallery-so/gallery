@@ -88,7 +88,7 @@ function NftDetailText({ tokenRef, queryRef }: Props) {
   const horizontalLayout = breakpoint === size.desktop || breakpoint === size.tablet;
 
   const openseaExternalUrl = useMemo(() => {
-    if (token.chain && token.contract?.contractAddress?.address && token.tokenId ) {
+    if (token.chain && token.contract?.contractAddress?.address && token.tokenId) {
       getOpenseaExternalUrl(token.chain, token.contract.contractAddress.address, token.tokenId);
     }
 

@@ -24,10 +24,16 @@ describe('regex', () => {
       'https://collection.xyz',
       'https://collection.xyz/gallery?q=main',
       'https://webbtelescope.org/news/first-images',
-       MIRROR_URL,
+      MIRROR_URL,
     ];
 
-    const invalidUrls = ['', 'http://invalid', 'https://invalid', 'https://mirrorrrs.xyz', 'mirror.xyz'];
+    const invalidUrls = [
+      '',
+      'http://invalid',
+      'https://invalid',
+      'https://mirrorrrs.xyz',
+      'mirror.xyz',
+    ];
 
     testRegex(VALID_URL, validUrls, true);
     testRegex(VALID_URL, invalidUrls, false);

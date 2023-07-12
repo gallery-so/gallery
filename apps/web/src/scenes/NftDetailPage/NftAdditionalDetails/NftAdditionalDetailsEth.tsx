@@ -57,10 +57,10 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionaDetailsNonPOAP
 
   const mirrorXyzUrl = useMemo(() => {
     if (tokenMetadata) {
-      return extractMirrorXyzUrl(tokenMetadata)
+      return extractMirrorXyzUrl(tokenMetadata);
     }
-    
-    return null; 
+
+    return null;
   }, [tokenMetadata]);
 
   return (
