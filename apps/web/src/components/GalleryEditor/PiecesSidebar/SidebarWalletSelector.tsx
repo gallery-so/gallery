@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -9,6 +9,8 @@ import IconContainer from '~/components/core/IconContainer';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import DoubleArrowsIcon from '~/icons/DoubleArrowsIcon';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
+import { ChainMetadata } from '~/components/GalleryEditor/PiecesSidebar/chains';
 import { SidebarWalletSelectorFragment$key } from '~/generated/SidebarWalletSelectorFragment.graphql';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 
@@ -16,12 +18,14 @@ export type SidebarWallet = string;
 
 type SidebarWalletSelectorProps = {
   queryRef: SidebarWalletSelectorFragment$key;
+  selectedChain: ChainMetadata;
   selectedWallet: SidebarWallet;
-  onSelectedWalletChange: (selectedWallet: string) => void;
+  onSelectedWalletChange: (selectedWallet: any) => void;
 };
 
 export default function SidebarWalletSelector({
   queryRef,
+  selectedChain,
   selectedWallet,
   onSelectedWalletChange,
 }: SidebarWalletSelectorProps) {
@@ -47,9 +51,19 @@ export default function SidebarWalletSelector({
     `,
     queryRef
   );
-  console.log("viewer", viewer);
-  const [usersWallets, setUsersWallets] = useState(["ALL"]);
-  
+  console.log('viewer', viewer);
+  console.log('selectedChain', selectedChain);
+  const userWalletsOnSelectedNetwork = useMemo(
+    () =>
+      removeNullValues(viewer?.user?.wallets).filter((wallet) => {
+        if (wallet.chainAddress.chain === selectedChain.name) {
+          return wallet;
+        }
+      }),
+    [viewer?.user?.wallets, selectedChain]
+  );
+
+  console.log('userWalletsOnSelectedNetwork', userWalletsOnSelectedNetwork);
   const track = useTrack();
 
   const onSelectWallet = useCallback(
@@ -76,12 +90,11 @@ export default function SidebarWalletSelector({
           <DropdownItem onClick={() => onSelectWallet('ALL')}>
             <BaseM>ALL</BaseM>
           </DropdownItem>
-          <DropdownItem onClick={() => onSelectWallet('0x5f97a3r1')}>
-            <BaseM>0x5f97a3r1</BaseM>
+          {userWalletsOnSelectedNetwork.map((wallet) => (
+          <DropdownItem onClick={() => onSelectWallet(wallet)}>
+            <BaseM>{wallet.chainAddress.address}</BaseM>
           </DropdownItem>
-          <DropdownItem onClick={() => onSelectWallet('0x97s4s301')}>
-            <BaseM>0x97s4s301</BaseM>
-          </DropdownItem>
+          ))}
         </DropdownSection>
       </StyledDropdown>
     </Container>

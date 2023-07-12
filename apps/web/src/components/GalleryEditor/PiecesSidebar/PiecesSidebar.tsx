@@ -257,6 +257,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
           <TitleS>Wallet</TitleS>
           <SidebarWalletSelector
             queryRef={query}
+            selectedChain={selectedChain}
             selectedWallet={selectedWallet}
             onSelectedWalletChange={handleSelectedWalletChange}
           />
