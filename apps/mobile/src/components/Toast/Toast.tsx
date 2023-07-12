@@ -1,4 +1,4 @@
-import { ReactNode,useCallback, useEffect, useState } from 'react';
+import { ReactNode, useCallback, useEffect, useState } from 'react';
 import { Animated, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { XMarkIcon } from 'src/icons/XMarkIcon';
