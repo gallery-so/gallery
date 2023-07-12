@@ -12,5 +12,7 @@ jobs:
           node-version: 16.18.1
           cache: 'yarn'
       - run: 'yarn install --immutable'
-      - name: Run unit tests
+      - name: Run web unit tests
         run: node_modules/.bin/moon run web:codegen && node_modules/.bin/moon run web:test
+      - name: Run shared package tests
+        run: node_modules/.bin/moon run shared:relay-codegen && node_modules/.bin/moon run shared:test
