@@ -18,7 +18,7 @@ export default function HdButton({ id }: Props) {
 
   return isEnabled ? (
     <>
-      <StyledTooltip text="Turn off hd view" showTooltip={showTooltip} />
+      <StyledTooltip text="Disable High Definition" showTooltip={showTooltip} />
       <StyledHdEnabledIcon
         color="white"
         onClick={() => toggleTokenHighDefinition(id)}
@@ -28,7 +28,7 @@ export default function HdButton({ id }: Props) {
     </>
   ) : (
     <>
-      <StyledTooltip text="Turn on hd view" showTooltip={showTooltip} />
+      <StyledTooltip text="Enable High Definition" showTooltip={showTooltip} />
       <StyledHdDisabledIcon
         color="white"
         onClick={() => toggleTokenHighDefinition(id)}
