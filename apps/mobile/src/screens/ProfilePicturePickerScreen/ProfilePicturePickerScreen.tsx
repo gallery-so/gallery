@@ -34,7 +34,7 @@ export function ProfilePicturePickerScreen() {
     {}
   );
 
-  const currentScreen = route.params.screen;
+  const currentScreen = route.params.page;
 
   const { top } = useSafeAreaPadding();
   const filterBottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);

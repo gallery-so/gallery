@@ -9,7 +9,7 @@ import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { NftPreviewAsset } from '~/components/NftPreview/NftPreviewAsset';
 import { NftPreviewErrorFallback } from '~/components/NftPreview/NftPreviewErrorFallback';
 import { ProfilePicturePickerSingularAssetFragment$key } from '~/generated/ProfilePicturePickerSingularAssetFragment.graphql';
-import { MainTabStackNavigatorParamList, MainTabStackNavigatorProp } from '~/navigation/types';
+import { MainTabStackNavigatorProp, RootStackNavigatorParamList } from '~/navigation/types';
 import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
 import colors from '~/shared/theme/colors';
 
@@ -38,8 +38,8 @@ export function ProfilePicturePickerSingularAsset({
     tokenRef
   );
 
-  const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'ProfilePicturePicker'>>();
-  const currentScreen = route.params.screen;
+  const route = useRoute<RouteProp<RootStackNavigatorParamList, 'Post'>>();
+  const currentScreen = route.params.page;
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
 
@@ -57,7 +57,7 @@ export function ProfilePicturePickerSingularAsset({
         onProfilePictureChange();
       });
     } else {
-      navigation.navigate('Post', {
+      navigation.navigate('PostComposer', {
         tokenId: token.dbid,
       });
     }

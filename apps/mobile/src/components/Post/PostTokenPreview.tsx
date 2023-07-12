@@ -6,7 +6,7 @@ import { graphql, useLazyLoadQuery } from 'react-relay';
 import { BareXMarkIcon } from 'src/icons/BareXMarkIcon';
 
 import { PostTokenPreviewQuery } from '~/generated/PostTokenPreviewQuery.graphql';
-import { MainTabStackNavigatorParamList } from '~/navigation/types';
+import { RootStackNavigatorParamList } from '~/navigation/types';
 import { NftDetailAsset } from '~/screens/NftDetailScreen/NftDetailAsset/NftDetailAsset';
 import { NftDetailAssetCacheSwapper } from '~/screens/NftDetailScreen/NftDetailAsset/NftDetailAssetCacheSwapper';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
@@ -22,7 +22,7 @@ type Props = {
 };
 
 export function PostTokenPreview({ bottomSheetRef }: Props) {
-  const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'Post'>>();
+  const route = useRoute<RouteProp<RootStackNavigatorParamList, 'PostComposer'>>();
 
   const query = useLazyLoadQuery<PostTokenPreviewQuery>(
     graphql`

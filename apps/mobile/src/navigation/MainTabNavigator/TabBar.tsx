@@ -36,9 +36,14 @@ function TabItem({ navigation, route, icon, activeRoute }: TabItemProps) {
       target: route.key,
       canPreventDefault: true,
     });
-
-    if (!isFocused && !event.defaultPrevented) {
-      navigation.navigate(route.name);
+    if (route.name === 'PostTab') {
+      navigation.navigate('Post', {
+        screen: 'Post',
+      });
+    } else {
+      if (!isFocused && !event.defaultPrevented) {
+        navigation.navigate(route.name);
+      }
     }
   }, [isFocused, navigation, route]);
 

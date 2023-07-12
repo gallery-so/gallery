@@ -8,7 +8,6 @@ import { GalleryScreen } from '~/screens/GalleryScreen/GalleryScreen';
 import { HomeScreen } from '~/screens/HomeScreen/HomeScreen';
 import { NftDetailScreen } from '~/screens/NftDetailScreen/NftDetailScreen';
 import { NotificationsScreen } from '~/screens/NotificationsScreen';
-import { PostScreen } from '~/screens/PostScreen/PostScreen';
 import { ProfilePicturePickerContractScreen } from '~/screens/ProfilePicturePickerScreen/ProfilePicturePickerContractScreen';
 import { ProfilePicturePickerScreen } from '~/screens/ProfilePicturePickerScreen/ProfilePicturePickerScreen';
 import { ProfileScreen } from '~/screens/ProfileScreen/ProfileScreen';
@@ -36,7 +35,7 @@ export function MainTabStackNavigator({ initialRouteName, initialProfileParams }
         name="ProfilePicturePicker"
         component={ProfilePicturePickerScreen}
         initialParams={{
-          screen: 'Post',
+          page: 'Post',
         }}
       />
       <Stack.Screen
@@ -50,7 +49,6 @@ export function MainTabStackNavigator({ initialRouteName, initialProfileParams }
       <Stack.Screen name="Search" component={SearchScreen} />
       <Stack.Screen name="Notifications" component={NotificationsScreen} />
       <Stack.Screen name="Settings" component={SettingsScreen} />
-      <Stack.Screen name="Post" component={PostScreen} />
       {/* End the 4 main tabs */}
     </Stack.Navigator>
   );

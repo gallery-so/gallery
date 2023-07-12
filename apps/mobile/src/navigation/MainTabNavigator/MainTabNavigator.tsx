@@ -10,6 +10,8 @@ import { MainTabStackNavigator } from '~/navigation/MainTabStackNavigator';
 import { MainTabNavigatorParamList } from '~/navigation/types';
 import colors from '~/shared/theme/colors';
 
+import { PostStackNavigator } from '../PostStackNavigator';
+
 const Tab = createMaterialTopTabNavigator<MainTabNavigatorParamList>();
 
 function AccountScreenInner() {
@@ -62,7 +64,7 @@ function SettingsScreen() {
 }
 
 function PostScreen() {
-  return <MainTabStackNavigator initialRouteName="ProfilePicturePicker" />;
+  return <PostStackNavigator />;
 }
 
 type MainTabNavigatorProps = {
@@ -84,7 +86,6 @@ export function MainTabNavigator({ isKoalaEnabled }: MainTabNavigatorProps) {
     >
       <Tab.Screen name="HomeTab" component={HomeScreen} />
       <Tab.Screen name="SearchTab" component={SearchScreen} />
-
       {isKoalaEnabled && <Tab.Screen name="PostTab" component={PostScreen} />}
       <Tab.Screen name="NotificationsTab" component={NotificationsScreen} />
       <Tab.Screen name="AccountTab" component={AccountScreen} />

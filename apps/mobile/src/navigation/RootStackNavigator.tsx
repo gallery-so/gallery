@@ -11,6 +11,9 @@ import { RootStackNavigatorParamList } from '~/navigation/types';
 import { DesignSystemButtonsScreen } from '~/screens/DesignSystemButtonsScreen';
 import { TwitterSuggestionListScreen } from '~/screens/HomeScreen/TwitterSuggestionListScreen';
 import { UserSuggestionListScreen } from '~/screens/HomeScreen/UserSuggestionListScreen';
+import { PostScreen } from '~/screens/PostScreen/PostScreen';
+import { ProfilePicturePickerContractScreen } from '~/screens/ProfilePicturePickerScreen/ProfilePicturePickerContractScreen';
+import { ProfilePicturePickerScreen } from '~/screens/ProfilePicturePickerScreen/ProfilePicturePickerScreen';
 import { ProfileQRCodeScreen } from '~/screens/ProfileQRCodeScreen';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 
@@ -57,6 +60,14 @@ export function RootStackNavigator({ navigationContainerRef }: Props) {
       initialRouteName={isLoggedIn ? 'MainTabs' : 'Login'}
     >
       <Stack.Screen name="Login" component={LoginStackNavigator} />
+
+      <Stack.Screen name="Post" component={ProfilePicturePickerScreen} />
+      <Stack.Screen
+        name="ProfilePicturePickerContract"
+        component={ProfilePicturePickerContractScreen}
+      />
+      <Stack.Screen name="PostComposer" component={PostScreen} />
+
       <Stack.Screen name="MainTabs">
         {(props) => <MainTabNavigator {...props} isKoalaEnabled={isKoalaEnabled} />}
       </Stack.Screen>

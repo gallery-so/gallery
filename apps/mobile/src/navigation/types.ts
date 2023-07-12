@@ -9,6 +9,13 @@ export type RootStackNavigatorParamList = {
   TwitterSuggestionList: { onUserPress: (username: string) => void };
   ProfileQRCode: { username: string };
   DesignSystemButtons: undefined;
+  Post: {
+    page: ScreenWithNftSelector;
+  };
+  ProfilePicturePickerContract: { contractAddress: string; page: ScreenWithNftSelector };
+  PostComposer: {
+    tokenId: string;
+  };
 };
 
 export type ScreenWithNftSelector = 'ProfilePicture' | 'Post';
@@ -24,9 +31,9 @@ export type MainTabStackNavigatorParamList = {
   FeedEvent: { eventId: string };
   Community: { contractAddress: string; chain: string };
   ProfilePicturePicker: {
-    screen: ScreenWithNftSelector;
+    page: ScreenWithNftSelector;
   };
-  ProfilePicturePickerContract: { contractAddress: string; screen: ScreenWithNftSelector };
+  ProfilePicturePickerContract: { contractAddress: string; page: ScreenWithNftSelector };
   SettingsProfile: undefined;
 
   // The main five tabs
@@ -42,9 +49,9 @@ export type MainTabStackNavigatorParamList = {
 
   Search: undefined;
   Settings: undefined;
-  Post: {
-    tokenId: string;
-  };
+  // Post: {
+  //   tokenId: string;
+  // };
   // End the main four tabs
 };
 
@@ -69,6 +76,15 @@ export type LoginStackNavigatorParamList = {
   QRCode: { onError: (message: string) => void };
   WaitingForConfirmation: { email: string };
   NotificationUpsell: undefined;
+};
+
+export type PostStackNavigatorParamList = {
+  NftSelector: {
+    page: ScreenWithNftSelector;
+  };
+  PostComposer: {
+    tokenId: string;
+  };
 };
 
 export type RootStackNavigatorProp = NativeStackNavigationProp<RootStackNavigatorParamList>;
