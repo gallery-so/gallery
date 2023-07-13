@@ -1,19 +1,24 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { useColorScheme } from 'nativewind';
 import { useCallback, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
+import { BottomArrowIcon } from 'src/icons/BottomArrowIcon';
 
 import { BackButton } from '~/components/BackButton';
+import { Button } from '~/components/Button';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { NftPreviewErrorFallback } from '~/components/NftPreview/NftPreviewErrorFallback';
 import { Pill } from '~/components/Pill';
 import { NftDetailScreenInnerQuery } from '~/generated/NftDetailScreenInnerQuery.graphql';
+import { PostIcon } from '~/navigation/MainTabNavigator/PostIcon';
 import { MainTabStackNavigatorParamList, MainTabStackNavigatorProp } from '~/navigation/types';
 import { NftDetailAssetCacheSwapper } from '~/screens/NftDetailScreen/NftDetailAsset/NftDetailAssetCacheSwapper';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
+import colors from '~/shared/theme/colors';
 
 import { IconContainer } from '../../components/IconContainer';
 import { InteractiveLink } from '../../components/InteractiveLink';
@@ -93,6 +98,8 @@ export function NftDetailScreenInner() {
     // SVG
     // { tokenId: '2O1TnqK7sbhbdlAeQwLFkxo8T9i' }
   );
+
+  const { colorScheme } = useColorScheme();
 
   const token = query.tokenById;
 
@@ -249,17 +256,37 @@ export function NftDetailScreenInner() {
           </View>
         )}
 
+        <Button
+          icon={
+            <PostIcon
+              color={colorScheme === 'dark' ? colors.black['800'] : colors.white}
+              size={24}
+            />
+          }
+          eventElementId={null}
+          eventName={null}
+          text="create post"
+        />
+
+        {!showAdditionalDetails && (
+          <GalleryTouchableOpacity
+            className="items-center flex-row space-x-1 justify-center"
+            eventElementId="NFT Detail Show Additional Details"
+            eventName={null}
+            onPress={toggleAdditionalDetails}
+          >
+            <Typography
+              className="text-xs text-center"
+              font={{ family: 'ABCDiatype', weight: 'Regular' }}
+            >
+              MORE INFO
+            </Typography>
+            <BottomArrowIcon />
+          </GalleryTouchableOpacity>
+        )}
+
         <View className="flex-1">
           <NftAdditionalDetails showDetails={showAdditionalDetails} tokenRef={token} />
-        </View>
-
-        <View>
-          <InteractiveLink
-            onPress={toggleAdditionalDetails}
-            type="NFT Detail Show Additional Details"
-          >
-            {showAdditionalDetails ? 'Hide Details' : 'Show Additional Details'}
-          </InteractiveLink>
         </View>
       </View>
     </ScrollView>

@@ -30,7 +30,12 @@ export function LinkableAddress({ chainAddressRef, type }: LinkableAddressProps)
 
   if (!link) {
     return (
-      <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
+      <Typography
+        numberOfLines={1}
+        ellipsizeMode="middle"
+        className="text-sm"
+        font={{ family: 'ABCDiatype', weight: 'Bold' }}
+      >
         {truncatedAddress || address.address}
       </Typography>
     );
@@ -63,7 +68,9 @@ export function RawLinkableAddress({
 }: RawLinkableAddressProps) {
   return (
     <InteractiveLink href={link} type={type}>
-      {truncatedAddress || address}
+      <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+        {truncatedAddress || address}
+      </Typography>
     </InteractiveLink>
   );
 }

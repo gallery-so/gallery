@@ -44,40 +44,45 @@ export function NftAdditionalDetailsPOAP({ tokenRef, showDetails }: POAPNftDetai
 
   return (
     <View className="flex flex-col space-y-4">
-      {formattedDate && (
-        <DetailSection>
-          <DetailLabelText>Created</DetailLabelText>
-          <DetailValue>{formattedDate}</DetailValue>
-        </DetailSection>
-      )}
-      {location && (
-        <DetailSection>
-          <DetailLabelText>Location</DetailLabelText>
-          <DetailValue>{location}</DetailValue>
-        </DetailSection>
-      )}
-
       {showDetails && (
-        <View className="flex flex-col space-y-4">
-          {id && (
-            <DetailSection>
-              <DetailLabelText>POAP ID</DetailLabelText>
-              <DetailValue>{id}</DetailValue>
-            </DetailSection>
-          )}
-          {supply && (
-            <DetailSection>
-              <DetailLabelText>SUPPLY</DetailLabelText>
-              <DetailValue>{supply}</DetailValue>
-            </DetailSection>
-          )}
-          {chain && (
-            <DetailSection>
-              <DetailLabelText>CHAIN</DetailLabelText>
-              <DetailValue>{chain}</DetailValue>
-            </DetailSection>
-          )}
-        </View>
+        <>
+          <View className="flex flex-row space-x-16">
+            {formattedDate && (
+              <DetailSection>
+                <DetailLabelText>CREATED</DetailLabelText>
+                <DetailValue>{formattedDate}</DetailValue>
+              </DetailSection>
+            )}
+
+            {location && (
+              <DetailSection>
+                <DetailLabelText>Location</DetailLabelText>
+                <DetailValue>{location}</DetailValue>
+              </DetailSection>
+            )}
+          </View>
+
+          <View className="flex flex-col space-y-4">
+            {id && (
+              <DetailSection>
+                <DetailLabelText>POAP ID</DetailLabelText>
+                <DetailValue>{id}</DetailValue>
+              </DetailSection>
+            )}
+            {supply && (
+              <DetailSection>
+                <DetailLabelText>SUPPLY</DetailLabelText>
+                <DetailValue>{supply}</DetailValue>
+              </DetailSection>
+            )}
+            {chain && (
+              <DetailSection>
+                <DetailLabelText>CHAIN</DetailLabelText>
+                <DetailValue>{chain}</DetailValue>
+              </DetailSection>
+            )}
+          </View>
+        </>
       )}
     </View>
   );
