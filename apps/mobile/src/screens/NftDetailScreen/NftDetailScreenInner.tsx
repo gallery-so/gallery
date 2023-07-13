@@ -248,7 +248,7 @@ export function NftDetailScreenInner() {
           {token.owner && (
             <View className="w-1/2">
               <Typography
-                className="text-xs text-shadow"
+                className="text-xs text-shadow dark:text-metal"
                 font={{ family: 'ABCDiatype', weight: 'Regular' }}
               >
                 OWNER
