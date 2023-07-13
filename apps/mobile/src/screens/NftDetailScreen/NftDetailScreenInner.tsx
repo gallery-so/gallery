@@ -56,6 +56,7 @@ export function NftDetailScreenInner() {
         tokenById(id: $tokenId) {
           ... on Token {
             __typename
+            dbid
             name
             chain
             tokenId
@@ -151,6 +152,14 @@ export function NftDetailScreenInner() {
     token.contract?.contractAddress?.address,
     token.tokenId,
   ]);
+
+  const handleCreatePost = useCallback(() => {
+    if (!token.dbid) return;
+
+    navigation.navigate('PostComposer', {
+      tokenId: token.dbid,
+    });
+  }, [navigation, token.dbid]);
 
   // const handleCreatorPress = useCallback(() => {
   //   if (token.creator?.username) {
@@ -270,6 +279,7 @@ export function NftDetailScreenInner() {
             }
             eventElementId={null}
             eventName={null}
+            onPress={handleCreatePost}
             text="create post"
           />
         )}
