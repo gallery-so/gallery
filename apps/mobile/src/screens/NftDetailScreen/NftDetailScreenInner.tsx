@@ -13,6 +13,7 @@ import { Button } from '~/components/Button';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { NftPreviewErrorFallback } from '~/components/NftPreview/NftPreviewErrorFallback';
 import { Pill } from '~/components/Pill';
+import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { NftDetailScreenInnerQuery } from '~/generated/NftDetailScreenInnerQuery.graphql';
 import { PostIcon } from '~/navigation/MainTabNavigator/PostIcon';
 import { MainTabStackNavigatorParamList, MainTabStackNavigatorProp } from '~/navigation/types';
@@ -74,6 +75,7 @@ export function NftDetailScreenInner() {
             owner {
               id
               username
+              ...ProfilePictureFragment
             }
 
             ...NftAdditionalDetailsFragment
@@ -245,13 +247,25 @@ export function NftDetailScreenInner() {
         <View className="flex-row">
           {token.owner && (
             <View className="w-1/2">
-              <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
+              <Typography
+                className="text-xs text-shadow"
+                font={{ family: 'ABCDiatype', weight: 'Regular' }}
+              >
                 OWNER
               </Typography>
 
-              <InteractiveLink onPress={handleUsernamePress} type="NFT Detail Token Owner Username">
-                {token.owner.username}
-              </InteractiveLink>
+              <GalleryTouchableOpacity
+                className="flex flex-row items-center space-x-1"
+                onPress={handleUsernamePress}
+                eventElementId="NFT Detail Token Owner Username"
+                eventName="NFT Detail Token Owner Username"
+              >
+                {token.owner.username && <ProfilePicture userRef={token.owner} size="xs" />}
+
+                <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+                  {token.owner.username}
+                </Typography>
+              </GalleryTouchableOpacity>
             </View>
           )}
           {ENABLED_CREATOR && (
