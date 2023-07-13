@@ -6,6 +6,7 @@ import FastImage from 'react-native-fast-image';
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import { BottomArrowIcon } from 'src/icons/BottomArrowIcon';
+import isFeatureEnabled, { FeatureFlag } from 'src/utils/isFeatureEnabled';
 
 import { BackButton } from '~/components/BackButton';
 import { Button } from '~/components/Button';
@@ -78,6 +79,8 @@ export function NftDetailScreenInner() {
 
           ...shareTokenFragment
         }
+
+        ...isFeatureEnabledFragment
       }
     `,
     {
@@ -100,6 +103,7 @@ export function NftDetailScreenInner() {
   );
 
   const { colorScheme } = useColorScheme();
+  const isKoalaEnabled = isFeatureEnabled(FeatureFlag.KOALA, query);
 
   const token = query.tokenById;
 
@@ -256,17 +260,19 @@ export function NftDetailScreenInner() {
           </View>
         )}
 
-        <Button
-          icon={
-            <PostIcon
-              color={colorScheme === 'dark' ? colors.black['800'] : colors.white}
-              size={24}
-            />
-          }
-          eventElementId={null}
-          eventName={null}
-          text="create post"
-        />
+        {isKoalaEnabled && (
+          <Button
+            icon={
+              <PostIcon
+                color={colorScheme === 'dark' ? colors.black['800'] : colors.white}
+                size={24}
+              />
+            }
+            eventElementId={null}
+            eventName={null}
+            text="create post"
+          />
+        )}
 
         {!showAdditionalDetails && (
           <GalleryTouchableOpacity
