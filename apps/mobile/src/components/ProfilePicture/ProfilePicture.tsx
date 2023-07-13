@@ -24,9 +24,18 @@ export function ProfilePicture({ userRef, style, ...rest }: ProfilePictureProps)
               media {
                 ... on Media {
                   previewURLs {
-                    medium
+                    small
                   }
                 }
+              }
+            }
+          }
+          ... on EnsProfileImage {
+            __typename
+            profileImage {
+              __typename
+              previewURLs {
+                small
               }
             }
           }
@@ -36,7 +45,9 @@ export function ProfilePicture({ userRef, style, ...rest }: ProfilePictureProps)
     userRef
   );
 
-  const imageUrl = user?.profileImage?.token?.media?.previewURLs?.medium;
+  const { token, profileImage: ensImage } = user?.profileImage ?? {};
+  const imageUrl = token?.media?.previewURLs?.small ?? ensImage?.previewURLs?.small;
+
   const letter = user?.username?.[0]?.toUpperCase();
 
   const fallbackProfilePicture = (
