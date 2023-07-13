@@ -44,6 +44,7 @@ export function CommentsModal({ eventRef, queryRef, fullscreen }: CommentsModalP
               __typename
 
               ... on Comment {
+                comment
                 ...CommentNoteFragment
               }
             }
@@ -124,13 +125,29 @@ export function CommentsModal({ eventRef, queryRef, fullscreen }: CommentsModalP
 
   const rowCount = hasPrevious ? nonNullInteractions.length + 1 : nonNullInteractions.length;
 
-  const estimatedItemHeight = 50;
-
   const estimatedContentHeight = useMemo(() => {
     // 420 is the max height of the modal
     // 121 is the height of the modal header + bottom padding + comment box
-    return Math.min(nonNullInteractions.length * estimatedItemHeight, 420 - 121);
-  }, [nonNullInteractions.length, estimatedItemHeight]);
+
+    let height = 0;
+
+    nonNullInteractions.forEach((interaction) => {
+      if (interaction.__typename === 'Comment') {
+        // If the comment more than 70 characters, we need to add extra height
+        // to account for the extra line
+        const commentLength = interaction.comment?.length ?? 0;
+
+        if (commentLength > 70) {
+          height += 70;
+          return;
+        }
+
+        height += 50;
+      }
+    });
+
+    return Math.min(height, 420 - 121);
+  }, [nonNullInteractions]);
 
   useEffect(
     function recalculateHeightsWhenEventsChange() {
