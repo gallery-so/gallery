@@ -78,7 +78,7 @@ const { chains, publicClient } = configureChains(
 
 const { connectors } = getDefaultWallets({
   appName: 'Gallery',
-  projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID ?? '',
+  projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID ?? 'defaultId', // use defaultId because if projectId is undefined, it throws an error that breaks the build during the bundle-diff job
   chains,
 });
 
