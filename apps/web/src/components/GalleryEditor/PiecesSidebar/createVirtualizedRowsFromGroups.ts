@@ -57,15 +57,17 @@ export function createVirtualizedRowsFromGroups({
 }
 
 type createVirtualizedRowsFromTokensArgs = {
-  tokens: any;
+  filteredTokensBySelectedWallet: any;
   erroredTokenIds: Set<string>;
 };
 
 export function createVirtualizedRowsFromTokens({
-  tokens,
+  filteredTokensBySelectedWallet,
   erroredTokenIds,
 }: createVirtualizedRowsFromTokensArgs): VirtualizedRow[] {
   const rows: VirtualizedRow[] = [];
+
+  const tokens = filteredTokensBySelectedWallet ?? [];
 
   const tokensSortedByErrored = [...tokens].sort((a, b) => {
     const aIsErrored = erroredTokenIds.has(a.id);
