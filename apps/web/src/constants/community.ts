@@ -9,3 +9,8 @@ export const GRID_ENABLED_COMMUNITY_ADDRESSES = [
   // Cryptocoven
   '0x5180db8f5c931aae63c74266b211f580155ecac8',
 ];
+
+export const BADGE_ENABLED_COMMUNITY_ADDRESSES = new Set([
+  // Gallery Premium Membership Cards
+  '0xe01569ca9b39e55bc7c0dfa09f05fa15cb4c7698',
+]);

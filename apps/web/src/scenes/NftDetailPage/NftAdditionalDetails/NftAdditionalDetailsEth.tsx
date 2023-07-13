@@ -9,6 +9,7 @@ import { EnsOrAddress } from '~/components/EnsOrAddress';
 import { LinkableAddress } from '~/components/LinkableAddress';
 import { NftAdditionalDetailsEthFragment$key } from '~/generated/NftAdditionalDetailsEthFragment.graphql';
 import { useRefreshMetadata } from '~/scenes/NftDetailPage/NftAdditionalDetails/useRefreshMetadata';
+import { extractMirrorXyzUrl } from '~/shared/utils/extractMirrorXyzUrl';
 import { getOpenseaExternalUrl, hexHandler } from '~/shared/utils/getOpenseaExternalUrl';
 
 type NftAdditionaDetailsNonPOAPProps = {
@@ -22,6 +23,8 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionaDetailsNonPOAP
       fragment NftAdditionalDetailsEthFragment on Token {
         externalUrl
         tokenId
+        chain
+        tokenMetadata
         contract {
           creatorAddress {
             address
@@ -40,17 +43,25 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionaDetailsNonPOAP
     tokenRef
   );
 
-  const { tokenId, contract, externalUrl } = token;
+  const { tokenId, contract, externalUrl, tokenMetadata, chain } = token;
 
   const [refresh, isRefreshing] = useRefreshMetadata(token);
 
   const openSeaExternalUrl = useMemo(() => {
-    if (contract?.contractAddress?.address && tokenId) {
-      return getOpenseaExternalUrl(contract.contractAddress.address, tokenId);
+    if (chain && contract?.contractAddress?.address && tokenId) {
+      return getOpenseaExternalUrl(chain, contract.contractAddress.address, tokenId);
     }
 
     return null;
-  }, [contract?.contractAddress?.address, tokenId]);
+  }, [chain, contract?.contractAddress?.address, tokenId]);
+
+  const mirrorXyzUrl = useMemo(() => {
+    if (tokenMetadata) {
+      return extractMirrorXyzUrl(tokenMetadata);
+    }
+
+    return null;
+  }, [tokenMetadata]);
 
   return (
     <VStack gap={16}>
@@ -76,6 +87,7 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionaDetailsNonPOAP
       )}
 
       <StyledLinkContainer>
+        {mirrorXyzUrl && <InteractiveLink href={mirrorXyzUrl}>View on Mirror</InteractiveLink>}
         {openSeaExternalUrl && (
           <>
             <InteractiveLink href={openSeaExternalUrl}>View on OpenSea</InteractiveLink>

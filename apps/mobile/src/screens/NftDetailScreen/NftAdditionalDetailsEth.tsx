@@ -4,6 +4,7 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { NftAdditionalDetailsEthFragment$key } from '~/generated/NftAdditionalDetailsEthFragment.graphql';
+import { extractMirrorXyzUrl } from '~/shared/utils/extractMirrorXyzUrl';
 import { getOpenseaExternalUrl, hexHandler } from '~/shared/utils/getOpenseaExternalUrl';
 
 import { LinkableAddress } from '../../components/LinkableAddress';
@@ -28,6 +29,7 @@ export function NftAdditionalDetailsEth({ tokenRef, showDetails }: NftAdditional
         tokenId
 
         chain
+        tokenMetadata
 
         contract {
           contractAddress {
@@ -40,15 +42,23 @@ export function NftAdditionalDetailsEth({ tokenRef, showDetails }: NftAdditional
     tokenRef
   );
 
-  const { tokenId, contract, externalUrl } = token;
+  const { tokenId, contract, externalUrl, chain, tokenMetadata } = token;
 
   const openSeaExternalUrl = useMemo(() => {
-    if (contract?.contractAddress?.address && tokenId) {
-      return getOpenseaExternalUrl(contract.contractAddress.address, tokenId);
+    if (chain && contract?.contractAddress?.address && tokenId) {
+      return getOpenseaExternalUrl(chain, contract.contractAddress.address, tokenId);
     }
 
     return null;
-  }, [contract?.contractAddress?.address, tokenId]);
+  }, [chain, contract?.contractAddress?.address, tokenId]);
+
+  const mirrorXyzUrl = useMemo(() => {
+    if (tokenMetadata) {
+      return extractMirrorXyzUrl(tokenMetadata);
+    }
+
+    return null;
+  }, [tokenMetadata]);
 
   return (
     <View className="flex flex-col space-y-4">
@@ -87,6 +97,16 @@ export function NftAdditionalDetailsEth({ tokenRef, showDetails }: NftAdditional
                   link={openSeaExternalUrl}
                   label="OpenSea"
                   trackingLabel="NFT Detail View on Opensea"
+                />
+              </DetailSection>
+            )}
+
+            {mirrorXyzUrl && (
+              <DetailSection>
+                <DetailExternalLink
+                  link={mirrorXyzUrl}
+                  label="Mirror"
+                  trackingLabel="NFT Detail View on Mirror"
                 />
               </DetailSection>
             )}

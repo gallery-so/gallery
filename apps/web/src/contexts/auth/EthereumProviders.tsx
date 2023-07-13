@@ -3,7 +3,8 @@ import '@rainbow-me/rainbowkit/styles.css';
 import { getDefaultWallets, lightTheme, RainbowKitProvider } from '@rainbow-me/rainbowkit';
 import merge from 'lodash.merge';
 import { ReactNode } from 'react';
-import { configureChains, createClient, defaultChains, WagmiConfig } from 'wagmi';
+import { configureChains, createConfig, WagmiConfig } from 'wagmi';
+import { arbitrum, mainnet, optimism, zora } from 'wagmi/chains';
 import { infuraProvider } from 'wagmi/providers/infura';
 import { publicProvider } from 'wagmi/providers/public';
 
@@ -66,21 +67,25 @@ const myCustomTheme = merge(lightTheme(), {
   },
 });
 
-const { chains, provider } = configureChains(defaultChains, [
-  // TODO: move this to env and rotate creds
-  infuraProvider({ apiKey: '84842078b09946638c03157f83405213' }),
-  publicProvider(),
-]);
+const { chains, publicClient } = configureChains(
+  [mainnet, optimism, arbitrum, zora],
+  [
+    // TODO: rotate creds
+    infuraProvider({ apiKey: process.env.NEXT_PUBLIC_INFURA_API_KEY ?? '' }),
+    publicProvider(),
+  ]
+);
 
 const { connectors } = getDefaultWallets({
   appName: 'Gallery',
+  projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID ?? 'defaultId', // use defaultId because if projectId is undefined, it throws an error that breaks the build during the bundle-diff job
   chains,
 });
 
-const wagmiClient = createClient({
+const wagmiConfig = createConfig({
   autoConnect: true,
   connectors,
-  provider,
+  publicClient,
 });
 
 type Props = {
@@ -89,7 +94,7 @@ type Props = {
 
 export default function EthereumProviders({ children }: Props) {
   return (
-    <WagmiConfig client={wagmiClient}>
+    <WagmiConfig config={wagmiConfig}>
       <RainbowKitProvider chains={chains} theme={myCustomTheme}>
         {children}
       </RainbowKitProvider>

@@ -88,12 +88,12 @@ function NftDetailText({ tokenRef, queryRef }: Props) {
   const horizontalLayout = breakpoint === size.desktop || breakpoint === size.tablet;
 
   const openseaExternalUrl = useMemo(() => {
-    if (token.contract?.contractAddress?.address && token.tokenId) {
-      getOpenseaExternalUrl(token.contract.contractAddress.address, token.tokenId);
+    if (token.chain && token.contract?.contractAddress?.address && token.tokenId) {
+      getOpenseaExternalUrl(token.chain, token.contract.contractAddress.address, token.tokenId);
     }
 
     return '';
-  }, [token.contract?.contractAddress?.address, token.tokenId]);
+  }, [token.chain, token.contract?.contractAddress?.address, token.tokenId]);
 
   const handleBuyNowClick = useCallback(() => {
     track('Buy Now Button Click', {

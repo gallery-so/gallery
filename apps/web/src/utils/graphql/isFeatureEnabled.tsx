@@ -10,7 +10,7 @@ export enum FeatureFlag {
 }
 
 const PROD_FLAGS: Record<FeatureFlag, boolean> = {
-  PFP: false,
+  PFP: true,
 };
 
 const DEV_FLAGS: Record<FeatureFlag, boolean> = {

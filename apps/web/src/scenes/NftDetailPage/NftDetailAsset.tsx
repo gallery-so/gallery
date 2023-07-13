@@ -165,7 +165,7 @@ function NftDetailAssetComponentWithouFallback({
         />
       );
     case 'GltfMedia':
-      return <NftDetailModel onLoad={onLoad} mediaRef={token.media} />;
+      return <NftDetailModel onLoad={onLoad} mediaRef={token.media} fullHeight />;
     default:
       return <NftDetailAnimation onLoad={onLoad} mediaRef={token} />;
   }
