@@ -14,15 +14,13 @@ import { doesUserOwnWalletFromChain } from '~/utils/doesUserOwnWalletFromChain';
 import IconContainer from '../core/IconContainer';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM } from '../core/Text/Text';
+import { Chain } from '../GalleryEditor/PiecesSidebar/chains';
 import isRefreshDisabledForUser from '../GalleryEditor/PiecesSidebar/isRefreshDisabledForUser';
 import { SidebarView } from '../GalleryEditor/PiecesSidebar/SidebarViewSelector';
 import { NewTooltip } from '../Tooltip/NewTooltip';
 import { useTooltipHover } from '../Tooltip/useTooltipHover';
 import { NftSelectorCollectionGroup } from './groupNftSelectorCollectionsByAddress';
-import {
-  NftSelectorFilterNetwork,
-  NftSelectorNetworkView,
-} from './NftSelectorFilter/NftSelectorFilterNetwork';
+import { NftSelectorFilterNetwork } from './NftSelectorFilter/NftSelectorFilterNetwork';
 import {
   NftSelectorFilterSort,
   NftSelectorSortView,
@@ -70,6 +68,7 @@ export function NftSelector({ tokensRef, queryRef }: Props) {
           }
         }
         ...doesUserOwnWalletFromChainFragment
+        ...NftSelectorFilterNetworkFragment
       }
     `,
     queryRef
@@ -80,8 +79,7 @@ export function NftSelector({ tokensRef, queryRef }: Props) {
 
   const [selectedView, setSelectedView] = useState<SidebarView>('Collected');
   const [selectedSortView, setSelectedSortView] = useState<NftSelectorSortView>('Recently added');
-  const [selectedNetworkView, setSelectedNetworkView] =
-    useState<NftSelectorNetworkView>('Ethereum');
+  const [selectedNetworkView, setSelectedNetworkView] = useState<Chain>('Ethereum');
 
   const [selectedContract, setSelectedContract] = useState<NftSelectorContractType>(null);
 
@@ -220,8 +218,10 @@ export function NftSelector({ tokensRef, queryRef }: Props) {
               onSelectedViewChange={setSelectedSortView}
             />
             <NftSelectorFilterNetwork
-              selectedView={selectedNetworkView}
+              selectedMode={selectedView}
+              selectedNetwork={selectedNetworkView}
               onSelectedViewChange={setSelectedNetworkView}
+              queryRef={query}
             />
 
             <IconContainer

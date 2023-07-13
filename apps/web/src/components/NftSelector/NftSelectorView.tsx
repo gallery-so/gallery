@@ -10,17 +10,17 @@ import useAddWalletModal from '~/hooks/useAddWalletModal';
 import { Button } from '../core/Button/Button';
 import { VStack } from '../core/Spacer/Stack';
 import { BaseXL } from '../core/Text/Text';
+import { Chain } from '../GalleryEditor/PiecesSidebar/chains';
 import {
   groupNftSelectorCollectionsByAddress,
   NftSelectorCollectionGroup,
 } from './groupNftSelectorCollectionsByAddress';
 import { NftSelectorContractType } from './NftSelector';
-import { NftSelectorNetworkView } from './NftSelectorFilter/NftSelectorFilterNetwork';
 import { NftSelectorTokenPreview } from './NftSelectorTokenPreview';
 
 type Props = {
   selectedContractAddress: string | null;
-  selectedNetworkView: NftSelectorNetworkView;
+  selectedNetworkView: Chain;
   onSelectContract: (collection: NftSelectorContractType) => void;
   tokenRefs: NftSelectorViewFragment$key;
   hasSearchKeyword: boolean;
