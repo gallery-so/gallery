@@ -18,7 +18,10 @@ export default function LiveDisplayButton({ id }: Props) {
 
   return isEnabled ? (
     <>
-      <StyledTooltip text="Turn off live display" showTooltip={showTooltip} />
+      <StyledTooltip
+        text="Disable live display. May affect performance."
+        showTooltip={showTooltip}
+      />
       <StyledVideoEnabledIcon
         color="white"
         onClick={() => toggleTokenLiveDisplay(id)}
@@ -28,7 +31,10 @@ export default function LiveDisplayButton({ id }: Props) {
     </>
   ) : (
     <>
-      <StyledTooltip text="Turn on live display" showTooltip={showTooltip} />
+      <StyledTooltip
+        text="Enable live display. May affect performance."
+        showTooltip={showTooltip}
+      />
       <StyledVideoDisabledIcon
         color="white"
         onClick={() => toggleTokenLiveDisplay(id)}
