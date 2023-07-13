@@ -19,6 +19,7 @@ import { MainTabStackNavigatorParamList, MainTabStackNavigatorProp } from '~/nav
 import { NftDetailAssetCacheSwapper } from '~/screens/NftDetailScreen/NftDetailAsset/NftDetailAssetCacheSwapper';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
+import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import colors from '~/shared/theme/colors';
 
 import { IconContainer } from '../../components/IconContainer';
@@ -71,6 +72,7 @@ export function NftDetailScreenInner() {
               }
             }
             owner {
+              id
               username
             }
 
@@ -81,6 +83,7 @@ export function NftDetailScreenInner() {
           ...shareTokenFragment
         }
 
+        ...useLoggedInUserIdFragment
         ...isFeatureEnabledFragment
       }
     `,
@@ -108,9 +111,13 @@ export function NftDetailScreenInner() {
 
   const token = query.tokenById;
 
+  const loggedInUserId = useLoggedInUserId(query);
+
   if (token?.__typename !== 'Token') {
     throw new Error("We couldn't find that token. Something went wrong and we're looking into it.");
   }
+
+  const isTokenOwner = loggedInUserId === token.owner?.id;
 
   const track = useTrack();
 
@@ -269,7 +276,7 @@ export function NftDetailScreenInner() {
           </View>
         )}
 
-        {isKoalaEnabled && (
+        {isKoalaEnabled && isTokenOwner && (
           <Button
             icon={
               <PostIcon
