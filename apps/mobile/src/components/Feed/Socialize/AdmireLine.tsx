@@ -11,11 +11,12 @@ import { MainTabStackNavigatorProp } from '~/navigation/types';
 type AdmireLineProps = {
   style?: ViewProps['style'];
   userRefs: AdmireLineFragment$key;
+  totalAdmires: number;
 
   onMultiUserPress: () => void;
 };
 
-export function AdmireLine({ userRefs, onMultiUserPress, style }: AdmireLineProps) {
+export function AdmireLine({ userRefs, totalAdmires, onMultiUserPress, style }: AdmireLineProps) {
   const users = useFragment(
     graphql`
       fragment AdmireLineFragment on GalleryUser @relay(plural: true) {
@@ -29,7 +30,7 @@ export function AdmireLine({ userRefs, onMultiUserPress, style }: AdmireLineProp
   const navigation = useNavigation<MainTabStackNavigatorProp>();
 
   const [firstUser] = users;
-  if (users.length === 1 && firstUser) {
+  if (totalAdmires === 1 && firstUser) {
     function handleUserPress() {
       if (firstUser?.username) {
         navigation.push('Profile', { username: firstUser.username, hideBackButton: false });
@@ -54,7 +55,7 @@ export function AdmireLine({ userRefs, onMultiUserPress, style }: AdmireLineProp
         </Typography>
       </View>
     );
-  } else if (users.length > 1) {
+  } else if (totalAdmires > 1) {
     return (
       <View style={style} className="flex flex-row items-center">
         <GalleryTouchableOpacity
@@ -63,7 +64,7 @@ export function AdmireLine({ userRefs, onMultiUserPress, style }: AdmireLineProp
           eventName={'AdmireLine Single User'}
         >
           <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-            {users.length} collectors{' '}
+            {totalAdmires} collectors{' '}
           </Typography>
         </GalleryTouchableOpacity>
 
