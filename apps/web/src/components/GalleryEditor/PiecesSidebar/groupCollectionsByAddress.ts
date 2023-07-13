@@ -9,7 +9,7 @@ export type CollectionGroup = {
 
 type groupCollectionsByAddressArgs = {
   //      Remove the readonly
-  tokens: SidebarTokensFragment$data;
+  tokens: any;
   ignoreSpam?: boolean;
 };
 
@@ -18,6 +18,7 @@ export function groupCollectionsByAddress({
   ignoreSpam = false,
 }: groupCollectionsByAddressArgs): CollectionGroup[] {
   const map: Record<string, CollectionGroup> = {};
+  
   for (const token of tokens) {
     if (ignoreSpam) {
       if (token.isSpamByProvider || token.isSpamByUser) {

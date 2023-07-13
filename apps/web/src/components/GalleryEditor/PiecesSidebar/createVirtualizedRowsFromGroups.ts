@@ -57,7 +57,7 @@ export function createVirtualizedRowsFromGroups({
 }
 
 type createVirtualizedRowsFromTokensArgs = {
-  tokens: SidebarTokensFragment$data;
+  tokens: any;
   erroredTokenIds: Set<string>;
 };
 

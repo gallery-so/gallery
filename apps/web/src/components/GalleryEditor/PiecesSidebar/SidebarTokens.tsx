@@ -47,6 +47,16 @@ export const SidebarTokens = ({
         # eslint-disable-next-line relay/unused-fields
         isSpamByProvider
 
+        ownedByWallets {
+          chainAddress {
+            address
+            chain
+          }
+          tokens {
+            name
+          }
+        }
+
         contract {
           # Escape hatch for data processing in util files
           # eslint-disable-next-line relay/unused-fields
@@ -62,21 +72,22 @@ export const SidebarTokens = ({
     `,
     tokenRefs
   );
-
   const filteredTokensBySelectedWallet = useMemo(() => {
     if (typeof selectedWallet === 'string') {
       return tokens;
     } else if (selectedWallet) {
-      console.log('tokens', tokens);
-      console.log('selectedWallet', selectedWallet);
-      return tokens.filter(
-        (token) => token.contract?.contractAddress?.address === selectedWallet.chainAddress.address
+      return tokens.filter((token) =>
+        token?.ownedByWallets?.some((wallet) => {
+          const sameWalletAddress =
+            wallet?.chainAddress?.address === selectedWallet.chainAddress.address;
+          const sameWalletChain = wallet?.chainAddress?.chain === selectedWallet.chainAddress.chain;
+          return sameWalletAddress && sameWalletChain;
+        })
       );
     }
     return tokens;
   }, [tokens, selectedWallet]);
 
-  console.log('filteredTokensBySelectedWallet', filteredTokensBySelectedWallet);
   const setSpamPreference = useSetSpamPreference();
   const setSpamPreferenceForCollection = useCallback(
     (address: string, isSpam: boolean) => {
@@ -150,7 +161,13 @@ export const SidebarTokens = ({
         erroredTokenIds,
       });
     }
-  }, [collapsedCollections, erroredTokenIds, shouldUseCollectionGrouping, tokens]);
+  }, [
+    collapsedCollections,
+    erroredTokenIds,
+    shouldUseCollectionGrouping,
+    tokens,
+    filteredTokensBySelectedWallet,
+  ]);
 
   useEffect(
     function resetCollapsedSectionsWhileSearching() {

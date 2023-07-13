@@ -15,7 +15,14 @@ import { SidebarWalletSelectorFragment$key } from '~/generated/SidebarWalletSele
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { chainsMap } from '~/components/GalleryEditor/PiecesSidebar/chains';
 
-export type SidebarWallet = "Abitrum" | "Ethereum" | "Optimism" | "POAP" | "Polygon" | "Tezos" | "Zora";
+export type SidebarWallet =
+  | 'Abitrum'
+  | 'Ethereum'
+  | 'Optimism'
+  | 'POAP'
+  | 'Polygon'
+  | 'Tezos'
+  | 'Zora';
 
 type SidebarWalletSelectorProps = {
   queryRef: SidebarWalletSelectorFragment$key;
@@ -51,7 +58,6 @@ export default function SidebarWalletSelector({
     `,
     queryRef
   );
-  console.log('viewer', viewer);
   const userWalletsOnSelectedNetwork = useMemo(
     () =>
       removeNullValues(viewer?.user?.wallets).filter((wallet) => {
@@ -62,7 +68,6 @@ export default function SidebarWalletSelector({
     [viewer?.user?.wallets, selectedChain]
   );
 
-  console.log('userWalletsOnSelectedNetwork', userWalletsOnSelectedNetwork);
   const track = useTrack();
 
   const onSelectWallet = useCallback(
@@ -73,11 +78,13 @@ export default function SidebarWalletSelector({
     },
     [track, onSelectedWalletChange]
   );
-  const dispVal = () => {
-    if (typeof selectedWallet === 'string') {
+
+  const dispVal = (wallet) => {
+    if (typeof wallet === 'string') {
       return 'All';
     } else if (selectedWallet) {
-      return selectedWallet.chainAddress.address.slice(0, 6);
+      const address = wallet?.chainAddress.address;
+      return `${address.slice(0, 6)}...${address.slice(-4)}`;
     }
     return 'All';
   };
@@ -85,7 +92,7 @@ export default function SidebarWalletSelector({
   return (
     <Container>
       <Selector gap={10} align="center" onClick={() => setIsDropdownOpen(true)}>
-        <BaseM>{dispVal()}</BaseM>
+        <BaseM>{dispVal(selectedWallet)}</BaseM>
         <IconContainer variant="stacked" size="sm" icon={<DoubleArrowsIcon />} />
       </Selector>
       <StyledDropdown
@@ -99,7 +106,7 @@ export default function SidebarWalletSelector({
           </DropdownItem>
           {userWalletsOnSelectedNetwork.map((wallet) => (
             <DropdownItem onClick={() => onSelectWallet(wallet)}>
-              <BaseM>{wallet.chainAddress.address.slice(0, 6)}</BaseM>
+              <BaseM>{dispVal(wallet)}</BaseM>
             </DropdownItem>
           ))}
         </DropdownSection>
@@ -117,5 +124,5 @@ const Container = styled.div`
 `;
 
 const StyledDropdown = styled(Dropdown)`
-  width: 100px;
+  width: 125px;
 `;
