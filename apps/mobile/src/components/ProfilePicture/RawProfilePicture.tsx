@@ -9,6 +9,7 @@ import { GalleryTouchableOpacity, GalleryTouchableOpacityProps } from '../Galler
 import { Typography } from '../Typography';
 
 const sizeMapping: { [size in Size]: number } = {
+  xs: 16,
   sm: 24,
   md: 32,
   lg: 48,
@@ -16,13 +17,14 @@ const sizeMapping: { [size in Size]: number } = {
 };
 
 const fontSizeMapping: { [size in Size]: number } = {
+  xs: 8,
   sm: 14,
   md: 18,
   lg: 28,
   xl: 32,
 };
 
-type Size = 'sm' | 'md' | 'lg' | 'xl';
+type Size = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
 export type RawProfilePictureProps = {
   size: Size;
