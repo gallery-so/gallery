@@ -4,21 +4,22 @@ export type CollectionGroup = {
   title: string;
   address: string;
   //      Remove the readonly
-  tokens: Array<SidebarTokensFragment$data[number]>;
+  tokens: Array<any[number]>;
 };
 
 type groupCollectionsByAddressArgs = {
   //      Remove the readonly
-  tokens: any;
+  filteredTokensBySelectedWallet: any;
   ignoreSpam?: boolean;
 };
 
 export function groupCollectionsByAddress({
-  tokens,
+  filteredTokensBySelectedWallet,
   ignoreSpam = false,
 }: groupCollectionsByAddressArgs): CollectionGroup[] {
   const map: Record<string, CollectionGroup> = {};
-  
+  const tokens = filteredTokensBySelectedWallet ?? [];
+
   for (const token of tokens) {
     if (ignoreSpam) {
       if (token.isSpamByProvider || token.isSpamByUser) {

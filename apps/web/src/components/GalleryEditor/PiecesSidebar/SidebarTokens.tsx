@@ -148,7 +148,7 @@ export const SidebarTokens = ({
 
   const rows = useMemo(() => {
     if (shouldUseCollectionGrouping) {
-      const groups = groupCollectionsByAddress({ tokens });
+      const groups = groupCollectionsByAddress({ filteredTokensBySelectedWallet });
 
       return createVirtualizedRowsFromGroups({
         groups,

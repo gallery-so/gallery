@@ -15,14 +15,7 @@ import { SidebarWalletSelectorFragment$key } from '~/generated/SidebarWalletSele
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { chainsMap } from '~/components/GalleryEditor/PiecesSidebar/chains';
 
-export type SidebarWallet =
-  | 'Abitrum'
-  | 'Ethereum'
-  | 'Optimism'
-  | 'POAP'
-  | 'Polygon'
-  | 'Tezos'
-  | 'Zora';
+export type SidebarWallet = any;
 
 type SidebarWalletSelectorProps = {
   queryRef: SidebarWalletSelectorFragment$key;

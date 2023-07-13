@@ -156,6 +156,12 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
     setSelectedWallet(wallet);
   }, []);
 
+  
+  const handleSelectedChain = useCallback((chain) => {
+    setSelectedChain(chain);
+    setSelectedWallet("All");
+  }, []);
+
   // [GAL-3406] – enable this once the button is ready to be hooked up end-to-end
   const handleRefresh = useCallback(async () => {
     if (refreshDisabled) {
@@ -249,7 +255,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
             <SidebarChainDropdown
               queryRef={query}
               selectedChain={selectedChain}
-              onSelectChain={setSelectedChain}
+              onSelectChain={handleSelectedChain}
               selectedView={selectedView}
             />
           )}
