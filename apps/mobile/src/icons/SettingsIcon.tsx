@@ -1,6 +1,6 @@
 import { useColorScheme } from 'nativewind';
 import * as React from 'react';
-import Svg, { Path, SvgProps } from 'react-native-svg';
+import Svg, { ClipPath, Defs, G, Path, SvgProps } from 'react-native-svg';
 
 import colors from '~/shared/theme/colors';
 
@@ -10,12 +10,16 @@ export function SettingsIcon(props: SvgProps) {
   const strokeColor = colorScheme === 'dark' ? colors.white : colors.black['800'];
 
   return (
-    <Svg width={25} height={24} viewBox="0 0 25 24" fill="none" {...props}>
-      <Path
-        d="M15.7 19.1l-1 2.9h-4.4l-1-2.9-1.3-.8-3 .6-2.3-3.8 2.1-2.3v-1.6L2.7 8.9 5 5.1l3 .6 1.3-.8 1-2.9h4.4l1 2.9 1.3.8 3-.6 2.3 3.8-2.1 2.3v1.6l2.1 2.3-2.3 3.8-3-.6-1.3.8z"
-        stroke={strokeColor}
-      />
-      <Path d="M12.5 15a3 3 0 100-6 3 3 0 000 6z" stroke={strokeColor} strokeMiterlimit={10} />
+    <Svg width={16} height={16} fill="none" {...props}>
+      <G stroke={strokeColor} clipPath="url(#a)">
+        <Path d="m10.133 12.734-.666 1.933H6.533l-.666-1.933L5 12.201l-2 .4-1.533-2.534 1.4-1.533V7.467l-1.4-1.533L3 3.401l2 .4.867-.534.666-1.933h2.934l.666 1.933.867.534 2-.4 1.533 2.533-1.4 1.533v1.067l1.4 1.533L13 12.601l-2-.4-.867.533Z" />
+        <Path strokeMiterlimit={10} d="M8 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" />
+      </G>
+      <Defs>
+        <ClipPath id="a">
+          <Path fill="#fff" d="M0 0h16v16H0z" />
+        </ClipPath>
+      </Defs>
     </Svg>
   );
 }
