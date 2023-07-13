@@ -24,7 +24,7 @@ export function getUrlForCommunity(contractAddress: string, chain: string): Rout
   } else if (chain === 'Tezos') {
     return { pathname: '/community/tez/[contractAddress]', query: { contractAddress } };
   } else if (chain === 'Optimism') {
-    return { pathname: '/community/op/[contractAddress]', query: { contractAddress } };
+    return { pathname: '/community/optimism/[contractAddress]', query: { contractAddress } };
   } else {
     return { pathname: '/community/[contractAddress]', query: { contractAddress } };
   }
