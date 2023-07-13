@@ -13,8 +13,9 @@ import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { ChainMetadata } from '~/components/GalleryEditor/PiecesSidebar/chains';
 import { SidebarWalletSelectorFragment$key } from '~/generated/SidebarWalletSelectorFragment.graphql';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
+import { chainsMap } from '~/components/GalleryEditor/PiecesSidebar/chains';
 
-export type SidebarWallet = any;
+export type SidebarWallet = "Abitrum" | "Ethereum" | "Optimism" | "POAP" | "Polygon" | "Tezos" | "Zora";
 
 type SidebarWalletSelectorProps = {
   queryRef: SidebarWalletSelectorFragment$key;
@@ -41,7 +42,6 @@ export default function SidebarWalletSelector({
                 chainAddress @required(action: THROW) {
                   address @required(action: THROW)
                   chain @required(action: THROW)
-                  ...ManageWalletsRow
                 }
               }
             }
@@ -52,11 +52,10 @@ export default function SidebarWalletSelector({
     queryRef
   );
   console.log('viewer', viewer);
-  console.log('selectedChain', selectedChain);
   const userWalletsOnSelectedNetwork = useMemo(
     () =>
       removeNullValues(viewer?.user?.wallets).filter((wallet) => {
-        if (wallet.chainAddress.chain === selectedChain.name) {
+        if (wallet.chainAddress.chain === chainsMap[selectedChain.name].baseChain) {
           return wallet;
         }
       }),
@@ -82,6 +81,7 @@ export default function SidebarWalletSelector({
     }
     return 'All';
   };
+
   return (
     <Container>
       <Selector gap={10} align="center" onClick={() => setIsDropdownOpen(true)}>

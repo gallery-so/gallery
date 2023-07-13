@@ -152,7 +152,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
     }
   }, []);
 
-  const handleSelectedWalletChange = useCallback((wallet: string) => {
+  const handleSelectedWalletChange = useCallback((wallet: any) => {
     setSelectedWallet(wallet);
   }, []);
 
@@ -198,6 +198,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
           tokenRefs={tokensToDisplay}
           selectedChain={selectedChain.name}
           selectedView={selectedView}
+          selectedWallet={selectedWallet}
         />
       );
     }

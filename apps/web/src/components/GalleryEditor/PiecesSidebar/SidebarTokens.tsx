@@ -20,6 +20,7 @@ type SidebarTokensProps = {
   isSearching: boolean;
   selectedChain: Chain;
   selectedView: SidebarView;
+  selectedWallet: any;
   tokenRefs: SidebarTokensFragment$key;
 };
 
@@ -28,6 +29,7 @@ export const SidebarTokens = ({
   isSearching,
   selectedChain,
   selectedView,
+  selectedWallet,
 }: SidebarTokensProps) => {
   const tokens = useFragment(
     graphql`
@@ -61,6 +63,20 @@ export const SidebarTokens = ({
     tokenRefs
   );
 
+  const filteredTokensBySelectedWallet = useMemo(() => {
+    if (typeof selectedWallet === 'string') {
+      return tokens;
+    } else if (selectedWallet) {
+      console.log('tokens', tokens);
+      console.log('selectedWallet', selectedWallet);
+      return tokens.filter(
+        (token) => token.contract?.contractAddress?.address === selectedWallet.chainAddress.address
+      );
+    }
+    return tokens;
+  }, [tokens, selectedWallet]);
+
+  console.log('filteredTokensBySelectedWallet', filteredTokensBySelectedWallet);
   const setSpamPreference = useSetSpamPreference();
   const setSpamPreferenceForCollection = useCallback(
     (address: string, isSpam: boolean) => {
