@@ -23,6 +23,8 @@ export function getUrlForCommunity(contractAddress: string, chain: string): Rout
     return { pathname: '/community/poap/[contractAddress]', query: { contractAddress } };
   } else if (chain === 'Tezos') {
     return { pathname: '/community/tez/[contractAddress]', query: { contractAddress } };
+  } else if (chain === 'Optimism') {
+    return { pathname: '/community/op/[contractAddress]', query: { contractAddress } };
   } else {
     return { pathname: '/community/[contractAddress]', query: { contractAddress } };
   }
