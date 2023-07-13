@@ -1,4 +1,3 @@
-import { Contract } from '@ethersproject/contracts';
 import { useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 import useSWR from 'swr';
@@ -9,7 +8,7 @@ import ErrorText from '~/components/core/Text/ErrorText';
 import { BaseM } from '~/components/core/Text/Text';
 import { TransactionStatus } from '~/constants/transaction';
 import { useToastActions } from '~/contexts/toast/ToastContext';
-import { useMintMementosContract } from '~/hooks/useContract';
+import { useMintMementosContract, WagmiContract } from '~/hooks/useContract';
 import useMintContract from '~/hooks/useMintContract';
 
 import { ALLOWLIST_URL, MEMENTOS_NFT_TOKEN_ID } from './config';
@@ -32,7 +31,7 @@ export default function MintButton({ onMintSuccess }: Props) {
     error,
     handleClick,
   } = useMintContract({
-    contract: contract as Contract | null,
+    contract: contract as WagmiContract | null,
     tokenId: MEMENTOS_NFT_TOKEN_ID,
     allowlist,
   });

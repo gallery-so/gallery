@@ -1,4 +1,3 @@
-import { Contract } from '@ethersproject/contracts';
 import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
 import { route } from 'nextjs-routes';
@@ -22,6 +21,7 @@ import {
 } from '~/contexts/membershipMintPage/MembershipMintPageContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import ShimmerProvider, { useSetContentIsLoaded } from '~/contexts/shimmer/ShimmerContext';
+import { WagmiContract } from '~/hooks/useContract';
 import useWalletModal from '~/hooks/useWalletModal';
 import colors from '~/shared/theme/colors';
 
@@ -30,11 +30,11 @@ import { MembershipNft } from './cardProperties';
 type Props = {
   membershipNft: MembershipNft;
   canMintToken: boolean;
-  contract: Contract | null;
+  contract: WagmiContract | null;
   // mintToken actually returns an any type :facepalm:
   // maybe there's a better way to type these
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  mintToken: (contract: Contract, tokenId: number) => Promise<any>;
+  mintToken: (contract: WagmiContract, tokenId: number) => Promise<any>;
   children?: ReactNode;
   onMintSuccess?: () => void;
 };

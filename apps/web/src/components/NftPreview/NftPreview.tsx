@@ -170,7 +170,7 @@ function NftPreview({
       return <NftDetailGif onLoad={handleNftLoaded} tokenRef={token} />;
     }
     if (shouldLiverender && token.media?.__typename === 'GltfMedia') {
-      return <NftDetailModel onLoad={handleNftLoaded} mediaRef={token.media} />;
+      return <NftDetailModel onLoad={handleNftLoaded} mediaRef={token.media} fullHeight={false} />;
     }
     if (isIFrameLiveDisplay) {
       return <NftDetailAnimation onLoad={handleNftLoaded} mediaRef={token} />;

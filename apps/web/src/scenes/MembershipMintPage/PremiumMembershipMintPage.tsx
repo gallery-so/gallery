@@ -1,4 +1,3 @@
-import { Contract } from '@ethersproject/contracts';
 import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
 import { useCallback, useEffect, useState } from 'react';
@@ -7,7 +6,7 @@ import {
   useMembershipMintPageActions,
   useMembershipMintPageState,
 } from '~/contexts/membershipMintPage/MembershipMintPageContext';
-import { usePremiumMembershipCardContract } from '~/hooks/useContract';
+import { usePremiumMembershipCardContract, WagmiContract } from '~/hooks/useContract';
 import { MembershipMintPage } from '~/scenes/MembershipMintPage/MembershipMintPage';
 
 import { MembershipNft } from './cardProperties';
@@ -26,9 +25,12 @@ function PremiumMembershipMintPage({ membershipNft }: Props) {
 
   // check the contract whether the user's address is allowed to call mint, and set the result in local state
   const getCanMintToken = useCallback(
-    async (contract: Contract) => {
+    async (contract: WagmiContract) => {
       if (account) {
-        const canMintTokenResult = await contract.canMintToken(account, membershipNft.tokenId);
+        const canMintTokenResult = await contract.read.canMintToken([
+          account,
+          membershipNft.tokenId,
+        ]);
         setCanMintToken(canMintTokenResult);
       }
     },
@@ -36,8 +38,8 @@ function PremiumMembershipMintPage({ membershipNft }: Props) {
   );
 
   const mintToken = useCallback(
-    async (contract: Contract, tokenId: number) =>
-      contract.mint(account, tokenId, { value: price }),
+    async (contract: WagmiContract, tokenId: number) =>
+      contract.write.mint([account, tokenId], { value: price }),
     [account, price]
   );
 
