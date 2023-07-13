@@ -103,6 +103,8 @@ export function getExternalAddressLink(chainAddressRef: walletGetExternalAddress
     return `https://etherscan.io/address/${address}`;
   } else if (chain === 'Tezos') {
     return `https://tzkt.io/${address}/operations`;
+  } else if (chain === 'Optimism') {
+    return `https://optimistic.etherscan.io/address/${address}`;
   }
 
   return null;
