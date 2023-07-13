@@ -18,7 +18,10 @@ export default function HdButton({ id }: Props) {
 
   return isEnabled ? (
     <>
-      <StyledTooltip text="Disable High Definition" showTooltip={showTooltip} />
+      <StyledTooltip
+        text="Disable high definition. May affect performance."
+        showTooltip={showTooltip}
+      />
       <StyledHdEnabledIcon
         color="white"
         onClick={() => toggleTokenHighDefinition(id)}
@@ -28,7 +31,10 @@ export default function HdButton({ id }: Props) {
     </>
   ) : (
     <>
-      <StyledTooltip text="Enable High Definition" showTooltip={showTooltip} />
+      <StyledTooltip
+        text="Enable high definition. May affect performance."
+        showTooltip={showTooltip}
+      />
       <StyledHdDisabledIcon
         color="white"
         onClick={() => toggleTokenHighDefinition(id)}
@@ -46,6 +52,7 @@ const sharedStyles = `
   position: absolute;
   left: 8px;
   top: 8px;
+  z-index: 5;
 `;
 
 const StyledTooltip = styled(Tooltip)<{ showTooltip: boolean }>`
