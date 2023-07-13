@@ -48,7 +48,7 @@ export function ProfilePicturePickerScreen() {
   const [networkFilter, setNetworkFilter] = useState<NetworkChoice>('all');
 
   const screenTitle = useMemo(() => {
-    return currentScreen === 'ProfilePicture' ? 'Select a profile picture' : 'Select an NFT';
+    return currentScreen === 'ProfilePicture' ? 'Select a profile picture' : 'Select item to post';
   }, [currentScreen]);
 
   return (
