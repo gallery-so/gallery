@@ -26,7 +26,7 @@ import isRefreshDisabledForUser from './isRefreshDisabledForUser';
 import SearchBar from './SearchBar';
 import SidebarChainDropdown from './SidebarChainDropdown';
 import { SidebarView, SidebarViewSelector } from './SidebarViewSelector';
-import  SidebarWalletSelector from "./SidebarWalletSelector";
+import SidebarWalletSelector from './SidebarWalletSelector';
 
 type Props = {
   tokensRef: PiecesSidebarFragment$key;
@@ -76,7 +76,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
 
   const [searchResults, setSearchResults] = useState<string[]>([]);
   const [selectedChain, setSelectedChain] = useState<ChainMetadata>(chainsMap['Ethereum']);
-  const [selectedWallet, setSelectedWallet] = useState<any>("All");
+  const [selectedWallet, setSelectedWallet] = useState<any>('All');
   const [selectedView, setSelectedView] = useState<SidebarView>('Collected');
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
 
@@ -156,10 +156,9 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
     setSelectedWallet(wallet);
   }, []);
 
-  
   const handleSelectedChain = useCallback((chain) => {
     setSelectedChain(chain);
-    setSelectedWallet("All");
+    setSelectedWallet('All');
   }, []);
 
   // [GAL-3406] – enable this once the button is ready to be hooked up end-to-end
