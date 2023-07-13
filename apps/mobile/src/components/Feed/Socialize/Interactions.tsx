@@ -121,7 +121,11 @@ export function Interactions({ eventRef }: Props) {
           totalCount={totalAdmires}
         />
 
-        <AdmireLine onMultiUserPress={handleSeeAllAdmires} userRefs={admireUsers} />
+        <AdmireLine
+          onMultiUserPress={handleSeeAllAdmires}
+          userRefs={admireUsers}
+          totalAdmires={totalAdmires}
+        />
       </View>
 
       {previewComments.map((comment) => {
