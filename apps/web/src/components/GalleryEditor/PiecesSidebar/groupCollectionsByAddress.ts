@@ -4,12 +4,12 @@ export type CollectionGroup = {
   title: string;
   address: string;
   //      Remove the readonly
-  tokens: Array<any[number]>;
+  tokens: Array<SidebarTokensFragment$data[number]>;
 };
 
 type groupCollectionsByAddressArgs = {
   //      Remove the readonly
-  filteredTokensBySelectedWallet: any;
+  filteredTokensBySelectedWallet: SidebarTokensFragment$data;
   ignoreSpam?: boolean;
 };
 

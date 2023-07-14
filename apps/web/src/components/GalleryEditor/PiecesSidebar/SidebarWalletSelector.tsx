@@ -1,4 +1,4 @@
-import { useCallback, useState, useMemo } from 'react';
+import { useCallback, useMemo,useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -8,12 +8,12 @@ import { DropdownSection } from '~/components/core/Dropdown/DropdownSection';
 import IconContainer from '~/components/core/IconContainer';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
-import DoubleArrowsIcon from '~/icons/DoubleArrowsIcon';
-import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { ChainMetadata } from '~/components/GalleryEditor/PiecesSidebar/chains';
-import { SidebarWalletSelectorFragment$key } from '~/generated/SidebarWalletSelectorFragment.graphql';
-import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { chainsMap } from '~/components/GalleryEditor/PiecesSidebar/chains';
+import { SidebarWalletSelectorFragment$key } from '~/generated/SidebarWalletSelectorFragment.graphql';
+import DoubleArrowsIcon from '~/icons/DoubleArrowsIcon';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 export type SidebarWallet = { chainAddress: { chain: string; address: string } } | 'All';
 
@@ -38,7 +38,6 @@ export default function SidebarWalletSelector({
           ... on Viewer {
             user {
               wallets {
-                dbid @required(action: THROW)
                 chainAddress @required(action: THROW) {
                   address @required(action: THROW)
                   chain @required(action: THROW)
@@ -95,8 +94,8 @@ export default function SidebarWalletSelector({
           <DropdownItem onClick={() => onSelectWallet('All')}>
             <BaseM>All</BaseM>
           </DropdownItem>
-          {userWalletsOnSelectedNetwork.map((wallet) => (
-            <DropdownItem onClick={() => onSelectWallet(wallet)}>
+          {userWalletsOnSelectedNetwork.map((wallet, index) => (
+            <DropdownItem key={index} onClick={() => onSelectWallet(wallet)}>
               <BaseM>{displayAddressVal(wallet)}</BaseM>
             </DropdownItem>
           ))}

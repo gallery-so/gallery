@@ -53,9 +53,6 @@ export const SidebarTokens = ({
             address
             chain
           }
-          tokens {
-            name
-          }
         }
 
         contract {

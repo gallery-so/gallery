@@ -57,7 +57,7 @@ export function createVirtualizedRowsFromGroups({
 }
 
 type createVirtualizedRowsFromTokensArgs = {
-  filteredTokensBySelectedWallet: any;
+  filteredTokensBySelectedWallet: SidebarTokensFragment$data;
   erroredTokenIds: Set<string>;
 };
 
@@ -71,6 +71,7 @@ export function createVirtualizedRowsFromTokens({
 
   const tokensSortedByErrored = [...tokens].sort((a, b) => {
     const aIsErrored = erroredTokenIds.has(a.id);
+
     const bIsErrored = erroredTokenIds.has(b.id);
 
     if (aIsErrored === bIsErrored) {
