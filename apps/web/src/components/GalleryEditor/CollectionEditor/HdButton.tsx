@@ -3,27 +3,27 @@ import styled from 'styled-components';
 
 import Tooltip from '~/components/Tooltip/Tooltip';
 import { useCollectionEditorContext } from '~/contexts/collectionEditor/CollectionEditorContext';
-import VideoEnabledIcon from '~/icons/Video';
-import VideoDisabledIcon from '~/icons/VideoDisabled';
+import HdDisabledIcon from '~/icons/HdDisabledIcon';
+import HdEnabledIcon from '~/icons/HdIcon';
 
 type Props = {
   id: string;
   className?: string;
 };
 
-export default function LiveDisplayButton({ id, className }: Props) {
-  const { liveDisplayTokenIds, toggleTokenLiveDisplay } = useCollectionEditorContext();
-  const isEnabled = liveDisplayTokenIds.has(id);
+export default function HdButton({ id, className }: Props) {
+  const { highDefinitionTokenIds, toggleTokenHighDefinition } = useCollectionEditorContext();
+  const isEnabled = highDefinitionTokenIds.has(id);
 
   const [showTooltip, setShowTooltip] = useState(false);
 
   return isEnabled ? (
     <>
-      <StyledTooltip text="Disable live display" showTooltip={showTooltip} />
-      <StyledVideoEnabledIcon
+      <StyledTooltip text="Disable high definition" showTooltip={showTooltip} />
+      <StyledHdEnabledIcon
         className={className}
         color="white"
-        onClick={() => toggleTokenLiveDisplay(id)}
+        onClick={() => toggleTokenHighDefinition(id)}
         onMouseEnter={() => setShowTooltip(true)}
         onMouseLeave={() => setShowTooltip(false)}
       />
@@ -31,13 +31,13 @@ export default function LiveDisplayButton({ id, className }: Props) {
   ) : (
     <>
       <StyledTooltip
-        text="Enable live display. May affect performance."
+        text="Enable high definition. May affect performance."
         showTooltip={showTooltip}
       />
-      <StyledVideoDisabledIcon
+      <StyledHdDisabledIcon
         className={className}
         color="white"
-        onClick={() => toggleTokenLiveDisplay(id)}
+        onClick={() => toggleTokenHighDefinition(id)}
         onMouseEnter={() => setShowTooltip(true)}
         onMouseLeave={() => setShowTooltip(false)}
       />
@@ -52,6 +52,7 @@ const sharedStyles = `
   position: absolute;
   left: 8px;
   top: 8px;
+  z-index: 5;
 `;
 
 const StyledTooltip = styled(Tooltip)<{ showTooltip: boolean }>`
@@ -61,14 +62,14 @@ const StyledTooltip = styled(Tooltip)<{ showTooltip: boolean }>`
   ${sharedStyles}
 `;
 
-export const StyledVideoEnabledIcon = styled(VideoEnabledIcon)`
+export const StyledHdEnabledIcon = styled(HdEnabledIcon)`
   mix-blend-mode: exclusion;
   cursor: pointer;
 
   ${sharedStyles}
 `;
 
-export const StyledVideoDisabledIcon = styled(VideoDisabledIcon)`
+export const StyledHdDisabledIcon = styled(HdDisabledIcon)`
   mix-blend-mode: exclusion;
   cursor: pointer;
 
