@@ -19,10 +19,7 @@ export default function HdButton({ id, className }: Props) {
 
   return isEnabled ? (
     <>
-      <StyledTooltip
-        text="Disable high definition. May affect performance."
-        showTooltip={showTooltip}
-      />
+      <StyledTooltip text="Disable high definition" showTooltip={showTooltip} />
       <StyledHdEnabledIcon
         className={className}
         color="white"

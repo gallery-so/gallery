@@ -19,10 +19,7 @@ export default function LiveDisplayButton({ id, className }: Props) {
 
   return isEnabled ? (
     <>
-      <StyledTooltip
-        text="Disable live display. May affect performance."
-        showTooltip={showTooltip}
-      />
+      <StyledTooltip text="Disable live display" showTooltip={showTooltip} />
       <StyledVideoEnabledIcon
         className={className}
         color="white"
