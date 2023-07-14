@@ -8,9 +8,10 @@ import VideoDisabledIcon from '~/icons/VideoDisabled';
 
 type Props = {
   id: string;
+  className?: string;
 };
 
-export default function LiveDisplayButton({ id }: Props) {
+export default function LiveDisplayButton({ id, className }: Props) {
   const { liveDisplayTokenIds, toggleTokenLiveDisplay } = useCollectionEditorContext();
   const isEnabled = liveDisplayTokenIds.has(id);
 
@@ -23,6 +24,7 @@ export default function LiveDisplayButton({ id }: Props) {
         showTooltip={showTooltip}
       />
       <StyledVideoEnabledIcon
+        className={className}
         color="white"
         onClick={() => toggleTokenLiveDisplay(id)}
         onMouseEnter={() => setShowTooltip(true)}
@@ -36,6 +38,7 @@ export default function LiveDisplayButton({ id }: Props) {
         showTooltip={showTooltip}
       />
       <StyledVideoDisabledIcon
+        className={className}
         color="white"
         onClick={() => toggleTokenLiveDisplay(id)}
         onMouseEnter={() => setShowTooltip(true)}
