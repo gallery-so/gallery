@@ -15,12 +15,13 @@ import { SidebarTokensFragment$key } from '~/generated/SidebarTokensFragment.gra
 import useSetSpamPreference from '~/hooks/api/tokens/useSetSpamPreference';
 
 import { SidebarView } from './SidebarViewSelector';
+import { SidebarWallet } from './SidebarWalletSelector';
 
 type SidebarTokensProps = {
   isSearching: boolean;
   selectedChain: Chain;
   selectedView: SidebarView;
-  selectedWallet: any;
+  selectedWallet: SidebarWallet;
   tokenRefs: SidebarTokensFragment$key;
 };
 
@@ -72,8 +73,9 @@ export const SidebarTokens = ({
     `,
     tokenRefs
   );
+
   const filteredTokensBySelectedWallet = useMemo(() => {
-    if (typeof selectedWallet === 'string') {
+    if (selectedWallet === 'All') {
       return tokens;
     } else if (selectedWallet) {
       return tokens.filter((token) =>

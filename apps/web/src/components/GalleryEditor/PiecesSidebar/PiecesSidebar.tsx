@@ -26,7 +26,7 @@ import isRefreshDisabledForUser from './isRefreshDisabledForUser';
 import SearchBar from './SearchBar';
 import SidebarChainDropdown from './SidebarChainDropdown';
 import { SidebarView, SidebarViewSelector } from './SidebarViewSelector';
-import SidebarWalletSelector from './SidebarWalletSelector';
+import SidebarWalletSelector, { SidebarWallet } from './SidebarWalletSelector';
 
 type Props = {
   tokensRef: PiecesSidebarFragment$key;
@@ -76,7 +76,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
 
   const [searchResults, setSearchResults] = useState<string[]>([]);
   const [selectedChain, setSelectedChain] = useState<ChainMetadata>(chainsMap['Ethereum']);
-  const [selectedWallet, setSelectedWallet] = useState<any>('All');
+  const [selectedWallet, setSelectedWallet] = useState<SidebarWallet>('All');
   const [selectedView, setSelectedView] = useState<SidebarView>('Collected');
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
 
@@ -152,11 +152,11 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
     }
   }, []);
 
-  const handleSelectedWalletChange = useCallback((wallet: any) => {
+  const handleSelectedWalletChange = useCallback((wallet: SidebarWallet) => {
     setSelectedWallet(wallet);
   }, []);
 
-  const handleSelectedChain = useCallback((chain) => {
+  const handleSelectedChain = useCallback((chain: ChainMetadata) => {
     setSelectedChain(chain);
     setSelectedWallet('All');
   }, []);

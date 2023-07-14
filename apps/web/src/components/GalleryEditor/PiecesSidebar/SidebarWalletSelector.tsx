@@ -15,13 +15,13 @@ import { SidebarWalletSelectorFragment$key } from '~/generated/SidebarWalletSele
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { chainsMap } from '~/components/GalleryEditor/PiecesSidebar/chains';
 
-export type SidebarWallet = any;
+export type SidebarWallet = { chainAddress: { chain: string; address: string } } | 'All';
 
 type SidebarWalletSelectorProps = {
   queryRef: SidebarWalletSelectorFragment$key;
   selectedChain: ChainMetadata;
   selectedWallet: SidebarWallet;
-  onSelectedWalletChange: (selectedWallet: any) => void;
+  onSelectedWalletChange: (selectedWallet: SidebarWallet) => void;
 };
 
 export default function SidebarWalletSelector({
@@ -72,10 +72,8 @@ export default function SidebarWalletSelector({
     [track, onSelectedWalletChange]
   );
 
-  const dispVal = (wallet) => {
-    if (typeof wallet === 'string') {
-      return 'All';
-    } else if (selectedWallet) {
+  const displayAddressVal = (wallet: SidebarWallet) => {
+    if (wallet && wallet !== 'All') {
       const address = wallet?.chainAddress.address;
       return `${address.slice(0, 6)}...${address.slice(-4)}`;
     }
@@ -85,7 +83,7 @@ export default function SidebarWalletSelector({
   return (
     <Container>
       <Selector gap={10} align="center" onClick={() => setIsDropdownOpen(true)}>
-        <BaseM>{dispVal(selectedWallet)}</BaseM>
+        <BaseM>{displayAddressVal(selectedWallet)}</BaseM>
         <IconContainer variant="stacked" size="sm" icon={<DoubleArrowsIcon />} />
       </Selector>
       <StyledDropdown
@@ -94,12 +92,12 @@ export default function SidebarWalletSelector({
         onClose={() => setIsDropdownOpen(false)}
       >
         <DropdownSection>
-          <DropdownItem onClick={() => onSelectWallet('ALL')}>
+          <DropdownItem onClick={() => onSelectWallet('All')}>
             <BaseM>All</BaseM>
           </DropdownItem>
           {userWalletsOnSelectedNetwork.map((wallet) => (
             <DropdownItem onClick={() => onSelectWallet(wallet)}>
-              <BaseM>{dispVal(wallet)}</BaseM>
+              <BaseM>{displayAddressVal(wallet)}</BaseM>
             </DropdownItem>
           ))}
         </DropdownSection>
