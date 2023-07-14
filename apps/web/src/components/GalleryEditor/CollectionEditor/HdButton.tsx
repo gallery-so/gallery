@@ -57,7 +57,7 @@ const sharedStyles = `
 
 const StyledTooltip = styled(Tooltip)<{ showTooltip: boolean }>`
   opacity: ${({ showTooltip }) => (showTooltip ? 1 : 0)};
-  transform: translateY(${({ showTooltip }) => (showTooltip ? -22 : -18)}px);
+  transform: translateY(${({ showTooltip }) => (showTooltip ? -26 : -20)}px);
 
   ${sharedStyles}
 `;
