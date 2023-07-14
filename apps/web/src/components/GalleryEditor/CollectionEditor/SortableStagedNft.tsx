@@ -103,7 +103,7 @@ function SortableStagedNft({ tokenRef, size, mini }: Props) {
         />
       </NftFailureBoundary>
       <StyledUnstageButton id={id} />
-      {isLiveType ? <LiveDisplayButton id={id} /> : <HdButton id={id} />}
+      {isLiveType ? <StyledLiveDisplayButton id={id} /> : <StyledHdButton id={id} />}
     </StyledSortableNft>
   );
 }
@@ -116,6 +116,14 @@ const FallbackContainer = styled.div<{ size: number }>`
 const StyledUnstageButton = styled(UnstageButton)`
   opacity: 0;
   top: 0;
+`;
+
+const StyledHdButton = styled(HdButton)`
+  opacity: 0;
+`;
+
+const StyledLiveDisplayButton = styled(LiveDisplayButton)`
+  opacity: 0;
 `;
 
 export const StyledSortableNft = styled.div<{
@@ -137,6 +145,14 @@ export const StyledSortableNft = styled.div<{
   user-select: none;
 
   &:hover ${StyledUnstageButton} {
+    opacity: 1;
+  }
+
+  &:hover ${StyledHdButton} {
+    opacity: 1;
+  }
+
+  &:hover ${StyledLiveDisplayButton} {
     opacity: 1;
   }
 

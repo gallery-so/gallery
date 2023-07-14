@@ -8,9 +8,10 @@ import HdEnabledIcon from '~/icons/HdIcon';
 
 type Props = {
   id: string;
+  className?: string;
 };
 
-export default function HdButton({ id }: Props) {
+export default function HdButton({ id, className }: Props) {
   const { highDefinitionTokenIds, toggleTokenHighDefinition } = useCollectionEditorContext();
   const isEnabled = highDefinitionTokenIds.has(id);
 
@@ -23,6 +24,7 @@ export default function HdButton({ id }: Props) {
         showTooltip={showTooltip}
       />
       <StyledHdEnabledIcon
+        className={className}
         color="white"
         onClick={() => toggleTokenHighDefinition(id)}
         onMouseEnter={() => setShowTooltip(true)}
@@ -36,6 +38,7 @@ export default function HdButton({ id }: Props) {
         showTooltip={showTooltip}
       />
       <StyledHdDisabledIcon
+        className={className}
         color="white"
         onClick={() => toggleTokenHighDefinition(id)}
         onMouseEnter={() => setShowTooltip(true)}
