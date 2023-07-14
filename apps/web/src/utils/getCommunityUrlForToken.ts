@@ -2,6 +2,7 @@ import { Route } from 'nextjs-routes';
 import { graphql } from 'react-relay';
 import { readInlineData } from 'relay-runtime';
 
+import { Chain } from '~/generated/enums';
 import { getCommunityUrlForTokenFragment$key } from '~/generated/getCommunityUrlForTokenFragment.graphql';
 
 export const DISABLED_CONTRACTS = [
@@ -14,19 +15,15 @@ export const DISABLED_CONTRACTS = [
   '0xdfde78d2baec499fe18f2be74b6c287eed9511d7', // Braindrops
 ];
 
-export function getUrlForCommunity(contractAddress: string, chain: string): Route | null {
+export function getUrlForCommunity(contractAddress: string, chain: Chain): Route | null {
+  const lowercaseChain = chain.toLowerCase();
   if (DISABLED_CONTRACTS.includes(contractAddress)) {
     return null;
-  }
-
-  if (chain === 'POAP') {
-    return { pathname: '/community/poap/[contractAddress]', query: { contractAddress } };
-  } else if (chain === 'Tezos') {
-    return { pathname: '/community/tez/[contractAddress]', query: { contractAddress } };
-  } else if (chain === 'Optimism') {
-    return { pathname: '/community/optimism/[contractAddress]', query: { contractAddress } };
   } else {
-    return { pathname: '/community/[contractAddress]', query: { contractAddress } };
+    return {
+      pathname: `/community/${[lowercaseChain]}/${[contractAddress]}`,
+      query: { contractAddress, chain },
+    };
   }
 }
 

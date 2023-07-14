@@ -105,6 +105,10 @@ export function getExternalAddressLink(chainAddressRef: walletGetExternalAddress
     return `https://tzkt.io/${address}/operations`;
   } else if (chain === 'Optimism') {
     return `https://optimistic.etherscan.io/address/${address}`;
+  } else if (chain === 'Zora') {
+    return `https://explorer.zora.energy/address/${address}`;
+  } else if (chain === 'Polygon') {
+    return `https://polygonscan.com/address/${address}`;
   }
 
   return null;
