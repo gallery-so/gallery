@@ -156,7 +156,7 @@ export const SidebarTokens = ({
       });
     } else {
       return createVirtualizedRowsFromTokens({
-        tokens,
+        filteredTokensBySelectedWallet,
         erroredTokenIds,
       });
     }
@@ -164,7 +164,6 @@ export const SidebarTokens = ({
     collapsedCollections,
     erroredTokenIds,
     shouldUseCollectionGrouping,
-    tokens,
     filteredTokensBySelectedWallet,
   ]);
 
