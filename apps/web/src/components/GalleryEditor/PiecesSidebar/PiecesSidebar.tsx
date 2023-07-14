@@ -260,13 +260,17 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
           )}
         </Header>
         <Header align="center" justify="space-between" gap={4}>
-          <TitleS>Wallet</TitleS>
-          <SidebarWalletSelector
-            queryRef={query}
-            selectedChain={selectedChain}
-            selectedWallet={selectedWallet}
-            onSelectedWalletChange={handleSelectedWalletChange}
-          />
+          <TitleS color={isSearching ? colors.metal : colors.black['800']}>Wallet</TitleS>
+          {isSearching ? (
+            <StyledNull>---</StyledNull>
+          ) : (
+            <SidebarWalletSelector
+              queryRef={query}
+              selectedChain={selectedChain}
+              selectedWallet={selectedWallet}
+              onSelectedWalletChange={handleSelectedWalletChange}
+            />
+          )}
         </Header>
         <StyledSearchBarContainer>
           <SearchBar

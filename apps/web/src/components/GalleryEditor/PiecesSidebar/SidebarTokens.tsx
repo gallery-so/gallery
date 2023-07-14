@@ -184,7 +184,7 @@ export const SidebarTokens = ({
 
       const collapsed = new Set<string>();
       if (shouldUseCollectionGrouping) {
-        const groups = groupCollectionsByAddress({ tokens });
+        const groups = groupCollectionsByAddress({ filteredTokensBySelectedWallet });
         for (const group of groups) {
           if (group.tokens.length > DEFAULT_COLLAPSE_TOKEN_COUNT) {
             collapsed.add(group.address);
@@ -193,7 +193,7 @@ export const SidebarTokens = ({
       }
       setCollapsedCollections(collapsed);
     },
-    [shouldUseCollectionGrouping, tokens]
+    [shouldUseCollectionGrouping, filteredTokensBySelectedWallet]
   );
 
   if (rows.length === 0) {
