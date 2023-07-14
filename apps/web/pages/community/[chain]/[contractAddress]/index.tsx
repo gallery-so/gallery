@@ -63,7 +63,7 @@ export default function CommunityPage({ contractAddress, chain }: CommunityPageP
 
 export const getServerSideProps: GetServerSideProps<CommunityPageProps> = async ({ params }) => {
   const contractAddress = params?.contractAddress ? (params.contractAddress as string) : '';
-  const chain = params?.chain ? (params.chain as Chain) : 'Ethereum'; // Assign a default value from the Chain enum if chain is undefined
+  const chain = params?.chain as Chain;
   return {
     props: {
       contractAddress,
