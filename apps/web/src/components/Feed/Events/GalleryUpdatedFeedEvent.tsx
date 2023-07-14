@@ -14,7 +14,6 @@ import { GalleryUpdatedFeedEventFragment$key } from '~/generated/GalleryUpdatedF
 import { GalleryUpdatedFeedEventQueryFragment$key } from '~/generated/GalleryUpdatedFeedEventQueryFragment.graphql';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import { getTimeSince } from '~/shared/utils/time';
-import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 import { StyledCaptionContainer } from './CollectionCreatedFeedEvent';
 import {
@@ -72,8 +71,6 @@ export default function GalleryUpdatedFeedEvent({
     queryRef
   );
 
-  const isPfpEnabled = isFeatureEnabled(FeatureFlag.PFP, query);
-
   const galleryPagePath: Route = {
     pathname: '/[username]/galleries/[galleryId]',
     query: {
@@ -91,7 +88,7 @@ export default function GalleryUpdatedFeedEvent({
         <StyledEventHeader>
           <HStack gap={4} align="center" inline>
             <HStack gap={4} align="center" inline>
-              {isPfpEnabled && <ProfilePicture size="sm" userRef={event.owner} />}
+              <ProfilePicture size="sm" userRef={event.owner} />
               <HoverCardOnUsername userRef={event.owner} />
             </HStack>
             <BaseM>updated</BaseM>

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { graphql, useFragment, usePaginationFragment } from 'react-relay';
+import { graphql, usePaginationFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
@@ -9,16 +9,14 @@ import { TitleS } from '~/components/core/Text/Text';
 import { GRID_ITEM_PER_PAGE } from '~/constants/community';
 import { GLOBAL_FOOTER_HEIGHT } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
 import { CommunityHolderGridFragment$key } from '~/generated/CommunityHolderGridFragment.graphql';
-import { CommunityHolderGridQueryFragment$key } from '~/generated/CommunityHolderGridQueryFragment.graphql';
 
 import CommunityHolderGridItem from './CommunityHolderGridItem';
 
 type Props = {
   communityRef: CommunityHolderGridFragment$key;
-  queryRef: CommunityHolderGridQueryFragment$key;
 };
 
-export default function CommunityHolderGrid({ communityRef, queryRef }: Props) {
+export default function CommunityHolderGrid({ communityRef }: Props) {
   const {
     data: community,
     loadNext,
@@ -53,15 +51,6 @@ export default function CommunityHolderGrid({ communityRef, queryRef }: Props) {
       }
     `,
     communityRef
-  );
-
-  const query = useFragment(
-    graphql`
-      fragment CommunityHolderGridQueryFragment on Query {
-        ...CommunityHolderGridItemQueryFragment
-      }
-    `,
-    queryRef
   );
 
   const [isFetching, setIsFetching] = useState(false);
@@ -120,9 +109,7 @@ export default function CommunityHolderGrid({ communityRef, queryRef }: Props) {
           <TitleS>Collectors on Gallery</TitleS>
           <StyledCommunityHolderGrid>
             {galleryMemberTokens.map((holder) =>
-              holder ? (
-                <CommunityHolderGridItem key={holder.id} holderRef={holder} queryRef={query} />
-              ) : null
+              holder ? <CommunityHolderGridItem key={holder.id} holderRef={holder} /> : null
             )}
           </StyledCommunityHolderGrid>
         </VStack>
@@ -133,9 +120,7 @@ export default function CommunityHolderGrid({ communityRef, queryRef }: Props) {
 
           <StyledCommunityHolderGrid>
             {nonGalleryMemberTokens.map((holder) =>
-              holder ? (
-                <CommunityHolderGridItem key={holder.id} holderRef={holder} queryRef={query} />
-              ) : null
+              holder ? <CommunityHolderGridItem key={holder.id} holderRef={holder} /> : null
             )}
           </StyledCommunityHolderGrid>
         </VStack>
