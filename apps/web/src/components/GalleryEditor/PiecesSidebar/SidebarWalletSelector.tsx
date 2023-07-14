@@ -62,7 +62,7 @@ export default function SidebarWalletSelector({
 
   const track = useTrack();
 
-  const onSelectWallet = useCallback(
+  const handleSelectWallet = useCallback(
     (selectedWallet: SidebarWallet) => {
       track('Editor Sidebar Wallet Dropdown Clicked', { variant: selectedWallet });
       onSelectedWalletChange(selectedWallet);
@@ -71,18 +71,18 @@ export default function SidebarWalletSelector({
     [track, onSelectedWalletChange]
   );
 
-  const displayAddressVal = (wallet: SidebarWallet) => {
-    if (wallet && wallet !== 'All') {
+  const truncateWalletAddress = useCallback((wallet: SidebarWallet) => {
+    if (wallet !== 'All') {
       const address = wallet?.chainAddress.address;
       return `${address.slice(0, 6)}...${address.slice(-4)}`;
     }
     return 'All';
-  };
+  }, []);
 
   return (
     <Container>
       <Selector gap={10} align="center" onClick={() => setIsDropdownOpen(true)}>
-        <BaseM>{displayAddressVal(selectedWallet)}</BaseM>
+        <BaseM>{truncateWalletAddress(selectedWallet)}</BaseM>
         <IconContainer variant="stacked" size="sm" icon={<DoubleArrowsIcon />} />
       </Selector>
       <StyledDropdown
@@ -91,12 +91,12 @@ export default function SidebarWalletSelector({
         onClose={() => setIsDropdownOpen(false)}
       >
         <DropdownSection>
-          <DropdownItem onClick={() => onSelectWallet('All')}>
+          <DropdownItem onClick={() => handleSelectWallet('All')}>
             <BaseM>All</BaseM>
           </DropdownItem>
           {userWalletsOnSelectedNetwork.map((wallet, index) => (
-            <DropdownItem key={index} onClick={() => onSelectWallet(wallet)}>
-              <BaseM>{displayAddressVal(wallet)}</BaseM>
+            <DropdownItem key={index} onClick={() => handleSelectWallet(wallet)}>
+              <BaseM>{truncateWalletAddress(wallet)}</BaseM>
             </DropdownItem>
           ))}
         </DropdownSection>
