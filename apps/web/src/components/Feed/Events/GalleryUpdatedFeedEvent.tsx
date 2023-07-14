@@ -65,7 +65,6 @@ export default function GalleryUpdatedFeedEvent({
     graphql`
       fragment GalleryUpdatedFeedEventQueryFragment on Query {
         ...FeedEventDataNonRecursiveQueryFragment
-        ...isFeatureEnabledFragment
       }
     `,
     queryRef
