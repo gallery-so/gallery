@@ -8,6 +8,7 @@ import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import Tooltip from '~/components/Tooltip/Tooltip';
 import { BADGE_ENABLED_COMMUNITY_ADDRESSES } from '~/constants/community';
 import { BadgeFragment$key } from '~/generated/BadgeFragment.graphql';
+import { Chain } from '~/generated/enums';
 
 type Props = {
   badgeRef: BadgeFragment$key;
@@ -37,22 +38,17 @@ export default function Badge({ badgeRef }: Props) {
   const communityUrl = useMemo<Route>(() => {
     const contractAddress = contract?.contractAddress?.address as string;
 
-    if (contract?.chain === 'POAP') {
-      return {
-        pathname: '/community/poap/[contractAddress]',
-        query: { contractAddress },
-      };
-    } else if (contract?.chain === 'Tezos') {
-      return {
-        pathname: '/community/tez/[contractAddress]',
-        query: { contractAddress },
-      };
-    } else {
-      return {
-        pathname: '/community/[contractAddress]',
-        query: { contractAddress },
-      };
-    }
+    /* The returned chain is usually uppercase, so we have to make sure we always convert
+     them to lowercase, otherwise user's will see the inconsistent routes.
+
+     TODO: we could probablly think of a better way to handle this, so we don't have to do this manually everytime.
+    */
+    const chain = contract?.chain?.toLocaleLowerCase() as Chain;
+
+    return {
+      pathname: `/community/[chain]/[contractAddress]`,
+      query: { contractAddress, chain },
+    };
   }, [contract]);
 
   const handleMouseEnter = useCallback(() => {

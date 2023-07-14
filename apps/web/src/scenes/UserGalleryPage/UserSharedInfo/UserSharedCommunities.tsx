@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { BaseS } from '~/components/core/Text/Text';
 import { useModalActions } from '~/contexts/modal/ModalContext';
+import { Chain } from '~/generated/enums';
 import { UserSharedCommunitiesFragment$key } from '~/generated/UserSharedCommunitiesFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
@@ -80,7 +81,10 @@ export default function UserSharedCommunities({ userRef }: Props) {
     // Display up to 3 communities
     const result = communitiesToDisplay.map((community) => {
       if (community.contractAddress?.address && community.chain) {
-        const url = getUrlForCommunity(community.contractAddress?.address, community.chain);
+        const url = getUrlForCommunity(
+          community.contractAddress?.address,
+          community.chain as Chain
+        );
 
         if (url) {
           return (
