@@ -12,13 +12,11 @@ import { SomeoneAdmiredYourFeedEventFragment$key } from '~/generated/SomeoneAdmi
 type SomeoneAdmiredYourFeedEventProps = {
   notificationRef: SomeoneAdmiredYourFeedEventFragment$key;
   onClose: () => void;
-  isPfpVisible: boolean;
 };
 
 export function SomeoneAdmiredYourFeedEvent({
   notificationRef,
   onClose,
-  isPfpVisible,
 }: SomeoneAdmiredYourFeedEventProps) {
   const notification = useFragment(
     graphql`
@@ -103,11 +101,10 @@ export function SomeoneAdmiredYourFeedEvent({
         <>
           {firstAdmirer ? (
             <>
-              {isPfpVisible && (
-                <StyledProfilePictureContainer>
-                  <ProfilePicture size="sm" userRef={firstAdmirer} />
-                </StyledProfilePictureContainer>
-              )}
+              <StyledProfilePictureContainer>
+                <ProfilePicture size="sm" userRef={firstAdmirer} />
+              </StyledProfilePictureContainer>
+
               <HoverCardOnUsername userRef={firstAdmirer} onClick={onClose} />
             </>
           ) : (

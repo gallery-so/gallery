@@ -10,7 +10,6 @@ import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { AdmireNoteFragment$key } from '~/generated/AdmireNoteFragment.graphql';
 import { AdmireNoteQueryFragment$key } from '~/generated/AdmireNoteQueryFragment.graphql';
 import { IconWrapper } from '~/icons/SocializeIcons';
-import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 type AdmireNoteProps = {
   admireRef: AdmireNoteFragment$key;
@@ -37,13 +36,10 @@ export function AdmireNote({ admireRef, queryRef }: AdmireNoteProps) {
     graphql`
       fragment AdmireNoteQueryFragment on Query {
         ...FollowButtonQueryFragment
-        ...isFeatureEnabledFragment
       }
     `,
     queryRef
   );
-
-  const isPfpEnabled = isFeatureEnabled(FeatureFlag.PFP, query);
 
   const user = admire.admirer;
 
@@ -54,7 +50,7 @@ export function AdmireNote({ admireRef, queryRef }: AdmireNoteProps) {
   return (
     <StyledListItem justify="space-between" gap={4}>
       <HStack gap={4} align="center">
-        {isPfpEnabled && <ProfilePicture size="sm" userRef={admire.admirer} />}
+        <ProfilePicture size="sm" userRef={admire.admirer} />
         {admire.admirer && <HoverCardOnUsername userRef={admire.admirer} />}
       </HStack>
       <StyledFollowButton userRef={user} queryRef={query} />

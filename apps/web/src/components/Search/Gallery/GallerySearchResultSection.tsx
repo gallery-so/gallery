@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
 import { GallerySearchResultSectionFragment$key } from '~/generated/GallerySearchResultSectionFragment.graphql';
-import { GallerySearchResultSectionQueryFragment$key } from '~/generated/GallerySearchResultSectionQueryFragment.graphql';
 
 import { NUM_PREVIEW_SEARCH_RESULTS } from '../constants';
 import { SearchFilterType } from '../Search';
@@ -13,7 +12,7 @@ type Props = {
   title: string;
   isShowAll?: boolean;
   resultRefs: GallerySearchResultSectionFragment$key;
-  queryRef: GallerySearchResultSectionQueryFragment$key;
+
   onChangeFilter: (filter: SearchFilterType) => void;
 };
 
@@ -22,7 +21,6 @@ export default function GallerySearchResultSection({
   onChangeFilter,
   title,
   resultRefs,
-  queryRef,
 }: Props) {
   const results = useFragment(
     graphql`
@@ -34,15 +32,6 @@ export default function GallerySearchResultSection({
       }
     `,
     resultRefs
-  );
-
-  const query = useFragment(
-    graphql`
-      fragment GallerySearchResultSectionQueryFragment on Query {
-        ...GallerySearchResultQueryFragment
-      }
-    `,
-    queryRef
   );
 
   const resultsToShow = useMemo(
@@ -58,7 +47,7 @@ export default function GallerySearchResultSection({
       numResults={results.length}
     >
       {resultsToShow.map((result) => (
-        <GallerySearchResult key={result.gallery.id} galleryRef={result.gallery} queryRef={query} />
+        <GallerySearchResult key={result.gallery.id} galleryRef={result.gallery} />
       ))}
     </SearchSection>
   );

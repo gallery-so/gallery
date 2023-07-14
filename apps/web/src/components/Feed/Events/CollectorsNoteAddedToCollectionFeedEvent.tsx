@@ -13,13 +13,11 @@ import { BaseM } from '~/components/core/Text/Text';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { CollectorsNoteAddedToCollectionFeedEventFragment$key } from '~/generated/CollectorsNoteAddedToCollectionFeedEventFragment.graphql';
-import { CollectorsNoteAddedToCollectionFeedEventQueryFragment$key } from '~/generated/CollectorsNoteAddedToCollectionFeedEventQueryFragment.graphql';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
 import { getTimeSince } from '~/shared/utils/time';
 import unescape from '~/shared/utils/unescape';
-import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 import FeedEventTokenPreviews from '../FeedEventTokenPreviews';
 import {
@@ -33,13 +31,11 @@ import {
 
 type Props = {
   eventDataRef: CollectorsNoteAddedToCollectionFeedEventFragment$key;
-  queryRef: CollectorsNoteAddedToCollectionFeedEventQueryFragment$key;
   isSubEvent?: boolean;
 };
 
 export default function CollectorsNoteAddedToCollectionFeedEvent({
   eventDataRef,
-  queryRef,
   isSubEvent = false,
 }: Props) {
   const event = useFragment(
@@ -67,24 +63,12 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({
     eventDataRef
   );
 
-  const query = useFragment(
-    graphql`
-      fragment CollectorsNoteAddedToCollectionFeedEventQueryFragment on Query {
-        ...FeedEventTokenPreviewsQueryFragment
-        ...isFeatureEnabledFragment
-      }
-    `,
-    queryRef
-  );
-
   const collectionPagePath: Route = {
     pathname: '/[username]/[collectionId]',
     query: { username: event.owner.username as string, collectionId: event.collection.dbid },
   };
 
   const track = useTrack();
-
-  const isPfpEnabled = isFeatureEnabled(FeatureFlag.PFP, query);
 
   const nonNullTokens = useMemo(() => {
     return removeNullValues(event.collection.tokens);
@@ -115,7 +99,7 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({
             <StyledEventText isSubEvent={isSubEvent}>
               {!isSubEvent && (
                 <HStack gap={4} align="center">
-                  {isPfpEnabled && <ProfilePicture userRef={event.owner} size="sm" />}
+                  <ProfilePicture userRef={event.owner} size="sm" />
                   <HoverCardOnUsername userRef={event.owner} />
                 </HStack>
               )}
@@ -138,7 +122,6 @@ export default function CollectorsNoteAddedToCollectionFeedEvent({
             <FeedEventTokenPreviews
               isInCaption={Boolean(event.newCollectorsNote)}
               tokenToPreviewRefs={nonNullTokens}
-              queryRef={query}
             />
           </StyledEventContent>
           {/* [GAL-608] Bring this back once we fix perf around tokenURI

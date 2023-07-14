@@ -10,14 +10,9 @@ import { SomeoneFollowedYouFragment$key } from '~/generated/SomeoneFollowedYouFr
 type SomeoneFollowedYouProps = {
   notificationRef: SomeoneFollowedYouFragment$key;
   onClose: () => void;
-  isPfpVisible: boolean;
 };
 
-export function SomeoneFollowedYou({
-  notificationRef,
-  onClose,
-  isPfpVisible,
-}: SomeoneFollowedYouProps) {
+export function SomeoneFollowedYou({ notificationRef, onClose }: SomeoneFollowedYouProps) {
   const notification = useFragment(
     graphql`
       fragment SomeoneFollowedYouFragment on SomeoneFollowedYouNotification {
@@ -49,7 +44,7 @@ export function SomeoneFollowedYou({
         <>
           {lastFollower ? (
             <HStack gap={4} align="center">
-              {isPfpVisible && <ProfilePicture size="sm" userRef={lastFollower} />}
+              <ProfilePicture size="sm" userRef={lastFollower} />
               <HoverCardOnUsername userRef={lastFollower} onClick={onClose} />
             </HStack>
           ) : (
