@@ -2,7 +2,7 @@ import { Route } from 'nextjs-routes';
 import { graphql } from 'react-relay';
 import { readInlineData } from 'relay-runtime';
 
-import { Chain } from '~/generated/enums';
+import { LowercaseChain } from '~/components/GalleryEditor/PiecesSidebar/chains';
 import { getCommunityUrlForTokenFragment$key } from '~/generated/getCommunityUrlForTokenFragment.graphql';
 
 export const DISABLED_CONTRACTS = [
@@ -15,7 +15,7 @@ export const DISABLED_CONTRACTS = [
   '0xdfde78d2baec499fe18f2be74b6c287eed9511d7', // Braindrops
 ];
 
-export function getUrlForCommunity(contractAddress: string, chain: Chain): Route | null {
+export function getUrlForCommunity(contractAddress: string, chain: LowercaseChain): Route | null {
   if (DISABLED_CONTRACTS.includes(contractAddress)) {
     return null;
   } else {
@@ -50,5 +50,5 @@ export function getCommunityUrlForToken(
     return null;
   }
 
-  return getUrlForCommunity(contractAddress, lowercaseChain as Chain);
+  return getUrlForCommunity(contractAddress, lowercaseChain as LowercaseChain);
 }
