@@ -49,9 +49,6 @@ export type MainTabStackNavigatorParamList = {
 
   Search: undefined;
   Settings: undefined;
-  // Post: {
-  //   tokenId: string;
-  // };
   // End the main four tabs
 };
 
