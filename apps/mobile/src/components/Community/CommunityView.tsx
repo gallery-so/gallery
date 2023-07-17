@@ -3,8 +3,10 @@ import { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 import { EthIcon } from 'src/icons/EthIcon';
+import { PoapIcon } from 'src/icons/PoapIcon';
+import { TezosIcon } from 'src/icons/TezosIcon';
 
-import { CommunityViewFragment$key } from '~/generated/CommunityViewFragment.graphql';
+import { Chain, CommunityViewFragment$key } from '~/generated/CommunityViewFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 
 import { BackButton } from '../BackButton';
@@ -169,13 +171,15 @@ export function CommunityView({ queryRef }: Props) {
                 network
               </Typography>
 
-              <Typography
-                font={{ family: 'ABCDiatype', weight: 'Regular' }}
-                className="text-sm text-shadow"
-              >
-                <EthIcon />
-                {community.chain}
-              </Typography>
+              {community.chain && (
+                <Typography
+                  font={{ family: 'ABCDiatype', weight: 'Regular' }}
+                  className="text-sm text-shadow"
+                >
+                  <NetworkIcon chain={community.chain} />
+                  {community.chain}
+                </Typography>
+              )}
             </View>
             <View className="space-y-0.5">
               <Typography
@@ -203,4 +207,16 @@ export function CommunityView({ queryRef }: Props) {
       </View>
     </View>
   );
+}
+
+function NetworkIcon({ chain }: { chain: Chain }) {
+  if (chain === 'Ethereum') {
+    return <EthIcon />;
+  } else if (chain === 'POAP') {
+    return <PoapIcon />;
+  } else if (chain === 'Tezos') {
+    return <TezosIcon />;
+  }
+
+  return null;
 }
