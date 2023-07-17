@@ -177,14 +177,14 @@ export function CommunityView({ queryRef }: Props) {
             <View className="space-y-0.5">
               <Typography
                 font={{ family: 'ABCDiatype', weight: 'Regular' }}
-                className="text-xs uppercase"
+                className="text-xs uppercase text-right"
               >
                 items
               </Typography>
 
               <Typography
                 font={{ family: 'ABCDiatype', weight: 'Regular' }}
-                className="text-sm text-shadow"
+                className="text-sm text-shadow text-right"
               >
                 {formattedTotalTokens}
               </Typography>
