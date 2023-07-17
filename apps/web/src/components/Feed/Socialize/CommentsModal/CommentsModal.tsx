@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useFragment, usePaginationFragment } from 'react-relay';
 import {
   AutoSizer,
@@ -44,6 +44,7 @@ export function CommentsModal({ eventRef, queryRef, fullscreen }: CommentsModalP
               __typename
 
               ... on Comment {
+                dbid
                 comment
                 ...CommentNoteFragment
               }
@@ -66,6 +67,8 @@ export function CommentsModal({ eventRef, queryRef, fullscreen }: CommentsModalP
     queryRef
   );
 
+  const virtualizedListRef = useRef<List | null>(null);
+
   const nonNullInteractions = useMemo(() => {
     const interactions = [];
 
@@ -78,14 +81,14 @@ export function CommentsModal({ eventRef, queryRef, fullscreen }: CommentsModalP
     return interactions.reverse();
   }, [feedEvent.interactions?.edges]);
 
-  const [measurerCache] = useState(() => {
+  const measurerCache = useMemo(() => {
     return new CellMeasurerCache({
       fixedWidth: true,
       minHeight: 0,
+      defaultHeight: 40,
     });
-  });
+  }, []);
 
-  const virtualizedListRef = useRef<List | null>(null);
   const handleLoadMore = useCallback(async () => {
     loadPrevious(NOTES_PER_PAGE);
   }, [loadPrevious]);
@@ -129,25 +132,15 @@ export function CommentsModal({ eventRef, queryRef, fullscreen }: CommentsModalP
     // 420 is the max height of the modal
     // 121 is the height of the modal header + bottom padding + comment box
 
-    let height = 0;
+    // 24 is the padding between the comment box and the list
+    let height = 24;
 
-    nonNullInteractions.forEach((interaction) => {
-      if (interaction.__typename === 'Comment') {
-        // If the comment more than 70 characters, we need to add extra height
-        // to account for the extra line
-        const commentLength = interaction.comment?.length ?? 0;
-
-        if (commentLength > 70) {
-          height += 70;
-          return;
-        }
-
-        height += 50;
-      }
-    });
+    for (let i = 0; i < rowCount; i++) {
+      height += measurerCache.rowHeight({ index: i });
+    }
 
     return Math.min(height, 420 - 121);
-  }, [nonNullInteractions]);
+  }, [measurerCache, rowCount]);
 
   useEffect(
     function recalculateHeightsWhenEventsChange() {
@@ -174,13 +167,13 @@ export function CommentsModal({ eventRef, queryRef, fullscreen }: CommentsModalP
                 {({ onRowsRendered, registerChild }) => (
                   <div ref={(el) => registerChild(el)}>
                     <List
+                      ref={virtualizedListRef}
                       width={width}
                       height={estimatedContentHeight}
                       rowRenderer={rowRenderer}
                       rowCount={nonNullInteractions.length}
                       rowHeight={measurerCache.rowHeight}
                       onRowsRendered={onRowsRendered}
-                      ref={virtualizedListRef}
                       style={{
                         paddingTop: '16px',
                       }}
