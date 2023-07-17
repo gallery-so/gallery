@@ -26,6 +26,14 @@ export const chains = [
     isEnabled: true,
   },
   {
+    name: 'Arbitrum',
+    shortName: 'ARB',
+    icon: '/icons/arbitrum_logo.svg',
+    baseChain: 'Ethereum',
+    hasCreatorSupport: false,
+    isEnabled: true,
+  },
+  {
     name: 'Optimism',
     shortName: 'OP',
     icon: '/icons/op_logo.svg',
@@ -40,14 +48,6 @@ export const chains = [
     baseChain: 'Ethereum',
     hasCreatorSupport: false,
     isEnabled: true,
-  },
-  {
-    name: 'Arbitrum',
-    shortName: 'ARB',
-    icon: '/icons/arbitrum_logo.svg',
-    baseChain: 'Ethereum',
-    hasCreatorSupport: false,
-    isEnabled: false,
   },
   {
     name: 'Polygon',
