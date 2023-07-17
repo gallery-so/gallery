@@ -49,7 +49,6 @@ export const chains = [
     hasCreatorSupport: false,
     isEnabled: true,
   },
-
   {
     name: 'Polygon',
     shortName: 'POLY',
