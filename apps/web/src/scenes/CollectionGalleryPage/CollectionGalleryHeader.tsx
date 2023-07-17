@@ -192,7 +192,9 @@ function CollectionGalleryHeader({
               {/* On mobile, we show these options in the navbar, not in header */}
               <SettingsDropdown iconVariant="default">
                 <DropdownSection>
-                  <DropdownItem onClick={handleEditNameClick}>EDIT NAME & DESCRIPTION</DropdownItem>
+                  <DropdownItem onClick={handleEditNameClick}>
+                    <BaseM>Edit Name & Description</BaseM>
+                  </DropdownItem>
 
                   {!shouldDisplayMobileLayoutToggle && (
                     <DropdownLink
@@ -204,7 +206,7 @@ function CollectionGalleryHeader({
                         track('Update existing collection');
                       }}
                     >
-                      EDIT COLLECTION
+                      <BaseM>Edit Collection</BaseM>
                     </DropdownLink>
                   )}
                 </DropdownSection>
