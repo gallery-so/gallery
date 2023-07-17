@@ -311,7 +311,7 @@ export default function Gallery({
                     <SettingsDropdown iconVariant="stacked">
                       <DropdownSection>
                         <DropdownItem onClick={handleEditGalleryName}>
-                          EDIT NAME & DESC
+                          <BaseM>Edit Name & Description</BaseM>
                         </DropdownItem>
                         {hidden ? (
                           <DropdownItem onClick={handleUpdateGalleryHidden}>UNHIDE</DropdownItem>
@@ -319,13 +319,17 @@ export default function Gallery({
                           <>
                             {!isFeatured && (
                               <DropdownItem onClick={handleSetFeaturedGallery}>
-                                FEATURE ON PROFILE
+                                <BaseM>Feature on Profile</BaseM>
                               </DropdownItem>
                             )}
-                            <DropdownItem onClick={handleUpdateGalleryHidden}>HIDE</DropdownItem>
+                            <DropdownItem onClick={handleUpdateGalleryHidden}>
+                              <BaseM>Hide</BaseM>
+                            </DropdownItem>
                           </>
                         )}
-                        <DropdownItem onClick={handleDeleteGallery}>DELETE</DropdownItem>
+                        <DropdownItem onClick={handleDeleteGallery}>
+                          <BaseM>Delete</BaseM>
+                        </DropdownItem>
                       </DropdownSection>
                     </SettingsDropdown>
                   </HStack>

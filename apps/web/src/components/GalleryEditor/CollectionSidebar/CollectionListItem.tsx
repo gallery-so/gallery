@@ -4,6 +4,7 @@ import { graphql, useFragment } from 'react-relay';
 import styled, { css } from 'styled-components';
 
 import { DropdownItem } from '~/components/core/Dropdown/DropdownItem';
+import { BaseM } from '~/components/core/Text/Text';
 import { DropdownSection } from '~/components/core/Dropdown/DropdownSection';
 import SettingsDropdown from '~/components/core/Dropdown/SettingsDropdown';
 import IconContainer from '~/components/core/IconContainer';
@@ -141,9 +142,15 @@ export function CollectionListItem({ collectionId, queryRef }: CollectionListIte
           />
           <SettingsDropdown size="sm" iconVariant="stacked" disableHoverPadding>
             <DropdownSection>
-              <DropdownItem onClick={handleEdit}>EDIT NAME & DESC</DropdownItem>
-              <DropdownItem onClick={handleMoveCollectionModal}>MOVE TO...</DropdownItem>
-              <DropdownItem onClick={handleDelete}>DELETE</DropdownItem>
+              <DropdownItem onClick={handleEdit}>
+                <BaseM>Edit Name & Description</BaseM>
+              </DropdownItem>
+              <DropdownItem onClick={handleMoveCollectionModal}>
+                <BaseM>Move To...</BaseM>
+              </DropdownItem>
+              <DropdownItem onClick={handleDelete}>
+                <BaseM>Delete</BaseM>
+              </DropdownItem>
             </DropdownSection>
           </SettingsDropdown>
         </CollectionListItemActionsContainer>
