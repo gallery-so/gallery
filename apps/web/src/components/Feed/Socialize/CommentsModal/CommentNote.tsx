@@ -9,17 +9,14 @@ import { TimeAgoText } from '~/components/Feed/Socialize/CommentsModal/TimeAgoTe
 import { UsernameLink } from '~/components/Feed/Socialize/CommentsModal/UsernameLink';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { CommentNoteFragment$key } from '~/generated/CommentNoteFragment.graphql';
-import { CommentNoteQueryFragment$key } from '~/generated/CommentNoteQueryFragment.graphql';
 import colors from '~/shared/theme/colors';
 import { getTimeSince } from '~/shared/utils/time';
-import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 type CommentNoteProps = {
   commentRef: CommentNoteFragment$key;
-  queryRef: CommentNoteQueryFragment$key;
 };
 
-export function CommentNote({ commentRef, queryRef }: CommentNoteProps) {
+export function CommentNote({ commentRef }: CommentNoteProps) {
   const comment = useFragment(
     graphql`
       fragment CommentNoteFragment on Comment {
@@ -37,25 +34,12 @@ export function CommentNote({ commentRef, queryRef }: CommentNoteProps) {
     commentRef
   );
 
-  const query = useFragment(
-    graphql`
-      fragment CommentNoteQueryFragment on Query {
-        ...isFeatureEnabledFragment
-      }
-    `,
-    queryRef
-  );
-
-  const isPfpEnabled = isFeatureEnabled(FeatureFlag.PFP, query);
-
   const timeAgo = comment.creationTime ? getTimeSince(comment.creationTime) : null;
 
   return (
     <StyledListItem justify="space-between" gap={4}>
       <HStack gap={4} align="center">
-        {comment.commenter && isPfpEnabled && (
-          <ProfilePicture size="sm" userRef={comment.commenter} />
-        )}
+        {comment.commenter && <ProfilePicture size="sm" userRef={comment.commenter} />}
         <p>
           <StyledUsernameContainer>
             <UsernameLink username={comment.commenter?.username ?? null} />

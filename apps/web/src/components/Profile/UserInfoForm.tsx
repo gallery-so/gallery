@@ -77,8 +77,6 @@ Props) {
   // const [showPfpDropdown, setShowPfpDropdown] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // const isPfpEnabled = isFeatureEnabled(FeatureFlag.PFP, query);
-
   // const tokens = removeNullValues(user.tokens) ?? [];
   // const showNftSelector = useNftSelector({ tokensRef: tokens, queryRef: query });
   // const track = useTrack();
@@ -142,7 +140,7 @@ Props) {
       {mode === 'Add' && (
         <>
           <TitleS>Let's set up your profile</TitleS>
-          {/* {isPfpEnabled && (
+          {/* 
             <div onClick={handleEditPfp}>
               {hasProfileImage ? (
                 <ProfilePicture userRef={user} size="xl" isEditable hasInset />
@@ -150,12 +148,12 @@ Props) {
                 <RawProfilePicture letter={firstLetter} default hasInset isEditable size="xl" />
               )}
             </div>
-          )} */}
+           */}
         </>
       )}
 
       <HStack gap={16} align="center">
-        {/* {!mode && isPfpEnabled && (
+        {/* {!mode  && (
           <StyledProfilePictureContainer onClick={handleOpenPfpDropdown}>
             <ProfilePicture userRef={user} size="xl" isEditable hasInset />
             <ProfilePictureDropdown

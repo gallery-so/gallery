@@ -2,17 +2,16 @@ import { Route } from 'nextjs-routes';
 import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
+import { LowercaseChain } from '~/components/GalleryEditor/PiecesSidebar/chains';
 import { CommunitySearchResultFragment$key } from '~/generated/CommunitySearchResultFragment.graphql';
-import { CommunitySearchResultQueryFragment$key } from '~/generated/CommunitySearchResultQueryFragment.graphql';
 
 import SearchResult from '../SearchResult';
 
 type Props = {
   communityRef: CommunitySearchResultFragment$key;
-  queryRef: CommunitySearchResultQueryFragment$key;
 };
 
-export default function CommunitySearchResult({ communityRef, queryRef }: Props) {
+export default function CommunitySearchResult({ communityRef }: Props) {
   const community = useFragment(
     graphql`
       fragment CommunitySearchResultFragment on Community {
@@ -27,26 +26,16 @@ export default function CommunitySearchResult({ communityRef, queryRef }: Props)
     communityRef
   );
 
-  const query = useFragment(
-    graphql`
-      fragment CommunitySearchResultQueryFragment on Query {
-        ...SearchResultQueryFragment
-      }
-    `,
-    queryRef
-  );
-
   const route = useMemo<Route>(() => {
-    const { address, chain } = community.contractAddress;
+    const { address, chain: uppercaseChain } = community.contractAddress;
+
+    const chain = uppercaseChain?.toLocaleLowerCase() as LowercaseChain;
     const contractAddress = address as string;
 
-    if (chain === 'POAP') {
-      return { pathname: '/community/poap/[contractAddress]', query: { contractAddress } };
-    } else if (chain === 'Tezos') {
-      return { pathname: '/community/tez/[contractAddress]', query: { contractAddress } };
-    } else {
-      return { pathname: '/community/[contractAddress]', query: { contractAddress } };
-    }
+    return {
+      pathname: `/community/[chain]/[contractAddress]`,
+      query: { contractAddress, chain },
+    };
   }, [community]);
 
   return (
@@ -55,7 +44,6 @@ export default function CommunitySearchResult({ communityRef, queryRef }: Props)
       description={community.description ?? ''}
       path={route}
       type="community"
-      queryRef={query}
     />
   );
 }

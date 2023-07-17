@@ -15,7 +15,6 @@ import { HoverCardQuery } from '~/generated/HoverCardQuery.graphql';
 import UserSharedInfo from '~/scenes/UserGalleryPage/UserSharedInfo/UserSharedInfo';
 import { ErrorWithSentryMetadata } from '~/shared/errors/ErrorWithSentryMetadata';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
-import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 import handleCustomDisplayName from '~/utils/handleCustomDisplayName';
 
 import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
@@ -51,8 +50,6 @@ export const HoverCardQueryNode = graphql`
 
     ...FollowButtonQueryFragment
     ...useLoggedInUserIdFragment
-    ...isFeatureEnabledFragment
-    ...UserSharedInfoQueryFragment
   }
 `;
 
@@ -92,7 +89,6 @@ export function HoverCard({ preloadedQuery }: HoverCardProps) {
   }
 
   const displayName = handleCustomDisplayName(user.username);
-  const isPfpEnabled = isFeatureEnabled(FeatureFlag.PFP, query);
 
   return (
     <VStack gap={4}>
@@ -101,7 +97,7 @@ export function HoverCard({ preloadedQuery }: HoverCardProps) {
           <StyledUsernameAndBadge align="center" gap={4}>
             <StyledLink href={userProfileLink}>
               <HStack align="center" gap={4}>
-                {isPfpEnabled && <ProfilePicture userRef={user} size="md" />}
+                <ProfilePicture userRef={user} size="md" />
                 <StyledCardUsername>{displayName}</StyledCardUsername>
               </HStack>
             </StyledLink>
@@ -129,7 +125,7 @@ export function HoverCard({ preloadedQuery }: HoverCardProps) {
           </StyledCardDescription>
         )}
       </StyledCardHeaderContainer>
-      {isLoggedIn && !isOwnProfile && <UserSharedInfo userRef={user} queryRef={query} />}
+      {isLoggedIn && !isOwnProfile && <UserSharedInfo userRef={user} />}
     </VStack>
   );
 }

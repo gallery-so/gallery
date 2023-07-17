@@ -8,20 +8,17 @@ import { BaseS } from '~/components/core/Text/Text';
 import { ProfilePictureStack } from '~/components/ProfilePictureStack';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { UserSharedFollowersFragment$key } from '~/generated/UserSharedFollowersFragment.graphql';
-import { UserSharedFollowersQueryFragment$key } from '~/generated/UserSharedFollowersQueryFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
-import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 import PaginatedUsersList from './UserSharedInfoList/SharedFollowersList';
 
 type Props = {
   userRef: UserSharedFollowersFragment$key;
-  queryRef: UserSharedFollowersQueryFragment$key;
 };
 
-export default function UserSharedFollowers({ userRef, queryRef }: Props) {
+export default function UserSharedFollowers({ userRef }: Props) {
   const user = useFragment(
     graphql`
       fragment UserSharedFollowersFragment on GalleryUser {
@@ -48,19 +45,9 @@ export default function UserSharedFollowers({ userRef, queryRef }: Props) {
     userRef
   );
 
-  const query = useFragment(
-    graphql`
-      fragment UserSharedFollowersQueryFragment on Query {
-        ...isFeatureEnabledFragment
-      }
-    `,
-    queryRef
-  );
-
   const { showModal } = useModalActions();
   const track = useTrack();
   const isMobile = useIsMobileWindowWidth();
-  const isPfpEnabled = isFeatureEnabled(FeatureFlag.PFP, query);
 
   const handleShowAllFollowersClick = useCallback(() => {
     track('User Gallery - Show All Shared Followers Click');
@@ -127,13 +114,11 @@ export default function UserSharedFollowers({ userRef, queryRef }: Props) {
 
   return (
     <HStack align="center" gap={isMobile ? 4 : 8}>
-      {isPfpEnabled && (
-        <ProfilePictureStack
-          usersRef={sharedFollowers}
-          total={totalSharedFollowers}
-          onClick={handleShowAllFollowersClick}
-        />
-      )}
+      <ProfilePictureStack
+        usersRef={sharedFollowers}
+        total={totalSharedFollowers}
+        onClick={handleShowAllFollowersClick}
+      />
       <div>
         <StyledBaseS>Followed by&nbsp;</StyledBaseS>
         {content}

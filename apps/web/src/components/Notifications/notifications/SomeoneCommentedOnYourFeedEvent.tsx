@@ -14,13 +14,11 @@ import unescape from '~/shared/utils/unescape';
 type SomeoneCommentedOnYourFeedEventProps = {
   notificationRef: SomeoneCommentedOnYourFeedEventFragment$key;
   onClose: () => void;
-  isPfpVisible: boolean;
 };
 
 export function SomeoneCommentedOnYourFeedEvent({
   notificationRef,
   onClose,
-  isPfpVisible,
 }: SomeoneCommentedOnYourFeedEventProps) {
   const notification = useFragment(
     graphql`
@@ -95,11 +93,10 @@ export function SomeoneCommentedOnYourFeedEvent({
       <BaseM>
         {notification.comment?.commenter ? (
           <>
-            {isPfpVisible && (
-              <StyledProfilePictureContainer>
-                <ProfilePicture size="sm" userRef={notification.comment?.commenter} />
-              </StyledProfilePictureContainer>
-            )}
+            <StyledProfilePictureContainer>
+              <ProfilePicture size="sm" userRef={notification.comment?.commenter} />
+            </StyledProfilePictureContainer>
+
             <HoverCardOnUsername userRef={notification.comment?.commenter} onClick={onClose} />
           </>
         ) : (

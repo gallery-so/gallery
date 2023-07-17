@@ -45,7 +45,6 @@ export default function UserGalleryHeader({ userRef, queryRef }: Props) {
         }
         ...UserNameAndDescriptionHeaderQueryFragment
         ...UserTwitterSectionQueryFragment
-        ...UserSharedInfoQueryFragment
       }
     `,
     queryRef
@@ -58,9 +57,7 @@ export default function UserGalleryHeader({ userRef, queryRef }: Props) {
   return (
     <VStack gap={12}>
       <UserNameAndDescriptionHeader userRef={user} queryRef={query} />
-      {isLoggedIn && !isAuthenticatedUsersPage && (
-        <UserSharedInfo userRef={user} queryRef={query} />
-      )}
+      {isLoggedIn && !isAuthenticatedUsersPage && <UserSharedInfo userRef={user} />}
       <UserTwitterSection userRef={user} queryRef={query} />
       {isMobile && (
         <MobileNavLinks align="center" justify="center">

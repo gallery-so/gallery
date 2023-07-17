@@ -1,10 +1,16 @@
-import { useCallback, useState } from 'react';
+import Image from 'next/image';
+import { useCallback, useMemo, useState } from 'react';
+import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { BaseM } from '~/components/core/Text/Text';
+import { Chain, ChainMetadata, chains } from '~/components/GalleryEditor/PiecesSidebar/chains';
+import { SidebarView } from '~/components/GalleryEditor/PiecesSidebar/SidebarViewSelector';
+import { NftSelectorFilterNetworkFragment$key } from '~/generated/NftSelectorFilterNetworkFragment.graphql';
 import DoubleArrowsIcon from '~/icons/DoubleArrowsIcon';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
+import isAdminRole from '~/utils/graphql/isAdminRole';
 
 import { Dropdown } from '../../core/Dropdown/Dropdown';
 import { DropdownItem } from '../../core/Dropdown/DropdownItem';
@@ -12,64 +18,64 @@ import { DropdownSection } from '../../core/Dropdown/DropdownSection';
 import IconContainer from '../../core/IconContainer';
 import { HStack } from '../../core/Spacer/Stack';
 
-export type NftSelectorNetworkView = 'Ethereum' | 'Tezos' | 'POAP';
+type NetworkDropdownProps = {
+  chain: ChainMetadata;
+};
+
+const NetworkDropdownByNetwork = ({ chain }: NetworkDropdownProps) => {
+  return (
+    <HStack align="center" gap={6}>
+      <Image src={chain.icon} width={16} height={16} alt={chain.name} />
+      <BaseM>{chain.name}</BaseM>
+    </HStack>
+  );
+};
 
 type NftSelectorViewSelectorProps = {
-  selectedView: NftSelectorNetworkView;
-  onSelectedViewChange: (selectedView: NftSelectorNetworkView) => void;
+  selectedMode: SidebarView;
+  selectedNetwork: Chain;
+  onSelectedViewChange: (selectedView: Chain) => void;
+  queryRef: NftSelectorFilterNetworkFragment$key;
 };
-
-const StyledLogo = styled.img`
-  height: 16px;
-  width: 16px;
-`;
-
-type NetworkDropdownProps = {
-  option: NftSelectorNetworkView;
-};
-
-const NetworkDropdownByNetwork = ({ option }: NetworkDropdownProps) => {
-  switch (option) {
-    case 'Ethereum':
-      return (
-        <HStack gap={4} align="center">
-          <StyledLogo src="/icons/ethereum_logo.svg" alt="Ethereum logo" />
-          <BaseM>Ethereum</BaseM>
-        </HStack>
-      );
-    case 'Tezos':
-      return (
-        <HStack gap={4} align="center">
-          <StyledLogo src="/icons/tezos_logo.svg" alt="Tezos logo" />
-          <BaseM>Tezos</BaseM>
-        </HStack>
-      );
-    case 'POAP':
-      return (
-        <HStack gap={4} align="center">
-          <StyledLogo src="/icons/poap_logo.svg" alt="POAP logo" />
-          <BaseM>POAP</BaseM>
-        </HStack>
-      );
-    default:
-      return <div />;
-  }
-};
-
-const options: NftSelectorNetworkView[] = ['Ethereum', 'Tezos', 'POAP'];
 
 export function NftSelectorFilterNetwork({
-  selectedView,
+  selectedMode,
+  selectedNetwork,
   onSelectedViewChange,
+  queryRef,
 }: NftSelectorViewSelectorProps) {
+  const query = useFragment(
+    graphql`
+      fragment NftSelectorFilterNetworkFragment on Query {
+        ...isAdminRoleFragment
+      }
+    `,
+    queryRef
+  );
+
+  const isAdmin = isAdminRole(query);
+
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const track = useTrack();
+  const availableChains = useMemo(() => {
+    if (selectedMode === 'Created') {
+      return chains.filter((chain) => chain.hasCreatorSupport);
+    }
+    if (isAdmin) {
+      return chains;
+    }
+    return chains.filter((chain) => chain.isEnabled);
+  }, [isAdmin, selectedMode]);
 
-  const onSelectView = useCallback(
-    (selectedView: NftSelectorNetworkView) => {
-      track('NFT Selector: Changed Network', { variant: selectedView });
-      onSelectedViewChange(selectedView);
+  const selectedChain = useMemo(() => {
+    return availableChains.find((chain) => chain.name === selectedNetwork);
+  }, [availableChains, selectedNetwork]);
+
+  const onSelectChain = useCallback(
+    (chain: ChainMetadata) => {
+      track('NFT Selector: Changed Network', { variant: chain.name });
+      onSelectedViewChange(chain.name);
       setIsDropdownOpen(false);
     },
     [track, onSelectedViewChange]
@@ -78,14 +84,14 @@ export function NftSelectorFilterNetwork({
   return (
     <Container>
       <Selector gap={10} align="center" onClick={() => setIsDropdownOpen(true)}>
-        <NetworkDropdownByNetwork option={selectedView} />
+        {selectedChain && <NetworkDropdownByNetwork chain={selectedChain} />}
         <IconContainer variant="stacked" size="sm" icon={<DoubleArrowsIcon />} />
       </Selector>
       <Dropdown position="right" active={isDropdownOpen} onClose={() => setIsDropdownOpen(false)}>
         <DropdownSection>
-          {options.map((option) => (
-            <DropdownItem key={option} onClick={() => onSelectView(option)}>
-              <NetworkDropdownByNetwork option={option} />
+          {availableChains.map((chain) => (
+            <DropdownItem key={chain.name} onClick={() => onSelectChain(chain)}>
+              <NetworkDropdownByNetwork chain={chain} />
             </DropdownItem>
           ))}
         </DropdownSection>

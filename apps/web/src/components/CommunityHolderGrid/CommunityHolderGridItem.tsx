@@ -8,7 +8,6 @@ import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { CommunityHolderGridItemFragment$key } from '~/generated/CommunityHolderGridItemFragment.graphql';
-import { CommunityHolderGridItemQueryFragment$key } from '~/generated/CommunityHolderGridItemQueryFragment.graphql';
 import TokenDetailView from '~/scenes/TokenDetailPage/TokenDetailView';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
@@ -21,10 +20,9 @@ import HoverCardOnUsername from '../HoverCard/HoverCardOnUsername';
 
 type Props = {
   holderRef: CommunityHolderGridItemFragment$key;
-  queryRef: CommunityHolderGridItemQueryFragment$key;
 };
 
-export default function CommunityHolderGridItem({ holderRef, queryRef }: Props) {
+export default function CommunityHolderGridItem({ holderRef }: Props) {
   const token = useFragment(
     graphql`
       fragment CommunityHolderGridItemFragment on Token {
@@ -47,15 +45,6 @@ export default function CommunityHolderGridItem({ holderRef, queryRef }: Props) 
       }
     `,
     holderRef
-  );
-
-  const query = useFragment(
-    graphql`
-      fragment CommunityHolderGridItemQueryFragment on Query {
-        ...TokenDetailViewQueryFragment
-      }
-    `,
-    queryRef
   );
 
   const [isFailedToLoad, setIsFailedToLoad] = useState(false);
@@ -98,12 +87,12 @@ export default function CommunityHolderGridItem({ holderRef, queryRef }: Props) 
     showModal({
       content: (
         <StyledNftDetailViewPopover justify="center" align="center">
-          <TokenDetailView authenticatedUserOwnsAsset={false} tokenRef={token} queryRef={query} />
+          <TokenDetailView authenticatedUserOwnsAsset={false} tokenRef={token} />
         </StyledNftDetailViewPopover>
       ),
       isFullPage: true,
     });
-  }, [openSeaExternalUrl, owner?.universal, query, showModal, token]);
+  }, [openSeaExternalUrl, owner?.universal, showModal, token]);
 
   const previewAsset = useMemo(() => {
     if (isFailedToLoad || !previewUrlSet?.urls.large) {

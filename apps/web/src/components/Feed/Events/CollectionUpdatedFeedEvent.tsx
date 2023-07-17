@@ -13,13 +13,11 @@ import { BaseM, BaseS } from '~/components/core/Text/Text';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { CollectionUpdatedFeedEventFragment$key } from '~/generated/CollectionUpdatedFeedEventFragment.graphql';
-import { CollectionUpdatedFeedEventQueryFragment$key } from '~/generated/CollectionUpdatedFeedEventQueryFragment.graphql';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
 import { getTimeSince } from '~/shared/utils/time';
 import unescape from '~/shared/utils/unescape';
-import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 import { pluralize } from '~/utils/string';
 
 import { MAX_PIECES_DISPLAYED_PER_FEED_EVENT } from '../constants';
@@ -28,15 +26,10 @@ import { StyledEvent, StyledEventHeader, StyledEventText, StyledTime } from './E
 
 type Props = {
   eventDataRef: CollectionUpdatedFeedEventFragment$key;
-  queryRef: CollectionUpdatedFeedEventQueryFragment$key;
   isSubEvent?: boolean;
 };
 
-export default function CollectionUpdatedFeedEvent({
-  eventDataRef,
-  queryRef,
-  isSubEvent = false,
-}: Props) {
+export default function CollectionUpdatedFeedEvent({ eventDataRef, isSubEvent = false }: Props) {
   const event = useFragment(
     graphql`
       fragment CollectionUpdatedFeedEventFragment on CollectionUpdatedFeedEventData {
@@ -58,18 +51,6 @@ export default function CollectionUpdatedFeedEvent({
     `,
     eventDataRef
   );
-
-  const query = useFragment(
-    graphql`
-      fragment CollectionUpdatedFeedEventQueryFragment on Query {
-        ...FeedEventTokenPreviewsQueryFragment
-        ...isFeatureEnabledFragment
-      }
-    `,
-    queryRef
-  );
-
-  const isPfpEnabled = isFeatureEnabled(FeatureFlag.PFP, query);
 
   const tokensToPreview = useMemo(() => {
     return removeNullValues(event.newTokens).slice(0, MAX_PIECES_DISPLAYED_PER_FEED_EVENT);
@@ -102,7 +83,7 @@ export default function CollectionUpdatedFeedEvent({
               <StyledEventText isSubEvent={isSubEvent}>
                 {!isSubEvent && (
                   <HStack align="center" gap={4}>
-                    {isPfpEnabled && <ProfilePicture userRef={event.owner} size="sm" />}
+                    <ProfilePicture userRef={event.owner} size="sm" />
                     <HoverCardOnUsername userRef={event.owner} />
                   </HStack>
                 )}{' '}
@@ -116,11 +97,7 @@ export default function CollectionUpdatedFeedEvent({
             <Markdown text={unescape(event.newCollectorsNote ?? '')} inheritLinkStyling />
           </StyledQuote>
           <VStack gap={8}>
-            <FeedEventTokenPreviews
-              isInCaption={false}
-              tokenToPreviewRefs={tokensToPreview}
-              queryRef={query}
-            />
+            <FeedEventTokenPreviews isInCaption={false} tokenToPreviewRefs={tokensToPreview} />
             {showAdditionalPiecesIndicator && (
               <StyledAdditionalPieces>
                 +{numAdditionalPieces} more {pluralize(numAdditionalPieces, 'piece')}
