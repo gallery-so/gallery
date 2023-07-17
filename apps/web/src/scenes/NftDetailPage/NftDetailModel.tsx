@@ -53,6 +53,7 @@ function NftDetailModel({ mediaRef, onLoad, fullHeight }: Props) {
         class="model-viewer"
         auto-rotate
         camera-controls
+        interaction-prompt={false}
         src={contentRenderURL}
         style={{
           width: '100%',
@@ -83,6 +84,7 @@ export function RawNftDetailModel({
         class="model-viewer"
         auto-rotate
         camera-controls
+        interaction-prompt={false}
         src={url}
         style={{
           width: '100%',
