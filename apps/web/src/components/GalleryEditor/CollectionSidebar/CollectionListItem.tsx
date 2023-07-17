@@ -4,11 +4,11 @@ import { graphql, useFragment } from 'react-relay';
 import styled, { css } from 'styled-components';
 
 import { DropdownItem } from '~/components/core/Dropdown/DropdownItem';
-import { BaseM } from '~/components/core/Text/Text';
 import { DropdownSection } from '~/components/core/Dropdown/DropdownSection';
 import SettingsDropdown from '~/components/core/Dropdown/SettingsDropdown';
 import IconContainer from '~/components/core/IconContainer';
 import { HStack } from '~/components/core/Spacer/Stack';
+import { BaseM } from '~/components/core/Text/Text';
 import { TitleXS } from '~/components/core/Text/Text';
 import { useGalleryEditorContext } from '~/components/GalleryEditor/GalleryEditorContext';
 import { NewTooltip } from '~/components/Tooltip/NewTooltip';
