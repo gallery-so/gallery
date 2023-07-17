@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
 import { CommunitySearchResultSectionFragment$key } from '~/generated/CommunitySearchResultSectionFragment.graphql';
-import { CommunitySearchResultSectionQueryFragment$key } from '~/generated/CommunitySearchResultSectionQueryFragment.graphql';
 
 import { NUM_PREVIEW_SEARCH_RESULTS } from '../constants';
 import { SearchFilterType } from '../Search';
@@ -13,7 +12,6 @@ type Props = {
   title: string;
   isShowAll?: boolean;
   resultRefs: CommunitySearchResultSectionFragment$key;
-  queryRef: CommunitySearchResultSectionQueryFragment$key;
   onChangeFilter: (filter: SearchFilterType) => void;
 };
 
@@ -22,7 +20,6 @@ export default function CommunitySearchResultSection({
   onChangeFilter,
   title,
   resultRefs,
-  queryRef,
 }: Props) {
   const results = useFragment(
     graphql`
@@ -34,15 +31,6 @@ export default function CommunitySearchResultSection({
       }
     `,
     resultRefs
-  );
-
-  const query = useFragment(
-    graphql`
-      fragment CommunitySearchResultSectionQueryFragment on Query {
-        ...CommunitySearchResultQueryFragment
-      }
-    `,
-    queryRef
   );
 
   const resultsToShow = useMemo(
@@ -58,11 +46,7 @@ export default function CommunitySearchResultSection({
       numResults={results.length}
     >
       {resultsToShow.map((result) => (
-        <CommunitySearchResult
-          key={result.community.dbid}
-          communityRef={result.community}
-          queryRef={query}
-        />
+        <CommunitySearchResult key={result.community.dbid} communityRef={result.community} />
       ))}
     </SearchSection>
   );

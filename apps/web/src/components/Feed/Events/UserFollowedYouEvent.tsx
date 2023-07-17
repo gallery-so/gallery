@@ -7,20 +7,17 @@ import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { UserFollowedYouEventEventFragment$key } from '~/generated/UserFollowedYouEventEventFragment.graphql';
 import { UserFollowedYouEventFragment$key } from '~/generated/UserFollowedYouEventFragment.graphql';
-import { UserFollowedYouEventQueryFragment$key } from '~/generated/UserFollowedYouEventQueryFragment.graphql';
 import colors from '~/shared/theme/colors';
 import { getTimeSince } from '~/shared/utils/time';
-import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 import { StyledEvent, StyledEventHeader, StyledTime } from './EventStyles';
 
 type Props = {
   eventRef: UserFollowedYouEventEventFragment$key;
   followInfoRef: UserFollowedYouEventFragment$key;
-  queryRef: UserFollowedYouEventQueryFragment$key;
 };
 
-export default function UserFollowedYouEvent({ followInfoRef, eventRef, queryRef }: Props) {
+export default function UserFollowedYouEvent({ followInfoRef, eventRef }: Props) {
   const event = useFragment(
     graphql`
       fragment UserFollowedYouEventEventFragment on UserFollowedUsersFeedEventData {
@@ -43,17 +40,6 @@ export default function UserFollowedYouEvent({ followInfoRef, eventRef, queryRef
     followInfoRef
   );
 
-  const query = useFragment(
-    graphql`
-      fragment UserFollowedYouEventQueryFragment on Query {
-        ...isFeatureEnabledFragment
-      }
-    `,
-    queryRef
-  );
-
-  const isPfpEnabled = isFeatureEnabled(FeatureFlag.PFP, query);
-
   return (
     <>
       <StyledEvent>
@@ -61,7 +47,7 @@ export default function UserFollowedYouEvent({ followInfoRef, eventRef, queryRef
           <StyledEventHeader>
             <HStack gap={4} inline>
               <HStack gap={4} align="center">
-                {isPfpEnabled && <ProfilePicture userRef={event.owner} size="sm" />}
+                <ProfilePicture userRef={event.owner} size="sm" />
                 <HoverCardOnUsername userRef={event.owner} />{' '}
                 <BaseM>
                   followed you

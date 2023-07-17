@@ -3,17 +3,15 @@ import styled from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';
 import { UserSharedInfoFragment$key } from '~/generated/UserSharedInfoFragment.graphql';
-import { UserSharedInfoQueryFragment$key } from '~/generated/UserSharedInfoQueryFragment.graphql';
 
 import UserSharedCommunities from './UserSharedCommunities';
 import UserSharedFollowers from './UserSharedFollowers';
 
 type Props = {
   userRef: UserSharedInfoFragment$key;
-  queryRef: UserSharedInfoQueryFragment$key;
 };
 
-export default function UserSharedInfo({ userRef, queryRef }: Props) {
+export default function UserSharedInfo({ userRef }: Props) {
   const user = useFragment(
     graphql`
       fragment UserSharedInfoFragment on GalleryUser {
@@ -25,19 +23,10 @@ export default function UserSharedInfo({ userRef, queryRef }: Props) {
     userRef
   );
 
-  const query = useFragment(
-    graphql`
-      fragment UserSharedInfoQueryFragment on Query {
-        ...UserSharedFollowersQueryFragment
-      }
-    `,
-    queryRef
-  );
-
   return (
     <StyledUserSharedInfo gap={4}>
       <UserSharedCommunities userRef={user} />
-      <UserSharedFollowers userRef={user} queryRef={query} />
+      <UserSharedFollowers userRef={user} />
     </StyledUserSharedInfo>
   );
 }

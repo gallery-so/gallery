@@ -4,6 +4,7 @@ import { AutoSizer, Index, InfiniteLoader, List, ListRowRenderer } from 'react-v
 import styled from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';
+import { LowercaseChain } from '~/components/GalleryEditor/PiecesSidebar/chains';
 import { SharedCommunitiesListFragment$key } from '~/generated/SharedCommunitiesListFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import unescape from '~/shared/utils/unescape';
@@ -88,7 +89,10 @@ export default function SharedCommunitiesList({ userRef }: Props) {
 
       const communityUrlPath =
         community.contractAddress?.address && community.chain
-          ? getUrlForCommunity(community.contractAddress?.address, community.chain)
+          ? getUrlForCommunity(
+              community.contractAddress?.address,
+              community.chain?.toLowerCase() as LowercaseChain
+            )
           : null;
 
       if (!community.name && !descriptionFirstLine) {

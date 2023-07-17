@@ -23,7 +23,6 @@ import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import colors from '~/shared/theme/colors';
 import unescape from '~/shared/utils/unescape';
-import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 import handleCustomDisplayName from '~/utils/handleCustomDisplayName';
 
 import EditUserInfoModal from './EditUserInfoModal';
@@ -56,12 +55,10 @@ export function UserNameAndDescriptionHeader({ userRef, queryRef }: Props) {
       fragment UserNameAndDescriptionHeaderQueryFragment on Query {
         ...EditUserInfoModalFragment
         ...useLoggedInUserIdFragment
-        ...isFeatureEnabledFragment
       }
     `,
     queryRef
   );
-  const isPfpEnabled = isFeatureEnabled(FeatureFlag.PFP, query);
 
   const { username, bio, badges } = user;
 
@@ -115,7 +112,7 @@ export function UserNameAndDescriptionHeader({ userRef, queryRef }: Props) {
       <Container gap={4}>
         <HStack align="center" gap={4}>
           <HStack gap={8} align="center">
-            {isPfpEnabled && <ProfilePicture userRef={user} size="md" />}
+            <ProfilePicture userRef={user} size="md" />
             <StyledUsername>{displayName}</StyledUsername>
           </HStack>
 

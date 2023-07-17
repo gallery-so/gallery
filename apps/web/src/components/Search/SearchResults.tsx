@@ -54,9 +54,6 @@ export default function SearchResults({ activeFilter, onChangeFilter }: Props) {
             }
           }
         }
-        ...UserSearchResultSectionQueryFragment
-        ...GallerySearchResultSectionQueryFragment
-        ...CommunitySearchResultSectionQueryFragment
       }
     `,
     { query: deferredKeyword }
@@ -98,7 +95,6 @@ export default function SearchResults({ activeFilter, onChangeFilter }: Props) {
           <UserSearchResultSection
             title="curators"
             resultRefs={query?.searchUsers?.results}
-            queryRef={query}
             onChangeFilter={onChangeFilter}
             isShowAll
           />
@@ -114,7 +110,6 @@ export default function SearchResults({ activeFilter, onChangeFilter }: Props) {
           <GallerySearchResultSection
             title="galleries"
             resultRefs={query?.searchGalleries?.results}
-            queryRef={query}
             onChangeFilter={onChangeFilter}
             isShowAll
           />
@@ -130,7 +125,6 @@ export default function SearchResults({ activeFilter, onChangeFilter }: Props) {
           <CommunitySearchResultSection
             title="communities"
             resultRefs={query?.searchCommunities?.results}
-            queryRef={query}
             onChangeFilter={onChangeFilter}
             isShowAll
           />
@@ -146,7 +140,6 @@ export default function SearchResults({ activeFilter, onChangeFilter }: Props) {
         <UserSearchResultSection
           title="curators"
           resultRefs={query?.searchUsers?.results}
-          queryRef={query}
           onChangeFilter={onChangeFilter}
         />
       )}
@@ -154,7 +147,6 @@ export default function SearchResults({ activeFilter, onChangeFilter }: Props) {
         <GallerySearchResultSection
           title="galleries"
           resultRefs={query?.searchGalleries?.results}
-          queryRef={query}
           onChangeFilter={onChangeFilter}
         />
       )}
@@ -162,7 +154,6 @@ export default function SearchResults({ activeFilter, onChangeFilter }: Props) {
         <CommunitySearchResultSection
           title="communities"
           resultRefs={query?.searchCommunities?.results}
-          queryRef={query}
           onChangeFilter={onChangeFilter}
         />
       )}

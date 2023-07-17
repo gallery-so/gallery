@@ -20,7 +20,6 @@ import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
 import { getTimeSince } from '~/shared/utils/time';
-import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 import { StyledEvent, StyledEventHeader, StyledEventText, StyledTime } from './EventStyles';
 import UserFollowedYouEvent from './UserFollowedYouEvent';
@@ -76,17 +75,12 @@ export default function UserFollowedUsersFeedEvent({
             }
           }
         }
-        ...isFeatureEnabledFragment
-        ...FollowListUsersQueryFragment
-        ...UserFollowedYouEventQueryFragment
       }
     `,
     queryRef
   );
 
   const { push } = useRouter();
-
-  const isPfpEnabled = isFeatureEnabled(FeatureFlag.PFP, query);
 
   const viewerUserId = query?.viewer?.user?.dbid;
 
@@ -137,7 +131,7 @@ export default function UserFollowedUsersFeedEvent({
       showModal({
         content: (
           <StyledFollowList fullscreen={isMobile}>
-            <FollowListUsers userRefs={flattenedGenericFollows} queryRef={query} />
+            <FollowListUsers userRefs={flattenedGenericFollows} />
           </StyledFollowList>
         ),
         isFullPage: isMobile,
@@ -145,7 +139,7 @@ export default function UserFollowedUsersFeedEvent({
         headerVariant: 'thicc',
       });
     },
-    [flattenedGenericFollows, isMobile, query, showModal, track]
+    [flattenedGenericFollows, isMobile, showModal, track]
   );
 
   const followedNoRemainingUsers = genericFollows.length === 0;
@@ -155,7 +149,7 @@ export default function UserFollowedUsersFeedEvent({
   return (
     <>
       {viewerUserId && followedYouAction && (
-        <UserFollowedYouEvent eventRef={event} followInfoRef={followedYouAction} queryRef={query} />
+        <UserFollowedYouEvent eventRef={event} followInfoRef={followedYouAction} />
       )}
       {followedNoRemainingUsers ? null : followedSingleUser ? (
         <CustomStyledEvent onClick={handleSeeFollowedUserClick} isSubEvent={isSubEvent}>
@@ -164,16 +158,14 @@ export default function UserFollowedUsersFeedEvent({
               <StyledEventText isSubEvent={isSubEvent}>
                 {!isSubEvent && (
                   <HStack gap={4} align="center" inline>
-                    {isPfpEnabled && <ProfilePicture userRef={event.owner} size="sm" />}
+                    <ProfilePicture userRef={event.owner} size="sm" />
                     <HoverCardOnUsername userRef={event.owner} />
                   </HStack>
                 )}
                 <BaseM>followed</BaseM>
                 {firstFollowerUsernameRef && firstFollowerUsernameRef.user && (
                   <HStack gap={4} align="center" inline>
-                    {isPfpEnabled && (
-                      <ProfilePicture userRef={firstFollowerUsernameRef.user} size="sm" />
-                    )}
+                    <ProfilePicture userRef={firstFollowerUsernameRef.user} size="sm" />
                     <HoverCardOnUsername userRef={firstFollowerUsernameRef.user} />
                   </HStack>
                 )}

@@ -14,7 +14,6 @@ import { removeNullValues } from '~/shared/relay/removeNullValues';
 type SomeoneViewedYourGalleryProps = {
   notificationRef: SomeoneViewedYourGalleryFragment$key;
   onClose: () => void;
-  isPfpVisible: boolean;
 };
 
 const testId = 'SomeoneViewedYourGallery';
@@ -22,7 +21,6 @@ const testId = 'SomeoneViewedYourGallery';
 export function SomeoneViewedYourGallery({
   notificationRef,
   onClose,
-  isPfpVisible,
 }: SomeoneViewedYourGalleryProps) {
   const notification = useFragment(
     graphql`
@@ -65,7 +63,7 @@ export function SomeoneViewedYourGallery({
         <HStack data-testid={testId} align="center" gap={4}>
           {lastViewer ? (
             <HStack inline gap={4} align="center">
-              {isPfpVisible && <ProfilePicture size="sm" userRef={lastViewer} />}
+              <ProfilePicture size="sm" userRef={lastViewer} />
               <HoverCardOnUsername onClick={onClose} userRef={lastViewer} />
             </HStack>
           ) : (
@@ -79,11 +77,10 @@ export function SomeoneViewedYourGallery({
 
       return (
         <BaseM data-testid={testId}>
-          {isPfpVisible && (
-            <StyledProfilePictureStackContainer>
-              <ProfilePictureStack usersRef={totalViewerUsers} total={userViewerCount} />
-            </StyledProfilePictureStackContainer>
-          )}
+          <StyledProfilePictureStackContainer>
+            <ProfilePictureStack usersRef={totalViewerUsers} total={userViewerCount} />
+          </StyledProfilePictureStackContainer>
+
           {lastViewer ? <HoverCardOnUsername userRef={lastViewer} /> : 'Someone'}
           <span>
             {' '}

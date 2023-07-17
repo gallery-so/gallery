@@ -60,6 +60,7 @@ export const chains = [
 ] as const;
 
 export type Chain = (typeof chains)[number]['name'];
+export type LowercaseChain = Lowercase<Chain>;
 
 export type ChainMetadata = (typeof chains)[number];
 

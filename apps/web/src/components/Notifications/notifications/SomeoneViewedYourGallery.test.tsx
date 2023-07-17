@@ -26,9 +26,7 @@ function Fixture() {
   );
 
   if (query.node?.__typename === 'SomeoneViewedYourGalleryNotification') {
-    return (
-      <SomeoneViewedYourGallery notificationRef={query.node} onClose={noop} isPfpVisible={false} />
-    );
+    return <SomeoneViewedYourGallery notificationRef={query.node} onClose={noop} />;
   }
 
   throw new Error('Yikes');
