@@ -12,23 +12,20 @@ import { IconContainer } from '~/components/IconContainer';
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { Select } from '~/components/Select';
 import { Typography } from '~/components/Typography';
-import { ProfilePicturePickerScreenQuery } from '~/generated/ProfilePicturePickerScreenQuery.graphql';
+import { NftSelectorPickerScreenQuery } from '~/generated/NftSelectorPickerScreenQuery.graphql';
 import { SearchIcon } from '~/navigation/MainTabNavigator/SearchIcon';
 import { MainTabStackNavigatorParamList } from '~/navigation/types';
 
-import {
-  NetworkChoice,
-  ProfilePicturePickerFilterBottomSheet,
-} from './ProfilePicturePickerFilterBottomSheet';
-import { ProfilePicturePickerGrid } from './ProfilePicturePickerGrid';
+import { NetworkChoice, NftSelectorFilterBottomSheet } from './NftSelectorFilterBottomSheet';
+import { NftSelectorPickerGrid } from './NftSelectorPickerGrid';
 
-export function ProfilePicturePickerScreen() {
+export function NftSelectorPickerScreen() {
   const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'ProfilePicturePicker'>>();
 
-  const query = useLazyLoadQuery<ProfilePicturePickerScreenQuery>(
+  const query = useLazyLoadQuery<NftSelectorPickerScreenQuery>(
     graphql`
-      query ProfilePicturePickerScreenQuery {
-        ...ProfilePicturePickerGridFragment
+      query NftSelectorPickerScreenQuery {
+        ...NftSelectorPickerGridFragment
       }
     `,
     {}
@@ -84,7 +81,7 @@ export function ProfilePicturePickerScreen() {
             <Select
               className="w-32"
               title="Owner Filter"
-              eventElementId="ProfilePictureOwnerFilter"
+              eventElementId="NftSelectorOwnerFilter"
               onChange={setFilter}
               selectedId={filter}
               options={[
@@ -98,18 +95,18 @@ export function ProfilePicturePickerScreen() {
                 size="sm"
                 onPress={() => {}}
                 icon={<RefreshIcon />}
-                eventElementId="ProfilePictureSelectorRefreshButton"
-                eventName="ProfilePictureSelectorRefreshButton pressed"
+                eventElementId="NftSelectorSelectorRefreshButton"
+                eventName="NftSelectoreSelectorRefreshButton pressed"
               />
               <IconContainer
                 size="sm"
                 onPress={handleSettingsPress}
                 icon={<SlidersIcon />}
-                eventElementId="ProfilePictureSelectorSettingsButton"
-                eventName="ProfilePictureSelectorSettingsButton pressed"
+                eventElementId="NftSelectorSelectorSettingsButton"
+                eventName="NftSelectorSelectorSettingsButton pressed"
               />
 
-              <ProfilePicturePickerFilterBottomSheet
+              <NftSelectorFilterBottomSheet
                 network={networkFilter}
                 onNetworkChange={setNetworkFilter}
                 bottomSheetRef={filterBottomSheetRef}
@@ -119,7 +116,7 @@ export function ProfilePicturePickerScreen() {
 
           <View className="flex-grow flex-1 w-full">
             <Suspense fallback={null}>
-              <ProfilePicturePickerGrid
+              <NftSelectorPickerGrid
                 searchCriteria={{
                   searchQuery,
                   ownerFilter: filter,

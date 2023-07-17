@@ -4,14 +4,11 @@ import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import { HStack } from '~/components/core/Spacer/Stack';
-import { BaseS, BODY_FONT_FAMILY } from '~/components/core/Text/Text';
-import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
+import { BaseS } from '~/components/core/Text/Text';
 import { ProfilePictureStack } from '~/components/ProfilePictureStack';
 import { AdmireLineEventFragment$key } from '~/generated/AdmireLineEventFragment.graphql';
 import { AdmireLineQueryFragment$key } from '~/generated/AdmireLineQueryFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
-import colors from '~/shared/theme/colors';
-import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 import { useAdmireModal } from './AdmireModal/useAdmireModal';
 
@@ -37,7 +34,6 @@ export function AdmireLine({ eventRef, queryRef }: CommentLineProps) {
                 dbid
                 username
                 ...ProfilePictureStackFragment
-                ...HoverCardOnUsernameFragment
               }
             }
           }
@@ -59,13 +55,10 @@ export function AdmireLine({ eventRef, queryRef }: CommentLineProps) {
           }
         }
         ...useAdmireModalQueryFragment
-        ...isFeatureEnabledFragment
       }
     `,
     queryRef
   );
-
-  const isPfpEnabled = isFeatureEnabled(FeatureFlag.PFP, query);
 
   const openAdmireModal = useAdmireModal({ eventRef: event, queryRef: query });
 
@@ -101,87 +94,26 @@ export function AdmireLine({ eventRef, queryRef }: CommentLineProps) {
 
   const totalAdmires = event.admires?.pageInfo.total ?? 0;
 
-  if (isPfpEnabled) {
-    return (
-      <Container gap={2} align="center">
-        <ProfilePictureStack
-          onClick={openAdmireModal}
-          usersRef={nonNullAdmires}
-          total={totalAdmires}
-        />
-
-        <BaseS onClick={openAdmireModal}>
-          {totalAdmires > 1 ? (
-            <strong>{totalAdmires} collectors </strong>
-          ) : (
-            <strong>{admirerName} </strong>
-          )}
-          admired this
-        </BaseS>
-      </Container>
-    );
-  }
-
   return (
-    <HStack gap={4} align="flex-end">
-      {admire && (
-        <HoverCardOnUsername userRef={admire}>
-          <AdmirerName>{admirerName}</AdmirerName>
-        </HoverCardOnUsername>
-      )}
-      {totalAdmires === 1 ? (
-        <AdmirerText>admired this</AdmirerText>
-      ) : (
-        <>
-          <AdmirerText>and</AdmirerText>
-          <AdmirerLink onClick={openAdmireModal}>
-            {/*                                  |-- Checking for two here since we have  */}
-            {/*                                  |   to subtract one to get the remaining count */}
-            {totalAdmires - 1} {totalAdmires === 2 ? 'other' : 'others'}
-          </AdmirerLink>
-          <AdmirerText>admired this</AdmirerText>
-        </>
-      )}
-    </HStack>
+    <Container gap={2} align="center">
+      <ProfilePictureStack
+        onClick={openAdmireModal}
+        usersRef={nonNullAdmires}
+        total={totalAdmires}
+      />
+
+      <BaseS onClick={openAdmireModal}>
+        {totalAdmires > 1 ? (
+          <strong>{totalAdmires} collectors </strong>
+        ) : (
+          <strong>{admirerName} </strong>
+        )}
+        admired this
+      </BaseS>
+    </Container>
   );
 }
 
 const Container = styled(HStack)`
   cursor: pointer;
-`;
-
-const AdmirerName = styled.a`
-  font-family: ${BODY_FONT_FAMILY};
-  vertical-align: bottom;
-  font-size: 12px;
-  line-height: 1;
-  font-weight: 700;
-  text-decoration: none;
-  color: ${colors.black['800']};
-`;
-
-const AdmirerText = styled.div`
-  font-family: ${BODY_FONT_FAMILY};
-  font-size: 12px;
-  line-height: 1;
-  font-weight: 400;
-  flex-shrink: 1;
-  min-width: 0;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-`;
-
-const AdmirerLink = styled.span`
-  cursor: pointer;
-  font-family: ${BODY_FONT_FAMILY};
-  font-size: 12px;
-  line-height: 1;
-  font-weight: 400;
-  text-decoration: underline;
-  color: ${colors.shadow};
-
-  &:hover {
-    text-decoration: none;
-  }
 `;

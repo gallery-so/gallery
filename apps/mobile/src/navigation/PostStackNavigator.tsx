@@ -1,8 +1,8 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { PostStackNavigatorParamList } from '~/navigation/types';
+import { NftSelectorPickerScreen } from '~/screens/NftSelectorScreen/NftSelectorPickerScreen';
 import { PostScreen } from '~/screens/PostScreen/PostScreen';
-import { ProfilePicturePickerScreen } from '~/screens/ProfilePicturePickerScreen/ProfilePicturePickerScreen';
 
 const Stack = createNativeStackNavigator<PostStackNavigatorParamList>();
 
@@ -15,7 +15,7 @@ export function PostStackNavigator() {
     <Stack.Navigator screenOptions={{ header: Empty }} initialRouteName="NftSelector">
       <Stack.Screen
         name="NftSelector"
-        component={ProfilePicturePickerScreen}
+        component={NftSelectorPickerScreen}
         initialParams={{
           page: 'Post',
         }}

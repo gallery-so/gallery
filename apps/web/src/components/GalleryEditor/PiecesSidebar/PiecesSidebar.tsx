@@ -26,6 +26,7 @@ import isRefreshDisabledForUser from './isRefreshDisabledForUser';
 import SearchBar from './SearchBar';
 import SidebarChainDropdown from './SidebarChainDropdown';
 import { SidebarView, SidebarViewSelector } from './SidebarViewSelector';
+import SidebarWalletSelector, { SidebarWallet } from './SidebarWalletSelector';
 
 type Props = {
   tokensRef: PiecesSidebarFragment$key;
@@ -63,6 +64,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
         ...SidebarChainDropdownFragment
         ...doesUserOwnWalletFromChainFamilyFragment
         ...AddWalletSidebarQueryFragment
+        ...SidebarWalletSelectorFragment
       }
     `,
     queryRef
@@ -74,6 +76,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
 
   const [searchResults, setSearchResults] = useState<string[]>([]);
   const [selectedChain, setSelectedChain] = useState<ChainMetadata>(chainsMap['Ethereum']);
+  const [selectedWallet, setSelectedWallet] = useState<SidebarWallet>('All');
   const [selectedView, setSelectedView] = useState<SidebarView>('Collected');
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
 
@@ -149,6 +152,15 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
     }
   }, []);
 
+  const handleSelectedWalletChange = useCallback((wallet: SidebarWallet) => {
+    setSelectedWallet(wallet);
+  }, []);
+
+  const handleSelectedChain = useCallback((chain: ChainMetadata) => {
+    setSelectedChain(chain);
+    setSelectedWallet('All');
+  }, []);
+
   // [GAL-3406] – enable this once the button is ready to be hooked up end-to-end
   const handleRefresh = useCallback(async () => {
     if (refreshDisabled) {
@@ -177,6 +189,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
             tokenRefs={tokensToDisplay}
             selectedChain={selectedChain.name}
             selectedView={selectedView}
+            selectedWallet={selectedWallet}
           />
         );
       }
@@ -190,6 +203,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
           tokenRefs={tokensToDisplay}
           selectedChain={selectedChain.name}
           selectedView={selectedView}
+          selectedWallet={selectedWallet}
         />
       );
     }
@@ -207,6 +221,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
     query,
     selectedChain.name,
     selectedView,
+    selectedWallet,
     tokensToDisplay,
   ]);
 
@@ -240,8 +255,21 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
             <SidebarChainDropdown
               queryRef={query}
               selectedChain={selectedChain}
-              onSelectChain={setSelectedChain}
+              onSelectChain={handleSelectedChain}
               selectedView={selectedView}
+            />
+          )}
+        </Header>
+        <Header align="center" justify="space-between" gap={4}>
+          <TitleS color={isSearching ? colors.metal : colors.black['800']}>Wallet</TitleS>
+          {isSearching ? (
+            <StyledNull>---</StyledNull>
+          ) : (
+            <SidebarWalletSelector
+              queryRef={query}
+              selectedChain={selectedChain}
+              selectedWallet={selectedWallet}
+              onSelectedWalletChange={handleSelectedWalletChange}
             />
           )}
         </Header>

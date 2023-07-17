@@ -11,9 +11,9 @@ import { RootStackNavigatorParamList } from '~/navigation/types';
 import { DesignSystemButtonsScreen } from '~/screens/DesignSystemButtonsScreen';
 import { TwitterSuggestionListScreen } from '~/screens/HomeScreen/TwitterSuggestionListScreen';
 import { UserSuggestionListScreen } from '~/screens/HomeScreen/UserSuggestionListScreen';
+import { NftSelectorContractScreen } from '~/screens/NftSelectorScreen/NftSelectorContractScreen';
+import { NftSelectorPickerScreen } from '~/screens/NftSelectorScreen/NftSelectorPickerScreen';
 import { PostScreen } from '~/screens/PostScreen/PostScreen';
-import { ProfilePicturePickerContractScreen } from '~/screens/ProfilePicturePickerScreen/ProfilePicturePickerContractScreen';
-import { ProfilePicturePickerScreen } from '~/screens/ProfilePicturePickerScreen/ProfilePicturePickerScreen';
 import { ProfileQRCodeScreen } from '~/screens/ProfileQRCodeScreen';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 
@@ -61,11 +61,8 @@ export function RootStackNavigator({ navigationContainerRef }: Props) {
     >
       <Stack.Screen name="Login" component={LoginStackNavigator} />
 
-      <Stack.Screen name="Post" component={ProfilePicturePickerScreen} />
-      <Stack.Screen
-        name="ProfilePicturePickerContract"
-        component={ProfilePicturePickerContractScreen}
-      />
+      <Stack.Screen name="Post" component={NftSelectorPickerScreen} />
+      <Stack.Screen name="NftSelectorContractScreen" component={NftSelectorContractScreen} />
       <Stack.Screen name="PostComposer" component={PostScreen} />
 
       <Stack.Screen name="MainTabs">

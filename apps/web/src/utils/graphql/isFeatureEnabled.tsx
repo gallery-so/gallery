@@ -6,26 +6,26 @@ import { removeNullValues } from '~/shared/relay/removeNullValues';
 import isProduction from '~/utils/isProduction';
 
 export enum FeatureFlag {
-  PFP = 'PFP',
+  KOALA = 'KOALA',
 }
 
 const PROD_FLAGS: Record<FeatureFlag, boolean> = {
-  PFP: true,
+  KOALA: false,
 };
 
 const DEV_FLAGS: Record<FeatureFlag, boolean> = {
-  PFP: true,
+  KOALA: true,
 };
 
 export const ROLE_FLAGS: Record<Role, Record<FeatureFlag, boolean>> = {
   ADMIN: {
-    PFP: true,
+    KOALA: true,
   },
   BETA_TESTER: {
-    PFP: true,
+    KOALA: false,
   },
   EARLY_ACCESS: {
-    PFP: true,
+    KOALA: false,
   },
 };
 

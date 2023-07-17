@@ -58,6 +58,15 @@ export function ProfilePictureDropdown({ open, onClose, tokensRef, queryRef }: P
                   }
                 }
               }
+
+              profileImage {
+                ... on TokenProfileImage {
+                  __typename
+                }
+                ... on EnsProfileImage {
+                  __typename
+                }
+              }
             }
           }
         }
@@ -127,12 +136,14 @@ export function ProfilePictureDropdown({ open, onClose, tokensRef, queryRef }: P
             <BaseS>Choose from collection</BaseS>
           </StyledDropdownItemContainer>
         </StyledDropdownItem>
-        <StyledDropdownItem onClick={handleRemoveProfileImage}>
-          <StyledDropdownItemContainer gap={8}>
-            <TrashIconNew color="#E12E16" />
-            <StyledRemoveText>Remove current profile picture</StyledRemoveText>
-          </StyledDropdownItemContainer>
-        </StyledDropdownItem>
+        {user.profileImage && (
+          <StyledDropdownItem onClick={handleRemoveProfileImage}>
+            <StyledDropdownItemContainer gap={8}>
+              <TrashIconNew color="#E12E16" />
+              <StyledRemoveText>Remove current profile picture</StyledRemoveText>
+            </StyledDropdownItemContainer>
+          </StyledDropdownItem>
+        )}
       </DropdownSection>
     </Dropdown>
   );

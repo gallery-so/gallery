@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { BaseS } from '~/components/core/Text/Text';
+import { LowercaseChain } from '~/components/GalleryEditor/PiecesSidebar/chains';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { UserSharedCommunitiesFragment$key } from '~/generated/UserSharedCommunitiesFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
@@ -80,7 +81,10 @@ export default function UserSharedCommunities({ userRef }: Props) {
     // Display up to 3 communities
     const result = communitiesToDisplay.map((community) => {
       if (community.contractAddress?.address && community.chain) {
-        const url = getUrlForCommunity(community.contractAddress?.address, community.chain);
+        const url = getUrlForCommunity(
+          community.contractAddress?.address,
+          community.chain?.toLowerCase() as LowercaseChain
+        );
 
         if (url) {
           return (

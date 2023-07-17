@@ -12,13 +12,11 @@ import { BaseM, BaseS } from '~/components/core/Text/Text';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { TokensAddedToCollectionFeedEventFragment$key } from '~/generated/TokensAddedToCollectionFeedEventFragment.graphql';
-import { TokensAddedToCollectionFeedEventQueryFragment$key } from '~/generated/TokensAddedToCollectionFeedEventQueryFragment.graphql';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
 import { getTimeSince } from '~/shared/utils/time';
 import unescape from '~/shared/utils/unescape';
-import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 import { pluralize } from '~/utils/string';
 
 import { MAX_PIECES_DISPLAYED_PER_FEED_EVENT } from '../constants';
@@ -36,13 +34,11 @@ type Props = {
   caption: string | null;
   isSubEvent?: boolean;
   eventDataRef: TokensAddedToCollectionFeedEventFragment$key;
-  queryRef: TokensAddedToCollectionFeedEventQueryFragment$key;
 };
 
 export default function TokensAddedToCollectionFeedEvent({
   caption,
   eventDataRef,
-  queryRef,
   isSubEvent = false,
 }: Props) {
   const event = useFragment(
@@ -70,19 +66,7 @@ export default function TokensAddedToCollectionFeedEvent({
     eventDataRef
   );
 
-  const query = useFragment(
-    graphql`
-      fragment TokensAddedToCollectionFeedEventQueryFragment on Query {
-        ...FeedEventTokenPreviewsQueryFragment
-        ...isFeatureEnabledFragment
-      }
-    `,
-    queryRef
-  );
-
   const { isPreFeed } = event;
-
-  const isPfpEnabled = isFeatureEnabled(FeatureFlag.PFP, query);
 
   const tokens = useMemo(
     () => (isPreFeed ? event.collection.tokens : event.newTokens ?? []),
@@ -120,7 +104,7 @@ export default function TokensAddedToCollectionFeedEvent({
               <StyledEventText isSubEvent={isSubEvent}>
                 {!isSubEvent && (
                   <HStack align="center" gap={4} inline>
-                    {isPfpEnabled && <ProfilePicture userRef={event.owner} size="sm" />}
+                    <ProfilePicture userRef={event.owner} size="sm" />
                     <HoverCardOnUsername userRef={event.owner} />
                   </HStack>
                 )}
@@ -148,7 +132,6 @@ export default function TokensAddedToCollectionFeedEvent({
           <FeedEventTokenPreviews
             isInCaption={Boolean(caption)}
             tokenToPreviewRefs={tokensToPreview}
-            queryRef={query}
           />
           {showAdditionalPiecesIndicator && !isPreFeed && (
             <StyledAdditionalPieces>

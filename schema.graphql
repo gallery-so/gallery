@@ -1,5 +1,11 @@
 directive @defer(label: String, if: Boolean! = true) on FRAGMENT_SPREAD | INLINE_FRAGMENT
 
+"""Exposes a URL that specifies the behavior of this scalar."""
+directive @specifiedBy(
+  """The URL that specifies the behavior of this scalar."""
+  url: String!
+) on SCALAR
+
 enum Action {
   UserCreated
   UserFollowedUsers
@@ -46,6 +52,14 @@ type AdmireFeedEventPayload {
 }
 
 union AdmireFeedEventPayloadOrError = AdmireFeedEventPayload | ErrAuthenticationFailed | ErrFeedEventNotFound | ErrInvalidInput | ErrAdmireAlreadyExists
+
+type AdmirePostPayload {
+  viewer: Viewer
+  post: Post
+  admire: Admire
+}
+
+union AdmirePostPayloadOrError = AdmirePostPayload | ErrInvalidInput | ErrNotAuthorized
 
 type AudioMedia implements Media {
   previewURLs: PreviewURLSet
@@ -239,6 +253,15 @@ type CommentOnFeedEventPayload {
 
 union CommentOnFeedEventPayloadOrError = CommentOnFeedEventPayload | ErrAuthenticationFailed | ErrFeedEventNotFound | ErrInvalidInput
 
+type CommentOnPostPayload {
+  viewer: Viewer
+  post: Post
+  comment: Comment
+  replyToComment: Comment
+}
+
+union CommentOnPostPayloadOrError = CommentOnPostPayload | ErrInvalidInput | ErrNotAuthorized
+
 type CommunitiesConnection {
   edges: [CommunityEdge]
   pageInfo: PageInfo!
@@ -263,6 +286,7 @@ type Community implements Node {
   subCommunities(before: String, after: String, first: Int, last: Int): CommunitiesConnection
   tokensInCommunity(before: String, after: String, first: Int, last: Int, onlyGalleryUsers: Boolean): TokensConnection
   owners(before: String, after: String, first: Int, last: Int, onlyGalleryUsers: Boolean): TokenHoldersConnection
+  posts(before: String, after: String, first: Int, last: Int): PostsConnection
 }
 
 union CommunityByAddressOrError = Community | ErrCommunityNotFound | ErrInvalidInput
@@ -393,6 +417,12 @@ type DeleteGalleryPayload {
 
 union DeleteGalleryPayloadOrError = DeleteGalleryPayload | ErrInvalidInput | ErrNotAuthorized
 
+type DeletePostPayload {
+  deletedId: DeletedNode
+}
+
+union DeletePostPayloadOrError = DeletePostPayload | ErrInvalidInput | ErrNotAuthorized
+
 type DisconnectSocialAccountPayload {
   viewer: Viewer
 }
@@ -421,6 +451,7 @@ enum EmailVerificationStatus {
 type EnsProfileImage {
   wallet: Wallet
   profileImage: HTTPSProfileImage
+  token: Token
 }
 
 input EoaAuth {
@@ -494,6 +525,10 @@ type ErrNotAuthorized implements Error {
 }
 
 interface Error {
+  message: String!
+}
+
+type ErrPostNotFound implements Error {
   message: String!
 }
 
@@ -597,7 +632,8 @@ type FeedEventInteractionsEdge {
   cursor: String
 }
 
-union FeedEventOrError = FeedEvent | ErrFeedEventNotFound | ErrUnknownAction
+"""Can return posts as well"""
+union FeedEventOrError = FeedEvent | Post | ErrPostNotFound | ErrFeedEventNotFound | ErrUnknownAction
 
 type FollowAllSocialConnectionsPayload {
   viewer: Viewer
@@ -721,7 +757,7 @@ input GnosisSafeAuth {
   nonce: String!
 }
 
-interface GroupedNotification implements Notification & Node {
+interface GroupedNotification {
   id: ID!
   seen: Boolean
   creationTime: Time
@@ -910,9 +946,13 @@ type Mutation {
   followAllSocialConnections(accountType: SocialAccountType!): FollowAllSocialConnectionsPayloadOrError
   unfollowUser(userId: DBID!): UnfollowUserPayloadOrError
   admireFeedEvent(feedEventId: DBID!): AdmireFeedEventPayloadOrError
+  admirePost(postId: DBID!): AdmirePostPayloadOrError
   removeAdmire(admireId: DBID!): RemoveAdmirePayloadOrError
   commentOnFeedEvent(feedEventId: DBID!, replyToID: DBID, comment: String!): CommentOnFeedEventPayloadOrError
   removeComment(commentId: DBID!): RemoveCommentPayloadOrError
+  commentOnPost(postId: DBID!, replyToID: DBID, comment: String!): CommentOnPostPayloadOrError
+  postTokens(input: PostTokensInput!): PostTokensPayloadOrError
+  deletePost(postId: DBID!): DeletePostPayloadOrError
   viewGallery(galleryId: DBID!): ViewGalleryPayloadOrError
   updateGallery(input: UpdateGalleryInput!): UpdateGalleryPayloadOrError
   publishGallery(input: PublishGalleryInput!): PublishGalleryPayloadOrError
@@ -948,7 +988,7 @@ interface Node {
   id: ID!
 }
 
-interface Notification implements Node {
+interface Notification {
   id: ID!
   seen: Boolean
   creationTime: Time
@@ -1006,6 +1046,73 @@ type PdfMedia implements Media {
   dimensions: MediaDimensions
   fallbackMedia: FallbackMedia
 }
+
+type Post implements Node {
+  id: ID!
+  dbid: DBID!
+  tokens: [Token]
+  caption: String
+  admires(before: String, after: String, first: Int, last: Int): PostAdmiresConnection
+  comments(before: String, after: String, first: Int, last: Int): PostCommentsConnection
+  interactions(before: String, after: String, first: Int, last: Int): PostInteractionsConnection
+  viewerAdmire: Admire
+}
+
+type PostAdmireEdge {
+  node: Admire
+  cursor: String
+  post: Post
+}
+
+type PostAdmiresConnection {
+  edges: [PostAdmireEdge]
+  pageInfo: PageInfo!
+}
+
+type PostCommentEdge {
+  node: Comment
+  cursor: String
+  post: Post
+}
+
+type PostCommentsConnection {
+  edges: [PostCommentEdge]
+  pageInfo: PageInfo!
+}
+
+type PostEdge {
+  node: PostOrError
+  cursor: String
+}
+
+type PostInteractionsConnection {
+  edges: [PostInteractionsEdge]
+  pageInfo: PageInfo!
+}
+
+type PostInteractionsEdge {
+  node: Interaction
+  cursor: String
+  post: Post
+}
+
+union PostOrError = Post | ErrPostNotFound | ErrInvalidInput
+
+type PostsConnection {
+  edges: [PostEdge]
+  pageInfo: PageInfo!
+}
+
+input PostTokensInput {
+  tokenIds: [DBID!]
+  caption: String
+}
+
+type PostTokensPayload {
+  post: Post!
+}
+
+union PostTokensPayloadOrError = PostTokensPayload | ErrInvalidInput | ErrNotAuthorized
 
 input PreverifyEmailInput {
   email: Email!
@@ -1145,6 +1252,7 @@ type RemoveAdmirePayload {
   viewer: Viewer
   admireID: DBID
   feedEvent: FeedEvent
+  post: Post
 }
 
 union RemoveAdmirePayloadOrError = RemoveAdmirePayload | ErrAuthenticationFailed | ErrFeedEventNotFound | ErrInvalidInput | ErrAdmireNotFound
@@ -1152,6 +1260,7 @@ union RemoveAdmirePayloadOrError = RemoveAdmirePayload | ErrAuthenticationFailed
 type RemoveCommentPayload {
   viewer: Viewer
   feedEvent: FeedEvent
+  post: Post
 }
 
 union RemoveCommentPayloadOrError = RemoveCommentPayload | ErrAuthenticationFailed | ErrFeedEventNotFound | ErrInvalidInput | ErrCommentNotFound
@@ -1293,6 +1402,17 @@ type SomeoneAdmiredYourFeedEventNotification implements Notification & Node & Gr
   admirers(before: String, after: String, first: Int, last: Int): GroupNotificationUsersConnection
 }
 
+type SomeoneAdmiredYourPostNotification implements Notification & Node & GroupedNotification {
+  id: ID!
+  dbid: DBID!
+  seen: Boolean
+  creationTime: Time
+  updatedTime: Time
+  count: Int
+  post: Post
+  admirers(before: String, after: String, first: Int, last: Int): GroupNotificationUsersConnection
+}
+
 type SomeoneCommentedOnYourFeedEventNotification implements Notification & Node {
   id: ID!
   dbid: DBID!
@@ -1301,6 +1421,16 @@ type SomeoneCommentedOnYourFeedEventNotification implements Notification & Node 
   updatedTime: Time
   comment: Comment
   feedEvent: FeedEvent
+}
+
+type SomeoneCommentedOnYourPostNotification implements Notification & Node {
+  id: ID!
+  dbid: DBID!
+  seen: Boolean
+  creationTime: Time
+  updatedTime: Time
+  comment: Comment
+  post: Post
 }
 
 type SomeoneFollowedYouBackNotification implements Notification & Node & GroupedNotification {
@@ -1873,3 +2003,4 @@ enum WalletType {
   EOA
   GnosisSafe
 }
+

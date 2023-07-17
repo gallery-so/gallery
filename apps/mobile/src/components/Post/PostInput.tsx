@@ -1,15 +1,17 @@
 import clsx from 'clsx';
 import { useColorScheme } from 'nativewind';
-import { useState } from 'react';
 import { TextInput, View } from 'react-native';
 
 import colors from '~/shared/theme/colors';
 
 import { Typography } from '../Typography';
 
-export function PostInput() {
-  const [value, setValue] = useState('');
+type Props = {
+  value: string;
+  onChange: (newText: string) => void;
+};
 
+export function PostInput({ value, onChange }: Props) {
   const { colorScheme } = useColorScheme();
 
   const isTextTooLong = value.length >= 600;
@@ -17,7 +19,7 @@ export function PostInput() {
 
   const handleChangeText = (newText: string) => {
     if (newText.length <= 600) {
-      setValue(newText);
+      onChange(newText);
     }
   };
 
