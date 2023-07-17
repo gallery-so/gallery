@@ -1,7 +1,7 @@
 import merge from 'lodash.merge';
 import { useColorScheme } from 'nativewind';
 import { PropsWithChildren, useCallback, useMemo, useState } from 'react';
-import { StyleProp, Text } from 'react-native';
+import { StyleProp, Text, View } from 'react-native';
 import MarkdownDisplay, { MarkdownIt, RenderRules } from 'react-native-markdown-display';
 
 import colors from '~/shared/theme/colors';
@@ -78,6 +78,12 @@ export function Markdown({
         >
           {children}
         </Text>
+      );
+
+      rules.body = (node, children, parent, styles) => (
+        <View key={node.key} style={styles.body}>
+          <Text numberOfLines={3}>{children}</Text>
+        </View>
       );
     }
 
