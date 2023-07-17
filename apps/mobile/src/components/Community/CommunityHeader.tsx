@@ -27,10 +27,12 @@ export function CommunityHeader({ communityRef }: Props) {
     communityRef
   );
 
+  const hasCommunityDescription = !!community.description;
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
   const handlePress = useCallback(() => {
+    if (!hasCommunityDescription) return;
     bottomSheetRef.current?.present();
-  }, []);
+  }, [hasCommunityDescription]);
 
   const formattedDescription = community.description?.replace(/\n/g, ' ');
 
@@ -43,6 +45,7 @@ export function CommunityHeader({ communityRef }: Props) {
           onPress={handlePress}
           eventElementId={null}
           eventName={null}
+          disabled={!hasCommunityDescription}
         >
           <View>
             <Typography
