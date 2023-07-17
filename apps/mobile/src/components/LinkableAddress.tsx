@@ -1,3 +1,4 @@
+import { ViewProps } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
@@ -10,9 +11,10 @@ import { Typography } from './Typography';
 type LinkableAddressProps = {
   chainAddressRef: LinkableAddressFragment$key;
   type: InteractiveLinkProps['type'];
+  style?: ViewProps['style'];
 };
 
-export function LinkableAddress({ chainAddressRef, type }: LinkableAddressProps) {
+export function LinkableAddress({ chainAddressRef, type, style }: LinkableAddressProps) {
   const address = useFragment(
     graphql`
       fragment LinkableAddressFragment on ChainAddress {
@@ -30,7 +32,11 @@ export function LinkableAddress({ chainAddressRef, type }: LinkableAddressProps)
 
   if (!link) {
     return (
-      <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
+      <Typography
+        className="text-sm"
+        font={{ family: 'ABCDiatype', weight: 'Regular' }}
+        style={style}
+      >
         {truncatedAddress || address.address}
       </Typography>
     );
@@ -41,6 +47,7 @@ export function LinkableAddress({ chainAddressRef, type }: LinkableAddressProps)
         link={link}
         truncatedAddress={truncatedAddress}
         address={address.address}
+        style={style}
       />
     );
   } else {
@@ -53,6 +60,7 @@ type RawLinkableAddressProps = {
   address: string;
   truncatedAddress: string | null;
   type: InteractiveLinkProps['type'];
+  style?: ViewProps['style'];
 };
 
 export function RawLinkableAddress({
@@ -60,9 +68,10 @@ export function RawLinkableAddress({
   truncatedAddress,
   address,
   type,
+  style,
 }: RawLinkableAddressProps) {
   return (
-    <InteractiveLink href={link} type={type}>
+    <InteractiveLink href={link} type={type} showUnderline style={style}>
       {truncatedAddress || address}
     </InteractiveLink>
   );

@@ -7,6 +7,7 @@ import { EditPencilIcon } from 'src/icons/EditPencilIcon';
 
 import { GalleryTouchableOpacity, GalleryTouchableOpacityProps } from '../GalleryTouchableOpacity';
 import { Typography } from '../Typography';
+import { DefaultUserIcon } from './DefaultUserIcon';
 
 const sizeMapping: { [size in Size]: number } = {
   xs: 20,
@@ -39,6 +40,9 @@ export type RawProfilePictureProps = {
     }
   | {
       imageUrl: string | undefined;
+    }
+  | {
+      default: boolean;
     }
 ) &
   Pick<GalleryTouchableOpacityProps, 'eventElementId' | 'eventName' | 'onPress'>;
@@ -85,6 +89,7 @@ export function RawProfilePicture({
         className={clsx('flex justify-center items-center w-full h-full rounded-full bg-offWhite', {
           'border border-black-800': 'letter' in rest,
           'border border-faint': 'imageUrl' in rest,
+          'border border-shadow': 'default' in rest,
         })}
       >
         {'letter' in rest && (
@@ -111,6 +116,8 @@ export function RawProfilePicture({
             resizeMode={ResizeMode.COVER}
           />
         )}
+
+        {'default' in rest && (!('letter' in rest) || rest.letter === '') && <DefaultUserIcon />}
 
         {isActive && <View className="absolute inset-0 bg-black opacity-25 rounded-full" />}
       </View>

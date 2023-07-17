@@ -34,14 +34,17 @@ export function CommunityView({ queryRef }: Props) {
           ... on Community {
             __typename
             chain
+            contractAddress {
+              ...LinkableAddressFragment
+            }
             creator {
               __typename
               ... on GalleryUser {
                 username
+                universal
                 ...ProfilePictureFragment
               }
               ... on ChainAddress {
-                address
                 ...LinkableAddressFragment
               }
             }
@@ -67,9 +70,6 @@ export function CommunityView({ queryRef }: Props) {
     throw new Error(`Unable to fetch the community`);
   }
 
-  const creatorAddress =
-    community.creator?.__typename === 'ChainAddress' && community.creator.address;
-
   const navigation = useNavigation<MainTabStackNavigatorProp>();
 
   const handleUsernamePress = useCallback(() => {
@@ -89,30 +89,7 @@ export function CommunityView({ queryRef }: Props) {
   }, [totalTokens]);
 
   const showAddressOrGalleryUser = useMemo(() => {
-    if (creatorAddress) {
-      return (
-        <GalleryTouchableOpacity
-          className="flex flex-row items-center space-x-1"
-          onPress={handleUsernamePress}
-          eventElementId="NFT Detail Token Owner Username"
-          eventName="NFT Detail Token Owner Username"
-        >
-          <RawProfilePicture
-            size="xs"
-            letter="O"
-            eventElementId="ProfilePicture"
-            eventName="ProfilePicture pressed"
-          />
-
-          <View>
-            <LinkableAddress
-              chainAddressRef={community.creator}
-              type="Community Contract Address"
-            />
-          </View>
-        </GalleryTouchableOpacity>
-      );
-    } else if (community.creator?.__typename === 'GalleryUser') {
+    if (community.creator?.__typename === 'GalleryUser' && !community.creator?.universal) {
       return (
         <GalleryTouchableOpacity
           className="flex flex-row items-center space-x-1"
@@ -130,10 +107,25 @@ export function CommunityView({ queryRef }: Props) {
           </Typography>
         </GalleryTouchableOpacity>
       );
+    } else if (community.contractAddress) {
+      return (
+        <View className="flex flex-row space-x-1 items-center">
+          <RawProfilePicture
+            size="xs"
+            default
+            eventElementId="ProfilePicture"
+            eventName="ProfilePicture pressed"
+          />
+          <LinkableAddress
+            chainAddressRef={community.contractAddress}
+            type="Community Contract Address"
+          />
+        </View>
+      );
     } else {
       return null;
     }
-  }, [community.creator, creatorAddress, handleUsernamePress]);
+  }, [community.creator, community.contractAddress, handleUsernamePress]);
 
   return (
     <View className="flex-1">
@@ -146,7 +138,6 @@ export function CommunityView({ queryRef }: Props) {
       <View className="flex-grow">
         <View className="mb-4 px-4">
           <CommunityHeader communityRef={community} />
-
           <View className="mb-4 flex flex-row justify-between">
             <View className="space-y-0.5">
               <Typography
@@ -172,13 +163,15 @@ export function CommunityView({ queryRef }: Props) {
               </Typography>
 
               {community.chain && (
-                <Typography
-                  font={{ family: 'ABCDiatype', weight: 'Regular' }}
-                  className="text-sm text-shadow"
-                >
+                <View className="flex flex-row space-x-1 items-center">
                   <NetworkIcon chain={community.chain} />
-                  {community.chain}
-                </Typography>
+                  <Typography
+                    font={{ family: 'ABCDiatype', weight: 'Regular' }}
+                    className="text-sm text-shadow"
+                  >
+                    {community.chain}
+                  </Typography>
+                </View>
               )}
             </View>
             <View className="space-y-0.5">
@@ -213,7 +206,7 @@ function NetworkIcon({ chain }: { chain: Chain }) {
   if (chain === 'Ethereum') {
     return <EthIcon />;
   } else if (chain === 'POAP') {
-    return <PoapIcon />;
+    return <PoapIcon className="w-4 h-4" />;
   } else if (chain === 'Tezos') {
     return <TezosIcon />;
   }
