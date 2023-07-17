@@ -12,7 +12,7 @@ export type RootStackNavigatorParamList = {
   Post: {
     page: ScreenWithNftSelector;
   };
-  ProfilePicturePickerContract: { contractAddress: string; page: ScreenWithNftSelector };
+  NftSelectorContractScreen: { contractAddress: string; page: ScreenWithNftSelector };
   PostComposer: {
     tokenId: string;
   };
@@ -33,7 +33,7 @@ export type MainTabStackNavigatorParamList = {
   ProfilePicturePicker: {
     page: ScreenWithNftSelector;
   };
-  ProfilePicturePickerContract: { contractAddress: string; page: ScreenWithNftSelector };
+  NftSelectorContractScreen: { contractAddress: string; page: ScreenWithNftSelector };
   SettingsProfile: undefined;
 
   // The main five tabs

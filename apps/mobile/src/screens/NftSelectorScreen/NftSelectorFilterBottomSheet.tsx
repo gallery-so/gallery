@@ -7,7 +7,7 @@ import { WorldIcon } from 'src/icons/WorldIcon';
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { SelectBottomSheet } from '~/components/Select';
 
-type ProfilePicturePickerFilterBottomSheetProps = {
+type NftSelectorPickerFilterBottomSheetProps = {
   network: NetworkChoice;
   onNetworkChange(network: NetworkChoice): void;
   bottomSheetRef: ForwardedRef<GalleryBottomSheetModalType>;
@@ -15,16 +15,16 @@ type ProfilePicturePickerFilterBottomSheetProps = {
 
 export type NetworkChoice = 'all' | 'Ethereum' | 'Tezos' | 'POAP';
 
-export function ProfilePicturePickerFilterBottomSheet({
+export function NftSelectorFilterBottomSheet({
   network,
   onNetworkChange,
   bottomSheetRef,
-}: ProfilePicturePickerFilterBottomSheetProps) {
+}: NftSelectorPickerFilterBottomSheetProps) {
   return (
     <SelectBottomSheet
       title="Filters"
       bottomSheetRef={bottomSheetRef}
-      eventElementId="ProfilePicturePickerFilterBottomSheet Network Select"
+      eventElementId="NftSelectorFilterBottomSheet Network Select"
       onChange={onNetworkChange}
       selected={network}
       options={[
