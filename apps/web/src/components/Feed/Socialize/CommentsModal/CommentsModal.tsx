@@ -129,9 +129,6 @@ export function CommentsModal({ eventRef, queryRef, fullscreen }: CommentsModalP
   const rowCount = hasPrevious ? nonNullInteractions.length + 1 : nonNullInteractions.length;
 
   const estimatedContentHeight = useMemo(() => {
-    // 420 is the max height of the modal
-    // 121 is the height of the modal header + bottom padding + comment box
-
     // 24 is the padding between the comment box and the list
     let height = 24;
 
@@ -139,6 +136,8 @@ export function CommentsModal({ eventRef, queryRef, fullscreen }: CommentsModalP
       height += measurerCache.rowHeight({ index: i });
     }
 
+    // 420 is the max height of the modal
+    // 121 is the height of the modal header + bottom padding + comment box
     return Math.min(height, 420 - 121);
   }, [measurerCache, rowCount]);
 
