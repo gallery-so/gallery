@@ -5,6 +5,7 @@ import { TextInput, View } from 'react-native';
 import colors from '~/shared/theme/colors';
 
 import { Typography } from '../Typography';
+const MAX_LENGTH = 600;
 
 type Props = {
   value: string;
@@ -14,14 +15,8 @@ type Props = {
 export function PostInput({ value, onChange }: Props) {
   const { colorScheme } = useColorScheme();
 
-  const isTextTooLong = value.length >= 600;
+  const isTextTooLong = value.length >= MAX_LENGTH;
   const characterCount = value.length;
-
-  const handleChangeText = (newText: string) => {
-    if (newText.length <= 600) {
-      onChange(newText);
-    }
-  };
 
   return (
     <View
@@ -32,11 +27,12 @@ export function PostInput({ value, onChange }: Props) {
     >
       <TextInput
         value={value}
-        onChangeText={handleChangeText}
+        onChangeText={onChange}
         className="px-3 pt-3 text-sm"
         selectionColor={colorScheme === 'dark' ? colors.white : colors.black['800']}
         placeholderTextColor={colorScheme === 'dark' ? colors.metal : colors.shadow}
         multiline
+        maxLength={MAX_LENGTH}
         autoCapitalize="none"
         autoComplete="off"
         placeholder="Add a description"
