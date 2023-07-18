@@ -10,8 +10,13 @@
         "paths": [
           {
             "name": "react-native",
-            "importNames": ["TouchableOpacity", "RefreshControl", "useColorScheme"],
-            "message": "Please use the GalleryTouchableOpacity component instead of TouchableOpacity from 'react-native'.\nPlease use our modified GalleryRefreshControl.\nPlease use useColorScheme from 'nativewind' instead."
+            "importNames": [
+              "TouchableOpacity",
+              "TouchableWithoutFeedback",
+              "RefreshControl",
+              "useColorScheme"
+            ],
+            "message": "Please use the GalleryTouchableOpacity component instead of TouchableOpacity or TouchableWithoutFeedback from 'react-native'.\nPlease use our modified GalleryRefreshControl.\nPlease use useColorScheme from 'nativewind' instead."
           },
           {
             "name": "@gorhom/bottom-sheet",

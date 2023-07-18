@@ -1,11 +1,20 @@
 import { useNavigationState } from '@react-navigation/native';
 import { useCallback } from 'react';
-// eslint-disable-next-line no-restricted-imports
-import { GestureResponderEvent, TouchableOpacity, TouchableOpacityProps } from 'react-native';
+import {
+  GestureResponderEvent,
+  // eslint-disable-next-line no-restricted-imports
+  TouchableOpacity,
+  TouchableOpacityProps,
+  // eslint-disable-next-line no-restricted-imports
+  TouchableWithoutFeedback,
+} from 'react-native';
 
 import { GalleryElementTrackingProps, useTrack } from '~/shared/contexts/AnalyticsContext';
 
-export type GalleryTouchableOpacityProps = GalleryElementTrackingProps & TouchableOpacityProps;
+export type GalleryTouchableOpacityProps = {
+  withoutFeedback?: boolean;
+} & GalleryElementTrackingProps &
+  TouchableOpacityProps;
 
 export function GalleryTouchableOpacity({
   children,
@@ -13,6 +22,7 @@ export function GalleryTouchableOpacity({
   eventName,
   onPress,
   properties,
+  withoutFeedback,
   ...props
 }: GalleryTouchableOpacityProps) {
   const track = useTrack();
@@ -38,6 +48,14 @@ export function GalleryTouchableOpacity({
     },
     [currentScreen, eventElementId, eventName, onPress, properties, track]
   );
+
+  if (withoutFeedback) {
+    return (
+      <TouchableWithoutFeedback {...props} onPress={handlePress}>
+        {children}
+      </TouchableWithoutFeedback>
+    );
+  }
 
   return (
     <TouchableOpacity {...props} onPress={handlePress}>
