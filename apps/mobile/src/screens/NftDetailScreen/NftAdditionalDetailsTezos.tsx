@@ -17,14 +17,10 @@ import {
 } from './DetailSection';
 
 type NftAdditionaDetailsNonPOAPProps = {
-  showDetails: boolean;
   tokenRef: NftAdditionalDetailsTezosFragment$key;
 };
 
-export function NftAdditionalDetailsTezos({
-  tokenRef,
-  showDetails,
-}: NftAdditionaDetailsNonPOAPProps) {
+export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPOAPProps) {
   const token = useFragment(
     graphql`
       fragment NftAdditionalDetailsTezosFragment on Token {
@@ -66,71 +62,69 @@ export function NftAdditionalDetailsTezos({
 
   return (
     <View className="flex flex-col space-y-4">
-      {showDetails && (
-        <>
-          {token.contract?.creatorAddress?.address && (
-            <DetailSection>
-              <DetailLabelText>CREATED BY</DetailLabelText>
+      <>
+        {token.contract?.creatorAddress?.address && (
+          <DetailSection>
+            <DetailLabelText>CREATED BY</DetailLabelText>
 
-              {/* TODO(Terence) When the contract screen is ready, setup the onPress here */}
-              <LinkableAddress
-                chainAddressRef={token.contract.creatorAddress}
-                type="NFT Detail Creator Address"
-              />
-            </DetailSection>
-          )}
+            {/* TODO(Terence) When the contract screen is ready, setup the onPress here */}
+            <LinkableAddress
+              chainAddressRef={token.contract.creatorAddress}
+              type="NFT Detail Creator Address"
+            />
+          </DetailSection>
+        )}
 
-          <View className="flex flex-col space-y-4">
-            <View className="flex flex-row space-x-16">
-              {contract?.contractAddress?.address && (
-                <DetailSection>
-                  <DetailLabelText>CONTRACT ADDRESS</DetailLabelText>
-                  <LinkableAddress
-                    chainAddressRef={contract.contractAddress}
-                    type="NFT Detail Contract Address"
-                  />
-                </DetailSection>
-              )}
-
-              {tokenId && token.externalUrl && (
-                <DetailSection>
-                  <DetailLabelText>TOKEN ID</DetailLabelText>
-                  <InteractiveLink href={token.externalUrl} type="NFT Detail Token ID">
-                    {hexHandler(tokenId)}
-                  </InteractiveLink>
-                </DetailSection>
-              )}
-            </View>
-
-            <View className="flex flex-row">
-              {token.chain && (
-                <DetailSection>
-                  <DetailLabelText>NETWORK</DetailLabelText>
-                  <DetailValue>{token.chain}</DetailValue>
-                </DetailSection>
-              )}
-
+        <View className="flex flex-col space-y-4">
+          <View className="flex flex-row space-x-16">
+            {contract?.contractAddress?.address && (
               <DetailSection>
-                {fxhashUrl && (
-                  <DetailExternalLink
-                    link={fxhashUrl}
-                    label="fx(hash)"
-                    trackingLabel="NFT Detail FX Hash URL"
-                  />
-                )}
-                {objktUrl && (
-                  <DetailExternalLink
-                    link={objktUrl}
-                    label="objkt"
-                    trackingLabel="NFT Detail OBJKT URL"
-                  />
-                )}
+                <DetailLabelText>CONTRACT ADDRESS</DetailLabelText>
+                <LinkableAddress
+                  chainAddressRef={contract.contractAddress}
+                  type="NFT Detail Contract Address"
+                />
               </DetailSection>
-              {externalUrl && <DetailMoreInfoLink link={externalUrl} />}
-            </View>
+            )}
+
+            {tokenId && token.externalUrl && (
+              <DetailSection>
+                <DetailLabelText>TOKEN ID</DetailLabelText>
+                <InteractiveLink href={token.externalUrl} type="NFT Detail Token ID">
+                  {hexHandler(tokenId)}
+                </InteractiveLink>
+              </DetailSection>
+            )}
           </View>
-        </>
-      )}
+
+          <View className="flex flex-row">
+            {token.chain && (
+              <DetailSection>
+                <DetailLabelText>NETWORK</DetailLabelText>
+                <DetailValue>{token.chain}</DetailValue>
+              </DetailSection>
+            )}
+
+            <DetailSection>
+              {fxhashUrl && (
+                <DetailExternalLink
+                  link={fxhashUrl}
+                  label="fx(hash)"
+                  trackingLabel="NFT Detail FX Hash URL"
+                />
+              )}
+              {objktUrl && (
+                <DetailExternalLink
+                  link={objktUrl}
+                  label="objkt"
+                  trackingLabel="NFT Detail OBJKT URL"
+                />
+              )}
+            </DetailSection>
+            {externalUrl && <DetailMoreInfoLink link={externalUrl} />}
+          </View>
+        </View>
+      </>
     </View>
   );
 }

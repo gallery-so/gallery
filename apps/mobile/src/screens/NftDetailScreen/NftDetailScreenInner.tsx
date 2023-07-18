@@ -1,11 +1,10 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { useColorScheme } from 'nativewind';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { BottomArrowIcon } from 'src/icons/BottomArrowIcon';
 import { CirclePostIcon } from 'src/icons/CirclePostIcon';
 import isFeatureEnabled, { FeatureFlag } from 'src/utils/isFeatureEnabled';
 
@@ -124,12 +123,6 @@ export function NftDetailScreenInner() {
   const track = useTrack();
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
-
-  const [showAdditionalDetails, setShowAdditionalDetails] = useState(false);
-
-  const toggleAdditionalDetails = useCallback(() => {
-    setShowAdditionalDetails((previous) => !previous);
-  }, []);
 
   const handleShare = useCallback(() => {
     shareToken(token, query.collectionTokenById?.collection ?? null);
@@ -305,25 +298,8 @@ export function NftDetailScreenInner() {
           />
         )}
 
-        {!showAdditionalDetails && (
-          <GalleryTouchableOpacity
-            className="items-center flex-row space-x-1 justify-center"
-            eventElementId="NFT Detail Show Additional Details"
-            eventName={null}
-            onPress={toggleAdditionalDetails}
-          >
-            <Typography
-              className="text-xs text-center"
-              font={{ family: 'ABCDiatype', weight: 'Regular' }}
-            >
-              MORE INFO
-            </Typography>
-            <BottomArrowIcon />
-          </GalleryTouchableOpacity>
-        )}
-
         <View className="flex-1">
-          <NftAdditionalDetails showDetails={showAdditionalDetails} tokenRef={token} />
+          <NftAdditionalDetails tokenRef={token} />
         </View>
       </View>
     </ScrollView>
