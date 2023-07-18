@@ -14,7 +14,7 @@ import { DropdownItem } from '../core/Dropdown/DropdownItem';
 import { DropdownSection } from '../core/Dropdown/DropdownSection';
 import { HStack } from '../core/Spacer/Stack';
 import { BaseS } from '../core/Text/Text';
-import useNftSelector from '../NftSelector/useNftSelector';
+import useNftSelector, { useNftSelectorForProfilePicture } from '../NftSelector/useNftSelector';
 import useUpdateProfileImage from '../NftSelector/useUpdateProfileImage';
 
 type Props = {
@@ -76,7 +76,7 @@ export function ProfilePictureDropdown({ open, onClose, tokensRef, queryRef }: P
     queryRef
   );
 
-  const showNftSelector = useNftSelector({ tokensRef: tokens, queryRef: query });
+  const showNftSelector = useNftSelectorForProfilePicture({ tokensRef: tokens, queryRef: query });
   const { setProfileImage, removeProfileImage } = useUpdateProfileImage();
   const track = useTrack();
 

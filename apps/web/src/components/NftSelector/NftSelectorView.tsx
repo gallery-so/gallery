@@ -25,6 +25,7 @@ type Props = {
   tokenRefs: NftSelectorViewFragment$key;
   hasSearchKeyword: boolean;
   handleRefresh: () => void;
+  onSelectToken: (tokenId: string) => void;
 };
 const COLUMN_COUNT = 4;
 
@@ -35,6 +36,7 @@ export function NftSelectorView({
   selectedNetworkView,
   hasSearchKeyword,
   handleRefresh,
+  onSelectToken,
 }: Props) {
   const tokens = useFragment(
     graphql`
@@ -140,6 +142,7 @@ export function NftSelectorView({
                 key={index}
                 group={column}
                 onSelectGroup={onSelectContract}
+                onSelectToken={onSelectToken}
               />
             );
           })}

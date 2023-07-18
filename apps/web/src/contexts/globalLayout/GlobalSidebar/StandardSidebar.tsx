@@ -8,8 +8,10 @@ import useAnnouncement from '~/components/Announcement/useAnnouncement';
 import breakpoints from '~/components/core/breakpoints';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { Notifications } from '~/components/Notifications/Notifications';
+import { PostComposerModalWithSelector } from '~/components/Posts/PostComposerModal';
 import Search from '~/components/Search/Search';
 import Settings from '~/components/Settings/Settings';
+import { useModalActions } from '~/contexts/modal/ModalContext';
 import { StandardSidebarFragment$key } from '~/generated/StandardSidebarFragment.graphql';
 import useAuthModal from '~/hooks/useAuthModal';
 import { useSearchHotkey } from '~/hooks/useSearchHotkey';
@@ -18,11 +20,14 @@ import BellIcon from '~/icons/BellIcon';
 import CogIcon from '~/icons/CogIcon';
 import { EditPencilIcon } from '~/icons/EditPencilIcon';
 import GLogoIcon from '~/icons/GLogoIcon';
+import { PlusSquareIcon } from '~/icons/PlusSquareIcon';
 import SearchIcon from '~/icons/SearchIcon';
 import ShopIcon from '~/icons/ShopIcon';
 import UserIcon from '~/icons/UserIcon';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 import useExperience from '~/utils/graphql/experiences/useExperience';
+import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 import { useDrawerActions, useDrawerState } from './SidebarDrawerContext';
 import SidebarIcon from './SidebarIcon';
@@ -41,6 +46,9 @@ export function StandardSidebar({ queryRef }: Props) {
             __typename
             user {
               username
+              tokens {
+                ...PostComposerModalWithSelectorFragment
+              }
               ...SidebarPfpFragment
             }
             notifications(last: 1) @connection(key: "StandardSidebarFragment_notifications") {
@@ -57,6 +65,8 @@ export function StandardSidebar({ queryRef }: Props) {
         ...SettingsFragment
         ...useExperienceFragment
         ...useAnnouncementFragment
+        ...PostComposerModalWithSelectorQueryFragment
+        ...isFeatureEnabledFragment
       }
     `,
     queryRef
@@ -113,6 +123,13 @@ export function StandardSidebar({ queryRef }: Props) {
 
   const username = (isLoggedIn && query.viewer.user?.username) || '';
 
+  const tokens = useMemo(
+    () => removeNullValues(query.viewer.user?.tokens) ?? [],
+    [query.viewer.user?.tokens]
+  );
+
+  const { showModal } = useModalActions();
+
   const handleSettingsClick = useCallback(() => {
     track('Sidebar Settings Click');
     showDrawer({
@@ -147,6 +164,15 @@ export function StandardSidebar({ queryRef }: Props) {
     track('Sidebar Home Click');
   }, [hideDrawer, track]);
 
+  const handleCreatePostClick = useCallback(() => {
+    hideDrawer();
+
+    showModal({
+      content: <PostComposerModalWithSelector tokensRef={tokens} queryRef={query} />,
+    });
+    track('Sidebar Create Post Click');
+  }, [hideDrawer, showModal, tokens, query, track]);
+
   const handleSearchClick = useCallback(() => {
     track('Sidebar Search Click');
     showDrawer({
@@ -155,6 +181,7 @@ export function StandardSidebar({ queryRef }: Props) {
   }, [showDrawer, track]);
 
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
+  const isKoalaEnabled = isFeatureEnabled(FeatureFlag.KOALA, query);
 
   const userGalleryRoute: Route = useMemo(() => {
     return { pathname: '/[username]', query: { username } };
@@ -251,11 +278,20 @@ export function StandardSidebar({ queryRef }: Props) {
             icon={<GLogoIcon />}
           />
           {isLoggedIn && query.viewer.user && (
-            <SidebarPfp
-              userRef={query.viewer.user}
-              href={userGalleryRoute}
-              onClick={handleProfileClick}
-            />
+            <VStack gap={12}>
+              <SidebarPfp
+                userRef={query.viewer.user}
+                href={userGalleryRoute}
+                onClick={handleProfileClick}
+              />
+              {isKoalaEnabled && (
+                <SidebarIcon
+                  tooltipLabel="Create a post"
+                  onClick={handleCreatePostClick}
+                  icon={<PlusSquareIcon />}
+                />
+              )}
+            </VStack>
           )}
         </VStack>
         {isLoggedIn ? (

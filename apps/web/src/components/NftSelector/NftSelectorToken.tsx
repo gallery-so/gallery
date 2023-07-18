@@ -12,13 +12,13 @@ import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import { NftFailureBoundary } from '../NftFailureFallback/NftFailureBoundary';
 import { NftFailureFallback } from '../NftFailureFallback/NftFailureFallback';
 import { NftSelectorPreviewAsset, RawNftSelectorPreviewAsset } from './RawNftSelectorPreviewAsset';
-import useUpdateProfileImage from './useUpdateProfileImage';
 
 type Props = {
   tokenRef: NftSelectorTokenFragment$key;
+  onSelectToken(tokenId: string): void;
   isInGroup?: boolean;
 };
-export function NftSelectorToken({ tokenRef, isInGroup = false }: Props) {
+export function NftSelectorToken({ tokenRef, onSelectToken, isInGroup = false }: Props) {
   const token = useFragment(
     graphql`
       fragment NftSelectorTokenFragment on Token {
@@ -35,13 +35,15 @@ export function NftSelectorToken({ tokenRef, isInGroup = false }: Props) {
           }
         }
         ...RawNftSelectorPreviewAssetFragment
+        # eslint-disable-next-line relay/must-colocate-fragment-spreads
+        ...PostComposerFragment
       }
     `,
     tokenRef
   );
 
   const { hideModal } = useModalActions();
-  const { setProfileImage } = useUpdateProfileImage();
+
   const track = useTrack();
 
   const { handleNftLoaded, handleNftError, retryKey, refreshMetadata, refreshingMetadata } =
@@ -66,9 +68,9 @@ export function NftSelectorToken({ tokenRef, isInGroup = false }: Props) {
       return;
     }
     track('NFT Selector: Selected NFT');
-    setProfileImage({ tokenId: token.dbid });
-    hideModal();
-  }, [isInGroup, track, setProfileImage, token.dbid, hideModal]);
+    onSelectToken(token);
+    // hideModal();
+  }, [isInGroup, track, token.dbid, hideModal, onSelectToken]);
 
   return (
     <NftFailureBoundary

@@ -92,7 +92,7 @@ export default function NftDetailView({ authenticatedUserOwnsAsset, collectionTo
           )}
         </StyledAssetAndNoteContainer>
 
-        <NftDetailText tokenRef={token} />
+        <NftDetailText tokenRef={token} authenticatedUserOwnsAsset={authenticatedUserOwnsAsset} />
       </StyledContentContainer>
       {!useIsMobileOrMobileLargeWindowWidth && <StyledNavigationBuffer />}
     </StyledBody>

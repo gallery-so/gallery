@@ -11,9 +11,11 @@ import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM, TitleM, TitleXS } from '~/components/core/Text/Text';
 import { ClickablePill, NonclickablePill } from '~/components/Pill';
+import { PostComposerModal } from '~/components/Posts/PostComposerModal';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { ENABLED_CREATOR } from '~/constants/creator';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
+import { useModalActions } from '~/contexts/modal/ModalContext';
 import { NftDetailTextFragment$key } from '~/generated/NftDetailTextFragment.graphql';
 import { useBreakpoint, useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { NftAdditionalDetails } from '~/scenes/NftDetailPage/NftAdditionalDetails/NftAdditionalDetails';
@@ -31,9 +33,10 @@ const SHOW_BUY_NOW_BUTTON = false;
 
 type Props = {
   tokenRef: NftDetailTextFragment$key;
+  authenticatedUserOwnsAsset: boolean;
 };
 
-function NftDetailText({ tokenRef }: Props) {
+function NftDetailText({ tokenRef, authenticatedUserOwnsAsset }: Props) {
   const token = useFragment(
     graphql`
       fragment NftDetailTextFragment on Token {
@@ -57,6 +60,7 @@ function NftDetailText({ tokenRef }: Props) {
 
         ...NftAdditionalDetailsFragment
         ...getCommunityUrlForTokenFragment
+        ...PostComposerModalFragment
       }
     `,
     tokenRef
@@ -142,6 +146,15 @@ function NftDetailText({ tokenRef }: Props) {
     return null;
   }, [token.name]);
 
+  const { showModal } = useModalActions();
+
+  const handleCreatePostClick = useCallback(() => {
+    track('NFT Detail: Clicked Create Post');
+    showModal({
+      content: <PostComposerModal tokenRef={token} />,
+    });
+  }, [showModal, token, track]);
+
   return (
     <StyledDetailLabel horizontalLayout={horizontalLayout} navbarHeight={navbarHeight}>
       <VStack gap={isMobile ? 32 : 24}>
@@ -219,6 +232,9 @@ function NftDetailText({ tokenRef }: Props) {
             )}
           </VStack>
         ) : null}
+
+        {/* if user owns */}
+        {authenticatedUserOwnsAsset && <Button onClick={handleCreatePostClick}>Create Post</Button>}
 
         {poapMoreInfoUrl || poapUrl ? (
           <VStack gap={16}>

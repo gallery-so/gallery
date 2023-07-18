@@ -24,6 +24,7 @@ type TextAreaProps = {
   textAreaHeight?: string;
   showMarkdownShortcuts?: boolean;
   hasPadding?: boolean;
+  maxLength?: number;
 };
 
 function isCursorInsideParentheses(textarea: HTMLTextAreaElement) {
@@ -58,6 +59,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
       textAreaHeight,
       showMarkdownShortcuts = false,
       hasPadding = false,
+      maxLength,
     },
     ref
   ) => {
@@ -120,6 +122,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
           ref={ref}
           hasPadding={hasPadding}
           onKeyDown={handleKeyDown}
+          maxLength={maxLength}
         />
         {showMarkdownShortcuts && (
           <StyledMarkdownContainer hasPadding={hasPadding}>
@@ -161,12 +164,16 @@ export function TextAreaWithCharCount({
   ...textAreaProps
 }: TextAreaWithCharCountProps) {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
+  const maxCharCountReached = currentCharCount >= maxCharCount;
   return (
     <>
       <StyledTextAreaWithCharCount className={className}>
-        <TextArea ref={textAreaRef} {...textAreaProps} />
+        <TextArea ref={textAreaRef} maxLength={maxCharCount} {...textAreaProps} />
+        {maxCharCountReached && (
+          <StyledMaxLengthMessage>Max text length reached</StyledMaxLengthMessage>
+        )}
         <StyledCharacterCounter
-          error={currentCharCount > maxCharCount}
+          error={maxCharCountReached}
           hasPadding={textAreaProps?.hasPadding || false}
         >
           {currentCharCount}/{maxCharCount}
@@ -260,7 +267,14 @@ const StyledCharacterCounter = styled(BaseM)<{ error: boolean; hasPadding: boole
   bottom: ${({ hasPadding }) => (hasPadding ? '8px' : '0')};
   right: ${({ hasPadding }) => (hasPadding ? '8px' : '0')};
 
-  color: ${({ error }) => (error ? colors.error : colors.metal)};
+  color: ${({ error }) => (error ? colors.red : colors.metal)};
+`;
+
+const StyledMaxLengthMessage = styled(BaseM)`
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  color: ${colors.red};
 `;
 
 const StyledMarkdownContainer = styled.div<{ hasPadding: boolean }>`

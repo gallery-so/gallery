@@ -13,10 +13,11 @@ import { NftSelectorToken } from './NftSelectorToken';
 
 type Props = {
   group: NftSelectorCollectionGroup;
+  onSelectToken: (tokenId: string) => void;
   onSelectGroup?: (collection: NftSelectorContractType) => void;
 };
 
-export function NftSelectorTokenPreview({ group, onSelectGroup = noop }: Props) {
+export function NftSelectorTokenPreview({ group, onSelectToken, onSelectGroup = noop }: Props) {
   const tokens = group.tokens;
 
   const handleSelectGroup = useCallback(() => {
@@ -39,7 +40,7 @@ export function NftSelectorTokenPreview({ group, onSelectGroup = noop }: Props) 
   if (tokens.length === 1) {
     return (
       <StyledNftSelectorTokensContainer>
-        {tokens[0] && <NftSelectorToken tokenRef={tokens[0]} />}
+        {tokens[0] && <NftSelectorToken tokenRef={tokens[0]} onSelectToken={onSelectToken} />}
         <NftSelectorTokenCollection />
       </StyledNftSelectorTokensContainer>
     );
@@ -51,7 +52,12 @@ export function NftSelectorTokenPreview({ group, onSelectGroup = noop }: Props) 
   return (
     <StyledNftSelectorTokensContainer isGrouped onClick={handleSelectGroup}>
       {showTokens.map((token) => (
-        <NftSelectorToken key={token.dbid} tokenRef={token} isInGroup />
+        <NftSelectorToken
+          key={token.dbid}
+          tokenRef={token}
+          isInGroup
+          onSelectToken={onSelectToken}
+        />
       ))}
       {remainingTokens > 0 && (
         <StyledRemainingTokens align="center" justify="center">
