@@ -23,9 +23,11 @@ export function CommentLine({ commentRef, style }: Props) {
   );
 
   return (
-    <View className="flex" style={style}>
-      <UsernameDisplay userRef={comment.commenter} />
-      <Text className="text-xs dark:text-white flex-1">{comment.comment}</Text>
+    <View className="flex flex-row" style={style}>
+      <Text>
+        <UsernameDisplay userRef={comment.commenter} />
+        <Text className="text-xs dark:text-white flex-1"> {comment.comment}</Text>
+      </Text>
     </View>
   );
 }
