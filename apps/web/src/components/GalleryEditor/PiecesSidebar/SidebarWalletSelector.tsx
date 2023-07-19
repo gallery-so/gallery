@@ -9,9 +9,9 @@ import IconContainer from '~/components/core/IconContainer';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import { ChainMetadata } from '~/components/GalleryEditor/PiecesSidebar/chains';
-import useAddWalletModal from '~/hooks/useAddWalletModal';
 import { chainsMap } from '~/components/GalleryEditor/PiecesSidebar/chains';
 import { SidebarWalletSelectorFragment$key } from '~/generated/SidebarWalletSelectorFragment.graphql';
+import useAddWalletModal from '~/hooks/useAddWalletModal';
 import DoubleArrowsIcon from '~/icons/DoubleArrowsIcon';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
@@ -61,7 +61,7 @@ export default function SidebarWalletSelector({
 
   const handleSubmit = useCallback(async () => {
     showAddWalletModal({ onEthAddWalletSuccess, onTezosAddWalletSuccess });
-  }, [showAddWalletModal]);
+  }, [onEthAddWalletSuccess, onTezosAddWalletSuccess, showAddWalletModal]);
 
   const addWalletDisabled = useMemo(
     () => viewer?.user?.wallets.length >= MAX_ALLOWED_ADDRESSES,
