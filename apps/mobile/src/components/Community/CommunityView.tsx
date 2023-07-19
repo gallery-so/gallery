@@ -112,12 +112,7 @@ export function CommunityView({ queryRef }: Props) {
     } else if (community.contractAddress) {
       return (
         <View className="flex flex-row space-x-1 items-center">
-          <RawProfilePicture
-            size="xs"
-            default
-            eventElementId="ProfilePicture"
-            eventName="ProfilePicture pressed"
-          />
+          <RawProfilePicture size="xs" default eventElementId={null} eventName={null} />
           <LinkableAddress
             chainAddressRef={community.contractAddress}
             type="Community Contract Address"
