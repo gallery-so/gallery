@@ -22,6 +22,8 @@ type Props = {
   queryRef: CommunityViewFragment$key;
 };
 
+const ENABLED_TOTAL_TOKENS = false;
+
 export function CommunityView({ queryRef }: Props) {
   const query = useFragment(
     graphql`
@@ -138,8 +140,8 @@ export function CommunityView({ queryRef }: Props) {
       <View className="flex-grow">
         <View className="mb-4 px-4">
           <CommunityHeader communityRef={community} />
-          <View className="mb-4 flex flex-row justify-between">
-            <View className="space-y-0.5">
+          <View className="mb-4 flex flex-row space-x-6">
+            <View className="space-y-1">
               <Typography
                 font={{ family: 'ABCDiatype', weight: 'Regular' }}
                 className="text-xs uppercase"
@@ -154,7 +156,7 @@ export function CommunityView({ queryRef }: Props) {
                 {showAddressOrGalleryUser}
               </Typography>
             </View>
-            <View className="space-y-0.5">
+            <View className="space-y-1">
               <Typography
                 font={{ family: 'ABCDiatype', weight: 'Regular' }}
                 className="text-xs uppercase"
@@ -174,21 +176,23 @@ export function CommunityView({ queryRef }: Props) {
                 </View>
               )}
             </View>
-            <View className="space-y-0.5">
-              <Typography
-                font={{ family: 'ABCDiatype', weight: 'Regular' }}
-                className="text-xs uppercase text-right"
-              >
-                items
-              </Typography>
+            {ENABLED_TOTAL_TOKENS && (
+              <View className="space-y-1">
+                <Typography
+                  font={{ family: 'ABCDiatype', weight: 'Regular' }}
+                  className="text-xs uppercase text-right"
+                >
+                  items
+                </Typography>
 
-              <Typography
-                font={{ family: 'ABCDiatype', weight: 'Regular' }}
-                className="text-sm text-shadow text-right"
-              >
-                {formattedTotalTokens}
-              </Typography>
-            </View>
+                <Typography
+                  font={{ family: 'ABCDiatype', weight: 'Regular' }}
+                  className="text-sm text-shadow text-right"
+                >
+                  {formattedTotalTokens}
+                </Typography>
+              </View>
+            )}
           </View>
         </View>
 
