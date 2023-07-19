@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useContext, useState } from 'react';
+import { createContext, ReactNode, useCallback, useContext, useState } from 'react';
 
 interface PreviewUrlMap {
   [key: string]: string;
@@ -26,12 +26,12 @@ const NftPreviewFallbackProvider = ({ children }: Props) => {
   const [previewUrlMap, setPreviewUrlMap] = useState<PreviewUrlMap>({});
 
   // Function to update the previewUrl map inside the context
-  const updatePreviewUrlMap = (key: string, value: string) => {
+  const updatePreviewUrlMap = useCallback((key: string, value: string) => {
     setPreviewUrlMap((prevPreviewUrlMap) => ({
       ...prevPreviewUrlMap,
       [key]: value,
     }));
-  };
+  }, []);
 
   const contextValue: NftPreviewFallbackState = {
     previewUrlMap,
