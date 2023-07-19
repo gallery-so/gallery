@@ -152,6 +152,7 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset }: Props) {
     track('NFT Detail: Clicked Create Post');
     showModal({
       content: <PostComposerModal tokenRef={token} />,
+      headerVariant: 'thicc',
     });
   }, [showModal, token, track]);
 

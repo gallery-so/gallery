@@ -2,9 +2,11 @@ import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
-import { useModalActions } from '~/contexts/modal/ModalContext';
 import { ContentIsLoadedEvent } from '~/contexts/shimmer/ShimmerContext';
-import { NftSelectorTokenFragment$key } from '~/generated/NftSelectorTokenFragment.graphql';
+import {
+  NftSelectorTokenFragment$data,
+  NftSelectorTokenFragment$key,
+} from '~/generated/NftSelectorTokenFragment.graphql';
 import { useNftRetry } from '~/hooks/useNftRetry';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
@@ -15,7 +17,7 @@ import { NftSelectorPreviewAsset, RawNftSelectorPreviewAsset } from './RawNftSel
 
 type Props = {
   tokenRef: NftSelectorTokenFragment$key;
-  onSelectToken(tokenId: string): void;
+  onSelectToken: (token: NftSelectorTokenFragment$data) => void;
   isInGroup?: boolean;
 };
 export function NftSelectorToken({ tokenRef, onSelectToken, isInGroup = false }: Props) {
@@ -42,8 +44,6 @@ export function NftSelectorToken({ tokenRef, onSelectToken, isInGroup = false }:
     tokenRef
   );
 
-  const { hideModal } = useModalActions();
-
   const track = useTrack();
 
   const { handleNftLoaded, handleNftError, retryKey, refreshMetadata, refreshingMetadata } =
@@ -69,8 +69,7 @@ export function NftSelectorToken({ tokenRef, onSelectToken, isInGroup = false }:
     }
     track('NFT Selector: Selected NFT');
     onSelectToken(token);
-    // hideModal();
-  }, [isInGroup, track, token.dbid, hideModal, onSelectToken]);
+  }, [isInGroup, track, onSelectToken, token]);
 
   return (
     <NftFailureBoundary

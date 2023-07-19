@@ -27,6 +27,7 @@ export default function PostComposer({ onBackClick, tokenRef }: Props) {
     graphql`
       fragment PostComposerFragment on Token {
         __typename
+        dbid
         name
         ...PostComposerNftFragment
       }
@@ -39,8 +40,6 @@ export default function PostComposer({ onBackClick, tokenRef }: Props) {
     setDescription(event.target.value);
   }, []);
 
-  // in order to take advantage of suspense, we're querying for the token in PostComposerNft. But we need the token name upon save, so set it on state
-
   const createPost = useCreatePost();
 
   const { hideModal } = useModalActions();
@@ -49,16 +48,16 @@ export default function PostComposer({ onBackClick, tokenRef }: Props) {
 
   const handlePostClick = useCallback(async () => {
     setIsSubmitting(true);
-    // await createPost({
-    //   tokenIds: [tokenId],
-    //   caption: description,
-    // });
+    await createPost({
+      tokenIds: [token.dbid],
+      caption: description,
+    });
     setIsSubmitting(false);
     pushToast({
       message: `Successfully posted ${token.name || 'item'}`,
     });
     hideModal();
-  }, [hideModal, pushToast, token.name]);
+  }, [createPost, description, hideModal, pushToast, token.dbid, token.name]);
 
   const handleBackClick = useCallback(() => {
     onBackClick?.();
@@ -79,7 +78,7 @@ export default function PostComposer({ onBackClick, tokenRef }: Props) {
           <TitleS>New post</TitleS>
         </StyledHeader>
         <HStack gap={16}>
-          <PostComposerNft tokenRef={token} />
+          <PostComposerNft tokenRef={token} onBackClick={handleBackClick} />
           <VStack grow>
             <TextAreaWithCharCount
               currentCharCount={description.length}
@@ -94,13 +93,7 @@ export default function PostComposer({ onBackClick, tokenRef }: Props) {
         </HStack>
       </VStack>
       <HStack justify="flex-end" align="flex-end">
-        <Button
-          variant="primary"
-          eventElementId="Post Composer Post Button"
-          eventName="Clicked Post Button in Post Composer"
-          onClick={handlePostClick}
-          disabled={isSubmitting}
-        >
+        <Button variant="primary" onClick={handlePostClick} disabled={isSubmitting}>
           POST
         </Button>
       </HStack>
@@ -115,7 +108,3 @@ const StyledPostComposer = styled(VStack)`
 const StyledHeader = styled(HStack)`
   padding-top: 16px;
 `;
-
-// const StyledTokenContainer = styled(VStack)`
-//   width: 180px;
-// `;

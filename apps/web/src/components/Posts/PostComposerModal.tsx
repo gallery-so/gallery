@@ -5,7 +5,9 @@ import styled from 'styled-components';
 import ErrorBoundary from '~/contexts/boundary/ErrorBoundary';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { PostComposerFragment$key } from '~/generated/PostComposerFragment.graphql';
+import { PostComposerModalFragment$key } from '~/generated/PostComposerModalFragment.graphql';
 import { PostComposerModalWithSelectorFragment$key } from '~/generated/PostComposerModalWithSelectorFragment.graphql';
+import { PostComposerModalWithSelectorQueryFragment$key } from '~/generated/PostComposerModalWithSelectorQueryFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import { Button } from '../core/Button/Button';
@@ -15,12 +17,11 @@ import { NftSelector } from '../NftSelector/NftSelector';
 import PostComposer from './PostComposer';
 
 type Props = {
-  tokenId: string;
   tokensRef: PostComposerModalWithSelectorFragment$key;
-  queryRef: PostComposerModalWithSelectorFragment$key;
+  queryRef: PostComposerModalWithSelectorQueryFragment$key;
 };
 
-// Modal with a multiple steps, the NFT Selector -> then Post Composer
+// Modal with a multiple steps: the NFT Selector -> then Post Composer
 export function PostComposerModalWithSelector({ tokensRef, queryRef }: Props) {
   const tokens = useFragment(
     graphql`
@@ -71,8 +72,9 @@ export function PostComposerModalWithSelector({ tokensRef, queryRef }: Props) {
 }
 
 type PostComposerModalProps = {
-  tokenRef: PostComposerFragment$key;
+  tokenRef: PostComposerModalFragment$key;
 };
+
 // Modal with a single step, the Post Composer.
 export function PostComposerModal({ tokenRef }: PostComposerModalProps) {
   const token = useFragment(

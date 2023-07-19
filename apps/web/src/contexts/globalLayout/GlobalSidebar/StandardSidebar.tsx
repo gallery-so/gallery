@@ -12,6 +12,7 @@ import { PostComposerModalWithSelector } from '~/components/Posts/PostComposerMo
 import Search from '~/components/Search/Search';
 import Settings from '~/components/Settings/Settings';
 import { useModalActions } from '~/contexts/modal/ModalContext';
+import { PostComposerModalWithSelectorFragment$key } from '~/generated/PostComposerModalWithSelectorFragment.graphql';
 import { StandardSidebarFragment$key } from '~/generated/StandardSidebarFragment.graphql';
 import useAuthModal from '~/hooks/useAuthModal';
 import { useSearchHotkey } from '~/hooks/useSearchHotkey';
@@ -123,10 +124,12 @@ export function StandardSidebar({ queryRef }: Props) {
 
   const username = (isLoggedIn && query.viewer.user?.username) || '';
 
-  const tokens = useMemo(
-    () => removeNullValues(query.viewer.user?.tokens) ?? [],
-    [query.viewer.user?.tokens]
-  );
+  const tokens = useMemo<PostComposerModalWithSelectorFragment$key>(() => {
+    if (query?.viewer?.__typename !== 'Viewer') {
+      return [];
+    }
+    return removeNullValues(query?.viewer?.user?.tokens) ?? [];
+  }, [query?.viewer]);
 
   const { showModal } = useModalActions();
 
@@ -169,6 +172,7 @@ export function StandardSidebar({ queryRef }: Props) {
 
     showModal({
       content: <PostComposerModalWithSelector tokensRef={tokens} queryRef={query} />,
+      headerVariant: 'thicc',
     });
     track('Sidebar Create Post Click');
   }, [hideDrawer, showModal, tokens, query, track]);

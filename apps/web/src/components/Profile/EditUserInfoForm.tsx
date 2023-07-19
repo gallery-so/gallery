@@ -12,7 +12,7 @@ import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import unescape from '~/shared/utils/unescape';
 
-import useNftSelector, { useNftSelectorForProfilePicture } from '../NftSelector/useNftSelector';
+import { useNftSelectorForProfilePicture } from '../NftSelector/useNftSelector';
 import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
 import { RawProfilePicture } from '../RawProfilePicture';
 import { ProfilePictureDropdown } from './ProfilePictureDropdown';

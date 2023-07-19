@@ -49,6 +49,7 @@ const UnknownMediaResponse: NftDetailAssetTestQueryQuery = {
       dbid: 'testCollectionId',
     },
     token: {
+      __typename: 'Token',
       id: 'Token:testTokenId',
       dbid: 'testTokenId',
       chain: Chain.Ethereum,
@@ -83,6 +84,11 @@ const UnknownMediaResponse: NftDetailAssetTestQueryQuery = {
         __typename: 'UnknownMedia',
         fallbackMedia: null,
         contentRenderURL: 'bad url here',
+        previewURLs: {
+          small: 'http://someurl.com',
+          medium: 'http://someurl.com',
+          large: 'http://someurl.com',
+        },
       },
       contract: {
         __typename: 'Contract',

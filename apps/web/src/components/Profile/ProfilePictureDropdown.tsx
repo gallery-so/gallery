@@ -14,7 +14,7 @@ import { DropdownItem } from '../core/Dropdown/DropdownItem';
 import { DropdownSection } from '../core/Dropdown/DropdownSection';
 import { HStack } from '../core/Spacer/Stack';
 import { BaseS } from '../core/Text/Text';
-import useNftSelector, { useNftSelectorForProfilePicture } from '../NftSelector/useNftSelector';
+import { useNftSelectorForProfilePicture } from '../NftSelector/useNftSelector';
 import useUpdateProfileImage from '../NftSelector/useUpdateProfileImage';
 
 type Props = {

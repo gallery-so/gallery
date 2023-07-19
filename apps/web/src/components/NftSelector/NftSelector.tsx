@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import { NftSelectorFragment$key } from '~/generated/NftSelectorFragment.graphql';
 import { NftSelectorQueryFragment$key } from '~/generated/NftSelectorQueryFragment.graphql';
+import { NftSelectorTokenFragment$data } from '~/generated/NftSelectorTokenFragment.graphql';
 import useSyncTokens from '~/hooks/api/tokens/useSyncTokens';
 import { ChevronLeftIcon } from '~/icons/ChevronLeftIcon';
 import { RefreshIcon } from '~/icons/RefreshIcon';
@@ -33,7 +34,7 @@ import { NftSelectorView } from './NftSelectorView';
 type Props = {
   tokensRef: NftSelectorFragment$key;
   queryRef: NftSelectorQueryFragment$key;
-  onSelectToken: (tokenId: string) => void;
+  onSelectToken: (token: NftSelectorTokenFragment$data) => void;
   headerText: string;
 };
 

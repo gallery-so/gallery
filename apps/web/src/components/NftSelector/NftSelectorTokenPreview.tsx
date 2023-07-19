@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import styled, { css } from 'styled-components';
 
+import { NftSelectorTokenFragment$data } from '~/generated/NftSelectorTokenFragment.graphql';
 import colors from '~/shared/theme/colors';
 import noop from '~/utils/noop';
 
@@ -13,7 +14,7 @@ import { NftSelectorToken } from './NftSelectorToken';
 
 type Props = {
   group: NftSelectorCollectionGroup;
-  onSelectToken: (tokenId: string) => void;
+  onSelectToken: (token: NftSelectorTokenFragment$data) => void;
   onSelectGroup?: (collection: NftSelectorContractType) => void;
 };
 

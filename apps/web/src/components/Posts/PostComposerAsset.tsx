@@ -22,11 +22,6 @@ export default function PostComposerAsset({ tokenRef }: Props) {
       fragment PostComposerAssetFragment on Token {
         __typename
         dbid
-        name
-        tokenId
-        contract {
-          name
-        }
         media {
           ... on Media {
             fallbackMedia {
@@ -72,12 +67,10 @@ export default function PostComposerAsset({ tokenRef }: Props) {
                 src={token.media?.fallbackMedia?.mediaURL}
                 onLoad={handleNftLoaded}
               />
-              {/* <StyledOutline onClick={handleClick} /> */}
             </div>
           }
         >
           <NftSelectorPreviewAsset tokenRef={token} onLoad={handleNftLoaded} />
-          {/* <StyledOutline onClick={handleClick} /> */}
         </ReportingErrorBoundary>
       </NftFailureBoundary>
     </StyledPostComposerAsset>
