@@ -20,7 +20,7 @@ function NftPreviewAsset({ tokenRef, size, onLoad }: Props) {
   const token = useFragment(
     graphql`
       fragment NftPreviewAssetFragment on Token {
-        id
+        dbid
         name
         media {
           __typename
@@ -89,8 +89,8 @@ function NftPreviewAsset({ tokenRef, size, onLoad }: Props) {
 
   const handleAssetLoad = () => {
     // Call the updatePreviewUrlMap function from the context
-    if (token?.id && src) {
-      updatePreviewUrlMap(token?.id, src);
+    if (token.dbid && src) {
+      updatePreviewUrlMap(token.dbid, src);
     }
 
     // Call the onLoad event passed down as a prop to notify the parent component
