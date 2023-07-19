@@ -136,21 +136,23 @@ export function CommunityView({ queryRef }: Props) {
         <View className="mb-4 px-4">
           <CommunityHeader communityRef={community} />
           <View className="mb-4 flex flex-row space-x-6">
-            <View className="space-y-1">
-              <Typography
-                font={{ family: 'ABCDiatype', weight: 'Regular' }}
-                className="text-xs uppercase"
-              >
-                created by
-              </Typography>
+            {community?.chain !== 'POAP' && (
+              <View className="space-y-1">
+                <Typography
+                  font={{ family: 'ABCDiatype', weight: 'Regular' }}
+                  className="text-xs uppercase"
+                >
+                  created by
+                </Typography>
 
-              <Typography
-                font={{ family: 'ABCDiatype', weight: 'Regular' }}
-                className="text-sm text-shadow"
-              >
-                {showAddressOrGalleryUser}
-              </Typography>
-            </View>
+                <Typography
+                  font={{ family: 'ABCDiatype', weight: 'Regular' }}
+                  className="text-sm text-shadow"
+                >
+                  {showAddressOrGalleryUser}
+                </Typography>
+              </View>
+            )}
             <View className="space-y-1">
               <Typography
                 font={{ family: 'ABCDiatype', weight: 'Regular' }}
