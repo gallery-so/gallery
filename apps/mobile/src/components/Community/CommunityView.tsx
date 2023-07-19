@@ -96,8 +96,8 @@ export function CommunityView({ queryRef }: Props) {
         <GalleryTouchableOpacity
           className="flex flex-row items-center space-x-1"
           onPress={handleUsernamePress}
-          eventElementId="NFT Detail Token Owner Username"
-          eventName="NFT Detail Token Owner Username"
+          eventElementId="Community Page Creator Username"
+          eventName="Tapped Community Page Creator Username"
         >
           {community.creator.__typename && <ProfilePicture userRef={community.creator} size="xs" />}
 
