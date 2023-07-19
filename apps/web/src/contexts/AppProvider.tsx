@@ -4,6 +4,7 @@ import Debugger from '~/components/Debugger/Debugger';
 import SearchProvider from '~/components/Search/SearchContext';
 import { GalleryNavigationProvider } from '~/contexts/navigation/GalleryNavigationProvider';
 import { NftErrorProvider } from '~/contexts/NftErrorContext';
+import NftPreviewFallbackProvider from '~/contexts/nftPreviewFallback/NftPreviewFallbackContext';
 import { SyncTokensLockProvider } from '~/contexts/SyncTokensLockContext';
 import { GlobalLayoutContextQuery } from '~/generated/GlobalLayoutContextQuery.graphql';
 import isProduction from '~/utils/isProduction';
@@ -46,8 +47,10 @@ export default function AppProvider({
                             <GlobalLayoutContextProvider
                               preloadedQuery={globalLayoutContextPreloadedQuery}
                             >
-                              {isProd ? null : <Debugger />}
-                              {children}
+                              <NftPreviewFallbackProvider>
+                                {isProd ? null : <Debugger />}
+                                {children}
+                              </NftPreviewFallbackProvider>
                             </GlobalLayoutContextProvider>
                           </SearchProvider>
                         </SidebarDrawerProvider>
