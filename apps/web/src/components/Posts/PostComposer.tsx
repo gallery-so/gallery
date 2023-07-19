@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -7,7 +7,9 @@ import { useToastActions } from '~/contexts/toast/ToastContext';
 import { PostComposerFragment$key } from '~/generated/PostComposerFragment.graphql';
 import useCreatePost from '~/hooks/api/posts/useCreatePost';
 import { ChevronLeftIcon } from '~/icons/ChevronLeftIcon';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 
+import breakpoints from '../core/breakpoints';
 import { Button } from '../core/Button/Button';
 import IconContainer from '../core/IconContainer';
 import { HStack, VStack } from '../core/Spacer/Stack';
@@ -45,23 +47,41 @@ export default function PostComposer({ onBackClick, tokenRef }: Props) {
   const { hideModal } = useModalActions();
   const { pushToast } = useToastActions();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const track = useTrack();
 
   const handlePostClick = useCallback(async () => {
     setIsSubmitting(true);
-    await createPost({
-      tokenIds: [token.dbid],
-      caption: description,
+    track('Clicked Post in Post Composer', {
+      added_description: !!description,
     });
+    try {
+      await createPost({
+        tokenIds: [token.dbid],
+        caption: description,
+      });
+    } catch (error) {
+      // TODO add error state
+      setIsSubmitting(false);
+      return;
+    }
+
     setIsSubmitting(false);
     pushToast({
       message: `Successfully posted ${token.name || 'item'}`,
     });
     hideModal();
-  }, [createPost, description, hideModal, pushToast, token.dbid, token.name]);
+  }, [createPost, description, hideModal, pushToast, token.dbid, token.name, track]);
 
   const handleBackClick = useCallback(() => {
     onBackClick?.();
   }, [onBackClick]);
+
+  const inputPlaceholderTokenName = useMemo(() => {
+    if (!token.name || token.name.length > 30) {
+      return 'this item';
+    }
+    return token.name;
+  }, [token.name]);
 
   return (
     <StyledPostComposer grow justify="space-between">
@@ -77,20 +97,20 @@ export default function PostComposer({ onBackClick, tokenRef }: Props) {
           )}
           <TitleS>New post</TitleS>
         </StyledHeader>
-        <HStack gap={16}>
+        <ContentContainer>
           <PostComposerNft tokenRef={token} onBackClick={handleBackClick} />
           <VStack grow>
             <TextAreaWithCharCount
               currentCharCount={description.length}
               maxCharCount={DESCRIPTION_MAX_LENGTH}
-              placeholder="Add a description"
+              placeholder={`Say something about ${inputPlaceholderTokenName}`}
               textAreaHeight="117px"
               onChange={handleDescriptionChange}
               autoFocus
               hasPadding
             />
           </VStack>
-        </HStack>
+        </ContentContainer>
       </VStack>
       <HStack justify="flex-end" align="flex-end">
         <Button variant="primary" onClick={handlePostClick} disabled={isSubmitting}>
@@ -107,4 +127,15 @@ const StyledPostComposer = styled(VStack)`
 
 const StyledHeader = styled(HStack)`
   padding-top: 16px;
+`;
+
+const ContentContainer = styled.div`
+  display: flex;
+  gap: 16px;
+  flex-direction: column-reverse;
+
+  @media only screen and ${breakpoints.tablet} {
+    width: 180px;
+    flex-direction: row;
+  }
 `;

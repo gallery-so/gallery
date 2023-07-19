@@ -153,8 +153,9 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset }: Props) {
     showModal({
       content: <PostComposerModal tokenRef={token} />,
       headerVariant: 'thicc',
+      isFullPage: isMobile,
     });
-  }, [showModal, token, track]);
+  }, [isMobile, showModal, token, track]);
 
   return (
     <StyledDetailLabel horizontalLayout={horizontalLayout} navbarHeight={navbarHeight}>

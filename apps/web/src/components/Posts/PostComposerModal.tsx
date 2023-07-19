@@ -10,6 +10,7 @@ import { PostComposerModalWithSelectorFragment$key } from '~/generated/PostCompo
 import { PostComposerModalWithSelectorQueryFragment$key } from '~/generated/PostComposerModalWithSelectorQueryFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
+import breakpoints from '../core/breakpoints';
 import { Button } from '../core/Button/Button';
 import { VStack } from '../core/Spacer/Stack';
 import { BaseM } from '../core/Text/Text';
@@ -95,8 +96,11 @@ export function PostComposerModal({ tokenRef }: PostComposerModalProps) {
 }
 
 const StyledPostComposerModal = styled.div`
-  min-width: 562px;
-  min-height: 344px;
+  width: 100%;
+  @media only screen and ${breakpoints.tablet} {
+    min-width: 562px;
+    min-height: 344px;
+  }
 `;
 
 function PostComposerErrorScreen() {

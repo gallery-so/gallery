@@ -132,6 +132,7 @@ export function StandardSidebar({ queryRef }: Props) {
   }, [query?.viewer]);
 
   const { showModal } = useModalActions();
+  const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
   const handleSettingsClick = useCallback(() => {
     track('Sidebar Settings Click');
@@ -173,9 +174,10 @@ export function StandardSidebar({ queryRef }: Props) {
     showModal({
       content: <PostComposerModalWithSelector tokensRef={tokens} queryRef={query} />,
       headerVariant: 'thicc',
+      isFullPage: isMobile,
     });
     track('Sidebar Create Post Click');
-  }, [hideDrawer, showModal, tokens, query, track]);
+  }, [hideDrawer, showModal, tokens, query, isMobile, track]);
 
   const handleSearchClick = useCallback(() => {
     track('Sidebar Search Click');
@@ -184,7 +186,6 @@ export function StandardSidebar({ queryRef }: Props) {
     });
   }, [showDrawer, track]);
 
-  const isMobile = useIsMobileOrMobileLargeWindowWidth();
   const isKoalaEnabled = isFeatureEnabled(FeatureFlag.KOALA, query);
 
   const userGalleryRoute: Route = useMemo(() => {

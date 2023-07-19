@@ -6,6 +6,7 @@ import { PostComposerNftFragment$key } from '~/generated/PostComposerNftFragment
 import CloseIcon from '~/icons/CloseIcon';
 import colors from '~/shared/theme/colors';
 
+import breakpoints from '../core/breakpoints';
 import { VStack } from '../core/Spacer/Stack';
 import { BaseS, TitleS } from '../core/Text/Text';
 import PostComposerAsset from './PostComposerAsset';
@@ -60,12 +61,21 @@ export default function PostComposerNft({ tokenRef, onBackClick }: Props) {
   );
 }
 const StyledTokenContainer = styled(VStack)`
-  width: 180px;
+  width: 100%;
+
+  @media only screen and ${breakpoints.tablet} {
+    width: 180px;
+  }
 `;
 
 const StyledAssetLoadingState = styled.div`
-  width: 180px;
-  height: 180px;
+  width: 100%;
+  height: 100%;
+
+  @media only screen and ${breakpoints.tablet} {
+    width: 180px;
+    height: 180px;
+  }
 `;
 
 const StyledCloseButton = styled.button`
