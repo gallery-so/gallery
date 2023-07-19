@@ -1,8 +1,6 @@
 import Svg, { Path, SvgProps } from 'react-native-svg';
 
 export const DefaultUserIcon = (props: SvgProps) => {
-  //   const { colorScheme } = useColorScheme();
-
   return (
     <Svg width={12} height={12} fill="none" {...props}>
       <Path
