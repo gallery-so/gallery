@@ -3,6 +3,7 @@ import { graphql } from 'relay-runtime';
 
 import ImageWithLoading from '~/components/LoadingAsset/ImageWithLoading';
 import VideoWithLoading from '~/components/LoadingAsset/VideoWithLoading';
+import { useNftPreviewFallbackState } from '~/contexts/nftPreviewFallback/NftPreviewFallbackContext';
 import { ContentIsLoadedEvent } from '~/contexts/shimmer/ShimmerContext';
 import { NftPreviewAssetFragment$key } from '~/generated/NftPreviewAssetFragment.graphql';
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
@@ -19,6 +20,7 @@ function NftPreviewAsset({ tokenRef, size, onLoad }: Props) {
   const token = useFragment(
     graphql`
       fragment NftPreviewAssetFragment on Token {
+        id
         name
         media {
           __typename
@@ -69,6 +71,8 @@ function NftPreviewAsset({ tokenRef, size, onLoad }: Props) {
     tokenRef
   );
 
+  const { updatePreviewUrlMap, previewUrlMap } = useNftPreviewFallbackState();
+
   const resizedNft =
     token.media && 'previewURLs' in token.media
       ? graphqlGetResizedNftImageUrlWithFallback(token.media.previewURLs.large, size)
@@ -83,7 +87,19 @@ function NftPreviewAsset({ tokenRef, size, onLoad }: Props) {
 
   const { url: src } = resizedNft;
 
-  return <RawNftPreviewAsset src={src} onLoad={onLoad} alt={token.name} />;
+  const handleAssetLoad = () => {
+    // Call the updatePreviewUrlMap function from the context
+    if (token?.id && src) {
+      updatePreviewUrlMap(token?.id, src);
+    }
+
+    // Call the onLoad event passed down as a prop to notify the parent component
+    onLoad();
+  };
+
+  console.log('previewUrlMap:', previewUrlMap);
+
+  return <RawNftPreviewAsset src={src} onLoad={handleAssetLoad} alt={token.name} />;
 }
 
 export function RawNftPreviewAsset({
