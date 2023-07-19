@@ -30,6 +30,7 @@ export function ProfileViewActivityTab({ queryRef }: ProfileViewActivityTabProps
               edges {
                 node {
                   ...createVirtualizedFeedEventItemsFragment
+                  ...createVirtualizedFeedEventItemsPostFragment
                 }
               }
             }

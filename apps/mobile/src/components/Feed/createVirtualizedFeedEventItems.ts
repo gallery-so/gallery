@@ -10,44 +10,79 @@ import {
   createVirtualizedFeedEventItemsFragment$key,
 } from '~/generated/createVirtualizedFeedEventItemsFragment.graphql';
 import {
+  createVirtualizedFeedEventItemsPostFragment$data,
+  createVirtualizedFeedEventItemsPostFragment$key,
+} from '~/generated/createVirtualizedFeedEventItemsPostFragment.graphql';
+import {
   createVirtualizedFeedEventItemsQueryFragment$data,
   createVirtualizedFeedEventItemsQueryFragment$key,
 } from '~/generated/createVirtualizedFeedEventItemsQueryFragment.graphql';
 
-export type FeedListItemType = { key: string; eventId: string } & (
+export type FeedListItemType = { key: string } & (
   | {
       kind: 'feed-item-navigation';
       activeFeed: ActiveFeed;
       onFilterChange: (feed: ActiveFeed) => void;
       event: null;
       queryRef?: null;
+      eventId: string;
     }
   | {
       kind: 'feed-item-header';
       event: createVirtualizedFeedEventItemsFragment$data;
       queryRef: createVirtualizedFeedEventItemsQueryFragment$data;
+      eventId: string;
     }
   | {
       kind: 'feed-item-caption';
       event: createVirtualizedFeedEventItemsFragment$data;
       queryRef?: null;
+      eventId: string;
     }
   | {
       kind: 'feed-item-event';
       event: createVirtualizedFeedEventItemsFragment$data;
       queryRef: createVirtualizedFeedEventItemsQueryFragment$data;
+      eventId: string;
     }
   | {
       kind: 'feed-item-socialize';
       event: createVirtualizedFeedEventItemsFragment$data;
       queryRef: createVirtualizedFeedEventItemsQueryFragment$data;
       onCommentPress: () => void;
+      eventId: string;
+    }
+  | {
+      kind: 'post-item-header';
+      post: createVirtualizedFeedEventItemsPostFragment$data;
+      queryRef: createVirtualizedFeedEventItemsQueryFragment$data;
+      postId: string;
+    }
+  | {
+      kind: 'post-item-caption';
+      post: createVirtualizedFeedEventItemsPostFragment$data;
+      queryRef?: null;
+      postId: string;
+    }
+  | {
+      kind: 'post-item-event';
+      post: createVirtualizedFeedEventItemsPostFragment$data;
+      queryRef: createVirtualizedFeedEventItemsQueryFragment$data;
+      postId: string;
+    }
+  | {
+      kind: 'post-item-socialize';
+      post: createVirtualizedFeedEventItemsPostFragment$data;
+      queryRef: createVirtualizedFeedEventItemsQueryFragment$data;
+      onCommentPress: () => void;
+      postId: string;
     }
 );
 
 export type createVirtualizedItemsFromFeedEventsArgs = {
   failedEvents: Set<string>;
   eventRefs: readonly createVirtualizedFeedEventItemsFragment$key[];
+  postRefs: readonly createVirtualizedFeedEventItemsPostFragment$key[];
   queryRef: createVirtualizedFeedEventItemsQueryFragment$key;
   listRef: MutableRefObject<FlashList<FeedListItemType> | null>;
 
@@ -65,6 +100,7 @@ type createVirtualizedItemsFromFeedEventsReturnType = {
 export function createVirtualizedFeedEventItems({
   failedEvents,
   eventRefs,
+  postRefs,
   queryRef,
   listRef,
   feedFilter,
@@ -76,6 +112,8 @@ export function createVirtualizedFeedEventItems({
         ...FeedEventSocializeSectionQueryFragment
         # eslint-disable-next-line relay/must-colocate-fragment-spreads
         ...FeedListItemQueryFragment
+        # eslint-disable-next-line relay/must-colocate-fragment-spreads
+        ...PostListSectionHeaderQueryFragment
       }
     `,
     queryRef
@@ -113,6 +151,32 @@ export function createVirtualizedFeedEventItems({
     )
   );
 
+  const posts = postRefs
+    .map((postRef) =>
+      readInlineData(
+        graphql`
+          fragment createVirtualizedFeedEventItemsPostFragment on Post @inline {
+            __typename
+            dbid
+            caption
+            tokens {
+              __typename
+            }
+
+            # eslint-disable-next-line relay/must-colocate-fragment-spreads
+            ...PostListSectionHeaderFragment
+            # eslint-disable-next-line relay/must-colocate-fragment-spreads
+            ...PostListCaptionFragment
+            # eslint-disable-next-line relay/must-colocate-fragment-spreads
+            ...PostListItemFragment
+          }
+        `,
+        postRef
+      )
+    )
+    // Filter out posts that don't have tokens
+    .filter((post) => post.tokens?.length);
+
   const items: FeedListItemType[] = [];
 
   if (feedFilter) {
@@ -123,6 +187,44 @@ export function createVirtualizedFeedEventItems({
       eventId: 'feed-item-navigation',
       onFilterChange: feedFilter.onFeedChange,
       activeFeed: feedFilter.activeFeed,
+    });
+  }
+
+  for (const post of posts) {
+    items.push({
+      kind: 'post-item-header',
+      post,
+      queryRef: query,
+      key: `post-item-header-${post.dbid}`,
+      postId: post.dbid,
+    });
+
+    if (post.caption) {
+      items.push({
+        kind: 'post-item-caption',
+        post,
+        key: `post-item-caption-${post.dbid}`,
+        postId: post.dbid,
+      });
+    }
+
+    items.push({
+      kind: 'post-item-event',
+      post,
+      queryRef: query,
+      key: `post-item-event-${post.dbid}`,
+      postId: post.dbid,
+    });
+
+    items.push({
+      kind: 'post-item-socialize',
+      post,
+      queryRef: query,
+      key: `post-item-socialize-${post.dbid}`,
+      postId: post.dbid,
+      onCommentPress: function () {
+        listRef.current?.scrollToItem({ item: this, animated: true, viewOffset: 0.5 });
+      },
     });
   }
 

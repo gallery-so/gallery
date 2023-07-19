@@ -46,11 +46,16 @@ export function FeedList({
   const events = useFragment(
     graphql`
       fragment FeedListFragment on FeedEvent @relay(plural: true) {
-        __typename
-
-        dbid
-
         ...createVirtualizedFeedEventItemsFragment
+      }
+    `,
+    feedEventRefs
+  );
+
+  const posts = useFragment(
+    graphql`
+      fragment FeedListPostsFragment on Post @relay(plural: true) {
+        ...createVirtualizedFeedEventItemsPostFragment
       }
     `,
     feedEventRefs
@@ -62,12 +67,13 @@ export function FeedList({
   const { items, stickyIndices } = useMemo(() => {
     return createVirtualizedFeedEventItems({
       eventRefs: events,
+      postRefs: posts,
       failedEvents,
       queryRef: query,
       feedFilter,
       listRef: ref,
     });
-  }, [events, failedEvents, feedFilter, query]);
+  }, [events, posts, failedEvents, feedFilter, query]);
 
   // @ts-expect-error - useScrollToTop is not typed correctly for FlashList
   useScrollToTop(ref);
@@ -77,6 +83,7 @@ export function FeedList({
       const markFailure = () => (item.event ? markEventAsFailure(item.event.dbid) : () => {});
 
       return <FeedVirtualizedRow eventId={item.eventId} item={item} onFailure={markFailure} />;
+      // return <FeedVirtualizedRow eventId={item.eventId} item={item} onFailure={() => {}} />;
     },
     [markEventAsFailure]
   );

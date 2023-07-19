@@ -32,6 +32,7 @@ export function WorldwideFeed({ queryRef, onChangeFeedMode }: Props) {
               __typename
 
               ...FeedListFragment
+              ...FeedListPostsFragment
             }
           }
         }
