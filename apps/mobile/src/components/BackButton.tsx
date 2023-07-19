@@ -4,15 +4,21 @@ import { IconContainer } from '~/components/IconContainer';
 
 import { BackIcon } from '../icons/BackIcon';
 
-export function BackButton() {
+type Props = {
+  onPress?: () => void;
+};
+
+export function BackButton({ onPress }: Props) {
   const navigation = useNavigation();
+
+  const handlePress = onPress ?? navigation.goBack;
 
   return (
     <IconContainer
       eventElementId={null}
       eventName={null}
       icon={<BackIcon />}
-      onPress={navigation.goBack}
+      onPress={handlePress}
     />
   );
 }

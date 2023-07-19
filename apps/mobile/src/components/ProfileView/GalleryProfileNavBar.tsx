@@ -3,6 +3,7 @@ import { useCallback } from 'react';
 import { Share, View, ViewProps } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
+import { SettingsIcon } from 'src/icons/SettingsIcon';
 
 import { BackButton } from '~/components/BackButton';
 import { DarkModeToggle } from '~/components/DarkModeToggle';
@@ -94,6 +95,10 @@ export function GalleryProfileNavBar({
     }
   }, [navigation, user.username]);
 
+  const handleSettings = useCallback(() => {
+    navigation.navigate('Settings');
+  }, [navigation]);
+
   return (
     <View style={style} className="flex flex-row justify-between bg-white dark:bg-black-900">
       {shouldShowBackButton ? <BackButton /> : <DarkModeToggle />}
@@ -112,6 +117,13 @@ export function GalleryProfileNavBar({
           eventName="Profile Share Icon Clicked"
           icon={<ShareIcon />}
           onPress={handleShare}
+        />
+
+        <IconContainer
+          eventElementId="Settings Share Icon"
+          eventName="Settings Icon Clicked"
+          icon={<SettingsIcon />}
+          onPress={handleSettings}
         />
 
         {!isLoggedInUser && <FollowButton queryRef={query} userRef={user} />}

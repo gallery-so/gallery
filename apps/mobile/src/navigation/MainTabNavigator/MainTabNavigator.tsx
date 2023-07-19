@@ -10,6 +10,8 @@ import { MainTabStackNavigator } from '~/navigation/MainTabStackNavigator';
 import { MainTabNavigatorParamList } from '~/navigation/types';
 import colors from '~/shared/theme/colors';
 
+import { PostStackNavigator } from '../PostStackNavigator';
+
 const Tab = createMaterialTopTabNavigator<MainTabNavigatorParamList>();
 
 function AccountScreenInner() {
@@ -61,7 +63,15 @@ function SettingsScreen() {
   return <MainTabStackNavigator initialRouteName="Settings" />;
 }
 
-export function MainTabNavigator() {
+function PostScreen() {
+  return <PostStackNavigator />;
+}
+
+type MainTabNavigatorProps = {
+  isKoalaEnabled: boolean;
+};
+
+export function MainTabNavigator({ isKoalaEnabled }: MainTabNavigatorProps) {
   const { colorScheme } = useColorScheme();
 
   return (
@@ -76,9 +86,10 @@ export function MainTabNavigator() {
     >
       <Tab.Screen name="HomeTab" component={HomeScreen} />
       <Tab.Screen name="SearchTab" component={SearchScreen} />
+      {isKoalaEnabled && <Tab.Screen name="PostTab" component={PostScreen} />}
       <Tab.Screen name="NotificationsTab" component={NotificationsScreen} />
       <Tab.Screen name="AccountTab" component={AccountScreen} />
-      <Tab.Screen name="SettingsTab" component={SettingsScreen} />
+      {!isKoalaEnabled && <Tab.Screen name="SettingsTab" component={SettingsScreen} />}
     </Tab.Navigator>
   );
 }

@@ -1,3 +1,4 @@
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { ResizeMode } from 'expo-av';
 import { useCallback, useState } from 'react';
 import { ActivityIndicator, View, ViewProps } from 'react-native';
@@ -7,27 +8,27 @@ import { graphql } from 'relay-runtime';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { NftPreviewAsset } from '~/components/NftPreview/NftPreviewAsset';
 import { NftPreviewErrorFallback } from '~/components/NftPreview/NftPreviewErrorFallback';
-import { ProfilePicturePickerSingularAssetFragment$key } from '~/generated/ProfilePicturePickerSingularAssetFragment.graphql';
-import { ProfilePicturePickerSingularAssetMutation } from '~/generated/ProfilePicturePickerSingularAssetMutation.graphql';
-import { useReportError } from '~/shared/contexts/ErrorReportingContext';
+import { NftSelectorPickerSingularAssetFragment$key } from '~/generated/NftSelectorPickerSingularAssetFragment.graphql';
+import { MainTabStackNavigatorProp, RootStackNavigatorParamList } from '~/navigation/types';
 import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
-import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 import colors from '~/shared/theme/colors';
 
-type ProfilePicturePickerSingularAssetProps = {
+import { useProfilePicture } from './useProfilePicture';
+
+type NftSelectorPickerSingularAssetProps = {
   style?: ViewProps['style'];
-  onProfilePictureChange: () => void;
-  tokenRef: ProfilePicturePickerSingularAssetFragment$key;
+  onSelect: () => void;
+  tokenRef: NftSelectorPickerSingularAssetFragment$key;
 };
 
-export function ProfilePicturePickerSingularAsset({
+export function NftSelectorPickerSingularAsset({
   style,
   tokenRef,
-  onProfilePictureChange,
-}: ProfilePicturePickerSingularAssetProps) {
+  onSelect,
+}: NftSelectorPickerSingularAssetProps) {
   const token = useFragment(
     graphql`
-      fragment ProfilePicturePickerSingularAssetFragment on Token {
+      fragment NftSelectorPickerSingularAssetFragment on Token {
         __typename
         dbid
 
@@ -37,22 +38,13 @@ export function ProfilePicturePickerSingularAsset({
     tokenRef
   );
 
-  const [setProfileImage, isSettingProfileImage] =
-    usePromisifiedMutation<ProfilePicturePickerSingularAssetMutation>(graphql`
-      mutation ProfilePicturePickerSingularAssetMutation($input: SetProfileImageInput!) {
-        setProfileImage(input: $input) {
-          ... on SetProfileImagePayload {
-            viewer {
-              user {
-                ...ProfilePictureFragment
-              }
-            }
-          }
-        }
-      }
-    `);
+  const route = useRoute<RouteProp<RootStackNavigatorParamList, 'Post'>>();
+  const currentScreen = route.params.page;
 
-  const reportError = useReportError();
+  const navigation = useNavigation<MainTabStackNavigatorProp>();
+
+  const { setProfileImage, isSettingProfileImage } = useProfilePicture();
+
   const tokenUrl = getVideoOrImageUrlForNftPreview({ tokenRef: token })?.urls.large;
 
   const [, setError] = useState<string | null>(null);
@@ -60,29 +52,24 @@ export function ProfilePicturePickerSingularAsset({
   const handlePress = useCallback(() => {
     setError(null);
 
-    setProfileImage({
-      variables: {
-        input: {
-          tokenId: token.dbid,
-        },
-      },
-    })
-      .then(() => {
-        onProfilePictureChange();
-      })
-      .catch((error) => {
-        setError(error);
-        reportError(error);
+    if (currentScreen === 'ProfilePicture') {
+      setProfileImage(token.dbid).then(() => {
+        onSelect();
       });
-  }, [onProfilePictureChange, reportError, setProfileImage, token.dbid]);
+    } else {
+      navigation.navigate('PostComposer', {
+        tokenId: token.dbid,
+      });
+    }
+  }, [currentScreen, navigation, onSelect, setProfileImage, token.dbid]);
   return (
     <GalleryTouchableOpacity
       style={style}
       disabled={isSettingProfileImage}
       onPress={handlePress}
       className="flex-1 aspect-square relative"
-      eventElementId="ProfilePicturePickerImage"
-      eventName="ProfilePicturePickerImage pressed"
+      eventElementId="NftSelectorPickerImage"
+      eventName="NftSelectorPickerImage pressed"
       properties={{ tokenId: token.dbid }}
     >
       {tokenUrl ? (
