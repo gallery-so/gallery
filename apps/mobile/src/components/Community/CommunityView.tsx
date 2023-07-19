@@ -50,7 +50,7 @@ export function CommunityView({ queryRef }: Props) {
                 ...LinkableAddressFragment
               }
             }
-            tokensInCommunity(first: 10000) {
+            tokensInCommunity(first: 1) {
               pageInfo {
                 total
               }
