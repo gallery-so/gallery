@@ -1,7 +1,7 @@
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { useColorScheme } from 'nativewind';
 import { useCallback, useMemo } from 'react';
-import { View } from 'react-native';
+import { Keyboard, View } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import { BareXMarkIcon } from 'src/icons/BareXMarkIcon';
 
@@ -60,6 +60,7 @@ export function PostTokenPreview({ bottomSheetRef }: Props) {
   }, [token]);
 
   const handleBackPress = useCallback(() => {
+    Keyboard.dismiss();
     bottomSheetRef.current?.present();
   }, [bottomSheetRef]);
 
