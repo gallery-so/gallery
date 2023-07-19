@@ -79,10 +79,9 @@ export function Markdown({
           {children}
         </Text>
       );
-
       rules.body = (node, children, parent, styles) => (
         <View key={node.key} style={styles.body}>
-          <Text numberOfLines={3}>{children}</Text>
+          <Text numberOfLines={numberOfLines}>{children}</Text>
         </View>
       );
     }
