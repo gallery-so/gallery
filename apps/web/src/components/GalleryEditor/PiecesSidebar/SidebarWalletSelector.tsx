@@ -64,7 +64,7 @@ export default function SidebarWalletSelector({
   }, [onEthAddWalletSuccess, onTezosAddWalletSuccess, showAddWalletModal]);
 
   const addWalletDisabled = useMemo(
-    () => viewer?.user?.wallets.length >= MAX_ALLOWED_ADDRESSES,
+    () => removeNullValues(viewer?.user?.wallets).length >= MAX_ALLOWED_ADDRESSES,
     [viewer?.user?.wallets]
   );
 
