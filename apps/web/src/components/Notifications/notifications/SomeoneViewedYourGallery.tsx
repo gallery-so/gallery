@@ -77,16 +77,19 @@ export function SomeoneViewedYourGallery({
 
       return (
         <BaseM data-testid={testId}>
+          {/* <HStack align="center" style={{ display: 'inline-flex' }}> */}
           <StyledProfilePictureStackContainer>
             <ProfilePictureStack usersRef={totalViewerUsers} total={userViewerCount} />
           </StyledProfilePictureStackContainer>
-
+          {/* </HStack> */}
           {lastViewer ? <HoverCardOnUsername userRef={lastViewer} /> : 'Someone'}
+          {/* <BaseM> */}
           <span>
             {' '}
             and {remainingViewCount} {remainingViewCount === 1 ? 'other' : 'others'} viewed your
             gallery
           </span>
+          {/* </BaseM> */}
         </BaseM>
       );
     }
