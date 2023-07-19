@@ -14,7 +14,7 @@ export const supportedAuthMethods: Readonly<
   Record<SupportedAuthMethodKey, Readonly<SupportedAuthMethod>>
 > = {
   ethereum: {
-    name: 'Ethereum',
+    name: 'Ethereum and L2s',
   },
   gnosisSafe: {
     name: 'Gnosis Safe',
