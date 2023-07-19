@@ -123,6 +123,11 @@ export default function PostComposer({ onBackClick, tokenRef }: Props) {
 
 const StyledPostComposer = styled(VStack)`
   height: 100%;
+  padding: 16px;
+
+  @media only screen and ${breakpoints.tablet} {
+    padding: 0;
+  }
 `;
 
 const StyledHeader = styled(HStack)`
@@ -135,7 +140,6 @@ const ContentContainer = styled.div`
   flex-direction: column-reverse;
 
   @media only screen and ${breakpoints.tablet} {
-    width: 180px;
     flex-direction: row;
   }
 `;

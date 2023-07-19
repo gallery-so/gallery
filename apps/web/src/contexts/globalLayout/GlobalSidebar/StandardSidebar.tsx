@@ -233,18 +233,18 @@ export function StandardSidebar({ queryRef }: Props) {
           {isLoggedIn ? (
             <>
               <SidebarIcon
-                href={userGalleryRoute}
-                tooltipLabel="My Profile"
-                onClick={handleProfileClick}
-                icon={<UserIcon />}
-                isActive={isLoggedInProfileActive}
-              />
-              <SidebarIcon
                 tooltipLabel="Search"
                 onClick={handleSearchClick}
                 icon={<SearchIcon />}
                 isActive={activeDrawerType === Search}
               />
+              {isKoalaEnabled && (
+                <SidebarIcon
+                  tooltipLabel="Create a post"
+                  onClick={handleCreatePostClick}
+                  icon={<PlusSquareIcon />}
+                />
+              )}
               <SidebarIcon
                 tooltipLabel="Updates"
                 onClick={handleNotificationsClick}
@@ -252,11 +252,18 @@ export function StandardSidebar({ queryRef }: Props) {
                 isActive={activeDrawerType === Notifications}
                 showUnreadDot={notificationCount > 0}
               />
-              <SidebarIcon
+              {/* <SidebarIcon
                 tooltipLabel="Settings"
                 onClick={handleSettingsClick}
                 icon={<CogIcon />}
                 isActive={activeDrawerType === Settings}
+              /> */}
+              <SidebarIcon
+                href={userGalleryRoute}
+                tooltipLabel="My Profile"
+                onClick={handleProfileClick}
+                icon={<UserIcon />}
+                isActive={isLoggedInProfileActive}
               />
             </>
           ) : (

@@ -97,6 +97,7 @@ export function PostComposerModal({ tokenRef }: PostComposerModalProps) {
 
 const StyledPostComposerModal = styled.div`
   width: 100%;
+  height: 100%;
   @media only screen and ${breakpoints.tablet} {
     min-width: 562px;
     min-height: 344px;

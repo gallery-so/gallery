@@ -24,6 +24,7 @@ import colors from '~/shared/theme/colors';
 import { getOpenseaExternalUrl } from '~/shared/utils/getOpenseaExternalUrl';
 import unescape from '~/shared/utils/unescape';
 import { getCommunityUrlForToken } from '~/utils/getCommunityUrlForToken';
+import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 /**
  * TODO: Figure out when to support creator addresses
@@ -235,7 +236,6 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset }: Props) {
           </VStack>
         ) : null}
 
-        {/* if user owns */}
         {authenticatedUserOwnsAsset && <Button onClick={handleCreatePostClick}>Create Post</Button>}
 
         {poapMoreInfoUrl || poapUrl ? (
