@@ -39,6 +39,7 @@ function PostBottomSheet(
         author {
           username
         }
+        ...DeletePostBottomSheetFragment
       }
     `,
     postRef
@@ -164,7 +165,7 @@ function PostBottomSheet(
         </View>
       </GalleryBottomSheetModal>
 
-      <DeletePostBottomSheet ref={deletePostBottomSheetRef} />
+      <DeletePostBottomSheet ref={deletePostBottomSheetRef} postRef={post} />
     </>
   );
 }

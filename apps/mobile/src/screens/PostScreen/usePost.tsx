@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react';
 import { graphql } from 'react-relay';
 
 import { useToastActions } from '~/contexts/ToastContext';
+import { usePostDeleteMutation } from '~/generated/usePostDeleteMutation.graphql';
 import { usePostMutation } from '~/generated/usePostMutation.graphql';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
@@ -17,6 +18,18 @@ export function usePost() {
       postTokens(input: $input) {
         ... on PostTokensPayload {
           post {
+            __typename
+          }
+        }
+      }
+    }
+  `);
+
+  const [deletePost, isDeletingPosting] = usePromisifiedMutation<usePostDeleteMutation>(graphql`
+    mutation usePostDeleteMutation($postId: DBID!) {
+      deletePost(postId: $postId) {
+        ... on DeletePostPayload {
+          deletedId {
             __typename
           }
         }
@@ -53,8 +66,21 @@ export function usePost() {
     [pushToast, post, reportError]
   );
 
+  const handleDelete = useCallback(
+    async (postId: string) => {
+      await deletePost({
+        variables: {
+          postId,
+        },
+      });
+    },
+    [deletePost]
+  );
+
   return {
     post: handlePost,
     isPosting,
+    deletePost: handleDelete,
+    isDeletingPosting,
   };
 }

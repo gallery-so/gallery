@@ -2,6 +2,7 @@ import { useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
 import { useNavigation } from '@react-navigation/native';
 import { ForwardedRef, forwardRef, useCallback, useRef } from 'react';
 import { View } from 'react-native';
+import { graphql, useFragment } from 'react-relay';
 
 import { Button } from '~/components/Button';
 import {
@@ -10,15 +11,28 @@ import {
 } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { Typography } from '~/components/Typography';
+import { DeletePostBottomSheetFragment$key } from '~/generated/DeletePostBottomSheetFragment.graphql';
+import { usePost } from '~/screens/PostScreen/usePost';
 
 const SNAP_POINTS = ['CONTENT_HEIGHT'];
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-type Props = {};
+type Props = {
+  postRef: DeletePostBottomSheetFragment$key;
+};
 
-function DeletePostBottomSheet(props: Props, ref: ForwardedRef<GalleryBottomSheetModalType>) {
+function DeletePostBottomSheet({ postRef }: Props, ref: ForwardedRef<GalleryBottomSheetModalType>) {
+  const post = useFragment(
+    graphql`
+      fragment DeletePostBottomSheetFragment on Post {
+        dbid
+      }
+    `,
+    postRef
+  );
+
   const navigation = useNavigation();
 
+  const { deletePost } = usePost();
   const { bottom } = useSafeAreaPadding();
 
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
@@ -30,6 +44,11 @@ function DeletePostBottomSheet(props: Props, ref: ForwardedRef<GalleryBottomShee
     bottomSheetRef.current?.dismiss();
     navigation.goBack();
   }, [navigation]);
+
+  const handleDelete = useCallback(() => {
+    deletePost(post.dbid);
+    bottomSheetRef.current?.dismiss();
+  }, [deletePost, post.dbid]);
 
   return (
     <GalleryBottomSheetModal
@@ -67,7 +86,7 @@ function DeletePostBottomSheet(props: Props, ref: ForwardedRef<GalleryBottomShee
         </View>
 
         <View className="space-y-2">
-          <Button onPress={handleBack} text="DELETE" eventElementId={null} eventName={null} />
+          <Button onPress={handleDelete} text="DELETE" eventElementId={null} eventName={null} />
           <Button
             onPress={handleBack}
             variant="secondary"
