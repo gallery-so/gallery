@@ -11,17 +11,21 @@ import { BaseM } from '~/components/core/Text/Text';
 import { ChainMetadata } from '~/components/GalleryEditor/PiecesSidebar/chains';
 import { chainsMap } from '~/components/GalleryEditor/PiecesSidebar/chains';
 import { SidebarWalletSelectorFragment$key } from '~/generated/SidebarWalletSelectorFragment.graphql';
+import useAddWalletModal from '~/hooks/useAddWalletModal';
 import DoubleArrowsIcon from '~/icons/DoubleArrowsIcon';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 export type SidebarWallet = { chainAddress: { chain: string; address: string } } | 'All';
+const MAX_ALLOWED_ADDRESSES = 15;
 
 type SidebarWalletSelectorProps = {
   queryRef: SidebarWalletSelectorFragment$key;
   selectedChain: ChainMetadata;
   selectedWallet: SidebarWallet;
   onSelectedWalletChange: (selectedWallet: SidebarWallet) => void;
+  onEthAddWalletSuccess?: () => void;
+  onTezosAddWalletSuccess?: () => void;
 };
 
 export default function SidebarWalletSelector({
@@ -29,8 +33,9 @@ export default function SidebarWalletSelector({
   selectedChain,
   selectedWallet,
   onSelectedWalletChange,
+  onEthAddWalletSuccess,
+  onTezosAddWalletSuccess,
 }: SidebarWalletSelectorProps) {
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { viewer } = useFragment(
     graphql`
       fragment SidebarWalletSelectorFragment on Query {
@@ -50,6 +55,19 @@ export default function SidebarWalletSelector({
     `,
     queryRef
   );
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const showAddWalletModal = useAddWalletModal();
+
+  const handleSubmit = useCallback(async () => {
+    showAddWalletModal({ onEthAddWalletSuccess, onTezosAddWalletSuccess });
+  }, [onEthAddWalletSuccess, onTezosAddWalletSuccess, showAddWalletModal]);
+
+  const addWalletDisabled = useMemo(
+    () => removeNullValues(viewer?.user?.wallets).length >= MAX_ALLOWED_ADDRESSES,
+    [viewer?.user?.wallets]
+  );
+
   const userWalletsOnSelectedNetwork = useMemo(
     () =>
       removeNullValues(viewer?.user?.wallets).filter((wallet) => {
@@ -99,6 +117,16 @@ export default function SidebarWalletSelector({
               <BaseM>{truncateWalletAddress(wallet)}</BaseM>
             </DropdownItem>
           ))}
+          {!addWalletDisabled && (
+            <DropdownItem
+              onClick={() => {
+                handleSubmit();
+                handleSelectWallet('All');
+              }}
+            >
+              <BaseM>ADD WALLET</BaseM>
+            </DropdownItem>
+          )}
         </DropdownSection>
       </StyledDropdown>
     </Container>

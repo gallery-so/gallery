@@ -6,17 +6,16 @@ import { graphql, useLazyLoadQuery } from 'react-relay';
 import { BackButton } from '~/components/BackButton';
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { Typography } from '~/components/Typography';
-import { ProfilePicturePickerContractScreenQuery } from '~/generated/ProfilePicturePickerContractScreenQuery.graphql';
+import { NftSelectorContractScreenQuery } from '~/generated/NftSelectorContractScreenQuery.graphql';
 import { MainTabStackNavigatorParamList, MainTabStackNavigatorProp } from '~/navigation/types';
-import { ProfilePicturePickerSingularAsset } from '~/screens/ProfilePicturePickerScreen/ProfilePicturePickerSingularAsset';
+import { NftSelectorPickerSingularAsset } from '~/screens/NftSelectorScreen/NftSelectorPickerSingularAsset';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
-export function ProfilePicturePickerContractScreen() {
-  const route =
-    useRoute<RouteProp<MainTabStackNavigatorParamList, 'ProfilePicturePickerContract'>>();
-  const query = useLazyLoadQuery<ProfilePicturePickerContractScreenQuery>(
+export function NftSelectorContractScreen() {
+  const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'NftSelectorContractScreen'>>();
+  const query = useLazyLoadQuery<NftSelectorContractScreenQuery>(
     graphql`
-      query ProfilePicturePickerContractScreenQuery {
+      query NftSelectorContractScreenQuery {
         viewer {
           ... on Viewer {
             user {
@@ -29,7 +28,7 @@ export function ProfilePicturePickerContractScreen() {
                   }
                 }
 
-                ...ProfilePicturePickerSingularAssetFragment
+                ...NftSelectorPickerSingularAssetFragment
               }
             }
           }
@@ -42,7 +41,7 @@ export function ProfilePicturePickerContractScreen() {
   const { top } = useSafeAreaPadding();
   const navigation = useNavigation<MainTabStackNavigatorProp>();
 
-  const handleProfilePictureChange = useCallback(() => {
+  const handleSelectNft = useCallback(() => {
     navigation.pop(2);
   }, [navigation]);
 
@@ -91,9 +90,9 @@ export function ProfilePicturePickerContractScreen() {
               <View key={index} className="flex flex-row space-x-4">
                 {row.map((token) => {
                   return (
-                    <ProfilePicturePickerSingularAsset
+                    <NftSelectorPickerSingularAsset
                       key={token.dbid}
-                      onProfilePictureChange={handleProfilePictureChange}
+                      onSelect={handleSelectNft}
                       tokenRef={token}
                     />
                   );
