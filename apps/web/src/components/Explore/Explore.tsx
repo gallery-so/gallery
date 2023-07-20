@@ -2,12 +2,9 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { ExploreFragment$key } from '~/generated/ExploreFragment.graphql';
-import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 
 import { VStack } from '../core/Spacer/Stack';
-import SuggestedSection from './SuggestedSection';
 import TrendingSection from './TrendingSection';
-import TwitterSection from './TwitterSection';
 
 type Props = {
   queryRef: ExploreFragment$key;
@@ -43,7 +40,8 @@ export default function Explore({ queryRef }: Props) {
 
         ...TrendingSectionQueryFragment
         ...SuggestedSectionQueryFragment
-        ...TwitterSectionQueryFragment
+        # [GAL-3763] Revive this if / when elon lets us import twitter follower graphs again
+        # ...TwitterSectionQueryFragment
       }
     `,
     queryRef
@@ -51,6 +49,7 @@ export default function Explore({ queryRef }: Props) {
 
   return (
     <StyledExplorePage gap={48}>
+      {/* [GAL-3763] Revive this if / when elon lets us import twitter follower graphs again
       {query.viewer?.__typename === 'Viewer' && (
         <>
           {query.viewer.socialAccounts?.twitter?.__typename && (
@@ -68,7 +67,7 @@ export default function Explore({ queryRef }: Props) {
             queryRef={query}
           />
         </>
-      )}
+      )} */}
       {query.trendingUsers5Days?.__typename === 'TrendingUsersPayload' && (
         <TrendingSection
           title="Weekly Leaderboard"
