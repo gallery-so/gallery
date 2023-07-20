@@ -55,7 +55,13 @@ export function FeedVirtualizedRow({ onFailure, item, itemId }: Props) {
       case 'post-item-event':
         return <PostListItem feedPostRef={item.post} />;
       case 'post-item-socialize':
-        return <FeedPostSocializeSection feedPostRef={item.post} queryRef={item.queryRef} />;
+        return (
+          <FeedPostSocializeSection
+            feedPostRef={item.post}
+            queryRef={item.queryRef}
+            onCommentPress={item.onCommentPress}
+          />
+        );
     }
   }, [item]);
 
