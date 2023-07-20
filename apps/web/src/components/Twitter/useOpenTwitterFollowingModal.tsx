@@ -23,9 +23,6 @@ export default function useOpenTwitterFollowingModal(
           socialAccountType: Twitter
           excludeAlreadyFollowing: false
         ) @connection(key: "TwitterFollowingModal__socialConnections") {
-          edges {
-            __typename
-          }
           pageInfo {
             total
           }

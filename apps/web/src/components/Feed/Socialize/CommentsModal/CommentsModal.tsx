@@ -44,8 +44,6 @@ export function CommentsModal({ eventRef, queryRef, fullscreen }: CommentsModalP
               __typename
 
               ... on Comment {
-                dbid
-                comment
                 ...CommentNoteFragment
               }
             }
