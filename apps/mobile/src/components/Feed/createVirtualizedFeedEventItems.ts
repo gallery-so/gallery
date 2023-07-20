@@ -17,6 +17,9 @@ import {
   createVirtualizedFeedEventItemsQueryFragment$data,
   createVirtualizedFeedEventItemsQueryFragment$key,
 } from '~/generated/createVirtualizedFeedEventItemsQueryFragment.graphql';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
+
+type itemType = 'event' | 'post' | null;
 
 export type FeedListItemType = { key: string } & (
   | {
@@ -24,67 +27,87 @@ export type FeedListItemType = { key: string } & (
       activeFeed: ActiveFeed;
       onFilterChange: (feed: ActiveFeed) => void;
       event: null;
+      post: null;
       queryRef?: null;
       eventId: string;
+      itemType: itemType;
     }
   | {
       kind: 'feed-item-header';
       event: createVirtualizedFeedEventItemsFragment$data;
+      post: null;
       queryRef: createVirtualizedFeedEventItemsQueryFragment$data;
       eventId: string;
+      itemType: itemType;
     }
   | {
       kind: 'feed-item-caption';
       event: createVirtualizedFeedEventItemsFragment$data;
+      post: null;
       queryRef?: null;
       eventId: string;
+      itemType: itemType;
     }
   | {
       kind: 'feed-item-event';
       event: createVirtualizedFeedEventItemsFragment$data;
+      post: null;
       queryRef: createVirtualizedFeedEventItemsQueryFragment$data;
       eventId: string;
+      itemType: itemType;
     }
   | {
       kind: 'feed-item-socialize';
       event: createVirtualizedFeedEventItemsFragment$data;
+      post: null;
       queryRef: createVirtualizedFeedEventItemsQueryFragment$data;
       onCommentPress: () => void;
       eventId: string;
+      itemType: itemType;
     }
   | {
       kind: 'post-item-header';
+      event: null;
       post: createVirtualizedFeedEventItemsPostFragment$data;
       queryRef: createVirtualizedFeedEventItemsQueryFragment$data;
       postId: string;
+      itemType: itemType;
     }
   | {
       kind: 'post-item-caption';
+      event: null;
       post: createVirtualizedFeedEventItemsPostFragment$data;
       queryRef?: null;
       postId: string;
+      itemType: itemType;
     }
   | {
       kind: 'post-item-event';
+      event: null;
       post: createVirtualizedFeedEventItemsPostFragment$data;
       queryRef: createVirtualizedFeedEventItemsQueryFragment$data;
       postId: string;
+      itemType: itemType;
     }
   | {
       kind: 'post-item-socialize';
+      event: null;
       post: createVirtualizedFeedEventItemsPostFragment$data;
       queryRef: createVirtualizedFeedEventItemsQueryFragment$data;
       onCommentPress: () => void;
       postId: string;
+      itemType: itemType;
     }
 );
 
 export type createVirtualizedItemsFromFeedEventsArgs = {
   failedEvents: Set<string>;
-  eventRefs: readonly createVirtualizedFeedEventItemsFragment$key[];
-  postRefs: readonly createVirtualizedFeedEventItemsPostFragment$key[];
   queryRef: createVirtualizedFeedEventItemsQueryFragment$key;
   listRef: MutableRefObject<FlashList<FeedListItemType> | null>;
+  itemRefs: readonly (
+    | createVirtualizedFeedEventItemsFragment$key
+    | createVirtualizedFeedEventItemsPostFragment$key
+  )[];
 
   feedFilter?: {
     activeFeed: ActiveFeed;
@@ -99,11 +122,11 @@ type createVirtualizedItemsFromFeedEventsReturnType = {
 
 export function createVirtualizedFeedEventItems({
   failedEvents,
-  eventRefs,
-  postRefs,
   queryRef,
   listRef,
   feedFilter,
+
+  itemRefs,
 }: createVirtualizedItemsFromFeedEventsArgs): createVirtualizedItemsFromFeedEventsReturnType {
   const query = readInlineData(
     graphql`
@@ -119,63 +142,68 @@ export function createVirtualizedFeedEventItems({
     queryRef
   );
 
-  const events = eventRefs.map((eventRef) =>
-    readInlineData(
-      graphql`
-        fragment createVirtualizedFeedEventItemsFragment on FeedEvent @inline {
-          dbid
-          caption
-
-          eventData {
-            __typename
-
-            ... on GalleryUpdatedFeedEventData {
-              __typename
-              subEventDatas {
+  const newItems = removeNullValues(
+    itemRefs.map((itemRef) => {
+      if ('__typename' in itemRef) {
+        if (itemRef.__typename === 'FeedEvent') {
+          return readInlineData(
+            graphql`
+              fragment createVirtualizedFeedEventItemsFragment on FeedEvent @inline {
                 __typename
+                dbid
+                caption
+
+                eventData {
+                  __typename
+
+                  ... on GalleryUpdatedFeedEventData {
+                    __typename
+                    subEventDatas {
+                      __typename
+                    }
+                  }
+                }
+
+                # eslint-disable-next-line relay/must-colocate-fragment-spreads
+                ...FeedListItemFragment
+                # eslint-disable-next-line relay/must-colocate-fragment-spreads
+                ...FeedListCaptionFragment
+                # eslint-disable-next-line relay/must-colocate-fragment-spreads
+                ...FeedListSectionHeaderFragment
+                # eslint-disable-next-line relay/must-colocate-fragment-spreads
+                ...FeedEventSocializeSectionFragment
               }
-            }
-          }
-
-          # eslint-disable-next-line relay/must-colocate-fragment-spreads
-          ...FeedListItemFragment
-          # eslint-disable-next-line relay/must-colocate-fragment-spreads
-          ...FeedListCaptionFragment
-          # eslint-disable-next-line relay/must-colocate-fragment-spreads
-          ...FeedListSectionHeaderFragment
-          # eslint-disable-next-line relay/must-colocate-fragment-spreads
-          ...FeedEventSocializeSectionFragment
+            `,
+            itemRef
+          );
         }
-      `,
-      eventRef
-    )
+
+        if (itemRef.__typename === 'Post') {
+          return readInlineData(
+            graphql`
+              fragment createVirtualizedFeedEventItemsPostFragment on Post @inline {
+                __typename
+                dbid
+                caption
+                tokens {
+                  __typename
+                }
+
+                # eslint-disable-next-line relay/must-colocate-fragment-spreads
+                ...PostListSectionHeaderFragment
+                # eslint-disable-next-line relay/must-colocate-fragment-spreads
+                ...PostListCaptionFragment
+                # eslint-disable-next-line relay/must-colocate-fragment-spreads
+                ...PostListItemFragment
+              }
+            `,
+            itemRef
+          );
+        }
+      }
+      return null;
+    })
   );
-
-  const posts = postRefs
-    .map((postRef) =>
-      readInlineData(
-        graphql`
-          fragment createVirtualizedFeedEventItemsPostFragment on Post @inline {
-            __typename
-            dbid
-            caption
-            tokens {
-              __typename
-            }
-
-            # eslint-disable-next-line relay/must-colocate-fragment-spreads
-            ...PostListSectionHeaderFragment
-            # eslint-disable-next-line relay/must-colocate-fragment-spreads
-            ...PostListCaptionFragment
-            # eslint-disable-next-line relay/must-colocate-fragment-spreads
-            ...PostListItemFragment
-          }
-        `,
-        postRef
-      )
-    )
-    // Filter out posts that don't have tokens
-    .filter((post) => post.tokens?.length);
 
   const items: FeedListItemType[] = [];
 
@@ -183,53 +211,64 @@ export function createVirtualizedFeedEventItems({
     items.push({
       kind: 'feed-item-navigation',
       event: null,
+      post: null,
       key: 'feed-item-navigation',
       eventId: 'feed-item-navigation',
       onFilterChange: feedFilter.onFeedChange,
       activeFeed: feedFilter.activeFeed,
+      itemType: null,
     });
   }
 
-  for (const post of posts) {
+  const setVirtualizeItemsForPost = (post: createVirtualizedFeedEventItemsPostFragment$data) => {
+    if (!post.tokens) return;
     items.push({
       kind: 'post-item-header',
       post,
+      event: null,
       queryRef: query,
       key: `post-item-header-${post.dbid}`,
       postId: post.dbid,
+      itemType: 'post',
     });
 
     if (post.caption) {
       items.push({
         kind: 'post-item-caption',
         post,
+        event: null,
         key: `post-item-caption-${post.dbid}`,
         postId: post.dbid,
+        itemType: 'post',
       });
     }
 
     items.push({
       kind: 'post-item-event',
       post,
+      event: null,
       queryRef: query,
       key: `post-item-event-${post.dbid}`,
       postId: post.dbid,
+      itemType: 'post',
     });
 
     items.push({
       kind: 'post-item-socialize',
       post,
+      event: null,
       queryRef: query,
       key: `post-item-socialize-${post.dbid}`,
       postId: post.dbid,
       onCommentPress: function () {
         listRef.current?.scrollToItem({ item: this, animated: true, viewOffset: 0.5 });
       },
+      itemType: 'post',
     });
-  }
+  };
 
-  for (const event of events) {
-    if (!event.eventData) continue;
+  const setVirtualizeItemsForEvent = (event: createVirtualizedFeedEventItemsFragment$data) => {
+    if (!event.eventData) return;
 
     // Make sure this is a supported feed event
     let isSupportedFeedEvent = false;
@@ -247,31 +286,38 @@ export function createVirtualizedFeedEventItems({
     if (isSupportedFeedEvent && !isAFailedEvent) {
       items.push({
         kind: 'feed-item-header',
+        post: null,
         event,
         queryRef: query,
         key: `feed-item-header-${event.dbid}`,
         eventId: event.dbid,
+        itemType: 'event',
       });
 
       if (event.caption) {
         items.push({
           kind: 'feed-item-caption',
+          post: null,
           event,
           key: `feed-item-caption-${event.dbid}`,
           eventId: event.dbid,
+          itemType: 'event',
         });
       }
 
       items.push({
         kind: 'feed-item-event',
+        post: null,
         event,
         key: `feed-item-event-${event.dbid}`,
         queryRef: query,
         eventId: event.dbid,
+        itemType: 'event',
       });
 
       items.push({
         kind: 'feed-item-socialize',
+        post: null,
         event,
         key: `feed-item-socialize-${event.dbid}`,
         eventId: event.dbid,
@@ -279,7 +325,17 @@ export function createVirtualizedFeedEventItems({
         onCommentPress: function () {
           listRef.current?.scrollToItem({ item: this, animated: true, viewOffset: 0.5 });
         },
+        itemType: 'event',
       });
+    }
+  };
+
+  for (const item of newItems) {
+    if (item.__typename === 'FeedEvent') {
+      setVirtualizeItemsForEvent(item);
+    }
+    if (item.__typename === 'Post') {
+      setVirtualizeItemsForPost(item);
     }
   }
 

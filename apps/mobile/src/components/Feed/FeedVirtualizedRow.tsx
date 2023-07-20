@@ -14,12 +14,12 @@ import { PostListItem } from './Posts/PostListItem';
 import { PostListSectionHeader } from './Posts/PostListSectionHeader';
 
 type Props = {
-  eventId: string;
+  itemId: string;
   item: FeedListItemType;
   onFailure: () => void;
 };
 
-export function FeedVirtualizedRow({ onFailure, item, eventId }: Props) {
+export function FeedVirtualizedRow({ onFailure, item, itemId }: Props) {
   const inner = useMemo(() => {
     switch (item.kind) {
       case 'feed-item-navigation':
@@ -60,7 +60,11 @@ export function FeedVirtualizedRow({ onFailure, item, eventId }: Props) {
   }, [item]);
 
   return (
-    <ReportingErrorBoundary fallback={null} onError={onFailure} additionalTags={{ eventId }}>
+    <ReportingErrorBoundary
+      fallback={null}
+      onError={onFailure}
+      additionalTags={{ eventId: itemId }}
+    >
       {inner}
     </ReportingErrorBoundary>
   );

@@ -30,9 +30,7 @@ export function WorldwideFeed({ queryRef, onChangeFeedMode }: Props) {
           edges {
             node {
               __typename
-
               ...FeedListFragment
-              ...FeedListPostsFragment
             }
           }
         }

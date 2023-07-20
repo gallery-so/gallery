@@ -58,24 +58,28 @@ export function ProfileViewActivityTab({ queryRef }: ProfileViewActivityTabProps
 
   const ref = useRef<FlashList<FeedListItemType> | null>(null);
   const { items, stickyIndices } = createVirtualizedFeedEventItems({
+    itemRefs: events,
     listRef: ref,
     failedEvents,
-    eventRefs: events,
     queryRef: query,
   });
 
   const renderItem = useCallback<ListRenderItem<FeedListItemType>>(
     ({ item }) => {
       // Set a default for feed navigation pill
-      let markFailure = () => {};
+      let itemId: string | null = null;
 
-      if (item.event) {
-        markFailure = () => {
-          markEventAsFailure(item.event.dbid);
-        };
+      if (item.post) {
+        itemId = item.post.dbid;
+      } else if (item.event) {
+        itemId = item.event.dbid;
+      } else {
+        itemId = item.eventId;
       }
 
-      return <FeedVirtualizedRow eventId={item.eventId} item={item} onFailure={markFailure} />;
+      const markFailure = () => (itemId ? markEventAsFailure(itemId) : () => {});
+
+      return <FeedVirtualizedRow itemId={itemId} item={item} onFailure={markFailure} />;
     },
     [markEventAsFailure]
   );
