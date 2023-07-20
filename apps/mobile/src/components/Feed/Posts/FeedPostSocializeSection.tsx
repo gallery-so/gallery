@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 import { usePostComment } from 'src/hooks/usePostComment';
@@ -9,6 +9,7 @@ import { FeedPostSocializeSectionQueryFragment$key } from '~/generated/FeedPostS
 
 import { AdmireButton } from '../Socialize/AdmireButton';
 import { CommentButton } from '../Socialize/CommentButton';
+import { Interactions } from '../Socialize/Interactions';
 
 type Props = {
   feedPostRef: FeedPostSocializeSectionFragment$key;
@@ -21,6 +22,33 @@ export function FeedPostSocializeSection({ feedPostRef, queryRef, onCommentPress
     graphql`
       fragment FeedPostSocializeSectionFragment on Post {
         dbid
+
+        # We only show 1 but in case the user deletes something
+        # we want to be sure that we can show another comment beneath
+        admires(last: 5) @connection(key: "Interactions_admires") {
+          pageInfo {
+            total
+          }
+          edges {
+            node {
+              dbid
+              ...InteractionsAdmiresFragment
+            }
+          }
+        }
+
+        # We only show 2 but in case the user deletes something
+        # we want to be sure that we can show another comment beneath
+        comments(last: 5) @connection(key: "Interactions_comments") {
+          pageInfo {
+            total
+          }
+          edges {
+            node {
+              ...InteractionsCommentsFragment
+            }
+          }
+        }
 
         ...useTogglePostAdmireFragment
       }
@@ -54,9 +82,48 @@ export function FeedPostSocializeSection({ feedPostRef, queryRef, onCommentPress
     [post.dbid, submitComment]
   );
 
+  const nonNullComments = useMemo(() => {
+    const comments = [];
+
+    for (const edge of post.comments?.edges ?? []) {
+      if (edge?.node) {
+        comments.push(edge.node);
+      }
+    }
+
+    return comments;
+  }, [post.comments?.edges]);
+
+  const totalComments = post.comments?.pageInfo?.total ?? 0;
+
+  const nonNullAdmires = useMemo(() => {
+    const admires = [];
+
+    for (const edge of post.admires?.edges ?? []) {
+      if (edge?.node) {
+        admires.push(edge.node);
+      }
+    }
+
+    admires.reverse();
+
+    return admires;
+  }, [post.admires?.edges]);
+
+  const totalAdmires = post.admires?.pageInfo?.total ?? 0;
+
   return (
     <View className="flex flex-row px-3 justify-between pb-8 pt-5">
-      <View className="flex-1 pr-4 pt-1">{/* <Interactions eventRef={event} /> */}</View>
+      <View className="flex-1 pr-4 pt-1">
+        <Interactions
+          type="post"
+          feedId={post.dbid}
+          commentRefs={nonNullComments}
+          admireRefs={nonNullAdmires}
+          totalComments={totalComments}
+          totalAdmires={totalAdmires}
+        />
+      </View>
 
       <View className="flex flex-row space-x-1">
         <AdmireButton onPress={toggleAdmire} isAdmired={hasViewerAdmiredEvent} />

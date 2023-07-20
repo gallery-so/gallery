@@ -23,6 +23,7 @@ import { Typography } from '~/components/Typography';
 import { CommentsBottomSheetConnectedCommentsListFragment$key } from '~/generated/CommentsBottomSheetConnectedCommentsListFragment.graphql';
 import { CommentsBottomSheetConnectedCommentsListPaginationQuery } from '~/generated/CommentsBottomSheetConnectedCommentsListPaginationQuery.graphql';
 import { CommentsBottomSheetConnectedCommentsListQuery } from '~/generated/CommentsBottomSheetConnectedCommentsListQuery.graphql';
+import { CommentsBottomSheetConnectedPostCommentsListFragment$key } from '~/generated/CommentsBottomSheetConnectedPostCommentsListFragment.graphql';
 import { CommentsBottomSheetConnectedPostCommentsListQuery } from '~/generated/CommentsBottomSheetConnectedPostCommentsListQuery.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
@@ -187,7 +188,7 @@ function ConnectedPostCommentsList({ feedId }: { feedId: string }) {
         $last: Int!
         $before: String
       ) {
-        ...CommentsBottomSheetConnectedCommentsListFragment
+        ...CommentsBottomSheetConnectedPostCommentsListFragment
       }
     `,
     { feedEventId: feedId, last: 10 }
@@ -200,7 +201,7 @@ function ConnectedPostCommentsList({ feedId }: { feedId: string }) {
     hasPrevious,
   } = usePaginationFragment<
     CommentsBottomSheetConnectedCommentsListPaginationQuery,
-    CommentsBottomSheetConnectedCommentsListFragment$key
+    CommentsBottomSheetConnectedPostCommentsListFragment$key
   >(
     graphql`
       fragment CommentsBottomSheetConnectedPostCommentsListFragment on Query
