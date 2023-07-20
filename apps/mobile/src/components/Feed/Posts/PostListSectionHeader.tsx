@@ -28,11 +28,12 @@ export function PostListSectionHeader({ feedPostRef, queryRef }: PostListSection
     graphql`
       fragment PostListSectionHeaderFragment on Post {
         __typename
-        author {
+        author @required(action: THROW) {
           __typename
           id
           username
           ...ProfilePictureFragment
+          ...PostBottomSheetUserFragment
         }
         creationTime
         tokens {
@@ -51,6 +52,7 @@ export function PostListSectionHeader({ feedPostRef, queryRef }: PostListSection
     graphql`
       fragment PostListSectionHeaderQueryFragment on Query {
         ...useLoggedInUserIdFragment
+        ...PostBottomSheetQueryFragment
       }
     `,
     queryRef
@@ -128,7 +130,13 @@ export function PostListSectionHeader({ feedPostRef, queryRef }: PostListSection
         </View>
       </View>
 
-      <PostBottomSheet ref={bottomSheetRef} isOwnPost={isOwnPost} postRef={feedPost} />
+      <PostBottomSheet
+        ref={bottomSheetRef}
+        isOwnPost={isOwnPost}
+        postRef={feedPost}
+        queryRef={query}
+        userRef={feedPost.author}
+      />
     </View>
   );
 }
