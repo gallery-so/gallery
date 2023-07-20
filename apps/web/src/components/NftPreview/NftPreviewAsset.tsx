@@ -71,7 +71,7 @@ function NftPreviewAsset({ tokenRef, size, onLoad }: Props) {
     tokenRef
   );
 
-  const { updatePreviewUrlMap, previewUrlMap } = useNftPreviewFallbackState();
+  const { updatePreviewUrlMap } = useNftPreviewFallbackState();
 
   const resizedNft =
     token.media && 'previewURLs' in token.media
@@ -96,8 +96,6 @@ function NftPreviewAsset({ tokenRef, size, onLoad }: Props) {
     // Call the onLoad event passed down as a prop to notify the parent component
     onLoad();
   };
-
-  console.log('previewUrlMap:', previewUrlMap);
 
   return <RawNftPreviewAsset src={src} onLoad={handleAssetLoad} alt={token.name} />;
 }

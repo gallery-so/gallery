@@ -4,7 +4,6 @@ import Debugger from '~/components/Debugger/Debugger';
 import SearchProvider from '~/components/Search/SearchContext';
 import { GalleryNavigationProvider } from '~/contexts/navigation/GalleryNavigationProvider';
 import { NftErrorProvider } from '~/contexts/NftErrorContext';
-import NftPreviewFallbackProvider from '~/contexts/nftPreviewFallback/NftPreviewFallbackContext';
 import { SyncTokensLockProvider } from '~/contexts/SyncTokensLockContext';
 import { GlobalLayoutContextQuery } from '~/generated/GlobalLayoutContextQuery.graphql';
 import isProduction from '~/utils/isProduction';
@@ -15,6 +14,7 @@ import { WebErrorReportingProvider } from './errorReporting/WebErrorReportingPro
 import GlobalLayoutContextProvider from './globalLayout/GlobalLayoutContext';
 import SidebarDrawerProvider from './globalLayout/GlobalSidebar/SidebarDrawerContext';
 import ModalProvider from './modal/ModalContext';
+import NftPreviewFallbackProvider from './nftPreviewFallback/NftPreviewFallbackContext';
 import { SwrProvider } from './swr/SwrContext';
 import ToastProvider from './toast/ToastContext';
 
@@ -39,24 +39,24 @@ export default function AppProvider({
             <WebErrorReportingProvider>
               <SwrProvider>
                 <GalleryNavigationProvider>
-                  <NftErrorProvider>
-                    <SyncTokensLockProvider>
-                      <ModalProvider>
-                        <SidebarDrawerProvider>
-                          <SearchProvider>
-                            <GlobalLayoutContextProvider
-                              preloadedQuery={globalLayoutContextPreloadedQuery}
-                            >
-                              <NftPreviewFallbackProvider>
+                  <NftPreviewFallbackProvider>
+                    <NftErrorProvider>
+                      <SyncTokensLockProvider>
+                        <ModalProvider>
+                          <SidebarDrawerProvider>
+                            <SearchProvider>
+                              <GlobalLayoutContextProvider
+                                preloadedQuery={globalLayoutContextPreloadedQuery}
+                              >
                                 {isProd ? null : <Debugger />}
                                 {children}
-                              </NftPreviewFallbackProvider>
-                            </GlobalLayoutContextProvider>
-                          </SearchProvider>
-                        </SidebarDrawerProvider>
-                      </ModalProvider>
-                    </SyncTokensLockProvider>
-                  </NftErrorProvider>
+                              </GlobalLayoutContextProvider>
+                            </SearchProvider>
+                          </SidebarDrawerProvider>
+                        </ModalProvider>
+                      </SyncTokensLockProvider>
+                    </NftErrorProvider>
+                  </NftPreviewFallbackProvider>
                 </GalleryNavigationProvider>
               </SwrProvider>
             </WebErrorReportingProvider>
