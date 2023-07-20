@@ -4,7 +4,7 @@ import { ProfilePictureFragment$key } from '~/generated/ProfilePictureFragment.g
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
 import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
 
-import { RawProfilePicture, RawProfilePictureProps } from '../RawProfilePicture';
+import { RawProfilePicture, RawProfilePictureProps } from './RawProfilePicture';
 
 type Props = {
   userRef: ProfilePictureFragment$key;

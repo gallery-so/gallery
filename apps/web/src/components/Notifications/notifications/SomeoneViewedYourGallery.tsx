@@ -7,7 +7,7 @@ import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
-import { ProfilePictureStack } from '~/components/ProfilePictureStack';
+import { ProfilePictureStack } from '~/components/ProfilePicture/ProfilePictureStack';
 import { SomeoneViewedYourGalleryFragment$key } from '~/generated/SomeoneViewedYourGalleryFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 

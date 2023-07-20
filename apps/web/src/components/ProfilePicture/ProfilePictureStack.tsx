@@ -7,9 +7,9 @@ import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
 
-import { HStack, VStack } from './core/Spacer/Stack';
-import { TitleXS } from './core/Text/Text';
-import { ProfilePicture } from './ProfilePicture/ProfilePicture';
+import { HStack, VStack } from '../core/Spacer/Stack';
+import { TitleXS } from '../core/Text/Text';
+import { ProfilePicture } from './ProfilePicture';
 
 type Props = {
   usersRef: ProfilePictureStackFragment$key;
