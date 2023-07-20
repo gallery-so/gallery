@@ -16,6 +16,7 @@ import { MainTabNavigatorParamList } from '~/navigation/types';
 
 import { AccountIcon } from '../../icons/AccountIcon';
 import { SettingsIcon } from '../../icons/SettingsIcon';
+import { PostIcon } from './PostIcon';
 
 type TabItemProps = {
   icon: ReactNode;
@@ -29,15 +30,31 @@ function TabItem({ navigation, route, icon, activeRoute }: TabItemProps) {
 
   const isFocused = activeRoute === route.name;
 
+  const handleOnPressIn = useCallback(() => {
+    if (route.name === 'PostTab') {
+      return;
+    }
+    setIsPressed(true);
+  }, [route.name]);
+
+  const handleOnPressOut = useCallback(() => {
+    setIsPressed(false);
+  }, []);
+
   const onPress = useCallback(() => {
     const event = navigation.emit({
       type: 'tabPress',
       target: route.key,
       canPreventDefault: true,
     });
-
-    if (!isFocused && !event.defaultPrevented) {
-      navigation.navigate(route.name);
+    if (route.name === 'PostTab') {
+      navigation.navigate('Post', {
+        screen: 'Post',
+      });
+    } else {
+      if (!isFocused && !event.defaultPrevented) {
+        navigation.navigate(route.name);
+      }
     }
   }, [isFocused, navigation, route]);
 
@@ -51,12 +68,12 @@ function TabItem({ navigation, route, icon, activeRoute }: TabItemProps) {
       eventElementId="Navigation Tab Item"
       eventName="Navigation Tab Item Clicked"
       properties={{ variant: 'Main', route: route.name }}
-      onPressIn={() => setIsPressed(true)}
-      onPressOut={() => setIsPressed(false)}
+      onPressIn={handleOnPressIn}
+      onPressOut={handleOnPressOut}
     >
       <View
         className={clsx(`px-0 flex h-8 w-8 items-center justify-center rounded-full`, {
-          'border border-black dark:border-white ': isFocused,
+          'border border-black dark:border-white ': isFocused && route.name !== 'PostTab',
           'bg-faint dark:bg-[#2B2B2B]': isPressed,
         })}
       >
@@ -92,6 +109,8 @@ export function TabBar({ state, navigation }: TabBarProps) {
           icon = <SearchIcon />;
         } else if (route.name === 'SettingsTab') {
           icon = <SettingsIcon />;
+        } else if (route.name === 'PostTab') {
+          icon = <PostIcon />;
         }
 
         return (

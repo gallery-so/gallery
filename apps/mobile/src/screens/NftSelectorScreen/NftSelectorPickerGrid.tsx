@@ -8,42 +8,45 @@ import { graphql } from 'relay-runtime';
 
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { NftPreviewAsset } from '~/components/NftPreview/NftPreviewAsset';
-import { ProfilePicturePickerGridFragment$key } from '~/generated/ProfilePicturePickerGridFragment.graphql';
-import { ProfilePicturePickerGridOneOrManyFragment$key } from '~/generated/ProfilePicturePickerGridOneOrManyFragment.graphql';
-import { ProfilePicturePickerGridTokenGridFragment$key } from '~/generated/ProfilePicturePickerGridTokenGridFragment.graphql';
+import { NftSelectorPickerGridFragment$key } from '~/generated/NftSelectorPickerGridFragment.graphql';
+import { NftSelectorPickerGridOneOrManyFragment$key } from '~/generated/NftSelectorPickerGridOneOrManyFragment.graphql';
+import { NftSelectorPickerGridTokenGridFragment$key } from '~/generated/NftSelectorPickerGridTokenGridFragment.graphql';
 import {
-  ProfilePicturePickerGridTokensFragment$data,
-  ProfilePicturePickerGridTokensFragment$key,
-} from '~/generated/ProfilePicturePickerGridTokensFragment.graphql';
-import { MainTabStackNavigatorProp } from '~/navigation/types';
-import { NetworkChoice } from '~/screens/ProfilePicturePickerScreen/ProfilePicturePickerFilterBottomSheet';
-import { ProfilePicturePickerSingularAsset } from '~/screens/ProfilePicturePickerScreen/ProfilePicturePickerSingularAsset';
+  NftSelectorPickerGridTokensFragment$data,
+  NftSelectorPickerGridTokensFragment$key,
+} from '~/generated/NftSelectorPickerGridTokensFragment.graphql';
+import { MainTabStackNavigatorProp, ScreenWithNftSelector } from '~/navigation/types';
+import { NetworkChoice } from '~/screens/NftSelectorScreen/NftSelectorFilterBottomSheet';
+import { NftSelectorPickerSingularAsset } from '~/screens/NftSelectorScreen/NftSelectorPickerSingularAsset';
 import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
-type ProfilePicturePickerGridProps = {
+type NftSelectorPickerGridProps = {
   style?: ViewProps['style'];
   searchCriteria: {
     searchQuery: string;
     ownerFilter: 'Collected' | 'Created';
     networkFilter: NetworkChoice;
   };
-  queryRef: ProfilePicturePickerGridFragment$key;
+  screen: ScreenWithNftSelector;
+
+  queryRef: NftSelectorPickerGridFragment$key;
 };
 
-export function ProfilePicturePickerGrid({
+export function NftSelectorPickerGrid({
   queryRef,
   searchCriteria,
+  screen,
   style,
-}: ProfilePicturePickerGridProps) {
+}: NftSelectorPickerGridProps) {
   const query = useFragment(
     graphql`
-      fragment ProfilePicturePickerGridFragment on Query {
+      fragment NftSelectorPickerGridFragment on Query {
         viewer {
           ... on Viewer {
             user {
               tokens {
-                ...ProfilePicturePickerGridTokensFragment
+                ...NftSelectorPickerGridTokensFragment
               }
             }
           }
@@ -55,9 +58,9 @@ export function ProfilePicturePickerGrid({
 
   const tokenRefs = removeNullValues(query.viewer?.user?.tokens);
 
-  const tokens = useFragment<ProfilePicturePickerGridTokensFragment$key>(
+  const tokens = useFragment<NftSelectorPickerGridTokensFragment$key>(
     graphql`
-      fragment ProfilePicturePickerGridTokensFragment on Token @relay(plural: true) {
+      fragment NftSelectorPickerGridTokensFragment on Token @relay(plural: true) {
         chain
         isSpamByUser
         isSpamByProvider
@@ -76,8 +79,8 @@ export function ProfilePicturePickerGrid({
         ownerIsCreator
 
         ...getVideoOrImageUrlForNftPreviewFragment
-        ...ProfilePicturePickerGridTokenGridFragment
-        ...ProfilePicturePickerGridOneOrManyFragment
+        ...NftSelectorPickerGridTokenGridFragment
+        ...NftSelectorPickerGridOneOrManyFragment
       }
     `,
     tokenRefs
@@ -122,7 +125,7 @@ export function ProfilePicturePickerGrid({
 
   type Group = {
     address: string;
-    tokens: Array<ProfilePicturePickerGridTokensFragment$data[number]>;
+    tokens: Array<NftSelectorPickerGridTokensFragment$data[number]>;
   };
   type GroupedTokens = Record<string, Group>;
   const groups = useMemo(() => {
@@ -160,22 +163,30 @@ export function ProfilePicturePickerGrid({
     return rows;
   }, [groups]);
 
-  const renderItem = useCallback<ListRenderItem<Row>>(({ item }) => {
-    return (
-      <View className="flex space-x-4 flex-row mb-4 px-4">
-        {item.groups.map((group, index) => {
-          return (
-            <TokenGroup key={index} tokenRefs={group.tokens} contractAddress={group.address} />
-          );
-        })}
+  const renderItem = useCallback<ListRenderItem<Row>>(
+    ({ item }) => {
+      return (
+        <View className="flex space-x-4 flex-row mb-4 px-4">
+          {item.groups.map((group, index) => {
+            return (
+              <TokenGroup
+                key={index}
+                tokenRefs={group.tokens}
+                contractAddress={group.address}
+                screen={screen}
+              />
+            );
+          })}
 
-        {/* Fill the remaining space for this row */}
-        {Array.from({ length: 3 - item.groups.length }).map((_, index) => {
-          return <View key={index} className="flex-1" />;
-        })}
-      </View>
-    );
-  }, []);
+          {/* Fill the remaining space for this row */}
+          {Array.from({ length: 3 - item.groups.length }).map((_, index) => {
+            return <View key={index} className="flex-1" />;
+          })}
+        </View>
+      );
+    },
+    [screen]
+  );
 
   return (
     <View className="flex flex-col flex-1" style={style}>
@@ -186,14 +197,15 @@ export function ProfilePicturePickerGrid({
 
 type TokenGridProps = {
   style?: ViewProps['style'];
-  tokenRefs: ProfilePicturePickerGridTokenGridFragment$key;
+  tokenRefs: NftSelectorPickerGridTokenGridFragment$key;
   contractAddress: string;
+  screen: ScreenWithNftSelector;
 };
 
-function TokenGrid({ tokenRefs, contractAddress, style }: TokenGridProps) {
+function TokenGrid({ tokenRefs, contractAddress, screen, style }: TokenGridProps) {
   const tokens = useFragment(
     graphql`
-      fragment ProfilePicturePickerGridTokenGridFragment on Token @relay(plural: true) {
+      fragment NftSelectorPickerGridTokenGridFragment on Token @relay(plural: true) {
         __typename
 
         ...getVideoOrImageUrlForNftPreviewFragment
@@ -221,13 +233,14 @@ function TokenGrid({ tokenRefs, contractAddress, style }: TokenGridProps) {
   return (
     <GalleryTouchableOpacity
       onPress={() => {
-        navigation.navigate('ProfilePicturePickerContract', {
+        navigation.navigate('NftSelectorContractScreen', {
           contractAddress: contractAddress,
+          page: screen,
         });
       }}
       style={style}
-      eventElementId="ProfilePicturePickerContractGroup"
-      eventName={'ProfilePicturePickerContractGroup pressed'}
+      eventElementId="NftSelectorPickerContractGroup"
+      eventName={'NftSelectorPickerContractGroup pressed'}
     >
       <View className="flex flex-col space-y-2 p-2">
         {rows.map((row, index) => {
@@ -254,17 +267,18 @@ function TokenGrid({ tokenRefs, contractAddress, style }: TokenGridProps) {
 
 type TokenGroupProps = {
   style?: ViewProps['style'];
-  tokenRefs: ProfilePicturePickerGridOneOrManyFragment$key;
+  tokenRefs: NftSelectorPickerGridOneOrManyFragment$key;
   contractAddress: string;
+  screen: ScreenWithNftSelector;
 };
 
-function TokenGroup({ tokenRefs, contractAddress, style }: TokenGroupProps) {
+function TokenGroup({ tokenRefs, contractAddress, style, screen }: TokenGroupProps) {
   const tokens = useFragment(
     graphql`
-      fragment ProfilePicturePickerGridOneOrManyFragment on Token @relay(plural: true) {
-        ...ProfilePicturePickerGridTokenGridFragment
+      fragment NftSelectorPickerGridOneOrManyFragment on Token @relay(plural: true) {
+        ...NftSelectorPickerGridTokenGridFragment
         ...getVideoOrImageUrlForNftPreviewFragment
-        ...ProfilePicturePickerSingularAssetFragment
+        ...NftSelectorPickerSingularAssetFragment
       }
     `,
     tokenRefs
@@ -272,7 +286,7 @@ function TokenGroup({ tokenRefs, contractAddress, style }: TokenGroupProps) {
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
 
-  const handleProfilePictureChange = useCallback(() => {
+  const handleSelectNft = useCallback(() => {
     navigation.pop();
   }, [navigation]);
 
@@ -284,12 +298,9 @@ function TokenGroup({ tokenRefs, contractAddress, style }: TokenGroupProps) {
   return (
     <View style={style} className="flex-1 aspect-square bg-offWhite dark:bg-black-800">
       {tokens.length === 1 ? (
-        <ProfilePicturePickerSingularAsset
-          onProfilePictureChange={handleProfilePictureChange}
-          tokenRef={firstToken}
-        />
+        <NftSelectorPickerSingularAsset onSelect={handleSelectNft} tokenRef={firstToken} />
       ) : (
-        <TokenGrid contractAddress={contractAddress} tokenRefs={tokens} />
+        <TokenGrid contractAddress={contractAddress} tokenRefs={tokens} screen={screen} />
       )}
     </View>
   );

@@ -71,10 +71,7 @@ export function NftSelectorView({
 
   const showAddWalletModal = useAddWalletModal();
   const handleManageWalletsClick = useCallback(() => {
-    showAddWalletModal({
-      onEthAddWalletSuccess: onNewWalletConnected,
-      onTezosAddWalletSuccess: onNewWalletConnected,
-    });
+    showAddWalletModal({ onConnectWalletSuccess: onNewWalletConnected });
   }, [onNewWalletConnected, showAddWalletModal]);
 
   const rows = useMemo(() => {

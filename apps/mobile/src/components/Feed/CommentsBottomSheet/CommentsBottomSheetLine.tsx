@@ -32,24 +32,27 @@ export function CommentsBottomSheetLine({ commentRef }: CommentLineProps) {
 
   return (
     <View className="flex flex-row justify-between items-center px-4">
-      <View className="flex flex-row items-center space-x-1">
-        {comment.commenter && <ProfilePicture userRef={comment.commenter} size="sm" />}
+      <View>
+        <View className="flex flex-row space-x-1 items-center">
+          {comment.commenter && <ProfilePicture userRef={comment.commenter} size="sm" />}
 
-        <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-          {comment.commenter?.username}
-        </Typography>
+          <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+            {comment.commenter?.username}
+          </Typography>
 
-        <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
-          {comment.comment}
-        </Typography>
+          <Typography
+            className="text-xxs text-metal"
+            font={{ family: 'ABCDiatype', weight: 'Regular' }}
+          >
+            {timeAgo}
+          </Typography>
+        </View>
+        <View className="pl-7">
+          <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
+            {comment.comment}
+          </Typography>
+        </View>
       </View>
-
-      <Typography
-        className="text-xxs text-metal"
-        font={{ family: 'ABCDiatype', weight: 'Regular' }}
-      >
-        {timeAgo}
-      </Typography>
     </View>
   );
 }

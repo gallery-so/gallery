@@ -34,7 +34,7 @@ export function UserSearchResult({ userRef }: Props) {
 
   return (
     <SearchResult
-      profilePicture={<ProfilePicture userRef={user} size="sm" />}
+      profilePicture={<ProfilePicture userRef={user} size="md" />}
       onPress={handlePress}
       title={user?.username ?? ''}
       description={user?.bio ?? ''}

@@ -1,11 +1,5 @@
 import { useCallback, useRef, useState } from 'react';
-import {
-  KeyboardAvoidingView,
-  Platform,
-  TextInput,
-  TouchableWithoutFeedback,
-  View,
-} from 'react-native';
+import { KeyboardAvoidingView, Platform, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import { useSearchContext } from 'src/components/Search/SearchContext';
@@ -14,6 +8,7 @@ import { SearchFilterType } from 'src/components/Search/SearchFilter';
 import { SearchInput } from 'src/components/Search/SearchInput';
 import { SearchResults } from 'src/components/Search/SearchResults';
 
+import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { SearchDefault } from '~/components/Search/SearchDefault';
 import { SearchScreenQuery } from '~/generated/SearchScreenQuery.graphql';
 
@@ -49,7 +44,12 @@ export function SearchScreen() {
         {keyword && <SearchFilter activeFilter={filter} onChange={setFilter} />}
       </View>
 
-      <TouchableWithoutFeedback onPressIn={blurInputFocus}>
+      <GalleryTouchableOpacity
+        withoutFeedback
+        onPressIn={blurInputFocus}
+        eventElementId={null}
+        eventName={null}
+      >
         {keyword ? (
           <View className="flex-grow">
             <SearchResults
@@ -61,7 +61,7 @@ export function SearchScreen() {
         ) : (
           <SearchDefault queryRef={query} blurInputFocus={blurInputFocus} />
         )}
-      </TouchableWithoutFeedback>
+      </GalleryTouchableOpacity>
     </KeyboardAvoidingView>
   );
 }

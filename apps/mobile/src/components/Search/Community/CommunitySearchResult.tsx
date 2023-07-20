@@ -2,6 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
+import { CommunityProfilePicture } from '~/components/ProfilePicture/CommunityProfilePicture';
 import { CommunitySearchResultFragment$key } from '~/generated/CommunitySearchResultFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 
@@ -20,6 +21,7 @@ export function CommunitySearchResult({ communityRef }: Props) {
           address
           chain
         }
+        ...CommunityProfilePictureFragment
       }
     `,
     communityRef
@@ -42,6 +44,7 @@ export function CommunitySearchResult({ communityRef }: Props) {
 
   return (
     <SearchResult
+      profilePicture={<CommunityProfilePicture communityRef={community} size="md" />}
       onPress={handlePress}
       title={community?.name ?? ''}
       description={community?.description ?? ''}

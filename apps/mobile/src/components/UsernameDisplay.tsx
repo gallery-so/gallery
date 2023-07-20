@@ -35,6 +35,7 @@ export function UsernameDisplay({ userRef, style, size = 'xs', text }: Props) {
 
   return (
     <GalleryTouchableOpacity
+      withoutFeedback
       onPress={handlePress}
       style={style}
       eventElementId="Username Interaction"

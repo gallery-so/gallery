@@ -1,19 +1,17 @@
-import { useNavigation } from '@react-navigation/native';
 import Constants from 'expo-constants';
 import { PropsWithChildren, ReactNode, useCallback, useRef, useState } from 'react';
 import { LayoutChangeEvent, Linking, ScrollView, View, ViewProps } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { BackButton } from '~/components/BackButton';
 import { Button } from '~/components/Button';
 import { FeedbackBottomSheet } from '~/components/FeedbackBottomSheet';
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { InteractiveLink } from '~/components/InteractiveLink';
 import { Typography } from '~/components/Typography';
-import { MainTabStackNavigatorProp } from '~/navigation/types';
 
 import { useLogout } from '../../hooks/useLogout';
-import { AccountIcon } from '../../icons/AccountIcon';
 import { BugReportIcon } from '../../icons/BugReportIcon';
 import { DiscordIcon } from '../../icons/DiscordIcon';
 import { GLogoIcon } from '../../icons/GLogoIcon';
@@ -25,7 +23,6 @@ const commitHash = Constants.expoConfig?.extra?.commitHash;
 
 export function SettingsScreen() {
   const { top } = useSafeAreaInsets();
-  const navigation = useNavigation<MainTabStackNavigatorProp>();
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
 
   const [bottomSectionHeight, setBottomSectionHeight] = useState(200);
@@ -46,10 +43,6 @@ export function SettingsScreen() {
     Linking.openURL('https://twitter.com/GALLERY');
   }, []);
 
-  const handleProfilePress = useCallback(() => {
-    navigation.navigate('SettingsProfile');
-  }, [navigation]);
-
   const [logout, isLoggingOut] = useLogout();
   const handleSignOut = useCallback(() => {
     logout();
@@ -63,29 +56,23 @@ export function SettingsScreen() {
 
   return (
     <View style={{ paddingTop: top }} className="relative flex-1 bg-white dark:bg-black-900">
-      <View className="p-4">
-        <Typography
-          font={{
-            family: 'ABCDiatype',
-            weight: 'Bold',
-          }}
-          className="text-2xl"
+      <View className="px-4 relative mb-2">
+        <BackButton />
+
+        <View
+          className="absolute inset-0 flex flex-row justify-center items-center"
+          pointerEvents="none"
         >
-          Settings
-        </Typography>
+          <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+            Settings
+          </Typography>
+        </View>
       </View>
 
       <ScrollView
         contentContainerStyle={{ paddingBottom: bottomSectionHeight + 24 }}
         className="px-2 pt-2 space-y-6 flex flex-col"
       >
-        <SettingsSection>
-          <SettingsRow
-            onPress={handleProfilePress}
-            text="Profile"
-            icon={<AccountIcon width={24} height={24} />}
-          />
-        </SettingsSection>
         <SettingsSection>
           <SettingsRow
             onPress={handleBugReportPress}

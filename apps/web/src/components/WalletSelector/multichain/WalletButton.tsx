@@ -2,7 +2,7 @@ import { ButtonHTMLAttributes, useMemo } from 'react';
 import styled from 'styled-components';
 
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
-import { BaseM, BaseS, TitleS } from '~/components/core/Text/Text';
+import { BaseM, TitleS } from '~/components/core/Text/Text';
 import transitions from '~/components/core/transitions';
 import { ChainMetadata } from '~/components/GalleryEditor/PiecesSidebar/chains';
 import colors from '~/shared/theme/colors';
@@ -24,18 +24,6 @@ type WalletButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   additionalChains?: ChainMetadata[];
 };
 
-// takes a list of chain names like ['Zora', 'Optimism'] and converts it to user facing copy like "Including Zora and Optimism"
-function convertChainListToSubLabelString(list: string[]) {
-  if (list.length === 0) {
-    return '';
-  } else if (list.length === 1) {
-    return `Including ${list[0]}`;
-  } else {
-    const last = list.pop();
-    return `Including ${list.join(', ')} and ${last}`;
-  }
-}
-
 export const WalletButton = ({
   label,
   additionalChains,
@@ -48,20 +36,11 @@ export const WalletButton = ({
     [additionalChains]
   );
 
-  const subLabel = useMemo(
-    () =>
-      additionalChains
-        ? convertChainListToSubLabelString(additionalChains.map((chain) => chain.name))
-        : '',
-    [additionalChains]
-  );
-
   return (
     <StyledButton data-testid="wallet-button" disabled={disabled} {...buttonProps}>
       <StyledContent align="center" justify="space-between">
         <VStack align="baseline">
           <TitleS>{label}</TitleS>
-          {subLabel && <BaseS color={colors.shadow}>{subLabel}</BaseS>}
         </VStack>
         <StyledButtonIcon>
           {disabled && <StyledComingSoonText>COMING SOON</StyledComingSoonText>}

@@ -15,7 +15,7 @@ export function SearchSection({ isShowAll, numResults, onShowAll, title }: Props
   if (!isShowAll && numResults === 0) return null;
 
   return (
-    <View className="flex flex-row items-center justify-between p-4">
+    <View className="flex flex-row items-center justify-between px-4 pt-2 pb-0">
       <Typography
         font={{
           family: 'ABCDiatype',

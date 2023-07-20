@@ -152,7 +152,7 @@ function UserGalleryCollection({
                 {showEditActions && (
                   <>
                     <DropdownItem onClick={handleEditNameClick}>
-                      EDIT NAME & DESCRIPTION
+                      <BaseM>Edit Name & Description</BaseM>
                     </DropdownItem>
                     <DropdownLink
                       href={{
@@ -161,11 +161,13 @@ function UserGalleryCollection({
                       }}
                       onClick={() => track('Update existing collection button clicked')}
                     >
-                      EDIT COLLECTION
+                      <BaseM>Edit Collection</BaseM>
                     </DropdownLink>
                   </>
                 )}
-                <DropdownLink href={collectionUrlPath}>VIEW COLLECTION</DropdownLink>
+                <DropdownLink href={collectionUrlPath}>
+                  <BaseM>View Collection</BaseM>
+                </DropdownLink>
               </DropdownSection>
             </SettingsDropdown>
           </StyledOptionsContainer>

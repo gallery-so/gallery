@@ -7,7 +7,7 @@ import { WalletSelectorWrapper } from '~/components/WalletSelector/multichain/Wa
 import { WalletSelectorFragment$key } from '~/generated/WalletSelectorFragment.graphql';
 import { ADD_WALLET_TO_USER, AUTH, CONNECT_WALLET_ONLY } from '~/types/Wallet';
 
-import type { WalletSelectorVariant } from './multichain/MultichainWalletSelector';
+import type { MultichainWalletSelectorProps } from './multichain/MultichainWalletSelector';
 
 const MultichainWalletSelector = lazy(() => import('./multichain/MultichainWalletSelector'));
 
@@ -22,13 +22,8 @@ const BeaconProvider = lazy(() => import('~/contexts/beacon/BeaconContext'));
 export type ConnectionMode = typeof AUTH | typeof ADD_WALLET_TO_USER | typeof CONNECT_WALLET_ONLY;
 
 type Props = {
-  connectionMode?: ConnectionMode;
   queryRef: WalletSelectorFragment$key;
-  variant?: WalletSelectorVariant;
-  onEthAddWalletSuccess?: () => void;
-  onTezosAddWalletSuccess?: () => void;
-  showEmail?: boolean;
-};
+} & MultichainWalletSelectorProps;
 
 // number of connection options supported; list available in `MultichainWalletSelector.tsx`
 const NUM_OPTIONS_SUPPORTED = 5;
@@ -37,8 +32,7 @@ export default function WalletSelector({
   queryRef,
   connectionMode = AUTH,
   variant,
-  onEthAddWalletSuccess,
-  onTezosAddWalletSuccess,
+  onConnectWalletSuccess,
   showEmail = true,
 }: Props) {
   // Usually we'd want to pass in a query variable and use @skip to conditionally
@@ -79,11 +73,10 @@ export default function WalletSelector({
       <BeaconProvider>
         <EthereumProviders>
           <MultichainWalletSelector
-            connectionMode={connectionMode}
             queryRef={query}
+            connectionMode={connectionMode}
             variant={variant}
-            onEthAddWalletSuccess={onEthAddWalletSuccess}
-            onTezosAddWalletSuccess={onTezosAddWalletSuccess}
+            onConnectWalletSuccess={onConnectWalletSuccess}
             showEmail={showEmail}
           />
         </EthereumProviders>
