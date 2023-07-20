@@ -14,12 +14,12 @@ const PROD_FLAGS: Record<FeatureFlag, boolean> = {
 };
 
 const DEV_FLAGS: Record<FeatureFlag, boolean> = {
-  KOALA: false,
+  KOALA: true,
 };
 
 export const ROLE_FLAGS: Record<Role, Record<FeatureFlag, boolean>> = {
   ADMIN: {
-    KOALA: false,
+    KOALA: true,
   },
   BETA_TESTER: {
     KOALA: false,
