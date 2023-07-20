@@ -25,6 +25,9 @@ export function groupNftSelectorCollectionsByAddress({
     readInlineData<groupNftSelectorCollectionsByAddressTokenFragment$key>(
       graphql`
         fragment groupNftSelectorCollectionsByAddressTokenFragment on Token @inline {
+          # dbid is used by NftSelectorTokenPreview.tsx
+          # eslint-disable-next-line relay/unused-fields
+          dbid
           chain
           isSpamByProvider
           isSpamByUser

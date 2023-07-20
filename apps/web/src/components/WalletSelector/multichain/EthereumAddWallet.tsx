@@ -192,7 +192,7 @@ export const EthereumAddWallet = ({ queryRef, reset, onSuccess = noop }: Props) 
 
   if (pendingState === ADDRESS_ALREADY_CONNECTED && account) {
     return (
-      <EmptyState title="Connect with Ethereum">
+      <EmptyState title="Connect with Ethereum or L2 Wallet">
         <VStack gap={8}>
           <VStack>
             <BaseM>The following address is already connected to this account:</BaseM>
