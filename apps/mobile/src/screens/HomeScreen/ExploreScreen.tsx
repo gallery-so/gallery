@@ -50,16 +50,16 @@ function ExploreScreenInner({ queryRef }: ExploreScreenInnerProps) {
         }
 
         # [GAL-3763] Revive this if / when elon lets us import twitter follower graphs again
-        # viewer {
-        #   __typename
-        #   ... on Viewer {
-        #     socialAccounts @required(action: THROW) {
-        #       twitter {
-        #         __typename
-        #       }
-        #     }
-        #   }
-        # }
+        viewer {
+          __typename
+          # ... on Viewer {
+          #   socialAccounts @required(action: THROW) {
+          #     twitter {
+          #       __typename
+          #     }
+          #   }
+          # }
+        }
         # ...TwitterSectionQueryFragment
 
         ...TrendingSectionQueryFragment
@@ -111,13 +111,13 @@ function ExploreScreenInner({ queryRef }: ExploreScreenInnerProps) {
     const items: ListItemType[] = [];
 
     // [GAL-3763] Revive this if / when elon lets us import twitter follower graphs again
-    // if (query.viewer?.__typename === 'Viewer') {
-    //   if (query.viewer.socialAccounts.twitter?.__typename) {
-    //     items.push({ kind: 'twitter', queryRef: query });
-    //   }
+    if (query.viewer?.__typename === 'Viewer') {
+      // if (query.viewer.socialAccounts.twitter?.__typename) {
+      //   items.push({ kind: 'twitter', queryRef: query });
+      // }
 
-    //   items.push({ kind: 'suggested', queryRef: query });
-    // }
+      items.push({ kind: 'suggested', queryRef: query });
+    }
 
     if (query.trendingUsers5Days?.__typename === 'TrendingUsersPayload') {
       items.push({
