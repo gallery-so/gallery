@@ -14,7 +14,7 @@ import unescape from '~/shared/utils/unescape';
 
 import useNftSelector from '../NftSelector/useNftSelector';
 import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
-import { RawProfilePicture } from '../RawProfilePicture';
+import { RawProfilePicture } from '../ProfilePicture/RawProfilePicture';
 import { ProfilePictureDropdown } from './ProfilePictureDropdown';
 
 type Props = {

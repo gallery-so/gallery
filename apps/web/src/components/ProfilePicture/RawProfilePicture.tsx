@@ -152,7 +152,7 @@ const InnerCircle = styled(VStack)<{ hasImage?: boolean }>`
   height: 100%;
 
   background-color: ${colors.offWhite};
-  border: 1px solid ${({ hasImage }) => (hasImage ? 'transparent' : colors.black['800'])};
+  ${({ hasImage }) => !hasImage && `border: 1px solid ${colors.black['800']}`};
 
   transition: background 100ms ease-in-out;
 `;

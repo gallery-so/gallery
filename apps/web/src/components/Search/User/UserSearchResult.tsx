@@ -1,6 +1,7 @@
 import { Route } from 'nextjs-routes';
 import { graphql, useFragment } from 'react-relay';
 
+import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { UserSearchResultFragment$key } from '~/generated/UserSearchResultFragment.graphql';
 
 import SearchResult from '../SearchResult';
@@ -15,7 +16,7 @@ export default function UserSearchResult({ userRef }: Props) {
       fragment UserSearchResultFragment on GalleryUser {
         username
         bio
-        ...SearchResultUserFragment
+        ...ProfilePictureFragment
       }
     `,
     userRef
@@ -32,7 +33,7 @@ export default function UserSearchResult({ userRef }: Props) {
       description={user.bio ?? ''}
       path={route}
       type="curator"
-      userRef={user}
+      profilePicture={<ProfilePicture userRef={user} size="md" />}
     />
   );
 }

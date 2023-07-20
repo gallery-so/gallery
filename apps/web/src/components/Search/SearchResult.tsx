@@ -1,18 +1,15 @@
 import Link, { LinkProps } from 'next/link';
 import { Route, route } from 'nextjs-routes';
-import { useCallback, useMemo } from 'react';
-import { graphql, useFragment } from 'react-relay';
+import { ReactNode, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 
 import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
-import { SearchResultUserFragment$key } from '~/generated/SearchResultUserFragment.graphql';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
 
 import Markdown from '../core/Markdown/Markdown';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM } from '../core/Text/Text';
-import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
 import { SearchFilterType } from './Search';
 import { useSearchContext } from './SearchContext';
 
@@ -21,22 +18,19 @@ type Props = {
   description: string;
   path: Route;
   type: SearchFilterType;
-  userRef?: SearchResultUserFragment$key | null;
+  profilePicture?: ReactNode;
 };
 
 const MAX_DESCRIPTION_CHARACTER = 150;
 
-export default function SearchResult({ name, description, path, type, userRef }: Props) {
-  const user = useFragment(
-    graphql`
-      fragment SearchResultUserFragment on GalleryUser {
-        __typename
-        ...ProfilePictureFragment
-      }
-    `,
-    userRef || null
-  );
+export default function SearchResult({
+  name,
+  description,
+  path,
+  type,
 
+  profilePicture,
+}: Props) {
   const { hideDrawer } = useDrawerActions();
   const { keyword } = useSearchContext();
 
@@ -85,11 +79,7 @@ export default function SearchResult({ name, description, path, type, userRef }:
   return (
     <StyledSearchResult className="SearchResult" href={path} onClick={handleClick}>
       <HStack gap={4} align="center">
-        {user && (
-          <div>
-            <ProfilePicture size="md" userRef={user} />
-          </div>
-        )}
+        {profilePicture}
         <VStack>
           <BaseM>
             <Markdown text={highlightedName} />

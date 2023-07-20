@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseS } from '~/components/core/Text/Text';
-import { ProfilePictureStack } from '~/components/ProfilePictureStack';
+import { ProfilePictureStack } from '~/components/ProfilePicture/ProfilePictureStack';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { UserSharedFollowersFragment$key } from '~/generated/UserSharedFollowersFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
