@@ -1,4 +1,5 @@
 import { useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
+import { useNavigation } from '@react-navigation/native';
 import clsx from 'clsx';
 import { ForwardedRef, forwardRef, useCallback, useMemo, useRef } from 'react';
 import { View } from 'react-native';
@@ -14,6 +15,8 @@ import { Typography } from '~/components/Typography';
 import { PostBottomSheetFragment$key } from '~/generated/PostBottomSheetFragment.graphql';
 import { PostBottomSheetQueryFragment$key } from '~/generated/PostBottomSheetQueryFragment.graphql';
 import { PostBottomSheetUserFragment$key } from '~/generated/PostBottomSheetUserFragment.graphql';
+import { MainTabStackNavigatorProp } from '~/navigation/types';
+import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
 import useFollowUser from '~/shared/relay/useFollowUser';
 import useUnfollowUser from '~/shared/relay/useUnfollowUser';
 
@@ -38,6 +41,10 @@ function PostBottomSheet(
         __typename
         author {
           username
+        }
+        tokens {
+          dbid
+          ...getVideoOrImageUrlForNftPreviewFragment
         }
         ...DeletePostBottomSheetFragment
       }
@@ -74,6 +81,13 @@ function PostBottomSheet(
     `,
     queryRef
   );
+  const token = post.tokens?.[0] || null;
+
+  if (!token) {
+    throw new Error('There is no token in post');
+  }
+
+  const navigation = useNavigation<MainTabStackNavigatorProp>();
 
   const { bottom } = useSafeAreaPadding();
 
@@ -121,24 +135,39 @@ function PostBottomSheet(
     }
   }, [isFollowing, username]);
 
+  const media = getVideoOrImageUrlForNftPreview({
+    tokenRef: token,
+    preferStillFrameFromGif: true,
+  });
+
+  const cachedPreviewAssetUrl = media?.urls.medium || media?.urls.small || null;
+
+  const handleViewNftDetail = useCallback(() => {
+    navigation.navigate('UniversalNftDetail', {
+      cachedPreviewAssetUrl,
+      tokenId: token.dbid,
+    });
+  }, [cachedPreviewAssetUrl, navigation, token.dbid]);
+
   const inner = useMemo(() => {
     if (isOwnPost)
       return (
         <>
-          <BottomSheetRow text="Share" onPress={() => {}} />
-          <BottomSheetRow text="View item detail" onPress={() => {}} />
+          {/* Uncomment when the web have an universal token detail page */}
+          {/* <BottomSheetRow text="Share" onPress={() => {}} /> */}
+          <BottomSheetRow text="View item detail" onPress={handleViewNftDetail} />
           <BottomSheetRow text="Delete" isConfirmationRow onPress={handleDeletePost} />
         </>
       );
 
     return (
       <>
-        <BottomSheetRow text="Share" onPress={() => {}} />
+        {/* <BottomSheetRow text="Share" onPress={() => {}} /> */}
         <BottomSheetRow text={followUserText} onPress={handleFollowUser} />
-        <BottomSheetRow text="View item detail" onPress={() => {}} />
+        <BottomSheetRow text="View item detail" onPress={handleViewNftDetail} />
       </>
     );
-  }, [followUserText, handleDeletePost, handleFollowUser, isOwnPost]);
+  }, [followUserText, handleDeletePost, handleFollowUser, handleViewNftDetail, isOwnPost]);
 
   return (
     <>
