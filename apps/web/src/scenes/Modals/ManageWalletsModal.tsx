@@ -3,21 +3,16 @@ import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import ManageWallets from '~/components/ManageWallets/ManageWallets';
+import { OnConnectWalletSuccessFn } from '~/components/WalletSelector/multichain/MultichainWalletSelector';
 import { ManageWalletsModalFragment$key } from '~/generated/ManageWalletsModalFragment.graphql';
 
 type Props = {
   queryRef: ManageWalletsModalFragment$key;
   newAddress?: string;
-  onEthAddWalletSuccess?: () => void;
-  onTezosAddWalletSuccess?: () => void;
+  onConnectWalletSuccess?: OnConnectWalletSuccessFn;
 };
 
-function ManageWalletsModal({
-  newAddress,
-  queryRef,
-  onEthAddWalletSuccess,
-  onTezosAddWalletSuccess,
-}: Props) {
+function ManageWalletsModal({ newAddress, queryRef, onConnectWalletSuccess }: Props) {
   const query = useFragment(
     graphql`
       fragment ManageWalletsModalFragment on Query {
@@ -32,8 +27,7 @@ function ManageWalletsModal({
       <ManageWallets
         queryRef={query}
         newAddress={newAddress}
-        onTezosAddWalletSuccess={onTezosAddWalletSuccess}
-        onEthAddWalletSuccess={onEthAddWalletSuccess}
+        onConnectWalletSuccess={onConnectWalletSuccess}
       />
     </StyledManageWalletsModal>
   );
