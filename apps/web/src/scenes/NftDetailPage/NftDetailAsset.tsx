@@ -6,6 +6,7 @@ import { StyledImageWithLoading } from '~/components/LoadingAsset/ImageWithLoadi
 import { NftFailureBoundary } from '~/components/NftFailureFallback/NftFailureBoundary';
 import { NftFailureFallback } from '~/components/NftFailureFallback/NftFailureFallback';
 import { GLOBAL_FOOTER_HEIGHT } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
+import { useNftPreviewFallbackState } from '~/contexts/nftPreviewFallback/NftPreviewFallbackContext';
 import { useContentState } from '~/contexts/shimmer/ShimmerContext';
 import { NftDetailAssetComponentFragment$key } from '~/generated/NftDetailAssetComponentFragment.graphql';
 import { NftDetailAssetComponentWithoutFallbackFragment$key } from '~/generated/NftDetailAssetComponentWithoutFallbackFragment.graphql';
@@ -33,6 +34,7 @@ export function NftDetailAssetComponent({ tokenRef, onLoad }: NftDetailAssetComp
   const token = useFragment(
     graphql`
       fragment NftDetailAssetComponentFragment on Token {
+        dbid
         media {
           ... on Media {
             fallbackMedia {
@@ -47,6 +49,10 @@ export function NftDetailAssetComponent({ tokenRef, onLoad }: NftDetailAssetComp
     tokenRef
   );
 
+  const { previewUrlMap } = useNftPreviewFallbackState();
+  const tokenId = token.dbid;
+  const previewUrl = previewUrlMap[tokenId];
+
   return (
     <ReportingErrorBoundary
       fallback={
@@ -57,7 +63,11 @@ export function NftDetailAssetComponent({ tokenRef, onLoad }: NftDetailAssetComp
         />
       }
     >
-      <NftDetailAssetComponentWithouFallback tokenRef={token} onLoad={onLoad} />
+      <NftDetailAssetComponentWithouFallback
+        tokenRef={token}
+        onLoad={onLoad}
+        previewUrl={previewUrl}
+      />
     </ReportingErrorBoundary>
   );
 }
@@ -65,11 +75,13 @@ export function NftDetailAssetComponent({ tokenRef, onLoad }: NftDetailAssetComp
 type NftDetailAssetComponentWithoutFallbackProps = {
   tokenRef: NftDetailAssetComponentWithoutFallbackFragment$key;
   onLoad: () => void;
+  previewUrl: string | undefined;
 };
 
 function NftDetailAssetComponentWithouFallback({
   tokenRef,
   onLoad,
+  previewUrl,
 }: NftDetailAssetComponentWithoutFallbackProps) {
   const token = useFragment(
     graphql`
@@ -131,25 +143,40 @@ function NftDetailAssetComponentWithouFallback({
     case 'ImageMedia':
       const imageMedia = token.media;
 
-      if (!imageMedia.contentRenderURL) {
+      if (previewUrl) {
+        // If there is a preview URL, display it
+        return (
+          <NftDetailImage
+            alt={token.name}
+            onLoad={onLoad}
+            imageUrl={previewUrl}
+            onClick={() => {
+              if (previewUrl) {
+                window.open(previewUrl);
+              }
+            }}
+          />
+        );
+      } else if (imageMedia.contentRenderURL) {
+        // If contentRenderURL is loaded, display it
+        return (
+          <NftDetailImage
+            alt={token.name}
+            onLoad={onLoad}
+            imageUrl={imageMedia.contentRenderURL}
+            onClick={() => {
+              if (imageMedia.contentRenderURL) {
+                window.open(imageMedia.contentRenderURL);
+              }
+            }}
+          />
+        );
+      } else {
         throw new CouldNotRenderNftError(
           'NftDetailAsset',
           'Token media type was `ImageMedia` but contentRenderURL was null'
         );
       }
-
-      return (
-        <NftDetailImage
-          alt={token.name}
-          onLoad={onLoad}
-          imageUrl={imageMedia.contentRenderURL}
-          onClick={() => {
-            if (imageMedia.contentRenderURL) {
-              window.open(imageMedia.contentRenderURL);
-            }
-          }}
-        />
-      );
     case 'GIFMedia':
       const gifMedia = token.media;
 
