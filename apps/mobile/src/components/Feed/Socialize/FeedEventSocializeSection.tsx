@@ -1,5 +1,7 @@
+import { useCallback } from 'react';
 import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
+import { useEventComment } from 'src/hooks/useEventComment';
 import { useToggleAdmire } from 'src/hooks/useToggleAdmire';
 
 import { FeedEventSocializeSectionFragment$key } from '~/generated/FeedEventSocializeSectionFragment.graphql';
@@ -19,6 +21,7 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef, onCommentPre
   const event = useFragment(
     graphql`
       fragment FeedEventSocializeSectionFragment on FeedEvent {
+        dbid
         eventData {
           ... on UserFollowedUsersFeedEventData {
             __typename
@@ -26,7 +29,6 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef, onCommentPre
         }
 
         ...InteractionsFragment
-        ...CommentButtonFragment
         ...useToggleAdmireFragment
       }
     `,
@@ -47,6 +49,19 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef, onCommentPre
     queryRef: query,
   });
 
+  const { submitComment, isSubmittingComment } = useEventComment();
+
+  const handleSubmit = useCallback(
+    (value: string) => {
+      submitComment({
+        feedEventId: event.dbid,
+        value,
+        onSuccess: () => {},
+      });
+    },
+    [event.dbid, submitComment]
+  );
+
   if (event.eventData?.__typename === 'UserFollowedUsersFeedEventData') {
     return <View className="pb-6" />;
   }
@@ -59,7 +74,11 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef, onCommentPre
 
       <View className="flex flex-row space-x-1">
         <AdmireButton onPress={toggleAdmire} isAdmired={hasViewerAdmiredEvent} />
-        <CommentButton eventRef={event} onClick={onCommentPress} />
+        <CommentButton
+          onClick={onCommentPress}
+          onSubmit={handleSubmit}
+          isSubmittingComment={isSubmittingComment}
+        />
       </View>
     </View>
   );

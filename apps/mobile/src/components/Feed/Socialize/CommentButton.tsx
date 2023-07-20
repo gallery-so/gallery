@@ -1,34 +1,24 @@
 import { useColorScheme } from 'nativewind';
 import { useCallback, useMemo, useRef } from 'react';
 import { View, ViewProps } from 'react-native';
-import { graphql, useFragment } from 'react-relay';
 
 import {
   GalleryBottomSheetModal,
   GalleryBottomSheetModalType,
 } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
-import { CommentButtonFragment$key } from '~/generated/CommentButtonFragment.graphql';
 
 import { CommentBox } from './CommentBox';
 import { CommentIcon } from './CommentIcon';
 
 type Props = {
-  eventRef: CommentButtonFragment$key;
   style?: ViewProps['style'];
   onClick: () => void;
+  onSubmit: (value: string) => void;
+  isSubmittingComment: boolean;
 };
 
-export function CommentButton({ eventRef, style, onClick }: Props) {
-  const event = useFragment(
-    graphql`
-      fragment CommentButtonFragment on FeedEvent {
-        dbid
-      }
-    `,
-    eventRef
-  );
-
+export function CommentButton({ style, onClick, onSubmit, isSubmittingComment }: Props) {
   const { colorScheme } = useColorScheme();
 
   const bottomSheetRef = useRef<GalleryBottomSheetModalType>(null);
@@ -67,7 +57,12 @@ export function CommentButton({ eventRef, style, onClick }: Props) {
         }}
       >
         <View className={`${colorScheme === 'dark' ? 'bg-black' : 'bg-white'}`}>
-          <CommentBox feedEventId={event.dbid} autoFocus onClose={handleCloseCommentBox} />
+          <CommentBox
+            autoFocus
+            onClose={handleCloseCommentBox}
+            onSubmit={onSubmit}
+            isSubmittingComment={isSubmittingComment}
+          />
         </View>
       </GalleryBottomSheetModal>
     </>

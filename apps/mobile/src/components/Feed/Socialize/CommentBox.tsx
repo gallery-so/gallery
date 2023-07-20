@@ -8,7 +8,6 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from 'react-native-reanimated';
-import { useEventComment } from 'src/hooks/useEventComment';
 import { XMarkIcon } from 'src/icons/XMarkIcon';
 import useKeyboardStatus from 'src/utils/useKeyboardStatus';
 
@@ -18,22 +17,27 @@ import colors from '~/shared/theme/colors';
 import { SendIcon } from './SendIcon';
 
 type Props = {
-  feedEventId: string;
-
   onClose: () => void;
   autoFocus?: boolean;
+
+  onSubmit: (value: string) => void;
+  isSubmittingComment: boolean;
 
   // If its coming from comment button, show the x mark
   isNotesModal?: boolean;
 };
 
-export function CommentBox({ autoFocus, onClose, isNotesModal = false, feedEventId }: Props) {
+export function CommentBox({
+  autoFocus,
+  onClose,
+  isNotesModal = false,
+  onSubmit,
+  isSubmittingComment,
+}: Props) {
   const { colorScheme } = useColorScheme();
   const [value, setValue] = useState('');
 
   const characterCount = useMemo(() => 100 - value.length, [value]);
-
-  const { submitComment, isSubmittingComment } = useEventComment();
 
   const isKeyboardActive = useKeyboardStatus();
 
@@ -58,14 +62,10 @@ export function CommentBox({ autoFocus, onClose, isNotesModal = false, feedEvent
       return;
     }
 
-    submitComment({
-      value,
-      feedEventId,
-      onSuccess: () => {
-        resetComment();
-      },
-    });
-  }, [feedEventId, resetComment, submitComment, value]);
+    onSubmit(value);
+
+    resetComment();
+  }, [onSubmit, resetComment, value]);
 
   const disabledSendButton = useMemo(() => {
     return value.length === 0 || characterCount < 0 || isSubmittingComment;
