@@ -8,6 +8,7 @@ import { TezosIcon } from 'src/icons/TezosIcon';
 
 import { Chain, CommunityViewFragment$key } from '~/generated/CommunityViewFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+import colors from '~/shared/theme/colors';
 
 import { BackButton } from '../BackButton';
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
@@ -116,6 +117,7 @@ export function CommunityView({ queryRef }: Props) {
           <LinkableAddress
             chainAddressRef={community.contractAddress}
             type="Community Contract Address"
+            textStyle={{ color: colors.shadow }}
           />
         </View>
       );
@@ -137,23 +139,17 @@ export function CommunityView({ queryRef }: Props) {
           <CommunityHeader communityRef={community} />
           <View className="mb-4 flex flex-row space-x-6">
             {community?.chain !== 'POAP' && (
-              <View className="space-y-1">
+              <View className="flex flex-column space-y-1">
                 <Typography
                   font={{ family: 'ABCDiatype', weight: 'Regular' }}
                   className="text-xs uppercase"
                 >
                   created by
                 </Typography>
-
-                <Typography
-                  font={{ family: 'ABCDiatype', weight: 'Regular' }}
-                  className="text-sm text-shadow"
-                >
-                  {showAddressOrGalleryUser}
-                </Typography>
+                {showAddressOrGalleryUser}
               </View>
             )}
-            <View className="space-y-1">
+            <View className="flex flex-column space-y-1">
               <Typography
                 font={{ family: 'ABCDiatype', weight: 'Regular' }}
                 className="text-xs uppercase"
