@@ -10,6 +10,7 @@ import { Typography } from '../Typography';
 import { DefaultUserIcon } from './DefaultUserIcon';
 
 const sizeMapping: { [size in Size]: number } = {
+  xxs: 16,
   xs: 20,
   sm: 24,
   md: 32,
@@ -19,6 +20,7 @@ const sizeMapping: { [size in Size]: number } = {
 };
 
 const fontSizeMapping: { [size in Size]: number } = {
+  xxs: 8,
   xs: 12,
   sm: 14,
   md: 18,
@@ -27,7 +29,7 @@ const fontSizeMapping: { [size in Size]: number } = {
   xxl: 40,
 };
 
-type Size = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl';
+type Size = 'xxs' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl';
 
 export type RawProfilePictureProps = {
   size: Size;
