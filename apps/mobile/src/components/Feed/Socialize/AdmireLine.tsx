@@ -75,5 +75,11 @@ export function AdmireLine({ userRefs, totalAdmires, onMultiUserPress, style }: 
     );
   }
 
-  return null;
+  return (
+    <View style={style} className="flex flex-row items-center">
+      <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+        Be the first to admire this
+      </Typography>
+    </View>
+  );
 }

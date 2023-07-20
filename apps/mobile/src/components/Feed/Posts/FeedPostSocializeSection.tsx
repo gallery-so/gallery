@@ -1,9 +1,12 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 import { usePostComment } from 'src/hooks/usePostComment';
 import { useTogglePostAdmire } from 'src/hooks/useTogglePostAdmire';
 
+import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
+import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
+import { Typography } from '~/components/Typography';
 import { FeedPostSocializeSectionFragment$key } from '~/generated/FeedPostSocializeSectionFragment.graphql';
 import { FeedPostSocializeSectionQueryFragment$key } from '~/generated/FeedPostSocializeSectionQueryFragment.graphql';
 
@@ -65,6 +68,8 @@ export function FeedPostSocializeSection({ feedPostRef, queryRef, onCommentPress
     queryRef
   );
 
+  const bottomSheetRef = useRef<GalleryBottomSheetModalType>(null);
+
   const { toggleAdmire, hasViewerAdmiredEvent } = useTogglePostAdmire({
     postRef: post,
     queryRef: query,
@@ -95,6 +100,7 @@ export function FeedPostSocializeSection({ feedPostRef, queryRef, onCommentPress
   }, [post.comments?.edges]);
 
   const totalComments = post.comments?.pageInfo?.total ?? 0;
+  const isEmptyComments = totalComments === 0;
 
   const nonNullAdmires = useMemo(() => {
     const admires = [];
@@ -112,27 +118,44 @@ export function FeedPostSocializeSection({ feedPostRef, queryRef, onCommentPress
 
   const totalAdmires = post.admires?.pageInfo?.total ?? 0;
 
-  return (
-    <View className="flex flex-row px-3 justify-between pb-8 pt-5">
-      <View className="flex-1 pr-4 pt-1">
-        <Interactions
-          type="post"
-          feedId={post.dbid}
-          commentRefs={nonNullComments}
-          admireRefs={nonNullAdmires}
-          totalComments={totalComments}
-          totalAdmires={totalAdmires}
-        />
-      </View>
+  const handleAddComment = useCallback(() => {
+    bottomSheetRef.current?.present();
+  }, []);
 
-      <View className="flex flex-row space-x-1">
-        <AdmireButton onPress={toggleAdmire} isAdmired={hasViewerAdmiredEvent} />
-        <CommentButton
-          onClick={onCommentPress}
-          onSubmit={handleSubmit}
-          isSubmittingComment={isSubmittingComment}
-        />
+  return (
+    <View className="px-3 pb-8 pt-5">
+      <View className="flex flex-row justify-between items-center ">
+        <View className="flex-1 pr-4 pt-1">
+          <Interactions
+            type="post"
+            feedId={post.dbid}
+            commentRefs={nonNullComments}
+            admireRefs={nonNullAdmires}
+            totalComments={totalComments}
+            totalAdmires={totalAdmires}
+          />
+        </View>
+
+        <View className="flex flex-row space-x-1">
+          <AdmireButton onPress={toggleAdmire} isAdmired={hasViewerAdmiredEvent} />
+          <CommentButton
+            onClick={onCommentPress}
+            onSubmit={handleSubmit}
+            isSubmittingComment={isSubmittingComment}
+            bottomSheetRef={bottomSheetRef}
+          />
+        </View>
       </View>
+      {isEmptyComments && (
+        <GalleryTouchableOpacity onPress={handleAddComment} eventElementId={null} eventName={null}>
+          <Typography
+            font={{ family: 'ABCDiatype', weight: 'Bold' }}
+            className="text-xs text-shadow"
+          >
+            Add a comment
+          </Typography>
+        </GalleryTouchableOpacity>
+      )}
     </View>
   );
 }

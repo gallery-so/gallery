@@ -1,9 +1,10 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 import { useEventComment } from 'src/hooks/useEventComment';
 import { useToggleAdmire } from 'src/hooks/useToggleAdmire';
 
+import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { FeedEventSocializeSectionFragment$key } from '~/generated/FeedEventSocializeSectionFragment.graphql';
 import { FeedEventSocializeSectionQueryFragment$key } from '~/generated/FeedEventSocializeSectionQueryFragment.graphql';
 
@@ -69,6 +70,7 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef, onCommentPre
     `,
     queryRef
   );
+  const bottomSheetRef = useRef<GalleryBottomSheetModalType>(null);
 
   const { toggleAdmire, hasViewerAdmiredEvent } = useToggleAdmire({
     eventRef: event,
@@ -123,7 +125,7 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef, onCommentPre
   }
 
   return (
-    <View className="flex flex-row px-3 justify-between pb-8 pt-5">
+    <View className="flex flex-row px-3 justify-between items-center pb-8 pt-5">
       <View className="flex-1 pr-4 pt-1">
         <Interactions
           type="event"
@@ -141,6 +143,7 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef, onCommentPre
           onClick={onCommentPress}
           onSubmit={handleSubmit}
           isSubmittingComment={isSubmittingComment}
+          bottomSheetRef={bottomSheetRef}
         />
       </View>
     </View>

@@ -81,13 +81,15 @@ export function Interactions({
   return (
     <View className="flex flex-col space-y-1">
       <View className="flex flex-row space-x-1 items-center">
-        <ProfilePictureBubblesWithCount
-          eventName="Feed Event Admire Bubbles Pressed"
-          eventElementId="Feed Event Admire Bubbles"
-          onPress={handleSeeAllAdmires}
-          userRefs={admireUsers}
-          totalCount={totalAdmires}
-        />
+        {admireUsers.length > 0 && (
+          <ProfilePictureBubblesWithCount
+            eventName="Feed Event Admire Bubbles Pressed"
+            eventElementId="Feed Event Admire Bubbles"
+            onPress={handleSeeAllAdmires}
+            userRefs={admireUsers}
+            totalCount={totalAdmires}
+          />
+        )}
 
         <AdmireLine
           onMultiUserPress={handleSeeAllAdmires}

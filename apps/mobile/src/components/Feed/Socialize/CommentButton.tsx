@@ -1,5 +1,5 @@
 import { useColorScheme } from 'nativewind';
-import { useCallback, useMemo, useRef } from 'react';
+import { ForwardedRef, useCallback, useMemo, useRef } from 'react';
 import { View, ViewProps } from 'react-native';
 
 import {
@@ -16,22 +16,30 @@ type Props = {
   onClick: () => void;
   onSubmit: (value: string) => void;
   isSubmittingComment: boolean;
+
+  bottomSheetRef: ForwardedRef<GalleryBottomSheetModalType>;
 };
 
-export function CommentButton({ style, onClick, onSubmit, isSubmittingComment }: Props) {
+export function CommentButton({
+  style,
+  onClick,
+  onSubmit,
+  isSubmittingComment,
+  bottomSheetRef,
+}: Props) {
   const { colorScheme } = useColorScheme();
 
-  const bottomSheetRef = useRef<GalleryBottomSheetModalType>(null);
+  // const bottomSheetRef = useRef<GalleryBottomSheetModalType>(null);
   const snapPoints = useMemo(() => [52], []);
+  const internalRef = useRef<GalleryBottomSheetModalType | null>(null);
 
   const handleCloseCommentBox = useCallback(() => {
-    bottomSheetRef.current?.close();
+    internalRef.current?.close();
   }, []);
 
   const toggleCommentBox = useCallback(() => {
     onClick();
-
-    bottomSheetRef.current?.present();
+    internalRef.current?.present();
   }, [onClick]);
 
   return (
@@ -47,7 +55,18 @@ export function CommentButton({ style, onClick, onSubmit, isSubmittingComment }:
       </GalleryTouchableOpacity>
       <GalleryBottomSheetModal
         index={0}
-        ref={bottomSheetRef}
+        // ref={bottomSheetRef}
+        ref={(value) => {
+          internalRef.current = value;
+
+          if (bottomSheetRef) {
+            if (typeof bottomSheetRef === 'function') {
+              bottomSheetRef(value);
+            } else {
+              bottomSheetRef.current = value;
+            }
+          }
+        }}
         snapPoints={snapPoints}
         enableHandlePanningGesture={false}
         android_keyboardInputMode="adjustResize"
