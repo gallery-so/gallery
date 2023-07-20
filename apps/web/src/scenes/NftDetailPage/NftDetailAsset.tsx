@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -87,7 +88,6 @@ function NftDetailAssetComponentWithouFallback({
     graphql`
       fragment NftDetailAssetComponentWithoutFallbackFragment on Token {
         name
-
         media @required(action: THROW) {
           ... on VideoMedia {
             __typename
@@ -133,6 +133,21 @@ function NftDetailAssetComponentWithouFallback({
     throw new CouldNotRenderNftError('NftDetailAsset', 'Token media type was `UnknownMedia`');
   }
 
+  const [imageUrlToShow, setImageUrlToShow] = useState<string | undefined>(previewUrl);
+
+  const imageMedia = token.media;
+
+  useEffect(() => {
+    // Check if the contentRenderURL is available
+    if (imageMedia.__typename === 'ImageMedia' && previewUrl) {
+      console.log('inside the useEffect block');
+      // If it is available, update the imageToShow state to display the contentRenderURL
+      setImageUrlToShow(imageMedia.contentRenderURL || '');
+    }
+  }, [imageMedia, previewUrl]);
+
+  console.log('imageUrlToShow:', imageUrlToShow);
+
   switch (token.media.__typename) {
     case 'HtmlMedia':
       return <NftDetailAnimation onLoad={onLoad} mediaRef={token} />;
@@ -141,42 +156,19 @@ function NftDetailAssetComponentWithouFallback({
     case 'AudioMedia':
       return <NftDetailAudio onLoad={onLoad} tokenRef={token} />;
     case 'ImageMedia':
-      const imageMedia = token.media;
+      return (
+        <NftDetailImage
+          alt={token.name}
+          onLoad={onLoad}
+          imageUrl={imageUrlToShow}
+          onClick={() => {
+            if (imageUrlToShow) {
+              window.open(imageUrlToShow);
+            }
+          }}
+        />
+      );
 
-      if (previewUrl) {
-        // If there is a preview URL, display it
-        return (
-          <NftDetailImage
-            alt={token.name}
-            onLoad={onLoad}
-            imageUrl={previewUrl}
-            onClick={() => {
-              if (previewUrl) {
-                window.open(previewUrl);
-              }
-            }}
-          />
-        );
-      } else if (imageMedia.contentRenderURL) {
-        // If contentRenderURL is loaded, display it
-        return (
-          <NftDetailImage
-            alt={token.name}
-            onLoad={onLoad}
-            imageUrl={imageMedia.contentRenderURL}
-            onClick={() => {
-              if (imageMedia.contentRenderURL) {
-                window.open(imageMedia.contentRenderURL);
-              }
-            }}
-          />
-        );
-      } else {
-        throw new CouldNotRenderNftError(
-          'NftDetailAsset',
-          'Token media type was `ImageMedia` but contentRenderURL was null'
-        );
-      }
     case 'GIFMedia':
       const gifMedia = token.media;
 

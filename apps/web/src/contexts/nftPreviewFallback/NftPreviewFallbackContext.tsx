@@ -9,7 +9,14 @@ type NftPreviewFallbackState = {
   updatePreviewUrlMap: (key: string, value: string) => void;
 };
 
-const NftPreviewFallbackContext = createContext<NftPreviewFallbackState | undefined>(undefined);
+const defaultNftPreviewFallbackState: NftPreviewFallbackState = {
+  previewUrlMap: {},
+  updatePreviewUrlMap: () => {},
+};
+
+const NftPreviewFallbackContext = createContext<NftPreviewFallbackState>(
+  defaultNftPreviewFallbackState
+);
 
 export const useNftPreviewFallbackState = (): NftPreviewFallbackState => {
   const context = useContext(NftPreviewFallbackContext);
