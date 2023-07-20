@@ -212,7 +212,7 @@ export const EthereumAddWallet = ({ queryRef, reset, onSuccess = noop }: Props) 
   // right now we only show this case for Metamask
   if (pendingState === CONFIRM_ADDRESS && account) {
     return (
-      <EmptyState title="Connect with Ethereum">
+      <EmptyState title="Connect with Ethereum or L2 Wallet">
         <VStack gap={24}>
           <VStack gap={16}>
             <VStack>
@@ -234,22 +234,22 @@ export const EthereumAddWallet = ({ queryRef, reset, onSuccess = noop }: Props) 
 
   if (pendingState === PROMPT_SIGNATURE) {
     return (
-      <EmptyState title="Connect with Ethereum" description="Sign the message with your wallet." />
+      <EmptyState
+        title="Connect with Ethereum or L2 Wallet"
+        description="Sign the message with your wallet."
+      />
     );
   }
 
   // Default view for when pendingState === INITIAL
   return (
     <EmptyState
-      title="Connect with Ethereum"
+      title="Connect with Ethereum or L2 Wallet"
       description="Approve your wallet to connect to Gallery."
     />
   );
 };
 
 const StyledButton = styled(Button)`
-  align-self: flex-end;
-  padding: 16px;
-  width: 100%;
-  height: 100%;
+  align-self: center;
 `;
