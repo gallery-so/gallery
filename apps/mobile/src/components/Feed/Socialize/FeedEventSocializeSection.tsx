@@ -1,5 +1,6 @@
 import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
+import { useToggleAdmire } from 'src/hooks/useToggleAdmire';
 
 import { FeedEventSocializeSectionFragment$key } from '~/generated/FeedEventSocializeSectionFragment.graphql';
 import { FeedEventSocializeSectionQueryFragment$key } from '~/generated/FeedEventSocializeSectionQueryFragment.graphql';
@@ -25,8 +26,8 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef, onCommentPre
         }
 
         ...InteractionsFragment
-        ...AdmireButtonFragment
         ...CommentButtonFragment
+        ...useToggleAdmireFragment
       }
     `,
     feedEventRef
@@ -35,11 +36,16 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef, onCommentPre
   const query = useFragment(
     graphql`
       fragment FeedEventSocializeSectionQueryFragment on Query {
-        ...AdmireButtonQueryFragment
+        ...useToggleAdmireQueryFragment
       }
     `,
     queryRef
   );
+
+  const { toggleAdmire, hasViewerAdmiredEvent } = useToggleAdmire({
+    eventRef: event,
+    queryRef: query,
+  });
 
   if (event.eventData?.__typename === 'UserFollowedUsersFeedEventData') {
     return <View className="pb-6" />;
@@ -52,7 +58,7 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef, onCommentPre
       </View>
 
       <View className="flex flex-row space-x-1">
-        <AdmireButton eventRef={event} queryRef={query} />
+        <AdmireButton onPress={toggleAdmire} isAdmired={hasViewerAdmiredEvent} />
         <CommentButton eventRef={event} onClick={onCommentPress} />
       </View>
     </View>

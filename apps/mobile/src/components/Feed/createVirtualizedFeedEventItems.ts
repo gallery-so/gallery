@@ -137,6 +137,8 @@ export function createVirtualizedFeedEventItems({
         ...FeedListItemQueryFragment
         # eslint-disable-next-line relay/must-colocate-fragment-spreads
         ...PostListSectionHeaderQueryFragment
+        # eslint-disable-next-line relay/must-colocate-fragment-spreads
+        ...FeedPostSocializeSectionQueryFragment
       }
     `,
     queryRef
@@ -195,6 +197,8 @@ export function createVirtualizedFeedEventItems({
                 ...PostListCaptionFragment
                 # eslint-disable-next-line relay/must-colocate-fragment-spreads
                 ...PostListItemFragment
+                # eslint-disable-next-line relay/must-colocate-fragment-spreads
+                ...FeedPostSocializeSectionFragment
               }
             `,
             itemRef

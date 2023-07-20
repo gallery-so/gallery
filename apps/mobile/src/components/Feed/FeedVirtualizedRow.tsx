@@ -8,7 +8,7 @@ import { FeedEventSocializeSection } from '~/components/Feed/Socialize/FeedEvent
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 
 import { FeedFilter } from './FeedFilter';
-import { PostEventSocializeSection } from './Posts/PostEventSocializeSection';
+import { FeedPostSocializeSection } from './Posts/FeedPostSocializeSection';
 import { PostListCaption } from './Posts/PostListCaption';
 import { PostListItem } from './Posts/PostListItem';
 import { PostListSectionHeader } from './Posts/PostListSectionHeader';
@@ -55,7 +55,7 @@ export function FeedVirtualizedRow({ onFailure, item, itemId }: Props) {
       case 'post-item-event':
         return <PostListItem feedPostRef={item.post} />;
       case 'post-item-socialize':
-        return <PostEventSocializeSection />;
+        return <FeedPostSocializeSection feedPostRef={item.post} queryRef={item.queryRef} />;
     }
   }, [item]);
 
