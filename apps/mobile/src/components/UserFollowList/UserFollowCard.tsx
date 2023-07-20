@@ -66,8 +66,6 @@ export function UserFollowCard({ userRef, queryRef, onPress }: UserFollowCardPro
             {bioFirstLine && <Markdown numberOfLines={1}>{bioFirstLine}</Markdown>}
           </View>
         </View>
-
-        <View></View>
       </GalleryTouchableOpacity>
 
       <FollowButton queryRef={query} userRef={user} />

@@ -149,7 +149,7 @@ export function CommunityView({ queryRef }: Props) {
                 {showAddressOrGalleryUser}
               </View>
             )}
-            <View className="flex flex-column  space-y-1">
+            <View className="flex flex-column space-y-1">
               <Typography
                 font={{ family: 'ABCDiatype', weight: 'Regular' }}
                 className="text-xs uppercase"
