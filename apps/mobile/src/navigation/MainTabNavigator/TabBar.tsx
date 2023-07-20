@@ -1,7 +1,6 @@
 import { MaterialTopTabBarProps } from '@react-navigation/material-top-tabs';
 import { NavigationRoute } from '@sentry/react-native/dist/js/tracing/reactnavigation';
 import clsx from 'clsx';
-import { useColorScheme } from 'nativewind';
 import { ReactNode, Suspense, useCallback, useMemo, useState } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -14,7 +13,6 @@ import { GLogo } from '~/navigation/MainTabNavigator/GLogo';
 import { NotificationsIcon } from '~/navigation/MainTabNavigator/NotificationsIcon';
 import { SearchIcon } from '~/navigation/MainTabNavigator/SearchIcon';
 import { MainTabNavigatorParamList } from '~/navigation/types';
-import colors from '~/shared/theme/colors';
 
 import { AccountIcon } from '../../icons/AccountIcon';
 import { SettingsIcon } from '../../icons/SettingsIcon';
@@ -89,7 +87,6 @@ type TabBarProps = MaterialTopTabBarProps;
 
 export function TabBar({ state, navigation }: TabBarProps) {
   const { bottom } = useSafeAreaInsets();
-  const { colorScheme } = useColorScheme();
 
   const activeRoute = state.routeNames[state.index] as keyof MainTabNavigatorParamList;
 
