@@ -270,6 +270,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
               selectedChain={selectedChain}
               selectedWallet={selectedWallet}
               onSelectedWalletChange={handleSelectedWalletChange}
+              onConnectWalletSuccess={handleRefresh}
             />
           )}
         </Header>
