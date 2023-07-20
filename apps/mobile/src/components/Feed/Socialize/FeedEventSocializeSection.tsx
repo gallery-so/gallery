@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 import { useEventComment } from 'src/hooks/useEventComment';
@@ -28,7 +28,33 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef, onCommentPre
           }
         }
 
-        ...InteractionsFragment
+        # We only show 1 but in case the user deletes something
+        # we want to be sure that we can show another comment beneath
+        admires(last: 5) @connection(key: "Interactions_admires") {
+          pageInfo {
+            total
+          }
+          edges {
+            node {
+              dbid
+              ...InteractionsAdmiresFragment
+            }
+          }
+        }
+
+        # We only show 2 but in case the user deletes something
+        # we want to be sure that we can show another comment beneath
+        comments(last: 5) @connection(key: "Interactions_comments") {
+          pageInfo {
+            total
+          }
+          edges {
+            node {
+              ...InteractionsCommentsFragment
+            }
+          }
+        }
+
         ...useToggleAdmireFragment
       }
     `,
@@ -51,6 +77,36 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef, onCommentPre
 
   const { submitComment, isSubmittingComment } = useEventComment();
 
+  const nonNullComments = useMemo(() => {
+    const comments = [];
+
+    for (const edge of event.comments?.edges ?? []) {
+      if (edge?.node) {
+        comments.push(edge.node);
+      }
+    }
+
+    return comments;
+  }, [event.comments?.edges]);
+
+  const totalComments = event.comments?.pageInfo?.total ?? 0;
+
+  const nonNullAdmires = useMemo(() => {
+    const admires = [];
+
+    for (const edge of event.admires?.edges ?? []) {
+      if (edge?.node) {
+        admires.push(edge.node);
+      }
+    }
+
+    admires.reverse();
+
+    return admires;
+  }, [event.admires?.edges]);
+
+  const totalAdmires = event.admires?.pageInfo?.total ?? 0;
+
   const handleSubmit = useCallback(
     (value: string) => {
       submitComment({
@@ -69,7 +125,14 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef, onCommentPre
   return (
     <View className="flex flex-row px-3 justify-between pb-8 pt-5">
       <View className="flex-1 pr-4 pt-1">
-        <Interactions eventRef={event} />
+        <Interactions
+          type="event"
+          feedId={event.dbid}
+          commentRefs={nonNullComments}
+          admireRefs={nonNullAdmires}
+          totalComments={totalComments}
+          totalAdmires={totalAdmires}
+        />
       </View>
 
       <View className="flex flex-row space-x-1">
