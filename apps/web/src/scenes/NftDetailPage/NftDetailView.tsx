@@ -6,6 +6,7 @@ import breakpoints from '~/components/core/breakpoints';
 import ShimmerProvider from '~/contexts/shimmer/ShimmerContext';
 import { NftDetailViewFragment$key } from '~/generated/NftDetailViewFragment.graphql';
 import { NftDetailViewQuery } from '~/generated/NftDetailViewQuery.graphql';
+import { NftDetailViewQueryFragment$key } from '~/generated/NftDetailViewQueryFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 
 import NftDetailAsset from './NftDetailAsset';
@@ -33,19 +34,30 @@ export function LoadableNftDetailView({
         collectionTokenById(tokenId: $tokenId, collectionId: $collectionId) {
           ...NftDetailViewFragment
         }
+        ...NftDetailViewQueryFragment
       }
     `,
     { tokenId: tokenId, collectionId: collectionId }
   );
-
+  console.log('what');
   if (!query.collectionTokenById) {
     return null;
   }
 
-  return <NftDetailView collectionTokenRef={query.collectionTokenById} {...props} />;
+  return (
+    <NftDetailView collectionTokenRef={query.collectionTokenById} queryRef={query} {...props} />
+  );
 }
 
-export default function NftDetailView({ authenticatedUserOwnsAsset, collectionTokenRef }: Props) {
+type NftDetailViewProps = {
+  queryRef: NftDetailViewQueryFragment$key;
+};
+
+export default function NftDetailView({
+  authenticatedUserOwnsAsset,
+  collectionTokenRef,
+  queryRef,
+}: Props & NftDetailViewProps) {
   const collectionNft = useFragment(
     graphql`
       fragment NftDetailViewFragment on CollectionToken {
@@ -63,6 +75,17 @@ export default function NftDetailView({ authenticatedUserOwnsAsset, collectionTo
     `,
     collectionTokenRef
   );
+
+  const query = useFragment(
+    graphql`
+      fragment NftDetailViewQueryFragment on Query {
+        ...NftDetailTextQueryFragment
+      }
+    `,
+    queryRef
+  );
+  console.log({ queryRef });
+  // console.log('nftdetail');
 
   const isMobileOrMobileLarge = useIsMobileOrMobileLargeWindowWidth();
 
@@ -92,7 +115,11 @@ export default function NftDetailView({ authenticatedUserOwnsAsset, collectionTo
           )}
         </StyledAssetAndNoteContainer>
 
-        <NftDetailText tokenRef={token} authenticatedUserOwnsAsset={authenticatedUserOwnsAsset} />
+        <NftDetailText
+          tokenRef={token}
+          authenticatedUserOwnsAsset={authenticatedUserOwnsAsset}
+          queryRef={query}
+        />
       </StyledContentContainer>
       {!useIsMobileOrMobileLargeWindowWidth && <StyledNavigationBuffer />}
     </StyledBody>
