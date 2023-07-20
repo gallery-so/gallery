@@ -1,17 +1,16 @@
+import { useColorScheme } from 'nativewind';
 import Svg, { Path, SvgProps } from 'react-native-svg';
 
-type Props = {
-  color: string;
-  size?: number;
-} & SvgProps;
+import colors from '~/shared/theme/colors';
 
-export const PostIcon = ({ color, size = 32, ...props }: Props) => {
+export const PostIcon = (props: SvgProps) => {
+  const { colorScheme } = useColorScheme();
   return (
-    <Svg width={size} height={size} viewBox="0 0 32 32" fill="none" {...props}>
+    <Svg width={24} height={24} fill="none" {...props}>
       <Path
-        stroke={color}
+        stroke={colorScheme === 'dark' ? colors.white : colors.black['800']}
         strokeMiterlimit={10}
-        d="M4.5 25.333V4.5h23v23h-23v-2.167ZM16 10.666v10.667M21.333 16H10.667"
+        d="M.5 21.333V.5h23v23H.5v-2.167ZM12 6.666v10.667M17.333 12H6.667"
       />
     </Svg>
   );

@@ -113,7 +113,7 @@ export function TabBar({ state, navigation }: TabBarProps) {
         } else if (route.name === 'SettingsTab') {
           icon = <SettingsIcon />;
         } else if (route.name === 'PostTab') {
-          icon = <PostIcon color={colorScheme === 'dark' ? colors.white : colors.black['800']} />;
+          icon = <PostIcon />;
         }
 
         return (

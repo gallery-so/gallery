@@ -8,6 +8,7 @@ import { DropdownSection } from '~/components/core/Dropdown/DropdownSection';
 import SettingsDropdown from '~/components/core/Dropdown/SettingsDropdown';
 import IconContainer from '~/components/core/IconContainer';
 import { HStack } from '~/components/core/Spacer/Stack';
+import { BaseM } from '~/components/core/Text/Text';
 import { TitleXS } from '~/components/core/Text/Text';
 import { useGalleryEditorContext } from '~/components/GalleryEditor/GalleryEditorContext';
 import { NewTooltip } from '~/components/Tooltip/NewTooltip';
@@ -141,9 +142,15 @@ export function CollectionListItem({ collectionId, queryRef }: CollectionListIte
           />
           <SettingsDropdown size="sm" iconVariant="stacked" disableHoverPadding>
             <DropdownSection>
-              <DropdownItem onClick={handleEdit}>EDIT NAME & DESC</DropdownItem>
-              <DropdownItem onClick={handleMoveCollectionModal}>MOVE TO...</DropdownItem>
-              <DropdownItem onClick={handleDelete}>DELETE</DropdownItem>
+              <DropdownItem onClick={handleEdit}>
+                <BaseM>Edit Name & Description</BaseM>
+              </DropdownItem>
+              <DropdownItem onClick={handleMoveCollectionModal}>
+                <BaseM>Move To...</BaseM>
+              </DropdownItem>
+              <DropdownItem onClick={handleDelete}>
+                <BaseM>Delete</BaseM>
+              </DropdownItem>
             </DropdownSection>
           </SettingsDropdown>
         </CollectionListItemActionsContainer>

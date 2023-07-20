@@ -111,11 +111,17 @@ export const EthereumAuthenticateWallet = ({ reset }: Props) => {
 
   if (pendingState === PROMPT_SIGNATURE) {
     return (
-      <EmptyState title="Connect with Ethereum" description="Sign the message with your wallet." />
+      <EmptyState
+        title="Connect with Ethereum or L2 Wallet"
+        description="Sign the message with your wallet."
+      />
     );
   }
 
   return (
-    <EmptyState title="Connect with Ethereum" description="Sign the message with your wallet." />
+    <EmptyState
+      title="Connect with Ethereum or L2 Wallet"
+      description="Sign the message with your wallet."
+    />
   );
 };

@@ -132,7 +132,7 @@ export function ProfilePictureDropdown({ open, onClose, tokensRef, queryRef }: P
         </StyledDropdownItem>
         <StyledDropdownItem onClick={handleShowNftSelector}>
           <StyledDropdownItemContainer gap={8}>
-            <AllGalleriesIcon />
+            <AllGalleriesIcon color={colors.black[800]} />
             <BaseS>Choose from collection</BaseS>
           </StyledDropdownItemContainer>
         </StyledDropdownItem>
@@ -153,7 +153,7 @@ const StyledDefaultEnsAvatar = styled.div`
   height: 16px;
   width: 16px;
   border-radius: 50%;
-  background-color: ${colors.metal};
+  background-color: ${colors.black[800]};
 `;
 
 const StyledEnsImage = styled.img`
@@ -170,7 +170,7 @@ const StyledRemoveText = styled(BaseS)`
 
 const StyledDropdownItem = styled(DropdownItem)`
   ${BaseS} {
-    color: ${colors.shadow};
+    color: ${colors.black[800]};
     font-weight: 500;
   }
 

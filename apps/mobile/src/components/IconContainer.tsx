@@ -38,10 +38,10 @@ export function IconContainer({
     <GalleryTouchableOpacity style={style} onPress={onPress} {...props}>
       <View
         className={clsx(
-          'bg-faint dark:bg-black-500 items-center justify-center rounded-full',
+          'items-center justify-center rounded-full',
           sizeVariants[size ?? 'md'],
           colorVariants[color ?? 'default'],
-          border && 'border-[0.5px] border-black-800'
+          border && 'border-[0.5px] border-black-800 dark:border-offWhite'
         )}
       >
         {icon}

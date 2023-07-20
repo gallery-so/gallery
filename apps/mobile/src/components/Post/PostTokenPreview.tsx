@@ -1,7 +1,6 @@
 import { RouteProp, useRoute } from '@react-navigation/native';
-import { useColorScheme } from 'nativewind';
 import { useCallback, useMemo } from 'react';
-import { View } from 'react-native';
+import { Keyboard, View } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import { BareXMarkIcon } from 'src/icons/BareXMarkIcon';
 
@@ -60,12 +59,13 @@ export function PostTokenPreview({ bottomSheetRef }: Props) {
   }, [token]);
 
   const handleBackPress = useCallback(() => {
+    Keyboard.dismiss();
     bottomSheetRef.current?.present();
   }, [bottomSheetRef]);
 
   return (
     <View className="flex flex-col space-y-2">
-      <View className="bg-offWhite">
+      <View className="bg-offWhite dark:bg-black-800">
         <ReportingErrorBoundary
           fallback={
             <View className="w-full aspect-square">
@@ -103,8 +103,6 @@ type CloseButtonProps = {
   onPress: () => void;
 };
 function CloseButton({ onPress }: CloseButtonProps) {
-  const { colorScheme } = useColorScheme();
-
   return (
     <IconContainer
       eventElementId={null}
@@ -113,7 +111,7 @@ function CloseButton({ onPress }: CloseButtonProps) {
       onPress={onPress}
       size="xs"
       border
-      color={colorScheme === 'dark' ? 'black' : 'white'}
+      color="white"
       className="absolute -top-2 -right-2"
     />
   );

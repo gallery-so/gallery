@@ -132,7 +132,9 @@ export function Interactions({ eventRef }: Props) {
         return <CommentLine key={comment.dbid} commentRef={comment} />;
       })}
 
-      <RemainingCommentCount totalCount={totalComments} onPress={handleSeeAllComments} />
+      {totalComments > 1 && (
+        <RemainingCommentCount totalCount={totalComments} onPress={handleSeeAllComments} />
+      )}
 
       <CommentsBottomSheet feedEventId={event.dbid} bottomSheetRef={commentsBottomSheetRef} />
 
