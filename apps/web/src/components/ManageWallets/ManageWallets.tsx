@@ -12,24 +12,19 @@ import useAddWalletModal from '~/hooks/useAddWalletModal';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { graphqlTruncateAddress, truncateAddress } from '~/shared/utils/wallet';
 
+import { OnConnectWalletSuccessFn } from '../WalletSelector/multichain/MultichainWalletSelector';
 import ManageWalletsRow from './ManageWalletsRow';
 import PrimaryWalletRow from './PrimaryWalletRow';
 
 type Props = {
   newAddress?: string;
   queryRef: ManageWalletsFragment$key;
-  onEthAddWalletSuccess?: () => void;
-  onTezosAddWalletSuccess?: () => void;
+  onConnectWalletSuccess?: OnConnectWalletSuccessFn;
 };
 
 const MAX_ALLOWED_ADDRESSES = 15;
 
-function ManageWallets({
-  newAddress,
-  queryRef,
-  onEthAddWalletSuccess,
-  onTezosAddWalletSuccess,
-}: Props) {
+function ManageWallets({ newAddress, queryRef, onConnectWalletSuccess }: Props) {
   const { viewer } = useFragment(
     graphql`
       fragment ManageWalletsFragment on Query {
@@ -76,8 +71,8 @@ function ManageWallets({
   const showAddWalletModal = useAddWalletModal();
 
   const handleSubmit = useCallback(async () => {
-    showAddWalletModal({ onEthAddWalletSuccess, onTezosAddWalletSuccess });
-  }, [onEthAddWalletSuccess, onTezosAddWalletSuccess, showAddWalletModal]);
+    showAddWalletModal({ onConnectWalletSuccess });
+  }, [onConnectWalletSuccess, showAddWalletModal]);
 
   const addWalletDisabled = useMemo(
     () => nonPrimaryWallets.length >= MAX_ALLOWED_ADDRESSES,
