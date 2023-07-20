@@ -2,12 +2,10 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { ExploreFragment$key } from '~/generated/ExploreFragment.graphql';
-import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 
 import { VStack } from '../core/Spacer/Stack';
 import SuggestedSection from './SuggestedSection';
 import TrendingSection from './TrendingSection';
-import TwitterSection from './TwitterSection';
 
 type Props = {
   queryRef: ExploreFragment$key;
@@ -32,18 +30,19 @@ export default function Explore({ queryRef }: Props) {
 
         viewer {
           __typename
-          ... on Viewer {
-            socialAccounts @required(action: THROW) {
-              twitter {
-                __typename
-              }
-            }
-          }
+          # [GAL-3763] Revive this if / when elon lets us import twitter follower graphs again
+          # ... on Viewer {
+          # socialAccounts @required(action: THROW) {
+          #   twitter {
+          #     __typename
+          #   }
+          # }
+          # }
         }
+        # ...TwitterSectionQueryFragment
 
         ...TrendingSectionQueryFragment
         ...SuggestedSectionQueryFragment
-        ...TwitterSectionQueryFragment
       }
     `,
     queryRef
@@ -53,15 +52,18 @@ export default function Explore({ queryRef }: Props) {
     <StyledExplorePage gap={48}>
       {query.viewer?.__typename === 'Viewer' && (
         <>
-          {query.viewer.socialAccounts?.twitter?.__typename && (
-            <ReportingErrorBoundary fallback={null}>
-              <TwitterSection
-                title="Twitter Friends"
-                subTitle="Curators you know from Twitter"
-                queryRef={query}
-              />
-            </ReportingErrorBoundary>
-          )}
+          {
+            // [GAL-3763] Revive this if / when elon lets us import twitter follower graphs again
+            // query.viewer.socialAccounts?.twitter?.__typename && (
+            //   <ReportingErrorBoundary fallback={null}>
+            //     <TwitterSection
+            //       title="Twitter Friends"
+            //       subTitle="Curators you know from Twitter"
+            //       queryRef={query}
+            //     />
+            //   </ReportingErrorBoundary>
+            // )
+          }
           <SuggestedSection
             title="In your orbit"
             subTitle="Curators you may enjoy based on your activity"
