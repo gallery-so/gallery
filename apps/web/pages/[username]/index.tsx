@@ -7,7 +7,6 @@ import styled from 'styled-components';
 
 import breakpoints, { pageGutter } from '~/components/core/breakpoints';
 import useVerifyEmailOnPage from '~/components/Email/useVerifyEmailOnPage';
-import useOpenTwitterFollowingModal from '~/components/Twitter/useOpenTwitterFollowingModal';
 import useOpenTwitterModal from '~/components/Twitter/useOpenTwitterModal';
 import { USER_PER_PAGE } from '~/constants/twitter';
 import { GalleryNavbar } from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavbar';
@@ -29,10 +28,10 @@ const UsernameQueryNode = graphql`
     $sharedCommunitiesFirst: Int
     $sharedCommunitiesAfter: String
     $sharedFollowersFirst: Int
-    $sharedFollowersAfter: String
-    $twitterListFirst: Int!
-    $twitterListAfter: String
-  ) {
+    $sharedFollowersAfter: String # [GAL-3763] Revive this if / when elon lets us import twitter follower graphs again
+  ) # $twitterListFirst: Int!
+  # $twitterListAfter: String
+  {
     userByUsername(username: $username) @required(action: THROW) {
       ... on GalleryUser {
         featuredGallery @required(action: THROW) {
@@ -47,7 +46,8 @@ const UsernameQueryNode = graphql`
     ...useVerifyEmailOnPageQueryFragment
     ...StandardSidebarFragment
     ...useOpenTwitterModalFragment
-    ...useOpenTwitterFollowingModalFragment
+    # [GAL-3763] Revive this if / when elon lets us import twitter follower graphs again
+    # ...useOpenTwitterFollowingModalFragment
   }
 `;
 
@@ -93,7 +93,8 @@ export default function UserGallery({ username, preloadedQuery }: UserGalleryPro
 
   useVerifyEmailOnPage(query);
   useOpenTwitterModal(query);
-  useOpenTwitterFollowingModal(query);
+  // [GAL-3763] Revive this if / when elon lets us import twitter follower graphs again
+  // useOpenTwitterFollowingModal(query);
 
   return (
     <GalleryRoute

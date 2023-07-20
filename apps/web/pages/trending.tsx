@@ -2,7 +2,6 @@ import { graphql, loadQuery, PreloadedQuery, usePreloadedQuery } from 'react-rel
 
 import { ITEMS_PER_PAGE, MAX_PIECES_DISPLAYED_PER_FEED_EVENT } from '~/components/Feed/constants';
 import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/CommentsModal/CommentsModal';
-import useOpenTwitterFollowingModal from '~/components/Twitter/useOpenTwitterFollowingModal';
 import { USER_PER_PAGE } from '~/constants/twitter';
 import { HomeNavbar } from '~/contexts/globalLayout/GlobalNavbar/HomeNavbar/HomeNavbar';
 import { StandardSidebar } from '~/contexts/globalLayout/GlobalSidebar/StandardSidebar';
@@ -19,13 +18,14 @@ const trendingPageQueryNode = graphql`
     $trendingBefore: String
     $globalLast: Int!
     $globalBefore: String
-    $visibleTokensPerFeedEvent: Int!
-    $twitterListFirst: Int!
-    $twitterListAfter: String
-  ) {
+    $visibleTokensPerFeedEvent: Int! # [GAL-3763] Revive this if / when elon lets us import twitter follower graphs again
+  ) # $twitterListFirst: Int!
+  # $twitterListAfter: String
+  {
     ...TrendingHomePageFragment
     ...HomeNavbarFragment
-    ...useOpenTwitterFollowingModalFragment
+    # [GAL-3763] Revive this if / when elon lets us import twitter follower graphs again
+    # ...useOpenTwitterFollowingModalFragment
     ...StandardSidebarFragment
   }
 `;
@@ -37,7 +37,8 @@ type Props = {
 export default function Trending({ preloadedQuery }: Props) {
   const query = usePreloadedQuery(trendingPageQueryNode, preloadedQuery);
 
-  useOpenTwitterFollowingModal(query);
+  // [GAL-3763] Revive this if / when elon lets us import twitter follower graphs again
+  // useOpenTwitterFollowingModal(query);
 
   return (
     <GalleryRoute
