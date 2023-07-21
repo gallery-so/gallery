@@ -126,25 +126,27 @@ function NftDetailAssetComponentWithouFallback({
     tokenRef
   );
 
-  if (token.media.__typename === 'UnknownMedia') {
-    // If we're dealing with UnknownMedia, we know the NFT is going to
-    // fail to load, so we'll just immediately notify the parent
-    // that this NftDetailAsset was unable to render
-    throw new CouldNotRenderNftError('NftDetailAsset', 'Token media type was `UnknownMedia`');
-  }
-
-  const [imageUrlToShow, setImageUrlToShow] = useState<string | undefined>(previewUrl);
-
+  // State to keep track of the loading state of the high-definition image.
+  const [isContentRenderUrlLoaded, setContentRenderUrlLoaded] = useState(false);
   const imageMedia = token.media;
 
   useEffect(() => {
     // Check if the contentRenderURL is available
-    if (imageMedia.__typename === 'ImageMedia' && previewUrl) {
-      console.log('inside the useEffect block');
-      // If it is available, update the imageToShow state to display the contentRenderURL
-      setImageUrlToShow(imageMedia.contentRenderURL || '');
+    if (imageMedia.__typename === 'ImageMedia' && imageMedia.contentRenderURL) {
+      // Create an image element to load the contentRenderURL in the background
+      const img = new Image();
+
+      img.onload = () => {
+        // When the contentRenderURL is loaded, update the state
+        setContentRenderUrlLoaded(true);
+      };
+
+      img.src = imageMedia.contentRenderURL; // Start loading the high-definition image
     }
-  }, [imageMedia, previewUrl]);
+  }, [imageMedia, imageMedia.__typename]);
+
+  // Determine which URL to display based on the loading state
+  const imageUrlToShow = isContentRenderUrlLoaded ? imageMedia.contentRenderURL : previewUrl;
 
   console.log('imageUrlToShow:', imageUrlToShow);
 
