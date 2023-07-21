@@ -70,7 +70,7 @@ export function PostScreen() {
     });
 
     navigation.pop(1);
-    navigation.navigate('Trending');
+    navigation.navigate('Latest');
 
     pushToast({
       children: <ToastMessage tokenRef={token} />,
