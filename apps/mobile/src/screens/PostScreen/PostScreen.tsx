@@ -26,7 +26,7 @@ export function PostScreen() {
         tokenById(id: $tokenId) {
           ... on Token {
             __typename
-            tokenId
+            dbid
             ...PostScreenTokenFragment
           }
         }
@@ -58,7 +58,7 @@ export function PostScreen() {
   const navigation = useNavigation<FeedTabNavigatorProp>();
   const { pushToast } = useToastActions();
   const handlePost = useCallback(async () => {
-    const tokenId = token.tokenId;
+    const tokenId = token.dbid;
 
     if (!tokenId) {
       return;
