@@ -228,7 +228,7 @@ export function UniversalNftDetailScreenInner() {
         )}
 
         <View className="flex-1">
-          <NftAdditionalDetails showDetails={showAdditionalDetails} tokenRef={token} />
+          <NftAdditionalDetails tokenRef={token} />
         </View>
 
         <View>
