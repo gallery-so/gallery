@@ -194,7 +194,6 @@ function ConnectedPostCommentsList({ feedId }: { feedId: string }) {
     { feedEventId: feedId, last: 10 }
   );
 
-  // TODO: Replace with feedPostById
   const {
     data: query,
     loadPrevious,
@@ -206,8 +205,8 @@ function ConnectedPostCommentsList({ feedId }: { feedId: string }) {
     graphql`
       fragment CommentsBottomSheetConnectedPostCommentsListFragment on Query
       @refetchable(queryName: "CommentsBottomSheetConnectedPostCommentsListPaginationQuery") {
-        feedEventById(id: $feedEventId) {
-          ... on FeedEvent {
+        postById(id: $feedEventId) {
+          ... on Post {
             comments(last: $last, before: $before)
               @connection(key: "CommentsBottomSheet_comments") {
               edges {
@@ -224,10 +223,8 @@ function ConnectedPostCommentsList({ feedId }: { feedId: string }) {
   );
 
   const comments = useMemo(() => {
-    return removeNullValues(
-      query.feedEventById?.comments?.edges?.map((edge) => edge?.node)
-    ).reverse();
-  }, [query.feedEventById?.comments?.edges]);
+    return removeNullValues(query.postById?.comments?.edges?.map((edge) => edge?.node)).reverse();
+  }, [query.postById?.comments?.edges]);
 
   const handleLoadMore = useCallback(() => {
     if (hasPrevious) {
