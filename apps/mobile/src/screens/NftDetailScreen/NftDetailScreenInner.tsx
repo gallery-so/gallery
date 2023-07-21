@@ -5,7 +5,6 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { CirclePostIcon } from 'src/icons/CirclePostIcon';
 import isFeatureEnabled, { FeatureFlag } from 'src/utils/isFeatureEnabled';
 
 import { BackButton } from '~/components/BackButton';
@@ -15,6 +14,7 @@ import { NftPreviewErrorFallback } from '~/components/NftPreview/NftPreviewError
 import { Pill } from '~/components/Pill';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { NftDetailScreenInnerQuery } from '~/generated/NftDetailScreenInnerQuery.graphql';
+import { PostIcon } from '~/navigation/MainTabNavigator/PostIcon';
 import { MainTabStackNavigatorParamList, MainTabStackNavigatorProp } from '~/navigation/types';
 import { NftDetailAssetCacheSwapper } from '~/screens/NftDetailScreen/NftDetailAsset/NftDetailAssetCacheSwapper';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
@@ -286,9 +286,9 @@ export function NftDetailScreenInner() {
         {isKoalaEnabled && isTokenOwner && (
           <Button
             icon={
-              <CirclePostIcon
-                color={colorScheme === 'dark' ? colors.black['800'] : colors.white}
+              <PostIcon
                 size={24}
+                color={colorScheme === 'dark' ? colors.black['800'] : colors.white}
               />
             }
             eventElementId={null}
