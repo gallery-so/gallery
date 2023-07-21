@@ -25,21 +25,24 @@ import WalletButton from './WalletButton';
 
 export type WalletSelectorVariant = 'sign-in' | 'sign-up';
 
-type Props = {
+export type OnConnectWalletSuccessFn = () => void;
+
+export type MultichainWalletSelectorProps = {
   connectionMode?: ConnectionMode;
-  queryRef: MultichainWalletSelectorFragment$key;
   variant?: WalletSelectorVariant;
-  onEthAddWalletSuccess?: () => void;
-  onTezosAddWalletSuccess?: () => void;
+  onConnectWalletSuccess?: OnConnectWalletSuccessFn;
   showEmail?: boolean;
 };
+
+type Props = {
+  queryRef: MultichainWalletSelectorFragment$key;
+} & MultichainWalletSelectorProps;
 
 export default function MultichainWalletSelector({
   queryRef,
   connectionMode = AUTH,
   variant = 'sign-in',
-  onEthAddWalletSuccess,
-  onTezosAddWalletSuccess,
+  onConnectWalletSuccess,
   showEmail = true,
 }: Props) {
   const query = useFragment(
@@ -85,7 +88,7 @@ export default function MultichainWalletSelector({
     if (connectionMode === ADD_WALLET_TO_USER) {
       return (
         <WalletSelectorWrapper>
-          <EthereumAddWallet queryRef={query} reset={reset} onSuccess={onEthAddWalletSuccess} />
+          <EthereumAddWallet queryRef={query} reset={reset} onSuccess={onConnectWalletSuccess} />
         </WalletSelectorWrapper>
       );
     }
@@ -120,7 +123,7 @@ export default function MultichainWalletSelector({
     if (connectionMode === ADD_WALLET_TO_USER) {
       return (
         <WalletSelectorWrapper>
-          <TezosAddWallet queryRef={query} reset={reset} onSuccess={onTezosAddWalletSuccess} />
+          <TezosAddWallet queryRef={query} reset={reset} onSuccess={onConnectWalletSuccess} />
         </WalletSelectorWrapper>
       );
     }

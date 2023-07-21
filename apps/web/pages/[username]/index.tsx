@@ -7,9 +7,7 @@ import styled from 'styled-components';
 
 import breakpoints, { pageGutter } from '~/components/core/breakpoints';
 import useVerifyEmailOnPage from '~/components/Email/useVerifyEmailOnPage';
-import useOpenTwitterFollowingModal from '~/components/Twitter/useOpenTwitterFollowingModal';
 import useOpenTwitterModal from '~/components/Twitter/useOpenTwitterModal';
-import { USER_PER_PAGE } from '~/constants/twitter';
 import { GalleryNavbar } from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavbar';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { StandardSidebar } from '~/contexts/globalLayout/GlobalSidebar/StandardSidebar';
@@ -29,9 +27,7 @@ const UsernameQueryNode = graphql`
     $sharedCommunitiesFirst: Int
     $sharedCommunitiesAfter: String
     $sharedFollowersFirst: Int
-    $sharedFollowersAfter: String
-    $twitterListFirst: Int!
-    $twitterListAfter: String
+    $sharedFollowersAfter: String # [GAL-3763] Revive this if / when elon lets us import twitter follower graphs again # $twitterListFirst: Int! # $twitterListAfter: String
   ) {
     userByUsername(username: $username) @required(action: THROW) {
       ... on GalleryUser {
@@ -47,7 +43,8 @@ const UsernameQueryNode = graphql`
     ...useVerifyEmailOnPageQueryFragment
     ...StandardSidebarFragment
     ...useOpenTwitterModalFragment
-    ...useOpenTwitterFollowingModalFragment
+    # [GAL-3763] Revive this if / when elon lets us import twitter follower graphs again
+    # ...useOpenTwitterFollowingModalFragment
   }
 `;
 
@@ -93,7 +90,8 @@ export default function UserGallery({ username, preloadedQuery }: UserGalleryPro
 
   useVerifyEmailOnPage(query);
   useOpenTwitterModal(query);
-  useOpenTwitterFollowingModal(query);
+  // [GAL-3763] Revive this if / when elon lets us import twitter follower graphs again
+  // useOpenTwitterFollowingModal(query);
 
   return (
     <GalleryRoute
@@ -128,7 +126,8 @@ UserGallery.preloadQuery = ({ relayEnvironment, query }: PreloadQueryArgs) => {
         username: query.username,
         sharedCommunitiesFirst: COMMUNITIES_PER_PAGE,
         sharedFollowersFirst: FOLLOWERS_PER_PAGE,
-        twitterListFirst: USER_PER_PAGE,
+        // [GAL-3763] Revive this if / when elon lets us import twitter follower graphs again
+        // twitterListFirst: USER_PER_PAGE,
       },
       { fetchPolicy: 'store-or-network' }
     );

@@ -58,15 +58,13 @@ export function UserFollowCard({ userRef, queryRef, onPress }: UserFollowCardPro
         eventName="User Follow Username Clicked"
       >
         <View className="flex flex-row items-center space-x-2">
-          <ProfilePicture userRef={user} size="sm" />
-
-          <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-            {user.username}
-          </Typography>
-        </View>
-
-        <View>
-          <Markdown numberOfLines={1}>{bioFirstLine}</Markdown>
+          <ProfilePicture userRef={user} size="md" />
+          <View>
+            <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+              {user.username}
+            </Typography>
+            {bioFirstLine && <Markdown numberOfLines={1}>{bioFirstLine}</Markdown>}
+          </View>
         </View>
       </GalleryTouchableOpacity>
 

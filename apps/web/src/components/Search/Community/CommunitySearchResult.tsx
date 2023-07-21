@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
 import { LowercaseChain } from '~/components/GalleryEditor/PiecesSidebar/chains';
+import CommunityProfilePicture from '~/components/ProfilePicture/CommunityProfilePicture';
 import { CommunitySearchResultFragment$key } from '~/generated/CommunitySearchResultFragment.graphql';
 
 import SearchResult from '../SearchResult';
@@ -21,6 +22,7 @@ export default function CommunitySearchResult({ communityRef }: Props) {
           address
           chain
         }
+        ...CommunityProfilePictureFragment
       }
     `,
     communityRef
@@ -44,6 +46,7 @@ export default function CommunitySearchResult({ communityRef }: Props) {
       description={community.description ?? ''}
       path={route}
       type="community"
+      profilePicture={<CommunityProfilePicture communityRef={community} size="md" />}
     />
   );
 }

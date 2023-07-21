@@ -70,11 +70,15 @@ export function SearchResult({ title, description, variant, profilePicture, ...p
       {...props}
     >
       {profilePicture}
-      <View className="flex flex-grow flex-1 flex-col">
-        <Markdown style={markdownStyles}>{highlightedName}</Markdown>
-        <Markdown style={markdownStyles} numberOfLines={1}>
-          {highlightedDescription}
-        </Markdown>
+      <View className="flex flex-grow flex-1 flex-col space-y-1">
+        <View>
+          <Markdown style={markdownStyles}>{highlightedName}</Markdown>
+        </View>
+        <View>
+          <Markdown style={markdownStyles} numberOfLines={1}>
+            {highlightedDescription}
+          </Markdown>
+        </View>
       </View>
     </GalleryTouchableOpacity>
   );

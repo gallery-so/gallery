@@ -10,6 +10,7 @@ import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import { ChainMetadata } from '~/components/GalleryEditor/PiecesSidebar/chains';
 import { chainsMap } from '~/components/GalleryEditor/PiecesSidebar/chains';
+import { OnConnectWalletSuccessFn } from '~/components/WalletSelector/multichain/MultichainWalletSelector';
 import { SidebarWalletSelectorFragment$key } from '~/generated/SidebarWalletSelectorFragment.graphql';
 import useAddWalletModal from '~/hooks/useAddWalletModal';
 import DoubleArrowsIcon from '~/icons/DoubleArrowsIcon';
@@ -24,8 +25,7 @@ type SidebarWalletSelectorProps = {
   selectedChain: ChainMetadata;
   selectedWallet: SidebarWallet;
   onSelectedWalletChange: (selectedWallet: SidebarWallet) => void;
-  onEthAddWalletSuccess?: () => void;
-  onTezosAddWalletSuccess?: () => void;
+  onConnectWalletSuccess?: OnConnectWalletSuccessFn;
 };
 
 export default function SidebarWalletSelector({
@@ -33,8 +33,7 @@ export default function SidebarWalletSelector({
   selectedChain,
   selectedWallet,
   onSelectedWalletChange,
-  onEthAddWalletSuccess,
-  onTezosAddWalletSuccess,
+  onConnectWalletSuccess,
 }: SidebarWalletSelectorProps) {
   const { viewer } = useFragment(
     graphql`
@@ -60,8 +59,8 @@ export default function SidebarWalletSelector({
   const showAddWalletModal = useAddWalletModal();
 
   const handleSubmit = useCallback(async () => {
-    showAddWalletModal({ onEthAddWalletSuccess, onTezosAddWalletSuccess });
-  }, [onEthAddWalletSuccess, onTezosAddWalletSuccess, showAddWalletModal]);
+    showAddWalletModal({ onConnectWalletSuccess });
+  }, [onConnectWalletSuccess, showAddWalletModal]);
 
   const addWalletDisabled = useMemo(
     () => removeNullValues(viewer?.user?.wallets).length >= MAX_ALLOWED_ADDRESSES,

@@ -154,7 +154,7 @@ export function Button({
         )}
       >
         <View
-          className={clsx('flex flex-row items-center justify-center space-x-4', {
+          className={clsx('flex flex-row items-center justify-center space-x-2', {
             'opacity-0': loading,
             'opacity-100': !loading,
           })}

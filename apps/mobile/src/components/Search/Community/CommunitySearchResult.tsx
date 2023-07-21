@@ -44,7 +44,7 @@ export function CommunitySearchResult({ communityRef }: Props) {
 
   return (
     <SearchResult
-      profilePicture={<CommunityProfilePicture communityRef={community} size="sm" />}
+      profilePicture={<CommunityProfilePicture communityRef={community} size="md" />}
       onPress={handlePress}
       title={community?.name ?? ''}
       description={community?.description ?? ''}

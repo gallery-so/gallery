@@ -1,19 +1,26 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
-import { useCallback, useState } from 'react';
+import { useColorScheme } from 'nativewind';
+import { useCallback } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
+import { CirclePostIcon } from 'src/icons/CirclePostIcon';
+import isFeatureEnabled, { FeatureFlag } from 'src/utils/isFeatureEnabled';
 
 import { BackButton } from '~/components/BackButton';
+import { Button } from '~/components/Button';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { NftPreviewErrorFallback } from '~/components/NftPreview/NftPreviewErrorFallback';
 import { Pill } from '~/components/Pill';
+import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { NftDetailScreenInnerQuery } from '~/generated/NftDetailScreenInnerQuery.graphql';
 import { MainTabStackNavigatorParamList, MainTabStackNavigatorProp } from '~/navigation/types';
 import { NftDetailAssetCacheSwapper } from '~/screens/NftDetailScreen/NftDetailAsset/NftDetailAssetCacheSwapper';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
+import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
+import colors from '~/shared/theme/colors';
 
 import { IconContainer } from '../../components/IconContainer';
 import { InteractiveLink } from '../../components/InteractiveLink';
@@ -50,6 +57,7 @@ export function NftDetailScreenInner() {
         tokenById(id: $tokenId) {
           ... on Token {
             __typename
+            dbid
             name
             chain
             tokenId
@@ -64,7 +72,9 @@ export function NftDetailScreenInner() {
               }
             }
             owner {
+              id
               username
+              ...ProfilePictureFragment
             }
 
             ...NftAdditionalDetailsFragment
@@ -73,6 +83,9 @@ export function NftDetailScreenInner() {
 
           ...shareTokenFragment
         }
+
+        ...useLoggedInUserIdFragment
+        ...isFeatureEnabledFragment
       }
     `,
     {
@@ -94,21 +107,22 @@ export function NftDetailScreenInner() {
     // { tokenId: '2O1TnqK7sbhbdlAeQwLFkxo8T9i' }
   );
 
+  const { colorScheme } = useColorScheme();
+  const isKoalaEnabled = isFeatureEnabled(FeatureFlag.KOALA, query);
+
   const token = query.tokenById;
+
+  const loggedInUserId = useLoggedInUserId(query);
 
   if (token?.__typename !== 'Token') {
     throw new Error("We couldn't find that token. Something went wrong and we're looking into it.");
   }
 
+  const isTokenOwner = loggedInUserId === token.owner?.id;
+
   const track = useTrack();
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
-
-  const [showAdditionalDetails, setShowAdditionalDetails] = useState(false);
-
-  const toggleAdditionalDetails = useCallback(() => {
-    setShowAdditionalDetails((previous) => !previous);
-  }, []);
 
   const handleShare = useCallback(() => {
     shareToken(token, query.collectionTokenById?.collection ?? null);
@@ -140,6 +154,14 @@ export function NftDetailScreenInner() {
     token.contract?.contractAddress?.address,
     token.tokenId,
   ]);
+
+  const handleCreatePost = useCallback(() => {
+    if (!token.dbid) return;
+
+    navigation.navigate('PostComposer', {
+      tokenId: token.dbid,
+    });
+  }, [navigation, token.dbid]);
 
   // const handleCreatorPress = useCallback(() => {
   //   if (token.creator?.username) {
@@ -218,13 +240,25 @@ export function NftDetailScreenInner() {
         <View className="flex-row">
           {token.owner && (
             <View className="w-1/2">
-              <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
+              <Typography
+                className="text-xs text-shadow dark:text-metal"
+                font={{ family: 'ABCDiatype', weight: 'Regular' }}
+              >
                 OWNER
               </Typography>
 
-              <InteractiveLink onPress={handleUsernamePress} type="NFT Detail Token Owner Username">
-                {token.owner.username}
-              </InteractiveLink>
+              <GalleryTouchableOpacity
+                className="flex flex-row items-center space-x-1"
+                onPress={handleUsernamePress}
+                eventElementId="NFT Detail Token Owner Username"
+                eventName="NFT Detail Token Owner Username"
+              >
+                {token.owner.username && <ProfilePicture userRef={token.owner} size="xs" />}
+
+                <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+                  {token.owner.username}
+                </Typography>
+              </GalleryTouchableOpacity>
             </View>
           )}
           {ENABLED_CREATOR && (
@@ -249,17 +283,23 @@ export function NftDetailScreenInner() {
           </View>
         )}
 
-        <View className="flex-1">
-          <NftAdditionalDetails showDetails={showAdditionalDetails} tokenRef={token} />
-        </View>
+        {isKoalaEnabled && isTokenOwner && (
+          <Button
+            icon={
+              <CirclePostIcon
+                color={colorScheme === 'dark' ? colors.black['800'] : colors.white}
+                size={24}
+              />
+            }
+            eventElementId={null}
+            eventName={null}
+            onPress={handleCreatePost}
+            text="create post"
+          />
+        )}
 
-        <View>
-          <InteractiveLink
-            onPress={toggleAdditionalDetails}
-            type="NFT Detail Show Additional Details"
-          >
-            {showAdditionalDetails ? 'Hide Details' : 'Show Additional Details'}
-          </InteractiveLink>
+        <View className="flex-1">
+          <NftAdditionalDetails tokenRef={token} />
         </View>
       </View>
     </ScrollView>
