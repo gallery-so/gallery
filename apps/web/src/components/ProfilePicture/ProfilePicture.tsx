@@ -1,7 +1,7 @@
-import { graphql, useFragment } from 'react-relay';
-import { MouseEventHandler, useCallback, useMemo } from 'react';
-import styled from 'styled-components';
 import Link from 'next/link';
+import { MouseEventHandler, useCallback, useMemo } from 'react';
+import { graphql, useFragment } from 'react-relay';
+import styled from 'styled-components';
 
 import { ProfilePictureFragment$key } from '~/generated/ProfilePictureFragment.graphql';
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';

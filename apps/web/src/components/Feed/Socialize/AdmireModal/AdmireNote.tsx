@@ -1,5 +1,3 @@
-import Link from 'next/link';
-import { MouseEventHandler, useCallback, useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
@@ -12,21 +10,18 @@ import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { AdmireNoteFragment$key } from '~/generated/AdmireNoteFragment.graphql';
 import { AdmireNoteQueryFragment$key } from '~/generated/AdmireNoteQueryFragment.graphql';
 import { IconWrapper } from '~/icons/SocializeIcons';
-import noop from '~/utils/noop';
 
 type AdmireNoteProps = {
   admireRef: AdmireNoteFragment$key;
   queryRef: AdmireNoteQueryFragment$key;
-  onClick?: () => void;
 };
 
-export function AdmireNote({ admireRef, queryRef, onClick = noop }: AdmireNoteProps) {
+export function AdmireNote({ admireRef, queryRef }: AdmireNoteProps) {
   const admire = useFragment(
     graphql`
       fragment AdmireNoteFragment on Admire {
         __typename
         admirer {
-          username
           ...FollowButtonUserFragment
           ...HoverCardOnUsernameFragment
           ...ProfilePictureFragment
@@ -47,18 +42,6 @@ export function AdmireNote({ admireRef, queryRef, onClick = noop }: AdmireNotePr
 
   const user = admire.admirer;
 
-  const handleUsernameClick = useCallback<MouseEventHandler>(
-    (event) => {
-      event.stopPropagation();
-      onClick();
-    },
-    [onClick]
-  );
-
-  const userProfileLink = useMemo((): Route => {
-    return { pathname: '/[username]', query: { username: user.username as string } };
-  }, [user]);
-
   if (!user) {
     return null;
   }
@@ -66,19 +49,13 @@ export function AdmireNote({ admireRef, queryRef, onClick = noop }: AdmireNotePr
   return (
     <StyledListItem justify="space-between" gap={4}>
       <HStack gap={4} align="center">
-        <StyledLink href={userProfileLink} onClick={handleUsernameClick}>
-          <ProfilePicture size="sm" userRef={admire.admirer} />
-        </StyledLink>
+        <ProfilePicture size="sm" userRef={admire.admirer} />
         {admire.admirer && <HoverCardOnUsername userRef={admire.admirer} />}
       </HStack>
       <StyledFollowButton userRef={user} queryRef={query} />
     </StyledListItem>
   );
 }
-
-const StyledLink = styled(Link)`
-  text-decoration: none;
-`;
 
 const StyledListItem = styled(ListItem)`
   padding: 12px 16px;
