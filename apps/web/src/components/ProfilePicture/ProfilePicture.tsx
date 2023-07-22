@@ -1,7 +1,7 @@
-import { graphql, useFragment } from 'react-relay';
-import { MouseEventHandler, useCallback, useMemo } from 'react';
-import styled from 'styled-components';
 import Link from 'next/link';
+import { useMemo } from 'react';
+import { graphql, useFragment } from 'react-relay';
+import styled from 'styled-components';
 
 import { ProfilePictureFragment$key } from '~/generated/ProfilePictureFragment.graphql';
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
@@ -41,34 +41,26 @@ export function ProfilePicture({ userRef, onClick = noop, ...rest }: Props) {
     userRef
   );
 
-  if (!user) return null;
-
-  const { token, profileImage } = user.profileImage ?? {};
-
-  const handleUsernameClick = useCallback<MouseEventHandler>(
-    (event) => {
-      event.stopPropagation();
-      onClick();
-    },
-    [onClick]
-  );
-
   const userProfileLink = useMemo((): Route => {
     return { pathname: '/[username]', query: { username: user.username as string } };
   }, [user]);
+
+  if (!user) return null;
+
+  const { token, profileImage } = user.profileImage ?? {};
 
   const firstLetter = user?.username?.substring(0, 1) ?? '';
 
   if (profileImage && profileImage.previewURLs?.medium)
     return (
-      <StyledLink href={userProfileLink} onClick={handleUsernameClick}>
+      <StyledLink href={userProfileLink} onClick={onClick}>
         <RawProfilePicture imageUrl={profileImage.previewURLs.medium} {...rest} />
       </StyledLink>
     );
 
   if (!token)
     return (
-      <StyledLink href={userProfileLink} onClick={handleUsernameClick}>
+      <StyledLink href={userProfileLink} onClick={onClick}>
         <RawProfilePicture letter={firstLetter} {...rest} />
       </StyledLink>
     );
@@ -90,7 +82,7 @@ export function ProfilePicture({ userRef, onClick = noop, ...rest }: Props) {
   }
 
   return (
-    <StyledLink href={userProfileLink} onClick={handleUsernameClick}>
+    <StyledLink href={userProfileLink} onClick={onClick}>
       <RawProfilePicture imageUrl={result.urls.small} {...rest} />
     </StyledLink>
   );

@@ -1,10 +1,10 @@
+import Link from 'next/link';
+import { MouseEventHandler, useCallback, useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
-import { MouseEventHandler, useCallback, useMemo } from 'react';
 import { HStack } from '~/components/core/Spacer/Stack';
-import Link from 'next/link';
 import { ListItem } from '~/components/Feed/Socialize/CommentsModal/ListItem';
 import FollowButton from '~/components/Follow/FollowButton';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
