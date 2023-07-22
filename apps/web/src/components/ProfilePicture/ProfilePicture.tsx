@@ -1,16 +1,21 @@
 import { graphql, useFragment } from 'react-relay';
+import { MouseEventHandler, useCallback, useMemo } from 'react';
+import styled from 'styled-components';
+import Link from 'next/link';
 
 import { ProfilePictureFragment$key } from '~/generated/ProfilePictureFragment.graphql';
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
 import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
+import noop from '~/utils/noop';
 
 import { RawProfilePicture, RawProfilePictureProps } from './RawProfilePicture';
 
 type Props = {
   userRef: ProfilePictureFragment$key;
+  onClick: () => void;
 } & Omit<RawProfilePictureProps, 'imageUrl'>;
 
-export function ProfilePicture({ userRef, ...rest }: Props) {
+export function ProfilePicture({ userRef, onClick = noop, ...rest }: Props) {
   const user = useFragment(
     graphql`
       fragment ProfilePictureFragment on GalleryUser {
@@ -40,12 +45,33 @@ export function ProfilePicture({ userRef, ...rest }: Props) {
 
   const { token, profileImage } = user.profileImage ?? {};
 
+  const handleUsernameClick = useCallback<MouseEventHandler>(
+    (event) => {
+      event.stopPropagation();
+      onClick();
+    },
+    [onClick]
+  );
+
+  const userProfileLink = useMemo((): Route => {
+    return { pathname: '/[username]', query: { username: user.username as string } };
+  }, [user]);
+
   const firstLetter = user?.username?.substring(0, 1) ?? '';
 
   if (profileImage && profileImage.previewURLs?.medium)
-    return <RawProfilePicture imageUrl={profileImage.previewURLs.medium} {...rest} />;
+    return (
+      <StyledLink href={userProfileLink} onClick={handleUsernameClick}>
+        <RawProfilePicture imageUrl={profileImage.previewURLs.medium} {...rest} />
+      </StyledLink>
+    );
 
-  if (!token) return <RawProfilePicture letter={firstLetter} {...rest} />;
+  if (!token)
+    return (
+      <StyledLink href={userProfileLink} onClick={handleUsernameClick}>
+        <RawProfilePicture letter={firstLetter} {...rest} />
+      </StyledLink>
+    );
 
   const result = getVideoOrImageUrlForNftPreview({
     tokenRef: token,
@@ -63,5 +89,14 @@ export function ProfilePicture({ userRef, ...rest }: Props) {
     throw new CouldNotRenderNftError('StagedNftImage', 'could not find a small url');
   }
 
-  return <RawProfilePicture imageUrl={result.urls.small} {...rest} />;
+  return (
+    <StyledLink href={userProfileLink} onClick={handleUsernameClick}>
+      <RawProfilePicture imageUrl={result.urls.small} {...rest} />
+    </StyledLink>
+  );
 }
+
+const StyledLink = styled(Link)`
+  text-decoration: none;
+  cursor: pointer;
+`;
