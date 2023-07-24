@@ -6,9 +6,11 @@ import styled from 'styled-components';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { AdmireButton } from '~/components/Feed/Socialize/AdmireButton';
 import { CommentBoxIcon } from '~/components/Feed/Socialize/CommentBox/CommentBoxIcon';
-import { Interactions } from '~/components/Feed/Socialize/Interactions';
+import { Comments } from '~/components/Feed/Socialize/Comments';
 import { FeedEventSocializeSectionFragment$key } from '~/generated/FeedEventSocializeSectionFragment.graphql';
 import { FeedEventSocializeSectionQueryFragment$key } from '~/generated/FeedEventSocializeSectionQueryFragment.graphql';
+import useAdmireFeedEvent from '~/hooks/api/feedEvents/useAdmireFeedEvent';
+import useRemovedAdmireFeedEvent from '~/hooks/api/feedEvents/useRemoveAdmireFeedEvent';
 
 import { AdmireLine } from './AdmireLine';
 
@@ -26,10 +28,10 @@ export function FeedEventSocializeSection({
   const event = useFragment(
     graphql`
       fragment FeedEventSocializeSectionFragment on FeedEvent {
-        ...CommentBoxIconEventFragment
-        ...InteractionsFragment
+        ...CommentBoxIconFragment
+        ...CommentsFragment
         ...AdmireButtonFragment
-        ...AdmireLineEventFragment
+        ...AdmireLineFragment
 
         # We only show 1 but in case the user deletes something
         # we want to be sure that we can show another comment beneath
@@ -40,7 +42,7 @@ export function FeedEventSocializeSection({
             }
           }
         }
-        ...AdmireLineEventFragment
+        ...AdmireLineFragment
       }
     `,
     eventRef
@@ -52,7 +54,7 @@ export function FeedEventSocializeSection({
         ...AdmireButtonQueryFragment
         ...CommentBoxIconQueryFragment
         ...AdmireLineQueryFragment
-        ...InteractionsQueryFragment
+        ...CommentsQueryFragment
       }
     `,
     queryRef
@@ -72,13 +74,20 @@ export function FeedEventSocializeSection({
     return admires;
   }, [event.admires?.edges]);
   const [admire] = nonNullAdmires;
+  const [admireFeedEvent] = useAdmireFeedEvent();
+  const [removeAdmireFeedEvent] = useRemovedAdmireFeedEvent();
   return (
     <VStack gap={4}>
       <HStack justify="space-between" align="center" gap={24}>
         <div>{admire && <AdmireLine eventRef={event} queryRef={query} />}</div>
         <HStack align="center">
           <IconWrapper>
-            <AdmireButton eventRef={event} queryRef={query} />
+            <AdmireButton
+              eventRef={event}
+              queryRef={query}
+              onAdmire={admireFeedEvent}
+              onRemoveAdmire={removeAdmireFeedEvent}
+            />
           </IconWrapper>
 
           <IconWrapper>
@@ -88,7 +97,7 @@ export function FeedEventSocializeSection({
       </HStack>
       <HStack justify="space-between" align="flex-start" gap={24}>
         <VStack shrink>
-          <Interactions
+          <Comments
             onPotentialLayoutShift={onPotentialLayoutShift}
             eventRef={event}
             queryRef={query}

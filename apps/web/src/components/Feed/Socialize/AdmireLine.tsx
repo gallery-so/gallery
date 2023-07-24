@@ -20,25 +20,45 @@ type CommentLineProps = {
 export function AdmireLine({ eventRef, queryRef }: CommentLineProps) {
   const event = useFragment(
     graphql`
-      fragment AdmireLineEventFragment on FeedEvent {
+      fragment AdmireLineFragment on FeedEventOrError {
         # We only show 1 but in case the user deletes something
-        # we want to be sure that we can show another comment beneath
-        admires(last: 5) @connection(key: "Interactions_admires") {
-          pageInfo {
-            total
-          }
-          edges {
-            node {
-              __typename
-              admirer {
-                dbid
-                username
-                ...ProfilePictureStackFragment
+        # we want to be sure that we can show another admire beneath
+        ... on FeedEvent {
+          admires(last: 5) @connection(key: "Interactions_admires") {
+            pageInfo {
+              total
+            }
+            edges {
+              node {
+                __typename
+                admirer {
+                  dbid
+                  username
+                  ...ProfilePictureStackFragment
+                }
               }
             }
           }
+          ...useAdmireModalFragment
         }
-        ...useAdmireModalFragment
+        ... on Post {
+          admires(last: 5) @connection(key: "Interactions_admires") {
+            pageInfo {
+              total
+            }
+            edges {
+              node {
+                __typename
+                admirer {
+                  dbid
+                  username
+                  ...ProfilePictureStackFragment
+                }
+              }
+            }
+          }
+          ...useAdmireModalFragment
+        }
       }
     `,
     eventRef

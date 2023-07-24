@@ -27,7 +27,7 @@ function UserActivityFeed({ userRef, queryRef }: Props) {
           @connection(key: "UserActivityFeedFragment_feed") {
           edges {
             node {
-              ... on FeedEvent {
+              ... on FeedEventOrError {
                 __typename
 
                 ...FeedListEventDataFragment
@@ -71,6 +71,10 @@ function UserActivityFeed({ userRef, queryRef }: Props) {
 
     for (const edge of user.feed?.edges ?? []) {
       if (edge?.node?.__typename === 'FeedEvent' && edge.node) {
+        events.push(edge.node);
+      }
+      if (edge?.node?.__typename === 'Post' && edge.node) {
+        // todo kaito: refactor
         events.push(edge.node);
       }
     }

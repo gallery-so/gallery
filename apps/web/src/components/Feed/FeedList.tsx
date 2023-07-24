@@ -47,9 +47,13 @@ export default function FeedList({
 
   const feedData = useFragment(
     graphql`
-      fragment FeedListEventDataFragment on FeedEvent @relay(plural: true) {
-        dbid
-
+      fragment FeedListEventDataFragment on FeedEventOrError @relay(plural: true) {
+        ... on FeedEvent {
+          dbid
+        }
+        ... on Post {
+          dbid
+        }
         ...FeedEventWithErrorBoundaryFragment
       }
     `,

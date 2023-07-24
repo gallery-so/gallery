@@ -19,6 +19,7 @@ import { useToastActions } from '~/contexts/toast/ToastContext';
 import { CommentBoxFragment$key } from '~/generated/CommentBoxFragment.graphql';
 import { CommentBoxMutation } from '~/generated/CommentBoxMutation.graphql';
 import { CommentBoxQueryFragment$key } from '~/generated/CommentBoxQueryFragment.graphql';
+import useCommentOnFeedEvent from '~/hooks/api/feedEvents/useCommentOnFeedEvent';
 import { AuthModal } from '~/hooks/useAuthModal';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
@@ -29,11 +30,13 @@ import colors from '~/shared/theme/colors';
 const MAX_TEXT_LENGTH = 100;
 
 type Props = {
-  eventRef: CommentBoxFragment$key;
   queryRef: CommentBoxQueryFragment$key;
+  onSubmitComment: (comment: string) => void;
+  isSubmittingComment: boolean;
 };
 
-export function CommentBox({ eventRef, queryRef }: Props) {
+// make this generic with an onsubmit
+export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment }: Props) {
   const query = useFragment(
     graphql`
       fragment CommentBoxQueryFragment on Query {
@@ -62,32 +65,17 @@ export function CommentBox({ eventRef, queryRef }: Props) {
     queryRef
   );
 
-  const event = useFragment(
-    graphql`
-      fragment CommentBoxFragment on FeedEvent {
-        id
-        dbid
-      }
-    `,
-    eventRef
-  );
+  // const event = useFragment(
+  //   graphql`
+  //     fragment CommentBoxFragment on FeedEvent {
+  //       id
+  //       dbid
+  //     }
+  //   `,
+  //   eventRef
+  // );
 
-  const [submitComment, isSubmittingComment] = usePromisifiedMutation<CommentBoxMutation>(graphql`
-    mutation CommentBoxMutation($eventId: DBID!, $comment: String!, $connections: [ID!]!)
-    @raw_response_type {
-      commentOnFeedEvent(comment: $comment, feedEventId: $eventId) {
-        ... on CommentOnFeedEventPayload {
-          __typename
-
-          comment @appendNode(connections: $connections, edgeTypeName: "FeedEventCommentEdge") {
-            dbid
-            ...CommentLineFragment
-            ...CommentNoteFragment
-          }
-        }
-      }
-    }
-  `);
+  // const [commentOnFeedEvent, isSubmittingComment] = useCommentOnFeedEvent();
 
   // WARNING: calling `setValue` will not cause the textarea's content to actually change
   // It's simply there as a state value that we can reference to peek into the current state
@@ -113,12 +101,19 @@ export function CommentBox({ eventRef, queryRef }: Props) {
     }
   }, []);
 
-  const hasProfileImage = useMemo(() => {
-    if (query?.viewer?.__typename !== 'Viewer') {
-      return false;
-    }
-    return query.viewer?.user?.profileImage?.token != null;
-  }, [query.viewer]);
+  // const hasProfileImage = useMemo(() => {
+  //   if (query?.viewer?.__typename !== 'Viewer') {
+  //     return false;
+  //   }
+  //   return query.viewer?.user?.profileImage?.token != null;
+  // }, [query.viewer]);
+
+  const pushErrorToast = useCallback(() => {
+    pushToast({
+      autoClose: true,
+      message: "Something went wrong while posting your comment. We're looking into it.",
+    });
+  }, [pushToast]);
 
   const handleSubmit = useCallback(async () => {
     if (query.viewer?.__typename !== 'Viewer') {
@@ -134,125 +129,37 @@ export function CommentBox({ eventRef, queryRef }: Props) {
       return;
     }
 
-    function pushErrorToast() {
-      pushToast({
-        autoClose: true,
-        message: "Something went wrong while posting your comment. We're looking into it.",
-      });
-    }
-
     track('Save Comment Click');
+    // const { token } = query.viewer?.user?.profileImage ?? {};
 
+    // const result = token
+    //   ? getVideoOrImageUrlForNftPreview({
+    //       tokenRef: token,
+    //     })
+    //   : null;
+    // const commenterProfileImageUrl = result?.urls?.small ?? null;
     try {
-      const interactionsConnection = ConnectionHandler.getConnectionID(
-        event.id,
-        'Interactions_comments'
-      );
-      const commentsModalConnection = ConnectionHandler.getConnectionID(
-        event.id,
-        'CommentsModal_interactions'
-      );
-
-      const updater: SelectorStoreUpdater<CommentBoxMutation['response']> = (store, response) => {
-        if (response.commentOnFeedEvent?.__typename === 'CommentOnFeedEventPayload') {
-          const pageInfo = store.get(interactionsConnection)?.getLinkedRecord('pageInfo');
-
-          pageInfo?.setValue(((pageInfo?.getValue('total') as number) ?? 0) + 1, 'total');
-        }
-      };
-
-      const optimisticId = Math.random().toString();
-
-      const { token } = query.viewer?.user?.profileImage ?? {};
-
-      const result = token
-        ? getVideoOrImageUrlForNftPreview({
-            tokenRef: token,
-          })
-        : null;
-
-      const tokenProfileImagePayload = hasProfileImage
-        ? {
-            token: {
-              dbid: token?.dbid ?? 'unknown',
-              id: token?.id ?? 'unknown',
-              media: {
-                __typename: 'ImageMedia',
-                fallbackMedia: {
-                  mediaURL: result?.urls?.small ?? null,
-                },
-                previewURLs: {
-                  large: result?.urls?.large ?? null,
-                  medium: result?.urls?.medium ?? null,
-                  small: result?.urls?.small ?? null,
-                },
-              },
-            },
-          }
-        : { token: null };
-
-      const response = await submitComment({
-        updater,
-        optimisticUpdater: updater,
-        optimisticResponse: {
-          commentOnFeedEvent: {
-            __typename: 'CommentOnFeedEventPayload',
-            comment: {
-              __typename: 'Comment',
-              comment: value,
-              commenter: {
-                dbid: query.viewer?.user?.dbid ?? 'unknown',
-                id: query.viewer?.user?.id ?? 'unknown',
-                username: query.viewer?.user?.username ?? null,
-                profileImage: {
-                  __typename: 'TokenProfileImage',
-                  ...tokenProfileImagePayload,
-                },
-              },
-              creationTime: new Date().toISOString(),
-              dbid: optimisticId,
-              id: `Comment:${optimisticId}`,
-            },
-          },
-        },
-        variables: {
-          comment: value,
-          eventId: event.dbid,
-          connections: [interactionsConnection, commentsModalConnection],
-        },
-      });
-
-      if (response.commentOnFeedEvent?.__typename === 'CommentOnFeedEventPayload') {
-        resetInputState();
-      } else {
-        pushErrorToast();
-
-        reportError(
-          `Error while commenting on feed event, typename was ${response.commentOnFeedEvent?.__typename}`
-        );
-      }
+      onSubmitComment(value);
+      // commentOnFeedEvent(event.id, event.dbid, value, {
+      //   commenterUserId: query.viewer.user.id,
+      //   commenterUserDbid: query.viewer.user.dbid,
+      //   commenterUsername: query.viewer.user.username,
+      //   commenterProfileImageUrl: result?.urls?.small ?? null,
+      // });
     } catch (error) {
       pushErrorToast();
-
-      if (error instanceof Error) {
-        reportError(error);
-      } else {
-        reportError('An unexpected error occurred while posting a comment.');
-      }
+      return;
     }
+    resetInputState();
   }, [
-    event.dbid,
-    event.id,
-    hasProfileImage,
-    isSubmittingComment,
-    pushToast,
     query,
-    showModal,
-    reportError,
-    resetInputState,
-    submitComment,
-    track,
+    isSubmittingComment,
     value,
+    track,
+    resetInputState,
+    showModal,
+    onSubmitComment,
+    pushErrorToast,
   ]);
 
   const handleInputKeyDown = useCallback<KeyboardEventHandler>(

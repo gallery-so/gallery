@@ -39,7 +39,7 @@ export function LoadableNftDetailView({
     `,
     { tokenId: tokenId, collectionId: collectionId }
   );
-  console.log('what');
+
   if (!query.collectionTokenById) {
     return null;
   }
@@ -84,8 +84,6 @@ export default function NftDetailView({
     `,
     queryRef
   );
-  console.log({ queryRef });
-  // console.log('nftdetail');
 
   const isMobileOrMobileLarge = useIsMobileOrMobileLargeWindowWidth();
 

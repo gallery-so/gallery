@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -16,6 +16,9 @@ import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import { TriedToRenderUnsupportedFeedEvent } from '~/shared/errors/TriedToRenderUnsupportedFeedEvent';
 import colors from '~/shared/theme/colors';
 
+import PostData from './Posts/PostData';
+import PostSocializeSection from './Socialize/PostSocializeSection';
+
 type FeedEventProps = {
   eventRef: FeedEventFragment$key;
   queryRef: FeedEventQueryFragment$key;
@@ -25,11 +28,18 @@ type FeedEventProps = {
 function FeedEvent({ eventRef, queryRef, feedMode }: FeedEventProps) {
   const event = useFragment(
     graphql`
-      fragment FeedEventFragment on FeedEvent {
-        dbid
-        caption
-        eventData {
-          ...FeedEventDataFragment
+      fragment FeedEventFragment on FeedEventOrError {
+        ... on FeedEvent {
+          __typename
+          dbid
+          caption
+          eventData {
+            ...FeedEventDataFragment
+          }
+        }
+        ... on Post {
+          __typename
+          ...PostDataFragment
         }
       }
     `,
@@ -45,19 +55,27 @@ function FeedEvent({ eventRef, queryRef, feedMode }: FeedEventProps) {
     queryRef
   );
 
-  if (!event.eventData) {
-    throw new TriedToRenderUnsupportedFeedEvent(event.dbid);
+  if (event.__typename === 'Post') {
+    return <PostData postRef={event} />;
   }
 
-  return (
-    <FeedEventData
-      caption={event.caption}
-      feedMode={feedMode}
-      eventDbid={event.dbid}
-      feedEventRef={event.eventData}
-      queryRef={query}
-    />
-  );
+  if (event.__typename === 'FeedEvent') {
+    if (!event.eventData) {
+      throw new TriedToRenderUnsupportedFeedEvent(event.dbid);
+    }
+
+    return (
+      <FeedEventData
+        caption={event.caption}
+        feedMode={feedMode}
+        eventDbid={event.dbid}
+        feedEventRef={event.eventData}
+        queryRef={query}
+      />
+    );
+  }
+
+  return <></>;
 }
 
 type FeedEventWithBoundaryProps = {
@@ -77,15 +95,20 @@ export default function FeedEventWithBoundary({
 }: FeedEventWithBoundaryProps) {
   const event = useFragment(
     graphql`
-      fragment FeedEventWithErrorBoundaryFragment on FeedEvent {
-        eventData {
-          ... on UserFollowedUsersFeedEventData {
-            __typename
+      fragment FeedEventWithErrorBoundaryFragment on FeedEventOrError {
+        __typename
+        ... on FeedEvent {
+          eventData {
+            ... on UserFollowedUsersFeedEventData {
+              __typename
+            }
           }
+          ...FeedEventSocializeSectionFragment
         }
-
+        ... on Post {
+          ...PostSocializeSectionFragment
+        }
         ...FeedEventFragment
-        ...FeedEventSocializeSectionFragment
       }
     `,
     eventRef
@@ -96,6 +119,7 @@ export default function FeedEventWithBoundary({
       fragment FeedEventWithErrorBoundaryQueryFragment on Query {
         ...FeedEventQueryFragment
         ...FeedEventSocializeSectionQueryFragment
+        ...PostSocializeSectionQueryFragment
       }
     `,
     queryRef
@@ -112,17 +136,26 @@ export default function FeedEventWithBoundary({
       <FeedEventContainer gap={16}>
         <FeedEvent eventRef={event} queryRef={query} feedMode={feedMode} />
 
-        {shouldShowAdmireComment && (
-          // We have another boundary here in case the socialize section fails
-          // and the rest of the feed event loads
-          <ReportingErrorBoundary dontReport fallback={<></>}>
+        {/* // We have another boundary here in case the socialize section fails
+          // and the rest of the feed event loads */}
+        <ReportingErrorBoundary dontReport fallback={<></>}>
+          {event.__typename === 'Post' && (
+            <PostSocializeSection
+              queryRef={query}
+              postRef={event}
+              onPotentialLayoutShift={handlePotentialLayoutShift}
+            />
+          )}
+          {event.__typename === 'FeedEvent' && shouldShowAdmireComment && (
             <FeedEventSocializeSection
               eventRef={event}
               queryRef={query}
               onPotentialLayoutShift={handlePotentialLayoutShift}
             />
-          </ReportingErrorBoundary>
-        )}
+          )}
+        </ReportingErrorBoundary>
+
+        <ReportingErrorBoundary dontReport fallback={<></>}></ReportingErrorBoundary>
       </FeedEventContainer>
     </ReportingErrorBoundary>
   );

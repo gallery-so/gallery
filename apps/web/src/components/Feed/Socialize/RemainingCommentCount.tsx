@@ -1,9 +1,14 @@
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
+import styled from 'styled-components';
 
-import { NoteModalOpenerText } from '~/components/Feed/Socialize/NoteModalOpenerText';
+import { BODY_FONT_FAMILY } from '~/components/core/Text/Text';
+// import { NoteModalOpenerText } from '~/components/Feed/Socialize/NoteModalOpenerText';
 import { RemainingCommentCountFragment$key } from '~/generated/RemainingCommentCountFragment.graphql';
 import { RemainingCommentCountQueryFragment$key } from '~/generated/RemainingCommentCountQueryFragment.graphql';
+import colors from '~/shared/theme/colors';
+
+import { useCommentsModal } from './CommentsModal/useCommentsModal';
 
 type RemainingAdmireCountProps = {
   eventRef: RemainingCommentCountFragment$key;
@@ -18,8 +23,13 @@ export function RemainingCommentCount({
 }: RemainingAdmireCountProps) {
   const event = useFragment(
     graphql`
-      fragment RemainingCommentCountFragment on FeedEvent {
-        ...NoteModalOpenerTextFragment
+      fragment RemainingCommentCountFragment on FeedEventOrError {
+        ... on FeedEvent {
+          ...useCommentsModalFragment
+        }
+        ... on Post {
+          ...useCommentsModalFragment
+        }
       }
     `,
     eventRef
@@ -28,19 +38,37 @@ export function RemainingCommentCount({
   const query = useFragment(
     graphql`
       fragment RemainingCommentCountQueryFragment on Query {
-        ...NoteModalOpenerTextQueryFragment
+        ...useCommentsModalQueryFragment
       }
     `,
     queryRef
   );
+
+  const openCommentsModal = useCommentsModal({ eventRef: event, queryRef: query });
 
   if (totalComments <= 1) {
     return null;
   }
 
   return (
-    <NoteModalOpenerText eventRef={event} queryRef={query}>
+    <StyledViewCommentsText onClick={openCommentsModal}>
       View all {totalComments} comments
-    </NoteModalOpenerText>
+    </StyledViewCommentsText>
   );
 }
+
+const StyledViewCommentsText = styled.div.attrs({ role: 'button' })`
+  cursor: pointer;
+  font-family: ${BODY_FONT_FAMILY};
+  font-size: 12px;
+  line-height: 1;
+  font-weight: 700;
+
+  text-decoration: underline;
+
+  color: ${colors.shadow};
+
+  :hover {
+    text-decoration: none;
+  }
+`;

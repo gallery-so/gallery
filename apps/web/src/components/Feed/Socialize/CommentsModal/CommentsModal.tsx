@@ -24,35 +24,68 @@ export const NOTES_PER_PAGE = 20;
 
 type CommentsModalProps = {
   fullscreen: boolean;
-  eventRef: CommentsModalFragment$key;
+  // eventRef: CommentsModalFragment$key;
   queryRef: CommentsModalQueryFragment$key;
+  hasPrevious: boolean;
+  loadPrevious: (count: number) => void;
+  commentsRef: any;
+  onSubmitComment: (comment: string) => void;
+  isSubmittingComment: boolean;
 };
 
-export function CommentsModal({ eventRef, queryRef, fullscreen }: CommentsModalProps) {
-  const {
-    data: feedEvent,
-    loadPrevious,
-    hasPrevious,
-  } = usePaginationFragment(
-    graphql`
-      fragment CommentsModalFragment on FeedEvent
-      @refetchable(queryName: "CommentsModalRefetchableFragment") {
-        interactions(last: $interactionsFirst, before: $interactionsAfter)
-          @connection(key: "CommentsModal_interactions") {
-          edges {
-            node {
-              __typename
+// pass in a list of comments
+export function CommentsModal({
+  commentsRef,
+  queryRef,
+  fullscreen,
+  hasPrevious,
+  loadPrevious,
+  onSubmitComment,
+  isSubmittingComment,
+}: CommentsModalProps) {
+  // const {
+  //   data: feedEvent,
+  //   loadPrevious,
+  //   hasPrevious,
+  // } = usePaginationFragment(
+  //   graphql`
+  //     fragment CommentsModalFragment on FeedEvent
+  //     @refetchable(queryName: "CommentsModalRefetchableFragment") {
+  //       interactions(last: $interactionsFirst, before: $interactionsAfter)
+  //         @connection(key: "CommentsModal_interactions") {
+  //         edges {
+  //           node {
+  //             __typename
 
-              ... on Comment {
-                ...CommentNoteFragment
-              }
-            }
-          }
-        }
-        ...CommentBoxFragment
+  //             ... on Comment {
+  //               ...CommentNoteFragment
+  //             }
+  //           }
+  //         }
+  //       }
+  //       ...CommentBoxFragment
+  //     }
+  //   `,
+  //   eventRef
+  // );
+
+  // const comments = useFragment(
+  //   graphql`
+  //     fragment CommentsModalFragment on Comment @relay(plural: true) {
+  //       __typename
+  //       ...CommentNoteFragment
+  //     }
+  //   `,
+  //   commentRefs
+  // );
+
+  const comments = useFragment(
+    graphql`
+      fragment CommentsModalFragment on Comment @relay(plural: true) {
+        ...CommentNoteFragment
       }
     `,
-    eventRef
+    commentsRef
   );
 
   const query = useFragment(
@@ -66,17 +99,19 @@ export function CommentsModal({ eventRef, queryRef, fullscreen }: CommentsModalP
 
   const virtualizedListRef = useRef<List | null>(null);
 
-  const nonNullInteractions = useMemo(() => {
-    const interactions = [];
+  // need to get non null comments and pass into generic
+  // comments modal should be powered by a list of comments , loadPrevious, hasPrevious
+  // const comments = useMemo(() => {
+  //   const interactions = [];
 
-    for (const interaction of feedEvent.interactions?.edges ?? []) {
-      if (interaction?.node && interaction.node.__typename === 'Comment') {
-        interactions.push(interaction.node);
-      }
-    }
+  //   for (const interaction of feedEvent.interactions?.edges ?? []) {
+  //     if (interaction?.node && interaction.node.__typename === 'Comment') {
+  //       interactions.push(interaction.node);
+  //     }
+  //   }
 
-    return interactions.reverse();
-  }, [feedEvent.interactions?.edges]);
+  //   return interactions.reverse();
+  // }, [feedEvent.interactions?.edges]);
 
   const measurerCache = useMemo(() => {
     return new CellMeasurerCache({
@@ -92,7 +127,7 @@ export function CommentsModal({ eventRef, queryRef, fullscreen }: CommentsModalP
 
   const rowRenderer = useCallback<ListRowRenderer>(
     ({ index, parent, key, style }) => {
-      const interaction = nonNullInteractions[nonNullInteractions.length - index - 1];
+      const interaction = comments[comments.length - index - 1];
 
       if (!interaction) {
         return null;
@@ -110,6 +145,7 @@ export function CommentsModal({ eventRef, queryRef, fullscreen }: CommentsModalP
             return (
               // @ts-expect-error Bad types from react-virtualized
               <div style={style} ref={registerChild} key={key}>
+                {/* commentRef */}
                 <CommentNote commentRef={interaction} />
               </div>
             );
@@ -117,13 +153,12 @@ export function CommentsModal({ eventRef, queryRef, fullscreen }: CommentsModalP
         </CellMeasurer>
       );
     },
-    [measurerCache, nonNullInteractions]
+    [measurerCache, comments]
   );
 
-  const isRowLoaded = ({ index }: { index: number }) =>
-    !hasPrevious || index < nonNullInteractions.length;
+  const isRowLoaded = ({ index }: { index: number }) => !hasPrevious || index < comments.length;
 
-  const rowCount = hasPrevious ? nonNullInteractions.length + 1 : nonNullInteractions.length;
+  const rowCount = hasPrevious ? comments.length + 1 : comments.length;
 
   const estimatedContentHeight = useMemo(() => {
     // 24 is the padding between the comment box and the list
@@ -143,7 +178,7 @@ export function CommentsModal({ eventRef, queryRef, fullscreen }: CommentsModalP
       measurerCache.clearAll();
       virtualizedListRef.current?.recomputeRowHeights();
     },
-    [nonNullInteractions, measurerCache]
+    [comments, measurerCache]
   );
 
   return (
@@ -167,7 +202,7 @@ export function CommentsModal({ eventRef, queryRef, fullscreen }: CommentsModalP
                       width={width}
                       height={estimatedContentHeight}
                       rowRenderer={rowRenderer}
-                      rowCount={nonNullInteractions.length}
+                      rowCount={comments.length}
                       rowHeight={measurerCache.rowHeight}
                       onRowsRendered={onRowsRendered}
                       style={{
@@ -180,7 +215,12 @@ export function CommentsModal({ eventRef, queryRef, fullscreen }: CommentsModalP
             )}
           </AutoSizer>
         </VStack>
-        <CommentBox eventRef={feedEvent} queryRef={query} />
+        {/* onSubmit */}
+        <CommentBox
+          queryRef={query}
+          onSubmitComment={onSubmitComment}
+          isSubmittingComment={isSubmittingComment}
+        />
       </WrappingVStack>
     </ModalContent>
   );

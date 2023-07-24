@@ -5,35 +5,53 @@ import { graphql } from 'relay-runtime';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { CommentLine } from '~/components/Feed/Socialize/CommentLine';
 import { RemainingCommentCount } from '~/components/Feed/Socialize/RemainingCommentCount';
-import { InteractionsFragment$key } from '~/generated/InteractionsFragment.graphql';
-import { InteractionsQueryFragment$key } from '~/generated/InteractionsQueryFragment.graphql';
+import { CommentsFragment$key } from '~/generated/CommentsFragment.graphql';
+import { CommentsQueryFragment$key } from '~/generated/CommentsQueryFragment.graphql';
 
 type Props = {
   onPotentialLayoutShift: () => void;
-  eventRef: InteractionsFragment$key;
-  queryRef: InteractionsQueryFragment$key;
+  eventRef: CommentsFragment$key;
+  queryRef: CommentsQueryFragment$key;
 };
 
-export function Interactions({ eventRef, queryRef, onPotentialLayoutShift }: Props) {
-  const event = useFragment(
+export function Comments({ eventRef, queryRef, onPotentialLayoutShift }: Props) {
+  const feedItem = useFragment(
     graphql`
-      fragment InteractionsFragment on FeedEvent {
+      fragment CommentsFragment on FeedEventOrError {
         # We only show 2 but in case the user deletes something
         # we want to be sure that we can show another comment beneath
-        comments(last: 5) @connection(key: "Interactions_comments") {
-          pageInfo {
-            total
-          }
-          edges {
-            node {
-              dbid
+        ... on FeedEvent {
+          comments(last: 5) @connection(key: "Interactions_comments") {
+            pageInfo {
+              total
+            }
+            edges {
+              node {
+                dbid
 
-              ...CommentLineFragment
+                ...CommentLineFragment
+              }
             }
           }
+
+          ...RemainingCommentCountFragment
         }
 
-        ...RemainingCommentCountFragment
+        ... on Post {
+          comments(last: 5) @connection(key: "Interactions_comments") {
+            pageInfo {
+              total
+            }
+            edges {
+              node {
+                dbid
+
+                ...CommentLineFragment
+              }
+            }
+          }
+          ...RemainingCommentCountFragment
+        }
       }
     `,
     eventRef
@@ -41,7 +59,7 @@ export function Interactions({ eventRef, queryRef, onPotentialLayoutShift }: Pro
 
   const query = useFragment(
     graphql`
-      fragment InteractionsQueryFragment on Query {
+      fragment CommentsQueryFragment on Query {
         ...RemainingCommentCountQueryFragment
       }
     `,
@@ -51,16 +69,16 @@ export function Interactions({ eventRef, queryRef, onPotentialLayoutShift }: Pro
   const nonNullComments = useMemo(() => {
     const comments = [];
 
-    for (const edge of event.comments?.edges ?? []) {
+    for (const edge of feedItem.comments?.edges ?? []) {
       if (edge?.node) {
         comments.push(edge.node);
       }
     }
 
     return comments;
-  }, [event.comments?.edges]);
+  }, [feedItem.comments?.edges]);
 
-  const totalComments = event.comments?.pageInfo.total ?? 0;
+  const totalComments = feedItem.comments?.pageInfo.total ?? 0;
 
   const isFirstMount = useRef(true);
   useLayoutEffect(() => {
@@ -115,13 +133,17 @@ export function Interactions({ eventRef, queryRef, onPotentialLayoutShift }: Pro
             })}
           </VStack>
 
-          <RemainingCommentCount eventRef={event} totalComments={totalComments} queryRef={query} />
+          <RemainingCommentCount
+            eventRef={feedItem}
+            totalComments={totalComments}
+            queryRef={query}
+          />
         </VStack>
       );
     }
 
     return (
-      <RemainingCommentCount eventRef={event} totalComments={totalComments} queryRef={query} />
+      <RemainingCommentCount eventRef={feedItem} totalComments={totalComments} queryRef={query} />
     );
   }
 
