@@ -96,8 +96,9 @@ export function useTogglePostAdmire({ postRef, queryRef }: Args) {
 
   const interactionsConnection = ConnectionHandler.getConnectionID(
     event.id,
-    'Interactions_admires'
+    'Interactions_post_admires'
   );
+
   const admireBottomSheetConnection = ConnectionHandler.getConnectionID(
     event.id,
     'AdmireBottomSheet_admires'

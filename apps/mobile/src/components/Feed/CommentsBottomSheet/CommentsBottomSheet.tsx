@@ -11,6 +11,7 @@ import { View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 import { useEventComment } from 'src/hooks/useEventComment';
+import { usePostComment } from 'src/hooks/usePostComment';
 
 import { CommentsBottomSheetList } from '~/components/Feed/CommentsBottomSheet/CommentsBottomSheetList';
 import { CommentBox } from '~/components/Feed/Socialize/CommentBox';
@@ -51,16 +52,36 @@ export function CommentsBottomSheet({ bottomSheetRef, feedId, type }: CommentsBo
   });
 
   const { submitComment, isSubmittingComment } = useEventComment();
+  const { submitComment: postComment, isSubmittingComment: isSubmittingPostComment } =
+    usePostComment();
+
   const handleSubmit = useCallback(
     (value: string) => {
+      if (type === 'post') {
+        postComment({
+          feedId,
+          value,
+          onSuccess: () => {},
+        });
+        return;
+      }
+
       submitComment({
         feedEventId: feedId,
         value,
         onSuccess: () => {},
       });
     },
-    [feedId, submitComment]
+    [feedId, type, submitComment, postComment]
   );
+
+  const isSubmitting = useMemo(() => {
+    if (type === 'post') {
+      return isSubmittingPostComment;
+    }
+
+    return isSubmittingComment;
+  }, [isSubmittingComment, isSubmittingPostComment, type]);
 
   useLayoutEffect(() => {
     if (isKeyboardActive) {
@@ -96,11 +117,7 @@ export function CommentsBottomSheet({ bottomSheetRef, feedId, type }: CommentsBo
           </Suspense>
         </View>
 
-        <CommentBox
-          onSubmit={handleSubmit}
-          isSubmittingComment={isSubmittingComment}
-          onClose={() => {}}
-        />
+        <CommentBox onSubmit={handleSubmit} isSubmittingComment={isSubmitting} onClose={() => {}} />
       </Animated.View>
     </GalleryBottomSheetModal>
   );

@@ -22,7 +22,7 @@ export function usePostComment() {
           ... on CommentOnPostPayload {
             __typename
 
-            comment @appendNode(connections: $connections, edgeTypeName: "FeedEventCommentEdge") {
+            comment @appendNode(connections: $connections, edgeTypeName: "FeedPostCommentEdge") {
               dbid
               __typename
               comment
@@ -51,7 +51,7 @@ export function usePostComment() {
         // since we don't need our data requirements blocking the initial render of the screen.
         // We also don't have to prop drill a bunch of refs down to get what we need.
         // If the data you need is only needed in a callback, it's fine to use `fetchQuery`.
-        const eventRelayId = `FeedEvent:${feedId}`;
+        const eventRelayId = `Post:${feedId}`;
         const query = await fetchQuery<usePostCommentQuery>(
           relayEnvironment,
           graphql`
@@ -73,7 +73,7 @@ export function usePostComment() {
 
         const interactionsConnection = ConnectionHandler.getConnectionID(
           eventRelayId,
-          'Interactions_comments'
+          'Interactions_post_comments'
         );
         const commentsBottomSheetConnection = ConnectionHandler.getConnectionID(
           eventRelayId,

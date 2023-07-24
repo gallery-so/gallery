@@ -113,7 +113,7 @@ export function Interactions({
 
       <CommentsBottomSheet type={type} feedId={feedId} bottomSheetRef={commentsBottomSheetRef} />
 
-      <AdmireBottomSheet feedEventId={feedId} bottomSheetRef={admiresBottomSheetRef} />
+      <AdmireBottomSheet type={type} feedEventId={feedId} bottomSheetRef={admiresBottomSheetRef} />
     </View>
   );
 }

@@ -28,7 +28,7 @@ export function FeedPostSocializeSection({ feedPostRef, queryRef, onCommentPress
 
         # We only show 1 but in case the user deletes something
         # we want to be sure that we can show another comment beneath
-        admires(last: 5) @connection(key: "Interactions_admires") {
+        admires(last: 5) @connection(key: "Interactions_post_admires") {
           pageInfo {
             total
           }
@@ -42,7 +42,7 @@ export function FeedPostSocializeSection({ feedPostRef, queryRef, onCommentPress
 
         # We only show 2 but in case the user deletes something
         # we want to be sure that we can show another comment beneath
-        comments(last: 5) @connection(key: "Interactions_comments") {
+        comments(last: 5) @connection(key: "Interactions_post_comments") {
           pageInfo {
             total
           }
