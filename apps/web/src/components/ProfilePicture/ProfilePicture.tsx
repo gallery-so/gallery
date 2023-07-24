@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -91,5 +90,3 @@ const StyledLink = styled(Link)`
   text-decoration: none;
   cursor: pointer;
 `;
-
-const StyledContainer = styled.div``;
