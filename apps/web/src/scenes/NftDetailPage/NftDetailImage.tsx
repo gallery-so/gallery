@@ -11,7 +11,7 @@ import { StyledVideo } from './NftDetailVideo';
 
 type Props = {
   alt: string | null | undefined;
-  imageUrl: string | null | undefined;
+  imageUrl: string | false | null | undefined;
   onClick?: () => void;
   onLoad: () => void;
 };
