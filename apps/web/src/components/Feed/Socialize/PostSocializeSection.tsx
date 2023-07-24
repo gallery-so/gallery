@@ -1,10 +1,11 @@
+import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
+import styled from 'styled-components';
 
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { PostSocializeSectionFragment$key } from '~/generated/PostSocializeSectionFragment.graphql';
 import useAdmirePost from '~/hooks/api/posts/useAdmirePost';
 import useRemoveAdmirePost from '~/hooks/api/posts/useRemoveAdmirePost';
-import { IconWrapper } from '~/icons/SocializeIcons';
 
 import { AdmireButton } from './AdmireButton';
 import { AdmireLine } from './AdmireLine';
@@ -26,6 +27,17 @@ export default function PostSocializeSection({ onPotentialLayoutShift, postRef, 
         ...AdmireLineFragment
         ...CommentBoxIconFragment
         ...CommentsFragment
+
+        # We only show 1 but in case the user deletes something
+        # we want to be sure that we can show another comment beneath
+        admires(last: 5) @connection(key: "Interactions_admires") {
+          edges {
+            node {
+              __typename
+            }
+          }
+        }
+        ...AdmireLineFragment
       }
     `,
     postRef
@@ -46,15 +58,24 @@ export default function PostSocializeSection({ onPotentialLayoutShift, postRef, 
   const [admirePost] = useAdmirePost();
   const [removeAdmirePost] = useRemoveAdmirePost();
 
-  // const handleAdmirePost = useCallback(() => {
+  const nonNullAdmires = useMemo(() => {
+    const admires = [];
 
-  // })
+    for (const edge of post.admires?.edges ?? []) {
+      if (edge?.node) {
+        admires.push(edge.node);
+      }
+    }
+
+    admires.reverse();
+
+    return admires;
+  }, [post.admires?.edges]);
 
   return (
     <VStack gap={4}>
       <HStack justify="space-between" align="center" gap={24}>
-        {/* <div>{admire && <AdmireLine eventRef={post} queryRef={query} />}</div> */}
-        <AdmireLine eventRef={post} queryRef={query} />
+        <div>{nonNullAdmires.length > 0 && <AdmireLine eventRef={post} queryRef={query} />}</div>
         <HStack align="center">
           <IconWrapper>
             <AdmireButton
@@ -82,3 +103,6 @@ export default function PostSocializeSection({ onPotentialLayoutShift, postRef, 
     </VStack>
   );
 }
+const IconWrapper = styled.div`
+  position: relative;
+`;

@@ -70,11 +70,10 @@ function UserActivityFeed({ userRef, queryRef }: Props) {
     const events = [];
 
     for (const edge of user.feed?.edges ?? []) {
-      if (edge?.node?.__typename === 'FeedEvent' && edge.node) {
-        events.push(edge.node);
-      }
-      if (edge?.node?.__typename === 'Post' && edge.node) {
-        // todo kaito: refactor
+      if (
+        (edge?.node?.__typename === 'FeedEvent' || edge?.node?.__typename === 'Post') &&
+        edge.node
+      ) {
         events.push(edge.node);
       }
     }

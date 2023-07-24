@@ -28,10 +28,10 @@ export function FeedEventSocializeSection({
   const event = useFragment(
     graphql`
       fragment FeedEventSocializeSectionFragment on FeedEvent {
-        ...CommentBoxIconFragment
-        ...CommentsFragment
         ...AdmireButtonFragment
         ...AdmireLineFragment
+        ...CommentBoxIconFragment
+        ...CommentsFragment
 
         # We only show 1 but in case the user deletes something
         # we want to be sure that we can show another comment beneath
@@ -52,8 +52,8 @@ export function FeedEventSocializeSection({
     graphql`
       fragment FeedEventSocializeSectionQueryFragment on Query {
         ...AdmireButtonQueryFragment
-        ...CommentBoxIconQueryFragment
         ...AdmireLineQueryFragment
+        ...CommentBoxIconQueryFragment
         ...CommentsQueryFragment
       }
     `,

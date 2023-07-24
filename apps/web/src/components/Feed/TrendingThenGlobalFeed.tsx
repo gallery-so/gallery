@@ -39,7 +39,7 @@ export default function TrendingThenGlobalFeed({ queryRef }: Props) {
           @connection(key: "NonAuthedFeed_globalFeed") {
           edges {
             node {
-              ... on FeedEvent {
+              ... on FeedEventOrError {
                 __typename
 
                 ...FeedListEventDataFragment
@@ -65,7 +65,7 @@ export default function TrendingThenGlobalFeed({ queryRef }: Props) {
           @connection(key: "NonAuthedFeed_trendingFeed") {
           edges {
             node {
-              ... on FeedEvent {
+              ... on FeedEventOrError {
                 __typename
 
                 ...FeedListEventDataFragment
@@ -92,7 +92,10 @@ export default function TrendingThenGlobalFeed({ queryRef }: Props) {
     }
 
     for (const edge of joined) {
-      if (edge?.node?.__typename === 'FeedEvent' && edge.node) {
+      if (
+        (edge?.node?.__typename === 'FeedEvent' || edge?.node?.__typename === 'Post') &&
+        edge.node
+      ) {
         events.push(edge.node);
       }
     }

@@ -54,6 +54,7 @@ export function LatestFeed({ queryRef }: Props) {
 
     return feedData;
   }, [query.globalFeed?.edges]);
+  console.log({ feedData });
 
   return (
     <FeedList
