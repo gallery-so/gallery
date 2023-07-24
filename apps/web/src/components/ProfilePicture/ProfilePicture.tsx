@@ -37,7 +37,7 @@ export function ProfilePicture({ userRef, ...rest }: Props) {
         }
       }
     `,
-    userRef,
+    userRef
   );
 
   const userProfileLink = useMemo((): Route => {
@@ -72,7 +72,7 @@ export function ProfilePicture({ userRef, ...rest }: Props) {
   if (!result) {
     throw new CouldNotRenderNftError(
       'StatedNftImage',
-      'could not compute getVideoOrImageUrlForNftPreview',
+      'could not compute getVideoOrImageUrlForNftPreview'
     );
   }
 

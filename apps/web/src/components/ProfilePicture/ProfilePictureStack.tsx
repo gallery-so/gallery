@@ -31,7 +31,7 @@ export function ProfilePictureStack({ usersRef, total, onClick }: Props) {
         ...ProfilePictureFragment
       }
     `,
-    usersRef,
+    usersRef
   );
 
   const [isHovered, setIsHovered] = useState(false);
