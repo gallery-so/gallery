@@ -1,4 +1,4 @@
-import { SyntheticEvent, useCallback, useMemo, useState } from 'react';
+import { SyntheticEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
@@ -13,9 +13,10 @@ type Props = {
   mediaRef: NftDetailVideoFragment$key;
   hideControls?: boolean;
   onLoad: ContentIsLoadedEvent;
+  previewUrl: string | undefined;
 };
 
-function NftDetailVideo({ mediaRef, hideControls = false, onLoad }: Props) {
+function NftDetailVideo({ mediaRef, hideControls = false, onLoad, previewUrl }: Props) {
   const token = useFragment(
     graphql`
       fragment NftDetailVideoFragment on VideoMedia {
@@ -30,6 +31,42 @@ function NftDetailVideo({ mediaRef, hideControls = false, onLoad }: Props) {
     mediaRef
   );
 
+  const [isContentRenderUrlLoaded, setContentRenderUrlLoaded] = useState(false);
+  const [isPreviewLoaded, setIsPreviewLoaded] = useState(false);
+
+  useEffect(() => {
+    // Check if the contentRenderURL is available
+    if (token.contentRenderURLs && token.contentRenderURLs.large) {
+      // Create a video element to load the contentRenderURL in the background
+      const video = document.createElement('video');
+      video.onloadeddata = () => {
+        // When the contentRenderURL is loaded, update the state
+        setContentRenderUrlLoaded(true);
+      };
+
+      video.src = token.contentRenderURLs.large; // Start loading the video
+    } else {
+      // If contentRenderURLs is not available, load the previewUrl image
+      if (previewUrl) {
+        console.log('previewUrl is avail');
+        const img = new Image();
+        img.onload = () => {
+          // When the previewUrl image is loaded, update the state
+          setIsPreviewLoaded(true);
+        };
+
+        img.src = previewUrl; // Start loading the preview image
+      }
+    }
+  }, [token.contentRenderURLs, previewUrl]);
+
+  // Determine which URL to display based on the loading state
+  const videoUrlToShow = isContentRenderUrlLoaded
+    ? token.contentRenderURLs?.large
+    : isPreviewLoaded
+    ? previewUrl
+    : undefined;
+
   const [errored, setErrored] = useState(false);
 
   const { handleError } = useThrowOnMediaFailure('NftDetailVideo');
@@ -43,6 +80,11 @@ function NftDetailVideo({ mediaRef, hideControls = false, onLoad }: Props) {
     },
     [handleError]
   );
+
+  const handleVideoLoad = () => {
+    // Once the video is loaded, we can call the onLoad function
+    onLoad();
+  };
 
   // poster image is displayed mid-load, or as a fallback if the load fails
   const poster = useMemo(() => {
@@ -61,34 +103,33 @@ function NftDetailVideo({ mediaRef, hideControls = false, onLoad }: Props) {
   // to render the poster fallback
   const shouldHideControls = hideControls || errored;
 
-  return (
+  console.log('videoUrlToShow:', videoUrlToShow);
+  console.log('previewUrl from video component:', previewUrl);
+
+  return videoUrlToShow ? (
     <StyledVideo
-      src={`${token.contentRenderURLs.large}#t=0.001`}
+      src={`${videoUrlToShow}#t=0.001`}
       muted
       autoPlay
       playsInline
       controls={!shouldHideControls}
-      /**
-       * Disable video looping if browser is Safari. As of Sept 2022, there's a bug on Safari
-       * where data will continuously download each time the video loops, at worst case leading
-       * to several gigabytes being fetched (which is really bad on mobile devices)
-       */
       loop={!isSafari()}
-      onLoadedData={onLoad}
-      /**
-       * NOTE: As of July 2022, there's a bug on iOS where certain videos will fail to load.
-       * Upon inspecting the simulator's logs, the network request for the video asset
-       * simply returns "An error occurred trying to load the resource". A few years ago
-       * a similar issue occurred on iOS that was solved with a combination of the props
-       * used above: `autoPlay`, `playsInline`, and `loop`. Now this bug has resurfaced,
-       * and even Opensea itself cannot load videos on iOS. The best we can do is render
-       * a static poster in its place.
-       */
+      onLoadedData={handleVideoLoad} // Call the handleVideoLoad function when the video is loaded
       onError={handleVideoLoadError}
       poster={poster}
     />
+  ) : (
+    // If videoUrlToShow is not available, render the preview image
+    <StyledImage src={previewUrl} onLoad={onLoad} />
   );
 }
+export const StyledImage = styled.img`
+  width: 100%;
+  height: 100%;
+  border: none;
+
+  max-height: inherit;
+`;
 
 export const StyledVideo = styled.video`
   width: 100%;

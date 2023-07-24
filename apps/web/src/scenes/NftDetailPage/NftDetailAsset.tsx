@@ -146,7 +146,9 @@ function NftDetailAssetComponentWithouFallback({
   }, [imageMedia, imageMedia.__typename]);
 
   // Determine which URL to display based on the loading state
-  const imageUrlToShow = isContentRenderUrlLoaded ? imageMedia.contentRenderURL : previewUrl;
+  const imageUrlToShow = isContentRenderUrlLoaded
+    ? imageMedia.__typename === 'ImageMedia' && imageMedia.contentRenderURL
+    : previewUrl;
 
   console.log('imageUrlToShow:', imageUrlToShow);
 
@@ -154,7 +156,7 @@ function NftDetailAssetComponentWithouFallback({
     case 'HtmlMedia':
       return <NftDetailAnimation onLoad={onLoad} mediaRef={token} />;
     case 'VideoMedia':
-      return <NftDetailVideo onLoad={onLoad} mediaRef={token.media} />;
+      return <NftDetailVideo onLoad={onLoad} mediaRef={token.media} previewUrl={previewUrl} />;
     case 'AudioMedia':
       return <NftDetailAudio onLoad={onLoad} tokenRef={token} />;
     case 'ImageMedia':
