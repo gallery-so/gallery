@@ -40,6 +40,10 @@ export function PostListSectionHeader({ feedPostRef, queryRef }: PostListSection
           __typename
           community {
             name
+            contractAddress {
+              address
+              chain
+            }
           }
         }
         ...PostBottomSheetFragment
@@ -71,7 +75,11 @@ export function PostListSectionHeader({ feedPostRef, queryRef }: PostListSection
     return removeNullValues(tokens);
   }, [feedPost?.tokens]);
 
-  const communityName = nonNullTokens[0]?.community?.name ?? 'Unknown Community';
+  const community = nonNullTokens[0]?.community ?? {
+    dbid: null,
+    name: 'Unknown Community',
+    contractAddress: null,
+  };
 
   const handleMenuPress = useCallback(() => {
     bottomSheetRef.current?.present();
@@ -82,6 +90,14 @@ export function PostListSectionHeader({ feedPostRef, queryRef }: PostListSection
       navigation.push('Profile', { username: feedPost.author?.username });
     }
   }, [feedPost.author?.username, navigation]);
+
+  const handleCommunityPress = useCallback(() => {
+    if (!community.contractAddress) return;
+    navigation.push('Community', {
+      contractAddress: community.contractAddress?.address ?? '',
+      chain: community.contractAddress?.chain ?? '',
+    });
+  }, [community.contractAddress, navigation]);
 
   return (
     <View className="flex flex-row items-center justify-between bg-white dark:bg-black-900  px-4">
@@ -108,12 +124,20 @@ export function PostListSectionHeader({ feedPostRef, queryRef }: PostListSection
                 {feedPost?.author?.username}
               </Typography>
             </GalleryTouchableOpacity>
-            <Typography
-              className="text-xs text-shadow"
-              font={{ family: 'ABCDiatype', weight: 'Regular' }}
+            <GalleryTouchableOpacity
+              className="flex flex-row items-center space-x-1"
+              onPress={handleCommunityPress}
+              eventElementId="Feed Community Button"
+              eventName="Feed Community Clicked"
+              properties={{ variant: 'Feed event community' }}
             >
-              {communityName}
-            </Typography>
+              <Typography
+                className="text-xs text-shadow"
+                font={{ family: 'ABCDiatype', weight: 'Regular' }}
+              >
+                {community.name}
+              </Typography>
+            </GalleryTouchableOpacity>
           </View>
         </View>
 
