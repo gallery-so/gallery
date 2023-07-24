@@ -1,7 +1,7 @@
 import Link from 'next/link';
+import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
-import { useMemo } from 'react';
 
 import { ProfilePictureFragment$key } from '~/generated/ProfilePictureFragment.graphql';
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
