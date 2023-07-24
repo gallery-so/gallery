@@ -22,6 +22,8 @@ type Props = {
   totalComments: number;
   totalAdmires: number;
   feedId: string;
+
+  onAdmirePress: () => void;
 };
 
 export function Interactions({
@@ -31,6 +33,8 @@ export function Interactions({
   totalAdmires,
   totalComments,
   type,
+
+  onAdmirePress,
 }: Props) {
   const comments = useFragment(
     graphql`
@@ -95,6 +99,7 @@ export function Interactions({
           onMultiUserPress={handleSeeAllAdmires}
           userRefs={admireUsers}
           totalAdmires={totalAdmires}
+          onAdmirePress={onAdmirePress}
         />
       </View>
 

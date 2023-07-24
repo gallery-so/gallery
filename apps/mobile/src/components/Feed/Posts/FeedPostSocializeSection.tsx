@@ -133,6 +133,7 @@ export function FeedPostSocializeSection({ feedPostRef, queryRef, onCommentPress
             admireRefs={nonNullAdmires}
             totalComments={totalComments}
             totalAdmires={totalAdmires}
+            onAdmirePress={toggleAdmire}
           />
         </View>
 

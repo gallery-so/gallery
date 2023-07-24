@@ -134,6 +134,7 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef, onCommentPre
           admireRefs={nonNullAdmires}
           totalComments={totalComments}
           totalAdmires={totalAdmires}
+          onAdmirePress={toggleAdmire}
         />
       </View>
 
