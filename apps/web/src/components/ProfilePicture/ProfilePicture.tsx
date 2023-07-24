@@ -1,21 +1,19 @@
 import Link from 'next/link';
-import { MouseEventHandler, useCallback, useMemo } from 'react';
+import { useRouter } from 'next/router';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { ProfilePictureFragment$key } from '~/generated/ProfilePictureFragment.graphql';
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
 import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
-import noop from '~/utils/noop';
 
 import { RawProfilePicture, RawProfilePictureProps } from './RawProfilePicture';
 
 type Props = {
   userRef: ProfilePictureFragment$key;
-  onClick: () => void;
 } & Omit<RawProfilePictureProps, 'imageUrl'>;
 
-export function ProfilePicture({ userRef, onClick = noop, ...rest }: Props) {
+export function ProfilePicture({ userRef, ...rest }: Props) {
   const user = useFragment(
     graphql`
       fragment ProfilePictureFragment on GalleryUser {
@@ -38,15 +36,7 @@ export function ProfilePicture({ userRef, onClick = noop, ...rest }: Props) {
         }
       }
     `,
-    userRef
-  );
-
-  const handleUsernameClick = useCallback<MouseEventHandler>(
-    (event) => {
-      event.stopPropagation();
-      onClick();
-    },
-    [onClick]
+    userRef,
   );
 
   const userProfileLink = useMemo((): Route => {
@@ -58,17 +48,18 @@ export function ProfilePicture({ userRef, onClick = noop, ...rest }: Props) {
   const { token, profileImage } = user.profileImage ?? {};
 
   const firstLetter = user?.username?.substring(0, 1) ?? '';
+  const router = useRouter();
 
   if (profileImage && profileImage.previewURLs?.medium)
     return (
-      <StyledLink href={userProfileLink} onClick={handleUsernameClick}>
+      <StyledLink href={userProfileLink}>
         <RawProfilePicture imageUrl={profileImage.previewURLs.medium} {...rest} />
       </StyledLink>
     );
 
   if (!token)
     return (
-      <StyledLink href={userProfileLink} onClick={handleUsernameClick}>
+      <StyledLink href={userProfileLink}>
         <RawProfilePicture letter={firstLetter} {...rest} />
       </StyledLink>
     );
@@ -81,7 +72,7 @@ export function ProfilePicture({ userRef, onClick = noop, ...rest }: Props) {
   if (!result) {
     throw new CouldNotRenderNftError(
       'StatedNftImage',
-      'could not compute getVideoOrImageUrlForNftPreview'
+      'could not compute getVideoOrImageUrlForNftPreview',
     );
   }
 
@@ -90,7 +81,7 @@ export function ProfilePicture({ userRef, onClick = noop, ...rest }: Props) {
   }
 
   return (
-    <StyledLink href={userProfileLink} onClick={handleUsernameClick}>
+    <StyledLink href={userProfileLink}>
       <RawProfilePicture imageUrl={result.urls.small} {...rest} />
     </StyledLink>
   );
@@ -100,3 +91,5 @@ const StyledLink = styled(Link)`
   text-decoration: none;
   cursor: pointer;
 `;
+
+const StyledContainer = styled.div``;

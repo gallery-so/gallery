@@ -21,6 +21,7 @@ export function AdmireNote({ admireRef, queryRef }: AdmireNoteProps) {
     graphql`
       fragment AdmireNoteFragment on Admire {
         __typename
+
         admirer {
           ...FollowButtonUserFragment
           ...HoverCardOnUsernameFragment
