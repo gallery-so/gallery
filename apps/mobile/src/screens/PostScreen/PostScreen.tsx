@@ -28,6 +28,7 @@ export function PostScreen() {
             __typename
             dbid
             ...PostScreenTokenFragment
+            ...PostInputTokenFragment
           }
         }
       }
@@ -107,7 +108,7 @@ export function PostScreen() {
         </View>
 
         <View className="px-4 flex flex-col flex-grow space-y-2">
-          <PostInput value={caption} onChange={setCaption} />
+          <PostInput value={caption} onChange={setCaption} tokenRef={token} />
 
           <View className="py-4">
             <PostTokenPreview bottomSheetRef={bottomSheetRef} />
