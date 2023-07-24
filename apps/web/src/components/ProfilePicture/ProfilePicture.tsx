@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
+import { useMemo } from 'react';
 
 import { ProfilePictureFragment$key } from '~/generated/ProfilePictureFragment.graphql';
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
@@ -47,7 +48,6 @@ export function ProfilePicture({ userRef, ...rest }: Props) {
   const { token, profileImage } = user.profileImage ?? {};
 
   const firstLetter = user?.username?.substring(0, 1) ?? '';
-  const router = useRouter();
 
   if (profileImage && profileImage.previewURLs?.medium)
     return (
