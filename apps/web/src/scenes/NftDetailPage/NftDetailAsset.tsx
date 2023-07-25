@@ -12,7 +12,7 @@ import { NftDetailAssetComponentFragment$key } from '~/generated/NftDetailAssetC
 import { NftDetailAssetComponentWithoutFallbackFragment$key } from '~/generated/NftDetailAssetComponentWithoutFallbackFragment.graphql';
 import { NftDetailAssetFragment$key } from '~/generated/NftDetailAssetFragment.graphql';
 import { NftDetailAssetTokenFragment$key } from '~/generated/NftDetailAssetTokenFragment.graphql';
-import { useImageLoading } from '~/hooks/useImageLoading';
+import { MediaType, useMediaLoading } from '~/hooks/useMediaLoading';
 import { useNftRetry } from '~/hooks/useNftRetry';
 import { useBreakpoint } from '~/hooks/useWindowSize';
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
@@ -134,8 +134,10 @@ function NftDetailAssetComponentWithouFallback({
   }
 
   const media = token.media;
-  const isImageContentRenderUrlLoaded = useImageLoading(
-    media.__typename === 'ImageMedia' && media.contentRenderURL
+  const isImageContentRenderUrlLoaded = useMediaLoading(
+    MediaType.Image,
+    media.__typename === 'ImageMedia' && media.contentRenderURL,
+    undefined
   );
 
   // Determine which URL to display based on the loading state

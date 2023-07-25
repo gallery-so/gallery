@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 import { ContentIsLoadedEvent } from '~/contexts/shimmer/ShimmerContext';
 import { NftDetailAnimationFragment$key } from '~/generated/NftDetailAnimationFragment.graphql';
-import { useHtmlMediaLoading } from '~/hooks/useHtmlMediaLoading';
+import { MediaType, useMediaLoading } from '~/hooks/useMediaLoading';
 
 import { RawNftDetailModel } from './NftDetailModel';
 import processIFrameRenderUrl from './processIFrameRenderUrl';
@@ -55,7 +55,8 @@ function NftDetailAnimation({ mediaRef, onLoad, previewUrl }: Props) {
     return '';
   }, [token.media]);
 
-  const isContentRenderUrlLoaded = useHtmlMediaLoading(contentRenderURL);
+  //const isContentRenderUrlLoaded = useHtmlMediaLoading(contentRenderURL);
+  const isContentRenderUrlLoaded = useMediaLoading(MediaType.Html, contentRenderURL, undefined);
 
   // Determine whether to show the StyledIframe or StyledImage based on the loading state
   const shouldShowIframe = isContentRenderUrlLoaded && token.media.__typename === 'HtmlMedia';

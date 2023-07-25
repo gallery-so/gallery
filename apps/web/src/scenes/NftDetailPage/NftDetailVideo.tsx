@@ -5,9 +5,8 @@ import styled from 'styled-components';
 
 import { ContentIsLoadedEvent } from '~/contexts/shimmer/ShimmerContext';
 import { NftDetailVideoFragment$key } from '~/generated/NftDetailVideoFragment.graphql';
-import { useImageLoading } from '~/hooks/useImageLoading';
+import { MediaType, useMediaLoading } from '~/hooks/useMediaLoading';
 import { useThrowOnMediaFailure } from '~/hooks/useNftRetry';
-import { useVideoLoading } from '~/hooks/useVideoLoading';
 import { isSafari } from '~/utils/browser';
 import isVideoUrl from '~/utils/isVideoUrl';
 
@@ -33,9 +32,13 @@ function NftDetailVideo({ mediaRef, hideControls = false, onLoad, previewUrl }: 
     mediaRef
   );
 
-  const isPreviewImageLoaded = useImageLoading(previewUrl);
+  const isPreviewImageLoaded = useMediaLoading(MediaType.Image, previewUrl, undefined);
 
-  const isContentRenderUrlLoaded = useVideoLoading(token.contentRenderURLs.large, previewUrl);
+  const isContentRenderUrlLoaded = useMediaLoading(
+    MediaType.Video,
+    token.contentRenderURLs.large,
+    previewUrl
+  );
 
   // Determine which URL to display based on the loading state
   const videoUrlToShow = isContentRenderUrlLoaded
