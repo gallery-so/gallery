@@ -240,12 +240,15 @@ export default function Gallery({
     });
   }, [gallery, handleUpdateGalleryInfo, showModal]);
 
-  const handleEditGallery: Route = useMemo(() => {
-    return {
-      pathname: '/gallery/[galleryId]/edit',
-      query: { galleryId: dbid },
-    };
-  }, [dbid]);
+  const galleryLink: Route = {
+    pathname: '/[username]/galleries/[galleryId]',
+    query: { username: gallery.owner.username, galleryId: gallery.dbid },
+  };
+
+  const galleryEditLink: Route = {
+    pathname: '/gallery/[galleryId]/edit',
+    query: { galleryId: dbid },
+  };
 
   const handleChangeGalleryOrder = useCallback(
     (direction: GalleryOrderDirection) => {
@@ -262,7 +265,7 @@ export default function Gallery({
 
   return (
     <StyledGalleryWrapper isDragging={isDragging}>
-      <UnstyledLink href={handleEditGallery}>
+      <UnstyledLink href={isAuthenticatedUser ? galleryEditLink : galleryLink}>
         <StyledGalleryDraggable
           gap={12}
           isAuthedUser={isAuthenticatedUser}
