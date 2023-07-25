@@ -13,7 +13,6 @@ import { hexHandler } from '~/shared/utils/getOpenseaExternalUrl';
 import { getFxHashExternalUrl, getObjktExternalUrl } from '~/shared/utils/getTezosExternalUrl';
 
 type NftAdditionaDetailsNonPOAPProps = {
-  showDetails: boolean;
   tokenRef: NftAdditionalDetailsTezosFragment$key;
 };
 
