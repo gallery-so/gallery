@@ -22,7 +22,7 @@ type Props = {
   queryRef: PostComposerModalWithSelectorQueryFragment$key;
 };
 
-// Modal with a multiple steps: the NFT Selector -> then Post Composer
+// Modal with multiple steps: the NFT Selector -> then Post Composer
 export function PostComposerModalWithSelector({ tokensRef, queryRef }: Props) {
   const tokens = useFragment(
     graphql`

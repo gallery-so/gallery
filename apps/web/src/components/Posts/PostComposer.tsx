@@ -60,7 +60,7 @@ export default function PostComposer({ onBackClick, tokenRef }: Props) {
         caption: description,
       });
     } catch (error) {
-      // TODO add error state
+      // TODO add error state GAL-3841
       setIsSubmitting(false);
       return;
     }
