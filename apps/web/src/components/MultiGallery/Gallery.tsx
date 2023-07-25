@@ -1,6 +1,5 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import Link from 'next/link';
 import { Route } from 'nextjs-routes';
 import { useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
@@ -14,7 +13,6 @@ import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import ArrowDownIcon from '~/icons/ArrowDownIcon';
 import ArrowUpIcon from '~/icons/ArrowUpIcon';
 import DragHandleIcon from '~/icons/DragHandleIcon';
-import { EditPencilIcon } from '~/icons/EditPencilIcon';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import colors from '~/shared/theme/colors';
@@ -100,11 +98,6 @@ export default function Gallery({
   if (!gallery?.owner?.username) {
     throw new Error('This gallery does not have an owner.');
   }
-
-  const galleryLink: Route = {
-    pathname: '/[username]/galleries/[galleryId]',
-    query: { username: gallery.owner.username, galleryId: gallery.dbid },
-  };
 
   const loggedInUserId = useLoggedInUserId(query);
   const isAuthenticatedUser = loggedInUserId === gallery?.owner?.id;
@@ -269,7 +262,7 @@ export default function Gallery({
 
   return (
     <StyledGalleryWrapper isDragging={isDragging}>
-      <UnstyledLink href={galleryLink}>
+      <UnstyledLink href={handleEditGallery}>
         <StyledGalleryDraggable
           gap={12}
           isAuthedUser={isAuthenticatedUser}
@@ -298,6 +291,7 @@ export default function Gallery({
                 </TitleContainer>
               </StyledGalleryTitleWrapper>
             </HStack>
+
             <StyledGalleryActionsContainer>
               <HStack align="center" gap={2}>
                 {isFeatured && (
@@ -305,9 +299,6 @@ export default function Gallery({
                 )}
                 {isAuthenticatedUser && (
                   <HStack>
-                    <Link href={handleEditGallery}>
-                      <IconContainer size="md" variant="stacked" icon={<EditPencilIcon />} />
-                    </Link>
                     <SettingsDropdown iconVariant="stacked">
                       <DropdownSection>
                         <DropdownItem onClick={handleEditGalleryName}>
