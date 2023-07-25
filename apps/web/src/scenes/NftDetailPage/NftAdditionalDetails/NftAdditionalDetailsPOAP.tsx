@@ -6,11 +6,10 @@ import { BaseM, TitleXS } from '~/components/core/Text/Text';
 import { NftAdditionalDetailsPOAPFragment$key } from '~/generated/NftAdditionalDetailsPOAPFragment.graphql';
 
 type POAPNftDetailSectionProps = {
-  showDetails: boolean;
   tokenRef: NftAdditionalDetailsPOAPFragment$key;
 };
 
-export function NftAdditionalDetailsPOAP({ tokenRef, showDetails }: POAPNftDetailSectionProps) {
+export function NftAdditionalDetailsPOAP({ tokenRef }: POAPNftDetailSectionProps) {
   const token = useFragment(
     graphql`
       fragment NftAdditionalDetailsPOAPFragment on Token {
@@ -53,27 +52,23 @@ export function NftAdditionalDetailsPOAP({ tokenRef, showDetails }: POAPNftDetai
         </div>
       )}
 
-      {showDetails && (
-        <>
-          {id && (
-            <div>
-              <TitleXS>POAP ID</TitleXS>
-              <BaseM>{id}</BaseM>
-            </div>
-          )}
-          {supply && (
-            <div>
-              <TitleXS>SUPPLY</TitleXS>
-              <BaseM>{supply}</BaseM>
-            </div>
-          )}
-          {chain && (
-            <div>
-              <TitleXS>CHAIN</TitleXS>
-              <BaseM>{chain}</BaseM>
-            </div>
-          )}
-        </>
+      {id && (
+        <div>
+          <TitleXS>POAP ID</TitleXS>
+          <BaseM>{id}</BaseM>
+        </div>
+      )}
+      {supply && (
+        <div>
+          <TitleXS>SUPPLY</TitleXS>
+          <BaseM>{supply}</BaseM>
+        </div>
+      )}
+      {chain && (
+        <div>
+          <TitleXS>CHAIN</TitleXS>
+          <BaseM>{chain}</BaseM>
+        </div>
       )}
     </VStack>
   );

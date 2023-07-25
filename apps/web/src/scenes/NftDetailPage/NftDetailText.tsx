@@ -207,7 +207,7 @@ function NftDetailText({ tokenRef }: Props) {
 
         {showDetails || SHOW_BUY_NOW_BUTTON ? (
           <VStack gap={16}>
-            {showDetails && <NftAdditionalDetails showDetails={showDetails} tokenRef={token} />}
+            {showDetails && <NftAdditionalDetails tokenRef={token} />}
 
             {SHOW_BUY_NOW_BUTTON && (
               <VStack gap={24}>
