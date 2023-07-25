@@ -6,6 +6,7 @@ import { TrendingThenGlobalFeedGlobalFragment$key } from '~/generated/TrendingTh
 import { TrendingThenGlobalFeedGlobalPaginationQuery } from '~/generated/TrendingThenGlobalFeedGlobalPaginationQuery.graphql';
 import { TrendingThenGlobalFeedTrendingFragment$key } from '~/generated/TrendingThenGlobalFeedTrendingFragment.graphql';
 import { TrendingThenGlobalFeedTrendingPaginationQuery } from '~/generated/TrendingThenGlobalFeedTrendingPaginationQuery.graphql';
+import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 import { useTrackLoadMoreFeedEvents } from './analytics';
 import { ITEMS_PER_PAGE } from './constants';
@@ -23,6 +24,7 @@ export default function TrendingThenGlobalFeed({ queryRef }: Props) {
 
         ...TrendingThenGlobalFeedGlobalFragment
         ...TrendingThenGlobalFeedTrendingFragment
+        ...isFeatureEnabledFragment
       }
     `,
     queryRef
@@ -80,6 +82,8 @@ export default function TrendingThenGlobalFeed({ queryRef }: Props) {
     query
   );
 
+  const isKoalaEnabled = isFeatureEnabled(FeatureFlag.KOALA, query);
+
   const feedData = useMemo(() => {
     const events = [];
 
@@ -93,7 +97,8 @@ export default function TrendingThenGlobalFeed({ queryRef }: Props) {
 
     for (const edge of joined) {
       if (
-        (edge?.node?.__typename === 'FeedEvent' || edge?.node?.__typename === 'Post') &&
+        (edge?.node?.__typename === 'FeedEvent' ||
+          (edge?.node?.__typename === 'Post' && isKoalaEnabled)) &&
         edge.node
       ) {
         events.push(edge.node);
@@ -103,6 +108,7 @@ export default function TrendingThenGlobalFeed({ queryRef }: Props) {
     return events;
   }, [
     globalPagination.data.globalFeed?.edges,
+    isKoalaEnabled,
     trendingPagination.data.trendingFeed?.edges,
     trendingPagination.hasPrevious,
   ]);

@@ -133,7 +133,7 @@ export default function FeedEventWithBoundary({
 
   return (
     <ReportingErrorBoundary fallback={<></>}>
-      <FeedEventContainer gap={16}>
+      <FeedItemContainer gap={16}>
         <FeedEvent eventRef={event} queryRef={query} feedMode={feedMode} />
 
         {/* // We have another boundary here in case the socialize section fails
@@ -156,12 +156,12 @@ export default function FeedEventWithBoundary({
         </ReportingErrorBoundary>
 
         <ReportingErrorBoundary dontReport fallback={<></>}></ReportingErrorBoundary>
-      </FeedEventContainer>
+      </FeedItemContainer>
     </ReportingErrorBoundary>
   );
 }
 
-const FeedEventContainer = styled(VStack)`
+const FeedItemContainer = styled(VStack)`
   margin: 0 auto;
 
   border-bottom: 1px solid ${colors.faint};

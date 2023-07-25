@@ -15,7 +15,12 @@ type Props = {
  * allowing them to share a direct link to the current modal view, while also being able to close
  * the modal and continue browsing.
  */
-export default function LinkToNftDetailView({ children, username, collectionId, tokenId }: Props) {
+export default function LinkToCollectionTokenDetailView({
+  children,
+  username,
+  collectionId,
+  tokenId,
+}: Props) {
   const { pathname, query, asPath } = useRouter();
 
   const href = useMemo(() => {

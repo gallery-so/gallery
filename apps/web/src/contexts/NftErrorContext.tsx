@@ -159,7 +159,7 @@ export function NftErrorProvider({ children }: PropsWithChildren) {
           __typename
           token {
             # Ensure we're reloading the necessary data
-            ...NftPreviewTokenFragment
+            ...NftPreviewFragment
             ...SidebarNftIconPreviewAssetNew
             ...NftDetailAssetTokenFragment
             ...StagingAreaFragment
