@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { PostSocializeSectionFragment$key } from '~/generated/PostSocializeSectionFragment.graphql';
+import { PostSocializeSectionQueryFragment$key } from '~/generated/PostSocializeSectionQueryFragment.graphql';
 import useAdmirePost from '~/hooks/api/posts/useAdmirePost';
 import useRemoveAdmirePost from '~/hooks/api/posts/useRemoveAdmirePost';
 
@@ -15,7 +16,7 @@ import { Comments } from './Comments';
 type Props = {
   onPotentialLayoutShift: () => void;
   postRef: PostSocializeSectionFragment$key;
-  queryRef: PostSocializeSectionFragment$key;
+  queryRef: PostSocializeSectionQueryFragment$key;
 };
 
 export default function PostSocializeSection({ onPotentialLayoutShift, postRef, queryRef }: Props) {

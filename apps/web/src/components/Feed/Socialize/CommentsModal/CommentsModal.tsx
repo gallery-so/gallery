@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
-import { useFragment, usePaginationFragment } from 'react-relay';
+import { useFragment } from 'react-relay';
 import {
   AutoSizer,
   CellMeasurer,
@@ -28,7 +28,7 @@ type CommentsModalProps = {
   queryRef: CommentsModalQueryFragment$key;
   hasPrevious: boolean;
   loadPrevious: (count: number) => void;
-  commentsRef: any;
+  commentsRef: CommentsModalFragment$key;
   onSubmitComment: (comment: string) => void;
   isSubmittingComment: boolean;
 };
@@ -43,42 +43,6 @@ export function CommentsModal({
   onSubmitComment,
   isSubmittingComment,
 }: CommentsModalProps) {
-  // const {
-  //   data: feedEvent,
-  //   loadPrevious,
-  //   hasPrevious,
-  // } = usePaginationFragment(
-  //   graphql`
-  //     fragment CommentsModalFragment on FeedEvent
-  //     @refetchable(queryName: "CommentsModalRefetchableFragment") {
-  //       interactions(last: $interactionsFirst, before: $interactionsAfter)
-  //         @connection(key: "CommentsModal_interactions") {
-  //         edges {
-  //           node {
-  //             __typename
-
-  //             ... on Comment {
-  //               ...CommentNoteFragment
-  //             }
-  //           }
-  //         }
-  //       }
-  //       ...CommentBoxFragment
-  //     }
-  //   `,
-  //   eventRef
-  // );
-
-  // const comments = useFragment(
-  //   graphql`
-  //     fragment CommentsModalFragment on Comment @relay(plural: true) {
-  //       __typename
-  //       ...CommentNoteFragment
-  //     }
-  //   `,
-  //   commentRefs
-  // );
-
   const comments = useFragment(
     graphql`
       fragment CommentsModalFragment on Comment @relay(plural: true) {
@@ -98,20 +62,6 @@ export function CommentsModal({
   );
 
   const virtualizedListRef = useRef<List | null>(null);
-
-  // need to get non null comments and pass into generic
-  // comments modal should be powered by a list of comments , loadPrevious, hasPrevious
-  // const comments = useMemo(() => {
-  //   const interactions = [];
-
-  //   for (const interaction of feedEvent.interactions?.edges ?? []) {
-  //     if (interaction?.node && interaction.node.__typename === 'Comment') {
-  //       interactions.push(interaction.node);
-  //     }
-  //   }
-
-  //   return interactions.reverse();
-  // }, [feedEvent.interactions?.edges]);
 
   const measurerCache = useMemo(() => {
     return new CellMeasurerCache({

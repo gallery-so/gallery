@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
-import { useFragment, usePaginationFragment } from 'react-relay';
+import { useFragment } from 'react-relay';
 import {
   AutoSizer,
   CellMeasurer,
@@ -35,30 +35,6 @@ export function AdmireModal({
   loadPrevious,
   hasPrevious,
 }: AdmireModalProps) {
-  // const {
-  //   data: feedEvent,
-  //   loadPrevious,
-  //   hasPrevious,
-  // } = usePaginationFragment(
-  //   graphql`
-  //     fragment AdmireModalFragment on FeedEvent
-  //     @refetchable(queryName: "AdmireModalRefetchableFragment") {
-  //       interactions(last: $interactionsFirst, before: $interactionsAfter)
-  //         @connection(key: "AdmiresModal_interactions") {
-  //         edges {
-  //           node {
-  //             __typename
-
-  //             ... on Admire {
-  //               ...AdmireNoteFragment
-  //             }
-  //           }
-  //         }
-  //       }
-  //     }
-  //   `,
-  //   eventRef
-  // );
   const admires = useFragment(
     graphql`
       fragment AdmireModalFragment on Admire @relay(plural: true) {
@@ -76,18 +52,6 @@ export function AdmireModal({
     `,
     queryRef
   );
-
-  // const nonNullInteractions = useMemo(() => {
-  //   const interactions = [];
-
-  //   for (const interaction of feedEvent.interactions?.edges ?? []) {
-  //     if (interaction?.node && interaction.node.__typename === 'Admire') {
-  //       interactions.push(interaction.node);
-  //     }
-  //   }
-
-  //   return interactions.reverse();
-  // }, [feedEvent.interactions?.edges]);
 
   const [measurerCache] = useState(() => {
     return new CellMeasurerCache({

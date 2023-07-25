@@ -2,13 +2,11 @@ import { useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
 import { useModalActions } from '~/contexts/modal/ModalContext';
-import { CommentBoxIconEventFragment$key } from '~/generated/CommentBoxIconEventFragment.graphql';
 import { CommentBoxIconFragment$key } from '~/generated/CommentBoxIconFragment.graphql';
 import { CommentBoxIconQueryFragment$key } from '~/generated/CommentBoxIconQueryFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import { CommentIcon } from '~/icons/SocializeIcons';
 
-import { CommentsModal } from '../CommentsModal/CommentsModal';
 import { FeedEventsCommentsModal } from '../CommentsModal/FeedEventsCommentsModal';
 import PostCommentsModal from '../CommentsModal/PostCommentsModal';
 
@@ -59,7 +57,7 @@ export function CommentBoxIcon({ queryRef, eventRef }: Props) {
       isPaddingDisabled: true,
       headerVariant: 'standard',
     });
-  }, [event, isMobile, query, showModal]);
+  }, [ModalContent, isMobile, showModal]);
 
   return <CommentIcon onClick={handleClick} />;
 }

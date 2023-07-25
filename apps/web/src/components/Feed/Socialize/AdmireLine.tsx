@@ -6,14 +6,14 @@ import styled from 'styled-components';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseS } from '~/components/core/Text/Text';
 import { ProfilePictureStack } from '~/components/ProfilePictureStack';
-import { AdmireLineEventFragment$key } from '~/generated/AdmireLineEventFragment.graphql';
+import { AdmireLineFragment$key } from '~/generated/AdmireLineFragment.graphql';
 import { AdmireLineQueryFragment$key } from '~/generated/AdmireLineQueryFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import { useAdmireModal } from './AdmireModal/useAdmireModal';
 
 type CommentLineProps = {
-  eventRef: AdmireLineEventFragment$key;
+  eventRef: AdmireLineFragment$key;
   queryRef: AdmireLineQueryFragment$key;
 };
 

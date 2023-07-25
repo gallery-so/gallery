@@ -23,11 +23,9 @@ export default function PostData({ postRef }: Props) {
     graphql`
       fragment PostDataFragment on Post {
         __typename
-        dbid
         caption
         author {
           ... on GalleryUser {
-            username
             ...ProfilePictureFragment
             ...HoverCardOnUsernameFragment
           }
@@ -50,16 +48,16 @@ export default function PostData({ postRef }: Props) {
   }
 
   const token = post.tokens[0];
-  const communityUrl = getCommunityUrlForToken(token);
+  const communityUrl = token ? getCommunityUrlForToken(token) : null;
 
   return (
     <StyledPost gap={8}>
       <VStack gap={12}>
         <HStack justify="space-between">
           <HStack align="center" gap={6}>
-            <ProfilePicture userRef={post.author} size="md" />
+            {post.author && <ProfilePicture userRef={post.author} size="md" />}
             <VStack>
-              <HoverCardOnUsername userRef={post.author} />
+              {post.author && <HoverCardOnUsername userRef={post.author} />}
               {communityUrl ? (
                 <StyledInteractiveLink to={communityUrl}>
                   <BaseS color={colors.shadow}>{token?.community?.name}</BaseS>
@@ -74,9 +72,11 @@ export default function PostData({ postRef }: Props) {
       </VStack>
       <BaseM>{post.caption}</BaseM>
       <HStack justify="center">
-        <StyledAsset>
-          <NftPreviewAsset tokenRef={token} />
-        </StyledAsset>
+        {token && (
+          <StyledAsset>
+            <NftPreviewAsset tokenRef={token} />
+          </StyledAsset>
+        )}
       </HStack>
     </StyledPost>
   );

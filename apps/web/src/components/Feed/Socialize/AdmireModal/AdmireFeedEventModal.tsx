@@ -63,7 +63,7 @@ export default function AdmireFeedEventModal({ eventRef, queryRef, fullscreen }:
     <AdmireModal
       admireRefs={nonNullInteractions}
       queryRef={query}
-      fullscren={fullscreen}
+      fullscreen={fullscreen}
       loadPrevious={loadPrevious}
       hasPrevious={hasPrevious}
     />

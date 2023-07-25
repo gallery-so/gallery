@@ -5,7 +5,6 @@ import { SelectorStoreUpdater } from 'relay-runtime';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { useCommentOnFeedEventMutation } from '~/generated/useCommentOnFeedEventMutation.graphql';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
-import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 
 export type OptimisticUserInfo = {
@@ -77,14 +76,6 @@ export default function useCommentOnFeedEvent() {
 
         const optimisticId = Math.random().toString();
 
-        // const { token } = query.viewer?.user?.profileImage ?? {};
-
-        // const result = token
-        //   ? getVideoOrImageUrlForNftPreview({
-        //       tokenRef: token,
-        //     })
-        //   : null;
-
         const hasProfileImage = optimisticUserInfo.commenterProfileImageUrl !== null;
 
         const tokenProfileImagePayload = hasProfileImage
@@ -139,6 +130,7 @@ export default function useCommentOnFeedEvent() {
         });
 
         if (response.commentOnFeedEvent?.__typename === 'CommentOnFeedEventPayload') {
+          // TODO: reset input state
           // resetInputState();
         } else {
           pushErrorToast();
@@ -158,7 +150,7 @@ export default function useCommentOnFeedEvent() {
         throw error;
       }
     },
-    [pushErrorToast, submitComment]
+    [pushErrorToast, reportError, submitComment]
   );
 
   return [commentOnFeedEvent, isSubmittingComment] as const;

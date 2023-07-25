@@ -3,12 +3,11 @@ import {
   KeyboardEventHandler,
   useCallback,
   useEffect,
-  useMemo,
   useRef,
   useState,
 } from 'react';
 import { useFragment } from 'react-relay';
-import { ConnectionHandler, graphql, SelectorStoreUpdater } from 'relay-runtime';
+import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import { HStack } from '~/components/core/Spacer/Stack';
@@ -16,15 +15,9 @@ import { BaseM, BODY_FONT_FAMILY } from '~/components/core/Text/Text';
 import { SendButton } from '~/components/Feed/Socialize/SendButton';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
-import { CommentBoxFragment$key } from '~/generated/CommentBoxFragment.graphql';
-import { CommentBoxMutation } from '~/generated/CommentBoxMutation.graphql';
 import { CommentBoxQueryFragment$key } from '~/generated/CommentBoxQueryFragment.graphql';
-import useCommentOnFeedEvent from '~/hooks/api/feedEvents/useCommentOnFeedEvent';
 import { AuthModal } from '~/hooks/useAuthModal';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
-import { useReportError } from '~/shared/contexts/ErrorReportingContext';
-import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
-import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 import colors from '~/shared/theme/colors';
 
 const MAX_TEXT_LENGTH = 100;
@@ -42,40 +35,12 @@ export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment }: P
       fragment CommentBoxQueryFragment on Query {
         viewer {
           __typename
-          ... on Viewer {
-            user {
-              id
-              dbid
-              username
-              profileImage {
-                ... on TokenProfileImage {
-                  token {
-                    dbid
-                    id
-                    ...getVideoOrImageUrlForNftPreviewFragment
-                  }
-                }
-              }
-            }
-          }
         }
         ...useAuthModalFragment
       }
     `,
     queryRef
   );
-
-  // const event = useFragment(
-  //   graphql`
-  //     fragment CommentBoxFragment on FeedEvent {
-  //       id
-  //       dbid
-  //     }
-  //   `,
-  //   eventRef
-  // );
-
-  // const [commentOnFeedEvent, isSubmittingComment] = useCommentOnFeedEvent();
 
   // WARNING: calling `setValue` will not cause the textarea's content to actually change
   // It's simply there as a state value that we can reference to peek into the current state
@@ -88,7 +53,7 @@ export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment }: P
   const textareaRef = useRef<HTMLParagraphElement | null>(null);
 
   const { pushToast } = useToastActions();
-  const reportError = useReportError();
+
   const track = useTrack();
   const { showModal } = useModalActions();
 
@@ -100,13 +65,6 @@ export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment }: P
       textarea.innerText = '';
     }
   }, []);
-
-  // const hasProfileImage = useMemo(() => {
-  //   if (query?.viewer?.__typename !== 'Viewer') {
-  //     return false;
-  //   }
-  //   return query.viewer?.user?.profileImage?.token != null;
-  // }, [query.viewer]);
 
   const pushErrorToast = useCallback(() => {
     pushToast({
@@ -130,22 +88,9 @@ export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment }: P
     }
 
     track('Save Comment Click');
-    // const { token } = query.viewer?.user?.profileImage ?? {};
 
-    // const result = token
-    //   ? getVideoOrImageUrlForNftPreview({
-    //       tokenRef: token,
-    //     })
-    //   : null;
-    // const commenterProfileImageUrl = result?.urls?.small ?? null;
     try {
       onSubmitComment(value);
-      // commentOnFeedEvent(event.id, event.dbid, value, {
-      //   commenterUserId: query.viewer.user.id,
-      //   commenterUserDbid: query.viewer.user.dbid,
-      //   commenterUsername: query.viewer.user.username,
-      //   commenterProfileImageUrl: result?.urls?.small ?? null,
-      // });
     } catch (error) {
       pushErrorToast();
       return;

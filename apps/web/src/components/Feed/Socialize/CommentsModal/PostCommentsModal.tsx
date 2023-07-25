@@ -35,7 +35,6 @@ export default function PostCommentsModal({ postRef, queryRef, fullscreen }: Pro
         }
         id
         dbid
-        # ...CommentBoxFragment
       }
     `,
     postRef
@@ -82,21 +81,28 @@ export default function PostCommentsModal({ postRef, queryRef, fullscreen }: Pro
     return interactions.reverse();
   }, [post.interactions?.edges]);
 
-  const handleSubmitComment = useCallback((comment: string) => {
-    const { token } = query.viewer?.user?.profileImage ?? {};
+  const handleSubmitComment = useCallback(
+    (comment: string) => {
+      const { token } = query.viewer?.user?.profileImage ?? {};
+      const user = query.viewer?.user;
+      if (!user) {
+        return;
+      }
 
-    const result = token
-      ? getVideoOrImageUrlForNftPreview({
-          tokenRef: token,
-        })
-      : null;
-    commentOnPost(post.id, post.dbid, comment, {
-      commenterUserId: query.viewer.user.id,
-      commenterUserDbid: query.viewer.user.dbid,
-      commenterUsername: query.viewer.user.username,
-      commenterProfileImageUrl: result?.urls?.small ?? '',
-    });
-  }, []);
+      const result = token
+        ? getVideoOrImageUrlForNftPreview({
+            tokenRef: token,
+          })
+        : null;
+      commentOnPost(post.id, post.dbid, comment, {
+        commenterUserId: user.id,
+        commenterUserDbid: user.dbid,
+        commenterUsername: user.username ?? '',
+        commenterProfileImageUrl: result?.urls?.small ?? '',
+      });
+    },
+    [commentOnPost, post.dbid, post.id, query.viewer?.user]
+  );
 
   return (
     <CommentsModal
