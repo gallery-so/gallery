@@ -92,7 +92,7 @@ export function FeedListSectionHeader({ feedEventRef }: FeedListSectionHeaderPro
           eventName="Feed Gallery Name Clicked"
         >
           <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-            {galleryName || 'their gallery'}
+            {galleryName || 'their gallery '}
           </Typography>
         </GalleryTouchableOpacity>
       </View>
