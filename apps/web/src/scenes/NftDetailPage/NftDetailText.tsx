@@ -227,7 +227,7 @@ function NftDetailText({ tokenRef }: Props) {
           </VStack>
         ) : null}
 
-        {!showDetails && <TextButton text="More Info" onClick={handleToggleClick} />}
+        {!showDetails && <TextButton text="Show Details" onClick={handleToggleClick} />}
         {showDetails && <TextButton text="Hide Details" onClick={handleToggleClick} />}
       </VStack>
     </StyledDetailLabel>
