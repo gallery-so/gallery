@@ -202,6 +202,7 @@ function NftPreview({
     isIFrameLiveDisplay,
     previewSize,
     handleNftLoaded,
+    previewUrl,
   ]);
 
   const isMobileOrLargeMobile = useIsMobileOrMobileLargeWindowWidth();

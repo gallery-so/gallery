@@ -133,19 +133,19 @@ function NftDetailAssetComponentWithouFallback({
     throw new CouldNotRenderNftError('NftDetailAsset', 'Token media type was `UnknownMedia`');
   }
 
-  const imageMedia = token.media;
-  const isContentRenderUrlLoaded = useImageLoading(
-    imageMedia.__typename === 'ImageMedia' && imageMedia.contentRenderURL
+  const media = token.media;
+  const isImageContentRenderUrlLoaded = useImageLoading(
+    media.__typename === 'ImageMedia' && media.contentRenderURL
   );
 
   // Determine which URL to display based on the loading state
-  const imageUrlToShow = isContentRenderUrlLoaded
-    ? imageMedia.__typename === 'ImageMedia' && imageMedia.contentRenderURL
+  const imageUrlToShow = isImageContentRenderUrlLoaded
+    ? media.__typename === 'ImageMedia' && media.contentRenderURL
     : previewUrl;
 
   switch (token.media.__typename) {
     case 'HtmlMedia':
-      return <NftDetailAnimation onLoad={onLoad} mediaRef={token} />;
+      return <NftDetailAnimation onLoad={onLoad} mediaRef={token} previewUrl={previewUrl} />;
     case 'VideoMedia':
       return <NftDetailVideo onLoad={onLoad} mediaRef={token.media} previewUrl={previewUrl} />;
     case 'AudioMedia':

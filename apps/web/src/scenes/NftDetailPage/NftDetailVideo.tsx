@@ -85,7 +85,7 @@ function NftDetailVideo({ mediaRef, hideControls = false, onLoad, previewUrl }: 
       playsInline
       controls={!shouldHideControls}
       loop={!isSafari()}
-      onLoadedData={handleVideoLoad} // Call the handleVideoLoad function when the video is loaded
+      onLoadedData={handleVideoLoad}
       onError={handleVideoLoadError}
       poster={poster}
     />

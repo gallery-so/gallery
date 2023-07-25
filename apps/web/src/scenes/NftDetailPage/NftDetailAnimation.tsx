@@ -5,6 +5,7 @@ import styled from 'styled-components';
 
 import { ContentIsLoadedEvent } from '~/contexts/shimmer/ShimmerContext';
 import { NftDetailAnimationFragment$key } from '~/generated/NftDetailAnimationFragment.graphql';
+import { useHtmlMediaLoading } from '~/hooks/useHtmlMediaLoading';
 
 import { RawNftDetailModel } from './NftDetailModel';
 import processIFrameRenderUrl from './processIFrameRenderUrl';
@@ -12,9 +13,10 @@ import processIFrameRenderUrl from './processIFrameRenderUrl';
 type Props = {
   mediaRef: NftDetailAnimationFragment$key;
   onLoad: ContentIsLoadedEvent;
+  previewUrl?: string | undefined;
 };
 
-function NftDetailAnimation({ mediaRef, onLoad }: Props) {
+function NftDetailAnimation({ mediaRef, onLoad, previewUrl }: Props) {
   const token = useFragment(
     graphql`
       fragment NftDetailAnimationFragment on Token {
@@ -53,11 +55,16 @@ function NftDetailAnimation({ mediaRef, onLoad }: Props) {
     return '';
   }, [token.media]);
 
+  const isContentRenderUrlLoaded = useHtmlMediaLoading(contentRenderURL);
+
+  // Determine whether to show the StyledIframe or StyledImage based on the loading state
+  const shouldShowIframe = isContentRenderUrlLoaded && token.media.__typename === 'HtmlMedia';
+
   if (contentRenderURL.endsWith('.glb')) {
     return <RawNftDetailModel onLoad={onLoad} url={contentRenderURL} fullHeight />;
   }
 
-  return (
+  return shouldShowIframe ? (
     <StyledNftDetailAnimation>
       <StyledIframe
         src={processIFrameRenderUrl(contentRenderURL)}
@@ -67,6 +74,8 @@ function NftDetailAnimation({ mediaRef, onLoad }: Props) {
         sandbox="allow-scripts allow-same-origin"
       />
     </StyledNftDetailAnimation>
+  ) : (
+    <StyledImage src={previewUrl} onLoad={onLoad} />
   );
 }
 
@@ -81,6 +90,11 @@ const StyledIframe = styled.iframe`
   border: none;
 
   aspect-ratio: 1;
+`;
+
+export const StyledImage = styled.img`
+  width: 100%;
+  border: none;
 `;
 
 export default NftDetailAnimation;
