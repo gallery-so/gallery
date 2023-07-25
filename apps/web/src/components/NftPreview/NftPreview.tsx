@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import transitions from '~/components/core/transitions';
 import { NftFailureBoundary } from '~/components/NftFailureFallback/NftFailureBoundary';
 import { NftFailureFallback } from '~/components/NftFailureFallback/NftFailureFallback';
+import { useNftPreviewFallbackState } from '~/contexts/nftPreviewFallback/NftPreviewFallbackContext';
 import { NftPreviewFragment$key } from '~/generated/NftPreviewFragment.graphql';
 import { NftPreviewTokenFragment$key } from '~/generated/NftPreviewTokenFragment.graphql';
 import { useNftRetry } from '~/hooks/useNftRetry';
@@ -120,6 +121,9 @@ function NftPreview({
   const username = collection.gallery?.owner?.username;
   const collectionId = collection.dbid;
 
+  const { previewUrlMap } = useNftPreviewFallbackState();
+  const previewUrl = previewUrlMap[collectionId];
+
   // This fragment is split up, so we can refresh it as a part
   // of the retry system
   const token = useFragment<NftPreviewTokenFragment$key>(
@@ -164,7 +168,14 @@ function NftPreview({
       );
     }
     if (shouldLiverender && token.media?.__typename === 'VideoMedia') {
-      return <NftDetailVideo onLoad={handleNftLoaded} mediaRef={token.media} hideControls />;
+      return (
+        <NftDetailVideo
+          onLoad={handleNftLoaded}
+          mediaRef={token.media}
+          previewUrl={previewUrl}
+          hideControls
+        />
+      );
     }
     if (shouldLiverender && token.media?.__typename === 'GIFMedia') {
       return <NftDetailGif onLoad={handleNftLoaded} tokenRef={token} />;

@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -13,6 +12,7 @@ import { NftDetailAssetComponentFragment$key } from '~/generated/NftDetailAssetC
 import { NftDetailAssetComponentWithoutFallbackFragment$key } from '~/generated/NftDetailAssetComponentWithoutFallbackFragment.graphql';
 import { NftDetailAssetFragment$key } from '~/generated/NftDetailAssetFragment.graphql';
 import { NftDetailAssetTokenFragment$key } from '~/generated/NftDetailAssetTokenFragment.graphql';
+import { useImageLoading } from '~/hooks/useImageLoading';
 import { useNftRetry } from '~/hooks/useNftRetry';
 import { useBreakpoint } from '~/hooks/useWindowSize';
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
@@ -126,31 +126,22 @@ function NftDetailAssetComponentWithouFallback({
     tokenRef
   );
 
-  // State to keep track of the loading state of the high-definition image.
-  const [isContentRenderUrlLoaded, setContentRenderUrlLoaded] = useState(false);
+  if (token.media.__typename === 'UnknownMedia') {
+    // If we're dealing with UnknownMedia, we know the NFT is going to
+    // fail to load, so we'll just immediately notify the parent
+    // that this NftDetailAsset was unable to render
+    throw new CouldNotRenderNftError('NftDetailAsset', 'Token media type was `UnknownMedia`');
+  }
+
   const imageMedia = token.media;
-
-  useEffect(() => {
-    // Check if the contentRenderURL is available
-    if (imageMedia.__typename === 'ImageMedia' && imageMedia.contentRenderURL) {
-      // Create an image element to load the contentRenderURL in the background
-      const img = new Image();
-
-      img.onload = () => {
-        // When the contentRenderURL is loaded, update the state
-        setContentRenderUrlLoaded(true);
-      };
-
-      img.src = imageMedia.contentRenderURL; // Start loading the high-definition image
-    }
-  }, [imageMedia, imageMedia.__typename]);
+  const isContentRenderUrlLoaded = useImageLoading(
+    imageMedia.__typename === 'ImageMedia' && imageMedia.contentRenderURL
+  );
 
   // Determine which URL to display based on the loading state
   const imageUrlToShow = isContentRenderUrlLoaded
     ? imageMedia.__typename === 'ImageMedia' && imageMedia.contentRenderURL
     : previewUrl;
-
-  console.log('imageUrlToShow:', imageUrlToShow);
 
   switch (token.media.__typename) {
     case 'HtmlMedia':
