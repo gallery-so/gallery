@@ -1,11 +1,13 @@
-import { SyntheticEvent, useCallback, useEffect, useMemo, useState } from 'react';
+import { SyntheticEvent, useCallback, useMemo, useState } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import { ContentIsLoadedEvent } from '~/contexts/shimmer/ShimmerContext';
 import { NftDetailVideoFragment$key } from '~/generated/NftDetailVideoFragment.graphql';
+import { useImageLoading } from '~/hooks/useImageLoading';
 import { useThrowOnMediaFailure } from '~/hooks/useNftRetry';
+import { useVideoLoading } from '~/hooks/useVideoLoading';
 import { isSafari } from '~/utils/browser';
 import isVideoUrl from '~/utils/isVideoUrl';
 
@@ -31,41 +33,14 @@ function NftDetailVideo({ mediaRef, hideControls = false, onLoad, previewUrl }: 
     mediaRef
   );
 
-  const [isContentRenderUrlLoaded, setContentRenderUrlLoaded] = useState(false);
-  const [isPreviewLoaded, setIsPreviewLoaded] = useState(false);
+  const isPreviewImageLoaded = useImageLoading(previewUrl);
 
-  useEffect(() => {
-    // Check if the contentRenderURL is available
-    if (token.contentRenderURLs && token.contentRenderURLs.large) {
-      // Create a video element to load the contentRenderURL in the background
-      const video = document.createElement('video');
-      video.onloadeddata = () => {
-        // When the contentRenderURL is loaded, update the state
-        setContentRenderUrlLoaded(true);
-      };
-
-      video.src = token.contentRenderURLs.large; // Start loading the video
-    } else {
-      // If contentRenderURLs is not available, load the previewUrl image
-      if (previewUrl) {
-        console.log('previewUrl is avail');
-        const img = new Image();
-        img.onload = () => {
-          // When the previewUrl image is loaded, update the state
-          setIsPreviewLoaded(true);
-        };
-
-        img.src = previewUrl; // Start loading the preview image
-      }
-    }
-  }, [token.contentRenderURLs, previewUrl]);
+  const isContentRenderUrlLoaded = useVideoLoading(token.contentRenderURLs.large, previewUrl);
 
   // Determine which URL to display based on the loading state
   const videoUrlToShow = isContentRenderUrlLoaded
     ? token.contentRenderURLs?.large
-    : isPreviewLoaded
-    ? previewUrl
-    : undefined;
+    : isPreviewImageLoaded && previewUrl;
 
   const [errored, setErrored] = useState(false);
 
@@ -82,7 +57,6 @@ function NftDetailVideo({ mediaRef, hideControls = false, onLoad, previewUrl }: 
   );
 
   const handleVideoLoad = () => {
-    // Once the video is loaded, we can call the onLoad function
     onLoad();
   };
 
@@ -103,10 +77,7 @@ function NftDetailVideo({ mediaRef, hideControls = false, onLoad, previewUrl }: 
   // to render the poster fallback
   const shouldHideControls = hideControls || errored;
 
-  console.log('videoUrlToShow:', videoUrlToShow);
-  console.log('previewUrl from video component:', previewUrl);
-
-  return videoUrlToShow ? (
+  return isContentRenderUrlLoaded ? (
     <StyledVideo
       src={`${videoUrlToShow}#t=0.001`}
       muted
@@ -119,16 +90,12 @@ function NftDetailVideo({ mediaRef, hideControls = false, onLoad, previewUrl }: 
       poster={poster}
     />
   ) : (
-    // If videoUrlToShow is not available, render the preview image
     <StyledImage src={previewUrl} onLoad={onLoad} />
   );
 }
 export const StyledImage = styled.img`
   width: 100%;
-  height: 100%;
   border: none;
-
-  max-height: inherit;
 `;
 
 export const StyledVideo = styled.video`
