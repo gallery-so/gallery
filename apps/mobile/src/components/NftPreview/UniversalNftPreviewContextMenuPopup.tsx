@@ -1,20 +1,24 @@
+import { useNavigation } from '@react-navigation/native';
 import { ResizeMode } from 'expo-av';
 import { PropsWithChildren, useCallback, useState } from 'react';
 import { Text, useWindowDimensions, View } from 'react-native';
-import { ContextMenuView } from 'react-native-ios-context-menu';
+import { ContextMenuView, OnPressMenuItemEvent } from 'react-native-ios-context-menu';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
+import { shareUniversalToken } from 'src/utils/shareToken';
 
 import { GallerySkeleton } from '~/components/GallerySkeleton';
 import { NftPreviewAsset } from '~/components/NftPreview/NftPreviewAsset';
 import { NftPreviewErrorFallback } from '~/components/NftPreview/NftPreviewErrorFallback';
 import { Typography } from '~/components/Typography';
 import { UniversalNftPreviewContextMenuPopupTokenFragment$key } from '~/generated/UniversalNftPreviewContextMenuPopupTokenFragment.graphql';
+import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { fitDimensionsToContainerCover } from '~/screens/NftDetailScreen/NftDetailAsset/fitDimensionToContainer';
 import { Dimensions } from '~/screens/NftDetailScreen/NftDetailAsset/types';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
+import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
 
 type NftPreviewContextMenuPopupProps = PropsWithChildren<{
   fallbackTokenUrl?: string;
@@ -34,6 +38,7 @@ export function UniversalNftPreviewContextMenuPopup({
   const token = useFragment(
     graphql`
       fragment UniversalNftPreviewContextMenuPopupTokenFragment on Token {
+        dbid
         name
 
         contract {
@@ -47,14 +52,22 @@ export function UniversalNftPreviewContextMenuPopup({
             }
           }
         }
+        ...getVideoOrImageUrlForNftPreviewFragment
+        ...shareTokenUniversalFragment
       }
     `,
     tokenRef
   );
 
+  const navigation = useNavigation<MainTabStackNavigatorProp>();
   const windowDimensions = useWindowDimensions();
 
   const tokenUrl = token.media?.previewURLs?.large ?? fallbackTokenUrl;
+  const media = getVideoOrImageUrlForNftPreview({
+    tokenRef: token,
+    preferStillFrameFromGif: true,
+  });
+  const cachedPreviewAssetUrl = media?.urls.medium || media?.urls.small || null;
 
   const [popupAssetLoaded, setPopupAssetLoaded] = useState(false);
 
@@ -62,31 +75,19 @@ export function UniversalNftPreviewContextMenuPopup({
     setPopupAssetLoaded(true);
   }, []);
 
-  //   const handleMenuItemPress = useCallback<OnPressMenuItemEvent>(
-  //     (event) => {
-  //       if (event.nativeEvent.actionKey === 'view-details') {
-  //         navigation.navigate('NftDetail', {
-  //           cachedPreviewAssetUrl,
-
-  //           tokenId: token.dbid,
-  //           collectionId: collectionToken?.collection?.dbid ?? null,
-  //         });
-  //       } else if (event.nativeEvent.actionKey === 'share') {
-  //         shareToken(token, collectionToken.collection ?? null);
-  //       } else if (event.nativeEvent.actionKey === 'view-gallery') {
-  //         navigation.push('Gallery', {
-  //           galleryId: collectionToken.collection?.gallery?.dbid ?? 'not-found',
-  //         });
-  //       }
-  //       // else if (event.nativeEvent.actionKey === 'view-artist') {
-  //       //   navigation.push('Profile', {
-  //       //     username: collectionToken.collection?.owner?.username ?? 'not-found',
-  //       //   });
-  //       // }
-  //     },
-  //     [cachedPreviewAssetUrl, collectionToken.collection, navigation, token]
-  //   );
-  const handleMenuItemPress = () => {};
+  const handleMenuItemPress = useCallback<OnPressMenuItemEvent>(
+    (event) => {
+      if (event.nativeEvent.actionKey === 'view-details') {
+        navigation.navigate('UniversalNftDetail', {
+          cachedPreviewAssetUrl,
+          tokenId: token.dbid,
+        });
+      } else if (event.nativeEvent.actionKey === 'share') {
+        shareUniversalToken(token);
+      }
+    },
+    [cachedPreviewAssetUrl, navigation, token]
+  );
 
   const track = useTrack();
 
@@ -101,10 +102,10 @@ export function UniversalNftPreviewContextMenuPopup({
       menuConfig={{
         menuTitle: '',
         menuItems: [
-          //   {
-          //     actionKey: 'view-details',
-          //     actionTitle: 'View Details',
-          //   },
+          {
+            actionKey: 'view-details',
+            actionTitle: 'View Details',
+          },
           //   {
           //     actionKey: 'view-gallery',
           //     actionTitle: 'View Gallery',

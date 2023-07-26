@@ -4,9 +4,12 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
+import { ShareIcon } from 'src/icons/ShareIcon';
+import { shareUniversalToken } from 'src/utils/shareToken';
 
 import { BackButton } from '~/components/BackButton';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
+import { IconContainer } from '~/components/IconContainer';
 import { NftPreviewErrorFallback } from '~/components/NftPreview/NftPreviewErrorFallback';
 import { Pill } from '~/components/Pill';
 import { UniversalNftDetailScreenInnerQuery } from '~/generated/UniversalNftDetailScreenInnerQuery.graphql';
@@ -60,6 +63,7 @@ export function UniversalNftDetailScreenInner() {
 
             ...NftAdditionalDetailsFragment
             ...NftDetailAssetFragment
+            ...shareTokenUniversalFragment
           }
         }
       }
@@ -125,16 +129,9 @@ export function UniversalNftDetailScreenInner() {
     token.tokenId,
   ]);
 
-  // const handleCreatorPress = useCallback(() => {
-  //   if (token.creator?.username) {
-  //     track('NFT Detail Creator Name Clicked', {
-  //       username: token.creator.username,
-  //       contractAddress: token.contract?.contractAddress?.address,
-  //       tokenId: token.tokenId,
-  //     });
-  //     navigation.push('Profile', { username: token.creator.username });
-  //   }
-  // }, [navigation, track, token.creator?.username]);
+  const handleShare = useCallback(() => {
+    shareUniversalToken(token);
+  }, [token]);
 
   return (
     <ScrollView>
@@ -142,6 +139,12 @@ export function UniversalNftDetailScreenInner() {
         <View className="flex flex-col space-y-3">
           <View className="flex flex-row justify-between">
             <BackButton />
+            <IconContainer
+              eventElementId="NFT Detail Share Icon"
+              eventName="NFT Detail Share Icon Clicked"
+              icon={<ShareIcon />}
+              onPress={handleShare}
+            />
           </View>
 
           <View>

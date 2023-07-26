@@ -4,6 +4,7 @@ import clsx from 'clsx';
 import { ForwardedRef, forwardRef, useCallback, useMemo, useRef } from 'react';
 import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
+import { shareUniversalToken } from 'src/utils/shareToken';
 
 import {
   GalleryBottomSheetModal,
@@ -45,6 +46,7 @@ function PostBottomSheet(
         tokens {
           dbid
           ...getVideoOrImageUrlForNftPreviewFragment
+          ...shareTokenUniversalFragment
         }
         ...DeletePostBottomSheetFragment
       }
@@ -149,12 +151,15 @@ function PostBottomSheet(
     });
   }, [cachedPreviewAssetUrl, navigation, token.dbid]);
 
+  const handleShare = useCallback(() => {
+    shareUniversalToken(token);
+  }, [token]);
+
   const inner = useMemo(() => {
     if (isOwnPost)
       return (
         <>
-          {/* Uncomment when the web have an universal token detail page */}
-          {/* <BottomSheetRow text="Share" onPress={() => {}} /> */}
+          <BottomSheetRow text="Share" onPress={handleShare} />
           <BottomSheetRow text="View item detail" onPress={handleViewNftDetail} />
           <BottomSheetRow text="Delete" isConfirmationRow onPress={handleDeletePost} />
         </>
@@ -162,12 +167,19 @@ function PostBottomSheet(
 
     return (
       <>
-        {/* <BottomSheetRow text="Share" onPress={() => {}} /> */}
+        <BottomSheetRow text="Share" onPress={handleShare} />
         <BottomSheetRow text={followUserText} onPress={handleFollowUser} />
         <BottomSheetRow text="View item detail" onPress={handleViewNftDetail} />
       </>
     );
-  }, [followUserText, handleDeletePost, handleFollowUser, handleViewNftDetail, isOwnPost]);
+  }, [
+    followUserText,
+    handleDeletePost,
+    handleFollowUser,
+    handleShare,
+    handleViewNftDetail,
+    isOwnPost,
+  ]);
 
   return (
     <>
