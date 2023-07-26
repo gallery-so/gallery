@@ -3,11 +3,15 @@ import styled from 'styled-components';
 import IconContainer from '~/components/core/IconContainer';
 import { ModalPaddingVariant } from '~/contexts/modal/constants';
 
-export default function CloseIcon() {
+type Props = {
+  size?: number;
+};
+
+export default function CloseIcon({ size = 16 }: Props) {
   return (
     <svg
-      width="16"
-      height="16"
+      width={size}
+      height={size}
       viewBox="0 0 16 16"
       fill="none"
       stroke="currentColor"

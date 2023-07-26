@@ -144,7 +144,9 @@ function NftPreview({
     [onClick]
   );
 
-  const shouldLiverender = tokenSettings?.renderLive;
+  const isMobileOrLargeMobile = useIsMobileOrMobileLargeWindowWidth();
+
+  const shouldLiverender = tokenSettings?.renderLive && !isMobileOrLargeMobile;
   const isIFrameLiveDisplay = Boolean(shouldLiverender && token.media?.__typename === 'HtmlMedia');
 
   const { handleNftLoaded, handleNftError, retryKey, refreshMetadata, refreshingMetadata } =
@@ -192,8 +194,6 @@ function NftPreview({
     previewSize,
     handleNftLoaded,
   ]);
-
-  const isMobileOrLargeMobile = useIsMobileOrMobileLargeWindowWidth();
 
   const result = getVideoOrImageUrlForNftPreview({ tokenRef: token });
   const isFirefoxSvg = isSvg(result?.urls?.large) && isFirefox();

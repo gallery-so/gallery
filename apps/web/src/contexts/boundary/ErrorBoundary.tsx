@@ -1,4 +1,4 @@
-import { PropsWithChildren } from 'react';
+import { ReactNode } from 'react';
 import styled from 'styled-components';
 
 import GalleryLink from '~/components/core/GalleryLink/GalleryLink';
@@ -10,7 +10,7 @@ import {
   ReportingErrorBoundaryFallbackProps,
 } from '~/shared/errors/ReportingErrorBoundary';
 
-function Fallback({ error }: ReportingErrorBoundaryFallbackProps) {
+function DefaultFallback({ error }: ReportingErrorBoundaryFallbackProps) {
   const errorMessage = formatError(error);
 
   return (
@@ -26,8 +26,17 @@ function Fallback({ error }: ReportingErrorBoundaryFallbackProps) {
   );
 }
 
-function ErrorBoundary({ children }: PropsWithChildren) {
-  return <ReportingErrorBoundary fallback={Fallback}>{children}</ReportingErrorBoundary>;
+type Props = {
+  fallback?: ReactNode;
+  children: ReactNode;
+};
+
+function ErrorBoundary({ fallback, children }: Props) {
+  return (
+    <ReportingErrorBoundary fallback={fallback ?? DefaultFallback}>
+      {children}
+    </ReportingErrorBoundary>
+  );
 }
 
 const StyledErrorBoundary = styled(VStack)`

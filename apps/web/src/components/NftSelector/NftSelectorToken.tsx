@@ -2,7 +2,6 @@ import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
-import { useModalActions } from '~/contexts/modal/ModalContext';
 import { ContentIsLoadedEvent } from '~/contexts/shimmer/ShimmerContext';
 import { NftSelectorTokenFragment$key } from '~/generated/NftSelectorTokenFragment.graphql';
 import { useNftRetry } from '~/hooks/useNftRetry';
@@ -12,13 +11,13 @@ import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import { NftFailureBoundary } from '../NftFailureFallback/NftFailureBoundary';
 import { NftFailureFallback } from '../NftFailureFallback/NftFailureFallback';
 import { NftSelectorPreviewAsset, RawNftSelectorPreviewAsset } from './RawNftSelectorPreviewAsset';
-import useUpdateProfileImage from './useUpdateProfileImage';
 
 type Props = {
   tokenRef: NftSelectorTokenFragment$key;
+  onSelectToken: (tokenId: string) => void;
   isInGroup?: boolean;
 };
-export function NftSelectorToken({ tokenRef, isInGroup = false }: Props) {
+export function NftSelectorToken({ tokenRef, onSelectToken, isInGroup = false }: Props) {
   const token = useFragment(
     graphql`
       fragment NftSelectorTokenFragment on Token {
@@ -40,8 +39,6 @@ export function NftSelectorToken({ tokenRef, isInGroup = false }: Props) {
     tokenRef
   );
 
-  const { hideModal } = useModalActions();
-  const { setProfileImage } = useUpdateProfileImage();
   const track = useTrack();
 
   const { handleNftLoaded, handleNftError, retryKey, refreshMetadata, refreshingMetadata } =
@@ -66,9 +63,8 @@ export function NftSelectorToken({ tokenRef, isInGroup = false }: Props) {
       return;
     }
     track('NFT Selector: Selected NFT');
-    setProfileImage({ tokenId: token.dbid });
-    hideModal();
-  }, [isInGroup, track, setProfileImage, token.dbid, hideModal]);
+    onSelectToken(token.dbid);
+  }, [isInGroup, track, onSelectToken, token]);
 
   return (
     <NftFailureBoundary

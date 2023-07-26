@@ -24,6 +24,7 @@ type TextAreaProps = {
   textAreaHeight?: string;
   showMarkdownShortcuts?: boolean;
   hasPadding?: boolean;
+  maxLength?: number;
 };
 
 function isCursorInsideParentheses(textarea: HTMLTextAreaElement) {
@@ -58,6 +59,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
       textAreaHeight,
       showMarkdownShortcuts = false,
       hasPadding = false,
+      maxLength,
     },
     ref
   ) => {
@@ -120,6 +122,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
           ref={ref}
           hasPadding={hasPadding}
           onKeyDown={handleKeyDown}
+          maxLength={maxLength}
         />
         {showMarkdownShortcuts && (
           <StyledMarkdownContainer hasPadding={hasPadding}>
@@ -161,10 +164,12 @@ export function TextAreaWithCharCount({
   ...textAreaProps
 }: TextAreaWithCharCountProps) {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
+
   return (
     <>
       <StyledTextAreaWithCharCount className={className}>
         <TextArea ref={textAreaRef} {...textAreaProps} />
+
         <StyledCharacterCounter
           error={currentCharCount > maxCharCount}
           hasPadding={textAreaProps?.hasPadding || false}
@@ -260,7 +265,7 @@ const StyledCharacterCounter = styled(BaseM)<{ error: boolean; hasPadding: boole
   bottom: ${({ hasPadding }) => (hasPadding ? '8px' : '0')};
   right: ${({ hasPadding }) => (hasPadding ? '8px' : '0')};
 
-  color: ${({ error }) => (error ? colors.error : colors.metal)};
+  color: ${({ error }) => (error ? colors.red : colors.metal)};
 `;
 
 const StyledMarkdownContainer = styled.div<{ hasPadding: boolean }>`

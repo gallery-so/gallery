@@ -93,6 +93,7 @@ const StyledProfilePictureContainer = styled.div`
   margin-left: -8px;
   position: relative;
   z-index: 1;
+  pointer-events: none;
 `;
 const StyledRemainings = styled(VStack)`
   background-color: ${colors.porcelain};

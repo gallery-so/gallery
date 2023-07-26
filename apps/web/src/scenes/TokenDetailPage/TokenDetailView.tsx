@@ -6,6 +6,7 @@ import breakpoints from '~/components/core/breakpoints';
 import { GLOBAL_FOOTER_HEIGHT } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
 import ShimmerProvider from '~/contexts/shimmer/ShimmerContext';
 import { TokenDetailViewFragment$key } from '~/generated/TokenDetailViewFragment.graphql';
+import { TokenDetailViewQueryFragment$key } from '~/generated/TokenDetailViewQueryFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import { NoteViewer, StyledContainer } from '~/scenes/NftDetailPage/NftDetailNote';
 import NftDetailText from '~/scenes/NftDetailPage/NftDetailText';
@@ -15,9 +16,10 @@ import TokenDetailAsset from './TokenDetailAsset';
 type Props = {
   authenticatedUserOwnsAsset: boolean;
   tokenRef: TokenDetailViewFragment$key;
+  queryRef: TokenDetailViewQueryFragment$key;
 };
 
-export default function TokenDetailView({ authenticatedUserOwnsAsset, tokenRef }: Props) {
+export default function TokenDetailView({ authenticatedUserOwnsAsset, tokenRef, queryRef }: Props) {
   const token = useFragment(
     graphql`
       fragment TokenDetailViewFragment on Token {
@@ -28,6 +30,15 @@ export default function TokenDetailView({ authenticatedUserOwnsAsset, tokenRef }
       }
     `,
     tokenRef
+  );
+
+  const query = useFragment(
+    graphql`
+      fragment TokenDetailViewQueryFragment on Query {
+        ...NftDetailTextQueryFragment
+      }
+    `,
+    queryRef
   );
 
   const isMobileOrMobileLarge = useIsMobileOrMobileLargeWindowWidth();
@@ -53,7 +64,11 @@ export default function TokenDetailView({ authenticatedUserOwnsAsset, tokenRef }
           )}
         </StyledAssetAndNoteContainer>
 
-        <NftDetailText tokenRef={token} />
+        <NftDetailText
+          tokenRef={token}
+          authenticatedUserOwnsAsset={authenticatedUserOwnsAsset}
+          queryRef={query}
+        />
       </StyledContentContainer>
       {!useIsMobileOrMobileLargeWindowWidth && <StyledNavigationBuffer />}
     </StyledBody>
