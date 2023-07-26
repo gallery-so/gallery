@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
-import { graphql } from 'react-relay';
+import { ConnectionHandler, graphql } from 'react-relay';
+import { SelectorStoreUpdater } from 'relay-runtime';
 
 import { useToastActions } from '~/contexts/ToastContext';
 import { usePostDeleteMutation } from '~/generated/usePostDeleteMutation.graphql';
@@ -19,6 +20,10 @@ export function usePost() {
         ... on PostTokensPayload {
           post {
             __typename
+            dbid
+            id
+            ...FeedListFragment
+            ...createVirtualizedFeedEventItemsPostFragment
           }
         }
       }
@@ -44,7 +49,37 @@ export function usePost() {
 
   const handlePost = useCallback(
     ({ tokenId, caption }: PostTokensInput) => {
+      const updater: SelectorStoreUpdater<usePostMutation['response']> = (store, response) => {
+        if (response.postTokens?.post?.__typename === 'Post') {
+          // Get the new post
+          const newPost = store.get(response.postTokens.post.id);
+          if (!newPost) {
+            return;
+          }
+
+          // Get the connection
+          const rootRecord = store.getRoot();
+          const connectionId = ConnectionHandler.getConnectionID(
+            rootRecord.getDataID(),
+            'WorldwideFeedFragment_globalFeed'
+          );
+
+          const relayStore = store.get(connectionId);
+
+          if (!relayStore) {
+            return;
+          }
+
+          // Create a new edge
+          const edge = ConnectionHandler.createEdge(store, relayStore, newPost, 'FeedEdge');
+
+          // Insert the edge at the end of the connection
+          ConnectionHandler.insertEdgeAfter(relayStore, edge);
+        }
+      };
+
       return post({
+        updater,
         variables: {
           input: {
             // Supposed to be an array of tokenIds, but we only post one at a time
@@ -60,8 +95,6 @@ export function usePost() {
         setError(error);
         reportError(error);
       });
-
-      // TODO: Handle optimistic response when the feed is ready
     },
     [pushToast, post, reportError]
   );
