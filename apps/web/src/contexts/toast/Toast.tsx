@@ -99,9 +99,9 @@ function Toast({ message, onClose, variant }: Props) {
             <AlertIcon />
           </StyledAlertIcon>
         )}
-        <BaseM>
+        <StyledMessage>
           <Markdown text={message} />
-        </BaseM>
+        </StyledMessage>
         <IconContainer variant="default" onClick={handleClose} size="sm" icon={<CloseIcon />} />
       </StyledToast>
     </ToastContainer>
@@ -127,4 +127,8 @@ const StyledToast = styled(HStack)<{ variant: Props['variant'] }>`
 const StyledAlertIcon = styled(VStack)`
   height: 24px;
   width: 24px;
+`;
+
+const StyledMessage = styled(BaseM)`
+  overflow: hidden; // prevent dynamic content from extending beyond toast
 `;

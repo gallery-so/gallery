@@ -33,11 +33,13 @@ import { NftSelectorView } from './NftSelectorView';
 type Props = {
   tokensRef: NftSelectorFragment$key;
   queryRef: NftSelectorQueryFragment$key;
+  onSelectToken: (tokenId: string) => void;
+  headerText: string;
 };
 
 export type NftSelectorContractType = Omit<NftSelectorCollectionGroup, 'tokens'> | null;
 
-export function NftSelector({ tokensRef, queryRef }: Props) {
+export function NftSelector({ tokensRef, queryRef, onSelectToken, headerText }: Props) {
   const tokens = useFragment(
     graphql`
       fragment NftSelectorFragment on Token @relay(plural: true) {
@@ -187,10 +189,10 @@ export function NftSelector({ tokensRef, queryRef }: Props) {
               size="sm"
               icon={<ChevronLeftIcon />}
             />
-            <StyledTitleText>Select profile picture</StyledTitleText>
+            <StyledTitleText>{headerText}</StyledTitleText>
           </HStack>
         ) : (
-          <StyledTitleText>Select profile picture</StyledTitleText>
+          <StyledTitleText>{headerText}</StyledTitleText>
         )}
       </StyledTitle>
 
@@ -255,6 +257,7 @@ export function NftSelector({ tokensRef, queryRef }: Props) {
           selectedNetworkView={selectedNetworkView}
           hasSearchKeyword={!!debouncedSearchKeyword}
           handleRefresh={handleRefresh}
+          onSelectToken={onSelectToken}
         />
       )}
     </StyledNftSelectorModal>
