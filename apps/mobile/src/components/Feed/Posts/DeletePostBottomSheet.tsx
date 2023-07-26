@@ -18,13 +18,17 @@ const SNAP_POINTS = ['CONTENT_HEIGHT'];
 
 type Props = {
   postRef: DeletePostBottomSheetFragment$key;
+  onDeleted: () => void;
 };
 
-function DeletePostBottomSheet({ postRef }: Props, ref: ForwardedRef<GalleryBottomSheetModalType>) {
+function DeletePostBottomSheet(
+  { postRef, onDeleted }: Props,
+  ref: ForwardedRef<GalleryBottomSheetModalType>
+) {
   const post = useFragment(
     graphql`
       fragment DeletePostBottomSheetFragment on Post {
-        dbid
+        dbid @required(action: THROW)
       }
     `,
     postRef
@@ -48,7 +52,8 @@ function DeletePostBottomSheet({ postRef }: Props, ref: ForwardedRef<GalleryBott
   const handleDelete = useCallback(() => {
     deletePost(post.dbid);
     bottomSheetRef.current?.dismiss();
-  }, [deletePost, post.dbid]);
+    onDeleted();
+  }, [deletePost, onDeleted, post.dbid]);
 
   return (
     <GalleryBottomSheetModal

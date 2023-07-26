@@ -34,8 +34,11 @@ export function usePost() {
     mutation usePostDeleteMutation($postId: DBID!) {
       deletePost(postId: $postId) {
         ... on DeletePostPayload {
+          __typename
           deletedId {
             __typename
+            dbid
+            id
           }
         }
       }
@@ -101,7 +104,20 @@ export function usePost() {
 
   const handleDelete = useCallback(
     async (postId: string) => {
+      const updater: SelectorStoreUpdater<usePostDeleteMutation['response']> = (
+        store,
+        response
+      ) => {
+        if (
+          response.deletePost?.__typename === 'DeletePostPayload' &&
+          response.deletePost.deletedId
+        ) {
+          const deletedId = response.deletePost.deletedId.dbid;
+          store.delete(`Post:${deletedId}`);
+        }
+      };
       await deletePost({
+        updater,
         variables: {
           postId,
         },

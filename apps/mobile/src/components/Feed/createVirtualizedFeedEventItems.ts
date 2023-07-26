@@ -148,6 +148,7 @@ export function createVirtualizedFeedEventItems({
 
   const newItems = removeNullValues(
     itemRefs.map((itemRef) => {
+      if (!itemRef) return;
       if ('__typename' in itemRef) {
         if (itemRef.__typename === 'FeedEvent') {
           return readInlineData(

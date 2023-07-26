@@ -194,7 +194,13 @@ function PostBottomSheet(
         </View>
       </GalleryBottomSheetModal>
 
-      <DeletePostBottomSheet ref={deletePostBottomSheetRef} postRef={post} />
+      <DeletePostBottomSheet
+        ref={deletePostBottomSheetRef}
+        postRef={post}
+        onDeleted={() => {
+          bottomSheetRef.current?.dismiss();
+        }}
+      />
     </>
   );
 }
