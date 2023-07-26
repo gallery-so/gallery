@@ -53,8 +53,8 @@ export function SomeoneFollowedYou({
   const lastFollower = notification.followers?.edges?.[0]?.node;
 
   return (
-    <StyledHStack justify="space-between">
-      <HStack gap={4} align="center">
+    <StyledHStack justify="space-between" align="center">
+      <HStack gap={4}>
         {count > 1 ? (
           <BaseM>
             <strong>{count} collectors</strong>
@@ -75,11 +75,7 @@ export function SomeoneFollowedYou({
         )}
         <BaseM>followed you</BaseM>
       </HStack>
-      {count === 1 && lastFollower && (
-        <HStack align="center">
-          <FollowButton queryRef={query} userRef={lastFollower} />
-        </HStack>
-      )}
+      {count === 1 && lastFollower && <FollowButton queryRef={query} userRef={lastFollower} />}
     </StyledHStack>
   );
 }
