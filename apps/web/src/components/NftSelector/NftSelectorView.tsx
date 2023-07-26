@@ -4,7 +4,6 @@ import { AutoSizer, List, ListRowProps } from 'react-virtualized';
 import styled from 'styled-components';
 
 import { useModalActions } from '~/contexts/modal/ModalContext';
-import { NftSelectorTokenFragment$data } from '~/generated/NftSelectorTokenFragment.graphql';
 import { NftSelectorViewFragment$key } from '~/generated/NftSelectorViewFragment.graphql';
 import useAddWalletModal from '~/hooks/useAddWalletModal';
 
@@ -26,7 +25,7 @@ type Props = {
   tokenRefs: NftSelectorViewFragment$key;
   hasSearchKeyword: boolean;
   handleRefresh: () => void;
-  onSelectToken: (token: NftSelectorTokenFragment$data) => void;
+  onSelectToken: (tokenId: string) => void;
 };
 const COLUMN_COUNT = 4;
 

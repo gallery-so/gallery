@@ -1,10 +1,9 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import ErrorBoundary from '~/contexts/boundary/ErrorBoundary';
 import { useModalActions } from '~/contexts/modal/ModalContext';
-import { PostComposerFragment$key } from '~/generated/PostComposerFragment.graphql';
 import { PostComposerModalFragment$key } from '~/generated/PostComposerModalFragment.graphql';
 import { PostComposerModalWithSelectorFragment$key } from '~/generated/PostComposerModalWithSelectorFragment.graphql';
 import { PostComposerModalWithSelectorQueryFragment$key } from '~/generated/PostComposerModalWithSelectorQueryFragment.graphql';
@@ -27,7 +26,9 @@ export function PostComposerModalWithSelector({ tokensRef, queryRef }: Props) {
   const tokens = useFragment(
     graphql`
       fragment PostComposerModalWithSelectorFragment on Token @relay(plural: true) {
+        dbid
         ...NftSelectorFragment
+        ...PostComposerFragment
       }
     `,
     tokensRef
@@ -44,14 +45,18 @@ export function PostComposerModalWithSelector({ tokensRef, queryRef }: Props) {
 
   const nonNullTokens = removeNullValues(tokens ?? []);
 
-  const [selectedToken, setSelectedToken] = useState<PostComposerFragment$key | null>(null);
+  const [selectedTokenId, setSelectedTokenId] = useState<string | null>(null);
 
-  const onSelectToken = useCallback((token: PostComposerFragment$key) => {
-    setSelectedToken(token);
+  const selectedToken = useMemo(() => {
+    return tokens.find((token) => token.dbid === selectedTokenId);
+  }, [selectedTokenId, tokens]);
+
+  const onSelectToken = useCallback((tokenId: string) => {
+    setSelectedTokenId(tokenId);
   }, []);
 
   const clearSelectedTokenId = useCallback(() => {
-    setSelectedToken(null);
+    setSelectedTokenId(null);
   }, []);
 
   return (
