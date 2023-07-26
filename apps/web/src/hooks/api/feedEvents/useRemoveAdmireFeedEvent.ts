@@ -29,7 +29,7 @@ export default function useRemovedAdmireFeedEvent() {
     async (eventId: string, eventDbid: string, removedAdmireDbid: string) => {
       const interactionsConnection = ConnectionHandler.getConnectionID(
         eventId,
-        'Interactions_admires'
+        'Interactions_previewAdmires'
       );
       const errorMetadata: AdditionalContext['tags'] = {
         eventId: eventDbid,

@@ -83,7 +83,6 @@ const StyledSvg = styled.svg`
 `;
 
 export const IconWrapper = styled.div<{ active: boolean }>`
-  padding: 4px;
   cursor: pointer;
 
   display: flex;

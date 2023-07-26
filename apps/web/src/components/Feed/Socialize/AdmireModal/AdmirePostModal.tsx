@@ -21,8 +21,8 @@ export function AdmirePostModal({ postRef, queryRef, fullscreen }: Props) {
     graphql`
       fragment AdmirePostModalFragment on Post
       @refetchable(queryName: "AdmirePostModalRefetchableFragment") {
-        interactions(last: $interactionsFirst, before: $interactionsAfter)
-          @connection(key: "AdmiresModal_interactions") {
+        admires(last: $interactionsFirst, before: $interactionsAfter)
+          @connection(key: "AdmiresModal_admires") {
           edges {
             node {
               __typename
@@ -47,22 +47,21 @@ export function AdmirePostModal({ postRef, queryRef, fullscreen }: Props) {
     queryRef
   );
 
-  const nonNullInteractions = useMemo(() => {
-    const interactions = [];
+  const nonNullAdmires = useMemo(() => {
+    const admires = [];
 
-    for (const interaction of post.interactions?.edges ?? []) {
-      // todo pagination query on Admire instead of Interaction so that we dont have to check for type here
-      if (interaction?.node && interaction.node.__typename === 'Admire') {
-        interactions.push(interaction.node);
+    for (const admire of post.admires?.edges ?? []) {
+      if (admire?.node && admire.node.__typename === 'Admire') {
+        admires.push(admire.node);
       }
     }
 
-    return interactions.reverse();
-  }, [post.interactions?.edges]);
+    return admires.reverse();
+  }, [post.admires?.edges]);
 
   return (
     <AdmireModal
-      admireRefs={nonNullInteractions}
+      admireRefs={nonNullAdmires}
       queryRef={query}
       fullscreen={fullscreen}
       loadPrevious={loadPrevious}

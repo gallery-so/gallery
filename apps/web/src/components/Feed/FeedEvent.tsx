@@ -14,7 +14,6 @@ import { FeedEventWithErrorBoundaryFragment$key } from '~/generated/FeedEventWit
 import { FeedEventWithErrorBoundaryQueryFragment$key } from '~/generated/FeedEventWithErrorBoundaryQueryFragment.graphql';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import { TriedToRenderUnsupportedFeedEvent } from '~/shared/errors/TriedToRenderUnsupportedFeedEvent';
-import colors from '~/shared/theme/colors';
 
 import PostData from './Posts/PostData';
 import PostSocializeSection from './Socialize/PostSocializeSection';
@@ -163,8 +162,6 @@ export default function FeedEventWithBoundary({
 
 const FeedItemContainer = styled(VStack)`
   margin: 0 auto;
-
-  border-bottom: 1px solid ${colors.faint};
 
   padding: 24px 0px;
 

@@ -65,8 +65,8 @@ export default function PostData({ postRef }: Props) {
   const communityUrl = token ? getCommunityUrlForToken(token) : null;
 
   return (
-    <StyledPost gap={8}>
-      <VStack gap={12}>
+    <StyledPost gap={12}>
+      <VStack gap={6}>
         <HStack justify="space-between">
           <HStack align="center" gap={6}>
             {post.author && <ProfilePicture userRef={post.author} size="md" />}
@@ -83,11 +83,11 @@ export default function PostData({ postRef }: Props) {
           </HStack>
           <StyledTime>{getTimeSince(post.creationTime)}</StyledTime>
         </HStack>
+        <StyledCaption>{post.caption}</StyledCaption>
       </VStack>
-      <BaseM>{post.caption}</BaseM>
-      <HStack justify="center" align="center">
+      <StyledTokenContainer justify="center" align="center">
         {token && <PostNftPreview tokenRef={token} tokenSize={tokenSize} />}
-      </HStack>
+      </StyledTokenContainer>
     </StyledPost>
   );
 }
@@ -101,4 +101,13 @@ const StyledInteractiveLink = styled(InteractiveLink)`
   &:hover {
     text-decoration: underline;
   }
+`;
+
+const StyledCaption = styled(BaseM)`
+  overflow-wrap: break-word;
+`;
+
+const StyledTokenContainer = styled(HStack)`
+  padding: 24px 0;
+  border: 1px solid ${colors.faint};
 `;

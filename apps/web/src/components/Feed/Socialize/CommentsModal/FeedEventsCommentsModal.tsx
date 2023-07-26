@@ -98,10 +98,10 @@ export function FeedEventsCommentsModal({ eventRef, queryRef, fullscreen }: Prop
           })
         : null;
       commentOnFeedEvent(feedEvent.id, feedEvent.dbid, comment, {
-        commenterUserId: user.id,
-        commenterUserDbid: user.dbid,
-        commenterUsername: user.username ?? '',
-        commenterProfileImageUrl: result?.urls?.small ?? '',
+        id: user.id,
+        dbid: user.dbid,
+        username: user.username ?? '',
+        profileImageUrl: result?.urls?.small ?? '',
       });
     },
     [commentOnFeedEvent, feedEvent.dbid, feedEvent.id, query.viewer?.user]

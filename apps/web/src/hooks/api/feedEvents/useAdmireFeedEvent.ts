@@ -7,6 +7,8 @@ import { useAdmireFeedEventMutation } from '~/generated/useAdmireFeedEventMutati
 import { AdditionalContext, useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 
+import { OptimisticUserInfo } from '../posts/useAdmirePost';
+
 export default function useAdmireFeedEvent() {
   const [admire] = usePromisifiedMutation<useAdmireFeedEventMutation>(graphql`
     mutation useAdmireFeedEventMutation($eventId: DBID!, $connections: [ID!]!) @raw_response_type {
@@ -32,14 +34,14 @@ export default function useAdmireFeedEvent() {
   const reportError = useReportError();
 
   const admireFeedEvent = useCallback(
-    async (eventId: string, eventDbid: string) => {
+    async (eventId: string, eventDbid: string, optimisticUserInfo: OptimisticUserInfo) => {
       const interactionsConnection = ConnectionHandler.getConnectionID(
         eventId,
-        'Interactions_admires'
+        'Interactions_previewAdmires'
       );
       const admireModalConnection = ConnectionHandler.getConnectionID(
         eventId,
-        'AdmiresModal_interactions'
+        'AdmiresModal_admires'
       );
 
       const errorMetadata: AdditionalContext['tags'] = {
@@ -52,7 +54,7 @@ export default function useAdmireFeedEvent() {
           message: `Something went wrong while admiring this post. We're actively looking into it.`,
         });
       }
-
+      const optimisticId = Math.random().toString();
       const updater: SelectorStoreUpdater<useAdmireFeedEventMutation['response']> = (
         store,
         response
@@ -64,10 +66,54 @@ export default function useAdmireFeedEvent() {
         }
       };
 
+      const hasProfileImage = optimisticUserInfo.profileImageUrl !== null;
+
+      const tokenProfileImagePayload = hasProfileImage
+        ? {
+            token: {
+              dbid: 'unknown',
+              id: 'unknown',
+              media: {
+                __typename: 'ImageMedia',
+                fallbackMedia: {
+                  mediaURL: optimisticUserInfo.profileImageUrl,
+                },
+                previewURLs: {
+                  large: optimisticUserInfo.profileImageUrl,
+                  medium: optimisticUserInfo.profileImageUrl,
+                  small: optimisticUserInfo.profileImageUrl,
+                },
+              },
+            },
+          }
+        : { token: null };
+
       try {
         const response = await admire({
           updater,
           optimisticUpdater: updater,
+          optimisticResponse: {
+            admireFeedEvent: {
+              __typename: 'AdmireFeedEventPayload',
+              feedEvent: {
+                id: eventId,
+                viewerAdmire: {
+                  __typename: 'Admire',
+                  admirer: {
+                    id: optimisticUserInfo.id ?? 'unknown',
+                    dbid: optimisticUserInfo.dbid ?? 'unknown',
+                    username: optimisticUserInfo.username ?? null,
+                    profileImage: {
+                      __typename: 'TokenProfileImage',
+                      ...tokenProfileImagePayload,
+                    },
+                  },
+                  id: `Admire:${optimisticId}`,
+                  dbid: optimisticId,
+                },
+              },
+            },
+          },
           variables: {
             eventId: eventDbid,
             connections: [interactionsConnection, admireModalConnection],

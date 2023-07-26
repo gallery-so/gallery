@@ -1,6 +1,3 @@
-// A variant of the NFT Detail Page that does not need collection information.
-// We use this for enabling the Detail Page for tokens that are not part of a collection.
-
 import { GetServerSideProps } from 'next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -20,6 +17,8 @@ type TokenDetailPageProps = MetaTagProps & {
   username: string;
 };
 
+// A variant of the NFT Detail Page that does not need collection information.
+// We use this for enabling the Detail Page for tokens that are not part of a collection.
 // It uses the Token type, instead of the CollectionToken type.
 export default function TokenDetailPage({ username, tokenId }: TokenDetailPageProps) {
   const { push } = useRouter();

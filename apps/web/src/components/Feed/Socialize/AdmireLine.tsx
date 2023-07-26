@@ -1,13 +1,16 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import { HStack } from '~/components/core/Spacer/Stack';
-import { BaseS } from '~/components/core/Text/Text';
+import { BaseM, TitleDiatypeM } from '~/components/core/Text/Text';
 import { ProfilePictureStack } from '~/components/ProfilePicture/ProfilePictureStack';
+import { useModalActions } from '~/contexts/modal/ModalContext';
 import { AdmireLineFragment$key } from '~/generated/AdmireLineFragment.graphql';
 import { AdmireLineQueryFragment$key } from '~/generated/AdmireLineQueryFragment.graphql';
+import { AuthModal } from '~/hooks/useAuthModal';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import { useAdmireModal } from './AdmireModal/useAdmireModal';
@@ -15,16 +18,19 @@ import { useAdmireModal } from './AdmireModal/useAdmireModal';
 type CommentLineProps = {
   eventRef: AdmireLineFragment$key;
   queryRef: AdmireLineQueryFragment$key;
+  onAdmire: () => void;
 };
 
-export function AdmireLine({ eventRef, queryRef }: CommentLineProps) {
+export function AdmireLine({ eventRef, queryRef, onAdmire }: CommentLineProps) {
   const event = useFragment(
     graphql`
       fragment AdmireLineFragment on FeedEventOrError {
         # We only show 1 but in case the user deletes something
         # we want to be sure that we can show another admire beneath
         ... on FeedEvent {
-          admires(last: 5) @connection(key: "Interactions_admires") {
+          id
+          dbid
+          previewAdmires: admires(last: 5) @connection(key: "Interactions_previewAdmires") {
             pageInfo {
               total
             }
@@ -42,7 +48,8 @@ export function AdmireLine({ eventRef, queryRef }: CommentLineProps) {
           ...useAdmireModalFragment
         }
         ... on Post {
-          admires(last: 5) @connection(key: "Interactions_admires") {
+          dbid
+          previewAdmires: admires(last: 5) @connection(key: "Interactions_previewAdmires") {
             pageInfo {
               total
             }
@@ -69,12 +76,14 @@ export function AdmireLine({ eventRef, queryRef }: CommentLineProps) {
       fragment AdmireLineQueryFragment on Query {
         viewer {
           ... on Viewer {
+            __typename
             user {
               dbid
             }
           }
         }
         ...useAdmireModalQueryFragment
+        ...useAuthModalFragment
       }
     `,
     queryRef
@@ -85,7 +94,7 @@ export function AdmireLine({ eventRef, queryRef }: CommentLineProps) {
   const nonNullAdmires = useMemo(() => {
     const admires = [];
 
-    for (const edge of event.admires?.edges ?? []) {
+    for (const edge of event.previewAdmires?.edges ?? []) {
       if (edge?.node) {
         admires.push(edge.node.admirer);
       }
@@ -94,14 +103,18 @@ export function AdmireLine({ eventRef, queryRef }: CommentLineProps) {
     admires.reverse();
 
     return removeNullValues(admires);
-  }, [event.admires?.edges]);
+  }, [event.previewAdmires?.edges]);
 
   const [admire] = nonNullAdmires;
+  const viewerUserDbid = useMemo(
+    () => (query.viewer?.__typename === 'Viewer' ? query.viewer?.user?.dbid : null),
+    [query.viewer]
+  );
 
   const admirerName = useMemo(() => {
     if (!admire) return '<unknown>';
 
-    const isTheAdmirerTheLoggedInUser = query.viewer?.user?.dbid === admire.dbid;
+    const isTheAdmirerTheLoggedInUser = viewerUserDbid === admire.dbid;
 
     if (isTheAdmirerTheLoggedInUser) {
       return 'You';
@@ -110,9 +123,34 @@ export function AdmireLine({ eventRef, queryRef }: CommentLineProps) {
     } else {
       return '<unknown>';
     }
-  }, [admire, query.viewer?.user?.dbid]);
+  }, [admire, viewerUserDbid]);
 
-  const totalAdmires = event.admires?.pageInfo.total ?? 0;
+  const totalAdmires = event.previewAdmires?.pageInfo.total ?? 0;
+
+  const { showModal } = useModalActions();
+  const track = useTrack();
+
+  const handleAdmire = useCallback(async () => {
+    if (query.viewer?.__typename !== 'Viewer') {
+      showModal({
+        content: <AuthModal queryRef={query} />,
+        headerText: 'Sign In',
+      });
+
+      return;
+    }
+
+    track('Admire Click');
+    onAdmire();
+  }, [onAdmire, query, showModal, track]);
+
+  if (totalAdmires === 0) {
+    return (
+      <StyledFirstAdmireCta onClick={handleAdmire}>
+        Be the first to admire this
+      </StyledFirstAdmireCta>
+    );
+  }
 
   return (
     <Container gap={2} align="center">
@@ -122,18 +160,22 @@ export function AdmireLine({ eventRef, queryRef }: CommentLineProps) {
         total={totalAdmires}
       />
 
-      <BaseS onClick={openAdmireModal}>
+      <BaseM onClick={openAdmireModal}>
         {totalAdmires > 1 ? (
           <strong>{totalAdmires} collectors </strong>
         ) : (
           <strong>{admirerName} </strong>
         )}
         admired this
-      </BaseS>
+      </BaseM>
     </Container>
   );
 }
 
 const Container = styled(HStack)`
+  cursor: pointer;
+`;
+
+const StyledFirstAdmireCta = styled(TitleDiatypeM)`
   cursor: pointer;
 `;

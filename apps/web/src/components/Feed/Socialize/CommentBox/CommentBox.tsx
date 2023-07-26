@@ -28,7 +28,6 @@ type Props = {
   isSubmittingComment: boolean;
 };
 
-// make this generic with an onsubmit
 export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment }: Props) {
   const query = useFragment(
     graphql`

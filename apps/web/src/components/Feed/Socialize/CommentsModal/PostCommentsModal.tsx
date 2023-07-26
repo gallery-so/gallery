@@ -95,10 +95,10 @@ export default function PostCommentsModal({ postRef, queryRef, fullscreen }: Pro
           })
         : null;
       commentOnPost(post.id, post.dbid, comment, {
-        commenterUserId: user.id,
-        commenterUserDbid: user.dbid,
-        commenterUsername: user.username ?? '',
-        commenterProfileImageUrl: result?.urls?.small ?? '',
+        id: user.id,
+        dbid: user.dbid,
+        username: user.username ?? '',
+        profileImageUrl: result?.urls?.small ?? '',
       });
     },
     [commentOnPost, post.dbid, post.id, query.viewer?.user]

@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -7,6 +7,7 @@ import { PostSocializeSectionFragment$key } from '~/generated/PostSocializeSecti
 import { PostSocializeSectionQueryFragment$key } from '~/generated/PostSocializeSectionQueryFragment.graphql';
 import useAdmirePost from '~/hooks/api/posts/useAdmirePost';
 import useRemoveAdmirePost from '~/hooks/api/posts/useRemoveAdmirePost';
+import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
 
 import { AdmireButton } from './AdmireButton';
 import { AdmireLine } from './AdmireLine';
@@ -24,20 +25,12 @@ export default function PostSocializeSection({ onPotentialLayoutShift, postRef, 
     graphql`
       fragment PostSocializeSectionFragment on Post {
         __typename
+        id
+        dbid
         ...AdmireButtonFragment
         ...AdmireLineFragment
         ...CommentBoxIconFragment
         ...CommentsFragment
-
-        # We only show 1 but in case the user deletes something
-        # we want to be sure that we can show another comment beneath
-        admires(last: 5) @connection(key: "Interactions_admires") {
-          edges {
-            node {
-              __typename
-            }
-          }
-        }
         ...AdmireLineFragment
       }
     `,
@@ -47,6 +40,24 @@ export default function PostSocializeSection({ onPotentialLayoutShift, postRef, 
   const query = useFragment(
     graphql`
       fragment PostSocializeSectionQueryFragment on Query {
+        viewer {
+          ... on Viewer {
+            user {
+              id
+              dbid
+              username
+              profileImage {
+                ... on TokenProfileImage {
+                  token {
+                    dbid
+                    id
+                    ...getVideoOrImageUrlForNftPreviewFragment
+                  }
+                }
+              }
+            }
+          }
+        }
         ...AdmireButtonQueryFragment
         ...AdmireLineQueryFragment
         ...CommentBoxIconQueryFragment
@@ -59,30 +70,37 @@ export default function PostSocializeSection({ onPotentialLayoutShift, postRef, 
   const [admirePost] = useAdmirePost();
   const [removeAdmirePost] = useRemoveAdmirePost();
 
-  const nonNullAdmires = useMemo(() => {
-    const admires = [];
-
-    for (const edge of post.admires?.edges ?? []) {
-      if (edge?.node) {
-        admires.push(edge.node);
-      }
+  const handleAdmireClick = useCallback(() => {
+    const { token } = query.viewer?.user?.profileImage ?? {};
+    const user = query.viewer?.user;
+    if (!user) {
+      return;
     }
 
-    admires.reverse();
-
-    return admires;
-  }, [post.admires?.edges]);
+    const result = token
+      ? getVideoOrImageUrlForNftPreview({
+          tokenRef: token,
+        })
+      : null;
+    admirePost(post.id, post.dbid, {
+      id: user.id,
+      dbid: user.dbid,
+      username: user.username ?? '',
+      profileImageUrl: result?.urls?.small ?? '',
+    });
+  }, [admirePost, post.dbid, post.id, query.viewer?.user]);
 
   return (
     <VStack gap={4}>
       <HStack justify="space-between" align="center" gap={24}>
-        <div>{nonNullAdmires.length > 0 && <AdmireLine eventRef={post} queryRef={query} />}</div>
-        <HStack align="center">
+        <AdmireLine eventRef={post} queryRef={query} onAdmire={handleAdmireClick} />
+
+        <HStack align="center" gap={8}>
           <IconWrapper>
             <AdmireButton
               eventRef={post}
               queryRef={query}
-              onAdmire={admirePost}
+              onAdmire={handleAdmireClick}
               onRemoveAdmire={removeAdmirePost}
             />
           </IconWrapper>

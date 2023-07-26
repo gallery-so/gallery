@@ -1,12 +1,20 @@
-import { useLayoutEffect, useMemo, useRef } from 'react';
+import { useCallback, useLayoutEffect, useMemo, useRef } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
+import styled from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';
+import { TitleDiatypeM } from '~/components/core/Text/Text';
 import { CommentLine } from '~/components/Feed/Socialize/CommentLine';
 import { RemainingCommentCount } from '~/components/Feed/Socialize/RemainingCommentCount';
+import { useModalActions } from '~/contexts/modal/ModalContext';
 import { CommentsFragment$key } from '~/generated/CommentsFragment.graphql';
 import { CommentsQueryFragment$key } from '~/generated/CommentsQueryFragment.graphql';
+import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import colors from '~/shared/theme/colors';
+
+import { FeedEventsCommentsModal } from './CommentsModal/FeedEventsCommentsModal';
+import PostCommentsModal from './CommentsModal/PostCommentsModal';
 
 type Props = {
   onPotentialLayoutShift: () => void;
@@ -18,6 +26,7 @@ export function Comments({ eventRef, queryRef, onPotentialLayoutShift }: Props) 
   const feedItem = useFragment(
     graphql`
       fragment CommentsFragment on FeedEventOrError {
+        __typename
         # We only show 2 but in case the user deletes something
         # we want to be sure that we can show another comment beneath
         ... on FeedEvent {
@@ -52,6 +61,9 @@ export function Comments({ eventRef, queryRef, onPotentialLayoutShift }: Props) 
           }
           ...RemainingCommentCountFragment
         }
+
+        ...FeedEventsCommentsModalFragment
+        ...PostCommentsModalFragment
       }
     `,
     eventRef
@@ -61,10 +73,32 @@ export function Comments({ eventRef, queryRef, onPotentialLayoutShift }: Props) 
     graphql`
       fragment CommentsQueryFragment on Query {
         ...RemainingCommentCountQueryFragment
+        ...FeedEventsCommentsModalQueryFragment
+        ...PostCommentsModalQueryFragment
       }
     `,
     queryRef
   );
+  const { showModal } = useModalActions();
+  const isMobile = useIsMobileOrMobileLargeWindowWidth();
+
+  const ModalContent = useMemo(() => {
+    if (feedItem.__typename === 'FeedEvent') {
+      return <FeedEventsCommentsModal fullscreen={isMobile} eventRef={feedItem} queryRef={query} />;
+    }
+
+    return <PostCommentsModal fullscreen={isMobile} postRef={feedItem} queryRef={query} />;
+  }, [feedItem, isMobile, query]);
+
+  const handleAddCommentClick = useCallback(() => {
+    // todo handle signed out users
+    showModal({
+      content: ModalContent,
+      isFullPage: isMobile,
+      isPaddingDisabled: true,
+      headerVariant: 'standard',
+    });
+  }, [ModalContent, isMobile, showModal]);
 
   const nonNullComments = useMemo(() => {
     const comments = [];
@@ -147,5 +181,13 @@ export function Comments({ eventRef, queryRef, onPotentialLayoutShift }: Props) 
     );
   }
 
-  return null;
+  return (
+    <StyledAddCommentCta onClick={handleAddCommentClick} color={colors.shadow}>
+      Add a comment
+    </StyledAddCommentCta>
+  );
 }
+
+const StyledAddCommentCta = styled(TitleDiatypeM)`
+  cursor: pointer;
+`;

@@ -60,15 +60,9 @@ export function RemainingCommentCount({
 const StyledViewCommentsText = styled.div.attrs({ role: 'button' })`
   cursor: pointer;
   font-family: ${BODY_FONT_FAMILY};
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1;
   font-weight: 700;
 
-  text-decoration: underline;
-
   color: ${colors.shadow};
-
-  :hover {
-    text-decoration: none;
-  }
 `;

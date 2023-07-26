@@ -21,8 +21,8 @@ export default function AdmireFeedEventModal({ eventRef, queryRef, fullscreen }:
     graphql`
       fragment AdmireFeedEventModalFragment on FeedEvent
       @refetchable(queryName: "AdmireFeedEventModalRefetchableFragment") {
-        interactions(last: $interactionsFirst, before: $interactionsAfter)
-          @connection(key: "AdmiresModal_interactions") {
+        admires(last: $interactionsFirst, before: $interactionsAfter)
+          @connection(key: "AdmiresModal_admires") {
           edges {
             node {
               __typename
@@ -47,21 +47,21 @@ export default function AdmireFeedEventModal({ eventRef, queryRef, fullscreen }:
     queryRef
   );
 
-  const nonNullInteractions = useMemo(() => {
-    const interactions = [];
+  const nonNullAdmires = useMemo(() => {
+    const admires = [];
 
-    for (const interaction of feedEvent.interactions?.edges ?? []) {
-      if (interaction?.node && interaction.node.__typename === 'Admire') {
-        interactions.push(interaction.node);
+    for (const admire of feedEvent.admires?.edges ?? []) {
+      if (admire?.node && admire.node.__typename === 'Admire') {
+        admires.push(admire.node);
       }
     }
 
-    return interactions.reverse();
-  }, [feedEvent.interactions?.edges]);
+    return admires.reverse();
+  }, [feedEvent.admires?.edges]);
 
   return (
     <AdmireModal
-      admireRefs={nonNullInteractions}
+      admireRefs={nonNullAdmires}
       queryRef={query}
       fullscreen={fullscreen}
       loadPrevious={loadPrevious}

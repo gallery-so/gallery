@@ -7,7 +7,7 @@ import { useCommentOnPostMutation } from '~/generated/useCommentOnPostMutation.g
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 
-import { OptimisticUserInfo } from '../feedEvents/useCommentOnFeedEvent';
+import { OptimisticUserInfo } from './useAdmirePost';
 
 export default function useCommentOnPost() {
   const [submitComment, isSubmittingComment] =
@@ -67,7 +67,7 @@ export default function useCommentOnPost() {
 
         const optimisticId = Math.random().toString();
 
-        const hasProfileImage = optimisticUserInfo.commenterProfileImageUrl !== null;
+        const hasProfileImage = optimisticUserInfo.profileImageUrl !== null;
 
         const tokenProfileImagePayload = hasProfileImage
           ? {
@@ -77,12 +77,12 @@ export default function useCommentOnPost() {
                 media: {
                   __typename: 'ImageMedia',
                   fallbackMedia: {
-                    mediaURL: optimisticUserInfo.commenterProfileImageUrl,
+                    mediaURL: optimisticUserInfo.profileImageUrl,
                   },
                   previewURLs: {
-                    large: optimisticUserInfo.commenterProfileImageUrl,
-                    medium: optimisticUserInfo.commenterProfileImageUrl,
-                    small: optimisticUserInfo.commenterProfileImageUrl,
+                    large: optimisticUserInfo.profileImageUrl,
+                    medium: optimisticUserInfo.profileImageUrl,
+                    small: optimisticUserInfo.profileImageUrl,
                   },
                 },
               },
@@ -99,9 +99,9 @@ export default function useCommentOnPost() {
                 __typename: 'Comment',
                 comment,
                 commenter: {
-                  dbid: optimisticUserInfo.commenterUserDbid ?? 'unknown',
-                  id: optimisticUserInfo.commenterUserId ?? 'unknown',
-                  username: optimisticUserInfo.commenterUsername ?? null,
+                  dbid: optimisticUserInfo.dbid ?? 'unknown',
+                  id: optimisticUserInfo.id ?? 'unknown',
+                  username: optimisticUserInfo.username ?? null,
                   profileImage: {
                     __typename: 'TokenProfileImage',
                     ...tokenProfileImagePayload,

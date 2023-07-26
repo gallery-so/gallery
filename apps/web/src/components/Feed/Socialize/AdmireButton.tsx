@@ -12,12 +12,12 @@ import { useTrack } from '~/shared/contexts/AnalyticsContext';
 type AdmireButtonProps = {
   eventRef: AdmireButtonFragment$key;
   queryRef: AdmireButtonQueryFragment$key;
-  onAdmire: (subjectId: string, subjectDbid: string) => void;
-  onRemoveAdmire: (subjectId: string, subjectDbid: string, viewerAdmireDbid: string) => void;
+  onAdmire: () => void;
+  onRemoveAdmire: (feedItemId: string, feedItemDbid: string, viewerAdmireDbid: string) => void;
 };
 
 export function AdmireButton({ eventRef, queryRef, onAdmire, onRemoveAdmire }: AdmireButtonProps) {
-  const subject = useFragment(
+  const feedItem = useFragment(
     graphql`
       fragment AdmireButtonFragment on FeedEventOrError {
         __typename
@@ -42,8 +42,8 @@ export function AdmireButton({ eventRef, queryRef, onAdmire, onRemoveAdmire }: A
     eventRef
   );
 
-  if (subject.__typename !== 'FeedEvent' && subject.__typename !== 'Post') {
-    throw new Error(`Unexpected typename: ${subject.__typename}`);
+  if (feedItem.__typename !== 'FeedEvent' && feedItem.__typename !== 'Post') {
+    throw new Error(`Unexpected typename: ${feedItem.__typename}`);
   }
 
   const query = useFragment(
@@ -60,17 +60,14 @@ export function AdmireButton({ eventRef, queryRef, onAdmire, onRemoveAdmire }: A
   );
   const { showModal } = useModalActions();
 
-  // const [admireFeedEvent] = useAdmireFeedEvent();
-  // const [removeAdmireFeedEvent] = useRemovedAdmireFeedEvent();
-
   const track = useTrack();
 
   const handleRemoveAdmire = useCallback(async () => {
-    if (!subject.viewerAdmire?.dbid) {
+    if (!feedItem.viewerAdmire?.dbid) {
       return;
     }
-    onRemoveAdmire(subject.id, subject.dbid, subject.viewerAdmire.dbid);
-  }, [onRemoveAdmire, subject.dbid, subject.id, subject.viewerAdmire?.dbid]);
+    onRemoveAdmire(feedItem.id, feedItem.dbid, feedItem.viewerAdmire.dbid);
+  }, [onRemoveAdmire, feedItem.dbid, feedItem.id, feedItem.viewerAdmire?.dbid]);
 
   const handleAdmire = useCallback(async () => {
     if (query.viewer?.__typename !== 'Viewer') {
@@ -83,10 +80,10 @@ export function AdmireButton({ eventRef, queryRef, onAdmire, onRemoveAdmire }: A
     }
 
     track('Admire Click');
-    onAdmire(subject.id, subject.dbid);
-  }, [query, track, onAdmire, subject.id, subject.dbid, showModal]);
+    onAdmire();
+  }, [query, track, onAdmire, showModal]);
 
-  const hasViewerAdmiredEvent = Boolean(subject.viewerAdmire);
+  const hasViewerAdmiredEvent = Boolean(feedItem.viewerAdmire);
 
   return (
     <AdmireIcon

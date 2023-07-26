@@ -29,7 +29,7 @@ export default function useRemoveAdmirePost() {
     async (postId: string, postDbid: string, removedAdmireDbid: string) => {
       const interactionsConnection = ConnectionHandler.getConnectionID(
         postId,
-        'Interactions_admires'
+        'Interactions_previewAdmires'
       );
       const errorMetadata: AdditionalContext['tags'] = {
         postId: postDbid,

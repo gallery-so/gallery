@@ -7,6 +7,13 @@ import { useAdmirePostMutation } from '~/generated/useAdmirePostMutation.graphql
 import { AdditionalContext, useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 
+export type OptimisticUserInfo = {
+  id: string;
+  dbid: string;
+  username: string;
+  profileImageUrl: string;
+};
+
 export default function useAdmirePost() {
   const [admire] = usePromisifiedMutation<useAdmirePostMutation>(graphql`
     mutation useAdmirePostMutation($postId: DBID!, $connections: [ID!]!) @raw_response_type {
@@ -20,10 +27,6 @@ export default function useAdmirePost() {
             }
           }
         }
-        # // todo add to graphql schema
-        # ... on ErrAdmireAlreadyExists {
-        #   __typename
-        # }
       }
     }
   `);
@@ -32,14 +35,14 @@ export default function useAdmirePost() {
   const reportError = useReportError();
 
   const admirePost = useCallback(
-    async (postId: string, postDbid: string) => {
+    async (postId: string, postDbid: string, optimisticUserInfo: OptimisticUserInfo) => {
       const interactionsConnection = ConnectionHandler.getConnectionID(
         postId,
-        'Interactions_admires'
+        'Interactions_previewAdmires'
       );
       const admireModalConnection = ConnectionHandler.getConnectionID(
         postId,
-        'AdmiresModal_interactions'
+        'AdmiresModal_admires'
       );
 
       const errorMetadata: AdditionalContext['tags'] = {
@@ -53,6 +56,8 @@ export default function useAdmirePost() {
         });
       }
 
+      const optimisticId = Math.random().toString();
+
       const updater: SelectorStoreUpdater<useAdmirePostMutation['response']> = (
         store,
         response
@@ -65,10 +70,56 @@ export default function useAdmirePost() {
         }
       };
 
+      const hasProfileImage = optimisticUserInfo.profileImageUrl !== null;
+
+      const tokenProfileImagePayload = hasProfileImage
+        ? {
+            token: {
+              dbid: 'unknown',
+              id: 'unknown',
+              media: {
+                __typename: 'ImageMedia',
+                fallbackMedia: {
+                  mediaURL: optimisticUserInfo.profileImageUrl,
+                },
+                previewURLs: {
+                  large: optimisticUserInfo.profileImageUrl,
+                  medium: optimisticUserInfo.profileImageUrl,
+                  small: optimisticUserInfo.profileImageUrl,
+                },
+              },
+            },
+          }
+        : { token: null };
+
+      console.log({ optimisticUserInfo });
+
       try {
         const response = await admire({
           updater,
           optimisticUpdater: updater,
+          optimisticResponse: {
+            admirePost: {
+              __typename: 'AdmirePostPayload',
+              post: {
+                id: postId,
+                viewerAdmire: {
+                  __typename: 'Admire',
+                  admirer: {
+                    id: optimisticUserInfo.id ?? 'unknown',
+                    dbid: optimisticUserInfo.dbid ?? 'unknown',
+                    username: optimisticUserInfo.username ?? null,
+                    profileImage: {
+                      __typename: 'TokenProfileImage',
+                      ...tokenProfileImagePayload,
+                    },
+                  },
+                  id: `Admire:${optimisticId}`,
+                  dbid: optimisticId,
+                },
+              },
+            },
+          },
           variables: {
             postId: postDbid,
             connections: [interactionsConnection, admireModalConnection],

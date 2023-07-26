@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import { Suspense, useCallback } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -23,6 +24,9 @@ export default function PostNftPreview({ tokenRef, tokenSize }: Props) {
     graphql`
       fragment PostNftPreviewFragment on Token {
         dbid
+        owner {
+          username
+        }
         ...NftPreviewFragment
       }
     `,
@@ -30,8 +34,16 @@ export default function PostNftPreview({ tokenRef, tokenSize }: Props) {
   );
 
   const { showModal } = useModalActions();
+  const router = useRouter();
 
   const handleClick = useCallback(() => {
+    const ownerUsername = token.owner?.username;
+
+    const currentUrl = router.asPath;
+    const newUrl = `/${ownerUsername}/token/${token.dbid}`;
+    // set Token Detail Page url without reloading the page. This allows the modal to open quickly, and the user can copy the url
+    window.history.replaceState({ ...window.history.state, as: newUrl, url: newUrl }, '', newUrl);
+
     showModal({
       content: (
         <StyledTokenPreviewModal>
@@ -41,8 +53,16 @@ export default function PostNftPreview({ tokenRef, tokenSize }: Props) {
         </StyledTokenPreviewModal>
       ),
       isFullPage: true,
+      onClose: () => {
+        // reset url to previous url without reloading the page
+        window.history.replaceState(
+          { ...window.history.state, as: currentUrl, url: currentUrl },
+          '',
+          currentUrl
+        );
+      },
     });
-  }, [showModal, token.dbid]);
+  }, [router.asPath, showModal, token.dbid, token.owner?.username]);
 
   return (
     <StyledPostNftPreview width={tokenSize} height={tokenSize}>

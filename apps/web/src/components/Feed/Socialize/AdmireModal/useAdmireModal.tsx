@@ -18,8 +18,8 @@ export function useAdmireModal({ eventRef, queryRef }: Props) {
     graphql`
       fragment useAdmireModalFragment on FeedEventOrError {
         __typename
-        ...AdmireFeedEventModalFragment
         ...AdmirePostModalFragment
+        ...AdmireFeedEventModalFragment
       }
     `,
     eventRef
@@ -28,8 +28,8 @@ export function useAdmireModal({ eventRef, queryRef }: Props) {
   const query = useFragment(
     graphql`
       fragment useAdmireModalQueryFragment on Query {
-        ...AdmireFeedEventModalQueryFragment
         ...AdmirePostModalQueryFragment
+        ...AdmireFeedEventModalQueryFragment
       }
     `,
     queryRef

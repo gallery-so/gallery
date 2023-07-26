@@ -69,6 +69,8 @@ export default function LinkToTokenDetailView({
     });
   }, [collectionId, tokenId, username]);
 
+  console.log({ asRoute });
+
   return (
     <Link
       // path that will be shown in the browser URL bar
