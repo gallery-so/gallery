@@ -99,11 +99,6 @@ export function useTogglePostAdmire({ postRef, queryRef }: Args) {
     'Interactions_post_admires'
   );
 
-  const admireBottomSheetConnection = ConnectionHandler.getConnectionID(
-    event.id,
-    'AdmireBottomSheet_admires'
-  );
-
   const handleRemoveAdmire = useCallback(async () => {
     if (!event.viewerAdmire?.dbid) {
       return;
@@ -219,7 +214,7 @@ export function useTogglePostAdmire({ postRef, queryRef }: Args) {
         },
         variables: {
           postId: event.dbid,
-          connections: [interactionsConnection, admireBottomSheetConnection],
+          connections: [interactionsConnection],
         },
       });
 
@@ -240,15 +235,7 @@ export function useTogglePostAdmire({ postRef, queryRef }: Args) {
         });
       }
     }
-  }, [
-    admire,
-    admireBottomSheetConnection,
-    event.dbid,
-    event.id,
-    interactionsConnection,
-    query.viewer,
-    reportError,
-  ]);
+  }, [admire, event.dbid, event.id, interactionsConnection, query.viewer, reportError]);
 
   const hasViewerAdmiredEvent = Boolean(event.viewerAdmire);
 
