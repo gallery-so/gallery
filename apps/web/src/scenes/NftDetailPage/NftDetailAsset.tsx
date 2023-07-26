@@ -6,6 +6,7 @@ import { StyledImageWithLoading } from '~/components/LoadingAsset/ImageWithLoadi
 import { NftFailureBoundary } from '~/components/NftFailureFallback/NftFailureBoundary';
 import { NftFailureFallback } from '~/components/NftFailureFallback/NftFailureFallback';
 import { GLOBAL_FOOTER_HEIGHT } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
+import { useNftPreviewFallbackState } from '~/contexts/nftPreviewFallback/NftPreviewFallbackContext';
 import { useContentState } from '~/contexts/shimmer/ShimmerContext';
 import { NftDetailAssetComponentFragment$key } from '~/generated/NftDetailAssetComponentFragment.graphql';
 import { NftDetailAssetComponentWithoutFallbackFragment$key } from '~/generated/NftDetailAssetComponentWithoutFallbackFragment.graphql';
@@ -228,6 +229,14 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
       tokenId: token.dbid,
     });
 
+  const { loadedUrlsMap } = useNftPreviewFallbackState();
+  console.log('loadedUrlsMap:', loadedUrlsMap);
+  const tokenId = token.dbid;
+
+  const hasPreviewUrl = !!loadedUrlsMap[tokenId]?.previewUrl;
+  const hasRawUrl = !!loadedUrlsMap[tokenId]?.rawUrl;
+  console.log('hasRawUrl:', hasRawUrl);
+
   return (
     <StyledAssetContainer
       data-tokenid={token.dbid}
@@ -248,6 +257,9 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
           />
         }
       >
+        <StyledImageWrapper visible={hasPreviewUrl}>
+          <StyledImage src={loadedUrlsMap[tokenId]?.previewUrl} onLoad={handleNftLoaded} />
+        </StyledImageWrapper>
         <NftDetailAssetComponent onLoad={handleNftLoaded} tokenRef={token} />
       </NftFailureBoundary>
     </StyledAssetContainer>
@@ -291,5 +303,26 @@ const StyledAssetContainer = styled.div<AssetContainerProps>`
     width: auto;
   }
 `;
+
+export const StyledImage = styled.img`
+  width: 100%;
+  border: none;
+`;
+
+interface WrapperProps extends React.HTMLAttributes<HTMLDivElement> {
+  visible?: boolean;
+}
+
+// Wrapper for StyledImage - Preview URL
+const StyledImageWrapper = styled.div<WrapperProps>(({ visible }) => ({
+  opacity: visible ? 1 : 0,
+  transition: 'opacity 0.3s ease-in-out',
+}));
+
+// Wrapper for NftDetailAssetComponent - Raw URL
+// const NftDetailAssetWrapper = styled.div<WrapperProps>(({ visible }) => ({
+//   opacity: visible ? 1 : 0,
+//   transition: 'opacity 0.3s ease-in-out',
+// }));
 
 export default NftDetailAsset;

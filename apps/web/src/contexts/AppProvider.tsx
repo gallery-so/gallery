@@ -14,6 +14,7 @@ import { WebErrorReportingProvider } from './errorReporting/WebErrorReportingPro
 import GlobalLayoutContextProvider from './globalLayout/GlobalLayoutContext';
 import SidebarDrawerProvider from './globalLayout/GlobalSidebar/SidebarDrawerContext';
 import ModalProvider from './modal/ModalContext';
+import NftPreviewFallbackProvider from './nftPreviewFallback/NftPreviewFallbackContext';
 import { SwrProvider } from './swr/SwrContext';
 import ToastProvider from './toast/ToastContext';
 
@@ -38,22 +39,24 @@ export default function AppProvider({
             <WebErrorReportingProvider>
               <SwrProvider>
                 <GalleryNavigationProvider>
-                  <NftErrorProvider>
-                    <SyncTokensLockProvider>
-                      <ModalProvider>
-                        <SidebarDrawerProvider>
-                          <SearchProvider>
-                            <GlobalLayoutContextProvider
-                              preloadedQuery={globalLayoutContextPreloadedQuery}
-                            >
-                              {isProd ? null : <Debugger />}
-                              {children}
-                            </GlobalLayoutContextProvider>
-                          </SearchProvider>
-                        </SidebarDrawerProvider>
-                      </ModalProvider>
-                    </SyncTokensLockProvider>
-                  </NftErrorProvider>
+                  <NftPreviewFallbackProvider>
+                    <NftErrorProvider>
+                      <SyncTokensLockProvider>
+                        <ModalProvider>
+                          <SidebarDrawerProvider>
+                            <SearchProvider>
+                              <GlobalLayoutContextProvider
+                                preloadedQuery={globalLayoutContextPreloadedQuery}
+                              >
+                                {isProd ? null : <Debugger />}
+                                {children}
+                              </GlobalLayoutContextProvider>
+                            </SearchProvider>
+                          </SidebarDrawerProvider>
+                        </ModalProvider>
+                      </SyncTokensLockProvider>
+                    </NftErrorProvider>
+                  </NftPreviewFallbackProvider>
                 </GalleryNavigationProvider>
               </SwrProvider>
             </WebErrorReportingProvider>
