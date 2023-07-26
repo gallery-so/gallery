@@ -28,7 +28,6 @@ export function AdmireLine({ eventRef, queryRef, onAdmire }: CommentLineProps) {
         # We only show 1 but in case the user deletes something
         # we want to be sure that we can show another admire beneath
         ... on FeedEvent {
-          id
           dbid
           previewAdmires: admires(last: 5) @connection(key: "Interactions_previewAdmires") {
             pageInfo {

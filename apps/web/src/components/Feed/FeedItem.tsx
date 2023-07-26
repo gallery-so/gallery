@@ -8,10 +8,10 @@ import { FEED_EVENT_ROW_WIDTH_DESKTOP } from '~/components/Feed/dimensions';
 import { FeedEventData } from '~/components/Feed/FeedEventData';
 import { FeedEventSocializeSection } from '~/components/Feed/Socialize/FeedEventSocializeSection';
 import { FeedMode } from '~/components/Feed/types';
-import { FeedEventFragment$key } from '~/generated/FeedEventFragment.graphql';
-import { FeedEventQueryFragment$key } from '~/generated/FeedEventQueryFragment.graphql';
-import { FeedEventWithErrorBoundaryFragment$key } from '~/generated/FeedEventWithErrorBoundaryFragment.graphql';
-import { FeedEventWithErrorBoundaryQueryFragment$key } from '~/generated/FeedEventWithErrorBoundaryQueryFragment.graphql';
+import { FeedItemFragment$key } from '~/generated/FeedItemFragment.graphql';
+import { FeedItemQueryFragment$key } from '~/generated/FeedItemQueryFragment.graphql';
+import { FeedItemWithErrorBoundaryFragment$key } from '~/generated/FeedItemWithErrorBoundaryFragment.graphql';
+import { FeedItemWithErrorBoundaryQueryFragment$key } from '~/generated/FeedItemWithErrorBoundaryQueryFragment.graphql';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import { TriedToRenderUnsupportedFeedEvent } from '~/shared/errors/TriedToRenderUnsupportedFeedEvent';
 
@@ -19,14 +19,14 @@ import PostData from './Posts/PostData';
 import PostSocializeSection from './Socialize/PostSocializeSection';
 
 type FeedItemProps = {
-  eventRef: FeedEventFragment$key;
-  queryRef: FeedEventQueryFragment$key;
+  eventRef: FeedItemFragment$key;
+  queryRef: FeedItemQueryFragment$key;
   feedMode: FeedMode;
 };
 
 // Not to be confused with the FeedEvent type. This component can render both FeedEvent and Post types, and represents a single item in the feed.
 function FeedItem({ eventRef, queryRef, feedMode }: FeedItemProps) {
-  const event = useFragment(
+  const postOrFeedEvent = useFragment(
     graphql`
       fragment FeedItemFragment on FeedEventOrError {
         ... on FeedEvent {
@@ -55,21 +55,21 @@ function FeedItem({ eventRef, queryRef, feedMode }: FeedItemProps) {
     queryRef
   );
 
-  if (event.__typename === 'Post') {
-    return <PostData postRef={event} />;
+  if (postOrFeedEvent.__typename === 'Post') {
+    return <PostData postRef={postOrFeedEvent} />;
   }
 
-  if (event.__typename === 'FeedEvent') {
-    if (!event.eventData) {
-      throw new TriedToRenderUnsupportedFeedEvent(event.dbid);
+  if (postOrFeedEvent.__typename === 'FeedEvent') {
+    if (!postOrFeedEvent.eventData) {
+      throw new TriedToRenderUnsupportedFeedEvent(postOrFeedEvent.dbid);
     }
 
     return (
       <FeedEventData
-        caption={event.caption}
+        caption={postOrFeedEvent.caption}
         feedMode={feedMode}
-        eventDbid={event.dbid}
-        feedEventRef={event.eventData}
+        eventDbid={postOrFeedEvent.dbid}
+        feedEventRef={postOrFeedEvent.eventData}
         queryRef={query}
       />
     );
@@ -82,8 +82,8 @@ type FeedItemWithBoundaryProps = {
   index: number;
   feedMode: FeedMode;
   onPotentialLayoutShift: (index: number) => void;
-  eventRef: FeedEventWithErrorBoundaryFragment$key;
-  queryRef: FeedEventWithErrorBoundaryQueryFragment$key;
+  eventRef: FeedItemWithErrorBoundaryFragment$key;
+  queryRef: FeedItemWithErrorBoundaryQueryFragment$key;
 };
 
 export default function FeedItemWithBoundary({

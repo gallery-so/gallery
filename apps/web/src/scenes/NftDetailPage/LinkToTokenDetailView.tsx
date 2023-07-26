@@ -41,8 +41,6 @@ export default function LinkToTokenDetailView({
       })}`;
     }
 
-    console.log('pathname', { pathname });
-
     return `${pathname}?${new URLSearchParams({
       // Ensure we pass the previous page's query params to satisfy Next.js
       ...query,
@@ -52,8 +50,6 @@ export default function LinkToTokenDetailView({
       modal: 'true',
     })}`;
   }, [asPath, collectionId, pathname, query, tokenId, username]);
-
-  console.log({ username });
 
   const asRoute = useMemo(() => {
     if (collectionId) {
@@ -68,8 +64,6 @@ export default function LinkToTokenDetailView({
       query: { username, tokenId },
     });
   }, [collectionId, tokenId, username]);
-
-  console.log({ asRoute });
 
   return (
     <Link

@@ -26,6 +26,7 @@ export default function PostData({ postRef }: Props) {
     graphql`
       fragment PostDataFragment on Post {
         __typename
+        dbid
         caption
         author {
           ... on GalleryUser {
@@ -58,10 +59,10 @@ export default function PostData({ postRef }: Props) {
   }, [breakpoint, width]);
 
   if (!post.tokens) {
-    return null;
+    reportError(`PostData: post.tokens is null - ${post.dbid}`);
   }
 
-  const token = post.tokens[0];
+  const token = post.tokens && post.tokens[0];
   const communityUrl = token ? getCommunityUrlForToken(token) : null;
 
   return (
@@ -87,6 +88,7 @@ export default function PostData({ postRef }: Props) {
       </VStack>
       <StyledTokenContainer justify="center" align="center">
         {token && <PostNftPreview tokenRef={token} tokenSize={tokenSize} />}
+        {!token && <BaseM color={colors.shadow}>There was an error displaying this item</BaseM>}
       </StyledTokenContainer>
     </StyledPost>
   );

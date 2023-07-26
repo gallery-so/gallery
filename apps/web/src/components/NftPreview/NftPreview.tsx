@@ -105,8 +105,6 @@ function NftPreview({
     [contractAddress]
   );
 
-  console.log({ onClick });
-
   const handleClick = useCallback(
     (event: React.MouseEvent<HTMLElement>) => {
       if (onClick && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) {
