@@ -3,7 +3,6 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { useModalActions } from '~/contexts/modal/ModalContext';
-import { NftSelectorTokenFragment$data } from '~/generated/NftSelectorTokenFragment.graphql';
 import { useNftSelectorFragment$key } from '~/generated/useNftSelectorFragment.graphql';
 import { useNftSelectorQueryFragment$key } from '~/generated/useNftSelectorQueryFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
@@ -14,7 +13,7 @@ import useUpdateProfileImage from './useUpdateProfileImage';
 type Props = {
   tokensRef: useNftSelectorFragment$key;
   queryRef: useNftSelectorQueryFragment$key;
-  onSelectToken: (token: NftSelectorTokenFragment$data) => void;
+  onSelectToken: (tokenId: string) => void;
   headerText: string;
 };
 
@@ -65,8 +64,8 @@ export function useNftSelectorForProfilePicture({ tokensRef, queryRef }: RefProp
   const { hideModal } = useModalActions();
 
   const handleSelectToken = useCallback(
-    (token: NftSelectorTokenFragment$data) => {
-      setProfileImage({ tokenId: token.dbid });
+    (tokenId: string) => {
+      setProfileImage({ tokenId });
       hideModal();
     },
     [hideModal, setProfileImage]

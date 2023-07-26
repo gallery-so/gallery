@@ -252,12 +252,6 @@ export function StandardSidebar({ queryRef }: Props) {
                 isActive={activeDrawerType === Notifications}
                 showUnreadDot={notificationCount > 0}
               />
-              {/* <SidebarIcon
-                tooltipLabel="Settings"
-                onClick={handleSettingsClick}
-                icon={<CogIcon />}
-                isActive={activeDrawerType === Settings}
-              /> */}
               <SidebarIcon
                 href={userGalleryRoute}
                 tooltipLabel="My Profile"

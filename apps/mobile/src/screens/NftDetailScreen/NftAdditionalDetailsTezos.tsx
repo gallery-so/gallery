@@ -8,17 +8,19 @@ import { getFxHashExternalUrl, getObjktExternalUrl } from '~/shared/utils/getTez
 
 import { InteractiveLink } from '../../components/InteractiveLink';
 import { LinkableAddress } from '../../components/LinkableAddress';
-import { DetailLabelText, DetailSection } from './DetailSection';
+import {
+  DetailExternalLink,
+  DetailLabelText,
+  DetailMoreInfoLink,
+  DetailSection,
+  DetailValue,
+} from './DetailSection';
 
 type NftAdditionaDetailsNonPOAPProps = {
-  showDetails: boolean;
   tokenRef: NftAdditionalDetailsTezosFragment$key;
 };
 
-export function NftAdditionalDetailsTezos({
-  tokenRef,
-  showDetails,
-}: NftAdditionaDetailsNonPOAPProps) {
+export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPOAPProps) {
   const token = useFragment(
     graphql`
       fragment NftAdditionalDetailsTezosFragment on Token {
@@ -60,19 +62,19 @@ export function NftAdditionalDetailsTezos({
 
   return (
     <View className="flex flex-col space-y-4">
-      {token.contract?.creatorAddress?.address && (
-        <DetailSection>
-          <DetailLabelText>CREATED BY</DetailLabelText>
+      <>
+        {token.contract?.creatorAddress?.address && (
+          <DetailSection>
+            <DetailLabelText>CREATED BY</DetailLabelText>
 
-          {/* TODO(Terence) When the contract screen is ready, setup the onPress here */}
-          <LinkableAddress
-            chainAddressRef={token.contract.creatorAddress}
-            type="NFT Detail Creator Address"
-          />
-        </DetailSection>
-      )}
+            {/* TODO(Terence) When the contract screen is ready, setup the onPress here */}
+            <LinkableAddress
+              chainAddressRef={token.contract.creatorAddress}
+              type="NFT Detail Creator Address"
+            />
+          </DetailSection>
+        )}
 
-      {showDetails && (
         <View className="flex flex-col space-y-4">
           <View className="flex flex-row space-x-16">
             {contract?.contractAddress?.address && (
@@ -95,32 +97,34 @@ export function NftAdditionalDetailsTezos({
             )}
           </View>
 
-          {token.chain && (
-            <DetailSection>
-              <DetailLabelText>CHAIN</DetailLabelText>
-              <InteractiveLink type="NFT Detail Chain">{token.chain}</InteractiveLink>
-            </DetailSection>
-          )}
+          <View className="flex flex-row">
+            {token.chain && (
+              <DetailSection>
+                <DetailLabelText>NETWORK</DetailLabelText>
+                <DetailValue>{token.chain}</DetailValue>
+              </DetailSection>
+            )}
 
-          <View className="flex flex-row space-x-1">
-            {fxhashUrl && (
-              <InteractiveLink href={fxhashUrl} type="NFT Detail FX Hash URL">
-                View on fx(hash)
-              </InteractiveLink>
-            )}
-            {objktUrl && (
-              <InteractiveLink href={objktUrl} type="NFT Detail OBJKT URL">
-                View on objkt
-              </InteractiveLink>
-            )}
-            {externalUrl && (
-              <InteractiveLink href={externalUrl} type="NFT Detail More Info URL">
-                More Info
-              </InteractiveLink>
-            )}
+            <DetailSection>
+              {fxhashUrl && (
+                <DetailExternalLink
+                  link={fxhashUrl}
+                  label="fx(hash)"
+                  trackingLabel="NFT Detail FX Hash URL"
+                />
+              )}
+              {objktUrl && (
+                <DetailExternalLink
+                  link={objktUrl}
+                  label="objkt"
+                  trackingLabel="NFT Detail OBJKT URL"
+                />
+              )}
+            </DetailSection>
+            {externalUrl && <DetailMoreInfoLink link={externalUrl} />}
           </View>
         </View>
-      )}
+      </>
     </View>
   );
 }

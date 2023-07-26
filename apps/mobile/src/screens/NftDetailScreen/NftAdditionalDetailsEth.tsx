@@ -7,17 +7,20 @@ import { NftAdditionalDetailsEthFragment$key } from '~/generated/NftAdditionalDe
 import { extractMirrorXyzUrl } from '~/shared/utils/extractMirrorXyzUrl';
 import { getOpenseaExternalUrl, hexHandler } from '~/shared/utils/getOpenseaExternalUrl';
 
-import { EnsOrAddress } from '../../components/EnsOrAddress';
-import { InteractiveLink } from '../../components/InteractiveLink';
 import { LinkableAddress } from '../../components/LinkableAddress';
-import { DetailLabelText, DetailSection, DetailValue } from './DetailSection';
+import {
+  DetailExternalLink,
+  DetailLabelText,
+  DetailMoreInfoLink,
+  DetailSection,
+  DetailValue,
+} from './DetailSection';
 
 type NftAdditionalDetailsEthProps = {
-  showDetails: boolean;
   tokenRef: NftAdditionalDetailsEthFragment$key;
 };
 
-export function NftAdditionalDetailsEth({ tokenRef, showDetails }: NftAdditionalDetailsEthProps) {
+export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionalDetailsEthProps) {
   const token = useFragment(
     graphql`
       fragment NftAdditionalDetailsEthFragment on Token {
@@ -28,15 +31,9 @@ export function NftAdditionalDetailsEth({ tokenRef, showDetails }: NftAdditional
         tokenMetadata
 
         contract {
-          creatorAddress {
-            address
-            ...LinkableAddressFragment
-            ...EnsOrAddressWithSuspenseFragment
-          }
           contractAddress {
             address
             ...LinkableAddressFragment
-            ...EnsOrAddressWithSuspenseFragment
           }
         }
       }
@@ -64,68 +61,61 @@ export function NftAdditionalDetailsEth({ tokenRef, showDetails }: NftAdditional
 
   return (
     <View className="flex flex-col space-y-4">
-      {token.contract?.creatorAddress?.address && (
-        <DetailSection>
-          <DetailLabelText>CREATED BY</DetailLabelText>
-
-          {/* TODO(Terence) When the contract screen is ready, setup the onPress here */}
-          <EnsOrAddress chainAddressRef={token.contract.creatorAddress} />
-        </DetailSection>
-      )}
-
-      {showDetails && (
-        <View className="flex flex-col space-y-4">
-          <View className="flex flex-row space-x-16">
-            {contract?.contractAddress?.address && (
-              <DetailSection>
-                <DetailLabelText>CONTRACT ADDRESS</DetailLabelText>
-                <LinkableAddress
-                  chainAddressRef={contract.contractAddress}
-                  type="NFT Detail Contract Address"
-                />
-              </DetailSection>
-            )}
-
-            {tokenId && (
-              <DetailSection>
-                <DetailLabelText>TOKEN ID</DetailLabelText>
-                <DetailValue>{hexHandler(tokenId)}</DetailValue>
-              </DetailSection>
-            )}
-          </View>
-
-          {token.chain && (
+      <View className="flex flex-col space-y-4">
+        <View className="flex flex-row space-x-16">
+          {contract?.contractAddress?.address && (
             <DetailSection>
-              <DetailLabelText>CHAIN</DetailLabelText>
-              <DetailValue>{token.chain}</DetailValue>
+              <DetailLabelText>CONTRACT</DetailLabelText>
+              <LinkableAddress
+                chainAddressRef={contract.contractAddress}
+                type="NFT Detail Contract Address"
+              />
             </DetailSection>
           )}
 
-          {mirrorXyzUrl && (
+          {tokenId && (
             <DetailSection>
-              <InteractiveLink href={mirrorXyzUrl} type="NFT Detail View on Mirror">
-                View on Mirror
-              </InteractiveLink>
+              <DetailLabelText>TOKEN ID</DetailLabelText>
+              <DetailValue>{hexHandler(tokenId)}</DetailValue>
+            </DetailSection>
+          )}
+        </View>
+
+        <View className="flex flex-row space-x-16">
+          {token.chain && (
+            <DetailSection>
+              <DetailLabelText>NETWORK</DetailLabelText>
+              <DetailValue>{token.chain}</DetailValue>
             </DetailSection>
           )}
 
           {openSeaExternalUrl && (
             <DetailSection>
-              <InteractiveLink href={openSeaExternalUrl} type="NFT Detail View on Opensea">
-                View on OpenSea
-              </InteractiveLink>
+              <DetailExternalLink
+                link={openSeaExternalUrl}
+                label="OpenSea"
+                trackingLabel="NFT Detail View on Opensea"
+              />
             </DetailSection>
           )}
 
-          {externalUrl && (
+          {mirrorXyzUrl && (
             <DetailSection>
-              <InteractiveLink href={externalUrl} type="NFT Detail More Info URL">
-                More Info
-              </InteractiveLink>
+              <DetailExternalLink
+                link={mirrorXyzUrl}
+                label="Mirror"
+                trackingLabel="NFT Detail View on Mirror"
+              />
             </DetailSection>
           )}
         </View>
-      )}
+
+        {externalUrl && (
+          <DetailSection>
+            <DetailMoreInfoLink link={externalUrl} />
+          </DetailSection>
+        )}
+      </View>
     </View>
   );
 }

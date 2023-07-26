@@ -164,16 +164,14 @@ export function TextAreaWithCharCount({
   ...textAreaProps
 }: TextAreaWithCharCountProps) {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
-  const maxCharCountReached = currentCharCount >= maxCharCount;
+
   return (
     <>
       <StyledTextAreaWithCharCount className={className}>
-        <TextArea ref={textAreaRef} maxLength={maxCharCount} {...textAreaProps} />
-        {maxCharCountReached && (
-          <StyledMaxLengthMessage>Max text length reached</StyledMaxLengthMessage>
-        )}
+        <TextArea ref={textAreaRef} {...textAreaProps} />
+
         <StyledCharacterCounter
-          error={maxCharCountReached}
+          error={currentCharCount > maxCharCount}
           hasPadding={textAreaProps?.hasPadding || false}
         >
           {currentCharCount}/{maxCharCount}
@@ -268,13 +266,6 @@ const StyledCharacterCounter = styled(BaseM)<{ error: boolean; hasPadding: boole
   right: ${({ hasPadding }) => (hasPadding ? '8px' : '0')};
 
   color: ${({ error }) => (error ? colors.red : colors.metal)};
-`;
-
-const StyledMaxLengthMessage = styled(BaseM)`
-  position: absolute;
-  bottom: 8px;
-  left: 8px;
-  color: ${colors.red};
 `;
 
 const StyledMarkdownContainer = styled.div<{ hasPadding: boolean }>`

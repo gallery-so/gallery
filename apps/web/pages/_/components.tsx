@@ -4,8 +4,8 @@ import styled from 'styled-components';
 import { Button, ButtonLink } from '~/components/core/Button/Button';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleM } from '~/components/core/Text/Text';
-import { ProfilePictureStack } from '~/components/ProfilePictureStack';
-import { RawProfilePicture } from '~/components/RawProfilePicture';
+import { ProfilePictureStack } from '~/components/ProfilePicture/ProfilePictureStack';
+import { RawProfilePicture } from '~/components/ProfilePicture/RawProfilePicture';
 import icons from '~/icons/index';
 import colors from '~/shared/theme/colors';
 

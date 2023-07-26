@@ -10,11 +10,10 @@ import {
 } from '~/screens/NftDetailScreen/DetailSection';
 
 type POAPNftDetailSectionProps = {
-  showDetails: boolean;
   tokenRef: NftAdditionalDetailsPOAPFragment$key;
 };
 
-export function NftAdditionalDetailsPOAP({ tokenRef, showDetails }: POAPNftDetailSectionProps) {
+export function NftAdditionalDetailsPOAP({ tokenRef }: POAPNftDetailSectionProps) {
   const token = useFragment(
     graphql`
       fragment NftAdditionalDetailsPOAPFragment on Token {
@@ -44,20 +43,23 @@ export function NftAdditionalDetailsPOAP({ tokenRef, showDetails }: POAPNftDetai
 
   return (
     <View className="flex flex-col space-y-4">
-      {formattedDate && (
-        <DetailSection>
-          <DetailLabelText>Created</DetailLabelText>
-          <DetailValue>{formattedDate}</DetailValue>
-        </DetailSection>
-      )}
-      {location && (
-        <DetailSection>
-          <DetailLabelText>Location</DetailLabelText>
-          <DetailValue>{location}</DetailValue>
-        </DetailSection>
-      )}
+      <>
+        <View className="flex flex-row space-x-16">
+          {formattedDate && (
+            <DetailSection>
+              <DetailLabelText>CREATED</DetailLabelText>
+              <DetailValue>{formattedDate}</DetailValue>
+            </DetailSection>
+          )}
 
-      {showDetails && (
+          {location && (
+            <DetailSection>
+              <DetailLabelText>Location</DetailLabelText>
+              <DetailValue>{location}</DetailValue>
+            </DetailSection>
+          )}
+        </View>
+
         <View className="flex flex-col space-y-4">
           {id && (
             <DetailSection>
@@ -78,7 +80,7 @@ export function NftAdditionalDetailsPOAP({ tokenRef, showDetails }: POAPNftDetai
             </DetailSection>
           )}
         </View>
-      )}
+      </>
     </View>
   );
 }

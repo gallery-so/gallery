@@ -1,9 +1,7 @@
-import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { PostComposerNftFragment$key } from '~/generated/PostComposerNftFragment.graphql';
-import CloseIcon from '~/icons/CloseIcon';
 import colors from '~/shared/theme/colors';
 
 import breakpoints from '../core/breakpoints';
@@ -13,7 +11,6 @@ import PostComposerAsset from './PostComposerAsset';
 
 type Props = {
   tokenRef: PostComposerNftFragment$key;
-  onBackClick: () => void;
 };
 
 export function PostComposerNftLoadingState() {
@@ -24,7 +21,7 @@ export function PostComposerNftLoadingState() {
   );
 }
 
-export default function PostComposerNft({ tokenRef, onBackClick }: Props) {
+export default function PostComposerNft({ tokenRef }: Props) {
   const token = useFragment(
     graphql`
       fragment PostComposerNftFragment on Token {
@@ -39,16 +36,13 @@ export default function PostComposerNft({ tokenRef, onBackClick }: Props) {
     tokenRef
   );
 
-  const handleCloseClick = useCallback(() => {
-    onBackClick();
-  }, [onBackClick]);
-
   return (
     <StyledTokenContainer gap={4}>
       <StyledAssetContainer>
-        <StyledCloseButton onClick={handleCloseClick}>
+        {/* Commenting for now since we will most lkely use the X when we introduce multi-item posting */}
+        {/* <StyledCloseButton onClick={handleCloseClick}>
           <CloseIcon size={8} />
-        </StyledCloseButton>
+        </StyledCloseButton> */}
         <PostComposerAsset tokenRef={token} />
       </StyledAssetContainer>
 

@@ -8,11 +8,10 @@ import { NftAdditionalDetailsEth } from './NftAdditionalDetailsEth';
 import { NftAdditionalDetailsTezos } from './NftAdditionalDetailsTezos';
 
 type NftAdditionalDetailsProps = {
-  showDetails: boolean;
   tokenRef: NftAdditionalDetailsFragment$key;
 };
 
-export function NftAdditionalDetails({ tokenRef, showDetails }: NftAdditionalDetailsProps) {
+export function NftAdditionalDetails({ tokenRef }: NftAdditionalDetailsProps) {
   const token = useFragment(
     graphql`
       fragment NftAdditionalDetailsFragment on Token {
@@ -27,10 +26,10 @@ export function NftAdditionalDetails({ tokenRef, showDetails }: NftAdditionalDet
   );
 
   if (token.chain === 'POAP') {
-    return <NftAdditionalDetailsPOAP showDetails={showDetails} tokenRef={token} />;
+    return <NftAdditionalDetailsPOAP tokenRef={token} />;
   } else if (token.chain === 'Tezos') {
-    return <NftAdditionalDetailsTezos showDetails={showDetails} tokenRef={token} />;
+    return <NftAdditionalDetailsTezos tokenRef={token} />;
   } else {
-    return <NftAdditionalDetailsEth showDetails={showDetails} tokenRef={token} />;
+    return <NftAdditionalDetailsEth tokenRef={token} />;
   }
 }

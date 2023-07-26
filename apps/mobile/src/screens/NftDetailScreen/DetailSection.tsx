@@ -1,6 +1,8 @@
 import { PropsWithChildren } from 'react';
 import { View, ViewProps } from 'react-native';
 
+import { InteractiveLink } from '~/components/InteractiveLink';
+
 import { Typography } from '../../components/Typography';
 
 export function DetailSection({
@@ -17,7 +19,7 @@ export function DetailSection({
 export function DetailLabelText({ children }: PropsWithChildren) {
   return (
     <Typography
-      className="text-xs dark:color-metal"
+      className="text-xs text-metal dark:color-metal"
       font={{ family: 'ABCDiatype', weight: 'Medium' }}
     >
       {children}
@@ -31,9 +33,54 @@ export function DetailValue({ children }: PropsWithChildren) {
       numberOfLines={1}
       ellipsizeMode="middle"
       className="text-sm"
-      font={{ family: 'ABCDiatype', weight: 'Regular' }}
+      font={{ family: 'ABCDiatype', weight: 'Bold' }}
     >
       {children}
     </Typography>
+  );
+}
+
+type DetailExternalLinkProps = {
+  link: string;
+  label: string;
+  trackingLabel: string;
+};
+export function DetailExternalLink({ link, label, trackingLabel }: DetailExternalLinkProps) {
+  return (
+    <InteractiveLink href={link} type={trackingLabel}>
+      <View className="flex flex-row space-x-1">
+        <Typography
+          numberOfLines={1}
+          ellipsizeMode="middle"
+          className="text-sm"
+          font={{ family: 'ABCDiatype', weight: 'Regular' }}
+        >
+          View on
+        </Typography>
+        <Typography
+          numberOfLines={1}
+          ellipsizeMode="middle"
+          className="text-sm"
+          font={{ family: 'ABCDiatype', weight: 'Medium' }}
+        >
+          {label}
+        </Typography>
+      </View>
+    </InteractiveLink>
+  );
+}
+
+export function DetailMoreInfoLink({ link }: { link: string }) {
+  return (
+    <InteractiveLink href={link} type="NFT Detail More Info URL">
+      <Typography
+        numberOfLines={1}
+        ellipsizeMode="middle"
+        className="text-sm"
+        font={{ family: 'ABCDiatype', weight: 'Regular' }}
+      >
+        More Info
+      </Typography>
+    </InteractiveLink>
   );
 }

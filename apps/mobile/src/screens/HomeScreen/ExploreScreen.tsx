@@ -4,11 +4,9 @@ import { View } from 'react-native';
 import { graphql, useLazyLoadQuery, useRefetchableFragment } from 'react-relay';
 
 import { GalleryRefreshControl } from '~/components/GalleryRefreshControl';
-import { USERS_PER_PAGE } from '~/components/Trending/constants';
 import { LoadingTrendingPage } from '~/components/Trending/LoadingTrendingPage';
 import { SuggestedSection } from '~/components/Trending/SuggestedSection';
 import { TrendingSection } from '~/components/Trending/TrendingSection';
-import { TwitterSection } from '~/components/Trending/TwitterSection';
 import { ExploreScreenFragment$key } from '~/generated/ExploreScreenFragment.graphql';
 import { ExploreScreenQuery } from '~/generated/ExploreScreenQuery.graphql';
 import { SuggestedSectionQueryFragment$key } from '~/generated/SuggestedSectionQueryFragment.graphql';
@@ -51,20 +49,21 @@ function ExploreScreenInner({ queryRef }: ExploreScreenInnerProps) {
           }
         }
 
+        # [GAL-3763] Revive this if / when elon lets us import twitter follower graphs again
         viewer {
           __typename
-          ... on Viewer {
-            socialAccounts @required(action: THROW) {
-              twitter {
-                __typename
-              }
-            }
-          }
+          # ... on Viewer {
+          #   socialAccounts @required(action: THROW) {
+          #     twitter {
+          #       __typename
+          #     }
+          #   }
+          # }
         }
+        # ...TwitterSectionQueryFragment
 
         ...TrendingSectionQueryFragment
         ...SuggestedSectionQueryFragment
-        ...TwitterSectionQueryFragment
       }
     `,
     queryRef
@@ -74,15 +73,17 @@ function ExploreScreenInner({ queryRef }: ExploreScreenInnerProps) {
 
   const renderItem = useCallback<ListRenderItem<ListItemType>>(
     ({ item }) => {
-      if (item.kind === 'twitter') {
-        return (
-          <TwitterSection
-            title="Twitter Friends"
-            description="Curators you know from Twitter"
-            queryRef={query}
-          />
-        );
-      } else if (item.kind === 'suggested') {
+      // [GAL-3763] Revive this if / when elon lets us import twitter follower graphs again
+      // if (item.kind === 'twitter') {
+      //   return (
+      //     <TwitterSection
+      //       title="Twitter Friends"
+      //       description="Curators you know from Twitter"
+      //       queryRef={query}
+      //     />
+      //   );
+      // }
+      if (item.kind === 'suggested') {
         return (
           <SuggestedSection
             title="In your orbit"
@@ -109,10 +110,11 @@ function ExploreScreenInner({ queryRef }: ExploreScreenInnerProps) {
   const items = useMemo((): ListItemType[] => {
     const items: ListItemType[] = [];
 
+    // [GAL-3763] Revive this if / when elon lets us import twitter follower graphs again
     if (query.viewer?.__typename === 'Viewer') {
-      if (query.viewer.socialAccounts.twitter?.__typename) {
-        items.push({ kind: 'twitter', queryRef: query });
-      }
+      // if (query.viewer.socialAccounts.twitter?.__typename) {
+      //   items.push({ kind: 'twitter', queryRef: query });
+      // }
 
       items.push({ kind: 'suggested', queryRef: query });
     }
@@ -155,17 +157,36 @@ function ExploreScreenInner({ queryRef }: ExploreScreenInnerProps) {
   );
 }
 
+// [GAL-3763] Revive this if / when elon lets us import twitter follower graphs again
+//
+// export function ExploreScreen() {
+//   const query = useLazyLoadQuery<ExploreScreenQuery>(
+//     graphql`
+//       query ExploreScreenQuery($twitterListFirst: Int!, $twitterListAfter: String) {
+//         ...ExploreScreenFragment
+//       }
+//     `,
+//     {
+//       twitterListFirst: USERS_PER_PAGE,
+//       twitterListAfter: null,
+//     }
+//   );
+
+//   return (
+//     <Suspense fallback={<LoadingTrendingPage />}>
+//       <ExploreScreenInner queryRef={query} />
+//     </Suspense>
+//   );
+// }
+
 export function ExploreScreen() {
   const query = useLazyLoadQuery<ExploreScreenQuery>(
     graphql`
-      query ExploreScreenQuery($twitterListFirst: Int!, $twitterListAfter: String) {
+      query ExploreScreenQuery {
         ...ExploreScreenFragment
       }
     `,
-    {
-      twitterListFirst: USERS_PER_PAGE,
-      twitterListAfter: null,
-    }
+    {}
   );
 
   return (

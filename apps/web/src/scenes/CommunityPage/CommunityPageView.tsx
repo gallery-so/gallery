@@ -12,6 +12,7 @@ import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleL, TitleXS } from '~/components/core/Text/Text';
+import CommunityProfilePicture from '~/components/ProfilePicture/CommunityProfilePicture';
 import MemberListFilter from '~/components/TokenHolderList/TokenHolderListFilter';
 import { GRID_ENABLED_COMMUNITY_ADDRESSES } from '~/constants/community';
 import MemberListPageProvider from '~/contexts/memberListPage/MemberListPageContext';
@@ -45,6 +46,7 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
 
         ...CommunityHolderGridFragment
         ...CommunityHolderListFragment
+        ...CommunityProfilePictureFragment
       }
     `,
     communityRef
@@ -107,8 +109,9 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
       <StyledCommunityPageContainer>
         <HStack>
           <StyledHeader gap={24}>
-            <VStack>
+            <VStack gap={24}>
               <HStack gap={12} align="center">
+                <CommunityProfilePicture communityRef={community} size="lg" />
                 <TitleL>{name}</TitleL>
                 {badgeURL && <StyledBadge src={badgeURL} />}
               </HStack>

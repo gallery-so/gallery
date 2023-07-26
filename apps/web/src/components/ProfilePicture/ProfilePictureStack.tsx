@@ -7,9 +7,9 @@ import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
 
-import { HStack, VStack } from './core/Spacer/Stack';
-import { TitleXS } from './core/Text/Text';
-import { ProfilePicture } from './ProfilePicture/ProfilePicture';
+import { HStack, VStack } from '../core/Spacer/Stack';
+import { TitleXS } from '../core/Text/Text';
+import { ProfilePicture } from './ProfilePicture';
 
 type Props = {
   usersRef: ProfilePictureStackFragment$key;
@@ -93,6 +93,7 @@ const StyledProfilePictureContainer = styled.div`
   margin-left: -8px;
   position: relative;
   z-index: 1;
+  pointer-events: none;
 `;
 const StyledRemainings = styled(VStack)`
   background-color: ${colors.porcelain};

@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseS } from '~/components/core/Text/Text';
-import { ProfilePictureStack } from '~/components/ProfilePictureStack';
+import { ProfilePictureStack } from '~/components/ProfilePicture/ProfilePictureStack';
 import { AdmireLineFragment$key } from '~/generated/AdmireLineFragment.graphql';
 import { AdmireLineQueryFragment$key } from '~/generated/AdmireLineQueryFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';

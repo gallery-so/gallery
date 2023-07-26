@@ -42,6 +42,10 @@ export default function PostComposer({ onBackClick, tokenRef }: Props) {
     setDescription(event.target.value);
   }, []);
 
+  const descriptionOverLengthLimit = useMemo(() => {
+    return description.length > DESCRIPTION_MAX_LENGTH;
+  }, [description]);
+
   const createPost = useCreatePost();
 
   const { hideModal } = useModalActions();
@@ -60,7 +64,7 @@ export default function PostComposer({ onBackClick, tokenRef }: Props) {
         caption: description,
       });
     } catch (error) {
-      // TODO add error state
+      // TODO add error state GAL-3841
       setIsSubmitting(false);
       return;
     }
@@ -98,7 +102,7 @@ export default function PostComposer({ onBackClick, tokenRef }: Props) {
           <TitleS>New post</TitleS>
         </StyledHeader>
         <ContentContainer>
-          <PostComposerNft tokenRef={token} onBackClick={handleBackClick} />
+          <PostComposerNft tokenRef={token} />
           <VStack grow>
             <TextAreaWithCharCount
               currentCharCount={description.length}
@@ -113,7 +117,11 @@ export default function PostComposer({ onBackClick, tokenRef }: Props) {
         </ContentContainer>
       </VStack>
       <HStack justify="flex-end" align="flex-end">
-        <Button variant="primary" onClick={handlePostClick} disabled={isSubmitting}>
+        <Button
+          variant="primary"
+          onClick={handlePostClick}
+          disabled={isSubmitting || descriptionOverLengthLimit}
+        >
           POST
         </Button>
       </HStack>

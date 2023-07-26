@@ -22,7 +22,6 @@ export default function useCreatePost() {
   return useCallback(
     async (input: PostTokensInput) => {
       await createPost({ variables: { input } });
-      //handle error
     },
     [createPost]
   );

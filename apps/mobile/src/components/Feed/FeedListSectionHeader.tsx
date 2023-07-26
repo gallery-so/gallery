@@ -65,7 +65,7 @@ export function FeedListSectionHeader({ feedEventRef }: FeedListSectionHeaderPro
 
   return (
     <View className="flex flex-row items-center justify-between bg-white dark:bg-black-900 px-3 pb-2">
-      <View className="flex flex-row space-x-1 items-center">
+      <View className="flex flex-row space-x-1 items-center" style={{ maxWidth: '92%' }}>
         <GalleryTouchableOpacity
           className="flex flex-row items-center space-x-1"
           onPress={handleUsernamePress}
@@ -87,11 +87,17 @@ export function FeedListSectionHeader({ feedEventRef }: FeedListSectionHeaderPro
         </Typography>
 
         <GalleryTouchableOpacity
+          className="flex-1"
           onPress={handleGalleryNamePress}
           eventElementId="Feed Gallery Name Button"
           eventName="Feed Gallery Name Clicked"
         >
-          <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+          <Typography
+            className="text-sm"
+            font={{ family: 'ABCDiatype', weight: 'Bold' }}
+            ellipsizeMode="tail"
+            numberOfLines={1}
+          >
             {galleryName || 'their gallery'}
           </Typography>
         </GalleryTouchableOpacity>
