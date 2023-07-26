@@ -87,7 +87,7 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
   );
 
   const { push } = useRouter();
-
+  console.log("query1", query);
   const clearAllNotifications = useClearNotifications();
 
   /**
@@ -223,11 +223,13 @@ function NotificationInner({ notificationRef, queryRef }: NotificationInnerProps
   const query = useFragment(
     graphql`
       fragment NotificationInnerQueryFragment on Query {
-        ...FollowButtonQueryFragment
+        ...SomeoneFollowedYouQueryFragment
       }
     `,
     queryRef
   );
+
+  console.log("query2", query);
 
   const { hideDrawer } = useDrawerActions();
   const handleClose = useCallback(() => {

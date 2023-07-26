@@ -16,8 +16,8 @@ type SomeoneFollowedYouProps = {
 
 export function SomeoneFollowedYou({
   notificationRef,
-  onClose,
   queryRef,
+  onClose,
 }: SomeoneFollowedYouProps) {
   const notification = useFragment(
     graphql`
@@ -27,6 +27,7 @@ export function SomeoneFollowedYou({
         followers(last: 1) {
           edges {
             node {
+              ...FollowButtonUserFragment
               ...HoverCardOnUsernameFragment
               ...ProfilePictureFragment
             }
@@ -34,7 +35,7 @@ export function SomeoneFollowedYou({
         }
       }
     `,
-    notificationRef,
+    notificationRef
   );
 
   const query = useFragment(graphql`
@@ -42,6 +43,9 @@ export function SomeoneFollowedYou({
       ...FollowButtonQueryFragment
     }
   `, queryRef);
+
+
+  console.log("query3", query);
 
   const count = notification.count ?? 1;
   const lastFollower = notification.followers?.edges?.[0]?.node;
