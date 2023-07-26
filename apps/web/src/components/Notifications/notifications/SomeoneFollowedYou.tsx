@@ -39,38 +39,6 @@ export function SomeoneFollowedYou({
     notificationRef,
   );
 
-  /////////////////////////////////////////////////////////////
-  // const query = useFragment(                              //
-  //   graphql`                                              //
-  //     fragment SomeoneFollowedYouQueryFragment on Query { //
-  //       ...FollowButtonQueryFragment                      //
-  //                                                         //
-  //       viewer {                                          //
-  //         ... on Viewer {                                 //
-  //           __typename                                    //
-  //           user {                                        //
-  //             dbid                                        //
-  //           }                                             //
-  //         }                                               //
-  //       }                                                 //
-  //                                                         //
-  ////////////////////////////////////////////////////////////
-  //   userByUsername(username: $username) {             // //
-  //     ... on GalleryUser {                            // //
-  //       dbid                                          // //
-  //       galleries {                                   // //
-  //         __typename                                  // //
-  //       }                                             // //
-  //       ...FollowButtonUserFragment                   // //
-  //     }                                               // //
-  //   }                                                 // //
-  // }                                                   // //
-  ////////////////////////////////////////////////////////////
-  //   `,                                                    //
-  //   queryRef                                              //
-  // );                                                      //
-  /////////////////////////////////////////////////////////////
-
   const query = useFragment(graphql`
     fragment SomeoneFollowedYouQueryFragment on Query {
       ...FollowButtonQueryFragment

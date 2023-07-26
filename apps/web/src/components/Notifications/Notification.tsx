@@ -64,7 +64,7 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
         ...NotificationInnerFragment
       }
     `,
-    notificationRef,
+    notificationRef
   );
 
   const query = useFragment(
@@ -72,7 +72,6 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
       fragment NotificationQueryFragment on Query {
         ...NotificationInnerQueryFragment
 
-        ...FollowButtonQueryFragment
         viewer {
           ... on Viewer {
             id
@@ -84,7 +83,7 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
         }
       }
     `,
-    queryRef,
+    queryRef
   );
 
   const { push } = useRouter();
@@ -109,7 +108,7 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
   const handleNotificationClick = useMemo((): NotificationClick => {
     function showUserListModal() {
       toggleSubView(
-        <NotificationUserListPage notificationId={notification.id} toggleSubView={toggleSubView} />,
+        <NotificationUserListPage notificationId={notification.id} toggleSubView={toggleSubView} />
       );
     }
 
@@ -227,7 +226,7 @@ function NotificationInner({ notificationRef, queryRef }: NotificationInnerProps
         ...FollowButtonQueryFragment
       }
     `,
-    queryRef,
+    queryRef
   );
 
   const { hideDrawer } = useDrawerActions();
