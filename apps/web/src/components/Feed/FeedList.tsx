@@ -19,7 +19,7 @@ import { FeedListEventDataFragment$key } from '~/generated/FeedListEventDataFrag
 import { FeedListFragment$key } from '~/generated/FeedListFragment.graphql';
 import colors from '~/shared/theme/colors';
 
-import FeedEvent from './FeedEvent';
+import FeedItem from './FeedItem';
 
 type Props = {
   loadNextPage: () => void;
@@ -39,7 +39,7 @@ export default function FeedList({
   const query = useFragment(
     graphql`
       fragment FeedListFragment on Query {
-        ...FeedEventWithErrorBoundaryQueryFragment
+        ...FeedItemWithErrorBoundaryQueryFragment
       }
     `,
     queryRef
@@ -54,7 +54,7 @@ export default function FeedList({
         ... on Post {
           dbid
         }
-        ...FeedEventWithErrorBoundaryFragment
+        ...FeedItemWithErrorBoundaryFragment
       }
     `,
     feedEventRefs
@@ -133,7 +133,7 @@ export default function FeedList({
           {({ registerChild }) => (
             // @ts-expect-error: this is the suggested usage of registerChild
             <div ref={registerChild} style={style} key={key}>
-              <FeedEvent
+              <FeedItem
                 // Here, we're listening to our children for anything that might cause
                 // the height of this list item to change height.
                 // Right now, this consists of "admiring", and "commenting"

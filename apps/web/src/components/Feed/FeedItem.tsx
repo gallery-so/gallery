@@ -18,16 +18,17 @@ import { TriedToRenderUnsupportedFeedEvent } from '~/shared/errors/TriedToRender
 import PostData from './Posts/PostData';
 import PostSocializeSection from './Socialize/PostSocializeSection';
 
-type FeedEventProps = {
+type FeedItemProps = {
   eventRef: FeedEventFragment$key;
   queryRef: FeedEventQueryFragment$key;
   feedMode: FeedMode;
 };
 
-function FeedEvent({ eventRef, queryRef, feedMode }: FeedEventProps) {
+// Not to be confused with the FeedEvent type. This component can render both FeedEvent and Post types, and represents a single item in the feed.
+function FeedItem({ eventRef, queryRef, feedMode }: FeedItemProps) {
   const event = useFragment(
     graphql`
-      fragment FeedEventFragment on FeedEventOrError {
+      fragment FeedItemFragment on FeedEventOrError {
         ... on FeedEvent {
           __typename
           dbid
@@ -47,7 +48,7 @@ function FeedEvent({ eventRef, queryRef, feedMode }: FeedEventProps) {
 
   const query = useFragment(
     graphql`
-      fragment FeedEventQueryFragment on Query {
+      fragment FeedItemQueryFragment on Query {
         ...FeedEventDataQueryFragment
       }
     `,
@@ -77,7 +78,7 @@ function FeedEvent({ eventRef, queryRef, feedMode }: FeedEventProps) {
   return <></>;
 }
 
-type FeedEventWithBoundaryProps = {
+type FeedItemWithBoundaryProps = {
   index: number;
   feedMode: FeedMode;
   onPotentialLayoutShift: (index: number) => void;
@@ -85,16 +86,16 @@ type FeedEventWithBoundaryProps = {
   queryRef: FeedEventWithErrorBoundaryQueryFragment$key;
 };
 
-export default function FeedEventWithBoundary({
+export default function FeedItemWithBoundary({
   index,
   feedMode,
   eventRef,
   queryRef,
   onPotentialLayoutShift,
-}: FeedEventWithBoundaryProps) {
+}: FeedItemWithBoundaryProps) {
   const event = useFragment(
     graphql`
-      fragment FeedEventWithErrorBoundaryFragment on FeedEventOrError {
+      fragment FeedItemWithErrorBoundaryFragment on FeedEventOrError {
         __typename
         ... on FeedEvent {
           eventData {
@@ -107,7 +108,7 @@ export default function FeedEventWithBoundary({
         ... on Post {
           ...PostSocializeSectionFragment
         }
-        ...FeedEventFragment
+        ...FeedItemFragment
       }
     `,
     eventRef
@@ -115,8 +116,8 @@ export default function FeedEventWithBoundary({
 
   const query = useFragment(
     graphql`
-      fragment FeedEventWithErrorBoundaryQueryFragment on Query {
-        ...FeedEventQueryFragment
+      fragment FeedItemWithErrorBoundaryQueryFragment on Query {
+        ...FeedItemQueryFragment
         ...FeedEventSocializeSectionQueryFragment
         ...PostSocializeSectionQueryFragment
       }
@@ -133,7 +134,7 @@ export default function FeedEventWithBoundary({
   return (
     <ReportingErrorBoundary fallback={<></>}>
       <FeedItemContainer gap={16}>
-        <FeedEvent eventRef={event} queryRef={query} feedMode={feedMode} />
+        <FeedItem eventRef={event} queryRef={query} feedMode={feedMode} />
 
         {/* // We have another boundary here in case the socialize section fails
           // and the rest of the feed event loads */}
