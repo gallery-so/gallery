@@ -139,7 +139,7 @@ const StyledTextArea = styled.textarea<TextAreaProps>`
   height: 100%;
   padding: 12px;
   font-family: 'ABC Diatype', Helvetica, Arial, sans-serif;
-  border: none;
+  border: 1px solid transparent;
   border-bottom: 36px solid transparent;
   resize: none;
   font-size: 14px;
@@ -147,6 +147,10 @@ const StyledTextArea = styled.textarea<TextAreaProps>`
   background: none;
   color: ${colors.black['800']};
   ${({ textAreaHeight }) => `min-height: ${textAreaHeight}`};
+
+  &:focus {
+    border: 1px solid ${colors.porcelain};
+  }
 `;
 
 TextArea.displayName = 'TextArea';
