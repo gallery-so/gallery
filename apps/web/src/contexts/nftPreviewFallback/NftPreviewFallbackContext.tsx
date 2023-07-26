@@ -7,9 +7,23 @@ interface LoadedUrlsMap {
   };
 }
 
+export type CacheParams = {
+  tokenId: string;
+  type: 'preview' | 'raw';
+  url: string;
+};
+
+const loadedUrlsMap = {
+  a: {
+    previewUrl: 'https://...',
+    raw: undefined,
+  },
+};
+
 type NftPreviewFallbackState = {
   loadedUrlsMap: LoadedUrlsMap;
-  updateLoadedUrlsMap: (tokenId: string, previewUrl: string, rawUrl: string) => void;
+  // updateLoadedUrlsMap: (tokenId: string, previewUrl: string, rawUrl: string) => void;
+  cacheLoadedImageUrl: (params: CacheParams) => void;
 };
 
 const defaultNftPreviewFallbackState: NftPreviewFallbackState = {

@@ -24,6 +24,8 @@ import NftDetailGif from './NftDetailGif';
 import NftDetailImage from './NftDetailImage';
 import NftDetailModel from './NftDetailModel';
 import NftDetailVideo from './NftDetailVideo';
+import { useMemo } from 'react';
+import getVideoOrImageUrlForNft from '~/shared/relay/getVideoOrImageUrlForNftPreview';
 
 type NftDetailAssetComponentProps = {
   tokenRef: NftDetailAssetComponentFragment$key;
@@ -70,7 +72,7 @@ type NftDetailAssetComponentWithoutFallbackProps = {
 
 function NftDetailAssetComponentWithouFallback({
   tokenRef,
-  onLoad,
+  onLoad: _onLoad,
 }: NftDetailAssetComponentWithoutFallbackProps) {
   const token = useFragment(
     graphql`
@@ -92,6 +94,7 @@ function NftDetailAssetComponentWithouFallback({
           }
           ... on HtmlMedia {
             __typename
+            contentRenderURL
           }
           ... on AudioMedia {
             __typename
@@ -114,6 +117,21 @@ function NftDetailAssetComponentWithouFallback({
     `,
     tokenRef
   );
+
+  // figuring out content render URL will be a big switch/case statement
+  // maybe instead of defining switch/case statement here, we can actually 
+  // extend `getVideoOrImageUrlForNftPreview.ts` and use the helper
+
+  const result = getVideoOrImageUrlForNft(token, handleReportError, preferStillFrameFromGif)
+
+  const onLoad = useCallback((e) => {
+    _onLoad(e)
+    cacheLoadedImageUrl({
+      tokenId,
+      type: 'raw',
+      url: result?.urls.raw
+    })
+  }, [])
 
   if (token.media.__typename === 'UnknownMedia') {
     // If we're dealing with UnknownMedia, we know the NFT is going to
@@ -237,6 +255,15 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
   const hasRawUrl = !!loadedUrlsMap[tokenId]?.rawUrl;
   console.log('hasRawUrl:', hasRawUrl);
 
+  const handleNftPreviewLoaded = useCallback((e) => {
+    handleNftLoaded(e)
+    cacheLoadedImageUrl({
+      tokenId,
+      type: 'preview',
+      url: // figure out preview URL
+    })
+  }, [])
+
   return (
     <StyledAssetContainer
       data-tokenid={token.dbid}
@@ -257,9 +284,10 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
           />
         }
       >
-        <StyledImageWrapper visible={hasPreviewUrl}>
+        <StyledImageWrapper visible={hasPreviewUrl && !hasRawUrl}>
           <StyledImage src={loadedUrlsMap[tokenId]?.previewUrl} onLoad={handleNftLoaded} />
         </StyledImageWrapper>
+
         <NftDetailAssetComponent onLoad={handleNftLoaded} tokenRef={token} />
       </NftFailureBoundary>
     </StyledAssetContainer>

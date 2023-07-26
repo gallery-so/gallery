@@ -3,7 +3,12 @@ import { graphql, readInlineData } from 'relay-runtime';
 import { ReportFn } from '~/contexts/ErrorReportingContext';
 import { getVideoOrImageUrlForNftPreviewFragment$key } from '~/generated/getVideoOrImageUrlForNftPreviewFragment.graphql';
 
-type UrlSet = { small: string | null; medium: string | null; large: string | null };
+type UrlSet = {
+  small: string | null;
+  medium: string | null;
+  large: string | null;
+  raw: string | null;
+};
 
 export type getVideoOrImageUrlForNftPreviewArgs = {
   tokenRef: getVideoOrImageUrlForNftPreviewFragment$key;
@@ -16,7 +21,7 @@ export type getVideoOrImageUrlForNftPreviewResult =
   | { type: 'image'; urls: UrlSet }
   | undefined;
 
-export default function getVideoOrImageUrlForNftPreview({
+export default function getVideoOrImageUrlForNft({
   tokenRef,
   handleReportError,
   preferStillFrameFromGif,
@@ -37,6 +42,8 @@ export default function getVideoOrImageUrlForNftPreview({
             fallbackMedia {
               mediaURL
             }
+
+            contentRenderURL
           }
 
           ... on AudioMedia {
