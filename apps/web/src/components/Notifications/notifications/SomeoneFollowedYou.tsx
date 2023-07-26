@@ -1,5 +1,6 @@
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
+import styled from 'styled-components';
 
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
@@ -52,7 +53,7 @@ export function SomeoneFollowedYou({
   const lastFollower = notification.followers?.edges?.[0]?.node;
 
   return (
-    <HStack style={{ width: '100%' }} justify="space-between">
+    <StyledHStack justify="space-between">
       <HStack gap={4} align="center">
         {count > 1 ? (
           <BaseM>
@@ -71,10 +72,18 @@ export function SomeoneFollowedYou({
               </BaseM>
             )}
           </>
-        )}{' '}
+        )}
         <BaseM>followed you</BaseM>
       </HStack>
-      {count === 1 && <FollowButton queryRef={query} userRef={lastFollower} />}
-    </HStack>
+      {count === 1 && lastFollower && (
+        <HStack align="center">
+          <FollowButton queryRef={query} userRef={lastFollower} />
+        </HStack>
+      )}
+    </StyledHStack>
   );
 }
+
+const StyledHStack = styled(HStack)`
+  width: 100%;
+`;
