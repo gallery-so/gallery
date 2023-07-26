@@ -16,6 +16,7 @@ import { NotificationUserListPage } from '~/components/Notifications/Notificatio
 import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 import { NotificationFragment$key } from '~/generated/NotificationFragment.graphql';
 import { NotificationInnerFragment$key } from '~/generated/NotificationInnerFragment.graphql';
+import { NotificationInnerQueryFragment$key } from '~/generated/NotificationInnerQueryFragment.graphql';
 import { NotificationQueryFragment$key } from '~/generated/NotificationQueryFragment.graphql';
 import { useClearNotifications } from '~/shared/relay/useClearNotifications';
 import colors from '~/shared/theme/colors';

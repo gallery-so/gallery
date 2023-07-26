@@ -7,6 +7,7 @@ import FollowButton from '~/components/Follow/FollowButton';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { SomeoneFollowedYouFragment$key } from '~/generated/SomeoneFollowedYouFragment.graphql';
+import { SomeoneFollowedYouQueryFragment$key } from '~/generated/SomeoneFollowedYouQueryFragment.graphql';
 
 type SomeoneFollowedYouProps = {
   notificationRef: SomeoneFollowedYouFragment$key;
@@ -46,8 +47,6 @@ export function SomeoneFollowedYou({
     `,
     queryRef
   );
-
-  console.log('query3', query);
 
   const count = notification.count ?? 1;
   const lastFollower = notification.followers?.edges?.[0]?.node;
