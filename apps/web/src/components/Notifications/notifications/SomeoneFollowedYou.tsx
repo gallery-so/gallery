@@ -11,7 +11,6 @@ import FollowButton from '~/components/Follow/FollowButton';
 type SomeoneFollowedYouProps = {
   notificationRef: SomeoneFollowedYouFragment$key;
   queryRef: SomeoneFollowedYouQueryFragment$key;
-  userRef?: SomeoneFollowedYouUserFragment$key;
   onClose: () => void;
 };
 
@@ -19,7 +18,6 @@ export function SomeoneFollowedYou({
   notificationRef,
   onClose,
   queryRef,
-  userRef,
 }: SomeoneFollowedYouProps) {
   const notification = useFragment(
     graphql`
@@ -45,12 +43,6 @@ export function SomeoneFollowedYou({
     }
   `, queryRef);
 
-  const user = useFragment(graphql`
-    fragment SomeoneFollowedYouUserFragment on GalleryUser {
-      ...FollowButtonUserFragment
-    }
-  `);
-
   const count = notification.count ?? 1;
   const lastFollower = notification.followers?.edges?.[0]?.node;
 
@@ -75,7 +67,7 @@ export function SomeoneFollowedYou({
         </>
       )}{' '}
       <BaseM>followed you</BaseM>
-      <FollowButton queryRef={query} userRef={user} />
+      <FollowButton queryRef={query} userRef={lastFollower} />
     </HStack>
   );
 }
