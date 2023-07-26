@@ -24,7 +24,6 @@ export const NOTES_PER_PAGE = 20;
 
 type CommentsModalProps = {
   fullscreen: boolean;
-  // eventRef: CommentsModalFragment$key;
   queryRef: CommentsModalQueryFragment$key;
   hasPrevious: boolean;
   loadPrevious: (count: number) => void;
@@ -33,7 +32,6 @@ type CommentsModalProps = {
   isSubmittingComment: boolean;
 };
 
-// pass in a list of comments
 export function CommentsModal({
   commentsRef,
   queryRef,
@@ -165,7 +163,6 @@ export function CommentsModal({
             )}
           </AutoSizer>
         </VStack>
-        {/* onSubmit */}
         <CommentBox
           queryRef={query}
           onSubmitComment={onSubmitComment}

@@ -34,8 +34,6 @@ export function NftSelectorToken({ tokenRef, onSelectToken, isInGroup = false }:
           }
         }
         ...RawNftSelectorPreviewAssetFragment
-        # eslint-disable-next-line relay/must-colocate-fragment-spreads
-        ...PostComposerFragment
       }
     `,
     tokenRef

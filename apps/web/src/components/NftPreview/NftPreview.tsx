@@ -115,7 +115,6 @@ function NftPreview({
     [onClick]
   );
 
-  // const shouldLiveRender = tokenSettings?.renderLive;
   const isIFrameLiveDisplay = Boolean(shouldLiveRender && token.media?.__typename === 'HtmlMedia');
   const isMobileOrLargeMobile = useIsMobileOrMobileLargeWindowWidth();
 

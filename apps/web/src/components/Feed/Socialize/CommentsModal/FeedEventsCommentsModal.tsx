@@ -83,7 +83,6 @@ export function FeedEventsCommentsModal({ eventRef, queryRef, fullscreen }: Prop
 
   const [commentOnFeedEvent, isSubmittingComment] = useCommentOnFeedEvent();
 
-  // handles specifically commenting on a feedevent
   const handleSubmitComment = useCallback(
     (comment: string) => {
       const { token } = query.viewer?.user?.profileImage ?? {};

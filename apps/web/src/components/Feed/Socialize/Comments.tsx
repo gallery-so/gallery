@@ -91,7 +91,6 @@ export function Comments({ eventRef, queryRef, onPotentialLayoutShift }: Props) 
   }, [feedItem, isMobile, query]);
 
   const handleAddCommentClick = useCallback(() => {
-    // todo handle signed out users
     showModal({
       content: ModalContent,
       isFullPage: isMobile,
