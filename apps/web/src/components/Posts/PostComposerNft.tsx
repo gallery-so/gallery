@@ -1,9 +1,7 @@
-import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { PostComposerNftFragment$key } from '~/generated/PostComposerNftFragment.graphql';
-import CloseIcon from '~/icons/CloseIcon';
 import colors from '~/shared/theme/colors';
 
 import breakpoints from '../core/breakpoints';
