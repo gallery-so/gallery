@@ -88,6 +88,7 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
   );
 
   const { push } = useRouter();
+
   const clearAllNotifications = useClearNotifications();
 
   /**
