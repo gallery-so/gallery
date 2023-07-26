@@ -61,7 +61,6 @@ export function CommentsBottomSheet({ bottomSheetRef, feedId, type }: CommentsBo
         postComment({
           feedId,
           value,
-          onSuccess: () => {},
         });
         return;
       }
@@ -69,7 +68,6 @@ export function CommentsBottomSheet({ bottomSheetRef, feedId, type }: CommentsBo
       submitComment({
         feedEventId: feedId,
         value,
-        onSuccess: () => {},
       });
     },
     [feedId, type, submitComment, postComment]

@@ -10,7 +10,7 @@ import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 type submitCommentProps = {
   feedEventId: string;
   value: string;
-  onSuccess: () => void;
+  onSuccess?: () => void;
 };
 
 export function useEventComment() {
@@ -41,7 +41,7 @@ export function useEventComment() {
 
   const relayEnvironment = useRelayEnvironment();
   const handleSubmit = useCallback(
-    async ({ feedEventId, value, onSuccess }: submitCommentProps) => {
+    async ({ feedEventId, value, onSuccess = () => {} }: submitCommentProps) => {
       if (value.length === 0) {
         return;
       }
