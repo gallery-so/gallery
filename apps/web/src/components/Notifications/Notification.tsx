@@ -87,7 +87,6 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
   );
 
   const { push } = useRouter();
-  console.log("query1", query);
   const clearAllNotifications = useClearNotifications();
 
   /**
@@ -217,7 +216,7 @@ function NotificationInner({ notificationRef, queryRef }: NotificationInnerProps
         }
       }
     `,
-    notificationRef,
+    notificationRef
   );
 
   const query = useFragment(
@@ -228,8 +227,6 @@ function NotificationInner({ notificationRef, queryRef }: NotificationInnerProps
     `,
     queryRef
   );
-
-  console.log("query2", query);
 
   const { hideDrawer } = useDrawerActions();
   const handleClose = useCallback(() => {

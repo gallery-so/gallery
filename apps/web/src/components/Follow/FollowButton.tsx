@@ -49,8 +49,6 @@ export default function FollowButton({ queryRef, userRef, className, source }: P
     queryRef
   );
 
-console.log("loggedInUserQuery", loggedInUserQuery)
-
   const userToFollow = useFragment(
     graphql`
       fragment FollowButtonUserFragment on GalleryUser {
