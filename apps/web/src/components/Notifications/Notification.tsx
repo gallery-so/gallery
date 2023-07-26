@@ -64,12 +64,15 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
         ...NotificationInnerFragment
       }
     `,
-    notificationRef
+    notificationRef,
   );
 
   const query = useFragment(
     graphql`
       fragment NotificationQueryFragment on Query {
+        ...NotificationInnerQueryFragment
+
+        ...FollowButtonQueryFragment
         viewer {
           ... on Viewer {
             id
@@ -81,7 +84,7 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
         }
       }
     `,
-    queryRef
+    queryRef,
   );
 
   const { push } = useRouter();
@@ -89,7 +92,7 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
   const clearAllNotifications = useClearNotifications();
 
   /**
-   * Bare with me here, this `useMemo` returns a stable function
+   * Bear with me here, this `useMemo` returns a stable function
    * if we want that notification type to have a clickable action.
    *
    * If the notification should not be clickable, we return undefined
@@ -106,7 +109,7 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
   const handleNotificationClick = useMemo((): NotificationClick => {
     function showUserListModal() {
       toggleSubView(
-        <NotificationUserListPage notificationId={notification.id} toggleSubView={toggleSubView} />
+        <NotificationUserListPage notificationId={notification.id} toggleSubView={toggleSubView} />,
       );
     }
 
@@ -182,9 +185,10 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
 
 type NotificationInnerProps = {
   notificationRef: NotificationInnerFragment$key;
+  queryRef: NotificationInnerQueryFragment$key;
 };
 
-function NotificationInner({ notificationRef }: NotificationInnerProps) {
+function NotificationInner({ notificationRef, queryRef }: NotificationInnerProps) {
   const notification = useFragment(
     graphql`
       fragment NotificationInnerFragment on Notification {
@@ -214,7 +218,16 @@ function NotificationInner({ notificationRef }: NotificationInnerProps) {
         }
       }
     `,
-    notificationRef
+    notificationRef,
+  );
+
+  const query = useFragment(
+    graphql`
+      fragment NotificationInnerQueryFragment on Query {
+        ...FollowButtonQueryFragment
+      }
+    `,
+    queryRef,
   );
 
   const { hideDrawer } = useDrawerActions();
@@ -227,7 +240,9 @@ function NotificationInner({ notificationRef }: NotificationInnerProps) {
   } else if (notification.__typename === 'SomeoneViewedYourGalleryNotification') {
     return <SomeoneViewedYourGallery notificationRef={notification} onClose={handleClose} />;
   } else if (notification.__typename === 'SomeoneFollowedYouNotification') {
-    return <SomeoneFollowedYou notificationRef={notification} onClose={handleClose} />;
+    return (
+      <SomeoneFollowedYou notificationRef={notification} queryRef={query} onClose={handleClose} />
+    );
   } else if (notification.__typename === 'SomeoneFollowedYouBackNotification') {
     return <SomeoneFollowedYouBack notificationRef={notification} onClose={handleClose} />;
   } else if (notification.__typename === 'SomeoneCommentedOnYourFeedEventNotification') {

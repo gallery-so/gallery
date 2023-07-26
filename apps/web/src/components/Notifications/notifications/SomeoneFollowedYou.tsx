@@ -6,13 +6,21 @@ import { BaseM } from '~/components/core/Text/Text';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { SomeoneFollowedYouFragment$key } from '~/generated/SomeoneFollowedYouFragment.graphql';
+import FollowButton from '~/components/Follow/FollowButton';
 
 type SomeoneFollowedYouProps = {
   notificationRef: SomeoneFollowedYouFragment$key;
+  queryRef: SomeoneFollowedYouQueryFragment$key;
+  userRef?: SomeoneFollowedYouUserFragment$key;
   onClose: () => void;
 };
 
-export function SomeoneFollowedYou({ notificationRef, onClose }: SomeoneFollowedYouProps) {
+export function SomeoneFollowedYou({
+  notificationRef,
+  onClose,
+  queryRef,
+  userRef,
+}: SomeoneFollowedYouProps) {
   const notification = useFragment(
     graphql`
       fragment SomeoneFollowedYouFragment on SomeoneFollowedYouNotification {
@@ -28,8 +36,52 @@ export function SomeoneFollowedYou({ notificationRef, onClose }: SomeoneFollowed
         }
       }
     `,
-    notificationRef
+    notificationRef,
   );
+
+  /////////////////////////////////////////////////////////////
+  // const query = useFragment(                              //
+  //   graphql`                                              //
+  //     fragment SomeoneFollowedYouQueryFragment on Query { //
+  //       ...FollowButtonQueryFragment                      //
+  //                                                         //
+  //       viewer {                                          //
+  //         ... on Viewer {                                 //
+  //           __typename                                    //
+  //           user {                                        //
+  //             dbid                                        //
+  //           }                                             //
+  //         }                                               //
+  //       }                                                 //
+  //                                                         //
+  ////////////////////////////////////////////////////////////
+  //   userByUsername(username: $username) {             // //
+  //     ... on GalleryUser {                            // //
+  //       dbid                                          // //
+  //       galleries {                                   // //
+  //         __typename                                  // //
+  //       }                                             // //
+  //       ...FollowButtonUserFragment                   // //
+  //     }                                               // //
+  //   }                                                 // //
+  // }                                                   // //
+  ////////////////////////////////////////////////////////////
+  //   `,                                                    //
+  //   queryRef                                              //
+  // );                                                      //
+  /////////////////////////////////////////////////////////////
+
+  const query = useFragment(graphql`
+    fragment SomeoneFollowedYouQueryFragment on Query {
+      ...FollowButtonQueryFragment
+    }
+  `, queryRef);
+
+  const user = useFragment(graphql`
+    fragment SomeoneFollowedYouUserFragment on GalleryUser {
+      ...FollowButtonUserFragment
+    }
+  `);
 
   const count = notification.count ?? 1;
   const lastFollower = notification.followers?.edges?.[0]?.node;
@@ -55,6 +107,7 @@ export function SomeoneFollowedYou({ notificationRef, onClose }: SomeoneFollowed
         </>
       )}{' '}
       <BaseM>followed you</BaseM>
+      <FollowButton queryRef={query} userRef={user} />
     </HStack>
   );
 }

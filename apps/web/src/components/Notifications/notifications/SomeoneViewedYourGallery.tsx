@@ -22,6 +22,34 @@ export function SomeoneViewedYourGallery({
   notificationRef,
   onClose,
 }: SomeoneViewedYourGalleryProps) {
+ const user = useFragment(
+    graphql`
+      fragment SomeoneViewedYourGalleryUserFragment on GalleryUser {
+        username
+        badges {
+          imageURL
+        }
+        bio
+        galleries {
+          tokenPreviews {
+            small
+          }
+          hidden
+        }
+      }
+    `,
+    userRef
+  );
+
+  const query = useFragment(
+    graphql`
+      fragment SomeoneViewedYourGalleryQueryFragment on Query {
+        ...FollowButtonQueryFragment
+      }
+    `,
+    queryRef
+  );
+
   const notification = useFragment(
     graphql`
       fragment SomeoneViewedYourGalleryFragment on SomeoneViewedYourGalleryNotification {
