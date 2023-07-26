@@ -54,7 +54,7 @@ export function SomeoneFollowedYou({
 
   return (
     <StyledHStack justify="space-between" align="center">
-      <HStack gap={4}>
+      <HStack gap={4} align="center">
         {count > 1 ? (
           <BaseM>
             <strong>{count} collectors</strong>
