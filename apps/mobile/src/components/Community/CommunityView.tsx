@@ -1,29 +1,22 @@
-import { useNavigation } from '@react-navigation/native';
-import { useCallback, useMemo } from 'react';
-import { View } from 'react-native';
+import clsx from 'clsx';
+import { useCallback, useMemo, useState } from 'react';
+import { View, ViewProps } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
-import { EthIcon } from 'src/icons/EthIcon';
-import { PoapIcon } from 'src/icons/PoapIcon';
-import { TezosIcon } from 'src/icons/TezosIcon';
 
-import { Chain, CommunityViewFragment$key } from '~/generated/CommunityViewFragment.graphql';
-import { MainTabStackNavigatorProp } from '~/navigation/types';
-import colors from '~/shared/theme/colors';
+import { CommunityViewFragment$key } from '~/generated/CommunityViewFragment.graphql';
 
 import { BackButton } from '../BackButton';
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
-import { LinkableAddress } from '../LinkableAddress';
-import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
-import { RawProfilePicture } from '../ProfilePicture/RawProfilePicture';
 import { Typography } from '../Typography';
-import { CommunityCollectorsList } from './CommunityCollectorsList';
+import { CommunityCollectors } from './CommunityCollectors';
 import { CommunityHeader } from './CommunityHeader';
+import { CommunityMeta } from './CommunityMeta';
 
 type Props = {
   queryRef: CommunityViewFragment$key;
 };
 
-const ENABLED_TOTAL_TOKENS = false;
+type CommunityInnerScreen = 'Posts' | 'Collectors';
 
 export function CommunityView({ queryRef }: Props) {
   const query = useFragment(
@@ -36,31 +29,13 @@ export function CommunityView({ queryRef }: Props) {
           }
           ... on Community {
             __typename
-            chain
-            contractAddress {
-              ...LinkableAddressFragment
-            }
-            creator {
-              __typename
-              ... on GalleryUser {
-                username
-                universal
-                ...ProfilePictureFragment
-              }
-              ... on ChainAddress {
-                ...LinkableAddressFragment
-              }
-            }
-            tokensInCommunity(first: 1) {
-              pageInfo {
-                total
-              }
-            }
             ...CommunityCollectorsListFragment
             ...CommunityHeaderFragment
+            ...CommunityCollectorsFragment
+            ...CommunityMetaFragment
           }
         }
-
+        ...CommunityCollectorsQueryFragment
         ...CommunityCollectorsListQueryFragment
       }
     `,
@@ -73,58 +48,19 @@ export function CommunityView({ queryRef }: Props) {
     throw new Error(`Unable to fetch the community`);
   }
 
-  const navigation = useNavigation<MainTabStackNavigatorProp>();
+  const [activeInnerScreen, setActiveInnerScreen] = useState<CommunityInnerScreen>('Collectors');
 
-  const handleUsernamePress = useCallback(() => {
-    if (community.creator?.__typename === 'GalleryUser' && community.creator?.username) {
-      navigation.navigate('Profile', { username: community.creator?.username });
-    }
-  }, [community.creator, navigation]);
-
-  const totalTokens = community.tokensInCommunity?.pageInfo?.total;
-
-  const formattedTotalTokens = useMemo(() => {
-    if (totalTokens && totalTokens > 999) {
-      return `${Math.floor(totalTokens / 1000)}K`;
-    }
-
-    return totalTokens;
-  }, [totalTokens]);
-
-  const showAddressOrGalleryUser = useMemo(() => {
-    if (community.creator?.__typename === 'GalleryUser' && !community.creator?.universal) {
-      return (
-        <GalleryTouchableOpacity
-          className="flex flex-row items-center space-x-1"
-          onPress={handleUsernamePress}
-          eventElementId="Community Page Creator Username"
-          eventName="Tapped Community Page Creator Username"
-        >
-          {community.creator.__typename && <ProfilePicture userRef={community.creator} size="xs" />}
-
-          <Typography
-            className="text-sm text-shadow"
-            font={{ family: 'ABCDiatype', weight: 'Regular' }}
-          >
-            {community.creator.username}
-          </Typography>
-        </GalleryTouchableOpacity>
-      );
-    } else if (community.contractAddress) {
-      return (
-        <View className="flex flex-row space-x-1 items-center">
-          <RawProfilePicture size="xs" default eventElementId={null} eventName={null} />
-          <LinkableAddress
-            chainAddressRef={community.contractAddress}
-            type="Community Contract Address"
-            textStyle={{ color: colors.shadow }}
-          />
-        </View>
-      );
+  const innnerScreen = useMemo(() => {
+    if (activeInnerScreen === 'Posts') {
+      return <View />;
     } else {
-      return null;
+      return <CommunityCollectors queryRef={query} communityRef={community} />;
     }
-  }, [community.creator, community.contractAddress, handleUsernamePress]);
+  }, [activeInnerScreen, community, query]);
+
+  const toggleInnerScreen = useCallback((screen: CommunityInnerScreen) => {
+    setActiveInnerScreen(screen);
+  }, []);
 
   return (
     <View className="flex-1">
@@ -135,78 +71,63 @@ export function CommunityView({ queryRef }: Props) {
       </View>
 
       <View className="flex-grow">
-        <View className="mb-4 px-4">
+        <View className="px-4">
           <CommunityHeader communityRef={community} />
-          <View className="mb-4 flex flex-row space-x-6">
-            {community?.chain !== 'POAP' && (
-              <View className="flex flex-column space-y-1">
-                <Typography
-                  font={{ family: 'ABCDiatype', weight: 'Regular' }}
-                  className="text-xs uppercase"
-                >
-                  created by
-                </Typography>
-                {showAddressOrGalleryUser}
-              </View>
-            )}
-            <View className="flex flex-column space-y-1">
-              <Typography
-                font={{ family: 'ABCDiatype', weight: 'Regular' }}
-                className="text-xs uppercase"
-              >
-                network
-              </Typography>
+          <CommunityMeta communityRef={community} />
+        </View>
 
-              {community.chain && (
-                <View className="flex flex-row space-x-1 items-center">
-                  <NetworkIcon chain={community.chain} />
-                  <Typography
-                    font={{ family: 'ABCDiatype', weight: 'Regular' }}
-                    className="text-sm text-shadow"
-                  >
-                    {community.chain}
-                  </Typography>
-                </View>
-              )}
-            </View>
-            {ENABLED_TOTAL_TOKENS && (
-              <View className="space-y-1">
-                <Typography
-                  font={{ family: 'ABCDiatype', weight: 'Regular' }}
-                  className="text-xs uppercase text-right"
-                >
-                  items
-                </Typography>
-
-                <Typography
-                  font={{ family: 'ABCDiatype', weight: 'Regular' }}
-                  className="text-sm text-shadow text-right"
-                >
-                  {formattedTotalTokens}
-                </Typography>
-              </View>
-            )}
+        <View className="items-center border-t border-b border-porcelain">
+          <View className="flex flex-row space-x-3 py-3">
+            <NavigationItem
+              active={activeInnerScreen === 'Posts'}
+              title="Posts"
+              onPress={() => {
+                toggleInnerScreen('Posts');
+              }}
+            />
+            <NavigationItem
+              active={activeInnerScreen === 'Collectors'}
+              title="Collectors"
+              onPress={() => {
+                toggleInnerScreen('Collectors');
+              }}
+            />
           </View>
         </View>
 
-        <Typography font={{ family: 'ABCDiatype', weight: 'Bold' }} className="text-sm mb-4 px-4">
-          Collectors on Gallery
-        </Typography>
-
-        <CommunityCollectorsList queryRef={query} communityRef={community} />
+        {innnerScreen}
       </View>
     </View>
   );
 }
 
-function NetworkIcon({ chain }: { chain: Chain }) {
-  if (chain === 'Ethereum') {
-    return <EthIcon />;
-  } else if (chain === 'POAP') {
-    return <PoapIcon className="w-4 h-4" />;
-  } else if (chain === 'Tezos') {
-    return <TezosIcon />;
-  }
+type NavigationItemProps = {
+  active: boolean;
+  onPress: () => void;
+  title: string;
+  style?: ViewProps['style'];
+};
 
-  return null;
+function NavigationItem({ active, onPress, style, title }: NavigationItemProps) {
+  return (
+    <GalleryTouchableOpacity
+      className="flex flex-row items-center space-x-1"
+      onPress={onPress}
+      eventElementId={null}
+      eventName={null}
+      style={style}
+    >
+      <Typography
+        font={{ family: 'ABCDiatype', weight: 'Medium' }}
+        className={clsx('text-metal', active && 'text-black-800')}
+      >
+        {title}
+      </Typography>
+      {active && <BlueDot />}
+    </GalleryTouchableOpacity>
+  );
+}
+
+function BlueDot({ style }: { style?: ViewProps['style'] }) {
+  return <View className="bg-activeBlue h-1.5 w-1.5 rounded-full" style={style} />;
 }
