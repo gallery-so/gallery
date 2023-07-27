@@ -4,9 +4,9 @@ import { TextInput, TextInputProps, View } from 'react-native';
 
 import colors from '~/shared/theme/colors';
 
-type Props = TextInputProps & { icon?: ReactNode };
+type Props = TextInputProps & { icon?: ReactNode; inputStyle: any };
 
-export function FadedInput({ value, onChange, icon, style, ...props }: Props) {
+export function FadedInput({ value, onChange, icon, style, inputStyle, ...props }: Props) {
   const { colorScheme } = useColorScheme();
 
   return (
@@ -18,6 +18,7 @@ export function FadedInput({ value, onChange, icon, style, ...props }: Props) {
       <TextInput
         style={{
           fontSize: 14,
+          flex: 1,
         }}
         className="dark:text-white"
         placeholderTextColor={colors.metal}
