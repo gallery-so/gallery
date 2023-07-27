@@ -36,7 +36,7 @@ export const chains = [
   {
     name: 'Base',
     shortName: 'BASE',
-    icon: '/icons/TODO.svg',
+    icon: '/icons/base_logo.svg',
     baseChain: 'Ethereum',
     hasCreatorSupport: false,
     isEnabled: false,
