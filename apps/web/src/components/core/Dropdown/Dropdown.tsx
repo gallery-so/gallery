@@ -52,6 +52,7 @@ export function Dropdown({
         active={active}
         onMouseLeave={onMouseLeave}
         onMouseEnter={onMouseEnter}
+        onClick={handleClose}
       >
         {children}
       </DropdownContainer>

@@ -15,13 +15,15 @@ import { getCommunityUrlForToken } from '~/utils/getCommunityUrlForToken';
 
 import { getFeedTokenDimensions } from '../dimensions';
 import { StyledTime } from '../Events/EventStyles';
+import PostDropdown from './PostDropdown';
 import PostNftPreview from './PostNftPreview';
 
 type Props = {
   postRef: PostDataFragment$key;
+  queryRef: PostDataQueryFragment$key;
 };
 
-export default function PostData({ postRef }: Props) {
+export default function PostData({ postRef, queryRef }: Props) {
   const post = useFragment(
     graphql`
       fragment PostDataFragment on Post {
@@ -42,9 +44,19 @@ export default function PostData({ postRef }: Props) {
           ...PostNftPreviewFragment
         }
         creationTime
+        ...PostDropdownFragment
       }
     `,
     postRef
+  );
+
+  const query = useFragment(
+    graphql`
+      fragment PostDataQueryFragment on Query {
+        ...PostDropdownQueryFragment
+      }
+    `,
+    queryRef
   );
 
   const breakpoint = useBreakpoint();
@@ -82,13 +94,19 @@ export default function PostData({ postRef }: Props) {
               )}
             </VStack>
           </HStack>
-          <StyledTime>{getTimeSince(post.creationTime)}</StyledTime>
+          <HStack align="center" gap={4}>
+            <StyledTime>{getTimeSince(post.creationTime)}</StyledTime>
+            <PostDropdown postRef={post} queryRef={query} />
+          </HStack>
         </HStack>
         <StyledCaption>{post.caption}</StyledCaption>
       </VStack>
       <StyledTokenContainer justify="center" align="center">
-        {token && <PostNftPreview tokenRef={token} tokenSize={tokenSize} />}
-        {!token && <BaseM color={colors.shadow}>There was an error displaying this item</BaseM>}
+        {token ? (
+          <PostNftPreview tokenRef={token} tokenSize={tokenSize} />
+        ) : (
+          <BaseM color={colors.shadow}>There was an error displaying this item</BaseM>
+        )}
       </StyledTokenContainer>
     </StyledPost>
   );
