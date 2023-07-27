@@ -5,6 +5,7 @@ import { InteractiveLink } from '~/components/InteractiveLink';
 
 import { Typography } from '../../components/Typography';
 import { ExternalLinkIcon } from '../../icons/ExternalLinkIcon';
+import colors from '~/shared/theme/colors';
 
 export function DetailSection({
   children,
@@ -20,7 +21,7 @@ export function DetailSection({
 export function DetailLabelText({ children }: PropsWithChildren) {
   return (
     <Typography
-      className="text-xs text-metal dark:color-metal"
+      className="text-xs text-[#707070] dark:color-metal"
       font={{ family: 'ABCDiatype', weight: 'Medium' }}
     >
       {children}

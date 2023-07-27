@@ -7,7 +7,6 @@ import { NftAdditionalDetailsEthFragment$key } from '~/generated/NftAdditionalDe
 import { extractMirrorXyzUrl } from '~/shared/utils/extractMirrorXyzUrl';
 import { getOpenseaExternalUrl, hexHandler } from '~/shared/utils/getOpenseaExternalUrl';
 import { IconContainer } from '~/components/IconContainer';
-import { ExternalLinkIcon } from '../../icons/ExternalLinkIcon';
 
 import { LinkableAddress } from '../../components/LinkableAddress';
 import {
