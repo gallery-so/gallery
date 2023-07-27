@@ -6,6 +6,8 @@ import { graphql } from 'relay-runtime';
 import { NftAdditionalDetailsEthFragment$key } from '~/generated/NftAdditionalDetailsEthFragment.graphql';
 import { extractMirrorXyzUrl } from '~/shared/utils/extractMirrorXyzUrl';
 import { getOpenseaExternalUrl, hexHandler } from '~/shared/utils/getOpenseaExternalUrl';
+import { IconContainer } from '~/components/IconContainer';
+import { ExternalLinkIcon } from '../../icons/ExternalLinkIcon';
 
 import { LinkableAddress } from '../../components/LinkableAddress';
 import {
@@ -38,7 +40,7 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionalDetailsEthPro
         }
       }
     `,
-    tokenRef
+    tokenRef,
   );
 
   const { tokenId, contract, externalUrl, chain, tokenMetadata } = token;
@@ -88,28 +90,38 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionalDetailsEthPro
           )}
         </View>
 
-        <View className="flex flex-row space-x-5">
+        <View className="flex flex-row space-x-4">
           {openSeaExternalUrl && (
             <DetailSection>
               <DetailLabelText>VIEW ON</DetailLabelText>
-              <DetailExternalLink
-                link={openSeaExternalUrl}
-                label="OpenSea"
-                trackingLabel="NFT Detail View on Opensea"
-              />
+              <View className="flex flex-row">
+                <DetailExternalLink
+                  link={openSeaExternalUrl}
+                  label="OpenSea"
+                  trackingLabel="NFT Detail View on Opensea"
+                  showExternalLinkIcon={true}
+                />
+              </View>
             </DetailSection>
           )}
 
           {mirrorXyzUrl && (
             <DetailSection>
               <DetailLabelText>VIEW ON</DetailLabelText>
-              <DetailExternalLink
-                link={mirrorXyzUrl}
-                label="Mirror"
-                trackingLabel="NFT Detail View on Mirror"
-              />
+              <View className="flex flex-row">
+                <DetailExternalLink
+                  link={mirrorXyzUrl}
+                  label="Mirror"
+                  trackingLabel="NFT Detail View on Mirror"
+                  showExternalLinkIcon={true}
+                />
+              </View>
             </DetailSection>
           )}
+
+          <DetailSection>
+            <DetailLabelText>{'    '}</DetailLabelText>
+          </DetailSection>
         </View>
 
         {externalUrl && (

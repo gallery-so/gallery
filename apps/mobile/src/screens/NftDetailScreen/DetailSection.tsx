@@ -44,8 +44,14 @@ type DetailExternalLinkProps = {
   link: string;
   label: string;
   trackingLabel: string;
+  showExternalLinkIcon?: boolean;
 };
-export function DetailExternalLink({ link, label, trackingLabel }: DetailExternalLinkProps) {
+export function DetailExternalLink({
+  link,
+  label,
+  trackingLabel,
+  showExternalLinkIcon = false,
+}: DetailExternalLinkProps) {
   return (
     <InteractiveLink href={link} type={trackingLabel}>
       <View className="flex flex-row space-x-1">
@@ -57,6 +63,7 @@ export function DetailExternalLink({ link, label, trackingLabel }: DetailExterna
         >
           {label}
         </Typography>
+        {showExternalLinkIcon && <ExternalLinkIcon />}
       </View>
     </InteractiveLink>
   );
