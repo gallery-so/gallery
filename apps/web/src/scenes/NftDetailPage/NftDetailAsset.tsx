@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -118,22 +118,6 @@ function NftDetailAssetComponentWithouFallback({
     tokenRef
   );
 
-  const { cacheLoadedImageUrls } = useNftPreviewFallbackState();
-  // figuring out content render URL will be a big switch/case statement
-  // maybe instead of defining switch/case statement here, we can actually
-  // extend `getVideoOrImageUrlForNftPreview.ts` and use the helper
-
-  const result = getVideoOrImageUrlForNftPreview({
-    tokenRef: token,
-    preferStillFrameFromGif: true,
-  });
-
-  const onLoad = useCallback(() => {
-    cacheLoadedImageUrls(token.dbid, 'raw', result?.contentRenderURL as string);
-    _onLoad();
-  }, [_onLoad, cacheLoadedImageUrls, result?.contentRenderURL, token?.dbid]);
-  onLoad();
-
   if (token.media.__typename === 'UnknownMedia') {
     // If we're dealing with UnknownMedia, we know the NFT is going to
     // fail to load, so we'll just immediately notify the parent
@@ -214,6 +198,7 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
     graphql`
       fragment NftDetailAssetTokenFragment on Token {
         dbid
+        ...getVideoOrImageUrlForNftPreviewFragment
         contract {
           contractAddress {
             address
@@ -248,12 +233,27 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
       tokenId: token.dbid,
     });
 
-  const { cachedUrls } = useNftPreviewFallbackState();
-  console.log('cachedUrls:', cachedUrls);
+  const { cacheLoadedImageUrls } = useNftPreviewFallbackState();
+
+  const result = getVideoOrImageUrlForNftPreview({
+    tokenRef: token,
+    preferStillFrameFromGif: true,
+  });
+
   const tokenId = token.dbid;
+
+  const { cachedUrls } = useNftPreviewFallbackState();
+
+  const handleRawLoad = useCallback(() => {
+    cacheLoadedImageUrls(tokenId, 'raw', result?.contentRenderURL as string);
+    handleNftLoaded();
+  }, [handleNftLoaded, cacheLoadedImageUrls, result?.contentRenderURL, tokenId]);
 
   const hasPreviewUrl = cachedUrls[tokenId]?.type === 'preview';
   const hasRawUrl = cachedUrls[tokenId]?.type === 'raw';
+
+  const shouldShowPreview = hasPreviewUrl && !hasRawUrl;
+  const shouldShowRaw = !hasPreviewUrl && hasRawUrl;
 
   return (
     <StyledAssetContainer
@@ -275,10 +275,14 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
           />
         }
       >
-        <StyledImageWrapper visible={hasPreviewUrl && !hasRawUrl}>
-          <StyledImage src={cachedUrls[tokenId]?.url} onLoad={handleNftLoaded} />
-        </StyledImageWrapper>
-        <NftDetailAssetComponent onLoad={handleNftLoaded} tokenRef={token} />
+        <VisibilityContainer>
+          <StyledImageWrapper className={shouldShowPreview ? 'visible' : ''}>
+            <StyledImage src={cachedUrls[tokenId]?.url} onLoad={handleNftLoaded} />
+          </StyledImageWrapper>
+          <NftDetailAssetWrapper className={shouldShowRaw ? 'visible' : ''}>
+            <NftDetailAssetComponent onLoad={handleRawLoad} tokenRef={token} />
+          </NftDetailAssetWrapper>
+        </VisibilityContainer>
       </NftFailureBoundary>
     </StyledAssetContainer>
   );
@@ -327,20 +331,42 @@ export const StyledImage = styled.img`
   border: none;
 `;
 
-interface WrapperProps extends React.HTMLAttributes<HTMLDivElement> {
-  visible?: boolean;
-}
+const VisibilityContainer = styled.div`
+  position: relative;
+  width: 100%;
+  padding-top: 100%; /* This creates a square container based on aspect ratio */
+`;
 
-const StyledImageWrapper = styled.div<WrapperProps>(({ visible }) => ({
-  display: visible ? 'block' : 'none',
-  transition: 'opacity 1s ease-in-out',
-}));
+const StyledImageWrapper = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease-in-out;
 
-// // Wrapper for NftDetailAssetComponent - Raw URL
-// const NftDetailAssetWrapper = styled.div<WrapperProps>(({ visible }) => ({
-//   opacity: visible ? 1 : 0,
-//   transition: '0.3s ease-in-out',
-//   zIndex: 10,
-// }));
+  &.visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+`;
+
+const NftDetailAssetWrapper = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease-in-out;
+
+  &.visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+`;
 
 export default NftDetailAsset;

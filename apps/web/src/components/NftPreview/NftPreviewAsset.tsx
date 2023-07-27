@@ -71,7 +71,7 @@ function NftPreviewAsset({ tokenRef, size, onLoad }: Props) {
     tokenRef
   );
 
-  const { cacheLoadedImageUrls, cachedUrls } = useNftPreviewFallbackState();
+  const { cacheLoadedImageUrls } = useNftPreviewFallbackState();
 
   const resizedNft =
     token.media && 'previewURLs' in token.media
@@ -87,16 +87,6 @@ function NftPreviewAsset({ tokenRef, size, onLoad }: Props) {
 
   const { url: src } = resizedNft;
 
-  // const handleAssetLoad = useCallback(() => {
-  //   // Call the updatePreviewUrlMap function from the context
-  //   if (token.dbid && src) {
-  //     cacheLoadedImageUrls(token.dbid, src, '');
-  //   }
-
-  //   // Call the onLoad event passed down as a prop to notify the parent component
-  //   onLoad();
-  // }, [token.dbid, src, updateLoadedUrlsMap, onLoad]);
-
   const handleAssetLoad = useCallback(() => {
     if (token.dbid && src) {
       cacheLoadedImageUrls(token.dbid, 'preview', src);
@@ -104,7 +94,6 @@ function NftPreviewAsset({ tokenRef, size, onLoad }: Props) {
     onLoad();
   }, [token.dbid, src, cacheLoadedImageUrls, onLoad]);
   onLoad();
-  console.log('cachedUrls:', cachedUrls);
   return <RawNftPreviewAsset src={src} onLoad={handleAssetLoad} alt={token.name} />;
 }
 
