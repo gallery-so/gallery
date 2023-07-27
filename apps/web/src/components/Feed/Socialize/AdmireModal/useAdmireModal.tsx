@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
 import { useModalActions } from '~/contexts/modal/ModalContext';
@@ -6,7 +6,9 @@ import { useAdmireModalFragment$key } from '~/generated/useAdmireModalFragment.g
 import { useAdmireModalQueryFragment$key } from '~/generated/useAdmireModalQueryFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 
-import { AdmireModal } from './AdmireModal';
+import AdmireFeedEventModal from './AdmireFeedEventModal';
+import { AdmirePostModal } from './AdmirePostModal';
+
 type Props = {
   eventRef: useAdmireModalFragment$key;
   queryRef: useAdmireModalQueryFragment$key;
@@ -14,8 +16,10 @@ type Props = {
 export function useAdmireModal({ eventRef, queryRef }: Props) {
   const event = useFragment(
     graphql`
-      fragment useAdmireModalFragment on FeedEvent {
-        ...AdmireModalFragment
+      fragment useAdmireModalFragment on FeedEventOrError {
+        __typename
+        ...AdmirePostModalFragment
+        ...AdmireFeedEventModalFragment
       }
     `,
     eventRef
@@ -24,7 +28,8 @@ export function useAdmireModal({ eventRef, queryRef }: Props) {
   const query = useFragment(
     graphql`
       fragment useAdmireModalQueryFragment on Query {
-        ...AdmireModalQueryFragment
+        ...AdmirePostModalQueryFragment
+        ...AdmireFeedEventModalQueryFragment
       }
     `,
     queryRef
@@ -33,12 +38,20 @@ export function useAdmireModal({ eventRef, queryRef }: Props) {
   const { showModal } = useModalActions();
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
+  const ModalContent = useMemo(() => {
+    if (event.__typename === 'FeedEvent') {
+      return <AdmireFeedEventModal fullscreen={isMobile} eventRef={event} queryRef={query} />;
+    }
+
+    return <AdmirePostModal fullscreen={isMobile} postRef={event} queryRef={query} />;
+  }, [event, isMobile, query]);
+
   return useCallback(() => {
     showModal({
-      content: <AdmireModal fullscreen={isMobile} eventRef={event} queryRef={query} />,
+      content: ModalContent,
       isFullPage: isMobile,
       isPaddingDisabled: true,
       headerVariant: 'standard',
     });
-  }, [event, isMobile, query, showModal]);
+  }, [ModalContent, isMobile, showModal]);
 }

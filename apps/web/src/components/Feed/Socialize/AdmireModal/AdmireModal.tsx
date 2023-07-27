@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
-import { useFragment, usePaginationFragment } from 'react-relay';
+import { useFragment } from 'react-relay';
 import {
   AutoSizer,
   CellMeasurer,
@@ -22,34 +22,26 @@ export const ADMIRES_PER_PAGE = 10;
 
 type AdmireModalProps = {
   fullscreen: boolean;
-  eventRef: AdmireModalFragment$key;
+  admireRefs: AdmireModalFragment$key;
   queryRef: AdmireModalQueryFragment$key;
+  loadPrevious: (count: number) => void;
+  hasPrevious: boolean;
 };
 
-export function AdmireModal({ eventRef, queryRef, fullscreen }: AdmireModalProps) {
-  const {
-    data: feedEvent,
-    loadPrevious,
-    hasPrevious,
-  } = usePaginationFragment(
+export function AdmireModal({
+  admireRefs,
+  queryRef,
+  fullscreen,
+  loadPrevious,
+  hasPrevious,
+}: AdmireModalProps) {
+  const admires = useFragment(
     graphql`
-      fragment AdmireModalFragment on FeedEvent
-      @refetchable(queryName: "AdmireModalRefetchableFragment") {
-        interactions(last: $interactionsFirst, before: $interactionsAfter)
-          @connection(key: "AdmiresModal_interactions") {
-          edges {
-            node {
-              __typename
-
-              ... on Admire {
-                ...AdmireNoteFragment
-              }
-            }
-          }
-        }
+      fragment AdmireModalFragment on Admire @relay(plural: true) {
+        ...AdmireNoteFragment
       }
     `,
-    eventRef
+    admireRefs
   );
 
   const query = useFragment(
@@ -61,18 +53,6 @@ export function AdmireModal({ eventRef, queryRef, fullscreen }: AdmireModalProps
     queryRef
   );
 
-  const nonNullInteractions = useMemo(() => {
-    const interactions = [];
-
-    for (const interaction of feedEvent.interactions?.edges ?? []) {
-      if (interaction?.node && interaction.node.__typename === 'Admire') {
-        interactions.push(interaction.node);
-      }
-    }
-
-    return interactions.reverse();
-  }, [feedEvent.interactions?.edges]);
-
   const [measurerCache] = useState(() => {
     return new CellMeasurerCache({
       fixedWidth: true,
@@ -80,10 +60,9 @@ export function AdmireModal({ eventRef, queryRef, fullscreen }: AdmireModalProps
     });
   });
 
-  const isRowLoaded = ({ index }: { index: number }) =>
-    !hasPrevious || index < nonNullInteractions.length;
+  const isRowLoaded = ({ index }: { index: number }) => !hasPrevious || index < admires.length;
 
-  const rowCount = hasPrevious ? nonNullInteractions.length + 1 : nonNullInteractions.length;
+  const rowCount = hasPrevious ? admires.length + 1 : admires.length;
 
   const handleLoadMore = useCallback(async () => {
     loadPrevious(ADMIRES_PER_PAGE);
@@ -91,7 +70,7 @@ export function AdmireModal({ eventRef, queryRef, fullscreen }: AdmireModalProps
 
   const rowRenderer = useCallback<ListRowRenderer>(
     ({ index, parent, key, style }) => {
-      const interaction = nonNullInteractions[nonNullInteractions.length - index - 1];
+      const interaction = admires[admires.length - index - 1];
 
       if (!interaction) {
         return null;
@@ -116,14 +95,14 @@ export function AdmireModal({ eventRef, queryRef, fullscreen }: AdmireModalProps
         </CellMeasurer>
       );
     },
-    [measurerCache, query, nonNullInteractions]
+    [measurerCache, query, admires]
   );
 
   const estimatedItemHeight = 50; // assuming each item is around 50px
 
   const estimatedContentHeight = useMemo(() => {
-    return Math.min(nonNullInteractions.length * estimatedItemHeight, 420);
-  }, [nonNullInteractions.length, estimatedItemHeight]);
+    return Math.min(admires.length * estimatedItemHeight, 420);
+  }, [admires.length, estimatedItemHeight]);
 
   return (
     <ModalContent fullscreen={fullscreen}>
@@ -144,7 +123,7 @@ export function AdmireModal({ eventRef, queryRef, fullscreen }: AdmireModalProps
                     width={width}
                     height={estimatedContentHeight}
                     rowRenderer={rowRenderer}
-                    rowCount={nonNullInteractions.length}
+                    rowCount={admires.length}
                     rowHeight={measurerCache.rowHeight}
                     onRowsRendered={onRowsRendered}
                     ref={registerChild}

@@ -19,7 +19,7 @@ export function LatestFeed({ queryRef }: Props) {
   } = usePaginationFragment<LatestFeedPaginationQuery, LatestFeedFragment$key>(
     graphql`
       fragment LatestFeedFragment on Query @refetchable(queryName: "LatestFeedPaginationQuery") {
-        globalFeed(last: $latestLast, before: $latestBefore)
+        globalFeed(last: $latestLast, before: $latestBefore, includePosts: $includePosts)
           @connection(key: "LatestFeedFragment_globalFeed") {
           edges {
             node {

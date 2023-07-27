@@ -6,7 +6,7 @@ import breakpoints from '~/components/core/breakpoints';
 import FullPageLoader from '~/components/core/Loader/FullPageLoader';
 import { StyledImageWithLoading } from '~/components/LoadingAsset/ImageWithLoading';
 import { StyledVideo } from '~/components/LoadingAsset/VideoWithLoading';
-import NftPreview from '~/components/NftPreview/NftPreview';
+import CollectionTokenPreview from '~/components/NftPreview/CollectionTokenPreview';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import ShimmerProvider from '~/contexts/shimmer/ShimmerContext';
 import { FeedEventNftPreviewWrapperFragment$key } from '~/generated/FeedEventNftPreviewWrapperFragment.graphql';
@@ -37,7 +37,7 @@ function FeedEventNftPreviewWrapper({ tokenRef, maxWidth, maxHeight }: Props) {
           dbid
         }
 
-        ...NftPreviewFragment
+        ...CollectionTokenPreviewFragment
       }
     `,
     tokenRef
@@ -72,7 +72,7 @@ function FeedEventNftPreviewWrapper({ tokenRef, maxWidth, maxHeight }: Props) {
       maxHeight={maxHeight}
       onClick={(e) => e.stopPropagation()}
     >
-      <NftPreview
+      <CollectionTokenPreview
         tokenRef={token}
         previewSize={maxWidth}
         onClick={handleClick}
@@ -90,7 +90,6 @@ const StyledNftPreviewWrapper = styled.div<{ maxWidth: number; maxHeight: number
   min-width: ${({ maxWidth }) => maxWidth ?? 150}px;
 
   ${StyledImageWithLoading}, ${StyledVideo} {
-    max-height: calc((100vw - 64px) / 3);
     max-width: ${({ maxWidth }) => maxWidth}px;
     max-height: ${({ maxHeight }) => maxHeight}px;
   }

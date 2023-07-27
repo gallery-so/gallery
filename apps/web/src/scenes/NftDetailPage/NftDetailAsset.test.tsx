@@ -150,6 +150,10 @@ const RetryImageMediaResponse: NftErrorContextRetryMutationMutation = {
         },
         badgeURL: 'http://someimage.com',
       },
+      owner: {
+        id: 'testOwnerId',
+        username: 'Test Username',
+      },
     },
   },
 };
