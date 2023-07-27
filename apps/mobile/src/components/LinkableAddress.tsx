@@ -32,7 +32,7 @@ export function LinkableAddress({
         ...walletGetExternalAddressLinkFragment
       }
     `,
-    chainAddressRef,
+    chainAddressRef
   );
 
   const link = getExternalAddressLink(address);
@@ -84,8 +84,6 @@ export function RawLinkableAddress({
   textStyle,
   font,
 }: RawLinkableAddressProps) {
-  console.log('truncatedAddress', truncatedAddress);
-
   return (
     <InteractiveLink href={link} type={type} style={style} textStyle={textStyle} font={font}>
       {truncatedAddress || address}

@@ -104,6 +104,7 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionalDetailsEthPro
                   label="OpenSea"
                   trackingLabel="NFT Detail View on Opensea"
                   showExternalLinkIcon={true}
+                  font={{ family: 'ABCDiatype', weight: 'Bold' }}
                 />
               </View>
             </DetailSection>
@@ -118,6 +119,7 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionalDetailsEthPro
                   label="Mirror"
                   trackingLabel="NFT Detail View on Mirror"
                   showExternalLinkIcon={true}
+                  font={{ family: 'ABCDiatype', weight: 'Bold' }}
                 />
               </View>
             </DetailSection>

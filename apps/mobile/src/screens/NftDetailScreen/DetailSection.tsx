@@ -46,12 +46,14 @@ type DetailExternalLinkProps = {
   link: string;
   label: string;
   trackingLabel: string;
+  font?: TypographyProps['font'];
   showExternalLinkIcon?: boolean;
 };
 export function DetailExternalLink({
   link,
   label,
   trackingLabel,
+  font,
   showExternalLinkIcon = false,
 }: DetailExternalLinkProps) {
   return (
@@ -61,7 +63,7 @@ export function DetailExternalLink({
           numberOfLines={1}
           ellipsizeMode="middle"
           className="text-sm"
-          font={{ family: 'ABCDiatype', weight: 'Bold' }}
+          font={font ?? { family: 'ABCDiatype', weight: 'Regular' }}
         >
           {label}
         </Typography>
