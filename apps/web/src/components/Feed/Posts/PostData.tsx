@@ -8,6 +8,7 @@ import { BaseM, BaseS } from '~/components/core/Text/Text';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { PostDataFragment$key } from '~/generated/PostDataFragment.graphql';
+import { PostDataQueryFragment$key } from '~/generated/PostDataQueryFragment.graphql';
 import useWindowSize, { useBreakpoint } from '~/hooks/useWindowSize';
 import colors from '~/shared/theme/colors';
 import { getTimeSince } from '~/shared/utils/time';
