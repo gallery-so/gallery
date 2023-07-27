@@ -1,5 +1,6 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { useRouter } from 'next/router';
 import { Route } from 'nextjs-routes';
 import { useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
@@ -94,6 +95,9 @@ export default function Gallery({
     `,
     queryRef
   );
+
+  const router = useRouter();
+  const { mode } = router.query;
 
   if (!gallery?.owner?.username) {
     throw new Error('This gallery does not have an owner.');
@@ -265,7 +269,7 @@ export default function Gallery({
 
   return (
     <StyledGalleryWrapper isDragging={isDragging}>
-      <UnstyledLink href={isAuthenticatedUser ? galleryEditLink : galleryLink}>
+      <UnstyledLink href={isAuthenticatedUser && mode === 'edit' ? galleryEditLink : galleryLink}>
         <StyledGalleryDraggable
           gap={12}
           isAuthedUser={isAuthenticatedUser}
