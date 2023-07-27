@@ -61,7 +61,6 @@ const StyledViewCommentsText = styled.div.attrs({ role: 'button' })`
   font-family: ${BODY_FONT_FAMILY};
   font-size: 14px;
   line-height: 1;
-  font-weight: 700;
 
   color: ${colors.shadow};
 `;

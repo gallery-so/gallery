@@ -4,7 +4,7 @@ import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';
-import { TitleDiatypeM } from '~/components/core/Text/Text';
+import { BaseM } from '~/components/core/Text/Text';
 import { CommentLine } from '~/components/Feed/Socialize/CommentLine';
 import { RemainingCommentCount } from '~/components/Feed/Socialize/RemainingCommentCount';
 import { useModalActions } from '~/contexts/modal/ModalContext';
@@ -187,6 +187,6 @@ export function Comments({ eventRef, queryRef, onPotentialLayoutShift }: Props) 
   );
 }
 
-const StyledAddCommentCta = styled(TitleDiatypeM)`
+const StyledAddCommentCta = styled(BaseM)`
   cursor: pointer;
 `;
