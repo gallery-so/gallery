@@ -66,7 +66,7 @@ export function DetailExternalLink({
           {label}
         </Typography>
         {showExternalLinkIcon && (
-          <View className="flex align-center justify-center pb-1">
+          <View className="flex align-center justify-center">
             <ExternalLinkIcon />
           </View>
         )}

@@ -13,9 +13,16 @@ type LinkableAddressProps = {
   type: InteractiveLinkProps['type'];
   style?: ViewProps['style'];
   textStyle?: TextProps['style'];
+  font?: TypographyProps['font'];
 };
 
-export function LinkableAddress({ chainAddressRef, type, style, textStyle }: LinkableAddressProps) {
+export function LinkableAddress({
+  chainAddressRef,
+  type,
+  style,
+  textStyle,
+  font,
+}: LinkableAddressProps) {
   const address = useFragment(
     graphql`
       fragment LinkableAddressFragment on ChainAddress {
@@ -25,7 +32,7 @@ export function LinkableAddress({ chainAddressRef, type, style, textStyle }: Lin
         ...walletGetExternalAddressLinkFragment
       }
     `,
-    chainAddressRef
+    chainAddressRef,
   );
 
   const link = getExternalAddressLink(address);
@@ -50,6 +57,7 @@ export function LinkableAddress({ chainAddressRef, type, style, textStyle }: Lin
         address={address.address}
         style={style}
         textStyle={textStyle}
+        font={font}
       />
     );
   } else {
@@ -64,6 +72,7 @@ type RawLinkableAddressProps = {
   type: InteractiveLinkProps['type'];
   style?: ViewProps['style'];
   textStyle?: TextProps['style'];
+  font?: TypographyProps['font'];
 };
 
 export function RawLinkableAddress({
@@ -73,9 +82,12 @@ export function RawLinkableAddress({
   type,
   style,
   textStyle,
+  font,
 }: RawLinkableAddressProps) {
+  console.log('truncatedAddress', truncatedAddress);
+
   return (
-    <InteractiveLink href={link} type={type} style={style} textStyle={textStyle}>
+    <InteractiveLink href={link} type={type} style={style} textStyle={textStyle} font={font}>
       {truncatedAddress || address}
     </InteractiveLink>
   );

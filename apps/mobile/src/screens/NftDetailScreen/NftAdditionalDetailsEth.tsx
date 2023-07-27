@@ -63,14 +63,19 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionalDetailsEthPro
   return (
     <View className="flex flex-col space-y-4">
       <View className="flex flex-col space-y-4">
-        <View className="flex flex-row space-x-4">
+        <View className="flex flex-row space-x-3">
           {contract?.contractAddress?.address && (
             <DetailSection>
               <DetailLabelText>CONTRACT</DetailLabelText>
-              <LinkableAddress
-                chainAddressRef={contract.contractAddress}
-                type="NFT Detail Contract Address"
-              />
+              <DetailValue>
+                <LinkableAddress
+                  chainAddressRef={contract.contractAddress}
+                  type="NFT Detail Contract Address"
+                  textStyle={{ color: 'black' }}
+                  style={{ paddingTop: 4 }}
+                  font={{ family: 'ABCDiatype', weight: 'Bold' }}
+                />
+              </DetailValue>
             </DetailSection>
           )}
 
@@ -89,7 +94,7 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionalDetailsEthPro
           )}
         </View>
 
-        <View className="flex flex-row space-x-4">
+        <View className="flex flex-row space-x-3">
           {openSeaExternalUrl && (
             <DetailSection>
               <DetailLabelText>VIEW ON</DetailLabelText>
@@ -118,16 +123,16 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionalDetailsEthPro
             </DetailSection>
           )}
 
-          <DetailSection>
-            <DetailLabelText>{'    '}</DetailLabelText>
-          </DetailSection>
+          {externalUrl ? (
+            <DetailSection>
+              <DetailMoreInfoLink link={externalUrl} />
+            </DetailSection>
+          ) : (
+            <DetailSection>
+              <DetailLabelText>{'    '}</DetailLabelText>
+            </DetailSection>
+          )}
         </View>
-
-        {externalUrl && (
-          <DetailSection>
-            <DetailMoreInfoLink link={externalUrl} />
-          </DetailSection>
-        )}
       </View>
     </View>
   );
