@@ -6,7 +6,6 @@ import { graphql } from 'relay-runtime';
 import { NftAdditionalDetailsEthFragment$key } from '~/generated/NftAdditionalDetailsEthFragment.graphql';
 import { extractMirrorXyzUrl } from '~/shared/utils/extractMirrorXyzUrl';
 import { getOpenseaExternalUrl, hexHandler } from '~/shared/utils/getOpenseaExternalUrl';
-import { IconContainer } from '~/components/IconContainer';
 
 import { LinkableAddress } from '../../components/LinkableAddress';
 import {
@@ -39,7 +38,7 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionalDetailsEthPro
         }
       }
     `,
-    tokenRef,
+    tokenRef
   );
 
   const { tokenId, contract, externalUrl, chain, tokenMetadata } = token;

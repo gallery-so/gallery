@@ -5,7 +5,6 @@ import { InteractiveLink } from '~/components/InteractiveLink';
 
 import { Typography } from '../../components/Typography';
 import { ExternalLinkIcon } from '../../icons/ExternalLinkIcon';
-import colors from '~/shared/theme/colors';
 
 export function DetailSection({
   children,
