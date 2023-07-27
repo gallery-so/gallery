@@ -1,3 +1,4 @@
+import { useMemo, useState } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
@@ -32,6 +33,9 @@ export function SomeoneFollowedYou({
               ...FollowButtonUserFragment
               ...HoverCardOnUsernameFragment
               ...ProfilePictureFragment
+              ... on GalleryUser {
+                dbid
+              }
             }
           }
         }
@@ -41,9 +45,20 @@ export function SomeoneFollowedYou({
   );
 
   const query = useFragment(
+    // eslint-disable-next-line relay/graphql-syntax
     graphql`
       fragment SomeoneFollowedYouQueryFragment on Query {
         ...FollowButtonQueryFragment
+        viewer {
+          ... on Viewer {
+            user {
+              id
+              following {
+                id
+              }
+            }
+          }
+        }
       }
     `,
     queryRef
@@ -51,6 +66,23 @@ export function SomeoneFollowedYou({
 
   const count = notification.count ?? 1;
   const lastFollower = notification.followers?.edges?.[0]?.node;
+
+  const isFollowingBack = useMemo(() => {
+    const followingList = new Set(
+      (query.viewer?.user?.following ?? []).map((following: { id: string } | null) =>
+        following?.id?.replace('GalleryUser:', '')
+      )
+    );
+    const lastFollowerUser = notification.followers?.edges?.[0];
+    if (lastFollowerUser && !followingList.has(lastFollowerUser.node?.dbid)) {
+      return true;
+    }
+    return false;
+  }, [query.viewer?.user?.following, notification.followers?.edges]);
+
+  const [isInitiallyFollowingBack] = useState(isFollowingBack);
+  const shouldShowFollowBackButton =
+    count === 1 && lastFollower && (isInitiallyFollowingBack || isFollowingBack);
 
   return (
     <StyledHStack justify="space-between" align="center">
@@ -75,11 +107,17 @@ export function SomeoneFollowedYou({
         )}
         <BaseM>followed you</BaseM>
       </HStack>
-      {count === 1 && lastFollower && <FollowButton queryRef={query} userRef={lastFollower} />}
+      {shouldShowFollowBackButton && <StyledFollowButton queryRef={query} userRef={lastFollower} />}
     </StyledHStack>
   );
 }
 
 const StyledHStack = styled(HStack)`
   width: 100%;
+`;
+
+const StyledFollowButton = styled(FollowButton)`
+  padding: 2px 8px;
+  width: 92px;
+  height: 24px;
 `;
