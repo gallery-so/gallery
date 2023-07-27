@@ -81,6 +81,7 @@ export function RawProfilePicture({
           <ProfilePictureText
             style={{
               fontSize,
+              lineHeight: `${fontSize}px`,
             }}
           >
             <InlineBlockWrapper>{rest.letter.toUpperCase()}</InlineBlockWrapper>
