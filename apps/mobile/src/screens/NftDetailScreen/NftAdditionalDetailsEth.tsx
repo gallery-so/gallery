@@ -91,7 +91,6 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionalDetailsEthPro
 
           {openSeaExternalUrl && (
             <DetailSection>
-              <DetailLabelText>VIEW ON</DetailLabelText>
               <DetailExternalLink
                 link={openSeaExternalUrl}
                 label="OpenSea"
@@ -102,7 +101,6 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionalDetailsEthPro
 
           {mirrorXyzUrl && (
             <DetailSection>
-              <DetailLabelText>VIEW ON</DetailLabelText>
               <DetailExternalLink
                 link={mirrorXyzUrl}
                 label="Mirror"

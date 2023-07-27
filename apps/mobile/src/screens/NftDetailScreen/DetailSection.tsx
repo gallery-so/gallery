@@ -65,7 +65,6 @@ export function DetailExternalLink({ link, label, trackingLabel }: DetailExterna
         >
           {label}
         </Typography>
-        Expand Down
       </View>
     </InteractiveLink>
   );
