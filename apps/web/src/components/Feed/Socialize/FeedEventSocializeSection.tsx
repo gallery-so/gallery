@@ -11,6 +11,7 @@ import { FeedEventSocializeSectionFragment$key } from '~/generated/FeedEventSoci
 import { FeedEventSocializeSectionQueryFragment$key } from '~/generated/FeedEventSocializeSectionQueryFragment.graphql';
 import useAdmireFeedEvent from '~/hooks/api/feedEvents/useAdmireFeedEvent';
 import useRemoveAdmireFeedEvent from '~/hooks/api/feedEvents/useRemoveAdmireFeedEvent';
+import getOptimisticUserInfo from '~/utils/getOptimisticUserInfo';
 
 import { AdmireLine } from './AdmireLine';
 
@@ -57,7 +58,7 @@ export function FeedEventSocializeSection({
   const [removeAdmireFeedEvent] = useRemoveAdmireFeedEvent();
 
   const handleAdmireFeedEvent = useCallback(() => {
-    admireFeedEvent(event.id, event.dbid, query);
+    admireFeedEvent(event.id, event.dbid, getOptimisticUserInfo(query));
   }, [admireFeedEvent, event.dbid, event.id, query]);
   return (
     <VStack gap={4}>

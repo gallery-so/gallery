@@ -7,6 +7,7 @@ import { PostSocializeSectionFragment$key } from '~/generated/PostSocializeSecti
 import { PostSocializeSectionQueryFragment$key } from '~/generated/PostSocializeSectionQueryFragment.graphql';
 import useAdmirePost from '~/hooks/api/posts/useAdmirePost';
 import useRemoveAdmirePost from '~/hooks/api/posts/useRemoveAdmirePost';
+import getOptimisticUserInfo from '~/utils/getOptimisticUserInfo';
 
 import { AdmireButton } from './AdmireButton';
 import { AdmireLine } from './AdmireLine';
@@ -53,7 +54,7 @@ export default function PostSocializeSection({ onPotentialLayoutShift, postRef, 
   const [removeAdmirePost] = useRemoveAdmirePost();
 
   const handleAdmireClick = useCallback(() => {
-    admirePost(post.id, post.dbid, query);
+    admirePost(post.id, post.dbid, getOptimisticUserInfo(query));
   }, [admirePost, post.dbid, post.id, query]);
 
   return (

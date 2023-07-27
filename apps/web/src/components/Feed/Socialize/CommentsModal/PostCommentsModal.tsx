@@ -4,6 +4,7 @@ import { graphql, useFragment, usePaginationFragment } from 'react-relay';
 import { PostCommentsModalFragment$key } from '~/generated/PostCommentsModalFragment.graphql';
 import { PostCommentsModalQueryFragment$key } from '~/generated/PostCommentsModalQueryFragment.graphql';
 import useCommentOnPost from '~/hooks/api/posts/useCommentOnPost';
+import getOptimisticUserInfo from '~/utils/getOptimisticUserInfo';
 
 import { CommentsModal } from './CommentsModal';
 type Props = {
@@ -65,7 +66,7 @@ export default function PostCommentsModal({ postRef, queryRef, fullscreen }: Pro
 
   const handleSubmitComment = useCallback(
     (comment: string) => {
-      commentOnPost(post.id, post.dbid, comment, query);
+      commentOnPost(post.id, post.dbid, comment, getOptimisticUserInfo(query));
     },
     [commentOnPost, post.dbid, post.id, query]
   );

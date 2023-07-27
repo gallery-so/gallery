@@ -3,11 +3,10 @@ import { ConnectionHandler, graphql } from 'react-relay';
 import { SelectorStoreUpdater } from 'relay-runtime';
 
 import { useToastActions } from '~/contexts/toast/ToastContext';
-import { getOptimisticUserInfoQueryFragment$key } from '~/generated/getOptimisticUserInfoQueryFragment.graphql';
 import { useAdmirePostMutation } from '~/generated/useAdmirePostMutation.graphql';
 import { AdditionalContext, useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
-import getOptimisticUserInfo from '~/utils/getOptimisticUserInfo';
+import { OptimisticUserInfo } from '~/utils/getOptimisticUserInfo';
 
 export default function useAdmirePost() {
   const [admire] = usePromisifiedMutation<useAdmirePostMutation>(graphql`
@@ -30,7 +29,7 @@ export default function useAdmirePost() {
   const reportError = useReportError();
 
   const admirePost = useCallback(
-    async (postId: string, postDbid: string, queryRef: getOptimisticUserInfoQueryFragment$key) => {
+    async (postId: string, postDbid: string, optimisticUserInfo: OptimisticUserInfo) => {
       const interactionsConnection = ConnectionHandler.getConnectionID(
         postId,
         'Interactions_previewAdmires'
@@ -56,7 +55,6 @@ export default function useAdmirePost() {
         response
       ) => {
         if (response?.admirePost?.__typename === 'AdmirePostPayload') {
-          // update store
           const pageInfo = store.get(interactionsConnection)?.getLinkedRecord('pageInfo');
 
           pageInfo?.setValue(((pageInfo?.getValue('total') as number) ?? 0) + 1, 'total');
@@ -64,7 +62,6 @@ export default function useAdmirePost() {
       };
 
       const optimisticId = Math.random().toString();
-      const optimisticUserInfo = getOptimisticUserInfo(queryRef);
       const hasProfileImage = optimisticUserInfo.profileImageUrl !== null;
 
       const tokenProfileImagePayload = hasProfileImage
@@ -121,13 +118,7 @@ export default function useAdmirePost() {
           },
         });
 
-        if (
-          response.admirePost?.__typename !== 'AdmirePostPayload'
-
-          // todo add to graphql schema
-
-          // && response.admirePost?.__typename !== 'ErrAdmireAlreadyExists'
-        ) {
+        if (response.admirePost?.__typename !== 'AdmirePostPayload') {
           pushErrorToast();
 
           reportError(`Could not admire post, typename was ${response.admirePost?.__typename}`, {
