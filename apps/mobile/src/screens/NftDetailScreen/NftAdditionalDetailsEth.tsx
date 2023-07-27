@@ -62,7 +62,7 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionalDetailsEthPro
   return (
     <View className="flex flex-col space-y-4">
       <View className="flex flex-col space-y-4">
-        <View className="flex flex-row space-x-16">
+        <View className="flex flex-row space-x-4">
           {contract?.contractAddress?.address && (
             <DetailSection>
               <DetailLabelText>CONTRACT</DetailLabelText>
@@ -79,18 +79,19 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionalDetailsEthPro
               <DetailValue>{hexHandler(tokenId)}</DetailValue>
             </DetailSection>
           )}
-        </View>
 
-        <View className="flex flex-row space-x-16">
           {token.chain && (
             <DetailSection>
               <DetailLabelText>NETWORK</DetailLabelText>
               <DetailValue>{token.chain}</DetailValue>
             </DetailSection>
           )}
+        </View>
 
+        <View className="flex flex-row space-x-5">
           {openSeaExternalUrl && (
             <DetailSection>
+              <DetailLabelText>VIEW ON</DetailLabelText>
               <DetailExternalLink
                 link={openSeaExternalUrl}
                 label="OpenSea"
@@ -101,6 +102,7 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionalDetailsEthPro
 
           {mirrorXyzUrl && (
             <DetailSection>
+              <DetailLabelText>VIEW ON</DetailLabelText>
               <DetailExternalLink
                 link={mirrorXyzUrl}
                 label="Mirror"
