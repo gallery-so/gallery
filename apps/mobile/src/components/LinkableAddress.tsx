@@ -6,7 +6,7 @@ import { LinkableAddressFragment$key } from '~/generated/LinkableAddressFragment
 import { getExternalAddressLink, graphqlTruncateAddress } from '~/shared/utils/wallet';
 
 import { InteractiveLink, InteractiveLinkProps } from './InteractiveLink';
-import { Typography } from './Typography';
+import { Typography, TypographyProps } from './Typography';
 
 type LinkableAddressProps = {
   chainAddressRef: LinkableAddressFragment$key;

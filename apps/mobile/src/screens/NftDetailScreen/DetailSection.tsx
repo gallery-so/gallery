@@ -3,7 +3,7 @@ import { View, ViewProps } from 'react-native';
 
 import { InteractiveLink } from '~/components/InteractiveLink';
 
-import { Typography } from '../../components/Typography';
+import { Typography, TypographyProps } from '../../components/Typography';
 import { ExternalLinkIcon } from '../../icons/ExternalLinkIcon';
 
 export function DetailSection({
