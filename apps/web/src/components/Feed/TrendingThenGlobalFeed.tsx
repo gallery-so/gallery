@@ -7,6 +7,7 @@ import { TrendingThenGlobalFeedGlobalPaginationQuery } from '~/generated/Trendin
 import { TrendingThenGlobalFeedTrendingFragment$key } from '~/generated/TrendingThenGlobalFeedTrendingFragment.graphql';
 import { TrendingThenGlobalFeedTrendingPaginationQuery } from '~/generated/TrendingThenGlobalFeedTrendingPaginationQuery.graphql';
 import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
+import isProduction from '~/utils/isProduction';
 
 import { useTrackLoadMoreFeedEvents } from './analytics';
 import { ITEMS_PER_PAGE } from './constants';
@@ -37,7 +38,7 @@ export default function TrendingThenGlobalFeed({ queryRef }: Props) {
     graphql`
       fragment TrendingThenGlobalFeedGlobalFragment on Query
       @refetchable(queryName: "TrendingThenGlobalFeedGlobalPaginationQuery") {
-        globalFeed(before: $globalBefore, last: $globalLast)
+        globalFeed(before: $globalBefore, last: $globalLast, includePosts: $includePosts)
           @connection(key: "NonAuthedFeed_globalFeed") {
           edges {
             node {
@@ -63,7 +64,7 @@ export default function TrendingThenGlobalFeed({ queryRef }: Props) {
     graphql`
       fragment TrendingThenGlobalFeedTrendingFragment on Query
       @refetchable(queryName: "TrendingThenGlobalFeedTrendingPaginationQuery") {
-        trendingFeed(before: $trendingBefore, last: $trendingLast)
+        trendingFeed(before: $trendingBefore, last: $trendingLast, includePosts: $includePosts)
           @connection(key: "NonAuthedFeed_trendingFeed") {
           edges {
             node {

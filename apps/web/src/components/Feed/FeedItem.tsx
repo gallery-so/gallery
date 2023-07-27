@@ -154,8 +154,6 @@ export default function FeedItemWithBoundary({
             />
           )}
         </ReportingErrorBoundary>
-
-        <ReportingErrorBoundary dontReport fallback={<></>}></ReportingErrorBoundary>
       </FeedItemContainer>
     </ReportingErrorBoundary>
   );

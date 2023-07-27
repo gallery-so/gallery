@@ -24,7 +24,7 @@ function UserActivityFeed({ userRef, queryRef }: Props) {
     graphql`
       fragment UserActivityFeedFragment on GalleryUser
       @refetchable(queryName: "UserFeedByUserIdPaginationQuery") {
-        feed(before: $viewerBefore, last: $viewerLast)
+        feed(before: $viewerBefore, last: $viewerLast, includePosts: $includePosts)
           @connection(key: "UserActivityFeedFragment_feed") {
           edges {
             node {

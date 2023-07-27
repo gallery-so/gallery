@@ -93,7 +93,6 @@ export function CommentsModal({
             return (
               // @ts-expect-error Bad types from react-virtualized
               <div style={style} ref={registerChild} key={key}>
-                {/* commentRef */}
                 <CommentNote commentRef={interaction} />
               </div>
             );

@@ -7,7 +7,6 @@ import { PostSocializeSectionFragment$key } from '~/generated/PostSocializeSecti
 import { PostSocializeSectionQueryFragment$key } from '~/generated/PostSocializeSectionQueryFragment.graphql';
 import useAdmirePost from '~/hooks/api/posts/useAdmirePost';
 import useRemoveAdmirePost from '~/hooks/api/posts/useRemoveAdmirePost';
-import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
 
 import { AdmireButton } from './AdmireButton';
 import { AdmireLine } from './AdmireLine';
@@ -40,24 +39,7 @@ export default function PostSocializeSection({ onPotentialLayoutShift, postRef, 
   const query = useFragment(
     graphql`
       fragment PostSocializeSectionQueryFragment on Query {
-        viewer {
-          ... on Viewer {
-            user {
-              id
-              dbid
-              username
-              profileImage {
-                ... on TokenProfileImage {
-                  token {
-                    dbid
-                    id
-                    ...getVideoOrImageUrlForNftPreviewFragment
-                  }
-                }
-              }
-            }
-          }
-        }
+        ...getOptimisticUserInfoQueryFragment
         ...AdmireButtonQueryFragment
         ...AdmireLineQueryFragment
         ...CommentBoxIconQueryFragment
@@ -71,24 +53,8 @@ export default function PostSocializeSection({ onPotentialLayoutShift, postRef, 
   const [removeAdmirePost] = useRemoveAdmirePost();
 
   const handleAdmireClick = useCallback(() => {
-    const { token } = query.viewer?.user?.profileImage ?? {};
-    const user = query.viewer?.user;
-    if (!user) {
-      return;
-    }
-
-    const result = token
-      ? getVideoOrImageUrlForNftPreview({
-          tokenRef: token,
-        })
-      : null;
-    admirePost(post.id, post.dbid, {
-      id: user.id,
-      dbid: user.dbid,
-      username: user.username ?? '',
-      profileImageUrl: result?.urls?.small ?? '',
-    });
-  }, [admirePost, post.dbid, post.id, query.viewer?.user]);
+    admirePost(post.id, post.dbid, query);
+  }, [admirePost, post.dbid, post.id, query]);
 
   return (
     <VStack gap={4}>

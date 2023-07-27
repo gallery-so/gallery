@@ -3,11 +3,11 @@ import { ConnectionHandler, graphql } from 'react-relay';
 import { SelectorStoreUpdater } from 'relay-runtime';
 
 import { useToastActions } from '~/contexts/toast/ToastContext';
+import { getOptimisticUserInfoQueryFragment$key } from '~/generated/getOptimisticUserInfoQueryFragment.graphql';
 import { useCommentOnFeedEventMutation } from '~/generated/useCommentOnFeedEventMutation.graphql';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
-
-import { OptimisticUserInfo } from '../posts/useAdmirePost';
+import getOptimisticUserInfo from '~/utils/getOptimisticUserInfo';
 
 export default function useCommentOnFeedEvent() {
   const [submitComment, isSubmittingComment] =
@@ -46,7 +46,7 @@ export default function useCommentOnFeedEvent() {
       eventId: string,
       eventDbid: string,
       comment: string,
-      optimisticUserInfo: OptimisticUserInfo
+      queryRef: getOptimisticUserInfoQueryFragment$key
     ) => {
       try {
         const interactionsConnection = ConnectionHandler.getConnectionID(
@@ -70,7 +70,8 @@ export default function useCommentOnFeedEvent() {
         };
 
         const optimisticId = Math.random().toString();
-
+        const optimisticUserInfo = getOptimisticUserInfo(queryRef);
+        console.log({ optimisticUserInfo });
         const hasProfileImage = optimisticUserInfo.profileImageUrl !== null;
 
         const tokenProfileImagePayload = hasProfileImage
@@ -124,10 +125,7 @@ export default function useCommentOnFeedEvent() {
           },
         });
 
-        if (response.commentOnFeedEvent?.__typename === 'CommentOnFeedEventPayload') {
-          // TODO: reset input state
-          // resetInputState();
-        } else {
+        if (response.commentOnFeedEvent?.__typename !== 'CommentOnFeedEventPayload') {
           pushErrorToast();
 
           reportError(

@@ -10,8 +10,7 @@ import { Comments } from '~/components/Feed/Socialize/Comments';
 import { FeedEventSocializeSectionFragment$key } from '~/generated/FeedEventSocializeSectionFragment.graphql';
 import { FeedEventSocializeSectionQueryFragment$key } from '~/generated/FeedEventSocializeSectionQueryFragment.graphql';
 import useAdmireFeedEvent from '~/hooks/api/feedEvents/useAdmireFeedEvent';
-import useRemovedAdmireFeedEvent from '~/hooks/api/feedEvents/useRemoveAdmireFeedEvent';
-import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
+import useRemoveAdmireFeedEvent from '~/hooks/api/feedEvents/useRemoveAdmireFeedEvent';
 
 import { AdmireLine } from './AdmireLine';
 
@@ -44,24 +43,7 @@ export function FeedEventSocializeSection({
   const query = useFragment(
     graphql`
       fragment FeedEventSocializeSectionQueryFragment on Query {
-        viewer {
-          ... on Viewer {
-            user {
-              id
-              dbid
-              username
-              profileImage {
-                ... on TokenProfileImage {
-                  token {
-                    dbid
-                    id
-                    ...getVideoOrImageUrlForNftPreviewFragment
-                  }
-                }
-              }
-            }
-          }
-        }
+        ...getOptimisticUserInfoQueryFragment
         ...AdmireButtonQueryFragment
         ...AdmireLineQueryFragment
         ...CommentBoxIconQueryFragment
@@ -72,28 +54,11 @@ export function FeedEventSocializeSection({
   );
 
   const [admireFeedEvent] = useAdmireFeedEvent();
-  const [removeAdmireFeedEvent] = useRemovedAdmireFeedEvent();
+  const [removeAdmireFeedEvent] = useRemoveAdmireFeedEvent();
 
   const handleAdmireFeedEvent = useCallback(() => {
-    const { token } = query.viewer?.user?.profileImage ?? {};
-    const user = query.viewer?.user;
-    if (!user) {
-      return;
-    }
-
-    const result = token
-      ? getVideoOrImageUrlForNftPreview({
-          tokenRef: token,
-        })
-      : null;
-
-    admireFeedEvent(event.id, event.dbid, {
-      id: user.id,
-      dbid: user.dbid,
-      username: user.username ?? '',
-      profileImageUrl: result?.urls?.small ?? '',
-    });
-  }, [admireFeedEvent, event.dbid, event.id, query.viewer?.user]);
+    admireFeedEvent(event.id, event.dbid, query);
+  }, [admireFeedEvent, event.dbid, event.id, query]);
   return (
     <VStack gap={4}>
       <HStack justify="space-between" align="center" gap={24}>

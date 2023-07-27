@@ -4,7 +4,6 @@ import { graphql, useFragment, usePaginationFragment } from 'react-relay';
 import { PostCommentsModalFragment$key } from '~/generated/PostCommentsModalFragment.graphql';
 import { PostCommentsModalQueryFragment$key } from '~/generated/PostCommentsModalQueryFragment.graphql';
 import useCommentOnPost from '~/hooks/api/posts/useCommentOnPost';
-import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
 
 import { CommentsModal } from './CommentsModal';
 type Props = {
@@ -43,24 +42,7 @@ export default function PostCommentsModal({ postRef, queryRef, fullscreen }: Pro
   const query = useFragment(
     graphql`
       fragment PostCommentsModalQueryFragment on Query {
-        viewer {
-          ... on Viewer {
-            user {
-              id
-              dbid
-              username
-              profileImage {
-                ... on TokenProfileImage {
-                  token {
-                    dbid
-                    id
-                    ...getVideoOrImageUrlForNftPreviewFragment
-                  }
-                }
-              }
-            }
-          }
-        }
+        ...getOptimisticUserInfoQueryFragment
         ...CommentsModalQueryFragment
       }
     `,
@@ -83,25 +65,9 @@ export default function PostCommentsModal({ postRef, queryRef, fullscreen }: Pro
 
   const handleSubmitComment = useCallback(
     (comment: string) => {
-      const { token } = query.viewer?.user?.profileImage ?? {};
-      const user = query.viewer?.user;
-      if (!user) {
-        return;
-      }
-
-      const result = token
-        ? getVideoOrImageUrlForNftPreview({
-            tokenRef: token,
-          })
-        : null;
-      commentOnPost(post.id, post.dbid, comment, {
-        id: user.id,
-        dbid: user.dbid,
-        username: user.username ?? '',
-        profileImageUrl: result?.urls?.small ?? '',
-      });
+      commentOnPost(post.id, post.dbid, comment, query);
     },
-    [commentOnPost, post.dbid, post.id, query.viewer?.user]
+    [commentOnPost, post.dbid, post.id, query]
   );
 
   return (

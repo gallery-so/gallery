@@ -3,16 +3,11 @@ import { ConnectionHandler, graphql } from 'react-relay';
 import { SelectorStoreUpdater } from 'relay-runtime';
 
 import { useToastActions } from '~/contexts/toast/ToastContext';
+import { getOptimisticUserInfoQueryFragment$key } from '~/generated/getOptimisticUserInfoQueryFragment.graphql';
 import { useAdmirePostMutation } from '~/generated/useAdmirePostMutation.graphql';
 import { AdditionalContext, useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
-
-export type OptimisticUserInfo = {
-  id: string;
-  dbid: string;
-  username: string;
-  profileImageUrl: string;
-};
+import getOptimisticUserInfo from '~/utils/getOptimisticUserInfo';
 
 export default function useAdmirePost() {
   const [admire] = usePromisifiedMutation<useAdmirePostMutation>(graphql`
@@ -35,7 +30,7 @@ export default function useAdmirePost() {
   const reportError = useReportError();
 
   const admirePost = useCallback(
-    async (postId: string, postDbid: string, optimisticUserInfo: OptimisticUserInfo) => {
+    async (postId: string, postDbid: string, queryRef: getOptimisticUserInfoQueryFragment$key) => {
       const interactionsConnection = ConnectionHandler.getConnectionID(
         postId,
         'Interactions_previewAdmires'
@@ -56,8 +51,6 @@ export default function useAdmirePost() {
         });
       }
 
-      const optimisticId = Math.random().toString();
-
       const updater: SelectorStoreUpdater<useAdmirePostMutation['response']> = (
         store,
         response
@@ -70,6 +63,8 @@ export default function useAdmirePost() {
         }
       };
 
+      const optimisticId = Math.random().toString();
+      const optimisticUserInfo = getOptimisticUserInfo(queryRef);
       const hasProfileImage = optimisticUserInfo.profileImageUrl !== null;
 
       const tokenProfileImagePayload = hasProfileImage

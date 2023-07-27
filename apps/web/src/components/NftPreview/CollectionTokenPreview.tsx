@@ -44,7 +44,6 @@ export default function CollectionTokenPreview({
   const { collection, tokenSettings } = collectionToken;
   const shouldLiveRender = !!tokenSettings?.renderLive;
 
-  // const shouldLiverender = 'depends on collection toekn setting';
   return (
     <NftPreview
       onClick={onClick}

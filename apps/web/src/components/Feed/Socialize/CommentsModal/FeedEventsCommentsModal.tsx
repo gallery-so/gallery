@@ -4,7 +4,6 @@ import { graphql, useFragment, usePaginationFragment } from 'react-relay';
 import { FeedEventsCommentsModalFragment$key } from '~/generated/FeedEventsCommentsModalFragment.graphql';
 import { FeedEventsCommentsModalQueryFragment$key } from '~/generated/FeedEventsCommentsModalQueryFragment.graphql';
 import useCommentOnFeedEvent from '~/hooks/api/feedEvents/useCommentOnFeedEvent';
-import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
 
 import { CommentsModal } from './CommentsModal';
 
@@ -45,24 +44,7 @@ export function FeedEventsCommentsModal({ eventRef, queryRef, fullscreen }: Prop
   const query = useFragment(
     graphql`
       fragment FeedEventsCommentsModalQueryFragment on Query {
-        viewer {
-          ... on Viewer {
-            user {
-              id
-              dbid
-              username
-              profileImage {
-                ... on TokenProfileImage {
-                  token {
-                    dbid
-                    id
-                    ...getVideoOrImageUrlForNftPreviewFragment
-                  }
-                }
-              }
-            }
-          }
-        }
+        ...getOptimisticUserInfoQueryFragment
         ...CommentsModalQueryFragment
       }
     `,
@@ -85,25 +67,9 @@ export function FeedEventsCommentsModal({ eventRef, queryRef, fullscreen }: Prop
 
   const handleSubmitComment = useCallback(
     (comment: string) => {
-      const { token } = query.viewer?.user?.profileImage ?? {};
-      const user = query.viewer?.user;
-      if (!user) {
-        return;
-      }
-
-      const result = token
-        ? getVideoOrImageUrlForNftPreview({
-            tokenRef: token,
-          })
-        : null;
-      commentOnFeedEvent(feedEvent.id, feedEvent.dbid, comment, {
-        id: user.id,
-        dbid: user.dbid,
-        username: user.username ?? '',
-        profileImageUrl: result?.urls?.small ?? '',
-      });
+      commentOnFeedEvent(feedEvent.id, feedEvent.dbid, comment, query);
     },
-    [commentOnFeedEvent, feedEvent.dbid, feedEvent.id, query.viewer?.user]
+    [commentOnFeedEvent, feedEvent.dbid, feedEvent.id, query]
   );
 
   return (

@@ -90,7 +90,6 @@ const StyledNftPreviewWrapper = styled.div<{ maxWidth: number; maxHeight: number
   min-width: ${({ maxWidth }) => maxWidth ?? 150}px;
 
   ${StyledImageWithLoading}, ${StyledVideo} {
-    max-height: calc((100vw - 64px) / 3);
     max-width: ${({ maxWidth }) => maxWidth}px;
     max-height: ${({ maxHeight }) => maxHeight}px;
   }

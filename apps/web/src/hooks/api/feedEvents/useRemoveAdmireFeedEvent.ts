@@ -6,7 +6,7 @@ import { useRemoveAdmireFeedEventMutation } from '~/generated/useRemoveAdmireFee
 import { AdditionalContext, useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 
-export default function useRemovedAdmireFeedEvent() {
+export default function useRemoveAdmireFeedEvent() {
   const [removeAdmire] = usePromisifiedMutation<useRemoveAdmireFeedEventMutation>(graphql`
     mutation useRemoveAdmireFeedEventMutation($admireId: DBID!) @raw_response_type {
       removeAdmire(admireId: $admireId) {

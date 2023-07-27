@@ -3,11 +3,11 @@ import { ConnectionHandler, graphql } from 'react-relay';
 import { SelectorStoreUpdater } from 'relay-runtime';
 
 import { useToastActions } from '~/contexts/toast/ToastContext';
+import { getOptimisticUserInfoQueryFragment$key } from '~/generated/getOptimisticUserInfoQueryFragment.graphql';
 import { useCommentOnPostMutation } from '~/generated/useCommentOnPostMutation.graphql';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
-
-import { OptimisticUserInfo } from './useAdmirePost';
+import getOptimisticUserInfo from '~/utils/getOptimisticUserInfo';
 
 export default function useCommentOnPost() {
   const [submitComment, isSubmittingComment] =
@@ -42,7 +42,7 @@ export default function useCommentOnPost() {
       postId: string,
       postDbid: string,
       comment: string,
-      optimisticUserInfo: OptimisticUserInfo
+      queryRef: getOptimisticUserInfoQueryFragment$key
     ) => {
       try {
         const interactionsConnection = ConnectionHandler.getConnectionID(
@@ -66,6 +66,7 @@ export default function useCommentOnPost() {
         };
 
         const optimisticId = Math.random().toString();
+        const optimisticUserInfo = getOptimisticUserInfo(queryRef);
 
         const hasProfileImage = optimisticUserInfo.profileImageUrl !== null;
 
@@ -120,9 +121,7 @@ export default function useCommentOnPost() {
           },
         });
 
-        if (response.commentOnPost?.__typename === 'CommentOnPostPayload') {
-          // resetInputState()
-        } else {
+        if (response.commentOnPost?.__typename !== 'CommentOnPostPayload') {
           pushErrorToast();
 
           reportError(

@@ -28,7 +28,7 @@ export default function PostData({ postRef }: Props) {
         __typename
         dbid
         caption
-        author {
+        author @required(action: THROW) {
           ... on GalleryUser {
             ...ProfilePictureFragment
             ...HoverCardOnUsernameFragment
@@ -70,9 +70,9 @@ export default function PostData({ postRef }: Props) {
       <VStack gap={6}>
         <HStack justify="space-between">
           <HStack align="center" gap={6}>
-            {post.author && <ProfilePicture userRef={post.author} size="md" />}
+            <ProfilePicture userRef={post.author} size="md" />
             <VStack>
-              {post.author && <HoverCardOnUsername userRef={post.author} />}
+              <HoverCardOnUsername userRef={post.author} />
               {communityUrl ? (
                 <StyledInteractiveLink to={communityUrl}>
                   <BaseS color={colors.shadow}>{token?.community?.name}</BaseS>

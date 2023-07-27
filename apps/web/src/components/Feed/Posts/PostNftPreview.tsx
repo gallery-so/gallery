@@ -84,7 +84,6 @@ const StyledPostNftPreview = styled.div<{ width: number; height: number }>`
   height: ${({ height }) => height}px;
 
   ${StyledImageWithLoading}, ${StyledVideo} {
-    max-height: calc((100vw - 64px) / 3);
     max-width: ${({ width }) => width}px;
     max-height: ${({ height }) => height}px;
   }

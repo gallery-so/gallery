@@ -3,7 +3,6 @@ import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import { BODY_FONT_FAMILY } from '~/components/core/Text/Text';
-// import { NoteModalOpenerText } from '~/components/Feed/Socialize/NoteModalOpenerText';
 import { RemainingCommentCountFragment$key } from '~/generated/RemainingCommentCountFragment.graphql';
 import { RemainingCommentCountQueryFragment$key } from '~/generated/RemainingCommentCountQueryFragment.graphql';
 import colors from '~/shared/theme/colors';

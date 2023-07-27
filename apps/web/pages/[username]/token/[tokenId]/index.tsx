@@ -37,10 +37,9 @@ export default function TokenDetailPage({ username, tokenId }: TokenDetailPagePr
   }, [userRoute, push]);
 
   useKeyDown('Escape', handleReturnToUserPage);
-  console.log('here', { username, tokenId });
 
   if (!tokenId) {
-    return <GalleryRedirect to={{ pathname: '/' }} />;
+    return <GalleryRedirect to={{ pathname: `/[username]`, query: { username } }} />;
   }
 
   return (

@@ -3,11 +3,11 @@ import { ConnectionHandler } from 'react-relay';
 import { graphql, SelectorStoreUpdater } from 'relay-runtime';
 
 import { useToastActions } from '~/contexts/toast/ToastContext';
+import { getOptimisticUserInfoQueryFragment$key } from '~/generated/getOptimisticUserInfoQueryFragment.graphql';
 import { useAdmireFeedEventMutation } from '~/generated/useAdmireFeedEventMutation.graphql';
 import { AdditionalContext, useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
-
-import { OptimisticUserInfo } from '../posts/useAdmirePost';
+import getOptimisticUserInfo from '~/utils/getOptimisticUserInfo';
 
 export default function useAdmireFeedEvent() {
   const [admire] = usePromisifiedMutation<useAdmireFeedEventMutation>(graphql`
@@ -34,7 +34,11 @@ export default function useAdmireFeedEvent() {
   const reportError = useReportError();
 
   const admireFeedEvent = useCallback(
-    async (eventId: string, eventDbid: string, optimisticUserInfo: OptimisticUserInfo) => {
+    async (
+      eventId: string,
+      eventDbid: string,
+      queryRef: getOptimisticUserInfoQueryFragment$key
+    ) => {
       const interactionsConnection = ConnectionHandler.getConnectionID(
         eventId,
         'Interactions_previewAdmires'
@@ -54,7 +58,6 @@ export default function useAdmireFeedEvent() {
           message: `Something went wrong while admiring this post. We're actively looking into it.`,
         });
       }
-      const optimisticId = Math.random().toString();
       const updater: SelectorStoreUpdater<useAdmireFeedEventMutation['response']> = (
         store,
         response
@@ -65,7 +68,8 @@ export default function useAdmireFeedEvent() {
           pageInfo?.setValue(((pageInfo?.getValue('total') as number) ?? 0) + 1, 'total');
         }
       };
-
+      const optimisticId = Math.random().toString();
+      const optimisticUserInfo = getOptimisticUserInfo(queryRef);
       const hasProfileImage = optimisticUserInfo.profileImageUrl !== null;
 
       const tokenProfileImagePayload = hasProfileImage
