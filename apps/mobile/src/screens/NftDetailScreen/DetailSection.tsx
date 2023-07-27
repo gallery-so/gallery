@@ -4,6 +4,7 @@ import { View, ViewProps } from 'react-native';
 import { InteractiveLink } from '~/components/InteractiveLink';
 
 import { Typography } from '../../components/Typography';
+import { ExternalLinkIcon } from '../../icons/ExternalLinkIcon';
 
 export function DetailSection({
   children,
@@ -54,7 +55,7 @@ export function DetailExternalLink({
 }: DetailExternalLinkProps) {
   return (
     <InteractiveLink href={link} type={trackingLabel}>
-      <View className="flex flex-row space-x-1">
+      <View className="flex flex-row">
         <Typography
           numberOfLines={1}
           ellipsizeMode="middle"
@@ -63,7 +64,11 @@ export function DetailExternalLink({
         >
           {label}
         </Typography>
-        {showExternalLinkIcon && <ExternalLinkIcon />}
+        {showExternalLinkIcon && (
+          <View className="flex align-center justify-center pb-1">
+            <ExternalLinkIcon />
+          </View>
+        )}
       </View>
     </InteractiveLink>
   );
