@@ -104,7 +104,7 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionalDetailsEthPro
               <DetailExternalLink
                 link={mirrorXyzUrl}
                 label="Mirror"
-                trackingLabel="NFT Detail View on Opensea"
+                trackingLabel="NFT Detail View on Mirror"
               />
             </DetailSection>
           )}
