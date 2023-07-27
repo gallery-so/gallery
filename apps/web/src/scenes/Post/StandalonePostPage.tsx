@@ -45,7 +45,9 @@ function StandalonePostPage({ queryRef }: Props) {
     const token = post.tokens && post.tokens[0];
 
     if (post.caption) {
-      return `${post.author?.username} on Gallery: "${post.caption.slice(0, 30)}"`;
+      const truncatedCaption =
+        post.caption.length > 30 ? `${post.caption.slice(0, 30)}...` : post.caption;
+      return `${post.author?.username} on Gallery: "${truncatedCaption}"`;
     }
 
     return token
