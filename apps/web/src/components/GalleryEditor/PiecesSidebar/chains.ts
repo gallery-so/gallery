@@ -34,6 +34,14 @@ export const chains = [
     isEnabled: true,
   },
   {
+    name: 'Base',
+    shortName: 'BASE',
+    icon: '/icons/TODO.svg',
+    baseChain: 'Ethereum',
+    hasCreatorSupport: false,
+    isEnabled: false,
+  },
+  {
     name: 'Optimism',
     shortName: 'OP',
     icon: '/icons/op_logo.svg',
