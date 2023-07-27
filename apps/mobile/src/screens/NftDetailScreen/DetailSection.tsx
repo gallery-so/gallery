@@ -53,15 +53,7 @@ export function DetailExternalLink({ link, label, trackingLabel }: DetailExterna
           numberOfLines={1}
           ellipsizeMode="middle"
           className="text-sm"
-          font={{ family: 'ABCDiatype', weight: 'Regular' }}
-        >
-          View on
-        </Typography>
-        <Typography
-          numberOfLines={1}
-          ellipsizeMode="middle"
-          className="text-sm"
-          font={{ family: 'ABCDiatype', weight: 'Medium' }}
+          font={{ family: 'ABCDiatype', weight: 'Bold' }}
         >
           {label}
         </Typography>
