@@ -4,9 +4,9 @@ import { TextInput, TextInputProps, View } from 'react-native';
 
 import colors from '~/shared/theme/colors';
 
-type Props = TextInputProps & { icon?: ReactNode; inputStyle: any };
+type Props = TextInputProps & { icon?: ReactNode };
 
-export function FadedInput({ value, onChange, icon, style, inputStyle, ...props }: Props) {
+export function FadedInput({ value, onChange, icon, style, ...props }: Props) {
   const { colorScheme } = useColorScheme();
 
   return (
