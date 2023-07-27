@@ -1,3 +1,4 @@
+import { useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -16,6 +17,7 @@ import { useNftRetry } from '~/hooks/useNftRetry';
 import { useBreakpoint } from '~/hooks/useWindowSize';
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
+import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
 import { getBackgroundColorOverrideForContract } from '~/utils/token';
 
 import NftDetailAnimation from './NftDetailAnimation';
@@ -70,13 +72,14 @@ type NftDetailAssetComponentWithoutFallbackProps = {
 
 function NftDetailAssetComponentWithouFallback({
   tokenRef,
-  onLoad,
+  onLoad: _onLoad,
 }: NftDetailAssetComponentWithoutFallbackProps) {
   const token = useFragment(
     graphql`
       fragment NftDetailAssetComponentWithoutFallbackFragment on Token {
+        dbid
         name
-
+        ...getVideoOrImageUrlForNftPreviewFragment
         media @required(action: THROW) {
           ... on VideoMedia {
             __typename
@@ -115,6 +118,22 @@ function NftDetailAssetComponentWithouFallback({
     tokenRef
   );
 
+  const { cacheLoadedImageUrls } = useNftPreviewFallbackState();
+  // figuring out content render URL will be a big switch/case statement
+  // maybe instead of defining switch/case statement here, we can actually
+  // extend `getVideoOrImageUrlForNftPreview.ts` and use the helper
+
+  const result = getVideoOrImageUrlForNftPreview({
+    tokenRef: token,
+    preferStillFrameFromGif: true,
+  });
+
+  const onLoad = useCallback(() => {
+    cacheLoadedImageUrls(token.dbid, 'raw', result?.contentRenderURL as string);
+    _onLoad();
+  }, [_onLoad, cacheLoadedImageUrls, result?.contentRenderURL, token?.dbid]);
+  onLoad();
+
   if (token.media.__typename === 'UnknownMedia') {
     // If we're dealing with UnknownMedia, we know the NFT is going to
     // fail to load, so we'll just immediately notify the parent
@@ -124,11 +143,11 @@ function NftDetailAssetComponentWithouFallback({
 
   switch (token.media.__typename) {
     case 'HtmlMedia':
-      return <NftDetailAnimation onLoad={onLoad} mediaRef={token} />;
+      return <NftDetailAnimation onLoad={_onLoad} mediaRef={token} />;
     case 'VideoMedia':
-      return <NftDetailVideo onLoad={onLoad} mediaRef={token.media} />;
+      return <NftDetailVideo onLoad={_onLoad} mediaRef={token.media} />;
     case 'AudioMedia':
-      return <NftDetailAudio onLoad={onLoad} tokenRef={token} />;
+      return <NftDetailAudio onLoad={_onLoad} tokenRef={token} />;
     case 'ImageMedia':
       const imageMedia = token.media;
 
@@ -142,7 +161,7 @@ function NftDetailAssetComponentWithouFallback({
       return (
         <NftDetailImage
           alt={token.name}
-          onLoad={onLoad}
+          onLoad={_onLoad}
           imageUrl={imageMedia.contentRenderURL}
           onClick={() => {
             if (imageMedia.contentRenderURL) {
@@ -156,7 +175,7 @@ function NftDetailAssetComponentWithouFallback({
 
       return (
         <NftDetailGif
-          onLoad={onLoad}
+          onLoad={_onLoad}
           tokenRef={token}
           onClick={() => {
             if (gifMedia.contentRenderURL) {
@@ -166,9 +185,9 @@ function NftDetailAssetComponentWithouFallback({
         />
       );
     case 'GltfMedia':
-      return <NftDetailModel onLoad={onLoad} mediaRef={token.media} fullHeight />;
+      return <NftDetailModel onLoad={_onLoad} mediaRef={token.media} fullHeight />;
     default:
-      return <NftDetailAnimation onLoad={onLoad} mediaRef={token} />;
+      return <NftDetailAnimation onLoad={_onLoad} mediaRef={token} />;
   }
 }
 
@@ -229,13 +248,12 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
       tokenId: token.dbid,
     });
 
-  const { loadedUrlsMap } = useNftPreviewFallbackState();
-  console.log('loadedUrlsMap:', loadedUrlsMap);
+  const { cachedUrls } = useNftPreviewFallbackState();
+  console.log('cachedUrls:', cachedUrls);
   const tokenId = token.dbid;
 
-  const hasPreviewUrl = !!loadedUrlsMap[tokenId]?.previewUrl;
-  const hasRawUrl = !!loadedUrlsMap[tokenId]?.rawUrl;
-  console.log('hasRawUrl:', hasRawUrl);
+  const hasPreviewUrl = cachedUrls[tokenId]?.type === 'preview';
+  const hasRawUrl = cachedUrls[tokenId]?.type === 'raw';
 
   return (
     <StyledAssetContainer
@@ -257,8 +275,8 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
           />
         }
       >
-        <StyledImageWrapper visible={hasPreviewUrl}>
-          <StyledImage src={loadedUrlsMap[tokenId]?.previewUrl} onLoad={handleNftLoaded} />
+        <StyledImageWrapper visible={hasPreviewUrl && !hasRawUrl}>
+          <StyledImage src={cachedUrls[tokenId]?.url} onLoad={handleNftLoaded} />
         </StyledImageWrapper>
         <NftDetailAssetComponent onLoad={handleNftLoaded} tokenRef={token} />
       </NftFailureBoundary>
@@ -313,16 +331,16 @@ interface WrapperProps extends React.HTMLAttributes<HTMLDivElement> {
   visible?: boolean;
 }
 
-// Wrapper for StyledImage - Preview URL
 const StyledImageWrapper = styled.div<WrapperProps>(({ visible }) => ({
-  opacity: visible ? 1 : 0,
-  transition: 'opacity 0.3s ease-in-out',
+  display: visible ? 'block' : 'none',
+  transition: 'opacity 1s ease-in-out',
 }));
 
-// Wrapper for NftDetailAssetComponent - Raw URL
+// // Wrapper for NftDetailAssetComponent - Raw URL
 // const NftDetailAssetWrapper = styled.div<WrapperProps>(({ visible }) => ({
 //   opacity: visible ? 1 : 0,
-//   transition: 'opacity 0.3s ease-in-out',
+//   transition: '0.3s ease-in-out',
+//   zIndex: 10,
 // }));
 
 export default NftDetailAsset;

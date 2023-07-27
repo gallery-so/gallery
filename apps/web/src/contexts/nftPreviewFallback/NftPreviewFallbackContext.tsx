@@ -7,14 +7,25 @@ interface LoadedUrlsMap {
   };
 }
 
+export type CacheParams = {
+  [tokenId: string]: {
+    type: 'preview' | 'raw';
+    url: string;
+  };
+};
+
 type NftPreviewFallbackState = {
   loadedUrlsMap: LoadedUrlsMap;
   updateLoadedUrlsMap: (tokenId: string, previewUrl: string, rawUrl: string) => void;
+  cacheLoadedImageUrls: (tokenId: string, type: 'preview' | 'raw', url: string) => void;
+  cachedUrls: CacheParams;
 };
 
 const defaultNftPreviewFallbackState: NftPreviewFallbackState = {
   loadedUrlsMap: {},
   updateLoadedUrlsMap: () => {},
+  cacheLoadedImageUrls: () => {},
+  cachedUrls: {},
 };
 
 const NftPreviewFallbackContext = createContext<NftPreviewFallbackState>(
@@ -34,6 +45,7 @@ type Props = { children: ReactNode | ReactNode[] };
 
 const NftPreviewFallbackProvider = ({ children }: Props) => {
   const [loadedUrlsMap, setLoadedUrlsMap] = useState<LoadedUrlsMap>({});
+  const [cachedUrls, setCachedUrls] = useState<CacheParams>({});
 
   // Function to update the loadedUrls map inside the context
   const updateLoadedUrlsMap = useCallback((tokenId: string, previewUrl: string, rawUrl: string) => {
@@ -46,12 +58,27 @@ const NftPreviewFallbackProvider = ({ children }: Props) => {
     }));
   }, []);
 
+  const cacheLoadedImageUrls = useCallback(
+    (tokenId: string, type: 'preview' | 'raw', url: string) => {
+      setCachedUrls((prevCachedUrls) => ({
+        ...prevCachedUrls,
+        [tokenId]: {
+          type: type,
+          url: url,
+        },
+      }));
+    },
+    []
+  );
+
   const contextValue: NftPreviewFallbackState = useMemo(() => {
     return {
       loadedUrlsMap,
+      cachedUrls,
       updateLoadedUrlsMap,
+      cacheLoadedImageUrls,
     };
-  }, [loadedUrlsMap, updateLoadedUrlsMap]);
+  }, [loadedUrlsMap, cachedUrls, updateLoadedUrlsMap, cacheLoadedImageUrls]);
 
   return (
     <NftPreviewFallbackContext.Provider value={contextValue}>
