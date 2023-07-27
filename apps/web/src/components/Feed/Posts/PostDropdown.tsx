@@ -114,6 +114,7 @@ export default function PostDropdown({ postRef, queryRef }: Props) {
         <DropdownItem onClick={() => {}}>
           <BaseM>Share</BaseM>
         </DropdownItem>
+        {/* Follow up: GAL-3862 */}
         {/* <DropdownItem onClick={handleFollowClick}>
           <BaseM>Follow</BaseM>
         </DropdownItem> */}
