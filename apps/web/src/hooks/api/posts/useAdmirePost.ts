@@ -84,8 +84,6 @@ export default function useAdmirePost() {
           }
         : { token: null };
 
-      console.log({ optimisticUserInfo });
-
       try {
         const response = await admire({
           updater,
