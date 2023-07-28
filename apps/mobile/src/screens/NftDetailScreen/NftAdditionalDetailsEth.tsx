@@ -8,13 +8,7 @@ import { extractMirrorXyzUrl } from '~/shared/utils/extractMirrorXyzUrl';
 import { getOpenseaExternalUrl, hexHandler } from '~/shared/utils/getOpenseaExternalUrl';
 
 import { LinkableAddress } from '../../components/LinkableAddress';
-import {
-  DetailExternalLink,
-  DetailLabelText,
-  DetailMoreInfoLink,
-  DetailSection,
-  DetailValue,
-} from './DetailSection';
+import { DetailExternalLink, DetailLabelText, DetailSection, DetailValue } from './DetailSection';
 
 type NftAdditionalDetailsEthProps = {
   tokenRef: NftAdditionalDetailsEthFragment$key;
