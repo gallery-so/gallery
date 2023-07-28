@@ -20,7 +20,7 @@ function TabItem({ activeRoute, counter = 0, route, onRouteChange }: TabItemProp
 
   return (
     <GalleryTouchableOpacity
-      className={`px-2`}
+      className={`px-2 flex flex-row items-center justify-center space-x-1`}
       accessibilityRole="button"
       accessibilityState={isFocused ? { selected: true } : {}}
       onPress={onPress}
@@ -35,6 +35,7 @@ function TabItem({ activeRoute, counter = 0, route, onRouteChange }: TabItemProp
         {route}
         {counter > 0 && <Text className="text-xs"> {counter}</Text>}
       </Typography>
+      {isFocused && <View className="bg-activeBlue h-1.5 w-1.5 rounded-full" />}
     </GalleryTouchableOpacity>
   );
 }

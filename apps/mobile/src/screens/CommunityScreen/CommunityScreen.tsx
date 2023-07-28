@@ -23,6 +23,8 @@ function CommunityScreenInner({ chain, contractAddress }: CommunityScreenInnerPr
         $listOwnersFirst: Int!
         $listOwnersAfter: String
         $onlyGalleryUsers: Boolean
+        $postLast: Int!
+        $postBefore: String
       ) {
         ...CommunityViewFragment
       }
@@ -34,6 +36,7 @@ function CommunityScreenInner({ chain, contractAddress }: CommunityScreenInnerPr
       },
       listOwnersFirst: 200,
       onlyGalleryUsers: true,
+      postLast: 24,
     },
     { fetchPolicy: 'store-or-network', UNSTABLE_renderPolicy: 'partial' }
   );

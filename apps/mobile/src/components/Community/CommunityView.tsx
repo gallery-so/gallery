@@ -1,22 +1,22 @@
-import clsx from 'clsx';
-import { useCallback, useMemo, useState } from 'react';
-import { View, ViewProps } from 'react-native';
+import { useColorScheme } from 'nativewind';
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { View } from 'react-native';
+import { CollapsibleRef, Tabs } from 'react-native-collapsible-tab-view';
 import { graphql, useFragment } from 'react-relay';
 
 import { CommunityViewFragment$key } from '~/generated/CommunityViewFragment.graphql';
+import colors from '~/shared/theme/colors';
 
 import { BackButton } from '../BackButton';
-import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
-import { Typography } from '../Typography';
+import { ProfileTabBar } from '../ProfileView/ProfileTabBar';
 import { CommunityCollectors } from './CommunityCollectors';
 import { CommunityHeader } from './CommunityHeader';
 import { CommunityMeta } from './CommunityMeta';
+import { CommunityViewPostsTab } from './Tabs/CommunityViewPostsTab';
 
 type Props = {
   queryRef: CommunityViewFragment$key;
 };
-
-type CommunityInnerScreen = 'Posts' | 'Collectors';
 
 export function CommunityView({ queryRef }: Props) {
   const query = useFragment(
@@ -33,10 +33,12 @@ export function CommunityView({ queryRef }: Props) {
             ...CommunityHeaderFragment
             ...CommunityCollectorsFragment
             ...CommunityMetaFragment
+            ...CommunityViewPostsTabFragment
           }
         }
         ...CommunityCollectorsQueryFragment
         ...CommunityCollectorsListQueryFragment
+        ...CommunityViewPostsTabQueryFragment
       }
     `,
     queryRef
@@ -48,19 +50,33 @@ export function CommunityView({ queryRef }: Props) {
     throw new Error(`Unable to fetch the community`);
   }
 
-  const [activeInnerScreen, setActiveInnerScreen] = useState<CommunityInnerScreen>('Collectors');
+  const [selectedRoute, setSelectedRoute] = useState('Posts');
 
-  const innnerScreen = useMemo(() => {
-    if (activeInnerScreen === 'Posts') {
-      return <View />;
-    } else {
-      return <CommunityCollectors queryRef={query} communityRef={community} />;
+  const containerRef = useRef<CollapsibleRef>(null);
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.jumpToTab(selectedRoute);
     }
-  }, [activeInnerScreen, community, query]);
+  }, [selectedRoute]);
 
-  const toggleInnerScreen = useCallback((screen: CommunityInnerScreen) => {
-    setActiveInnerScreen(screen);
+  const { colorScheme } = useColorScheme();
+
+  const routes = useMemo(() => {
+    return [
+      {
+        name: 'Posts',
+      },
+      {
+        name: 'Collectors',
+      },
+    ];
   }, []);
+
+  const Header = useCallback(() => {
+    return (
+      <ProfileTabBar activeRoute={selectedRoute} onRouteChange={setSelectedRoute} routes={routes} />
+    );
+  }, [routes, setSelectedRoute, selectedRoute]);
 
   return (
     <View className="flex-1">
@@ -76,58 +92,38 @@ export function CommunityView({ queryRef }: Props) {
           <CommunityMeta communityRef={community} />
         </View>
 
-        <View className="items-center border-t border-b border-porcelain">
-          <View className="flex flex-row space-x-3 py-3">
-            <NavigationItem
-              active={activeInnerScreen === 'Posts'}
-              title="Posts"
-              onPress={() => {
-                toggleInnerScreen('Posts');
+        <View className="flex-grow">
+          <Suspense fallback={null}>
+            <Tabs.Container
+              ref={containerRef}
+              pagerProps={{ scrollEnabled: false }}
+              containerStyle={{
+                backgroundColor: colorScheme === 'light' ? colors.white : colors.black['900'],
               }}
-            />
-            <NavigationItem
-              active={activeInnerScreen === 'Collectors'}
-              title="Collectors"
-              onPress={() => {
-                toggleInnerScreen('Collectors');
+              headerContainerStyle={{
+                margin: 0,
+                elevation: 0,
+                shadowOpacity: 0,
+                borderBottomColor: 'transparent',
+                backgroundColor: colorScheme === 'light' ? colors.white : colors.black['900'],
               }}
-            />
-          </View>
+              renderTabBar={Empty}
+              renderHeader={Header}
+            >
+              <Tabs.Tab name="Posts">
+                <CommunityViewPostsTab communityRef={community} queryRef={query} />
+              </Tabs.Tab>
+              <Tabs.Tab name="Collectors">
+                <CommunityCollectors queryRef={query} communityRef={community} />
+              </Tabs.Tab>
+            </Tabs.Container>
+          </Suspense>
         </View>
-
-        {innnerScreen}
       </View>
     </View>
   );
 }
 
-type NavigationItemProps = {
-  active: boolean;
-  onPress: () => void;
-  title: string;
-  style?: ViewProps['style'];
-};
-
-function NavigationItem({ active, onPress, style, title }: NavigationItemProps) {
-  return (
-    <GalleryTouchableOpacity
-      className="flex flex-row items-center space-x-1"
-      onPress={onPress}
-      eventElementId={null}
-      eventName={null}
-      style={style}
-    >
-      <Typography
-        font={{ family: 'ABCDiatype', weight: 'Medium' }}
-        className={clsx('text-metal', active && 'text-black-800')}
-      >
-        {title}
-      </Typography>
-      {active && <BlueDot />}
-    </GalleryTouchableOpacity>
-  );
-}
-
-function BlueDot({ style }: { style?: ViewProps['style'] }) {
-  return <View className="bg-activeBlue h-1.5 w-1.5 rounded-full" style={style} />;
+function Empty() {
+  return null;
 }
