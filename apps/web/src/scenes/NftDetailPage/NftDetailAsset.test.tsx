@@ -57,6 +57,7 @@ const UnknownMediaResponse: NftDetailAssetTestQueryQuery = {
       dbid: 'testTokenId',
       chain: Chain.Ethereum,
       tokenMetadata: '{}',
+      lastUpdated: '2023-07-25T11:47:41.83653Z',
       owner: {
         id: 'GalleryUser:TestOwnerId',
         username: 'Test Username',
