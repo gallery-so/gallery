@@ -22,7 +22,7 @@ export const PostOpenGraphPreview = ({ username, caption, imageUrl, profileImage
       <StyledGalleryContainer>
         <OpenBracket style={{ width: '196px', height: '196px' }} viewBox="0 0 36 121" />
         <StyledPostContent>
-          <StyledImage key={imageUrl} src={imageUrl} />
+          <StyledImage src={imageUrl} />
 
           <StyledTextContainer>
             <StyledUserInfoContainer>

@@ -77,12 +77,10 @@ function StandalonePostPage({ queryRef }: Props) {
 
 export default function StandalonePostPageWithBoundary({ queryRef }: Props) {
   return (
-    <div>
-      <Suspense fallback={<FullPageLoader />}>
-        <ErrorBoundary>
-          <StandalonePostPage queryRef={queryRef} />
-        </ErrorBoundary>
-      </Suspense>
-    </div>
+    <Suspense fallback={<FullPageLoader />}>
+      <ErrorBoundary>
+        <StandalonePostPage queryRef={queryRef} />
+      </ErrorBoundary>
+    </Suspense>
   );
 }
