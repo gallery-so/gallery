@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import { useCallback, useRef } from 'react';
 import { View } from 'react-native';
@@ -11,9 +12,11 @@ import {
 } from '~/components/Feed/createVirtualizedFeedEventItems';
 import { FeedVirtualizedRow } from '~/components/Feed/FeedVirtualizedRow';
 import { useFailedEventTracker } from '~/components/Feed/useFailedEventTracker';
+import { useListContentStyle } from '~/components/ProfileView/Tabs/useListContentStyle';
 import { Typography } from '~/components/Typography';
 import { CommunityViewPostsTabFragment$key } from '~/generated/CommunityViewPostsTabFragment.graphql';
 import { CommunityViewPostsTabQueryFragment$key } from '~/generated/CommunityViewPostsTabQueryFragment.graphql';
+import { MainTabStackNavigatorProp } from '~/navigation/types';
 
 type Props = {
   communityRef: CommunityViewPostsTabFragment$key;
@@ -26,6 +29,9 @@ export function CommunityViewPostsTab({ communityRef, queryRef }: Props) {
       fragment CommunityViewPostsTabFragment on Community
       @refetchable(queryName: "CommunityViewPostsTabFragmentPaginationQuery") {
         name
+        contractAddress {
+          address
+        }
         posts(first: $postLast, after: $postBefore)
           @connection(key: "CommunityViewPostsTabFragment_posts") {
           edges {
@@ -50,6 +56,8 @@ export function CommunityViewPostsTab({ communityRef, queryRef }: Props) {
     `,
     queryRef
   );
+
+  const contentContainerStyle = useListContentStyle();
 
   const totalPosts = community?.posts?.pageInfo?.total ?? 0;
 
@@ -92,7 +100,15 @@ export function CommunityViewPostsTab({ communityRef, queryRef }: Props) {
     [markEventAsFailure]
   );
 
-  const handleCreatePost = useCallback(() => {}, []);
+  const navigation = useNavigation<MainTabStackNavigatorProp>();
+
+  const handleCreatePost = useCallback(() => {
+    if (!community?.contractAddress?.address) return;
+    navigation.navigate('NftSelectorContractScreen', {
+      contractAddress: community?.contractAddress?.address,
+      page: 'Post',
+    });
+  }, [navigation, community?.contractAddress?.address]);
 
   if (totalPosts === 0) {
     return (
@@ -124,7 +140,7 @@ export function CommunityViewPostsTab({ communityRef, queryRef }: Props) {
   }
 
   return (
-    <View className="pt-16">
+    <View style={contentContainerStyle}>
       <Tabs.FlashList
         ref={ref}
         data={items}
