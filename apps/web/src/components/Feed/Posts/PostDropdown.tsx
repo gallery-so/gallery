@@ -111,9 +111,11 @@ export default function PostDropdown({ postRef, queryRef }: Props) {
   return (
     <SettingsDropdown iconVariant="default">
       <DropdownSection>
-        <DropdownItem onClick={() => {}}>
-          <BaseM>Share</BaseM>
-        </DropdownItem>
+        <CopyToClipboard textToCopy={postUrl}>
+          <DropdownItem onClick={() => {}}>
+            <BaseM>Share</BaseM>
+          </DropdownItem>
+        </CopyToClipboard>
         {/* Follow up: GAL-3862 */}
         {/* <DropdownItem onClick={handleFollowClick}>
           <BaseM>Follow</BaseM>
