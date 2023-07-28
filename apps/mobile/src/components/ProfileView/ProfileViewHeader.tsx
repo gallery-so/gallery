@@ -4,7 +4,6 @@ import { graphql, useFragment } from 'react-relay';
 
 import { Markdown } from '~/components/Markdown';
 import { Pill } from '~/components/Pill';
-import { ProfileTabBar } from '~/components/ProfileView/ProfileTabBar';
 import { Typography } from '~/components/Typography';
 import { ProfileViewHeaderFragment$key } from '~/generated/ProfileViewHeaderFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
@@ -12,6 +11,7 @@ import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 
 import { TwitterIcon } from '../../icons/TwitterIcon';
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
+import { TabBar } from '../Tabs/TabBar';
 import ProfileViewSharedInfo from './ProfileViewSharedInfo/ProfileViewSharedInfo';
 
 type Props = {
@@ -129,7 +129,13 @@ export function ProfileViewHeader({ queryRef, selectedRoute, onRouteChange }: Pr
 
       {twitterPill ?? null}
 
-      <ProfileTabBar activeRoute={selectedRoute} onRouteChange={onRouteChange} routes={routes} />
+      <TabBar
+        activeRoute={selectedRoute}
+        onRouteChange={onRouteChange}
+        routes={routes}
+        eventElementId="Profile Tab"
+        eventName="Profile Tab Clicked"
+      />
     </View>
   );
 }

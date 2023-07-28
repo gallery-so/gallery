@@ -8,7 +8,7 @@ import { CommunityViewFragment$key } from '~/generated/CommunityViewFragment.gra
 import colors from '~/shared/theme/colors';
 
 import { BackButton } from '../BackButton';
-import { ProfileTabBar } from '../ProfileView/ProfileTabBar';
+import { TabBar } from '../Tabs/TabBar';
 import { CommunityCollectors } from './CommunityCollectors';
 import { CommunityHeader } from './CommunityHeader';
 import { CommunityMeta } from './CommunityMeta';
@@ -74,7 +74,13 @@ export function CommunityView({ queryRef }: Props) {
 
   const Header = useCallback(() => {
     return (
-      <ProfileTabBar activeRoute={selectedRoute} onRouteChange={setSelectedRoute} routes={routes} />
+      <TabBar
+        activeRoute={selectedRoute}
+        onRouteChange={setSelectedRoute}
+        routes={routes}
+        eventElementId="Community Tab"
+        eventName="Community Tab Clicked"
+      />
     );
   }, [routes, setSelectedRoute, selectedRoute]);
 
