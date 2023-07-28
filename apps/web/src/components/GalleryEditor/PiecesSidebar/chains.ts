@@ -34,6 +34,14 @@ export const chains = [
     isEnabled: true,
   },
   {
+    name: 'Polygon',
+    shortName: 'POLY',
+    icon: '/icons/polygon_logo.svg',
+    baseChain: 'Ethereum',
+    hasCreatorSupport: false,
+    isEnabled: true,
+  },
+  {
     name: 'Base',
     shortName: 'BASE',
     icon: '/icons/base_logo.svg',
@@ -56,14 +64,6 @@ export const chains = [
     baseChain: 'Ethereum',
     hasCreatorSupport: false,
     isEnabled: true,
-  },
-  {
-    name: 'Polygon',
-    shortName: 'POLY',
-    icon: '/icons/polygon_logo.svg',
-    baseChain: 'Ethereum',
-    hasCreatorSupport: false,
-    isEnabled: false,
   },
 ] as const;
 
