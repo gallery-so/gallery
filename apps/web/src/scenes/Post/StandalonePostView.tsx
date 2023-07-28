@@ -30,6 +30,7 @@ export default function StandalonePostView({ postRef, queryRef }: Props) {
     graphql`
       fragment StandalonePostViewQueryFragment on Query {
         ...PostSocializeSectionQueryFragment
+        ...PostDataQueryFragment
       }
     `,
     queryRef
@@ -38,7 +39,7 @@ export default function StandalonePostView({ postRef, queryRef }: Props) {
   return (
     <ReportingErrorBoundary fallback={<></>}>
       <StyledPostContainer gap={16}>
-        <PostData postRef={post} />
+        <PostData postRef={post} queryRef={query} />
 
         {/* // We have another boundary here in case the socialize section fails
       // and the rest of the feed event loads */}
