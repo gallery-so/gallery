@@ -14,6 +14,8 @@ type NftAdditionalDetailsEthProps = {
   tokenRef: NftAdditionalDetailsEthFragment$key;
 };
 
+const PROHIBITION_CONTRACT_ADDRESSES = ['0x47a91457a3a1f700097199fd63c039c4784384ab'];
+
 export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionalDetailsEthProps) {
   const token = useFragment(
     graphql`
@@ -53,8 +55,20 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionalDetailsEthPro
     return null;
   }, [tokenMetadata]);
 
-  const numOfLinks = [openSeaExternalUrl, externalUrl, mirrorXyzUrl].filter((value) =>
-    value ? value : null
+  const prohibitionUrl = useMemo(() => {
+    if (!contract?.contractAddress?.address || !tokenId) {
+      return null;
+    }
+    if (PROHIBITION_CONTRACT_ADDRESSES.includes(contract?.contractAddress?.address)) {
+      return `https://prohibition.art/token/${contract?.contractAddress?.address}-${hexHandler(
+        tokenId
+      )}`;
+    }
+    return null;
+  }, [contract?.contractAddress?.address, tokenId]);
+
+  const numOfLinks = [openSeaExternalUrl, externalUrl, mirrorXyzUrl, prohibitionUrl].filter(
+    Boolean
   ).length;
 
   return (
@@ -68,7 +82,7 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionalDetailsEthPro
                 chainAddressRef={contract.contractAddress}
                 type="NFT Detail Contract Address"
                 textStyle={{ color: 'black' }}
-                style={{ paddingTop: 4 }}
+                style={{ paddingTop: 2 }}
                 font={{ family: 'ABCDiatype', weight: 'Bold' }}
               />
             </DetailSection>
@@ -126,6 +140,20 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionalDetailsEthPro
                   link={externalUrl}
                   label="More Info"
                   trackingLabel="NFT Detail View on External Link"
+                  showExternalLinkIcon={true}
+                  font={{ family: 'ABCDiatype', weight: 'Bold' }}
+                />
+              </View>
+            </DetailSection>
+          )}
+          {prohibitionUrl && (
+            <DetailSection>
+              <DetailLabelText>VIEW ON</DetailLabelText>
+              <View className="flex flex-row">
+                <DetailExternalLink
+                  link={prohibitionUrl}
+                  label="Prohibition"
+                  trackingLabel="NFT Detail View on Prohibition"
                   showExternalLinkIcon={true}
                   font={{ family: 'ABCDiatype', weight: 'Bold' }}
                 />

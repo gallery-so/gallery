@@ -8,13 +8,7 @@ import { getFxHashExternalUrl, getObjktExternalUrl } from '~/shared/utils/getTez
 
 import { InteractiveLink } from '../../components/InteractiveLink';
 import { LinkableAddress } from '../../components/LinkableAddress';
-import {
-  DetailExternalLink,
-  DetailLabelText,
-  DetailMoreInfoLink,
-  DetailSection,
-  DetailValue,
-} from './DetailSection';
+import { DetailExternalLink, DetailLabelText, DetailSection, DetailValue } from './DetailSection';
 
 type NftAdditionaDetailsNonPOAPProps = {
   tokenRef: NftAdditionalDetailsTezosFragment$key;
@@ -136,7 +130,19 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
                 </View>
               </DetailSection>
             )}
-            {externalUrl && <DetailMoreInfoLink link={externalUrl} />}
+            {externalUrl && (
+              <DetailSection>
+                <View className="flex flex-col pt-4">
+                  <DetailExternalLink
+                    link={externalUrl}
+                    label="More Info"
+                    trackingLabel="NFT Detail View on External Link"
+                    showExternalLinkIcon={true}
+                    font={{ family: 'ABCDiatype', weight: 'Bold' }}
+                  />
+                </View>
+              </DetailSection>
+            )}
           </View>
         </View>
       </>

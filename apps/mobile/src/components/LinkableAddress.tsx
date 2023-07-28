@@ -40,11 +40,7 @@ export function LinkableAddress({
 
   if (!link) {
     return (
-      <Typography
-        className="text-sm"
-        font={{ family: 'ABCDiatype', weight: 'Regular' }}
-        style={style}
-      >
+      <Typography className="text-sm" font={font ?? { family: 'ABCDiatype', weight: 'Regular' }}>
         {truncatedAddress || address.address}
       </Typography>
     );
