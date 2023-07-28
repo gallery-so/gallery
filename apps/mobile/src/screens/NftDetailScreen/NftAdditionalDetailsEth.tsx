@@ -67,9 +67,10 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionalDetailsEthPro
     return null;
   }, [contract?.contractAddress?.address, tokenId]);
 
-  const numOfLinks = [openSeaExternalUrl, externalUrl, mirrorXyzUrl, prohibitionUrl].filter(
-    Boolean
-  ).length;
+  const numOfLinks = useMemo(
+    () => [openSeaExternalUrl, externalUrl, mirrorXyzUrl, prohibitionUrl].filter(Boolean).length,
+    [openSeaExternalUrl, externalUrl, mirrorXyzUrl, prohibitionUrl]
+  );
 
   return (
     <View className="flex flex-col space-y-4">
