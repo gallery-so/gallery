@@ -89,7 +89,7 @@ export default function NftDetailsExternalLinksEth({ tokenRef }: Props) {
   const lastUpdated = formatDateString(lastUpdatedRaw, DateFormatOption.ABBREVIATED);
 
   return (
-    <StyledExternalLinks gap={4}>
+    <StyledExternalLinks gap={14}>
       {mirrorXyzUrl && <InteractiveLink href={mirrorXyzUrl}>View on Mirror</InteractiveLink>}
       {prohibitionUrl && (
         <InteractiveLink href={prohibitionUrl}>View on Prohibition</InteractiveLink>
