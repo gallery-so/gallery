@@ -18,9 +18,9 @@ export const chains = [
     isEnabled: true,
   },
   {
-    name: 'Zora',
-    shortName: 'ZORA',
-    icon: '/icons/zora_logo.svg',
+    name: 'Polygon',
+    shortName: 'POLY',
+    icon: '/icons/polygon_logo.svg',
     baseChain: 'Ethereum',
     hasCreatorSupport: false,
     isEnabled: true,
@@ -29,6 +29,14 @@ export const chains = [
     name: 'Arbitrum',
     shortName: 'ARB',
     icon: '/icons/arbitrum_logo.svg',
+    baseChain: 'Ethereum',
+    hasCreatorSupport: false,
+    isEnabled: true,
+  },
+  {
+    name: 'Zora',
+    shortName: 'ZORA',
+    icon: '/icons/zora_logo.svg',
     baseChain: 'Ethereum',
     hasCreatorSupport: false,
     isEnabled: true,
@@ -56,14 +64,6 @@ export const chains = [
     baseChain: 'Ethereum',
     hasCreatorSupport: false,
     isEnabled: true,
-  },
-  {
-    name: 'Polygon',
-    shortName: 'POLY',
-    icon: '/icons/polygon_logo.svg',
-    baseChain: 'Ethereum',
-    hasCreatorSupport: false,
-    isEnabled: false,
   },
 ] as const;
 
