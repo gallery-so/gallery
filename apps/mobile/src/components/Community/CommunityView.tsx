@@ -33,6 +33,15 @@ export function CommunityView({ queryRef }: Props) {
             ...CommunityCollectorsFragment
             ...CommunityMetaFragment
             ...CommunityViewPostsTabFragment
+            owners(
+              first: $listOwnersFirst
+              after: $listOwnersAfter
+              onlyGalleryUsers: $onlyGalleryUsers
+            ) {
+              pageInfo {
+                total
+              }
+            }
           }
         }
         ...CommunityCollectorsQueryFragment
@@ -58,6 +67,10 @@ export function CommunityView({ queryRef }: Props) {
     }
   }, [selectedRoute]);
 
+  const totalOwners = useMemo(() => {
+    return community.owners?.pageInfo?.total ?? 0;
+  }, [community.owners?.pageInfo?.total]);
+
   const routes = useMemo(() => {
     return [
       {
@@ -65,9 +78,10 @@ export function CommunityView({ queryRef }: Props) {
       },
       {
         name: 'Collectors',
+        counter: totalOwners,
       },
     ];
-  }, []);
+  }, [totalOwners]);
 
   const Header = useCallback(() => {
     return (
