@@ -83,7 +83,7 @@ export default function NftDetailsExternalLinksEth({ tokenRef }: Props) {
   }, [contract?.contractAddress?.address, tokenId]);
   const { floating, reference, getFloatingProps, getReferenceProps, floatingStyle } =
     useTooltipHover({
-      placement: 'right',
+      placement: 'top',
     });
 
   const lastUpdated = formatDateString(lastUpdatedRaw, DateFormatOption.ABBREVIATED);
