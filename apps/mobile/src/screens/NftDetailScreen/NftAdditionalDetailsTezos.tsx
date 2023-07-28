@@ -69,10 +69,10 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
 
             {/* TODO(Terence) When the contract screen is ready, setup the onPress here */}
             <LinkableAddress
-                  textStyle={{ color: 'black' }}
+              textStyle={{ color: 'black' }}
               chainAddressRef={token.contract.creatorAddress}
               type="NFT Detail Creator Address"
-                  font={{ family: 'ABCDiatype', weight: 'Bold' }}
+              font={{ family: 'ABCDiatype', weight: 'Bold' }}
             />
           </DetailSection>
         )}

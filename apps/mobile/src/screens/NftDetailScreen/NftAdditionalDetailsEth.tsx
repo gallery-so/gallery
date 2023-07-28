@@ -66,13 +66,13 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionalDetailsEthPro
           {contract?.contractAddress?.address && (
             <DetailSection>
               <DetailLabelText>CONTRACT</DetailLabelText>
-                <LinkableAddress
-                  chainAddressRef={contract.contractAddress}
-                  type="NFT Detail Contract Address"
-                  textStyle={{ color: 'black' }}
-                  style={{ paddingTop: 4 }}
-                  font={{ family: 'ABCDiatype', weight: 'Bold' }}
-                />
+              <LinkableAddress
+                chainAddressRef={contract.contractAddress}
+                type="NFT Detail Contract Address"
+                textStyle={{ color: 'black' }}
+                style={{ paddingTop: 4 }}
+                font={{ family: 'ABCDiatype', weight: 'Bold' }}
+              />
             </DetailSection>
           )}
 

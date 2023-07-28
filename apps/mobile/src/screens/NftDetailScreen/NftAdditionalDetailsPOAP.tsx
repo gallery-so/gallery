@@ -20,7 +20,7 @@ export function NftAdditionalDetailsPOAP({ tokenRef }: POAPNftDetailSectionProps
         tokenMetadata
       }
     `,
-    tokenRef,
+    tokenRef
   );
 
   if (!token.tokenMetadata) {
