@@ -98,7 +98,7 @@ export default function CommunityHolderGridItem({ holderRef, queryRef }: Props) 
     showModal({
       content: (
         <StyledNftDetailViewPopover justify="center" align="center">
-          <TokenDetailView authenticatedUserOwnsAsset={false} tokenRef={token} queryRef={query} />
+          <TokenDetailView tokenRef={token} queryRef={query} />
         </StyledNftDetailViewPopover>
       ),
       isFullPage: true,

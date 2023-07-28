@@ -3,12 +3,11 @@ import {
   KeyboardEventHandler,
   useCallback,
   useEffect,
-  useMemo,
   useRef,
   useState,
 } from 'react';
 import { useFragment } from 'react-relay';
-import { ConnectionHandler, graphql, SelectorStoreUpdater } from 'relay-runtime';
+import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import { HStack } from '~/components/core/Spacer/Stack';
@@ -16,78 +15,31 @@ import { BaseM, BODY_FONT_FAMILY } from '~/components/core/Text/Text';
 import { SendButton } from '~/components/Feed/Socialize/SendButton';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
-import { CommentBoxFragment$key } from '~/generated/CommentBoxFragment.graphql';
-import { CommentBoxMutation } from '~/generated/CommentBoxMutation.graphql';
 import { CommentBoxQueryFragment$key } from '~/generated/CommentBoxQueryFragment.graphql';
 import { AuthModal } from '~/hooks/useAuthModal';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
-import { useReportError } from '~/shared/contexts/ErrorReportingContext';
-import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
-import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 import colors from '~/shared/theme/colors';
 
 const MAX_TEXT_LENGTH = 100;
 
 type Props = {
-  eventRef: CommentBoxFragment$key;
   queryRef: CommentBoxQueryFragment$key;
+  onSubmitComment: (comment: string) => void;
+  isSubmittingComment: boolean;
 };
 
-export function CommentBox({ eventRef, queryRef }: Props) {
+export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment }: Props) {
   const query = useFragment(
     graphql`
       fragment CommentBoxQueryFragment on Query {
         viewer {
           __typename
-          ... on Viewer {
-            user {
-              id
-              dbid
-              username
-              profileImage {
-                ... on TokenProfileImage {
-                  token {
-                    dbid
-                    id
-                    ...getVideoOrImageUrlForNftPreviewFragment
-                  }
-                }
-              }
-            }
-          }
         }
         ...useAuthModalFragment
       }
     `,
     queryRef
   );
-
-  const event = useFragment(
-    graphql`
-      fragment CommentBoxFragment on FeedEvent {
-        id
-        dbid
-      }
-    `,
-    eventRef
-  );
-
-  const [submitComment, isSubmittingComment] = usePromisifiedMutation<CommentBoxMutation>(graphql`
-    mutation CommentBoxMutation($eventId: DBID!, $comment: String!, $connections: [ID!]!)
-    @raw_response_type {
-      commentOnFeedEvent(comment: $comment, feedEventId: $eventId) {
-        ... on CommentOnFeedEventPayload {
-          __typename
-
-          comment @appendNode(connections: $connections, edgeTypeName: "FeedEventCommentEdge") {
-            dbid
-            ...CommentLineFragment
-            ...CommentNoteFragment
-          }
-        }
-      }
-    }
-  `);
 
   // WARNING: calling `setValue` will not cause the textarea's content to actually change
   // It's simply there as a state value that we can reference to peek into the current state
@@ -100,7 +52,7 @@ export function CommentBox({ eventRef, queryRef }: Props) {
   const textareaRef = useRef<HTMLParagraphElement | null>(null);
 
   const { pushToast } = useToastActions();
-  const reportError = useReportError();
+
   const track = useTrack();
   const { showModal } = useModalActions();
 
@@ -113,12 +65,12 @@ export function CommentBox({ eventRef, queryRef }: Props) {
     }
   }, []);
 
-  const hasProfileImage = useMemo(() => {
-    if (query?.viewer?.__typename !== 'Viewer') {
-      return false;
-    }
-    return query.viewer?.user?.profileImage?.token != null;
-  }, [query.viewer]);
+  const pushErrorToast = useCallback(() => {
+    pushToast({
+      autoClose: true,
+      message: "Something went wrong while posting your comment. We're looking into it.",
+    });
+  }, [pushToast]);
 
   const handleSubmit = useCallback(async () => {
     if (query.viewer?.__typename !== 'Viewer') {
@@ -134,125 +86,24 @@ export function CommentBox({ eventRef, queryRef }: Props) {
       return;
     }
 
-    function pushErrorToast() {
-      pushToast({
-        autoClose: true,
-        message: "Something went wrong while posting your comment. We're looking into it.",
-      });
-    }
-
     track('Save Comment Click');
 
     try {
-      const interactionsConnection = ConnectionHandler.getConnectionID(
-        event.id,
-        'Interactions_comments'
-      );
-      const commentsModalConnection = ConnectionHandler.getConnectionID(
-        event.id,
-        'CommentsModal_interactions'
-      );
-
-      const updater: SelectorStoreUpdater<CommentBoxMutation['response']> = (store, response) => {
-        if (response.commentOnFeedEvent?.__typename === 'CommentOnFeedEventPayload') {
-          const pageInfo = store.get(interactionsConnection)?.getLinkedRecord('pageInfo');
-
-          pageInfo?.setValue(((pageInfo?.getValue('total') as number) ?? 0) + 1, 'total');
-        }
-      };
-
-      const optimisticId = Math.random().toString();
-
-      const { token } = query.viewer?.user?.profileImage ?? {};
-
-      const result = token
-        ? getVideoOrImageUrlForNftPreview({
-            tokenRef: token,
-          })
-        : null;
-
-      const tokenProfileImagePayload = hasProfileImage
-        ? {
-            token: {
-              dbid: token?.dbid ?? 'unknown',
-              id: token?.id ?? 'unknown',
-              media: {
-                __typename: 'ImageMedia',
-                fallbackMedia: {
-                  mediaURL: result?.urls?.small ?? null,
-                },
-                previewURLs: {
-                  large: result?.urls?.large ?? null,
-                  medium: result?.urls?.medium ?? null,
-                  small: result?.urls?.small ?? null,
-                },
-              },
-            },
-          }
-        : { token: null };
-
-      const response = await submitComment({
-        updater,
-        optimisticUpdater: updater,
-        optimisticResponse: {
-          commentOnFeedEvent: {
-            __typename: 'CommentOnFeedEventPayload',
-            comment: {
-              __typename: 'Comment',
-              comment: value,
-              commenter: {
-                dbid: query.viewer?.user?.dbid ?? 'unknown',
-                id: query.viewer?.user?.id ?? 'unknown',
-                username: query.viewer?.user?.username ?? null,
-                profileImage: {
-                  __typename: 'TokenProfileImage',
-                  ...tokenProfileImagePayload,
-                },
-              },
-              creationTime: new Date().toISOString(),
-              dbid: optimisticId,
-              id: `Comment:${optimisticId}`,
-            },
-          },
-        },
-        variables: {
-          comment: value,
-          eventId: event.dbid,
-          connections: [interactionsConnection, commentsModalConnection],
-        },
-      });
-
-      if (response.commentOnFeedEvent?.__typename === 'CommentOnFeedEventPayload') {
-        resetInputState();
-      } else {
-        pushErrorToast();
-
-        reportError(
-          `Error while commenting on feed event, typename was ${response.commentOnFeedEvent?.__typename}`
-        );
-      }
+      onSubmitComment(value);
     } catch (error) {
       pushErrorToast();
-
-      if (error instanceof Error) {
-        reportError(error);
-      } else {
-        reportError('An unexpected error occurred while posting a comment.');
-      }
+      return;
     }
+    resetInputState();
   }, [
-    event.dbid,
-    event.id,
-    hasProfileImage,
-    isSubmittingComment,
-    pushToast,
     query,
-    showModal,
-    reportError,
-    resetInputState,
-    submitComment,
-    track,
+    isSubmittingComment,
     value,
+    track,
+    resetInputState,
+    showModal,
+    onSubmitComment,
+    pushErrorToast,
   ]);
 
   const handleInputKeyDown = useCallback<KeyboardEventHandler>(

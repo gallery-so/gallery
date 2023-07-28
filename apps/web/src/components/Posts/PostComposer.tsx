@@ -107,7 +107,7 @@ export default function PostComposer({ onBackClick, tokenRef }: Props) {
             <TextAreaWithCharCount
               currentCharCount={description.length}
               maxCharCount={DESCRIPTION_MAX_LENGTH}
-              placeholder={`Say something about ${inputPlaceholderTokenName}`}
+              placeholder={`Say something about "${inputPlaceholderTokenName}"`}
               textAreaHeight="117px"
               onChange={handleDescriptionChange}
               autoFocus

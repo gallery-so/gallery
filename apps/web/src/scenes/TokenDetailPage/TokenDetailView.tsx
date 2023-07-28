@@ -1,4 +1,4 @@
-import { useFragment } from 'react-relay';
+import { useFragment, useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
@@ -6,6 +6,7 @@ import breakpoints from '~/components/core/breakpoints';
 import { GLOBAL_FOOTER_HEIGHT } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
 import ShimmerProvider from '~/contexts/shimmer/ShimmerContext';
 import { TokenDetailViewFragment$key } from '~/generated/TokenDetailViewFragment.graphql';
+import { TokenDetailViewQuery } from '~/generated/TokenDetailViewQuery.graphql';
 import { TokenDetailViewQueryFragment$key } from '~/generated/TokenDetailViewQueryFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import { NoteViewer, StyledContainer } from '~/scenes/NftDetailPage/NftDetailNote';
@@ -13,17 +14,50 @@ import NftDetailText from '~/scenes/NftDetailPage/NftDetailText';
 
 import TokenDetailAsset from './TokenDetailAsset';
 
+type LoadableTokenDetailViewProps = {
+  tokenId: string;
+};
+
+export function LoadableTokenDetailView({ tokenId, ...props }: LoadableTokenDetailViewProps) {
+  const query = useLazyLoadQuery<TokenDetailViewQuery>(
+    graphql`
+      query TokenDetailViewQuery($tokenId: DBID!) {
+        token: tokenById(id: $tokenId) {
+          ... on ErrTokenNotFound {
+            __typename
+          }
+          ... on Token {
+            __typename
+            ...TokenDetailViewFragment
+          }
+        }
+
+        ...TokenDetailViewQueryFragment
+      }
+    `,
+    { tokenId }
+  );
+
+  if (!query.token || query.token.__typename !== 'Token') {
+    return null;
+  }
+
+  return <TokenDetailView tokenRef={query.token} queryRef={query} {...props} />;
+}
+
 type Props = {
-  authenticatedUserOwnsAsset: boolean;
   tokenRef: TokenDetailViewFragment$key;
   queryRef: TokenDetailViewQueryFragment$key;
 };
 
-export default function TokenDetailView({ authenticatedUserOwnsAsset, tokenRef, queryRef }: Props) {
+export default function TokenDetailView({ tokenRef, queryRef }: Props) {
   const token = useFragment(
     graphql`
       fragment TokenDetailViewFragment on Token {
         collectorsNote
+        owner {
+          username
+        }
 
         ...NftDetailTextFragment
         ...TokenDetailAssetFragment
@@ -35,6 +69,14 @@ export default function TokenDetailView({ authenticatedUserOwnsAsset, tokenRef, 
   const query = useFragment(
     graphql`
       fragment TokenDetailViewQueryFragment on Query {
+        viewer {
+          ... on Viewer {
+            __typename
+            user {
+              username
+            }
+          }
+        }
         ...NftDetailTextQueryFragment
       }
     `,
@@ -42,6 +84,9 @@ export default function TokenDetailView({ authenticatedUserOwnsAsset, tokenRef, 
   );
 
   const isMobileOrMobileLarge = useIsMobileOrMobileLargeWindowWidth();
+
+  const authenticatedUserOwnsAsset =
+    query.viewer?.__typename === 'Viewer' && query.viewer?.user?.username === token.owner?.username;
 
   const assetHasNote = !!token.collectorsNote;
   const showCollectorsNoteComponent = assetHasNote || authenticatedUserOwnsAsset;
