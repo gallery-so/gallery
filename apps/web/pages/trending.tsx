@@ -8,6 +8,7 @@ import { trendingPageQuery } from '~/generated/trendingPageQuery.graphql';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
 import TrendingHomePage from '~/scenes/Home/TrendingHomePage';
 import { PreloadQueryArgs } from '~/types/PageComponentPreloadQuery';
+import isProduction from '~/utils/isProduction';
 
 const trendingPageQueryNode = graphql`
   query trendingPageQuery(
@@ -18,6 +19,7 @@ const trendingPageQueryNode = graphql`
     $globalLast: Int!
     $globalBefore: String
     $visibleTokensPerFeedEvent: Int! # [GAL-3763] Revive this if / when elon lets us import twitter follower graphs again # $twitterListFirst: Int! # $twitterListAfter: String
+    $includePosts: Boolean!
   ) {
     ...TrendingHomePageFragment
     ...HomeNavbarFragment
@@ -47,6 +49,7 @@ export default function Trending({ preloadedQuery }: Props) {
 }
 
 Trending.preloadQuery = ({ relayEnvironment }: PreloadQueryArgs) => {
+  const includePosts = !isProduction();
   return loadQuery<trendingPageQuery>(
     relayEnvironment,
     trendingPageQueryNode,
@@ -55,6 +58,7 @@ Trending.preloadQuery = ({ relayEnvironment }: PreloadQueryArgs) => {
       globalLast: ITEMS_PER_PAGE,
       trendingLast: ITEMS_PER_PAGE,
       visibleTokensPerFeedEvent: MAX_PIECES_DISPLAYED_PER_FEED_EVENT,
+      includePosts,
       // [GAL-3763] Revive this if / when elon lets us import twitter follower graphs again
       // twitterListFirst: USER_PER_PAGE,
     },

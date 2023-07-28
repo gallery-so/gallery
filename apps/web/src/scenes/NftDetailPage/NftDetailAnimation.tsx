@@ -62,6 +62,7 @@ function NftDetailAnimation({ mediaRef, onLoad }: Props) {
       <StyledIframe
         src={processIFrameRenderUrl(contentRenderURL)}
         onLoad={onLoad}
+        loading="lazy"
         // Lets the resource run scripts (but not create popup windows): https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe
         // More specifically, this prevents the rendered iframe from displaying Alerts
         sandbox="allow-scripts allow-same-origin"

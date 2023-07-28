@@ -8,6 +8,7 @@ import { UserGalleryHeaderQueryFragment$key } from '~/generated/UserGalleryHeade
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import colors from '~/shared/theme/colors';
 
+import UserFarcasterSection from './UserFarcasterSection';
 import { UserNameAndDescriptionHeader } from './UserNameAndDescriptionHeader';
 import UserSharedInfo from './UserSharedInfo/UserSharedInfo';
 import UserTwitterSection from './UserTwitterSection';
@@ -26,6 +27,7 @@ export default function UserGalleryHeader({ userRef, queryRef }: Props) {
 
         ...UserNameAndDescriptionHeaderFragment
         ...UserTwitterSectionFragment
+        ...UserFarcasterSectionFragment
         ...UserSharedInfoFragment
         ...GalleryNavLinksFragment
       }
@@ -58,7 +60,10 @@ export default function UserGalleryHeader({ userRef, queryRef }: Props) {
     <VStack gap={12}>
       <UserNameAndDescriptionHeader userRef={user} queryRef={query} />
       {isLoggedIn && !isAuthenticatedUsersPage && <UserSharedInfo userRef={user} />}
-      <UserTwitterSection userRef={user} queryRef={query} />
+      <SocialConnectionsSection gap={8}>
+        <UserTwitterSection userRef={user} queryRef={query} />
+        <UserFarcasterSection userRef={user} />
+      </SocialConnectionsSection>
       {isMobile && (
         <MobileNavLinks align="center" justify="center">
           <GalleryNavLinks username={user.username ?? ''} queryRef={user} />
@@ -67,6 +72,8 @@ export default function UserGalleryHeader({ userRef, queryRef }: Props) {
     </VStack>
   );
 }
+
+const SocialConnectionsSection = styled(HStack)``;
 
 const MobileNavLinks = styled(HStack)`
   padding: 16px 0;

@@ -7,10 +7,9 @@ import transitions from '~/components/core/transitions';
 import { NftFailureBoundary } from '~/components/NftFailureFallback/NftFailureBoundary';
 import { NftFailureFallback } from '~/components/NftFailureFallback/NftFailureFallback';
 import { NftPreviewFragment$key } from '~/generated/NftPreviewFragment.graphql';
-import { NftPreviewTokenFragment$key } from '~/generated/NftPreviewTokenFragment.graphql';
 import { useNftRetry } from '~/hooks/useNftRetry';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
-import LinkToNftDetailView from '~/scenes/NftDetailPage/LinkToNftDetailView';
+import LinkToTokenDetailView from '~/scenes/NftDetailPage/LinkToTokenDetailView';
 import NftDetailAnimation from '~/scenes/NftDetailPage/NftDetailAnimation';
 import NftDetailGif from '~/scenes/NftDetailPage/NftDetailGif';
 import NftDetailModel from '~/scenes/NftDetailPage/NftDetailModel';
@@ -33,51 +32,13 @@ type Props = {
   disableLiverender?: boolean;
   columns?: number;
   isInFeedEvent?: boolean;
+  shouldLiveRender?: boolean;
+  collectionId?: string;
 };
 
 const contractsWhoseIFrameNFTsShouldNotTakeUpFullHeight = new Set([
   'KT1U6EHmNxJTkvaWJ4ThczG4FSDaHC21ssvi',
 ]);
-
-const nftPreviewTokenFragment = graphql`
-  fragment NftPreviewTokenFragment on Token {
-    dbid
-    contract {
-      contractAddress {
-        address
-      }
-    }
-    media {
-      ... on Media {
-        __typename
-        fallbackMedia {
-          mediaURL
-        }
-      }
-
-      ... on VideoMedia {
-        __typename
-        ...NftDetailVideoFragment
-      }
-      ... on GIFMedia {
-        __typename
-      }
-      ... on HtmlMedia {
-        __typename
-      }
-      ... on GltfMedia {
-        __typename
-        ...NftDetailModelFragment
-      }
-    }
-
-    ...NftPreviewLabelFragment
-    ...NftPreviewAssetFragment
-    ...NftDetailAnimationFragment
-    ...getVideoOrImageUrlForNftPreviewFragment
-    ...NftDetailGifFragment
-  }
-`;
 
 function NftPreview({
   tokenRef,
@@ -86,46 +47,56 @@ function NftPreview({
   disableLiverender = false,
   columns = 3,
   isInFeedEvent = false,
+  shouldLiveRender,
+  collectionId,
 }: Props) {
-  const collectionToken = useFragment(
+  const token = useFragment(
     graphql`
-      fragment NftPreviewFragment on CollectionToken {
-        token @required(action: THROW) {
-          ...NftPreviewTokenFragment
-          contract {
-            contractAddress {
-              address
-            }
+      fragment NftPreviewFragment on Token {
+        dbid
+        contract {
+          contractAddress {
+            address
           }
         }
-        tokenSettings {
-          renderLive
+        owner {
+          username
         }
-        collection @required(action: THROW) {
-          dbid
-          gallery {
-            dbid
-            owner {
-              username
+        media {
+          ... on Media {
+            __typename
+            fallbackMedia {
+              mediaURL
             }
           }
+
+          ... on VideoMedia {
+            __typename
+            ...NftDetailVideoFragment
+          }
+          ... on GIFMedia {
+            __typename
+          }
+          ... on HtmlMedia {
+            __typename
+          }
+          ... on GltfMedia {
+            __typename
+            ...NftDetailModelFragment
+          }
         }
+
+        ...NftPreviewLabelFragment
+        ...NftPreviewAssetFragment
+        ...NftDetailAnimationFragment
+        ...getVideoOrImageUrlForNftPreviewFragment
+        ...NftDetailGifFragment
       }
     `,
     tokenRef
   );
 
-  const { collection, tokenSettings } = collectionToken;
-
-  const username = collection.gallery?.owner?.username;
-  const collectionId = collection.dbid;
-
-  // This fragment is split up, so we can refresh it as a part
-  // of the retry system
-  const token = useFragment<NftPreviewTokenFragment$key>(
-    nftPreviewTokenFragment,
-    collectionToken.token
-  );
+  const ownerUsername = token.owner?.username;
 
   const contractAddress = token.contract?.contractAddress?.address ?? '';
 
@@ -144,10 +115,8 @@ function NftPreview({
     [onClick]
   );
 
+  const isIFrameLiveDisplay = Boolean(shouldLiveRender && token.media?.__typename === 'HtmlMedia');
   const isMobileOrLargeMobile = useIsMobileOrMobileLargeWindowWidth();
-
-  const shouldLiverender = tokenSettings?.renderLive && !isMobileOrLargeMobile;
-  const isIFrameLiveDisplay = Boolean(shouldLiverender && token.media?.__typename === 'HtmlMedia');
 
   const { handleNftLoaded, handleNftError, retryKey, refreshMetadata, refreshingMetadata } =
     useNftRetry({
@@ -165,13 +134,13 @@ function NftPreview({
         />
       );
     }
-    if (shouldLiverender && token.media?.__typename === 'VideoMedia') {
+    if (shouldLiveRender && token.media?.__typename === 'VideoMedia') {
       return <NftDetailVideo onLoad={handleNftLoaded} mediaRef={token.media} hideControls />;
     }
-    if (shouldLiverender && token.media?.__typename === 'GIFMedia') {
+    if (shouldLiveRender && token.media?.__typename === 'GIFMedia') {
       return <NftDetailGif onLoad={handleNftLoaded} tokenRef={token} />;
     }
-    if (shouldLiverender && token.media?.__typename === 'GltfMedia') {
+    if (shouldLiveRender && token.media?.__typename === 'GltfMedia') {
       return <NftDetailModel onLoad={handleNftLoaded} mediaRef={token.media} fullHeight={false} />;
     }
     if (isIFrameLiveDisplay) {
@@ -188,7 +157,7 @@ function NftPreview({
     );
   }, [
     disableLiverender,
-    shouldLiverender,
+    shouldLiveRender,
     token,
     isIFrameLiveDisplay,
     previewSize,
@@ -216,9 +185,9 @@ function NftPreview({
   // in the long run, we should give the user the tools to size their NFTs manually (fit-to-X) on a per-
   // NFT or per-collection basis, similar to the Live Render setting
   const shouldBeExemptedFromFullHeightDisplay = useMemo(() => {
-    const contractAddress = collectionToken.token.contract?.contractAddress?.address ?? '';
+    const contractAddress = token.contract?.contractAddress?.address ?? '';
     return contractsWhoseIFrameNFTsShouldNotTakeUpFullHeight.has(contractAddress);
-  }, [collectionToken.token.contract?.contractAddress]);
+  }, [token.contract?.contractAddress]);
 
   const fullHeight = isIFrameLiveDisplay && !shouldBeExemptedFromFullHeightDisplay;
 
@@ -237,8 +206,8 @@ function NftPreview({
       }
       onError={handleNftError}
     >
-      <LinkToNftDetailView
-        username={username ?? ''}
+      <LinkToTokenDetailView
+        username={ownerUsername ?? ''}
         collectionId={collectionId}
         tokenId={token.dbid}
       >
@@ -268,7 +237,7 @@ function NftPreview({
             )}
           </StyledNftPreview>
         </StyledA>
-      </LinkToNftDetailView>
+      </LinkToTokenDetailView>
     </NftFailureBoundary>
   );
 }
