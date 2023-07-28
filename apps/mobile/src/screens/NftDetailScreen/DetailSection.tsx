@@ -20,7 +20,7 @@ export function DetailSection({
 export function DetailLabelText({ children }: PropsWithChildren) {
   return (
     <Typography
-      className="text-xs text-[#707070] dark:color-metal"
+      className="text-xs text-shadow dark:color-metal"
       font={{ family: 'ABCDiatype', weight: 'Medium' }}
     >
       {children}

@@ -20,7 +20,7 @@ export function NftAdditionalDetailsPOAP({ tokenRef }: POAPNftDetailSectionProps
         tokenMetadata
       }
     `,
-    tokenRef
+    tokenRef,
   );
 
   if (!token.tokenMetadata) {
@@ -44,6 +44,14 @@ export function NftAdditionalDetailsPOAP({ tokenRef }: POAPNftDetailSectionProps
   return (
     <View className="flex flex-col space-y-4">
       <>
+        {location && (
+          <View className="flex flex-row">
+            <DetailSection>
+              <DetailLabelText>LOCATION</DetailLabelText>
+              <DetailValue>{location}</DetailValue>
+            </DetailSection>
+          </View>
+        )}
         <View className="flex flex-row space-x-16">
           {formattedDate && (
             <DetailSection>
@@ -52,21 +60,15 @@ export function NftAdditionalDetailsPOAP({ tokenRef }: POAPNftDetailSectionProps
             </DetailSection>
           )}
 
-          {location && (
-            <DetailSection>
-              <DetailLabelText>Location</DetailLabelText>
-              <DetailValue>{location}</DetailValue>
-            </DetailSection>
-          )}
-        </View>
-
-        <View className="flex flex-col space-y-4">
           {id && (
             <DetailSection>
               <DetailLabelText>POAP ID</DetailLabelText>
               <DetailValue>{id}</DetailValue>
             </DetailSection>
           )}
+        </View>
+
+        <View className="flex flex-row space-x-7">
           {supply && (
             <DetailSection>
               <DetailLabelText>SUPPLY</DetailLabelText>
