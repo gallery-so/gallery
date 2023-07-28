@@ -193,7 +193,7 @@ export function StandardSidebar({ queryRef }: Props) {
   }, [username]);
 
   const editGalleriesRoute: Route = useMemo(() => {
-    return { pathname: '/[username]/galleries', query: { username } };
+    return { pathname: '/[username]/galleries', query: { username, mode: 'edit' } };
   }, [username]);
 
   const isLoggedInProfileActive = useMemo(() => {

@@ -18,6 +18,7 @@ export function FadedInput({ value, onChange, icon, style, ...props }: Props) {
       <TextInput
         style={{
           fontSize: 14,
+          flex: 1,
         }}
         className="dark:text-white"
         placeholderTextColor={colors.metal}

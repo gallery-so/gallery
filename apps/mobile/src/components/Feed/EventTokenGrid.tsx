@@ -80,7 +80,7 @@ export function EventTokenGrid({
       // ChatGPT says 200ms is at the fast end for double tapping.
       // I want the single tap flow to feel fast, so I'm going for speed here.
       // Our users better be nimble af.
-      const DOUBLE_TAP_WINDOW = 200;
+      const DOUBLE_TAP_WINDOW = 250;
 
       if (singleTapTimeoutRef.current) {
         clearTimeout(singleTapTimeoutRef.current);

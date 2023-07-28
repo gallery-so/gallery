@@ -1,20 +1,12 @@
-import { MouseEventHandler, useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
-import styled from 'styled-components';
 
-import IconContainer from '~/components/core/IconContainer';
 import { HStack } from '~/components/core/Spacer/Stack';
-import transitions from '~/components/core/transitions';
 import { ClickablePill } from '~/components/Pill';
 import { TWITTER_AUTH_URL } from '~/constants/twitter';
-import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 import { UserTwitterSectionFragment$key } from '~/generated/UserTwitterSectionFragment.graphql';
 import { UserTwitterSectionQueryFragment$key } from '~/generated/UserTwitterSectionQueryFragment.graphql';
-import { EditPencilIcon } from '~/icons/EditPencilIcon';
 import TwitterIcon from '~/icons/TwitterIcon';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
-
-import Settings from '../../components/Settings/Settings';
 
 type Props = {
   queryRef: UserTwitterSectionQueryFragment$key;
@@ -39,7 +31,6 @@ export default function UserTwitterSection({ queryRef, userRef }: Props) {
   const query = useFragment(
     graphql`
       fragment UserTwitterSectionQueryFragment on Query {
-        ...SettingsFragment
         ...useLoggedInUserIdFragment
       }
     `,
@@ -49,19 +40,7 @@ export default function UserTwitterSection({ queryRef, userRef }: Props) {
   const loggedInUserId = useLoggedInUserId(query);
   const isAuthenticatedUser = loggedInUserId === user.id;
 
-  const { showDrawer } = useDrawerActions();
-
   const userTwitterAccount = user.socialAccounts?.twitter;
-
-  const handleEditButtonClick = useCallback<MouseEventHandler>(
-    (event) => {
-      event.stopPropagation();
-      showDrawer({
-        content: <Settings queryRef={query} />,
-      });
-    },
-    [query, showDrawer]
-  );
 
   const twitterUrl = `https://twitter.com/${userTwitterAccount?.username}`;
 
@@ -86,33 +65,13 @@ export default function UserTwitterSection({ queryRef, userRef }: Props) {
 
   // twitter account is connected
   return (
-    <HStack align="flex-start" gap={8}>
+    <HStack align="flex-start">
       <ClickablePill href={twitterUrl}>
         <HStack gap={5} align="center">
           <TwitterIcon />
           <strong>{userTwitterAccount.username}</strong>
         </HStack>
       </ClickablePill>
-
-      {isAuthenticatedUser && (
-        <StyledActionContainer>
-          <IconContainer
-            onClick={handleEditButtonClick}
-            size="md"
-            variant="default"
-            icon={<EditPencilIcon />}
-          />
-        </StyledActionContainer>
-      )}
     </HStack>
   );
 }
-
-const StyledActionContainer = styled(HStack)`
-  opacity: 0;
-
-  &:hover {
-    opacity: 1;
-    transition: opacity ${transitions.cubic};
-  }
-`;
