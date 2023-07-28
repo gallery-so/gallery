@@ -1,9 +1,9 @@
 import { useColorScheme } from 'nativewind';
-import Svg, { G, Path, SvgProps } from 'react-native-svg';
+import Svg, { G, Path } from 'react-native-svg';
 
 import colors from '~/shared/theme/colors';
 
-export const ExternalLinkIcon = (props: SvgProps) => {
+export const ExternalLinkIcon = () => {
   const { colorScheme } = useColorScheme();
 
   return (
