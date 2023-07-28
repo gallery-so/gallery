@@ -46,6 +46,11 @@ export function CommunityMeta({ communityRef }: Props) {
             total
           }
         }
+        posts(first: $postLast, after: $postBefore) {
+          pageInfo {
+            total
+          }
+        }
       }
     `,
     communityRef
@@ -60,6 +65,7 @@ export function CommunityMeta({ communityRef }: Props) {
   }, [community.creator, navigation]);
 
   const totalTokens = community.tokensInCommunity?.pageInfo?.total;
+  const totalPosts = community.posts?.pageInfo?.total ?? 0;
 
   const formattedTotalTokens = useMemo(() => {
     if (totalTokens && totalTokens > 999) {
@@ -68,6 +74,14 @@ export function CommunityMeta({ communityRef }: Props) {
 
     return totalTokens;
   }, [totalTokens]);
+
+  const formattedTotalPosts = useMemo(() => {
+    if (totalPosts && totalPosts > 999) {
+      return `${Math.floor(totalPosts / 1000)}K`;
+    }
+
+    return totalPosts;
+  }, [totalPosts]);
 
   const showAddressOrGalleryUser = useMemo(() => {
     if (community.creator?.__typename === 'GalleryUser' && !community.creator?.universal) {
@@ -152,6 +166,25 @@ export function CommunityMeta({ communityRef }: Props) {
           >
             {formattedTotalTokens}
           </Typography>
+        </View>
+      )}
+      {totalPosts > 0 && (
+        <View className="flex flex-column space-y-1">
+          <Typography
+            font={{ family: 'ABCDiatype', weight: 'Regular' }}
+            className="text-xs uppercase"
+          >
+            posts
+          </Typography>
+
+          <View className="space-y-1">
+            <Typography
+              font={{ family: 'ABCDiatype', weight: 'Regular' }}
+              className="text-sm text-shadow text-right"
+            >
+              {formattedTotalPosts}
+            </Typography>
+          </View>
         </View>
       )}
     </View>
