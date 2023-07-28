@@ -31,7 +31,7 @@ export function CommunityCollectors({ communityRef, queryRef }: Props) {
   );
 
   return (
-    <View className="flex-1">
+    <View className="flex-1 pt-16">
       <CommunityCollectorsList queryRef={query} communityRef={community} />
     </View>
   );

@@ -89,22 +89,20 @@ export function CommunityView({ queryRef }: Props) {
         </View>
       </View>
 
-      <View className="flex-grow">
-        <View className="px-4">
-          <CommunityHeader communityRef={community} />
-          <CommunityMeta communityRef={community} />
-        </View>
+      <View className="px-4">
+        <CommunityHeader communityRef={community} />
+        <CommunityMeta communityRef={community} />
+      </View>
 
-        <View className="flex-grow">
-          <GalleryTabsContainer Header={Header} ref={containerRef}>
-            <Tabs.Tab name="Posts">
-              <CommunityViewPostsTab communityRef={community} queryRef={query} />
-            </Tabs.Tab>
-            <Tabs.Tab name="Collectors">
-              <CommunityCollectors queryRef={query} communityRef={community} />
-            </Tabs.Tab>
-          </GalleryTabsContainer>
-        </View>
+      <View className="flex-grow">
+        <GalleryTabsContainer Header={Header} ref={containerRef}>
+          <Tabs.Tab name="Posts">
+            <CommunityViewPostsTab communityRef={community} queryRef={query} />
+          </Tabs.Tab>
+          <Tabs.Tab name="Collectors">
+            <CommunityCollectors queryRef={query} communityRef={community} />
+          </Tabs.Tab>
+        </GalleryTabsContainer>
       </View>
     </View>
   );

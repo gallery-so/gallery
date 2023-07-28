@@ -4,13 +4,14 @@ import { View } from 'react-native';
 import { Tabs } from 'react-native-collapsible-tab-view';
 import { graphql, useFragment, usePaginationFragment } from 'react-relay';
 
+import { Button } from '~/components/Button';
 import {
   createVirtualizedFeedEventItems,
   FeedListItemType,
 } from '~/components/Feed/createVirtualizedFeedEventItems';
 import { FeedVirtualizedRow } from '~/components/Feed/FeedVirtualizedRow';
 import { useFailedEventTracker } from '~/components/Feed/useFailedEventTracker';
-import { useListContentStyle } from '~/components/ProfileView/Tabs/useListContentStyle';
+import { Typography } from '~/components/Typography';
 import { CommunityViewPostsTabFragment$key } from '~/generated/CommunityViewPostsTabFragment.graphql';
 import { CommunityViewPostsTabQueryFragment$key } from '~/generated/CommunityViewPostsTabQueryFragment.graphql';
 
@@ -24,12 +25,16 @@ export function CommunityViewPostsTab({ communityRef, queryRef }: Props) {
     graphql`
       fragment CommunityViewPostsTabFragment on Community
       @refetchable(queryName: "CommunityViewPostsTabFragmentPaginationQuery") {
+        name
         posts(first: $postLast, after: $postBefore)
           @connection(key: "CommunityViewPostsTabFragment_posts") {
           edges {
             node {
               ...createVirtualizedFeedEventItemsPostFragment
             }
+          }
+          pageInfo {
+            total
           }
         }
       }
@@ -46,7 +51,7 @@ export function CommunityViewPostsTab({ communityRef, queryRef }: Props) {
     queryRef
   );
 
-  const contentContainerStyle = useListContentStyle();
+  const totalPosts = community?.posts?.pageInfo?.total ?? 0;
 
   const { markEventAsFailure, failedEvents } = useFailedEventTracker();
 
@@ -87,8 +92,39 @@ export function CommunityViewPostsTab({ communityRef, queryRef }: Props) {
     [markEventAsFailure]
   );
 
+  const handleCreatePost = useCallback(() => {}, []);
+
+  if (totalPosts === 0) {
+    return (
+      <View className="flex-1 pt-16 justify-center">
+        <View className="space-y-6 px-8">
+          <Typography
+            font={{ family: 'ABCDiatype', weight: 'Regular' }}
+            className="text-lg text-center"
+          >
+            It’s still early... be the first to post about{' '}
+            <Typography
+              font={{ family: 'ABCDiatype', weight: 'Bold' }}
+              className="text-lg text-center"
+            >
+              {community?.name}
+            </Typography>{' '}
+            and inspire others!
+          </Typography>
+
+          <Button
+            text={'CREATE A POST'}
+            onPress={handleCreatePost}
+            eventElementId={null}
+            eventName={null}
+          />
+        </View>
+      </View>
+    );
+  }
+
   return (
-    <View style={contentContainerStyle}>
+    <View className="pt-16">
       <Tabs.FlashList
         ref={ref}
         data={items}
