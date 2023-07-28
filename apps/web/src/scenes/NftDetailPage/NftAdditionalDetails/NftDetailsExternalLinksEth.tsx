@@ -13,6 +13,7 @@ import { NftDetailsExternalLinksEthFragment$key } from '~/generated/NftDetailsEx
 import { RefreshIcon } from '~/icons/RefreshIcon';
 import { extractMirrorXyzUrl } from '~/shared/utils/extractMirrorXyzUrl';
 import { getOpenseaExternalUrl, hexHandler } from '~/shared/utils/getOpenseaExternalUrl';
+import { DateFormatOption, formatDateString } from '~/utils/formatDateString';
 
 import { useRefreshMetadata } from './useRefreshMetadata';
 
@@ -30,6 +31,7 @@ export default function NftDetailsExternalLinksEth({ tokenRef }: Props) {
         tokenId
         tokenMetadata
         chain
+        lastUpdated
         contract {
           contractAddress {
             address
@@ -41,7 +43,14 @@ export default function NftDetailsExternalLinksEth({ tokenRef }: Props) {
     tokenRef
   );
 
-  const { tokenId, contract, externalUrl, tokenMetadata, chain } = token;
+  const {
+    tokenId,
+    contract,
+    externalUrl,
+    tokenMetadata,
+    chain,
+    lastUpdated: lastUpdatedRaw,
+  } = token;
 
   const [refresh, isRefreshing] = useRefreshMetadata(token);
 
@@ -77,6 +86,8 @@ export default function NftDetailsExternalLinksEth({ tokenRef }: Props) {
       placement: 'right',
     });
 
+  const lastUpdated = formatDateString(lastUpdatedRaw, DateFormatOption.ABBREVIATED);
+
   return (
     <StyledExternalLinks gap={4}>
       {mirrorXyzUrl && <InteractiveLink href={mirrorXyzUrl}>View on Mirror</InteractiveLink>}
@@ -101,7 +112,7 @@ export default function NftDetailsExternalLinksEth({ tokenRef }: Props) {
               style={{ ...floatingStyle }}
               ref={floating}
               whiteSpace="pre-line"
-              text={`Last refreshed `}
+              text={`Last refreshed ${lastUpdated}`}
             />
           </StartAlignedButtonPill>
         </VStack>
