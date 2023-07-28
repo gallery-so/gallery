@@ -59,6 +59,10 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionalDetailsEthPro
     return null;
   }, [tokenMetadata]);
 
+  const numOfLinks = [openSeaExternalUrl, externalUrl, mirrorXyzUrl].filter((value) =>
+    value ? value : null
+  ).length;
+
   return (
     <View className="flex flex-col space-y-4">
       <View className="flex flex-col space-y-4">
@@ -121,14 +125,22 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionalDetailsEthPro
               </View>
             </DetailSection>
           )}
-
-          {externalUrl ? (
+          {externalUrl && (
             <DetailSection>
-              <DetailMoreInfoLink link={externalUrl} />
+              <View className="flex flex-col pt-4">
+                <DetailExternalLink
+                  link={externalUrl}
+                  label="More Info"
+                  trackingLabel="NFT Detail View on External Link"
+                  showExternalLinkIcon={true}
+                  font={{ family: 'ABCDiatype', weight: 'Bold' }}
+                />
+              </View>
             </DetailSection>
-          ) : (
+          )}
+          {numOfLinks === 2 && (
             <DetailSection>
-              <DetailLabelText>{'    '}</DetailLabelText>
+              <DetailLabelText> </DetailLabelText>
             </DetailSection>
           )}
         </View>

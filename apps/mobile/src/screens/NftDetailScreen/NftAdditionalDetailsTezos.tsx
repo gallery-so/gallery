@@ -108,23 +108,34 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
                 <DetailValue>{token.chain}</DetailValue>
               </DetailSection>
             )}
-
-            <DetailSection>
-              {fxhashUrl && (
-                <DetailExternalLink
-                  link={fxhashUrl}
-                  label="fx(hash)"
-                  trackingLabel="NFT Detail FX Hash URL"
-                />
-              )}
-              {objktUrl && (
-                <DetailExternalLink
-                  link={objktUrl}
-                  label="objkt"
-                  trackingLabel="NFT Detail OBJKT URL"
-                />
-              )}
-            </DetailSection>
+            {fxhashUrl && (
+              <DetailSection>
+                <DetailLabelText>VIEW ON</DetailLabelText>
+                <View className="flex flex-row">
+                  <DetailExternalLink
+                    link={fxhashUrl}
+                    label="fxhash"
+                    trackingLabel="NFT Detail View on fxhashUrl"
+                    showExternalLinkIcon={true}
+                    font={{ family: 'ABCDiatype', weight: 'Bold' }}
+                  />
+                </View>
+              </DetailSection>
+            )}
+            {objktUrl && (
+              <DetailSection>
+                <DetailLabelText>VIEW ON</DetailLabelText>
+                <View className="flex flex-row">
+                  <DetailExternalLink
+                    link={objktUrl}
+                    label="objkt"
+                    trackingLabel="NFT Detail View on objktUrl"
+                    showExternalLinkIcon={true}
+                    font={{ family: 'ABCDiatype', weight: 'Bold' }}
+                  />
+                </View>
+              </DetailSection>
+            )}
             {externalUrl && <DetailMoreInfoLink link={externalUrl} />}
           </View>
         </View>

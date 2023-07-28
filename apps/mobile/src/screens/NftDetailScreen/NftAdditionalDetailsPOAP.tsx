@@ -68,7 +68,7 @@ export function NftAdditionalDetailsPOAP({ tokenRef }: POAPNftDetailSectionProps
           )}
         </View>
 
-        <View className="flex flex-row space-x-7">
+        <View className="flex flex-row space-x-16">
           {supply && (
             <DetailSection>
               <DetailLabelText>SUPPLY</DetailLabelText>
