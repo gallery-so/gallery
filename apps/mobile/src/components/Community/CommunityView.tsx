@@ -1,14 +1,13 @@
-import { useColorScheme } from 'nativewind';
-import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { View } from 'react-native';
 import { CollapsibleRef, Tabs } from 'react-native-collapsible-tab-view';
 import { graphql, useFragment } from 'react-relay';
 
 import { CommunityViewFragment$key } from '~/generated/CommunityViewFragment.graphql';
-import colors from '~/shared/theme/colors';
 
 import { BackButton } from '../BackButton';
-import { TabBar } from '../Tabs/TabBar';
+import { GalleryTabBar } from '../GalleryTabs/GalleryTabBar';
+import { GalleryTabsContainer } from '../GalleryTabs/GalleryTabsContainer';
 import { CommunityCollectors } from './CommunityCollectors';
 import { CommunityHeader } from './CommunityHeader';
 import { CommunityMeta } from './CommunityMeta';
@@ -59,8 +58,6 @@ export function CommunityView({ queryRef }: Props) {
     }
   }, [selectedRoute]);
 
-  const { colorScheme } = useColorScheme();
-
   const routes = useMemo(() => {
     return [
       {
@@ -74,7 +71,7 @@ export function CommunityView({ queryRef }: Props) {
 
   const Header = useCallback(() => {
     return (
-      <TabBar
+      <GalleryTabBar
         activeRoute={selectedRoute}
         onRouteChange={setSelectedRoute}
         routes={routes}
@@ -99,37 +96,16 @@ export function CommunityView({ queryRef }: Props) {
         </View>
 
         <View className="flex-grow">
-          <Suspense fallback={null}>
-            <Tabs.Container
-              ref={containerRef}
-              pagerProps={{ scrollEnabled: false }}
-              containerStyle={{
-                backgroundColor: colorScheme === 'light' ? colors.white : colors.black['900'],
-              }}
-              headerContainerStyle={{
-                margin: 0,
-                elevation: 0,
-                shadowOpacity: 0,
-                borderBottomColor: 'transparent',
-                backgroundColor: colorScheme === 'light' ? colors.white : colors.black['900'],
-              }}
-              renderTabBar={Empty}
-              renderHeader={Header}
-            >
-              <Tabs.Tab name="Posts">
-                <CommunityViewPostsTab communityRef={community} queryRef={query} />
-              </Tabs.Tab>
-              <Tabs.Tab name="Collectors">
-                <CommunityCollectors queryRef={query} communityRef={community} />
-              </Tabs.Tab>
-            </Tabs.Container>
-          </Suspense>
+          <GalleryTabsContainer Header={Header} ref={containerRef}>
+            <Tabs.Tab name="Posts">
+              <CommunityViewPostsTab communityRef={community} queryRef={query} />
+            </Tabs.Tab>
+            <Tabs.Tab name="Collectors">
+              <CommunityCollectors queryRef={query} communityRef={community} />
+            </Tabs.Tab>
+          </GalleryTabsContainer>
         </View>
       </View>
     </View>
   );
-}
-
-function Empty() {
-  return null;
 }

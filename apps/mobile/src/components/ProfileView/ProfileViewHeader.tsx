@@ -10,8 +10,8 @@ import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 
 import { TwitterIcon } from '../../icons/TwitterIcon';
+import { GalleryTabBar } from '../GalleryTabs/GalleryTabBar';
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
-import { TabBar } from '../Tabs/TabBar';
 import ProfileViewSharedInfo from './ProfileViewSharedInfo/ProfileViewSharedInfo';
 
 type Props = {
@@ -129,7 +129,7 @@ export function ProfileViewHeader({ queryRef, selectedRoute, onRouteChange }: Pr
 
       {twitterPill ?? null}
 
-      <TabBar
+      <GalleryTabBar
         activeRoute={selectedRoute}
         onRouteChange={onRouteChange}
         routes={routes}

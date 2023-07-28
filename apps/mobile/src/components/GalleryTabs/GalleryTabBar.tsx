@@ -1,8 +1,8 @@
 import { useCallback } from 'react';
 import { Text, View } from 'react-native';
 
-import { Typography } from '../../components/Typography';
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
+import { Typography } from '../Typography';
 
 type TabItemProps = {
   activeRoute: string;
@@ -63,7 +63,13 @@ type Props = {
   eventName?: string;
 };
 
-export function TabBar({ eventElementId, eventName, routes, activeRoute, onRouteChange }: Props) {
+export function GalleryTabBar({
+  eventElementId,
+  eventName,
+  routes,
+  activeRoute,
+  onRouteChange,
+}: Props) {
   return (
     <View className="border-porcelain dark:border-black-500 mt-4 flex flex-row items-center justify-center border-t border-b px-2 py-3">
       {routes.map((route) => {
