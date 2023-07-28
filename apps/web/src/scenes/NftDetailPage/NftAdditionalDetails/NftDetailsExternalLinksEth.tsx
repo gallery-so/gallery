@@ -2,9 +2,15 @@ import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
+import IconContainer from '~/components/core/IconContainer';
 import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
-import { VStack } from '~/components/core/Spacer/Stack';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
+import { TitleDiatypeM } from '~/components/core/Text/Text';
+import { ButtonPill } from '~/components/Pill';
+import { NewTooltip } from '~/components/Tooltip/NewTooltip';
+import { useTooltipHover } from '~/components/Tooltip/useTooltipHover';
 import { NftDetailsExternalLinksEthFragment$key } from '~/generated/NftDetailsExternalLinksEthFragment.graphql';
+import { RefreshIcon } from '~/icons/RefreshIcon';
 import { extractMirrorXyzUrl } from '~/shared/utils/extractMirrorXyzUrl';
 import { getOpenseaExternalUrl, hexHandler } from '~/shared/utils/getOpenseaExternalUrl';
 
@@ -66,6 +72,10 @@ export default function NftDetailsExternalLinksEth({ tokenRef }: Props) {
     }
     return null;
   }, [contract?.contractAddress?.address, tokenId]);
+  const { floating, reference, getFloatingProps, getReferenceProps, floatingStyle } =
+    useTooltipHover({
+      placement: 'right',
+    });
 
   return (
     <StyledExternalLinks gap={4}>
@@ -74,12 +84,27 @@ export default function NftDetailsExternalLinksEth({ tokenRef }: Props) {
         <InteractiveLink href={prohibitionUrl}>View on Prohibition</InteractiveLink>
       )}
       {openSeaExternalUrl && (
-        <>
+        <VStack gap={14}>
           <InteractiveLink href={openSeaExternalUrl}>View on OpenSea</InteractiveLink>
-          <InteractiveLink onClick={refresh} disabled={isRefreshing}>
-            Refresh metadata
-          </InteractiveLink>
-        </>
+          <StartAlignedButtonPill
+            onClick={refresh}
+            disabled={isRefreshing}
+            ref={reference}
+            {...getReferenceProps()}
+          >
+            <HStack gap={6}>
+              <IconContainer size="xs" variant="default" icon={<RefreshIcon />} />
+              <TitleDiatypeM>Refresh metadata</TitleDiatypeM>
+            </HStack>
+            <NewTooltip
+              {...getFloatingProps()}
+              style={{ ...floatingStyle }}
+              ref={floating}
+              whiteSpace="pre-line"
+              text={`Last refreshed `}
+            />
+          </StartAlignedButtonPill>
+        </VStack>
       )}
       {externalUrl && <InteractiveLink href={externalUrl}>More Info</InteractiveLink>}
     </StyledExternalLinks>
@@ -87,3 +112,7 @@ export default function NftDetailsExternalLinksEth({ tokenRef }: Props) {
 }
 
 const StyledExternalLinks = styled(VStack)``;
+
+const StartAlignedButtonPill = styled(ButtonPill)`
+  align-self: start;
+`;
