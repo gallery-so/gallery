@@ -172,13 +172,13 @@ export function TextAreaWithCharCount({
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const [isFocused, setFocus] = useState(false);
 
-  const handleFocus = () => {
+  const handleFocus = useCallback(() => {
     setFocus(true);
-  };
+  }, []);
 
-  const handleBlur = () => {
+  const handleBlur = useCallback(() => {
     setFocus(false);
-  };
+  }, []);
 
   return (
     <>
@@ -247,13 +247,13 @@ export function AutoResizingTextAreaWithCharCount({
 
   const [isFocused, setFocus] = useState(false);
 
-  const handleFocus = () => {
+  const handleFocus = useCallback(() => {
     setFocus(true);
-  };
+  }, []);
 
-  const handleBlur = () => {
+  const handleBlur = useCallback(() => {
     setFocus(false);
-  };
+  }, []);
 
   return (
     <StyledTextAreaWithCharCount
