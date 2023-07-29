@@ -75,18 +75,3 @@ export function DetailExternalLink({
     </InteractiveLink>
   );
 }
-
-export function DetailMoreInfoLink({ link }: { link: string }) {
-  return (
-    <InteractiveLink href={link} type="NFT Detail More Info URL">
-      <Typography
-        numberOfLines={1}
-        ellipsizeMode="middle"
-        className="text-sm"
-        font={{ family: 'ABCDiatype', weight: 'Regular' }}
-      >
-        More Info
-      </Typography>
-    </InteractiveLink>
-  );
-}
