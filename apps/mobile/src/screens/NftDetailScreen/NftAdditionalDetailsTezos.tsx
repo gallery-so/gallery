@@ -132,8 +132,8 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
             )}
             {externalUrl && (
               <DetailSection>
+                <DetailLabelText>VIEW ON</DetailLabelText>
                 <View className="flex flex-col pt-4">
-                  <DetailLabelText>VIEW ON</DetailLabelText>
                   <DetailExternalLink
                     link={externalUrl}
                     label="Visit Site"
