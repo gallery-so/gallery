@@ -95,7 +95,7 @@ export function CommunityViewPostsTab({ communityRef, queryRef }: Props) {
 
       const markFailure = () => (itemId ? markEventAsFailure(itemId) : () => {});
 
-      return <FeedVirtualizedRow itemId={itemId} item={item} onFailure={markFailure} />;
+      return <FeedVirtualizedRow item={item} onFailure={markFailure} />;
     },
     [markEventAsFailure]
   );
