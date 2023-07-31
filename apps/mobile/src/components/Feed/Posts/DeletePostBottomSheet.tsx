@@ -93,7 +93,7 @@ function DeletePostBottomSheet(
             className="text-lg text-black-900 dark:text-offWhite"
             font={{ family: 'ABCDiatype', weight: 'Bold' }}
           >
-            Delete the post
+            Delete post
           </Typography>
           <Typography
             className="text-lg text-black-900 dark:text-offWhite"
