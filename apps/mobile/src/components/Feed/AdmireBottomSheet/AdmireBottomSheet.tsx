@@ -24,12 +24,12 @@ import { removeNullValues } from '~/shared/relay/removeNullValues';
 const SNAP_POINTS = [350];
 
 type AdmireBottomSheetProps = {
-  feedEventId: string;
+  feedId: string;
   bottomSheetRef: ForwardedRef<GalleryBottomSheetModalType | null>;
   type: 'post' | 'event';
 };
 
-export function AdmireBottomSheet({ bottomSheetRef, feedEventId, type }: AdmireBottomSheetProps) {
+export function AdmireBottomSheet({ bottomSheetRef, feedId, type }: AdmireBottomSheetProps) {
   const [isOpen, setIsOpen] = useState(false);
   const internalRef = useRef<GalleryBottomSheetModalType | null>(null);
 
@@ -57,7 +57,7 @@ export function AdmireBottomSheet({ bottomSheetRef, feedEventId, type }: AdmireB
 
         <View className="flex-grow">
           <Suspense fallback={<UserFollowListFallback />}>
-            {isOpen && <ConnectedAdmireList type={type} feedId={feedEventId} />}
+            {isOpen && <ConnectedAdmireList type={type} feedId={feedId} />}
           </Suspense>
         </View>
       </View>
