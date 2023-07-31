@@ -58,7 +58,7 @@ export function CommentsBottomSheet({ bottomSheetRef, feedId, type }: CommentsBo
 
   const handleSubmit = useCallback(
     (value: string) => {
-      if (type === 'post') {
+      if (type === 'Post') {
         postComment({
           feedId,
           value,
@@ -75,7 +75,7 @@ export function CommentsBottomSheet({ bottomSheetRef, feedId, type }: CommentsBo
   );
 
   const isSubmitting = useMemo(() => {
-    if (type === 'post') {
+    if (type === 'Post') {
       return isSubmittingPostComment;
     }
 
@@ -128,7 +128,7 @@ type ConnectedCommentsListProps = {
 };
 
 function ConnectedCommentsList({ type, feedId }: ConnectedCommentsListProps) {
-  if (type === 'post') {
+  if (type === 'Post') {
     return <ConnectedPostCommentsList feedId={feedId} />;
   }
 

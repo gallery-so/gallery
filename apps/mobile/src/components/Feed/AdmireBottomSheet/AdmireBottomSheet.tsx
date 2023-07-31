@@ -71,7 +71,7 @@ type ConnectedAdmireListProps = {
   feedId: string;
 };
 function ConnectedAdmireList({ type, feedId }: ConnectedAdmireListProps) {
-  if (type === 'post') {
+  if (type === 'Post') {
     return <ConnectedPostAdmireList feedId={feedId} />;
   }
 

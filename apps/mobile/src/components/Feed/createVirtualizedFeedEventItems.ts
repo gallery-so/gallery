@@ -19,7 +19,7 @@ import {
 } from '~/generated/createVirtualizedFeedEventItemsQueryFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
-export type FeedItemTypes = 'post' | 'event';
+export type FeedItemTypes = 'Post' | 'FeedEvent';
 type itemType = FeedItemTypes | null;
 
 export type FeedListItemType = { key: string } & (
@@ -237,7 +237,7 @@ export function createVirtualizedFeedEventItems({
       queryRef: query,
       key: `post-item-header-${post.dbid}`,
       postId: post.dbid,
-      itemType: 'post',
+      itemType: 'Post',
     });
 
     if (post.caption) {
@@ -247,7 +247,7 @@ export function createVirtualizedFeedEventItems({
         event: null,
         key: `post-item-caption-${post.dbid}`,
         postId: post.dbid,
-        itemType: 'post',
+        itemType: 'Post',
       });
     }
 
@@ -258,7 +258,7 @@ export function createVirtualizedFeedEventItems({
       queryRef: query,
       key: `post-item-event-${post.dbid}`,
       postId: post.dbid,
-      itemType: 'post',
+      itemType: 'Post',
     });
 
     items.push({
@@ -271,7 +271,7 @@ export function createVirtualizedFeedEventItems({
       onCommentPress: function () {
         listRef.current?.scrollToItem({ item: this, animated: true, viewOffset: 0.5 });
       },
-      itemType: 'post',
+      itemType: 'Post',
     });
   };
 
@@ -299,7 +299,7 @@ export function createVirtualizedFeedEventItems({
         queryRef: query,
         key: `feed-item-header-${event.dbid}`,
         eventId: event.dbid,
-        itemType: 'event',
+        itemType: 'FeedEvent',
       });
 
       if (event.caption) {
@@ -309,7 +309,7 @@ export function createVirtualizedFeedEventItems({
           event,
           key: `feed-item-caption-${event.dbid}`,
           eventId: event.dbid,
-          itemType: 'event',
+          itemType: 'FeedEvent',
         });
       }
 
@@ -320,7 +320,7 @@ export function createVirtualizedFeedEventItems({
         key: `feed-item-event-${event.dbid}`,
         queryRef: query,
         eventId: event.dbid,
-        itemType: 'event',
+        itemType: 'FeedEvent',
       });
 
       items.push({
@@ -333,7 +333,7 @@ export function createVirtualizedFeedEventItems({
         onCommentPress: function () {
           listRef.current?.scrollToItem({ item: this, animated: true, viewOffset: 0.5 });
         },
-        itemType: 'event',
+        itemType: 'FeedEvent',
       });
     }
   };

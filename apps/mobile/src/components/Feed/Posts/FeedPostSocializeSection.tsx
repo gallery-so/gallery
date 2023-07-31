@@ -127,7 +127,7 @@ export function FeedPostSocializeSection({ feedPostRef, queryRef, onCommentPress
       <View className="flex flex-row justify-between items-center ">
         <View className="flex-1 pr-4 pt-1">
           <Interactions
-            type="post"
+            type="Post"
             feedId={post.dbid}
             commentRefs={nonNullComments}
             admireRefs={nonNullAdmires}
