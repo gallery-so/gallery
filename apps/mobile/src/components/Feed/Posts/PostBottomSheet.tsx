@@ -233,10 +233,13 @@ type BottomSheetRowProps = {
 function BottomSheetRow({ text, onPress, style, isConfirmationRow }: BottomSheetRowProps) {
   return (
     <GalleryTouchableOpacity onPress={onPress} eventElementId={null} eventName={null} style={style}>
-      <View className="bg-offWhite p-3">
+      <View className="bg-offWhite dark:bg-black-800 p-3">
         <Typography
           font={{ family: 'ABCDiatype', weight: 'Regular' }}
-          className={clsx('text-sm', isConfirmationRow ? 'text-red' : 'text-black-900')}
+          className={clsx(
+            'text-sm',
+            isConfirmationRow ? 'text-red' : 'text-black-900 dark:text-offWhite'
+          )}
         >
           {text}
         </Typography>
