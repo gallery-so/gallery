@@ -79,7 +79,7 @@ export function ProfileViewActivityTab({ queryRef }: ProfileViewActivityTabProps
 
       const markFailure = () => (itemId ? markEventAsFailure(itemId) : () => {});
 
-      return <FeedVirtualizedRow itemId={itemId} item={item} onFailure={markFailure} />;
+      return <FeedVirtualizedRow item={item} onFailure={markFailure} />;
     },
     [markEventAsFailure]
   );
