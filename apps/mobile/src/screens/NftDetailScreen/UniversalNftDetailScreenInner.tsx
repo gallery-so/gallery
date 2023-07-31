@@ -71,19 +71,6 @@ export function UniversalNftDetailScreenInner() {
     {
       tokenId: route.params.tokenId,
     }
-    // Use one of these if you want to test with a specific NFT
-    // POAP
-    // { tokenId: '2Hu1U34d5UpXWDoVNOkMtguCEpk' }
-    // FX Hash
-    // { tokenId: '2FmsnRrmb57vIMXuvhzojbVLWCG' }
-    // Tezos
-    // { tokenId: '2EpXhetYK92diIazWW9iQlC9i6W' }
-    // Eth
-    // { tokenId: '2EpXhbAjixRMTIveYgoCkpxFAzJ' }
-    // Art Gobbler
-    // { tokenId: '2GupK6MPJnGukvC36QV3pOYvheS' }
-    // SVG
-    // { tokenId: '2O1TnqK7sbhbdlAeQwLFkxo8T9i' }
   );
 
   const token = query.tokenById;
