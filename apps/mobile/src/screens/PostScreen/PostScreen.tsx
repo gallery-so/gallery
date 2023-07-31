@@ -31,6 +31,7 @@ export function PostScreen() {
             ...PostInputTokenFragment
           }
         }
+        ...usePostFragment
       }
     `,
     {
@@ -45,7 +46,9 @@ export function PostScreen() {
   }
 
   const { top } = useSafeAreaInsets();
-  const { post } = usePost();
+  const { post } = usePost({
+    queryRef: query,
+  });
 
   const [caption, setCaption] = useState('');
 
