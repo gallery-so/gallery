@@ -219,18 +219,15 @@ export function useTogglePostAdmire({ postRef, queryRef }: Args) {
       });
 
       if (response.admirePost?.__typename !== 'AdmirePostPayload') {
-        reportError(
-          `Could not admire feed event, typename was ${response.admirePost?.__typename}`,
-          {
-            tags: errorMetadata,
-          }
-        );
+        reportError(`Could not admire post, typename was ${response.admirePost?.__typename}`, {
+          tags: errorMetadata,
+        });
       }
     } catch (error) {
       if (error instanceof Error) {
         reportError(error);
       } else {
-        reportError(`Could not post comment on feed event for an unknown reason`, {
+        reportError(`Could not admire on post for an unknown reason`, {
           tags: errorMetadata,
         });
       }

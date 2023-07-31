@@ -123,7 +123,7 @@ export function usePostComment() {
           onSuccess();
         } else {
           reportError(
-            `Error while commenting on feed event, typename was ${response.commentOnPost?.__typename}`
+            `Error while commenting on post, typename was ${response.commentOnPost?.__typename}`
           );
         }
       } catch (error) {
