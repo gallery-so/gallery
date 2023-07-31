@@ -29,13 +29,14 @@ import { CommentsBottomSheetConnectedPostCommentsListQuery } from '~/generated/C
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import useKeyboardStatus from '../../../utils/useKeyboardStatus';
+import { FeedItemTypes } from '../createVirtualizedFeedEventItems';
 
 const SNAP_POINTS = [350];
 
 type CommentsBottomSheetProps = {
   feedId: string;
   bottomSheetRef: ForwardedRef<GalleryBottomSheetModalType>;
-  type: 'post' | 'event';
+  type: FeedItemTypes;
 };
 
 export function CommentsBottomSheet({ bottomSheetRef, feedId, type }: CommentsBottomSheetProps) {
@@ -122,7 +123,7 @@ export function CommentsBottomSheet({ bottomSheetRef, feedId, type }: CommentsBo
 }
 
 type ConnectedCommentsListProps = {
-  type: 'post' | 'event';
+  type: FeedItemTypes;
   feedId: string;
 };
 

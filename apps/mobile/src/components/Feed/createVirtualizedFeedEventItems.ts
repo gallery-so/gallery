@@ -19,7 +19,8 @@ import {
 } from '~/generated/createVirtualizedFeedEventItemsQueryFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
-type itemType = 'event' | 'post' | null;
+export type FeedItemTypes = 'post' | 'event';
+type itemType = FeedItemTypes | null;
 
 export type FeedListItemType = { key: string } & (
   | {

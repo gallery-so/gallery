@@ -21,12 +21,14 @@ import { AdmireBottomSheetConnectedPostAdmireListQuery } from '~/generated/Admir
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
+import { FeedItemTypes } from '../createVirtualizedFeedEventItems';
+
 const SNAP_POINTS = [350];
 
 type AdmireBottomSheetProps = {
   feedId: string;
   bottomSheetRef: ForwardedRef<GalleryBottomSheetModalType | null>;
-  type: 'post' | 'event';
+  type: FeedItemTypes;
 };
 
 export function AdmireBottomSheet({ bottomSheetRef, feedId, type }: AdmireBottomSheetProps) {
@@ -65,7 +67,7 @@ export function AdmireBottomSheet({ bottomSheetRef, feedId, type }: AdmireBottom
   );
 }
 type ConnectedAdmireListProps = {
-  type: 'post' | 'event';
+  type: FeedItemTypes;
   feedId: string;
 };
 function ConnectedAdmireList({ type, feedId }: ConnectedAdmireListProps) {
