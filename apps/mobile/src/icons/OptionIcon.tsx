@@ -1,5 +1,6 @@
 import { useColorScheme } from 'nativewind';
 import Svg, { Path, SvgProps } from 'react-native-svg';
+
 import colors from '~/shared/theme/colors';
 
 export function OptionIcon(props: SvgProps) {
