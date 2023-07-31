@@ -45,7 +45,6 @@ function TabItem({
         {route}
         {counter > 0 && <Text className="text-xs"> {counter}</Text>}
       </Typography>
-      {isFocused && <View className="bg-activeBlue h-1.5 w-1.5 rounded-full" />}
     </GalleryTouchableOpacity>
   );
 }
