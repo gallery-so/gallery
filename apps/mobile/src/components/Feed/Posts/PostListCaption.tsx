@@ -1,6 +1,7 @@
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
+import { Typography } from '~/components/Typography';
 import { PostListCaptionFragment$key } from '~/generated/PostListCaptionFragment.graphql';
 
 type Props = {
@@ -22,7 +23,9 @@ export function PostListCaption({ feedPostRef }: Props) {
 
   return (
     <View className="px-4 pb-4">
-      <Text className="text-sm">{caption}</Text>
+      <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
+        {caption}
+      </Typography>
     </View>
   );
 }
