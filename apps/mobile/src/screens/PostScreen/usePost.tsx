@@ -1,9 +1,11 @@
 import { useCallback, useState } from 'react';
-import { ConnectionHandler, graphql } from 'react-relay';
+import { ConnectionHandler, graphql, useFragment } from 'react-relay';
 import { SelectorStoreUpdater } from 'relay-runtime';
+import isFeatureEnabled, { FeatureFlag } from 'src/utils/isFeatureEnabled';
 
 import { useToastActions } from '~/contexts/ToastContext';
 import { usePostDeleteMutation } from '~/generated/usePostDeleteMutation.graphql';
+import { usePostFragment$key } from '~/generated/usePostFragment.graphql';
 import { usePostMutation } from '~/generated/usePostMutation.graphql';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
@@ -13,7 +15,18 @@ type PostTokensInput = {
   caption?: string;
 };
 
-export function usePost() {
+export function usePost({ queryRef }: { queryRef: usePostFragment$key }) {
+  const query = useFragment(
+    graphql`
+      fragment usePostFragment on Query {
+        ...isFeatureEnabledFragment
+      }
+    `,
+    queryRef
+  );
+
+  const isPostEnabled = isFeatureEnabled(FeatureFlag.KOALA, query);
+
   const [post, isPosting] = usePromisifiedMutation<usePostMutation>(graphql`
     mutation usePostMutation($input: PostTokensInput!) {
       postTokens(input: $input) {
@@ -67,7 +80,11 @@ export function usePost() {
             'WorldwideFeedFragment_globalFeed'
           );
 
-          const relayStore = store.get(connectionId);
+          const connectionName = `${connectionId}(includePosts:${
+            isPostEnabled ? 'true' : 'false'
+          })`;
+
+          const relayStore = store.get(connectionName);
 
           if (!relayStore) {
             return;
@@ -99,7 +116,7 @@ export function usePost() {
         reportError(error);
       });
     },
-    [pushToast, post, reportError]
+    [isPostEnabled, pushToast, post, reportError]
   );
 
   const handleDelete = useCallback(

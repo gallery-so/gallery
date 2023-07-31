@@ -14,12 +14,11 @@ import { PostListItem } from './Posts/PostListItem';
 import { PostListSectionHeader } from './Posts/PostListSectionHeader';
 
 type Props = {
-  itemId: string;
   item: FeedListItemType;
   onFailure: () => void;
 };
 
-export function FeedVirtualizedRow({ onFailure, item, itemId }: Props) {
+export function FeedVirtualizedRow({ onFailure, item }: Props) {
   const inner = useMemo(() => {
     switch (item.kind) {
       case 'feed-item-navigation':
@@ -64,6 +63,16 @@ export function FeedVirtualizedRow({ onFailure, item, itemId }: Props) {
         );
     }
   }, [item]);
+
+  let itemId: string | null = null;
+
+  if (item.post) {
+    itemId = item.post.dbid;
+  } else if (item.event) {
+    itemId = item.event.dbid;
+  } else {
+    itemId = item.eventId;
+  }
 
   return (
     <ReportingErrorBoundary

@@ -79,6 +79,7 @@ function PostBottomSheet(
 
         ...useFollowUserFragment
         ...useUnfollowUserFragment
+        ...DeletePostBottomSheetQueryFragment
       }
     `,
     queryRef
@@ -209,6 +210,7 @@ function PostBottomSheet(
       <DeletePostBottomSheet
         ref={deletePostBottomSheetRef}
         postRef={post}
+        queryRef={loggedInUserQuery}
         onDeleted={() => {
           bottomSheetRef.current?.dismiss();
         }}

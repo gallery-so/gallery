@@ -10,13 +10,14 @@ import { ProfilePictureBubblesWithCount } from '~/components/ProfileView/Profile
 import { InteractionsAdmiresFragment$key } from '~/generated/InteractionsAdmiresFragment.graphql';
 import { InteractionsCommentsFragment$key } from '~/generated/InteractionsCommentsFragment.graphql';
 
+import { FeedItemTypes } from '../createVirtualizedFeedEventItems';
 import { CommentLine } from './CommentLine';
 import { RemainingCommentCount } from './RemainingCommentCount';
 
 const PREVIEW_COMMENT_COUNT = 1;
 
 type Props = {
-  type: 'post' | 'event';
+  type: FeedItemTypes;
   commentRefs: InteractionsCommentsFragment$key;
   admireRefs: InteractionsAdmiresFragment$key;
   totalComments: number;
@@ -113,7 +114,7 @@ export function Interactions({
 
       <CommentsBottomSheet type={type} feedId={feedId} bottomSheetRef={commentsBottomSheetRef} />
 
-      <AdmireBottomSheet type={type} feedEventId={feedId} bottomSheetRef={admiresBottomSheetRef} />
+      <AdmireBottomSheet type={type} feedId={feedId} bottomSheetRef={admiresBottomSheetRef} />
     </View>
   );
 }

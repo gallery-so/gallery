@@ -12,17 +12,19 @@ import {
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { Typography } from '~/components/Typography';
 import { DeletePostBottomSheetFragment$key } from '~/generated/DeletePostBottomSheetFragment.graphql';
+import { DeletePostBottomSheetQueryFragment$key } from '~/generated/DeletePostBottomSheetQueryFragment.graphql';
 import { usePost } from '~/screens/PostScreen/usePost';
 
 const SNAP_POINTS = ['CONTENT_HEIGHT'];
 
 type Props = {
   postRef: DeletePostBottomSheetFragment$key;
+  queryRef: DeletePostBottomSheetQueryFragment$key;
   onDeleted: () => void;
 };
 
 function DeletePostBottomSheet(
-  { postRef, onDeleted }: Props,
+  { postRef, queryRef, onDeleted }: Props,
   ref: ForwardedRef<GalleryBottomSheetModalType>
 ) {
   const post = useFragment(
@@ -34,9 +36,20 @@ function DeletePostBottomSheet(
     postRef
   );
 
+  const query = useFragment(
+    graphql`
+      fragment DeletePostBottomSheetQueryFragment on Query {
+        ...usePostFragment
+      }
+    `,
+    queryRef
+  );
+
   const navigation = useNavigation();
 
-  const { deletePost } = usePost();
+  const { deletePost } = usePost({
+    queryRef: query,
+  });
   const { bottom } = useSafeAreaPadding();
 
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
@@ -80,7 +93,7 @@ function DeletePostBottomSheet(
             className="text-lg text-black-900 dark:text-offWhite"
             font={{ family: 'ABCDiatype', weight: 'Bold' }}
           >
-            Delete the post
+            Delete post
           </Typography>
           <Typography
             className="text-lg text-black-900 dark:text-offWhite"

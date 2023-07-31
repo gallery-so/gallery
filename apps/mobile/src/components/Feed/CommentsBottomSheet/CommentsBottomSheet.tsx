@@ -29,13 +29,14 @@ import { CommentsBottomSheetConnectedPostCommentsListQuery } from '~/generated/C
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import useKeyboardStatus from '../../../utils/useKeyboardStatus';
+import { FeedItemTypes } from '../createVirtualizedFeedEventItems';
 
 const SNAP_POINTS = [350];
 
 type CommentsBottomSheetProps = {
   feedId: string;
   bottomSheetRef: ForwardedRef<GalleryBottomSheetModalType>;
-  type: 'post' | 'event';
+  type: FeedItemTypes;
 };
 
 export function CommentsBottomSheet({ bottomSheetRef, feedId, type }: CommentsBottomSheetProps) {
@@ -57,7 +58,7 @@ export function CommentsBottomSheet({ bottomSheetRef, feedId, type }: CommentsBo
 
   const handleSubmit = useCallback(
     (value: string) => {
-      if (type === 'post') {
+      if (type === 'Post') {
         postComment({
           feedId,
           value,
@@ -74,7 +75,7 @@ export function CommentsBottomSheet({ bottomSheetRef, feedId, type }: CommentsBo
   );
 
   const isSubmitting = useMemo(() => {
-    if (type === 'post') {
+    if (type === 'Post') {
       return isSubmittingPostComment;
     }
 
@@ -122,12 +123,12 @@ export function CommentsBottomSheet({ bottomSheetRef, feedId, type }: CommentsBo
 }
 
 type ConnectedCommentsListProps = {
-  type: 'post' | 'event';
+  type: FeedItemTypes;
   feedId: string;
 };
 
 function ConnectedCommentsList({ type, feedId }: ConnectedCommentsListProps) {
-  if (type === 'post') {
+  if (type === 'Post') {
     return <ConnectedPostCommentsList feedId={feedId} />;
   }
 

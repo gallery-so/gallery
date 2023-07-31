@@ -29,7 +29,6 @@ export function CommentButton({
 }: Props) {
   const { colorScheme } = useColorScheme();
 
-  // const bottomSheetRef = useRef<GalleryBottomSheetModalType>(null);
   const snapPoints = useMemo(() => [52], []);
   const internalRef = useRef<GalleryBottomSheetModalType | null>(null);
 
@@ -55,7 +54,6 @@ export function CommentButton({
       </GalleryTouchableOpacity>
       <GalleryBottomSheetModal
         index={0}
-        // ref={bottomSheetRef}
         ref={(value) => {
           internalRef.current = value;
 
