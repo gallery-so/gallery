@@ -7,6 +7,7 @@ import { useToastActions } from '~/contexts/ToastContext';
 import { usePostDeleteMutation } from '~/generated/usePostDeleteMutation.graphql';
 import { usePostFragment$key } from '~/generated/usePostFragment.graphql';
 import { usePostMutation } from '~/generated/usePostMutation.graphql';
+import { usePostTokenFragment$key } from '~/generated/usePostTokenFragment.graphql';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 
@@ -15,7 +16,12 @@ type PostTokensInput = {
   caption?: string;
 };
 
-export function usePost({ queryRef }: { queryRef: usePostFragment$key }) {
+type Props = {
+  queryRef: usePostFragment$key;
+  tokenRef: usePostTokenFragment$key;
+};
+
+export function usePost({ queryRef, tokenRef }: Props) {
   const query = useFragment(
     graphql`
       fragment usePostFragment on Query {
@@ -23,6 +29,18 @@ export function usePost({ queryRef }: { queryRef: usePostFragment$key }) {
       }
     `,
     queryRef
+  );
+
+  const token = useFragment(
+    graphql`
+      fragment usePostTokenFragment on Token {
+        __typename
+        community {
+          dbid
+        }
+      }
+    `,
+    tokenRef
   );
 
   const isPostEnabled = isFeatureEnabled(FeatureFlag.KOALA, query);
@@ -63,6 +81,11 @@ export function usePost({ queryRef }: { queryRef: usePostFragment$key }) {
 
   const { pushToast } = useToastActions();
 
+  const communityConnection = ConnectionHandler.getConnectionID(
+    `Community:${token?.community?.dbid}`,
+    'CommunityViewPostsTabFragment_posts'
+  );
+
   const handlePost = useCallback(
     ({ tokenId, caption }: PostTokensInput) => {
       const updater: SelectorStoreUpdater<usePostMutation['response']> = (store, response) => {
@@ -80,21 +103,34 @@ export function usePost({ queryRef }: { queryRef: usePostFragment$key }) {
             'WorldwideFeedFragment_globalFeed'
           );
 
+          const communityStore = store.get(communityConnection);
+
           const connectionName = `${connectionId}(includePosts:${
             isPostEnabled ? 'true' : 'false'
           })`;
 
           const relayStore = store.get(connectionName);
 
-          if (!relayStore) {
-            return;
+          if (relayStore) {
+            const edge = ConnectionHandler.createEdge(store, relayStore, newPost, 'FeedEdge');
+            ConnectionHandler.insertEdgeAfter(relayStore, edge);
           }
 
-          // Create a new edge
-          const edge = ConnectionHandler.createEdge(store, relayStore, newPost, 'FeedEdge');
+          if (communityStore) {
+            const pageInfo = communityStore.getLinkedRecord('pageInfo');
+            pageInfo?.setValue(((pageInfo?.getValue('total') as number) ?? 1) + 1, 'total');
 
-          // Insert the edge at the end of the connection
-          ConnectionHandler.insertEdgeAfter(relayStore, edge);
+            // Create a new edge
+            const communityEdge = ConnectionHandler.createEdge(
+              store,
+              communityStore,
+              newPost,
+              'PostEdge'
+            );
+
+            // Insert the edge at the end of the connection
+            ConnectionHandler.insertEdgeAfter(communityStore, communityEdge);
+          }
         }
       };
 
@@ -116,7 +152,7 @@ export function usePost({ queryRef }: { queryRef: usePostFragment$key }) {
         reportError(error);
       });
     },
-    [isPostEnabled, pushToast, post, reportError]
+    [communityConnection, isPostEnabled, pushToast, post, reportError]
   );
 
   const handleDelete = useCallback(

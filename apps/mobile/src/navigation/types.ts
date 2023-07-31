@@ -15,10 +15,11 @@ export type RootStackNavigatorParamList = {
   NftSelectorContractScreen: { contractAddress: string; page: ScreenWithNftSelector };
   PostComposer: {
     tokenId: string;
+    redirectTo?: PostRedirect;
   };
 };
 
-export type ScreenWithNftSelector = 'ProfilePicture' | 'Post';
+export type ScreenWithNftSelector = 'ProfilePicture' | 'Post' | 'Community';
 export type MainTabStackNavigatorParamList = {
   Profile: { username: string; hideBackButton?: boolean };
   NftDetail: {
@@ -79,12 +80,14 @@ export type LoginStackNavigatorParamList = {
   NotificationUpsell: undefined;
 };
 
+export type PostRedirect = 'Latest' | 'Community';
 export type PostStackNavigatorParamList = {
   NftSelector: {
     page: ScreenWithNftSelector;
   };
   PostComposer: {
     tokenId: string;
+    redirectTo: PostRedirect;
   };
 };
 

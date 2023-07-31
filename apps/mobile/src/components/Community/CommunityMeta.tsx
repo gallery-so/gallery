@@ -46,7 +46,14 @@ export function CommunityMeta({ communityRef }: Props) {
             total
           }
         }
-        posts(first: $postLast, after: $postBefore) {
+        posts(first: $postLast, after: $postBefore)
+          @connection(key: "CommunityViewPostsTabFragment_posts") {
+          # Relay requires that we grab the edges field if we use the connection directive
+          # We're selecting __typename since that shouldn't have a cost
+          # eslint-disable-next-line relay/unused-fields
+          edges {
+            __typename
+          }
           pageInfo {
             total
           }

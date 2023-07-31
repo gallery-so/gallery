@@ -106,7 +106,7 @@ export function CommunityViewPostsTab({ communityRef, queryRef }: Props) {
     if (!community?.contractAddress?.address) return;
     navigation.navigate('NftSelectorContractScreen', {
       contractAddress: community?.contractAddress?.address,
-      page: 'Post',
+      page: 'Community',
     });
   }, [navigation, community?.contractAddress?.address]);
 
