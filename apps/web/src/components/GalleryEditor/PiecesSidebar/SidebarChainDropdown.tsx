@@ -9,10 +9,10 @@ import { DropdownSection } from '~/components/core/Dropdown/DropdownSection';
 import IconContainer from '~/components/core/IconContainer';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
-import { ChainMetadata, chains } from '~/components/GalleryEditor/PiecesSidebar/chains';
 import { SidebarChainDropdownFragment$key } from '~/generated/SidebarChainDropdownFragment.graphql';
 import DoubleArrowsIcon from '~/icons/DoubleArrowsIcon';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
+import { ChainMetadata, chains } from '~/shared/utils/chains';
 import isAdminRole from '~/utils/graphql/isAdminRole';
 
 import { SidebarView } from './SidebarViewSelector';

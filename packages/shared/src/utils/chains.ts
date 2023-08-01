@@ -73,3 +73,7 @@ export type LowercaseChain = Lowercase<Chain>;
 export type ChainMetadata = (typeof chains)[number];
 
 export const chainsMap = keyBy(chains, 'name') as Record<Chain, ChainMetadata>;
+
+export function isChainEvm(chain: Chain) {
+  return chainsMap[chain].baseChain === 'Ethereum';
+}
