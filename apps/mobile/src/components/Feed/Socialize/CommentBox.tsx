@@ -97,6 +97,7 @@ export function CommentBox({
         <BottomSheetTextInput
           value={value}
           onChangeText={setValue}
+          multiline={true}
           className="text-sm h-5"
           selectionColor={colorScheme === 'dark' ? colors.white : colors.black['800']}
           autoCapitalize="none"
