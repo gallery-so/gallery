@@ -7,6 +7,7 @@ import { FeedEventScreen } from '~/screens/FeedEventScreen';
 import { GalleryScreen } from '~/screens/GalleryScreen/GalleryScreen';
 import { HomeScreen } from '~/screens/HomeScreen/HomeScreen';
 import { NftDetailScreen } from '~/screens/NftDetailScreen/NftDetailScreen';
+import { UniversalNftDetailScreen } from '~/screens/NftDetailScreen/UniversalNftDetailScreen';
 import { NftSelectorContractScreen } from '~/screens/NftSelectorScreen/NftSelectorContractScreen';
 import { NftSelectorPickerScreen } from '~/screens/NftSelectorScreen/NftSelectorPickerScreen';
 import { NotificationsScreen } from '~/screens/NotificationsScreen';
@@ -25,6 +26,7 @@ type Props = {
 export function MainTabStackNavigator({ initialRouteName, initialProfileParams }: Props) {
   return (
     <Stack.Navigator initialRouteName={initialRouteName} screenOptions={{ header: Empty }}>
+      <Stack.Screen name="UniversalNftDetail" component={UniversalNftDetailScreen} />
       <Stack.Screen name="NftDetail" component={NftDetailScreen} />
       <Stack.Screen name="Profile" component={ProfileScreen} initialParams={initialProfileParams} />
       <Stack.Screen name="Gallery" component={GalleryScreen} />
