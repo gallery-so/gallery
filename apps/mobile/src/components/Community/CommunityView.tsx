@@ -1,13 +1,15 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { View } from 'react-native';
+import { Share, View } from 'react-native';
 import { CollapsibleRef, Tabs } from 'react-native-collapsible-tab-view';
 import { graphql, useFragment } from 'react-relay';
+import { ShareIcon } from 'src/icons/ShareIcon';
 
 import { CommunityViewFragment$key } from '~/generated/CommunityViewFragment.graphql';
 
 import { BackButton } from '../BackButton';
 import { GalleryTabBar } from '../GalleryTabs/GalleryTabBar';
 import { GalleryTabsContainer } from '../GalleryTabs/GalleryTabsContainer';
+import { IconContainer } from '../IconContainer';
 import { CommunityCollectors } from './CommunityCollectors';
 import { CommunityHeader } from './CommunityHeader';
 import { CommunityMeta } from './CommunityMeta';
@@ -33,6 +35,10 @@ export function CommunityView({ queryRef }: Props) {
             ...CommunityCollectorsFragment
             ...CommunityMetaFragment
             ...CommunityViewPostsTabFragment
+            chain
+            contractAddress {
+              address
+            }
             owners(
               first: $listOwnersFirst
               after: $listOwnersAfter
@@ -83,6 +89,14 @@ export function CommunityView({ queryRef }: Props) {
     ];
   }, [totalOwners]);
 
+  const handleShare = useCallback(() => {
+    Share.share({
+      url: `https://gallery.so/community/${community.chain?.toLowerCase()}/${
+        community.contractAddress?.address
+      }`,
+    });
+  }, [community.chain, community.contractAddress?.address]);
+
   const Header = useCallback(() => {
     return (
       <GalleryTabBar
@@ -100,6 +114,13 @@ export function CommunityView({ queryRef }: Props) {
       <View className="flex flex-col px-4 pb-4 z-10">
         <View className="flex flex-row justify-between">
           <BackButton />
+
+          <IconContainer
+            eventElementId="Profile Share Icon"
+            eventName="Profile Share Icon Clicked"
+            icon={<ShareIcon />}
+            onPress={handleShare}
+          />
         </View>
       </View>
 
