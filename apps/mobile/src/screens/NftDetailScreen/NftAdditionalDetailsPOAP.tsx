@@ -1,4 +1,3 @@
-import { format, parse } from 'date-fns';
 import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
@@ -8,6 +7,7 @@ import {
   DetailSection,
   DetailValue,
 } from '~/screens/NftDetailScreen/DetailSection';
+import extractPoapMetadata from '~/shared/utils/extractPoapMetadata';
 
 type POAPNftDetailSectionProps = {
   tokenRef: NftAdditionalDetailsPOAPFragment$key;
@@ -27,19 +27,7 @@ export function NftAdditionalDetailsPOAP({ tokenRef }: POAPNftDetailSectionProps
     return null;
   }
 
-  const {
-    city,
-    country,
-    created,
-    event_id: id,
-    supply,
-    chain,
-  } = JSON.parse(token.tokenMetadata) ?? {};
-
-  const location = city && country ? `${city}, ${country}` : null;
-
-  const parsedDate = created ? parse(created, 'yyyy-MM-dd HH:mm:ss', new Date()) : null;
-  const formattedDate = parsedDate ? format(parsedDate, 'MMMM do, yyyy') : null;
+  const { id, location, createdDate, supply, chain } = extractPoapMetadata(token.tokenMetadata);
 
   return (
     <View className="flex flex-col space-y-4">
@@ -53,10 +41,10 @@ export function NftAdditionalDetailsPOAP({ tokenRef }: POAPNftDetailSectionProps
           </View>
         )}
         <View className="flex flex-row space-x-16">
-          {formattedDate && (
+          {createdDate && (
             <DetailSection>
               <DetailLabelText>CREATED</DetailLabelText>
-              <DetailValue>{formattedDate}</DetailValue>
+              <DetailValue>{createdDate}</DetailValue>
             </DetailSection>
           )}
 
