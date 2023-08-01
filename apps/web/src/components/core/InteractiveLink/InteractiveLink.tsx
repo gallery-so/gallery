@@ -17,7 +17,7 @@ type InteractiveLinkProps = {
   children: ReactNode;
   size?: string; // 'M', 'L', 'XL'
   className?: string;
-  disabled?: boolean;
+  // disabled?: boolean;
   onClick?: MouseEventHandler;
   // allows the parent to override default link styles
   inheritLinkStyling?: boolean;
@@ -145,8 +145,8 @@ export function InteractiveLinkNeedsVerification({
 }
 
 export const StyledAnchor = styled.a<{ disabled?: boolean; inheritStyles?: boolean }>`
-  color: ${({ disabled }) => (disabled ? colors.porcelain : colors.shadow)};
-  text-decoration: underline;
+  color: ${colors.shadow};
+  text-decoration: none;
   font-family: ${({ inheritStyles }) => (inheritStyles ? 'inherit' : BODY_FONT_FAMILY)};
   font-size: ${({ inheritStyles }) => (inheritStyles ? 'inherit' : '14px')};
   line-height: ${({ inheritStyles }) => (inheritStyles ? 'inherit' : '18px')};

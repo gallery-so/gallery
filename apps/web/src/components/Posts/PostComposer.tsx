@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import { useCallback, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
@@ -31,6 +32,9 @@ export default function PostComposer({ onBackClick, tokenRef }: Props) {
         __typename
         dbid
         name
+        community {
+          id
+        }
         ...PostComposerNftFragment
       }
     `,
@@ -52,6 +56,7 @@ export default function PostComposer({ onBackClick, tokenRef }: Props) {
   const { pushToast } = useToastActions();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const track = useTrack();
+  const router = useRouter();
 
   const handlePostClick = useCallback(async () => {
     setIsSubmitting(true);
@@ -59,10 +64,15 @@ export default function PostComposer({ onBackClick, tokenRef }: Props) {
       added_description: !!description,
     });
     try {
+      // if posted token belongs to current community, dont redirect
+
+      // otherwise redirect to latest feed
+
       await createPost({
-        tokenIds: [token.dbid],
+        tokens: [{ dbid: token.dbid, communityId: token.community.id }],
         caption: description,
       });
+      // router.push('/latest');
     } catch (error) {
       // TODO add error state GAL-3841
       setIsSubmitting(false);
@@ -74,7 +84,16 @@ export default function PostComposer({ onBackClick, tokenRef }: Props) {
       message: `Successfully posted ${token.name || 'item'}`,
     });
     hideModal();
-  }, [createPost, description, hideModal, pushToast, token.dbid, token.name, track]);
+  }, [
+    createPost,
+    description,
+    hideModal,
+    pushToast,
+    token.community.id,
+    token.dbid,
+    token.name,
+    track,
+  ]);
 
   const handleBackClick = useCallback(() => {
     onBackClick?.();
@@ -84,7 +103,7 @@ export default function PostComposer({ onBackClick, tokenRef }: Props) {
     if (!token.name || token.name.length > 30) {
       return 'this item';
     }
-    return token.name;
+    return `"${token.name}`;
   }, [token.name]);
 
   return (
@@ -107,7 +126,7 @@ export default function PostComposer({ onBackClick, tokenRef }: Props) {
             <TextAreaWithCharCount
               currentCharCount={description.length}
               maxCharCount={DESCRIPTION_MAX_LENGTH}
-              placeholder={`Say something about "${inputPlaceholderTokenName}"`}
+              placeholder={`Say something about ${inputPlaceholderTokenName}`}
               textAreaHeight="117px"
               onChange={handleDescriptionChange}
               autoFocus
