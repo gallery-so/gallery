@@ -167,6 +167,13 @@ export function usePost({ queryRef, tokenRef }: Props) {
         ) {
           const deletedId = response.deletePost.deletedId.dbid;
           store.delete(`Post:${deletedId}`);
+
+          const communityStore = store.get(communityConnection);
+
+          if (communityStore) {
+            const pageInfo = communityStore.getLinkedRecord('pageInfo');
+            pageInfo?.setValue(((pageInfo?.getValue('total') as number) ?? 1) - 1, 'total');
+          }
         }
       };
       await deletePost({
@@ -176,7 +183,7 @@ export function usePost({ queryRef, tokenRef }: Props) {
         },
       });
     },
-    [deletePost]
+    [communityConnection, deletePost]
   );
 
   return {
