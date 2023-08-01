@@ -73,7 +73,7 @@ export function CommunityViewPostsTab({ communityRef, queryRef }: Props) {
   posts.reverse();
 
   const ref = useRef<FlashList<FeedListItemType> | null>(null);
-  const { items, stickyIndices } = createVirtualizedFeedEventItems({
+  const { items } = createVirtualizedFeedEventItems({
     itemRefs: posts,
     listRef: ref,
     failedEvents,
@@ -147,7 +147,6 @@ export function CommunityViewPostsTab({ communityRef, queryRef }: Props) {
         keyExtractor={(item) => item.key}
         estimatedItemSize={400}
         data={items}
-        stickyHeaderIndices={stickyIndices}
         renderItem={renderItem}
       />
     </View>
