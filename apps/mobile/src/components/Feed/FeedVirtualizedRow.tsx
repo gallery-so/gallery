@@ -52,7 +52,7 @@ export function FeedVirtualizedRow({ onFailure, item }: Props) {
       case 'post-item-caption':
         return <PostListCaption feedPostRef={item.post} />;
       case 'post-item-event':
-        return <PostListItem feedPostRef={item.post} />;
+        return <PostListItem feedPostRef={item.post} queryRef={item.queryRef} />;
       case 'post-item-socialize':
         return (
           <FeedPostSocializeSection

@@ -142,6 +142,8 @@ export function createVirtualizedFeedEventItems({
         ...PostListSectionHeaderQueryFragment
         # eslint-disable-next-line relay/must-colocate-fragment-spreads
         ...FeedPostSocializeSectionQueryFragment
+        # eslint-disable-next-line relay/must-colocate-fragment-spreads
+        ...PostListItemQueryFragment
       }
     `,
     queryRef
