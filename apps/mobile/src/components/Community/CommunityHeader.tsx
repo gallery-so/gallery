@@ -37,7 +37,7 @@ export function CommunityHeader({ communityRef }: Props) {
   const formattedDescription = community.description?.replace(/\n/g, ' ');
 
   return (
-    <View className="mb-4">
+    <View className="mb-2">
       <View className="flex flex-row space-x-2">
         <CommunityProfilePicture communityRef={community} size="xxl" />
         <GalleryTouchableOpacity

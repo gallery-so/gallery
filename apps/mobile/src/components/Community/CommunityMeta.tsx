@@ -126,7 +126,7 @@ export function CommunityMeta({ communityRef }: Props) {
   }, [community.creator, community.contractAddress, handleUsernamePress]);
 
   return (
-    <View className="mb-4 flex flex-row space-x-6">
+    <View className="flex flex-row space-x-6">
       {community?.chain !== 'POAP' && (
         <View className="flex flex-column space-y-1">
           <Typography

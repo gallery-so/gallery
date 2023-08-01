@@ -55,7 +55,7 @@ export function CommunityScreen() {
   const { chain, contractAddress } = route.params;
 
   return (
-    <View className="flex-1 bg-white dark:bg-black">
+    <View className="flex-1 bg-white dark:bg-black-900">
       <Suspense fallback={<CommunityViewFallback />}>
         <CommunityScreenInner contractAddress={contractAddress} chain={chain as Chain} />
       </Suspense>
