@@ -17,7 +17,7 @@ import { FeedEventsCommentsModal } from './CommentsModal/FeedEventsCommentsModal
 import PostCommentsModal from './CommentsModal/PostCommentsModal';
 
 type Props = {
-  onPotentialLayoutShift: () => void;
+  onPotentialLayoutShift?: () => void;
   eventRef: CommentsFragment$key;
   queryRef: CommentsQueryFragment$key;
 };
@@ -115,6 +115,9 @@ export function Comments({ eventRef, queryRef, onPotentialLayoutShift }: Props) 
 
   const isFirstMount = useRef(true);
   useLayoutEffect(() => {
+    if (!onPotentialLayoutShift) {
+      return;
+    }
     if (!isFirstMount.current) {
       onPotentialLayoutShift();
     }

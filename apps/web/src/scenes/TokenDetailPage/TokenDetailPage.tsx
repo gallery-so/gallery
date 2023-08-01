@@ -35,7 +35,7 @@ function TokenDetailPage({ tokenId }: TokenDetailPageProps) {
   if (!query.token || query.token.__typename !== 'Token') {
     return (
       <StyledTokenDetailPage>
-        <NotFound />
+        <NotFound resource="token" />
       </StyledTokenDetailPage>
     );
   }

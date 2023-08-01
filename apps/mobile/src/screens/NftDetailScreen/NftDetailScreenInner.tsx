@@ -242,7 +242,7 @@ export function NftDetailScreenInner() {
             <View className="w-1/2">
               <Typography
                 className="text-xs text-shadow dark:text-metal"
-                font={{ family: 'ABCDiatype', weight: 'Regular' }}
+                font={{ family: 'ABCDiatype', weight: 'Medium' }}
               >
                 OWNER
               </Typography>

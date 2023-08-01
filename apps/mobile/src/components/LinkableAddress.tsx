@@ -6,16 +6,23 @@ import { LinkableAddressFragment$key } from '~/generated/LinkableAddressFragment
 import { getExternalAddressLink, graphqlTruncateAddress } from '~/shared/utils/wallet';
 
 import { InteractiveLink, InteractiveLinkProps } from './InteractiveLink';
-import { Typography } from './Typography';
+import { Typography, TypographyProps } from './Typography';
 
 type LinkableAddressProps = {
   chainAddressRef: LinkableAddressFragment$key;
   type: InteractiveLinkProps['type'];
   style?: ViewProps['style'];
   textStyle?: TextProps['style'];
+  font?: TypographyProps['font'];
 };
 
-export function LinkableAddress({ chainAddressRef, type, style, textStyle }: LinkableAddressProps) {
+export function LinkableAddress({
+  chainAddressRef,
+  type,
+  style,
+  textStyle,
+  font,
+}: LinkableAddressProps) {
   const address = useFragment(
     graphql`
       fragment LinkableAddressFragment on ChainAddress {
@@ -33,11 +40,7 @@ export function LinkableAddress({ chainAddressRef, type, style, textStyle }: Lin
 
   if (!link) {
     return (
-      <Typography
-        className="text-sm"
-        font={{ family: 'ABCDiatype', weight: 'Regular' }}
-        style={style}
-      >
+      <Typography className="text-sm" font={font ?? { family: 'ABCDiatype', weight: 'Regular' }}>
         {truncatedAddress || address.address}
       </Typography>
     );
@@ -50,6 +53,7 @@ export function LinkableAddress({ chainAddressRef, type, style, textStyle }: Lin
         address={address.address}
         style={style}
         textStyle={textStyle}
+        font={font}
       />
     );
   } else {
@@ -64,6 +68,7 @@ type RawLinkableAddressProps = {
   type: InteractiveLinkProps['type'];
   style?: ViewProps['style'];
   textStyle?: TextProps['style'];
+  font?: TypographyProps['font'];
 };
 
 export function RawLinkableAddress({
@@ -73,9 +78,10 @@ export function RawLinkableAddress({
   type,
   style,
   textStyle,
+  font,
 }: RawLinkableAddressProps) {
   return (
-    <InteractiveLink href={link} type={type} style={style} textStyle={textStyle}>
+    <InteractiveLink href={link} type={type} style={style} textStyle={textStyle} font={font}>
       {truncatedAddress || address}
     </InteractiveLink>
   );

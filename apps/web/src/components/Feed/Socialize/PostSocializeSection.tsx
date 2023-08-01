@@ -15,7 +15,7 @@ import { CommentBoxIcon } from './CommentBox/CommentBoxIcon';
 import { Comments } from './Comments';
 
 type Props = {
-  onPotentialLayoutShift: () => void;
+  onPotentialLayoutShift?: () => void;
   postRef: PostSocializeSectionFragment$key;
   queryRef: PostSocializeSectionQueryFragment$key;
 };

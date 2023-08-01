@@ -50,13 +50,14 @@ function FeedItem({ eventRef, queryRef, feedMode }: FeedItemProps) {
     graphql`
       fragment FeedItemQueryFragment on Query {
         ...FeedEventDataQueryFragment
+        ...PostDataQueryFragment
       }
     `,
     queryRef
   );
 
   if (postOrFeedEvent.__typename === 'Post') {
-    return <PostData postRef={postOrFeedEvent} />;
+    return <PostData postRef={postOrFeedEvent} queryRef={query} />;
   }
 
   if (postOrFeedEvent.__typename === 'FeedEvent') {
