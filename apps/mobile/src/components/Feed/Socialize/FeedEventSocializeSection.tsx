@@ -125,7 +125,7 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef, onCommentPre
   }
 
   return (
-    <View className="flex flex-row px-3 justify-between items-center pb-8 pt-5">
+    <View className="flex flex-row px-3 justify-between pb-8 pt-5">
       <View className="flex-1 pr-4 pt-1">
         <Interactions
           type="FeedEvent"

@@ -124,7 +124,7 @@ export function FeedPostSocializeSection({ feedPostRef, queryRef, onCommentPress
 
   return (
     <View className="px-3 pb-8 pt-5">
-      <View className="flex flex-row justify-between items-center ">
+      <View className="flex flex-row justify-between">
         <View className="flex-1 pr-4 pt-1">
           <Interactions
             type="Post"
