@@ -116,8 +116,8 @@ export function CommunityView({ queryRef }: Props) {
           <BackButton />
 
           <IconContainer
-            eventElementId="Profile Share Icon"
-            eventName="Profile Share Icon Clicked"
+            eventElementId="Community Share Icon"
+            eventName="Community Share Icon Clicked"
             icon={<ShareIcon />}
             onPress={handleShare}
           />
