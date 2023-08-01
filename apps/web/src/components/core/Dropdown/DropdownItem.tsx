@@ -10,6 +10,7 @@ export const DropdownItem = styled.div<{ disabled?: boolean }>`
   font-weight: 400;
   font-size: 12px;
   line-height: 16px;
+  width: 100%;
 
   color: ${({ disabled }) => (disabled ? '#c2c2c2' : colors.shadow)};
   cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};

@@ -1,18 +1,16 @@
-import { useCallback, useMemo } from 'react';
-import { Linking, View } from 'react-native';
+import { useMemo } from 'react';
+import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { Markdown } from '~/components/Markdown';
-import { Pill } from '~/components/Pill';
-import { Typography } from '~/components/Typography';
 import { ProfileViewHeaderFragment$key } from '~/generated/ProfileViewHeaderFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 
-import { TwitterIcon } from '../../icons/TwitterIcon';
 import { GalleryTabBar } from '../GalleryTabs/GalleryTabBar';
-import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import ProfileViewSharedInfo from './ProfileViewSharedInfo/ProfileViewSharedInfo';
+import ProfileViewFarcasterPill from './SocialPills/ProfileViewFarcasterPill';
+import ProfileViewTwitterPill from './SocialPills/ProfileViewTwitterPill';
 
 type Props = {
   selectedRoute: string;
@@ -39,13 +37,9 @@ export function ProfileViewHeader({ queryRef, selectedRoute, onRouteChange }: Pr
               __typename
             }
 
-            socialAccounts {
-              twitter {
-                __typename
-                username
-              }
-            }
             ...ProfileViewSharedInfoFragment
+            ...ProfileViewFarcasterPillFragment
+            ...ProfileViewTwitterPillFragment
           }
         }
 
@@ -63,33 +57,6 @@ export function ProfileViewHeader({ queryRef, selectedRoute, onRouteChange }: Pr
   }
 
   const isLoggedInUser = loggedInUserId === user.id;
-
-  const handleTwitterPress = useCallback(() => {
-    if (user.socialAccounts?.twitter?.username) {
-      Linking.openURL(`https://twitter.com/${user.socialAccounts.twitter.username}`);
-    }
-  }, [user.socialAccounts?.twitter?.username]);
-
-  const twitterPill = useMemo(() => {
-    if (user.socialAccounts?.twitter?.username) {
-      return (
-        <GalleryTouchableOpacity
-          onPress={handleTwitterPress}
-          className="px-4"
-          eventElementId="Social Pill"
-          eventName="Social Pill Clicked"
-          properties={{ variant: 'Twitter' }}
-        >
-          <Pill className="flex flex-row items-center space-x-2 self-start">
-            <TwitterIcon width={14} />
-            <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-              {user.socialAccounts.twitter.username}
-            </Typography>
-          </Pill>
-        </GalleryTouchableOpacity>
-      );
-    }
-  }, [handleTwitterPress, user.socialAccounts?.twitter?.username]);
 
   const totalFollowers = user.followers?.length ?? 0;
   const totalGalleries = useMemo(() => {
@@ -127,7 +94,10 @@ export function ProfileViewHeader({ queryRef, selectedRoute, onRouteChange }: Pr
       )}
       {!isLoggedInUser && <ProfileViewSharedInfo userRef={user} />}
 
-      {twitterPill ?? null}
+      <View className="flex flex-row mx-4 space-x-12 ">
+        <ProfileViewTwitterPill userRef={user} />
+        <ProfileViewFarcasterPill userRef={user} />
+      </View>
 
       <GalleryTabBar
         activeRoute={selectedRoute}
