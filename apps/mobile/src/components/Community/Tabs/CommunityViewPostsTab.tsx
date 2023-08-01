@@ -143,10 +143,12 @@ export function CommunityViewPostsTab({ communityRef, queryRef }: Props) {
     <View style={contentContainerStyle}>
       <Tabs.FlashList
         ref={ref}
-        data={items}
-        renderItem={renderItem}
+        getItemType={(item) => item.kind}
+        keyExtractor={(item) => item.key}
         estimatedItemSize={400}
+        data={items}
         stickyHeaderIndices={stickyIndices}
+        renderItem={renderItem}
       />
     </View>
   );
