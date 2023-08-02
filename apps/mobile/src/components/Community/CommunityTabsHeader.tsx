@@ -1,8 +1,10 @@
 import { useMemo } from 'react';
 import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
+import isFeatureEnabled, { FeatureFlag } from 'src/utils/isFeatureEnabled';
 
 import { CommunityTabsHeaderFragment$key } from '~/generated/CommunityTabsHeaderFragment.graphql';
+import { CommunityTabsHeaderQueryFragment$key } from '~/generated/CommunityTabsHeaderQueryFragment.graphql';
 
 import { GalleryTabBar } from '../GalleryTabs/GalleryTabBar';
 
@@ -10,9 +12,15 @@ type Props = {
   selectedRoute: string;
   onRouteChange: (value: string) => void;
   communityRef: CommunityTabsHeaderFragment$key;
+  queryRef: CommunityTabsHeaderQueryFragment$key;
 };
 
-export function CommunityTabsHeader({ selectedRoute, onRouteChange, communityRef }: Props) {
+export function CommunityTabsHeader({
+  selectedRoute,
+  onRouteChange,
+  communityRef,
+  queryRef,
+}: Props) {
   const community = useFragment(
     graphql`
       fragment CommunityTabsHeaderFragment on Community {
@@ -30,11 +38,31 @@ export function CommunityTabsHeader({ selectedRoute, onRouteChange, communityRef
     communityRef
   );
 
+  const query = useFragment(
+    graphql`
+      fragment CommunityTabsHeaderQueryFragment on Query {
+        ...isFeatureEnabledFragment
+      }
+    `,
+    queryRef
+  );
+
+  const isKoalaEnabled = isFeatureEnabled(FeatureFlag.KOALA, query);
+
   const totalOwners = useMemo(() => {
     return community.owners?.pageInfo?.total ?? 0;
   }, [community.owners?.pageInfo?.total]);
 
   const routes = useMemo(() => {
+    if (!isKoalaEnabled) {
+      return [
+        {
+          name: 'Collectors',
+          counter: totalOwners,
+        },
+      ];
+    }
+
     return [
       {
         name: 'Posts',
@@ -44,7 +72,7 @@ export function CommunityTabsHeader({ selectedRoute, onRouteChange, communityRef
         counter: totalOwners,
       },
     ];
-  }, [totalOwners]);
+  }, [isKoalaEnabled, totalOwners]);
 
   return (
     <View>

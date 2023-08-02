@@ -3,6 +3,7 @@ import { Share, View } from 'react-native';
 import { CollapsibleRef, Tabs } from 'react-native-collapsible-tab-view';
 import { graphql, useFragment } from 'react-relay';
 import { ShareIcon } from 'src/icons/ShareIcon';
+import isFeatureEnabled, { FeatureFlag } from 'src/utils/isFeatureEnabled';
 
 import { CommunityViewFragment$key } from '~/generated/CommunityViewFragment.graphql';
 
@@ -45,6 +46,9 @@ export function CommunityView({ queryRef }: Props) {
         ...CommunityCollectorsQueryFragment
         ...CommunityCollectorsListQueryFragment
         ...CommunityViewPostsTabQueryFragment
+        ...CommunityTabsHeaderQueryFragment
+        ...isFeatureEnabledFragment
+        ...CommunityMetaQueryFragment
       }
     `,
     queryRef
@@ -55,8 +59,9 @@ export function CommunityView({ queryRef }: Props) {
   if (!community || community.__typename !== 'Community') {
     throw new Error(`Unable to fetch the community`);
   }
+  const isKoalaEnabled = isFeatureEnabled(FeatureFlag.KOALA, query);
 
-  const [selectedRoute, setSelectedRoute] = useState('Posts');
+  const [selectedRoute, setSelectedRoute] = useState(isKoalaEnabled ? 'Posts' : 'Collectors');
 
   const containerRef = useRef<CollapsibleRef>(null);
   useEffect(() => {
@@ -79,9 +84,10 @@ export function CommunityView({ queryRef }: Props) {
         communityRef={community}
         selectedRoute={selectedRoute}
         onRouteChange={setSelectedRoute}
+        queryRef={query}
       />
     );
-  }, [community, setSelectedRoute, selectedRoute]);
+  }, [community, query, setSelectedRoute, selectedRoute]);
 
   return (
     <View className="flex-1">
@@ -100,11 +106,11 @@ export function CommunityView({ queryRef }: Props) {
 
       <View className="px-4">
         <CommunityHeader communityRef={community} />
-        <CommunityMeta communityRef={community} />
+        <CommunityMeta communityRef={community} queryRef={query} />
       </View>
 
       <View className="flex-grow">
-        <GalleryTabsContainer Header={Header} ref={containerRef}>
+        <GalleryTabsContainer Header={Header} ref={containerRef} initialTabName={selectedRoute}>
           <Tabs.Tab name="Posts">
             <CommunityViewPostsTab communityRef={community} queryRef={query} />
           </Tabs.Tab>

@@ -5,8 +5,10 @@ import { graphql, useFragment } from 'react-relay';
 import { EthIcon } from 'src/icons/EthIcon';
 import { PoapIcon } from 'src/icons/PoapIcon';
 import { TezosIcon } from 'src/icons/TezosIcon';
+import isFeatureEnabled, { FeatureFlag } from 'src/utils/isFeatureEnabled';
 
 import { Chain, CommunityMetaFragment$key } from '~/generated/CommunityMetaFragment.graphql';
+import { CommunityMetaQueryFragment$key } from '~/generated/CommunityMetaQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import colors from '~/shared/theme/colors';
 
@@ -18,10 +20,11 @@ import { Typography } from '../Typography';
 
 type Props = {
   communityRef: CommunityMetaFragment$key;
+  queryRef: CommunityMetaQueryFragment$key;
 };
 const ENABLED_TOTAL_TOKENS = false;
 
-export function CommunityMeta({ communityRef }: Props) {
+export function CommunityMeta({ communityRef, queryRef }: Props) {
   const community = useFragment(
     graphql`
       fragment CommunityMetaFragment on Community {
@@ -62,6 +65,17 @@ export function CommunityMeta({ communityRef }: Props) {
     `,
     communityRef
   );
+
+  const query = useFragment(
+    graphql`
+      fragment CommunityMetaQueryFragment on Query {
+        ...isFeatureEnabledFragment
+      }
+    `,
+    queryRef
+  );
+
+  const isKoalaEnabled = isFeatureEnabled(FeatureFlag.KOALA, query);
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
 
@@ -175,7 +189,7 @@ export function CommunityMeta({ communityRef }: Props) {
           </Typography>
         </View>
       )}
-      {totalPosts > 0 && (
+      {totalPosts > 0 && isKoalaEnabled && (
         <View className="flex flex-column space-y-1">
           <Typography
             font={{ family: 'ABCDiatype', weight: 'Regular' }}

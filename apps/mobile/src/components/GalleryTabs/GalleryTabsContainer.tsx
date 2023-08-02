@@ -10,6 +10,7 @@ import colors from '~/shared/theme/colors';
 
 type GalleryTabsContainerProps = {
   children: TabReactElement<string> | TabReactElement<string>[];
+  initialTabName?: string;
   Header: () => JSX.Element;
 };
 
@@ -19,7 +20,7 @@ const GalleryTabsContainer: React.FC<GalleryTabsContainerProps> = (
   props,
   ref: ForwardedRef<GalleryTabsContainerType>
 ) => {
-  const { children, Header } = props;
+  const { children, Header, initialTabName } = props;
   const { colorScheme } = useColorScheme();
 
   const containerRef = useRef<GalleryTabsContainerType | null>(null);
@@ -35,6 +36,7 @@ const GalleryTabsContainer: React.FC<GalleryTabsContainerProps> = (
             ref.current = element;
           }
         }}
+        initialTabName={initialTabName}
         pagerProps={{ scrollEnabled: false }}
         containerStyle={{
           backgroundColor: colorScheme === 'light' ? colors.white : colors.black['900'],
