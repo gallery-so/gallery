@@ -73,7 +73,7 @@ export default function UserSharedCommunities({ userRef }: Props) {
   const handleShowAllClick = useCallback(() => {
     track('User Gallery - Show All Shared Communities Click');
     showModal({
-      content: <PaginatedCommunitiesList userRef={user} />,
+      content: <PaginatedCommunitiesList userRef={user} size="md" />,
       headerText: 'Pieces you both own',
       isPaddingDisabled: true,
       isFullPage: isMobile,
