@@ -56,7 +56,6 @@ export default function PostComposer({ onBackClick, tokenRef }: Props) {
   const { pushToast } = useToastActions();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const track = useTrack();
-  const router = useRouter();
 
   const handlePostClick = useCallback(async () => {
     setIsSubmitting(true);
@@ -64,15 +63,10 @@ export default function PostComposer({ onBackClick, tokenRef }: Props) {
       added_description: !!description,
     });
     try {
-      // if posted token belongs to current community, dont redirect
-
-      // otherwise redirect to latest feed
-
       await createPost({
-        tokens: [{ dbid: token.dbid, communityId: token.community.id }],
+        tokens: [{ dbid: token.dbid, communityId: token.community?.id || '' }],
         caption: description,
       });
-      // router.push('/latest');
     } catch (error) {
       // TODO add error state GAL-3841
       setIsSubmitting(false);

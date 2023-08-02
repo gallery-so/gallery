@@ -14,9 +14,10 @@ import LayoutToggleButton from './LayoutToggleButton';
 
 type Props = {
   communityRef: CommunityPageCollectorsTabFragment$key;
+  queryRef: CommunityPageCollectorsTabQueryFragment$key;
 };
 
-export default function CommunityPageCollectorsTab({ communityRef }: Props) {
+export default function CommunityPageCollectorsTab({ communityRef, queryRef }: Props) {
   const community = useFragment(
     graphql`
       fragment CommunityPageCollectorsTabFragment on Community {
@@ -29,6 +30,16 @@ export default function CommunityPageCollectorsTab({ communityRef }: Props) {
     `,
     communityRef
   );
+
+  const query = useFragment(
+    graphql`
+      fragment CommunityPageCollectorsTabQueryFragment on Query {
+        ...CommunityHolderGridQueryFragment
+      }
+    `,
+    queryRef
+  );
+
   const { contractAddress } = community;
   if (!contractAddress) {
     throw new Error('CommunityPageView: contractAddress not found on community');

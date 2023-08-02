@@ -84,7 +84,6 @@ export default function CommunityPagePostsTab({ communityRef, queryRef }: Props)
 
   const loadNextPage = useCallback(() => {
     return new Promise((resolve) => {
-      // trackLoadMoreFeedEvents('viewer');
       // Infinite scroll component wants load callback to return a promise
       loadPrevious(ITEMS_PER_PAGE, { onComplete: () => resolve('loaded') });
     });
