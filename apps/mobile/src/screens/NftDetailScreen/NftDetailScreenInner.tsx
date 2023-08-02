@@ -17,6 +17,7 @@ import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { NftDetailScreenInnerQuery } from '~/generated/NftDetailScreenInnerQuery.graphql';
 import { MainTabStackNavigatorParamList, MainTabStackNavigatorProp } from '~/navigation/types';
 import { NftDetailAssetCacheSwapper } from '~/screens/NftDetailScreen/NftDetailAsset/NftDetailAssetCacheSwapper';
+import TokenViewEmitter from '~/shared/components/TokenViewEmitter';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
@@ -179,6 +180,10 @@ export function NftDetailScreenInner() {
       <View className="flex flex-col space-y-6 px-4 pb-4">
         <View className="flex flex-col space-y-3">
           <View className="flex flex-row justify-between">
+            <TokenViewEmitter
+              collectionID={route.params.collectionId ?? ''}
+              tokenID={route.params.tokenId}
+            />
             <BackButton />
             <IconContainer
               eventElementId="NFT Detail Share Icon"
