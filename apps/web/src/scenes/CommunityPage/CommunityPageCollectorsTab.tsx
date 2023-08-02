@@ -8,6 +8,7 @@ import { DisplayLayout } from '~/components/core/enums';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { GRID_ENABLED_COMMUNITY_ADDRESSES } from '~/constants/community';
 import { CommunityPageCollectorsTabFragment$key } from '~/generated/CommunityPageCollectorsTabFragment.graphql';
+import { CommunityPageCollectorsTabQueryFragment$key } from '~/generated/CommunityPageCollectorsTabQueryFragment.graphql';
 import colors from '~/shared/theme/colors';
 
 import LayoutToggleButton from './LayoutToggleButton';

@@ -49,6 +49,7 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
         ...CommunityPagePostsTabQueryFragment
         ...CommunityPageViewHeaderQueryFragment
         ...isFeatureEnabledFragment
+        ...CommunityPageCollectorsTabQueryFragment
       }
     `,
     queryRef
@@ -78,7 +79,9 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
           {activeTab === 'posts' && (
             <CommunityPagePostsTab communityRef={community} queryRef={query} />
           )}
-          {activeTab === 'collectors' && <CommunityPageCollectorsTab communityRef={community} />}
+          {activeTab === 'collectors' && (
+            <CommunityPageCollectorsTab communityRef={community} queryRef={query} />
+          )}
         </VStack>
 
         {isCommunityPageDisabled && <CommunityPageDisabled name={name ?? ''} />}
