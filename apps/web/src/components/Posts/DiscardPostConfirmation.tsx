@@ -23,7 +23,7 @@ export default function DiscardPostConfirmation({ onDiscard }: Props) {
       <StyledTextWrapper>
         <BaseM>Are you sure?</BaseM>
       </StyledTextWrapper>
-      <BaseM>If you go back now, this post will be discarded</BaseM>
+      <BaseM>If you go back now, this post will be discarded.</BaseM>
       <HStack justify="flex-end">
         <StyledButton onClick={handleDiscardConfirmClick}>DISCARD POST</StyledButton>
       </HStack>
