@@ -79,7 +79,7 @@ export default function AddEmail() {
         step={'add-email'}
         onNext={handleNext}
         previousTextOverride="Skip"
-        isNextEnabled={!!savedEmail}
+        isNextEnabled={Boolean(savedEmail)}
         onPrevious={handleSkip}
       />
     </VStack>

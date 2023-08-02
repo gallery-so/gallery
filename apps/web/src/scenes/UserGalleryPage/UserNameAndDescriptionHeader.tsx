@@ -107,7 +107,7 @@ export function UserNameAndDescriptionHeader({ userRef, queryRef }: Props) {
       onClick={handleEditBioAndName}
       inline
       isAuth={isAuthenticatedUser}
-      hasMobileContent={isMobile && !!unescapedBio}
+      hasMobileContent={isMobile && Boolean(unescapedBio)}
     >
       <Container gap={4}>
         <HStack align="center" gap={4}>

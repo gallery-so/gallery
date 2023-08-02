@@ -84,7 +84,7 @@ export default function FeedList({
 
   // Function responsible for tracking the loaded state of each row.
   const isRowLoaded = useCallback(
-    ({ index }: { index: number }) => !hasNext || !!feedData[index],
+    ({ index }: { index: number }) => !hasNext || Boolean(feedData[index]),
     [feedData, hasNext]
   );
 
