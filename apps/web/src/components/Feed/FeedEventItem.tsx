@@ -8,6 +8,10 @@ import { FEED_EVENT_ROW_WIDTH_DESKTOP } from '~/components/Feed/dimensions';
 import { FeedEventData } from '~/components/Feed/FeedEventData';
 import { FeedEventSocializeSection } from '~/components/Feed/Socialize/FeedEventSocializeSection';
 import { FeedMode } from '~/components/Feed/types';
+import { FeedEventItemFragment$key } from '~/generated/FeedEventItemFragment.graphql';
+import { FeedEventItemQueryFragment$key } from '~/generated/FeedEventItemQueryFragment.graphql';
+import { FeedEventItemWithErrorBoundaryFragment$key } from '~/generated/FeedEventItemWithErrorBoundaryFragment.graphql';
+import { FeedEventItemWithErrorBoundaryQueryFragment$key } from '~/generated/FeedEventItemWithErrorBoundaryQueryFragment.graphql';
 import { FeedItemFragment$key } from '~/generated/FeedItemFragment.graphql';
 import { FeedItemQueryFragment$key } from '~/generated/FeedItemQueryFragment.graphql';
 import { FeedItemWithErrorBoundaryFragment$key } from '~/generated/FeedItemWithErrorBoundaryFragment.graphql';
@@ -18,28 +22,22 @@ import { TriedToRenderUnsupportedFeedEvent } from '~/shared/errors/TriedToRender
 import PostData from './Posts/PostData';
 import PostSocializeSection from './Socialize/PostSocializeSection';
 
-type FeedItemProps = {
-  eventRef: FeedItemFragment$key;
-  queryRef: FeedItemQueryFragment$key;
+type FeedEventItemProps = {
+  eventRef: FeedEventItemFragment$key;
+  queryRef: FeedEventItemQueryFragment$key;
   feedMode: FeedMode;
 };
 
 // Not to be confused with the FeedEvent type. This component can render both FeedEvent and Post types, and represents a single item in the feed.
-function FeedItem({ eventRef, queryRef, feedMode }: FeedItemProps) {
+function FeedEventItem({ eventRef, queryRef, feedMode }: FeedEventItemProps) {
   const postOrFeedEvent = useFragment(
     graphql`
-      fragment FeedItemFragment on FeedEventOrError {
-        ... on FeedEvent {
-          __typename
-          dbid
-          caption
-          eventData {
-            ...FeedEventDataFragment
-          }
-        }
-        ... on Post {
-          __typename
-          ...PostDataFragment
+      fragment FeedEventItemFragment on FeedEvent {
+        __typename
+        dbid
+        caption
+        eventData {
+          ...FeedEventDataFragment
         }
       }
     `,
@@ -48,17 +46,12 @@ function FeedItem({ eventRef, queryRef, feedMode }: FeedItemProps) {
 
   const query = useFragment(
     graphql`
-      fragment FeedItemQueryFragment on Query {
+      fragment FeedEventItemQueryFragment on Query {
         ...FeedEventDataQueryFragment
-        ...PostDataQueryFragment
       }
     `,
     queryRef
   );
-
-  if (postOrFeedEvent.__typename === 'Post') {
-    return <PostData postRef={postOrFeedEvent} queryRef={query} />;
-  }
 
   if (postOrFeedEvent.__typename === 'FeedEvent') {
     if (!postOrFeedEvent.eventData) {
@@ -79,37 +72,31 @@ function FeedItem({ eventRef, queryRef, feedMode }: FeedItemProps) {
   return <></>;
 }
 
-type FeedItemWithBoundaryProps = {
+type FeedEventItemWithBoundaryProps = {
   index: number;
   feedMode: FeedMode;
   onPotentialLayoutShift: (index: number) => void;
-  eventRef: FeedItemWithErrorBoundaryFragment$key;
-  queryRef: FeedItemWithErrorBoundaryQueryFragment$key;
+  eventRef: FeedEventItemWithErrorBoundaryFragment$key;
+  queryRef: FeedEventItemWithErrorBoundaryQueryFragment$key;
 };
 
-export default function FeedItemWithBoundary({
+export default function FeedEventItemWithBoundary({
   index,
   feedMode,
   eventRef,
   queryRef,
   onPotentialLayoutShift,
-}: FeedItemWithBoundaryProps) {
+}: FeedEventItemWithBoundaryProps) {
   const event = useFragment(
     graphql`
-      fragment FeedItemWithErrorBoundaryFragment on FeedEventOrError {
-        __typename
-        ... on FeedEvent {
-          eventData {
-            ... on UserFollowedUsersFeedEventData {
-              __typename
-            }
+      fragment FeedEventItemWithErrorBoundaryFragment on FeedEvent {
+        eventData {
+          ... on UserFollowedUsersFeedEventData {
+            __typename
           }
-          ...FeedEventSocializeSectionFragment
         }
-        ... on Post {
-          ...PostSocializeSectionFragment
-        }
-        ...FeedItemFragment
+        ...FeedEventSocializeSectionFragment
+        ...FeedEventItemFragment
       }
     `,
     eventRef
@@ -117,10 +104,9 @@ export default function FeedItemWithBoundary({
 
   const query = useFragment(
     graphql`
-      fragment FeedItemWithErrorBoundaryQueryFragment on Query {
-        ...FeedItemQueryFragment
+      fragment FeedEventItemWithErrorBoundaryQueryFragment on Query {
+        ...FeedEventItemQueryFragment
         ...FeedEventSocializeSectionQueryFragment
-        ...PostSocializeSectionQueryFragment
       }
     `,
     queryRef
@@ -134,19 +120,12 @@ export default function FeedItemWithBoundary({
 
   return (
     <ReportingErrorBoundary fallback={<></>}>
-      <FeedItemContainer gap={16}>
-        <FeedItem eventRef={event} queryRef={query} feedMode={feedMode} />
+      <FeedEventItemContainer gap={16}>
+        <FeedEventItem eventRef={event} queryRef={query} feedMode={feedMode} />
 
         {/* // We have another boundary here in case the socialize section fails
           // and the rest of the feed event loads */}
         <ReportingErrorBoundary dontReport fallback={<></>}>
-          {event.__typename === 'Post' && (
-            <PostSocializeSection
-              queryRef={query}
-              postRef={event}
-              onPotentialLayoutShift={handlePotentialLayoutShift}
-            />
-          )}
           {event.__typename === 'FeedEvent' && shouldShowAdmireComment && (
             <FeedEventSocializeSection
               eventRef={event}
@@ -155,12 +134,12 @@ export default function FeedItemWithBoundary({
             />
           )}
         </ReportingErrorBoundary>
-      </FeedItemContainer>
+      </FeedEventItemContainer>
     </ReportingErrorBoundary>
   );
 }
 
-const FeedItemContainer = styled(VStack)`
+const FeedEventItemContainer = styled(VStack)`
   margin: 0 auto;
 
   padding: 24px 0px;

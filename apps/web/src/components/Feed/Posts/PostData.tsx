@@ -9,7 +9,11 @@ import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { PostDataFragment$key } from '~/generated/PostDataFragment.graphql';
 import { PostDataQueryFragment$key } from '~/generated/PostDataQueryFragment.graphql';
-import useWindowSize, { useBreakpoint } from '~/hooks/useWindowSize';
+import useWindowSize, {
+  useBreakpoint,
+  useIsMobileOrMobileLargeWindowWidth,
+  useIsMobileWindowWidth,
+} from '~/hooks/useWindowSize';
 import colors from '~/shared/theme/colors';
 import { getTimeSince } from '~/shared/utils/time';
 import { getCommunityUrlForToken } from '~/utils/getCommunityUrlForToken';
@@ -78,54 +82,49 @@ export default function PostData({ postRef, queryRef }: Props) {
   const token = post.tokens && post.tokens[0];
   const communityUrl = token ? getCommunityUrlForToken(token) : null;
 
-  return (
-    <StyledPost gap={12}>
-      <VStack gap={6}>
-        <HStack justify="space-between">
-          <HStack align="center" gap={6}>
-            <ProfilePicture userRef={post.author} size="md" />
-            <VStack>
-              <HoverCardOnUsername userRef={post.author} />
-              {communityUrl ? (
-                <StyledInteractiveLink to={communityUrl}>
+  // todo account for tablet
+  const isMobile = useIsMobileOrMobileLargeWindowWidth();
+  if (isMobile) {
+    return (
+      <StyledPost gap={12}>
+        {/* <VStack gap={6}>
+          <HStack justify="space-between">
+            <HStack align="center" gap={6}>
+              <ProfilePicture userRef={post.author} size="md" />
+              <VStack>
+                <HoverCardOnUsername userRef={post.author} />
+                {communityUrl ? (
+                  <StyledInteractiveLink to={communityUrl}>
+                    <BaseS color={colors.shadow}>{token?.community?.name}</BaseS>
+                  </StyledInteractiveLink>
+                ) : (
                   <BaseS color={colors.shadow}>{token?.community?.name}</BaseS>
-                </StyledInteractiveLink>
-              ) : (
-                <BaseS color={colors.shadow}>{token?.community?.name}</BaseS>
-              )}
-            </VStack>
+                )}
+              </VStack>
+            </HStack>
+            <HStack align="center" gap={4}>
+              <StyledTime>{getTimeSince(post.creationTime)}</StyledTime>
+              <PostDropdown postRef={post} queryRef={query} />
+            </HStack>
           </HStack>
-          <HStack align="center" gap={4}>
-            <StyledTime>{getTimeSince(post.creationTime)}</StyledTime>
-            <PostDropdown postRef={post} queryRef={query} />
-          </HStack>
-        </HStack>
-        <StyledCaption>{post.caption}</StyledCaption>
-      </VStack>
-      <StyledTokenContainer justify="center" align="center">
-        {token ? (
-          <PostNftPreview tokenRef={token} tokenSize={tokenSize} />
-        ) : (
-          <BaseM color={colors.shadow}>There was an error displaying this item</BaseM>
-        )}
-      </StyledTokenContainer>
-    </StyledPost>
-  );
+          <StyledCaption>{post.caption}</StyledCaption>
+        </VStack> */}
+        <StyledTokenContainer justify="center" align="center">
+          {token ? (
+            <PostNftPreview tokenRef={token} tokenSize={tokenSize} />
+          ) : (
+            <BaseM color={colors.shadow}>There was an error displaying this item</BaseM>
+          )}
+        </StyledTokenContainer>
+      </StyledPost>
+    );
+  }
+
+  return <StyledPost></StyledPost>;
 }
 
 const StyledPost = styled(VStack)`
   max-height: 100%;
-`;
-
-const StyledInteractiveLink = styled(InteractiveLink)`
-  text-decoration: none;
-  &:hover {
-    text-decoration: underline;
-  }
-`;
-
-const StyledCaption = styled(BaseM)`
-  overflow-wrap: break-word;
 `;
 
 const StyledTokenContainer = styled(HStack)`

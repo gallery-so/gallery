@@ -19,7 +19,8 @@ import { FeedListEventDataFragment$key } from '~/generated/FeedListEventDataFrag
 import { FeedListFragment$key } from '~/generated/FeedListFragment.graphql';
 import colors from '~/shared/theme/colors';
 
-import FeedItem from './FeedItem';
+import FeedEventItem from './FeedEventItem';
+import PostItem from './PostItem';
 
 type Props = {
   loadNextPage: () => void;
@@ -39,7 +40,8 @@ export default function FeedList({
   const query = useFragment(
     graphql`
       fragment FeedListFragment on Query {
-        ...FeedItemWithErrorBoundaryQueryFragment
+        ...PostItemWithErrorBoundaryQueryFragment
+        ...FeedEventItemWithErrorBoundaryQueryFragment
       }
     `,
     queryRef
@@ -48,13 +50,15 @@ export default function FeedList({
   const feedData = useFragment(
     graphql`
       fragment FeedListEventDataFragment on FeedEventOrError @relay(plural: true) {
+        __typename
         ... on FeedEvent {
           dbid
         }
         ... on Post {
           dbid
         }
-        ...FeedItemWithErrorBoundaryFragment
+        ...PostItemWithErrorBoundaryFragment
+        ...FeedEventItemWithErrorBoundaryFragment
       }
     `,
     feedEventRefs
@@ -121,6 +125,8 @@ export default function FeedList({
       if (!content) {
         return;
       }
+
+      const FeedItem = content.__typename === 'Post' ? PostItem : FeedEventItem;
 
       return (
         <CellMeasurer

@@ -38,7 +38,7 @@ export default function PostNftPreview({ tokenRef, tokenSize }: Props) {
   }, [showTokenDetailModal, token.dbid, token.owner?.username]);
 
   return (
-    <StyledPostNftPreview width={tokenSize} height={tokenSize}>
+    <StyledPostNftPreview width={517} height={517}>
       <ShimmerProvider>
         <NftPreview
           tokenRef={token}
