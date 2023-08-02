@@ -5,6 +5,10 @@ import styled from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';
 import { LowercaseChain } from '~/components/GalleryEditor/PiecesSidebar/chains';
+import {
+  RawProfilePicture,
+  RawProfilePictureProps,
+} from '~/components/ProfilePicture/RawProfilePicture';
 import { SharedCommunitiesListFragment$key } from '~/generated/SharedCommunitiesListFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import unescape from '~/shared/utils/unescape';
@@ -15,7 +19,7 @@ import PaginatedListRow from './SharedInfoListRow';
 
 type Props = {
   userRef: SharedCommunitiesListFragment$key;
-};
+} & Omit<RawProfilePictureProps, 'imageUrl'>;
 export default function SharedCommunitiesList({ userRef }: Props) {
   const { data, loadNext, hasNext } = usePaginationFragment(
     graphql`
@@ -32,6 +36,7 @@ export default function SharedCommunitiesList({ userRef }: Props) {
                 address
               }
               chain
+              profileImageURL
             }
           }
         }
@@ -86,7 +91,7 @@ export default function SharedCommunitiesList({ userRef }: Props) {
 
       const unescapedDescription = community.description ? unescape(community.description) : '';
       const descriptionFirstLine = unescapedDescription.split('\n')[0] ?? '';
-
+      const communityImageUrl = community.profileImageURL ?? '';
       const communityUrlPath =
         community.contractAddress?.address && community.chain
           ? getUrlForCommunity(
@@ -105,6 +110,7 @@ export default function SharedCommunitiesList({ userRef }: Props) {
             title={community.name ?? ''}
             subTitle={descriptionFirstLine}
             href={communityUrlPath}
+            imageContent={<RawProfilePicture imageUrl={communityImageUrl as string} size="md" />}
           />
         </div>
       );
