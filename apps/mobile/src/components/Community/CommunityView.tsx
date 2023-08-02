@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Share, View } from 'react-native';
 import { CollapsibleRef, Tabs } from 'react-native-collapsible-tab-view';
 import { graphql, useFragment } from 'react-relay';
@@ -7,12 +7,12 @@ import { ShareIcon } from 'src/icons/ShareIcon';
 import { CommunityViewFragment$key } from '~/generated/CommunityViewFragment.graphql';
 
 import { BackButton } from '../BackButton';
-import { GalleryTabBar } from '../GalleryTabs/GalleryTabBar';
 import { GalleryTabsContainer } from '../GalleryTabs/GalleryTabsContainer';
 import { IconContainer } from '../IconContainer';
 import { CommunityCollectors } from './CommunityCollectors';
 import { CommunityHeader } from './CommunityHeader';
 import { CommunityMeta } from './CommunityMeta';
+import { CommunityTabsHeader } from './CommunityTabsHeader';
 import { CommunityViewPostsTab } from './Tabs/CommunityViewPostsTab';
 
 type Props = {
@@ -35,18 +35,10 @@ export function CommunityView({ queryRef }: Props) {
             ...CommunityCollectorsFragment
             ...CommunityMetaFragment
             ...CommunityViewPostsTabFragment
+            ...CommunityTabsHeaderFragment
             chain
             contractAddress {
               address
-            }
-            owners(
-              first: $listOwnersFirst
-              after: $listOwnersAfter
-              onlyGalleryUsers: $onlyGalleryUsers
-            ) {
-              pageInfo {
-                total
-              }
             }
           }
         }
@@ -73,22 +65,6 @@ export function CommunityView({ queryRef }: Props) {
     }
   }, [selectedRoute]);
 
-  const totalOwners = useMemo(() => {
-    return community.owners?.pageInfo?.total ?? 0;
-  }, [community.owners?.pageInfo?.total]);
-
-  const routes = useMemo(() => {
-    return [
-      {
-        name: 'Posts',
-      },
-      {
-        name: 'Collectors',
-        counter: totalOwners,
-      },
-    ];
-  }, [totalOwners]);
-
   const handleShare = useCallback(() => {
     Share.share({
       url: `https://gallery.so/community/${community.chain?.toLowerCase()}/${
@@ -99,15 +75,13 @@ export function CommunityView({ queryRef }: Props) {
 
   const Header = useCallback(() => {
     return (
-      <GalleryTabBar
-        activeRoute={selectedRoute}
+      <CommunityTabsHeader
+        communityRef={community}
+        selectedRoute={selectedRoute}
         onRouteChange={setSelectedRoute}
-        routes={routes}
-        eventElementId="Community Tab"
-        eventName="Community Tab Clicked"
       />
     );
-  }, [routes, setSelectedRoute, selectedRoute]);
+  }, [community, setSelectedRoute, selectedRoute]);
 
   return (
     <View className="flex-1">
