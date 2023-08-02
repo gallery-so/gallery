@@ -7,55 +7,57 @@ import { CommentsBottomSheet } from '~/components/Feed/CommentsBottomSheet/Comme
 import { AdmireLine } from '~/components/Feed/Socialize/AdmireLine';
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { ProfilePictureBubblesWithCount } from '~/components/ProfileView/ProfileViewSharedInfo/ProfileViewSharedFollowers';
-import { InteractionsFragment$key } from '~/generated/InteractionsFragment.graphql';
+import { InteractionsAdmiresFragment$key } from '~/generated/InteractionsAdmiresFragment.graphql';
+import { InteractionsCommentsFragment$key } from '~/generated/InteractionsCommentsFragment.graphql';
 
+import { FeedItemTypes } from '../createVirtualizedFeedEventItems';
 import { CommentLine } from './CommentLine';
 import { RemainingCommentCount } from './RemainingCommentCount';
 
 const PREVIEW_COMMENT_COUNT = 1;
 
 type Props = {
-  eventRef: InteractionsFragment$key;
+  type: FeedItemTypes;
+  commentRefs: InteractionsCommentsFragment$key;
+  admireRefs: InteractionsAdmiresFragment$key;
+  totalComments: number;
+  totalAdmires: number;
+  feedId: string;
+
+  onAdmirePress: () => void;
 };
 
-export function Interactions({ eventRef }: Props) {
-  const event = useFragment(
-    graphql`
-      fragment InteractionsFragment on FeedEvent {
-        dbid
-        # We only show 1 but in case the user deletes something
-        # we want to be sure that we can show another comment beneath
-        admires(last: 5) @connection(key: "Interactions_admires") {
-          pageInfo {
-            total
-          }
-          edges {
-            node {
-              dbid
-              admirer {
-                ...AdmireLineFragment
-                ...ProfileViewSharedFollowersBubblesFragment
-              }
-            }
-          }
-        }
+export function Interactions({
+  admireRefs,
+  commentRefs,
+  feedId,
+  totalAdmires,
+  totalComments,
+  type,
 
-        # We only show 2 but in case the user deletes something
-        # we want to be sure that we can show another comment beneath
-        comments(last: 5) @connection(key: "Interactions_comments") {
-          pageInfo {
-            total
-          }
-          edges {
-            node {
-              dbid
-              ...CommentLineFragment
-            }
-          }
+  onAdmirePress,
+}: Props) {
+  const comments = useFragment(
+    graphql`
+      fragment InteractionsCommentsFragment on Comment @relay(plural: true) {
+        dbid
+        ...CommentLineFragment
+      }
+    `,
+    commentRefs
+  );
+
+  const admires = useFragment(
+    graphql`
+      fragment InteractionsAdmiresFragment on Admire @relay(plural: true) {
+        dbid
+        admirer {
+          ...AdmireLineFragment
+          ...ProfileViewSharedFollowersBubblesFragment
         }
       }
     `,
-    eventRef
+    admireRefs
   );
 
   const handleSeeAllAdmires = useCallback(() => {
@@ -66,46 +68,17 @@ export function Interactions({ eventRef }: Props) {
     commentsBottomSheetRef.current?.present();
   }, []);
 
-  const nonNullComments = useMemo(() => {
-    const comments = [];
-
-    for (const edge of event.comments?.edges ?? []) {
-      if (edge?.node) {
-        comments.push(edge.node);
-      }
-    }
-
-    return comments;
-  }, [event.comments?.edges]);
-
-  const nonNullAdmires = useMemo(() => {
-    const admires = [];
-
-    for (const edge of event.admires?.edges ?? []) {
-      if (edge?.node) {
-        admires.push(edge.node);
-      }
-    }
-
-    admires.reverse();
-
-    return admires;
-  }, [event.admires?.edges]);
-
   const admireUsers = useMemo(() => {
     const users = [];
-    for (const admire of nonNullAdmires) {
+    for (const admire of admires) {
       if (admire?.admirer) {
         users.push(admire.admirer);
       }
     }
     return users;
-  }, [nonNullAdmires]);
+  }, [admires]);
 
-  const totalComments = event.comments?.pageInfo.total ?? 0;
-  const totalAdmires = event.admires?.pageInfo.total ?? 0;
-
-  const previewComments = nonNullComments.slice(-PREVIEW_COMMENT_COUNT);
+  const previewComments = comments.slice(-PREVIEW_COMMENT_COUNT);
 
   const commentsBottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
   const admiresBottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
@@ -113,18 +86,21 @@ export function Interactions({ eventRef }: Props) {
   return (
     <View className="flex flex-col space-y-1">
       <View className="flex flex-row space-x-1 items-center">
-        <ProfilePictureBubblesWithCount
-          eventName="Feed Event Admire Bubbles Pressed"
-          eventElementId="Feed Event Admire Bubbles"
-          onPress={handleSeeAllAdmires}
-          userRefs={admireUsers}
-          totalCount={totalAdmires}
-        />
+        {admireUsers.length > 0 && (
+          <ProfilePictureBubblesWithCount
+            eventName="Feed Event Admire Bubbles Pressed"
+            eventElementId="Feed Event Admire Bubbles"
+            onPress={handleSeeAllAdmires}
+            userRefs={admireUsers}
+            totalCount={totalAdmires}
+          />
+        )}
 
         <AdmireLine
           onMultiUserPress={handleSeeAllAdmires}
           userRefs={admireUsers}
           totalAdmires={totalAdmires}
+          onAdmirePress={onAdmirePress}
         />
       </View>
 
@@ -136,9 +112,9 @@ export function Interactions({ eventRef }: Props) {
         <RemainingCommentCount totalCount={totalComments} onPress={handleSeeAllComments} />
       )}
 
-      <CommentsBottomSheet feedEventId={event.dbid} bottomSheetRef={commentsBottomSheetRef} />
+      <CommentsBottomSheet type={type} feedId={feedId} bottomSheetRef={commentsBottomSheetRef} />
 
-      <AdmireBottomSheet feedEventId={event.dbid} bottomSheetRef={admiresBottomSheetRef} />
+      <AdmireBottomSheet type={type} feedId={feedId} bottomSheetRef={admiresBottomSheetRef} />
     </View>
   );
 }

@@ -14,6 +14,7 @@ import { MainTabStackNavigatorProp } from '~/navigation/types';
 import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
 
 import { NftPreview } from '../NftPreview/NftPreview';
+import { DOUBLE_TAP_WINDOW } from './constants';
 
 type EventTokenGridProps = {
   imagePriority: Priority;
@@ -80,7 +81,6 @@ export function EventTokenGrid({
       // ChatGPT says 200ms is at the fast end for double tapping.
       // I want the single tap flow to feel fast, so I'm going for speed here.
       // Our users better be nimble af.
-      const DOUBLE_TAP_WINDOW = 250;
 
       if (singleTapTimeoutRef.current) {
         clearTimeout(singleTapTimeoutRef.current);

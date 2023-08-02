@@ -1,47 +1,44 @@
 import { useColorScheme } from 'nativewind';
-import { useCallback, useMemo, useRef } from 'react';
+import { ForwardedRef, useCallback, useMemo, useRef } from 'react';
 import { View, ViewProps } from 'react-native';
-import { graphql, useFragment } from 'react-relay';
 
 import {
   GalleryBottomSheetModal,
   GalleryBottomSheetModalType,
 } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
-import { CommentButtonFragment$key } from '~/generated/CommentButtonFragment.graphql';
 
 import { CommentBox } from './CommentBox';
 import { CommentIcon } from './CommentIcon';
 
 type Props = {
-  eventRef: CommentButtonFragment$key;
   style?: ViewProps['style'];
   onClick: () => void;
+  onSubmit: (value: string) => void;
+  isSubmittingComment: boolean;
+
+  bottomSheetRef: ForwardedRef<GalleryBottomSheetModalType>;
 };
 
-export function CommentButton({ eventRef, style, onClick }: Props) {
-  const event = useFragment(
-    graphql`
-      fragment CommentButtonFragment on FeedEvent {
-        dbid
-      }
-    `,
-    eventRef
-  );
-
+export function CommentButton({
+  style,
+  onClick,
+  onSubmit,
+  isSubmittingComment,
+  bottomSheetRef,
+}: Props) {
   const { colorScheme } = useColorScheme();
 
-  const bottomSheetRef = useRef<GalleryBottomSheetModalType>(null);
   const snapPoints = useMemo(() => [52], []);
+  const internalRef = useRef<GalleryBottomSheetModalType | null>(null);
 
   const handleCloseCommentBox = useCallback(() => {
-    bottomSheetRef.current?.close();
+    internalRef.current?.close();
   }, []);
 
   const toggleCommentBox = useCallback(() => {
     onClick();
-
-    bottomSheetRef.current?.present();
+    internalRef.current?.present();
   }, [onClick]);
 
   return (
@@ -57,7 +54,17 @@ export function CommentButton({ eventRef, style, onClick }: Props) {
       </GalleryTouchableOpacity>
       <GalleryBottomSheetModal
         index={0}
-        ref={bottomSheetRef}
+        ref={(value) => {
+          internalRef.current = value;
+
+          if (bottomSheetRef) {
+            if (typeof bottomSheetRef === 'function') {
+              bottomSheetRef(value);
+            } else {
+              bottomSheetRef.current = value;
+            }
+          }
+        }}
         snapPoints={snapPoints}
         enableHandlePanningGesture={false}
         android_keyboardInputMode="adjustResize"
@@ -67,7 +74,12 @@ export function CommentButton({ eventRef, style, onClick }: Props) {
         }}
       >
         <View className={`${colorScheme === 'dark' ? 'bg-black' : 'bg-white'}`}>
-          <CommentBox feedEventId={event.dbid} autoFocus onClose={handleCloseCommentBox} />
+          <CommentBox
+            autoFocus
+            onClose={handleCloseCommentBox}
+            onSubmit={onSubmit}
+            isSubmittingComment={isSubmittingComment}
+          />
         </View>
       </GalleryBottomSheetModal>
     </>

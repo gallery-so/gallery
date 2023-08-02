@@ -26,10 +26,12 @@ export function PostScreen() {
         tokenById(id: $tokenId) {
           ... on Token {
             __typename
-            tokenId
+            dbid
             ...PostScreenTokenFragment
+            ...PostInputTokenFragment
           }
         }
+        ...usePostFragment
       }
     `,
     {
@@ -44,7 +46,9 @@ export function PostScreen() {
   }
 
   const { top } = useSafeAreaInsets();
-  const { post } = usePost();
+  const { post } = usePost({
+    queryRef: query,
+  });
 
   const [caption, setCaption] = useState('');
 
@@ -58,7 +62,7 @@ export function PostScreen() {
   const navigation = useNavigation<FeedTabNavigatorProp>();
   const { pushToast } = useToastActions();
   const handlePost = useCallback(async () => {
-    const tokenId = token.tokenId;
+    const tokenId = token.dbid;
 
     if (!tokenId) {
       return;
@@ -70,7 +74,7 @@ export function PostScreen() {
     });
 
     navigation.pop(1);
-    navigation.navigate('Trending');
+    navigation.navigate('Latest');
 
     pushToast({
       children: <ToastMessage tokenRef={token} />,
@@ -107,7 +111,7 @@ export function PostScreen() {
         </View>
 
         <View className="px-4 flex flex-col flex-grow space-y-2">
-          <PostInput value={caption} onChange={setCaption} />
+          <PostInput value={caption} onChange={setCaption} tokenRef={token} />
 
           <View className="py-4">
             <PostTokenPreview bottomSheetRef={bottomSheetRef} />

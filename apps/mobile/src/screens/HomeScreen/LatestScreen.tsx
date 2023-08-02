@@ -1,11 +1,13 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
+import isFeatureEnabled, { FeatureFlag } from 'src/utils/isFeatureEnabled';
 
 import { FEED_PER_PAGE } from '~/components/Feed/constants';
 import { ActiveFeed } from '~/components/Feed/FeedFilter';
 import { FollowingFeed } from '~/components/Feed/FollowingFeed';
 import { WelcomeToBeta } from '~/components/WelcomeToBeta';
+import { LatestScreenFeatureQuery } from '~/generated/LatestScreenFeatureQuery.graphql';
 import { LatestScreenFragment$key } from '~/generated/LatestScreenFragment.graphql';
 import { LatestScreenQuery } from '~/generated/LatestScreenQuery.graphql';
 
@@ -68,6 +70,17 @@ function LatestScreenInner({ queryRef }: LatestScreenInnerProps) {
 }
 
 export function LatestScreen() {
+  const featureQuery = useLazyLoadQuery<LatestScreenFeatureQuery>(
+    graphql`
+      query LatestScreenFeatureQuery {
+        ...isFeatureEnabledFragment
+      }
+    `,
+    {}
+  );
+
+  const isPostEnabled = isFeatureEnabled(FeatureFlag.KOALA, featureQuery);
+
   const query = useLazyLoadQuery<LatestScreenQuery>(
     graphql`
       query LatestScreenQuery(
@@ -75,13 +88,16 @@ export function LatestScreen() {
         $globalFeedCount: Int!
         $followingFeedBefore: String
         $followingFeedCount: Int!
+        $includePosts: Boolean!
       ) {
         ...LatestScreenFragment
+        ...isFeatureEnabledFragment
       }
     `,
     {
       globalFeedCount: FEED_PER_PAGE,
       followingFeedCount: FEED_PER_PAGE,
+      includePosts: isPostEnabled,
     }
   );
 

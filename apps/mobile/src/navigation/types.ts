@@ -26,6 +26,10 @@ export type MainTabStackNavigatorParamList = {
     collectionId: string | null;
     cachedPreviewAssetUrl: string | null;
   };
+  UniversalNftDetail: {
+    tokenId: string;
+    cachedPreviewAssetUrl: string | null;
+  };
   Gallery: { galleryId: string };
   Collection: { collectionId: string };
   FeedEvent: { eventId: string };

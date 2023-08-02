@@ -3,6 +3,7 @@ import { Suspense } from 'react';
 import { ScrollView, View } from 'react-native';
 import { useLazyLoadQuery, useRefetchableFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
+import isFeatureEnabled, { FeatureFlag } from 'src/utils/isFeatureEnabled';
 
 import { GalleryRefreshControl } from '~/components/GalleryRefreshControl';
 import { ProfileView } from '~/components/ProfileView/ProfileView';
@@ -10,6 +11,7 @@ import { ProfileViewFallback } from '~/components/ProfileView/ProfileViewFallbac
 import { SHARED_COMMUNITIES_PER_PAGE } from '~/components/ProfileView/ProfileViewSharedInfo/ProfileViewSharedCommunitiesSheet';
 import { SHARED_FOLLOWERS_PER_PAGE } from '~/components/ProfileView/ProfileViewSharedInfo/ProfileViewSharedFollowers';
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
+import { ProfileScreenFeatureQuery } from '~/generated/ProfileScreenFeatureQuery.graphql';
 import { ProfileScreenQuery } from '~/generated/ProfileScreenQuery.graphql';
 import { ProfileScreenRefetchableFragment$key } from '~/generated/ProfileScreenRefetchableFragment.graphql';
 import { ProfileScreenRefetchableFragmentQuery } from '~/generated/ProfileScreenRefetchableFragmentQuery.graphql';
@@ -19,6 +21,17 @@ import { useRefreshHandle } from '../../hooks/useRefreshHandle';
 
 function ProfileScreenInner() {
   const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'Profile'>>();
+
+  const featureQuery = useLazyLoadQuery<ProfileScreenFeatureQuery>(
+    graphql`
+      query ProfileScreenFeatureQuery {
+        ...isFeatureEnabledFragment
+      }
+    `,
+    {}
+  );
+
+  const isPostEnabled = isFeatureEnabled(FeatureFlag.KOALA, featureQuery);
 
   const wrapperQuery = useLazyLoadQuery<ProfileScreenQuery>(
     graphql`
@@ -30,6 +43,7 @@ function ProfileScreenInner() {
         $sharedCommunitiesAfter: String
         $sharedFollowersFirst: Int
         $sharedFollowersAfter: String
+        $includePosts: Boolean!
       ) {
         ...ProfileScreenRefetchableFragment
       }
@@ -39,6 +53,7 @@ function ProfileScreenInner() {
       feedLast: 24,
       sharedCommunitiesFirst: SHARED_COMMUNITIES_PER_PAGE,
       sharedFollowersFirst: SHARED_FOLLOWERS_PER_PAGE,
+      includePosts: isPostEnabled,
     },
     { fetchPolicy: 'store-or-network', UNSTABLE_renderPolicy: 'partial' }
   );
