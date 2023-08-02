@@ -3,8 +3,10 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseS } from '~/components/core/Text/Text';
 import { LowercaseChain } from '~/components/GalleryEditor/PiecesSidebar/chains';
+import { CommunityProfilePictureStack } from '~/components/ProfilePicture/CommunityProfilePictureStack';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { UserSharedCommunitiesFragment$key } from '~/generated/UserSharedCommunitiesFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
@@ -36,6 +38,7 @@ export default function UserSharedCommunities({ userRef }: Props) {
                 contractAddress {
                   address
                 }
+                ...CommunityProfilePictureStackFragment
               }
             }
           }
@@ -122,10 +125,17 @@ export default function UserSharedCommunities({ userRef }: Props) {
   }
 
   return (
-    <div>
-      <StyledBaseS>Also holds&nbsp;</StyledBaseS>
-      {content}
-    </div>
+    <HStack align="center" gap={isMobile ? 4 : 8}>
+      <CommunityProfilePictureStack
+        communitiesRef={sharedCommunities}
+        total={totalSharedCommunities}
+        onClick={handleShowAllClick}
+      />
+      <div>
+        <StyledBaseS>Also holds&nbsp;</StyledBaseS>
+        {content}
+      </div>
+    </HStack>
   );
 }
 
