@@ -10,6 +10,7 @@ import { SomeoneCommentedOnYourFeedEvent } from './Notifications/SomeoneCommente
 import { SomeoneFollowedYou } from './Notifications/SomeoneFollowedYou';
 import { SomeoneFollowedYouBack } from './Notifications/SomeoneFollowedYouBack';
 import { SomeoneViewedYourGallery } from './Notifications/SomeoneViewedYourGallery';
+import { SomeoneCommentedOnYourPost } from './Notifications/SomeoneCommentedOnYourPost';
 
 type NotificationInnerProps = {
   queryRef: NotificationQueryFragment$key;
@@ -26,6 +27,7 @@ export function Notification({ notificationRef, queryRef }: NotificationInnerPro
         ...SomeoneCommentedOnYourFeedEventQueryFragment
         ...SomeoneViewedYourGalleryQueryFragment
         ...SomeoneAdmiredYourPostQueryFragment
+        ...SomeoneCommentedOnYourPostQueryFragment
       }
     `,
     queryRef
@@ -64,6 +66,11 @@ export function Notification({ notificationRef, queryRef }: NotificationInnerPro
           __typename
           ...SomeoneAdmiredYourPostFragment
         }
+
+        ... on SomeoneCommentedOnYourPostNotification {
+          __typename
+          ...SomeoneCommentedOnYourPostFragment
+        }
       }
     `,
     notificationRef
@@ -81,6 +88,8 @@ export function Notification({ notificationRef, queryRef }: NotificationInnerPro
     return <SomeoneCommentedOnYourFeedEvent queryRef={query} notificationRef={notification} />;
   } else if (notification.__typename === 'SomeoneAdmiredYourPostNotification') {
     return <SomeoneAdmiredYourPost queryRef={query} notificationRef={notification} />;
+  } else if (notification.__typename === 'SomeoneCommentedOnYourPostNotification') {
+    return <SomeoneCommentedOnYourPost queryRef={query} notificationRef={notification} />;
   }
 
   return <View />;
