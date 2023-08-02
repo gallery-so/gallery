@@ -1,4 +1,3 @@
-import { useRouter } from 'next/router';
 import { useCallback, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
@@ -83,7 +82,7 @@ export default function PostComposer({ onBackClick, tokenRef }: Props) {
     description,
     hideModal,
     pushToast,
-    token.community.id,
+    token.community,
     token.dbid,
     token.name,
     track,
