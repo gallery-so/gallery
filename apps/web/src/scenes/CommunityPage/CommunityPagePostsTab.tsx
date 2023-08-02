@@ -34,7 +34,7 @@ export default function CommunityPagePostsTab({ communityRef, queryRef }: Props)
           @connection(key: "CommunityFeed_posts") {
           edges {
             node {
-              ... on FeedEventOrError {
+              ... on Post {
                 __typename
                 ...FeedListEventDataFragment
               }
