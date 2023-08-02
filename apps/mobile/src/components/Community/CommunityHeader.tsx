@@ -38,7 +38,7 @@ export function CommunityHeader({ communityRef }: Props) {
 
   return (
     <View className="mb-2">
-      <View className="flex flex-row space-x-2">
+      <View className="flex flex-row space-x-2 items-center">
         <CommunityProfilePicture communityRef={community} size="xxl" />
         <GalleryTouchableOpacity
           className="flex-1"
