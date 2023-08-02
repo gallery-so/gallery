@@ -1,4 +1,6 @@
+import { useNavigation } from '@react-navigation/native';
 import { ResizeMode } from 'expo-av';
+import { useCallback } from 'react';
 import { View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { graphql, useFragment } from 'react-relay';
@@ -6,6 +8,7 @@ import { graphql, useFragment } from 'react-relay';
 import { Button } from '~/components/Button';
 import { Typography } from '~/components/Typography';
 import { NewTokensFragment$key } from '~/generated/NewTokensFragment.graphql';
+import { MainTabStackNavigatorProp } from '~/navigation/types';
 import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
 import colors from '~/shared/theme/colors';
 import { getTimeSince } from '~/shared/utils/time';
@@ -37,10 +40,11 @@ export function NewTokens({ notificationRef }: Props) {
     notificationRef
   );
 
+  const navigation = useNavigation<MainTabStackNavigatorProp>();
   const { token } = notification;
 
-  if (!token) {
-    return null;
+  if (token?.__typename !== 'Token') {
+    throw new Error("We couldn't find that token. Something went wrong and we're looking into it.");
   }
 
   const media = getVideoOrImageUrlForNftPreview({
@@ -50,50 +54,58 @@ export function NewTokens({ notificationRef }: Props) {
 
   const tokenUrl = media?.urls.small;
 
-  const handlePress = () => {};
+  const handlePress = useCallback(() => {
+    if (!token.dbid) return;
+
+    navigation.navigate('PostComposer', {
+      tokenId: token.dbid,
+    });
+  }, [navigation, token.dbid]);
 
   return (
-    <View className="flex flex-row items-center space-x-2 p-3">
-      {tokenUrl ? (
-        <FastImage
-          style={{
-            width: 56,
-            height: 56,
-          }}
-          source={{ uri: tokenUrl }}
-          resizeMode={ResizeMode.COVER}
-        />
-      ) : (
-        <View
-          style={{
-            width: 56,
-            height: 56,
-            backgroundColor: colors.porcelain,
-          }}
-        />
-      )}
+    <View className="flex flex-row items-center p-3">
+      <View className="flex-row flex-1 space-x-2">
+        {tokenUrl ? (
+          <FastImage
+            style={{
+              width: 56,
+              height: 56,
+            }}
+            source={{ uri: tokenUrl }}
+            resizeMode={ResizeMode.COVER}
+          />
+        ) : (
+          <View
+            style={{
+              width: 56,
+              height: 56,
+              backgroundColor: colors.porcelain,
+            }}
+          />
+        )}
 
-      <View className="flex-1">
-        <Typography
-          font={{
-            family: 'ABCDiatype',
-            weight: 'Regular',
-          }}
-          className="text-sm"
-        >
-          Minted
-        </Typography>
-        <Typography
-          font={{
-            family: 'ABCDiatype',
-            weight: 'Bold',
-          }}
-          className="text-sm"
-        >
-          {token.name ? token.name : 'Unknown'}
-        </Typography>
+        <View className="flex-1">
+          <Typography
+            font={{
+              family: 'ABCDiatype',
+              weight: 'Regular',
+            }}
+            className="text-sm"
+          >
+            Minted
+          </Typography>
+          <Typography
+            font={{
+              family: 'ABCDiatype',
+              weight: 'Bold',
+            }}
+            numberOfLines={2}
+            className="text-sm"
+          >
+            {token.name ? token.name : 'Unknown'}
+          </Typography>
+        </View>
       </View>
-
       <Button
         onPress={handlePress}
         className="w-20"
