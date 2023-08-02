@@ -426,14 +426,21 @@ function GlobalNavbarWithFadeEnabled({
               }}
             >
               {isBannerVisible && (
+                // <GlobalBanner
+                //   // make sure to update this flag and add to backend schema.graphql
+                //   experienceFlag="MobileBetaUpsell"
+                //   variant="lit"
+                //   text="Embrace the new era of creativity at Gallery! Download the Gallery Mobile App Beta and take your collection everywhere."
+                //   actionComponent={<CTAChip />}
+                //   dismissOnActionComponentClick
+                //   queryRef={query}
+                //   requireAuth
+                // />
                 <GlobalBanner
-                  // make sure to update this flag and add to backend schema.graphql
-                  experienceFlag="MobileBetaUpsell"
-                  variant="lit"
-                  text="Embrace the new era of creativity at Gallery! Download the Gallery Mobile App Beta and take your collection everywhere."
-                  actionComponent={<CTAChip />}
-                  dismissOnActionComponentClick
+                  experienceFlag="MaintenanceAug2023"
+                  text="Gallery will be undergoing planned maintenance on **Wednesday, Aug 2nd** from **9:00 – 10:00PM EST** as we upgrade our infrastructure. The site will not be usable during this period."
                   queryRef={query}
+                  dismissOnActionComponentClick
                   requireAuth
                 />
               )}
