@@ -83,14 +83,14 @@ function AnimatedModal({
     return 'unset';
   }, [isFullPage, isMobile]);
 
-  const onClickHandler = useCallback(
+  const handleClick = useCallback(
     () => (onCloseOverride ? onCloseOverride() : hideModal()),
     [onCloseOverride, hideModal]
   );
 
   return (
     <_ToggleFade isActive={isActive}>
-      <Overlay onClick={onClickHandler} />
+      <Overlay onClick={handleClick} />
       <StyledModal isFullPage={isFullPage}>
         <_ToggleTranslate isActive={isActive}>
           <StyledContainer isFullPage={isFullPage} maxWidth={maxWidth} width={width}>
@@ -99,7 +99,7 @@ function AnimatedModal({
               <StyledModalActions align="center">
                 {headerActions}
                 {hideClose ? null : (
-                  <DecoratedCloseIcon onClick={onClickHandler} variant={headerVariant} />
+                  <DecoratedCloseIcon onClick={handleClick} variant={headerVariant} />
                 )}
               </StyledModalActions>
             </StyledHeader>
