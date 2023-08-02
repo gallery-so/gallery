@@ -8,6 +8,7 @@ import { NftDetailViewFragment$key } from '~/generated/NftDetailViewFragment.gra
 import { NftDetailViewQuery } from '~/generated/NftDetailViewQuery.graphql';
 import { NftDetailViewQueryFragment$key } from '~/generated/NftDetailViewQueryFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import TokenViewEmitter from '~/shared/components/TokenViewEmitter';
 
 import NftDetailAsset from './NftDetailAsset';
 import NftDetailNote from './NftDetailNote';
@@ -94,6 +95,7 @@ export default function NftDetailView({
 
   return (
     <StyledBody>
+      <TokenViewEmitter collectionID={collection.dbid} tokenID={token.dbid} />
       {!isMobileOrMobileLarge && <StyledNavigationBuffer />}
       <StyledContentContainer>
         <StyledAssetAndNoteContainer>
