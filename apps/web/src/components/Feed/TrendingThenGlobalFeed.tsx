@@ -63,8 +63,8 @@ export default function TrendingThenGlobalFeed({ queryRef }: Props) {
     graphql`
       fragment TrendingThenGlobalFeedTrendingFragment on Query
       @refetchable(queryName: "TrendingThenGlobalFeedTrendingPaginationQuery") {
-        trendingFeed(before: $trendingBefore, last: $trendingLast, includePosts: $includePosts)
-          @connection(key: "NonAuthedFeed_trendingFeed") {
+        curatedFeed(before: $trendingBefore, last: $trendingLast, includePosts: $includePosts)
+          @connection(key: "NonAuthedFeed_curatedFeed") {
           edges {
             node {
               ... on FeedEventOrError {
@@ -87,7 +87,7 @@ export default function TrendingThenGlobalFeed({ queryRef }: Props) {
   const feedData = useMemo(() => {
     const events = [];
 
-    const joined = [...(trendingPagination.data.trendingFeed?.edges ?? [])];
+    const joined = [...(trendingPagination.data.curatedFeed?.edges ?? [])];
 
     if (!trendingPagination.hasPrevious) {
       // These get displayed in reverse order so we need to put the global stuff
@@ -109,7 +109,7 @@ export default function TrendingThenGlobalFeed({ queryRef }: Props) {
   }, [
     globalPagination.data.globalFeed?.edges,
     isKoalaEnabled,
-    trendingPagination.data.trendingFeed?.edges,
+    trendingPagination.data.curatedFeed?.edges,
     trendingPagination.hasPrevious,
   ]);
 
