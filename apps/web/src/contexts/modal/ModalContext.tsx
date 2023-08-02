@@ -71,11 +71,6 @@ export const useModalActions = (): ModalActions => {
   return context;
 };
 
-type ModalExitCofirmationProps = {
-  bodyText: string;
-  ctaText: string;
-};
-
 type Props = { children: ReactNode };
 
 type Modal = {
@@ -90,7 +85,6 @@ type Modal = {
   hideClose: boolean;
   onClose: () => void;
   onBypassClose?: () => void;
-  confirmModalExit?: ModalExitCofirmationProps;
 };
 
 function ModalProvider({ children }: Props) {

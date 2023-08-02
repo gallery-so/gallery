@@ -43,5 +43,5 @@ const StyledTextWrapper = styled.div`
 
 const StyledButton = styled(Button)`
   margin-top: 16px;
-  width: 160px;
+  width: 150px;
 `;
