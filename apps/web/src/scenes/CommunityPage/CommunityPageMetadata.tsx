@@ -37,6 +37,7 @@ export default function CommunityPageMetadata({ communityRef, isKoalaEnabled }: 
           __typename
           ... on GalleryUser {
             username
+            universal
 
             ...ProfilePictureFragment
           }
@@ -76,7 +77,7 @@ export default function CommunityPageMetadata({ communityRef, isKoalaEnabled }: 
   }, [contractAddress?.chain]);
 
   const CreatorLink = useMemo(() => {
-    if (community.creator?.__typename === 'GalleryUser') {
+    if (community.creator?.__typename === 'GalleryUser' && !community.creator?.universal) {
       return (
         <HStack align="center" gap={4}>
           <ProfilePicture userRef={community.creator} size="xs" />

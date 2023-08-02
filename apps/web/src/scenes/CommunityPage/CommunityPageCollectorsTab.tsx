@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import CommunityHolderList from '~/components/Community/CommunityHolderList';
 import CommunityHolderGrid from '~/components/CommunityHolderGrid/CommunityHolderGrid';
 import { DisplayLayout } from '~/components/core/enums';
-import { VStack } from '~/components/core/Spacer/Stack';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { GRID_ENABLED_COMMUNITY_ADDRESSES } from '~/constants/community';
 import { CommunityPageCollectorsTabFragment$key } from '~/generated/CommunityPageCollectorsTabFragment.graphql';
 import { CommunityPageCollectorsTabQueryFragment$key } from '~/generated/CommunityPageCollectorsTabQueryFragment.graphql';
@@ -59,13 +59,12 @@ export default function CommunityPageCollectorsTab({ communityRef, queryRef }: P
   return (
     <StyledCollectorsTab>
       {isGridEnabled && (
-        <StyledLayoutToggleButtonContainer>
+        <HStack justify="flex-end">
           <LayoutToggleButton layout={layout} setLayout={setLayout} />
-        </StyledLayoutToggleButtonContainer>
+        </HStack>
       )}
       {showGrid ? (
         <StyledGridViewContainer gap={24}>
-          <StyledBreakLine />
           <StyledListWrapper>
             <CommunityHolderGrid communityRef={community} queryRef={query} />
           </StyledListWrapper>
@@ -89,10 +88,6 @@ const StyledCollectorsTab = styled.div`
   padding-top: 24px;
 `;
 
-const StyledLayoutToggleButtonContainer = styled.div`
-  align-self: flex-end;
-`;
-
 const StyledGridViewContainer = styled(VStack)`
   padding-top: 24px;
 `;
@@ -101,11 +96,4 @@ const StyledListWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-`;
-
-const StyledBreakLine = styled.hr`
-  width: 100%;
-  height: 1px;
-  background-color: ${colors.faint};
-  border: none;
 `;
