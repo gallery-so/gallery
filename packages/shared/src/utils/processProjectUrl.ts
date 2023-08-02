@@ -15,5 +15,5 @@ function isValidHttpsUrl(url: string): boolean {
       '(\\#[-a-z\\d_]*)?$',
     'i'
   ); // fragment locator
-  return !!pattern.test(url);
+  return Boolean(pattern.test(url));
 }
