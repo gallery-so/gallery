@@ -23,13 +23,7 @@ function TokenViewEmitter({ collectionID, tokenID }: TokenViewEmitterProps) {
   const reportError = useReportError();
 
   useEffect(() => {
-    // Uncomment to skip tracking of anonymous views
-    // const isLoggedIn = query.viewer?.user?.dbid;
-    // if (!isLoggedIn) {
-    //   return;
-    // }
-
-    if (!tokenID) {
+    if (!tokenID || !collectionID) {
       return;
     }
 
