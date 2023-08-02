@@ -57,6 +57,7 @@ export const getFeedTokenDimensions = ({
 
   return {
     '1': 320,
+    // eslint-disable-next-line no-implicit-coercion
     '2': (maxWidth - FEED_EVENT_TOKEN_MARGIN * 1 - FEED_EVENT_PADDING_MOBILE * paddingCount) / 2,
     '3': (maxWidth - FEED_EVENT_TOKEN_MARGIN * 2 - FEED_EVENT_PADDING_MOBILE * paddingCount) / 3,
     '4': (maxWidth - FEED_EVENT_TOKEN_MARGIN * 3 - FEED_EVENT_PADDING_MOBILE * paddingCount) / 4,
