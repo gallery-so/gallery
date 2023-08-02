@@ -14,6 +14,7 @@ import { Button } from '../core/Button/Button';
 import { VStack } from '../core/Spacer/Stack';
 import { BaseM } from '../core/Text/Text';
 import { NftSelector } from '../NftSelector/NftSelector';
+import DiscardPostConfirmation from './DiscardPostConfirmation';
 import PostComposer from './PostComposer';
 
 type Props = {
@@ -59,11 +60,26 @@ export function PostComposerModalWithSelector({ tokensRef, queryRef }: Props) {
     setSelectedTokenId(null);
   }, []);
 
+  const { showModal } = useModalActions();
+
+  const onBackClick = useCallback(() => {
+    showModal({
+      content: (
+        <DiscardPostConfirmation
+          onDiscard={() => {
+            clearSelectedTokenId();
+          }}
+        />
+      ),
+      isFullPage: false,
+    });
+  }, [showModal, clearSelectedTokenId]);
+
   return (
     <StyledPostComposerModal>
       <ErrorBoundary fallback={<PostComposerErrorScreen />}>
         {selectedToken ? (
-          <PostComposer onBackClick={clearSelectedTokenId} tokenRef={selectedToken} />
+          <PostComposer onBackClick={onBackClick} tokenRef={selectedToken} />
         ) : (
           <NftSelector
             tokensRef={nonNullTokens}
