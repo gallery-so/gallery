@@ -34,7 +34,8 @@ export function CommunityHeader({ communityRef }: Props) {
     bottomSheetRef.current?.present();
   }, [hasCommunityDescription]);
 
-  const formattedDescription = community.description?.replace(/\n/g, ' ');
+  const cleanedSetences = community.description?.trim().replace(/\s+/g, ' ');
+  const formattedDescription = cleanedSetences?.split(/[.!?]\s+/).join(' ');
 
   return (
     <View className="mb-4">
