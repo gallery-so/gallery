@@ -7,15 +7,15 @@ import { HStack } from '../core/Spacer/Stack';
 import { BaseM } from '../core/Text/Text';
 
 type Props = {
-  onClick: () => void;
+  onDiscard: () => void;
 };
 
-export default function DiscardPostConfirmation({ onClick }: Props) {
+export default function DiscardPostConfirmation({ onDiscard }: Props) {
   const { hideModal } = useModalActions();
 
-  const handleConfirmClick = () => {
+  const handleDiscardConfirmClick = () => {
     hideModal();
-    onClick();
+    onDiscard();
   };
 
   return (
@@ -25,7 +25,7 @@ export default function DiscardPostConfirmation({ onClick }: Props) {
       </StyledTextWrapper>
       <BaseM>If you go back now, this post will be discarded</BaseM>
       <HStack justify="flex-end">
-        <StyledButton onClick={handleConfirmClick}>DISCARD POST</StyledButton>
+        <StyledButton onClick={handleDiscardConfirmClick}>DISCARD POST</StyledButton>
       </HStack>
     </StyledConfirmation>
   );

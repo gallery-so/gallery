@@ -181,7 +181,7 @@ export function StandardSidebar({ queryRef }: Props) {
         showModal({
           content: (
             <DiscardPostConfirmation
-              onClick={() => {
+              onDiscard={() => {
                 hideModal({ id: 'post-composer' });
               }}
             />
