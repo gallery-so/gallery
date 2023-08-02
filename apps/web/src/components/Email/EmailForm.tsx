@@ -70,7 +70,7 @@ function EmailForm({ setIsEditMode, queryRef, onClose }: Props) {
   const [isValidEmail, setIsValidEmail] = useState(false);
   const [savePending, setSavePending] = useState(false);
 
-  const showCancelButton = useMemo(() => !!savedEmail || onClose, [onClose, savedEmail]);
+  const showCancelButton = useMemo(() => savedEmail || onClose, [onClose, savedEmail]);
   const { pushToast } = useToastActions();
 
   const { verifyEmail } = useVerifyValidEmail();

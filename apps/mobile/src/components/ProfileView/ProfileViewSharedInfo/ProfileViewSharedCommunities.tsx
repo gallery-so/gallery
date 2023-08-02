@@ -89,7 +89,7 @@ export default function ProfileViewSharedCommunities({ userRef }: Props) {
   const content = useMemo(() => {
     // Display up to 3 communities
     const result = communitiesToDisplay.map((community) => {
-      if (!!community.contractAddress && community.chain) {
+      if (community.contractAddress && community.chain) {
         return (
           <InteractiveLink
             type="Profile View Shared Communities"

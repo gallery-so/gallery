@@ -42,7 +42,7 @@ export default function CollectionTokenPreview({
   );
 
   const { collection, tokenSettings } = collectionToken;
-  const shouldLiveRender = !!tokenSettings?.renderLive;
+  const shouldLiveRender = Boolean(tokenSettings?.renderLive);
 
   return (
     <NftPreview

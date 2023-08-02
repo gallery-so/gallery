@@ -78,7 +78,7 @@ export function HoverCard({ preloadedQuery }: HoverCardProps) {
 
   const loggedInUserId = useLoggedInUserId(query);
   const isOwnProfile = loggedInUserId === user?.id;
-  const isLoggedIn = !!loggedInUserId;
+  const isLoggedIn = Boolean(loggedInUserId);
 
   const userProfileLink = useMemo((): Route => {
     return { pathname: '/[username]', query: { username: user.username as string } };

@@ -89,7 +89,7 @@ export default function NftDetailView({
 
   const { token, collection } = collectionNft;
 
-  const assetHasNote = !!token.collectorsNote;
+  const assetHasNote = Boolean(token.collectorsNote);
   const showCollectorsNoteComponent = assetHasNote || authenticatedUserOwnsAsset;
 
   return (

@@ -62,7 +62,7 @@ export default function useAdmirePost() {
       };
 
       const optimisticId = Math.random().toString();
-      const hasProfileImage = optimisticUserInfo.profileImageUrl !== null;
+      const hasProfileImage = Boolean(optimisticUserInfo.profileImageUrl);
 
       const tokenProfileImagePayload = hasProfileImage
         ? {
