@@ -132,7 +132,7 @@ export function StandardSidebar({ queryRef }: Props) {
     return removeNullValues(query?.viewer?.user?.tokens) ?? [];
   }, [query?.viewer]);
 
-  const { showModal } = useModalActions();
+  const { showModal, hideModal } = useModalActions();
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
   const handleSettingsClick = useCallback(() => {
@@ -173,6 +173,7 @@ export function StandardSidebar({ queryRef }: Props) {
     hideDrawer();
 
     showModal({
+      id: 'post-composer',
       content: <PostComposerModalWithSelector tokensRef={tokens} queryRef={query} />,
       headerVariant: 'thicc',
       isFullPage: isMobile,
@@ -181,7 +182,7 @@ export function StandardSidebar({ queryRef }: Props) {
           content: (
             <DiscardPostConfirmation
               onClick={() => {
-                console.log('running running runinggggg');
+                hideModal({ id: 'post-composer' });
               }}
             />
           ),
@@ -190,7 +191,7 @@ export function StandardSidebar({ queryRef }: Props) {
       },
     });
     track('Sidebar Create Post Click');
-  }, [hideDrawer, showModal, tokens, query, isMobile, track]);
+  }, [hideDrawer, showModal, hideModal, tokens, query, isMobile, track]);
 
   const handleSearchClick = useCallback(() => {
     track('Sidebar Search Click');
