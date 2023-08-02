@@ -27,7 +27,7 @@ export function CommunityHeader({ communityRef }: Props) {
     communityRef
   );
 
-  const hasCommunityDescription = !!community.description;
+  const hasCommunityDescription = Boolean(community.description);
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
   const handlePress = useCallback(() => {
     if (!hasCommunityDescription) return;

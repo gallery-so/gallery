@@ -88,7 +88,7 @@ export default function TokenDetailView({ tokenRef, queryRef }: Props) {
   const authenticatedUserOwnsAsset =
     query.viewer?.__typename === 'Viewer' && query.viewer?.user?.username === token.owner?.username;
 
-  const assetHasNote = !!token.collectorsNote;
+  const assetHasNote = Boolean(token.collectorsNote);
   const showCollectorsNoteComponent = assetHasNote || authenticatedUserOwnsAsset;
 
   return (

@@ -255,7 +255,7 @@ export function NftSelector({ tokensRef, queryRef, onSelectToken, headerText }: 
           selectedContractAddress={selectedContract?.address ?? null}
           onSelectContract={setSelectedContract}
           selectedNetworkView={selectedNetworkView}
-          hasSearchKeyword={!!debouncedSearchKeyword}
+          hasSearchKeyword={Boolean(debouncedSearchKeyword)}
           handleRefresh={handleRefresh}
           onSelectToken={onSelectToken}
         />

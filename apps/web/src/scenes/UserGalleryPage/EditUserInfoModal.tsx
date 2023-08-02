@@ -94,7 +94,7 @@ function EditUserInfoModal({ queryRef }: Props) {
       </VStack>
       {/* TODO [GAL-256]: This spacer and button should be part of a new ModalFooter */}
       <StyledButtonContainer justify="flex-end">
-        <Button onClick={handleSubmit} disabled={!!usernameError} pending={isLoading}>
+        <Button onClick={handleSubmit} disabled={Boolean(usernameError)} pending={isLoading}>
           Save
         </Button>
       </StyledButtonContainer>
