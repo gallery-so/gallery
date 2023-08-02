@@ -82,7 +82,7 @@ function PostItem({ eventRef, queryRef, handlePotentialLayoutShift, index }: Pos
     <StyledPostItem>
       <PostNfts postRef={post} />
       {/* {index % 2 === 0 && <PostNfts postRef={post} />} */}
-      <StyledDesktopPostData gap={16} justify="center">
+      <StyledDesktopPostData gap={16} justify="space-between">
         <PostHeader postRef={post} queryRef={query} />
         <ReportingErrorBoundary dontReport fallback={<></>}>
           <PostSocializeSection

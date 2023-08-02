@@ -58,5 +58,5 @@ export default function PostNfts({ postRef }: Props) {
 
 const StyledTokenContainer = styled(HStack)`
   padding: 24px;
-  // border: 1px solid ${colors.faint};
+  border: 1px solid ${colors.faint};
 `;
