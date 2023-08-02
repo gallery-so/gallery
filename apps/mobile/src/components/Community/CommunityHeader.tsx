@@ -34,8 +34,11 @@ export function CommunityHeader({ communityRef }: Props) {
     bottomSheetRef.current?.present();
   }, [hasCommunityDescription]);
 
-  const cleanedSetences = community.description?.trim().replace(/\s+/g, ' ');
-  const formattedDescription = cleanedSetences?.split(/[.!?]\s+/).join(' ');
+  // combines description into a single paragraph by removing extra whitespace,
+  //  then splitting the cleaned text into sentences using a regular expression
+  //  and then joining them.
+  const cleanedSentences = community.description?.trim().replace(/\s+/g, ' ');
+  const formattedDescription = cleanedSentences?.split(/[.!?]\s+/).join(' ');
 
   return (
     <View className="mb-4">
