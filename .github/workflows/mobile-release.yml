@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - node-bump
+      - node-bump-2
     # We only want to run a build if things that could've affected mobile changed.
     paths:
       - yarn.lock
@@ -22,7 +22,7 @@ jobs:
       - name: 🏗 Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: 16.18.1
+          node-version: 20.5.0
           cache: yarn
 
       - name: 🏗 Setup EAS
@@ -47,7 +47,7 @@ jobs:
       - name: 🏗 Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: 16.18.1
+          node-version: 20.5.0
           cache: yarn
 
       - name: 🏗 Setup EAS
