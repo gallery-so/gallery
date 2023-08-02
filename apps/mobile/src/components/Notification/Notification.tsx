@@ -5,6 +5,7 @@ import { NotificationFragment$key } from '~/generated/NotificationFragment.graph
 import { NotificationQueryFragment$key } from '~/generated/NotificationQueryFragment.graphql';
 
 import { SomeoneAdmiredYourFeedEvent } from './Notifications/SomeoneAdmiredYourFeedEvent';
+import { SomeoneAdmiredYourPost } from './Notifications/SomeoneAdmiredYourPost';
 import { SomeoneCommentedOnYourFeedEvent } from './Notifications/SomeoneCommentedOnYourFeedEvent';
 import { SomeoneFollowedYou } from './Notifications/SomeoneFollowedYou';
 import { SomeoneFollowedYouBack } from './Notifications/SomeoneFollowedYouBack';
@@ -24,6 +25,7 @@ export function Notification({ notificationRef, queryRef }: NotificationInnerPro
         ...SomeoneAdmiredYourFeedEventQueryFragment
         ...SomeoneCommentedOnYourFeedEventQueryFragment
         ...SomeoneViewedYourGalleryQueryFragment
+        ...SomeoneAdmiredYourPostQueryFragment
       }
     `,
     queryRef
@@ -32,6 +34,7 @@ export function Notification({ notificationRef, queryRef }: NotificationInnerPro
   const notification = useFragment(
     graphql`
       fragment NotificationFragment on Notification {
+        __typename
         ... on SomeoneFollowedYouNotification {
           __typename
           ...SomeoneFollowedYouFragment
@@ -56,6 +59,11 @@ export function Notification({ notificationRef, queryRef }: NotificationInnerPro
           __typename
           ...SomeoneViewedYourGalleryFragment
         }
+
+        ... on SomeoneAdmiredYourPostNotification {
+          __typename
+          ...SomeoneAdmiredYourPostFragment
+        }
       }
     `,
     notificationRef
@@ -71,6 +79,8 @@ export function Notification({ notificationRef, queryRef }: NotificationInnerPro
     return <SomeoneFollowedYou queryRef={query} notificationRef={notification} />;
   } else if (notification.__typename === 'SomeoneCommentedOnYourFeedEventNotification') {
     return <SomeoneCommentedOnYourFeedEvent queryRef={query} notificationRef={notification} />;
+  } else if (notification.__typename === 'SomeoneAdmiredYourPostNotification') {
+    return <SomeoneAdmiredYourPost queryRef={query} notificationRef={notification} />;
   }
 
   return <View />;
