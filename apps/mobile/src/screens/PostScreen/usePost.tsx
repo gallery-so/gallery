@@ -1,11 +1,9 @@
 import { useCallback, useState } from 'react';
 import { ConnectionHandler, graphql, useFragment } from 'react-relay';
 import { SelectorStoreUpdater } from 'relay-runtime';
-import isFeatureEnabled, { FeatureFlag } from 'src/utils/isFeatureEnabled';
 
 import { useToastActions } from '~/contexts/ToastContext';
 import { usePostDeleteMutation } from '~/generated/usePostDeleteMutation.graphql';
-import { usePostFragment$key } from '~/generated/usePostFragment.graphql';
 import { usePostMutation } from '~/generated/usePostMutation.graphql';
 import { usePostTokenFragment$key } from '~/generated/usePostTokenFragment.graphql';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
@@ -17,20 +15,10 @@ type PostTokensInput = {
 };
 
 type Props = {
-  queryRef: usePostFragment$key;
   tokenRef: usePostTokenFragment$key;
 };
 
-export function usePost({ queryRef, tokenRef }: Props) {
-  const query = useFragment(
-    graphql`
-      fragment usePostFragment on Query {
-        ...isFeatureEnabledFragment
-      }
-    `,
-    queryRef
-  );
-
+export function usePost({ tokenRef }: Props) {
   const token = useFragment(
     graphql`
       fragment usePostTokenFragment on Token {
@@ -42,8 +30,6 @@ export function usePost({ queryRef, tokenRef }: Props) {
     `,
     tokenRef
   );
-
-  const isPostEnabled = isFeatureEnabled(FeatureFlag.KOALA, query);
 
   const [post, isPosting] = usePromisifiedMutation<usePostMutation>(graphql`
     mutation usePostMutation($input: PostTokensInput!) {
@@ -105,9 +91,7 @@ export function usePost({ queryRef, tokenRef }: Props) {
 
           const communityStore = store.get(communityConnection);
 
-          const connectionName = `${connectionId}(includePosts:${
-            isPostEnabled ? 'true' : 'false'
-          })`;
+          const connectionName = `${connectionId}(includePosts:true)`;
 
           const relayStore = store.get(connectionName);
 
@@ -152,7 +136,7 @@ export function usePost({ queryRef, tokenRef }: Props) {
         reportError(error);
       });
     },
-    [communityConnection, isPostEnabled, pushToast, post, reportError]
+    [communityConnection, pushToast, post, reportError]
   );
 
   const handleDelete = useCallback(
