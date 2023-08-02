@@ -93,7 +93,7 @@ export function ProfileViewHeader({ queryRef, selectedRoute, onRouteChange }: Pr
         </View>
       )}
       {!isLoggedInUser && <ProfileViewSharedInfo userRef={user} />}
-      <View className={`flex flex-row mx-4 space-x-12 ${isLoggedInUser ? 'mt-2.5' : 'mt-4'}`}>
+      <View className={`flex flex-row mx-4 space-x-12 mt-4`}>
         <ProfileViewTwitterPill userRef={user} />
         <ProfileViewFarcasterPill userRef={user} />
       </View>
