@@ -1,7 +1,13 @@
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import { useColorScheme } from 'nativewind';
 import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
-import { Text, View, ViewStyle } from 'react-native';
+import {
+  NativeSyntheticEvent,
+  Text,
+  TextInputContentSizeChangeEvent,
+  View,
+  ViewStyle,
+} from 'react-native';
 import Animated, {
   AnimatedStyleProp,
   useAnimatedStyle,
@@ -91,21 +97,35 @@ export function CommentBox({
     }
   }, [showXMark, width, display]);
 
+  // dynamically adjust the height of the BottomSheetTextInput as users make newlines
+  const [inputHeight, setInputHeight] = useState<number>(40);
+
+  const handleContentSizeChange = (
+    event: NativeSyntheticEvent<TextInputContentSizeChangeEvent>
+  ) => {
+    setInputHeight(event.nativeEvent.contentSize.height);
+  };
+
   return (
     <View className="px-2 pb-2 flex flex-row items-center space-x-3">
       <Animated.View className="flex-1 flex-row justify-between items-center bg-faint dark:bg-black-800 p-1.5 space-x-3">
         <BottomSheetTextInput
           value={value}
           onChangeText={setValue}
-          multiline={true}
           className="text-sm h-5"
           selectionColor={colorScheme === 'dark' ? colors.white : colors.black['800']}
           autoCapitalize="none"
           autoComplete="off"
           autoFocus={autoFocus}
+          multiline
           onBlur={handleDismiss}
           onSubmitEditing={handleDismiss}
-          style={{ flex: 1, color: colorScheme === 'dark' ? colors.white : colors.black['800'] }}
+          style={{
+            height: inputHeight,
+            flex: 1,
+            color: colorScheme === 'dark' ? colors.white : colors.black['800'],
+          }}
+          onContentSizeChange={handleContentSizeChange}
         />
         <Text className="text-sm text-metal">{characterCount}</Text>
         <GalleryTouchableOpacity
