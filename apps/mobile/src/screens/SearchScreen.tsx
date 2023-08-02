@@ -35,7 +35,7 @@ export function SearchScreen() {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height '}
       style={{ paddingTop: top }}
       className="flex flex-1 flex-col bg-white dark:bg-black-900 "
     >
