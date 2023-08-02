@@ -179,6 +179,7 @@ export function StandardSidebar({ queryRef }: Props) {
       isFullPage: isMobile,
       onCloseOverride: () => {
         showModal({
+          headerText: 'Are you sure?',
           content: (
             <DiscardPostConfirmation
               onDiscard={() => {
