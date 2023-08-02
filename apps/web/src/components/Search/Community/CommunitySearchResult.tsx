@@ -2,9 +2,9 @@ import { Route } from 'nextjs-routes';
 import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
-import { LowercaseChain } from '~/components/GalleryEditor/PiecesSidebar/chains';
 import CommunityProfilePicture from '~/components/ProfilePicture/CommunityProfilePicture';
 import { CommunitySearchResultFragment$key } from '~/generated/CommunitySearchResultFragment.graphql';
+import { LowercaseChain } from '~/shared/utils/chains';
 
 import SearchResult from '../SearchResult';
 
