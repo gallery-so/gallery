@@ -13,7 +13,7 @@ import { TwitterSuggestionListScreen } from '~/screens/HomeScreen/TwitterSuggest
 import { UserSuggestionListScreen } from '~/screens/HomeScreen/UserSuggestionListScreen';
 import { NftSelectorContractScreen } from '~/screens/NftSelectorScreen/NftSelectorContractScreen';
 import { NftSelectorPickerScreen } from '~/screens/NftSelectorScreen/NftSelectorPickerScreen';
-import { PostScreen } from '~/screens/PostScreen/PostScreen';
+import { PostComposerScreen } from '~/screens/PostScreen/PostComposerScreen';
 import { ProfileQRCodeScreen } from '~/screens/ProfileQRCodeScreen';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 
@@ -63,7 +63,7 @@ export function RootStackNavigator({ navigationContainerRef }: Props) {
 
       <Stack.Screen name="Post" component={NftSelectorPickerScreen} />
       <Stack.Screen name="NftSelectorContractScreen" component={NftSelectorContractScreen} />
-      <Stack.Screen name="PostComposer" component={PostScreen} />
+      <Stack.Screen name="PostComposer" component={PostComposerScreen} />
 
       <Stack.Screen name="MainTabs">
         {(props) => <MainTabNavigator {...props} isKoalaEnabled={isKoalaEnabled} />}

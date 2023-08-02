@@ -12,22 +12,22 @@ import { PostTokenPreview } from '~/components/Post/PostTokenPreview';
 import { WarningPostBottomSheet } from '~/components/Post/WarningPostBottomSheet';
 import { Typography } from '~/components/Typography';
 import { useToastActions } from '~/contexts/ToastContext';
-import { PostScreenQuery } from '~/generated/PostScreenQuery.graphql';
-import { PostScreenTokenFragment$key } from '~/generated/PostScreenTokenFragment.graphql';
+import { PostComposerScreenQuery } from '~/generated/PostComposerScreenQuery.graphql';
+import { PostComposerScreenTokenFragment$key } from '~/generated/PostComposerScreenTokenFragment.graphql';
 import { FeedTabNavigatorProp, PostStackNavigatorParamList } from '~/navigation/types';
 
 import { usePost } from './usePost';
 
-export function PostScreen() {
+export function PostComposerScreen() {
   const route = useRoute<RouteProp<PostStackNavigatorParamList, 'PostComposer'>>();
-  const query = useLazyLoadQuery<PostScreenQuery>(
+  const query = useLazyLoadQuery<PostComposerScreenQuery>(
     graphql`
-      query PostScreenQuery($tokenId: DBID!) {
+      query PostComposerScreenQuery($tokenId: DBID!) {
         tokenById(id: $tokenId) {
           ... on Token {
             __typename
             dbid
-            ...PostScreenTokenFragment
+            ...PostComposerScreenTokenFragment
             ...PostInputTokenFragment
           }
         }
@@ -125,12 +125,12 @@ export function PostScreen() {
 }
 
 type ToastMessageProps = {
-  tokenRef: PostScreenTokenFragment$key;
+  tokenRef: PostComposerScreenTokenFragment$key;
 };
 export function ToastMessage({ tokenRef }: ToastMessageProps) {
   const token = useFragment(
     graphql`
-      fragment PostScreenTokenFragment on Token {
+      fragment PostComposerScreenTokenFragment on Token {
         name
       }
     `,
