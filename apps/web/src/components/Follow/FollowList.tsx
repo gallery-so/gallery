@@ -4,6 +4,7 @@ import styled, { css } from 'styled-components';
 
 import TextButton, { StyledButtonText } from '~/components/core/Button/TextButton';
 import { HStack } from '~/components/core/Spacer/Stack';
+import { BaseS } from '~/components/core/Text/Text';
 import { MODAL_PADDING_THICC_PX } from '~/contexts/modal/constants';
 import { FollowListFragment$key } from '~/generated/FollowListFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
@@ -40,7 +41,7 @@ export default function FollowList({ userRef }: Props) {
 
   return (
     <StyledFollowList fullscreen={isMobile}>
-      <StyledHeader gap={16} justify="center">
+      <StyledHeader justify="space-between">
         <StyledHeaderTextRight>
           <StyledTextButton
             text="Followers"
@@ -54,6 +55,10 @@ export default function FollowList({ userRef }: Props) {
             onClick={() => setDisplayedList('following')}
             active={displayedList === 'following'}
           />
+          <HStack gap={4} align="baseline">
+            <span>Followers</span>
+            {userList.length > 0 && <BaseS>{userList.length}</BaseS>}
+          </HStack>
         </StyledHeaderText>
       </StyledHeader>
       <FollowListUsers
