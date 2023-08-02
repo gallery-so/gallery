@@ -18,6 +18,7 @@ import { NftDetailPageQueryFragment$key } from '~/generated/NftDetailPageQueryFr
 import useKeyDown from '~/hooks/useKeyDown';
 import NotFound from '~/scenes/NotFound/NotFound';
 import GalleryViewEmitter from '~/shared/components/GalleryViewEmitter';
+import TokenViewEmitter from '~/shared/components/TokenViewEmitter';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
@@ -204,6 +205,7 @@ function NftDetailPage({
         <title>{headTitle}</title>
       </Head>
       <GalleryViewEmitter queryRef={query} />
+      <TokenViewEmitter collectionID={initialCollectionId} tokenID={tokenId} />
       {prevNft && <NavigationHandle direction={Directions.LEFT} onClick={handlePrevPress} />}
       {mountedNfts.map(({ token, visibility }) => (
         <_DirectionalFade key={token.token.dbid} visibility={visibility}>
