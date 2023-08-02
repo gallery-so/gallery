@@ -4,6 +4,7 @@ import { graphql, useFragment } from 'react-relay';
 import { NotificationFragment$key } from '~/generated/NotificationFragment.graphql';
 import { NotificationQueryFragment$key } from '~/generated/NotificationQueryFragment.graphql';
 
+import { NewTokens } from './Notifications/NewTokens';
 import { SomeoneAdmiredYourFeedEvent } from './Notifications/SomeoneAdmiredYourFeedEvent';
 import { SomeoneAdmiredYourPost } from './Notifications/SomeoneAdmiredYourPost';
 import { SomeoneCommentedOnYourFeedEvent } from './Notifications/SomeoneCommentedOnYourFeedEvent';
@@ -71,6 +72,11 @@ export function Notification({ notificationRef, queryRef }: NotificationInnerPro
           __typename
           ...SomeoneCommentedOnYourPostFragment
         }
+
+        ... on NewTokensNotification {
+          __typename
+          ...NewTokensFragment
+        }
       }
     `,
     notificationRef
@@ -90,6 +96,8 @@ export function Notification({ notificationRef, queryRef }: NotificationInnerPro
     return <SomeoneAdmiredYourPost queryRef={query} notificationRef={notification} />;
   } else if (notification.__typename === 'SomeoneCommentedOnYourPostNotification') {
     return <SomeoneCommentedOnYourPost queryRef={query} notificationRef={notification} />;
+  } else if (notification.__typename === 'NewTokensNotification') {
+    return <NewTokens notificationRef={notification} />;
   }
 
   return <View />;
