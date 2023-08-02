@@ -9,6 +9,7 @@ import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import colors from '~/shared/theme/colors';
 
 import UserFarcasterSection from './UserFarcasterSection';
+import UserLensSection from './UserLensSection';
 import { UserNameAndDescriptionHeader } from './UserNameAndDescriptionHeader';
 import UserSharedInfo from './UserSharedInfo/UserSharedInfo';
 import UserTwitterSection from './UserTwitterSection';
@@ -30,6 +31,7 @@ export default function UserGalleryHeader({ userRef, queryRef }: Props) {
         ...UserFarcasterSectionFragment
         ...UserSharedInfoFragment
         ...GalleryNavLinksFragment
+        ...UserLensSectionFragment
       }
     `,
     userRef
@@ -63,6 +65,7 @@ export default function UserGalleryHeader({ userRef, queryRef }: Props) {
       <SocialConnectionsSection gap={8}>
         <UserTwitterSection userRef={user} queryRef={query} />
         <UserFarcasterSection userRef={user} />
+        <UserLensSection userRef={user} />
       </SocialConnectionsSection>
       {isMobile && (
         <MobileNavLinks align="center" justify="center">
