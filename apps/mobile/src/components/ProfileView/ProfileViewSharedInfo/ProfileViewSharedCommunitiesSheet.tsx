@@ -9,6 +9,7 @@ import {
   GalleryBottomSheetModalType,
 } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { InteractiveLink } from '~/components/InteractiveLink';
+import { RawProfilePicture } from '~/components/ProfilePicture/RawProfilePicture';
 import { Typography } from '~/components/Typography';
 import { ProfileViewSharedCommunitiesSheetFragment$key } from '~/generated/ProfileViewSharedCommunitiesSheetFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
@@ -26,7 +27,12 @@ export type ContractAddress = {
   address: string | null;
   chain: string | null;
 };
-type ListItemType = { kind: 'community'; name?: string; contractAddress: ContractAddress | null };
+type ListItemType = {
+  kind: 'community';
+  name?: string;
+  contractAddress: ContractAddress | null;
+  profileImageURL: string;
+};
 
 function ProfileViewSharedCommunitiesSheet(
   props: Props,
@@ -48,6 +54,7 @@ function ProfileViewSharedCommunitiesSheet(
                   address
                   chain
                 }
+                profileImageURL
               }
             }
           }
@@ -66,6 +73,7 @@ function ProfileViewSharedCommunitiesSheet(
           kind: 'community',
           name: edge.node.name ?? '',
           contractAddress: edge.node.contractAddress,
+          profileImageURL: edge.node.profileImageURL,
         });
       }
     }
@@ -97,20 +105,28 @@ function ProfileViewSharedCommunitiesSheet(
   const renderItem = useCallback<ListRenderItem<ListItemType>>(
     ({ item }) => {
       return (
-        <View className="mb-4 px-4" key={item.name}>
+        <View className="px-4 mb-4 flex flex-row items-center" key={item.name}>
           <InteractiveLink
             onPress={() => item.contractAddress && handleCommunityPress(item.contractAddress)}
             type="Profile View Shared Communities"
           >
-            <Typography
-              className="text-sm mb-4 px-4"
-              font={{
-                family: 'ABCDiatype',
-                weight: 'Bold',
-              }}
-            >
-              {item.name}
-            </Typography>
+            <View className="flex flex-row items-center">
+              <RawProfilePicture
+                imageUrl={item.profileImageURL as string}
+                size={'sm'}
+                eventElementId="profilePicture"
+                eventName="profilePictureClicked"
+              />
+              <Typography
+                className="text-sm mb-4 px-4"
+                font={{
+                  family: 'ABCDiatype',
+                  weight: 'Bold',
+                }}
+              >
+                {item.name}
+              </Typography>
+            </View>
           </InteractiveLink>
         </View>
       );
@@ -122,7 +138,7 @@ function ProfileViewSharedCommunitiesSheet(
     <GalleryBottomSheetModal ref={ref} index={0} snapPoints={snapPoints}>
       <View style={contentContainerStyle}>
         <Typography
-          className="text-sm mb-4 px-4"
+          className="text-sm mb-4 px-4 flex flex-row items-center "
           font={{
             family: 'ABCDiatype',
             weight: 'Bold',

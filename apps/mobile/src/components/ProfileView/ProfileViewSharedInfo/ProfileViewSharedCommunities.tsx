@@ -1,13 +1,19 @@
+/* eslint-disable no-console */
 import { useNavigation } from '@react-navigation/native';
+import clsx from 'clsx';
 import React, { useCallback, useMemo, useRef } from 'react';
 import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
+import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { InteractiveLink } from '~/components/InteractiveLink';
+import { CommunityProfilePicture } from '~/components/ProfilePicture/CommunityProfilePicture';
 import { Typography } from '~/components/Typography';
+import { ProfileViewSharedCommunitiesBubblesFragment$key } from '~/generated/ProfileViewSharedCommunitiesBubblesFragment.graphql';
 import { ProfileViewSharedCommunitiesFragment$key } from '~/generated/ProfileViewSharedCommunitiesFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import {
@@ -38,6 +44,7 @@ export default function ProfileViewSharedCommunities({ userRef }: Props) {
                   address
                   chain
                 }
+                ...ProfileViewSharedCommunitiesBubblesFragment
               }
             }
           }
@@ -168,11 +175,81 @@ export default function ProfileViewSharedCommunities({ userRef }: Props) {
 
   return (
     <View className="flex flex-row flex-wrap">
+      <CommunityProfilePictureBubblesWithCount
+        onPress={handleSeeAllPress}
+        totalCount={sharedCommunities.length}
+        eventElementId="Shared Followers Bubbles"
+        eventName="Shared Followers Bubbles pressed"
+        userRefs={sharedCommunities}
+      />
+
       <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
         Also holds{' '}
       </Typography>
       {content}
       <ProfileViewSharedCommunitiesSheet ref={bottomSheetRef} userRef={user} />
     </View>
+  );
+}
+
+type CommunityProfilePictureBubblesWithCountProps = {
+  userRefs: ProfileViewSharedCommunitiesBubblesFragment$key;
+  totalCount: number;
+  onPress: () => void;
+} & GalleryElementTrackingProps;
+
+export function CommunityProfilePictureBubblesWithCount({
+  onPress,
+  userRefs,
+  totalCount,
+  ...trackingProps
+}: CommunityProfilePictureBubblesWithCountProps) {
+  const communities = useFragment(
+    graphql`
+      fragment ProfileViewSharedCommunitiesBubblesFragment on Community @relay(plural: true) {
+        dbid
+        ...CommunityProfilePictureFragment
+      }
+    `,
+    userRefs
+  );
+
+  if (communities.length === 0) {
+    return null;
+  }
+
+  const remainingCount = Math.max(totalCount - 3, 0);
+
+  return (
+    <GalleryTouchableOpacity
+      onPress={onPress}
+      className="flex flex-row items-center"
+      {...trackingProps}
+    >
+      {communities.slice(0, 3).map((community, index) => {
+        return (
+          <View
+            key={community.dbid}
+            className={clsx({
+              '-ml-2': index !== 0,
+            })}
+          >
+            <CommunityProfilePicture communityRef={community} size="sm" />
+          </View>
+        );
+      })}
+
+      {Boolean(remainingCount) && (
+        <View className="bg-porcelain border-2 border-white dark:border-black-900 rounded-3xl px-1.5 -ml-2">
+          <Typography
+            className="text-xs text-metal"
+            font={{ family: 'ABCDiatype', weight: 'Medium' }}
+            style={{ fontVariant: ['tabular-nums'] }}
+          >
+            +{remainingCount}
+          </Typography>
+        </View>
+      )}
+    </GalleryTouchableOpacity>
   );
 }
