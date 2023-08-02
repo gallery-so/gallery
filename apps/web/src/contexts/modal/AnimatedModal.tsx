@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useMemo } from 'react';
+import { ReactElement, useCallback, useEffect, useMemo } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
@@ -31,7 +31,7 @@ type Props = {
   headerText: string;
   headerVariant: ModalPaddingVariant;
   hideClose?: boolean;
-  onBypassClose?: () => void;
+  onCloseOverride?: () => void;
 };
 
 function AnimatedModal({
@@ -45,7 +45,7 @@ function AnimatedModal({
   headerText,
   headerVariant,
   hideClose,
-  onBypassClose,
+  onCloseOverride,
 }: Props) {
   useEffect(() => {
     if (!isActive) {
@@ -83,13 +83,10 @@ function AnimatedModal({
     return 'unset';
   }, [isFullPage, isMobile]);
 
-  const onClickHandler = () => {
-    if (onBypassClose) {
-      onBypassClose();
-    } else {
-      hideModal();
-    }
-  };
+  const onClickHandler = useCallback(
+    () => (onCloseOverride ? onCloseOverride() : hideModal()),
+    [onCloseOverride, hideModal]
+  );
 
   return (
     <_ToggleFade isActive={isActive}>

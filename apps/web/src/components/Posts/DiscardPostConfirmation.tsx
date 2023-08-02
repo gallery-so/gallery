@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import styled from 'styled-components';
 
 import { useModalActions } from '~/contexts/modal/ModalContext';
@@ -13,10 +14,10 @@ type Props = {
 export default function DiscardPostConfirmation({ onDiscard }: Props) {
   const { hideModal } = useModalActions();
 
-  const handleDiscardConfirmClick = () => {
+  const handleDiscardConfirmClick = useCallback(() => {
     hideModal();
     onDiscard();
-  };
+  }, [onDiscard, hideModal]);
 
   return (
     <StyledConfirmation>

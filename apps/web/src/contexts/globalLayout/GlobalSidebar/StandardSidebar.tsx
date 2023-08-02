@@ -177,7 +177,7 @@ export function StandardSidebar({ queryRef }: Props) {
       content: <PostComposerModalWithSelector tokensRef={tokens} queryRef={query} />,
       headerVariant: 'thicc',
       isFullPage: isMobile,
-      onBypassClose: () => {
+      onCloseOverride: () => {
         showModal({
           content: (
             <DiscardPostConfirmation
