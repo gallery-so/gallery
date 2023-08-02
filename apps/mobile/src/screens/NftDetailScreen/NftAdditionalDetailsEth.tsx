@@ -108,7 +108,7 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionalDetailsEthPro
           {projectUrl && (
             <DetailSection>
               <DetailLabelText>VIEW ON</DetailLabelText>
-              <View className="flex flex-col pt-4">
+              <View className="flex flex-col">
                 <DetailExternalLink
                   link={projectUrl}
                   label="Visit Site"
