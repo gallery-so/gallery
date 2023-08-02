@@ -31,7 +31,7 @@ type ListItemType = {
   kind: 'community';
   name?: string;
   contractAddress: ContractAddress | null;
-  profileImageURL: string;
+  profileImageURL: string | null;
 };
 
 function ProfileViewSharedCommunitiesSheet(
