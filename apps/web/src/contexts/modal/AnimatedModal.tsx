@@ -31,6 +31,7 @@ type Props = {
   headerText: string;
   headerVariant: ModalPaddingVariant;
   hideClose?: boolean;
+  onBypassClose?: () => void;
 };
 
 function AnimatedModal({
@@ -44,6 +45,7 @@ function AnimatedModal({
   headerText,
   headerVariant,
   hideClose,
+  onBypassClose,
 }: Props) {
   useEffect(() => {
     if (!isActive) {
@@ -81,9 +83,17 @@ function AnimatedModal({
     return 'unset';
   }, [isFullPage, isMobile]);
 
+  const onClickHandler = () => {
+    if (onBypassClose) {
+      onBypassClose();
+    } else {
+      hideModal();
+    }
+  };
+
   return (
     <_ToggleFade isActive={isActive}>
-      <Overlay onClick={hideModal} />
+      <Overlay onClick={onClickHandler} />
       <StyledModal isFullPage={isFullPage}>
         <_ToggleTranslate isActive={isActive}>
           <StyledContainer isFullPage={isFullPage} maxWidth={maxWidth} width={width}>
@@ -92,7 +102,7 @@ function AnimatedModal({
               <StyledModalActions align="center">
                 {headerActions}
                 {hideClose ? null : (
-                  <DecoratedCloseIcon onClick={hideModal} variant={headerVariant} />
+                  <DecoratedCloseIcon onClick={onClickHandler} variant={headerVariant} />
                 )}
               </StyledModalActions>
             </StyledHeader>

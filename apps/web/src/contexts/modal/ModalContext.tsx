@@ -45,6 +45,7 @@ type ShowModalFnProps = {
   hideClose?: boolean;
   isPaddingDisabled?: boolean;
   onClose?: () => void;
+  onBypassClose?: () => void;
   headerActions?: JSX.Element | false;
 };
 
@@ -70,6 +71,11 @@ export const useModalActions = (): ModalActions => {
   return context;
 };
 
+type ModalExitCofirmationProps = {
+  bodyText: string;
+  ctaText: string;
+};
+
 type Props = { children: ReactNode };
 
 type Modal = {
@@ -83,6 +89,8 @@ type Modal = {
   isPaddingDisabled: boolean;
   hideClose: boolean;
   onClose: () => void;
+  onBypassClose?: () => void;
+  confirmModalExit?: ModalExitCofirmationProps;
 };
 
 function ModalProvider({ children }: Props) {
@@ -107,6 +115,7 @@ function ModalProvider({ children }: Props) {
       isFullPage = false,
       isPaddingDisabled = false,
       onClose = noop,
+      onBypassClose,
     }: ShowModalFnProps) => {
       setModals((prevModals) => [
         ...prevModals,
@@ -121,6 +130,7 @@ function ModalProvider({ children }: Props) {
           isFullPage,
           isPaddingDisabled,
           onClose,
+          onBypassClose,
         },
       ]);
     },
@@ -252,12 +262,14 @@ function ModalProvider({ children }: Props) {
             isFullPage,
             isPaddingDisabled,
             hideClose,
+            onBypassClose,
           }) => {
             return (
               <AnimatedModal
                 key={id}
                 isActive={isActive}
                 hideModal={hideModal}
+                onBypassClose={onBypassClose}
                 dismountModal={() => dismountModal(id)}
                 content={content}
                 headerText={headerText}

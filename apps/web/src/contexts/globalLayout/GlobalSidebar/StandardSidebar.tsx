@@ -8,6 +8,7 @@ import useAnnouncement from '~/components/Announcement/useAnnouncement';
 import breakpoints from '~/components/core/breakpoints';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { Notifications } from '~/components/Notifications/Notifications';
+import DiscardPostConfirmation from '~/components/Posts/DiscardPostConfirmation';
 import { PostComposerModalWithSelector } from '~/components/Posts/PostComposerModal';
 import Search from '~/components/Search/Search';
 import Settings from '~/components/Settings/Settings';
@@ -175,6 +176,18 @@ export function StandardSidebar({ queryRef }: Props) {
       content: <PostComposerModalWithSelector tokensRef={tokens} queryRef={query} />,
       headerVariant: 'thicc',
       isFullPage: isMobile,
+      onBypassClose: () => {
+        showModal({
+          content: (
+            <DiscardPostConfirmation
+              onClick={() => {
+                console.log('running running runinggggg');
+              }}
+            />
+          ),
+          isFullPage: false,
+        });
+      },
     });
     track('Sidebar Create Post Click');
   }, [hideDrawer, showModal, tokens, query, isMobile, track]);
