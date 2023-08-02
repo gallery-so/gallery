@@ -37,7 +37,7 @@ export function SearchScreen() {
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={{ paddingTop: top }}
-      className="flex flex-1 flex-col bg-white dark:bg-black-900"
+      className="flex flex-1 flex-col bg-white dark:bg-black-900 "
     >
       <View className="flex flex-col space-y-2 p-4">
         <SearchInput inputRef={searchInputRef} setFilter={setFilter} />
