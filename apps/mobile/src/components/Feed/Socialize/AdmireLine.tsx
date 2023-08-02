@@ -13,10 +13,17 @@ type AdmireLineProps = {
   userRefs: AdmireLineFragment$key;
   totalAdmires: number;
 
+  onAdmirePress: () => void;
   onMultiUserPress: () => void;
 };
 
-export function AdmireLine({ userRefs, totalAdmires, onMultiUserPress, style }: AdmireLineProps) {
+export function AdmireLine({
+  userRefs,
+  totalAdmires,
+  onAdmirePress,
+  onMultiUserPress,
+  style,
+}: AdmireLineProps) {
   const users = useFragment(
     graphql`
       fragment AdmireLineFragment on GalleryUser @relay(plural: true) {
@@ -75,5 +82,13 @@ export function AdmireLine({ userRefs, totalAdmires, onMultiUserPress, style }: 
     );
   }
 
-  return null;
+  return (
+    <View style={style} className="flex flex-row items-center">
+      <GalleryTouchableOpacity onPress={onAdmirePress} eventElementId={null} eventName={null}>
+        <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+          Be the first to admire this
+        </Typography>
+      </GalleryTouchableOpacity>
+    </View>
+  );
 }

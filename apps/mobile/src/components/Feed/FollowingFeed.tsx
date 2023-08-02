@@ -31,10 +31,8 @@ export function FollowingFeed({ queryRef, onChangeFeedMode }: Props) {
               @connection(key: "FollowingFeedFragment_feed") {
               edges {
                 node {
-                  ... on FeedEvent {
-                    __typename
-                    ...FeedListFragment
-                  }
+                  __typename
+                  ...FeedListFragment
                 }
               }
             }
@@ -59,6 +57,9 @@ export function FollowingFeed({ queryRef, onChangeFeedMode }: Props) {
 
     for (const edge of query.viewer?.feed?.edges ?? []) {
       if (edge?.node?.__typename === 'FeedEvent' && edge.node) {
+        events.push(edge.node);
+      }
+      if (edge?.node?.__typename === 'Post' && edge.node) {
         events.push(edge.node);
       }
     }

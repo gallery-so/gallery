@@ -69,7 +69,7 @@ export default function useCommentOnFeedEvent() {
         };
 
         const optimisticId = Math.random().toString();
-        const hasProfileImage = optimisticUserInfo.profileImageUrl !== null;
+        const hasProfileImage = !!optimisticUserInfo.profileImageUrl;
 
         const tokenProfileImagePayload = hasProfileImage
           ? {

@@ -10,6 +10,8 @@ import {
 import { View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
+import { useEventComment } from 'src/hooks/useEventComment';
+import { usePostComment } from 'src/hooks/usePostComment';
 
 import { CommentsBottomSheetList } from '~/components/Feed/CommentsBottomSheet/CommentsBottomSheetList';
 import { CommentBox } from '~/components/Feed/Socialize/CommentBox';
@@ -22,18 +24,22 @@ import { Typography } from '~/components/Typography';
 import { CommentsBottomSheetConnectedCommentsListFragment$key } from '~/generated/CommentsBottomSheetConnectedCommentsListFragment.graphql';
 import { CommentsBottomSheetConnectedCommentsListPaginationQuery } from '~/generated/CommentsBottomSheetConnectedCommentsListPaginationQuery.graphql';
 import { CommentsBottomSheetConnectedCommentsListQuery } from '~/generated/CommentsBottomSheetConnectedCommentsListQuery.graphql';
+import { CommentsBottomSheetConnectedPostCommentsListFragment$key } from '~/generated/CommentsBottomSheetConnectedPostCommentsListFragment.graphql';
+import { CommentsBottomSheetConnectedPostCommentsListQuery } from '~/generated/CommentsBottomSheetConnectedPostCommentsListQuery.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import useKeyboardStatus from '../../../utils/useKeyboardStatus';
+import { FeedItemTypes } from '../createVirtualizedFeedEventItems';
 
 const SNAP_POINTS = [350];
 
 type CommentsBottomSheetProps = {
-  feedEventId: string;
+  feedId: string;
   bottomSheetRef: ForwardedRef<GalleryBottomSheetModalType>;
+  type: FeedItemTypes;
 };
 
-export function CommentsBottomSheet({ bottomSheetRef, feedEventId }: CommentsBottomSheetProps) {
+export function CommentsBottomSheet({ bottomSheetRef, feedId, type }: CommentsBottomSheetProps) {
   const internalRef = useRef<GalleryBottomSheetModalType | null>(null);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -45,6 +51,36 @@ export function CommentsBottomSheet({ bottomSheetRef, feedEventId }: CommentsBot
       paddingBottom: paddingBottomValue.value,
     };
   });
+
+  const { submitComment, isSubmittingComment } = useEventComment();
+  const { submitComment: postComment, isSubmittingComment: isSubmittingPostComment } =
+    usePostComment();
+
+  const handleSubmit = useCallback(
+    (value: string) => {
+      if (type === 'Post') {
+        postComment({
+          feedId,
+          value,
+        });
+        return;
+      }
+
+      submitComment({
+        feedEventId: feedId,
+        value,
+      });
+    },
+    [feedId, type, submitComment, postComment]
+  );
+
+  const isSubmitting = useMemo(() => {
+    if (type === 'Post') {
+      return isSubmittingPostComment;
+    }
+
+    return isSubmittingComment;
+  }, [isSubmittingComment, isSubmittingPostComment, type]);
 
   useLayoutEffect(() => {
     if (isKeyboardActive) {
@@ -76,21 +112,30 @@ export function CommentsBottomSheet({ bottomSheetRef, feedEventId }: CommentsBot
 
         <View className="flex-grow">
           <Suspense fallback={null}>
-            {isOpen && <ConnectedCommentsList feedEventId={feedEventId} />}
+            {isOpen && <ConnectedCommentsList type={type} feedId={feedId} />}
           </Suspense>
         </View>
 
-        <CommentBox feedEventId={feedEventId} onClose={() => {}} />
+        <CommentBox onSubmit={handleSubmit} isSubmittingComment={isSubmitting} onClose={() => {}} />
       </Animated.View>
     </GalleryBottomSheetModal>
   );
 }
 
 type ConnectedCommentsListProps = {
-  feedEventId: string;
+  type: FeedItemTypes;
+  feedId: string;
 };
 
-function ConnectedCommentsList({ feedEventId }: ConnectedCommentsListProps) {
+function ConnectedCommentsList({ type, feedId }: ConnectedCommentsListProps) {
+  if (type === 'Post') {
+    return <ConnectedPostCommentsList feedId={feedId} />;
+  }
+
+  return <ConnectedEventCommentsList feedId={feedId} />;
+}
+
+function ConnectedEventCommentsList({ feedId }: { feedId: string }) {
   const queryRef = useLazyLoadQuery<CommentsBottomSheetConnectedCommentsListQuery>(
     graphql`
       query CommentsBottomSheetConnectedCommentsListQuery(
@@ -101,7 +146,7 @@ function ConnectedCommentsList({ feedEventId }: ConnectedCommentsListProps) {
         ...CommentsBottomSheetConnectedCommentsListFragment
       }
     `,
-    { feedEventId, last: 10 }
+    { feedEventId: feedId, last: 10 }
   );
 
   const {
@@ -137,6 +182,65 @@ function ConnectedCommentsList({ feedEventId }: ConnectedCommentsListProps) {
       query.feedEventById?.comments?.edges?.map((edge) => edge?.node)
     ).reverse();
   }, [query.feedEventById?.comments?.edges]);
+
+  const handleLoadMore = useCallback(() => {
+    if (hasPrevious) {
+      loadPrevious(10);
+    }
+  }, [hasPrevious, loadPrevious]);
+
+  return (
+    <View className="flex-1">
+      <CommentsBottomSheetList onLoadMore={handleLoadMore} commentRefs={comments} />
+    </View>
+  );
+}
+
+function ConnectedPostCommentsList({ feedId }: { feedId: string }) {
+  const queryRef = useLazyLoadQuery<CommentsBottomSheetConnectedPostCommentsListQuery>(
+    graphql`
+      query CommentsBottomSheetConnectedPostCommentsListQuery(
+        $feedEventId: DBID!
+        $last: Int!
+        $before: String
+      ) {
+        ...CommentsBottomSheetConnectedPostCommentsListFragment
+      }
+    `,
+    { feedEventId: feedId, last: 10 }
+  );
+
+  const {
+    data: query,
+    loadPrevious,
+    hasPrevious,
+  } = usePaginationFragment<
+    CommentsBottomSheetConnectedCommentsListPaginationQuery,
+    CommentsBottomSheetConnectedPostCommentsListFragment$key
+  >(
+    graphql`
+      fragment CommentsBottomSheetConnectedPostCommentsListFragment on Query
+      @refetchable(queryName: "CommentsBottomSheetConnectedPostCommentsListPaginationQuery") {
+        postById(id: $feedEventId) {
+          ... on Post {
+            comments(last: $last, before: $before)
+              @connection(key: "CommentsBottomSheet_comments") {
+              edges {
+                node {
+                  ...CommentsBottomSheetList
+                }
+              }
+            }
+          }
+        }
+      }
+    `,
+    queryRef
+  );
+
+  const comments = useMemo(() => {
+    return removeNullValues(query.postById?.comments?.edges?.map((edge) => edge?.node)).reverse();
+  }, [query.postById?.comments?.edges]);
 
   const handleLoadMore = useCallback(() => {
     if (hasPrevious) {

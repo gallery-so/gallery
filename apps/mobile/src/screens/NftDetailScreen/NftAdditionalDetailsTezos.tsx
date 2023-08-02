@@ -8,13 +8,7 @@ import { getFxHashExternalUrl, getObjktExternalUrl } from '~/shared/utils/getTez
 
 import { InteractiveLink } from '../../components/InteractiveLink';
 import { LinkableAddress } from '../../components/LinkableAddress';
-import {
-  DetailExternalLink,
-  DetailLabelText,
-  DetailMoreInfoLink,
-  DetailSection,
-  DetailValue,
-} from './DetailSection';
+import { DetailExternalLink, DetailLabelText, DetailSection, DetailValue } from './DetailSection';
 
 type NftAdditionaDetailsNonPOAPProps = {
   tokenRef: NftAdditionalDetailsTezosFragment$key;
@@ -69,8 +63,10 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
 
             {/* TODO(Terence) When the contract screen is ready, setup the onPress here */}
             <LinkableAddress
+              textStyle={{ color: 'black' }}
               chainAddressRef={token.contract.creatorAddress}
               type="NFT Detail Creator Address"
+              font={{ family: 'ABCDiatype', weight: 'Bold' }}
             />
           </DetailSection>
         )}
@@ -79,10 +75,12 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
           <View className="flex flex-row space-x-16">
             {contract?.contractAddress?.address && (
               <DetailSection>
-                <DetailLabelText>CONTRACT ADDRESS</DetailLabelText>
+                <DetailLabelText>CONTRACT</DetailLabelText>
                 <LinkableAddress
+                  textStyle={{ color: 'black' }}
                   chainAddressRef={contract.contractAddress}
                   type="NFT Detail Contract Address"
+                  font={{ family: 'ABCDiatype', weight: 'Bold' }}
                 />
               </DetailSection>
             )}
@@ -104,24 +102,48 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
                 <DetailValue>{token.chain}</DetailValue>
               </DetailSection>
             )}
-
-            <DetailSection>
-              {fxhashUrl && (
-                <DetailExternalLink
-                  link={fxhashUrl}
-                  label="fx(hash)"
-                  trackingLabel="NFT Detail FX Hash URL"
-                />
-              )}
-              {objktUrl && (
-                <DetailExternalLink
-                  link={objktUrl}
-                  label="objkt"
-                  trackingLabel="NFT Detail OBJKT URL"
-                />
-              )}
-            </DetailSection>
-            {externalUrl && <DetailMoreInfoLink link={externalUrl} />}
+            {fxhashUrl && (
+              <DetailSection>
+                <DetailLabelText>VIEW ON</DetailLabelText>
+                <View className="flex flex-row">
+                  <DetailExternalLink
+                    link={fxhashUrl}
+                    label="fxhash"
+                    trackingLabel="NFT Detail View on fxhashUrl"
+                    showExternalLinkIcon={true}
+                    font={{ family: 'ABCDiatype', weight: 'Bold' }}
+                  />
+                </View>
+              </DetailSection>
+            )}
+            {objktUrl && (
+              <DetailSection>
+                <DetailLabelText>VIEW ON</DetailLabelText>
+                <View className="flex flex-row">
+                  <DetailExternalLink
+                    link={objktUrl}
+                    label="objkt"
+                    trackingLabel="NFT Detail View on objktUrl"
+                    showExternalLinkIcon={true}
+                    font={{ family: 'ABCDiatype', weight: 'Bold' }}
+                  />
+                </View>
+              </DetailSection>
+            )}
+            {externalUrl && (
+              <DetailSection>
+                <DetailLabelText>VIEW ON</DetailLabelText>
+                <View className="flex flex-col pt-4">
+                  <DetailExternalLink
+                    link={externalUrl}
+                    label="Visit Site"
+                    trackingLabel="NFT Detail View on External Link"
+                    showExternalLinkIcon={true}
+                    font={{ family: 'ABCDiatype', weight: 'Bold' }}
+                  />
+                </View>
+              </DetailSection>
+            )}
           </View>
         </View>
       </>

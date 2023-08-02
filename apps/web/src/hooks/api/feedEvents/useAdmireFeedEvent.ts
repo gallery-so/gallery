@@ -64,7 +64,7 @@ export default function useAdmireFeedEvent() {
         }
       };
       const optimisticId = Math.random().toString();
-      const hasProfileImage = optimisticUserInfo.profileImageUrl !== null;
+      const hasProfileImage = !!optimisticUserInfo.profileImageUrl;
 
       const tokenProfileImagePayload = hasProfileImage
         ? {

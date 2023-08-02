@@ -3,22 +3,23 @@ import { trigger } from 'react-native-haptic-feedback';
 import { ConnectionHandler, graphql, useFragment } from 'react-relay';
 import { SelectorStoreUpdater } from 'relay-runtime';
 
-import { useToggleAdmireAddMutation } from '~/generated/useToggleAdmireAddMutation.graphql';
-import { useToggleAdmireFragment$key } from '~/generated/useToggleAdmireFragment.graphql';
-import { useToggleAdmireQueryFragment$key } from '~/generated/useToggleAdmireQueryFragment.graphql';
 import { useToggleAdmireRemoveMutation } from '~/generated/useToggleAdmireRemoveMutation.graphql';
+import { useTogglePostAdmireAddMutation } from '~/generated/useTogglePostAdmireAddMutation.graphql';
+import { useTogglePostAdmireFragment$key } from '~/generated/useTogglePostAdmireFragment.graphql';
+import { useTogglePostAdmireQueryFragment$key } from '~/generated/useTogglePostAdmireQueryFragment.graphql';
+import { useTogglePostAdmireRemoveMutation } from '~/generated/useTogglePostAdmireRemoveMutation.graphql';
 import { AdditionalContext, useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 
 type Args = {
-  queryRef: useToggleAdmireQueryFragment$key;
-  eventRef: useToggleAdmireFragment$key;
+  queryRef: useTogglePostAdmireQueryFragment$key;
+  postRef: useTogglePostAdmireFragment$key;
 };
 
-export function useToggleAdmire({ eventRef, queryRef }: Args) {
+export function useTogglePostAdmire({ postRef, queryRef }: Args) {
   const query = useFragment(
     graphql`
-      fragment useToggleAdmireQueryFragment on Query {
+      fragment useTogglePostAdmireQueryFragment on Query {
         viewer {
           __typename
 
@@ -37,7 +38,7 @@ export function useToggleAdmire({ eventRef, queryRef }: Args) {
 
   const event = useFragment(
     graphql`
-      fragment useToggleAdmireFragment on FeedEvent {
+      fragment useTogglePostAdmireFragment on Post {
         id
         dbid
 
@@ -47,19 +48,20 @@ export function useToggleAdmire({ eventRef, queryRef }: Args) {
         }
       }
     `,
-    eventRef
+    postRef
   );
 
   const reportError = useReportError();
 
-  const [admire] = usePromisifiedMutation<useToggleAdmireAddMutation>(graphql`
-    mutation useToggleAdmireAddMutation($eventId: DBID!, $connections: [ID!]!) @raw_response_type {
-      admireFeedEvent(feedEventId: $eventId) {
-        ... on AdmireFeedEventPayload {
+  const [admire] = usePromisifiedMutation<useTogglePostAdmireAddMutation>(graphql`
+    mutation useTogglePostAdmireAddMutation($postId: DBID!, $connections: [ID!]!)
+    @raw_response_type {
+      admirePost(postId: $postId) {
+        ... on AdmirePostPayload {
           __typename
-          feedEvent {
+          post {
             viewerAdmire
-              @appendNode(edgeTypeName: "FeedEventAdmireEdge", connections: $connections) {
+              @appendNode(edgeTypeName: "FeedPostAdmireEdge", connections: $connections) {
               dbid
               __typename
               creationTime
@@ -70,18 +72,15 @@ export function useToggleAdmire({ eventRef, queryRef }: Args) {
               }
             }
 
-            ...useToggleAdmireFragment
+            ...useTogglePostAdmireFragment
           }
-        }
-        ... on ErrAdmireAlreadyExists {
-          __typename
         }
       }
     }
   `);
 
-  const [removeAdmire] = usePromisifiedMutation<useToggleAdmireRemoveMutation>(graphql`
-    mutation useToggleAdmireRemoveMutation($admireId: DBID!) @raw_response_type {
+  const [removeAdmire] = usePromisifiedMutation<useTogglePostAdmireRemoveMutation>(graphql`
+    mutation useTogglePostAdmireRemoveMutation($admireId: DBID!) @raw_response_type {
       removeAdmire(admireId: $admireId) {
         ... on RemoveAdmirePayload {
           __typename
@@ -97,7 +96,7 @@ export function useToggleAdmire({ eventRef, queryRef }: Args) {
 
   const interactionsConnection = ConnectionHandler.getConnectionID(
     event.id,
-    'Interactions_admires'
+    'Interactions_post_admires'
   );
 
   const handleRemoveAdmire = useCallback(async () => {
@@ -177,11 +176,11 @@ export function useToggleAdmire({ eventRef, queryRef }: Args) {
       eventId: event.dbid,
     };
 
-    const updater: SelectorStoreUpdater<useToggleAdmireAddMutation['response']> = (
+    const updater: SelectorStoreUpdater<useTogglePostAdmireAddMutation['response']> = (
       store,
       response
     ) => {
-      if (response?.admireFeedEvent?.__typename === 'AdmireFeedEventPayload') {
+      if (response?.admirePost?.__typename === 'AdmirePostPayload') {
         const pageInfo = store.get(interactionsConnection)?.getLinkedRecord('pageInfo');
 
         pageInfo?.setValue(((pageInfo?.getValue('total') as number) ?? 0) + 1, 'total');
@@ -194,9 +193,9 @@ export function useToggleAdmire({ eventRef, queryRef }: Args) {
         updater,
         optimisticUpdater: updater,
         optimisticResponse: {
-          admireFeedEvent: {
-            __typename: 'AdmireFeedEventPayload',
-            feedEvent: {
+          admirePost: {
+            __typename: 'AdmirePostPayload',
+            post: {
               id: event.id,
               dbid: event.dbid,
               viewerAdmire: {
@@ -214,28 +213,21 @@ export function useToggleAdmire({ eventRef, queryRef }: Args) {
           },
         },
         variables: {
-          eventId: event.dbid,
+          postId: event.dbid,
           connections: [interactionsConnection],
         },
       });
 
-      if (
-        response.admireFeedEvent?.__typename !== 'AdmireFeedEventPayload' &&
-        // We can silently fail if the post was already admired
-        response.admireFeedEvent?.__typename !== 'ErrAdmireAlreadyExists'
-      ) {
-        reportError(
-          `Could not admire feed event, typename was ${response.admireFeedEvent?.__typename}`,
-          {
-            tags: errorMetadata,
-          }
-        );
+      if (response.admirePost?.__typename !== 'AdmirePostPayload') {
+        reportError(`Could not admire post, typename was ${response.admirePost?.__typename}`, {
+          tags: errorMetadata,
+        });
       }
     } catch (error) {
       if (error instanceof Error) {
         reportError(error);
       } else {
-        reportError(`Could not post comment on feed event for an unknown reason`, {
+        reportError(`Could not admire on post for an unknown reason`, {
           tags: errorMetadata,
         });
       }
