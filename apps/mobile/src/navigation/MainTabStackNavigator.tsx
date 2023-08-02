@@ -11,6 +11,7 @@ import { UniversalNftDetailScreen } from '~/screens/NftDetailScreen/UniversalNft
 import { NftSelectorContractScreen } from '~/screens/NftSelectorScreen/NftSelectorContractScreen';
 import { NftSelectorPickerScreen } from '~/screens/NftSelectorScreen/NftSelectorPickerScreen';
 import { NotificationsScreen } from '~/screens/NotificationsScreen';
+import { PostScreen } from '~/screens/PostScreen/PostScreen';
 import { ProfileScreen } from '~/screens/ProfileScreen/ProfileScreen';
 import { SearchScreen } from '~/screens/SearchScreen';
 import { SettingsProfileScreen } from '~/screens/SettingsProfileScreen';
@@ -36,6 +37,7 @@ export function MainTabStackNavigator({ initialRouteName, initialProfileParams }
       <Stack.Screen name="ProfilePicturePicker" component={NftSelectorPickerScreen} />
       <Stack.Screen name="NftSelectorContractScreen" component={NftSelectorContractScreen} />
       <Stack.Screen name="SettingsProfile" component={SettingsProfileScreen} />
+      <Stack.Screen name="Post" component={PostScreen} />
 
       {/* The 5 main tabs excluding "Account" since that just uses Profile */}
       <Stack.Screen name="Home" component={HomeScreen} />

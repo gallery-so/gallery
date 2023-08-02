@@ -7,10 +7,10 @@ import { NotificationQueryFragment$key } from '~/generated/NotificationQueryFrag
 import { SomeoneAdmiredYourFeedEvent } from './Notifications/SomeoneAdmiredYourFeedEvent';
 import { SomeoneAdmiredYourPost } from './Notifications/SomeoneAdmiredYourPost';
 import { SomeoneCommentedOnYourFeedEvent } from './Notifications/SomeoneCommentedOnYourFeedEvent';
+import { SomeoneCommentedOnYourPost } from './Notifications/SomeoneCommentedOnYourPost';
 import { SomeoneFollowedYou } from './Notifications/SomeoneFollowedYou';
 import { SomeoneFollowedYouBack } from './Notifications/SomeoneFollowedYouBack';
 import { SomeoneViewedYourGallery } from './Notifications/SomeoneViewedYourGallery';
-import { SomeoneCommentedOnYourPost } from './Notifications/SomeoneCommentedOnYourPost';
 
 type NotificationInnerProps = {
   queryRef: NotificationQueryFragment$key;

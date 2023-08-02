@@ -61,7 +61,7 @@ export function RootStackNavigator({ navigationContainerRef }: Props) {
     >
       <Stack.Screen name="Login" component={LoginStackNavigator} />
 
-      <Stack.Screen name="Post" component={NftSelectorPickerScreen} />
+      <Stack.Screen name="PostNftSelector" component={NftSelectorPickerScreen} />
       <Stack.Screen name="NftSelectorContractScreen" component={NftSelectorContractScreen} />
       <Stack.Screen name="PostComposer" component={PostComposerScreen} />
 

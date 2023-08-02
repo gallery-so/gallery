@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { ResizeMode } from 'expo-av';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { Text, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { useFragment } from 'react-relay';
@@ -87,13 +87,11 @@ export function SomeoneCommentedOnYourPost({
   const commenter = notification.comment?.commenter;
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
-  // const handlePress = useCallback(() => {
-  //   if (notification.feedEvent?.dbid) {
-  //     navigation.navigate('FeedEvent', { eventId: notification.feedEvent?.dbid });
-  //   }
-  // }, [navigation, notification.feedEvent?.dbid]);
-
-  const handlePress = () => {};
+  const handlePress = useCallback(() => {
+    if (post?.dbid) {
+      navigation.navigate('Post', { postId: post.dbid });
+    }
+  }, [navigation, post?.dbid]);
 
   return (
     <NotificationSkeleton
