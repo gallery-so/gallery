@@ -29,13 +29,13 @@ export default function PostNftPreview({ tokenRef, tokenSize }: Props) {
     tokenRef
   );
 
-  const showTokenDetailModal = useTokenDetailModal();
+  // const showTokenDetailModal = useTokenDetailModal();
 
-  const handleClick = useCallback(() => {
-    const ownerUsername = token.owner?.username ?? '';
+  // const handleClick = useCallback(() => {
+  //   const ownerUsername = token.owner?.username ?? '';
 
-    showTokenDetailModal(ownerUsername, token.dbid);
-  }, [showTokenDetailModal, token.dbid, token.owner?.username]);
+  //   // showTokenDetailModal(ownerUsername, token.dbid);
+  // }, [showTokenDetailModal, token.dbid, token.owner?.username]);
 
   return (
     <StyledPostNftPreview width={tokenSize} height={tokenSize}>
@@ -43,7 +43,7 @@ export default function PostNftPreview({ tokenRef, tokenSize }: Props) {
         <NftPreview
           tokenRef={token}
           previewSize={tokenSize}
-          onClick={handleClick}
+          // onClick={handleClick}
           shouldLiveRender
         />
       </ShimmerProvider>

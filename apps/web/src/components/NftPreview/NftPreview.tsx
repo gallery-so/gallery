@@ -27,7 +27,6 @@ type Props = {
   tokenRef: NftPreviewFragment$key;
   previewSize: number;
   ownerUsername?: string;
-  onClick?: () => void;
   hideLabelOnMobile?: boolean;
   disableLiverender?: boolean;
   columns?: number;
@@ -43,7 +42,6 @@ const contractsWhoseIFrameNFTsShouldNotTakeUpFullHeight = new Set([
 function NftPreview({
   tokenRef,
   previewSize,
-  onClick,
   disableLiverender = false,
   columns = 3,
   isInFeedEvent = false,
@@ -103,16 +101,6 @@ function NftPreview({
   const backgroundColorOverride = useMemo(
     () => getBackgroundColorOverrideForContract(contractAddress),
     [contractAddress]
-  );
-
-  const handleClick = useCallback(
-    (event: React.MouseEvent<HTMLElement>) => {
-      if (onClick && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) {
-        event.preventDefault();
-        onClick();
-      }
-    },
-    [onClick]
   );
 
   const isIFrameLiveDisplay = Boolean(shouldLiveRender && token.media?.__typename === 'HtmlMedia');
@@ -213,30 +201,31 @@ function NftPreview({
       >
         {/* NextJS <Link> tags don't come with an anchor tag by default, so we're adding one here.
           This will inherit the `as` URL from the parent component. */}
-        <StyledA data-tokenid={token.dbid} onClick={handleClick}>
-          <StyledNftPreview
-            backgroundColorOverride={backgroundColorOverride}
-            fullWidth={fullWidth}
-            fullHeight={fullHeight}
+        {/* <StyledA > */}
+        <StyledNftPreview
+          backgroundColorOverride={backgroundColorOverride}
+          fullWidth={fullWidth}
+          fullHeight={fullHeight}
+          data-tokenid={token.dbid}
+        >
+          <ReportingErrorBoundary
+            fallback={
+              <RawNftPreviewAsset
+                src={token.media?.fallbackMedia?.mediaURL}
+                onLoad={handleNftLoaded}
+              />
+            }
           >
-            <ReportingErrorBoundary
-              fallback={
-                <RawNftPreviewAsset
-                  src={token.media?.fallbackMedia?.mediaURL}
-                  onLoad={handleNftLoaded}
-                />
-              }
-            >
-              {PreviewAsset}
-            </ReportingErrorBoundary>
+            {PreviewAsset}
+          </ReportingErrorBoundary>
 
-            {isMobileOrLargeMobile ? null : (
-              <StyledNftFooter>
-                <StyledNftLabel tokenRef={token} />
-              </StyledNftFooter>
-            )}
-          </StyledNftPreview>
-        </StyledA>
+          {isMobileOrLargeMobile ? null : (
+            <StyledNftFooter>
+              <StyledNftLabel tokenRef={token} />
+            </StyledNftFooter>
+          )}
+        </StyledNftPreview>
+        {/* </StyledA> */}
       </LinkToTokenDetailView>
     </NftFailureBoundary>
   );

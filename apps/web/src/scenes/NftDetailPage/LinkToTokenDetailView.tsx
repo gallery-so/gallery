@@ -14,6 +14,10 @@ type Props = {
  * This component opens the NFT Detail View as a separate URL but keeps the user where they are,
  * allowing them to share a direct link to the current modal view, while also being able to close
  * the modal and continue browsing.
+ *
+ * The NFT Detail variant that will be displayed will be either:
+ * 1. Standalone Token Page (e.g. from a Post) OR
+ * 2. Collection Token Page, as part of a user's personal collection
  */
 export default function LinkToTokenDetailView({
   children,
@@ -23,36 +27,30 @@ export default function LinkToTokenDetailView({
 }: Props) {
   const { pathname, query, asPath } = useRouter();
 
+  const isCollectionToken = typeof collectionId === 'string' && Boolean(collectionId);
+
+  // query params purely for internal tracking. this will NOT be displayed in URL bar.
   const href = useMemo(() => {
-    // query params purely for internal tracking. this will NOT be displayed in URL bar.
-
-    if (collectionId) {
-      // the path will either be `/[username]` or `/[username]/[collectionId]`, with the
-      // appropriate query params attached. this allows the app to stay on the current page,
-      // while also feeding the modal the necessary data to display an NFT in detail.
-      return `${pathname}?${new URLSearchParams({
-        // Ensure we pass the previous page's query params to satisfy Next.js
-        ...query,
-        username,
-        collectionId,
-        tokenId,
-        originPage: asPath,
-        modal: 'true',
-      })}`;
-    }
-
-    return `${pathname}?${new URLSearchParams({
+    const rawSearchParams = {
       // Ensure we pass the previous page's query params to satisfy Next.js
       ...query,
       username,
       tokenId,
       originPage: asPath,
       modal: 'true',
-    })}`;
-  }, [asPath, collectionId, pathname, query, tokenId, username]);
+      modalVariant: 'nft_detail',
+    };
 
+    if (isCollectionToken) {
+      rawSearchParams.collectionId = collectionId;
+    }
+
+    return `${pathname}?${new URLSearchParams(rawSearchParams)}`;
+  }, [asPath, collectionId, isCollectionToken, pathname, query, tokenId, username]);
+
+  // path that will be shown in the browser URL bar
   const asRoute = useMemo(() => {
-    if (collectionId) {
+    if (isCollectionToken) {
       return route({
         pathname: '/[username]/[collectionId]/[tokenId]',
         query: { username, collectionId, tokenId },
@@ -63,7 +61,11 @@ export default function LinkToTokenDetailView({
       pathname: '/[username]/token/[tokenId]',
       query: { username, tokenId },
     });
-  }, [collectionId, tokenId, username]);
+  }, [collectionId, isCollectionToken, tokenId, username]);
+
+  if (!isCollectionToken) {
+    console.log({ href, asRoute });
+  }
 
   return (
     <Link
@@ -76,7 +78,9 @@ export default function LinkToTokenDetailView({
       passHref
       legacyBehavior
     >
-      {children}
+      {/* NextJS <Link> tags don't come with an anchor tag by default, so we're adding one here.
+          This will inherit the `as` URL from the parent component. */}
+      <a data-tokenid={tokenId}>{children}</a>
     </Link>
   );
 }

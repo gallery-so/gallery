@@ -27,6 +27,9 @@ export default function useStabilizedRouteTransitionKey() {
     if (pathname === '/[username]/[collectionId]' && query.modal === 'true') {
       return `/${query.username}/${query.collectionId}`;
     }
+    if (pathname === '/[username]/activity' && query.modal === 'true') {
+      return `/${query.username}/activity`;
+    }
 
     // keep location stable for NFT detail pages
     if (pathname === '/[username]/[collectionId]/[tokenId]') {
