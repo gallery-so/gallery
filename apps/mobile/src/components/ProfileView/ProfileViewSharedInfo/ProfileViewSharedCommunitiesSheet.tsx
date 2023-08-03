@@ -105,7 +105,7 @@ function ProfileViewSharedCommunitiesSheet(
   const renderItem = useCallback<ListRenderItem<ListItemType>>(
     ({ item }) => {
       return (
-        <View className="px-4 mb-4 flex flex-row items-center" key={item.name}>
+        <View className="px-4 py-4 flex flex-row items-center" key={item.name}>
           <InteractiveLink
             onPress={() => item.contractAddress && handleCommunityPress(item.contractAddress)}
             type="Profile View Shared Communities"
@@ -118,7 +118,7 @@ function ProfileViewSharedCommunitiesSheet(
                 eventName="profilePictureClicked"
               />
               <Typography
-                className="text-sm mb-4 px-4"
+                className="text-sm px-4"
                 font={{
                   family: 'ABCDiatype',
                   weight: 'Bold',
