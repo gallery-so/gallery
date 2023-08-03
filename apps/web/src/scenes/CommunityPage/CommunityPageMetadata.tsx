@@ -7,11 +7,11 @@ import styled from 'styled-components';
 import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleXS } from '~/components/core/Text/Text';
-import { chains } from '~/components/GalleryEditor/PiecesSidebar/chains';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { RawProfilePicture } from '~/components/ProfilePicture/RawProfilePicture';
 import { CommunityPageMetadataFragment$key } from '~/generated/CommunityPageMetadataFragment.graphql';
 import colors from '~/shared/theme/colors';
+import { chains } from '~/shared/utils/chains';
 import { getExternalAddressLink, truncateAddress } from '~/shared/utils/wallet';
 
 type Props = {
