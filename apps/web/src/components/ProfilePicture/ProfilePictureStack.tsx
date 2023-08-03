@@ -71,7 +71,7 @@ export function ProfilePictureStack({ usersRef, total, onClick }: Props) {
       align="center"
       inline
       onClick={handleClick}
-      isClickable={!!onClick}
+      isClickable={Boolean(onClick)}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >

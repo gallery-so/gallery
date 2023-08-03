@@ -2,11 +2,11 @@
 import { graphql } from 'react-relay';
 import { readInlineData } from 'relay-runtime';
 
-import { chainsMap } from '~/components/GalleryEditor/PiecesSidebar/chains';
 import {
   Chain,
   doesUserOwnWalletFromChainFamilyFragment$key,
 } from '~/generated/doesUserOwnWalletFromChainFamilyFragment.graphql';
+import { chainsMap } from '~/shared/utils/chains';
 
 export function doesUserOwnWalletFromChainFamily(
   _chain: Chain,

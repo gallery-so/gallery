@@ -9,12 +9,12 @@ import { ChevronLeftIcon } from '~/icons/ChevronLeftIcon';
 import { RefreshIcon } from '~/icons/RefreshIcon';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import useDebounce from '~/shared/hooks/useDebounce';
+import { Chain } from '~/shared/utils/chains';
 import { doesUserOwnWalletFromChain } from '~/utils/doesUserOwnWalletFromChain';
 
 import IconContainer from '../core/IconContainer';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM } from '../core/Text/Text';
-import { Chain } from '../GalleryEditor/PiecesSidebar/chains';
 import isRefreshDisabledForUser from '../GalleryEditor/PiecesSidebar/isRefreshDisabledForUser';
 import { SidebarView } from '../GalleryEditor/PiecesSidebar/SidebarViewSelector';
 import { NewTooltip } from '../Tooltip/NewTooltip';
@@ -264,7 +264,7 @@ export function NftSelector({
           selectedContractAddress={selectedContract?.address ?? null}
           onSelectContract={setSelectedContract}
           selectedNetworkView={selectedNetworkView}
-          hasSearchKeyword={!!debouncedSearchKeyword}
+          hasSearchKeyword={Boolean(debouncedSearchKeyword)}
           handleRefresh={handleRefresh}
           onSelectToken={onSelectToken}
         />

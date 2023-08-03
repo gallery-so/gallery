@@ -4,7 +4,6 @@ import styled from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeL } from '~/components/core/Text/Text';
-import { Chain } from '~/components/GalleryEditor/PiecesSidebar/chains';
 import {
   createVirtualizedRowsFromGroups,
   createVirtualizedRowsFromTokens,
@@ -13,6 +12,7 @@ import { groupCollectionsByAddress } from '~/components/GalleryEditor/PiecesSide
 import { SidebarList } from '~/components/GalleryEditor/PiecesSidebar/SidebarList/SidebarList';
 import { SidebarTokensFragment$key } from '~/generated/SidebarTokensFragment.graphql';
 import useSetSpamPreference from '~/hooks/api/tokens/useSetSpamPreference';
+import { Chain } from '~/shared/utils/chains';
 
 import { SidebarView } from './SidebarViewSelector';
 import { SidebarWallet } from './SidebarWalletSelector';

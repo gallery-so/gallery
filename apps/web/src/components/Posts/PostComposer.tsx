@@ -59,7 +59,7 @@ export default function PostComposer({ onBackClick, tokenRef }: Props) {
   const handlePostClick = useCallback(async () => {
     setIsSubmitting(true);
     track('Clicked Post in Post Composer', {
-      added_description: !!description,
+      added_description: Boolean(description),
     });
     try {
       await createPost({

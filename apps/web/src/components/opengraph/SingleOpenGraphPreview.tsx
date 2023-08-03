@@ -22,7 +22,7 @@ export const SingleOpenGraphPreview = ({
   return (
     <>
       <StyledContainer>
-        <StyledGalleryContainer hasCollectorNote={!!collectorsNote}>
+        <StyledGalleryContainer hasCollectorNote={Boolean(collectorsNote)}>
           {imageUrls.map((url) => (
             <StyledImage key={url} src={url} />
           ))}

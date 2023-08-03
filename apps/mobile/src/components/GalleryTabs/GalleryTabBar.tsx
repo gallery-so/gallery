@@ -1,17 +1,27 @@
 import { useCallback } from 'react';
 import { Text, View } from 'react-native';
 
-import { Typography } from '../../components/Typography';
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
+import { Typography } from '../Typography';
 
 type TabItemProps = {
   activeRoute: string;
   route: string;
   counter?: number;
   onRouteChange: (route: string) => void;
+
+  eventElementId?: string;
+  eventName?: string;
 };
 
-function TabItem({ activeRoute, counter = 0, route, onRouteChange }: TabItemProps) {
+function TabItem({
+  activeRoute,
+  counter = 0,
+  route,
+  onRouteChange,
+  eventElementId,
+  eventName,
+}: TabItemProps) {
   const isFocused = activeRoute === route;
 
   const onPress = useCallback(() => {
@@ -20,12 +30,12 @@ function TabItem({ activeRoute, counter = 0, route, onRouteChange }: TabItemProp
 
   return (
     <GalleryTouchableOpacity
-      className={`px-2`}
+      className={`px-2 flex flex-row items-center justify-center space-x-1`}
       accessibilityRole="button"
       accessibilityState={isFocused ? { selected: true } : {}}
       onPress={onPress}
-      eventElementId="Profile Tab"
-      eventName="Profile Tab Clicked"
+      eventElementId={eventElementId ?? null}
+      eventName={eventName ?? null}
       properties={{ variant: route }}
     >
       <Typography
@@ -39,7 +49,7 @@ function TabItem({ activeRoute, counter = 0, route, onRouteChange }: TabItemProp
   );
 }
 
-type ProfileTabRoutes = {
+type TabRoutes = {
   name: string;
   counter?: number;
 };
@@ -47,10 +57,18 @@ type ProfileTabRoutes = {
 type Props = {
   activeRoute: string;
   onRouteChange: (route: string) => void;
-  routes: ProfileTabRoutes[];
+  routes: TabRoutes[];
+  eventElementId?: string;
+  eventName?: string;
 };
 
-export function ProfileTabBar({ routes, activeRoute, onRouteChange }: Props) {
+export function GalleryTabBar({
+  eventElementId,
+  eventName,
+  routes,
+  activeRoute,
+  onRouteChange,
+}: Props) {
   return (
     <View className="border-porcelain dark:border-black-500 mt-4 flex flex-row items-center justify-center border-t border-b px-2 py-3">
       {routes.map((route) => {
@@ -61,6 +79,8 @@ export function ProfileTabBar({ routes, activeRoute, onRouteChange }: Props) {
             onRouteChange={onRouteChange}
             activeRoute={activeRoute}
             counter={route.counter}
+            eventElementId={eventElementId}
+            eventName={eventName}
           />
         );
       })}

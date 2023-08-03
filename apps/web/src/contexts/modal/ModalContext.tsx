@@ -45,6 +45,7 @@ type ShowModalFnProps = {
   hideClose?: boolean;
   isPaddingDisabled?: boolean;
   onClose?: () => void;
+  onCloseOverride?: () => void;
   headerActions?: JSX.Element | false;
 };
 
@@ -83,6 +84,7 @@ type Modal = {
   isPaddingDisabled: boolean;
   hideClose: boolean;
   onClose: () => void;
+  onCloseOverride?: () => void;
 };
 
 function ModalProvider({ children }: Props) {
@@ -96,6 +98,7 @@ function ModalProvider({ children }: Props) {
 
   const state = useMemo(() => ({ isModalOpenRef }), [isModalOpenRef]);
 
+  // if provided onCloseOverride prop, this callback will trigger as opposed to closing the modal
   const showModal = useCallback(
     ({
       id = uuid(),
@@ -107,6 +110,7 @@ function ModalProvider({ children }: Props) {
       isFullPage = false,
       isPaddingDisabled = false,
       onClose = noop,
+      onCloseOverride,
     }: ShowModalFnProps) => {
       setModals((prevModals) => [
         ...prevModals,
@@ -121,6 +125,7 @@ function ModalProvider({ children }: Props) {
           isFullPage,
           isPaddingDisabled,
           onClose,
+          onCloseOverride,
         },
       ]);
     },
@@ -252,12 +257,14 @@ function ModalProvider({ children }: Props) {
             isFullPage,
             isPaddingDisabled,
             hideClose,
+            onCloseOverride,
           }) => {
             return (
               <AnimatedModal
                 key={id}
                 isActive={isActive}
                 hideModal={hideModal}
+                onCloseOverride={onCloseOverride}
                 dismountModal={() => dismountModal(id)}
                 content={content}
                 headerText={headerText}

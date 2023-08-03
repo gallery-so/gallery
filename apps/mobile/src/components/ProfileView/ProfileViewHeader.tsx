@@ -3,11 +3,11 @@ import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { Markdown } from '~/components/Markdown';
-import { ProfileTabBar } from '~/components/ProfileView/ProfileTabBar';
 import { ProfileViewHeaderFragment$key } from '~/generated/ProfileViewHeaderFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 
+import { GalleryTabBar } from '../GalleryTabs/GalleryTabBar';
 import ProfileViewSharedInfo from './ProfileViewSharedInfo/ProfileViewSharedInfo';
 import ProfileViewFarcasterPill from './SocialPills/ProfileViewFarcasterPill';
 import ProfileViewTwitterPill from './SocialPills/ProfileViewTwitterPill';
@@ -88,18 +88,23 @@ export function ProfileViewHeader({ queryRef, selectedRoute, onRouteChange }: Pr
   return (
     <View>
       {user.bio && (
-        <View className="mb-4 px-4">
+        <View className="px-4">
           <Markdown>{user.bio}</Markdown>
         </View>
       )}
       {!isLoggedInUser && <ProfileViewSharedInfo userRef={user} />}
-
-      <View className="flex flex-row mx-4 space-x-12 ">
+      <View className={`flex flex-row mx-4 space-x-12 mt-4`}>
         <ProfileViewTwitterPill userRef={user} />
         <ProfileViewFarcasterPill userRef={user} />
       </View>
 
-      <ProfileTabBar activeRoute={selectedRoute} onRouteChange={onRouteChange} routes={routes} />
+      <GalleryTabBar
+        activeRoute={selectedRoute}
+        onRouteChange={onRouteChange}
+        routes={routes}
+        eventElementId="Profile Tab"
+        eventName="Profile Tab Clicked"
+      />
     </View>
   );
 }

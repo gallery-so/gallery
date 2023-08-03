@@ -4,8 +4,8 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { NftAdditionalDetailsEthFragment$key } from '~/generated/NftAdditionalDetailsEthFragment.graphql';
-import { extractMirrorXyzUrl } from '~/shared/utils/extractMirrorXyzUrl';
-import { getOpenseaExternalUrl, hexHandler } from '~/shared/utils/getOpenseaExternalUrl';
+import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
+import { hexHandler } from '~/shared/utils/getOpenseaExternalUrl';
 
 import { LinkableAddress } from '../../components/LinkableAddress';
 import { DetailExternalLink, DetailLabelText, DetailSection, DetailValue } from './DetailSection';
@@ -14,62 +14,33 @@ type NftAdditionalDetailsEthProps = {
   tokenRef: NftAdditionalDetailsEthFragment$key;
 };
 
-const PROHIBITION_CONTRACT_ADDRESSES = ['0x47a91457a3a1f700097199fd63c039c4784384ab'];
-
 export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionalDetailsEthProps) {
   const token = useFragment(
     graphql`
       fragment NftAdditionalDetailsEthFragment on Token {
-        externalUrl
         tokenId
-
         chain
-        tokenMetadata
-
         contract {
           contractAddress {
             address
             ...LinkableAddressFragment
           }
         }
+
+        ...extractRelevantMetadataFromTokenFragment
       }
     `,
     tokenRef
   );
 
-  const { tokenId, contract, externalUrl, chain, tokenMetadata } = token;
+  const { tokenId, openseaUrl, mirrorUrl, prohibitionUrl, projectUrl } =
+    extractRelevantMetadataFromToken(token);
 
-  const openSeaExternalUrl = useMemo(() => {
-    if (chain && contract?.contractAddress?.address && tokenId) {
-      return getOpenseaExternalUrl(chain, contract.contractAddress.address, tokenId);
-    }
-
-    return null;
-  }, [chain, contract?.contractAddress?.address, tokenId]);
-
-  const mirrorXyzUrl = useMemo(() => {
-    if (tokenMetadata) {
-      return extractMirrorXyzUrl(tokenMetadata);
-    }
-
-    return null;
-  }, [tokenMetadata]);
-
-  const prohibitionUrl = useMemo(() => {
-    if (!contract?.contractAddress?.address || !tokenId) {
-      return null;
-    }
-    if (PROHIBITION_CONTRACT_ADDRESSES.includes(contract?.contractAddress?.address)) {
-      return `https://prohibition.art/token/${contract?.contractAddress?.address}-${hexHandler(
-        tokenId
-      )}`;
-    }
-    return null;
-  }, [contract?.contractAddress?.address, tokenId]);
+  const { contract } = token;
 
   const numOfLinks = useMemo(
-    () => [openSeaExternalUrl, externalUrl, mirrorXyzUrl, prohibitionUrl].filter(Boolean).length,
-    [openSeaExternalUrl, externalUrl, mirrorXyzUrl, prohibitionUrl]
+    () => [openseaUrl, projectUrl, mirrorUrl, prohibitionUrl].filter(Boolean).length,
+    [openseaUrl, projectUrl, mirrorUrl, prohibitionUrl]
   );
 
   return (
@@ -105,12 +76,12 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionalDetailsEthPro
         </View>
 
         <View className="flex flex-row space-x-3">
-          {openSeaExternalUrl && (
+          {openseaUrl && (
             <DetailSection>
               <DetailLabelText>VIEW ON</DetailLabelText>
               <View className="flex flex-row">
                 <DetailExternalLink
-                  link={openSeaExternalUrl}
+                  link={openseaUrl}
                   label="OpenSea"
                   trackingLabel="NFT Detail View on Opensea"
                   showExternalLinkIcon={true}
@@ -120,12 +91,12 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionalDetailsEthPro
             </DetailSection>
           )}
 
-          {mirrorXyzUrl && (
+          {mirrorUrl && (
             <DetailSection>
               <DetailLabelText>VIEW ON</DetailLabelText>
               <View className="flex flex-row">
                 <DetailExternalLink
-                  link={mirrorXyzUrl}
+                  link={mirrorUrl}
                   label="Mirror"
                   trackingLabel="NFT Detail View on Mirror"
                   showExternalLinkIcon={true}
@@ -134,12 +105,12 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionalDetailsEthPro
               </View>
             </DetailSection>
           )}
-          {externalUrl && (
+          {projectUrl && (
             <DetailSection>
               <DetailLabelText>VIEW ON</DetailLabelText>
-              <View className="flex flex-col pt-4">
+              <View className="flex flex-col">
                 <DetailExternalLink
-                  link={externalUrl}
+                  link={projectUrl}
                   label="Visit Site"
                   trackingLabel="NFT Detail View on External Link"
                   showExternalLinkIcon={true}
