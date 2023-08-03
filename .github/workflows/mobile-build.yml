@@ -1,10 +1,6 @@
 name: mobile-build
 
 on:
-  push:
-    branches:
-      - main
-      - node-bump-2
   pull_request:
     # We only want to run a build if things that could've affected mobile changed.
     paths:
