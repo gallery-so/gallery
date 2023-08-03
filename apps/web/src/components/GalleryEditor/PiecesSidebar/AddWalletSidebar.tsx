@@ -5,10 +5,10 @@ import styled from 'styled-components';
 import { Button } from '~/components/core/Button/Button';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { EmptyState } from '~/components/EmptyState/EmptyState';
-import { Chain } from '~/components/GalleryEditor/PiecesSidebar/chains';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { AddWalletSidebarQueryFragment$key } from '~/generated/AddWalletSidebarQueryFragment.graphql';
 import ManageWalletsModal from '~/scenes/Modals/ManageWalletsModal';
+import { Chain } from '~/shared/utils/chains';
 
 type Props = {
   queryRef: AddWalletSidebarQueryFragment$key;

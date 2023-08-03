@@ -24,7 +24,7 @@ type Variant = 'default' | 'lit';
 type Props = {
   queryRef: GlobalBannerFragment$key;
   experienceFlag: UserExperienceType;
-  variant: Variant;
+  variant?: Variant;
   text: string;
   title?: React.ReactNode | string;
   requireAuth?: boolean;

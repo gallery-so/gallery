@@ -2,8 +2,8 @@ import styled, { css } from 'styled-components';
 
 import { HStack } from '~/components/core/Spacer/Stack';
 import { TitleXSBold } from '~/components/core/Text/Text';
-import { ChainMetadata } from '~/components/GalleryEditor/PiecesSidebar/chains';
 import colors from '~/shared/theme/colors';
+import { ChainMetadata } from '~/shared/utils/chains';
 
 type Props = {
   chain: ChainMetadata;
