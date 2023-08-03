@@ -41,8 +41,8 @@ export function CommunityHeader({ communityRef }: Props) {
   const formattedDescription = cleanedSentences?.split(/[.!?]\s+/).join(' ');
 
   return (
-    <View className="mb-4">
-      <View className="flex flex-row space-x-2">
+    <View className="mb-2">
+      <View className="flex flex-row space-x-2 items-center">
         <CommunityProfilePicture communityRef={community} size="xxl" />
         <GalleryTouchableOpacity
           className="flex-1"

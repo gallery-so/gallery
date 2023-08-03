@@ -23,6 +23,8 @@ function CommunityScreenInner({ chain, contractAddress }: CommunityScreenInnerPr
         $listOwnersFirst: Int!
         $listOwnersAfter: String
         $onlyGalleryUsers: Boolean
+        $postLast: Int!
+        $postBefore: String
       ) {
         ...CommunityViewFragment
       }
@@ -34,6 +36,7 @@ function CommunityScreenInner({ chain, contractAddress }: CommunityScreenInnerPr
       },
       listOwnersFirst: 200,
       onlyGalleryUsers: true,
+      postLast: 24,
     },
     { fetchPolicy: 'store-or-network', UNSTABLE_renderPolicy: 'partial' }
   );
@@ -52,7 +55,7 @@ export function CommunityScreen() {
   const { chain, contractAddress } = route.params;
 
   return (
-    <View className="flex-1 bg-white dark:bg-black">
+    <View className="flex-1 bg-white dark:bg-black-900">
       <Suspense fallback={<CommunityViewFallback />}>
         <CommunityScreenInner contractAddress={contractAddress} chain={chain as Chain} />
       </Suspense>
