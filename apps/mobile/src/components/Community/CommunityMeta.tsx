@@ -1,4 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
+import { useColorScheme } from 'nativewind';
 import { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
@@ -9,9 +10,11 @@ import isFeatureEnabled, { FeatureFlag } from 'src/utils/isFeatureEnabled';
 
 import { Chain, CommunityMetaFragment$key } from '~/generated/CommunityMetaFragment.graphql';
 import { CommunityMetaQueryFragment$key } from '~/generated/CommunityMetaQueryFragment.graphql';
+import { PostIcon } from '~/navigation/MainTabNavigator/PostIcon';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import colors from '~/shared/theme/colors';
 
+import { Button } from '../Button';
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import { LinkableAddress } from '../LinkableAddress';
 import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
@@ -22,7 +25,6 @@ type Props = {
   communityRef: CommunityMetaFragment$key;
   queryRef: CommunityMetaQueryFragment$key;
 };
-const ENABLED_TOTAL_TOKENS = false;
 
 export function CommunityMeta({ communityRef, queryRef }: Props) {
   const community = useFragment(
@@ -31,6 +33,7 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
         chain
         contractAddress {
           chain
+          address
           ...LinkableAddressFragment
         }
         creator {
@@ -42,23 +45,6 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
           }
           ... on ChainAddress {
             chain
-          }
-        }
-        tokensInCommunity(first: 1) {
-          pageInfo {
-            total
-          }
-        }
-        posts(first: $postLast, after: $postBefore)
-          @connection(key: "CommunityViewPostsTabFragment_posts") {
-          # Relay requires that we grab the edges field if we use the connection directive
-          # We're selecting __typename since that shouldn't have a cost
-          # eslint-disable-next-line relay/unused-fields
-          edges {
-            __typename
-          }
-          pageInfo {
-            total
           }
         }
       }
@@ -75,6 +61,7 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
     queryRef
   );
 
+  const { colorScheme } = useColorScheme();
   const isKoalaEnabled = isFeatureEnabled(FeatureFlag.KOALA, query);
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
@@ -85,24 +72,13 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
     }
   }, [community.creator, navigation]);
 
-  const totalTokens = community.tokensInCommunity?.pageInfo?.total;
-  const totalPosts = community.posts?.pageInfo?.total ?? 0;
-
-  const formattedTotalTokens = useMemo(() => {
-    if (totalTokens && totalTokens > 999) {
-      return `${Math.floor(totalTokens / 1000)}K`;
-    }
-
-    return totalTokens;
-  }, [totalTokens]);
-
-  const formattedTotalPosts = useMemo(() => {
-    if (totalPosts && totalPosts > 999) {
-      return `${Math.floor(totalPosts / 1000)}K`;
-    }
-
-    return totalPosts;
-  }, [totalPosts]);
+  const handleCreatePost = useCallback(() => {
+    if (!community?.contractAddress?.address) return;
+    navigation.navigate('NftSelectorContractScreen', {
+      contractAddress: community?.contractAddress?.address,
+      page: 'Community',
+    });
+  }, [navigation, community?.contractAddress?.address]);
 
   const showAddressOrGalleryUser = useMemo(() => {
     if (community.creator?.__typename === 'GalleryUser' && !community.creator?.universal) {
@@ -172,41 +148,21 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
           </View>
         )}
       </View>
-      {ENABLED_TOTAL_TOKENS && (
-        <View className="space-y-1">
-          <Typography
-            font={{ family: 'ABCDiatype', weight: 'Regular' }}
-            className="text-xs uppercase text-right"
-          >
-            items
-          </Typography>
-
-          <Typography
-            font={{ family: 'ABCDiatype', weight: 'Regular' }}
-            className="text-sm text-shadow text-right"
-          >
-            {formattedTotalTokens}
-          </Typography>
-        </View>
-      )}
-      {totalPosts > 0 && isKoalaEnabled && (
-        <View className="flex flex-column space-y-1">
-          <Typography
-            font={{ family: 'ABCDiatype', weight: 'Regular' }}
-            className="text-xs uppercase"
-          >
-            posts
-          </Typography>
-
-          <View className="space-y-1">
-            <Typography
-              font={{ family: 'ABCDiatype', weight: 'Regular' }}
-              className="text-sm text-shadow text-right"
-            >
-              {formattedTotalPosts}
-            </Typography>
-          </View>
-        </View>
+      {isKoalaEnabled && (
+        <Button
+          size="sm"
+          text="Post"
+          className="w-[100px]"
+          icon={
+            <PostIcon
+              size={14}
+              color={colorScheme === 'dark' ? colors.black['800'] : colors.white}
+            />
+          }
+          onPress={handleCreatePost}
+          eventElementId={null}
+          eventName={null}
+        />
       )}
     </View>
   );
