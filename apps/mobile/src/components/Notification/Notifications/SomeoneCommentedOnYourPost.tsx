@@ -1,8 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
-import { ResizeMode } from 'expo-av';
 import { useCallback, useMemo } from 'react';
 import { Text, View } from 'react-native';
-import FastImage from 'react-native-fast-image';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
@@ -99,6 +97,7 @@ export function SomeoneCommentedOnYourPost({
       onPress={handlePress}
       responsibleUserRefs={commenters}
       notificationRef={notification}
+      tokenUrl={tokenUrl ?? undefined}
     >
       <View className="flex-row space-x-2">
         <View className="flex space-y-2">
@@ -124,21 +123,10 @@ export function SomeoneCommentedOnYourPost({
             </Typography>
           </Text>
 
-          <View className="ml-4 border-l-2 border-[#d9d9d9] pl-2">
+          <View className="border-l-2 border-[#d9d9d9] pl-2">
             <Text className="dark:text-white">{notification.comment?.comment ?? ''}</Text>
           </View>
         </View>
-
-        {tokenUrl && (
-          <FastImage
-            style={{
-              width: 56,
-              height: 56,
-            }}
-            source={{ uri: tokenUrl }}
-            resizeMode={ResizeMode.COVER}
-          />
-        )}
       </View>
     </NotificationSkeleton>
   );

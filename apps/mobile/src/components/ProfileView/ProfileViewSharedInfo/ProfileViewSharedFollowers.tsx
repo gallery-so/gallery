@@ -8,6 +8,7 @@ import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/Gal
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { InteractiveLink } from '~/components/InteractiveLink';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
+import { RawProfilePictureProps } from '~/components/ProfilePicture/RawProfilePicture';
 import { Typography } from '~/components/Typography';
 import { ProfileViewSharedFollowersBubblesFragment$key } from '~/generated/ProfileViewSharedFollowersBubblesFragment.graphql';
 import { ProfileViewSharedFollowersFollowingTextFragment$key } from '~/generated/ProfileViewSharedFollowersFollowingTextFragment.graphql';
@@ -167,12 +168,14 @@ type ProfilePictureBubblesWithCountProps = {
   userRefs: ProfileViewSharedFollowersBubblesFragment$key;
   totalCount: number;
   onPress: () => void;
-} & GalleryElementTrackingProps;
+} & GalleryElementTrackingProps &
+  Partial<Pick<RawProfilePictureProps, 'size'>>;
 
 export function ProfilePictureBubblesWithCount({
   onPress,
   userRefs,
   totalCount,
+  size = 'sm',
   ...trackingProps
 }: ProfilePictureBubblesWithCountProps) {
   const users = useFragment(
@@ -205,7 +208,7 @@ export function ProfilePictureBubblesWithCount({
               '-ml-2': index !== 0,
             })}
           >
-            <ProfilePicture userRef={user} size="sm" hasInset={users.length > 1} />
+            <ProfilePicture userRef={user} size={size} hasInset={users.length > 1} />
           </View>
         );
       })}

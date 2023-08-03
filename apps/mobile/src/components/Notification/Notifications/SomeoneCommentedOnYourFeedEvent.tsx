@@ -150,7 +150,7 @@ export function SomeoneCommentedOnYourFeedEvent({
           )}
         </Text>
 
-        <View className="ml-4 border-l-2 border-[#d9d9d9] pl-2">
+        <View className="border-l-2 border-[#d9d9d9] pl-2">
           <Text className="dark:text-white">{notification.comment?.comment ?? ''}</Text>
         </View>
       </View>

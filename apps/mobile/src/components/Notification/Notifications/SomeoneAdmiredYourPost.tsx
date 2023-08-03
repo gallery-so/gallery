@@ -1,8 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
-import { ResizeMode } from 'expo-av';
 import { useCallback, useMemo } from 'react';
-import { Text, View } from 'react-native';
-import FastImage from 'react-native-fast-image';
+import { Text } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
@@ -102,52 +100,41 @@ export function SomeoneAdmiredYourPost({
       onPress={handlePress}
       responsibleUserRefs={admirers}
       notificationRef={notification}
+      tokenUrl={tokenUrl ?? undefined}
     >
-      <View className="flex-row space-x-2">
-        <Text>
-          <Typography
-            font={{
-              family: 'ABCDiatype',
-              weight: 'Bold',
-            }}
-            className="text-sm"
-          >
-            {count > 1
-              ? `${notification.count} collectors`
-              : firstAdmirer
-              ? firstAdmirer?.username
-              : 'Someone'}
-          </Typography>{' '}
-          <Typography
-            font={{
-              family: 'ABCDiatype',
-              weight: 'Regular',
-            }}
-            className="text-sm"
-          >
-            admired your
-          </Typography>{' '}
-          <Typography
-            font={{
-              family: 'ABCDiatype',
-              weight: 'Bold',
-            }}
-            className="text-sm"
-          >
-            post
-          </Typography>
-        </Text>
-        {tokenUrl && (
-          <FastImage
-            style={{
-              width: 56,
-              height: 56,
-            }}
-            source={{ uri: tokenUrl }}
-            resizeMode={ResizeMode.COVER}
-          />
-        )}
-      </View>
+      <Text>
+        <Typography
+          font={{
+            family: 'ABCDiatype',
+            weight: 'Bold',
+          }}
+          className="text-sm"
+        >
+          {count > 1
+            ? `${notification.count} collectors`
+            : firstAdmirer
+            ? firstAdmirer?.username
+            : 'Someone'}
+        </Typography>{' '}
+        <Typography
+          font={{
+            family: 'ABCDiatype',
+            weight: 'Regular',
+          }}
+          className="text-sm"
+        >
+          admired your
+        </Typography>{' '}
+        <Typography
+          font={{
+            family: 'ABCDiatype',
+            weight: 'Bold',
+          }}
+          className="text-sm"
+        >
+          post
+        </Typography>
+      </Text>
     </NotificationSkeleton>
   );
 }
