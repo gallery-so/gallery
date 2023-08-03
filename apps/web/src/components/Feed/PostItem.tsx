@@ -111,7 +111,7 @@ const StyledPostItem = styled.div`
 `;
 
 const StyledDesktopPostData = styled(VStack)`
-  // padding: 24px;
+  padding: 24px;
   width: 380px;
 `;
 
@@ -167,7 +167,7 @@ export default function PostItemWithBoundary({
 }
 
 const PostItemContainer = styled(VStack)`
-  margin: 0 auto;
+  margin: 24px auto;
 
   padding: 24px 0px;
 

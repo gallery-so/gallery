@@ -93,4 +93,5 @@ const StyledInteractiveLink = styled(InteractiveLink)`
 
 const StyledCaption = styled(BaseM)`
   overflow-wrap: break-word;
+  font-size: 16px;
 `;

@@ -53,8 +53,9 @@ export default function PostNftPreview({ tokenRef, tokenSize }: Props) {
 
 const StyledPostNftPreview = styled.div<{ width: number; height: number }>`
   display: flex;
-  max-width: ${({ width }) => width}px;
-  height: ${({ height }) => height}px;
+
+  width: ${({ width }) => width}px;
+  // height: ${({ height }) => height}px;
 
   ${StyledImageWithLoading}, ${StyledVideo} {
     max-width: ${({ width }) => width}px;
