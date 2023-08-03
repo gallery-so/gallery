@@ -89,22 +89,24 @@ export default function GlobalBanner({
     return <MobileBetaReleaseBanner handleCTAClick={handleActionClick} />;
   }
 
-  return (
-    <StyledContainer navbarHeight={navbarHeight} variant={variant}>
-      <StyledBanner justify="space-between" align="center" gap={24}>
-        <TextContainer>
-          {title && <StyledTitle>{title}</StyledTitle>}
-          <BaseM>
-            <Markdown text={text} />
-          </BaseM>
-        </TextContainer>
-        <StyledAction align="center" gap={isMobile ? 4 : 8}>
-          <span onClick={handleActionClick}>{actionComponent}</span>
-          <StyledClose onClick={hideBanner} mode={variant === 'lit' ? 'dark' : 'light'} />
-        </StyledAction>
-      </StyledBanner>
-    </StyledContainer>
-  );
+  return null; // EXPERIENCE BANNER IS CURRENTLY OFF AS OF 8/3/23
+
+  // return (
+  //   <StyledContainer navbarHeight={navbarHeight} variant={variant}>
+  //     <StyledBanner justify="space-between" align="center" gap={24}>
+  //       <TextContainer>
+  //         {title && <StyledTitle>{title}</StyledTitle>}
+  //         <BaseM>
+  //           <Markdown text={text} />
+  //         </BaseM>
+  //       </TextContainer>
+  //       <StyledAction align="center" gap={isMobile ? 4 : 8}>
+  //         <span onClick={handleActionClick}>{actionComponent}</span>
+  //         <StyledClose onClick={hideBanner} mode={variant === 'lit' ? 'dark' : 'light'} />
+  //       </StyledAction>
+  //     </StyledBanner>
+  //   </StyledContainer>
+  // );
 }
 
 const StyledContainer = styled.div<{ navbarHeight: number; variant: Variant }>`
