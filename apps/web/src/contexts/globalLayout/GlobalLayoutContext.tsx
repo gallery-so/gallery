@@ -31,7 +31,7 @@ import isTouchscreenDevice from '~/utils/isTouchscreenDevice';
 
 import { FEATURED_COLLECTION_IDS } from './GlobalAnnouncementPopover/GlobalAnnouncementPopover';
 // import useGlobalAnnouncementPopover from './GlobalAnnouncementPopover/useGlobalAnnouncementPopover';
-import GlobalBanner from './GlobalBanner/GlobalBanner';
+import GlobalBanner, { CTAChip } from './GlobalBanner/GlobalBanner';
 import GlobalSidebar, { GLOBAL_SIDEBAR_DESKTOP_WIDTH } from './GlobalSidebar/GlobalSidebar';
 import {
   FADE_TRANSITION_TIME_MS,
@@ -426,21 +426,14 @@ function GlobalNavbarWithFadeEnabled({
               }}
             >
               {isBannerVisible && (
-                // <GlobalBanner
-                //   // make sure to update this flag and add to backend schema.graphql
-                //   experienceFlag="MobileBetaUpsell"
-                //   variant="lit"
-                //   text="Embrace the new era of creativity at Gallery! Download the Gallery Mobile App Beta and take your collection everywhere."
-                //   actionComponent={<CTAChip />}
-                //   dismissOnActionComponentClick
-                //   queryRef={query}
-                //   requireAuth
-                // />
                 <GlobalBanner
-                  experienceFlag="MaintenanceAug2023"
-                  text="Gallery will be undergoing planned maintenance on **Wednesday, Aug 2nd** from **9:00 – 10:00PM EST** as we upgrade our infrastructure. The site will not be usable during this period."
-                  queryRef={query}
+                  // make sure to update this flag and add to backend schema.graphql
+                  experienceFlag="MobileBetaUpsell"
+                  variant="lit"
+                  text="Embrace the new era of creativity at Gallery! Download the Gallery Mobile App Beta and take your collection everywhere."
+                  actionComponent={<CTAChip />}
                   dismissOnActionComponentClick
+                  queryRef={query}
                   requireAuth
                 />
               )}
