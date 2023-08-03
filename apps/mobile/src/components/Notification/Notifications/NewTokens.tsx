@@ -19,11 +19,14 @@ type Props = {
   notificationRef: NewTokensFragment$key;
 };
 
+const INVALID_TOKEN_TYPES = ['SyncingMedia', 'InvalidMedia'];
+
 export function NewTokens({ notificationRef }: Props) {
   const notification = useFragment(
     graphql`
       fragment NewTokensFragment on NewTokensNotification {
         __typename
+        count
         seen
         updatedTime
         token {
@@ -31,6 +34,9 @@ export function NewTokens({ notificationRef }: Props) {
             __typename
             dbid
             name
+            media {
+              __typename
+            }
             ...getVideoOrImageUrlForNftPreviewFragment
           }
         }
@@ -43,16 +49,11 @@ export function NewTokens({ notificationRef }: Props) {
   const navigation = useNavigation<MainTabStackNavigatorProp>();
   const { token } = notification;
 
+  const quantity = notification.count ?? 1;
+
   if (token?.__typename !== 'Token') {
     throw new Error("We couldn't find that token. Something went wrong and we're looking into it.");
   }
-
-  const media = getVideoOrImageUrlForNftPreview({
-    tokenRef: token,
-    preferStillFrameFromGif: false,
-  });
-
-  const tokenUrl = media?.urls.small;
 
   const handlePress = useCallback(() => {
     if (!token.dbid) return;
@@ -61,6 +62,17 @@ export function NewTokens({ notificationRef }: Props) {
       tokenId: token.dbid,
     });
   }, [navigation, token.dbid]);
+
+  if (INVALID_TOKEN_TYPES.includes(token.media?.__typename ?? '')) {
+    return null;
+  }
+
+  const media = getVideoOrImageUrlForNftPreview({
+    tokenRef: token,
+    preferStillFrameFromGif: false,
+  });
+
+  const tokenUrl = media?.urls.small;
 
   return (
     <View className="flex flex-row items-center p-3">
@@ -93,6 +105,7 @@ export function NewTokens({ notificationRef }: Props) {
             className="text-sm"
           >
             Minted
+            {quantity > 1 && ` ${quantity}x`}
           </Typography>
           <Typography
             font={{
