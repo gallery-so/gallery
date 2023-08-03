@@ -47,7 +47,7 @@ export const chains = [
     icon: '/icons/base_logo.svg',
     baseChain: 'Ethereum',
     hasCreatorSupport: false,
-    isEnabled: false,
+    isEnabled: true,
   },
   {
     name: 'Optimism',
