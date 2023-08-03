@@ -1,9 +1,10 @@
+import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 
-import { HStack } from '~/components/core/Spacer/Stack';
-import { ClickablePill } from '~/components/Pill';
 import { UserLensSectionFragment$key } from '~/generated/UserLensSectionFragment.graphql';
 import LensIcon from '~/icons/LensIcon';
+
+import UserSocialPill from './UserSocialPill';
 
 type Props = {
   userRef: UserLensSectionFragment$key;
@@ -25,18 +26,16 @@ export default function UserLensSection({ userRef }: Props) {
 
   const lensUsername = user.socialAccounts?.lens?.username;
 
-  if (!lensUsername) {
+  const rawLensUsername = useMemo(
+    () => (lensUsername?.endsWith('.lens') ? lensUsername.slice(0, -5) : lensUsername),
+    [lensUsername]
+  );
+
+  if (!lensUsername || !rawLensUsername) {
     return null;
   }
 
-  const lensUrl = `https://lenster.xyz/${lensUsername}`;
+  const lensUrl = `https://lenster.xyz/u/${rawLensUsername}`;
 
-  return (
-    <ClickablePill href={lensUrl}>
-      <HStack gap={5} align="center">
-        <LensIcon />
-        <strong>{lensUsername}</strong>
-      </HStack>
-    </ClickablePill>
-  );
+  return <UserSocialPill url={lensUrl} icon={<LensIcon />} username={rawLensUsername} />;
 }

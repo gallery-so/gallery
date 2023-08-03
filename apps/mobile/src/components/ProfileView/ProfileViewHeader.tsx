@@ -11,6 +11,7 @@ import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import ProfileViewSharedInfo from './ProfileViewSharedInfo/ProfileViewSharedInfo';
 import ProfileViewFarcasterPill from './SocialPills/ProfileViewFarcasterPill';
 import ProfileViewTwitterPill from './SocialPills/ProfileViewTwitterPill';
+import ProfileViewLensPill from './SocialPills/ProfileViewLensPill';
 
 type Props = {
   selectedRoute: string;
@@ -40,6 +41,7 @@ export function ProfileViewHeader({ queryRef, selectedRoute, onRouteChange }: Pr
             ...ProfileViewSharedInfoFragment
             ...ProfileViewFarcasterPillFragment
             ...ProfileViewTwitterPillFragment
+            ...ProfileViewLensPillFragment
           }
         }
 
@@ -96,6 +98,7 @@ export function ProfileViewHeader({ queryRef, selectedRoute, onRouteChange }: Pr
       <View className={`flex flex-row mx-4 space-x-12 mt-4`}>
         <ProfileViewTwitterPill userRef={user} />
         <ProfileViewFarcasterPill userRef={user} />
+        <ProfileViewLensPill userRef={user} />
       </View>
 
       <ProfileTabBar activeRoute={selectedRoute} onRouteChange={onRouteChange} routes={routes} />

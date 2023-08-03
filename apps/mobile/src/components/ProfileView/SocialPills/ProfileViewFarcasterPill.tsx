@@ -43,7 +43,7 @@ export default function ProfileViewFarcasterPill({ userRef }: Props) {
       onPress={handlePress}
       eventElementId="Social Pill"
       eventName="Social Pill Clicked"
-      properties={{ variant: 'Twitter' }}
+      properties={{ variant: 'Farcaster' }}
     >
       <Pill className="flex flex-row items-center space-x-2 self-start">
         <FarcasterIcon width={14} />

@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -12,6 +13,7 @@ import UserFarcasterSection from './UserFarcasterSection';
 import UserLensSection from './UserLensSection';
 import { UserNameAndDescriptionHeader } from './UserNameAndDescriptionHeader';
 import UserSharedInfo from './UserSharedInfo/UserSharedInfo';
+import UserSocialPill, { StyledUserSocialPill } from './UserSocialPill';
 import UserTwitterSection from './UserTwitterSection';
 
 type Props = {
@@ -25,6 +27,14 @@ export default function UserGalleryHeader({ userRef, queryRef }: Props) {
       fragment UserGalleryHeaderFragment on GalleryUser {
         username
         dbid
+        socialAccounts {
+          lens {
+            username
+          }
+          farcaster {
+            username
+          }
+        }
 
         ...UserNameAndDescriptionHeaderFragment
         ...UserTwitterSectionFragment
@@ -58,11 +68,23 @@ export default function UserGalleryHeader({ userRef, queryRef }: Props) {
   const isLoggedIn = Boolean(loggedInUserId);
   const isAuthenticatedUsersPage = loggedInUserId === user?.dbid;
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
+
+  const numPills = useMemo(() => {
+    let total = 1;
+    if (user.socialAccounts?.lens?.username) {
+      total += 1;
+    }
+    if (user.socialAccounts?.farcaster?.username) {
+      total += 1;
+    }
+    return total;
+  }, [user.socialAccounts?.farcaster?.username, user.socialAccounts?.lens?.username]);
+
   return (
     <VStack gap={12}>
       <UserNameAndDescriptionHeader userRef={user} queryRef={query} />
       {isLoggedIn && !isAuthenticatedUsersPage && <UserSharedInfo userRef={user} />}
-      <SocialConnectionsSection gap={8}>
+      <SocialConnectionsSection numPills={numPills}>
         <UserTwitterSection userRef={user} queryRef={query} />
         <UserFarcasterSection userRef={user} />
         <UserLensSection userRef={user} />
@@ -76,7 +98,14 @@ export default function UserGalleryHeader({ userRef, queryRef }: Props) {
   );
 }
 
-const SocialConnectionsSection = styled(HStack)``;
+const SocialConnectionsSection = styled.div<{ numPills: number }>`
+  display: flex;
+  gap: 8px;
+
+  ${StyledUserSocialPill} {
+    max-width: ${({ numPills }) => 100 / numPills}%;
+  }
+`;
 
 const MobileNavLinks = styled(HStack)`
   padding: 16px 0;

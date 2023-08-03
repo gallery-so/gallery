@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import colors from '~/shared/theme/colors';
 
-export const ClickablePill = styled(InteractiveLink)<{ active?: boolean }>`
+export const ClickablePill = styled(InteractiveLink)<{ active?: boolean; className?: string }>`
   border: 1px solid ${colors.porcelain};
   padding: 0 12px;
   border-radius: 24px;
