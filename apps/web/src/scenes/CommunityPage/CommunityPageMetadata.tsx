@@ -54,10 +54,7 @@ export default function CommunityPageMetadata({ communityRef, isKoalaEnabled }: 
   const { contractAddress, creator } = community;
 
   const creatorUsername = creator?.__typename === 'GalleryUser' && creator?.username;
-
-  const creatorAddress = useMemo(() => {
-    return creator?.__typename === 'ChainAddress' && creator?.address;
-  }, [creator]);
+  const creatorAddress = creator?.__typename === 'ChainAddress' && creator?.address;
 
   const creatorExternalLink = useMemo(() => {
     if (!creator || creator.__typename !== 'ChainAddress') return null;

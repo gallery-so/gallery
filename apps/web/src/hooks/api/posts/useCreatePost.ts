@@ -53,9 +53,9 @@ export default function useCreatePost() {
         store,
         response
       ) => {
-        // We current only support posting one token at a time
+        // We currently only support posting one token at a time
 
-        // Insert the new post into the feeds in the relay store so that it appears immedatiately
+        // Insert the new post into the feeds in the relay store so that it appears immediately
         if (response?.postTokens?.__typename === 'PostTokensPayload') {
           // Get the new post record
           const newPostRootField = store.getRootField('postTokens');

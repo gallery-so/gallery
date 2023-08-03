@@ -96,7 +96,7 @@ export default function PostComposer({ onBackClick, tokenRef }: Props) {
     if (!token.name || token.name.length > 30) {
       return 'this item';
     }
-    return `"${token.name}`;
+    return `"${token.name}"`;
   }, [token.name]);
 
   return (

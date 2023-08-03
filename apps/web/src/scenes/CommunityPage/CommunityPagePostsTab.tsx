@@ -117,7 +117,7 @@ export default function CommunityPagePostsTab({ communityRef, queryRef }: Props)
   }, [showModal, tokens, query, community.name, community.contractAddress?.address, isMobile]);
 
   // KAITO TODO (follow up): set to false if user is not member of community , blocked by backend
-  const viewerIsCommunityOwner = true;
+  const viewerIsCommunityOwner = false;
 
   if (!feedData || feedData.length === 0) {
     return (
