@@ -49,9 +49,7 @@ export function CommunityTabsHeader({
 
   const isKoalaEnabled = isFeatureEnabled(FeatureFlag.KOALA, query);
 
-  const totalOwners = useMemo(() => {
-    return community.owners?.pageInfo?.total ?? 0;
-  }, [community.owners?.pageInfo?.total]);
+  const totalOwners = community.owners?.pageInfo?.total ?? 0;
 
   const routes = useMemo(() => {
     if (!isKoalaEnabled) {

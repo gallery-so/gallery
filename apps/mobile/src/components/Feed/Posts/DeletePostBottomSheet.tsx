@@ -40,13 +40,11 @@ function DeletePostBottomSheet(
 
   const navigation = useNavigation();
 
-  const nonNullTokens = useMemo(() => {
+  const token = useMemo(() => {
     const tokens = post?.tokens;
 
-    return removeNullValues(tokens);
+    return removeNullValues(tokens)[0];
   }, [post?.tokens]);
-
-  const token = nonNullTokens[0];
 
   if (!token) {
     throw new Error(

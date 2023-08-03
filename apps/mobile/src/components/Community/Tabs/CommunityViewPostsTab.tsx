@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
-import { useCallback, useRef } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import { View } from 'react-native';
 import { Tabs } from 'react-native-collapsible-tab-view';
 import { graphql, useFragment, usePaginationFragment } from 'react-relay';
@@ -63,14 +63,17 @@ export function CommunityViewPostsTab({ communityRef, queryRef }: Props) {
 
   const { markEventAsFailure, failedEvents } = useFailedEventTracker();
 
-  const posts = [];
-  for (const edge of community?.posts?.edges ?? []) {
-    if (edge?.node) {
-      posts.push(edge.node);
-    }
-  }
+  const posts = useMemo(() => {
+    const postNodes = [];
 
-  posts.reverse();
+    for (const edge of community?.posts?.edges ?? []) {
+      if (edge?.node) {
+        postNodes.push(edge.node);
+      }
+    }
+
+    return postNodes.reverse();
+  }, [community?.posts?.edges]);
 
   const ref = useRef<FlashList<FeedListItemType> | null>(null);
   const { items } = createVirtualizedFeedEventItems({
