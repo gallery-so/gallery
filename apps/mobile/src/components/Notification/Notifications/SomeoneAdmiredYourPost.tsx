@@ -1,5 +1,8 @@
-import { useMemo } from 'react';
-import { Text } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { ResizeMode } from 'expo-av';
+import { useCallback, useMemo } from 'react';
+import { Text, View } from 'react-native';
+import FastImage from 'react-native-fast-image';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
@@ -7,6 +10,8 @@ import { NotificationSkeleton } from '~/components/Notification/NotificationSkel
 import { Typography } from '~/components/Typography';
 import { SomeoneAdmiredYourPostFragment$key } from '~/generated/SomeoneAdmiredYourPostFragment.graphql';
 import { SomeoneAdmiredYourPostQueryFragment$key } from '~/generated/SomeoneAdmiredYourPostQueryFragment.graphql';
+import { MainTabStackNavigatorProp } from '~/navigation/types';
+import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 type SomeoneAdmiredYourFeedEventProps = {
@@ -42,12 +47,40 @@ export function SomeoneAdmiredYourPost({
             }
           }
         }
+        post {
+          dbid
+          tokens {
+            __typename
+            ...getVideoOrImageUrlForNftPreviewFragment
+          }
+        }
 
         ...NotificationSkeletonFragment
       }
     `,
     notificationRef
   );
+
+  const { post } = notification;
+
+  const nonNullTokens = useMemo(() => {
+    const tokens = post?.tokens;
+
+    return removeNullValues(tokens);
+  }, [post?.tokens]);
+
+  const token = nonNullTokens?.[0] || null;
+
+  if (!token) {
+    throw new Error('There is no token in post');
+  }
+
+  const media = getVideoOrImageUrlForNftPreview({
+    tokenRef: token,
+    preferStillFrameFromGif: true,
+  });
+
+  const tokenUrl = media?.urls.small;
 
   const admirers = useMemo(() => {
     return removeNullValues(notification.admirers?.edges?.map((edge) => edge?.node));
@@ -56,59 +89,65 @@ export function SomeoneAdmiredYourPost({
   const count = notification.count ?? 1;
   const firstAdmirer = admirers[0];
 
-  //   const collection =
-  //     notification.feedEvent?.eventData && 'collection' in notification.feedEvent?.eventData
-  //       ? notification.feedEvent?.eventData?.collection
-  //       : null;
-
-  //   const navigation = useNavigation<MainTabStackNavigatorProp>();
-  //   const handlePress = useCallback(() => {
-  //     if (notification.feedEvent?.dbid) {
-  //       navigation.navigate('FeedEvent', { eventId: notification.feedEvent?.dbid });
-  //     }
-  //   }, [navigation, notification.feedEvent?.dbid]);
+  const navigation = useNavigation<MainTabStackNavigatorProp>();
+  const handlePress = useCallback(() => {
+    if (post?.dbid) {
+      navigation.navigate('Post', { postId: post.dbid });
+    }
+  }, [navigation, post?.dbid]);
 
   return (
     <NotificationSkeleton
       queryRef={query}
-      //   onPress={handlePress}
-      onPress={() => {}}
+      onPress={handlePress}
       responsibleUserRefs={admirers}
       notificationRef={notification}
     >
-      <Text>
-        <Typography
-          font={{
-            family: 'ABCDiatype',
-            weight: 'Bold',
-          }}
-          className="text-sm"
-        >
-          {count > 1
-            ? `${notification.count} collectors`
-            : firstAdmirer
-            ? firstAdmirer?.username
-            : 'Someone'}
-        </Typography>{' '}
-        <Typography
-          font={{
-            family: 'ABCDiatype',
-            weight: 'Regular',
-          }}
-          className="text-sm"
-        >
-          admired your
-        </Typography>{' '}
-        <Typography
-          font={{
-            family: 'ABCDiatype',
-            weight: 'Bold',
-          }}
-          className="text-sm"
-        >
-          post
-        </Typography>
-      </Text>
+      <View className="flex-row space-x-2">
+        <Text>
+          <Typography
+            font={{
+              family: 'ABCDiatype',
+              weight: 'Bold',
+            }}
+            className="text-sm"
+          >
+            {count > 1
+              ? `${notification.count} collectors`
+              : firstAdmirer
+              ? firstAdmirer?.username
+              : 'Someone'}
+          </Typography>{' '}
+          <Typography
+            font={{
+              family: 'ABCDiatype',
+              weight: 'Regular',
+            }}
+            className="text-sm"
+          >
+            admired your
+          </Typography>{' '}
+          <Typography
+            font={{
+              family: 'ABCDiatype',
+              weight: 'Bold',
+            }}
+            className="text-sm"
+          >
+            post
+          </Typography>
+        </Text>
+        {tokenUrl && (
+          <FastImage
+            style={{
+              width: 56,
+              height: 56,
+            }}
+            source={{ uri: tokenUrl }}
+            resizeMode={ResizeMode.COVER}
+          />
+        )}
+      </View>
     </NotificationSkeleton>
   );
 }
