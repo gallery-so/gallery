@@ -1,8 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
-import { ResizeMode } from 'expo-av';
 import { useCallback } from 'react';
 import { View } from 'react-native';
-import FastImage from 'react-native-fast-image';
 import { graphql, useFragment } from 'react-relay';
 
 import { Button } from '~/components/Button';
@@ -14,6 +12,7 @@ import colors from '~/shared/theme/colors';
 import { getTimeSince } from '~/shared/utils/time';
 
 import { UnseenDot } from '../NotificationSkeleton';
+import { NotificationTokenPreview } from './NotificationTokenPreview';
 
 type Props = {
   notificationRef: NewTokensFragment$key;
@@ -75,17 +74,10 @@ export function NewTokens({ notificationRef }: Props) {
   const tokenUrl = media?.urls.small;
 
   return (
-    <View className="flex flex-row items-center p-3">
+    <View className="flex flex-row items-center p-4">
       <View className="flex-row flex-1 space-x-2">
         {tokenUrl ? (
-          <FastImage
-            style={{
-              width: 56,
-              height: 56,
-            }}
-            source={{ uri: tokenUrl }}
-            resizeMode={ResizeMode.COVER}
-          />
+          <NotificationTokenPreview tokenUrl={tokenUrl} count={quantity} />
         ) : (
           <View
             style={{
