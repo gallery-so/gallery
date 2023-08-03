@@ -2,8 +2,8 @@ import { Route } from 'nextjs-routes';
 import { graphql } from 'react-relay';
 import { readInlineData } from 'relay-runtime';
 
-import { LowercaseChain } from '~/components/GalleryEditor/PiecesSidebar/chains';
 import { getCommunityUrlForTokenFragment$key } from '~/generated/getCommunityUrlForTokenFragment.graphql';
+import { LowercaseChain } from '~/shared/utils/chains';
 
 export const DISABLED_CONTRACTS = [
   '0xa7d8d9ef8d8ce8992df33d8b8cf4aebabd5bd270', // Art Blocks

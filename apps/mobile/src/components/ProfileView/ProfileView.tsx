@@ -1,6 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import { useColorScheme } from 'nativewind';
-import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { View, ViewProps } from 'react-native';
 import { CollapsibleRef, Tabs } from 'react-native-collapsible-tab-view';
 import { useFragment } from 'react-relay';
@@ -21,9 +20,9 @@ import { ProfileViewQueryFragment$key } from '~/generated/ProfileViewQueryFragme
 import { ProfileViewUsernameFragment$key } from '~/generated/ProfileViewUsernameFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import GalleryViewEmitter from '~/shared/components/GalleryViewEmitter';
-import colors from '~/shared/theme/colors';
 
 import { GalleryBottomSheetModalType } from '../GalleryBottomSheet/GalleryBottomSheetModal';
+import { GalleryTabsContainer } from '../GalleryTabs/GalleryTabsContainer';
 import { PfpBottomSheet } from '../PfpPicker/PfpBottomSheet';
 import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
 
@@ -70,8 +69,6 @@ export function ProfileView({ queryRef, shouldShowBackButton }: ProfileViewProps
     }
   }, [selectedRoute]);
 
-  const { colorScheme } = useColorScheme();
-
   return (
     <View className="flex-1">
       <GalleryViewEmitter queryRef={query} />
@@ -94,47 +91,26 @@ export function ProfileView({ queryRef, shouldShowBackButton }: ProfileViewProps
       </View>
 
       <View className="flex-grow">
-        <Suspense fallback={null}>
-          <Tabs.Container
-            ref={containerRef}
-            pagerProps={{ scrollEnabled: false }}
-            containerStyle={{
-              backgroundColor: colorScheme === 'light' ? colors.white : colors.black['900'],
-            }}
-            headerContainerStyle={{
-              margin: 0,
-              elevation: 0,
-              shadowOpacity: 0,
-              borderBottomColor: 'transparent',
-              backgroundColor: colorScheme === 'light' ? colors.white : colors.black['900'],
-            }}
-            renderTabBar={Empty}
-            renderHeader={Header}
-          >
-            <Tabs.Tab name="Featured">
-              <ProfileViewFeaturedTab queryRef={query} />
-            </Tabs.Tab>
+        <GalleryTabsContainer Header={Header} ref={containerRef}>
+          <Tabs.Tab name="Featured">
+            <ProfileViewFeaturedTab queryRef={query} />
+          </Tabs.Tab>
 
-            <Tabs.Tab name="Galleries">
-              <ProfileViewGalleriesTab queryRef={query} />
-            </Tabs.Tab>
+          <Tabs.Tab name="Galleries">
+            <ProfileViewGalleriesTab queryRef={query} />
+          </Tabs.Tab>
 
-            <Tabs.Tab name="Followers">
-              <ProfileViewFollowersTab queryRef={query} />
-            </Tabs.Tab>
+          <Tabs.Tab name="Followers">
+            <ProfileViewFollowersTab queryRef={query} />
+          </Tabs.Tab>
 
-            <Tabs.Tab name="Activity">
-              <ProfileViewActivityTab queryRef={query} />
-            </Tabs.Tab>
-          </Tabs.Container>
-        </Suspense>
+          <Tabs.Tab name="Activity">
+            <ProfileViewActivityTab queryRef={query} />
+          </Tabs.Tab>
+        </GalleryTabsContainer>
       </View>
     </View>
   );
-}
-
-function Empty() {
-  return null;
 }
 
 type ConnectedGalleryProfileNavbarProps = {

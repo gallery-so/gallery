@@ -8,14 +8,14 @@ import { DropdownSection } from '~/components/core/Dropdown/DropdownSection';
 import IconContainer from '~/components/core/IconContainer';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
-import { ChainMetadata } from '~/components/GalleryEditor/PiecesSidebar/chains';
-import { chainsMap } from '~/components/GalleryEditor/PiecesSidebar/chains';
 import { OnConnectWalletSuccessFn } from '~/components/WalletSelector/multichain/MultichainWalletSelector';
 import { SidebarWalletSelectorFragment$key } from '~/generated/SidebarWalletSelectorFragment.graphql';
 import useAddWalletModal from '~/hooks/useAddWalletModal';
 import DoubleArrowsIcon from '~/icons/DoubleArrowsIcon';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
+import { ChainMetadata } from '~/shared/utils/chains';
+import { chainsMap } from '~/shared/utils/chains';
 
 export type SidebarWallet = { chainAddress: { chain: string; address: string } } | 'All';
 const MAX_ALLOWED_ADDRESSES = 15;

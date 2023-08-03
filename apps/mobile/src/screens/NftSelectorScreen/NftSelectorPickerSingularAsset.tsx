@@ -56,6 +56,11 @@ export function NftSelectorPickerSingularAsset({
       setProfileImage(token.dbid).then(() => {
         onSelect();
       });
+    } else if (currentScreen === 'Community') {
+      navigation.navigate('PostComposer', {
+        tokenId: token.dbid,
+        redirectTo: 'Community',
+      });
     } else {
       navigation.navigate('PostComposer', {
         tokenId: token.dbid,

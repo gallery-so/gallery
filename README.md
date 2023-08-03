@@ -10,10 +10,13 @@ The premier gallery experience for your NFTs.
 2. [Install NVM](https://github.com/nvm-sh/nvm)
 
 ##### Install Moon
+
 At Gallery, we use a monorepo tool called [moon](https://moonrepo.dev).
 Every time you want to run a task in our repo, it will follow the format `moon {command-here}`.
 
 **Before moving forward with this README, please install `moon` using [these instructions](https://moonrepo.dev/docs/install#installing)**
+
+You'll notice there are different apps and packages in the repo, each with its own `moon.yml` file. The files list the relevant moon commands to run for each target. If you're unsure about which command to run to boot a specific app or package, refer to the associated `moon.yml`.`
 
 ### Setup Web
 
@@ -42,6 +45,10 @@ moon run web:dev
 ```
 
 The app will be running at http://localhost:3000.
+
+### Working with Shared Packages
+
+`/packages/shared` contains shared code that can be utilized by both web and mobile. When developing here, you'll need to run codegen specific to that package, such as `moon run shared:codegen-watch`. In other words, just having the web or mobile app running won't automatically handle codegen for `shared` – that will need to be a separate process.
 
 ### E2E Testing
 

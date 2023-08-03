@@ -6,11 +6,11 @@ import styled from 'styled-components';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { NftSelectorViewFragment$key } from '~/generated/NftSelectorViewFragment.graphql';
 import useAddWalletModal from '~/hooks/useAddWalletModal';
+import { Chain } from '~/shared/utils/chains';
 
 import { Button } from '../core/Button/Button';
 import { VStack } from '../core/Spacer/Stack';
 import { BaseXL } from '../core/Text/Text';
-import { Chain } from '../GalleryEditor/PiecesSidebar/chains';
 import {
   groupNftSelectorCollectionsByAddress,
   NftSelectorCollectionGroup,

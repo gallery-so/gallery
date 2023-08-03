@@ -1,6 +1,6 @@
 import { useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
 import { useNavigation } from '@react-navigation/native';
-import { ForwardedRef, forwardRef, useCallback, useRef } from 'react';
+import { ForwardedRef, forwardRef, useCallback, useMemo, useRef } from 'react';
 import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
@@ -12,43 +12,48 @@ import {
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { Typography } from '~/components/Typography';
 import { DeletePostBottomSheetFragment$key } from '~/generated/DeletePostBottomSheetFragment.graphql';
-import { DeletePostBottomSheetQueryFragment$key } from '~/generated/DeletePostBottomSheetQueryFragment.graphql';
 import { usePost } from '~/screens/PostScreen/usePost';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 const SNAP_POINTS = ['CONTENT_HEIGHT'];
 
 type Props = {
   postRef: DeletePostBottomSheetFragment$key;
-  queryRef: DeletePostBottomSheetQueryFragment$key;
   onDeleted: () => void;
 };
 
 function DeletePostBottomSheet(
-  { postRef, queryRef, onDeleted }: Props,
+  { postRef, onDeleted }: Props,
   ref: ForwardedRef<GalleryBottomSheetModalType>
 ) {
   const post = useFragment(
     graphql`
       fragment DeletePostBottomSheetFragment on Post {
         dbid @required(action: THROW)
+        tokens {
+          ...usePostTokenFragment
+        }
       }
     `,
     postRef
   );
 
-  const query = useFragment(
-    graphql`
-      fragment DeletePostBottomSheetQueryFragment on Query {
-        ...usePostFragment
-      }
-    `,
-    queryRef
-  );
-
   const navigation = useNavigation();
 
+  const token = useMemo(() => {
+    const tokens = post?.tokens;
+
+    return removeNullValues(tokens)[0];
+  }, [post?.tokens]);
+
+  if (!token) {
+    throw new Error(
+      "We couldn't find that token in the post. Something went wrong and we're looking into it."
+    );
+  }
+
   const { deletePost } = usePost({
-    queryRef: query,
+    tokenRef: token,
   });
   const { bottom } = useSafeAreaPadding();
 

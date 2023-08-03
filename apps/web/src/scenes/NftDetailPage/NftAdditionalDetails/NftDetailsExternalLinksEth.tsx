@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -11,9 +10,7 @@ import { NewTooltip } from '~/components/Tooltip/NewTooltip';
 import { useTooltipHover } from '~/components/Tooltip/useTooltipHover';
 import { NftDetailsExternalLinksEthFragment$key } from '~/generated/NftDetailsExternalLinksEthFragment.graphql';
 import { RefreshIcon } from '~/icons/RefreshIcon';
-import { extractMirrorXyzUrl } from '~/shared/utils/extractMirrorXyzUrl';
-import { getOpenseaExternalUrl, hexHandler } from '~/shared/utils/getOpenseaExternalUrl';
-import { DateFormatOption, formatDateString } from '~/utils/formatDateString';
+import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
 
 import { useRefreshMetadata } from './useRefreshMetadata';
 
@@ -21,82 +18,36 @@ type Props = {
   tokenRef: NftDetailsExternalLinksEthFragment$key;
 };
 
-const PROHIBITION_CONTRACT_ADDRESSES = ['0x47a91457a3a1f700097199fd63c039c4784384ab'];
-
 export default function NftDetailsExternalLinksEth({ tokenRef }: Props) {
   const token = useFragment(
     graphql`
       fragment NftDetailsExternalLinksEthFragment on Token {
-        externalUrl
-        tokenId
-        tokenMetadata
-        chain
-        lastUpdated
-        contract {
-          contractAddress {
-            address
-          }
-        }
         ...useRefreshMetadataFragment
+        ...extractRelevantMetadataFromTokenFragment
       }
     `,
     tokenRef
   );
 
-  const {
-    tokenId,
-    contract,
-    externalUrl,
-    tokenMetadata,
-    chain,
-    lastUpdated: lastUpdatedRaw,
-  } = token;
+  const { lastUpdated, openseaUrl, mirrorUrl, prohibitionUrl, projectUrl } =
+    extractRelevantMetadataFromToken(token);
 
   const [refresh, isRefreshing] = useRefreshMetadata(token);
 
-  const openSeaExternalUrl = useMemo(() => {
-    if (chain && contract?.contractAddress?.address && tokenId) {
-      return getOpenseaExternalUrl(chain, contract.contractAddress.address, tokenId);
-    }
-
-    return null;
-  }, [chain, contract?.contractAddress?.address, tokenId]);
-
-  const mirrorXyzUrl = useMemo(() => {
-    if (tokenMetadata) {
-      return extractMirrorXyzUrl(tokenMetadata);
-    }
-
-    return null;
-  }, [tokenMetadata]);
-
-  const prohibitionUrl = useMemo(() => {
-    if (!contract?.contractAddress?.address || !tokenId) {
-      return null;
-    }
-    if (PROHIBITION_CONTRACT_ADDRESSES.includes(contract?.contractAddress?.address)) {
-      return `https://prohibition.art/token/${contract?.contractAddress?.address}-${hexHandler(
-        tokenId
-      )}`;
-    }
-    return null;
-  }, [contract?.contractAddress?.address, tokenId]);
   const { floating, reference, getFloatingProps, getReferenceProps, floatingStyle } =
     useTooltipHover({
       placement: 'top',
     });
 
-  const lastUpdated = formatDateString(lastUpdatedRaw, DateFormatOption.ABBREVIATED);
-
   return (
     <StyledExternalLinks gap={14}>
-      {mirrorXyzUrl && <InteractiveLink href={mirrorXyzUrl}>View on Mirror</InteractiveLink>}
+      {mirrorUrl && <InteractiveLink href={mirrorUrl}>View on Mirror</InteractiveLink>}
       {prohibitionUrl && (
         <InteractiveLink href={prohibitionUrl}>View on Prohibition</InteractiveLink>
       )}
-      {openSeaExternalUrl && (
+      {openseaUrl && (
         <VStack gap={14}>
-          <InteractiveLink href={openSeaExternalUrl}>View on OpenSea</InteractiveLink>
+          <InteractiveLink href={openseaUrl}>View on OpenSea</InteractiveLink>
           <StartAlignedButtonPill
             onClick={refresh}
             disabled={isRefreshing}
@@ -117,7 +68,7 @@ export default function NftDetailsExternalLinksEth({ tokenRef }: Props) {
           </StartAlignedButtonPill>
         </VStack>
       )}
-      {externalUrl && <InteractiveLink href={externalUrl}>More Info</InteractiveLink>}
+      {projectUrl && <InteractiveLink href={projectUrl}>More Info</InteractiveLink>}
     </StyledExternalLinks>
   );
 }
