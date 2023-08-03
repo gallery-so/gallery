@@ -34,10 +34,10 @@ export default function ProfileViewLensPill({ userRef }: Props) {
   );
 
   const handlePress = useCallback(() => {
-    if (lensUsername) {
-      Linking.openURL(`https://lenster.com/u/${lensUsername}`);
+    if (rawLensUsername) {
+      Linking.openURL(`https://lenster.xyz/u/${rawLensUsername}`);
     }
-  }, [lensUsername]);
+  }, [rawLensUsername]);
 
   if (!lensUsername || !rawLensUsername) {
     return null;
