@@ -69,7 +69,7 @@ export function CommunityProfilePictureStack({ communitiesRef, total, onClick }:
       align="center"
       inline
       onClick={handleClick}
-      isClickable={!!onClick}
+      isClickable={Boolean(onClick)}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
