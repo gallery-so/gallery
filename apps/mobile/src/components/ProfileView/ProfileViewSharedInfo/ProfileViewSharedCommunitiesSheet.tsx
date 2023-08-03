@@ -1,15 +1,14 @@
+/* eslint-disable no-console */
 import { useNavigation } from '@react-navigation/native';
-import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import { ForwardedRef, forwardRef, useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { graphql, usePaginationFragment } from 'react-relay';
 
+import { CommunityFollowList } from '~/components/CommunitiesFollowList/CommunityFollowList';
 import {
   GalleryBottomSheetModal,
   GalleryBottomSheetModalType,
 } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
-import { InteractiveLink } from '~/components/InteractiveLink';
-import { RawProfilePicture } from '~/components/ProfilePicture/RawProfilePicture';
 import { Typography } from '~/components/Typography';
 import { ProfileViewSharedCommunitiesSheetFragment$key } from '~/generated/ProfileViewSharedCommunitiesSheetFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
@@ -27,12 +26,6 @@ export type ContractAddress = {
   address: string | null;
   chain: string | null;
 };
-type ListItemType = {
-  kind: 'community';
-  name?: string;
-  contractAddress: ContractAddress | null;
-  profileImageURL: string | null;
-};
 
 function ProfileViewSharedCommunitiesSheet(
   props: Props,
@@ -49,12 +42,7 @@ function ProfileViewSharedCommunitiesSheet(
               __typename
               ... on Community {
                 __typename
-                name
-                contractAddress {
-                  address
-                  chain
-                }
-                profileImageURL
+                ...CommunityFollowListFragment
               }
             }
           }
@@ -65,20 +53,15 @@ function ProfileViewSharedCommunitiesSheet(
   );
 
   const nonNullCommunities = useMemo(() => {
-    const items: ListItemType[] = [];
+    const communities = [];
 
     for (const edge of data.sharedCommunities?.edges ?? []) {
       if (edge?.node?.__typename === 'Community' && edge?.node) {
-        items.push({
-          kind: 'community',
-          name: edge.node.name ?? '',
-          contractAddress: edge.node.contractAddress,
-          profileImageURL: edge.node.profileImageURL,
-        });
+        communities.push(edge.node);
       }
     }
 
-    return items;
+    return communities;
   }, [data.sharedCommunities?.edges]);
 
   const contentContainerStyle = useListContentStyle();
@@ -102,38 +85,6 @@ function ProfileViewSharedCommunitiesSheet(
     }
   }, [hasNext, loadNext]);
 
-  const renderItem = useCallback<ListRenderItem<ListItemType>>(
-    ({ item }) => {
-      return (
-        <View className="px-4 py-4 flex flex-row items-center" key={item.name}>
-          <InteractiveLink
-            onPress={() => item.contractAddress && handleCommunityPress(item.contractAddress)}
-            type="Profile View Shared Communities"
-          >
-            <View className="flex flex-row items-center">
-              <RawProfilePicture
-                imageUrl={item.profileImageURL as string}
-                size={'sm'}
-                eventElementId="profilePicture"
-                eventName="profilePictureClicked"
-              />
-              <Typography
-                className="text-sm px-4"
-                font={{
-                  family: 'ABCDiatype',
-                  weight: 'Bold',
-                }}
-              >
-                {item.name}
-              </Typography>
-            </View>
-          </InteractiveLink>
-        </View>
-      );
-    },
-    [handleCommunityPress]
-  );
-
   return (
     <GalleryBottomSheetModal ref={ref} index={0} snapPoints={snapPoints}>
       <View style={contentContainerStyle}>
@@ -148,13 +99,11 @@ function ProfileViewSharedCommunitiesSheet(
         </Typography>
 
         <View className="flex-grow">
-          <FlashList
-            data={nonNullCommunities}
-            renderItem={renderItem}
-            onEndReached={loadMore}
-            estimatedItemSize={20}
-            contentContainerStyle={{ paddingBottom: 24 }}
-          ></FlashList>
+          <CommunityFollowList
+            onCommunityPress={handleCommunityPress}
+            onLoadMore={loadMore}
+            communityRefs={nonNullCommunities}
+          />
         </View>
       </View>
     </GalleryBottomSheetModal>
