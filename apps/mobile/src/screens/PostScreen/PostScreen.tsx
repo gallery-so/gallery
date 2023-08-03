@@ -85,7 +85,15 @@ export function PostScreen() {
       caption,
     });
 
-    mainTabNavigation.pop(1);
+    mainTabNavigation.reset({
+      index: 0,
+      routes: [
+        {
+          name: 'MainTabs',
+          params: { screen: 'HomeTab', params: { screen: 'Home', params: { screen: 'Latest' } } },
+        },
+      ],
+    });
 
     if (route.params.redirectTo === 'Community') {
       mainTabNavigation.navigate('Community', {
