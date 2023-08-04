@@ -1,3 +1,4 @@
+import { lazy } from 'react';
 import { Environment, PreloadedQuery, RelayEnvironmentProvider } from 'react-relay';
 
 import Debugger from '~/components/Debugger/Debugger';
@@ -16,6 +17,10 @@ import SidebarDrawerProvider from './globalLayout/GlobalSidebar/SidebarDrawerCon
 import ModalProvider from './modal/ModalContext';
 import { SwrProvider } from './swr/SwrContext';
 import ToastProvider from './toast/ToastContext';
+
+const FullPageNftDetailModalListener = lazy(
+  () => import('./fullPageNftDetailModalListener/FullPageNftDetailModalListener')
+);
 
 type Props = {
   children: React.ReactNode;
@@ -46,6 +51,7 @@ export default function AppProvider({
                             <GlobalLayoutContextProvider
                               preloadedQuery={globalLayoutContextPreloadedQuery}
                             >
+                              <FullPageNftDetailModalListener />
                               {isProd ? null : <Debugger />}
                               {children}
                             </GlobalLayoutContextProvider>
