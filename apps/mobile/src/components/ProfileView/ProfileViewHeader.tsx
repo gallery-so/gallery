@@ -3,15 +3,15 @@ import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { Markdown } from '~/components/Markdown';
-import { ProfileTabBar } from '~/components/ProfileView/ProfileTabBar';
 import { ProfileViewHeaderFragment$key } from '~/generated/ProfileViewHeaderFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 
+import { GalleryTabBar } from '../GalleryTabs/GalleryTabBar';
 import ProfileViewSharedInfo from './ProfileViewSharedInfo/ProfileViewSharedInfo';
 import ProfileViewFarcasterPill from './SocialPills/ProfileViewFarcasterPill';
-import ProfileViewTwitterPill from './SocialPills/ProfileViewTwitterPill';
 import ProfileViewLensPill from './SocialPills/ProfileViewLensPill';
+import ProfileViewTwitterPill from './SocialPills/ProfileViewTwitterPill';
 
 type Props = {
   selectedRoute: string;
@@ -101,7 +101,13 @@ export function ProfileViewHeader({ queryRef, selectedRoute, onRouteChange }: Pr
         <ProfileViewLensPill userRef={user} />
       </View>
 
-      <ProfileTabBar activeRoute={selectedRoute} onRouteChange={onRouteChange} routes={routes} />
+      <GalleryTabBar
+        activeRoute={selectedRoute}
+        onRouteChange={onRouteChange}
+        routes={routes}
+        eventElementId="Profile Tab"
+        eventName="Profile Tab Clicked"
+      />
     </View>
   );
 }

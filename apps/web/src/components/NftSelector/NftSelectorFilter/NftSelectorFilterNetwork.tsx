@@ -4,12 +4,12 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { BaseM } from '~/components/core/Text/Text';
-import { Chain, ChainMetadata, chains } from '~/components/GalleryEditor/PiecesSidebar/chains';
 import { SidebarView } from '~/components/GalleryEditor/PiecesSidebar/SidebarViewSelector';
 import { NftSelectorFilterNetworkFragment$key } from '~/generated/NftSelectorFilterNetworkFragment.graphql';
 import DoubleArrowsIcon from '~/icons/DoubleArrowsIcon';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
+import { Chain, ChainMetadata, chains } from '~/shared/utils/chains';
 import isAdminRole from '~/utils/graphql/isAdminRole';
 
 import { Dropdown } from '../../core/Dropdown/Dropdown';

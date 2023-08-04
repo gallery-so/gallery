@@ -1,12 +1,11 @@
 import { useCallback, useState } from 'react';
 import { ConnectionHandler, graphql, useFragment } from 'react-relay';
 import { SelectorStoreUpdater } from 'relay-runtime';
-import isFeatureEnabled, { FeatureFlag } from 'src/utils/isFeatureEnabled';
 
 import { useToastActions } from '~/contexts/ToastContext';
 import { usePostDeleteMutation } from '~/generated/usePostDeleteMutation.graphql';
-import { usePostFragment$key } from '~/generated/usePostFragment.graphql';
 import { usePostMutation } from '~/generated/usePostMutation.graphql';
+import { usePostTokenFragment$key } from '~/generated/usePostTokenFragment.graphql';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 
@@ -15,17 +14,22 @@ type PostTokensInput = {
   caption?: string;
 };
 
-export function usePost({ queryRef }: { queryRef: usePostFragment$key }) {
-  const query = useFragment(
+type Props = {
+  tokenRef: usePostTokenFragment$key;
+};
+
+export function usePost({ tokenRef }: Props) {
+  const token = useFragment(
     graphql`
-      fragment usePostFragment on Query {
-        ...isFeatureEnabledFragment
+      fragment usePostTokenFragment on Token {
+        __typename
+        community {
+          dbid
+        }
       }
     `,
-    queryRef
+    tokenRef
   );
-
-  const isPostEnabled = isFeatureEnabled(FeatureFlag.KOALA, query);
 
   const [post, isPosting] = usePromisifiedMutation<usePostMutation>(graphql`
     mutation usePostMutation($input: PostTokensInput!) {
@@ -63,6 +67,11 @@ export function usePost({ queryRef }: { queryRef: usePostFragment$key }) {
 
   const { pushToast } = useToastActions();
 
+  const communityConnection = ConnectionHandler.getConnectionID(
+    `Community:${token?.community?.dbid}`,
+    'CommunityViewPostsTabFragment_posts'
+  );
+
   const handlePost = useCallback(
     ({ tokenId, caption }: PostTokensInput) => {
       const updater: SelectorStoreUpdater<usePostMutation['response']> = (store, response) => {
@@ -80,21 +89,32 @@ export function usePost({ queryRef }: { queryRef: usePostFragment$key }) {
             'WorldwideFeedFragment_globalFeed'
           );
 
-          const connectionName = `${connectionId}(includePosts:${
-            isPostEnabled ? 'true' : 'false'
-          })`;
+          const communityStore = store.get(communityConnection);
+
+          const connectionName = `${connectionId}(includePosts:true)`;
 
           const relayStore = store.get(connectionName);
 
-          if (!relayStore) {
-            return;
+          if (relayStore) {
+            const edge = ConnectionHandler.createEdge(store, relayStore, newPost, 'FeedEdge');
+            ConnectionHandler.insertEdgeAfter(relayStore, edge);
           }
 
-          // Create a new edge
-          const edge = ConnectionHandler.createEdge(store, relayStore, newPost, 'FeedEdge');
+          if (communityStore) {
+            const pageInfo = communityStore.getLinkedRecord('pageInfo');
+            pageInfo?.setValue(((pageInfo?.getValue('total') as number) ?? 1) + 1, 'total');
 
-          // Insert the edge at the end of the connection
-          ConnectionHandler.insertEdgeAfter(relayStore, edge);
+            // Create a new edge
+            const communityEdge = ConnectionHandler.createEdge(
+              store,
+              communityStore,
+              newPost,
+              'PostEdge'
+            );
+
+            // Insert the edge at the end of the connection
+            ConnectionHandler.insertEdgeAfter(communityStore, communityEdge);
+          }
         }
       };
 
@@ -116,7 +136,7 @@ export function usePost({ queryRef }: { queryRef: usePostFragment$key }) {
         reportError(error);
       });
     },
-    [isPostEnabled, pushToast, post, reportError]
+    [communityConnection, pushToast, post, reportError]
   );
 
   const handleDelete = useCallback(
@@ -131,6 +151,13 @@ export function usePost({ queryRef }: { queryRef: usePostFragment$key }) {
         ) {
           const deletedId = response.deletePost.deletedId.dbid;
           store.delete(`Post:${deletedId}`);
+
+          const communityStore = store.get(communityConnection);
+
+          if (communityStore) {
+            const pageInfo = communityStore.getLinkedRecord('pageInfo');
+            pageInfo?.setValue(((pageInfo?.getValue('total') as number) ?? 1) - 1, 'total');
+          }
         }
       };
       await deletePost({
@@ -140,7 +167,7 @@ export function usePost({ queryRef }: { queryRef: usePostFragment$key }) {
         },
       });
     },
-    [deletePost]
+    [communityConnection, deletePost]
   );
 
   return {

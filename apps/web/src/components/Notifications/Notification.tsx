@@ -165,6 +165,18 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
 
   const timeAgo = getTimeSince(notification.updatedTime);
 
+  if (
+    ![
+      'SomeoneAdmiredYourFeedEventNotification',
+      'SomeoneCommentedOnYourFeedEventNotification',
+      'SomeoneFollowedYouNotification',
+      'SomeoneFollowedYouBackNotification',
+      'SomeoneViewedYourGalleryNotification',
+    ].includes(notification.__typename)
+  ) {
+    return null;
+  }
+
   return (
     <Container isClickable={isClickable} onClick={handleClick}>
       <HStack gap={8} align="center">

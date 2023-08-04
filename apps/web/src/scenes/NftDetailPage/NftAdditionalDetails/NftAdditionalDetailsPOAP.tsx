@@ -1,9 +1,9 @@
-import { format, parse } from 'date-fns';
 import { graphql, useFragment } from 'react-relay';
 
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleXS } from '~/components/core/Text/Text';
 import { NftAdditionalDetailsPOAPFragment$key } from '~/generated/NftAdditionalDetailsPOAPFragment.graphql';
+import extractPoapMetadata from '~/shared/utils/extractPoapMetadata';
 
 type POAPNftDetailSectionProps = {
   tokenRef: NftAdditionalDetailsPOAPFragment$key;
@@ -23,26 +23,14 @@ export function NftAdditionalDetailsPOAP({ tokenRef }: POAPNftDetailSectionProps
     return null;
   }
 
-  const {
-    city,
-    country,
-    created,
-    event_id: id,
-    supply,
-    chain,
-  } = JSON.parse(token.tokenMetadata) ?? {};
-
-  const location = city && country ? `${city}, ${country}` : null;
-
-  const parsedDate = created ? parse(created, 'yyyy-MM-dd HH:mm:ss', new Date()) : null;
-  const formattedDate = parsedDate ? format(parsedDate, 'MMMM do, yyyy') : null;
+  const { id, location, createdDate, supply, chain } = extractPoapMetadata(token.tokenMetadata);
 
   return (
     <VStack gap={16}>
-      {formattedDate && (
+      {createdDate && (
         <div>
           <TitleXS>Created</TitleXS>
-          <BaseM>{formattedDate}</BaseM>
+          <BaseM>{createdDate}</BaseM>
         </div>
       )}
       {location && (
