@@ -9,12 +9,12 @@ import { ChevronLeftIcon } from '~/icons/ChevronLeftIcon';
 import { RefreshIcon } from '~/icons/RefreshIcon';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import useDebounce from '~/shared/hooks/useDebounce';
+import { Chain } from '~/shared/utils/chains';
 import { doesUserOwnWalletFromChain } from '~/utils/doesUserOwnWalletFromChain';
 
 import IconContainer from '../core/IconContainer';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM } from '../core/Text/Text';
-import { Chain } from '../GalleryEditor/PiecesSidebar/chains';
 import isRefreshDisabledForUser from '../GalleryEditor/PiecesSidebar/isRefreshDisabledForUser';
 import { SidebarView } from '../GalleryEditor/PiecesSidebar/SidebarViewSelector';
 import { NewTooltip } from '../Tooltip/NewTooltip';
@@ -33,11 +33,20 @@ import { NftSelectorView } from './NftSelectorView';
 type Props = {
   tokensRef: NftSelectorFragment$key;
   queryRef: NftSelectorQueryFragment$key;
+  onSelectToken: (tokenId: string) => void;
+  headerText: string;
+  preSelectedContract?: NftSelectorContractType;
 };
 
 export type NftSelectorContractType = Omit<NftSelectorCollectionGroup, 'tokens'> | null;
 
-export function NftSelector({ tokensRef, queryRef }: Props) {
+export function NftSelector({
+  tokensRef,
+  queryRef,
+  onSelectToken,
+  headerText,
+  preSelectedContract,
+}: Props) {
   const tokens = useFragment(
     graphql`
       fragment NftSelectorFragment on Token @relay(plural: true) {
@@ -81,7 +90,9 @@ export function NftSelector({ tokensRef, queryRef }: Props) {
   const [selectedSortView, setSelectedSortView] = useState<NftSelectorSortView>('Recently added');
   const [selectedNetworkView, setSelectedNetworkView] = useState<Chain>('Ethereum');
 
-  const [selectedContract, setSelectedContract] = useState<NftSelectorContractType>(null);
+  const [selectedContract, setSelectedContract] = useState<NftSelectorContractType>(
+    preSelectedContract || null
+  );
 
   const { isLocked, syncTokens } = useSyncTokens();
 
@@ -187,10 +198,10 @@ export function NftSelector({ tokensRef, queryRef }: Props) {
               size="sm"
               icon={<ChevronLeftIcon />}
             />
-            <StyledTitleText>Select profile picture</StyledTitleText>
+            <StyledTitleText>{headerText}</StyledTitleText>
           </HStack>
         ) : (
-          <StyledTitleText>Select profile picture</StyledTitleText>
+          <StyledTitleText>{headerText}</StyledTitleText>
         )}
       </StyledTitle>
 
@@ -253,8 +264,9 @@ export function NftSelector({ tokensRef, queryRef }: Props) {
           selectedContractAddress={selectedContract?.address ?? null}
           onSelectContract={setSelectedContract}
           selectedNetworkView={selectedNetworkView}
-          hasSearchKeyword={!!debouncedSearchKeyword}
+          hasSearchKeyword={Boolean(debouncedSearchKeyword)}
           handleRefresh={handleRefresh}
+          onSelectToken={onSelectToken}
         />
       )}
     </StyledNftSelectorModal>

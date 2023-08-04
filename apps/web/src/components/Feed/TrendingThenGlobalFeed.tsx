@@ -6,6 +6,7 @@ import { TrendingThenGlobalFeedGlobalFragment$key } from '~/generated/TrendingTh
 import { TrendingThenGlobalFeedGlobalPaginationQuery } from '~/generated/TrendingThenGlobalFeedGlobalPaginationQuery.graphql';
 import { TrendingThenGlobalFeedTrendingFragment$key } from '~/generated/TrendingThenGlobalFeedTrendingFragment.graphql';
 import { TrendingThenGlobalFeedTrendingPaginationQuery } from '~/generated/TrendingThenGlobalFeedTrendingPaginationQuery.graphql';
+import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 import { useTrackLoadMoreFeedEvents } from './analytics';
 import { ITEMS_PER_PAGE } from './constants';
@@ -23,6 +24,7 @@ export default function TrendingThenGlobalFeed({ queryRef }: Props) {
 
         ...TrendingThenGlobalFeedGlobalFragment
         ...TrendingThenGlobalFeedTrendingFragment
+        ...isFeatureEnabledFragment
       }
     `,
     queryRef
@@ -35,11 +37,11 @@ export default function TrendingThenGlobalFeed({ queryRef }: Props) {
     graphql`
       fragment TrendingThenGlobalFeedGlobalFragment on Query
       @refetchable(queryName: "TrendingThenGlobalFeedGlobalPaginationQuery") {
-        globalFeed(before: $globalBefore, last: $globalLast)
+        globalFeed(before: $globalBefore, last: $globalLast, includePosts: $includePosts)
           @connection(key: "NonAuthedFeed_globalFeed") {
           edges {
             node {
-              ... on FeedEvent {
+              ... on FeedEventOrError {
                 __typename
 
                 ...FeedListEventDataFragment
@@ -61,11 +63,11 @@ export default function TrendingThenGlobalFeed({ queryRef }: Props) {
     graphql`
       fragment TrendingThenGlobalFeedTrendingFragment on Query
       @refetchable(queryName: "TrendingThenGlobalFeedTrendingPaginationQuery") {
-        trendingFeed(before: $trendingBefore, last: $trendingLast)
+        trendingFeed(before: $trendingBefore, last: $trendingLast, includePosts: $includePosts)
           @connection(key: "NonAuthedFeed_trendingFeed") {
           edges {
             node {
-              ... on FeedEvent {
+              ... on FeedEventOrError {
                 __typename
 
                 ...FeedListEventDataFragment
@@ -80,6 +82,8 @@ export default function TrendingThenGlobalFeed({ queryRef }: Props) {
     query
   );
 
+  const isKoalaEnabled = isFeatureEnabled(FeatureFlag.KOALA, query);
+
   const feedData = useMemo(() => {
     const events = [];
 
@@ -92,7 +96,11 @@ export default function TrendingThenGlobalFeed({ queryRef }: Props) {
     }
 
     for (const edge of joined) {
-      if (edge?.node?.__typename === 'FeedEvent' && edge.node) {
+      if (
+        (edge?.node?.__typename === 'FeedEvent' ||
+          (edge?.node?.__typename === 'Post' && isKoalaEnabled)) &&
+        edge.node
+      ) {
         events.push(edge.node);
       }
     }
@@ -100,6 +108,7 @@ export default function TrendingThenGlobalFeed({ queryRef }: Props) {
     return events;
   }, [
     globalPagination.data.globalFeed?.edges,
+    isKoalaEnabled,
     trendingPagination.data.trendingFeed?.edges,
     trendingPagination.hasPrevious,
   ]);

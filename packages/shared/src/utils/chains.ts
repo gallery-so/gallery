@@ -18,9 +18,9 @@ export const chains = [
     isEnabled: true,
   },
   {
-    name: 'Zora',
-    shortName: 'ZORA',
-    icon: '/icons/zora_logo.svg',
+    name: 'Polygon',
+    shortName: 'POLY',
+    icon: '/icons/polygon_logo.svg',
     baseChain: 'Ethereum',
     hasCreatorSupport: false,
     isEnabled: true,
@@ -29,6 +29,22 @@ export const chains = [
     name: 'Arbitrum',
     shortName: 'ARB',
     icon: '/icons/arbitrum_logo.svg',
+    baseChain: 'Ethereum',
+    hasCreatorSupport: false,
+    isEnabled: true,
+  },
+  {
+    name: 'Zora',
+    shortName: 'ZORA',
+    icon: '/icons/zora_logo.svg',
+    baseChain: 'Ethereum',
+    hasCreatorSupport: false,
+    isEnabled: true,
+  },
+  {
+    name: 'Base',
+    shortName: 'BASE',
+    icon: '/icons/base_logo.svg',
     baseChain: 'Ethereum',
     hasCreatorSupport: false,
     isEnabled: true,
@@ -49,14 +65,6 @@ export const chains = [
     hasCreatorSupport: false,
     isEnabled: true,
   },
-  {
-    name: 'Polygon',
-    shortName: 'POLY',
-    icon: '/icons/polygon_logo.svg',
-    baseChain: 'Ethereum',
-    hasCreatorSupport: false,
-    isEnabled: false,
-  },
 ] as const;
 
 export type Chain = (typeof chains)[number]['name'];
@@ -65,3 +73,7 @@ export type LowercaseChain = Lowercase<Chain>;
 export type ChainMetadata = (typeof chains)[number];
 
 export const chainsMap = keyBy(chains, 'name') as Record<Chain, ChainMetadata>;
+
+export function isChainEvm(chain: Chain) {
+  return chainsMap[chain].baseChain === 'Ethereum';
+}

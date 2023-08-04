@@ -4,17 +4,11 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { NftAdditionalDetailsEthFragment$key } from '~/generated/NftAdditionalDetailsEthFragment.graphql';
-import { extractMirrorXyzUrl } from '~/shared/utils/extractMirrorXyzUrl';
-import { getOpenseaExternalUrl, hexHandler } from '~/shared/utils/getOpenseaExternalUrl';
+import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
+import { hexHandler } from '~/shared/utils/getOpenseaExternalUrl';
 
 import { LinkableAddress } from '../../components/LinkableAddress';
-import {
-  DetailExternalLink,
-  DetailLabelText,
-  DetailMoreInfoLink,
-  DetailSection,
-  DetailValue,
-} from './DetailSection';
+import { DetailExternalLink, DetailLabelText, DetailSection, DetailValue } from './DetailSection';
 
 type NftAdditionalDetailsEthProps = {
   tokenRef: NftAdditionalDetailsEthFragment$key;
@@ -24,51 +18,44 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionalDetailsEthPro
   const token = useFragment(
     graphql`
       fragment NftAdditionalDetailsEthFragment on Token {
-        externalUrl
         tokenId
-
         chain
-        tokenMetadata
-
         contract {
           contractAddress {
             address
             ...LinkableAddressFragment
           }
         }
+
+        ...extractRelevantMetadataFromTokenFragment
       }
     `,
     tokenRef
   );
 
-  const { tokenId, contract, externalUrl, chain, tokenMetadata } = token;
+  const { tokenId, openseaUrl, mirrorUrl, prohibitionUrl, projectUrl } =
+    extractRelevantMetadataFromToken(token);
 
-  const openSeaExternalUrl = useMemo(() => {
-    if (chain && contract?.contractAddress?.address && tokenId) {
-      return getOpenseaExternalUrl(chain, contract.contractAddress.address, tokenId);
-    }
+  const { contract } = token;
 
-    return null;
-  }, [chain, contract?.contractAddress?.address, tokenId]);
-
-  const mirrorXyzUrl = useMemo(() => {
-    if (tokenMetadata) {
-      return extractMirrorXyzUrl(tokenMetadata);
-    }
-
-    return null;
-  }, [tokenMetadata]);
+  const numOfLinks = useMemo(
+    () => [openseaUrl, projectUrl, mirrorUrl, prohibitionUrl].filter(Boolean).length,
+    [openseaUrl, projectUrl, mirrorUrl, prohibitionUrl]
+  );
 
   return (
     <View className="flex flex-col space-y-4">
       <View className="flex flex-col space-y-4">
-        <View className="flex flex-row space-x-16">
+        <View className="flex flex-row space-x-3">
           {contract?.contractAddress?.address && (
             <DetailSection>
               <DetailLabelText>CONTRACT</DetailLabelText>
               <LinkableAddress
                 chainAddressRef={contract.contractAddress}
                 type="NFT Detail Contract Address"
+                textStyle={{ color: 'black' }}
+                style={{ paddingTop: 2 }}
+                font={{ family: 'ABCDiatype', weight: 'Bold' }}
               />
             </DetailSection>
           )}
@@ -79,42 +66,79 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionalDetailsEthPro
               <DetailValue>{hexHandler(tokenId)}</DetailValue>
             </DetailSection>
           )}
-        </View>
 
-        <View className="flex flex-row space-x-16">
           {token.chain && (
             <DetailSection>
               <DetailLabelText>NETWORK</DetailLabelText>
               <DetailValue>{token.chain}</DetailValue>
             </DetailSection>
           )}
+        </View>
 
-          {openSeaExternalUrl && (
+        <View className="flex flex-row space-x-3">
+          {openseaUrl && (
             <DetailSection>
-              <DetailExternalLink
-                link={openSeaExternalUrl}
-                label="OpenSea"
-                trackingLabel="NFT Detail View on Opensea"
-              />
+              <DetailLabelText>VIEW ON</DetailLabelText>
+              <View className="flex flex-row">
+                <DetailExternalLink
+                  link={openseaUrl}
+                  label="OpenSea"
+                  trackingLabel="NFT Detail View on Opensea"
+                  showExternalLinkIcon={true}
+                  font={{ family: 'ABCDiatype', weight: 'Bold' }}
+                />
+              </View>
             </DetailSection>
           )}
 
-          {mirrorXyzUrl && (
+          {mirrorUrl && (
             <DetailSection>
-              <DetailExternalLink
-                link={mirrorXyzUrl}
-                label="Mirror"
-                trackingLabel="NFT Detail View on Mirror"
-              />
+              <DetailLabelText>VIEW ON</DetailLabelText>
+              <View className="flex flex-row">
+                <DetailExternalLink
+                  link={mirrorUrl}
+                  label="Mirror"
+                  trackingLabel="NFT Detail View on Mirror"
+                  showExternalLinkIcon={true}
+                  font={{ family: 'ABCDiatype', weight: 'Bold' }}
+                />
+              </View>
+            </DetailSection>
+          )}
+          {projectUrl && (
+            <DetailSection>
+              <DetailLabelText>VIEW ON</DetailLabelText>
+              <View className="flex flex-col">
+                <DetailExternalLink
+                  link={projectUrl}
+                  label="Visit Site"
+                  trackingLabel="NFT Detail View on External Link"
+                  showExternalLinkIcon={true}
+                  font={{ family: 'ABCDiatype', weight: 'Bold' }}
+                />
+              </View>
+            </DetailSection>
+          )}
+          {prohibitionUrl && (
+            <DetailSection>
+              <DetailLabelText>VIEW ON</DetailLabelText>
+              <View className="flex flex-row">
+                <DetailExternalLink
+                  link={prohibitionUrl}
+                  label="Prohibition"
+                  trackingLabel="NFT Detail View on Prohibition"
+                  showExternalLinkIcon={true}
+                  font={{ family: 'ABCDiatype', weight: 'Bold' }}
+                />
+              </View>
+            </DetailSection>
+          )}
+          {numOfLinks === 2 && (
+            <DetailSection>
+              <DetailLabelText> </DetailLabelText>
             </DetailSection>
           )}
         </View>
-
-        {externalUrl && (
-          <DetailSection>
-            <DetailMoreInfoLink link={externalUrl} />
-          </DetailSection>
-        )}
       </View>
     </View>
   );

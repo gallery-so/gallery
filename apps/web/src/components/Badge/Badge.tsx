@@ -8,8 +8,7 @@ import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import Tooltip from '~/components/Tooltip/Tooltip';
 import { BADGE_ENABLED_COMMUNITY_ADDRESSES } from '~/constants/community';
 import { BadgeFragment$key } from '~/generated/BadgeFragment.graphql';
-
-import { LowercaseChain } from '../GalleryEditor/PiecesSidebar/chains';
+import { LowercaseChain } from '~/shared/utils/chains';
 
 type Props = {
   badgeRef: BadgeFragment$key;

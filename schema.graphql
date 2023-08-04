@@ -105,6 +105,7 @@ enum Chain {
   Tezos
   POAP
   Zora
+  Base
 }
 
 type ChainAddress {
@@ -569,6 +570,16 @@ type FallbackMedia {
   mediaType: String
 }
 
+type FarcasterSocialAccount implements SocialAccount {
+  type: SocialAccountType!
+  social_id: String!
+  name: String!
+  username: String!
+  profileImageURL: String!
+  bio: String!
+  display: Boolean!
+}
+
 type FeedConnection {
   edges: [FeedEdge]
   pageInfo: PageInfo!
@@ -715,7 +726,7 @@ type GalleryUser implements Node {
   isAuthenticatedUser: Boolean
   followers: [GalleryUser]
   following: [GalleryUser]
-  feed(before: String, after: String, first: Int, last: Int): FeedConnection
+  feed(before: String, after: String, first: Int, last: Int, includePosts: Boolean! = false): FeedConnection
   sharedFollowers(before: String, after: String, first: Int, last: Int): UsersConnection
   sharedCommunities(before: String, after: String, first: Int, last: Int): CommunitiesConnection
   createdCommunities(input: CreatedCommunitiesInput!, before: String, after: String, first: Int, last: Int): CommunitiesConnection
@@ -954,6 +965,7 @@ type Mutation {
   postTokens(input: PostTokensInput!): PostTokensPayloadOrError
   deletePost(postId: DBID!): DeletePostPayloadOrError
   viewGallery(galleryId: DBID!): ViewGalleryPayloadOrError
+  viewToken(tokenID: DBID!, collectionID: DBID!): ViewTokenPayloadOrError
   updateGallery(input: UpdateGalleryInput!): UpdateGalleryPayloadOrError
   publishGallery(input: PublishGalleryInput!): PublishGalleryPayloadOrError
   createGallery(input: CreateGalleryInput!): CreateGalleryPayloadOrError
@@ -982,6 +994,16 @@ type Mutation {
   updateUserExperience(input: UpdateUserExperienceInput!): UpdateUserExperiencePayloadOrError
   moveCollectionToGallery(input: MoveCollectionToGalleryInput): MoveCollectionToGalleryPayloadOrError
   generateQRCodeLoginToken: GenerateQRCodeLoginTokenPayloadOrError
+}
+
+type NewTokensNotification implements Notification & GroupedNotification & Node {
+  id: ID!
+  dbid: DBID!
+  seen: Boolean
+  creationTime: Time
+  updatedTime: Time
+  count: Int
+  token: Token
 }
 
 interface Node {
@@ -1050,6 +1072,8 @@ type PdfMedia implements Media {
 type Post implements Node {
   id: ID!
   dbid: DBID!
+  author: GalleryUser
+  creationTime: Time
   tokens: [Token]
   caption: String
   admires(before: String, after: String, first: Int, last: Int): PostAdmiresConnection
@@ -1173,9 +1197,10 @@ type Query {
   communityByAddress(communityAddress: ChainAddressInput!, forceRefresh: Boolean): CommunityByAddressOrError
   generalAllowlist: [ChainAddress!]
   galleryOfTheWeekWinners: [GalleryUser!]
-  globalFeed(before: String, after: String, first: Int, last: Int): FeedConnection
-  trendingFeed(before: String, after: String, first: Int, last: Int): FeedConnection
+  globalFeed(before: String, after: String, first: Int, last: Int, includePosts: Boolean! = false): FeedConnection
+  trendingFeed(before: String, after: String, first: Int, last: Int, includePosts: Boolean! = false): FeedConnection
   feedEventById(id: DBID!): FeedEventByIdOrError
+  postById(id: DBID!): PostOrError
   getMerchTokens(wallet: Address!): MerchTokensPayloadOrError
   galleryById(id: DBID!): GalleryByIdPayloadOrError
   viewerGalleryById(id: DBID!): ViewerGalleryByIdPayloadOrError
@@ -1351,10 +1376,13 @@ interface SocialAccount {
 
 type SocialAccounts {
   twitter: TwitterSocialAccount
+  farcaster: FarcasterSocialAccount
 }
 
 enum SocialAccountType {
   Twitter
+  Farcaster
+  Lens
 }
 
 input SocialAuthMechanism {
@@ -1898,6 +1926,7 @@ enum UserExperienceType {
   EmailUpsell
   MerchStoreUpsell
   MaintenanceFeb2023
+  MaintenanceAug2023
   TwitterConnectionOnboardingUpsell
   UpsellMintMemento4
   UpsellGallerySelects1
@@ -1989,6 +2018,12 @@ type ViewGalleryPayload {
 }
 
 union ViewGalleryPayloadOrError = ViewGalleryPayload | ErrAuthenticationFailed
+
+type ViewTokenPayload {
+  token: Token
+}
+
+union ViewTokenPayloadOrError = ViewTokenPayload | ErrAuthenticationFailed | ErrTokenNotFound | ErrCollectionNotFound
 
 type Wallet implements Node {
   id: ID!

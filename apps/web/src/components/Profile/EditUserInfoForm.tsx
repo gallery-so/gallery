@@ -12,7 +12,7 @@ import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import unescape from '~/shared/utils/unescape';
 
-import useNftSelector from '../NftSelector/useNftSelector';
+import { useNftSelectorForProfilePicture } from '../NftSelector/useNftSelector';
 import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
 import { RawProfilePicture } from '../ProfilePicture/RawProfilePicture';
 import { ProfilePictureDropdown } from './ProfilePictureDropdown';
@@ -77,7 +77,7 @@ function UserInfoForm({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const tokens = removeNullValues(user.tokens) ?? [];
-  const showNftSelector = useNftSelector({ tokensRef: tokens, queryRef: query });
+  const showNftSelector = useNftSelectorForProfilePicture({ tokensRef: tokens, queryRef: query });
   const track = useTrack();
 
   const handleEditPfp = useCallback(() => {

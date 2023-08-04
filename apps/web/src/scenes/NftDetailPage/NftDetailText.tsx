@@ -11,10 +11,13 @@ import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM, TitleM, TitleXS } from '~/components/core/Text/Text';
 import { ClickablePill, NonclickablePill } from '~/components/Pill';
+import { PostComposerModal } from '~/components/Posts/PostComposerModal';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { ENABLED_CREATOR } from '~/constants/creator';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
+import { useModalActions } from '~/contexts/modal/ModalContext';
 import { NftDetailTextFragment$key } from '~/generated/NftDetailTextFragment.graphql';
+import { NftDetailTextQueryFragment$key } from '~/generated/NftDetailTextQueryFragment.graphql';
 import { useBreakpoint, useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { NftAdditionalDetails } from '~/scenes/NftDetailPage/NftAdditionalDetails/NftAdditionalDetails';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
@@ -22,6 +25,7 @@ import colors from '~/shared/theme/colors';
 import { getOpenseaExternalUrl } from '~/shared/utils/getOpenseaExternalUrl';
 import unescape from '~/shared/utils/unescape';
 import { getCommunityUrlForToken } from '~/utils/getCommunityUrlForToken';
+import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 /**
  * TODO: Figure out when to support creator addresses
@@ -31,9 +35,11 @@ const SHOW_BUY_NOW_BUTTON = false;
 
 type Props = {
   tokenRef: NftDetailTextFragment$key;
+  authenticatedUserOwnsAsset: boolean;
+  queryRef: NftDetailTextQueryFragment$key;
 };
 
-function NftDetailText({ tokenRef }: Props) {
+function NftDetailText({ tokenRef, authenticatedUserOwnsAsset, queryRef }: Props) {
   const token = useFragment(
     graphql`
       fragment NftDetailTextFragment on Token {
@@ -57,9 +63,19 @@ function NftDetailText({ tokenRef }: Props) {
 
         ...NftAdditionalDetailsFragment
         ...getCommunityUrlForTokenFragment
+        ...PostComposerModalFragment
       }
     `,
     tokenRef
+  );
+
+  const query = useFragment(
+    graphql`
+      fragment NftDetailTextQueryFragment on Query {
+        ...isFeatureEnabledFragment
+      }
+    `,
+    queryRef
   );
 
   const [showDetails, setShowDetails] = useState(false);
@@ -142,6 +158,19 @@ function NftDetailText({ tokenRef }: Props) {
     return null;
   }, [token.name]);
 
+  const { showModal } = useModalActions();
+
+  const handleCreatePostClick = useCallback(() => {
+    track('NFT Detail: Clicked Create Post');
+    showModal({
+      content: <PostComposerModal tokenRef={token} />,
+      headerVariant: 'thicc',
+      isFullPage: isMobile,
+    });
+  }, [isMobile, showModal, token, track]);
+
+  const isKoalaEnabled = isFeatureEnabled(FeatureFlag.KOALA, query);
+
   return (
     <StyledDetailLabel horizontalLayout={horizontalLayout} navbarHeight={navbarHeight}>
       <VStack gap={isMobile ? 32 : 24}>
@@ -207,7 +236,7 @@ function NftDetailText({ tokenRef }: Props) {
 
         {showDetails || SHOW_BUY_NOW_BUTTON ? (
           <VStack gap={16}>
-            {showDetails && <NftAdditionalDetails showDetails={showDetails} tokenRef={token} />}
+            {showDetails && <NftAdditionalDetails tokenRef={token} />}
 
             {SHOW_BUY_NOW_BUTTON && (
               <VStack gap={24}>
@@ -219,6 +248,10 @@ function NftDetailText({ tokenRef }: Props) {
             )}
           </VStack>
         ) : null}
+
+        {isKoalaEnabled && authenticatedUserOwnsAsset && (
+          <Button onClick={handleCreatePostClick}>Create Post</Button>
+        )}
 
         {poapMoreInfoUrl || poapUrl ? (
           <VStack gap={16}>

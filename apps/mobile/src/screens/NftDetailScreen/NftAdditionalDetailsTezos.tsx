@@ -1,20 +1,12 @@
-import { useMemo } from 'react';
 import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { NftAdditionalDetailsTezosFragment$key } from '~/generated/NftAdditionalDetailsTezosFragment.graphql';
-import { hexHandler } from '~/shared/utils/getOpenseaExternalUrl';
-import { getFxHashExternalUrl, getObjktExternalUrl } from '~/shared/utils/getTezosExternalUrl';
+import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
 
 import { InteractiveLink } from '../../components/InteractiveLink';
 import { LinkableAddress } from '../../components/LinkableAddress';
-import {
-  DetailExternalLink,
-  DetailLabelText,
-  DetailMoreInfoLink,
-  DetailSection,
-  DetailValue,
-} from './DetailSection';
+import { DetailExternalLink, DetailLabelText, DetailSection, DetailValue } from './DetailSection';
 
 type NftAdditionaDetailsNonPOAPProps = {
   tokenRef: NftAdditionalDetailsTezosFragment$key;
@@ -24,7 +16,6 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
   const token = useFragment(
     graphql`
       fragment NftAdditionalDetailsTezosFragment on Token {
-        externalUrl
         tokenId
         chain
         contract {
@@ -37,28 +28,15 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
             ...LinkableAddressFragment
           }
         }
+        ...extractRelevantMetadataFromTokenFragment
       }
     `,
     tokenRef
   );
 
-  const { tokenId, contract, externalUrl } = token;
+  const { tokenId, fxhashUrl, objktUrl, projectUrl } = extractRelevantMetadataFromToken(token);
 
-  const { fxhashUrl, objktUrl } = useMemo(() => {
-    if (token.contract?.contractAddress?.address && token.tokenId) {
-      const contractAddress = token.contract.contractAddress.address;
-      const tokenId = hexHandler(token.tokenId);
-      return {
-        fxhashUrl: getFxHashExternalUrl(contractAddress, tokenId),
-        objktUrl: getObjktExternalUrl(contractAddress, tokenId),
-      };
-    }
-
-    return {
-      fxhashUrl: null,
-      objktUrl: null,
-    };
-  }, [token.contract?.contractAddress?.address, token.tokenId]);
+  const { contract } = token;
 
   return (
     <View className="flex flex-col space-y-4">
@@ -69,8 +47,10 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
 
             {/* TODO(Terence) When the contract screen is ready, setup the onPress here */}
             <LinkableAddress
+              textStyle={{ color: 'black' }}
               chainAddressRef={token.contract.creatorAddress}
               type="NFT Detail Creator Address"
+              font={{ family: 'ABCDiatype', weight: 'Bold' }}
             />
           </DetailSection>
         )}
@@ -79,19 +59,21 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
           <View className="flex flex-row space-x-16">
             {contract?.contractAddress?.address && (
               <DetailSection>
-                <DetailLabelText>CONTRACT ADDRESS</DetailLabelText>
+                <DetailLabelText>CONTRACT</DetailLabelText>
                 <LinkableAddress
+                  textStyle={{ color: 'black' }}
                   chainAddressRef={contract.contractAddress}
                   type="NFT Detail Contract Address"
+                  font={{ family: 'ABCDiatype', weight: 'Bold' }}
                 />
               </DetailSection>
             )}
 
-            {tokenId && token.externalUrl && (
+            {tokenId && projectUrl && (
               <DetailSection>
                 <DetailLabelText>TOKEN ID</DetailLabelText>
-                <InteractiveLink href={token.externalUrl} type="NFT Detail Token ID">
-                  {hexHandler(tokenId)}
+                <InteractiveLink href={projectUrl} type="NFT Detail Token ID">
+                  {tokenId}
                 </InteractiveLink>
               </DetailSection>
             )}
@@ -104,24 +86,48 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
                 <DetailValue>{token.chain}</DetailValue>
               </DetailSection>
             )}
-
-            <DetailSection>
-              {fxhashUrl && (
-                <DetailExternalLink
-                  link={fxhashUrl}
-                  label="fx(hash)"
-                  trackingLabel="NFT Detail FX Hash URL"
-                />
-              )}
-              {objktUrl && (
-                <DetailExternalLink
-                  link={objktUrl}
-                  label="objkt"
-                  trackingLabel="NFT Detail OBJKT URL"
-                />
-              )}
-            </DetailSection>
-            {externalUrl && <DetailMoreInfoLink link={externalUrl} />}
+            {fxhashUrl && (
+              <DetailSection>
+                <DetailLabelText>VIEW ON</DetailLabelText>
+                <View className="flex flex-row">
+                  <DetailExternalLink
+                    link={fxhashUrl}
+                    label="fxhash"
+                    trackingLabel="NFT Detail View on fxhashUrl"
+                    showExternalLinkIcon={true}
+                    font={{ family: 'ABCDiatype', weight: 'Bold' }}
+                  />
+                </View>
+              </DetailSection>
+            )}
+            {objktUrl && (
+              <DetailSection>
+                <DetailLabelText>VIEW ON</DetailLabelText>
+                <View className="flex flex-row">
+                  <DetailExternalLink
+                    link={objktUrl}
+                    label="objkt"
+                    trackingLabel="NFT Detail View on objktUrl"
+                    showExternalLinkIcon={true}
+                    font={{ family: 'ABCDiatype', weight: 'Bold' }}
+                  />
+                </View>
+              </DetailSection>
+            )}
+            {projectUrl && (
+              <DetailSection>
+                <DetailLabelText>VIEW ON</DetailLabelText>
+                <View className="flex flex-col pt-4">
+                  <DetailExternalLink
+                    link={projectUrl}
+                    label="Visit Site"
+                    trackingLabel="NFT Detail View on External Link"
+                    showExternalLinkIcon={true}
+                    font={{ family: 'ABCDiatype', weight: 'Bold' }}
+                  />
+                </View>
+              </DetailSection>
+            )}
           </View>
         </View>
       </>

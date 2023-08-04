@@ -57,7 +57,7 @@ export function CommentLine({ commentRef }: CommentLineProps) {
 }
 const TimeAgoText = styled.div`
   font-family: ${BODY_FONT_FAMILY};
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1;
   font-weight: 400;
 
@@ -67,7 +67,7 @@ const TimeAgoText = styled.div`
 const CommenterName = styled.a`
   font-family: ${BODY_FONT_FAMILY};
   vertical-align: bottom;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1;
   font-weight: 700;
 
@@ -77,7 +77,7 @@ const CommenterName = styled.a`
 
 const CommentText = styled.div`
   font-family: ${BODY_FONT_FAMILY};
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1;
   font-weight: 400;
 

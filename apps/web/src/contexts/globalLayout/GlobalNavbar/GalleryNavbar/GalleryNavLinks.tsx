@@ -71,6 +71,14 @@ export function GalleryNavLinks({ username, queryRef }: Props) {
 
       <NavbarLink
         // @ts-expect-error We're not using the legacy Link
+        href={route(activityRoute)}
+        active={pathname === activityRoute.pathname}
+      >
+        Activity
+      </NavbarLink>
+
+      <NavbarLink
+        // @ts-expect-error We're not using the legacy Link
         href={route(followersRoute)}
         active={pathname === followersRoute.pathname}
       >
@@ -78,14 +86,6 @@ export function GalleryNavLinks({ username, queryRef }: Props) {
           Followers
           {totalFollowers > 0 && <BaseS>{totalFollowers}</BaseS>}
         </HStack>
-      </NavbarLink>
-
-      <NavbarLink
-        // @ts-expect-error We're not using the legacy Link
-        href={route(activityRoute)}
-        active={pathname === activityRoute.pathname}
-      >
-        Activity
       </NavbarLink>
     </HStack>
   );

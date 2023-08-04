@@ -8,8 +8,12 @@ import useAnnouncement from '~/components/Announcement/useAnnouncement';
 import breakpoints from '~/components/core/breakpoints';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { Notifications } from '~/components/Notifications/Notifications';
+import DiscardPostConfirmation from '~/components/Posts/DiscardPostConfirmation';
+import { PostComposerModalWithSelector } from '~/components/Posts/PostComposerModal';
 import Search from '~/components/Search/Search';
 import Settings from '~/components/Settings/Settings';
+import { useModalActions } from '~/contexts/modal/ModalContext';
+import { PostComposerModalWithSelectorFragment$key } from '~/generated/PostComposerModalWithSelectorFragment.graphql';
 import { StandardSidebarFragment$key } from '~/generated/StandardSidebarFragment.graphql';
 import useAuthModal from '~/hooks/useAuthModal';
 import { useSearchHotkey } from '~/hooks/useSearchHotkey';
@@ -18,11 +22,14 @@ import BellIcon from '~/icons/BellIcon';
 import CogIcon from '~/icons/CogIcon';
 import { EditPencilIcon } from '~/icons/EditPencilIcon';
 import GLogoIcon from '~/icons/GLogoIcon';
+import { PlusSquareIcon } from '~/icons/PlusSquareIcon';
 import SearchIcon from '~/icons/SearchIcon';
 import ShopIcon from '~/icons/ShopIcon';
 import UserIcon from '~/icons/UserIcon';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 import useExperience from '~/utils/graphql/experiences/useExperience';
+import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 import { useDrawerActions, useDrawerState } from './SidebarDrawerContext';
 import SidebarIcon from './SidebarIcon';
@@ -41,6 +48,9 @@ export function StandardSidebar({ queryRef }: Props) {
             __typename
             user {
               username
+              tokens {
+                ...PostComposerModalWithSelectorFragment
+              }
               ...SidebarPfpFragment
             }
             notifications(last: 1) @connection(key: "StandardSidebarFragment_notifications") {
@@ -57,6 +67,8 @@ export function StandardSidebar({ queryRef }: Props) {
         ...SettingsFragment
         ...useExperienceFragment
         ...useAnnouncementFragment
+        ...PostComposerModalWithSelectorQueryFragment
+        ...isFeatureEnabledFragment
       }
     `,
     queryRef
@@ -113,6 +125,16 @@ export function StandardSidebar({ queryRef }: Props) {
 
   const username = (isLoggedIn && query.viewer.user?.username) || '';
 
+  const tokens = useMemo<PostComposerModalWithSelectorFragment$key>(() => {
+    if (query?.viewer?.__typename !== 'Viewer') {
+      return [];
+    }
+    return removeNullValues(query?.viewer?.user?.tokens) ?? [];
+  }, [query?.viewer]);
+
+  const { showModal, hideModal } = useModalActions();
+  const isMobile = useIsMobileOrMobileLargeWindowWidth();
+
   const handleSettingsClick = useCallback(() => {
     track('Sidebar Settings Click');
     showDrawer({
@@ -147,6 +169,31 @@ export function StandardSidebar({ queryRef }: Props) {
     track('Sidebar Home Click');
   }, [hideDrawer, track]);
 
+  const handleCreatePostClick = useCallback(() => {
+    hideDrawer();
+
+    showModal({
+      id: 'post-composer',
+      content: <PostComposerModalWithSelector tokensRef={tokens} queryRef={query} />,
+      headerVariant: 'thicc',
+      isFullPage: isMobile,
+      onCloseOverride: () => {
+        showModal({
+          headerText: 'Are you sure?',
+          content: (
+            <DiscardPostConfirmation
+              onDiscard={() => {
+                hideModal({ id: 'post-composer' });
+              }}
+            />
+          ),
+          isFullPage: false,
+        });
+      },
+    });
+    track('Sidebar Create Post Click');
+  }, [hideDrawer, showModal, hideModal, tokens, query, isMobile, track]);
+
   const handleSearchClick = useCallback(() => {
     track('Sidebar Search Click');
     showDrawer({
@@ -154,14 +201,14 @@ export function StandardSidebar({ queryRef }: Props) {
     });
   }, [showDrawer, track]);
 
-  const isMobile = useIsMobileOrMobileLargeWindowWidth();
+  const isKoalaEnabled = isFeatureEnabled(FeatureFlag.KOALA, query);
 
   const userGalleryRoute: Route = useMemo(() => {
     return { pathname: '/[username]', query: { username } };
   }, [username]);
 
   const editGalleriesRoute: Route = useMemo(() => {
-    return { pathname: '/[username]/galleries', query: { username } };
+    return { pathname: '/[username]/galleries', query: { username, mode: 'edit' } };
   }, [username]);
 
   const isLoggedInProfileActive = useMemo(() => {
@@ -201,18 +248,18 @@ export function StandardSidebar({ queryRef }: Props) {
           {isLoggedIn ? (
             <>
               <SidebarIcon
-                href={userGalleryRoute}
-                tooltipLabel="My Profile"
-                onClick={handleProfileClick}
-                icon={<UserIcon />}
-                isActive={isLoggedInProfileActive}
-              />
-              <SidebarIcon
                 tooltipLabel="Search"
                 onClick={handleSearchClick}
                 icon={<SearchIcon />}
                 isActive={activeDrawerType === Search}
               />
+              {isKoalaEnabled && (
+                <SidebarIcon
+                  tooltipLabel="Create a post"
+                  onClick={handleCreatePostClick}
+                  icon={<PlusSquareIcon />}
+                />
+              )}
               <SidebarIcon
                 tooltipLabel="Updates"
                 onClick={handleNotificationsClick}
@@ -221,10 +268,11 @@ export function StandardSidebar({ queryRef }: Props) {
                 showUnreadDot={notificationCount > 0}
               />
               <SidebarIcon
-                tooltipLabel="Settings"
-                onClick={handleSettingsClick}
-                icon={<CogIcon />}
-                isActive={activeDrawerType === Settings}
+                href={userGalleryRoute}
+                tooltipLabel="My Profile"
+                onClick={handleProfileClick}
+                icon={<UserIcon />}
+                isActive={isLoggedInProfileActive}
               />
             </>
           ) : (
@@ -251,11 +299,20 @@ export function StandardSidebar({ queryRef }: Props) {
             icon={<GLogoIcon />}
           />
           {isLoggedIn && query.viewer.user && (
-            <SidebarPfp
-              userRef={query.viewer.user}
-              href={userGalleryRoute}
-              onClick={handleProfileClick}
-            />
+            <VStack gap={12}>
+              <SidebarPfp
+                userRef={query.viewer.user}
+                href={userGalleryRoute}
+                onClick={handleProfileClick}
+              />
+              {isKoalaEnabled && (
+                <SidebarIcon
+                  tooltipLabel="Create a post"
+                  onClick={handleCreatePostClick}
+                  icon={<PlusSquareIcon />}
+                />
+              )}
+            </VStack>
           )}
         </VStack>
         {isLoggedIn ? (

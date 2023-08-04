@@ -7,6 +7,7 @@ import {
   Chain,
   NftDetailAssetTestQueryQuery,
   NftErrorContextRetryMutationMutation,
+  Role,
 } from '~/tests/__generated__/graphql-codegen/operations';
 import { MockAppProvider } from '~/tests/graphql/MockAppProvider';
 import { mockGraphqlQuery } from '~/tests/graphql/mockGraphqlQuery';
@@ -22,6 +23,7 @@ function Fixture() {
             ...NftDetailViewFragment
           }
         }
+        ...NftDetailViewQueryFragment
       }
     `,
     { collectionId: 'testCollectionId', tokenId: 'testTokenId' }
@@ -35,6 +37,7 @@ function Fixture() {
     <NftDetailView
       authenticatedUserOwnsAsset={false}
       collectionTokenRef={query.collectionTokenById}
+      queryRef={query}
     />
   );
 }
@@ -49,10 +52,12 @@ const UnknownMediaResponse: NftDetailAssetTestQueryQuery = {
       dbid: 'testCollectionId',
     },
     token: {
+      __typename: 'Token',
       id: 'Token:testTokenId',
       dbid: 'testTokenId',
       chain: Chain.Ethereum,
       tokenMetadata: '{}',
+      lastUpdated: '2023-07-25T11:47:41.83653Z',
       owner: {
         id: 'GalleryUser:TestOwnerId',
         username: 'Test Username',
@@ -83,6 +88,15 @@ const UnknownMediaResponse: NftDetailAssetTestQueryQuery = {
         __typename: 'UnknownMedia',
         fallbackMedia: null,
         contentRenderURL: 'bad url here',
+        previewURLs: {
+          small: 'http://someurl.com',
+          medium: 'http://someurl.com',
+          large: 'http://someurl.com',
+        },
+      },
+      community: {
+        __typename: 'Community',
+        id: 'Community:testCommunityId',
       },
       contract: {
         __typename: 'Contract',
@@ -99,6 +113,14 @@ const UnknownMediaResponse: NftDetailAssetTestQueryQuery = {
         },
         badgeURL: 'http://someurl.com',
       },
+    },
+  },
+  viewer: {
+    __typename: 'Viewer',
+    id: 'GalleryUser:TestUserId',
+    user: {
+      roles: [Role.EarlyAccess],
+      id: 'GalleryUser:TestUserId',
     },
   },
 };
@@ -132,6 +154,10 @@ const RetryImageMediaResponse: NftErrorContextRetryMutationMutation = {
           address: '0x0Ff979fB365e20c09bE06676D569EF581a46621D',
         },
         badgeURL: 'http://someimage.com',
+      },
+      owner: {
+        id: 'testOwnerId',
+        username: 'Test Username',
       },
     },
   },

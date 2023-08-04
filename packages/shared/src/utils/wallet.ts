@@ -22,11 +22,8 @@ export function getUserFriendlyWalletName(name: string) {
   return name;
 }
 
-/**
- * @deprecated Please use graphqlTruncateAddress instead
- */
 export function truncateAddress(address: string) {
-  return `${address.slice(0, 8)}......${address.slice(-4)}`;
+  return `${address.slice(0, 8)}...${address.slice(-4)}`;
 }
 
 export function graphqlTruncateAddress(chainAddressRef: walletTruncateAddressFragment$key) {

@@ -19,12 +19,12 @@ function MaintenancePage() {
         <StyledLogo />
         <StyledBaseM>
           Gallery is currently undergoing planned maintenance until{' '}
-          <strong>Saturday Feb 25th, 3:30pm EST</strong> and is not usable at this time. Keep up to
+          <strong>Wednesday Aug 2nd, 10:00pm EST</strong> and is not usable at this time. Keep up to
           date on our socials.
         </StyledBaseM>
       </VStack>
       <HStack gap={8}>
-        <StyledFooterLink href={GALLERY_TWITTER}>Twitter</StyledFooterLink>
+        <StyledFooterLink href={GALLERY_TWITTER}>Xwitter</StyledFooterLink>
         <BaseM>·</BaseM>
         <StyledFooterLink href={GALLERY_DISCORD}>Discord</StyledFooterLink>
       </HStack>

@@ -25,12 +25,11 @@ export function WorldwideFeed({ queryRef, onChangeFeedMode }: Props) {
     graphql`
       fragment WorldwideFeedFragment on Query
       @refetchable(queryName: "RefetchableWorldwideFeedFragmentQuery") {
-        globalFeed(before: $globalFeedBefore, last: $globalFeedCount)
+        globalFeed(before: $globalFeedBefore, last: $globalFeedCount, includePosts: $includePosts)
           @connection(key: "WorldwideFeedFragment_globalFeed") {
           edges {
             node {
               __typename
-
               ...FeedListFragment
             }
           }

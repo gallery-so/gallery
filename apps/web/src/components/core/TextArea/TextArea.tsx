@@ -24,6 +24,9 @@ type TextAreaProps = {
   textAreaHeight?: string;
   showMarkdownShortcuts?: boolean;
   hasPadding?: boolean;
+  maxLength?: number;
+  onFocus?: () => void;
+  onBlur?: () => void;
 };
 
 function isCursorInsideParentheses(textarea: HTMLTextAreaElement) {
@@ -58,6 +61,9 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
       textAreaHeight,
       showMarkdownShortcuts = false,
       hasPadding = false,
+      maxLength,
+      onFocus = noop,
+      onBlur = noop,
     },
     ref
   ) => {
@@ -106,6 +112,8 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
     return (
       <>
         <StyledTextArea
+          onFocus={onFocus}
+          onBlur={onBlur}
           className={className}
           placeholder={placeholder}
           defaultValue={defaultValue}
@@ -120,6 +128,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
           ref={ref}
           hasPadding={hasPadding}
           onKeyDown={handleKeyDown}
+          maxLength={maxLength}
         />
         {showMarkdownShortcuts && (
           <StyledMarkdownContainer hasPadding={hasPadding}>
@@ -161,12 +170,27 @@ export function TextAreaWithCharCount({
   ...textAreaProps
 }: TextAreaWithCharCountProps) {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
+  const [isFocused, setFocus] = useState(false);
+
+  const handleFocus = useCallback(() => {
+    setFocus(true);
+  }, []);
+
+  const handleBlur = useCallback(() => {
+    setFocus(false);
+  }, []);
+
   return (
     <>
-      <StyledTextAreaWithCharCount className={className}>
-        <TextArea ref={textAreaRef} {...textAreaProps} />
+      <StyledTextAreaWithCharCount
+        className={className}
+        hasError={currentCharCount > maxCharCount}
+        isFocused={isFocused}
+      >
+        <TextArea ref={textAreaRef} {...textAreaProps} onFocus={handleFocus} onBlur={handleBlur} />
+
         <StyledCharacterCounter
-          error={currentCharCount > maxCharCount}
+          hasError={currentCharCount > maxCharCount}
           hasPadding={textAreaProps?.hasPadding || false}
         >
           {currentCharCount}/{maxCharCount}
@@ -221,8 +245,22 @@ export function AutoResizingTextAreaWithCharCount({
     [textAreaProps]
   );
 
+  const [isFocused, setFocus] = useState(false);
+
+  const handleFocus = useCallback(() => {
+    setFocus(true);
+  }, []);
+
+  const handleBlur = useCallback(() => {
+    setFocus(false);
+  }, []);
+
   return (
-    <StyledTextAreaWithCharCount className={textAreaProps.className}>
+    <StyledTextAreaWithCharCount
+      className={textAreaProps.className}
+      hasError={textAreaProps.currentCharCount > textAreaProps.maxCharCount}
+      isFocused={isFocused}
+    >
       <StyledParentContainer
         style={{
           minHeight: parentHeight,
@@ -233,9 +271,11 @@ export function AutoResizingTextAreaWithCharCount({
           ref={textAreaRef}
           textAreaHeight={textAreaHeight}
           onChange={handleChange}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
         />
         <StyledCharacterCounter
-          error={textAreaProps.currentCharCount > textAreaProps.maxCharCount}
+          hasError={textAreaProps.currentCharCount > textAreaProps.maxCharCount}
           hasPadding={textAreaProps?.hasPadding || false}
         >
           {textAreaProps.currentCharCount}/{textAreaProps.maxCharCount}
@@ -245,22 +285,26 @@ export function AutoResizingTextAreaWithCharCount({
   );
 }
 
-const StyledTextAreaWithCharCount = styled.div`
+const StyledTextAreaWithCharCount = styled.div<{ hasError: boolean; isFocused: boolean }>`
   position: relative;
   background: ${colors.faint};
   padding-bottom: 1px; /* This fixes a FF bug where the bottom border does not appear */
+
+  border: 1px solid
+    ${({ hasError, isFocused }) =>
+      hasError ? colors.error : isFocused ? colors.porcelain : 'transparent'};
 `;
 
 const StyledParentContainer = styled.div`
   padding-bottom: 32px;
 `;
 
-const StyledCharacterCounter = styled(BaseM)<{ error: boolean; hasPadding: boolean }>`
+const StyledCharacterCounter = styled(BaseM)<{ hasError: boolean; hasPadding: boolean }>`
   position: absolute;
   bottom: ${({ hasPadding }) => (hasPadding ? '8px' : '0')};
   right: ${({ hasPadding }) => (hasPadding ? '8px' : '0')};
 
-  color: ${({ error }) => (error ? colors.error : colors.metal)};
+  color: ${({ hasError }) => (hasError ? colors.red : colors.metal)};
 `;
 
 const StyledMarkdownContainer = styled.div<{ hasPadding: boolean }>`

@@ -12,6 +12,7 @@ const loading = keyframes`
 const Shimmer = styled.div<{ colorful?: boolean }>`
   display: block;
   width: 100%;
+  height: 30px;
 
   aspect-ratio: 1;
   /* hack for safari, since it doesn't support aspect-ratio yet */

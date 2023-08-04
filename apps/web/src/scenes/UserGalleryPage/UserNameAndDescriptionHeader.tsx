@@ -18,13 +18,13 @@ import { UserNameAndDescriptionHeaderQueryFragment$key } from '~/generated/UserN
 import useIs3acProfilePage from '~/hooks/oneOffs/useIs3acProfilePage';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { EditPencilIcon } from '~/icons/EditPencilIcon';
-import LinkToNftDetailView from '~/scenes/NftDetailPage/LinkToNftDetailView';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import colors from '~/shared/theme/colors';
 import unescape from '~/shared/utils/unescape';
 import handleCustomDisplayName from '~/utils/handleCustomDisplayName';
 
+import LinkToTokenDetailView from '../NftDetailPage/LinkToTokenDetailView';
 import EditUserInfoModal from './EditUserInfoModal';
 
 type Props = {
@@ -107,7 +107,7 @@ export function UserNameAndDescriptionHeader({ userRef, queryRef }: Props) {
       onClick={handleEditBioAndName}
       inline
       isAuth={isAuthenticatedUser}
-      hasMobileContent={isMobile && !!unescapedBio}
+      hasMobileContent={isMobile && Boolean(unescapedBio)}
     >
       <Container gap={4}>
         <HStack align="center" gap={4}>
@@ -189,9 +189,9 @@ const NftDetailViewer = ({ href, children }: NftDetailViewerProps) => {
   }
 
   return (
-    <LinkToNftDetailView username={username} collectionId={collectionId} tokenId={tokenId}>
+    <LinkToTokenDetailView username={username} collectionId={collectionId} tokenId={tokenId}>
       <StyledAnchor>{children}</StyledAnchor>
-    </LinkToNftDetailView>
+    </LinkToTokenDetailView>
   );
 };
 

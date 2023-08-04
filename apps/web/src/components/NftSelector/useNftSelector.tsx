@@ -8,13 +8,16 @@ import { useNftSelectorQueryFragment$key } from '~/generated/useNftSelectorQuery
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import { NftSelector } from './NftSelector';
+import useUpdateProfileImage from './useUpdateProfileImage';
 
 type Props = {
   tokensRef: useNftSelectorFragment$key;
   queryRef: useNftSelectorQueryFragment$key;
+  onSelectToken: (tokenId: string) => void;
+  headerText: string;
 };
 
-export default function useNftSelector({ tokensRef, queryRef }: Props) {
+export default function useNftSelector({ tokensRef, queryRef, onSelectToken, headerText }: Props) {
   const tokens = useFragment(
     graphql`
       fragment useNftSelectorFragment on Token @relay(plural: true) {
@@ -39,7 +42,39 @@ export default function useNftSelector({ tokensRef, queryRef }: Props) {
 
   return useCallback(() => {
     showModal({
-      content: <NftSelector tokensRef={nonNullTokens} queryRef={query} />,
+      content: (
+        <NftSelector
+          tokensRef={nonNullTokens}
+          queryRef={query}
+          onSelectToken={onSelectToken}
+          headerText={headerText}
+        />
+      ),
     });
-  }, [nonNullTokens, query, showModal]);
+  }, [headerText, nonNullTokens, onSelectToken, query, showModal]);
+}
+
+type RefProps = {
+  tokensRef: useNftSelectorFragment$key;
+  queryRef: useNftSelectorQueryFragment$key;
+};
+
+export function useNftSelectorForProfilePicture({ tokensRef, queryRef }: RefProps) {
+  const { setProfileImage } = useUpdateProfileImage();
+  const { hideModal } = useModalActions();
+
+  const handleSelectToken = useCallback(
+    (tokenId: string) => {
+      setProfileImage({ tokenId });
+      hideModal();
+    },
+    [hideModal, setProfileImage]
+  );
+
+  return useNftSelector({
+    tokensRef: tokensRef,
+    queryRef: queryRef,
+    onSelectToken: handleSelectToken,
+    headerText: 'Select profile picture',
+  });
 }

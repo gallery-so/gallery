@@ -46,45 +46,7 @@ function UserInfoForm({
 }: // userRef,
 // queryRef,
 Props) {
-  // const user = useFragment(
-  //   graphql`
-  //     fragment UserInfoFormFragment on GalleryUser {
-  //       ...ProfilePictureFragment
-  //       profileImage {
-  //         __typename
-  //       }
-
-  //       tokens {
-  //         ...ProfilePictureDropdownFragment
-  //         ...useNftSelectorFragment
-  //       }
-  //     }
-  //   `,
-  //   userRef
-  // );
-
-  // const query = useFragment(
-  //   graphql`
-  //     fragment UserInfoFormQueryFragment on Query {
-  //       ...isFeatureEnabledFragment
-  //       ...ProfilePictureDropdownQueryFragment
-  //       ...useNftSelectorQueryFragment
-  //     }
-  //   `,
-  //   queryRef
-  // );
-
-  // const [showPfpDropdown, setShowPfpDropdown] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // const tokens = removeNullValues(user.tokens) ?? [];
-  // const showNftSelector = useNftSelector({ tokensRef: tokens, queryRef: query });
-  // const track = useTrack();
-
-  // const handleEditPfp = useCallback(() => {
-  //   track('PFP: Clicked PFP setup in Onboarding');
-  //   showNftSelector();
-  // }, [showNftSelector, track]);
 
   const unescapedBio = useMemo(() => unescape(bio), [bio]);
 

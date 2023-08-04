@@ -7,20 +7,24 @@ import UserIcon from '~/icons/UserIcon';
 import colors from '~/shared/theme/colors';
 
 const sizeMapping: { [size in Size]: number } = {
+  xs: 20,
   sm: 24,
   md: 32,
   lg: 48,
   xl: 56,
+  xxl: 72,
 };
 
 const fontSizeMapping: { [size in Size]: number } = {
+  xs: 12,
   sm: 14,
   md: 18,
   lg: 28,
   xl: 32,
+  xxl: 48,
 };
 
-type Size = 'sm' | 'md' | 'lg' | 'xl';
+type Size = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl';
 
 export type RawProfilePictureProps = {
   size: Size;
@@ -29,6 +33,7 @@ export type RawProfilePictureProps = {
   inline?: boolean;
   isHover?: boolean;
   onEdit?: () => void;
+  inheritBorderColor?: boolean;
 } & (
   | {
       letter: string;
@@ -48,6 +53,7 @@ export function RawProfilePicture({
   isEditable,
   inline,
   isHover,
+  inheritBorderColor,
   ...rest
 }: RawProfilePictureProps) {
   const widthAndHeight = sizeMapping[size];
@@ -76,11 +82,17 @@ export function RawProfilePicture({
         cursor: isEditable ? 'pointer' : undefined,
       }}
     >
-      <InnerCircle hasImage={hasImage} justify="center" align="center">
+      <InnerCircle
+        hasImage={hasImage}
+        justify="center"
+        align="center"
+        inheritBorderColor={inheritBorderColor}
+      >
         {'letter' in rest && (
           <ProfilePictureText
             style={{
               fontSize,
+              lineHeight: `${fontSize}px`,
             }}
           >
             <InlineBlockWrapper>{rest.letter.toUpperCase()}</InlineBlockWrapper>
@@ -144,7 +156,7 @@ const EditCircle = styled(VStack)`
   transform: translate(25%, 25%);
 `;
 
-const InnerCircle = styled(VStack)<{ hasImage?: boolean }>`
+export const InnerCircle = styled(VStack)<{ hasImage?: boolean; inheritBorderColor?: boolean }>`
   position: relative;
   border-radius: 999999px;
 
@@ -153,6 +165,8 @@ const InnerCircle = styled(VStack)<{ hasImage?: boolean }>`
 
   background-color: ${colors.offWhite};
   ${({ hasImage }) => !hasImage && `border: 1px solid ${colors.black['800']}`};
+
+  ${({ inheritBorderColor }) => inheritBorderColor && `border-color: inherit`};
 
   transition: background 100ms ease-in-out;
 `;

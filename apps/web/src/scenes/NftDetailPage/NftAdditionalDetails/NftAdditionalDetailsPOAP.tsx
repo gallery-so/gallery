@@ -1,16 +1,15 @@
-import { format, parse } from 'date-fns';
 import { graphql, useFragment } from 'react-relay';
 
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleXS } from '~/components/core/Text/Text';
 import { NftAdditionalDetailsPOAPFragment$key } from '~/generated/NftAdditionalDetailsPOAPFragment.graphql';
+import extractPoapMetadata from '~/shared/utils/extractPoapMetadata';
 
 type POAPNftDetailSectionProps = {
-  showDetails: boolean;
   tokenRef: NftAdditionalDetailsPOAPFragment$key;
 };
 
-export function NftAdditionalDetailsPOAP({ tokenRef, showDetails }: POAPNftDetailSectionProps) {
+export function NftAdditionalDetailsPOAP({ tokenRef }: POAPNftDetailSectionProps) {
   const token = useFragment(
     graphql`
       fragment NftAdditionalDetailsPOAPFragment on Token {
@@ -24,26 +23,14 @@ export function NftAdditionalDetailsPOAP({ tokenRef, showDetails }: POAPNftDetai
     return null;
   }
 
-  const {
-    city,
-    country,
-    created,
-    event_id: id,
-    supply,
-    chain,
-  } = JSON.parse(token.tokenMetadata) ?? {};
-
-  const location = city && country ? `${city}, ${country}` : null;
-
-  const parsedDate = created ? parse(created, 'yyyy-MM-dd HH:mm:ss', new Date()) : null;
-  const formattedDate = parsedDate ? format(parsedDate, 'MMMM do, yyyy') : null;
+  const { id, location, createdDate, supply, chain } = extractPoapMetadata(token.tokenMetadata);
 
   return (
     <VStack gap={16}>
-      {formattedDate && (
+      {createdDate && (
         <div>
           <TitleXS>Created</TitleXS>
-          <BaseM>{formattedDate}</BaseM>
+          <BaseM>{createdDate}</BaseM>
         </div>
       )}
       {location && (
@@ -53,27 +40,23 @@ export function NftAdditionalDetailsPOAP({ tokenRef, showDetails }: POAPNftDetai
         </div>
       )}
 
-      {showDetails && (
-        <>
-          {id && (
-            <div>
-              <TitleXS>POAP ID</TitleXS>
-              <BaseM>{id}</BaseM>
-            </div>
-          )}
-          {supply && (
-            <div>
-              <TitleXS>SUPPLY</TitleXS>
-              <BaseM>{supply}</BaseM>
-            </div>
-          )}
-          {chain && (
-            <div>
-              <TitleXS>CHAIN</TitleXS>
-              <BaseM>{chain}</BaseM>
-            </div>
-          )}
-        </>
+      {id && (
+        <div>
+          <TitleXS>POAP ID</TitleXS>
+          <BaseM>{id}</BaseM>
+        </div>
+      )}
+      {supply && (
+        <div>
+          <TitleXS>SUPPLY</TitleXS>
+          <BaseM>{supply}</BaseM>
+        </div>
+      )}
+      {chain && (
+        <div>
+          <TitleXS>CHAIN</TitleXS>
+          <BaseM>{chain}</BaseM>
+        </div>
       )}
     </VStack>
   );

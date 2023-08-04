@@ -37,7 +37,7 @@ export function UserOwnsBox({ inReceipt, tokenId }: { inReceipt: boolean; tokenI
         <StyledFlexContainer>
           <StyledBaseM>Total paid</StyledBaseM>
           <StyledPrice>
-            {(userOwnedSupply * +ethers.utils.formatEther(tokenPrice)).toFixed(2)} Ξ
+            {(userOwnedSupply * Number(ethers.utils.formatEther(tokenPrice))).toFixed(2)} Ξ
           </StyledPrice>
         </StyledFlexContainer>
       </UserOwnsContainer>
@@ -224,7 +224,7 @@ export default function PurchaseBox({
                 <StyledFlexContainerColumnOnMobile>
                   <StyledBaseM>{isReceiptState ? 'Total paid' : 'Pay today'}</StyledBaseM>
                   <StyledPrice>
-                    {(+ethers.utils.formatEther(tokenPrice) * quantity).toFixed(2)} Ξ
+                    {(Number(ethers.utils.formatEther(tokenPrice)) * quantity).toFixed(2)} Ξ
                   </StyledPrice>
                 </StyledFlexContainerColumnOnMobile>
                 {!isReceiptState && (

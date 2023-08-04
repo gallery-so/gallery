@@ -14,7 +14,11 @@ import { Typography } from '~/components/Typography';
 import { useToastActions } from '~/contexts/ToastContext';
 import { PostScreenQuery } from '~/generated/PostScreenQuery.graphql';
 import { PostScreenTokenFragment$key } from '~/generated/PostScreenTokenFragment.graphql';
-import { FeedTabNavigatorProp, PostStackNavigatorParamList } from '~/navigation/types';
+import {
+  FeedTabNavigatorProp,
+  MainTabStackNavigatorProp,
+  PostStackNavigatorParamList,
+} from '~/navigation/types';
 
 import { usePost } from './usePost';
 
@@ -26,8 +30,16 @@ export function PostScreen() {
         tokenById(id: $tokenId) {
           ... on Token {
             __typename
-            tokenId
+            dbid
+            chain
+            contract {
+              contractAddress {
+                address
+              }
+            }
             ...PostScreenTokenFragment
+            ...PostInputTokenFragment
+            ...usePostTokenFragment
           }
         }
       }
@@ -44,7 +56,9 @@ export function PostScreen() {
   }
 
   const { top } = useSafeAreaInsets();
-  const { post } = usePost();
+  const { post } = usePost({
+    tokenRef: token,
+  });
 
   const [caption, setCaption] = useState('');
 
@@ -55,10 +69,12 @@ export function PostScreen() {
     bottomSheetRef.current?.present();
   }, []);
 
-  const navigation = useNavigation<FeedTabNavigatorProp>();
+  const mainTabNavigation = useNavigation<MainTabStackNavigatorProp>();
+  const feedTabNavigation = useNavigation<FeedTabNavigatorProp>();
+
   const { pushToast } = useToastActions();
   const handlePost = useCallback(async () => {
-    const tokenId = token.tokenId;
+    const tokenId = token.dbid;
 
     if (!tokenId) {
       return;
@@ -69,13 +85,37 @@ export function PostScreen() {
       caption,
     });
 
-    navigation.pop(1);
-    navigation.navigate('Trending');
+    mainTabNavigation.reset({
+      index: 0,
+      routes: [
+        {
+          name: 'MainTabs',
+          params: { screen: 'HomeTab', params: { screen: 'Home', params: { screen: 'Latest' } } },
+        },
+      ],
+    });
+
+    if (route.params.redirectTo === 'Community') {
+      mainTabNavigation.navigate('Community', {
+        contractAddress: token.contract?.contractAddress?.address ?? '',
+        chain: token.chain ?? '',
+      });
+    } else {
+      feedTabNavigation.navigate('Latest');
+    }
 
     pushToast({
       children: <ToastMessage tokenRef={token} />,
     });
-  }, [caption, navigation, post, pushToast, token]);
+  }, [
+    caption,
+    feedTabNavigation,
+    mainTabNavigation,
+    post,
+    pushToast,
+    route.params.redirectTo,
+    token,
+  ]);
 
   return (
     <View className="flex-1 bg-white dark:bg-black-900" style={{ paddingTop: top }}>
@@ -107,7 +147,7 @@ export function PostScreen() {
         </View>
 
         <View className="px-4 flex flex-col flex-grow space-y-2">
-          <PostInput value={caption} onChange={setCaption} />
+          <PostInput value={caption} onChange={setCaption} tokenRef={token} />
 
           <View className="py-4">
             <PostTokenPreview bottomSheetRef={bottomSheetRef} />

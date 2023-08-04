@@ -4,8 +4,8 @@ import styled from 'styled-components';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleS } from '~/components/core/Text/Text';
 import transitions from '~/components/core/transitions';
-import { ChainMetadata } from '~/components/GalleryEditor/PiecesSidebar/chains';
 import colors from '~/shared/theme/colors';
+import { ChainMetadata } from '~/shared/utils/chains';
 
 export const walletIconMap = {
   metamask: '/icons/metamask.svg',

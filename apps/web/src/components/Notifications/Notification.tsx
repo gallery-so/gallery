@@ -16,6 +16,7 @@ import { NotificationUserListPage } from '~/components/Notifications/Notificatio
 import { useDrawerActions } from '~/contexts/globalLayout/GlobalSidebar/SidebarDrawerContext';
 import { NotificationFragment$key } from '~/generated/NotificationFragment.graphql';
 import { NotificationInnerFragment$key } from '~/generated/NotificationInnerFragment.graphql';
+import { NotificationInnerQueryFragment$key } from '~/generated/NotificationInnerQueryFragment.graphql';
 import { NotificationQueryFragment$key } from '~/generated/NotificationQueryFragment.graphql';
 import { useClearNotifications } from '~/shared/relay/useClearNotifications';
 import colors from '~/shared/theme/colors';
@@ -70,6 +71,8 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
   const query = useFragment(
     graphql`
       fragment NotificationQueryFragment on Query {
+        ...NotificationInnerQueryFragment
+
         viewer {
           ... on Viewer {
             id
@@ -89,7 +92,7 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
   const clearAllNotifications = useClearNotifications();
 
   /**
-   * Bare with me here, this `useMemo` returns a stable function
+   * Bear with me here, this `useMemo` returns a stable function
    * if we want that notification type to have a clickable action.
    *
    * If the notification should not be clickable, we return undefined
@@ -162,6 +165,18 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
 
   const timeAgo = getTimeSince(notification.updatedTime);
 
+  if (
+    ![
+      'SomeoneAdmiredYourFeedEventNotification',
+      'SomeoneCommentedOnYourFeedEventNotification',
+      'SomeoneFollowedYouNotification',
+      'SomeoneFollowedYouBackNotification',
+      'SomeoneViewedYourGalleryNotification',
+    ].includes(notification.__typename)
+  ) {
+    return null;
+  }
+
   return (
     <Container isClickable={isClickable} onClick={handleClick}>
       <HStack gap={8} align="center">
@@ -170,7 +185,7 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
             <UnseenDot />
           </UnseenDotContainer>
         )}
-        <NotificationInner notificationRef={notification} />
+        <NotificationInner notificationRef={notification} queryRef={query} />
         <HStack grow justify="flex-end" gap={16}>
           <TimeAgoText color={colors.metal}>{timeAgo}</TimeAgoText>
           {showCaret && <NotificationArrow />}
@@ -182,9 +197,10 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
 
 type NotificationInnerProps = {
   notificationRef: NotificationInnerFragment$key;
+  queryRef: NotificationInnerQueryFragment$key;
 };
 
-function NotificationInner({ notificationRef }: NotificationInnerProps) {
+function NotificationInner({ notificationRef, queryRef }: NotificationInnerProps) {
   const notification = useFragment(
     graphql`
       fragment NotificationInnerFragment on Notification {
@@ -217,6 +233,15 @@ function NotificationInner({ notificationRef }: NotificationInnerProps) {
     notificationRef
   );
 
+  const query = useFragment(
+    graphql`
+      fragment NotificationInnerQueryFragment on Query {
+        ...SomeoneFollowedYouQueryFragment
+      }
+    `,
+    queryRef
+  );
+
   const { hideDrawer } = useDrawerActions();
   const handleClose = useCallback(() => {
     hideDrawer();
@@ -227,7 +252,9 @@ function NotificationInner({ notificationRef }: NotificationInnerProps) {
   } else if (notification.__typename === 'SomeoneViewedYourGalleryNotification') {
     return <SomeoneViewedYourGallery notificationRef={notification} onClose={handleClose} />;
   } else if (notification.__typename === 'SomeoneFollowedYouNotification') {
-    return <SomeoneFollowedYou notificationRef={notification} onClose={handleClose} />;
+    return (
+      <SomeoneFollowedYou notificationRef={notification} queryRef={query} onClose={handleClose} />
+    );
   } else if (notification.__typename === 'SomeoneFollowedYouBackNotification') {
     return <SomeoneFollowedYouBack notificationRef={notification} onClose={handleClose} />;
   } else if (notification.__typename === 'SomeoneCommentedOnYourFeedEventNotification') {

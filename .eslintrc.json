@@ -5,6 +5,8 @@
   "ignorePatterns": ["*.graphql.ts", "**/operations.ts"],
 
   "rules": {
+    "no-implicit-coercion": "error",
+
     "react/no-unescaped-entities": "off",
 
     "react-hooks/rules-of-hooks": "error",

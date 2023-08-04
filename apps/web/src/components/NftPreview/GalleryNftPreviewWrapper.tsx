@@ -4,7 +4,7 @@ import ShimmerProvider from '~/contexts/shimmer/ShimmerContext';
 import { GalleryNftPreviewWrapperFragment$key } from '~/generated/GalleryNftPreviewWrapperFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 
-import NftPreview from './NftPreview';
+import CollectionTokenPreview from './CollectionTokenPreview';
 
 type Props = {
   tokenRef: GalleryNftPreviewWrapperFragment$key;
@@ -37,7 +37,7 @@ function GalleryNftPreviewWrapper({ tokenRef, columns }: Props) {
   const collectionTokenRef = useFragment(
     graphql`
       fragment GalleryNftPreviewWrapperFragment on CollectionToken {
-        ...NftPreviewFragment
+        ...CollectionTokenPreviewFragment
       }
     `,
     tokenRef
@@ -49,7 +49,13 @@ function GalleryNftPreviewWrapper({ tokenRef, columns }: Props) {
     ? MOBILE_NFT_WIDTH
     : LAYOUT_DIMENSIONS[columns] ?? /* Just a sane fallback */ SINGLE_COLUMN_NFT_WIDTH;
 
-  return <NftPreview tokenRef={collectionTokenRef} previewSize={previewSize} columns={columns} />;
+  return (
+    <CollectionTokenPreview
+      tokenRef={collectionTokenRef}
+      previewSize={previewSize}
+      columns={columns}
+    />
+  );
 }
 
 export default NftPreviewWithShimmer;
