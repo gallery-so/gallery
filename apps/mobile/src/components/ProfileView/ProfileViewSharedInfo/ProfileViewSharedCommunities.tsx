@@ -139,7 +139,7 @@ function HoldsText({ communityRefs, onSeeAll, style }: HoldsTextProps) {
 
   return (
     <View className="flex flex-row items-center space-x-1" style={style}>
-      <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+      <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
         Also holds
       </Typography>
       {communitiesToShow.map((community, index) => {
@@ -151,13 +151,14 @@ function HoldsText({ communityRefs, onSeeAll, style }: HoldsTextProps) {
               onPress={() =>
                 community.contractAddress && handleCommunityPress(community.contractAddress)
               }
-              textStyle={{ fontSize: 12 }}
+              textStyle={{ fontSize: 12, color: 'text-black-800' }}
+              font={{ family: 'ABCDiatype', weight: 'Bold' }}
               type="Shared Communities Name"
             >
               {community.name}
             </InteractiveLink>
             {(!isLast || hasMore) && (
-              <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+              <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
                 ,
               </Typography>
             )}
@@ -167,13 +168,14 @@ function HoldsText({ communityRefs, onSeeAll, style }: HoldsTextProps) {
 
       {hasMore && (
         <View className="flex flex-row">
-          <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+          <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
             and{' '}
           </Typography>
 
           <InteractiveLink
             onPress={onSeeAll}
-            textStyle={{ fontSize: 12 }}
+            textStyle={{ fontSize: 12, color: 'text-black-800' }}
+            font={{ family: 'ABCDiatype', weight: 'Bold' }}
             type="Shared Communities See All"
           >
             {communities.length - communitiesToShow.length} others

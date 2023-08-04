@@ -114,7 +114,7 @@ function FollowingText({ userRefs, onSeeAll, style }: FollowingTextProps) {
 
   return (
     <View className="flex flex-row items-center space-x-1" style={style}>
-      <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+      <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
         Followed by
       </Typography>
       {usersToShow.map((user, index) => {
@@ -128,14 +128,14 @@ function FollowingText({ userRefs, onSeeAll, style }: FollowingTextProps) {
                   navigation.push('Profile', { username: user.username });
                 }
               }}
-              textStyle={{ fontSize: 12 }}
-              showUnderline
+              textStyle={{ fontSize: 12, color: 'text-black-800' }}
+              font={{ family: 'ABCDiatype', weight: 'Bold' }}
               type="Shared Followers Username"
             >
               {user.username}
             </InteractiveLink>
             {(!isLast || hasMore) && (
-              <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+              <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
                 ,
               </Typography>
             )}
@@ -145,15 +145,15 @@ function FollowingText({ userRefs, onSeeAll, style }: FollowingTextProps) {
 
       {hasMore && (
         <View className="flex flex-row">
-          <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+          <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
             and{' '}
           </Typography>
 
           <InteractiveLink
             onPress={onSeeAll}
-            textStyle={{ fontSize: 12 }}
+            textStyle={{ fontSize: 12, color: 'text-black-800' }}
+            font={{ family: 'ABCDiatype', weight: 'Bold' }}
             type="Shared Followers See All"
-            showUnderline
           >
             {users.length - usersToShow.length} others
           </InteractiveLink>
