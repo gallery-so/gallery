@@ -13,10 +13,20 @@ import colors from '~/shared/theme/colors';
 import FollowListUsers from './FollowListUsers';
 
 type Props = {
+  queryRef: FollowListQueryFragment$key;
   userRef: FollowListFragment$key;
 };
 
-export default function FollowList({ userRef }: Props) {
+export default function FollowList({ userRef, queryRef }: Props) {
+  const query = useFragment(
+    graphql`
+      fragment FollowListQueryFragment on Query {
+        ...FollowListUsersQueryFragment
+      }
+    `,
+    queryRef
+  );
+
   const user = useFragment(
     graphql`
       fragment FollowListFragment on GalleryUser {
@@ -61,6 +71,7 @@ export default function FollowList({ userRef }: Props) {
         </StyledSpan>
       </StyledHeader>
       <FollowListUsers
+        queryRef={query}
         userRefs={nonNullUserList}
         emptyListText={
           displayedList === 'followers' ? 'No followers yet.' : 'Not following anyone yet.'
@@ -70,7 +81,7 @@ export default function FollowList({ userRef }: Props) {
   );
 }
 
-const StyledFollowList = styled.div<{ fullscreen: boolean }>`
+const StyledFollowList = styled.div`
   height: 100%;
   width: 100%;
   padding-top: 24px;
@@ -89,10 +100,10 @@ const StyledSpan = styled.span<{ active: boolean }>`
   line-height: 21px;
   letter-spacing: -0.04em;
   font-weight: 500;
-  font-size: 20px;
+  font-size: 18px;
 
   @media only screen and ${breakpoints.tablet} {
-    font-size: 20px;
+    font-size: 18px;
   }
 
   margin: 0;

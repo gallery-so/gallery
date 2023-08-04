@@ -5,7 +5,9 @@ import styled from 'styled-components';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleS } from '~/components/core/Text/Text';
+import FollowButton from '~/components/Follow/FollowButton';
 import { FollowListUsersFragment$key } from '~/generated/FollowListUsersFragment.graphql';
+import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
 import { BREAK_LINES } from '~/utils/regex';
@@ -13,15 +15,26 @@ import { BREAK_LINES } from '~/utils/regex';
 import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
 
 type Props = {
+  queryRef: FollowListQueryFragment$key;
   userRefs: FollowListUsersFragment$key;
   emptyListText?: string;
 };
 
 export default function FollowListUsers({
+  queryRef,
   userRefs,
   emptyListText = 'No users to display.',
 }: Props) {
   const track = useTrack();
+
+  const query = useFragment(
+    graphql`
+      fragment FollowListUsersQueryFragment on Query {
+        ...FollowButtonQueryFragment
+      }
+    `,
+    queryRef
+  );
 
   const users = useFragment(
     graphql`
@@ -30,10 +43,13 @@ export default function FollowListUsers({
         bio
         username
         ...ProfilePictureFragment
+        ...FollowButtonUserFragment
       }
     `,
     userRefs
   );
+
+  const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
   const handleClick = useCallback(() => {
     track('Follower List Username Click');
@@ -51,12 +67,32 @@ export default function FollowListUsers({
   return (
     <StyledList>
       {formattedUsersBio.map((user) => (
-        <StyledListItem key={user.dbid} href={`/${user.username}`} onClick={handleClick}>
-          <HStack gap={4} align="center" inline>
-            <ProfilePicture userRef={user} size="sm" />
-            <TitleS>{user.username}</TitleS>
+        <StyledListItem
+          key={user.dbid}
+          href={`/${user.username}`}
+          onClick={handleClick}
+          isMobile={isMobile}
+        >
+          <HStack gap={8}>
+            <ProfilePicture userRef={user} size="md" />
+            {user.bio ? (
+              <VStack inline>
+                <TitleS>{user.username}</TitleS>
+                <StyledBaseM>
+                  <Markdown text={user.bio} />
+                </StyledBaseM>
+              </VStack>
+            ) : (
+              <VStack justify="center">
+                <TitleS>{user.username}</TitleS>
+              </VStack>
+            )}
           </HStack>
-          <StyledBaseM>{user.bio && <Markdown text={user.bio} />}</StyledBaseM>
+          {query && user && (
+            <VStack justify="center">
+              <StyledFollowButton queryRef={query} userRef={user} />
+            </VStack>
+          )}
         </StyledListItem>
       ))}
       {formattedUsersBio.length === 0 && (
@@ -85,9 +121,15 @@ const StyledList = styled.div`
   height: 100%;
   padding-top: 12px;
 `;
-const StyledListItem = styled.a`
-  padding: 16px;
+
+const StyledListItem = styled.a<{ isMobile: boolean }>`
+  display: flex;
+  padding: 12px;
+  padding-top: 16px;
+  padding-bottom: 16px;
   text-decoration: none;
+  gap: ${({ isMobile }) => (isMobile ? '4px' : '72px')};
+  justify-content: space-between;
 
   &:hover {
     background: ${colors.offWhite};
@@ -96,4 +138,10 @@ const StyledListItem = styled.a`
 
 const StyledEmptyList = styled(VStack)`
   height: 100%;
+`;
+
+const StyledFollowButton = styled(FollowButton)`
+  padding: 2px 8px;
+  width: 92px;
+  height: 24px;
 `;
