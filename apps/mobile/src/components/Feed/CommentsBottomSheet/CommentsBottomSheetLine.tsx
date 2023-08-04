@@ -35,19 +35,19 @@ export function CommentsBottomSheetLine({ commentRef }: CommentLineProps) {
       <View>
         <View className="flex flex-row space-x-1 items-center">
           {comment.commenter && <ProfilePicture userRef={comment.commenter} size="sm" />}
-
-          <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-            {comment.commenter?.username}
-          </Typography>
-
-          <Typography
-            className="text-xxs text-metal"
-            font={{ family: 'ABCDiatype', weight: 'Regular' }}
-          >
-            {timeAgo}
-          </Typography>
+          <View className="flex flex-row space-x-1 h-5 -mt-1.5">
+            <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+              {comment.commenter?.username}
+            </Typography>
+            <Typography
+              className="text-xxs text-metal -mt-1"
+              font={{ family: 'ABCDiatype', weight: 'Regular' }}
+            >
+              {timeAgo}
+            </Typography>
+          </View>
         </View>
-        <View className="pl-7">
+        <View className="pl-7 -mt-2">
           <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
             {comment.comment}
           </Typography>
