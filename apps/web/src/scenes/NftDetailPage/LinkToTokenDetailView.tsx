@@ -64,10 +64,6 @@ export default function LinkToTokenDetailView({
     });
   }, [collectionId, isCollectionToken, tokenId, username]);
 
-  if (!isCollectionToken) {
-    console.log({ href, asRoute });
-  }
-
   return (
     <Link
       // path that will be shown in the browser URL bar
