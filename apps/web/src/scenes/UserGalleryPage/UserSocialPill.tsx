@@ -16,7 +16,7 @@ export default function UserSocialPill({ url, icon, username, className }: Props
     <StyledUserSocialPill href={url} className={className}>
       <StyledPillContent gap={5} align="center">
         <StyledIconContainer>{icon}</StyledIconContainer>
-        <StyledHandle>{username}asdas</StyledHandle>
+        <StyledHandle>{username}</StyledHandle>
       </StyledPillContent>
     </StyledUserSocialPill>
   );

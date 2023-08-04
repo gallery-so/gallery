@@ -45,7 +45,7 @@ export default function ProfileViewTwitterPill({ userRef, style }: Props) {
       properties={{ variant: 'Twitter' }}
       style={style}
     >
-      <Pill className="flex flex-row items-center space-x-2 self-start mr-2 flex-nowrap overflow-hidden ">
+      <Pill className="flex flex-row items-center space-x-2 self-start  flex-nowrap overflow-hidden ">
         <TwitterIcon width={14} />
         <Typography
           className="text-sm overflow-hidden overflow-ellipsis whitespace-nowrap"
