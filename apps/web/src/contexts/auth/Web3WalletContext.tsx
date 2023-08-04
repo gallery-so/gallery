@@ -17,7 +17,7 @@ const Web3WalletProvider = memo(({ children }: PropsWithChildren) => (
   <Web3ReactProvider getLibrary={getLibrary}>{children}</Web3ReactProvider>
 ));
 
-Web3WalletProvider.displayName = 'Web3WalletProvider ';
+Web3WalletProvider.displayName = 'Web3WalletProvider';
 
 let web3Root: ReturnType<typeof createWeb3ReactRoot>;
 
