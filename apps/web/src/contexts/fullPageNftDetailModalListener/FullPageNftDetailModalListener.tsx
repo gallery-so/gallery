@@ -15,6 +15,8 @@ import { useModalActions, useModalState } from '../modal/ModalContext';
  * This component listens globally for clients transitioning to an NFT Detail Modal Route.
  * If users are pushed to that route, a modal will be triggered with a pseudo-transition
  * while the previous route remains mounted in the background.
+ *
+ * How this works: * How this works: https://www.loom.com/share/00e33659ade1413d8059896e8347d049?sid=f2a8d569-3742-477b-95aa-991512a1c630
  */
 export default function FullPageNftDetailModalListener() {
   const { isModalOpenRef } = useModalState();

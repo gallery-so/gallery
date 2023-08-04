@@ -12,7 +12,6 @@ import isProduction from '~/utils/isProduction';
 import AnalyticsProvider from './analytics/WebAnalyticsProvider';
 import Boundary from './boundary/Boundary';
 import { WebErrorReportingProvider } from './errorReporting/WebErrorReportingProvider';
-// import FullPageNftDetailModalListener from './fullPageNftDetailModalListener/FullPageNftDetailModalListener';
 import GlobalLayoutContextProvider from './globalLayout/GlobalLayoutContext';
 import SidebarDrawerProvider from './globalLayout/GlobalSidebar/SidebarDrawerContext';
 import ModalProvider from './modal/ModalContext';

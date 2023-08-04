@@ -21,6 +21,8 @@ type Props = {
  * The NFT Detail variant that will be displayed will be either:
  * 1. Standalone Token Page (e.g. from a Post) OR
  * 2. Collection Token Page, as part of a user's personal collection
+ *
+ * How this works: https://www.loom.com/share/00e33659ade1413d8059896e8347d049?sid=f2a8d569-3742-477b-95aa-991512a1c630
  */
 export default function LinkToFullPageNftDetailModal({
   children,
