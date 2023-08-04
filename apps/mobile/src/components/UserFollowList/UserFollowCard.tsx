@@ -50,7 +50,7 @@ export function UserFollowCard({ userRef, queryRef, onPress }: UserFollowCardPro
   }, [onPress, user.username]);
 
   return (
-    <View className="flex w-full flex-row items-center justify-between space-x-8 overflow-hidden py-2 px-4">
+    <View className="flex w-full flex-row items-center space-x-8 overflow-hidden py-2 px-4">
       <GalleryTouchableOpacity
         onPress={handlePress}
         className="flex flex-1 flex-grow flex-col py-2"
@@ -59,7 +59,7 @@ export function UserFollowCard({ userRef, queryRef, onPress }: UserFollowCardPro
       >
         <View className="flex flex-row items-center">
           <ProfilePicture userRef={user} size="md" />
-          <View className="px-3">
+          <View className="px-3 w-full">
             <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
               {user.username}
             </Typography>
