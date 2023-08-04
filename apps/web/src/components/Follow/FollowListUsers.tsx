@@ -125,7 +125,6 @@ const StyledList = styled.div`
 
 const StyledListItem = styled.a<{ isMobile: boolean }>`
   display: flex;
-  padding: 12px;
   padding-top: 16px;
   padding-bottom: 16px;
   text-decoration: none;
