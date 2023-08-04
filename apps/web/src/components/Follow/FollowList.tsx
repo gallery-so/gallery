@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import { HStack } from '~/components/core/Spacer/Stack';

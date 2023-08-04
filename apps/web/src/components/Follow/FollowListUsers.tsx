@@ -15,7 +15,7 @@ import { BREAK_LINES } from '~/utils/regex';
 import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
 
 type Props = {
-  queryRef: FollowListQueryFragment$key;
+  queryRef: FollowListUsersQueryFragment$key;
   userRefs: FollowListUsersFragment$key;
   emptyListText?: string;
 };
