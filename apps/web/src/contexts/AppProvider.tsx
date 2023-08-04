@@ -1,3 +1,4 @@
+import { lazy } from 'react';
 import { Environment, PreloadedQuery, RelayEnvironmentProvider } from 'react-relay';
 
 import Debugger from '~/components/Debugger/Debugger';
@@ -11,12 +12,16 @@ import isProduction from '~/utils/isProduction';
 import AnalyticsProvider from './analytics/WebAnalyticsProvider';
 import Boundary from './boundary/Boundary';
 import { WebErrorReportingProvider } from './errorReporting/WebErrorReportingProvider';
-import FullPageNftDetailModalListener from './fullPageNftDetailModalListener/FullPageNftDetailModalListener';
+// import FullPageNftDetailModalListener from './fullPageNftDetailModalListener/FullPageNftDetailModalListener';
 import GlobalLayoutContextProvider from './globalLayout/GlobalLayoutContext';
 import SidebarDrawerProvider from './globalLayout/GlobalSidebar/SidebarDrawerContext';
 import ModalProvider from './modal/ModalContext';
 import { SwrProvider } from './swr/SwrContext';
 import ToastProvider from './toast/ToastContext';
+
+const FullPageNftDetailModalListener = lazy(
+  () => import('./fullPageNftDetailModalListener/FullPageNftDetailModalListener')
+);
 
 type Props = {
   children: React.ReactNode;
