@@ -13,7 +13,7 @@ import UserFarcasterSection from './UserFarcasterSection';
 import UserLensSection from './UserLensSection';
 import { UserNameAndDescriptionHeader } from './UserNameAndDescriptionHeader';
 import UserSharedInfo from './UserSharedInfo/UserSharedInfo';
-import UserSocialPill, { StyledUserSocialPill } from './UserSocialPill';
+import { StyledUserSocialPill } from './UserSocialPill';
 import UserTwitterSection from './UserTwitterSection';
 
 type Props = {

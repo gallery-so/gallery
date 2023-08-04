@@ -10,9 +10,10 @@ import { ProfileViewLensPillFragment$key } from '~/generated/ProfileViewLensPill
 
 type Props = {
   userRef: ProfileViewLensPillFragment$key;
+  maxWidth: string;
 };
 
-export default function ProfileViewLensPill({ userRef }: Props) {
+export default function ProfileViewLensPill({ userRef, maxWidth }: Props) {
   const user = useFragment(
     graphql`
       fragment ProfileViewLensPillFragment on GalleryUser {
@@ -49,10 +50,15 @@ export default function ProfileViewLensPill({ userRef }: Props) {
       eventElementId="Social Pill"
       eventName="Social Pill Clicked"
       properties={{ variant: 'Lens' }}
+      className={`ml-2 max-w-[${maxWidth}]`}
     >
       <Pill className="flex flex-row items-center space-x-2 self-start mr-2">
         <LensIcon width={14} />
-        <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+        <Typography
+          numberOfLines={1}
+          className="text-sm"
+          font={{ family: 'ABCDiatype', weight: 'Bold' }}
+        >
           {rawLensUsername}
         </Typography>
       </Pill>

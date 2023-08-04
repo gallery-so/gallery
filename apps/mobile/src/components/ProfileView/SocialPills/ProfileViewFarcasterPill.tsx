@@ -10,9 +10,10 @@ import { ProfileViewFarcasterPillFragment$key } from '~/generated/ProfileViewFar
 
 type Props = {
   userRef: ProfileViewFarcasterPillFragment$key;
+  maxWidth: string;
 };
 
-export default function ProfileViewFarcasterPill({ userRef }: Props) {
+export default function ProfileViewFarcasterPill({ userRef, maxWidth }: Props) {
   const user = useFragment(
     graphql`
       fragment ProfileViewFarcasterPillFragment on GalleryUser {
@@ -44,10 +45,15 @@ export default function ProfileViewFarcasterPill({ userRef }: Props) {
       eventElementId="Social Pill"
       eventName="Social Pill Clicked"
       properties={{ variant: 'Farcaster' }}
+      className={`ml-2 max-w-[${maxWidth}]`}
     >
-      <Pill className="flex flex-row items-center space-x-2 self-start">
+      <Pill className="flex flex-row items-center space-x-2 self-start w-full">
         <FarcasterIcon width={14} />
-        <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+        <Typography
+          numberOfLines={1}
+          className="text-sm"
+          font={{ family: 'ABCDiatype', weight: 'Bold' }}
+        >
           {user.socialAccounts.farcaster.username}
         </Typography>
       </Pill>

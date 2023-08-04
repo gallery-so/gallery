@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { Linking, ViewProps } from 'react-native';
+import { Linking } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 import { TwitterIcon } from 'src/icons/TwitterIcon';
 
@@ -10,10 +10,10 @@ import { ProfileViewTwitterPillFragment$key } from '~/generated/ProfileViewTwitt
 
 type Props = {
   userRef: ProfileViewTwitterPillFragment$key;
-  style?: ViewProps['style'];
+  maxWidth: string;
 };
 
-export default function ProfileViewTwitterPill({ userRef, style }: Props) {
+export default function ProfileViewTwitterPill({ userRef, maxWidth }: Props) {
   const user = useFragment(
     graphql`
       fragment ProfileViewTwitterPillFragment on GalleryUser {
@@ -43,12 +43,13 @@ export default function ProfileViewTwitterPill({ userRef, style }: Props) {
       eventElementId="Social Pill"
       eventName="Social Pill Clicked"
       properties={{ variant: 'Twitter' }}
-      style={style}
+      className={`ml-2 max-w-[${maxWidth}]`}
     >
-      <Pill className="flex flex-row items-center space-x-2 self-start  flex-nowrap overflow-hidden ">
+      <Pill className="flex flex-row items-center space-x-2 self-start w-full">
         <TwitterIcon width={14} />
         <Typography
-          className="text-sm overflow-hidden overflow-ellipsis whitespace-nowrap"
+          numberOfLines={1}
+          className="text-sm"
           font={{ family: 'ABCDiatype', weight: 'Bold' }}
         >
           {user.socialAccounts.twitter.username}
