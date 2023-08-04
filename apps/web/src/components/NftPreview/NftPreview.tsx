@@ -9,7 +9,7 @@ import { NftFailureFallback } from '~/components/NftFailureFallback/NftFailureFa
 import { NftPreviewFragment$key } from '~/generated/NftPreviewFragment.graphql';
 import { useNftRetry } from '~/hooks/useNftRetry';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
-import LinkToTokenDetailView from '~/scenes/NftDetailPage/LinkToTokenDetailView';
+import LinkToFullPageNftDetailModal from '~/scenes/NftDetailPage/LinkToFullPageNftDetailModal';
 import NftDetailAnimation from '~/scenes/NftDetailPage/NftDetailAnimation';
 import NftDetailGif from '~/scenes/NftDetailPage/NftDetailGif';
 import NftDetailModel from '~/scenes/NftDetailPage/NftDetailModel';
@@ -194,7 +194,7 @@ function NftPreview({
       }
       onError={handleNftError}
     >
-      <LinkToTokenDetailView
+      <LinkToFullPageNftDetailModal
         username={ownerUsername ?? ''}
         collectionId={collectionId}
         tokenId={token.dbid}
@@ -224,7 +224,7 @@ function NftPreview({
             </StyledNftFooter>
           )}
         </StyledNftPreview>
-      </LinkToTokenDetailView>
+      </LinkToFullPageNftDetailModal>
     </NftFailureBoundary>
   );
 }

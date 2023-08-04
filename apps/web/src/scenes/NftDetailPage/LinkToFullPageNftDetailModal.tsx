@@ -12,6 +12,8 @@ type Props = {
 };
 
 /**
+ * IMPORTANT! The mechanics of this file are tied to the globally available `FullPageNftDetailModalListener.tsx`
+ *
  * This component opens the NFT Detail View as a separate URL but keeps the user where they are,
  * allowing them to share a direct link to the current modal view, while also being able to close
  * the modal and continue browsing.
@@ -20,7 +22,7 @@ type Props = {
  * 1. Standalone Token Page (e.g. from a Post) OR
  * 2. Collection Token Page, as part of a user's personal collection
  */
-export default function LinkToTokenDetailView({
+export default function LinkToFullPageNftDetailModal({
   children,
   username,
   tokenId,

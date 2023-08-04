@@ -9,11 +9,13 @@ import { LoadableTokenDetailView } from '~/scenes/TokenDetailPage/TokenDetailVie
 
 import { useModalActions, useModalState } from '../modal/ModalContext';
 
-// This component listens globally for clients transitioning to an NFT Detail Modal Route.
-// If users are pushed to that route, a modal will be triggered with a pseudo-transition
-// while the previous route remains mounted in the background.
-//
-// This file works in tandem with `LinkToTokenDetailView.tsx`
+/**
+ * IMPORTANT! The mechanics of this listener is tied to `LinkToFullPageNftDetailModal.tsx`
+ *
+ * This component listens globally for clients transitioning to an NFT Detail Modal Route.
+ * If users are pushed to that route, a modal will be triggered with a pseudo-transition
+ * while the previous route remains mounted in the background.
+ */
 export default function FullPageNftDetailModalListener() {
   const { isModalOpenRef } = useModalState();
   const { showModal } = useModalActions();

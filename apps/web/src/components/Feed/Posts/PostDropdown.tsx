@@ -9,7 +9,7 @@ import { BaseM } from '~/components/core/Text/Text';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { PostDropdownFragment$key } from '~/generated/PostDropdownFragment.graphql';
 import { PostDropdownQueryFragment$key } from '~/generated/PostDropdownQueryFragment.graphql';
-import LinkToTokenDetailView from '~/scenes/NftDetailPage/LinkToTokenDetailView';
+import LinkToFullPageNftDetailModal from '~/scenes/NftDetailPage/LinkToFullPageNftDetailModal';
 import { getBaseUrl } from '~/utils/getBaseUrl';
 
 import DeletePostConfirmation from './DeletePostConfirmation';
@@ -87,11 +87,14 @@ export default function PostDropdown({ postRef, queryRef }: Props) {
             </DropdownItem>
           </CopyToClipboard>
           {token && (
-            <LinkToTokenDetailView username={token?.owner?.username ?? ''} tokenId={token?.dbid}>
+            <LinkToFullPageNftDetailModal
+              username={token?.owner?.username ?? ''}
+              tokenId={token?.dbid}
+            >
               <DropdownItem>
                 <BaseM>View Item Detail</BaseM>
               </DropdownItem>
-            </LinkToTokenDetailView>
+            </LinkToFullPageNftDetailModal>
           )}
           <DropdownItem onClick={handleDeletePostClick}>
             <BaseM>Delete</BaseM>
@@ -114,11 +117,14 @@ export default function PostDropdown({ postRef, queryRef }: Props) {
           <BaseM>Follow</BaseM>
         </DropdownItem> */}
         {token && (
-          <LinkToTokenDetailView username={token?.owner?.username ?? ''} tokenId={token?.dbid}>
+          <LinkToFullPageNftDetailModal
+            username={token?.owner?.username ?? ''}
+            tokenId={token?.dbid}
+          >
             <DropdownItem>
               <BaseM>View Item Detail</BaseM>
             </DropdownItem>
-          </LinkToTokenDetailView>
+          </LinkToFullPageNftDetailModal>
         )}
       </DropdownSection>
     </SettingsDropdown>
