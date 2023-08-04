@@ -125,7 +125,7 @@ export default function CommunityPagePostsTab({ communityRef, queryRef }: Props)
         {viewerIsCommunityOwner ? (
           <StyledFirstPostCta gap={32} align="center">
             <BaseXL>
-              It's still early... be the first to post about{' '}
+              We're still so early... be the first to post about{' '}
               {community.name ? <strong>{community.name}</strong> : 'this community'} and inspire
               others!
             </BaseXL>
