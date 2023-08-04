@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { graphql, usePaginationFragment } from 'react-relay';
-import { AutoSizer, Index, InfiniteLoader, List, ListRowRenderer } from 'react-virtualized';
+import { AutoSizer, InfiniteLoader, List, ListRowRenderer } from 'react-virtualized';
 import styled from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';

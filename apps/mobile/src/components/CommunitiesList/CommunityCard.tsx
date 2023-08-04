@@ -6,7 +6,6 @@ import { graphql } from 'relay-runtime';
 
 import { Typography } from '~/components/Typography';
 import { CommunityCardFragment$key } from '~/generated/CommunityCardFragment.graphql';
-import unescape from '~/shared/utils/unescape';
 
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import { Markdown } from '../Markdown';
