@@ -730,6 +730,7 @@ type GalleryUser implements Node {
   sharedFollowers(before: String, after: String, first: Int, last: Int): UsersConnection
   sharedCommunities(before: String, after: String, first: Int, last: Int): CommunitiesConnection
   createdCommunities(input: CreatedCommunitiesInput!, before: String, after: String, first: Int, last: Int): CommunitiesConnection
+  isMemberOfCommunity(communityID: DBID!): Boolean!
 }
 
 union GalleryUserOrAddress = GalleryUser | ChainAddress
@@ -831,6 +832,16 @@ type JsonMedia implements Media {
   contentRenderURL: String
   dimensions: MediaDimensions
   fallbackMedia: FallbackMedia
+}
+
+type LensSocialAccount implements SocialAccount {
+  type: SocialAccountType!
+  social_id: String!
+  name: String!
+  username: String!
+  profileImageURL: String!
+  bio: String!
+  display: Boolean!
 }
 
 type LoginPayload {
@@ -1199,6 +1210,7 @@ type Query {
   galleryOfTheWeekWinners: [GalleryUser!]
   globalFeed(before: String, after: String, first: Int, last: Int, includePosts: Boolean! = false): FeedConnection
   trendingFeed(before: String, after: String, first: Int, last: Int, includePosts: Boolean! = false): FeedConnection
+  curatedFeed(before: String, after: String, first: Int, last: Int, includePosts: Boolean! = false): FeedConnection
   feedEventById(id: DBID!): FeedEventByIdOrError
   postById(id: DBID!): PostOrError
   getMerchTokens(wallet: Address!): MerchTokensPayloadOrError
@@ -1377,6 +1389,7 @@ interface SocialAccount {
 type SocialAccounts {
   twitter: TwitterSocialAccount
   farcaster: FarcasterSocialAccount
+  lens: LensSocialAccount
 }
 
 enum SocialAccountType {

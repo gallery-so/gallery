@@ -1,24 +1,24 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { Linking } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
-import { TwitterIcon } from 'src/icons/TwitterIcon';
+import LensIcon from 'src/icons/LensIcon';
 
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { Pill } from '~/components/Pill';
 import { Typography } from '~/components/Typography';
-import { ProfileViewTwitterPillFragment$key } from '~/generated/ProfileViewTwitterPillFragment.graphql';
+import { ProfileViewLensPillFragment$key } from '~/generated/ProfileViewLensPillFragment.graphql';
 
 type Props = {
-  userRef: ProfileViewTwitterPillFragment$key;
+  userRef: ProfileViewLensPillFragment$key;
   maxWidth: string;
 };
 
-export default function ProfileViewTwitterPill({ userRef, maxWidth }: Props) {
+export default function ProfileViewLensPill({ userRef, maxWidth }: Props) {
   const user = useFragment(
     graphql`
-      fragment ProfileViewTwitterPillFragment on GalleryUser {
+      fragment ProfileViewLensPillFragment on GalleryUser {
         socialAccounts {
-          twitter {
+          lens {
             username
           }
         }
@@ -27,13 +27,20 @@ export default function ProfileViewTwitterPill({ userRef, maxWidth }: Props) {
     userRef
   );
 
-  const handlePress = useCallback(() => {
-    if (user.socialAccounts?.twitter?.username) {
-      Linking.openURL(`https://twitter.com/${user.socialAccounts.twitter.username}`);
-    }
-  }, [user.socialAccounts?.twitter?.username]);
+  const lensUsername = user.socialAccounts?.lens?.username;
 
-  if (!user.socialAccounts?.twitter?.username) {
+  const rawLensUsername = useMemo(
+    () => (lensUsername?.endsWith('.lens') ? lensUsername.slice(0, -5) : lensUsername),
+    [lensUsername]
+  );
+
+  const handlePress = useCallback(() => {
+    if (rawLensUsername) {
+      Linking.openURL(`https://lenster.xyz/u/${rawLensUsername}`);
+    }
+  }, [rawLensUsername]);
+
+  if (!lensUsername || !rawLensUsername) {
     return null;
   }
 
@@ -42,17 +49,17 @@ export default function ProfileViewTwitterPill({ userRef, maxWidth }: Props) {
       onPress={handlePress}
       eventElementId="Social Pill"
       eventName="Social Pill Clicked"
-      properties={{ variant: 'Twitter' }}
+      properties={{ variant: 'Lens' }}
       className={`ml-2 max-w-[${maxWidth}]`}
     >
-      <Pill className="flex flex-row items-center space-x-2 self-start w-full">
-        <TwitterIcon width={14} />
+      <Pill className="flex flex-row items-center space-x-2 self-start mr-2">
+        <LensIcon width={14} />
         <Typography
           numberOfLines={1}
           className="text-sm"
           font={{ family: 'ABCDiatype', weight: 'Bold' }}
         >
-          {user.socialAccounts.twitter.username}
+          {rawLensUsername}
         </Typography>
       </Pill>
     </GalleryTouchableOpacity>
