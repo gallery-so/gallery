@@ -1,0 +1,8 @@
+web:
+  - apps/web/**
+
+mobile:
+  - apps/mobile/**
+
+shared:
+  - packages/shared/**
