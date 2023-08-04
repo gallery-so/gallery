@@ -56,29 +56,6 @@ export default function SharedCommunitiesList({ userRef }: Props) {
   const isRowLoaded = ({ index }: { index: number }) =>
     !hasNext || index < sharedCommunities.length;
 
-  const getRowHeight = useCallback(
-    ({ index }: Index) => {
-      const community = sharedCommunities[index]?.node;
-      if (!community) {
-        return 0;
-      }
-
-      const unescapedDescription = community.description ? unescape(community.description) : '';
-      const descriptionFirstLine = unescapedDescription.split('\n')[0] ?? '';
-
-      if (!community.name && !descriptionFirstLine.length) {
-        return 0;
-      }
-
-      if (descriptionFirstLine.length === 0) {
-        return 40;
-      }
-
-      return 56;
-    },
-    [sharedCommunities]
-  );
-
   const rowRenderer = useCallback<ListRowRenderer>(
     ({ index, key, style }: { index: number; key: string; style: React.CSSProperties }) => {
       const community = sharedCommunities[index]?.node;
@@ -132,7 +109,7 @@ export default function SharedCommunitiesList({ userRef }: Props) {
                 rowRenderer={rowRenderer}
                 width={width}
                 height={height}
-                rowHeight={getRowHeight}
+                rowHeight={56}
                 rowCount={sharedCommunities.length}
               />
             )}
