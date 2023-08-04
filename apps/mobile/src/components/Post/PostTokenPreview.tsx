@@ -1,8 +1,7 @@
 import { RouteProp, useRoute } from '@react-navigation/native';
-import { useCallback, useMemo } from 'react';
-import { Keyboard, View } from 'react-native';
+import { useMemo } from 'react';
+import { View } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
-import { BareXMarkIcon } from 'src/icons/BareXMarkIcon';
 
 import { PostTokenPreviewQuery } from '~/generated/PostTokenPreviewQuery.graphql';
 import { RootStackNavigatorParamList } from '~/navigation/types';
@@ -12,7 +11,6 @@ import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
 
 import { GalleryBottomSheetModalType } from '../GalleryBottomSheet/GalleryBottomSheetModal';
-import { IconContainer } from '../IconContainer';
 import { NftPreviewErrorFallback } from '../NftPreview/NftPreviewErrorFallback';
 import { Typography } from '../Typography';
 
@@ -58,11 +56,6 @@ export function PostTokenPreview({ bottomSheetRef }: Props) {
     return tokenUrls?.urls.large;
   }, [token]);
 
-  const handleBackPress = useCallback(() => {
-    Keyboard.dismiss();
-    bottomSheetRef.current?.present();
-  }, [bottomSheetRef]);
-
   return (
     <View className="flex flex-col space-y-2">
       <View className="bg-offWhite dark:bg-black-800">
@@ -77,8 +70,6 @@ export function PostTokenPreview({ bottomSheetRef }: Props) {
             <NftDetailAsset tokenRef={token} />
           </NftDetailAssetCacheSwapper>
         </ReportingErrorBoundary>
-
-        <CloseButton onPress={handleBackPress} />
       </View>
 
       <View className="flex flex-col space-y-2">
@@ -96,23 +87,5 @@ export function PostTokenPreview({ bottomSheetRef }: Props) {
         </Typography>
       </View>
     </View>
-  );
-}
-
-type CloseButtonProps = {
-  onPress: () => void;
-};
-function CloseButton({ onPress }: CloseButtonProps) {
-  return (
-    <IconContainer
-      eventElementId={null}
-      eventName={null}
-      icon={<BareXMarkIcon />}
-      onPress={onPress}
-      size="xs"
-      border
-      color="white"
-      className="absolute -top-2 -right-2"
-    />
   );
 }
