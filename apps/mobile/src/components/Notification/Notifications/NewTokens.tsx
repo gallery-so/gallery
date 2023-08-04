@@ -75,7 +75,7 @@ export function NewTokens({ notificationRef }: Props) {
 
   return (
     <View className="flex flex-row items-center p-4">
-      <View className="flex-row flex-1 space-x-2">
+      <View className="flex-row flex-1 items-center space-x-2">
         {tokenUrl ? (
           <NotificationTokenPreview tokenUrl={tokenUrl} count={quantity} />
         ) : (
@@ -120,14 +120,17 @@ export function NewTokens({ notificationRef }: Props) {
         eventElementId={null}
         eventName={null}
       />
-      <View className="flex w-10 flex-row items-center justify-end space-x-2">
+      <View
+        className={`w-[35px] flex-row space-x-2 items-center ${
+          !notification.seen ? 'justify-between' : 'justify-end'
+        }`}
+      >
         <Typography
           className="text-metal text-xs"
           font={{ family: 'ABCDiatype', weight: 'Regular' }}
         >
           {getTimeSince(notification.updatedTime)}
         </Typography>
-
         {!notification.seen && <UnseenDot />}
       </View>
     </View>
