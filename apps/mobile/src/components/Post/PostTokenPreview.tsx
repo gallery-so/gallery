@@ -10,15 +10,10 @@ import { NftDetailAssetCacheSwapper } from '~/screens/NftDetailScreen/NftDetailA
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
 
-import { GalleryBottomSheetModalType } from '../GalleryBottomSheet/GalleryBottomSheetModal';
 import { NftPreviewErrorFallback } from '../NftPreview/NftPreviewErrorFallback';
 import { Typography } from '../Typography';
 
-type Props = {
-  bottomSheetRef: React.RefObject<GalleryBottomSheetModalType>;
-};
-
-export function PostTokenPreview({ bottomSheetRef }: Props) {
+export function PostTokenPreview() {
   const route = useRoute<RouteProp<RootStackNavigatorParamList, 'PostComposer'>>();
 
   const query = useLazyLoadQuery<PostTokenPreviewQuery>(

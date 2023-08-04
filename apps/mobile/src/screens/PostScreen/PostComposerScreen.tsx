@@ -150,7 +150,7 @@ export function PostComposerScreen() {
           <PostInput value={caption} onChange={setCaption} tokenRef={token} />
 
           <View className="py-4">
-            <PostTokenPreview bottomSheetRef={bottomSheetRef} />
+            <PostTokenPreview />
           </View>
         </View>
       </View>
