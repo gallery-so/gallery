@@ -1,10 +1,12 @@
+import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled, { css } from 'styled-components';
 
+import breakpoints from '~/components/core/breakpoints';
 import TextButton, { StyledButtonText } from '~/components/core/Button/TextButton';
 import { HStack } from '~/components/core/Spacer/Stack';
-import { BaseS } from '~/components/core/Text/Text';
+import { BaseS, BODY_FONT_FAMILY } from '~/components/core/Text/Text';
 import { MODAL_PADDING_THICC_PX } from '~/contexts/modal/constants';
 import { FollowListFragment$key } from '~/generated/FollowListFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
@@ -41,25 +43,25 @@ export default function FollowList({ userRef }: Props) {
 
   return (
     <StyledFollowList fullscreen={isMobile}>
-      <StyledHeader justify="space-between">
-        <StyledHeaderTextRight>
-          <StyledTextButton
-            text="Followers"
-            onClick={() => setDisplayedList('followers')}
-            active={displayedList === 'followers'}
-          />
-        </StyledHeaderTextRight>
-        <StyledHeaderText>
-          <StyledTextButton
-            text="Following"
-            onClick={() => setDisplayedList('following')}
-            active={displayedList === 'following'}
-          />
+      <StyledHeader>
+        <StyledSpan
+          active={displayedList === 'followers'}
+          onClick={() => setDisplayedList('followers')}
+        >
           <HStack gap={4} align="baseline">
             <span>Followers</span>
-            {userList.length > 0 && <BaseS>{userList.length}</BaseS>}
+            {user.followers.length > 0 && <BaseS>{user.followers.length}</BaseS>}
           </HStack>
-        </StyledHeaderText>
+        </StyledSpan>
+        <StyledSpan
+          active={displayedList === 'following'}
+          onClick={() => setDisplayedList('following')}
+        >
+          <HStack gap={4} align="baseline">
+            <span>Following</span>
+            {user.following.length > 0 && <BaseS>{user.following.length}</BaseS>}
+          </HStack>
+        </StyledSpan>
       </StyledHeader>
       <FollowListUsers
         userRefs={nonNullUserList}
@@ -90,20 +92,29 @@ const StyledFollowList = styled.div<{ fullscreen: boolean }>`
 
 const StyledHeader = styled(HStack)`
   padding-bottom: ${MODAL_PADDING_THICC_PX}px;
-`;
-
-const StyledHeaderText = styled.div`
   display: flex;
+  gap: 12px;
 `;
 
-const StyledHeaderTextRight = styled(StyledHeaderText)`
-  justify-content: flex-end;
-`;
+const StyledSpan = styled.span<{ active: boolean }>`
+  font-family: ${BODY_FONT_FAMILY};
+  line-height: 21px;
+  letter-spacing: -0.04em;
+  font-weight: 500;
+  font-size: 16px;
 
-const StyledTextButton = styled(TextButton)<{ active: boolean }>`
-  ${({ active }) =>
-    active &&
-    `${StyledButtonText} {
-    color: ${colors.black['800']};
-  }`}
+  @media only screen and ${breakpoints.tablet} {
+    font-size: 18px;
+  }
+
+  margin: 0;
+
+  color: ${({ active }) => (active ? colors.black['800'] : colors.metal)};
+
+  cursor: pointer;
+  text-decoration: none;
+
+  ${BaseS} {
+    color: ${({ active }) => (active ? colors.black['800'] : colors.metal)};
+  }
 `;
