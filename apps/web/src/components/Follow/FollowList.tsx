@@ -6,7 +6,7 @@ import breakpoints from '~/components/core/breakpoints';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseS, BODY_FONT_FAMILY } from '~/components/core/Text/Text';
 import { FollowListFragment$key } from '~/generated/FollowListFragment.graphql';
-import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import { FollowListQueryFragment$key } from '~/generated/FollowListQueryFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
 
@@ -42,14 +42,13 @@ export default function FollowList({ userRef, queryRef }: Props) {
   );
 
   const [displayedList, setDisplayedList] = useState<'followers' | 'following'>('followers');
-  const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
   const userList = displayedList === 'followers' ? user.followers : user.following;
 
   const nonNullUserList = useMemo(() => removeNullValues(userList), [userList]);
 
   return (
-    <StyledFollowList fullscreen={isMobile}>
+    <StyledFollowList>
       <StyledHeader>
         <StyledSpan
           active={displayedList === 'followers'}

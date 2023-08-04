@@ -7,6 +7,7 @@ import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleS } from '~/components/core/Text/Text';
 import FollowButton from '~/components/Follow/FollowButton';
 import { FollowListUsersFragment$key } from '~/generated/FollowListUsersFragment.graphql';
+import { FollowListUsersQueryFragment$key } from '~/generated/FollowListUsersQueryFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
