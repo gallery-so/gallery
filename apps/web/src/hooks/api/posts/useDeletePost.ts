@@ -21,13 +21,26 @@ export default function useDeletePost() {
   const reportError = useReportError();
 
   return useCallback(
-    async (postDbid: string) => {
+    async (postDbid: string, communityId: string) => {
       const updater: SelectorStoreUpdater<useDeletePostMutation['response']> = (
         store,
         response
       ) => {
         if (response.deletePost?.__typename === 'DeletePostPayload') {
           store.delete(`Post:${postDbid}`);
+
+          // Decrement the post count on the community
+          const communityRoot = store.get(communityId);
+          if (communityRoot) {
+            const communityFeedPostsCountPageInfo = communityRoot
+              .getLinkedRecord('posts(last:0)')
+              ?.getLinkedRecord('pageInfo');
+
+            communityFeedPostsCountPageInfo?.setValue(
+              ((communityFeedPostsCountPageInfo?.getValue('total') as number) ?? 0) - 1,
+              'total'
+            );
+          }
         }
       };
 

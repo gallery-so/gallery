@@ -8,10 +8,11 @@ import { useModalActions } from '~/contexts/modal/ModalContext';
 import useDeletePost from '~/hooks/api/posts/useDeletePost';
 
 type Props = {
-  postId: string;
+  postDbid: string;
+  communityId: string;
 };
 
-export default function DeletePostConfirmation({ postId }: Props) {
+export default function DeletePostConfirmation({ postDbid, communityId }: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const deletePost = useDeletePost();
   const { hideModal } = useModalActions();
@@ -19,13 +20,13 @@ export default function DeletePostConfirmation({ postId }: Props) {
   const handleConfirmClick = useCallback(async () => {
     setIsLoading(true);
     try {
-      await deletePost(postId);
+      await deletePost(postDbid, communityId);
     } catch (error) {
       return;
     }
     setIsLoading(false);
     hideModal();
-  }, [deletePost, hideModal, postId]);
+  }, [communityId, deletePost, hideModal, postDbid]);
   return (
     <VStack gap={16}>
       <VStack>
