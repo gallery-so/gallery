@@ -92,8 +92,8 @@ export function NotificationSkeleton({
 
         <Text className="dark:text-white mt-[1]">{children}</Text>
       </View>
-      <View className="flex w-20 flex-row items-center justify-end space-x-2">
-        {tokenUrl && (
+      <View className="flex flex-row items-center justify-between space-x-2">
+        {tokenUrl ? (
           <FastImage
             style={{
               width: 56,
@@ -102,15 +102,23 @@ export function NotificationSkeleton({
             source={{ uri: tokenUrl }}
             resizeMode={ResizeMode.COVER}
           />
+        ) : (
+          <View />
         )}
 
-        <Typography
-          className="text-metal text-xs"
-          font={{ family: 'ABCDiatype', weight: 'Regular' }}
+        <View
+          className={`w-[35px] flex-row space-x-2 items-center ${
+            !notification.seen ? 'justify-between' : 'justify-end'
+          }`}
         >
-          {getTimeSince(notification.updatedTime)}
-        </Typography>
-        {!notification.seen && <UnseenDot />}
+          <Typography
+            className="text-metal text-xs"
+            font={{ family: 'ABCDiatype', weight: 'Regular' }}
+          >
+            {getTimeSince(notification.updatedTime)}
+          </Typography>
+          {!notification.seen && <UnseenDot />}
+        </View>
       </View>
     </GalleryTouchableOpacity>
   );
