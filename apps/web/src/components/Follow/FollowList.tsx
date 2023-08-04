@@ -1,13 +1,10 @@
-import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled, { css } from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
-import TextButton, { StyledButtonText } from '~/components/core/Button/TextButton';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseS, BODY_FONT_FAMILY } from '~/components/core/Text/Text';
-import { MODAL_PADDING_THICC_PX } from '~/contexts/modal/constants';
 import { FollowListFragment$key } from '~/generated/FollowListFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
@@ -75,23 +72,14 @@ export default function FollowList({ userRef }: Props) {
 
 const StyledFollowList = styled.div<{ fullscreen: boolean }>`
   height: 100%;
-  width: ${({ fullscreen }) => (fullscreen ? '100%' : '540px')};
+  width: 100%;
+  padding-top: 24px;
+  border-top: 1px solid ${colors.porcelain};
   display: flex;
   flex-direction: column;
-
-  ${({ fullscreen }) =>
-    fullscreen
-      ? css`
-          width: 100%;
-          padding: ${MODAL_PADDING_THICC_PX}px 8px;
-        `
-      : css`
-          width: 540px;
-        `}
 `;
 
 const StyledHeader = styled(HStack)`
-  padding-bottom: ${MODAL_PADDING_THICC_PX}px;
   display: flex;
   gap: 12px;
 `;
@@ -101,10 +89,10 @@ const StyledSpan = styled.span<{ active: boolean }>`
   line-height: 21px;
   letter-spacing: -0.04em;
   font-weight: 500;
-  font-size: 16px;
+  font-size: 20px;
 
   @media only screen and ${breakpoints.tablet} {
-    font-size: 18px;
+    font-size: 20px;
   }
 
   margin: 0;
