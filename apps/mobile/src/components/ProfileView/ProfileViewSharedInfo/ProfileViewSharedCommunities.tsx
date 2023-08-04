@@ -76,7 +76,7 @@ export default function ProfileViewSharedCommunities({ userRef }: Props) {
   }
 
   return (
-    <View className="flex flex-row mt-3 mb-2 space-x-1">
+    <View className="flex flex-row items-center mt-3 mb-2 space-x-1">
       <CommunityProfilePictureBubblesWithCount
         onPress={handleSeeAllPress}
         totalCount={sharedCommunities.length}
@@ -138,7 +138,7 @@ function HoldsText({ communityRefs, onSeeAll, style }: HoldsTextProps) {
   );
 
   return (
-    <View className="flex flex-row items-center space-x-1" style={style}>
+    <View className="flex flex-row flex-1 flex-wrap items-center space-x-1" style={style}>
       <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
         Also holds
       </Typography>
@@ -146,7 +146,7 @@ function HoldsText({ communityRefs, onSeeAll, style }: HoldsTextProps) {
         const isLast = index === communitiesToShow.length - 1;
 
         return (
-          <View key={community.dbid} className="flex flex-row">
+          <View key={community.dbid} className="flex flex-row items-center">
             <InteractiveLink
               onPress={() =>
                 community.contractAddress && handleCommunityPress(community.contractAddress)
@@ -167,7 +167,7 @@ function HoldsText({ communityRefs, onSeeAll, style }: HoldsTextProps) {
       })}
 
       {hasMore && (
-        <View className="flex flex-row">
+        <View className="flex flex-row items-center">
           <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
             and{' '}
           </Typography>
