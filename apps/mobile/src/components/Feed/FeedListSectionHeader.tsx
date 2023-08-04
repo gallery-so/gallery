@@ -98,7 +98,7 @@ export function FeedListSectionHeader({ feedEventRef }: FeedListSectionHeaderPro
             ellipsizeMode="tail"
             numberOfLines={1}
           >
-            {galleryName || 'their gallery '}
+            {galleryName || 'their gallery'}
           </Typography>
         </GalleryTouchableOpacity>
       </View>
