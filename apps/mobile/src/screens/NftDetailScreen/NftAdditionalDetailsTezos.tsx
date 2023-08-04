@@ -1,7 +1,9 @@
+import { useColorScheme } from 'nativewind';
 import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { NftAdditionalDetailsTezosFragment$key } from '~/generated/NftAdditionalDetailsTezosFragment.graphql';
+import colors from '~/shared/theme/colors';
 import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
 
 import { InteractiveLink } from '../../components/InteractiveLink';
@@ -34,6 +36,7 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
     tokenRef
   );
 
+  const { colorScheme } = useColorScheme();
   const { tokenId, fxhashUrl, objktUrl, projectUrl } = extractRelevantMetadataFromToken(token);
 
   const { contract } = token;
@@ -47,7 +50,7 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
 
             {/* TODO(Terence) When the contract screen is ready, setup the onPress here */}
             <LinkableAddress
-              textStyle={{ color: 'black' }}
+              textStyle={{ color: colorScheme === 'dark' ? colors.white : colors.black['800'] }}
               chainAddressRef={token.contract.creatorAddress}
               type="NFT Detail Creator Address"
               font={{ family: 'ABCDiatype', weight: 'Bold' }}
@@ -61,7 +64,7 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
               <DetailSection>
                 <DetailLabelText>CONTRACT</DetailLabelText>
                 <LinkableAddress
-                  textStyle={{ color: 'black' }}
+                  textStyle={{ color: colorScheme === 'dark' ? colors.white : colors.black['800'] }}
                   chainAddressRef={contract.contractAddress}
                   type="NFT Detail Contract Address"
                   font={{ family: 'ABCDiatype', weight: 'Bold' }}
