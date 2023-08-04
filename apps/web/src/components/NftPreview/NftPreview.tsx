@@ -199,8 +199,6 @@ function NftPreview({
         collectionId={collectionId}
         tokenId={token.dbid}
       >
-        {/* NextJS <Link> tags don't come with an anchor tag by default, so we're adding one here.
-          This will inherit the `as` URL from the parent component. */}
         <StyledNftPreview
           backgroundColorOverride={backgroundColorOverride}
           fullWidth={fullWidth}
