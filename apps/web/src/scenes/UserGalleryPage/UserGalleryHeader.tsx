@@ -34,6 +34,9 @@ export default function UserGalleryHeader({ userRef, queryRef }: Props) {
           farcaster {
             username
           }
+          twitter {
+            username
+          }
         }
 
         ...UserNameAndDescriptionHeaderFragment
@@ -70,25 +73,28 @@ export default function UserGalleryHeader({ userRef, queryRef }: Props) {
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
   const numPills = useMemo(() => {
-    let total = 1;
-    if (user.socialAccounts?.lens?.username) {
-      total += 1;
-    }
-    if (user.socialAccounts?.farcaster?.username) {
-      total += 1;
-    }
-    return total;
-  }, [user.socialAccounts?.farcaster?.username, user.socialAccounts?.lens?.username]);
+    return [
+      user.socialAccounts?.farcaster?.username,
+      user.socialAccounts?.lens?.username,
+      user.socialAccounts?.twitter?.username,
+    ].filter((username) => Boolean(username)).length;
+  }, [
+    user.socialAccounts?.farcaster?.username,
+    user.socialAccounts?.lens?.username,
+    user.socialAccounts?.twitter?.username,
+  ]);
 
   return (
     <VStack gap={12}>
       <UserNameAndDescriptionHeader userRef={user} queryRef={query} />
       {isLoggedIn && !isAuthenticatedUsersPage && <UserSharedInfo userRef={user} />}
-      <SocialConnectionsSection numPills={numPills}>
-        <UserTwitterSection userRef={user} queryRef={query} />
-        <UserFarcasterSection userRef={user} />
-        <UserLensSection userRef={user} />
-      </SocialConnectionsSection>
+      {numPills > 0 && (
+        <SocialConnectionsSection numPills={numPills}>
+          <UserTwitterSection userRef={user} queryRef={query} />
+          <UserFarcasterSection userRef={user} />
+          <UserLensSection userRef={user} />
+        </SocialConnectionsSection>
+      )}
       {isMobile && (
         <MobileNavLinks align="center" justify="center">
           <GalleryNavLinks username={user.username ?? ''} queryRef={user} />
