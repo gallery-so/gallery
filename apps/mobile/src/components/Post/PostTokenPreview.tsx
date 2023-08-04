@@ -74,13 +74,13 @@ export function PostTokenPreview({ bottomSheetRef }: Props) {
 
       <View className="flex flex-col space-y-2">
         <Typography
-          className="text-lg text-black-800 dark:text-offWhite leading-[18px]"
+          className="text-lg text-black-800 dark:text-offWhite"
           font={{ family: 'ABCDiatype', weight: 'Bold' }}
         >
           {token.name}
         </Typography>
         <Typography
-          className="text-lg text-metal leading-[18px]"
+          className="text-lg text-metal leading-[20px]"
           font={{ family: 'ABCDiatype', weight: 'Regular' }}
         >
           {token.contract?.name}
