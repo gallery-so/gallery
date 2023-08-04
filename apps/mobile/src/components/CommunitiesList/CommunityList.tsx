@@ -3,30 +3,26 @@ import { useCallback } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import { CommunityFollowListFragment$key } from '~/generated/CommunityFollowListFragment.graphql';
+import { CommunityListFragment$key } from '~/generated/CommunityListFragment.graphql';
 
-import { CommunityFollowCard } from './CommunityFollowCard';
+import { CommunityCard } from './CommunityCard';
 
 type ContractAddress = {
   address: string | null;
   chain: string | null;
 };
 
-type CommunityFollowListProps = {
-  communityRefs: CommunityFollowListFragment$key;
+type CommunityListProps = {
+  communityRefs: CommunityListFragment$key;
   onLoadMore?: () => void;
   onCommunityPress: (contractAddress: ContractAddress) => void;
 };
 
-export function CommunityFollowList({
-  communityRefs,
-  onLoadMore,
-  onCommunityPress,
-}: CommunityFollowListProps) {
+export function CommunityList({ communityRefs, onLoadMore, onCommunityPress }: CommunityListProps) {
   const communities = useFragment(
     graphql`
-      fragment CommunityFollowListFragment on Community @relay(plural: true) {
-        ...CommunityFollowCardFragment
+      fragment CommunityListFragment on Community @relay(plural: true) {
+        ...CommunityCardFragment
       }
     `,
     communityRefs
@@ -34,7 +30,7 @@ export function CommunityFollowList({
 
   const renderItem = useCallback<ListRenderItem<(typeof communities)[number]>>(
     ({ item }) => {
-      return <CommunityFollowCard onPress={onCommunityPress} communityRef={item} />;
+      return <CommunityCard onPress={onCommunityPress} communityRef={item} />;
     },
     [onCommunityPress]
   );

@@ -67,8 +67,6 @@ export function UserFollowCard({ userRef, queryRef, onPress }: UserFollowCardPro
           </View>
         </View>
       </GalleryTouchableOpacity>
-
-      <FollowButton queryRef={query} userRef={user} />
     </View>
   );
 }

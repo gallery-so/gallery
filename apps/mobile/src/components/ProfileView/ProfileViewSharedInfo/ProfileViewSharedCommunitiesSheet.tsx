@@ -4,7 +4,7 @@ import { ForwardedRef, forwardRef, useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { graphql, usePaginationFragment } from 'react-relay';
 
-import { CommunityFollowList } from '~/components/CommunitiesFollowList/CommunityFollowList';
+import { CommunityList } from '~/components/CommunitiesList/CommunityList';
 import {
   GalleryBottomSheetModal,
   GalleryBottomSheetModalType,
@@ -42,7 +42,7 @@ function ProfileViewSharedCommunitiesSheet(
               __typename
               ... on Community {
                 __typename
-                ...CommunityFollowListFragment
+                ...CommunityListFragment
               }
             }
           }
@@ -99,7 +99,7 @@ function ProfileViewSharedCommunitiesSheet(
         </Typography>
 
         <View className="flex-grow">
-          <CommunityFollowList
+          <CommunityList
             onCommunityPress={handleCommunityPress}
             onLoadMore={loadMore}
             communityRefs={nonNullCommunities}
