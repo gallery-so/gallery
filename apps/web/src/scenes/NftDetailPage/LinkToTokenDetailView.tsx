@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { route } from 'nextjs-routes';
 import { ReactNode, useMemo } from 'react';
+import styled from 'styled-components';
 
 type Props = {
   username: string;
@@ -32,7 +33,6 @@ export default function LinkToTokenDetailView({
   // query params purely for internal tracking. this will NOT be displayed in URL bar.
   const href = useMemo(() => {
     const rawSearchParams = {
-      // Ensure we pass the previous page's query params to satisfy Next.js
       ...query,
       username,
       tokenId,
@@ -42,6 +42,7 @@ export default function LinkToTokenDetailView({
     };
 
     if (isCollectionToken) {
+      // @ts-expect-error: collectionId will be added to params conditionally
       rawSearchParams.collectionId = collectionId;
     }
 
@@ -80,7 +81,16 @@ export default function LinkToTokenDetailView({
     >
       {/* NextJS <Link> tags don't come with an anchor tag by default, so we're adding one here.
           This will inherit the `as` URL from the parent component. */}
-      <a data-tokenid={tokenId}>{children}</a>
+      <StyledAnchor data-tokenid={tokenId}>{children}</StyledAnchor>
     </Link>
   );
 }
+
+const StyledAnchor = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: inherit;
+  height: inherit;
+  text-decoration: none;
+`;

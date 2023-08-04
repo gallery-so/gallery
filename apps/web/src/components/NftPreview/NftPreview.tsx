@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
@@ -201,7 +201,6 @@ function NftPreview({
       >
         {/* NextJS <Link> tags don't come with an anchor tag by default, so we're adding one here.
           This will inherit the `as` URL from the parent component. */}
-        {/* <StyledA > */}
         <StyledNftPreview
           backgroundColorOverride={backgroundColorOverride}
           fullWidth={fullWidth}
@@ -225,7 +224,6 @@ function NftPreview({
             </StyledNftFooter>
           )}
         </StyledNftPreview>
-        {/* </StyledA> */}
       </LinkToTokenDetailView>
     </NftFailureBoundary>
   );
@@ -234,15 +232,6 @@ function NftPreview({
 const NftFailureWrapper = styled.div`
   width: 100%;
   max-width: 400px;
-`;
-
-const StyledA = styled.a`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: inherit;
-  height: inherit;
-  text-decoration: none;
 `;
 
 const StyledNftLabel = styled(NftPreviewLabel)`
