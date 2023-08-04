@@ -75,7 +75,7 @@ export default function UserFollowedUsersFeedEvent({
             }
           }
         }
-        ...FollowListUsersQuery
+        ...FollowListUsersQueryFragment
       }
     `,
     queryRef
