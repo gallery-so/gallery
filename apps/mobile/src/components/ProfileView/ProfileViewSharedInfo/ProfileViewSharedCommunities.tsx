@@ -2,7 +2,7 @@
 import { useNavigation } from '@react-navigation/native';
 import clsx from 'clsx';
 import React, { useCallback, useMemo, useRef } from 'react';
-import { View } from 'react-native';
+import { View, ViewProps } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
@@ -12,6 +12,7 @@ import { CommunityProfilePicture } from '~/components/ProfilePicture/CommunityPr
 import { Typography } from '~/components/Typography';
 import { ProfileViewSharedCommunitiesBubblesFragment$key } from '~/generated/ProfileViewSharedCommunitiesBubblesFragment.graphql';
 import { ProfileViewSharedCommunitiesFragment$key } from '~/generated/ProfileViewSharedCommunitiesFragment.graphql';
+import { ProfileViewSharedCommunitiesHoldsTextFragment$key } from '~/generated/ProfileViewSharedCommunitiesHoldsTextFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
@@ -37,7 +38,6 @@ export default function ProfileViewSharedCommunities({ userRef }: Props) {
               __typename
               ... on Community {
                 __typename
-                id
                 name
                 chain
                 contractAddress {
@@ -45,6 +45,7 @@ export default function ProfileViewSharedCommunities({ userRef }: Props) {
                   chain
                 }
                 ...ProfileViewSharedCommunitiesBubblesFragment
+                ...ProfileViewSharedCommunitiesHoldsTextFragment
               }
             }
           }
@@ -65,18 +66,61 @@ export default function ProfileViewSharedCommunities({ userRef }: Props) {
 
   const totalSharedCommunities = user.sharedCommunities?.pageInfo?.total ?? 0;
 
-  // Determine how many users to display by username
-  const communitiesToDisplay = useMemo(() => {
-    // In most cases we display a max of 2 communities. ie "community1, community2 and 3 others"
-    // But if there are exactly 3 shared communities, we display all 3. ie "community1, community2 and community3"
-    const maxNamesToDisplay = totalSharedCommunities === 3 ? 3 : 2;
-    return sharedCommunities.slice(0, maxNamesToDisplay);
-  }, [sharedCommunities, totalSharedCommunities]);
-
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
   const handleSeeAllPress = useCallback(() => {
     bottomSheetRef.current?.present();
   }, []);
+
+  if (totalSharedCommunities === 0) {
+    return null;
+  }
+
+  return (
+    <View className="flex flex-row mt-3 mb-2 space-x-1">
+      <CommunityProfilePictureBubblesWithCount
+        onPress={handleSeeAllPress}
+        totalCount={sharedCommunities.length}
+        eventElementId="Shared Followers Bubbles"
+        eventName="Shared Followers Bubbles pressed"
+        userRefs={sharedCommunities}
+      />
+
+      <HoldsText onSeeAll={handleSeeAllPress} communityRefs={sharedCommunities} />
+
+      <ProfileViewSharedCommunitiesSheet ref={bottomSheetRef} userRef={user} />
+    </View>
+  );
+}
+
+type HoldsTextProps = {
+  onSeeAll: () => void;
+  style?: ViewProps['style'];
+  communityRefs: ProfileViewSharedCommunitiesHoldsTextFragment$key;
+};
+
+function HoldsText({ communityRefs, onSeeAll, style }: HoldsTextProps) {
+  const communities = useFragment(
+    graphql`
+      fragment ProfileViewSharedCommunitiesHoldsTextFragment on Community @relay(plural: true) {
+        __typename
+        dbid
+        name
+        contractAddress {
+          address
+          chain
+        }
+      }
+    `,
+    communityRefs
+  );
+
+  const { communities: communitiesToShow, hasMore } = useMemo(() => {
+    if (communities.length <= 3) {
+      return { communities: communities.slice(0, 3), hasMore: false };
+    } else {
+      return { communities: communities.slice(0, 2), hasMore: true };
+    }
+  }, [communities]);
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
 
@@ -93,101 +137,49 @@ export default function ProfileViewSharedCommunities({ userRef }: Props) {
     [navigation]
   );
 
-  const content = useMemo(() => {
-    // Display up to 3 communities
-    const result = communitiesToDisplay.map((community) => {
-      if (community.contractAddress && community.chain) {
-        return (
-          <InteractiveLink
-            type="Profile View Shared Communities"
-            key={community.id}
-            textStyle={{ fontSize: 12 }}
-            showUnderline
-            onPress={() =>
-              community.contractAddress && handleCommunityPress(community.contractAddress)
-            }
-          >
-            {community.name}
-          </InteractiveLink>
-        );
-      }
-
-      return (
-        <Typography
-          className="text-xs "
-          font={{ family: 'ABCDiatype', weight: 'Regular' }}
-          key={community.id}
-        >
-          {community.name}
-        </Typography>
-      );
-    });
-
-    // If there are more than 3 communities, add a link to show all in a popover
-    if (totalSharedCommunities > 3) {
-      result.push(
-        <InteractiveLink
-          type="Shared Communmities See All"
-          showUnderline
-          onPress={handleSeeAllPress}
-          textStyle={{ fontSize: 12 }}
-          key="shared-communities-see-all"
-        >
-          {totalSharedCommunities - 2} others
-        </InteractiveLink>
-      );
-    }
-
-    // Add punctuation: "," and "and"
-    if (result.length === 3) {
-      result.splice(
-        1,
-        0,
-        <Typography
-          className="text-xs"
-          font={{ family: 'ABCDiatype', weight: 'Bold' }}
-          key="shared-communities-comma"
-        >
-          ,&nbsp;
-        </Typography>
-      );
-    }
-    if (result.length > 1) {
-      result.splice(
-        -1,
-        0,
-        <Typography
-          className="text-xs"
-          font={{ family: 'ABCDiatype', weight: 'Bold' }}
-          key="shared-communities-and"
-        >
-          &nbsp;and&nbsp;
-        </Typography>
-      );
-    }
-
-    return result;
-  }, [communitiesToDisplay, handleCommunityPress, handleSeeAllPress, totalSharedCommunities]);
-
-  if (totalSharedCommunities === 0) {
-    return null;
-  }
-
   return (
-    <View className="flex flex-row flex-wrap mt-2">
-      <CommunityProfilePictureBubblesWithCount
-        onPress={handleSeeAllPress}
-        totalCount={sharedCommunities.length}
-        eventElementId="Shared Followers Bubbles"
-        eventName="Shared Followers Bubbles pressed"
-        userRefs={sharedCommunities}
-      />
-
-      <Typography className="text-xs mx-1" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-        Also holds{' '}
+    <View className="flex flex-row items-center space-x-1" style={style}>
+      <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+        Also holds
       </Typography>
-      {content}
-      <ProfileViewSharedCommunitiesSheet ref={bottomSheetRef} userRef={user} />
+      {communitiesToShow.map((community, index) => {
+        const isLast = index === communitiesToShow.length - 1;
+
+        return (
+          <View key={community.dbid} className="flex flex-row">
+            <InteractiveLink
+              onPress={() =>
+                community.contractAddress && handleCommunityPress(community.contractAddress)
+              }
+              textStyle={{ fontSize: 12 }}
+              type="Shared Communities Name"
+            >
+              {community.name}
+            </InteractiveLink>
+            {(!isLast || hasMore) && (
+              <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+                ,
+              </Typography>
+            )}
+          </View>
+        );
+      })}
+
+      {hasMore && (
+        <View className="flex flex-row">
+          <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+            and{' '}
+          </Typography>
+
+          <InteractiveLink
+            onPress={onSeeAll}
+            textStyle={{ fontSize: 12 }}
+            type="Shared Communities See All"
+          >
+            {communities.length - communitiesToShow.length} others
+          </InteractiveLink>
+        </View>
+      )}
     </View>
   );
 }
