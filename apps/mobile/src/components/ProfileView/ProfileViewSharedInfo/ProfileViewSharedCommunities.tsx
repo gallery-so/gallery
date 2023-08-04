@@ -174,7 +174,7 @@ export default function ProfileViewSharedCommunities({ userRef }: Props) {
   }
 
   return (
-    <View className="flex flex-row flex-wrap mt-2 space-x-1">
+    <View className="flex flex-row flex-wrap mt-2">
       <CommunityProfilePictureBubblesWithCount
         onPress={handleSeeAllPress}
         totalCount={sharedCommunities.length}
@@ -183,7 +183,7 @@ export default function ProfileViewSharedCommunities({ userRef }: Props) {
         userRefs={sharedCommunities}
       />
 
-      <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+      <Typography className="text-xs mx-1" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
         Also holds{' '}
       </Typography>
       {content}
