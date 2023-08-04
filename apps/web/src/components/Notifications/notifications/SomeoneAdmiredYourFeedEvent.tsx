@@ -102,7 +102,7 @@ export function SomeoneAdmiredYourFeedEvent({
           {firstAdmirer ? (
             <>
               <StyledProfilePictureContainer>
-                <ProfilePicture size="sm" userRef={firstAdmirer} />
+                <ProfilePicture size="md" userRef={firstAdmirer} />
               </StyledProfilePictureContainer>
 
               <HoverCardOnUsername userRef={firstAdmirer} onClick={onClose} />
@@ -122,5 +122,5 @@ export function SomeoneAdmiredYourFeedEvent({
 
 const StyledProfilePictureContainer = styled.div`
   display: inline-block;
-  padding-right: 4px;
+  padding-right: 8px;
 `;
