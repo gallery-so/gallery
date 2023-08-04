@@ -169,6 +169,7 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
 
     return undefined;
   }, [
+    hideDrawer,
     notification.__typename,
     notification.count,
     notification.feedEvent,

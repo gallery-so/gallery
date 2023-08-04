@@ -3,6 +3,7 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
+import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { CollectionLink } from '~/components/Notifications/CollectionLink';
@@ -21,6 +22,7 @@ export function SomeoneAdmiredYourFeedEvent({
   const notification = useFragment(
     graphql`
       fragment SomeoneAdmiredYourFeedEventFragment on SomeoneAdmiredYourFeedEventNotification {
+        dbid
         count
 
         feedEvent {
@@ -68,7 +70,7 @@ export function SomeoneAdmiredYourFeedEvent({
     notificationRef
   );
 
-  const count = notification.count ?? 1;
+  const notificationCount = notification.count ?? 1;
   const firstAdmirer = notification.admirers?.edges?.[0]?.node;
   const eventType = notification.feedEvent?.eventData?.__typename;
 
@@ -86,41 +88,47 @@ export function SomeoneAdmiredYourFeedEvent({
     }
   }, [eventType]);
 
+  if (!firstAdmirer) {
+    reportError(
+      `SomeoneAdmiredYourFeedEventNotification id:${notification.dbid} was missing admirer`
+    );
+    return null;
+  }
+
   const collection =
     notification.feedEvent?.eventData && 'collection' in notification.feedEvent?.eventData
       ? notification.feedEvent?.eventData?.collection
       : null;
 
   return (
-    <BaseM>
-      {count > 1 ? (
-        <BaseM>
-          <strong>{notification.count} collectors</strong>
-        </BaseM>
-      ) : (
-        <>
-          {firstAdmirer ? (
-            <>
-              <StyledProfilePictureContainer>
-                <ProfilePicture size="md" userRef={firstAdmirer} />
-              </StyledProfilePictureContainer>
-
-              <HoverCardOnUsername userRef={firstAdmirer} onClick={onClose} />
-            </>
-          ) : (
-            <BaseM as="span">
-              <strong>Someone</strong>
-            </BaseM>
-          )}
-        </>
-      )}
-      <BaseM as="span">{` ${verb} `}</BaseM>
-      {collection ? <CollectionLink collectionRef={collection} /> : <BaseM>your collection</BaseM>}
-    </BaseM>
+    <StyledNotificationContent align="center" justify="space-between" gap={8}>
+      <HStack align="center" gap={8}>
+        <ProfilePicture size="md" userRef={firstAdmirer} />
+        <StyledTextWrapper align="center" as="span" wrap="wrap">
+          <HoverCardOnUsername userRef={firstAdmirer} onClick={onClose} />
+          &nbsp;
+          <BaseM as="span">
+            {notificationCount > 1 && (
+              <>
+                {'and '}
+                <strong>
+                  {notificationCount - 1} other{notificationCount - 1 > 1 && 's'}&nbsp;
+                </strong>
+              </>
+            )}
+            {verb}
+            {collection ? <CollectionLink collectionRef={collection} /> : ' your collection'}
+          </BaseM>
+        </StyledTextWrapper>
+      </HStack>
+    </StyledNotificationContent>
   );
 }
 
-const StyledProfilePictureContainer = styled.div`
-  display: inline-block;
-  padding-right: 8px;
+const StyledNotificationContent = styled(HStack)`
+  width: 100%;
+`;
+
+const StyledTextWrapper = styled(HStack)`
+  display: inline;
 `;
