@@ -4,6 +4,9 @@ import styled, { css } from 'styled-components';
 import { HStack } from '~/components/core/Spacer/Stack';
 import colors from '~/shared/theme/colors';
 
+import { NewTooltip } from '../Tooltip/NewTooltip';
+import { useTooltipHover } from '../Tooltip/useTooltipHover';
+
 export type IconSize = 'xs' | 'sm' | 'md' | 'lg';
 
 export type ColorVariant = 'blue' | 'default' | 'stacked';
@@ -75,6 +78,8 @@ type Props = {
   className?: string;
   icon: React.ReactElement;
   disableHoverPadding?: boolean;
+  tooltipLabel?: string;
+  tooltipPlacement?: 'top' | 'bottom' | 'left' | 'right';
 } & Omit<JSX.IntrinsicElements['div'], 'ref'>;
 
 function IconContainer(
@@ -88,34 +93,48 @@ function IconContainer(
     className,
     size = 'md',
     disableHoverPadding = false,
-
+    tooltipLabel,
+    tooltipPlacement = 'bottom',
     ...props
   }: Props,
   ref: ForwardedRef<HTMLDivElement>
 ) {
+  const { floating, reference, getFloatingProps, getReferenceProps, floatingStyle } =
+    useTooltipHover({ placement: tooltipPlacement });
   return (
-    <StyledIcon
-      ref={ref}
-      onClick={onClick}
-      size={size}
-      disabled={disabled}
-      className={className}
-      variant={variant}
-      // TODO: this is a temporary measure. need to refactor with official dark mode support
-      mode={mode}
-      disableHoverPadding={disableHoverPadding}
-      onMouseDown={(e) => {
-        // This will prevent the textarea from losing focus when user clicks a markdown icon
-        e.preventDefault();
-      }}
-      {...props}
-    >
-      {disableHoverPadding && <HoverCircle variant={variant} size={size} disabled={disabled} />}
+    <div ref={ref}>
+      <StyledIcon
+        {...getReferenceProps()}
+        ref={reference}
+        onClick={onClick}
+        size={size}
+        disabled={disabled}
+        className={className}
+        variant={variant}
+        // TODO: this is a temporary measure. need to refactor with official dark mode support
+        mode={mode}
+        disableHoverPadding={disableHoverPadding}
+        onMouseDown={(e) => {
+          // This will prevent the textarea from losing focus when user clicks a markdown icon
+          e.preventDefault();
+        }}
+        {...props}
+      >
+        {disableHoverPadding && <HoverCircle variant={variant} size={size} disabled={disabled} />}
 
-      <HStack justify="center" align="center" style={{ position: 'relative', zIndex: 1 }}>
-        {icon}
-      </HStack>
-    </StyledIcon>
+        <HStack justify="center" align="center" style={{ position: 'relative', zIndex: 1 }}>
+          {icon}
+        </HStack>
+      </StyledIcon>
+      {tooltipLabel && (
+        <NewTooltip
+          {...getFloatingProps()}
+          style={floatingStyle}
+          ref={floating}
+          text={tooltipLabel}
+        />
+      )}
+    </div>
   );
 }
 

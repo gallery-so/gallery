@@ -17,7 +17,6 @@ type InteractiveLinkProps = {
   children: ReactNode;
   size?: string; // 'M', 'L', 'XL'
   className?: string;
-  disabled?: boolean;
   onClick?: MouseEventHandler;
   // allows the parent to override default link styles
   inheritLinkStyling?: boolean;
@@ -30,7 +29,6 @@ export default function InteractiveLink({
   href,
   children,
   className,
-  disabled = false,
   onClick,
   inheritLinkStyling = false,
   target = '_blank',
@@ -47,11 +45,10 @@ export default function InteractiveLink({
       });
 
       if (onClick) {
-        if (disabled) return;
         onClick(event);
       }
     },
-    [href, onClick, to, track, disabled]
+    [href, onClick, to, track]
   );
 
   if (!to && !href && !onClick) {
@@ -89,12 +86,7 @@ export default function InteractiveLink({
 
   if (onClick) {
     return (
-      <StyledAnchor
-        onClick={handleClick}
-        className={className}
-        disabled={disabled}
-        inheritStyles={inheritLinkStyling}
-      >
+      <StyledAnchor onClick={handleClick} className={className} inheritStyles={inheritLinkStyling}>
         {children}
       </StyledAnchor>
     );
@@ -145,8 +137,8 @@ export function InteractiveLinkNeedsVerification({
 }
 
 export const StyledAnchor = styled.a<{ disabled?: boolean; inheritStyles?: boolean }>`
-  color: ${({ disabled }) => (disabled ? colors.porcelain : colors.shadow)};
-  text-decoration: underline;
+  color: ${colors.shadow};
+  text-decoration: none;
   font-family: ${({ inheritStyles }) => (inheritStyles ? 'inherit' : BODY_FONT_FAMILY)};
   font-size: ${({ inheritStyles }) => (inheritStyles ? 'inherit' : '14px')};
   line-height: ${({ inheritStyles }) => (inheritStyles ? 'inherit' : '18px')};

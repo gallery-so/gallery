@@ -36,6 +36,9 @@ export default function PostDropdown({ postRef, queryRef }: Props) {
           owner {
             username
           }
+          community {
+            id
+          }
         }
         #
       }
@@ -81,10 +84,12 @@ export default function PostDropdown({ postRef, queryRef }: Props) {
 
   const handleDeletePostClick = useCallback(() => {
     showModal({
-      content: <DeletePostConfirmation postId={post.dbid} />,
+      content: (
+        <DeletePostConfirmation postDbid={post.dbid} communityId={token?.community?.id ?? ''} />
+      ),
       headerText: 'Delete Post',
     });
-  }, [post.dbid, showModal]);
+  }, [post.dbid, showModal, token]);
 
   if (viewerIsPostAuthor) {
     return (
