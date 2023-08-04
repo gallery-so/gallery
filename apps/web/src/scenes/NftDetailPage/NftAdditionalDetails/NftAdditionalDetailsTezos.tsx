@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -15,9 +14,8 @@ import { useTooltipHover } from '~/components/Tooltip/useTooltipHover';
 import { NftAdditionalDetailsTezosFragment$key } from '~/generated/NftAdditionalDetailsTezosFragment.graphql';
 import { RefreshIcon } from '~/icons/RefreshIcon';
 import { useRefreshMetadata } from '~/scenes/NftDetailPage/NftAdditionalDetails/useRefreshMetadata';
+import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
 import { hexHandler } from '~/shared/utils/getOpenseaExternalUrl';
-import { getFxHashExternalUrl, getObjktExternalUrl } from '~/shared/utils/getTezosExternalUrl';
-import { DateFormatOption, formatDateString } from '~/utils/formatDateString';
 
 type NftAdditionaDetailsNonPOAPProps = {
   tokenRef: NftAdditionalDetailsTezosFragment$key;
@@ -27,7 +25,6 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
   const token = useFragment(
     graphql`
       fragment NftAdditionalDetailsTezosFragment on Token {
-        externalUrl
         tokenId
         lastUpdated
         contract {
@@ -42,6 +39,7 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
         }
 
         ...useRefreshMetadataFragment
+        ...extractRelevantMetadataFromTokenFragment
       }
     `,
     tokenRef
@@ -49,30 +47,15 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
 
   const [refresh, isRefreshing] = useRefreshMetadata(token);
 
-  const { tokenId, contract, externalUrl, lastUpdated: lastUpdatedRaw } = token;
+  const { tokenId, lastUpdated, fxhashUrl, objktUrl, projectUrl } =
+    extractRelevantMetadataFromToken(token);
 
-  const { fxhashUrl, objktUrl } = useMemo(() => {
-    if (token.contract?.contractAddress?.address && token.tokenId) {
-      const contractAddress = token.contract.contractAddress.address;
-      const tokenId = hexHandler(token.tokenId);
-      return {
-        fxhashUrl: getFxHashExternalUrl(contractAddress, tokenId),
-        objktUrl: getObjktExternalUrl(contractAddress, tokenId),
-      };
-    }
-
-    return {
-      fxhashUrl: null,
-      objktUrl: null,
-    };
-  }, [token.contract?.contractAddress?.address, token.tokenId]);
+  const { contract } = token;
 
   const { floating, reference, getFloatingProps, getReferenceProps, floatingStyle } =
     useTooltipHover({
       placement: 'right',
     });
-
-  const lastUpdated = formatDateString(lastUpdatedRaw, DateFormatOption.ABBREVIATED);
 
   return (
     <VStack gap={16}>
@@ -100,7 +83,7 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
       <StyledLinkContainer>
         {fxhashUrl && <InteractiveLink href={fxhashUrl}>View on fx(hash)</InteractiveLink>}
         {objktUrl && <InteractiveLink href={objktUrl}>View on objkt</InteractiveLink>}
-        {externalUrl && <InteractiveLink href={externalUrl}>More Info</InteractiveLink>}
+        {projectUrl && <InteractiveLink href={projectUrl}>More Info</InteractiveLink>}
       </StyledLinkContainer>
       <StartAlignedButtonPill
         onClick={refresh}

@@ -4,9 +4,9 @@ import { AutoSizer, Index, InfiniteLoader, List, ListRowRenderer } from 'react-v
 import styled from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';
-import { LowercaseChain } from '~/components/GalleryEditor/PiecesSidebar/chains';
 import { SharedCommunitiesListFragment$key } from '~/generated/SharedCommunitiesListFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
+import { LowercaseChain } from '~/shared/utils/chains';
 import unescape from '~/shared/utils/unescape';
 import { getUrlForCommunity } from '~/utils/getCommunityUrlForToken';
 

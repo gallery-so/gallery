@@ -94,6 +94,10 @@ const UnknownMediaResponse: NftDetailAssetTestQueryQuery = {
           large: 'http://someurl.com',
         },
       },
+      community: {
+        __typename: 'Community',
+        id: 'Community:testCommunityId',
+      },
       contract: {
         __typename: 'Contract',
         id: 'Contract:someContractId',

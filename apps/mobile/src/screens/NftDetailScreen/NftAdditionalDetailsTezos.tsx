@@ -1,10 +1,8 @@
-import { useMemo } from 'react';
 import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { NftAdditionalDetailsTezosFragment$key } from '~/generated/NftAdditionalDetailsTezosFragment.graphql';
-import { hexHandler } from '~/shared/utils/getOpenseaExternalUrl';
-import { getFxHashExternalUrl, getObjktExternalUrl } from '~/shared/utils/getTezosExternalUrl';
+import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
 
 import { InteractiveLink } from '../../components/InteractiveLink';
 import { LinkableAddress } from '../../components/LinkableAddress';
@@ -18,7 +16,6 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
   const token = useFragment(
     graphql`
       fragment NftAdditionalDetailsTezosFragment on Token {
-        externalUrl
         tokenId
         chain
         contract {
@@ -31,28 +28,15 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
             ...LinkableAddressFragment
           }
         }
+        ...extractRelevantMetadataFromTokenFragment
       }
     `,
     tokenRef
   );
 
-  const { tokenId, contract, externalUrl } = token;
+  const { tokenId, fxhashUrl, objktUrl, projectUrl } = extractRelevantMetadataFromToken(token);
 
-  const { fxhashUrl, objktUrl } = useMemo(() => {
-    if (token.contract?.contractAddress?.address && token.tokenId) {
-      const contractAddress = token.contract.contractAddress.address;
-      const tokenId = hexHandler(token.tokenId);
-      return {
-        fxhashUrl: getFxHashExternalUrl(contractAddress, tokenId),
-        objktUrl: getObjktExternalUrl(contractAddress, tokenId),
-      };
-    }
-
-    return {
-      fxhashUrl: null,
-      objktUrl: null,
-    };
-  }, [token.contract?.contractAddress?.address, token.tokenId]);
+  const { contract } = token;
 
   return (
     <View className="flex flex-col space-y-4">
@@ -85,11 +69,11 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
               </DetailSection>
             )}
 
-            {tokenId && token.externalUrl && (
+            {tokenId && projectUrl && (
               <DetailSection>
                 <DetailLabelText>TOKEN ID</DetailLabelText>
-                <InteractiveLink href={token.externalUrl} type="NFT Detail Token ID">
-                  {hexHandler(tokenId)}
+                <InteractiveLink href={projectUrl} type="NFT Detail Token ID">
+                  {tokenId}
                 </InteractiveLink>
               </DetailSection>
             )}
@@ -130,12 +114,12 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
                 </View>
               </DetailSection>
             )}
-            {externalUrl && (
+            {projectUrl && (
               <DetailSection>
                 <DetailLabelText>VIEW ON</DetailLabelText>
                 <View className="flex flex-col pt-4">
                   <DetailExternalLink
-                    link={externalUrl}
+                    link={projectUrl}
                     label="Visit Site"
                     trackingLabel="NFT Detail View on External Link"
                     showExternalLinkIcon={true}

@@ -8,7 +8,7 @@ export enum DateFormatOption {
 }
 
 // Utility function to format a date string
-export const formatDateString = (
+export const getFormattedDate = (
   inputDateString: string,
   formatOption: DateFormatOption
 ): string => {

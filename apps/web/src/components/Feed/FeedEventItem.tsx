@@ -12,15 +12,8 @@ import { FeedEventItemFragment$key } from '~/generated/FeedEventItemFragment.gra
 import { FeedEventItemQueryFragment$key } from '~/generated/FeedEventItemQueryFragment.graphql';
 import { FeedEventItemWithErrorBoundaryFragment$key } from '~/generated/FeedEventItemWithErrorBoundaryFragment.graphql';
 import { FeedEventItemWithErrorBoundaryQueryFragment$key } from '~/generated/FeedEventItemWithErrorBoundaryQueryFragment.graphql';
-import { FeedItemFragment$key } from '~/generated/FeedItemFragment.graphql';
-import { FeedItemQueryFragment$key } from '~/generated/FeedItemQueryFragment.graphql';
-import { FeedItemWithErrorBoundaryFragment$key } from '~/generated/FeedItemWithErrorBoundaryFragment.graphql';
-import { FeedItemWithErrorBoundaryQueryFragment$key } from '~/generated/FeedItemWithErrorBoundaryQueryFragment.graphql';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import { TriedToRenderUnsupportedFeedEvent } from '~/shared/errors/TriedToRenderUnsupportedFeedEvent';
-
-import PostData from './Posts/PostData';
-import PostSocializeSection from './Socialize/PostSocializeSection';
 
 type FeedEventItemProps = {
   eventRef: FeedEventItemFragment$key;
@@ -56,6 +49,10 @@ function FeedEventItem({ eventRef, queryRef, feedMode }: FeedEventItemProps) {
   if (postOrFeedEvent.__typename === 'FeedEvent') {
     if (!postOrFeedEvent.eventData) {
       throw new TriedToRenderUnsupportedFeedEvent(postOrFeedEvent.dbid);
+    }
+
+    if (!feedMode) {
+      throw new Error('Feed mode must be provided when rendering FeedEvents');
     }
 
     return (
@@ -145,7 +142,7 @@ const FeedEventItemContainer = styled(VStack)`
   padding: 24px 0px;
 
   @media only screen and ${breakpoints.desktop} {
-    padding: 24px 16px;
+    padding: 24px 0px;
     max-width: initial;
     width: ${FEED_EVENT_ROW_WIDTH_DESKTOP}px;
   }

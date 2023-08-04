@@ -3,24 +3,16 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
-import { HStack, VStack } from '~/components/core/Spacer/Stack';
+import { VStack } from '~/components/core/Spacer/Stack';
 import { FEED_EVENT_ROW_WIDTH_DESKTOP } from '~/components/Feed/dimensions';
-import { FeedEventData } from '~/components/Feed/FeedEventData';
-import { FeedEventSocializeSection } from '~/components/Feed/Socialize/FeedEventSocializeSection';
 import { FeedMode } from '~/components/Feed/types';
-import { FeedItemFragment$key } from '~/generated/FeedItemFragment.graphql';
-import { FeedItemQueryFragment$key } from '~/generated/FeedItemQueryFragment.graphql';
-import { FeedItemWithErrorBoundaryFragment$key } from '~/generated/FeedItemWithErrorBoundaryFragment.graphql';
-import { FeedItemWithErrorBoundaryQueryFragment$key } from '~/generated/FeedItemWithErrorBoundaryQueryFragment.graphql';
 import { PostItemFragment$key } from '~/generated/PostItemFragment.graphql';
 import { PostItemQueryFragment$key } from '~/generated/PostItemQueryFragment.graphql';
 import { PostItemWithErrorBoundaryFragment$key } from '~/generated/PostItemWithErrorBoundaryFragment.graphql';
 import { PostItemWithErrorBoundaryQueryFragment$key } from '~/generated/PostItemWithErrorBoundaryQueryFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
-import { TriedToRenderUnsupportedFeedEvent } from '~/shared/errors/TriedToRenderUnsupportedFeedEvent';
 
-import PostData from './Posts/PostData';
 import PostHeader from './Posts/PostHeader';
 import PostNfts from './Posts/PostNfts';
 import PostSocializeSection from './Socialize/PostSocializeSection';

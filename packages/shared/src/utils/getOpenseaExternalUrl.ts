@@ -20,8 +20,5 @@ export const getOpenseaExternalUrl = (
   const chain = chainStr.toLocaleLowerCase();
   const hexTokenId = hexHandler(tokenId);
 
-  // Allows us to get referral credit
-  const ref = GALLERY_OS_ADDRESS;
-
-  return `https://opensea.io/assets/${chain}/${contractAddress}/${hexTokenId}?ref=${ref}`;
+  return `https://opensea.io/assets/${chain}/${contractAddress}/${hexTokenId}`;
 };

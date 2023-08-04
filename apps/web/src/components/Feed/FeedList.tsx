@@ -27,7 +27,7 @@ type Props = {
   hasNext: boolean;
   queryRef: FeedListFragment$key;
   feedEventRefs: FeedListEventDataFragment$key;
-  feedMode: FeedMode;
+  feedMode?: FeedMode;
 };
 
 export default function FeedList({

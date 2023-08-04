@@ -88,7 +88,7 @@ const StyledPage = styled.div<{ navbarHeight: number }>`
   }
 
   @media only screen and ${breakpoints.desktop} {
-    max-width: 1200px;
+    max-width: 1124px;
     margin: 0 auto;
     padding: ${({ navbarHeight }) => navbarHeight}px 32px 0;
   }

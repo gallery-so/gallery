@@ -4,10 +4,10 @@ import styled from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
-import { chains } from '~/components/GalleryEditor/PiecesSidebar/chains';
 import { WalletSelectorWrapper } from '~/components/WalletSelector/multichain/WalletSelectorWrapper';
 import { useBeaconActions } from '~/contexts/beacon/BeaconContext';
 import { MultichainWalletSelectorFragment$key } from '~/generated/MultichainWalletSelectorFragment.graphql';
+import { chains } from '~/shared/utils/chains';
 import { ADD_WALLET_TO_USER, AUTH, CONNECT_WALLET_ONLY } from '~/types/Wallet';
 
 import { ConnectionMode } from '../WalletSelector';
