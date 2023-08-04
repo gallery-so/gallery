@@ -22,6 +22,9 @@ import { useClearNotifications } from '~/shared/relay/useClearNotifications';
 import colors from '~/shared/theme/colors';
 import { getTimeSince } from '~/shared/utils/time';
 
+import SomeoneAdmiredYourPost from './notifications/SomeoneAdmiredYourPost';
+import SomeoneCommentedOnYourPost from './notifications/SomeoneCommentedOnYourPost';
+
 type NotificationProps = {
   notificationRef: NotificationFragment$key;
   queryRef: NotificationQueryFragment$key;
@@ -62,6 +65,18 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
           count
         }
 
+        ... on SomeoneAdmiredYourPostNotification {
+          post {
+            dbid
+          }
+        }
+
+        ... on SomeoneCommentedOnYourPostNotification {
+          post {
+            dbid
+          }
+        }
+
         ...NotificationInnerFragment
       }
     `,
@@ -90,6 +105,7 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
   const { push } = useRouter();
 
   const clearAllNotifications = useClearNotifications();
+  const { hideDrawer } = useDrawerActions();
 
   /**
    * Bear with me here, this `useMemo` returns a stable function
@@ -123,6 +139,20 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
           if (username && eventId) {
             push({ pathname: '/[username]/activity', query: { username, eventId } });
           }
+          hideDrawer();
+        },
+      };
+    } else if (notification.post) {
+      const username = query.viewer?.user?.username;
+      const postId = notification.post.dbid;
+
+      return {
+        showCaret: false,
+        handleClick: function navigateToPostPage() {
+          if (username && postId) {
+            push({ pathname: '/post/[postId]', query: { postId } });
+          }
+          hideDrawer();
         },
       };
     } else if (notification.__typename === 'SomeoneViewedYourGalleryNotification') {
@@ -139,10 +169,12 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
 
     return undefined;
   }, [
+    hideDrawer,
     notification.__typename,
     notification.count,
     notification.feedEvent,
     notification.id,
+    notification.post,
     notification.userViewers?.pageInfo?.total,
     push,
     query.viewer?.user?.username,
@@ -172,6 +204,8 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
       'SomeoneFollowedYouNotification',
       'SomeoneFollowedYouBackNotification',
       'SomeoneViewedYourGalleryNotification',
+      'SomeoneAdmiredYourPostNotification',
+      'SomeoneCommentedOnYourPostNotification',
     ].includes(notification.__typename)
   ) {
     return null;
@@ -179,21 +213,27 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
 
   return (
     <Container isClickable={isClickable} onClick={handleClick}>
-      <HStack gap={8} align="center">
-        {!notification.seen && (
-          <UnseenDotContainer>
-            <UnseenDot />
-          </UnseenDotContainer>
-        )}
+      <HStack gap={8} align="center" justify="space-between">
         <NotificationInner notificationRef={notification} queryRef={query} />
-        <HStack grow justify="flex-end" gap={16}>
-          <TimeAgoText color={colors.metal}>{timeAgo}</TimeAgoText>
-          {showCaret && <NotificationArrow />}
-        </HStack>
+        <StyledDotAndTimeAgo align="center" gap={4}>
+          <HStack grow justify="flex-end" gap={16}>
+            <TimeAgoText color={colors.metal}>{timeAgo}</TimeAgoText>
+            {showCaret && <NotificationArrow />}
+          </HStack>
+          {!notification.seen && (
+            <UnseenDotContainer>
+              <UnseenDot />
+            </UnseenDotContainer>
+          )}
+        </StyledDotAndTimeAgo>
       </HStack>
     </Container>
   );
 }
+
+const StyledDotAndTimeAgo = styled(HStack)`
+  width: 35px;
+`;
 
 type NotificationInnerProps = {
   notificationRef: NotificationInnerFragment$key;
@@ -228,6 +268,16 @@ function NotificationInner({ notificationRef, queryRef }: NotificationInnerProps
           __typename
           ...SomeoneViewedYourGalleryFragment
         }
+
+        ... on SomeoneAdmiredYourPostNotification {
+          __typename
+          ...SomeoneAdmiredYourPostFragment
+        }
+
+        ... on SomeoneCommentedOnYourPostNotification {
+          __typename
+          ...SomeoneCommentedOnYourPostFragment
+        }
       }
     `,
     notificationRef
@@ -259,6 +309,10 @@ function NotificationInner({ notificationRef, queryRef }: NotificationInnerProps
     return <SomeoneFollowedYouBack notificationRef={notification} onClose={handleClose} />;
   } else if (notification.__typename === 'SomeoneCommentedOnYourFeedEventNotification') {
     return <SomeoneCommentedOnYourFeedEvent notificationRef={notification} onClose={handleClose} />;
+  } else if (notification.__typename === 'SomeoneAdmiredYourPostNotification') {
+    return <SomeoneAdmiredYourPost notificationRef={notification} onClose={handleClose} />;
+  } else if (notification.__typename === 'SomeoneCommentedOnYourPostNotification') {
+    return <SomeoneCommentedOnYourPost notificationRef={notification} onClose={handleClose} />;
   }
 
   return null;
@@ -271,6 +325,8 @@ export const TimeAgoText = styled(BaseS)`
 
 const UnseenDotContainer = styled.div`
   align-self: stretch;
+  display: flex;
+  align-items: center;
 `;
 
 const UnseenDot = styled.div`
@@ -282,7 +338,7 @@ const UnseenDot = styled.div`
 `;
 
 const Container = styled.div<{ isClickable: boolean }>`
-  padding: 16px 12px;
+  padding: 16px;
 
   ${({ isClickable }) =>
     isClickable

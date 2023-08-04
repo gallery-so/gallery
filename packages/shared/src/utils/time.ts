@@ -15,7 +15,7 @@ export const getTimeSince = (time: string) => {
   const interval = Math.floor(Date.now() - new Date(time).getTime());
 
   if (interval < MINUTE) {
-    return `just now`;
+    return `<1m`;
   }
   if (interval < HOUR) {
     return `${Math.floor(interval / MINUTE)}m`;

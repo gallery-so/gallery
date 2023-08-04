@@ -94,8 +94,8 @@ export function SomeoneFollowedYou({
         ) : (
           <>
             {lastFollower ? (
-              <HStack gap={4} align="center">
-                <ProfilePicture size="sm" userRef={lastFollower} />
+              <HStack gap={8} align="center">
+                <ProfilePicture size="md" userRef={lastFollower} />
                 <HoverCardOnUsername userRef={lastFollower} onClick={onClose} />
               </HStack>
             ) : (
