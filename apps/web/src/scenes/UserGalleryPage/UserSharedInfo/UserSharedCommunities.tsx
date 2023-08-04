@@ -5,13 +5,13 @@ import styled from 'styled-components';
 import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseS } from '~/components/core/Text/Text';
-import { LowercaseChain } from '~/components/GalleryEditor/PiecesSidebar/chains';
 import { CommunityProfilePictureStack } from '~/components/ProfilePicture/CommunityProfilePictureStack';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { UserSharedCommunitiesFragment$key } from '~/generated/UserSharedCommunitiesFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
+import { LowercaseChain } from '~/shared/utils/chains';
 import { getUrlForCommunity } from '~/utils/getCommunityUrlForToken';
 
 import PaginatedCommunitiesList from './UserSharedInfoList/SharedCommunitiesList';
