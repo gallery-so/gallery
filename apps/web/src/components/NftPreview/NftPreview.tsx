@@ -16,7 +16,7 @@ import NftDetailModel from '~/scenes/NftDetailPage/NftDetailModel';
 import NftDetailVideo from '~/scenes/NftDetailPage/NftDetailVideo';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
-import { isFirefox } from '~/utils/browser';
+import { isFirefox, isSafari } from '~/utils/browser';
 import isSvg from '~/utils/isSvg';
 import { getBackgroundColorOverrideForContract } from '~/utils/token';
 
@@ -153,7 +153,7 @@ function NftPreview({
   ]);
 
   const result = getVideoOrImageUrlForNftPreview({ tokenRef: token });
-  const isFirefoxSvg = isSvg(result?.urls?.large) && isFirefox();
+  const isFirefoxSvg = isSvg(result?.urls?.large) && (isFirefox() || isSafari());
   // stretch the image to take up the full-width if...
   const fullWidth =
     // it's not in a feed event
