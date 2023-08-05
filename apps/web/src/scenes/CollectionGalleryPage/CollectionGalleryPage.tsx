@@ -7,7 +7,6 @@ import { useModalState } from '~/contexts/modal/ModalContext';
 import { CollectionGalleryPageFragment$key } from '~/generated/CollectionGalleryPageFragment.graphql';
 import useKeyDown from '~/hooks/useKeyDown';
 import { GalleryPageSpacing } from '~/pages/[username]';
-import useDisplayFullPageNftDetailModal from '~/scenes/NftDetailPage/useDisplayFullPageNftDetailModal';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 
 import CollectionGallery from './CollectionGallery';
@@ -95,8 +94,6 @@ function CollectionGalleryPage({ username, queryRef }: CollectionGalleryPageProp
   }, [isLoggedIn, isModalOpenRef, userOwnsCollection, push, galleryId, collectionId]);
 
   useKeyDown('e', navigateToEdit);
-
-  useDisplayFullPageNftDetailModal();
 
   return (
     <>

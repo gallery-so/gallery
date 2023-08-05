@@ -1,5 +1,7 @@
+import { ResizeMode } from 'expo-av';
 import { PropsWithChildren, useCallback, useRef } from 'react';
 import { Text, View } from 'react-native';
+import FastImage from 'react-native-fast-image';
 import { graphql, useFragment } from 'react-relay';
 
 import {
@@ -18,6 +20,7 @@ import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 
 type Props = PropsWithChildren<{
   onPress: () => void;
+  tokenUrl?: string;
   queryRef: NotificationSkeletonQueryFragment$key;
   notificationRef: NotificationSkeletonFragment$key;
   responsibleUserRefs: NotificationSkeletonResponsibleUsersFragment$key;
@@ -25,6 +28,7 @@ type Props = PropsWithChildren<{
 
 export function NotificationSkeleton({
   onPress,
+  tokenUrl,
   children,
   queryRef,
   notificationRef,
@@ -68,17 +72,18 @@ export function NotificationSkeleton({
   return (
     <GalleryTouchableOpacity
       onPress={onPress}
-      className="flex flex-row justify-between p-3"
+      className="flex flex-row justify-between p-4"
       eventElementId="Notification Row"
       eventName="Notification Row Clicked"
     >
-      <View className="flex-1 flex-row space-x-1 items-start">
+      <View className="flex-1 flex-row space-x-2 items-center">
         <ProfilePictureBubblesWithCount
           eventElementId="Notification Row PFP Bubbles"
           eventName="Notification Row PFP Bubbles Pressed"
           onPress={handleBubblesPress}
           userRefs={responsibleUsers}
           totalCount={responsibleUserRefs.length}
+          size="md"
         />
 
         <GalleryBottomSheetModal ref={bottomSheetRef} snapPoints={[350]}>
@@ -87,19 +92,38 @@ export function NotificationSkeleton({
 
         <Text className="dark:text-white mt-[1]">{children}</Text>
       </View>
-      <View className="flex w-20 flex-row items-center justify-end space-x-2">
-        <Typography
-          className="text-metal text-xs"
-          font={{ family: 'ABCDiatype', weight: 'Regular' }}
+      <View className="flex flex-row items-center justify-between space-x-2">
+        {tokenUrl ? (
+          <FastImage
+            style={{
+              width: 56,
+              height: 56,
+            }}
+            source={{ uri: tokenUrl }}
+            resizeMode={ResizeMode.COVER}
+          />
+        ) : (
+          <View />
+        )}
+
+        <View
+          className={`w-[35px] flex-row space-x-2 items-center ${
+            !notification.seen ? 'justify-between' : 'justify-end'
+          }`}
         >
-          {getTimeSince(notification.updatedTime)}
-        </Typography>
-        {!notification.seen && <UnseenDot />}
+          <Typography
+            className="text-metal text-xs"
+            font={{ family: 'ABCDiatype', weight: 'Regular' }}
+          >
+            {getTimeSince(notification.updatedTime)}
+          </Typography>
+          {!notification.seen && <UnseenDot />}
+        </View>
       </View>
     </GalleryTouchableOpacity>
   );
 }
 
-function UnseenDot({ ...props }) {
+export function UnseenDot({ ...props }) {
   return <View className="bg-activeBlue h-2 w-2 rounded-full" {...props}></View>;
 }

@@ -19,8 +19,8 @@ export default function GalleryLink({
   to,
   href,
   children,
-  underlined = true,
-  underlineOnHover = false,
+  underlined = false,
+  underlineOnHover = true,
 }: Props) {
   const track = useTrack();
 

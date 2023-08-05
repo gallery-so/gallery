@@ -38,7 +38,7 @@ export function NftSelectorPickerSingularAsset({
     tokenRef
   );
 
-  const route = useRoute<RouteProp<RootStackNavigatorParamList, 'Post'>>();
+  const route = useRoute<RouteProp<RootStackNavigatorParamList, 'PostNftSelector'>>();
   const currentScreen = route.params.page;
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
@@ -55,6 +55,11 @@ export function NftSelectorPickerSingularAsset({
     if (currentScreen === 'ProfilePicture') {
       setProfileImage(token.dbid).then(() => {
         onSelect();
+      });
+    } else if (currentScreen === 'Community') {
+      navigation.navigate('PostComposer', {
+        tokenId: token.dbid,
+        redirectTo: 'Community',
       });
     } else {
       navigation.navigate('PostComposer', {

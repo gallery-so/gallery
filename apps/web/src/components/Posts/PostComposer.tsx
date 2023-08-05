@@ -31,6 +31,9 @@ export default function PostComposer({ onBackClick, tokenRef }: Props) {
         __typename
         dbid
         name
+        community {
+          id
+        }
         ...PostComposerNftFragment
       }
     `,
@@ -60,7 +63,7 @@ export default function PostComposer({ onBackClick, tokenRef }: Props) {
     });
     try {
       await createPost({
-        tokenIds: [token.dbid],
+        tokens: [{ dbid: token.dbid, communityId: token.community?.id || '' }],
         caption: description,
       });
     } catch (error) {
@@ -74,7 +77,16 @@ export default function PostComposer({ onBackClick, tokenRef }: Props) {
       message: `Successfully posted ${token.name || 'item'}`,
     });
     hideModal();
-  }, [createPost, description, hideModal, pushToast, token.dbid, token.name, track]);
+  }, [
+    createPost,
+    description,
+    hideModal,
+    pushToast,
+    token.community,
+    token.dbid,
+    token.name,
+    track,
+  ]);
 
   const handleBackClick = useCallback(() => {
     onBackClick?.();
@@ -84,7 +96,7 @@ export default function PostComposer({ onBackClick, tokenRef }: Props) {
     if (!token.name || token.name.length > 30) {
       return 'this item';
     }
-    return token.name;
+    return `"${token.name}"`;
   }, [token.name]);
 
   return (
@@ -107,7 +119,7 @@ export default function PostComposer({ onBackClick, tokenRef }: Props) {
             <TextAreaWithCharCount
               currentCharCount={description.length}
               maxCharCount={DESCRIPTION_MAX_LENGTH}
-              placeholder={`Say something about "${inputPlaceholderTokenName}"`}
+              placeholder={`Say something about ${inputPlaceholderTokenName}`}
               textAreaHeight="117px"
               onChange={handleDescriptionChange}
               autoFocus

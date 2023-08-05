@@ -3,13 +3,14 @@ import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { Markdown } from '~/components/Markdown';
-import { ProfileTabBar } from '~/components/ProfileView/ProfileTabBar';
 import { ProfileViewHeaderFragment$key } from '~/generated/ProfileViewHeaderFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 
+import { GalleryTabBar } from '../GalleryTabs/GalleryTabBar';
 import ProfileViewSharedInfo from './ProfileViewSharedInfo/ProfileViewSharedInfo';
 import ProfileViewFarcasterPill from './SocialPills/ProfileViewFarcasterPill';
+import ProfileViewLensPill from './SocialPills/ProfileViewLensPill';
 import ProfileViewTwitterPill from './SocialPills/ProfileViewTwitterPill';
 
 type Props = {
@@ -37,9 +38,22 @@ export function ProfileViewHeader({ queryRef, selectedRoute, onRouteChange }: Pr
               __typename
             }
 
+            socialAccounts {
+              farcaster {
+                username
+              }
+              lens {
+                username
+              }
+              twitter {
+                username
+              }
+            }
+
             ...ProfileViewSharedInfoFragment
             ...ProfileViewFarcasterPillFragment
             ...ProfileViewTwitterPillFragment
+            ...ProfileViewLensPillFragment
           }
         }
 
@@ -85,6 +99,20 @@ export function ProfileViewHeader({ queryRef, selectedRoute, onRouteChange }: Pr
     ];
   }, [totalGalleries, totalFollowers]);
 
+  const numPills = useMemo(() => {
+    return [
+      user.socialAccounts?.farcaster?.username,
+      user.socialAccounts?.lens?.username,
+      user.socialAccounts?.twitter?.username,
+    ].filter((username) => Boolean(username)).length;
+  }, [
+    user.socialAccounts?.farcaster?.username,
+    user.socialAccounts?.lens?.username,
+    user.socialAccounts?.twitter?.username,
+  ]);
+
+  const maxPillWidth = 90 / numPills + '%';
+
   return (
     <View>
       {user.bio && (
@@ -93,12 +121,21 @@ export function ProfileViewHeader({ queryRef, selectedRoute, onRouteChange }: Pr
         </View>
       )}
       {!isLoggedInUser && <ProfileViewSharedInfo userRef={user} />}
-      <View className={`flex flex-row mx-4 space-x-12 mt-4`}>
-        <ProfileViewTwitterPill userRef={user} />
-        <ProfileViewFarcasterPill userRef={user} />
-      </View>
+      {numPills > 0 && (
+        <View className={`flex flex-row mx-4 mt-4 w-full ml-2`}>
+          <ProfileViewTwitterPill userRef={user} maxWidth={maxPillWidth} />
+          <ProfileViewFarcasterPill userRef={user} maxWidth={maxPillWidth} />
+          <ProfileViewLensPill userRef={user} maxWidth={maxPillWidth} />
+        </View>
+      )}
 
-      <ProfileTabBar activeRoute={selectedRoute} onRouteChange={onRouteChange} routes={routes} />
+      <GalleryTabBar
+        activeRoute={selectedRoute}
+        onRouteChange={onRouteChange}
+        routes={routes}
+        eventElementId="Profile Tab"
+        eventName="Profile Tab Clicked"
+      />
     </View>
   );
 }

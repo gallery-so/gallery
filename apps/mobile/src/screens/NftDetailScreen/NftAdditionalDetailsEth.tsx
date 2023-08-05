@@ -1,9 +1,11 @@
+import { useColorScheme } from 'nativewind';
 import { useMemo } from 'react';
 import { View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { NftAdditionalDetailsEthFragment$key } from '~/generated/NftAdditionalDetailsEthFragment.graphql';
+import colors from '~/shared/theme/colors';
 import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
 import { hexHandler } from '~/shared/utils/getOpenseaExternalUrl';
 
@@ -33,6 +35,8 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionalDetailsEthPro
     tokenRef
   );
 
+  const { colorScheme } = useColorScheme();
+
   const { tokenId, openseaUrl, mirrorUrl, prohibitionUrl, projectUrl } =
     extractRelevantMetadataFromToken(token);
 
@@ -53,7 +57,7 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionalDetailsEthPro
               <LinkableAddress
                 chainAddressRef={contract.contractAddress}
                 type="NFT Detail Contract Address"
-                textStyle={{ color: 'black' }}
+                textStyle={{ color: colorScheme === 'dark' ? colors.white : colors.black['800'] }}
                 style={{ paddingTop: 2 }}
                 font={{ family: 'ABCDiatype', weight: 'Bold' }}
               />
@@ -108,7 +112,7 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionalDetailsEthPro
           {projectUrl && (
             <DetailSection>
               <DetailLabelText>VIEW ON</DetailLabelText>
-              <View className="flex flex-col pt-4">
+              <View className="flex flex-col">
                 <DetailExternalLink
                   link={projectUrl}
                   label="Visit Site"

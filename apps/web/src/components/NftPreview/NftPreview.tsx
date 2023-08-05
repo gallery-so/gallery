@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
@@ -9,7 +9,7 @@ import { NftFailureFallback } from '~/components/NftFailureFallback/NftFailureFa
 import { NftPreviewFragment$key } from '~/generated/NftPreviewFragment.graphql';
 import { useNftRetry } from '~/hooks/useNftRetry';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
-import LinkToTokenDetailView from '~/scenes/NftDetailPage/LinkToTokenDetailView';
+import LinkToFullPageNftDetailModal from '~/scenes/NftDetailPage/LinkToFullPageNftDetailModal';
 import NftDetailAnimation from '~/scenes/NftDetailPage/NftDetailAnimation';
 import NftDetailGif from '~/scenes/NftDetailPage/NftDetailGif';
 import NftDetailModel from '~/scenes/NftDetailPage/NftDetailModel';
@@ -27,7 +27,6 @@ type Props = {
   tokenRef: NftPreviewFragment$key;
   previewSize: number;
   ownerUsername?: string;
-  onClick?: () => void;
   hideLabelOnMobile?: boolean;
   disableLiverender?: boolean;
   columns?: number;
@@ -43,7 +42,6 @@ const contractsWhoseIFrameNFTsShouldNotTakeUpFullHeight = new Set([
 function NftPreview({
   tokenRef,
   previewSize,
-  onClick,
   disableLiverender = false,
   columns = 3,
   isInFeedEvent = false,
@@ -103,16 +101,6 @@ function NftPreview({
   const backgroundColorOverride = useMemo(
     () => getBackgroundColorOverrideForContract(contractAddress),
     [contractAddress]
-  );
-
-  const handleClick = useCallback(
-    (event: React.MouseEvent<HTMLElement>) => {
-      if (onClick && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) {
-        event.preventDefault();
-        onClick();
-      }
-    },
-    [onClick]
   );
 
   const isIFrameLiveDisplay = Boolean(shouldLiveRender && token.media?.__typename === 'HtmlMedia');
@@ -206,38 +194,35 @@ function NftPreview({
       }
       onError={handleNftError}
     >
-      <LinkToTokenDetailView
+      <LinkToFullPageNftDetailModal
         username={ownerUsername ?? ''}
         collectionId={collectionId}
         tokenId={token.dbid}
       >
-        {/* NextJS <Link> tags don't come with an anchor tag by default, so we're adding one here.
-          This will inherit the `as` URL from the parent component. */}
-        <StyledA data-tokenid={token.dbid} onClick={handleClick}>
-          <StyledNftPreview
-            backgroundColorOverride={backgroundColorOverride}
-            fullWidth={fullWidth}
-            fullHeight={fullHeight}
+        <StyledNftPreview
+          backgroundColorOverride={backgroundColorOverride}
+          fullWidth={fullWidth}
+          fullHeight={fullHeight}
+          data-tokenid={token.dbid}
+        >
+          <ReportingErrorBoundary
+            fallback={
+              <RawNftPreviewAsset
+                src={token.media?.fallbackMedia?.mediaURL}
+                onLoad={handleNftLoaded}
+              />
+            }
           >
-            <ReportingErrorBoundary
-              fallback={
-                <RawNftPreviewAsset
-                  src={token.media?.fallbackMedia?.mediaURL}
-                  onLoad={handleNftLoaded}
-                />
-              }
-            >
-              {PreviewAsset}
-            </ReportingErrorBoundary>
+            {PreviewAsset}
+          </ReportingErrorBoundary>
 
-            {isMobileOrLargeMobile ? null : (
-              <StyledNftFooter>
-                <StyledNftLabel tokenRef={token} />
-              </StyledNftFooter>
-            )}
-          </StyledNftPreview>
-        </StyledA>
-      </LinkToTokenDetailView>
+          {isMobileOrLargeMobile ? null : (
+            <StyledNftFooter>
+              <StyledNftLabel tokenRef={token} />
+            </StyledNftFooter>
+          )}
+        </StyledNftPreview>
+      </LinkToFullPageNftDetailModal>
     </NftFailureBoundary>
   );
 }
@@ -245,15 +230,6 @@ function NftPreview({
 const NftFailureWrapper = styled.div`
   width: 100%;
   max-width: 400px;
-`;
-
-const StyledA = styled.a`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: inherit;
-  height: inherit;
-  text-decoration: none;
 `;
 
 const StyledNftLabel = styled(NftPreviewLabel)`

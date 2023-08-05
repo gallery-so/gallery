@@ -2,6 +2,8 @@ import { GetServerSideProps } from 'next';
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
+import { ITEMS_PER_PAGE } from '~/components/Feed/constants';
+import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/CommentsModal/CommentsModal';
 import { GRID_ITEM_PER_PAGE, LIST_ITEM_PER_PAGE } from '~/constants/community';
 import { CommunityNavbar } from '~/contexts/globalLayout/GlobalNavbar/CommunityNavbar/CommunityNavbar';
 import { StandardSidebar } from '~/contexts/globalLayout/GlobalSidebar/StandardSidebar';
@@ -29,6 +31,11 @@ export default function CommunityPage({ contractAddress, chain }: CommunityPageP
         $listOwnersFirst: Int!
         $listOwnersAfter: String
         $onlyGalleryUsers: Boolean
+        $communityPostsLast: Int!
+        $communityPostsBefore: String
+        $interactionsFirst: Int!
+        $interactionsAfter: String
+        $visibleTokensPerFeedEvent: Int!
       ) {
         ...CommunityPageFragment
         ...CommunityNavbarFragment
@@ -44,6 +51,9 @@ export default function CommunityPage({ contractAddress, chain }: CommunityPageP
       tokenCommunityFirst: GRID_ITEM_PER_PAGE,
       listOwnersFirst: LIST_ITEM_PER_PAGE,
       onlyGalleryUsers: true,
+      communityPostsLast: ITEMS_PER_PAGE,
+      interactionsFirst: NOTES_PER_PAGE,
+      visibleTokensPerFeedEvent: 1,
     }
   );
 

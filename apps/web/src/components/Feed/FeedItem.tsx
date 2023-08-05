@@ -21,7 +21,7 @@ import PostSocializeSection from './Socialize/PostSocializeSection';
 type FeedItemProps = {
   eventRef: FeedItemFragment$key;
   queryRef: FeedItemQueryFragment$key;
-  feedMode: FeedMode;
+  feedMode?: FeedMode;
 };
 
 // Not to be confused with the FeedEvent type. This component can render both FeedEvent and Post types, and represents a single item in the feed.
@@ -65,6 +65,10 @@ function FeedItem({ eventRef, queryRef, feedMode }: FeedItemProps) {
       throw new TriedToRenderUnsupportedFeedEvent(postOrFeedEvent.dbid);
     }
 
+    if (!feedMode) {
+      throw new Error('Feed mode must be provided when rendering FeedEvents');
+    }
+
     return (
       <FeedEventData
         caption={postOrFeedEvent.caption}
@@ -81,7 +85,7 @@ function FeedItem({ eventRef, queryRef, feedMode }: FeedItemProps) {
 
 type FeedItemWithBoundaryProps = {
   index: number;
-  feedMode: FeedMode;
+  feedMode?: FeedMode;
   onPotentialLayoutShift: (index: number) => void;
   eventRef: FeedItemWithErrorBoundaryFragment$key;
   queryRef: FeedItemWithErrorBoundaryQueryFragment$key;
@@ -166,7 +170,7 @@ const FeedItemContainer = styled(VStack)`
   padding: 24px 0px;
 
   @media only screen and ${breakpoints.desktop} {
-    padding: 24px 16px;
+    padding: 24px 0px;
     max-width: initial;
     width: ${FEED_EVENT_ROW_WIDTH_DESKTOP}px;
   }

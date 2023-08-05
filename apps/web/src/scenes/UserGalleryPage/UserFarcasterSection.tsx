@@ -1,9 +1,9 @@
 import { graphql, useFragment } from 'react-relay';
 
-import { HStack } from '~/components/core/Spacer/Stack';
-import { ClickablePill } from '~/components/Pill';
 import { UserFarcasterSectionFragment$key } from '~/generated/UserFarcasterSectionFragment.graphql';
 import FarcasterIcon from '~/icons/FarcasterIcon';
+
+import UserSocialPill from './UserSocialPill';
 
 type Props = {
   userRef: UserFarcasterSectionFragment$key;
@@ -32,11 +32,6 @@ export default function UserFarcasterSection({ userRef }: Props) {
   const farcasterUrl = `https://warpcast.com/${farcasterUsername}`;
 
   return (
-    <ClickablePill href={farcasterUrl}>
-      <HStack gap={5} align="center">
-        <FarcasterIcon />
-        <strong>{farcasterUsername}</strong>
-      </HStack>
-    </ClickablePill>
+    <UserSocialPill url={farcasterUrl} icon={<FarcasterIcon />} username={farcasterUsername} />
   );
 }

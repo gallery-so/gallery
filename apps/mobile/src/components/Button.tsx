@@ -9,6 +9,8 @@ import { GalleryTouchableOpacity, GalleryTouchableOpacityProps } from './Gallery
 import { Typography } from './Typography';
 
 type Variant = 'primary' | 'secondary' | 'danger';
+type FontWeight = 'Medium' | 'Regular' | 'Bold';
+type Size = 'xs' | 'sm' | 'md';
 
 type ButtonProps = {
   style?: GalleryTouchableOpacityProps['style'];
@@ -18,7 +20,8 @@ type ButtonProps = {
   text: string;
   icon?: ReactNode;
   variant?: Variant;
-  size?: 'sm' | 'md';
+  fontWeight?: FontWeight;
+  size?: Size;
   DO_NOT_USE_OR_YOU_WILL_BE_FIRED_colorScheme?: 'light' | 'dark';
 } & GalleryTouchableOpacityProps;
 
@@ -121,6 +124,7 @@ export function Button({
   disabled,
   style,
   size = 'md',
+  fontWeight = 'Medium',
   DO_NOT_USE_OR_YOU_WILL_BE_FIRED_colorScheme,
   ...props
 }: ButtonProps) {
@@ -131,7 +135,8 @@ export function Button({
 
   const variantClassNames = buttonVariants[colorScheme][variant][active ? 'active' : 'inactive'];
 
-  const sizeVariants: { [size in 'sm' | 'md']: string } = {
+  const sizeVariants: { [size in Size]: string } = {
+    xs: 'h-[24] px-2',
     sm: 'h-[36] px-4',
     md: 'h-[44] px-6',
   };
@@ -148,7 +153,7 @@ export function Button({
       {/* Setting a height explicitly here to ensure icons / text gets the same treatment */}
       <View
         className={clsx(
-          'relative flex h-[36] items-center justify-center  px-6',
+          'relative flex h-[36] items-center justify-center px-6 rounded-sm',
           variantClassNames.containerClassName,
           sizeVariants[size]
         )}
@@ -162,7 +167,7 @@ export function Button({
           {icon}
 
           <Typography
-            font={{ family: 'ABCDiatype', weight: 'Medium' }}
+            font={{ family: 'ABCDiatype', weight: fontWeight }}
             className={clsx('text-xs uppercase', variantClassNames.textClassName)}
           >
             {text}

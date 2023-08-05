@@ -50,7 +50,7 @@ function TabItem({ navigation, route, icon, activeRoute }: TabItemProps) {
       canPreventDefault: true,
     });
     if (route.name === 'PostTab') {
-      navigation.navigate('Post', {
+      navigation.navigate('PostNftSelector', {
         screen: 'Post',
       });
     } else {
