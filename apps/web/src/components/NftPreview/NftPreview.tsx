@@ -153,7 +153,7 @@ function NftPreview({
   ]);
 
   const result = getVideoOrImageUrlForNftPreview({ tokenRef: token });
-  const isFirefoxSvg = isSvg(result?.urls?.large) && (isFirefox() || isSafari());
+  const isSvgOnWeirdBrowser = isSvg(result?.urls?.large) && (isFirefox() || isSafari());
   // stretch the image to take up the full-width if...
   const fullWidth =
     // it's not in a feed event
@@ -161,7 +161,7 @@ function NftPreview({
     // there are more than 1 columns in the layout
     (columns > 1 ||
       // the asset is an SVG on firefox
-      isFirefoxSvg ||
+      isSvgOnWeirdBrowser ||
       // the asset is an iframe in single column mode
       (columns === 1 && isIFrameLiveDisplay));
 
