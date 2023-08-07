@@ -10,6 +10,7 @@ import { useModalActions } from '~/contexts/modal/ModalContext';
 import { PostDropdownFragment$key } from '~/generated/PostDropdownFragment.graphql';
 import { PostDropdownQueryFragment$key } from '~/generated/PostDropdownQueryFragment.graphql';
 import LinkToFullPageNftDetailModal from '~/scenes/NftDetailPage/LinkToFullPageNftDetailModal';
+import colors from '~/shared/theme/colors';
 import { getBaseUrl } from '~/utils/getBaseUrl';
 
 import DeletePostConfirmation from './DeletePostConfirmation';
@@ -101,7 +102,7 @@ export default function PostDropdown({ postRef, queryRef }: Props) {
               </DropdownItem>
             </LinkToFullPageNftDetailModal>
           )}
-          <DropdownItem onClick={handleDeletePostClick}>
+          <DropdownItem onClick={handleDeletePostClick} color={colors.error}>
             <BaseM>Delete</BaseM>
           </DropdownItem>
         </DropdownSection>
