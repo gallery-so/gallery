@@ -1,19 +1,14 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
-import Markdown from '~/components/core/Markdown/Markdown';
-import { HStack, VStack } from '~/components/core/Spacer/Stack';
-import { BaseM, TitleS } from '~/components/core/Text/Text';
-import FollowButton from '~/components/Follow/FollowButton';
+import { VStack } from '~/components/core/Spacer/Stack';
+import { BaseM } from '~/components/core/Text/Text';
 import { FollowListUsersFragment$key } from '~/generated/FollowListUsersFragment.graphql';
 import { FollowListUsersQueryFragment$key } from '~/generated/FollowListUsersQueryFragment.graphql';
-import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
-import colors from '~/shared/theme/colors';
 import { BREAK_LINES } from '~/utils/regex';
 
-import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
 import FollowListUserItem from './FollowListUserItem';
 
 type Props = {
@@ -45,19 +40,16 @@ export default function FollowListUsers({
         bio
         username
         ...FollowListUserItemFragment
-        ...ProfilePictureFragment
-        ...FollowButtonUserFragment
       }
     `,
     userRefs
   );
 
-  const isMobile = useIsMobileOrMobileLargeWindowWidth();
-
   const handleClick = useCallback(() => {
     track('Follower List Username Click');
   }, [track]);
 
+  const [fadeUsernames, setFadeUsernames] = useState(false);
   const formattedUsersBio = useMemo(() => {
     return users.map((user) => {
       return {
@@ -77,6 +69,8 @@ export default function FollowListUsers({
           bio={user.bio}
           queryRef={query}
           userRef={user}
+          fadeUsernames={fadeUsernames}
+          setFadeUsernames={(val) => setFadeUsernames(val)}
         />
       ))}
       {formattedUsersBio.length === 0 && (
@@ -88,17 +82,6 @@ export default function FollowListUsers({
   );
 }
 
-const StyledBaseM = styled(BaseM)`
-  display: -webkit-box;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-
-  p {
-    padding-bottom: 0;
-  }
-`;
-
 const StyledList = styled.div`
   display: flex;
   flex-direction: column;
@@ -106,25 +89,6 @@ const StyledList = styled.div`
   padding-top: 12px;
 `;
 
-const StyledListItem = styled.a<{ isMobile: boolean }>`
-  display: flex;
-  padding-top: 16px;
-  padding-bottom: 16px;
-  text-decoration: none;
-  gap: ${({ isMobile }) => (isMobile ? '4px' : '72px')};
-  justify-content: space-between;
-
-  &:hover {
-    background: ${colors.offWhite};
-  }
-`;
-
 const StyledEmptyList = styled(VStack)`
   height: 100%;
-`;
-
-const StyledFollowButton = styled(FollowButton)`
-  padding: 2px 8px;
-  width: 92px;
-  height: 24px;
 `;

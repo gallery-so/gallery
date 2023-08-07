@@ -1,14 +1,16 @@
+import { useCallback, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
-import { BaseM } from '~/components/core/Text/Text';
+import { BaseM, TitleS } from '~/components/core/Text/Text';
 import FollowButton from '~/components/Follow/FollowButton';
 import { FollowListUserItemFragment$key } from '~/generated/FollowListUserItemFragment.graphql';
 import { FollowListUserItemQueryFragment$key } from '~/generated/FollowListUserItemQueryFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import useDebounce from '~/shared/hooks/useDebounce';
 import colors from '~/shared/theme/colors';
 
 import HoverCardOnUsername from '../HoverCard/HoverCardOnUsername';
@@ -19,6 +21,8 @@ type Props = {
   userRef: FollowListUserItemFragment$key;
   username: string;
   bio?: string;
+  fadeUsernames: boolean;
+  setFadeUsernames: (val: boolean) => void;
   handleClick: () => void;
 };
 
@@ -27,7 +31,9 @@ export default function FollowListUserItem({
   userRef,
   username,
   bio,
+  fadeUsernames,
   handleClick,
+  setFadeUsernames,
 }: Props) {
   const query = useFragment(
     graphql`
@@ -49,22 +55,40 @@ export default function FollowListUserItem({
     userRef
   );
 
-  const isMobile = useIsMobileOrMobileLargeWindowWidth();
+  const [isHovering, setIsHovering] = useState(false);
+
+  const onMouseEnter = useCallback(() => {
+    setIsHovering(true);
+    setFadeUsernames(true);
+  }, [setFadeUsernames]);
+
+  const onMouseLeave = useCallback(() => {
+    setIsHovering(false);
+    setFadeUsernames(false);
+  }, [setFadeUsernames]);
 
   return (
-    <StyledListItem href={`/${username}`} onClick={handleClick} isMobile={isMobile}>
+    <StyledListItem
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      href={`/${username}`}
+      onClick={handleClick}
+      fadeUsernames={fadeUsernames}
+    >
       <HStack gap={8} align="center">
         <ProfilePicture userRef={user} size="md" />
-        <VStack inline>
-          <HoverCardOnUsername userRef={user}></HoverCardOnUsername>
-          <StyledBaseM>
-            {bio && (
-              <VStack justify="center">
-                <Markdown text={bio} />
-              </VStack>
-            )}
-          </StyledBaseM>
-        </VStack>
+        <HoverCardOnUsername userRef={user}>
+          <VStack inline>
+            <TitleS>{username}</TitleS>
+            <StyledBaseM>
+              {bio && (
+                <VStack justify="center">
+                  <Markdown text={bio} />
+                </VStack>
+              )}
+            </StyledBaseM>
+          </VStack>
+        </HoverCardOnUsername>
       </HStack>
       {query && user && (
         <VStack justify="center">
@@ -75,16 +99,19 @@ export default function FollowListUserItem({
   );
 }
 
-const StyledListItem = styled.a<{ isMobile: boolean }>`
+const StyledListItem = styled.a<{ fadeUsernames: boolean }>`
   display: flex;
   padding-top: 16px;
   padding-bottom: 16px;
   text-decoration: none;
   justify-content: space-between;
+  transition: color 0.15s ease-in-out, opacity 0.15s ease-in-out;
+  opacity: ${({ fadeUsernames }) => (fadeUsernames ? 0.5 : 1)};
   gap: 4px;
 
   &:hover {
-    background: ${colors.offWhite};
+    color: ${colors.black['800']};
+    opacity: 1;
   }
 
   @media only screen and ${breakpoints.desktop} {
@@ -101,6 +128,11 @@ const StyledBaseM = styled(BaseM)`
   p {
     padding-bottom: 0;
   }
+`;
+
+const StyledHStack = styled(HStack)`
+  display: flex;
+  width: 100%;
 `;
 
 const StyledFollowButton = styled(FollowButton)`
