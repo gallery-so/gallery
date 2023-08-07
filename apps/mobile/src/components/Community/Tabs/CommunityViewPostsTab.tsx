@@ -3,7 +3,7 @@ import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import { useCallback, useMemo, useRef } from 'react';
 import { View } from 'react-native';
 import { Tabs } from 'react-native-collapsible-tab-view';
-import { graphql, useFragment, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
+import { graphql, useFragment, usePaginationFragment } from 'react-relay';
 
 import { Button } from '~/components/Button';
 import {
@@ -16,7 +16,6 @@ import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/Gal
 import { useListContentStyle } from '~/components/ProfileView/Tabs/useListContentStyle';
 import { Typography } from '~/components/Typography';
 import { CommunityViewPostsTabFragment$key } from '~/generated/CommunityViewPostsTabFragment.graphql';
-import { CommunityViewPostsTabQuery } from '~/generated/CommunityViewPostsTabQuery.graphql';
 import { CommunityViewPostsTabQueryFragment$key } from '~/generated/CommunityViewPostsTabQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 
@@ -58,14 +57,6 @@ export function CommunityViewPostsTab({ communityRef, queryRef }: Props) {
     graphql`
       fragment CommunityViewPostsTabQueryFragment on Query {
         ...createVirtualizedFeedEventItemsQueryFragment
-      }
-    `,
-    queryRef
-  );
-
-  const isMemberOfCommunityQuery = useLazyLoadQuery<CommunityViewPostsTabQuery>(
-    graphql`
-      query CommunityViewPostsTabQuery($communityID: DBID!) {
         viewer {
           ... on Viewer {
             user {
@@ -75,12 +66,10 @@ export function CommunityViewPostsTab({ communityRef, queryRef }: Props) {
         }
       }
     `,
-    {
-      communityID: community.dbid,
-    }
+    queryRef
   );
 
-  const isMemberOfCommunity = isMemberOfCommunityQuery.viewer?.user?.isMemberOfCommunity ?? false;
+  const isMemberOfCommunity = query.viewer?.user?.isMemberOfCommunity ?? false;
 
   const contentContainerStyle = useListContentStyle();
 
