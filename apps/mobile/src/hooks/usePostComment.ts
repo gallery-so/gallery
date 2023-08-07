@@ -75,10 +75,6 @@ export function usePostComment() {
           eventRelayId,
           'Interactions_post_comments'
         );
-        const commentsBottomSheetConnection = ConnectionHandler.getConnectionID(
-          eventRelayId,
-          'CommentsBottomSheet_comments'
-        );
 
         const updater: SelectorStoreUpdater<usePostCommentMutation['response']> = (
           store,
@@ -115,7 +111,7 @@ export function usePostComment() {
           variables: {
             comment: value,
             postId: feedId,
-            connections: [interactionsConnection, commentsBottomSheetConnection],
+            connections: [interactionsConnection],
           },
         });
 
