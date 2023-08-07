@@ -102,6 +102,7 @@ const StyledListItem = styled.a<{ fadeUsernames: boolean }>`
   transition: color 0.15s ease-in-out, opacity 0.15s ease-in-out;
   opacity: ${({ fadeUsernames }) => (fadeUsernames ? 0.5 : 1)};
   gap: 4px;
+  min-height: 72px;
 
   &:hover {
     color: ${colors.black['800']};
