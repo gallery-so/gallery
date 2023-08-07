@@ -203,8 +203,8 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
 
           <View className="space-y-1">
             <Typography
-              font={{ family: 'ABCDiatype', weight: 'Regular' }}
-              className="text-sm text-shadow text-right"
+              font={{ family: 'ABCDiatype', weight: 'Bold' }}
+              className="text-sm text-black-800 dark:text-offWhite text-right"
             >
               {formattedTotalPosts}
             </Typography>
