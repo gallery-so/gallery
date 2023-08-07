@@ -14,6 +14,7 @@ import colors from '~/shared/theme/colors';
 import { BREAK_LINES } from '~/utils/regex';
 
 import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
+import FollowListUserItem from './FollowListUserItem';
 
 type Props = {
   queryRef: FollowListUsersQueryFragment$key;
@@ -31,7 +32,7 @@ export default function FollowListUsers({
   const query = useFragment(
     graphql`
       fragment FollowListUsersQueryFragment on Query {
-        ...FollowButtonQueryFragment
+        ...FollowListUserItemQueryFragment
       }
     `,
     queryRef
@@ -43,6 +44,7 @@ export default function FollowListUsers({
         dbid
         bio
         username
+        ...FollowListUserItemFragment
         ...ProfilePictureFragment
         ...FollowButtonUserFragment
       }
@@ -68,31 +70,14 @@ export default function FollowListUsers({
   return (
     <StyledList>
       {formattedUsersBio.map((user) => (
-        <StyledListItem
+        <FollowListUserItem
           key={user.dbid}
-          href={`/${user.username}`}
-          onClick={handleClick}
-          isMobile={isMobile}
-        >
-          <HStack gap={8} align="center">
-            <ProfilePicture userRef={user} size="md" />
-            <VStack inline>
-              <TitleS>{user.username}</TitleS>
-              <StyledBaseM>
-                {user.bio && (
-                  <VStack justify="center">
-                    <Markdown text={user.bio} />
-                  </VStack>
-                )}
-              </StyledBaseM>
-            </VStack>
-          </HStack>
-          {query && user && (
-            <VStack justify="center">
-              <StyledFollowButton queryRef={query} userRef={user} />
-            </VStack>
-          )}
-        </StyledListItem>
+          username={user.username ?? ''}
+          handleClick={handleClick}
+          bio={user.bio}
+          queryRef={query}
+          userRef={user}
+        />
       ))}
       {formattedUsersBio.length === 0 && (
         <StyledEmptyList gap={48} align="center" justify="center">
