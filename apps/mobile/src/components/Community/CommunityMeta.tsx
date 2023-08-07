@@ -137,6 +137,8 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
     }
   }, [isMemberOfCommunity, colorScheme]);
 
+  const handleRefresh = useCallback(() => {}, []);
+
   const showAddressOrGalleryUser = useMemo(() => {
     if (community.creator?.__typename === 'GalleryUser' && !community.creator?.universal) {
       return (
@@ -217,7 +219,11 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
           eventName={null}
         />
       )}
-      <CommunityPostBottomSheet ref={bottomSheetRef} communityRef={community} />
+      <CommunityPostBottomSheet
+        ref={bottomSheetRef}
+        communityRef={community}
+        onRefresh={handleRefresh}
+      />
     </View>
   );
 }
