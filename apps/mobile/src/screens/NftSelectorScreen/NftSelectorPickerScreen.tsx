@@ -18,6 +18,7 @@ import { MainTabStackNavigatorParamList } from '~/navigation/types';
 
 import { NetworkChoice, NftSelectorFilterBottomSheet } from './NftSelectorFilterBottomSheet';
 import { NftSelectorPickerGrid } from './NftSelectorPickerGrid';
+import { NftSelectorScreenFallback } from './NftSelectorScreenFallback';
 
 export function NftSelectorPickerScreen() {
   const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'ProfilePicturePicker'>>();
@@ -115,7 +116,7 @@ export function NftSelectorPickerScreen() {
           </View>
 
           <View className="flex-grow flex-1 w-full">
-            <Suspense fallback={null}>
+            <Suspense fallback={<NftSelectorScreenFallback />}>
               <NftSelectorPickerGrid
                 searchCriteria={{
                   searchQuery,
