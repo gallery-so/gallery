@@ -8,7 +8,6 @@ type Props = {
   tokenRef: CollectionTokenPreviewFragment$key;
   previewSize: number;
   ownerUsername?: string;
-  onClick?: () => void;
   hideLabelOnMobile?: boolean;
   disableLiverender?: boolean;
   columns?: number;
@@ -18,7 +17,6 @@ type Props = {
 export default function CollectionTokenPreview({
   tokenRef,
   previewSize,
-  onClick,
   disableLiverender,
   columns,
   isInFeedEvent,
@@ -46,7 +44,6 @@ export default function CollectionTokenPreview({
 
   return (
     <NftPreview
-      onClick={onClick}
       previewSize={previewSize}
       disableLiverender={disableLiverender}
       columns={columns}
