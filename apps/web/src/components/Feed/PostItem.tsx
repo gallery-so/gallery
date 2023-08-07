@@ -154,9 +154,9 @@ export function PostItemWithBoundary({
 }
 
 const PostItemContainer = styled(VStack)`
-  margin: 24px auto;
+  margin: 8px auto;
 
-  padding: 24px 0px;
+  padding: 12px 0px;
 
   @media only screen and ${breakpoints.desktop} {
     padding: 24px 16px;
