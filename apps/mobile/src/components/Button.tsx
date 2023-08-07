@@ -8,7 +8,7 @@ import colors from '~/shared/theme/colors';
 import { GalleryTouchableOpacity, GalleryTouchableOpacityProps } from './GalleryTouchableOpacity';
 import { Typography } from './Typography';
 
-type Variant = 'primary' | 'secondary' | 'danger';
+type Variant = 'primary' | 'secondary' | 'danger' | 'disabled';
 type FontWeight = 'Medium' | 'Regular' | 'Bold';
 type Size = 'xs' | 'sm' | 'md';
 
@@ -75,6 +75,18 @@ const buttonVariants: ButtonVariants = {
         loadingColor: colors.red,
       },
     },
+    disabled: {
+      inactive: {
+        containerClassName: 'bg-porcelain border border-porcelain',
+        textClassName: 'text-metal',
+        loadingColor: 'black',
+      },
+      active: {
+        containerClassName: 'bg-porcelain border border-porcelain',
+        textClassName: 'text-metal',
+        loadingColor: 'black',
+      },
+    },
   },
   dark: {
     primary: {
@@ -111,6 +123,18 @@ const buttonVariants: ButtonVariants = {
         containerClassName: 'bg-black-700 border border-red',
         textClassName: 'text-red',
         loadingColor: colors.red,
+      },
+    },
+    disabled: {
+      inactive: {
+        containerClassName: 'bg-black-500 border border-black-500',
+        textClassName: 'text-shadow',
+        loadingColor: colors.shadow,
+      },
+      active: {
+        containerClassName: 'bg-black-500 border border-black-500',
+        textClassName: 'text-shadow',
+        loadingColor: colors.shadow,
       },
     },
   },
