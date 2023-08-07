@@ -208,7 +208,7 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
           text="Post"
           className="w-[100px]"
           variant={isMemberOfCommunity ? 'primary' : 'disabled'}
-          icon={<PostIcon size={14} color={PostIconColor} />}
+          icon={<PostIcon width={16} color={PostIconColor} />}
           onPress={handlePress}
           eventElementId={null}
           eventName={null}
