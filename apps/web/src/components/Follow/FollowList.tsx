@@ -56,7 +56,11 @@ export default function FollowList({ userRef, queryRef }: Props) {
         >
           <HStack gap={4} align="baseline">
             <span>Followers</span>
-            {user.followers.length > 0 && <BaseS>{user.followers.length}</BaseS>}
+            {user.followers.length > 0 && (
+              <BaseS color={displayedList === 'followers' ? colors.black['800'] : colors.metal}>
+                {user.followers.length}
+              </BaseS>
+            )}
           </HStack>
         </StyledSpan>
         <StyledSpan
@@ -65,7 +69,11 @@ export default function FollowList({ userRef, queryRef }: Props) {
         >
           <HStack gap={4} align="baseline">
             <span>Following</span>
-            {user.following.length > 0 && <BaseS>{user.following.length}</BaseS>}
+            {user.following.length > 0 && (
+              <BaseS color={displayedList === 'following' ? colors.black['800'] : colors.metal}>
+                {user.following.length}
+              </BaseS>
+            )}
           </HStack>
         </StyledSpan>
       </StyledHeader>
@@ -111,8 +119,4 @@ const StyledSpan = styled.span<{ active: boolean }>`
 
   cursor: pointer;
   text-decoration: none;
-
-  ${BaseS} {
-    color: ${({ active }) => (active ? colors.black['800'] : colors.metal)};
-  }
 `;

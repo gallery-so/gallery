@@ -74,20 +74,18 @@ export default function FollowListUsers({
           onClick={handleClick}
           isMobile={isMobile}
         >
-          <HStack gap={8}>
+          <HStack gap={8} align="center">
             <ProfilePicture userRef={user} size="md" />
-            {user.bio ? (
-              <VStack inline>
-                <TitleS>{user.username}</TitleS>
-                <StyledBaseM>
-                  <Markdown text={user.bio} />
-                </StyledBaseM>
-              </VStack>
-            ) : (
-              <VStack justify="center">
-                <TitleS>{user.username}</TitleS>
-              </VStack>
-            )}
+            <VStack inline>
+              <TitleS>{user.username}</TitleS>
+              <StyledBaseM>
+                {user.bio && (
+                  <VStack justify="center">
+                    <Markdown text={user.bio} />
+                  </VStack>
+                )}
+              </StyledBaseM>
+            </VStack>
           </HStack>
           {query && user && (
             <VStack justify="center">
