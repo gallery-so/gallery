@@ -1,4 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
+import { useColorScheme } from 'nativewind';
 import { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
@@ -75,6 +76,7 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
     queryRef
   );
 
+  const { colorScheme } = useColorScheme();
   const isKoalaEnabled = isFeatureEnabled(FeatureFlag.KOALA, query);
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
@@ -116,8 +118,8 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
           {community.creator.__typename && <ProfilePicture userRef={community.creator} size="xs" />}
 
           <Typography
-            className="text-sm text-shadow"
-            font={{ family: 'ABCDiatype', weight: 'Regular' }}
+            className="text-sm text-black-800 dark:text-offWhite"
+            font={{ family: 'ABCDiatype', weight: 'Bold' }}
           >
             {community.creator.username}
           </Typography>
@@ -130,14 +132,15 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
           <LinkableAddress
             chainAddressRef={community.contractAddress}
             type="Community Contract Address"
-            textStyle={{ color: colors.shadow }}
+            textStyle={{ color: colorScheme === 'light' ? colors.black[800] : colors.offWhite }}
+            font={{ family: 'ABCDiatype', weight: 'Bold' }}
           />
         </View>
       );
     } else {
       return null;
     }
-  }, [community.creator, community.contractAddress, handleUsernamePress]);
+  }, [colorScheme, community.creator, community.contractAddress, handleUsernamePress]);
 
   return (
     <View className="flex flex-row space-x-6">
@@ -164,8 +167,8 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
           <View className="flex flex-row space-x-1 items-center">
             <NetworkIcon chain={community.chain} />
             <Typography
-              font={{ family: 'ABCDiatype', weight: 'Regular' }}
-              className="text-sm text-shadow"
+              font={{ family: 'ABCDiatype', weight: 'Bold' }}
+              className="text-sm text-black-800 dark:text-offWhite"
             >
               {community.chain}
             </Typography>
@@ -200,8 +203,8 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
 
           <View className="space-y-1">
             <Typography
-              font={{ family: 'ABCDiatype', weight: 'Regular' }}
-              className="text-sm text-shadow text-right"
+              font={{ family: 'ABCDiatype', weight: 'Bold' }}
+              className="text-sm text-black-800 dark:text-offWhite text-right"
             >
               {formattedTotalPosts}
             </Typography>

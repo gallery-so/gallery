@@ -90,7 +90,7 @@ export function NotificationSkeleton({
           <UserFollowList userRefs={responsibleUsers} queryRef={query} onUserPress={() => {}} />
         </GalleryBottomSheetModal>
 
-        <Text className="dark:text-white mt-[1]">{children}</Text>
+        <Text className="dark:text-white mt-[1] pr-1">{children}</Text>
       </View>
       <View className="flex flex-row items-center justify-between space-x-2">
         {tokenUrl ? (
