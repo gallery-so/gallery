@@ -19,8 +19,6 @@ Provide steps on how the reviewer can test the changes.
 
 Please make sure to review and check all of the following:
 
-- [ ] The code follows the code style of the project.
-- [ ] The changes are documented appropriately.
 - [ ] The changes have been tested and all tests pass.
 - [ ] WEB: The changes have been tested on various desktop screen sizes to ensure responsiveness.
 - [ ] MOBILE APP: The changes have been tested on both light and dark modes.
