@@ -4,8 +4,7 @@ import styled from 'styled-components';
 import breakpoints from '~/components/core/breakpoints';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { FEED_EVENT_ROW_WIDTH_DESKTOP } from '~/components/Feed/dimensions';
-import PostData from '~/components/Feed/Posts/PostData';
-import PostSocializeSection from '~/components/Feed/Socialize/PostSocializeSection';
+import { PostItem } from '~/components/Feed/PostItem';
 import { StandalonePostViewFragment$key } from '~/generated/StandalonePostViewFragment.graphql';
 import { StandalonePostViewQueryFragment$key } from '~/generated/StandalonePostViewQueryFragment.graphql';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
@@ -19,8 +18,7 @@ export default function StandalonePostView({ postRef, queryRef }: Props) {
   const post = useFragment(
     graphql`
       fragment StandalonePostViewFragment on Post {
-        ...PostDataFragment
-        ...PostSocializeSectionFragment
+        ...PostItemFragment
       }
     `,
     postRef
@@ -29,8 +27,7 @@ export default function StandalonePostView({ postRef, queryRef }: Props) {
   const query = useFragment(
     graphql`
       fragment StandalonePostViewQueryFragment on Query {
-        ...PostSocializeSectionQueryFragment
-        ...PostDataQueryFragment
+        ...PostItemQueryFragment
       }
     `,
     queryRef
@@ -39,13 +36,7 @@ export default function StandalonePostView({ postRef, queryRef }: Props) {
   return (
     <ReportingErrorBoundary fallback={<></>}>
       <StyledPostContainer gap={16}>
-        <PostData postRef={post} queryRef={query} />
-
-        {/* // We have another boundary here in case the socialize section fails
-      // and the rest of the feed event loads */}
-        <ReportingErrorBoundary dontReport fallback={<></>}>
-          <PostSocializeSection queryRef={query} postRef={post} />
-        </ReportingErrorBoundary>
+        <PostItem eventRef={post} queryRef={query} />
       </StyledPostContainer>
     </ReportingErrorBoundary>
   );

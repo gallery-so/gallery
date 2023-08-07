@@ -5,12 +5,11 @@ import styled from 'styled-components';
 import breakpoints from '~/components/core/breakpoints';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { FEED_EVENT_ROW_WIDTH_DESKTOP } from '~/components/Feed/dimensions';
-import { FeedMode } from '~/components/Feed/types';
 import { PostItemFragment$key } from '~/generated/PostItemFragment.graphql';
 import { PostItemQueryFragment$key } from '~/generated/PostItemQueryFragment.graphql';
 import { PostItemWithErrorBoundaryFragment$key } from '~/generated/PostItemWithErrorBoundaryFragment.graphql';
 import { PostItemWithErrorBoundaryQueryFragment$key } from '~/generated/PostItemWithErrorBoundaryQueryFragment.graphql';
-import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import { useIsDesktopWindowWidth } from '~/hooks/useWindowSize';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 
 import PostHeader from './Posts/PostHeader';
@@ -20,17 +19,20 @@ import PostSocializeSection from './Socialize/PostSocializeSection';
 type PostItemProps = {
   eventRef: PostItemFragment$key;
   queryRef: PostItemQueryFragment$key;
-  handlePotentialLayoutShift: () => void;
-  index: number;
+  handlePotentialLayoutShift?: () => void;
+  measure?: () => void;
 };
 
-// Not to be confused with the FeedEvent type. This component can render both FeedEvent and Post types, and represents a single item in the feed.
-function PostItem({ eventRef, queryRef, handlePotentialLayoutShift, index }: PostItemProps) {
+export function PostItem({
+  eventRef,
+  queryRef,
+  handlePotentialLayoutShift,
+
+  measure,
+}: PostItemProps) {
   const post = useFragment(
     graphql`
       fragment PostItemFragment on Post {
-        __typename
-        ...PostDataFragment
         ...PostSocializeSectionFragment
         ...PostHeaderFragment
         ...PostNftsFragment
@@ -42,7 +44,6 @@ function PostItem({ eventRef, queryRef, handlePotentialLayoutShift, index }: Pos
   const query = useFragment(
     graphql`
       fragment PostItemQueryFragment on Query {
-        ...PostDataQueryFragment
         ...PostSocializeSectionQueryFragment
         ...PostHeaderQueryFragment
       }
@@ -50,16 +51,13 @@ function PostItem({ eventRef, queryRef, handlePotentialLayoutShift, index }: Pos
     queryRef
   );
 
-  const isMobile = useIsMobileOrMobileLargeWindowWidth();
+  const isDesktop = useIsDesktopWindowWidth();
 
-  if (isMobile) {
+  if (!isDesktop) {
     return (
-      <StyledPostItem gap={12}>
+      <StyledPostItem>
         <PostHeader postRef={post} queryRef={query} />
-        <PostNfts postRef={post} />
-        {/* // We have another boundary here in case the socialize section fails
-          // and the rest of the post loads */}
-
+        <PostNfts postRef={post} onNftLoad={measure} />
         <ReportingErrorBoundary dontReport fallback={<></>}>
           <PostSocializeSection
             queryRef={query}
@@ -72,8 +70,7 @@ function PostItem({ eventRef, queryRef, handlePotentialLayoutShift, index }: Pos
   }
   return (
     <StyledPostItem>
-      <PostNfts postRef={post} />
-      {/* {index % 2 === 0 && <PostNfts postRef={post} />} */}
+      <PostNfts postRef={post} onNftLoad={measure} />
       <StyledDesktopPostData gap={16} justify="space-between">
         <PostHeader postRef={post} queryRef={query} />
         <ReportingErrorBoundary dontReport fallback={<></>}>
@@ -84,7 +81,6 @@ function PostItem({ eventRef, queryRef, handlePotentialLayoutShift, index }: Pos
           />
         </ReportingErrorBoundary>
       </StyledDesktopPostData>
-      {/* {index % 2 === 1 && <PostNfts postRef={post} />} */}
     </StyledPostItem>
   );
 }
@@ -109,18 +105,18 @@ const StyledDesktopPostData = styled(VStack)`
 
 type PostItemWithBoundaryProps = {
   index: number;
-  feedMode: FeedMode;
   onPotentialLayoutShift: (index: number) => void;
   eventRef: PostItemWithErrorBoundaryFragment$key;
   queryRef: PostItemWithErrorBoundaryQueryFragment$key;
+  measure: () => void;
 };
 
-export default function PostItemWithBoundary({
+export function PostItemWithBoundary({
   index,
-  feedMode,
   eventRef,
   queryRef,
   onPotentialLayoutShift,
+  measure,
 }: PostItemWithBoundaryProps) {
   const event = useFragment(
     graphql`
@@ -140,7 +136,6 @@ export default function PostItemWithBoundary({
     queryRef
   );
 
-  // const shouldShowAdmireComment = event.eventData?.__typename !== 'UserFollowedUsersFeedEventData';
   const handlePotentialLayoutShift = useCallback(() => {
     onPotentialLayoutShift(index);
   }, [index, onPotentialLayoutShift]);
@@ -151,7 +146,7 @@ export default function PostItemWithBoundary({
           eventRef={event}
           queryRef={query}
           handlePotentialLayoutShift={handlePotentialLayoutShift}
-          index={index}
+          measure={measure}
         />
       </PostItemContainer>
     </ReportingErrorBoundary>

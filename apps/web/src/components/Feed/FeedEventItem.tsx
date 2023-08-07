@@ -21,9 +21,8 @@ type FeedEventItemProps = {
   feedMode: FeedMode;
 };
 
-// Not to be confused with the FeedEvent type. This component can render both FeedEvent and Post types, and represents a single item in the feed.
 function FeedEventItem({ eventRef, queryRef, feedMode }: FeedEventItemProps) {
-  const postOrFeedEvent = useFragment(
+  const feedEvent = useFragment(
     graphql`
       fragment FeedEventItemFragment on FeedEvent {
         __typename
@@ -46,21 +45,17 @@ function FeedEventItem({ eventRef, queryRef, feedMode }: FeedEventItemProps) {
     queryRef
   );
 
-  if (postOrFeedEvent.__typename === 'FeedEvent') {
-    if (!postOrFeedEvent.eventData) {
-      throw new TriedToRenderUnsupportedFeedEvent(postOrFeedEvent.dbid);
-    }
-
-    if (!feedMode) {
-      throw new Error('Feed mode must be provided when rendering FeedEvents');
+  if (feedEvent.__typename === 'FeedEvent') {
+    if (!feedEvent.eventData) {
+      throw new TriedToRenderUnsupportedFeedEvent(feedEvent.dbid);
     }
 
     return (
       <FeedEventData
-        caption={postOrFeedEvent.caption}
+        caption={feedEvent.caption}
         feedMode={feedMode}
-        eventDbid={postOrFeedEvent.dbid}
-        feedEventRef={postOrFeedEvent.eventData}
+        eventDbid={feedEvent.dbid}
+        feedEventRef={feedEvent.eventData}
         queryRef={query}
       />
     );
@@ -123,7 +118,7 @@ export default function FeedEventItemWithBoundary({
         {/* // We have another boundary here in case the socialize section fails
           // and the rest of the feed event loads */}
         <ReportingErrorBoundary dontReport fallback={<></>}>
-          {event.__typename === 'FeedEvent' && shouldShowAdmireComment && (
+          {shouldShowAdmireComment && (
             <FeedEventSocializeSection
               eventRef={event}
               queryRef={query}

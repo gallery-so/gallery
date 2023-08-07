@@ -20,7 +20,7 @@ import { FeedListFragment$key } from '~/generated/FeedListFragment.graphql';
 import colors from '~/shared/theme/colors';
 
 import FeedEventItem from './FeedEventItem';
-import PostItem from './PostItem';
+import { PostItemWithBoundary as PostItem } from './PostItem';
 
 type Props = {
   loadNextPage: () => void;
@@ -126,37 +126,65 @@ export default function FeedList({
         return;
       }
 
-      const FeedItem = content.__typename === 'Post' ? PostItem : FeedEventItem;
+      if (content.__typename === 'Post') {
+        return (
+          <CellMeasurer
+            cache={measurerCache}
+            columnIndex={0}
+            rowIndex={index}
+            key={key}
+            parent={parent}
+          >
+            {({ measure, registerChild }) => (
+              // @ts-expect-error: this is the suggested usage of registerChild
+              <div ref={registerChild} style={style} key={key}>
+                <PostItem
+                  onPotentialLayoutShift={handlePotentialLayoutShift}
+                  index={index}
+                  eventRef={content}
+                  key={content.dbid}
+                  queryRef={query}
+                  measure={measure}
+                />
+              </div>
+            )}
+          </CellMeasurer>
+        );
+      }
 
-      return (
-        <CellMeasurer
-          cache={measurerCache}
-          columnIndex={0}
-          rowIndex={index}
-          key={key}
-          parent={parent}
-        >
-          {({ registerChild }) => (
-            // @ts-expect-error: this is the suggested usage of registerChild
-            <div ref={registerChild} style={style} key={key}>
-              <FeedItem
-                // Here, we're listening to our children for anything that might cause
-                // the height of this list item to change height.
-                // Right now, this consists of "admiring", and "commenting"
-                //
-                // Whenever the height changes, we need to ask react-virtualized
-                // to re-evaluate the height of the item to keep the virtualization good.
-                onPotentialLayoutShift={handlePotentialLayoutShift}
-                index={index}
-                eventRef={content}
-                key={content.dbid}
-                queryRef={query}
-                feedMode={feedMode}
-              />
-            </div>
-          )}
-        </CellMeasurer>
-      );
+      if (content.__typename === 'FeedEvent' && feedMode) {
+        return (
+          <CellMeasurer
+            cache={measurerCache}
+            columnIndex={0}
+            rowIndex={index}
+            key={key}
+            parent={parent}
+          >
+            {({ registerChild }) => (
+              // @ts-expect-error: this is the suggested usage of registerChild
+              <div ref={registerChild} style={style} key={key}>
+                <FeedEventItem
+                  // Here, we're listening to our children for anything that might cause
+                  // the height of this list item to change height.
+                  // Right now, this consists of "admiring", and "commenting"
+                  //
+                  // Whenever the height changes, we need to ask react-virtualized
+                  // to re-evaluate the height of the item to keep the virtualization good.
+                  onPotentialLayoutShift={handlePotentialLayoutShift}
+                  index={index}
+                  eventRef={content}
+                  key={content.dbid}
+                  queryRef={query}
+                  feedMode={feedMode}
+                />
+              </div>
+            )}
+          </CellMeasurer>
+        );
+      }
+
+      return null;
     },
     [feedData, feedMode, handlePotentialLayoutShift, isRowLoaded, measurerCache, query]
   );

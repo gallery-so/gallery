@@ -25,7 +25,6 @@ export default function PostHeader({ postRef, queryRef }: Props) {
     graphql`
       fragment PostHeaderFragment on Post {
         __typename
-        dbid
         caption
         author @required(action: THROW) {
           ... on GalleryUser {
