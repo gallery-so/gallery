@@ -107,7 +107,7 @@ const StyledSpan = styled.span<{ active: boolean }>`
   line-height: 21px;
   letter-spacing: -0.04em;
   font-weight: 500;
-  font-size: 18px;
+  font-size: 16px;
 
   @media only screen and ${breakpoints.tablet} {
     font-size: 18px;
