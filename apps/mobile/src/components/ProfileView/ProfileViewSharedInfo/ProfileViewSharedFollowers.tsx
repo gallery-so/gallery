@@ -8,6 +8,7 @@ import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/Gal
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { InteractiveLink } from '~/components/InteractiveLink';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
+import { RawProfilePictureProps } from '~/components/ProfilePicture/RawProfilePicture';
 import { Typography } from '~/components/Typography';
 import { ProfileViewSharedFollowersBubblesFragment$key } from '~/generated/ProfileViewSharedFollowersBubblesFragment.graphql';
 import { ProfileViewSharedFollowersFollowingTextFragment$key } from '~/generated/ProfileViewSharedFollowersFollowingTextFragment.graphql';
@@ -114,7 +115,7 @@ function FollowingText({ userRefs, onSeeAll, style }: FollowingTextProps) {
 
   return (
     <View className="flex flex-row items-center space-x-1" style={style}>
-      <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+      <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
         Followed by
       </Typography>
       {usersToShow.map((user, index) => {
@@ -128,14 +129,14 @@ function FollowingText({ userRefs, onSeeAll, style }: FollowingTextProps) {
                   navigation.push('Profile', { username: user.username });
                 }
               }}
-              textStyle={{ fontSize: 12 }}
-              showUnderline
+              textStyle={{ fontSize: 12, color: 'text-black-800' }}
+              font={{ family: 'ABCDiatype', weight: 'Bold' }}
               type="Shared Followers Username"
             >
               {user.username}
             </InteractiveLink>
             {(!isLast || hasMore) && (
-              <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+              <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
                 ,
               </Typography>
             )}
@@ -145,15 +146,15 @@ function FollowingText({ userRefs, onSeeAll, style }: FollowingTextProps) {
 
       {hasMore && (
         <View className="flex flex-row">
-          <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+          <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
             and{' '}
           </Typography>
 
           <InteractiveLink
             onPress={onSeeAll}
-            textStyle={{ fontSize: 12 }}
+            textStyle={{ fontSize: 12, color: 'text-black-800' }}
+            font={{ family: 'ABCDiatype', weight: 'Bold' }}
             type="Shared Followers See All"
-            showUnderline
           >
             {users.length - usersToShow.length} others
           </InteractiveLink>
@@ -167,12 +168,14 @@ type ProfilePictureBubblesWithCountProps = {
   userRefs: ProfileViewSharedFollowersBubblesFragment$key;
   totalCount: number;
   onPress: () => void;
-} & GalleryElementTrackingProps;
+} & GalleryElementTrackingProps &
+  Partial<Pick<RawProfilePictureProps, 'size'>>;
 
 export function ProfilePictureBubblesWithCount({
   onPress,
   userRefs,
   totalCount,
+  size = 'sm',
   ...trackingProps
 }: ProfilePictureBubblesWithCountProps) {
   const users = useFragment(
@@ -205,7 +208,7 @@ export function ProfilePictureBubblesWithCount({
               '-ml-2': index !== 0,
             })}
           >
-            <ProfilePicture userRef={user} size="sm" hasInset={users.length > 1} />
+            <ProfilePicture userRef={user} size={size} hasInset={users.length > 1} />
           </View>
         );
       })}

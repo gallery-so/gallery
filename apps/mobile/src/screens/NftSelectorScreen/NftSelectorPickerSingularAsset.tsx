@@ -38,7 +38,7 @@ export function NftSelectorPickerSingularAsset({
     tokenRef
   );
 
-  const route = useRoute<RouteProp<RootStackNavigatorParamList, 'Post'>>();
+  const route = useRoute<RouteProp<RootStackNavigatorParamList, 'PostNftSelector'>>();
   const currentScreen = route.params.page;
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();

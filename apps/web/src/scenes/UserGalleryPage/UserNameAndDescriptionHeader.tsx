@@ -24,7 +24,7 @@ import colors from '~/shared/theme/colors';
 import unescape from '~/shared/utils/unescape';
 import handleCustomDisplayName from '~/utils/handleCustomDisplayName';
 
-import LinkToTokenDetailView from '../NftDetailPage/LinkToTokenDetailView';
+import LinkToFullPageNftDetailModal from '../NftDetailPage/LinkToFullPageNftDetailModal';
 import EditUserInfoModal from './EditUserInfoModal';
 
 type Props = {
@@ -189,9 +189,9 @@ const NftDetailViewer = ({ href, children }: NftDetailViewerProps) => {
   }
 
   return (
-    <LinkToTokenDetailView username={username} collectionId={collectionId} tokenId={tokenId}>
+    <LinkToFullPageNftDetailModal username={username} collectionId={collectionId} tokenId={tokenId}>
       <StyledAnchor>{children}</StyledAnchor>
-    </LinkToTokenDetailView>
+    </LinkToFullPageNftDetailModal>
   );
 };
 

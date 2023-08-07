@@ -43,8 +43,8 @@ export function SomeoneFollowedYouBack({ notificationRef, onClose }: SomeoneFoll
       ) : (
         <>
           {lastFollower ? (
-            <HStack align="center" gap={4} inline>
-              <ProfilePicture size="sm" userRef={lastFollower} />
+            <HStack align="center" gap={8} inline>
+              <ProfilePicture size="md" userRef={lastFollower} />
               <HoverCardOnUsername userRef={lastFollower} onClick={onClose} />
             </HStack>
           ) : (

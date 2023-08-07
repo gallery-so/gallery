@@ -9,7 +9,7 @@ import { BaseM } from '~/components/core/Text/Text';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { PostDropdownFragment$key } from '~/generated/PostDropdownFragment.graphql';
 import { PostDropdownQueryFragment$key } from '~/generated/PostDropdownQueryFragment.graphql';
-import useTokenDetailModal from '~/hooks/useTokenDetailModal';
+import LinkToFullPageNftDetailModal from '~/scenes/NftDetailPage/LinkToFullPageNftDetailModal';
 import { getBaseUrl } from '~/utils/getBaseUrl';
 
 import DeletePostConfirmation from './DeletePostConfirmation';
@@ -71,16 +71,7 @@ export default function PostDropdown({ postRef, queryRef }: Props) {
     return `${getBaseUrl()}/post/${post.dbid}`;
   }, [post.dbid]);
 
-  const showTokenDetailModal = useTokenDetailModal();
   const { showModal } = useModalActions();
-
-  const handleViewDetailsClick = useCallback(() => {
-    if (!token) {
-      return;
-    }
-    const ownerUsername = token.owner?.username ?? '';
-    showTokenDetailModal(ownerUsername, token.dbid);
-  }, [showTokenDetailModal, token]);
 
   const handleDeletePostClick = useCallback(() => {
     showModal({
@@ -96,14 +87,19 @@ export default function PostDropdown({ postRef, queryRef }: Props) {
       <SettingsDropdown iconVariant="default">
         <DropdownSection>
           <CopyToClipboard textToCopy={postUrl}>
-            <DropdownItem onClick={() => {}}>
+            <DropdownItem>
               <BaseM>Share</BaseM>
             </DropdownItem>
           </CopyToClipboard>
           {token && (
-            <DropdownItem onClick={handleViewDetailsClick}>
-              <BaseM>View Item Detail</BaseM>
-            </DropdownItem>
+            <LinkToFullPageNftDetailModal
+              username={token?.owner?.username ?? ''}
+              tokenId={token?.dbid}
+            >
+              <DropdownItem>
+                <BaseM>View Item Detail</BaseM>
+              </DropdownItem>
+            </LinkToFullPageNftDetailModal>
           )}
           <DropdownItem onClick={handleDeletePostClick}>
             <BaseM>Delete</BaseM>
@@ -126,9 +122,14 @@ export default function PostDropdown({ postRef, queryRef }: Props) {
           <BaseM>Follow</BaseM>
         </DropdownItem> */}
         {token && (
-          <DropdownItem onClick={handleViewDetailsClick}>
-            <BaseM>View Item Detail</BaseM>
-          </DropdownItem>
+          <LinkToFullPageNftDetailModal
+            username={token?.owner?.username ?? ''}
+            tokenId={token?.dbid}
+          >
+            <DropdownItem>
+              <BaseM>View Item Detail</BaseM>
+            </DropdownItem>
+          </LinkToFullPageNftDetailModal>
         )}
       </DropdownSection>
     </SettingsDropdown>

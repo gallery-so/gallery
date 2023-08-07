@@ -94,7 +94,7 @@ export function SomeoneCommentedOnYourFeedEvent({
         {notification.comment?.commenter ? (
           <>
             <StyledProfilePictureContainer>
-              <ProfilePicture size="sm" userRef={notification.comment?.commenter} />
+              <ProfilePicture size="md" userRef={notification.comment?.commenter} />
             </StyledProfilePictureContainer>
 
             <HoverCardOnUsername userRef={notification.comment?.commenter} onClick={onClose} />
@@ -122,5 +122,5 @@ const CommentPreviewContainer = styled.div`
 
 const StyledProfilePictureContainer = styled.div`
   display: inline-block;
-  padding-right: 4px;
+  padding-right: 8px;
 `;

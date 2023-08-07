@@ -10,9 +10,10 @@ import { ProfileViewTwitterPillFragment$key } from '~/generated/ProfileViewTwitt
 
 type Props = {
   userRef: ProfileViewTwitterPillFragment$key;
+  maxWidth: string;
 };
 
-export default function ProfileViewTwitterPill({ userRef }: Props) {
+export default function ProfileViewTwitterPill({ userRef, maxWidth }: Props) {
   const user = useFragment(
     graphql`
       fragment ProfileViewTwitterPillFragment on GalleryUser {
@@ -42,10 +43,15 @@ export default function ProfileViewTwitterPill({ userRef }: Props) {
       eventElementId="Social Pill"
       eventName="Social Pill Clicked"
       properties={{ variant: 'Twitter' }}
+      className={`ml-2 max-w-[${maxWidth}]`}
     >
-      <Pill className="flex flex-row items-center space-x-2 self-start mr-2">
+      <Pill className="flex flex-row items-center space-x-2 self-start w-full">
         <TwitterIcon width={14} />
-        <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+        <Typography
+          numberOfLines={1}
+          className="text-sm"
+          font={{ family: 'ABCDiatype', weight: 'Bold' }}
+        >
           {user.socialAccounts.twitter.username}
         </Typography>
       </Pill>
