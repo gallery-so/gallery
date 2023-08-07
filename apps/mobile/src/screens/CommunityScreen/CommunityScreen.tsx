@@ -6,6 +6,7 @@ import { graphql, useLazyLoadQuery } from 'react-relay';
 import { CommunityView } from '~/components/Community/CommunityView';
 import { CommunityViewFallback } from '~/components/Community/CommunityViewFallback';
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
+import { CommunityScreenInitializeQuery } from '~/generated/CommunityScreenInitializeQuery.graphql';
 import { CommunityScreenQuery } from '~/generated/CommunityScreenQuery.graphql';
 import { Chain } from '~/generated/CommunityScreenQuery.graphql';
 import { MainTabStackNavigatorParamList } from '~/navigation/types';
@@ -16,6 +17,26 @@ type CommunityScreenInnerProps = {
 };
 
 function CommunityScreenInner({ chain, contractAddress }: CommunityScreenInnerProps) {
+  const communityQuery = useLazyLoadQuery<CommunityScreenInitializeQuery>(
+    graphql`
+      query CommunityScreenInitializeQuery($communityAddress: ChainAddressInput!) {
+        community: communityByAddress(communityAddress: $communityAddress)
+          @required(action: THROW) {
+          ... on Community {
+            dbid
+          }
+        }
+      }
+    `,
+    {
+      communityAddress: {
+        address: contractAddress,
+        chain: chain,
+      },
+    },
+    { fetchPolicy: 'store-or-network', UNSTABLE_renderPolicy: 'partial' }
+  );
+
   const query = useLazyLoadQuery<CommunityScreenQuery>(
     graphql`
       query CommunityScreenQuery(
@@ -25,6 +46,7 @@ function CommunityScreenInner({ chain, contractAddress }: CommunityScreenInnerPr
         $onlyGalleryUsers: Boolean
         $postLast: Int!
         $postBefore: String
+        $communityID: DBID!
       ) {
         ...CommunityViewFragment
       }
@@ -37,6 +59,7 @@ function CommunityScreenInner({ chain, contractAddress }: CommunityScreenInnerPr
       listOwnersFirst: 200,
       onlyGalleryUsers: true,
       postLast: 24,
+      communityID: communityQuery.community.dbid ?? '',
     },
     { fetchPolicy: 'store-or-network', UNSTABLE_renderPolicy: 'partial' }
   );

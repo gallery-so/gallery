@@ -2,15 +2,15 @@ import { useNavigation } from '@react-navigation/native';
 import { useColorScheme } from 'nativewind';
 import { useCallback, useMemo, useRef } from 'react';
 import { View } from 'react-native';
-import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
+import { graphql, useFragment, useRefetchableFragment } from 'react-relay';
 import { EthIcon } from 'src/icons/EthIcon';
 import { PoapIcon } from 'src/icons/PoapIcon';
 import { TezosIcon } from 'src/icons/TezosIcon';
 import isFeatureEnabled, { FeatureFlag } from 'src/utils/isFeatureEnabled';
 
 import { Chain, CommunityMetaFragment$key } from '~/generated/CommunityMetaFragment.graphql';
-import { CommunityMetaQuery } from '~/generated/CommunityMetaQuery.graphql';
 import { CommunityMetaQueryFragment$key } from '~/generated/CommunityMetaQueryFragment.graphql';
+import { CommunityMetaRefetchQuery } from '~/generated/CommunityMetaRefetchQuery.graphql';
 import { PostIcon } from '~/navigation/MainTabNavigator/PostIcon';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import colors from '~/shared/theme/colors';
@@ -57,14 +57,19 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
     communityRef
   );
 
-  const query = useFragment(
+  const [query, refetch] = useRefetchableFragment<
+    CommunityMetaRefetchQuery,
+    CommunityMetaQueryFragment$key
+  >(
     graphql`
-      fragment CommunityMetaQueryFragment on Query {
+      fragment CommunityMetaQueryFragment on Query
+      @refetchable(queryName: "CommunityMetaRefetchQuery") {
         ...isFeatureEnabledFragment
         viewer {
           ... on Viewer {
             user {
               __typename
+              isMemberOfCommunity(communityID: $communityID)
             }
           }
         }
@@ -73,24 +78,7 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
     queryRef
   );
 
-  const isMemberOfCommunityQuery = useLazyLoadQuery<CommunityMetaQuery>(
-    graphql`
-      query CommunityMetaQuery($communityID: DBID!) {
-        viewer {
-          ... on Viewer {
-            user {
-              isMemberOfCommunity(communityID: $communityID)
-            }
-          }
-        }
-      }
-    `,
-    {
-      communityID: community.dbid,
-    }
-  );
-
-  const isMemberOfCommunity = isMemberOfCommunityQuery.viewer?.user?.isMemberOfCommunity ?? false;
+  const isMemberOfCommunity = query.viewer?.user?.isMemberOfCommunity ?? false;
 
   const { colorScheme } = useColorScheme();
   const isKoalaEnabled = isFeatureEnabled(FeatureFlag.KOALA, query);
@@ -137,7 +125,14 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
     }
   }, [isMemberOfCommunity, colorScheme]);
 
-  const handleRefresh = useCallback(() => {}, []);
+  const handleRefresh = useCallback(() => {
+    refetch(
+      {
+        communityID: community.dbid,
+      },
+      { fetchPolicy: 'network-only' }
+    );
+  }, [community.dbid, refetch]);
 
   const showAddressOrGalleryUser = useMemo(() => {
     if (community.creator?.__typename === 'GalleryUser' && !community.creator?.universal) {
