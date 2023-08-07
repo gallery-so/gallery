@@ -2,7 +2,6 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { UserActivityFragment$key } from '~/generated/UserActivityFragment.graphql';
-import useDisplayFullPageNftDetailModal from '~/scenes/NftDetailPage/useDisplayFullPageNftDetailModal';
 import NotFound from '~/scenes/NotFound/NotFound';
 
 import { UserActivityLayout } from './UserActivityLayout';
@@ -33,8 +32,6 @@ function UserActivity({ queryRef }: Props) {
   );
 
   const { user } = query;
-
-  useDisplayFullPageNftDetailModal();
 
   if (user.__typename === 'ErrUserNotFound') {
     return <NotFound />;

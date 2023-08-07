@@ -13,17 +13,18 @@ import breakpoints from '../core/breakpoints';
 import { Button } from '../core/Button/Button';
 import { VStack } from '../core/Spacer/Stack';
 import { BaseM } from '../core/Text/Text';
-import { NftSelector } from '../NftSelector/NftSelector';
+import { NftSelector, NftSelectorContractType } from '../NftSelector/NftSelector';
 import DiscardPostConfirmation from './DiscardPostConfirmation';
 import PostComposer from './PostComposer';
 
 type Props = {
   tokensRef: PostComposerModalWithSelectorFragment$key;
   queryRef: PostComposerModalWithSelectorQueryFragment$key;
+  preSelectedContract?: NftSelectorContractType;
 };
 
 // Modal with multiple steps: the NFT Selector -> then Post Composer
-export function PostComposerModalWithSelector({ tokensRef, queryRef }: Props) {
+export function PostComposerModalWithSelector({ tokensRef, queryRef, preSelectedContract }: Props) {
   const tokens = useFragment(
     graphql`
       fragment PostComposerModalWithSelectorFragment on Token @relay(plural: true) {
@@ -86,6 +87,7 @@ export function PostComposerModalWithSelector({ tokensRef, queryRef }: Props) {
             queryRef={query}
             onSelectToken={onSelectToken}
             headerText={'Select item to post'}
+            preSelectedContract={preSelectedContract}
           />
         )}
       </ErrorBoundary>

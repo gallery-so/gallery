@@ -8,6 +8,8 @@ import { UserTwitterSectionQueryFragment$key } from '~/generated/UserTwitterSect
 import TwitterIcon from '~/icons/TwitterIcon';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 
+import UserSocialPill from './UserSocialPill';
+
 type Props = {
   queryRef: UserTwitterSectionQueryFragment$key;
   userRef: UserTwitterSectionFragment$key;
@@ -65,13 +67,10 @@ export default function UserTwitterSection({ queryRef, userRef }: Props) {
 
   // twitter account is connected
   return (
-    <HStack align="flex-start">
-      <ClickablePill href={twitterUrl}>
-        <HStack gap={5} align="center">
-          <TwitterIcon />
-          <strong>{userTwitterAccount.username}</strong>
-        </HStack>
-      </ClickablePill>
-    </HStack>
+    <UserSocialPill
+      url={twitterUrl}
+      icon={<TwitterIcon />}
+      username={userTwitterAccount.username}
+    />
   );
 }

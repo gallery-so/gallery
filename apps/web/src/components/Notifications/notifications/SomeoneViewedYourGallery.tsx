@@ -62,8 +62,8 @@ export function SomeoneViewedYourGallery({
       return (
         <HStack data-testid={testId} align="center" gap={4}>
           {lastViewer ? (
-            <HStack inline gap={4} align="center">
-              <ProfilePicture size="sm" userRef={lastViewer} />
+            <HStack inline gap={8} align="center">
+              <ProfilePicture size="md" userRef={lastViewer} />
               <HoverCardOnUsername onClick={onClose} userRef={lastViewer} />
             </HStack>
           ) : (
@@ -119,5 +119,5 @@ export function SomeoneViewedYourGallery({
 
 const StyledProfilePictureStackContainer = styled.div`
   display: inline-block;
-  padding-right: 4px;
+  padding-right: 8px;
 `;

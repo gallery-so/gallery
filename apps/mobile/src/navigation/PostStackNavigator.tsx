@@ -2,7 +2,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { PostStackNavigatorParamList } from '~/navigation/types';
 import { NftSelectorPickerScreen } from '~/screens/NftSelectorScreen/NftSelectorPickerScreen';
-import { PostScreen } from '~/screens/PostScreen/PostScreen';
+import { PostComposerScreen } from '~/screens/PostScreen/PostComposerScreen';
 
 const Stack = createNativeStackNavigator<PostStackNavigatorParamList>();
 
@@ -20,7 +20,7 @@ export function PostStackNavigator() {
           page: 'Post',
         }}
       />
-      <Stack.Screen name="PostComposer" component={PostScreen} />
+      <Stack.Screen name="PostComposer" component={PostComposerScreen} />
     </Stack.Navigator>
   );
 }

@@ -8,7 +8,6 @@ import { useModalState } from '~/contexts/modal/ModalContext';
 import { UserGalleryFragment$key } from '~/generated/UserGalleryFragment.graphql';
 import useKeyDown from '~/hooks/useKeyDown';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
-import useDisplayFullPageNftDetailModal from '~/scenes/NftDetailPage/useDisplayFullPageNftDetailModal';
 import NotFound from '~/scenes/NotFound/NotFound';
 import { UserGalleryLayout } from '~/scenes/UserGalleryPage/UserGalleryLayout';
 
@@ -75,7 +74,6 @@ function UserGallery({ queryRef }: Props) {
   }, [isLoggedIn, isModalOpenRef, push, galleryId]);
 
   useKeyDown('e', navigateToEdit);
-  useDisplayFullPageNftDetailModal();
 
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 

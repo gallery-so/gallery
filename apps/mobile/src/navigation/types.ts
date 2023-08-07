@@ -9,7 +9,7 @@ export type RootStackNavigatorParamList = {
   TwitterSuggestionList: { onUserPress: (username: string) => void };
   ProfileQRCode: { username: string };
   DesignSystemButtons: undefined;
-  Post: {
+  PostNftSelector: {
     page: ScreenWithNftSelector;
   };
   NftSelectorContractScreen: { contractAddress: string; page: ScreenWithNftSelector };
@@ -40,6 +40,7 @@ export type MainTabStackNavigatorParamList = {
   };
   NftSelectorContractScreen: { contractAddress: string; page: ScreenWithNftSelector };
   SettingsProfile: undefined;
+  Post: { postId: string };
 
   // The main five tabs
   Account: undefined;
