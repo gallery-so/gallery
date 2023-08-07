@@ -1,25 +1,28 @@
 import { useNavigation } from '@react-navigation/native';
 import { useColorScheme } from 'nativewind';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import { View } from 'react-native';
-import { graphql, useFragment } from 'react-relay';
+import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 import { EthIcon } from 'src/icons/EthIcon';
 import { PoapIcon } from 'src/icons/PoapIcon';
 import { TezosIcon } from 'src/icons/TezosIcon';
 import isFeatureEnabled, { FeatureFlag } from 'src/utils/isFeatureEnabled';
 
 import { Chain, CommunityMetaFragment$key } from '~/generated/CommunityMetaFragment.graphql';
+import { CommunityMetaQuery } from '~/generated/CommunityMetaQuery.graphql';
 import { CommunityMetaQueryFragment$key } from '~/generated/CommunityMetaQueryFragment.graphql';
 import { PostIcon } from '~/navigation/MainTabNavigator/PostIcon';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import colors from '~/shared/theme/colors';
 
 import { Button } from '../Button';
+import { GalleryBottomSheetModalType } from '../GalleryBottomSheet/GalleryBottomSheetModal';
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import { LinkableAddress } from '../LinkableAddress';
 import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
 import { RawProfilePicture } from '../ProfilePicture/RawProfilePicture';
 import { Typography } from '../Typography';
+import { CommunityPostBottomSheet } from './CommunityPostBottomSheet';
 
 type Props = {
   communityRef: CommunityMetaFragment$key;
@@ -30,6 +33,7 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
   const community = useFragment(
     graphql`
       fragment CommunityMetaFragment on Community {
+        dbid
         chain
         contractAddress {
           chain
@@ -47,6 +51,7 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
             chain
           }
         }
+        ...CommunityPostBottomSheetFragment
       }
     `,
     communityRef
@@ -56,15 +61,42 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
     graphql`
       fragment CommunityMetaQueryFragment on Query {
         ...isFeatureEnabledFragment
+        viewer {
+          ... on Viewer {
+            user {
+              __typename
+            }
+          }
+        }
       }
     `,
     queryRef
   );
 
+  const isMemberOfCommunityQuery = useLazyLoadQuery<CommunityMetaQuery>(
+    graphql`
+      query CommunityMetaQuery($communityID: DBID!) {
+        viewer {
+          ... on Viewer {
+            user {
+              isMemberOfCommunity(communityID: $communityID)
+            }
+          }
+        }
+      }
+    `,
+    {
+      communityID: community.dbid,
+    }
+  );
+
+  const isMemberOfCommunity = isMemberOfCommunityQuery.viewer?.user?.isMemberOfCommunity ?? false;
+
   const { colorScheme } = useColorScheme();
   const isKoalaEnabled = isFeatureEnabled(FeatureFlag.KOALA, query);
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
+  const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
 
   const handleUsernamePress = useCallback(() => {
     if (community.creator?.__typename === 'GalleryUser' && community.creator?.username) {
@@ -79,6 +111,31 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
       page: 'Community',
     });
   }, [navigation, community?.contractAddress?.address]);
+
+  const handlePress = useCallback(() => {
+    if (isMemberOfCommunity) {
+      handleCreatePost();
+      return;
+    }
+
+    bottomSheetRef.current?.present();
+  }, [handleCreatePost, isMemberOfCommunity]);
+
+  const PostIconColor = useMemo(() => {
+    if (isMemberOfCommunity) {
+      if (colorScheme === 'dark') {
+        return colors.black['800'];
+      } else {
+        return colors.white;
+      }
+    } else {
+      if (colorScheme === 'dark') {
+        return colors.shadow;
+      } else {
+        return colors.metal;
+      }
+    }
+  }, [isMemberOfCommunity, colorScheme]);
 
   const showAddressOrGalleryUser = useMemo(() => {
     if (community.creator?.__typename === 'GalleryUser' && !community.creator?.universal) {
@@ -153,17 +210,14 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
           size="sm"
           text="Post"
           className="w-[100px]"
-          icon={
-            <PostIcon
-              size={14}
-              color={colorScheme === 'dark' ? colors.black['800'] : colors.white}
-            />
-          }
-          onPress={handleCreatePost}
+          variant={isMemberOfCommunity ? 'primary' : 'disabled'}
+          icon={<PostIcon size={14} color={PostIconColor} />}
+          onPress={handlePress}
           eventElementId={null}
           eventName={null}
         />
       )}
+      <CommunityPostBottomSheet ref={bottomSheetRef} communityRef={community} />
     </View>
   );
 }
