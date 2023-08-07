@@ -3,7 +3,7 @@ import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import { useCallback, useMemo, useRef } from 'react';
 import { View } from 'react-native';
 import { Tabs } from 'react-native-collapsible-tab-view';
-import { graphql, useFragment, usePaginationFragment } from 'react-relay';
+import { graphql, useFragment, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 
 import { Button } from '~/components/Button';
 import {
@@ -12,11 +12,15 @@ import {
 } from '~/components/Feed/createVirtualizedFeedEventItems';
 import { FeedVirtualizedRow } from '~/components/Feed/FeedVirtualizedRow';
 import { useFailedEventTracker } from '~/components/Feed/useFailedEventTracker';
+import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { useListContentStyle } from '~/components/ProfileView/Tabs/useListContentStyle';
 import { Typography } from '~/components/Typography';
 import { CommunityViewPostsTabFragment$key } from '~/generated/CommunityViewPostsTabFragment.graphql';
+import { CommunityViewPostsTabQuery } from '~/generated/CommunityViewPostsTabQuery.graphql';
 import { CommunityViewPostsTabQueryFragment$key } from '~/generated/CommunityViewPostsTabQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+
+import { CommunityPostBottomSheet } from '../CommunityPostBottomSheet';
 
 type Props = {
   communityRef: CommunityViewPostsTabFragment$key;
@@ -28,6 +32,7 @@ export function CommunityViewPostsTab({ communityRef, queryRef }: Props) {
     graphql`
       fragment CommunityViewPostsTabFragment on Community
       @refetchable(queryName: "CommunityViewPostsTabFragmentPaginationQuery") {
+        dbid
         name
         contractAddress {
           address
@@ -43,6 +48,7 @@ export function CommunityViewPostsTab({ communityRef, queryRef }: Props) {
             total
           }
         }
+        ...CommunityPostBottomSheetFragment
       }
     `,
     communityRef
@@ -56,6 +62,25 @@ export function CommunityViewPostsTab({ communityRef, queryRef }: Props) {
     `,
     queryRef
   );
+
+  const isMemberOfCommunityQuery = useLazyLoadQuery<CommunityViewPostsTabQuery>(
+    graphql`
+      query CommunityViewPostsTabQuery($communityID: DBID!) {
+        viewer {
+          ... on Viewer {
+            user {
+              isMemberOfCommunity(communityID: $communityID)
+            }
+          }
+        }
+      }
+    `,
+    {
+      communityID: community.dbid,
+    }
+  );
+
+  const isMemberOfCommunity = isMemberOfCommunityQuery.viewer?.user?.isMemberOfCommunity ?? false;
 
   const contentContainerStyle = useListContentStyle();
 
@@ -105,13 +130,19 @@ export function CommunityViewPostsTab({ communityRef, queryRef }: Props) {
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
 
+  const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
   const handleCreatePost = useCallback(() => {
+    if (!isMemberOfCommunity) {
+      bottomSheetRef.current?.present();
+      return;
+    }
+
     if (!community?.contractAddress?.address) return;
     navigation.navigate('NftSelectorContractScreen', {
       contractAddress: community?.contractAddress?.address,
       page: 'Community',
     });
-  }, [navigation, community?.contractAddress?.address]);
+  }, [isMemberOfCommunity, navigation, community?.contractAddress?.address]);
 
   if (totalPosts === 0) {
     return (
@@ -121,7 +152,7 @@ export function CommunityViewPostsTab({ communityRef, queryRef }: Props) {
             font={{ family: 'ABCDiatype', weight: 'Regular' }}
             className="text-lg text-center"
           >
-            It’s still early... be the first to post about{' '}
+            We're still early... be the first to post about{' '}
             <Typography
               font={{ family: 'ABCDiatype', weight: 'Bold' }}
               className="text-lg text-center"
@@ -136,6 +167,12 @@ export function CommunityViewPostsTab({ communityRef, queryRef }: Props) {
             onPress={handleCreatePost}
             eventElementId={null}
             eventName={null}
+          />
+
+          <CommunityPostBottomSheet
+            ref={bottomSheetRef}
+            communityRef={community}
+            onRefresh={() => {}}
           />
         </View>
       </View>
