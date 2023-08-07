@@ -10,6 +10,7 @@ import { Typography, TypographyProps } from './Typography';
 export type InteractiveLinkProps = PropsWithChildren<{
   href?: string;
   showUnderline?: boolean;
+  isSecondary?: boolean; // if true, the text color renders as normal Typography..
   onPress?: () => void;
   style?: TouchableOpacityProps['style'];
   // for tracking
@@ -24,6 +25,7 @@ export function InteractiveLink({
   style,
   onPress,
   showUnderline = false,
+  isSecondary = false,
   children,
   type,
   textStyle,
@@ -51,7 +53,8 @@ export function InteractiveLink({
       }}
     >
       <Typography
-        className={clsx(`text-shadow dark:text-white text-sm`, {
+        className={clsx(`text-sm`, {
+          'text-shadow dark:text-white': !isSecondary,
           underline: showUnderline,
         })}
         style={[textStyle, { lineHeight: undefined }]}

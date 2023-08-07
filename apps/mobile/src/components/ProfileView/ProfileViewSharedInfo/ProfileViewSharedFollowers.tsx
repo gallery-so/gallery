@@ -129,9 +129,10 @@ function FollowingText({ userRefs, onSeeAll, style }: FollowingTextProps) {
                   navigation.push('Profile', { username: user.username });
                 }
               }}
-              textStyle={{ fontSize: 12, color: 'text-black-800' }}
+              textStyle={{ fontSize: 12 }}
               font={{ family: 'ABCDiatype', weight: 'Bold' }}
               type="Shared Followers Username"
+              isSecondary
             >
               {user.username}
             </InteractiveLink>
@@ -152,9 +153,10 @@ function FollowingText({ userRefs, onSeeAll, style }: FollowingTextProps) {
 
           <InteractiveLink
             onPress={onSeeAll}
-            textStyle={{ fontSize: 12, color: 'text-black-800' }}
+            textStyle={{ fontSize: 12 }}
             font={{ family: 'ABCDiatype', weight: 'Bold' }}
             type="Shared Followers See All"
+            isSecondary
           >
             {users.length - usersToShow.length} others
           </InteractiveLink>

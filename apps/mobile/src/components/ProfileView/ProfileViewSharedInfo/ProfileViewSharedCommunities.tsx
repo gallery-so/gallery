@@ -151,9 +151,10 @@ function HoldsText({ communityRefs, onSeeAll, style }: HoldsTextProps) {
               onPress={() =>
                 community.contractAddress && handleCommunityPress(community.contractAddress)
               }
-              textStyle={{ fontSize: 12, color: 'text-black-800' }}
+              textStyle={{ fontSize: 12 }}
               font={{ family: 'ABCDiatype', weight: 'Bold' }}
               type="Shared Communities Name"
+              isSecondary
             >
               {community.name}
             </InteractiveLink>
@@ -174,9 +175,10 @@ function HoldsText({ communityRefs, onSeeAll, style }: HoldsTextProps) {
 
           <InteractiveLink
             onPress={onSeeAll}
-            textStyle={{ fontSize: 12, color: 'text-black-800' }}
+            textStyle={{ fontSize: 12 }}
             font={{ family: 'ABCDiatype', weight: 'Bold' }}
             type="Shared Communities See All"
+            isSecondary
           >
             {communities.length - communitiesToShow.length} others
           </InteractiveLink>
