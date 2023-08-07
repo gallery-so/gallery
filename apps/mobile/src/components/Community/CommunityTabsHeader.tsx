@@ -24,6 +24,11 @@ export function CommunityTabsHeader({
   const community = useFragment(
     graphql`
       fragment CommunityTabsHeaderFragment on Community {
+        posts(first: $postLast, after: $postBefore) {
+          pageInfo {
+            total
+          }
+        }
         owners(
           first: $listOwnersFirst
           after: $listOwnersAfter
@@ -50,6 +55,7 @@ export function CommunityTabsHeader({
   const isKoalaEnabled = isFeatureEnabled(FeatureFlag.KOALA, query);
 
   const totalOwners = community.owners?.pageInfo?.total ?? 0;
+  const totalPosts = community.posts?.pageInfo?.total ?? 0;
 
   const routes = useMemo(() => {
     if (!isKoalaEnabled) {
@@ -64,13 +70,14 @@ export function CommunityTabsHeader({
     return [
       {
         name: 'Posts',
+        counter: totalPosts,
       },
       {
         name: 'Collectors',
         counter: totalOwners,
       },
     ];
-  }, [isKoalaEnabled, totalOwners]);
+  }, [isKoalaEnabled, totalPosts, totalOwners]);
 
   return (
     <View>
