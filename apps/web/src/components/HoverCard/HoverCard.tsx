@@ -144,6 +144,7 @@ const StyledCardHeaderContainer = styled(VStack)`
 
 const StyledLink = styled(Link)`
   text-decoration: none;
+  outline: none;
   min-width: 0;
 `;
 

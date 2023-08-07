@@ -9,8 +9,6 @@ import { BaseM, TitleS } from '~/components/core/Text/Text';
 import FollowButton from '~/components/Follow/FollowButton';
 import { FollowListUserItemFragment$key } from '~/generated/FollowListUserItemFragment.graphql';
 import { FollowListUserItemQueryFragment$key } from '~/generated/FollowListUserItemQueryFragment.graphql';
-import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
-import useDebounce from '~/shared/hooks/useDebounce';
 import colors from '~/shared/theme/colors';
 
 import HoverCardOnUsername from '../HoverCard/HoverCardOnUsername';
@@ -55,15 +53,11 @@ export default function FollowListUserItem({
     userRef
   );
 
-  const [isHovering, setIsHovering] = useState(false);
-
   const onMouseEnter = useCallback(() => {
-    setIsHovering(true);
     setFadeUsernames(true);
   }, [setFadeUsernames]);
 
   const onMouseLeave = useCallback(() => {
-    setIsHovering(false);
     setFadeUsernames(false);
   }, [setFadeUsernames]);
 
@@ -128,11 +122,6 @@ const StyledBaseM = styled(BaseM)`
   p {
     padding-bottom: 0;
   }
-`;
-
-const StyledHStack = styled(HStack)`
-  display: flex;
-  width: 100%;
 `;
 
 const StyledFollowButton = styled(FollowButton)`
