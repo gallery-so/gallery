@@ -69,7 +69,7 @@ function EditGalleryPageInner({ queryRef }: EditGalleryPageInnerProps) {
         query: { username: query.viewer.user.username },
       });
     } else {
-      replace({ pathname: '/trending' });
+      replace({ pathname: '/home' });
     }
   }, [back, canGoBack, query.viewer, replace]);
 

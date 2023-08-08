@@ -28,7 +28,7 @@ export default function LandingPage() {
             Sign In
           </ButtonLink>
           <ButtonLink
-            href={{ pathname: '/trending' }}
+            href={{ pathname: '/home' }}
             onClick={() => track('Landing page Explore button click')}
             variant="secondary"
           >

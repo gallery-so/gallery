@@ -1,11 +1,11 @@
 import { useCallback, useMemo } from 'react';
 import { graphql, useFragment, usePaginationFragment } from 'react-relay';
 
-import { TrendingThenGlobalFeedFragment$key } from '~/generated/TrendingThenGlobalFeedFragment.graphql';
-import { TrendingThenGlobalFeedGlobalFragment$key } from '~/generated/TrendingThenGlobalFeedGlobalFragment.graphql';
-import { TrendingThenGlobalFeedGlobalPaginationQuery } from '~/generated/TrendingThenGlobalFeedGlobalPaginationQuery.graphql';
-import { TrendingThenGlobalFeedTrendingFragment$key } from '~/generated/TrendingThenGlobalFeedTrendingFragment.graphql';
-import { TrendingThenGlobalFeedTrendingPaginationQuery } from '~/generated/TrendingThenGlobalFeedTrendingPaginationQuery.graphql';
+import { CuratedThenGlobalFeedFragment$key } from '~/generated/CuratedThenGlobalFeedFragment.graphql';
+import { CuratedThenGlobalFeedGlobalFragment$key } from '~/generated/CuratedThenGlobalFeedGlobalFragment.graphql';
+import { CuratedThenGlobalFeedGlobalPaginationQuery } from '~/generated/CuratedThenGlobalFeedGlobalPaginationQuery.graphql';
+import { CuratedThenGlobalFeedTrendingFragment$key } from '~/generated/CuratedThenGlobalFeedTrendingFragment.graphql';
+import { CuratedThenGlobalFeedTrendingPaginationQuery } from '~/generated/CuratedThenGlobalFeedTrendingPaginationQuery.graphql';
 import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 import { useTrackLoadMoreFeedEvents } from './analytics';
@@ -13,17 +13,17 @@ import { ITEMS_PER_PAGE } from './constants';
 import FeedList from './FeedList';
 
 type Props = {
-  queryRef: TrendingThenGlobalFeedFragment$key;
+  queryRef: CuratedThenGlobalFeedFragment$key;
 };
 
-export default function TrendingThenGlobalFeed({ queryRef }: Props) {
+export default function CuratedThenGlobalFeed({ queryRef }: Props) {
   const query = useFragment(
     graphql`
-      fragment TrendingThenGlobalFeedFragment on Query {
+      fragment CuratedThenGlobalFeedFragment on Query {
         ...FeedListFragment
 
-        ...TrendingThenGlobalFeedGlobalFragment
-        ...TrendingThenGlobalFeedTrendingFragment
+        ...CuratedThenGlobalFeedGlobalFragment
+        ...CuratedThenGlobalFeedTrendingFragment
         ...isFeatureEnabledFragment
       }
     `,
@@ -31,12 +31,12 @@ export default function TrendingThenGlobalFeed({ queryRef }: Props) {
   );
 
   const globalPagination = usePaginationFragment<
-    TrendingThenGlobalFeedGlobalPaginationQuery,
-    TrendingThenGlobalFeedGlobalFragment$key
+    CuratedThenGlobalFeedGlobalPaginationQuery,
+    CuratedThenGlobalFeedGlobalFragment$key
   >(
     graphql`
-      fragment TrendingThenGlobalFeedGlobalFragment on Query
-      @refetchable(queryName: "TrendingThenGlobalFeedGlobalPaginationQuery") {
+      fragment CuratedThenGlobalFeedGlobalFragment on Query
+      @refetchable(queryName: "CuratedThenGlobalFeedGlobalPaginationQuery") {
         globalFeed(before: $globalBefore, last: $globalLast, includePosts: $includePosts)
           @connection(key: "NonAuthedFeed_globalFeed") {
           edges {
@@ -56,15 +56,15 @@ export default function TrendingThenGlobalFeed({ queryRef }: Props) {
     query
   );
 
-  const trendingPagination = usePaginationFragment<
-    TrendingThenGlobalFeedTrendingPaginationQuery,
-    TrendingThenGlobalFeedTrendingFragment$key
+  const curatedPagination = usePaginationFragment<
+    CuratedThenGlobalFeedTrendingPaginationQuery,
+    CuratedThenGlobalFeedTrendingFragment$key
   >(
     graphql`
-      fragment TrendingThenGlobalFeedTrendingFragment on Query
-      @refetchable(queryName: "TrendingThenGlobalFeedTrendingPaginationQuery") {
-        trendingFeed(before: $trendingBefore, last: $trendingLast, includePosts: $includePosts)
-          @connection(key: "NonAuthedFeed_trendingFeed") {
+      fragment CuratedThenGlobalFeedTrendingFragment on Query
+      @refetchable(queryName: "CuratedThenGlobalFeedTrendingPaginationQuery") {
+        curatedFeed(before: $curatedBefore, last: $curatedLast, includePosts: $includePosts)
+          @connection(key: "NonAuthedFeed_curatedFeed") {
           edges {
             node {
               ... on FeedEventOrError {
@@ -87,9 +87,9 @@ export default function TrendingThenGlobalFeed({ queryRef }: Props) {
   const feedData = useMemo(() => {
     const events = [];
 
-    const joined = [...(trendingPagination.data.trendingFeed?.edges ?? [])];
+    const joined = [...(curatedPagination.data.curatedFeed?.edges ?? [])];
 
-    if (!trendingPagination.hasPrevious) {
+    if (!curatedPagination.hasPrevious) {
       // These get displayed in reverse order so we need to put the global stuff
       // at the beginning of the list
       joined.unshift(...(globalPagination.data.globalFeed?.edges ?? []));
@@ -109,25 +109,25 @@ export default function TrendingThenGlobalFeed({ queryRef }: Props) {
   }, [
     globalPagination.data.globalFeed?.edges,
     isKoalaEnabled,
-    trendingPagination.data.trendingFeed?.edges,
-    trendingPagination.hasPrevious,
+    curatedPagination.data.curatedFeed?.edges,
+    curatedPagination.hasPrevious,
   ]);
 
-  const hasPrevious = trendingPagination.hasPrevious || globalPagination.hasPrevious;
+  const hasPrevious = curatedPagination.hasPrevious || globalPagination.hasPrevious;
 
   const trackLoadMoreFeedEvents = useTrackLoadMoreFeedEvents();
 
   const loadNextPage = useCallback(() => {
     return new Promise<void>((resolve) => {
-      trackLoadMoreFeedEvents('trending');
+      trackLoadMoreFeedEvents('curated');
       // Infinite scroll component wants load callback to return a promise
-      if (trendingPagination.hasPrevious) {
-        trendingPagination.loadPrevious(ITEMS_PER_PAGE, { onComplete: () => resolve() });
+      if (curatedPagination.hasPrevious) {
+        curatedPagination.loadPrevious(ITEMS_PER_PAGE, { onComplete: () => resolve() });
       } else if (globalPagination.hasPrevious) {
         globalPagination.loadPrevious(ITEMS_PER_PAGE, { onComplete: () => resolve() });
       }
     });
-  }, [globalPagination, trackLoadMoreFeedEvents, trendingPagination]);
+  }, [globalPagination, trackLoadMoreFeedEvents, curatedPagination]);
 
   return (
     <FeedList

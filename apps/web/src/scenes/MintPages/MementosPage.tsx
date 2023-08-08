@@ -62,7 +62,7 @@ export default function MementosPage() {
   return (
     <StyledPage>
       <StyledBackLink>
-        <ActionText onClick={() => push('/trending')}>← Back to gallery</ActionText>
+        <ActionText onClick={() => push('/home')}>← Back to gallery</ActionText>
       </StyledBackLink>
       <StyledWrapper>
         <StyledImageContainer>

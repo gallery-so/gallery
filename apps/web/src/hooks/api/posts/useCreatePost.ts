@@ -116,7 +116,7 @@ export default function useCreatePost() {
           const stayOnCommunityPage =
             communityAddressOfPostedToken && router.asPath.includes(communityAddressOfPostedToken);
 
-          if (!stayOnCommunityPage && !['/trending', '/latest'].includes(pathname)) {
+          if (!stayOnCommunityPage && !['/home', '/latest'].includes(pathname)) {
             router.push('/latest');
           }
         }

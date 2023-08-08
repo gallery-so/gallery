@@ -1,8 +1,8 @@
 import Head from 'next/head';
 import { graphql, useFragment } from 'react-relay';
 
+import CuratedThenGlobalFeed from '~/components/Feed/CuratedThenGlobalFeed';
 import { FeedPage } from '~/components/Feed/FeedPage';
-import TrendingThenGlobalFeed from '~/components/Feed/TrendingThenGlobalFeed';
 import { TrendingHomePageFragment$key } from '~/generated/TrendingHomePageFragment.graphql';
 
 type Props = {
@@ -13,7 +13,7 @@ export default function TrendingHomePage({ queryRef }: Props) {
   const query = useFragment(
     graphql`
       fragment TrendingHomePageFragment on Query {
-        ...TrendingThenGlobalFeedFragment
+        ...CuratedThenGlobalFeedFragment
       }
     `,
     queryRef
@@ -25,7 +25,7 @@ export default function TrendingHomePage({ queryRef }: Props) {
         <title>Gallery | Trending</title>
       </Head>
       <FeedPage>
-        <TrendingThenGlobalFeed queryRef={query} />
+        <CuratedThenGlobalFeed queryRef={query} />
       </FeedPage>
     </>
   );
