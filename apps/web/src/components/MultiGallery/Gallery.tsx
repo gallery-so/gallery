@@ -326,7 +326,7 @@ export default function Gallery({
                           </>
                         )}
                         <DropdownItem onClick={handleDeleteGallery}>
-                          <BaseM>Delete</BaseM>
+                          <BaseM color={colors.error}>Delete</BaseM>
                         </DropdownItem>
                       </DropdownSection>
                     </SettingsDropdown>

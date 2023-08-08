@@ -149,7 +149,7 @@ export function CollectionListItem({ collectionId, queryRef }: CollectionListIte
                 <BaseM>Move To...</BaseM>
               </DropdownItem>
               <DropdownItem onClick={handleDelete}>
-                <BaseM>Delete</BaseM>
+                <BaseM color={colors.error}>Delete</BaseM>
               </DropdownItem>
             </DropdownSection>
           </SettingsDropdown>
