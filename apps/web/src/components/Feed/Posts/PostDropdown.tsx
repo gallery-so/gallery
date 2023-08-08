@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
+import styled from 'styled-components';
 
 import CopyToClipboard from '~/components/CopyToClipboard/CopyToClipboard';
 import { DropdownItem } from '~/components/core/Dropdown/DropdownItem';
@@ -10,7 +11,6 @@ import { useModalActions } from '~/contexts/modal/ModalContext';
 import { PostDropdownFragment$key } from '~/generated/PostDropdownFragment.graphql';
 import { PostDropdownQueryFragment$key } from '~/generated/PostDropdownQueryFragment.graphql';
 import LinkToFullPageNftDetailModal from '~/scenes/NftDetailPage/LinkToFullPageNftDetailModal';
-import colors from '~/shared/theme/colors';
 import { getBaseUrl } from '~/utils/getBaseUrl';
 
 import DeletePostConfirmation from './DeletePostConfirmation';
@@ -103,7 +103,7 @@ export default function PostDropdown({ postRef, queryRef }: Props) {
             </LinkToFullPageNftDetailModal>
           )}
           <DropdownItem onClick={handleDeletePostClick}>
-            <BaseM color={colors.error}>Delete</BaseM>
+            <StyledDeleteText>Delete</StyledDeleteText>
           </DropdownItem>
         </DropdownSection>
       </SettingsDropdown>
@@ -136,3 +136,7 @@ export default function PostDropdown({ postRef, queryRef }: Props) {
     </SettingsDropdown>
   );
 }
+
+const StyledDeleteText = styled(BaseM)`
+  color: #e12e16;
+`;
