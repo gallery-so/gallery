@@ -33,7 +33,8 @@ export default function useCreatePost() {
                   }
                 }
               }
-              ...PostDataFragment
+              ...PostHeaderFragment
+              ...PostNftsFragment
             }
           }
         }
