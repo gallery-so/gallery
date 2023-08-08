@@ -56,14 +56,14 @@ export default function CuratedThenGlobalFeed({ queryRef }: Props) {
     query
   );
 
-  const trendingPagination = usePaginationFragment<
+  const curatedPagination = usePaginationFragment<
     CuratedThenGlobalFeedTrendingPaginationQuery,
     CuratedThenGlobalFeedTrendingFragment$key
   >(
     graphql`
       fragment CuratedThenGlobalFeedTrendingFragment on Query
       @refetchable(queryName: "CuratedThenGlobalFeedTrendingPaginationQuery") {
-        curatedFeed(before: $trendingBefore, last: $trendingLast, includePosts: $includePosts)
+        curatedFeed(before: $curatedBefore, last: $curatedLast, includePosts: $includePosts)
           @connection(key: "NonAuthedFeed_curatedFeed") {
           edges {
             node {
@@ -87,9 +87,9 @@ export default function CuratedThenGlobalFeed({ queryRef }: Props) {
   const feedData = useMemo(() => {
     const events = [];
 
-    const joined = [...(trendingPagination.data.curatedFeed?.edges ?? [])];
+    const joined = [...(curatedPagination.data.curatedFeed?.edges ?? [])];
 
-    if (!trendingPagination.hasPrevious) {
+    if (!curatedPagination.hasPrevious) {
       // These get displayed in reverse order so we need to put the global stuff
       // at the beginning of the list
       joined.unshift(...(globalPagination.data.globalFeed?.edges ?? []));
@@ -109,25 +109,25 @@ export default function CuratedThenGlobalFeed({ queryRef }: Props) {
   }, [
     globalPagination.data.globalFeed?.edges,
     isKoalaEnabled,
-    trendingPagination.data.curatedFeed?.edges,
-    trendingPagination.hasPrevious,
+    curatedPagination.data.curatedFeed?.edges,
+    curatedPagination.hasPrevious,
   ]);
 
-  const hasPrevious = trendingPagination.hasPrevious || globalPagination.hasPrevious;
+  const hasPrevious = curatedPagination.hasPrevious || globalPagination.hasPrevious;
 
   const trackLoadMoreFeedEvents = useTrackLoadMoreFeedEvents();
 
   const loadNextPage = useCallback(() => {
     return new Promise<void>((resolve) => {
-      trackLoadMoreFeedEvents('trending');
+      trackLoadMoreFeedEvents('curated');
       // Infinite scroll component wants load callback to return a promise
-      if (trendingPagination.hasPrevious) {
-        trendingPagination.loadPrevious(ITEMS_PER_PAGE, { onComplete: () => resolve() });
+      if (curatedPagination.hasPrevious) {
+        curatedPagination.loadPrevious(ITEMS_PER_PAGE, { onComplete: () => resolve() });
       } else if (globalPagination.hasPrevious) {
         globalPagination.loadPrevious(ITEMS_PER_PAGE, { onComplete: () => resolve() });
       }
     });
-  }, [globalPagination, trackLoadMoreFeedEvents, trendingPagination]);
+  }, [globalPagination, trackLoadMoreFeedEvents, curatedPagination]);
 
   return (
     <FeedList

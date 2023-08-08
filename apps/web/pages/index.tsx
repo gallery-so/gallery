@@ -27,7 +27,7 @@ function LandingPageSceneWithRedirect({ queryRef }: LandingPageSceneWithRedirect
   );
 
   if (query.viewer?.__typename === 'Viewer') {
-    return <GalleryRedirect to={{ pathname: '/trending' }} />;
+    return <GalleryRedirect to={{ pathname: '/home' }} />;
   }
 
   return <LandingPageScene />;

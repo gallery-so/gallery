@@ -51,7 +51,7 @@ export function HomeNavbar({ queryRef }: Props) {
   }, [track]);
 
   const { pathname } = useRouter();
-  const trendingRoute: Route = { pathname: '/trending', query: {} };
+  const curatedRoute: Route = { pathname: '/home', query: {} };
   const latestRoute: Route = { pathname: '/latest', query: {} };
   const latestFollowingRoute: Route = { pathname: '/latest/following', query: {} };
   const exploreRoute: Route = { pathname: '/explore', query: {} };
@@ -64,9 +64,9 @@ export function HomeNavbar({ queryRef }: Props) {
       <NavbarCenterContent>
         <HStack gap={8}>
           <NavbarLink
-            active={pathname === trendingRoute.pathname}
+            active={pathname === curatedRoute.pathname}
             // @ts-expect-error We're not using the legacy Link
-            href={route(trendingRoute)}
+            href={route(curatedRoute)}
             onClick={handleTrendingClick}
           >
             Curated

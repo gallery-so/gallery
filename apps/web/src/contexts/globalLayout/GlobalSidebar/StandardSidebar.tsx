@@ -240,7 +240,7 @@ export function StandardSidebar({ queryRef }: Props) {
       <StyledStandardSidebar>
         <StyledMobileIconContainer align="center" justify="space-around">
           <SidebarIcon
-            href={{ pathname: '/trending' }}
+            href={{ pathname: '/home' }}
             tooltipLabel="Home"
             onClick={handleHomeIconClick}
             icon={<GLogoIcon />}
@@ -293,7 +293,7 @@ export function StandardSidebar({ queryRef }: Props) {
       <StyledIconContainer align="center" justify="space-between">
         <VStack gap={18}>
           <SidebarIcon
-            href={{ pathname: '/trending' }}
+            href={{ pathname: '/home' }}
             tooltipLabel="Home"
             onClick={handleHomeIconClick}
             icon={<GLogoIcon />}

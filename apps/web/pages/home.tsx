@@ -4,18 +4,18 @@ import { ITEMS_PER_PAGE, MAX_PIECES_DISPLAYED_PER_FEED_EVENT } from '~/component
 import { NOTES_PER_PAGE } from '~/components/Feed/Socialize/CommentsModal/CommentsModal';
 import { HomeNavbar } from '~/contexts/globalLayout/GlobalNavbar/HomeNavbar/HomeNavbar';
 import { StandardSidebar } from '~/contexts/globalLayout/GlobalSidebar/StandardSidebar';
-import { trendingPageQuery } from '~/generated/trendingPageQuery.graphql';
+import { homePageCuratedQuery } from '~/generated/homePageCuratedQuery.graphql';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
 import TrendingHomePage from '~/scenes/Home/TrendingHomePage';
 import { PreloadQueryArgs } from '~/types/PageComponentPreloadQuery';
 import isProduction from '~/utils/isProduction';
 
-const trendingPageQueryNode = graphql`
-  query trendingPageQuery(
+const homePageCuratedQueryNode = graphql`
+  query homePageCuratedQuery(
     $interactionsFirst: Int!
     $interactionsAfter: String
-    $trendingLast: Int!
-    $trendingBefore: String
+    $curatedLast: Int!
+    $curatedBefore: String
     $globalLast: Int!
     $globalBefore: String
     $visibleTokensPerFeedEvent: Int! # [GAL-3763] Revive this if / when elon lets us import twitter follower graphs again # $twitterListFirst: Int! # $twitterListAfter: String
@@ -30,11 +30,11 @@ const trendingPageQueryNode = graphql`
 `;
 
 type Props = {
-  preloadedQuery: PreloadedQuery<trendingPageQuery>;
+  preloadedQuery: PreloadedQuery<homePageCuratedQuery>;
 };
 
-export default function Trending({ preloadedQuery }: Props) {
-  const query = usePreloadedQuery(trendingPageQueryNode, preloadedQuery);
+export default function Home({ preloadedQuery }: Props) {
+  const query = usePreloadedQuery(homePageCuratedQueryNode, preloadedQuery);
 
   // [GAL-3763] Revive this if / when elon lets us import twitter follower graphs again
   // useOpenTwitterFollowingModal(query);
@@ -48,15 +48,15 @@ export default function Trending({ preloadedQuery }: Props) {
   );
 }
 
-Trending.preloadQuery = ({ relayEnvironment }: PreloadQueryArgs) => {
+Home.preloadQuery = ({ relayEnvironment }: PreloadQueryArgs) => {
   const includePosts = !isProduction();
-  return loadQuery<trendingPageQuery>(
+  return loadQuery<homePageCuratedQuery>(
     relayEnvironment,
-    trendingPageQueryNode,
+    homePageCuratedQueryNode,
     {
       interactionsFirst: NOTES_PER_PAGE,
       globalLast: ITEMS_PER_PAGE,
-      trendingLast: ITEMS_PER_PAGE,
+      curatedLast: ITEMS_PER_PAGE,
       visibleTokensPerFeedEvent: MAX_PIECES_DISPLAYED_PER_FEED_EVENT,
       includePosts,
       // [GAL-3763] Revive this if / when elon lets us import twitter follower graphs again

@@ -23,7 +23,7 @@ export default function CommunityPageDisabled({ name }: Props) {
         <InteractiveLink href={GALLERY_TWITTER}>Twitter</InteractiveLink>.
       </BaseM>
       <BaseM>
-        <InteractiveLink to={{ pathname: '/trending' }}>Back to home</InteractiveLink>
+        <InteractiveLink to={{ pathname: '/home' }}>Back to home</InteractiveLink>
       </BaseM>
     </StyledDisabledSection>
   );
