@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import { useNavigation } from '@react-navigation/native';
 import clsx from 'clsx';
+import { useColorScheme } from 'nativewind';
 import React, { useCallback, useMemo, useRef } from 'react';
 import { View, ViewProps } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
@@ -16,6 +17,7 @@ import { ProfileViewSharedCommunitiesHoldsTextFragment$key } from '~/generated/P
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
+import colors from '~/shared/theme/colors';
 
 import {
   ContractAddress,
@@ -137,6 +139,8 @@ function HoldsText({ communityRefs, onSeeAll, style }: HoldsTextProps) {
     [navigation]
   );
 
+  const { colorScheme } = useColorScheme();
+
   return (
     <View className="flex flex-row flex-1 flex-wrap items-center space-x-1" style={style}>
       <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
@@ -151,9 +155,12 @@ function HoldsText({ communityRefs, onSeeAll, style }: HoldsTextProps) {
               onPress={() =>
                 community.contractAddress && handleCommunityPress(community.contractAddress)
               }
-              textStyle={{ fontSize: 12, color: 'text-black-800' }}
               font={{ family: 'ABCDiatype', weight: 'Bold' }}
               type="Shared Communities Name"
+              textStyle={{
+                fontSize: 12,
+                color: colorScheme === 'dark' ? colors.white : colors.black['800'],
+              }}
             >
               {community.name}
             </InteractiveLink>
@@ -174,9 +181,12 @@ function HoldsText({ communityRefs, onSeeAll, style }: HoldsTextProps) {
 
           <InteractiveLink
             onPress={onSeeAll}
-            textStyle={{ fontSize: 12, color: 'text-black-800' }}
             font={{ family: 'ABCDiatype', weight: 'Bold' }}
             type="Shared Communities See All"
+            textStyle={{
+              fontSize: 12,
+              color: colorScheme === 'dark' ? colors.white : colors.black['800'],
+            }}
           >
             {communities.length - communitiesToShow.length} others
           </InteractiveLink>

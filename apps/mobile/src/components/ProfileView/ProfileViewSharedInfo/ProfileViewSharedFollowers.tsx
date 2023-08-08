@@ -1,5 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import clsx from 'clsx';
+import { useColorScheme } from 'nativewind';
 import { useCallback, useMemo, useRef } from 'react';
 import { View, ViewProps } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
@@ -16,9 +17,9 @@ import { ProfileViewSharedFollowersFragment$key } from '~/generated/ProfileViewS
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { GalleryElementTrackingProps } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
+import colors from '~/shared/theme/colors';
 
 import { ProfileViewSharedFollowersSheet } from './ProfileViewSharedFollowersSheet';
-
 export const SHARED_FOLLOWERS_PER_PAGE = 20;
 
 type Props = {
@@ -112,7 +113,7 @@ function FollowingText({ userRefs, onSeeAll, style }: FollowingTextProps) {
   }, [users]);
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
-
+  const { colorScheme } = useColorScheme();
   return (
     <View className="flex flex-row items-center space-x-1" style={style}>
       <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
@@ -129,9 +130,12 @@ function FollowingText({ userRefs, onSeeAll, style }: FollowingTextProps) {
                   navigation.push('Profile', { username: user.username });
                 }
               }}
-              textStyle={{ fontSize: 12, color: 'text-black-800' }}
               font={{ family: 'ABCDiatype', weight: 'Bold' }}
               type="Shared Followers Username"
+              textStyle={{
+                fontSize: 12,
+                color: colorScheme === 'dark' ? colors.white : colors.black['800'],
+              }}
             >
               {user.username}
             </InteractiveLink>
@@ -152,9 +156,12 @@ function FollowingText({ userRefs, onSeeAll, style }: FollowingTextProps) {
 
           <InteractiveLink
             onPress={onSeeAll}
-            textStyle={{ fontSize: 12, color: 'text-black-800' }}
             font={{ family: 'ABCDiatype', weight: 'Bold' }}
             type="Shared Followers See All"
+            textStyle={{
+              fontSize: 12,
+              color: colorScheme === 'dark' ? colors.white : colors.black['800'],
+            }}
           >
             {users.length - usersToShow.length} others
           </InteractiveLink>
