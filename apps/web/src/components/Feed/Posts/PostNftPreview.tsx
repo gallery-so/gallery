@@ -31,7 +31,6 @@ export default function PostNftPreview({ tokenRef, onNftLoad }: Props) {
     tokenRef
   );
 
-  console.log({ onNftLoad });
   const breakpoint = useBreakpoint();
   const { width } = useWindowSize();
 
