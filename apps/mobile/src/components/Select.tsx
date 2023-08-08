@@ -170,7 +170,7 @@ export function SelectBottomSheet<T extends string>({
           }
         }
       }}
-      snapPoints={animatedSnapPoints}
+      snapPoints={animatedSnapPoints.value}
       handleHeight={animatedHandleHeight}
       contentHeight={animatedContentHeight}
     >

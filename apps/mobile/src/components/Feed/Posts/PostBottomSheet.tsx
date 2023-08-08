@@ -193,7 +193,7 @@ function PostBottomSheet(
             ref.current = value;
           }
         }}
-        snapPoints={animatedSnapPoints}
+        snapPoints={animatedSnapPoints.value}
         handleHeight={animatedHandleHeight}
         contentHeight={animatedContentHeight}
       >

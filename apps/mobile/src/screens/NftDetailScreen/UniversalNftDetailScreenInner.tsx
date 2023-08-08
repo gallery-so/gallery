@@ -1,5 +1,5 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { useLazyLoadQuery } from 'react-relay';
@@ -82,12 +82,6 @@ export function UniversalNftDetailScreenInner() {
   const track = useTrack();
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
-
-  const [showAdditionalDetails, setShowAdditionalDetails] = useState(false);
-
-  const toggleAdditionalDetails = useCallback(() => {
-    setShowAdditionalDetails((previous) => !previous);
-  }, []);
 
   const handleOpenCommunityScreen = useCallback(() => {
     const contractAddress = token.contract?.contractAddress;
@@ -219,15 +213,6 @@ export function UniversalNftDetailScreenInner() {
 
         <View className="flex-1">
           <NftAdditionalDetails tokenRef={token} />
-        </View>
-
-        <View>
-          <InteractiveLink
-            onPress={toggleAdditionalDetails}
-            type="NFT Detail Show Additional Details"
-          >
-            {showAdditionalDetails ? 'Hide Details' : 'Show Additional Details'}
-          </InteractiveLink>
         </View>
       </View>
     </ScrollView>

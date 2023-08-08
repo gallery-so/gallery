@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
@@ -16,7 +16,7 @@ import NftDetailModel from '~/scenes/NftDetailPage/NftDetailModel';
 import NftDetailVideo from '~/scenes/NftDetailPage/NftDetailVideo';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
-import { isFirefox } from '~/utils/browser';
+import { isFirefox, isSafari } from '~/utils/browser';
 import isSvg from '~/utils/isSvg';
 import { getBackgroundColorOverrideForContract } from '~/utils/token';
 
@@ -33,6 +33,7 @@ type Props = {
   isInFeedEvent?: boolean;
   shouldLiveRender?: boolean;
   collectionId?: string;
+  onLoad?: () => void;
 };
 
 const contractsWhoseIFrameNFTsShouldNotTakeUpFullHeight = new Set([
@@ -47,6 +48,7 @@ function NftPreview({
   isInFeedEvent = false,
   shouldLiveRender,
   collectionId,
+  onLoad,
 }: Props) {
   const token = useFragment(
     graphql`
@@ -111,11 +113,16 @@ function NftPreview({
       tokenId: token.dbid,
     });
 
+  const onNftLoad = useCallback(() => {
+    onLoad?.();
+    handleNftLoaded();
+  }, [handleNftLoaded, onLoad]);
+
   const PreviewAsset = useMemo(() => {
     if (disableLiverender) {
       return (
         <NftPreviewAsset
-          onLoad={handleNftLoaded}
+          onLoad={onNftLoad}
           tokenRef={token}
           // we'll request images at double the size of the element so that it looks sharp on retina
           size={previewSize * 2}
@@ -123,37 +130,30 @@ function NftPreview({
       );
     }
     if (shouldLiveRender && token.media?.__typename === 'VideoMedia') {
-      return <NftDetailVideo onLoad={handleNftLoaded} mediaRef={token.media} hideControls />;
+      return <NftDetailVideo onLoad={onNftLoad} mediaRef={token.media} hideControls />;
     }
     if (shouldLiveRender && token.media?.__typename === 'GIFMedia') {
-      return <NftDetailGif onLoad={handleNftLoaded} tokenRef={token} />;
+      return <NftDetailGif onLoad={onNftLoad} tokenRef={token} />;
     }
     if (shouldLiveRender && token.media?.__typename === 'GltfMedia') {
-      return <NftDetailModel onLoad={handleNftLoaded} mediaRef={token.media} fullHeight={false} />;
+      return <NftDetailModel onLoad={onNftLoad} mediaRef={token.media} fullHeight={false} />;
     }
     if (isIFrameLiveDisplay) {
-      return <NftDetailAnimation onLoad={handleNftLoaded} mediaRef={token} />;
+      return <NftDetailAnimation onLoad={onNftLoad} mediaRef={token} />;
     }
 
     return (
       <NftPreviewAsset
-        onLoad={handleNftLoaded}
+        onLoad={onNftLoad}
         tokenRef={token}
         // we'll request images at double the size of the element so that it looks sharp on retina
         size={previewSize * 2}
       />
     );
-  }, [
-    disableLiverender,
-    shouldLiveRender,
-    token,
-    isIFrameLiveDisplay,
-    previewSize,
-    handleNftLoaded,
-  ]);
+  }, [disableLiverender, shouldLiveRender, token, isIFrameLiveDisplay, previewSize, onNftLoad]);
 
   const result = getVideoOrImageUrlForNftPreview({ tokenRef: token });
-  const isFirefoxSvg = isSvg(result?.urls?.large) && isFirefox();
+  const isSvgOnWeirdBrowser = isSvg(result?.urls?.large) && (isFirefox() || isSafari());
   // stretch the image to take up the full-width if...
   const fullWidth =
     // it's not in a feed event
@@ -161,7 +161,7 @@ function NftPreview({
     // there are more than 1 columns in the layout
     (columns > 1 ||
       // the asset is an SVG on firefox
-      isFirefoxSvg ||
+      isSvgOnWeirdBrowser ||
       // the asset is an iframe in single column mode
       (columns === 1 && isIFrameLiveDisplay));
 
@@ -207,10 +207,7 @@ function NftPreview({
         >
           <ReportingErrorBoundary
             fallback={
-              <RawNftPreviewAsset
-                src={token.media?.fallbackMedia?.mediaURL}
-                onLoad={handleNftLoaded}
-              />
+              <RawNftPreviewAsset src={token.media?.fallbackMedia?.mediaURL} onLoad={onNftLoad} />
             }
           >
             {PreviewAsset}
