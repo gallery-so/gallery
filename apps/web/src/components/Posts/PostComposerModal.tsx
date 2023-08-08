@@ -65,6 +65,7 @@ export function PostComposerModalWithSelector({ tokensRef, queryRef, preSelected
 
   const onBackClick = useCallback(() => {
     showModal({
+      headerText: 'Are you sure?',
       content: (
         <DiscardPostConfirmation
           onDiscard={() => {
