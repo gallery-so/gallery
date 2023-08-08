@@ -89,7 +89,7 @@ export default function PostDropdown({ postRef, queryRef }: Props) {
         <DropdownSection>
           <CopyToClipboard textToCopy={postUrl}>
             <DropdownItem>
-              <BaseM color={colors.error}>Share</BaseM>
+              <BaseM>Share</BaseM>
             </DropdownItem>
           </CopyToClipboard>
           {token && (
