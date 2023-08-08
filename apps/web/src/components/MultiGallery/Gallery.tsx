@@ -455,7 +455,3 @@ const StyledOrderingButton = styled.button`
     border-left: 1px solid ${colors.faint};
   }
 `;
-
-const StyledDeleteText = styled(BaseM)`
-  color: #e12e16;
-`;
