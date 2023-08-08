@@ -98,12 +98,12 @@ export default function PostDropdown({ postRef, queryRef }: Props) {
               tokenId={token?.dbid}
             >
               <DropdownItem>
-                <BaseM>View Item Detailzz</BaseM>
+                <BaseM>View Item Detail</BaseM>
               </DropdownItem>
             </LinkToFullPageNftDetailModal>
           )}
-          <DropdownItem onClick={handleDeletePostClick} color={colors.error}>
-            <BaseM>Deletesss</BaseM>
+          <DropdownItem onClick={handleDeletePostClick}>
+            <BaseM color={colors.error}>Delete</BaseM>
           </DropdownItem>
         </DropdownSection>
       </SettingsDropdown>
