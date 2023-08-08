@@ -89,6 +89,11 @@ const nextConfig = {
         permanent: false,
       },
       {
+        source: '/trending',
+        destination: '/home',
+        permanent: false,
+      },
+      {
         source: '/activity',
         destination: '/home',
         permanent: false,
