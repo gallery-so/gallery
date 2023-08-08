@@ -59,7 +59,7 @@ export type MainTabStackNavigatorParamList = {
 };
 
 export type FeedTabNavigatorParamList = {
-  Trending: undefined;
+  Curated: undefined;
   Latest: undefined;
   Explore: undefined;
 };
