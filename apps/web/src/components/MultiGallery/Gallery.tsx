@@ -326,7 +326,7 @@ export default function Gallery({
                           </>
                         )}
                         <DropdownItem onClick={handleDeleteGallery}>
-                          <BaseM>Delete</BaseM>
+                          <BaseM color={colors.error}>Delete</BaseM>
                         </DropdownItem>
                       </DropdownSection>
                     </SettingsDropdown>
@@ -454,4 +454,8 @@ const StyledOrderingButton = styled.button`
   &:last-child {
     border-left: 1px solid ${colors.faint};
   }
+`;
+
+const StyledDeleteText = styled(BaseM)`
+  color: #e12e16;
 `;
