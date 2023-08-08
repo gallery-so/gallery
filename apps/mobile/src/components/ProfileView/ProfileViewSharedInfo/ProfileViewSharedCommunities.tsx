@@ -183,7 +183,6 @@ function HoldsText({ communityRefs, onSeeAll, style }: HoldsTextProps) {
             onPress={onSeeAll}
             font={{ family: 'ABCDiatype', weight: 'Bold' }}
             type="Shared Communities See All"
-            isSecondary
             textStyle={{
               fontSize: 12,
               color: colorScheme === 'dark' ? colors.white : colors.black['800'],
