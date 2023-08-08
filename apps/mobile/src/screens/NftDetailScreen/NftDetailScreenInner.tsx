@@ -292,7 +292,7 @@ export function NftDetailScreenInner() {
           <Button
             icon={
               <PostIcon
-                size={24}
+                width={24}
                 color={colorScheme === 'dark' ? colors.black['800'] : colors.white}
               />
             }

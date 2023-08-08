@@ -1,8 +1,8 @@
 import { useNavigation } from '@react-navigation/native';
 import { useColorScheme } from 'nativewind';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import { View } from 'react-native';
-import { graphql, useFragment } from 'react-relay';
+import { graphql, useFragment, useRefetchableFragment } from 'react-relay';
 import { EthIcon } from 'src/icons/EthIcon';
 import { PoapIcon } from 'src/icons/PoapIcon';
 import { TezosIcon } from 'src/icons/TezosIcon';
@@ -10,28 +10,34 @@ import isFeatureEnabled, { FeatureFlag } from 'src/utils/isFeatureEnabled';
 
 import { Chain, CommunityMetaFragment$key } from '~/generated/CommunityMetaFragment.graphql';
 import { CommunityMetaQueryFragment$key } from '~/generated/CommunityMetaQueryFragment.graphql';
+import { CommunityMetaRefetchQuery } from '~/generated/CommunityMetaRefetchQuery.graphql';
+import { PostIcon } from '~/navigation/MainTabNavigator/PostIcon';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import colors from '~/shared/theme/colors';
 
+import { Button } from '../Button';
+import { GalleryBottomSheetModalType } from '../GalleryBottomSheet/GalleryBottomSheetModal';
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import { LinkableAddress } from '../LinkableAddress';
 import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
 import { RawProfilePicture } from '../ProfilePicture/RawProfilePicture';
 import { Typography } from '../Typography';
+import { CommunityPostBottomSheet } from './CommunityPostBottomSheet';
 
 type Props = {
   communityRef: CommunityMetaFragment$key;
   queryRef: CommunityMetaQueryFragment$key;
 };
-const ENABLED_TOTAL_TOKENS = false;
 
 export function CommunityMeta({ communityRef, queryRef }: Props) {
   const community = useFragment(
     graphql`
       fragment CommunityMetaFragment on Community {
+        dbid
         chain
         contractAddress {
           chain
+          address
           ...LinkableAddressFragment
         }
         creator {
@@ -45,41 +51,40 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
             chain
           }
         }
-        tokensInCommunity(first: 1) {
-          pageInfo {
-            total
-          }
-        }
-        posts(first: $postLast, after: $postBefore)
-          @connection(key: "CommunityViewPostsTabFragment_posts") {
-          # Relay requires that we grab the edges field if we use the connection directive
-          # We're selecting __typename since that shouldn't have a cost
-          # eslint-disable-next-line relay/unused-fields
-          edges {
-            __typename
-          }
-          pageInfo {
-            total
-          }
-        }
+        ...CommunityPostBottomSheetFragment
       }
     `,
     communityRef
   );
 
-  const query = useFragment(
+  const [query, refetch] = useRefetchableFragment<
+    CommunityMetaRefetchQuery,
+    CommunityMetaQueryFragment$key
+  >(
     graphql`
-      fragment CommunityMetaQueryFragment on Query {
+      fragment CommunityMetaQueryFragment on Query
+      @refetchable(queryName: "CommunityMetaRefetchQuery") {
         ...isFeatureEnabledFragment
+        viewer {
+          ... on Viewer {
+            user {
+              __typename
+              isMemberOfCommunity(communityID: $communityID)
+            }
+          }
+        }
       }
     `,
     queryRef
   );
 
+  const isMemberOfCommunity = query.viewer?.user?.isMemberOfCommunity ?? false;
+
   const { colorScheme } = useColorScheme();
   const isKoalaEnabled = isFeatureEnabled(FeatureFlag.KOALA, query);
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
+  const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
 
   const handleUsernamePress = useCallback(() => {
     if (community.creator?.__typename === 'GalleryUser' && community.creator?.username) {
@@ -87,24 +92,47 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
     }
   }, [community.creator, navigation]);
 
-  const totalTokens = community.tokensInCommunity?.pageInfo?.total;
-  const totalPosts = community.posts?.pageInfo?.total ?? 0;
+  const handleCreatePost = useCallback(() => {
+    if (!community?.contractAddress?.address) return;
+    navigation.navigate('NftSelectorContractScreen', {
+      contractAddress: community?.contractAddress?.address,
+      page: 'Community',
+    });
+  }, [navigation, community?.contractAddress?.address]);
 
-  const formattedTotalTokens = useMemo(() => {
-    if (totalTokens && totalTokens > 999) {
-      return `${Math.floor(totalTokens / 1000)}K`;
+  const handlePress = useCallback(() => {
+    if (isMemberOfCommunity) {
+      handleCreatePost();
+      return;
     }
 
-    return totalTokens;
-  }, [totalTokens]);
+    bottomSheetRef.current?.present();
+  }, [handleCreatePost, isMemberOfCommunity]);
 
-  const formattedTotalPosts = useMemo(() => {
-    if (totalPosts && totalPosts > 999) {
-      return `${Math.floor(totalPosts / 1000)}K`;
+  const PostIconColor = useMemo(() => {
+    if (isMemberOfCommunity) {
+      if (colorScheme === 'dark') {
+        return colors.black['800'];
+      } else {
+        return colors.white;
+      }
+    } else {
+      if (colorScheme === 'dark') {
+        return colors.shadow;
+      } else {
+        return colors.metal;
+      }
     }
+  }, [isMemberOfCommunity, colorScheme]);
 
-    return totalPosts;
-  }, [totalPosts]);
+  const handleRefresh = useCallback(() => {
+    refetch(
+      {
+        communityID: community.dbid,
+      },
+      { fetchPolicy: 'network-only' }
+    );
+  }, [community.dbid, refetch]);
 
   const showAddressOrGalleryUser = useMemo(() => {
     if (community.creator?.__typename === 'GalleryUser' && !community.creator?.universal) {
@@ -175,42 +203,23 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
           </View>
         )}
       </View>
-      {ENABLED_TOTAL_TOKENS && (
-        <View className="space-y-1">
-          <Typography
-            font={{ family: 'ABCDiatype', weight: 'Regular' }}
-            className="text-xs uppercase text-right"
-          >
-            items
-          </Typography>
-
-          <Typography
-            font={{ family: 'ABCDiatype', weight: 'Regular' }}
-            className="text-sm text-shadow text-right"
-          >
-            {formattedTotalTokens}
-          </Typography>
-        </View>
+      {isKoalaEnabled && (
+        <Button
+          size="sm"
+          text="Post"
+          className="w-[100px]"
+          variant={isMemberOfCommunity ? 'primary' : 'disabled'}
+          icon={<PostIcon width={16} color={PostIconColor} />}
+          onPress={handlePress}
+          eventElementId={null}
+          eventName={null}
+        />
       )}
-      {totalPosts > 0 && isKoalaEnabled && (
-        <View className="flex flex-column space-y-1">
-          <Typography
-            font={{ family: 'ABCDiatype', weight: 'Regular' }}
-            className="text-xs uppercase"
-          >
-            posts
-          </Typography>
-
-          <View className="space-y-1">
-            <Typography
-              font={{ family: 'ABCDiatype', weight: 'Bold' }}
-              className="text-sm text-black-800 dark:text-offWhite text-right"
-            >
-              {formattedTotalPosts}
-            </Typography>
-          </View>
-        </View>
-      )}
+      <CommunityPostBottomSheet
+        ref={bottomSheetRef}
+        communityRef={community}
+        onRefresh={handleRefresh}
+      />
     </View>
   );
 }
