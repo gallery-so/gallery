@@ -73,7 +73,6 @@ export default function FollowListUserItem({
   const onMouseLeave = useCallback(() => {
     setFadeUsernames(false);
   }, [setFadeUsernames]);
-
   return (
     <StyledListItem
       onMouseEnter={onMouseEnter}
@@ -89,9 +88,9 @@ export default function FollowListUserItem({
             <TitleS>{user.username}</TitleS>
             <StyledBaseM>
               {formattedUserBio && (
-                <VStack justify="center">
+                <StyledContainer justify="center">
                   <Markdown text={formattedUserBio} />
-                </VStack>
+                </StyledContainer>
               )}
             </StyledBaseM>
           </VStack>
@@ -133,6 +132,14 @@ const StyledBaseM = styled(BaseM)`
 
   p {
     padding-bottom: 0;
+  }
+`;
+
+const StyledContainer = styled(VStack)`
+  max-width: 250px;
+
+  @media only screen and ${breakpoints.desktop} {
+    max-width: none;
   }
 `;
 
