@@ -57,7 +57,7 @@ export default function FollowListUserItem({
   const formattedUserBio = useMemo(() => {
     const truncate = (bio: string) => {
       const maxLength = isMobile ? 250 : 320;
-      if (bio.length > maxLength && isMobile) {
+      if (bio.length > maxLength) {
         return `${bio.slice(0, maxLength)}...`;
       }
       return bio;
@@ -103,15 +103,16 @@ export default function FollowListUserItem({
 }
 
 const StyledListItem = styled.a<{ fadeUsernames: boolean }>`
+  text-decoration: none;
   display: flex;
+  justify-content: space-between;
   padding-top: 16px;
   padding-bottom: 16px;
-  text-decoration: none;
-  justify-content: space-between;
-  transition: color 0.15s ease-in-out, opacity 0.15s ease-in-out;
-  opacity: ${({ fadeUsernames }) => (fadeUsernames ? 0.5 : 1)};
   gap: 4px;
   min-height: 72px;
+
+  transition: color 0.15s ease-in-out, opacity 0.15s ease-in-out;
+  opacity: ${({ fadeUsernames }) => (fadeUsernames ? 0.5 : 1)};
 
   &:hover {
     color: ${colors.black['800']};
