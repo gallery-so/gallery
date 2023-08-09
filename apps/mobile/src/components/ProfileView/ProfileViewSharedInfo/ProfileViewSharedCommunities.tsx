@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { useNavigation } from '@react-navigation/native';
 import clsx from 'clsx';
 import { useColorScheme } from 'nativewind';

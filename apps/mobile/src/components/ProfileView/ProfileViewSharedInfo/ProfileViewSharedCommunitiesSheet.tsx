@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { useNavigation } from '@react-navigation/native';
 import { ForwardedRef, forwardRef, useCallback, useMemo } from 'react';
 import { View } from 'react-native';
