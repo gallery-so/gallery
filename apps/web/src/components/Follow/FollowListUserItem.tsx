@@ -9,6 +9,7 @@ import { BaseM, TitleS } from '~/components/core/Text/Text';
 import FollowButton from '~/components/Follow/FollowButton';
 import { FollowListUserItemFragment$key } from '~/generated/FollowListUserItemFragment.graphql';
 import { FollowListUserItemQueryFragment$key } from '~/generated/FollowListUserItemQueryFragment.graphql';
+import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import colors from '~/shared/theme/colors';
 import { BREAK_LINES } from '~/utils/regex';
 
@@ -52,7 +53,18 @@ export default function FollowListUserItem({
     userRef
   );
 
-  const formattedUserBio = useMemo(() => (user.bio ?? '').replace(BREAK_LINES, ''), [user.bio]);
+  const isMobile = useIsMobileOrMobileLargeWindowWidth();
+  const formattedUserBio = useMemo(() => {
+    const truncate = (bio: string) => {
+      if (bio.length > 250 && isMobile) {
+        return `${bio.slice(0, 250)}...`;
+      } else if (bio.length > 320) {
+        return `${bio.slice(0, 320)}...`;
+      }
+      return bio;
+    };
+    return truncate((user.bio ?? '').replace(BREAK_LINES, ''));
+  }, [isMobile, user.bio]);
 
   const onMouseEnter = useCallback(() => {
     setFadeUsernames(true);

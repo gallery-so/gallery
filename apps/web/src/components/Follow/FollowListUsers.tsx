@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
+import breakpoints from '~/components/core/breakpoints';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import { FollowListUsersFragment$key } from '~/generated/FollowListUsersFragment.graphql';
@@ -73,7 +74,10 @@ const StyledList = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding-top: 12px;
+  margin-bottom: 24px;
+  @media only screen and ${breakpoints.desktop} {
+    padding-top: 12px;
+  }
 `;
 
 const StyledEmptyList = styled(VStack)`

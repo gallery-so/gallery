@@ -42,7 +42,7 @@ function FollowersPage({ queryRef }: FollowersPageProps) {
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
   return (
     <GalleryPageSpacing>
-      <VStack gap={isMobile ? 12 : 24}>
+      <VStack gap={isMobile ? 0 : 24}>
         <UserGalleryHeader userRef={query.userByUsername} queryRef={query} />
         <VStack align="center">
           <FollowList queryRef={query} userRef={query.userByUsername} />

@@ -91,10 +91,14 @@ export default function FollowList({ userRef, queryRef }: Props) {
 const StyledFollowList = styled.div`
   height: 100%;
   width: 100%;
-  padding-top: 24px;
-  border-top: 1px solid ${colors.porcelain};
   display: flex;
   flex-direction: column;
+  padding-top: 24px;
+
+  @media only screen and ${breakpoints.tablet} {
+    padding-top: 24px;
+    border-top: 1px solid ${colors.porcelain};
+  }
 `;
 
 const StyledHeader = styled(HStack)`
