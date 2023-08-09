@@ -7,6 +7,7 @@ import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { PostComposerFragment$key } from '~/generated/PostComposerFragment.graphql';
 import useCreatePost from '~/hooks/api/posts/useCreatePost';
+import AlertTriangleIcon from '~/icons/AlertTriangleIcon';
 import { ChevronLeftIcon } from '~/icons/ChevronLeftIcon';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
@@ -139,6 +140,7 @@ export default function PostComposer({ onBackClick, tokenRef }: Props) {
       <HStack justify={generalError ? 'space-between' : 'flex-end'} align="flex-end">
         {generalError && (
           <StyledWrapper>
+            <AlertTriangleIcon color={colors.red} />
             <StyledErrorText message={generalError} />
           </StyledWrapper>
         )}
@@ -184,5 +186,6 @@ const StyledErrorText = styled(ErrorText)`
 const StyledWrapper = styled(HStack)`
   display: flex;
   height: 100%;
+  gap: 4px;
   align-items: center;
 `;
