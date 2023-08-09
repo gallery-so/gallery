@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -7,7 +7,6 @@ import { BaseM } from '~/components/core/Text/Text';
 import { FollowListUsersFragment$key } from '~/generated/FollowListUsersFragment.graphql';
 import { FollowListUsersQueryFragment$key } from '~/generated/FollowListUsersQueryFragment.graphql';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
-import { BREAK_LINES } from '~/utils/regex';
 
 import FollowListUserItem from './FollowListUserItem';
 
@@ -37,8 +36,6 @@ export default function FollowListUsers({
     graphql`
       fragment FollowListUsersFragment on GalleryUser @relay(plural: true) {
         dbid
-        bio
-        username
         ...FollowListUserItemFragment
       }
     `,
@@ -50,30 +47,20 @@ export default function FollowListUsers({
   }, [track]);
 
   const [fadeUsernames, setFadeUsernames] = useState(false);
-  const formattedUsersBio = useMemo(() => {
-    return users.map((user) => {
-      return {
-        ...user,
-        bio: (user.bio ?? '').replace(BREAK_LINES, ''),
-      };
-    });
-  }, [users]);
 
   return (
     <StyledList>
-      {formattedUsersBio.map((user) => (
+      {users.map((user) => (
         <FollowListUserItem
           key={user.dbid}
-          username={user.username ?? ''}
           handleClick={handleClick}
-          bio={user.bio}
           queryRef={query}
           userRef={user}
           fadeUsernames={fadeUsernames}
           setFadeUsernames={(val) => setFadeUsernames(val)}
         />
       ))}
-      {formattedUsersBio.length === 0 && (
+      {users.length === 0 && (
         <StyledEmptyList gap={48} align="center" justify="center">
           <BaseM>{emptyListText}</BaseM>
         </StyledEmptyList>

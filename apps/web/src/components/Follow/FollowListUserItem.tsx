@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -10,6 +10,7 @@ import FollowButton from '~/components/Follow/FollowButton';
 import { FollowListUserItemFragment$key } from '~/generated/FollowListUserItemFragment.graphql';
 import { FollowListUserItemQueryFragment$key } from '~/generated/FollowListUserItemQueryFragment.graphql';
 import colors from '~/shared/theme/colors';
+import { BREAK_LINES } from '~/utils/regex';
 
 import HoverCardOnUsername from '../HoverCard/HoverCardOnUsername';
 import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
@@ -17,8 +18,6 @@ import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
 type Props = {
   queryRef: FollowListUserItemQueryFragment$key;
   userRef: FollowListUserItemFragment$key;
-  username: string;
-  bio?: string;
   fadeUsernames: boolean;
   setFadeUsernames: (val: boolean) => void;
   handleClick: () => void;
@@ -27,8 +26,6 @@ type Props = {
 export default function FollowListUserItem({
   queryRef,
   userRef,
-  username,
-  bio,
   fadeUsernames,
   handleClick,
   setFadeUsernames,
@@ -45,6 +42,8 @@ export default function FollowListUserItem({
   const user = useFragment(
     graphql`
       fragment FollowListUserItemFragment on GalleryUser {
+        bio
+        username
         ...FollowButtonUserFragment
         ...HoverCardOnUsernameFragment
         ...ProfilePictureFragment
@@ -52,6 +51,8 @@ export default function FollowListUserItem({
     `,
     userRef
   );
+
+  const formattedUserBio = useMemo(() => (user.bio ?? '').replace(BREAK_LINES, ''), [user.bio]);
 
   const onMouseEnter = useCallback(() => {
     setFadeUsernames(true);
@@ -65,7 +66,7 @@ export default function FollowListUserItem({
     <StyledListItem
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
-      href={`/${username}`}
+      href={`/${user.username}`}
       onClick={handleClick}
       fadeUsernames={fadeUsernames}
     >
@@ -73,22 +74,20 @@ export default function FollowListUserItem({
         <ProfilePicture userRef={user} size="md" />
         <HoverCardOnUsername userRef={user}>
           <VStack inline>
-            <TitleS>{username}</TitleS>
+            <TitleS>{user.username}</TitleS>
             <StyledBaseM>
-              {bio && (
+              {formattedUserBio && (
                 <VStack justify="center">
-                  <Markdown text={bio} />
+                  <Markdown text={formattedUserBio} />
                 </VStack>
               )}
             </StyledBaseM>
           </VStack>
         </HoverCardOnUsername>
       </HStack>
-      {query && user && (
-        <VStack justify="center">
-          <StyledFollowButton queryRef={query} userRef={user} />
-        </VStack>
-      )}
+      <VStack justify="center">
+        <StyledFollowButton queryRef={query} userRef={user} />
+      </VStack>
     </StyledListItem>
   );
 }
