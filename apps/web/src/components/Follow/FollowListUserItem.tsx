@@ -72,6 +72,7 @@ export default function FollowListUserItem({
   const onMouseLeave = useCallback(() => {
     setFadeUsernames(false);
   }, [setFadeUsernames]);
+
   return (
     <StyledListItem
       onMouseEnter={onMouseEnter}
@@ -138,7 +139,7 @@ const StyledBaseM = styled(BaseM)`
 const StyledContainer = styled(VStack)`
   max-width: 220px;
 
-  @media only screen and ${breakpoints.desktop} {
+  @media only screen and ${breakpoints.tablet} {
     max-width: none;
   }
 `;
