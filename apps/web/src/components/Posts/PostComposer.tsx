@@ -2,12 +2,14 @@ import { useCallback, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
+import ErrorText from '~/components/core/Text/ErrorText';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { PostComposerFragment$key } from '~/generated/PostComposerFragment.graphql';
 import useCreatePost from '~/hooks/api/posts/useCreatePost';
 import { ChevronLeftIcon } from '~/icons/ChevronLeftIcon';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
+import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 
 import breakpoints from '../core/breakpoints';
 import { Button } from '../core/Button/Button';
@@ -55,6 +57,8 @@ export default function PostComposer({ onBackClick, tokenRef }: Props) {
   const { pushToast } = useToastActions();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const track = useTrack();
+  const [generalError, setGeneralError] = useState('');
+  const reportError = useReportError();
 
   const handlePostClick = useCallback(async () => {
     setIsSubmitting(true);
@@ -68,6 +72,10 @@ export default function PostComposer({ onBackClick, tokenRef }: Props) {
       });
     } catch (error) {
       // TODO add error state GAL-3841
+      if (error instanceof Error) {
+        reportError(error);
+      }
+      setGeneralError('Post failed to upload, please try again');
       setIsSubmitting(false);
       return;
     }
@@ -86,6 +94,8 @@ export default function PostComposer({ onBackClick, tokenRef }: Props) {
     token.dbid,
     token.name,
     track,
+    setGeneralError,
+    reportError,
   ]);
 
   const handleBackClick = useCallback(() => {
@@ -129,6 +139,7 @@ export default function PostComposer({ onBackClick, tokenRef }: Props) {
         </ContentContainer>
       </VStack>
       <HStack justify="flex-end" align="flex-end">
+        {generalError && <ErrorText message={generalError} />}
         <Button
           variant="primary"
           onClick={handlePostClick}
