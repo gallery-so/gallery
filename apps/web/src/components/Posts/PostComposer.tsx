@@ -70,21 +70,18 @@ export default function PostComposer({ onBackClick, tokenRef }: Props) {
         tokens: [{ dbid: token.dbid, communityId: token.community?.id || '' }],
         caption: description,
       });
+      setIsSubmitting(false);
+      hideModal();
+      pushToast({
+        message: `Successfully posted ${token.name || 'item'}`,
+      });
     } catch (error) {
-      // TODO add error state GAL-3841
+      setIsSubmitting(false);
       if (error instanceof Error) {
         reportError(error);
       }
       setGeneralError('Post failed to upload, please try again');
-      setIsSubmitting(false);
-      return;
     }
-
-    setIsSubmitting(false);
-    pushToast({
-      message: `Successfully posted ${token.name || 'item'}`,
-    });
-    hideModal();
   }, [
     createPost,
     description,
