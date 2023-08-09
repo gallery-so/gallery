@@ -1,7 +1,8 @@
 import Constants from 'expo-constants';
-import { PropsWithChildren, ReactNode, useCallback, useRef, useState } from 'react';
-import { LayoutChangeEvent, Linking, ScrollView, View, ViewProps } from 'react-native';
+import { PropsWithChildren, ReactNode, useCallback, useMemo, useRef, useState } from 'react';
+import { LayoutChangeEvent, Linking, ScrollView, Text, View, ViewProps } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { graphql, useLazyLoadQuery } from 'react-relay';
 
 import { BackButton } from '~/components/BackButton';
 import { Button } from '~/components/Button';
@@ -10,6 +11,7 @@ import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/Gal
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { InteractiveLink } from '~/components/InteractiveLink';
 import { Typography } from '~/components/Typography';
+import { SettingsScreenQuery } from '~/generated/SettingsScreenQuery.graphql';
 
 import { useLogout } from '../../hooks/useLogout';
 import { BugReportIcon } from '../../icons/BugReportIcon';
@@ -17,18 +19,39 @@ import { DiscordIcon } from '../../icons/DiscordIcon';
 import { GLogoIcon } from '../../icons/GLogoIcon';
 import { RightArrowIcon } from '../../icons/RightArrowIcon';
 import { TwitterIcon } from '../../icons/TwitterIcon';
+import { DebugBottomSheet } from './DebugBottomSheet';
 
 const appVersion = Constants.expoConfig?.version;
 const commitHash = Constants.expoConfig?.extra?.commitHash;
 
 export function SettingsScreen() {
+  const query = useLazyLoadQuery<SettingsScreenQuery>(
+    graphql`
+      query SettingsScreenQuery {
+        viewer {
+          ... on Viewer {
+            user {
+              roles
+            }
+          }
+        }
+      }
+    `,
+    {}
+  );
+
   const { top } = useSafeAreaInsets();
-  const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
+  const feedbackBottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
+  const debugBottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
 
   const [bottomSectionHeight, setBottomSectionHeight] = useState(200);
 
   const handleBugReportPress = useCallback(() => {
-    bottomSheetRef.current?.present();
+    feedbackBottomSheetRef.current?.present();
+  }, []);
+
+  const handleDebugPress = useCallback(() => {
+    debugBottomSheetRef.current?.present();
   }, []);
 
   const handleDiscordPress = useCallback(() => {
@@ -53,6 +76,10 @@ export function SettingsScreen() {
   }, []);
 
   const formattedCommitHash = commitHash?.slice(0, 6);
+
+  const isAdminUser = useMemo(() => {
+    return query.viewer?.user?.roles?.includes('ADMIN') ?? false;
+  }, [query.viewer?.user?.roles]);
 
   return (
     <View style={{ paddingTop: top }} className="relative flex-1 bg-white dark:bg-black-900">
@@ -122,10 +149,20 @@ export function SettingsScreen() {
           <InteractiveLink href="https://gallery.so/privacy" type={null}>
             PRIVACY POLICY
           </InteractiveLink>
+          {isAdminUser && (
+            <GalleryTouchableOpacity
+              onPress={handleDebugPress}
+              eventElementId={null}
+              eventName={null}
+            >
+              <Text className="text-shadow dark:text-white">DEBUG</Text>
+            </GalleryTouchableOpacity>
+          )}
         </View>
       </View>
 
-      <FeedbackBottomSheet ref={bottomSheetRef} />
+      <FeedbackBottomSheet ref={feedbackBottomSheetRef} />
+      {isAdminUser && <DebugBottomSheet ref={debugBottomSheetRef} />}
     </View>
   );
 }
