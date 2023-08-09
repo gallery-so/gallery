@@ -136,7 +136,7 @@ const StyledBaseM = styled(BaseM)`
 `;
 
 const StyledContainer = styled(VStack)`
-  max-width: 250px;
+  max-width: 220px;
 
   @media only screen and ${breakpoints.desktop} {
     max-width: none;
