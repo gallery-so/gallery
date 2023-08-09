@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { useNavigation } from '@react-navigation/native';
 import clsx from 'clsx';
 import { useColorScheme } from 'nativewind';
@@ -81,13 +80,17 @@ export default function ProfileViewSharedCommunities({ userRef }: Props) {
     <View className="flex flex-row items-center mt-3 mb-2 space-x-1">
       <CommunityProfilePictureBubblesWithCount
         onPress={handleSeeAllPress}
-        totalCount={sharedCommunities.length}
+        totalCount={totalSharedCommunities}
         eventElementId="Shared Followers Bubbles"
         eventName="Shared Followers Bubbles pressed"
         userRefs={sharedCommunities}
       />
 
-      <HoldsText onSeeAll={handleSeeAllPress} communityRefs={sharedCommunities} />
+      <HoldsText
+        onSeeAll={handleSeeAllPress}
+        communityRefs={sharedCommunities}
+        totalCount={totalSharedCommunities}
+      />
 
       <ProfileViewSharedCommunitiesSheet ref={bottomSheetRef} userRef={user} />
     </View>
@@ -98,9 +101,10 @@ type HoldsTextProps = {
   onSeeAll: () => void;
   style?: ViewProps['style'];
   communityRefs: ProfileViewSharedCommunitiesHoldsTextFragment$key;
+  totalCount: number;
 };
 
-function HoldsText({ communityRefs, onSeeAll, style }: HoldsTextProps) {
+function HoldsText({ communityRefs, onSeeAll, style, totalCount }: HoldsTextProps) {
   const communities = useFragment(
     graphql`
       fragment ProfileViewSharedCommunitiesHoldsTextFragment on Community @relay(plural: true) {
@@ -188,7 +192,7 @@ function HoldsText({ communityRefs, onSeeAll, style }: HoldsTextProps) {
               color: colorScheme === 'dark' ? colors.white : colors.black['800'],
             }}
           >
-            {communities.length - communitiesToShow.length} others
+            {totalCount - communitiesToShow.length} others
           </InteractiveLink>
         </View>
       )}

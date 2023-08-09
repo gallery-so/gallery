@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { useCallback } from 'react';
 import { View } from 'react-native';
 import { useFragment } from 'react-relay';

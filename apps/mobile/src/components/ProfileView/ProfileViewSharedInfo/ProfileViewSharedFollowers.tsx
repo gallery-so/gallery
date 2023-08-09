@@ -73,13 +73,17 @@ export default function ProfileViewSharedFollowers({ userRef }: Props) {
     <View className="flex flex-row flex-wrap space-x-1">
       <ProfilePictureBubblesWithCount
         onPress={handleSeeAllPress}
-        totalCount={sharedFollowers.length}
+        totalCount={totalSharedFollowers}
         eventElementId="Shared Followers Bubbles"
         eventName="Shared Followers Bubbles pressed"
         userRefs={sharedFollowers}
       />
 
-      <FollowingText onSeeAll={handleSeeAllPress} userRefs={sharedFollowers} />
+      <FollowingText
+        onSeeAll={handleSeeAllPress}
+        userRefs={sharedFollowers}
+        totalCount={totalSharedFollowers}
+      />
 
       <ProfileViewSharedFollowersSheet ref={bottomSheetRef} userRef={user} />
     </View>
@@ -90,9 +94,10 @@ type FollowingTextProps = {
   onSeeAll: () => void;
   style?: ViewProps['style'];
   userRefs: ProfileViewSharedFollowersFollowingTextFragment$key;
+  totalCount: number;
 };
 
-function FollowingText({ userRefs, onSeeAll, style }: FollowingTextProps) {
+function FollowingText({ userRefs, onSeeAll, style, totalCount }: FollowingTextProps) {
   const users = useFragment(
     graphql`
       fragment ProfileViewSharedFollowersFollowingTextFragment on GalleryUser @relay(plural: true) {
@@ -163,7 +168,7 @@ function FollowingText({ userRefs, onSeeAll, style }: FollowingTextProps) {
               color: colorScheme === 'dark' ? colors.white : colors.black['800'],
             }}
           >
-            {users.length - usersToShow.length} others
+            {totalCount - usersToShow.length} others
           </InteractiveLink>
         </View>
       )}
