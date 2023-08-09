@@ -56,10 +56,9 @@ export default function FollowListUserItem({
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
   const formattedUserBio = useMemo(() => {
     const truncate = (bio: string) => {
-      if (bio.length > 250 && isMobile) {
-        return `${bio.slice(0, 250)}...`;
-      } else if (bio.length > 320) {
-        return `${bio.slice(0, 320)}...`;
+      const maxLength = isMobile ? 250 : 320;
+      if (bio.length > maxLength && isMobile) {
+        return `${bio.slice(0, maxLength)}...`;
       }
       return bio;
     };
