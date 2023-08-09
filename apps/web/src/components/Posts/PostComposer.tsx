@@ -10,6 +10,7 @@ import useCreatePost from '~/hooks/api/posts/useCreatePost';
 import { ChevronLeftIcon } from '~/icons/ChevronLeftIcon';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
+import colors from '~/shared/theme/colors';
 
 import breakpoints from '../core/breakpoints';
 import { Button } from '../core/Button/Button';
@@ -135,8 +136,12 @@ export default function PostComposer({ onBackClick, tokenRef }: Props) {
           </VStack>
         </ContentContainer>
       </VStack>
-      <HStack justify="flex-end" align="flex-end">
-        {generalError && <ErrorText message={generalError} />}
+      <HStack justify={generalError ? 'space-between' : 'flex-end'} align="flex-end">
+        {generalError && (
+          <StyledWrapper>
+            <StyledErrorText message={generalError} />
+          </StyledWrapper>
+        )}
         <Button
           variant="primary"
           onClick={handlePostClick}
@@ -170,4 +175,14 @@ const ContentContainer = styled.div`
   @media only screen and ${breakpoints.tablet} {
     flex-direction: row;
   }
+`;
+
+const StyledErrorText = styled(ErrorText)`
+  color: ${colors.red};
+`;
+
+const StyledWrapper = styled(HStack)`
+  display: flex;
+  height: 100%;
+  align-items: center;
 `;
