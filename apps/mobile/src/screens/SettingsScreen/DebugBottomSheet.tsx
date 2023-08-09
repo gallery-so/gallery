@@ -18,10 +18,8 @@ function DebugBottomSheet(props: Props, ref: ForwardedRef<GalleryBottomSheetModa
 
   useEffect(() => {
     const getToken = async () => {
-      try {
-        const token = await Notifications.getExpoPushTokenAsync();
-        setExpoPushToken(token.data);
-      } catch (error) {}
+      const token = await Notifications.getExpoPushTokenAsync();
+      setExpoPushToken(token.data);
     };
     getToken();
   }, []);
