@@ -3,6 +3,7 @@ import { BottomSheetModal, BottomSheetModalProps } from '@gorhom/bottom-sheet';
 import { NavigationContext, useNavigation } from '@react-navigation/native';
 import { ForwardedRef, forwardRef, useEffect, useRef } from 'react';
 import { Keyboard } from 'react-native';
+import { SharedValue } from 'react-native-reanimated';
 
 import { GalleryBottomSheetBackdrop } from '~/components/GalleryBottomSheet/GalleryBottomSheetBackdrop';
 import { GalleryBottomSheetBackground } from '~/components/GalleryBottomSheet/GalleryBottomSheetBackground';
@@ -10,10 +11,20 @@ import { GalleryBottomSheetHandle } from '~/components/GalleryBottomSheet/Galler
 
 export type GalleryBottomSheetModalType = BottomSheetModal;
 
+type GalleryBottomSheetModalProps = {
+  children: React.ReactNode;
+  snapPoints:
+    | Readonly<{ value: (string | number)[] }>
+    | (string | number)[]
+    | SharedValue<(string | number)[]>;
+} & Omit<BottomSheetModalProps, 'snapPoints'>;
+
 function GalleryBottomSheetModal(
-  { children, ...props }: BottomSheetModalProps,
+  { children, ...props }: GalleryBottomSheetModalProps,
   ref: ForwardedRef<GalleryBottomSheetModalType>
 ) {
+  const { snapPoints, ...rest } = props;
+
   const navigation = useNavigation();
 
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
@@ -46,7 +57,10 @@ function GalleryBottomSheetModal(
       backgroundComponent={GalleryBottomSheetBackground}
       backdropComponent={GalleryBottomSheetBackdrop}
       handleComponent={GalleryBottomSheetHandle}
-      {...props}
+      // @ts-expect-error - `snapPoints` is not typed correctly in `@gorhom/bottom-sheet`
+      // https://github.com/gorhom/react-native-bottom-sheet/issues/1478
+      snapPoints={snapPoints}
+      {...rest}
     >
       {/* Pass the parent's navigation down to this bottom sheet so it has */}
       {/* all of the context that its parent did. We may need to do more of this in the future */}
@@ -59,7 +73,7 @@ function GalleryBottomSheetModal(
   );
 }
 
-const ForwardedGalleryBottomSheetModal = forwardRef<BottomSheetModal, BottomSheetModalProps>(
+const ForwardedGalleryBottomSheetModal = forwardRef<BottomSheetModal, GalleryBottomSheetModalProps>(
   GalleryBottomSheetModal
 );
 

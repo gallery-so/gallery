@@ -84,7 +84,7 @@ function DeletePostBottomSheet(
           ref.current = value;
         }
       }}
-      snapPoints={animatedSnapPoints.value}
+      snapPoints={animatedSnapPoints}
       handleHeight={animatedHandleHeight}
       contentHeight={animatedContentHeight}
     >
