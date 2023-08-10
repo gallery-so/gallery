@@ -67,15 +67,15 @@ export function NotificationSettingsScreen() {
         </Typography>
         {isPushNotificationPermissionGranted ? (
           <Button
-            eventElementId={null}
+            eventElementId="Enable Push Notifications Button (Disabled) in Settings Screen"
             eventName={null}
             variant="disabled"
             text="Push notifications are enabled"
           />
         ) : (
           <Button
-            eventElementId={null}
-            eventName={null}
+            eventElementId="Enable Push Notifications Button in Settings Screen"
+            eventName="Enable Push Notifications Button in Settings Screen Pressed"
             text="Enable Push Notifications"
             onPress={handleResyncPushNotifications}
           />
