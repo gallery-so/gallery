@@ -83,7 +83,7 @@ type OptionsProps<ValueType extends string> = {
   eventElementId: string;
 };
 
-function Options<ValueType extends string>({
+export function Options<ValueType extends string>({
   selected,
   options,
   style,
@@ -122,7 +122,7 @@ function Options<ValueType extends string>({
   );
 }
 
-function Section({ children, style }: PropsWithChildren<{ style?: ViewProps['style'] }>) {
+export function Section({ children, style }: PropsWithChildren<{ style?: ViewProps['style'] }>) {
   return (
     <View style={style} className="flex flex-col space-y-2">
       {children}

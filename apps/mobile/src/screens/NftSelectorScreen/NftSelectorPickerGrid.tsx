@@ -16,7 +16,10 @@ import {
   NftSelectorPickerGridTokensFragment$key,
 } from '~/generated/NftSelectorPickerGridTokensFragment.graphql';
 import { MainTabStackNavigatorProp, ScreenWithNftSelector } from '~/navigation/types';
-import { NetworkChoice } from '~/screens/NftSelectorScreen/NftSelectorFilterBottomSheet';
+import {
+  NetworkChoice,
+  NftSelectorSortView,
+} from '~/screens/NftSelectorScreen/NftSelectorFilterBottomSheet';
 import { NftSelectorPickerSingularAsset } from '~/screens/NftSelectorScreen/NftSelectorPickerSingularAsset';
 import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
@@ -27,6 +30,7 @@ type NftSelectorPickerGridProps = {
     searchQuery: string;
     ownerFilter: 'Collected' | 'Created';
     networkFilter: NetworkChoice;
+    sortView: NftSelectorSortView;
   };
   screen: ScreenWithNftSelector;
 
@@ -46,6 +50,7 @@ export function NftSelectorPickerGrid({
           ... on Viewer {
             user {
               tokens {
+                creationTime
                 ...NftSelectorPickerGridTokensFragment
               }
             }
@@ -64,6 +69,7 @@ export function NftSelectorPickerGrid({
         chain
         isSpamByUser
         isSpamByProvider
+        creationTime
 
         contract {
           # Keeping name in the cache so the contract picker screen
@@ -123,6 +129,40 @@ export function NftSelectorPickerGrid({
     tokens,
   ]);
 
+  const sortedTokens = useMemo(() => {
+    const sortedTokens = [...filteredTokens];
+
+    if (searchCriteria.sortView === 'Recently added') {
+      sortedTokens.sort((a, b) => {
+        return new Date(b.creationTime).getTime() - new Date(a.creationTime).getTime();
+      });
+    } else if (searchCriteria.sortView === 'Oldest') {
+      sortedTokens.sort((a, b) => {
+        return new Date(a.creationTime).getTime() - new Date(b.creationTime).getTime();
+      });
+    } else if (searchCriteria.sortView === 'Alphabetical') {
+      sortedTokens.sort((a, b) => {
+        const contractA = a.contract?.name?.toLocaleLowerCase();
+        const contractB = b.contract?.name?.toLocaleLowerCase();
+
+        if (contractA && contractB) {
+          if (contractA < contractB) {
+            return -1;
+          }
+
+          if (contractA > contractB) {
+            return 1;
+          }
+
+          return 0;
+        }
+        return 0;
+      });
+    }
+
+    return sortedTokens;
+  }, [filteredTokens, searchCriteria.sortView]);
+
   type Group = {
     address: string;
     tokens: Array<NftSelectorPickerGridTokensFragment$data[number]>;
@@ -131,7 +171,7 @@ export function NftSelectorPickerGrid({
   const groups = useMemo(() => {
     const groups: GroupedTokens = {};
 
-    for (const token of filteredTokens) {
+    for (const token of sortedTokens) {
       const address = token?.contract?.contractAddress?.address;
 
       if (!address) {
@@ -150,7 +190,7 @@ export function NftSelectorPickerGrid({
     }
 
     return groups;
-  }, [filteredTokens]);
+  }, [sortedTokens]);
 
   type Row = { groups: Group[] };
   const rows = useMemo(() => {
