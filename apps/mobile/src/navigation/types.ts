@@ -41,6 +41,7 @@ export type MainTabStackNavigatorParamList = {
   NftSelectorContractScreen: { contractAddress: string; page: ScreenWithNftSelector };
   SettingsProfile: undefined;
   Post: { postId: string };
+  NotificationSettingsScreen: undefined;
 
   // The main five tabs
   Account: undefined;

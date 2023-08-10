@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native';
 import Constants from 'expo-constants';
 import { PropsWithChildren, ReactNode, useCallback, useMemo, useRef, useState } from 'react';
 import { LayoutChangeEvent, Linking, ScrollView, Text, View, ViewProps } from 'react-native';
@@ -12,6 +13,8 @@ import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { InteractiveLink } from '~/components/InteractiveLink';
 import { Typography } from '~/components/Typography';
 import { SettingsScreenQuery } from '~/generated/SettingsScreenQuery.graphql';
+import { NotificationsIcon } from '~/navigation/MainTabNavigator/NotificationsIcon';
+import { MainTabStackNavigatorProp } from '~/navigation/types';
 
 import { useLogout } from '../../hooks/useLogout';
 import { BugReportIcon } from '../../icons/BugReportIcon';
@@ -43,6 +46,7 @@ export function SettingsScreen() {
   const { top } = useSafeAreaInsets();
   const feedbackBottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
   const debugBottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
+  const navigation = useNavigation<MainTabStackNavigatorProp>();
 
   const [bottomSectionHeight, setBottomSectionHeight] = useState(200);
 
@@ -65,6 +69,10 @@ export function SettingsScreen() {
   const handleTwitterPress = useCallback(() => {
     Linking.openURL('https://twitter.com/GALLERY');
   }, []);
+
+  const handleNotificationsPress = useCallback(() => {
+    navigation.navigate('NotificationSettingsScreen');
+  }, [navigation]);
 
   const [logout, isLoggingOut] = useLogout();
   const handleSignOut = useCallback(() => {
@@ -117,6 +125,13 @@ export function SettingsScreen() {
             text="Twitter"
             icon={<TwitterIcon width={24} />}
           />
+          {isAdminUser && (
+            <SettingsRow
+              onPress={handleNotificationsPress}
+              text="Notifications"
+              icon={<NotificationsIcon width={24} />}
+            />
+          )}
         </SettingsSection>
       </ScrollView>
 
