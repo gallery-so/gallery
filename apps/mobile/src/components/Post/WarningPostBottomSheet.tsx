@@ -42,7 +42,7 @@ function WarningPostBottomSheet(props: Props, ref: ForwardedRef<GalleryBottomShe
           ref.current = value;
         }
       }}
-      snapPoints={animatedSnapPoints.value}
+      snapPoints={animatedSnapPoints}
       handleHeight={animatedHandleHeight}
       contentHeight={animatedContentHeight}
     >
