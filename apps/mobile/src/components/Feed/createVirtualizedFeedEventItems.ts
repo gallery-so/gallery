@@ -231,13 +231,15 @@ export function createVirtualizedFeedEventItems({
   }
 
   const setVirtualizeItemsForPost = (post: createVirtualizedFeedEventItemsPostFragment$data) => {
+    const uniqueKey = Math.random().toString();
+
     if (!post.tokens) return;
     items.push({
       kind: 'post-item-header',
       post,
       event: null,
       queryRef: query,
-      key: `post-item-header-${post.dbid}`,
+      key: `post-item-header-${post.dbid}-${uniqueKey}`,
       postId: post.dbid,
       itemType: 'Post',
     });
@@ -247,7 +249,7 @@ export function createVirtualizedFeedEventItems({
         kind: 'post-item-caption',
         post,
         event: null,
-        key: `post-item-caption-${post.dbid}`,
+        key: `post-item-caption-${post.dbid}-${uniqueKey}`,
         postId: post.dbid,
         itemType: 'Post',
       });
@@ -258,7 +260,7 @@ export function createVirtualizedFeedEventItems({
       post,
       event: null,
       queryRef: query,
-      key: `post-item-event-${post.dbid}`,
+      key: `post-item-event-${post.dbid}-${uniqueKey}`,
       postId: post.dbid,
       itemType: 'Post',
     });
@@ -268,7 +270,7 @@ export function createVirtualizedFeedEventItems({
       post,
       event: null,
       queryRef: query,
-      key: `post-item-socialize-${post.dbid}`,
+      key: `post-item-socialize-${post.dbid}-${uniqueKey}`,
       postId: post.dbid,
       onCommentPress: function () {
         listRef.current?.scrollToItem({ item: this, animated: true, viewOffset: 0.5 });
@@ -278,6 +280,8 @@ export function createVirtualizedFeedEventItems({
   };
 
   const setVirtualizeItemsForEvent = (event: createVirtualizedFeedEventItemsFragment$data) => {
+    const uniqueKey = Math.random().toString();
+
     if (!event.eventData) return;
 
     // Make sure this is a supported feed event
@@ -299,7 +303,7 @@ export function createVirtualizedFeedEventItems({
         post: null,
         event,
         queryRef: query,
-        key: `feed-item-header-${event.dbid}`,
+        key: `feed-item-header-${event.dbid}-${uniqueKey}`,
         eventId: event.dbid,
         itemType: 'FeedEvent',
       });
@@ -309,7 +313,7 @@ export function createVirtualizedFeedEventItems({
           kind: 'feed-item-caption',
           post: null,
           event,
-          key: `feed-item-caption-${event.dbid}`,
+          key: `feed-item-caption-${event.dbid}-${uniqueKey}`,
           eventId: event.dbid,
           itemType: 'FeedEvent',
         });
@@ -319,7 +323,7 @@ export function createVirtualizedFeedEventItems({
         kind: 'feed-item-event',
         post: null,
         event,
-        key: `feed-item-event-${event.dbid}`,
+        key: `feed-item-event-${event.dbid}-${uniqueKey}`,
         queryRef: query,
         eventId: event.dbid,
         itemType: 'FeedEvent',
@@ -329,7 +333,7 @@ export function createVirtualizedFeedEventItems({
         kind: 'feed-item-socialize',
         post: null,
         event,
-        key: `feed-item-socialize-${event.dbid}`,
+        key: `feed-item-socialize-${event.dbid}-${uniqueKey}`,
         eventId: event.dbid,
         queryRef: query,
         onCommentPress: function () {
