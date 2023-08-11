@@ -1,5 +1,5 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
-import { useCallback, useRef, useState } from 'react';
+import { Suspense, useCallback, useRef, useState } from 'react';
 import { Keyboard, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
@@ -22,7 +22,7 @@ import {
 
 import { usePost } from './usePost';
 
-export function PostComposerScreen() {
+function PostComposerScreenInner() {
   const route = useRoute<RouteProp<PostStackNavigatorParamList, 'PostComposer'>>();
   const query = useLazyLoadQuery<PostComposerScreenQuery>(
     graphql`
@@ -55,7 +55,6 @@ export function PostComposerScreen() {
     throw new Error("We couldn't find that token. Something went wrong and we're looking into it.");
   }
 
-  const { top } = useSafeAreaInsets();
   const { post } = usePost({
     tokenRef: token,
   });
@@ -118,6 +117,49 @@ export function PostComposerScreen() {
   ]);
 
   return (
+    <View className="flex flex-col flex-grow space-y-8">
+      <View className="px-4 relative flex-row items-center justify-between">
+        <BackButton onPress={handleBackPress} />
+
+        <View className="flex flex-row justify-center items-center" pointerEvents="none">
+          <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+            New post
+          </Typography>
+        </View>
+
+        <GalleryTouchableOpacity
+          onPress={handlePost}
+          eventElementId="Post Button"
+          eventName="Post button clicked"
+        >
+          <Typography
+            className="text-sm text-activeBlue"
+            font={{
+              family: 'ABCDiatype',
+              weight: 'Bold',
+            }}
+          >
+            POST
+          </Typography>
+        </GalleryTouchableOpacity>
+      </View>
+
+      <View className="px-4 flex flex-col flex-grow space-y-2">
+        <PostInput value={caption} onChange={setCaption} tokenRef={token} />
+
+        <View className="py-4">
+          <PostTokenPreview />
+        </View>
+      </View>
+      <WarningPostBottomSheet ref={bottomSheetRef} />
+    </View>
+  );
+}
+
+export function PostComposerScreen() {
+  const { top } = useSafeAreaInsets();
+
+  return (
     <GalleryTouchableOpacity
       withoutFeedback
       onPress={Keyboard.dismiss}
@@ -125,44 +167,10 @@ export function PostComposerScreen() {
       eventElementId={null}
       eventName={null}
     >
-      <View className="flex-1 bg-white dark:bg-black-900" style={{ paddingTop: top }}>
-        <View className="flex flex-col flex-grow space-y-8">
-          <View className="px-4 relative flex-row items-center justify-between">
-            <BackButton onPress={handleBackPress} />
-
-            <View className="flex flex-row justify-center items-center" pointerEvents="none">
-              <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-                New post
-              </Typography>
-            </View>
-
-            <GalleryTouchableOpacity
-              onPress={handlePost}
-              eventElementId="Post Button"
-              eventName="Post button clicked"
-            >
-              <Typography
-                className="text-sm text-activeBlue"
-                font={{
-                  family: 'ABCDiatype',
-                  weight: 'Bold',
-                }}
-              >
-                POST
-              </Typography>
-            </GalleryTouchableOpacity>
-          </View>
-
-          <View className="px-4 flex flex-col flex-grow space-y-2">
-            <PostInput value={caption} onChange={setCaption} tokenRef={token} />
-
-            <View className="py-4">
-              <PostTokenPreview />
-            </View>
-          </View>
-        </View>
-
-        <WarningPostBottomSheet ref={bottomSheetRef} />
+      <View className="flex-1 bg-offWhite dark:bg-black-900" style={{ paddingTop: top }}>
+        <Suspense fallback={null}>
+          <PostComposerScreenInner />
+        </Suspense>
       </View>
     </GalleryTouchableOpacity>
   );
