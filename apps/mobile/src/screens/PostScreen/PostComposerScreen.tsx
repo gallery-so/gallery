@@ -118,45 +118,53 @@ export function PostComposerScreen() {
   ]);
 
   return (
-    <View className="flex-1 bg-white dark:bg-black-900" style={{ paddingTop: top }}>
-      <View className="flex flex-col flex-grow space-y-8">
-        <View className="px-4 relative flex-row items-center justify-between">
-          <BackButton onPress={handleBackPress} />
+    <GalleryTouchableOpacity
+      withoutFeedback
+      onPress={Keyboard.dismiss}
+      accessible={false}
+      eventElementId={null}
+      eventName={null}
+    >
+      <View className="flex-1 bg-white dark:bg-black-900" style={{ paddingTop: top }}>
+        <View className="flex flex-col flex-grow space-y-8">
+          <View className="px-4 relative flex-row items-center justify-between">
+            <BackButton onPress={handleBackPress} />
 
-          <View className="flex flex-row justify-center items-center" pointerEvents="none">
-            <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-              New post
-            </Typography>
-          </View>
+            <View className="flex flex-row justify-center items-center" pointerEvents="none">
+              <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+                New post
+              </Typography>
+            </View>
 
-          <GalleryTouchableOpacity
-            onPress={handlePost}
-            eventElementId="Post Button"
-            eventName="Post button clicked"
-          >
-            <Typography
-              className="text-sm text-activeBlue"
-              font={{
-                family: 'ABCDiatype',
-                weight: 'Bold',
-              }}
+            <GalleryTouchableOpacity
+              onPress={handlePost}
+              eventElementId="Post Button"
+              eventName="Post button clicked"
             >
-              POST
-            </Typography>
-          </GalleryTouchableOpacity>
-        </View>
+              <Typography
+                className="text-sm text-activeBlue"
+                font={{
+                  family: 'ABCDiatype',
+                  weight: 'Bold',
+                }}
+              >
+                POST
+              </Typography>
+            </GalleryTouchableOpacity>
+          </View>
 
-        <View className="px-4 flex flex-col flex-grow space-y-2">
-          <PostInput value={caption} onChange={setCaption} tokenRef={token} />
+          <View className="px-4 flex flex-col flex-grow space-y-2">
+            <PostInput value={caption} onChange={setCaption} tokenRef={token} />
 
-          <View className="py-4">
-            <PostTokenPreview />
+            <View className="py-4">
+              <PostTokenPreview />
+            </View>
           </View>
         </View>
-      </View>
 
-      <WarningPostBottomSheet ref={bottomSheetRef} />
-    </View>
+        <WarningPostBottomSheet ref={bottomSheetRef} />
+      </View>
+    </GalleryTouchableOpacity>
   );
 }
 
