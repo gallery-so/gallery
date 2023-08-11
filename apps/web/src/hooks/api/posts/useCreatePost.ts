@@ -62,6 +62,24 @@ export default function useCreatePost() {
           const newPostRootField = store.getRootField('postTokens');
           const newPostRecord = newPostRootField?.getLinkedRecord('post');
 
+          // UPDATE CURATED FEED
+          const rootRecord = store.getRoot();
+          const curatedFeedConnection = ConnectionHandler.getConnection(
+            rootRecord,
+            'NonAuthedFeed_curatedFeed',
+            { includePosts: true }
+          );
+
+          if (newPostRecord && curatedFeedConnection) {
+            const edge = ConnectionHandler.createEdge(
+              store,
+              curatedFeedConnection,
+              newPostRecord,
+              'FeedEdge'
+            );
+            ConnectionHandler.insertEdgeAfter(curatedFeedConnection, edge);
+          }
+
           // UPDATE COMMUNITY FEED
           // Get a reference to current posts in the community feed
           const communityRoot = store.get(token.communityId);
