@@ -52,6 +52,7 @@ export function PostInput({ value, onChange, tokenRef }: Props) {
         maxLength={MAX_LENGTH}
         autoCapitalize="none"
         autoComplete="off"
+        keyboardAppearance={colorScheme}
         placeholder={inputPlaceHolder}
         style={{ flex: 1, color: colorScheme === 'dark' ? colors.white : colors.black['800'] }}
       />

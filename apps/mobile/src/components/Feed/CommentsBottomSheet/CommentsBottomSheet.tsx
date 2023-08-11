@@ -30,6 +30,7 @@ import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import useKeyboardStatus from '../../../utils/useKeyboardStatus';
 import { FeedItemTypes } from '../createVirtualizedFeedEventItems';
+import { CommentListFallback } from './CommentListFallback';
 
 const SNAP_POINTS = [350];
 
@@ -111,7 +112,7 @@ export function CommentsBottomSheet({ bottomSheetRef, feedId, type }: CommentsBo
         </Typography>
 
         <View className="flex-grow">
-          <Suspense fallback={null}>
+          <Suspense fallback={<CommentListFallback />}>
             {isOpen && <ConnectedCommentsList type={type} feedId={feedId} />}
           </Suspense>
         </View>
