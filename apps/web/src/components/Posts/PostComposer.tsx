@@ -2,12 +2,16 @@ import { useCallback, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
+import ErrorText from '~/components/core/Text/ErrorText';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { PostComposerFragment$key } from '~/generated/PostComposerFragment.graphql';
 import useCreatePost from '~/hooks/api/posts/useCreatePost';
+import AlertTriangleIcon from '~/icons/AlertTriangleIcon';
 import { ChevronLeftIcon } from '~/icons/ChevronLeftIcon';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
+import { useReportError } from '~/shared/contexts/ErrorReportingContext';
+import colors from '~/shared/theme/colors';
 
 import breakpoints from '../core/breakpoints';
 import { Button } from '../core/Button/Button';
@@ -55,6 +59,8 @@ export default function PostComposer({ onBackClick, tokenRef }: Props) {
   const { pushToast } = useToastActions();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const track = useTrack();
+  const [generalError, setGeneralError] = useState('');
+  const reportError = useReportError();
 
   const handlePostClick = useCallback(async () => {
     setIsSubmitting(true);
@@ -66,17 +72,18 @@ export default function PostComposer({ onBackClick, tokenRef }: Props) {
         tokens: [{ dbid: token.dbid, communityId: token.community?.id || '' }],
         caption: description,
       });
-    } catch (error) {
-      // TODO add error state GAL-3841
       setIsSubmitting(false);
-      return;
+      hideModal();
+      pushToast({
+        message: `Successfully posted ${token.name || 'item'}`,
+      });
+    } catch (error) {
+      setIsSubmitting(false);
+      if (error instanceof Error) {
+        reportError(error);
+      }
+      setGeneralError('Post failed to upload, please try again');
     }
-
-    setIsSubmitting(false);
-    pushToast({
-      message: `Successfully posted ${token.name || 'item'}`,
-    });
-    hideModal();
   }, [
     createPost,
     description,
@@ -86,6 +93,8 @@ export default function PostComposer({ onBackClick, tokenRef }: Props) {
     token.dbid,
     token.name,
     track,
+    setGeneralError,
+    reportError,
   ]);
 
   const handleBackClick = useCallback(() => {
@@ -128,7 +137,13 @@ export default function PostComposer({ onBackClick, tokenRef }: Props) {
           </VStack>
         </ContentContainer>
       </VStack>
-      <HStack justify="flex-end" align="flex-end">
+      <HStack justify={generalError ? 'space-between' : 'flex-end'} align="flex-end">
+        {generalError && (
+          <StyledWrapper>
+            <AlertTriangleIcon color={colors.red} />
+            <StyledErrorText message={generalError} />
+          </StyledWrapper>
+        )}
         <Button
           variant="primary"
           onClick={handlePostClick}
@@ -162,4 +177,15 @@ const ContentContainer = styled.div`
   @media only screen and ${breakpoints.tablet} {
     flex-direction: row;
   }
+`;
+
+const StyledErrorText = styled(ErrorText)`
+  color: ${colors.red};
+`;
+
+const StyledWrapper = styled(HStack)`
+  display: flex;
+  height: 100%;
+  gap: 4px;
+  align-items: center;
 `;

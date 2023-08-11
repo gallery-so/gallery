@@ -49,7 +49,6 @@ export function PostInput({ value, onChange, tokenRef }: Props) {
         selectionColor={colorScheme === 'dark' ? colors.white : colors.black['800']}
         placeholderTextColor={colorScheme === 'dark' ? colors.metal : colors.shadow}
         multiline
-        autoFocus
         maxLength={MAX_LENGTH}
         autoCapitalize="none"
         autoComplete="off"

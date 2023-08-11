@@ -75,6 +75,7 @@ export default function UserFollowedUsersFeedEvent({
             }
           }
         }
+        ...FollowListUsersQueryFragment
       }
     `,
     queryRef
@@ -131,7 +132,7 @@ export default function UserFollowedUsersFeedEvent({
       showModal({
         content: (
           <StyledFollowList fullscreen={isMobile}>
-            <FollowListUsers userRefs={flattenedGenericFollows} />
+            <FollowListUsers queryRef={query} userRefs={flattenedGenericFollows} />
           </StyledFollowList>
         ),
         isFullPage: isMobile,
@@ -139,7 +140,7 @@ export default function UserFollowedUsersFeedEvent({
         headerVariant: 'thicc',
       });
     },
-    [flattenedGenericFollows, isMobile, showModal, track]
+    [flattenedGenericFollows, isMobile, showModal, track, query]
   );
 
   const followedNoRemainingUsers = genericFollows.length === 0;
