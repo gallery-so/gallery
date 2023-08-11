@@ -81,7 +81,7 @@ export function CommentBox({
   return (
     <View
       className={`border-t-2 border-solid ${
-        colorScheme === 'dark' ? `border-[${colors.black[500]}]` : `border-[${colors.porcelain}]`
+        colorScheme === 'dark' ? `border-[${colors.black[500]}]` : 'border-[#e2e2e2]'
       }`}
     >
       <View className="px-2 pb-2 flex flex-row items-center space-x-3 mt-2">
