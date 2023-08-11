@@ -124,8 +124,9 @@ export default function useCreatePost() {
         if (error instanceof Error) {
           reportError(error);
         } else {
-          reportError(`Could not admire post for an unknown reason`);
+          reportError(`Could not upload post for an unknown reason`);
         }
+        throw Error;
       }
     },
     [createPost, reportError, router]

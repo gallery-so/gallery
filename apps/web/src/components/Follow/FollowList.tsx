@@ -1,22 +1,32 @@
 import { useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
-import TextButton, { StyledButtonText } from '~/components/core/Button/TextButton';
+import breakpoints from '~/components/core/breakpoints';
 import { HStack } from '~/components/core/Spacer/Stack';
-import { MODAL_PADDING_THICC_PX } from '~/contexts/modal/constants';
+import { BaseS, BODY_FONT_FAMILY } from '~/components/core/Text/Text';
 import { FollowListFragment$key } from '~/generated/FollowListFragment.graphql';
-import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import { FollowListQueryFragment$key } from '~/generated/FollowListQueryFragment.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
 
 import FollowListUsers from './FollowListUsers';
 
 type Props = {
+  queryRef: FollowListQueryFragment$key;
   userRef: FollowListFragment$key;
 };
 
-export default function FollowList({ userRef }: Props) {
+export default function FollowList({ userRef, queryRef }: Props) {
+  const query = useFragment(
+    graphql`
+      fragment FollowListQueryFragment on Query {
+        ...FollowListUsersQueryFragment
+      }
+    `,
+    queryRef
+  );
+
   const user = useFragment(
     graphql`
       fragment FollowListFragment on GalleryUser {
@@ -32,31 +42,43 @@ export default function FollowList({ userRef }: Props) {
   );
 
   const [displayedList, setDisplayedList] = useState<'followers' | 'following'>('followers');
-  const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
   const userList = displayedList === 'followers' ? user.followers : user.following;
 
   const nonNullUserList = useMemo(() => removeNullValues(userList), [userList]);
 
   return (
-    <StyledFollowList fullscreen={isMobile}>
-      <StyledHeader gap={16} justify="center">
-        <StyledHeaderTextRight>
-          <StyledTextButton
-            text="Followers"
-            onClick={() => setDisplayedList('followers')}
-            active={displayedList === 'followers'}
-          />
-        </StyledHeaderTextRight>
-        <StyledHeaderText>
-          <StyledTextButton
-            text="Following"
-            onClick={() => setDisplayedList('following')}
-            active={displayedList === 'following'}
-          />
-        </StyledHeaderText>
+    <StyledFollowList>
+      <StyledHeader>
+        <StyledSpan
+          active={displayedList === 'followers'}
+          onClick={() => setDisplayedList('followers')}
+        >
+          <HStack gap={4} align="baseline">
+            <span>Followers</span>
+            {user.followers.length > 0 && (
+              <BaseS color={displayedList === 'followers' ? colors.black['800'] : colors.metal}>
+                {user.followers.length}
+              </BaseS>
+            )}
+          </HStack>
+        </StyledSpan>
+        <StyledSpan
+          active={displayedList === 'following'}
+          onClick={() => setDisplayedList('following')}
+        >
+          <HStack gap={4} align="baseline">
+            <span>Following</span>
+            {user.following.length > 0 && (
+              <BaseS color={displayedList === 'following' ? colors.black['800'] : colors.metal}>
+                {user.following.length}
+              </BaseS>
+            )}
+          </HStack>
+        </StyledSpan>
       </StyledHeader>
       <FollowListUsers
+        queryRef={query}
         userRefs={nonNullUserList}
         emptyListText={
           displayedList === 'followers' ? 'No followers yet.' : 'Not following anyone yet.'
@@ -66,39 +88,39 @@ export default function FollowList({ userRef }: Props) {
   );
 }
 
-const StyledFollowList = styled.div<{ fullscreen: boolean }>`
+const StyledFollowList = styled.div`
   height: 100%;
-  width: ${({ fullscreen }) => (fullscreen ? '100%' : '540px')};
+  width: 100%;
   display: flex;
   flex-direction: column;
+  padding-top: 24px;
 
-  ${({ fullscreen }) =>
-    fullscreen
-      ? css`
-          width: 100%;
-          padding: ${MODAL_PADDING_THICC_PX}px 8px;
-        `
-      : css`
-          width: 540px;
-        `}
+  @media only screen and ${breakpoints.tablet} {
+    padding-top: 24px;
+    border-top: 1px solid ${colors.porcelain};
+  }
 `;
 
 const StyledHeader = styled(HStack)`
-  padding-bottom: ${MODAL_PADDING_THICC_PX}px;
-`;
-
-const StyledHeaderText = styled.div`
   display: flex;
+  gap: 12px;
 `;
 
-const StyledHeaderTextRight = styled(StyledHeaderText)`
-  justify-content: flex-end;
-`;
+const StyledSpan = styled.span<{ active: boolean }>`
+  font-family: ${BODY_FONT_FAMILY};
+  line-height: 21px;
+  letter-spacing: -0.04em;
+  font-weight: 500;
+  font-size: 16px;
 
-const StyledTextButton = styled(TextButton)<{ active: boolean }>`
-  ${({ active }) =>
-    active &&
-    `${StyledButtonText} {
-    color: ${colors.black['800']};
-  }`}
+  @media only screen and ${breakpoints.tablet} {
+    font-size: 18px;
+  }
+
+  margin: 0;
+
+  color: ${({ active }) => (active ? colors.black['800'] : colors.metal)};
+
+  cursor: pointer;
+  text-decoration: none;
 `;

@@ -1,35 +1,43 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
-import Markdown from '~/components/core/Markdown/Markdown';
-import { HStack, VStack } from '~/components/core/Spacer/Stack';
-import { BaseM, TitleS } from '~/components/core/Text/Text';
+import breakpoints from '~/components/core/breakpoints';
+import { VStack } from '~/components/core/Spacer/Stack';
+import { BaseM } from '~/components/core/Text/Text';
 import { FollowListUsersFragment$key } from '~/generated/FollowListUsersFragment.graphql';
+import { FollowListUsersQueryFragment$key } from '~/generated/FollowListUsersQueryFragment.graphql';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
-import colors from '~/shared/theme/colors';
-import { BREAK_LINES } from '~/utils/regex';
 
-import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
+import FollowListUserItem from './FollowListUserItem';
 
 type Props = {
+  queryRef: FollowListUsersQueryFragment$key;
   userRefs: FollowListUsersFragment$key;
   emptyListText?: string;
 };
 
 export default function FollowListUsers({
+  queryRef,
   userRefs,
   emptyListText = 'No users to display.',
 }: Props) {
   const track = useTrack();
 
+  const query = useFragment(
+    graphql`
+      fragment FollowListUsersQueryFragment on Query {
+        ...FollowListUserItemQueryFragment
+      }
+    `,
+    queryRef
+  );
+
   const users = useFragment(
     graphql`
       fragment FollowListUsersFragment on GalleryUser @relay(plural: true) {
         dbid
-        bio
-        username
-        ...ProfilePictureFragment
+        ...FollowListUserItemFragment
       }
     `,
     userRefs
@@ -39,27 +47,21 @@ export default function FollowListUsers({
     track('Follower List Username Click');
   }, [track]);
 
-  const formattedUsersBio = useMemo(() => {
-    return users.map((user) => {
-      return {
-        ...user,
-        bio: (user.bio ?? '').replace(BREAK_LINES, ''),
-      };
-    });
-  }, [users]);
+  const [fadeUsernames, setFadeUsernames] = useState(false);
 
   return (
     <StyledList>
-      {formattedUsersBio.map((user) => (
-        <StyledListItem key={user.dbid} href={`/${user.username}`} onClick={handleClick}>
-          <HStack gap={4} align="center" inline>
-            <ProfilePicture userRef={user} size="sm" />
-            <TitleS>{user.username}</TitleS>
-          </HStack>
-          <StyledBaseM>{user.bio && <Markdown text={user.bio} />}</StyledBaseM>
-        </StyledListItem>
+      {users.map((user) => (
+        <FollowListUserItem
+          key={user.dbid}
+          handleClick={handleClick}
+          queryRef={query}
+          userRef={user}
+          fadeUsernames={fadeUsernames}
+          setFadeUsernames={(val) => setFadeUsernames(val)}
+        />
       ))}
-      {formattedUsersBio.length === 0 && (
+      {users.length === 0 && (
         <StyledEmptyList gap={48} align="center" justify="center">
           <BaseM>{emptyListText}</BaseM>
         </StyledEmptyList>
@@ -68,29 +70,13 @@ export default function FollowListUsers({
   );
 }
 
-const StyledBaseM = styled(BaseM)`
-  display: -webkit-box;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-
-  p {
-    padding-bottom: 0;
-  }
-`;
-
 const StyledList = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding-top: 32px;
-`;
-const StyledListItem = styled.a`
-  padding: 16px;
-  text-decoration: none;
-
-  &:hover {
-    background: ${colors.offWhite};
+  margin-bottom: 24px;
+  @media only screen and ${breakpoints.desktop} {
+    padding-top: 12px;
   }
 `;
 
