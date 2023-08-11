@@ -1,10 +1,8 @@
 import { useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
 import { ForwardedRef, forwardRef, useRef } from 'react';
 import { View, ViewProps } from 'react-native';
-import { EthIcon } from 'src/icons/EthIcon';
-import { PoapIcon } from 'src/icons/PoapIcon';
-import { TezosIcon } from 'src/icons/TezosIcon';
 import { WorldIcon } from 'src/icons/WorldIcon';
+import { getChainIconComponent } from 'src/utils/getChainIconComponent';
 
 import {
   GalleryBottomSheetModal,
@@ -13,14 +11,17 @@ import {
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { Options, Section } from '~/components/Select';
 import { Typography } from '~/components/Typography';
+import { ChainMetadata, chains } from '~/shared/utils/chains';
 
 const SNAP_POINTS = ['CONTENT_HEIGHT'];
 
 const NETWORKS: { label: string; id: NetworkChoice; icon: JSX.Element }[] = [
   { label: 'All Networks', id: 'all', icon: <WorldIcon /> },
-  { label: 'Ethereum', id: 'Ethereum', icon: <EthIcon /> },
-  { label: 'Tezos', id: 'Tezos', icon: <TezosIcon /> },
-  { label: 'POAP', id: 'POAP', icon: <PoapIcon className="w-4 h-4" /> },
+  ...chains.map((chain) => ({
+    label: chain.name,
+    id: chain.name,
+    icon: getChainIconComponent(chain),
+  })),
 ];
 
 const SORT_VIEWS: { label: string; id: NftSelectorSortView }[] = [
@@ -36,7 +37,8 @@ type Props = {
   sortView: NftSelectorSortView;
   onSortViewChange: (sortView: NftSelectorSortView) => void;
 };
-export type NetworkChoice = 'all' | 'Ethereum' | 'Tezos' | 'POAP';
+
+export type NetworkChoice = 'all' | ChainMetadata['name'];
 export type NftSelectorSortView = 'Recently added' | 'Oldest' | 'Alphabetical';
 
 function NftSelectorFilterBottomSheet(
