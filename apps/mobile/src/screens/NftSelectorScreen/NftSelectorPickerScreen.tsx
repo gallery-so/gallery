@@ -16,7 +16,11 @@ import { NftSelectorPickerScreenQuery } from '~/generated/NftSelectorPickerScree
 import { SearchIcon } from '~/navigation/MainTabNavigator/SearchIcon';
 import { MainTabStackNavigatorParamList } from '~/navigation/types';
 
-import { NetworkChoice, NftSelectorFilterBottomSheet } from './NftSelectorFilterBottomSheet';
+import {
+  NetworkChoice,
+  NftSelectorFilterBottomSheet,
+  NftSelectorSortView,
+} from './NftSelectorFilterBottomSheet';
 import { NftSelectorPickerGrid } from './NftSelectorPickerGrid';
 import { NftSelectorScreenFallback } from './NftSelectorScreenFallback';
 
@@ -44,6 +48,7 @@ export function NftSelectorPickerScreen() {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [filter, setFilter] = useState<'Collected' | 'Created'>('Collected');
   const [networkFilter, setNetworkFilter] = useState<NetworkChoice>('all');
+  const [sortView, setSortView] = useState<NftSelectorSortView>('Recently added');
 
   const screenTitle = useMemo(() => {
     return currentScreen === 'ProfilePicture' ? 'Select a profile picture' : 'Select item to post';
@@ -108,9 +113,11 @@ export function NftSelectorPickerScreen() {
               />
 
               <NftSelectorFilterBottomSheet
+                ref={filterBottomSheetRef}
                 network={networkFilter}
                 onNetworkChange={setNetworkFilter}
-                bottomSheetRef={filterBottomSheetRef}
+                sortView={sortView}
+                onSortViewChange={setSortView}
               />
             </View>
           </View>
@@ -122,6 +129,7 @@ export function NftSelectorPickerScreen() {
                   searchQuery,
                   ownerFilter: filter,
                   networkFilter: networkFilter,
+                  sortView,
                 }}
                 queryRef={query}
                 screen={currentScreen}
