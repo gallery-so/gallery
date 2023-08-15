@@ -46,6 +46,7 @@ LogBox.ignoreLogs([
   'Overriding previous layout animation',
   'There was a problem sending log message',
   'Constants.manifest has been deprecated in favor of Constants.expoConfig',
+  "CommentsBottomSheet_comments_connection' doesn't exist.",
 ]);
 
 polyfillEncoding();
