@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native';
 import { ResizeMode } from 'expo-av';
 import { PropsWithChildren, useCallback, useRef } from 'react';
 import { Text, View } from 'react-native';
@@ -14,6 +15,7 @@ import { UserFollowList } from '~/components/UserFollowList/UserFollowList';
 import { NotificationSkeletonFragment$key } from '~/generated/NotificationSkeletonFragment.graphql';
 import { NotificationSkeletonQueryFragment$key } from '~/generated/NotificationSkeletonQueryFragment.graphql';
 import { NotificationSkeletonResponsibleUsersFragment$key } from '~/generated/NotificationSkeletonResponsibleUsersFragment.graphql';
+import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { getTimeSince } from '~/shared/utils/time';
 
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
@@ -46,6 +48,7 @@ export function NotificationSkeleton({
   const responsibleUsers = useFragment(
     graphql`
       fragment NotificationSkeletonResponsibleUsersFragment on GalleryUser @relay(plural: true) {
+        username @required(action: THROW)
         ...UserFollowListFragment
         ...ProfileViewSharedFollowersBubblesFragment
       }
@@ -63,11 +66,33 @@ export function NotificationSkeleton({
     `,
     notificationRef
   );
+  const navigation = useNavigation<MainTabStackNavigatorProp>();
 
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
+
+  const handleNavigateToProfile = useCallback(
+    (username: string) => {
+      navigation.navigate('Profile', { username });
+    },
+    [navigation]
+  );
+
   const handleBubblesPress = useCallback(() => {
-    bottomSheetRef.current?.present();
-  }, []);
+    if (responsibleUsers.length === 0) {
+      return;
+    }
+
+    if (responsibleUsers.length > 1) {
+      bottomSheetRef.current?.present();
+      return;
+    }
+
+    const firstUser = responsibleUsers[0];
+
+    if (firstUser) {
+      handleNavigateToProfile(firstUser.username);
+    }
+  }, [handleNavigateToProfile, responsibleUsers]);
 
   return (
     <GalleryTouchableOpacity
@@ -85,10 +110,6 @@ export function NotificationSkeleton({
           totalCount={responsibleUserRefs.length}
           size="md"
         />
-
-        <GalleryBottomSheetModal ref={bottomSheetRef} snapPoints={[350]}>
-          <UserFollowList userRefs={responsibleUsers} queryRef={query} onUserPress={() => {}} />
-        </GalleryBottomSheetModal>
 
         <Text className="dark:text-white mt-[1] pr-1">{children}</Text>
       </View>
@@ -120,6 +141,13 @@ export function NotificationSkeleton({
           {!notification.seen && <UnseenDot />}
         </View>
       </View>
+      <GalleryBottomSheetModal ref={bottomSheetRef} snapPoints={[350]}>
+        <UserFollowList
+          userRefs={responsibleUsers}
+          queryRef={query}
+          onUserPress={handleNavigateToProfile}
+        />
+      </GalleryBottomSheetModal>
     </GalleryTouchableOpacity>
   );
 }
