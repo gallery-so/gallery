@@ -949,7 +949,8 @@ type Mutation {
   updateTokenInfo(input: UpdateTokenInfoInput!): UpdateTokenInfoPayloadOrError
   setSpamPreference(input: SetSpamPreferenceInput!): SetSpamPreferencePayloadOrError
   syncTokens(chains: [Chain!]): SyncTokensPayloadOrError
-  syncCreatedTokens(input: SyncCreatedTokensInput!): SyncCreatedTokensPayloadOrError
+  syncCreatedTokensForNewContracts(input: SyncCreatedTokensForNewContractsInput!): SyncCreatedTokensForNewContractsPayloadOrError
+  syncCreatedTokensForExistingContract(input: SyncCreatedTokensForExistingContractInput!): SyncCreatedTokensForExistingContractPayloadOrError
   refreshToken(tokenId: DBID!): RefreshTokenPayloadOrError
   refreshCollection(collectionId: DBID!): RefreshCollectionPayloadOrError
   refreshContract(contractId: DBID!): RefreshContractPayloadOrError
@@ -1511,21 +1512,31 @@ type Subscription {
   notificationUpdated: Notification
 }
 
+input SyncCreatedTokensForExistingContractInput {
+  contractId: DBID!
+}
+
+type SyncCreatedTokensForExistingContractPayload {
+  viewer: Viewer
+}
+
+union SyncCreatedTokensForExistingContractPayloadOrError = SyncCreatedTokensForExistingContractPayload | ErrNotAuthorized | ErrSyncFailed
+
+input SyncCreatedTokensForNewContractsInput {
+  includeChains: [Chain!]
+}
+
+type SyncCreatedTokensForNewContractsPayload {
+  viewer: Viewer
+}
+
+union SyncCreatedTokensForNewContractsPayloadOrError = SyncCreatedTokensForNewContractsPayload | ErrNotAuthorized | ErrSyncFailed
+
 type SyncCreatedTokensForUsernamePayload {
   message: String!
 }
 
 union SyncCreatedTokensForUsernamePayloadOrError = SyncCreatedTokensForUsernamePayload | ErrNotAuthorized | ErrSyncFailed
-
-input SyncCreatedTokensInput {
-  includeChains: [Chain!]
-}
-
-type SyncCreatedTokensPayload {
-  viewer: Viewer
-}
-
-union SyncCreatedTokensPayloadOrError = SyncCreatedTokensPayload | ErrNotAuthorized | ErrSyncFailed
 
 type SyncingMedia implements Media {
   previewURLs: PreviewURLSet

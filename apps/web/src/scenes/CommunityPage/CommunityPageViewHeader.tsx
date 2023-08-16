@@ -14,6 +14,7 @@ import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeL, TitleL } from '~/components/core/Text/Text';
 import { PostComposerModalWithSelector } from '~/components/Posts/PostComposerModal';
 import CommunityProfilePicture from '~/components/ProfilePicture/CommunityProfilePicture';
+import { useIsMemberOfCommunity } from '~/contexts/communityPage/IsMemberOfCommunityContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { CommunityPageViewHeaderFragment$key } from '~/generated/CommunityPageViewHeaderFragment.graphql';
 import { CommunityPageViewHeaderQueryFragment$key } from '~/generated/CommunityPageViewHeaderQueryFragment.graphql';
@@ -31,6 +32,7 @@ import { getBaseUrl } from '~/utils/getBaseUrl';
 import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 import CommunityPageMetadata from './CommunityPageMetadata';
+import CommunityPageOwnershipRequiredModal from './CommunityPageOwnershipRequiredModal';
 
 type Props = {
   communityRef: CommunityPageViewHeaderFragment$key;
@@ -50,6 +52,7 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
         }
         ...CommunityPageMetadataFragment
         ...CommunityProfilePictureFragment
+        ...CommunityPageOwnershipRequiredModalFragment
       }
     `,
     communityRef
@@ -77,6 +80,8 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
 
   const isMobile = useIsMobileWindowWidth();
   const isKoalaEnabled = isFeatureEnabled(FeatureFlag.KOALA, query);
+
+  const { isMemberOfCommunity } = useIsMemberOfCommunity();
 
   const { name, description, contractAddress, badgeURL } = community;
 
@@ -120,6 +125,7 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
   }, [query?.viewer]);
 
   const handleCreatePostClick = useCallback(() => {
+    track('Community Page: Clicked Enabled Post Button');
     showModal({
       content: (
         <PostComposerModalWithSelector
@@ -134,7 +140,23 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
       headerVariant: 'thicc',
       isFullPage: isMobile,
     });
-  }, [showModal, tokens, query, community.name, community.contractAddress?.address, isMobile]);
+  }, [
+    track,
+    showModal,
+    tokens,
+    query,
+    community.name,
+    community.contractAddress?.address,
+    isMobile,
+  ]);
+
+  const handleDisabledPostButtonClick = useCallback(() => {
+    track('Community Page: Clicked Disabled Post Button');
+    showModal({
+      content: <CommunityPageOwnershipRequiredModal communityRef={community} />,
+      headerText: 'Ownership required',
+    });
+  }, [community, showModal, track]);
 
   const { asPath } = useRouter();
 
@@ -148,10 +170,7 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
     track('Community Page: Clicked Copy Share Link');
   }, [track]);
 
-  // KAITO TODO (follow up): also disable if user is not member of community, blocked by backend
-  const isPostButtonDisabled = useMemo(() => {
-    return query?.viewer?.__typename !== 'Viewer';
-  }, [query?.viewer]);
+  const showPostButton = query.viewer?.__typename === 'Viewer' && isKoalaEnabled;
 
   const ExternalLinks = useMemo(() => {
     return (
@@ -229,14 +248,22 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
         </HStack>
         <HStack gap={48}>
           <CommunityPageMetadata communityRef={community} isKoalaEnabled={isKoalaEnabled} />
-          {isKoalaEnabled && (
-            <StyledButton onClick={handleCreatePostClick} disabled={isPostButtonDisabled}>
-              <HStack align="center" gap={4}>
-                <PlusSquareIcon stroke={colors.white} height={16} width={16} />
-                Post
-              </HStack>
-            </StyledButton>
-          )}
+          {showPostButton &&
+            (isMemberOfCommunity ? (
+              <StyledPostButton onClick={handleCreatePostClick}>
+                <HStack align="center" gap={4}>
+                  <PlusSquareIcon stroke={colors.white} height={16} width={16} />
+                  Post
+                </HStack>
+              </StyledPostButton>
+            ) : (
+              <StyledDisabledPostButton onClick={handleDisabledPostButtonClick}>
+                <HStack align="center" gap={4}>
+                  <PlusSquareIcon stroke={colors.metal} height={16} width={16} />
+                  Post
+                </HStack>
+              </StyledDisabledPostButton>
+            ))}
           {ExternalLinks}
         </HStack>
       </StyledContainer>
@@ -283,7 +310,14 @@ const StyledBadge = styled.img`
   width: 100%;
 `;
 
-const StyledButton = styled(Button)`
+const StyledPostButton = styled(Button)`
   width: 100px;
   height: 32px;
+`;
+
+const StyledDisabledPostButton = styled(Button)`
+  width: 100px;
+  height: 32px;
+  background-color: ${colors.porcelain};
+  color: ${colors.metal};
 `;
