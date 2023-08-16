@@ -81,7 +81,7 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
   const isMobile = useIsMobileWindowWidth();
   const isKoalaEnabled = isFeatureEnabled(FeatureFlag.KOALA, query);
 
-  const { isMemberOfCommunity } = useIsMemberOfCommunity();
+  const { isMemberOfCommunity, refetchIsMemberOfCommunity } = useIsMemberOfCommunity();
 
   const { name, description, contractAddress, badgeURL } = community;
 
@@ -153,7 +153,12 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
   const handleDisabledPostButtonClick = useCallback(() => {
     track('Community Page: Clicked Disabled Post Button');
     showModal({
-      content: <CommunityPageOwnershipRequiredModal communityRef={community} />,
+      content: (
+        <CommunityPageOwnershipRequiredModal
+          communityRef={community}
+          refetchIsMemberOfCommunity={refetchIsMemberOfCommunity}
+        />
+      ),
       headerText: 'Ownership required',
     });
   }, [community, showModal, track]);

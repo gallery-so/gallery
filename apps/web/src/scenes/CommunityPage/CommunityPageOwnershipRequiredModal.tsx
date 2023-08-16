@@ -12,9 +12,13 @@ import { RefreshIcon } from '~/icons/RefreshIcon';
 
 type Props = {
   communityRef: CommunityPageOwnershipRequiredModalFragment$key;
+  refetchIsMemberOfCommunity: () => void;
 };
 
-export default function CommunityPageOwnershipRequiredModal({ communityRef }: Props) {
+export default function CommunityPageOwnershipRequiredModal({
+  communityRef,
+  refetchIsMemberOfCommunity,
+}: Props) {
   const community = useFragment(
     graphql`
       fragment CommunityPageOwnershipRequiredModalFragment on Community {
@@ -39,8 +43,9 @@ export default function CommunityPageOwnershipRequiredModal({ communityRef }: Pr
     setIsRefreshing(true);
     await syncTokens(community.chain);
     setIsRefreshing(false);
+    refetchIsMemberOfCommunity();
     hideModal();
-  }, [community.chain, hideModal, syncTokens]);
+  }, [community.chain, hideModal, refetchIsMemberOfCommunity, syncTokens]);
 
   const [isRefreshing, setIsRefreshing] = useState(false);
 
