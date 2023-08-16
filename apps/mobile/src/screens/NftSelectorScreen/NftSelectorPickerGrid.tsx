@@ -8,6 +8,7 @@ import { graphql } from 'relay-runtime';
 
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { NftPreviewAsset } from '~/components/NftPreview/NftPreviewAsset';
+import { Typography } from '~/components/Typography';
 import { NftSelectorPickerGridFragment$key } from '~/generated/NftSelectorPickerGridFragment.graphql';
 import { NftSelectorPickerGridOneOrManyFragment$key } from '~/generated/NftSelectorPickerGridOneOrManyFragment.graphql';
 import { NftSelectorPickerGridTokenGridFragment$key } from '~/generated/NftSelectorPickerGridTokenGridFragment.graphql';
@@ -227,6 +228,16 @@ export function NftSelectorPickerGrid({
     },
     [screen]
   );
+
+  if (!rows.length) {
+    return (
+      <View className="flex flex-col flex-1 pt-16" style={style}>
+        <Typography className="text-lg text-center" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+          No NFTs found
+        </Typography>
+      </View>
+    );
+  }
 
   return (
     <View className="flex flex-col flex-1" style={style}>
