@@ -46,6 +46,8 @@ LogBox.ignoreLogs([
   'Overriding previous layout animation',
   'There was a problem sending log message',
   'Constants.manifest has been deprecated in favor of Constants.expoConfig',
+  // Warning only occurs when commenting before opening the bottom sheet because it uses lazyLoadQuery, which initializes the connection
+  "CommentsBottomSheet_comments_connection' doesn't exist.",
 ]);
 
 polyfillEncoding();
