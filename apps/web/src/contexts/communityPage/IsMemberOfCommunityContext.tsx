@@ -10,6 +10,9 @@ type IsMemberOfCommunityState = {
   refetchIsMemberOfCommunity: () => void;
 };
 
+// Using a context because isMemberOfCommunity is used in different areas of the Community Page that are separate from each other.
+// Wanted to avoid them making redundant separate requests to retrieve this value.
+// isMemberOfCommunity is its own query because it requires a community id which we don't have until the first query for community data is resolved.
 export const IsMemberOfCommunityContext = createContext<IsMemberOfCommunityState | undefined>(
   undefined
 );

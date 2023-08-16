@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -33,21 +33,18 @@ export default function CommunityPageOwnershipRequiredModal({
   const handleOkClick = useCallback(() => {
     hideModal();
   }, [hideModal]);
-  const { syncTokens } = useSyncTokens();
+  const { isLocked, syncTokens } = useSyncTokens();
 
   // Acknowledgment: This could let a user refresh a chain they can't access in the Editor
   const handleRefreshCollectionClick = useCallback(async () => {
     if (!community.chain) {
       return;
     }
-    setIsRefreshing(true);
+
     await syncTokens(community.chain);
-    setIsRefreshing(false);
     refetchIsMemberOfCommunity();
     hideModal();
   }, [community.chain, hideModal, refetchIsMemberOfCommunity, syncTokens]);
-
-  const [isRefreshing, setIsRefreshing] = useState(false);
 
   return (
     <StyledModal gap={16}>
@@ -56,7 +53,7 @@ export default function CommunityPageOwnershipRequiredModal({
         not displaying try <strong>refreshing your collection</strong>.
       </BaseM>
       <HStack justify="flex-end" gap={8}>
-        <Button variant="secondary" onClick={handleRefreshCollectionClick} disabled={isRefreshing}>
+        <Button variant="secondary" onClick={handleRefreshCollectionClick} disabled={isLocked}>
           <HStack align="center" gap={4}>
             <RefreshIcon />
             Refresh Collection
