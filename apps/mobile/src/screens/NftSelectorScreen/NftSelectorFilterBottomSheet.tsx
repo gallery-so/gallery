@@ -1,5 +1,5 @@
 import { useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
-import { ForwardedRef, forwardRef, useRef } from 'react';
+import { ForwardedRef, forwardRef, useCallback, useRef } from 'react';
 import { View, ViewProps } from 'react-native';
 import { WorldIcon } from 'src/icons/WorldIcon';
 import { getChainIconComponent } from 'src/utils/getChainIconComponent';
@@ -52,6 +52,26 @@ function NftSelectorFilterBottomSheet(
   const { animatedHandleHeight, animatedSnapPoints, animatedContentHeight, handleContentLayout } =
     useBottomSheetDynamicSnapPoints(SNAP_POINTS);
 
+  const handleClose = useCallback(() => {
+    bottomSheetRef.current?.close();
+  }, []);
+
+  const handleNetworkChange = useCallback(
+    (network: NetworkChoice) => {
+      onNetworkChange(network);
+      handleClose();
+    },
+    [onNetworkChange, handleClose]
+  );
+
+  const handleSortViewChange = useCallback(
+    (sortView: NftSelectorSortView) => {
+      onSortViewChange(sortView);
+      handleClose();
+    },
+    [onSortViewChange, handleClose]
+  );
+
   return (
     <GalleryBottomSheetModal
       ref={(value) => {
@@ -79,7 +99,7 @@ function NftSelectorFilterBottomSheet(
           <FilterSection title="Network">
             <Section>
               <Options
-                onChange={onNetworkChange}
+                onChange={handleNetworkChange}
                 selected={network}
                 options={NETWORKS}
                 eventElementId="Network filter"
@@ -89,7 +109,7 @@ function NftSelectorFilterBottomSheet(
           <FilterSection title="Sort by">
             <Section>
               <Options
-                onChange={onSortViewChange}
+                onChange={handleSortViewChange}
                 selected={sortView}
                 options={SORT_VIEWS}
                 eventElementId="Sort by filter"
