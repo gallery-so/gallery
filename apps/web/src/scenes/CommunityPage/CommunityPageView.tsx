@@ -5,6 +5,7 @@ import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import { VStack } from '~/components/core/Spacer/Stack';
+import { IsMemberOfCommunityProvider } from '~/contexts/communityPage/IsMemberOfCommunityContext';
 import MemberListPageProvider from '~/contexts/memberListPage/MemberListPageContext';
 import { CommunityPageViewFragment$key } from '~/generated/CommunityPageViewFragment.graphql';
 import { CommunityPageViewQueryFragment$key } from '~/generated/CommunityPageViewQueryFragment.graphql';
@@ -29,6 +30,7 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
     graphql`
       fragment CommunityPageViewFragment on Community {
         name
+        dbid
 
         contractAddress {
           address
@@ -70,22 +72,26 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
 
   return (
     <MemberListPageProvider>
-      <StyledCommunityPageContainer>
-        <VStack gap={16}>
-          <CommunityPageViewHeader communityRef={community} queryRef={query} />
+      <IsMemberOfCommunityProvider communityDbid={community.dbid}>
+        <StyledCommunityPageContainer>
+          <VStack gap={16}>
+            <CommunityPageViewHeader communityRef={community} queryRef={query} />
 
-          {isKoalaEnabled && <CommunityPageTabs onSelectTab={setActiveTab} activeTab={activeTab} />}
+            {isKoalaEnabled && (
+              <CommunityPageTabs onSelectTab={setActiveTab} activeTab={activeTab} />
+            )}
 
-          {activeTab === 'posts' && (
-            <CommunityPagePostsTab communityRef={community} queryRef={query} />
-          )}
-          {activeTab === 'collectors' && (
-            <CommunityPageCollectorsTab communityRef={community} queryRef={query} />
-          )}
-        </VStack>
+            {activeTab === 'posts' && (
+              <CommunityPagePostsTab communityRef={community} queryRef={query} />
+            )}
+            {activeTab === 'collectors' && (
+              <CommunityPageCollectorsTab communityRef={community} queryRef={query} />
+            )}
+          </VStack>
 
-        {isCommunityPageDisabled && <CommunityPageDisabled name={name ?? ''} />}
-      </StyledCommunityPageContainer>
+          {isCommunityPageDisabled && <CommunityPageDisabled name={name ?? ''} />}
+        </StyledCommunityPageContainer>
+      </IsMemberOfCommunityProvider>
     </MemberListPageProvider>
   );
 }

@@ -5,30 +5,22 @@ import styled from 'styled-components';
 
 import CopyToClipboard from '~/components/CopyToClipboard/CopyToClipboard';
 import breakpoints from '~/components/core/breakpoints';
-import { Button } from '~/components/core/Button/Button';
 import TextButton from '~/components/core/Button/TextButton';
 import IconContainer from '~/components/core/IconContainer';
 import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeL, TitleL } from '~/components/core/Text/Text';
-import { PostComposerModalWithSelector } from '~/components/Posts/PostComposerModal';
 import CommunityProfilePicture from '~/components/ProfilePicture/CommunityProfilePicture';
-import { useModalActions } from '~/contexts/modal/ModalContext';
 import { CommunityPageViewHeaderFragment$key } from '~/generated/CommunityPageViewHeaderFragment.graphql';
 import { CommunityPageViewHeaderQueryFragment$key } from '~/generated/CommunityPageViewHeaderQueryFragment.graphql';
-import { PostComposerModalWithSelectorFragment$key } from '~/generated/PostComposerModalWithSelectorFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import GlobeIcon from '~/icons/GlobeIcon';
-import { PlusSquareIcon } from '~/icons/PlusSquareIcon';
 import ShareIcon from '~/icons/ShareIcon';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
-import { removeNullValues } from '~/shared/relay/removeNullValues';
-import colors from '~/shared/theme/colors';
 import { getExternalAddressLink } from '~/shared/utils/wallet';
 import formatUrl from '~/utils/formatUrl';
 import { getBaseUrl } from '~/utils/getBaseUrl';
-import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 import CommunityPageMetadata from './CommunityPageMetadata';
 
@@ -45,7 +37,6 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
         description
         badgeURL
         contractAddress {
-          address
           ...walletGetExternalAddressLinkFragment
         }
         ...CommunityPageMetadataFragment
@@ -58,25 +49,13 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
   const query = useFragment(
     graphql`
       fragment CommunityPageViewHeaderQueryFragment on Query {
-        viewer {
-          __typename
-          ... on Viewer {
-            user {
-              tokens {
-                ...PostComposerModalWithSelectorFragment
-              }
-            }
-          }
-        }
-        ...PostComposerModalWithSelectorQueryFragment
-        ...isFeatureEnabledFragment
+        ...CommunityPageMetadataQueryFragment
       }
     `,
     queryRef
   );
 
   const isMobile = useIsMobileWindowWidth();
-  const isKoalaEnabled = isFeatureEnabled(FeatureFlag.KOALA, query);
 
   const { name, description, contractAddress, badgeURL } = community;
 
@@ -110,31 +89,6 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
   }, [contractAddress]);
 
   const track = useTrack();
-  const { showModal } = useModalActions();
-
-  const tokens = useMemo<PostComposerModalWithSelectorFragment$key>(() => {
-    if (query?.viewer?.__typename !== 'Viewer') {
-      return [];
-    }
-    return removeNullValues(query?.viewer?.user?.tokens) ?? [];
-  }, [query?.viewer]);
-
-  const handleCreatePostClick = useCallback(() => {
-    showModal({
-      content: (
-        <PostComposerModalWithSelector
-          tokensRef={tokens}
-          queryRef={query}
-          preSelectedContract={{
-            title: community.name ?? '',
-            address: community.contractAddress?.address ?? '', // ok to proceed to post composer even if contractAddress is missing (unlikely). user will just be prompted to select a token
-          }}
-        />
-      ),
-      headerVariant: 'thicc',
-      isFullPage: isMobile,
-    });
-  }, [showModal, tokens, query, community.name, community.contractAddress?.address, isMobile]);
 
   const { asPath } = useRouter();
 
@@ -147,11 +101,6 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
   const handleShareLinkClick = useCallback(() => {
     track('Community Page: Clicked Copy Share Link');
   }, [track]);
-
-  // KAITO TODO (follow up): also disable if user is not member of community, blocked by backend
-  const isPostButtonDisabled = useMemo(() => {
-    return query?.viewer?.__typename !== 'Viewer';
-  }, [query?.viewer]);
 
   const ExternalLinks = useMemo(() => {
     return (
@@ -214,7 +163,9 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
             {DescriptionContainer}
           </VStack>
         </HStack>
-        <CommunityPageMetadata communityRef={community} isKoalaEnabled={isKoalaEnabled} />
+        <HStack justify="space-between">
+          <CommunityPageMetadata communityRef={community} queryRef={query} />
+        </HStack>
       </VStack>
     );
   }
@@ -228,15 +179,7 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
           {badgeURL && <StyledBadge src={badgeURL} />}
         </HStack>
         <HStack gap={48}>
-          <CommunityPageMetadata communityRef={community} isKoalaEnabled={isKoalaEnabled} />
-          {isKoalaEnabled && (
-            <StyledButton onClick={handleCreatePostClick} disabled={isPostButtonDisabled}>
-              <HStack align="center" gap={4}>
-                <PlusSquareIcon stroke={colors.white} height={16} width={16} />
-                Post
-              </HStack>
-            </StyledButton>
-          )}
+          <CommunityPageMetadata communityRef={community} queryRef={query} />
           {ExternalLinks}
         </HStack>
       </StyledContainer>
@@ -281,9 +224,4 @@ const StyledBadge = styled.img`
   max-height: 24px;
   max-width: 24px;
   width: 100%;
-`;
-
-const StyledButton = styled(Button)`
-  width: 100px;
-  height: 32px;
 `;

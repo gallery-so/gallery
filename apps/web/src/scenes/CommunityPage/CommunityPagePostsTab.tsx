@@ -8,6 +8,7 @@ import { BaseXL } from '~/components/core/Text/Text';
 import { ITEMS_PER_PAGE } from '~/components/Feed/constants';
 import FeedList from '~/components/Feed/FeedList';
 import { PostComposerModalWithSelector } from '~/components/Posts/PostComposerModal';
+import { useIsMemberOfCommunity } from '~/contexts/communityPage/IsMemberOfCommunityContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { CommunityPagePostsTabFragment$key } from '~/generated/CommunityPagePostsTabFragment.graphql';
 import { CommunityPagePostsTabQueryFragment$key } from '~/generated/CommunityPagePostsTabQueryFragment.graphql';
@@ -116,13 +117,12 @@ export default function CommunityPagePostsTab({ communityRef, queryRef }: Props)
     });
   }, [showModal, tokens, query, community.name, community.contractAddress?.address, isMobile]);
 
-  // KAITO TODO (follow up): set to false if user is not member of community , blocked by backend
-  const viewerIsCommunityOwner = false;
+  const { isMemberOfCommunity } = useIsMemberOfCommunity();
 
   if (!feedData || feedData.length === 0) {
     return (
       <StyledEmptyState>
-        {viewerIsCommunityOwner ? (
+        {isMemberOfCommunity ? (
           <StyledFirstPostCta gap={32} align="center">
             <BaseXL>
               We're still so early... be the first to post about{' '}
