@@ -1,3 +1,4 @@
+import { useColorScheme } from 'nativewind';
 import {
   ForwardedRef,
   Suspense,
@@ -90,7 +91,7 @@ export function CommentsBottomSheet({ bottomSheetRef, feedId, type }: CommentsBo
       paddingBottomValue.value = withSpring(bottom, { overshootClamping: true });
     }
   }, [bottom, isKeyboardActive, paddingBottomValue]);
-
+  const { colorScheme } = useColorScheme();
   return (
     <GalleryBottomSheetModal
       ref={(value) => {
@@ -116,7 +117,11 @@ export function CommentsBottomSheet({ bottomSheetRef, feedId, type }: CommentsBo
             {isOpen && <ConnectedCommentsList type={type} feedId={feedId} />}
           </Suspense>
         </View>
-
+        <View
+          className={`h-2 border-t-2 border-solid ${
+            colorScheme === 'dark' ? 'bg-black border-black-500 ' : 'bg-white border-porcelain'
+          }`}
+        />
         <CommentBox onSubmit={handleSubmit} isSubmittingComment={isSubmitting} onClose={() => {}} />
       </Animated.View>
     </GalleryBottomSheetModal>

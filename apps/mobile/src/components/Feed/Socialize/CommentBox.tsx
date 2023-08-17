@@ -79,43 +79,37 @@ export function CommentBox({
   }, [showXMark, width, display]);
 
   return (
-    <View
-      className={`border-t-2 border-solid ${
-        colorScheme === 'dark' ? `border-[${colors.black[500]}]` : 'border-[#e2e2e2]'
-      }`}
-    >
-      <View className="px-2 pb-2 flex flex-row items-center space-x-3 mt-2">
-        <Animated.View className="flex-1 flex-row justify-between items-center bg-faint dark:bg-black-800 p-1.5 space-x-3">
-          <BottomSheetTextInput
-            value={value}
-            onChangeText={setValue}
-            className="text-sm h-5"
-            selectionColor={colorScheme === 'dark' ? colors.white : colors.black['800']}
-            autoCapitalize="none"
-            autoComplete="off"
-            autoFocus={autoFocus}
-            onBlur={handleDismiss}
-            onSubmitEditing={handleDismiss}
-            keyboardAppearance={colorScheme}
-            style={{ flex: 1, color: colorScheme === 'dark' ? colors.white : colors.black['800'] }}
-          />
-          <Text className="text-sm text-metal">{characterCount}</Text>
-          <GalleryTouchableOpacity
-            eventElementId="Submit Comment Button"
-            eventName="Submit Comment Button Clicked"
-            onPress={handleSubmit}
-            disabled={disabledSendButton}
-          >
-            <View
-              className={`h-6 w-6 rounded-full flex items-center justify-center bg-red
+    <View className="px-2 pb-2 flex flex-row items-center space-x-3">
+      <Animated.View className="flex-1 flex-row justify-between items-center bg-faint dark:bg-black-800 p-1.5 space-x-3">
+        <BottomSheetTextInput
+          value={value}
+          onChangeText={setValue}
+          className="text-sm h-5"
+          selectionColor={colorScheme === 'dark' ? colors.white : colors.black['800']}
+          autoCapitalize="none"
+          autoComplete="off"
+          autoFocus={autoFocus}
+          onBlur={handleDismiss}
+          onSubmitEditing={handleDismiss}
+          keyboardAppearance={colorScheme}
+          style={{ flex: 1, color: colorScheme === 'dark' ? colors.white : colors.black['800'] }}
+        />
+        <Text className="text-sm text-metal">{characterCount}</Text>
+        <GalleryTouchableOpacity
+          eventElementId="Submit Comment Button"
+          eventName="Submit Comment Button Clicked"
+          onPress={handleSubmit}
+          disabled={disabledSendButton}
+        >
+          <View
+            className={`h-6 w-6 rounded-full flex items-center justify-center bg-red
             ${disabledSendButton ? 'bg-metal' : 'bg-activeBlue'}
         `}
-            >
-              <SendIcon />
-            </View>
-          </GalleryTouchableOpacity>
-        </Animated.View>
-      </View>
+          >
+            <SendIcon />
+          </View>
+        </GalleryTouchableOpacity>
+      </Animated.View>
     </View>
   );
 }

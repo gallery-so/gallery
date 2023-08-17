@@ -90,8 +90,8 @@ function Handle() {
   const { colorScheme } = useColorScheme();
   return (
     <View
-      className={`h-2 border-t ${
-        colorScheme === 'dark' ? 'bg-black border-black-800' : 'bg-white border-porcelain'
+      className={`h-2 border-t-2 border-solid ${
+        colorScheme === 'dark' ? 'bg-black border-black-500 ' : 'bg-white border-porcelain'
       }`}
     />
   );
