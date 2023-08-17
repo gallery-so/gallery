@@ -22,8 +22,11 @@ import { useClearNotifications } from '~/shared/relay/useClearNotifications';
 import colors from '~/shared/theme/colors';
 import { getTimeSince } from '~/shared/utils/time';
 
+import { NewTokens } from './notifications/NewTokens';
 import SomeoneAdmiredYourPost from './notifications/SomeoneAdmiredYourPost';
 import SomeoneCommentedOnYourPost from './notifications/SomeoneCommentedOnYourPost';
+
+const INVALID_TOKEN_TYPES = ['SyncingMedia', 'InvalidMedia'];
 
 type NotificationProps = {
   notificationRef: NotificationFragment$key;
@@ -74,6 +77,15 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
         ... on SomeoneCommentedOnYourPostNotification {
           post {
             dbid
+          }
+        }
+
+        ... on NewTokensNotification {
+          __typename
+          token {
+            media {
+              __typename
+            }
           }
         }
 
@@ -206,7 +218,16 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
       'SomeoneViewedYourGalleryNotification',
       'SomeoneAdmiredYourPostNotification',
       'SomeoneCommentedOnYourPostNotification',
+      'NewTokensNotification',
     ].includes(notification.__typename)
+  ) {
+    return null;
+  }
+
+  // If the notification is a new token notification and the token is invalid, we don't want to show it
+  if (
+    notification.__typename === 'NewTokensNotification' &&
+    INVALID_TOKEN_TYPES.includes(notification.token?.media?.__typename ?? '')
   ) {
     return null;
   }
@@ -278,6 +299,16 @@ function NotificationInner({ notificationRef, queryRef }: NotificationInnerProps
           __typename
           ...SomeoneCommentedOnYourPostFragment
         }
+
+        ... on NewTokensNotification {
+          __typename
+          token {
+            media {
+              __typename
+            }
+          }
+          ...NewTokensFragment
+        }
       }
     `,
     notificationRef
@@ -313,6 +344,8 @@ function NotificationInner({ notificationRef, queryRef }: NotificationInnerProps
     return <SomeoneAdmiredYourPost notificationRef={notification} onClose={handleClose} />;
   } else if (notification.__typename === 'SomeoneCommentedOnYourPostNotification') {
     return <SomeoneCommentedOnYourPost notificationRef={notification} onClose={handleClose} />;
+  } else if (notification.__typename === 'NewTokensNotification') {
+    return <NewTokens notificationRef={notification} onClose={handleClose} />;
   }
 
   return null;
