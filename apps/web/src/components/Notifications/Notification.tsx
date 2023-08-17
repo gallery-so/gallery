@@ -21,6 +21,7 @@ import { NotificationQueryFragment$key } from '~/generated/NotificationQueryFrag
 import { useClearNotifications } from '~/shared/relay/useClearNotifications';
 import colors from '~/shared/theme/colors';
 import { getTimeSince } from '~/shared/utils/time';
+import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 import { NewTokens } from './notifications/NewTokens';
 import SomeoneAdmiredYourPost from './notifications/SomeoneAdmiredYourPost';
@@ -99,6 +100,7 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
     graphql`
       fragment NotificationQueryFragment on Query {
         ...NotificationInnerQueryFragment
+        ...isFeatureEnabledFragment
 
         viewer {
           ... on Viewer {
@@ -118,6 +120,8 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
 
   const clearAllNotifications = useClearNotifications();
   const { hideDrawer } = useDrawerActions();
+
+  const isKoalaEnabled = isFeatureEnabled(FeatureFlag.KOALA, query);
 
   /**
    * Bear with me here, this `useMemo` returns a stable function
@@ -229,6 +233,11 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
     notification.__typename === 'NewTokensNotification' &&
     INVALID_TOKEN_TYPES.includes(notification.token?.media?.__typename ?? '')
   ) {
+    return null;
+  }
+
+  // If the notification is a new token notification and koala is not enabled, we don't want to show it
+  if (notification.__typename === 'NewTokensNotification' && !isKoalaEnabled) {
     return null;
   }
 
