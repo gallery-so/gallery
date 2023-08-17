@@ -44,11 +44,13 @@ export function CommentLine({ commentRef }: CommentLineProps) {
   const timeAgo = comment.creationTime ? getTimeSince(comment.creationTime) : null;
 
   return (
-    <HStack key={comment.dbid} gap={4} align="flex-end">
+    <HStack key={comment.dbid} gap={4}>
       {comment.commenter && (
-        <HoverCardOnUsername userRef={comment.commenter}>
-          <CommenterName>{comment.commenter?.username ?? '<unknown>'}</CommenterName>
-        </HoverCardOnUsername>
+        <StyledUsernameWrapper>
+          <HoverCardOnUsername userRef={comment.commenter}>
+            <CommenterName>{comment.commenter?.username ?? '<unknown>'}</CommenterName>
+          </HoverCardOnUsername>
+        </StyledUsernameWrapper>
       )}
       <CommentText dangerouslySetInnerHTML={{ __html: comment.comment }} />
       {timeAgo && <TimeAgoText>{timeAgo}</TimeAgoText>}
@@ -62,6 +64,11 @@ const TimeAgoText = styled.div`
   font-weight: 400;
 
   color: ${colors.metal};
+`;
+
+const StyledUsernameWrapper = styled.div`
+  line-height: 16px;
+  height: fit-content;
 `;
 
 const CommenterName = styled.a`
@@ -78,7 +85,7 @@ const CommenterName = styled.a`
 const CommentText = styled.div`
   font-family: ${BODY_FONT_FAMILY};
   font-size: 14px;
-  line-height: 1;
+  line-height: 18px;
   font-weight: 400;
 
   flex-shrink: 1;
