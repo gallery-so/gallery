@@ -133,7 +133,6 @@ export function FeedPostSocializeSection({ feedPostRef, queryRef, onCommentPress
             type="Post"
             feedId={post.dbid}
             onClick={onCommentPress}
-            // onSubmit={handleSubmit}
             isSubmittingComment={isSubmittingComment}
             bottomSheetRef={bottomSheetRef}
           />

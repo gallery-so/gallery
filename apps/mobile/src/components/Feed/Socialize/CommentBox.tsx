@@ -1,14 +1,8 @@
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import { useColorScheme } from 'nativewind';
 import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
-import { Text, View, ViewStyle } from 'react-native';
-import Animated, {
-  AnimatedStyleProp,
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-} from 'react-native-reanimated';
-import { XMarkIcon } from 'src/icons/XMarkIcon';
+import { Text, View } from 'react-native';
+import Animated, { useSharedValue, withSpring } from 'react-native-reanimated';
 import useKeyboardStatus from 'src/utils/useKeyboardStatus';
 
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
@@ -73,13 +67,6 @@ export function CommentBox({
 
   const width = useSharedValue(0);
   const display = useSharedValue('none');
-  const xmarkIconStyle = useAnimatedStyle(() => {
-    return {
-      overflow: 'hidden',
-      width: width.value,
-      display: display.value,
-    } as AnimatedStyleProp<ViewStyle>;
-  });
 
   useLayoutEffect(() => {
     if (showXMark) {
@@ -92,7 +79,7 @@ export function CommentBox({
   }, [showXMark, width, display]);
 
   return (
-    <View className="px-2 pb-2 flex flex-row items-center space-x-3">
+    <View className="p-2 flex flex-row items-center space-x-3 border-t border-porcelain dark:border-black-500">
       <Animated.View className="flex-1 flex-row justify-between items-center bg-faint dark:bg-black-800 p-1.5 space-x-3">
         <BottomSheetTextInput
           value={value}
@@ -120,14 +107,6 @@ export function CommentBox({
         `}
           >
             <SendIcon />
-          </View>
-        </GalleryTouchableOpacity>
-      </Animated.View>
-
-      <Animated.View style={xmarkIconStyle}>
-        <GalleryTouchableOpacity eventElementId={null} eventName={null} onPress={handleDismiss}>
-          <View className="h-6 w-6  items-center justify-center rounded-full">
-            <XMarkIcon />
           </View>
         </GalleryTouchableOpacity>
       </Animated.View>
