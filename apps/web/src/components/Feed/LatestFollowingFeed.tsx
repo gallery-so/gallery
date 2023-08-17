@@ -35,11 +35,7 @@ export function LatestFollowingFeed({ onSeeAll, queryRef }: Props) {
               @connection(key: "ViewerFeedFragment_feed") {
               edges {
                 node {
-                  ... on FeedEvent {
-                    __typename
-
-                    ...FeedListEventDataFragment
-                  }
+                  ...FeedListEventDataFragment
                 }
               }
             }
@@ -73,7 +69,7 @@ export function LatestFollowingFeed({ onSeeAll, queryRef }: Props) {
     const events = [];
 
     for (const edge of query.viewer?.feed?.edges ?? []) {
-      if (edge?.node?.__typename === 'FeedEvent' && edge.node) {
+      if (edge?.node) {
         events.push(edge.node);
       }
     }
