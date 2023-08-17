@@ -1,44 +1,29 @@
-import { useColorScheme } from 'nativewind';
-import { ForwardedRef, useCallback, useMemo, useRef } from 'react';
-import { View, ViewProps } from 'react-native';
+import { ForwardedRef, useCallback, useRef } from 'react';
+import { ViewProps } from 'react-native';
 
-import {
-  GalleryBottomSheetModal,
-  GalleryBottomSheetModalType,
-} from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
+import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 
-import { CommentBox } from './CommentBox';
+import { CommentsBottomSheet } from '../CommentsBottomSheet/CommentsBottomSheet';
+import { FeedItemTypes } from '../createVirtualizedFeedEventItems';
 import { CommentIcon } from './CommentIcon';
 
 type Props = {
   style?: ViewProps['style'];
   onClick: () => void;
-  onSubmit: (value: string) => void;
+  feedId: string;
+  type: FeedItemTypes;
   isSubmittingComment: boolean;
 
   bottomSheetRef: ForwardedRef<GalleryBottomSheetModalType>;
 };
 
-export function CommentButton({
-  style,
-  onClick,
-  onSubmit,
-  isSubmittingComment,
-  bottomSheetRef,
-}: Props) {
-  const { colorScheme } = useColorScheme();
-
-  const snapPoints = useMemo(() => [52], []);
-  const internalRef = useRef<GalleryBottomSheetModalType | null>(null);
-
-  const handleCloseCommentBox = useCallback(() => {
-    internalRef.current?.close();
-  }, []);
+export function CommentButton({ style, onClick, type, feedId }: Props) {
+  const commentsBottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
 
   const toggleCommentBox = useCallback(() => {
     onClick();
-    internalRef.current?.present();
+    commentsBottomSheetRef.current?.present();
   }, [onClick]);
 
   return (
@@ -52,47 +37,7 @@ export function CommentButton({
       >
         <CommentIcon className="h-[20]" />
       </GalleryTouchableOpacity>
-      <GalleryBottomSheetModal
-        index={0}
-        ref={(value) => {
-          internalRef.current = value;
-
-          if (bottomSheetRef) {
-            if (typeof bottomSheetRef === 'function') {
-              bottomSheetRef(value);
-            } else {
-              bottomSheetRef.current = value;
-            }
-          }
-        }}
-        snapPoints={snapPoints}
-        enableHandlePanningGesture={false}
-        android_keyboardInputMode="adjustResize"
-        handleComponent={Handle}
-        handleIndicatorStyle={{
-          display: 'none',
-        }}
-      >
-        <View className={`${colorScheme === 'dark' ? 'bg-black' : 'bg-white'}`}>
-          <CommentBox
-            autoFocus
-            onClose={handleCloseCommentBox}
-            onSubmit={onSubmit}
-            isSubmittingComment={isSubmittingComment}
-          />
-        </View>
-      </GalleryBottomSheetModal>
+      <CommentsBottomSheet type={type} feedId={feedId} bottomSheetRef={commentsBottomSheetRef} />
     </>
-  );
-}
-
-function Handle() {
-  const { colorScheme } = useColorScheme();
-  return (
-    <View
-      className={`h-2 border-t ${
-        colorScheme === 'dark' ? 'bg-black border-black-800' : 'bg-white border-porcelain'
-      }`}
-    />
   );
 }

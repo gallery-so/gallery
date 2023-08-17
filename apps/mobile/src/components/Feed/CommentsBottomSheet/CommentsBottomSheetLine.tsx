@@ -31,24 +31,26 @@ export function CommentsBottomSheetLine({ commentRef }: CommentLineProps) {
   const timeAgo = getTimeSince(comment.creationTime);
 
   return (
-    <View className="flex flex-row justify-between items-center px-4">
-      <View>
-        <View className="flex flex-row space-x-1 items-center">
-          {comment.commenter && <ProfilePicture userRef={comment.commenter} size="sm" />}
-          <View className="flex flex-row space-x-1 h-5 -mt-2">
-            <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-              {comment.commenter?.username}
-            </Typography>
-            <Typography
-              className="text-xxs text-metal -mt-1"
-              font={{ family: 'ABCDiatype', weight: 'Regular' }}
-            >
-              {timeAgo}
-            </Typography>
-          </View>
+    <View className="flex flex-row space-x-2 px-2">
+      {comment.commenter && (
+        <View className="mt-1">
+          <ProfilePicture userRef={comment.commenter} size="sm" />
         </View>
-        <View className="pl-7 -mt-2.5">
-          <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
+      )}
+      <View className="flex flex-col grow-0">
+        <View className="flex flex-row space-x-1">
+          <Typography className="text-sm leading-4" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+            {comment.commenter?.username}
+          </Typography>
+          <Typography
+            className="text-xxs text-metal leading-4"
+            font={{ family: 'ABCDiatype', weight: 'Regular' }}
+          >
+            {timeAgo}
+          </Typography>
+        </View>
+        <View className="flex">
+          <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
             {comment.comment}
           </Typography>
         </View>
