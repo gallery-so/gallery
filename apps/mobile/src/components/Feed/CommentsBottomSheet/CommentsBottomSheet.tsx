@@ -111,7 +111,7 @@ export function CommentsBottomSheet({ bottomSheetRef, feedId, type }: CommentsBo
           Comments
         </Typography>
 
-        <View className="flex-grow">
+        <View className="flex-grow px-1">
           <Suspense fallback={<CommentListFallback />}>
             {isOpen && <ConnectedCommentsList type={type} feedId={feedId} />}
           </Suspense>
@@ -192,7 +192,18 @@ function ConnectedEventCommentsList({ feedId }: { feedId: string }) {
 
   return (
     <View className="flex-1">
-      <CommentsBottomSheetList onLoadMore={handleLoadMore} commentRefs={comments} />
+      {comments.length > 0 ? (
+        <CommentsBottomSheetList onLoadMore={handleLoadMore} commentRefs={comments} />
+      ) : (
+        <View className="flex items-center justify-center h-full">
+          <Typography
+            className="text-sm px-4 text-shadow"
+            font={{ family: 'ABCDiatype', weight: 'Bold' }}
+          >
+            No comments yet
+          </Typography>
+        </View>
+      )}
     </View>
   );
 }
@@ -251,7 +262,18 @@ function ConnectedPostCommentsList({ feedId }: { feedId: string }) {
 
   return (
     <View className="flex-1">
-      <CommentsBottomSheetList onLoadMore={handleLoadMore} commentRefs={comments} />
+      {comments.length > 0 ? (
+        <CommentsBottomSheetList onLoadMore={handleLoadMore} commentRefs={comments} />
+      ) : (
+        <View className="flex items-center justify-center h-full">
+          <Typography
+            className="text-sm px-4 text-shadow"
+            font={{ family: 'ABCDiatype', weight: 'Bold' }}
+          >
+            No comments yet
+          </Typography>
+        </View>
+      )}
     </View>
   );
 }

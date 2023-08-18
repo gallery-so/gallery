@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef } from 'react';
+import { useMemo, useRef } from 'react';
 import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 import { useEventComment } from 'src/hooks/useEventComment';
@@ -77,7 +77,7 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef, onCommentPre
     queryRef: query,
   });
 
-  const { submitComment, isSubmittingComment } = useEventComment();
+  const { isSubmittingComment } = useEventComment();
 
   const nonNullComments = useMemo(() => {
     const comments = [];
@@ -109,17 +109,6 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef, onCommentPre
 
   const totalAdmires = event.admires?.pageInfo?.total ?? 0;
 
-  const handleSubmit = useCallback(
-    (value: string) => {
-      submitComment({
-        feedEventId: event.dbid,
-        value,
-        onSuccess: () => {},
-      });
-    },
-    [event.dbid, submitComment]
-  );
-
   if (event.eventData?.__typename === 'UserFollowedUsersFeedEventData') {
     return <View className="pb-6" />;
   }
@@ -141,8 +130,9 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef, onCommentPre
       <View className="flex flex-row space-x-1">
         <AdmireButton onPress={toggleAdmire} isAdmired={hasViewerAdmiredEvent} />
         <CommentButton
+          type="FeedEvent"
+          feedId={event.dbid}
           onClick={onCommentPress}
-          onSubmit={handleSubmit}
           isSubmittingComment={isSubmittingComment}
           bottomSheetRef={bottomSheetRef}
         />

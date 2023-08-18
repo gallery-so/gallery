@@ -75,17 +75,7 @@ export function FeedPostSocializeSection({ feedPostRef, queryRef, onCommentPress
     queryRef: query,
   });
 
-  const { submitComment, isSubmittingComment } = usePostComment();
-
-  const handleSubmit = useCallback(
-    (value: string) => {
-      submitComment({
-        feedId: post.dbid,
-        value,
-      });
-    },
-    [post.dbid, submitComment]
-  );
+  const { isSubmittingComment } = usePostComment();
 
   const nonNullComments = useMemo(() => {
     const comments = [];
@@ -140,8 +130,9 @@ export function FeedPostSocializeSection({ feedPostRef, queryRef, onCommentPress
         <View className="flex flex-row space-x-1">
           <AdmireButton onPress={toggleAdmire} isAdmired={hasViewerAdmiredEvent} />
           <CommentButton
+            type="Post"
+            feedId={post.dbid}
             onClick={onCommentPress}
-            onSubmit={handleSubmit}
             isSubmittingComment={isSubmittingComment}
             bottomSheetRef={bottomSheetRef}
           />
