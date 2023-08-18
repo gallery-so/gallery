@@ -2,11 +2,8 @@ import { useCallback, useMemo } from 'react';
 import { graphql, useFragment, usePaginationFragment } from 'react-relay';
 
 import { CuratedFeedFragment$key } from '~/generated/CuratedFeedFragment.graphql';
-import { CuratedFeedGlobalFragment$key } from '~/generated/CuratedFeedGlobalFragment.graphql';
-import { CuratedFeedGlobalPaginationQuery } from '~/generated/CuratedFeedGlobalPaginationQuery.graphql';
 import { CuratedFeedPaginationFragment$key } from '~/generated/CuratedFeedPaginationFragment.graphql';
 import { CuratedFeedPaginationQuery } from '~/generated/CuratedFeedPaginationQuery.graphql';
-import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 import { useTrackLoadMoreFeedEvents } from './analytics';
 import { ITEMS_PER_PAGE } from './constants';
@@ -22,38 +19,10 @@ export default function CuratedFeed({ queryRef }: Props) {
       fragment CuratedFeedFragment on Query {
         ...FeedListFragment
 
-        ...CuratedFeedGlobalFragment
         ...CuratedFeedPaginationFragment
-        ...isFeatureEnabledFragment
       }
     `,
     queryRef
-  );
-
-  const globalPagination = usePaginationFragment<
-    CuratedFeedGlobalPaginationQuery,
-    CuratedFeedGlobalFragment$key
-  >(
-    graphql`
-      fragment CuratedFeedGlobalFragment on Query
-      @refetchable(queryName: "CuratedFeedGlobalPaginationQuery") {
-        globalFeed(before: $globalBefore, last: $globalLast, includePosts: $includePosts)
-          @connection(key: "NonAuthedFeed_globalFeed") {
-          edges {
-            node {
-              ... on FeedEventOrError {
-                __typename
-
-                ...FeedListEventDataFragment
-              }
-            }
-          }
-        }
-
-        ...FeedListFragment
-      }
-    `,
-    query
   );
 
   const curatedPagination = usePaginationFragment<
@@ -63,7 +32,7 @@ export default function CuratedFeed({ queryRef }: Props) {
     graphql`
       fragment CuratedFeedPaginationFragment on Query
       @refetchable(queryName: "CuratedFeedPaginationQuery") {
-        curatedFeed(before: $curatedBefore, last: $curatedLast, includePosts: $includePosts)
+        curatedFeed(before: $curatedBefore, last: $curatedLast)
           @connection(key: "NonAuthedFeed_curatedFeed") {
           edges {
             node {
@@ -82,23 +51,14 @@ export default function CuratedFeed({ queryRef }: Props) {
     query
   );
 
-  const isKoalaEnabled = isFeatureEnabled(FeatureFlag.KOALA, query);
-
   const feedData = useMemo(() => {
     const events = [];
 
     const joined = [...(curatedPagination.data.curatedFeed?.edges ?? [])];
 
-    if (!curatedPagination.hasPrevious) {
-      // These get displayed in reverse order so we need to put the global stuff
-      // at the beginning of the list
-      joined.unshift(...(globalPagination.data.globalFeed?.edges ?? []));
-    }
-
     for (const edge of joined) {
       if (
-        (edge?.node?.__typename === 'FeedEvent' ||
-          (edge?.node?.__typename === 'Post' && isKoalaEnabled)) &&
+        (edge?.node?.__typename === 'FeedEvent' || edge?.node?.__typename === 'Post') &&
         edge.node
       ) {
         events.push(edge.node);
@@ -106,14 +66,9 @@ export default function CuratedFeed({ queryRef }: Props) {
     }
 
     return events;
-  }, [
-    globalPagination.data.globalFeed?.edges,
-    isKoalaEnabled,
-    curatedPagination.data.curatedFeed?.edges,
-    curatedPagination.hasPrevious,
-  ]);
+  }, [curatedPagination.data.curatedFeed?.edges]);
 
-  const hasPrevious = curatedPagination.hasPrevious || globalPagination.hasPrevious;
+  const hasPrevious = curatedPagination.hasPrevious;
 
   const trackLoadMoreFeedEvents = useTrackLoadMoreFeedEvents();
 
@@ -123,11 +78,9 @@ export default function CuratedFeed({ queryRef }: Props) {
       // Infinite scroll component wants load callback to return a promise
       if (curatedPagination.hasPrevious) {
         curatedPagination.loadPrevious(ITEMS_PER_PAGE, { onComplete: () => resolve() });
-      } else if (globalPagination.hasPrevious) {
-        globalPagination.loadPrevious(ITEMS_PER_PAGE, { onComplete: () => resolve() });
       }
     });
-  }, [globalPagination, trackLoadMoreFeedEvents, curatedPagination]);
+  }, [trackLoadMoreFeedEvents, curatedPagination]);
 
   return (
     <FeedList
