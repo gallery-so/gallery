@@ -50,7 +50,7 @@ export function UserFollowCard({ userRef, queryRef, onPress }: UserFollowCardPro
   }, [onPress, user.username]);
 
   return (
-    <View className="flex w-full flex-row items-center space-x-8 overflow-hidden py-2 px-4">
+    <View className="flex w-full flex-row items-center space-x-8 overflow-hidden px-4">
       <GalleryTouchableOpacity
         onPress={handlePress}
         className="flex flex-1 flex-grow flex-col py-2"

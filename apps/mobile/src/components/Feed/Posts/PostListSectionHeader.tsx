@@ -110,7 +110,7 @@ export function PostListSectionHeader({ feedPostRef, queryRef }: PostListSection
             eventName="Feed Profile Picture Clicked"
             properties={{ variant: 'Feed event author' }}
           >
-            <ProfilePicture userRef={feedPost.author} size="sm" />
+            <ProfilePicture userRef={feedPost.author} size="md" />
           </GalleryTouchableOpacity>
           <View className="flex-1">
             <GalleryTouchableOpacity
@@ -124,20 +124,22 @@ export function PostListSectionHeader({ feedPostRef, queryRef }: PostListSection
                 {feedPost?.author?.username}
               </Typography>
             </GalleryTouchableOpacity>
-            <GalleryTouchableOpacity
-              className="flex flex-row items-center space-x-1"
-              onPress={handleCommunityPress}
-              eventElementId="Feed Community Button"
-              eventName="Feed Community Clicked"
-              properties={{ variant: 'Feed event community' }}
-            >
-              <Typography
-                className="text-xs text-shadow"
-                font={{ family: 'ABCDiatype', weight: 'Regular' }}
+            {community.name && (
+              <GalleryTouchableOpacity
+                className="flex flex-row items-center space-x-1"
+                onPress={handleCommunityPress}
+                eventElementId="Feed Community Button"
+                eventName="Feed Community Clicked"
+                properties={{ variant: 'Feed event community' }}
               >
-                {community.name}
-              </Typography>
-            </GalleryTouchableOpacity>
+                <Typography
+                  className="text-xs text-shadow"
+                  font={{ family: 'ABCDiatype', weight: 'Regular' }}
+                >
+                  {community.name}
+                </Typography>
+              </GalleryTouchableOpacity>
+            )}
           </View>
         </View>
 

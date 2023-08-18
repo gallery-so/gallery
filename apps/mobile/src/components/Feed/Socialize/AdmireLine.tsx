@@ -52,12 +52,12 @@ export function AdmireLine({
           eventElementId={'AdmireLine Single User'}
           eventName={'AdmireLine Single User'}
         >
-          <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+          <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
             {firstUser.username}{' '}
           </Typography>
         </GalleryTouchableOpacity>
 
-        <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
+        <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
           admired this
         </Typography>
       </View>
@@ -70,12 +70,12 @@ export function AdmireLine({
           eventElementId={'AdmireLine Single User'}
           eventName={'AdmireLine Single User'}
         >
-          <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+          <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
             {totalAdmires} collectors{' '}
           </Typography>
         </GalleryTouchableOpacity>
 
-        <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
+        <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
           admired this
         </Typography>
       </View>
@@ -90,7 +90,7 @@ export function AdmireLine({
         eventName={'Tapped AdmireLine First Admire CTA'}
         className="flex  justify-center h-6"
       >
-        <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+        <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
           Be the first to admire this
         </Typography>
       </GalleryTouchableOpacity>

@@ -41,7 +41,7 @@ function TabItem({ navigation, route, activeRoute }: TabItemProps) {
       properties={{ variant: 'Feed', route: route.name }}
     >
       <Typography
-        className={`text-lg ${
+        className={`text-lg tracking-tight ${
           isFocused ? 'text-black-800 dark:text-white' : 'text-metal dark:text-metal'
         }`}
         font={{ family: 'ABCDiatype', weight: 'Medium' }}

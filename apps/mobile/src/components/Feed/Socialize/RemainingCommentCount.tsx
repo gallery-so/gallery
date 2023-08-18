@@ -23,7 +23,7 @@ export function RemainingCommentCount({ style, onPress, totalCount }: Props) {
         eventName="Expand Admirers Button Clicked"
       >
         <Typography
-          className="text-xs color-shadow"
+          className="text-sm color-shadow"
           font={{ family: 'ABCDiatype', weight: 'Regular' }}
         >
           View all {totalCount} comments

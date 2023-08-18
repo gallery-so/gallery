@@ -39,7 +39,7 @@ function TabItem({
       properties={{ variant: route }}
     >
       <Typography
-        className={`${isFocused ? 'text-black-800 dark:text-white' : 'text-metal'}`}
+        className={`tracking-tight ${isFocused ? 'text-black-800 dark:text-white' : 'text-metal'}`}
         font={{ family: 'ABCDiatype', weight: 'Medium' }}
       >
         {route}
