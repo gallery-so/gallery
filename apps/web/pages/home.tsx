@@ -6,7 +6,7 @@ import { HomeNavbar } from '~/contexts/globalLayout/GlobalNavbar/HomeNavbar/Home
 import { StandardSidebar } from '~/contexts/globalLayout/GlobalSidebar/StandardSidebar';
 import { homePageCuratedQuery } from '~/generated/homePageCuratedQuery.graphql';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
-import TrendingHomePage from '~/scenes/Home/TrendingHomePage';
+import CuratedHomePage from '~/scenes/Home/CuratedHomePage';
 import { PreloadQueryArgs } from '~/types/PageComponentPreloadQuery';
 import isProduction from '~/utils/isProduction';
 
@@ -21,7 +21,7 @@ const homePageCuratedQueryNode = graphql`
     $visibleTokensPerFeedEvent: Int! # [GAL-3763] Revive this if / when elon lets us import twitter follower graphs again # $twitterListFirst: Int! # $twitterListAfter: String
     $includePosts: Boolean!
   ) {
-    ...TrendingHomePageFragment
+    ...CuratedHomePageFragment
     ...HomeNavbarFragment
     # [GAL-3763] Revive this if / when elon lets us import twitter follower graphs again
     # ...useOpenTwitterFollowingModalFragment
@@ -43,7 +43,7 @@ export default function Home({ preloadedQuery }: Props) {
     <GalleryRoute
       navbar={<HomeNavbar queryRef={query} />}
       sidebar={<StandardSidebar queryRef={query} />}
-      element={<TrendingHomePage queryRef={query} />}
+      element={<CuratedHomePage queryRef={query} />}
     />
   );
 }

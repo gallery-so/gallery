@@ -1,11 +1,11 @@
 import { useCallback, useMemo } from 'react';
 import { graphql, useFragment, usePaginationFragment } from 'react-relay';
 
-import { CuratedThenGlobalFeedFragment$key } from '~/generated/CuratedThenGlobalFeedFragment.graphql';
-import { CuratedThenGlobalFeedGlobalFragment$key } from '~/generated/CuratedThenGlobalFeedGlobalFragment.graphql';
-import { CuratedThenGlobalFeedGlobalPaginationQuery } from '~/generated/CuratedThenGlobalFeedGlobalPaginationQuery.graphql';
-import { CuratedThenGlobalFeedTrendingFragment$key } from '~/generated/CuratedThenGlobalFeedTrendingFragment.graphql';
-import { CuratedThenGlobalFeedTrendingPaginationQuery } from '~/generated/CuratedThenGlobalFeedTrendingPaginationQuery.graphql';
+import { CuratedFeedFragment$key } from '~/generated/CuratedFeedFragment.graphql';
+import { CuratedFeedGlobalFragment$key } from '~/generated/CuratedFeedGlobalFragment.graphql';
+import { CuratedFeedGlobalPaginationQuery } from '~/generated/CuratedFeedGlobalPaginationQuery.graphql';
+import { CuratedFeedTrendingFragment$key } from '~/generated/CuratedFeedTrendingFragment.graphql';
+import { CuratedFeedTrendingPaginationQuery } from '~/generated/CuratedFeedTrendingPaginationQuery.graphql';
 import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 import { useTrackLoadMoreFeedEvents } from './analytics';
@@ -13,17 +13,17 @@ import { ITEMS_PER_PAGE } from './constants';
 import FeedList from './FeedList';
 
 type Props = {
-  queryRef: CuratedThenGlobalFeedFragment$key;
+  queryRef: CuratedFeedFragment$key;
 };
 
-export default function CuratedThenGlobalFeed({ queryRef }: Props) {
+export default function CuratedFeed({ queryRef }: Props) {
   const query = useFragment(
     graphql`
-      fragment CuratedThenGlobalFeedFragment on Query {
+      fragment CuratedFeedFragment on Query {
         ...FeedListFragment
 
-        ...CuratedThenGlobalFeedGlobalFragment
-        ...CuratedThenGlobalFeedTrendingFragment
+        ...CuratedFeedGlobalFragment
+        ...CuratedFeedTrendingFragment
         ...isFeatureEnabledFragment
       }
     `,
@@ -31,12 +31,12 @@ export default function CuratedThenGlobalFeed({ queryRef }: Props) {
   );
 
   const globalPagination = usePaginationFragment<
-    CuratedThenGlobalFeedGlobalPaginationQuery,
-    CuratedThenGlobalFeedGlobalFragment$key
+    CuratedFeedGlobalPaginationQuery,
+    CuratedFeedGlobalFragment$key
   >(
     graphql`
-      fragment CuratedThenGlobalFeedGlobalFragment on Query
-      @refetchable(queryName: "CuratedThenGlobalFeedGlobalPaginationQuery") {
+      fragment CuratedFeedGlobalFragment on Query
+      @refetchable(queryName: "CuratedFeedGlobalPaginationQuery") {
         globalFeed(before: $globalBefore, last: $globalLast, includePosts: $includePosts)
           @connection(key: "NonAuthedFeed_globalFeed") {
           edges {
@@ -57,12 +57,12 @@ export default function CuratedThenGlobalFeed({ queryRef }: Props) {
   );
 
   const curatedPagination = usePaginationFragment<
-    CuratedThenGlobalFeedTrendingPaginationQuery,
-    CuratedThenGlobalFeedTrendingFragment$key
+    CuratedFeedTrendingPaginationQuery,
+    CuratedFeedTrendingFragment$key
   >(
     graphql`
-      fragment CuratedThenGlobalFeedTrendingFragment on Query
-      @refetchable(queryName: "CuratedThenGlobalFeedTrendingPaginationQuery") {
+      fragment CuratedFeedTrendingFragment on Query
+      @refetchable(queryName: "CuratedFeedTrendingPaginationQuery") {
         curatedFeed(before: $curatedBefore, last: $curatedLast, includePosts: $includePosts)
           @connection(key: "NonAuthedFeed_curatedFeed") {
           edges {
