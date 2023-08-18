@@ -4,8 +4,8 @@ import { graphql, useFragment, usePaginationFragment } from 'react-relay';
 import { CuratedFeedFragment$key } from '~/generated/CuratedFeedFragment.graphql';
 import { CuratedFeedGlobalFragment$key } from '~/generated/CuratedFeedGlobalFragment.graphql';
 import { CuratedFeedGlobalPaginationQuery } from '~/generated/CuratedFeedGlobalPaginationQuery.graphql';
-import { CuratedFeedTrendingFragment$key } from '~/generated/CuratedFeedTrendingFragment.graphql';
-import { CuratedFeedTrendingPaginationQuery } from '~/generated/CuratedFeedTrendingPaginationQuery.graphql';
+import { CuratedFeedPaginationFragment$key } from '~/generated/CuratedFeedPaginationFragment.graphql';
+import { CuratedFeedPaginationQuery } from '~/generated/CuratedFeedPaginationQuery.graphql';
 import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 import { useTrackLoadMoreFeedEvents } from './analytics';
@@ -23,7 +23,7 @@ export default function CuratedFeed({ queryRef }: Props) {
         ...FeedListFragment
 
         ...CuratedFeedGlobalFragment
-        ...CuratedFeedTrendingFragment
+        ...CuratedFeedPaginationFragment
         ...isFeatureEnabledFragment
       }
     `,
@@ -57,12 +57,12 @@ export default function CuratedFeed({ queryRef }: Props) {
   );
 
   const curatedPagination = usePaginationFragment<
-    CuratedFeedTrendingPaginationQuery,
-    CuratedFeedTrendingFragment$key
+    CuratedFeedPaginationQuery,
+    CuratedFeedPaginationFragment$key
   >(
     graphql`
-      fragment CuratedFeedTrendingFragment on Query
-      @refetchable(queryName: "CuratedFeedTrendingPaginationQuery") {
+      fragment CuratedFeedPaginationFragment on Query
+      @refetchable(queryName: "CuratedFeedPaginationQuery") {
         curatedFeed(before: $curatedBefore, last: $curatedLast, includePosts: $includePosts)
           @connection(key: "NonAuthedFeed_curatedFeed") {
           edges {
