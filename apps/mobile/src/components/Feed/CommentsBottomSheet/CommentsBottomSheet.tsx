@@ -32,7 +32,7 @@ import useKeyboardStatus from '../../../utils/useKeyboardStatus';
 import { FeedItemTypes } from '../createVirtualizedFeedEventItems';
 import { CommentListFallback } from './CommentListFallback';
 
-const SNAP_POINTS = [350];
+const SNAP_POINTS = [400];
 
 type CommentsBottomSheetProps = {
   feedId: string;

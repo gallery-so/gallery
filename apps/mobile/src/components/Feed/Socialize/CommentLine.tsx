@@ -1,15 +1,18 @@
-import { Text, View, ViewProps } from 'react-native';
+import { View, ViewProps } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
+import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
+import { Typography } from '~/components/Typography';
 import { UsernameDisplay } from '~/components/UsernameDisplay';
 import { CommentLineFragment$key } from '~/generated/CommentLineFragment.graphql';
 
 type Props = {
   commentRef: CommentLineFragment$key;
   style?: ViewProps['style'];
+  onCommentPress?: () => void;
 };
 
-export function CommentLine({ commentRef, style }: Props) {
+export function CommentLine({ commentRef, style, onCommentPress }: Props) {
   const comment = useFragment(
     graphql`
       fragment CommentLineFragment on Comment {
@@ -23,11 +26,18 @@ export function CommentLine({ commentRef, style }: Props) {
   );
 
   return (
-    <View className="flex flex-row" style={style}>
-      <Text>
-        <UsernameDisplay userRef={comment.commenter} />
-        <Text className="text-xs dark:text-white flex-1"> {comment.comment}</Text>
-      </Text>
+    <View className="flex flex-row space-x-1" style={style}>
+      <UsernameDisplay userRef={comment.commenter} />
+      <GalleryTouchableOpacity
+        onPress={onCommentPress}
+        eventElementId={null}
+        eventName={null}
+        className="flex flex-row wrap"
+      >
+        <Typography className={`text-xs`} font={{ family: 'ABCDiatype', weight: 'Regular' }}>
+          {comment.comment}
+        </Typography>
+      </GalleryTouchableOpacity>
     </View>
   );
 }

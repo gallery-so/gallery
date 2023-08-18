@@ -1,7 +1,6 @@
 import { useCallback, useMemo, useRef } from 'react';
 import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
-import { usePostComment } from 'src/hooks/usePostComment';
 import { useTogglePostAdmire } from 'src/hooks/useTogglePostAdmire';
 
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
@@ -10,6 +9,7 @@ import { Typography } from '~/components/Typography';
 import { FeedPostSocializeSectionFragment$key } from '~/generated/FeedPostSocializeSectionFragment.graphql';
 import { FeedPostSocializeSectionQueryFragment$key } from '~/generated/FeedPostSocializeSectionQueryFragment.graphql';
 
+import { CommentsBottomSheet } from '../CommentsBottomSheet/CommentsBottomSheet';
 import { AdmireButton } from '../Socialize/AdmireButton';
 import { CommentButton } from '../Socialize/CommentButton';
 import { Interactions } from '../Socialize/Interactions';
@@ -20,7 +20,7 @@ type Props = {
   onCommentPress: () => void;
 };
 
-export function FeedPostSocializeSection({ feedPostRef, queryRef, onCommentPress }: Props) {
+export function FeedPostSocializeSection({ feedPostRef, queryRef }: Props) {
   const post = useFragment(
     graphql`
       fragment FeedPostSocializeSectionFragment on Post {
@@ -68,14 +68,10 @@ export function FeedPostSocializeSection({ feedPostRef, queryRef, onCommentPress
     queryRef
   );
 
-  const bottomSheetRef = useRef<GalleryBottomSheetModalType>(null);
-
   const { toggleAdmire, hasViewerAdmiredEvent } = useTogglePostAdmire({
     postRef: post,
     queryRef: query,
   });
-
-  const { isSubmittingComment } = usePostComment();
 
   const nonNullComments = useMemo(() => {
     const comments = [];
@@ -108,46 +104,49 @@ export function FeedPostSocializeSection({ feedPostRef, queryRef, onCommentPress
 
   const totalAdmires = post.admires?.pageInfo?.total ?? 0;
 
-  const handleAddComment = useCallback(() => {
-    bottomSheetRef.current?.present();
+  const commentsBottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
+  const handleOpenCommentBottomSheet = useCallback(() => {
+    commentsBottomSheetRef.current?.present();
   }, []);
 
   return (
-    <View className="px-3 pb-8 pt-5">
-      <View className="flex flex-row justify-between">
-        <View className="flex-1 pr-4 pt-1">
-          <Interactions
-            type="Post"
-            feedId={post.dbid}
-            commentRefs={nonNullComments}
-            admireRefs={nonNullAdmires}
-            totalComments={totalComments}
-            totalAdmires={totalAdmires}
-            onAdmirePress={toggleAdmire}
-          />
-        </View>
+    <>
+      <View className="px-3 pb-8 pt-5">
+        <View className="flex flex-row justify-between">
+          <View className="flex-1 pr-4 pt-1">
+            <Interactions
+              type="Post"
+              feedId={post.dbid}
+              commentRefs={nonNullComments}
+              admireRefs={nonNullAdmires}
+              totalComments={totalComments}
+              totalAdmires={totalAdmires}
+              onAdmirePress={toggleAdmire}
+              openCommentBottomSheet={handleOpenCommentBottomSheet}
+            />
+          </View>
 
-        <View className="flex flex-row space-x-1">
-          <AdmireButton onPress={toggleAdmire} isAdmired={hasViewerAdmiredEvent} />
-          <CommentButton
-            type="Post"
-            feedId={post.dbid}
-            onClick={onCommentPress}
-            isSubmittingComment={isSubmittingComment}
-            bottomSheetRef={bottomSheetRef}
-          />
+          <View className="flex flex-row space-x-1">
+            <AdmireButton onPress={toggleAdmire} isAdmired={hasViewerAdmiredEvent} />
+            <CommentButton openCommentBottomSheet={handleOpenCommentBottomSheet} />
+          </View>
         </View>
-      </View>
-      {isEmptyComments && (
-        <GalleryTouchableOpacity onPress={handleAddComment} eventElementId={null} eventName={null}>
-          <Typography
-            font={{ family: 'ABCDiatype', weight: 'Bold' }}
-            className="text-xs text-shadow"
+        {isEmptyComments && (
+          <GalleryTouchableOpacity
+            onPress={handleOpenCommentBottomSheet}
+            eventElementId={null}
+            eventName={null}
           >
-            Add a comment
-          </Typography>
-        </GalleryTouchableOpacity>
-      )}
-    </View>
+            <Typography
+              font={{ family: 'ABCDiatype', weight: 'Regular' }}
+              className="text-xs text-shadow"
+            >
+              Add a comment
+            </Typography>
+          </GalleryTouchableOpacity>
+        )}
+      </View>
+      <CommentsBottomSheet type="Post" feedId={post.dbid} bottomSheetRef={commentsBottomSheetRef} />
+    </>
   );
 }

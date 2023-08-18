@@ -22,7 +22,10 @@ export function RemainingCommentCount({ style, onPress, totalCount }: Props) {
         eventElementId="Expand Admirers Button"
         eventName="Expand Admirers Button Clicked"
       >
-        <Typography className="text-xs underline" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+        <Typography
+          className="text-xs color-shadow"
+          font={{ family: 'ABCDiatype', weight: 'Regular' }}
+        >
           View all {totalCount} comments
         </Typography>
       </GalleryTouchableOpacity>
