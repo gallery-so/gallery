@@ -99,33 +99,31 @@ export function SomeoneCommentedOnYourPost({
       notificationRef={notification}
       tokenUrl={tokenUrl ?? undefined}
     >
-      <View className="flex-row space-x-2">
-        <View className="flex space-y-2">
-          <Text className="dark:text-white">
-            <Typography
-              font={{
-                family: 'ABCDiatype',
-                weight: 'Bold',
-              }}
-              className="text-sm"
-            >
-              {commenter ? commenter.username : 'Someone'}
-            </Typography>{' '}
-            commented on your{' '}
-            <Typography
-              font={{
-                family: 'ABCDiatype',
-                weight: 'Bold',
-              }}
-              className="text-sm"
-            >
-              post
-            </Typography>
-          </Text>
+      <View className="flex space-y-2">
+        <Text className="dark:text-white">
+          <Typography
+            font={{
+              family: 'ABCDiatype',
+              weight: 'Bold',
+            }}
+            className="text-sm"
+          >
+            {commenter ? commenter.username : 'Someone'}
+          </Typography>{' '}
+          commented on your{' '}
+          <Typography
+            font={{
+              family: 'ABCDiatype',
+              weight: 'Bold',
+            }}
+            className="text-sm"
+          >
+            post
+          </Typography>
+        </Text>
 
-          <View className="border-l-2 border-[#d9d9d9] pl-2">
-            <Text className="dark:text-white">{notification.comment?.comment ?? ''}</Text>
-          </View>
+        <View className="border-l-2 border-[#d9d9d9] pl-2">
+          <Text className="dark:text-white">{notification.comment?.comment ?? ''}</Text>
         </View>
       </View>
     </NotificationSkeleton>
