@@ -2,7 +2,7 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
-import { HStack } from '~/components/core/Spacer/Stack';
+import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import { ListItem } from '~/components/Feed/Socialize/CommentsModal/ListItem';
 import { TimeAgoText } from '~/components/Feed/Socialize/CommentsModal/TimeAgoText';
@@ -38,25 +38,33 @@ export function CommentNote({ commentRef }: CommentNoteProps) {
 
   return (
     <StyledListItem justify="space-between" gap={4}>
-      <HStack gap={4} align="center">
-        {comment.commenter && <ProfilePicture size="sm" userRef={comment.commenter} />}
-        <p>
-          <StyledUsernameContainer>
-            <UsernameLink username={comment.commenter?.username ?? null} />
-          </StyledUsernameContainer>
-          <BaseM as="span" dangerouslySetInnerHTML={{ __html: comment.comment ?? '' }} />
-        </p>
-      </HStack>
+      <HStack gap={8}>
+        {comment.commenter && (
+          <StyledProfilePictureWrapper>
+            <ProfilePicture size="sm" userRef={comment.commenter} />
+          </StyledProfilePictureWrapper>
+        )}
 
-      <TimeAgoText color={colors.metal}>{timeAgo}</TimeAgoText>
+        <VStack>
+          <HStack gap={4} align="center">
+            <UsernameLink username={comment.commenter?.username ?? null} />
+            <StyledTimeAgoText color={colors.metal}>{timeAgo}</StyledTimeAgoText>
+          </HStack>
+          <BaseM as="span" dangerouslySetInnerHTML={{ __html: comment.comment ?? '' }} />
+        </VStack>
+      </HStack>
     </StyledListItem>
   );
 }
 
-const StyledUsernameContainer = styled.span`
-  padding-right: 4px;
+const StyledProfilePictureWrapper = styled.div`
+  margin-top: 4px;
 `;
 
 const StyledListItem = styled(ListItem)`
   padding: 0px 16px 16px;
+`;
+
+const StyledTimeAgoText = styled(TimeAgoText)`
+  font-size: 10px;
 `;

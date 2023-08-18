@@ -58,7 +58,7 @@ export default function PostSocializeSection({ onPotentialLayoutShift, postRef, 
   }, [admirePost, post.dbid, post.id, query]);
 
   return (
-    <VStack gap={4}>
+    <VStack gap={16}>
       <HStack justify="space-between" align="center" gap={24}>
         <AdmireLine eventRef={post} queryRef={query} onAdmire={handleAdmireClick} />
 
