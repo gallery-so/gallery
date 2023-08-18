@@ -240,7 +240,7 @@ function ConnectedPostCommentsList({ feedId }: { feedId: string }) {
   );
 
   const comments = useMemo(() => {
-    return removeNullValues(query.postById?.comments?.edges?.map((edge) => edge?.node)).reverse();
+    return removeNullValues(query.postById?.comments?.edges?.map((edge) => edge?.node));
   }, [query.postById?.comments?.edges]);
 
   const handleLoadMore = useCallback(() => {
