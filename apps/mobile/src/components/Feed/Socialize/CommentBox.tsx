@@ -90,6 +90,7 @@ export function CommentBox({
           autoComplete="off"
           autoFocus={autoFocus}
           onBlur={handleDismiss}
+          placeholder="Add a comment..."
           onSubmitEditing={handleDismiss}
           keyboardAppearance={colorScheme}
           style={{ flex: 1, color: colorScheme === 'dark' ? colors.white : colors.black['800'] }}
