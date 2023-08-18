@@ -1,7 +1,7 @@
 import { RouteProp, useRoute } from '@react-navigation/native';
-import { Suspense, useCallback, useMemo, useRef, useState } from 'react';
-import { View } from 'react-native';
-import { graphql, useLazyLoadQuery } from 'react-relay';
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Animated, View } from 'react-native';
+import { graphql, useLazyLoadQuery, useRefetchableFragment } from 'react-relay';
 import { RefreshIcon } from 'src/icons/RefreshIcon';
 import { SlidersIcon } from 'src/icons/SlidersIcon';
 
@@ -12,7 +12,10 @@ import { IconContainer } from '~/components/IconContainer';
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { Select } from '~/components/Select';
 import { Typography } from '~/components/Typography';
+import { useToastActions } from '~/contexts/ToastContext';
+import { NftSelectorPickerScreenFragment$key } from '~/generated/NftSelectorPickerScreenFragment.graphql';
 import { NftSelectorPickerScreenQuery } from '~/generated/NftSelectorPickerScreenQuery.graphql';
+import { NftSelectorPickerScreenRefetchQuery } from '~/generated/NftSelectorPickerScreenRefetchQuery.graphql';
 import { SearchIcon } from '~/navigation/MainTabNavigator/SearchIcon';
 import { MainTabStackNavigatorParamList } from '~/navigation/types';
 
@@ -23,6 +26,7 @@ import {
 } from './NftSelectorFilterBottomSheet';
 import { NftSelectorPickerGrid } from './NftSelectorPickerGrid';
 import { NftSelectorScreenFallback } from './NftSelectorScreenFallback';
+import useSyncTokens from './useSyncTokens';
 
 export function NftSelectorPickerScreen() {
   const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'ProfilePicturePicker'>>();
@@ -30,10 +34,23 @@ export function NftSelectorPickerScreen() {
   const query = useLazyLoadQuery<NftSelectorPickerScreenQuery>(
     graphql`
       query NftSelectorPickerScreenQuery {
-        ...NftSelectorPickerGridFragment
+        ...NftSelectorPickerScreenFragment
       }
     `,
     {}
+  );
+
+  const [data, refetch] = useRefetchableFragment<
+    NftSelectorPickerScreenRefetchQuery,
+    NftSelectorPickerScreenFragment$key
+  >(
+    graphql`
+      fragment NftSelectorPickerScreenFragment on Query
+      @refetchable(queryName: "NftSelectorPickerScreenRefetchQuery") {
+        ...NftSelectorPickerGridFragment
+      }
+    `,
+    query
   );
 
   const currentScreen = route.params.page;
@@ -53,6 +70,14 @@ export function NftSelectorPickerScreen() {
   const screenTitle = useMemo(() => {
     return currentScreen === 'ProfilePicture' ? 'Select a profile picture' : 'Select item to post';
   }, [currentScreen]);
+
+  const showRefreshIcon = useMemo(() => {
+    return networkFilter !== 'all';
+  }, [networkFilter]);
+
+  const handleRefresh = useCallback(() => {
+    refetch({ networkFilter }, { fetchPolicy: 'network-only' });
+  }, [networkFilter, refetch]);
 
   return (
     <View className="flex-1 bg-white dark:bg-black-900" style={{ paddingTop: top }}>
@@ -97,13 +122,9 @@ export function NftSelectorPickerScreen() {
             />
 
             <View className="flex flex-row space-x-1">
-              <IconContainer
-                size="sm"
-                onPress={() => {}}
-                icon={<RefreshIcon />}
-                eventElementId="NftSelectorSelectorRefreshButton"
-                eventName="NftSelectoreSelectorRefreshButton pressed"
-              />
+              {showRefreshIcon && (
+                <AnimatedRefreshIcon networkFilter={networkFilter} onRefresh={handleRefresh} />
+              )}
               <IconContainer
                 size="sm"
                 onPress={handleSettingsPress}
@@ -131,7 +152,7 @@ export function NftSelectorPickerScreen() {
                   networkFilter: networkFilter,
                   sortView,
                 }}
-                queryRef={query}
+                queryRef={data}
                 screen={currentScreen}
               />
             </Suspense>
@@ -139,5 +160,68 @@ export function NftSelectorPickerScreen() {
         </View>
       </View>
     </View>
+  );
+}
+
+type AnimatedRefreshIconProps = {
+  networkFilter: NetworkChoice;
+  onRefresh: () => void;
+};
+
+function AnimatedRefreshIcon({ networkFilter, onRefresh }: AnimatedRefreshIconProps) {
+  const { isSyncing, syncTokens } = useSyncTokens();
+  const { pushToast } = useToastActions();
+
+  const handleSync = useCallback(async () => {
+    if (networkFilter === 'all' || isSyncing) return;
+
+    await syncTokens(networkFilter);
+    onRefresh();
+    pushToast({
+      message: 'Successfully refreshed your collection',
+    });
+  }, [isSyncing, networkFilter, onRefresh, pushToast, syncTokens]);
+
+  const spinValue = useRef(new Animated.Value(0)).current;
+
+  const spin = useCallback(() => {
+    spinValue.setValue(0);
+    Animated.timing(spinValue, {
+      toValue: 1,
+      duration: 1000,
+      useNativeDriver: true,
+    }).start(({ finished }) => {
+      // Only repeat the animation if it completed (wasn't interrupted) and isSyncing is still true
+      if (finished && isSyncing) {
+        spin();
+      }
+    });
+  }, [isSyncing, spinValue]);
+
+  const spinAnimation = spinValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '360deg'],
+  });
+
+  useEffect(() => {
+    if (isSyncing) {
+      spin();
+    } else {
+      spinValue.stopAnimation();
+    }
+  }, [isSyncing, spin, spinValue]);
+
+  return (
+    <IconContainer
+      size="sm"
+      onPress={handleSync}
+      icon={
+        <Animated.View style={{ transform: [{ rotate: spinAnimation }] }}>
+          <RefreshIcon />
+        </Animated.View>
+      }
+      eventElementId="NftSelectorSelectorRefreshButton"
+      eventName="NftSelectoreSelectorRefreshButton pressed"
+    />
   );
 }
