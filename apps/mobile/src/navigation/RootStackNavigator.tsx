@@ -90,7 +90,7 @@ export function RootStackNavigator({ navigationContainerRef }: Props) {
         component={TwitterSuggestionListScreen}
       />
       <Stack.Screen name="DesignSystemButtons" component={DesignSystemButtonsScreen} />
-      <Stack.Screen name="Debugger" component={Dev} />
+      <Stack.Screen name="Dev" component={Dev} />
     </Stack.Navigator>
   );
 }

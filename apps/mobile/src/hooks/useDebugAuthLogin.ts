@@ -33,6 +33,10 @@ export function useDebugAuthLogin() {
 
   return useCallback(
     async ({ asUsername, userId, chainAddresses, debugToolsPassword }: DebugAuth) => {
+      console.log('asUsername', asUsername);
+      console.log('userId', userId);
+      console.log('chainAddresses', chainAddresses);
+      console.log('debugToolsPassword', debugToolsPassword);
       const { login: result } = await login({
         variables: {
           mechanism: {

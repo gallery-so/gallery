@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
-import { ScrollView, View } from 'react-native';
+import { View } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import { DEBUG_PASSWORD_KEY, DEBUG_USERNAME_KEY } from 'src/constants/storageKeys';
 import { useDebugAuthLogin } from 'src/hooks/useDebugAuthLogin';
@@ -49,6 +49,8 @@ export function Dev() {
 
   const [username, setUsername] = usePersistedState(DEBUG_USERNAME_KEY, '');
   const [password, setPassword] = usePersistedState(DEBUG_PASSWORD_KEY, '');
+  console.log('username', username);
+  console.log('password', password);
   const [errorMessage, setErrorMessage] = useState('');
 
   //useKeyDown('Escape', handleCloseDebugger);
@@ -87,53 +89,52 @@ export function Dev() {
   );
 
   return (
-    <ScrollView className="flex-1 bg-white dark:bg-black-900">
+    <View
+      className="flex-1 flex flex-col bg-white dark:bg-black-900 space-y-4 p-10"
+      style={{ paddingTop: 150 }}
+    >
       <Typography className="text-lg" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
         ☢️ DEBUG MODE
       </Typography>
+      <Typography font={{ family: 'ABCDiatype', weight: 'Regular' }}>Login As</Typography>
 
-      <View className="flex flex-row space-x-2">
-        <Typography font={{ family: 'ABCDiatype', weight: 'Regular' }}>Login As</Typography>
+      {isLocalServer ? null : (
+        <View className="flex gap-3">
+          <FadedInput
+            className="py-2"
+            onChange={handleUsernameChange}
+            placeholder="Username"
+            defaultValue={username}
+          />
 
-        {isLocalServer ? null : (
-          <>
-            <FadedInput
-              onChange={handleUsernameChange}
-              placeholder="Username"
-              defaultValue={username}
-            />
+          <FadedInput
+            className="py-2"
+            onChange={handlePasswordChange}
+            placeholder="Admin Password"
+            defaultValue={password}
+          />
+        </View>
+      )}
 
-            <FadedInput
-              onChange={handlePasswordChange}
-              placeholder="Admin Password"
-              defaultValue={password}
-            />
-          </>
-        )}
+      <Button
+        text="Submit"
+        onPress={handleLogin}
+        eventName="Debugger Login"
+        eventElementId="Submit login"
+      />
 
-        <Button
-          text="Submit"
-          onPress={handleLogin}
-          disabled={!username.length}
-          eventName="Debugger Login"
-          eventElementId="Submit login"
-        />
-
-        {errorMessage && (
-          <Typography
-            className="text-error text-sm"
-            font={{ family: 'ABCDiatype', weight: 'Regular' }}
-          >
-            {errorMessage}
-          </Typography>
-        )}
-
-        <Typography font={{ family: 'ABCDiatype', weight: 'Regular' }}>Detected User</Typography>
-
-        <Typography font={{ family: 'ABCDiatype', weight: 'Regular' }}>
-          {loggedInUserInfo}
+      {errorMessage && (
+        <Typography
+          className="text-error text-sm"
+          font={{ family: 'ABCDiatype', weight: 'Regular' }}
+        >
+          {errorMessage}
         </Typography>
-      </View>
-    </ScrollView>
+      )}
+
+      <Typography font={{ family: 'ABCDiatype', weight: 'Regular' }}>Detected User</Typography>
+
+      <Typography font={{ family: 'ABCDiatype', weight: 'Regular' }}>{loggedInUserInfo}</Typography>
+    </View>
   );
 }
