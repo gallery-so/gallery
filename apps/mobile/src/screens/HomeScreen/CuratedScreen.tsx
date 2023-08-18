@@ -1,8 +1,6 @@
 import { Suspense, useCallback, useMemo, useState } from 'react';
 import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
-import isFeatureEnabled, { FeatureFlag } from 'src/utils/isFeatureEnabled';
 
-import { CuratedScreenFeatureQuery } from '~/generated/CuratedScreenFeatureQuery.graphql';
 import { CuratedScreenFragment$key } from '~/generated/CuratedScreenFragment.graphql';
 import { CuratedScreenQuery } from '~/generated/CuratedScreenQuery.graphql';
 import { RefetchableCuratedScreenFragmentQuery } from '~/generated/RefetchableCuratedScreenFragmentQuery.graphql';
@@ -25,11 +23,8 @@ function CuratedScreenInner({ queryRef }: CuratedScreenInnerProps) {
     graphql`
       fragment CuratedScreenFragment on Query
       @refetchable(queryName: "RefetchableCuratedScreenFragmentQuery") {
-        curatedFeed(
-          before: $curatedFeedBefore
-          last: $curatedFeedCount
-          includePosts: $includePosts
-        ) @connection(key: "CuratedScreenFragment_curatedFeed") {
+        curatedFeed(before: $curatedFeedBefore, last: $curatedFeedCount)
+          @connection(key: "CuratedScreenFragment_curatedFeed") {
           edges {
             node {
               __typename
@@ -91,30 +86,14 @@ function CuratedScreenInner({ queryRef }: CuratedScreenInnerProps) {
 }
 
 export function CuratedScreen() {
-  const featureQuery = useLazyLoadQuery<CuratedScreenFeatureQuery>(
-    graphql`
-      query CuratedScreenFeatureQuery {
-        ...isFeatureEnabledFragment
-      }
-    `,
-    {}
-  );
-
-  const isPostEnabled = isFeatureEnabled(FeatureFlag.KOALA, featureQuery);
-
   const query = useLazyLoadQuery<CuratedScreenQuery>(
     graphql`
-      query CuratedScreenQuery(
-        $curatedFeedBefore: String
-        $curatedFeedCount: Int!
-        $includePosts: Boolean!
-      ) {
+      query CuratedScreenQuery($curatedFeedBefore: String, $curatedFeedCount: Int!) {
         ...CuratedScreenFragment
       }
     `,
     {
       curatedFeedCount: PER_PAGE,
-      includePosts: isPostEnabled,
     }
   );
 
