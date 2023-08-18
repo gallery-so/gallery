@@ -1,14 +1,9 @@
 import { Suspense, useCallback, useMemo, useState } from 'react';
-import { graphql, useFragment, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
-import isFeatureEnabled, { FeatureFlag } from 'src/utils/isFeatureEnabled';
+import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 
-import { CuratedScreenFeatureQuery } from '~/generated/CuratedScreenFeatureQuery.graphql';
 import { CuratedScreenFragment$key } from '~/generated/CuratedScreenFragment.graphql';
-import { CuratedScreenGlobalFragment$key } from '~/generated/CuratedScreenGlobalFragment.graphql';
 import { CuratedScreenQuery } from '~/generated/CuratedScreenQuery.graphql';
-import { CuratedScreenTrendingFragment$key } from '~/generated/CuratedScreenTrendingFragment.graphql';
-import { RefetchableCuratedScreenGlobalFragmentQuery } from '~/generated/RefetchableCuratedScreenGlobalFragmentQuery.graphql';
-import { RefetchableCuratedScreenTrendingFragmentQuery } from '~/generated/RefetchableCuratedScreenTrendingFragmentQuery.graphql';
+import { RefetchableCuratedScreenFragmentQuery } from '~/generated/RefetchableCuratedScreenFragmentQuery.graphql';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import { FeedList } from '../../components/Feed/FeedList';
@@ -21,155 +16,84 @@ type CuratedScreenInnerProps = {
 const PER_PAGE = 20;
 
 function CuratedScreenInner({ queryRef }: CuratedScreenInnerProps) {
-  const query = useFragment(
+  const query = usePaginationFragment<
+    RefetchableCuratedScreenFragmentQuery,
+    CuratedScreenFragment$key
+  >(
     graphql`
-      fragment CuratedScreenFragment on Query {
-        ...CuratedScreenTrendingFragment
-        ...CuratedScreenGlobalFragment
+      fragment CuratedScreenFragment on Query
+      @refetchable(queryName: "RefetchableCuratedScreenFragmentQuery") {
+        curatedFeed(before: $curatedFeedBefore, last: $curatedFeedCount)
+          @connection(key: "CuratedScreenFragment_curatedFeed") {
+          edges {
+            node {
+              __typename
 
+              ...FeedListFragment
+            }
+          }
+        }
         ...FeedListQueryFragment
       }
     `,
     queryRef
   );
 
-  const globalFeed = usePaginationFragment<
-    RefetchableCuratedScreenGlobalFragmentQuery,
-    CuratedScreenGlobalFragment$key
-  >(
-    graphql`
-      fragment CuratedScreenGlobalFragment on Query
-      @refetchable(queryName: "RefetchableCuratedScreenGlobalFragmentQuery") {
-        globalFeed(
-          before: $curatedFeedBefore
-          last: $curatedFeedCount
-          includePosts: $includePosts
-        ) @connection(key: "CuratedScreenFragment_globalFeed") {
-          edges {
-            node {
-              __typename
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
-              ...FeedListFragment
-            }
-          }
-        }
-      }
-    `,
-    query
-  );
-
-  const curatedFeed = usePaginationFragment<
-    RefetchableCuratedScreenTrendingFragmentQuery,
-    CuratedScreenTrendingFragment$key
-  >(
-    graphql`
-      fragment CuratedScreenTrendingFragment on Query
-      @refetchable(queryName: "RefetchableCuratedScreenTrendingFragmentQuery") {
-        curatedFeed(before: $curatedFeedBefore, last: $curatedFeedCount)
-          @connection(key: "TrendingScreenFragment_curatedFeed") {
-          edges {
-            node {
-              __typename
-
-              ...FeedListFragment
-            }
-          }
-        }
-      }
-    `,
-    query
-  );
-
-  const [isGlobalFeedRefreshing, setIsGlobalFeedRefreshing] = useState(false);
-  const [isCuratedFeedRefreshing, setIsCuratedFeedRefreshing] = useState(false);
-  const isRefreshing = isGlobalFeedRefreshing || isCuratedFeedRefreshing;
+  const curatedFeed = query.data.curatedFeed;
 
   const handleRefresh = useCallback(() => {
-    setIsGlobalFeedRefreshing(true);
-    setIsCuratedFeedRefreshing(true);
+    setIsRefreshing(true);
 
-    curatedFeed.refetch(
+    query.refetch(
       {},
       {
         fetchPolicy: 'store-and-network',
         onComplete: () => {
-          setIsCuratedFeedRefreshing(false);
+          setIsRefreshing(false);
         },
       }
     );
-
-    globalFeed.refetch(
-      {},
-      {
-        fetchPolicy: 'store-and-network',
-        onComplete: () => {
-          setIsGlobalFeedRefreshing(false);
-        },
-      }
-    );
-  }, [globalFeed, curatedFeed]);
+  }, [query]);
 
   const handleLoadMore = useCallback(() => {
-    if (curatedFeed.isLoadingPrevious || globalFeed.isLoadingPrevious) {
+    if (query.isLoadingPrevious) {
       return;
     }
 
-    if (curatedFeed.hasPrevious) {
-      curatedFeed.loadPrevious(PER_PAGE);
-    } else if (globalFeed.hasPrevious) {
-      globalFeed.loadPrevious(PER_PAGE);
+    if (query.hasPrevious) {
+      query.loadPrevious(PER_PAGE);
     }
-  }, [globalFeed, curatedFeed]);
+  }, [query]);
 
   const events = useMemo(() => {
-    const curatedEvents = removeNullValues(
-      curatedFeed.data.curatedFeed?.edges?.map((it) => it?.node).reverse()
-    );
+    const curatedEvents = removeNullValues(curatedFeed?.edges?.map((it) => it?.node).reverse());
 
-    const globalEvents = removeNullValues(
-      globalFeed.data.globalFeed?.edges?.map((it) => it?.node).reverse()
-    );
-
-    return [...curatedEvents, ...globalEvents];
-  }, [globalFeed.data.globalFeed?.edges, curatedFeed.data.curatedFeed?.edges]);
+    return [...curatedEvents];
+  }, [curatedFeed?.edges]);
 
   return (
     <FeedList
-      isLoadingMore={curatedFeed.isLoadingPrevious || globalFeed.isLoadingPrevious}
+      isLoadingMore={query.isLoadingPrevious}
       isRefreshing={isRefreshing}
       onRefresh={handleRefresh}
       onLoadMore={handleLoadMore}
       feedEventRefs={events}
-      queryRef={query}
+      queryRef={query.data}
     />
   );
 }
 
 export function CuratedScreen() {
-  const featureQuery = useLazyLoadQuery<CuratedScreenFeatureQuery>(
-    graphql`
-      query CuratedScreenFeatureQuery {
-        ...isFeatureEnabledFragment
-      }
-    `,
-    {}
-  );
-
-  const isPostEnabled = isFeatureEnabled(FeatureFlag.KOALA, featureQuery);
-
   const query = useLazyLoadQuery<CuratedScreenQuery>(
     graphql`
-      query CuratedScreenQuery(
-        $curatedFeedBefore: String
-        $curatedFeedCount: Int!
-        $includePosts: Boolean!
-      ) {
+      query CuratedScreenQuery($curatedFeedBefore: String, $curatedFeedCount: Int!) {
         ...CuratedScreenFragment
       }
     `,
     {
       curatedFeedCount: PER_PAGE,
-      includePosts: isPostEnabled,
     }
   );
 
