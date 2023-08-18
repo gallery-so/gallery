@@ -22,7 +22,7 @@ export const ROLE_FLAGS: Record<Role, Record<FeatureFlag, boolean>> = {
     KOALA: true,
   },
   BETA_TESTER: {
-    KOALA: false,
+    KOALA: true,
   },
   EARLY_ACCESS: {
     KOALA: false,
