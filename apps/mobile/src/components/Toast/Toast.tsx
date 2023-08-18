@@ -16,9 +16,16 @@ type Props = {
   onClose?: () => void;
   autoClose?: boolean;
   children?: ReactNode;
+  withoutNavbar?: boolean;
 };
 
-export function AnimatedToast({ message, onClose = () => {}, autoClose = true, children }: Props) {
+export function AnimatedToast({
+  message,
+  onClose = () => {},
+  autoClose = true,
+  children,
+  withoutNavbar,
+}: Props) {
   const animationValue = useState(new Animated.Value(0))[0];
 
   const { bottom } = useSafeAreaInsets();
@@ -67,7 +74,7 @@ export function AnimatedToast({ message, onClose = () => {}, autoClose = true, c
       style={[
         {
           // 56 is the height of the bottom navigation bar
-          bottom: bottom + 56,
+          bottom: bottom + (withoutNavbar ? 0 : 56),
         },
         animatedStyles,
       ]}

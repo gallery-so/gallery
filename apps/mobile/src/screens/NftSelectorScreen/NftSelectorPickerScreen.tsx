@@ -179,6 +179,7 @@ function AnimatedRefreshIcon({ networkFilter, onRefresh }: AnimatedRefreshIconPr
     onRefresh();
     pushToast({
       message: 'Successfully refreshed your collection',
+      withoutNavbar: true,
     });
   }, [isSyncing, networkFilter, onRefresh, pushToast, syncTokens]);
 

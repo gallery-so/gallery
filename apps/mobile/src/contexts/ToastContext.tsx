@@ -9,10 +9,17 @@ type ToastProps = {
   onDismiss?: DismissToastHandler;
   autoClose?: boolean;
   children?: ReactNode;
+  withoutNavbar?: boolean;
 };
 
 type ToastActions = {
-  pushToast: ({ message, onDismiss, autoClose, children }: ToastProps) => void;
+  pushToast: ({
+    message,
+    onDismiss,
+    autoClose,
+    children,
+    withoutNavbar = false,
+  }: ToastProps) => void;
   dismissToast: (id: string) => void;
   dismissAllToasts: () => void;
 };
@@ -36,6 +43,7 @@ type ToastType = {
   onDismiss: DismissToastHandler;
   autoClose: boolean;
   children?: ReactNode;
+  withoutNavbar?: boolean;
 };
 
 type Props = { children: ReactNode };
@@ -44,10 +52,10 @@ const ToastProvider = memo(({ children }: Props) => {
   const [toasts, setToasts] = useState<ToastType[]>([]);
 
   const pushToast = useCallback(
-    ({ message, onDismiss = noop, autoClose = true, children }: ToastProps) => {
+    ({ message, onDismiss = noop, autoClose = true, children, withoutNavbar }: ToastProps) => {
       setToasts((previousMessages) => [
         ...previousMessages,
-        { message, onDismiss, autoClose, id: Date.now().toString(), children },
+        { message, onDismiss, autoClose, id: Date.now().toString(), children, withoutNavbar },
       ]);
     },
     []
@@ -84,13 +92,14 @@ const ToastProvider = memo(({ children }: Props) => {
 
   return (
     <ToastActionsContext.Provider value={value}>
-      {toasts.map(({ message, autoClose, id, children }) => (
+      {toasts.map(({ message, autoClose, id, children, withoutNavbar }) => (
         <AnimatedToast
           data-testid={id}
           key={id}
           message={message}
           onClose={() => dismissToast(id)}
           autoClose={autoClose}
+          withoutNavbar={withoutNavbar}
         >
           {children}
         </AnimatedToast>
