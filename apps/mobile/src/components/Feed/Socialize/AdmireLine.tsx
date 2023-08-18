@@ -83,8 +83,13 @@ export function AdmireLine({
   }
 
   return (
-    <View style={style} className="flex flex-row items-center">
-      <GalleryTouchableOpacity onPress={onAdmirePress} eventElementId={null} eventName={null}>
+    <View style={style} className="flex flex-row items-center ">
+      <GalleryTouchableOpacity
+        onPress={onAdmirePress}
+        eventElementId={'AdmireLine First Admire CTA'}
+        eventName={'Tapped AdmireLine First Admire CTA'}
+        className="flex  justify-center h-6"
+      >
         <Typography className="text-xs" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
           Be the first to admire this
         </Typography>

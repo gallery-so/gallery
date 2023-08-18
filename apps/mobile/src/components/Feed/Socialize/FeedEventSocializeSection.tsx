@@ -1,13 +1,15 @@
-import { useMemo, useRef } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
-import { useEventComment } from 'src/hooks/useEventComment';
 import { useToggleAdmire } from 'src/hooks/useToggleAdmire';
 
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
+import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
+import { Typography } from '~/components/Typography';
 import { FeedEventSocializeSectionFragment$key } from '~/generated/FeedEventSocializeSectionFragment.graphql';
 import { FeedEventSocializeSectionQueryFragment$key } from '~/generated/FeedEventSocializeSectionQueryFragment.graphql';
 
+import { CommentsBottomSheet } from '../CommentsBottomSheet/CommentsBottomSheet';
 import { AdmireButton } from './AdmireButton';
 import { CommentButton } from './CommentButton';
 import { Interactions } from './Interactions';
@@ -70,14 +72,11 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef, onCommentPre
     `,
     queryRef
   );
-  const bottomSheetRef = useRef<GalleryBottomSheetModalType>(null);
 
   const { toggleAdmire, hasViewerAdmiredEvent } = useToggleAdmire({
     eventRef: event,
     queryRef: query,
   });
-
-  const { isSubmittingComment } = useEventComment();
 
   const nonNullComments = useMemo(() => {
     const comments = [];
@@ -92,6 +91,7 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef, onCommentPre
   }, [event.comments?.edges]);
 
   const totalComments = event.comments?.pageInfo?.total ?? 0;
+  const isEmptyComments = totalComments === 0;
 
   const nonNullAdmires = useMemo(() => {
     const admires = [];
@@ -109,34 +109,58 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef, onCommentPre
 
   const totalAdmires = event.admires?.pageInfo?.total ?? 0;
 
+  const commentsBottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
+  const handleOpenCommentBottomSheet = useCallback(() => {
+    commentsBottomSheetRef.current?.present();
+    onCommentPress();
+  }, [onCommentPress]);
+
   if (event.eventData?.__typename === 'UserFollowedUsersFeedEventData') {
     return <View className="pb-6" />;
   }
 
   return (
-    <View className="flex flex-row px-3 justify-between items-center pb-8 pt-5">
-      <View className="flex-1 pr-4 pt-1">
-        <Interactions
-          type="FeedEvent"
-          feedId={event.dbid}
-          commentRefs={nonNullComments}
-          admireRefs={nonNullAdmires}
-          totalComments={totalComments}
-          totalAdmires={totalAdmires}
-          onAdmirePress={toggleAdmire}
-        />
-      </View>
+    <>
+      <View className="px-3 pb-8 pt-5">
+        <View className="flex flex-row justify-between">
+          <View className="flex-1 pr-4 pt-1">
+            <Interactions
+              type="FeedEvent"
+              feedId={event.dbid}
+              commentRefs={nonNullComments}
+              admireRefs={nonNullAdmires}
+              totalComments={totalComments}
+              totalAdmires={totalAdmires}
+              onAdmirePress={toggleAdmire}
+              openCommentBottomSheet={handleOpenCommentBottomSheet}
+            />
+          </View>
 
-      <View className="flex flex-row space-x-1">
-        <AdmireButton onPress={toggleAdmire} isAdmired={hasViewerAdmiredEvent} />
-        <CommentButton
-          type="FeedEvent"
-          feedId={event.dbid}
-          onClick={onCommentPress}
-          isSubmittingComment={isSubmittingComment}
-          bottomSheetRef={bottomSheetRef}
-        />
+          <View className="flex flex-row space-x-1">
+            <AdmireButton onPress={toggleAdmire} isAdmired={hasViewerAdmiredEvent} />
+            <CommentButton openCommentBottomSheet={handleOpenCommentBottomSheet} />
+          </View>
+        </View>
+        {isEmptyComments && (
+          <GalleryTouchableOpacity
+            onPress={handleOpenCommentBottomSheet}
+            eventElementId={null}
+            eventName={null}
+          >
+            <Typography
+              font={{ family: 'ABCDiatype', weight: 'Regular' }}
+              className="text-xs text-shadow"
+            >
+              Add a comment
+            </Typography>
+          </GalleryTouchableOpacity>
+        )}
       </View>
-    </View>
+      <CommentsBottomSheet
+        type="Post"
+        feedId={event.dbid}
+        bottomSheetRef={commentsBottomSheetRef}
+      />
+    </>
   );
 }

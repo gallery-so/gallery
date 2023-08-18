@@ -3,7 +3,6 @@ import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { AdmireBottomSheet } from '~/components/Feed/AdmireBottomSheet/AdmireBottomSheet';
-import { CommentsBottomSheet } from '~/components/Feed/CommentsBottomSheet/CommentsBottomSheet';
 import { AdmireLine } from '~/components/Feed/Socialize/AdmireLine';
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { ProfilePictureBubblesWithCount } from '~/components/ProfileView/ProfileViewSharedInfo/ProfileViewSharedFollowers';
@@ -18,24 +17,25 @@ const PREVIEW_COMMENT_COUNT = 1;
 
 type Props = {
   type: FeedItemTypes;
-  commentRefs: InteractionsCommentsFragment$key;
-  admireRefs: InteractionsAdmiresFragment$key;
-  totalComments: number;
-  totalAdmires: number;
   feedId: string;
+  admireRefs: InteractionsAdmiresFragment$key;
+  commentRefs: InteractionsCommentsFragment$key;
+  totalAdmires: number;
+  totalComments: number;
 
   onAdmirePress: () => void;
+  openCommentBottomSheet: () => void;
 };
 
 export function Interactions({
+  type,
+  feedId,
   admireRefs,
   commentRefs,
-  feedId,
   totalAdmires,
   totalComments,
-  type,
-
   onAdmirePress,
+  openCommentBottomSheet,
 }: Props) {
   const comments = useFragment(
     graphql`
@@ -64,10 +64,6 @@ export function Interactions({
     admiresBottomSheetRef.current?.present();
   }, []);
 
-  const handleSeeAllComments = useCallback(() => {
-    commentsBottomSheetRef.current?.present();
-  }, []);
-
   const admireUsers = useMemo(() => {
     const users = [];
     for (const admire of admires) {
@@ -80,11 +76,10 @@ export function Interactions({
 
   const previewComments = comments.slice(-PREVIEW_COMMENT_COUNT);
 
-  const commentsBottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
   const admiresBottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
 
   return (
-    <View className="flex flex-col space-y-1">
+    <View className="flex flex-col space-y-2">
       <View className="flex flex-row space-x-1 items-center">
         {admireUsers.length > 0 && (
           <ProfilePictureBubblesWithCount
@@ -104,15 +99,21 @@ export function Interactions({
         />
       </View>
 
-      {previewComments.map((comment) => {
-        return <CommentLine key={comment.dbid} commentRef={comment} />;
-      })}
+      <View className="flex flex-col space-y-1">
+        {previewComments.map((comment) => {
+          return (
+            <CommentLine
+              key={comment.dbid}
+              commentRef={comment}
+              onCommentPress={openCommentBottomSheet}
+            />
+          );
+        })}
 
-      {totalComments > 1 && (
-        <RemainingCommentCount totalCount={totalComments} onPress={handleSeeAllComments} />
-      )}
-
-      <CommentsBottomSheet type={type} feedId={feedId} bottomSheetRef={commentsBottomSheetRef} />
+        {totalComments > 1 && (
+          <RemainingCommentCount totalCount={totalComments} onPress={openCommentBottomSheet} />
+        )}
+      </View>
 
       <AdmireBottomSheet type={type} feedId={feedId} bottomSheetRef={admiresBottomSheetRef} />
     </View>
