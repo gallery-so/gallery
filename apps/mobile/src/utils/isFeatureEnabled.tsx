@@ -23,7 +23,7 @@ const ROLE_FLAGS: Record<Role, Record<FeatureFlag, boolean>> = {
   },
   BETA_TESTER: {
     BIG_EASEL: false,
-    KOALA: false,
+    KOALA: true,
   },
   EARLY_ACCESS: {
     BIG_EASEL: false,
