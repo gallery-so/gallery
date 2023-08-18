@@ -95,11 +95,6 @@ export function UserNameAndDescriptionHeader({ userRef, queryRef }: Props) {
 
   const displayName = handleCustomDisplayName(username);
 
-  // If the user doesn't have a bio, don't render anything on mobile
-  if (isMobile && !unescapedBio) {
-    return null;
-  }
-
   return (
     <HeaderContainer
       gap={12}
