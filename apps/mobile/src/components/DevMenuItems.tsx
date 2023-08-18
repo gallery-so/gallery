@@ -20,6 +20,12 @@ export function DevMenuItems() {
         },
       },
       {
+        name: 'Dev Debugger',
+        callback: () => {
+          navigation.navigate('Dev');
+        },
+      },
+      {
         name: 'Clear Async Storage',
         callback: () => {
           AsyncStorage.clear();
