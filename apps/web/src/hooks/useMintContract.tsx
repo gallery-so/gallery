@@ -1,5 +1,4 @@
 import { ethers } from 'ethers';
-import { type } from 'os';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAccount, useNetwork, useSwitchNetwork } from 'wagmi';
 
