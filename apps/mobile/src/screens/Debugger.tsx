@@ -9,14 +9,14 @@ import { getServerEnvironment } from 'src/utils/getServerEnvironment';
 import { Button } from '~/components/Button';
 import { FadedInput } from '~/components/FadedInput';
 import { Typography } from '~/components/Typography';
-import { DevQuery } from '~/generated/DevQuery.graphql';
+import { DebuggerQuery } from '~/generated/DebuggerQuery.graphql';
 
 const isLocalServer = getServerEnvironment() === 'local';
 
-export function Dev() {
-  const query = useLazyLoadQuery<DevQuery>(
+export function Debugger() {
+  const query = useLazyLoadQuery<DebuggerQuery>(
     graphql`
-      query DevQuery {
+      query DebuggerQuery {
         viewer {
           ... on Viewer {
             user {
@@ -49,12 +49,7 @@ export function Dev() {
 
   const [username, setUsername] = usePersistedState(DEBUG_USERNAME_KEY, '');
   const [password, setPassword] = usePersistedState(DEBUG_PASSWORD_KEY, '');
-  console.log('username', username);
-  console.log('password', password);
   const [errorMessage, setErrorMessage] = useState('');
-
-  //useKeyDown('Escape', handleCloseDebugger);
-  // useMultiKeyDown(['Control', 'd'], handleToggleDebugger);
 
   const debugLogin = useDebugAuthLogin();
 

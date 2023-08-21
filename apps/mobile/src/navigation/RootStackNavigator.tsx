@@ -9,7 +9,7 @@ import { LoginStackNavigator } from '~/navigation/LoginStackNavigator';
 import { MainTabNavigator } from '~/navigation/MainTabNavigator/MainTabNavigator';
 import { RootStackNavigatorParamList } from '~/navigation/types';
 import { DesignSystemButtonsScreen } from '~/screens/DesignSystemButtonsScreen';
-import { Dev } from '~/screens/Dev';
+import { Debugger } from '~/screens/Debugger';
 import { TwitterSuggestionListScreen } from '~/screens/HomeScreen/TwitterSuggestionListScreen';
 import { UserSuggestionListScreen } from '~/screens/HomeScreen/UserSuggestionListScreen';
 import { NftSelectorContractScreen } from '~/screens/NftSelectorScreen/NftSelectorContractScreen';
@@ -90,7 +90,7 @@ export function RootStackNavigator({ navigationContainerRef }: Props) {
         component={TwitterSuggestionListScreen}
       />
       <Stack.Screen name="DesignSystemButtons" component={DesignSystemButtonsScreen} />
-      <Stack.Screen name="Dev" component={Dev} />
+      <Stack.Screen name="Debugger" component={Debugger} />
     </Stack.Navigator>
   );
 }

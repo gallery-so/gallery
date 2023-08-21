@@ -22,7 +22,7 @@ export function DevMenuItems() {
       {
         name: 'Debugger',
         callback: () => {
-          navigation.navigate('Dev');
+          navigation.navigate('Debugger');
         },
       },
       {

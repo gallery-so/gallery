@@ -9,7 +9,7 @@ export type RootStackNavigatorParamList = {
   TwitterSuggestionList: { onUserPress: (username: string) => void };
   ProfileQRCode: { username: string };
   DesignSystemButtons: undefined;
-  Dev: undefined;
+  Debugger: undefined;
   PostNftSelector: {
     page: ScreenWithNftSelector;
   };

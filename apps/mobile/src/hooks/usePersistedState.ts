@@ -1,4 +1,4 @@
-import AsyncStorage from '@react-native-async-storage/async-storage'; // Make sure to install the async-storage package
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 
 type SetValue<T> = Dispatch<SetStateAction<T>>;
