@@ -73,16 +73,16 @@ export function Dev() {
   }, [debugLogin, username, password]);
 
   const handleUsernameChange = useCallback(
-    (event: any) => {
-      setUsername(event.target.value);
+    (newUsername: string) => {
+      setUsername(newUsername);
       setErrorMessage('');
     },
     [setUsername]
   );
 
   const handlePasswordChange = useCallback(
-    (event: any) => {
-      setPassword(event.target.value);
+    (newPassword: string) => {
+      setPassword(newPassword);
       setErrorMessage('');
     },
     [setPassword]
@@ -102,16 +102,16 @@ export function Dev() {
         <View className="flex gap-3">
           <FadedInput
             className="py-2"
-            onChange={handleUsernameChange}
+            onChangeText={handleUsernameChange}
             placeholder="Username"
-            defaultValue={username}
+            value={username}
           />
 
           <FadedInput
             className="py-2"
-            onChange={handlePasswordChange}
+            onChangeText={handlePasswordChange}
             placeholder="Admin Password"
-            defaultValue={password}
+            value={password}
           />
         </View>
       )}
