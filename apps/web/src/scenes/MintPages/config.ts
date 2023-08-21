@@ -1,9 +1,9 @@
 // time is in EST (GMT-05:00)
-export const MINT_START = '2023-06-30T13:00:00-05:00';
-export const MINT_END = '2023-07-07T23:59:00-05:00';
+export const MINT_START = '2023-08-22T13:00:00-05:00';
+export const MINT_END = '2023-08-31T23:59:00-05:00';
 
 // increment this each time we introduce a new token
-export const MEMENTOS_NFT_TOKEN_ID = 4;
+export const MEMENTOS_NFT_TOKEN_ID = 0;
 
 // image preview
 import featuredImage from 'public/mobile-memento.jpg';
