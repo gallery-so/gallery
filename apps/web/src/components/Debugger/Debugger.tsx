@@ -15,8 +15,8 @@ import useKeyDown from '~/hooks/useKeyDown';
 import useMultiKeyDown from '~/hooks/useMultiKeyDown';
 import usePersistedState from '~/hooks/usePersistedState';
 import { getServerEnvironment } from '~/shared/utils/getServerEnvironment';
+import { useDebugAuthLogin } from '~/shared/hooks/useDebugAuthLogin';
 
-import { useDebugAuthLogin } from './useDebugAuth';
 
 const isLocalServer = getServerEnvironment() === 'local';
 

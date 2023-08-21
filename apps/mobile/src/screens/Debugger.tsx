@@ -2,9 +2,9 @@ import { useCallback, useMemo, useState } from 'react';
 import { View } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import { DEBUG_PASSWORD_KEY, DEBUG_USERNAME_KEY } from 'src/constants/storageKeys';
-import { useDebugAuthLogin } from 'src/hooks/useDebugAuthLogin';
+import { useDebugAuthLogin } from '~/shared/hooks/useDebugAuthLogin';
 import usePersistedState from 'src/hooks/usePersistedState';
-import { getServerEnvironment } from 'src/utils/getServerEnvironment';
+import { getServerEnvironment } from '~/shared/utils/getServerEnvironment';
 
 import { Button } from '~/components/Button';
 import { FadedInput } from '~/components/FadedInput';
