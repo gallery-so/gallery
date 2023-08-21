@@ -59,8 +59,8 @@ export function CommentLine({ commentRef }: CommentLineProps) {
 }
 const TimeAgoText = styled.div`
   font-family: ${BODY_FONT_FAMILY};
-  font-size: 12px;
-  line-height: 1;
+  font-size: 10px;
+  line-height: 18px;
   font-weight: 400;
 
   color: ${colors.metal};
