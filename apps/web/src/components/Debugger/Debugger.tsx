@@ -14,7 +14,7 @@ import { DebuggerQuery } from '~/generated/DebuggerQuery.graphql';
 import useKeyDown from '~/hooks/useKeyDown';
 import useMultiKeyDown from '~/hooks/useMultiKeyDown';
 import usePersistedState from '~/hooks/usePersistedState';
-import { getServerEnvironment } from '~/utils/getServerEnvironment';
+import { getServerEnvironment } from '~/shared/utils/getServerEnvironment';
 
 import { useDebugAuthLogin } from './useDebugAuth';
 

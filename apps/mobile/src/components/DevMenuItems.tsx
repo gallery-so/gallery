@@ -20,7 +20,7 @@ export function DevMenuItems() {
         },
       },
       {
-        name: 'Dev Debugger',
+        name: 'Debugger',
         callback: () => {
           navigation.navigate('Dev');
         },
