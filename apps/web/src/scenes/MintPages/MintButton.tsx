@@ -70,8 +70,9 @@ export default function MintButton({ onMintSuccess }: Props) {
               ? 'Transaction successful!'
               : 'Transaction submitted. This may take several minutes.'}
           </BaseM>
-          <GalleryLink href={`https://etherscan.io/tx/${transactionHash}`}>
-            <BaseM>View on Etherscan</BaseM>
+          {/* MintButton is currently only used for Mementos, which is now on Base. */}
+          <GalleryLink href={`https://basescan.org/tx/${transactionHash}`}>
+            <BaseM>View on Basescan</BaseM>
           </GalleryLink>
         </>
       )}

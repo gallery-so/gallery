@@ -71,18 +71,14 @@ export default function MementosPage() {
         <StyledContent>
           <HStack align="center" gap={4}>
             <StyledTitleL>
-              <i>Worlds Beyond</i>
+              <i>Gallery x Base</i>
             </StyledTitleL>
           </HStack>
           <VStack gap={16}>
             <BaseM>
-              Introducing the <b>Worlds Beyond</b> memento, an emblem of the transformational steps
-              Gallery is taking into the exciting world of mobile. This limited edition piece is
-              both a celebration of the public beta launch of{' '}
-              <InteractiveLink href="https://gallery.so/mobile">the Gallery App</InteractiveLink>{' '}
-              and a symbol of the endless potential of creativity on-the-go. The memento
-              encapsulates the spirit of our mobile-first era, manifesting our commitment to
-              delivering unparalleled creative experiences, right in your pocket.
+              Introducing the <b>Gallery x Base</b> memento, a collectible in celebration of Gallery
+              rolling out support for{' '}
+              <InteractiveLink href="https://base.org/ecosystem">Base Chain</InteractiveLink>.
             </BaseM>
             <BaseM>
               You can read more about Gallery Mementos{' '}
@@ -93,31 +89,17 @@ export default function MementosPage() {
             </BaseM>
             <VStack>
               <BaseM>
-                Eligibility Criteria
+                Eligibility Criteria:
                 <StyledUl>
-                  <li>
+                  {/* <li>
                     Follow{' '}
                     <InteractiveLink href="https://twitter.com/GALLERY">@GALLERY</InteractiveLink>{' '}
                     on Twitter.
-                  </li>
+                  </li> */}
+
                   <li>
-                    Reply to the{' '}
-                    <InteractiveLink
-                      href={
-                        process.env.NEXT_PUBLIC_MEMENTO_ANNOUNCEMENT_TWEET_URL ||
-                        'https://twitter.com/GALLERY'
-                      }
-                    >
-                      announcement tweet
-                    </InteractiveLink>{' '}
-                    with your ENS or wallet.
-                  </li>
-                  <li>
-                    On <b>Friday June 30th</b>, a snapshot will be taken of qualifying users
-                  </li>
-                  <li>
-                    Minting will open from 
-                    <b>June 30th 2:00PM through July 7th 11:59PM ET</b>
+                    Minting will open to all from 
+                    <b>August 22nd 1:00PM through August 31st 11:59PM ET</b>
                   </li>
                 </StyledUl>
               </BaseM>
