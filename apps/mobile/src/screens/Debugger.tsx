@@ -98,7 +98,6 @@ export function Debugger() {
         ☢️ DEBUG MODE
       </Typography>
       <Typography font={{ family: 'ABCDiatype', weight: 'Regular' }}>Login As</Typography>
-
       {isLocalServer ? null : (
         <View className="flex gap-3">
           <FadedInput
@@ -109,7 +108,6 @@ export function Debugger() {
             autoCorrect={false}
             autoCapitalize="none"
           />
-
           <FadedInput
             className="py-2"
             onChangeText={handlePasswordChange}
@@ -120,7 +118,6 @@ export function Debugger() {
           />
         </View>
       )}
-
       <Button
         text="Submit"
         onPress={handleLogin}
@@ -144,9 +141,7 @@ export function Debugger() {
           {errorMessage}
         </Typography>
       )}
-
       <Typography font={{ family: 'ABCDiatype', weight: 'Regular' }}>Detected User</Typography>
-
       <Typography font={{ family: 'ABCDiatype', weight: 'Regular' }}>{loggedInUserInfo}</Typography>
     </ScrollView>
   );
