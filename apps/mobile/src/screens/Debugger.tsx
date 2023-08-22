@@ -91,8 +91,8 @@ export function Debugger() {
 
   return (
     <ScrollView
-      className="flex-1 flex flex-col bg-white dark:bg-black-900 space-y-4 p-10"
-      style={{ paddingTop: 150 }}
+      className="flex flex-col bg-white dark:bg-black-900 space-y-4 p-10"
+      style={{ paddingTop: 100 }}
     >
       <Typography className="text-lg" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
         ☢️ DEBUG MODE
