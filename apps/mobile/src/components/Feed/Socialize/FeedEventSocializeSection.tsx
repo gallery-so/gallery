@@ -149,7 +149,7 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef, onCommentPre
           >
             <Typography
               font={{ family: 'ABCDiatype', weight: 'Regular' }}
-              className="text-xs text-shadow"
+              className="text-sm text-shadow"
             >
               Add a comment
             </Typography>

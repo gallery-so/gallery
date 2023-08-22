@@ -111,7 +111,7 @@ export function FeedPostSocializeSection({ feedPostRef, queryRef }: Props) {
 
   return (
     <>
-      <View className="px-3 pb-8 pt-5">
+      <View className="px-3 pb-8 pt-2">
         <View className="flex flex-row justify-between">
           <View className="flex-1 pr-4 pt-1">
             <Interactions
@@ -139,7 +139,7 @@ export function FeedPostSocializeSection({ feedPostRef, queryRef }: Props) {
           >
             <Typography
               font={{ family: 'ABCDiatype', weight: 'Regular' }}
-              className="text-xs text-shadow"
+              className="text-sm text-shadow"
             >
               Add a comment
             </Typography>
