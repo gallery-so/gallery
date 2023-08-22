@@ -52,7 +52,7 @@ export function Debugger() {
   const [username, setUsername] = usePersistedState(DEBUG_USERNAME_KEY, '');
   const [password, setPassword] = usePersistedState(DEBUG_PASSWORD_KEY, '');
   const [errorMessage, setErrorMessage] = useState('');
-  const [isSuccess, setIsSuccess] = useState(false);
+  const [isLoginSuccessful, setIsLoginSuccessful] = useState(false);
 
   const debugLogin = useDebugAuthLogin();
   const navigation = useNavigation<MainTabStackNavigatorProp>();
@@ -63,13 +63,13 @@ export function Debugger() {
         asUsername: username,
         debugToolsPassword: isLocalServer ? undefined : password,
       });
-      setIsSuccess(true);
+      setIsLoginSuccessful(true);
       setErrorMessage('');
     } catch (e: unknown) {
       if (e instanceof Error) {
         setErrorMessage(e.message);
       }
-      setIsSuccess(false);
+      setIsLoginSuccessful(false);
     }
   }, [debugLogin, username, password]);
 
@@ -124,7 +124,7 @@ export function Debugger() {
         eventName="Debugger Login"
         eventElementId="Submit login"
       />
-      {isSuccess && (
+      {isLoginSuccessful && (
         <Button
           text="Back to Profile"
           onPress={() => navigation.navigate('Profile', { username: username })}
