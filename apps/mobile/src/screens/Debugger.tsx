@@ -1,10 +1,12 @@
 import { useCallback, useMemo, useState } from 'react';
-import { View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import { DEBUG_PASSWORD_KEY, DEBUG_USERNAME_KEY } from 'src/constants/storageKeys';
 import { useDebugAuthLogin } from '~/shared/hooks/useDebugAuthLogin';
 import usePersistedState from 'src/hooks/usePersistedState';
 import { getServerEnvironment } from '~/shared/utils/getServerEnvironment';
+import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { useNavigation } from '@react-navigation/native';
 
 import { Button } from '~/components/Button';
 import { FadedInput } from '~/components/FadedInput';
@@ -47,11 +49,14 @@ export function Debugger() {
     [query]
   );
 
+
   const [username, setUsername] = usePersistedState(DEBUG_USERNAME_KEY, '');
   const [password, setPassword] = usePersistedState(DEBUG_PASSWORD_KEY, '');
   const [errorMessage, setErrorMessage] = useState('');
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const debugLogin = useDebugAuthLogin();
+  const navigation = useNavigation<MainTabStackNavigatorProp>();
 
   const handleLogin = useCallback(async () => {
     try {
@@ -59,11 +64,13 @@ export function Debugger() {
         asUsername: username,
         debugToolsPassword: isLocalServer ? undefined : password,
       });
+      setIsSuccess(true);
       setErrorMessage('');
     } catch (e: unknown) {
       if (e instanceof Error) {
         setErrorMessage(e.message);
       }
+      setIsSuccess(false);
     }
   }, [debugLogin, username, password]);
 
@@ -84,7 +91,7 @@ export function Debugger() {
   );
 
   return (
-    <View
+    <ScrollView
       className="flex-1 flex flex-col bg-white dark:bg-black-900 space-y-4 p-10"
       style={{ paddingTop: 150 }}
     >
@@ -100,11 +107,15 @@ export function Debugger() {
             onChangeText={handleUsernameChange}
             placeholder="Username"
             value={username}
+            autoCorrect={false}
+            autoCapitalize="none"
           />
 
           <FadedInput
             className="py-2"
             onChangeText={handlePasswordChange}
+            secureTextEntry={true}
+            autoCapitalize="none"
             placeholder="Admin Password"
             value={password}
           />
@@ -117,6 +128,13 @@ export function Debugger() {
         eventName="Debugger Login"
         eventElementId="Submit login"
       />
+      {isSuccess &&
+(
+      <Button text="Back to Profile" onPress={() => navigation.navigate('Profile', { username: username })}
+              eventName="Reroute to userprofile tab"
+              eventElementId="Route to user profile"
+      />
+)     }
 
       {errorMessage && (
         <Typography
@@ -130,6 +148,6 @@ export function Debugger() {
       <Typography font={{ family: 'ABCDiatype', weight: 'Regular' }}>Detected User</Typography>
 
       <Typography font={{ family: 'ABCDiatype', weight: 'Regular' }}>{loggedInUserInfo}</Typography>
-    </View>
+    </ScrollView>
   );
 }
