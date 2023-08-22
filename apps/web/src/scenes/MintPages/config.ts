@@ -1,5 +1,5 @@
 // time is in EST (GMT-05:00)
-export const MINT_START = '2023-08-22T13:00:00-05:00';
+export const MINT_START = '2023-08-21T13:00:00-05:00';
 export const MINT_END = '2023-08-31T23:59:00-05:00';
 
 // increment this each time we introduce a new token

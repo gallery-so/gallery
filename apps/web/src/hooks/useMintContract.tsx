@@ -1,3 +1,4 @@
+import { waitForTransaction } from '@wagmi/core';
 import { ethers } from 'ethers';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAccount, useNetwork, useSwitchNetwork } from 'wagmi';
@@ -21,20 +22,24 @@ export default function useMintContract({ contract, tokenId, allowlist, onMintSu
 
   const [error, setError] = useState('');
   const [transactionStatus, setTransactionStatus] = useState<TransactionStatus | null>(null);
-  const [transactionHash, setTransactionHash] = useState('');
+  const [transactionHash, setTransactionHash] = useState<`0x${string}` | undefined>();
 
   const address = rawAddress?.toLowerCase();
 
   const attemptMint = useCallback(async () => {
     setTransactionStatus(TransactionStatus.PENDING);
-    let mintResult;
+    let hash;
     if (contract && address) {
       try {
         const merkleProof = allowlist ? generateMerkleProof(address, Array.from(allowlist)) : [];
         console.log({ contract: contract.address, tokenId, address, merkleProof });
-        mintResult = await contract.write.mint([tokenId, address, merkleProof], {
+        hash = await contract.write.mint([tokenId, address, merkleProof], {
           value: ethers.utils.parseEther('0.000777'),
         });
+
+        if (hash) {
+          setTransactionHash(hash);
+        }
       } catch (error: unknown) {
         // @ts-expect-error: weird contract error type has `error.error`
         const originalErrorMessage = error?.error?.message ?? error?.message;
@@ -53,29 +58,33 @@ export default function useMintContract({ contract, tokenId, allowlist, onMintSu
 
         setError(userFacingErrorMessage ?? originalErrorMessage);
         setTransactionStatus(TransactionStatus.FAILED);
+        return;
       }
     }
 
-    if (!mintResult) {
-      return;
-    }
+    try {
+      if (!hash) {
+        throw new Error('No transaction hash returned from contract');
+      }
 
-    if (mintResult.hash) {
-      setTransactionHash(mintResult.hash);
-    }
-
-    if (typeof mintResult.wait === 'function') {
-      // Wait for the transaction to be mined
-      const waitResult = await mintResult.wait().catch(() => {
-        setTransactionStatus(TransactionStatus.FAILED);
-        setError('Transaction failed');
+      setTransactionHash(hash);
+      const mintResult = await waitForTransaction({
+        chainId: BASE_MAINNET_CHAIN_ID,
+        hash,
       });
-      if (waitResult) {
+      console.log({ mintResult });
+
+      if (mintResult.status === 'success') {
         setTransactionStatus(TransactionStatus.SUCCESS);
         if (onMintSuccess) {
           onMintSuccess();
         }
+      } else {
+        throw new Error('Transaction failed');
       }
+    } catch (error) {
+      setTransactionStatus(TransactionStatus.FAILED);
+      setError('The transaction was unsuccesful. Please check Basescan for details.');
     }
   }, [address, allowlist, contract, onMintSuccess, tokenId]);
 

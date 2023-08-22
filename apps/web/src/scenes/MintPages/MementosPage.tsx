@@ -71,7 +71,7 @@ export default function MementosPage() {
         <StyledContent>
           <HStack align="center" gap={4}>
             <StyledTitleL>
-              <i>Worlds Beyond</i>
+              <i>Gallery x Base</i>
             </StyledTitleL>
           </HStack>
           <VStack gap={16}>
