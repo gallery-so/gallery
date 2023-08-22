@@ -1,17 +1,17 @@
+import { useNavigation } from '@react-navigation/native';
 import { useCallback, useMemo, useState } from 'react';
 import { ScrollView, View } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import { DEBUG_PASSWORD_KEY, DEBUG_USERNAME_KEY } from 'src/constants/storageKeys';
-import { useDebugAuthLogin } from '~/shared/hooks/useDebugAuthLogin';
 import usePersistedState from 'src/hooks/usePersistedState';
-import { getServerEnvironment } from '~/shared/utils/getServerEnvironment';
-import { MainTabStackNavigatorProp } from '~/navigation/types';
-import { useNavigation } from '@react-navigation/native';
 
 import { Button } from '~/components/Button';
 import { FadedInput } from '~/components/FadedInput';
 import { Typography } from '~/components/Typography';
 import { DebuggerQuery } from '~/generated/DebuggerQuery.graphql';
+import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { useDebugAuthLogin } from '~/shared/hooks/useDebugAuthLogin';
+import { getServerEnvironment } from '~/shared/utils/getServerEnvironment';
 
 const isLocalServer = getServerEnvironment() === 'local';
 
@@ -48,7 +48,6 @@ export function Debugger() {
       ),
     [query]
   );
-
 
   const [username, setUsername] = usePersistedState(DEBUG_USERNAME_KEY, '');
   const [password, setPassword] = usePersistedState(DEBUG_PASSWORD_KEY, '');
@@ -128,13 +127,14 @@ export function Debugger() {
         eventName="Debugger Login"
         eventElementId="Submit login"
       />
-      {isSuccess &&
-(
-      <Button text="Back to Profile" onPress={() => navigation.navigate('Profile', { username: username })}
-              eventName="Reroute to userprofile tab"
-              eventElementId="Route to user profile"
-      />
-)     }
+      {isSuccess && (
+        <Button
+          text="Back to Profile"
+          onPress={() => navigation.navigate('Profile', { username: username })}
+          eventName="Reroute to userprofile tab"
+          eventElementId="Route to user profile"
+        />
+      )}
 
       {errorMessage && (
         <Typography

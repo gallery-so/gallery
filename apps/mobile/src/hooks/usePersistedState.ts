@@ -9,7 +9,7 @@ async function getItem<T>(key: string, defaultValue: T): Promise<T> {
     if (persistedValue !== null) {
       return JSON.parse(persistedValue) as T;
     }
-  } catch(e) {
+  } catch (e) {
     throw e;
   }
   return defaultValue;
@@ -19,7 +19,7 @@ async function setItem<T>(key: string, value: T): Promise<void> {
   try {
     const item = JSON.stringify(value);
     await AsyncStorage.setItem(key, item);
-  } catch(e) {
+  } catch (e) {
     throw e;
   }
 }
