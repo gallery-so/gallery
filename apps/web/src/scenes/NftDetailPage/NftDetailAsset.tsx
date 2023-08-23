@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -9,6 +9,7 @@ import { NftFailureFallback } from '~/components/NftFailureFallback/NftFailureFa
 import { GLOBAL_FOOTER_HEIGHT } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
 import { useNftPreviewFallbackState } from '~/contexts/nftPreviewFallback/NftPreviewFallbackContext';
 import { useContentState } from '~/contexts/shimmer/ShimmerContext';
+import { ContentIsLoadedEvent } from '~/contexts/shimmer/ShimmerContext';
 import { NftDetailAssetComponentFragment$key } from '~/generated/NftDetailAssetComponentFragment.graphql';
 import { NftDetailAssetComponentWithoutFallbackFragment$key } from '~/generated/NftDetailAssetComponentWithoutFallbackFragment.graphql';
 import { NftDetailAssetFragment$key } from '~/generated/NftDetailAssetFragment.graphql';
@@ -29,7 +30,7 @@ import NftDetailVideo from './NftDetailVideo';
 
 type NftDetailAssetComponentProps = {
   tokenRef: NftDetailAssetComponentFragment$key;
-  onLoad: () => void;
+  onLoad: ContentIsLoadedEvent;
 };
 
 export function NftDetailAssetComponent({ tokenRef, onLoad }: NftDetailAssetComponentProps) {
@@ -67,12 +68,12 @@ export function NftDetailAssetComponent({ tokenRef, onLoad }: NftDetailAssetComp
 
 type NftDetailAssetComponentWithoutFallbackProps = {
   tokenRef: NftDetailAssetComponentWithoutFallbackFragment$key;
-  onLoad: () => void;
+  onLoad: ContentIsLoadedEvent;
 };
 
 function NftDetailAssetComponentWithouFallback({
   tokenRef,
-  onLoad: _onLoad,
+  onLoad,
 }: NftDetailAssetComponentWithoutFallbackProps) {
   const token = useFragment(
     graphql`
@@ -127,11 +128,11 @@ function NftDetailAssetComponentWithouFallback({
 
   switch (token.media.__typename) {
     case 'HtmlMedia':
-      return <NftDetailAnimation onLoad={_onLoad} mediaRef={token} />;
+      return <NftDetailAnimation onLoad={onLoad} mediaRef={token} />;
     case 'VideoMedia':
-      return <NftDetailVideo onLoad={_onLoad} mediaRef={token.media} />;
+      return <NftDetailVideo onLoad={onLoad} mediaRef={token.media} />;
     case 'AudioMedia':
-      return <NftDetailAudio onLoad={_onLoad} tokenRef={token} />;
+      return <NftDetailAudio onLoad={onLoad} tokenRef={token} />;
     case 'ImageMedia':
       const imageMedia = token.media;
 
@@ -145,7 +146,7 @@ function NftDetailAssetComponentWithouFallback({
       return (
         <NftDetailImage
           alt={token.name}
-          onLoad={_onLoad}
+          onLoad={onLoad}
           imageUrl={imageMedia.contentRenderURL}
           onClick={() => {
             if (imageMedia.contentRenderURL) {
@@ -159,7 +160,7 @@ function NftDetailAssetComponentWithouFallback({
 
       return (
         <NftDetailGif
-          onLoad={_onLoad}
+          onLoad={onLoad}
           tokenRef={token}
           onClick={() => {
             if (gifMedia.contentRenderURL) {
@@ -169,18 +170,19 @@ function NftDetailAssetComponentWithouFallback({
         />
       );
     case 'GltfMedia':
-      return <NftDetailModel onLoad={_onLoad} mediaRef={token.media} fullHeight />;
+      return <NftDetailModel onLoad={onLoad} mediaRef={token.media} fullHeight />;
     default:
-      return <NftDetailAnimation onLoad={_onLoad} mediaRef={token} />;
+      return <NftDetailAnimation onLoad={onLoad} mediaRef={token} />;
   }
 }
 
 type Props = {
   tokenRef: NftDetailAssetFragment$key;
   hasExtraPaddingForNote: boolean;
+  visibility?: string; // prop to pass the visibility state of the selected NFT
 };
 
-function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
+function NftDetailAsset({ tokenRef, hasExtraPaddingForNote, visibility }: Props) {
   const collectionToken = useFragment(
     graphql`
       fragment NftDetailAssetFragment on CollectionToken {
@@ -233,7 +235,7 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
       tokenId: token.dbid,
     });
 
-  const { cacheLoadedImageUrls } = useNftPreviewFallbackState();
+  const { cacheLoadedImageUrls, cachedUrls } = useNftPreviewFallbackState();
 
   const result = getVideoOrImageUrlForNftPreview({
     tokenRef: token,
@@ -242,18 +244,16 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
 
   const tokenId = token.dbid;
 
-  const { cachedUrls } = useNftPreviewFallbackState();
-
-  const handleRawLoad = useCallback(() => {
-    cacheLoadedImageUrls(tokenId, 'raw', result?.contentRenderURL as string);
-    handleNftLoaded();
-  }, [handleNftLoaded, cacheLoadedImageUrls, result?.contentRenderURL, tokenId]);
-
   const hasPreviewUrl = cachedUrls[tokenId]?.type === 'preview';
   const hasRawUrl = cachedUrls[tokenId]?.type === 'raw';
 
-  const shouldShowPreview = hasPreviewUrl && !hasRawUrl;
-  const shouldShowRaw = !hasPreviewUrl && hasRawUrl;
+  // only update the state if the selected token is set to 'visible'
+  const handleRawLoad = useCallback(() => {
+    if (visibility === 'visible') {
+      cacheLoadedImageUrls(tokenId, 'raw', result?.contentRenderURL as string);
+    }
+    handleNftLoaded();
+  }, [tokenId, result?.contentRenderURL, handleNftLoaded, cacheLoadedImageUrls, visibility]);
 
   return (
     <StyledAssetContainer
@@ -276,10 +276,10 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
         }
       >
         <VisibilityContainer>
-          <StyledImageWrapper className={shouldShowPreview ? 'visible' : ''}>
+          <StyledImageWrapper className={`${hasPreviewUrl && 'visible'}`}>
             <StyledImage src={cachedUrls[tokenId]?.url} onLoad={handleNftLoaded} />
           </StyledImageWrapper>
-          <NftDetailAssetWrapper className={shouldShowRaw ? 'visible' : ''}>
+          <NftDetailAssetWrapper className={`${hasRawUrl && 'visible'}`}>
             <NftDetailAssetComponent onLoad={handleRawLoad} tokenRef={token} />
           </NftDetailAssetWrapper>
         </VisibilityContainer>
@@ -327,13 +327,13 @@ const StyledAssetContainer = styled.div<AssetContainerProps>`
 `;
 
 export const StyledImage = styled.img`
-  width: 100%;
+  width: inherit;
   border: none;
 `;
 
 const VisibilityContainer = styled.div`
   position: relative;
-  width: 100%;
+  width: inherit;
   padding-top: 100%; /* This creates a square container based on aspect ratio */
 `;
 

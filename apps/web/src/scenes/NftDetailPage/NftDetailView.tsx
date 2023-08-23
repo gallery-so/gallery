@@ -51,12 +51,14 @@ export function LoadableNftDetailView({
 
 type NftDetailViewProps = {
   queryRef: NftDetailViewQueryFragment$key;
+  visibility?: string; // prop to pass the visibility state of the selected NFT
 };
 
 export default function NftDetailView({
   authenticatedUserOwnsAsset,
   collectionTokenRef,
   queryRef,
+  visibility,
 }: Props & NftDetailViewProps) {
   const collectionNft = useFragment(
     graphql`
@@ -101,6 +103,7 @@ export default function NftDetailView({
             <NftDetailAsset
               tokenRef={collectionNft}
               hasExtraPaddingForNote={showCollectorsNoteComponent}
+              visibility={visibility}
             />
           </ShimmerProvider>
           {showCollectorsNoteComponent && (

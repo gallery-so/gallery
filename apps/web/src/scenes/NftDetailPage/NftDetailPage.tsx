@@ -211,6 +211,7 @@ function NftDetailPage({
             collectionTokenRef={token}
             authenticatedUserOwnsAsset={authenticatedUserOwnsAsset}
             queryRef={query}
+            visibility={visibility}
           />
         </_DirectionalFade>
       ))}
