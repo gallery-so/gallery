@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -250,10 +250,10 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote, visibility }: Props)
   // only update the state if the selected token is set to 'visible'
   const handleRawLoad = useCallback(() => {
     if (visibility === 'visible') {
-      cacheLoadedImageUrls(tokenId, 'raw', result?.contentRenderURL as string);
+      cacheLoadedImageUrls(tokenId, 'raw', result?.urls.large as string);
     }
     handleNftLoaded();
-  }, [tokenId, result?.contentRenderURL, handleNftLoaded, cacheLoadedImageUrls, visibility]);
+  }, [visibility, result?.urls.large, handleNftLoaded, cacheLoadedImageUrls, tokenId]);
 
   return (
     <StyledAssetContainer

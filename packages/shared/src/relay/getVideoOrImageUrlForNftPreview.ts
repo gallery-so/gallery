@@ -3,17 +3,7 @@ import { graphql, readInlineData } from 'relay-runtime';
 import { ReportFn } from '~/contexts/ErrorReportingContext';
 import { getVideoOrImageUrlForNftPreviewFragment$key } from '~/generated/getVideoOrImageUrlForNftPreviewFragment.graphql';
 
-export type UrlSet = { small: string | null; medium: string | null; large: string | null };
-
-type VideoMediaContentRenderURL = {
-  raw: string;
-};
-
-export type ContentRenderURL = VideoMediaContentRenderURL | string;
-
-function isVideoMediaContentRenderURL(url: any): url is VideoMediaContentRenderURL {
-  return url && typeof url === 'object' && 'raw' in url;
-}
+type UrlSet = { small: string | null; medium: string | null; large: string | null };
 
 export type getVideoOrImageUrlForNftPreviewArgs = {
   tokenRef: getVideoOrImageUrlForNftPreviewFragment$key;
@@ -22,8 +12,8 @@ export type getVideoOrImageUrlForNftPreviewArgs = {
 };
 
 export type getVideoOrImageUrlForNftPreviewResult =
-  | { type: 'video'; urls: UrlSet; contentRenderURL: ContentRenderURL }
-  | { type: 'image'; urls: UrlSet; contentRenderURL: ContentRenderURL }
+  | { type: 'video'; urls: UrlSet }
+  | { type: 'image'; urls: UrlSet }
   | undefined;
 
 export default function getVideoOrImageUrlForNftPreview({
@@ -47,9 +37,6 @@ export default function getVideoOrImageUrlForNftPreview({
             fallbackMedia {
               mediaURL
             }
-            contentRenderURLs {
-              raw
-            }
           }
 
           ... on AudioMedia {
@@ -62,7 +49,6 @@ export default function getVideoOrImageUrlForNftPreview({
             fallbackMedia {
               mediaURL
             }
-            contentRenderURL
           }
 
           ... on GltfMedia {
@@ -75,7 +61,6 @@ export default function getVideoOrImageUrlForNftPreview({
             fallbackMedia {
               mediaURL
             }
-            contentRenderURL
           }
 
           ... on HtmlMedia {
@@ -88,7 +73,6 @@ export default function getVideoOrImageUrlForNftPreview({
             fallbackMedia {
               mediaURL
             }
-            contentRenderURL
           }
 
           ... on ImageMedia {
@@ -101,7 +85,6 @@ export default function getVideoOrImageUrlForNftPreview({
             fallbackMedia {
               mediaURL
             }
-            contentRenderURL
           }
 
           ... on GIFMedia {
@@ -119,7 +102,6 @@ export default function getVideoOrImageUrlForNftPreview({
             fallbackMedia {
               mediaURL
             }
-            contentRenderURL
           }
 
           ... on InvalidMedia {
@@ -132,7 +114,6 @@ export default function getVideoOrImageUrlForNftPreview({
             fallbackMedia {
               mediaURL
             }
-            contentRenderURL
           }
 
           ... on JsonMedia {
@@ -145,7 +126,6 @@ export default function getVideoOrImageUrlForNftPreview({
             fallbackMedia {
               mediaURL
             }
-            contentRenderURL
           }
 
           ... on TextMedia {
@@ -158,7 +138,6 @@ export default function getVideoOrImageUrlForNftPreview({
             fallbackMedia {
               mediaURL
             }
-            contentRenderURL
           }
 
           ... on PdfMedia {
@@ -171,7 +150,6 @@ export default function getVideoOrImageUrlForNftPreview({
             fallbackMedia {
               mediaURL
             }
-            contentRenderURL
           }
 
           ... on UnknownMedia {
@@ -184,7 +162,6 @@ export default function getVideoOrImageUrlForNftPreview({
             fallbackMedia {
               mediaURL
             }
-            contentRenderURL
           }
         }
       }
@@ -229,43 +206,17 @@ export default function getVideoOrImageUrlForNftPreview({
     }
   }
 
-  let contentRenderURL: ContentRenderURL | undefined = undefined;
-
-  if (media.__typename === 'VideoMedia') {
-    if (
-      'contentRenderURLs' in media &&
-      media.contentRenderURLs &&
-      isVideoMediaContentRenderURL(media.contentRenderURLs)
-    ) {
-      contentRenderURL = media.contentRenderURLs?.raw;
-    }
-  } else {
-    if ('contentRenderURL' in media && media.contentRenderURL) {
-      contentRenderURL = media.contentRenderURL as ContentRenderURL;
-    }
-  }
-
-  if (!contentRenderURL) {
-    handleReportError?.(new Error('no media or contentRender URLs found for NFT'), {
-      tags: {
-        id: result?.dbid,
-        assetType: media?.__typename,
-      },
-    });
-    return undefined;
-  }
-
   if (media.__typename === 'VideoMedia') {
     // TODO: we shouldn't need to do this check on the client, but this is a necessary evil
     // until we're on the indexer. in summary, we don't know whether something was categorized
     // as VideoMedia due to its OpenseaImageURL or OpenseaAnimationURL, so we need to do one
     // more check ourselves
     if (previewUrls.large?.endsWith('mp4') || previewUrls.large?.endsWith('webm')) {
-      return { type: 'video', urls: previewUrls, contentRenderURL };
+      return { type: 'video', urls: previewUrls };
     }
 
-    return { type: 'image', urls: previewUrls, contentRenderURL };
+    return { type: 'image', urls: previewUrls };
   }
 
-  return { type: 'image', urls: previewUrls, contentRenderURL };
+  return { type: 'image', urls: previewUrls };
 }
