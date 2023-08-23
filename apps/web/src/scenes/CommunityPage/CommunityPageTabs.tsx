@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -27,25 +27,16 @@ export default function CommunityPageTabs({ onSelectTab, activeTab, communityRef
               }
             }
           }
+          pageInfo {
+            total
+          }
         }
       }
     `,
     communityRef
   );
 
-  const feedData = useMemo(() => {
-    const events = [];
-
-    for (const edge of community.posts?.edges ?? []) {
-      if (edge?.node?.__typename === 'Post' && edge.node) {
-        events.push(edge.node);
-      }
-    }
-
-    return events;
-  }, [community.posts?.edges]);
-
-  const totalPosts = feedData?.length;
+  const totalPosts = community.posts?.pageInfo.total;
 
   const handleTabClick = useCallback(
     (tab: CommunityPageTab) => {
