@@ -12,11 +12,12 @@ import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';
-import { TitleDiatypeM } from '~/components/core/Text/Text';
+import { BaseM, TitleDiatypeM } from '~/components/core/Text/Text';
 import { CommentNote } from '~/components/Feed/Socialize/CommentsModal/CommentNote';
 import { MODAL_PADDING_PX } from '~/contexts/modal/constants';
 import { CommentsModalFragment$key } from '~/generated/CommentsModalFragment.graphql';
 import { CommentsModalQueryFragment$key } from '~/generated/CommentsModalQueryFragment.graphql';
+import colors from '~/shared/theme/colors';
 
 import { CommentBox } from '../CommentBox/CommentBox';
 
@@ -134,34 +135,40 @@ export function CommentsModal({
         <StyledHeader>
           <TitleDiatypeM>Comments</TitleDiatypeM>
         </StyledHeader>
-        <VStack grow>
-          <AutoSizer disableHeight>
-            {({ width }) => (
-              <InfiniteLoader
-                isRowLoaded={isRowLoaded}
-                loadMoreRows={handleLoadMore}
-                rowCount={rowCount}
-              >
-                {({ onRowsRendered, registerChild }) => (
-                  <div ref={(el) => registerChild(el)}>
-                    <List
-                      ref={virtualizedListRef}
-                      width={width}
-                      height={estimatedContentHeight}
-                      rowRenderer={rowRenderer}
-                      rowCount={comments.length}
-                      rowHeight={measurerCache.rowHeight}
-                      onRowsRendered={onRowsRendered}
-                      style={{
-                        paddingTop: '16px',
-                      }}
-                    />
-                  </div>
-                )}
-              </InfiniteLoader>
-            )}
-          </AutoSizer>
-        </VStack>
+        {rowCount === 0 ? (
+          <EmptyStateVStack align="center" justify="center">
+            <BaseM color={colors.metal}>No comments yet</BaseM>
+          </EmptyStateVStack>
+        ) : (
+          <VStack grow>
+            <AutoSizer disableHeight>
+              {({ width }) => (
+                <InfiniteLoader
+                  isRowLoaded={isRowLoaded}
+                  loadMoreRows={handleLoadMore}
+                  rowCount={rowCount}
+                >
+                  {({ onRowsRendered, registerChild }) => (
+                    <div ref={(el) => registerChild(el)}>
+                      <List
+                        ref={virtualizedListRef}
+                        width={width}
+                        height={estimatedContentHeight}
+                        rowRenderer={rowRenderer}
+                        rowCount={comments.length}
+                        rowHeight={measurerCache.rowHeight}
+                        onRowsRendered={onRowsRendered}
+                        style={{
+                          paddingTop: '16px',
+                        }}
+                      />
+                    </div>
+                  )}
+                </InfiniteLoader>
+              )}
+            </AutoSizer>
+          </VStack>
+        )}
         <CommentBox
           queryRef={query}
           onSubmitComment={onSubmitComment}
@@ -174,6 +181,11 @@ export function CommentsModal({
 
 const WrappingVStack = styled(VStack)`
   height: 100%;
+`;
+
+const EmptyStateVStack = styled(VStack)`
+  padding-top: 20px;
+  padding-bottom: 36px;
 `;
 
 const StyledHeader = styled.div`
