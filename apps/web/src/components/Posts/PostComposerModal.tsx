@@ -18,23 +18,31 @@ import DiscardPostConfirmation from './DiscardPostConfirmation';
 import PostComposer from './PostComposer';
 
 type Props = {
-  tokensRef: PostComposerModalWithSelectorFragment$key;
+  viewerRef: PostComposerModalWithSelectorFragment$key;
   queryRef: PostComposerModalWithSelectorQueryFragment$key;
   preSelectedContract?: NftSelectorContractType;
 };
 
 // Modal with multiple steps: the NFT Selector -> then Post Composer
-export function PostComposerModalWithSelector({ tokensRef, queryRef, preSelectedContract }: Props) {
-  const tokens = useFragment(
+export function PostComposerModalWithSelector({ viewerRef, queryRef, preSelectedContract }: Props) {
+  const viewer = useFragment(
     graphql`
-      fragment PostComposerModalWithSelectorFragment on Token @relay(plural: true) {
-        dbid
-        ...NftSelectorFragment
-        ...PostComposerFragment
+      fragment PostComposerModalWithSelectorFragment on Viewer {
+        user {
+          tokens(ownershipFilter: [Creator, Holder]) {
+            dbid
+            ...NftSelectorFragment
+            ...PostComposerFragment
+          }
+        }
       }
     `,
-    tokensRef
+    viewerRef
   );
+
+  const tokens = useMemo(() => {
+    return removeNullValues(viewer?.user?.tokens) ?? [];
+  }, [viewer]);
 
   const query = useFragment(
     graphql`
