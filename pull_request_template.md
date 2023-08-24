@@ -2,7 +2,7 @@
 
 Provide a brief description of the changes made in this PR. Explain the problem you are fixing or the feature you are adding.
 
-### Before/After or Demo
+### Demo or Before/After Pics
 
 - If this is a new feature, include screenshots or recordings of the feature in action.
 - If this PR makes visual changes, include before and after screenshots. You can type `/table` to quickly come up with a before/after table.
