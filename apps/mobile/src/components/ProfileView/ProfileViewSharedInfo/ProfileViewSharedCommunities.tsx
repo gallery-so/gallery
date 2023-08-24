@@ -242,7 +242,11 @@ export function CommunityProfilePictureBubblesWithCount({
               '-ml-2': index !== 0,
             })}
           >
-            <CommunityProfilePicture communityRef={community} size="sm" />
+            <CommunityProfilePicture
+              communityRef={community}
+              size="sm"
+              hasInset={communities.length > 1}
+            />
           </View>
         );
       })}
