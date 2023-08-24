@@ -22,6 +22,8 @@ export default function useSyncTokens() {
               # This should be sufficient to capture all the things
               # we want to refresh. Don't @me when this fails.
               ...GalleryEditorViewerFragment
+              # Refresh tokens for post composer
+              ...PostComposerModalWithSelectorFragment
 
               ... on Viewer {
                 user {

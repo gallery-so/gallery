@@ -13,7 +13,6 @@ import { PostComposerModalWithSelector } from '~/components/Posts/PostComposerMo
 import Search from '~/components/Search/Search';
 import Settings from '~/components/Settings/Settings';
 import { useModalActions } from '~/contexts/modal/ModalContext';
-import { PostComposerModalWithSelectorFragment$key } from '~/generated/PostComposerModalWithSelectorFragment.graphql';
 import { StandardSidebarFragment$key } from '~/generated/StandardSidebarFragment.graphql';
 import useAuthModal from '~/hooks/useAuthModal';
 import { useSearchHotkey } from '~/hooks/useSearchHotkey';
@@ -27,7 +26,6 @@ import SearchIcon from '~/icons/SearchIcon';
 import ShopIcon from '~/icons/ShopIcon';
 import UserIcon from '~/icons/UserIcon';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
-import { removeNullValues } from '~/shared/relay/removeNullValues';
 import useExperience from '~/utils/graphql/experiences/useExperience';
 import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
@@ -46,11 +44,9 @@ export function StandardSidebar({ queryRef }: Props) {
         viewer {
           ... on Viewer {
             __typename
+            ...PostComposerModalWithSelectorFragment
             user {
               username
-              tokens {
-                ...PostComposerModalWithSelectorFragment
-              }
               ...SidebarPfpFragment
             }
             notifications(last: 1) @connection(key: "StandardSidebarFragment_notifications") {
@@ -125,13 +121,6 @@ export function StandardSidebar({ queryRef }: Props) {
 
   const username = (isLoggedIn && query.viewer.user?.username) || '';
 
-  const tokens = useMemo<PostComposerModalWithSelectorFragment$key>(() => {
-    if (query?.viewer?.__typename !== 'Viewer') {
-      return [];
-    }
-    return removeNullValues(query?.viewer?.user?.tokens) ?? [];
-  }, [query?.viewer]);
-
   const { showModal, hideModal } = useModalActions();
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
@@ -172,9 +161,13 @@ export function StandardSidebar({ queryRef }: Props) {
   const handleCreatePostClick = useCallback(() => {
     hideDrawer();
 
+    if (!isLoggedIn) {
+      return;
+    }
+
     showModal({
       id: 'post-composer',
-      content: <PostComposerModalWithSelector tokensRef={tokens} queryRef={query} />,
+      content: <PostComposerModalWithSelector viewerRef={query?.viewer} queryRef={query} />,
       headerVariant: 'thicc',
       isFullPage: isMobile,
       onCloseOverride: () => {
@@ -192,7 +185,7 @@ export function StandardSidebar({ queryRef }: Props) {
       },
     });
     track('Sidebar Create Post Click');
-  }, [hideDrawer, showModal, hideModal, tokens, query, isMobile, track]);
+  }, [hideDrawer, isLoggedIn, showModal, query, isMobile, track, hideModal]);
 
   const handleSearchClick = useCallback(() => {
     track('Sidebar Search Click');
