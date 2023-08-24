@@ -8,6 +8,8 @@ import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import { FeedList } from '../../components/Feed/FeedList';
 import { LoadingFeedList } from '../../components/Feed/LoadingFeedList';
+import { RouteProp, useNavigationState, useRoute } from '@react-navigation/native';
+import { FeedTabNavigatorParamList, MainTabStackNavigatorParamList } from '~/navigation/types';
 
 type CuratedScreenInnerProps = {
   queryRef: CuratedScreenFragment$key;
@@ -40,6 +42,11 @@ function CuratedScreenInner({ queryRef }: CuratedScreenInnerProps) {
   );
 
   const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const currentScreen = useNavigationState((state) => state);
+  console.log({ currentScreen });
+  const { params: routeParams } = useRoute<RouteProp<FeedTabNavigatorParamList, 'Curated'>>();
+  console.log('route', routeParams);
 
   const curatedFeed = query.data.curatedFeed;
 

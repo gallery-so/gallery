@@ -43,6 +43,19 @@ export function DeepLinkRegistrar() {
       }
 
       const parsedUrl = new URL(url);
+      console.log(parsedUrl);
+
+      if (parsedUrl.pathname === '/mobile') {
+        navigation.navigate('MainTabs', {
+          screen: 'HomeTab',
+          params: {
+            screen: 'Home',
+            params: { screen: 'Curated', params: { showMarfaSheet: true } },
+          },
+        });
+        return;
+      }
+
       const splitBySlash = parsedUrl.pathname.split('/').filter(Boolean);
 
       if (splitBySlash.length === 1) {

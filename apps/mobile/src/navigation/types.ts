@@ -60,7 +60,7 @@ export type MainTabStackNavigatorParamList = {
 };
 
 export type FeedTabNavigatorParamList = {
-  Curated: undefined;
+  Curated: { showMarfaSheet?: boolean };
   Latest: undefined;
   Explore: undefined;
 };
