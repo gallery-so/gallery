@@ -104,9 +104,7 @@ export default function useCreatePost() {
 
             // Increment the displayed total number of posts in the community.
             // This count is a different record from the actual feed because we retrieve the count separately
-            const communityFeedPostsCountPageInfo = communityRoot
-              .getLinkedRecord('posts(last:0)')
-              ?.getLinkedRecord('pageInfo');
+            const communityFeedPostsCountPageInfo = communityFeedPosts?.getLinkedRecord('pageInfo');
 
             communityFeedPostsCountPageInfo?.setValue(
               ((communityFeedPostsCountPageInfo?.getValue('total') as number) ?? 0) + 1,
