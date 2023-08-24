@@ -40,7 +40,7 @@ export const ButtonPill = styled.button<{ active?: boolean }>`
   display: flex;
   align-items: center;
   background-color: ${colors.offWhite};
-  cursor: hover;
+  cursor: pointer;
 
   ${({ active }) =>
     active &&
