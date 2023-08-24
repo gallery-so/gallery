@@ -29,12 +29,27 @@ export default function CommunityPageTabs({ onSelectTab, activeTab, communityRef
             total
           }
         }
+        owners(
+          first: $listOwnersFirst
+          after: $listOwnersAfter
+          onlyGalleryUsers: $onlyGalleryUsers
+        ) @connection(key: "CommunityPageView_owners") {
+          # Relay doesn't allow @connection w/o edges so we must query for it
+          # eslint-disable-next-line relay/unused-fields
+          edges {
+            __typename
+          }
+          pageInfo {
+            total
+          }
+        }
       }
     `,
     communityRef
   );
 
   const totalPosts = community.posts?.pageInfo.total;
+  const totalOwners = community.owners?.pageInfo.total;
 
   const handleTabClick = useCallback(
     (tab: CommunityPageTab) => {
@@ -56,7 +71,10 @@ export default function CommunityPageTabs({ onSelectTab, activeTab, communityRef
         <StyledTabLabel>Galleries</StyledTabLabel>
       </StyledTab> */}
       <StyledTab isActive={activeTab === 'collectors'} onClick={() => handleTabClick('collectors')}>
-        <StyledTabLabel>Collectors</StyledTabLabel>
+        <HStack gap={3}>
+          <StyledTabLabel>Collectors</StyledTabLabel>
+          {totalOwners !== 0 && <StyledTabLabelCount>{totalOwners}</StyledTabLabelCount>}
+        </HStack>
       </StyledTab>
     </StyledTabsContainer>
   );
