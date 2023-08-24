@@ -246,7 +246,7 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
       <HStack gap={8} align="center" justify="space-between">
         <NotificationInner notificationRef={notification} queryRef={query} />
         <StyledDotAndTimeAgo align="center" gap={4}>
-          <HStack grow justify="flex-end" gap={16}>
+          <HStack grow justify="flex-end" gap={2}>
             <TimeAgoText color={colors.metal}>{timeAgo}</TimeAgoText>
             {showCaret && <NotificationArrow />}
           </HStack>
