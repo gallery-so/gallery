@@ -1,11 +1,11 @@
 ### Summary of Changes
 
-Please provide a brief description of the changes made in this PR. Explain the problem are fixing or the feature you are adding.
+Provide a brief description of the changes made in this PR. Explain the problem you are fixing or the feature you are adding.
 
-### Demo or Before and After
+### Before/After or Demo
 
-If this is a new feature, it helps to include screenshots or recordings of the feature in action.
-If this PR makes visual changes, include before and after screenshots.
+- If this is a new feature, include screenshots or recordings of the feature in action.
+- If this PR makes visual changes, include before and after screenshots. You can type `/table` to quickly come up with a before/after table.
 
 ### Edge Cases
 
@@ -19,6 +19,6 @@ Provide steps on how the reviewer can test the changes.
 
 Please make sure to review and check all of the following:
 
-- [ ] The changes have been tested and all tests pass.
-- [ ] WEB: The changes have been tested on various desktop screen sizes to ensure responsiveness.
-- [ ] MOBILE APP: The changes have been tested on both light and dark modes.
+- [ ] I've tested the changes.
+- [ ] (if web) I've tested the changes on various desktop screen sizes to ensure responsiveness.
+- [ ] (if mobile) I've tested the changes on both light and dark modes.
