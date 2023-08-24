@@ -1,6 +1,7 @@
 import { graphql, useFragment } from 'react-relay';
 
 import { CollectionTokenPreviewFragment$key } from '~/generated/CollectionTokenPreviewFragment.graphql';
+import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 
 import NftPreview from './NftPreview';
 
@@ -40,7 +41,8 @@ export default function CollectionTokenPreview({
   );
 
   const { collection, tokenSettings } = collectionToken;
-  const shouldLiveRender = Boolean(tokenSettings?.renderLive);
+  const isMobileOrLargeMobile = useIsMobileOrMobileLargeWindowWidth();
+  const shouldLiveRender = Boolean(tokenSettings?.renderLive) && !isMobileOrLargeMobile;
 
   return (
     <NftPreview
