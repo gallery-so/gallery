@@ -20,12 +20,10 @@ export default function CommunityPageTabs({ onSelectTab, activeTab, communityRef
       fragment CommunityPageTabsFragment on Community {
         posts(before: $communityPostsBefore, last: $communityPostsLast)
           @connection(key: "CommunityFeed_posts") {
+          # Relay doesn't allow @connection w/o edges so we must query for it
+          # eslint-disable-next-line relay/unused-fields
           edges {
-            node {
-              ... on Post {
-                __typename
-              }
-            }
+            __typename
           }
           pageInfo {
             total

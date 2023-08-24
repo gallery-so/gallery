@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { graphql, SelectorStoreUpdater } from 'relay-runtime';
+import { ConnectionHandler, graphql, SelectorStoreUpdater } from 'relay-runtime';
 
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { useDeletePostMutation } from '~/generated/useDeletePostMutation.graphql';
@@ -32,9 +32,11 @@ export default function useDeletePost() {
           // Decrement the post count on the community
           const communityRoot = store.get(communityId);
           if (communityRoot) {
-            const communityFeedPostsCountPageInfo = communityRoot
-              .getLinkedRecord('posts(last:0)')
-              ?.getLinkedRecord('pageInfo');
+            const communityFeedPosts = ConnectionHandler.getConnection(
+              communityRoot,
+              'CommunityFeed_posts'
+            );
+            const communityFeedPostsCountPageInfo = communityFeedPosts?.getLinkedRecord('pageInfo');
 
             communityFeedPostsCountPageInfo?.setValue(
               ((communityFeedPostsCountPageInfo?.getValue('total') as number) ?? 0) - 1,
