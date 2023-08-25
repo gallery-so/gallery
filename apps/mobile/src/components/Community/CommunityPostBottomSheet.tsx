@@ -96,7 +96,7 @@ function CommunityPostBottomSheet(
               font={{ family: 'ABCDiatype', weight: 'Regular' }}
             >
               Only {community.name} owners can post about {community.name}. If you own this item but
-              its not displaying try
+              it's not displaying try
             </Typography>{' '}
             <Typography
               className="text-sm text-black-900 dark:text-offWhite"
