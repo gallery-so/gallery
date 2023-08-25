@@ -5,6 +5,7 @@ import { View } from 'react-native';
 import { QRCodeIcon } from 'src/icons/QRCodeIcon';
 
 import { LoginStackNavigatorProp } from '~/navigation/types';
+import { EmailIcon } from '~/screens/Login/EmailIcon';
 
 import { BottomSheetRow } from '../Feed/Posts/PostBottomSheet';
 import {
@@ -66,9 +67,9 @@ function SignInBottomSheet(
         </View>
 
         <View className="flex flex-col space-y-2">
-          <BottomSheetRow text="Email" onPress={handleEmailPress} />
+          <BottomSheetRow icon={<EmailIcon />} text="Email" onPress={handleEmailPress} />
           <BottomSheetRow
-            icon={<QRCodeIcon />}
+            icon={<QRCodeIcon width={24} height={24} />}
             text="QR Code (Sync with desktop)"
             onPress={onQrCodePress}
           />

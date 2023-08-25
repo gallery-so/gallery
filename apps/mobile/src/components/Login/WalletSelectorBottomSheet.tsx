@@ -1,7 +1,12 @@
 import { useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
+import clsx from 'clsx';
 import { ForwardedRef, forwardRef, useRef } from 'react';
-import { View } from 'react-native';
+import { View, ViewProps } from 'react-native';
+import { ArbitrumIcon } from 'src/icons/ArbitrumIcon';
 import { EthIcon } from 'src/icons/EthIcon';
+import { OptimismIcon } from 'src/icons/OptimismIcon';
+import { PolygonIcon } from 'src/icons/PolygonIcon';
+import { ZoraIcon } from 'src/icons/ZoraIcon';
 
 import { BottomSheetRow } from '../Feed/Posts/PostBottomSheet';
 import {
@@ -64,8 +69,10 @@ function WalletSelectorBottomSheet(
                 <EthIcon width={24} height={24} />
               </View>
             }
+            fontWeight="Bold"
             text="Ethereum and L2s"
             onPress={onConnectWallet}
+            rightIcon={<EvmStackedIcons />}
           />
         </View>
       </View>
@@ -76,3 +83,38 @@ function WalletSelectorBottomSheet(
 const ForwardedWalletSelectorBottomSheet = forwardRef(WalletSelectorBottomSheet);
 
 export { ForwardedWalletSelectorBottomSheet as WalletSelectorBottomSheet };
+
+function EvmStackedIcons() {
+  return (
+    <View className="flex-row">
+      <IconWrapper>
+        <ArbitrumIcon />
+      </IconWrapper>
+      <IconWrapper className="-ml-2">
+        <OptimismIcon />
+      </IconWrapper>
+      <IconWrapper className="-ml-2">
+        <ZoraIcon />
+      </IconWrapper>
+      <IconWrapper className="-ml-2">
+        <PolygonIcon width={24} height={24} />
+      </IconWrapper>
+    </View>
+  );
+}
+
+function IconWrapper({
+  children,
+  style,
+  className,
+}: {
+  children: React.ReactNode;
+  style?: ViewProps['style'];
+  className?: string;
+}) {
+  return (
+    <View className={clsx('border-2 border-white rounded-full w-5 h-5', className)} style={style}>
+      {children}
+    </View>
+  );
+}
