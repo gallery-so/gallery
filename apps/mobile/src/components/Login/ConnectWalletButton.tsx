@@ -86,7 +86,6 @@ export function ConnectWalletButton() {
       }
     } catch (error) {
       provider?.disconnect();
-      return;
     } finally {
       setIsLoading(false);
     }
@@ -106,6 +105,8 @@ export function ConnectWalletButton() {
   useEffect(() => {
     if (isConnected) {
       handleSignMessage();
+    } else {
+      setIsLoading(false);
     }
   }, [isConnected, handleSignMessage]);
 
