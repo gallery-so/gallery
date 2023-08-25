@@ -92,14 +92,14 @@ function CommunityPostBottomSheet(
           </Typography>
           <Text>
             <Typography
-              className="text-sm text-black-900 dark:text-offWhite"
+              className="text-md text-black-900 dark:text-offWhite"
               font={{ family: 'ABCDiatype', weight: 'Regular' }}
             >
               Only {community.name} owners can post about {community.name}. If you own this item but
               it's not displaying try
             </Typography>{' '}
             <Typography
-              className="text-sm text-black-900 dark:text-offWhite"
+              className="text-md text-black-900 dark:text-offWhite"
               font={{ family: 'ABCDiatype', weight: 'Bold' }}
             >
               refreshing your collection.
