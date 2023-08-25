@@ -19,6 +19,6 @@ Provide steps on how the reviewer can test the changes.
 
 Please make sure to review and check all of the following:
 
-- [ ] I've tested the changes.
+- [ ] I've tested the changes and all tests pass.
 - [ ] (if web) I've tested the changes on various desktop screen sizes to ensure responsiveness.
 - [ ] (if mobile) I've tested the changes on both light and dark modes.
