@@ -7,17 +7,22 @@ import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import Badge from '~/components/Badge/Badge';
+import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
-import { BaseM, TitleM } from '~/components/core/Text/Text';
+import { BaseM, BaseS, TitleM } from '~/components/core/Text/Text';
 import FollowButton from '~/components/Follow/FollowButton';
+import { HoverCardCommunityQuery } from '~/generated/HoverCardCommunityQuery.graphql';
 import { HoverCardQuery } from '~/generated/HoverCardQuery.graphql';
 import UserSharedInfo from '~/scenes/UserGalleryPage/UserSharedInfo/UserSharedInfo';
 import { ErrorWithSentryMetadata } from '~/shared/errors/ErrorWithSentryMetadata';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import handleCustomDisplayName from '~/utils/handleCustomDisplayName';
 
+import CommunityProfilePicture from '../ProfilePicture/CommunityProfilePicture';
 import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
+import { ProfilePictureStack } from '../ProfilePicture/ProfilePictureStack';
 
 type HoverCardProps = {
   preloadedQuery: PreloadedQuery<HoverCardQuery>;
@@ -50,6 +55,38 @@ export const HoverCardQueryNode = graphql`
 
     ...FollowButtonQueryFragment
     ...useLoggedInUserIdFragment
+  }
+`;
+
+export const HoverCardCommunityQueryNode = graphql`
+  query HoverCardCommunityQuery($communityAddress: ChainAddressInput!) {
+    communityByAddress(communityAddress: $communityAddress) {
+      __typename
+      ... on Community {
+        name
+        description
+        contractAddress {
+          address
+          chain
+        }
+        ...CommunityProfilePictureFragment
+        owners(onlyGalleryUsers: true, first: 10) {
+          edges {
+            node {
+              user {
+                ... on GalleryUser {
+                  username
+                  ...ProfilePictureStackFragment
+                }
+              }
+            }
+          }
+          pageInfo {
+            total
+          }
+        }
+      }
+    }
   }
 `;
 
@@ -98,7 +135,7 @@ export function HoverCard({ preloadedQuery }: HoverCardProps) {
             <StyledLink href={userProfileLink}>
               <HStack align="center" gap={4}>
                 <ProfilePicture userRef={user} size="md" />
-                <StyledCardUsername>{displayName}</StyledCardUsername>
+                <StyledCardTitle>{displayName}</StyledCardTitle>
               </HStack>
             </StyledLink>
 
@@ -130,6 +167,115 @@ export function HoverCard({ preloadedQuery }: HoverCardProps) {
   );
 }
 
+type HoverCardOnCommunityProps = {
+  preloadedCommunityQuery: PreloadedQuery<HoverCardCommunityQuery>;
+};
+
+export function HoverCardOnCommunity({ preloadedCommunityQuery }: HoverCardOnCommunityProps) {
+  const communityQuery = usePreloadedQuery(HoverCardCommunityQueryNode, preloadedCommunityQuery);
+
+  const community = communityQuery.communityByAddress;
+
+  if (community?.__typename !== 'Community') {
+    throw new ErrorWithSentryMetadata('Expected userById to return w/ typename GalleryUser', {
+      typename: community?.__typename,
+    });
+  }
+
+  const owners = useMemo(() => {
+    const list = community?.owners?.edges?.map((edge) => edge?.node?.user) ?? [];
+    return removeNullValues(list);
+  }, [community.owners?.edges]);
+
+  const totalOwners = community?.owners?.pageInfo?.total ?? 0;
+
+  const ownersToDisplay = useMemo(() => {
+    // In most cases we display a max of 2 usernames. i.e, "username1, username2 and 3 others you follow"
+    // But if there are exactly 3 owners, we display all 3 usernames. i.e, "username1, username2 and username3"
+    const maxUsernamesToDisplay = totalOwners === 3 ? 3 : 2;
+    return owners.slice(0, maxUsernamesToDisplay);
+  }, [owners, totalOwners]);
+
+  const content = useMemo(() => {
+    // Display up to 3 usernames
+    const result = ownersToDisplay.map((owner) => (
+      <StyledInteractiveLink
+        to={{
+          pathname: `/[username]`,
+          query: { username: owner.username ?? '' },
+        }}
+        key={owner.username}
+      >
+        {owner.username}
+      </StyledInteractiveLink>
+    ));
+
+    // If there are more than 3 usernames, add a link to show all in a popover
+    if (totalOwners > 3) {
+      result.push(<StyledBaseS>{totalOwners - 2} others</StyledBaseS>);
+    }
+
+    // Add punctuation: "," and "and"
+    if (result.length === 3) {
+      result.splice(1, 0, <StyledBaseS>,&nbsp;</StyledBaseS>);
+    }
+    if (result.length > 1) {
+      result.splice(-1, 0, <StyledBaseS>&nbsp;and&nbsp;</StyledBaseS>);
+    }
+
+    return result;
+  }, [ownersToDisplay, totalOwners]);
+
+  const communityProfileLink = useMemo((): Route => {
+    return {
+      pathname: '/community/[chain]/[contractAddress]',
+      query: {
+        contractAddress: community.contractAddress?.address as string,
+        chain: community.contractAddress?.chain as string,
+      },
+    };
+  }, [community]);
+
+  if (!community.name) {
+    return null;
+  }
+
+  const displayName = handleCustomDisplayName(community?.name as string);
+
+  return (
+    <VStack gap={4}>
+      <StyledCardHeaderContainer gap={8}>
+        <StyledCardHeader align="center" justify="space-between">
+          <HStack align="center" gap={4}>
+            <HStack align="center" gap={4}>
+              <CommunityProfilePicture communityRef={community} size="lg" />
+              <VStack gap={4}>
+                <StyledLink href={communityProfileLink}>
+                  <StyledCardTitle>{displayName}</StyledCardTitle>
+                </StyledLink>
+                {community.description && (
+                  <StyledCardDescription>
+                    <BaseM>
+                      <Markdown text={unescape(community.description)}></Markdown>
+                    </BaseM>
+                  </StyledCardDescription>
+                )}
+              </VStack>
+            </HStack>
+          </HStack>
+        </StyledCardHeader>
+      </StyledCardHeaderContainer>
+      <HStack align="center" gap={4}>
+        <ProfilePictureStack usersRef={owners} total={totalOwners} />
+        <HStack gap={2} wrap="wrap">
+          <StyledBaseS>Owned by&nbsp;</StyledBaseS>
+          {content}
+        </HStack>
+      </HStack>
+    </VStack>
+  );
+}
+
 const StyledCardHeader = styled(HStack)`
   display: flex;
 
@@ -156,7 +302,7 @@ const StyledFollowButtonWrapper = styled.div`
   margin-right: 8px;
 `;
 
-const StyledCardUsername = styled(TitleM)`
+const StyledCardTitle = styled(TitleM)`
   font-style: normal;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -179,4 +325,13 @@ const StyledFollowButton = styled(FollowButton)`
   padding: 2px 8px;
   width: 92px;
   height: 24px;
+`;
+
+const StyledInteractiveLink = styled(InteractiveLink)`
+  font-size: 12px;
+`;
+
+const StyledBaseS = styled(BaseS)`
+  font-weight: 700;
+  font-size: 12px;
 `;
