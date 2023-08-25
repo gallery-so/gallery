@@ -49,8 +49,6 @@ export function ConnectWalletButton() {
       return;
     }
 
-    setIsLoading(true);
-
     const signer = web3Provider.getSigner();
     const { nonce, user_exists: userExist } = await createNonce(address, 'Ethereum');
 
@@ -65,6 +63,7 @@ export function ConnectWalletButton() {
     }
 
     try {
+      setIsLoading(true);
       const signature = await signer.signMessage(nonce);
 
       const result = await login({
@@ -105,6 +104,7 @@ export function ConnectWalletButton() {
   useEffect(() => {
     if (isConnected) {
       handleSignMessage();
+      bottomSheet.current?.close();
     } else {
       setIsLoading(false);
     }
