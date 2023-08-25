@@ -90,12 +90,11 @@ export function NftSelectorContractScreen() {
               <View key={index} className="flex flex-row space-x-4">
                 {row.map((token) => {
                   return (
-                    <View
+                    <NftSelectorPickerSingularAsset
                       key={token.dbid}
-                      className="flex-1 aspect-square bg-offWhite dark:bg-black-800"
-                    >
-                      <NftSelectorPickerSingularAsset onSelect={handleSelectNft} tokenRef={token} />
-                    </View>
+                      onSelect={handleSelectNft}
+                      tokenRef={token}
+                    />
                   );
                 })}
 
