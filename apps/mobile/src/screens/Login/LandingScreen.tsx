@@ -20,7 +20,7 @@ import { EmailIcon } from './EmailIcon';
 import { LandingLogo } from './LandingLogo';
 import { QRCodeIcon } from './QRCodeIcon';
 
-const IS_ONBOARDING_ENABLED = true;
+const IS_ONBOARDING_ENABLED = false;
 
 export function LandingScreen() {
   const isOnboardingEnabled = IS_ONBOARDING_ENABLED;
