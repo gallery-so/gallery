@@ -47,11 +47,13 @@ export default function useSyncTokens() {
 
   const { pushToast } = useToastActions();
   const sync = useCallback(
-    async (chain: Chain) => {
-      pushToast({
-        message: 'We’re retrieving your new pieces. This may take up to a few minutes.',
-        autoClose: true,
-      });
+    async (chain: Chain, silent = false) => {
+      if (!silent) {
+        pushToast({
+          message: 'We’re retrieving your new pieces. This may take up to a few minutes.',
+          autoClose: true,
+        });
+      }
 
       if (isLocked) {
         return false;
@@ -60,11 +62,13 @@ export default function useSyncTokens() {
       const unlock = lock();
 
       function showFailure() {
-        pushToast({
-          autoClose: true,
-          message:
-            "Something went wrong while syncing your tokens. We're looking into it. Please try again in a few minutes.",
-        });
+        if (!silent) {
+          pushToast({
+            autoClose: true,
+            message:
+              "Something went wrong while syncing your tokens. We're looking into it. Please try again in a few minutes.",
+          });
+        }
       }
 
       try {
