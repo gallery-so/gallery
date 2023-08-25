@@ -1,6 +1,8 @@
-import { Suspense, useCallback, useMemo, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 
+import { WelcomeToBeta } from '~/components/WelcomeToBeta';
 import { CuratedScreenFragment$key } from '~/generated/CuratedScreenFragment.graphql';
 import { CuratedScreenQuery } from '~/generated/CuratedScreenQuery.graphql';
 import { RefetchableCuratedScreenFragmentQuery } from '~/generated/RefetchableCuratedScreenFragmentQuery.graphql';
@@ -30,6 +32,14 @@ function CuratedScreenInner({ queryRef }: CuratedScreenInnerProps) {
               __typename
 
               ...FeedListFragment
+            }
+          }
+        }
+
+        viewer {
+          ... on Viewer {
+            user {
+              username
             }
           }
         }
@@ -73,15 +83,32 @@ function CuratedScreenInner({ queryRef }: CuratedScreenInnerProps) {
     return [...curatedEvents];
   }, [curatedFeed?.edges]);
 
+  const [showWelcome, setShowWelcome] = useState(false);
+
+  const checkShouldShowWelcome = useCallback(async () => {
+    const shown = await AsyncStorage.getItem('welcomeMessageShown');
+    if (shown !== 'true') {
+      setShowWelcome(true);
+      await AsyncStorage.setItem('welcomeMessageShown', 'true');
+    }
+  }, [setShowWelcome]);
+
+  useEffect(() => {
+    checkShouldShowWelcome();
+  }, [checkShouldShowWelcome]);
+
   return (
-    <FeedList
-      isLoadingMore={query.isLoadingPrevious}
-      isRefreshing={isRefreshing}
-      onRefresh={handleRefresh}
-      onLoadMore={handleLoadMore}
-      feedEventRefs={events}
-      queryRef={query.data}
-    />
+    <>
+      <FeedList
+        isLoadingMore={query.isLoadingPrevious}
+        isRefreshing={isRefreshing}
+        onRefresh={handleRefresh}
+        onLoadMore={handleLoadMore}
+        feedEventRefs={events}
+        queryRef={query.data}
+      />
+      {showWelcome && <WelcomeToBeta username={query.viewer?.user?.username ?? ''} />}
+    </>
   );
 }
 
