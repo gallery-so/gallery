@@ -4,12 +4,17 @@ import Svg, { ClipPath, Defs, G, Path, SvgProps } from 'react-native-svg';
 
 import colors from '~/shared/theme/colors';
 
-export function EthIcon(props: SvgProps) {
+type Props = {
+  height?: number;
+  width?: number;
+} & SvgProps;
+
+export function EthIcon({ height = 12, width = 12, ...props }: Props) {
   const { colorScheme } = useColorScheme();
   const fillColor = colorScheme === 'light' ? colors.black.DEFAULT : colors.offWhite;
 
   return (
-    <Svg width={12} height={12} viewBox="0 0 12 12" fill="none" {...props}>
+    <Svg width={width} height={height} viewBox="0 0 12 12" fill="none" {...props}>
       <G clipPath="url(#clip0_2134_7334)" fill={fillColor}>
         <Path opacity={0.6} d="M5.999 4.567L2.625 6.101l3.374 1.995L9.373 6.1 6 4.567z" />
         <Path opacity={0.45} d="M2.626 6.101L6 8.096V.503L2.626 6.101z" />
