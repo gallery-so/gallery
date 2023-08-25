@@ -107,7 +107,7 @@ function CuratedScreenInner({ queryRef }: CuratedScreenInnerProps) {
         feedEventRefs={events}
         queryRef={query.data}
       />
-      {showWelcome && <WelcomeToBeta username={query.viewer?.user?.username ?? ''} />}
+      {showWelcome && <WelcomeToBeta username={query.data.viewer?.user?.username ?? ''} />}
     </>
   );
 }
