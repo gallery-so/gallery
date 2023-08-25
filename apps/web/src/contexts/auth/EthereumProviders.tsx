@@ -4,7 +4,7 @@ import { getDefaultWallets, lightTheme, RainbowKitProvider } from '@rainbow-me/r
 import merge from 'lodash.merge';
 import { ReactNode } from 'react';
 import { configureChains, createConfig, WagmiConfig } from 'wagmi';
-import { arbitrum, mainnet, optimism, zora } from 'wagmi/chains';
+import { arbitrum, base, mainnet, optimism, zora } from 'wagmi/chains';
 import { infuraProvider } from 'wagmi/providers/infura';
 import { publicProvider } from 'wagmi/providers/public';
 
@@ -68,7 +68,7 @@ const myCustomTheme = merge(lightTheme(), {
 });
 
 const { chains, publicClient } = configureChains(
-  [mainnet, optimism, arbitrum, zora],
+  [mainnet, optimism, arbitrum, zora, base],
   [
     // TODO: rotate creds
     infuraProvider({ apiKey: process.env.NEXT_PUBLIC_INFURA_API_KEY ?? '' }),

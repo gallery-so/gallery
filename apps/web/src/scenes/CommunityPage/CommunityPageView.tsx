@@ -37,6 +37,7 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
         }
 
         ...CommunityPageCollectorsTabFragment
+        ...CommunityPageTabsFragment
         ...CommunityPagePostsTabFragment
 
         ...CommunityPageViewHeaderFragment
@@ -78,7 +79,11 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
             <CommunityPageViewHeader communityRef={community} queryRef={query} />
 
             {isKoalaEnabled && (
-              <CommunityPageTabs onSelectTab={setActiveTab} activeTab={activeTab} />
+              <CommunityPageTabs
+                onSelectTab={setActiveTab}
+                activeTab={activeTab}
+                communityRef={community}
+              />
             )}
 
             {activeTab === 'posts' && (

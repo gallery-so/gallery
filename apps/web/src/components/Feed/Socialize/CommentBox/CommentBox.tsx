@@ -108,6 +108,16 @@ export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment }: P
 
   const handleInputKeyDown = useCallback<KeyboardEventHandler>(
     async (event) => {
+      /* To disable formatting, manually handling shortcuts might be the most straightforward approach. 
+        While it can be a bit verbose, it ensures that we have full control over what formatting shortcuts 
+        are allowed. 
+      */
+      if (
+        (event.ctrlKey || event.metaKey) && // Ctrl or Cmd
+        ['b', 'i', 'u', 's'].includes(event.key)
+      ) {
+        event.preventDefault(); // Prevent formatting
+      }
       if (event.key === 'Enter' && event.metaKey) {
         await handleSubmit();
       }

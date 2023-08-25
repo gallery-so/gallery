@@ -12,7 +12,7 @@ export const PREMIUM_MEMBERSHIP_CONTRACT_ADDRESS =
 export const GENERAL_MEMBERSHIP_CONRTACT_ADDRESS =
   process.env.NEXT_PUBLIC_GENERAL_MEMBERSHIP_CONTRACT_ADDRESS ?? '';
 export const GALLERY_MEMENTOS_CONTRACT_ADDRESS =
-  process.env.NEXT_PUBLIC_GALLERY_MEMENTOS_CONTRACT_ADDRESS ?? '';
+  process.env.NEXT_PUBLIC_GALLERY_MEMENTOS_BASE_CONTRACT_ADDRESS ?? '';
 export const GALLERY_MERCH_CONTRACT_ADDRESS =
   process.env.NEXT_PUBLIC_GALLERY_MERCH_CONTRACT_ADDRESS ?? '';
 
@@ -37,11 +37,16 @@ function validateEthereumAddressFormat(input: string): EthereumAddress {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type WagmiContract = GetContractReturnType<Abi> & { write?: any; read?: any };
 
-function useContractWithAbi(contractAddress: string, contractAbi: Abi): WagmiContract {
+function useContractWithAbi(
+  contractAddress: string,
+  contractAbi: Abi,
+  chainId?: number
+): WagmiContract {
   const validatedAddress = validateEthereumAddressFormat(contractAddress);
-  const chainId = parseInt(process.env.NEXT_PUBLIC_NETWORK_CONNECTOR_CHAIN_ID || '1');
+  const chainIdInt = chainId ?? parseInt(process.env.NEXT_PUBLIC_NETWORK_CONNECTOR_CHAIN_ID || '1');
+
   const { data: walletClient } = useWalletClient({
-    chainId,
+    chainId: chainIdInt,
   });
   const abi = [...contractAbi] as const;
   const publicClient = usePublicClient();
@@ -74,9 +79,12 @@ export function useGeneralMembershipCardContract() {
   );
 }
 
+export const BASE_MAINNET_CHAIN_ID = 8453;
+
 export function useMintMementosContract() {
   return useContractWithAbi(
     GALLERY_MEMENTOS_CONTRACT_ADDRESS,
-    GALLERY_MEMENTOS_CONTRACT_ABI as Abi
+    GALLERY_MEMENTOS_CONTRACT_ABI as Abi,
+    BASE_MAINNET_CHAIN_ID
   );
 }
