@@ -66,7 +66,7 @@ export function CommentsModal({
     return new CellMeasurerCache({
       fixedWidth: true,
       minHeight: 0,
-      defaultHeight: 40,
+      defaultHeight: 56,
     });
   }, []);
 
