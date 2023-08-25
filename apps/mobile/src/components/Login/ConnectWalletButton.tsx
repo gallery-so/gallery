@@ -64,34 +64,39 @@ export function ConnectWalletButton() {
       return;
     }
 
-    const signature = await signer.signMessage(nonce);
+    try {
+      const signature = await signer.signMessage(nonce);
 
-    const result = await login({
-      eoa: {
-        signature,
-        nonce,
-        chainPubKey: {
-          pubKey: address,
-          chain: 'Ethereum',
+      const result = await login({
+        eoa: {
+          signature,
+          nonce,
+          chainPubKey: {
+            pubKey: address,
+            chain: 'Ethereum',
+          },
         },
-      },
-    });
+      });
 
-    if (result.kind === 'failure') {
-      track('Sign In Failure', { 'Sign in method': 'Wallet Connect', error: result.message });
-    } else {
-      track('Sign In Success', { 'Sign in method': 'Wallet Connect' });
-      await navigateToNotificationUpsellOrHomeScreen(navigation);
+      if (result.kind === 'failure') {
+        track('Sign In Failure', { 'Sign in method': 'Wallet Connect', error: result.message });
+      } else {
+        track('Sign In Success', { 'Sign in method': 'Wallet Connect' });
+        await navigateToNotificationUpsellOrHomeScreen(navigation);
+      }
+    } catch (error) {
+      provider?.disconnect();
+      return;
+    } finally {
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
   }, [address, createNonce, login, provider, pushToast, web3Provider, navigation, track]);
 
   const handleEthereumConnect = useCallback(async () => {
     if (isConnected) {
       return provider?.disconnect();
     }
-    return open();
+    open();
   }, [isConnected, open, provider]);
 
   const handleButtonPress = useCallback(() => {
