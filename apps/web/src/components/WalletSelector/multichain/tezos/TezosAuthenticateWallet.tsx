@@ -2,7 +2,6 @@ import { captureException } from '@sentry/nextjs';
 import { useCallback, useEffect, useState } from 'react';
 
 import { EmptyState } from '~/components/EmptyState/EmptyState';
-import useCreateNonce from '~/components/WalletSelector/mutations/useCreateNonce';
 import useLoginOrRedirectToOnboarding from '~/components/WalletSelector/mutations/useLoginOrRedirectToOnboarding';
 import {
   isEarlyAccessError,
@@ -11,6 +10,7 @@ import {
   useTrackSignInSuccess,
 } from '~/contexts/analytics/authUtil';
 import { useBeaconActions } from '~/contexts/beacon/BeaconContext';
+import useCreateNonce from '~/shared/hooks/useCreateNonce';
 import { INITIAL, PendingState, PROMPT_SIGNATURE } from '~/types/Wallet';
 
 import { normalizeError } from '../normalizeError';

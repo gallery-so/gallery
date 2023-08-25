@@ -10,9 +10,9 @@ import {
   useTrackSignInError,
   useTrackSignInSuccess,
 } from '~/contexts/analytics/authUtil';
+import useCreateNonce from '~/shared/hooks/useCreateNonce';
 import { INITIAL, PendingState, PROMPT_SIGNATURE } from '~/types/Wallet';
 
-import useCreateNonce from '../mutations/useCreateNonce';
 import useLoginOrRedirectToOnboarding from '../mutations/useLoginOrRedirectToOnboarding';
 import { normalizeError } from './normalizeError';
 import { WalletError } from './WalletError';
