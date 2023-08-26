@@ -106,7 +106,7 @@ const StyledInnerContent = styled(VStack)`
 
 const PasswordInput = styled.input`
   border: none;
-  width: 118px;
+  width: 120px;
   &::placeholder {
     color: ${colors.metal};
     font-family: ${BODY_FONT_FAMILY};
