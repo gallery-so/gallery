@@ -61,15 +61,20 @@ function PostComposerScreenInner() {
 
   const [caption, setCaption] = useState('');
 
+  const mainTabNavigation = useNavigation<MainTabStackNavigatorProp>();
+  const feedTabNavigation = useNavigation<FeedTabNavigatorProp>();
+  const navigation = useNavigation();
+
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
   const handleBackPress = useCallback(() => {
+    if (!caption) {
+      navigation.goBack();
+      return;
+    }
     Keyboard.dismiss();
 
     bottomSheetRef.current?.present();
-  }, []);
-
-  const mainTabNavigation = useNavigation<MainTabStackNavigatorProp>();
-  const feedTabNavigation = useNavigation<FeedTabNavigatorProp>();
+  }, [caption, navigation]);
 
   const { pushToast } = useToastActions();
   const handlePost = useCallback(async () => {
