@@ -6,6 +6,7 @@ import styled from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BODY_FONT_FAMILY } from '~/components/core/Text/Text';
+import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import colors from '~/shared/theme/colors';
 
 const TOP_SECRET_PASSWORD = 'koalasruletheworld';
@@ -27,25 +28,23 @@ export default function NewHome() {
     }
   }, [password, revealTypeform]);
 
+  const isMobile = useIsMobileOrMobileLargeWindowWidth();
+
   return (
     <NewHomeContainer>
       <IntroContentContainer opacity={Number(view === 'default')}>
-        <StyledImage
-          src={frame}
-          alt="frame"
-          // sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-        />
-        <StyledInnerContent justify="center" align="center" gap={50}>
+        <StyledImage src={frame} alt="frame" isMobile={isMobile} />
+        <StyledInnerContent justify="center" align="center" gap={isMobile ? 30 : 50}>
           <TextContainer>
-            <IntroText>A new home</IntroText>
-            <IntroText>
+            <IntroText isMobile={isMobile}>A new home</IntroText>
+            <IntroText isMobile={isMobile}>
               <i>awaits...</i>
             </IntroText>
           </TextContainer>
           <PasswordInput
-            placeholder="enter password"
             autoFocus
             type="password"
+            placeholder="enter password"
             onChange={handleChange}
           />
         </StyledInnerContent>
@@ -74,7 +73,7 @@ const IntroContentContainer = styled.div<{ opacity: number }>`
   position: relative;
 
   opacity: ${({ opacity }) => opacity};
-  pointer-events: ${({ opacity }) => (opacity ? 'none' : 'auto')};
+  pointer-events: ${({ opacity }) => (!opacity ? 'none' : 'auto')};
   transition: opacity 600ms cubic-bezier(0.4, 0, 0.6, 1);
 `;
 
@@ -88,10 +87,9 @@ const TypeformContentContainer = styled.div<{ opacity: number }>`
   transition: opacity 600ms cubic-bezier(0.4, 0, 0.6, 1);
 `;
 
-const StyledImage = styled(Image)`
-  width: 500px;
+const StyledImage = styled(Image)<{ isMobile: boolean }>`
+  width: ${({ isMobile }) => (isMobile ? 380 : 500)}px;
   height: auto;
-
   position: absolute;
 `;
 
@@ -103,9 +101,7 @@ const StyledInnerContent = styled(VStack)`
 
 const PasswordInput = styled.input`
   border: none;
-
   width: 118px;
-
   &::placeholder {
     color: ${colors.metal};
     font-family: ${BODY_FONT_FAMILY};
@@ -118,11 +114,11 @@ const TextContainer = styled(VStack)`
   padding-top: 60px;
 `;
 
-const IntroText = styled.span`
+const IntroText = styled.span<{ isMobile: boolean }>`
   // TODO [GAL-273]: once we've defined marketing-specific font families, standardize this in Text.tsx
   font-family: 'GT Alpina Condensed';
-  font-size: 50px;
-  line-height: 48px;
+  font-size: ${({ isMobile }) => (isMobile ? 32 : 50)}px;
+  line-height: ${({ isMobile }) => (isMobile ? 36 : 48)}px;
   letter-spacing: -0.05em;
 `;
 
