@@ -1,4 +1,5 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
@@ -63,9 +64,32 @@ export function NftSelectorContractScreen() {
     return rows;
   }, [tokens]);
 
+  const renderItem = useCallback<ListRenderItem<typeof tokens>>(
+    ({ item: row }) => {
+      return (
+        <View className="flex space-x-4 flex-row mb-4 px-4">
+          {row.map((token) => {
+            return (
+              <NftSelectorPickerSingularAsset
+                key={token.dbid}
+                onSelect={handleSelectNft}
+                tokenRef={token}
+              />
+            );
+          })}
+
+          {Array.from({ length: 3 - row.length }).map((_, index) => {
+            return <View key={index} className="flex-1 aspect-square" />;
+          })}
+        </View>
+      );
+    },
+    [handleSelectNft]
+  );
+
   return (
     <View className="flex-1 bg-white dark:bg-black-900" style={{ paddingTop: top }}>
-      <View className="flex flex-col space-y-8">
+      <View className="flex flex-col space-y-8 flex-1 ">
         <View className="px-4 relative">
           <BackButton />
 
@@ -83,27 +107,8 @@ export function NftSelectorContractScreen() {
             </Typography>
           </View>
         </View>
-
-        <View className="flex flex-col space-y-4 px-4">
-          {rows.map((row, index) => {
-            return (
-              <View key={index} className="flex flex-row space-x-4">
-                {row.map((token) => {
-                  return (
-                    <NftSelectorPickerSingularAsset
-                      key={token.dbid}
-                      onSelect={handleSelectNft}
-                      tokenRef={token}
-                    />
-                  );
-                })}
-
-                {Array.from({ length: 3 - row.length }).map((_, index) => {
-                  return <View key={index} className="flex-1 aspect-square" />;
-                })}
-              </View>
-            );
-          })}
+        <View className="flex-1 w-full">
+          <FlashList renderItem={renderItem} data={rows} estimatedItemSize={100} />
         </View>
       </View>
     </View>
