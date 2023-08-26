@@ -20,7 +20,7 @@ export async function navigateToNotificationUpsellOrHomeScreen(
       routes: [
         {
           name: 'MainTabs',
-          params: { screen: 'HomeTab', params: { screen: 'Home', params: { screen: 'Latest' } } },
+          params: { screen: 'HomeTab', params: { screen: 'Home', params: { screen: 'Curated' } } },
         },
       ],
     });
