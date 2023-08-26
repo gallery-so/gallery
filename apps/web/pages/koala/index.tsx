@@ -2,6 +2,7 @@ import { Widget } from '@typeform/embed-react';
 import Image from 'next/image';
 import frame from 'public/frame.jpg';
 import { useCallback, useEffect, useState } from 'react';
+import Div100vh from 'react-div-100vh';
 import styled from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';
@@ -31,34 +32,38 @@ export default function NewHome() {
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
   return (
-    <NewHomeContainer>
-      <IntroContentContainer opacity={Number(view === 'default')}>
-        <StyledImage src={frame} alt="frame" isMobile={isMobile} />
-        <StyledInnerContent justify="center" align="center" gap={isMobile ? 30 : 50}>
-          <TextContainer>
-            <IntroText isMobile={isMobile}>A new home</IntroText>
-            <IntroText isMobile={isMobile}>
-              <i>awaits...</i>
-            </IntroText>
-          </TextContainer>
-          <PasswordInput
-            autoFocus
-            type="password"
-            placeholder="enter password"
-            onChange={handleChange}
-          />
-        </StyledInnerContent>
-      </IntroContentContainer>
-      <TypeformContentContainer opacity={Number(view === 'typeform')}>
-        <TypeformView />
-      </TypeformContentContainer>
-    </NewHomeContainer>
+    // using this library hack to ensure 100vh isn't buggy on mobile
+    // https://github.com/mvasin/react-div-100vh
+    <Div100vh>
+      <NewHomeContainer>
+        <IntroContentContainer opacity={Number(view === 'default')}>
+          <StyledImage src={frame} alt="frame" isMobile={isMobile} />
+          <StyledInnerContent justify="center" align="center" gap={isMobile ? 30 : 50}>
+            <TextContainer>
+              <IntroText isMobile={isMobile}>A new home</IntroText>
+              <IntroText isMobile={isMobile}>
+                <i>awaits...</i>
+              </IntroText>
+            </TextContainer>
+            <PasswordInput
+              autoFocus
+              type="password"
+              placeholder="enter password"
+              onChange={handleChange}
+            />
+          </StyledInnerContent>
+        </IntroContentContainer>
+        <TypeformContentContainer opacity={Number(view === 'typeform')}>
+          <TypeformView />
+        </TypeformContentContainer>
+      </NewHomeContainer>
+    </Div100vh>
   );
 }
 
 const NewHomeContainer = styled.div`
   width: 100vw;
-  height: 100vh;
+  height: 100%;
 
   display: flex;
   justify-content: center;

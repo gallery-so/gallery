@@ -28949,6 +28949,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-div-100vh@npm:^0.7.0":
+  version: 0.7.0
+  resolution: "react-div-100vh@npm:0.7.0"
+  peerDependencies:
+    react: ">=16.8.0"
+  checksum: 3adc7ac3a8363a6bcaa5b8b3b287f5c842ee64aff29d00ab8910d968dde0d130fbbd4d4d2cb5c9e35624df6bff28154e6dd577ef8ce9062821cca3d11b9b161e
+  languageName: node
+  linkType: hard
+
 "react-dom@npm:^18.2.0":
   version: 18.2.0
   resolution: "react-dom@npm:18.2.0"
@@ -35138,6 +35147,7 @@ __metadata:
     nock: ^13.2.9
     node-fetch: ^2
     qr-code-styling: ^1.6.0-rc.1
+    react-div-100vh: ^0.7.0
     react-dom: ^18.2.0
     react-google-recaptcha-v3: ^1.10.1
     react-is: ^17.0.2
