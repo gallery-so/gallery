@@ -1,3 +1,4 @@
+import { Widget } from '@typeform/embed-react';
 import Image from 'next/image';
 import frame from 'public/frame.jpg';
 import { useCallback, useEffect, useState } from 'react';
@@ -16,17 +17,19 @@ export default function NewHome() {
     setPassword(event.target.value);
   }, []);
 
+  const [view, setView] = useState<'default' | 'typeform'>('default');
+
   const revealTypeform = useCallback(() => {}, []);
 
   useEffect(() => {
     if (password === TOP_SECRET_PASSWORD) {
-      revealTypeform();
+      setView('typeform');
     }
   }, [password, revealTypeform]);
 
   return (
     <NewHomeContainer>
-      <ContentContainer>
+      <IntroContentContainer opacity={Number(view === 'default')}>
         <StyledImage
           src={frame}
           alt="frame"
@@ -46,7 +49,10 @@ export default function NewHome() {
             onChange={handleChange}
           />
         </StyledInnerContent>
-      </ContentContainer>
+      </IntroContentContainer>
+      <TypeformContentContainer opacity={Number(view === 'typeform')}>
+        <TypeformView />
+      </TypeformContentContainer>
     </NewHomeContainer>
   );
 }
@@ -60,12 +66,26 @@ const NewHomeContainer = styled.div`
   align-items: center;
 `;
 
-const ContentContainer = styled.div`
+const IntroContentContainer = styled.div<{ opacity: number }>`
   display: flex;
   justify-content: center;
   align-items: center;
 
   position: relative;
+
+  opacity: ${({ opacity }) => opacity};
+  pointer-events: ${({ opacity }) => (opacity ? 'none' : 'auto')};
+  transition: opacity 600ms cubic-bezier(0.4, 0, 0.6, 1);
+`;
+
+const TypeformContentContainer = styled.div<{ opacity: number }>`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+
+  opacity: ${({ opacity }) => opacity};
+  pointer-events: ${({ opacity }) => (!opacity ? 'none' : 'auto')};
+  transition: opacity 600ms cubic-bezier(0.4, 0, 0.6, 1);
 `;
 
 const StyledImage = styled(Image)`
@@ -105,3 +125,7 @@ const IntroText = styled.span`
   line-height: 48px;
   letter-spacing: -0.05em;
 `;
+
+function TypeformView() {
+  return <Widget id="GcDBLwvj" style={{ width: '100%', height: '100%' }} />;
+}
