@@ -21,13 +21,11 @@ export default function NewHome() {
 
   const [view, setView] = useState<'default' | 'typeform'>('default');
 
-  const revealTypeform = useCallback(() => {}, []);
-
   useEffect(() => {
     if (password === TOP_SECRET_PASSWORD) {
       setView('typeform');
     }
-  }, [password, revealTypeform]);
+  }, [password]);
 
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
