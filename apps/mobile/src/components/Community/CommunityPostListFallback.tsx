@@ -23,7 +23,7 @@ export function CommunityPostCardFallback() {
             </SkeletonPlaceholder.Item>
             <SkeletonPlaceholder.Item width={50} height={12} />
           </SkeletonPlaceholder.Item>
-            <SkeletonPlaceholder.Item marginTop={18} width={100} height={14} />
+          <SkeletonPlaceholder.Item marginTop={18} width={100} height={14} />
           <SkeletonPlaceholder.Item marginVertical={18} width="100%" height={330} />
         </SkeletonPlaceholder.Item>
       </GallerySkeleton>
