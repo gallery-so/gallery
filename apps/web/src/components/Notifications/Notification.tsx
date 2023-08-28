@@ -6,7 +6,6 @@ import styled, { css } from 'styled-components';
 
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseS } from '~/components/core/Text/Text';
-import { NotificationArrow } from '~/components/Notifications/NotificationArrow';
 import { SomeoneAdmiredYourFeedEvent } from '~/components/Notifications/notifications/SomeoneAdmiredYourFeedEvent';
 import { SomeoneCommentedOnYourFeedEvent } from '~/components/Notifications/notifications/SomeoneCommentedOnYourFeedEvent';
 import { SomeoneFollowedYou } from '~/components/Notifications/notifications/SomeoneFollowedYou';
@@ -209,7 +208,6 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
       ConnectionHandler.getConnectionID(query.viewer.id, 'StandardSidebarFragment_notifications'),
     ]);
   }, [clearAllNotifications, handleNotificationClick, query.viewer]);
-  const showCaret = handleNotificationClick?.showCaret ?? false;
 
   const timeAgo = getTimeSince(notification.updatedTime);
 
@@ -257,7 +255,6 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
         <StyledDotAndTimeAgo align="center" gap={4}>
           <HStack grow justify="flex-end" gap={16}>
             <TimeAgoText color={colors.metal}>{timeAgo}</TimeAgoText>
-            {showCaret && <NotificationArrow />}
           </HStack>
           {!notification.seen && (
             <UnseenDotContainer>
