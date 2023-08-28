@@ -8170,6 +8170,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@typeform/embed-react@npm:^2.30.0":
+  version: 2.30.0
+  resolution: "@typeform/embed-react@npm:2.30.0"
+  dependencies:
+    "@typeform/embed": 2.16.0
+    fast-deep-equal: ^3.1.3
+  peerDependencies:
+    react: ">=16.8.0"
+  checksum: 84b82d792f018220ea0638c65c091889d983519a5c62148c0dd5f049cc529fad5361ed09184fecb97e8da1bb6d238e95ee8edbf977a9aef168b00e338636d305
+  languageName: node
+  linkType: hard
+
+"@typeform/embed@npm:2.16.0":
+  version: 2.16.0
+  resolution: "@typeform/embed@npm:2.16.0"
+  checksum: 39ae4873b8f280ecbba5d718c5f5c396c5b468cd992269ec5a0aeeac5b69002106a956f0f43b7f4b917197ef654b3865d9629a893b68b942926c0c42aab4b32b
+  languageName: node
+  linkType: hard
+
 "@types/aria-query@npm:^4.2.0":
   version: 4.2.2
   resolution: "@types/aria-query@npm:4.2.2"
@@ -28930,6 +28949,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-div-100vh@npm:^0.7.0":
+  version: 0.7.0
+  resolution: "react-div-100vh@npm:0.7.0"
+  peerDependencies:
+    react: ">=16.8.0"
+  checksum: 3adc7ac3a8363a6bcaa5b8b3b287f5c842ee64aff29d00ab8910d968dde0d130fbbd4d4d2cb5c9e35624df6bff28154e6dd577ef8ce9062821cca3d11b9b161e
+  languageName: node
+  linkType: hard
+
 "react-dom@npm:^18.2.0":
   version: 18.2.0
   resolution: "react-dom@npm:18.2.0"
@@ -35066,6 +35094,7 @@ __metadata:
     "@testing-library/react": ^13.4.0
     "@testing-library/user-event": ^14.4.3
     "@tezos-domains/taquito-client": ^1.19.0
+    "@typeform/embed-react": ^2.30.0
     "@types/lodash.chunk": ^4.2.7
     "@types/lodash.clonedeep": ^4.5.6
     "@types/lodash.keyby": ^4.6.7
@@ -35118,6 +35147,7 @@ __metadata:
     nock: ^13.2.9
     node-fetch: ^2
     qr-code-styling: ^1.6.0-rc.1
+    react-div-100vh: ^0.7.0
     react-dom: ^18.2.0
     react-google-recaptcha-v3: ^1.10.1
     react-is: ^17.0.2
