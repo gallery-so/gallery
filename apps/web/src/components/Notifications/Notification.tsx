@@ -241,6 +241,15 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
     return null;
   }
 
+  if (
+    notification.__typename === 'SomeoneCommentedOnYourPostNotification' ||
+    notification.__typename === 'SomeoneAdmiredYourPostNotification'
+  ) {
+    if (!notification.post) {
+      return null;
+    }
+  }
+
   return (
     <Container isClickable={isClickable} onClick={handleClick}>
       <HStack gap={8} align="center" justify="space-between">

@@ -17,7 +17,7 @@ export function FeedTabNavigator() {
   return (
     <Tab.Navigator
       tabBarPosition="top"
-      initialRouteName="Latest"
+      initialRouteName="Curated"
       tabBar={TabBar}
       screenOptions={{ lazy: true, swipeEnabled: false, animationEnabled: false }}
       sceneContainerStyle={{
