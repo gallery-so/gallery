@@ -10,7 +10,7 @@ import { BODY_FONT_FAMILY } from '~/components/core/Text/Text';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import colors from '~/shared/theme/colors';
 
-const TOP_SECRET_PASSWORD = 'koalasruletheworld';
+const TOP_SECRET_PASSWORD = 'exhibitionseason2023';
 
 export default function NewHome() {
   const [password, setPassword] = useState('');
