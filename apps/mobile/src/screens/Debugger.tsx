@@ -1,16 +1,14 @@
-import { useNavigation } from '@react-navigation/native';
 import { useCallback, useMemo, useState } from 'react';
 import { ScrollView, View } from 'react-native';
+import { NativeModules } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import { DEBUG_PASSWORD_KEY, DEBUG_USERNAME_KEY } from 'src/constants/storageKeys';
-import { NativeModules } from "react-native";
 import usePersistedState from 'src/hooks/usePersistedState';
 
 import { Button } from '~/components/Button';
 import { FadedInput } from '~/components/FadedInput';
 import { Typography } from '~/components/Typography';
 import { DebuggerQuery } from '~/generated/DebuggerQuery.graphql';
-import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { useDebugAuthLogin } from '~/shared/hooks/useDebugAuthLogin';
 import { getServerEnvironment } from '~/shared/utils/getServerEnvironment';
 
