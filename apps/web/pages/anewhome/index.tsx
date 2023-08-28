@@ -10,7 +10,7 @@ import { BODY_FONT_FAMILY } from '~/components/core/Text/Text';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import colors from '~/shared/theme/colors';
 
-const TOP_SECRET_PASSWORD = 'koalasruletheworld';
+const TOP_SECRET_PASSWORD = 'exhibitionseason2023';
 
 export default function NewHome() {
   const [password, setPassword] = useState('');
@@ -105,6 +105,8 @@ const StyledInnerContent = styled(VStack)`
 const PasswordInput = styled.input`
   border: none;
   width: 120px;
+  height: 24px;
+  text-align: center;
   &::placeholder {
     color: ${colors.metal};
     font-family: ${BODY_FONT_FAMILY};
