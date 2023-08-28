@@ -24,8 +24,8 @@ const providerMetadata = {
     'https://f4shnljo4g7olt4wifnpdfz6752po37hr3waoaxakgpxqw64jojq.arweave.net/LyR2rS7hvuXPlkFa8Zc-_3T3b-eO7AcC4FGfeFvcS5M',
   ],
   redirect: {
-    native: 'YOUR_APP_SCHEME://',
-    universal: 'YOUR_APP_UNIVERSAL_LINK.com',
+    native: 'applinks:gallery.so/',
+    universal: 'https://gallery.so',
   },
 };
 
