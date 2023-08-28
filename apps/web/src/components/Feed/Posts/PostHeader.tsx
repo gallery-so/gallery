@@ -3,9 +3,8 @@ import styled from 'styled-components';
 
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
-import HoverCardOnUsername, {
-  HoverCardOnCommunityWrapper,
-} from '~/components/HoverCard/HoverCardOnUsername';
+import HoverCardOnCommunity from '~/components/HoverCard/HoverCardOnCommunity';
+import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { PostHeaderFragment$key } from '~/generated/PostHeaderFragment.graphql';
 import { PostHeaderQueryFragment$key } from '~/generated/PostHeaderQueryFragment.graphql';
@@ -33,7 +32,7 @@ export default function PostHeader({ postRef, queryRef }: Props) {
         }
         tokens {
           community {
-            ...HoverCardOnUsernameCommunityFragment
+            ...HoverCardOnCommunityFragment
           }
         }
         creationTime
@@ -61,7 +60,7 @@ export default function PostHeader({ postRef, queryRef }: Props) {
           <ProfilePicture userRef={post.author} size="md" />
           <VStack>
             <HoverCardOnUsername userRef={post.author} />
-            {token?.community && <HoverCardOnCommunityWrapper communityRef={token.community} />}
+            {token?.community && <HoverCardOnCommunity communityRef={token.community} />}
           </VStack>
         </HStack>
         <HStack align="center" gap={4}>
