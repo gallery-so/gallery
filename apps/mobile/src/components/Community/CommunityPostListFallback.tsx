@@ -3,7 +3,7 @@ import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
 import { GallerySkeleton } from '~/components/GallerySkeleton';
 
-// 20 18 24
+// 36 14 440
 export function CommunityPostCardFallback() {
   return (
     <View className="px-4 py-3">
