@@ -58,7 +58,7 @@ function WalletSelectorBottomSheet(
             className="text-lg text-black-900 dark:text-offWhite"
             font={{ family: 'ABCDiatype', weight: 'Bold' }}
           >
-            Which network
+            Network
           </Typography>
         </View>
 
