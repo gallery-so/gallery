@@ -3,6 +3,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { ScrollView, View } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import { DEBUG_PASSWORD_KEY, DEBUG_USERNAME_KEY } from 'src/constants/storageKeys';
+import { NativeModules } from "react-native";
 import usePersistedState from 'src/hooks/usePersistedState';
 
 import { Button } from '~/components/Button';
@@ -52,10 +53,8 @@ export function Debugger() {
   const [username, setUsername] = usePersistedState(DEBUG_USERNAME_KEY, '');
   const [password, setPassword] = usePersistedState(DEBUG_PASSWORD_KEY, '');
   const [errorMessage, setErrorMessage] = useState('');
-  const [isLoginSuccessful, setIsLoginSuccessful] = useState(false);
 
   const debugLogin = useDebugAuthLogin();
-  const navigation = useNavigation<MainTabStackNavigatorProp>();
 
   const handleLogin = useCallback(async () => {
     try {
@@ -63,13 +62,11 @@ export function Debugger() {
         asUsername: username,
         debugToolsPassword: isLocalServer ? undefined : password,
       });
-      setIsLoginSuccessful(true);
-      setErrorMessage('');
+      NativeModules.DevSettings.reload();
     } catch (e: unknown) {
       if (e instanceof Error) {
         setErrorMessage(e.message);
       }
-      setIsLoginSuccessful(false);
     }
   }, [debugLogin, username, password]);
 
@@ -124,14 +121,6 @@ export function Debugger() {
         eventName="Debugger Login"
         eventElementId="Submit login"
       />
-      {isLoginSuccessful && (
-        <Button
-          text="Back to Profile"
-          onPress={() => navigation.navigate('Profile', { username: username })}
-          eventName="Reroute to userprofile tab"
-          eventElementId="Route to user profile"
-        />
-      )}
 
       {errorMessage && (
         <Typography
