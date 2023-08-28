@@ -105,7 +105,7 @@ const StyledDesktopPostData = styled(VStack)`
 
 type PostItemWithBoundaryProps = {
   index: number;
-  onPotentialLayoutShift: (index: number) => void;
+  onPotentialLayoutShift?: (index: number) => void;
   eventRef: PostItemWithErrorBoundaryFragment$key;
   queryRef: PostItemWithErrorBoundaryQueryFragment$key;
   measure: () => void;
@@ -137,7 +137,10 @@ export function PostItemWithBoundary({
   );
 
   const handlePotentialLayoutShift = useCallback(() => {
-    onPotentialLayoutShift(index);
+    if (onPotentialLayoutShift) {
+      // onPotentialLayoutShift is only defined when displaying Posts in a virtualized setting
+      onPotentialLayoutShift(index);
+    }
   }, [index, onPotentialLayoutShift]);
   return (
     <ReportingErrorBoundary fallback={<></>}>

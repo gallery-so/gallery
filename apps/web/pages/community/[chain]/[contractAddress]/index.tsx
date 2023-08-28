@@ -71,9 +71,10 @@ export default function CommunityPage({ contractAddress, chain }: CommunityPageP
   );
 }
 
-export const getServerSideProps: GetServerSideProps<CommunityPageProps> = async ({ params }) => {
-  const contractAddress = params?.contractAddress ? (params.contractAddress as string) : '';
-  const chain = params?.chain as Chain;
+export const getServerSideProps: GetServerSideProps<CommunityPageProps> = async ({ query }) => {
+  const contractAddress = query?.contractAddress ? (query.contractAddress as string) : '';
+  const chain = query?.chain as Chain;
+  console.log({ query });
   return {
     props: {
       contractAddress,

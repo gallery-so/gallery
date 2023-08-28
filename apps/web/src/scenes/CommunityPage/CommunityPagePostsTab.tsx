@@ -15,6 +15,8 @@ import { CommunityPagePostsTabQueryFragment$key } from '~/generated/CommunityPag
 import { RefetchableCommunityFeedQuery } from '~/generated/RefetchableCommunityFeedQuery.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 
+import CommunityPagePostCycle from './CommunityPagePostCycle';
+
 type Props = {
   communityRef: CommunityPagePostsTabFragment$key;
   queryRef: CommunityPagePostsTabQueryFragment$key;
@@ -36,6 +38,7 @@ export default function CommunityPagePostsTab({ communityRef, queryRef }: Props)
               ... on Post {
                 __typename
                 ...FeedListEventDataFragment
+                ...CommunityPagePostCycleFragment
               }
             }
           }
@@ -71,6 +74,7 @@ export default function CommunityPagePostsTab({ communityRef, queryRef }: Props)
           }
         }
         ...FeedListFragment
+        ...CommunityPagePostCycleQueryFragment
         ...PostComposerModalWithSelectorQueryFragment
       }
     `,
@@ -130,6 +134,15 @@ export default function CommunityPagePostsTab({ communityRef, queryRef }: Props)
       </StyledEmptyState>
     );
   }
+
+  return (
+    <CommunityPagePostCycle
+      postRefs={feedData}
+      queryRef={query}
+      loadNextPage={loadNextPage}
+      hasNext={hasPrevious}
+    />
+  );
 
   return (
     <FeedList
