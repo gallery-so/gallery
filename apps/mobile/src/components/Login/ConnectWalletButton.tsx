@@ -36,6 +36,8 @@ export function ConnectWalletButton() {
   const { pushToast } = useToastActions();
 
   const [isLoading, setIsLoading] = useState(false);
+  const [isSigningIn, setIsSigningIn] = useState(false);
+
   const [login] = useLogin();
   const track = useTrack();
 
@@ -64,6 +66,7 @@ export function ConnectWalletButton() {
 
     try {
       setIsLoading(true);
+      setIsSigningIn(true);
       const signature = await signer.signMessage(nonce);
 
       const result = await login({
@@ -87,6 +90,7 @@ export function ConnectWalletButton() {
       provider?.disconnect();
     } finally {
       setIsLoading(false);
+      setIsSigningIn(false);
     }
   }, [address, createNonce, login, provider, pushToast, web3Provider, navigation, track]);
 
@@ -104,9 +108,9 @@ export function ConnectWalletButton() {
   useEffect(() => {
     if (isConnected) {
       handleSignMessage();
-      bottomSheet.current?.close();
     } else {
       setIsLoading(false);
+      setIsSigningIn(false);
     }
   }, [isConnected, handleSignMessage]);
 
@@ -121,7 +125,11 @@ export function ConnectWalletButton() {
         eventName={null}
         loading={isLoading}
       />
-      <WalletSelectorBottomSheet ref={bottomSheet} onConnectWallet={handleEthereumConnect} />
+      <WalletSelectorBottomSheet
+        ref={bottomSheet}
+        isSignedIn={isSigningIn}
+        onConnectWallet={handleEthereumConnect}
+      />
       <WalletConnectModal projectId={projectId} providerMetadata={providerMetadata} />
     </>
   );

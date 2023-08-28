@@ -6,6 +6,7 @@ import { ArbitrumIcon } from 'src/icons/ArbitrumIcon';
 import { EthIcon } from 'src/icons/EthIcon';
 import { OptimismIcon } from 'src/icons/OptimismIcon';
 import { PolygonIcon } from 'src/icons/PolygonIcon';
+import { SpinnerIcon } from 'src/icons/SpinnerIcon';
 import { ZoraIcon } from 'src/icons/ZoraIcon';
 
 import { BottomSheetRow } from '../Feed/Posts/PostBottomSheet';
@@ -20,10 +21,11 @@ const SNAP_POINTS = ['CONTENT_HEIGHT'];
 
 type Props = {
   onConnectWallet: () => void;
+  isSignedIn: boolean;
 };
 
 function WalletSelectorBottomSheet(
-  { onConnectWallet }: Props,
+  { onConnectWallet, isSignedIn }: Props,
   ref: ForwardedRef<GalleryBottomSheetModalType>
 ) {
   const { bottom } = useSafeAreaPadding();
@@ -54,26 +56,46 @@ function WalletSelectorBottomSheet(
         className="p-4 flex flex-col space-y-6"
       >
         <View className="flex flex-col space-y-4">
-          <Typography
-            className="text-lg text-black-900 dark:text-offWhite"
-            font={{ family: 'ABCDiatype', weight: 'Bold' }}
-          >
-            Network
-          </Typography>
+          {isSignedIn ? (
+            <Typography
+              className="text-lg text-black-900 dark:text-offWhite text-center"
+              font={{ family: 'ABCDiatype', weight: 'Bold' }}
+            >
+              Please sign the message in your wallet
+            </Typography>
+          ) : (
+            <Typography
+              className="text-lg text-black-900 dark:text-offWhite"
+              font={{ family: 'ABCDiatype', weight: 'Bold' }}
+            >
+              Network
+            </Typography>
+          )}
         </View>
 
         <View className="flex flex-col space-y-2">
-          <BottomSheetRow
-            icon={
-              <View className="bg-white p-1 rounded-full">
-                <EthIcon width={24} height={24} />
-              </View>
-            }
-            fontWeight="Bold"
-            text="Ethereum and L2s"
-            onPress={onConnectWallet}
-            rightIcon={<EvmStackedIcons />}
-          />
+          {isSignedIn ? (
+            <View
+              className="items-center"
+              style={{
+                paddingBottom: bottom,
+              }}
+            >
+              <SpinnerIcon spin />
+            </View>
+          ) : (
+            <BottomSheetRow
+              icon={
+                <View className="bg-white p-1 rounded-full">
+                  <EthIcon width={24} height={24} />
+                </View>
+              }
+              fontWeight="Bold"
+              text="Ethereum and L2s"
+              onPress={onConnectWallet}
+              rightIcon={<EvmStackedIcons />}
+            />
+          )}
         </View>
       </View>
     </GalleryBottomSheetModal>
