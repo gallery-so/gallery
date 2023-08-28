@@ -35,7 +35,6 @@ export function CommunityPostListFallback() {
   return (
     <View className="flex flex-col">
       <CommunityPostCardFallback />
-      <CommunityPostCardFallback />
     </View>
   );
 }
