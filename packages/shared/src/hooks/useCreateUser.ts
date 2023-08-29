@@ -4,8 +4,8 @@ import { fetchQuery, graphql } from 'relay-runtime';
 
 import { useCreateUserMutation } from '~/generated/useCreateUserMutation.graphql';
 import { useCreateUserRefreshViewerQuery } from '~/generated/useCreateUserRefreshViewerQuery.graphql';
-import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 
+import { usePromisifiedMutation } from '../relay/usePromisifiedMutation';
 import { AuthPayloadVariables, isEoaPayload } from './useAuthPayloadQuery';
 
 export default function useCreateUser() {
@@ -89,6 +89,7 @@ export default function useCreateUser() {
         throw new Error('A user already exists with the provided wallet address');
       }
       if (response.createUser?.__typename === 'ErrUsernameNotAvailable') {
+        console.log(response.createUser);
         throw new Error('The username is taken');
       }
       if (response.createUser?.__typename === 'ErrInvalidInput') {
