@@ -80,6 +80,8 @@ export type LoginStackNavigatorParamList = {
   QRCode: { onError: (message: string) => void };
   WaitingForConfirmation: { email: string };
   NotificationUpsell: undefined;
+
+  OnboardingUsername: undefined;
 };
 
 export type PostRedirect = 'Latest' | 'Community';

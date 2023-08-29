@@ -2,6 +2,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { LoginStackNavigatorParamList } from '~/navigation/types';
 import { NotificationUpsellScreen } from '~/screens/Login/NotificationUpsellScreen';
+import { OnboardingUsernameScreen } from '~/screens/Onboarding/OnboardingUsernameScreen';
 
 import { EnterEmailScreen } from '../screens/Login/EnterEmailScreen';
 import { LandingScreen } from '../screens/Login/LandingScreen';
@@ -23,6 +24,8 @@ export function LoginStackNavigator() {
       <Stack.Screen name="NotificationUpsell" component={NotificationUpsellScreen} />
 
       <Stack.Screen name="QRCode" component={QRCodeScreen} />
+
+      <Stack.Screen name="OnboardingUsername" component={OnboardingUsernameScreen} />
     </Stack.Navigator>
   );
 }
