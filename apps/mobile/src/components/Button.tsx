@@ -17,7 +17,7 @@ type ButtonProps = {
   className?: string;
   loading?: boolean;
   disabled?: boolean;
-  text: string;
+  text?: string;
   icon?: ReactNode;
   variant?: Variant;
   fontWeight?: FontWeight;
@@ -192,7 +192,7 @@ export function Button({
 
           <Typography
             font={{ family: 'ABCDiatype', weight: fontWeight }}
-            className={clsx('text-xs uppercase', variantClassNames.textClassName)}
+            className={clsx('text-xs uppercase text-center', variantClassNames.textClassName)}
           >
             {text}
           </Typography>

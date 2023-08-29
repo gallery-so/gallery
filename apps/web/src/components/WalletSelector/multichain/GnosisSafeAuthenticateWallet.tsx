@@ -12,12 +12,12 @@ import {
   useTrackSignInError,
   useTrackSignInSuccess,
 } from '~/contexts/analytics/authUtil';
+import useCreateNonce from '~/shared/hooks/useCreateNonce';
 import { Web3Error } from '~/types/Error';
 import { INITIAL, LISTENING_ONCHAIN, PendingState, PROMPT_SIGNATURE } from '~/types/Wallet';
 import { getLocalStorageItem } from '~/utils/localStorage';
 
 import GnosisSafePendingMessage from '../GnosisSafePendingMessage';
-import useCreateNonce from '../mutations/useCreateNonce';
 import useLoginOrRedirectToOnboarding from '../mutations/useLoginOrRedirectToOnboarding';
 import {
   listenForGnosisSignature,

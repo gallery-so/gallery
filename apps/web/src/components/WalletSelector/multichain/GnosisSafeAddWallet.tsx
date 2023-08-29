@@ -18,6 +18,7 @@ import {
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { GnosisSafeAddWalletFragment$key } from '~/generated/GnosisSafeAddWalletFragment.graphql';
 import ManageWalletsModal from '~/scenes/Modals/ManageWalletsModal';
+import useCreateNonce from '~/shared/hooks/useCreateNonce';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
 import { Web3Error } from '~/types/Error';
@@ -32,7 +33,6 @@ import { getLocalStorageItem } from '~/utils/localStorage';
 
 import GnosisSafePendingMessage from '../GnosisSafePendingMessage';
 import useAddWallet from '../mutations/useAddWallet';
-import useCreateNonce from '../mutations/useCreateNonce';
 import {
   listenForGnosisSignature,
   signMessageWithContractAccount,

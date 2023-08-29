@@ -1,24 +1,33 @@
 import { useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
 import { useNavigation } from '@react-navigation/native';
+import clsx from 'clsx';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { View } from 'react-native';
+import { EllipsesIcon } from 'src/icons/EllipsesIcon';
 
 import {
   GalleryBottomSheetModal,
   GalleryBottomSheetModalType,
 } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
+import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
+import { ConnectWalletButton } from '~/components/Login/ConnectWalletButton';
+import { SignInBottomSheet } from '~/components/Login/SignInBottomSheet';
 import { SafeAreaViewWithPadding, useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { LoginStackNavigatorProp } from '~/navigation/types';
 
 import { Button } from '../../components/Button';
 import { OrderedListItem, Typography } from '../../components/Typography';
-import { EmailIcon } from './EmailIcon';
+import { EmailIcon } from '../../icons/EmailIcon';
 import { LandingLogo } from './LandingLogo';
 import { QRCodeIcon } from './QRCodeIcon';
 
 export function LandingScreen() {
+  const [noOfLogoTapped, setNoOfLogoTapped] = useState<number>(0);
+
   const { bottom } = useSafeAreaPadding();
   const navigation = useNavigation<LoginStackNavigatorProp>();
+
+  const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
 
   const [error, setError] = useState('');
   const handleEmailPress = useCallback(() => {
@@ -48,6 +57,18 @@ export function LandingScreen() {
       },
     });
   }, [navigation]);
+
+  const toggleOption = useCallback(() => {
+    bottomSheetRef.current?.present();
+  }, []);
+
+  const handleLogoPress = useCallback(() => {
+    setNoOfLogoTapped((prev) => prev + 1);
+  }, []);
+
+  const isOnboardingEnabled = useMemo(() => {
+    return noOfLogoTapped > 5;
+  }, [noOfLogoTapped]);
 
   return (
     <SafeAreaViewWithPadding className="flex h-full flex-col justify-end bg-white dark:bg-black-900">
@@ -104,41 +125,69 @@ export function LandingScreen() {
         </View>
       </GalleryBottomSheetModal>
 
-      <View className="flex flex-grow flex-col justify-center items-center space-y-12">
-        <LandingLogo />
+      <View
+        className={clsx('flex flex-grow flex-col items-center space-y-12', {
+          'justify-center': !isOnboardingEnabled,
+          'justify-between': isOnboardingEnabled,
+        })}
+      >
+        <View className={clsx(isOnboardingEnabled ? 'pt-32' : 'pt-0')}>
+          <GalleryTouchableOpacity onPress={handleLogoPress} eventElementId={null} eventName={null}>
+            <LandingLogo onPress={handleLogoPress} />
+          </GalleryTouchableOpacity>
+        </View>
 
         <View className="flex flex-col space-y-4 w-8/12">
-          <Typography
-            className="text-metal text-center text-sm"
-            font={{ family: 'ABCDiatype', weight: 'Regular' }}
-          >
-            Select a sign in method
-          </Typography>
+          {isOnboardingEnabled ? (
+            <View className="w-[160px] space-y-2 self-center">
+              <ConnectWalletButton />
+              <Button
+                onPress={toggleOption}
+                variant="secondary"
+                icon={<EllipsesIcon />}
+                eventElementId={null}
+                eventName={null}
+              />
 
-          <Button
-            eventElementId="QR Code Button"
-            eventName="Sign In Selection"
-            properties={{
-              'Sign In Method': 'QR Code',
-            }}
-            onPress={handleQrCodePress}
-            variant="primary"
-            icon={<QRCodeIcon />}
-            text="Scan QR Code"
-            style={{ justifyContent: 'space-between' }}
-          />
+              <SignInBottomSheet ref={bottomSheetRef} onQrCodePress={handleQrCodePress} />
+            </View>
+          ) : (
+            <>
+              <Typography
+                className="text-metal text-center text-sm mb-4"
+                font={{ family: 'ABCDiatype', weight: 'Regular' }}
+              >
+                Select a sign in method
+              </Typography>
 
-          <Button
-            eventElementId="Email Button"
-            eventName="Sign In Selection"
-            variant="secondary"
-            properties={{
-              'Sign In Method': 'Email',
-            }}
-            onPress={handleEmailPress}
-            icon={<EmailIcon />}
-            text="Use verified email"
-          />
+              <View className="space-y-2">
+                <Button
+                  eventElementId="QR Code Button"
+                  eventName="Sign In Selection"
+                  properties={{
+                    'Sign In Method': 'QR Code',
+                  }}
+                  onPress={handleQrCodePress}
+                  variant="primary"
+                  icon={<QRCodeIcon />}
+                  text="Scan QR Code"
+                  style={{ justifyContent: 'space-between' }}
+                />
+
+                <Button
+                  eventElementId="Email Button"
+                  eventName="Sign In Selection"
+                  variant="secondary"
+                  properties={{
+                    'Sign In Method': 'Email',
+                  }}
+                  onPress={handleEmailPress}
+                  icon={<EmailIcon />}
+                  text="Use verified email"
+                />
+              </View>
+            </>
+          )}
 
           {error && (
             <Typography
@@ -151,14 +200,16 @@ export function LandingScreen() {
         </View>
       </View>
 
-      <View className="pb-5">
-        <Typography
-          className="text-metal text-center text-sm"
-          font={{ family: 'ABCDiatype', weight: 'Regular' }}
-        >
-          New user? Please sign up on gallery.so first.
-        </Typography>
-      </View>
+      {!isOnboardingEnabled && (
+        <View className="pb-5">
+          <Typography
+            className="text-metal text-center text-sm"
+            font={{ family: 'ABCDiatype', weight: 'Regular' }}
+          >
+            New user? Please sign up on gallery.so first.
+          </Typography>
+        </View>
+      )}
     </SafeAreaViewWithPadding>
   );
 }
