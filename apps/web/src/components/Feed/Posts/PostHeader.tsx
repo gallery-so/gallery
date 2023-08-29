@@ -1,6 +1,5 @@
 import unescape from 'lodash/unescape';
 import { graphql, useFragment } from 'react-relay';
-import styled from 'styled-components';
 
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
@@ -70,14 +69,7 @@ export default function PostHeader({ postRef, queryRef }: Props) {
           <PostDropdown postRef={post} queryRef={query} />
         </HStack>
       </HStack>
-      <StyledCaption>
-        {post.caption && <Markdown text={unescape(post.caption)}></Markdown>}
-      </StyledCaption>
+      <BaseM>{post.caption && <Markdown text={unescape(post.caption)}></Markdown>}</BaseM>
     </VStack>
   );
 }
-
-const StyledCaption = styled(BaseM)`
-  overflow-wrap: break-word;
-  font-size: 16px;
-`;
