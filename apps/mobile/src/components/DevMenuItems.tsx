@@ -3,12 +3,10 @@ import { useNavigation } from '@react-navigation/native';
 import { registerDevMenuItems } from 'expo-dev-menu';
 import { useEffect } from 'react';
 
+import { env } from '~/env/runtime';
 import { RootStackNavigatorProp } from '~/navigation/types';
-import { getServerEnvironment } from '~/shared/utils/getServerEnvironment';
 
 import { useLogout } from '../hooks/useLogout';
-
-const isLocalServer = getServerEnvironment() === 'local';
 
 export function DevMenuItems() {
   const navigation = useNavigation<RootStackNavigatorProp>();
@@ -16,7 +14,7 @@ export function DevMenuItems() {
 
   useEffect(() => {
     const devMenuItems = [];
-    if (!isLocalServer) {
+    if (env.ENV !== 'prod') {
       devMenuItems.push({
         name: 'Debugger',
         callback: () => {
