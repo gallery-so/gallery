@@ -114,7 +114,11 @@ export function SettingsScreen() {
             text="Report a bug"
             icon={<BugReportIcon width={24} height={24} />}
           />
-          <SettingsRow onPress={handleFaqPress} text="FAQ" icon={<GLogoIcon height={24} />} />
+          <SettingsRow
+            onPress={handleNotificationsPress}
+            text="Notifications"
+            icon={<NotificationsIcon width={24} />}
+          />
           <SettingsRow
             onPress={handleDiscordPress}
             text="Discord"
@@ -125,11 +129,7 @@ export function SettingsScreen() {
             text="Twitter"
             icon={<TwitterIcon width={24} />}
           />
-          <SettingsRow
-            onPress={handleNotificationsPress}
-            text="Notifications"
-            icon={<NotificationsIcon width={24} />}
-          />
+          <SettingsRow onPress={handleFaqPress} text="FAQ" icon={<GLogoIcon height={24} />} />
         </SettingsSection>
       </ScrollView>
 
