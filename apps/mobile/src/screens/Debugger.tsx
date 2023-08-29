@@ -10,9 +10,6 @@ import { FadedInput } from '~/components/FadedInput';
 import { Typography } from '~/components/Typography';
 import { DebuggerQuery } from '~/generated/DebuggerQuery.graphql';
 import { useDebugAuthLogin } from '~/shared/hooks/useDebugAuthLogin';
-import { getServerEnvironment } from '~/shared/utils/getServerEnvironment';
-
-const isLocalServer = getServerEnvironment() === 'local';
 
 export function Debugger() {
   const query = useLazyLoadQuery<DebuggerQuery>(
@@ -58,7 +55,7 @@ export function Debugger() {
     try {
       await debugLogin({
         asUsername: username,
-        debugToolsPassword: isLocalServer ? undefined : password,
+        debugToolsPassword: password,
       });
       NativeModules.DevSettings.reload();
     } catch (e: unknown) {
@@ -93,26 +90,24 @@ export function Debugger() {
         ☢️ DEBUG MODE
       </Typography>
       <Typography font={{ family: 'ABCDiatype', weight: 'Regular' }}>Login As</Typography>
-      {isLocalServer ? null : (
-        <View className="flex gap-3">
-          <FadedInput
-            className="py-2"
-            onChangeText={handleUsernameChange}
-            placeholder="Username"
-            value={username}
-            autoCorrect={false}
-            autoCapitalize="none"
-          />
-          <FadedInput
-            className="py-2"
-            onChangeText={handlePasswordChange}
-            secureTextEntry={true}
-            autoCapitalize="none"
-            placeholder="Admin Password"
-            value={password}
-          />
-        </View>
-      )}
+      <View className="flex gap-3">
+        <FadedInput
+          className="py-2"
+          onChangeText={handleUsernameChange}
+          placeholder="Username"
+          value={username}
+          autoCorrect={false}
+          autoCapitalize="none"
+        />
+        <FadedInput
+          className="py-2"
+          onChangeText={handlePasswordChange}
+          secureTextEntry={true}
+          autoCapitalize="none"
+          placeholder="Admin Password"
+          value={password}
+        />
+      </View>
       <Button
         text="Submit"
         onPress={handleLogin}
