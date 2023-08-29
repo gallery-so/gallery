@@ -135,7 +135,13 @@ function IconWrapper({
   className?: string;
 }) {
   return (
-    <View className={clsx('border-2 border-white rounded-full w-5 h-5', className)} style={style}>
+    <View
+      className={clsx(
+        'border-2 border-white dark:border-black-800 rounded-full w-5 h-5',
+        className
+      )}
+      style={style}
+    >
       {children}
     </View>
   );
