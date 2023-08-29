@@ -2,10 +2,10 @@ import { useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
 import { useNavigation } from '@react-navigation/native';
 import { ForwardedRef, forwardRef, useCallback, useRef } from 'react';
 import { View } from 'react-native';
+import { EmailIcon } from 'src/icons/EmailIcon';
 import { QRCodeIcon } from 'src/icons/QRCodeIcon';
 
 import { LoginStackNavigatorProp } from '~/navigation/types';
-import { EmailIcon } from '~/screens/Login/EmailIcon';
 
 import { BottomSheetRow } from '../Feed/Posts/PostBottomSheet';
 import {

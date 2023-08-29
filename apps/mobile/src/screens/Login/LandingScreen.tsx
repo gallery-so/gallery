@@ -16,7 +16,7 @@ import { LoginStackNavigatorProp } from '~/navigation/types';
 
 import { Button } from '../../components/Button';
 import { OrderedListItem, Typography } from '../../components/Typography';
-import { EmailIcon } from './EmailIcon';
+import { EmailIcon } from '../../icons/EmailIcon';
 import { LandingLogo } from './LandingLogo';
 import { QRCodeIcon } from './QRCodeIcon';
 
