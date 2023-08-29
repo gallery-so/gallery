@@ -87,6 +87,10 @@ export function ConnectWalletButton() {
         await navigateToNotificationUpsellOrHomeScreen(navigation);
       }
     } catch (error) {
+      pushToast({
+        message: 'The signature was rejected. Try again or use another wallet.',
+        withoutNavbar: true,
+      });
       provider?.disconnect();
     } finally {
       setIsLoading(false);
