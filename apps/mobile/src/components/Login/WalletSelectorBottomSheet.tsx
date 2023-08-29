@@ -22,10 +22,11 @@ const SNAP_POINTS = ['CONTENT_HEIGHT'];
 type Props = {
   onConnectWallet: () => void;
   isSignedIn: boolean;
+  onDismiss: () => void;
 };
 
 function WalletSelectorBottomSheet(
-  { onConnectWallet, isSignedIn }: Props,
+  { onConnectWallet, isSignedIn, onDismiss }: Props,
   ref: ForwardedRef<GalleryBottomSheetModalType>
 ) {
   const { bottom } = useSafeAreaPadding();
@@ -49,6 +50,7 @@ function WalletSelectorBottomSheet(
       snapPoints={animatedSnapPoints}
       handleHeight={animatedHandleHeight}
       contentHeight={animatedContentHeight}
+      onDismiss={onDismiss}
     >
       <View
         onLayout={handleContentLayout}

@@ -105,6 +105,12 @@ export function ConnectWalletButton() {
     bottomSheet.current?.present();
   }, []);
 
+  const handleDismiss = useCallback(() => {
+    provider?.disconnect();
+    setIsLoading(false);
+    setIsSigningIn(false);
+  }, [provider]);
+
   useEffect(() => {
     if (isConnected) {
       handleSignMessage();
@@ -129,6 +135,7 @@ export function ConnectWalletButton() {
         ref={bottomSheet}
         isSignedIn={isSigningIn}
         onConnectWallet={handleEthereumConnect}
+        onDismiss={handleDismiss}
       />
       <WalletConnectModal projectId={projectId} providerMetadata={providerMetadata} />
     </>
