@@ -125,13 +125,11 @@ export function SettingsScreen() {
             text="Twitter"
             icon={<TwitterIcon width={24} />}
           />
-          {isAdminUser && (
-            <SettingsRow
-              onPress={handleNotificationsPress}
-              text="Notifications"
-              icon={<NotificationsIcon width={24} />}
-            />
-          )}
+          <SettingsRow
+            onPress={handleNotificationsPress}
+            text="Notifications"
+            icon={<NotificationsIcon width={24} />}
+          />
         </SettingsSection>
       </ScrollView>
 
