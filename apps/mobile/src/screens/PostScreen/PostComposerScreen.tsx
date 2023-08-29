@@ -20,6 +20,7 @@ import {
   PostStackNavigatorParamList,
 } from '~/navigation/types';
 
+import { PostComposerNftFallback } from './PostComposerNftFallback';
 import { usePost } from './usePost';
 
 function PostComposerScreenInner() {
@@ -77,6 +78,7 @@ function PostComposerScreenInner() {
   }, [caption, navigation]);
 
   const { pushToast } = useToastActions();
+
   const handlePost = useCallback(async () => {
     const tokenId = token.dbid;
 
@@ -151,9 +153,10 @@ function PostComposerScreenInner() {
 
       <View className="px-4 flex flex-col flex-grow space-y-2">
         <PostInput value={caption} onChange={setCaption} tokenRef={token} />
-
         <View className="py-4">
-          <PostTokenPreview />
+          <Suspense fallback={<PostComposerNftFallback />}>
+            <PostTokenPreview />
+          </Suspense>
         </View>
       </View>
       <WarningPostBottomSheet ref={bottomSheetRef} />
