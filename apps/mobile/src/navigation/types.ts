@@ -82,6 +82,11 @@ export type LoginStackNavigatorParamList = {
   NotificationUpsell: undefined;
 
   OnboardingUsername: undefined;
+  OnboardingProfileBio: undefined;
+
+  OnboardingNftSelector: {
+    page: ScreenWithNftSelector;
+  };
 };
 
 export type PostRedirect = 'Latest' | 'Community';
