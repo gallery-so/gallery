@@ -54,20 +54,32 @@ export function ConnectWalletButton() {
     const signer = web3Provider.getSigner();
     const { nonce, user_exists: userExist } = await createNonce(address, 'Ethereum');
 
-    if (!userExist) {
-      pushToast({
-        message: 'You need to sign up first',
-        withoutNavbar: true,
-      });
-      setIsLoading(false);
-      provider?.disconnect();
-      return;
-    }
-
     try {
       setIsLoading(true);
       setIsSigningIn(true);
       const signature = await signer.signMessage(nonce);
+
+      if (!userExist) {
+        pushToast({
+          message: 'You need to sign up first',
+          withoutNavbar: true,
+        });
+        setIsLoading(false);
+        provider?.disconnect();
+
+        navigation.navigate('OnboardingUsername', {
+          authMechanism: {
+            authMechanismType: 'eoa',
+            chain: 'Ethereum',
+            address,
+            nonce,
+            signature,
+            userFriendlyWalletName: 'Unknown',
+          },
+        });
+
+        return;
+      }
 
       const result = await login({
         eoa: {

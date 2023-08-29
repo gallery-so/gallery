@@ -1,26 +1,130 @@
-import { useNavigation } from '@react-navigation/native';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { useColorScheme } from 'nativewind';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { KeyboardAvoidingView, Platform, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { BackButton } from '~/components/BackButton';
 import { Button } from '~/components/Button';
 import { Typography } from '~/components/Typography';
-import { LoginStackNavigatorProp } from '~/navigation/types';
+import { LoginStackNavigatorParamList, LoginStackNavigatorProp } from '~/navigation/types';
+import { useReportError } from '~/shared/contexts/ErrorReportingContext';
+import useCreateUser from '~/shared/hooks/useCreateUser';
+import useDebounce from '~/shared/hooks/useDebounce';
+import { useIsUsernameAvailableFetcher } from '~/shared/hooks/useUserInfoFormIsUsernameAvailableQuery';
 import colors from '~/shared/theme/colors';
+import {
+  alphanumericUnderscores,
+  maxLength,
+  minLength,
+  noConsecutivePeriodsOrUnderscores,
+  required,
+  validate,
+} from '~/shared/utils/validators';
 
 export function OnboardingUsernameScreen() {
   const navigation = useNavigation<LoginStackNavigatorProp>();
   const { colorScheme } = useColorScheme();
+  const createUser = useCreateUser();
+  const isUsernameAvailableFetcher = useIsUsernameAvailableFetcher();
+  const reportError = useReportError();
+
+  const route = useRoute<RouteProp<LoginStackNavigatorParamList, 'OnboardingUsername'>>();
+
+  const [username, setUsername] = useState('jakz');
+  const [bio] = useState('');
+
+  // This cannot be derived from a "null" `usernameError`
+  // since the value starts off as empty when the form is empty
+  const [isUsernameValid, setIsUsernameValid] = useState(false);
+  const [usernameError, setUsernameError] = useState('');
+
+  // Generic error that doesn't belong to username / bio
+  const [, setGeneralError] = useState('');
+
+  const debouncedUsername = useDebounce(username, 500);
+
+  const authMechanism = route.params.authMechanism;
 
   const { top, bottom } = useSafeAreaInsets();
-
-  const [username, setUsername] = useState('');
 
   const handleBack = useCallback(() => {
     navigation.goBack();
   }, [navigation]);
+
+  const handleNext = useCallback(async () => {
+    setGeneralError('');
+
+    try {
+      const response = await createUser(authMechanism, username, bio);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setGeneralError(error.message);
+      }
+    }
+  }, [authMechanism, bio, createUser, username]);
+
+  const [isCheckingUsername, setIsCheckingUsername] = useState(false);
+  useEffect(
+    function validateUsername() {
+      setGeneralError('');
+
+      // it doesn't make sense to tell users their current username is taken!
+      // if (existingUsername && debouncedUsername === existingUsername) {
+      //   setIsUsernameValid(true);
+      //   return;
+      // }
+
+      if (debouncedUsername.length < 2) {
+        return;
+      }
+
+      const clientSideUsernameError = validate(debouncedUsername, [
+        required,
+        minLength(2),
+        maxLength(20),
+        alphanumericUnderscores,
+        noConsecutivePeriodsOrUnderscores,
+      ]);
+
+      if (clientSideUsernameError) {
+        setUsernameError(clientSideUsernameError);
+
+        return;
+      } else {
+        setUsernameError('');
+      }
+
+      setIsCheckingUsername(true);
+
+      isUsernameAvailableFetcher(debouncedUsername)
+        .then((isUsernameAvailable) => {
+          if (!isUsernameAvailable) {
+            setUsernameError('Username is taken');
+            setIsUsernameValid(false);
+          } else {
+            setIsUsernameValid(true);
+          }
+        })
+        .catch((error) => {
+          if (error instanceof Error) {
+            reportError(error);
+          } else {
+            reportError('Failure while validating username', {
+              tags: { username: debouncedUsername },
+            });
+          }
+
+          setGeneralError(
+            "Something went wrong while validating your username. We're looking into it."
+          );
+        })
+        .finally(() => {
+          setIsCheckingUsername(false);
+        });
+    },
+    [debouncedUsername, isUsernameAvailableFetcher, reportError]
+  );
 
   return (
     <KeyboardAvoidingView
@@ -45,7 +149,7 @@ export function OnboardingUsernameScreen() {
         </View>
 
         <View
-          className="flex-1 items-center justify-center space-y-12 px-8"
+          className="flex-1  justify-center space-y-12 px-8"
           style={{
             marginBottom: bottom,
           }}
@@ -66,9 +170,28 @@ export function OnboardingUsernameScreen() {
             autoCorrect={false}
           />
 
-          {username.length > 0 && (
-            <Button className="w-full" eventElementId={null} eventName={null} text="NEXT" />
-          )}
+          <View className="space-y-4">
+            {username.length > 0 && (
+              <>
+                <Button
+                  onPress={handleNext}
+                  className="w-full"
+                  eventElementId={null}
+                  eventName={null}
+                  text="NEXT"
+                  variant={!isUsernameValid ? 'disabled' : 'primary'}
+                  disabled={!isUsernameValid}
+                  loading={isCheckingUsername}
+                />
+                <Typography
+                  className="text-sm text-red"
+                  font={{ family: 'ABCDiatype', weight: 'Regular' }}
+                >
+                  {usernameError}
+                </Typography>
+              </>
+            )}
+          </View>
         </View>
       </View>
     </KeyboardAvoidingView>

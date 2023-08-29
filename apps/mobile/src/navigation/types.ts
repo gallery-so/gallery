@@ -74,6 +74,15 @@ export type MainTabNavigatorParamList = {
   PostTab: NavigatorScreenParams<MainTabStackNavigatorParamList>;
 };
 
+type AuthMechanism = {
+  authMechanismType: 'eoa';
+  chain: string;
+  address: string;
+  nonce: string;
+  signature: string;
+  userFriendlyWalletName: string;
+};
+
 export type LoginStackNavigatorParamList = {
   Landing: undefined;
   EnterEmail: undefined;
@@ -81,7 +90,10 @@ export type LoginStackNavigatorParamList = {
   WaitingForConfirmation: { email: string };
   NotificationUpsell: undefined;
 
-  OnboardingUsername: undefined;
+  OnboardingUsername: {
+    authMechanism: AuthMechanism;
+  };
+
   OnboardingProfileBio: undefined;
 
   OnboardingNftSelector: {
