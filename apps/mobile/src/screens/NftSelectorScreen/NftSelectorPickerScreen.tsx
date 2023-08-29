@@ -40,7 +40,7 @@ export function NftSelectorPickerScreen() {
     {}
   );
 
-  const [data, refetch] = useRefetchableFragment<
+  const [data] = useRefetchableFragment<
     NftSelectorPickerScreenRefetchQuery,
     NftSelectorPickerScreenFragment$key
   >(
@@ -64,20 +64,12 @@ export function NftSelectorPickerScreen() {
 
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [filter, setFilter] = useState<'Collected' | 'Created'>('Collected');
-  const [networkFilter, setNetworkFilter] = useState<NetworkChoice>('all');
+  const [networkFilter, setNetworkFilter] = useState<NetworkChoice>('Ethereum');
   const [sortView, setSortView] = useState<NftSelectorSortView>('Recently added');
 
   const screenTitle = useMemo(() => {
     return currentScreen === 'ProfilePicture' ? 'Select a profile picture' : 'Select item to post';
   }, [currentScreen]);
-
-  const showRefreshIcon = useMemo(() => {
-    return networkFilter !== 'all';
-  }, [networkFilter]);
-
-  const handleRefresh = useCallback(() => {
-    refetch({ networkFilter }, { fetchPolicy: 'network-only' });
-  }, [networkFilter, refetch]);
 
   return (
     <View className="flex-1 bg-white dark:bg-black-900" style={{ paddingTop: top }}>
@@ -122,9 +114,6 @@ export function NftSelectorPickerScreen() {
             />
 
             <View className="flex flex-row space-x-1">
-              {showRefreshIcon && (
-                <AnimatedRefreshIcon networkFilter={networkFilter} onRefresh={handleRefresh} />
-              )}
               <IconContainer
                 size="sm"
                 onPress={handleSettingsPress}
@@ -173,7 +162,7 @@ function AnimatedRefreshIcon({ networkFilter, onRefresh }: AnimatedRefreshIconPr
   const { pushToast } = useToastActions();
 
   const handleSync = useCallback(async () => {
-    if (networkFilter === 'all' || isSyncing) return;
+    if (isSyncing) return;
 
     await syncTokens(networkFilter);
     onRefresh();
