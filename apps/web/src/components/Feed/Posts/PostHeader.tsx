@@ -1,6 +1,8 @@
+import unescape from 'lodash/unescape';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
+import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import HoverCardOnCommunity from '~/components/HoverCard/HoverCardOnCommunity';
@@ -68,7 +70,9 @@ export default function PostHeader({ postRef, queryRef }: Props) {
           <PostDropdown postRef={post} queryRef={query} />
         </HStack>
       </HStack>
-      <StyledCaption>{post.caption}</StyledCaption>
+      <StyledCaption>
+        {post.caption && <Markdown text={unescape(post.caption)}></Markdown>}
+      </StyledCaption>
     </VStack>
   );
 }
