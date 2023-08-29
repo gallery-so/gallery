@@ -1,4 +1,4 @@
-import { VALID_URL } from './regex';
+import { VALID_URL } from '~/shared/utils/regex';
 
 export default function formatUrl(str: string): string {
   const unformattedStr = str.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
