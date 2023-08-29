@@ -97,12 +97,14 @@ export default function HoverCardOnCommunity({ children, onClick = noop, communi
   const { getReferenceProps, getFloatingProps } = useInteractions([hover, role]);
 
   useEffect(() => {
-    preloadHoverCardCommunityQuery({
-      communityAddress: {
-        address: community.contractAddress?.address as string,
-        chain: community.contractAddress?.chain as Chain,
-      },
-    });
+    if (isHovering) {
+      preloadHoverCardCommunityQuery({
+        communityAddress: {
+          address: community.contractAddress?.address as string,
+          chain: community.contractAddress?.chain as Chain,
+        },
+      });
+    }
   }, [
     isHovering,
     preloadHoverCardCommunityQuery,

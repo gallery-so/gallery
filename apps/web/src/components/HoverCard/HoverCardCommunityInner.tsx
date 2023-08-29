@@ -13,6 +13,7 @@ import { BaseM, BaseS, TitleM } from '~/components/core/Text/Text';
 import { HoverCardCommunityInnerQuery } from '~/generated/HoverCardCommunityInnerQuery.graphql';
 import { ErrorWithSentryMetadata } from '~/shared/errors/ErrorWithSentryMetadata';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
+import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import handleCustomDisplayName from '~/utils/handleCustomDisplayName';
 
 import CommunityProfilePicture from '../ProfilePicture/CommunityProfilePicture';
@@ -35,6 +36,7 @@ export const HoverCardCommunityInnerQueryNode = graphql`
             node {
               user {
                 ... on GalleryUser {
+                  id
                   username
                   ...ProfilePictureStackFragment
                 }
@@ -47,6 +49,8 @@ export const HoverCardCommunityInnerQueryNode = graphql`
         }
       }
     }
+
+    ...useLoggedInUserIdFragment
   }
 `;
 
@@ -78,6 +82,8 @@ export function HoverCardCommunityInner({
     return removeNullValues(list);
   }, [community.owners?.edges]);
 
+  const loggedInUserId = useLoggedInUserId(communityQuery);
+
   const totalOwners = community?.owners?.pageInfo?.total ?? 0;
 
   const ownersToDisplay = useMemo(() => {
@@ -94,7 +100,7 @@ export function HoverCardCommunityInner({
         }}
         key={owner.username}
       >
-        {owner.username}
+        {loggedInUserId === owner.id ? 'You' : owner.username}
       </StyledInteractiveLink>
     ));
 
@@ -111,7 +117,7 @@ export function HoverCardCommunityInner({
     }
 
     return result;
-  }, [ownersToDisplay, totalOwners]);
+  }, [loggedInUserId, ownersToDisplay, totalOwners]);
 
   const communityProfileLink = useMemo((): Route => {
     return {
