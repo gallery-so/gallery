@@ -15,7 +15,16 @@ export function DevMenuItems() {
   const [logout] = useLogout();
 
   useEffect(() => {
-    const devMenuItems = [
+    const devMenuItems = [];
+    if (!isLocalServer) {
+      devMenuItems.push({
+        name: 'Debugger',
+        callback: () => {
+          navigation.navigate('Debugger');
+        },
+      });
+    }
+    devMenuItems.push(
       {
         name: 'Design System',
         callback: () => {
@@ -33,16 +42,9 @@ export function DevMenuItems() {
         callback: () => {
           logout();
         },
-      },
-    ];
-    if (isLocalServer) {
-      devMenuItems.push({
-        name: 'Debugger',
-        callback: () => {
-          navigation.navigate('Debugger');
-        },
-      });
-    }
+      }
+    );
+
     registerDevMenuItems(devMenuItems);
   }, [logout, navigation]);
 
