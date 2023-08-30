@@ -31,7 +31,7 @@ export function OnboardingUsernameScreen() {
 
   const route = useRoute<RouteProp<LoginStackNavigatorParamList, 'OnboardingUsername'>>();
 
-  const [username, setUsername] = useState('jakz');
+  const [username, setUsername] = useState('');
   const [bio] = useState('');
 
   // This cannot be derived from a "null" `usernameError`
@@ -57,12 +57,16 @@ export function OnboardingUsernameScreen() {
 
     try {
       const response = await createUser(authMechanism, username, bio);
+
+      if (response.createUser?.__typename === 'CreateUserPayload') {
+        navigation.navigate('OnboardingProfileBio');
+      }
     } catch (error: unknown) {
       if (error instanceof Error) {
         setGeneralError(error.message);
       }
     }
-  }, [authMechanism, bio, createUser, username]);
+  }, [authMechanism, bio, createUser, navigation, username]);
 
   const [isCheckingUsername, setIsCheckingUsername] = useState(false);
   useEffect(

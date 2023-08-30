@@ -21,8 +21,6 @@ import { EmailIcon } from '../../icons/EmailIcon';
 import { LandingLogo } from './LandingLogo';
 import { QRCodeIcon } from './QRCodeIcon';
 
-const IS_ONBOARDING_ENABLED = false;
-
 export function LandingScreen() {
   const [noOfLogoTapped, setNoOfLogoTapped] = useState<number>(0);
 
