@@ -7,13 +7,13 @@ type Props = {
   strokeWidth?: number;
 } & SvgProps;
 
-export const PostIcon = ({ color, height = 24, width = 24, ...props }: Props) => {
+export const PostIcon = ({ color, height = 24, width = 24, strokeWidth = 1, ...props }: Props) => {
   return (
     <Svg fill="none" width={width} height={height} viewBox="0 0 30 30" {...props}>
       <Path
         stroke={color}
         strokeMiterlimit={10}
-        strokeWidth={2}
+        strokeWidth={strokeWidth}
         d="M4.5 25.333V4.5h23v23h-23v-2.167ZM16 10.666v10.667M21.333 16H10.667"
       />
     </Svg>
