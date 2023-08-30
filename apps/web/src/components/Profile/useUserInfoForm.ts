@@ -6,7 +6,7 @@ import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import formatError from '~/shared/errors/formatError';
 import useCreateUser from '~/shared/hooks/useCreateUser';
 import useDebounce from '~/shared/hooks/useDebounce';
-import useUpdateUser from '~/shared/hooks/useUpdateUser';
+import useUpdateUser, { BIO_MAX_CHAR_COUNT } from '~/shared/hooks/useUpdateUser';
 import { useIsUsernameAvailableFetcher } from '~/shared/hooks/useUserInfoFormIsUsernameAvailableQuery';
 import {
   alphanumericUnderscores,
@@ -16,8 +16,6 @@ import {
   required,
   validate,
 } from '~/shared/utils/validators';
-
-import { BIO_MAX_CHAR_COUNT } from './UserInfoForm';
 
 type Props = {
   onSuccess: (username: string) => void;

@@ -8,6 +8,8 @@ import {
 
 import { usePromisifiedMutation } from '../relay/usePromisifiedMutation';
 
+export const BIO_MAX_CHAR_COUNT = 600;
+
 export default function useUpdateUser() {
   const [updateUser] = usePromisifiedMutation<useUpdateUserMutation>(
     graphql`
