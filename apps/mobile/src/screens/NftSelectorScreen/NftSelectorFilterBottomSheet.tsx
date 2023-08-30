@@ -1,7 +1,6 @@
 import { useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
 import { ForwardedRef, forwardRef, useCallback, useRef } from 'react';
 import { View, ViewProps } from 'react-native';
-import { WorldIcon } from 'src/icons/WorldIcon';
 import { getChainIconComponent } from 'src/utils/getChainIconComponent';
 
 import {
@@ -16,7 +15,6 @@ import { ChainMetadata, chains } from '~/shared/utils/chains';
 const SNAP_POINTS = ['CONTENT_HEIGHT'];
 
 const NETWORKS: { label: string; id: NetworkChoice; icon: JSX.Element }[] = [
-  { label: 'All Networks', id: 'all', icon: <WorldIcon /> },
   ...chains.map((chain) => ({
     label: chain.name,
     id: chain.name,
@@ -38,7 +36,7 @@ type Props = {
   onSortViewChange: (sortView: NftSelectorSortView) => void;
 };
 
-export type NetworkChoice = 'all' | ChainMetadata['name'];
+export type NetworkChoice = ChainMetadata['name'];
 export type NftSelectorSortView = 'Recently added' | 'Oldest' | 'Alphabetical';
 
 function NftSelectorFilterBottomSheet(

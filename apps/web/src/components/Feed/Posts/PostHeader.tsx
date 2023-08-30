@@ -1,16 +1,15 @@
+import unescape from 'lodash/unescape';
 import { graphql, useFragment } from 'react-relay';
-import styled from 'styled-components';
 
-import InteractiveLink from '~/components/core/InteractiveLink/InteractiveLink';
+import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
-import { BaseM, BaseS } from '~/components/core/Text/Text';
+import { BaseM } from '~/components/core/Text/Text';
+import HoverCardOnCommunity from '~/components/HoverCard/HoverCardOnCommunity';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { PostHeaderFragment$key } from '~/generated/PostHeaderFragment.graphql';
 import { PostHeaderQueryFragment$key } from '~/generated/PostHeaderQueryFragment.graphql';
-import colors from '~/shared/theme/colors';
 import { getTimeSince } from '~/shared/utils/time';
-import { getCommunityUrlForToken } from '~/utils/getCommunityUrlForToken';
 
 import { StyledTime } from '../Events/EventStyles';
 import PostDropdown from './PostDropdown';
@@ -34,9 +33,8 @@ export default function PostHeader({ postRef, queryRef }: Props) {
         }
         tokens {
           community {
-            name
+            ...HoverCardOnCommunityFragment
           }
-          ...getCommunityUrlForTokenFragment
         }
         creationTime
         ...PostDropdownFragment
@@ -55,7 +53,6 @@ export default function PostHeader({ postRef, queryRef }: Props) {
   );
 
   const token = post.tokens && post.tokens[0];
-  const communityUrl = token ? getCommunityUrlForToken(token) : null;
 
   return (
     <VStack gap={6}>
@@ -64,13 +61,7 @@ export default function PostHeader({ postRef, queryRef }: Props) {
           <ProfilePicture userRef={post.author} size="md" />
           <VStack>
             <HoverCardOnUsername userRef={post.author} />
-            {communityUrl ? (
-              <StyledInteractiveLink to={communityUrl}>
-                <BaseS color={colors.shadow}>{token?.community?.name}</BaseS>
-              </StyledInteractiveLink>
-            ) : (
-              <BaseS color={colors.shadow}>{token?.community?.name}</BaseS>
-            )}
+            {token?.community && <HoverCardOnCommunity communityRef={token.community} />}
           </VStack>
         </HStack>
         <HStack align="center" gap={4}>
@@ -78,19 +69,7 @@ export default function PostHeader({ postRef, queryRef }: Props) {
           <PostDropdown postRef={post} queryRef={query} />
         </HStack>
       </HStack>
-      <StyledCaption>{post.caption}</StyledCaption>
+      <BaseM>{post.caption && <Markdown text={unescape(post.caption)}></Markdown>}</BaseM>
     </VStack>
   );
 }
-
-const StyledInteractiveLink = styled(InteractiveLink)`
-  text-decoration: none;
-  &:hover {
-    text-decoration: underline;
-  }
-`;
-
-const StyledCaption = styled(BaseM)`
-  overflow-wrap: break-word;
-  font-size: 16px;
-`;

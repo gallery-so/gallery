@@ -36,12 +36,12 @@ export function SpinnerIcon({ spin, ...props }: Props) {
     if (colorScheme === 'dark') {
       return {
         container: colors.black[900],
-        spinner: colors.offWhite,
+        spinner: colors.white,
       };
     }
 
     return {
-      container: colors.offWhite,
+      container: colors.white,
       spinner: colors.black[900],
     };
   }, [colorScheme]);

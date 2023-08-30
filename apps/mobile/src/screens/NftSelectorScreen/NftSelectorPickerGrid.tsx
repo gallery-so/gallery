@@ -112,10 +112,6 @@ export function NftSelectorPickerGrid({
           .includes(searchCriteria.searchQuery.toLowerCase());
       })
       .filter((token) => {
-        if (searchCriteria.networkFilter === 'all') {
-          return true;
-        }
-
         return token.chain === searchCriteria.networkFilter;
       })
       .filter((token) => {

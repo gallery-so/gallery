@@ -14,10 +14,24 @@ const TOP_SECRET_PASSWORD = 'exhibitionseason2023';
 
 export default function NewHome() {
   const [password, setPassword] = useState('');
+  const [isIncorrect, setIsIncorrect] = useState(false);
 
   const handleChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
   }, []);
+
+  const handleKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLInputElement>) => {
+      if (event.key === 'Enter') {
+        if (password !== TOP_SECRET_PASSWORD) {
+          setIsIncorrect(true);
+          return;
+        }
+      }
+      setIsIncorrect(false);
+    },
+    [password]
+  );
 
   const [view, setView] = useState<'default' | 'typeform'>('default');
 
@@ -48,6 +62,8 @@ export default function NewHome() {
               type="password"
               placeholder="enter password"
               onChange={handleChange}
+              onKeyDown={handleKeyDown}
+              isIncorrect={isIncorrect}
             />
           </StyledInnerContent>
         </IntroContentContainer>
@@ -102,11 +118,12 @@ const StyledInnerContent = styled(VStack)`
   text-align: center;
 `;
 
-const PasswordInput = styled.input`
+const PasswordInput = styled.input<{ isIncorrect: boolean }>`
   border: none;
   width: 120px;
   height: 24px;
   text-align: center;
+  color: ${({ isIncorrect }) => (isIncorrect ? colors.error : 'auto')};
   &::placeholder {
     color: ${colors.metal};
     font-family: ${BODY_FONT_FAMILY};

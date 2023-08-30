@@ -18,20 +18,19 @@ import { MouseEventHandler, Suspense, useCallback, useEffect, useMemo, useState 
 import { graphql, useFragment, useQueryLoader } from 'react-relay';
 import styled from 'styled-components';
 
-import { TitleDiatypeM } from '~/components/core/Text/Text';
+import { BaseS } from '~/components/core/Text/Text';
 import {
   ANIMATED_COMPONENT_TRANSITION_S,
   ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL,
   rawTransitions,
 } from '~/components/core/transitions';
 import {
-  HoverCardUsernameInner,
-  HoverCardUsernameInnerQueryNode,
-} from '~/components/HoverCard/HoverCardUsernameInner';
-import { HoverCardOnUsernameFragment$key } from '~/generated/HoverCardOnUsernameFragment.graphql';
-import { HoverCardUsernameInnerQuery } from '~/generated/HoverCardUsernameInnerQuery.graphql';
-import { COMMUNITIES_PER_PAGE } from '~/scenes/UserGalleryPage/UserSharedInfo/UserSharedCommunities';
-import { FOLLOWERS_PER_PAGE } from '~/scenes/UserGalleryPage/UserSharedInfo/UserSharedInfoList/SharedFollowersList';
+  HoverCardCommunityInner,
+  HoverCardCommunityInnerQueryNode,
+} from '~/components/HoverCard/HoverCardCommunityInner';
+import { Chain } from '~/generated/enums';
+import { HoverCardCommunityInnerQuery } from '~/generated/HoverCardCommunityInnerQuery.graphql';
+import { HoverCardOnCommunityFragment$key } from '~/generated/HoverCardOnCommunityFragment.graphql';
 import colors from '~/shared/theme/colors';
 import handleCustomDisplayName from '~/utils/handleCustomDisplayName';
 import noop from '~/utils/noop';
@@ -41,24 +40,45 @@ import breakpoints, { pageGutter } from '../core/breakpoints';
 const HOVER_POPUP_DELAY = 100;
 
 type Props = {
-  userRef: HoverCardOnUsernameFragment$key;
   children?: React.ReactNode;
   onClick?: () => void;
+  communityRef: HoverCardOnCommunityFragment$key;
 };
 
-export default function HoverCardOnUsername({ children, userRef, onClick = noop }: Props) {
-  const user = useFragment(
+export default function HoverCardOnCommunity({ children, onClick = noop, communityRef }: Props) {
+  const community = useFragment(
     graphql`
-      fragment HoverCardOnUsernameFragment on GalleryUser {
-        dbid
-        username
+      fragment HoverCardOnCommunityFragment on Community {
+        name
+        contractAddress {
+          address
+          chain
+        }
       }
     `,
-    userRef
+    communityRef
   );
 
-  const [preloadedHoverCardQuery, preloadHoverCardQuery] =
-    useQueryLoader<HoverCardUsernameInnerQuery>(HoverCardUsernameInnerQueryNode);
+  const handleCommunityClick = useCallback<MouseEventHandler>(
+    (event) => {
+      event.stopPropagation();
+      onClick();
+    },
+    [onClick]
+  );
+
+  const communityProfileLink = useMemo((): Route => {
+    return {
+      pathname: '/community/[chain]/[contractAddress]',
+      query: {
+        contractAddress: community.contractAddress?.address as string,
+        chain: community.contractAddress?.chain as string,
+      },
+    };
+  }, [community]);
+
+  const [preloadedHoverCardCommunityQuery, preloadHoverCardCommunityQuery] =
+    useQueryLoader<HoverCardCommunityInnerQuery>(HoverCardCommunityInnerQueryNode);
 
   const [isHovering, setIsHovering] = useState(false);
 
@@ -76,44 +96,38 @@ export default function HoverCardOnUsername({ children, userRef, onClick = noop 
 
   const { getReferenceProps, getFloatingProps } = useInteractions([hover, role]);
 
-  const handleUsernameClick = useCallback<MouseEventHandler>(
-    (event) => {
-      event.stopPropagation();
-      onClick();
-    },
-    [onClick]
-  );
-
-  const userProfileLink = useMemo((): Route => {
-    return { pathname: '/[username]', query: { username: user.username as string } };
-  }, [user]);
-
   useEffect(() => {
     if (isHovering) {
-      preloadHoverCardQuery({
-        userId: user.dbid,
-        sharedCommunitiesFirst: COMMUNITIES_PER_PAGE,
-        sharedFollowersFirst: FOLLOWERS_PER_PAGE,
+      preloadHoverCardCommunityQuery({
+        communityAddress: {
+          address: community.contractAddress?.address as string,
+          chain: community.contractAddress?.chain as Chain,
+        },
       });
     }
-  }, [preloadHoverCardQuery, user.dbid, isHovering]);
+  }, [
+    isHovering,
+    preloadHoverCardCommunityQuery,
+    community.contractAddress?.address,
+    community.contractAddress?.chain,
+  ]);
 
-  if (!user.username) {
+  if (!community.name) {
     return null;
   }
 
-  const displayName = handleCustomDisplayName(user.username);
+  const displayName = handleCustomDisplayName(community.name);
 
   return (
     <StyledContainer>
       <StyledLinkContainer ref={reference} {...getReferenceProps()}>
-        <StyledLink href={userProfileLink} onClick={handleUsernameClick}>
-          {children ? children : <TitleDiatypeM>{displayName}</TitleDiatypeM>}
+        <StyledLink href={communityProfileLink} onClick={handleCommunityClick}>
+          {children ? children : <BaseS color={colors.shadow}>{displayName}</BaseS>}
         </StyledLink>
       </StyledLinkContainer>
 
       <AnimatePresence>
-        {isHovering && preloadedHoverCardQuery && (
+        {isHovering && preloadedHoverCardCommunityQuery && (
           <FloatingPortal preserveTabOrder={false}>
             <FloatingFocusManager context={context} modal={false}>
               <StyledCardWrapper
@@ -138,7 +152,9 @@ export default function HoverCardOnUsername({ children, userRef, onClick = noop 
               >
                 <StyledCardContainer>
                   <Suspense fallback={null}>
-                    <HoverCardUsernameInner preloadedQuery={preloadedHoverCardQuery} />
+                    <HoverCardCommunityInner
+                      preloadedCommunityQuery={preloadedHoverCardCommunityQuery}
+                    />
                   </Suspense>
                 </StyledCardContainer>
               </StyledCardWrapper>

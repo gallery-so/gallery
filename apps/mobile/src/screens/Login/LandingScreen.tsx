@@ -9,6 +9,7 @@ import {
   GalleryBottomSheetModal,
   GalleryBottomSheetModalType,
 } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
+import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { ConnectWalletButton } from '~/components/Login/ConnectWalletButton';
 import { SignInBottomSheet } from '~/components/Login/SignInBottomSheet';
 import { SafeAreaViewWithPadding, useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
@@ -23,7 +24,7 @@ import { QRCodeIcon } from './QRCodeIcon';
 const IS_ONBOARDING_ENABLED = false;
 
 export function LandingScreen() {
-  const isOnboardingEnabled = IS_ONBOARDING_ENABLED;
+  const [noOfLogoTapped, setNoOfLogoTapped] = useState<number>(0);
 
   const { bottom } = useSafeAreaPadding();
   const navigation = useNavigation<LoginStackNavigatorProp>();
@@ -62,6 +63,14 @@ export function LandingScreen() {
   const toggleOption = useCallback(() => {
     bottomSheetRef.current?.present();
   }, []);
+
+  const handleLogoPress = useCallback(() => {
+    setNoOfLogoTapped((prev) => prev + 1);
+  }, []);
+
+  const isOnboardingEnabled = useMemo(() => {
+    return noOfLogoTapped > 5;
+  }, [noOfLogoTapped]);
 
   return (
     <SafeAreaViewWithPadding className="flex h-full flex-col justify-end bg-white dark:bg-black-900">
@@ -125,7 +134,9 @@ export function LandingScreen() {
         })}
       >
         <View className={clsx(isOnboardingEnabled ? 'pt-32' : 'pt-0')}>
-          <LandingLogo />
+          <GalleryTouchableOpacity onPress={handleLogoPress} eventElementId={null} eventName={null}>
+            <LandingLogo onPress={handleLogoPress} />
+          </GalleryTouchableOpacity>
         </View>
 
         <View className="flex flex-col space-y-4 w-8/12">
