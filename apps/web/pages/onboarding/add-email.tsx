@@ -20,7 +20,9 @@ export default function AddEmail() {
         viewer {
           ... on Viewer {
             __typename
-
+            user {
+              username
+            }
             email {
               email
             }
@@ -42,21 +44,29 @@ export default function AddEmail() {
   const { push } = useRouter();
 
   const savedEmail = query?.viewer?.email?.email;
+  const username = query?.viewer?.user?.username;
 
-  const congratulationsRoute: Route = useMemo(
-    () => ({ pathname: '/onboarding/congratulations' }),
-    []
+  const userProfileRoute: Route = useMemo(
+    () => ({
+      pathname: '/[username]',
+      query: {
+        username: `${username as string}`,
+        onboarding: 'true',
+      },
+    }),
+    [username]
   );
 
   const handleNext = useCallback(() => {
     track('Onboarding: add-email Done click');
-    push(congratulationsRoute);
-  }, [push, track, congratulationsRoute]);
+
+    push(userProfileRoute);
+  }, [push, track, userProfileRoute]);
 
   const handleSkip = useCallback(() => {
     track('Onboarding: add-email Skip click');
-    push(congratulationsRoute);
-  }, [push, track, congratulationsRoute]);
+    push(userProfileRoute);
+  }, [push, track, userProfileRoute]);
 
   return (
     <VStack>
