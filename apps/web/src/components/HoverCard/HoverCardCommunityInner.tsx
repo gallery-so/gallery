@@ -14,7 +14,6 @@ import { HoverCardCommunityInnerQuery } from '~/generated/HoverCardCommunityInne
 import { ErrorWithSentryMetadata } from '~/shared/errors/ErrorWithSentryMetadata';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
-import handleCustomDisplayName from '~/utils/handleCustomDisplayName';
 
 import CommunityProfilePicture from '../ProfilePicture/CommunityProfilePicture';
 import { ProfilePictureStack } from '../ProfilePicture/ProfilePictureStack';
@@ -133,15 +132,14 @@ export function HoverCardCommunityInner({
     return null;
   }
 
-  const displayName = handleCustomDisplayName(community?.name as string);
-
+  const hasDescription = Boolean(community.description);
   return (
-    <VStack gap={8}>
-      <HStack align="center" gap={8}>
-        <CommunityProfilePicture communityRef={community} size="lg" />
-        <VStack gap={4}>
+    <VStack gap={6}>
+      <HStack gap={8} align={`${hasDescription ? '' : 'center'}`}>
+        <CommunityProfilePicture communityRef={community} size="xxl" />
+        <VStack gap={2}>
           <StyledLink href={communityProfileLink}>
-            <StyledCardTitle>{displayName}</StyledCardTitle>
+            <StyledCardTitle>{community.name}</StyledCardTitle>
           </StyledLink>
           {community.description && (
             <StyledCardDescription>
@@ -154,7 +152,7 @@ export function HoverCardCommunityInner({
       </HStack>
       <HStack align="center" gap={4}>
         <ProfilePictureStack usersRef={owners} total={totalOwners} />
-        <HStack wrap="wrap">
+        <HStack align="center" wrap="wrap">
           <StyledBaseS>Owned by&nbsp;</StyledBaseS>
           {content}
         </HStack>
@@ -170,15 +168,18 @@ const StyledLink = styled(Link)`
 `;
 
 const StyledCardTitle = styled(TitleM)`
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 24px;
   font-style: normal;
   text-overflow: ellipsis;
-  white-space: nowrap;
   overflow: hidden;
 `;
 
 const StyledCardDescription = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
+  max-width: 250px;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
