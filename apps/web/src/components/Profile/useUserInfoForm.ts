@@ -2,11 +2,11 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { useTrackCreateUserSuccess } from '~/contexts/analytics/authUtil';
 import useAuthPayloadQuery from '~/hooks/api/users/useAuthPayloadQuery';
-import useUpdateUser from '~/hooks/api/users/useUpdateUser';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import formatError from '~/shared/errors/formatError';
 import useCreateUser from '~/shared/hooks/useCreateUser';
 import useDebounce from '~/shared/hooks/useDebounce';
+import useUpdateUser from '~/shared/hooks/useUpdateUser';
 import { useIsUsernameAvailableFetcher } from '~/shared/hooks/useUserInfoFormIsUsernameAvailableQuery';
 import {
   alphanumericUnderscores,

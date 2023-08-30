@@ -5,7 +5,8 @@ import {
   useUpdateUserMutation,
   useUpdateUserMutation$data,
 } from '~/generated/useUpdateUserMutation.graphql';
-import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
+
+import { usePromisifiedMutation } from '../relay/usePromisifiedMutation';
 
 export default function useUpdateUser() {
   const [updateUser] = usePromisifiedMutation<useUpdateUserMutation>(
