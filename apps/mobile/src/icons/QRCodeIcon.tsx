@@ -4,11 +4,16 @@ import Svg, { ClipPath, Defs, G, Path, SvgProps } from 'react-native-svg';
 
 import colors from '~/shared/theme/colors';
 
-export function QRCodeIcon(props: SvgProps) {
+type Props = {
+  height?: number;
+  width?: number;
+} & SvgProps;
+
+export function QRCodeIcon({ height = 16, width = 16, ...props }: Props) {
   const { colorScheme } = useColorScheme();
 
   return (
-    <Svg width={16} height={16} viewBox="0 0 16 16" fill="none" {...props}>
+    <Svg width={width} height={height} viewBox="0 0 16 16" fill="none" {...props}>
       <G
         clipPath="url(#clip0_998_36495)"
         stroke={colorScheme === 'dark' ? colors.white : colors.black.DEFAULT}

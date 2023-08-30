@@ -9,7 +9,6 @@ import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import { EmptyState } from '~/components/EmptyState/EmptyState';
 import useAddWallet from '~/components/WalletSelector/mutations/useAddWallet';
-import useCreateNonce from '~/components/WalletSelector/mutations/useCreateNonce';
 import {
   isEarlyAccessError,
   useTrackAddWalletAttempt,
@@ -19,6 +18,7 @@ import {
 import { useBeaconActions } from '~/contexts/beacon/BeaconContext';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { TezosAddWalletFragment$key } from '~/generated/TezosAddWalletFragment.graphql';
+import useCreateNonce from '~/shared/hooks/useCreateNonce';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
 import { Web3Error } from '~/types/Error';

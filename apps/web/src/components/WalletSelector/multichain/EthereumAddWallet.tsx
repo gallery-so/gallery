@@ -18,6 +18,7 @@ import {
 } from '~/contexts/analytics/authUtil';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { EthereumAddWalletFragment$key } from '~/generated/EthereumAddWalletFragment.graphql';
+import useCreateNonce from '~/shared/hooks/useCreateNonce';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
 import { Web3Error } from '~/types/Error';
@@ -31,7 +32,6 @@ import {
 import noop from '~/utils/noop';
 
 import useAddWallet from '../mutations/useAddWallet';
-import useCreateNonce from '../mutations/useCreateNonce';
 import { normalizeError } from './normalizeError';
 import { WalletError } from './WalletError';
 

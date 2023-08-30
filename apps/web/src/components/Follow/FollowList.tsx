@@ -96,8 +96,7 @@ const StyledFollowList = styled.div`
   padding-top: 24px;
 
   @media only screen and ${breakpoints.tablet} {
-    padding-top: 24px;
-    border-top: 1px solid ${colors.porcelain};
+    padding-top: 0;
   }
 `;
 

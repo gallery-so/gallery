@@ -222,18 +222,30 @@ const ForwardedPostBottomSheet = forwardRef(PostBottomSheet);
 export { ForwardedPostBottomSheet as PostBottomSheet };
 
 type BottomSheetRowProps = {
+  icon?: React.ReactNode;
   text: string;
   onPress: () => void;
   style?: React.ComponentProps<typeof GalleryTouchableOpacity>['style'];
   isConfirmationRow?: boolean;
+  fontWeight?: 'Regular' | 'Bold';
+  rightIcon?: React.ReactNode;
 };
 
-function BottomSheetRow({ text, onPress, style, isConfirmationRow }: BottomSheetRowProps) {
+export function BottomSheetRow({
+  icon,
+  text,
+  onPress,
+  style,
+  isConfirmationRow,
+  fontWeight = 'Regular',
+  rightIcon,
+}: BottomSheetRowProps) {
   return (
     <GalleryTouchableOpacity onPress={onPress} eventElementId={null} eventName={null} style={style}>
-      <View className="bg-offWhite dark:bg-black-800 p-3">
+      <View className="bg-offWhite dark:bg-black-800 p-3 flex-row items-center">
+        {icon && <View className="mr-2">{icon}</View>}
         <Typography
-          font={{ family: 'ABCDiatype', weight: 'Regular' }}
+          font={{ family: 'ABCDiatype', weight: fontWeight }}
           className={clsx(
             'text-sm',
             isConfirmationRow ? 'text-red' : 'text-black-900 dark:text-offWhite'
@@ -241,6 +253,7 @@ function BottomSheetRow({ text, onPress, style, isConfirmationRow }: BottomSheet
         >
           {text}
         </Typography>
+        {rightIcon && <View className="ml-auto">{rightIcon}</View>}
       </View>
     </GalleryTouchableOpacity>
   );
