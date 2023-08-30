@@ -22,12 +22,15 @@ import {
   validate,
 } from '~/shared/utils/validators';
 
+import useSyncTokens from '../NftSelectorScreen/useSyncTokens';
+
 export function OnboardingUsernameScreen() {
   const navigation = useNavigation<LoginStackNavigatorProp>();
   const { colorScheme } = useColorScheme();
   const createUser = useCreateUser();
   const isUsernameAvailableFetcher = useIsUsernameAvailableFetcher();
   const reportError = useReportError();
+  const { isSyncing, syncTokens } = useSyncTokens();
 
   const route = useRoute<RouteProp<LoginStackNavigatorParamList, 'OnboardingUsername'>>();
 
@@ -59,6 +62,10 @@ export function OnboardingUsernameScreen() {
       const response = await createUser(authMechanism, username, bio);
 
       if (response.createUser?.__typename === 'CreateUserPayload') {
+        if (!isSyncing) {
+          syncTokens('Ethereum');
+        }
+
         navigation.navigate('OnboardingProfileBio');
       }
     } catch (error: unknown) {
@@ -66,7 +73,7 @@ export function OnboardingUsernameScreen() {
         setGeneralError(error.message);
       }
     }
-  }, [authMechanism, bio, createUser, navigation, username]);
+  }, [authMechanism, bio, createUser, isSyncing, navigation, syncTokens, username]);
 
   const [isCheckingUsername, setIsCheckingUsername] = useState(false);
   useEffect(

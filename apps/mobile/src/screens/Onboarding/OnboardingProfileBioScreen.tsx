@@ -7,7 +7,7 @@ import { graphql, useLazyLoadQuery } from 'react-relay';
 
 import { BackButton } from '~/components/BackButton';
 import { Button } from '~/components/Button';
-import { RawProfilePicture } from '~/components/ProfilePicture/RawProfilePicture';
+import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { Typography } from '~/components/Typography';
 import { OnboardingProfileBioScreenQuery } from '~/generated/OnboardingProfileBioScreenQuery.graphql';
 import { LoginStackNavigatorProp } from '~/navigation/types';
@@ -23,8 +23,10 @@ export function OnboardingProfileBioScreen() {
         viewer {
           ... on Viewer {
             user {
+              __typename
               dbid
               username
+              ...ProfilePictureFragment
             }
           }
         }
@@ -34,8 +36,6 @@ export function OnboardingProfileBioScreen() {
   );
 
   const user = query?.viewer?.user;
-
-  const firstLetter = user?.username?.charAt(0) ?? '';
 
   const navigation = useNavigation<LoginStackNavigatorProp>();
   const { colorScheme } = useColorScheme();
@@ -66,6 +66,10 @@ export function OnboardingProfileBioScreen() {
     await navigateToNotificationUpsellOrHomeScreen(navigation);
   }, [bio, navigation, updateUser, user]);
 
+  if (user?.__typename !== 'GalleryUser') {
+    throw new Error(`Unable to fetch the logged in user`);
+  }
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -95,13 +99,11 @@ export function OnboardingProfileBioScreen() {
           }}
         >
           <View>
-            <RawProfilePicture
-              eventElementId="ProfilePicture"
-              eventName="ProfilePicture pressed"
-              letter={firstLetter}
+            <ProfilePicture
+              userRef={user}
               size="xxl"
-              isEditable
               onPress={handleSelectProfilePicture}
+              isEditable
             />
           </View>
 
