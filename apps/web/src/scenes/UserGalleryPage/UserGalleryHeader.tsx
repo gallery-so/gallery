@@ -73,7 +73,7 @@ export default function UserGalleryHeader({ userRef, queryRef }: Props) {
   const isAuthenticatedUsersPage = loggedInUserId === user?.dbid;
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
-  const numPills = useMemo(() => {
+  const numberOfConnectedAccounts = useMemo(() => {
     return [
       user.socialAccounts?.farcaster?.username,
       user.socialAccounts?.lens?.username,
@@ -90,11 +90,15 @@ export default function UserGalleryHeader({ userRef, queryRef }: Props) {
       <VStack gap={12}>
         <UserNameAndDescriptionHeader userRef={user} queryRef={query} />
         {isLoggedIn && !isAuthenticatedUsersPage && <UserSharedInfo userRef={user} />}
-        {numPills > 0 && (
-          <SocialConnectionsSection numPills={numPills}>
+        {numberOfConnectedAccounts > 0 ? (
+          <SocialConnectionsSection numPills={numberOfConnectedAccounts}>
             <UserTwitterSection userRef={user} queryRef={query} />
             <UserFarcasterSection userRef={user} />
             <UserLensSection userRef={user} />
+          </SocialConnectionsSection>
+        ) : (
+          <SocialConnectionsSection numPills={1}>
+            <UserTwitterSection userRef={user} queryRef={query} />
           </SocialConnectionsSection>
         )}
         {isMobile && (
