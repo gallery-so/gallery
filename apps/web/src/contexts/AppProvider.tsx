@@ -15,6 +15,7 @@ import { WebErrorReportingProvider } from './errorReporting/WebErrorReportingPro
 import GlobalLayoutContextProvider from './globalLayout/GlobalLayoutContext';
 import SidebarDrawerProvider from './globalLayout/GlobalSidebar/SidebarDrawerContext';
 import ModalProvider from './modal/ModalContext';
+import PostComposerProvider from './postComposer/PostComposerContext';
 import { SwrProvider } from './swr/SwrContext';
 import ToastProvider from './toast/ToastContext';
 
@@ -45,19 +46,21 @@ export default function AppProvider({
                 <GalleryNavigationProvider>
                   <NftErrorProvider>
                     <SyncTokensLockProvider>
-                      <ModalProvider>
-                        <SidebarDrawerProvider>
-                          <SearchProvider>
-                            <GlobalLayoutContextProvider
-                              preloadedQuery={globalLayoutContextPreloadedQuery}
-                            >
-                              <FullPageNftDetailModalListener />
-                              {isProd ? null : <Debugger />}
-                              {children}
-                            </GlobalLayoutContextProvider>
-                          </SearchProvider>
-                        </SidebarDrawerProvider>
-                      </ModalProvider>
+                      <PostComposerProvider>
+                        <ModalProvider>
+                          <SidebarDrawerProvider>
+                            <SearchProvider>
+                              <GlobalLayoutContextProvider
+                                preloadedQuery={globalLayoutContextPreloadedQuery}
+                              >
+                                <FullPageNftDetailModalListener />
+                                {isProd ? null : <Debugger />}
+                                {children}
+                              </GlobalLayoutContextProvider>
+                            </SearchProvider>
+                          </SidebarDrawerProvider>
+                        </ModalProvider>
+                      </PostComposerProvider>
                     </SyncTokensLockProvider>
                   </NftErrorProvider>
                 </GalleryNavigationProvider>

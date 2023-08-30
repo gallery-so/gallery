@@ -13,6 +13,7 @@ import { PostComposerModalWithSelector } from '~/components/Posts/PostComposerMo
 import Search from '~/components/Search/Search';
 import Settings from '~/components/Settings/Settings';
 import { useModalActions } from '~/contexts/modal/ModalContext';
+import { usePostComposerContext } from '~/contexts/postComposer/PostComposerContext';
 import { StandardSidebarFragment$key } from '~/generated/StandardSidebarFragment.graphql';
 import useAuthModal from '~/hooks/useAuthModal';
 import { useSearchHotkey } from '~/hooks/useSearchHotkey';
@@ -158,6 +159,8 @@ export function StandardSidebar({ queryRef }: Props) {
     track('Sidebar Home Click');
   }, [hideDrawer, track]);
 
+  const { captionRef } = usePostComposerContext();
+
   const handleCreatePostClick = useCallback(() => {
     hideDrawer();
 
@@ -171,6 +174,10 @@ export function StandardSidebar({ queryRef }: Props) {
       headerVariant: 'thicc',
       isFullPage: isMobile,
       onCloseOverride: () => {
+        if (!captionRef.current) {
+          hideModal({ id: 'post-composer' });
+          return;
+        }
         showModal({
           headerText: 'Are you sure?',
           content: (
@@ -185,7 +192,7 @@ export function StandardSidebar({ queryRef }: Props) {
       },
     });
     track('Sidebar Create Post Click');
-  }, [hideDrawer, isLoggedIn, showModal, query, isMobile, track, hideModal]);
+  }, [hideDrawer, isLoggedIn, showModal, query, isMobile, track, captionRef, hideModal]);
 
   const handleSearchClick = useCallback(() => {
     track('Sidebar Search Click');
