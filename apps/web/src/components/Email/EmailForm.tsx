@@ -11,7 +11,7 @@ import { AdditionalContext, useReportError } from '~/shared/contexts/ErrorReport
 import useDebounce from '~/shared/hooks/useDebounce';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 import colors from '~/shared/theme/colors';
-import { EMAIL_FORMAT } from '~/utils/regex';
+import { EMAIL_FORMAT } from '~/shared/utils/regex';
 
 import { Button } from '../core/Button/Button';
 import { HStack, VStack } from '../core/Spacer/Stack';
