@@ -3,6 +3,7 @@ import { useNavigation } from '@react-navigation/native';
 import { registerDevMenuItems } from 'expo-dev-menu';
 import { useEffect } from 'react';
 
+import { env } from '~/env/runtime';
 import { RootStackNavigatorProp } from '~/navigation/types';
 
 import { useLogout } from '../hooks/useLogout';
@@ -12,7 +13,16 @@ export function DevMenuItems() {
   const [logout] = useLogout();
 
   useEffect(() => {
-    registerDevMenuItems([
+    const devMenuItems = [];
+    if (env.ENV !== 'prod') {
+      devMenuItems.push({
+        name: 'Debugger',
+        callback: () => {
+          navigation.navigate('Debugger');
+        },
+      });
+    }
+    devMenuItems.push(
       {
         name: 'Design System',
         callback: () => {
@@ -30,8 +40,10 @@ export function DevMenuItems() {
         callback: () => {
           logout();
         },
-      },
-    ]);
+      }
+    );
+
+    registerDevMenuItems(devMenuItems);
   }, [logout, navigation]);
 
   return null;
