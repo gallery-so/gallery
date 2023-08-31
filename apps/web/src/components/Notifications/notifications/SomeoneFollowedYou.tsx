@@ -85,7 +85,7 @@ export function SomeoneFollowedYou({
     count === 1 && lastFollower && (isInitiallyFollowingBack || isFollowingBack);
 
   return (
-    <StyledHStack justify="space-between" align="center">
+    <StyledHStack justify="space-between" align="center" gap={4}>
       <StyledContainer gap={4} align="center">
         {count > 1 ? (
           <BaseM>
