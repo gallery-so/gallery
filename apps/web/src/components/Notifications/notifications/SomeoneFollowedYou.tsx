@@ -103,11 +103,10 @@ export function SomeoneFollowedYou({
                 </StyledContainer>
               </HStack>
             ) : (
-                <BaseM>
-                  <strong>Someone </strong>
-                  followed you
-                </BaseM>
-
+              <BaseM>
+                <strong>Someone </strong>
+                followed you
+              </BaseM>
             )}
           </>
         )}
