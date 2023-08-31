@@ -190,8 +190,14 @@ export function NftSelector({
 
     track('NFT Selector: Clicked Refresh');
 
-    await syncTokens(selectedNetworkView);
-  }, [refreshDisabled, track, syncTokens, selectedNetworkView]);
+    if (selectedView === 'Created') {
+      await syncTokens({ type: 'Created', chain: selectedNetworkView });
+    }
+
+    if (selectedView === 'Collected') {
+      await syncTokens({ type: 'Collected', chain: selectedNetworkView });
+    }
+  }, [refreshDisabled, track, selectedView, syncTokens, selectedNetworkView]);
 
   const { floating, reference, getFloatingProps, getReferenceProps, floatingStyle } =
     useTooltipHover({

@@ -99,7 +99,6 @@ function AddUserInfo() {
 
   const track = useTrack();
   const { isLocked, syncTokens } = useSyncTokens();
-  // const user = query.viewer?.user;
 
   const handleSubmit = useCallback(async () => {
     const { success } = await onEditUser();
@@ -113,7 +112,7 @@ function AddUserInfo() {
     if (!isLocked) {
       // Start the sync tokens mutation so the user
       // sees their NFTs loaded ASAP.
-      syncTokens(urlQuery.chain as Chain, true);
+      syncTokens({ type: 'Collected', chain: urlQuery.chain as Chain, silent: true });
     }
 
     handleFormSuccess();
