@@ -7,7 +7,6 @@ import {
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 export enum FeatureFlag {
-  BIG_EASEL = 'BIG_EASEL',
   KOALA = 'KOALA',
 }
 
@@ -18,15 +17,12 @@ type Role = Exclude<RelayRole, '%future added value'>;
 
 const ROLE_FLAGS: Record<Role, Record<FeatureFlag, boolean>> = {
   ADMIN: {
-    BIG_EASEL: true,
     KOALA: true,
   },
   BETA_TESTER: {
-    BIG_EASEL: false,
     KOALA: true,
   },
   EARLY_ACCESS: {
-    BIG_EASEL: false,
     KOALA: false,
   },
 };

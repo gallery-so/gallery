@@ -14,6 +14,7 @@ export const DropdownItem = styled.div<{ disabled?: boolean }>`
 
   color: ${({ disabled }) => (disabled ? '#c2c2c2' : colors.shadow)};
   cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
+  opacity: ${({ disabled }) => (disabled ? 0.35 : 1)};
 
   white-space: nowrap;
 

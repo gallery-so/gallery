@@ -55,14 +55,11 @@ export default function SidebarChainDropdown({
   );
 
   const availableChains = useMemo(() => {
-    if (selectedView === 'Created') {
-      return chains.filter((chain) => chain.hasCreatorSupport);
-    }
     if (isAdmin) {
       return chains;
     }
     return chains.filter((chain) => chain.isEnabled);
-  }, [isAdmin, selectedView]);
+  }, [isAdmin]);
 
   return (
     <Container>
@@ -80,7 +77,15 @@ export default function SidebarChainDropdown({
       >
         <DropdownSection>
           {availableChains.map((chain) => (
-            <DropdownItem key={chain.name} onClick={() => handleSelectChain(chain)}>
+            <DropdownItem
+              key={chain.name}
+              onClick={() => {
+                if (selectedView === 'Created' && chain.hasCreatorSupport) {
+                  handleSelectChain(chain);
+                }
+              }}
+              disabled={selectedView === 'Created' && !chain.hasCreatorSupport}
+            >
               <HStack align="center" gap={6}>
                 <Image src={chain.icon} width={16} height={16} alt={chain.name} />
                 <BaseM>{chain.name}</BaseM>
