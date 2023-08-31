@@ -86,7 +86,7 @@ export function SomeoneFollowedYou({
 
   return (
     <StyledHStack justify="space-between" align="center">
-      <StyledContainer  gap={4} align="center">
+      <StyledContainer gap={4} align="center">
         {count > 1 ? (
           <BaseM>
             <strong>{count} collectors</strong>
@@ -100,18 +100,21 @@ export function SomeoneFollowedYou({
                   <HoverCardOnUsername userRef={lastFollower} onClick={onClose} />
                   <BaseM>followed </BaseM>
                   <BaseM>you</BaseM>
-</StyledContainer>
+                </StyledContainer>
               </HStack>
             ) : (
-              <BaseM>
-                <strong>Someone</strong>
-                followed you
-              </BaseM>
+              <HStack gap={4}>
+                <BaseM>
+                  <strong>Someone</strong>
+                </BaseM>
+
+                <BaseM>followed you</BaseM>
+              </HStack>
             )}
           </>
         )}
-                </StyledContainer>
-                {shouldShowFollowBackButton && <StyledFollowButton queryRef={query} userRef={lastFollower} />}
+      </StyledContainer>
+      {shouldShowFollowBackButton && <StyledFollowButton queryRef={query} userRef={lastFollower} />}
     </StyledHStack>
   );
 }
