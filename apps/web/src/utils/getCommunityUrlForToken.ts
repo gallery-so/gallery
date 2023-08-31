@@ -5,7 +5,8 @@ import { readInlineData } from 'relay-runtime';
 import { getCommunityUrlForTokenFragment$key } from '~/generated/getCommunityUrlForTokenFragment.graphql';
 import { LowercaseChain } from '~/shared/utils/chains';
 
-export const DISABLED_CONTRACTS = [
+// not used anywhere but keeping around for posterity / potential future usage
+export const KNOWN_OMNIBUS_CONTRACTS = [
   '0xa7d8d9ef8d8ce8992df33d8b8cf4aebabd5bd270', // Art Blocks
   '0x059edd72cd353df5106d2b9cc5ab83a52287ac3a', // Art Blocks
   '0x99a9b7c1116f9ceeb1652de04d5969cce509b069', // Art Blocks
@@ -16,14 +17,10 @@ export const DISABLED_CONTRACTS = [
 ];
 
 export function getUrlForCommunity(contractAddress: string, chain: LowercaseChain): Route | null {
-  if (DISABLED_CONTRACTS.includes(contractAddress)) {
-    return null;
-  } else {
-    return {
-      pathname: `/community/[chain]/[contractAddress]`,
-      query: { contractAddress, chain },
-    };
-  }
+  return {
+    pathname: `/community/[chain]/[contractAddress]`,
+    query: { contractAddress, chain },
+  };
 }
 
 export function getCommunityUrlForToken(
