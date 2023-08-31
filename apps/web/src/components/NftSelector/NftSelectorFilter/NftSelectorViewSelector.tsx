@@ -29,9 +29,6 @@ export function NftSelectorViewSelector({
   const onSelectView = useCallback(
     (selectedView: TokenFilterType) => {
       track('NFT Selector: Changed View Filter', { variant: selectedView });
-      if (selectedView === 'Created') {
-        return;
-      }
       onSelectedViewChange(selectedView);
       setIsDropdownOpen(false);
     },
@@ -50,7 +47,7 @@ export function NftSelectorViewSelector({
             <BaseM>Collected</BaseM>
           </DropdownItem>
           <DropdownItem onClick={() => onSelectView('Created')}>
-            <BaseM color={colors.metal}>Created (Soon)</BaseM>
+            <BaseM>Created</BaseM>
           </DropdownItem>
         </DropdownSection>
       </Dropdown>
