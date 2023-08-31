@@ -99,6 +99,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
   }, [addWhitespace]);
 
   // TODO: we should unit test this function
+  // TODO: this logic could be consolidated across web editor + web selector + mobile selector
   const tokensToDisplay = useMemo(() => {
     return tokenSearchResults.filter((token) => {
       // If we're searching, we want to search across all chains; the chain selector will be hidden during search

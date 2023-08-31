@@ -59,6 +59,9 @@ export function NftSelector({
         isSpamByUser
         isSpamByProvider
 
+        ownerIsHolder
+        ownerIsCreator
+
         contract {
           name
         }
@@ -107,14 +110,32 @@ export function NftSelector({
     setSelectedContract(null);
   }, []);
 
-  const filteredTokens = useMemo(() => {
-    let filteredTokens = [...tokenSearchResults];
+  // TODO: this logic could be consolidated across web editor + web selector + mobile selector
+  const tokensToDisplay = useMemo(() => {
+    // Filter tokens
+    const filteredTokens = tokenSearchResults.filter((token) => {
+      // If we're searching, we want to search across all chains; the chain selector will be hidden during search
+      if (isSearching) {
+        return true;
+      }
 
-    // Filter by network
-    filteredTokens = filteredTokens.filter((token) => token.chain === selectedNetworkView);
+      if (token.chain !== selectedNetworkView) {
+        return false;
+      }
 
-    // Filter by view
-    filteredTokens = filteredTokens.filter((token) => {
+      // Early return created tokens as we don't need to filter out spam
+      if (selectedView === 'Created') {
+        return token.ownerIsCreator;
+      }
+
+      // Filter out created tokens in Collected view...
+      if (selectedView === 'Collected') {
+        if (!token.ownerIsHolder) {
+          return false;
+        }
+      }
+
+      // ...but incorporate with spam filtering logic for Collected view
       const isSpam = token.isSpamByUser !== null ? token.isSpamByUser : token.isSpamByProvider;
       if (selectedView === 'Hidden') {
         return isSpam;
@@ -123,7 +144,7 @@ export function NftSelector({
       return !isSpam;
     });
 
-    // Filter by sort
+    // Sort tokens
     if (selectedSortView === 'Recently added') {
       filteredTokens.sort((a, b) => {
         return new Date(b.creationTime).getTime() - new Date(a.creationTime).getTime();
@@ -153,7 +174,7 @@ export function NftSelector({
     }
 
     return filteredTokens;
-  }, [selectedNetworkView, selectedSortView, selectedView, tokenSearchResults]);
+  }, [isSearching, selectedNetworkView, selectedSortView, selectedView, tokenSearchResults]);
 
   const track = useTrack();
   const isRefreshDisabledAtUserLevel = isRefreshDisabledForUser(query.viewer?.user?.dbid ?? '');
@@ -250,7 +271,7 @@ export function NftSelector({
         <NftSelectorLoadingView />
       ) : (
         <NftSelectorView
-          tokenRefs={filteredTokens}
+          tokenRefs={tokensToDisplay}
           selectedContractAddress={selectedContract?.address ?? null}
           onSelectContract={setSelectedContract}
           selectedNetworkView={selectedNetworkView}
