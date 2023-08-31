@@ -12,7 +12,7 @@ import colors from '~/shared/theme/colors';
 import OnboardingDialog from '../../GalleryOnboardingGuide/OnboardingDialog';
 import { useOnboardingDialogContext } from '../../GalleryOnboardingGuide/OnboardingDialogContext';
 import { ExpandedIcon } from '../ExpandedIcon';
-import { SidebarView } from '../SidebarViewSelector';
+import { TokenFilterType } from '../SidebarViewSelector';
 import { CollectionTitleRow } from './SidebarList';
 import ToggleSpamIcon, { SetSpamFn } from './ToggleSpamIcon';
 
@@ -29,7 +29,7 @@ export default function CollectionTitle({
   key: string;
   index: number;
   style: React.CSSProperties;
-  selectedView: SidebarView;
+  selectedView: TokenFilterType;
   onToggleExpanded: (address: string) => void;
   setSpamPreferenceForCollection: SetSpamFn;
 }) {

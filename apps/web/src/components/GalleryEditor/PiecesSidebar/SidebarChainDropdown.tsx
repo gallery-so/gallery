@@ -15,13 +15,13 @@ import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { ChainMetadata, chains } from '~/shared/utils/chains';
 import isAdminRole from '~/utils/graphql/isAdminRole';
 
-import { SidebarView } from './SidebarViewSelector';
+import { TokenFilterType } from './SidebarViewSelector';
 
 type Props = {
   queryRef: SidebarChainDropdownFragment$key;
   selectedChain: ChainMetadata;
   onSelectChain: (chain: ChainMetadata) => void;
-  selectedView: SidebarView;
+  selectedView: TokenFilterType;
 };
 
 export default function SidebarChainDropdown({

@@ -11,11 +11,11 @@ import { DropdownSection } from '../../core/Dropdown/DropdownSection';
 import IconContainer from '../../core/IconContainer';
 import { HStack } from '../../core/Spacer/Stack';
 import { BaseM } from '../../core/Text/Text';
-import { SidebarView } from '../../GalleryEditor/PiecesSidebar/SidebarViewSelector';
+import { TokenFilterType } from '../../GalleryEditor/PiecesSidebar/SidebarViewSelector';
 
 type NftSelectorViewSelectorProps = {
-  selectedView: SidebarView;
-  onSelectedViewChange: (selectedView: SidebarView) => void;
+  selectedView: TokenFilterType;
+  onSelectedViewChange: (selectedView: TokenFilterType) => void;
 };
 
 export function NftSelectorViewSelector({
@@ -27,7 +27,7 @@ export function NftSelectorViewSelector({
   const track = useTrack();
 
   const onSelectView = useCallback(
-    (selectedView: SidebarView) => {
+    (selectedView: TokenFilterType) => {
       track('NFT Selector: Changed View Filter', { variant: selectedView });
       if (selectedView === 'Created') {
         return;

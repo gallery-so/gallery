@@ -10,11 +10,11 @@ import { BaseM } from '~/components/core/Text/Text';
 import DoubleArrowsIcon from '~/icons/DoubleArrowsIcon';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 
-export type SidebarView = 'Collected' | 'Created' | 'Hidden';
+export type TokenFilterType = 'Collected' | 'Created' | 'Hidden';
 
 type SidebarViewSelectorProps = {
-  selectedView: SidebarView;
-  onSelectedViewChange: (selectedView: SidebarView) => void;
+  selectedView: TokenFilterType;
+  onSelectedViewChange: (selectedView: TokenFilterType) => void;
 };
 
 export function SidebarViewSelector({
@@ -26,7 +26,7 @@ export function SidebarViewSelector({
   const track = useTrack();
 
   const onSelectView = useCallback(
-    (selectedView: SidebarView) => {
+    (selectedView: TokenFilterType) => {
       track('Editor Sidebar Dropdown Clicked', { variant: selectedView });
       onSelectedViewChange(selectedView);
       setIsDropdownOpen(false);

@@ -15,7 +15,7 @@ import IconContainer from '../core/IconContainer';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM } from '../core/Text/Text';
 import isRefreshDisabledForUser from '../GalleryEditor/PiecesSidebar/isRefreshDisabledForUser';
-import { SidebarView } from '../GalleryEditor/PiecesSidebar/SidebarViewSelector';
+import { TokenFilterType } from '../GalleryEditor/PiecesSidebar/SidebarViewSelector';
 import useTokenSearchResults from '../GalleryEditor/PiecesSidebar/useTokenSearchResults';
 import { NewTooltip } from '../Tooltip/NewTooltip';
 import { useTooltipHover } from '../Tooltip/useTooltipHover';
@@ -93,7 +93,7 @@ export function NftSelector({
     rawTokensToDisplay: tokens,
   });
 
-  const [selectedView, setSelectedView] = useState<SidebarView>('Collected');
+  const [selectedView, setSelectedView] = useState<TokenFilterType>('Collected');
   const [selectedSortView, setSelectedSortView] = useState<NftSelectorSortView>('Recently added');
   const [selectedNetworkView, setSelectedNetworkView] = useState<Chain>('Ethereum');
 

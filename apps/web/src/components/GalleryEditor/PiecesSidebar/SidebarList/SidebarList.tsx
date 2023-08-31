@@ -14,7 +14,7 @@ import {
 } from '~/constants/sidebar';
 import { SidebarListTokenFragment$key } from '~/generated/SidebarListTokenFragment.graphql';
 
-import { SidebarView } from '../SidebarViewSelector';
+import { TokenFilterType } from '../SidebarViewSelector';
 import CollectionTitle from './CollectionTitle';
 import { SetSpamFn } from './ToggleSpamIcon';
 
@@ -32,7 +32,7 @@ export type VirtualizedRow =
 
 type Props = {
   rows: VirtualizedRow[];
-  selectedView: SidebarView;
+  selectedView: TokenFilterType;
   shouldUseCollectionGrouping: boolean;
   onToggleExpanded(address: string): void;
   handleTokenRenderError: (id: string) => void;

@@ -4,7 +4,7 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { BaseM } from '~/components/core/Text/Text';
-import { SidebarView } from '~/components/GalleryEditor/PiecesSidebar/SidebarViewSelector';
+import { TokenFilterType } from '~/components/GalleryEditor/PiecesSidebar/SidebarViewSelector';
 import { NftSelectorFilterNetworkFragment$key } from '~/generated/NftSelectorFilterNetworkFragment.graphql';
 import DoubleArrowsIcon from '~/icons/DoubleArrowsIcon';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
@@ -32,7 +32,7 @@ const NetworkDropdownByNetwork = ({ chain }: NetworkDropdownProps) => {
 };
 
 type NftSelectorViewSelectorProps = {
-  selectedMode: SidebarView;
+  selectedMode: TokenFilterType;
   selectedNetwork: Chain;
   onSelectedViewChange: (selectedView: Chain) => void;
   queryRef: NftSelectorFilterNetworkFragment$key;

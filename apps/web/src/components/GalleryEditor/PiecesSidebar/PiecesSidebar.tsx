@@ -24,7 +24,7 @@ import { AddWalletSidebar } from './AddWalletSidebar';
 import CreatorEmptyStateSidebar from './CreatorEmptyStateSidebar';
 import isRefreshDisabledForUser from './isRefreshDisabledForUser';
 import SidebarChainDropdown from './SidebarChainDropdown';
-import { SidebarView, SidebarViewSelector } from './SidebarViewSelector';
+import { SidebarViewSelector, TokenFilterType } from './SidebarViewSelector';
 import SidebarWalletSelector, { SidebarWallet } from './SidebarWalletSelector';
 import useTokenSearchResults from './useTokenSearchResults';
 
@@ -85,7 +85,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
 
   const [selectedChain, setSelectedChain] = useState<ChainMetadata>(chainsMap['Ethereum']);
   const [selectedWallet, setSelectedWallet] = useState<SidebarWallet>('All');
-  const [selectedView, setSelectedView] = useState<SidebarView>('Collected');
+  const [selectedView, setSelectedView] = useState<TokenFilterType>('Collected');
 
   const navbarHeight = useGlobalNavbarHeight();
 
@@ -137,7 +137,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
     !doesUserOwnWalletFromChainFamily(selectedChain.name, query) ||
     isLocked;
 
-  const handleSelectedViewChange = useCallback((view: SidebarView) => {
+  const handleSelectedViewChange = useCallback((view: TokenFilterType) => {
     setSelectedView(view);
 
     if (view === 'Created') {
