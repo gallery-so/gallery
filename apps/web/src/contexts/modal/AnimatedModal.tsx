@@ -14,7 +14,7 @@ import colors from '~/shared/theme/colors';
 
 import { MODAL_PADDING_PX, ModalPaddingVariant } from './constants';
 
-type Props = {
+export type AnimatedModalProps = {
   /**
    * `hideModal` and `dismountModal` are used separately.
    * hideModal begins the process for removing the modal, and
@@ -30,8 +30,8 @@ type Props = {
   headerActions?: JSX.Element | false;
   headerText: string;
   headerVariant: ModalPaddingVariant;
-  hideClose?: boolean;
-  onCloseOverride?: () => void;
+  hideClose: boolean;
+  onCloseOverride: (onClose: () => void) => void;
 };
 
 function AnimatedModal({
@@ -46,7 +46,7 @@ function AnimatedModal({
   headerVariant,
   hideClose,
   onCloseOverride,
-}: Props) {
+}: AnimatedModalProps) {
   useEffect(() => {
     if (!isActive) {
       setTimeout(dismountModal, ANIMATED_COMPONENT_TRANSITION_MS);
@@ -84,7 +84,7 @@ function AnimatedModal({
   }, [isFullPage, isMobile]);
 
   const handleClick = useCallback(
-    () => (onCloseOverride ? onCloseOverride() : hideModal()),
+    () => (onCloseOverride ? onCloseOverride(hideModal) : hideModal()),
     [onCloseOverride, hideModal]
   );
 

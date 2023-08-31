@@ -18,7 +18,7 @@ import { getScrollBarWidth } from '~/utils/getScrollbarWidth';
 import noop from '~/utils/noop';
 
 import useStabilizedRouteTransitionKey from '../globalLayout/useStabilizedRouteTransitionKey';
-import AnimatedModal from './AnimatedModal';
+import AnimatedModal, { AnimatedModalProps } from './AnimatedModal';
 import { ModalPaddingVariant } from './constants';
 
 type ModalState = {
@@ -39,14 +39,14 @@ export const useModalState = (): ModalState => {
 type ShowModalFnProps = {
   id?: string;
   content: ReactElement;
+  headerActions?: JSX.Element | false;
   headerText?: string;
   headerVariant?: ModalPaddingVariant;
   isFullPage?: boolean;
   hideClose?: boolean;
   isPaddingDisabled?: boolean;
   onClose?: () => void;
-  onCloseOverride?: () => void;
-  headerActions?: JSX.Element | false;
+  onCloseOverride?: AnimatedModalProps['onCloseOverride'];
 };
 
 type HideModalFnProps = {
@@ -75,17 +75,8 @@ type Props = { children: ReactNode };
 
 type Modal = {
   id: string;
-  isActive: boolean;
-  content: ReactElement;
-  headerActions?: JSX.Element | false;
-  headerText: string;
-  headerVariant: ModalPaddingVariant;
-  isFullPage: boolean;
-  isPaddingDisabled: boolean;
-  hideClose: boolean;
   onClose: () => void;
-  onCloseOverride?: () => void;
-};
+} & Omit<AnimatedModalProps, 'hideModal' | 'dismountModal'>;
 
 function ModalProvider({ children }: Props) {
   const [modals, setModals] = useState<Modal[]>([]);
@@ -110,7 +101,7 @@ function ModalProvider({ children }: Props) {
       isFullPage = false,
       isPaddingDisabled = false,
       onClose = noop,
-      onCloseOverride,
+      onCloseOverride = () => {},
     }: ShowModalFnProps) => {
       setModals((prevModals) => [
         ...prevModals,
@@ -259,11 +250,15 @@ function ModalProvider({ children }: Props) {
             hideClose,
             onCloseOverride,
           }) => {
+            const hideCurrentModal = () => {
+              hideModal({ id });
+            };
+
             return (
               <AnimatedModal
                 key={id}
                 isActive={isActive}
-                hideModal={hideModal}
+                hideModal={hideCurrentModal}
                 onCloseOverride={onCloseOverride}
                 dismountModal={() => dismountModal(id)}
                 content={content}

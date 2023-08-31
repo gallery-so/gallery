@@ -72,7 +72,7 @@ export function PostComposerModalWithSelector({ viewerRef, queryRef, preSelected
 
   const { showModal } = useModalActions();
 
-  const { captionRef } = usePostComposerContext();
+  const { captionRef, setCaption } = usePostComposerContext();
 
   const onBackClick = useCallback(() => {
     if (!captionRef.current) {
@@ -84,14 +84,18 @@ export function PostComposerModalWithSelector({ viewerRef, queryRef, preSelected
       headerText: 'Are you sure?',
       content: (
         <DiscardPostConfirmation
+          onSaveDraft={() => {
+            returnUserToSelectorStep();
+          }}
           onDiscard={() => {
             returnUserToSelectorStep();
+            setCaption('');
           }}
         />
       ),
       isFullPage: false,
     });
-  }, [showModal, returnUserToSelectorStep, captionRef]);
+  }, [captionRef, showModal, returnUserToSelectorStep, setCaption]);
 
   return (
     <StyledPostComposerModal>
