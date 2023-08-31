@@ -80,6 +80,7 @@ export default function PostComposer({ onBackClick, tokenRef }: Props) {
       pushToast({
         message: `Successfully posted ${token.name || 'item'}`,
       });
+      setCaption('');
     } catch (error) {
       setIsSubmitting(false);
       if (error instanceof Error) {
@@ -88,15 +89,15 @@ export default function PostComposer({ onBackClick, tokenRef }: Props) {
       setGeneralError('Post failed to upload, please try again');
     }
   }, [
-    createPost,
+    track,
     captionRef,
+    createPost,
+    token.dbid,
+    token.community?.id,
+    token.name,
     hideModal,
     pushToast,
-    token.community,
-    token.dbid,
-    token.name,
-    track,
-    setGeneralError,
+    setCaption,
     reportError,
   ]);
 
