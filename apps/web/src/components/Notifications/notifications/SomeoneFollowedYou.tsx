@@ -113,11 +113,12 @@ export function SomeoneFollowedYou({
 }
 
 const StyledHStack = styled(HStack)`
+  flex-wrap: wrap;
+  row-gap: 10px;
   width: 100%;
 `;
 
 const StyledFollowButton = styled(FollowButton)`
-  padding: 2px 8px;
   width: 92px;
   height: 24px;
 `;
