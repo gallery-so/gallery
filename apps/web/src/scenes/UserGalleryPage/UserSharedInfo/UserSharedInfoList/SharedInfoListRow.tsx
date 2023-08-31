@@ -1,11 +1,12 @@
 import Link from 'next/link';
 import { Route } from 'nextjs-routes';
-import { useMemo } from 'react';
+import { useMemo, useCallback } from 'react';
 import styled from 'styled-components';
 
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM } from '~/components/core/Text/Text';
+import { useModalActions } from '~/contexts/modal/ModalContext';
 import colors from '~/shared/theme/colors';
 
 type Props = {
@@ -17,6 +18,7 @@ type Props = {
 };
 
 export default function SharedInfoListRow({ title, subTitle, href, imageContent }: Props) {
+  const { hideModal } = useModalActions();
   const rowContent = useMemo(() => {
     return (
       <StyledHStack justify="space-between" align="center" gap={8}>
@@ -33,11 +35,13 @@ export default function SharedInfoListRow({ title, subTitle, href, imageContent 
     );
   }, [imageContent, subTitle, title]);
 
+  const onPressUserRow = useCallback(() => hideModal(), [hideModal]);
+
   if (href === null) {
-    return <StyledRowNonLink>{rowContent}</StyledRowNonLink>;
+    return <StyledRowNonLink onClick={onPressUserRow}>{rowContent}</StyledRowNonLink>;
   }
 
-  return <StyledRowLink href={href}>{rowContent}</StyledRowLink>;
+  return <StyledRowLink onClick={onPressUserRow} href={href}>{rowContent}</StyledRowLink>;
 }
 
 const StyledRowNonLink = styled.div`

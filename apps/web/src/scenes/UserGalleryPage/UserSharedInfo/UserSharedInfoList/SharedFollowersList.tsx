@@ -72,29 +72,30 @@ export default function SharedFollowersList({ userRef }: Props) {
   const isMobile = useIsMobileWindowWidth();
   return (
     <StyledList fullscreen={isMobile} gap={24}>
-      <AutoSizer>
-        {({ width, height }) => (
-          <InfiniteLoader
-            isRowLoaded={isRowLoaded}
-            loadMoreRows={handleLoadMore}
-            rowCount={rowCount}
-          >
-            {({ onRowsRendered, registerChild }) => (
-              <List
-                ref={registerChild}
-                onRowsRendered={onRowsRendered}
-                rowRenderer={rowRenderer}
-                width={width}
-                height={height}
-                rowHeight={56}
-                rowCount={sharedFollowers.length}
-              />
-            )}
-          </InfiniteLoader>
-        )}
-      </AutoSizer>
-
-      <VStack></VStack>
+      <AutoSizerWrapper>
+        <AutoSizer >
+          {({ width, height }) => (
+            <InfiniteLoader
+              isRowLoaded={isRowLoaded}
+              loadMoreRows={handleLoadMore}
+              rowCount={rowCount}
+            >
+              {({ onRowsRendered, registerChild }) => (
+                <List
+                  ref={registerChild}
+                  onRowsRendered={onRowsRendered}
+                  rowRenderer={rowRenderer}
+                  width={width}
+                  height={height}
+                  rowHeight={56}
+                  rowCount={sharedFollowers.length}
+                />
+              )}
+            </InfiniteLoader>
+          )}
+        </AutoSizer>
+</AutoSizerWrapper>
+        <VStack></VStack>
     </StyledList>
   );
 }
@@ -103,7 +104,7 @@ const StyledList = styled(VStack)<{ fullscreen: boolean }>`
   width: 375px;
   max-width: 375px;
   margin: 4px;
-  height: ${({ fullscreen }) => (fullscreen ? '100%' : '640px')};
+  height: ${({ fullscreen }) => (fullscreen ? '100%' : '400px')};
 `;
 
 function SharedFollowersListRow({ userRef }: { userRef: SharedFollowersListRowFragment$key }) {
@@ -135,3 +136,8 @@ function SharedFollowersListRow({ userRef }: { userRef: SharedFollowersListRowFr
     />
   );
 }
+
+
+const AutoSizerWrapper = styled(VStack)`
+  height: 100%;
+`;
