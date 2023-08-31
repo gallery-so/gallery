@@ -35,14 +35,14 @@ export default function SharedInfoListRow({ title, subTitle, href, imageContent 
   }, [imageContent, subTitle, title]);
 
   const { hideModal } = useModalActions();
-  const handlePressUserRow = useCallback(() => hideModal(), [hideModal]);
+  const handlePressUserLink = useCallback(() => hideModal(), [hideModal]);
 
   if (href === null) {
-    return <StyledRowNonLink onClick={handlePressUserRow}>{rowContent}</StyledRowNonLink>;
+    return <StyledRowNonLink>{rowContent}</StyledRowNonLink>;
   }
 
   return (
-    <StyledRowLink onClick={handlePressUserRow} href={href}>
+    <StyledRowLink onClick={handlePressUserLink} href={href}>
       {rowContent}
     </StyledRowLink>
   );
