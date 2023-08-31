@@ -85,11 +85,9 @@ function AnimatedModal({
 
   const handleClick = useCallback(() => {
     if (onCloseOverride) {
-      console.log('oncloseoverride');
       onCloseOverride(hideModal);
       return;
     }
-    console.log('hidemodal');
     hideModal();
   }, [onCloseOverride, hideModal]);
 
