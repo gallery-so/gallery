@@ -86,7 +86,7 @@ export function SomeoneFollowedYou({
 
   return (
     <StyledHStack justify="space-between" align="center">
-      <HStack gap={4} align="center">
+      <StyledContainer  gap={4} align="center">
         {count > 1 ? (
           <BaseM>
             <strong>{count} collectors</strong>
@@ -106,16 +106,19 @@ export function SomeoneFollowedYou({
           </>
         )}
         <BaseM>followed you</BaseM>
-      </HStack>
+      </StyledContainer>
       {shouldShowFollowBackButton && <StyledFollowButton queryRef={query} userRef={lastFollower} />}
     </StyledHStack>
   );
 }
 
 const StyledHStack = styled(HStack)`
-  flex-wrap: wrap;
-  row-gap: 10px;
   width: 100%;
+`;
+
+const StyledContainer = styled(HStack)`
+  display: flex;
+  flex-wrap: wrap;
 `;
 
 const StyledFollowButton = styled(FollowButton)`
