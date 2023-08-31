@@ -275,11 +275,6 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
             onChange={setSearchQuery}
             placeholder="Search pieces"
           />
-          {/* <SearchBar
-            tokensRef={nonNullTokens}
-            setSearchResults={setSearchResults}
-            setDebouncedSearchQuery={setDebouncedSearchQuery}
-          /> */}
           {step === 3 && (
             <OnboardingDialog
               step={step}
