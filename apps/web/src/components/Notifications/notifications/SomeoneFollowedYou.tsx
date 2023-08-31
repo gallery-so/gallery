@@ -103,13 +103,11 @@ export function SomeoneFollowedYou({
                 </StyledContainer>
               </HStack>
             ) : (
-              <HStack gap={4}>
                 <BaseM>
-                  <strong>Someone</strong>
+                  <strong>Someone </strong>
+                  followed you
                 </BaseM>
 
-                <BaseM>followed you</BaseM>
-              </HStack>
             )}
           </>
         )}
