@@ -29,8 +29,6 @@ export default function PostCommunityPill({ postRef }: Props) {
 
   const token = post.tokens && post.tokens[0];
 
-  // const;
-
   const track = useTrack();
 
   const handleClick = useCallback(() => {
