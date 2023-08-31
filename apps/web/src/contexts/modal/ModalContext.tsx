@@ -101,7 +101,7 @@ function ModalProvider({ children }: Props) {
       isFullPage = false,
       isPaddingDisabled = false,
       onClose = noop,
-      onCloseOverride = () => {},
+      onCloseOverride,
     }: ShowModalFnProps) => {
       setModals((prevModals) => [
         ...prevModals,

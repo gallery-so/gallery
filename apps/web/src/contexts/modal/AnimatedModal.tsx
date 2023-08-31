@@ -31,7 +31,7 @@ export type AnimatedModalProps = {
   headerText: string;
   headerVariant: ModalPaddingVariant;
   hideClose: boolean;
-  onCloseOverride: (onClose: () => void) => void;
+  onCloseOverride?: (onClose: () => void) => void;
 };
 
 function AnimatedModal({
@@ -83,10 +83,15 @@ function AnimatedModal({
     return 'unset';
   }, [isFullPage, isMobile]);
 
-  const handleClick = useCallback(
-    () => (onCloseOverride ? onCloseOverride(hideModal) : hideModal()),
-    [onCloseOverride, hideModal]
-  );
+  const handleClick = useCallback(() => {
+    if (onCloseOverride) {
+      console.log('oncloseoverride');
+      onCloseOverride(hideModal);
+      return;
+    }
+    console.log('hidemodal');
+    hideModal();
+  }, [onCloseOverride, hideModal]);
 
   return (
     <_ToggleFade isActive={isActive}>
