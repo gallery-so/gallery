@@ -61,16 +61,16 @@ export function extractRelevantMetadataFromToken(
   }
 
   if (contractAddress && tokenId) {
-    result.prohibitionUrl = getProhibitionUrl(contractAddress, tokenId);
-    result.fxhashUrl = getFxHashExternalUrl(contractAddress, tokenId);
-    result.objktUrl = getObjktExternalUrl(contractAddress, tokenId);
+    result.prohibitionUrl = getProhibitionUrl(contractAddress, result.tokenId);
+    result.fxhashUrl = getFxHashExternalUrl(contractAddress, result.tokenId);
+    result.objktUrl = getObjktExternalUrl(contractAddress, result.tokenId);
     if (
       chain &&
       // eslint-disable-next-line relay/no-future-added-value
       chain !== '%future added value' &&
       isChainEvm(chain)
     ) {
-      result.openseaUrl = getOpenseaExternalUrl(chain, contractAddress, tokenId);
+      result.openseaUrl = getOpenseaExternalUrl(chain, contractAddress, result.tokenId);
     }
   }
 
