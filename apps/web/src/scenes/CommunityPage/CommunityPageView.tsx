@@ -28,6 +28,9 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
     graphql`
       fragment CommunityPageViewFragment on Community {
         dbid
+        contractAddress {
+          __typename
+        }
 
         ...CommunityPageCollectorsTabFragment
         ...CommunityPageTabsFragment
