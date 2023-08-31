@@ -96,18 +96,22 @@ export function SomeoneFollowedYou({
             {lastFollower ? (
               <HStack gap={8} align="center">
                 <ProfilePicture size="md" userRef={lastFollower} />
-                <HoverCardOnUsername userRef={lastFollower} onClick={onClose} />
+                <StyledContainer gap={4}>
+                  <HoverCardOnUsername userRef={lastFollower} onClick={onClose} />
+                  <BaseM>followed </BaseM>
+                  <BaseM>you</BaseM>
+</StyledContainer>
               </HStack>
             ) : (
               <BaseM>
                 <strong>Someone</strong>
+                followed you
               </BaseM>
             )}
           </>
         )}
-        <BaseM>followed you</BaseM>
-      </StyledContainer>
-      {shouldShowFollowBackButton && <StyledFollowButton queryRef={query} userRef={lastFollower} />}
+                </StyledContainer>
+                {shouldShowFollowBackButton && <StyledFollowButton queryRef={query} userRef={lastFollower} />}
     </StyledHStack>
   );
 }
