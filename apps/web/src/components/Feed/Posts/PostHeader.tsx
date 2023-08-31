@@ -4,7 +4,6 @@ import { graphql, useFragment } from 'react-relay';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
-import HoverCardOnCommunity from '~/components/HoverCard/HoverCardOnCommunity';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { PostHeaderFragment$key } from '~/generated/PostHeaderFragment.graphql';
@@ -31,11 +30,6 @@ export default function PostHeader({ postRef, queryRef }: Props) {
             ...HoverCardOnUsernameFragment
           }
         }
-        tokens {
-          community {
-            ...HoverCardOnCommunityFragment
-          }
-        }
         creationTime
         ...PostDropdownFragment
       }
@@ -52,8 +46,6 @@ export default function PostHeader({ postRef, queryRef }: Props) {
     queryRef
   );
 
-  const token = post.tokens && post.tokens[0];
-
   return (
     <VStack gap={6}>
       <HStack justify="space-between">
@@ -61,7 +53,6 @@ export default function PostHeader({ postRef, queryRef }: Props) {
           <ProfilePicture userRef={post.author} size="md" />
           <VStack>
             <HoverCardOnUsername userRef={post.author} />
-            {token?.community && <HoverCardOnCommunity communityRef={token.community} />}
           </VStack>
         </HStack>
         <HStack align="center" gap={4}>

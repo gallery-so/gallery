@@ -6,7 +6,10 @@ import FastImage from 'react-native-fast-image';
 import { graphql, useFragment } from 'react-relay';
 import { useTogglePostAdmire } from 'src/hooks/useTogglePostAdmire';
 
+import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { UniversalNftPreview } from '~/components/NftPreview/UniversalNftPreview';
+import { Pill } from '~/components/Pill';
+import { Typography } from '~/components/Typography';
 import { PostListItemFragment$key } from '~/generated/PostListItemFragment.graphql';
 import { PostListItemQueryFragment$key } from '~/generated/PostListItemQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
@@ -27,6 +30,13 @@ export function PostListItem({ feedPostRef, queryRef }: Props) {
 
         tokens {
           dbid
+          community {
+            name
+            contractAddress {
+              address
+              chain
+            }
+          }
           ...getVideoOrImageUrlForNftPreviewFragment
           ...UniversalNftPreviewTokenFragment
         }
@@ -47,6 +57,7 @@ export function PostListItem({ feedPostRef, queryRef }: Props) {
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
   const dimensions = useWindowDimensions();
+
   const singleTapTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const { toggleAdmire } = useTogglePostAdmire({
@@ -55,6 +66,15 @@ export function PostListItem({ feedPostRef, queryRef }: Props) {
   });
 
   const firstToken = feedPost.tokens?.[0] || null;
+  const community = firstToken?.community ?? null;
+
+  const handleCommunityPress = useCallback(() => {
+    if (!community || !community.contractAddress) return;
+    navigation.push('Community', {
+      contractAddress: community.contractAddress?.address ?? '',
+      chain: community.contractAddress?.chain ?? '',
+    });
+  }, [community, navigation]);
 
   if (!firstToken) {
     throw new Error('There is no token in post');
@@ -91,8 +111,8 @@ export function PostListItem({ feedPostRef, queryRef }: Props) {
     <View className="flex flex-1 flex-col pt-1" style={{ width: dimensions.width }}>
       <View
         style={{
-          minHeight: dimensions.width,
-          minWidth: dimensions.width,
+          height: dimensions.width,
+          width: dimensions.width,
         }}
       >
         <UniversalNftPreview
@@ -103,6 +123,25 @@ export function PostListItem({ feedPostRef, queryRef }: Props) {
           tokenUrl={tokenUrl}
         />
       </View>
+      {community && (
+        <GalleryTouchableOpacity
+          className="flex flex-row mt-3 ml-3"
+          onPress={handleCommunityPress}
+          eventElementId="Post Community Pill"
+          eventName="Clicked Post Community Pill"
+          properties={{ communityName: community.name }}
+        >
+          <Pill className="dark:border-black-500">
+            <Typography
+              numberOfLines={1}
+              className="text-sm "
+              font={{ family: 'ABCDiatype', weight: 'Bold' }}
+            >
+              {community.name || 'Unknown Collection'}
+            </Typography>
+          </Pill>
+        </GalleryTouchableOpacity>
+      )}
     </View>
   );
 }
