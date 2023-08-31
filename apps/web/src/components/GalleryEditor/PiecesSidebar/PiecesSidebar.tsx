@@ -3,6 +3,7 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { Button } from '~/components/core/Button/Button';
+import { FadedInput } from '~/components/core/Input/FadedInput';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { Spinner } from '~/components/core/Spinner/Spinner';
 import { TitleS } from '~/components/core/Text/Text';
@@ -13,7 +14,6 @@ import { PiecesSidebarFragment$key } from '~/generated/PiecesSidebarFragment.gra
 import { PiecesSidebarViewerFragment$key } from '~/generated/PiecesSidebarViewerFragment.graphql';
 import useSyncTokens from '~/hooks/api/tokens/useSyncTokens';
 import { RefreshIcon } from '~/icons/RefreshIcon';
-import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
 import { ChainMetadata, chainsMap } from '~/shared/utils/chains';
 import { doesUserOwnWalletFromChainFamily } from '~/utils/doesUserOwnWalletFromChainFamily';
@@ -23,10 +23,10 @@ import { useOnboardingDialogContext } from '../GalleryOnboardingGuide/Onboarding
 import { AddWalletSidebar } from './AddWalletSidebar';
 import CreatorEmptyStateSidebar from './CreatorEmptyStateSidebar';
 import isRefreshDisabledForUser from './isRefreshDisabledForUser';
-import SearchBar from './SearchBar';
 import SidebarChainDropdown from './SidebarChainDropdown';
 import { SidebarView, SidebarViewSelector } from './SidebarViewSelector';
 import SidebarWalletSelector, { SidebarWallet } from './SidebarWalletSelector';
+import useTokenSearchResults from './useTokenSearchResults';
 
 type Props = {
   tokensRef: PiecesSidebarFragment$key;
@@ -46,6 +46,8 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
 
         ...SearchBarFragment
         ...SidebarTokensFragment
+
+        ...useTokenSearchResultsFragment
       }
     `,
     tokensRef
@@ -74,32 +76,23 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
   const { isLocked, syncTokens } = useSyncTokens();
   const { addWhitespace } = useCollectionEditorContext();
 
-  const [searchResults, setSearchResults] = useState<string[]>([]);
+  const { searchQuery, setSearchQuery, tokenSearchResults, isSearching } = useTokenSearchResults<
+    (typeof allTokens)[0]
+  >({
+    tokensRef: allTokens,
+    rawTokensToDisplay: allTokens,
+  });
+
   const [selectedChain, setSelectedChain] = useState<ChainMetadata>(chainsMap['Ethereum']);
   const [selectedWallet, setSelectedWallet] = useState<SidebarWallet>('All');
   const [selectedView, setSelectedView] = useState<SidebarView>('Collected');
-  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
 
   const navbarHeight = useGlobalNavbarHeight();
-
-  const isSearching = debouncedSearchQuery.length > 0;
-
-  const nonNullTokens = removeNullValues(allTokens);
 
   const ownsWalletFromSelectedChainFamily = doesUserOwnWalletFromChainFamily(
     selectedChain.name,
     query
   );
-
-  const tokenSearchResults = useMemo(() => {
-    if (!debouncedSearchQuery) {
-      return nonNullTokens;
-    }
-
-    const searchResultsSet = new Set(searchResults);
-
-    return nonNullTokens.filter((token) => searchResultsSet.has(token.dbid));
-  }, [debouncedSearchQuery, nonNullTokens, searchResults]);
 
   const handleAddBlankBlockClick = useCallback(() => {
     addWhitespace();
@@ -275,11 +268,17 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
           )}
         </Header>
         <StyledSearchBarContainer>
-          <SearchBar
+          <FadedInput
+            size="md"
+            value={searchQuery}
+            onChange={setSearchQuery}
+            placeholder="Search pieces"
+          />
+          {/* <SearchBar
             tokensRef={nonNullTokens}
             setSearchResults={setSearchResults}
             setDebouncedSearchQuery={setDebouncedSearchQuery}
-          />
+          /> */}
           {step === 3 && (
             <OnboardingDialog
               step={step}

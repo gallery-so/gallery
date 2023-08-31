@@ -8,7 +8,6 @@ import useSyncTokens from '~/hooks/api/tokens/useSyncTokens';
 import { ChevronLeftIcon } from '~/icons/ChevronLeftIcon';
 import { RefreshIcon } from '~/icons/RefreshIcon';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
-import useDebounce from '~/shared/hooks/useDebounce';
 import { Chain } from '~/shared/utils/chains';
 import { doesUserOwnWalletFromChainFamily } from '~/utils/doesUserOwnWalletFromChainFamily';
 
@@ -17,6 +16,7 @@ import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM } from '../core/Text/Text';
 import isRefreshDisabledForUser from '../GalleryEditor/PiecesSidebar/isRefreshDisabledForUser';
 import { SidebarView } from '../GalleryEditor/PiecesSidebar/SidebarViewSelector';
+import useTokenSearchResults from '../GalleryEditor/PiecesSidebar/useTokenSearchResults';
 import { NewTooltip } from '../Tooltip/NewTooltip';
 import { useTooltipHover } from '../Tooltip/useTooltipHover';
 import { NftSelectorCollectionGroup } from './groupNftSelectorCollectionsByAddress';
@@ -51,6 +51,7 @@ export function NftSelector({
     graphql`
       fragment NftSelectorFragment on Token @relay(plural: true) {
         ...NftSelectorViewFragment
+        dbid
         name
         chain
         creationTime
@@ -61,6 +62,8 @@ export function NftSelector({
         contract {
           name
         }
+
+        ...useTokenSearchResultsFragment
       }
     `,
     tokensRef
@@ -83,8 +86,12 @@ export function NftSelector({
     queryRef
   );
 
-  const [searchKeyword, setSearchKeyword] = useState<string>('');
-  const debouncedSearchKeyword = useDebounce(searchKeyword, 200);
+  const { searchQuery, setSearchQuery, tokenSearchResults, isSearching } = useTokenSearchResults<
+    (typeof tokens)[0]
+  >({
+    tokensRef: tokens,
+    rawTokensToDisplay: tokens,
+  });
 
   const [selectedView, setSelectedView] = useState<SidebarView>('Collected');
   const [selectedSortView, setSelectedSortView] = useState<NftSelectorSortView>('Recently added');
@@ -101,30 +108,12 @@ export function NftSelector({
   }, []);
 
   const filteredTokens = useMemo(() => {
-    let filteredTokens = [...tokens];
+    let filteredTokens = [...tokenSearchResults];
 
     // Filter by network
-    filteredTokens = tokens.filter((token) => token.chain === selectedNetworkView);
-
-    // Filter by search
-    if (debouncedSearchKeyword) {
-      const lowerCaseQuery = debouncedSearchKeyword.toLowerCase();
-
-      filteredTokens = tokens.filter((token) => {
-        if (token.name?.toLowerCase().includes(debouncedSearchKeyword)) {
-          return true;
-        }
-
-        if (token.contract?.name?.toLowerCase().includes(lowerCaseQuery)) {
-          return true;
-        }
-
-        return false;
-      });
-    }
+    filteredTokens = filteredTokens.filter((token) => token.chain === selectedNetworkView);
 
     // Filter by view
-
     filteredTokens = filteredTokens.filter((token) => {
       const isSpam = token.isSpamByUser !== null ? token.isSpamByUser : token.isSpamByProvider;
       if (selectedView === 'Hidden') {
@@ -164,7 +153,7 @@ export function NftSelector({
     }
 
     return filteredTokens;
-  }, [debouncedSearchKeyword, selectedNetworkView, selectedSortView, selectedView, tokens]);
+  }, [selectedNetworkView, selectedSortView, selectedView, tokenSearchResults]);
 
   const track = useTrack();
   const isRefreshDisabledAtUserLevel = isRefreshDisabledForUser(query.viewer?.user?.dbid ?? '');
@@ -208,7 +197,7 @@ export function NftSelector({
 
       <StyledActionContainer gap={16} justify="space-between">
         {!selectedContract && (
-          <NftSelectorSearchBar keyword={searchKeyword} onChange={setSearchKeyword} />
+          <NftSelectorSearchBar keyword={searchQuery} onChange={setSearchQuery} />
         )}
         {selectedContract ? (
           <StyledHeaderContainer justify="space-between" align="center">
@@ -265,7 +254,7 @@ export function NftSelector({
           selectedContractAddress={selectedContract?.address ?? null}
           onSelectContract={setSelectedContract}
           selectedNetworkView={selectedNetworkView}
-          hasSearchKeyword={Boolean(debouncedSearchKeyword)}
+          hasSearchKeyword={isSearching}
           handleRefresh={handleRefresh}
           onSelectToken={onSelectToken}
         />
