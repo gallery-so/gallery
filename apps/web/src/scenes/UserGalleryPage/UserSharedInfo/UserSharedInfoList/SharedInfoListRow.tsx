@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Route } from 'nextjs-routes';
-import { useMemo, useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 
 import Markdown from '~/components/core/Markdown/Markdown';
@@ -41,7 +41,11 @@ export default function SharedInfoListRow({ title, subTitle, href, imageContent 
     return <StyledRowNonLink onClick={onPressUserRow}>{rowContent}</StyledRowNonLink>;
   }
 
-  return <StyledRowLink onClick={onPressUserRow} href={href}>{rowContent}</StyledRowLink>;
+  return (
+    <StyledRowLink onClick={onPressUserRow} href={href}>
+      {rowContent}
+    </StyledRowLink>
+  );
 }
 
 const StyledRowNonLink = styled.div`
