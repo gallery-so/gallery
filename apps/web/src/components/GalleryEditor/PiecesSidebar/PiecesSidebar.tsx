@@ -43,8 +43,6 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
         isSpamByProvider
         ownerIsHolder
         ownerIsCreator
-
-        ...SearchBarFragment
         ...SidebarTokensFragment
 
         ...useTokenSearchResultsFragment
@@ -155,14 +153,19 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
     setSelectedWallet('All');
   }, []);
 
-  // [GAL-3406] – enable this once the button is ready to be hooked up end-to-end
   const handleRefresh = useCallback(async () => {
     if (refreshDisabled) {
       return;
     }
 
-    await syncTokens(selectedChain.name);
-  }, [selectedChain, refreshDisabled, syncTokens]);
+    if (selectedView === 'Created') {
+      await syncTokens({ type: 'Created', chain: selectedChain.name });
+    }
+
+    if (selectedView === 'Collected') {
+      await syncTokens({ type: 'Collected', chain: selectedChain.name });
+    }
+  }, [refreshDisabled, selectedView, syncTokens, selectedChain.name]);
 
   // Auto-sync tokens when the chain changes, and there are 0 tokens to display
   useEffect(() => {
@@ -221,15 +224,11 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
 
   // this can be a 1-liner but this is easier to read tbh
   const shouldDisplayRefreshButtonGroup = useMemo(() => {
-    // [GAL-3406] – enable this once the button is ready to be hooked up end-to-end
-    if (selectedView === 'Created') {
-      return false;
-    }
     if (!ownsWalletFromSelectedChainFamily) {
       return false;
     }
     return true;
-  }, [ownsWalletFromSelectedChainFamily, selectedView]);
+  }, [ownsWalletFromSelectedChainFamily]);
 
   return (
     <StyledSidebar navbarHeight={navbarHeight}>

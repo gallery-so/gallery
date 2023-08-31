@@ -41,7 +41,7 @@ export default function CommunityPageOwnershipRequiredModal({
       return;
     }
 
-    await syncTokens(community.chain);
+    await syncTokens({ type: 'Collected', chain: community.chain });
     refetchIsMemberOfCommunity();
     hideModal();
   }, [community.chain, hideModal, refetchIsMemberOfCommunity, syncTokens]);

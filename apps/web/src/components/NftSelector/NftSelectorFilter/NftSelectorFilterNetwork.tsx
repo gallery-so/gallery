@@ -59,14 +59,11 @@ export function NftSelectorFilterNetwork({
 
   const track = useTrack();
   const availableChains = useMemo(() => {
-    if (selectedMode === 'Created') {
-      return chains.filter((chain) => chain.hasCreatorSupport);
-    }
     if (isAdmin) {
       return chains;
     }
     return chains.filter((chain) => chain.isEnabled);
-  }, [isAdmin, selectedMode]);
+  }, [isAdmin]);
 
   const selectedChain = useMemo(() => {
     return availableChains.find((chain) => chain.name === selectedNetwork);
@@ -90,7 +87,15 @@ export function NftSelectorFilterNetwork({
       <Dropdown position="right" active={isDropdownOpen} onClose={() => setIsDropdownOpen(false)}>
         <DropdownSection>
           {availableChains.map((chain) => (
-            <DropdownItem key={chain.name} onClick={() => onSelectChain(chain)}>
+            <DropdownItem
+              key={chain.name}
+              onClick={() => {
+                if (selectedMode === 'Created' && chain.hasCreatorSupport) {
+                  onSelectChain(chain);
+                }
+              }}
+              disabled={selectedMode === 'Created' && !chain.hasCreatorSupport}
+            >
               <NetworkDropdownByNetwork chain={chain} />
             </DropdownItem>
           ))}
