@@ -93,7 +93,6 @@ export default function SharedFollowersList({ userRef }: Props) {
           </InfiniteLoader>
         )}
       </AutoSizer>
-      <VStack></VStack>
     </StyledList>
   );
 }

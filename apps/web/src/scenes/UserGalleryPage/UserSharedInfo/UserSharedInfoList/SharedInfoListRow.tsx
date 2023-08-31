@@ -18,7 +18,6 @@ type Props = {
 };
 
 export default function SharedInfoListRow({ title, subTitle, href, imageContent }: Props) {
-  const { hideModal } = useModalActions();
   const rowContent = useMemo(() => {
     return (
       <StyledHStack justify="space-between" align="center" gap={8}>
@@ -35,14 +34,15 @@ export default function SharedInfoListRow({ title, subTitle, href, imageContent 
     );
   }, [imageContent, subTitle, title]);
 
-  const onPressUserRow = useCallback(() => hideModal(), [hideModal]);
+  const { hideModal } = useModalActions();
+  const handlePressUserRow = useCallback(() => hideModal(), [hideModal]);
 
   if (href === null) {
-    return <StyledRowNonLink onClick={onPressUserRow}>{rowContent}</StyledRowNonLink>;
+    return <StyledRowNonLink onClick={handlePressUserRow}>{rowContent}</StyledRowNonLink>;
   }
 
   return (
-    <StyledRowLink onClick={onPressUserRow} href={href}>
+    <StyledRowLink onClick={handlePressUserRow} href={href}>
       {rowContent}
     </StyledRowLink>
   );
