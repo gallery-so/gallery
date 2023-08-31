@@ -43,8 +43,6 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
         isSpamByProvider
         ownerIsHolder
         ownerIsCreator
-
-        ...SearchBarFragment
         ...SidebarTokensFragment
 
         ...useTokenSearchResultsFragment
