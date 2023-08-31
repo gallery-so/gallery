@@ -33,14 +33,21 @@ export default function PostNftPreview({ tokenRef, onNftLoad }: Props) {
 
   const breakpoint = useBreakpoint();
   const { width } = useWindowSize();
+  const bigScreenMode = true;
 
   const tokenSize = useMemo(() => {
+    if (bigScreenMode) {
+      return 480;
+    }
+
     return getFeedTokenDimensions({
       numTokens: '1',
       maxWidth: width,
       breakpoint,
     });
-  }, [breakpoint, width]);
+  }, [bigScreenMode, breakpoint, width]);
+
+  console.log({ tokenSize });
 
   return (
     <StyledPostNftPreview>

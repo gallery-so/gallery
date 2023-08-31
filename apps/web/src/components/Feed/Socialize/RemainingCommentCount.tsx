@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
@@ -5,6 +6,7 @@ import styled from 'styled-components';
 import { BODY_FONT_FAMILY } from '~/components/core/Text/Text';
 import { RemainingCommentCountFragment$key } from '~/generated/RemainingCommentCountFragment.graphql';
 import { RemainingCommentCountQueryFragment$key } from '~/generated/RemainingCommentCountQueryFragment.graphql';
+import { CommunityPageDisplayMode } from '~/scenes/CommunityPage/CommunityPagePresentation/CommunityPagePresentationScene';
 import colors from '~/shared/theme/colors';
 
 import { useCommentsModal } from './CommentsModal/useCommentsModal';
@@ -43,13 +45,17 @@ export function RemainingCommentCount({
     queryRef
   );
 
+  const { query: routerQuery } = useRouter();
+
   const openCommentsModal = useCommentsModal({ eventRef: event, queryRef: query });
 
   if (totalComments <= 1) {
     return null;
   }
 
-  return (
+  return routerQuery.displayMode === CommunityPageDisplayMode.PRESENTATION ? (
+    <StyledViewCommentsText>View all comments in the Gallery App</StyledViewCommentsText>
+  ) : (
     <StyledViewCommentsText onClick={openCommentsModal}>
       View all {totalComments} comments
     </StyledViewCommentsText>

@@ -12,7 +12,12 @@ type Props = {
   postRefs: CommunityPagePostCycleFragment$key;
 };
 
-export default function CommunityPagePostCycle({ queryRef, postRefs }: Props) {
+export default function CommunityPagePostCycle({
+  queryRef,
+  postRefs,
+  loadNextPage,
+  hasNext,
+}: Props) {
   const query = useFragment(
     graphql`
       fragment CommunityPagePostCycleQueryFragment on Query {
@@ -36,20 +41,41 @@ export default function CommunityPagePostCycle({ queryRef, postRefs }: Props) {
 
   const [displayedPostIndex, setDisplayedPostIndex] = useState(0);
 
+  // useEffect(() => {
+  //   const intervalId = setInterval(() => {
+  //     setDisplayedPostIndex((prevIndex) => {
+  //       // If we've shown all posts, start from 0 again
+  //       console.log(prevIndex, postsData.length);
+  //       if (prevIndex >= postsData.length - 1) {
+  //         console.log('resetting', postsData.length);
+  //         return 0;
+  //       }
+  //       return prevIndex + 1;
+  //     });
+
+  //     // if we're about to set the last index, load more posts
+  //   }, 5000);
+
+  //   return () => clearInterval(intervalId);
+  // });
+
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      setDisplayedPostIndex((prevIndex) => {
-        // If we've shown all posts, start from 0 again
-        console.log(prevIndex, postsData.length);
-        if (prevIndex >= postsData.length - 1) {
-          return 0;
-        }
-        return prevIndex + 1;
-      });
-    }, 5000);
+    console.log('displayedPostIndex changed: ', displayedPostIndex);
+    console.log('postsData.length: ', postsData.length);
+    console.log('hasNext: ', hasNext);
+    console.log({ postsData });
+    console.log(postsData[displayedPostIndex]);
+    if (displayedPostIndex === postsData.length - 1 && hasNext) {
+      console.log('loading next page');
+      // loadNextPage();
+    }
+  }, [displayedPostIndex, hasNext, loadNextPage, postsData, postsData.length]);
 
-    return () => clearInterval(intervalId);
-  });
-
-  return <PostItem eventRef={postsData[displayedPostIndex]} queryRef={query}></PostItem>;
+  return (
+    <PostItem
+      eventRef={postsData[displayedPostIndex]}
+      queryRef={query}
+      bigScreenMode={true}
+    ></PostItem>
+  );
 }

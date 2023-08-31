@@ -3,14 +3,21 @@ import colors, { ColorType } from '~/shared/theme/colors';
 type Props = {
   className?: string;
   color?: ColorType;
+  width?: number;
+  height?: number;
 };
 
-export default function LogoBracketRight({ className, color = colors.black['800'] }: Props) {
+export default function LogoBracketRight({
+  className,
+  color = colors.black['800'],
+  width = 5,
+  height = 16,
+}: Props) {
   return (
     <svg
       className={className}
-      width="5"
-      height="16"
+      width={width}
+      height={height}
       viewBox="0 0 5 16"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

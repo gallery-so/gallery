@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import { useCallback, useLayoutEffect, useMemo, useRef } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -11,6 +12,7 @@ import { useModalActions } from '~/contexts/modal/ModalContext';
 import { CommentsFragment$key } from '~/generated/CommentsFragment.graphql';
 import { CommentsQueryFragment$key } from '~/generated/CommentsQueryFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
+import { CommunityPageDisplayMode } from '~/scenes/CommunityPage/CommunityPagePresentation/CommunityPagePresentationScene';
 import colors from '~/shared/theme/colors';
 
 import { FeedEventsCommentsModal } from './CommentsModal/FeedEventsCommentsModal';
@@ -127,6 +129,8 @@ export function Comments({ eventRef, queryRef, onPotentialLayoutShift }: Props) 
     // These are all the things that might cause the layout to shift
   }, [onPotentialLayoutShift, nonNullComments, totalComments]);
 
+  const { query: routerQuery } = useRouter();
+
   /**
    * The below logic is a bit annoying to read so I'll try to explain it here
    *
@@ -183,7 +187,11 @@ export function Comments({ eventRef, queryRef, onPotentialLayoutShift }: Props) 
     );
   }
 
-  return (
+  return routerQuery.displayMode === CommunityPageDisplayMode.PRESENTATION ? (
+    <StyledAddCommentCta color={colors.shadow}>
+      Join the coversation in the Gallery app
+    </StyledAddCommentCta>
+  ) : (
     <StyledAddCommentCta onClick={handleAddCommentClick} color={colors.shadow}>
       Add a comment
     </StyledAddCommentCta>
