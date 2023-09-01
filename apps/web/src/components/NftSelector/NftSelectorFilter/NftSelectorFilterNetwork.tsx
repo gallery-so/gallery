@@ -86,19 +86,21 @@ export function NftSelectorFilterNetwork({
       </Selector>
       <Dropdown position="right" active={isDropdownOpen} onClose={() => setIsDropdownOpen(false)}>
         <DropdownSection>
-          {availableChains.map((chain) => (
-            <DropdownItem
-              key={chain.name}
-              onClick={() => {
-                if (selectedMode === 'Created' && chain.hasCreatorSupport) {
+          {availableChains.map((chain) => {
+            const isChainDisabled = selectedMode === 'Created' && !chain.hasCreatorSupport;
+            return (
+              <DropdownItem
+                key={chain.name}
+                onClick={() => {
+                  if (isChainDisabled) return;
                   onSelectChain(chain);
-                }
-              }}
-              disabled={selectedMode === 'Created' && !chain.hasCreatorSupport}
-            >
-              <NetworkDropdownByNetwork chain={chain} />
-            </DropdownItem>
-          ))}
+                }}
+                disabled={isChainDisabled}
+              >
+                <NetworkDropdownByNetwork chain={chain} />
+              </DropdownItem>
+            );
+          })}
         </DropdownSection>
       </Dropdown>
     </Container>

@@ -76,22 +76,24 @@ export default function SidebarChainDropdown({
         onClose={() => setIsDropdownOpen(false)}
       >
         <DropdownSection>
-          {availableChains.map((chain) => (
-            <DropdownItem
-              key={chain.name}
-              onClick={() => {
-                if (selectedView === 'Created' && chain.hasCreatorSupport) {
+          {availableChains.map((chain) => {
+            const isChainDisabled = selectedView === 'Created' && !chain.hasCreatorSupport;
+            return (
+              <DropdownItem
+                key={chain.name}
+                onClick={() => {
+                  if (isChainDisabled) return;
                   handleSelectChain(chain);
-                }
-              }}
-              disabled={selectedView === 'Created' && !chain.hasCreatorSupport}
-            >
-              <HStack align="center" gap={6}>
-                <Image src={chain.icon} width={16} height={16} alt={chain.name} />
-                <BaseM>{chain.name}</BaseM>
-              </HStack>
-            </DropdownItem>
-          ))}
+                }}
+                disabled={isChainDisabled}
+              >
+                <HStack align="center" gap={6}>
+                  <Image src={chain.icon} width={16} height={16} alt={chain.name} />
+                  <BaseM>{chain.name}</BaseM>
+                </HStack>
+              </DropdownItem>
+            );
+          })}
         </DropdownSection>
       </StyledDropdown>
     </Container>
