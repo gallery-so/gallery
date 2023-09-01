@@ -60,7 +60,10 @@ export type MainTabStackNavigatorParamList = {
 };
 
 export type FeedTabNavigatorParamList = {
-  Curated: undefined;
+  Curated: {
+    // check if new registered user, we show a welcome message
+    isNewUser?: boolean;
+  };
   Latest: undefined;
   Explore: undefined;
 };
