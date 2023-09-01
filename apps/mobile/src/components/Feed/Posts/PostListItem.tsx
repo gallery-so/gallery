@@ -69,11 +69,14 @@ export function PostListItem({ feedPostRef, queryRef }: Props) {
   const community = firstToken?.community ?? null;
 
   const handleCommunityPress = useCallback(() => {
-    if (!community || !community.contractAddress) return;
-    navigation.push('Community', {
-      contractAddress: community.contractAddress?.address ?? '',
-      chain: community.contractAddress?.chain ?? '',
-    });
+    if (community?.contractAddress?.address && community?.contractAddress?.chain) {
+      navigation.push('Community', {
+        contractAddress: community.contractAddress?.address ?? '',
+        chain: community.contractAddress?.chain ?? '',
+      });
+    }
+
+    return;
   }, [community, navigation]);
 
   if (!firstToken) {

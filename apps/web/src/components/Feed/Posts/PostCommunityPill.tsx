@@ -32,7 +32,7 @@ export default function PostCommunityPill({ postRef }: Props) {
   const track = useTrack();
 
   const handleClick = useCallback(() => {
-    track('Clicked Post COmmunity Pill', { community: token?.community?.name });
+    track('Clicked Post Community Pill', { community: token?.community?.name });
   }, [token?.community?.name, track]);
 
   if (!token?.community) {
