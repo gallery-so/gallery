@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useRef } from 'react';
 import { View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -12,7 +12,6 @@ import { Typography } from '~/components/Typography';
 import { PostListSectionHeaderFragment$key } from '~/generated/PostListSectionHeaderFragment.graphql';
 import { PostListSectionHeaderQueryFragment$key } from '~/generated/PostListSectionHeaderQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
-import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import { getTimeSince } from '~/shared/utils/time';
 
@@ -36,16 +35,6 @@ export function PostListSectionHeader({ feedPostRef, queryRef }: PostListSection
           ...PostBottomSheetUserFragment
         }
         creationTime
-        tokens {
-          __typename
-          community {
-            name
-            contractAddress {
-              address
-              chain
-            }
-          }
-        }
         ...PostBottomSheetFragment
       }
     `,
@@ -69,18 +58,6 @@ export function PostListSectionHeader({ feedPostRef, queryRef }: PostListSection
   const loggedInUserId = useLoggedInUserId(query);
   const isOwnPost = loggedInUserId === feedPost.author?.id;
 
-  const nonNullTokens = useMemo(() => {
-    const tokens = feedPost?.tokens;
-
-    return removeNullValues(tokens);
-  }, [feedPost?.tokens]);
-
-  const community = nonNullTokens[0]?.community ?? {
-    dbid: null,
-    name: 'Unknown Community',
-    contractAddress: null,
-  };
-
   const handleMenuPress = useCallback(() => {
     bottomSheetRef.current?.present();
   }, []);
@@ -90,14 +67,6 @@ export function PostListSectionHeader({ feedPostRef, queryRef }: PostListSection
       navigation.push('Profile', { username: feedPost.author?.username });
     }
   }, [feedPost.author?.username, navigation]);
-
-  const handleCommunityPress = useCallback(() => {
-    if (!community.contractAddress) return;
-    navigation.push('Community', {
-      contractAddress: community.contractAddress?.address ?? '',
-      chain: community.contractAddress?.chain ?? '',
-    });
-  }, [community.contractAddress, navigation]);
 
   return (
     <View className="flex flex-row items-center justify-between bg-white dark:bg-black-900  px-4">
@@ -124,22 +93,6 @@ export function PostListSectionHeader({ feedPostRef, queryRef }: PostListSection
                 {feedPost?.author?.username}
               </Typography>
             </GalleryTouchableOpacity>
-            {community.name && (
-              <GalleryTouchableOpacity
-                className="flex flex-row items-center space-x-1"
-                onPress={handleCommunityPress}
-                eventElementId="Feed Community Button"
-                eventName="Feed Community Clicked"
-                properties={{ variant: 'Feed event community' }}
-              >
-                <Typography
-                  className="text-xs text-shadow"
-                  font={{ family: 'ABCDiatype', weight: 'Regular' }}
-                >
-                  {community.name}
-                </Typography>
-              </GalleryTouchableOpacity>
-            )}
           </View>
         </View>
 

@@ -196,6 +196,7 @@ const StyledContainer = styled.span`
   position: relative;
   display: inline-grid;
   cursor: initial;
+  width: fit-content;
 `;
 
 const StyledLinkContainer = styled.div`
