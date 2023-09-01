@@ -60,8 +60,8 @@ export function LatestFollowingFeed({ onSeeAll, queryRef }: Props) {
 
   const track = useTrack();
 
-  const handleSeeWorldwideClick = useCallback(() => {
-    track('Feed: Clicked worldwide button from inbox zero');
+  const handleSeeForYouClick = useCallback(() => {
+    track('Feed: Clicked See All button from inbox zero');
     onSeeAll();
   }, [onSeeAll, track]);
 
@@ -82,12 +82,12 @@ export function LatestFollowingFeed({ onSeeAll, queryRef }: Props) {
       <VStack align="center">
         <TitleDiatypeL>It's quiet in here</TitleDiatypeL>
         <StyledEmptyFeedBody>
-          Discover new collectors to follow in the worldwide feed.
+          Discover new collectors and creators to follow in your <strong>For You</strong> feed.
         </StyledEmptyFeedBody>
       </VStack>
       <VStack>
-        <Button variant="secondary" onClick={handleSeeWorldwideClick}>
-          See worldwide activity
+        <Button variant="secondary" onClick={handleSeeForYouClick}>
+          Take me there
         </Button>
       </VStack>
     </StyledEmptyFeed>
@@ -109,6 +109,6 @@ const StyledEmptyFeed = styled(VStack)`
 `;
 
 const StyledEmptyFeedBody = styled(BaseM)`
-  width: 194px;
+  width: 230px;
   text-align: center;
 `;

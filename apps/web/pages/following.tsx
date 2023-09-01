@@ -41,7 +41,7 @@ export default function Following() {
   const isAuthenticated = Boolean(query.viewer?.user?.id);
 
   if (!isAuthenticated) {
-    return <GalleryRedirect to={{ pathname: '/latest' }} />;
+    return <GalleryRedirect to={{ pathname: '/home' }} />;
   }
 
   return (
