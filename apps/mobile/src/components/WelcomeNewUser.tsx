@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { View } from 'react-native';
 
+import { Button } from './Button';
 import {
   GalleryBottomSheetModal,
   GalleryBottomSheetModalType,
 } from './GalleryBottomSheet/GalleryBottomSheetModal';
 import { Typography } from './Typography';
-import { Button } from './Button';
 
 type Props = {
   username: string;

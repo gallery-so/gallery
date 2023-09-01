@@ -1,16 +1,16 @@
+import { RouteProp, useRoute } from '@react-navigation/native';
 import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 
+import { WelcomeNewUser } from '~/components/WelcomeNewUser';
 import { CuratedScreenFragment$key } from '~/generated/CuratedScreenFragment.graphql';
 import { CuratedScreenQuery } from '~/generated/CuratedScreenQuery.graphql';
 import { RefetchableCuratedScreenFragmentQuery } from '~/generated/RefetchableCuratedScreenFragmentQuery.graphql';
+import { FeedTabNavigatorParamList } from '~/navigation/types';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import { FeedList } from '../../components/Feed/FeedList';
 import { LoadingFeedList } from '../../components/Feed/LoadingFeedList';
-import { RouteProp, useRoute } from '@react-navigation/native';
-import { FeedTabNavigatorParamList } from '~/navigation/types';
-import { WelcomeNewUser } from '~/components/WelcomeNewUser';
 
 type CuratedScreenInnerProps = {
   queryRef: CuratedScreenFragment$key;
