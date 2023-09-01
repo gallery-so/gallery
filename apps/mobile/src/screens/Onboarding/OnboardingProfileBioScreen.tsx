@@ -63,7 +63,7 @@ export function OnboardingProfileBioScreen() {
       await updateUser(user.dbid, user.username ?? '', bio);
     }
 
-    await navigateToNotificationUpsellOrHomeScreen(navigation);
+    await navigateToNotificationUpsellOrHomeScreen(navigation, true);
   }, [bio, navigation, updateUser, user]);
 
   if (user?.__typename !== 'GalleryUser') {

@@ -10,7 +10,8 @@ export function markAsShown() {
 }
 
 export async function navigateToNotificationUpsellOrHomeScreen(
-  navigation: LoginStackNavigatorProp
+  navigation: LoginStackNavigatorProp,
+  isNewUser?: boolean
 ) {
   const shown = await AsyncStorage.getItem(KEY);
 
@@ -24,7 +25,7 @@ export async function navigateToNotificationUpsellOrHomeScreen(
             screen: 'HomeTab',
             params: {
               screen: 'Home',
-              params: { screen: 'Curated', params: { isNewUser: true } },
+              params: { screen: 'Curated', params: { isNewUser } },
             },
           },
         },
