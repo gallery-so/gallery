@@ -43,9 +43,6 @@ export function OnboardingUsernameScreen() {
   const [isUsernameValid, setIsUsernameValid] = useState(false);
   const [usernameError, setUsernameError] = useState('');
 
-  // Generic error that doesn't belong to username / bio
-  const [, setGeneralError] = useState('');
-
   const debouncedUsername = useDebounce(username, 500);
 
   const authMechanism = route.params.authMechanism;
@@ -56,8 +53,13 @@ export function OnboardingUsernameScreen() {
     navigation.goBack();
   }, [navigation]);
 
+  const handleUsernameChange = useCallback((text: string) => {
+    setUsernameError('');
+    setUsername(text);
+  }, []);
+
   const handleNext = useCallback(async () => {
-    setGeneralError('');
+    setUsernameError('');
 
     try {
       const response = await createUser(authMechanism, username, bio);
@@ -71,7 +73,7 @@ export function OnboardingUsernameScreen() {
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
-        setGeneralError(error.message);
+        setUsernameError(error.message);
       }
     }
   }, [authMechanism, bio, createUser, isSyncing, navigation, syncTokens, username]);
@@ -79,7 +81,7 @@ export function OnboardingUsernameScreen() {
   const [isCheckingUsername, setIsCheckingUsername] = useState(false);
   useEffect(
     function validateUsername() {
-      setGeneralError('');
+      setUsernameError('');
 
       if (debouncedUsername.length < 2) {
         return;
@@ -121,7 +123,7 @@ export function OnboardingUsernameScreen() {
             });
           }
 
-          setGeneralError(
+          setUsernameError(
             "Something went wrong while validating your username. We're looking into it."
           );
         })
@@ -171,7 +173,7 @@ export function OnboardingUsernameScreen() {
             textAlignVertical="center"
             placeholder="username"
             value={username}
-            onChange={(e) => setUsername(e.nativeEvent.text)}
+            onChange={(e) => handleUsernameChange(e.nativeEvent.text)}
             autoCapitalize="none"
             autoCorrect={false}
           />
