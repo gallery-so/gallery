@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -176,12 +176,15 @@ export function NftSelector({
     return filteredTokens;
   }, [isSearching, selectedNetworkView, selectedSortView, selectedView, tokenSearchResults]);
 
+  const ownsWalletFromSelectedChainFamily = doesUserOwnWalletFromChainFamily(
+    selectedNetworkView,
+    query
+  );
+
   const track = useTrack();
   const isRefreshDisabledAtUserLevel = isRefreshDisabledForUser(query.viewer?.user?.dbid ?? '');
   const refreshDisabled =
-    isRefreshDisabledAtUserLevel ||
-    !doesUserOwnWalletFromChainFamily(selectedNetworkView, query) ||
-    isLocked;
+    isRefreshDisabledAtUserLevel || !ownsWalletFromSelectedChainFamily || isLocked;
 
   const handleRefresh = useCallback(async () => {
     if (refreshDisabled) {
@@ -203,6 +206,16 @@ export function NftSelector({
     useTooltipHover({
       placement: 'bottom-end',
     });
+
+  // Auto-sync tokens when the chain changes, and there are 0 tokens to display
+  useEffect(() => {
+    if (ownsWalletFromSelectedChainFamily && tokensToDisplay.length === 0 && !isSearching) {
+      handleRefresh();
+    }
+
+    // we only want to consider auto-syncing tokens if selectedNetworkView changes, so limit dependencies
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedNetworkView]);
 
   return (
     <StyledNftSelectorModal>
