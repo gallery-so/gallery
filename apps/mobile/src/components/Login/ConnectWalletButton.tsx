@@ -60,10 +60,6 @@ export function ConnectWalletButton() {
       const signature = await signer.signMessage(nonce);
 
       if (!userExist) {
-        pushToast({
-          message: 'You need to sign up first',
-          withoutNavbar: true,
-        });
         setIsLoading(false);
         provider?.disconnect();
 
