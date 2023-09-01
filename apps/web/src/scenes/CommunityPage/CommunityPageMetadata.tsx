@@ -213,6 +213,10 @@ const StyledMetadata = styled(HStack)`
     gap: 0 48px;
   }
 
+  @media only screen and ${breakpoints.mobileLarge} {
+    gap: 8px 48px;
+  }
+
   width: 100%;
 `;
 
