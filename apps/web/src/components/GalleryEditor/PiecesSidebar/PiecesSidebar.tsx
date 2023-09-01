@@ -234,11 +234,15 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
     <StyledSidebar navbarHeight={navbarHeight}>
       <StyledSidebarContainer gap={8}>
         <Header align="center" justify="space-between" gap={4}>
-          <TitleS>Add pieces</TitleS>
-          <SidebarViewSelector
-            selectedView={selectedView}
-            onSelectedViewChange={handleSelectedViewChange}
-          />
+          <TitleS color={isSearching ? colors.metal : colors.black['800']}>Add pieces</TitleS>
+          {isSearching ? (
+            <StyledNull>---</StyledNull>
+          ) : (
+            <SidebarViewSelector
+              selectedView={selectedView}
+              onSelectedViewChange={handleSelectedViewChange}
+            />
+          )}
         </Header>
         <Header align="center" justify="space-between" gap={4}>
           <TitleS color={isSearching ? colors.metal : colors.black['800']}>Network</TitleS>
