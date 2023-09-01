@@ -186,8 +186,8 @@ export function OnboardingUsernameScreen() {
                 username.length > 0 && 'opacity-100',
                 username.length === 0 && 'opacity-0'
               )}
-              eventElementId={null}
-              eventName={null}
+              eventElementId="Onboarding Username Next Pressed"
+              eventName="Onboarding Username Next Pressed"
               text="NEXT"
               variant={!isUsernameValid ? 'disabled' : 'primary'}
               disabled={!isUsernameValid}

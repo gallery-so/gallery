@@ -11,6 +11,7 @@ import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { Typography } from '~/components/Typography';
 import { OnboardingProfileBioScreenQuery } from '~/generated/OnboardingProfileBioScreenQuery.graphql';
 import { LoginStackNavigatorProp } from '~/navigation/types';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import useUpdateUser, { BIO_MAX_CHAR_COUNT } from '~/shared/hooks/useUpdateUser';
 import colors from '~/shared/theme/colors';
 
@@ -37,6 +38,7 @@ export function OnboardingProfileBioScreen() {
 
   const user = query?.viewer?.user;
 
+  const track = useTrack();
   const navigation = useNavigation<LoginStackNavigatorProp>();
   const { colorScheme } = useColorScheme();
 
@@ -51,10 +53,16 @@ export function OnboardingProfileBioScreen() {
   }, [navigation]);
 
   const handleSelectProfilePicture = useCallback(() => {
+    track('Profile Picture Pressed', {
+      id: 'Onboarding Profile Picture Selected',
+      name: 'Onboarding Profile Picture Selected',
+      screen: 'OnboardingProfileBio',
+    });
+
     navigation.navigate('OnboardingNftSelector', {
       page: 'ProfilePicture',
     });
-  }, [navigation]);
+  }, [navigation, track]);
 
   const handleNext = useCallback(async () => {
     if (!user) return null;
@@ -137,8 +145,8 @@ export function OnboardingProfileBioScreen() {
             <Button
               onPress={handleNext}
               className="w-full"
-              eventElementId={null}
-              eventName={null}
+              eventElementId="Next button on onboarding bio screen"
+              eventName="Next button on onboarding bio screen"
               disabled={bio.length > BIO_MAX_CHAR_COUNT}
               variant={bio.length > BIO_MAX_CHAR_COUNT ? 'disabled' : 'primary'}
               text="NEXT"
@@ -148,8 +156,8 @@ export function OnboardingProfileBioScreen() {
               onPress={handleNext}
               variant="secondary"
               className="w-full"
-              eventElementId={null}
-              eventName={null}
+              eventElementId="Skip onboarding bio & profile picture"
+              eventName="Skip onboarding bio & profile picture"
               text="SKIP"
             />
           )}
