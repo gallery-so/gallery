@@ -1,4 +1,5 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import clsx from 'clsx';
 import { useColorScheme } from 'nativewind';
 import { useCallback, useEffect, useState } from 'react';
 import { KeyboardAvoidingView, Platform, TextInput, View } from 'react-native';
@@ -79,12 +80,6 @@ export function OnboardingUsernameScreen() {
   useEffect(
     function validateUsername() {
       setGeneralError('');
-
-      // it doesn't make sense to tell users their current username is taken!
-      // if (existingUsername && debouncedUsername === existingUsername) {
-      //   setIsUsernameValid(true);
-      //   return;
-      // }
 
       if (debouncedUsername.length < 2) {
         return;
@@ -182,26 +177,30 @@ export function OnboardingUsernameScreen() {
           />
 
           <View className="space-y-4">
-            {username.length > 0 && (
-              <>
-                <Button
-                  onPress={handleNext}
-                  className="w-full"
-                  eventElementId={null}
-                  eventName={null}
-                  text="NEXT"
-                  variant={!isUsernameValid ? 'disabled' : 'primary'}
-                  disabled={!isUsernameValid}
-                  loading={isCheckingUsername}
-                />
-                <Typography
-                  className="text-sm text-red"
-                  font={{ family: 'ABCDiatype', weight: 'Regular' }}
-                >
-                  {usernameError}
-                </Typography>
-              </>
-            )}
+            <Button
+              onPress={handleNext}
+              className={clsx(
+                'w-full',
+                username.length > 0 && 'opacity-100',
+                username.length === 0 && 'opacity-0'
+              )}
+              eventElementId={null}
+              eventName={null}
+              text="NEXT"
+              variant={!isUsernameValid ? 'disabled' : 'primary'}
+              disabled={!isUsernameValid}
+              loading={isCheckingUsername}
+            />
+            <Typography
+              className={clsx(
+                'text-sm text-red',
+                username.length > 0 && 'opacity-100',
+                username.length === 0 && 'opacity-0'
+              )}
+              font={{ family: 'ABCDiatype', weight: 'Regular' }}
+            >
+              {usernameError}
+            </Typography>
           </View>
         </View>
       </View>
