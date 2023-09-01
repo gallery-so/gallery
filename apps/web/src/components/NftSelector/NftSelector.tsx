@@ -249,8 +249,9 @@ export function NftSelector({
             />
           </StyledHeaderContainer>
         ) : (
-          <HStack gap={4} align="center">
+          <DropdownsContainer gap={4} align="center" disabled={isSearching}>
             <NftSelectorViewSelector
+              isSearching={isSearching}
               selectedView={selectedView}
               onSelectedViewChange={setSelectedView}
             />
@@ -259,6 +260,7 @@ export function NftSelector({
               onSelectedViewChange={setSelectedSortView}
             />
             <NftSelectorFilterNetwork
+              isSearching={isSearching}
               selectedMode={selectedView}
               selectedNetwork={selectedNetworkView}
               onSelectedViewChange={setSelectedNetworkView}
@@ -282,7 +284,7 @@ export function NftSelector({
               whiteSpace="pre-line"
               text={`Refresh to update your collection`}
             />
-          </HStack>
+          </DropdownsContainer>
         )}
       </StyledActionContainer>
 
@@ -321,4 +323,9 @@ const StyledActionContainer = styled(HStack)`
 
 const StyledHeaderContainer = styled(HStack)`
   width: 100%;
+`;
+
+const DropdownsContainer = styled(HStack)<{ disabled: boolean }>`
+  opacity: ${({ disabled }) => (disabled ? 0.35 : 1)};
+  pointer-events: ${({ disabled }) => (disabled ? 'none' : 'auto')};
 `;

@@ -14,11 +14,13 @@ import { BaseM } from '../../core/Text/Text';
 import { TokenFilterType } from '../../GalleryEditor/PiecesSidebar/SidebarViewSelector';
 
 type NftSelectorViewSelectorProps = {
+  isSearching: boolean;
   selectedView: TokenFilterType;
   onSelectedViewChange: (selectedView: TokenFilterType) => void;
 };
 
 export function NftSelectorViewSelector({
+  isSearching,
   selectedView,
   onSelectedViewChange,
 }: NftSelectorViewSelectorProps) {
@@ -37,8 +39,13 @@ export function NftSelectorViewSelector({
 
   return (
     <Container>
-      <Selector gap={10} align="center" onClick={() => setIsDropdownOpen(true)}>
-        <BaseM>{selectedView}</BaseM>
+      <Selector
+        gap={10}
+        justify="space-between"
+        align="center"
+        onClick={() => setIsDropdownOpen(true)}
+      >
+        <BaseM>{isSearching ? 'All' : selectedView}</BaseM>
         <IconContainer variant="stacked" size="sm" icon={<DoubleArrowsIcon />} />
       </Selector>
       <Dropdown position="right" active={isDropdownOpen} onClose={() => setIsDropdownOpen(false)}>
@@ -58,6 +65,7 @@ export function NftSelectorViewSelector({
 const Selector = styled(HStack)`
   cursor: pointer;
   padding: 4px 8px;
+  width: 100%;
 
   &:hover {
     background-color: ${colors.faint};
@@ -66,4 +74,5 @@ const Selector = styled(HStack)`
 
 const Container = styled.div`
   position: relative;
+  width: 110px;
 `;

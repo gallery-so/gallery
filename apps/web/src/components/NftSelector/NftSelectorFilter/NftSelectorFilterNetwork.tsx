@@ -32,6 +32,7 @@ const NetworkDropdownByNetwork = ({ chain }: NetworkDropdownProps) => {
 };
 
 type NftSelectorViewSelectorProps = {
+  isSearching: boolean;
   selectedMode: TokenFilterType;
   selectedNetwork: Chain;
   onSelectedViewChange: (selectedView: Chain) => void;
@@ -39,6 +40,7 @@ type NftSelectorViewSelectorProps = {
 };
 
 export function NftSelectorFilterNetwork({
+  isSearching,
   selectedMode,
   selectedNetwork,
   onSelectedViewChange,
@@ -80,8 +82,17 @@ export function NftSelectorFilterNetwork({
 
   return (
     <Container>
-      <Selector gap={10} align="center" onClick={() => setIsDropdownOpen(true)}>
-        {selectedChain && <NetworkDropdownByNetwork chain={selectedChain} />}
+      <Selector
+        gap={10}
+        justify="space-between"
+        align="center"
+        onClick={() => setIsDropdownOpen(true)}
+      >
+        {isSearching ? (
+          <BaseM>All</BaseM>
+        ) : (
+          selectedChain && <NetworkDropdownByNetwork chain={selectedChain} />
+        )}
         <IconContainer variant="stacked" size="sm" icon={<DoubleArrowsIcon />} />
       </Selector>
       <Dropdown position="right" active={isDropdownOpen} onClose={() => setIsDropdownOpen(false)}>
@@ -118,4 +129,5 @@ const Selector = styled(HStack)`
 
 const Container = styled.div`
   position: relative;
+  width: 133px;
 `;
