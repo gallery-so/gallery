@@ -233,44 +233,37 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
   return (
     <StyledSidebar navbarHeight={navbarHeight}>
       <StyledSidebarContainer gap={8}>
-        <Header align="center" justify="space-between" gap={4}>
-          <TitleS color={isSearching ? colors.metal : colors.black['800']}>Add pieces</TitleS>
-          {isSearching ? (
-            <StyledNull>---</StyledNull>
-          ) : (
+        <FiltersContainer gap={8} disabled={isSearching}>
+          <Header align="center" justify="space-between" gap={4}>
+            <TitleS>Add pieces</TitleS>
             <SidebarViewSelector
+              isSearching={isSearching}
               selectedView={selectedView}
               onSelectedViewChange={handleSelectedViewChange}
             />
-          )}
-        </Header>
-        <Header align="center" justify="space-between" gap={4}>
-          <TitleS color={isSearching ? colors.metal : colors.black['800']}>Network</TitleS>
-          {isSearching ? (
-            <StyledNull>---</StyledNull>
-          ) : (
+          </Header>
+          <Header align="center" justify="space-between" gap={4}>
+            <TitleS>Network</TitleS>
             <SidebarChainDropdown
               queryRef={query}
+              isSearching={isSearching}
               selectedChain={selectedChain}
               onSelectChain={handleSelectedChain}
               selectedView={selectedView}
             />
-          )}
-        </Header>
-        <Header align="center" justify="space-between" gap={4}>
-          <TitleS color={isSearching ? colors.metal : colors.black['800']}>Wallet</TitleS>
-          {isSearching ? (
-            <StyledNull>---</StyledNull>
-          ) : (
+          </Header>
+          <Header align="center" justify="space-between" gap={4}>
+            <TitleS>Wallet</TitleS>
             <SidebarWalletSelector
               queryRef={query}
+              isSearching={isSearching}
               selectedChain={selectedChain}
               selectedWallet={selectedWallet}
               onSelectedWalletChange={handleSelectedWalletChange}
               onConnectWalletSuccess={handleRefresh}
             />
-          )}
-        </Header>
+          </Header>
+        </FiltersContainer>
         <StyledSearchBarContainer>
           <FadedInput
             size="md"
@@ -343,14 +336,14 @@ const StyledSidebar = styled.div<{ navbarHeight: number }>`
   }
 `;
 
+const FiltersContainer = styled(VStack)<{ disabled: boolean }>`
+  opacity: ${({ disabled }) => (disabled ? 0.35 : 1)};
+  pointer-events: ${({ disabled }) => (disabled ? 'none' : 'auto')};
+`;
+
 const Header = styled(HStack)`
   height: 32px;
   padding: 0 12px 8px;
-`;
-
-const StyledNull = styled.div`
-  padding-right: 8px;
-  color: ${colors.metal};
 `;
 
 const StyledSearchBarContainer = styled(VStack)`

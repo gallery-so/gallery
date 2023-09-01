@@ -19,6 +19,7 @@ import { TokenFilterType } from './SidebarViewSelector';
 
 type Props = {
   queryRef: SidebarChainDropdownFragment$key;
+  isSearching: boolean;
   selectedChain: ChainMetadata;
   onSelectChain: (chain: ChainMetadata) => void;
   selectedView: TokenFilterType;
@@ -26,6 +27,7 @@ type Props = {
 
 export default function SidebarChainDropdown({
   queryRef,
+  isSearching,
   selectedChain,
   onSelectChain,
   selectedView,
@@ -65,8 +67,10 @@ export default function SidebarChainDropdown({
     <Container>
       <Selector gap={10} align="center" onClick={() => setIsDropdownOpen(true)}>
         <HStack align="center" gap={6}>
-          <Image src={selectedChain.icon} width={16} height={16} alt={selectedChain.name} />
-          <BaseM>{selectedChain.name}</BaseM>
+          {isSearching ? null : (
+            <Image src={selectedChain.icon} width={16} height={16} alt={selectedChain.name} />
+          )}
+          <BaseM>{isSearching ? 'All' : selectedChain.name}</BaseM>
         </HStack>
         <IconContainer variant="stacked" size="sm" icon={<DoubleArrowsIcon />} />
       </Selector>

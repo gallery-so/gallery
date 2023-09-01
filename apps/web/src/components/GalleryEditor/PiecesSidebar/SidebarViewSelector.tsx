@@ -13,11 +13,13 @@ import { useTrack } from '~/shared/contexts/AnalyticsContext';
 export type TokenFilterType = 'Collected' | 'Created' | 'Hidden';
 
 type SidebarViewSelectorProps = {
+  isSearching: boolean;
   selectedView: TokenFilterType;
   onSelectedViewChange: (selectedView: TokenFilterType) => void;
 };
 
 export function SidebarViewSelector({
+  isSearching,
   selectedView,
   onSelectedViewChange,
 }: SidebarViewSelectorProps) {
@@ -37,7 +39,7 @@ export function SidebarViewSelector({
   return (
     <Container>
       <Selector gap={10} align="center" onClick={() => setIsDropdownOpen(true)}>
-        <BaseM>{selectedView}</BaseM>
+        <BaseM>{isSearching ? 'All' : selectedView}</BaseM>
         <IconContainer variant="stacked" size="sm" icon={<DoubleArrowsIcon />} />
       </Selector>
       <StyledDropdown
