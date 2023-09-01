@@ -69,7 +69,7 @@ export function HomeNavbar({ queryRef }: Props) {
             href={route(curatedRoute)}
             onClick={handleTrendingClick}
           >
-            For You
+            {isLoggedIn ? 'For You' : 'Trending'}
           </NavbarLink>
 
           <NavbarLink
