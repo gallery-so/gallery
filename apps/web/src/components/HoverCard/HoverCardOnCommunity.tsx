@@ -169,7 +169,6 @@ export default function HoverCardOnCommunity({ children, onClick = noop, communi
 const StyledCardContainer = styled.div`
   border: 1px solid ${colors.black['800']};
   padding: 16px;
-  width: 375px;
   max-width: calc(100vw - ${pageGutter.mobile * 2}px);
   display: grid;
   gap: 8px;

@@ -136,7 +136,7 @@ export function HoverCardCommunityInner({
   return (
     <VStack gap={6}>
       <HStack gap={8} align={`${hasDescription ? '' : 'center'}`}>
-        <CommunityProfilePicture communityRef={community} size="xxl" />
+        <CommunityProfilePicture communityRef={community} size={64} />
         <VStack gap={2}>
           <StyledLink href={communityProfileLink}>
             <StyledCardTitle>{community.name}</StyledCardTitle>
