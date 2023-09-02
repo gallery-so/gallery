@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -8,7 +8,6 @@ import useSyncTokens from '~/hooks/api/tokens/useSyncTokens';
 import { ChevronLeftIcon } from '~/icons/ChevronLeftIcon';
 import { RefreshIcon } from '~/icons/RefreshIcon';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
-import useDebounce from '~/shared/hooks/useDebounce';
 import { Chain } from '~/shared/utils/chains';
 import { doesUserOwnWalletFromChainFamily } from '~/utils/doesUserOwnWalletFromChainFamily';
 
@@ -16,7 +15,8 @@ import IconContainer from '../core/IconContainer';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM } from '../core/Text/Text';
 import isRefreshDisabledForUser from '../GalleryEditor/PiecesSidebar/isRefreshDisabledForUser';
-import { SidebarView } from '../GalleryEditor/PiecesSidebar/SidebarViewSelector';
+import { TokenFilterType } from '../GalleryEditor/PiecesSidebar/SidebarViewSelector';
+import useTokenSearchResults from '../GalleryEditor/PiecesSidebar/useTokenSearchResults';
 import { NewTooltip } from '../Tooltip/NewTooltip';
 import { useTooltipHover } from '../Tooltip/useTooltipHover';
 import { NftSelectorCollectionGroup } from './groupNftSelectorCollectionsByAddress';
@@ -51,6 +51,7 @@ export function NftSelector({
     graphql`
       fragment NftSelectorFragment on Token @relay(plural: true) {
         ...NftSelectorViewFragment
+        dbid
         name
         chain
         creationTime
@@ -58,9 +59,14 @@ export function NftSelector({
         isSpamByUser
         isSpamByProvider
 
+        ownerIsHolder
+        ownerIsCreator
+
         contract {
           name
         }
+
+        ...useTokenSearchResultsFragment
       }
     `,
     tokensRef
@@ -83,10 +89,14 @@ export function NftSelector({
     queryRef
   );
 
-  const [searchKeyword, setSearchKeyword] = useState<string>('');
-  const debouncedSearchKeyword = useDebounce(searchKeyword, 200);
+  const { searchQuery, setSearchQuery, tokenSearchResults, isSearching } = useTokenSearchResults<
+    (typeof tokens)[0]
+  >({
+    tokensRef: tokens,
+    rawTokensToDisplay: tokens,
+  });
 
-  const [selectedView, setSelectedView] = useState<SidebarView>('Collected');
+  const [selectedView, setSelectedView] = useState<TokenFilterType>('Collected');
   const [selectedSortView, setSelectedSortView] = useState<NftSelectorSortView>('Recently added');
   const [selectedNetworkView, setSelectedNetworkView] = useState<Chain>('Ethereum');
 
@@ -100,32 +110,32 @@ export function NftSelector({
     setSelectedContract(null);
   }, []);
 
-  const filteredTokens = useMemo(() => {
-    let filteredTokens = [...tokens];
+  // [GAL-4202] this logic could be consolidated across web editor + web selector + mobile selector
+  const tokensToDisplay = useMemo(() => {
+    // Filter tokens
+    const filteredTokens = tokenSearchResults.filter((token) => {
+      // If we're searching, we want to search across all chains; the chain selector will be hidden during search
+      if (isSearching) {
+        return true;
+      }
 
-    // Filter by network
-    filteredTokens = tokens.filter((token) => token.chain === selectedNetworkView);
-
-    // Filter by search
-    if (debouncedSearchKeyword) {
-      const lowerCaseQuery = debouncedSearchKeyword.toLowerCase();
-
-      filteredTokens = tokens.filter((token) => {
-        if (token.name?.toLowerCase().includes(debouncedSearchKeyword)) {
-          return true;
-        }
-
-        if (token.contract?.name?.toLowerCase().includes(lowerCaseQuery)) {
-          return true;
-        }
-
+      if (token.chain !== selectedNetworkView) {
         return false;
-      });
-    }
+      }
 
-    // Filter by view
+      // Early return created tokens as we don't need to filter out spam
+      if (selectedView === 'Created') {
+        return token.ownerIsCreator;
+      }
 
-    filteredTokens = filteredTokens.filter((token) => {
+      // Filter out created tokens in Collected view...
+      if (selectedView === 'Collected') {
+        if (!token.ownerIsHolder) {
+          return false;
+        }
+      }
+
+      // ...but incorporate with spam filtering logic for Collected view
       const isSpam = token.isSpamByUser !== null ? token.isSpamByUser : token.isSpamByProvider;
       if (selectedView === 'Hidden') {
         return isSpam;
@@ -134,7 +144,7 @@ export function NftSelector({
       return !isSpam;
     });
 
-    // Filter by sort
+    // Sort tokens
     if (selectedSortView === 'Recently added') {
       filteredTokens.sort((a, b) => {
         return new Date(b.creationTime).getTime() - new Date(a.creationTime).getTime();
@@ -164,14 +174,17 @@ export function NftSelector({
     }
 
     return filteredTokens;
-  }, [debouncedSearchKeyword, selectedNetworkView, selectedSortView, selectedView, tokens]);
+  }, [isSearching, selectedNetworkView, selectedSortView, selectedView, tokenSearchResults]);
+
+  const ownsWalletFromSelectedChainFamily = doesUserOwnWalletFromChainFamily(
+    selectedNetworkView,
+    query
+  );
 
   const track = useTrack();
   const isRefreshDisabledAtUserLevel = isRefreshDisabledForUser(query.viewer?.user?.dbid ?? '');
   const refreshDisabled =
-    isRefreshDisabledAtUserLevel ||
-    !doesUserOwnWalletFromChainFamily(selectedNetworkView, query) ||
-    isLocked;
+    isRefreshDisabledAtUserLevel || !ownsWalletFromSelectedChainFamily || isLocked;
 
   const handleRefresh = useCallback(async () => {
     if (refreshDisabled) {
@@ -180,13 +193,27 @@ export function NftSelector({
 
     track('NFT Selector: Clicked Refresh');
 
-    await syncTokens(selectedNetworkView);
-  }, [refreshDisabled, track, syncTokens, selectedNetworkView]);
+    if (selectedView === 'Hidden') {
+      return;
+    }
+
+    await syncTokens({ type: selectedView, chain: selectedNetworkView });
+  }, [refreshDisabled, track, selectedView, syncTokens, selectedNetworkView]);
 
   const { floating, reference, getFloatingProps, getReferenceProps, floatingStyle } =
     useTooltipHover({
       placement: 'bottom-end',
     });
+
+  // Auto-sync tokens when the chain changes, and there are 0 tokens to display
+  useEffect(() => {
+    if (ownsWalletFromSelectedChainFamily && tokensToDisplay.length === 0 && !isSearching) {
+      handleRefresh();
+    }
+
+    // we only want to consider auto-syncing tokens if selectedNetworkView changes, so limit dependencies
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedNetworkView]);
 
   return (
     <StyledNftSelectorModal>
@@ -208,7 +235,7 @@ export function NftSelector({
 
       <StyledActionContainer gap={16} justify="space-between">
         {!selectedContract && (
-          <NftSelectorSearchBar keyword={searchKeyword} onChange={setSearchKeyword} />
+          <NftSelectorSearchBar keyword={searchQuery} onChange={setSearchQuery} />
         )}
         {selectedContract ? (
           <StyledHeaderContainer justify="space-between" align="center">
@@ -220,8 +247,9 @@ export function NftSelector({
             />
           </StyledHeaderContainer>
         ) : (
-          <HStack gap={4} align="center">
+          <DropdownsContainer gap={4} align="center" disabled={isSearching}>
             <NftSelectorViewSelector
+              isSearching={isSearching}
               selectedView={selectedView}
               onSelectedViewChange={setSelectedView}
             />
@@ -230,6 +258,7 @@ export function NftSelector({
               onSelectedViewChange={setSelectedSortView}
             />
             <NftSelectorFilterNetwork
+              isSearching={isSearching}
               selectedMode={selectedView}
               selectedNetwork={selectedNetworkView}
               onSelectedViewChange={setSelectedNetworkView}
@@ -253,7 +282,7 @@ export function NftSelector({
               whiteSpace="pre-line"
               text={`Refresh to update your collection`}
             />
-          </HStack>
+          </DropdownsContainer>
         )}
       </StyledActionContainer>
 
@@ -261,11 +290,11 @@ export function NftSelector({
         <NftSelectorLoadingView />
       ) : (
         <NftSelectorView
-          tokenRefs={filteredTokens}
+          tokenRefs={tokensToDisplay}
           selectedContractAddress={selectedContract?.address ?? null}
           onSelectContract={setSelectedContract}
           selectedNetworkView={selectedNetworkView}
-          hasSearchKeyword={Boolean(debouncedSearchKeyword)}
+          hasSearchKeyword={isSearching}
           handleRefresh={handleRefresh}
           onSelectToken={onSelectToken}
         />
@@ -292,4 +321,9 @@ const StyledActionContainer = styled(HStack)`
 
 const StyledHeaderContainer = styled(HStack)`
   width: 100%;
+`;
+
+const DropdownsContainer = styled(HStack)<{ disabled: boolean }>`
+  opacity: ${({ disabled }) => (disabled ? 0.35 : 1)};
+  pointer-events: ${({ disabled }) => (disabled ? 'none' : 'auto')};
 `;

@@ -95,6 +95,8 @@ export function NftSelectorPickerGrid({
     tokenRefs
   );
 
+  // [GAL-4202] this logic could be consolidated across web editor + web selector + mobile selector
+  // but also don't overdo it if there's sufficient differentiation between web and mobile UX
   const filteredTokens = useMemo(() => {
     return tokens
       .filter((token) => {

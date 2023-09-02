@@ -70,4 +70,5 @@ const Selector = styled(HStack)`
 
 const Container = styled.div`
   position: relative;
+  width: 147px;
 `;

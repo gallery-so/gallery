@@ -10,14 +10,16 @@ import { BaseM } from '~/components/core/Text/Text';
 import DoubleArrowsIcon from '~/icons/DoubleArrowsIcon';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 
-export type SidebarView = 'Collected' | 'Created' | 'Hidden';
+export type TokenFilterType = 'Collected' | 'Created' | 'Hidden';
 
 type SidebarViewSelectorProps = {
-  selectedView: SidebarView;
-  onSelectedViewChange: (selectedView: SidebarView) => void;
+  isSearching: boolean;
+  selectedView: TokenFilterType;
+  onSelectedViewChange: (selectedView: TokenFilterType) => void;
 };
 
 export function SidebarViewSelector({
+  isSearching,
   selectedView,
   onSelectedViewChange,
 }: SidebarViewSelectorProps) {
@@ -26,7 +28,7 @@ export function SidebarViewSelector({
   const track = useTrack();
 
   const onSelectView = useCallback(
-    (selectedView: SidebarView) => {
+    (selectedView: TokenFilterType) => {
       track('Editor Sidebar Dropdown Clicked', { variant: selectedView });
       onSelectedViewChange(selectedView);
       setIsDropdownOpen(false);
@@ -37,7 +39,7 @@ export function SidebarViewSelector({
   return (
     <Container>
       <Selector gap={10} align="center" onClick={() => setIsDropdownOpen(true)}>
-        <BaseM>{selectedView}</BaseM>
+        <BaseM>{isSearching ? 'All' : selectedView}</BaseM>
         <IconContainer variant="stacked" size="sm" icon={<DoubleArrowsIcon />} />
       </Selector>
       <StyledDropdown
