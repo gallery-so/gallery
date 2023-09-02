@@ -66,7 +66,6 @@ export default function useTokenSearchResults<T>({ tokensRef, rawTokensToDisplay
   return {
     searchQuery,
     setSearchQuery,
-    searchResults, // may not need
     tokenSearchResults: tokensToDisplayFromSearchResults,
     isSearching,
   };
