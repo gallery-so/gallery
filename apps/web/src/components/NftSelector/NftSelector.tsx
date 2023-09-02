@@ -193,13 +193,11 @@ export function NftSelector({
 
     track('NFT Selector: Clicked Refresh');
 
-    if (selectedView === 'Created') {
-      await syncTokens({ type: 'Created', chain: selectedNetworkView });
+    if (selectedView === 'Hidden') {
+      return;
     }
 
-    if (selectedView === 'Collected') {
-      await syncTokens({ type: 'Collected', chain: selectedNetworkView });
-    }
+    await syncTokens({ type: selectedView, chain: selectedNetworkView });
   }, [refreshDisabled, track, selectedView, syncTokens, selectedNetworkView]);
 
   const { floating, reference, getFloatingProps, getReferenceProps, floatingStyle } =

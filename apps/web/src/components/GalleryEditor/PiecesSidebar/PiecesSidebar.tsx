@@ -158,13 +158,11 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
       return;
     }
 
-    if (selectedView === 'Created') {
-      await syncTokens({ type: 'Created', chain: selectedChain.name });
+    if (selectedView === 'Hidden') {
+      return;
     }
 
-    if (selectedView === 'Collected') {
-      await syncTokens({ type: 'Collected', chain: selectedChain.name });
-    }
+    await syncTokens({ type: selectedView, chain: selectedChain.name });
   }, [refreshDisabled, selectedView, syncTokens, selectedChain.name]);
 
   // Auto-sync tokens when the chain changes, and there are 0 tokens to display
