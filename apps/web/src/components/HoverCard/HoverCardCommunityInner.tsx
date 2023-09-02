@@ -104,7 +104,13 @@ export function HoverCardCommunityInner({
     ));
 
     if (totalOwners > 3) {
-      result.push(<StyledBaseS>{totalOwners - 2} others</StyledBaseS>);
+      result.push(
+        <>
+          <StyledBaseS>{totalOwners - 2}</StyledBaseS>
+          <StyledBaseS>&nbsp;</StyledBaseS>
+          <StyledBaseS>others</StyledBaseS>
+        </>
+      );
     }
 
     // Add punctuation: "," and "and"
