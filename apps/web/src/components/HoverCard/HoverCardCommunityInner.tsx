@@ -176,9 +176,6 @@ const StyledLink = styled(Link)`
 `;
 
 const StyledCardTitle = styled(TitleM)`
-  font-size: 18px;
-  font-weight: 700;
-  line-height: 24px;
   font-style: normal;
   text-overflow: ellipsis;
   overflow: hidden;
