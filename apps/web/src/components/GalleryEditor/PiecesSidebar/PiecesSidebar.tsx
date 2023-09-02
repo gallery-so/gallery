@@ -96,8 +96,8 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
     addWhitespace();
   }, [addWhitespace]);
 
-  // TODO: we should unit test this function
-  // TODO: this logic could be consolidated across web editor + web selector + mobile selector
+  // [GAL-4202] this logic could be consolidated across web editor + web selector + mobile selector
+  // there's also wallet-specific token filtering happening in a child component, which should be lifted up here
   const tokensToDisplay = useMemo(() => {
     return tokenSearchResults.filter((token) => {
       // If we're searching, we want to search across all chains; the chain selector will be hidden during search

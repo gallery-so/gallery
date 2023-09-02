@@ -110,7 +110,7 @@ export function NftSelector({
     setSelectedContract(null);
   }, []);
 
-  // TODO: this logic could be consolidated across web editor + web selector + mobile selector
+  // [GAL-4202] this logic could be consolidated across web editor + web selector + mobile selector
   const tokensToDisplay = useMemo(() => {
     // Filter tokens
     const filteredTokens = tokenSearchResults.filter((token) => {
