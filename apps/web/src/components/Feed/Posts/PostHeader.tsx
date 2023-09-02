@@ -50,7 +50,9 @@ export default function PostHeader({ postRef, queryRef }: Props) {
     <VStack gap={6}>
       <HStack justify="space-between">
         <HStack align="center" gap={6}>
-          <ProfilePicture userRef={post.author} size="md" />
+          <HoverCardOnUsername userRef={post.author}>
+            <ProfilePicture userRef={post.author} size="md" />
+          </HoverCardOnUsername>
           <VStack>
             <HoverCardOnUsername userRef={post.author} />
           </VStack>

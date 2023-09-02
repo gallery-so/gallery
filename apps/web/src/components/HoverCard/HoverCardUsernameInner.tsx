@@ -139,7 +139,8 @@ const StyledCardHeader = styled(HStack)`
 `;
 
 const StyledCardHeaderContainer = styled(VStack)`
-  padding: 12px 0;
+  padding-top: 6px;
+  padding-bottom: 12px;
 `;
 
 const StyledLink = styled(Link)`
