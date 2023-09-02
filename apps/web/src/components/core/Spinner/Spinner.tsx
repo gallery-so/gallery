@@ -17,3 +17,17 @@ export const Spinner = styled.span`
 
   animation: ${spin} 1s linear infinite;
 `;
+
+export const SelfCenteredSpinner = () => {
+  return (
+    <CenteringContainer>
+      <Spinner />
+    </CenteringContainer>
+  );
+};
+
+const CenteringContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;

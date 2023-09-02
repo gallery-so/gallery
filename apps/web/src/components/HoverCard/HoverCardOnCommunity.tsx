@@ -35,7 +35,8 @@ import colors from '~/shared/theme/colors';
 import handleCustomDisplayName from '~/utils/handleCustomDisplayName';
 import noop from '~/utils/noop';
 
-import breakpoints, { pageGutter } from '../core/breakpoints';
+import breakpoints from '../core/breakpoints';
+import { SelfCenteredSpinner } from '../core/Spinner/Spinner';
 
 const HOVER_POPUP_DELAY = 100;
 
@@ -151,7 +152,7 @@ export default function HoverCardOnCommunity({ children, onClick = noop, communi
                 exit={{ opacity: 0, y: 0 }}
               >
                 <StyledCardContainer>
-                  <Suspense fallback={null}>
+                  <Suspense fallback={<SelfCenteredSpinner />}>
                     <HoverCardCommunityInner
                       preloadedCommunityQuery={preloadedHoverCardCommunityQuery}
                     />
@@ -169,8 +170,8 @@ export default function HoverCardOnCommunity({ children, onClick = noop, communi
 const StyledCardContainer = styled.div`
   border: 1px solid ${colors.black['800']};
   padding: 16px;
-  width: 375px;
-  max-width: calc(100vw - ${pageGutter.mobile * 2}px);
+  width: 360px;
+  min-height: 128px;
   display: grid;
   gap: 8px;
   background-color: ${colors.white};
