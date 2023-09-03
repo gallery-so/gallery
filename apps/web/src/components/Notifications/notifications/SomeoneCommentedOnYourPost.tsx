@@ -70,7 +70,7 @@ export default function SomeoneCommentedOnYourPost({ notificationRef, onClose }:
               commented on your <strong>post</strong>
             </BaseM>
           </StyledTextWrapper>
-          <StyledCaption>{comment.comment}</StyledCaption>
+          <StyledCaption dangerouslySetInnerHTML={{ __html: comment.comment }}></StyledCaption>
         </VStack>
       </HStack>
       {previewUrlSet?.urls.small && <StyledPostPreview src={previewUrlSet?.urls.small} />}
