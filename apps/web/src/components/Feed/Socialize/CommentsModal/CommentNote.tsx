@@ -1,8 +1,9 @@
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
-
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
+import DOMPurify from 'dompurify';
+
 import { BaseM } from '~/components/core/Text/Text';
 import { ListItem } from '~/components/Feed/Socialize/CommentsModal/ListItem';
 import { TimeAgoText } from '~/components/Feed/Socialize/CommentsModal/TimeAgoText';
@@ -36,6 +37,7 @@ export function CommentNote({ commentRef }: CommentNoteProps) {
 
   const timeAgo = comment.creationTime ? getTimeSince(comment.creationTime) : null;
 
+  const sanitizedComment = DOMPurify.sanitize(comment.comment ?? '');
   return (
     <StyledListItem justify="space-between" gap={4}>
       <HStack gap={8}>
@@ -50,7 +52,7 @@ export function CommentNote({ commentRef }: CommentNoteProps) {
             <UsernameLink username={comment.commenter?.username ?? null} />
             <StyledTimeAgoText color={colors.metal}>{timeAgo}</StyledTimeAgoText>
           </HStack>
-          <BaseM as="span" dangerouslySetInnerHTML={{ __html: comment.comment ?? '' }} />
+          <BaseM as="span" dangerouslySetInnerHTML={{ __html: sanitizedComment ?? '' }} />
         </VStack>
       </HStack>
     </StyledListItem>
