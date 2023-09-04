@@ -44,6 +44,7 @@ export function createVirtualizedRowsFromGroups({
 
 type createVirtualizedRowsFromTokensArgs = {
   tokens: SidebarTokensFragment$data;
+<<<<<<< HEAD
 };
 
 export function createVirtualizedRowsFromTokens({
@@ -51,6 +52,31 @@ export function createVirtualizedRowsFromTokens({
 }: createVirtualizedRowsFromTokensArgs): VirtualizedRow[] {
   const rows: VirtualizedRow[] = [];
 
+=======
+  erroredTokenIds: Set<string>;
+};
+
+export function createVirtualizedRowsFromTokens({
+  tokens,
+  erroredTokenIds,
+}: createVirtualizedRowsFromTokensArgs): VirtualizedRow[] {
+  const rows: VirtualizedRow[] = [];
+
+  const tokensSortedByErrored = [...tokens].sort((a, b) => {
+    const aIsErrored = erroredTokenIds.has(a.id);
+
+    const bIsErrored = erroredTokenIds.has(b.id);
+
+    if (aIsErrored === bIsErrored) {
+      return 0;
+    } else if (aIsErrored) {
+      return 1;
+    } else {
+      return -1;
+    }
+  });
+
+>>>>>>> 3cc99ed1 (base)
   const COLUMNS_PER_ROW = 3;
   for (let i = 0; i < tokens.length; i += COLUMNS_PER_ROW) {
     const rowTokens = tokens.slice(i, i + COLUMNS_PER_ROW);

@@ -60,6 +60,10 @@ export const SidebarTokens = ({
     `,
     tokenRefs
   );
+<<<<<<< HEAD
+=======
+  console.log("tokens", tokens);
+>>>>>>> 3cc99ed1 (base)
   const setSpamPreference = useSetSpamPreference();
   const setSpamPreferenceForCollection = useCallback(
     (address: string, isSpam: boolean) => {
@@ -112,9 +116,21 @@ export const SidebarTokens = ({
     } else {
       return createVirtualizedRowsFromTokens({
         tokens,
+<<<<<<< HEAD
       });
     }
   }, [collapsedCollections, shouldUseCollectionGrouping, tokens]);
+=======
+        erroredTokenIds,
+      });
+    }
+  }, [
+    collapsedCollections,
+    erroredTokenIds,
+    shouldUseCollectionGrouping,
+    tokens,
+  ]);
+>>>>>>> 3cc99ed1 (base)
 
   useEffect(
     function resetCollapsedSectionsWhileSearching() {
