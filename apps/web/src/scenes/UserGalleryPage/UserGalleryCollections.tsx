@@ -19,7 +19,7 @@ import useWindowSize from '~/hooks/useWindowSize';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 
-import EmptyGallery from './EmptyGallery';
+import EmptyGallery, { EmptyAuthenticatedUsersGallery } from './EmptyGallery';
 import UserGalleryCollection from './UserGalleryCollection';
 
 type Props = {
@@ -41,9 +41,14 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
 
   const loggedInUserId = useLoggedInUserId(query);
 
-  const { collections, owner } = useFragment(
+  const {
+    dbid: galleryId,
+    collections,
+    owner,
+  } = useFragment(
     graphql`
       fragment UserGalleryCollectionsFragment on Gallery {
+        dbid
         owner {
           id
         }
@@ -134,11 +139,11 @@ function UserGalleryCollections({ galleryRef, queryRef, mobileLayout }: Props) {
   const numCollectionsToDisplay = collectionsToDisplay.length;
 
   if (numCollectionsToDisplay === 0) {
-    const emptyGalleryMessage = isAuthenticatedUsersPage
-      ? 'Your gallery is empty. Display your pieces by creating a collection.'
-      : 'Curation in progress.';
-
-    return <EmptyGallery message={emptyGalleryMessage} />;
+    return isAuthenticatedUsersPage ? (
+      <EmptyAuthenticatedUsersGallery galleryId={galleryId} />
+    ) : (
+      <EmptyGallery message="Curation in progress." />
+    );
   }
 
   return (

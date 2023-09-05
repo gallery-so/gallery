@@ -13,6 +13,7 @@ import { PostComposerModalWithSelector } from '~/components/Posts/PostComposerMo
 import Search from '~/components/Search/Search';
 import Settings from '~/components/Settings/Settings';
 import { useModalActions } from '~/contexts/modal/ModalContext';
+import { usePostComposerContext } from '~/contexts/postComposer/PostComposerContext';
 import { StandardSidebarFragment$key } from '~/generated/StandardSidebarFragment.graphql';
 import useAuthModal from '~/hooks/useAuthModal';
 import { useSearchHotkey } from '~/hooks/useSearchHotkey';
@@ -121,7 +122,7 @@ export function StandardSidebar({ queryRef }: Props) {
 
   const username = (isLoggedIn && query.viewer.user?.username) || '';
 
-  const { showModal, hideModal } = useModalActions();
+  const { showModal } = useModalActions();
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
   const handleSettingsClick = useCallback(() => {
@@ -158,6 +159,8 @@ export function StandardSidebar({ queryRef }: Props) {
     track('Sidebar Home Click');
   }, [hideDrawer, track]);
 
+  const { captionRef, setCaption } = usePostComposerContext();
+
   const handleCreatePostClick = useCallback(() => {
     hideDrawer();
 
@@ -170,13 +173,22 @@ export function StandardSidebar({ queryRef }: Props) {
       content: <PostComposerModalWithSelector viewerRef={query?.viewer} queryRef={query} />,
       headerVariant: 'thicc',
       isFullPage: isMobile,
-      onCloseOverride: () => {
+      onCloseOverride: (onClose: () => void) => {
+        if (!captionRef.current) {
+          onClose();
+          return;
+        }
+
         showModal({
           headerText: 'Are you sure?',
           content: (
             <DiscardPostConfirmation
+              onSaveDraft={() => {
+                onClose();
+              }}
               onDiscard={() => {
-                hideModal({ id: 'post-composer' });
+                setCaption('');
+                onClose();
               }}
             />
           ),
@@ -185,7 +197,7 @@ export function StandardSidebar({ queryRef }: Props) {
       },
     });
     track('Sidebar Create Post Click');
-  }, [hideDrawer, isLoggedIn, showModal, query, isMobile, track, hideModal]);
+  }, [hideDrawer, isLoggedIn, showModal, query, isMobile, track, captionRef, setCaption]);
 
   const handleSearchClick = useCallback(() => {
     track('Sidebar Search Click');

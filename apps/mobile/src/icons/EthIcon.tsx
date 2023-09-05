@@ -8,7 +8,7 @@ type Props = {
 
 export function EthIcon({ height = 12, width = 12, ...props }: Props) {
   return (
-    <Svg width={width} height={height} fill="none" {...props}>
+    <Svg width={width} height={height} fill="none" viewBox="0 0 24 24" {...props}>
       <Path
         fill="#000"
         d="M11.997 9.137 5.25 12.204l6.747 3.989 6.75-3.989-6.75-3.067Z"

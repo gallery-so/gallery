@@ -24,7 +24,7 @@ const fontSizeMapping: { [size in Size]: number } = {
   xxl: 48,
 };
 
-type Size = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl';
+type Size = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl' | number;
 
 export type RawProfilePictureProps = {
   size: Size;
@@ -56,9 +56,9 @@ export function RawProfilePicture({
   inheritBorderColor,
   ...rest
 }: RawProfilePictureProps) {
-  const widthAndHeight = sizeMapping[size];
+  const widthAndHeight = typeof size === 'number' ? size : sizeMapping[size];
 
-  let fontSize: number | null = fontSizeMapping[size];
+  let fontSize: number | null = typeof size === 'number' ? size / 1.75 : fontSizeMapping[size];
   if (hasInset) {
     fontSize -= 2;
   }

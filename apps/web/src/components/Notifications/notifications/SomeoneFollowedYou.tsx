@@ -85,8 +85,8 @@ export function SomeoneFollowedYou({
     count === 1 && lastFollower && (isInitiallyFollowingBack || isFollowingBack);
 
   return (
-    <StyledHStack justify="space-between" align="center">
-      <HStack gap={4} align="center">
+    <StyledHStack justify="space-between" align="center" gap={4}>
+      <StyledContainer gap={4} align="center">
         {count > 1 ? (
           <BaseM>
             <strong>{count} collectors</strong>
@@ -96,17 +96,21 @@ export function SomeoneFollowedYou({
             {lastFollower ? (
               <HStack gap={8} align="center">
                 <ProfilePicture size="md" userRef={lastFollower} />
-                <HoverCardOnUsername userRef={lastFollower} onClick={onClose} />
+                <StyledContainer gap={4}>
+                  <HoverCardOnUsername userRef={lastFollower} onClick={onClose} />
+                  <BaseM>followed </BaseM>
+                  <BaseM>you</BaseM>
+                </StyledContainer>
               </HStack>
             ) : (
               <BaseM>
-                <strong>Someone</strong>
+                <strong>Someone </strong>
+                followed you
               </BaseM>
             )}
           </>
         )}
-        <BaseM>followed you</BaseM>
-      </HStack>
+      </StyledContainer>
       {shouldShowFollowBackButton && <StyledFollowButton queryRef={query} userRef={lastFollower} />}
     </StyledHStack>
   );
@@ -116,8 +120,12 @@ const StyledHStack = styled(HStack)`
   width: 100%;
 `;
 
+const StyledContainer = styled(HStack)`
+  display: flex;
+  flex-wrap: wrap;
+`;
+
 const StyledFollowButton = styled(FollowButton)`
-  padding: 2px 8px;
   width: 92px;
   height: 24px;
 `;

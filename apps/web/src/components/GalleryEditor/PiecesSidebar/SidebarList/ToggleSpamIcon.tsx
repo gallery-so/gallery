@@ -6,14 +6,14 @@ import Tooltip from '~/components/Tooltip/Tooltip';
 import HideIcon from '~/icons/HideIcon';
 import ShowIcon from '~/icons/ShowIcon';
 
-import { SidebarView } from '../SidebarViewSelector';
+import { TokenFilterType } from '../SidebarViewSelector';
 import { CollectionTitleRow } from './SidebarList';
 
 export type SetSpamFn = (address: string, isSpam: boolean) => void;
 
 type Props = {
   row: CollectionTitleRow;
-  selectedView: SidebarView;
+  selectedView: TokenFilterType;
   setSpamPreferenceForCollection: SetSpamFn;
 };
 

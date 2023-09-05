@@ -4,7 +4,7 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { BaseM } from '~/components/core/Text/Text';
-import { SidebarView } from '~/components/GalleryEditor/PiecesSidebar/SidebarViewSelector';
+import { TokenFilterType } from '~/components/GalleryEditor/PiecesSidebar/SidebarViewSelector';
 import { NftSelectorFilterNetworkFragment$key } from '~/generated/NftSelectorFilterNetworkFragment.graphql';
 import DoubleArrowsIcon from '~/icons/DoubleArrowsIcon';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
@@ -32,13 +32,15 @@ const NetworkDropdownByNetwork = ({ chain }: NetworkDropdownProps) => {
 };
 
 type NftSelectorViewSelectorProps = {
-  selectedMode: SidebarView;
+  isSearching: boolean;
+  selectedMode: TokenFilterType;
   selectedNetwork: Chain;
   onSelectedViewChange: (selectedView: Chain) => void;
   queryRef: NftSelectorFilterNetworkFragment$key;
 };
 
 export function NftSelectorFilterNetwork({
+  isSearching,
   selectedMode,
   selectedNetwork,
   onSelectedViewChange,
@@ -59,14 +61,11 @@ export function NftSelectorFilterNetwork({
 
   const track = useTrack();
   const availableChains = useMemo(() => {
-    if (selectedMode === 'Created') {
-      return chains.filter((chain) => chain.hasCreatorSupport);
-    }
     if (isAdmin) {
       return chains;
     }
     return chains.filter((chain) => chain.isEnabled);
-  }, [isAdmin, selectedMode]);
+  }, [isAdmin]);
 
   const selectedChain = useMemo(() => {
     return availableChains.find((chain) => chain.name === selectedNetwork);
@@ -83,17 +82,36 @@ export function NftSelectorFilterNetwork({
 
   return (
     <Container>
-      <Selector gap={10} align="center" onClick={() => setIsDropdownOpen(true)}>
-        {selectedChain && <NetworkDropdownByNetwork chain={selectedChain} />}
+      <Selector
+        gap={10}
+        justify="space-between"
+        align="center"
+        onClick={() => setIsDropdownOpen(true)}
+      >
+        {isSearching ? (
+          <BaseM>All</BaseM>
+        ) : (
+          selectedChain && <NetworkDropdownByNetwork chain={selectedChain} />
+        )}
         <IconContainer variant="stacked" size="sm" icon={<DoubleArrowsIcon />} />
       </Selector>
       <Dropdown position="right" active={isDropdownOpen} onClose={() => setIsDropdownOpen(false)}>
         <DropdownSection>
-          {availableChains.map((chain) => (
-            <DropdownItem key={chain.name} onClick={() => onSelectChain(chain)}>
-              <NetworkDropdownByNetwork chain={chain} />
-            </DropdownItem>
-          ))}
+          {availableChains.map((chain) => {
+            const isChainDisabled = selectedMode === 'Created' && !chain.hasCreatorSupport;
+            return (
+              <DropdownItem
+                key={chain.name}
+                onClick={() => {
+                  if (isChainDisabled) return;
+                  onSelectChain(chain);
+                }}
+                disabled={isChainDisabled}
+              >
+                <NetworkDropdownByNetwork chain={chain} />
+              </DropdownItem>
+            );
+          })}
         </DropdownSection>
       </Dropdown>
     </Container>
@@ -111,4 +129,5 @@ const Selector = styled(HStack)`
 
 const Container = styled.div`
   position: relative;
+  width: 133px;
 `;

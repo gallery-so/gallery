@@ -21,6 +21,7 @@ export type SidebarWallet = { chainAddress: { chain: string; address: string } }
 const MAX_ALLOWED_ADDRESSES = 15;
 
 type SidebarWalletSelectorProps = {
+  isSearching: boolean;
   queryRef: SidebarWalletSelectorFragment$key;
   selectedChain: ChainMetadata;
   selectedWallet: SidebarWallet;
@@ -30,6 +31,7 @@ type SidebarWalletSelectorProps = {
 
 export default function SidebarWalletSelector({
   queryRef,
+  isSearching,
   selectedChain,
   selectedWallet,
   onSelectedWalletChange,
@@ -99,7 +101,7 @@ export default function SidebarWalletSelector({
   return (
     <Container>
       <Selector gap={10} align="center" onClick={() => setIsDropdownOpen(true)}>
-        <BaseM>{truncateWalletAddress(selectedWallet)}</BaseM>
+        <BaseM>{isSearching ? 'All' : truncateWalletAddress(selectedWallet)}</BaseM>
         <IconContainer variant="stacked" size="sm" icon={<DoubleArrowsIcon />} />
       </Selector>
       <StyledDropdown

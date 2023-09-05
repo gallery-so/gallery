@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import ErrorText from '~/components/core/Text/ErrorText';
 import { useModalActions } from '~/contexts/modal/ModalContext';
+import { usePostComposerContext } from '~/contexts/postComposer/PostComposerContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { PostComposerFragment$key } from '~/generated/PostComposerFragment.graphql';
 import useCreatePost from '~/hooks/api/posts/useCreatePost';
@@ -44,14 +45,16 @@ export default function PostComposer({ onBackClick, tokenRef }: Props) {
     tokenRef
   );
 
-  const [description, setDescription] = useState('');
-  const handleDescriptionChange = useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setDescription(event.target.value);
-  }, []);
+  const { caption, setCaption, captionRef } = usePostComposerContext();
 
-  const descriptionOverLengthLimit = useMemo(() => {
-    return description.length > DESCRIPTION_MAX_LENGTH;
-  }, [description]);
+  const handleDescriptionChange = useCallback(
+    (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+      setCaption(event.target.value);
+    },
+    [setCaption]
+  );
+
+  const descriptionOverLengthLimit = caption.length > DESCRIPTION_MAX_LENGTH;
 
   const createPost = useCreatePost();
 
@@ -65,18 +68,19 @@ export default function PostComposer({ onBackClick, tokenRef }: Props) {
   const handlePostClick = useCallback(async () => {
     setIsSubmitting(true);
     track('Clicked Post in Post Composer', {
-      added_description: Boolean(description),
+      added_description: Boolean(captionRef.current),
     });
     try {
       await createPost({
         tokens: [{ dbid: token.dbid, communityId: token.community?.id || '' }],
-        caption: description,
+        caption: captionRef.current,
       });
       setIsSubmitting(false);
       hideModal();
       pushToast({
         message: `Successfully posted ${token.name || 'item'}`,
       });
+      setCaption('');
     } catch (error) {
       setIsSubmitting(false);
       if (error instanceof Error) {
@@ -85,15 +89,15 @@ export default function PostComposer({ onBackClick, tokenRef }: Props) {
       setGeneralError('Post failed to upload, please try again');
     }
   }, [
+    track,
+    captionRef,
     createPost,
-    description,
+    token.dbid,
+    token.community?.id,
+    token.name,
     hideModal,
     pushToast,
-    token.community,
-    token.dbid,
-    token.name,
-    track,
-    setGeneralError,
+    setCaption,
     reportError,
   ]);
 
@@ -126,9 +130,10 @@ export default function PostComposer({ onBackClick, tokenRef }: Props) {
           <PostComposerNft tokenRef={token} />
           <VStack grow>
             <TextAreaWithCharCount
-              currentCharCount={description.length}
-              maxCharCount={DESCRIPTION_MAX_LENGTH}
+              defaultValue={caption}
               placeholder={`Say something about ${inputPlaceholderTokenName}`}
+              currentCharCount={caption.length}
+              maxCharCount={DESCRIPTION_MAX_LENGTH}
               textAreaHeight="117px"
               onChange={handleDescriptionChange}
               autoFocus
