@@ -10,6 +10,7 @@ import { SomeoneCommentedOnYourPostFragment$key } from '~/generated/SomeoneComme
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
 import colors from '~/shared/theme/colors';
+import unescape from '~/shared/utils/unescape';
 type Props = {
   notificationRef: SomeoneCommentedOnYourPostFragment$key;
   onClose: () => void;
@@ -70,7 +71,7 @@ export default function SomeoneCommentedOnYourPost({ notificationRef, onClose }:
               commented on your <strong>post</strong>
             </BaseM>
           </StyledTextWrapper>
-          <StyledCaption dangerouslySetInnerHTML={{ __html: comment.comment }}></StyledCaption>
+          <StyledCaption>{unescape(comment.comment)}</StyledCaption>
         </VStack>
       </HStack>
       {previewUrlSet?.urls.small && <StyledPostPreview src={previewUrlSet?.urls.small} />}
