@@ -61,6 +61,14 @@ type AdmirePostPayload {
 
 union AdmirePostPayloadOrError = AdmirePostPayload | ErrInvalidInput | ErrNotAuthorized
 
+type AdmireTokenPayload {
+  viewer: Viewer
+  token: Token
+  admire: Admire
+}
+
+union AdmireTokenPayloadOrError = AdmireTokenPayload | ErrTokenNotFound | ErrInvalidInput | ErrNotAuthorized
+
 type AudioMedia implements Media {
   previewURLs: PreviewURLSet
   mediaURL: String
@@ -383,7 +391,7 @@ type CreateUserPayload {
   viewer: Viewer
 }
 
-union CreateUserPayloadOrError = CreateUserPayload | ErrAuthenticationFailed | ErrDoesNotOwnRequiredToken | ErrUserAlreadyExists | ErrUsernameNotAvailable | ErrInvalidInput
+union CreateUserPayloadOrError = CreateUserPayload | ErrAuthenticationFailed | ErrDoesNotOwnRequiredToken | ErrUserAlreadyExists | ErrUsernameNotAvailable | ErrInvalidInput | ErrEmailAlreadyUsed
 
 scalar DBID
 
@@ -490,6 +498,14 @@ type ErrCommunityNotFound implements Error {
 }
 
 type ErrDoesNotOwnRequiredToken implements Error {
+  message: String!
+}
+
+type ErrEmailAlreadyUsed implements Error {
+  message: String!
+}
+
+type ErrEmailUnverified implements Error {
   message: String!
 }
 
@@ -849,7 +865,7 @@ type LoginPayload {
   viewer: Viewer
 }
 
-union LoginPayloadOrError = LoginPayload | ErrUserNotFound | ErrAuthenticationFailed | ErrDoesNotOwnRequiredToken
+union LoginPayloadOrError = LoginPayload | ErrUserNotFound | ErrAuthenticationFailed | ErrEmailUnverified | ErrDoesNotOwnRequiredToken
 
 type LogoutPayload {
   viewer: Viewer
@@ -970,6 +986,7 @@ type Mutation {
   unfollowUser(userId: DBID!): UnfollowUserPayloadOrError
   admireFeedEvent(feedEventId: DBID!): AdmireFeedEventPayloadOrError
   admirePost(postId: DBID!): AdmirePostPayloadOrError
+  admireToken(tokenId: DBID!): AdmireTokenPayloadOrError
   removeAdmire(admireId: DBID!): RemoveAdmirePayloadOrError
   commentOnFeedEvent(feedEventId: DBID!, replyToID: DBID, comment: String!): CommentOnFeedEventPayloadOrError
   removeComment(commentId: DBID!): RemoveCommentPayloadOrError
@@ -1595,9 +1612,21 @@ type Token implements Node {
   blockNumber: String
   isSpamByUser: Boolean
   isSpamByProvider: Boolean
+  admires(before: String, after: String, first: Int, last: Int, userID: DBID): TokenAdmiresConnection
   creatorAddress: ChainAddress
   openseaCollectionName: String
   openseaId: Int
+}
+
+type TokenAdmireEdge {
+  node: Admire
+  cursor: String
+  token: Token
+}
+
+type TokenAdmiresConnection {
+  edges: [TokenAdmireEdge]
+  pageInfo: PageInfo
 }
 
 union TokenByIdOrError = Token | ErrTokenNotFound
@@ -2016,7 +2045,7 @@ type Viewer implements Node {
   user: GalleryUser
   socialAccounts: SocialAccounts
   viewerGalleries: [ViewerGallery]
-  feed(before: String, after: String, first: Int, last: Int): FeedConnection
+  feed(before: String, after: String, first: Int, last: Int, includePosts: Boolean! = false): FeedConnection
   email: UserEmail
 
   """
