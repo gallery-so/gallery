@@ -12,6 +12,7 @@ import { PostItemWithErrorBoundaryQueryFragment$key } from '~/generated/PostItem
 import { useIsDesktopWindowWidth } from '~/hooks/useWindowSize';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 
+import PostCommunityPill from './Posts/PostCommunityPill';
 import PostHeader from './Posts/PostHeader';
 import PostNfts from './Posts/PostNfts';
 import PostSocializeSection from './Socialize/PostSocializeSection';
@@ -40,6 +41,7 @@ export function PostItem({
         ...PostSocializeSectionFragment
         ...PostHeaderFragment
         ...PostNftsFragment
+        ...PostCommunityPillFragment
       }
     `,
     eventRef
@@ -66,13 +68,16 @@ export function PostItem({
       <StyledPostItem useVerticalLayout={true}>
         <PostHeader postRef={post} queryRef={query} />
         <PostNfts postRef={post} onNftLoad={measure} />
-        <ReportingErrorBoundary dontReport fallback={<></>}>
-          <PostSocializeSection
-            queryRef={query}
-            postRef={post}
-            onPotentialLayoutShift={handlePotentialLayoutShift}
-          />
-        </ReportingErrorBoundary>
+        <VStack gap={8}>
+          <PostCommunityPill postRef={post} />
+          <ReportingErrorBoundary dontReport fallback={<></>}>
+            <PostSocializeSection
+              queryRef={query}
+              postRef={post}
+              onPotentialLayoutShift={handlePotentialLayoutShift}
+            />
+          </ReportingErrorBoundary>
+        </VStack>
       </StyledPostItem>
     );
   }
@@ -81,13 +86,16 @@ export function PostItem({
       <PostNfts postRef={post} onNftLoad={measure} />
       <StyledDesktopPostData gap={16} justify="space-between">
         <PostHeader postRef={post} queryRef={query} />
-        <ReportingErrorBoundary dontReport fallback={<></>}>
-          <PostSocializeSection
-            queryRef={query}
-            postRef={post}
-            onPotentialLayoutShift={handlePotentialLayoutShift}
-          />
-        </ReportingErrorBoundary>
+        <VStack gap={8}>
+          <PostCommunityPill postRef={post} />
+          <ReportingErrorBoundary dontReport fallback={<></>}>
+            <PostSocializeSection
+              queryRef={query}
+              postRef={post}
+              onPotentialLayoutShift={handlePotentialLayoutShift}
+            />
+          </ReportingErrorBoundary>
+        </VStack>
       </StyledDesktopPostData>
     </StyledPostItem>
   );

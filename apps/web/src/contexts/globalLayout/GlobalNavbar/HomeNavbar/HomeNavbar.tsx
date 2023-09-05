@@ -7,6 +7,7 @@ import { HStack } from '~/components/core/Spacer/Stack';
 import { HomeNavbarFragment$key } from '~/generated/HomeNavbarFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
+import isAdminRole from '~/utils/graphql/isAdminRole';
 
 import { NavbarLink } from '../NavbarLink';
 import { SignInButton } from '../SignInButton';
@@ -30,6 +31,7 @@ export function HomeNavbar({ queryRef }: Props) {
             __typename
           }
         }
+        ...isAdminRoleFragment
       }
     `,
     queryRef
@@ -42,8 +44,12 @@ export function HomeNavbar({ queryRef }: Props) {
     track('Home: Clicked toggle to Trending Feed');
   }, [track]);
 
-  const handleLatestModeClick = useCallback<MouseEventHandler>(() => {
+  const handleLatestTabClick = useCallback<MouseEventHandler>(() => {
     track('Home: Clicked toggle to Latest Page');
+  }, [track]);
+
+  const handleFollowingTabClick = useCallback<MouseEventHandler>(() => {
+    track('Home: Clicked toggle to Following Page');
   }, [track]);
 
   const handleFeaturedModeClick = useCallback<MouseEventHandler>(() => {
@@ -53,7 +59,7 @@ export function HomeNavbar({ queryRef }: Props) {
   const { pathname } = useRouter();
   const curatedRoute: Route = { pathname: '/home', query: {} };
   const latestRoute: Route = { pathname: '/latest', query: {} };
-  const latestFollowingRoute: Route = { pathname: '/latest/following', query: {} };
+  const followingRoute: Route = { pathname: '/following', query: {} };
   const exploreRoute: Route = { pathname: '/explore', query: {} };
 
   const isMobile = useIsMobileWindowWidth();
@@ -69,17 +75,30 @@ export function HomeNavbar({ queryRef }: Props) {
             href={route(curatedRoute)}
             onClick={handleTrendingClick}
           >
-            Curated
+            {isLoggedIn ? 'For You' : 'Trending'}
           </NavbarLink>
 
-          <NavbarLink
-            active={pathname === latestRoute.pathname || pathname === latestFollowingRoute.pathname}
-            // @ts-expect-error We're not using the legacy Link
-            href={route(latestRoute)}
-            onClick={handleLatestModeClick}
-          >
-            Latest
-          </NavbarLink>
+          {isLoggedIn && (
+            <NavbarLink
+              active={pathname === followingRoute.pathname}
+              // @ts-expect-error We're not using the legacy Link
+              href={route(followingRoute)}
+              onClick={handleFollowingTabClick}
+            >
+              Following
+            </NavbarLink>
+          )}
+
+          {(!isLoggedIn || isAdminRole(query)) && (
+            <NavbarLink
+              active={pathname === latestRoute.pathname}
+              // @ts-expect-error We're not using the legacy Link
+              href={route(latestRoute)}
+              onClick={handleLatestTabClick}
+            >
+              Latest
+            </NavbarLink>
+          )}
 
           <NavbarLink
             active={pathname === exploreRoute.pathname}

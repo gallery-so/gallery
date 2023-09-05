@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import ErrorBoundary from '~/contexts/boundary/ErrorBoundary';
 import { useModalActions } from '~/contexts/modal/ModalContext';
+import { usePostComposerContext } from '~/contexts/postComposer/PostComposerContext';
 import { PostComposerModalFragment$key } from '~/generated/PostComposerModalFragment.graphql';
 import { PostComposerModalWithSelectorFragment$key } from '~/generated/PostComposerModalWithSelectorFragment.graphql';
 import { PostComposerModalWithSelectorQueryFragment$key } from '~/generated/PostComposerModalWithSelectorQueryFragment.graphql';
@@ -65,25 +66,36 @@ export function PostComposerModalWithSelector({ viewerRef, queryRef, preSelected
     setSelectedTokenId(tokenId);
   }, []);
 
-  const clearSelectedTokenId = useCallback(() => {
+  const returnUserToSelectorStep = useCallback(() => {
     setSelectedTokenId(null);
   }, []);
 
   const { showModal } = useModalActions();
 
+  const { captionRef, setCaption } = usePostComposerContext();
+
   const onBackClick = useCallback(() => {
+    if (!captionRef.current) {
+      returnUserToSelectorStep();
+      return;
+    }
+
     showModal({
       headerText: 'Are you sure?',
       content: (
         <DiscardPostConfirmation
+          onSaveDraft={() => {
+            returnUserToSelectorStep();
+          }}
           onDiscard={() => {
-            clearSelectedTokenId();
+            returnUserToSelectorStep();
+            setCaption('');
           }}
         />
       ),
       isFullPage: false,
     });
-  }, [showModal, clearSelectedTokenId]);
+  }, [captionRef, showModal, returnUserToSelectorStep, setCaption]);
 
   return (
     <StyledPostComposerModal>

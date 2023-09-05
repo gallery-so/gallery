@@ -93,8 +93,6 @@ export default function SharedFollowersList({ userRef }: Props) {
           </InfiniteLoader>
         )}
       </AutoSizer>
-
-      <VStack></VStack>
     </StyledList>
   );
 }
@@ -103,7 +101,7 @@ const StyledList = styled(VStack)<{ fullscreen: boolean }>`
   width: 375px;
   max-width: 375px;
   margin: 4px;
-  height: ${({ fullscreen }) => (fullscreen ? '100%' : '640px')};
+  height: ${({ fullscreen }) => (fullscreen ? '100%' : '400px')};
 `;
 
 function SharedFollowersListRow({ userRef }: { userRef: SharedFollowersListRowFragment$key }) {

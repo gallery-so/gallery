@@ -14,13 +14,13 @@ import { SidebarTokensFragment$key } from '~/generated/SidebarTokensFragment.gra
 import useSetSpamPreference from '~/hooks/api/tokens/useSetSpamPreference';
 import { Chain } from '~/shared/utils/chains';
 
-import { SidebarView } from './SidebarViewSelector';
+import { TokenFilterType } from './SidebarViewSelector';
 import { SidebarWallet } from './SidebarWalletSelector';
 
 type SidebarTokensProps = {
   isSearching: boolean;
   selectedChain: Chain;
-  selectedView: SidebarView;
+  selectedView: TokenFilterType;
   selectedWallet: SidebarWallet;
   tokenRefs: SidebarTokensFragment$key;
 };

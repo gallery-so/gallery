@@ -9,11 +9,9 @@ import { IsMemberOfCommunityProvider } from '~/contexts/communityPage/IsMemberOf
 import MemberListPageProvider from '~/contexts/memberListPage/MemberListPageContext';
 import { CommunityPageViewFragment$key } from '~/generated/CommunityPageViewFragment.graphql';
 import { CommunityPageViewQueryFragment$key } from '~/generated/CommunityPageViewQueryFragment.graphql';
-import { DISABLED_CONTRACTS } from '~/utils/getCommunityUrlForToken';
 import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 import CommunityPageCollectorsTab from './CommunityPageCollectorsTab';
-import CommunityPageDisabled from './CommunityPageDisabled';
 import CommunityPagePostsTab from './CommunityPagePostsTab';
 import CommunityPageTabs from './CommunityPageTabs';
 import CommunityPageViewHeader from './CommunityPageViewHeader';
@@ -29,11 +27,9 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
   const community = useFragment(
     graphql`
       fragment CommunityPageViewFragment on Community {
-        name
         dbid
-
         contractAddress {
-          address
+          __typename
         }
 
         ...CommunityPageCollectorsTabFragment
@@ -58,7 +54,7 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
     queryRef
   );
 
-  const { name, contractAddress } = community;
+  const { contractAddress } = community;
 
   if (!contractAddress) {
     throw new Error('CommunityPageView: contractAddress not found on community');
@@ -68,8 +64,6 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
   const [activeTab, setActiveTab] = useState<CommunityPageTab>(
     isKoalaEnabled ? 'posts' : 'collectors'
   );
-
-  const isCommunityPageDisabled = DISABLED_CONTRACTS.includes(contractAddress.address ?? '');
 
   return (
     <MemberListPageProvider>
@@ -93,8 +87,6 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
               <CommunityPageCollectorsTab communityRef={community} queryRef={query} />
             )}
           </VStack>
-
-          {isCommunityPageDisabled && <CommunityPageDisabled name={name ?? ''} />}
         </StyledCommunityPageContainer>
       </IsMemberOfCommunityProvider>
     </MemberListPageProvider>
