@@ -14,8 +14,20 @@ type GnosisPayloadVariables = {
   userFriendlyWalletName: string;
 };
 
-export type AuthPayloadVariables = EoaPayloadVariables | GnosisPayloadVariables;
+type EmailPayloadVariables = {
+  authMechanismType: 'magicLink';
+  token: string;
+};
+
+export type AuthPayloadVariables =
+  | EoaPayloadVariables
+  | GnosisPayloadVariables
+  | EmailPayloadVariables;
 
 export function isEoaPayload(payload: AuthPayloadVariables): payload is EoaPayloadVariables {
   return payload.authMechanismType === 'eoa';
+}
+
+export function isEmailPayload(payload: AuthPayloadVariables): payload is EmailPayloadVariables {
+  return payload.authMechanismType === 'magicLink';
 }
