@@ -65,6 +65,7 @@ export function OnboardingUsernameScreen() {
       const response = await createUser(authMechanism, username, bio);
 
       if (response.createUser?.__typename === 'CreateUserPayload') {
+        // TODO: Remove this once incremental sync is implemented
         if (!isSyncing) {
           syncTokens('Ethereum');
         }
