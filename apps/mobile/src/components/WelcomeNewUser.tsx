@@ -37,7 +37,7 @@ export function WelcomeNewUser({ username }: Props) {
           </View>
           <Typography className="text-center" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
             This is where you'll find see what people are collecting, creating and sharing. Choose
-            'Curated' for tailored content or 'Following' to see what your connections are up to!
+            'For You' for tailored content or 'Following' to see what your connections are up to!
           </Typography>
         </View>
 
