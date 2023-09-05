@@ -10,6 +10,7 @@ import { LoginStackNavigatorProp } from '~/navigation/types';
 import { navigateToNotificationUpsellOrHomeScreen } from '~/screens/Login/navigateToNotificationUpsellOrHomeScreen';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
+import { EMAIL_FORMAT } from '~/shared/utils/regex';
 
 import { Button } from '../../components/Button';
 import { Typography } from '../../components/Typography';
@@ -29,6 +30,15 @@ export function OnboardingEmailScreen() {
   const [login] = useLogin();
   const reportError = useReportError();
   const track = useTrack();
+
+  const handleEmailChange = useCallback((text: string) => {
+    setError('');
+    setEmail(text);
+    if (!EMAIL_FORMAT.test(text)) {
+      setError('Please enter a valid email address');
+      return;
+    }
+  }, []);
 
   const handleContinue = useCallback(async () => {
     let hasNavigatedForward = false;
@@ -90,9 +100,11 @@ export function OnboardingEmailScreen() {
       setIsLoggingIn(false);
     }
   }, [email, login, navigation, reportError, track]);
+
   const handleBack = useCallback(() => {
     navigation.goBack();
   }, [navigation]);
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -127,7 +139,7 @@ export function OnboardingEmailScreen() {
             keyboardType="email-address"
             autoComplete="email"
             value={email}
-            onChangeText={setEmail}
+            onChange={(e) => handleEmailChange(e.nativeEvent.text)}
             multiline
           />
           <View className="space-y-4">
@@ -141,6 +153,8 @@ export function OnboardingEmailScreen() {
               )}
               loading={isLoggingIn}
               onPress={handleContinue}
+              variant={Boolean(error) ? 'disabled' : 'primary'}
+              disabled={Boolean(error)}
               text="Next"
             />
 
