@@ -36,9 +36,12 @@ export default function CommunityPagePresentation({ communityRef, queryRef }: Pr
     queryRef
   );
 
+  // currently getting data from new to old, we want old to
+  // need to get data
+
   const {
     data: community,
-    loadPrevious,
+    loadNext,
     hasPrevious,
   } = usePaginationFragment<
     RefetchableCommunityPresentationFeedQuery,
@@ -47,8 +50,8 @@ export default function CommunityPagePresentation({ communityRef, queryRef }: Pr
     graphql`
       fragment CommunityPagePresentationFragment on Community
       @refetchable(queryName: "RefetchableCommunityPresentationFeedQuery") {
-        posts(before: $communityPostsBefore, last: $communityPostsLast)
-          @connection(key: "CommunityFeed_posts") {
+        presentationPosts: posts(after: $communityPostsAfter, first: $communityPostsFirst)
+          @connection(key: "CommunityFeed_presentationPosts") {
           edges {
             node {
               ... on Post {
@@ -71,14 +74,14 @@ export default function CommunityPagePresentation({ communityRef, queryRef }: Pr
   const postData = useMemo(() => {
     const events = [];
 
-    for (const edge of community.posts?.edges ?? []) {
+    for (const edge of community.presentationPosts?.edges ?? []) {
       if (edge?.node?.__typename === 'Post' && edge.node) {
         events.push(edge.node);
       }
     }
 
     return events;
-  }, [community.posts?.edges]);
+  }, [community.presentationPosts?.edges]);
 
   // const community = useFragment(
   //   graphql`
@@ -92,9 +95,9 @@ export default function CommunityPagePresentation({ communityRef, queryRef }: Pr
   const loadNextPage = useCallback(() => {
     return new Promise((resolve) => {
       // Infinite scroll component wants load callback to return a promise
-      loadPrevious(ITEMS_PER_PAGE, { onComplete: () => resolve('loaded') });
+      loadNext(ITEMS_PER_PAGE, { onComplete: () => resolve('loaded') });
     });
-  }, [loadPrevious]);
+  }, [loadNext]);
 
   const { width } = useWindowSize();
 

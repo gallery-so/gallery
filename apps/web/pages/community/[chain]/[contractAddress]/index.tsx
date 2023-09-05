@@ -20,7 +20,7 @@ import CommunityPagePresentationScene, {
 type CommunityPageProps = MetaTagProps & {
   contractAddress: string;
   chain: Chain;
-  displayMode?: CommunityPageDisplayMode;
+  displayMode: CommunityPageDisplayMode | null;
 };
 
 // todo change to real address
@@ -40,6 +40,8 @@ export default function CommunityPage({ contractAddress, chain, displayMode }: C
         $onlyGalleryUsers: Boolean
         $communityPostsLast: Int!
         $communityPostsBefore: String
+        $communityPostsFirst: Int!
+        $communityPostsAfter: String
         $interactionsFirst: Int!
         $interactionsAfter: String
         $visibleTokensPerFeedEvent: Int!
@@ -60,6 +62,7 @@ export default function CommunityPage({ contractAddress, chain, displayMode }: C
       listOwnersFirst: LIST_ITEM_PER_PAGE,
       onlyGalleryUsers: true,
       communityPostsLast: ITEMS_PER_PAGE,
+      communityPostsFirst: ITEMS_PER_PAGE,
       interactionsFirst: NOTES_PER_PAGE,
       visibleTokensPerFeedEvent: 1,
     }
@@ -103,7 +106,7 @@ export const getServerSideProps: GetServerSideProps<CommunityPageProps> = async 
     props: {
       contractAddress,
       chain,
-      displayMode,
+      displayMode: displayMode ?? null,
     },
   };
 };

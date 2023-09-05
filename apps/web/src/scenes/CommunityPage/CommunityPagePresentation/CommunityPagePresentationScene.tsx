@@ -4,9 +4,9 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';
+import { CommunityPagePresentationSceneFragment$key } from '~/generated/CommunityPagePresentationSceneFragment.graphql';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 
-import CommunityPagePresentationView from './CommunityPagePresentation';
 import CommunityPagePresentation from './CommunityPagePresentation';
 
 type Props = {

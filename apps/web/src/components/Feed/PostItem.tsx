@@ -34,6 +34,9 @@ export function PostItem({
   const post = useFragment(
     graphql`
       fragment PostItemFragment on Post {
+        author {
+          __typename
+        }
         ...PostSocializeSectionFragment
         ...PostHeaderFragment
         ...PostNftsFragment
@@ -55,6 +58,8 @@ export function PostItem({
   const isDesktop = useIsDesktopWindowWidth();
 
   const useVerticalLayout = !isDesktop || bigScreenMode;
+
+  console.log('post.author', post.author);
 
   if (useVerticalLayout) {
     return (
