@@ -89,14 +89,7 @@ export function OnboardingEmailScreen() {
     } finally {
       setIsLoggingIn(false);
     }
-  }, [
-    email,
-    login,
-    navigation,
-    reportError,
-    track,
-    // verifyEmail
-  ]);
+  }, [email, login, navigation, reportError, track]);
   const handleBack = useCallback(() => {
     navigation.goBack();
   }, [navigation]);
@@ -135,6 +128,7 @@ export function OnboardingEmailScreen() {
             autoComplete="email"
             value={email}
             onChangeText={setEmail}
+            multiline
           />
           <View className="space-y-4">
             <Button
@@ -147,10 +141,7 @@ export function OnboardingEmailScreen() {
               )}
               loading={isLoggingIn}
               onPress={handleContinue}
-              text="Continue"
-              properties={{
-                'Sign In Selection': 'Email',
-              }}
+              text="Next"
             />
 
             <Typography

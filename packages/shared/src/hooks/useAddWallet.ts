@@ -20,6 +20,9 @@ export default function useAddWallet() {
             __typename
             viewer {
               user {
+                primaryWallet {
+                  __typename
+                }
                 wallets {
                   dbid
                   chainAddress {
