@@ -251,6 +251,7 @@ export function OnboardingProfileBioScreen() {
       </View>
 
       <WalletSelectorBottomSheet
+        title="Connect your wallet to view your collection"
         ref={bottomSheet}
         isSignedIn={isSigningIn}
         onDismiss={handleDismiss}

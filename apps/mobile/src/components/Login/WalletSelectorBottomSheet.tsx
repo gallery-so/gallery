@@ -1,5 +1,5 @@
 import { useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
-import { useWalletConnectModal,WalletConnectModal } from '@walletconnect/modal-react-native';
+import { useWalletConnectModal, WalletConnectModal } from '@walletconnect/modal-react-native';
 import clsx from 'clsx';
 import { ForwardedRef, forwardRef, useCallback, useRef } from 'react';
 import { View, ViewProps } from 'react-native';
@@ -36,12 +36,13 @@ const providerMetadata = {
 };
 
 type Props = {
+  title?: string;
   isSignedIn: boolean;
   onDismiss: () => void;
 };
 
 function WalletSelectorBottomSheet(
-  { isSignedIn, onDismiss }: Props,
+  { isSignedIn, onDismiss, title = 'Network' }: Props,
   ref: ForwardedRef<GalleryBottomSheetModalType>
 ) {
   const { bottom } = useSafeAreaPadding();
@@ -94,7 +95,7 @@ function WalletSelectorBottomSheet(
                 className="text-lg text-black-900 dark:text-offWhite"
                 font={{ family: 'ABCDiatype', weight: 'Bold' }}
               >
-                Network
+                {title}
               </Typography>
             )}
           </View>
