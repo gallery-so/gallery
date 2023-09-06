@@ -28,6 +28,7 @@ export function groupNftSelectorCollectionsByAddress({
           # dbid is used by NftSelectorTokenPreview.tsx
           # eslint-disable-next-line relay/unused-fields
           dbid
+          name
           chain
           isSpamByProvider
           isSpamByUser

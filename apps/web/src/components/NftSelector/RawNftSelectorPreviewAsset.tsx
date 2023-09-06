@@ -2,47 +2,19 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { RawNftSelectorPreviewAssetFragment$key } from '~/generated/RawNftSelectorPreviewAssetFragment.graphql';
-import { useThrowOnMediaFailure } from '~/hooks/useNftRetry';
-import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
-import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
+import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 
 import transitions from '../core/transitions';
 
-export function RawNftSelectorPreviewAsset({
-  type,
-  isSelected,
-  src,
-  onLoad,
-}: {
-  type: 'video' | 'image';
+type Props = {
   isSelected: boolean;
-  src: string | null | undefined;
+  src: string;
   onLoad: () => void;
-  alt?: string | null;
-}) {
-  const { handleError } = useThrowOnMediaFailure('SidebarPreviewAsset');
+};
 
-  if (!src) {
-    throw new CouldNotRenderNftError('SidebarNftIcon', 'missing src');
-  }
-
-  // Some OpenSea assets don't have an image url,
-  // so render a freeze-frame of the video instead
-  if (type === 'video')
-    return (
-      <StyledVideo onLoadedData={onLoad} onError={handleError} isSelected={isSelected} src={src} />
-    );
-
-  return (
-    <StyledImage
-      isSelected={isSelected}
-      src={src}
-      alt="token"
-      onLoad={onLoad}
-      onError={handleError}
-    />
-  );
+export function RawNftSelectorPreviewAsset({ isSelected, src, onLoad }: Props) {
+  return <StyledImage isSelected={isSelected} src={src} alt="token" onLoad={onLoad} />;
 }
 
 type NftSelectorPreviewAssetProps = {
@@ -54,52 +26,31 @@ export function NftSelectorPreviewAsset({ tokenRef, onLoad }: NftSelectorPreview
   const token = useFragment(
     graphql`
       fragment RawNftSelectorPreviewAssetFragment on Token {
-        ...getVideoOrImageUrlForNftPreviewFragment
+        ...useGetPreviewImagesSingleFragment
       }
     `,
     tokenRef
   );
 
-  const reportError = useReportError();
-  const previewUrlSet = getVideoOrImageUrlForNftPreview({
-    tokenRef: token,
-    handleReportError: reportError,
-  });
+  const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size: 'medium' });
 
-  if (!previewUrlSet?.urls.medium) {
-    throw new CouldNotRenderNftError('SidebarNftIcon', 'could not find medium image url');
+  if (!imageUrl) {
+    throw new CouldNotRenderNftError('NftSelectorPreviewAsset', 'could not find medium image url');
   }
 
-  return (
-    <RawNftSelectorPreviewAsset
-      type={previewUrlSet.type}
-      isSelected={false}
-      src={previewUrlSet.urls.medium}
-      onLoad={onLoad}
-    />
-  );
+  return <RawNftSelectorPreviewAsset isSelected={false} src={imageUrl} onLoad={onLoad} />;
 }
 
 type SelectedProps = {
   isSelected?: boolean;
 };
+
 const StyledImage = styled.img<SelectedProps>`
   max-height: 100%;
   max-width: 100%;
   transition: opacity ${transitions.cubic};
   opacity: ${({ isSelected }) => (isSelected ? 0.5 : 1)};
 
-  height: auto;
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  object-fit: cover;
-`;
-
-const StyledVideo = styled.video<SelectedProps>`
-  max-height: 100%;
-  max-width: 100%;
-  transition: opacity ${transitions.cubic};
-  opacity: ${({ isSelected }) => (isSelected ? 0.5 : 1)};
   height: auto;
   width: 100%;
   aspect-ratio: 1 / 1;
