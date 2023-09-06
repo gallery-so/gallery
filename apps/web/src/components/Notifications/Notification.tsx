@@ -17,6 +17,7 @@ import { NotificationFragment$key } from '~/generated/NotificationFragment.graph
 import { NotificationInnerFragment$key } from '~/generated/NotificationInnerFragment.graphql';
 import { NotificationInnerQueryFragment$key } from '~/generated/NotificationInnerQueryFragment.graphql';
 import { NotificationQueryFragment$key } from '~/generated/NotificationQueryFragment.graphql';
+import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import { useClearNotifications } from '~/shared/relay/useClearNotifications';
 import colors from '~/shared/theme/colors';
 import { getTimeSince } from '~/shared/utils/time';
@@ -249,21 +250,23 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
   }
 
   return (
-    <Container isClickable={isClickable} onClick={handleClick}>
-      <HStack gap={8} align="center" justify="space-between">
-        <NotificationInner notificationRef={notification} queryRef={query} />
-        <StyledDotAndTimeAgo align="center" gap={4}>
-          <HStack grow justify="flex-end" gap={16}>
-            <TimeAgoText color={colors.metal}>{timeAgo}</TimeAgoText>
-          </HStack>
-          {!notification.seen && (
-            <UnseenDotContainer>
-              <UnseenDot />
-            </UnseenDotContainer>
-          )}
-        </StyledDotAndTimeAgo>
-      </HStack>
-    </Container>
+    <ReportingErrorBoundary fallback={null}>
+      <Container isClickable={isClickable} onClick={handleClick}>
+        <HStack gap={8} align="center" justify="space-between">
+          <NotificationInner notificationRef={notification} queryRef={query} />
+          <StyledDotAndTimeAgo align="center" gap={4}>
+            <HStack grow justify="flex-end" gap={16}>
+              <TimeAgoText color={colors.metal}>{timeAgo}</TimeAgoText>
+            </HStack>
+            {!notification.seen && (
+              <UnseenDotContainer>
+                <UnseenDot />
+              </UnseenDotContainer>
+            )}
+          </StyledDotAndTimeAgo>
+        </HStack>
+      </Container>
+    </ReportingErrorBoundary>
   );
 }
 
