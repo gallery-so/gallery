@@ -6,7 +6,7 @@ import { useToastActions } from '~/contexts/toast/ToastContext';
 import { useAdmireFeedEventMutation } from '~/generated/useAdmireFeedEventMutation.graphql';
 import { AdditionalContext, useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
-import { OptimisticUserInfo } from '~/utils/getOptimisticUserInfo';
+import { OptimisticUserInfo } from '~/utils/useOptimisticUserInfo';
 
 export default function useAdmireFeedEvent() {
   const [admire] = usePromisifiedMutation<useAdmireFeedEventMutation>(graphql`
