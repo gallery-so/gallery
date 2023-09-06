@@ -4,7 +4,7 @@ import { graphql, useLazyLoadQuery } from 'react-relay';
 import { SingleOpenGraphPreview } from '~/components/opengraph/SingleOpenGraphPreview';
 import { HEIGHT_OPENGRAPH_IMAGE, WIDTH_OPENGRAPH_IMAGE } from '~/constants/opengraph';
 import { TokenIdOpengraphQuery } from '~/generated/TokenIdOpengraphQuery.graphql';
-import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
+import { getPreviewImageUrlsInlineDangerously } from '~/shared/relay/getPreviewImageUrlsInlineDangerously';
 
 export default function OpenGraphCollectionPage() {
   const { query } = useRouter();
@@ -21,7 +21,7 @@ export default function OpenGraphCollectionPage() {
             name
             collectorsNote
             description
-            ...getVideoOrImageUrlForNftPreviewFragment
+            ...getPreviewImageUrlsInlineDangerouslyFragment
           }
         }
       }
@@ -35,10 +35,14 @@ export default function OpenGraphCollectionPage() {
 
   const { token } = queryResponse;
 
-  const media = getVideoOrImageUrlForNftPreview({ tokenRef: token });
+  const result = getPreviewImageUrlsInlineDangerously({ tokenRef: token });
 
   const width = parseInt(query.width as string) || WIDTH_OPENGRAPH_IMAGE;
   const height = parseInt(query.height as string) || HEIGHT_OPENGRAPH_IMAGE;
+
+  if (result.type !== 'valid') {
+    return null;
+  }
 
   return (
     <>
@@ -49,7 +53,7 @@ export default function OpenGraphCollectionPage() {
               title={token.name ?? ''}
               description={token.description ?? ''}
               collectorsNote={token.collectorsNote ?? ''}
-              imageUrls={media?.urls.large ? [media.urls.large] : []}
+              imageUrls={result.urls.large ? [result.urls.large] : []}
             />
           )}
         </div>

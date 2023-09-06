@@ -3,7 +3,6 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { useReportError } from '~/contexts/ErrorReportingContext';
-// import { useGetPreviewImageUrlsFragment$key } from '~/generated/useGetPreviewImageUrlsFragment.graphql';
 import { useGetPreviewImageUrlsWithPollingFragment$key } from '~/generated/useGetPreviewImageUrlsWithPollingFragment.graphql';
 
 import {
