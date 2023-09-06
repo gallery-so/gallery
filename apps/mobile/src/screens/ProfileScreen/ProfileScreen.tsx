@@ -55,7 +55,7 @@ function ProfileScreenInner() {
       sharedFollowersFirst: SHARED_FOLLOWERS_PER_PAGE,
       includePosts: isPostEnabled,
     },
-    { fetchPolicy: 'store-or-network', UNSTABLE_renderPolicy: 'partial' }
+    { fetchPolicy: 'store-or-network', UNSTABLE_renderPolicy: 'full' }
   );
 
   const [query, refetch] = useRefetchableFragment<

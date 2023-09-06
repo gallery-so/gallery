@@ -61,7 +61,10 @@ export type MainTabStackNavigatorParamList = {
 };
 
 export type FeedTabNavigatorParamList = {
-  Curated: undefined;
+  Curated: {
+    // check if new registered user, we show a welcome message
+    isNewUser?: boolean;
+  };
   Latest: undefined;
   Explore: undefined;
 };
@@ -75,12 +78,31 @@ export type MainTabNavigatorParamList = {
   PostTab: NavigatorScreenParams<MainTabStackNavigatorParamList>;
 };
 
+type AuthMechanism = {
+  authMechanismType: 'eoa';
+  chain: string;
+  address: string;
+  nonce: string;
+  signature: string;
+  userFriendlyWalletName: string;
+};
+
 export type LoginStackNavigatorParamList = {
   Landing: undefined;
   EnterEmail: undefined;
   QRCode: { onError: (message: string) => void };
   WaitingForConfirmation: { email: string };
   NotificationUpsell: undefined;
+
+  OnboardingUsername: {
+    authMechanism: AuthMechanism;
+  };
+
+  OnboardingProfileBio: undefined;
+
+  OnboardingNftSelector: {
+    page: ScreenWithNftSelector;
+  };
 };
 
 export type PostRedirect = 'Latest' | 'Community';

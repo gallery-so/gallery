@@ -10,7 +10,7 @@ import { BaseM, TitleS } from '~/components/core/Text/Text';
 import { EmptyState } from '~/components/EmptyState/EmptyState';
 import { useTrackSignInSuccess } from '~/contexts/analytics/authUtil';
 import useMagicLogin from '~/hooks/useMagicLink';
-import { EMAIL_FORMAT } from '~/utils/regex';
+import { EMAIL_FORMAT } from '~/shared/utils/regex';
 
 import useLoginOrRedirectToOnboarding from '../mutations/useLoginOrRedirectToOnboarding';
 
