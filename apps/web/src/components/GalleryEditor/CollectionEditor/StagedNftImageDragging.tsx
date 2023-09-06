@@ -7,10 +7,9 @@ import { StagedNftImageDraggingWithoutFallbackFragment$key } from '~/generated/S
 import { useImageFailureCheck } from '~/hooks/useImageFailureCheck';
 import useMouseUp from '~/hooks/useMouseUp';
 import { useThrowOnMediaFailure } from '~/hooks/useNftRetry';
-import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
-import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
+import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 import colors from '~/shared/theme/colors';
 import { getBackgroundColorOverrideForContract } from '~/utils/token';
 
@@ -45,7 +44,6 @@ function StagedNftImageDragging({ tokenRef, onLoad, size }: StagedNftImageDraggi
           onLoad={onLoad}
           size={size}
           url={token.media?.fallbackMedia?.mediaURL}
-          type="image"
         />
       }
     >
@@ -73,28 +71,23 @@ function StagedNftImageDraggingWithoutFallback({
             address
           }
         }
-        ...getVideoOrImageUrlForNftPreviewFragment
+        ...useGetPreviewImagesSingleFragment
       }
     `,
     tokenRef
   );
 
-  const reportError = useReportError();
-  const result = getVideoOrImageUrlForNftPreview({
-    tokenRef: token,
-    handleReportError: reportError,
-  });
+  const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size: 'large' });
 
   const contractAddress = token.contract?.contractAddress?.address ?? '';
   const backgroundColorOverride = getBackgroundColorOverrideForContract(contractAddress);
 
-  if (result?.urls.large) {
+  if (imageUrl) {
     return (
       <RawStagedNftImageDragging
         size={size}
         onLoad={onLoad}
-        type={result.type}
-        url={result.urls.large}
+        url={imageUrl}
         backgroundColorOverride={backgroundColorOverride}
       />
     );
@@ -105,7 +98,6 @@ function StagedNftImageDraggingWithoutFallback({
 
 type RawStagedNftImageDraggingProps = {
   size: number;
-  type: 'image' | 'video';
   url: string | null | undefined;
   onLoad: () => void;
   backgroundColorOverride?: string;
@@ -113,7 +105,6 @@ type RawStagedNftImageDraggingProps = {
 
 function RawStagedNftImageDragging({
   url,
-  type,
   size,
   onLoad,
   backgroundColorOverride,
@@ -127,14 +118,7 @@ function RawStagedNftImageDragging({
   // slightly enlarge the image when dragging
   const zoomedSize = useMemo(() => size * 1.02, [size]);
 
-  return type === 'video' ? (
-    <StagedNftImageDraggingVideo
-      zoomedSize={zoomedSize}
-      isMouseUp={isMouseUp}
-      url={url}
-      onLoad={onLoad}
-    />
-  ) : (
+  return (
     <StagedNftImageDraggingImage
       zoomedSize={zoomedSize}
       isMouseUp={isMouseUp}
@@ -142,28 +126,6 @@ function RawStagedNftImageDragging({
       url={url}
       onLoad={onLoad}
     />
-  );
-}
-
-type StagedNftImageDraggingVideoProps = {
-  zoomedSize: number;
-  isMouseUp: boolean;
-  url: string;
-  onLoad: () => void;
-};
-
-function StagedNftImageDraggingVideo({
-  zoomedSize,
-  isMouseUp,
-  url,
-  onLoad,
-}: StagedNftImageDraggingVideoProps) {
-  const { handleError } = useThrowOnMediaFailure('StagedNftImageDraggingVideo');
-
-  return (
-    <VideoContainer isMouseUp={isMouseUp} size={zoomedSize}>
-      <StyledDraggingVideo onLoadedData={onLoad} onError={handleError} src={url} />
-    </VideoContainer>
   );
 }
 
@@ -196,21 +158,6 @@ function StagedNftImageDraggingImage({
 const grow = keyframes`
   from {height: 280px; width: 280px}
   to {height: 284px; width: 284px}
-`;
-
-const VideoContainer = styled.div<{ isMouseUp: boolean; size: number }>`
-  // TODO handle non square videos
-  box-shadow: 0px 0px 16px 4px rgb(0 0 0 / 34%);
-  height: ${({ size }) => size}px;
-  width: ${({ size }) => size}px;
-
-  // we need to manually use isMouseUp instead of :active to set the grabbing cursor
-  // because this element was never clicked, so it is not considered active
-  cursor: ${({ isMouseUp }) => (isMouseUp ? 'grab' : 'grabbing')};
-`;
-
-const StyledDraggingVideo = styled.video`
-  width: 100%;
 `;
 
 const ImageContainer = styled.div<{ size: number; backgroundColorOverride: string }>`
