@@ -15,7 +15,7 @@ import NftDetailGif from '~/scenes/NftDetailPage/NftDetailGif';
 import NftDetailModel from '~/scenes/NftDetailPage/NftDetailModel';
 import NftDetailVideo from '~/scenes/NftDetailPage/NftDetailVideo';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
-import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
+import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 import { isFirefox, isSafari } from '~/utils/browser';
 import isSvg from '~/utils/isSvg';
 import { getBackgroundColorOverrideForContract } from '~/utils/token';
@@ -89,7 +89,7 @@ function NftPreview({
         ...NftPreviewLabelFragment
         ...NftPreviewAssetFragment
         ...NftDetailAnimationFragment
-        ...getVideoOrImageUrlForNftPreviewFragment
+        ...useGetPreviewImagesSingleFragment
         ...NftDetailGifFragment
       }
     `,
@@ -152,8 +152,9 @@ function NftPreview({
     );
   }, [disableLiverender, shouldLiveRender, token, isIFrameLiveDisplay, previewSize, onNftLoad]);
 
-  const result = getVideoOrImageUrlForNftPreview({ tokenRef: token });
-  const isSvgOnWeirdBrowser = isSvg(result?.urls?.large) && (isFirefox() || isSafari());
+  const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size: 'large' });
+
+  const isSvgOnWeirdBrowser = isSvg(imageUrl) && (isFirefox() || isSafari());
   // stretch the image to take up the full-width if...
   const fullWidth =
     // it's not in a feed event
