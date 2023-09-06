@@ -5,8 +5,9 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { ProfilePictureFragment$key } from '~/generated/ProfilePictureFragment.graphql';
+import { ProfilePictureValidFragment$key } from '~/generated/ProfilePictureValidFragment.graphql';
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
-import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
+import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 
 import { RawProfilePicture, RawProfilePictureProps } from './RawProfilePicture';
 
@@ -22,7 +23,7 @@ export function ProfilePicture({ userRef, ...rest }: Props) {
         profileImage {
           ... on TokenProfileImage {
             token {
-              ...getVideoOrImageUrlForNftPreviewFragment
+              ...ProfilePictureValidFragment
             }
           }
           ... on EnsProfileImage {
@@ -50,41 +51,50 @@ export function ProfilePicture({ userRef, ...rest }: Props) {
 
   const firstLetter = user?.username?.substring(0, 1) ?? '';
 
-  if (profileImage && profileImage.previewURLs?.medium)
+  if (profileImage && profileImage.previewURLs?.medium) {
     return (
       <StyledLink href={userProfileLink}>
         <RawProfilePicture imageUrl={profileImage.previewURLs.medium} {...rest} />
       </StyledLink>
     );
+  }
 
-  if (!token)
+  if (!token) {
     return (
       <StyledLink href={userProfileLink}>
         <RawProfilePicture letter={firstLetter} {...rest} />
       </StyledLink>
     );
-
-  const result = getVideoOrImageUrlForNftPreview({
-    tokenRef: token,
-    handleReportError: reportError,
-  });
-
-  if (!result) {
-    throw new CouldNotRenderNftError(
-      'StatedNftImage',
-      'could not compute getVideoOrImageUrlForNftPreview'
-    );
-  }
-
-  if (!result.urls.small) {
-    throw new CouldNotRenderNftError('StagedNftImage', 'could not find a small url');
   }
 
   return (
     <StyledLink href={userProfileLink}>
-      <RawProfilePicture imageUrl={result.urls.small} {...rest} />
+      <ValidProfilePicture tokenRef={token} {...rest} />
     </StyledLink>
   );
+}
+
+type ValidProfilePictureProps = {
+  tokenRef: ProfilePictureValidFragment$key;
+} & Omit<RawProfilePictureProps, 'imageUrl'>;
+
+function ValidProfilePicture({ tokenRef, ...rest }: ValidProfilePictureProps) {
+  const token = useFragment(
+    graphql`
+      fragment ProfilePictureValidFragment on Token {
+        ...useGetPreviewImagesSingleFragment
+      }
+    `,
+    tokenRef
+  );
+
+  const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size: 'small' });
+
+  if (!imageUrl) {
+    throw new CouldNotRenderNftError('ProfilePicture', 'could not find a small url');
+  }
+
+  return <RawProfilePicture imageUrl={imageUrl} {...rest} />;
 }
 
 const StyledLink = styled(Link)`
