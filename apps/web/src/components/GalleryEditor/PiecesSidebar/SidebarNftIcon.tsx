@@ -15,10 +15,8 @@ import { SidebarNftIconFragment$key } from '~/generated/SidebarNftIconFragment.g
 import { SidebarNftIconPollerNewQuery } from '~/generated/SidebarNftIconPollerNewQuery.graphql';
 import { SidebarNftIconPreviewAssetNew$key } from '~/generated/SidebarNftIconPreviewAssetNew.graphql';
 import { useNftRetry, useThrowOnMediaFailure } from '~/hooks/useNftRetry';
-import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
-import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
-import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
+import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 import colors from '~/shared/theme/colors';
 import { getBackgroundColorOverrideForContract } from '~/utils/token';
 
@@ -43,12 +41,6 @@ function SidebarNftIcon({
           }
         }
         media {
-          ... on Media {
-            fallbackMedia {
-              mediaURL
-            }
-          }
-
           ... on SyncingMedia {
             __typename
           }
@@ -186,28 +178,14 @@ function SidebarNftIcon({
       }
       onError={handleError}
     >
-      <ReportingErrorBoundary
-        fallback={
-          <StyledSidebarNftIcon backgroundColorOverride={backgroundColorOverride}>
-            <RawSidebarPreviewAsset
-              onLoad={handleLoad}
-              type="image"
-              isSelected={isSelected ?? false}
-              src={token.media?.fallbackMedia?.mediaURL}
-            />
-            <StyledOutline onClick={handleClick} isSelected={isSelected} />
-          </StyledSidebarNftIcon>
-        }
-      >
-        <StyledSidebarNftIcon backgroundColorOverride={backgroundColorOverride}>
-          <SidebarPreviewAsset
-            tokenRef={token}
-            onLoad={handleLoad}
-            isSelected={isSelected ?? false}
-          />
-          <StyledOutline onClick={handleClick} isSelected={isSelected} />
-        </StyledSidebarNftIcon>
-      </ReportingErrorBoundary>
+      <StyledSidebarNftIcon backgroundColorOverride={backgroundColorOverride}>
+        <SidebarPreviewAsset
+          tokenRef={token}
+          onLoad={handleLoad}
+          isSelected={isSelected ?? false}
+        />
+        <StyledOutline onClick={handleClick} isSelected={isSelected} />
+      </StyledSidebarNftIcon>
     </NftFailureBoundary>
   );
 }
@@ -233,42 +211,6 @@ const LoadingText = styled.span`
   color: ${colors.metal};
 `;
 
-function RawSidebarPreviewAsset({
-  type,
-  isSelected,
-  src,
-  onLoad,
-}: {
-  type: 'video' | 'image';
-  isSelected: boolean;
-  src: string | null | undefined;
-  onLoad: () => void;
-  alt?: string | null;
-}) {
-  if (!src) {
-    throw new CouldNotRenderNftError('SidebarNftIcon', 'missing src');
-  }
-
-  const { handleError } = useThrowOnMediaFailure('SidebarPreviewAsset');
-
-  // Some OpenSea assets don't have an image url,
-  // so render a freeze-frame of the video instead
-  if (type === 'video')
-    return (
-      <StyledVideo onLoadedData={onLoad} onError={handleError} isSelected={isSelected} src={src} />
-    );
-
-  return (
-    <StyledImage
-      isSelected={isSelected}
-      src={src}
-      alt="token"
-      onLoad={onLoad}
-      onError={handleError}
-    />
-  );
-}
-
 type SidebarPreviewAssetProps = {
   tokenRef: SidebarNftIconPreviewAssetNew$key;
   onLoad: ContentIsLoadedEvent;
@@ -279,28 +221,27 @@ function SidebarPreviewAsset({ tokenRef, onLoad, isSelected }: SidebarPreviewAss
   const token = useFragment(
     graphql`
       fragment SidebarNftIconPreviewAssetNew on Token {
-        ...getVideoOrImageUrlForNftPreviewFragment
+        ...useGetPreviewImagesSingleFragment
       }
     `,
     tokenRef
   );
 
-  const reportError = useReportError();
-  const previewUrlSet = getVideoOrImageUrlForNftPreview({
-    tokenRef: token,
-    handleReportError: reportError,
-  });
+  const { handleError } = useThrowOnMediaFailure('SidebarPreviewAsset');
 
-  if (!previewUrlSet?.urls.small) {
+  const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size: 'small' });
+
+  if (!imageUrl) {
     throw new CouldNotRenderNftError('SidebarNftIcon', 'could not find small image url');
   }
 
   return (
-    <RawSidebarPreviewAsset
-      type={previewUrlSet.type}
+    <StyledImage
       isSelected={isSelected}
-      src={previewUrlSet.urls.small}
+      src={imageUrl}
+      alt="token"
       onLoad={onLoad}
+      onError={handleError}
     />
   );
 }
@@ -341,13 +282,6 @@ const StyledOutline = styled.div<SelectedProps>`
 `;
 
 const StyledImage = styled.img<SelectedProps>`
-  max-height: 100%;
-  max-width: 100%;
-  transition: opacity ${transitions.cubic};
-  opacity: ${({ isSelected }) => (isSelected ? 0.5 : 1)};
-`;
-
-const StyledVideo = styled.video<SelectedProps>`
   max-height: 100%;
   max-width: 100%;
   transition: opacity ${transitions.cubic};
