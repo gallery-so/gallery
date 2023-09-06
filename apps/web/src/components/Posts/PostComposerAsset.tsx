@@ -3,15 +3,11 @@ import styled from 'styled-components';
 
 import { PostComposerAssetFragment$key } from '~/generated/PostComposerAssetFragment.graphql';
 import { useNftRetry } from '~/hooks/useNftRetry';
-import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 
 import breakpoints from '../core/breakpoints';
 import { NftFailureBoundary } from '../NftFailureFallback/NftFailureBoundary';
 import { NftFailureFallback } from '../NftFailureFallback/NftFailureFallback';
-import {
-  NftSelectorPreviewAsset,
-  RawNftSelectorPreviewAsset,
-} from '../NftSelector/RawNftSelectorPreviewAsset';
+import { NftSelectorPreviewAsset } from '../NftSelector/RawNftSelectorPreviewAsset';
 
 type Props = {
   tokenRef: PostComposerAssetFragment$key;
@@ -23,17 +19,6 @@ export default function PostComposerAsset({ tokenRef }: Props) {
       fragment PostComposerAssetFragment on Token {
         __typename
         dbid
-        media {
-          ... on Media {
-            fallbackMedia {
-              mediaURL
-            }
-          }
-
-          ... on SyncingMedia {
-            __typename
-          }
-        }
         ...RawNftSelectorPreviewAssetFragment
       }
     `,
@@ -42,37 +27,24 @@ export default function PostComposerAsset({ tokenRef }: Props) {
 
   const { handleNftLoaded, handleNftError, retryKey, refreshMetadata, refreshingMetadata } =
     useNftRetry({ tokenId: token.dbid });
+
   return (
     <StyledPostComposerAsset>
       <NftFailureBoundary
         key={retryKey}
         tokenId={token.dbid}
         fallback={
-          <div>
-            <NftFailureFallback
-              size="medium"
-              tokenId={token.dbid}
-              onRetry={refreshMetadata}
-              refreshing={refreshingMetadata}
-            />
-          </div>
+          // TODO: update FailureFallback or FailureBoundary to handle "Loading..."
+          <NftFailureFallback
+            size="medium"
+            tokenId={token.dbid}
+            onRetry={refreshMetadata}
+            refreshing={refreshingMetadata}
+          />
         }
         onError={handleNftError}
       >
-        <ReportingErrorBoundary
-          fallback={
-            <div>
-              <RawNftSelectorPreviewAsset
-                type="image"
-                isSelected={false}
-                src={token.media?.fallbackMedia?.mediaURL}
-                onLoad={handleNftLoaded}
-              />
-            </div>
-          }
-        >
-          <NftSelectorPreviewAsset tokenRef={token} onLoad={handleNftLoaded} />
-        </ReportingErrorBoundary>
+        <NftSelectorPreviewAsset tokenRef={token} onLoad={handleNftLoaded} />
       </NftFailureBoundary>
     </StyledPostComposerAsset>
   );
