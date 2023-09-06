@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -7,8 +6,8 @@ import { BaseM } from '~/components/core/Text/Text';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { SomeoneAdmiredYourPostFragment$key } from '~/generated/SomeoneAdmiredYourPostFragment.graphql';
-import { useReportError } from '~/shared/contexts/ErrorReportingContext';
-import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
+import { ErrorWithSentryMetadata } from '~/shared/errors/ErrorWithSentryMetadata';
+import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 
 type Props = {
   notificationRef: SomeoneAdmiredYourPostFragment$key;
@@ -23,7 +22,7 @@ export default function SomeoneAdmiredYourPost({ notificationRef, onClose }: Pro
         dbid
         post {
           tokens {
-            ...getVideoOrImageUrlForNftPreviewFragment
+            ...useGetPreviewImagesSingleFragment
           }
         }
         count
@@ -40,20 +39,24 @@ export default function SomeoneAdmiredYourPost({ notificationRef, onClose }: Pro
     `,
     notificationRef
   );
-  const reportError = useReportError();
+
   const notificationCount = notification.count ?? 1;
 
   const firstAdmirer = notification.admirers?.edges?.[0]?.node;
-  const token = notification.post?.tokens?.[0];
-  const previewUrlSet = useMemo(() => {
-    if (!token) return null;
-    return getVideoOrImageUrlForNftPreview({ tokenRef: token });
-  }, [token]);
 
   if (!firstAdmirer) {
-    reportError(`SomeoneAdmiredYourPostNotification id:${notification.dbid} was missing admirer`);
-    return null;
+    throw new ErrorWithSentryMetadata('SomeoneAdmiredYourPostNotification was missing admirer', {
+      id: notification.dbid,
+    });
   }
+
+  const token = notification.post?.tokens?.[0];
+
+  if (!token) {
+    throw new Error('Post does not have accompanying token');
+  }
+
+  const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size: 'small' });
 
   return (
     <StyledNotificationContent align="center" justify="space-between" gap={8}>
@@ -75,7 +78,7 @@ export default function SomeoneAdmiredYourPost({ notificationRef, onClose }: Pro
           </BaseM>
         </StyledTextWrapper>
       </HStack>
-      {previewUrlSet?.urls.small && <StyledPostPreview src={previewUrlSet?.urls.small} />}
+      {imageUrl && <StyledPostPreview src={imageUrl} />}
     </StyledNotificationContent>
   );
 }
