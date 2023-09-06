@@ -11,7 +11,7 @@ import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleM } from '~/components/core/Text/Text';
 import FollowButton from '~/components/Follow/FollowButton';
-import { HoverCardQuery } from '~/generated/HoverCardQuery.graphql';
+import { HoverCardUsernameInnerQuery } from '~/generated/HoverCardUsernameInnerQuery.graphql';
 import UserSharedInfo from '~/scenes/UserGalleryPage/UserSharedInfo/UserSharedInfo';
 import { ErrorWithSentryMetadata } from '~/shared/errors/ErrorWithSentryMetadata';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
@@ -19,12 +19,12 @@ import handleCustomDisplayName from '~/utils/handleCustomDisplayName';
 
 import { ProfilePicture } from '../ProfilePicture/ProfilePicture';
 
-type HoverCardProps = {
-  preloadedQuery: PreloadedQuery<HoverCardQuery>;
+type Props = {
+  preloadedQuery: PreloadedQuery<HoverCardUsernameInnerQuery>;
 };
 
-export const HoverCardQueryNode = graphql`
-  query HoverCardQuery(
+export const HoverCardUsernameInnerQueryNode = graphql`
+  query HoverCardUsernameInnerQuery(
     $userId: DBID!
     $sharedCommunitiesFirst: Int
     $sharedCommunitiesAfter: String
@@ -53,8 +53,8 @@ export const HoverCardQueryNode = graphql`
   }
 `;
 
-export function HoverCard({ preloadedQuery }: HoverCardProps) {
-  const query = usePreloadedQuery(HoverCardQueryNode, preloadedQuery);
+export function HoverCardUsernameInner({ preloadedQuery }: Props) {
+  const query = usePreloadedQuery(HoverCardUsernameInnerQueryNode, preloadedQuery);
 
   const user = query.userById;
 
@@ -98,7 +98,7 @@ export function HoverCard({ preloadedQuery }: HoverCardProps) {
             <StyledLink href={userProfileLink}>
               <HStack align="center" gap={4}>
                 <ProfilePicture userRef={user} size="md" />
-                <StyledCardUsername>{displayName}</StyledCardUsername>
+                <StyledCardTitle>{displayName}</StyledCardTitle>
               </HStack>
             </StyledLink>
 
@@ -139,7 +139,8 @@ const StyledCardHeader = styled(HStack)`
 `;
 
 const StyledCardHeaderContainer = styled(VStack)`
-  padding: 12px 0;
+  padding-top: 6px;
+  padding-bottom: 12px;
 `;
 
 const StyledLink = styled(Link)`
@@ -156,7 +157,7 @@ const StyledFollowButtonWrapper = styled.div`
   margin-right: 8px;
 `;
 
-const StyledCardUsername = styled(TitleM)`
+const StyledCardTitle = styled(TitleM)`
   font-style: normal;
   text-overflow: ellipsis;
   white-space: nowrap;

@@ -16,11 +16,9 @@ import { useIsMemberOfCommunity } from '~/contexts/communityPage/IsMemberOfCommu
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { CommunityPageMetadataFragment$key } from '~/generated/CommunityPageMetadataFragment.graphql';
 import { CommunityPageMetadataQueryFragment$key } from '~/generated/CommunityPageMetadataQueryFragment.graphql';
-import { PostComposerModalWithSelectorFragment$key } from '~/generated/PostComposerModalWithSelectorFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { PlusSquareIcon } from '~/icons/PlusSquareIcon';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
-import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
 import { chains } from '~/shared/utils/chains';
 import { getExternalAddressLink, truncateAddress } from '~/shared/utils/wallet';
@@ -68,11 +66,7 @@ export default function CommunityPageMetadata({ communityRef, queryRef }: Props)
         viewer {
           __typename
           ... on Viewer {
-            user {
-              tokens {
-                ...PostComposerModalWithSelectorFragment
-              }
-            }
+            ...PostComposerModalWithSelectorFragment
           }
         }
         ...PostComposerModalWithSelectorQueryFragment
@@ -111,19 +105,16 @@ export default function CommunityPageMetadata({ communityRef, queryRef }: Props)
   const { showModal } = useModalActions();
   const isMobile = useIsMobileWindowWidth();
 
-  const tokens = useMemo<PostComposerModalWithSelectorFragment$key>(() => {
-    if (query?.viewer?.__typename !== 'Viewer') {
-      return [];
-    }
-    return removeNullValues(query?.viewer?.user?.tokens) ?? [];
-  }, [query?.viewer]);
-
   const handleCreatePostClick = useCallback(() => {
     track('Community Page: Clicked Enabled Post Button');
+    if (query?.viewer?.__typename !== 'Viewer') {
+      return;
+    }
+
     showModal({
       content: (
         <PostComposerModalWithSelector
-          tokensRef={tokens}
+          viewerRef={query?.viewer}
           queryRef={query}
           preSelectedContract={{
             title: community.name ?? '',
@@ -134,15 +125,7 @@ export default function CommunityPageMetadata({ communityRef, queryRef }: Props)
       headerVariant: 'thicc',
       isFullPage: isMobile,
     });
-  }, [
-    track,
-    showModal,
-    tokens,
-    query,
-    community.name,
-    community.contractAddress?.address,
-    isMobile,
-  ]);
+  }, [track, showModal, query, community.name, community.contractAddress?.address, isMobile]);
 
   const handleDisabledPostButtonClick = useCallback(() => {
     track('Community Page: Clicked Disabled Post Button');
@@ -228,6 +211,10 @@ const StyledMetadata = styled(HStack)`
     justify-content: flex-start;
     flex-wrap: nowrap;
     gap: 0 48px;
+  }
+
+  @media only screen and ${breakpoints.mobileLarge} {
+    gap: 8px 48px;
   }
 
   width: 100%;

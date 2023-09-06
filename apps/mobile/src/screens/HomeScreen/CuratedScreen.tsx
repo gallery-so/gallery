@@ -1,9 +1,12 @@
-import { Suspense, useCallback, useMemo, useState } from 'react';
+import { RouteProp, useRoute } from '@react-navigation/native';
+import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 
+import { WelcomeNewUser } from '~/components/WelcomeNewUser';
 import { CuratedScreenFragment$key } from '~/generated/CuratedScreenFragment.graphql';
 import { CuratedScreenQuery } from '~/generated/CuratedScreenQuery.graphql';
 import { RefetchableCuratedScreenFragmentQuery } from '~/generated/RefetchableCuratedScreenFragmentQuery.graphql';
+import { FeedTabNavigatorParamList } from '~/navigation/types';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import { FeedList } from '../../components/Feed/FeedList';
@@ -35,6 +38,14 @@ function CuratedScreenInner({ queryRef }: CuratedScreenInnerProps) {
             }
           }
         }
+
+        viewer {
+          ... on Viewer {
+            user {
+              username
+            }
+          }
+        }
         ...FeedListQueryFragment
       }
     `,
@@ -49,6 +60,17 @@ function CuratedScreenInner({ queryRef }: CuratedScreenInnerProps) {
   console.log('route', routeParams);
 
   const curatedFeed = query.data.curatedFeed;
+
+  const route = useRoute<RouteProp<FeedTabNavigatorParamList, 'Curated'>>();
+  const [showWelcome, setShowWelcome] = useState(false);
+
+  const { isNewUser } = route.params ?? {};
+
+  useEffect(() => {
+    if (isNewUser) {
+      setShowWelcome(true);
+    }
+  }, [isNewUser, setShowWelcome]);
 
   const handleRefresh = useCallback(() => {
     setIsRefreshing(true);
@@ -81,14 +103,17 @@ function CuratedScreenInner({ queryRef }: CuratedScreenInnerProps) {
   }, [curatedFeed?.edges]);
 
   return (
-    <FeedList
-      isLoadingMore={query.isLoadingPrevious}
-      isRefreshing={isRefreshing}
-      onRefresh={handleRefresh}
-      onLoadMore={handleLoadMore}
-      feedEventRefs={events}
-      queryRef={query.data}
-    />
+    <>
+      <FeedList
+        isLoadingMore={query.isLoadingPrevious}
+        isRefreshing={isRefreshing}
+        onRefresh={handleRefresh}
+        onLoadMore={handleLoadMore}
+        feedEventRefs={events}
+        queryRef={query.data}
+      />
+      {showWelcome && <WelcomeNewUser username={query.data.viewer?.user?.username ?? ''} />}
+    </>
   );
 }
 

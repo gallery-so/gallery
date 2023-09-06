@@ -11,6 +11,7 @@ import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { CommentNoteFragment$key } from '~/generated/CommentNoteFragment.graphql';
 import colors from '~/shared/theme/colors';
 import { getTimeSince } from '~/shared/utils/time';
+import unescape from '~/shared/utils/unescape';
 
 type CommentNoteProps = {
   commentRef: CommentNoteFragment$key;
@@ -50,7 +51,7 @@ export function CommentNote({ commentRef }: CommentNoteProps) {
             <UsernameLink username={comment.commenter?.username ?? null} />
             <StyledTimeAgoText color={colors.metal}>{timeAgo}</StyledTimeAgoText>
           </HStack>
-          <BaseM as="span" dangerouslySetInnerHTML={{ __html: comment.comment ?? '' }} />
+          <BaseM as="span">{unescape(comment.comment ?? '')}</BaseM>
         </VStack>
       </HStack>
     </StyledListItem>

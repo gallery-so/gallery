@@ -3,7 +3,7 @@ import styled, { css, keyframes } from 'styled-components';
 
 import { Directions } from '~/components/core/enums';
 import colors from '~/shared/theme/colors';
-import { GOOGLE_CONTENT_IMG_URL } from '~/utils/regex';
+import { GOOGLE_CONTENT_IMG_URL } from '~/shared/utils/regex';
 
 const verticalOffset = [0, 130, 260];
 const horizontalOffset = [0, 90, 180];

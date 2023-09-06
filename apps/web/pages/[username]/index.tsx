@@ -7,7 +7,6 @@ import styled from 'styled-components';
 
 import breakpoints, { pageGutter } from '~/components/core/breakpoints';
 import useVerifyEmailOnPage from '~/components/Email/useVerifyEmailOnPage';
-import useOpenTwitterModal from '~/components/Twitter/useOpenTwitterModal';
 import { GalleryNavbar } from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavbar';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { StandardSidebar } from '~/contexts/globalLayout/GlobalSidebar/StandardSidebar';
@@ -42,7 +41,7 @@ const UsernameQueryNode = graphql`
     ...GalleryViewEmitterWithSuspenseFragment
     ...useVerifyEmailOnPageQueryFragment
     ...StandardSidebarFragment
-    ...useOpenTwitterModalFragment
+
     # [GAL-3763] Revive this if / when elon lets us import twitter follower graphs again
     # ...useOpenTwitterFollowingModalFragment
   }
@@ -89,7 +88,7 @@ export default function UserGallery({ username, preloadedQuery }: UserGalleryPro
   const query = usePreloadedQuery<UsernameQuery>(UsernameQueryNode, preloadedQuery);
 
   useVerifyEmailOnPage(query);
-  useOpenTwitterModal(query);
+
   // [GAL-3763] Revive this if / when elon lets us import twitter follower graphs again
   // useOpenTwitterFollowingModal(query);
 

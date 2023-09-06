@@ -12,10 +12,8 @@ import { useIsMemberOfCommunity } from '~/contexts/communityPage/IsMemberOfCommu
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { CommunityPagePostsTabFragment$key } from '~/generated/CommunityPagePostsTabFragment.graphql';
 import { CommunityPagePostsTabQueryFragment$key } from '~/generated/CommunityPagePostsTabQueryFragment.graphql';
-import { PostComposerModalWithSelectorFragment$key } from '~/generated/PostComposerModalWithSelectorFragment.graphql';
 import { RefetchableCommunityFeedQuery } from '~/generated/RefetchableCommunityFeedQuery.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
-import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 type Props = {
   communityRef: CommunityPagePostsTabFragment$key;
@@ -69,11 +67,7 @@ export default function CommunityPagePostsTab({ communityRef, queryRef }: Props)
         viewer {
           ... on Viewer {
             __typename
-            user {
-              tokens {
-                ...PostComposerModalWithSelectorFragment
-              }
-            }
+            ...PostComposerModalWithSelectorFragment
           }
         }
         ...FeedListFragment
@@ -93,18 +87,14 @@ export default function CommunityPagePostsTab({ communityRef, queryRef }: Props)
   const { showModal } = useModalActions();
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
-  const tokens = useMemo<PostComposerModalWithSelectorFragment$key>(() => {
-    if (query?.viewer?.__typename !== 'Viewer') {
-      return [];
-    }
-    return removeNullValues(query?.viewer?.user?.tokens) ?? [];
-  }, [query?.viewer]);
-
   const handleCreatePostClick = useCallback(() => {
+    if (query?.viewer?.__typename !== 'Viewer') {
+      return;
+    }
     showModal({
       content: (
         <PostComposerModalWithSelector
-          tokensRef={tokens}
+          viewerRef={query?.viewer}
           queryRef={query}
           preSelectedContract={{
             title: community.name ?? '',
@@ -115,7 +105,7 @@ export default function CommunityPagePostsTab({ communityRef, queryRef }: Props)
       headerVariant: 'thicc',
       isFullPage: isMobile,
     });
-  }, [showModal, tokens, query, community.name, community.contractAddress?.address, isMobile]);
+  }, [showModal, query, community.name, community.contractAddress?.address, isMobile]);
 
   const { isMemberOfCommunity } = useIsMemberOfCommunity();
 

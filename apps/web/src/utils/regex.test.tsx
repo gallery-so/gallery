@@ -1,4 +1,4 @@
-import { ALPHANUMERIC_UNDERSCORES, BREAK_LINES, VALID_URL } from './regex';
+import { ALPHANUMERIC_UNDERSCORES, BREAK_LINES, VALID_URL } from '~/shared/utils/regex';
 
 function testRegex(pattern: RegExp, values: string[], expectedValue: boolean) {
   for (const value of values) {

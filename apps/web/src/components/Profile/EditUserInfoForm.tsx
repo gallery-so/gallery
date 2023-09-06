@@ -54,7 +54,7 @@ function UserInfoForm({
           __typename
         }
 
-        tokens {
+        tokens(ownershipFilter: [Creator, Holder]) {
           ...ProfilePictureDropdownFragment
           ...useNftSelectorFragment
         }

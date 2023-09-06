@@ -1,8 +1,10 @@
+import { useMemo } from 'react';
 import { View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { NotificationFragment$key } from '~/generated/NotificationFragment.graphql';
 import { NotificationQueryFragment$key } from '~/generated/NotificationQueryFragment.graphql';
+import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 
 import { NewTokens } from './Notifications/NewTokens';
 import { SomeoneAdmiredYourFeedEvent } from './Notifications/SomeoneAdmiredYourFeedEvent';
@@ -65,11 +67,17 @@ export function Notification({ notificationRef, queryRef }: NotificationInnerPro
 
         ... on SomeoneAdmiredYourPostNotification {
           __typename
+          post {
+            __typename
+          }
           ...SomeoneAdmiredYourPostFragment
         }
 
         ... on SomeoneCommentedOnYourPostNotification {
           __typename
+          post {
+            __typename
+          }
           ...SomeoneCommentedOnYourPostFragment
         }
 
@@ -82,23 +90,32 @@ export function Notification({ notificationRef, queryRef }: NotificationInnerPro
     notificationRef
   );
 
-  if (notification.__typename === 'SomeoneViewedYourGalleryNotification') {
-    return <SomeoneViewedYourGallery queryRef={query} notificationRef={notification} />;
-  } else if (notification.__typename === 'SomeoneAdmiredYourFeedEventNotification') {
-    return <SomeoneAdmiredYourFeedEvent queryRef={query} notificationRef={notification} />;
-  } else if (notification.__typename === 'SomeoneFollowedYouBackNotification') {
-    return <SomeoneFollowedYouBack queryRef={query} notificationRef={notification} />;
-  } else if (notification.__typename === 'SomeoneFollowedYouNotification') {
-    return <SomeoneFollowedYou queryRef={query} notificationRef={notification} />;
-  } else if (notification.__typename === 'SomeoneCommentedOnYourFeedEventNotification') {
-    return <SomeoneCommentedOnYourFeedEvent queryRef={query} notificationRef={notification} />;
-  } else if (notification.__typename === 'SomeoneAdmiredYourPostNotification') {
-    return <SomeoneAdmiredYourPost queryRef={query} notificationRef={notification} />;
-  } else if (notification.__typename === 'SomeoneCommentedOnYourPostNotification') {
-    return <SomeoneCommentedOnYourPost queryRef={query} notificationRef={notification} />;
-  } else if (notification.__typename === 'NewTokensNotification') {
-    return <NewTokens notificationRef={notification} />;
-  }
+  const NotificationComponent = useMemo(() => {
+    if (notification.__typename === 'SomeoneViewedYourGalleryNotification') {
+      return <SomeoneViewedYourGallery queryRef={query} notificationRef={notification} />;
+    } else if (notification.__typename === 'SomeoneAdmiredYourFeedEventNotification') {
+      return <SomeoneAdmiredYourFeedEvent queryRef={query} notificationRef={notification} />;
+    } else if (notification.__typename === 'SomeoneFollowedYouBackNotification') {
+      return <SomeoneFollowedYouBack queryRef={query} notificationRef={notification} />;
+    } else if (notification.__typename === 'SomeoneFollowedYouNotification') {
+      return <SomeoneFollowedYou queryRef={query} notificationRef={notification} />;
+    } else if (notification.__typename === 'SomeoneCommentedOnYourFeedEventNotification') {
+      return <SomeoneCommentedOnYourFeedEvent queryRef={query} notificationRef={notification} />;
+    } else if (notification.__typename === 'SomeoneAdmiredYourPostNotification') {
+      return notification.post ? (
+        <SomeoneAdmiredYourPost queryRef={query} notificationRef={notification} />
+      ) : null;
+    } else if (notification.__typename === 'SomeoneCommentedOnYourPostNotification') {
+      return notification.post ? (
+        <SomeoneCommentedOnYourPost queryRef={query} notificationRef={notification} />
+      ) : null;
+    } else if (notification.__typename === 'NewTokensNotification') {
+      return <NewTokens notificationRef={notification} />;
+    }
+    return <View />;
+  }, [notification, query]);
 
-  return <View />;
+  return (
+    <ReportingErrorBoundary fallback={<View />}>{NotificationComponent}</ReportingErrorBoundary>
+  );
 }

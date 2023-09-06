@@ -15,17 +15,19 @@ import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { ChainMetadata, chains } from '~/shared/utils/chains';
 import isAdminRole from '~/utils/graphql/isAdminRole';
 
-import { SidebarView } from './SidebarViewSelector';
+import { TokenFilterType } from './SidebarViewSelector';
 
 type Props = {
   queryRef: SidebarChainDropdownFragment$key;
+  isSearching: boolean;
   selectedChain: ChainMetadata;
   onSelectChain: (chain: ChainMetadata) => void;
-  selectedView: SidebarView;
+  selectedView: TokenFilterType;
 };
 
 export default function SidebarChainDropdown({
   queryRef,
+  isSearching,
   selectedChain,
   onSelectChain,
   selectedView,
@@ -55,21 +57,20 @@ export default function SidebarChainDropdown({
   );
 
   const availableChains = useMemo(() => {
-    if (selectedView === 'Created') {
-      return chains.filter((chain) => chain.hasCreatorSupport);
-    }
     if (isAdmin) {
       return chains;
     }
     return chains.filter((chain) => chain.isEnabled);
-  }, [isAdmin, selectedView]);
+  }, [isAdmin]);
 
   return (
     <Container>
       <Selector gap={10} align="center" onClick={() => setIsDropdownOpen(true)}>
         <HStack align="center" gap={6}>
-          <Image src={selectedChain.icon} width={16} height={16} alt={selectedChain.name} />
-          <BaseM>{selectedChain.name}</BaseM>
+          {isSearching ? null : (
+            <Image src={selectedChain.icon} width={16} height={16} alt={selectedChain.name} />
+          )}
+          <BaseM>{isSearching ? 'All' : selectedChain.name}</BaseM>
         </HStack>
         <IconContainer variant="stacked" size="sm" icon={<DoubleArrowsIcon />} />
       </Selector>
@@ -79,14 +80,24 @@ export default function SidebarChainDropdown({
         onClose={() => setIsDropdownOpen(false)}
       >
         <DropdownSection>
-          {availableChains.map((chain) => (
-            <DropdownItem key={chain.name} onClick={() => handleSelectChain(chain)}>
-              <HStack align="center" gap={6}>
-                <Image src={chain.icon} width={16} height={16} alt={chain.name} />
-                <BaseM>{chain.name}</BaseM>
-              </HStack>
-            </DropdownItem>
-          ))}
+          {availableChains.map((chain) => {
+            const isChainDisabled = selectedView === 'Created' && !chain.hasCreatorSupport;
+            return (
+              <DropdownItem
+                key={chain.name}
+                onClick={() => {
+                  if (isChainDisabled) return;
+                  handleSelectChain(chain);
+                }}
+                disabled={isChainDisabled}
+              >
+                <HStack align="center" gap={6}>
+                  <Image src={chain.icon} width={16} height={16} alt={chain.name} />
+                  <BaseM>{chain.name}</BaseM>
+                </HStack>
+              </DropdownItem>
+            );
+          })}
         </DropdownSection>
       </StyledDropdown>
     </Container>

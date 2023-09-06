@@ -1,11 +1,13 @@
 import { useNavigation } from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import { ResizeMode } from 'expo-av';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { View, ViewProps } from 'react-native';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
+import { GallerySkeleton } from '~/components/GallerySkeleton';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { NftPreviewAsset } from '~/components/NftPreview/NftPreviewAsset';
 import { Typography } from '~/components/Typography';
@@ -93,6 +95,8 @@ export function NftSelectorPickerGrid({
     tokenRefs
   );
 
+  // [GAL-4202] this logic could be consolidated across web editor + web selector + mobile selector
+  // but also don't overdo it if there's sufficient differentiation between web and mobile UX
   const filteredTokens = useMemo(() => {
     return tokens
       .filter((token) => {
@@ -110,10 +114,6 @@ export function NftSelectorPickerGrid({
           .includes(searchCriteria.searchQuery.toLowerCase());
       })
       .filter((token) => {
-        if (searchCriteria.networkFilter === 'all') {
-          return true;
-        }
-
         return token.chain === searchCriteria.networkFilter;
       })
       .filter((token) => {
@@ -246,6 +246,25 @@ export function NftSelectorPickerGrid({
   );
 }
 
+function TokenGridSinglePreview({ tokenUrl }: { tokenUrl: string }) {
+  const [assetLoaded, setAssetLoaded] = useState(false);
+  const handleAssetLoad = useCallback(() => {
+    setAssetLoaded(true);
+  }, []);
+  return (
+    <>
+      <NftPreviewAsset tokenUrl={tokenUrl} resizeMode={ResizeMode.COVER} onLoad={handleAssetLoad} />
+      {!assetLoaded && (
+        <View className="absolute inset-0">
+          <GallerySkeleton borderRadius={0}>
+            <SkeletonPlaceholder.Item width="100%" height="100%" />
+          </GallerySkeleton>
+        </View>
+      )}
+    </>
+  );
+}
+
 type TokenGridProps = {
   style?: ViewProps['style'];
   tokenRefs: NftSelectorPickerGridTokenGridFragment$key;
@@ -300,7 +319,7 @@ function TokenGrid({ tokenRefs, contractAddress, screen, style }: TokenGridProps
               {row.tokens.map((tokenUrl) => {
                 return (
                   <View key={tokenUrl} className="flex-1 aspect-square">
-                    <NftPreviewAsset tokenUrl={tokenUrl} resizeMode={ResizeMode.COVER} />
+                    <TokenGridSinglePreview tokenUrl={tokenUrl} />
                   </View>
                 );
               })}

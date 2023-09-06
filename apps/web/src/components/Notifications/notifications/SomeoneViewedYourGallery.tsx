@@ -76,18 +76,18 @@ export function SomeoneViewedYourGallery({
       const remainingViewCount = totalViewCount - 1;
 
       return (
-        <BaseM data-testid={testId}>
-          <StyledProfilePictureStackContainer>
-            <ProfilePictureStack usersRef={totalViewerUsers} total={userViewerCount} />
-          </StyledProfilePictureStackContainer>
+        <StyledProfilePictureStackContainer align="center" data-testid={testId} gap={6}>
+          <ProfilePictureStack usersRef={totalViewerUsers} total={userViewerCount} />
 
-          {lastViewer ? <HoverCardOnUsername userRef={lastViewer} /> : 'Someone'}
-          <span>
-            {' '}
-            and {remainingViewCount} {remainingViewCount === 1 ? 'other' : 'others'} viewed your
-            gallery
-          </span>
-        </BaseM>
+          <BaseM>
+            {lastViewer ? <HoverCardOnUsername userRef={lastViewer} /> : 'Someone'}
+            <span>
+              {' '}
+              and {remainingViewCount} {remainingViewCount === 1 ? 'other' : 'others'} viewed your
+              gallery
+            </span>
+          </BaseM>
+        </StyledProfilePictureStackContainer>
       );
     }
   } else if (nonUserViewerCount > 0) {
@@ -117,7 +117,6 @@ export function SomeoneViewedYourGallery({
   );
 }
 
-const StyledProfilePictureStackContainer = styled.div`
-  display: inline-block;
+const StyledProfilePictureStackContainer = styled(HStack)`
   padding-right: 8px;
 `;

@@ -3,9 +3,14 @@ import { useColorScheme } from 'nativewind';
 import { useCallback, useMemo, useRef } from 'react';
 import { View } from 'react-native';
 import { graphql, useFragment, useRefetchableFragment } from 'react-relay';
+import { ArbitrumIcon } from 'src/icons/ArbitrumIcon';
+import { BaseIcon } from 'src/icons/BaseIcon';
 import { EthIcon } from 'src/icons/EthIcon';
+import { OptimismIcon } from 'src/icons/OptimismIcon';
 import { PoapIcon } from 'src/icons/PoapIcon';
+import { PolygonIcon } from 'src/icons/PolygonIcon';
 import { TezosIcon } from 'src/icons/TezosIcon';
+import { ZoraIcon } from 'src/icons/ZoraIcon';
 import isFeatureEnabled, { FeatureFlag } from 'src/utils/isFeatureEnabled';
 
 import { Chain, CommunityMetaFragment$key } from '~/generated/CommunityMetaFragment.graphql';
@@ -155,7 +160,7 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
       );
     } else if (community.contractAddress) {
       return (
-        <View className="flex flex-row space-x-1 items-center">
+        <View className="flex flex-row items-center space-x-1">
           <RawProfilePicture size="xs" default eventElementId={null} eventName={null} />
           <LinkableAddress
             chainAddressRef={community.contractAddress}
@@ -209,7 +214,7 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
           text="Post"
           className="w-[100px]"
           variant={isMemberOfCommunity ? 'primary' : 'disabled'}
-          icon={<PostIcon width={16} color={PostIconColor} />}
+          icon={<PostIcon width={16} color={PostIconColor} strokeWidth={2} />}
           onPress={handlePress}
           eventElementId={null}
           eventName={null}
@@ -227,6 +232,16 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
 function NetworkIcon({ chain }: { chain: Chain }) {
   if (chain === 'Ethereum') {
     return <EthIcon />;
+  } else if (chain === 'Base') {
+    return <BaseIcon />;
+  } else if (chain === 'Zora') {
+    return <ZoraIcon />;
+  } else if (chain === 'Optimism') {
+    return <OptimismIcon />;
+  } else if (chain === 'Polygon') {
+    return <PolygonIcon />;
+  } else if (chain === 'Arbitrum') {
+    return <ArbitrumIcon />;
   } else if (chain === 'POAP') {
     return <PoapIcon className="w-4 h-4" />;
   } else if (chain === 'Tezos') {

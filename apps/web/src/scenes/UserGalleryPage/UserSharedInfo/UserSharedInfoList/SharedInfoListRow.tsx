@@ -1,11 +1,12 @@
 import Link from 'next/link';
 import { Route } from 'nextjs-routes';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM } from '~/components/core/Text/Text';
+import { useModalActions } from '~/contexts/modal/ModalContext';
 import colors from '~/shared/theme/colors';
 
 type Props = {
@@ -33,11 +34,18 @@ export default function SharedInfoListRow({ title, subTitle, href, imageContent 
     );
   }, [imageContent, subTitle, title]);
 
+  const { hideModal } = useModalActions();
+  const handlePressUserLink = useCallback(() => hideModal(), [hideModal]);
+
   if (href === null) {
     return <StyledRowNonLink>{rowContent}</StyledRowNonLink>;
   }
 
-  return <StyledRowLink href={href}>{rowContent}</StyledRowLink>;
+  return (
+    <StyledRowLink onClick={handlePressUserLink} href={href}>
+      {rowContent}
+    </StyledRowLink>
+  );
 }
 
 const StyledRowNonLink = styled.div`

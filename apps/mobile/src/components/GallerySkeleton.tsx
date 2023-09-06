@@ -7,7 +7,13 @@ import colors from '~/shared/theme/colors';
 // The types here are not great from the Skeleton library
 // Idiomatically, the type of children would ReactNode so
 // we could use PropsWithChildren, but this is fine.
-export function GallerySkeleton({ children }: { children: JSX.Element }) {
+export function GallerySkeleton({
+  children,
+  borderRadius = 4,
+}: {
+  children: JSX.Element;
+  borderRadius?: number;
+}) {
   const speed = useMemo(() => {
     return 800 + Math.random() * 800;
   }, []);
@@ -17,7 +23,7 @@ export function GallerySkeleton({ children }: { children: JSX.Element }) {
   return (
     <SkeletonPlaceholder
       speed={speed}
-      borderRadius={4}
+      borderRadius={borderRadius}
       highlightColor={colorScheme === 'dark' ? colors.black['500'] : colors.faint}
       backgroundColor={colorScheme === 'dark' ? colors.black['800'] : colors.porcelain}
     >

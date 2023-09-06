@@ -24,9 +24,12 @@ import {
   ANIMATED_COMPONENT_TRANSLATION_PIXELS_SMALL,
   rawTransitions,
 } from '~/components/core/transitions';
-import { HoverCard, HoverCardQueryNode } from '~/components/HoverCard/HoverCard';
+import {
+  HoverCardUsernameInner,
+  HoverCardUsernameInnerQueryNode,
+} from '~/components/HoverCard/HoverCardUsernameInner';
 import { HoverCardOnUsernameFragment$key } from '~/generated/HoverCardOnUsernameFragment.graphql';
-import { HoverCardQuery } from '~/generated/HoverCardQuery.graphql';
+import { HoverCardUsernameInnerQuery } from '~/generated/HoverCardUsernameInnerQuery.graphql';
 import { COMMUNITIES_PER_PAGE } from '~/scenes/UserGalleryPage/UserSharedInfo/UserSharedCommunities';
 import { FOLLOWERS_PER_PAGE } from '~/scenes/UserGalleryPage/UserSharedInfo/UserSharedInfoList/SharedFollowersList';
 import colors from '~/shared/theme/colors';
@@ -34,6 +37,7 @@ import handleCustomDisplayName from '~/utils/handleCustomDisplayName';
 import noop from '~/utils/noop';
 
 import breakpoints, { pageGutter } from '../core/breakpoints';
+import { SelfCenteredSpinner } from '../core/Spinner/Spinner';
 
 const HOVER_POPUP_DELAY = 100;
 
@@ -55,7 +59,8 @@ export default function HoverCardOnUsername({ children, userRef, onClick = noop 
   );
 
   const [preloadedHoverCardQuery, preloadHoverCardQuery] =
-    useQueryLoader<HoverCardQuery>(HoverCardQueryNode);
+    useQueryLoader<HoverCardUsernameInnerQuery>(HoverCardUsernameInnerQueryNode);
+
   const [isHovering, setIsHovering] = useState(false);
 
   const { x, y, reference, floating, strategy, context } = useFloating({
@@ -133,8 +138,8 @@ export default function HoverCardOnUsername({ children, userRef, onClick = noop 
                 exit={{ opacity: 0, y: 0 }}
               >
                 <StyledCardContainer>
-                  <Suspense fallback={null}>
-                    <HoverCard preloadedQuery={preloadedHoverCardQuery} />
+                  <Suspense fallback={<SelfCenteredSpinner />}>
+                    <HoverCardUsernameInner preloadedQuery={preloadedHoverCardQuery} />
                   </Suspense>
                 </StyledCardContainer>
               </StyledCardWrapper>
@@ -150,6 +155,7 @@ const StyledCardContainer = styled.div`
   border: 1px solid ${colors.black['800']};
   padding: 16px;
   width: 375px;
+  min-height: 128px;
   max-width: calc(100vw - ${pageGutter.mobile * 2}px);
   display: grid;
   gap: 8px;

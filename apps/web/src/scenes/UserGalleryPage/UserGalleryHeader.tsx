@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
+import breakpoints from '~/components/core/breakpoints';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { GalleryNavLinks } from '~/contexts/globalLayout/GlobalNavbar/GalleryNavbar/GalleryNavLinks';
 import { UserGalleryHeaderFragment$key } from '~/generated/UserGalleryHeaderFragment.graphql';
@@ -72,7 +73,7 @@ export default function UserGalleryHeader({ userRef, queryRef }: Props) {
   const isAuthenticatedUsersPage = loggedInUserId === user?.dbid;
   const isMobile = useIsMobileOrMobileLargeWindowWidth();
 
-  const numPills = useMemo(() => {
+  const numberOfConnectedAccounts = useMemo(() => {
     return [
       user.socialAccounts?.farcaster?.username,
       user.socialAccounts?.lens?.username,
@@ -85,21 +86,28 @@ export default function UserGalleryHeader({ userRef, queryRef }: Props) {
   ]);
 
   return (
-    <VStack gap={12}>
-      <UserNameAndDescriptionHeader userRef={user} queryRef={query} />
-      {isLoggedIn && !isAuthenticatedUsersPage && <UserSharedInfo userRef={user} />}
-      {numPills > 0 && (
-        <SocialConnectionsSection numPills={numPills}>
-          <UserTwitterSection userRef={user} queryRef={query} />
-          <UserFarcasterSection userRef={user} />
-          <UserLensSection userRef={user} />
-        </SocialConnectionsSection>
-      )}
-      {isMobile && (
-        <MobileNavLinks align="center" justify="center">
-          <GalleryNavLinks username={user.username ?? ''} queryRef={user} />
-        </MobileNavLinks>
-      )}
+    <VStack gap={24}>
+      <VStack gap={12}>
+        <UserNameAndDescriptionHeader userRef={user} queryRef={query} />
+        {isLoggedIn && !isAuthenticatedUsersPage && <UserSharedInfo userRef={user} />}
+        {numberOfConnectedAccounts > 0 ? (
+          <SocialConnectionsSection numPills={numberOfConnectedAccounts}>
+            <UserTwitterSection userRef={user} queryRef={query} />
+            <UserFarcasterSection userRef={user} />
+            <UserLensSection userRef={user} />
+          </SocialConnectionsSection>
+        ) : (
+          <SocialConnectionsSection numPills={1}>
+            <UserTwitterSection userRef={user} queryRef={query} />
+          </SocialConnectionsSection>
+        )}
+        {isMobile && (
+          <MobileNavLinks align="center" justify="center">
+            <GalleryNavLinks username={user.username ?? ''} queryRef={user} />
+          </MobileNavLinks>
+        )}
+      </VStack>
+      <Divider />
     </VStack>
   );
 }
@@ -117,4 +125,15 @@ const MobileNavLinks = styled(HStack)`
   padding: 16px 0;
   border-bottom: 1px solid ${colors.porcelain};
   border-top: 1px solid ${colors.porcelain};
+`;
+
+const Divider = styled.div`
+  width: 100%;
+  height: 1px;
+  background-color: ${colors.porcelain};
+  display: none;
+
+  @media only screen and ${breakpoints.desktop} {
+    display: block;
+  }
 `;

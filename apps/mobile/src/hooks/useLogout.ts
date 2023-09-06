@@ -1,4 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
+import { useWalletConnectModal } from '@walletconnect/modal-react-native';
 import { useCallback } from 'react';
 import { graphql } from 'react-relay';
 
@@ -12,6 +13,7 @@ import { magic } from '../magic';
 
 export function useLogout(): [() => void, boolean] {
   const navigation = useNavigation<RootStackNavigatorProp>();
+  const { provider } = useWalletConnectModal();
 
   const [mutate, isLoggingOut] = usePromisifiedMutation<useLogoutMutation>(graphql`
     mutation useLogoutMutation {
@@ -27,6 +29,7 @@ export function useLogout(): [() => void, boolean] {
   const logout = useCallback(async () => {
     try {
       magic.user.logout();
+      provider?.disconnect();
       const response = await mutate({ variables: {} });
 
       if (response.logout?.__typename === 'LogoutPayload') {
@@ -45,7 +48,7 @@ export function useLogout(): [() => void, boolean] {
         reportError('Something unexpected went wrong while logging the user out');
       }
     }
-  }, [mutate, navigation, reportError]);
+  }, [mutate, navigation, provider, reportError]);
 
   return [logout, isLoggingOut];
 }
