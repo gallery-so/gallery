@@ -5,14 +5,12 @@ import NftPreviewLabel from '~/components/NftPreview/NftPreviewLabel';
 import { StagedNftImageFragment$key } from '~/generated/StagedNftImageFragment.graphql';
 import { StagedNftImageImageFragment$key } from '~/generated/StagedNftImageImageFragment.graphql';
 import { StagedNftImageRawFragment$key } from '~/generated/StagedNftImageRawFragment.graphql';
-import { StagedNftImageVideoFragment$key } from '~/generated/StagedNftImageVideoFragment.graphql';
 import { StagedNftImageWithoutFallbackFragment$key } from '~/generated/StagedNftImageWithoutFallbackFragment.graphql';
 import { useImageFailureCheck } from '~/hooks/useImageFailureCheck';
 import { useThrowOnMediaFailure } from '~/hooks/useNftRetry';
-import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
-import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
+import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 
 type StagedNftImageProps = {
   tokenRef: StagedNftImageFragment$key;
@@ -44,12 +42,7 @@ function StagedNftImage({ tokenRef, ...rest }: StagedNftImageProps) {
   return (
     <ReportingErrorBoundary
       fallback={
-        <RawStagedNftImage
-          {...rest}
-          type="image"
-          tokenRef={token}
-          url={token.media?.fallbackMedia?.mediaURL}
-        />
+        <RawStagedNftImage {...rest} tokenRef={token} url={token.media?.fallbackMedia?.mediaURL} />
       }
     >
       <StagedNftImageWithoutFallback tokenRef={token} {...rest} />
@@ -77,26 +70,15 @@ function StagedNftImageWithoutFallback({
     graphql`
       fragment StagedNftImageWithoutFallbackFragment on Token {
         ...StagedNftImageRawFragment
-        ...getVideoOrImageUrlForNftPreviewFragment
+        ...useGetPreviewImagesSingleFragment
       }
     `,
     tokenRef
   );
 
-  const reportError = useReportError();
-  const result = getVideoOrImageUrlForNftPreview({
-    tokenRef: token,
-    handleReportError: reportError,
-  });
+  const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size: 'large' });
 
-  if (!result) {
-    throw new CouldNotRenderNftError(
-      'StatedNftImage',
-      'could not compute getVideoOrImageUrlForNftPreview'
-    );
-  }
-
-  if (!result.urls.large) {
+  if (!imageUrl) {
     throw new CouldNotRenderNftError('StagedNftImage', 'could not find a large url');
   }
 
@@ -105,8 +87,7 @@ function StagedNftImageWithoutFallback({
       setNodeRef={setNodeRef}
       onLoad={onLoad}
       tokenRef={token}
-      type={result.type}
-      url={result.urls.large}
+      url={imageUrl}
       hideLabel={hideLabel}
       size={size}
       {...props}
@@ -115,7 +96,6 @@ function StagedNftImageWithoutFallback({
 }
 
 type RawStagedNftImageProps = {
-  type: 'video' | 'image';
   size: number;
   onLoad: () => void;
   hideLabel: boolean;
@@ -125,7 +105,6 @@ type RawStagedNftImageProps = {
 };
 
 function RawStagedNftImage({
-  type,
   setNodeRef,
   tokenRef,
   hideLabel,
@@ -142,37 +121,22 @@ function RawStagedNftImage({
     graphql`
       fragment StagedNftImageRawFragment on Token {
         ...StagedNftImageImageFragment
-        ...StagedNftImageVideoFragment
       }
     `,
     tokenRef
   );
 
-  if (type === 'video') {
-    return (
-      <StagedNftImageVideo
-        size={size}
-        onLoad={onLoad}
-        hideLabel={hideLabel}
-        tokenRef={token}
-        url={url}
-        setNodeRef={setNodeRef}
-        {...props}
-      />
-    );
-  } else {
-    return (
-      <StagedNftImageImage
-        size={size}
-        onLoad={onLoad}
-        hideLabel={hideLabel}
-        tokenRef={token}
-        setNodeRef={setNodeRef}
-        url={url}
-        {...props}
-      />
-    );
-  }
+  return (
+    <StagedNftImageImage
+      size={size}
+      onLoad={onLoad}
+      hideLabel={hideLabel}
+      tokenRef={token}
+      setNodeRef={setNodeRef}
+      url={url}
+      {...props}
+    />
+  );
 }
 
 type StagedNftImageImageProps = {
@@ -213,52 +177,6 @@ function StagedNftImageImage({
     </StyledGridImage>
   );
 }
-
-type StagedNftImageVideoProps = {
-  url: string;
-  size: number;
-  hideLabel: boolean;
-  onLoad: () => void;
-  tokenRef: StagedNftImageVideoFragment$key;
-  setNodeRef: (node: HTMLElement | null) => void;
-};
-
-function StagedNftImageVideo({
-  url,
-  size,
-  onLoad,
-  tokenRef,
-  hideLabel,
-  setNodeRef,
-  ...props
-}: StagedNftImageVideoProps) {
-  const token = useFragment(
-    graphql`
-      fragment StagedNftImageVideoFragment on Token {
-        ...NftPreviewLabelFragment
-      }
-    `,
-    tokenRef
-  );
-
-  return (
-    <VideoContainer ref={setNodeRef} size={size} {...props}>
-      <StyledGridVideo onLoad={onLoad} src={url} />
-      {hideLabel ? null : <StyledNftPreviewLabel tokenRef={token} interactive={false} />}
-    </VideoContainer>
-  );
-}
-
-const VideoContainer = styled.div<{ size: number }>`
-  // TODO handle non square videos
-  height: ${({ size }) => size}px;
-  width: ${({ size }) => size}px;
-  position: relative;
-`;
-
-const StyledGridVideo = styled.video`
-  width: 100%;
-`;
 
 type StyledGridImageProps = {
   srcUrl: string;
