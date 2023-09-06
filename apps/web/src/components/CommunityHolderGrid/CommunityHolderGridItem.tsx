@@ -10,9 +10,8 @@ import { useModalActions } from '~/contexts/modal/ModalContext';
 import { CommunityHolderGridItemFragment$key } from '~/generated/CommunityHolderGridItemFragment.graphql';
 import { CommunityHolderGridItemQueryFragment$key } from '~/generated/CommunityHolderGridItemQueryFragment.graphql';
 import TokenDetailView from '~/scenes/TokenDetailPage/TokenDetailView';
-import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
-import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
+import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 import colors from '~/shared/theme/colors';
 import { getOpenseaExternalUrl } from '~/shared/utils/getOpenseaExternalUrl';
 import { graphqlTruncateUniversalUsername } from '~/shared/utils/wallet';
@@ -42,7 +41,7 @@ export default function CommunityHolderGridItem({ holderRef, queryRef }: Props) 
           ...walletTruncateUniversalUsernameFragment
           ...HoverCardOnUsernameFragment
         }
-        ...getVideoOrImageUrlForNftPreviewFragment
+        ...useGetPreviewImagesSingleFragment
         ...TokenDetailViewFragment
       }
     `,
@@ -71,13 +70,9 @@ export default function CommunityHolderGridItem({ holderRef, queryRef }: Props) 
 
   const openseaProfileLink = `https://opensea.io/${owner?.username}`;
 
-  const reportError = useReportError();
-  const previewUrlSet = getVideoOrImageUrlForNftPreview({
-    tokenRef: token,
-    handleReportError: reportError,
-  });
+  const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size: 'large' });
 
-  if (!previewUrlSet?.urls.large) {
+  if (!imageUrl) {
     throw new CouldNotRenderNftError('CommunityHolderGridItem', 'could not find large image url');
   }
 
@@ -106,7 +101,7 @@ export default function CommunityHolderGridItem({ holderRef, queryRef }: Props) 
   }, [openSeaExternalUrl, owner?.universal, query, showModal, token]);
 
   const previewAsset = useMemo(() => {
-    if (isFailedToLoad || !previewUrlSet?.urls.large) {
+    if (isFailedToLoad) {
       return (
         <StyledErrorWrapper justify="center" align="center">
           <StyledErrorText>Could not load</StyledErrorText>
@@ -114,12 +109,8 @@ export default function CommunityHolderGridItem({ holderRef, queryRef }: Props) 
       );
     }
 
-    if (previewUrlSet?.type === 'video') {
-      return <StyledNftVideo src={previewUrlSet.urls.large} onError={handleFailedToLoad} />;
-    }
-
-    return <StyledNftImage src={previewUrlSet.urls.large} onError={handleFailedToLoad} />;
-  }, [handleFailedToLoad, isFailedToLoad, previewUrlSet?.type, previewUrlSet.urls.large]);
+    return <StyledNftImage src={imageUrl} onError={handleFailedToLoad} />;
+  }, [handleFailedToLoad, imageUrl, isFailedToLoad]);
 
   return (
     <VStack gap={8}>
@@ -141,13 +132,6 @@ export default function CommunityHolderGridItem({ holderRef, queryRef }: Props) 
 }
 
 const StyledNftImage = styled.img`
-  height: auto;
-  width: 100%;
-  max-width: 100%;
-  cursor: pointer;
-`;
-
-const StyledNftVideo = styled.video`
   height: auto;
   width: 100%;
   max-width: 100%;
