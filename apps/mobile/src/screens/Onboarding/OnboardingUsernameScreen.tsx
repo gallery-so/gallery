@@ -4,14 +4,17 @@ import { useColorScheme } from 'nativewind';
 import { useCallback, useEffect, useState } from 'react';
 import { KeyboardAvoidingView, Platform, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { graphql, useLazyLoadQuery } from 'react-relay';
 
 import { BackButton } from '~/components/BackButton';
 import { Button } from '~/components/Button';
 import { Typography } from '~/components/Typography';
+import { OnboardingUsernameScreenQuery } from '~/generated/OnboardingUsernameScreenQuery.graphql';
 import { LoginStackNavigatorParamList, LoginStackNavigatorProp } from '~/navigation/types';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import useCreateUser from '~/shared/hooks/useCreateUser';
 import useDebounce from '~/shared/hooks/useDebounce';
+import useUpdateUser from '~/shared/hooks/useUpdateUser';
 import { useIsUsernameAvailableFetcher } from '~/shared/hooks/useUserInfoFormIsUsernameAvailableQuery';
 import colors from '~/shared/theme/colors';
 import {
@@ -26,16 +29,37 @@ import {
 import useSyncTokens from '../NftSelectorScreen/useSyncTokens';
 
 export function OnboardingUsernameScreen() {
+  const query = useLazyLoadQuery<OnboardingUsernameScreenQuery>(
+    graphql`
+      query OnboardingUsernameScreenQuery {
+        viewer {
+          ... on Viewer {
+            user {
+              __typename
+              dbid
+              username
+              bio
+            }
+          }
+        }
+      }
+    `,
+    {}
+  );
+
+  const user = query?.viewer?.user;
+
   const navigation = useNavigation<LoginStackNavigatorProp>();
   const { colorScheme } = useColorScheme();
   const createUser = useCreateUser();
+  const updateUser = useUpdateUser();
   const isUsernameAvailableFetcher = useIsUsernameAvailableFetcher();
   const reportError = useReportError();
   const { isSyncing, syncTokens } = useSyncTokens();
 
   const route = useRoute<RouteProp<LoginStackNavigatorParamList, 'OnboardingUsername'>>();
 
-  const [username, setUsername] = useState('');
+  const [username, setUsername] = useState(user?.username ?? '');
   const [bio] = useState('');
 
   // This cannot be derived from a "null" `usernameError`
@@ -62,6 +86,14 @@ export function OnboardingUsernameScreen() {
     setUsernameError('');
 
     try {
+      // If its existing user, update the username
+      if (user?.username) {
+        await updateUser(user.dbid, username, user.bio ?? '');
+
+        navigation.navigate('OnboardingProfileBio');
+        return;
+      }
+
       const response = await createUser(authMechanism, username, bio);
 
       if (response.createUser?.__typename === 'CreateUserPayload') {
@@ -77,7 +109,17 @@ export function OnboardingUsernameScreen() {
         setUsernameError(error.message);
       }
     }
-  }, [authMechanism, bio, createUser, isSyncing, navigation, syncTokens, username]);
+  }, [
+    authMechanism,
+    bio,
+    createUser,
+    isSyncing,
+    navigation,
+    syncTokens,
+    username,
+    updateUser,
+    user,
+  ]);
 
   const [isCheckingUsername, setIsCheckingUsername] = useState(false);
   useEffect(
@@ -85,6 +127,13 @@ export function OnboardingUsernameScreen() {
       setUsernameError('');
 
       if (debouncedUsername.length < 2) {
+        return;
+      }
+
+      // if the user checking the username is the same as the user
+      // that is currently logged in, then we don't need to check
+      if (user?.username === debouncedUsername) {
+        setIsUsernameValid(true);
         return;
       }
 
@@ -132,7 +181,7 @@ export function OnboardingUsernameScreen() {
           setIsCheckingUsername(false);
         });
     },
-    [debouncedUsername, isUsernameAvailableFetcher, reportError]
+    [debouncedUsername, isUsernameAvailableFetcher, reportError, user?.username]
   );
 
   return (
