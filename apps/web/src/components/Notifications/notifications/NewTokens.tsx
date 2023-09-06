@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -10,7 +10,7 @@ import { useModalActions } from '~/contexts/modal/ModalContext';
 import { NewTokensFragment$key } from '~/generated/NewTokensFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
-import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
+import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 import colors from '~/shared/theme/colors';
 
 type Props = {
@@ -27,7 +27,7 @@ export function NewTokens({ notificationRef, onClose }: Props) {
         token {
           ... on Token {
             __typename
-            ...getVideoOrImageUrlForNftPreviewFragment
+            ...useGetPreviewImagesSingleFragment
             ...PostComposerModalFragment
             name
           }
@@ -48,10 +48,7 @@ export function NewTokens({ notificationRef, onClose }: Props) {
 
   const quantity = notification.count ?? 1;
 
-  const previewUrlSet = useMemo(() => {
-    if (!token) return null;
-    return getVideoOrImageUrlForNftPreview({ tokenRef: token });
-  }, [token]);
+  const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size: 'small' });
 
   const handleCreatePostClick = useCallback(() => {
     track('NFT Detail: Clicked Create Post');
@@ -66,9 +63,7 @@ export function NewTokens({ notificationRef, onClose }: Props) {
   return (
     <StyledNotificationContent align="center" justify="space-between" gap={8}>
       <HStack align="center" gap={8}>
-        {previewUrlSet?.urls.small && (
-          <TokenPreview count={quantity} tokenUrl={previewUrlSet?.urls.small} />
-        )}
+        {imageUrl && <TokenPreview count={quantity} tokenUrl={imageUrl} />}
 
         <VStack>
           <StyledTextWrapper align="center" as="span" wrap="wrap">
