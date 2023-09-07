@@ -18,9 +18,12 @@ import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { StillLoadingNftError } from '~/shared/errors/StillLoadingNftError';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 
-type TokenErrorState = {
+export type TokenErrorState = {
   isFailed: boolean;
+  // whether the token is still syncing without a fallback
   isLoading: boolean;
+  // whether the polling process has kicked off for a syncing token
+  isPolling: boolean;
   retryKey: number;
   refreshed: boolean;
   refreshingMetadata: boolean;
@@ -35,6 +38,7 @@ type NftErrorContextType = {
   refreshToken: (tokenId: string) => Promise<void>;
   clearTokenFailureState: (tokenIds: string[]) => void;
   handleNftError: (tokenId: string, error: Error) => void;
+  markTokenAsPolling: (tokenId: string) => void;
 };
 
 const NftErrorContext = createContext<NftErrorContextType | undefined>(undefined);
@@ -43,6 +47,7 @@ export function defaultTokenErrorState(): TokenErrorState {
   return {
     isFailed: false,
     isLoading: false,
+    isPolling: false,
     retryKey: 0,
     refreshed: false,
     refreshingMetadata: false,
@@ -69,38 +74,38 @@ export function NftErrorProvider({ children }: PropsWithChildren) {
 
   const handleNftError = useCallback<NftErrorContextType['handleNftError']>(
     (tokenId: string, error: Error) => {
-      const token = { ...(tokens[tokenId] ?? defaultTokenErrorState()) };
-
-      if (error instanceof StillLoadingNftError) {
-        console.log('still loading!');
-        token.isLoading = true;
-      } else {
-        addBreadcrumb({ category: 'nft error', message: error.message, level: 'error' });
-        token.isFailed = true;
-        // If the user refreshed the metadata and there was another failure,
-        // we'll show them a new toast telling them things failed to load,
-        // and we're looking into the issue asap.
-        if (token.refreshed) {
-          // Commenting this out because it's being displayed even without the user explicitly
-          // refreshing anything in the editor
-          //
-          // pushToast({
-          //   message:
-          //     'This piece has failed to load. This issue has been reported to the Gallery team.',
-          //   autoClose: true,
-          // });
-        }
-      }
-
       setTokens((previous) => {
         const next = { ...previous };
+
+        const token = { ...(next[tokenId] ?? defaultTokenErrorState()) };
+
+        if (error instanceof StillLoadingNftError) {
+          console.log('still loading!');
+          token.isLoading = true;
+        } else {
+          addBreadcrumb({ category: 'nft error', message: error.message, level: 'error' });
+          token.isFailed = true;
+          // If the user refreshed the metadata and there was another failure,
+          // we'll show them a new toast telling them things failed to load,
+          // and we're looking into the issue asap.
+          if (token.refreshed) {
+            // Commenting this out because it's being displayed even without the user explicitly
+            // refreshing anything in the editor
+            //
+            // pushToast({
+            //   message:
+            //     'This piece has failed to load. This issue has been reported to the Gallery team.',
+            //   autoClose: true,
+            // });
+          }
+        }
 
         next[tokenId] = token;
 
         return next;
       });
     },
-    [tokens]
+    []
   );
 
   const environment = useRelayEnvironment();
@@ -130,14 +135,14 @@ export function NftErrorProvider({ children }: PropsWithChildren) {
         }
       }
 
-      const token = { ...(tokens[tokenId] ?? defaultTokenErrorState()) };
-
-      token.isFailed = false;
-      token.refreshed = true;
-      token.retryKey++;
-
       setTokens((previous) => {
         const next = { ...previous };
+
+        const token = { ...(next[tokenId] ?? defaultTokenErrorState()) };
+
+        token.isFailed = false;
+        token.refreshed = true;
+        token.retryKey++;
 
         next[tokenId] = token;
 
@@ -146,7 +151,7 @@ export function NftErrorProvider({ children }: PropsWithChildren) {
     },
     // Make sure this dep is `FragmentResource`, this is all untyped
     // `FragmentResource._cache._map` might cause a HUGE ERROR
-    [FragmentResource, reportError, tokens]
+    [FragmentResource, reportError]
   );
 
   const clearTokenFailureState = useCallback(
@@ -231,6 +236,15 @@ export function NftErrorProvider({ children }: PropsWithChildren) {
     [pushToast, refresh, reportError, retryToken]
   );
 
+  const markTokenAsPolling = useCallback<NftErrorContextType['markTokenAsPolling']>((tokenId) => {
+    setTokens((previous) => {
+      const next = { ...previous };
+      const token = { ...(previous[tokenId] ?? defaultTokenErrorState()) };
+      next[tokenId] = { ...token, isPolling: true };
+      return next;
+    });
+  }, []);
+
   const value = useMemo((): NftErrorContextType => {
     return {
       tokens,
@@ -239,8 +253,16 @@ export function NftErrorProvider({ children }: PropsWithChildren) {
       handleNftError,
       markTokenAsLoaded,
       clearTokenFailureState,
+      markTokenAsPolling,
     };
-  }, [clearTokenFailureState, handleNftError, markTokenAsLoaded, refreshToken, tokens]);
+  }, [
+    clearTokenFailureState,
+    handleNftError,
+    markTokenAsLoaded,
+    markTokenAsPolling,
+    refreshToken,
+    tokens,
+  ]);
 
   return <NftErrorContext.Provider value={value}>{children}</NftErrorContext.Provider>;
 }
