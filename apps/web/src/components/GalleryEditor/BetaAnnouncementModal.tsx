@@ -1,5 +1,4 @@
 import Image from 'next/image';
-import cover from 'public/beta-tester-announcement.png';
 import { useCallback } from 'react';
 import { graphql } from 'react-relay';
 import styled from 'styled-components';
@@ -59,7 +58,10 @@ export function BetaAnnouncementModal() {
 
   return (
     <Container align="center">
-      <StyledImage src={cover} alt="frame" />
+      <StyledImage
+        src="https://storage.googleapis.com/gallery-prod-325303.appspot.com/beta_invite_artwork.png"
+        alt="beta_invite_artwork"
+      />
 
       <StyledTextContainer align="center" gap={64}>
         <VStack gap={32}>
