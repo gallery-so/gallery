@@ -60,7 +60,6 @@ export const SidebarTokens = ({
     `,
     tokenRefs
   );
-  console.log("tokens", tokens);
   const setSpamPreference = useSetSpamPreference();
   const setSpamPreferenceForCollection = useCallback(
     (address: string, isSpam: boolean) => {
@@ -134,12 +133,7 @@ export const SidebarTokens = ({
         erroredTokenIds,
       });
     }
-  }, [
-    collapsedCollections,
-    erroredTokenIds,
-    shouldUseCollectionGrouping,
-    tokens,
-  ]);
+  }, [collapsedCollections, erroredTokenIds, shouldUseCollectionGrouping, tokens]);
 
   useEffect(
     function resetCollapsedSectionsWhileSearching() {
