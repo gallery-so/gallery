@@ -43,14 +43,13 @@ export function DeepLinkRegistrar() {
       }
 
       const parsedUrl = new URL(url);
-      console.log(parsedUrl);
 
-      if (parsedUrl.pathname === '/mobile') {
+      if (parsedUrl.pathname === '/mobile/marfa') {
         navigation.navigate('MainTabs', {
           screen: 'HomeTab',
           params: {
             screen: 'Home',
-            params: { screen: 'Curated', params: { showMarfaSheet: true } },
+            params: { screen: 'Curated', params: { showMarfaCheckIn: true } },
           },
         });
         return;

@@ -35,13 +35,11 @@ export function SpinnerIcon({ spin, ...props }: Props) {
   const styles = useMemo(() => {
     if (colorScheme === 'dark') {
       return {
-        container: colors.black[900],
         spinner: colors.white,
       };
     }
 
     return {
-      container: colors.white,
       spinner: colors.black[900],
     };
   }, [colorScheme]);
@@ -55,7 +53,6 @@ export function SpinnerIcon({ spin, ...props }: Props) {
       }}
     >
       <Svg width={118} height={118} fill="none" {...props}>
-        <Path fill={styles.container} d="M.966 99.345 18.897.966l98.38 17.931-17.932 98.38z" />
         <Path
           fill={styles.spinner}
           fillRule="evenodd"
