@@ -5,6 +5,7 @@ import styled from 'styled-components';
 
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { BetaAnnouncementModalMutation } from '~/generated/BetaAnnouncementModalMutation.graphql';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 import colors from '~/shared/theme/colors';
@@ -38,11 +39,14 @@ export function BetaAnnouncementModal({ onDismiss }: Props) {
     }
   `);
 
+  const track = useTrack();
   const { hideModal } = useModalActions();
   const reportError = useReportError();
 
   const handleContinue = useCallback(async () => {
     hideModal();
+
+    track('Clicked Continue in Beta Announcement Modal');
 
     try {
       await optInForRoles({
@@ -61,7 +65,7 @@ export function BetaAnnouncementModal({ onDismiss }: Props) {
     }
 
     window.open(TYPEFORM_URL, '_blank');
-  }, [hideModal, onDismiss, optInForRoles, reportError]);
+  }, [hideModal, onDismiss, optInForRoles, reportError, track]);
 
   return (
     <Container align="center">

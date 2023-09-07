@@ -27,6 +27,7 @@ import { editGalleryPageNewQuery } from '~/generated/editGalleryPageNewQuery.gra
 import { useGuardEditorUnsavedChanges } from '~/hooks/useGuardEditorUnsavedChanges';
 import usePersistedState from '~/hooks/usePersistedState';
 import GalleryRedirect from '~/scenes/_Router/GalleryRedirect';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 
 type EditGalleryPageInnerProps = {
   queryRef: editGalleryPageNewInnerFragment$key;
@@ -58,7 +59,9 @@ function EditGalleryPageInner({ queryRef }: EditGalleryPageInnerProps) {
   );
 
   const { showModal } = useModalActions();
+  const track = useTrack();
   const canGoBack = useCanGoBack();
+
   const { replace, back, route } = useRouter();
   const {
     saveGallery,
@@ -108,6 +111,8 @@ function EditGalleryPageInner({ queryRef }: EditGalleryPageInnerProps) {
       return;
     }
 
+    track('Show Beta Announcement Modal');
+
     showModal({
       content: (
         <BetaAnnouncementModal
@@ -120,7 +125,7 @@ function EditGalleryPageInner({ queryRef }: EditGalleryPageInnerProps) {
         setDismissAnnouncement(true);
       },
     });
-  }, [dismissAnnouncement, user, saveGallery, setDismissAnnouncement, showModal]);
+  }, [dismissAnnouncement, user, saveGallery, setDismissAnnouncement, showModal, track]);
 
   const handleEdit = useCallback(() => {
     editGalleryNameAndDescription();
