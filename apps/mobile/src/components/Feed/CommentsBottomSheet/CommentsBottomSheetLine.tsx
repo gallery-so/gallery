@@ -1,4 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
+import { useCallback } from 'react';
 import { View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -34,12 +35,12 @@ export function CommentsBottomSheetLine({ commentRef }: CommentLineProps) {
   const timeAgo = getTimeSince(comment.creationTime);
   const navigation = useNavigation<MainTabStackNavigatorProp>();
 
-  function handleUserPress() {
+  const handleUserPress = useCallback(() => {
     const username = comment?.commenter?.username;
     if (username) {
       navigation.push('Profile', { username: username, hideBackButton: false });
     }
-  }
+  }, [comment?.commenter?.username, navigation])
 
   return (
     <GalleryTouchableOpacity
