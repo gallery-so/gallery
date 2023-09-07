@@ -2,7 +2,6 @@ import { useNavigation } from '@react-navigation/native';
 import Constants from 'expo-constants';
 import { PropsWithChildren, ReactNode, useCallback, useMemo, useRef, useState } from 'react';
 import { LayoutChangeEvent, Linking, ScrollView, Text, View, ViewProps } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 
 import { BackButton } from '~/components/BackButton';
@@ -43,7 +42,6 @@ export function SettingsScreen() {
     {}
   );
 
-  const { top } = useSafeAreaInsets();
   const feedbackBottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
   const debugBottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
   const navigation = useNavigation<MainTabStackNavigatorProp>();
@@ -90,7 +88,7 @@ export function SettingsScreen() {
   }, [query.viewer?.user?.roles]);
 
   return (
-    <View style={{ paddingTop: top }} className="relative flex-1 bg-white dark:bg-black-900">
+    <View className="relative flex-1 bg-white dark:bg-black-900">
       <View className="px-4 relative mb-2">
         <BackButton />
 

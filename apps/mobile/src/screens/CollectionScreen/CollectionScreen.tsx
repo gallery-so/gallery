@@ -12,7 +12,6 @@ import { GalleryNameHeader } from '~/components/Gallery/GalleryNameHeader';
 import { GalleryVirtualizedRow } from '~/components/Gallery/GalleryVirtualizedRow';
 import { Markdown } from '~/components/Markdown';
 import { GalleryProfileNavBar } from '~/components/ProfileView/GalleryProfileNavBar';
-import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { CollectionScreenQuery } from '~/generated/CollectionScreenQuery.graphql';
 import { MainTabStackNavigatorParamList } from '~/navigation/types';
 import { CollectionScreenFallback } from '~/screens/CollectionScreen/CollectionScreenFallback';
@@ -70,10 +69,8 @@ function CollectionScreenInner() {
     }
   }, []);
 
-  const { top } = useSafeAreaPadding();
-
   return (
-    <View className="flex flex-col flex-1 bg-white dark:bg-black-900" style={{ paddingTop: top }}>
+    <View className="flex flex-col flex-1 bg-white dark:bg-black-900">
       <View className="px-4 pb-4">
         <GalleryProfileNavBar
           shouldShowBackButton

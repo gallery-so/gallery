@@ -3,17 +3,14 @@ import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
 import { GallerySkeleton } from '~/components/GallerySkeleton';
 import { GalleryProfileNavbarFallback } from '~/components/ProfileView/GalleryProfileNavBar';
-import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 
 type Props = {
   shouldShowBackButton: boolean;
 };
 
 export function ProfileViewFallback({ shouldShowBackButton }: Props) {
-  const { top } = useSafeAreaPadding();
-
   return (
-    <View className="flex-1 bg-white dark:bg-black-900 px-4" style={{ paddingTop: top }}>
+    <View className="flex-1 bg-white dark:bg-black-900 px-4">
       <GalleryProfileNavbarFallback shouldShowBackButton={shouldShowBackButton} />
 
       <GallerySkeleton>
