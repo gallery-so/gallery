@@ -105,24 +105,7 @@ export const SidebarTokens = ({
     [tokens, setSpamPreference]
   );
 
-  const [erroredTokenIds, setErroredTokenIds] = useState<Set<string>>(new Set());
   const [collapsedCollections, setCollapsedCollections] = useState<Set<string>>(new Set());
-
-  const handleMarkErroredTokenId = useCallback((id: string) => {
-    setErroredTokenIds((prev) => {
-      const next = new Set(prev);
-      next.add(id);
-      return next;
-    });
-  }, []);
-
-  const handleMarkSuccessTokenId = useCallback((id: string) => {
-    setErroredTokenIds((prev) => {
-      const next = new Set(prev);
-      next.delete(id);
-      return next;
-    });
-  }, []);
 
   const handleToggleExpanded = useCallback((address: string) => {
     setCollapsedCollections((previous) => {
@@ -151,21 +134,14 @@ export const SidebarTokens = ({
 
       return createVirtualizedRowsFromGroups({
         groups,
-        erroredTokenIds,
         collapsedCollections,
       });
     } else {
       return createVirtualizedRowsFromTokens({
         filteredTokensBySelectedWallet,
-        erroredTokenIds,
       });
     }
-  }, [
-    collapsedCollections,
-    erroredTokenIds,
-    shouldUseCollectionGrouping,
-    filteredTokensBySelectedWallet,
-  ]);
+  }, [collapsedCollections, shouldUseCollectionGrouping, filteredTokensBySelectedWallet]);
 
   useEffect(
     function resetCollapsedSectionsWhileSearching() {
@@ -208,8 +184,6 @@ export const SidebarTokens = ({
       rows={rows}
       selectedView={selectedView}
       onToggleExpanded={handleToggleExpanded}
-      handleTokenRenderError={handleMarkErroredTokenId}
-      handleTokenRenderSuccess={handleMarkSuccessTokenId}
       shouldUseCollectionGrouping={shouldUseCollectionGrouping}
       setSpamPreferenceForCollection={setSpamPreferenceForCollection}
     />

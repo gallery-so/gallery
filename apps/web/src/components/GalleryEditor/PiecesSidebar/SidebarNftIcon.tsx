@@ -22,15 +22,9 @@ import { getBackgroundColorOverrideForContract } from '~/utils/token';
 
 type SidebarNftIconProps = {
   tokenRef: SidebarNftIconFragment$key;
-  handleTokenRenderError: (id: string) => void;
-  handleTokenRenderSuccess: (id: string) => void;
 };
 
-function SidebarNftIcon({
-  tokenRef,
-  handleTokenRenderError,
-  handleTokenRenderSuccess,
-}: SidebarNftIconProps) {
+function SidebarNftIcon({ tokenRef }: SidebarNftIconProps) {
   const token = useFragment(
     graphql`
       fragment SidebarNftIconFragment on Token {
@@ -93,17 +87,15 @@ function SidebarNftIcon({
   const handleError = useCallback<ContentIsLoadedEvent>(
     (event) => {
       handleNftError(event);
-      handleTokenRenderError(token.dbid);
     },
-    [handleNftError, handleTokenRenderError, token.dbid]
+    [handleNftError]
   );
 
   const handleLoad = useCallback<ContentIsLoadedEvent>(
     (event) => {
       handleNftLoaded(event);
-      handleTokenRenderSuccess(token.dbid);
     },
-    [handleNftLoaded, handleTokenRenderSuccess, token.dbid]
+    [handleNftLoaded]
   );
 
   const relayEnvironment = useRelayEnvironment();
