@@ -45,6 +45,22 @@ export function DeepLinkRegistrar() {
       const parsedUrl = new URL(url);
       const splitBySlash = parsedUrl.pathname.split('/').filter(Boolean);
 
+      if (parsedUrl.pathname.includes('post')) {
+        const [, maybePostId] = splitBySlash;
+
+        if (maybePostId) {
+          navigation.navigate('MainTabs', {
+            screen: 'HomeTab',
+            params: {
+              screen: 'Post',
+              params: { postId: maybePostId },
+            },
+          });
+        }
+
+        return;
+      }
+
       if (splitBySlash.length === 1) {
         const [maybeUsername] = splitBySlash;
 
