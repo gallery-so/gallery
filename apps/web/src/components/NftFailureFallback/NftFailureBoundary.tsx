@@ -1,28 +1,33 @@
 import { createElement, useMemo } from 'react';
 
 import { useNftErrorContext } from '~/contexts/NftErrorContext';
+import { useNftRetry } from '~/hooks/useNftRetry';
 import {
   ReportingErrorBoundary,
   ReportingErrorBoundaryProps,
 } from '~/shared/errors/ReportingErrorBoundary';
 
+import { NftFailureFallback } from './NftFailureFallback';
+
 type Props = {
   tokenId: string;
-} & ReportingErrorBoundaryProps;
+  fallback?: ReportingErrorBoundaryProps['fallback'];
+} & Omit<ReportingErrorBoundaryProps, 'fallback'>;
 
-export function NftFailureBoundary({ tokenId, additionalTags, ...rest }: Props) {
+export function NftFailureBoundary({
+  tokenId,
+  fallback = <NftFailureFallback tokenId={tokenId} />,
+  ...rest
+}: Props) {
+  const { handleNftError, retryKey } = useNftRetry({
+    tokenId,
+  });
+
   const { tokens } = useNftErrorContext();
 
-  const tagsToSendThrough = useMemo(() => {
-    return {
-      ...additionalTags,
-      tokenId,
-    };
-  }, [additionalTags, tokenId]);
+  const additionalTags = useMemo(() => ({ tokenId }), [tokenId]);
 
   if (tokens[tokenId]?.isFailed) {
-    const fallback = rest.fallback;
-
     if (typeof fallback === 'function') {
       return createElement(fallback, { error: new Error() });
     } else {
@@ -30,5 +35,13 @@ export function NftFailureBoundary({ tokenId, additionalTags, ...rest }: Props) 
     }
   }
 
-  return <ReportingErrorBoundary {...rest} additionalTags={tagsToSendThrough} />;
+  return (
+    <ReportingErrorBoundary
+      key={retryKey}
+      onError={handleNftError}
+      additionalTags={additionalTags}
+      fallback={fallback}
+      {...rest}
+    />
+  );
 }

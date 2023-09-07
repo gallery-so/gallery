@@ -15,6 +15,7 @@ type Props = {
   onSelectToken: (tokenId: string) => void;
   isInGroup?: boolean;
 };
+
 export function NftSelectorToken({ tokenRef, onSelectToken, isInGroup = false }: Props) {
   const token = useFragment(
     graphql`

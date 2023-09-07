@@ -5,19 +5,22 @@ import IconContainer from '~/components/core/IconContainer';
 import { VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
 import Tooltip from '~/components/Tooltip/Tooltip';
+import { useNftRetry } from '~/hooks/useNftRetry';
 import { RefreshIcon } from '~/icons/RefreshIcon';
 import colors from '~/shared/theme/colors';
 
 type Size = 'tiny' | 'medium';
 
-type Props = {
+export type NftFailureFallbackProps = {
   size?: Size;
   tokenId: string;
-  onRetry: () => void;
-  refreshing: boolean;
 };
 
-export function NftFailureFallback({ tokenId, onRetry, refreshing, size = 'medium' }: Props) {
+export function NftFailureFallback({ tokenId, size = 'medium' }: NftFailureFallbackProps) {
+  const { refreshingMetadata: refreshing, refreshMetadata: onRetry } = useNftRetry({
+    tokenId,
+  });
+
   const handleClick = useCallback(
     (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       event.preventDefault();

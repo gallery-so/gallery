@@ -1,15 +1,13 @@
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
+import { NftFailureBoundary } from '~/components/NftFailureFallback/NftFailureBoundary';
+import { NftFailureFallback } from '~/components/NftFailureFallback/NftFailureFallback';
 import NftPreviewLabel from '~/components/NftPreview/NftPreviewLabel';
 import { StagedNftImageFragment$key } from '~/generated/StagedNftImageFragment.graphql';
-import { StagedNftImageImageFragment$key } from '~/generated/StagedNftImageImageFragment.graphql';
 import { StagedNftImageRawFragment$key } from '~/generated/StagedNftImageRawFragment.graphql';
-import { StagedNftImageWithoutFallbackFragment$key } from '~/generated/StagedNftImageWithoutFallbackFragment.graphql';
 import { useImageFailureCheck } from '~/hooks/useImageFailureCheck';
-import { useThrowOnMediaFailure } from '~/hooks/useNftRetry';
-import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
-import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
+import { useNftRetry, useThrowOnMediaFailure } from '~/hooks/useNftRetry';
 import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 
 type StagedNftImageProps = {
@@ -17,159 +15,71 @@ type StagedNftImageProps = {
   size: number;
   setNodeRef: (node: HTMLElement | null) => void;
   hideLabel: boolean;
-  onLoad: () => void;
 };
 
-function StagedNftImage({ tokenRef, ...rest }: StagedNftImageProps) {
+function StagedNftImage({ tokenRef, setNodeRef, ...rest }: StagedNftImageProps) {
   const token = useFragment(
     graphql`
       fragment StagedNftImageFragment on Token {
-        media {
-          ... on Media {
-            fallbackMedia {
-              mediaURL
-            }
-          }
-        }
-
+        dbid
         ...StagedNftImageRawFragment
-        ...StagedNftImageWithoutFallbackFragment
       }
     `,
     tokenRef
   );
 
   return (
-    <ReportingErrorBoundary
+    <NftFailureBoundary
+      tokenId={token.dbid}
       fallback={
-        <RawStagedNftImage {...rest} tokenRef={token} url={token.media?.fallbackMedia?.mediaURL} />
+        <FallbackContainer ref={setNodeRef} {...rest}>
+          <NftFailureFallback tokenId={token.dbid} />
+        </FallbackContainer>
       }
     >
-      <StagedNftImageWithoutFallback tokenRef={token} {...rest} />
-    </ReportingErrorBoundary>
+      <RawStagedNftImage tokenRef={token} setNodeRef={setNodeRef} {...rest} />
+    </NftFailureBoundary>
   );
 }
 
-type StagedNftImageWithoutFallbackProps = {
-  tokenRef: StagedNftImageWithoutFallbackFragment$key;
+const FallbackContainer = styled.div<{ size: number }>`
+  height: ${({ size }) => size}px;
+  width: ${({ size }) => size}px;
+`;
+
+type RawStagedNftImageProps = {
   size: number;
-  setNodeRef: (node: HTMLElement | null) => void;
   hideLabel: boolean;
-  onLoad: () => void;
+  setNodeRef: (node: HTMLElement | null) => void;
+  tokenRef: StagedNftImageRawFragment$key;
 };
 
-function StagedNftImageWithoutFallback({
-  tokenRef,
+function RawStagedNftImage({
   size,
+  tokenRef,
   hideLabel,
   setNodeRef,
-  onLoad,
   ...props
-}: StagedNftImageWithoutFallbackProps) {
+}: RawStagedNftImageProps) {
   const token = useFragment(
     graphql`
-      fragment StagedNftImageWithoutFallbackFragment on Token {
-        ...StagedNftImageRawFragment
+      fragment StagedNftImageRawFragment on Token {
+        dbid
+        ...NftPreviewLabelFragment
         ...useGetPreviewImagesSingleFragment
       }
     `,
     tokenRef
   );
 
-  const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size: 'large' });
+  const url = useGetSinglePreviewImage({ tokenRef: token, size: 'large', shouldThrow: true }) ?? '';
 
-  if (!imageUrl) {
-    throw new CouldNotRenderNftError('StagedNftImage', 'could not find a large url');
-  }
+  const { handleNftLoaded } = useNftRetry({ tokenId: token.dbid });
 
-  return (
-    <RawStagedNftImage
-      setNodeRef={setNodeRef}
-      onLoad={onLoad}
-      tokenRef={token}
-      url={imageUrl}
-      hideLabel={hideLabel}
-      size={size}
-      {...props}
-    />
-  );
-}
-
-type RawStagedNftImageProps = {
-  size: number;
-  onLoad: () => void;
-  hideLabel: boolean;
-  setNodeRef: (node: HTMLElement | null) => void;
-  tokenRef: StagedNftImageRawFragment$key;
-  url: string | undefined | null;
-};
-
-function RawStagedNftImage({
-  setNodeRef,
-  tokenRef,
-  hideLabel,
-  onLoad,
-  size,
-  url,
-  ...props
-}: RawStagedNftImageProps) {
-  if (!url) {
-    throw new CouldNotRenderNftError('RawStagedNftImage', 'url is undefined');
-  }
-
-  const token = useFragment(
-    graphql`
-      fragment StagedNftImageRawFragment on Token {
-        ...StagedNftImageImageFragment
-      }
-    `,
-    tokenRef
-  );
-
-  return (
-    <StagedNftImageImage
-      size={size}
-      onLoad={onLoad}
-      hideLabel={hideLabel}
-      tokenRef={token}
-      setNodeRef={setNodeRef}
-      url={url}
-      {...props}
-    />
-  );
-}
-
-type StagedNftImageImageProps = {
-  url: string;
-  size: number;
-  hideLabel: boolean;
-  onLoad: () => void;
-  tokenRef: StagedNftImageImageFragment$key;
-  setNodeRef: (node: HTMLElement | null) => void;
-};
-
-function StagedNftImageImage({
-  url,
-  size,
-  onLoad,
-  tokenRef,
-  hideLabel,
-  setNodeRef,
-  ...props
-}: StagedNftImageImageProps) {
-  const token = useFragment(
-    graphql`
-      fragment StagedNftImageImageFragment on Token {
-        ...NftPreviewLabelFragment
-      }
-    `,
-    tokenRef
-  );
-
-  const { handleError } = useThrowOnMediaFailure('StagedNftImageImage');
+  const { handleError } = useThrowOnMediaFailure('RawStagedNftImage');
 
   // We have to use this since we're not using an actual img element
-  useImageFailureCheck({ url, onLoad, onError: handleError });
+  useImageFailureCheck({ url, onLoad: handleNftLoaded, onError: handleError });
 
   return (
     <StyledGridImage srcUrl={url} ref={setNodeRef} size={size} {...props}>
