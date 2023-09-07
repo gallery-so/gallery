@@ -14,8 +14,7 @@ import { Button } from '../core/Button/Button';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseXL, TitleL } from '../core/Text/Text';
 
-// TODO: Replace with actual typeform URL
-const TYPEFORM_URL = 'https://frameio.typeform.com/to/rgZ2Z4';
+const TYPEFORM_URL = 'https://s3kov98mov4.typeform.com/to/NaZt3VA1';
 
 export function BetaAnnouncementModal() {
   const [optInForRoles] = usePromisifiedMutation<BetaAnnouncementModalMutation>(graphql`
