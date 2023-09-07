@@ -8,7 +8,10 @@ import { StyledImageWithLoading } from '~/components/LoadingAsset/ImageWithLoadi
 import NftPreview from '~/components/NftPreview/NftPreview';
 import ShimmerProvider from '~/contexts/shimmer/ShimmerContext';
 import { PostNftPreviewFragment$key } from '~/generated/PostNftPreviewFragment.graphql';
-import useWindowSize, { useBreakpoint } from '~/hooks/useWindowSize';
+import useWindowSize, {
+  useBreakpoint,
+  useIsMobileOrMobileLargeWindowWidth,
+} from '~/hooks/useWindowSize';
 import { StyledVideo } from '~/scenes/NftDetailPage/NftDetailVideo';
 
 import { getFeedTokenDimensions } from '../dimensions';
@@ -42,10 +45,17 @@ export default function PostNftPreview({ tokenRef, onNftLoad }: Props) {
     });
   }, [breakpoint, width]);
 
+  const isMobile = useIsMobileOrMobileLargeWindowWidth();
+
   return (
     <StyledPostNftPreview>
       <ShimmerProvider>
-        <NftPreview tokenRef={token} previewSize={tokenSize} shouldLiveRender onLoad={onNftLoad} />
+        <NftPreview
+          tokenRef={token}
+          previewSize={tokenSize}
+          shouldLiveRender={!isMobile}
+          onLoad={onNftLoad}
+        />
       </ShimmerProvider>
     </StyledPostNftPreview>
   );
