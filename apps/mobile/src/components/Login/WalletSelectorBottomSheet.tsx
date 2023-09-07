@@ -53,7 +53,7 @@ function WalletSelectorBottomSheet(
   const { animatedHandleHeight, animatedSnapPoints, animatedContentHeight, handleContentLayout } =
     useBottomSheetDynamicSnapPoints(SNAP_POINTS);
 
-  const handleConenctWallet = useCallback(async () => {
+  const handleConnectWallet = useCallback(async () => {
     if (isConnected) {
       return provider?.disconnect();
     }
@@ -119,7 +119,7 @@ function WalletSelectorBottomSheet(
                 }
                 fontWeight="Bold"
                 text="Ethereum and L2s"
-                onPress={handleConenctWallet}
+                onPress={handleConnectWallet}
                 rightIcon={<EvmStackedIcons />}
               />
             )}
