@@ -1,9 +1,13 @@
 import Image from 'next/image';
 import cover from 'public/beta-tester-announcement.png';
 import { useCallback } from 'react';
+import { graphql } from 'react-relay';
 import styled from 'styled-components';
 
 import { useModalActions } from '~/contexts/modal/ModalContext';
+import { BetaAnnouncementModalMutation } from '~/generated/BetaAnnouncementModalMutation.graphql';
+import { useReportError } from '~/shared/contexts/ErrorReportingContext';
+import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 
 import { Button } from '../core/Button/Button';
 import { HStack, VStack } from '../core/Spacer/Stack';
@@ -13,13 +17,45 @@ import { BaseXL, TitleL } from '../core/Text/Text';
 const TYPEFORM_URL = 'https://frameio.typeform.com/to/rgZ2Z4';
 
 export function BetaAnnouncementModal() {
-  const { hideModal } = useModalActions();
+  const [optInForRoles] = usePromisifiedMutation<BetaAnnouncementModalMutation>(graphql`
+    mutation BetaAnnouncementModalMutation($input: [Role!]!) @raw_response_type {
+      optInForRoles(roles: $input) {
+        __typename
+        ... on OptInForRolesPayload {
+          user {
+            roles
+          }
+        }
+        ... on ErrInvalidInput {
+          __typename
+          message
+        }
+      }
+    }
+  `);
 
-  const handleContinue = useCallback(() => {
+  const { hideModal } = useModalActions();
+  const reportError = useReportError();
+
+  const handleContinue = useCallback(async () => {
     hideModal();
 
+    try {
+      await optInForRoles({
+        variables: {
+          input: ['BETA_TESTER'],
+        },
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        reportError(error);
+      } else {
+        reportError('Uncaught error in while opting in for beta tester');
+      }
+    }
+
     window.open(TYPEFORM_URL, '_blank');
-  }, [hideModal]);
+  }, [hideModal, optInForRoles, reportError]);
 
   return (
     <Container justify="space-between" align="center">
