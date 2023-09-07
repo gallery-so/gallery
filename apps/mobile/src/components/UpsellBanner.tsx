@@ -125,6 +125,7 @@ export function UpsellBanner() {
         style={{
           paddingTop: top,
         }}
+        className="bg-white dark:bg-black-900"
       ></View>
     );
   }
