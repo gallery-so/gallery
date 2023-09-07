@@ -4,6 +4,7 @@ import { useCallback, useState } from 'react';
 import { useFragment, useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
+import { BetaAnnouncementModal } from '~/components/GalleryEditor/BetaAnnouncementModal';
 import { GalleryEditor } from '~/components/GalleryEditor/GalleryEditor';
 import {
   GalleryEditorProvider,
@@ -16,6 +17,7 @@ import {
 import useConfirmationMessageBeforeClose from '~/components/ManageGallery/useConfirmationMessageBeforeClose';
 import FullPageStep from '~/components/Onboarding/FullPageStep';
 import { EditGalleryNavbar } from '~/contexts/globalLayout/GlobalNavbar/EditGalleryNavbar/EditGalleryNavbar';
+import { useModalActions } from '~/contexts/modal/ModalContext';
 import { useCanGoBack } from '~/contexts/navigation/GalleryNavigationProvider';
 import { editGalleryPageNewInnerFragment$key } from '~/generated/editGalleryPageNewInnerFragment.graphql';
 import { editGalleryPageNewQuery } from '~/generated/editGalleryPageNewQuery.graphql';
@@ -37,6 +39,7 @@ function EditGalleryPageInner({ queryRef }: EditGalleryPageInnerProps) {
             __typename
             user {
               username
+              roles
             }
           }
         }
@@ -45,6 +48,7 @@ function EditGalleryPageInner({ queryRef }: EditGalleryPageInnerProps) {
     queryRef
   );
 
+  const { showModal } = useModalActions();
   const canGoBack = useCanGoBack();
   const { replace, back, route } = useRouter();
   const {
@@ -76,11 +80,29 @@ function EditGalleryPageInner({ queryRef }: EditGalleryPageInnerProps) {
   const handleBack = useGuardEditorUnsavedChanges(goBack, hasUnsavedChanges);
 
   const [isSaving, setIsSaving] = useState(false);
+
+  if (query.viewer?.__typename !== 'Viewer') {
+    throw new Error('Viewer does not exist');
+  }
+
+  const user = query.viewer.user;
+
   const handleSave = useCallback(async () => {
+    const userRoles = user?.roles ?? [];
+
     setIsSaving(true);
     await saveGallery();
     setIsSaving(false);
-  }, [saveGallery]);
+
+    // If the user is beta tester or admin, skip the modal
+    if (userRoles?.includes('BETA_TESTER') || userRoles?.includes('ADMIN')) {
+      return;
+    }
+
+    showModal({
+      content: <BetaAnnouncementModal />,
+    });
+  }, [user, saveGallery, showModal]);
 
   const handleEdit = useCallback(() => {
     editGalleryNameAndDescription();

@@ -8,6 +8,7 @@ import { useModalActions } from '~/contexts/modal/ModalContext';
 import { BetaAnnouncementModalMutation } from '~/generated/BetaAnnouncementModalMutation.graphql';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
+import colors from '~/shared/theme/colors';
 
 import { Button } from '../core/Button/Button';
 import { HStack, VStack } from '../core/Spacer/Stack';
@@ -58,7 +59,7 @@ export function BetaAnnouncementModal() {
   }, [hideModal, optInForRoles, reportError]);
 
   return (
-    <Container justify="space-between" align="center">
+    <Container align="center">
       <StyledImage src={cover} alt="frame" />
 
       <StyledTextContainer align="center" gap={64}>
@@ -70,15 +71,21 @@ export function BetaAnnouncementModal() {
           </BaseXL>
         </VStack>
 
-        <Button onClick={handleContinue}>Continue</Button>
+        <StyledButton onClick={handleContinue}>Continue</StyledButton>
       </StyledTextContainer>
     </Container>
   );
 }
 
 const Container = styled(HStack)`
-  width: 1024px;
+  width: 1086px;
+  max-width: 100%;
   padding: 32px 16px 20px;
+
+  @media (max-width: 1024px) {
+    flex-direction: column;
+    gap: 32px;
+  }
 `;
 
 const StyledImage = styled(Image)`
@@ -87,10 +94,15 @@ const StyledImage = styled(Image)`
 `;
 
 const StyledHeader = styled(TitleL)`
-  font-size: 56px;
+  font-size: 50px;
+  color: ${colors.black.DEFAULT};
 `;
 
 const StyledTextContainer = styled(VStack)`
   padding: 0 48px;
   text-align: center;
+`;
+
+const StyledButton = styled(Button)`
+  height: 40px;
 `;
