@@ -13,9 +13,14 @@ import { Button } from '../core/Button/Button';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseXL, TitleL } from '../core/Text/Text';
 
+export const BETA_ANNOUNCEMENT_STORAGE_KEY = 'gallery_beta_announcement_dismissed';
 const TYPEFORM_URL = 'https://s3kov98mov4.typeform.com/to/NaZt3VA1';
 
-export function BetaAnnouncementModal() {
+type Props = {
+  onDismiss: () => void;
+};
+
+export function BetaAnnouncementModal({ onDismiss }: Props) {
   const [optInForRoles] = usePromisifiedMutation<BetaAnnouncementModalMutation>(graphql`
     mutation BetaAnnouncementModalMutation($input: [Role!]!) @raw_response_type {
       optInForRoles(roles: $input) {
@@ -45,6 +50,8 @@ export function BetaAnnouncementModal() {
           input: ['BETA_TESTER'],
         },
       });
+
+      onDismiss();
     } catch (error) {
       if (error instanceof Error) {
         reportError(error);
@@ -54,13 +61,15 @@ export function BetaAnnouncementModal() {
     }
 
     window.open(TYPEFORM_URL, '_blank');
-  }, [hideModal, optInForRoles, reportError]);
+  }, [hideModal, onDismiss, optInForRoles, reportError]);
 
   return (
     <Container align="center">
-      <StyledImage
+      <Image
         src="https://storage.googleapis.com/gallery-prod-325303.appspot.com/beta_invite_artwork.png"
         alt="beta_invite_artwork"
+        width={500}
+        height={500}
       />
 
       <StyledTextContainer align="center" gap={64}>
@@ -87,11 +96,6 @@ const Container = styled(HStack)`
     flex-direction: column;
     gap: 32px;
   }
-`;
-
-const StyledImage = styled(Image)`
-  width: 500px;
-  height: auto;
 `;
 
 const StyledHeader = styled(TitleL)`

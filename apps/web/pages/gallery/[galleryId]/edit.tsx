@@ -4,7 +4,10 @@ import { useCallback, useState } from 'react';
 import { useFragment, useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import { BetaAnnouncementModal } from '~/components/GalleryEditor/BetaAnnouncementModal';
+import {
+  BETA_ANNOUNCEMENT_STORAGE_KEY,
+  BetaAnnouncementModal,
+} from '~/components/GalleryEditor/BetaAnnouncementModal';
 import { GalleryEditor } from '~/components/GalleryEditor/GalleryEditor';
 import {
   GalleryEditorProvider,
@@ -22,6 +25,7 @@ import { useCanGoBack } from '~/contexts/navigation/GalleryNavigationProvider';
 import { editGalleryPageNewInnerFragment$key } from '~/generated/editGalleryPageNewInnerFragment.graphql';
 import { editGalleryPageNewQuery } from '~/generated/editGalleryPageNewQuery.graphql';
 import { useGuardEditorUnsavedChanges } from '~/hooks/useGuardEditorUnsavedChanges';
+import usePersistedState from '~/hooks/usePersistedState';
 import GalleryRedirect from '~/scenes/_Router/GalleryRedirect';
 
 type EditGalleryPageInnerProps = {
@@ -46,6 +50,11 @@ function EditGalleryPageInner({ queryRef }: EditGalleryPageInnerProps) {
       }
     `,
     queryRef
+  );
+
+  const [dismissAnnouncement, setDismissAnnouncement] = usePersistedState(
+    BETA_ANNOUNCEMENT_STORAGE_KEY,
+    false
   );
 
   const { showModal } = useModalActions();
@@ -94,15 +103,24 @@ function EditGalleryPageInner({ queryRef }: EditGalleryPageInnerProps) {
     await saveGallery();
     setIsSaving(false);
 
-    // If the user is beta tester or admin, skip the modal
-    if (userRoles?.includes('BETA_TESTER') || userRoles?.includes('ADMIN')) {
+    // If the user is beta tester or admin or has dismissed the announcement, don't show the modal
+    if (userRoles?.includes('BETA_TESTER') || userRoles?.includes('ADMIN') || dismissAnnouncement) {
       return;
     }
 
     showModal({
-      content: <BetaAnnouncementModal />,
+      content: (
+        <BetaAnnouncementModal
+          onDismiss={() => {
+            setDismissAnnouncement(true);
+          }}
+        />
+      ),
+      onClose: () => {
+        setDismissAnnouncement(true);
+      },
     });
-  }, [user, saveGallery, showModal]);
+  }, [dismissAnnouncement, user, saveGallery, setDismissAnnouncement, showModal]);
 
   const handleEdit = useCallback(() => {
     editGalleryNameAndDescription();
