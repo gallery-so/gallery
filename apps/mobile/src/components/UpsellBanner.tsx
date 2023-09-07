@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useWalletConnectModal } from '@walletconnect/modal-react-native';
 import { ethers } from 'ethers';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -40,11 +41,21 @@ export function UpsellBanner() {
   const { top } = useSafeAreaInsets();
   const bottomSheet = useRef<GalleryBottomSheetModalType | null>(null);
 
+  const [isUpsellBannerDismissed, setIsUpsellBannerDismissed] = useState(false);
+
   const [isSigningIn, setIsSigningIn] = useState(false);
   const { address, isConnected, provider } = useWalletConnectModal();
   const createNonce = useCreateNonce();
   const { isSyncing, syncTokens } = useSyncTokens();
   const addWallet = useAddWallet();
+
+  useEffect(() => {
+    AsyncStorage.getItem('isUpsellBannerDismissed').then((value) => {
+      if (value === 'true') {
+        setIsUpsellBannerDismissed(true);
+      }
+    });
+  }, []);
 
   const userHasWallet = query.viewer?.user?.primaryWallet?.__typename === 'Wallet' ?? false;
 
@@ -111,6 +122,11 @@ export function UpsellBanner() {
     bottomSheet.current?.present();
   }, []);
 
+  const handleDismissUpsellBanner = useCallback(() => {
+    setIsUpsellBannerDismissed(true);
+    AsyncStorage.setItem('isUpsellBannerDismissed', 'true');
+  }, []);
+
   useEffect(() => {
     if (isConnected) {
       handleSignMessage();
@@ -119,7 +135,7 @@ export function UpsellBanner() {
     }
   }, [isConnected, handleSignMessage]);
 
-  if (userHasWallet) {
+  if (userHasWallet || isUpsellBannerDismissed) {
     return (
       <View
         style={{
@@ -165,6 +181,7 @@ export function UpsellBanner() {
           className="p-2"
           eventElementId="Close Upsell Banner"
           eventName="Close Upsell Banner"
+          onPress={handleDismissUpsellBanner}
         >
           <XMarkIcon color={colors.offWhite} />
         </GalleryTouchableOpacity>
