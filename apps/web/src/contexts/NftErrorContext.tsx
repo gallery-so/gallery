@@ -15,10 +15,12 @@ import { graphql } from 'relay-runtime';
 import { useToastActions } from '~/contexts/toast/ToastContext';
 import { NftErrorContextRetryMutation } from '~/generated/NftErrorContextRetryMutation.graphql';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
+import { StillLoadingNftError } from '~/shared/errors/StillLoadingNftError';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 
 type TokenErrorState = {
   isFailed: boolean;
+  isLoading: boolean;
   retryKey: number;
   refreshed: boolean;
   refreshingMetadata: boolean;
@@ -40,6 +42,7 @@ const NftErrorContext = createContext<NftErrorContextType | undefined>(undefined
 export function defaultTokenErrorState(): TokenErrorState {
   return {
     isFailed: false,
+    isLoading: false,
     retryKey: 0,
     refreshed: false,
     refreshingMetadata: false,
@@ -66,24 +69,27 @@ export function NftErrorProvider({ children }: PropsWithChildren) {
 
   const handleNftError = useCallback<NftErrorContextType['handleNftError']>(
     (tokenId: string, error: Error) => {
-      addBreadcrumb({ category: 'nft error', message: error.message, level: 'error' });
-
       const token = { ...(tokens[tokenId] ?? defaultTokenErrorState()) };
 
-      token.isFailed = true;
-
-      // If the user refreshed the metadata and there was another failure,
-      // we'll show them a new toast telling them things failed to load,
-      // and we're looking into the issue asap.
-      if (token.refreshed) {
-        // Commenting this out because it's being displayed even without the user explicitly
-        // refreshing anything in the editor
-        //
-        // pushToast({
-        //   message:
-        //     'This piece has failed to load. This issue has been reported to the Gallery team.',
-        //   autoClose: true,
-        // });
+      if (error instanceof StillLoadingNftError) {
+        console.log('still loading!');
+        token.isLoading = true;
+      } else {
+        addBreadcrumb({ category: 'nft error', message: error.message, level: 'error' });
+        token.isFailed = true;
+        // If the user refreshed the metadata and there was another failure,
+        // we'll show them a new toast telling them things failed to load,
+        // and we're looking into the issue asap.
+        if (token.refreshed) {
+          // Commenting this out because it's being displayed even without the user explicitly
+          // refreshing anything in the editor
+          //
+          // pushToast({
+          //   message:
+          //     'This piece has failed to load. This issue has been reported to the Gallery team.',
+          //   autoClose: true,
+          // });
+        }
       }
 
       setTokens((previous) => {

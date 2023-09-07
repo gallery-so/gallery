@@ -63,9 +63,9 @@ export function NftFailureFallback({ tokenId, size = 'medium' }: NftFailureFallb
     <AspectRatioWrapper>
       <Wrapper data-tokenid={tokenId} gap={spaceY} align="center" justify="center">
         {refreshing ? (
-          <Label size={size}>Loading...</Label>
+          <NftFallbackLabel size={size}>Loading...</NftFallbackLabel>
         ) : (
-          <Label size={size}>Could not load</Label>
+          <NftFallbackLabel size={size}>Could not load</NftFallbackLabel>
         )}
         {!refreshing && (
           <IconButton
@@ -91,7 +91,7 @@ const RefreshTooltip = styled(Tooltip)<{ active: boolean }>`
   transform: translateY(calc(-100% + ${({ active }) => (active ? -4 : 0)}px));
 `;
 
-const Label = styled(BaseM)<{ size: Size }>`
+export const NftFallbackLabel = styled(BaseM)<{ size: Size }>`
   color: ${colors.metal};
   text-align: center;
 

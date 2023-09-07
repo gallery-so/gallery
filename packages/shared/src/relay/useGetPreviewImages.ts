@@ -6,6 +6,7 @@ import { useGetPreviewImagesSingleFragment$key } from '~/generated/useGetPreview
 import { useGetPreviewImagesWithPollingFragment$key } from '~/generated/useGetPreviewImagesWithPollingFragment.graphql';
 
 import { useReportError } from '../contexts/ErrorReportingContext';
+import { StillLoadingNftError } from '../errors/StillLoadingNftError';
 import {
   getPreviewImageUrlsInlineDangerously,
   GetPreviewImageUrlsResult,
@@ -88,7 +89,7 @@ export function useGetPreviewImagesWithPolling({
   // explicitly throw the loading state. this will allow a boundary
   // to catch it and display a loader.
   if (shouldThrow && result.type === SyncingMediaWithoutFallback) {
-    throw result.type;
+    throw new StillLoadingNftError('token is syncing without a fallback');
   }
   if (shouldThrow && result.type === 'error') {
     throw result.error;

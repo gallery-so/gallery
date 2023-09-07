@@ -1,7 +1,10 @@
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
-import { NftFailureBoundary } from '~/components/NftFailureFallback/NftFailureBoundary';
+import {
+  NftFailureBoundary,
+  NftLoadingFallback,
+} from '~/components/NftFailureFallback/NftFailureBoundary';
 import { NftFailureFallback } from '~/components/NftFailureFallback/NftFailureFallback';
 import NftPreviewLabel from '~/components/NftPreview/NftPreviewLabel';
 import { StagedNftImageFragment$key } from '~/generated/StagedNftImageFragment.graphql';
@@ -34,6 +37,11 @@ function StagedNftImage({ tokenRef, setNodeRef, ...rest }: StagedNftImageProps) 
       fallback={
         <FallbackContainer ref={setNodeRef} {...rest}>
           <NftFailureFallback tokenId={token.dbid} />
+        </FallbackContainer>
+      }
+      loadingFallback={
+        <FallbackContainer ref={setNodeRef} {...rest}>
+          <NftLoadingFallback />
         </FallbackContainer>
       }
     >
