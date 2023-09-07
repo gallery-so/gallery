@@ -9,15 +9,16 @@ import { useReportError } from '../contexts/ErrorReportingContext';
 import {
   getPreviewImageUrlsInlineDangerously,
   GetPreviewImageUrlsResult,
+  SyncingMediaWithoutFallback,
 } from './getPreviewImageUrlsInlineDangerously';
 
 type SharedProps = {
   preferStillFrameFromGif?: boolean;
   /**
-   * `shouldThrow` determines whether the underlying error is explicitly thrown or quietly reported.
-   * this param should typically be set to `true`, and somewhere above where the hook is used a proper
-   * error boundary should be set up to catch + report it. in web, the boundary is expected to be
-   * `NftFailureBoundary`, while in mobile it'll be `ReportingErrorBoundary`.
+   * `shouldThrow` will cause the hook to explicitly throw an error OR loading state to be caught by
+   * a nearby boundary (`NftFailureBoundary` in web, `ReportingErrorBoundary` in mobile).
+   *
+   * otherwise, any errors will be quietly reported without throwing.
    */
   shouldThrow?: boolean;
 };
@@ -84,21 +85,28 @@ export function useGetPreviewImagesWithPolling({
   const result = getPreviewImageUrlsInlineDangerously({ tokenRef: token, preferStillFrameFromGif });
 
   const reportError = useReportError();
-  // explicitly throw the error...
-  if (result.type === 'error' && shouldThrow) {
+  // explicitly throw the loading state. this will allow a boundary
+  // to catch it and display a loader.
+  if (shouldThrow && result.type === SyncingMediaWithoutFallback) {
+    throw result.type;
+  }
+  if (shouldThrow && result.type === 'error') {
     throw result.error;
   }
   useEffect(() => {
-    // ...or quietly report the error
-    if (result.type === 'error' && !shouldThrow) {
+    // quietly report the error otherwise
+    if (!shouldThrow && result.type === 'error') {
       reportError(result.error);
     }
   }, [reportError, result, shouldThrow]);
 
+  // TODO: maybe this whole effect is called in the parent boundary
+  // when thrown
   useEffect(() => {
-    if (result.type === 'isSyncingWithoutFallback') {
+    if (result.type === SyncingMediaWithoutFallback) {
       // TODO: trigger polling from shared context
     }
+    // TODO: make sure to stop syncing if hook unmounts
   }, [result]);
 
   return result;
