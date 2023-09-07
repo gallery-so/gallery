@@ -229,7 +229,6 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
     query,
     selectedChain.name,
     selectedView,
-    selectedWallet,
     tokensToDisplay,
   ]);
 
