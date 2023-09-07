@@ -40,7 +40,7 @@ export function CommentsBottomSheetLine({ commentRef }: CommentLineProps) {
     if (username) {
       navigation.push('Profile', { username: username, hideBackButton: false });
     }
-  }, [comment?.commenter?.username, navigation])
+  }, [comment?.commenter?.username, navigation]);
 
   return (
     <GalleryTouchableOpacity
