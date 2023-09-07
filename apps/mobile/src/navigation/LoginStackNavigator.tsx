@@ -2,6 +2,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { LoginStackNavigatorParamList } from '~/navigation/types';
 import { NotificationUpsellScreen } from '~/screens/Login/NotificationUpsellScreen';
+import { OnboardingEmailScreen } from '~/screens/Login/OnboardingEmailScreen';
 import { NftSelectorPickerScreen } from '~/screens/NftSelectorScreen/NftSelectorPickerScreen';
 import { OnboardingProfileBioScreen } from '~/screens/Onboarding/OnboardingProfileBioScreen';
 import { OnboardingUsernameScreen } from '~/screens/Onboarding/OnboardingUsernameScreen';
@@ -27,6 +28,7 @@ export function LoginStackNavigator() {
 
       <Stack.Screen name="QRCode" component={QRCodeScreen} />
 
+      <Stack.Screen name="OnboardingEmail" component={OnboardingEmailScreen} />
       <Stack.Screen name="OnboardingUsername" component={OnboardingUsernameScreen} />
       <Stack.Screen name="OnboardingProfileBio" component={OnboardingProfileBioScreen} />
       <Stack.Screen name="OnboardingNftSelector" component={NftSelectorPickerScreen} />

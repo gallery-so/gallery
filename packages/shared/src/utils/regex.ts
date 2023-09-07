@@ -9,7 +9,7 @@ export const VALID_URL =
   /https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9(@:%_\+.~#?&\/=]*)/;
 
 // standard email format x@x.xx
-export const EMAIL_FORMAT = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+export const EMAIL_FORMAT = /^[\w-\.+]+@([\w-]+\.)+[\w-]{2,4}$/;
 
 // break lines
 export const BREAK_LINES = /(\r\n|\n|\r|\\\n)/gm;

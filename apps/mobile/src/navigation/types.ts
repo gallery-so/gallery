@@ -2,6 +2,8 @@ import { MaterialTopTabNavigationProp } from '@react-navigation/material-top-tab
 import { CompositeNavigationProp, NavigatorScreenParams } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
+import { AuthPayloadVariables } from '~/shared/hooks/useAuthPayloadQuery';
+
 export type RootStackNavigatorParamList = {
   MainTabs: NavigatorScreenParams<MainTabNavigatorParamList>;
   Login: NavigatorScreenParams<LoginStackNavigatorParamList>;
@@ -78,15 +80,6 @@ export type MainTabNavigatorParamList = {
   PostTab: NavigatorScreenParams<MainTabStackNavigatorParamList>;
 };
 
-type AuthMechanism = {
-  authMechanismType: 'eoa';
-  chain: string;
-  address: string;
-  nonce: string;
-  signature: string;
-  userFriendlyWalletName: string;
-};
-
 export type LoginStackNavigatorParamList = {
   Landing: undefined;
   EnterEmail: undefined;
@@ -94,8 +87,10 @@ export type LoginStackNavigatorParamList = {
   WaitingForConfirmation: { email: string };
   NotificationUpsell: undefined;
 
+  OnboardingEmail: undefined;
+
   OnboardingUsername: {
-    authMechanism: AuthMechanism;
+    authMechanism: AuthPayloadVariables;
   };
 
   OnboardingProfileBio: undefined;
