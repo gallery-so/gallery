@@ -1,14 +1,14 @@
+import { useNavigation } from '@react-navigation/native';
 import { View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import { useNavigation } from '@react-navigation/native';
 
+import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { Typography } from '~/components/Typography';
-import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { CommentsBottomSheetLineFragment$key } from '~/generated/CommentsBottomSheetLineFragment.graphql';
-import { getTimeSince } from '~/shared/utils/time';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
+import { getTimeSince } from '~/shared/utils/time';
 
 type CommentLineProps = {
   commentRef: CommentsBottomSheetLineFragment$key;
