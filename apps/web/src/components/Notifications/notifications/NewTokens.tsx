@@ -89,6 +89,7 @@ type TokenPreviewProps = {
   tokenRef: NewTokensTokenPreviewFragment$key;
   count: number;
 };
+
 function TokenPreview({ tokenRef, count }: TokenPreviewProps) {
   const token = useFragment(
     graphql`
