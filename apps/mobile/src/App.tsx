@@ -24,6 +24,7 @@ import { RootStackNavigator } from '~/navigation/RootStackNavigator';
 import { DevMenuItems } from './components/DevMenuItems';
 import { LoadingView } from './components/LoadingView';
 import SearchProvider from './components/Search/SearchContext';
+import ManageWalletProvider from './contexts/ManageWalletContext';
 import ToastProvider from './contexts/ToastContext';
 import { magic } from './magic';
 
@@ -131,11 +132,13 @@ export default function App() {
                       <NavigationContainer ref={navigationRef}>
                         <ToastProvider>
                           <BottomSheetModalProvider>
-                            {/* Register the user's push token if one exists (does not prompt the user) */}
-                            <NotificationRegistrar />
-                            <DevMenuItems />
-                            <DeepLinkRegistrar />
-                            <RootStackNavigator navigationContainerRef={navigationRef} />
+                            <ManageWalletProvider>
+                              {/* Register the user's push token if one exists (does not prompt the user) */}
+                              <NotificationRegistrar />
+                              <DevMenuItems />
+                              <DeepLinkRegistrar />
+                              <RootStackNavigator navigationContainerRef={navigationRef} />
+                            </ManageWalletProvider>
                           </BottomSheetModalProvider>
                         </ToastProvider>
                       </NavigationContainer>
