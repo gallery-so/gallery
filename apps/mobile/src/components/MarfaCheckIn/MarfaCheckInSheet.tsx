@@ -47,6 +47,7 @@ export function MarfaCheckInSheet({ viewerRef }: Props) {
   const handleOnDimiss = useCallback(() => {
     // update route param so the sheet can be retrigered by re-scanning the QR code
     if (route.params && route.params.showMarfaCheckIn) {
+      // @ts-expect-error - showMarfaCheckIn is a valid route param for the FeedTabNavigator
       navigation.setParams({ ...route.params, showMarfaCheckIn: false });
     }
   }, [navigation, route.params]);

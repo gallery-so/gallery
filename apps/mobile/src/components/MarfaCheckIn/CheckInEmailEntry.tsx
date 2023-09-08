@@ -14,6 +14,7 @@ import colors from '~/shared/theme/colors';
 
 import { BackButton } from '../BackButton';
 import { Typography } from '../Typography';
+import { env } from '~/env/runtime';
 
 type Props = {
   viewerRef: CheckInEmailEntryFragment$key;
@@ -34,69 +35,51 @@ export default function CheckInEmailEntry({
         email {
           email
         }
+        user {
+          username
+        }
       }
     `,
     viewerRef
   );
 
-  const [, setFormSubmitted] = usePersistedState(MARFA_2023_SUBMITTED_FORM_KEY, '');
-  const [status, setStatus] = useState(''); // LOADING, SUCCESS, ERROR
-
-  // const handleSubmitPress = useCallback(() => {
-  //   const testPayload = new FormData({
-  //     email: 'test',
-  //     walletAddress: confirmedWalletAddress,
-  //   });
-  //   handleSubmit(testPayload);
-  // }, [confirmedWalletAddress, handleSubmit]);
-
-  // const handleSubmitPress = useCallback(async () => {
-  //   try {
-  //     const response = await fetch('https://formspree.io/f/mknlbkbg', {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify({ email: 'test@email.com', walletAddress: confirmedWalletAddress }),
-  //     });
-
-  //     if (response.status === 200) {
-  //       setStatus('SUCCESS');
-  //     } else {
-  //       setStatus('ERROR');
-  //     }
-  //   } catch (error) {
-  //     setStatus('ERROR');
-  //   }
-  // }, [confirmedWalletAddress]);
-
-  const handleSubmitPress = useCallback(() => {
-    // enter into draw
-    // setIsSubmitting(true);
-    setStatus('SUBMITTING');
-
-    // submit
-    // email, wallet address, username, user id
-
-    setTimeout(() => {
-      // setIsSubmitting(false);
-      // setIsSubmitted(true);
-      setFormSubmitted('true');
-      setStatus('SUCCESS');
-    }, 2000);
-  }, [setFormSubmitted]);
+  const [, setFormSubmittedFlag] = usePersistedState(MARFA_2023_SUBMITTED_FORM_KEY, '');
+  const [status, setStatus] = useState<'SUBMITTING' | 'SUCCESS' | 'ERROR' | undefined>();
 
   const [email, setEmail] = useState(viewer.email?.email ?? '');
+
+  const handleSubmitPress = useCallback(async () => {
+    setStatus('SUBMITTING');
+
+    try {
+      const response = await fetch(`https://formspree.io/f/${env.FORMSPREE_ID}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          walletAddress: confirmedWalletAddress,
+          username: viewer.user?.username,
+        }),
+      });
+
+      if (response.status === 200) {
+        setFormSubmittedFlag('true');
+        setStatus('SUCCESS');
+      } else {
+        setStatus('ERROR');
+      }
+    } catch (error) {
+      setStatus('ERROR');
+    }
+  }, [confirmedWalletAddress, email, setFormSubmittedFlag, viewer.user?.username]);
 
   const isEmailValid = useMemo(() => {
     return Boolean(email);
   }, [email]);
 
   const { colorScheme } = useColorScheme();
-
-  // const isSubmitEnabled = useMemo(() => {
-
-  // },[])
 
   const handleEmailChange = useCallback((value: string) => {
     setEmail(value);
@@ -157,7 +140,7 @@ export default function CheckInEmailEntry({
       <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
         Enter your email and we’ll let you know if you win an allowlist spot.
       </Typography>
-      <View className="dark:text-white px-4 py-6">
+      <View className="dark:text-white p-4 my-4 bg-faint">
         <BottomSheetTextInput
           value={email}
           autoFocus
@@ -177,6 +160,15 @@ export default function CheckInEmailEntry({
         eventElementId={null}
         eventName={null}
       />
+      {status === 'ERROR' && (
+        <Typography
+          className="text-sm mt-4 text-error text-center"
+          font={{ family: 'ABCDiatype', weight: 'Regular' }}
+        >
+          There was an error while submitting your entry. Please try again or reach out to the
+          Gallery team.
+        </Typography>
+      )}
     </View>
   );
 }

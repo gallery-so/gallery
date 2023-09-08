@@ -44,7 +44,7 @@ export function DeepLinkRegistrar() {
 
       const parsedUrl = new URL(url);
 
-      if (parsedUrl.pathname === '/mobile/marfa') {
+      if (parsedUrl.pathname === '/mobile' && parsedUrl.searchParams.get('event') === 'marfa') {
         navigation.navigate('MainTabs', {
           screen: 'HomeTab',
           params: {

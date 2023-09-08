@@ -110,7 +110,7 @@ export default function CheckInWalletSelection({ setConfirmedWalletAddress, user
         <Typography className="text-sm mb-4" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
           Type or paste in your Ethereum wallet address below
         </Typography>
-        <View className="dark:text-white dark:bg-black-700 dark:color-white p-4 mb-4">
+        <View className="bg-faint dark:text-white dark:bg-black-700 dark:color-white p-4 mb-4">
           <BottomSheetTextInput
             value={customAddress}
             onChangeText={handleCustomAddressChange}
@@ -148,10 +148,10 @@ export default function CheckInWalletSelection({ setConfirmedWalletAddress, user
       {ethereumWallets?.map(
         (wallet) =>
           wallet?.chainAddress?.address && (
-            <View id={wallet.chainAddress.address}>
+            <View key={wallet.chainAddress.address}>
               <GalleryTouchableOpacity
                 onPress={() => setSelectedAddress(wallet?.chainAddress?.address ?? '')}
-                className="mb-2 dark:bg-black-700 p-3"
+                className="mb-2 bg-offWhite dark:bg-black-700 p-3"
                 eventElementId="Marfa Check In: Wallet Selection Wallet Button"
                 eventName="Pressed Marfa Check In: Wallet Selection Wallet Button"
               >
@@ -167,7 +167,7 @@ export default function CheckInWalletSelection({ setConfirmedWalletAddress, user
       )}
       <GalleryTouchableOpacity
         onPress={toggleShowCustomAddressInput}
-        className="mb-2 dark:bg-black-700 p-3"
+        className="mb-2 bg-offWhite dark:bg-black-700 p-3"
         eventElementId="Marfa Check In: Wallet Selection Custom Wallet Button"
         eventName="Pressed Marfa Check In: Wallet Selection Custom Wallet Button"
       >
