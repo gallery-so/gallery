@@ -108,10 +108,9 @@ function NftPreview({
   const isIFrameLiveDisplay = Boolean(shouldLiveRender && token.media?.__typename === 'HtmlMedia');
   const isMobileOrLargeMobile = useIsMobileOrMobileLargeWindowWidth();
 
-  const { handleNftLoaded, handleNftError, retryKey, refreshMetadata, refreshingMetadata } =
-    useNftRetry({
-      tokenId: token.dbid,
-    });
+  const { handleNftLoaded } = useNftRetry({
+    tokenId: token.dbid,
+  });
 
   const onNftLoad = useCallback(() => {
     onLoad?.();
@@ -182,18 +181,12 @@ function NftPreview({
 
   return (
     <NftFailureBoundary
-      key={retryKey}
       tokenId={token.dbid}
       fallback={
         <NftFailureWrapper>
-          <NftFailureFallback
-            tokenId={token.dbid}
-            refreshing={refreshingMetadata}
-            onRetry={refreshMetadata}
-          />
+          <NftFailureFallback tokenId={token.dbid} />
         </NftFailureWrapper>
       }
-      onError={handleNftError}
     >
       <LinkToFullPageNftDetailModal
         username={ownerUsername ?? ''}
