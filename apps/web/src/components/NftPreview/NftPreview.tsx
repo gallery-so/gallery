@@ -14,18 +14,16 @@ import NftDetailAnimation from '~/scenes/NftDetailPage/NftDetailAnimation';
 import NftDetailGif from '~/scenes/NftDetailPage/NftDetailGif';
 import NftDetailModel from '~/scenes/NftDetailPage/NftDetailModel';
 import NftDetailVideo from '~/scenes/NftDetailPage/NftDetailVideo';
-import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 import { isFirefox, isSafari } from '~/utils/browser';
 import isSvg from '~/utils/isSvg';
 import { getBackgroundColorOverrideForContract } from '~/utils/token';
 
-import NftPreviewAsset, { RawNftPreviewAsset } from './NftPreviewAsset';
+import NftPreviewAsset from './NftPreviewAsset';
 import NftPreviewLabel from './NftPreviewLabel';
 
 type Props = {
   tokenRef: NftPreviewFragment$key;
-  previewSize: number;
   ownerUsername?: string;
   hideLabelOnMobile?: boolean;
   disableLiverender?: boolean;
@@ -42,7 +40,6 @@ const contractsWhoseIFrameNFTsShouldNotTakeUpFullHeight = new Set([
 
 function NftPreview({
   tokenRef,
-  previewSize,
   disableLiverender = false,
   columns = 3,
   isInFeedEvent = false,
@@ -63,13 +60,6 @@ function NftPreview({
           username
         }
         media {
-          ... on Media {
-            __typename
-            fallbackMedia {
-              mediaURL
-            }
-          }
-
           ... on VideoMedia {
             __typename
             ...NftDetailVideoFragment
@@ -119,14 +109,7 @@ function NftPreview({
 
   const PreviewAsset = useMemo(() => {
     if (disableLiverender) {
-      return (
-        <NftPreviewAsset
-          onLoad={onNftLoad}
-          tokenRef={token}
-          // we'll request images at double the size of the element so that it looks sharp on retina
-          size={previewSize * 2}
-        />
-      );
+      return <NftPreviewAsset onLoad={onNftLoad} tokenRef={token} />;
     }
     if (shouldLiveRender && token.media?.__typename === 'VideoMedia') {
       return <NftDetailVideo onLoad={onNftLoad} mediaRef={token.media} hideControls />;
@@ -141,15 +124,8 @@ function NftPreview({
       return <NftDetailAnimation onLoad={onNftLoad} mediaRef={token} />;
     }
 
-    return (
-      <NftPreviewAsset
-        onLoad={onNftLoad}
-        tokenRef={token}
-        // we'll request images at double the size of the element so that it looks sharp on retina
-        size={previewSize * 2}
-      />
-    );
-  }, [disableLiverender, shouldLiveRender, token, isIFrameLiveDisplay, previewSize, onNftLoad]);
+    return <NftPreviewAsset onLoad={onNftLoad} tokenRef={token} />;
+  }, [disableLiverender, shouldLiveRender, token, isIFrameLiveDisplay, onNftLoad]);
 
   // [GAL-4229] TODO: leave this un-throwing until we wrap a proper boundary around it
   const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size: 'large', shouldThrow: false });
@@ -202,13 +178,7 @@ function NftPreview({
           fullHeight={fullHeight}
           data-tokenid={token.dbid}
         >
-          <ReportingErrorBoundary
-            fallback={
-              <RawNftPreviewAsset src={token.media?.fallbackMedia?.mediaURL} onLoad={onNftLoad} />
-            }
-          >
-            {PreviewAsset}
-          </ReportingErrorBoundary>
+          {PreviewAsset}
 
           {isMobileOrLargeMobile ? null : (
             <StyledNftFooter>

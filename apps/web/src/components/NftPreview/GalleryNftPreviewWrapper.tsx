@@ -43,19 +43,7 @@ function GalleryNftPreviewWrapper({ tokenRef, columns }: Props) {
     tokenRef
   );
 
-  // width for rendering so that we request the appropriate size image.
-  const isMobile = useIsMobileWindowWidth();
-  const previewSize = isMobile
-    ? MOBILE_NFT_WIDTH
-    : LAYOUT_DIMENSIONS[columns] ?? /* Just a sane fallback */ SINGLE_COLUMN_NFT_WIDTH;
-
-  return (
-    <CollectionTokenPreview
-      tokenRef={collectionTokenRef}
-      previewSize={previewSize}
-      columns={columns}
-    />
-  );
+  return <CollectionTokenPreview tokenRef={collectionTokenRef} columns={columns} />;
 }
 
 export default NftPreviewWithShimmer;
