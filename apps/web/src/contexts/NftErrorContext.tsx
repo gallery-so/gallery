@@ -141,6 +141,8 @@ export function NftErrorProvider({ children }: PropsWithChildren) {
         const token = { ...(next[tokenId] ?? defaultTokenErrorState()) };
 
         token.isFailed = false;
+        token.isLoading = false;
+        token.isPolling = false;
         token.refreshed = true;
         token.retryKey++;
 
