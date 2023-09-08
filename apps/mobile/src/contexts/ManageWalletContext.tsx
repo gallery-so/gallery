@@ -132,7 +132,7 @@ const ManageWalletProvider = memo(({ children }: Props) => {
         title="Which Network"
         ref={bottomSheet}
         isSignedIn={isSigningIn}
-        onDismiss={() => {}}
+        onDismiss={dismissManageWallet}
       />
       {children}
     </ManageWalletActionsContext.Provider>
