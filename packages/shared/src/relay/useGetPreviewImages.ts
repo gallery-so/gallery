@@ -94,21 +94,15 @@ export function useGetPreviewImagesWithPolling({
   if (shouldThrow && result.type === 'error') {
     throw result.error;
   }
-  useEffect(() => {
-    // quietly report the error otherwise
-    if (!shouldThrow && result.type === 'error') {
-      reportError(result.error);
-    }
-  }, [reportError, result, shouldThrow]);
-
-  // TODO: maybe this whole effect is called in the parent boundary
-  // when thrown
-  useEffect(() => {
-    if (result.type === SyncingMediaWithoutFallback) {
-      // TODO: trigger polling from shared context
-    }
-    // TODO: make sure to stop syncing if hook unmounts
-  }, [result]);
+  useEffect(
+    function silentlyReportError() {
+      // quietly report the error if we opt out of throwing it
+      if (!shouldThrow && result.type === 'error') {
+        reportError(result.error);
+      }
+    },
+    [reportError, result, shouldThrow]
+  );
 
   return result;
 }
