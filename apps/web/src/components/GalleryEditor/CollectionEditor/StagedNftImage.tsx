@@ -1,11 +1,7 @@
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
-import {
-  NftFailureBoundary,
-  NftLoadingFallback,
-} from '~/components/NftFailureFallback/NftFailureBoundary';
-import { NftFailureFallback } from '~/components/NftFailureFallback/NftFailureFallback';
+import { NftFailureBoundary } from '~/components/NftFailureFallback/NftFailureBoundary';
 import NftPreviewLabel from '~/components/NftPreview/NftPreviewLabel';
 import { StagedNftImageFragment$key } from '~/generated/StagedNftImageFragment.graphql';
 import { StagedNftImageRawFragment$key } from '~/generated/StagedNftImageRawFragment.graphql';
@@ -32,21 +28,11 @@ function StagedNftImage({ tokenRef, setNodeRef, ...rest }: StagedNftImageProps) 
   );
 
   return (
-    <NftFailureBoundary
-      tokenId={token.dbid}
-      fallback={
-        <FallbackContainer ref={setNodeRef} {...rest}>
-          <NftFailureFallback tokenId={token.dbid} />
-        </FallbackContainer>
-      }
-      loadingFallback={
-        <FallbackContainer ref={setNodeRef} {...rest}>
-          <NftLoadingFallback />
-        </FallbackContainer>
-      }
-    >
-      <RawStagedNftImage tokenRef={token} setNodeRef={setNodeRef} {...rest} />
-    </NftFailureBoundary>
+    <FallbackContainer ref={setNodeRef} {...rest}>
+      <NftFailureBoundary tokenId={token.dbid}>
+        <RawStagedNftImage tokenRef={token} {...rest} />
+      </NftFailureBoundary>
+    </FallbackContainer>
   );
 }
 
@@ -58,17 +44,10 @@ const FallbackContainer = styled.div<{ size: number }>`
 type RawStagedNftImageProps = {
   size: number;
   hideLabel: boolean;
-  setNodeRef: (node: HTMLElement | null) => void;
   tokenRef: StagedNftImageRawFragment$key;
 };
 
-function RawStagedNftImage({
-  size,
-  tokenRef,
-  hideLabel,
-  setNodeRef,
-  ...props
-}: RawStagedNftImageProps) {
+function RawStagedNftImage({ size, tokenRef, hideLabel, ...props }: RawStagedNftImageProps) {
   const token = useFragment(
     graphql`
       fragment StagedNftImageRawFragment on Token {
@@ -90,7 +69,7 @@ function RawStagedNftImage({
   useImageFailureCheck({ url, onLoad: handleNftLoaded, onError: handleError });
 
   return (
-    <StyledGridImage srcUrl={url} ref={setNodeRef} size={size} {...props}>
+    <StyledGridImage srcUrl={url} size={size} {...props}>
       {hideLabel ? null : <StyledNftPreviewLabel tokenRef={token} interactive={false} />}
     </StyledGridImage>
   );
