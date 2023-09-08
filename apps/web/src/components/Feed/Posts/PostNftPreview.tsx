@@ -1,18 +1,13 @@
-import { useMemo } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import { StyledImageWithLoading } from '~/components/LoadingAsset/ImageWithLoading';
-import { NftFailureBoundary } from '~/components/NftFailureFallback/NftFailureBoundary';
 import NftPreview from '~/components/NftPreview/NftPreview';
 import ShimmerProvider from '~/contexts/shimmer/ShimmerContext';
 import { PostNftPreviewFragment$key } from '~/generated/PostNftPreviewFragment.graphql';
-import useWindowSize, { useBreakpoint } from '~/hooks/useWindowSize';
 import { StyledVideo } from '~/scenes/NftDetailPage/NftDetailVideo';
-
-import { getFeedTokenDimensions } from '../dimensions';
 
 type Props = {
   tokenRef: PostNftPreviewFragment$key;
@@ -26,37 +21,16 @@ export default function PostNftPreview({ tokenRef, onNftLoad }: Props) {
   const token = useFragment(
     graphql`
       fragment PostNftPreviewFragment on Token {
-        dbid
         ...NftPreviewFragment
       }
     `,
     tokenRef
   );
 
-  const breakpoint = useBreakpoint();
-  const { width } = useWindowSize();
-
-  const tokenSize = useMemo(() => {
-    return getFeedTokenDimensions({
-      numTokens: '1',
-      maxWidth: width,
-      breakpoint,
-    });
-  }, [breakpoint, width]);
-
   return (
     <StyledPostNftPreview>
       <ShimmerProvider>
-        {/* [GAL-4229] TODO: this may be redundant if we wrap the underlyingNftPreview in a bonudary.
-            But we may actually want a looking different boundary for this particular view */}
-        <NftFailureBoundary tokenId={token.dbid}>
-          <NftPreview
-            tokenRef={token}
-            previewSize={tokenSize}
-            shouldLiveRender
-            onLoad={onNftLoad}
-          />
-        </NftFailureBoundary>
+        <NftPreview tokenRef={token} shouldLiveRender onLoad={onNftLoad} />
       </ShimmerProvider>
     </StyledPostNftPreview>
   );
@@ -69,6 +43,7 @@ const StyledPostNftPreview = styled.div`
 
   @media only screen and ${breakpoints.desktop} {
     width: ${DESKTOP_TOKEN_SIZE}px;
+    height: ${DESKTOP_TOKEN_SIZE}px;
   }
 
   ${StyledImageWithLoading}, ${StyledVideo} {
