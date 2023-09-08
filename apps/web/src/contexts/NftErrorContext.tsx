@@ -80,7 +80,6 @@ export function NftErrorProvider({ children }: PropsWithChildren) {
         const token = { ...(next[tokenId] ?? defaultTokenErrorState()) };
 
         if (error instanceof StillLoadingNftError) {
-          console.log('still loading!');
           token.isLoading = true;
         } else {
           addBreadcrumb({ category: 'nft error', message: error.message, level: 'error' });

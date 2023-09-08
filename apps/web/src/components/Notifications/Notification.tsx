@@ -27,8 +27,6 @@ import { NewTokens } from './notifications/NewTokens';
 import SomeoneAdmiredYourPost from './notifications/SomeoneAdmiredYourPost';
 import SomeoneCommentedOnYourPost from './notifications/SomeoneCommentedOnYourPost';
 
-const INVALID_TOKEN_TYPES = ['SyncingMedia', 'InvalidMedia'];
-
 type NotificationProps = {
   notificationRef: NotificationFragment$key;
   queryRef: NotificationQueryFragment$key;
@@ -83,11 +81,6 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
 
         ... on NewTokensNotification {
           __typename
-          token {
-            media {
-              __typename
-            }
-          }
         }
 
         ...NotificationInnerFragment
@@ -197,7 +190,7 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
     toggleSubView,
   ]);
 
-  const isClickable = handleNotificationClick != undefined;
+  const isClickable = Boolean(handleNotificationClick);
   const handleClick = useCallback(() => {
     handleNotificationClick?.handleClick();
     if (!query.viewer?.user?.dbid || !query.viewer.id) {
@@ -227,13 +220,19 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
     return null;
   }
 
+  // Leaving this commented in for now in case we regret this decision.
+  // If the token is syncing or invalid -> we may still want them to post about it,
+  // especially at the Marfa event. but this might litter the feed with wonky tokens.
+  // On the flip side, if we don't show the notification, our system will feel like
+  // it's slow.
+  //
   // If the notification is a new token notification and the token is invalid, we don't want to show it
-  if (
-    notification.__typename === 'NewTokensNotification' &&
-    INVALID_TOKEN_TYPES.includes(notification.token?.media?.__typename ?? '')
-  ) {
-    return null;
-  }
+  // if (
+  //   notification.__typename === 'NewTokensNotification' &&
+  //   ['SyncingMedia', 'InvalidMedia'].includes(notification.token?.media?.__typename ?? '')
+  // ) {
+  //   return null;
+  // }
 
   // If the notification is a new token notification and koala is not enabled, we don't want to show it
   if (notification.__typename === 'NewTokensNotification' && !isKoalaEnabled) {
