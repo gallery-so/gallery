@@ -59,7 +59,7 @@ function RawStagedNftImage({ size, tokenRef, hideLabel, ...props }: RawStagedNft
     tokenRef
   );
 
-  const url = useGetSinglePreviewImage({ tokenRef: token, size: 'large', shouldThrow: true }) ?? '';
+  const url = useGetSinglePreviewImage({ tokenRef: token, size: 'large' }) ?? '';
 
   const { handleNftLoaded } = useNftRetry({ tokenId: token.dbid });
 

@@ -86,8 +86,7 @@ function SidebarPreviewAsset({ tokenRef, isSelected }: SidebarPreviewAssetProps)
   const { handleNftLoaded } = useNftRetry({ tokenId: token.dbid });
   const { handleError } = useThrowOnMediaFailure('SidebarPreviewAsset');
 
-  const imageUrl =
-    useGetSinglePreviewImage({ tokenRef: token, size: 'small', shouldThrow: true }) ?? '';
+  const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size: 'small' }) ?? '';
 
   return (
     <StyledImage

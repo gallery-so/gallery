@@ -72,7 +72,7 @@ type useGetPreviewImagesWithPolling = {
 export function useGetPreviewImagesWithPolling({
   tokenRef,
   preferStillFrameFromGif = false,
-  shouldThrow = false,
+  shouldThrow = true,
 }: useGetPreviewImagesWithPolling): GetPreviewImageUrlsResult {
   const token = useFragment(
     graphql`

@@ -22,8 +22,7 @@ export function NftSelectorPreviewAsset({ tokenRef }: NftSelectorPreviewAssetPro
     tokenRef
   );
 
-  const imageUrl =
-    useGetSinglePreviewImage({ tokenRef: token, size: 'medium', shouldThrow: true }) ?? '';
+  const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size: 'medium' }) ?? '';
 
   const { handleNftLoaded } = useNftRetry({ tokenId: token.dbid });
 

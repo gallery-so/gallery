@@ -64,8 +64,7 @@ export default function CommunityHolderGridItem({ holderRef, queryRef }: Props) 
   const openseaProfileLink = `https://opensea.io/${owner?.username}`;
 
   // TODO:
-  const imageUrl =
-    useGetSinglePreviewImage({ tokenRef: token, size: 'large', shouldThrow: true }) ?? '';
+  const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size: 'large' }) ?? '';
 
   const openSeaExternalUrl = useMemo(() => {
     if (chain && contract?.contractAddress?.address && tokenId) {
