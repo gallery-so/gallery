@@ -13,18 +13,24 @@ import {
 import colors from '~/shared/theme/colors';
 
 import { VStack } from '../core/Spacer/Stack';
-import { NftFailureFallback, NftFallbackLabel } from './NftFailureFallback';
+import {
+  NftFailureFallback,
+  NftFailureFallbackProps,
+  NftFallbackLabel,
+} from './NftFailureFallback';
 
 type Props = {
   tokenId: string;
+  fallbackSize?: NftFailureFallbackProps['size'];
   fallback?: ReportingErrorBoundaryProps['fallback'];
   loadingFallback?: ReportingErrorBoundaryProps['fallback'];
 } & Omit<ReportingErrorBoundaryProps, 'fallback'>;
 
 export function NftFailureBoundary({
   tokenId,
-  fallback = <NftFailureFallback tokenId={tokenId} />,
-  loadingFallback = <NftLoadingFallback size="medium" />,
+  fallbackSize = 'medium',
+  fallback = <NftFailureFallback tokenId={tokenId} size={fallbackSize} />,
+  loadingFallback = <NftLoadingFallback size={fallbackSize} />,
   ...rest
 }: Props) {
   const { handleNftError, retryKey } = useNftRetry({
