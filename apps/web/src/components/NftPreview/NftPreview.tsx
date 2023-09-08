@@ -151,7 +151,8 @@ function NftPreview({
     );
   }, [disableLiverender, shouldLiveRender, token, isIFrameLiveDisplay, previewSize, onNftLoad]);
 
-  const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size: 'large' });
+  // [GAL-4229] TODO: leave this un-throwing until we wrap a proper boundary around it
+  const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size: 'large', shouldThrow: false });
 
   const isSvgOnWeirdBrowser = isSvg(imageUrl) && (isFirefox() || isSafari());
   // stretch the image to take up the full-width if...
