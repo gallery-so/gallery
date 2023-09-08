@@ -223,10 +223,9 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
     !isIframe &&
     (aspectRatioType !== 'wide' || breakpoint === size.desktop || breakpoint === size.tablet);
 
-  const { retryKey, handleNftLoaded, refreshMetadata, refreshingMetadata, handleNftError } =
-    useNftRetry({
-      tokenId: token.dbid,
-    });
+  const { handleNftLoaded } = useNftRetry({
+    tokenId: token.dbid,
+  });
 
   return (
     <StyledAssetContainer
@@ -237,16 +236,8 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
       backgroundColorOverride={backgroundColorOverride}
     >
       <NftFailureBoundary
-        key={retryKey}
         tokenId={token.dbid}
-        onError={handleNftError}
-        fallback={
-          <NftFailureFallback
-            tokenId={token.dbid}
-            onRetry={refreshMetadata}
-            refreshing={refreshingMetadata}
-          />
-        }
+        fallback={<NftFailureFallback tokenId={token.dbid} />}
       >
         <NftDetailAssetComponent onLoad={handleNftLoaded} tokenRef={token} />
       </NftFailureBoundary>
