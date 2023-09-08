@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import styled, { css } from 'styled-components';
 
 import colors from '~/shared/theme/colors';
@@ -43,13 +43,19 @@ export function NftSelectorTokenPreview({
     onSelectContract(collection);
   }, [group.address, group.title, onSelectContract]);
 
+  const singleTokenTitle = useMemo(() => {
+    const token = tokens[0];
+    if (token && hasSelectedContract) {
+      return token.name || `#${token.tokenId}`;
+    }
+    return group.title;
+  }, [group.title, hasSelectedContract, tokens]);
+
   if (tokens.length === 1) {
     return (
       <StyledNftSelectorTokensContainer>
         {tokens[0] && <NftSelectorToken tokenRef={tokens[0]} onSelectToken={onSelectToken} />}
-        <NftSelectorTokenCollection
-          title={hasSelectedContract ? tokens[0]?.name ?? group.title : group.title}
-        />
+        <NftSelectorTokenCollection title={singleTokenTitle} />
       </StyledNftSelectorTokensContainer>
     );
   }
