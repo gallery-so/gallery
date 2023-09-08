@@ -2,12 +2,10 @@ import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { PostComposerAssetFragment$key } from '~/generated/PostComposerAssetFragment.graphql';
-import { useNftRetry } from '~/hooks/useNftRetry';
 
 import breakpoints from '../core/breakpoints';
 import { NftFailureBoundary } from '../NftFailureFallback/NftFailureBoundary';
-import { NftFailureFallback } from '../NftFailureFallback/NftFailureFallback';
-import { NftSelectorPreviewAsset } from '../NftSelector/RawNftSelectorPreviewAsset';
+import { NftSelectorPreviewAsset } from '../NftSelector/NftSelectorPreviewAsset';
 
 type Props = {
   tokenRef: PostComposerAssetFragment$key;
@@ -19,32 +17,16 @@ export default function PostComposerAsset({ tokenRef }: Props) {
       fragment PostComposerAssetFragment on Token {
         __typename
         dbid
-        ...RawNftSelectorPreviewAssetFragment
+        ...NftSelectorPreviewAssetFragment
       }
     `,
     tokenRef
   );
 
-  const { handleNftLoaded, handleNftError, retryKey, refreshMetadata, refreshingMetadata } =
-    useNftRetry({ tokenId: token.dbid });
-
   return (
     <StyledPostComposerAsset>
-      <NftFailureBoundary
-        key={retryKey}
-        tokenId={token.dbid}
-        fallback={
-          // TODO: update FailureFallback or FailureBoundary to handle "Loading..."
-          <NftFailureFallback
-            size="medium"
-            tokenId={token.dbid}
-            onRetry={refreshMetadata}
-            refreshing={refreshingMetadata}
-          />
-        }
-        onError={handleNftError}
-      >
-        <NftSelectorPreviewAsset tokenRef={token} onLoad={handleNftLoaded} />
+      <NftFailureBoundary tokenId={token.dbid}>
+        <NftSelectorPreviewAsset tokenRef={token} />
       </NftFailureBoundary>
     </StyledPostComposerAsset>
   );

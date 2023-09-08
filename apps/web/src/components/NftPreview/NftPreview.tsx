@@ -108,10 +108,9 @@ function NftPreview({
   const isIFrameLiveDisplay = Boolean(shouldLiveRender && token.media?.__typename === 'HtmlMedia');
   const isMobileOrLargeMobile = useIsMobileOrMobileLargeWindowWidth();
 
-  const { handleNftLoaded, handleNftError, retryKey, refreshMetadata, refreshingMetadata } =
-    useNftRetry({
-      tokenId: token.dbid,
-    });
+  const { handleNftLoaded } = useNftRetry({
+    tokenId: token.dbid,
+  });
 
   const onNftLoad = useCallback(() => {
     onLoad?.();
@@ -152,7 +151,8 @@ function NftPreview({
     );
   }, [disableLiverender, shouldLiveRender, token, isIFrameLiveDisplay, previewSize, onNftLoad]);
 
-  const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size: 'large' });
+  // [GAL-4229] TODO: leave this un-throwing until we wrap a proper boundary around it
+  const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size: 'large', shouldThrow: false });
 
   const isSvgOnWeirdBrowser = isSvg(imageUrl) && (isFirefox() || isSafari());
   // stretch the image to take up the full-width if...
@@ -181,19 +181,15 @@ function NftPreview({
   const fullHeight = isIFrameLiveDisplay && !shouldBeExemptedFromFullHeightDisplay;
 
   return (
+    // [GAL-4229] TODO: this failure boundary + wrapper can be greatly simplified.
+    // but its child asset rendering components must be refactored to use `useGetPreviewImages`
     <NftFailureBoundary
-      key={retryKey}
       tokenId={token.dbid}
       fallback={
         <NftFailureWrapper>
-          <NftFailureFallback
-            tokenId={token.dbid}
-            refreshing={refreshingMetadata}
-            onRetry={refreshMetadata}
-          />
+          <NftFailureFallback tokenId={token.dbid} />
         </NftFailureWrapper>
       }
-      onError={handleNftError}
     >
       <LinkToFullPageNftDetailModal
         username={ownerUsername ?? ''}

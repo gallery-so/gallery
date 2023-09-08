@@ -7,7 +7,8 @@ import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { SomeoneAdmiredYourPostFragment$key } from '~/generated/SomeoneAdmiredYourPostFragment.graphql';
 import { ErrorWithSentryMetadata } from '~/shared/errors/ErrorWithSentryMetadata';
-import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
+
+import { NotificationPostPreviewWithBoundary } from './NotificationPostPreview';
 
 type Props = {
   notificationRef: SomeoneAdmiredYourPostFragment$key;
@@ -22,7 +23,7 @@ export default function SomeoneAdmiredYourPost({ notificationRef, onClose }: Pro
         dbid
         post {
           tokens {
-            ...useGetPreviewImagesSingleFragment
+            ...NotificationPostPreviewWithBoundaryFragment
           }
         }
         count
@@ -56,8 +57,6 @@ export default function SomeoneAdmiredYourPost({ notificationRef, onClose }: Pro
     throw new Error('Post does not have accompanying token');
   }
 
-  const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size: 'small' });
-
   return (
     <StyledNotificationContent align="center" justify="space-between" gap={8}>
       <HStack align="center" gap={8}>
@@ -78,15 +77,10 @@ export default function SomeoneAdmiredYourPost({ notificationRef, onClose }: Pro
           </BaseM>
         </StyledTextWrapper>
       </HStack>
-      {imageUrl && <StyledPostPreview src={imageUrl} />}
+      <NotificationPostPreviewWithBoundary tokenRef={token} />
     </StyledNotificationContent>
   );
 }
-
-const StyledPostPreview = styled.img`
-  height: 56px;
-  width: 56px;
-`;
 
 const StyledNotificationContent = styled(HStack)`
   width: 100%;

@@ -10,13 +10,15 @@ type UrlSet = {
   large: string | null;
 };
 
+export const SyncingMediaWithoutFallback = Symbol('SyncingMediaWithoutFallback');
+
 export type GetPreviewImageUrlsResult =
   | {
       type: 'valid';
       urls: UrlSet;
     }
   | {
-      type: 'isSyncingWithoutFallback';
+      type: typeof SyncingMediaWithoutFallback;
     }
   | {
       type: 'error';
@@ -224,7 +226,7 @@ export function getPreviewImageUrlsInlineDangerously({
         large: media.fallbackMedia.mediaURL,
       };
     } else if (media.__typename === 'SyncingMedia' && !media.fallbackMedia?.mediaURL) {
-      return { type: 'isSyncingWithoutFallback' };
+      return { type: SyncingMediaWithoutFallback };
     }
   }
 

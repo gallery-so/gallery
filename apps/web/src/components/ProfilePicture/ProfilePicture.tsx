@@ -6,9 +6,9 @@ import styled from 'styled-components';
 
 import { ProfilePictureFragment$key } from '~/generated/ProfilePictureFragment.graphql';
 import { ProfilePictureValidFragment$key } from '~/generated/ProfilePictureValidFragment.graphql';
-import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
 import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 
+import { NftFailureBoundary } from '../NftFailureFallback/NftFailureBoundary';
 import { RawProfilePicture, RawProfilePictureProps } from './RawProfilePicture';
 
 type Props = {
@@ -23,6 +23,7 @@ export function ProfilePicture({ userRef, ...rest }: Props) {
         profileImage {
           ... on TokenProfileImage {
             token {
+              dbid
               ...ProfilePictureValidFragment
             }
           }
@@ -69,7 +70,13 @@ export function ProfilePicture({ userRef, ...rest }: Props) {
 
   return (
     <StyledLink href={userProfileLink}>
-      <ValidProfilePicture tokenRef={token} {...rest} />
+      <NftFailureBoundary
+        tokenId={token.dbid}
+        fallback={<RawProfilePicture letter={firstLetter} {...rest} />}
+        loadingFallback={<RawProfilePicture letter={firstLetter} {...rest} />}
+      >
+        <ValidProfilePicture tokenRef={token} {...rest} />
+      </NftFailureBoundary>
     </StyledLink>
   );
 }
@@ -88,11 +95,7 @@ function ValidProfilePicture({ tokenRef, ...rest }: ValidProfilePictureProps) {
     tokenRef
   );
 
-  const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size: 'small' });
-
-  if (!imageUrl) {
-    throw new CouldNotRenderNftError('ProfilePicture', 'could not find a small url');
-  }
+  const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size: 'small' }) ?? '';
 
   return <RawProfilePicture imageUrl={imageUrl} {...rest} />;
 }
