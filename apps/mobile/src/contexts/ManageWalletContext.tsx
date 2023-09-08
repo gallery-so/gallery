@@ -19,7 +19,7 @@ import useAddWallet from '~/shared/hooks/useAddWallet';
 import useCreateNonce from '~/shared/hooks/useCreateNonce';
 
 type ManageWalletActions = {
-  openManageWallet: () => void;
+  openManageWallet: ({ title }: { title?: string }) => void;
   dismissManageWallet: () => void;
   isSigningIn: boolean;
 };
@@ -46,6 +46,7 @@ const ManageWalletProvider = memo(({ children }: Props) => {
   const { isSyncing, syncTokens } = useSyncTokens();
 
   const [isSigningIn, setIsSigningIn] = useState(false);
+  const [title, setTitle] = useState('Which Network');
 
   // To track if the user has signed the message
   const hasSigned = useRef(false);
@@ -55,7 +56,11 @@ const ManageWalletProvider = memo(({ children }: Props) => {
     [provider]
   );
 
-  const openManageWallet = useCallback(() => {
+  const openManageWallet = useCallback(({ title }: { title?: string }) => {
+    if (title) {
+      setTitle(title);
+    }
+
     bottomSheet.current?.present();
   }, []);
 
@@ -122,14 +127,15 @@ const ManageWalletProvider = memo(({ children }: Props) => {
       dismissManageWallet,
       openManageWallet,
       isSigningIn,
+      title,
     }),
-    [dismissManageWallet, openManageWallet, isSigningIn]
+    [dismissManageWallet, openManageWallet, isSigningIn, title]
   );
 
   return (
     <ManageWalletActionsContext.Provider value={value}>
       <WalletSelectorBottomSheet
-        title="Which Network"
+        title={value.title}
         ref={bottomSheet}
         isSignedIn={isSigningIn}
         onDismiss={dismissManageWallet}

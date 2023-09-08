@@ -49,7 +49,7 @@ export function UpsellBanner() {
   const userHasWallet = query.viewer?.user?.primaryWallet?.__typename === 'Wallet' ?? false;
 
   const handleConnectWallet = useCallback(() => {
-    openManageWallet();
+    openManageWallet({});
   }, [openManageWallet]);
 
   const handleDismissUpsellBanner = useCallback(() => {
