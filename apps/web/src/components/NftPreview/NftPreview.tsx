@@ -180,6 +180,8 @@ function NftPreview({
   const fullHeight = isIFrameLiveDisplay && !shouldBeExemptedFromFullHeightDisplay;
 
   return (
+    // [GAL-4229] TODO: this failure boundary + wrapper can be greatly simplified.
+    // but its child asset rendering components must be refactored to use `useGetPreviewImages`
     <NftFailureBoundary
       tokenId={token.dbid}
       fallback={

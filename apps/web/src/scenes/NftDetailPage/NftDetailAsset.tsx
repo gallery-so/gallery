@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import breakpoints, { size } from '~/components/core/breakpoints';
 import { StyledImageWithLoading } from '~/components/LoadingAsset/ImageWithLoading';
 import { NftFailureBoundary } from '~/components/NftFailureFallback/NftFailureBoundary';
-import { NftFailureFallback } from '~/components/NftFailureFallback/NftFailureFallback';
 import { GLOBAL_FOOTER_HEIGHT } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
 import { useContentState } from '~/contexts/shimmer/ShimmerContext';
 import { NftDetailAssetComponentFragment$key } from '~/generated/NftDetailAssetComponentFragment.graphql';
@@ -48,6 +47,8 @@ export function NftDetailAssetComponent({ tokenRef, onLoad }: NftDetailAssetComp
   );
 
   return (
+    // [GAL-4229] TODO: this failure boundary + wrapper can be greatly simplified.
+    // but its child asset rendering components must be refactored to use `useGetPreviewImages`
     <ReportingErrorBoundary
       fallback={
         <NftDetailImage
@@ -236,6 +237,9 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
       backgroundColorOverride={backgroundColorOverride}
     >
       <NftFailureBoundary tokenId={token.dbid}>
+        {/*
+          [GAL-4229] TODO: child rendering components should be refactored to use `useGetPreviewImages`
+        */}
         <NftDetailAssetComponent onLoad={handleNftLoaded} tokenRef={token} />
       </NftFailureBoundary>
     </StyledAssetContainer>
