@@ -94,6 +94,7 @@ const RefreshTooltip = styled(Tooltip)<{ active: boolean }>`
 export const NftFallbackLabel = styled(BaseM)<{ size: Size }>`
   color: ${colors.metal};
   text-align: center;
+  pointer-events: none;
 
   ${({ size }) => (size === 'tiny' ? 'font-size: 10px;' : '')}
   ${({ size }) => (size === 'tiny' ? 'line-height: 12px;' : '')}
