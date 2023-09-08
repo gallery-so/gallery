@@ -1,22 +1,16 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useWalletConnectModal } from '@walletconnect/modal-react-native';
-import { ethers } from 'ethers';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import { XMarkIcon } from 'src/icons/XMarkIcon';
 
+import { useManageWalletActions } from '~/contexts/ManageWalletContext';
 import { UpsellBannerQuery } from '~/generated/UpsellBannerQuery.graphql';
-import useSyncTokens from '~/screens/NftSelectorScreen/useSyncTokens';
-import useAddWallet from '~/shared/hooks/useAddWallet';
-import useCreateNonce from '~/shared/hooks/useCreateNonce';
 import colors from '~/shared/theme/colors';
 
 import { Button } from './Button';
-import { GalleryBottomSheetModalType } from './GalleryBottomSheet/GalleryBottomSheetModal';
 import { GalleryTouchableOpacity } from './GalleryTouchableOpacity';
-import { WalletSelectorBottomSheet } from './Login/WalletSelectorBottomSheet';
 import { Typography } from './Typography';
 
 export function UpsellBanner() {
@@ -39,15 +33,10 @@ export function UpsellBanner() {
   );
 
   const { top } = useSafeAreaInsets();
-  const bottomSheet = useRef<GalleryBottomSheetModalType | null>(null);
 
   const [isUpsellBannerDismissed, setIsUpsellBannerDismissed] = useState(false);
 
-  const [isSigningIn, setIsSigningIn] = useState(false);
-  const { address, isConnected, provider } = useWalletConnectModal();
-  const createNonce = useCreateNonce();
-  const { isSyncing, syncTokens } = useSyncTokens();
-  const addWallet = useAddWallet();
+  const { openManageWallet } = useManageWalletActions();
 
   useEffect(() => {
     AsyncStorage.getItem('isUpsellBannerDismissed').then((value) => {
@@ -59,81 +48,14 @@ export function UpsellBanner() {
 
   const userHasWallet = query.viewer?.user?.primaryWallet?.__typename === 'Wallet' ?? false;
 
-  const web3Provider = useMemo(
-    () => (provider ? new ethers.providers.Web3Provider(provider) : undefined),
-    [provider]
-  );
-
-  const handleSignMessage = useCallback(async () => {
-    if (!web3Provider || !address || userHasWallet) {
-      return;
-    }
-
-    const signer = web3Provider.getSigner();
-    const { nonce } = await createNonce(address, 'Ethereum');
-
-    try {
-      setIsSigningIn(true);
-      const signature = await signer.signMessage(nonce);
-
-      const { signatureValid } = await addWallet({
-        authMechanism: {
-          eoa: {
-            signature,
-            nonce,
-            chainPubKey: {
-              pubKey: address,
-              chain: 'Ethereum',
-            },
-          },
-        },
-        chainAddress: {
-          address,
-          chain: 'Ethereum',
-        },
-      });
-
-      if (!signatureValid) {
-        throw new Error('Signature is not valid');
-      }
-
-      if (!isSyncing) {
-        syncTokens('Ethereum');
-      }
-
-      bottomSheet.current?.dismiss();
-    } catch (error) {
-      provider?.disconnect();
-    } finally {
-      setIsSigningIn(false);
-    }
-  }, [
-    address,
-    addWallet,
-    createNonce,
-    isSyncing,
-    provider,
-    syncTokens,
-    userHasWallet,
-    web3Provider,
-  ]);
-
   const handleConnectWallet = useCallback(() => {
-    bottomSheet.current?.present();
-  }, []);
+    openManageWallet();
+  }, [openManageWallet]);
 
   const handleDismissUpsellBanner = useCallback(() => {
     setIsUpsellBannerDismissed(true);
     AsyncStorage.setItem('isUpsellBannerDismissed', 'true');
   }, []);
-
-  useEffect(() => {
-    if (isConnected) {
-      handleSignMessage();
-    } else {
-      setIsSigningIn(false);
-    }
-  }, [isConnected, handleSignMessage]);
 
   if (userHasWallet || isUpsellBannerDismissed) {
     return (
@@ -186,13 +108,6 @@ export function UpsellBanner() {
           <XMarkIcon color={colors.offWhite} />
         </GalleryTouchableOpacity>
       </View>
-
-      <WalletSelectorBottomSheet
-        title="Which Network"
-        ref={bottomSheet}
-        isSignedIn={isSigningIn}
-        onDismiss={() => {}}
-      />
     </View>
   );
 }
