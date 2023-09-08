@@ -2,6 +2,8 @@ import { MaterialTopTabNavigationProp } from '@react-navigation/material-top-tab
 import { CompositeNavigationProp, NavigatorScreenParams } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
+import { AuthPayloadVariables } from '~/shared/hooks/useAuthPayloadQuery';
+
 export type RootStackNavigatorParamList = {
   MainTabs: NavigatorScreenParams<MainTabNavigatorParamList>;
   Login: NavigatorScreenParams<LoginStackNavigatorParamList>;
@@ -61,7 +63,10 @@ export type MainTabStackNavigatorParamList = {
 };
 
 export type FeedTabNavigatorParamList = {
-  Curated: undefined;
+  Curated: {
+    // check if new registered user, we show a welcome message
+    isNewUser?: boolean;
+  };
   Latest: undefined;
   Explore: undefined;
 };
@@ -81,6 +86,18 @@ export type LoginStackNavigatorParamList = {
   QRCode: { onError: (message: string) => void };
   WaitingForConfirmation: { email: string };
   NotificationUpsell: undefined;
+
+  OnboardingEmail: undefined;
+
+  OnboardingUsername: {
+    authMechanism: AuthPayloadVariables;
+  };
+
+  OnboardingProfileBio: undefined;
+
+  OnboardingNftSelector: {
+    page: ScreenWithNftSelector;
+  };
 };
 
 export type PostRedirect = 'Latest' | 'Community';

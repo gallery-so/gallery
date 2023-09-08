@@ -6,6 +6,7 @@ import Input from '~/components/core/Input/Input';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { TitleS } from '~/components/core/Text/Text';
 import { TextAreaWithCharCount } from '~/components/core/TextArea/TextArea';
+import { BIO_MAX_CHAR_COUNT } from '~/shared/hooks/useUpdateUser';
 // import { UserInfoFormFragment$key } from '~/generated/UserInfoFormFragment.graphql';
 // import { UserInfoFormQueryFragment$key } from '~/generated/UserInfoFormQueryFragment.graphql';
 // import { useTrack } from '~/shared/contexts/AnalyticsContext';
@@ -31,8 +32,6 @@ type Props = {
   // userRef: UserInfoFormFragment$key;
   // queryRef: UserInfoFormQueryFragment$key;
 };
-
-export const BIO_MAX_CHAR_COUNT = 600;
 
 function UserInfoForm({
   className,

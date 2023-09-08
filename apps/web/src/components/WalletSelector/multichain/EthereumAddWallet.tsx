@@ -18,6 +18,7 @@ import {
 } from '~/contexts/analytics/authUtil';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { EthereumAddWalletFragment$key } from '~/generated/EthereumAddWalletFragment.graphql';
+import useAddWallet from '~/shared/hooks/useAddWallet';
 import useCreateNonce from '~/shared/hooks/useCreateNonce';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
@@ -31,7 +32,6 @@ import {
 } from '~/types/Wallet';
 import noop from '~/utils/noop';
 
-import useAddWallet from '../mutations/useAddWallet';
 import { normalizeError } from './normalizeError';
 import { WalletError } from './WalletError';
 
@@ -105,6 +105,7 @@ export const EthereumAddWallet = ({ queryRef, reset, onSuccess = noop }: Props) 
         }
 
         const signature = await signMessage({ message: nonce });
+
         const { signatureValid } = await addWallet({
           authMechanism: {
             eoa: {

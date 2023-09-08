@@ -43,15 +43,13 @@ export function createVirtualizedRowsFromGroups({
 }
 
 type createVirtualizedRowsFromTokensArgs = {
-  filteredTokensBySelectedWallet: SidebarTokensFragment$data;
+  tokens: SidebarTokensFragment$data;
 };
 
 export function createVirtualizedRowsFromTokens({
-  filteredTokensBySelectedWallet,
+  tokens = [],
 }: createVirtualizedRowsFromTokensArgs): VirtualizedRow[] {
   const rows: VirtualizedRow[] = [];
-
-  const tokens = filteredTokensBySelectedWallet ?? [];
 
   const COLUMNS_PER_ROW = 3;
   for (let i = 0; i < tokens.length; i += COLUMNS_PER_ROW) {

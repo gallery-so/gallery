@@ -20,7 +20,7 @@ import { AuthModal } from '~/hooks/useAuthModal';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
 
-const MAX_TEXT_LENGTH = 100;
+const MAX_TEXT_LENGTH = 300;
 
 type Props = {
   queryRef: CommentBoxQueryFragment$key;
@@ -137,7 +137,7 @@ export function CommentBox({ queryRef, onSubmitComment, isSubmittingComment }: P
     // we need to trim the content down, override the text content in the element
     // and then put their cursor back at the end of the element
     if (nextValue.length > MAX_TEXT_LENGTH) {
-      const nextValueSliced = nextValue.slice(0, 100);
+      const nextValueSliced = nextValue.slice(0, MAX_TEXT_LENGTH);
       textarea.textContent = nextValueSliced;
 
       const range = document.createRange();

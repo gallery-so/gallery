@@ -9,6 +9,8 @@ import { SomeoneCommentedOnYourPostFragment$key } from '~/generated/SomeoneComme
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 import colors from '~/shared/theme/colors';
+import unescape from '~/shared/utils/unescape';
+
 type Props = {
   notificationRef: SomeoneCommentedOnYourPostFragment$key;
   onClose: () => void;
@@ -71,7 +73,7 @@ export default function SomeoneCommentedOnYourPost({ notificationRef, onClose }:
               commented on your <strong>post</strong>
             </BaseM>
           </StyledTextWrapper>
-          <StyledCaption>{comment.comment}</StyledCaption>
+          <StyledCaption>{unescape(comment.comment)}</StyledCaption>
         </VStack>
       </HStack>
       {imageUrl && <StyledPostPreview src={imageUrl} />}

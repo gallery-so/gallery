@@ -9,6 +9,7 @@ import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { CommentLineFragment$key } from '~/generated/CommentLineFragment.graphql';
 import colors from '~/shared/theme/colors';
 import { getTimeSince } from '~/shared/utils/time';
+import unescape from '~/shared/utils/unescape';
 
 type CommentLineProps = {
   commentRef: CommentLineFragment$key;
@@ -52,7 +53,7 @@ export function CommentLine({ commentRef }: CommentLineProps) {
           </HoverCardOnUsername>
         </StyledUsernameWrapper>
       )}
-      <CommentText dangerouslySetInnerHTML={{ __html: comment.comment }} />
+      <CommentText>{unescape(comment.comment)}</CommentText>
       {timeAgo && <TimeAgoText>{timeAgo}</TimeAgoText>}
     </HStack>
   );

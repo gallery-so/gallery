@@ -5,7 +5,10 @@ import {
   useUpdateUserMutation,
   useUpdateUserMutation$data,
 } from '~/generated/useUpdateUserMutation.graphql';
-import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
+
+import { usePromisifiedMutation } from '../relay/usePromisifiedMutation';
+
+export const BIO_MAX_CHAR_COUNT = 600;
 
 export default function useUpdateUser() {
   const [updateUser] = usePromisifiedMutation<useUpdateUserMutation>(

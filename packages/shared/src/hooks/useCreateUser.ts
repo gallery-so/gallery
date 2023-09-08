@@ -4,9 +4,9 @@ import { fetchQuery, graphql } from 'relay-runtime';
 
 import { useCreateUserMutation } from '~/generated/useCreateUserMutation.graphql';
 import { useCreateUserRefreshViewerQuery } from '~/generated/useCreateUserRefreshViewerQuery.graphql';
-import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 
-import { AuthPayloadVariables, isEoaPayload } from './useAuthPayloadQuery';
+import { usePromisifiedMutation } from '../relay/usePromisifiedMutation';
+import { AuthPayloadVariables, isEmailPayload, isEoaPayload } from './useAuthPayloadQuery';
 
 export default function useCreateUser() {
   const environment = useRelayEnvironment();
@@ -54,6 +54,13 @@ export default function useCreateUser() {
             },
             nonce,
             signature,
+          },
+        };
+      } else if (isEmailPayload(authPayloadVariables)) {
+        const { token } = authPayloadVariables;
+        authMechanism = {
+          magicLink: {
+            token,
           },
         };
       } else {
