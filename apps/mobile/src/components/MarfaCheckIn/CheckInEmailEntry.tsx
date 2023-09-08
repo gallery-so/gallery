@@ -9,12 +9,12 @@ import { CircleCheckIcon } from 'src/icons/CircleCheckIcon';
 import { SpinnerIcon } from 'src/icons/SpinnerIcon';
 
 import { Button } from '~/components/Button';
+import { env } from '~/env/runtime';
 import { CheckInEmailEntryFragment$key } from '~/generated/CheckInEmailEntryFragment.graphql';
 import colors from '~/shared/theme/colors';
 
 import { BackButton } from '../BackButton';
 import { Typography } from '../Typography';
-import { env } from '~/env/runtime';
 
 type Props = {
   viewerRef: CheckInEmailEntryFragment$key;
