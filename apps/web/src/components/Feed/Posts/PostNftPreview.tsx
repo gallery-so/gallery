@@ -47,6 +47,8 @@ export default function PostNftPreview({ tokenRef, onNftLoad }: Props) {
   return (
     <StyledPostNftPreview>
       <ShimmerProvider>
+        {/* [GAL-4229] TODO: this may be redundant if we wrap the underlyingNftPreview in a bonudary.
+            But we may actually want a looking different boundary for this particular view */}
         <NftFailureBoundary tokenId={token.dbid}>
           <NftPreview
             tokenRef={token}

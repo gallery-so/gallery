@@ -71,9 +71,6 @@ export function NftFailureBoundary({
                     }
                   }
                 }
-                # TODO: do we actually need to specify a bunch of fragments here...
-                # ...SidebarNftIconFragment
-                # ...useGetPreviewImagesSingleFragment
               }
             }
           `,

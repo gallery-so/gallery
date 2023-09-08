@@ -63,7 +63,8 @@ export default function CommunityHolderGridItem({ holderRef, queryRef }: Props) 
 
   const openseaProfileLink = `https://opensea.io/${owner?.username}`;
 
-  // TODO:
+  // [GAL-4229] TODO: we'll need to wrap this component in a simple boundary
+  // skipping for now since this component is rarely ever visited
   const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size: 'large' }) ?? '';
 
   const openSeaExternalUrl = useMemo(() => {
