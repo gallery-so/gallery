@@ -235,10 +235,7 @@ function NftDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
       hasExtraPaddingForNote={hasExtraPaddingForNote}
       backgroundColorOverride={backgroundColorOverride}
     >
-      <NftFailureBoundary
-        tokenId={token.dbid}
-        fallback={<NftFailureFallback tokenId={token.dbid} />}
-      >
+      <NftFailureBoundary tokenId={token.dbid}>
         <NftDetailAssetComponent onLoad={handleNftLoaded} tokenRef={token} />
       </NftFailureBoundary>
     </StyledAssetContainer>
