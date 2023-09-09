@@ -4,7 +4,7 @@ import { graphql, useLazyLoadQuery } from 'react-relay';
 import { OpenGraphPreview } from '~/components/opengraph/OpenGraphPreview';
 import { HEIGHT_OPENGRAPH_IMAGE, WIDTH_OPENGRAPH_IMAGE } from '~/constants/opengraph';
 import { CollectionIdOpengraphQuery } from '~/generated/CollectionIdOpengraphQuery.graphql';
-import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
+import { getPreviewImageUrlsInlineDangerously } from '~/shared/relay/getPreviewImageUrlsInlineDangerously';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 export default function OpenGraphCollectionPage() {
@@ -23,7 +23,7 @@ export default function OpenGraphCollectionPage() {
             collectorsNote
             tokens {
               token {
-                ...getVideoOrImageUrlForNftPreviewFragment
+                ...getPreviewImageUrlsInlineDangerouslyFragment
               }
             }
           }
@@ -41,9 +41,15 @@ export default function OpenGraphCollectionPage() {
 
   const imageUrls = removeNullValues(
     removeNullValues(
-      removeNullValues(collection.tokens).map(({ token }) =>
-        token ? getVideoOrImageUrlForNftPreview({ tokenRef: token }) : null
-      )
+      removeNullValues(collection.tokens).map(({ token }) => {
+        if (token) {
+          const result = getPreviewImageUrlsInlineDangerously({ tokenRef: token });
+          if (result.type === 'valid') {
+            return result;
+          }
+          return null;
+        }
+      })
     )
       .slice(0, 4)
       .map((token) => token.urls.large)

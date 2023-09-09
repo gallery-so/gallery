@@ -11,7 +11,7 @@ import FollowButton from '~/components/Follow/FollowButton';
 import { FeaturedCollectorCardCollectionFragment$key } from '~/generated/FeaturedCollectorCardCollectionFragment.graphql';
 import { FeaturedCollectorCardFragment$key } from '~/generated/FeaturedCollectorCardFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
-import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
+import { getPreviewImageUrlsInlineDangerously } from '~/shared/relay/getPreviewImageUrlsInlineDangerously';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import colors from '~/shared/theme/colors';
 
@@ -38,7 +38,7 @@ export default function FeaturedCollectorCard({
       fragment FeaturedCollectorCardCollectionFragment on Collection {
         tokens {
           token {
-            ...getVideoOrImageUrlForNftPreviewFragment
+            ...getPreviewImageUrlsInlineDangerouslyFragment
           }
         }
 
@@ -57,10 +57,16 @@ export default function FeaturedCollectorCard({
 
   const imageUrls = removeNullValues(
     removeNullValues(collection.tokens)
-      .map((galleryToken) => {
-        return galleryToken?.token
-          ? getVideoOrImageUrlForNftPreview({ tokenRef: galleryToken.token })
-          : null;
+      .map(({ token }) => {
+        if (token) {
+          // TODO: this component should be refactored where the underlying `FeaturedCollectorImage`
+          // uses the `useGetSinglePreviewImage` hook, as opposed to mapping inline here
+          const result = getPreviewImageUrlsInlineDangerously({ tokenRef: token });
+          if (result.type === 'valid') {
+            return result;
+          }
+          return null;
+        }
       })
       .map((token) => token?.urls.large)
   ).slice(0, 4);

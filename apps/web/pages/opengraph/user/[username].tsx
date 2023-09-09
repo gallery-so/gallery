@@ -4,7 +4,7 @@ import { graphql, useLazyLoadQuery } from 'react-relay';
 import { OpenGraphPreview } from '~/components/opengraph/OpenGraphPreview';
 import { HEIGHT_OPENGRAPH_IMAGE, WIDTH_OPENGRAPH_IMAGE } from '~/constants/opengraph';
 import { UsernameOpengraphQuery } from '~/generated/UsernameOpengraphQuery.graphql';
-import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
+import { getPreviewImageUrlsInlineDangerously } from '~/shared/relay/getPreviewImageUrlsInlineDangerously';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 export default function OpenGraphUserPage() {
@@ -28,7 +28,7 @@ export default function OpenGraphUserPage() {
                 hidden
                 tokens {
                   token {
-                    ...getVideoOrImageUrlForNftPreviewFragment
+                    ...getPreviewImageUrlsInlineDangerouslyFragment
                   }
                 }
               }
@@ -56,10 +56,15 @@ export default function OpenGraphUserPage() {
       .flatMap((collection) => collection?.tokens)
       .map((galleryToken) => {
         return galleryToken?.token
-          ? getVideoOrImageUrlForNftPreview({ tokenRef: galleryToken.token })
+          ? getPreviewImageUrlsInlineDangerously({ tokenRef: galleryToken.token })
           : null;
       })
-      .map((token) => token?.urls.large)
+      .map((result) => {
+        if (result?.type === 'valid') {
+          return result.urls.large;
+        }
+        return null;
+      })
   ).slice(0, 4);
 
   const width = parseInt(query.width as string) || WIDTH_OPENGRAPH_IMAGE;

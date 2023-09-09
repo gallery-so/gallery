@@ -4,7 +4,7 @@ import { graphql, useFragment, usePaginationFragment } from 'react-relay';
 import { FeedEventsCommentsModalFragment$key } from '~/generated/FeedEventsCommentsModalFragment.graphql';
 import { FeedEventsCommentsModalQueryFragment$key } from '~/generated/FeedEventsCommentsModalQueryFragment.graphql';
 import useCommentOnFeedEvent from '~/hooks/api/feedEvents/useCommentOnFeedEvent';
-import getOptimisticUserInfo from '~/utils/getOptimisticUserInfo';
+import useOptimisticUserInfo from '~/utils/useOptimisticUserInfo';
 
 import { CommentsModal } from './CommentsModal';
 
@@ -45,7 +45,7 @@ export function FeedEventsCommentsModal({ eventRef, queryRef, fullscreen }: Prop
   const query = useFragment(
     graphql`
       fragment FeedEventsCommentsModalQueryFragment on Query {
-        ...getOptimisticUserInfoQueryFragment
+        ...useOptimisticUserInfoFragment
         ...CommentsModalQueryFragment
       }
     `,
@@ -66,11 +66,13 @@ export function FeedEventsCommentsModal({ eventRef, queryRef, fullscreen }: Prop
 
   const [commentOnFeedEvent, isSubmittingComment] = useCommentOnFeedEvent();
 
+  const info = useOptimisticUserInfo(query);
+
   const handleSubmitComment = useCallback(
     (comment: string) => {
-      commentOnFeedEvent(feedEvent.id, feedEvent.dbid, comment, getOptimisticUserInfo(query));
+      commentOnFeedEvent(feedEvent.id, feedEvent.dbid, comment, info);
     },
-    [commentOnFeedEvent, feedEvent.dbid, feedEvent.id, query]
+    [commentOnFeedEvent, feedEvent.dbid, feedEvent.id, info]
   );
 
   return (

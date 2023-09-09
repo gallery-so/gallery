@@ -1,16 +1,18 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { Button } from '~/components/core/Button/Button';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
+import { NftFailureBoundary } from '~/components/NftFailureFallback/NftFailureBoundary';
 import { PostComposerModal } from '~/components/Posts/PostComposerModal';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { NewTokensFragment$key } from '~/generated/NewTokensFragment.graphql';
+import { NewTokensTokenPreviewFragment$key } from '~/generated/NewTokensTokenPreviewFragment.graphql';
 import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
-import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
+import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 import colors from '~/shared/theme/colors';
 
 type Props = {
@@ -27,9 +29,10 @@ export function NewTokens({ notificationRef, onClose }: Props) {
         token {
           ... on Token {
             __typename
-            ...getVideoOrImageUrlForNftPreviewFragment
-            ...PostComposerModalFragment
+            dbid
             name
+            ...PostComposerModalFragment
+            ...NewTokensTokenPreviewFragment
           }
         }
       }
@@ -48,11 +51,6 @@ export function NewTokens({ notificationRef, onClose }: Props) {
 
   const quantity = notification.count ?? 1;
 
-  const previewUrlSet = useMemo(() => {
-    if (!token) return null;
-    return getVideoOrImageUrlForNftPreview({ tokenRef: token });
-  }, [token]);
-
   const handleCreatePostClick = useCallback(() => {
     track('NFT Detail: Clicked Create Post');
     showModal({
@@ -66,9 +64,9 @@ export function NewTokens({ notificationRef, onClose }: Props) {
   return (
     <StyledNotificationContent align="center" justify="space-between" gap={8}>
       <HStack align="center" gap={8}>
-        {previewUrlSet?.urls.small && (
-          <TokenPreview count={quantity} tokenUrl={previewUrlSet?.urls.small} />
-        )}
+        <NftFailureBoundary tokenId={token.dbid} fallbackSize="tiny">
+          <TokenPreview tokenRef={token} count={quantity} />
+        </NftFailureBoundary>
 
         <VStack>
           <StyledTextWrapper align="center" as="span" wrap="wrap">
@@ -88,14 +86,26 @@ export function NewTokens({ notificationRef, onClose }: Props) {
 }
 
 type TokenPreviewProps = {
-  tokenUrl: string;
+  tokenRef: NewTokensTokenPreviewFragment$key;
   count: number;
 };
-function TokenPreview({ count, tokenUrl }: TokenPreviewProps) {
+
+function TokenPreview({ tokenRef, count }: TokenPreviewProps) {
+  const token = useFragment(
+    graphql`
+      fragment NewTokensTokenPreviewFragment on Token {
+        ...useGetPreviewImagesSingleFragment
+      }
+    `,
+    tokenRef
+  );
+
+  const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size: 'small' }) ?? '';
+
   return (
     <StyledPostPreviewWrapper>
-      {count > 1 && <StyledPostPreview src={tokenUrl} count={count} stacked />}
-      <StyledPostPreview count={count} src={tokenUrl} />
+      {count > 1 && <StyledPostPreview src={imageUrl} count={count} stacked />}
+      <StyledPostPreview count={count} src={imageUrl} />
     </StyledPostPreviewWrapper>
   );
 }

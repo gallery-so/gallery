@@ -17,6 +17,7 @@ import { NotificationFragment$key } from '~/generated/NotificationFragment.graph
 import { NotificationInnerFragment$key } from '~/generated/NotificationInnerFragment.graphql';
 import { NotificationInnerQueryFragment$key } from '~/generated/NotificationInnerQueryFragment.graphql';
 import { NotificationQueryFragment$key } from '~/generated/NotificationQueryFragment.graphql';
+import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import { useClearNotifications } from '~/shared/relay/useClearNotifications';
 import colors from '~/shared/theme/colors';
 import { getTimeSince } from '~/shared/utils/time';
@@ -25,8 +26,6 @@ import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled'
 import { NewTokens } from './notifications/NewTokens';
 import SomeoneAdmiredYourPost from './notifications/SomeoneAdmiredYourPost';
 import SomeoneCommentedOnYourPost from './notifications/SomeoneCommentedOnYourPost';
-
-const INVALID_TOKEN_TYPES = ['SyncingMedia', 'InvalidMedia'];
 
 type NotificationProps = {
   notificationRef: NotificationFragment$key;
@@ -82,11 +81,6 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
 
         ... on NewTokensNotification {
           __typename
-          token {
-            media {
-              __typename
-            }
-          }
         }
 
         ...NotificationInnerFragment
@@ -196,7 +190,7 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
     toggleSubView,
   ]);
 
-  const isClickable = handleNotificationClick != undefined;
+  const isClickable = Boolean(handleNotificationClick);
   const handleClick = useCallback(() => {
     handleNotificationClick?.handleClick();
     if (!query.viewer?.user?.dbid || !query.viewer.id) {
@@ -226,13 +220,19 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
     return null;
   }
 
+  // Leaving this commented in for now in case we regret this decision.
+  // If the token is syncing or invalid -> we may still want them to post about it,
+  // especially at the Marfa event. but this might litter the feed with wonky tokens.
+  // On the flip side, if we don't show the notification, our system will feel like
+  // it's slow.
+  //
   // If the notification is a new token notification and the token is invalid, we don't want to show it
-  if (
-    notification.__typename === 'NewTokensNotification' &&
-    INVALID_TOKEN_TYPES.includes(notification.token?.media?.__typename ?? '')
-  ) {
-    return null;
-  }
+  // if (
+  //   notification.__typename === 'NewTokensNotification' &&
+  //   ['SyncingMedia', 'InvalidMedia'].includes(notification.token?.media?.__typename ?? '')
+  // ) {
+  //   return null;
+  // }
 
   // If the notification is a new token notification and koala is not enabled, we don't want to show it
   if (notification.__typename === 'NewTokensNotification' && !isKoalaEnabled) {
@@ -249,21 +249,23 @@ export function Notification({ notificationRef, queryRef, toggleSubView }: Notif
   }
 
   return (
-    <Container isClickable={isClickable} onClick={handleClick}>
-      <HStack gap={8} align="center" justify="space-between">
-        <NotificationInner notificationRef={notification} queryRef={query} />
-        <StyledDotAndTimeAgo align="center" gap={4}>
-          <HStack grow justify="flex-end" gap={16}>
-            <TimeAgoText color={colors.metal}>{timeAgo}</TimeAgoText>
-          </HStack>
-          {!notification.seen && (
-            <UnseenDotContainer>
-              <UnseenDot />
-            </UnseenDotContainer>
-          )}
-        </StyledDotAndTimeAgo>
-      </HStack>
-    </Container>
+    <ReportingErrorBoundary fallback={null}>
+      <Container isClickable={isClickable} onClick={handleClick}>
+        <HStack gap={8} align="center" justify="space-between">
+          <NotificationInner notificationRef={notification} queryRef={query} />
+          <StyledDotAndTimeAgo align="center" gap={4}>
+            <HStack grow justify="flex-end" gap={16}>
+              <TimeAgoText color={colors.metal}>{timeAgo}</TimeAgoText>
+            </HStack>
+            {!notification.seen && (
+              <UnseenDotContainer>
+                <UnseenDot />
+              </UnseenDotContainer>
+            )}
+          </StyledDotAndTimeAgo>
+        </HStack>
+      </Container>
+    </ReportingErrorBoundary>
   );
 }
 

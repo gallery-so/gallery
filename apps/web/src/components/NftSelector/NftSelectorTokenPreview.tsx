@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import styled, { css } from 'styled-components';
 
 import colors from '~/shared/theme/colors';
@@ -14,34 +14,48 @@ import { NftSelectorToken } from './NftSelectorToken';
 type Props = {
   group: NftSelectorCollectionGroup;
   onSelectToken: (tokenId: string) => void;
-  onSelectGroup?: (collection: NftSelectorContractType) => void;
+  onSelectContract?: (collection: NftSelectorContractType) => void;
+  hasSelectedContract: boolean;
 };
 
-export function NftSelectorTokenPreview({ group, onSelectToken, onSelectGroup = noop }: Props) {
+const NftSelectorTokenCollection = ({ title }: { title: string }) => {
+  return (
+    <StyledNftSelectorTokenCollection>
+      <BaseM>{title}</BaseM>
+    </StyledNftSelectorTokenCollection>
+  );
+};
+
+export function NftSelectorTokenPreview({
+  group,
+  onSelectToken,
+  onSelectContract = noop,
+  hasSelectedContract,
+}: Props) {
   const tokens = group.tokens;
 
-  const handleSelectGroup = useCallback(() => {
+  const handleSelectContract = useCallback(() => {
     const collection = {
       title: group.title,
       address: group.address,
     };
 
-    onSelectGroup(collection);
-  }, [group.address, group.title, onSelectGroup]);
+    onSelectContract(collection);
+  }, [group.address, group.title, onSelectContract]);
 
-  const NftSelectorTokenCollection = () => {
-    return (
-      <StyledNftSelectorTokenCollection>
-        <BaseM>{group.title}</BaseM>
-      </StyledNftSelectorTokenCollection>
-    );
-  };
+  const singleTokenTitle = useMemo(() => {
+    const token = tokens[0];
+    if (token && hasSelectedContract) {
+      return token.name || `#${token.tokenId}`;
+    }
+    return group.title;
+  }, [group.title, hasSelectedContract, tokens]);
 
   if (tokens.length === 1) {
     return (
       <StyledNftSelectorTokensContainer>
         {tokens[0] && <NftSelectorToken tokenRef={tokens[0]} onSelectToken={onSelectToken} />}
-        <NftSelectorTokenCollection />
+        <NftSelectorTokenCollection title={singleTokenTitle} />
       </StyledNftSelectorTokensContainer>
     );
   }
@@ -50,7 +64,7 @@ export function NftSelectorTokenPreview({ group, onSelectToken, onSelectGroup = 
   const remainingTokens = tokens.length - showTokens.length;
 
   return (
-    <StyledNftSelectorTokensContainer isGrouped onClick={handleSelectGroup}>
+    <StyledNftSelectorTokensContainer isGrouped onClick={handleSelectContract}>
       {showTokens.map((token) => (
         <NftSelectorToken
           key={token.dbid}
@@ -64,7 +78,7 @@ export function NftSelectorTokenPreview({ group, onSelectToken, onSelectGroup = 
           <BaseM>+ {remainingTokens}</BaseM>
         </StyledRemainingTokens>
       )}
-      <NftSelectorTokenCollection />
+      <NftSelectorTokenCollection title={group.title} />
     </StyledNftSelectorTokensContainer>
   );
 }

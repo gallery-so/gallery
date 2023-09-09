@@ -26,8 +26,10 @@ export default function useUpdateProfileImage() {
               profileImage {
                 __typename
                 ... on TokenProfileImage {
+                  __typename
                   token {
-                    ...getVideoOrImageUrlForNftPreviewFragment
+                    ...ProfilePictureValidFragment
+                    ...getPreviewImageUrlsInlineDangerouslyFragment
                   }
                 }
                 ... on EnsProfileImage {
@@ -63,8 +65,10 @@ export default function useUpdateProfileImage() {
                 profileImage {
                   __typename
                   ... on TokenProfileImage {
+                    __typename
                     token {
-                      ...getVideoOrImageUrlForNftPreviewFragment
+                      ...ProfilePictureValidFragment
+                      ...getPreviewImageUrlsInlineDangerouslyFragment
                     }
                   }
                 }

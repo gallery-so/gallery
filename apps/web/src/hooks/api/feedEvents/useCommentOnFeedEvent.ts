@@ -6,7 +6,7 @@ import { useToastActions } from '~/contexts/toast/ToastContext';
 import { useCommentOnFeedEventMutation } from '~/generated/useCommentOnFeedEventMutation.graphql';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
-import { OptimisticUserInfo } from '~/utils/getOptimisticUserInfo';
+import { OptimisticUserInfo } from '~/utils/useOptimisticUserInfo';
 
 export default function useCommentOnFeedEvent() {
   const [submitComment, isSubmittingComment] =

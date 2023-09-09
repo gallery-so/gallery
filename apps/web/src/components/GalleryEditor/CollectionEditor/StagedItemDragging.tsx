@@ -3,13 +3,8 @@ import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
 import { BaseM } from '~/components/core/Text/Text';
-import { NftFailureBoundary } from '~/components/NftFailureFallback/NftFailureBoundary';
-import { NftFailureFallback } from '~/components/NftFailureFallback/NftFailureFallback';
 import { StagedItemDraggingFragment$key } from '~/generated/StagedItemDraggingFragment.graphql';
-import { StagedItemDraggingWrapperFragment$key } from '~/generated/StagedItemDraggingWrapperFragment.graphql';
-import { useNftRetry } from '~/hooks/useNftRetry';
 import colors from '~/shared/theme/colors';
-import noop from '~/utils/noop';
 
 import StagedNftImageDragging from './StagedNftImageDragging';
 
@@ -22,53 +17,20 @@ function StagedItemDragging({ tokenRef, size }: Props) {
   const token = useFragment(
     graphql`
       fragment StagedItemDraggingFragment on Token {
-        ...StagedItemDraggingWrapperFragment
+        ...StagedNftImageDraggingWithBoundaryFragment
       }
     `,
     tokenRef
   );
 
   if (token) {
-    return <StagedNftImageDraggingWrapper size={size} tokenRef={token} />;
+    return <StagedNftImageDragging size={size} tokenRef={token} />;
   }
 
   return (
     <StyledBlankBlock size={size}>
       <StyledLabel>Blank Space</StyledLabel>
     </StyledBlankBlock>
-  );
-}
-
-type StagedNftImageDraggingWrapperProps = {
-  tokenRef: StagedItemDraggingWrapperFragment$key;
-  size: number;
-};
-
-function StagedNftImageDraggingWrapper({ tokenRef, size }: StagedNftImageDraggingWrapperProps) {
-  const token = useFragment(
-    graphql`
-      fragment StagedItemDraggingWrapperFragment on Token {
-        dbid
-
-        ...StagedNftImageDraggingFragment
-      }
-    `,
-    tokenRef
-  );
-
-  const { handleNftError, handleNftLoaded, retryKey } = useNftRetry({
-    tokenId: token.dbid,
-  });
-
-  return (
-    <NftFailureBoundary
-      key={retryKey}
-      tokenId={token.dbid}
-      fallback={<NftFailureFallback tokenId={token.dbid} refreshing={false} onRetry={noop} />}
-      onError={handleNftError}
-    >
-      <StagedNftImageDragging onLoad={handleNftLoaded} tokenRef={token} size={size} />
-    </NftFailureBoundary>
   );
 }
 
