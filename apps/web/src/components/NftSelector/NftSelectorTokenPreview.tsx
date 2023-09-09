@@ -43,6 +43,7 @@ export function NftSelectorTokenPreview({
     onSelectContract(collection);
   }, [group.address, group.title, onSelectContract]);
 
+<<<<<<< Updated upstream
   const singleTokenTitle = useMemo(() => {
     const token = tokens[0];
     if (token && hasSelectedContract) {
@@ -50,6 +51,15 @@ export function NftSelectorTokenPreview({
     }
     return group.title;
   }, [group.title, hasSelectedContract, tokens]);
+=======
+  const NftSelectorTokenCollection = () => {
+    return (
+      <StyledNftSelectorTokenCollection>
+        <StyledBaseM>{group.title}</StyledBaseM>
+      </StyledNftSelectorTokenCollection>
+    );
+  };
+>>>>>>> Stashed changes
 
   if (tokens.length === 1) {
     return (
@@ -82,6 +92,18 @@ export function NftSelectorTokenPreview({
     </StyledNftSelectorTokensContainer>
   );
 }
+
+const StyledBaseM = styled(BaseM)`
+  word-wrap: break-word;
+  word-break: break-all;
+
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  line-clamp: 1;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
 
 const StyledNftSelectorTokenCollection = styled.div`
   position: absolute;
