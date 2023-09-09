@@ -43,6 +43,18 @@ export function DeepLinkRegistrar() {
       }
 
       const parsedUrl = new URL(url);
+
+      if (parsedUrl.pathname === '/mobile' && parsedUrl.searchParams.get('event') === 'marfa') {
+        navigation.navigate('MainTabs', {
+          screen: 'HomeTab',
+          params: {
+            screen: 'Home',
+            params: { screen: 'Curated', params: { showMarfaCheckIn: true } },
+          },
+        });
+        return;
+      }
+
       const splitBySlash = parsedUrl.pathname.split('/').filter(Boolean);
 
       if (parsedUrl.pathname.includes('post/')) {

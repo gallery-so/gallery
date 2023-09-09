@@ -2,6 +2,7 @@ import { RouteProp, useRoute } from '@react-navigation/native';
 import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 
+import { MarfaCheckInSheet } from '~/components/MarfaCheckIn/MarfaCheckInSheet';
 import { WelcomeNewUser } from '~/components/WelcomeNewUser';
 import { CuratedScreenFragment$key } from '~/generated/CuratedScreenFragment.graphql';
 import { CuratedScreenQuery } from '~/generated/CuratedScreenQuery.graphql';
@@ -37,11 +38,12 @@ function CuratedScreenInner({ queryRef }: CuratedScreenInnerProps) {
           }
         }
 
-        viewer {
+        viewer @required(action: THROW) {
           ... on Viewer {
             user {
               username
             }
+            ...MarfaCheckInSheetFragment
           }
         }
         ...FeedListQueryFragment
@@ -51,6 +53,9 @@ function CuratedScreenInner({ queryRef }: CuratedScreenInnerProps) {
   );
 
   const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const { params: routeParams } = useRoute<RouteProp<FeedTabNavigatorParamList, 'Curated'>>();
+  const showMarfaCheckIn = routeParams?.showMarfaCheckIn ?? false;
 
   const curatedFeed = query.data.curatedFeed;
 
@@ -106,6 +111,7 @@ function CuratedScreenInner({ queryRef }: CuratedScreenInnerProps) {
         queryRef={query.data}
       />
       {showWelcome && <WelcomeNewUser username={query.data.viewer?.user?.username ?? ''} />}
+      {showMarfaCheckIn && <MarfaCheckInSheet viewerRef={query.data.viewer} />}
     </>
   );
 }
