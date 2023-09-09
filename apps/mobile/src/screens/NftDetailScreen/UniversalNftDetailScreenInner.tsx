@@ -57,6 +57,7 @@ export function UniversalNftDetailScreenInner() {
                 chain
               }
             }
+            ownerIsCreator
             owner {
               username
             }
@@ -181,7 +182,7 @@ export function UniversalNftDetailScreenInner() {
           {token.owner && (
             <View className="w-1/2">
               <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
-                OWNER
+                {token.ownerIsCreator ? 'CREATOR' : 'OWNER'}
               </Typography>
 
               <InteractiveLink onPress={handleUsernamePress} type="NFT Detail Token Owner Username">
