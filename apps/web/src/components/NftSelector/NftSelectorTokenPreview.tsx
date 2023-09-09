@@ -43,7 +43,6 @@ export function NftSelectorTokenPreview({
     onSelectContract(collection);
   }, [group.address, group.title, onSelectContract]);
 
-<<<<<<< Updated upstream
   const singleTokenTitle = useMemo(() => {
     const token = tokens[0];
     if (token && hasSelectedContract) {
@@ -51,7 +50,7 @@ export function NftSelectorTokenPreview({
     }
     return group.title;
   }, [group.title, hasSelectedContract, tokens]);
-=======
+
   const NftSelectorTokenCollection = () => {
     return (
       <StyledNftSelectorTokenCollection>
@@ -59,7 +58,6 @@ export function NftSelectorTokenPreview({
       </StyledNftSelectorTokenCollection>
     );
   };
->>>>>>> Stashed changes
 
   if (tokens.length === 1) {
     return (
