@@ -5,7 +5,6 @@ import { View } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 
 import { BackButton } from '~/components/BackButton';
-import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { Typography } from '~/components/Typography';
 import { NftSelectorContractScreenQuery } from '~/generated/NftSelectorContractScreenQuery.graphql';
 import { MainTabStackNavigatorParamList, MainTabStackNavigatorProp } from '~/navigation/types';
@@ -39,7 +38,6 @@ export function NftSelectorContractScreen() {
     {}
   );
 
-  const { top } = useSafeAreaPadding();
   const navigation = useNavigation<MainTabStackNavigatorProp>();
 
   const handleSelectNft = useCallback(() => {
@@ -88,7 +86,7 @@ export function NftSelectorContractScreen() {
   );
 
   return (
-    <View className="flex-1 bg-white dark:bg-black-900" style={{ paddingTop: top }}>
+    <View className="flex-1 bg-white dark:bg-black-900 pt-4">
       <View className="flex flex-col space-y-8 flex-1 ">
         <View className="px-4 relative">
           <BackButton />

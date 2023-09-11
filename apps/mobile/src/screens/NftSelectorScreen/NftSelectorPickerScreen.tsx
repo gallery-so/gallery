@@ -9,7 +9,6 @@ import { BackButton } from '~/components/BackButton';
 import { FadedInput } from '~/components/FadedInput';
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { IconContainer } from '~/components/IconContainer';
-import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { Select } from '~/components/Select';
 import { Typography } from '~/components/Typography';
 import { useToastActions } from '~/contexts/ToastContext';
@@ -55,7 +54,6 @@ export function NftSelectorPickerScreen() {
 
   const currentScreen = route.params.page;
 
-  const { top } = useSafeAreaPadding();
   const filterBottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
 
   const handleSettingsPress = useCallback(() => {
@@ -76,7 +74,7 @@ export function NftSelectorPickerScreen() {
   }, [networkFilter, refetch]);
 
   return (
-    <View className="flex-1 bg-white dark:bg-black-900" style={{ paddingTop: top }}>
+    <View className="flex-1 bg-white dark:bg-black-900 pt-4">
       <View className="flex flex-col flex-grow space-y-8">
         <View className="px-4 relative">
           <BackButton />
