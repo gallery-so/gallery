@@ -56,7 +56,7 @@ export function SettingsProfileScreen() {
   }
 
   return (
-    <View className="flex-1 flex flex-col bg-white dark:bg-black-900 space-y-4">
+    <View className="flex-1 flex flex-col bg-white dark:bg-black-900 space-y-4 pt-4">
       <View className="px-4">
         <BackButton />
       </View>
