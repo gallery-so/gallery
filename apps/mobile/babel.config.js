@@ -12,6 +12,7 @@ module.exports = function (api) {
         },
       ],
       'tsconfig-paths-module-resolver',
+      '@babel/plugin-transform-flow-strip-types',
       ['@babel/plugin-proposal-private-methods', { loose: true }],
     ],
   };
