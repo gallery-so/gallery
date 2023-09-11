@@ -88,7 +88,7 @@ export function SettingsScreen() {
   }, [query.viewer?.user?.roles]);
 
   return (
-    <View className="relative flex-1 bg-white dark:bg-black-900">
+    <View className="relative flex-1 bg-white dark:bg-black-900 pt-4">
       <View className="px-4 relative mb-2">
         <BackButton />
 
