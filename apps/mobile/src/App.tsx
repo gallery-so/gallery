@@ -24,6 +24,7 @@ import { RootStackNavigator } from '~/navigation/RootStackNavigator';
 import { DevMenuItems } from './components/DevMenuItems';
 import { LoadingView } from './components/LoadingView';
 import SearchProvider from './components/Search/SearchContext';
+import SyncTokensProvider from './contexts/SyncTokensContext';
 import ToastProvider from './contexts/ToastContext';
 import { magic } from './magic';
 
@@ -130,13 +131,15 @@ export default function App() {
                     <SearchProvider>
                       <NavigationContainer ref={navigationRef}>
                         <ToastProvider>
-                          <BottomSheetModalProvider>
-                            {/* Register the user's push token if one exists (does not prompt the user) */}
-                            <NotificationRegistrar />
-                            <DevMenuItems />
-                            <DeepLinkRegistrar />
-                            <RootStackNavigator navigationContainerRef={navigationRef} />
-                          </BottomSheetModalProvider>
+                          <SyncTokensProvider>
+                            <BottomSheetModalProvider>
+                              {/* Register the user's push token if one exists (does not prompt the user) */}
+                              <NotificationRegistrar />
+                              <DevMenuItems />
+                              <DeepLinkRegistrar />
+                              <RootStackNavigator navigationContainerRef={navigationRef} />
+                            </BottomSheetModalProvider>
+                          </SyncTokensProvider>
                         </ToastProvider>
                       </NavigationContainer>
                     </SearchProvider>

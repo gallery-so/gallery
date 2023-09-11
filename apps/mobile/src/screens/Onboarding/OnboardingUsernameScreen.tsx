@@ -9,6 +9,7 @@ import { graphql, useLazyLoadQuery } from 'react-relay';
 import { BackButton } from '~/components/BackButton';
 import { Button } from '~/components/Button';
 import { Typography } from '~/components/Typography';
+import { useSyncTokenstActions } from '~/contexts/SyncTokensContext';
 import { OnboardingUsernameScreenQuery } from '~/generated/OnboardingUsernameScreenQuery.graphql';
 import { LoginStackNavigatorParamList, LoginStackNavigatorProp } from '~/navigation/types';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
@@ -25,8 +26,6 @@ import {
   required,
   validate,
 } from '~/shared/utils/validators';
-
-import useSyncTokens from '../NftSelectorScreen/useSyncTokens';
 
 export function OnboardingUsernameScreen() {
   const query = useLazyLoadQuery<OnboardingUsernameScreenQuery>(
@@ -55,7 +54,7 @@ export function OnboardingUsernameScreen() {
   const updateUser = useUpdateUser();
   const isUsernameAvailableFetcher = useIsUsernameAvailableFetcher();
   const reportError = useReportError();
-  const { isSyncing, syncTokens } = useSyncTokens();
+  const { isSyncing, syncTokens } = useSyncTokenstActions();
 
   const route = useRoute<RouteProp<LoginStackNavigatorParamList, 'OnboardingUsername'>>();
 
