@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -8,7 +7,7 @@ import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { SomeoneCommentedOnYourPostFragment$key } from '~/generated/SomeoneCommentedOnYourPostFragment.graphql';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
-import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
+import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 import colors from '~/shared/theme/colors';
 import unescape from '~/shared/utils/unescape';
 
@@ -25,7 +24,7 @@ export default function SomeoneCommentedOnYourPost({ notificationRef, onClose }:
         dbid
         post {
           tokens {
-            ...getVideoOrImageUrlForNftPreviewFragment
+            ...useGetPreviewImagesSingleFragment
           }
         }
         comment {
@@ -44,10 +43,12 @@ export default function SomeoneCommentedOnYourPost({ notificationRef, onClose }:
   const reportError = useReportError();
 
   const token = notification.post?.tokens?.[0];
-  const previewUrlSet = useMemo(() => {
-    if (!token) return null;
-    return getVideoOrImageUrlForNftPreview({ tokenRef: token });
-  }, [token]);
+
+  if (!token) {
+    throw new Error('Post does not have accompanying token');
+  }
+
+  const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size: 'small' });
 
   if (!comment || !comment.commenter || !comment.comment) {
     reportError(
@@ -75,7 +76,7 @@ export default function SomeoneCommentedOnYourPost({ notificationRef, onClose }:
           <StyledCaption>{unescape(comment.comment)}</StyledCaption>
         </VStack>
       </HStack>
-      {previewUrlSet?.urls.small && <StyledPostPreview src={previewUrlSet?.urls.small} />}
+      {imageUrl && <StyledPostPreview src={imageUrl} />}
     </StyledNotificationContent>
   );
 }

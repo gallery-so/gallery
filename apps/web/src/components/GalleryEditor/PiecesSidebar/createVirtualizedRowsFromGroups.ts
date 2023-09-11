@@ -1,49 +1,35 @@
 import { CollectionGroup } from '~/components/GalleryEditor/PiecesSidebar/groupCollectionsByAddress';
 import { VirtualizedRow } from '~/components/GalleryEditor/PiecesSidebar/SidebarList/SidebarList';
-import { SidebarListTokenFragment$key } from '~/generated/SidebarListTokenFragment.graphql';
 import { SidebarTokensFragment$data } from '~/generated/SidebarTokensFragment.graphql';
 
 type createVirtualizedRowsFromGroupsArgs = {
   groups: CollectionGroup[];
-  erroredTokenIds: Set<string>;
   collapsedCollections: Set<string>;
 };
 
 export function createVirtualizedRowsFromGroups({
   groups,
-  erroredTokenIds,
   collapsedCollections,
 }: createVirtualizedRowsFromGroupsArgs): VirtualizedRow[] {
   const rows: VirtualizedRow[] = [];
 
   for (const group of groups) {
-    const tokensSortedByErrored: SidebarListTokenFragment$key[] = [...group.tokens].sort((a, b) => {
-      const aIsErrored = erroredTokenIds.has(a.dbid);
-      const bIsErrored = erroredTokenIds.has(b.dbid);
-
-      if (aIsErrored === bIsErrored) {
-        return 0;
-      } else if (aIsErrored) {
-        return 1;
-      } else {
-        return -1;
-      }
-    });
+    const { title, address, tokens } = group;
 
     // Default to expanded
-    const expanded = !collapsedCollections.has(group.address);
+    const expanded = !collapsedCollections.has(address);
 
     rows.push({
       type: 'collection-title',
       expanded,
-      address: group.address,
-      title: group.title,
-      count: group.tokens.length,
+      address: address,
+      title: title,
+      count: tokens.length,
     });
 
     const COLUMNS_PER_ROW = 3;
-    for (let i = 0; i < tokensSortedByErrored.length; i += COLUMNS_PER_ROW) {
-      const rowTokens = tokensSortedByErrored.slice(i, i + COLUMNS_PER_ROW);
+    for (let i = 0; i < tokens.length; i += COLUMNS_PER_ROW) {
+      const rowTokens = tokens.slice(i, i + COLUMNS_PER_ROW);
 
       rows.push({
         type: 'tokens',
@@ -57,35 +43,17 @@ export function createVirtualizedRowsFromGroups({
 }
 
 type createVirtualizedRowsFromTokensArgs = {
-  filteredTokensBySelectedWallet: SidebarTokensFragment$data;
-  erroredTokenIds: Set<string>;
+  tokens: SidebarTokensFragment$data;
 };
 
 export function createVirtualizedRowsFromTokens({
-  filteredTokensBySelectedWallet,
-  erroredTokenIds,
+  tokens = [],
 }: createVirtualizedRowsFromTokensArgs): VirtualizedRow[] {
   const rows: VirtualizedRow[] = [];
 
-  const tokens = filteredTokensBySelectedWallet ?? [];
-
-  const tokensSortedByErrored = [...tokens].sort((a, b) => {
-    const aIsErrored = erroredTokenIds.has(a.id);
-
-    const bIsErrored = erroredTokenIds.has(b.id);
-
-    if (aIsErrored === bIsErrored) {
-      return 0;
-    } else if (aIsErrored) {
-      return 1;
-    } else {
-      return -1;
-    }
-  });
-
   const COLUMNS_PER_ROW = 3;
-  for (let i = 0; i < tokensSortedByErrored.length; i += COLUMNS_PER_ROW) {
-    const rowTokens = tokensSortedByErrored.slice(i, i + COLUMNS_PER_ROW);
+  for (let i = 0; i < tokens.length; i += COLUMNS_PER_ROW) {
+    const rowTokens = tokens.slice(i, i + COLUMNS_PER_ROW);
 
     rows.push({
       type: 'tokens',

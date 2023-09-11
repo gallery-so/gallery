@@ -1009,6 +1009,8 @@ type Mutation {
   verifyEmail(input: VerifyEmailInput!): VerifyEmailPayloadOrError
   verifyEmailMagicLink(input: VerifyEmailMagicLinkInput!): VerifyEmailMagicLinkPayloadOrError
   redeemMerch(input: RedeemMerchInput!): RedeemMerchPayloadOrError
+  optInForRoles(roles: [Role!]!): OptInForRolesPayloadOrError
+  optOutForRoles(roles: [Role!]!): OptOutForRolesPayloadOrError
   addRolesToUser(username: String!, roles: [Role]): AddRolesToUserPayloadOrError
   addWalletToUserUnchecked(input: AdminAddWalletInput!): AdminAddWalletPayloadOrError
   revokeRolesFromUser(username: String!, roles: [Role]): RevokeRolesFromUserPayloadOrError
@@ -1074,6 +1076,18 @@ input NotificationSettingsInput {
 input OneTimeLoginTokenAuth {
   token: String!
 }
+
+type OptInForRolesPayload {
+  user: GalleryUser
+}
+
+union OptInForRolesPayloadOrError = OptInForRolesPayload | ErrNotAuthorized | ErrInvalidInput
+
+type OptOutForRolesPayload {
+  user: GalleryUser
+}
+
+union OptOutForRolesPayloadOrError = OptOutForRolesPayload | ErrNotAuthorized | ErrInvalidInput
 
 type OwnerAtBlock {
   owner: GalleryUserOrAddress

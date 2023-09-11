@@ -11,7 +11,7 @@ import { FeedEventSocializeSectionFragment$key } from '~/generated/FeedEventSoci
 import { FeedEventSocializeSectionQueryFragment$key } from '~/generated/FeedEventSocializeSectionQueryFragment.graphql';
 import useAdmireFeedEvent from '~/hooks/api/feedEvents/useAdmireFeedEvent';
 import useRemoveAdmireFeedEvent from '~/hooks/api/feedEvents/useRemoveAdmireFeedEvent';
-import getOptimisticUserInfo from '~/utils/getOptimisticUserInfo';
+import useOptimisticUserInfo from '~/utils/useOptimisticUserInfo';
 
 import { AdmireLine } from './AdmireLine';
 
@@ -44,7 +44,7 @@ export function FeedEventSocializeSection({
   const query = useFragment(
     graphql`
       fragment FeedEventSocializeSectionQueryFragment on Query {
-        ...getOptimisticUserInfoQueryFragment
+        ...useOptimisticUserInfoFragment
         ...AdmireButtonQueryFragment
         ...AdmireLineQueryFragment
         ...CommentBoxIconQueryFragment
@@ -57,9 +57,12 @@ export function FeedEventSocializeSection({
   const [admireFeedEvent] = useAdmireFeedEvent();
   const [removeAdmireFeedEvent] = useRemoveAdmireFeedEvent();
 
+  const info = useOptimisticUserInfo(query);
+
   const handleAdmireFeedEvent = useCallback(() => {
-    admireFeedEvent(event.id, event.dbid, getOptimisticUserInfo(query));
-  }, [admireFeedEvent, event.dbid, event.id, query]);
+    admireFeedEvent(event.id, event.dbid, info);
+  }, [admireFeedEvent, event.dbid, event.id, info]);
+
   return (
     <VStack gap={4}>
       <HStack justify="space-between" align="center" gap={24}>

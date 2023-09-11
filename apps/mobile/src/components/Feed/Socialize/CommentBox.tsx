@@ -31,7 +31,7 @@ export function CommentBox({
   const { colorScheme } = useColorScheme();
   const [value, setValue] = useState('');
 
-  const characterCount = useMemo(() => 100 - value.length, [value]);
+  const characterCount = useMemo(() => 300 - value.length, [value]);
 
   const isKeyboardActive = useKeyboardStatus();
 

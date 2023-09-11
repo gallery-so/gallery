@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -10,10 +10,7 @@ import { useModalActions } from '~/contexts/modal/ModalContext';
 import { CommunityHolderGridItemFragment$key } from '~/generated/CommunityHolderGridItemFragment.graphql';
 import { CommunityHolderGridItemQueryFragment$key } from '~/generated/CommunityHolderGridItemQueryFragment.graphql';
 import TokenDetailView from '~/scenes/TokenDetailPage/TokenDetailView';
-import { useReportError } from '~/shared/contexts/ErrorReportingContext';
-import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
-import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
-import colors from '~/shared/theme/colors';
+import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 import { getOpenseaExternalUrl } from '~/shared/utils/getOpenseaExternalUrl';
 import { graphqlTruncateUniversalUsername } from '~/shared/utils/wallet';
 
@@ -42,7 +39,7 @@ export default function CommunityHolderGridItem({ holderRef, queryRef }: Props) 
           ...walletTruncateUniversalUsernameFragment
           ...HoverCardOnUsernameFragment
         }
-        ...getVideoOrImageUrlForNftPreviewFragment
+        ...useGetPreviewImagesSingleFragment
         ...TokenDetailViewFragment
       }
     `,
@@ -58,11 +55,6 @@ export default function CommunityHolderGridItem({ holderRef, queryRef }: Props) 
     queryRef
   );
 
-  const [isFailedToLoad, setIsFailedToLoad] = useState(false);
-  const handleFailedToLoad = useCallback(() => {
-    setIsFailedToLoad(true);
-  }, []);
-
   const { showModal } = useModalActions();
 
   const { tokenId, contract, owner, chain } = token;
@@ -71,15 +63,9 @@ export default function CommunityHolderGridItem({ holderRef, queryRef }: Props) 
 
   const openseaProfileLink = `https://opensea.io/${owner?.username}`;
 
-  const reportError = useReportError();
-  const previewUrlSet = getVideoOrImageUrlForNftPreview({
-    tokenRef: token,
-    handleReportError: reportError,
-  });
-
-  if (!previewUrlSet?.urls.large) {
-    throw new CouldNotRenderNftError('CommunityHolderGridItem', 'could not find large image url');
-  }
+  // [GAL-4229] TODO: we'll need to wrap this component in a simple boundary
+  // skipping for now since this component is rarely ever visited
+  const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size: 'large' }) ?? '';
 
   const openSeaExternalUrl = useMemo(() => {
     if (chain && contract?.contractAddress?.address && tokenId) {
@@ -105,25 +91,11 @@ export default function CommunityHolderGridItem({ holderRef, queryRef }: Props) 
     });
   }, [openSeaExternalUrl, owner?.universal, query, showModal, token]);
 
-  const previewAsset = useMemo(() => {
-    if (isFailedToLoad || !previewUrlSet?.urls.large) {
-      return (
-        <StyledErrorWrapper justify="center" align="center">
-          <StyledErrorText>Could not load</StyledErrorText>
-        </StyledErrorWrapper>
-      );
-    }
-
-    if (previewUrlSet?.type === 'video') {
-      return <StyledNftVideo src={previewUrlSet.urls.large} onError={handleFailedToLoad} />;
-    }
-
-    return <StyledNftImage src={previewUrlSet.urls.large} onError={handleFailedToLoad} />;
-  }, [handleFailedToLoad, isFailedToLoad, previewUrlSet?.type, previewUrlSet.urls.large]);
-
   return (
     <VStack gap={8}>
-      <StyledInteractiveLink onClick={handleClick}>{previewAsset}</StyledInteractiveLink>
+      <StyledInteractiveLink onClick={handleClick}>
+        <StyledNftImage src={imageUrl} />
+      </StyledInteractiveLink>
       <VStack>
         <BaseM>{token?.name}</BaseM>
         {owner?.universal ? (
@@ -147,13 +119,6 @@ const StyledNftImage = styled.img`
   cursor: pointer;
 `;
 
-const StyledNftVideo = styled.video`
-  height: auto;
-  width: 100%;
-  max-width: 100%;
-  cursor: pointer;
-`;
-
 const StyledNftDetailViewPopover = styled(VStack)`
   height: 100%;
   padding: 80px 0;
@@ -164,15 +129,4 @@ const StyledNftDetailViewPopover = styled(VStack)`
 
 const StyledInteractiveLink = styled(InteractiveLink)`
   text-decoration: none;
-`;
-
-const StyledErrorWrapper = styled(VStack)`
-  background-color: ${colors.offWhite};
-  height: auto;
-  width: 100%;
-  aspect-ratio: 1 / 1;
-`;
-
-const StyledErrorText = styled(BaseM)`
-  color: ${colors.metal};
 `;

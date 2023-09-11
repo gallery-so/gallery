@@ -52,6 +52,7 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset, queryRef }: Props
           username
           ...ProfilePictureFragment
         }
+        ownerIsCreator
         contract {
           name
           chain
@@ -196,7 +197,7 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset, queryRef }: Props
         <HStack justify="space-between">
           {token.owner?.username && (
             <VStack gap={2}>
-              <TitleXS>OWNER</TitleXS>
+              <TitleXS>{token.ownerIsCreator ? 'CREATOR' : 'OWNER'}</TitleXS>
               <StyledInteractiveLink
                 to={{ pathname: '/[username]', query: { username: token.owner.username } }}
                 onClick={handleCollectorNameClick}

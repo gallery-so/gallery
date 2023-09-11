@@ -7,7 +7,7 @@ import { PostSocializeSectionFragment$key } from '~/generated/PostSocializeSecti
 import { PostSocializeSectionQueryFragment$key } from '~/generated/PostSocializeSectionQueryFragment.graphql';
 import useAdmirePost from '~/hooks/api/posts/useAdmirePost';
 import useRemoveAdmirePost from '~/hooks/api/posts/useRemoveAdmirePost';
-import getOptimisticUserInfo from '~/utils/getOptimisticUserInfo';
+import useOptimisticUserInfo from '~/utils/useOptimisticUserInfo';
 
 import { AdmireButton } from './AdmireButton';
 import { AdmireLine } from './AdmireLine';
@@ -40,7 +40,7 @@ export default function PostSocializeSection({ onPotentialLayoutShift, postRef, 
   const query = useFragment(
     graphql`
       fragment PostSocializeSectionQueryFragment on Query {
-        ...getOptimisticUserInfoQueryFragment
+        ...useOptimisticUserInfoFragment
         ...AdmireButtonQueryFragment
         ...AdmireLineQueryFragment
         ...CommentBoxIconQueryFragment
@@ -53,9 +53,11 @@ export default function PostSocializeSection({ onPotentialLayoutShift, postRef, 
   const [admirePost] = useAdmirePost();
   const [removeAdmirePost] = useRemoveAdmirePost();
 
+  const info = useOptimisticUserInfo(query);
+
   const handleAdmireClick = useCallback(() => {
-    admirePost(post.id, post.dbid, getOptimisticUserInfo(query));
-  }, [admirePost, post.dbid, post.id, query]);
+    admirePost(post.id, post.dbid, info);
+  }, [admirePost, info, post.dbid, post.id]);
 
   return (
     <VStack gap={16}>

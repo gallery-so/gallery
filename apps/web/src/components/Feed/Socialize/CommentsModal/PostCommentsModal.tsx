@@ -4,7 +4,7 @@ import { graphql, useFragment, usePaginationFragment } from 'react-relay';
 import { PostCommentsModalFragment$key } from '~/generated/PostCommentsModalFragment.graphql';
 import { PostCommentsModalQueryFragment$key } from '~/generated/PostCommentsModalQueryFragment.graphql';
 import useCommentOnPost from '~/hooks/api/posts/useCommentOnPost';
-import getOptimisticUserInfo from '~/utils/getOptimisticUserInfo';
+import useOptimisticUserInfo from '~/utils/useOptimisticUserInfo';
 
 import { CommentsModal } from './CommentsModal';
 type Props = {
@@ -43,7 +43,7 @@ export default function PostCommentsModal({ postRef, queryRef, fullscreen }: Pro
   const query = useFragment(
     graphql`
       fragment PostCommentsModalQueryFragment on Query {
-        ...getOptimisticUserInfoQueryFragment
+        ...useOptimisticUserInfoFragment
         ...CommentsModalQueryFragment
       }
     `,
@@ -64,11 +64,13 @@ export default function PostCommentsModal({ postRef, queryRef, fullscreen }: Pro
     return interactions.reverse();
   }, [post.interactions?.edges]);
 
+  const info = useOptimisticUserInfo(query);
+
   const handleSubmitComment = useCallback(
     (comment: string) => {
-      commentOnPost(post.id, post.dbid, comment, getOptimisticUserInfo(query));
+      commentOnPost(post.id, post.dbid, comment, info);
     },
-    [commentOnPost, post.dbid, post.id, query]
+    [commentOnPost, info, post.dbid, post.id]
   );
 
   return (

@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import breakpoints, { size } from '~/components/core/breakpoints';
 import { StyledImageWithLoading } from '~/components/LoadingAsset/ImageWithLoading';
 import { NftFailureBoundary } from '~/components/NftFailureFallback/NftFailureBoundary';
-import { NftFailureFallback } from '~/components/NftFailureFallback/NftFailureFallback';
 import { GLOBAL_FOOTER_HEIGHT } from '~/contexts/globalLayout/GlobalFooter/GlobalFooter';
 import { useContentState } from '~/contexts/shimmer/ShimmerContext';
 import { TokenDetailAssetFragment$key } from '~/generated/TokenDetailAssetFragment.graphql';
@@ -54,10 +53,9 @@ function TokenDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
     !isIframe &&
     (aspectRatioType !== 'wide' || breakpoint === size.desktop || breakpoint === size.tablet);
 
-  const { retryKey, handleNftLoaded, refreshMetadata, refreshingMetadata, handleNftError } =
-    useNftRetry({
-      tokenId: token.dbid,
-    });
+  const { handleNftLoaded } = useNftRetry({
+    tokenId: token.dbid,
+  });
 
   return (
     <StyledAssetContainer
@@ -67,18 +65,7 @@ function TokenDetailAsset({ tokenRef, hasExtraPaddingForNote }: Props) {
       hasExtraPaddingForNote={hasExtraPaddingForNote}
       backgroundColorOverride={backgroundColorOverride}
     >
-      <NftFailureBoundary
-        key={retryKey}
-        tokenId={token.dbid}
-        onError={handleNftError}
-        fallback={
-          <NftFailureFallback
-            tokenId={token.dbid}
-            onRetry={refreshMetadata}
-            refreshing={refreshingMetadata}
-          />
-        }
-      >
+      <NftFailureBoundary tokenId={token.dbid}>
         <NftDetailAssetComponent onLoad={handleNftLoaded} tokenRef={token} />
       </NftFailureBoundary>
     </StyledAssetContainer>

@@ -157,7 +157,8 @@ export function Button({
 
   const [active, setActive] = useState(false);
 
-  const variantClassNames = buttonVariants[colorScheme][variant][active ? 'active' : 'inactive'];
+  const variantClassNames =
+    buttonVariants[colorScheme][disabled ? 'disabled' : variant][active ? 'active' : 'inactive'];
 
   const sizeVariants: { [size in Size]: string } = {
     xs: 'h-[24] px-2',

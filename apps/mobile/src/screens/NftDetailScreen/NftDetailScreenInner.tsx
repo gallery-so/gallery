@@ -72,6 +72,7 @@ export function NftDetailScreenInner() {
                 chain
               }
             }
+            ownerIsCreator
             owner {
               id
               username
@@ -249,7 +250,7 @@ export function NftDetailScreenInner() {
                 className="text-xs text-shadow dark:text-metal"
                 font={{ family: 'ABCDiatype', weight: 'Medium' }}
               >
-                OWNER
+                {token.ownerIsCreator ? 'CREATOR' : 'OWNER'}
               </Typography>
 
               <GalleryTouchableOpacity

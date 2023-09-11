@@ -2,61 +2,30 @@ import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
-import { ContentIsLoadedEvent } from '~/contexts/shimmer/ShimmerContext';
 import { NftSelectorTokenFragment$key } from '~/generated/NftSelectorTokenFragment.graphql';
-import { useNftRetry } from '~/hooks/useNftRetry';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
-import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 
 import { NftFailureBoundary } from '../NftFailureFallback/NftFailureBoundary';
-import { NftFailureFallback } from '../NftFailureFallback/NftFailureFallback';
-import { NftSelectorPreviewAsset, RawNftSelectorPreviewAsset } from './RawNftSelectorPreviewAsset';
+import { NftSelectorPreviewAsset } from './NftSelectorPreviewAsset';
 
 type Props = {
   tokenRef: NftSelectorTokenFragment$key;
   onSelectToken: (tokenId: string) => void;
   isInGroup?: boolean;
 };
+
 export function NftSelectorToken({ tokenRef, onSelectToken, isInGroup = false }: Props) {
   const token = useFragment(
     graphql`
       fragment NftSelectorTokenFragment on Token {
         dbid
-        media {
-          ... on Media {
-            fallbackMedia {
-              mediaURL
-            }
-          }
-
-          ... on SyncingMedia {
-            __typename
-          }
-        }
-        ...RawNftSelectorPreviewAssetFragment
+        ...NftSelectorPreviewAssetFragment
       }
     `,
     tokenRef
   );
 
   const track = useTrack();
-
-  const { handleNftLoaded, handleNftError, retryKey, refreshMetadata, refreshingMetadata } =
-    useNftRetry({ tokenId: token.dbid });
-
-  const handleError = useCallback<ContentIsLoadedEvent>(
-    (event) => {
-      handleNftError(event);
-    },
-    [handleNftError]
-  );
-
-  const handleLoad = useCallback<ContentIsLoadedEvent>(
-    (event) => {
-      handleNftLoaded(event);
-    },
-    [handleNftLoaded]
-  );
 
   const handleClick = useCallback(() => {
     if (isInGroup) {
@@ -67,46 +36,14 @@ export function NftSelectorToken({ tokenRef, onSelectToken, isInGroup = false }:
   }, [isInGroup, track, onSelectToken, token]);
 
   return (
-    <NftFailureBoundary
-      key={retryKey}
-      tokenId={token.dbid}
-      fallback={
-        <StyledNftFailureFallbackWrapper>
-          <NftFailureFallback
-            size="medium"
-            tokenId={token.dbid}
-            onRetry={refreshMetadata}
-            refreshing={refreshingMetadata}
-          />
-        </StyledNftFailureFallbackWrapper>
-      }
-      onError={handleError}
-    >
-      <ReportingErrorBoundary
-        fallback={
-          <div>
-            <RawNftSelectorPreviewAsset
-              type="image"
-              isSelected={false}
-              src={token.media?.fallbackMedia?.mediaURL}
-              onLoad={handleLoad}
-            />
-            <StyledOutline onClick={handleClick} />
-          </div>
-        }
-      >
-        <NftSelectorPreviewAsset tokenRef={token} onLoad={handleLoad} />
-        <StyledOutline onClick={handleClick} />
-      </ReportingErrorBoundary>
-    </NftFailureBoundary>
+    <>
+      <StyledOutline onClick={handleClick} />
+      <NftFailureBoundary tokenId={token.dbid}>
+        <NftSelectorPreviewAsset tokenRef={token} />
+      </NftFailureBoundary>
+    </>
   );
 }
-
-const StyledNftFailureFallbackWrapper = styled.div`
-  height: 100%;
-  width: 100%;
-  position: relative;
-`;
 
 const StyledOutline = styled.div`
   position: absolute;

@@ -66,6 +66,7 @@ export type FeedTabNavigatorParamList = {
   Curated: {
     // check if new registered user, we show a welcome message
     isNewUser?: boolean;
+    showMarfaCheckIn?: boolean;
   };
   Latest: undefined;
   Explore: undefined;

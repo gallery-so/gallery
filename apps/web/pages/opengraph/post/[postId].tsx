@@ -5,7 +5,7 @@ import { graphql, useLazyLoadQuery } from 'react-relay';
 import { PostOpenGraphPreview } from '~/components/opengraph/PostOpenGraphPreview';
 import { HEIGHT_OPENGRAPH_IMAGE, WIDTH_OPENGRAPH_IMAGE } from '~/constants/opengraph';
 import { PostIdOpengraphQuery } from '~/generated/PostIdOpengraphQuery.graphql';
-import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
+import { getPreviewImageUrlsInlineDangerously } from '~/shared/relay/getPreviewImageUrlsInlineDangerously';
 
 export default function OpenGraphPostPage() {
   const { query } = useRouter();
@@ -23,7 +23,7 @@ export default function OpenGraphPostPage() {
               profileImage {
                 ... on TokenProfileImage {
                   token {
-                    ...getVideoOrImageUrlForNftPreviewFragment
+                    ...getPreviewImageUrlsInlineDangerouslyFragment
                   }
                 }
                 ... on EnsProfileImage {
@@ -39,7 +39,7 @@ export default function OpenGraphPostPage() {
             }
             caption
             tokens {
-              ...getVideoOrImageUrlForNftPreviewFragment
+              ...getPreviewImageUrlsInlineDangerouslyFragment
             }
           }
         }
@@ -62,11 +62,13 @@ export default function OpenGraphPostPage() {
     }
 
     if (token) {
-      const result = getVideoOrImageUrlForNftPreview({
+      const result = getPreviewImageUrlsInlineDangerously({
         tokenRef: token,
-        handleReportError: reportError,
       });
-      return result?.urls.small ?? null;
+      if (result.type === 'valid') {
+        return result.urls.small;
+      }
+      return null;
     }
 
     return null;
@@ -76,8 +78,15 @@ export default function OpenGraphPostPage() {
     return null;
   }
 
-  const token = post?.tokens?.[0];
-  const imageUrl = token ? getVideoOrImageUrlForNftPreview({ tokenRef: token })?.urls.large : null;
+  const token = post.tokens?.[0];
+  if (!token) {
+    return null;
+  }
+
+  const result = getPreviewImageUrlsInlineDangerously({ tokenRef: token });
+  if (result.type !== 'valid') {
+    return null;
+  }
 
   const width = parseInt(query.width as string) || WIDTH_OPENGRAPH_IMAGE;
   const height = parseInt(query.height as string) || HEIGHT_OPENGRAPH_IMAGE;
@@ -89,7 +98,7 @@ export default function OpenGraphPostPage() {
           <PostOpenGraphPreview
             username={post.author.username ?? ''}
             caption={post.caption ?? ''}
-            imageUrl={imageUrl ?? ''}
+            imageUrl={result.urls.large ?? ''}
             profileImageUrl={profileImageUrl ?? ''}
           />
         </div>
