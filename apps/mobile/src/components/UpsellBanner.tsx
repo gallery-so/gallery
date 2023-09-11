@@ -46,7 +46,7 @@ export function UpsellBanner() {
     });
   }, []);
 
-  const userHasWallet = query.viewer?.user?.primaryWallet?.__typename === 'Wallet' ?? false;
+  const userHasWallet = query.viewer?.user?.primaryWallet?.__typename === 'Wallet';
 
   const handleConnectWallet = useCallback(() => {
     openManageWallet({});

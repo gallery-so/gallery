@@ -88,7 +88,7 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
   );
 
   const isMemberOfCommunity = query.viewer?.user?.isMemberOfCommunity ?? false;
-  const userHasWallet = query.viewer?.user?.primaryWallet?.__typename === 'Wallet' ?? false;
+  const userHasWallet = query.viewer?.user?.primaryWallet?.__typename === 'Wallet';
 
   const { colorScheme } = useColorScheme();
   const { openManageWallet } = useManageWalletActions();

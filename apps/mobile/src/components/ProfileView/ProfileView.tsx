@@ -227,7 +227,7 @@ function ConnectedProfilePicture({ queryRef }: ConnectedProfilePictureProps) {
 
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
   const { openManageWallet } = useManageWalletActions();
-  const userHasWallet = query.viewer?.user?.primaryWallet?.__typename === 'Wallet' ?? false;
+  const userHasWallet = query.viewer?.user?.primaryWallet?.__typename === 'Wallet';
 
   const handlePress = useCallback(() => {
     if (!isLoggedInUser) {

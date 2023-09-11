@@ -231,7 +231,7 @@ function LazyPostIcon(props: TabItemProps) {
     {}
   );
 
-  const userHasWallet = query.viewer?.user?.primaryWallet?.__typename === 'Wallet' ?? false;
+  const userHasWallet = query.viewer?.user?.primaryWallet?.__typename === 'Wallet';
 
   return <TabItem {...props} hasWallet={userHasWallet} />;
 }
