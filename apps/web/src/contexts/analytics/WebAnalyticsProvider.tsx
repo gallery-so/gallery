@@ -4,6 +4,7 @@ import { memo, ReactNode } from 'react';
 
 import AnalyticsProvider, {
   IdentifyFunction,
+  RegisterSuperPropertiesFunction,
   TrackFunction,
 } from '~/shared/contexts/AnalyticsContext';
 
@@ -41,11 +42,26 @@ export const _identify: IdentifyFunction = (userId) => {
   }
 };
 
+export const _registerSuperProperties: RegisterSuperPropertiesFunction = (eventProps) => {
+  if (!mixpanelEnabled) return;
+
+  try {
+    mixpanel.register(eventProps);
+  } catch (error: unknown) {
+    // mixpanel errors shouldn't disrupt app
+    captureException(error);
+  }
+};
+
 type Props = { children: ReactNode };
 
 const WebAnalyticsProvider = memo(({ children }: Props) => {
   return (
-    <AnalyticsProvider track={_track} identify={_identify}>
+    <AnalyticsProvider
+      track={_track}
+      identify={_identify}
+      registerSuperProperties={_registerSuperProperties}
+    >
       {children}
     </AnalyticsProvider>
   );
