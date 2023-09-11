@@ -13,6 +13,7 @@ import { TezosIcon } from 'src/icons/TezosIcon';
 import { ZoraIcon } from 'src/icons/ZoraIcon';
 import isFeatureEnabled, { FeatureFlag } from 'src/utils/isFeatureEnabled';
 
+import { useManageWalletActions } from '~/contexts/ManageWalletContext';
 import { Chain, CommunityMetaFragment$key } from '~/generated/CommunityMetaFragment.graphql';
 import { CommunityMetaQueryFragment$key } from '~/generated/CommunityMetaQueryFragment.graphql';
 import { CommunityMetaRefetchQuery } from '~/generated/CommunityMetaRefetchQuery.graphql';
@@ -75,6 +76,9 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
             user {
               __typename
               isMemberOfCommunity(communityID: $communityID)
+              primaryWallet {
+                __typename
+              }
             }
           }
         }
@@ -84,8 +88,11 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
   );
 
   const isMemberOfCommunity = query.viewer?.user?.isMemberOfCommunity ?? false;
+  const userHasWallet = query.viewer?.user?.primaryWallet?.__typename === 'Wallet' ?? false;
 
   const { colorScheme } = useColorScheme();
+  const { openManageWallet } = useManageWalletActions();
+
   const isKoalaEnabled = isFeatureEnabled(FeatureFlag.KOALA, query);
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
@@ -106,13 +113,20 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
   }, [navigation, community?.contractAddress?.address]);
 
   const handlePress = useCallback(() => {
+    if (!userHasWallet) {
+      openManageWallet({
+        title: 'You need to connect a wallet to post',
+      });
+      return;
+    }
+
     if (isMemberOfCommunity) {
       handleCreatePost();
       return;
     }
 
     bottomSheetRef.current?.present();
-  }, [handleCreatePost, isMemberOfCommunity]);
+  }, [handleCreatePost, isMemberOfCommunity, openManageWallet, userHasWallet]);
 
   const PostIconColor = useMemo(() => {
     if (isMemberOfCommunity) {
