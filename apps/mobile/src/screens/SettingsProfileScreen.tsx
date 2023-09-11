@@ -7,14 +7,12 @@ import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/Gal
 import { Markdown } from '~/components/Markdown';
 import { PfpBottomSheet } from '~/components/PfpPicker/PfpBottomSheet';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
-import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { Typography } from '~/components/Typography';
+import { useManageWalletActions } from '~/contexts/ManageWalletContext';
 import { SettingsProfileScreenQuery } from '~/generated/SettingsProfileScreenQuery.graphql';
 import colors from '~/shared/theme/colors';
 
 export function SettingsProfileScreen() {
-  const { top } = useSafeAreaPadding();
-
   const query = useLazyLoadQuery<SettingsProfileScreenQuery>(
     graphql`
       query SettingsProfileScreenQuery {
@@ -23,6 +21,9 @@ export function SettingsProfileScreen() {
             user {
               bio
               username
+              primaryWallet {
+                __typename
+              }
 
               ...ProfilePictureFragment
             }
@@ -38,20 +39,24 @@ export function SettingsProfileScreen() {
   const user = query.viewer?.user;
 
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
+  const { openManageWallet } = useManageWalletActions();
+  const userHasWallet = query.viewer?.user?.primaryWallet?.__typename === 'Wallet' ?? false;
 
   const handlePress = useCallback(() => {
+    if (!userHasWallet) {
+      openManageWallet({});
+      return;
+    }
+
     bottomSheetRef.current?.present();
-  }, []);
+  }, [openManageWallet, userHasWallet]);
 
   if (!user) {
     return null;
   }
 
   return (
-    <View
-      style={{ paddingTop: top }}
-      className="flex-1 flex flex-col bg-white dark:bg-black-900 space-y-4"
-    >
+    <View className="flex-1 flex flex-col bg-white dark:bg-black-900 space-y-4">
       <View className="px-4">
         <BackButton />
       </View>
