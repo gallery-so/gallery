@@ -101,8 +101,8 @@ export function UpsellBanner() {
         />
         <GalleryTouchableOpacity
           className="p-2"
-          eventElementId="Close Upsell Banner"
-          eventName="Close Upsell Banner"
+          eventElementId="Close Connect Wallet Upsell Banner"
+          eventName="Close Connect Wallet Upsell Banner"
           onPress={handleDismissUpsellBanner}
         >
           <XMarkIcon color={colors.offWhite} />
