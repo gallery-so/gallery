@@ -8,7 +8,7 @@ import { CommunityPostListFallback } from './CommunityPostListFallback';
 
 export function CommunityViewFallback() {
   return (
-    <View className="flex-1 bg-white dark:bg-black px-4">
+    <View className="flex-1 bg-white dark:bg-black px-4 pt-4">
       <View className="mb-4">
         <GalleryProfileNavbarFallback shouldShowBackButton={true} />
       </View>

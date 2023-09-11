@@ -70,7 +70,7 @@ function CollectionScreenInner() {
   }, []);
 
   return (
-    <View className="flex flex-col flex-1 bg-white dark:bg-black-900">
+    <View className="flex flex-col flex-1 bg-white dark:bg-black-900 pt-4">
       <View className="px-4 pb-4">
         <GalleryProfileNavBar
           shouldShowBackButton

@@ -10,7 +10,7 @@ type Props = {
 
 export function ProfileViewFallback({ shouldShowBackButton }: Props) {
   return (
-    <View className="flex-1 bg-white dark:bg-black-900 px-4">
+    <View className="flex-1 bg-white dark:bg-black-900 px-4 pt-4">
       <GalleryProfileNavbarFallback shouldShowBackButton={shouldShowBackButton} />
 
       <GallerySkeleton>

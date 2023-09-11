@@ -91,7 +91,7 @@ export function CommunityView({ queryRef }: Props) {
 
   return (
     <View className="flex-1">
-      <View className="flex flex-col px-4 pb-4 z-10">
+      <View className="flex flex-col px-4 py-4 z-10">
         <View className="flex flex-row justify-between">
           <BackButton />
 

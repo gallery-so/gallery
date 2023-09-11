@@ -73,7 +73,7 @@ export function ProfileView({ queryRef, shouldShowBackButton }: ProfileViewProps
     <View className="flex-1">
       <GalleryViewEmitter queryRef={query} />
 
-      <View className="flex flex-col px-4 pb-1 z-10 bg-white dark:bg-black-900">
+      <View className="flex flex-col px-4 pt-4 pb-1 z-10 bg-white dark:bg-black-900">
         <ConnectedGalleryProfileNavbar
           queryRef={query}
           shouldShowBackButton={shouldShowBackButton}
