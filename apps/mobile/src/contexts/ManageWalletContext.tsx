@@ -18,8 +18,13 @@ import useSyncTokens from '~/screens/NftSelectorScreen/useSyncTokens';
 import useAddWallet from '~/shared/hooks/useAddWallet';
 import useCreateNonce from '~/shared/hooks/useCreateNonce';
 
+type openManageWalletProps = {
+  title?: string;
+  onSuccess?: () => void;
+};
+
 type ManageWalletActions = {
-  openManageWallet: ({ title }: { title?: string }) => void;
+  openManageWallet: ({ title, onSuccess }: openManageWalletProps) => void;
   dismissManageWallet: () => void;
   isSigningIn: boolean;
 };
@@ -50,15 +55,20 @@ const ManageWalletProvider = memo(({ children }: Props) => {
 
   // To track if the user has signed the message
   const hasSigned = useRef(false);
+  const onSuccessRef = useRef<(() => void) | null>(null);
 
   const web3Provider = useMemo(
     () => (provider ? new ethers.providers.Web3Provider(provider) : undefined),
     [provider]
   );
 
-  const openManageWallet = useCallback(({ title }: { title?: string }) => {
+  const openManageWallet = useCallback(({ title, onSuccess = () => {} }: openManageWalletProps) => {
     if (title) {
       setTitle(title);
+    }
+
+    if (onSuccess) {
+      onSuccessRef.current = onSuccess;
     }
 
     bottomSheet.current?.present();
@@ -107,6 +117,11 @@ const ManageWalletProvider = memo(({ children }: Props) => {
       }
 
       bottomSheet.current?.dismiss();
+
+      if (onSuccessRef.current) {
+        onSuccessRef.current();
+        onSuccessRef.current = null;
+      }
     } catch (error) {
       provider?.disconnect();
     } finally {
