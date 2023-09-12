@@ -105,28 +105,31 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
   }, [community.creator, navigation]);
 
   const handleCreatePost = useCallback(() => {
+    if (!isMemberOfCommunity) {
+      bottomSheetRef.current?.present();
+      return;
+    }
+
     if (!community?.contractAddress?.address) return;
     navigation.navigate('NftSelectorContractScreen', {
       contractAddress: community?.contractAddress?.address,
       page: 'Community',
     });
-  }, [navigation, community?.contractAddress?.address]);
+  }, [community?.contractAddress?.address, isMemberOfCommunity, navigation]);
 
   const handlePress = useCallback(() => {
     if (!userHasWallet) {
       openManageWallet({
         title: 'You need to connect a wallet to post',
+        onSuccess: () => {
+          handleCreatePost();
+        },
       });
       return;
     }
 
-    if (isMemberOfCommunity) {
-      handleCreatePost();
-      return;
-    }
-
-    bottomSheetRef.current?.present();
-  }, [handleCreatePost, isMemberOfCommunity, openManageWallet, userHasWallet]);
+    handleCreatePost();
+  }, [handleCreatePost, openManageWallet, userHasWallet]);
 
   const PostIconColor = useMemo(() => {
     if (isMemberOfCommunity) {
