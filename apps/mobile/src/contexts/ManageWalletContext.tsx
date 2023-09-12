@@ -52,7 +52,7 @@ const ManageWalletProvider = memo(({ children }: Props) => {
   const { isSyncing, syncTokens } = useSyncTokenstActions();
 
   const [isSigningIn, setIsSigningIn] = useState(false);
-  const [title, setTitle] = useState('Which Network');
+  const [title, setTitle] = useState('Network');
 
   // To track if the user has signed the message
   const hasSigned = useRef(false);
