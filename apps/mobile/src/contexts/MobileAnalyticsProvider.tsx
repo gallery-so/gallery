@@ -4,6 +4,7 @@ import { PropsWithChildren } from 'react';
 import { env } from '~/env/runtime';
 import AnalyticsProvider, {
   IdentifyFunction,
+  RegisterSuperPropertiesFunction,
   TrackFunction,
 } from '~/shared/contexts/AnalyticsContext';
 
@@ -29,9 +30,17 @@ const identify: IdentifyFunction = (userId) => {
   instance?.identify(userId);
 };
 
+const registerSuperProperties: RegisterSuperPropertiesFunction = (eventProps) => {
+  instance?.registerSuperProperties(eventProps);
+};
+
 export function MobileAnalyticsProvider({ children }: PropsWithChildren) {
   return (
-    <AnalyticsProvider track={track} identify={identify}>
+    <AnalyticsProvider
+      track={track}
+      identify={identify}
+      registerSuperProperties={registerSuperProperties}
+    >
       {children}
     </AnalyticsProvider>
   );

@@ -1,4 +1,12 @@
-import { createContext, memo, ReactNode, useCallback, useContext, useEffect } from 'react';
+import {
+  createContext,
+  memo,
+  ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import { useRelayEnvironment } from 'react-relay';
 import { fetchQuery, graphql } from 'relay-runtime';
 
@@ -39,6 +47,7 @@ const AnalyticsContextQueryNode = graphql`
       ... on Viewer {
         user {
           dbid
+          roles
         }
       }
     }
@@ -47,15 +56,18 @@ const AnalyticsContextQueryNode = graphql`
 
 export type TrackFunction = (eventName: string, eventProps: EventProps) => void;
 export type IdentifyFunction = (userId: string) => void;
+export type RegisterSuperPropertiesFunction = (eventProps: EventProps) => void;
 
 type Props = {
   children: ReactNode;
   track: TrackFunction;
   identify: IdentifyFunction;
+  registerSuperProperties: RegisterSuperPropertiesFunction;
 };
 
-const AnalyticsProvider = memo(({ children, identify, track }: Props) => {
+const AnalyticsProvider = memo(({ children, identify, track, registerSuperProperties }: Props) => {
   const relayEnvironment = useRelayEnvironment();
+  const [isBetaTester, setIsBetaTester] = useState<boolean>(false);
 
   useEffect(() => {
     fetchQuery<AnalyticsContextQuery>(
@@ -66,22 +78,27 @@ const AnalyticsProvider = memo(({ children, identify, track }: Props) => {
     )
       .toPromise()
       .then((query) => {
-        const userId = query?.viewer?.user?.dbid;
+        const user = query?.viewer?.user;
+        const userId = user?.dbid;
 
         // don't identify unauthenticated users
         if (!userId) {
           return;
         }
-
         identify(userId);
+
+        if (user.roles?.includes('BETA_TESTER')) {
+          setIsBetaTester(true);
+          registerSuperProperties({ isBetaTester: true });
+        }
       });
-  }, [identify, relayEnvironment]);
+  }, [identify, registerSuperProperties, relayEnvironment]);
 
   const handleTrack: HookTrackFunction = useCallback(
     (eventName, eventProps = {}) => {
-      track(eventName, eventProps);
+      track(eventName, { ...eventProps, isBetaTester });
     },
-    [track]
+    [isBetaTester, track]
   );
 
   return <AnalyticsContext.Provider value={handleTrack}>{children}</AnalyticsContext.Provider>;
