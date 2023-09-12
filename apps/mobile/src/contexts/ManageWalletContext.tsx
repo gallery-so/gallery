@@ -14,9 +14,10 @@ import {
 
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { WalletSelectorBottomSheet } from '~/components/Login/WalletSelectorBottomSheet';
-import useSyncTokens from '~/screens/NftSelectorScreen/useSyncTokens';
 import useAddWallet from '~/shared/hooks/useAddWallet';
 import useCreateNonce from '~/shared/hooks/useCreateNonce';
+
+import { useSyncTokenstActions } from './SyncTokensContext';
 
 type openManageWalletProps = {
   title?: string;
@@ -48,7 +49,7 @@ const ManageWalletProvider = memo(({ children }: Props) => {
   const bottomSheet = useRef<GalleryBottomSheetModalType | null>(null);
   const createNonce = useCreateNonce();
   const addWallet = useAddWallet();
-  const { isSyncing, syncTokens } = useSyncTokens();
+  const { isSyncing, syncTokens } = useSyncTokenstActions();
 
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [title, setTitle] = useState('Which Network');

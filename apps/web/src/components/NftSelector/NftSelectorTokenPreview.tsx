@@ -21,7 +21,7 @@ type Props = {
 const NftSelectorTokenCollection = ({ title }: { title: string }) => {
   return (
     <StyledNftSelectorTokenCollection>
-      <BaseM>{title}</BaseM>
+      <StyledBaseM>{title}</StyledBaseM>
     </StyledNftSelectorTokenCollection>
   );
 };
@@ -82,6 +82,17 @@ export function NftSelectorTokenPreview({
     </StyledNftSelectorTokensContainer>
   );
 }
+
+const StyledBaseM = styled(BaseM)`
+  word-wrap: break-word;
+  word-break: break-all;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  line-clamp: 1;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
 
 const StyledNftSelectorTokenCollection = styled.div`
   position: absolute;

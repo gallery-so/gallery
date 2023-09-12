@@ -4,9 +4,9 @@ import { Text, View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 import { RefreshIcon } from 'src/icons/RefreshIcon';
 
+import { useSyncTokenstActions } from '~/contexts/SyncTokensContext';
 import { useToastActions } from '~/contexts/ToastContext';
 import { CommunityPostBottomSheetFragment$key } from '~/generated/CommunityPostBottomSheetFragment.graphql';
-import useSyncTokens from '~/screens/NftSelectorScreen/useSyncTokens';
 
 import { Button } from '../Button';
 import {
@@ -38,7 +38,7 @@ function CommunityPostBottomSheet(
   );
 
   const { bottom } = useSafeAreaPadding();
-  const { isSyncing, syncTokens } = useSyncTokens();
+  const { isSyncing, syncTokens } = useSyncTokenstActions();
   const { pushToast } = useToastActions();
 
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
