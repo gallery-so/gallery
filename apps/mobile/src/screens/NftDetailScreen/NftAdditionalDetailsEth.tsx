@@ -7,7 +7,6 @@ import { graphql } from 'relay-runtime';
 import { NftAdditionalDetailsEthFragment$key } from '~/generated/NftAdditionalDetailsEthFragment.graphql';
 import colors from '~/shared/theme/colors';
 import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
-import { hexHandler } from '~/shared/utils/getOpenseaExternalUrl';
 
 import { LinkableAddress } from '../../components/LinkableAddress';
 import { DetailExternalLink, DetailLabelText, DetailSection, DetailValue } from './DetailSection';
@@ -67,7 +66,7 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionalDetailsEthPro
           {tokenId && (
             <DetailSection>
               <DetailLabelText>TOKEN ID</DetailLabelText>
-              <DetailValue>{hexHandler(tokenId)}</DetailValue>
+              <DetailValue>{tokenId}</DetailValue>
             </DetailSection>
           )}
 

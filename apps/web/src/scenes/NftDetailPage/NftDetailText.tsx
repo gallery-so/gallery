@@ -22,7 +22,7 @@ import { useBreakpoint, useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { NftAdditionalDetails } from '~/scenes/NftDetailPage/NftAdditionalDetails/NftAdditionalDetails';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
-import { getOpenseaExternalUrl } from '~/shared/utils/getOpenseaExternalUrl';
+import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
 import unescape from '~/shared/utils/unescape';
 import { getCommunityUrlForToken } from '~/utils/getCommunityUrlForToken';
 import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
@@ -65,6 +65,7 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset, queryRef }: Props
         ...NftAdditionalDetailsFragment
         ...getCommunityUrlForTokenFragment
         ...PostComposerModalFragment
+        ...extractRelevantMetadataFromTokenFragment
       }
     `,
     tokenRef
@@ -90,27 +91,21 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset, queryRef }: Props
   const isMobile = useIsMobileWindowWidth();
   const horizontalLayout = breakpoint === size.desktop || breakpoint === size.tablet;
 
-  const openseaExternalUrl = useMemo(() => {
-    if (token.chain && token.contract?.contractAddress?.address && token.tokenId) {
-      getOpenseaExternalUrl(token.chain, token.contract.contractAddress.address, token.tokenId);
-    }
-
-    return '';
-  }, [token.chain, token.contract?.contractAddress?.address, token.tokenId]);
+  const { openseaUrl } = extractRelevantMetadataFromToken(token);
 
   const handleBuyNowClick = useCallback(() => {
     track('Buy Now Button Click', {
       username: token.owner?.username ? token.owner.username.toLowerCase() : undefined,
       contractAddress: token.contract?.contractAddress?.address,
       tokenId: token.tokenId,
-      externaUrl: openseaExternalUrl,
+      externaUrl: openseaUrl,
     });
   }, [
     track,
     token.owner?.username,
     token.contract?.contractAddress?.address,
     token.tokenId,
-    openseaExternalUrl,
+    openseaUrl,
   ]);
 
   const handleCreatorNameClick = useCallback(() => {
@@ -119,14 +114,14 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset, queryRef }: Props
       username: token.owner?.username ? token.owner.username.toLowerCase() : undefined,
       contractAddress: token.contract?.contractAddress?.address,
       tokenId: token.tokenId,
-      externaUrl: openseaExternalUrl,
+      externaUrl: openseaUrl,
     });
   }, [
     track,
     token.owner?.username,
     token.contract?.contractAddress?.address,
     token.tokenId,
-    openseaExternalUrl,
+    openseaUrl,
   ]);
 
   const handleCollectorNameClick = useCallback(() => {
@@ -134,14 +129,14 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset, queryRef }: Props
       username: token.owner?.username ? token.owner.username.toLowerCase() : undefined,
       contractAddress: token.contract?.contractAddress?.address,
       tokenId: token.tokenId,
-      externaUrl: openseaExternalUrl,
+      externaUrl: openseaUrl,
     });
   }, [
     track,
     token.owner?.username,
     token.contract?.contractAddress?.address,
     token.tokenId,
-    openseaExternalUrl,
+    openseaUrl,
   ]);
 
   const communityUrl = getCommunityUrlForToken(token);
@@ -242,7 +237,7 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset, queryRef }: Props
             {SHOW_BUY_NOW_BUTTON && (
               <VStack gap={24}>
                 <HorizontalBreak />
-                <StyledInteractiveLink href={openseaExternalUrl} onClick={handleBuyNowClick}>
+                <StyledInteractiveLink href={openseaUrl} onClick={handleBuyNowClick}>
                   <StyledButton>Buy Now</StyledButton>
                 </StyledInteractiveLink>
               </VStack>

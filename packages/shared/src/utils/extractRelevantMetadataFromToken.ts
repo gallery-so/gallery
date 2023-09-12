@@ -5,9 +5,13 @@ import { extractRelevantMetadataFromTokenFragment$key } from '~/generated/extrac
 import { isChainEvm } from './chains';
 import { extractMirrorXyzUrl } from './extractMirrorXyzUrl';
 import { DateFormatOption, getFormattedDate } from './getFormattedDate';
-import { getOpenseaExternalUrl, hexHandler } from './getOpenseaExternalUrl';
-import getProhibitionUrl from './getProhibitionUrl';
-import { getFxHashExternalUrl, getObjktExternalUrl } from './getTezosExternalUrl';
+import { getOpenseaExternalUrlDangerously } from './getOpenseaExternalUrl';
+import { getProhibitionUrlDangerously } from './getProhibitionUrl';
+import {
+  getFxHashExternalUrlDangerously,
+  getObjktExternalUrlDangerously,
+} from './getTezosExternalUrl';
+import { hexToDec } from './hexToDec';
 import processProjectUrl from './processProjectUrl';
 
 export function extractRelevantMetadataFromToken(
@@ -57,20 +61,20 @@ export function extractRelevantMetadataFromToken(
   };
 
   if (tokenId) {
-    result.tokenId = hexHandler(tokenId);
+    result.tokenId = hexToDec(tokenId);
   }
 
   if (contractAddress && tokenId) {
-    result.prohibitionUrl = getProhibitionUrl(contractAddress, result.tokenId);
-    result.fxhashUrl = getFxHashExternalUrl(contractAddress, result.tokenId);
-    result.objktUrl = getObjktExternalUrl(contractAddress, result.tokenId);
+    result.prohibitionUrl = getProhibitionUrlDangerously(contractAddress, tokenId);
+    result.fxhashUrl = getFxHashExternalUrlDangerously(contractAddress, tokenId);
+    result.objktUrl = getObjktExternalUrlDangerously(contractAddress, tokenId);
     if (
       chain &&
       // eslint-disable-next-line relay/no-future-added-value
       chain !== '%future added value' &&
       isChainEvm(chain)
     ) {
-      result.openseaUrl = getOpenseaExternalUrl(chain, contractAddress, result.tokenId);
+      result.openseaUrl = getOpenseaExternalUrlDangerously(chain, contractAddress, tokenId);
     }
   }
 
