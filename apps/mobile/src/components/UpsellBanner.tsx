@@ -4,6 +4,7 @@ import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 import { XMarkIcon } from 'src/icons/XMarkIcon';
+import isFeatureEnabled, { FeatureFlag } from 'src/utils/isFeatureEnabled';
 
 import { useManageWalletActions } from '~/contexts/ManageWalletContext';
 import { UpsellBannerQuery } from '~/generated/UpsellBannerQuery.graphql';
@@ -27,6 +28,7 @@ export function UpsellBanner() {
             }
           }
         }
+        ...isFeatureEnabledFragment
       }
     `,
     {}
@@ -35,6 +37,8 @@ export function UpsellBanner() {
   const { top } = useSafeAreaInsets();
 
   const [isUpsellBannerDismissed, setIsUpsellBannerDismissed] = useState(false);
+
+  const isOnboardingEnabled = isFeatureEnabled(FeatureFlag.ONBOARDING, query);
 
   const { openManageWallet } = useManageWalletActions();
 
@@ -57,7 +61,7 @@ export function UpsellBanner() {
     AsyncStorage.setItem('isUpsellBannerDismissed', 'true');
   }, []);
 
-  if (userHasWallet || isUpsellBannerDismissed) {
+  if (userHasWallet || isUpsellBannerDismissed || !isOnboardingEnabled) {
     return (
       <View
         style={{

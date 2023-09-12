@@ -8,6 +8,7 @@ import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 export enum FeatureFlag {
   KOALA = 'KOALA',
+  ONBOARDING = 'ONBOARDING',
 }
 
 // We need to ignore this fake value from Relay here since we're expecting
@@ -18,12 +19,15 @@ type Role = Exclude<RelayRole, '%future added value'>;
 const ROLE_FLAGS: Record<Role, Record<FeatureFlag, boolean>> = {
   ADMIN: {
     KOALA: true,
+    ONBOARDING: true,
   },
   BETA_TESTER: {
     KOALA: true,
+    ONBOARDING: false,
   },
   EARLY_ACCESS: {
     KOALA: false,
+    ONBOARDING: false,
   },
 };
 
