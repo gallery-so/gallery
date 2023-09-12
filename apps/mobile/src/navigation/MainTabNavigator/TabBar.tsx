@@ -60,9 +60,16 @@ function TabItem({ navigation, route, icon, activeRoute, hasWallet }: TabItemPro
       hasWallet
         ? navigation.navigate('PostNftSelector', {
             screen: 'Post',
+            fullScreen: true,
           })
         : openManageWallet({
             title: 'You need to connect a wallet to post',
+            onSuccess: () => {
+              navigation.navigate('PostNftSelector', {
+                screen: 'Post',
+                fullScreen: true,
+              });
+            },
           });
     } else {
       if (!isFocused && !event.defaultPrevented) {

@@ -235,7 +235,11 @@ function ConnectedProfilePicture({ queryRef }: ConnectedProfilePictureProps) {
     }
 
     if (!userHasWallet) {
-      openManageWallet({});
+      openManageWallet({
+        onSuccess: () => {
+          bottomSheetRef.current?.present();
+        },
+      });
       return;
     }
 

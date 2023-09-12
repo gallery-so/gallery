@@ -39,9 +39,14 @@ export type MainTabStackNavigatorParamList = {
   FeedEvent: { eventId: string };
   Community: { contractAddress: string; chain: string };
   ProfilePicturePicker: {
+    fullScreen?: boolean;
     page: ScreenWithNftSelector;
   };
-  NftSelectorContractScreen: { contractAddress: string; page: ScreenWithNftSelector };
+  NftSelectorContractScreen: {
+    contractAddress: string;
+    fullScreen?: boolean;
+    page: ScreenWithNftSelector;
+  };
   SettingsProfile: undefined;
   Post: { postId: string };
   NotificationSettingsScreen: undefined;
@@ -98,6 +103,7 @@ export type LoginStackNavigatorParamList = {
 
   OnboardingNftSelector: {
     page: ScreenWithNftSelector;
+    fullScreen?: boolean;
   };
 };
 

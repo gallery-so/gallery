@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/native';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import { ResizeMode } from 'expo-av';
 import { useCallback, useMemo, useState } from 'react';
@@ -18,7 +18,11 @@ import {
   NftSelectorPickerGridTokensFragment$data,
   NftSelectorPickerGridTokensFragment$key,
 } from '~/generated/NftSelectorPickerGridTokensFragment.graphql';
-import { MainTabStackNavigatorProp, ScreenWithNftSelector } from '~/navigation/types';
+import {
+  MainTabStackNavigatorParamList,
+  MainTabStackNavigatorProp,
+  ScreenWithNftSelector,
+} from '~/navigation/types';
 import {
   NetworkChoice,
   NftSelectorSortView,
@@ -285,6 +289,9 @@ function TokenGrid({ tokenRefs, contractAddress, screen, style }: TokenGridProps
   );
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
+  const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'NftSelectorContractScreen'>>();
+
+  const isFullscreen = route.params.fullScreen;
 
   type Row = { tokens: string[] };
 
@@ -306,6 +313,7 @@ function TokenGrid({ tokenRefs, contractAddress, screen, style }: TokenGridProps
         navigation.navigate('NftSelectorContractScreen', {
           contractAddress: contractAddress,
           page: screen,
+          fullScreen: isFullscreen,
         });
       }}
       style={style}

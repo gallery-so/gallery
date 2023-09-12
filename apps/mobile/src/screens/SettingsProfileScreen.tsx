@@ -44,7 +44,11 @@ export function SettingsProfileScreen() {
 
   const handlePress = useCallback(() => {
     if (!userHasWallet) {
-      openManageWallet({});
+      openManageWallet({
+        onSuccess: () => {
+          bottomSheetRef.current?.present();
+        },
+      });
       return;
     }
 
