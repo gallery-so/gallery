@@ -2,7 +2,6 @@ import * as Application from 'expo-application';
 import * as Notifications from 'expo-notifications';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Alert, Linking, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRelayEnvironment } from 'react-relay';
 
 import { BackButton } from '~/components/BackButton';
@@ -12,7 +11,6 @@ import { Typography } from '~/components/Typography';
 
 export function NotificationSettingsScreen() {
   const relayEnvironment = useRelayEnvironment();
-  const { top } = useSafeAreaInsets();
 
   const [pushNotificationPermissions, setPushNotificationPermissions] =
     useState<Notifications.NotificationPermissionsStatus | null>(null);
@@ -57,7 +55,7 @@ export function NotificationSettingsScreen() {
   );
 
   return (
-    <View style={{ paddingTop: top }} className="relative pt-4 flex-1 bg-white dark:bg-black-900">
+    <View className="relative pt-4 flex-1 bg-white dark:bg-black-900">
       <View className="px-4 relative mb-2">
         <BackButton />
       </View>
