@@ -132,17 +132,17 @@ export default function App() {
                     <SearchProvider>
                       <NavigationContainer ref={navigationRef}>
                         <ToastProvider>
-                          <ManageWalletProvider>
+                          <BottomSheetModalProvider>
                             <SyncTokensProvider>
-                              <BottomSheetModalProvider>
+                              <ManageWalletProvider>
                                 {/* Register the user's push token if one exists (does not prompt the user) */}
                                 <NotificationRegistrar />
                                 <DevMenuItems />
                                 <DeepLinkRegistrar />
                                 <RootStackNavigator navigationContainerRef={navigationRef} />
-                              </BottomSheetModalProvider>
+                              </ManageWalletProvider>
                             </SyncTokensProvider>
-                          </ManageWalletProvider>
+                          </BottomSheetModalProvider>
                         </ToastProvider>
                       </NavigationContainer>
                     </SearchProvider>
