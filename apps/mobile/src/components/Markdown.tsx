@@ -1,7 +1,7 @@
 import merge from 'lodash.merge';
 import { useColorScheme } from 'nativewind';
 import { PropsWithChildren, useCallback, useMemo, useState } from 'react';
-import { StyleProp, Text, View } from 'react-native';
+import { StyleProp, Text, View, Linking } from 'react-native';
 import MarkdownDisplay, { MarkdownIt, RenderRules } from 'react-native-markdown-display';
 
 import colors from '~/shared/theme/colors';
@@ -34,6 +34,7 @@ const lightModeMarkdownStyles = {
 };
 
 type GalleryMarkdownProps = PropsWithChildren<{
+  onLinkPress?: (url: string) => void;
   numberOfLines?: number;
   touchToExpand?: boolean;
   style?: StyleProp<unknown>;
@@ -43,6 +44,7 @@ const markdownItOptions = MarkdownIt({ typographer: true, linkify: false }).disa
 
 export function Markdown({
   children,
+  onLinkPress,
   touchToExpand = false,
   numberOfLines,
   style,
@@ -93,16 +95,25 @@ export function Markdown({
     setShowAll((previous) => !previous);
   }, []);
 
-  return (
-    <GalleryTouchableOpacity
-      eventElementId={null}
-      eventName={null}
-      onPress={handlePress}
-      disabled={numberOfLines === undefined || !touchToExpand}
-    >
-      <MarkdownDisplay markdownit={markdownItOptions} rules={rules} style={mergedStyles}>
-        {children}
-      </MarkdownDisplay>
-    </GalleryTouchableOpacity>
-  );
+  const onFinalLinkPress = (url: string) => {
+    if (url && onLinkPress) {
+      onLinkPress(url);
+      return false;
+    }
+
+    return true
+  }
+
+    return (
+      <GalleryTouchableOpacity
+        eventElementId={null}
+        eventName={null}
+        onPress={handlePress}
+        disabled={numberOfLines === undefined || !touchToExpand}
+      >
+        <MarkdownDisplay onLinkPress={onFinalLinkPress} markdownit={markdownItOptions} rules={rules} style={mergedStyles}>
+          {children}
+        </MarkdownDisplay>
+      </GalleryTouchableOpacity>
+    );
 }
