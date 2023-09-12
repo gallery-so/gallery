@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -11,7 +11,7 @@ import { CommunityHolderGridItemFragment$key } from '~/generated/CommunityHolder
 import { CommunityHolderGridItemQueryFragment$key } from '~/generated/CommunityHolderGridItemQueryFragment.graphql';
 import TokenDetailView from '~/scenes/TokenDetailPage/TokenDetailView';
 import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
-import { getOpenseaExternalUrl } from '~/shared/utils/getOpenseaExternalUrl';
+import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
 import { graphqlTruncateUniversalUsername } from '~/shared/utils/wallet';
 
 import HoverCardOnUsername from '../HoverCard/HoverCardOnUsername';
@@ -26,13 +26,6 @@ export default function CommunityHolderGridItem({ holderRef, queryRef }: Props) 
     graphql`
       fragment CommunityHolderGridItemFragment on Token {
         name
-        tokenId
-        chain
-        contract {
-          contractAddress {
-            address
-          }
-        }
         owner @required(action: THROW) {
           username @required(action: THROW)
           universal
@@ -41,6 +34,7 @@ export default function CommunityHolderGridItem({ holderRef, queryRef }: Props) 
         }
         ...useGetPreviewImagesSingleFragment
         ...TokenDetailViewFragment
+        ...extractRelevantMetadataFromTokenFragment
       }
     `,
     holderRef
@@ -57,7 +51,7 @@ export default function CommunityHolderGridItem({ holderRef, queryRef }: Props) 
 
   const { showModal } = useModalActions();
 
-  const { tokenId, contract, owner, chain } = token;
+  const { owner } = token;
 
   const usernameWithFallback = owner ? graphqlTruncateUniversalUsername(owner) : null;
 
@@ -67,17 +61,11 @@ export default function CommunityHolderGridItem({ holderRef, queryRef }: Props) 
   // skipping for now since this component is rarely ever visited
   const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size: 'large' }) ?? '';
 
-  const openSeaExternalUrl = useMemo(() => {
-    if (chain && contract?.contractAddress?.address && tokenId) {
-      return getOpenseaExternalUrl(chain, contract.contractAddress.address, tokenId);
-    }
-
-    return '';
-  }, [chain, contract?.contractAddress?.address, tokenId]);
+  const { openseaUrl } = extractRelevantMetadataFromToken(token);
 
   const handleClick = useCallback(() => {
     if (owner?.universal) {
-      window.open(openSeaExternalUrl, '_blank');
+      window.open(openseaUrl, '_blank');
       return;
     }
 
@@ -89,7 +77,7 @@ export default function CommunityHolderGridItem({ holderRef, queryRef }: Props) 
       ),
       isFullPage: true,
     });
-  }, [openSeaExternalUrl, owner?.universal, query, showModal, token]);
+  }, [openseaUrl, owner?.universal, query, showModal, token]);
 
   return (
     <VStack gap={8}>
