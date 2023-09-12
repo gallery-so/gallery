@@ -12,6 +12,7 @@ import { IconContainer } from '~/components/IconContainer';
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { Select } from '~/components/Select';
 import { Typography } from '~/components/Typography';
+import { useSyncTokenstActions } from '~/contexts/SyncTokensContext';
 import { useToastActions } from '~/contexts/ToastContext';
 import { NftSelectorPickerScreenFragment$key } from '~/generated/NftSelectorPickerScreenFragment.graphql';
 import { NftSelectorPickerScreenQuery } from '~/generated/NftSelectorPickerScreenQuery.graphql';
@@ -26,7 +27,6 @@ import {
 } from './NftSelectorFilterBottomSheet';
 import { NftSelectorPickerGrid } from './NftSelectorPickerGrid';
 import { NftSelectorScreenFallback } from './NftSelectorScreenFallback';
-import useSyncTokens from './useSyncTokens';
 
 export function NftSelectorPickerScreen() {
   const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'ProfilePicturePicker'>>();
@@ -163,7 +163,8 @@ type AnimatedRefreshIconProps = {
 };
 
 function AnimatedRefreshIcon({ networkFilter, onRefresh }: AnimatedRefreshIconProps) {
-  const { isSyncing, syncTokens } = useSyncTokens();
+  const { isSyncing, syncTokens } = useSyncTokenstActions();
+
   const { pushToast } = useToastActions();
 
   const handleSync = useCallback(async () => {

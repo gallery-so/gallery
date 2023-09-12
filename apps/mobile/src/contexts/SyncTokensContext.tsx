@@ -1,14 +1,33 @@
-import { useCallback, useMemo, useState } from 'react';
-import { graphql } from 'relay-runtime';
+import { createContext, memo, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
+import { graphql } from 'react-relay';
 
-import { useToastActions } from '~/contexts/ToastContext';
-import { Chain, useSyncTokensMutation } from '~/generated/useSyncTokensMutation.graphql';
+import { Chain, SyncTokensContextMutation } from '~/generated/SyncTokensContextMutation.graphql';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 
-export default function useSyncTokens() {
-  const [syncTokens] = usePromisifiedMutation<useSyncTokensMutation>(
+import { useToastActions } from './ToastContext';
+
+type SyncTokensActions = {
+  syncTokens: (chain: Chain) => void;
+  isSyncing: boolean;
+};
+
+const SyncTokensActionsContext = createContext<SyncTokensActions | undefined>(undefined);
+
+export const useSyncTokenstActions = (): SyncTokensActions => {
+  const context = useContext(SyncTokensActionsContext);
+  if (!context) {
+    throw new Error('Attempted to use SyncTokensActionsContext without a provider!');
+  }
+
+  return context;
+};
+
+type Props = { children: ReactNode };
+
+const SyncTokensProvider = memo(({ children }: Props) => {
+  const [syncTokens] = usePromisifiedMutation<SyncTokensContextMutation>(
     graphql`
-      mutation useSyncTokensMutation($chain: Chain!) {
+      mutation SyncTokensContextMutation($chain: Chain!) {
         syncTokens(chains: [$chain]) {
           __typename
           ... on SyncTokensPayload {
@@ -36,6 +55,7 @@ export default function useSyncTokens() {
   const [isSyncing, setIsSyncing] = useState(false);
 
   const { pushToast } = useToastActions();
+
   const sync = useCallback(
     async (chain: Chain) => {
       function showFailure() {
@@ -66,7 +86,15 @@ export default function useSyncTokens() {
     [pushToast, syncTokens]
   );
 
-  return useMemo(() => {
+  const value = useMemo(() => {
     return { syncTokens: sync, isSyncing };
   }, [isSyncing, sync]);
-}
+
+  return (
+    <SyncTokensActionsContext.Provider value={value}>{children}</SyncTokensActionsContext.Provider>
+  );
+});
+
+SyncTokensProvider.displayName = 'SyncTokensProvider';
+
+export default SyncTokensProvider;

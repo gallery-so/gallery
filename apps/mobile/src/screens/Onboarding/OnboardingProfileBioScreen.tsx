@@ -13,6 +13,7 @@ import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/Gal
 import { WalletSelectorBottomSheet } from '~/components/Login/WalletSelectorBottomSheet';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { Typography } from '~/components/Typography';
+import { useSyncTokenstActions } from '~/contexts/SyncTokensContext';
 import { OnboardingProfileBioScreenQuery } from '~/generated/OnboardingProfileBioScreenQuery.graphql';
 import { LoginStackNavigatorProp } from '~/navigation/types';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
@@ -22,7 +23,6 @@ import useUpdateUser, { BIO_MAX_CHAR_COUNT } from '~/shared/hooks/useUpdateUser'
 import colors from '~/shared/theme/colors';
 
 import { navigateToNotificationUpsellOrHomeScreen } from '../Login/navigateToNotificationUpsellOrHomeScreen';
-import useSyncTokens from '../NftSelectorScreen/useSyncTokens';
 
 export function OnboardingProfileBioScreen() {
   const query = useLazyLoadQuery<OnboardingProfileBioScreenQuery>(
@@ -49,7 +49,7 @@ export function OnboardingProfileBioScreen() {
   const user = query?.viewer?.user;
   const { address, isConnected, provider } = useWalletConnectModal();
   const createNonce = useCreateNonce();
-  const { isSyncing, syncTokens } = useSyncTokens();
+  const { isSyncing, syncTokens } = useSyncTokenstActions();
 
   const track = useTrack();
   const navigation = useNavigation<LoginStackNavigatorProp>();
