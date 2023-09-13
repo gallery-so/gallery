@@ -11,6 +11,7 @@ import { Primitive } from 'relay-runtime/lib/store/RelayStoreTypes';
 import { ErrorReportingContext } from '../contexts/ErrorReportingContext';
 import { CouldNotRenderNftError } from './CouldNotRenderNftError';
 import { ErrorWithSentryMetadata } from './ErrorWithSentryMetadata';
+import { StillLoadingNftError } from './StillLoadingNftError';
 
 export type ReportingErrorBoundaryFallbackProps = { error: Error };
 
@@ -56,7 +57,11 @@ export class ReportingErrorBoundary extends Component<ReportingErrorBoundaryProp
     // since they're eating up our sentry credits.
     //
     // Also allow the user of this component to swallow errors
-    if (!this.props.dontReport && !(error instanceof CouldNotRenderNftError)) {
+    if (
+      !this.props.dontReport &&
+      !(error instanceof CouldNotRenderNftError) &&
+      !(error instanceof StillLoadingNftError)
+    ) {
       this.context?.(error);
     }
 
