@@ -1,8 +1,7 @@
 import { graphql, readInlineData } from 'relay-runtime';
 
+import { CouldNotRenderNftError } from '~/errors/CouldNotRenderNftError';
 import { getPreviewImageUrlsInlineDangerouslyFragment$key } from '~/generated/getPreviewImageUrlsInlineDangerouslyFragment.graphql';
-
-import { ErrorWithSentryMetadata } from '../errors/ErrorWithSentryMetadata';
 
 type UrlSet = {
   small: string | null;
@@ -22,7 +21,7 @@ export type GetPreviewImageUrlsResult =
     }
   | {
       type: 'error';
-      error: ErrorWithSentryMetadata;
+      error: CouldNotRenderNftError;
     };
 
 type Props = {
@@ -205,9 +204,13 @@ export function getPreviewImageUrlsInlineDangerously({
   if (!media) {
     return {
       type: 'error',
-      error: new ErrorWithSentryMetadata('No media or preview URLs returned for token!', {
-        id: token?.dbid,
-      }),
+      error: new CouldNotRenderNftError(
+        'getPreviewImageUrlsInlineDangerously',
+        'No media object returned for token!',
+        {
+          id: token?.dbid,
+        }
+      ),
     };
   }
 
@@ -233,10 +236,14 @@ export function getPreviewImageUrlsInlineDangerously({
   if (!previewUrls) {
     return {
       type: 'error',
-      error: new ErrorWithSentryMetadata('No media or preview URLs returned for token!', {
-        id: token?.dbid,
-        assetType: media?.__typename,
-      }),
+      error: new CouldNotRenderNftError(
+        'getPreviewImageUrlsInlineDangerously',
+        'No preview URLs returned for token!',
+        {
+          id: token?.dbid,
+          assetType: media?.__typename,
+        }
+      ),
     };
   }
 
