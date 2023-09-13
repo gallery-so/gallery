@@ -1,6 +1,7 @@
 import unescape from 'lodash/unescape';
 import { graphql, useFragment } from 'react-relay';
 
+import styled from 'styled-components';
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM } from '~/components/core/Text/Text';
@@ -50,6 +51,16 @@ export default function PostHeader({ postRef, queryRef }: Props) {
 
   const displayName = handleCustomDisplayName(post.author?.username ?? '');
 
+const urlRegex = /(?:https?|ftp):\/\/[^\s/$.?#].[^\s]*[^\s.,!?#$]/g;
+
+
+  // Function to convert URLs to Markdown links
+  const convertToMarkdownLinks = (text: string) => {
+    return text.replace(urlRegex, (url: string) => {
+      return `[${url}](${url})`;
+    });
+  };
+
   return (
     <VStack gap={6}>
       <HStack justify="space-between">
@@ -66,7 +77,15 @@ export default function PostHeader({ postRef, queryRef }: Props) {
           <PostDropdown postRef={post} queryRef={query} />
         </HStack>
       </HStack>
-      <BaseM>{post.caption && <Markdown text={unescape(post.caption)}></Markdown>}</BaseM>
+      <StyledBaseM>{post.caption && <Markdown text={unescape(convertToMarkdownLinks(post.caption))}></Markdown>}</StyledBaseM>
     </VStack>
-  );
+      );
 }
+
+const StyledBaseM = styled(BaseM)`
+  word-wrap: break-word;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
