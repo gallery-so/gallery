@@ -36,8 +36,6 @@ const lightModeMarkdownStyles = {
   },
 };
 
-// if onBypassLinkPress is provided, when a link is pressed onBypassLinkPress
-//  is executed or otherwise, by default, it navigates to link in browser
 type GalleryMarkdownProps = PropsWithChildren<{
   onBypassLinkPress?: (url: string) => void;
   numberOfLines?: number;
@@ -47,6 +45,8 @@ type GalleryMarkdownProps = PropsWithChildren<{
 
 const markdownItOptions = MarkdownIt({ typographer: true, linkify: false }).disable(['lheading']);
 
+// if onBypassLinkPress is provided, when a link is pressed onBypassLinkPress
+//  is executed or otherwise, by default, it navigates to link in browser
 export function Markdown({
   children,
   onBypassLinkPress,
