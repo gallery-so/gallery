@@ -1,21 +1,17 @@
-import { useState, useRef } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { useRef, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
-import { Markdown } from '~/components/Markdown';
-import { WarningLinkBottomSheet } from './WarningLinkBottomSheet';
 
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
+import { Markdown } from '~/components/Markdown';
 import { PostListCaptionFragment$key } from '~/generated/PostListCaptionFragment.graphql';
+import { convertToMarkdownLinks } from '~/shared/utils/convertToMarkdownLinks';
+
+import { WarningLinkBottomSheet } from './WarningLinkBottomSheet';
 
 type Props = {
   feedPostRef: PostListCaptionFragment$key;
 };
-
-const markdownStyles = StyleSheet.create({
-  body: {
-    fontSize: 14,
-  },
-});
 
 export function PostListCaption({ feedPostRef }: Props) {
   const feedPost = useFragment(
@@ -28,35 +24,30 @@ export function PostListCaption({ feedPostRef }: Props) {
     feedPostRef
   );
 
+  const [redirectUrl, setRedirectUrl] = useState('');
   const { caption } = feedPost;
-
-  // Regular expression to match URLs
-  const urlRegex = /(?:https?|ftp):\/\/[^\s/$.?#].[^\s]*[^\s.,!?#$]/g;
-
-  const [url, setUrl] = useState('');
-
-  // Function to convert URLs to Markdown links
-  const convertToMarkdownLinks = (text: string) => {
-    return text.replace(urlRegex, (url: string) => {
-      return `[${url}](${url})`;
-    });
-  };
 
   const captionWithMarkdownLinks = convertToMarkdownLinks(caption ?? '');
 
   const handleLinkPress = (url: string) => {
     bottomSheetRef.current?.present();
-    setUrl(url);
+    setRedirectUrl(url);
   };
 
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
 
   return (
     <View className="px-4 pb-4">
-      <Markdown onLinkPress={handleLinkPress} style={markdownStyles}>
+      <Markdown onBypassLinkPress={handleLinkPress} style={markdownStyles}>
         {captionWithMarkdownLinks}
       </Markdown>
-      <WarningLinkBottomSheet url={url} ref={bottomSheetRef} />
+      <WarningLinkBottomSheet redirectUrl={redirectUrl} ref={bottomSheetRef} />
     </View>
   );
 }
+
+const markdownStyles = StyleSheet.create({
+  body: {
+    fontSize: 14,
+  },
+});

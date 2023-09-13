@@ -1,6 +1,6 @@
 import { useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
 import { ForwardedRef, forwardRef, useRef } from 'react';
-import { View, Linking } from 'react-native';
+import { Linking, View } from 'react-native';
 
 import { Button } from '../../Button';
 import {
@@ -12,9 +12,8 @@ import { Typography } from '../../Typography';
 
 const SNAP_POINTS = ['CONTENT_HEIGHT'];
 
-// eslint-disable-next-line @typescript-eslint/ban-types
 type Props = {
-  url: string;
+  redirectUrl: string;
 };
 
 function WarningLinkBottomSheet(props: Props, ref: ForwardedRef<GalleryBottomSheetModalType>) {
@@ -27,7 +26,7 @@ function WarningLinkBottomSheet(props: Props, ref: ForwardedRef<GalleryBottomShe
 
   const handleCancel = () => bottomSheetRef.current?.dismiss();
 
-  const handleOpen = () => Linking.openURL(props.url);
+  const handleOpen = () => Linking.openURL(props.redirectUrl);
 
   return (
     <GalleryBottomSheetModal
@@ -61,7 +60,9 @@ function WarningLinkBottomSheet(props: Props, ref: ForwardedRef<GalleryBottomShe
             font={{ family: 'ABCDiatype', weight: 'Regular' }}
           >
             Confirm that you are going to{' '}
-            <Typography font={{ family: 'ABCDiatype', weight: 'Bold' }}>{props.url}</Typography>
+            <Typography font={{ family: 'ABCDiatype', weight: 'Bold' }}>
+              {props.redirectUrl}
+            </Typography>
           </Typography>
         </View>
 

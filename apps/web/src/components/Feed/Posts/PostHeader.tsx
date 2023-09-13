@@ -1,7 +1,7 @@
 import unescape from 'lodash/unescape';
 import { graphql, useFragment } from 'react-relay';
-
 import styled from 'styled-components';
+
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleDiatypeM } from '~/components/core/Text/Text';
@@ -9,6 +9,7 @@ import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { PostHeaderFragment$key } from '~/generated/PostHeaderFragment.graphql';
 import { PostHeaderQueryFragment$key } from '~/generated/PostHeaderQueryFragment.graphql';
+import { convertToMarkdownLinks } from '~/shared/utils/convertToMarkdownLinks';
 import { getTimeSince } from '~/shared/utils/time';
 import handleCustomDisplayName from '~/utils/handleCustomDisplayName';
 
@@ -51,16 +52,6 @@ export default function PostHeader({ postRef, queryRef }: Props) {
 
   const displayName = handleCustomDisplayName(post.author?.username ?? '');
 
-const urlRegex = /(?:https?|ftp):\/\/[^\s/$.?#].[^\s]*[^\s.,!?#$]/g;
-
-
-  // Function to convert URLs to Markdown links
-  const convertToMarkdownLinks = (text: string) => {
-    return text.replace(urlRegex, (url: string) => {
-      return `[${url}](${url})`;
-    });
-  };
-
   return (
     <VStack gap={6}>
       <HStack justify="space-between">
@@ -77,9 +68,13 @@ const urlRegex = /(?:https?|ftp):\/\/[^\s/$.?#].[^\s]*[^\s.,!?#$]/g;
           <PostDropdown postRef={post} queryRef={query} />
         </HStack>
       </HStack>
-      <StyledBaseM>{post.caption && <Markdown text={unescape(convertToMarkdownLinks(post.caption))}></Markdown>}</StyledBaseM>
+      <StyledBaseM>
+        {post.caption && (
+          <Markdown text={unescape(convertToMarkdownLinks(post.caption))}></Markdown>
+        )}
+      </StyledBaseM>
     </VStack>
-      );
+  );
 }
 
 const StyledBaseM = styled(BaseM)`
