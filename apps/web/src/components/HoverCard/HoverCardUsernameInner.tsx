@@ -91,7 +91,7 @@ export function HoverCardUsernameInner({ preloadedQuery }: Props) {
   const displayName = handleCustomDisplayName(user.username);
 
   return (
-    <VStack gap={4}>
+    <Section gap={4}>
       <StyledCardHeaderContainer gap={8}>
         <StyledCardHeader align="center" justify="space-between">
           <StyledUsernameAndBadge align="center" gap={4}>
@@ -126,13 +126,17 @@ export function HoverCardUsernameInner({ preloadedQuery }: Props) {
         )}
       </StyledCardHeaderContainer>
       {isLoggedIn && !isOwnProfile && <UserSharedInfo userRef={user} />}
-    </VStack>
+    </Section>
   );
 }
 
+const Section = styled(VStack)`
+  width: 100%;
+`;
+
 const StyledCardHeader = styled(HStack)`
   display: flex;
-
+  gap: 2px;
   min-width: 0;
   // enforce height on container since the follow button causes additional height
   height: 24px;
