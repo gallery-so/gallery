@@ -3,15 +3,12 @@ import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
 import { GallerySkeleton } from '~/components/GallerySkeleton';
 import { GalleryProfileNavbarFallback } from '~/components/ProfileView/GalleryProfileNavBar';
-import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 
 import { CommunityPostListFallback } from './CommunityPostListFallback';
 
 export function CommunityViewFallback() {
-  const { top } = useSafeAreaPadding();
-
   return (
-    <View className="flex-1 bg-white dark:bg-black px-4" style={{ paddingTop: top }}>
+    <View className="flex-1 bg-white dark:bg-black px-4 pt-4">
       <View className="mb-4">
         <GalleryProfileNavbarFallback shouldShowBackButton={true} />
       </View>

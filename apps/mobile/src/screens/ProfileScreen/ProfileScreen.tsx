@@ -10,7 +10,6 @@ import { ProfileView } from '~/components/ProfileView/ProfileView';
 import { ProfileViewFallback } from '~/components/ProfileView/ProfileViewFallback';
 import { SHARED_COMMUNITIES_PER_PAGE } from '~/components/ProfileView/ProfileViewSharedInfo/ProfileViewSharedCommunitiesSheet';
 import { SHARED_FOLLOWERS_PER_PAGE } from '~/components/ProfileView/ProfileViewSharedInfo/ProfileViewSharedFollowers';
-import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { ProfileScreenFeatureQuery } from '~/generated/ProfileScreenFeatureQuery.graphql';
 import { ProfileScreenQuery } from '~/generated/ProfileScreenQuery.graphql';
 import { ProfileScreenRefetchableFragment$key } from '~/generated/ProfileScreenRefetchableFragment.graphql';
@@ -71,11 +70,10 @@ function ProfileScreenInner() {
     wrapperQuery
   );
 
-  const { top } = useSafeAreaPadding();
   const { isRefreshing, handleRefresh } = useRefreshHandle(refetch);
 
   return (
-    <View style={{ flex: 1, paddingTop: top }}>
+    <View style={{ flex: 1 }}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ flex: 1 }}
@@ -93,7 +91,7 @@ export function ProfileScreen() {
   const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'Profile'>>();
 
   return (
-    <View className="flex-1 bg-white dark:bg-black-900">
+    <View className="flex-1 bg-white dark:bg-black-900 ">
       <Suspense
         fallback={<ProfileViewFallback shouldShowBackButton={!route.params.hideBackButton} />}
       >

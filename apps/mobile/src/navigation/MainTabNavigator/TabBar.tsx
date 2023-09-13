@@ -9,7 +9,9 @@ import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
+import { useManageWalletActions } from '~/contexts/ManageWalletContext';
 import { TabBarLazyNotificationBlueDotQuery } from '~/generated/TabBarLazyNotificationBlueDotQuery.graphql';
+import { TabBarQuery } from '~/generated/TabBarQuery.graphql';
 import { GLogo } from '~/navigation/MainTabNavigator/GLogo';
 import { NotificationsIcon } from '~/navigation/MainTabNavigator/NotificationsIcon';
 import { SearchIcon } from '~/navigation/MainTabNavigator/SearchIcon';
@@ -25,12 +27,16 @@ type TabItemProps = {
   route: NavigationRoute;
   activeRoute: keyof MainTabNavigatorParamList;
   navigation: MaterialTopTabBarProps['navigation'];
+
+  hasWallet?: boolean;
 };
 
-function TabItem({ navigation, route, icon, activeRoute }: TabItemProps) {
+function TabItem({ navigation, route, icon, activeRoute, hasWallet }: TabItemProps) {
   const [isPressed, setIsPressed] = useState(false);
 
   const isFocused = activeRoute === route.name;
+
+  const { openManageWallet } = useManageWalletActions();
 
   const handleOnPressIn = useCallback(() => {
     if (route.name === 'PostTab') {
@@ -49,16 +55,28 @@ function TabItem({ navigation, route, icon, activeRoute }: TabItemProps) {
       target: route.key,
       canPreventDefault: true,
     });
+
     if (route.name === 'PostTab') {
-      navigation.navigate('PostNftSelector', {
-        screen: 'Post',
-      });
+      hasWallet
+        ? navigation.navigate('PostNftSelector', {
+            screen: 'Post',
+            fullScreen: true,
+          })
+        : openManageWallet({
+            title: 'You need to connect a wallet to post',
+            onSuccess: () => {
+              navigation.navigate('PostNftSelector', {
+                screen: 'Post',
+                fullScreen: true,
+              });
+            },
+          });
     } else {
       if (!isFocused && !event.defaultPrevented) {
         navigation.navigate(route.name);
       }
     }
-  }, [isFocused, navigation, route]);
+  }, [hasWallet, isFocused, openManageWallet, navigation, route]);
 
   return (
     <GalleryTouchableOpacity
@@ -114,6 +132,18 @@ export function TabBar({ state, navigation }: TabBarProps) {
           icon = <SettingsIcon />;
         } else if (route.name === 'PostTab') {
           icon = <PostIcon color={colorScheme === 'dark' ? colors.white : colors.black['800']} />;
+        }
+
+        if (route.name === 'PostTab') {
+          return (
+            <LazyPostTabItem
+              key={route.key}
+              icon={
+                <PostIcon color={colorScheme === 'dark' ? colors.white : colors.black['800']} />
+              }
+              {...{ navigation, route, activeRoute }}
+            />
+          );
         }
 
         return (
@@ -179,4 +209,36 @@ function LazyNotificationIcon() {
       </Suspense>
     </View>
   );
+}
+
+function LazyPostTabItem(props: TabItemProps) {
+  return (
+    <Suspense fallback={null}>
+      <LazyPostIcon {...props} />
+    </Suspense>
+  );
+}
+
+function LazyPostIcon(props: TabItemProps) {
+  const query = useLazyLoadQuery<TabBarQuery>(
+    graphql`
+      query TabBarQuery {
+        viewer {
+          ... on Viewer {
+            user {
+              __typename
+              primaryWallet {
+                __typename
+              }
+            }
+          }
+        }
+      }
+    `,
+    {}
+  );
+
+  const userHasWallet = query.viewer?.user?.primaryWallet?.__typename === 'Wallet';
+
+  return <TabItem {...props} hasWallet={userHasWallet} />;
 }

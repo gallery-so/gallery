@@ -41,6 +41,7 @@ export function NftSelectorContractScreen() {
 
   const { top } = useSafeAreaPadding();
   const navigation = useNavigation<MainTabStackNavigatorProp>();
+  const isFullscreen = route.params.fullScreen;
 
   const handleSelectNft = useCallback(() => {
     navigation.pop(2);
@@ -88,7 +89,12 @@ export function NftSelectorContractScreen() {
   );
 
   return (
-    <View className="flex-1 bg-white dark:bg-black-900" style={{ paddingTop: top }}>
+    <View
+      className="flex-1 bg-white dark:bg-black-900"
+      style={{
+        paddingTop: isFullscreen ? top : 16,
+      }}
+    >
       <View className="flex flex-col space-y-8 flex-1 ">
         <View className="px-4 relative">
           <BackButton />
