@@ -1,7 +1,8 @@
 import { graphql, readInlineData } from 'relay-runtime';
 
-import { CouldNotRenderNftError } from '~/errors/CouldNotRenderNftError';
 import { getPreviewImageUrlsInlineDangerouslyFragment$key } from '~/generated/getPreviewImageUrlsInlineDangerouslyFragment.graphql';
+
+import { CouldNotRenderNftError } from '../errors/CouldNotRenderNftError';
 
 type UrlSet = {
   small: string | null;
