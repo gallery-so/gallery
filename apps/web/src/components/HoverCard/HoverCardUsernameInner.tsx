@@ -93,7 +93,7 @@ export function HoverCardUsernameInner({ preloadedQuery }: Props) {
   return (
     <Section gap={4}>
       <StyledCardHeaderContainer gap={8}>
-        <StyledCardHeader align="center" justify="space-between">
+        <StyledCardHeader gap={2} align="center" justify="space-between">
           <StyledUsernameAndBadge align="center" gap={4}>
             <StyledLink href={userProfileLink}>
               <HStack align="center" gap={4}>
@@ -136,7 +136,6 @@ const Section = styled(VStack)`
 
 const StyledCardHeader = styled(HStack)`
   display: flex;
-  gap: 2px;
   min-width: 0;
   // enforce height on container since the follow button causes additional height
   height: 24px;

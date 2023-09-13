@@ -16,3 +16,6 @@ export const BREAK_LINES = /(\r\n|\n|\r|\\\n)/gm;
 
 // check https in URL
 export const HTTPS_URL = /^https?:\/\//i;
+
+// check if ethereum address
+export const ETH_ADDRESS = /^0x[a-fA-F0-9]{40}$/;

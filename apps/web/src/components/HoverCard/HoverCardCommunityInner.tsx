@@ -14,6 +14,7 @@ import { HoverCardCommunityInnerQuery } from '~/generated/HoverCardCommunityInne
 import { ErrorWithSentryMetadata } from '~/shared/errors/ErrorWithSentryMetadata';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
+import { isValidEthereumAddress, truncateEthAddress } from '~/shared/utils/wallet';
 
 import CommunityProfilePicture from '../ProfilePicture/CommunityProfilePicture';
 import { ProfilePictureStack } from '../ProfilePicture/ProfilePictureStack';
@@ -138,13 +139,6 @@ export function HoverCardCommunityInner({
     return null;
   }
 
-  const formatEthAddress = (e: string) => {
-    return e.slice(0, 4) + '...' + e.slice(-4);
-  };
-
-  // check if name is eth address and truncate
-  const hasAddress = Boolean(community.name.startsWith('0x') && community.name.length > 20);
-
   const hasDescription = Boolean(community.description);
   return (
     <VStack gap={6}>
@@ -155,7 +149,9 @@ export function HoverCardCommunityInner({
         <Section gap={2}>
           <StyledLink href={communityProfileLink}>
             <StyledCardTitle>
-              {hasAddress ? formatEthAddress(community.name) : community.name}
+              {isValidEthereumAddress(community.name)
+                ? truncateEthAddress(community.name)
+                : community.name}
             </StyledCardTitle>
           </StyledLink>
           {community.description && (
