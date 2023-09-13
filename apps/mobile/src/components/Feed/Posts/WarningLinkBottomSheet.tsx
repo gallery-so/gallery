@@ -53,7 +53,7 @@ function WarningLinkBottomSheet(props: Props, ref: ForwardedRef<GalleryBottomShe
             className="text-lg text-black-900 dark:text-offWhite"
             font={{ family: 'ABCDiatype', weight: 'Bold' }}
           >
-            Leaving gallery.so
+            Leaving Gallery
           </Typography>
           <Typography
             className="text-lg text-black-900 dark:text-offWhite"
@@ -70,10 +70,15 @@ function WarningLinkBottomSheet(props: Props, ref: ForwardedRef<GalleryBottomShe
           variant="secondary"
           onPress={handleCancel}
           text="CANCEL"
-          eventElementId={null}
-          eventName={null}
+          eventElementId="External URL Confirmation Cancel Button"
+          eventName="Pressed External URL Confirmation Cancel Button"
         />
-        <Button onPress={handleOpen} text="OPEN" eventElementId={null} eventName={null} />
+        <Button
+          onPress={handleOpen}
+          text="OPEN"
+          eventElementId="External URL Confirmation Open Button"
+          eventName="Pressed External URL Confirmation Open Button"
+        />
       </View>
     </GalleryBottomSheetModal>
   );
