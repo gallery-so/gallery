@@ -70,6 +70,8 @@ export function NftFailureBoundary({
                       }
                     }
                   }
+                  # Ensure relevant polling component gets its data refetched
+                  # eslint-disable-next-line relay/must-colocate-fragment-spreads
                   ...getPreviewImageUrlsInlineDangerouslyFragment
                 }
               }
