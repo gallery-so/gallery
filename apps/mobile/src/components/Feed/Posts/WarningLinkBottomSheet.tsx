@@ -26,7 +26,7 @@ function WarningLinkBottomSheet(props: Props, ref: ForwardedRef<GalleryBottomShe
 
   const handleCancel = () => bottomSheetRef.current?.dismiss();
 
-  const handleOpen = () => Linking.openURL(props.redirectUrl);
+  const handleContinue = () => Linking.openURL(props.redirectUrl);
 
   return (
     <GalleryBottomSheetModal
@@ -56,29 +56,31 @@ function WarningLinkBottomSheet(props: Props, ref: ForwardedRef<GalleryBottomShe
             Leaving Gallery
           </Typography>
           <Typography
-            className="text-lg text-black-900 dark:text-offWhite"
+            className="text-md text-black-900 dark:text-offWhite"
             font={{ family: 'ABCDiatype', weight: 'Regular' }}
           >
-            Confirm that you are going to{' '}
+            You are going to{' '}
             <Typography font={{ family: 'ABCDiatype', weight: 'Bold' }}>
               {props.redirectUrl}
             </Typography>
           </Typography>
         </View>
 
-        <Button
-          variant="secondary"
-          onPress={handleCancel}
-          text="CANCEL"
-          eventElementId="External URL Confirmation Cancel Button"
-          eventName="Pressed External URL Confirmation Cancel Button"
-        />
-        <Button
-          onPress={handleOpen}
-          text="OPEN"
-          eventElementId="External URL Confirmation Open Button"
-          eventName="Pressed External URL Confirmation Open Button"
-        />
+        <View className="pb-1.5 flex flex-col space-y-2.5">
+          <Button
+            onPress={handleContinue}
+            text="CONTINUE"
+            eventElementId="External URL Confirmation Continue Button"
+            eventName="Pressed External URL Confirmation Continue Button"
+          />
+          <Button
+            variant="secondary"
+            onPress={handleCancel}
+            text="CANCEL"
+            eventElementId="External URL Confirmation Cancel Button"
+            eventName="Pressed External URL Confirmation Cancel Button"
+          />
+        </View>
       </View>
     </GalleryBottomSheetModal>
   );

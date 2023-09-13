@@ -16,20 +16,23 @@ const markdownStyles = {
     fontSize: 14,
     fontFamily: 'ABCDiatypeRegular',
   },
-  link: {
-    color: '#707070',
-  },
 };
 
 const darkModeMarkdownStyles = {
   body: {
     color: colors.offWhite,
   },
+  link: {
+    color: '#9E9E9E',
+  },
 };
 
 const lightModeMarkdownStyles = {
   body: {
     color: colors.black['800'],
+  },
+  link: {
+    color: '#707070',
   },
 };
 
