@@ -4,11 +4,13 @@ import { useWindowDimensions, View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import { ImageState, NftPreviewWithBoundary } from '~/components/NftPreview/NftPreview';
+import { NftPreviewWithBoundary } from '~/components/NftPreview/NftPreview';
 import { GalleryTokenPreviewFragment$key } from '~/generated/GalleryTokenPreviewFragment.graphql';
 import { fitDimensionsToContainerContain } from '~/screens/NftDetailScreen/NftDetailAsset/fitDimensionToContainer';
 import { Dimensions } from '~/screens/NftDetailScreen/NftDetailAsset/types';
 import { getPreviewImageUrlsInlineDangerously } from '~/shared/relay/getPreviewImageUrlsInlineDangerously';
+
+import { ImageState } from '../NftPreview/UniversalNftPreview';
 
 type GalleryTokenPreviewProps = {
   tokenRef: GalleryTokenPreviewFragment$key;

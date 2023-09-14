@@ -6,41 +6,46 @@ import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import { NftPreviewAsset } from '~/components/NftPreview/NftPreviewAsset';
+import { RawNftPreviewAsset } from '~/components/NftPreview/NftPreviewAsset';
 import { NftPreviewErrorFallback } from '~/components/NftPreview/NftPreviewErrorFallback';
-import { UniversalNftPreviewTokenFragment$key } from '~/generated/UniversalNftPreviewTokenFragment.graphql';
+import { UniversalNftPreviewFragment$key } from '~/generated/UniversalNftPreviewFragment.graphql';
+import { UniversalNftPreviewInnerFragment$key } from '~/generated/UniversalNftPreviewInnerFragment.graphql';
 import { Dimensions } from '~/screens/NftDetailScreen/NftDetailAsset/types';
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
+import {
+  useGetSinglePreviewImage,
+  useGetSinglePreviewImageProps,
+} from '~/shared/relay/useGetPreviewImages';
 
 import { GallerySkeleton } from '../GallerySkeleton';
 import { UniversalNftPreviewContextMenuPopup } from './UniversalNftPreviewContextMenuPopup';
 
 export type ImageState = { kind: 'loading' } | { kind: 'loaded'; dimensions: Dimensions | null };
 
-type NftPreviewProps = {
-  priority?: Priority;
-
-  tokenRef: UniversalNftPreviewTokenFragment$key;
-  tokenUrl: string | null | undefined;
-  resizeMode: ResizeMode;
-
+export type NftPreviewSharedProps = {
   onPress?: () => void;
   onImageStateChange?: (imageState: ImageState) => void;
+  priority?: Priority;
+  resizeMode: ResizeMode;
 };
 
-function NftPreviewInner({
+type UniversalNftPreviewInnerProps = {
+  tokenRef: UniversalNftPreviewInnerFragment$key;
+  tokenUrl: string | null | undefined;
+} & NftPreviewSharedProps;
+
+function UniversalNftPreviewInner({
   tokenRef,
   tokenUrl,
   resizeMode,
   priority,
-
   onPress,
   onImageStateChange,
-}: NftPreviewProps) {
+}: UniversalNftPreviewInnerProps) {
   const token = useFragment(
     graphql`
-      fragment UniversalNftPreviewTokenFragment on Token {
+      fragment UniversalNftPreviewInnerFragment on Token {
         ...UniversalNftPreviewContextMenuPopupTokenFragment
       }
     `,
@@ -88,7 +93,7 @@ function NftPreviewInner({
       {/* https://github.com/dominicstop/react-native-ios-context-menu/issues/9#issuecomment-1047058781 */}
       <Pressable delayLongPress={100} onPress={handlePress} onLongPress={() => {}}>
         <View className="relative h-full w-full">
-          <NftPreviewAsset
+          <RawNftPreviewAsset
             key={tokenUrl}
             tokenUrl={tokenUrl}
             priority={priority}
@@ -108,23 +113,50 @@ function NftPreviewInner({
   );
 }
 
-export function UniversalNftPreview({
+type UniversalNftPreviewProps = {
+  tokenRef: UniversalNftPreviewFragment$key;
+  size: useGetSinglePreviewImageProps['size'];
+} & NftPreviewSharedProps;
+
+function UniversalNftPreview({ tokenRef, size, ...props }: UniversalNftPreviewProps) {
+  const token = useFragment(
+    graphql`
+      fragment UniversalNftPreviewFragment on Token {
+        ...useGetPreviewImagesSingleFragment
+        ...UniversalNftPreviewInnerFragment
+      }
+    `,
+    tokenRef
+  );
+
+  const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size }) ?? '';
+
+  return <UniversalNftPreviewInner {...props} tokenRef={token} tokenUrl={imageUrl} />;
+}
+
+type UniversalNftPreviewWithBoundaryProps = {
+  tokenRef: UniversalNftPreviewFragment$key;
+  size: useGetSinglePreviewImageProps['size'];
+} & NftPreviewSharedProps;
+
+export function UniversalNftPreviewWithBoundary({
   tokenRef,
   onImageStateChange,
-  tokenUrl,
   resizeMode,
   priority,
   onPress,
-}: NftPreviewProps) {
+  size,
+}: UniversalNftPreviewWithBoundaryProps) {
   return (
+    // TODO 09-13-22 wrap this in proper suspense boundary
     <ReportingErrorBoundary fallback={<NftPreviewErrorFallback />}>
-      <NftPreviewInner
+      <UniversalNftPreview
         tokenRef={tokenRef}
         onPress={onPress}
         onImageStateChange={onImageStateChange}
-        tokenUrl={tokenUrl}
         resizeMode={resizeMode}
         priority={priority}
+        size={size}
       />
     </ReportingErrorBoundary>
   );

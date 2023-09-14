@@ -15,7 +15,7 @@ import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
 import { Markdown } from '../Markdown';
-import { NftPreviewAsset } from '../NftPreview/NftPreviewAsset';
+import { RawNftPreviewAsset } from '../NftPreview/NftPreviewAsset';
 import { Typography } from '../Typography';
 
 type Props = {
@@ -105,7 +105,7 @@ export function TrendingUserCard({ style, userRef, queryRef }: Props) {
           return (
             <View key={index} className="h-full w-1/2">
               <ReportingErrorBoundary fallback={<NftPreviewErrorFallback />}>
-                <NftPreviewAsset
+                <RawNftPreviewAsset
                   tokenUrl={tokenPreview?.small ?? ''}
                   resizeMode={ResizeMode.COVER}
                 />

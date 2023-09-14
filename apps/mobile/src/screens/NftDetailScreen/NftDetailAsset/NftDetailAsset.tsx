@@ -11,7 +11,7 @@ import { NftDetailAssetVideo } from '~/screens/NftDetailScreen/NftDetailAsset/Nf
 import { Dimensions } from '~/screens/NftDetailScreen/NftDetailAsset/types';
 import { useNftDetailAssetSizer } from '~/screens/NftDetailScreen/NftDetailAsset/useNftDetailAssetSizer';
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
-import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
+import { getPreviewImageUrlsInlineDangerously } from '~/shared/relay/getPreviewImageUrlsInlineDangerously';
 
 type NftDetailProps = {
   tokenRef: NftDetailAssetFragment$key;
@@ -52,7 +52,7 @@ export function NftDetailAsset({ tokenRef, style }: NftDetailProps) {
           }
         }
 
-        ...getVideoOrImageUrlForNftPreviewFragment
+        ...getPreviewImageUrlsInlineDangerouslyFragment
       }
     `,
     tokenRef
@@ -77,22 +77,27 @@ export function NftDetailAsset({ tokenRef, style }: NftDetailProps) {
       token.media?.__typename === 'AudioMedia' ||
       token.media?.__typename === 'InvalidMedia'
     ) {
-      const imageUrl = getVideoOrImageUrlForNftPreview({
+      const result = getPreviewImageUrlsInlineDangerously({
         tokenRef: token,
         preferStillFrameFromGif: false,
-      })?.urls.large;
+      });
 
-      if (!imageUrl) {
-        throw new CouldNotRenderNftError('NftDetailAsset', 'Image had no contentRenderUrl');
+      if (result.type === 'valid' && result.urls.large) {
+        return (
+          <NftDetailAssetImage
+            onLoad={handleLoad}
+            imageUrl={result.urls.large}
+            outputDimensions={assetSizer.finalAssetDimensions}
+          />
+        );
       }
 
-      return (
-        <NftDetailAssetImage
-          onLoad={handleLoad}
-          imageUrl={imageUrl}
-          outputDimensions={assetSizer.finalAssetDimensions}
-        />
-      );
+      if (result.type === 'error') {
+        throw result.error;
+      }
+
+      // TODO [GAL-4229] loading view
+      return <></>;
     } else if (token.media?.__typename === 'VideoMedia') {
       const videoUrl = token.media.contentRenderURLs?.large;
 

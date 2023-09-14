@@ -8,7 +8,7 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { GallerySkeleton } from '~/components/GallerySkeleton';
-import { NftPreviewAsset } from '~/components/NftPreview/NftPreviewAsset';
+import { RawNftPreviewAsset } from '~/components/NftPreview/NftPreviewAsset';
 import { NftPreviewErrorFallback } from '~/components/NftPreview/NftPreviewErrorFallback';
 import { Typography } from '~/components/Typography';
 import { NftPreviewContextMenuPopupFragment$key } from '~/generated/NftPreviewContextMenuPopupFragment.graphql';
@@ -21,21 +21,18 @@ import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import { shareToken } from '../../utils/shareToken';
 
 type NftPreviewContextMenuPopupProps = PropsWithChildren<{
-  fallbackTokenUrl?: string;
-  imageDimensions: Dimensions | null;
-  cachedPreviewAssetUrl: string | null;
   collectionTokenRef: NftPreviewContextMenuPopupFragment$key;
+  imageDimensions: Dimensions | null;
+  fallbackTokenUrl: string;
 }>;
 
 const ENABLED_ARTIST = false;
 
 export function NftPreviewContextMenuPopup({
-  children,
-
+  collectionTokenRef,
   imageDimensions,
   fallbackTokenUrl,
-  collectionTokenRef,
-  cachedPreviewAssetUrl,
+  children,
 }: NftPreviewContextMenuPopupProps) {
   const collectionToken = useFragment(
     graphql`
@@ -89,8 +86,7 @@ export function NftPreviewContextMenuPopup({
     (event) => {
       if (event.nativeEvent.actionKey === 'view-details') {
         navigation.navigate('NftDetail', {
-          cachedPreviewAssetUrl,
-
+          cachedPreviewAssetUrl: fallbackTokenUrl,
           tokenId: token.dbid,
           collectionId: collectionToken?.collection?.dbid ?? null,
         });
@@ -107,7 +103,7 @@ export function NftPreviewContextMenuPopup({
       //   });
       // }
     },
-    [cachedPreviewAssetUrl, collectionToken.collection, navigation, token]
+    [collectionToken.collection, fallbackTokenUrl, navigation, token]
   );
 
   const track = useTrack();
@@ -166,7 +162,7 @@ export function NftPreviewContextMenuPopup({
           <View className="bg-white dark:bg-black-900">
             <View className="self-center" style={finalDimensions}>
               <ReportingErrorBoundary fallback={<NftPreviewErrorFallback />}>
-                <NftPreviewAsset
+                <RawNftPreviewAsset
                   priority="high"
                   tokenUrl={tokenUrl}
                   resizeMode={ResizeMode.CONTAIN}

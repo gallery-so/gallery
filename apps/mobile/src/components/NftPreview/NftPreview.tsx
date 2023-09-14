@@ -1,13 +1,11 @@
 import { useNavigation } from '@react-navigation/native';
-import { ResizeMode } from 'expo-av';
 import { startTransition, useCallback, useRef, useState } from 'react';
 import { Pressable, View } from 'react-native';
-import { Priority } from 'react-native-fast-image';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import { NftPreviewAsset } from '~/components/NftPreview/NftPreviewAsset';
+import { RawNftPreviewAsset } from '~/components/NftPreview/NftPreviewAsset';
 import { NftPreviewContextMenuPopup } from '~/components/NftPreview/NftPreviewContextMenuPopup';
 import { NftPreviewErrorFallback } from '~/components/NftPreview/NftPreviewErrorFallback';
 import { NftPreviewFragment$key } from '~/generated/NftPreviewFragment.graphql';
@@ -22,15 +20,7 @@ import {
 } from '~/shared/relay/useGetPreviewImages';
 
 import { GallerySkeleton } from '../GallerySkeleton';
-
-export type ImageState = { kind: 'loading' } | { kind: 'loaded'; dimensions: Dimensions | null };
-
-type NftPreviewSharedProps = {
-  onPress?: () => void;
-  onImageStateChange?: (imageState: ImageState) => void;
-  priority?: Priority;
-  resizeMode: ResizeMode;
-};
+import { ImageState, NftPreviewSharedProps } from './UniversalNftPreview';
 
 type NftPreviewInnerProps = {
   collectionTokenRef: NftPreviewInnerFragment$key;
@@ -108,7 +98,6 @@ function NftPreviewInner({
 
   return (
     <NftPreviewContextMenuPopup
-      cachedPreviewAssetUrl={tokenUrl}
       fallbackTokenUrl={tokenUrl}
       collectionTokenRef={collectionToken}
       imageDimensions={imageState.kind === 'loaded' ? imageState.dimensions : null}
@@ -116,7 +105,7 @@ function NftPreviewInner({
       {/* https://github.com/dominicstop/react-native-ios-context-menu/issues/9#issuecomment-1047058781 */}
       <Pressable delayLongPress={100} onPress={handlePress} onLongPress={() => {}}>
         <View className="relative h-full w-full">
-          <NftPreviewAsset
+          <RawNftPreviewAsset
             key={tokenUrl}
             tokenUrl={tokenUrl}
             priority={priority}
@@ -141,7 +130,7 @@ type NftPreviewProps = {
   size: useGetSinglePreviewImageProps['size'];
 } & NftPreviewSharedProps;
 
-function NftPreview({ size, collectionTokenRef, ...props }: NftPreviewProps) {
+function NftPreview({ collectionTokenRef, size, ...props }: NftPreviewProps) {
   const collectionToken = useFragment(
     graphql`
       fragment NftPreviewFragment on CollectionToken {

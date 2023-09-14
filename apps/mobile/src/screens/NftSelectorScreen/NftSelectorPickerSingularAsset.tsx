@@ -8,12 +8,11 @@ import { graphql } from 'relay-runtime';
 
 import { GallerySkeleton } from '~/components/GallerySkeleton';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
-import { NftPreviewAsset } from '~/components/NftPreview/NftPreviewAsset';
+import { NftPreviewAssetToWrapInBoundary } from '~/components/NftPreview/NftPreviewAsset';
 import { NftPreviewErrorFallback } from '~/components/NftPreview/NftPreviewErrorFallback';
 import { NftSelectorPickerSingularAssetFragment$key } from '~/generated/NftSelectorPickerSingularAssetFragment.graphql';
 import { MainTabStackNavigatorProp, RootStackNavigatorParamList } from '~/navigation/types';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
-import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
 import colors from '~/shared/theme/colors';
 
 import { useProfilePicture } from './useProfilePicture';
@@ -35,7 +34,7 @@ export function NftSelectorPickerSingularAsset({
         __typename
         dbid
 
-        ...getVideoOrImageUrlForNftPreviewFragment
+        ...NftPreviewAssetToWrapInBoundaryFragment
       }
     `,
     tokenRef
@@ -47,8 +46,6 @@ export function NftSelectorPickerSingularAsset({
   const navigation = useNavigation<MainTabStackNavigatorProp>();
 
   const { setProfileImage, isSettingProfileImage } = useProfilePicture();
-
-  const tokenUrl = getVideoOrImageUrlForNftPreview({ tokenRef: token })?.urls.large;
 
   const [, setError] = useState<string | null>(null);
 
@@ -76,10 +73,6 @@ export function NftSelectorPickerSingularAsset({
     setAssetLoaded(true);
   }, []);
 
-  if (!tokenUrl) {
-    return <NftPreviewErrorFallback />;
-  }
-
   return (
     <ReportingErrorBoundary fallback={<NftPreviewErrorFallback />}>
       <GalleryTouchableOpacity
@@ -91,8 +84,9 @@ export function NftSelectorPickerSingularAsset({
         eventName="NftSelectorPickerImage pressed"
         properties={{ tokenId: token.dbid }}
       >
-        <NftPreviewAsset
-          tokenUrl={tokenUrl}
+        <NftPreviewAssetToWrapInBoundary
+          tokenRef={token}
+          mediaSize="large"
           resizeMode={ResizeMode.COVER}
           onLoad={handleAssetLoad}
         />

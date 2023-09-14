@@ -2,7 +2,7 @@ import { ResizeMode } from 'expo-av';
 import { createContext, PropsWithChildren, useCallback, useMemo, useState } from 'react';
 import { LayoutChangeEvent, View, ViewProps } from 'react-native';
 
-import { NftPreviewAsset } from '~/components/NftPreview/NftPreviewAsset';
+import { RawNftPreviewAsset } from '~/components/NftPreview/NftPreviewAsset';
 import { useNftDetailAssetSizer } from '~/screens/NftDetailScreen/NftDetailAsset/useNftDetailAssetSizer';
 
 type NftDetailAssetCacheSwapperContextType = {
@@ -75,7 +75,7 @@ export function NftDetailAssetCacheSwapper({ children, style, cachedPreviewAsset
         ]}
       >
         {fullyRemoved ? null : (
-          <NftPreviewAsset
+          <RawNftPreviewAsset
             onLoad={assetSizer.handleLoad}
             tokenUrl={cachedPreviewAssetUrl}
             resizeMode={ResizeMode.CONTAIN}

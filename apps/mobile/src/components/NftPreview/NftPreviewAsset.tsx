@@ -1,18 +1,24 @@
 import { ResizeMode, Video } from 'expo-av';
 import { memo } from 'react';
 import FastImage, { Priority } from 'react-native-fast-image';
+import { graphql, useFragment } from 'react-relay';
 
 import { SvgWebView } from '~/components/SvgWebView';
+import { NftPreviewAssetToWrapInBoundaryFragment$key } from '~/generated/NftPreviewAssetToWrapInBoundaryFragment.graphql';
 import { Dimensions } from '~/screens/NftDetailScreen/NftDetailAsset/types';
+import {
+  useGetSinglePreviewImage,
+  useGetSinglePreviewImageProps,
+} from '~/shared/relay/useGetPreviewImages';
 
-type Props = {
+type RawNftPreviewAssetProps = {
   tokenUrl: string;
   priority?: Priority;
   resizeMode: ResizeMode;
   onLoad?: (dimensions: Dimensions | null) => void;
 };
 
-function NftPreviewAsset({ tokenUrl, onLoad, priority, resizeMode }: Props) {
+function RawNftPreviewAsset({ tokenUrl, onLoad, priority, resizeMode }: RawNftPreviewAssetProps) {
   if (tokenUrl.includes('svg')) {
     return (
       <SvgWebView
@@ -61,6 +67,53 @@ function NftPreviewAsset({ tokenUrl, onLoad, priority, resizeMode }: Props) {
   );
 }
 
-const MemoizedNftPreviewAsset = memo(NftPreviewAsset);
+const MemoizedNftPreviewAsset = memo(RawNftPreviewAsset);
 
-export { MemoizedNftPreviewAsset as NftPreviewAsset };
+type NftPreviewAssetToWrapInBoundaryProps = {
+  tokenRef: NftPreviewAssetToWrapInBoundaryFragment$key;
+  mediaSize: useGetSinglePreviewImageProps['size'];
+} & Omit<RawNftPreviewAssetProps, 'tokenUrl'>;
+
+/**
+ * Make sure to wrap this in a boundary / fallback of your choice.
+ * In the future, we may generalize this to default boundaries / fallbacks.
+ */
+function NftPreviewAssetToWrapInBoundary({
+  tokenRef,
+  mediaSize,
+  priority,
+  resizeMode,
+  onLoad,
+}: NftPreviewAssetToWrapInBoundaryProps) {
+  const token = useFragment(
+    graphql`
+      fragment NftPreviewAssetToWrapInBoundaryFragment on Token {
+        ...useGetPreviewImagesSingleFragment
+      }
+    `,
+    tokenRef
+  );
+
+  const imageUrl =
+    useGetSinglePreviewImage({
+      tokenRef: token,
+      preferStillFrameFromGif: true,
+      size: mediaSize,
+    }) ?? '';
+
+  return (
+    <RawNftPreviewAsset
+      tokenUrl={imageUrl}
+      priority={priority}
+      resizeMode={resizeMode}
+      onLoad={onLoad}
+    />
+  );
+}
+
+const MemoizedNftPreviewAssetToWrapInBoundary = memo(NftPreviewAssetToWrapInBoundary);
+
+export {
+  MemoizedNftPreviewAssetToWrapInBoundary as NftPreviewAssetToWrapInBoundary,
+  MemoizedNftPreviewAsset as RawNftPreviewAsset,
+};
