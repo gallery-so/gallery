@@ -113,10 +113,6 @@ export function getExternalAddressLink(chainAddressRef: walletGetExternalAddress
   return null;
 }
 
-export function truncateEthAddress(e: string) {
-  return e.slice(0, 4) + '...' + e.slice(-4);
-}
-
 export function isValidEthereumAddress(address: string): boolean {
   const pattern = ETH_ADDRESS;
   return pattern.test(address);

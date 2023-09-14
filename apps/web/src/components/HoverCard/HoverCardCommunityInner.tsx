@@ -14,7 +14,7 @@ import { HoverCardCommunityInnerQuery } from '~/generated/HoverCardCommunityInne
 import { ErrorWithSentryMetadata } from '~/shared/errors/ErrorWithSentryMetadata';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
-import { isValidEthereumAddress, truncateEthAddress } from '~/shared/utils/wallet';
+import { isValidEthereumAddress, truncateAddress } from '~/shared/utils/wallet';
 
 import CommunityProfilePicture from '../ProfilePicture/CommunityProfilePicture';
 import { ProfilePictureStack } from '../ProfilePicture/ProfilePictureStack';
@@ -150,7 +150,7 @@ export function HoverCardCommunityInner({
           <StyledLink href={communityProfileLink}>
             <StyledCardTitle>
               {isValidEthereumAddress(community.name)
-                ? truncateEthAddress(community.name)
+                ? truncateAddress(community.name)
                 : community.name}
             </StyledCardTitle>
           </StyledLink>
