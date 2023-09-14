@@ -78,8 +78,3 @@ const StyledPage = styled(VStack)`
   height: 100vh;
   font-size: 64px;
 `;
-
-const StyledNotFoundPage = styled(StyledPage)`
-  align-items: center;
-  justify-content: center;
-`;

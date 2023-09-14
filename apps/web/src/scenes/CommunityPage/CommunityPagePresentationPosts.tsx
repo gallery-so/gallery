@@ -1,29 +1,17 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import {
-  fetchQuery,
-  graphql,
-  useFragment,
-  usePaginationFragment,
-  useRelayEnvironment,
-} from 'react-relay';
-import styled from 'styled-components';
+import { useMemo } from 'react';
+import { graphql, useFragment, usePaginationFragment } from 'react-relay';
 
-import { VStack } from '~/components/core/Spacer/Stack';
-import { TitleCondensed } from '~/components/core/Text/Text';
-import { PostItem } from '~/components/Feed/PostItem';
 import { CommunityPagePresentationPostsFragment$key } from '~/generated/CommunityPagePresentationPostsFragment.graphql';
+import { CommunityPagePresentationPostsQueryFragment$key } from '~/generated/CommunityPagePresentationPostsQueryFragment.graphql';
 import { RefetchableCommunityPresentationPostsQuery } from '~/generated/RefetchableCommunityPresentationPostsQuery.graphql';
-import useWindowSize from '~/hooks/useWindowSize';
 
 import CommunityPagePresentationEmptyState from './CommunityPagePresentation/CommunityPagePresentationEmptyState';
 import CommunityPagePresentationPostsCycle from './CommunityPagePresentation/CommunityPagePresentationPostsCycle';
 
 type Props = {
   communityRef: CommunityPagePresentationPostsFragment$key;
-  queryRef: any;
+  queryRef: CommunityPagePresentationPostsQueryFragment$key;
 };
-
-// instead of hasnext, use total?
 
 export const fetchPageQuery = graphql`
   query CommunityPagePresentationPostsHasNextPageQuery(
@@ -38,6 +26,8 @@ export const fetchPageQuery = graphql`
     ) {
       ... on Community {
         __typename
+        # we use these fields where we use this fragment
+        # eslint-disable-next-line relay/unused-fields
         postsPageInfo: posts(after: $communityPostsAfter, first: $communityPostsFirst) {
           pageInfo {
             hasNextPage
@@ -72,9 +62,6 @@ export default function CommunityPagePresentationPosts({ communityRef, queryRef 
             node {
               ... on Post {
                 __typename
-                id
-                # ...CommunityPagePresentationPostsPostFragment
-                # ...CommunityPagePostCycleFragment
                 ...CommunityPagePresentationPostsCycleFragment
               }
             }
@@ -82,9 +69,6 @@ export default function CommunityPagePresentationPosts({ communityRef, queryRef 
           pageInfo {
             ...CommunityPagePresentationPostsCyclePageInfoFragment
           }
-        }
-        contractAddress {
-          address
         }
       }
     `,
@@ -101,7 +85,7 @@ export default function CommunityPagePresentationPosts({ communityRef, queryRef 
 
   const nonNullPosts = useMemo(() => {
     const posts = [];
-    for (const edge of community.presentationPosts?.edges) {
+    for (const edge of community.presentationPosts?.edges ?? []) {
       if (edge?.node?.__typename === 'Post' && edge.node) {
         posts.push(edge.node);
       }
@@ -110,20 +94,18 @@ export default function CommunityPagePresentationPosts({ communityRef, queryRef 
   }, [community.presentationPosts?.edges]);
 
   if (!nonNullPosts.length) {
-    return (
-      <CommunityPagePresentationEmptyState refetch={refetch} />
-      // <StyledEmptyState justify="center" gap={84}>
-      //   <StyledEmptyStateText>Mint to join the conversation</StyledEmptyStateText>
-      //   <StyledEmptyStateText>[ insert QR code ]</StyledEmptyStateText>
-      // </StyledEmptyState>
-    );
+    return <CommunityPagePresentationEmptyState refetch={refetch} />;
+  }
+
+  if (!community.presentationPosts?.pageInfo) {
+    return null;
   }
 
   return (
     <CommunityPagePresentationPostsCycle
       queryRef={query}
       postsRef={nonNullPosts}
-      pageInfoRef={community.presentationPosts.pageInfo}
+      pageInfoRef={community.presentationPosts?.pageInfo}
       loadNext={loadNext}
     />
   );

@@ -15,8 +15,6 @@ import { CommunityPagePostsTabQueryFragment$key } from '~/generated/CommunityPag
 import { RefetchableCommunityFeedQuery } from '~/generated/RefetchableCommunityFeedQuery.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 
-import CommunityPagePostCycle from './CommunityPagePresentation/CommunityPagePresentationPostsCycle';
-
 type Props = {
   communityRef: CommunityPagePostsTabFragment$key;
   queryRef: CommunityPagePostsTabQueryFragment$key;
