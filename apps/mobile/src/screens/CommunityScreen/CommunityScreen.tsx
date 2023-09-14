@@ -5,7 +5,6 @@ import { graphql, useLazyLoadQuery } from 'react-relay';
 
 import { CommunityView } from '~/components/Community/CommunityView';
 import { CommunityViewFallback } from '~/components/Community/CommunityViewFallback';
-import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { CommunityScreenInitializeQuery } from '~/generated/CommunityScreenInitializeQuery.graphql';
 import { CommunityScreenQuery } from '~/generated/CommunityScreenQuery.graphql';
 import { Chain } from '~/generated/CommunityScreenQuery.graphql';
@@ -64,10 +63,8 @@ function CommunityScreenInner({ chain, contractAddress }: CommunityScreenInnerPr
     { fetchPolicy: 'store-or-network', UNSTABLE_renderPolicy: 'partial' }
   );
 
-  const { top } = useSafeAreaPadding();
-
   return (
-    <View style={{ flex: 1, paddingTop: top }}>
+    <View style={{ flex: 1 }}>
       <CommunityView queryRef={query} />
     </View>
   );

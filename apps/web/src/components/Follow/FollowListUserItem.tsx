@@ -11,7 +11,7 @@ import { FollowListUserItemFragment$key } from '~/generated/FollowListUserItemFr
 import { FollowListUserItemQueryFragment$key } from '~/generated/FollowListUserItemQueryFragment.graphql';
 import { useIsMobileOrMobileLargeWindowWidth } from '~/hooks/useWindowSize';
 import colors from '~/shared/theme/colors';
-import { BREAK_LINES } from '~/utils/regex';
+import { BREAK_LINES } from '~/shared/utils/regex';
 
 import HoverCardOnUsername from '../HoverCard/HoverCardOnUsername';
 import { ProfilePicture } from '../ProfilePicture/ProfilePicture';

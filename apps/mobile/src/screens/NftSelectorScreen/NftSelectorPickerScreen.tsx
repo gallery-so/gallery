@@ -12,6 +12,7 @@ import { IconContainer } from '~/components/IconContainer';
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { Select } from '~/components/Select';
 import { Typography } from '~/components/Typography';
+import { useSyncTokenstActions } from '~/contexts/SyncTokensContext';
 import { useToastActions } from '~/contexts/ToastContext';
 import { NftSelectorPickerScreenFragment$key } from '~/generated/NftSelectorPickerScreenFragment.graphql';
 import { NftSelectorPickerScreenQuery } from '~/generated/NftSelectorPickerScreenQuery.graphql';
@@ -26,7 +27,6 @@ import {
 } from './NftSelectorFilterBottomSheet';
 import { NftSelectorPickerGrid } from './NftSelectorPickerGrid';
 import { NftSelectorScreenFallback } from './NftSelectorScreenFallback';
-import useSyncTokens from './useSyncTokens';
 
 export function NftSelectorPickerScreen() {
   const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'ProfilePicturePicker'>>();
@@ -54,6 +54,7 @@ export function NftSelectorPickerScreen() {
   );
 
   const currentScreen = route.params.page;
+  const isFullscreen = route.params.fullScreen;
 
   const { top } = useSafeAreaPadding();
   const filterBottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
@@ -76,7 +77,12 @@ export function NftSelectorPickerScreen() {
   }, [networkFilter, refetch]);
 
   return (
-    <View className="flex-1 bg-white dark:bg-black-900" style={{ paddingTop: top }}>
+    <View
+      className="flex-1 bg-white dark:bg-black-900"
+      style={{
+        paddingTop: isFullscreen ? top : 16,
+      }}
+    >
       <View className="flex flex-col flex-grow space-y-8">
         <View className="px-4 relative">
           <BackButton />
@@ -163,7 +169,8 @@ type AnimatedRefreshIconProps = {
 };
 
 function AnimatedRefreshIcon({ networkFilter, onRefresh }: AnimatedRefreshIconProps) {
-  const { isSyncing, syncTokens } = useSyncTokens();
+  const { isSyncing, syncTokens } = useSyncTokenstActions();
+
   const { pushToast } = useToastActions();
 
   const handleSync = useCallback(async () => {

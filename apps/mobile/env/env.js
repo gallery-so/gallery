@@ -8,6 +8,7 @@ const EnvironmentSchema = z.object({
   MAGIC_LINK_PUBLIC_KEY: z.string(),
   MIXPANEL_API_URL: z.string(),
   MIXPANEL_TOKEN: z.string(),
+  FORMSPREE_ID: z.string(),
 });
 
 module.exports = {

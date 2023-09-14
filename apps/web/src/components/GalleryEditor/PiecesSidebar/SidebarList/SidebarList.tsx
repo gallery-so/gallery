@@ -35,8 +35,6 @@ type Props = {
   selectedView: TokenFilterType;
   shouldUseCollectionGrouping: boolean;
   onToggleExpanded(address: string): void;
-  handleTokenRenderError: (id: string) => void;
-  handleTokenRenderSuccess: (id: string) => void;
   setSpamPreferenceForCollection: SetSpamFn;
 };
 
@@ -44,8 +42,6 @@ export function SidebarList({
   rows,
   selectedView,
   onToggleExpanded,
-  handleTokenRenderError,
-  handleTokenRenderSuccess,
   shouldUseCollectionGrouping,
   setSpamPreferenceForCollection,
 }: Props) {
@@ -89,27 +85,13 @@ export function SidebarList({
                 tokenRef
               );
 
-              return (
-                <SidebarNftIcon
-                  key={token.dbid}
-                  tokenRef={token}
-                  handleTokenRenderError={handleTokenRenderError}
-                  handleTokenRenderSuccess={handleTokenRenderSuccess}
-                />
-              );
+              return <SidebarNftIcon key={token.dbid} tokenRef={token} />;
             })}
           </Selection>
         );
       }
     },
-    [
-      handleTokenRenderError,
-      handleTokenRenderSuccess,
-      onToggleExpanded,
-      rows,
-      selectedView,
-      setSpamPreferenceForCollection,
-    ]
+    [onToggleExpanded, rows, selectedView, setSpamPreferenceForCollection]
   );
 
   const rowHeightCalculator = useCallback(

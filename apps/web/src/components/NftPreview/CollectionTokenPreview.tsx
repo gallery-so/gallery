@@ -7,7 +7,6 @@ import NftPreview from './NftPreview';
 
 type Props = {
   tokenRef: CollectionTokenPreviewFragment$key;
-  previewSize: number;
   ownerUsername?: string;
   hideLabelOnMobile?: boolean;
   disableLiverender?: boolean;
@@ -17,7 +16,6 @@ type Props = {
 
 export default function CollectionTokenPreview({
   tokenRef,
-  previewSize,
   disableLiverender,
   columns,
   isInFeedEvent,
@@ -46,7 +44,6 @@ export default function CollectionTokenPreview({
 
   return (
     <NftPreview
-      previewSize={previewSize}
       disableLiverender={disableLiverender}
       columns={columns}
       isInFeedEvent={isInFeedEvent}

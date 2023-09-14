@@ -2,10 +2,13 @@ import { useNavigation } from '@react-navigation/native';
 import { useEffect } from 'react';
 import { Linking } from 'react-native';
 import { fetchQuery, graphql, useRelayEnvironment } from 'react-relay';
+import { simpleHash } from 'src/utils/hashString';
 
 import { DeepLinkRegistrarAuthCheckQuery } from '~/generated/DeepLinkRegistrarAuthCheckQuery.graphql';
 import { RootStackNavigatorProp } from '~/navigation/types';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
+
+const MARFA_EVENT_HASH = -1082633448;
 
 export function DeepLinkRegistrar() {
   const relayEnvironment = useRelayEnvironment();
@@ -13,11 +16,6 @@ export function DeepLinkRegistrar() {
   const navigation = useNavigation<RootStackNavigatorProp>();
 
   useEffect(() => {
-    // Need to support
-    // 1. /:username
-    // 2. /:username/:collectionId
-    // 3. /:username/:collectionId/:tokenId
-    // 4. /:username/galleries/:galleryId
     async function handleDeepLinkToUrl({ url }: { url: string }) {
       track('Deep Link Opened', { url });
 
@@ -43,11 +41,52 @@ export function DeepLinkRegistrar() {
       }
 
       const parsedUrl = new URL(url);
+
+      /**
+       * Marfa Event Check In
+       */
+      if (parsedUrl.pathname === '/mobile' && parsedUrl.searchParams.get('event')) {
+        const hashedEventParam = await simpleHash(parsedUrl.searchParams.get('event') ?? '');
+        if (hashedEventParam === MARFA_EVENT_HASH) {
+          navigation.navigate('MainTabs', {
+            screen: 'HomeTab',
+            params: {
+              screen: 'Home',
+              params: { screen: 'Curated', params: { showMarfaCheckIn: true } },
+            },
+          });
+          return;
+        }
+        return;
+      }
+
       const splitBySlash = parsedUrl.pathname.split('/').filter(Boolean);
+
+      /**
+       * /post/:postId
+       */
+      if (parsedUrl.pathname.includes('post/')) {
+        const [, maybePostId] = splitBySlash;
+
+        if (maybePostId) {
+          navigation.navigate('MainTabs', {
+            screen: 'HomeTab',
+            params: {
+              screen: 'Post',
+              params: { postId: maybePostId },
+            },
+          });
+        }
+
+        return;
+      }
 
       if (splitBySlash.length === 1) {
         const [maybeUsername] = splitBySlash;
 
+        /**
+         * /:username
+         */
         if (maybeUsername) {
           navigation.navigate('MainTabs', {
             screen: 'HomeTab',
@@ -60,6 +99,9 @@ export function DeepLinkRegistrar() {
       } else if (splitBySlash.length === 2) {
         const [maybeUsername, maybeCollectionId] = splitBySlash;
 
+        /**
+         * /:username/:collectionId
+         */
         if (maybeUsername && maybeCollectionId) {
           navigation.navigate('MainTabs', {
             screen: 'HomeTab',
@@ -73,6 +115,9 @@ export function DeepLinkRegistrar() {
         const [maybeUsername, maybeCollectionIdOrGalleries, maybeTokenIdOrGalleryId] = splitBySlash;
 
         if (maybeUsername && maybeCollectionIdOrGalleries && maybeTokenIdOrGalleryId) {
+          /**
+           * /:username/galleries/:galleryId
+           */
           if (maybeCollectionIdOrGalleries === 'galleries') {
             navigation.navigate('MainTabs', {
               screen: 'HomeTab',
@@ -81,6 +126,9 @@ export function DeepLinkRegistrar() {
                 params: { galleryId: maybeTokenIdOrGalleryId },
               },
             });
+            /**
+             * /:username/:collectionId/:tokenId
+             */
           } else {
             navigation.navigate('MainTabs', {
               screen: 'HomeTab',

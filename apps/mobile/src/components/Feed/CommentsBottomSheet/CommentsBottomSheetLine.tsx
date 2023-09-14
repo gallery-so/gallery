@@ -1,10 +1,14 @@
+import { useNavigation } from '@react-navigation/native';
+import { useCallback } from 'react';
 import { View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
+import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { Typography } from '~/components/Typography';
 import { CommentsBottomSheetLineFragment$key } from '~/generated/CommentsBottomSheetLineFragment.graphql';
+import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { getTimeSince } from '~/shared/utils/time';
 
 type CommentLineProps = {
@@ -29,9 +33,22 @@ export function CommentsBottomSheetLine({ commentRef }: CommentLineProps) {
   );
 
   const timeAgo = getTimeSince(comment.creationTime);
+  const navigation = useNavigation<MainTabStackNavigatorProp>();
+
+  const handleUserPress = useCallback(() => {
+    const username = comment?.commenter?.username;
+    if (username) {
+      navigation.push('Profile', { username: username, hideBackButton: false });
+    }
+  }, [comment?.commenter?.username, navigation]);
 
   return (
-    <View className="flex flex-row space-x-2 px-2">
+    <GalleryTouchableOpacity
+      className="flex flex-row space-x-2 px-2"
+      onPress={handleUserPress}
+      eventElementId={'CommentsBottomSheetLine Single User'}
+      eventName={'CommentsBottomSheetLine Single User'}
+    >
       {comment.commenter && (
         <View className="mt-1">
           <ProfilePicture userRef={comment.commenter} size="sm" />
@@ -55,6 +72,6 @@ export function CommentsBottomSheetLine({ commentRef }: CommentLineProps) {
           </Typography>
         </View>
       </View>
-    </View>
+    </GalleryTouchableOpacity>
   );
 }

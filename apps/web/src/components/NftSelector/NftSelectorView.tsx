@@ -138,15 +138,16 @@ export function NftSelectorView({
               <NftSelectorTokenPreview
                 key={index}
                 group={column}
-                onSelectGroup={onSelectContract}
                 onSelectToken={onSelectToken}
+                onSelectContract={onSelectContract}
+                hasSelectedContract={Boolean(selectedContractAddress)}
               />
             );
           })}
         </StyledNftSelectorViewContainer>
       );
     },
-    [onSelectContract, onSelectToken, rows]
+    [onSelectContract, onSelectToken, rows, selectedContractAddress]
   );
 
   if (!rows.length && !hasSearchKeyword) {

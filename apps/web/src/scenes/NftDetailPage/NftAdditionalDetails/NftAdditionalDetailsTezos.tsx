@@ -15,7 +15,7 @@ import { NftAdditionalDetailsTezosFragment$key } from '~/generated/NftAdditional
 import { RefreshIcon } from '~/icons/RefreshIcon';
 import { useRefreshMetadata } from '~/scenes/NftDetailPage/NftAdditionalDetails/useRefreshMetadata';
 import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
-import { hexHandler } from '~/shared/utils/getOpenseaExternalUrl';
+import { hexToDec } from '~/shared/utils/hexToDec';
 
 type NftAdditionaDetailsNonPOAPProps = {
   tokenRef: NftAdditionalDetailsTezosFragment$key;
@@ -76,7 +76,7 @@ export function NftAdditionalDetailsTezos({ tokenRef }: NftAdditionaDetailsNonPO
       {tokenId && (
         <div>
           <TitleXS>Token ID</TitleXS>
-          <BaseM>{hexHandler(tokenId)}</BaseM>
+          <BaseM>{hexToDec(tokenId)}</BaseM>
         </div>
       )}
 

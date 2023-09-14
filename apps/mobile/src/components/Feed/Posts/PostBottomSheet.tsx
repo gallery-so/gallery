@@ -129,14 +129,6 @@ function PostBottomSheet(
     }
   }, [followUser, unfollowUser, isFollowing, userToFollow.dbid]);
 
-  const followUserText = useMemo(() => {
-    if (isFollowing) {
-      return `Unfollow ${username}`;
-    } else {
-      return `Follow ${username}`;
-    }
-  }, [isFollowing, username]);
-
   const media = getVideoOrImageUrlForNftPreview({
     tokenRef: token,
     preferStillFrameFromGif: true,
@@ -156,7 +148,7 @@ function PostBottomSheet(
   }, [token]);
 
   const inner = useMemo(() => {
-    if (isOwnPost)
+    if (isOwnPost) {
       return (
         <>
           <BottomSheetRow text="Share" onPress={handleShare} />
@@ -164,21 +156,33 @@ function PostBottomSheet(
           <BottomSheetRow text="Delete" isConfirmationRow onPress={handleDeletePost} />
         </>
       );
+    }
+
+    if (isFollowing) {
+      return (
+        <>
+          <BottomSheetRow text="Share" onPress={handleShare} />
+          <BottomSheetRow text="View item detail" onPress={handleViewNftDetail} />
+          <BottomSheetRow text={`Unfollow ${username}`} onPress={handleFollowUser} />
+        </>
+      );
+    }
 
     return (
       <>
         <BottomSheetRow text="Share" onPress={handleShare} />
-        <BottomSheetRow text={followUserText} onPress={handleFollowUser} />
+        <BottomSheetRow text={`Follow ${username}`} onPress={handleFollowUser} />
         <BottomSheetRow text="View item detail" onPress={handleViewNftDetail} />
       </>
     );
   }, [
-    followUserText,
     handleDeletePost,
     handleFollowUser,
     handleShare,
     handleViewNftDetail,
+    isFollowing,
     isOwnPost,
+    username,
   ]);
 
   return (

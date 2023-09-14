@@ -43,6 +43,12 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
         isSpamByProvider
         ownerIsHolder
         ownerIsCreator
+        ownedByWallets {
+          chainAddress {
+            address
+            chain
+          }
+        }
         ...SidebarTokensFragment
 
         ...useTokenSearchResultsFragment
@@ -109,6 +115,15 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
         return false;
       }
 
+      if (selectedWallet !== 'All') {
+        return token?.ownedByWallets?.some((wallet) => {
+          const sameWalletAddress =
+            wallet?.chainAddress?.address === selectedWallet.chainAddress.address;
+          const sameWalletChain = wallet?.chainAddress?.chain === selectedWallet.chainAddress.chain;
+          return sameWalletAddress && sameWalletChain;
+        });
+      }
+
       // Early return created tokens as we don't need to filter out spam
       if (selectedView === 'Created') {
         return token.ownerIsCreator;
@@ -128,7 +143,7 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
       }
       return !isSpam;
     });
-  }, [tokenSearchResults, isSearching, selectedChain, selectedView]);
+  }, [tokenSearchResults, isSearching, selectedChain, selectedView, selectedWallet]);
 
   const isRefreshDisabledAtUserLevel = isRefreshDisabledForUser(query.viewer?.user?.dbid ?? '');
   const refreshDisabled =
@@ -184,7 +199,6 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
             tokenRefs={tokensToDisplay}
             selectedChain={selectedChain.name}
             selectedView={selectedView}
-            selectedWallet={selectedWallet}
           />
         );
       }
@@ -198,7 +212,6 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
           tokenRefs={tokensToDisplay}
           selectedChain={selectedChain.name}
           selectedView={selectedView}
-          selectedWallet={selectedWallet}
         />
       );
     }
@@ -216,7 +229,6 @@ export function PiecesSidebar({ tokensRef, queryRef }: Props) {
     query,
     selectedChain.name,
     selectedView,
-    selectedWallet,
     tokensToDisplay,
   ]);
 

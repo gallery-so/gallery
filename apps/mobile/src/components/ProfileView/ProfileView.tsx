@@ -13,6 +13,7 @@ import { ProfileViewFeaturedTab } from '~/components/ProfileView/Tabs/ProfileVie
 import { ProfileViewFollowersTab } from '~/components/ProfileView/Tabs/ProfileViewFollowersTab';
 import { ProfileViewGalleriesTab } from '~/components/ProfileView/Tabs/ProfileViewGalleriesTab';
 import { Typography } from '~/components/Typography';
+import { useManageWalletActions } from '~/contexts/ManageWalletContext';
 import { ProfileViewConnectedProfilePictureFragment$key } from '~/generated/ProfileViewConnectedProfilePictureFragment.graphql';
 import { ProfileViewConnectedQueryFragment$key } from '~/generated/ProfileViewConnectedQueryFragment.graphql';
 import { ProfileViewEditProfileButtonFragment$key } from '~/generated/ProfileViewEditProfileButtonFragment.graphql';
@@ -73,7 +74,7 @@ export function ProfileView({ queryRef, shouldShowBackButton }: ProfileViewProps
     <View className="flex-1">
       <GalleryViewEmitter queryRef={query} />
 
-      <View className="flex flex-col px-4 pb-1 z-10 bg-white dark:bg-black-900">
+      <View className="flex flex-col px-4 pt-4 pb-1 z-10 bg-white dark:bg-black-900">
         <ConnectedGalleryProfileNavbar
           queryRef={query}
           shouldShowBackButton={shouldShowBackButton}
@@ -195,6 +196,9 @@ function ConnectedProfilePicture({ queryRef }: ConnectedProfilePictureProps) {
           ... on Viewer {
             user {
               dbid
+              primaryWallet {
+                __typename
+              }
             }
           }
         }
@@ -222,13 +226,25 @@ function ConnectedProfilePicture({ queryRef }: ConnectedProfilePictureProps) {
   );
 
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
+  const { openManageWallet } = useManageWalletActions();
+  const userHasWallet = query.viewer?.user?.primaryWallet?.__typename === 'Wallet';
+
   const handlePress = useCallback(() => {
     if (!isLoggedInUser) {
       return;
     }
 
+    if (!userHasWallet) {
+      openManageWallet({
+        onSuccess: () => {
+          bottomSheetRef.current?.present();
+        },
+      });
+      return;
+    }
+
     bottomSheetRef.current?.present();
-  }, [isLoggedInUser]);
+  }, [isLoggedInUser, openManageWallet, userHasWallet]);
 
   return (
     <View className="mr-2">

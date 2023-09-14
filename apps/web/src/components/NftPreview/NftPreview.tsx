@@ -14,18 +14,16 @@ import NftDetailAnimation from '~/scenes/NftDetailPage/NftDetailAnimation';
 import NftDetailGif from '~/scenes/NftDetailPage/NftDetailGif';
 import NftDetailModel from '~/scenes/NftDetailPage/NftDetailModel';
 import NftDetailVideo from '~/scenes/NftDetailPage/NftDetailVideo';
-import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
-import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
+import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 import { isFirefox, isSafari } from '~/utils/browser';
 import isSvg from '~/utils/isSvg';
 import { getBackgroundColorOverrideForContract } from '~/utils/token';
 
-import NftPreviewAsset, { RawNftPreviewAsset } from './NftPreviewAsset';
+import NftPreviewAsset from './NftPreviewAsset';
 import NftPreviewLabel from './NftPreviewLabel';
 
 type Props = {
   tokenRef: NftPreviewFragment$key;
-  previewSize: number;
   ownerUsername?: string;
   hideLabelOnMobile?: boolean;
   disableLiverender?: boolean;
@@ -42,7 +40,6 @@ const contractsWhoseIFrameNFTsShouldNotTakeUpFullHeight = new Set([
 
 function NftPreview({
   tokenRef,
-  previewSize,
   disableLiverender = false,
   columns = 3,
   isInFeedEvent = false,
@@ -63,13 +60,6 @@ function NftPreview({
           username
         }
         media {
-          ... on Media {
-            __typename
-            fallbackMedia {
-              mediaURL
-            }
-          }
-
           ... on VideoMedia {
             __typename
             ...NftDetailVideoFragment
@@ -89,7 +79,7 @@ function NftPreview({
         ...NftPreviewLabelFragment
         ...NftPreviewAssetFragment
         ...NftDetailAnimationFragment
-        ...getVideoOrImageUrlForNftPreviewFragment
+        ...useGetPreviewImagesSingleFragment
         ...NftDetailGifFragment
       }
     `,
@@ -108,10 +98,9 @@ function NftPreview({
   const isIFrameLiveDisplay = Boolean(shouldLiveRender && token.media?.__typename === 'HtmlMedia');
   const isMobileOrLargeMobile = useIsMobileOrMobileLargeWindowWidth();
 
-  const { handleNftLoaded, handleNftError, retryKey, refreshMetadata, refreshingMetadata } =
-    useNftRetry({
-      tokenId: token.dbid,
-    });
+  const { handleNftLoaded } = useNftRetry({
+    tokenId: token.dbid,
+  });
 
   const onNftLoad = useCallback(() => {
     onLoad?.();
@@ -120,14 +109,7 @@ function NftPreview({
 
   const PreviewAsset = useMemo(() => {
     if (disableLiverender) {
-      return (
-        <NftPreviewAsset
-          onLoad={onNftLoad}
-          tokenRef={token}
-          // we'll request images at double the size of the element so that it looks sharp on retina
-          size={previewSize * 2}
-        />
-      );
+      return <NftPreviewAsset onLoad={onNftLoad} tokenRef={token} />;
     }
     if (shouldLiveRender && token.media?.__typename === 'VideoMedia') {
       return <NftDetailVideo onLoad={onNftLoad} mediaRef={token.media} hideControls />;
@@ -142,18 +124,13 @@ function NftPreview({
       return <NftDetailAnimation onLoad={onNftLoad} mediaRef={token} />;
     }
 
-    return (
-      <NftPreviewAsset
-        onLoad={onNftLoad}
-        tokenRef={token}
-        // we'll request images at double the size of the element so that it looks sharp on retina
-        size={previewSize * 2}
-      />
-    );
-  }, [disableLiverender, shouldLiveRender, token, isIFrameLiveDisplay, previewSize, onNftLoad]);
+    return <NftPreviewAsset onLoad={onNftLoad} tokenRef={token} />;
+  }, [disableLiverender, shouldLiveRender, token, isIFrameLiveDisplay, onNftLoad]);
 
-  const result = getVideoOrImageUrlForNftPreview({ tokenRef: token });
-  const isSvgOnWeirdBrowser = isSvg(result?.urls?.large) && (isFirefox() || isSafari());
+  // [GAL-4229] TODO: leave this un-throwing until we wrap a proper boundary around it
+  const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size: 'large', shouldThrow: false });
+
+  const isSvgOnWeirdBrowser = isSvg(imageUrl) && (isFirefox() || isSafari());
   // stretch the image to take up the full-width if...
   const fullWidth =
     // it's not in a feed event
@@ -180,19 +157,15 @@ function NftPreview({
   const fullHeight = isIFrameLiveDisplay && !shouldBeExemptedFromFullHeightDisplay;
 
   return (
+    // [GAL-4229] TODO: this failure boundary + wrapper can be greatly simplified.
+    // but its child asset rendering components must be refactored to use `useGetPreviewImages`
     <NftFailureBoundary
-      key={retryKey}
       tokenId={token.dbid}
       fallback={
         <NftFailureWrapper>
-          <NftFailureFallback
-            tokenId={token.dbid}
-            refreshing={refreshingMetadata}
-            onRetry={refreshMetadata}
-          />
+          <NftFailureFallback tokenId={token.dbid} />
         </NftFailureWrapper>
       }
-      onError={handleNftError}
     >
       <LinkToFullPageNftDetailModal
         username={ownerUsername ?? ''}
@@ -205,13 +178,7 @@ function NftPreview({
           fullHeight={fullHeight}
           data-tokenid={token.dbid}
         >
-          <ReportingErrorBoundary
-            fallback={
-              <RawNftPreviewAsset src={token.media?.fallbackMedia?.mediaURL} onLoad={onNftLoad} />
-            }
-          >
-            {PreviewAsset}
-          </ReportingErrorBoundary>
+          {PreviewAsset}
 
           {isMobileOrLargeMobile ? null : (
             <StyledNftFooter>

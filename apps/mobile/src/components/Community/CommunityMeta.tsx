@@ -13,6 +13,7 @@ import { TezosIcon } from 'src/icons/TezosIcon';
 import { ZoraIcon } from 'src/icons/ZoraIcon';
 import isFeatureEnabled, { FeatureFlag } from 'src/utils/isFeatureEnabled';
 
+import { useManageWalletActions } from '~/contexts/ManageWalletContext';
 import { Chain, CommunityMetaFragment$key } from '~/generated/CommunityMetaFragment.graphql';
 import { CommunityMetaQueryFragment$key } from '~/generated/CommunityMetaQueryFragment.graphql';
 import { CommunityMetaRefetchQuery } from '~/generated/CommunityMetaRefetchQuery.graphql';
@@ -75,6 +76,9 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
             user {
               __typename
               isMemberOfCommunity(communityID: $communityID)
+              primaryWallet {
+                __typename
+              }
             }
           }
         }
@@ -84,8 +88,11 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
   );
 
   const isMemberOfCommunity = query.viewer?.user?.isMemberOfCommunity ?? false;
+  const userHasWallet = query.viewer?.user?.primaryWallet?.__typename === 'Wallet';
 
   const { colorScheme } = useColorScheme();
+  const { openManageWallet } = useManageWalletActions();
+
   const isKoalaEnabled = isFeatureEnabled(FeatureFlag.KOALA, query);
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
@@ -98,21 +105,31 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
   }, [community.creator, navigation]);
 
   const handleCreatePost = useCallback(() => {
+    if (!isMemberOfCommunity) {
+      bottomSheetRef.current?.present();
+      return;
+    }
+
     if (!community?.contractAddress?.address) return;
     navigation.navigate('NftSelectorContractScreen', {
       contractAddress: community?.contractAddress?.address,
       page: 'Community',
     });
-  }, [navigation, community?.contractAddress?.address]);
+  }, [community?.contractAddress?.address, isMemberOfCommunity, navigation]);
 
   const handlePress = useCallback(() => {
-    if (isMemberOfCommunity) {
-      handleCreatePost();
+    if (!userHasWallet) {
+      openManageWallet({
+        title: 'You need to connect a wallet to post',
+        onSuccess: () => {
+          handleCreatePost();
+        },
+      });
       return;
     }
 
-    bottomSheetRef.current?.present();
-  }, [handleCreatePost, isMemberOfCommunity]);
+    handleCreatePost();
+  }, [handleCreatePost, openManageWallet, userHasWallet]);
 
   const PostIconColor = useMemo(() => {
     if (isMemberOfCommunity) {

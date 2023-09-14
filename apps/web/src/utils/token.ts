@@ -1,4 +1,4 @@
-import { GOOGLE_CONTENT_IMG_URL } from './regex';
+import { GOOGLE_CONTENT_IMG_URL } from '~/shared/utils/regex';
 
 type resizeImageUrlReturnType =
   | {

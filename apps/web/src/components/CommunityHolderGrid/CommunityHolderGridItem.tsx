@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -10,11 +10,8 @@ import { useModalActions } from '~/contexts/modal/ModalContext';
 import { CommunityHolderGridItemFragment$key } from '~/generated/CommunityHolderGridItemFragment.graphql';
 import { CommunityHolderGridItemQueryFragment$key } from '~/generated/CommunityHolderGridItemQueryFragment.graphql';
 import TokenDetailView from '~/scenes/TokenDetailPage/TokenDetailView';
-import { useReportError } from '~/shared/contexts/ErrorReportingContext';
-import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
-import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
-import colors from '~/shared/theme/colors';
-import { getOpenseaExternalUrl } from '~/shared/utils/getOpenseaExternalUrl';
+import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
+import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
 import { graphqlTruncateUniversalUsername } from '~/shared/utils/wallet';
 
 import HoverCardOnUsername from '../HoverCard/HoverCardOnUsername';
@@ -29,21 +26,15 @@ export default function CommunityHolderGridItem({ holderRef, queryRef }: Props) 
     graphql`
       fragment CommunityHolderGridItemFragment on Token {
         name
-        tokenId
-        chain
-        contract {
-          contractAddress {
-            address
-          }
-        }
         owner @required(action: THROW) {
           username @required(action: THROW)
           universal
           ...walletTruncateUniversalUsernameFragment
           ...HoverCardOnUsernameFragment
         }
-        ...getVideoOrImageUrlForNftPreviewFragment
+        ...useGetPreviewImagesSingleFragment
         ...TokenDetailViewFragment
+        ...extractRelevantMetadataFromTokenFragment
       }
     `,
     holderRef
@@ -58,40 +49,23 @@ export default function CommunityHolderGridItem({ holderRef, queryRef }: Props) 
     queryRef
   );
 
-  const [isFailedToLoad, setIsFailedToLoad] = useState(false);
-  const handleFailedToLoad = useCallback(() => {
-    setIsFailedToLoad(true);
-  }, []);
-
   const { showModal } = useModalActions();
 
-  const { tokenId, contract, owner, chain } = token;
+  const { owner } = token;
 
   const usernameWithFallback = owner ? graphqlTruncateUniversalUsername(owner) : null;
 
   const openseaProfileLink = `https://opensea.io/${owner?.username}`;
 
-  const reportError = useReportError();
-  const previewUrlSet = getVideoOrImageUrlForNftPreview({
-    tokenRef: token,
-    handleReportError: reportError,
-  });
+  // [GAL-4229] TODO: we'll need to wrap this component in a simple boundary
+  // skipping for now since this component is rarely ever visited
+  const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size: 'large' }) ?? '';
 
-  if (!previewUrlSet?.urls.large) {
-    throw new CouldNotRenderNftError('CommunityHolderGridItem', 'could not find large image url');
-  }
-
-  const openSeaExternalUrl = useMemo(() => {
-    if (chain && contract?.contractAddress?.address && tokenId) {
-      return getOpenseaExternalUrl(chain, contract.contractAddress.address, tokenId);
-    }
-
-    return '';
-  }, [chain, contract?.contractAddress?.address, tokenId]);
+  const { openseaUrl } = extractRelevantMetadataFromToken(token);
 
   const handleClick = useCallback(() => {
     if (owner?.universal) {
-      window.open(openSeaExternalUrl, '_blank');
+      window.open(openseaUrl, '_blank');
       return;
     }
 
@@ -103,27 +77,13 @@ export default function CommunityHolderGridItem({ holderRef, queryRef }: Props) 
       ),
       isFullPage: true,
     });
-  }, [openSeaExternalUrl, owner?.universal, query, showModal, token]);
-
-  const previewAsset = useMemo(() => {
-    if (isFailedToLoad || !previewUrlSet?.urls.large) {
-      return (
-        <StyledErrorWrapper justify="center" align="center">
-          <StyledErrorText>Could not load</StyledErrorText>
-        </StyledErrorWrapper>
-      );
-    }
-
-    if (previewUrlSet?.type === 'video') {
-      return <StyledNftVideo src={previewUrlSet.urls.large} onError={handleFailedToLoad} />;
-    }
-
-    return <StyledNftImage src={previewUrlSet.urls.large} onError={handleFailedToLoad} />;
-  }, [handleFailedToLoad, isFailedToLoad, previewUrlSet?.type, previewUrlSet.urls.large]);
+  }, [openseaUrl, owner?.universal, query, showModal, token]);
 
   return (
     <VStack gap={8}>
-      <StyledInteractiveLink onClick={handleClick}>{previewAsset}</StyledInteractiveLink>
+      <StyledInteractiveLink onClick={handleClick}>
+        <StyledNftImage src={imageUrl} />
+      </StyledInteractiveLink>
       <VStack>
         <BaseM>{token?.name}</BaseM>
         {owner?.universal ? (
@@ -147,13 +107,6 @@ const StyledNftImage = styled.img`
   cursor: pointer;
 `;
 
-const StyledNftVideo = styled.video`
-  height: auto;
-  width: 100%;
-  max-width: 100%;
-  cursor: pointer;
-`;
-
 const StyledNftDetailViewPopover = styled(VStack)`
   height: 100%;
   padding: 80px 0;
@@ -164,15 +117,4 @@ const StyledNftDetailViewPopover = styled(VStack)`
 
 const StyledInteractiveLink = styled(InteractiveLink)`
   text-decoration: none;
-`;
-
-const StyledErrorWrapper = styled(VStack)`
-  background-color: ${colors.offWhite};
-  height: auto;
-  width: 100%;
-  aspect-ratio: 1 / 1;
-`;
-
-const StyledErrorText = styled(BaseM)`
-  color: ${colors.metal};
 `;

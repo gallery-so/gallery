@@ -5,7 +5,7 @@ import { BaseM, TitleXS } from '~/components/core/Text/Text';
 import { EnsOrAddress } from '~/components/EnsOrAddress';
 import { LinkableAddress } from '~/components/LinkableAddress';
 import { NftAdditionalDetailsEthFragment$key } from '~/generated/NftAdditionalDetailsEthFragment.graphql';
-import { hexHandler } from '~/shared/utils/getOpenseaExternalUrl';
+import { hexToDec } from '~/shared/utils/hexToDec';
 
 import NftDetailsExternalLinksEth from './NftDetailsExternalLinksEth';
 
@@ -56,7 +56,7 @@ export function NftAdditionalDetailsEth({ tokenRef }: NftAdditionaDetailsNonPOAP
       {tokenId && (
         <div>
           <TitleXS>Token ID</TitleXS>
-          <BaseM>{hexHandler(tokenId)}</BaseM>
+          <BaseM>{hexToDec(tokenId)}</BaseM>
         </div>
       )}
       <NftDetailsExternalLinksEth tokenRef={token} />

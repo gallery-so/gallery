@@ -1,11 +1,13 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { RouteProp, useRoute } from '@react-navigation/native';
 import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 
-import { WelcomeToBeta } from '~/components/WelcomeToBeta';
+import { MarfaCheckInSheet } from '~/components/MarfaCheckIn/MarfaCheckInSheet';
+import { WelcomeNewUser } from '~/components/WelcomeNewUser';
 import { CuratedScreenFragment$key } from '~/generated/CuratedScreenFragment.graphql';
 import { CuratedScreenQuery } from '~/generated/CuratedScreenQuery.graphql';
 import { RefetchableCuratedScreenFragmentQuery } from '~/generated/RefetchableCuratedScreenFragmentQuery.graphql';
+import { FeedTabNavigatorParamList } from '~/navigation/types';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import { FeedList } from '../../components/Feed/FeedList';
@@ -36,11 +38,12 @@ function CuratedScreenInner({ queryRef }: CuratedScreenInnerProps) {
           }
         }
 
-        viewer {
+        viewer @required(action: THROW) {
           ... on Viewer {
             user {
               username
             }
+            ...MarfaCheckInSheetFragment
           }
         }
         ...FeedListQueryFragment
@@ -51,7 +54,21 @@ function CuratedScreenInner({ queryRef }: CuratedScreenInnerProps) {
 
   const [isRefreshing, setIsRefreshing] = useState(false);
 
+  const { params: routeParams } = useRoute<RouteProp<FeedTabNavigatorParamList, 'Curated'>>();
+  const showMarfaCheckIn = routeParams?.showMarfaCheckIn ?? false;
+
   const curatedFeed = query.data.curatedFeed;
+
+  const route = useRoute<RouteProp<FeedTabNavigatorParamList, 'Curated'>>();
+  const [showWelcome, setShowWelcome] = useState(false);
+
+  const { isNewUser } = route.params ?? {};
+
+  useEffect(() => {
+    if (isNewUser) {
+      setShowWelcome(true);
+    }
+  }, [isNewUser, setShowWelcome]);
 
   const handleRefresh = useCallback(() => {
     setIsRefreshing(true);
@@ -83,20 +100,6 @@ function CuratedScreenInner({ queryRef }: CuratedScreenInnerProps) {
     return [...curatedEvents];
   }, [curatedFeed?.edges]);
 
-  const [showWelcome, setShowWelcome] = useState(false);
-
-  const checkShouldShowWelcome = useCallback(async () => {
-    const shown = await AsyncStorage.getItem('welcomeMessageShown');
-    if (shown !== 'true') {
-      setShowWelcome(true);
-      await AsyncStorage.setItem('welcomeMessageShown', 'true');
-    }
-  }, [setShowWelcome]);
-
-  useEffect(() => {
-    checkShouldShowWelcome();
-  }, [checkShouldShowWelcome]);
-
   return (
     <>
       <FeedList
@@ -107,7 +110,8 @@ function CuratedScreenInner({ queryRef }: CuratedScreenInnerProps) {
         feedEventRefs={events}
         queryRef={query.data}
       />
-      {showWelcome && <WelcomeToBeta username={query.data.viewer?.user?.username ?? ''} />}
+      {showWelcome && <WelcomeNewUser username={query.data.viewer?.user?.username ?? ''} />}
+      {showMarfaCheckIn && <MarfaCheckInSheet viewerRef={query.data.viewer} />}
     </>
   );
 }

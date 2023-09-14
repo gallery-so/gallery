@@ -15,13 +15,11 @@ import useSetSpamPreference from '~/hooks/api/tokens/useSetSpamPreference';
 import { Chain } from '~/shared/utils/chains';
 
 import { TokenFilterType } from './SidebarViewSelector';
-import { SidebarWallet } from './SidebarWalletSelector';
 
 type SidebarTokensProps = {
   isSearching: boolean;
   selectedChain: Chain;
   selectedView: TokenFilterType;
-  selectedWallet: SidebarWallet;
   tokenRefs: SidebarTokensFragment$key;
 };
 
@@ -30,7 +28,6 @@ export const SidebarTokens = ({
   isSearching,
   selectedChain,
   selectedView,
-  selectedWallet,
 }: SidebarTokensProps) => {
   const tokens = useFragment(
     graphql`
@@ -48,13 +45,6 @@ export const SidebarTokens = ({
         # eslint-disable-next-line relay/unused-fields
         isSpamByProvider
 
-        ownedByWallets {
-          chainAddress {
-            address
-            chain
-          }
-        }
-
         contract {
           # Escape hatch for data processing in util files
           # eslint-disable-next-line relay/unused-fields
@@ -70,23 +60,6 @@ export const SidebarTokens = ({
     `,
     tokenRefs
   );
-
-  const filteredTokensBySelectedWallet = useMemo(() => {
-    if (selectedWallet === 'All') {
-      return tokens;
-    } else if (selectedWallet) {
-      return tokens.filter((token) =>
-        token?.ownedByWallets?.some((wallet) => {
-          const sameWalletAddress =
-            wallet?.chainAddress?.address === selectedWallet.chainAddress.address;
-          const sameWalletChain = wallet?.chainAddress?.chain === selectedWallet.chainAddress.chain;
-          return sameWalletAddress && sameWalletChain;
-        })
-      );
-    }
-    return tokens;
-  }, [tokens, selectedWallet]);
-
   const setSpamPreference = useSetSpamPreference();
   const setSpamPreferenceForCollection = useCallback(
     (address: string, isSpam: boolean) => {
@@ -105,24 +78,7 @@ export const SidebarTokens = ({
     [tokens, setSpamPreference]
   );
 
-  const [erroredTokenIds, setErroredTokenIds] = useState<Set<string>>(new Set());
   const [collapsedCollections, setCollapsedCollections] = useState<Set<string>>(new Set());
-
-  const handleMarkErroredTokenId = useCallback((id: string) => {
-    setErroredTokenIds((prev) => {
-      const next = new Set(prev);
-      next.add(id);
-      return next;
-    });
-  }, []);
-
-  const handleMarkSuccessTokenId = useCallback((id: string) => {
-    setErroredTokenIds((prev) => {
-      const next = new Set(prev);
-      next.delete(id);
-      return next;
-    });
-  }, []);
 
   const handleToggleExpanded = useCallback((address: string) => {
     setCollapsedCollections((previous) => {
@@ -147,25 +103,18 @@ export const SidebarTokens = ({
 
   const rows = useMemo(() => {
     if (shouldUseCollectionGrouping) {
-      const groups = groupCollectionsByAddress({ filteredTokensBySelectedWallet });
+      const groups = groupCollectionsByAddress({ tokens });
 
       return createVirtualizedRowsFromGroups({
         groups,
-        erroredTokenIds,
         collapsedCollections,
       });
     } else {
       return createVirtualizedRowsFromTokens({
-        filteredTokensBySelectedWallet,
-        erroredTokenIds,
+        tokens,
       });
     }
-  }, [
-    collapsedCollections,
-    erroredTokenIds,
-    shouldUseCollectionGrouping,
-    filteredTokensBySelectedWallet,
-  ]);
+  }, [collapsedCollections, shouldUseCollectionGrouping, tokens]);
 
   useEffect(
     function resetCollapsedSectionsWhileSearching() {
@@ -182,7 +131,7 @@ export const SidebarTokens = ({
 
       const collapsed = new Set<string>();
       if (shouldUseCollectionGrouping) {
-        const groups = groupCollectionsByAddress({ filteredTokensBySelectedWallet });
+        const groups = groupCollectionsByAddress({ tokens });
         for (const group of groups) {
           if (group.tokens.length > DEFAULT_COLLAPSE_TOKEN_COUNT) {
             collapsed.add(group.address);
@@ -191,7 +140,7 @@ export const SidebarTokens = ({
       }
       setCollapsedCollections(collapsed);
     },
-    [shouldUseCollectionGrouping, filteredTokensBySelectedWallet]
+    [shouldUseCollectionGrouping, tokens]
   );
 
   if (rows.length === 0) {
@@ -208,8 +157,6 @@ export const SidebarTokens = ({
       rows={rows}
       selectedView={selectedView}
       onToggleExpanded={handleToggleExpanded}
-      handleTokenRenderError={handleMarkErroredTokenId}
-      handleTokenRenderSuccess={handleMarkSuccessTokenId}
       shouldUseCollectionGrouping={shouldUseCollectionGrouping}
       setSpamPreferenceForCollection={setSpamPreferenceForCollection}
     />
