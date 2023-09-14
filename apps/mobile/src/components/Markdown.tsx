@@ -37,6 +37,7 @@ const lightModeMarkdownStyles = {
 };
 
 type GalleryMarkdownProps = PropsWithChildren<{
+// if provided, this function will be executed instead of navigating to the pressed link
   onBypassLinkPress?: (url: string) => void;
   numberOfLines?: number;
   touchToExpand?: boolean;
@@ -45,8 +46,6 @@ type GalleryMarkdownProps = PropsWithChildren<{
 
 const markdownItOptions = MarkdownIt({ typographer: true, linkify: false }).disable(['lheading']);
 
-// if onBypassLinkPress is provided, when a link is pressed onBypassLinkPress
-//  is executed or otherwise, by default, it navigates to link in browser
 export function Markdown({
   children,
   onBypassLinkPress,
@@ -100,14 +99,14 @@ export function Markdown({
     setShowAll((previous) => !previous);
   }, []);
 
-  const handleLinkPress = (url: string) => {
+  const handleLinkPress = useCallback((url: string) => {
     if (url && onBypassLinkPress) {
       onBypassLinkPress(url);
       return false;
     }
 
     return true;
-  };
+  }, [onBypassLinkPress]);
 
   return (
     <GalleryTouchableOpacity

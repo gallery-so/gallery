@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useCallback } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
@@ -29,12 +29,12 @@ export function PostListCaption({ feedPostRef }: Props) {
 
   const captionWithMarkdownLinks = convertToMarkdownLinks(caption ?? '');
 
-  const handleLinkPress = (url: string) => {
+  const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
+
+  const handleLinkPress = useCallback((url: string) => {
     bottomSheetRef.current?.present();
     setRedirectUrl(url);
-  };
-
-  const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
+  }, []);
 
   return (
     <View className="px-4 pb-4">

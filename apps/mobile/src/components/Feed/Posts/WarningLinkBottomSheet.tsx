@@ -1,5 +1,6 @@
 import { useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
-import { ForwardedRef, forwardRef, useRef } from 'react';
+import { ForwardedRef, forwardRef, useRef, useCallback } from 'react';
+
 import { Linking, View } from 'react-native';
 
 import { Button } from '../../Button';
@@ -24,9 +25,9 @@ function WarningLinkBottomSheet(props: Props, ref: ForwardedRef<GalleryBottomShe
   const { animatedHandleHeight, animatedSnapPoints, animatedContentHeight, handleContentLayout } =
     useBottomSheetDynamicSnapPoints(SNAP_POINTS);
 
-  const handleCancel = () => bottomSheetRef.current?.dismiss();
+  const handleCancel = useCallback(() => bottomSheetRef.current?.dismiss(), []);
 
-  const handleContinue = () => Linking.openURL(props.redirectUrl);
+  const handleContinue = useCallback(() => Linking.openURL(props.redirectUrl), [props.redirectUrl]);
 
   return (
     <GalleryBottomSheetModal

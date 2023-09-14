@@ -1,9 +1,9 @@
-import { convertToMarkdownLinks } from './convertToMarkdownLinks';
+import { replaceUrlsWithMarkdownFormat } from './replaceUrlsWithMarkdownFormat';
 
-describe('convertToMarkdownLinks', () => {
+describe('replaceUrlsWithMarkdownFormat', () => {
   test('converts strings with already markdown formatted urls correctly to markdown', () => {
     expect(
-      convertToMarkdownLinks(
+      replaceUrlsWithMarkdownFormat(
         'in between the [here](https://mirror.xyz/) and https://asystem.dev/'
       )
     ).toEqual(
@@ -12,7 +12,7 @@ describe('convertToMarkdownLinks', () => {
   });
   test('converts urls to markdown links correctly', () => {
     expect(
-      convertToMarkdownLinks(
+      replaceUrlsWithMarkdownFormat(
         'here are some valid urls: https://www.fxhash.xyz/generative/slug/toccata, https://highlight.xyz/mint/64ef4dc173490a0eb6d63bda and http://new-x-wing.com and one more right one www.wolframalpha.com'
       )
     ).toEqual(
