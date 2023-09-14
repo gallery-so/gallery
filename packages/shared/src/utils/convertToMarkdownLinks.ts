@@ -1,8 +1,21 @@
 // Regular expression to match URLs
-const urlRegex =
-  /(?:https:\/\/(?:www\.[^\s/$.?#].[^\s]*[^\s.,!?#$]|(?!www\.)[^\s/$.?#].[^\s]*[^\s.,!?#$])|www\.[^\s/$.?#].[^\s]*[^\s.,!?#$])/g;
+const urlRegex = /(\[([^\]]*?)\]\((https?:\/\/[^\s,)]+)\))|((https?:\/\/|www\.)[^\s,)]+)/g;
 
-export const convertToMarkdownLinks = (text: string) => {
-  const unformattedStr = text.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
-  return unformattedStr.replace(urlRegex, (url: string) => `[${url}](${url})`);
-};
+export function convertToMarkdownLinks(input: string) {
+  return input.replace(urlRegex, (match, text, textInside, url, standaloneUrl) => {
+    if (url || standaloneUrl) {
+      // Check if the match is already inside square brackets
+      if (
+        (text && textInside) || // Inside both square brackets and parentheses
+        (text && input.charAt(input.indexOf(match) - 1) === '(') || // Inside square brackets and following an open parenthesis
+        (textInside && input.charAt(input.indexOf(match) - 1) === '[') // Inside parentheses and following an open square bracket
+      ) {
+        return match; // Return the match as-is
+      } else {
+        return `[${match}](${url || standaloneUrl})`; // Convert the match to a Markdown link
+      }
+    } else {
+      return `[${text}](${match})`; // Convert the match to a Markdown link
+    }
+  });
+}
