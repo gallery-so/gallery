@@ -1,8 +1,7 @@
-// Regular expression to match URLs
-const urlRegex = /(\[([^\]]*?)\]\((https?:\/\/[^\s,)]+)\))|((https?:\/\/|www\.)[^\s,)]+)/g;
+import { VALID_URL_IGNORE_MARKDOWN } from './regex';
 
 export function replaceUrlsWithMarkdownFormat(input: string) {
-  return input.replace(urlRegex, (match, text, textInside, url, standaloneUrl) => {
+  return input.replace(VALID_URL_IGNORE_MARKDOWN, (match, text, textInside, url, standaloneUrl) => {
     if (url || standaloneUrl) {
       // Check if the match is already inside square brackets
       if (

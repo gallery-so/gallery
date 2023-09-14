@@ -16,9 +16,6 @@ const markdownStyles = {
     fontSize: 14,
     fontFamily: 'ABCDiatypeRegular',
   },
-  link: {
-    textDecorationLine: 'none',
-  },
 };
 
 const darkModeMarkdownStyles = {
@@ -27,6 +24,7 @@ const darkModeMarkdownStyles = {
   },
   link: {
     color: '#9E9E9E',
+    textDecorationLine: 'none',
   },
 };
 
@@ -36,6 +34,7 @@ const lightModeMarkdownStyles = {
   },
   link: {
     color: '#707070',
+    textDecorationLine: 'none',
   },
 };
 
