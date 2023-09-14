@@ -9,7 +9,6 @@ import { Typography } from '~/components/Typography';
 import { SomeoneAdmiredYourPostFragment$key } from '~/generated/SomeoneAdmiredYourPostFragment.graphql';
 import { SomeoneAdmiredYourPostQueryFragment$key } from '~/generated/SomeoneAdmiredYourPostQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
-import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 type SomeoneAdmiredYourFeedEventProps = {
@@ -47,10 +46,6 @@ export function SomeoneAdmiredYourPost({
         }
         post {
           dbid
-          tokens {
-            __typename
-            ...getVideoOrImageUrlForNftPreviewFragment
-          }
         }
 
         ...NotificationSkeletonFragment
@@ -60,25 +55,6 @@ export function SomeoneAdmiredYourPost({
   );
 
   const { post } = notification;
-
-  const nonNullTokens = useMemo(() => {
-    const tokens = post?.tokens;
-
-    return removeNullValues(tokens);
-  }, [post?.tokens]);
-
-  const token = nonNullTokens?.[0] || null;
-
-  if (!token) {
-    throw new Error('There is no token in post');
-  }
-
-  const media = getVideoOrImageUrlForNftPreview({
-    tokenRef: token,
-    preferStillFrameFromGif: true,
-  });
-
-  const tokenUrl = media?.urls.small;
 
   const admirers = useMemo(() => {
     return removeNullValues(notification.admirers?.edges?.map((edge) => edge?.node));
@@ -100,7 +76,6 @@ export function SomeoneAdmiredYourPost({
       onPress={handlePress}
       responsibleUserRefs={admirers}
       notificationRef={notification}
-      tokenUrl={tokenUrl ?? undefined}
     >
       <Text>
         <Typography

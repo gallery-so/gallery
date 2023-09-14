@@ -1,8 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
-import { ResizeMode } from 'expo-av';
-import { PropsWithChildren, useCallback, useRef } from 'react';
+import { PropsWithChildren, useCallback, useMemo, useRef } from 'react';
 import { Text, View } from 'react-native';
-import FastImage from 'react-native-fast-image';
 import { graphql, useFragment } from 'react-relay';
 
 import {
@@ -19,10 +17,10 @@ import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { getTimeSince } from '~/shared/utils/time';
 
 import { GalleryTouchableOpacity } from '../GalleryTouchableOpacity';
+import { NotificationPostPreviewWithBoundary } from './NotificationPostPreview';
 
 type Props = PropsWithChildren<{
   onPress: () => void;
-  tokenUrl?: string;
   queryRef: NotificationSkeletonQueryFragment$key;
   notificationRef: NotificationSkeletonFragment$key;
   responsibleUserRefs: NotificationSkeletonResponsibleUsersFragment$key;
@@ -30,7 +28,6 @@ type Props = PropsWithChildren<{
 
 export function NotificationSkeleton({
   onPress,
-  tokenUrl,
   children,
   queryRef,
   notificationRef,
@@ -62,6 +59,20 @@ export function NotificationSkeleton({
         __typename
         seen
         updatedTime
+        ... on SomeoneAdmiredYourPostNotification {
+          post {
+            tokens {
+              ...NotificationPostPreviewWithBoundaryFragment
+            }
+          }
+        }
+        ... on SomeoneCommentedOnYourPostNotification {
+          post {
+            tokens {
+              ...NotificationPostPreviewWithBoundaryFragment
+            }
+          }
+        }
       }
     `,
     notificationRef
@@ -94,6 +105,16 @@ export function NotificationSkeleton({
     }
   }, [handleNavigateToProfile, responsibleUsers]);
 
+  const postToken = useMemo(() => {
+    if (
+      notification.__typename === 'SomeoneAdmiredYourPostNotification' ||
+      notification.__typename === 'SomeoneCommentedOnYourPostNotification'
+    ) {
+      return notification.post?.tokens?.[0];
+    }
+    return null;
+  }, [notification]);
+
   return (
     <GalleryTouchableOpacity
       onPress={onPress}
@@ -114,18 +135,7 @@ export function NotificationSkeleton({
         <Text className="dark:text-white mt-[1] pr-1 flex-1">{children}</Text>
       </View>
       <View className="flex flex-row items-center justify-between space-x-2">
-        {tokenUrl ? (
-          <FastImage
-            style={{
-              width: 56,
-              height: 56,
-            }}
-            source={{ uri: tokenUrl }}
-            resizeMode={ResizeMode.COVER}
-          />
-        ) : (
-          <View />
-        )}
+        {postToken ? <NotificationPostPreviewWithBoundary tokenRef={postToken} /> : <View />}
 
         <View
           className={`w-[35px] flex-row space-x-2 items-center ${
