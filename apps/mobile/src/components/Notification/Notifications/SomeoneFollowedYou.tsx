@@ -125,7 +125,7 @@ export function SomeoneFollowedYou({ notificationRef, queryRef }: SomeoneFollowe
           alignItems: 'center', // Align items vertically in the center
         }}
       >
-        <Text style={{ maxWidth: '70%' }}>
+        <Text style={shouldShowFollowBackButton ? { maxWidth: '70%' } : null}>
           <Typography
             font={{
               family: 'ABCDiatype',
@@ -139,7 +139,7 @@ export function SomeoneFollowedYou({ notificationRef, queryRef }: SomeoneFollowe
               <>{lastFollower ? lastFollower.username : 'Someone'}</>
             )}
           </Typography>{' '}
-          followed you
+          <Typography font={{ family: 'ABCDiatype', weight: 'Regular' }}>followed you</Typography>
         </Text>
         {shouldShowFollowBackButton && <FollowButton queryRef={query} userRef={lastFollower} />}
       </View>
