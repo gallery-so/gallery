@@ -5,6 +5,8 @@ import { walletGetExternalAddressLinkFragment$key } from '~/generated/walletGetE
 import { walletTruncateAddressFragment$key } from '~/generated/walletTruncateAddressFragment.graphql';
 import { walletTruncateUniversalUsernameFragment$key } from '~/generated/walletTruncateUniversalUsernameFragment.graphql';
 
+import { ETH_ADDRESS } from './regex';
+
 const overrides: Record<string, string> = {
   METAMASK: 'MetaMask',
   WALLETCONNECT: 'WalletConnect',
@@ -109,4 +111,9 @@ export function getExternalAddressLink(chainAddressRef: walletGetExternalAddress
   }
 
   return null;
+}
+
+export function isValidEthereumAddress(address: string): boolean {
+  const pattern = ETH_ADDRESS;
+  return pattern.test(address);
 }

@@ -14,6 +14,7 @@ import { HoverCardCommunityInnerQuery } from '~/generated/HoverCardCommunityInne
 import { ErrorWithSentryMetadata } from '~/shared/errors/ErrorWithSentryMetadata';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
+import { isValidEthereumAddress, truncateAddress } from '~/shared/utils/wallet';
 
 import CommunityProfilePicture from '../ProfilePicture/CommunityProfilePicture';
 import { ProfilePictureStack } from '../ProfilePicture/ProfilePictureStack';
@@ -145,9 +146,13 @@ export function HoverCardCommunityInner({
         <StyledLink href={communityProfileLink}>
           <CommunityProfilePicture communityRef={community} size={64} />
         </StyledLink>
-        <VStack gap={2}>
+        <Section gap={2}>
           <StyledLink href={communityProfileLink}>
-            <StyledCardTitle>{community.name}</StyledCardTitle>
+            <StyledCardTitle>
+              {isValidEthereumAddress(community.name)
+                ? truncateAddress(community.name)
+                : community.name}
+            </StyledCardTitle>
           </StyledLink>
           {community.description && (
             <StyledCardDescription>
@@ -156,7 +161,7 @@ export function HoverCardCommunityInner({
               </BaseM>
             </StyledCardDescription>
           )}
-        </VStack>
+        </Section>
       </HStack>
       <HStack align="center" gap={4}>
         <ProfilePictureStack usersRef={owners} total={totalOwners} />
@@ -175,16 +180,20 @@ const StyledLink = styled(Link)`
   min-width: 0;
 `;
 
+const Section = styled(VStack)`
+  max-width: 250px;
+`;
+
 const StyledCardTitle = styled(TitleM)`
   font-style: normal;
   text-overflow: ellipsis;
   overflow: hidden;
+  white-space: nowrap;
 `;
 
 const StyledCardDescription = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 250px;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;

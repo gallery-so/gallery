@@ -157,7 +157,7 @@ const StyledCardContainer = styled.div`
   width: 375px;
   min-height: 128px;
   max-width: calc(100vw - ${pageGutter.mobile * 2}px);
-  display: grid;
+  display: flex;
   gap: 8px;
   background-color: ${colors.white};
 
