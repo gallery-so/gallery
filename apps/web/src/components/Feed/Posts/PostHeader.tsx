@@ -1,5 +1,6 @@
 import unescape from 'lodash/unescape';
 import { graphql, useFragment } from 'react-relay';
+import styled from 'styled-components';
 
 import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
@@ -8,6 +9,7 @@ import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { PostHeaderFragment$key } from '~/generated/PostHeaderFragment.graphql';
 import { PostHeaderQueryFragment$key } from '~/generated/PostHeaderQueryFragment.graphql';
+import { replaceUrlsWithMarkdownFormat } from '~/shared/utils/replaceUrlsWithMarkdownFormat';
 import { getTimeSince } from '~/shared/utils/time';
 import handleCustomDisplayName from '~/utils/handleCustomDisplayName';
 
@@ -66,7 +68,19 @@ export default function PostHeader({ postRef, queryRef }: Props) {
           <PostDropdown postRef={post} queryRef={query} />
         </HStack>
       </HStack>
-      <BaseM>{post.caption && <Markdown text={unescape(post.caption)}></Markdown>}</BaseM>
+      <StyledBaseM>
+        {post.caption && (
+          <Markdown text={unescape(replaceUrlsWithMarkdownFormat(post.caption))}></Markdown>
+        )}
+      </StyledBaseM>
     </VStack>
   );
 }
+
+const StyledBaseM = styled(BaseM)`
+  word-wrap: break-word;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;

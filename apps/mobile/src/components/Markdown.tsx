@@ -16,14 +16,15 @@ const markdownStyles = {
     fontSize: 14,
     fontFamily: 'ABCDiatypeRegular',
   },
-  link: {
-    color: '#707070',
-  },
 };
 
 const darkModeMarkdownStyles = {
   body: {
     color: colors.offWhite,
+  },
+  link: {
+    color: '#9E9E9E',
+    textDecorationLine: 'none',
   },
 };
 
@@ -31,9 +32,15 @@ const lightModeMarkdownStyles = {
   body: {
     color: colors.black['800'],
   },
+  link: {
+    color: '#707070',
+    textDecorationLine: 'none',
+  },
 };
 
 type GalleryMarkdownProps = PropsWithChildren<{
+  // if provided, this function will be executed instead of navigating to the pressed link
+  onBypassLinkPress?: (url: string) => void;
   numberOfLines?: number;
   touchToExpand?: boolean;
   style?: StyleProp<unknown>;
@@ -43,6 +50,7 @@ const markdownItOptions = MarkdownIt({ typographer: true, linkify: false }).disa
 
 export function Markdown({
   children,
+  onBypassLinkPress,
   touchToExpand = false,
   numberOfLines,
   style,
@@ -93,6 +101,18 @@ export function Markdown({
     setShowAll((previous) => !previous);
   }, []);
 
+  const handleLinkPress = useCallback(
+    (url: string) => {
+      if (url && onBypassLinkPress) {
+        onBypassLinkPress(url);
+        return false;
+      }
+
+      return true;
+    },
+    [onBypassLinkPress]
+  );
+
   return (
     <GalleryTouchableOpacity
       eventElementId={null}
@@ -100,7 +120,12 @@ export function Markdown({
       onPress={handlePress}
       disabled={numberOfLines === undefined || !touchToExpand}
     >
-      <MarkdownDisplay markdownit={markdownItOptions} rules={rules} style={mergedStyles}>
+      <MarkdownDisplay
+        onLinkPress={handleLinkPress}
+        markdownit={markdownItOptions}
+        rules={rules}
+        style={mergedStyles}
+      >
         {children}
       </MarkdownDisplay>
     </GalleryTouchableOpacity>
