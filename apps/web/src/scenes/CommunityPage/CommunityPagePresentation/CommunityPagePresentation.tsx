@@ -12,7 +12,7 @@ import CloseIcon from '~/icons/CloseIcon';
 import LogoBracketLeft from '~/icons/LogoBracketLeft';
 import LogoBracketRight from '~/icons/LogoBracketRight';
 
-import CommunityPagePresentationPosts from '../CommunityPagePresentationPosts';
+import CommunityPagePresentationPosts from './CommunityPagePresentationPosts';
 
 type Props = {
   communityRef: CommunityPagePresentationFragment$key;

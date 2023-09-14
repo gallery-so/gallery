@@ -5,8 +5,8 @@ import { CommunityPagePresentationPostsFragment$key } from '~/generated/Communit
 import { CommunityPagePresentationPostsQueryFragment$key } from '~/generated/CommunityPagePresentationPostsQueryFragment.graphql';
 import { RefetchableCommunityPresentationPostsQuery } from '~/generated/RefetchableCommunityPresentationPostsQuery.graphql';
 
-import CommunityPagePresentationEmptyState from './CommunityPagePresentation/CommunityPagePresentationEmptyState';
-import CommunityPagePresentationPostsCycle from './CommunityPagePresentation/CommunityPagePresentationPostsCycle';
+import CommunityPagePresentationEmptyState from './CommunityPagePresentationEmptyState';
+import CommunityPagePresentationPostsCycle from './CommunityPagePresentationPostsCycle';
 
 type Props = {
   communityRef: CommunityPagePresentationPostsFragment$key;

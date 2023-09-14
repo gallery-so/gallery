@@ -12,7 +12,7 @@ import { CommunityPagePresentationPostsCycleQueryFragment$key } from '~/generate
 import { CommunityPagePresentationPostsHasNextPageQuery } from '~/generated/CommunityPagePresentationPostsHasNextPageQuery.graphql';
 import useWindowSize from '~/hooks/useWindowSize';
 
-import { fetchPageQuery } from '../CommunityPagePresentationPosts';
+import { fetchPageQuery } from './CommunityPagePresentationPosts';
 
 const NEXT_POST_INTERVAL_MS = 10000;
 const CHECK_HAS_NEXT_PAGE_INTERVAL_MS = 5000;

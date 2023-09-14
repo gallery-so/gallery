@@ -73,7 +73,6 @@ export default function CommunityPage({ contractAddress, chain, displayMode }: C
     return <GalleryRedirect to={{ pathname: '/' }} />;
   }
 
-  // console.log({ displayMode, contractAddress });
   if (
     displayMode === CommunityPageDisplayMode.PRESENTATION &&
     contractAddress === PROHIBITION_CONTRACT_ADDRESS

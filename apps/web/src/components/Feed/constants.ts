@@ -1,2 +1,2 @@
-export const ITEMS_PER_PAGE = 2;
+export const ITEMS_PER_PAGE = 24;
 export const MAX_PIECES_DISPLAYED_PER_FEED_EVENT = 4;

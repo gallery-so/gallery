@@ -5,6 +5,7 @@ import styled from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';
 import { CommunityPagePresentationSceneFragment$key } from '~/generated/CommunityPagePresentationSceneFragment.graphql';
+import NotFound from '~/scenes/NotFound/NotFound';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 
 import CommunityPagePresentation from './CommunityPagePresentation';
@@ -33,7 +34,6 @@ export default function CommunityPagePresentationScene({ queryRef }: Props) {
             __typename
             name
             ...CommunityPagePresentationFragment
-            # ...CommunityPagePresentationHasNextPageFragment
           }
         }
         ...CommunityPagePresentationQueryFragment
@@ -43,7 +43,6 @@ export default function CommunityPagePresentationScene({ queryRef }: Props) {
   );
   const { community } = query;
   const track = useTrack();
-  // const navbarHeight = useGlobalNavbarHeight();
 
   useEffect(() => {
     if (community && community.__typename === 'Community') {
@@ -52,12 +51,7 @@ export default function CommunityPagePresentationScene({ queryRef }: Props) {
   }, [community, track]);
 
   if (!community || community.__typename !== 'Community') {
-    return (
-      <div>not found</div>
-      // <StyledNotFoundPage navbarHeight={navbarHeight}>
-      //   <NotFound resource="community" />
-      // </StyledNotFoundPage>
-    );
+    return <NotFound resource="community" />;
   }
 
   const headTitle = community.name ? `${community.name} | Gallery` : 'Gallery';

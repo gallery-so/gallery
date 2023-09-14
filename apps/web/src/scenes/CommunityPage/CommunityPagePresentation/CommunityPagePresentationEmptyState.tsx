@@ -8,7 +8,7 @@ import { CommunityPagePresentationPostsFragment$key } from '~/generated/Communit
 import { CommunityPagePresentationPostsHasNextPageQuery } from '~/generated/CommunityPagePresentationPostsHasNextPageQuery.graphql';
 import { RefetchableCommunityPresentationPostsQuery } from '~/generated/RefetchableCommunityPresentationPostsQuery.graphql';
 
-import { fetchPageQuery } from '../CommunityPagePresentationPosts';
+import { fetchPageQuery } from './CommunityPagePresentationPosts';
 
 const POLL_FOR_POST_INTERVAL_MS = 5000;
 

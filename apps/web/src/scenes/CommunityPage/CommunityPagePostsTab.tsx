@@ -71,7 +71,6 @@ export default function CommunityPagePostsTab({ communityRef, queryRef }: Props)
           }
         }
         ...FeedListFragment
-        # ...CommunityPagePostCycleQueryFragment
         ...PostComposerModalWithSelectorQueryFragment
       }
     `,
