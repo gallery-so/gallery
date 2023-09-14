@@ -11,9 +11,9 @@ import {
   EventTokenGridFragment$key,
 } from '~/generated/EventTokenGridFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
-import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
+import { getPreviewImageUrlsInlineDangerously } from '~/shared/relay/getPreviewImageUrlsInlineDangerously';
 
-import { NftPreview } from '../NftPreview/NftPreview';
+import { NftPreviewWithBoundary } from '../NftPreview/NftPreview';
 import { DOUBLE_TAP_WINDOW } from './constants';
 
 type EventTokenGridProps = {
@@ -39,7 +39,7 @@ export function EventTokenGrid({
 
         token @required(action: THROW) {
           dbid
-          ...getVideoOrImageUrlForNftPreviewFragment
+          ...getPreviewImageUrlsInlineDangerouslyFragment
         }
 
         ...NftPreviewFragment
@@ -109,14 +109,20 @@ export function EventTokenGrid({
   const inner = useMemo(() => {
     const tokensWithMedia = collectionTokens
       .map((collectionToken) => {
-        const media = getVideoOrImageUrlForNftPreview({
+        // this is okay to do since we're simply checking for the existence of a token URL
+        // to decide whether to display it. we don't need to error if we don't find one.
+        const result = getPreviewImageUrlsInlineDangerously({
           tokenRef: collectionToken.token,
           preferStillFrameFromGif: true,
         });
 
+        if (result.type !== 'valid') {
+          return null;
+        }
+
         return {
           ...collectionToken,
-          ...media?.urls,
+          ...result?.urls,
         };
       })
       // This makes sure we're only working with valid media
@@ -129,42 +135,42 @@ export function EventTokenGrid({
         <FullCell className="flex flex-1 flex-col justify-between overflow-hidden">
           <HalfHeightRow>
             <QuarterCell>
-              <NftPreview
+              <NftPreviewWithBoundary
                 onPress={() => handlePress(firstToken, firstToken.medium)}
                 priority={imagePriority}
                 resizeMode={ResizeMode.COVER}
                 collectionTokenRef={firstToken}
-                tokenUrl={firstToken.medium}
+                size="medium"
               />
             </QuarterCell>
             <QuarterCell>
-              <NftPreview
+              <NftPreviewWithBoundary
                 onPress={() => handlePress(secondToken, secondToken.medium)}
                 priority={imagePriority}
                 resizeMode={ResizeMode.COVER}
                 collectionTokenRef={secondToken}
-                tokenUrl={secondToken.medium}
+                size="medium"
               />
             </QuarterCell>
           </HalfHeightRow>
 
           <HalfHeightRow>
             <QuarterCell>
-              <NftPreview
+              <NftPreviewWithBoundary
                 onPress={() => handlePress(thirdToken, thirdToken.medium)}
                 priority={imagePriority}
                 resizeMode={ResizeMode.COVER}
                 collectionTokenRef={thirdToken}
-                tokenUrl={thirdToken.medium}
+                size="medium"
               />
             </QuarterCell>
             <QuarterCell>
-              <NftPreview
+              <NftPreviewWithBoundary
                 onPress={() => handlePress(fourthToken, fourthToken.medium)}
                 priority={imagePriority}
                 resizeMode={ResizeMode.COVER}
                 collectionTokenRef={fourthToken}
-                tokenUrl={fourthToken.medium}
+                size="medium"
               />
             </QuarterCell>
           </HalfHeightRow>
@@ -174,21 +180,21 @@ export function EventTokenGrid({
       return (
         <HalfHeightRow>
           <QuarterCell>
-            <NftPreview
+            <NftPreviewWithBoundary
               onPress={() => handlePress(firstToken, firstToken.large)}
               priority={imagePriority}
               resizeMode={ResizeMode.COVER}
               collectionTokenRef={firstToken}
-              tokenUrl={firstToken.large}
+              size="large"
             />
           </QuarterCell>
           <QuarterCell>
-            <NftPreview
+            <NftPreviewWithBoundary
               onPress={() => handlePress(secondToken, secondToken.large)}
               priority={imagePriority}
               resizeMode={ResizeMode.COVER}
               collectionTokenRef={secondToken}
-              tokenUrl={secondToken.large}
+              size="large"
             />
           </QuarterCell>
         </HalfHeightRow>
@@ -201,12 +207,12 @@ export function EventTokenGrid({
             minWidth: fullWidth,
           }}
         >
-          <NftPreview
+          <NftPreviewWithBoundary
             onPress={() => handlePress(firstToken, firstToken.large)}
             resizeMode={preserveAspectRatio ? ResizeMode.CONTAIN : ResizeMode.COVER}
             priority={imagePriority}
             collectionTokenRef={firstToken}
-            tokenUrl={firstToken.large}
+            size="large"
           />
         </View>
       );

@@ -67,8 +67,6 @@ function NotificationTokenPreview({ tokenRef, count }: NotificationTokenPreviewP
 
   const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size: 'small' }) ?? '';
 
-  console.log({ imageUrl });
-
   return (
     <View className="relative">
       {count > 1 && <ImagePreview tokenUrl={imageUrl} count={count} stacked />}
