@@ -2,10 +2,13 @@ import { useNavigation } from '@react-navigation/native';
 import { useEffect } from 'react';
 import { Linking } from 'react-native';
 import { fetchQuery, graphql, useRelayEnvironment } from 'react-relay';
+import { simpleHash } from 'src/utils/hashString';
 
 import { DeepLinkRegistrarAuthCheckQuery } from '~/generated/DeepLinkRegistrarAuthCheckQuery.graphql';
 import { RootStackNavigatorProp } from '~/navigation/types';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
+
+const MARFA_EVENT_HASH = -1082633448;
 
 export function DeepLinkRegistrar() {
   const relayEnvironment = useRelayEnvironment();
@@ -40,16 +43,20 @@ export function DeepLinkRegistrar() {
       const parsedUrl = new URL(url);
 
       /**
-       * /mobile?marfa=true
+       * Marfa Event Check In
        */
-      if (parsedUrl.pathname === '/mobile' && parsedUrl.searchParams.get('event') === 'marfa') {
-        navigation.navigate('MainTabs', {
-          screen: 'HomeTab',
-          params: {
-            screen: 'Home',
-            params: { screen: 'Curated', params: { showMarfaCheckIn: true } },
-          },
-        });
+      if (parsedUrl.pathname === '/mobile' && parsedUrl.searchParams.get('event')) {
+        const hashedEventParam = await simpleHash(parsedUrl.searchParams.get('event') ?? '');
+        if (hashedEventParam === MARFA_EVENT_HASH) {
+          navigation.navigate('MainTabs', {
+            screen: 'HomeTab',
+            params: {
+              screen: 'Home',
+              params: { screen: 'Curated', params: { showMarfaCheckIn: true } },
+            },
+          });
+          return;
+        }
         return;
       }
 
