@@ -62,7 +62,7 @@ export default function CommunityPage({ contractAddress, chain, displayMode }: C
       listOwnersFirst: LIST_ITEM_PER_PAGE,
       onlyGalleryUsers: true,
       communityPostsLast: ITEMS_PER_PAGE,
-      communityPostsFirst: ITEMS_PER_PAGE,
+      communityPostsFirst: 1,
       interactionsFirst: NOTES_PER_PAGE,
       visibleTokensPerFeedEvent: 1,
     }
@@ -73,7 +73,7 @@ export default function CommunityPage({ contractAddress, chain, displayMode }: C
     return <GalleryRedirect to={{ pathname: '/' }} />;
   }
 
-  console.log({ displayMode, contractAddress });
+  // console.log({ displayMode, contractAddress });
   if (
     displayMode === CommunityPageDisplayMode.PRESENTATION &&
     contractAddress === PROHIBITION_CONTRACT_ADDRESS

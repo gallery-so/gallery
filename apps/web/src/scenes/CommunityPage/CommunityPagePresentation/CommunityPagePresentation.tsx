@@ -1,20 +1,20 @@
 import GalleryLogoNoBrackets from 'public/icons/gallery_logo_no_brackets.svg';
 import ProhibitionLogo from 'public/icons/prohibition_logo.svg';
-import { useCallback, useMemo } from 'react';
+import { Suspense, useCallback, useMemo } from 'react';
 import { graphql, useFragment, usePaginationFragment } from 'react-relay';
 import styled from 'styled-components';
 
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
-import { TitleCondensed, TitleM } from '~/components/core/Text/Text';
+import { TitleM } from '~/components/core/Text/Text';
 import { ITEMS_PER_PAGE } from '~/components/Feed/constants';
 import { CommunityPagePresentationFragment$key } from '~/generated/CommunityPagePresentationFragment.graphql';
 import { RefetchableCommunityPresentationFeedQuery } from '~/generated/RefetchableCommunityPresentationFeedQuery.graphql';
-import useWindowSize from '~/hooks/useWindowSize';
 import CloseIcon from '~/icons/CloseIcon';
 import LogoBracketLeft from '~/icons/LogoBracketLeft';
 import LogoBracketRight from '~/icons/LogoBracketRight';
 
-import CommunityPagePostCycle from '../CommunityPagePostCycle';
+import CommunityPagePresentationPosts from '../CommunityPagePresentationPosts';
+import CommunityPagePostCycle from './CommunityPagePresentationPostsCycle';
 
 type Props = {
   communityRef: CommunityPagePresentationFragment$key;
@@ -22,53 +22,22 @@ type Props = {
 };
 
 export default function CommunityPagePresentation({ communityRef, queryRef }: Props) {
-  const query = useFragment(
+  const community = useFragment(
     graphql`
-      fragment CommunityPagePresentationQueryFragment on Query {
-        viewer {
-          ... on Viewer {
-            __typename
-          }
-        }
-        ...CommunityPagePostCycleQueryFragment
-      }
-    `,
-    queryRef
-  );
-
-  // currently getting data from new to old, we want old to
-  // need to get data
-
-  const {
-    data: community,
-    loadNext,
-    hasPrevious,
-  } = usePaginationFragment<
-    RefetchableCommunityPresentationFeedQuery,
-    CommunityPagePresentationFragment$key
-  >(
-    graphql`
-      fragment CommunityPagePresentationFragment on Community
-      @refetchable(queryName: "RefetchableCommunityPresentationFeedQuery") {
-        presentationPosts: posts(after: $communityPostsAfter, first: $communityPostsFirst)
-          @connection(key: "CommunityFeed_presentationPosts") {
-          edges {
-            node {
-              ... on Post {
-                __typename
-                # ...FeedListEventDataFragment
-                ...CommunityPagePostCycleFragment
-              }
-            }
-          }
-        }
-        name
-        contractAddress {
-          address
-        }
+      fragment CommunityPagePresentationFragment on Community {
+        ...CommunityPagePresentationPostsFragment
       }
     `,
     communityRef
+  );
+
+  const query = useFragment(
+    graphql`
+      fragment CommunityPagePresentationQueryFragment on Query {
+        ...CommunityPagePresentationPostsQueryFragment
+      }
+    `,
+    queryRef
   );
 
   const postData = useMemo(() => {
@@ -82,27 +51,6 @@ export default function CommunityPagePresentation({ communityRef, queryRef }: Pr
 
     return events;
   }, [community.presentationPosts?.edges]);
-
-  // const community = useFragment(
-  //   graphql`
-  //     fragment CommunityPagePresentationFragment on Community {
-  //       __typename
-  //     }
-  //   `,
-  //   communityRef
-  // );
-
-  const loadNextPage = useCallback(() => {
-    return new Promise((resolve) => {
-      // Infinite scroll component wants load callback to return a promise
-      loadNext(ITEMS_PER_PAGE, { onComplete: () => resolve('loaded') });
-    });
-  }, [loadNext]);
-
-  const { width } = useWindowSize();
-
-  // width of a post + padding 512 + 16*2
-  const scale = width / 544;
 
   return (
     <StyledPresentation>
@@ -118,21 +66,17 @@ export default function CommunityPagePresentation({ communityRef, queryRef }: Pr
           <LogoBracketRight width={75} height={252} />
         </HStack>
       </VStack>
-      {postData.length === 0 ? (
-        <StyledEmptyState justify="center" gap={84}>
-          <StyledEmptyStateText>Mint to join the conversation</StyledEmptyStateText>
-          <StyledEmptyStateText>[ insert QR code ]</StyledEmptyStateText>
-        </StyledEmptyState>
-      ) : (
-        <StyledPostsContainer scale={scale}>
-          <CommunityPagePostCycle
-            postRefs={postData}
-            queryRef={query}
-            loadNextPage={loadNextPage}
-            hasNext={hasPrevious}
-          />
-        </StyledPostsContainer>
-      )}
+      <Suspense fallback={null}>
+        {/* <CommunityPagePostCycle
+          postRefs={postData}
+          queryRef={query}
+          loadNext={loadNext}
+          hasNext={hasNext}
+          checkForNextPage={checkForNextPage}
+          refetch={refetch}
+        /> */}
+        <CommunityPagePresentationPosts communityRef={community} queryRef={query} />
+      </Suspense>
     </StyledPresentation>
   );
 }
@@ -140,19 +84,6 @@ export default function CommunityPagePresentation({ communityRef, queryRef }: Pr
 const StyledPresentation = styled(VStack)`
   padding: 80px 0;
   height: 100%;
-`;
-
-const StyledPostsContainer = styled.div<{ scale: number }>`
-  transform: scale(${({ scale }) => scale});
-  transform-origin: top center;
-`;
-
-const StyledEmptyState = styled(VStack)`
-  height: 100%;
-`;
-const StyledEmptyStateText = styled(TitleCondensed)`
-  font-size: 120px;
-  line-height: 120px;
 `;
 
 const StyledArtistName = styled(TitleM)`

@@ -10,6 +10,7 @@ import { PostItemQueryFragment$key } from '~/generated/PostItemQueryFragment.gra
 import { PostItemWithErrorBoundaryFragment$key } from '~/generated/PostItemWithErrorBoundaryFragment.graphql';
 import { PostItemWithErrorBoundaryQueryFragment$key } from '~/generated/PostItemWithErrorBoundaryQueryFragment.graphql';
 import { useIsDesktopWindowWidth } from '~/hooks/useWindowSize';
+import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 
 import PostCommunityPill from './Posts/PostCommunityPill';
@@ -35,6 +36,7 @@ export function PostItem({
   const post = useFragment(
     graphql`
       fragment PostItemFragment on Post {
+        dbid
         author {
           __typename
         }
@@ -61,7 +63,12 @@ export function PostItem({
 
   const useVerticalLayout = !isDesktop || bigScreenMode;
 
-  console.log('post.author', post.author);
+  const reportError = useReportError();
+
+  if (!post.author) {
+    reportError('Post author is undefined', { tags: { postId: post.dbid } });
+    return null;
+  }
 
   if (useVerticalLayout) {
     return (

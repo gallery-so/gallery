@@ -25,7 +25,7 @@ export default function PostHeader({ postRef, queryRef }: Props) {
       fragment PostHeaderFragment on Post {
         __typename
         caption
-        author {
+        author @required(action: THROW) {
           ... on GalleryUser {
             username
             ...ProfilePictureFragment

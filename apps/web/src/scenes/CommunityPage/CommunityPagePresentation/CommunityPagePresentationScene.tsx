@@ -33,6 +33,7 @@ export default function CommunityPagePresentationScene({ queryRef }: Props) {
             __typename
             name
             ...CommunityPagePresentationFragment
+            # ...CommunityPagePresentationHasNextPageFragment
           }
         }
         ...CommunityPagePresentationQueryFragment

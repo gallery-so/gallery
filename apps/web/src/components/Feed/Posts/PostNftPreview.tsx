@@ -47,8 +47,6 @@ export default function PostNftPreview({ tokenRef, onNftLoad }: Props) {
     });
   }, [bigScreenMode, breakpoint, width]);
 
-  console.log({ tokenSize });
-
   return (
     <StyledPostNftPreview>
       <ShimmerProvider>
