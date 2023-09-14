@@ -16,6 +16,9 @@ const markdownStyles = {
     fontSize: 14,
     fontFamily: 'ABCDiatypeRegular',
   },
+  link: {
+    textDecorationLine: 'none',
+  },
 };
 
 const darkModeMarkdownStyles = {
@@ -37,7 +40,7 @@ const lightModeMarkdownStyles = {
 };
 
 type GalleryMarkdownProps = PropsWithChildren<{
-// if provided, this function will be executed instead of navigating to the pressed link
+  // if provided, this function will be executed instead of navigating to the pressed link
   onBypassLinkPress?: (url: string) => void;
   numberOfLines?: number;
   touchToExpand?: boolean;
@@ -99,14 +102,17 @@ export function Markdown({
     setShowAll((previous) => !previous);
   }, []);
 
-  const handleLinkPress = useCallback((url: string) => {
-    if (url && onBypassLinkPress) {
-      onBypassLinkPress(url);
-      return false;
-    }
+  const handleLinkPress = useCallback(
+    (url: string) => {
+      if (url && onBypassLinkPress) {
+        onBypassLinkPress(url);
+        return false;
+      }
 
-    return true;
-  }, [onBypassLinkPress]);
+      return true;
+    },
+    [onBypassLinkPress]
+  );
 
   return (
     <GalleryTouchableOpacity

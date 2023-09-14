@@ -5,7 +5,7 @@ import { graphql, useFragment } from 'react-relay';
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { Markdown } from '~/components/Markdown';
 import { PostListCaptionFragment$key } from '~/generated/PostListCaptionFragment.graphql';
-import { convertToMarkdownLinks } from '~/shared/utils/convertToMarkdownLinks';
+import { replaceUrlsWithMarkdownFormat } from '~/shared/utils/replaceUrlsWithMarkdownFormat';
 
 import { WarningLinkBottomSheet } from './WarningLinkBottomSheet';
 
@@ -27,7 +27,7 @@ export function PostListCaption({ feedPostRef }: Props) {
   const [redirectUrl, setRedirectUrl] = useState('');
   const { caption } = feedPost;
 
-  const captionWithMarkdownLinks = convertToMarkdownLinks(caption ?? '');
+  const captionWithMarkdownLinks = replaceUrlsWithMarkdownFormat(caption ?? '');
 
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
 
