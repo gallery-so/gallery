@@ -2,11 +2,11 @@ import clsx from 'clsx';
 import { ResizeMode } from 'expo-av';
 import { View } from 'react-native';
 import FastImage from 'react-native-fast-image';
+import { graphql, useFragment } from 'react-relay';
 
-type Props = {
-  tokenUrl: string;
-  count: number;
-};
+import { NotificationTokenPreviewFragment$key } from '~/generated/NotificationTokenPreviewFragment.graphql';
+import { NotificationTokenPreviewWithBoundaryFragment$key } from '~/generated/NotificationTokenPreviewWithBoundaryFragment.graphql';
+import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 
 const sizes = {
   single: {
@@ -19,18 +19,69 @@ const sizes = {
   },
 };
 
-export function NotificationTokenPreview({ tokenUrl, count }: Props) {
+type NotificationTokenPreviewWithBoundaryProps = {
+  tokenRef: NotificationTokenPreviewWithBoundaryFragment$key;
+  count: number;
+};
+
+export function NotificationTokenPreviewWithBoundary({
+  tokenRef,
+  count,
+}: NotificationTokenPreviewWithBoundaryProps) {
+  const token = useFragment(
+    graphql`
+      fragment NotificationTokenPreviewWithBoundaryFragment on Token {
+        ...NotificationTokenPreviewFragment
+      }
+    `,
+    tokenRef
+  );
+
+  // TODO 09-13-22 wrap this in proper suspense boundary
+  return <NotificationTokenPreview tokenRef={token} count={count} />;
+}
+
+// boundary we could use
+/* <View
+  style={{
+    width: 56,
+    height: 56,
+    backgroundColor: colors.porcelain,
+  }}
+/> */
+
+type NotificationTokenPreviewProps = {
+  tokenRef: NotificationTokenPreviewFragment$key;
+  count: number;
+};
+
+function NotificationTokenPreview({ tokenRef, count }: NotificationTokenPreviewProps) {
+  const token = useFragment(
+    graphql`
+      fragment NotificationTokenPreviewFragment on Token {
+        ...useGetPreviewImagesSingleFragment
+      }
+    `,
+    tokenRef
+  );
+
+  const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size: 'small' }) ?? '';
+
+  console.log({ imageUrl });
+
   return (
     <View className="relative">
-      {count > 1 && <ImagePreview tokenUrl={tokenUrl} count={count} stacked />}
-      <ImagePreview tokenUrl={tokenUrl} count={count} />
+      {count > 1 && <ImagePreview tokenUrl={imageUrl} count={count} stacked />}
+      <ImagePreview tokenUrl={imageUrl} count={count} />
     </View>
   );
 }
 
 type ImagePreviewProps = {
+  tokenUrl: string;
+  count: number;
   stacked?: boolean;
-} & Props;
+};
 
 function ImagePreview({ tokenUrl, count, stacked }: ImagePreviewProps) {
   return (
@@ -43,6 +94,8 @@ function ImagePreview({ tokenUrl, count, stacked }: ImagePreviewProps) {
         stacked && 'absolute -bottom-1 -right-1'
       )}
       source={{ uri: tokenUrl }}
+      // TODO 09-13-22 this should throw if we're unable to render
+      // onError={() => console.log('error!')}
       resizeMode={ResizeMode.COVER}
     />
   );
