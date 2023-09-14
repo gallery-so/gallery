@@ -1,6 +1,5 @@
 import { useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
-import { ForwardedRef, forwardRef, useRef, useCallback } from 'react';
-
+import { ForwardedRef, forwardRef, useCallback, useRef } from 'react';
 import { Linking, View } from 'react-native';
 
 import { Button } from '../../Button';
