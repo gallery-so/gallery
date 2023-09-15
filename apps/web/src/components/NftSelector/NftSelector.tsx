@@ -1,8 +1,9 @@
 import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
-import { graphql, useLazyLoadQuery } from 'react-relay';
+import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 import styled from 'styled-components';
 
 import { NftSelectorQuery } from '~/generated/NftSelectorQuery.graphql';
+import { NftSelectorViewerFragment$key } from '~/generated/NftSelectorViewerFragment.graphql';
 import useSyncTokens from '~/hooks/api/tokens/useSyncTokens';
 import { ChevronLeftIcon } from '~/icons/ChevronLeftIcon';
 import { RefreshIcon } from '~/icons/RefreshIcon';
@@ -55,29 +56,7 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract }: Pr
 
         viewer {
           ... on Viewer {
-            user {
-              dbid
-
-              tokens(ownershipFilter: [Creator, Holder]) {
-                ...NftSelectorViewFragment
-                dbid
-                name
-                chain
-                creationTime
-
-                isSpamByUser
-                isSpamByProvider
-
-                ownerIsHolder
-                ownerIsCreator
-
-                contract {
-                  name
-                }
-
-                ...useTokenSearchResultsFragment
-              }
-            }
+            ...NftSelectorViewerFragment
           }
         }
       }
@@ -85,10 +64,38 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract }: Pr
     {}
   );
 
-  const tokens = useMemo(
-    () => removeNullValues(query.viewer?.user?.tokens),
-    [query.viewer?.user?.tokens]
+  const viewer = useFragment<NftSelectorViewerFragment$key>(
+    graphql`
+      fragment NftSelectorViewerFragment on Viewer {
+        user {
+          dbid
+
+          tokens(ownershipFilter: [Creator, Holder]) {
+            dbid
+            name
+            chain
+            creationTime
+
+            isSpamByUser
+            isSpamByProvider
+
+            ownerIsHolder
+            ownerIsCreator
+
+            contract {
+              name
+            }
+
+            ...useTokenSearchResultsFragment
+            ...NftSelectorViewFragment
+          }
+        }
+      }
+    `,
+    query.viewer
   );
+
+  const tokens = useMemo(() => removeNullValues(viewer?.user?.tokens), [viewer?.user?.tokens]);
 
   const { searchQuery, setSearchQuery, tokenSearchResults, isSearching } = useTokenSearchResults<
     (typeof tokens)[0]
@@ -183,7 +190,7 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract }: Pr
   );
 
   const track = useTrack();
-  const isRefreshDisabledAtUserLevel = isRefreshDisabledForUser(query.viewer?.user?.dbid ?? '');
+  const isRefreshDisabledAtUserLevel = isRefreshDisabledForUser(viewer?.user?.dbid ?? '');
   const refreshDisabled =
     isRefreshDisabledAtUserLevel || !ownsWalletFromSelectedChainFamily || isLocked;
 
