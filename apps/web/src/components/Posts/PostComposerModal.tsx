@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -6,9 +6,6 @@ import ErrorBoundary from '~/contexts/boundary/ErrorBoundary';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { usePostComposerContext } from '~/contexts/postComposer/PostComposerContext';
 import { PostComposerModalFragment$key } from '~/generated/PostComposerModalFragment.graphql';
-import { PostComposerModalWithSelectorFragment$key } from '~/generated/PostComposerModalWithSelectorFragment.graphql';
-import { PostComposerModalWithSelectorQueryFragment$key } from '~/generated/PostComposerModalWithSelectorQueryFragment.graphql';
-import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 import breakpoints from '../core/breakpoints';
 import { Button } from '../core/Button/Button';
@@ -19,48 +16,12 @@ import DiscardPostConfirmation from './DiscardPostConfirmation';
 import PostComposer from './PostComposer';
 
 type Props = {
-  viewerRef: PostComposerModalWithSelectorFragment$key;
-  queryRef: PostComposerModalWithSelectorQueryFragment$key;
   preSelectedContract?: NftSelectorContractType;
 };
 
 // Modal with multiple steps: the NFT Selector -> then Post Composer
-export function PostComposerModalWithSelector({ viewerRef, queryRef, preSelectedContract }: Props) {
-  const viewer = useFragment(
-    graphql`
-      fragment PostComposerModalWithSelectorFragment on Viewer {
-        user {
-          tokens(ownershipFilter: [Creator, Holder]) {
-            dbid
-            ...NftSelectorFragment
-            ...PostComposerFragment
-          }
-        }
-      }
-    `,
-    viewerRef
-  );
-
-  const tokens = useMemo(() => {
-    return removeNullValues(viewer?.user?.tokens) ?? [];
-  }, [viewer]);
-
-  const query = useFragment(
-    graphql`
-      fragment PostComposerModalWithSelectorQueryFragment on Query {
-        ...NftSelectorQueryFragment
-      }
-    `,
-    queryRef
-  );
-
-  const nonNullTokens = removeNullValues(tokens ?? []);
-
+export function PostComposerModalWithSelector({ preSelectedContract }: Props) {
   const [selectedTokenId, setSelectedTokenId] = useState<string | null>(null);
-
-  const selectedToken = useMemo(() => {
-    return tokens.find((token) => token.dbid === selectedTokenId);
-  }, [selectedTokenId, tokens]);
 
   const onSelectToken = useCallback((tokenId: string) => {
     setSelectedTokenId(tokenId);
@@ -97,6 +58,8 @@ export function PostComposerModalWithSelector({ viewerRef, queryRef, preSelected
     });
   }, [captionRef, showModal, returnUserToSelectorStep, setCaption]);
 
+  const selectedToken = null;
+
   return (
     <StyledPostComposerModal>
       <ErrorBoundary fallback={<PostComposerErrorScreen />}>
@@ -104,8 +67,6 @@ export function PostComposerModalWithSelector({ viewerRef, queryRef, preSelected
           <PostComposer onBackClick={onBackClick} tokenRef={selectedToken} />
         ) : (
           <NftSelector
-            tokensRef={nonNullTokens}
-            queryRef={query}
             onSelectToken={onSelectToken}
             headerText={'Select item to post'}
             preSelectedContract={preSelectedContract}

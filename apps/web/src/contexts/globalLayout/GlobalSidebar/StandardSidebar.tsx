@@ -45,7 +45,6 @@ export function StandardSidebar({ queryRef }: Props) {
         viewer {
           ... on Viewer {
             __typename
-            ...PostComposerModalWithSelectorFragment
             user {
               username
               ...SidebarPfpFragment
@@ -64,7 +63,6 @@ export function StandardSidebar({ queryRef }: Props) {
         ...SettingsFragment
         ...useExperienceFragment
         ...useAnnouncementFragment
-        ...PostComposerModalWithSelectorQueryFragment
         ...isFeatureEnabledFragment
       }
     `,

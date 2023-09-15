@@ -1,13 +1,13 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { graphql, useFragment } from 'react-relay';
+import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
+import { graphql, useLazyLoadQuery } from 'react-relay';
 import styled from 'styled-components';
 
-import { NftSelectorFragment$key } from '~/generated/NftSelectorFragment.graphql';
-import { NftSelectorQueryFragment$key } from '~/generated/NftSelectorQueryFragment.graphql';
+import { NftSelectorQuery } from '~/generated/NftSelectorQuery.graphql';
 import useSyncTokens from '~/hooks/api/tokens/useSyncTokens';
 import { ChevronLeftIcon } from '~/icons/ChevronLeftIcon';
 import { RefreshIcon } from '~/icons/RefreshIcon';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { Chain } from '~/shared/utils/chains';
 import { doesUserOwnWalletFromChainFamily } from '~/utils/doesUserOwnWalletFromChainFamily';
 
@@ -31,8 +31,6 @@ import { NftSelectorSearchBar } from './NftSelectorSearchBar';
 import { NftSelectorView } from './NftSelectorView';
 
 type Props = {
-  tokensRef: NftSelectorFragment$key;
-  queryRef: NftSelectorQueryFragment$key;
   onSelectToken: (tokenId: string) => void;
   headerText: string;
   preSelectedContract?: NftSelectorContractType;
@@ -40,53 +38,56 @@ type Props = {
 
 export type NftSelectorContractType = Omit<NftSelectorCollectionGroup, 'tokens'> | null;
 
-export function NftSelector({
-  tokensRef,
-  queryRef,
-  onSelectToken,
-  headerText,
-  preSelectedContract,
-}: Props) {
-  const tokens = useFragment(
-    graphql`
-      fragment NftSelectorFragment on Token @relay(plural: true) {
-        ...NftSelectorViewFragment
-        dbid
-        name
-        chain
-        creationTime
-
-        isSpamByUser
-        isSpamByProvider
-
-        ownerIsHolder
-        ownerIsCreator
-
-        contract {
-          name
-        }
-
-        ...useTokenSearchResultsFragment
-      }
-    `,
-    tokensRef
+export function NftSelector(props: Props) {
+  return (
+    <Suspense fallback={<NftSelectorLoadingView />}>
+      <NftSelectorInner {...props} />
+    </Suspense>
   );
+}
 
-  const query = useFragment(
+function NftSelectorInner({ onSelectToken, headerText, preSelectedContract }: Props) {
+  const query = useLazyLoadQuery<NftSelectorQuery>(
     graphql`
-      fragment NftSelectorQueryFragment on Query {
+      query NftSelectorQuery {
+        ...doesUserOwnWalletFromChainFamilyFragment
+        ...NftSelectorFilterNetworkFragment
+
         viewer {
           ... on Viewer {
             user {
               dbid
+
+              tokens(ownershipFilter: [Creator, Holder]) {
+                ...NftSelectorViewFragment
+                dbid
+                name
+                chain
+                creationTime
+
+                isSpamByUser
+                isSpamByProvider
+
+                ownerIsHolder
+                ownerIsCreator
+
+                contract {
+                  name
+                }
+
+                ...useTokenSearchResultsFragment
+              }
             }
           }
         }
-        ...doesUserOwnWalletFromChainFamilyFragment
-        ...NftSelectorFilterNetworkFragment
       }
     `,
-    queryRef
+    {}
+  );
+
+  const tokens = useMemo(
+    () => removeNullValues(query.viewer?.user?.tokens),
+    [query.viewer?.user?.tokens]
   );
 
   const { searchQuery, setSearchQuery, tokenSearchResults, isSearching } = useTokenSearchResults<
