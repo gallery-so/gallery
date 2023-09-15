@@ -43,6 +43,7 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset, queryRef }: Props
   const token = useFragment(
     graphql`
       fragment NftDetailTextFragment on Token {
+        dbid
         name
         chain
         description
@@ -64,7 +65,6 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset, queryRef }: Props
 
         ...NftAdditionalDetailsFragment
         ...getCommunityUrlForTokenFragment
-        ...PostComposerModalFragment
         ...extractRelevantMetadataFromTokenFragment
       }
     `,
@@ -159,7 +159,7 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset, queryRef }: Props
   const handleCreatePostClick = useCallback(() => {
     track('NFT Detail: Clicked Create Post');
     showModal({
-      content: <PostComposerModal tokenRef={token} />,
+      content: <PostComposerModal tokenId={token.dbid} />,
       headerVariant: 'thicc',
       isFullPage: isMobile,
     });

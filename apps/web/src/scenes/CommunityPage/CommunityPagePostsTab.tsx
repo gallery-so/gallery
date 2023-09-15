@@ -67,11 +67,9 @@ export default function CommunityPagePostsTab({ communityRef, queryRef }: Props)
         viewer {
           ... on Viewer {
             __typename
-            ...PostComposerModalWithSelectorFragment
           }
         }
         ...FeedListFragment
-        ...PostComposerModalWithSelectorQueryFragment
       }
     `,
     queryRef
@@ -94,8 +92,6 @@ export default function CommunityPagePostsTab({ communityRef, queryRef }: Props)
     showModal({
       content: (
         <PostComposerModalWithSelector
-          viewerRef={query?.viewer}
-          queryRef={query}
           preSelectedContract={{
             title: community.name ?? '',
             address: community.contractAddress?.address ?? '', // ok to proceed to post composer even if contractAddress is missing (unlikely). user will just be prompted to select a token

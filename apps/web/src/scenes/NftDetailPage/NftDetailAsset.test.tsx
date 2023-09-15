@@ -89,15 +89,6 @@ const UnknownMediaResponse: NftDetailAssetTestQueryQuery = {
         __typename: 'UnknownMedia',
         fallbackMedia: null,
         contentRenderURL: 'bad url here',
-        previewURLs: {
-          small: 'http://someurl.com',
-          medium: 'http://someurl.com',
-          large: 'http://someurl.com',
-        },
-      },
-      community: {
-        __typename: 'Community',
-        id: 'Community:testCommunityId',
       },
       contract: {
         __typename: 'Contract',

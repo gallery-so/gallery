@@ -45,7 +45,6 @@ export function StandardSidebar({ queryRef }: Props) {
         viewer {
           ... on Viewer {
             __typename
-            ...PostComposerModalWithSelectorFragment
             user {
               username
               ...SidebarPfpFragment
@@ -64,7 +63,6 @@ export function StandardSidebar({ queryRef }: Props) {
         ...SettingsFragment
         ...useExperienceFragment
         ...useAnnouncementFragment
-        ...PostComposerModalWithSelectorQueryFragment
         ...isFeatureEnabledFragment
       }
     `,
@@ -170,7 +168,7 @@ export function StandardSidebar({ queryRef }: Props) {
 
     showModal({
       id: 'post-composer',
-      content: <PostComposerModalWithSelector viewerRef={query?.viewer} queryRef={query} />,
+      content: <PostComposerModalWithSelector />,
       headerVariant: 'thicc',
       isFullPage: isMobile,
       onCloseOverride: (onClose: () => void) => {
@@ -197,7 +195,7 @@ export function StandardSidebar({ queryRef }: Props) {
       },
     });
     track('Sidebar Create Post Click');
-  }, [hideDrawer, isLoggedIn, showModal, query, isMobile, track, captionRef, setCaption]);
+  }, [hideDrawer, isLoggedIn, showModal, isMobile, track, captionRef, setCaption]);
 
   const handleSearchClick = useCallback(() => {
     track('Sidebar Search Click');

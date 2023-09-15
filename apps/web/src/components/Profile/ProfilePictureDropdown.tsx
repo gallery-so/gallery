@@ -2,7 +2,6 @@ import { useCallback, useEffect } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
-import { ProfilePictureDropdownFragment$key } from '~/generated/ProfilePictureDropdownFragment.graphql';
 import { ProfilePictureDropdownQueryFragment$key } from '~/generated/ProfilePictureDropdownQueryFragment.graphql';
 import { AllGalleriesIcon } from '~/icons/AllGalleriesIcon';
 import { TrashIconNew } from '~/icons/TrashIconNew';
@@ -20,20 +19,10 @@ import useUpdateProfileImage from '../NftSelector/useUpdateProfileImage';
 type Props = {
   open: boolean;
   onClose: () => void;
-  tokensRef: ProfilePictureDropdownFragment$key;
   queryRef: ProfilePictureDropdownQueryFragment$key;
 };
 
-export function ProfilePictureDropdown({ open, onClose, tokensRef, queryRef }: Props) {
-  const tokens = useFragment(
-    graphql`
-      fragment ProfilePictureDropdownFragment on Token @relay(plural: true) {
-        ...useNftSelectorFragment
-      }
-    `,
-    tokensRef
-  );
-
+export function ProfilePictureDropdown({ open, onClose, queryRef }: Props) {
   const query = useFragment(
     graphql`
       fragment ProfilePictureDropdownQueryFragment on Query {
@@ -70,13 +59,12 @@ export function ProfilePictureDropdown({ open, onClose, tokensRef, queryRef }: P
             }
           }
         }
-        ...useNftSelectorQueryFragment
       }
     `,
     queryRef
   );
 
-  const showNftSelector = useNftSelectorForProfilePicture({ tokensRef: tokens, queryRef: query });
+  const showNftSelector = useNftSelectorForProfilePicture();
   const { setProfileImage, removeProfileImage } = useUpdateProfileImage();
   const track = useTrack();
 
