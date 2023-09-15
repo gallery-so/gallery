@@ -1,9 +1,10 @@
 import { useNavigation } from '@react-navigation/native';
-import { useCallback, useMemo, useRef } from 'react';
-import { Text } from 'react-native';
+import { useCallback, useMemo, useRef, useState } from 'react';
+import { Text, View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
+import { FollowButton } from '~/components/FollowButton';
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { NotificationBottomSheetUserList } from '~/components/Notification/NotificationBottomSheetUserList';
 import { NotificationSkeleton } from '~/components/Notification/NotificationSkeleton';
@@ -22,6 +23,17 @@ export function SomeoneFollowedYou({ notificationRef, queryRef }: SomeoneFollowe
   const query = useFragment(
     graphql`
       fragment SomeoneFollowedYouQueryFragment on Query {
+        ...FollowButtonQueryFragment
+        viewer {
+          ... on Viewer {
+            user {
+              id
+              following {
+                id
+              }
+            }
+          }
+        }
         ...NotificationSkeletonQueryFragment
       }
     `,
@@ -39,7 +51,11 @@ export function SomeoneFollowedYou({ notificationRef, queryRef }: SomeoneFollowe
             node {
               username
 
+              ...FollowButtonUserFragment
               ...NotificationSkeletonResponsibleUsersFragment
+              ... on GalleryUser {
+                dbid
+              }
             }
           }
         }
@@ -76,6 +92,23 @@ export function SomeoneFollowedYou({ notificationRef, queryRef }: SomeoneFollowe
     [navigation]
   );
 
+  const isFollowingBack = useMemo(() => {
+    const followingList = new Set(
+      (query.viewer?.user?.following ?? []).map((following: { id: string } | null) =>
+        following?.id?.replace('GalleryUser:', '')
+      )
+    );
+    const lastFollowerUser = notification.followers?.edges?.[0];
+    if (lastFollowerUser && !followingList.has(lastFollowerUser.node?.dbid)) {
+      return true;
+    }
+    return false;
+  }, [query.viewer?.user?.following, notification.followers?.edges]);
+
+  const [isInitiallyFollowingBack] = useState(isFollowingBack);
+  const shouldShowFollowBackButton =
+    count === 1 && lastFollower && (isInitiallyFollowingBack || isFollowingBack);
+
   return (
     <NotificationSkeleton
       queryRef={query}
@@ -83,23 +116,25 @@ export function SomeoneFollowedYou({ notificationRef, queryRef }: SomeoneFollowe
       responsibleUserRefs={followers}
       notificationRef={notification}
     >
-      <Text>
-        <Typography
-          font={{
-            family: 'ABCDiatype',
-            weight: 'Bold',
-          }}
-          className="text-sm"
-        >
-          {count > 1 ? (
-            `${count} collectors`
-          ) : (
-            <>{lastFollower ? lastFollower.username : 'Someone'}</>
-          )}
-        </Typography>{' '}
-        followed you
-      </Text>
-
+      <View className="flex flex-row w-full justify-between items-center">
+        <Text className={shouldShowFollowBackButton ? 'max-w-70' : ''}>
+          <Typography
+            font={{
+              family: 'ABCDiatype',
+              weight: 'Bold',
+            }}
+            className="text-sm"
+          >
+            {count > 1 ? (
+              `${count} collectors`
+            ) : (
+              <>{lastFollower ? lastFollower.username : 'Someone'}</>
+            )}
+          </Typography>{' '}
+          <Typography font={{ family: 'ABCDiatype', weight: 'Regular' }}>followed you</Typography>
+        </Text>
+        {shouldShowFollowBackButton && <FollowButton queryRef={query} userRef={lastFollower} />}
+      </View>
       <NotificationBottomSheetUserList
         ref={bottomSheetRef}
         onUserPress={handleUserPress}
