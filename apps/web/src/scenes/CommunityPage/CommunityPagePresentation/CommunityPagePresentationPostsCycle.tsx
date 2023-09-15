@@ -14,8 +14,8 @@ import useWindowSize from '~/hooks/useWindowSize';
 
 import { fetchPageQuery } from './CommunityPagePresentationPosts';
 
-const NEXT_POST_INTERVAL_MS = 10000;
-const CHECK_HAS_NEXT_PAGE_INTERVAL_MS = 5000;
+const NEXT_POST_INTERVAL_MS = 100000;
+const CHECK_HAS_NEXT_PAGE_INTERVAL_MS = 50000;
 
 type Props = {
   postsRef: CommunityPagePresentationPostsCycleFragment$key;
@@ -180,12 +180,14 @@ type PostProps = {
   queryRef: CommunityPagePresentationPostsCyclePostQueryFragment$key;
 };
 
-const POST_WIDTH_PX = 544; // incl 32px of padding
+// can use DESKTOP_TOKEN_SIZE
+const POST_WIDTH_PX = 517; // incl 32px of padding
+const MARGIN = 32;
 
 function PresentationPost({ postRef, queryRef }: PostProps) {
   const { width } = useWindowSize();
   //   // Scale post to fit screen size, so we don't have to manually resize the post's elements
-  const scale = width / POST_WIDTH_PX;
+  const scale = width / (POST_WIDTH_PX + MARGIN);
 
   const post = useFragment(
     graphql`
@@ -216,4 +218,5 @@ const ScaledPost = styled.div<{ scale: number }>`
   width: ${POST_WIDTH_PX}px;
   transform: scale(${({ scale }) => scale});
   transform-origin: top left;
+  margin: 0 ${MARGIN * 2}px;
 `;

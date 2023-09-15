@@ -1,4 +1,5 @@
 import GalleryLogoNoBrackets from 'public/icons/gallery_logo_no_brackets.svg';
+import GlitchLogo from 'public/icons/glitch_logo.svg';
 import ProhibitionLogo from 'public/icons/prohibition_logo.svg';
 import { Suspense } from 'react';
 import { graphql, useFragment } from 'react-relay';
@@ -13,6 +14,7 @@ import LogoBracketLeft from '~/icons/LogoBracketLeft';
 import LogoBracketRight from '~/icons/LogoBracketRight';
 
 import CommunityPagePresentationPosts from './CommunityPagePresentationPosts';
+import colors from '~/shared/theme/colors';
 
 type Props = {
   communityRef: CommunityPagePresentationFragment$key;
@@ -39,18 +41,26 @@ export default function CommunityPagePresentation({ communityRef, queryRef }: Pr
   );
 
   return (
-    <StyledPresentation>
-      <VStack align="center" gap={54}>
+    <StyledPresentation gap={72}>
+      <VStack align="center" gap={60}>
+        <VStack align="center" gap={12}>
+          <StyledTitle>Resonance</StyledTitle>
+          <StyledTitle>
+            <strong>Jimena Buena Vida</strong>
+          </StyledTitle>
+        </VStack>
         <HStack gap={28} align="center">
+          <LogoBracketLeft width={22} height={75} />
           <GalleryLogoNoBrackets />
           <CloseIcon size={35} />
+          <GlitchLogo />
+          <CloseIcon size={35} />
           <ProhibitionLogo />
+          <LogoBracketRight width={22} height={75} />
         </HStack>
-        <HStack align="center" gap={94}>
-          <LogoBracketLeft width={75} height={252} />
-          <StyledArtistName>Jimena Buena Vida</StyledArtistName>
-          <LogoBracketRight width={75} height={252} />
-        </HStack>
+      </VStack>
+      <VStack align="center">
+        <StyledDivider />
       </VStack>
       <Suspense fallback={null}>
         <CommunityPagePresentationPosts communityRef={community} queryRef={query} />
@@ -64,8 +74,13 @@ const StyledPresentation = styled(VStack)`
   height: 100%;
 `;
 
-const StyledArtistName = styled(TitleM)`
-  font-size: 200px;
-  line-height: 190px;
+const StyledTitle = styled(TitleM)`
+  font-size: 120px;
+  line-height: 120px;
   letter-spacing: -0.03em;
+`;
+
+const StyledDivider = styled.div`
+  width: 2000px;
+  border-top: 1px solid ${colors.porcelain};
 `;
