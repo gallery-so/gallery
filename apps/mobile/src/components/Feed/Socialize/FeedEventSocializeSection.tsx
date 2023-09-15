@@ -26,7 +26,7 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef, onCommentPre
       fragment FeedEventSocializeSectionFragment on FeedEvent {
         dbid
         eventData {
-          ... on GalleryUpdatedFeedEventData {
+          ... on UserFollowedUsersFeedEventData {
             __typename
           }
         }
