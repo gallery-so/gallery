@@ -117,7 +117,7 @@ export function SomeoneFollowedYou({ notificationRef, queryRef }: SomeoneFollowe
       notificationRef={notification}
     >
       <View className="flex flex-row w-full justify-between items-center">
-        <Text style={shouldShowFollowBackButton ? { maxWidth: '70%' } : null}>
+        <Text className={shouldShowFollowBackButton ? 'max-w-70' : ''}>
           <Typography
             font={{
               family: 'ABCDiatype',
