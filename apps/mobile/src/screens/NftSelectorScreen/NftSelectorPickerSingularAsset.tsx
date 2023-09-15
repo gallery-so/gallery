@@ -1,7 +1,7 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { ResizeMode } from 'expo-av';
 import { useCallback, useState } from 'react';
-import { ActivityIndicator, View, ViewProps, Text } from 'react-native';
+import { ActivityIndicator, View, ViewProps } from 'react-native';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
