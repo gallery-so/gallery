@@ -92,6 +92,7 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract }: Pr
             ...NftSelectorViewFragment
 
             # Needed for when we select a token, we want to have this already in the cache
+            # eslint-disable-next-line relay/must-colocate-fragment-spreads
             ...PostComposerTokenFragment
           }
         }

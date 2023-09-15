@@ -195,7 +195,7 @@ export function StandardSidebar({ queryRef }: Props) {
       },
     });
     track('Sidebar Create Post Click');
-  }, [hideDrawer, isLoggedIn, showModal, query, isMobile, track, captionRef, setCaption]);
+  }, [hideDrawer, isLoggedIn, showModal, isMobile, track, captionRef, setCaption]);
 
   const handleSearchClick = useCallback(() => {
     track('Sidebar Search Click');
