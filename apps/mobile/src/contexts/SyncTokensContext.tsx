@@ -2,9 +2,11 @@ import { createContext, memo, ReactNode, useCallback, useContext, useMemo, useSt
 import { graphql } from 'react-relay';
 
 import { Chain, SyncTokensContextMutation } from '~/generated/SyncTokensContextMutation.graphql';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { usePromisifiedMutation } from '~/shared/relay/usePromisifiedMutation';
 
 import { useToastActions } from './ToastContext';
+import { useTokenStateManagerContext } from './TokenStateManagerContext';
 
 type SyncTokensActions = {
   syncTokens: (chain: Chain) => void;
@@ -25,6 +27,7 @@ export const useSyncTokenstActions = (): SyncTokensActions => {
 type Props = { children: ReactNode };
 
 const SyncTokensProvider = memo(({ children }: Props) => {
+  const { clearTokenFailureState } = useTokenStateManagerContext();
   const [syncTokens] = usePromisifiedMutation<SyncTokensContextMutation>(
     graphql`
       mutation SyncTokensContextMutation($chain: Chain!) {
@@ -76,6 +79,13 @@ const SyncTokensProvider = memo(({ children }: Props) => {
 
         if (response.syncTokens?.__typename !== 'SyncTokensPayload') {
           showFailure();
+        } else {
+          const tokenIds = removeNullValues(
+            response.syncTokens?.viewer?.user?.tokens?.map((token) => {
+              return token?.dbid;
+            })
+          );
+          clearTokenFailureState(tokenIds);
         }
       } catch (error) {
         showFailure();
@@ -83,7 +93,7 @@ const SyncTokensProvider = memo(({ children }: Props) => {
         setIsSyncing(false);
       }
     },
-    [pushToast, syncTokens]
+    [clearTokenFailureState, pushToast, syncTokens]
   );
 
   const value = useMemo(() => {
