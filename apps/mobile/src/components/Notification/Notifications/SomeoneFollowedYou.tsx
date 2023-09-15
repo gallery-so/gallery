@@ -4,8 +4,8 @@ import { Text, View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { FollowButton } from '~/components/FollowButton';
+import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { NotificationBottomSheetUserList } from '~/components/Notification/NotificationBottomSheetUserList';
 import { NotificationSkeleton } from '~/components/Notification/NotificationSkeleton';
 import { Typography } from '~/components/Typography';
@@ -116,15 +116,7 @@ export function SomeoneFollowedYou({ notificationRef, queryRef }: SomeoneFollowe
       responsibleUserRefs={followers}
       notificationRef={notification}
     >
-      <View
-        style={{
-          display: 'flex',
-          flexDirection: 'row', // Change this to 'row'
-          width: '100%',
-          justifyContent: 'space-between',
-          alignItems: 'center', // Align items vertically in the center
-        }}
-      >
+      <View className="flex flex-row w-full justify-between items-center">
         <Text style={shouldShowFollowBackButton ? { maxWidth: '70%' } : null}>
           <Typography
             font={{
