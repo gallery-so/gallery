@@ -29,9 +29,6 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef, onCommentPre
           ... on GalleryUpdatedFeedEventData {
             __typename
           }
-          ... on UserFollowedUsersFeedEventData {
-            __typename
-          }
         }
 
         # We only show 1 but in case the user deletes something
@@ -122,9 +119,6 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef, onCommentPre
     return <View className="pb-6" />;
   }
 
-  const eventDataType =
-    event.eventData?.__typename === 'GalleryUpdatedFeedEventData' ? 'FeedEvent' : 'Post';
-
   return (
     <>
       <View className="px-3 pb-8 pt-5">
@@ -163,7 +157,7 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef, onCommentPre
         )}
       </View>
       <CommentsBottomSheet
-        type={eventDataType}
+        type={"FeedEvent"}
         feedId={event.dbid}
         bottomSheetRef={commentsBottomSheetRef}
       />
