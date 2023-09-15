@@ -168,7 +168,7 @@ export function StandardSidebar({ queryRef }: Props) {
 
     showModal({
       id: 'post-composer',
-      content: <PostComposerModalWithSelector viewerRef={query?.viewer} queryRef={query} />,
+      content: <PostComposerModalWithSelector />,
       headerVariant: 'thicc',
       isFullPage: isMobile,
       onCloseOverride: (onClose: () => void) => {

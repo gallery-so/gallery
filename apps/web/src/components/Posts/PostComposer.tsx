@@ -1,12 +1,13 @@
 import { useCallback, useMemo, useState } from 'react';
-import { graphql, useFragment } from 'react-relay';
+import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 import styled from 'styled-components';
 
 import ErrorText from '~/components/core/Text/ErrorText';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { usePostComposerContext } from '~/contexts/postComposer/PostComposerContext';
 import { useToastActions } from '~/contexts/toast/ToastContext';
-import { PostComposerFragment$key } from '~/generated/PostComposerFragment.graphql';
+import { PostComposerQuery } from '~/generated/PostComposerQuery.graphql';
+import { PostComposerTokenFragment$key } from '~/generated/PostComposerTokenFragment.graphql';
 import useCreatePost from '~/hooks/api/posts/useCreatePost';
 import AlertTriangleIcon from '~/icons/AlertTriangleIcon';
 import { ChevronLeftIcon } from '~/icons/ChevronLeftIcon';
@@ -23,17 +24,35 @@ import { TextAreaWithCharCount } from '../core/TextArea/TextArea';
 import PostComposerNft from './PostComposerNft';
 
 type Props = {
+  tokenId: string;
   onBackClick?: () => void;
-  tokenRef: PostComposerFragment$key;
 };
 
 const DESCRIPTION_MAX_LENGTH = 600;
 
-export default function PostComposer({ onBackClick, tokenRef }: Props) {
-  const token = useFragment(
+export default function PostComposer({ onBackClick, tokenId }: Props) {
+  const query = useLazyLoadQuery<PostComposerQuery>(
     graphql`
-      fragment PostComposerFragment on Token {
-        __typename
+      query PostComposerQuery($tokenId: DBID!) {
+        tokenById(id: $tokenId) {
+          ... on Token {
+            __typename
+            ...PostComposerTokenFragment
+          }
+        }
+      }
+    `,
+    { tokenId },
+    { fetchPolicy: 'store-only' }
+  );
+
+  if (query.tokenById?.__typename !== 'Token') {
+    throw new Error("We couldn't find that token. Something went wrong and we're looking into it.");
+  }
+
+  const token = useFragment<PostComposerTokenFragment$key>(
+    graphql`
+      fragment PostComposerTokenFragment on Token {
         dbid
         name
         community {
@@ -42,7 +61,7 @@ export default function PostComposer({ onBackClick, tokenRef }: Props) {
         ...PostComposerNftFragment
       }
     `,
-    tokenRef
+    query.tokenById
   );
 
   const { caption, setCaption, captionRef } = usePostComposerContext();

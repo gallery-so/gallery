@@ -71,6 +71,8 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract }: Pr
           dbid
 
           tokens(ownershipFilter: [Creator, Holder]) {
+            __typename
+
             dbid
             name
             chain
@@ -88,6 +90,9 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract }: Pr
 
             ...useTokenSearchResultsFragment
             ...NftSelectorViewFragment
+
+            # Needed for when we select a token, we want to have this already in the cache
+            ...PostComposerTokenFragment
           }
         }
       }

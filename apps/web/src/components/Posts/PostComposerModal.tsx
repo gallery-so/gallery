@@ -1,11 +1,10 @@
-import { useCallback, useState } from 'react';
-import { graphql, useFragment } from 'react-relay';
+import { Suspense, useCallback, useState } from 'react';
 import styled from 'styled-components';
 
+import { NftSelectorLoadingView } from '~/components/NftSelector/NftSelectorLoadingView';
 import ErrorBoundary from '~/contexts/boundary/ErrorBoundary';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { usePostComposerContext } from '~/contexts/postComposer/PostComposerContext';
-import { PostComposerModalFragment$key } from '~/generated/PostComposerModalFragment.graphql';
 
 import breakpoints from '../core/breakpoints';
 import { Button } from '../core/Button/Button';
@@ -58,13 +57,14 @@ export function PostComposerModalWithSelector({ preSelectedContract }: Props) {
     });
   }, [captionRef, showModal, returnUserToSelectorStep, setCaption]);
 
-  const selectedToken = null;
-
   return (
     <StyledPostComposerModal>
       <ErrorBoundary fallback={<PostComposerErrorScreen />}>
-        {selectedToken ? (
-          <PostComposer onBackClick={onBackClick} tokenRef={selectedToken} />
+        {selectedTokenId ? (
+          // Just in case the PostComposer's token isn't already in the cache, we'll have a fallback
+          <Suspense fallback={<NftSelectorLoadingView />}>
+            <PostComposer onBackClick={onBackClick} tokenId={selectedTokenId} />
+          </Suspense>
         ) : (
           <NftSelector
             onSelectToken={onSelectToken}
@@ -78,23 +78,15 @@ export function PostComposerModalWithSelector({ preSelectedContract }: Props) {
 }
 
 type PostComposerModalProps = {
-  tokenRef: PostComposerModalFragment$key;
+  tokenId: string;
 };
 
 // Modal with a single step, the Post Composer.
-export function PostComposerModal({ tokenRef }: PostComposerModalProps) {
-  const token = useFragment(
-    graphql`
-      fragment PostComposerModalFragment on Token {
-        ...PostComposerFragment
-      }
-    `,
-    tokenRef
-  );
+export function PostComposerModal({ tokenId }: PostComposerModalProps) {
   return (
     <StyledPostComposerModal>
       <ErrorBoundary fallback={<PostComposerErrorScreen />}>
-        <PostComposer tokenRef={token} />
+        <PostComposer tokenId={tokenId} />
       </ErrorBoundary>
     </StyledPostComposerModal>
   );
