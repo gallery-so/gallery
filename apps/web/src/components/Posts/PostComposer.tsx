@@ -42,8 +42,7 @@ export default function PostComposer({ onBackClick, tokenId }: Props) {
         }
       }
     `,
-    { tokenId },
-    { fetchPolicy: 'store-only' }
+    { tokenId }
   );
 
   if (query.tokenById?.__typename !== 'Token') {
