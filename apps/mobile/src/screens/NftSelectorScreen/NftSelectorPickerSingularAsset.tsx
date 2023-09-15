@@ -81,7 +81,13 @@ export function NftSelectorPickerSingularAsset({
   }
 
   return (
-    <ReportingErrorBoundary fallback={<NftPreviewErrorFallback />}>
+    <ReportingErrorBoundary
+      fallback={
+        <View style={style} className="flex-1 aspect-square relative">
+          <NftPreviewErrorFallback />
+        </View>
+      }
+    >
       <GalleryTouchableOpacity
         style={style}
         disabled={isSettingProfileImage}
