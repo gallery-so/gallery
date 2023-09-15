@@ -93,7 +93,6 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef, onCommentPre
     return comments;
   }, [event.comments?.edges]);
 
-  const eventDataType = event.eventData?.__typename === 'GalleryUpdatedFeedEventData' ? 'FeedEvent' : 'Post';
   const totalComments = event.comments?.pageInfo?.total ?? 0;
   const isEmptyComments = totalComments === 0;
 
@@ -123,6 +122,8 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef, onCommentPre
     return <View className="pb-6" />;
   }
 
+  const eventDataType =
+    event.eventData?.__typename === 'GalleryUpdatedFeedEventData' ? 'FeedEvent' : 'Post';
 
   return (
     <>
