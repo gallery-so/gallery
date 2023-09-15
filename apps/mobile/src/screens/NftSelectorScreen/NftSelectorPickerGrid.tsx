@@ -10,6 +10,7 @@ import { graphql } from 'relay-runtime';
 import { GallerySkeleton } from '~/components/GallerySkeleton';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { NftPreviewAsset } from '~/components/NftPreview/NftPreviewAsset';
+import { NftPreviewErrorFallback } from '~/components/NftPreview/NftPreviewErrorFallback';
 import { Typography } from '~/components/Typography';
 import { NftSelectorPickerGridFragment$key } from '~/generated/NftSelectorPickerGridFragment.graphql';
 import { NftSelectorPickerGridOneOrManyFragment$key } from '~/generated/NftSelectorPickerGridOneOrManyFragment.graphql';
@@ -28,6 +29,7 @@ import {
   NftSelectorSortView,
 } from '~/screens/NftSelectorScreen/NftSelectorFilterBottomSheet';
 import { NftSelectorPickerSingularAsset } from '~/screens/NftSelectorScreen/NftSelectorPickerSingularAsset';
+import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
@@ -327,7 +329,9 @@ function TokenGrid({ tokenRefs, contractAddress, screen, style }: TokenGridProps
               {row.tokens.map((tokenUrl) => {
                 return (
                   <View key={tokenUrl} className="flex-1 aspect-square">
-                    <TokenGridSinglePreview tokenUrl={tokenUrl} />
+                    <ReportingErrorBoundary fallback={<NftPreviewErrorFallback />}>
+                      <TokenGridSinglePreview tokenUrl={tokenUrl} />
+                    </ReportingErrorBoundary>
                   </View>
                 );
               })}
