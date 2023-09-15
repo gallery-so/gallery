@@ -157,7 +157,7 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef, onCommentPre
         )}
       </View>
       <CommentsBottomSheet
-        type="Post"
+        type="FeedEvent"
         feedId={event.dbid}
         bottomSheetRef={commentsBottomSheetRef}
       />
