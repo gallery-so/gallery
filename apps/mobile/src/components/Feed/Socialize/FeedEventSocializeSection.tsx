@@ -26,6 +26,9 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef, onCommentPre
       fragment FeedEventSocializeSectionFragment on FeedEvent {
         dbid
         eventData {
+          ... on GalleryUpdatedFeedEventData {
+            __typename
+          }
           ... on UserFollowedUsersFeedEventData {
             __typename
           }
@@ -90,6 +93,7 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef, onCommentPre
     return comments;
   }, [event.comments?.edges]);
 
+  const eventDataType = event.eventData?.__typename === 'GalleryUpdatedFeedEventData' ? 'FeedEvent' : 'Post';
   const totalComments = event.comments?.pageInfo?.total ?? 0;
   const isEmptyComments = totalComments === 0;
 
@@ -118,6 +122,7 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef, onCommentPre
   if (event.eventData?.__typename === 'UserFollowedUsersFeedEventData') {
     return <View className="pb-6" />;
   }
+
 
   return (
     <>
@@ -157,7 +162,7 @@ export function FeedEventSocializeSection({ feedEventRef, queryRef, onCommentPre
         )}
       </View>
       <CommentsBottomSheet
-        type="Post"
+        type={eventDataType}
         feedId={event.dbid}
         bottomSheetRef={commentsBottomSheetRef}
       />
