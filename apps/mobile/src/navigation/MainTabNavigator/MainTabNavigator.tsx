@@ -59,19 +59,11 @@ function NotificationsScreen() {
   return <MainTabStackNavigator initialRouteName="Notifications" />;
 }
 
-function SettingsScreen() {
-  return <MainTabStackNavigator initialRouteName="Settings" />;
-}
-
 function PostScreen() {
   return <PostStackNavigator />;
 }
 
-type MainTabNavigatorProps = {
-  isKoalaEnabled: boolean;
-};
-
-export function MainTabNavigator({ isKoalaEnabled }: MainTabNavigatorProps) {
+export function MainTabNavigator() {
   const { colorScheme } = useColorScheme();
 
   return (
@@ -86,10 +78,9 @@ export function MainTabNavigator({ isKoalaEnabled }: MainTabNavigatorProps) {
     >
       <Tab.Screen name="HomeTab" component={HomeScreen} />
       <Tab.Screen name="SearchTab" component={SearchScreen} />
-      {isKoalaEnabled && <Tab.Screen name="PostTab" component={PostScreen} />}
+      <Tab.Screen name="PostTab" component={PostScreen} />
       <Tab.Screen name="NotificationsTab" component={NotificationsScreen} />
       <Tab.Screen name="AccountTab" component={AccountScreen} />
-      {!isKoalaEnabled && <Tab.Screen name="SettingsTab" component={SettingsScreen} />}
     </Tab.Navigator>
   );
 }

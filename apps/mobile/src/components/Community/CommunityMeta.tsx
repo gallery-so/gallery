@@ -11,7 +11,6 @@ import { PoapIcon } from 'src/icons/PoapIcon';
 import { PolygonIcon } from 'src/icons/PolygonIcon';
 import { TezosIcon } from 'src/icons/TezosIcon';
 import { ZoraIcon } from 'src/icons/ZoraIcon';
-import isFeatureEnabled, { FeatureFlag } from 'src/utils/isFeatureEnabled';
 
 import { useManageWalletActions } from '~/contexts/ManageWalletContext';
 import { Chain, CommunityMetaFragment$key } from '~/generated/CommunityMetaFragment.graphql';
@@ -70,7 +69,6 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
     graphql`
       fragment CommunityMetaQueryFragment on Query
       @refetchable(queryName: "CommunityMetaRefetchQuery") {
-        ...isFeatureEnabledFragment
         viewer {
           ... on Viewer {
             user {
@@ -92,8 +90,6 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
 
   const { colorScheme } = useColorScheme();
   const { openManageWallet } = useManageWalletActions();
-
-  const isKoalaEnabled = isFeatureEnabled(FeatureFlag.KOALA, query);
 
   const navigation = useNavigation<MainTabStackNavigatorProp>();
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
@@ -225,18 +221,16 @@ export function CommunityMeta({ communityRef, queryRef }: Props) {
           </View>
         )}
       </View>
-      {isKoalaEnabled && (
-        <Button
-          size="sm"
-          text="Post"
-          className="w-[100px]"
-          variant={isMemberOfCommunity ? 'primary' : 'disabled'}
-          icon={<PostIcon width={16} color={PostIconColor} strokeWidth={2} />}
-          onPress={handlePress}
-          eventElementId={null}
-          eventName={null}
-        />
-      )}
+      <Button
+        size="sm"
+        text="Post"
+        className="w-[100px]"
+        variant={isMemberOfCommunity ? 'primary' : 'disabled'}
+        icon={<PostIcon width={16} color={PostIconColor} strokeWidth={2} />}
+        onPress={handlePress}
+        eventElementId={null}
+        eventName={null}
+      />
       <CommunityPostBottomSheet
         ref={bottomSheetRef}
         communityRef={community}

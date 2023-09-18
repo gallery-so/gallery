@@ -1,16 +1,10 @@
-import {
-  NavigationContainerRefWithCurrent,
-  NavigationProp,
-  RouteProp,
-} from '@react-navigation/native';
+import { NavigationContainerRefWithCurrent } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Suspense, useEffect } from 'react';
 import { View } from 'react-native';
-import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
-import isFeatureEnabled, { FeatureFlag } from 'src/utils/isFeatureEnabled';
+import { graphql, useLazyLoadQuery } from 'react-relay';
 
 import { UpsellBanner } from '~/components/UpsellBanner';
-import { RootStackNavigatorFragment$key } from '~/generated/RootStackNavigatorFragment.graphql';
 import { RootStackNavigatorQuery } from '~/generated/RootStackNavigatorQuery.graphql';
 import { LoginStackNavigator } from '~/navigation/LoginStackNavigator';
 import { MainTabNavigator } from '~/navigation/MainTabNavigator/MainTabNavigator';
@@ -39,8 +33,6 @@ export function RootStackNavigator({ navigationContainerRef }: Props) {
             __typename
           }
         }
-        ...isFeatureEnabledFragment
-        ...RootStackNavigatorFragment
       }
     `,
     {}
@@ -71,9 +63,7 @@ export function RootStackNavigator({ navigationContainerRef }: Props) {
       <Stack.Screen name="NftSelectorContractScreen" component={NftSelectorContractScreen} />
       <Stack.Screen name="PostComposer" component={PostComposerScreen} />
 
-      <Stack.Screen name="MainTabs">
-        {(props) => <MainScreen {...props} queryRef={query} />}
-      </Stack.Screen>
+      <Stack.Screen name="MainTabs" component={MainScreen} />
 
       <Stack.Screen
         name="ProfileQRCode"
@@ -104,30 +94,13 @@ function Empty() {
   return null;
 }
 
-type MainScreenProps = {
-  queryRef: RootStackNavigatorFragment$key;
-  route: RouteProp<RootStackNavigatorParamList, 'MainTabs'>;
-  navigation: NavigationProp<RootStackNavigatorParamList, 'MainTabs'>;
-};
-
-function MainScreen({ queryRef, ...props }: MainScreenProps) {
-  const query = useFragment(
-    graphql`
-      fragment RootStackNavigatorFragment on Query {
-        ...isFeatureEnabledFragment
-      }
-    `,
-    queryRef
-  );
-
-  const isKoalaEnabled = isFeatureEnabled(FeatureFlag.KOALA, query);
-
+function MainScreen() {
   return (
     <View className="flex-1">
       <Suspense fallback={<View />}>
         <UpsellBanner />
       </Suspense>
-      <MainTabNavigator isKoalaEnabled={isKoalaEnabled} {...props} />
+      <MainTabNavigator />
     </View>
   );
 }
