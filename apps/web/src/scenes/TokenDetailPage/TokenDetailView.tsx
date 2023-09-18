@@ -77,7 +77,6 @@ export default function TokenDetailView({ tokenRef, queryRef }: Props) {
             }
           }
         }
-        ...NftDetailTextQueryFragment
       }
     `,
     queryRef
@@ -109,11 +108,7 @@ export default function TokenDetailView({ tokenRef, queryRef }: Props) {
           )}
         </StyledAssetAndNoteContainer>
 
-        <NftDetailText
-          tokenRef={token}
-          authenticatedUserOwnsAsset={authenticatedUserOwnsAsset}
-          queryRef={query}
-        />
+        <NftDetailText tokenRef={token} authenticatedUserOwnsAsset={authenticatedUserOwnsAsset} />
       </StyledContentContainer>
       {!useIsMobileOrMobileLargeWindowWidth && <StyledNavigationBuffer />}
     </StyledBody>

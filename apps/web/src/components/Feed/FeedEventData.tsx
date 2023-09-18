@@ -57,11 +57,7 @@ const getEventComponent = ({
       return <CollectionUpdatedFeedEvent isSubEvent={isSubEvent} eventDataRef={eventData} />;
     case 'CollectorsNoteAddedToTokenFeedEventData':
       return (
-        <CollectorsNoteAddedToTokenFeedEvent
-          isSubEvent={isSubEvent}
-          eventDataRef={eventData}
-          queryRef={query}
-        />
+        <CollectorsNoteAddedToTokenFeedEvent isSubEvent={isSubEvent} eventDataRef={eventData} />
       );
     case 'TokensAddedToCollectionFeedEventData':
       return (
@@ -106,7 +102,6 @@ export function NonRecursiveFeedEventData({
     graphql`
       fragment FeedEventDataNonRecursiveQueryFragment on Query {
         ...UserFollowedUsersFeedEventQueryFragment
-        ...CollectorsNoteAddedToTokenFeedEventQueryFragment
       }
     `,
     queryRef

@@ -23,7 +23,7 @@ const ROLE_FLAGS: Record<Role, Record<FeatureFlag, boolean>> = {
     KOALA: true,
   },
   EARLY_ACCESS: {
-    KOALA: false,
+    KOALA: true,
   },
 };
 

@@ -9,7 +9,6 @@ import { IsMemberOfCommunityProvider } from '~/contexts/communityPage/IsMemberOf
 import MemberListPageProvider from '~/contexts/memberListPage/MemberListPageContext';
 import { CommunityPageViewFragment$key } from '~/generated/CommunityPageViewFragment.graphql';
 import { CommunityPageViewQueryFragment$key } from '~/generated/CommunityPageViewQueryFragment.graphql';
-import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 import CommunityPageCollectorsTab from './CommunityPageCollectorsTab';
 import CommunityPagePostsTab from './CommunityPagePostsTab';
@@ -47,7 +46,6 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
       fragment CommunityPageViewQueryFragment on Query {
         ...CommunityPagePostsTabQueryFragment
         ...CommunityPageViewHeaderQueryFragment
-        ...isFeatureEnabledFragment
         ...CommunityPageCollectorsTabQueryFragment
       }
     `,
@@ -60,10 +58,7 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
     throw new Error('CommunityPageView: contractAddress not found on community');
   }
 
-  const isKoalaEnabled = isFeatureEnabled(FeatureFlag.KOALA, query);
-  const [activeTab, setActiveTab] = useState<CommunityPageTab>(
-    isKoalaEnabled ? 'posts' : 'collectors'
-  );
+  const [activeTab, setActiveTab] = useState<CommunityPageTab>('posts');
 
   return (
     <MemberListPageProvider>
@@ -72,13 +67,11 @@ export default function CommunityPageView({ communityRef, queryRef }: Props) {
           <VStack gap={16}>
             <CommunityPageViewHeader communityRef={community} queryRef={query} />
 
-            {isKoalaEnabled && (
-              <CommunityPageTabs
-                onSelectTab={setActiveTab}
-                activeTab={activeTab}
-                communityRef={community}
-              />
-            )}
+            <CommunityPageTabs
+              onSelectTab={setActiveTab}
+              activeTab={activeTab}
+              communityRef={community}
+            />
 
             {activeTab === 'posts' && (
               <CommunityPagePostsTab communityRef={community} queryRef={query} />
