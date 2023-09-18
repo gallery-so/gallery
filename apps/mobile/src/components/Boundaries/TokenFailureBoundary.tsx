@@ -1,6 +1,7 @@
 import { createElement, useCallback, useEffect, useMemo } from 'react';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
 import { fetchQuery, graphql, useFragment, useRelayEnvironment } from 'react-relay';
+import { ErrorIcon } from 'src/icons/ErrorIcon';
 
 import { useTokenStateManagerContext } from '~/contexts/TokenStateManagerContext';
 import { TokenFailureBoundaryFragment$key } from '~/generated/TokenFailureBoundaryFragment.graphql';
@@ -10,7 +11,24 @@ import {
   ReportingErrorBoundaryProps,
 } from '~/shared/errors/ReportingErrorBoundary';
 
-import { NftPreviewErrorFallback } from '../NftPreview/NftPreviewErrorFallback';
+// TODO: use refresh icon instead, and make the token refresh
+function TokenPreviewErrorFallback() {
+  return (
+    <View className="w-full h-full bg-offWhite dark:bg-black-800 flex items-center justify-center">
+      <ErrorIcon />
+    </View>
+  );
+}
+
+// TODO: loading for tiny tokens
+// TODO: check dark mode
+function TokenPreviewLoadingFallback() {
+  return (
+    <View className="w-full h-full bg-offWhite dark:bg-black-800 flex items-center justify-center">
+      <Text className="text-xs text-metal">Processing...</Text>
+    </View>
+  );
+}
 
 type Props = {
   tokenRef: TokenFailureBoundaryFragment$key;
@@ -20,8 +38,8 @@ type Props = {
 
 export function TokenFailureBoundary({
   tokenRef,
-  fallback = <NftPreviewErrorFallback />,
-  loadingFallback = <Text>TODO NFT Loading Fallback</Text>,
+  fallback = <TokenPreviewErrorFallback />,
+  loadingFallback = <TokenPreviewLoadingFallback />,
   ...rest
 }: Props) {
   const tokenFragment = useFragment(
@@ -86,9 +104,11 @@ export function TokenFailureBoundary({
           !media?.previewURLs?.large &&
           !media?.fallbackMedia?.mediaURL
         ) {
+          console.log('refetching token!');
           // We're still syncing without a fallback, so queue up another refetch
           timeoutId = setTimeout(reFetchToken, POLLING_INTERNVAL_MS);
         } else {
+          console.log('token resolved!');
           // If the token was failing before, we need to make sure
           // that it's error state gets cleared on the chance
           // that it just got loaded.
@@ -141,7 +161,7 @@ export function TokenFailureBoundary({
       key={token?.retryKey ?? 0}
       onError={handleError}
       additionalTags={additionalTags}
-      fallback={<NftPreviewErrorFallback />}
+      fallback={<TokenPreviewErrorFallback />}
       {...rest}
     />
   );
