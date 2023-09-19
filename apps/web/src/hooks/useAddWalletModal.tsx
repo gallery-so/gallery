@@ -3,6 +3,7 @@ import { useFragment, useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
+import breakpoints from '~/components/core/breakpoints';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { TitleL } from '~/components/core/Text/Text';
 import { OnConnectWalletSuccessFn } from '~/components/WalletSelector/multichain/MultichainWalletSelector';
@@ -80,13 +81,26 @@ const Container = styled(HStack).attrs({
 })`
   min-height: 280px;
   height: 100%;
+
+  display: block;
+
+  @media only screen and ${breakpoints.tablet} {
+    display: flex;
+    min-height: 280px;
+    height: 100%;
+  }
 `;
 
 const StyledWalletText = styled(TitleL)`
-  text-align: center;
-  font-weight: 300;
+  display: none;
 
-  span {
-    font-style: italic;
+  @media only screen and ${breakpoints.tablet} {
+    display: block;
+    text-align: center;
+    font-weight: 300;
+
+    span {
+      font-style: italic;
+    }
   }
 `;

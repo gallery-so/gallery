@@ -425,11 +425,6 @@ function GlobalNavbarWithFadeEnabled({
        * 2) synchronize fading with the main content
        */}
 
-      {isLoggedInAndDoesNotHaveWallet && (
-        <StyledUpsellBannerWrapper isSidebarPresent={isSidebarPresent}>
-          <UpsellBanner queryRef={query} />
-        </StyledUpsellBannerWrapper>
-      )}
       <AnimatePresence>
         {isVisible && (
           <StyledMotionWrapper isSidebarPresent={isSidebarPresent}>
@@ -447,6 +442,7 @@ function GlobalNavbarWithFadeEnabled({
                 duration: FADE_TRANSITION_TIME_SECONDS,
               }}
             >
+              {isLoggedInAndDoesNotHaveWallet && <UpsellBanner queryRef={query} />}
               {isBannerVisible && (
                 <GlobalBanner
                   // make sure to update this flag and add to backend schema.graphql
@@ -483,16 +479,6 @@ const StyledGlobalNavbarWithFadeEnabled = styled.div<{
 const StyledBackground = styled.div`
   background: ${colors.white};
   backdrop-filter: blur(48px) opacity(0.95);
-`;
-
-const StyledUpsellBannerWrapper = styled.div<{ isSidebarPresent: boolean }>`
-  transition: margin-left ${FADE_TRANSITION_TIME_SECONDS}s ease-in-out;
-  position: relative;
-
-  @media only screen and ${breakpoints.tablet} {
-    ${({ isSidebarPresent }) =>
-      isSidebarPresent && `margin-left: ${GLOBAL_SIDEBAR_DESKTOP_WIDTH}px;`}
-  }
 `;
 
 const StyledMotionWrapper = styled.div<{ isSidebarPresent: boolean }>`

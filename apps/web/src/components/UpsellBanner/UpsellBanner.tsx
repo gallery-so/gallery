@@ -9,8 +9,9 @@ import CloseIcon from '~/icons/CloseIcon';
 import colors from '~/shared/theme/colors';
 import useExperience from '~/utils/graphql/experiences/useExperience';
 
+import breakpoints from '../core/breakpoints';
 import { Button } from '../core/Button/Button';
-import { HStack } from '../core/Spacer/Stack';
+import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM } from '../core/Text/Text';
 
 type Props = {
@@ -53,17 +54,17 @@ export function UpsellBanner({ queryRef }: Props) {
 
   return (
     <StyledWrapper align="center" justify="space-between">
-      <HStack gap={8}>
+      <StyledTextWrapper>
         <BaseM>
           <strong>Gallery is better with a wallet</strong>
         </BaseM>
         <BaseM>Add your wallet to start posting and curating</BaseM>
-      </HStack>
-      <HStack gap={24} align="center">
+      </StyledTextWrapper>
+      <StyledButtonWrapper>
         <StyledButton onClick={handleConnectWallet}>Connect</StyledButton>
 
         <IconContainer variant="blue" size="sm" icon={<StyledCloseIcon />} onClick={handleClose} />
-      </HStack>
+      </StyledButtonWrapper>
     </StyledWrapper>
   );
 }
@@ -74,6 +75,23 @@ const StyledWrapper = styled(HStack)`
 
   ${BaseM} {
     color: ${colors.white};
+  }
+`;
+
+const StyledTextWrapper = styled(VStack)`
+  @media only screen and ${breakpoints.tablet} {
+    flex-direction: row;
+    gap: 8px;
+  }
+`;
+
+const StyledButtonWrapper = styled(HStack).attrs({
+  align: 'center',
+})`
+  gap: 8px;
+
+  @media only screen and ${breakpoints.tablet} {
+    gap: 24px;
   }
 `;
 
