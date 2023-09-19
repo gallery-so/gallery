@@ -14,8 +14,8 @@ import useWindowSize from '~/hooks/useWindowSize';
 
 import { fetchPageQuery } from './CommunityPagePresentationPosts';
 
-const NEXT_POST_INTERVAL_MS = 100000;
-const CHECK_HAS_NEXT_PAGE_INTERVAL_MS = 50000;
+const NEXT_POST_INTERVAL_MS = 30000;
+const CHECK_HAS_NEXT_PAGE_INTERVAL_MS = 5000;
 
 type Props = {
   postsRef: CommunityPagePresentationPostsCycleFragment$key;
