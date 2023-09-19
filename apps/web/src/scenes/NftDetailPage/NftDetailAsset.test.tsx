@@ -104,14 +104,6 @@ const UnknownMediaResponse: NftDetailAssetTestQueryQuery = {
       },
     },
   },
-  // viewer: {
-  //   __typename: 'Viewer',
-  //   id: 'GalleryUser:TestUserId',
-  //   user: {
-  //     roles: [Role.EarlyAccess],
-  //     id: 'GalleryUser:TestUserId',
-  //   },
-  // },
 };
 
 const RetryImageMediaResponse: NftErrorContextRetryMutationMutation = {
