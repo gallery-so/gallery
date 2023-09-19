@@ -19,6 +19,7 @@ import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import FullPageLoader from '~/components/core/Loader/FullPageLoader';
+import { UpsellBanner } from '~/components/UpsellBanner/UpsellBanner';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { GlobalLayoutContextNavbarFragment$key } from '~/generated/GlobalLayoutContextNavbarFragment.graphql';
 import { GlobalLayoutContextQuery } from '~/generated/GlobalLayoutContextQuery.graphql';
@@ -353,11 +354,26 @@ function GlobalNavbarWithFadeEnabled({
   const query = useFragment(
     graphql`
       fragment GlobalLayoutContextNavbarFragment on Query {
+        viewer {
+          ... on Viewer {
+            __typename
+            user {
+              ... on GalleryUser {
+                primaryWallet {
+                  __typename
+                }
+              }
+            }
+          }
+        }
         ...GlobalBannerFragment
+        ...UpsellBannerQuery
       }
     `,
     queryRef
   );
+  const isLoggedInAndDoesNotHaveWallet =
+    query.viewer?.__typename === 'Viewer' && !query.viewer.user?.primaryWallet;
 
   const isTouchscreen = useRef(isTouchscreenDevice());
   const [zIndex, setZIndex] = useState(2);
@@ -408,6 +424,12 @@ function GlobalNavbarWithFadeEnabled({
        * 1) remain stable across route transitions, or
        * 2) synchronize fading with the main content
        */}
+
+      {isLoggedInAndDoesNotHaveWallet && (
+        <StyledUpsellBannerWrapper isSidebarPresent={isSidebarPresent}>
+          <UpsellBanner queryRef={query} />
+        </StyledUpsellBannerWrapper>
+      )}
       <AnimatePresence>
         {isVisible && (
           <StyledMotionWrapper isSidebarPresent={isSidebarPresent}>
@@ -461,6 +483,16 @@ const StyledGlobalNavbarWithFadeEnabled = styled.div<{
 const StyledBackground = styled.div`
   background: ${colors.white};
   backdrop-filter: blur(48px) opacity(0.95);
+`;
+
+const StyledUpsellBannerWrapper = styled.div<{ isSidebarPresent: boolean }>`
+  transition: margin-left ${FADE_TRANSITION_TIME_SECONDS}s ease-in-out;
+  position: relative;
+
+  @media only screen and ${breakpoints.tablet} {
+    ${({ isSidebarPresent }) =>
+      isSidebarPresent && `margin-left: ${GLOBAL_SIDEBAR_DESKTOP_WIDTH}px;`}
+  }
 `;
 
 const StyledMotionWrapper = styled.div<{ isSidebarPresent: boolean }>`
