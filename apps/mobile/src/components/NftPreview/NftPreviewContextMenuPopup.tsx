@@ -9,16 +9,15 @@ import { graphql } from 'relay-runtime';
 
 import { GallerySkeleton } from '~/components/GallerySkeleton';
 import { RawNftPreviewAsset } from '~/components/NftPreview/NftPreviewAsset';
-import { NftPreviewErrorFallback } from '~/components/NftPreview/NftPreviewErrorFallback';
 import { Typography } from '~/components/Typography';
 import { NftPreviewContextMenuPopupFragment$key } from '~/generated/NftPreviewContextMenuPopupFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { fitDimensionsToContainerCover } from '~/screens/NftDetailScreen/NftDetailAsset/fitDimensionToContainer';
 import { Dimensions } from '~/screens/NftDetailScreen/NftDetailAsset/types';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
-import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 
 import { shareToken } from '../../utils/shareToken';
+import { TokenFailureBoundary } from '../Boundaries/TokenFailureBoundary';
 
 type NftPreviewContextMenuPopupProps = PropsWithChildren<{
   collectionTokenRef: NftPreviewContextMenuPopupFragment$key;
@@ -63,6 +62,7 @@ export function NftPreviewContextMenuPopup({
           }
 
           ...shareTokenFragment
+          ...TokenFailureBoundaryFragment
         }
       }
     `,
@@ -161,14 +161,14 @@ export function NftPreviewContextMenuPopup({
         return (
           <View className="bg-white dark:bg-black-900">
             <View className="self-center" style={finalDimensions}>
-              <ReportingErrorBoundary fallback={<NftPreviewErrorFallback />}>
+              <TokenFailureBoundary tokenRef={token}>
                 <RawNftPreviewAsset
                   priority="high"
                   tokenUrl={tokenUrl}
                   resizeMode={ResizeMode.CONTAIN}
                   onLoad={handlePopupAssetLoad}
                 />
-              </ReportingErrorBoundary>
+              </TokenFailureBoundary>
 
               {popupAssetLoaded ? null : (
                 <View className="absolute inset-0">
