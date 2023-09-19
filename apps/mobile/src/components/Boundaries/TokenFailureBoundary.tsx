@@ -13,7 +13,11 @@ import {
   ReportingErrorBoundaryProps,
 } from '~/shared/errors/ReportingErrorBoundary';
 
-// TODO: use refresh icon instead, and make the token refresh
+// TODO v soon:
+// - use refresh icon instead, and fetch new asset
+// - responsiveness for tiny and large versions
+// - check dark mode
+// - truncate / ellipses text
 function TokenPreviewErrorFallback({
   tokenRef,
 }: {
@@ -41,9 +45,10 @@ function TokenPreviewErrorFallback({
   );
 }
 
-// TODO: loading for tiny tokens
-// TODO: check dark mode
-// seems like truncate text-ellipsis doesn't work
+// TODO v soon:
+// - responsiveness for tiny and large versions
+// - check dark mode
+// - truncate / ellipses text
 function TokenPreviewLoadingFallback({
   tokenRef,
 }: {
