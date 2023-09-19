@@ -77,10 +77,8 @@ export function NftSelectorPickerSingularAsset({
     <View style={style} className="flex-1 aspect-square relative">
       <TokenFailureBoundary tokenRef={token}>
         <GalleryTouchableOpacity
-          style={style}
           disabled={isSettingProfileImage}
           onPress={handlePress}
-          className="flex-1 aspect-square relative"
           eventElementId="NftSelectorPickerImage"
           eventName="NftSelectorPickerImage pressed"
           properties={{ tokenId: token.dbid }}
