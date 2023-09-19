@@ -150,11 +150,9 @@ export function TokenFailureBoundary({
           !media?.previewURLs?.large &&
           !media?.fallbackMedia?.mediaURL
         ) {
-          console.log('refetching token!');
           // We're still syncing without a fallback, so queue up another refetch
           timeoutId = setTimeout(reFetchToken, POLLING_INTERNVAL_MS);
         } else {
-          console.log('token resolved!');
           // If the token was failing before, we need to make sure
           // that it's error state gets cleared on the chance
           // that it just got loaded.

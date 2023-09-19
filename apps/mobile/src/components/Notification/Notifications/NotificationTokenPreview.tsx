@@ -88,8 +88,6 @@ function ImagePreview({ tokenUrl, count, stacked }: ImagePreviewProps) {
         stacked && 'absolute -bottom-1 -right-1'
       )}
       source={{ uri: tokenUrl }}
-      // TODO 09-13-22 this should throw if we're unable to render
-      // onError={() => console.log('error!')}
       resizeMode={ResizeMode.COVER}
     />
   );
