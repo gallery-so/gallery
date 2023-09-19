@@ -5,7 +5,6 @@ import { graphql, useLazyLoadQuery, useRefetchableFragment } from 'react-relay';
 
 import { BackButton } from '~/components/BackButton';
 import { FeedList } from '~/components/Feed/FeedList';
-import { SafeAreaViewWithPadding } from '~/components/SafeAreaViewWithPadding';
 import { FeedEventRefetchableFragmentQuery } from '~/generated/FeedEventRefetchableFragmentQuery.graphql';
 import { FeedEventScreenFragment$key } from '~/generated/FeedEventScreenFragment.graphql';
 import { FeedEventScreenQuery } from '~/generated/FeedEventScreenQuery.graphql';
@@ -65,15 +64,13 @@ function FeedEventScreenInner() {
 export function FeedEventScreen() {
   return (
     <View className="flex-1 bg-white dark:bg-black-900">
-      <SafeAreaViewWithPadding className="flex-1">
-        <View className="px-3 pb-6">
-          <BackButton />
-        </View>
+      <View className="px-3 pb-6">
+        <BackButton />
+      </View>
 
-        <Suspense fallback={null}>
-          <FeedEventScreenInner />
-        </Suspense>
-      </SafeAreaViewWithPadding>
+      <Suspense fallback={null}>
+        <FeedEventScreenInner />
+      </Suspense>
     </View>
   );
 }
