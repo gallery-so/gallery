@@ -13,12 +13,17 @@ import { CommentsBottomSheet } from '../CommentsBottomSheet/CommentsBottomSheet'
 import { AdmireButton } from '../Socialize/AdmireButton';
 import { CommentButton } from '../Socialize/CommentButton';
 import { Interactions } from '../Socialize/Interactions';
+import { CommentLine } from '../Socialize/CommentLine';
+import { RemainingCommentCount } from '../Socialize/RemainingCommentCount';
+import { AdmireBottomSheet } from '../AdmireBottomSheet/AdmireBottomSheet';
 
 type Props = {
   feedPostRef: FeedPostSocializeSectionFragment$key;
   queryRef: FeedPostSocializeSectionQueryFragment$key;
   onCommentPress: () => void;
 };
+
+const PREVIEW_COMMENT_COUNT = 1;
 
 export function FeedPostSocializeSection({ feedPostRef, queryRef }: Props) {
   const post = useFragment(
@@ -49,6 +54,8 @@ export function FeedPostSocializeSection({ feedPostRef, queryRef }: Props) {
           edges {
             node {
               ...InteractionsCommentsFragment
+              dbid
+              ...CommentLineFragment
             }
           }
         }
@@ -104,11 +111,14 @@ export function FeedPostSocializeSection({ feedPostRef, queryRef }: Props) {
 
   const totalAdmires = post.admires?.pageInfo?.total ?? 0;
 
+  const previewComments = nonNullComments.slice(-PREVIEW_COMMENT_COUNT);
+
   const commentsBottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
   const handleOpenCommentBottomSheet = useCallback(() => {
     commentsBottomSheetRef.current?.present();
   }, []);
 
+  const admiresBottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
   return (
     <>
       <View className="px-3 pb-8 pt-2">
@@ -126,9 +136,32 @@ export function FeedPostSocializeSection({ feedPostRef, queryRef }: Props) {
             />
           </View>
 
-          <View className="flex flex-row space-x-1">
+          <View className="flex flex-col space-x-1" style={{ maxHeight: 30 }}>
             <AdmireButton onPress={toggleAdmire} isAdmired={hasViewerAdmiredEvent} />
             <CommentButton openCommentBottomSheet={handleOpenCommentBottomSheet} />
+          </View>
+
+          <View className="flex flex-col space-y-1">
+            {previewComments.map((comment) => {
+              return (
+                <CommentLine
+                  key={comment.dbid}
+                  commentRef={comment}
+                  onCommentPress={handleOpenCommentBottomSheet}
+                />
+              );
+            })}
+            {totalComments > 1 && (
+              <RemainingCommentCount
+                totalCount={totalComments}
+                onPress={handleOpenCommentBottomSheet}
+              />
+            )}
+            <AdmireBottomSheet
+              type={'Post'}
+              feedId={post.dbid}
+              bottomSheetRef={admiresBottomSheetRef}
+            />
           </View>
         </View>
         {isEmptyComments && (

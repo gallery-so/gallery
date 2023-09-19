@@ -27,7 +27,6 @@ export function CommentLine({ commentRef, style, onCommentPress }: Props) {
 
   return (
     <View className="flex flex-row space-x-1" style={style}>
-      <UsernameDisplay userRef={comment.commenter} size="sm" />
       <GalleryTouchableOpacity
         onPress={onCommentPress}
         eventElementId={null}
@@ -35,6 +34,8 @@ export function CommentLine({ commentRef, style, onCommentPress }: Props) {
         className="flex flex-row wrap"
       >
         <Typography className={`text-sm`} font={{ family: 'ABCDiatype', weight: 'Regular' }}>
+          <UsernameDisplay userRef={comment.commenter} size="sm" />
+
           {comment.comment}
         </Typography>
       </GalleryTouchableOpacity>

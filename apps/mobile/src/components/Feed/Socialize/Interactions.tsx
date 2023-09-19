@@ -13,7 +13,6 @@ import { FeedItemTypes } from '../createVirtualizedFeedEventItems';
 import { CommentLine } from './CommentLine';
 import { RemainingCommentCount } from './RemainingCommentCount';
 
-const PREVIEW_COMMENT_COUNT = 1;
 
 type Props = {
   type: FeedItemTypes;
@@ -41,7 +40,6 @@ export function Interactions({
     graphql`
       fragment InteractionsCommentsFragment on Comment @relay(plural: true) {
         dbid
-        ...CommentLineFragment
       }
     `,
     commentRefs
@@ -74,7 +72,6 @@ export function Interactions({
     return users;
   }, [admires]);
 
-  const previewComments = comments.slice(-PREVIEW_COMMENT_COUNT);
 
   const admiresBottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
 
@@ -99,23 +96,6 @@ export function Interactions({
         />
       </View>
 
-      <View className="flex flex-col space-y-1">
-        {previewComments.map((comment) => {
-          return (
-            <CommentLine
-              key={comment.dbid}
-              commentRef={comment}
-              onCommentPress={openCommentBottomSheet}
-            />
-          );
-        })}
-
-        {totalComments > 1 && (
-          <RemainingCommentCount totalCount={totalComments} onPress={openCommentBottomSheet} />
-        )}
-      </View>
-
-      <AdmireBottomSheet type={type} feedId={feedId} bottomSheetRef={admiresBottomSheetRef} />
     </View>
   );
 }
