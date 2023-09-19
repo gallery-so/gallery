@@ -7,14 +7,14 @@ import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
+import { TokenFailureBoundary } from '~/components/Boundaries/TokenFailureBoundary';
 import { GallerySkeleton } from '~/components/GallerySkeleton';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { NftPreviewAssetToWrapInBoundary } from '~/components/NftPreview/NftPreviewAsset';
-import { NftPreviewErrorFallback } from '~/components/NftPreview/NftPreviewErrorFallback';
 import { Typography } from '~/components/Typography';
-import { NftPreviewAssetToWrapInBoundaryFragment$key } from '~/generated/NftPreviewAssetToWrapInBoundaryFragment.graphql';
 import { NftSelectorPickerGridFragment$key } from '~/generated/NftSelectorPickerGridFragment.graphql';
 import { NftSelectorPickerGridOneOrManyFragment$key } from '~/generated/NftSelectorPickerGridOneOrManyFragment.graphql';
+import { NftSelectorPickerGridSinglePreviewFragment$key } from '~/generated/NftSelectorPickerGridSinglePreviewFragment.graphql';
 import {
   NftSelectorPickerGridTokenGridFragment$data,
   NftSelectorPickerGridTokenGridFragment$key,
@@ -33,7 +33,6 @@ import {
   NftSelectorSortView,
 } from '~/screens/NftSelectorScreen/NftSelectorFilterBottomSheet';
 import { NftSelectorPickerSingularAsset } from '~/screens/NftSelectorScreen/NftSelectorPickerSingularAsset';
-import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 type NftSelectorPickerGridProps = {
@@ -255,7 +254,7 @@ export function NftSelectorPickerGrid({
 }
 
 type TokenGridSinglePreviewProps = {
-  tokenRef: NftPreviewAssetToWrapInBoundaryFragment$key;
+  tokenRef: NftSelectorPickerGridSinglePreviewFragment$key;
 };
 
 function TokenGridSinglePreview({ tokenRef }: TokenGridSinglePreviewProps) {
@@ -264,10 +263,20 @@ function TokenGridSinglePreview({ tokenRef }: TokenGridSinglePreviewProps) {
     setAssetLoaded(true);
   }, []);
 
+  const token = useFragment(
+    graphql`
+      fragment NftSelectorPickerGridSinglePreviewFragment on Token {
+        ...TokenFailureBoundaryFragment
+        ...NftPreviewAssetToWrapInBoundaryFragment
+      }
+    `,
+    tokenRef
+  );
+
   return (
-    <>
+    <TokenFailureBoundary tokenRef={token}>
       <NftPreviewAssetToWrapInBoundary
-        tokenRef={tokenRef}
+        tokenRef={token}
         mediaSize="medium"
         resizeMode={ResizeMode.COVER}
         onLoad={handleAssetLoad}
@@ -279,7 +288,7 @@ function TokenGridSinglePreview({ tokenRef }: TokenGridSinglePreviewProps) {
           </GallerySkeleton>
         </View>
       )}
-    </>
+    </TokenFailureBoundary>
   );
 }
 
@@ -296,7 +305,7 @@ function TokenGrid({ tokenRefs, contractAddress, screen, style }: TokenGridProps
       fragment NftSelectorPickerGridTokenGridFragment on Token @relay(plural: true) {
         __typename
         dbid
-        ...NftPreviewAssetToWrapInBoundaryFragment
+        ...NftSelectorPickerGridSinglePreviewFragment
       }
     `,
     tokenRefs
@@ -335,9 +344,7 @@ function TokenGrid({ tokenRefs, contractAddress, screen, style }: TokenGridProps
               {row.tokens.map((token) => {
                 return (
                   <View key={token.dbid} className="flex-1 aspect-square">
-                    <ReportingErrorBoundary fallback={<NftPreviewErrorFallback />}>
-                      <TokenGridSinglePreview tokenRef={token} />
-                    </ReportingErrorBoundary>
+                    <TokenGridSinglePreview tokenRef={token} />
                   </View>
                 );
               })}

@@ -6,13 +6,12 @@ import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
+import { TokenFailureBoundary } from '~/components/Boundaries/TokenFailureBoundary';
 import { GallerySkeleton } from '~/components/GallerySkeleton';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { NftPreviewAssetToWrapInBoundary } from '~/components/NftPreview/NftPreviewAsset';
-import { NftPreviewErrorFallback } from '~/components/NftPreview/NftPreviewErrorFallback';
 import { NftSelectorPickerSingularAssetFragment$key } from '~/generated/NftSelectorPickerSingularAssetFragment.graphql';
 import { MainTabStackNavigatorProp, RootStackNavigatorParamList } from '~/navigation/types';
-import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import colors from '~/shared/theme/colors';
 
 import { useProfilePicture } from './useProfilePicture';
@@ -35,6 +34,7 @@ export function NftSelectorPickerSingularAsset({
         dbid
 
         ...NftPreviewAssetToWrapInBoundaryFragment
+        ...TokenFailureBoundaryFragment
       }
     `,
     tokenRef
@@ -74,7 +74,7 @@ export function NftSelectorPickerSingularAsset({
   }, []);
 
   return (
-    <ReportingErrorBoundary fallback={<NftPreviewErrorFallback />}>
+    <TokenFailureBoundary tokenRef={token}>
       <GalleryTouchableOpacity
         style={style}
         disabled={isSettingProfileImage}
@@ -104,6 +104,6 @@ export function NftSelectorPickerSingularAsset({
           </View>
         )}
       </GalleryTouchableOpacity>
-    </ReportingErrorBoundary>
+    </TokenFailureBoundary>
   );
 }
