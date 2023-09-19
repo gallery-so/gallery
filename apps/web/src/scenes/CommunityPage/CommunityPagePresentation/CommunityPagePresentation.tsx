@@ -12,9 +12,9 @@ import { CommunityPagePresentationQueryFragment$key } from '~/generated/Communit
 import CloseIcon from '~/icons/CloseIcon';
 import LogoBracketLeft from '~/icons/LogoBracketLeft';
 import LogoBracketRight from '~/icons/LogoBracketRight';
+import colors from '~/shared/theme/colors';
 
 import CommunityPagePresentationPosts from './CommunityPagePresentationPosts';
-import colors from '~/shared/theme/colors';
 
 type Props = {
   communityRef: CommunityPagePresentationFragment$key;
