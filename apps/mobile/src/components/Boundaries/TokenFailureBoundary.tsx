@@ -32,7 +32,7 @@ function TokenPreviewErrorFallback({
   );
 
   return (
-    <View className="w-full h-full bg-offWhite dark:bg-black-800 flex items-center justify-center">
+    <View className="w-full h-full bg-porcelain dark:bg-black-800 flex items-center justify-center">
       <Text className="text-xs text-metal">{token.contract?.name ?? token.tokenId}</Text>
       <ErrorIcon />
     </View>
@@ -59,7 +59,7 @@ function TokenPreviewLoadingFallback({
   );
 
   return (
-    <View className="w-full h-full bg-offWhite dark:bg-black-800 flex items-center justify-center">
+    <View className="w-full h-full bg-porcelain dark:bg-black-800 flex items-center justify-center">
       <Text className="text-xs text-metal">{token.contract?.name ?? token.tokenId}</Text>
       <Text className="text-xxs text-metal">(processing)</Text>
     </View>
