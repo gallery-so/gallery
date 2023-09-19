@@ -51,7 +51,6 @@ export default function CommunityPagePresentationEmptyState({ refetch }: Props) 
       ) {
         refetch({}, { fetchPolicy: 'network-only' });
       }
-      // setIntervalCount((prevCount) => prevCount + 1);
     }, POLL_FOR_POST_INTERVAL_MS);
 
     return () => {
