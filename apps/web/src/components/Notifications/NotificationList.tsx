@@ -44,8 +44,8 @@ export function NotificationList({ queryRef, toggleSubView }: NotificationListPr
               }
             }
 
-            email @required(action: THROW) {
-              verificationStatus @required(action: THROW)
+            email @required(action: NONE) {
+              verificationStatus @required(action: NONE)
             }
           }
         }
