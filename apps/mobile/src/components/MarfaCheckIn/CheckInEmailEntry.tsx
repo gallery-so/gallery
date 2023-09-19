@@ -140,7 +140,7 @@ export default function CheckInEmailEntry({
       <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
         Enter your email and we’ll let you know if you win an allowlist spot.
       </Typography>
-      <View className="dark:text-white p-4 my-4 bg-faint">
+      <View className="bg-faint dark:text-white dark:bg-black-700 dark:color-white p-4 my-4">
         <BottomSheetTextInput
           value={email}
           autoFocus
