@@ -1,7 +1,7 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { ResizeMode } from 'expo-av';
 import { useCallback, useState } from 'react';
-import { ActivityIndicator, Text, View, ViewProps } from 'react-native';
+import { ActivityIndicator, View, ViewProps } from 'react-native';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -75,7 +75,6 @@ export function NftSelectorPickerSingularAsset({
 
   return (
     <View style={style} className="flex-1 aspect-square relative">
-      <Text>i</Text>
       <TokenFailureBoundary tokenRef={token}>
         <GalleryTouchableOpacity
           style={style}
