@@ -7,17 +7,17 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { RawNftPreviewAsset } from '~/components/NftPreview/NftPreviewAsset';
-import { NftPreviewErrorFallback } from '~/components/NftPreview/NftPreviewErrorFallback';
 import { UniversalNftPreviewFragment$key } from '~/generated/UniversalNftPreviewFragment.graphql';
 import { UniversalNftPreviewInnerFragment$key } from '~/generated/UniversalNftPreviewInnerFragment.graphql';
+import { UniversalNftPreviewWithBoundaryFragment$key } from '~/generated/UniversalNftPreviewWithBoundaryFragment.graphql';
 import { Dimensions } from '~/screens/NftDetailScreen/NftDetailAsset/types';
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
-import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import {
   useGetSinglePreviewImage,
   useGetSinglePreviewImageProps,
 } from '~/shared/relay/useGetPreviewImages';
 
+import { TokenFailureBoundary } from '../Boundaries/TokenFailureBoundary';
 import { GallerySkeleton } from '../GallerySkeleton';
 import { UniversalNftPreviewContextMenuPopup } from './UniversalNftPreviewContextMenuPopup';
 
@@ -135,7 +135,7 @@ function UniversalNftPreview({ tokenRef, size, ...props }: UniversalNftPreviewPr
 }
 
 type UniversalNftPreviewWithBoundaryProps = {
-  tokenRef: UniversalNftPreviewFragment$key;
+  tokenRef: UniversalNftPreviewWithBoundaryFragment$key;
   size: useGetSinglePreviewImageProps['size'];
 } & NftPreviewSharedProps;
 
@@ -147,17 +147,26 @@ export function UniversalNftPreviewWithBoundary({
   onPress,
   size,
 }: UniversalNftPreviewWithBoundaryProps) {
+  const token = useFragment(
+    graphql`
+      fragment UniversalNftPreviewWithBoundaryFragment on Token {
+        ...TokenFailureBoundaryFragment
+        ...UniversalNftPreviewFragment
+      }
+    `,
+    tokenRef
+  );
+
   return (
-    // TODO 09-13-22 wrap this in proper suspense boundary
-    <ReportingErrorBoundary fallback={<NftPreviewErrorFallback />}>
+    <TokenFailureBoundary tokenRef={token}>
       <UniversalNftPreview
-        tokenRef={tokenRef}
+        tokenRef={token}
         onPress={onPress}
         onImageStateChange={onImageStateChange}
         resizeMode={resizeMode}
         priority={priority}
         size={size}
       />
-    </ReportingErrorBoundary>
+    </TokenFailureBoundary>
   );
 }

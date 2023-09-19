@@ -38,7 +38,7 @@ export function PostListItem({ feedPostRef, queryRef }: Props) {
             }
           }
           ...useGetPreviewImagesSingleFragment
-          ...UniversalNftPreviewFragment
+          ...UniversalNftPreviewWithBoundaryFragment
         }
         ...useTogglePostAdmireFragment
       }

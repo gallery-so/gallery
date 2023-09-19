@@ -35,7 +35,7 @@ export function GalleryTokenPreview({ tokenRef, containerWidth }: GalleryTokenPr
           ...getPreviewImageUrlsInlineDangerouslyFragment
         }
 
-        ...NftPreviewFragment
+        ...NftPreviewWithBoundaryFragment
       }
     `,
     tokenRef

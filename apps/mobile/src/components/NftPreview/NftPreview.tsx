@@ -7,18 +7,18 @@ import { graphql } from 'relay-runtime';
 
 import { RawNftPreviewAsset } from '~/components/NftPreview/NftPreviewAsset';
 import { NftPreviewContextMenuPopup } from '~/components/NftPreview/NftPreviewContextMenuPopup';
-import { NftPreviewErrorFallback } from '~/components/NftPreview/NftPreviewErrorFallback';
 import { NftPreviewFragment$key } from '~/generated/NftPreviewFragment.graphql';
 import { NftPreviewInnerFragment$key } from '~/generated/NftPreviewInnerFragment.graphql';
+import { NftPreviewWithBoundaryFragment$key } from '~/generated/NftPreviewWithBoundaryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { Dimensions } from '~/screens/NftDetailScreen/NftDetailAsset/types';
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
-import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import {
   useGetSinglePreviewImage,
   useGetSinglePreviewImageProps,
 } from '~/shared/relay/useGetPreviewImages';
 
+import { TokenFailureBoundary } from '../Boundaries/TokenFailureBoundary';
 import { GallerySkeleton } from '../GallerySkeleton';
 import { ImageState, NftPreviewSharedProps } from './UniversalNftPreview';
 
@@ -153,7 +153,7 @@ function NftPreview({ collectionTokenRef, size, ...props }: NftPreviewProps) {
 }
 
 type NftPreviewWithBoundaryProps = {
-  collectionTokenRef: NftPreviewFragment$key;
+  collectionTokenRef: NftPreviewWithBoundaryFragment$key;
   size: useGetSinglePreviewImageProps['size'];
 } & NftPreviewSharedProps;
 
@@ -165,17 +165,32 @@ export function NftPreviewWithBoundary({
   onPress,
   size,
 }: NftPreviewWithBoundaryProps) {
+  const collectionToken = useFragment(
+    graphql`
+      fragment NftPreviewWithBoundaryFragment on CollectionToken {
+        token {
+          ...TokenFailureBoundaryFragment
+        }
+        ...NftPreviewFragment
+      }
+    `,
+    collectionTokenRef
+  );
+
+  if (!collectionToken.token) {
+    throw new Error('token must exist on collectionToken');
+  }
+
   return (
-    // TODO 09-13-22 wrap this in proper suspense boundary
-    <ReportingErrorBoundary fallback={<NftPreviewErrorFallback />}>
+    <TokenFailureBoundary tokenRef={collectionToken.token}>
       <NftPreview
-        collectionTokenRef={collectionTokenRef}
+        collectionTokenRef={collectionToken}
         onPress={onPress}
         onImageStateChange={onImageStateChange}
         resizeMode={resizeMode}
         priority={priority}
         size={size}
       />
-    </ReportingErrorBoundary>
+    </TokenFailureBoundary>
   );
 }

@@ -42,7 +42,7 @@ export function EventTokenGrid({
           ...getPreviewImageUrlsInlineDangerouslyFragment
         }
 
-        ...NftPreviewFragment
+        ...NftPreviewWithBoundaryFragment
       }
     `,
     collectionTokenRefs
