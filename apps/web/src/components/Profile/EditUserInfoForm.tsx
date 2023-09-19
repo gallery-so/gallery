@@ -9,7 +9,6 @@ import { TextAreaWithCharCount } from '~/components/core/TextArea/TextArea';
 import { EditUserInfoFormFragment$key } from '~/generated/EditUserInfoFormFragment.graphql';
 import { EditUserInfoFormQueryFragment$key } from '~/generated/EditUserInfoFormQueryFragment.graphql';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
-import { removeNullValues } from '~/shared/relay/removeNullValues';
 import unescape from '~/shared/utils/unescape';
 
 import { useNftSelectorForProfilePicture } from '../NftSelector/useNftSelector';
@@ -53,11 +52,6 @@ function UserInfoForm({
         profileImage {
           __typename
         }
-
-        tokens(ownershipFilter: [Creator, Holder]) {
-          ...ProfilePictureDropdownFragment
-          ...useNftSelectorFragment
-        }
       }
     `,
     userRef
@@ -67,7 +61,6 @@ function UserInfoForm({
     graphql`
       fragment EditUserInfoFormQueryFragment on Query {
         ...ProfilePictureDropdownQueryFragment
-        ...useNftSelectorQueryFragment
       }
     `,
     queryRef
@@ -76,8 +69,7 @@ function UserInfoForm({
   const [showPfpDropdown, setShowPfpDropdown] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const tokens = removeNullValues(user.tokens) ?? [];
-  const showNftSelector = useNftSelectorForProfilePicture({ tokensRef: tokens, queryRef: query });
+  const showNftSelector = useNftSelectorForProfilePicture();
   const track = useTrack();
 
   const handleEditPfp = useCallback(() => {
@@ -157,7 +149,6 @@ function UserInfoForm({
             <ProfilePictureDropdown
               open={showPfpDropdown}
               onClose={handleClosePfpDropdown}
-              tokensRef={tokens}
               queryRef={query}
             />
           </StyledProfilePictureContainer>

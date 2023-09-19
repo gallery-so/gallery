@@ -1,7 +1,7 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { ResizeMode } from 'expo-av';
 import { useCallback, useState } from 'react';
-import { ActivityIndicator, View, ViewProps } from 'react-native';
+import { ActivityIndicator, Text, View, ViewProps } from 'react-native';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -74,36 +74,39 @@ export function NftSelectorPickerSingularAsset({
   }, []);
 
   return (
-    <TokenFailureBoundary tokenRef={token}>
-      <GalleryTouchableOpacity
-        style={style}
-        disabled={isSettingProfileImage}
-        onPress={handlePress}
-        className="flex-1 aspect-square relative"
-        eventElementId="NftSelectorPickerImage"
-        eventName="NftSelectorPickerImage pressed"
-        properties={{ tokenId: token.dbid }}
-      >
-        <NftPreviewAssetToWrapInBoundary
-          tokenRef={token}
-          mediaSize="large"
-          resizeMode={ResizeMode.COVER}
-          onLoad={handleAssetLoad}
-        />
-        {!assetLoaded && (
-          <View className="absolute inset-0">
-            <GallerySkeleton borderRadius={0}>
-              <SkeletonPlaceholder.Item width="100%" height="100%" />
-            </GallerySkeleton>
-          </View>
-        )}
+    <View style={style} className="flex-1 aspect-square relative">
+      <Text>i</Text>
+      <TokenFailureBoundary tokenRef={token}>
+        <GalleryTouchableOpacity
+          style={style}
+          disabled={isSettingProfileImage}
+          onPress={handlePress}
+          className="flex-1 aspect-square relative"
+          eventElementId="NftSelectorPickerImage"
+          eventName="NftSelectorPickerImage pressed"
+          properties={{ tokenId: token.dbid }}
+        >
+          <NftPreviewAssetToWrapInBoundary
+            tokenRef={token}
+            mediaSize="large"
+            resizeMode={ResizeMode.COVER}
+            onLoad={handleAssetLoad}
+          />
+          {!assetLoaded && (
+            <View className="absolute inset-0">
+              <GallerySkeleton borderRadius={0}>
+                <SkeletonPlaceholder.Item width="100%" height="100%" />
+              </GallerySkeleton>
+            </View>
+          )}
 
-        {isSettingProfileImage && (
-          <View className="absolute inset-0 bg-black opacity-50 flex items-center justify-center">
-            <ActivityIndicator color={colors.white} />
-          </View>
-        )}
-      </GalleryTouchableOpacity>
-    </TokenFailureBoundary>
+          {isSettingProfileImage && (
+            <View className="absolute inset-0 bg-black opacity-50 flex items-center justify-center">
+              <ActivityIndicator color={colors.white} />
+            </View>
+          )}
+        </GalleryTouchableOpacity>
+      </TokenFailureBoundary>
+    </View>
   );
 }

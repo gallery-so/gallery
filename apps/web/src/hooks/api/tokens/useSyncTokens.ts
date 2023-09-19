@@ -33,7 +33,7 @@ export default function useSyncTokens() {
               # we want to refresh. Don't @me when this fails.
               ...GalleryEditorViewerFragment
               # Refresh tokens for post composer
-              ...PostComposerModalWithSelectorFragment
+              ...NftSelectorViewerFragment
 
               ... on Viewer {
                 user {
@@ -66,7 +66,8 @@ export default function useSyncTokens() {
               # we want to refresh. Don't @me when this fails.
               ...GalleryEditorViewerFragment
               # Refresh tokens for post composer
-              ...PostComposerModalWithSelectorFragment
+              ...NftSelectorViewerFragment
+
               ... on Viewer {
                 user {
                   tokens(ownershipFilter: [Creator, Holder]) {

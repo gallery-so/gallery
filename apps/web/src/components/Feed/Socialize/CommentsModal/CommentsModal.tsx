@@ -116,10 +116,12 @@ export function CommentsModal({
       height += measurerCache.rowHeight({ index: i });
     }
 
-    // 420 is the max height of the modal
+    // 420 is the max height of the modal if not full screen
+    const modalMaxHeight = fullscreen ? window.innerHeight : 420;
+
     // 121 is the height of the modal header + bottom padding + comment box
-    return Math.min(height, 420 - 121);
-  }, [measurerCache, rowCount]);
+    return Math.min(height, modalMaxHeight - 121);
+  }, [measurerCache, rowCount, fullscreen]);
 
   useEffect(
     function recalculateHeightsWhenEventsChange() {

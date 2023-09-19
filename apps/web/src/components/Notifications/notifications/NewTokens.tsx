@@ -31,7 +31,6 @@ export function NewTokens({ notificationRef, onClose }: Props) {
             __typename
             dbid
             name
-            ...PostComposerModalFragment
             ...NewTokensTokenPreviewFragment
           }
         }
@@ -54,7 +53,7 @@ export function NewTokens({ notificationRef, onClose }: Props) {
   const handleCreatePostClick = useCallback(() => {
     track('NFT Detail: Clicked Create Post');
     showModal({
-      content: <PostComposerModal tokenRef={token} />,
+      content: <PostComposerModal tokenId={token.dbid} />,
       headerVariant: 'thicc',
       isFullPage: isMobile,
     });

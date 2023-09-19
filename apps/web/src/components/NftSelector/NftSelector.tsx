@@ -1,13 +1,14 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { graphql, useFragment } from 'react-relay';
+import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
+import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 import styled from 'styled-components';
 
-import { NftSelectorFragment$key } from '~/generated/NftSelectorFragment.graphql';
-import { NftSelectorQueryFragment$key } from '~/generated/NftSelectorQueryFragment.graphql';
+import { NftSelectorQuery } from '~/generated/NftSelectorQuery.graphql';
+import { NftSelectorViewerFragment$key } from '~/generated/NftSelectorViewerFragment.graphql';
 import useSyncTokens from '~/hooks/api/tokens/useSyncTokens';
 import { ChevronLeftIcon } from '~/icons/ChevronLeftIcon';
 import { RefreshIcon } from '~/icons/RefreshIcon';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
+import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { Chain } from '~/shared/utils/chains';
 import { doesUserOwnWalletFromChainFamily } from '~/utils/doesUserOwnWalletFromChainFamily';
 
@@ -31,8 +32,6 @@ import { NftSelectorSearchBar } from './NftSelectorSearchBar';
 import { NftSelectorView } from './NftSelectorView';
 
 type Props = {
-  tokensRef: NftSelectorFragment$key;
-  queryRef: NftSelectorQueryFragment$key;
   onSelectToken: (tokenId: string) => void;
   headerText: string;
   preSelectedContract?: NftSelectorContractType;
@@ -40,54 +39,69 @@ type Props = {
 
 export type NftSelectorContractType = Omit<NftSelectorCollectionGroup, 'tokens'> | null;
 
-export function NftSelector({
-  tokensRef,
-  queryRef,
-  onSelectToken,
-  headerText,
-  preSelectedContract,
-}: Props) {
-  const tokens = useFragment(
-    graphql`
-      fragment NftSelectorFragment on Token @relay(plural: true) {
-        ...NftSelectorViewFragment
-        dbid
-        name
-        chain
-        creationTime
-
-        isSpamByUser
-        isSpamByProvider
-
-        ownerIsHolder
-        ownerIsCreator
-
-        contract {
-          name
-        }
-
-        ...useTokenSearchResultsFragment
-      }
-    `,
-    tokensRef
+export function NftSelector(props: Props) {
+  return (
+    <Suspense fallback={<NftSelectorLoadingView />}>
+      <NftSelectorInner {...props} />
+    </Suspense>
   );
+}
 
-  const query = useFragment(
+function NftSelectorInner({ onSelectToken, headerText, preSelectedContract }: Props) {
+  const query = useLazyLoadQuery<NftSelectorQuery>(
     graphql`
-      fragment NftSelectorQueryFragment on Query {
-        viewer {
-          ... on Viewer {
-            user {
-              dbid
-            }
-          }
-        }
+      query NftSelectorQuery {
         ...doesUserOwnWalletFromChainFamilyFragment
         ...NftSelectorFilterNetworkFragment
+
+        viewer {
+          ... on Viewer {
+            ...NftSelectorViewerFragment
+          }
+        }
       }
     `,
-    queryRef
+    {}
   );
+
+  const viewer = useFragment<NftSelectorViewerFragment$key>(
+    graphql`
+      fragment NftSelectorViewerFragment on Viewer {
+        user {
+          dbid
+
+          tokens(ownershipFilter: [Creator, Holder]) {
+            __typename
+
+            dbid
+            name
+            chain
+            creationTime
+
+            isSpamByUser
+            isSpamByProvider
+
+            ownerIsHolder
+            ownerIsCreator
+
+            contract {
+              name
+            }
+
+            ...useTokenSearchResultsFragment
+            ...NftSelectorViewFragment
+
+            # Needed for when we select a token, we want to have this already in the cache
+            # eslint-disable-next-line relay/must-colocate-fragment-spreads
+            ...PostComposerTokenFragment
+          }
+        }
+      }
+    `,
+    query.viewer
+  );
+
+  const tokens = useMemo(() => removeNullValues(viewer?.user?.tokens), [viewer?.user?.tokens]);
 
   const { searchQuery, setSearchQuery, tokenSearchResults, isSearching } = useTokenSearchResults<
     (typeof tokens)[0]
@@ -182,7 +196,7 @@ export function NftSelector({
   );
 
   const track = useTrack();
-  const isRefreshDisabledAtUserLevel = isRefreshDisabledForUser(query.viewer?.user?.dbid ?? '');
+  const isRefreshDisabledAtUserLevel = isRefreshDisabledForUser(viewer?.user?.dbid ?? '');
   const refreshDisabled =
     isRefreshDisabledAtUserLevel || !ownsWalletFromSelectedChainFamily || isLocked;
 

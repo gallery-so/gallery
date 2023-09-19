@@ -19,6 +19,10 @@ export function createMissingFieldHandlers(): MissingFieldHandler[] {
         return `Collection:${args.id}`;
       }
 
+      if (field.name === 'tokenById') {
+        return `Token:${args.id}`;
+      }
+
       return undefined;
     },
   };
