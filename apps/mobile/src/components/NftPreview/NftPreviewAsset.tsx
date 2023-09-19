@@ -1,11 +1,13 @@
 import { ResizeMode, Video } from 'expo-av';
-import { memo } from 'react';
+import { memo, useCallback } from 'react';
 import FastImage, { Priority } from 'react-native-fast-image';
 import { graphql, useFragment } from 'react-relay';
 
 import { SvgWebView } from '~/components/SvgWebView';
+import { useTokenStateManagerContext } from '~/contexts/TokenStateManagerContext';
 import { NftPreviewAssetToWrapInBoundaryFragment$key } from '~/generated/NftPreviewAssetToWrapInBoundaryFragment.graphql';
 import { Dimensions } from '~/screens/NftDetailScreen/NftDetailAsset/types';
+import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
 import {
   useGetSinglePreviewImage,
   useGetSinglePreviewImageProps,
@@ -16,15 +18,23 @@ type RawNftPreviewAssetProps = {
   priority?: Priority;
   resizeMode: ResizeMode;
   onLoad?: (dimensions: Dimensions | null) => void;
+  onError?: () => void;
 };
 
-function RawNftPreviewAsset({ tokenUrl, onLoad, priority, resizeMode }: RawNftPreviewAssetProps) {
+function RawNftPreviewAsset({
+  tokenUrl,
+  onLoad,
+  onError = () => {},
+  priority,
+  resizeMode,
+}: RawNftPreviewAssetProps) {
   if (tokenUrl.includes('svg')) {
     return (
       <SvgWebView
         onLoadEnd={(dimensions) => {
           onLoad?.(dimensions);
         }}
+        onError={onError}
         source={{
           uri: tokenUrl,
         }}
@@ -42,6 +52,7 @@ function RawNftPreviewAsset({ tokenUrl, onLoad, priority, resizeMode }: RawNftPr
         onReadyForDisplay={(event) => {
           onLoad?.(event.naturalSize);
         }}
+        onError={onError}
         shouldPlay
         isLooping
         resizeMode={resizeMode}
@@ -56,6 +67,7 @@ function RawNftPreviewAsset({ tokenUrl, onLoad, priority, resizeMode }: RawNftPr
       onLoad={(event) => {
         onLoad?.(event.nativeEvent);
       }}
+      onError={onError}
       resizeMode={resizeMode}
       className="h-full w-full overflow-hidden"
       source={{
@@ -88,6 +100,7 @@ function NftPreviewAssetToWrapInBoundary({
   const token = useFragment(
     graphql`
       fragment NftPreviewAssetToWrapInBoundaryFragment on Token {
+        dbid
         ...useGetPreviewImagesSingleFragment
       }
     `,
@@ -101,12 +114,21 @@ function NftPreviewAssetToWrapInBoundary({
       size: mediaSize,
     }) ?? '';
 
+  const { markTokenAsFailed } = useTokenStateManagerContext();
+  const handleError = useCallback(() => {
+    markTokenAsFailed(
+      token.dbid,
+      new CouldNotRenderNftError('RawNftPreviewAsset', 'Failed to render', { id: token.dbid })
+    );
+  }, [markTokenAsFailed, token.dbid]);
+
   return (
     <RawNftPreviewAsset
       tokenUrl={imageUrl}
       priority={priority}
       resizeMode={resizeMode}
       onLoad={onLoad}
+      onError={handleError}
     />
   );
 }
