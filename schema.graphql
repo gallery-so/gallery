@@ -2000,6 +2000,7 @@ enum UserExperienceType {
   MobileUpsell1
   MobileBetaUpsell
   UpsellMintMemento5
+  UpsellBanner
 }
 
 type UserFollowedUsersFeedEventData implements FeedEventData {
