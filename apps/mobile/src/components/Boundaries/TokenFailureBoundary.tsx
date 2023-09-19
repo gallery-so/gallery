@@ -32,8 +32,10 @@ function TokenPreviewErrorFallback({
   );
 
   return (
-    <View className="w-full h-full bg-porcelain dark:bg-black-800 flex items-center justify-center">
-      <Text className="text-xs text-metal">{token.contract?.name ?? token.tokenId}</Text>
+    <View className="w-full h-full bg-porcelain dark:bg-black-800 flex items-center justify-center text-center">
+      <Text className="text-xs text-metal text-center">
+        {token.contract?.name ?? token.tokenId}
+      </Text>
       <ErrorIcon />
     </View>
   );
@@ -41,6 +43,7 @@ function TokenPreviewErrorFallback({
 
 // TODO: loading for tiny tokens
 // TODO: check dark mode
+// seems like truncate text-ellipsis doesn't work
 function TokenPreviewLoadingFallback({
   tokenRef,
 }: {
@@ -59,8 +62,10 @@ function TokenPreviewLoadingFallback({
   );
 
   return (
-    <View className="w-full h-full bg-porcelain dark:bg-black-800 flex items-center justify-center">
-      <Text className="text-xs text-metal">{token.contract?.name ?? token.tokenId}</Text>
+    <View className="w-full h-full bg-porcelain dark:bg-black-800 flex items-center justify-center text-center">
+      <Text className="text-xs text-metal text-center">
+        {token.contract?.name ?? token.tokenId}
+      </Text>
       <Text className="text-xxs text-metal">(processing)</Text>
     </View>
   );
