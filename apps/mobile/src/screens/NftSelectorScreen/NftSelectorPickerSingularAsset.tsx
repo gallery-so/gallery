@@ -75,14 +75,14 @@ export function NftSelectorPickerSingularAsset({
 
   return (
     <View style={style} className="flex-1 aspect-square relative">
-      <TokenFailureBoundary tokenRef={token}>
-        <GalleryTouchableOpacity
-          disabled={isSettingProfileImage}
-          onPress={handlePress}
-          eventElementId="NftSelectorPickerImage"
-          eventName="NftSelectorPickerImage pressed"
-          properties={{ tokenId: token.dbid }}
-        >
+      <GalleryTouchableOpacity
+        disabled={isSettingProfileImage}
+        onPress={handlePress}
+        eventElementId="NftSelectorPickerImage"
+        eventName="NftSelectorPickerImage pressed"
+        properties={{ tokenId: token.dbid }}
+      >
+        <TokenFailureBoundary tokenRef={token}>
           <NftPreviewAssetToWrapInBoundary
             tokenRef={token}
             mediaSize="large"
@@ -102,8 +102,8 @@ export function NftSelectorPickerSingularAsset({
               <ActivityIndicator color={colors.white} />
             </View>
           )}
-        </GalleryTouchableOpacity>
-      </TokenFailureBoundary>
+        </TokenFailureBoundary>
+      </GalleryTouchableOpacity>
     </View>
   );
 }
