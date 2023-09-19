@@ -25,9 +25,9 @@ export default function ManageEmailSection({ queryRef }: Props) {
   const query = useFragment(
     graphql`
       fragment ManageEmailSectionFragment on Query {
-        viewer @required(action: NONE) {
+        viewer @required(action: THROW) {
           ... on Viewer {
-            email @required(action: NONE) {
+            email @required(action: THROW) {
               email
               verificationStatus
               emailNotificationSettings {
