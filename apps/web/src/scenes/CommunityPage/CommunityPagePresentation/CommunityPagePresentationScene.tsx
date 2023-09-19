@@ -68,7 +68,6 @@ export default function CommunityPagePresentationScene({ queryRef }: Props) {
 }
 
 const StyledPage = styled(VStack)`
-  border: 1px solid red;
   height: 100vh;
   font-size: 64px;
 `;
