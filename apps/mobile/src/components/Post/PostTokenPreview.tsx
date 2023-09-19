@@ -6,10 +6,9 @@ import { PostTokenPreviewQuery } from '~/generated/PostTokenPreviewQuery.graphql
 import { RootStackNavigatorParamList } from '~/navigation/types';
 import { NftDetailAsset } from '~/screens/NftDetailScreen/NftDetailAsset/NftDetailAsset';
 import { NftDetailAssetCacheSwapper } from '~/screens/NftDetailScreen/NftDetailAsset/NftDetailAssetCacheSwapper';
-import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 
-import { NftPreviewErrorFallback } from '../NftPreview/NftPreviewErrorFallback';
+import { TokenFailureBoundary } from '../Boundaries/TokenFailureBoundary';
 import { Typography } from '../Typography';
 
 export function PostTokenPreview() {
@@ -30,6 +29,7 @@ export function PostTokenPreview() {
 
             ...NftDetailAssetFragment
             ...useGetPreviewImagesSingleFragment
+            ...TokenFailureBoundaryFragment
           }
         }
       }
@@ -57,17 +57,13 @@ export function PostTokenPreview() {
   return (
     <View className="flex flex-col space-y-2">
       <View className="bg-offWhite dark:bg-black-800">
-        <ReportingErrorBoundary
-          fallback={
-            <View className="w-full aspect-square">
-              <NftPreviewErrorFallback />
-            </View>
-          }
-        >
-          <NftDetailAssetCacheSwapper cachedPreviewAssetUrl={imageUrl ?? ''}>
-            <NftDetailAsset tokenRef={token} />
-          </NftDetailAssetCacheSwapper>
-        </ReportingErrorBoundary>
+        <View className="w-full aspect-square">
+          <TokenFailureBoundary tokenRef={token}>
+            <NftDetailAssetCacheSwapper cachedPreviewAssetUrl={imageUrl ?? ''}>
+              <NftDetailAsset tokenRef={token} />
+            </NftDetailAssetCacheSwapper>
+          </TokenFailureBoundary>
+        </View>
       </View>
 
       <View className="flex flex-col space-y-2">

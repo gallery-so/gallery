@@ -8,15 +8,14 @@ import { ShareIcon } from 'src/icons/ShareIcon';
 import { shareUniversalToken } from 'src/utils/shareToken';
 
 import { BackButton } from '~/components/BackButton';
+import { TokenFailureBoundary } from '~/components/Boundaries/TokenFailureBoundary';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { IconContainer } from '~/components/IconContainer';
-import { NftPreviewErrorFallback } from '~/components/NftPreview/NftPreviewErrorFallback';
 import { Pill } from '~/components/Pill';
 import { UniversalNftDetailScreenInnerQuery } from '~/generated/UniversalNftDetailScreenInnerQuery.graphql';
 import { MainTabStackNavigatorParamList, MainTabStackNavigatorProp } from '~/navigation/types';
 import { NftDetailAssetCacheSwapper } from '~/screens/NftDetailScreen/NftDetailAsset/NftDetailAssetCacheSwapper';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
-import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 
 import { InteractiveLink } from '../../components/InteractiveLink';
 import { Markdown } from '../../components/Markdown';
@@ -65,6 +64,7 @@ export function UniversalNftDetailScreenInner() {
             ...NftAdditionalDetailsFragment
             ...NftDetailAssetFragment
             ...shareTokenUniversalFragment
+            ...TokenFailureBoundaryFragment
           }
         }
       }
@@ -129,20 +129,14 @@ export function UniversalNftDetailScreenInner() {
             />
           </View>
 
-          <View>
-            <ReportingErrorBoundary
-              fallback={
-                <View className="w-full aspect-square">
-                  <NftPreviewErrorFallback />
-                </View>
-              }
-            >
+          <View className="w-full aspect-square">
+            <TokenFailureBoundary tokenRef={token}>
               <NftDetailAssetCacheSwapper
                 cachedPreviewAssetUrl={route.params.cachedPreviewAssetUrl}
               >
                 <NftDetailAsset tokenRef={token} />
               </NftDetailAssetCacheSwapper>
-            </ReportingErrorBoundary>
+            </TokenFailureBoundary>
           </View>
         </View>
 
