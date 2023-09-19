@@ -207,7 +207,7 @@ export function TokenFailureBoundary({
       key={token?.retryKey ?? 0}
       onError={handleError}
       additionalTags={additionalTags}
-      fallback={<TokenPreviewErrorFallback />}
+      fallback={fallback}
       {...rest}
     />
   );
