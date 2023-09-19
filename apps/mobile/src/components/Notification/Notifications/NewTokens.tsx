@@ -58,7 +58,9 @@ export function NewTokens({ notificationRef }: Props) {
   return (
     <View className="flex flex-row items-center p-4">
       <View className="flex-row flex-1 items-center space-x-2">
-        <NotificationTokenPreviewWithBoundary tokenRef={token} count={quantity} />
+        <View className="w-[56px] h-[56px]">
+          <NotificationTokenPreviewWithBoundary tokenRef={token} count={quantity} />
+        </View>
 
         <View className="flex-1">
           <Typography

@@ -4,6 +4,7 @@ import { View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { graphql, useFragment } from 'react-relay';
 
+import { TokenFailureBoundary } from '~/components/Boundaries/TokenFailureBoundary';
 import { NotificationTokenPreviewFragment$key } from '~/generated/NotificationTokenPreviewFragment.graphql';
 import { NotificationTokenPreviewWithBoundaryFragment$key } from '~/generated/NotificationTokenPreviewWithBoundaryFragment.graphql';
 import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
@@ -32,23 +33,18 @@ export function NotificationTokenPreviewWithBoundary({
     graphql`
       fragment NotificationTokenPreviewWithBoundaryFragment on Token {
         ...NotificationTokenPreviewFragment
+        ...TokenFailureBoundaryFragment
       }
     `,
     tokenRef
   );
 
-  // TODO 09-13-22 wrap this in proper suspense boundary
-  return <NotificationTokenPreview tokenRef={token} count={count} />;
+  return (
+    <TokenFailureBoundary tokenRef={token}>
+      <NotificationTokenPreview tokenRef={token} count={count} />;
+    </TokenFailureBoundary>
+  );
 }
-
-// boundary we could use
-/* <View
-  style={{
-    width: 56,
-    height: 56,
-    backgroundColor: colors.porcelain,
-  }}
-/> */
 
 type NotificationTokenPreviewProps = {
   tokenRef: NotificationTokenPreviewFragment$key;

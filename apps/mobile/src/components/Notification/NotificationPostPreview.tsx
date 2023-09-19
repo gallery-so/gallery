@@ -6,6 +6,8 @@ import { NotificationPostPreviewFragment$key } from '~/generated/NotificationPos
 import { NotificationPostPreviewWithBoundaryFragment$key } from '~/generated/NotificationPostPreviewWithBoundaryFragment.graphql';
 import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 
+import { TokenFailureBoundary } from '../Boundaries/TokenFailureBoundary';
+
 type NotificationPostPreviewProps = {
   tokenRef: NotificationPostPreviewFragment$key;
 };
@@ -23,11 +25,7 @@ function NotificationPostPreview({ tokenRef }: NotificationPostPreviewProps) {
   const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size: 'small' }) ?? '';
 
   return (
-    <FastImage
-      style={{ width: 56, height: 56 }}
-      source={{ uri: imageUrl }}
-      resizeMode={ResizeMode.COVER}
-    />
+    <FastImage className="w-full h-full" source={{ uri: imageUrl }} resizeMode={ResizeMode.COVER} />
   );
 }
 
@@ -42,11 +40,15 @@ export function NotificationPostPreviewWithBoundary({
     graphql`
       fragment NotificationPostPreviewWithBoundaryFragment on Token {
         ...NotificationPostPreviewFragment
+        ...TokenFailureBoundaryFragment
       }
     `,
     tokenRef
   );
 
-  // TODO 09-13-22 wrap this in proper suspense boundary
-  return <NotificationPostPreview tokenRef={token} />;
+  return (
+    <TokenFailureBoundary tokenRef={token}>
+      <NotificationPostPreview tokenRef={token} />
+    </TokenFailureBoundary>
+  );
 }

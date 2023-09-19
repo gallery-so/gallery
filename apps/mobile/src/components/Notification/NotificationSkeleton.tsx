@@ -135,7 +135,13 @@ export function NotificationSkeleton({
         <Text className="dark:text-white mt-[1] pr-1 flex-1">{children}</Text>
       </View>
       <View className="flex flex-row items-center justify-between space-x-2">
-        {postToken ? <NotificationPostPreviewWithBoundary tokenRef={postToken} /> : <View />}
+        {postToken ? (
+          <View className="w-[56px] h-[56px]">
+            <NotificationPostPreviewWithBoundary tokenRef={postToken} />
+          </View>
+        ) : (
+          <View />
+        )}
 
         <View
           className={`w-[35px] flex-row space-x-2 items-center ${
