@@ -75,32 +75,32 @@ export default function useAddWalletModal() {
 }
 
 const Container = styled(HStack).attrs({
-  gap: 24,
-  align: 'center',
   justify: 'center',
 })`
   min-height: 280px;
   height: 100%;
 
-  display: block;
+  flex-direction: column-reverse;
+  gap: 24px;
 
   @media only screen and ${breakpoints.tablet} {
-    display: flex;
     min-height: 280px;
     height: 100%;
+    align-items: center;
+    flex-direction: row;
   }
 `;
 
 const StyledWalletText = styled(TitleL)`
-  display: none;
+  display: block;
+  text-align: center;
+  width: 100%;
 
+  span {
+    font-style: italic;
+  }
   @media only screen and ${breakpoints.tablet} {
-    display: block;
-    text-align: center;
     font-weight: 300;
-
-    span {
-      font-style: italic;
-    }
+    width: 300px;
   }
 `;
