@@ -6,15 +6,17 @@ type Props = {
   videoUrl: string;
   outputDimensions: Dimensions;
   onLoad: (dimensions: Dimensions) => void;
+  onError: () => void;
 };
 
-export function NftDetailAssetVideo({ outputDimensions, videoUrl, onLoad }: Props) {
+export function NftDetailAssetVideo({ outputDimensions, videoUrl, onLoad, onError }: Props) {
   return (
     <Video
       style={outputDimensions}
       onReadyForDisplay={(event) => {
         onLoad(event.naturalSize);
       }}
+      onError={onError}
       shouldPlay
       isLooping
       resizeMode={ResizeMode.CONTAIN}
