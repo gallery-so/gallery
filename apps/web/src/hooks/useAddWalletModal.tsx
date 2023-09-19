@@ -83,11 +83,14 @@ const Container = styled(HStack).attrs({
   flex-direction: column-reverse;
   gap: 24px;
 
+  padding-top: 24px;
+
   @media only screen and ${breakpoints.tablet} {
     min-height: 280px;
     height: 100%;
     align-items: center;
     flex-direction: row;
+    padding-top: 0;
   }
 `;
 
