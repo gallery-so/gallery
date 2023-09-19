@@ -56,11 +56,11 @@ export default function WalletSelector({
   const fallback = useMemo(
     () => (
       <WalletSelectorWrapper>
-        <VStack gap={8}>
+        <VStack gap={12}>
           {Array.from({ length: numOptionsToShow }).map(() => {
             // We don't have anything relevant to key off of here
             // eslint-disable-next-line react/jsx-key
-            return <Skeleton width="100%" height="52px" />;
+            return <Skeleton width="400px" height="57px" />;
           })}
         </VStack>
       </WalletSelectorWrapper>
