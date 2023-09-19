@@ -217,6 +217,6 @@ function PresentationPost({ postRef, queryRef }: PostProps) {
 const ScaledPost = styled.div<{ scale: number }>`
   width: ${POST_WIDTH_PX}px;
   transform: scale(${({ scale }) => scale});
-  transform-origin: top left;
-  margin: 0 ${MARGIN * 2}px;
+  transform-origin: top center;
+  margin: 0 auto;
 `;

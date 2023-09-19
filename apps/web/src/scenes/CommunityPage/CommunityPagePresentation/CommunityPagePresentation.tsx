@@ -81,6 +81,6 @@ const StyledTitle = styled(TitleM)`
 `;
 
 const StyledDivider = styled.div`
-  width: 2000px;
+  width: 90%;
   border-top: 1px solid ${colors.porcelain};
 `;
