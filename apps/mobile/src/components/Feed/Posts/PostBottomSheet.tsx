@@ -3,8 +3,8 @@ import { useNavigation } from '@react-navigation/native';
 import clsx from 'clsx';
 import { ForwardedRef, forwardRef, useCallback, useMemo, useRef } from 'react';
 import { View } from 'react-native';
+import { Share } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
-import { shareUniversalToken } from 'src/utils/shareToken';
 
 import {
   GalleryBottomSheetModal,
@@ -40,6 +40,7 @@ function PostBottomSheet(
     graphql`
       fragment PostBottomSheetFragment on Post {
         __typename
+        dbid
         author {
           username
         }
@@ -146,8 +147,9 @@ function PostBottomSheet(
   }, [imageUrl, navigation, token.dbid]);
 
   const handleShare = useCallback(() => {
-    shareUniversalToken(token);
-  }, [token]);
+    const url = `https://gallery.so/post/${post.dbid}`;
+    Share.share({ url });
+  }, [post.dbid]);
 
   const inner = useMemo(() => {
     if (isOwnPost) {

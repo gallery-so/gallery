@@ -1,10 +1,14 @@
-import { View, ViewProps } from 'react-native';
+import { useCallback, useRef, useState } from 'react';
+import { StyleSheet, View, ViewProps } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
+import { WarningLinkBottomSheet } from '~/components/Feed/Posts/WarningLinkBottomSheet';
+import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
-import { Typography } from '~/components/Typography';
+import { Markdown } from '~/components/Markdown';
 import { UsernameDisplay } from '~/components/UsernameDisplay';
 import { CommentLineFragment$key } from '~/generated/CommentLineFragment.graphql';
+import { replaceUrlsWithMarkdownFormat } from '~/shared/utils/replaceUrlsWithMarkdownFormat';
 
 type Props = {
   commentRef: CommentLineFragment$key;
@@ -24,6 +28,14 @@ export function CommentLine({ commentRef, style, onCommentPress }: Props) {
     `,
     commentRef
   );
+  const [redirectUrl, setRedirectUrl] = useState('');
+  const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
+  const captionWithMarkdownLinks = replaceUrlsWithMarkdownFormat(comment.comment ?? '');
+
+  const handleLinkPress = useCallback((url: string) => {
+    bottomSheetRef.current?.present();
+    setRedirectUrl(url);
+  }, []);
 
   return (
     <View className="flex flex-row space-x-1" style={style}>
@@ -34,10 +46,17 @@ export function CommentLine({ commentRef, style, onCommentPress }: Props) {
         eventName={null}
         className="flex flex-row wrap"
       >
-        <Typography className={`text-sm`} font={{ family: 'ABCDiatype', weight: 'Regular' }}>
-          {comment.comment}
-        </Typography>
+        <Markdown onBypassLinkPress={handleLinkPress} style={markdownStyles}>
+          {captionWithMarkdownLinks}
+        </Markdown>
+        <WarningLinkBottomSheet redirectUrl={redirectUrl} ref={bottomSheetRef} />
       </GalleryTouchableOpacity>
     </View>
   );
 }
+
+const markdownStyles = StyleSheet.create({
+  body: {
+    fontSize: 14,
+  },
+});
