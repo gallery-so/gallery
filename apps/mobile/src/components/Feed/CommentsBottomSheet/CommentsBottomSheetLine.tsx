@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
-import { useCallback } from 'react';
-import { View } from 'react-native';
+import { useCallback, useRef, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
@@ -10,6 +10,10 @@ import { Typography } from '~/components/Typography';
 import { CommentsBottomSheetLineFragment$key } from '~/generated/CommentsBottomSheetLineFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { getTimeSince } from '~/shared/utils/time';
+import { WarningLinkBottomSheet } from '../Posts/WarningLinkBottomSheet';
+import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
+import { Markdown } from '~/components/Markdown';
+import { replaceUrlsWithMarkdownFormat } from '~/shared/utils/replaceUrlsWithMarkdownFormat';
 
 type CommentLineProps = {
   commentRef: CommentsBottomSheetLineFragment$key;
@@ -34,6 +38,16 @@ export function CommentsBottomSheetLine({ commentRef }: CommentLineProps) {
 
   const timeAgo = getTimeSince(comment.creationTime);
   const navigation = useNavigation<MainTabStackNavigatorProp>();
+
+  const [redirectUrl, setRedirectUrl] = useState('');
+  const captionWithMarkdownLinks = replaceUrlsWithMarkdownFormat(comment.comment ?? '');
+
+  const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
+
+  const handleLinkPress = useCallback((url: string) => {
+    bottomSheetRef.current?.present();
+    setRedirectUrl(url);
+  }, []);
 
   const handleUserPress = useCallback(() => {
     const username = comment?.commenter?.username;
@@ -67,11 +81,17 @@ export function CommentsBottomSheetLine({ commentRef }: CommentLineProps) {
           </Typography>
         </View>
         <View className="flex">
-          <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
-            {comment.comment}
-          </Typography>
+          <Markdown onBypassLinkPress={handleLinkPress} style={markdownStyles}>
+            {captionWithMarkdownLinks}
+          </Markdown>
+          <WarningLinkBottomSheet redirectUrl={redirectUrl} ref={bottomSheetRef} />
         </View>
       </View>
     </GalleryTouchableOpacity>
   );
 }
+const markdownStyles = StyleSheet.create({
+  body: {
+    fontSize: 14,
+  },
+});

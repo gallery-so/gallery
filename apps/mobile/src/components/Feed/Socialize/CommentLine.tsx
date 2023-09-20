@@ -1,10 +1,13 @@
-import { View, ViewProps } from 'react-native';
+import { View, ViewProps, StyleSheet } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
+import { useCallback, useRef, useState } from 'react';
 
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
-import { Typography } from '~/components/Typography';
 import { UsernameDisplay } from '~/components/UsernameDisplay';
+import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { CommentLineFragment$key } from '~/generated/CommentLineFragment.graphql';
+import { Markdown } from '~/components/Markdown';
+import { WarningLinkBottomSheet } from '../Posts/WarningLinkBottomSheet';
 
 type Props = {
   commentRef: CommentLineFragment$key;
@@ -24,6 +27,12 @@ export function CommentLine({ commentRef, style, onCommentPress }: Props) {
     `,
     commentRef
   );
+  const [redirectUrl, setRedirectUrl] = useState('');
+  const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
+  const handleLinkPress = useCallback((url: string) => {
+    bottomSheetRef.current?.present();
+    setRedirectUrl(url);
+  }, []);
 
   return (
     <View className="flex flex-row space-x-1" style={style}>
@@ -34,10 +43,17 @@ export function CommentLine({ commentRef, style, onCommentPress }: Props) {
         eventName={null}
         className="flex flex-row wrap"
       >
-        <Typography className={`text-sm`} font={{ family: 'ABCDiatype', weight: 'Regular' }}>
+        <Markdown onBypassLinkPress={handleLinkPress} style={markdownStyles}>
           {comment.comment}
-        </Typography>
+        </Markdown>
+        <WarningLinkBottomSheet redirectUrl={redirectUrl} ref={bottomSheetRef} />
       </GalleryTouchableOpacity>
     </View>
   );
 }
+
+const markdownStyles = StyleSheet.create({
+  body: {
+    fontSize: 14,
+  },
+});
