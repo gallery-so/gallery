@@ -8,7 +8,7 @@ import { NftDetailAsset } from '~/screens/NftDetailScreen/NftDetailAsset/NftDeta
 import { NftDetailAssetCacheSwapper } from '~/screens/NftDetailScreen/NftDetailAsset/NftDetailAssetCacheSwapper';
 import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 
-import { TokenFailureBoundary } from '../Boundaries/TokenFailureBoundary';
+import { TokenFailureBoundary } from '../Boundaries/TokenFailureBoundary/TokenFailureBoundary';
 import { Typography } from '../Typography';
 
 export function PostTokenPreview() {
@@ -58,7 +58,7 @@ export function PostTokenPreview() {
     <View className="flex flex-col space-y-2">
       <View className="bg-offWhite dark:bg-black-800">
         <View className="w-full">
-          <TokenFailureBoundary tokenRef={token}>
+          <TokenFailureBoundary tokenRef={token} variant="large">
             <NftDetailAssetCacheSwapper cachedPreviewAssetUrl={imageUrl ?? ''}>
               <NftDetailAsset tokenRef={token} />
             </NftDetailAssetCacheSwapper>

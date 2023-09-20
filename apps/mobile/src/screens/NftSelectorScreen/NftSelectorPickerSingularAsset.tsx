@@ -6,7 +6,7 @@ import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import { TokenFailureBoundary } from '~/components/Boundaries/TokenFailureBoundary';
+import { TokenFailureBoundary } from '~/components/Boundaries/TokenFailureBoundary/TokenFailureBoundary';
 import { GallerySkeleton } from '~/components/GallerySkeleton';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { NftPreviewAssetToWrapInBoundary } from '~/components/NftPreview/NftPreviewAsset';
@@ -82,7 +82,7 @@ export function NftSelectorPickerSingularAsset({
         eventName="NftSelectorPickerImage pressed"
         properties={{ tokenId: token.dbid }}
       >
-        <TokenFailureBoundary tokenRef={token}>
+        <TokenFailureBoundary tokenRef={token} variant="small">
           <NftPreviewAssetToWrapInBoundary
             tokenRef={token}
             mediaSize="large"

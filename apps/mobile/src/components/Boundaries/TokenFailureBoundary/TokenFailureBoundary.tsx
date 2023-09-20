@@ -1,111 +1,74 @@
 import { createElement, useCallback, useEffect, useMemo } from 'react';
-import { Text, View } from 'react-native';
 import { fetchQuery, graphql, useFragment, useRelayEnvironment } from 'react-relay';
-import { ErrorIcon } from 'src/icons/ErrorIcon';
 
 import { useTokenStateManagerContext } from '~/contexts/TokenStateManagerContext';
-import { TokenFailureBoundaryErrorFallbackFragment$key } from '~/generated/TokenFailureBoundaryErrorFallbackFragment.graphql';
 import { TokenFailureBoundaryFragment$key } from '~/generated/TokenFailureBoundaryFragment.graphql';
-import { TokenFailureBoundaryLoadingFallbackFragment$key } from '~/generated/TokenFailureBoundaryLoadingFallbackFragment.graphql';
 import { TokenFailureBoundaryPollerQuery } from '~/generated/TokenFailureBoundaryPollerQuery.graphql';
 import {
   ReportingErrorBoundary,
   ReportingErrorBoundaryProps,
 } from '~/shared/errors/ReportingErrorBoundary';
 
-// TODO v soon:
-// - use refresh icon instead, and fetch new asset
-// - responsiveness for tiny and large versions
-// - check dark mode
-// - truncate / ellipses text
-function TokenPreviewErrorFallback({
-  tokenRef,
-}: {
-  tokenRef: TokenFailureBoundaryErrorFallbackFragment$key;
-}) {
-  const token = useFragment(
-    graphql`
-      fragment TokenFailureBoundaryErrorFallbackFragment on Token {
-        tokenId
-        contract {
-          name
-        }
-      }
-    `,
-    tokenRef
-  );
-
-  return (
-    <View className="w-full h-full bg-porcelain dark:bg-black-800 flex items-center justify-center text-center">
-      <Text className="text-xs text-metal text-center">
-        {token.contract?.name ?? token.tokenId}
-      </Text>
-      <ErrorIcon />
-    </View>
-  );
-}
-
-// TODO v soon:
-// - responsiveness for tiny and large versions
-// - check dark mode
-// - truncate / ellipses text
-function TokenPreviewLoadingFallback({
-  tokenRef,
-}: {
-  tokenRef: TokenFailureBoundaryLoadingFallbackFragment$key;
-}) {
-  const token = useFragment(
-    graphql`
-      fragment TokenFailureBoundaryLoadingFallbackFragment on Token {
-        tokenId
-        contract {
-          name
-        }
-      }
-    `,
-    tokenRef
-  );
-
-  return (
-    <View className="w-full h-full bg-porcelain dark:bg-black-800 flex items-center justify-center text-center">
-      <Text className="text-xs text-metal text-center">
-        {token.contract?.name ?? token.tokenId}
-      </Text>
-      <Text className="text-xxs text-metal">(processing)</Text>
-    </View>
-  );
-}
+import {
+  FallbackProps,
+  FallbackWrapper,
+  TokenPreviewErrorFallback,
+  TokenPreviewLoadingFallback,
+} from './TokenFailureFallbacks';
 
 type Props = {
   tokenRef: TokenFailureBoundaryFragment$key;
   fallback?: ReportingErrorBoundaryProps['fallback'];
   loadingFallback?: ReportingErrorBoundaryProps['fallback'];
-} & Omit<ReportingErrorBoundaryProps, 'fallback'>;
+} & Omit<ReportingErrorBoundaryProps, 'fallback'> &
+  FallbackProps;
 
 export function TokenFailureBoundary({
   tokenRef,
   fallback: errorFallback,
   loadingFallback: _loadingFallback,
+  fallbackAspectSquare = true,
+  variant = 'medium',
   ...rest
 }: Props) {
   const tokenFragment = useFragment(
     graphql`
       fragment TokenFailureBoundaryFragment on Token {
         dbid
-        ...TokenFailureBoundaryErrorFallbackFragment
-        ...TokenFailureBoundaryLoadingFallbackFragment
+        ...TokenFailureFallbacksErrorFallbackFragment
+        ...TokenFailureFallbacksLoadingFallbackFragment
       }
     `,
     tokenRef
   );
 
   const fallback = useMemo(() => {
-    return errorFallback || <TokenPreviewErrorFallback tokenRef={tokenFragment} />;
-  }, [errorFallback, tokenFragment]);
+    return (
+      errorFallback || (
+        <FallbackWrapper fallbackAspectSquare={fallbackAspectSquare} variant={variant}>
+          <TokenPreviewErrorFallback
+            tokenRef={tokenFragment}
+            fallbackAspectSquare={fallbackAspectSquare}
+            variant={variant}
+          />
+        </FallbackWrapper>
+      )
+    );
+  }, [errorFallback, fallbackAspectSquare, tokenFragment, variant]);
 
   const loadingFallback = useMemo(() => {
-    return _loadingFallback || <TokenPreviewLoadingFallback tokenRef={tokenFragment} />;
-  }, [_loadingFallback, tokenFragment]);
+    return (
+      _loadingFallback || (
+        <FallbackWrapper fallbackAspectSquare={fallbackAspectSquare} variant={variant}>
+          <TokenPreviewLoadingFallback
+            tokenRef={tokenFragment}
+            fallbackAspectSquare={fallbackAspectSquare}
+            variant={variant}
+          />
+        </FallbackWrapper>
+      )
+    );
+  }, [_loadingFallback, fallbackAspectSquare, tokenFragment, variant]);
 
   const { tokens, clearTokenFailureState, markTokenAsPolling, markTokenAsFailed } =
     useTokenStateManagerContext();

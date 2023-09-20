@@ -17,7 +17,7 @@ import { fitDimensionsToContainerCover } from '~/screens/NftDetailScreen/NftDeta
 import { Dimensions } from '~/screens/NftDetailScreen/NftDetailAsset/types';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 
-import { TokenFailureBoundary } from '../Boundaries/TokenFailureBoundary';
+import { TokenFailureBoundary } from '../Boundaries/TokenFailureBoundary/TokenFailureBoundary';
 
 type NftPreviewContextMenuPopupProps = PropsWithChildren<{
   tokenRef: UniversalNftPreviewContextMenuPopupTokenFragment$key;
@@ -138,7 +138,7 @@ export function UniversalNftPreviewContextMenuPopup({
         return (
           <View className="bg-white dark:bg-black-900">
             <View className="self-center" style={finalDimensions}>
-              <TokenFailureBoundary tokenRef={token}>
+              <TokenFailureBoundary tokenRef={token} variant="large">
                 <RawNftPreviewAsset
                   priority="high"
                   tokenUrl={tokenUrl}
