@@ -93,6 +93,7 @@ export type LoginStackNavigatorParamList = {
   WaitingForConfirmation: { email: string };
   NotificationUpsell: undefined;
 
+  OnboardingVideo: undefined;
   OnboardingEmail: undefined;
 
   OnboardingUsername: {
