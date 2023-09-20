@@ -8,7 +8,7 @@ import { graphql } from 'relay-runtime';
 import isFeatureEnabled, { FeatureFlag } from 'src/utils/isFeatureEnabled';
 
 import { BackButton } from '~/components/BackButton';
-import { TokenFailureBoundary } from '~/components/Boundaries/TokenFailureBoundary';
+import { TokenFailureBoundary } from '~/components/Boundaries/TokenFailureBoundary/TokenFailureBoundary';
 import { Button } from '~/components/Button';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { Pill } from '~/components/Pill';

@@ -9,7 +9,7 @@ import { NotificationPostPreviewWithBoundaryFragment$key } from '~/generated/Not
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
 import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 
-import { TokenFailureBoundary } from '../Boundaries/TokenFailureBoundary';
+import { TokenFailureBoundary } from '../Boundaries/TokenFailureBoundary/TokenFailureBoundary';
 
 type NotificationPostPreviewProps = {
   tokenRef: NotificationPostPreviewFragment$key;

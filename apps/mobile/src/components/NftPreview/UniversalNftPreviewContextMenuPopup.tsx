@@ -17,7 +17,7 @@ import { fitDimensionsToContainerCover } from '~/screens/NftDetailScreen/NftDeta
 import { Dimensions } from '~/screens/NftDetailScreen/NftDetailAsset/types';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 
-import { TokenFailureBoundary } from '../Boundaries/TokenFailureBoundary';
+import { TokenFailureBoundary } from '../Boundaries/TokenFailureBoundary/TokenFailureBoundary';
 
 type NftPreviewContextMenuPopupProps = PropsWithChildren<{
   tokenRef: UniversalNftPreviewContextMenuPopupTokenFragment$key;

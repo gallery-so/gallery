@@ -17,7 +17,7 @@ import {
   useGetSinglePreviewImageProps,
 } from '~/shared/relay/useGetPreviewImages';
 
-import { TokenFailureBoundary } from '../Boundaries/TokenFailureBoundary';
+import { TokenFailureBoundary } from '../Boundaries/TokenFailureBoundary/TokenFailureBoundary';
 import { GallerySkeleton } from '../GallerySkeleton';
 import { UniversalNftPreviewContextMenuPopup } from './UniversalNftPreviewContextMenuPopup';
 

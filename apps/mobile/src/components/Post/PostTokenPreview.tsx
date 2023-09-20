@@ -8,7 +8,7 @@ import { NftDetailAsset } from '~/screens/NftDetailScreen/NftDetailAsset/NftDeta
 import { NftDetailAssetCacheSwapper } from '~/screens/NftDetailScreen/NftDetailAsset/NftDetailAssetCacheSwapper';
 import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 
-import { TokenFailureBoundary } from '../Boundaries/TokenFailureBoundary';
+import { TokenFailureBoundary } from '../Boundaries/TokenFailureBoundary/TokenFailureBoundary';
 import { Typography } from '../Typography';
 
 export function PostTokenPreview() {

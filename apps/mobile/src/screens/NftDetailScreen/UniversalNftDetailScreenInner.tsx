@@ -8,7 +8,7 @@ import { ShareIcon } from 'src/icons/ShareIcon';
 import { shareUniversalToken } from 'src/utils/shareToken';
 
 import { BackButton } from '~/components/BackButton';
-import { TokenFailureBoundary } from '~/components/Boundaries/TokenFailureBoundary';
+import { TokenFailureBoundary } from '~/components/Boundaries/TokenFailureBoundary/TokenFailureBoundary';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { IconContainer } from '~/components/IconContainer';
 import { Pill } from '~/components/Pill';
