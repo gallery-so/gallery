@@ -4,6 +4,7 @@ import { Animated, View } from 'react-native';
 import { graphql, useLazyLoadQuery, useRefetchableFragment } from 'react-relay';
 import { RefreshIcon } from 'src/icons/RefreshIcon';
 import { SlidersIcon } from 'src/icons/SlidersIcon';
+import { getChainIconComponent } from 'src/utils/getChainIconComponent';
 
 import { BackButton } from '~/components/BackButton';
 import { FadedInput } from '~/components/FadedInput';
@@ -19,6 +20,7 @@ import { NftSelectorPickerScreenQuery } from '~/generated/NftSelectorPickerScree
 import { NftSelectorPickerScreenRefetchQuery } from '~/generated/NftSelectorPickerScreenRefetchQuery.graphql';
 import { SearchIcon } from '~/navigation/MainTabNavigator/SearchIcon';
 import { MainTabStackNavigatorParamList } from '~/navigation/types';
+import { chains } from '~/shared/utils/chains';
 
 import {
   NetworkChoice,
@@ -27,6 +29,14 @@ import {
 } from './NftSelectorFilterBottomSheet';
 import { NftSelectorPickerGrid } from './NftSelectorPickerGrid';
 import { NftSelectorScreenFallback } from './NftSelectorScreenFallback';
+
+const NETWORKS: { label: string; id: NetworkChoice; icon: JSX.Element }[] = [
+  ...chains.map((chain) => ({
+    label: chain.name,
+    id: chain.name,
+    icon: getChainIconComponent(chain),
+  })),
+];
 
 export function NftSelectorPickerScreen() {
   const route = useRoute<RouteProp<MainTabStackNavigatorParamList, 'ProfilePicturePicker'>>();
@@ -76,6 +86,10 @@ export function NftSelectorPickerScreen() {
     refetch({ networkFilter }, { fetchPolicy: 'network-only' });
   }, [networkFilter, refetch]);
 
+  const handleNetworkChange = useCallback((network: NetworkChoice) => {
+    setNetworkFilter(network);
+  }, []);
+
   return (
     <View
       className="flex-1 bg-white dark:bg-black-900"
@@ -113,14 +127,11 @@ export function NftSelectorPickerScreen() {
           <View className="px-4 flex flex-row items-center justify-between">
             <Select
               className="w-32"
-              title="Owner Filter"
-              eventElementId="NftSelectorOwnerFilter"
-              onChange={setFilter}
-              selectedId={filter}
-              options={[
-                { id: 'Collected', label: 'Collected' },
-                { id: 'Created', label: 'Created' },
-              ]}
+              title="Network"
+              eventElementId="NftSelectorNetworkFilter"
+              onChange={handleNetworkChange}
+              selectedId={networkFilter}
+              options={NETWORKS}
             />
 
             <View className="flex flex-row space-x-1">
@@ -135,8 +146,8 @@ export function NftSelectorPickerScreen() {
 
               <NftSelectorFilterBottomSheet
                 ref={filterBottomSheetRef}
-                network={networkFilter}
-                onNetworkChange={setNetworkFilter}
+                ownerFilter={filter}
+                onOwnerFilterChange={setFilter}
                 sortView={sortView}
                 onSortViewChange={setSortView}
               />

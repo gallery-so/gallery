@@ -1,7 +1,6 @@
 import { useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
 import { ForwardedRef, forwardRef, useCallback, useRef } from 'react';
 import { View, ViewProps } from 'react-native';
-import { getChainIconComponent } from 'src/utils/getChainIconComponent';
 
 import {
   GalleryBottomSheetModal,
@@ -10,16 +9,13 @@ import {
 import { useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
 import { Options, Section } from '~/components/Select';
 import { Typography } from '~/components/Typography';
-import { ChainMetadata, chains } from '~/shared/utils/chains';
+import { ChainMetadata } from '~/shared/utils/chains';
 
 const SNAP_POINTS = ['CONTENT_HEIGHT'];
 
-const NETWORKS: { label: string; id: NetworkChoice; icon: JSX.Element }[] = [
-  ...chains.map((chain) => ({
-    label: chain.name,
-    id: chain.name,
-    icon: getChainIconComponent(chain),
-  })),
+const OWNER_OPTIONS: { label: string; id: 'Collected' | 'Created' }[] = [
+  { id: 'Collected', label: 'Collected' },
+  { id: 'Created', label: 'Created' },
 ];
 
 const SORT_VIEWS: { label: string; id: NftSelectorSortView }[] = [
@@ -29,8 +25,8 @@ const SORT_VIEWS: { label: string; id: NftSelectorSortView }[] = [
 ];
 
 type Props = {
-  network: NetworkChoice;
-  onNetworkChange: (network: NetworkChoice) => void;
+  ownerFilter: 'Created' | 'Collected';
+  onOwnerFilterChange: (filter: 'Created' | 'Collected') => void;
 
   sortView: NftSelectorSortView;
   onSortViewChange: (sortView: NftSelectorSortView) => void;
@@ -40,7 +36,7 @@ export type NetworkChoice = ChainMetadata['name'];
 export type NftSelectorSortView = 'Recently added' | 'Oldest' | 'Alphabetical';
 
 function NftSelectorFilterBottomSheet(
-  { network, onNetworkChange, sortView, onSortViewChange }: Props,
+  { ownerFilter, onOwnerFilterChange, sortView, onSortViewChange }: Props,
   ref: ForwardedRef<GalleryBottomSheetModalType>
 ) {
   const { bottom } = useSafeAreaPadding();
@@ -54,12 +50,12 @@ function NftSelectorFilterBottomSheet(
     bottomSheetRef.current?.close();
   }, []);
 
-  const handleNetworkChange = useCallback(
-    (network: NetworkChoice) => {
-      onNetworkChange(network);
+  const handleOwnerFilterChange = useCallback(
+    (filter: 'Created' | 'Collected') => {
+      onOwnerFilterChange(filter);
       handleClose();
     },
-    [onNetworkChange, handleClose]
+    [onOwnerFilterChange, handleClose]
   );
 
   const handleSortViewChange = useCallback(
@@ -94,13 +90,13 @@ function NftSelectorFilterBottomSheet(
           Filters
         </Typography>
         <View className="flex flex-col space-y-4">
-          <FilterSection title="Network">
+          <FilterSection title="Type">
             <Section>
               <Options
-                onChange={handleNetworkChange}
-                selected={network}
-                options={NETWORKS}
-                eventElementId="Network filter"
+                onChange={handleOwnerFilterChange}
+                selected={ownerFilter}
+                options={OWNER_OPTIONS}
+                eventElementId="Owner filter"
               />
             </Section>
           </FilterSection>
