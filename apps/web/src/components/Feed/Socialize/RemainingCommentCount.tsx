@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
@@ -43,13 +44,17 @@ export function RemainingCommentCount({
     queryRef
   );
 
+  const { route } = useRouter();
+
   const openCommentsModal = useCommentsModal({ eventRef: event, queryRef: query });
 
   if (totalComments <= 1) {
     return null;
   }
 
-  return (
+  return route === '/community/[chain]/[contractAddress]/live' ? (
+    <StyledViewCommentsText>View all comments in the Gallery App</StyledViewCommentsText>
+  ) : (
     <StyledViewCommentsText onClick={openCommentsModal}>
       View all {totalComments} comments
     </StyledViewCommentsText>

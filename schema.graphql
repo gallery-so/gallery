@@ -126,6 +126,15 @@ input ChainAddressInput {
   chain: Chain!
 }
 
+input ChainAddressTokenInput {
+  chainAddress: ChainAddressInput!
+
+  """
+  Refers to the id of the token in the contract either in decimal, or interpreted as hexadecimal when prefixed with '0x'
+  """
+  tokenId: TokenId!
+}
+
 type ChainPubKey {
   pubKey: PubKey
   chain: Chain
@@ -296,6 +305,7 @@ type Community implements Node {
   tokensInCommunity(before: String, after: String, first: Int, last: Int, onlyGalleryUsers: Boolean): TokensConnection
   owners(before: String, after: String, first: Int, last: Int, onlyGalleryUsers: Boolean): TokenHoldersConnection
   posts(before: String, after: String, first: Int, last: Int): PostsConnection
+  tmpPostsWithProjectID(projectID: Int!, before: String, after: String, first: Int, last: Int): PostsConnection
 }
 
 union CommunityByAddressOrError = Community | ErrCommunityNotFound | ErrInvalidInput
@@ -992,6 +1002,8 @@ type Mutation {
   removeComment(commentId: DBID!): RemoveCommentPayloadOrError
   commentOnPost(postId: DBID!, replyToID: DBID, comment: String!): CommentOnPostPayloadOrError
   postTokens(input: PostTokensInput!): PostTokensPayloadOrError
+  referralPostToken(input: ReferralPostTokenInput!): ReferralPostTokenPayloadOrError
+  referralPostPreflight(input: ReferralPostPreflightInput!): ReferralPostPreflightPayloadOrError
   deletePost(postId: DBID!): DeletePostPayloadOrError
   viewGallery(galleryId: DBID!): ViewGalleryPayloadOrError
   viewToken(tokenID: DBID!, collectionID: DBID!): ViewTokenPayloadOrError
@@ -1147,6 +1159,19 @@ type PostCommentsConnection {
   pageInfo: PageInfo!
 }
 
+input PostComposerDraftDetailsInput {
+  token: ChainAddressTokenInput!
+}
+
+type PostComposerDraftDetailsPayload {
+  media: MediaSubtype
+  community: Community
+  tokenName: String
+  tokenDescription: String
+}
+
+union PostComposerDraftDetailsPayloadOrError = PostComposerDraftDetailsPayload | ErrInvalidInput
+
 type PostEdge {
   node: PostOrError
   cursor: String
@@ -1278,6 +1303,7 @@ type Query {
   socialConnections(socialAccountType: SocialAccountType!, excludeAlreadyFollowing: Boolean, before: String, after: String, first: Int, last: Int): SocialConnectionsConnection
   socialQueries: SocialQueriesOrError
   topCollectionsForCommunity(input: topCollectionsForCommunityInput!, before: String, after: String, first: Int, last: Int): CollectionsConnection
+  postComposerDraftDetails(input: PostComposerDraftDetailsInput!): PostComposerDraftDetailsPayloadOrError
 }
 
 input RedeemMerchInput {
@@ -1292,6 +1318,27 @@ type RedeemMerchPayload {
 }
 
 union RedeemMerchPayloadOrError = RedeemMerchPayload | ErrInvalidInput
+
+input ReferralPostPreflightInput {
+  token: ChainAddressTokenInput!
+}
+
+type ReferralPostPreflightPayload {
+  accepted: Boolean!
+}
+
+union ReferralPostPreflightPayloadOrError = ReferralPostPreflightPayload | ErrInvalidInput
+
+input ReferralPostTokenInput {
+  token: ChainAddressTokenInput!
+  caption: String
+}
+
+type ReferralPostTokenPayload {
+  post: Post!
+}
+
+union ReferralPostTokenPayloadOrError = ReferralPostTokenPayload | ErrInvalidInput | ErrNotAuthorized | ErrTokenNotFound
 
 type RefreshCollectionPayload {
   collection: Collection
@@ -1666,6 +1713,8 @@ type TokenHoldersConnection {
   edges: [TokenHolderEdge]
   pageInfo: PageInfo!
 }
+
+scalar TokenId
 
 enum TokenOwnershipType {
   Holder

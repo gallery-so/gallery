@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import { useCallback, useLayoutEffect, useMemo, useRef } from 'react';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
@@ -127,6 +128,8 @@ export function Comments({ eventRef, queryRef, onPotentialLayoutShift }: Props) 
     // These are all the things that might cause the layout to shift
   }, [onPotentialLayoutShift, nonNullComments, totalComments]);
 
+  const { route } = useRouter();
+
   /**
    * The below logic is a bit annoying to read so I'll try to explain it here
    *
@@ -183,7 +186,11 @@ export function Comments({ eventRef, queryRef, onPotentialLayoutShift }: Props) 
     );
   }
 
-  return (
+  return route === '/community/[chain]/[contractAddress]/live' ? (
+    <StyledAddCommentCta color={colors.shadow}>
+      Join the coversation in the Gallery app
+    </StyledAddCommentCta>
+  ) : (
     <StyledAddCommentCta onClick={handleAddCommentClick} color={colors.shadow}>
       Add a comment
     </StyledAddCommentCta>
