@@ -15,12 +15,13 @@ import {
 
 type FallbackProps = {
   fallbackAspectSquare?: boolean;
+  variant?: 'tiny' | 'small' | 'medium' | 'large';
 };
 
 function FallbackWrapper({ children, fallbackAspectSquare }: PropsWithChildren<FallbackProps>) {
   const inner = useMemo(
     () => (
-      <View className="w-full h-full bg-porcelain dark:bg-black-800 flex items-center justify-center text-center">
+      <View className="w-full h-full bg-porcelain dark:bg-black-800 flex items-center justify-center text-center truncate p-1">
         {children}
       </View>
     ),
@@ -41,8 +42,9 @@ function FallbackWrapper({ children, fallbackAspectSquare }: PropsWithChildren<F
 // - truncate / ellipses text
 function TokenPreviewErrorFallback({
   tokenRef,
-  fallbackAspectSquare,
-}: {
+}: // fallbackAspectSquare,
+// variant,
+{
   tokenRef: TokenFailureBoundaryErrorFallbackFragment$key;
 } & FallbackProps) {
   const token = useFragment(
@@ -58,12 +60,12 @@ function TokenPreviewErrorFallback({
   );
 
   return (
-    <FallbackWrapper fallbackAspectSquare={fallbackAspectSquare}>
+    <>
       <Text className="text-xs text-metal text-center">
         {token.contract?.name ?? token.tokenId}
       </Text>
       <ErrorIcon />
-    </FallbackWrapper>
+    </>
   );
 }
 
@@ -73,7 +75,7 @@ function TokenPreviewErrorFallback({
 // - truncate / ellipses text
 function TokenPreviewLoadingFallback({
   tokenRef,
-  fallbackAspectSquare,
+  variant,
 }: {
   tokenRef: TokenFailureBoundaryLoadingFallbackFragment$key;
 } & FallbackProps) {
@@ -90,12 +92,12 @@ function TokenPreviewLoadingFallback({
   );
 
   return (
-    <FallbackWrapper fallbackAspectSquare={fallbackAspectSquare}>
-      <Text className="text-xs text-metal text-center">
+    <>
+      <Text className="text-xs text-metal text-center" numberOfLines={1}>
         {token.contract?.name ?? token.tokenId}
       </Text>
-      <Text className="text-xxs text-metal">(processing)</Text>
-    </FallbackWrapper>
+      {variant === 'tiny' ? null : <Text className="text-xxs text-metal">(processing)</Text>}
+    </>
   );
 }
 
@@ -111,6 +113,7 @@ export function TokenFailureBoundary({
   fallback: errorFallback,
   loadingFallback: _loadingFallback,
   fallbackAspectSquare = true,
+  variant = 'medium',
   ...rest
 }: Props) {
   const tokenFragment = useFragment(
@@ -127,24 +130,30 @@ export function TokenFailureBoundary({
   const fallback = useMemo(() => {
     return (
       errorFallback || (
-        <TokenPreviewErrorFallback
-          tokenRef={tokenFragment}
-          fallbackAspectSquare={fallbackAspectSquare}
-        />
+        <FallbackWrapper fallbackAspectSquare={fallbackAspectSquare} variant={variant}>
+          <TokenPreviewErrorFallback
+            tokenRef={tokenFragment}
+            fallbackAspectSquare={fallbackAspectSquare}
+            variant={variant}
+          />
+        </FallbackWrapper>
       )
     );
-  }, [errorFallback, fallbackAspectSquare, tokenFragment]);
+  }, [errorFallback, fallbackAspectSquare, tokenFragment, variant]);
 
   const loadingFallback = useMemo(() => {
     return (
       _loadingFallback || (
-        <TokenPreviewLoadingFallback
-          tokenRef={tokenFragment}
-          fallbackAspectSquare={fallbackAspectSquare}
-        />
+        <FallbackWrapper fallbackAspectSquare={fallbackAspectSquare} variant={variant}>
+          <TokenPreviewLoadingFallback
+            tokenRef={tokenFragment}
+            fallbackAspectSquare={fallbackAspectSquare}
+            variant={variant}
+          />
+        </FallbackWrapper>
       )
     );
-  }, [_loadingFallback, fallbackAspectSquare, tokenFragment]);
+  }, [_loadingFallback, fallbackAspectSquare, tokenFragment, variant]);
 
   const { tokens, clearTokenFailureState, markTokenAsPolling, markTokenAsFailed } =
     useTokenStateManagerContext();

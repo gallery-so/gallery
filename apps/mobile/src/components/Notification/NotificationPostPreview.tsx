@@ -64,7 +64,7 @@ export function NotificationPostPreviewWithBoundary({
   );
 
   return (
-    <TokenFailureBoundary tokenRef={token}>
+    <TokenFailureBoundary tokenRef={token} variant="tiny">
       <NotificationPostPreview tokenRef={token} />
     </TokenFailureBoundary>
   );
