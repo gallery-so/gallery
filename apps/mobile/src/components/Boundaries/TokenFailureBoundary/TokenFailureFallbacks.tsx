@@ -3,8 +3,8 @@ import { Text, View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 import { ErrorIcon } from 'src/icons/ErrorIcon';
 
-import { TokenFailureBoundaryErrorFallbackFragment$key } from '~/generated/TokenFailureBoundaryErrorFallbackFragment.graphql';
-import { TokenFailureBoundaryLoadingFallbackFragment$key } from '~/generated/TokenFailureBoundaryLoadingFallbackFragment.graphql';
+import { TokenFailureFallbacksErrorFallbackFragment$key } from '~/generated/TokenFailureFallbacksErrorFallbackFragment.graphql';
+import { TokenFailureFallbacksLoadingFallbackFragment$key } from '~/generated/TokenFailureFallbacksLoadingFallbackFragment.graphql';
 
 export type FallbackProps = {
   fallbackAspectSquare?: boolean;
@@ -38,7 +38,7 @@ export function TokenPreviewErrorFallback({
   tokenRef,
   variant,
 }: {
-  tokenRef: TokenFailureBoundaryErrorFallbackFragment$key;
+  tokenRef: TokenFailureFallbacksErrorFallbackFragment$key;
 } & FallbackProps) {
   const token = useFragment(
     graphql`
@@ -75,7 +75,7 @@ export function TokenPreviewLoadingFallback({
   tokenRef,
   variant,
 }: {
-  tokenRef: TokenFailureBoundaryLoadingFallbackFragment$key;
+  tokenRef: TokenFailureFallbacksLoadingFallbackFragment$key;
 } & FallbackProps) {
   const token = useFragment(
     graphql`
