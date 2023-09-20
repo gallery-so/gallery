@@ -56,7 +56,7 @@ export function CommentLine({ commentRef }: CommentLineProps) {
         </StyledUsernameWrapper>
       )}
       <CommentText>
-        <Markdown text={unescape(replaceUrlsWithMarkdownFormat(comment.comment))} />
+        <Markdown text={unescape(replaceUrlsWithMarkdownFormat(comment.comment ?? ''))} />
       </CommentText>
       {timeAgo && <TimeAgoText>{timeAgo}</TimeAgoText>}
     </HStack>
@@ -93,6 +93,7 @@ const CommentText = styled.div`
   line-height: 18px;
   font-weight: 400;
 
+  flex-shrink: 1;
   min-width: 0;
   white-space: pre-line;
 `;

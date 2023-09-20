@@ -18,8 +18,8 @@ import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import GlobeIcon from '~/icons/GlobeIcon';
 import ShareIcon from '~/icons/ShareIcon';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
+import { replaceUrlsWithMarkdownFormat } from '~/shared/utils/replaceUrlsWithMarkdownFormat';
 import { getExternalAddressLink } from '~/shared/utils/wallet';
-import formatUrl from '~/utils/formatUrl';
 import { getBaseUrl } from '~/utils/getBaseUrl';
 
 import CommunityPageMetadata from './CommunityPageMetadata';
@@ -79,7 +79,7 @@ export default function CommunityPageViewHeader({ communityRef, queryRef }: Prop
     }
   }, [descriptionRef]);
 
-  const formattedDescription = formatUrl(description || '');
+  const formattedDescription = replaceUrlsWithMarkdownFormat(description || '');
 
   const externalAddressLink = useMemo(() => {
     if (contractAddress) {
