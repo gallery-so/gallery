@@ -1,14 +1,14 @@
-import { View, ViewProps, StyleSheet } from 'react-native';
-import { graphql, useFragment } from 'react-relay';
 import { useCallback, useRef, useState } from 'react';
+import { StyleSheet, View, ViewProps } from 'react-native';
+import { graphql, useFragment } from 'react-relay';
 
-import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
-import { UsernameDisplay } from '~/components/UsernameDisplay';
+import { WarningLinkBottomSheet } from '~/components/Feed/Posts/WarningLinkBottomSheet';
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
-import { CommentLineFragment$key } from '~/generated/CommentLineFragment.graphql';
+import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { Markdown } from '~/components/Markdown';
+import { UsernameDisplay } from '~/components/UsernameDisplay';
+import { CommentLineFragment$key } from '~/generated/CommentLineFragment.graphql';
 import { replaceUrlsWithMarkdownFormat } from '~/shared/utils/replaceUrlsWithMarkdownFormat';
-import { WarningLinkBottomSheet } from '../Posts/WarningLinkBottomSheet';
 
 type Props = {
   commentRef: CommentLineFragment$key;

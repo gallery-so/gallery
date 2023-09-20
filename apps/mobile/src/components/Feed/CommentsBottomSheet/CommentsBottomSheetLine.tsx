@@ -4,16 +4,16 @@ import { StyleSheet, View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
+import { WarningLinkBottomSheet } from '~/components/Feed/Posts/WarningLinkBottomSheet';
+import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
+import { Markdown } from '~/components/Markdown';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { Typography } from '~/components/Typography';
 import { CommentsBottomSheetLineFragment$key } from '~/generated/CommentsBottomSheetLineFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
-import { getTimeSince } from '~/shared/utils/time';
-import { WarningLinkBottomSheet } from '../Posts/WarningLinkBottomSheet';
-import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
-import { Markdown } from '~/components/Markdown';
 import { replaceUrlsWithMarkdownFormat } from '~/shared/utils/replaceUrlsWithMarkdownFormat';
+import { getTimeSince } from '~/shared/utils/time';
 
 type CommentLineProps = {
   commentRef: CommentsBottomSheetLineFragment$key;

@@ -2,18 +2,18 @@ import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
+import Markdown from '~/components/core/Markdown/Markdown';
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
-import Markdown from '~/components/core/Markdown/Markdown';
 import { ListItem } from '~/components/Feed/Socialize/CommentsModal/ListItem';
 import { TimeAgoText } from '~/components/Feed/Socialize/CommentsModal/TimeAgoText';
 import { UsernameLink } from '~/components/Feed/Socialize/CommentsModal/UsernameLink';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { CommentNoteFragment$key } from '~/generated/CommentNoteFragment.graphql';
 import colors from '~/shared/theme/colors';
+import { replaceUrlsWithMarkdownFormat } from '~/shared/utils/replaceUrlsWithMarkdownFormat';
 import { getTimeSince } from '~/shared/utils/time';
 import unescape from '~/shared/utils/unescape';
-import { replaceUrlsWithMarkdownFormat } from '~/shared/utils/replaceUrlsWithMarkdownFormat';
 
 type CommentNoteProps = {
   commentRef: CommentNoteFragment$key;
@@ -54,9 +54,7 @@ export function CommentNote({ commentRef }: CommentNoteProps) {
             <StyledTimeAgoText color={colors.metal}>{timeAgo}</StyledTimeAgoText>
           </HStack>
           <BaseM as="span">
-            <Markdown
-              text={unescape(replaceUrlsWithMarkdownFormat(unescape(comment.comment ?? '')))}
-            />
+            <Markdown text={unescape(replaceUrlsWithMarkdownFormat(comment.comment ?? ''))} />
           </BaseM>
         </VStack>
       </HStack>
