@@ -35,6 +35,24 @@ function FallbackWrapper({ children, fallbackAspectSquare }: PropsWithChildren<F
   return inner;
 }
 
+function variantToTextSize(variant: FallbackProps['variant'] = 'tiny') {
+  return {
+    tiny: 'xs',
+    small: 'xs',
+    medium: 's',
+    large: 'md',
+  }[variant];
+}
+
+function variantToSubtextSize(variant: FallbackProps['variant'] = 'tiny') {
+  return {
+    tiny: 'xxs',
+    small: 'xxs',
+    medium: 'xs',
+    large: 's',
+  }[variant];
+}
+
 // TODO v soon:
 // - use refresh icon instead, and fetch new asset
 // - responsiveness for tiny and large versions
@@ -42,6 +60,7 @@ function FallbackWrapper({ children, fallbackAspectSquare }: PropsWithChildren<F
 // - truncate / ellipses text
 function TokenPreviewErrorFallback({
   tokenRef,
+  variant,
 }: // fallbackAspectSquare,
 // variant,
 {
@@ -61,10 +80,17 @@ function TokenPreviewErrorFallback({
 
   return (
     <>
-      <Text className="text-xs text-metal text-center">
+      <Text
+        className={`text-${variantToTextSize(variant)} text-metal text-center`}
+        numberOfLines={2}
+      >
         {token.contract?.name ?? token.tokenId}
       </Text>
-      <ErrorIcon />
+      {variant === 'tiny' ? null : (
+        <View className="p-1">
+          <ErrorIcon />
+        </View>
+      )}
     </>
   );
 }
@@ -93,10 +119,15 @@ function TokenPreviewLoadingFallback({
 
   return (
     <>
-      <Text className="text-xs text-metal text-center" numberOfLines={1}>
+      <Text
+        className={`text-${variantToTextSize(variant)} text-metal text-center`}
+        numberOfLines={2}
+      >
         {token.contract?.name ?? token.tokenId}
       </Text>
-      {variant === 'tiny' ? null : <Text className="text-xxs text-metal">(processing)</Text>}
+      {variant === 'tiny' ? null : (
+        <Text className={`text-${variantToSubtextSize(variant)} text-metal`}>(processing)</Text>
+      )}
     </>
   );
 }
