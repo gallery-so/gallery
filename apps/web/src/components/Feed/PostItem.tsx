@@ -11,6 +11,7 @@ import { PostItemWithErrorBoundaryFragment$key } from '~/generated/PostItemWithE
 import { PostItemWithErrorBoundaryQueryFragment$key } from '~/generated/PostItemWithErrorBoundaryQueryFragment.graphql';
 import { useIsDesktopWindowWidth } from '~/hooks/useWindowSize';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
+import { ErrorWithSentryMetadata } from '~/shared/errors/ErrorWithSentryMetadata';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 
 import PostCommunityPill from './Posts/PostCommunityPill';
@@ -63,11 +64,8 @@ export function PostItem({
 
   const useVerticalLayout = !isDesktop || bigScreenMode;
 
-  const reportError = useReportError();
-
   if (!post.author) {
-    reportError('Post author is undefined', { tags: { postId: post.dbid } });
-    return null;
+    throw new ErrorWithSentryMetadata('Post author is undefined', { postId: post.dbid }); // no need to specify `tags`
   }
 
   if (useVerticalLayout) {
@@ -194,7 +192,5 @@ const PostItemContainer = styled(VStack)<{ bigScreenMode: boolean }>`
     padding: 24px 16px;
     max-width: initial;
     width: ${({ bigScreenMode }) => (bigScreenMode ? 544 : FEED_EVENT_ROW_WIDTH_DESKTOP)}px;
-
-    ${({ bigScreenMode }) => bigScreenMode && ``}
   }
 `;
