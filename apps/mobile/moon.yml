@@ -48,6 +48,12 @@ tasks:
       - ~:ios-raw
       - ~:relay-watch
 
+  ios-build:
+    command: eas build -p ios --local
+    env:
+      EAS_LOCAL_BUILD_SKIP_CLEANUP: '1'
+    local: true
+
   android-prebuild:
     command: expo prebuild -p android
     local: true
@@ -72,12 +78,6 @@ tasks:
     deps:
       - ~:android-raw
       - ~:relay-watch
-
-  ios-build:
-    command: eas build -p ios --local
-    env:
-      EAS_LOCAL_BUILD_SKIP_CLEANUP: '1'
-    local: true
 
   # Inherited from root task
   typecheck:
