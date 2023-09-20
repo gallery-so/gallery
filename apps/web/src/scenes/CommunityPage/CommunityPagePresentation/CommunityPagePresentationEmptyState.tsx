@@ -1,4 +1,5 @@
-import { useEffect } from 'react';
+import { useRouter } from 'next/router';
+import { useEffect, useMemo } from 'react';
 import { fetchQuery, RefetchFnDynamic, useRelayEnvironment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -7,6 +8,8 @@ import { TitleCondensed } from '~/components/core/Text/Text';
 import { CommunityPagePresentationPostsFragment$key } from '~/generated/CommunityPagePresentationPostsFragment.graphql';
 import { CommunityPagePresentationPostsHasNextPageQuery } from '~/generated/CommunityPagePresentationPostsHasNextPageQuery.graphql';
 import { RefetchableCommunityPresentationPostsQuery } from '~/generated/RefetchableCommunityPresentationPostsQuery.graphql';
+import { PROHIBITION_CONTRACT_ADDRESS } from '~/pages/community/[chain]/[contractAddress]';
+import { RESONANCE_PROJECT_ID } from '~/pages/community/[chain]/[contractAddress]/live';
 
 import { fetchPageQuery } from './CommunityPagePresentationPosts';
 
@@ -23,6 +26,11 @@ export default function CommunityPagePresentationEmptyState({ refetch }: Props) 
   // poll for the first post
 
   const relayEnvironment = useRelayEnvironment();
+  const { query: routerQuery } = useRouter();
+
+  const projectId = useMemo(() => {
+    return routerQuery.projectId ? parseInt(routerQuery.projectId as string) : RESONANCE_PROJECT_ID;
+  }, [routerQuery.projectId]);
 
   // Poll to check if any Posts have been created
   useEffect(() => {
@@ -32,11 +40,12 @@ export default function CommunityPagePresentationEmptyState({ refetch }: Props) 
         fetchPageQuery,
         {
           communityAddress: {
-            address: '0x7e619a01e1a3b3a6526d0e01fbac4822d48f439b',
-            chain: 'Ethereum',
+            address: PROHIBITION_CONTRACT_ADDRESS,
+            chain: 'Arbitrum',
           },
           communityPostsFirst: 1,
           forceRefresh: false,
+          communityProjectID: projectId,
         }
       ).toPromise();
 
@@ -57,7 +66,7 @@ export default function CommunityPagePresentationEmptyState({ refetch }: Props) 
       console.log('clearing');
       clearInterval(intervalId);
     };
-  }, [refetch, relayEnvironment]);
+  }, [projectId, refetch, relayEnvironment]);
 
   return (
     <StyledEmptyState justify="center" gap={84}>

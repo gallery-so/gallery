@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { fetchQuery, graphql, useFragment, useRelayEnvironment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -11,6 +12,8 @@ import { CommunityPagePresentationPostsCyclePostQueryFragment$key } from '~/gene
 import { CommunityPagePresentationPostsCycleQueryFragment$key } from '~/generated/CommunityPagePresentationPostsCycleQueryFragment.graphql';
 import { CommunityPagePresentationPostsHasNextPageQuery } from '~/generated/CommunityPagePresentationPostsHasNextPageQuery.graphql';
 import useWindowSize from '~/hooks/useWindowSize';
+import { PROHIBITION_CONTRACT_ADDRESS } from '~/pages/community/[chain]/[contractAddress]';
+import { RESONANCE_PROJECT_ID } from '~/pages/community/[chain]/[contractAddress]/live';
 
 import { fetchPageQuery } from './CommunityPagePresentationPosts';
 
@@ -61,6 +64,11 @@ export default function CommunityPagePresentationPostsCycle({
   const [hasNextPage, setHasNextPage] = useState(false);
 
   const relayEnvironment = useRelayEnvironment();
+  const { query: routerQuery } = useRouter();
+
+  const projectId = useMemo(() => {
+    return routerQuery.projectId ? parseInt(routerQuery.projectId as string) : RESONANCE_PROJECT_ID;
+  }, [routerQuery.projectId]);
 
   const refreshPageInfo = useCallback(async () => {
     const data = await fetchQuery<CommunityPagePresentationPostsHasNextPageQuery>(
@@ -68,12 +76,13 @@ export default function CommunityPagePresentationPostsCycle({
       fetchPageQuery,
       {
         communityAddress: {
-          address: '0x7e619a01e1a3b3a6526d0e01fbac4822d48f439b',
-          chain: 'Ethereum',
+          address: PROHIBITION_CONTRACT_ADDRESS,
+          chain: 'Arbitrum',
         },
         communityPostsAfter: pageInfo.endCursor,
         communityPostsFirst: 1,
         forceRefresh: false,
+        communityProjectID: projectId,
       }
     ).toPromise();
 
@@ -84,7 +93,7 @@ export default function CommunityPagePresentationPostsCycle({
     const hasNextPage = Boolean(data?.community?.postsPageInfo?.pageInfo?.endCursor);
     console.log('Refreshed Page Info, next Post found: ', hasNextPage);
     setHasNextPage(hasNextPage);
-  }, [pageInfo.endCursor, relayEnvironment]);
+  }, [pageInfo.endCursor, projectId, relayEnvironment]);
 
   // This page is controlled by 2 separate interval states:
   // 1. rotatePostIntervalCount is used to cycle through posts being displayed.

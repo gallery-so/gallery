@@ -10,7 +10,6 @@ import { PostItemQueryFragment$key } from '~/generated/PostItemQueryFragment.gra
 import { PostItemWithErrorBoundaryFragment$key } from '~/generated/PostItemWithErrorBoundaryFragment.graphql';
 import { PostItemWithErrorBoundaryQueryFragment$key } from '~/generated/PostItemWithErrorBoundaryQueryFragment.graphql';
 import { useIsDesktopWindowWidth } from '~/hooks/useWindowSize';
-import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 import { ErrorWithSentryMetadata } from '~/shared/errors/ErrorWithSentryMetadata';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 

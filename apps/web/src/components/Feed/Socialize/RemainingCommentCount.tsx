@@ -6,7 +6,6 @@ import styled from 'styled-components';
 import { BODY_FONT_FAMILY } from '~/components/core/Text/Text';
 import { RemainingCommentCountFragment$key } from '~/generated/RemainingCommentCountFragment.graphql';
 import { RemainingCommentCountQueryFragment$key } from '~/generated/RemainingCommentCountQueryFragment.graphql';
-import { CommunityPageDisplayMode } from '~/scenes/CommunityPage/CommunityPagePresentation/CommunityPagePresentationScene';
 import colors from '~/shared/theme/colors';
 
 import { useCommentsModal } from './CommentsModal/useCommentsModal';
@@ -45,7 +44,7 @@ export function RemainingCommentCount({
     queryRef
   );
 
-  const { query: routerQuery } = useRouter();
+  const { route } = useRouter();
 
   const openCommentsModal = useCommentsModal({ eventRef: event, queryRef: query });
 
@@ -53,7 +52,7 @@ export function RemainingCommentCount({
     return null;
   }
 
-  return routerQuery.displayMode === CommunityPageDisplayMode.PRESENTATION ? (
+  return route === '/community/[chain]/[contractAddress]/live' ? (
     <StyledViewCommentsText>View all comments in the Gallery App</StyledViewCommentsText>
   ) : (
     <StyledViewCommentsText onClick={openCommentsModal}>

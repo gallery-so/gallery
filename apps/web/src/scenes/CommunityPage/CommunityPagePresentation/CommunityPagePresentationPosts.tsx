@@ -17,6 +17,7 @@ export const fetchPageQuery = graphql`
   query CommunityPagePresentationPostsHasNextPageQuery(
     $communityAddress: ChainAddressInput!
     $forceRefresh: Boolean!
+    $communityProjectID: Int!
     $communityPostsAfter: String
     $communityPostsFirst: Int
   ) {
@@ -28,7 +29,11 @@ export const fetchPageQuery = graphql`
         __typename
         # we use these fields where we use this fragment
         # eslint-disable-next-line relay/unused-fields
-        postsPageInfo: posts(after: $communityPostsAfter, first: $communityPostsFirst) {
+        postsPageInfo: tmpPostsWithProjectID(
+          projectID: $communityProjectID
+          after: $communityPostsAfter
+          first: $communityPostsFirst
+        ) {
           pageInfo {
             hasNextPage
             startCursor
@@ -56,8 +61,11 @@ export default function CommunityPagePresentationPosts({ communityRef, queryRef 
     graphql`
       fragment CommunityPagePresentationPostsFragment on Community
       @refetchable(queryName: "RefetchableCommunityPresentationPostsQuery") {
-        presentationPosts: posts(after: $communityPostsAfter, first: $communityPostsFirst)
-          @connection(key: "CommunityFeed_presentationPosts") {
+        presentationPosts: tmpPostsWithProjectID(
+          projectID: $communityProjectID
+          after: $communityPostsAfter
+          first: $communityPostsFirst
+        ) @connection(key: "CommunityFeed_presentationPosts") {
           edges {
             node {
               ... on Post {

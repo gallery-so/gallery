@@ -14,10 +14,6 @@ type Props = {
   queryRef: CommunityPagePresentationSceneFragment$key;
 };
 
-export enum CommunityPageDisplayMode {
-  PRESENTATION = 'presentation',
-}
-
 // Optimized for 75" TV
 export default function CommunityPagePresentationScene({ queryRef }: Props) {
   const query = useFragment(
