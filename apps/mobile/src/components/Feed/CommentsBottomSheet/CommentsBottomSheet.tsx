@@ -8,6 +8,7 @@ import {
   useState,
 } from 'react';
 import { View } from 'react-native';
+import { Keyboard } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { graphql, useLazyLoadQuery, usePaginationFragment } from 'react-relay';
 import { useEventComment } from 'src/hooks/useEventComment';
@@ -63,6 +64,9 @@ export function CommentsBottomSheet({ bottomSheetRef, feedId, type }: CommentsBo
         postComment({
           feedId,
           value,
+          onSuccess: () => {
+            Keyboard.dismiss();
+          },
         });
         return;
       }
@@ -70,6 +74,9 @@ export function CommentsBottomSheet({ bottomSheetRef, feedId, type }: CommentsBo
       submitComment({
         feedEventId: feedId,
         value,
+        onSuccess: () => {
+          Keyboard.dismiss();
+        },
       });
     },
     [feedId, type, submitComment, postComment]
