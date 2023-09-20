@@ -1,7 +1,7 @@
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import { useColorScheme } from 'nativewind';
 import { useCallback, useMemo, useState } from 'react';
-import { View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 
 import { Button } from '~/components/Button';
@@ -145,39 +145,41 @@ export default function CheckInWalletSelection({ setConfirmedWalletAddress, user
         Select your Ethereum wallet to enter the draw for an exclusive allowlist spot in the Gallery
         x Prohibition drop with Jimena Buena Vida!
       </Typography>
-      {ethereumWallets?.map(
-        (wallet) =>
-          wallet?.chainAddress?.address && (
-            <View key={wallet.chainAddress.address}>
-              <GalleryTouchableOpacity
-                onPress={() => setSelectedAddress(wallet?.chainAddress?.address ?? '')}
-                className="mb-2 bg-offWhite dark:bg-black-700 p-3"
-                eventElementId="Marfa Check In: Wallet Selection Wallet Button"
-                eventName="Pressed Marfa Check In: Wallet Selection Wallet Button"
-              >
-                <Typography
-                  className="dark:text-white text-sm"
-                  font={{ family: 'ABCDiatype', weight: 'Bold' }}
+      <ScrollView className="mb-20">
+        {ethereumWallets?.map(
+          (wallet) =>
+            wallet?.chainAddress?.address && (
+              <View key={wallet.chainAddress.address}>
+                <GalleryTouchableOpacity
+                  onPress={() => setSelectedAddress(wallet?.chainAddress?.address ?? '')}
+                  className="mb-2 bg-offWhite dark:bg-black-700 p-3"
+                  eventElementId="Marfa Check In: Wallet Selection Wallet Button"
+                  eventName="Pressed Marfa Check In: Wallet Selection Wallet Button"
                 >
-                  {truncateAddress(wallet.chainAddress.address)}
-                </Typography>
-              </GalleryTouchableOpacity>
-            </View>
-          )
-      )}
-      <GalleryTouchableOpacity
-        onPress={toggleShowCustomAddressInput}
-        className="mb-2 bg-offWhite dark:bg-black-700 p-3"
-        eventElementId="Marfa Check In: Wallet Selection Custom Wallet Button"
-        eventName="Pressed Marfa Check In: Wallet Selection Custom Wallet Button"
-      >
-        <Typography
-          className="dark:text-white text-sm"
-          font={{ family: 'ABCDiatype', weight: 'Bold' }}
+                  <Typography
+                    className="dark:text-white text-sm"
+                    font={{ family: 'ABCDiatype', weight: 'Bold' }}
+                  >
+                    {truncateAddress(wallet.chainAddress.address)}
+                  </Typography>
+                </GalleryTouchableOpacity>
+              </View>
+            )
+        )}
+        <GalleryTouchableOpacity
+          onPress={toggleShowCustomAddressInput}
+          className="mb-2 bg-offWhite dark:bg-black-700 p-3"
+          eventElementId="Marfa Check In: Wallet Selection Custom Wallet Button"
+          eventName="Pressed Marfa Check In: Wallet Selection Custom Wallet Button"
         >
-          Other
-        </Typography>
-      </GalleryTouchableOpacity>
+          <Typography
+            className="dark:text-white text-sm"
+            font={{ family: 'ABCDiatype', weight: 'Bold' }}
+          >
+            Other
+          </Typography>
+        </GalleryTouchableOpacity>
+      </ScrollView>
     </>
   );
 }
