@@ -1,7 +1,8 @@
 import { useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import clsx from 'clsx';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { View } from 'react-native';
 import { EllipsesIcon } from 'src/icons/EllipsesIcon';
 
@@ -18,6 +19,7 @@ import { LoginStackNavigatorProp } from '~/navigation/types';
 import { Button } from '../../components/Button';
 import { OrderedListItem, Typography } from '../../components/Typography';
 import { EmailIcon } from '../../icons/EmailIcon';
+import { SEEN_ONBOARDING_VIDEO_STORAGE_KEY } from '../Onboarding/OnboardingVideoScreen';
 import { LandingLogo } from './LandingLogo';
 import { QRCodeIcon } from './QRCodeIcon';
 
@@ -28,8 +30,17 @@ export function LandingScreen() {
   const navigation = useNavigation<LoginStackNavigatorProp>();
 
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
-
+  const [hasSeenOnboardingVideo, setHasSeenOnboardingVideo] = useState(false);
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    AsyncStorage.getItem(SEEN_ONBOARDING_VIDEO_STORAGE_KEY).then((value) => {
+      if (value === 'true') {
+        setHasSeenOnboardingVideo(true);
+      }
+    });
+  }, []);
+
   const handleEmailPress = useCallback(() => {
     setError('');
 
@@ -65,6 +76,12 @@ export function LandingScreen() {
   const handleLogoPress = useCallback(() => {
     setNoOfLogoTapped((prev) => prev + 1);
   }, []);
+
+  useEffect(() => {
+    if (noOfLogoTapped > 5 && !hasSeenOnboardingVideo) {
+      navigation.navigate('OnboardingVideo');
+    }
+  }, [navigation, noOfLogoTapped, hasSeenOnboardingVideo]);
 
   const isOnboardingEnabled = useMemo(() => {
     return noOfLogoTapped > 5;
