@@ -6,7 +6,10 @@ import styled from 'styled-components';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BODY_FONT_FAMILY } from '~/components/core/Text/Text';
 import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
+import Markdown from '~/components/core/Markdown/Markdown';
+
 import { CommentLineFragment$key } from '~/generated/CommentLineFragment.graphql';
+import { replaceUrlsWithMarkdownFormat } from '~/shared/utils/replaceUrlsWithMarkdownFormat';
 import colors from '~/shared/theme/colors';
 import { getTimeSince } from '~/shared/utils/time';
 import unescape from '~/shared/utils/unescape';
@@ -53,7 +56,9 @@ export function CommentLine({ commentRef }: CommentLineProps) {
           </HoverCardOnUsername>
         </StyledUsernameWrapper>
       )}
-      <CommentText>{unescape(comment.comment)}</CommentText>
+      <CommentText>
+        <Markdown text={unescape(replaceUrlsWithMarkdownFormat(comment.comment))} />
+      </CommentText>
       {timeAgo && <TimeAgoText>{timeAgo}</TimeAgoText>}
     </HStack>
   );
@@ -89,7 +94,6 @@ const CommentText = styled.div`
   line-height: 18px;
   font-weight: 400;
 
-  flex-shrink: 1;
   min-width: 0;
   white-space: pre-line;
 `;

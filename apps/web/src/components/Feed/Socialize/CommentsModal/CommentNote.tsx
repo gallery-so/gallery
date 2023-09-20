@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import { HStack, VStack } from '~/components/core/Spacer/Stack';
 import { BaseM } from '~/components/core/Text/Text';
+import Markdown from '~/components/core/Markdown/Markdown';
 import { ListItem } from '~/components/Feed/Socialize/CommentsModal/ListItem';
 import { TimeAgoText } from '~/components/Feed/Socialize/CommentsModal/TimeAgoText';
 import { UsernameLink } from '~/components/Feed/Socialize/CommentsModal/UsernameLink';
@@ -12,6 +13,7 @@ import { CommentNoteFragment$key } from '~/generated/CommentNoteFragment.graphql
 import colors from '~/shared/theme/colors';
 import { getTimeSince } from '~/shared/utils/time';
 import unescape from '~/shared/utils/unescape';
+import { replaceUrlsWithMarkdownFormat } from '~/shared/utils/replaceUrlsWithMarkdownFormat';
 
 type CommentNoteProps = {
   commentRef: CommentNoteFragment$key;
@@ -51,7 +53,11 @@ export function CommentNote({ commentRef }: CommentNoteProps) {
             <UsernameLink username={comment.commenter?.username ?? null} />
             <StyledTimeAgoText color={colors.metal}>{timeAgo}</StyledTimeAgoText>
           </HStack>
-          <BaseM as="span">{unescape(comment.comment ?? '')}</BaseM>
+          <BaseM as="span">
+            <Markdown
+              text={unescape(replaceUrlsWithMarkdownFormat(unescape(comment.comment ?? '')))}
+            />
+          </BaseM>
         </VStack>
       </HStack>
     </StyledListItem>

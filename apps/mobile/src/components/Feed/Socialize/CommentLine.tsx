@@ -7,6 +7,7 @@ import { UsernameDisplay } from '~/components/UsernameDisplay';
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { CommentLineFragment$key } from '~/generated/CommentLineFragment.graphql';
 import { Markdown } from '~/components/Markdown';
+import { replaceUrlsWithMarkdownFormat } from '~/shared/utils/replaceUrlsWithMarkdownFormat';
 import { WarningLinkBottomSheet } from '../Posts/WarningLinkBottomSheet';
 
 type Props = {
@@ -29,6 +30,8 @@ export function CommentLine({ commentRef, style, onCommentPress }: Props) {
   );
   const [redirectUrl, setRedirectUrl] = useState('');
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
+  const captionWithMarkdownLinks = replaceUrlsWithMarkdownFormat(comment.comment ?? '');
+
   const handleLinkPress = useCallback((url: string) => {
     bottomSheetRef.current?.present();
     setRedirectUrl(url);
@@ -44,7 +47,7 @@ export function CommentLine({ commentRef, style, onCommentPress }: Props) {
         className="flex flex-row wrap"
       >
         <Markdown onBypassLinkPress={handleLinkPress} style={markdownStyles}>
-          {comment.comment}
+          {captionWithMarkdownLinks}
         </Markdown>
         <WarningLinkBottomSheet redirectUrl={redirectUrl} ref={bottomSheetRef} />
       </GalleryTouchableOpacity>
