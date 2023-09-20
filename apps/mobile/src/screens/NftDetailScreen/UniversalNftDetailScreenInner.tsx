@@ -130,7 +130,7 @@ export function UniversalNftDetailScreenInner() {
           </View>
 
           <View className="w-full">
-            <TokenFailureBoundary tokenRef={token}>
+            <TokenFailureBoundary tokenRef={token} variant="large">
               <NftDetailAssetCacheSwapper
                 cachedPreviewAssetUrl={route.params.cachedPreviewAssetUrl}
               >

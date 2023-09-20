@@ -40,7 +40,7 @@ export function NotificationTokenPreviewWithBoundary({
   );
 
   return (
-    <TokenFailureBoundary tokenRef={token}>
+    <TokenFailureBoundary tokenRef={token} variant="tiny">
       <NotificationTokenPreview tokenRef={token} count={count} />;
     </TokenFailureBoundary>
   );

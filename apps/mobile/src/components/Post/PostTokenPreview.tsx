@@ -58,7 +58,7 @@ export function PostTokenPreview() {
     <View className="flex flex-col space-y-2">
       <View className="bg-offWhite dark:bg-black-800">
         <View className="w-full">
-          <TokenFailureBoundary tokenRef={token}>
+          <TokenFailureBoundary tokenRef={token} variant="large">
             <NftDetailAssetCacheSwapper cachedPreviewAssetUrl={imageUrl ?? ''}>
               <NftDetailAsset tokenRef={token} />
             </NftDetailAssetCacheSwapper>

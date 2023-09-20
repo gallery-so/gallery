@@ -39,8 +39,8 @@ function variantToTextSize(variant: FallbackProps['variant'] = 'tiny') {
   return {
     tiny: 'xs',
     small: 'xs',
-    medium: 's',
-    large: 'md',
+    medium: 'sm',
+    large: 'base',
   }[variant];
 }
 
@@ -49,7 +49,7 @@ function variantToSubtextSize(variant: FallbackProps['variant'] = 'tiny') {
     tiny: 'xxs',
     small: 'xxs',
     medium: 'xs',
-    large: 's',
+    large: 'xs',
   }[variant];
 }
 

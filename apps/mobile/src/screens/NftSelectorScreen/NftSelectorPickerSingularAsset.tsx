@@ -82,7 +82,7 @@ export function NftSelectorPickerSingularAsset({
         eventName="NftSelectorPickerImage pressed"
         properties={{ tokenId: token.dbid }}
       >
-        <TokenFailureBoundary tokenRef={token}>
+        <TokenFailureBoundary tokenRef={token} variant="small">
           <NftPreviewAssetToWrapInBoundary
             tokenRef={token}
             mediaSize="large"

@@ -274,7 +274,7 @@ function TokenGridSinglePreview({ tokenRef }: TokenGridSinglePreviewProps) {
   );
 
   return (
-    <TokenFailureBoundary tokenRef={token}>
+    <TokenFailureBoundary tokenRef={token} variant="tiny">
       <NftPreviewAssetToWrapInBoundary
         tokenRef={token}
         mediaSize="medium"
