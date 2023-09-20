@@ -52,8 +52,7 @@ export function OnboardingVideoScreen() {
         shouldPlay
         resizeMode={ResizeMode.COVER}
         source={{
-          // TODO: Replace with actual video URL
-          uri: 'https://yuvsgodipjvycbdvgahw.supabase.co/storage/v1/object/public/dev/onboarding?t=2023-09-20T01%3A56%3A43.640Z',
+          uri: 'https://storage.googleapis.com/gallery-prod-325303.appspot.com/mobile_onboarding_animation.mp4',
         }}
         onPlaybackStatusUpdate={(status) => {
           if (status.isLoaded && status.didJustFinish) {
