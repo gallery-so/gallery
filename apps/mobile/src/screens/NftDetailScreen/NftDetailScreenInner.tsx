@@ -194,7 +194,7 @@ export function NftDetailScreenInner() {
             />
           </View>
 
-          <View className="w-full aspect-square">
+          <View className="w-full">
             <TokenFailureBoundary tokenRef={token}>
               <NftDetailAssetCacheSwapper
                 cachedPreviewAssetUrl={route.params.cachedPreviewAssetUrl}
