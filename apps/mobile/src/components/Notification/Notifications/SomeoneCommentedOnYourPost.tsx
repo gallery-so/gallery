@@ -97,8 +97,10 @@ export function SomeoneCommentedOnYourPost({
           </Typography>
         </Text>
 
-        <View className="border-l-2 border-[#d9d9d9] pl-2">
-          <Text className="dark:text-white">{notification.comment?.comment ?? ''}</Text>
+        <View className="border-l-2 border-[#d9d9d9] pl-2 px-2">
+          <Text className="dark:text-white" numberOfLines={3}>
+            {notification.comment?.comment ?? ''}
+          </Text>
         </View>
       </View>
     </NotificationSkeleton>
