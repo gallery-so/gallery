@@ -3,6 +3,7 @@ import { View, ViewProps } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
+import { useTokenStateManagerContext } from '~/contexts/TokenStateManagerContext';
 import { NftDetailAssetFragment$key } from '~/generated/NftDetailAssetFragment.graphql';
 import { NftDetailAssetCacheSwapperContext } from '~/screens/NftDetailScreen/NftDetailAsset/NftDetailAssetCacheSwapper';
 import { NftDetailAssetHtml } from '~/screens/NftDetailScreen/NftDetailAsset/NftDetailAssetHtml';
@@ -11,7 +12,7 @@ import { NftDetailAssetVideo } from '~/screens/NftDetailScreen/NftDetailAsset/Nf
 import { Dimensions } from '~/screens/NftDetailScreen/NftDetailAsset/types';
 import { useNftDetailAssetSizer } from '~/screens/NftDetailScreen/NftDetailAsset/useNftDetailAssetSizer';
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
-import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
+import { getPreviewImageUrlsInlineDangerously } from '~/shared/relay/getPreviewImageUrlsInlineDangerously';
 
 type NftDetailProps = {
   tokenRef: NftDetailAssetFragment$key;
@@ -22,6 +23,7 @@ export function NftDetailAsset({ tokenRef, style }: NftDetailProps) {
   const token = useFragment(
     graphql`
       fragment NftDetailAssetFragment on Token {
+        dbid
         media {
           __typename
 
@@ -52,7 +54,7 @@ export function NftDetailAsset({ tokenRef, style }: NftDetailProps) {
           }
         }
 
-        ...getVideoOrImageUrlForNftPreviewFragment
+        ...getPreviewImageUrlsInlineDangerouslyFragment
       }
     `,
     tokenRef
@@ -70,6 +72,14 @@ export function NftDetailAsset({ tokenRef, style }: NftDetailProps) {
     [assetSizer, cachedAssetSwapperContext]
   );
 
+  const { markTokenAsFailed } = useTokenStateManagerContext();
+  const handleError = useCallback(() => {
+    markTokenAsFailed(
+      token.dbid,
+      new CouldNotRenderNftError('NftDetailAsset', 'Failed to render', { id: token.dbid })
+    );
+  }, [markTokenAsFailed, token.dbid]);
+
   const inner = useMemo(() => {
     if (
       token.media?.__typename === 'GIFMedia' ||
@@ -77,22 +87,28 @@ export function NftDetailAsset({ tokenRef, style }: NftDetailProps) {
       token.media?.__typename === 'AudioMedia' ||
       token.media?.__typename === 'InvalidMedia'
     ) {
-      const imageUrl = getVideoOrImageUrlForNftPreview({
+      const result = getPreviewImageUrlsInlineDangerously({
         tokenRef: token,
         preferStillFrameFromGif: false,
-      })?.urls.large;
+      });
 
-      if (!imageUrl) {
-        throw new CouldNotRenderNftError('NftDetailAsset', 'Image had no contentRenderUrl');
+      if (result.type === 'valid' && result.urls.large) {
+        return (
+          <NftDetailAssetImage
+            onLoad={handleLoad}
+            onError={handleError}
+            imageUrl={result.urls.large}
+            outputDimensions={assetSizer.finalAssetDimensions}
+          />
+        );
       }
 
-      return (
-        <NftDetailAssetImage
-          onLoad={handleLoad}
-          imageUrl={imageUrl}
-          outputDimensions={assetSizer.finalAssetDimensions}
-        />
-      );
+      if (result.type === 'error') {
+        throw result.error;
+      }
+
+      // TODO [GAL-4229] loading view
+      return <></>;
     } else if (token.media?.__typename === 'VideoMedia') {
       const videoUrl = token.media.contentRenderURLs?.large;
 
@@ -103,6 +119,7 @@ export function NftDetailAsset({ tokenRef, style }: NftDetailProps) {
       return (
         <NftDetailAssetVideo
           onLoad={handleLoad}
+          onError={handleError}
           videoUrl={videoUrl}
           outputDimensions={assetSizer.finalAssetDimensions}
         />
@@ -117,13 +134,13 @@ export function NftDetailAsset({ tokenRef, style }: NftDetailProps) {
         );
       }
 
-      return <NftDetailAssetHtml htmlUrl={htmlUrl} onLoad={handleLoad} />;
+      return <NftDetailAssetHtml htmlUrl={htmlUrl} onLoad={handleLoad} onError={handleError} />;
     }
 
     throw new CouldNotRenderNftError('NftDetailAsset', 'Unsupported media type', {
       typename: token.media?.__typename,
     });
-  }, [assetSizer.finalAssetDimensions, handleLoad, token]);
+  }, [assetSizer.finalAssetDimensions, handleError, handleLoad, token]);
 
   return (
     <View

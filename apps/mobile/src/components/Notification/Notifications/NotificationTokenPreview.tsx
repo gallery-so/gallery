@@ -2,11 +2,12 @@ import clsx from 'clsx';
 import { ResizeMode } from 'expo-av';
 import { View } from 'react-native';
 import FastImage from 'react-native-fast-image';
+import { graphql, useFragment } from 'react-relay';
 
-type Props = {
-  tokenUrl: string;
-  count: number;
-};
+import { TokenFailureBoundary } from '~/components/Boundaries/TokenFailureBoundary';
+import { NotificationTokenPreviewFragment$key } from '~/generated/NotificationTokenPreviewFragment.graphql';
+import { NotificationTokenPreviewWithBoundaryFragment$key } from '~/generated/NotificationTokenPreviewWithBoundaryFragment.graphql';
+import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 
 const sizes = {
   single: {
@@ -19,18 +20,62 @@ const sizes = {
   },
 };
 
-export function NotificationTokenPreview({ tokenUrl, count }: Props) {
+type NotificationTokenPreviewWithBoundaryProps = {
+  tokenRef: NotificationTokenPreviewWithBoundaryFragment$key;
+  count: number;
+};
+
+export function NotificationTokenPreviewWithBoundary({
+  tokenRef,
+  count,
+}: NotificationTokenPreviewWithBoundaryProps) {
+  const token = useFragment(
+    graphql`
+      fragment NotificationTokenPreviewWithBoundaryFragment on Token {
+        ...NotificationTokenPreviewFragment
+        ...TokenFailureBoundaryFragment
+      }
+    `,
+    tokenRef
+  );
+
+  return (
+    <TokenFailureBoundary tokenRef={token}>
+      <NotificationTokenPreview tokenRef={token} count={count} />;
+    </TokenFailureBoundary>
+  );
+}
+
+type NotificationTokenPreviewProps = {
+  tokenRef: NotificationTokenPreviewFragment$key;
+  count: number;
+};
+
+function NotificationTokenPreview({ tokenRef, count }: NotificationTokenPreviewProps) {
+  const token = useFragment(
+    graphql`
+      fragment NotificationTokenPreviewFragment on Token {
+        ...useGetPreviewImagesSingleFragment
+      }
+    `,
+    tokenRef
+  );
+
+  const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size: 'small' }) ?? '';
+
   return (
     <View className="relative">
-      {count > 1 && <ImagePreview tokenUrl={tokenUrl} count={count} stacked />}
-      <ImagePreview tokenUrl={tokenUrl} count={count} />
+      {count > 1 && <ImagePreview tokenUrl={imageUrl} count={count} stacked />}
+      <ImagePreview tokenUrl={imageUrl} count={count} />
     </View>
   );
 }
 
 type ImagePreviewProps = {
+  tokenUrl: string;
+  count: number;
   stacked?: boolean;
-} & Props;
+};
 
 function ImagePreview({ tokenUrl, count, stacked }: ImagePreviewProps) {
   return (

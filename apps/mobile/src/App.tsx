@@ -27,6 +27,7 @@ import SearchProvider from './components/Search/SearchContext';
 import ManageWalletProvider from './contexts/ManageWalletContext';
 import SyncTokensProvider from './contexts/SyncTokensContext';
 import ToastProvider from './contexts/ToastContext';
+import { TokenStateManagerProvider } from './contexts/TokenStateManagerContext';
 import { magic } from './magic';
 
 SplashScreen.preventAutoHideAsync();
@@ -132,17 +133,19 @@ export default function App() {
                     <SearchProvider>
                       <NavigationContainer ref={navigationRef}>
                         <ToastProvider>
-                          <BottomSheetModalProvider>
-                            <SyncTokensProvider>
-                              <ManageWalletProvider>
-                                {/* Register the user's push token if one exists (does not prompt the user) */}
-                                <NotificationRegistrar />
-                                <DevMenuItems />
-                                <DeepLinkRegistrar />
-                                <RootStackNavigator navigationContainerRef={navigationRef} />
-                              </ManageWalletProvider>
-                            </SyncTokensProvider>
-                          </BottomSheetModalProvider>
+                          <TokenStateManagerProvider>
+                            <BottomSheetModalProvider>
+                              <SyncTokensProvider>
+                                <ManageWalletProvider>
+                                  {/* Register the user's push token if one exists (does not prompt the user) */}
+                                  <NotificationRegistrar />
+                                  <DevMenuItems />
+                                  <DeepLinkRegistrar />
+                                  <RootStackNavigator navigationContainerRef={navigationRef} />
+                                </ManageWalletProvider>
+                              </SyncTokensProvider>
+                            </BottomSheetModalProvider>
+                          </TokenStateManagerProvider>
                         </ToastProvider>
                       </NavigationContainer>
                     </SearchProvider>

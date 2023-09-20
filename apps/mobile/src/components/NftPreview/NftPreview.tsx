@@ -1,35 +1,31 @@
 import { useNavigation } from '@react-navigation/native';
-import { ResizeMode } from 'expo-av';
 import { startTransition, useCallback, useRef, useState } from 'react';
 import { Pressable, View } from 'react-native';
-import { Priority } from 'react-native-fast-image';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import { NftPreviewAsset } from '~/components/NftPreview/NftPreviewAsset';
+import { RawNftPreviewAsset } from '~/components/NftPreview/NftPreviewAsset';
 import { NftPreviewContextMenuPopup } from '~/components/NftPreview/NftPreviewContextMenuPopup';
-import { NftPreviewErrorFallback } from '~/components/NftPreview/NftPreviewErrorFallback';
 import { NftPreviewFragment$key } from '~/generated/NftPreviewFragment.graphql';
+import { NftPreviewInnerFragment$key } from '~/generated/NftPreviewInnerFragment.graphql';
+import { NftPreviewWithBoundaryFragment$key } from '~/generated/NftPreviewWithBoundaryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { Dimensions } from '~/screens/NftDetailScreen/NftDetailAsset/types';
 import { CouldNotRenderNftError } from '~/shared/errors/CouldNotRenderNftError';
-import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
+import {
+  useGetSinglePreviewImage,
+  useGetSinglePreviewImageProps,
+} from '~/shared/relay/useGetPreviewImages';
 
+import { TokenFailureBoundary } from '../Boundaries/TokenFailureBoundary';
 import { GallerySkeleton } from '../GallerySkeleton';
+import { ImageState, NftPreviewSharedProps } from './UniversalNftPreview';
 
-export type ImageState = { kind: 'loading' } | { kind: 'loaded'; dimensions: Dimensions | null };
-
-type NftPreviewProps = {
-  priority?: Priority;
-
-  collectionTokenRef: NftPreviewFragment$key;
+type NftPreviewInnerProps = {
+  collectionTokenRef: NftPreviewInnerFragment$key;
   tokenUrl: string | null | undefined;
-  resizeMode: ResizeMode;
-
-  onPress?: () => void;
-  onImageStateChange?: (imageState: ImageState) => void;
-};
+} & NftPreviewSharedProps;
 
 function NftPreviewInner({
   collectionTokenRef,
@@ -39,10 +35,10 @@ function NftPreviewInner({
 
   onPress,
   onImageStateChange,
-}: NftPreviewProps) {
+}: NftPreviewInnerProps) {
   const collectionToken = useFragment(
     graphql`
-      fragment NftPreviewFragment on CollectionToken {
+      fragment NftPreviewInnerFragment on CollectionToken {
         collection {
           dbid
         }
@@ -102,7 +98,6 @@ function NftPreviewInner({
 
   return (
     <NftPreviewContextMenuPopup
-      cachedPreviewAssetUrl={tokenUrl}
       fallbackTokenUrl={tokenUrl}
       collectionTokenRef={collectionToken}
       imageDimensions={imageState.kind === 'loaded' ? imageState.dimensions : null}
@@ -110,7 +105,7 @@ function NftPreviewInner({
       {/* https://github.com/dominicstop/react-native-ios-context-menu/issues/9#issuecomment-1047058781 */}
       <Pressable delayLongPress={100} onPress={handlePress} onLongPress={() => {}}>
         <View className="relative h-full w-full">
-          <NftPreviewAsset
+          <RawNftPreviewAsset
             key={tokenUrl}
             tokenUrl={tokenUrl}
             priority={priority}
@@ -130,24 +125,72 @@ function NftPreviewInner({
   );
 }
 
-export function NftPreview({
+type NftPreviewProps = {
+  collectionTokenRef: NftPreviewFragment$key;
+  size: useGetSinglePreviewImageProps['size'];
+} & NftPreviewSharedProps;
+
+function NftPreview({ collectionTokenRef, size, ...props }: NftPreviewProps) {
+  const collectionToken = useFragment(
+    graphql`
+      fragment NftPreviewFragment on CollectionToken {
+        token {
+          ...useGetPreviewImagesSingleFragment
+        }
+        ...NftPreviewInnerFragment
+      }
+    `,
+    collectionTokenRef
+  );
+
+  if (!collectionToken.token) {
+    throw new Error('token must exist on collectionToken');
+  }
+
+  const imageUrl = useGetSinglePreviewImage({ tokenRef: collectionToken.token, size }) ?? '';
+
+  return <NftPreviewInner {...props} collectionTokenRef={collectionToken} tokenUrl={imageUrl} />;
+}
+
+type NftPreviewWithBoundaryProps = {
+  collectionTokenRef: NftPreviewWithBoundaryFragment$key;
+  size: useGetSinglePreviewImageProps['size'];
+} & NftPreviewSharedProps;
+
+export function NftPreviewWithBoundary({
   collectionTokenRef,
   onImageStateChange,
-  tokenUrl,
   resizeMode,
   priority,
   onPress,
-}: NftPreviewProps) {
+  size,
+}: NftPreviewWithBoundaryProps) {
+  const collectionToken = useFragment(
+    graphql`
+      fragment NftPreviewWithBoundaryFragment on CollectionToken {
+        token {
+          ...TokenFailureBoundaryFragment
+        }
+        ...NftPreviewFragment
+      }
+    `,
+    collectionTokenRef
+  );
+
+  if (!collectionToken.token) {
+    throw new Error('token must exist on collectionToken');
+  }
+
   return (
-    <ReportingErrorBoundary fallback={<NftPreviewErrorFallback />}>
-      <NftPreviewInner
+    <TokenFailureBoundary tokenRef={collectionToken.token}>
+      <NftPreview
+        collectionTokenRef={collectionToken}
         onPress={onPress}
         onImageStateChange={onImageStateChange}
-        collectionTokenRef={collectionTokenRef}
-        tokenUrl={tokenUrl}
         resizeMode={resizeMode}
         priority={priority}
+        size={size}
       />
-    </ReportingErrorBoundary>
+    </TokenFailureBoundary>
   );
 }

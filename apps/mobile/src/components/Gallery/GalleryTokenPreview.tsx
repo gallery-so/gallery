@@ -4,11 +4,13 @@ import { useWindowDimensions, View } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import { ImageState, NftPreview } from '~/components/NftPreview/NftPreview';
+import { NftPreviewWithBoundary } from '~/components/NftPreview/NftPreview';
 import { GalleryTokenPreviewFragment$key } from '~/generated/GalleryTokenPreviewFragment.graphql';
 import { fitDimensionsToContainerContain } from '~/screens/NftDetailScreen/NftDetailAsset/fitDimensionToContainer';
 import { Dimensions } from '~/screens/NftDetailScreen/NftDetailAsset/types';
-import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
+import { getPreviewImageUrlsInlineDangerously } from '~/shared/relay/getPreviewImageUrlsInlineDangerously';
+
+import { ImageState } from '../NftPreview/UniversalNftPreview';
 
 type GalleryTokenPreviewProps = {
   tokenRef: GalleryTokenPreviewFragment$key;
@@ -30,21 +32,27 @@ export function GalleryTokenPreview({ tokenRef, containerWidth }: GalleryTokenPr
               }
             }
           }
-          ...getVideoOrImageUrlForNftPreviewFragment
+          ...getPreviewImageUrlsInlineDangerouslyFragment
         }
 
-        ...NftPreviewFragment
+        ...NftPreviewWithBoundaryFragment
       }
     `,
     tokenRef
   );
 
   const tokenUrl = useMemo(() => {
-    const tokenUrls = getVideoOrImageUrlForNftPreview({ tokenRef: token.token });
+    // TODO: not entirely clear what calculating `tokenUrl` accomplishes on this level.
+    // but also don't want to remove it because that might break everything
+    const result = getPreviewImageUrlsInlineDangerously({ tokenRef: token.token });
+    if (result.type !== 'valid') {
+      return '';
+    }
+
     if (containerWidth < 200) {
-      return tokenUrls?.urls.medium;
+      return result.urls.medium;
     } else {
-      return tokenUrls?.urls.large;
+      return result.urls.large;
     }
   }, [containerWidth, token.token]);
 
@@ -98,11 +106,11 @@ export function GalleryTokenPreview({ tokenRef, containerWidth }: GalleryTokenPr
       className="flex-grow"
       style={resultDimensions ? resultDimensions : { width: containerWidth, aspectRatio: 1 }}
     >
-      <NftPreview
+      <NftPreviewWithBoundary
         onImageStateChange={handleImageStateChange}
         collectionTokenRef={token}
-        tokenUrl={tokenUrl}
         resizeMode={ResizeMode.CONTAIN}
+        size={containerWidth < 200 ? 'medium' : 'large'}
       />
     </View>
   );

@@ -24,7 +24,7 @@ type SharedProps = {
   shouldThrow?: boolean;
 };
 
-type useGetSinglePreviewImageProps = {
+export type useGetSinglePreviewImageProps = {
   tokenRef: useGetPreviewImagesSingleFragment$key;
   size: 'small' | 'medium' | 'large';
 } & SharedProps;

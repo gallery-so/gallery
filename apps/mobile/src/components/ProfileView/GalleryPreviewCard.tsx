@@ -5,7 +5,7 @@ import { View, ViewProps } from 'react-native';
 import { useFragment } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
-import { NftPreviewAsset } from '~/components/NftPreview/NftPreviewAsset';
+import { RawNftPreviewAsset } from '~/components/NftPreview/NftPreviewAsset';
 import { NftPreviewErrorFallback } from '~/components/NftPreview/NftPreviewErrorFallback';
 import { Typography } from '~/components/Typography';
 import { GalleryPreviewCardFragment$key } from '~/generated/GalleryPreviewCardFragment.graphql';
@@ -108,7 +108,7 @@ function TokenCell({
       <View className="aspect-square w-full">
         {tokenUrl ? (
           <ReportingErrorBoundary fallback={<NftPreviewErrorFallback />}>
-            <NftPreviewAsset tokenUrl={tokenUrl} resizeMode={ResizeMode.COVER} />
+            <RawNftPreviewAsset tokenUrl={tokenUrl} resizeMode={ResizeMode.COVER} />
           </ReportingErrorBoundary>
         ) : (
           <View />

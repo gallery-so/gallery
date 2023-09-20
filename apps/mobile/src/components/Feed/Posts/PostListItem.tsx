@@ -7,13 +7,13 @@ import { graphql, useFragment } from 'react-relay';
 import { useTogglePostAdmire } from 'src/hooks/useTogglePostAdmire';
 
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
-import { UniversalNftPreview } from '~/components/NftPreview/UniversalNftPreview';
+import { UniversalNftPreviewWithBoundary } from '~/components/NftPreview/UniversalNftPreview';
 import { Pill } from '~/components/Pill';
 import { Typography } from '~/components/Typography';
 import { PostListItemFragment$key } from '~/generated/PostListItemFragment.graphql';
 import { PostListItemQueryFragment$key } from '~/generated/PostListItemQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
-import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
+import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 
 import { DOUBLE_TAP_WINDOW } from '../constants';
 
@@ -37,8 +37,8 @@ export function PostListItem({ feedPostRef, queryRef }: Props) {
               chain
             }
           }
-          ...getVideoOrImageUrlForNftPreviewFragment
-          ...UniversalNftPreviewTokenFragment
+          ...useGetPreviewImagesSingleFragment
+          ...UniversalNftPreviewWithBoundaryFragment
         }
         ...useTogglePostAdmireFragment
       }
@@ -83,11 +83,14 @@ export function PostListItem({ feedPostRef, queryRef }: Props) {
     throw new Error('There is no token in post');
   }
 
-  const media = getVideoOrImageUrlForNftPreview({
+  const imageUrl = useGetSinglePreviewImage({
     tokenRef: firstToken,
     preferStillFrameFromGif: true,
+    size: 'large',
+    // we're simply using the URL for warming the cache;
+    // no need to throw an error if image is invalid
+    shouldThrow: false,
   });
-  const tokenUrl = media?.urls.large;
 
   const handlePress = useCallback(() => {
     // ChatGPT says 200ms is at the fast end for double tapping.
@@ -103,12 +106,12 @@ export function PostListItem({ feedPostRef, queryRef }: Props) {
       singleTapTimeoutRef.current = setTimeout(() => {
         singleTapTimeoutRef.current = null;
         navigation.navigate('UniversalNftDetail', {
-          cachedPreviewAssetUrl: tokenUrl ?? '',
+          cachedPreviewAssetUrl: imageUrl ?? '',
           tokenId: firstToken.dbid,
         });
       }, DOUBLE_TAP_WINDOW);
     }
-  }, [firstToken.dbid, navigation, tokenUrl, toggleAdmire]);
+  }, [firstToken.dbid, navigation, imageUrl, toggleAdmire]);
 
   return (
     <View className="flex flex-1 flex-col pt-1" style={{ width: dimensions.width }}>
@@ -118,12 +121,12 @@ export function PostListItem({ feedPostRef, queryRef }: Props) {
           width: dimensions.width,
         }}
       >
-        <UniversalNftPreview
+        <UniversalNftPreviewWithBoundary
+          tokenRef={firstToken}
           onPress={handlePress}
           resizeMode={ResizeMode.CONTAIN}
           priority={FastImage.priority.high}
-          tokenRef={firstToken}
-          tokenUrl={tokenUrl}
+          size="large"
         />
       </View>
       {community && (

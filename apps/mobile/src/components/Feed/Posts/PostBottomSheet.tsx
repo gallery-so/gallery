@@ -17,8 +17,8 @@ import { PostBottomSheetFragment$key } from '~/generated/PostBottomSheetFragment
 import { PostBottomSheetQueryFragment$key } from '~/generated/PostBottomSheetQueryFragment.graphql';
 import { PostBottomSheetUserFragment$key } from '~/generated/PostBottomSheetUserFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
-import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
 import useFollowUser from '~/shared/relay/useFollowUser';
+import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 import useUnfollowUser from '~/shared/relay/useUnfollowUser';
 
 import { DeletePostBottomSheet } from './DeletePostBottomSheet';
@@ -46,7 +46,7 @@ function PostBottomSheet(
         }
         tokens {
           dbid
-          ...getVideoOrImageUrlForNftPreviewFragment
+          ...useGetPreviewImagesSingleFragment
         }
         ...DeletePostBottomSheetFragment
       }
@@ -129,19 +129,21 @@ function PostBottomSheet(
     }
   }, [followUser, unfollowUser, isFollowing, userToFollow.dbid]);
 
-  const media = getVideoOrImageUrlForNftPreview({
+  const imageUrl = useGetSinglePreviewImage({
     tokenRef: token,
     preferStillFrameFromGif: true,
+    size: 'medium',
+    // we're simply using the URL for warming the cache;
+    // no need to throw an error if image is invalid
+    shouldThrow: false,
   });
-
-  const cachedPreviewAssetUrl = media?.urls.medium || media?.urls.small || null;
 
   const handleViewNftDetail = useCallback(() => {
     navigation.navigate('UniversalNftDetail', {
-      cachedPreviewAssetUrl,
+      cachedPreviewAssetUrl: imageUrl,
       tokenId: token.dbid,
     });
-  }, [cachedPreviewAssetUrl, navigation, token.dbid]);
+  }, [imageUrl, navigation, token.dbid]);
 
   const handleShare = useCallback(() => {
     const url = `https://gallery.so/post/${post.dbid}`;
