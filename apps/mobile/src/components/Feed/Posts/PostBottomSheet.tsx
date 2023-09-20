@@ -47,7 +47,6 @@ function PostBottomSheet(
         tokens {
           dbid
           ...useGetPreviewImagesSingleFragment
-          ...shareTokenUniversalFragment
         }
         ...DeletePostBottomSheetFragment
       }
