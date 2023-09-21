@@ -92,27 +92,6 @@ export function StandardSidebar({ queryRef }: Props) {
     return 0;
   }, [query.viewer, totalUnreadAnnouncements]);
 
-  const showAuthModal = useAuthModal('sign-in');
-
-  const { settings } = routerQuery;
-
-  // feels like a hack but if this hook is run multiple times via parent component re-render,
-  // the same drawer is opened multiple times
-  const isSettingsOpen = useRef(false);
-
-  useEffect(() => {
-    // Only show the modal if the user is logged in and the settings query param is set
-    if (settings === 'true' && !isSettingsOpen.current) {
-      if (isLoggedIn) {
-        showDrawer({
-          content: <Settings queryRef={query} />,
-        });
-        return;
-      }
-      showAuthModal();
-    }
-  }, [isLoggedIn, query, settings, showAuthModal, showDrawer]);
-
   const [isMerchStoreUpsellExperienced, setMerchStoreUpsellExperienced] = useExperience({
     type: 'MerchStoreUpsell',
     queryRef: query,
@@ -159,13 +138,7 @@ export function StandardSidebar({ queryRef }: Props) {
 
   const { captionRef, setCaption } = usePostComposerContext();
 
-  const handleCreatePostClick = useCallback(() => {
-    hideDrawer();
-
-    if (!isLoggedIn) {
-      return;
-    }
-
+  const handleOpenPostComposer = useCallback(() => {
     showModal({
       id: 'post-composer',
       content: <PostComposerModalWithSelector />,
@@ -194,8 +167,19 @@ export function StandardSidebar({ queryRef }: Props) {
         });
       },
     });
+  }, [captionRef, isMobile, setCaption, showModal]);
+
+  const handleCreatePostClick = useCallback(() => {
+    hideDrawer();
+
+    if (!isLoggedIn) {
+      return;
+    }
+
+    handleOpenPostComposer();
+
     track('Sidebar Create Post Click');
-  }, [hideDrawer, isLoggedIn, showModal, isMobile, track, captionRef, setCaption]);
+  }, [hideDrawer, isLoggedIn, handleOpenPostComposer, track]);
 
   const handleSearchClick = useCallback(() => {
     track('Sidebar Search Click');
@@ -237,6 +221,35 @@ export function StandardSidebar({ queryRef }: Props) {
       content: <Search />,
     });
   });
+
+  // feels like a hack but if this hook is run multiple times via parent component re-render,
+  // the same drawer is opened multiple times
+  const { settings, composer } = routerQuery;
+  const isSettingsOpen = useRef(false);
+  const isComposerOpen = useRef(false);
+
+  const showAuthModal = useAuthModal('sign-in');
+
+  useEffect(() => {
+    // Only show the modal if the user is logged in and the settings query param is set
+    if (settings === 'true' && !isSettingsOpen.current) {
+      if (isLoggedIn) {
+        showDrawer({
+          content: <Settings queryRef={query} />,
+        });
+        return;
+      }
+      showAuthModal();
+    }
+
+    if (composer === 'true' && !isComposerOpen.current) {
+      if (isLoggedIn) {
+        handleOpenPostComposer();
+        return;
+      }
+      showAuthModal();
+    }
+  }, [composer, handleOpenPostComposer, isLoggedIn, query, settings, showAuthModal, showDrawer]);
 
   if (isMobile) {
     return (
