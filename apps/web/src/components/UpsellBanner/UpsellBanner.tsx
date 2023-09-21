@@ -1,18 +1,11 @@
 import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
-import styled from 'styled-components';
 
-import IconContainer from '~/components/core/IconContainer';
 import { UpsellBannerQuery$key } from '~/generated/UpsellBannerQuery.graphql';
 import useAddWalletModal from '~/hooks/useAddWalletModal';
-import CloseIcon from '~/icons/CloseIcon';
-import colors from '~/shared/theme/colors';
 import useExperience from '~/utils/graphql/experiences/useExperience';
 
-import breakpoints from '../core/breakpoints';
-import { Button } from '../core/Button/Button';
-import { HStack, VStack } from '../core/Spacer/Stack';
-import { BaseM } from '../core/Text/Text';
+import { GlobalBanner } from '../core/GlobalBanner/GlobalBanner';
 
 type Props = {
   queryRef: UpsellBannerQuery$key;
@@ -53,54 +46,12 @@ export function UpsellBanner({ queryRef }: Props) {
   }
 
   return (
-    <StyledWrapper align="center" justify="space-between">
-      <StyledTextWrapper>
-        <BaseM>
-          <strong>Gallery is better with a wallet</strong>
-        </BaseM>
-        <BaseM>Add your wallet to start posting and curating</BaseM>
-      </StyledTextWrapper>
-      <StyledButtonWrapper>
-        <StyledButton onClick={handleConnectWallet}>Connect</StyledButton>
-
-        <IconContainer variant="blue" size="sm" icon={<StyledCloseIcon />} onClick={handleClose} />
-      </StyledButtonWrapper>
-    </StyledWrapper>
+    <GlobalBanner
+      title="Gallery is better with a wallet"
+      description="Add your wallet to start posting and curating"
+      onClose={handleClose}
+      onClick={handleConnectWallet}
+      ctaText="Connect"
+    />
   );
 }
-
-const StyledWrapper = styled(HStack)`
-  background-color: ${colors.activeBlue};
-  padding: 8px 16px;
-
-  ${BaseM} {
-    color: ${colors.white};
-  }
-`;
-
-const StyledTextWrapper = styled(VStack)`
-  @media only screen and ${breakpoints.tablet} {
-    flex-direction: row;
-    gap: 8px;
-  }
-`;
-
-const StyledButtonWrapper = styled(HStack).attrs({
-  align: 'center',
-})`
-  gap: 8px;
-
-  @media only screen and ${breakpoints.tablet} {
-    gap: 24px;
-  }
-`;
-
-const StyledCloseIcon = styled(CloseIcon)`
-  color: ${colors.white};
-`;
-
-const StyledButton = styled(Button)`
-  background-color: ${colors.offWhite};
-  color: ${colors.activeBlue};
-  font-weight: 500;
-`;

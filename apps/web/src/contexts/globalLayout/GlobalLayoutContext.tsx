@@ -31,8 +31,8 @@ import { PreloadQueryArgs } from '~/types/PageComponentPreloadQuery';
 import isTouchscreenDevice from '~/utils/isTouchscreenDevice';
 
 import { FEATURED_COLLECTION_IDS } from './GlobalAnnouncementPopover/GlobalAnnouncementPopover';
+import MobileBetaUpsell from './GlobalBanner/MobileBetaUpsell';
 // import useGlobalAnnouncementPopover from './GlobalAnnouncementPopover/useGlobalAnnouncementPopover';
-import GlobalBanner, { CTAChip } from './GlobalBanner/GlobalBanner';
 import GlobalSidebar, { GLOBAL_SIDEBAR_DESKTOP_WIDTH } from './GlobalSidebar/GlobalSidebar';
 import {
   FADE_TRANSITION_TIME_MS,
@@ -366,14 +366,35 @@ function GlobalNavbarWithFadeEnabled({
             }
           }
         }
-        ...GlobalBannerFragment
+        ...MobileBetaUpsellFragment
         ...UpsellBannerQuery
       }
     `,
     queryRef
   );
+
   const isLoggedInAndDoesNotHaveWallet =
     query.viewer?.__typename === 'Viewer' && !query.viewer.user?.primaryWallet;
+
+  const displayedBanner = useMemo(() => {
+    if (isLoggedInAndDoesNotHaveWallet) {
+      return <UpsellBanner queryRef={query} />;
+    }
+
+    if (isBannerVisible) {
+      return (
+        <MobileBetaUpsell
+          experienceFlag="MobileBetaUpsell"
+          text="Embrace the new era of creativity at Gallery! Download the Gallery Mobile App Beta and take your collection everywhere."
+          dismissOnActionComponentClick
+          queryRef={query}
+          requireAuth
+        />
+      );
+    }
+
+    return null;
+  }, [isBannerVisible, isLoggedInAndDoesNotHaveWallet, query]);
 
   const isTouchscreen = useRef(isTouchscreenDevice());
   const [zIndex, setZIndex] = useState(2);
@@ -442,19 +463,7 @@ function GlobalNavbarWithFadeEnabled({
                 duration: FADE_TRANSITION_TIME_SECONDS,
               }}
             >
-              {isLoggedInAndDoesNotHaveWallet && <UpsellBanner queryRef={query} />}
-              {isBannerVisible && (
-                <GlobalBanner
-                  // make sure to update this flag and add to backend schema.graphql
-                  experienceFlag="MobileBetaUpsell"
-                  variant="lit"
-                  text="Embrace the new era of creativity at Gallery! Download the Gallery Mobile App Beta and take your collection everywhere."
-                  actionComponent={<CTAChip />}
-                  dismissOnActionComponentClick
-                  queryRef={query}
-                  requireAuth
-                />
-              )}
+              {displayedBanner}
               <StyledBackground>{content}</StyledBackground>
             </motion.div>
           </StyledMotionWrapper>
