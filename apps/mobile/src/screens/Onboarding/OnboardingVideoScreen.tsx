@@ -10,11 +10,14 @@ import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { Typography } from '~/components/Typography';
 import { LoginStackNavigatorProp } from '~/navigation/types';
 
+import { useCacheIntroVideo } from './useCacheIntroVideo';
+
 export const SEEN_ONBOARDING_VIDEO_STORAGE_KEY = 'hasSeenOnboardingVideo';
 
 export function OnboardingVideoScreen() {
   const { top } = useSafeAreaInsets();
   const navigation = useNavigation<LoginStackNavigatorProp>();
+  const { uri } = useCacheIntroVideo();
 
   const handleRedirectToLandingScreen = useCallback(() => {
     AsyncStorage.setItem(SEEN_ONBOARDING_VIDEO_STORAGE_KEY, 'true');
@@ -44,22 +47,24 @@ export function OnboardingVideoScreen() {
 
         <ChevronRightIcon />
       </View>
-      <Video
-        style={{
-          width: '100%',
-          height: '100%',
-        }}
-        shouldPlay
-        resizeMode={ResizeMode.COVER}
-        source={{
-          uri: 'https://storage.googleapis.com/gallery-prod-325303.appspot.com/mobile_onboarding_animation.mp4',
-        }}
-        onPlaybackStatusUpdate={(status) => {
-          if (status.isLoaded && status.didJustFinish) {
-            handleRedirectToLandingScreen();
-          }
-        }}
-      />
+      {uri && (
+        <Video
+          style={{
+            width: '100%',
+            height: '100%',
+          }}
+          shouldPlay
+          resizeMode={ResizeMode.COVER}
+          source={{
+            uri,
+          }}
+          onPlaybackStatusUpdate={(status) => {
+            if (status.isLoaded && status.didJustFinish) {
+              handleRedirectToLandingScreen();
+            }
+          }}
+        />
+      )}
     </View>
   );
 }

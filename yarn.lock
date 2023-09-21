@@ -26072,6 +26072,7 @@ __metadata:
     expo-dev-client: ~2.1.5
     expo-dev-menu: ^2.1.4
     expo-device: ~5.2.1
+    expo-file-system: ~15.2.2
     expo-font: ~11.1.1
     expo-linking: ^4.0.1
     expo-notifications: ^0.18.1
