@@ -86,6 +86,33 @@ const PostComposerProvider = memo(({ children }: Props) => {
     }
   }, [chain, composer, isMobile]);
 
+  /**
+   * TODO: we want to run autosync for certain chains when a user selects them from the dropdown.
+   * however, there are a couple issues:
+   * 1) the autosync will run *every* time the user selects a chain. so if they're quickly switching
+   *    back and forth between many chains, we'll be firing a lot of syncs. solution: just trigger it
+   *    once globally per chain for that session.
+   * 2) while syncing, the entire modal goes into a loading state. this is problematic if the user
+   *    has many ETH NFTs, selects ETH, and the modal looks blocked / loading for 30 seconds.
+   *    solution: need a "background" syncing mode that doesn't block the UI
+   */
+  // const { syncTokens } = useSyncTokens();
+  // useEffect(
+  //   function handleAutoSync() {
+  //     const chainMetadata = chains.find((c) => c.name === network);
+  //     if (chainMetadata?.shouldAutoRefresh && filterType === 'Collected') {
+  //       syncTokens({
+  //         type: filterType,
+  //         chain: network,
+  //       });
+  //     }
+  //   },
+  //   // not passing in `syncTokens` because the function is unstable and gets
+  //   // redefined when new tokens are fetched
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  //   [filterType, network]
+  // );
+
   const value = useMemo(
     () => ({
       caption: _caption,
