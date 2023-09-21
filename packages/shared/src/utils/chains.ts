@@ -8,6 +8,7 @@ export const chains = [
     baseChain: 'Ethereum',
     hasCreatorSupport: true,
     isEnabled: true,
+    shouldAutoRefresh: false,
   },
   {
     name: 'Tezos',
@@ -16,6 +17,7 @@ export const chains = [
     baseChain: 'Tezos',
     hasCreatorSupport: false,
     isEnabled: true,
+    shouldAutoRefresh: false,
   },
   {
     name: 'Polygon',
@@ -24,6 +26,7 @@ export const chains = [
     baseChain: 'Ethereum',
     hasCreatorSupport: false,
     isEnabled: true,
+    shouldAutoRefresh: false,
   },
   {
     name: 'Arbitrum',
@@ -32,6 +35,7 @@ export const chains = [
     baseChain: 'Ethereum',
     hasCreatorSupport: false,
     isEnabled: true,
+    shouldAutoRefresh: true,
   },
   {
     name: 'Zora',
@@ -40,6 +44,7 @@ export const chains = [
     baseChain: 'Ethereum',
     hasCreatorSupport: false,
     isEnabled: true,
+    shouldAutoRefresh: true,
   },
   {
     name: 'Base',
@@ -48,6 +53,7 @@ export const chains = [
     baseChain: 'Ethereum',
     hasCreatorSupport: false,
     isEnabled: true,
+    shouldAutoRefresh: true,
   },
   {
     name: 'Optimism',
@@ -56,6 +62,7 @@ export const chains = [
     baseChain: 'Ethereum',
     hasCreatorSupport: false,
     isEnabled: true,
+    shouldAutoRefresh: true,
   },
   {
     name: 'POAP',
@@ -64,6 +71,7 @@ export const chains = [
     baseChain: 'Ethereum',
     hasCreatorSupport: false,
     isEnabled: true,
+    shouldAutoRefresh: true,
   },
 ] as const;
 
