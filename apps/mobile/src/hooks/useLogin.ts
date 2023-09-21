@@ -23,6 +23,16 @@ export function useLogin(): [
         ... on LoginPayload {
           __typename
           userId
+          viewer {
+            ... on Viewer {
+              user {
+                __typename
+                primaryWallet {
+                  __typename
+                }
+              }
+            }
+          }
         }
 
         ... on Error {

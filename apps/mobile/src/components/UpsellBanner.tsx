@@ -2,21 +2,25 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useCallback, useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { graphql, useLazyLoadQuery } from 'react-relay';
+import { graphql, useFragment } from 'react-relay';
 import { XMarkIcon } from 'src/icons/XMarkIcon';
 
 import { useManageWalletActions } from '~/contexts/ManageWalletContext';
-import { UpsellBannerQuery } from '~/generated/UpsellBannerQuery.graphql';
+import { UpsellBannerFragment$key } from '~/generated/UpsellBannerFragment.graphql';
 import colors from '~/shared/theme/colors';
 
 import { Button } from './Button';
 import { GalleryTouchableOpacity } from './GalleryTouchableOpacity';
 import { Typography } from './Typography';
 
-export function UpsellBanner() {
-  const query = useLazyLoadQuery<UpsellBannerQuery>(
+type Props = {
+  queryRef: UpsellBannerFragment$key;
+};
+
+export function UpsellBanner({ queryRef }: Props) {
+  const query = useFragment(
     graphql`
-      query UpsellBannerQuery {
+      fragment UpsellBannerFragment on Query {
         viewer {
           ... on Viewer {
             user {
@@ -29,7 +33,7 @@ export function UpsellBanner() {
         }
       }
     `,
-    {}
+    queryRef
   );
 
   const { top } = useSafeAreaInsets();
@@ -46,7 +50,8 @@ export function UpsellBanner() {
     });
   }, []);
 
-  const userHasWallet = query.viewer?.user?.primaryWallet?.__typename === 'Wallet';
+  const user = query.viewer?.user;
+  const userHasWallet = user?.primaryWallet?.__typename === 'Wallet';
 
   const handleConnectWallet = useCallback(() => {
     openManageWallet({});
@@ -57,7 +62,7 @@ export function UpsellBanner() {
     AsyncStorage.setItem('isUpsellBannerDismissed', 'true');
   }, []);
 
-  if (userHasWallet || isUpsellBannerDismissed) {
+  if (!user || userHasWallet || isUpsellBannerDismissed) {
     return (
       <View
         style={{
