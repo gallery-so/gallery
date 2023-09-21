@@ -42,17 +42,16 @@ type Props = { children: ReactNode };
 
 const PostComposerProvider = memo(({ children }: Props) => {
   const {
-    /* eslint-disable @typescript-eslint/no-unused-vars */
     query: {
       composer,
       // required fields
-      tokenId, // TODO: actually use this fallback
-      contractAddress, // TODO: auto-select contract
+      // tokenId, // TODO: actually use this fallback
+      // contractAddress, // TODO: auto-select contract.
       chain,
       // optional fields
-      collection_title: collectionTitle, // TODO: actually use this fallback
-      token_title: tokenTitle, // TODO: actually use this fallback
-      image_url: imageUrl, // TODO: actually use this fallback
+      // collection_title: collectionTitle, // TODO: actually use this fallback
+      // token_title: tokenTitle, // TODO: actually use this fallback
+      // image_url: imageUrl, // TODO: actually use this fallback
       caption: caption,
     },
   } = useRouter();
