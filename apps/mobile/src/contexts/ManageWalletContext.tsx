@@ -11,9 +11,11 @@ import {
   useRef,
   useState,
 } from 'react';
+import { useLogin } from 'src/hooks/useLogin';
 
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { WalletSelectorBottomSheet } from '~/components/Login/WalletSelectorBottomSheet';
+import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import useAddWallet from '~/shared/hooks/useAddWallet';
 import useCreateNonce from '~/shared/hooks/useCreateNonce';
 
@@ -21,13 +23,17 @@ import { useSyncTokenstActions } from './SyncTokensContext';
 
 type openManageWalletProps = {
   title?: string;
+  method?: 'auth' | 'add-wallet';
   onSuccess?: () => void;
 };
 
 type ManageWalletActions = {
-  openManageWallet: ({ title, onSuccess }: openManageWalletProps) => void;
+  openManageWallet: ({ title, method, onSuccess }: openManageWalletProps) => void;
   dismissManageWallet: () => void;
   isSigningIn: boolean;
+  address?: string;
+  signature?: string;
+  nonce?: string;
 };
 
 const ManageWalletActionsContext = createContext<ManageWalletActions | undefined>(undefined);
@@ -49,6 +55,10 @@ const ManageWalletProvider = memo(({ children }: Props) => {
   const bottomSheet = useRef<GalleryBottomSheetModalType | null>(null);
   const createNonce = useCreateNonce();
   const addWallet = useAddWallet();
+
+  const [login] = useLogin();
+  const track = useTrack();
+
   const { isSyncing, syncTokens } = useSyncTokenstActions();
 
   const [isSigningIn, setIsSigningIn] = useState(false);
@@ -57,23 +67,29 @@ const ManageWalletProvider = memo(({ children }: Props) => {
   // To track if the user has signed the message
   const hasSigned = useRef(false);
   const onSuccessRef = useRef<(() => void) | null>(null);
+  const methodRef = useRef<'auth' | 'add-wallet'>('add-wallet');
 
   const web3Provider = useMemo(
     () => (provider ? new ethers.providers.Web3Provider(provider) : undefined),
     [provider]
   );
 
-  const openManageWallet = useCallback(({ title, onSuccess = () => {} }: openManageWalletProps) => {
-    if (title) {
-      setTitle(title);
-    }
+  const openManageWallet = useCallback(
+    ({ title, onSuccess = () => {}, method = 'add-wallet' }: openManageWalletProps) => {
+      if (title) {
+        setTitle(title);
+      }
 
-    if (onSuccess) {
-      onSuccessRef.current = onSuccess;
-    }
+      if (onSuccess) {
+        onSuccessRef.current = onSuccess;
+      }
 
-    bottomSheet.current?.present();
-  }, []);
+      methodRef.current = method;
+
+      bottomSheet.current?.present();
+    },
+    []
+  );
 
   const dismissManageWallet = useCallback(() => {
     bottomSheet.current?.dismiss();
@@ -92,8 +108,29 @@ const ManageWalletProvider = memo(({ children }: Props) => {
       const signature = await signer.signMessage(nonce);
       hasSigned.current = true;
 
-      const { signatureValid } = await addWallet({
-        authMechanism: {
+      if (methodRef.current === 'add-wallet') {
+        const { signatureValid } = await addWallet({
+          authMechanism: {
+            eoa: {
+              signature,
+              nonce,
+              chainPubKey: {
+                pubKey: address,
+                chain: 'Ethereum',
+              },
+            },
+          },
+          chainAddress: {
+            address,
+            chain: 'Ethereum',
+          },
+        });
+
+        if (!signatureValid) {
+          throw new Error('Signature is not valid');
+        }
+      } else if (methodRef.current === 'auth') {
+        const result = await login({
           eoa: {
             signature,
             nonce,
@@ -102,15 +139,20 @@ const ManageWalletProvider = memo(({ children }: Props) => {
               chain: 'Ethereum',
             },
           },
-        },
-        chainAddress: {
-          address,
-          chain: 'Ethereum',
-        },
-      });
+        });
 
-      if (!signatureValid) {
-        throw new Error('Signature is not valid');
+        if (result.kind === 'failure') {
+          track('Sign In Failure', { 'Sign in method': 'Wallet Connect', error: result.message });
+        } else {
+          track('Sign In Success', { 'Sign in method': 'Wallet Connect' });
+        }
+      } else {
+        return;
+      }
+
+      if (onSuccessRef.current) {
+        onSuccessRef.current();
+        onSuccessRef.current = null;
       }
 
       if (!isSyncing) {
@@ -118,17 +160,22 @@ const ManageWalletProvider = memo(({ children }: Props) => {
       }
 
       bottomSheet.current?.dismiss();
-
-      if (onSuccessRef.current) {
-        onSuccessRef.current();
-        onSuccessRef.current = null;
-      }
     } catch (error) {
       provider?.disconnect();
     } finally {
       setIsSigningIn(false);
     }
-  }, [address, addWallet, createNonce, isSyncing, provider, syncTokens, web3Provider]);
+  }, [
+    address,
+    addWallet,
+    createNonce,
+    login,
+    isSyncing,
+    provider,
+    syncTokens,
+    track,
+    web3Provider,
+  ]);
 
   useEffect(() => {
     if (isConnected && !hasSigned.current) {
@@ -140,12 +187,13 @@ const ManageWalletProvider = memo(({ children }: Props) => {
 
   const value = useMemo(
     () => ({
+      address,
       dismissManageWallet,
       openManageWallet,
       isSigningIn,
       title,
     }),
-    [dismissManageWallet, openManageWallet, isSigningIn, title]
+    [address, dismissManageWallet, openManageWallet, isSigningIn, title]
   );
 
   return (
