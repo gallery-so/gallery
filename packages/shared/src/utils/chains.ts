@@ -87,5 +87,5 @@ export function isChainEvm(chain: Chain) {
 }
 
 export function isSupportedChain(chain: string): chain is Chain {
-  return Boolean(chains.find((c) => c.name === chain));
+  return Boolean(chains.find((c) => c.name.toLowerCase() === chain.toLowerCase()));
 }
