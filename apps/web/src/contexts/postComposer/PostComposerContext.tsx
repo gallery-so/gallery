@@ -11,10 +11,20 @@ import {
   useState,
 } from 'react';
 
+import { TokenFilterType } from '~/components/GalleryEditor/PiecesSidebar/SidebarViewSelector';
+import { NftSelectorSortView } from '~/components/NftSelector/NftSelectorFilter/NftSelectorFilterSort';
+import { Chain } from '~/shared/utils/chains';
+
 type PostComposerState = {
   caption: string;
   setCaption: (s: string) => void;
   captionRef: MutableRefObject<string>;
+  filterType: TokenFilterType;
+  setFilterType: (s: TokenFilterType) => void;
+  sortType: NftSelectorSortView;
+  setSortType: (s: NftSelectorSortView) => void;
+  network: Chain;
+  setNetwork: (s: Chain) => void;
 };
 
 const PostComposerContext = createContext<PostComposerState | undefined>(undefined);
@@ -52,13 +62,23 @@ const PostComposerProvider = memo(({ children }: Props) => {
     captionRef.current = caption;
   }, [caption]);
 
+  const [filterType, setFilterType] = useState<TokenFilterType>('Collected');
+  const [sortType, setSortType] = useState<NftSelectorSortView>('Recently added');
+  const [network, setNetwork] = useState<Chain>('Ethereum');
+
   const value = useMemo(
     () => ({
       caption,
       setCaption,
       captionRef,
+      filterType,
+      setFilterType,
+      sortType,
+      setSortType,
+      network,
+      setNetwork,
     }),
-    [caption]
+    [caption, filterType, network, sortType]
   );
 
   return <PostComposerContext.Provider value={value}>{children}</PostComposerContext.Provider>;
