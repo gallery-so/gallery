@@ -29,7 +29,7 @@ const AddWalletModal = ({ queryRef, onConnectWalletSuccess }: ModalProps) => {
   );
 
   return (
-    <Container>
+    <Container justify="center">
       <WalletSelector
         connectionMode={ADD_WALLET_TO_USER}
         queryRef={query}
@@ -67,16 +67,14 @@ export default function useAddWalletModal() {
         content: (
           <AddWalletModal queryRef={query} onConnectWalletSuccess={onConnectWalletSuccess} />
         ),
-        headerText: 'Sign in or create an account',
+        headerText: 'Connect your wallet',
       });
     },
     [query, showModal]
   );
 }
 
-const Container = styled(HStack).attrs({
-  justify: 'center',
-})`
+const Container = styled(HStack)`
   min-height: 280px;
   height: 100%;
 
