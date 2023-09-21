@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native';
 import { useWalletConnectModal } from '@walletconnect/modal-react-native';
 import { ethers } from 'ethers';
 import {
@@ -15,6 +16,8 @@ import { useLogin } from 'src/hooks/useLogin';
 
 import { GalleryBottomSheetModalType } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
 import { WalletSelectorBottomSheet } from '~/components/Login/WalletSelectorBottomSheet';
+import { LoginStackNavigatorProp } from '~/navigation/types';
+import { navigateToNotificationUpsellOrHomeScreen } from '~/screens/Login/navigateToNotificationUpsellOrHomeScreen';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import useAddWallet from '~/shared/hooks/useAddWallet';
 import useCreateNonce from '~/shared/hooks/useCreateNonce';
@@ -50,8 +53,9 @@ export const useManageWalletActions = (): ManageWalletActions => {
 type Props = { children: ReactNode };
 
 const ManageWalletProvider = memo(({ children }: Props) => {
-  const { address, isConnected, provider } = useWalletConnectModal();
+  const navigation = useNavigation<LoginStackNavigatorProp>();
 
+  const { address, isConnected, provider } = useWalletConnectModal();
   const bottomSheet = useRef<GalleryBottomSheetModalType | null>(null);
   const createNonce = useCreateNonce();
   const addWallet = useAddWallet();
@@ -101,12 +105,27 @@ const ManageWalletProvider = memo(({ children }: Props) => {
     }
 
     const signer = web3Provider.getSigner();
-    const { nonce } = await createNonce(address, 'Ethereum');
+    const { nonce, user_exists: userExist } = await createNonce(address, 'Ethereum');
 
     try {
       setIsSigningIn(true);
       const signature = await signer.signMessage(nonce);
       hasSigned.current = true;
+
+      if (!userExist) {
+        provider?.disconnect();
+
+        navigation.navigate('OnboardingUsername', {
+          authMechanism: {
+            authMechanismType: 'eoa',
+            chain: 'Ethereum',
+            address,
+            nonce,
+            signature,
+            userFriendlyWalletName: 'Unknown',
+          },
+        });
+      }
 
       if (methodRef.current === 'add-wallet') {
         const { signatureValid } = await addWallet({
@@ -129,7 +148,11 @@ const ManageWalletProvider = memo(({ children }: Props) => {
         if (!signatureValid) {
           throw new Error('Signature is not valid');
         }
-      } else if (methodRef.current === 'auth') {
+
+        if (!isSyncing) {
+          syncTokens('Ethereum');
+        }
+      } else if (methodRef.current === 'auth' && userExist) {
         const result = await login({
           eoa: {
             signature,
@@ -145,18 +168,13 @@ const ManageWalletProvider = memo(({ children }: Props) => {
           track('Sign In Failure', { 'Sign in method': 'Wallet Connect', error: result.message });
         } else {
           track('Sign In Success', { 'Sign in method': 'Wallet Connect' });
+          await navigateToNotificationUpsellOrHomeScreen(navigation);
         }
-      } else {
-        return;
       }
 
       if (onSuccessRef.current) {
         onSuccessRef.current();
         onSuccessRef.current = null;
-      }
-
-      if (!isSyncing) {
-        syncTokens('Ethereum');
       }
 
       bottomSheet.current?.dismiss();
@@ -171,6 +189,7 @@ const ManageWalletProvider = memo(({ children }: Props) => {
     createNonce,
     login,
     isSyncing,
+    navigation,
     provider,
     syncTokens,
     track,
