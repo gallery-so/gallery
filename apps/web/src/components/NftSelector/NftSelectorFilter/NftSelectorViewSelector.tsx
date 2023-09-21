@@ -45,8 +45,6 @@ export function NftSelectorViewSelector({
     return selectedChain?.hasCreatorSupport;
   }, [selectedNetwork]);
 
-  console.log({ isCreatorSupportEnabledForChain });
-
   return (
     <Container>
       <Selector
