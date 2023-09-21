@@ -77,3 +77,7 @@ export const chainsMap = keyBy(chains, 'name') as Record<Chain, ChainMetadata>;
 export function isChainEvm(chain: Chain) {
   return chainsMap[chain].baseChain === 'Ethereum';
 }
+
+export function isSupportedChain(chain: string): chain is Chain {
+  return Boolean(chains.find((c) => c.name === chain));
+}

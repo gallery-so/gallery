@@ -13,7 +13,8 @@ import {
 
 import { TokenFilterType } from '~/components/GalleryEditor/PiecesSidebar/SidebarViewSelector';
 import { NftSelectorSortView } from '~/components/NftSelector/NftSelectorFilter/NftSelectorFilterSort';
-import { Chain } from '~/shared/utils/chains';
+import { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
+import { Chain, isSupportedChain } from '~/shared/utils/chains';
 
 type PostComposerState = {
   caption: string;
@@ -41,34 +42,53 @@ type Props = { children: ReactNode };
 
 const PostComposerProvider = memo(({ children }: Props) => {
   const {
+    /* eslint-disable @typescript-eslint/no-unused-vars */
     query: {
-      // optional pre-populated caption provided in URL params
-      caption: queryCaption,
+      composer,
+      // required fields
+      tokenId, // TODO: actually use this fallback
+      contractAddress, // TODO: auto-select contract
+      chain,
+      // optional fields
+      collection_title: collectionTitle, // TODO: actually use this fallback
+      token_title: tokenTitle, // TODO: actually use this fallback
+      image_url: imageUrl, // TODO: actually use this fallback
+      caption: caption,
     },
   } = useRouter();
 
   const defaultCaption = useMemo(() => {
-    if (typeof queryCaption === 'string') {
-      return queryCaption;
+    if (typeof caption === 'string') {
+      return caption;
     }
     return '';
-  }, [queryCaption]);
+  }, [caption]);
 
-  const [caption, setCaption] = useState(defaultCaption);
+  const [_caption, setCaption] = useState(defaultCaption);
 
   const captionRef = useRef('');
 
   useEffect(() => {
-    captionRef.current = caption;
-  }, [caption]);
+    captionRef.current = _caption;
+  }, [_caption]);
 
+  // TODO: move selectedContract state / selector up into this context. will need to handle the edge
+  // case where the contract address may be invalid.
   const [filterType, setFilterType] = useState<TokenFilterType>('Collected');
   const [sortType, setSortType] = useState<NftSelectorSortView>('Recently added');
   const [network, setNetwork] = useState<Chain>('Ethereum');
 
+  const isMobile = useIsMobileWindowWidth();
+
+  useEffect(() => {
+    if (chain && typeof chain === 'string' && isSupportedChain(chain)) {
+      setNetwork(chain);
+    }
+  }, [chain, composer, isMobile]);
+
   const value = useMemo(
     () => ({
-      caption,
+      caption: _caption,
       setCaption,
       captionRef,
       filterType,
@@ -78,7 +98,7 @@ const PostComposerProvider = memo(({ children }: Props) => {
       network,
       setNetwork,
     }),
-    [caption, filterType, network, sortType]
+    [_caption, filterType, network, sortType]
   );
 
   return <PostComposerContext.Provider value={value}>{children}</PostComposerContext.Provider>;
