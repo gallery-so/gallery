@@ -1,9 +1,10 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import DoubleArrowsIcon from '~/icons/DoubleArrowsIcon';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
+import { Chain, chains } from '~/shared/utils/chains';
 
 import { Dropdown } from '../../core/Dropdown/Dropdown';
 import { DropdownItem } from '../../core/Dropdown/DropdownItem';
@@ -17,12 +18,14 @@ type NftSelectorViewSelectorProps = {
   isSearching: boolean;
   selectedView: TokenFilterType;
   onSelectedViewChange: (selectedView: TokenFilterType) => void;
+  selectedNetwork: Chain;
 };
 
 export function NftSelectorViewSelector({
   isSearching,
   selectedView,
   onSelectedViewChange,
+  selectedNetwork,
 }: NftSelectorViewSelectorProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
@@ -36,6 +39,13 @@ export function NftSelectorViewSelector({
     },
     [track, onSelectedViewChange]
   );
+
+  const isCreatorSupportEnabledForChain = useMemo(() => {
+    const selectedChain = chains.find((chain) => chain.name === selectedNetwork);
+    return selectedChain?.hasCreatorSupport;
+  }, [selectedNetwork]);
+
+  console.log({ isCreatorSupportEnabledForChain });
 
   return (
     <Container>
@@ -53,7 +63,10 @@ export function NftSelectorViewSelector({
           <DropdownItem onClick={() => onSelectView('Collected')}>
             <BaseM>Collected</BaseM>
           </DropdownItem>
-          <DropdownItem onClick={() => onSelectView('Created')}>
+          <DropdownItem
+            onClick={() => onSelectView('Created')}
+            disabled={!isCreatorSupportEnabledForChain}
+          >
             <BaseM>Created</BaseM>
           </DropdownItem>
         </DropdownSection>
