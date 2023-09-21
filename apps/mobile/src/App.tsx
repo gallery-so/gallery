@@ -29,6 +29,7 @@ import SyncTokensProvider from './contexts/SyncTokensContext';
 import ToastProvider from './contexts/ToastContext';
 import { TokenStateManagerProvider } from './contexts/TokenStateManagerContext';
 import { magic } from './magic';
+import { useCacheIntroVideo } from './screens/Onboarding/useCacheIntroVideo';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -58,6 +59,7 @@ export default function App() {
 
   const [colorSchemeLoaded, setColorSchemeLoaded] = useState(false);
   const { setColorScheme, colorScheme } = useColorScheme();
+  const { introVideoLoaded } = useCacheIntroVideo();
 
   useEffect(
     function loadInitialColorSchemeFromAsyncStorage() {
@@ -116,7 +118,7 @@ export default function App() {
     [colorSchemeLoaded, fontsLoaded]
   );
 
-  if (!fontsLoaded || !colorSchemeLoaded) {
+  if (!fontsLoaded || !colorSchemeLoaded || !introVideoLoaded) {
     return null;
   }
 
