@@ -38,7 +38,7 @@ export function NftSelectorToken({ tokenRef, onSelectToken, isInGroup = false }:
   return (
     <>
       <StyledOutline onClick={handleClick} />
-      <NftFailureBoundary tokenId={token.dbid}>
+      <NftFailureBoundary tokenId={token.dbid} fallbackSize={isInGroup ? 'tiny' : 'medium'}>
         <NftSelectorPreviewAsset tokenRef={token} />
       </NftFailureBoundary>
     </>
