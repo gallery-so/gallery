@@ -131,7 +131,9 @@ export function SomeoneFollowedYou({ notificationRef, queryRef }: SomeoneFollowe
               <>{lastFollower ? lastFollower.username : 'Someone'}</>
             )}
           </Typography>{' '}
-          <Typography font={{ family: 'ABCDiatype', weight: 'Regular' }}>followed you</Typography>
+          <Typography className="text-sm" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
+            followed you
+          </Typography>
         </Text>
         {shouldShowFollowBackButton && <FollowButton queryRef={query} userRef={lastFollower} />}
       </View>

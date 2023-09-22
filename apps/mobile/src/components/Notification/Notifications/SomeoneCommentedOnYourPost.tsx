@@ -9,7 +9,6 @@ import { Typography } from '~/components/Typography';
 import { SomeoneCommentedOnYourPostFragment$key } from '~/generated/SomeoneCommentedOnYourPostFragment.graphql';
 import { SomeoneCommentedOnYourPostQueryFragment$key } from '~/generated/SomeoneCommentedOnYourPostQueryFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
-import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 
 type SomeoneCommentedOnYourFeedEventProps = {
@@ -45,10 +44,6 @@ export function SomeoneCommentedOnYourPost({
 
         post {
           dbid
-          tokens {
-            __typename
-            ...getVideoOrImageUrlForNftPreviewFragment
-          }
         }
 
         ...NotificationSkeletonFragment
@@ -58,25 +53,6 @@ export function SomeoneCommentedOnYourPost({
   );
 
   const { post } = notification;
-
-  const nonNullTokens = useMemo(() => {
-    const tokens = post?.tokens;
-
-    return removeNullValues(tokens);
-  }, [post?.tokens]);
-
-  const token = nonNullTokens?.[0] || null;
-
-  if (!token) {
-    throw new Error('There is no token in post');
-  }
-
-  const media = getVideoOrImageUrlForNftPreview({
-    tokenRef: token,
-    preferStillFrameFromGif: true,
-  });
-
-  const tokenUrl = media?.urls.small;
 
   const commenters = useMemo(() => {
     return removeNullValues([notification.comment?.commenter]);
@@ -97,7 +73,6 @@ export function SomeoneCommentedOnYourPost({
       onPress={handlePress}
       responsibleUserRefs={commenters}
       notificationRef={notification}
-      tokenUrl={tokenUrl ?? undefined}
     >
       <View className="flex space-y-2">
         <Text className="dark:text-white">
@@ -122,8 +97,10 @@ export function SomeoneCommentedOnYourPost({
           </Typography>
         </Text>
 
-        <View className="border-l-2 border-[#d9d9d9] pl-2">
-          <Text className="dark:text-white">{notification.comment?.comment ?? ''}</Text>
+        <View className="border-l-2 border-[#d9d9d9] pl-2 px-2">
+          <Text className="dark:text-white" numberOfLines={3}>
+            {notification.comment?.comment ?? ''}
+          </Text>
         </View>
       </View>
     </NotificationSkeleton>

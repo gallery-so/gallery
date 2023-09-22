@@ -107,6 +107,7 @@ type SvgWebViewProps = {
   source: { uri: string };
   onLoadStart?: () => void;
   onLoadEnd?: (dimensions: Dimensions | null) => void;
+  onError?: () => void;
   style: StyleProp<ViewStyle>;
 };
 
@@ -165,7 +166,7 @@ function parseSvg(text: string): CachedSvgValue {
   }
 }
 
-export function SvgWebView({ source, onLoadStart, onLoadEnd, style }: SvgWebViewProps) {
+export function SvgWebView({ source, onLoadStart, onLoadEnd, onError, style }: SvgWebViewProps) {
   const uri = source.uri;
   const [svgState, setSvgState] = useState<SvgContentState>({ kind: 'loading' });
 
@@ -189,6 +190,7 @@ export function SvgWebView({ source, onLoadStart, onLoadEnd, style }: SvgWebView
           kind: 'failure',
           error: new CouldNotRenderNftError('SvgWebView', 'Network Failure'),
         });
+        onError?.();
       });
 
     // Not dealing with memoization issues right now
@@ -213,6 +215,7 @@ export function SvgWebView({ source, onLoadStart, onLoadEnd, style }: SvgWebView
           showsHorizontalScrollIndicator={false}
           showsVerticalScrollIndicator={false}
           source={{ html }}
+          onError={onError}
         />
       </View>
     );

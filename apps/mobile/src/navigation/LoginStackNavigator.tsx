@@ -6,6 +6,7 @@ import { OnboardingEmailScreen } from '~/screens/Login/OnboardingEmailScreen';
 import { NftSelectorPickerScreen } from '~/screens/NftSelectorScreen/NftSelectorPickerScreen';
 import { OnboardingProfileBioScreen } from '~/screens/Onboarding/OnboardingProfileBioScreen';
 import { OnboardingUsernameScreen } from '~/screens/Onboarding/OnboardingUsernameScreen';
+import { OnboardingVideoScreen } from '~/screens/Onboarding/OnboardingVideoScreen';
 
 import { EnterEmailScreen } from '../screens/Login/EnterEmailScreen';
 import { LandingScreen } from '../screens/Login/LandingScreen';
@@ -28,6 +29,7 @@ export function LoginStackNavigator() {
 
       <Stack.Screen name="QRCode" component={QRCodeScreen} />
 
+      <Stack.Screen name="OnboardingVideo" component={OnboardingVideoScreen} />
       <Stack.Screen name="OnboardingEmail" component={OnboardingEmailScreen} />
       <Stack.Screen name="OnboardingUsername" component={OnboardingUsernameScreen} />
       <Stack.Screen name="OnboardingProfileBio" component={OnboardingProfileBioScreen} />

@@ -20,12 +20,6 @@ export function mockGlobalLayoutQuery() {
         primaryWallet: {
           __typename: 'Wallet',
           id: '123',
-          dbid: '123',
-          chainAddress: {
-            __typename: 'ChainAddress',
-            address: '0x123',
-            chain: null,
-          },
         },
       },
     },

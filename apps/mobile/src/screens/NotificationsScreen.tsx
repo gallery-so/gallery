@@ -25,6 +25,7 @@ export function NotificationsScreen() {
     },
     {
       fetchKey: route.params?.fetchKey,
+      fetchPolicy: 'store-and-network',
     }
   );
 

@@ -1,5 +1,4 @@
 import { RouteProp, useRoute } from '@react-navigation/native';
-import { useMemo } from 'react';
 import { View } from 'react-native';
 import { graphql, useLazyLoadQuery } from 'react-relay';
 
@@ -7,10 +6,9 @@ import { PostTokenPreviewQuery } from '~/generated/PostTokenPreviewQuery.graphql
 import { RootStackNavigatorParamList } from '~/navigation/types';
 import { NftDetailAsset } from '~/screens/NftDetailScreen/NftDetailAsset/NftDetailAsset';
 import { NftDetailAssetCacheSwapper } from '~/screens/NftDetailScreen/NftDetailAsset/NftDetailAssetCacheSwapper';
-import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
-import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
+import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 
-import { NftPreviewErrorFallback } from '../NftPreview/NftPreviewErrorFallback';
+import { TokenFailureBoundary } from '../Boundaries/TokenFailureBoundary/TokenFailureBoundary';
 import { Typography } from '../Typography';
 
 export function PostTokenPreview() {
@@ -30,7 +28,8 @@ export function PostTokenPreview() {
             }
 
             ...NftDetailAssetFragment
-            ...getVideoOrImageUrlForNftPreviewFragment
+            ...useGetPreviewImagesSingleFragment
+            ...TokenFailureBoundaryFragment
           }
         }
       }
@@ -46,25 +45,25 @@ export function PostTokenPreview() {
     throw new Error("We couldn't find that token. Something went wrong and we're looking into it.");
   }
 
-  const tokenUrl = useMemo(() => {
-    const tokenUrls = getVideoOrImageUrlForNftPreview({ tokenRef: token });
-    return tokenUrls?.urls.large;
-  }, [token]);
+  const imageUrl = useGetSinglePreviewImage({
+    tokenRef: token,
+    preferStillFrameFromGif: true,
+    size: 'large',
+    // we're simply using the URL for warming the cache;
+    // no need to throw an error if image is invalid
+    shouldThrow: false,
+  });
 
   return (
     <View className="flex flex-col space-y-2">
       <View className="bg-offWhite dark:bg-black-800">
-        <ReportingErrorBoundary
-          fallback={
-            <View className="w-full aspect-square">
-              <NftPreviewErrorFallback />
-            </View>
-          }
-        >
-          <NftDetailAssetCacheSwapper cachedPreviewAssetUrl={tokenUrl ?? ''}>
-            <NftDetailAsset tokenRef={token} />
-          </NftDetailAssetCacheSwapper>
-        </ReportingErrorBoundary>
+        <View className="w-full">
+          <TokenFailureBoundary tokenRef={token} variant="large">
+            <NftDetailAssetCacheSwapper cachedPreviewAssetUrl={imageUrl ?? ''}>
+              <NftDetailAsset tokenRef={token} />
+            </NftDetailAssetCacheSwapper>
+          </TokenFailureBoundary>
+        </View>
       </View>
 
       <View className="flex flex-col space-y-2">

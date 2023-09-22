@@ -310,11 +310,6 @@ function NotificationInner({ notificationRef, queryRef }: NotificationInnerProps
 
         ... on NewTokensNotification {
           __typename
-          token {
-            media {
-              __typename
-            }
-          }
           ...NewTokensFragment
         }
       }

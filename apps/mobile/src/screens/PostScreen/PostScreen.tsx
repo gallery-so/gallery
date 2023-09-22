@@ -6,7 +6,6 @@ import { useRefreshHandle } from 'src/hooks/useRefreshHandle';
 
 import { BackButton } from '~/components/BackButton';
 import { FeedList } from '~/components/Feed/FeedList';
-import { SafeAreaViewWithPadding } from '~/components/SafeAreaViewWithPadding';
 import { PostRefetchableFragmentQuery } from '~/generated/PostRefetchableFragmentQuery.graphql';
 import { PostScreenFragment$key } from '~/generated/PostScreenFragment.graphql';
 import { PostScreenQuery } from '~/generated/PostScreenQuery.graphql';
@@ -63,15 +62,13 @@ function PostScreenInner() {
 export function PostScreen() {
   return (
     <View className="flex-1 bg-white dark:bg-black-900">
-      <SafeAreaViewWithPadding className="flex-1">
-        <View className="px-3 pb-6">
-          <BackButton />
-        </View>
+      <View className="px-3 pb-6">
+        <BackButton />
+      </View>
 
-        <Suspense fallback={null}>
-          <PostScreenInner />
-        </Suspense>
-      </SafeAreaViewWithPadding>
+      <Suspense fallback={null}>
+        <PostScreenInner />
+      </Suspense>
     </View>
   );
 }

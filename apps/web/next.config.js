@@ -112,6 +112,11 @@ const nextConfig = {
         destination: 'https://gallery-so.notion.site/Careers-e8d78dea54834630928f075f4a4ccdba',
         permanent: false,
       },
+      {
+        source: '/~/compose',
+        destination: '/home?composer=true',
+        permanent: false,
+      },
       process.env.MAINTENANCE_MODE === '1'
         ? // Redirect all non-maintenance routes to /maintenance.
           // Also ignore /icons so that assets properly load on that page.

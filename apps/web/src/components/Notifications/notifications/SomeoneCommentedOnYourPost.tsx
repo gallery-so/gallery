@@ -7,9 +7,10 @@ import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { SomeoneCommentedOnYourPostFragment$key } from '~/generated/SomeoneCommentedOnYourPostFragment.graphql';
 import { useReportError } from '~/shared/contexts/ErrorReportingContext';
-import { useGetSinglePreviewImage } from '~/shared/relay/useGetPreviewImages';
 import colors from '~/shared/theme/colors';
 import unescape from '~/shared/utils/unescape';
+
+import { NotificationPostPreviewWithBoundary } from './NotificationPostPreview';
 
 type Props = {
   notificationRef: SomeoneCommentedOnYourPostFragment$key;
@@ -24,7 +25,7 @@ export default function SomeoneCommentedOnYourPost({ notificationRef, onClose }:
         dbid
         post {
           tokens {
-            ...useGetPreviewImagesSingleFragment
+            ...NotificationPostPreviewWithBoundaryFragment
           }
         }
         comment {
@@ -47,8 +48,6 @@ export default function SomeoneCommentedOnYourPost({ notificationRef, onClose }:
   if (!token) {
     throw new Error('Post does not have accompanying token');
   }
-
-  const imageUrl = useGetSinglePreviewImage({ tokenRef: token, size: 'small' });
 
   if (!comment || !comment.commenter || !comment.comment) {
     reportError(
@@ -76,15 +75,10 @@ export default function SomeoneCommentedOnYourPost({ notificationRef, onClose }:
           <StyledCaption>{unescape(comment.comment)}</StyledCaption>
         </VStack>
       </HStack>
-      {imageUrl && <StyledPostPreview src={imageUrl} />}
+      <NotificationPostPreviewWithBoundary tokenRef={token} />
     </StyledNotificationContent>
   );
 }
-
-const StyledPostPreview = styled.img`
-  height: 56px;
-  width: 56px;
-`;
 
 const StyledNotificationContent = styled(HStack)`
   width: 100%;

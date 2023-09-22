@@ -8,9 +8,10 @@ type Props = {
   imageUrl: string;
   outputDimensions: Dimensions;
   onLoad: (dimensions: Dimensions | null) => void;
+  onError: () => void;
 };
 
-export function NftDetailAssetImage({ imageUrl, outputDimensions, onLoad }: Props) {
+export function NftDetailAssetImage({ imageUrl, outputDimensions, onLoad, onError }: Props) {
   if (imageUrl.includes('svg')) {
     return (
       <SvgWebView
@@ -19,6 +20,7 @@ export function NftDetailAssetImage({ imageUrl, outputDimensions, onLoad }: Prop
           // We don't know the dimensions of the SVG, so we just pass null
           onLoad(null);
         }}
+        onError={onError}
         // Since we don't know the size of the SVG, we'll just render it in a square
         style={{ width: '100%', aspectRatio: 1 }}
       />
@@ -35,6 +37,7 @@ export function NftDetailAssetImage({ imageUrl, outputDimensions, onLoad }: Prop
       onLoad={(event) => {
         onLoad(event.nativeEvent);
       }}
+      onError={onError}
     />
   );
 }

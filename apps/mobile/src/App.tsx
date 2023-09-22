@@ -27,7 +27,9 @@ import SearchProvider from './components/Search/SearchContext';
 import ManageWalletProvider from './contexts/ManageWalletContext';
 import SyncTokensProvider from './contexts/SyncTokensContext';
 import ToastProvider from './contexts/ToastContext';
+import { TokenStateManagerProvider } from './contexts/TokenStateManagerContext';
 import { magic } from './magic';
+import { useCacheIntroVideo } from './screens/Onboarding/useCacheIntroVideo';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -57,6 +59,7 @@ export default function App() {
 
   const [colorSchemeLoaded, setColorSchemeLoaded] = useState(false);
   const { setColorScheme, colorScheme } = useColorScheme();
+  const { introVideoLoaded } = useCacheIntroVideo();
 
   useEffect(
     function loadInitialColorSchemeFromAsyncStorage() {
@@ -115,7 +118,7 @@ export default function App() {
     [colorSchemeLoaded, fontsLoaded]
   );
 
-  if (!fontsLoaded || !colorSchemeLoaded) {
+  if (!fontsLoaded || !colorSchemeLoaded || !introVideoLoaded) {
     return null;
   }
 
@@ -132,17 +135,19 @@ export default function App() {
                     <SearchProvider>
                       <NavigationContainer ref={navigationRef}>
                         <ToastProvider>
-                          <BottomSheetModalProvider>
-                            <SyncTokensProvider>
-                              <ManageWalletProvider>
-                                {/* Register the user's push token if one exists (does not prompt the user) */}
-                                <NotificationRegistrar />
-                                <DevMenuItems />
-                                <DeepLinkRegistrar />
-                                <RootStackNavigator navigationContainerRef={navigationRef} />
-                              </ManageWalletProvider>
-                            </SyncTokensProvider>
-                          </BottomSheetModalProvider>
+                          <TokenStateManagerProvider>
+                            <BottomSheetModalProvider>
+                              <SyncTokensProvider>
+                                <ManageWalletProvider>
+                                  {/* Register the user's push token if one exists (does not prompt the user) */}
+                                  <NotificationRegistrar />
+                                  <DevMenuItems />
+                                  <DeepLinkRegistrar />
+                                  <RootStackNavigator navigationContainerRef={navigationRef} />
+                                </ManageWalletProvider>
+                              </SyncTokensProvider>
+                            </BottomSheetModalProvider>
+                          </TokenStateManagerProvider>
                         </ToastProvider>
                       </NavigationContainer>
                     </SearchProvider>

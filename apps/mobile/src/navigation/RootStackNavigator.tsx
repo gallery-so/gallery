@@ -2,9 +2,10 @@ import { NavigationContainerRefWithCurrent } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Suspense, useEffect } from 'react';
 import { View } from 'react-native';
-import { graphql, useLazyLoadQuery } from 'react-relay';
+import { graphql, useFragment, useLazyLoadQuery } from 'react-relay';
 
 import { UpsellBanner } from '~/components/UpsellBanner';
+import { RootStackNavigatorFragment$key } from '~/generated/RootStackNavigatorFragment.graphql';
 import { RootStackNavigatorQuery } from '~/generated/RootStackNavigatorQuery.graphql';
 import { LoginStackNavigator } from '~/navigation/LoginStackNavigator';
 import { MainTabNavigator } from '~/navigation/MainTabNavigator/MainTabNavigator';
@@ -33,6 +34,7 @@ export function RootStackNavigator({ navigationContainerRef }: Props) {
             __typename
           }
         }
+        ...RootStackNavigatorFragment
       }
     `,
     {}
@@ -63,7 +65,9 @@ export function RootStackNavigator({ navigationContainerRef }: Props) {
       <Stack.Screen name="NftSelectorContractScreen" component={NftSelectorContractScreen} />
       <Stack.Screen name="PostComposer" component={PostComposerScreen} />
 
-      <Stack.Screen name="MainTabs" component={MainScreen} />
+      <Stack.Screen name="MainTabs">
+        {(props) => <MainScreen {...props} queryRef={query} />}
+      </Stack.Screen>
 
       <Stack.Screen
         name="ProfileQRCode"
@@ -94,11 +98,24 @@ function Empty() {
   return null;
 }
 
-function MainScreen() {
+type MainScreenProps = {
+  queryRef: RootStackNavigatorFragment$key;
+};
+
+function MainScreen({ queryRef }: MainScreenProps) {
+  const query = useFragment(
+    graphql`
+      fragment RootStackNavigatorFragment on Query {
+        ...UpsellBannerFragment
+      }
+    `,
+    queryRef
+  );
+
   return (
     <View className="flex-1">
       <Suspense fallback={<View />}>
-        <UpsellBanner />
+        <UpsellBanner queryRef={query} />
       </Suspense>
       <MainTabNavigator />
     </View>

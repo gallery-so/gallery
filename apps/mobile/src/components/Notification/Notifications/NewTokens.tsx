@@ -7,18 +7,14 @@ import { Button } from '~/components/Button';
 import { Typography } from '~/components/Typography';
 import { NewTokensFragment$key } from '~/generated/NewTokensFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
-import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
-import colors from '~/shared/theme/colors';
 import { getTimeSince } from '~/shared/utils/time';
 
 import { UnseenDot } from '../NotificationSkeleton';
-import { NotificationTokenPreview } from './NotificationTokenPreview';
+import { NotificationTokenPreviewWithBoundary } from './NotificationTokenPreview';
 
 type Props = {
   notificationRef: NewTokensFragment$key;
 };
-
-const INVALID_TOKEN_TYPES = ['SyncingMedia', 'InvalidMedia'];
 
 export function NewTokens({ notificationRef }: Props) {
   const notification = useFragment(
@@ -33,10 +29,7 @@ export function NewTokens({ notificationRef }: Props) {
             __typename
             dbid
             name
-            media {
-              __typename
-            }
-            ...getVideoOrImageUrlForNftPreviewFragment
+            ...NotificationTokenPreviewWithBoundaryFragment
           }
         }
         ...NotificationSkeletonFragment
@@ -62,31 +55,12 @@ export function NewTokens({ notificationRef }: Props) {
     });
   }, [navigation, token.dbid]);
 
-  if (INVALID_TOKEN_TYPES.includes(token.media?.__typename ?? '')) {
-    return null;
-  }
-
-  const media = getVideoOrImageUrlForNftPreview({
-    tokenRef: token,
-    preferStillFrameFromGif: false,
-  });
-
-  const tokenUrl = media?.urls.small;
-
   return (
     <View className="flex flex-row items-center p-4">
       <View className="flex-row flex-1 items-center space-x-2">
-        {tokenUrl ? (
-          <NotificationTokenPreview tokenUrl={tokenUrl} count={quantity} />
-        ) : (
-          <View
-            style={{
-              width: 56,
-              height: 56,
-              backgroundColor: colors.porcelain,
-            }}
-          />
-        )}
+        <View className="w-[56px] h-[56px]">
+          <NotificationTokenPreviewWithBoundary tokenRef={token} count={quantity} />
+        </View>
 
         <View className="flex-1">
           <Typography

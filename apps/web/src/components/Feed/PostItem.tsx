@@ -10,6 +10,7 @@ import { PostItemQueryFragment$key } from '~/generated/PostItemQueryFragment.gra
 import { PostItemWithErrorBoundaryFragment$key } from '~/generated/PostItemWithErrorBoundaryFragment.graphql';
 import { PostItemWithErrorBoundaryQueryFragment$key } from '~/generated/PostItemWithErrorBoundaryQueryFragment.graphql';
 import { useIsDesktopWindowWidth } from '~/hooks/useWindowSize';
+import { ErrorWithSentryMetadata } from '~/shared/errors/ErrorWithSentryMetadata';
 import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 
 import PostCommunityPill from './Posts/PostCommunityPill';
@@ -22,18 +23,23 @@ type PostItemProps = {
   queryRef: PostItemQueryFragment$key;
   handlePotentialLayoutShift?: () => void;
   measure?: () => void;
+  bigScreenMode?: boolean;
 };
 
 export function PostItem({
   eventRef,
   queryRef,
   handlePotentialLayoutShift,
-
   measure,
+  bigScreenMode = false,
 }: PostItemProps) {
   const post = useFragment(
     graphql`
       fragment PostItemFragment on Post {
+        dbid
+        author {
+          __typename
+        }
         ...PostSocializeSectionFragment
         ...PostHeaderFragment
         ...PostNftsFragment
@@ -55,9 +61,15 @@ export function PostItem({
 
   const isDesktop = useIsDesktopWindowWidth();
 
-  if (!isDesktop) {
+  const useVerticalLayout = !isDesktop || bigScreenMode;
+
+  if (!post.author) {
+    throw new ErrorWithSentryMetadata('Post author is undefined', { postId: post.dbid }); // no need to specify `tags`
+  }
+
+  if (useVerticalLayout) {
     return (
-      <StyledPostItem>
+      <StyledPostItem useVerticalLayout={true}>
         <PostHeader postRef={post} queryRef={query} />
         <PostNfts postRef={post} onNftLoad={measure} />
         <VStack gap={8}>
@@ -74,7 +86,7 @@ export function PostItem({
     );
   }
   return (
-    <StyledPostItem>
+    <StyledPostItem useVerticalLayout={false}>
       <PostNfts postRef={post} onNftLoad={measure} />
       <StyledDesktopPostData gap={16} justify="space-between">
         <PostHeader postRef={post} queryRef={query} />
@@ -93,17 +105,20 @@ export function PostItem({
   );
 }
 
-const StyledPostItem = styled.div`
+const StyledPostItem = styled.div<{ useVerticalLayout: boolean }>`
   max-height: 100%;
   display: flex;
   flex-direction: column;
   width: 100%;
   gap: 12px;
+  max-width: 1024px;
 
-  @media only screen and ${breakpoints.desktop} {
+  ${({ useVerticalLayout }) =>
+    !useVerticalLayout &&
+    `
     flex-direction: row;
     justify-content: space-between;
-  }
+  `}
 `;
 
 const StyledDesktopPostData = styled(VStack)`
@@ -113,10 +128,11 @@ const StyledDesktopPostData = styled(VStack)`
 
 type PostItemWithBoundaryProps = {
   index: number;
-  onPotentialLayoutShift: (index: number) => void;
+  onPotentialLayoutShift?: (index: number) => void;
   eventRef: PostItemWithErrorBoundaryFragment$key;
   queryRef: PostItemWithErrorBoundaryQueryFragment$key;
   measure: () => void;
+  bigScreenMode?: boolean;
 };
 
 export function PostItemWithBoundary({
@@ -125,6 +141,7 @@ export function PostItemWithBoundary({
   queryRef,
   onPotentialLayoutShift,
   measure,
+  bigScreenMode = false,
 }: PostItemWithBoundaryProps) {
   const event = useFragment(
     graphql`
@@ -145,23 +162,27 @@ export function PostItemWithBoundary({
   );
 
   const handlePotentialLayoutShift = useCallback(() => {
-    onPotentialLayoutShift(index);
+    if (onPotentialLayoutShift) {
+      // onPotentialLayoutShift is only defined when displaying Posts in a virtualized setting
+      onPotentialLayoutShift(index);
+    }
   }, [index, onPotentialLayoutShift]);
   return (
     <ReportingErrorBoundary fallback={<></>}>
-      <PostItemContainer gap={16}>
+      <PostItemContainer gap={16} bigScreenMode={bigScreenMode}>
         <PostItem
           eventRef={event}
           queryRef={query}
           handlePotentialLayoutShift={handlePotentialLayoutShift}
           measure={measure}
+          bigScreenMode={bigScreenMode}
         />
       </PostItemContainer>
     </ReportingErrorBoundary>
   );
 }
 
-const PostItemContainer = styled(VStack)`
+const PostItemContainer = styled(VStack)<{ bigScreenMode: boolean }>`
   margin: 8px auto;
 
   padding: 12px 0px;
@@ -169,6 +190,6 @@ const PostItemContainer = styled(VStack)`
   @media only screen and ${breakpoints.desktop} {
     padding: 24px 16px;
     max-width: initial;
-    width: ${FEED_EVENT_ROW_WIDTH_DESKTOP}px;
+    width: ${({ bigScreenMode }) => (bigScreenMode ? 544 : FEED_EVENT_ROW_WIDTH_DESKTOP)}px;
   }
 `;

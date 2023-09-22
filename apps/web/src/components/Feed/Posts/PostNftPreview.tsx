@@ -16,7 +16,7 @@ type Props = {
   onNftLoad?: () => void;
 };
 
-const DESKTOP_TOKEN_SIZE = 517;
+export const DESKTOP_TOKEN_SIZE = 517;
 
 export default function PostNftPreview({ tokenRef, onNftLoad }: Props) {
   const token = useFragment(

@@ -9,21 +9,20 @@ import { graphql } from 'relay-runtime';
 import { shareUniversalToken } from 'src/utils/shareToken';
 
 import { GallerySkeleton } from '~/components/GallerySkeleton';
-import { NftPreviewAsset } from '~/components/NftPreview/NftPreviewAsset';
-import { NftPreviewErrorFallback } from '~/components/NftPreview/NftPreviewErrorFallback';
+import { RawNftPreviewAsset } from '~/components/NftPreview/NftPreviewAsset';
 import { Typography } from '~/components/Typography';
 import { UniversalNftPreviewContextMenuPopupTokenFragment$key } from '~/generated/UniversalNftPreviewContextMenuPopupTokenFragment.graphql';
 import { MainTabStackNavigatorProp } from '~/navigation/types';
 import { fitDimensionsToContainerCover } from '~/screens/NftDetailScreen/NftDetailAsset/fitDimensionToContainer';
 import { Dimensions } from '~/screens/NftDetailScreen/NftDetailAsset/types';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
-import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
-import getVideoOrImageUrlForNftPreview from '~/shared/relay/getVideoOrImageUrlForNftPreview';
+
+import { TokenFailureBoundary } from '../Boundaries/TokenFailureBoundary/TokenFailureBoundary';
 
 type NftPreviewContextMenuPopupProps = PropsWithChildren<{
-  fallbackTokenUrl?: string;
-  imageDimensions: Dimensions | null;
   tokenRef: UniversalNftPreviewContextMenuPopupTokenFragment$key;
+  imageDimensions: Dimensions | null;
+  fallbackTokenUrl: string;
 }>;
 
 const ENABLED_ARTIST = false;
@@ -31,9 +30,9 @@ const ENABLED_ARTIST = false;
 export function UniversalNftPreviewContextMenuPopup({
   children,
 
+  tokenRef,
   imageDimensions,
   fallbackTokenUrl,
-  tokenRef,
 }: NftPreviewContextMenuPopupProps) {
   const token = useFragment(
     graphql`
@@ -52,8 +51,8 @@ export function UniversalNftPreviewContextMenuPopup({
             }
           }
         }
-        ...getVideoOrImageUrlForNftPreviewFragment
         ...shareTokenUniversalFragment
+        ...TokenFailureBoundaryFragment
       }
     `,
     tokenRef
@@ -63,11 +62,6 @@ export function UniversalNftPreviewContextMenuPopup({
   const windowDimensions = useWindowDimensions();
 
   const tokenUrl = token.media?.previewURLs?.large ?? fallbackTokenUrl;
-  const media = getVideoOrImageUrlForNftPreview({
-    tokenRef: token,
-    preferStillFrameFromGif: true,
-  });
-  const cachedPreviewAssetUrl = media?.urls.medium || media?.urls.small || null;
 
   const [popupAssetLoaded, setPopupAssetLoaded] = useState(false);
 
@@ -79,14 +73,14 @@ export function UniversalNftPreviewContextMenuPopup({
     (event) => {
       if (event.nativeEvent.actionKey === 'view-details') {
         navigation.navigate('UniversalNftDetail', {
-          cachedPreviewAssetUrl,
+          cachedPreviewAssetUrl: fallbackTokenUrl,
           tokenId: token.dbid,
         });
       } else if (event.nativeEvent.actionKey === 'share') {
         shareUniversalToken(token);
       }
     },
-    [cachedPreviewAssetUrl, navigation, token]
+    [fallbackTokenUrl, navigation, token]
   );
 
   const track = useTrack();
@@ -144,14 +138,14 @@ export function UniversalNftPreviewContextMenuPopup({
         return (
           <View className="bg-white dark:bg-black-900">
             <View className="self-center" style={finalDimensions}>
-              <ReportingErrorBoundary fallback={<NftPreviewErrorFallback />}>
-                <NftPreviewAsset
+              <TokenFailureBoundary tokenRef={token} variant="large">
+                <RawNftPreviewAsset
                   priority="high"
                   tokenUrl={tokenUrl}
                   resizeMode={ResizeMode.CONTAIN}
                   onLoad={handlePopupAssetLoad}
                 />
-              </ReportingErrorBoundary>
+              </TokenFailureBoundary>
 
               {popupAssetLoaded ? null : (
                 <View className="absolute inset-0">

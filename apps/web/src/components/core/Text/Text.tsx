@@ -126,6 +126,13 @@ export const TitleMonoM = styled(Paragraph)`
   text-transform: uppercase;
 `;
 
+export const TitleCondensed = styled(H1)`
+  font-family: 'GT Alpina Condensed';
+  font-weight: 300;
+  text-align: center;
+  letter-spacing: -0.05em;
+`;
+
 export const BlueLabel = styled(TitleXS)`
   font-family: ${BODY_FONT_FAMILY};
   font-style: normal;

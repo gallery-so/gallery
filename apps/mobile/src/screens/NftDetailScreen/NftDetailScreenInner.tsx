@@ -7,9 +7,9 @@ import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 
 import { BackButton } from '~/components/BackButton';
+import { TokenFailureBoundary } from '~/components/Boundaries/TokenFailureBoundary/TokenFailureBoundary';
 import { Button } from '~/components/Button';
 import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
-import { NftPreviewErrorFallback } from '~/components/NftPreview/NftPreviewErrorFallback';
 import { Pill } from '~/components/Pill';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { NftDetailScreenInnerQuery } from '~/generated/NftDetailScreenInnerQuery.graphql';
@@ -18,7 +18,6 @@ import { MainTabStackNavigatorParamList, MainTabStackNavigatorProp } from '~/nav
 import { NftDetailAssetCacheSwapper } from '~/screens/NftDetailScreen/NftDetailAsset/NftDetailAssetCacheSwapper';
 import TokenViewEmitter from '~/shared/components/TokenViewEmitter';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
-import { ReportingErrorBoundary } from '~/shared/errors/ReportingErrorBoundary';
 import { useLoggedInUserId } from '~/shared/relay/useLoggedInUserId';
 import colors from '~/shared/theme/colors';
 
@@ -83,6 +82,7 @@ export function NftDetailScreenInner() {
           }
 
           ...shareTokenFragment
+          ...TokenFailureBoundaryFragment
         }
 
         ...useLoggedInUserIdFragment
@@ -191,20 +191,14 @@ export function NftDetailScreenInner() {
             />
           </View>
 
-          <View>
-            <ReportingErrorBoundary
-              fallback={
-                <View className="w-full aspect-square">
-                  <NftPreviewErrorFallback />
-                </View>
-              }
-            >
+          <View className="w-full">
+            <TokenFailureBoundary tokenRef={token} variant="large">
               <NftDetailAssetCacheSwapper
                 cachedPreviewAssetUrl={route.params.cachedPreviewAssetUrl}
               >
                 <NftDetailAsset tokenRef={token} />
               </NftDetailAssetCacheSwapper>
-            </ReportingErrorBoundary>
+            </TokenFailureBoundary>
           </View>
         </View>
 
