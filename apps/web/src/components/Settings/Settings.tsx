@@ -1,5 +1,4 @@
-import { useRouter } from 'next/router';
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import { graphql, useFragment } from 'react-relay';
 import styled from 'styled-components';
 
@@ -10,6 +9,7 @@ import DrawerHeader from '~/contexts/globalLayout/GlobalSidebar/DrawerHeader';
 import { SettingsFragment$key } from '~/generated/SettingsFragment.graphql';
 import { useLogout } from '~/hooks/useLogout';
 import colors from '~/shared/theme/colors';
+import { useClearURLQueryParams } from '~/utils/useClearURLQueryParams';
 
 import ManageAuthSection from './ManageAccountsSection/ManageAccountsSection';
 import ManageEmailSection from './ManageEmailSection/ManageEmailSection';
@@ -34,16 +34,7 @@ function Settings({ queryRef }: Props) {
     queryRef
   );
 
-  // drop settings param from URL once modal has been opened
-  const { pathname, query: urlQuery, replace } = useRouter();
-  useEffect(() => {
-    const params = new URLSearchParams(urlQuery as Record<string, string>);
-    if (params.has('settings')) {
-      params.delete('settings');
-      // @ts-expect-error we're simply replacing the current page with the same path
-      replace({ pathname, query: params.toString() }, undefined, { shallow: true });
-    }
-  }, [pathname, replace, urlQuery]);
+  useClearURLQueryParams('settings');
 
   const logout = useLogout();
 

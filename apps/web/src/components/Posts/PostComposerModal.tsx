@@ -5,6 +5,7 @@ import { NftSelectorLoadingView } from '~/components/NftSelector/NftSelectorLoad
 import ErrorBoundary from '~/contexts/boundary/ErrorBoundary';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { usePostComposerContext } from '~/contexts/postComposer/PostComposerContext';
+import { useClearURLQueryParams } from '~/utils/useClearURLQueryParams';
 
 import breakpoints from '../core/breakpoints';
 import { Button } from '../core/Button/Button';
@@ -29,6 +30,8 @@ export function PostComposerModalWithSelector({ preSelectedContract }: Props) {
   const returnUserToSelectorStep = useCallback(() => {
     setSelectedTokenId(null);
   }, []);
+
+  useClearURLQueryParams('composer');
 
   const { showModal } = useModalActions();
 
@@ -83,6 +86,7 @@ type PostComposerModalProps = {
 
 // Modal with a single step, the Post Composer.
 export function PostComposerModal({ tokenId }: PostComposerModalProps) {
+  useClearURLQueryParams('composer');
   return (
     <StyledPostComposerModal>
       <ErrorBoundary fallback={<PostComposerErrorScreen />}>
