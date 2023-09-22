@@ -35,6 +35,7 @@ type TokenStateManagerContextType = {
   markTokenAsFailed: (tokenId: string, error: Error) => void;
   refreshToken: (tokenId: string) => Promise<void>;
   clearTokenFailureState: (tokenIds: string[]) => void;
+  getTokenState: (tokenId: string) => TokenState | undefined;
 };
 
 const TokenStateManagerContext = createContext<TokenStateManagerContextType | undefined>(undefined);
@@ -223,6 +224,13 @@ export function TokenStateManagerProvider({ children }: PropsWithChildren) {
     [incrementTokenRetryKey]
   );
 
+  const getTokenState = useCallback(
+    (tokenId: string) => {
+      return tokens[tokenId];
+    },
+    [tokens]
+  );
+
   const value = useMemo((): TokenStateManagerContextType => {
     return {
       tokens,
@@ -231,6 +239,7 @@ export function TokenStateManagerProvider({ children }: PropsWithChildren) {
       markTokenAsFailed,
       refreshToken,
       clearTokenFailureState,
+      getTokenState,
     };
   }, [
     tokens,
@@ -239,6 +248,7 @@ export function TokenStateManagerProvider({ children }: PropsWithChildren) {
     markTokenAsFailed,
     refreshToken,
     clearTokenFailureState,
+    getTokenState,
   ]);
 
   return (
