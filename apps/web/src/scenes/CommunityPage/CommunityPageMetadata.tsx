@@ -22,7 +22,6 @@ import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import colors from '~/shared/theme/colors';
 import { chains } from '~/shared/utils/chains';
 import { getExternalAddressLink, truncateAddress } from '~/shared/utils/wallet';
-import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 import CommunityPageOwnershipRequiredModal from './CommunityPageOwnershipRequiredModal';
 
@@ -66,14 +65,12 @@ export default function CommunityPageMetadata({ communityRef, queryRef }: Props)
         viewer {
           __typename
         }
-        ...isFeatureEnabledFragment
       }
     `,
     queryRef
   );
 
   const { contractAddress, creator } = community;
-  const isKoalaEnabled = isFeatureEnabled(FeatureFlag.KOALA, query);
 
   const creatorUsername = creator?.__typename === 'GalleryUser' && creator?.username;
   const creatorAddress = creator?.__typename === 'ChainAddress' && creator?.address;
@@ -134,7 +131,7 @@ export default function CommunityPageMetadata({ communityRef, queryRef }: Props)
     });
   }, [community, refetchIsMemberOfCommunity, showModal, track]);
 
-  const showPostButton = query.viewer?.__typename === 'Viewer' && isKoalaEnabled;
+  const showPostButton = query.viewer?.__typename === 'Viewer';
 
   const CreatorLink = useMemo(() => {
     if (community.creator?.__typename === 'GalleryUser' && !community.creator?.universal) {

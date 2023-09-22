@@ -10,7 +10,7 @@ export enum FeatureFlag {
 }
 
 const PROD_FLAGS: Record<FeatureFlag, boolean> = {
-  KOALA: false,
+  KOALA: true,
 };
 
 const DEV_FLAGS: Record<FeatureFlag, boolean> = {
@@ -25,7 +25,7 @@ export const ROLE_FLAGS: Record<Role, Record<FeatureFlag, boolean>> = {
     KOALA: true,
   },
   EARLY_ACCESS: {
-    KOALA: false,
+    KOALA: true,
   },
 };
 

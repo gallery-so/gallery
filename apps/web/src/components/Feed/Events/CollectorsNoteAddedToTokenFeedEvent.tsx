@@ -11,7 +11,6 @@ import HoverCardOnUsername from '~/components/HoverCard/HoverCardOnUsername';
 import { ProfilePicture } from '~/components/ProfilePicture/ProfilePicture';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { CollectorsNoteAddedToTokenFeedEventFragment$key } from '~/generated/CollectorsNoteAddedToTokenFeedEventFragment.graphql';
-import { CollectorsNoteAddedToTokenFeedEventQueryFragment$key } from '~/generated/CollectorsNoteAddedToTokenFeedEventQueryFragment.graphql';
 import useWindowSize, { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import NftDetailView from '~/scenes/NftDetailPage/NftDetailView';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
@@ -32,7 +31,6 @@ import {
 type Props = {
   isSubEvent?: boolean;
   eventDataRef: CollectorsNoteAddedToTokenFeedEventFragment$key;
-  queryRef: CollectorsNoteAddedToTokenFeedEventQueryFragment$key;
 };
 
 const MARGIN = 16;
@@ -43,7 +41,6 @@ const IMAGE_SPACE_SIZE = 269;
 export default function CollectorsNoteAddedToTokenFeedEvent({
   eventDataRef,
   isSubEvent = false,
-  queryRef,
 }: Props) {
   const event = useFragment(
     graphql`
@@ -71,15 +68,6 @@ export default function CollectorsNoteAddedToTokenFeedEvent({
     eventDataRef
   );
 
-  const query = useFragment(
-    graphql`
-      fragment CollectorsNoteAddedToTokenFeedEventQueryFragment on Query {
-        ...NftDetailViewQueryFragment
-      }
-    `,
-    queryRef
-  );
-
   const isMobile = useIsMobileWindowWidth();
   const windowSize = useWindowSize();
   const { showModal } = useModalActions();
@@ -95,17 +83,13 @@ export default function CollectorsNoteAddedToTokenFeedEvent({
       showModal({
         content: (
           <StyledNftDetailViewPopover>
-            <NftDetailView
-              authenticatedUserOwnsAsset={false}
-              collectionTokenRef={event.token}
-              queryRef={query}
-            />
+            <NftDetailView authenticatedUserOwnsAsset={false} collectionTokenRef={event.token} />
           </StyledNftDetailViewPopover>
         ),
         isFullPage: true,
       });
     },
-    [event.token, query, showModal, track]
+    [event.token, showModal, track]
   );
 
   return (

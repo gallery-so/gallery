@@ -17,7 +17,6 @@ import { ENABLED_CREATOR } from '~/constants/creator';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { NftDetailTextFragment$key } from '~/generated/NftDetailTextFragment.graphql';
-import { NftDetailTextQueryFragment$key } from '~/generated/NftDetailTextQueryFragment.graphql';
 import { useBreakpoint, useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { NftAdditionalDetails } from '~/scenes/NftDetailPage/NftAdditionalDetails/NftAdditionalDetails';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
@@ -25,7 +24,6 @@ import colors from '~/shared/theme/colors';
 import { extractRelevantMetadataFromToken } from '~/shared/utils/extractRelevantMetadataFromToken';
 import unescape from '~/shared/utils/unescape';
 import { getCommunityUrlForToken } from '~/utils/getCommunityUrlForToken';
-import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 /**
  * TODO: Figure out when to support creator addresses
@@ -36,10 +34,9 @@ const SHOW_BUY_NOW_BUTTON = false;
 type Props = {
   tokenRef: NftDetailTextFragment$key;
   authenticatedUserOwnsAsset: boolean;
-  queryRef: NftDetailTextQueryFragment$key;
 };
 
-function NftDetailText({ tokenRef, authenticatedUserOwnsAsset, queryRef }: Props) {
+function NftDetailText({ tokenRef, authenticatedUserOwnsAsset }: Props) {
   const token = useFragment(
     graphql`
       fragment NftDetailTextFragment on Token {
@@ -69,15 +66,6 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset, queryRef }: Props
       }
     `,
     tokenRef
-  );
-
-  const query = useFragment(
-    graphql`
-      fragment NftDetailTextQueryFragment on Query {
-        ...isFeatureEnabledFragment
-      }
-    `,
-    queryRef
   );
 
   const [showDetails, setShowDetails] = useState(false);
@@ -165,8 +153,6 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset, queryRef }: Props
     });
   }, [isMobile, showModal, token, track]);
 
-  const isKoalaEnabled = isFeatureEnabled(FeatureFlag.KOALA, query);
-
   return (
     <StyledDetailLabel horizontalLayout={horizontalLayout} navbarHeight={navbarHeight}>
       <VStack gap={isMobile ? 32 : 24}>
@@ -245,9 +231,7 @@ function NftDetailText({ tokenRef, authenticatedUserOwnsAsset, queryRef }: Props
           </VStack>
         ) : null}
 
-        {isKoalaEnabled && authenticatedUserOwnsAsset && (
-          <Button onClick={handleCreatePostClick}>Create Post</Button>
-        )}
+        {authenticatedUserOwnsAsset && <Button onClick={handleCreatePostClick}>Create Post</Button>}
 
         {poapMoreInfoUrl || poapUrl ? (
           <VStack gap={16}>

@@ -3,7 +3,6 @@ import { Share, View } from 'react-native';
 import { CollapsibleRef, Tabs } from 'react-native-collapsible-tab-view';
 import { graphql, useFragment } from 'react-relay';
 import { ShareIcon } from 'src/icons/ShareIcon';
-import isFeatureEnabled, { FeatureFlag } from 'src/utils/isFeatureEnabled';
 
 import { CommunityViewFragment$key } from '~/generated/CommunityViewFragment.graphql';
 
@@ -46,8 +45,6 @@ export function CommunityView({ queryRef }: Props) {
         ...CommunityCollectorsQueryFragment
         ...CommunityCollectorsListQueryFragment
         ...CommunityViewPostsTabQueryFragment
-        ...CommunityTabsHeaderQueryFragment
-        ...isFeatureEnabledFragment
         ...CommunityMetaQueryFragment
       }
     `,
@@ -59,9 +56,8 @@ export function CommunityView({ queryRef }: Props) {
   if (!community || community.__typename !== 'Community') {
     throw new Error(`Unable to fetch the community`);
   }
-  const isKoalaEnabled = isFeatureEnabled(FeatureFlag.KOALA, query);
 
-  const [selectedRoute, setSelectedRoute] = useState(isKoalaEnabled ? 'Posts' : 'Collectors');
+  const [selectedRoute, setSelectedRoute] = useState('Posts');
 
   const containerRef = useRef<CollapsibleRef>(null);
   useEffect(() => {
@@ -84,10 +80,9 @@ export function CommunityView({ queryRef }: Props) {
         communityRef={community}
         selectedRoute={selectedRoute}
         onRouteChange={setSelectedRoute}
-        queryRef={query}
       />
     );
-  }, [community, query, setSelectedRoute, selectedRoute]);
+  }, [community, setSelectedRoute, selectedRoute]);
 
   return (
     <View className="flex-1">

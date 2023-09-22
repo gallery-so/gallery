@@ -28,7 +28,6 @@ import ShopIcon from '~/icons/ShopIcon';
 import UserIcon from '~/icons/UserIcon';
 import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import useExperience from '~/utils/graphql/experiences/useExperience';
-import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 import { useDrawerActions, useDrawerState } from './SidebarDrawerContext';
 import SidebarIcon from './SidebarIcon';
@@ -63,7 +62,6 @@ export function StandardSidebar({ queryRef }: Props) {
         ...SettingsFragment
         ...useExperienceFragment
         ...useAnnouncementFragment
-        ...isFeatureEnabledFragment
       }
     `,
     queryRef
@@ -188,8 +186,6 @@ export function StandardSidebar({ queryRef }: Props) {
     });
   }, [showDrawer, track]);
 
-  const isKoalaEnabled = isFeatureEnabled(FeatureFlag.KOALA, query);
-
   const userGalleryRoute: Route = useMemo(() => {
     return { pathname: '/[username]', query: { username } };
   }, [username]);
@@ -269,13 +265,11 @@ export function StandardSidebar({ queryRef }: Props) {
                 icon={<SearchIcon />}
                 isActive={activeDrawerType === Search}
               />
-              {isKoalaEnabled && (
-                <SidebarIcon
-                  tooltipLabel="Create a post"
-                  onClick={handleCreatePostClick}
-                  icon={<PlusSquareIcon />}
-                />
-              )}
+              <SidebarIcon
+                tooltipLabel="Create a post"
+                onClick={handleCreatePostClick}
+                icon={<PlusSquareIcon />}
+              />
               <SidebarIcon
                 tooltipLabel="Updates"
                 onClick={handleNotificationsClick}
@@ -321,13 +315,11 @@ export function StandardSidebar({ queryRef }: Props) {
                 href={userGalleryRoute}
                 onClick={handleProfileClick}
               />
-              {isKoalaEnabled && (
-                <SidebarIcon
-                  tooltipLabel="Create a post"
-                  onClick={handleCreatePostClick}
-                  icon={<PlusSquareIcon />}
-                />
-              )}
+              <SidebarIcon
+                tooltipLabel="Create a post"
+                onClick={handleCreatePostClick}
+                icon={<PlusSquareIcon />}
+              />
             </VStack>
           )}
         </VStack>

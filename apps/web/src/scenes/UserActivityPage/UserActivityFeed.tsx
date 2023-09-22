@@ -8,7 +8,6 @@ import FeedList from '~/components/Feed/FeedList';
 import { UserActivityFeedFragment$key } from '~/generated/UserActivityFeedFragment.graphql';
 import { UserActivityFeedQueryFragment$key } from '~/generated/UserActivityFeedQueryFragment.graphql';
 import { UserFeedByUserIdPaginationQuery } from '~/generated/UserFeedByUserIdPaginationQuery.graphql';
-import isFeatureEnabled, { FeatureFlag } from '~/utils/graphql/isFeatureEnabled';
 
 type Props = {
   userRef: UserActivityFeedFragment$key;
@@ -52,14 +51,12 @@ function UserActivityFeed({ userRef, queryRef }: Props) {
             ...FeedListEventDataFragment
           }
         }
-        ...isFeatureEnabledFragment
       }
     `,
     queryRef
   );
 
   const trackLoadMoreFeedEvents = useTrackLoadMoreFeedEvents();
-  const isKoalaEnabled = isFeatureEnabled(FeatureFlag.KOALA, query);
 
   const loadNextPage = useCallback(() => {
     return new Promise((resolve) => {
@@ -74,8 +71,7 @@ function UserActivityFeed({ userRef, queryRef }: Props) {
 
     for (const edge of user.feed?.edges ?? []) {
       if (
-        (edge?.node?.__typename === 'FeedEvent' ||
-          (edge?.node?.__typename === 'Post' && isKoalaEnabled)) &&
+        (edge?.node?.__typename === 'FeedEvent' || edge?.node?.__typename === 'Post') &&
         edge.node
       ) {
         events.push(edge.node);
@@ -87,7 +83,7 @@ function UserActivityFeed({ userRef, queryRef }: Props) {
     }
 
     return events;
-  }, [isKoalaEnabled, query.feedEventById, user.feed?.edges]);
+  }, [query.feedEventById, user.feed?.edges]);
 
   if (feedData.length === 0) {
     return (

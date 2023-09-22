@@ -3,7 +3,6 @@ import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { graphql, usePaginationFragment } from 'react-relay';
-import isFeatureEnabled, { FeatureFlag } from 'src/utils/isFeatureEnabled';
 
 import { GalleryRefreshControl } from '~/components/GalleryRefreshControl';
 import { NotificationFragment$key } from '~/generated/NotificationFragment.graphql';
@@ -25,12 +24,6 @@ type NotificationType = {
   notification: NotificationFragment$key;
   query: NotificationQueryFragment$key;
 };
-
-const POST_NOTIFICATIONS_TYPES = [
-  'SomeoneAdmiredYourPostNotification',
-  'SomeoneCommentedOnYourPostNotification',
-  'NewTokensNotification',
-];
 
 export function NotificationList({ queryRef }: Props) {
   const {
@@ -61,13 +54,11 @@ export function NotificationList({ queryRef }: Props) {
         }
 
         ...NotificationQueryFragment
-        ...isFeatureEnabledFragment
       }
     `,
     queryRef
   );
 
-  const isKoalaEnabled = isFeatureEnabled(FeatureFlag.KOALA, query);
   const clearNotifications = useMobileClearNotifications();
   const { isRefreshing, handleRefresh } = useRefreshHandle(refetch);
 
@@ -76,10 +67,6 @@ export function NotificationList({ queryRef }: Props) {
 
     for (const edge of query.viewer?.notifications?.edges ?? []) {
       if (edge?.node) {
-        if (POST_NOTIFICATIONS_TYPES.includes(edge.node.__typename) && !isKoalaEnabled) {
-          continue;
-        }
-
         notifications.push({ ...edge.node, notification: edge.node, query });
       }
     }
@@ -87,7 +74,7 @@ export function NotificationList({ queryRef }: Props) {
     notifications.reverse();
 
     return notifications;
-  }, [isKoalaEnabled, query]);
+  }, [query]);
 
   const loadMore = useCallback(() => {
     if (hasPrevious) {

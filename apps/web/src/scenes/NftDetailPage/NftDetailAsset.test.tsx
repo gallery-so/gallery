@@ -7,7 +7,6 @@ import {
   Chain,
   NftDetailAssetTestQueryQuery,
   NftErrorContextRetryMutationMutation,
-  Role,
 } from '~/tests/__generated__/graphql-codegen/operations';
 import { MockAppProvider } from '~/tests/graphql/MockAppProvider';
 import { mockGraphqlQuery } from '~/tests/graphql/mockGraphqlQuery';
@@ -23,7 +22,6 @@ function Fixture() {
             ...NftDetailViewFragment
           }
         }
-        ...NftDetailViewQueryFragment
       }
     `,
     { collectionId: 'testCollectionId', tokenId: 'testTokenId' }
@@ -37,7 +35,6 @@ function Fixture() {
     <NftDetailView
       authenticatedUserOwnsAsset={false}
       collectionTokenRef={query.collectionTokenById}
-      queryRef={query}
     />
   );
 }
@@ -105,14 +102,6 @@ const UnknownMediaResponse: NftDetailAssetTestQueryQuery = {
         },
         badgeURL: 'http://someurl.com',
       },
-    },
-  },
-  viewer: {
-    __typename: 'Viewer',
-    id: 'GalleryUser:TestUserId',
-    user: {
-      roles: [Role.EarlyAccess],
-      id: 'GalleryUser:TestUserId',
     },
   },
 };

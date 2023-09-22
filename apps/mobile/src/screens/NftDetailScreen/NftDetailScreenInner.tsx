@@ -5,7 +5,6 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
-import isFeatureEnabled, { FeatureFlag } from 'src/utils/isFeatureEnabled';
 
 import { BackButton } from '~/components/BackButton';
 import { TokenFailureBoundary } from '~/components/Boundaries/TokenFailureBoundary/TokenFailureBoundary';
@@ -87,7 +86,6 @@ export function NftDetailScreenInner() {
         }
 
         ...useLoggedInUserIdFragment
-        ...isFeatureEnabledFragment
       }
     `,
     {
@@ -110,7 +108,6 @@ export function NftDetailScreenInner() {
   );
 
   const { colorScheme } = useColorScheme();
-  const isKoalaEnabled = isFeatureEnabled(FeatureFlag.KOALA, query);
 
   const token = query.tokenById;
 
@@ -283,7 +280,7 @@ export function NftDetailScreenInner() {
           </View>
         )}
 
-        {isKoalaEnabled && isTokenOwner && (
+        {isTokenOwner && (
           <Button
             icon={
               <PostIcon
