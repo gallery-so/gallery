@@ -11,6 +11,8 @@ import { useReportError } from '~/shared/contexts/ErrorReportingContext';
 
 const MARFA_EVENT_HASH = -1082633448;
 
+const KNOWN_NON_DEEPLINK_ROUTES = ['community', '~'];
+
 export function DeepLinkRegistrar() {
   const relayEnvironment = useRelayEnvironment();
   const track = useTrack();
@@ -44,6 +46,15 @@ export function DeepLinkRegistrar() {
         }
 
         const parsedUrl = new URL(url);
+        const splitBySlash = parsedUrl.pathname.split('/').filter(Boolean);
+
+        // if the url is for a route we don't support deeplinking to, return early so we don't treat it as a username, collectionId, etc.
+        if (
+          typeof splitBySlash[0] === 'string' &&
+          KNOWN_NON_DEEPLINK_ROUTES.includes(splitBySlash[0])
+        ) {
+          return;
+        }
 
         /**
          * Marfa Event Check In
@@ -62,8 +73,6 @@ export function DeepLinkRegistrar() {
           }
           return;
         }
-
-        const splitBySlash = parsedUrl.pathname.split('/').filter(Boolean);
 
         /**
          * /post/:postId
