@@ -3,6 +3,9 @@ import { useFragment, useLazyLoadQuery } from 'react-relay';
 import { graphql } from 'relay-runtime';
 import styled from 'styled-components';
 
+import breakpoints from '~/components/core/breakpoints';
+import { HStack } from '~/components/core/Spacer/Stack';
+import { TitleL } from '~/components/core/Text/Text';
 import { OnConnectWalletSuccessFn } from '~/components/WalletSelector/multichain/MultichainWalletSelector';
 import WalletSelector from '~/components/WalletSelector/WalletSelector';
 import { useModalActions } from '~/contexts/modal/ModalContext';
@@ -26,12 +29,17 @@ const AddWalletModal = ({ queryRef, onConnectWalletSuccess }: ModalProps) => {
   );
 
   return (
-    <Container>
+    <Container justify="center">
       <WalletSelector
         connectionMode={ADD_WALLET_TO_USER}
         queryRef={query}
         onConnectWalletSuccess={onConnectWalletSuccess}
+        showEmail={false}
       />
+      <StyledWalletText>
+        Gallery is a limitless creative canvas for <span>curation</span>, <span>connection</span>,
+        and <span>self expression</span> in web3
+      </StyledWalletText>
     </Container>
   );
 };
@@ -66,11 +74,34 @@ export default function useAddWalletModal() {
   );
 }
 
-const Container = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
+const Container = styled(HStack)`
   min-height: 280px;
   height: 100%;
+
+  flex-direction: column-reverse;
+  gap: 24px;
+
+  padding-top: 24px;
+
+  @media only screen and ${breakpoints.tablet} {
+    min-height: 280px;
+    height: 100%;
+    align-items: center;
+    flex-direction: row;
+    padding-top: 0;
+  }
+`;
+
+const StyledWalletText = styled(TitleL)`
+  display: block;
+  text-align: center;
+  width: 100%;
+
+  span {
+    font-style: italic;
+  }
+  @media only screen and ${breakpoints.tablet} {
+    font-weight: 300;
+    width: 300px;
+  }
 `;

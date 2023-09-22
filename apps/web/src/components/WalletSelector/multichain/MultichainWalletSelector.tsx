@@ -67,8 +67,6 @@ export default function MultichainWalletSelector({
 
   const subheading = useMemo(() => {
     switch (variant) {
-      case 'sign-in':
-        return 'Sign in to your Gallery account using a wallet or email.';
       case 'sign-up':
         return 'Join Gallery today to curate and display your NFT collection.';
       default:

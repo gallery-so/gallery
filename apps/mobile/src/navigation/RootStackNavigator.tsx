@@ -115,6 +115,7 @@ function MainScreen({ queryRef, ...props }: MainScreenProps) {
     graphql`
       fragment RootStackNavigatorFragment on Query {
         ...isFeatureEnabledFragment
+        ...UpsellBannerFragment
       }
     `,
     queryRef
@@ -125,7 +126,7 @@ function MainScreen({ queryRef, ...props }: MainScreenProps) {
   return (
     <View className="flex-1">
       <Suspense fallback={<View />}>
-        <UpsellBanner />
+        <UpsellBanner queryRef={query} />
       </Suspense>
       <MainTabNavigator isKoalaEnabled={isKoalaEnabled} {...props} />
     </View>

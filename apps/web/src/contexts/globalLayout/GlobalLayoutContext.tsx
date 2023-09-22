@@ -19,6 +19,7 @@ import styled from 'styled-components';
 
 import breakpoints from '~/components/core/breakpoints';
 import FullPageLoader from '~/components/core/Loader/FullPageLoader';
+import { UpsellBanner } from '~/components/UpsellBanner/UpsellBanner';
 import { useGlobalNavbarHeight } from '~/contexts/globalLayout/GlobalNavbar/useGlobalNavbarHeight';
 import { GlobalLayoutContextNavbarFragment$key } from '~/generated/GlobalLayoutContextNavbarFragment.graphql';
 import { GlobalLayoutContextQuery } from '~/generated/GlobalLayoutContextQuery.graphql';
@@ -30,8 +31,8 @@ import { PreloadQueryArgs } from '~/types/PageComponentPreloadQuery';
 import isTouchscreenDevice from '~/utils/isTouchscreenDevice';
 
 import { FEATURED_COLLECTION_IDS } from './GlobalAnnouncementPopover/GlobalAnnouncementPopover';
+import MobileBetaUpsell from './GlobalBanner/MobileBetaUpsell';
 // import useGlobalAnnouncementPopover from './GlobalAnnouncementPopover/useGlobalAnnouncementPopover';
-import GlobalBanner, { CTAChip } from './GlobalBanner/GlobalBanner';
 import GlobalSidebar, { GLOBAL_SIDEBAR_DESKTOP_WIDTH } from './GlobalSidebar/GlobalSidebar';
 import {
   FADE_TRANSITION_TIME_MS,
@@ -353,11 +354,47 @@ function GlobalNavbarWithFadeEnabled({
   const query = useFragment(
     graphql`
       fragment GlobalLayoutContextNavbarFragment on Query {
-        ...GlobalBannerFragment
+        viewer {
+          ... on Viewer {
+            __typename
+            user {
+              ... on GalleryUser {
+                primaryWallet {
+                  __typename
+                }
+              }
+            }
+          }
+        }
+        ...MobileBetaUpsellFragment
+        ...UpsellBannerQuery
       }
     `,
     queryRef
   );
+
+  const isLoggedInAndDoesNotHaveWallet =
+    query.viewer?.__typename === 'Viewer' && !query.viewer.user?.primaryWallet;
+
+  const displayedBanner = useMemo(() => {
+    if (isLoggedInAndDoesNotHaveWallet) {
+      return <UpsellBanner queryRef={query} />;
+    }
+
+    if (isBannerVisible) {
+      return (
+        <MobileBetaUpsell
+          experienceFlag="MobileBetaUpsell"
+          text="Embrace the new era of creativity at Gallery! Download the Gallery Mobile App Beta and take your collection everywhere."
+          dismissOnActionComponentClick
+          queryRef={query}
+          requireAuth
+        />
+      );
+    }
+
+    return null;
+  }, [isBannerVisible, isLoggedInAndDoesNotHaveWallet, query]);
 
   const isTouchscreen = useRef(isTouchscreenDevice());
   const [zIndex, setZIndex] = useState(2);
@@ -408,6 +445,7 @@ function GlobalNavbarWithFadeEnabled({
        * 1) remain stable across route transitions, or
        * 2) synchronize fading with the main content
        */}
+
       <AnimatePresence>
         {isVisible && (
           <StyledMotionWrapper isSidebarPresent={isSidebarPresent}>
@@ -425,18 +463,7 @@ function GlobalNavbarWithFadeEnabled({
                 duration: FADE_TRANSITION_TIME_SECONDS,
               }}
             >
-              {isBannerVisible && (
-                <GlobalBanner
-                  // make sure to update this flag and add to backend schema.graphql
-                  experienceFlag="MobileBetaUpsell"
-                  variant="lit"
-                  text="Embrace the new era of creativity at Gallery! Download the Gallery Mobile App Beta and take your collection everywhere."
-                  actionComponent={<CTAChip />}
-                  dismissOnActionComponentClick
-                  queryRef={query}
-                  requireAuth
-                />
-              )}
+              {displayedBanner}
               <StyledBackground>{content}</StyledBackground>
             </motion.div>
           </StyledMotionWrapper>

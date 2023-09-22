@@ -1,12 +1,14 @@
 import { lazy, Suspense, useMemo } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import { graphql, useFragment } from 'react-relay';
+import styled from 'styled-components';
 
 import { VStack } from '~/components/core/Spacer/Stack';
 import { WalletSelectorWrapper } from '~/components/WalletSelector/multichain/WalletSelectorWrapper';
 import { WalletSelectorFragment$key } from '~/generated/WalletSelectorFragment.graphql';
 import { ADD_WALLET_TO_USER, AUTH, CONNECT_WALLET_ONLY } from '~/types/Wallet';
 
+import breakpoints from '../core/breakpoints';
 import type { MultichainWalletSelectorProps } from './multichain/MultichainWalletSelector';
 
 const MultichainWalletSelector = lazy(() => import('./multichain/MultichainWalletSelector'));
@@ -56,11 +58,11 @@ export default function WalletSelector({
   const fallback = useMemo(
     () => (
       <WalletSelectorWrapper>
-        <VStack gap={8}>
+        <VStack gap={12}>
           {Array.from({ length: numOptionsToShow }).map(() => {
             // We don't have anything relevant to key off of here
             // eslint-disable-next-line react/jsx-key
-            return <Skeleton width="100%" height="52px" />;
+            return <StyledSkeleton />;
           })}
         </VStack>
       </WalletSelectorWrapper>
@@ -84,3 +86,12 @@ export default function WalletSelector({
     </Suspense>
   );
 }
+
+const StyledSkeleton = styled(Skeleton)`
+  width: 100%;
+  height: 57px;
+
+  @media only screen and ${breakpoints.tablet} {
+    width: 400px;
+  }
+`;
