@@ -70,11 +70,11 @@ export function TokenFailureBoundary({
     );
   }, [_loadingFallback, fallbackAspectSquare, tokenFragment, variant]);
 
-  const { tokens, clearTokenFailureState, markTokenAsPolling, markTokenAsFailed } =
+  const { getTokenState, clearTokenFailureState, markTokenAsPolling, markTokenAsFailed } =
     useTokenStateManagerContext();
 
   const { dbid: tokenId } = tokenFragment;
-  const token = tokens[tokenId];
+  const token = getTokenState(tokenId);
   const additionalTags = useMemo(() => ({ tokenId }), [tokenId]);
 
   const relayEnvironment = useRelayEnvironment();
@@ -161,7 +161,7 @@ export function TokenFailureBoundary({
     [markTokenAsFailed, tokenId]
   );
 
-  if (token?.isLoading) {
+  if (token?.isLoading || token?.refreshingMetadata) {
     return <>{loadingFallback}</>;
   }
 

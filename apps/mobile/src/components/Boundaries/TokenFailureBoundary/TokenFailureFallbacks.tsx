@@ -1,8 +1,11 @@
-import { PropsWithChildren, useMemo } from 'react';
+import { PropsWithChildren, useCallback, useMemo } from 'react';
 import { Text, View } from 'react-native';
 import { graphql, useFragment } from 'react-relay';
 import { ErrorIcon } from 'src/icons/ErrorIcon';
+import { RefreshIcon } from 'src/icons/RefreshIcon';
 
+import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
+import { useTokenStateManagerContext } from '~/contexts/TokenStateManagerContext';
 import { TokenFailureFallbacksErrorFallbackFragment$key } from '~/generated/TokenFailureFallbacksErrorFallbackFragment.graphql';
 import { TokenFailureFallbacksLoadingFallbackFragment$key } from '~/generated/TokenFailureFallbacksLoadingFallbackFragment.graphql';
 
@@ -31,18 +34,25 @@ export function FallbackWrapper({
   return inner;
 }
 
+type ErrorFallbackProps = {
+  refreshable?: boolean;
+};
+
 // TODO:
 // - use refresh icon instead, and fetch new asset
 // - check dark mode
 export function TokenPreviewErrorFallback({
   tokenRef,
   variant,
+  refreshable = true,
 }: {
   tokenRef: TokenFailureFallbacksErrorFallbackFragment$key;
-} & FallbackProps) {
+} & FallbackProps &
+  ErrorFallbackProps) {
   const token = useFragment(
     graphql`
       fragment TokenFailureFallbacksErrorFallbackFragment on Token {
+        dbid
         tokenId
         contract {
           name
@@ -52,8 +62,26 @@ export function TokenPreviewErrorFallback({
     tokenRef
   );
 
+  const { refreshToken, getTokenState } = useTokenStateManagerContext();
+  const isRefreshing = useMemo(() => {
+    return getTokenState(token.dbid ?? '')?.refreshingMetadata;
+  }, [getTokenState, token.dbid]);
+
+  const handlePress = useCallback(() => {
+    if (isRefreshing || !refreshable) {
+      return;
+    }
+    refreshToken(token.dbid);
+  }, [isRefreshing, refreshToken, refreshable, token.dbid]);
+
   return (
-    <>
+    <GalleryTouchableOpacity
+      className="w-full h-full flex items-center justify-center"
+      onPress={handlePress}
+      eventElementId="Refresh Broken Token Button"
+      eventName="Refresh Broken Token Pressed"
+      activeOpacity={refreshable ? 0.2 : 1}
+    >
       <Text
         className={`text-${variantToTextSize(variant)} text-metal text-center`}
         numberOfLines={2}
@@ -61,11 +89,9 @@ export function TokenPreviewErrorFallback({
         {token.contract?.name ?? token.tokenId}
       </Text>
       {variant === 'tiny' ? null : (
-        <View className="p-1">
-          <ErrorIcon />
-        </View>
+        <View className="p-1">{refreshable ? <RefreshIcon /> : <ErrorIcon />}</View>
       )}
-    </>
+    </GalleryTouchableOpacity>
   );
 }
 
