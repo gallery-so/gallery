@@ -63,9 +63,11 @@ export function NewTokens({ notificationRef, onClose }: Props) {
   return (
     <StyledNotificationContent align="center" justify="space-between" gap={8}>
       <HStack align="center" gap={8}>
-        <NftFailureBoundary tokenId={token.dbid} fallbackSize="tiny">
-          <TokenPreview tokenRef={token} count={quantity} />
-        </NftFailureBoundary>
+        <Container>
+          <NftFailureBoundary tokenId={token.dbid} fallbackSize="tiny">
+            <TokenPreview tokenRef={token} count={quantity} />
+          </NftFailureBoundary>
+        </Container>
 
         <VStack>
           <StyledTextWrapper align="center" as="span" wrap="wrap">
@@ -83,6 +85,11 @@ export function NewTokens({ notificationRef, onClose }: Props) {
     </StyledNotificationContent>
   );
 }
+
+const Container = styled.div`
+  height: 56px;
+  width: 56px;
+`;
 
 type TokenPreviewProps = {
   tokenRef: NewTokensTokenPreviewFragment$key;
