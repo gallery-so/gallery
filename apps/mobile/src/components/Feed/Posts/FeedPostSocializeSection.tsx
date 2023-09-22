@@ -10,8 +10,6 @@ import { FeedPostSocializeSectionFragment$key } from '~/generated/FeedPostSocial
 import { FeedPostSocializeSectionQueryFragment$key } from '~/generated/FeedPostSocializeSectionQueryFragment.graphql';
 
 import { CommentsBottomSheet } from '../CommentsBottomSheet/CommentsBottomSheet';
-import { AdmireButton } from '../Socialize/AdmireButton';
-import { CommentButton } from '../Socialize/CommentButton';
 import { Interactions } from '../Socialize/Interactions';
 
 type Props = {
@@ -113,7 +111,7 @@ export function FeedPostSocializeSection({ feedPostRef, queryRef }: Props) {
     <>
       <View className="px-3 pb-8 pt-2">
         <View className="flex flex-row justify-between">
-          <View className="flex-1 pr-4 pt-1">
+          <View className="flex-1 pt-1">
             <Interactions
               type="Post"
               feedId={post.dbid}
@@ -122,14 +120,11 @@ export function FeedPostSocializeSection({ feedPostRef, queryRef }: Props) {
               totalComments={totalComments}
               totalAdmires={totalAdmires}
               onAdmirePress={toggleAdmire}
+              isAdmired={hasViewerAdmiredEvent}
               openCommentBottomSheet={handleOpenCommentBottomSheet}
             />
           </View>
 
-          <View className="flex flex-row space-x-1">
-            <AdmireButton onPress={toggleAdmire} isAdmired={hasViewerAdmiredEvent} />
-            <CommentButton openCommentBottomSheet={handleOpenCommentBottomSheet} />
-          </View>
         </View>
         {isEmptyComments && (
           <GalleryTouchableOpacity

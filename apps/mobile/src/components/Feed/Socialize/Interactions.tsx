@@ -13,6 +13,9 @@ import { FeedItemTypes } from '../createVirtualizedFeedEventItems';
 import { CommentLine } from './CommentLine';
 import { RemainingCommentCount } from './RemainingCommentCount';
 
+import { AdmireButton } from './AdmireButton';
+import { CommentButton } from './CommentButton';
+
 const PREVIEW_COMMENT_COUNT = 1;
 
 type Props = {
@@ -22,6 +25,7 @@ type Props = {
   commentRefs: InteractionsCommentsFragment$key;
   totalAdmires: number;
   totalComments: number;
+  isAdmired: boolean;
 
   onAdmirePress: () => void;
   openCommentBottomSheet: () => void;
@@ -34,6 +38,7 @@ export function Interactions({
   commentRefs,
   totalAdmires,
   totalComments,
+  isAdmired,
   onAdmirePress,
   openCommentBottomSheet,
 }: Props) {
@@ -80,23 +85,28 @@ export function Interactions({
 
   return (
     <View className="flex flex-col space-y-2">
-      <View className="flex flex-row space-x-1 items-center">
-        {admireUsers.length > 0 && (
-          <ProfilePictureBubblesWithCount
-            eventName="Feed Event Admire Bubbles Pressed"
-            eventElementId="Feed Event Admire Bubbles"
-            onPress={handleSeeAllAdmires}
+      <View className="flex w-100 flex-row justify-between items-center">
+        <View className="flex flex-row space-x-1 items-center">
+          {admireUsers.length > 0 && (
+            <ProfilePictureBubblesWithCount
+              eventName="Feed Event Admire Bubbles Pressed"
+              eventElementId="Feed Event Admire Bubbles"
+              onPress={handleSeeAllAdmires}
+              userRefs={admireUsers}
+              totalCount={totalAdmires}
+            />
+          )}
+          <AdmireLine
+            onMultiUserPress={handleSeeAllAdmires}
             userRefs={admireUsers}
-            totalCount={totalAdmires}
+            totalAdmires={totalAdmires}
+            onAdmirePress={onAdmirePress}
           />
-        )}
-
-        <AdmireLine
-          onMultiUserPress={handleSeeAllAdmires}
-          userRefs={admireUsers}
-          totalAdmires={totalAdmires}
-          onAdmirePress={onAdmirePress}
-        />
+        </View>
+        <View className="flex flex-row space-x-1">
+          <AdmireButton onPress={onAdmirePress} isAdmired={isAdmired} />
+          <CommentButton openCommentBottomSheet={openCommentBottomSheet} />
+        </View>
       </View>
 
       <View className="flex flex-col space-y-1">
