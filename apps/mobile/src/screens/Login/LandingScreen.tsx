@@ -12,7 +12,7 @@ import {
 import { ConnectWalletButton } from '~/components/Login/ConnectWalletButton';
 import { SignInBottomSheet } from '~/components/Login/SignInBottomSheet';
 import { SafeAreaViewWithPadding, useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
-import { OrderedListItem,Typography } from '~/components/Typography';
+import { OrderedListItem, Typography } from '~/components/Typography';
 import { LoginStackNavigatorProp } from '~/navigation/types';
 
 import { Button } from '../../components/Button';
