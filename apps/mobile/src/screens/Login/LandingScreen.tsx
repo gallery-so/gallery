@@ -1,7 +1,6 @@
 import { useBottomSheetDynamicSnapPoints } from '@gorhom/bottom-sheet';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
-import clsx from 'clsx';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { View } from 'react-native';
 import { EllipsesIcon } from 'src/icons/EllipsesIcon';
@@ -10,41 +9,30 @@ import {
   GalleryBottomSheetModal,
   GalleryBottomSheetModalType,
 } from '~/components/GalleryBottomSheet/GalleryBottomSheetModal';
-import { GalleryTouchableOpacity } from '~/components/GalleryTouchableOpacity';
 import { ConnectWalletButton } from '~/components/Login/ConnectWalletButton';
 import { SignInBottomSheet } from '~/components/Login/SignInBottomSheet';
 import { SafeAreaViewWithPadding, useSafeAreaPadding } from '~/components/SafeAreaViewWithPadding';
+import { OrderedListItem,Typography } from '~/components/Typography';
 import { LoginStackNavigatorProp } from '~/navigation/types';
 
 import { Button } from '../../components/Button';
-import { OrderedListItem, Typography } from '../../components/Typography';
-import { EmailIcon } from '../../icons/EmailIcon';
 import { SEEN_ONBOARDING_VIDEO_STORAGE_KEY } from '../Onboarding/OnboardingVideoScreen';
 import { LandingLogo } from './LandingLogo';
 import { QRCodeIcon } from './QRCodeIcon';
 
 export function LandingScreen() {
-  const [noOfLogoTapped, setNoOfLogoTapped] = useState<number>(0);
-
   const { bottom } = useSafeAreaPadding();
   const navigation = useNavigation<LoginStackNavigatorProp>();
 
   const bottomSheetRef = useRef<GalleryBottomSheetModalType | null>(null);
-  const [hasSeenOnboardingVideo, setHasSeenOnboardingVideo] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
     AsyncStorage.getItem(SEEN_ONBOARDING_VIDEO_STORAGE_KEY).then((value) => {
-      if (value === 'true') {
-        setHasSeenOnboardingVideo(true);
+      if (value !== 'true') {
+        navigation.navigate('OnboardingVideo');
       }
     });
-  }, []);
-
-  const handleEmailPress = useCallback(() => {
-    setError('');
-
-    navigation.navigate('EnterEmail');
   }, [navigation]);
 
   const initialSnapPoints = useMemo(() => ['CONTENT_HEIGHT'], []);
@@ -72,20 +60,6 @@ export function LandingScreen() {
   const toggleOption = useCallback(() => {
     bottomSheetRef.current?.present();
   }, []);
-
-  const handleLogoPress = useCallback(() => {
-    setNoOfLogoTapped((prev) => prev + 1);
-  }, []);
-
-  useEffect(() => {
-    if (noOfLogoTapped > 5 && !hasSeenOnboardingVideo) {
-      navigation.navigate('OnboardingVideo');
-    }
-  }, [navigation, noOfLogoTapped, hasSeenOnboardingVideo]);
-
-  const isOnboardingEnabled = useMemo(() => {
-    return noOfLogoTapped > 5;
-  }, [noOfLogoTapped]);
 
   return (
     <SafeAreaViewWithPadding className="flex h-full flex-col justify-end bg-white dark:bg-black-900">
@@ -142,70 +116,24 @@ export function LandingScreen() {
         </View>
       </GalleryBottomSheetModal>
 
-      <View
-        className={clsx('flex flex-grow flex-col items-center space-y-12', {
-          'justify-center': !isOnboardingEnabled,
-          'justify-between': isOnboardingEnabled,
-        })}
-      >
-        <View className={clsx(isOnboardingEnabled ? 'pt-32' : 'pt-0')}>
-          <GalleryTouchableOpacity onPress={handleLogoPress} eventElementId={null} eventName={null}>
-            <LandingLogo onPress={handleLogoPress} />
-          </GalleryTouchableOpacity>
+      <View className="flex flex-grow flex-col items-center space-y-12 justify-between">
+        <View className="pt-32">
+          <LandingLogo />
         </View>
 
         <View className="flex flex-col space-y-4 w-8/12">
-          {isOnboardingEnabled ? (
-            <View className="w-[160px] space-y-2 self-center">
-              <ConnectWalletButton />
-              <Button
-                onPress={toggleOption}
-                variant="secondary"
-                icon={<EllipsesIcon />}
-                eventElementId={null}
-                eventName={null}
-              />
+          <View className="w-[160px] space-y-2 self-center">
+            <ConnectWalletButton />
+            <Button
+              onPress={toggleOption}
+              variant="secondary"
+              icon={<EllipsesIcon />}
+              eventElementId={null}
+              eventName={null}
+            />
 
-              <SignInBottomSheet ref={bottomSheetRef} onQrCodePress={handleQrCodePress} />
-            </View>
-          ) : (
-            <>
-              <Typography
-                className="text-metal text-center text-sm mb-4"
-                font={{ family: 'ABCDiatype', weight: 'Regular' }}
-              >
-                Select a sign in method
-              </Typography>
-
-              <View className="space-y-2">
-                <Button
-                  eventElementId="QR Code Button"
-                  eventName="Sign In Selection"
-                  properties={{
-                    'Sign In Method': 'QR Code',
-                  }}
-                  onPress={handleQrCodePress}
-                  variant="primary"
-                  icon={<QRCodeIcon />}
-                  text="Scan QR Code"
-                  style={{ justifyContent: 'space-between' }}
-                />
-
-                <Button
-                  eventElementId="Email Button"
-                  eventName="Sign In Selection"
-                  variant="secondary"
-                  properties={{
-                    'Sign In Method': 'Email',
-                  }}
-                  onPress={handleEmailPress}
-                  icon={<EmailIcon />}
-                  text="Use verified email"
-                />
-              </View>
-            </>
-          )}
-
+            <SignInBottomSheet ref={bottomSheetRef} onQrCodePress={handleQrCodePress} />
+          </View>
           {error && (
             <Typography
               className="text-sm text-error text-center"
@@ -216,17 +144,6 @@ export function LandingScreen() {
           )}
         </View>
       </View>
-
-      {!isOnboardingEnabled && (
-        <View className="pb-5">
-          <Typography
-            className="text-metal text-center text-sm"
-            font={{ family: 'ABCDiatype', weight: 'Regular' }}
-          >
-            New user? Please sign up on gallery.so first.
-          </Typography>
-        </View>
-      )}
     </SafeAreaViewWithPadding>
   );
 }
