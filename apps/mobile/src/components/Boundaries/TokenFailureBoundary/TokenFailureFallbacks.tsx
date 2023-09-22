@@ -68,11 +68,11 @@ export function TokenPreviewErrorFallback({
   }, [getTokenState, token.dbid]);
 
   const handlePress = useCallback(() => {
-    if (isRefreshing) {
+    if (isRefreshing || !refreshable) {
       return;
     }
     refreshToken(token.dbid);
-  }, [isRefreshing, refreshToken, token.dbid]);
+  }, [isRefreshing, refreshToken, refreshable, token.dbid]);
 
   return (
     <GalleryTouchableOpacity
@@ -80,6 +80,7 @@ export function TokenPreviewErrorFallback({
       onPress={handlePress}
       eventElementId="Refresh Broken Token Button"
       eventName="Refresh Broken Token Pressed"
+      activeOpacity={refreshable ? 0.2 : 1}
     >
       <Text
         className={`text-${variantToTextSize(variant)} text-metal text-center`}
