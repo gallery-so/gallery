@@ -8,7 +8,6 @@ import { homePageCuratedQuery } from '~/generated/homePageCuratedQuery.graphql';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
 import CuratedHomePage from '~/scenes/Home/CuratedHomePage';
 import { PreloadQueryArgs } from '~/types/PageComponentPreloadQuery';
-import isProduction from '~/utils/isProduction';
 
 const homePageCuratedQueryNode = graphql`
   query homePageCuratedQuery(
@@ -47,7 +46,6 @@ export default function Home({ preloadedQuery }: Props) {
 }
 
 Home.preloadQuery = ({ relayEnvironment }: PreloadQueryArgs) => {
-  const includePosts = !isProduction();
   return loadQuery<homePageCuratedQuery>(
     relayEnvironment,
     homePageCuratedQueryNode,
@@ -55,7 +53,7 @@ Home.preloadQuery = ({ relayEnvironment }: PreloadQueryArgs) => {
       interactionsFirst: NOTES_PER_PAGE,
       curatedLast: ITEMS_PER_PAGE,
       visibleTokensPerFeedEvent: MAX_PIECES_DISPLAYED_PER_FEED_EVENT,
-      includePosts,
+      includePosts: true,
       // [GAL-3763] Revive this if / when elon lets us import twitter follower graphs again
       // twitterListFirst: USER_PER_PAGE,
     },

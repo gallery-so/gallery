@@ -8,7 +8,6 @@ import { latestQuery } from '~/generated/latestQuery.graphql';
 import GalleryRoute from '~/scenes/_Router/GalleryRoute';
 import { LatestHomePage } from '~/scenes/Home/Latest/LatestHomePage';
 import { PreloadQueryArgs } from '~/types/PageComponentPreloadQuery';
-import isProduction from '~/utils/isProduction';
 
 const latestQueryNode = graphql`
   query latestQuery(
@@ -42,7 +41,6 @@ export default function Latest({ preloadedQuery }: Props) {
 }
 
 Latest.preloadQuery = ({ relayEnvironment }: PreloadQueryArgs) => {
-  const includePosts = !isProduction();
   return loadQuery(
     relayEnvironment,
     latestQueryNode,
@@ -50,7 +48,7 @@ Latest.preloadQuery = ({ relayEnvironment }: PreloadQueryArgs) => {
       latestLast: ITEMS_PER_PAGE,
       visibleTokensPerFeedEvent: MAX_PIECES_DISPLAYED_PER_FEED_EVENT,
       interactionsFirst: NOTES_PER_PAGE,
-      includePosts,
+      includePosts: true,
     },
     { fetchPolicy: 'store-or-network' }
   );
