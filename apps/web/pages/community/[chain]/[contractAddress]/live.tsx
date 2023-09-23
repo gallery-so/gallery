@@ -17,7 +17,7 @@ type CommunityPageProps = MetaTagProps & {
 };
 
 export const PROHIBITION_CONTRACT_ADDRESS = '0x47a91457a3a1f700097199fd63c039c4784384ab';
-export const RESONANCE_PROJECT_ID = 100;
+export const RESONANCE_PROJECT_ID = 182;
 
 export default function CommunityLivePage({
   contractAddress,
