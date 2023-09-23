@@ -139,11 +139,14 @@ export default function CheckInWalletSelection({ setConfirmedWalletAddress, user
   return (
     <>
       <Typography className="text-lg" font={{ family: 'ABCDiatype', weight: 'Bold' }}>
-        Select a wallet to enter the draw
+        Select a hot wallet to enter the draw
       </Typography>
-      <Typography className="text-sm mb-4" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
+      <Typography className="text-sm mb-2" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
         Select your Ethereum wallet to enter the draw for an exclusive allowlist spot in the Gallery
         x Prohibition drop with Jimena Buena Vida!
+      </Typography>
+      <Typography className="text-sm mb-4" font={{ family: 'ABCDiatype', weight: 'Regular' }}>
+        Be sure to select a hot wallet that you can mint with.
       </Typography>
       <ScrollView className="mb-20">
         {ethereumWallets?.map(

@@ -62,7 +62,7 @@ function SignInBottomSheet(
             className="text-lg text-black-900 dark:text-offWhite"
             font={{ family: 'ABCDiatype', weight: 'Bold' }}
           >
-            Other sign in method
+            Create an account or sign in
           </Typography>
         </View>
 
