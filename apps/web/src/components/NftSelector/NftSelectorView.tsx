@@ -6,8 +6,10 @@ import styled from 'styled-components';
 import { useModalActions } from '~/contexts/modal/ModalContext';
 import { NftSelectorViewFragment$key } from '~/generated/NftSelectorViewFragment.graphql';
 import useAddWalletModal from '~/hooks/useAddWalletModal';
+import useWindowSize, { useIsMobileWindowWidth } from '~/hooks/useWindowSize';
 import { Chain } from '~/shared/utils/chains';
 
+import breakpoints from '../core/breakpoints';
 import { Button } from '../core/Button/Button';
 import { VStack } from '../core/Spacer/Stack';
 import { BaseXL } from '../core/Text/Text';
@@ -27,7 +29,8 @@ type Props = {
   handleRefresh: () => void;
   onSelectToken: (tokenId: string) => void;
 };
-const COLUMN_COUNT = 4;
+const COLUMN_COUNT_DESKTOP = 4;
+const COLUMN_COUNT_MOBILE = 3;
 
 export function NftSelectorView({
   selectedContractAddress,
@@ -73,6 +76,9 @@ export function NftSelectorView({
     showAddWalletModal({ onConnectWalletSuccess: onNewWalletConnected });
   }, [onNewWalletConnected, showAddWalletModal]);
 
+  const isMobile = useIsMobileWindowWidth();
+  const columnCount = isMobile ? COLUMN_COUNT_MOBILE : COLUMN_COUNT_DESKTOP;
+
   const rows = useMemo(() => {
     const rows = [];
 
@@ -114,14 +120,25 @@ export function NftSelectorView({
       }
     }
 
-    for (let i = 0; i < tokens.length; i += COLUMN_COUNT) {
-      const row = tokens.slice(i, i + COLUMN_COUNT);
+    for (let i = 0; i < tokens.length; i += columnCount) {
+      const row = tokens.slice(i, i + columnCount);
 
       rows.push(row);
     }
 
     return rows;
-  }, [groupedTokens, selectedContractAddress, selectedNetworkView]);
+  }, [columnCount, groupedTokens, selectedContractAddress, selectedNetworkView]);
+
+  const { width } = useWindowSize();
+  const rowHeight = useMemo(() => {
+    if (isMobile) {
+      // calculate the width of each item: screen width - 32px side padding - 2x16px gap between items, and divided by number of columns
+      const itemWidth = (width - 64) / 3;
+      // add 16px for top and bottom gap between rows
+      return itemWidth + 16;
+    }
+    return 220;
+  }, [isMobile, width]);
 
   const rowRenderer = useCallback(
     ({ key, style, index }: ListRowProps) => {
@@ -132,7 +149,7 @@ export function NftSelectorView({
       }
 
       return (
-        <StyledNftSelectorViewContainer key={key} style={style}>
+        <StyledNftSelectorViewContainer key={key} style={style} columnCount={columnCount}>
           {row.map((column, index) => {
             return (
               <NftSelectorTokenPreview
@@ -147,7 +164,7 @@ export function NftSelectorView({
         </StyledNftSelectorViewContainer>
       );
     },
-    [onSelectContract, onSelectToken, rows, selectedContractAddress]
+    [columnCount, onSelectContract, onSelectToken, rows, selectedContractAddress]
   );
 
   if (!rows.length && !hasSearchKeyword) {
@@ -181,7 +198,7 @@ export function NftSelectorView({
             ref={virtualizedListRef}
             width={width}
             height={height}
-            rowHeight={220}
+            rowHeight={rowHeight}
             rowCount={rows.length}
             rowRenderer={rowRenderer}
           />
@@ -193,14 +210,18 @@ export function NftSelectorView({
 
 const StyledWrapper = styled.div`
   position: relative;
-  height: 500px;
+  height: 100vh;
+
+  @media only screen and ${breakpoints.desktop} {
+    height: 500px;
+  }
 `;
 
-const StyledNftSelectorViewContainer = styled.div`
+const StyledNftSelectorViewContainer = styled.div<{ columnCount: number }>`
   padding: 8px 0;
 
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(${({ columnCount }) => columnCount}, minmax(0, 1fr));
 
   gap: 16px;
 `;
