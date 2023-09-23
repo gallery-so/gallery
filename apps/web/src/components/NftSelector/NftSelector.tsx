@@ -12,6 +12,7 @@ import { useTrack } from '~/shared/contexts/AnalyticsContext';
 import { removeNullValues } from '~/shared/relay/removeNullValues';
 import { doesUserOwnWalletFromChainFamily } from '~/utils/doesUserOwnWalletFromChainFamily';
 
+import breakpoints from '../core/breakpoints';
 import IconContainer from '../core/IconContainer';
 import { HStack, VStack } from '../core/Spacer/Stack';
 import { BaseM } from '../core/Text/Text';
@@ -305,19 +306,35 @@ function NftSelectorInner({ onSelectToken, headerText, preSelectedContract }: Pr
 }
 
 const StyledNftSelectorModal = styled(VStack)`
-  width: 880px;
   max-height: 100%;
   min-height: 250px;
+  width: 100%;
+  padding: 16px;
+
+  @media only screen and ${breakpoints.desktop} {
+    width: 880px;
+    padding: 0;
+  }
 `;
 
 const StyledTitle = styled.div`
-  padding: 16px 0;
+  padding-bottom: 16px;
+
+  @media only screen and ${breakpoints.desktop} {
+    padding: 16px 0;
+  }
 `;
 const StyledTitleText = styled(BaseM)`
   font-weight: 700;
 `;
-const StyledActionContainer = styled(HStack)`
+const StyledActionContainer = styled(VStack)`
   padding-bottom: 8px;
+  gap: 8px;
+
+  @media only screen and ${breakpoints.desktop} {
+    flex-direction: row;
+    gap: 16px;
+  }
 `;
 
 const StyledHeaderContainer = styled(HStack)`
@@ -327,4 +344,9 @@ const StyledHeaderContainer = styled(HStack)`
 const DropdownsContainer = styled(HStack)<{ disabled: boolean }>`
   opacity: ${({ disabled }) => (disabled ? 0.35 : 1)};
   pointer-events: ${({ disabled }) => (disabled ? 'none' : 'auto')};
+
+  flex-wrap: wrap;
+  @media only screen and ${breakpoints.desktop} {
+    flex-wrap: unset;
+  }
 `;
