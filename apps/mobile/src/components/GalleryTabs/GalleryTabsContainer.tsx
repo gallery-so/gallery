@@ -11,7 +11,8 @@ import colors from '~/shared/theme/colors';
 type GalleryTabsContainerProps = {
   children: TabReactElement<string> | TabReactElement<string>[];
   initialTabName?: string;
-  Header: () => JSX.Element;
+  TabBar?: () => JSX.Element;
+  Header?: () => JSX.Element;
 };
 
 type GalleryTabsContainerType = CollapsibleRef<string>;
@@ -20,7 +21,7 @@ const GalleryTabsContainer: React.FC<GalleryTabsContainerProps> = (
   props,
   ref: ForwardedRef<GalleryTabsContainerType>
 ) => {
-  const { children, Header, initialTabName } = props;
+  const { children, TabBar, Header, initialTabName } = props;
   const { colorScheme } = useColorScheme();
 
   const containerRef = useRef<GalleryTabsContainerType | null>(null);
@@ -48,8 +49,8 @@ const GalleryTabsContainer: React.FC<GalleryTabsContainerProps> = (
           borderBottomColor: 'transparent',
           backgroundColor: colorScheme === 'light' ? colors.white : colors.black['900'],
         }}
-        renderTabBar={Empty}
-        renderHeader={Header}
+        renderTabBar={TabBar || Empty}
+        renderHeader={Header || Empty}
       >
         {children}
       </Tabs.Container>

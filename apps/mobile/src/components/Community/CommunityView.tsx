@@ -74,7 +74,7 @@ export function CommunityView({ queryRef }: Props) {
     });
   }, [community.chain, community.contractAddress?.address]);
 
-  const Header = useCallback(() => {
+  const TabBar = useCallback(() => {
     return (
       <CommunityTabsHeader
         communityRef={community}
@@ -105,7 +105,7 @@ export function CommunityView({ queryRef }: Props) {
       </View>
 
       <View className="flex-grow">
-        <GalleryTabsContainer Header={Header} ref={containerRef} initialTabName={selectedRoute}>
+        <GalleryTabsContainer TabBar={TabBar} ref={containerRef} initialTabName={selectedRoute}>
           <Tabs.Tab name="Posts">
             <CommunityViewPostsTab communityRef={community} queryRef={query} />
           </Tabs.Tab>

@@ -1,13 +1,17 @@
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { Suspense } from 'react';
-import { View } from 'react-native';
-import { graphql, useLazyLoadQuery } from 'react-relay';
+import { ScrollView, View } from 'react-native';
+import { graphql, useLazyLoadQuery, useRefetchableFragment } from 'react-relay';
+import { useRefreshHandle } from 'src/hooks/useRefreshHandle';
 
 import { CommunityView } from '~/components/Community/CommunityView';
 import { CommunityViewFallback } from '~/components/Community/CommunityViewFallback';
+import { GalleryRefreshControl } from '~/components/GalleryRefreshControl';
 import { CommunityScreenInitializeQuery } from '~/generated/CommunityScreenInitializeQuery.graphql';
 import { CommunityScreenQuery } from '~/generated/CommunityScreenQuery.graphql';
 import { Chain } from '~/generated/CommunityScreenQuery.graphql';
+import { CommunityScreenRefetchableFragment$key } from '~/generated/CommunityScreenRefetchableFragment.graphql';
+import { CommunityScreenRefetchableFragmentQuery } from '~/generated/CommunityScreenRefetchableFragmentQuery.graphql';
 import { MainTabStackNavigatorParamList } from '~/navigation/types';
 
 type CommunityScreenInnerProps = {
@@ -36,7 +40,7 @@ function CommunityScreenInner({ chain, contractAddress }: CommunityScreenInnerPr
     { fetchPolicy: 'store-or-network', UNSTABLE_renderPolicy: 'partial' }
   );
 
-  const query = useLazyLoadQuery<CommunityScreenQuery>(
+  const wrapperQuery = useLazyLoadQuery<CommunityScreenQuery>(
     graphql`
       query CommunityScreenQuery(
         $communityAddress: ChainAddressInput!
@@ -47,7 +51,7 @@ function CommunityScreenInner({ chain, contractAddress }: CommunityScreenInnerPr
         $postBefore: String
         $communityID: DBID!
       ) {
-        ...CommunityViewFragment
+        ...CommunityScreenRefetchableFragment
       }
     `,
     {
@@ -63,9 +67,32 @@ function CommunityScreenInner({ chain, contractAddress }: CommunityScreenInnerPr
     { fetchPolicy: 'store-or-network', UNSTABLE_renderPolicy: 'partial' }
   );
 
+  const [query, refetch] = useRefetchableFragment<
+    CommunityScreenRefetchableFragmentQuery,
+    CommunityScreenRefetchableFragment$key
+  >(
+    graphql`
+      fragment CommunityScreenRefetchableFragment on Query
+      @refetchable(queryName: "CommunityScreenRefetchableFragmentQuery") {
+        ...CommunityViewFragment
+      }
+    `,
+    wrapperQuery
+  );
+
+  const { isRefreshing, handleRefresh } = useRefreshHandle(refetch);
+
   return (
     <View style={{ flex: 1 }}>
-      <CommunityView queryRef={query} />
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ flex: 1 }}
+        refreshControl={
+          <GalleryRefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />
+        }
+      >
+        <CommunityView queryRef={query} />
+      </ScrollView>
     </View>
   );
 }
