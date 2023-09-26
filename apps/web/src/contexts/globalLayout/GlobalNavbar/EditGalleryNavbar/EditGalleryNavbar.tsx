@@ -7,7 +7,6 @@ import { Button } from '~/components/core/Button/Button';
 import { HStack } from '~/components/core/Spacer/Stack';
 import { BaseM, TitleXS } from '~/components/core/Text/Text';
 import OnboardingDialog from '~/components/GalleryEditor/GalleryOnboardingGuide/OnboardingDialog';
-import { CollectionSaveButtonWithCaption } from '~/contexts/globalLayout/GlobalNavbar/CollectionSaveButtonWithCaption';
 import { GalleryTitleSection } from '~/contexts/globalLayout/GlobalNavbar/EditGalleryNavbar/GalleryTitleSection';
 import {
   NavbarCenterContent,
@@ -39,7 +38,7 @@ type Props = {
 
   onBack: () => void;
   onSave: () => Promise<void>;
-  onDone: (caption: string, redirect?: boolean) => Promise<void>;
+  onDone: (redirect?: boolean) => Promise<void>;
 };
 
 type DoneAction =
@@ -72,7 +71,7 @@ export function EditGalleryNavbar({
   const handleAllGalleriesClick = useGuardEditorUnsavedChanges(() => {
     // if the user has saved changes, we will automatically publish the gallery with no caption
     if (doneAction === 'saved') {
-      onDone('');
+      onDone();
     }
 
     push({ pathname: '/[username]/galleries', query: { username } });
@@ -109,12 +108,12 @@ export function EditGalleryNavbar({
     }
   });
 
-  const handleDone = useCallback(
-    (caption: string) => {
-      onDone(caption, true);
-    },
-    [onDone]
-  );
+  const [isDone, setIsDone] = useState(false);
+
+  const handleDone = useCallback(() => {
+    setIsDone(true);
+    onDone(true);
+  }, [onDone]);
 
   const doneButton = useMemo(() => {
     if (doneAction === 'no-changes') {
@@ -126,7 +125,9 @@ export function EditGalleryNavbar({
             Saved
           </SavedText>
 
-          <CollectionSaveButtonWithCaption onSave={handleDone} label="Done" />
+          <DoneButton onClick={handleDone} pending={isDone}>
+            Done
+          </DoneButton>
         </>
       );
     } else if (
@@ -142,7 +143,7 @@ export function EditGalleryNavbar({
         </>
       );
     }
-  }, [doneAction, isSaving, onBack, handleDone, onSave, showSaved]);
+  }, [doneAction, onBack, showSaved, handleDone, isDone, onSave, isSaving]);
 
   return (
     <Wrapper>

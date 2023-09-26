@@ -89,8 +89,8 @@ function EditGalleryPageInner({ queryRef }: EditGalleryPageInnerProps) {
   }, [editGalleryNameAndDescription]);
 
   const handleDone = useCallback(
-    async (caption: string, redirect?: boolean) => {
-      await publishGallery(caption);
+    async (redirect?: boolean) => {
+      await publishGallery();
 
       if (redirect) {
         handleBack();
