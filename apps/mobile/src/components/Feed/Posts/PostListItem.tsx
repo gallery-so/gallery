@@ -40,6 +40,9 @@ export function PostListItem({ feedPostRef, queryRef }: Props) {
           ...useGetPreviewImagesSingleFragment
           ...UniversalNftPreviewWithBoundaryFragment
         }
+        viewerAdmire {
+          __typename
+        }
         ...useTogglePostAdmireFragment
       }
     `,
@@ -101,7 +104,9 @@ export function PostListItem({ feedPostRef, queryRef }: Props) {
       clearTimeout(singleTapTimeoutRef.current);
       singleTapTimeoutRef.current = null;
 
-      toggleAdmire();
+      if (feedPost.viewerAdmire?.__typename !== 'Admire') {
+        toggleAdmire();
+      }
     } else {
       singleTapTimeoutRef.current = setTimeout(() => {
         singleTapTimeoutRef.current = null;
@@ -111,7 +116,7 @@ export function PostListItem({ feedPostRef, queryRef }: Props) {
         });
       }, DOUBLE_TAP_WINDOW);
     }
-  }, [firstToken.dbid, navigation, imageUrl, toggleAdmire]);
+  }, [feedPost.viewerAdmire?.__typename, toggleAdmire, navigation, imageUrl, firstToken.dbid]);
 
   return (
     <View className="flex flex-1 flex-col pt-1" style={{ width: dimensions.width }}>
