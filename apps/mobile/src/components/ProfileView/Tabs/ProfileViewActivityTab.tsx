@@ -57,7 +57,7 @@ export function ProfileViewActivityTab({ queryRef }: ProfileViewActivityTabProps
   events.reverse();
 
   const ref = useRef<FlashList<FeedListItemType> | null>(null);
-  const { items, stickyIndices } = createVirtualizedFeedEventItems({
+  const { items } = createVirtualizedFeedEventItems({
     itemRefs: events,
     listRef: ref,
     failedEvents,
@@ -88,13 +88,7 @@ export function ProfileViewActivityTab({ queryRef }: ProfileViewActivityTabProps
 
   return (
     <View style={contentContainerStyle}>
-      <Tabs.FlashList
-        ref={ref}
-        data={items}
-        renderItem={renderItem}
-        estimatedItemSize={400}
-        stickyHeaderIndices={stickyIndices}
-      />
+      <Tabs.FlashList ref={ref} data={items} renderItem={renderItem} estimatedItemSize={400} />
     </View>
   );
 }

@@ -118,10 +118,7 @@ export type createVirtualizedItemsFromFeedEventsArgs = {
 
 type createVirtualizedItemsFromFeedEventsReturnType = {
   items: FeedListItemType[];
-  stickyIndices: number[];
 };
-
-const STICKY_EVENT_ITEM_TYPES = new Set(['feed-item-header', 'post-item-header']);
 
 export function createVirtualizedFeedEventItems({
   failedEvents,
@@ -353,12 +350,5 @@ export function createVirtualizedFeedEventItems({
     }
   }
 
-  const stickyIndices: number[] = [];
-  items.forEach((item, index) => {
-    if (STICKY_EVENT_ITEM_TYPES.has(item.kind)) {
-      stickyIndices.push(index);
-    }
-  });
-
-  return { items, stickyIndices };
+  return { items };
 }
