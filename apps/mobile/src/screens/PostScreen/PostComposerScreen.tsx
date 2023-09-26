@@ -61,6 +61,7 @@ function PostComposerScreenInner() {
   });
 
   const [caption, setCaption] = useState('');
+  const [isPosting, setIsPosting] = useState(false);
 
   const mainTabNavigation = useNavigation<MainTabStackNavigatorProp>();
   const feedTabNavigation = useNavigation<FeedTabNavigatorProp>();
@@ -82,9 +83,11 @@ function PostComposerScreenInner() {
   const handlePost = useCallback(async () => {
     const tokenId = token.dbid;
 
-    if (!tokenId) {
+    if (!tokenId || isPosting) {
       return;
     }
+
+    setIsPosting(true);
 
     await post({
       tokenId,
@@ -110,12 +113,14 @@ function PostComposerScreenInner() {
       feedTabNavigation.navigate('Latest');
     }
 
+    setIsPosting(false);
     pushToast({
       children: <ToastMessage tokenRef={token} />,
     });
   }, [
     caption,
     feedTabNavigation,
+    isPosting,
     mainTabNavigation,
     post,
     pushToast,
@@ -138,6 +143,7 @@ function PostComposerScreenInner() {
           onPress={handlePost}
           eventElementId="Post Button"
           eventName="Post button clicked"
+          disabled={isPosting}
         >
           <Typography
             className="text-sm text-activeBlue"
