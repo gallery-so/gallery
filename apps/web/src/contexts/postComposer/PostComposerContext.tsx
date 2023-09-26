@@ -81,7 +81,9 @@ const PostComposerProvider = memo(({ children }: Props) => {
 
   useEffect(() => {
     if (chain && typeof chain === 'string' && isSupportedChain(chain)) {
-      setNetwork(chain);
+      // Capitalize the first letter of the chain name that we get from the router to match the Chain type
+      const capitalizedChainName = chain.charAt(0).toUpperCase() + chain.slice(1);
+      setNetwork(capitalizedChainName as Chain);
     }
   }, [chain, composer, isMobile]);
 
