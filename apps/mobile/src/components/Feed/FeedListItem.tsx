@@ -56,7 +56,7 @@ export function FeedListItem({ eventId, queryRef, eventDataRef }: FeedListItemPr
     queryRef: query,
   });
 
-  const onAdmire = useCallback(() => {
+  const handleAdmire = useCallback(() => {
     if (!hasViewerAdmiredEvent) {
       toggleAdmire();
     }
@@ -70,7 +70,7 @@ export function FeedListItem({ eventId, queryRef, eventDataRef }: FeedListItemPr
     if (event.eventData.__typename === 'GalleryUpdatedFeedEventData') {
       return (
         <GalleryUpdatedFeedEvent
-          onAdmire={onAdmire}
+          onAdmire={handleAdmire}
           eventId={eventId}
           eventDataRef={event.eventData}
         />
@@ -80,7 +80,7 @@ export function FeedListItem({ eventId, queryRef, eventDataRef }: FeedListItemPr
     return (
       <View className="overflow-hidden">
         <NonRecursiveFeedListItem
-          onAdmire={onAdmire}
+          onAdmire={handleAdmire}
           eventId={eventId}
           slideIndex={0}
           eventCount={1}
@@ -88,7 +88,7 @@ export function FeedListItem({ eventId, queryRef, eventDataRef }: FeedListItemPr
         />
       </View>
     );
-  }, [event.eventData, eventId, onAdmire]);
+  }, [event.eventData, eventId, handleAdmire]);
 
   return <View>{inner}</View>;
 }
