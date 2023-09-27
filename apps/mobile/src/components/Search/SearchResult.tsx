@@ -74,11 +74,13 @@ export function SearchResult({ title, description, variant, profilePicture, ...p
         <View>
           <Markdown style={markdownStyles}>{highlightedName}</Markdown>
         </View>
-        <View>
-          <Markdown style={markdownStyles} numberOfLines={1}>
-            {highlightedDescription}
-          </Markdown>
-        </View>
+        {highlightedDescription && (
+          <View>
+            <Markdown style={markdownStyles} numberOfLines={1}>
+              {highlightedDescription}
+            </Markdown>
+          </View>
+        )}
       </View>
     </GalleryTouchableOpacity>
   );
